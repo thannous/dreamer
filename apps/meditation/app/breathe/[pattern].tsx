@@ -2,32 +2,43 @@ import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, useWindowDimensions, View } from 'react-native';
 
-import { Screen } from '@/components/atmosphere/Screen';
-import { BreathGauge } from '@/components/breathe/BreathGauge';
-import { BreathRing } from '@/components/breathe/BreathRing';
-import { BackLink, Button, Chip, Rule, Text } from '@/components/ui';
+import { TrainerControls } from '@/components/trainer/TrainerControls';
+import { TrainerFocus } from '@/components/trainer/TrainerFocus';
+import { BackLink, Text } from '@/components/ui';
+import { WorldScene } from '@/components/worlds/WorldScene';
 import {
   BREATH_DURATIONS,
   isBreathingPatternId,
   PATTERN_BY_ID,
+  type BreathPhaseType,
   type BreathDurationMinutes,
 } from '@/content/breathing';
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
-import { useBreathEngine } from '@/hooks/useBreathEngine';
+import { useWorld } from '@/context/WorldContext';
+import { cycleDurationMs, useBreathEngine } from '@/hooks/useBreathEngine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useScreenReader } from '@/hooks/useScreenReader';
 import { formatTime } from '@/lib/audio';
 import type { TranslationKey } from '@/lib/i18n';
 
+const TRAINER_PHASES = ['inhale', 'hold', 'exhale'] as const;
+
+function hasTrainerCopy(
+  phase: BreathPhaseType
+): phase is (typeof TRAINER_PHASES)[number] {
+  return (TRAINER_PHASES as readonly BreathPhaseType[]).includes(phase);
+}
+
 export default function BreatheExercise() {
   const { pattern: patternParam } = useLocalSearchParams<{ pattern: string }>();
   const { t } = useTranslation();
-  const { width } = useWindowDimensions();
+  const { width, height, fontScale } = useWindowDimensions();
   const reducedMotion = useReducedMotion();
   const screenReader = useScreenReader();
   const { recordPractice } = useLibrary();
+  const { world } = useWorld();
 
   const valid = patternParam && isBreathingPatternId(patternParam);
   const pattern = valid ? PATTERN_BY_ID[patternParam] : PATTERN_BY_ID.calm;
@@ -65,96 +76,125 @@ export default function BreatheExercise() {
 
   if (!valid) {
     return (
-      <Screen variant="immersive">
-        <View className="flex-1 items-center justify-center px-gutter">
-          <Text variant="h3">{t('search.empty.title')}</Text>
+      <WorldScene world={world} artwork="trainer" scrimStrength={1.1}>
+        <View className="flex-1">
+          <BackLink
+            testID={TID.Button.BreatheClose}
+            label={t('player.close')}
+            fallbackHref="/(drawer)/(tabs)"
+            className="px-gutter pt-2"
+          />
+          <View className="flex-1 items-center justify-center px-gutter">
+            <Text variant="h3">{t('search.empty.title')}</Text>
+          </View>
         </View>
-      </Screen>
+      </WorldScene>
     );
   }
 
-  const ringSize = Math.min(width * 0.62, 280);
   const started = engine.running || engine.remainingSec < durationMin * 60;
+  const compact = fontScale >= 1.5 || height < 720;
+  const ringSize = Math.min(
+    width * 0.68,
+    height * (compact ? 0.18 : started ? 0.31 : 0.25),
+    compact ? 200 : 300
+  );
+  const cycleTotal = Math.max(
+    1,
+    Math.ceil((durationMin * 60 * 1000) / cycleDurationMs(pattern))
+  );
+  const cycleCurrent = engine.finished
+    ? cycleTotal
+    : Math.min(cycleTotal, engine.state.cycleIndex + 1);
+  const cycleLabel = t('trainer.cycles', {
+    current: cycleCurrent,
+    total: cycleTotal,
+  });
+  const nextPhase = pattern.phases[(engine.state.phaseIndex + 1) % pattern.phases.length].type;
+  const phaseLabel = engine.finished
+    ? t('breathe.complete.title')
+    : t(`breathe.phase.${engine.state.phase}` as TranslationKey);
+  const translatedCue =
+    started && !engine.finished && hasTrainerCopy(engine.state.phase)
+      ? t(`trainer.cue.${engine.state.phase}` as TranslationKey)
+      : null;
+  // Several locales intentionally use the same terse word for the instruction
+  // and its cue. Repeating it under itself adds noise, so only show the cue
+  // when the translation contributes something new.
+  const phaseCue = translatedCue === phaseLabel ? null : translatedCue;
+  const nextLabel =
+    started && !engine.finished && hasTrainerCopy(nextPhase)
+      ? t(`trainer.next.${nextPhase}` as TranslationKey)
+      : null;
+  const durationOptions = BREATH_DURATIONS.map((minutes) => ({
+    value: minutes,
+    label: t('common.minutes', { count: minutes }),
+  }));
+  const actionLabel = engine.finished
+    ? t('breathe.again')
+    : engine.running
+      ? t('breathe.pause')
+      : started
+        ? t('breathe.resume')
+        : t('breathe.start');
+  const handleAction = engine.finished
+    ? engine.reset
+    : engine.running
+      ? engine.pause
+      : engine.start;
 
   return (
-    <Screen variant="immersive">
-      <BackLink
-        testID={TID.Button.BreatheClose}
-        label={t('player.close')}
-        fallbackHref="/(drawer)/(tabs)"
-        className="px-gutter pt-2"
-      />
+    <WorldScene world={world} artwork="trainer" scrimStrength={1.1}>
+      <View className="flex-1">
+        <BackLink
+          testID={TID.Button.BreatheClose}
+          label={t('player.close')}
+          fallbackHref="/(drawer)/(tabs)"
+          className="px-gutter pt-2"
+        />
 
-      <View
-        testID={TID.Screen.BreatheExercise}
-        className="flex-1 items-center justify-center gap-10 px-gutter">
-        <View className="items-center gap-2">
-          <Text variant="overline">
-            {t(`breathe.pattern.${pattern.id}.name` as TranslationKey)}
-          </Text>
-          <Text
-            testID={TID.Text.BreathePhase}
-            variant="display"
-            className="text-center"
-            accessibilityLiveRegion="polite"
-            accessibilityRole="header">
-            {engine.finished
-              ? t('breathe.complete.title')
-              : t(`breathe.phase.${engine.state.phase}` as TranslationKey)}
-          </Text>
-          <Rule />
-        </View>
-
-        {reducedMotion ? (
-          <BreathGauge
-            progress={engine.state.phaseProgress}
-            remainingSec={engine.state.phaseRemainingSec}
-          />
-        ) : (
-          <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-            <BreathRing scale={engine.scale} accent={pattern.accent} size={ringSize} />
-          </View>
-        )}
-
-        <View className="items-center gap-1">
-          <Text variant="h2">{formatTime(engine.remainingSec)}</Text>
-          <Text variant="caption">{t('breathe.cycle', { count: engine.state.cycleIndex + 1 })}</Text>
-        </View>
-      </View>
-
-      <View className="gap-4 px-gutter pb-6">
-        {!started ? (
-          <View className="gap-3">
-            <Text variant="overline">{t('breathe.duration')}</Text>
-            <View className="flex-row gap-2">
-              {BREATH_DURATIONS.map((minutes) => (
-                <Chip
-                  key={minutes}
-                  label={t('common.minutes', { count: minutes })}
-                  selected={durationMin === minutes}
-                  onPress={() => setDurationMin(minutes)}
-                />
-              ))}
+        <View testID={TID.Screen.BreatheExercise} className="flex-1 px-gutter">
+          {!compact ? (
+            <View className="items-center gap-1 pt-1">
+              <Text variant="overline">
+                {t(`breathe.pattern.${pattern.id}.name` as TranslationKey)}
+              </Text>
             </View>
-          </View>
-        ) : null}
+          ) : null}
 
-        {engine.finished ? (
-          <Button label={t('breathe.again')} onPress={engine.reset} />
-        ) : (
-          <Button
-            testID={TID.Button.BreatheStart}
-            label={
-              engine.running
-                ? t('breathe.pause')
-                : started
-                  ? t('breathe.resume')
-                  : t('breathe.start')
-            }
-            onPress={engine.running ? engine.pause : engine.start}
+          <TrainerFocus
+            accent={pattern.accent}
+            compact={compact}
+            cycleCurrent={cycleCurrent}
+            cycleLabel={cycleLabel}
+            cycleTotal={cycleTotal}
+            finished={engine.finished}
+            nextLabel={nextLabel}
+            phaseCue={phaseCue}
+            phaseLabel={phaseLabel}
+            phaseProgress={engine.state.phaseProgress}
+            phaseRemainingSec={engine.state.phaseRemainingSec}
+            phaseTestID={TID.Text.BreathePhase}
+            reducedMotion={reducedMotion}
+            remainingLabel={formatTime(engine.remainingSec)}
+            ringSize={ringSize}
+            scale={engine.scale}
           />
-        )}
+        </View>
+
+        <TrainerControls
+          actionLabel={actionLabel}
+          appearance={world.appearance}
+          compact={compact}
+          durationLabel={t('breathe.duration')}
+          durationMin={durationMin}
+          durations={durationOptions}
+          showDurations={!started}
+          testID={TID.Button.BreatheStart}
+          onAction={handleAction}
+          onDurationChange={setDurationMin}
+        />
       </View>
-    </Screen>
+    </WorldScene>
   );
 }

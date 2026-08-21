@@ -15,7 +15,7 @@ import { Radius } from '@/constants/theme';
 import { FontFamily } from '@/constants/typography';
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
-import { useTheme } from '@/context/ThemeContext';
+import { useChromeTheme } from '@/hooks/useChromeTheme';
 
 /**
  * Four tabs, in a pill that floats over the screen.
@@ -37,7 +37,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
  */
 function DrawerButton() {
   const { t } = useTranslation();
-  const { colors, mode } = useTheme();
+  const { colors, mode } = useChromeTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<DrawerNavigationProp<Record<string, undefined>>>();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
@@ -72,7 +72,7 @@ function DrawerButton() {
 
 export default function TabsLayout() {
   const { t } = useTranslation();
-  const { colors, mode } = useTheme();
+  const { colors, mode } = useChromeTheme();
   const insets = useSafeAreaInsets();
 
   return (
