@@ -72,14 +72,34 @@ if [[ -z "$base_revision" ]] || \
 fi
 
 changed_files="$(mktemp)"
-trap 'rm -f "$changed_files"' EXIT
-git diff --name-only "$base_revision" "$head_revision" > "$changed_files"
+changed_entries="$(mktemp)"
+trap 'rm -f "$changed_files" "$changed_entries"' EXIT
+git diff --name-status -z -M -C --find-copies-harder \
+  "$base_revision" "$head_revision" > "$changed_entries"
 
-if [[ ! -s "$changed_files" ]]; then
+if [[ ! -s "$changed_entries" ]]; then
   echo "No changed files; continuing with an explicit no-op workflow."
   write_parameters affected "$base_revision" false false false false false false false false false false false
   exit 0
 fi
+
+unsafe_change_status=false
+while IFS= read -r -d '' raw_status; do
+  status="${raw_status:0:1}"
+  if [[ "$status" == "R" || "$status" == "C" ]]; then
+    IFS= read -r -d '' old_path
+    IFS= read -r -d '' new_path
+    printf '%s\n%s\n' "$old_path" "$new_path" >> "$changed_files"
+  else
+    IFS= read -r -d '' path
+    printf '%s\n' "$path" >> "$changed_files"
+  fi
+
+  if [[ "$status" != "A" && "$status" != "M" ]]; then
+    unsafe_change_status=true
+    echo "Git status '$raw_status' is fail-closed across every surface."
+  fi
+done < "$changed_entries"
 
 echo "Changed files:"
 cat "$changed_files"
@@ -98,8 +118,11 @@ mark_all_surfaces() {
   run_edge_contracts=true
 }
 
-while IFS= read -r path; do
-  case "$path" in
+if [[ "$unsafe_change_status" == true ]]; then
+  mark_all_surfaces
+else
+  while IFS= read -r path; do
+    case "$path" in
     .circleci/*|.github/workflows/quality.yml)
       # CI control-plane changes are deliberately fail-closed.
       mark_all_surfaces
@@ -131,7 +154,15 @@ while IFS= read -r path; do
       run_noctalia=true
       run_site=true
       ;;
-    docs-src/*|docs/*|data/*)
+    docs-src/static/scripts/*|docs-src/experience/*)
+      # Site generators that live under docs-src still need docs:build/docs:check.
+      run_site=true
+      ;;
+    docs-src/*|docs/*)
+      # Editorial SEO/showcase sources are validated by the Cloudflare Pages
+      # deployment build, not by installing and rebuilding them in CI.
+      ;;
+    data/*)
       run_site=true
       ;;
     supabase/functions/api/routes/analytics.ts|supabase/functions/api/routes/chat.ts|supabase/functions/api/routes/quota.ts)
@@ -178,8 +209,9 @@ while IFS= read -r path; do
       echo "Unclassified path '$path'; failing closed across every surface."
       mark_all_surfaces
       ;;
-  esac
-done < "$changed_files"
+    esac
+  done < "$changed_files"
+fi
 
 save_site_npm_cache=false
 save_edge_contracts_npm_cache=false
@@ -188,6 +220,23 @@ if [[ "$run_site" == true && "$run_noctalia" == false ]]; then
   save_site_npm_cache=true
 elif [[ "$run_edge_contracts" == true && "$run_noctalia" == false ]]; then
   save_edge_contracts_npm_cache=true
+fi
+
+commit_prefix="$(git log -1 --format=%B "$head_revision")"
+commit_prefix="${commit_prefix:0:250}"
+commit_prefix_lc="$(printf '%s' "$commit_prefix" | tr '[:upper:]' '[:lower:]')"
+if [[ "$commit_prefix_lc" =~ \[(ci[[:space:]]+skip|skip[[:space:]]+ci)\] ]]; then
+  if [[ "$run_noctalia" == true || "$run_meditation" == true || "$run_site" == true || \
+    "$run_edge_functions" == true || "$run_edge_contracts" == true ]]; then
+    echo "CI opt-out in the latest commit message is ignored; a product, generator, shared-data, dependency, or backend surface changed."
+  else
+    echo "Explicit CI opt-out requested; continuing with an explicit no-op workflow."
+    write_parameters \
+      affected \
+      "$base_revision" \
+      false false false false false false false false false false false
+    exit 0
+  fi
 fi
 
 echo "Selected surfaces: Noctalia=$run_noctalia Meditation=$run_meditation Site=$run_site Edge=$run_edge_functions DB-contracts=$run_edge_contracts"
