@@ -16,7 +16,7 @@ import { useTheme } from '@/context/ThemeContext';
  * drawer is a way in, not a reason to move screens.
  */
 export default function DrawerLayout() {
-  const { mode } = useTheme();
+  const { colors } = useTheme();
 
   return (
     <Drawer
@@ -32,7 +32,7 @@ export default function DrawerLayout() {
         // screen pushed above the tabs, and a wide activation zone here would
         // take that gesture away.
         swipeEdgeWidth: 40,
-        overlayColor: mode === 'dark' ? 'rgba(3, 4, 13, 0.55)' : 'rgba(42, 40, 56, 0.28)',
+        overlayColor: colors.drawerOverlay,
       }}>
       <Drawer.Screen name="(tabs)" />
     </Drawer>

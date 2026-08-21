@@ -34,6 +34,8 @@ export interface ThemeColors {
   divider: string;
   navbarBg: string;
   navbarBorder: string;
+  /** Native drawer overlay, passed as a navigation prop. */
+  drawerOverlay: string;
 }
 
 export const NightTheme: ThemeColors = {
@@ -53,6 +55,7 @@ export const NightTheme: ThemeColors = {
   divider: 'rgba(234, 212, 180, 0.16)',
   navbarBg: 'rgba(8, 8, 20, 0.92)',
   navbarBorder: 'rgba(234, 212, 180, 0.14)',
+  drawerOverlay: 'rgba(3, 4, 13, 0.55)',
 };
 
 export const PaperTheme: ThemeColors = {
@@ -72,6 +75,7 @@ export const PaperTheme: ThemeColors = {
   divider: 'rgba(154, 99, 50, 0.16)',
   navbarBg: 'rgba(252, 251, 248, 0.92)',
   navbarBorder: 'rgba(154, 99, 50, 0.14)',
+  drawerOverlay: 'rgba(42, 40, 56, 0.28)',
 };
 
 export const Themes: Record<ThemeMode, ThemeColors> = {
