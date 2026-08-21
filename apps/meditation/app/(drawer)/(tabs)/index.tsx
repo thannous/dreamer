@@ -2,107 +2,76 @@ import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
-import { Screen } from '@/components/atmosphere/Screen';
-import { SessionCard } from '@/components/session/SessionCard';
-import { Button, Card, Rule, Text } from '@/components/ui';
-import { sessionsInCategory, sessionsUpTo } from '@/content/sessions';
+import { DailyRitualShelf } from '@/components/journey/DailyRitualShelf';
+import { WeeklyJourney } from '@/components/journey/WeeklyJourney';
+import { Text } from '@/components/ui';
+import { WorldScene } from '@/components/worlds/WorldScene';
+import { WorldSwitcher } from '@/components/worlds/WorldSwitcher';
+import { WORLD_BY_ID, WORLD_IDS } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
 import { useTabBarInset } from '@/hooks/useTabBarInset';
 import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
 import { useOnboarding } from '@/context/OnboardingContext';
-import type { TranslationKey } from '@/lib/i18n';
-import { greetingKey, resumableSession, sessionOfTheDay, toMinutes } from '@/lib/library';
+import { useWorld } from '@/context/WorldContext';
+import { greetingKey, resumableSession, sessionOfTheDay } from '@/lib/library';
+import { toLocalDay } from '@/lib/streak';
 
-/** How many short sessions the "if you only have a moment" row offers. */
-const QUICK_COUNT = 4;
+const WORLDS = WORLD_IDS.map((worldId) => WORLD_BY_ID[worldId]);
 
 export default function HomeTab() {
   const router = useRouter();
   const { t } = useTranslation();
   const tabBarInset = useTabBarInset();
   const { state } = useOnboarding();
-  const { progress } = useLibrary();
+  const { progress, practiceLog } = useLibrary();
+  const { world, worldId, setWorld } = useWorld();
 
-  // Read once per mount rather than per render: `new Date()` in a render body
-  // is a moving dependency, and the recommendation must not change under the
-  // user between two glances at the same screen.
-  const [today] = useState(() => new Date().toISOString().slice(0, 10));
-  const [hour] = useState(() => new Date().getHours());
+  // The recommendation stays stable for the whole visit. Use the local day:
+  // a late-night ritual must belong to the evening the listener is living.
+  const [now] = useState(() => new Date());
+  const today = toLocalDay(now);
+  const hour = now.getHours();
 
   const todaySession = useMemo(() => sessionOfTheDay(today, state.goals), [today, state.goals]);
-
   const resume = useMemo(() => resumableSession(progress), [progress]);
-
-  const quick = useMemo(
-    () => sessionsUpTo(state.dailyIntentionMin ?? 10).slice(0, QUICK_COUNT),
-    [state.dailyIntentionMin]
-  );
-
-  const tonight = useMemo(() => sessionsInCategory('sleep').slice(0, 3), []);
+  const activeSession = resume?.session ?? todaySession;
+  const activeProgress = progress[activeSession.id];
 
   return (
-    <Screen variant="subtle" edges={['top']}>
+    <WorldScene world={world} artwork="journey" edges={['top']} className="flex-1">
       <ScrollView
         testID={TID.Screen.Home}
-        contentContainerClassName="px-gutter pt-4 gap-8"
-        contentContainerStyle={{ paddingBottom: tabBarInset }}
-        showsVerticalScrollIndicator={false}>
-        <View className="gap-1">
-          <Text variant="h1">{t(greetingKey(hour))}</Text>
-          <Text variant="bodySm">{t('home.today.label')}</Text>
-        </View>
-
-        <SessionCard session={todaySession} variant="feature" />
-
-        {resume ? (
-          <View className="gap-3">
-            <Text variant="h2">{t('home.resume.title')}</Text>
-            <Rule className="self-start" />
-            <SessionCard session={resume.session} />
-            <Text variant="caption">
-              {toMinutes(resume.remainingSec) === 1
-                ? t('home.resume.left.one')
-                : t('home.resume.left', { count: toMinutes(resume.remainingSec) })}
-            </Text>
+        contentContainerClassName="px-gutter pb-4 pt-3"
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: tabBarInset }}
+        alwaysBounceVertical={false}
+        showsVerticalScrollIndicator={false}
+        bounces={false}>
+        <View className="flex-1 justify-between gap-8">
+          <View className="max-w-[78%] gap-2 pr-8">
+            <Text variant="overline">{t('home.journey.eyebrow')}</Text>
+            <Text variant="display">{t(greetingKey(hour))}</Text>
+            <Text variant="bodySm">{t(world.descriptionKey)}</Text>
           </View>
-        ) : null}
 
-        <View className="gap-3">
-          <Text variant="h2">{t('home.quick.title')}</Text>
-          <Rule className="self-start" />
-          {quick.map((session) => (
-            <SessionCard key={session.id} session={session} />
-          ))}
+          <View className="gap-5">
+            <WorldSwitcher
+              worlds={WORLDS}
+              selectedWorldId={worldId}
+              onSelect={(nextWorldId) => void setWorld(nextWorldId)}
+              accessibilityLabel={t('home.journey.worldLabel')}
+              testID="home.world-switcher"
+            />
+            <WeeklyJourney practiceLog={practiceLog} today={today} />
+            <DailyRitualShelf
+              session={activeSession}
+              progress={activeProgress}
+              world={world}
+              onOpen={() => router.push(`/session/${activeSession.id}`)}
+            />
+          </View>
         </View>
-
-        <View className="gap-3">
-          <Text variant="h2">{t('home.tonight.title')}</Text>
-          <Rule className="self-start" />
-          <Text variant="bodySm">{t('home.tonight.subtitle')}</Text>
-          {tonight.map((session) => (
-            <SessionCard key={session.id} session={session} />
-          ))}
-        </View>
-
-        <Card>
-          <Text variant="h3">{t('home.breathe.title')}</Text>
-          <Text variant="bodySm" className="mt-1">
-            {t('home.breathe.subtitle')}
-          </Text>
-          <Button
-            label={t('tabs.breathe')}
-            variant="secondary"
-            className="mt-4"
-            onPress={() => router.push('/breathe')}
-          />
-        </Card>
-
-        <Text variant="caption" className="text-center">
-          {t('category.count', { count: 24 })} ·{' '}
-          {t(`category.${todaySession.categorySlug}.tagline` as TranslationKey)}
-        </Text>
       </ScrollView>
-    </Screen>
+    </WorldScene>
   );
 }

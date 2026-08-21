@@ -139,6 +139,13 @@ export const Atmosphere = {
 /** Opacity of the glass card fill, per mode (matches the Noctalia journal app). */
 export const GlassOpacity: Record<ThemeMode, number> = { dark: 0.3, light: 0.96 };
 
+/** Readability veil for copy rendered over world thumbnails. Native prop
+ * colours live here rather than as one-off RGBA literals in components. */
+export const ArtworkScrim = {
+  transparent: 'rgba(3, 4, 13, 0.04)',
+  strong: 'rgba(3, 4, 13, 0.84)',
+} as const;
+
 export const Radius = { sm: 8, md: 12, lg: 16, xl: 24, artwork: 28, full: 999 } as const;
 
 export const Spacing = { xs: 4, sm: 8, md: 16, lg20: 20, lg: 24, xl: 32 } as const;

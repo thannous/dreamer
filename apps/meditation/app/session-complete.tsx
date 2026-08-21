@@ -2,11 +2,12 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { Linking, View } from 'react-native';
 
-import { Screen } from '@/components/atmosphere/Screen';
 import { Button, Card, Rule, Text } from '@/components/ui';
+import { WorldScene } from '@/components/worlds';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useLibrary } from '@/context/LibraryContext';
 import { useTranslation } from '@/context/LanguageContext';
+import { useWorld } from '@/context/WorldContext';
 import { TID } from '@/lib/testIDs';
 import type { TranslationKey } from '@/lib/i18n';
 import { toMinutes } from '@/lib/library';
@@ -24,6 +25,7 @@ export default function SessionCompleteScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { t } = useTranslation();
+  const { world } = useWorld();
 
   const session = id ? SESSION_BY_ID[id] : undefined;
 
@@ -41,7 +43,7 @@ export default function SessionCompleteScreen() {
   };
 
   return (
-    <Screen variant="immersive" video="sleep">
+    <WorldScene world={world} artwork="completion" scrimStrength={1.12}>
       <View testID={TID.Screen.SessionComplete} className="flex-1 justify-between px-gutter pb-4 pt-16">
         <View className="gap-4">
           <Text variant="display">{t('complete.title')}</Text>
@@ -84,6 +86,6 @@ export default function SessionCompleteScreen() {
           <Button label={t('complete.done')} onPress={() => router.replace('/(drawer)/(tabs)')} />
         </View>
       </View>
-    </Screen>
+    </WorldScene>
   );
 }
