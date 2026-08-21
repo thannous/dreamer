@@ -74,7 +74,7 @@ describe('immersive home journey', () => {
     expect(await AsyncStorage.getItem(StorageKey.world)).toBe(JSON.stringify('dawn'));
   });
 
-  it('offers the most recent unfinished session before the daily recommendation', async () => {
+  it('routes the most recent unfinished session through the gated detail screen', async () => {
     await AsyncStorage.setItem(
       StorageKey.favorites,
       JSON.stringify({
@@ -100,6 +100,7 @@ describe('immersive home journey', () => {
     const resume = await screen.findByRole('button', { name: /Continue the journey/i });
     fireEvent.press(resume);
 
-    expect(mockPush).toHaveBeenCalledWith('/player/sleep-descent');
+    expect(mockPush).toHaveBeenCalledWith('/session/sleep-descent');
+    expect(mockPush).not.toHaveBeenCalledWith('/player/sleep-descent');
   });
 });

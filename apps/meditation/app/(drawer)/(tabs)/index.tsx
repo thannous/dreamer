@@ -67,9 +67,7 @@ export default function HomeTab() {
               session={activeSession}
               progress={activeProgress}
               world={world}
-              onOpen={(resume) =>
-                router.push(resume ? `/player/${activeSession.id}` : `/session/${activeSession.id}`)
-              }
+              onOpen={() => router.push(`/session/${activeSession.id}`)}
             />
           </View>
         </View>
