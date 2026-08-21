@@ -44,7 +44,7 @@ Vérifié le 19 août 2026, Europe/Paris. TikTok C1 est **PUBLIÉ** à 15:30 :
 `Time stops across the city. What would you do first? #Noctalia #Dreamscape #SurrealDreams`,
 label créateur généré par IA.
 
-Instagram C1 est **PUBLIÉ** à 15:45 : l'accroche commence par
+Instagram C1 est **PUBLIÉ** à 15:45 : l’accroche commence par
 `Time stops across the city.`, label IA natif activé, URL capturée
 `https://www.instagram.com/reel/DcOWIEWpgSh/`.
 
@@ -59,7 +59,7 @@ Vérifié le 19 août 2026, Europe/Paris. TikTok C2 est **PUBLIÉ** à 19:30 :
 `A hidden door opens into another world. Would you step through? #Noctalia #Dreamscape #SurrealDreams`,
 label créateur généré par IA.
 
-Instagram C2 est **PUBLIÉ** à 19:45 : l'accroche commence par
+Instagram C2 est **PUBLIÉ** à 19:45 : l’accroche commence par
 `A hidden door opens into another world.`, label IA natif activé, URL capturée
 `https://www.instagram.com/reel/DcOxRJKplYp/`. Le Reel C1
 `https://www.instagram.com/reel/DcOWIEWpgSh/` n'a pas été retouché.
@@ -75,7 +75,7 @@ Vérifié le 19 août 2026, Europe/Paris. TikTok C3 est **PUBLIÉ** à 22:30 :
 `A dream city rushes past you. Where would you go first? #Noctalia #Dreamscape #SurrealDreams`,
 label créateur généré par IA.
 
-Instagram C3 est **PUBLIÉ** à 22:45 : l'accroche commence par
+Instagram C3 est **PUBLIÉ** à 22:45 : l’accroche commence par
 `A dream city rushes past you.`, label IA natif activé, URL capturée
 `https://www.instagram.com/reel/DcPFyBwpwAd/`. Les Reels C1
 `https://www.instagram.com/reel/DcOWIEWpgSh/` et C2
