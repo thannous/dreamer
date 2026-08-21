@@ -1,4 +1,5 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { aiLanguageName, type AiLanguage, localizedForAi } from '../lib/aiLanguage.ts';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { CATEGORIZE_DREAM_SCHEMA } from '../lib/schemas.ts';
 import {
@@ -29,6 +30,15 @@ export {
   sanitizeAnalysisDetails,
   type DreamAnalysisDetails,
 } from '../services/dreamAnalysis.ts';
+
+const CATEGORIZE_SYSTEM_INSTRUCTIONS: Record<AiLanguage, string> = {
+  en: 'Categorize quickly. Return ONLY valid JSON.',
+  fr: 'Catégorise rapidement. Retourne UNIQUEMENT du JSON valide.',
+  es: 'Categoriza rápidamente. Devuelve SOLO JSON válido.',
+  de: 'Kategorisiere schnell. Gib NUR gültiges JSON zurück.',
+  it: 'Categorizza rapidamente. Restituisci SOLO JSON valido.',
+  pt: 'Categorize rapidamente. Retorne APENAS JSON válido.',
+};
 
 const toCount = (value: unknown): number => {
   if (typeof value !== 'number') return 0;
@@ -544,12 +554,8 @@ export async function handleCategorizeDream(ctx: ApiContext): Promise<Response> 
       lang,
     });
 
-    const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
-    const systemInstruction = lang === 'fr'
-      ? 'Catégorise rapidement. Retourne UNIQUEMENT du JSON valide.'
-      : lang === 'es'
-        ? 'Categoriza rápidamente. Devuelve SOLO JSON válido.'
-        : 'Categorize quickly. Return ONLY valid JSON.';
+    const langName = aiLanguageName(lang);
+    const systemInstruction = localizedForAi(lang, CATEGORIZE_SYSTEM_INSTRUCTIONS);
 
     const prompt = `You analyze user dreams with keys: {"title": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "hasPerson": boolean, "hasAnimal": boolean}. Choose the single most appropriate theme and dreamType from that list. The title MUST be in ${langName}.
 
