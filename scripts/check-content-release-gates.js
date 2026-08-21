@@ -30,9 +30,15 @@ const {
 const BLOG_SOURCE_DIR = path.join(DOCS_SRC_DIR, 'content', 'blog');
 const PAGE_SOURCE_DIR = path.join(DOCS_SRC_DIR, 'content', 'pages');
 const CONTENT_DIR = path.join(DOCS_SRC_DIR, 'content');
-// Symbol catalogs only exist in the symbol collection languages (partial
-// coverage languages such as pt-br have no symbol content).
+// Languages whose symbol pages the site publishes. Everything this gate checks
+// (slugs, dates, illustrations, routes) is scoped to these.
 const SYMBOL_LANGUAGES = getCollectionLanguages('symbols');
+// The catalogs in `data/` are shared with the mobile app, which ships one extra
+// locale the site does not publish: pt-BR (stored under the `pt` key). Its
+// blocks must still be recognised as locale blocks, otherwise they read as
+// changes to the symbol's shared fields and every symbol demands a modifiedAt bump.
+const APP_ONLY_SYMBOL_LANGUAGES = ['pt'];
+const SYMBOL_LOCALE_KEYS = [...SYMBOL_LANGUAGES, ...APP_ONLY_SYMBOL_LANGUAGES];
 
 function staticPageSourceLanguages(pageId) {
   const page = getStaticPageConfig(pageId);
@@ -914,7 +920,7 @@ function withoutDocumentMetadata(value) {
 
 function sharedSymbolFields(symbol) {
   const clone = withoutModifiedAt(symbol) || {};
-  for (const lang of SYMBOL_LANGUAGES) delete clone[lang];
+  for (const lang of SYMBOL_LOCALE_KEYS) delete clone[lang];
   // relatedArticles is keyed by locale, so changing one language must not
   // refresh the publication dates of every translated symbol page.
   delete clone.relatedArticles;

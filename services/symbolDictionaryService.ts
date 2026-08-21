@@ -87,17 +87,24 @@ export function getSymbolsByCategory(category: SymbolCategory): DreamSymbol[] {
   return SYMBOLS_BY_CATEGORY.get(category) ?? [];
 }
 
+const normalizeSearchValue = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toLowerCase();
+
 export function searchSymbols(query: string, language: SymbolLanguage): DreamSymbol[] {
-  const lower = query.trim().toLowerCase();
-  if (!lower) {
+  const normalizedQuery = normalizeSearchValue(query);
+  if (!normalizedQuery) {
     return ALL_SYMBOLS;
   }
 
   return ALL_SYMBOLS.filter((s) => {
     const content = s[language] ?? s.en;
     return (
-      content.name.toLowerCase().includes(lower) ||
-      content.shortDescription.toLowerCase().includes(lower)
+      normalizeSearchValue(content.name).includes(normalizedQuery) ||
+      normalizeSearchValue(content.shortDescription).includes(normalizedQuery)
     );
   });
 }
