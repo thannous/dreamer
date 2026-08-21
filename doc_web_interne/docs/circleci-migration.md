@@ -131,7 +131,7 @@ Hypothèses officielles figées au 20 août 2026 : 30 000 crédits/mois, Docker
 [configuration dynamique](https://circleci.com/docs/guides/orchestrate/using-dynamic-configuration/).
 
 Hypothèses hébergées à remplacer après un benchmark sériel : setup/no-op 1 min,
-Noctalia affecté 8 min, Meditation 5 min, site 12 min, Edge 5 min sur `small`,
+Noctalia affecté 8 min, Meditation 5 min, site 12 min, Edge 5 min sur `medium`,
 contrats 4 min. Le site retient volontairement 12 min car la première exécution
 réelle a approché 11 min 40.
 
@@ -140,7 +140,7 @@ réelle a approché 11 min 40.
 | Noctalia seul, PR/master | Noctalia ; master forçait aussi full/site/Edge | setup + Noctalia affecté | 85 |
 | Meditation seul | Noctalia incorrectement ; Meditation non testée | setup + Meditation | 55 |
 | Site seul | site ; master forçait tout | setup + site | 125 |
-| Edge Function simple | Noctalia + Edge ; master forçait tout | setup + Edge Deno | 30 |
+| Edge Function simple | Noctalia + Edge ; master forçait tout | setup + Edge Deno | 55 |
 | Migration DB | Noctalia + Edge Deno | setup + contrats ciblés | 45 |
 | Documentation interne | no-op | no-op | 10 |
 

@@ -30,7 +30,6 @@ describe('useBreathEngine', () => {
     expect(result.current.running).toBe(true);
 
     act(() => {
-      jest.setSystemTime(200);
       jest.advanceTimersByTime(200);
     });
 
