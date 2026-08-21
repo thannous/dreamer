@@ -146,7 +146,7 @@ export function useBreathEngine({
     }, TICK_MS);
 
     return () => clearInterval(tick);
-  }, [active, totalMs]);
+  }, [active, scale, totalMs]);
 
   // One tick at each phase boundary — the whole point of the haptic is that it
   // marks the transition, so it must never fire twice inside a phase.
