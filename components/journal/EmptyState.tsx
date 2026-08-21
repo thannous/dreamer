@@ -1,13 +1,10 @@
-import { ThemeLayout } from '@/constants/journalTheme';
+import { PressableScale, Reveal } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
-import { useFadeInUp } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import React, { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import Animated from 'react-native-reanimated';
+import { Text, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -46,104 +43,51 @@ export function EmptyState({
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
-  const animatedStyle = useFadeInUp(100);
   const showRememberedAction = !hasActiveFilter && !!onStartRememberedDream;
 
   return (
-    <Animated.View style={[styles.container, animatedStyle]}>
-      <MoonStarsIcon size={64} color={noctalia.text.tertiary} />
-      <View style={styles.copy}>
-        <Text style={[styles.title, { color: noctalia.text.primary }]}>
-          {hasActiveFilter ? t('journal.empty.filtered') : t('journal.empty.default')}
-        </Text>
-        {showRememberedAction ? (
-          <Text style={[styles.body, { color: noctalia.text.secondary }]}>
-            {t('journal.empty.remembered_hint')}
+    // The empty state mounts once, and it is the only thing on screen: an entrance is
+    // what tells the user the list finished loading and is genuinely empty.
+    <Reveal delay={100}>
+      <View className="items-center gap-4 px-6 pt-20">
+        <MoonStarsIcon size={64} color={noctalia.text.tertiary} />
+        <View className="items-center gap-2">
+          <Text className="text-center font-sans text-body text-ivory">
+            {hasActiveFilter ? t('journal.empty.filtered') : t('journal.empty.default')}
           </Text>
+          {showRememberedAction ? (
+            <Text className="max-w-[320px] text-center font-sans text-body-sm text-ivory-muted">
+              {t('journal.empty.remembered_hint')}
+            </Text>
+          ) : null}
+        </View>
+        {showRememberedAction ? (
+          <PressableScale
+            className="mt-2 min-h-[48px] flex-row items-center justify-center gap-2 rounded-full border border-continuous border-champagne-soft bg-champagne px-[18px] py-3"
+            onPress={onStartRememberedDream}
+            accessibilityRole="button"
+            accessibilityLabel={t('journal.empty.remembered_cta')}
+            testID={TID.Button.EmptyStartRememberedDream}
+          >
+            <IconSymbol name="pencil" size={18} color={noctalia.action.primaryText} />
+            <Text className="text-center font-sans-bold text-[15px] text-on-champagne">
+              {t('journal.empty.remembered_cta')}
+            </Text>
+          </PressableScale>
+        ) : null}
+        {hasActiveFilter && onClearFilters ? (
+          <PressableScale
+            className="mt-2 rounded-full border border-continuous border-champagne-soft px-6 py-3"
+            onPress={onClearFilters}
+            accessibilityRole="button"
+            testID={TID.Button.EmptyClearFilters}
+          >
+            <Text className="font-sans-bold text-[16px] text-champagne-on">
+              {t('journal.filter.clear')}
+            </Text>
+          </PressableScale>
         ) : null}
       </View>
-      {showRememberedAction ? (
-        <Pressable
-          style={[styles.primaryButton, { backgroundColor: noctalia.action.primary, borderColor: noctalia.action.primaryBorder }]}
-          onPress={onStartRememberedDream}
-          accessibilityRole="button"
-          accessibilityLabel={t('journal.empty.remembered_cta')}
-          testID={TID.Button.EmptyStartRememberedDream}
-        >
-          <IconSymbol name="pencil" size={18} color={noctalia.action.primaryText} />
-          <Text style={[styles.primaryText, { color: noctalia.action.primaryText }]}>
-            {t('journal.empty.remembered_cta')}
-          </Text>
-        </Pressable>
-      ) : null}
-      {hasActiveFilter && onClearFilters ? (
-        <Pressable
-          style={[styles.secondaryButton, { borderColor: noctalia.action.primaryBorder }]}
-          onPress={onClearFilters}
-          accessibilityRole="button"
-          testID={TID.Button.EmptyClearFilters}
-        >
-          <Text style={[styles.secondaryText, { color: noctalia.accent.text }]}>
-            {t('journal.filter.clear')}
-          </Text>
-        </Pressable>
-      ) : null}
-    </Animated.View>
+    </Reveal>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 80,
-    alignItems: 'center',
-    gap: ThemeLayout.spacing.md,
-    paddingHorizontal: ThemeLayout.spacing.lg,
-  },
-  title: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  copy: {
-    alignItems: 'center',
-    gap: 8,
-  },
-  body: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    textAlign: 'center',
-    lineHeight: 20,
-    maxWidth: 320,
-  },
-  primaryButton: {
-    marginTop: ThemeLayout.spacing.sm,
-    minHeight: 48,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    borderRadius: ThemeLayout.borderRadius.full,
-    borderCurve: 'continuous',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    borderWidth: 1,
-  },
-  primaryText: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    textAlign: 'center',
-  },
-  secondaryButton: {
-    marginTop: ThemeLayout.spacing.sm,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: ThemeLayout.borderRadius.full,
-    borderCurve: 'continuous',
-    borderWidth: 1,
-  },
-  secondaryText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-});

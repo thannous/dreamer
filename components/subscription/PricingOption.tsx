@@ -1,11 +1,21 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 
+import { PressableScale, SPRING } from '@/components/motion';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
+
+/** Selected state lives in the border and the fill, so both cross over rather than repaint. */
+const SELECTION_TRANSITION = ['borderColor', 'backgroundColor'] as const;
 
 export type PricingOptionProps = {
   id: string;
@@ -52,9 +62,26 @@ export const PricingOption: React.FC<PricingOptionProps> = function PricingOptio
   const borderColor = isSelected ? noctalia.accent.base : noctalia.surface.border;
   const backgroundColor = isSelected ? noctalia.surface.active : noctalia.surface.raised;
 
+  // Purpose: state indication. Two plans sit side by side and the only thing separating
+  // the chosen one is a border colour — crossing that over, instead of repainting it,
+  // is what makes the tap read as "this one" rather than as a redraw. The radio itself
+  // springs, because the finger that moved it is still on the screen.
+  const reduced = useReducedMotion();
+  const selection = useSharedValue(isSelected ? 1 : 0);
+
+  useEffect(() => {
+    const target = isSelected ? 1 : 0;
+    selection.set(reduced ? target : withSpring(target, SPRING.snapBack));
+  }, [isSelected, reduced, selection]);
+
+  const radioStyle = useAnimatedStyle(() => {
+    const value = selection.get();
+    return { transform: [{ scale: 1 + 0.12 * Math.min(1, Math.max(0, value)) }] };
+  });
+
   return (
-    <Pressable
-      style={({ pressed }) => [
+    <PressableScale
+      style={[
         styles.container,
         compact && styles.compactContainer,
         {
@@ -62,11 +89,17 @@ export const PricingOption: React.FC<PricingOptionProps> = function PricingOptio
           backgroundColor,
         },
         style,
-        pressed && !isDisabled && styles.pressed,
         isDisabled && styles.disabled,
       ]}
+      transitionProperties={SELECTION_TRANSITION}
       onPress={handlePress}
       disabled={isDisabled}
+      // The cards sit 8pt apart in a two-up grid and are far larger than 44pt already,
+      // so the default slop would make the gap between them ambiguous.
+      hitSlop={0}
+      // A radio ticking to a new value is the textbook selection haptic. It fires on
+      // press-in alongside the scale, never on its own.
+      haptic={isDisabled ? 'none' : 'selection'}
       testID={testID}
       accessibilityRole="radio"
       aria-checked={isSelected}
@@ -74,11 +107,13 @@ export const PricingOption: React.FC<PricingOptionProps> = function PricingOptio
     >
       <View style={[styles.headerRow, compact && styles.compactHeaderRow]}>
         {compact ? (
-          <MaterialIcons
-            name={isSelected ? 'radio-button-checked' : 'radio-button-unchecked'}
-            size={21}
-            color={isSelected ? noctalia.accent.text : noctalia.text.tertiary}
-          />
+          <Animated.View style={radioStyle}>
+            <MaterialIcons
+              name={isSelected ? 'radio-button-checked' : 'radio-button-unchecked'}
+              size={21}
+              color={isSelected ? noctalia.accent.text : noctalia.text.tertiary}
+            />
+          </Animated.View>
         ) : null}
         <View style={styles.textContainer}>
           <Text style={[styles.title, compact && styles.compactTitle, { color: noctalia.text.primary }]}>
@@ -125,7 +160,7 @@ export const PricingOption: React.FC<PricingOptionProps> = function PricingOptio
           <Text style={[styles.badgeText, { color: noctalia.action.primaryText }]}>{badge}</Text>
         </View>
       ) : null}
-    </Pressable>
+    </PressableScale>
   );
 };
 
@@ -142,9 +177,6 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     padding: 12,
     gap: 8,
-  },
-  pressed: {
-    opacity: 0.9,
   },
   disabled: {
     opacity: 0.6,

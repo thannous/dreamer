@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
+import { PressableScale } from '@/components/motion';
 import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import {
@@ -13,12 +14,37 @@ import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { REFERENCE_IMAGES } from '@/constants/appConfig';
 import { QUOTAS } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import type { ReferenceImage, SubscriptionTier } from '@/lib/types';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+
+/**
+ * `BottomSheet` styles its content through a `style` prop, so the sheet shells stay
+ * objects. Everything rendered inside them is Uniwind.
+ */
+const SHEET_BASE = {
+  borderTopLeftRadius: 24,
+  borderTopRightRadius: 24,
+  paddingHorizontal: 20,
+  paddingTop: 18,
+  paddingBottom: 24,
+  borderWidth: 1,
+} as const;
+const SHEET_STYLE = { ...SHEET_BASE, gap: 12 } as const;
+const NOTICE_SHEET_STYLE = { ...SHEET_BASE, gap: 14 } as const;
+
+const HANDLE_CLASS = 'mb-3 h-1 w-11 self-center rounded-full bg-line opacity-70';
+const TITLE_CLASS = 'font-serif-bold text-[20px] text-ivory';
+const BODY_CLASS = 'font-sans text-[15px] leading-[22px] text-ivory-muted';
+
+const NOTICE_TONE_CLASS: Record<AnalysisNoticeTone, string> = {
+  success: 'bg-success',
+  warning: 'bg-warning',
+  error: 'bg-danger',
+  info: 'bg-ink-soft',
+};
 
 type ReferenceSubjectType = 'person' | 'animal' | null;
 
@@ -72,22 +98,22 @@ export function AnalysisNoticeSheet({
       onClose={onClose}
       backdropColor={noctalia.surface.overlay}
       style={[
-        styles.noticeSheet,
+        NOTICE_SHEET_STYLE,
         { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
         shadows.xl,
       ]}
       testID={TID.Sheet.AnalysisNotice}
     >
-      <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.border }]} />
-      <View style={styles.noticeHeader}>
-        <View style={[styles.noticeIcon, { backgroundColor: toneTokens.background }]}>
+      <View className={HANDLE_CLASS} />
+      <View className="flex-row items-center gap-3">
+        <View className={`h-11 w-11 items-center justify-center rounded-[14px] ${NOTICE_TONE_CLASS[tone]}`}>
           <IconSymbol name={iconName} size={24} color={toneTokens.icon} />
         </View>
-        <Text style={[styles.sheetTitle, { color: noctalia.text.primary }]}>
+        <Text className={TITLE_CLASS}>
           {notice?.title}
         </Text>
       </View>
-      <Text style={[styles.noticeMessage, { color: noctalia.text.secondary }]}>
+      <Text className={BODY_CLASS}>
         {notice?.message}
       </Text>
       <BottomSheetActions>
@@ -120,16 +146,16 @@ export function ReplaceImageSheet({
       onClose={onClose}
       backdropColor={noctalia.surface.overlay}
       style={[
-        styles.replaceImageSheet,
+        SHEET_STYLE,
         { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
         shadows.xl,
       ]}
     >
-      <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.border }]} />
-      <Text style={[styles.sheetTitle, { color: noctalia.text.primary }]}>
+      <View className={HANDLE_CLASS} />
+      <Text className={TITLE_CLASS}>
         {t('journal.detail.image_replace.title')}
       </Text>
-      <Text style={[styles.sheetSubtitle, { color: noctalia.text.secondary }]}>
+      <Text className={BODY_CLASS}>
         {t('journal.detail.image_replace.subtitle')}
       </Text>
       <BottomSheetActions>
@@ -175,19 +201,19 @@ export function ReanalyzeSheet({
       onClose={onClose}
       backdropColor={noctalia.surface.overlay}
       style={[
-        styles.replaceImageSheet,
+        SHEET_STYLE,
         { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
         shadows.xl,
       ]}
     >
-      <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.border }]} />
-      <Text style={[styles.sheetTitle, { color: noctalia.text.primary }]}>
+      <View className={HANDLE_CLASS} />
+      <Text className={TITLE_CLASS}>
         {t('journal.detail.reanalyze_prompt.title')}
       </Text>
-      <Text style={[styles.sheetSubtitle, { color: noctalia.text.secondary }]}>
+      <Text className={BODY_CLASS}>
         {t('journal.detail.reanalyze_prompt.message')}
       </Text>
-      <Pressable
+      <PressableScale
         onPress={() => {
           onImagePolicyChange(isRegenerate ? 'keep' : 'regenerate');
         }}
@@ -196,34 +222,28 @@ export function ReanalyzeSheet({
         accessibilityLabel={t('journal.detail.reanalyze_prompt.regenerate_label')}
         accessibilityHint={t('journal.detail.reanalyze_prompt.regenerate_note')}
         disabled={isLocked}
-        style={[
-          styles.sheetCheckboxRow,
-          { borderColor: noctalia.surface.border, backgroundColor: noctalia.surface.active },
-          isLocked && { opacity: 0.5 },
-        ]}
+        className={`flex-row items-start gap-3 rounded-md border border-line bg-ink-active p-3 ${
+          isLocked ? 'opacity-50' : ''
+        }`}
       >
         <View
-          style={[
-            styles.sheetCheckboxBox,
-            {
-              borderColor: noctalia.surface.border,
-          backgroundColor: isRegenerate ? noctalia.action.primary : 'transparent',
-            },
-          ]}
+          className={`mt-px h-[22px] w-[22px] items-center justify-center rounded-[6px] border border-line ${
+            isRegenerate ? 'bg-champagne' : 'bg-transparent'
+          }`}
         >
           {isRegenerate ? (
             <IconSymbol name="checkmark" size={16} color={noctalia.action.primaryText} />
           ) : null}
         </View>
-        <View style={styles.sheetCheckboxContent}>
-          <Text style={[styles.sheetCheckboxLabel, { color: noctalia.text.primary }]}>
+        <View className="flex-1 gap-0.5">
+          <Text className="font-sans-bold text-[15px] leading-5 text-ivory">
             {t('journal.detail.reanalyze_prompt.regenerate_label')}
           </Text>
-          <Text style={[styles.sheetCheckboxNote, { color: noctalia.text.secondary }]}>
+          <Text className="font-sans text-[13px] leading-[18px] text-ivory-muted">
             {t('journal.detail.reanalyze_prompt.regenerate_note')}
           </Text>
         </View>
-      </Pressable>
+      </PressableScale>
       <BottomSheetActions>
         <BottomSheetPrimaryAction
           label={t('journal.detail.reanalyze_prompt.reanalyze')}
@@ -261,16 +281,16 @@ export function DeleteConfirmSheet({
       onClose={onClose}
       backdropColor={noctalia.surface.overlay}
       style={[
-        styles.deleteSheet,
+        SHEET_STYLE,
         { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
         shadows.xl,
       ]}
     >
-      <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.border }]} />
-      <Text style={[styles.sheetTitle, { color: noctalia.text.primary }]}>
+      <View className={HANDLE_CLASS} />
+      <Text className={TITLE_CLASS}>
         {t('journal.detail.delete_confirm.title')}
       </Text>
-      <Text style={[styles.deleteSheetMessage, { color: noctalia.text.secondary }]}>
+      <Text className={BODY_CLASS}>
         {t('journal.detail.delete_confirm.message')}
       </Text>
       <BottomSheetActions>
@@ -343,20 +363,17 @@ export function QuotaLimitSheet({
       onClose={onClose}
       backdropColor={noctalia.surface.overlay}
       style={[
-        styles.quotaLimitSheet,
+        SHEET_STYLE,
         { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
         shadows.xl,
       ]}
       testID={TID.Sheet.QuotaLimit}
     >
-      <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.border }]} />
-      <Text
-        style={[styles.sheetTitle, { color: noctalia.text.primary }]}
-        testID={TID.Text.QuotaLimitTitle}
-      >
+      <View className={HANDLE_CLASS} />
+      <Text className={TITLE_CLASS} testID={TID.Text.QuotaLimitTitle}>
         {title}
       </Text>
-      <Text style={[styles.sheetSubtitle, { color: noctalia.text.secondary }]}>
+      <Text className={BODY_CLASS}>
         {subtitle}
       </Text>
       <BottomSheetActions>
@@ -402,26 +419,21 @@ export function ImageErrorSheet({
       onClose={onClose}
       backdropColor={noctalia.surface.overlay}
       style={[
-        styles.noticeSheet,
+        NOTICE_SHEET_STYLE,
         { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
         shadows.xl,
       ]}
     >
-      <View style={[styles.sheetHandle, { backgroundColor: noctalia.surface.border }]} />
-      <View style={styles.noticeHeader}>
-        <View
-          style={[
-            styles.noticeIcon,
-            { backgroundColor: noctalia.status.danger.background },
-          ]}
-        >
+      <View className={HANDLE_CLASS} />
+      <View className="flex-row items-center gap-3">
+        <View className="h-11 w-11 items-center justify-center rounded-[14px] bg-danger">
           <IconSymbol name="exclamationmark.circle.fill" size={24} color={noctalia.status.danger.icon} />
         </View>
-        <Text style={[styles.sheetTitle, { color: noctalia.text.primary }]}>
+        <Text className={TITLE_CLASS}>
           {t('image_retry.generation_failed')}
         </Text>
       </View>
-      <Text style={[styles.noticeMessage, { color: noctalia.text.secondary }]}>
+      <Text className={BODY_CLASS}>
         {message ?? t('common.unknown_error')}
       </Text>
       <BottomSheetActions>
@@ -490,112 +502,3 @@ export function ReferenceImageSheet({
     </StandardBottomSheet>
   );
 }
-
-const styles = StyleSheet.create({
-  deleteSheet: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 24,
-    borderWidth: 1,
-    gap: 12,
-  },
-  deleteSheetMessage: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    lineHeight: 22,
-  },
-  replaceImageSheet: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 24,
-    borderWidth: 1,
-    gap: 12,
-  },
-  noticeSheet: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 24,
-    borderWidth: 1,
-    gap: 14,
-  },
-  noticeHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  noticeIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  noticeMessage: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    lineHeight: 22,
-  },
-  quotaLimitSheet: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 24,
-    borderWidth: 1,
-    gap: 12,
-  },
-  sheetHandle: {
-    width: 44,
-    height: 4,
-    borderRadius: 999,
-    alignSelf: 'center',
-    marginBottom: 12,
-    opacity: 0.7,
-  },
-  sheetTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.lora.bold,
-  },
-  sheetSubtitle: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    lineHeight: 22,
-  },
-  sheetCheckboxRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-    padding: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-  sheetCheckboxBox: {
-    width: 22,
-    height: 22,
-    borderRadius: 6,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 1,
-  },
-  sheetCheckboxContent: {
-    flex: 1,
-    gap: 2,
-  },
-  sheetCheckboxLabel: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    lineHeight: 20,
-  },
-  sheetCheckboxNote: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    lineHeight: 18,
-  },
-});

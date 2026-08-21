@@ -1,7 +1,6 @@
+import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ThemeLayout, getTagColor } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
@@ -10,7 +9,7 @@ import { getDreamImageVersion, getDreamThumbnailUri, getImageConfig, withCacheBu
 import type { DreamAnalysis } from '@/lib/types';
 import { Image } from 'expo-image';
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 
 interface AtlasDreamRowProps {
   dream: DreamAnalysis;
@@ -22,6 +21,17 @@ interface AtlasDreamRowProps {
 }
 
 const failedThumbnailUris = new Set<string>();
+
+/** expo-image is not a Uniwind component, so its fill style stays an object. */
+const THUMBNAIL_IMAGE_STYLE = { width: '100%', height: '100%' } as const;
+
+/** Tag colours have to resolve to a literal class so Tailwind can see them. */
+const THEME_PILL_CLASS: Record<string, string> = {
+  surreal: 'bg-tag-surreal',
+  mystical: 'bg-tag-mystical',
+  calm: 'bg-tag-calm',
+  noir: 'bg-tag-noir',
+};
 
 export const AtlasDreamRow = memo(function AtlasDreamRow({
   dream,
@@ -85,33 +95,36 @@ export const AtlasDreamRow = memo(function AtlasDreamRow({
   return (
     <View>
       {sectionLabel ? (
-        <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionLabel, { color: noctalia.accent.soft }]}>{sectionLabel}</Text>
-          <View style={[styles.sectionRule, { backgroundColor: noctalia.surface.border }]} />
+        <View className="flex-row items-center gap-2 pb-2 pt-6">
+          {/* `champagne-soft` is #EAD4B4 in BOTH themes, so as text it was near-invisible on
+              the light cream ground. `champagne-on` is the readable accent per theme. */}
+          <Text className="font-sans-bold text-[12px] uppercase text-champagne-on">{sectionLabel}</Text>
+          <View className="h-px flex-1 bg-line opacity-[0.78]" />
         </View>
       ) : null}
-      <Pressable
+      <PressableScale
         onPress={handlePress}
-        style={({ pressed }) => [
-          styles.row,
-          isNarrow && styles.rowNarrow,
-          { borderBottomColor: noctalia.surface.border },
-          pressed && styles.rowPressed,
-        ]}
+        className={`flex-row border-b-[length:hairlineWidth()] border-line py-4 ${
+          isNarrow ? 'min-h-[156px] items-start gap-2' : 'min-h-[136px] items-center gap-4'
+        }`}
         accessibilityRole="button"
         accessibilityLabel={dream.title || t('journal.card.accessibility.open')}
         testID={testID}
       >
-        <View style={styles.timelineColumn}>
-          <View style={[styles.timelineLine, { backgroundColor: noctalia.surface.border }]} />
-          <View style={[styles.timelineDot, isNarrow && styles.timelineDotNarrow, { backgroundColor: noctalia.accent.soft }]} />
+        <View className="w-[14px] items-center self-stretch">
+          <View className="absolute -bottom-4 -top-4 w-px bg-line opacity-80" />
+          <View className={`h-2 w-2 rounded-full bg-champagne-soft ${isNarrow ? 'mt-8' : 'mt-10'}`} />
         </View>
 
-        <View style={[styles.thumbnail, isNarrow && styles.thumbnailNarrow, { backgroundColor: noctalia.surface.soft }]}>
+        <View
+          className={`items-center justify-center overflow-hidden rounded-lg border-continuous bg-ink-soft ${
+            isNarrow ? 'h-[78px] w-[78px]' : 'h-24 w-24'
+          }`}
+        >
           {hasImage ? (
             <Image
               source={{ uri: imageUri }}
-              style={styles.thumbnailImage}
+              style={THUMBNAIL_IMAGE_STYLE}
               contentFit={imageConfig.contentFit}
               transition={imageTransition}
               cachePolicy={imageConfig.cachePolicy}
@@ -132,32 +145,37 @@ export const AtlasDreamRow = memo(function AtlasDreamRow({
           )}
         </View>
 
-        <View style={[styles.content, isNarrow && styles.contentNarrow]}>
-          <Text style={[styles.title, isNarrow && styles.titleNarrow, { color: noctalia.text.primary }]} numberOfLines={isNarrow ? 2 : 1}>
+        <View className={`min-w-0 flex-1 gap-1 ${isNarrow ? 'pt-px' : ''}`}>
+          <Text
+            className={`font-serif-bold text-ivory ${isNarrow ? 'text-[19px] leading-6' : 'text-[21px]'}`}
+            numberOfLines={isNarrow ? 2 : 1}
+          >
             {dream.title}
           </Text>
-          <Text style={[styles.excerpt, isNarrow && styles.excerptNarrow, { color: noctalia.text.secondary }]} numberOfLines={isNarrow ? 3 : 2}>
+          <Text
+            className={`font-sans text-ivory-muted ${isNarrow ? 'text-[13px] leading-[18px]' : 'text-body-sm'}`}
+            numberOfLines={isNarrow ? 3 : 2}
+          >
             {dream.transcript || dream.shareableQuote}
           </Text>
-          <View style={styles.metaRow}>
-            <Text style={[styles.date, { color: noctalia.text.tertiary }]}>{dateLabel}</Text>
+          <View className="min-h-[28px] flex-row flex-wrap items-center gap-2">
+            <Text className="font-sans text-[13px] text-ivory-faint">{dateLabel}</Text>
             {dream.theme ? (
-              <View style={[styles.themePill, { backgroundColor: getTagColor(dream.theme, colors) }]}>
-                <Text style={[styles.themePillText, { color: noctalia.text.primary }]} numberOfLines={1}>
+              <View
+                className={`max-w-[94px] rounded-full border-continuous px-2.5 py-1 ${
+                  THEME_PILL_CLASS[dream.theme] ?? THEME_PILL_CLASS.surreal
+                }`}
+              >
+                <Text className="font-sans-medium text-[12px] text-ivory" numberOfLines={1}>
                   {themeLabel}
                 </Text>
               </View>
             ) : null}
             {isExplored || isAnalyzed ? (
               <View
-                style={[
-                  styles.statusDot,
-                  {
-                    backgroundColor: isExplored
-                      ? noctalia.status.success.background
-                      : noctalia.action.disabled,
-                  },
-                ]}
+                className={`h-[26px] w-[26px] items-center justify-center rounded-full ${
+                  isExplored ? 'bg-success' : 'bg-champagne-dim'
+                }`}
                 accessibilityLabel={isExplored ? t('journal.badge.explored') : t('journal.badge.analyzed')}
               >
                 <IconSymbol
@@ -170,135 +188,7 @@ export const AtlasDreamRow = memo(function AtlasDreamRow({
           </View>
         </View>
 
-      </Pressable>
+      </PressableScale>
     </View>
   );
-});
-
-const styles = StyleSheet.create({
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: ThemeLayout.spacing.sm,
-    paddingTop: ThemeLayout.spacing.lg,
-    paddingBottom: ThemeLayout.spacing.sm,
-  },
-  sectionLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
-    textTransform: 'uppercase',
-  },
-  sectionRule: {
-    flex: 1,
-    height: 1,
-    opacity: 0.78,
-  },
-  row: {
-    minHeight: 136,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: ThemeLayout.spacing.md,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingVertical: ThemeLayout.spacing.md,
-  },
-  rowNarrow: {
-    minHeight: 156,
-    alignItems: 'flex-start',
-    gap: ThemeLayout.spacing.sm,
-  },
-  rowPressed: {
-    opacity: 0.72,
-  },
-  timelineColumn: {
-    alignSelf: 'stretch',
-    width: 14,
-    alignItems: 'center',
-  },
-  timelineLine: {
-    position: 'absolute',
-    top: -ThemeLayout.spacing.md,
-    bottom: -ThemeLayout.spacing.md,
-    width: 1,
-    opacity: 0.8,
-  },
-  timelineDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginTop: 40,
-  },
-  timelineDotNarrow: {
-    marginTop: 32,
-  },
-  thumbnail: {
-    width: 96,
-    height: 96,
-    borderRadius: ThemeLayout.borderRadius.lg,
-    borderCurve: 'continuous',
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  thumbnailNarrow: {
-    width: 78,
-    height: 78,
-  },
-  thumbnailImage: {
-    width: '100%',
-    height: '100%',
-  },
-  content: {
-    flex: 1,
-    minWidth: 0,
-    gap: ThemeLayout.spacing.xs,
-  },
-  contentNarrow: {
-    paddingTop: 1,
-  },
-  title: {
-    fontFamily: Fonts.lora.bold,
-    fontSize: 21,
-  },
-  titleNarrow: {
-    fontSize: 19,
-    lineHeight: 24,
-  },
-  excerpt: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  excerptNarrow: {
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  metaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: ThemeLayout.spacing.sm,
-    minHeight: 28,
-  },
-  date: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-  },
-  themePill: {
-    maxWidth: 94,
-    borderRadius: ThemeLayout.borderRadius.full,
-    borderCurve: 'continuous',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  themePillText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
-  },
-  statusDot: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 });

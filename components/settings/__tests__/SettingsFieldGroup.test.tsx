@@ -167,6 +167,8 @@ jest.doMock('@/components/settings/useNotificationSettingsController', () => ({
     toggleWeekday,
     toggleWeekend,
     toggleWeeklyRecap: jest.fn(async () => {}),
+    toggleStreakRisk: jest.fn(async () => {}),
+    toggleInactivityNudge: jest.fn(async () => {}),
     setWeekdayTime,
     setWeekendTime,
     sendTest: sendTestNotification,
@@ -346,7 +348,9 @@ describe('SettingsFieldGroup', () => {
   it('replays the recording onboarding from the experience card', () => {
     render(<SettingsFieldGroup {...baseProps} />);
 
-    expect(screen.getByText('settings.onboarding.restart').style.maxWidth).toBe('48%');
+    // Uniwind resolves `className` in the Metro transformer, which Jest never runs, so
+    // the wide-value column is asserted on the class rather than on a resolved style.
+    expect(screen.getByText('settings.onboarding.restart').className).toContain('max-w-[48%]');
     fireEvent.click(screen.getByTestId('btn.recording.onboarding.restart'));
 
     expect(restartRecordingGuide).toHaveBeenCalledTimes(1);

@@ -255,16 +255,26 @@ jest.doMock('react-native-reanimated', () => {
     return AnimatedComponent;
   };
   const springifyChain = { damping: () => springifyChain };
-  const enteringChain = {
+  const enteringChain: any = {
     delay: () => enteringChain,
     duration: () => enteringChain,
     springify: () => springifyChain,
+    withInitialValues: () => enteringChain,
+    easing: () => enteringChain,
   };
   return {
+    // Without `__esModule`, Babel's interop makes `default` the whole module object, so
+    // `Animated.createAnimatedComponent` resolves to undefined. Flag it explicitly and
+    // give the default export the full animated-component surface.
+    __esModule: true,
     default: {
       View,
+      Text: View,
+      ScrollView: View,
+      FlatList: View,
       createAnimatedComponent,
     },
+    createAnimatedComponent,
     FadeInDown: enteringChain,
     SlideInDown: { springify: () => ({ damping: () => ({}) }) },
     useAnimatedStyle: () => ({}),
@@ -276,7 +286,22 @@ jest.doMock('react-native-reanimated', () => {
     Extrapolation: { CLAMP: 'clamp' },
     runOnJS: (fn: any) => fn,
     cancelAnimation: () => {},
-    Easing: { out: () => {}, in: () => {}, cubic: {} },
+    Easing: {
+      out: () => {},
+      in: () => {},
+      cubic: {},
+      bezier: (..._points: number[]) => (value: any) => value,
+    },
+    // Reanimated CSS easing helpers, used by `@/components/motion`. They only need to be
+    // inert values that survive being spread into a style object.
+    cubicBezier: (...points: number[]) => `cubic-bezier(${points.join(', ')})`,
+    linear: (...points: any[]) => `linear(${points.join(', ')})`,
+    steps: (count: number) => `steps(${count})`,
+    useReducedMotion: () => false,
+    FadeIn: enteringChain,
+    FadeOut: enteringChain,
+    FadeInUp: enteringChain,
+    LinearTransition: enteringChain,
   };
 });
 

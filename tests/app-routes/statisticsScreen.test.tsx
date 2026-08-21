@@ -71,6 +71,12 @@ let mockRunInteractionsImmediately = false;
 const lockedSectionProps: Record<string, unknown>[] = [];
 const notEnoughProps: Record<string, unknown>[] = [];
 
+// Every call the screen made to `useDreamStatistics`, in order: the window it passed and the
+// shape of the series it got back. `stats.dreamsOverTime` is computed but rendered nowhere,
+// so this is the only place the activity series can be observed at screen level.
+type StatsCall = { windowDays?: number | null; points: number; bucketDays: number };
+const statsCalls: StatsCall[] = [];
+
 afterEach(() => {
   cleanup();
   jest.clearAllMocks();
@@ -79,6 +85,7 @@ afterEach(() => {
   mockAuthState = guestAuthState();
   lockedSectionProps.length = 0;
   notEnoughProps.length = 0;
+  statsCalls.length = 0;
 });
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
@@ -450,6 +457,27 @@ jest.doMock('@/constants/theme', () => ({
   },
 }));
 
+// Partial mock: the real hook still does the work, the wrapper only records the window it
+// was given. A stub returning fixture statistics would make every assertion in this file
+// about the screen's own arithmetic unfalsifiable.
+jest.doMock('@/hooks/useDreamStatistics', () => {
+  const actual = jest.requireActual(
+    '@/hooks/useDreamStatistics',
+  ) as typeof import('@/hooks/useDreamStatistics');
+  return {
+    ...actual,
+    useDreamStatistics: (dreams: DreamAnalysis[], windowDays?: number | null) => {
+      const stats = actual.useDreamStatistics(dreams, windowDays);
+      statsCalls.push({
+        windowDays,
+        points: stats.dreamsOverTime.length,
+        bucketDays: stats.dreamsOverTimeBucketDays,
+      });
+      return stats;
+    },
+  };
+});
+
 // `buildThemeTrend` is read off the SAME require as the screen: it is exported from
 // app/(tabs)/statistics.tsx, which cannot be imported without the ~350 lines of jest.doMock
 // preamble above. That is why its unit block lives at the end of this file rather than in one
@@ -691,6 +719,55 @@ describe('Statistics screen period filter', () => {
     expect(screen.queryByTestId(TID.Component.StatsPeriodEmpty)).toBeNull();
     expect(screen.getByLabelText('stats.card.total_dreams: 3')).toBeTruthy();
     expect(screen.getByTestId(TID.Button.HeaderStatsShare)).toBeTruthy();
+  });
+});
+
+describe('Statistics screen activity window', () => {
+  const lastCall = () => statsCalls[statsCalls.length - 1];
+
+  it('[B] Given each period When Stats renders Then the statistics hook is handed that period as its window', () => {
+    // The hook receives `periodDreams`, already filtered, which carries no trace of the
+    // filter that produced it. Revert: call `useDreamStatistics(periodDreams)` with one
+    // argument -> the window falls back to 30 days under every period, which is exactly the
+    // series that used to contradict the "7 days" and "12 months" chips.
+    mockUseDreams.mockReturnValue({ dreams: buildPeriodDreams(), loaded: true });
+    mockUseSubscription.mockReturnValue({ isActive: false, loading: false });
+
+    render(<StatisticsScreen />);
+
+    // 'all time' is the only period with no fixed length: null tells the hook to span the
+    // journal itself. Revert: map it to 0 or to 30 -> the series stops covering the journal.
+    expect(lastCall().windowDays).toBeNull();
+
+    selectPeriod('week');
+    expect(lastCall().windowDays).toBe(7);
+
+    selectPeriod('month');
+    expect(lastCall().windowDays).toBe(30);
+
+    selectPeriod('year');
+    expect(lastCall().windowDays).toBe(365);
+
+    selectPeriod('all');
+    expect(lastCall().windowDays).toBeNull();
+  });
+
+  it('[B] Given the 7-day and 12-month periods When the series is built Then it is seven daily points and then a bucketed year', () => {
+    // The window argument reaching the hook is not enough on its own: this pins the series
+    // the screen actually gets, one point per day under "7 days" and a bounded, bucketed
+    // series under "12 months" rather than 365 points inside a nested ScrollView.
+    mockUseDreams.mockReturnValue({ dreams: buildPeriodDreams(), loaded: true });
+    mockUseSubscription.mockReturnValue({ isActive: false, loading: false });
+
+    render(<StatisticsScreen />);
+
+    selectPeriod('week');
+    expect(lastCall().points).toBe(7);
+    expect(lastCall().bucketDays).toBe(1);
+
+    selectPeriod('year');
+    expect(lastCall().points).toBeLessThanOrEqual(30);
+    expect(lastCall().bucketDays).toBeGreaterThan(1);
   });
 });
 

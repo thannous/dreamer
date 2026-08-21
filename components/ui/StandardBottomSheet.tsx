@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import {
   AccessibilityInfo,
   findNodeHandle,
-  StyleSheet,
   Text,
   View,
   type StyleProp,
@@ -14,7 +13,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
 import { BottomSheet, type BottomSheetProps } from './BottomSheet';
@@ -161,32 +159,23 @@ export function StandardBottomSheet({
       onClose={onClose}
       backdropColor={backdropColor}
       snapPoints={snapPoints}
+      className="rounded-t-xl border-t border-line bg-ink-raised px-6 pt-1"
       style={[
-        styles.sheet,
-        {
-          backgroundColor: noctalia.surface.raised,
-          paddingBottom: insets.bottom + ThemeLayout.spacing.md,
-          borderColor: noctalia.surface.border,
-        },
+        // Safe-area inset and the theme shadow are runtime values, not classes.
+        { paddingBottom: insets.bottom + ThemeLayout.spacing.md },
         shadows.xl,
         style,
       ]}
       testID={testID}
     >
       {/* Handle indicator */}
-      <View style={[styles.handle, { backgroundColor: noctalia.surface.border }]} />
+      <View className="mb-4 h-1 w-9 self-center rounded-[2px] bg-line" />
 
       {/* Title */}
       {headerIcon ? (
         <View
           accessible={false}
-          style={[
-            styles.headerIcon,
-            {
-              backgroundColor: noctalia.surface.soft,
-              borderColor: noctalia.accent.soft,
-            },
-          ]}
+          className="mb-4 h-14 w-14 items-center justify-center self-center rounded-artwork border-2 border-champagne-soft bg-ink-soft"
         >
           <IconSymbol name={headerIcon} size={32} color={noctalia.accent.soft} />
         </View>
@@ -197,7 +186,8 @@ export function StandardBottomSheet({
         {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
         accessible
         accessibilityRole="header"
-        style={[styles.title, webTitleFocusResetStyle, { color: noctalia.text.primary }]}
+        className="mb-2 text-center font-sans-bold text-[20px] text-ivory"
+        style={webTitleFocusResetStyle}
         testID={titleTestID}
       >
         {title}
@@ -205,7 +195,7 @@ export function StandardBottomSheet({
 
       {/* Subtitle */}
       {subtitle ? (
-        <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
+        <Text className="mb-6 text-center font-sans text-body-sm text-ivory-muted">
           {subtitle}
         </Text>
       ) : null}
@@ -248,45 +238,5 @@ export function StandardBottomSheet({
     </BottomSheet>
   );
 }
-
-const styles = StyleSheet.create({
-  sheet: {
-    borderTopLeftRadius: ThemeLayout.borderRadius.xl,
-    borderTopRightRadius: ThemeLayout.borderRadius.xl,
-    borderTopWidth: 1,
-    paddingTop: ThemeLayout.spacing.xs,
-    paddingHorizontal: ThemeLayout.spacing.lg,
-  },
-  handle: {
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-    alignSelf: 'center',
-    marginBottom: ThemeLayout.spacing.md,
-  },
-  title: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 20,
-    textAlign: 'center',
-    marginBottom: ThemeLayout.spacing.sm,
-  },
-  headerIcon: {
-    width: 56,
-    height: 56,
-    borderWidth: 2,
-    borderRadius: 28,
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: ThemeLayout.spacing.md,
-  },
-  subtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
-    textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: ThemeLayout.spacing.lg,
-  },
-});
 
 export default StandardBottomSheet;

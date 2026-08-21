@@ -1,63 +1,41 @@
-import { StyleSheet, Text, type TextProps } from 'react-native';
+import { Text, type TextProps } from 'react-native';
 
-import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { useTheme } from '@/context/ThemeContext';
+export type ThemedTextVariant = 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
 
 export type ThemedTextProps = TextProps & {
+  /**
+   * @deprecated Theme-specific overrides are handled by the `dark:` variant now.
+   * Pass `className="text-x dark:text-y"` instead.
+   */
   lightColor?: string;
+  /** @deprecated See `lightColor`. */
   darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
+  type?: ThemedTextVariant;
+  className?: string;
 };
 
-export function ThemedText({
-  style,
-  lightColor,
-  darkColor,
-  type = 'default',
-  ...rest
-}: ThemedTextProps) {
-  const { colors, mode } = useTheme();
-  const noctalia = getNoctaliaDesignTokens(colors, mode);
-  const overrideColor = mode === 'dark' ? darkColor : lightColor;
-  const color = overrideColor ?? noctalia.text.primary;
+/**
+ * Variants carry font and size only — never colour. A variant that also set a colour
+ * would silently beat the caller's `text-*` class at the call site, which is the exact
+ * class of contrast regression ADR-001 set out to remove.
+ */
+const VARIANT: Record<ThemedTextVariant, string> = {
+  default: 'text-body',
+  defaultSemiBold: 'text-body font-sans-medium',
+  title: 'text-[32px] leading-[32px] font-display-bold',
+  subtitle: 'text-[20px] font-display-semibold',
+  link: 'text-body leading-[30px]',
+};
 
-  return (
-    <Text
-      style={[
-        { color },
-        type === 'default' ? styles.default : undefined,
-        type === 'title' ? styles.title : undefined,
-        type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'link' ? [styles.link, { color: noctalia.accent.text }] : undefined,
-        style,
-      ]}
-      {...rest}
-    />
-  );
+/** Tone is separate, so a caller's `text-*` class always wins. */
+const TONE: Record<ThemedTextVariant, string> = {
+  default: 'text-ivory',
+  defaultSemiBold: 'text-ivory',
+  title: 'text-ivory',
+  subtitle: 'text-ivory',
+  link: 'text-champagne-on',
+};
+
+export function ThemedText({ style, lightColor, darkColor, type = 'default', className, ...rest }: ThemedTextProps) {
+  return <Text className={`${VARIANT[type]} ${TONE[type]} ${className ?? ''}`} style={style} {...rest} />;
 }
-
-const styles = StyleSheet.create({
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  defaultSemiBold: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: '600',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    lineHeight: 32,
-  },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  link: {
-    lineHeight: 30,
-    fontSize: 16,
-  },
-});

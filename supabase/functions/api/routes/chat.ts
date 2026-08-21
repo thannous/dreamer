@@ -6,6 +6,7 @@ import {
   classifyGeminiError,
   extractModelParts,
   GEMINI_FLASH_LITE_MODEL,
+  GEMINI_FLASH_MODEL,
   type GeminiGenerationConfig,
   type GeminiPart,
   requestGeminiStream,
@@ -677,10 +678,10 @@ export async function handleChat(
 
     const primaryModel = resolveTextModel(
       ['GEMINI_CHAT_MODEL', 'GEMINI_LITE_MODEL'],
-      GEMINI_FLASH_LITE_MODEL
+      GEMINI_FLASH_MODEL
     );
     const fallbackModel = resolveTextModel('GEMINI_LITE_MODEL', GEMINI_FLASH_LITE_MODEL);
-    const chatConfig: GeminiGenerationConfig = { thinkingLevel: 'minimal', maxOutputTokens: 2048 };
+    const chatConfig: GeminiGenerationConfig = { thinkingLevel: 'low', maxOutputTokens: 2048 };
 
     const buildModelMessage = (reply: string, rawParts: GeminiPart[] | null): StoredChatMessage => {
       const modelParts = sanitizeParts(rawParts);

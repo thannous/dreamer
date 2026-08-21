@@ -11,7 +11,7 @@
 export const GEMINI_MODELS = {
   text: {
     /** Primary text model for analysis, categorisation and chat. */
-    default: 'gemini-3.6-flash',
+    default: 'gemini-3.7-flash',
     /** Cheaper fallback used when the primary model rejects or times out. */
     fallback: 'gemini-3.5-flash-lite',
   },

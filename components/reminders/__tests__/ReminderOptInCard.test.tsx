@@ -84,6 +84,9 @@ describe('ReminderOptInCard', () => {
     render(<ReminderOptInCard surface="home" />);
 
     expect(screen.getByText('reminders.opt_in.title')).toBeTruthy();
+    // The card enables four families at once, so the list is on screen before
+    // the user can tap the CTA.
+    expect(screen.getByText('reminders.opt_in.includes')).toBeTruthy();
     fireEvent.click(screen.getByTestId('btn.reminderOptIn.time.0730'));
     expect(mockSelectTime).toHaveBeenCalledWith('07:30');
 
@@ -101,6 +104,8 @@ describe('ReminderOptInCard', () => {
 
     expect(screen.getByText('reminders.opt_in.enabled_title')).toBeTruthy();
     expect(screen.getByText('reminders.opt_in.enabled_body|06:30')).toBeTruthy();
+    // Still listed after opting in, so the evening reminders are never a surprise.
+    expect(screen.getByText('reminders.opt_in.includes')).toBeTruthy();
     expect(screen.queryByTestId('btn.reminderOptIn.enable')).toBeNull();
   });
 });

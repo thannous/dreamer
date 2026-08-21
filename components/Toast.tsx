@@ -1,23 +1,15 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
+import { Text, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, {
-  Easing,
-  runOnJS,
   useAnimatedStyle,
+  useReducedMotion,
   useSharedValue,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
-import { ThemeLayout } from '@/constants/journalTheme';
+import { DURATION, EASING } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
 type ToastProps = {
@@ -30,6 +22,20 @@ type ToastProps = {
   testID?: string;
 };
 
+/** How far the toast travels on the way in. */
+const TRAVEL = 16;
+/** Leaving is quicker than arriving — the user has already read it. */
+const EXIT_DURATION = 180;
+
+/**
+ * A toast appears occasionally and is not something the user summoned deliberately, so
+ * it earns a real animation: without one it would pop into place, which reads as a
+ * glitch rather than as a message.
+ *
+ * Both directions ease **out**. An ease-in exit would linger at the exact moment the
+ * user has stopped caring, and Reanimated's built-in curves are too weak to read at
+ * this size.
+ */
 export const Toast: React.FC<ToastProps> = ({
   message,
   mode: toastMode = 'info',
@@ -41,47 +47,43 @@ export const Toast: React.FC<ToastProps> = ({
 }) => {
   const { colors, mode: themeMode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, themeMode), [colors, themeMode]);
+  const reduced = useReducedMotion();
+
   const opacity = useSharedValue(0);
-  const translateY = useSharedValue(16);
+  // Reduced motion keeps the fade — the message still announces itself — but nothing
+  // travels across the screen.
+  const translateY = useSharedValue(reduced ? 0 : TRAVEL);
   const handleHide = useCallback(() => onHide?.(), [onHide]);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ translateY: translateY.value }],
+    opacity: opacity.get(),
+    transform: [{ translateY: translateY.get() }],
   }));
 
   useEffect(() => {
-    opacity.value = withTiming(1, {
-      duration: 220,
-      easing: Easing.out(Easing.quad),
-    });
-    translateY.value = withSpring(0, {
-      damping: 12,
-      mass: 0.6,
-      stiffness: 120,
-    });
+    opacity.set(withTiming(1, { duration: DURATION.fast, easing: EASING.out }));
+    if (!reduced) {
+      translateY.set(withTiming(0, { duration: DURATION.fast, easing: EASING.out }));
+    }
 
     const timeout = setTimeout(() => {
-      opacity.value = withTiming(0, {
-        duration: 180,
-        easing: Easing.in(Easing.quad),
-      });
-      translateY.value = withTiming(
-        16,
-        {
-          duration: 180,
-          easing: Easing.in(Easing.quad),
-        },
-        (finished) => {
+      if (!reduced) {
+        translateY.set(withTiming(TRAVEL, { duration: EXIT_DURATION, easing: EASING.out }));
+      }
+      // The fade owns the completion callback, so `onHide` fires exactly once whether or
+      // not motion is reduced.
+      opacity.set(
+        withTiming(0, { duration: EXIT_DURATION, easing: EASING.out }, (finished) => {
+          'worklet';
           if (finished) {
-            runOnJS(handleHide)();
+            scheduleOnRN(handleHide);
           }
-        }
+        })
       );
     }, durationMs);
 
     return () => clearTimeout(timeout);
-  }, [durationMs, handleHide, opacity, translateY]);
+  }, [durationMs, handleHide, opacity, reduced, translateY]);
 
   const backgroundColor =
     toastMode === 'success'
@@ -101,64 +103,30 @@ export const Toast: React.FC<ToastProps> = ({
       : toastMode === 'error'
         ? noctalia.status.danger.text
         : noctalia.text.primary;
-  const pointerEventsStyle = Platform.OS === 'web' ? styles.pointerNone : styles.nativePointerNone;
 
   return (
     <Animated.View
-      style={[
-        styles.container,
-        !compact && styles.defaultPosition,
-        animatedStyle,
-        { backgroundColor, borderColor },
-        compact && styles.compactContainer,
-        pointerEventsStyle,
-        style,
-      ]}
+      className={
+        compact
+          ? 'absolute self-start max-w-[248px] rounded-md border px-3 py-[9px] pointer-events-none'
+          : 'absolute bottom-6 left-6 right-6 rounded-md border px-4 py-2 pointer-events-none'
+      }
+      style={[animatedStyle, { backgroundColor, borderColor }, style]}
+      pointerEvents="none"
       testID={testID}
     >
-      <Text style={[styles.text, compact && styles.compactText, { color: textColor }]}>
+      <Text
+        className={
+          compact
+            ? 'text-left text-[12px] leading-4 font-sans-medium'
+            : 'text-center text-body-sm font-sans-medium'
+        }
+        style={{ color: textColor }}
+      >
         {message}
       </Text>
     </Animated.View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    borderRadius: ThemeLayout.borderRadius.md,
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingVertical: ThemeLayout.spacing.sm,
-    borderWidth: 1,
-  },
-  defaultPosition: {
-    bottom: ThemeLayout.spacing.lg,
-    left: ThemeLayout.spacing.lg,
-    right: ThemeLayout.spacing.lg,
-  },
-  text: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textAlign: 'center',
-  },
-  compactContainer: {
-    alignSelf: 'flex-start',
-    maxWidth: 248,
-    paddingHorizontal: 12,
-    paddingVertical: 9,
-    borderRadius: 12,
-  },
-  compactText: {
-    fontSize: 12,
-    lineHeight: 16,
-    textAlign: 'left',
-  },
-  pointerNone: {
-    pointerEvents: 'none',
-  } as ViewStyle,
-  nativePointerNone: {
-    pointerEvents: 'none',
-  } as ViewStyle,
-});
 
 export default Toast;

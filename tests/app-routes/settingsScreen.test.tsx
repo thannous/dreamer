@@ -298,7 +298,7 @@ describe('Settings screen', () => {
 
     render(<SettingsScreen />);
 
-    expect(screen.getByTestId('settings-account-rn-content').style.width).toBe('100%');
+    expect(screen.getByTestId('settings-account-rn-content').className).toContain('w-full');
     expect(screen.getByTestId('settings-quota-rn-content')).toBeTruthy();
     expect(screen.getByTestId('quota-status-card')).toBeTruthy();
     expect(capturedSettingsProps).toMatchObject({
@@ -319,7 +319,7 @@ describe('Settings screen', () => {
 
     render(<SettingsScreen />);
 
-    expect(screen.getByTestId('settings-account-rn-content').style.width).toBe('100%');
+    expect(screen.getByTestId('settings-account-rn-content').className).toContain('w-full');
   });
 
   it('[B] keeps the Android clipping guard while using the full card width', () => {
@@ -333,9 +333,11 @@ describe('Settings screen', () => {
 
     render(<SettingsScreen />);
 
+    // Uniwind resolves `className` in the Metro transformer, which Jest never runs, so
+    // the classes assert the intent: full width, plus the Android clipping guard.
     const accountContent = screen.getByTestId('settings-account-rn-content');
-    expect(accountContent.style.width).toBe('100%');
-    expect(accountContent.style.paddingBottom).toBe('24px');
+    expect(accountContent.className).toContain('w-full');
+    expect(accountContent.className).toContain('pb-6');
   });
 
   it('[B] Given a returning guest is blocked When rendering Then it hides subscription features', () => {

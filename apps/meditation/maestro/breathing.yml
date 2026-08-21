@@ -1,0 +1,34 @@
+# The breathing exercise, and the phase changes that are its whole content.
+appId: com.noctalia.meditation
+---
+- runFlow: onboarding.yml
+
+- tapOn:
+    id: 'tab.breathe'
+- assertVisible:
+    id: 'screen.breathe'
+
+# First card: the calming rhythm, 4 in / 6 out. Free, so no paywall here.
+- tapOn:
+    point: '50%,30%'
+- assertVisible:
+    id: 'screen.breathe.exercise'
+- assertVisible:
+    id: 'text.breathe.phase'
+
+- tapOn:
+    id: 'btn.breathe.start'
+
+# The inhale lasts 4s and the exhale 6s, so five seconds in the phase must have
+# changed at least once. Asserting the exact word would tie this to one locale.
+- waitForAnimationToEnd:
+    timeout: 5000
+- assertVisible:
+    id: 'text.breathe.phase'
+
+# Pause, then leave: the exercise must not keep running behind the tab bar.
+- tapOn:
+    id: 'btn.breathe.start'
+- back
+- assertVisible:
+    id: 'screen.breathe'

@@ -34,6 +34,12 @@ export function deriveWeekendTime(weekdayTime: string): string {
  * Settings written when the user accepts the opt-in card: weekdays at the chosen
  * time, weekends one hour later. Existing weekend preferences are preserved when
  * the user had already customised them.
+ *
+ * The card is a single consent moment for four families, so anything enabled
+ * here must be spelled out in `reminders.opt_in.includes`, which the card renders
+ * above the CTA — an evening "your streak ends tonight" message nobody was told
+ * about is exactly the kind of surprise that gets an app uninstalled. Settings
+ * remains the place to trim each family back.
  */
 export function buildOptInNotificationSettings(
   current: NotificationSettings,
@@ -44,8 +50,12 @@ export function buildOptInNotificationSettings(
     weekdayTime,
     weekendEnabled: true,
     weekendTime: current.weekendEnabled ? current.weekendTime : deriveWeekendTime(weekdayTime),
-    // Opting in from the card also enables the Sunday recap; Settings can turn it off.
+    // Disclosed by `reminders.opt_in.includes`. Adding a family here without
+    // updating that copy (in the six locales) breaks the informed consent the
+    // card is built on.
     weeklyRecapEnabled: true,
+    streakRiskEnabled: true,
+    inactivityNudgeEnabled: true,
   };
 }
 

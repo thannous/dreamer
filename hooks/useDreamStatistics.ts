@@ -16,7 +16,17 @@ export interface DreamStatistics {
 
   // Time-based data
   dreamsByDay: { weekday: number; count: number }[];
+  /**
+   * Activity series over the window the caller asked for, anchored on today: the last entry
+   * is always the current bucket. Each `timestamp` is the local midnight the bucket starts on.
+   */
   dreamsOverTime: { timestamp: number; count: number }[];
+  /**
+   * Days covered by each `dreamsOverTime` entry. 1 until the window needs more than
+   * TIME_SERIES_MAX_POINTS points. A renderer must read it before labelling a point with a
+   * single date — under '12 months' one point is a fortnight, not a day.
+   */
+  dreamsOverTimeBucketDays: number;
 
   // Content analysis
   dreamTypeDistribution: { type: DreamTypeKey; count: number; percentage: number }[];
@@ -32,7 +42,49 @@ export interface DreamStatistics {
 
 const ORDERED_WEEKDAYS = [1, 2, 3, 4, 5, 6, 0];
 
-export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => {
+const DAY_IN_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * Window `dreamsOverTime` covers when the caller does not name one. Kept at 30 so the single
+ * argument call — the shape every caller used before the window became explicit — returns the
+ * exact series it always did.
+ */
+export const DEFAULT_STATS_WINDOW_DAYS = 30;
+
+/**
+ * Point ceiling, mirroring THEME_TREND_MAX_POINTS on the statistics screen and there for the
+ * same reason: '12 months' would otherwise be 365 entries and 'all time' one per day of the
+ * journal, recomputed on every change of the dream list.
+ */
+const TIME_SERIES_MAX_POINTS = 30;
+
+// Math.round, not Math.floor: startOfDay() returns local midnight, and across a DST boundary
+// a one-day gap is 23 or 25 hours, which floor() would count as zero days.
+const dayDiff = (fromDayStart: number, toDayStart: number) =>
+  Math.round((toDayStart - fromDayStart) / DAY_IN_MS);
+
+/**
+ * `null` (all time) resolves to the span the journal actually covers; anything else is the
+ * requested window, NOT clamped to that span. A 12-month window over a three-week journal has
+ * to keep its empty buckets — shrinking it would answer a question the user did not ask and
+ * would make "12 months" and "7 days" draw the same picture.
+ */
+const resolveWindowDays = (windowDays: number | null, observedDays: number) =>
+  windowDays === null || !Number.isFinite(windowDays)
+    ? observedDays
+    : Math.max(1, Math.floor(windowDays));
+
+/**
+ * @param dreams Dreams to describe. The caller filters them; this hook never does.
+ * @param windowDays Days `dreamsOverTime` spans, or `null` for the whole journal. An
+ *   already-filtered array carries no trace of the filter that produced it, so the window has
+ *   to be handed in: without it the series would keep answering "last 30 days" while every
+ *   other number on the screen answered the selected period.
+ */
+export const useDreamStatistics = (
+  dreams: DreamAnalysis[],
+  windowDays: number | null = DEFAULT_STATS_WINDOW_DAYS,
+): DreamStatistics => {
   const [now] = useState(() => Date.now());
 
   return useMemo(() => {
@@ -80,11 +132,12 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
       const day = new Date(dream.id).getDay();
       dayCount.set(day, (dayCount.get(day) || 0) + 1);
 
-      if (isWithinMonth) {
-        const date = startOfDay(dream.id);
-        const dayTimestamp = date.getTime();
-        dateCount.set(dayTimestamp, (dateCount.get(dayTimestamp) || 0) + 1);
-      }
+      // Every dream, not only the last 30 days: the window is resolved after this loop (for
+      // 'all time' it depends on `firstDreamDate`), and the bucketing below drops whatever
+      // falls outside it. One entry per distinct day, so this stays bounded by the journal's
+      // span rather than its size.
+      const dayTimestamp = startOfDay(dream.id).getTime();
+      dateCount.set(dayTimestamp, (dateCount.get(dayTimestamp) || 0) + 1);
 
       // The annotation is required: `dreamType` is declared non-optional, so TS
       // discards the never-falsy fallback and would infer plain `DreamType`,
@@ -119,16 +172,43 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
     const weeksSinceFirst = Math.max(1, Math.floor((effectiveNow - firstDreamDate) / (7 * 24 * 60 * 60 * 1000)));
     const averageDreamsPerWeek = totalDreams / weeksSinceFirst;
 
+    // Anchored on today so the right edge always means "now", whatever the window.
     const today = startOfDay(effectiveNow);
-    const dreamsOverTime = [];
-    for (let i = 29; i >= 0; i--) {
+    const dayStartOffsetBy = (days: number) => {
       const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      dreamsOverTime.push({
-        timestamp: date.getTime(),
-        count: dateCount.get(date.getTime()) || 0,
-      });
-    }
+      // setDate(), not an arithmetic offset: it lands on local midnight even across a DST
+      // boundary, where a day is not 24 hours.
+      date.setDate(date.getDate() + days);
+      return date.getTime();
+    };
+
+    const observedDays = Math.max(
+      1,
+      dayDiff(startOfDay(firstDreamDate).getTime(), today.getTime()) + 1,
+    );
+    const resolvedWindowDays = resolveWindowDays(windowDays, observedDays);
+    const dreamsOverTimeBucketDays = Math.max(
+      1,
+      Math.ceil(resolvedWindowDays / TIME_SERIES_MAX_POINTS),
+    );
+    const pointCount = Math.max(1, Math.ceil(resolvedWindowDays / dreamsOverTimeBucketDays));
+    const firstDayOffset = -(resolvedWindowDays - 1);
+    const windowStart = dayStartOffsetBy(firstDayOffset);
+
+    const dreamsOverTime = Array.from({ length: pointCount }, (_, index) => ({
+      timestamp: dayStartOffsetBy(firstDayOffset + index * dreamsOverTimeBucketDays),
+      count: 0,
+    }));
+
+    dateCount.forEach((count, dayTimestamp) => {
+      const offset = dayDiff(windowStart, dayTimestamp);
+      if (offset < 0 || offset >= resolvedWindowDays) return;
+      // The last bucket absorbs the remainder when the window is not a whole number of
+      // buckets: 365 days in 13-day buckets leaves a short final one, and a dream recorded
+      // today must not fall past the end of the array.
+      const bucket = Math.min(Math.floor(offset / dreamsOverTimeBucketDays), pointCount - 1);
+      dreamsOverTime[bucket].count += count;
+    });
 
     const dreamTypeDistribution = Array.from(typeCount.entries())
       .map(([type, count]) => ({
@@ -157,6 +237,7 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
       averageDreamsPerWeek,
       dreamsByDay,
       dreamsOverTime,
+      dreamsOverTimeBucketDays,
       dreamTypeDistribution,
       topThemes,
       totalChatMessages,
@@ -165,5 +246,5 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
       mostDiscussedDream,
       mostDiscussedDreamUserMessages,
     };
-  }, [dreams, now]);
+  }, [dreams, now, windowDays]);
 };

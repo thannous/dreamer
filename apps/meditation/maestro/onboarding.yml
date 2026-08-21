@@ -1,0 +1,58 @@
+# The entry path, from a clean install to the home screen.
+#
+# Every target is a testID: the app ships in six languages and the copy is the
+# part most likely to change, so matching on visible text would mean rewriting
+# this flow six times.
+appId: com.noctalia.meditation
+---
+- clearState
+- launchApp
+
+- assertVisible:
+    id: 'screen.welcome'
+- tapOn:
+    id: 'btn.welcome.start'
+
+# 1 — goals. Multi-select, and Continue stays inert until one is chosen.
+- assertVisible:
+    id: 'screen.onboarding.goals'
+- assertVisible:
+    id: 'btn.onboarding.continue'
+    enabled: false
+- tapOn:
+    point: '50%,38%'
+- tapOn:
+    id: 'btn.onboarding.continue'
+
+# 2 — experience. Single choice.
+- assertVisible:
+    id: 'screen.onboarding.experience'
+- tapOn:
+    point: '50%,32%'
+- tapOn:
+    id: 'btn.onboarding.continue'
+
+# 3 — daily intention.
+- assertVisible:
+    id: 'screen.onboarding.intention'
+- tapOn:
+    point: '50%,32%'
+- tapOn:
+    id: 'btn.onboarding.continue'
+
+# 4 — reminder. Skipping must still finish onboarding.
+- assertVisible:
+    id: 'screen.onboarding.reminder'
+- tapOn:
+    id: 'btn.onboarding.continue'
+
+- assertVisible:
+    id: 'screen.home'
+
+# The state has to survive a relaunch: onboarding must not replay.
+- stopApp
+- launchApp
+- assertVisible:
+    id: 'screen.home'
+- assertNotVisible:
+    id: 'screen.welcome'

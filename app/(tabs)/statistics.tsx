@@ -3,16 +3,18 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 import {
   InteractionManager,
   Platform,
-  Pressable,
   Share,
   ScrollView,
   StyleSheet,
   Text,
   View,
   useWindowDimensions,
+  type TextStyle,
+  type ViewStyle,
 } from 'react-native';
 
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DURATION, EASING, PressableScale, Reveal } from '@/components/motion';
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeader } from '@/components/inspiration/PageHeader';
 import { SectionHeading } from '@/components/inspiration/SectionHeading';
@@ -27,8 +29,14 @@ import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layou
 import type { DataSet, LabelLineConfig, barDataItem, pieDataItem } from 'react-native-gifted-charts';
 import { BarChart, LineChart, PieChart } from 'react-native-gifted-charts';
 import { Line, Rect, Svg, Text as SvgText } from 'react-native-svg';
+import Animated, {
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
-import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
+import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
@@ -364,10 +372,11 @@ const dayDiff = (fromDayStart: number, toDayStart: number) =>
 /**
  * Theme x day aggregation for "Themes over time" (S3).
  *
- * Lives here, not on useDreamStatistics, on purpose. The hook receives an already-filtered
- * array and cannot know which window produced it — which is exactly why its `dreamsOverTime`
- * hard-codes 30 days and has never been renderable under a 7-day or 12-month filter. Teaching
- * it the period would change its signature and ripple into every caller and its test file.
+ * Lives here, not on useDreamStatistics, on purpose. The hook now takes the window as an
+ * argument (`statsWindowDays` below), so the old objection — a filtered array carries no
+ * trace of the filter that produced it — no longer applies to the window itself. What keeps
+ * this builder on the screen is the rest of its input: theme colours, the Plus gate and the
+ * span thresholds are screen concerns, and the hook describes a journal, not a section.
  * Re-render cost is identical either way (both recompute on the same `periodDreams` identity
  * change), so the decision rests on coupling alone.
  *
@@ -566,33 +575,63 @@ const buildPieLabelLayouts = (data: DreamPieDataItem[], metrics: PieMetrics): Pi
   return [...left, ...right];
 };
 
+// ─── Styles Uniwind cannot carry ──────────────────────────────────────────────
+// Three cases, all permanent rather than debt:
+//   1. `borderCurve` and `fontVariant` have no token in global.css.
+//   2. GlassCard / BottomSheet / ScrollView.contentContainerStyle take a `style` object,
+//      not a `className`.
+//   3. gifted-charts axis label styles are style objects handed to the library.
+
+const CONTINUOUS_CORNERS: ViewStyle = { borderCurve: 'continuous' };
+
+/** StaticFlatGlassCard draws its own ground; this only shapes and clips it. */
+const SECTION_GLASS_CARD: ViewStyle = { borderRadius: 24, overflow: 'hidden', padding: 0 };
+/** The two hero cards (insight, dream profile) sit one step rounder than a section. */
+const HERO_GLASS_CARD: ViewStyle = { borderRadius: 26, overflow: 'hidden', padding: 0 };
+const PERIOD_SHEET: ViewStyle = {
+  gap: ThemeLayout.spacing.md,
+  paddingBottom: ThemeLayout.spacing.xl,
+};
+const EMPTY_SCROLL_CONTENT: ViewStyle = { flexGrow: 1, justifyContent: 'center' };
+const CHART_AXIS_LABEL: TextStyle = { fontSize: 11, fontFamily: Fonts.spaceGrotesk.regular };
+const CHART_X_AXIS_LABEL: TextStyle = {
+  fontSize: 11,
+  fontFamily: Fonts.spaceGrotesk.medium,
+  textAlign: 'center',
+};
+
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 
 interface StatCardProps {
   title: string;
   value: string | number;
   subtitle?: string;
+  /** Kept so every call site stays untouched; colours now come from `global.css`. */
   noctalia: NoctaliaDesignTokens;
   valueTestID?: string;
+  /** Position inside its grid, for the staggered entrance. */
+  index?: number;
 }
 
-function StatCard({ title, value, subtitle, noctalia, valueTestID }: StatCardProps) {
+function StatCard({ title, value, subtitle, valueTestID, index = 0 }: StatCardProps) {
   const valueText = typeof value === 'number' ? String(value) : value;
   const accessibilityLabel = `${title}: ${valueText}`;
 
+  // The card carries the flex sizing so the grid keeps its shape: `Reveal` is the flex
+  // child now, and the entrance is opacity + translate only.
   return (
-    <View style={styles.statCard}>
-      <Text style={[styles.statTitle, { color: noctalia.text.secondary }]}>{title}</Text>
+    <Reveal index={index} className="flex-1 min-w-[48%] rounded-md p-4">
+      <Text className="text-[13px] font-sans-medium uppercase mb-1 text-ivory-muted">{title}</Text>
       <Text
-        style={[styles.statValue, { color: noctalia.accent.text }]}
+        className="text-[36px] font-display-bold text-champagne-on"
         testID={valueTestID}
         accessibilityLabel={accessibilityLabel}
       >
         {value}
       </Text>
-      <View style={[styles.statValueUnderline, { backgroundColor: noctalia.accent.base }]} />
-      {subtitle && <Text style={[styles.statSubtitle, { color: noctalia.text.tertiary }]}>{subtitle}</Text>}
-    </View>
+      <View className="w-6 h-0.5 rounded-[1px] mt-1.5 bg-champagne" />
+      {subtitle && <Text className="text-[12px] font-sans mt-1 text-ivory-faint">{subtitle}</Text>}
+    </Reveal>
   );
 }
 
@@ -600,10 +639,10 @@ function StatCard({ title, value, subtitle, noctalia, valueTestID }: StatCardPro
 
 const SectionGlass = memo(function SectionGlass({
   children,
-  noctalia,
   animationDelay = 0,
 }: {
   children: React.ReactNode;
+  /** Kept so every call site stays untouched; the stripe now reads `global.css`. */
   noctalia: NoctaliaDesignTokens;
   animationDelay?: number;
 }) {
@@ -611,10 +650,10 @@ const SectionGlass = memo(function SectionGlass({
     <StaticFlatGlassCard
       intensity="subtle"
       animationDelay={animationDelay}
-      style={styles.sectionGlassCard}
+      style={SECTION_GLASS_CARD}
     >
-      <View style={[styles.sectionAccentStripe, { backgroundColor: noctalia.accent.base }]} />
-      <View style={styles.sectionInner}>
+      <View className="w-full h-[3px] opacity-[0.85] bg-champagne" />
+      <View className="p-[22px]">
         {children}
       </View>
     </StaticFlatGlassCard>
@@ -682,13 +721,13 @@ const StatsRhythmSection = memo(function StatsRhythmSection({
         icon="waveform"
         colors={colors}
       />
-      <View style={styles.chartContainer}>
+      <View className="rounded-md px-4 py-1 items-center">
         <View
           accessible
           accessibilityRole="image"
           accessibilityLabel={accessibilityLabel}
           testID={TID.Component.StatsRhythmChart}
-          style={styles.chartFrame}
+          className="self-center mb-2"
         >
           <BarChart
             data={barData}
@@ -715,8 +754,8 @@ const StatsRhythmSection = memo(function StatsRhythmSection({
             xAxisColor={noctalia.surface.border}
             yAxisColor={noctalia.surface.border}
             rulesColor={noctalia.surface.border}
-            yAxisTextStyle={[styles.chartAxisLabel, { color: noctalia.text.tertiary }]}
-            xAxisLabelTextStyle={[styles.chartXAxisLabel, { color: noctalia.text.secondary }]}
+            yAxisTextStyle={[CHART_AXIS_LABEL, { color: noctalia.text.tertiary }]}
+            xAxisLabelTextStyle={[CHART_X_AXIS_LABEL, { color: noctalia.text.secondary }]}
           />
         </View>
       </View>
@@ -738,34 +777,54 @@ const StatsHeaderActionsRow = memo(function StatsHeaderActionsRow({
   noctalia,
 }: StatsHeaderActionsRowProps) {
   return (
-    <View style={styles.desktopHeaderActions}>
+    <View className="flex-row items-center justify-end gap-2 px-4 pb-2">
       {actions.map((action) => (
-        <Pressable
+        <PressableScale
           key={action.testID ?? action.accessibilityLabel}
           accessibilityRole="button"
           accessibilityLabel={action.accessibilityLabel}
           testID={action.testID}
           onPress={action.onPress}
-          hitSlop={8}
-          style={({ pressed }) => [
-            styles.desktopHeaderActionButton,
-            {
-              backgroundColor: action.active ? noctalia.action.primary : noctalia.surface.soft,
-              borderColor: action.active ? noctalia.action.primaryBorder : noctalia.surface.border,
-            },
-            pressed && styles.pressedButton,
-          ]}
+          className={`w-11 h-11 rounded-full border items-center justify-center ${
+            action.active ? 'bg-champagne border-champagne-soft' : 'bg-ink-soft border-line'
+          }`}
         >
           <IconSymbol
             name={action.icon}
             size={20}
             color={action.active ? noctalia.action.primaryText : noctalia.text.secondary}
           />
-        </Pressable>
+        </PressableScale>
       ))}
     </View>
   );
 });
+
+/**
+ * The three insight meters fill from zero ONCE, when the card first mounts — the moment the
+ * length of the bar is information the reader has not seen. `width`, not `scaleX`: the fill
+ * is childless inside a fixed-height clipped track, so nothing else re-lays-out and the pill
+ * radius survives. Later changes (a new period) are written straight to the shared value:
+ * a ratio that moved did not arrive, and re-running the growth would say it did.
+ */
+function InsightProgressFill({ percent }: { percent: number }) {
+  const reduced = useReducedMotion();
+  const width = useSharedValue(reduced ? percent : 0);
+  const hasGrown = useRef(false);
+
+  useEffect(() => {
+    if (hasGrown.current || reduced) {
+      width.set(percent);
+      return;
+    }
+    hasGrown.current = true;
+    width.set(withTiming(percent, { duration: DURATION.normal, easing: EASING.out }));
+  }, [percent, reduced, width]);
+
+  const animatedStyle = useAnimatedStyle(() => ({ width: `${width.get()}%` }));
+
+  return <Animated.View className="h-full rounded-full bg-champagne" style={animatedStyle} />;
+}
 
 type StatsInsightCardProps = {
   noctalia: NoctaliaDesignTokens;
@@ -807,19 +866,15 @@ const StatsInsightCard = memo(function StatsInsightCard({
     <StaticFlatGlassCard
       intensity="moderate"
       animationDelay={SECTION_ANIMATION_DELAY.insight}
-      style={styles.insightCard}
+      style={HERO_GLASS_CARD}
       testID={TID.Component.StatsInsight}
     >
-      <View style={[styles.insightAccent, { backgroundColor: noctalia.accent.base }]} />
-      <View style={styles.insightInner}>
-        <View style={styles.insightHeaderRow}>
+      <View className="h-[3px] opacity-90 bg-champagne" />
+      <View className="p-[22px] gap-[18px]">
+        <View className="flex-row gap-[14px] items-start">
           <View
-            style={[
-              styles.insightIconWrap,
-              {
-                backgroundColor: noctalia.surface.soft,
-              },
-            ]}
+            className="w-[46px] h-[46px] rounded-[15px] items-center justify-center bg-ink-soft"
+            style={CONTINUOUS_CORNERS}
           >
             <IconSymbol
               name={STATS_INSIGHT_ICON[insight.kind]}
@@ -827,36 +882,31 @@ const StatsInsightCard = memo(function StatsInsightCard({
               color={noctalia.accent.text}
             />
           </View>
-          <View style={styles.insightCopy}>
-            <Text style={[styles.insightEyebrow, { color: noctalia.accent.text }]}>
+          <View className="flex-1 gap-[5px]">
+            <Text className="text-[12px] font-sans-medium uppercase text-champagne-on">
               {t('stats.insight.eyebrow')}
             </Text>
-            <Text style={[styles.insightTitle, { color: noctalia.text.primary }]}>
+            <Text className="text-[24px] leading-[30px] font-display-semibold text-ivory">
               {t(insight.titleKey)}
             </Text>
-            <Text style={[styles.insightBody, { color: noctalia.text.secondary }]}>
+            <Text className="text-body-sm font-sans text-ivory-muted">
               {t(insight.bodyKey)}
             </Text>
           </View>
         </View>
 
-        <View style={styles.insightProgressGrid}>
+        <View className="flex-row flex-wrap gap-2.5">
           {progressItems.map((item) => (
             <View
               key={item.id}
-              style={[
-                styles.insightProgressItem,
-                {
-                  borderColor: noctalia.surface.border,
-                  backgroundColor: noctalia.surface.soft,
-                },
-              ]}
+              className="flex-1 min-w-[138px] border rounded-lg p-3 gap-[9px] border-line bg-ink-soft"
+              style={CONTINUOUS_CORNERS}
             >
-              <View style={styles.insightMetricRow}>
-                <Text style={[styles.insightMetricLabel, { color: noctalia.text.secondary }]}>
+              <View className="flex-row items-center justify-between gap-2.5">
+                <Text className="flex-1 text-[11px] leading-[14px] font-sans-medium uppercase text-ivory-muted">
                   {item.label}
                 </Text>
-                <Text style={[styles.insightMetricValue, { color: noctalia.text.primary }]}>
+                <Text className="text-[13px] font-sans-bold text-ivory tabular-nums">
                   {item.value}
                 </Text>
               </View>
@@ -869,43 +919,27 @@ const StatsInsightCard = memo(function StatsInsightCard({
                   now: Math.round(clamp(item.ratio, 0, 1) * 100),
                   text: item.value,
                 }}
-                style={[
-                  styles.insightTrack,
-                  {
-                    backgroundColor: noctalia.surface.border,
-                  },
-                ]}
+                className="h-[5px] rounded-full overflow-hidden bg-line"
               >
-                <View
-                  style={[
-                    styles.insightFill,
-                    {
-                      width: `${Math.max(5, item.ratio * 100)}%`,
-                      backgroundColor: noctalia.accent.base,
-                    },
-                  ]}
-                />
+                <InsightProgressFill percent={Math.max(5, item.ratio * 100)} />
               </View>
             </View>
           ))}
         </View>
 
-        <Pressable
+        <PressableScale
           accessibilityRole="button"
           accessibilityLabel={t(insight.ctaKey)}
           testID={TID.Button.StatsInsightCta}
           onPress={onPress}
-          style={({ pressed }) => [
-            styles.insightButton,
-            { backgroundColor: noctalia.action.primary },
-            pressed && styles.pressedButton,
-          ]}
+          className="min-h-12 rounded-[18px] px-[18px] flex-row items-center justify-center gap-2 self-start bg-champagne"
+          style={CONTINUOUS_CORNERS}
         >
-          <Text style={[styles.insightButtonText, { color: noctalia.action.primaryText }]}>
+          <Text className="text-[15px] font-sans-bold text-on-champagne">
             {t(insight.ctaKey)}
           </Text>
           <IconSymbol name="arrow.right" size={16} color={noctalia.action.primaryText} />
-        </Pressable>
+        </PressableScale>
       </View>
     </StaticFlatGlassCard>
   );
@@ -999,87 +1033,67 @@ const DreamProfileCard = memo(function DreamProfileCard({
     <StaticFlatGlassCard
       intensity="moderate"
       animationDelay={SECTION_ANIMATION_DELAY.profile}
-      style={styles.profileCard}
+      style={HERO_GLASS_CARD}
       testID={TID.Component.DreamProfileCard}
     >
-      <View style={[styles.profileAccent, { backgroundColor: noctalia.accent.base }]} />
-      <View style={styles.profileInner}>
-        <View style={styles.profileHeaderRow}>
+      <View className="h-[3px] opacity-90 bg-champagne" />
+      <View className="p-[22px] gap-4">
+        <View className="flex-row gap-[14px] items-start">
           <View
-            style={[
-              styles.profileIconWrap,
-              {
-                backgroundColor: noctalia.surface.soft,
-              },
-            ]}
+            className="w-[46px] h-[46px] rounded-[15px] items-center justify-center bg-ink-soft"
+            style={CONTINUOUS_CORNERS}
           >
             <IconSymbol name="brain" size={23} color={noctalia.accent.text} />
           </View>
-          <View style={styles.profileCopy}>
-            <Text style={[styles.profileEyebrow, { color: noctalia.accent.text }]}>
+          <View className="flex-1 gap-[5px]">
+            <Text className="text-[12px] font-sans-medium uppercase text-champagne-on">
               {t('stats.profile.eyebrow')}
             </Text>
-            <Text style={[styles.profileTitle, { color: noctalia.text.primary }]}>
+            <Text className="text-[24px] leading-[30px] font-display-semibold text-ivory">
               {t('stats.profile.title')}
             </Text>
-            <Text style={[styles.profileBody, { color: noctalia.text.secondary }]}>
+            <Text className="text-body-sm font-sans text-ivory-muted">
               {t(`stats.profile.readiness.${profile.readiness}.body`)}
             </Text>
           </View>
         </View>
 
-        <View
-          style={[
-            styles.profileReadinessPill,
-            {
-              backgroundColor: noctalia.surface.soft,
-              borderColor: noctalia.surface.borderStrong,
-            },
-          ]}
-        >
+        <View className="self-start border rounded-full flex-row items-center gap-2 min-h-[34px] px-3 bg-ink-soft border-line-strong">
           <IconSymbol
             name={profile.hasEnoughForPatterns ? 'checkmark.circle.fill' : 'hourglass'}
             size={16}
             color={noctalia.accent.text}
           />
-          <Text style={[styles.profileReadinessText, { color: noctalia.text.primary }]}>
+          <Text className="text-[13px] leading-[17px] font-sans-bold text-ivory">
             {t(`stats.profile.readiness.${profile.readiness}.label`)}
           </Text>
         </View>
 
-        <Pressable
+        <PressableScale
           accessibilityRole="button"
           accessibilityLabel={t(`stats.profile.next_action.${profile.nextAction}.cta`)}
           testID={TID.Button.DreamProfileCta}
           onPress={onPress}
-          style={({ pressed }) => [
-            styles.profileButton,
-            { backgroundColor: noctalia.action.primary },
-            pressed && styles.pressedButton,
-          ]}
+          className="min-h-12 rounded-[18px] px-[18px] flex-row items-center justify-center gap-2 self-start bg-champagne"
+          style={CONTINUOUS_CORNERS}
         >
-          <Text style={[styles.profileButtonText, { color: noctalia.action.primaryText }]}>
+          <Text className="text-[15px] font-sans-bold text-center text-on-champagne">
             {t(`stats.profile.next_action.${profile.nextAction}.cta`)}
           </Text>
           <IconSymbol name="arrow.right" size={16} color={noctalia.action.primaryText} />
-        </Pressable>
+        </PressableScale>
 
-        <View style={styles.profileMetricGrid}>
+        <View className="flex-row flex-wrap gap-2.5">
           {profileMetrics.map((metric) => (
             <View
               key={metric.id}
-              style={[
-                styles.profileMetric,
-                {
-                  backgroundColor: noctalia.surface.soft,
-                  borderColor: noctalia.surface.border,
-                },
-              ]}
+              className="flex-1 min-w-[132px] border rounded-lg p-3 gap-1 bg-ink-soft border-line"
+              style={CONTINUOUS_CORNERS}
             >
-              <Text style={[styles.profileMetricValue, { color: noctalia.text.primary }]}>
+              <Text className="text-[24px] font-display-bold text-ivory tabular-nums">
                 {metric.value}
               </Text>
-              <Text style={[styles.profileMetricLabel, { color: noctalia.text.secondary }]}>
+              <Text className="text-[11px] leading-[14px] font-sans-medium uppercase text-ivory-muted">
                 {metric.label}
               </Text>
             </View>
@@ -1087,22 +1101,17 @@ const DreamProfileCard = memo(function DreamProfileCard({
         </View>
 
         {canShowPremiumSignals ? (
-          <View style={styles.profileSignalGrid}>
+          <View className="gap-[9px]">
             {signalItems.map((item) => (
               <View
                 key={item.id}
-                style={[
-                  styles.profileSignal,
-                  {
-                    borderColor: noctalia.surface.border,
-                    backgroundColor: noctalia.surface.soft,
-                  },
-                ]}
+                className="border rounded-[14px] px-3 py-2.5 gap-[3px] border-line bg-ink-soft"
+                style={CONTINUOUS_CORNERS}
               >
-                <Text style={[styles.profileSignalLabel, { color: noctalia.text.secondary }]}>
+                <Text className="text-[11px] font-sans-medium uppercase text-ivory-muted">
                   {item.label}
                 </Text>
-                <Text style={[styles.profileSignalValue, { color: noctalia.text.primary }]} numberOfLines={2}>
+                <Text className="text-[15px] leading-[19px] font-sans-bold text-ivory" numberOfLines={2}>
                   {item.value}
                 </Text>
               </View>
@@ -1110,61 +1119,48 @@ const DreamProfileCard = memo(function DreamProfileCard({
           </View>
         ) : (
           <View
-            style={[
-            styles.profilePlusPreview,
-            {
-                borderColor: noctalia.surface.borderStrong,
-                backgroundColor: noctalia.surface.soft,
-            },
-          ]}
+            className="border rounded-[18px] p-3.5 gap-3 border-line-strong bg-ink-soft"
+            style={CONTINUOUS_CORNERS}
             testID={TID.Component.DreamProfilePlusPreview}
           >
-            <View style={styles.profilePlusPreviewHeader}>
+            <View className="flex-row items-center gap-2">
               <IconSymbol name="lock.fill" size={16} color={noctalia.accent.text} />
-              <Text style={[styles.profilePlusPreviewTitle, { color: noctalia.text.primary }]}>
+              <Text className="flex-1 text-[15px] leading-5 font-sans-bold text-ivory">
                 {t('stats.profile.plus_preview.title')}
               </Text>
             </View>
-            <Text style={[styles.profilePlusPreviewBody, { color: noctalia.text.secondary }]}>
+            <Text className="text-[13px] leading-[18px] font-sans text-ivory-muted">
               {t('stats.profile.plus_preview.body')}
             </Text>
-            <View style={styles.profileSignalGrid}>
+            <View className="gap-[9px]">
               {signalItems.map((item) => (
                 <View
                   key={item.id}
-                  style={[
-                    styles.profileSignal,
-                    {
-                      borderColor: noctalia.surface.border,
-                      backgroundColor: noctalia.surface.raised,
-                    },
-                  ]}
+                  className="border rounded-[14px] px-3 py-2.5 gap-[3px] border-line bg-ink-raised"
+                  style={CONTINUOUS_CORNERS}
                 >
-                  <Text style={[styles.profileSignalLabel, { color: noctalia.text.secondary }]}>
+                  <Text className="text-[11px] font-sans-medium uppercase text-ivory-muted">
                     {item.label}
                   </Text>
-                  <Text style={[styles.profileSignalLockedValue, { color: noctalia.accent.text }]} numberOfLines={1}>
+                  <Text className="text-[14px] leading-[18px] font-sans-bold text-champagne-on" numberOfLines={1}>
                     {t('stats.profile.plus_preview.locked_value')}
                   </Text>
                 </View>
               ))}
             </View>
-            <Pressable
+            <PressableScale
               accessibilityRole="button"
               accessibilityLabel={t('stats.profile.plus_preview.cta')}
               testID={TID.Button.DreamProfileUpgradeCta}
               onPress={onUpgradePress}
-              style={({ pressed }) => [
-                styles.profileUpgradeButton,
-                { borderColor: noctalia.surface.borderStrong },
-                pressed && styles.pressedButton,
-              ]}
+              className="min-h-[42px] rounded-[15px] border px-3.5 flex-row items-center justify-center gap-2 self-start border-line-strong"
+              style={CONTINUOUS_CORNERS}
             >
-              <Text style={[styles.profileUpgradeButtonText, { color: noctalia.accent.text }]}>
+              <Text className="text-[14px] font-sans-bold text-center text-champagne-on">
                 {t('stats.profile.plus_preview.cta')}
               </Text>
               <IconSymbol name="arrow.right" size={15} color={noctalia.accent.text} />
-            </Pressable>
+            </PressableScale>
           </View>
         )}
       </View>
@@ -1437,13 +1433,13 @@ const StatsThemeTrendSection = memo(function StatsThemeTrendSection({
   return (
     <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.themeTrend}>
       {heading}
-      <View style={styles.chartContainer}>
+      <View className="rounded-md px-4 py-1 items-center">
         <View
           accessible
           accessibilityRole="image"
           accessibilityLabel={accessibilityLabel}
           testID={TID.Component.StatsThemeTrendChart}
-          style={styles.chartFrame}
+          className="self-center mb-2"
         >
           <LineChart
             dataSet={dataSet}
@@ -1470,18 +1466,21 @@ const StatsThemeTrendSection = memo(function StatsThemeTrendSection({
             xAxisColor={noctalia.surface.border}
             yAxisColor={noctalia.surface.border}
             rulesColor={noctalia.surface.border}
-            yAxisTextStyle={[styles.chartAxisLabel, { color: noctalia.text.tertiary }]}
-            xAxisLabelTextStyle={[styles.chartXAxisLabel, { color: noctalia.text.secondary }]}
+            yAxisTextStyle={[CHART_AXIS_LABEL, { color: noctalia.text.tertiary }]}
+            xAxisLabelTextStyle={[CHART_X_AXIS_LABEL, { color: noctalia.text.secondary }]}
           />
         </View>
-        <View style={styles.legendContainer} testID={TID.Component.StatsThemeTrendLegend}>
+        <View className="w-full gap-2" testID={TID.Component.StatsThemeTrendLegend}>
           {trend.series.map((item) => (
             <View
               key={item.theme}
-              style={[styles.legendItem, { backgroundColor: noctalia.surface.soft }]}
+              className="flex-row items-center gap-2 rounded-[12px] p-2.5 bg-ink-soft"
             >
-              <View style={[styles.legendColor, { backgroundColor: themeColor(item.theme) }]} />
-              <Text style={[styles.legendText, { color: noctalia.text.primary }]}>
+              <View
+                className="w-4 h-4 rounded-[4px]"
+                style={{ backgroundColor: themeColor(item.theme) }}
+              />
+              <Text className="text-[14px] font-sans text-ivory">
                 {getDreamThemeLabel(item.theme, t) ?? item.theme} ({countLabel(item.total)})
               </Text>
             </View>
@@ -1516,7 +1515,13 @@ export default function StatisticsScreen() {
     [dreams, selectedStatsPeriod],
   );
   const isPeriodFiltered = selectedStatsPeriod !== 'all';
-  const stats = useDreamStatistics(periodDreams);
+  // The window has to be handed to the hook, not inferred: `periodDreams` is already
+  // filtered, and a filtered array carries no trace of the filter that produced it. Without
+  // this argument `stats.dreamsOverTime` keeps answering "last 30 days" while every other
+  // number on the page answers the selected period. `null` = all time -> the observed span.
+  const statsWindowDays =
+    selectedStatsPeriod === 'all' ? null : STATS_PERIOD_DAYS[selectedStatsPeriod];
+  const stats = useDreamStatistics(periodDreams, statsWindowDays);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height);
   const scrollBottomPadding = isDesktopLayout
@@ -1914,21 +1919,24 @@ export default function StatisticsScreen() {
       visible={showStatsPeriodSheet}
       onClose={() => setShowStatsPeriodSheet(false)}
       testID={TID.Modal.StatsPeriod}
-      style={[styles.periodSheet, { backgroundColor: noctalia.surface.raised }]}
+      style={[PERIOD_SHEET, { backgroundColor: noctalia.surface.raised }]}
     >
-      <Text style={[styles.periodSheetTitle, { color: noctalia.text.primary }]}>
+      <Text className="text-[24px] leading-[30px] font-display-semibold text-ivory">
         {t('stats.period.title')}
       </Text>
-      <View style={styles.periodOptions}>
+      <View className="gap-2">
         {STATS_PERIOD_OPTIONS.map((option) => {
           const active = selectedStatsPeriod === option.id;
 
           return (
-            <Pressable
+            <PressableScale
               key={option.id}
               accessibilityRole="button"
               accessibilityLabel={t(option.labelKey)}
               testID={TID.Button.StatsPeriodOption(option.id)}
+              // The one haptic on this screen: picking a period is a discrete choice, and
+              // it is the only control here that commits something.
+              haptic="selection"
               onPress={() => {
                 void trackProductEvent('stats_period_selected', {
                   period: option.id,
@@ -1937,20 +1945,15 @@ export default function StatisticsScreen() {
                 setSelectedStatsPeriod(option.id);
                 setShowStatsPeriodSheet(false);
               }}
-              style={({ pressed }) => [
-                styles.periodOption,
-                {
-                  borderColor: active ? noctalia.action.primaryBorder : noctalia.surface.border,
-                  backgroundColor: active ? noctalia.action.primary : noctalia.surface.soft,
-                },
-                pressed && styles.pressedButton,
-              ]}
+              className={`min-h-[54px] border rounded-[18px] px-4 flex-row items-center justify-between gap-4 ${
+                active ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
+              }`}
+              style={CONTINUOUS_CORNERS}
             >
               <Text
-                style={[
-                  styles.periodOptionText,
-                  { color: active ? noctalia.action.primaryText : noctalia.text.primary },
-                ]}
+                className={`flex-1 text-[16px] font-sans-bold ${
+                  active ? 'text-on-champagne' : 'text-ivory'
+                }`}
               >
                 {t(option.labelKey)}
               </Text>
@@ -1961,7 +1964,7 @@ export default function StatisticsScreen() {
                   color={noctalia.action.primaryText}
                 />
               ) : null}
-            </Pressable>
+            </PressableScale>
           );
         })}
       </View>
@@ -1971,38 +1974,31 @@ export default function StatisticsScreen() {
   // Audit P1-8: nothing on the page said which window the numbers described. The pill
   // names the active period and doubles as the way back into the period sheet.
   const periodChip = isPeriodFiltered ? (
-    <View style={styles.periodChipRow}>
-      <Pressable
+    <View className="w-full flex-row mb-4">
+      <PressableScale
         accessibilityRole="button"
         accessibilityLabel={t('stats.period.indicator', { period: selectedPeriodLabel })}
         testID={TID.Button.StatsPeriodChip}
         onPress={handleOpenStatsPeriodSheet}
-        style={({ pressed }) => [
-          styles.periodChip,
-          {
-            backgroundColor: noctalia.surface.soft,
-            borderColor: noctalia.surface.borderStrong,
-          },
-          pressed && styles.pressedButton,
-        ]}
+        className="border rounded-full flex-row items-center gap-1.5 min-h-[30px] px-2.5 bg-ink-soft border-line-strong"
       >
         <IconSymbol name="calendar" size={14} color={noctalia.accent.text} />
-        <Text style={[styles.periodChipText, { color: noctalia.text.primary }]}>
+        <Text className="text-[12px] leading-4 font-sans-medium text-ivory">
           {t('stats.period.indicator', { period: selectedPeriodLabel })}
         </Text>
-      </Pressable>
+      </PressableScale>
     </View>
   ) : null;
 
   if (!loaded) {
     return (
       <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-        <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
+        <View className="flex-1 bg-ink">
           <AtmosphericBackground variant="subtle" />
           {header}
           {periodSheet}
-          <View style={styles.loadingContainer}>
-            <Text style={[styles.loadingText, { color: noctalia.text.secondary }]}>{t('stats.loading')}</Text>
+          <View className="flex-1 items-center justify-center">
+            <Text className="text-[16px] font-sans text-ivory-muted">{t('stats.loading')}</Text>
           </View>
         </View>
       </ScrollPerfProvider>
@@ -2012,50 +2008,44 @@ export default function StatisticsScreen() {
   if (dreams.length === 0) {
     return (
       <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-        <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
+        <View className="flex-1 bg-ink">
           <AtmosphericBackground variant="subtle" />
           {header}
           {periodSheet}
           <ScrollView
-            style={styles.scrollView}
+            className="flex-1"
             contentInsetAdjustmentBehavior="automatic"
             contentContainerStyle={[
-              styles.emptyScrollContent,
+              EMPTY_SCROLL_CONTENT,
               { paddingBottom: scrollBottomPadding },
             ]}
             showsVerticalScrollIndicator={false}
           >
             <ScreenContainer>
               <MockNavigationRail />
-              <View style={styles.emptyState}>
-                <View style={styles.emptyCopy}>
+              <View className="gap-6 p-6">
+                <View className="items-center gap-2">
                   <IconSymbol name="chart.bar.fill" size={40} color={noctalia.text.tertiary} />
-                  <Text style={[styles.emptyHeading, { color: noctalia.text.primary }]}>
+                  <Text className="text-[20px] leading-[26px] font-display-semibold text-center text-ivory">
                     {t('stats.empty.title')}
                   </Text>
-                  <Text style={[styles.emptyBody, { color: noctalia.text.secondary }]}>
+                  <Text className="text-body-sm font-sans text-center max-w-[320px] self-center text-ivory-muted">
                     {t('stats.empty.body')}
                   </Text>
                 </View>
-                <Pressable
+                <PressableScale
                   accessibilityRole="button"
                   accessibilityLabel={t('stats.profile.next_action.add_anchor.cta')}
                   testID={TID.Button.EmptyStartRememberedDream}
                   onPress={handleAddDreamPress}
-                  style={({ pressed }) => [
-                    styles.emptyPrimaryButton,
-                    {
-                      backgroundColor: noctalia.action.primary,
-                      borderColor: noctalia.action.primaryBorder,
-                    },
-                    pressed && styles.pressedButton,
-                  ]}
+                  className="min-h-[50px] rounded-[18px] border px-[18px] flex-row items-center justify-center gap-2 self-center bg-champagne border-champagne-soft"
+                  style={CONTINUOUS_CORNERS}
                 >
                   <IconSymbol name="pencil" size={18} color={noctalia.action.primaryText} />
-                  <Text style={[styles.emptyPrimaryButtonText, { color: noctalia.action.primaryText }]}>
+                  <Text className="text-[15px] font-sans-bold text-on-champagne">
                     {t('stats.profile.next_action.add_anchor.cta')}
                   </Text>
-                </Pressable>
+                </PressableScale>
               </View>
             </ScreenContainer>
           </ScrollView>
@@ -2070,57 +2060,46 @@ export default function StatisticsScreen() {
   if (periodDreams.length === 0) {
     return (
       <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-        <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
+        <View className="flex-1 bg-ink">
           <AtmosphericBackground variant="subtle" />
           {header}
           {periodSheet}
           <ScrollView
-            style={styles.scrollView}
+            className="flex-1"
             contentInsetAdjustmentBehavior="automatic"
             contentContainerStyle={[
-              styles.emptyScrollContent,
+              EMPTY_SCROLL_CONTENT,
               { paddingBottom: scrollBottomPadding },
             ]}
             showsVerticalScrollIndicator={false}
           >
             <ScreenContainer>
               <MockNavigationRail />
-              <View style={styles.emptyState}>
+              <View className="gap-6 p-6">
                 <View
-                  style={[
-                    styles.periodEmptyCard,
-                    {
-                      backgroundColor: noctalia.surface.soft,
-                      borderColor: noctalia.surface.borderStrong,
-                    },
-                  ]}
+                  className="border rounded-[20px] p-6 gap-2 items-center bg-ink-soft border-line-strong"
+                  style={CONTINUOUS_CORNERS}
                   testID={TID.Component.StatsPeriodEmpty}
                 >
                   <IconSymbol name="calendar" size={22} color={noctalia.accent.text} />
-                  <Text style={[styles.periodEmptyTitle, { color: noctalia.text.primary }]}>
+                  <Text className="text-[20px] leading-[26px] font-display-semibold text-center text-ivory">
                     {t('stats.period.empty.title')}
                   </Text>
-                  <Text style={[styles.periodEmptyBody, { color: noctalia.text.secondary }]}>
+                  <Text className="text-body-sm font-sans text-center mb-1 text-ivory-muted">
                     {t('stats.period.empty.body')}
                   </Text>
-                  <Pressable
+                  <PressableScale
                     accessibilityRole="button"
                     accessibilityLabel={t('stats.period.reset')}
                     testID={TID.Button.StatsPeriodReset}
                     onPress={handleResetStatsPeriod}
-                    style={({ pressed }) => [
-                      styles.emptyPrimaryButton,
-                      {
-                        backgroundColor: noctalia.action.primary,
-                        borderColor: noctalia.action.primaryBorder,
-                      },
-                      pressed && styles.pressedButton,
-                    ]}
+                    className="min-h-[50px] rounded-[18px] border px-[18px] flex-row items-center justify-center gap-2 self-center bg-champagne border-champagne-soft"
+                    style={CONTINUOUS_CORNERS}
                   >
-                    <Text style={[styles.emptyPrimaryButtonText, { color: noctalia.action.primaryText }]}>
+                    <Text className="text-[15px] font-sans-bold text-on-champagne">
                       {t('stats.period.reset')}
                     </Text>
-                  </Pressable>
+                  </PressableScale>
                 </View>
               </View>
             </ScreenContainer>
@@ -2132,13 +2111,13 @@ export default function StatisticsScreen() {
 
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-      <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
+      <View className="flex-1 bg-ink">
         <AtmosphericBackground variant="subtle" />
         {header}
         {periodSheet}
 
         <ScrollView
-          style={styles.scrollView}
+          className="flex-1"
           contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={{ paddingBottom: scrollBottomPadding }}
           showsVerticalScrollIndicator={false}
@@ -2149,24 +2128,26 @@ export default function StatisticsScreen() {
         >
           <ScreenContainer>
             <MockNavigationRail />
-            <View style={[styles.scrollContent, isDesktopLayout && styles.scrollContentDesktop]}>
+            <View className={`p-4${isDesktopLayout ? ' flex-row flex-wrap gap-4' : ''}`}>
             {periodChip}
             {/* Overview Cards */}
-            <View style={[styles.section, isDesktopLayout && styles.sectionOverviewDesktop]}>
+            <View className={`mb-9${isDesktopLayout ? ' w-full' : ''}`}>
               <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.overview}>
                 <SectionHeading
                   title={t('stats.section.overview')}
                   icon="chart.bar.fill"
                   colors={colors}
                 />
-                <View style={styles.statsGrid}>
+                <View className="flex-row flex-wrap gap-2">
                   <StatCard
                     title={t('stats.card.total_dreams')}
+                    index={0}
                     value={formatNumber(stats.totalDreams)}
                     noctalia={noctalia}
                   />
                   <StatCard
                     title={t('stats.card.favorites')}
+                    index={1}
                     value={formatNumber(stats.favoriteDreams)}
                     noctalia={noctalia}
                   />
@@ -2179,11 +2160,13 @@ export default function StatisticsScreen() {
                     <>
                       <StatCard
                         title={t('stats.card.this_week')}
+                        index={2}
                         value={formatNumber(stats.dreamsThisWeek)}
                         noctalia={noctalia}
                       />
                       <StatCard
                         title={t('stats.card.this_month')}
+                        index={3}
                         value={formatNumber(stats.dreamsThisMonth)}
                         noctalia={noctalia}
                       />
@@ -2202,7 +2185,7 @@ export default function StatisticsScreen() {
             */}
             {showDeferredSections ? (
               <View
-                style={[styles.section, isDesktopLayout && styles.sectionRhythmDesktop]}
+                className={`mb-9${isDesktopLayout ? ' w-full' : ''}`}
                 testID={TID.Component.StatsRhythm}
               >
                 <StatsRhythmSection
@@ -2219,7 +2202,7 @@ export default function StatisticsScreen() {
 
             {showDreamProfileSection ? (
               <>
-                <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
+                <View className={`mb-9${isDesktopLayout ? ' w-full' : ''}`}>
                   <DreamProfileCard
                     noctalia={noctalia}
                     profile={dreamProfile}
@@ -2232,7 +2215,7 @@ export default function StatisticsScreen() {
                 </View>
 
                 {journalHasAnalysis ? (
-                  <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
+                  <View className={`mb-9${isDesktopLayout ? ' w-full' : ''}`}>
                     <StatsInsightCard
                       noctalia={noctalia}
                       insight={statsInsight}
@@ -2246,30 +2229,33 @@ export default function StatisticsScreen() {
             ) : null}
 
             {/* Streaks */}
-            <View style={[styles.section, isDesktopLayout && styles.sectionStreaksDesktop]}>
+            <View className={`mb-9${isDesktopLayout ? ' w-full' : ''}`}>
               <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.streaks}>
                 <SectionHeading
                   title={t('stats.section.streaks')}
                   icon="flame.fill"
                   colors={colors}
                 />
-                <View style={styles.statsRow}>
+                <View className="flex-row gap-2">
                   <StatCard
                     title={t('stats.card.current_streak')}
+                    index={0}
                     value={formatNumber(stats.currentStreak)}
                     subtitle={stats.currentStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
                     noctalia={noctalia}
                   />
                   <StatCard
                     title={t('stats.card.longest_streak')}
+                    index={1}
                     value={formatNumber(stats.longestStreak)}
                     subtitle={stats.longestStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
                     noctalia={noctalia}
                   />
                 </View>
-                <View style={styles.singleStatCard}>
+                <View className="mt-2">
                   <StatCard
                     title={t('stats.card.average_per_week')}
+                    index={2}
                     value={formatNumber(stats.averageDreamsPerWeek, {
                       minimumFractionDigits: 1,
                       maximumFractionDigits: 1,
@@ -2282,15 +2268,15 @@ export default function StatisticsScreen() {
 
             {/* Dream Type Distribution */}
             {showDeferredSections && stats.dreamTypeDistribution.length > 0 && (
-              <View style={[styles.section, isDesktopLayout && styles.sectionChartDesktop]}>
+              <View className={`mb-9${isDesktopLayout ? ' w-[60%] min-w-[420px]' : ''}`}>
                 <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.dreamTypes}>
                     <SectionHeading
                       title={t('stats.section.dream_types')}
                       icon="chart.pie.fill"
                       colors={colors}
                     />
-                  <View style={styles.chartContainer}>
-                    <View style={styles.pieChartWrapper}>
+                  <View className="rounded-md px-4 py-1 items-center">
+                    <View className="items-center mb-2">
                       <View
                         accessible
                         accessibilityRole="image"
@@ -2309,10 +2295,10 @@ export default function StatisticsScreen() {
                           showExternalLabels={false}
                           centerLabelComponent={() => (
                             <View>
-                              <Text style={[styles.pieChartCenterText, { color: noctalia.text.primary }]}>
+                              <Text className="text-[24px] font-display-bold text-center text-ivory">
                                 {formatNumber(stats.totalDreams)}
                               </Text>
-                              <Text style={[styles.pieChartCenterSubtext, { color: noctalia.text.secondary }]}>
+                              <Text className="text-[12px] font-sans text-center text-ivory-muted">
                                 {t('stats.chart.pie_center')}
                               </Text>
                             </View>
@@ -2404,22 +2390,19 @@ export default function StatisticsScreen() {
                         </Svg>
                       </View>
                     </View>
-                    <View style={styles.legendContainer} testID={TID.Component.StatsTypeLegend}>
+                    <View className="w-full gap-2" testID={TID.Component.StatsTypeLegend}>
                       {pieChartData.map((item, index) => (
                         <View
                           key={item.typeLabel}
-                          style={[
-                            styles.legendItem,
-                            { backgroundColor: noctalia.surface.soft },
-                          ]}
+                          className="flex-row items-center gap-2 rounded-[12px] p-2.5 bg-ink-soft"
                         >
                           <View
-                            style={[
-                              styles.legendColor,
-                              { backgroundColor: dreamTypeColors[index % dreamTypeColors.length] },
-                            ]}
+                            className="w-4 h-4 rounded-[4px]"
+                            style={{
+                              backgroundColor: dreamTypeColors[index % dreamTypeColors.length],
+                            }}
                           />
-                          <Text style={[styles.legendText, { color: noctalia.text.primary }]}>
+                          <Text className="text-[14px] font-sans text-ivory">
                             {item.typeLabel} ({t(item.count === 1 ? 'stats.legend.count_one' : 'stats.legend.count', { count: formatNumber(item.count) })})
                           </Text>
                         </View>
@@ -2432,7 +2415,7 @@ export default function StatisticsScreen() {
 
             {/* Top Themes */}
             {showDeferredSections && stats.topThemes.length > 0 && (
-              <View style={[styles.section, isDesktopLayout && styles.sectionTopThemesDesktop]}>
+              <View className={`mb-9${isDesktopLayout ? ' w-[40%] min-w-[320px]' : ''}`}>
                 <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.topThemes}>
                   <SectionHeading
                     title={t('stats.section.top_themes')}
@@ -2466,7 +2449,7 @@ export default function StatisticsScreen() {
             // can carry plenty of emotions and still rank none — and "0 emotions keep coming
             // back" is precisely the empty promise this phase exists to remove.
             (!emotionProfile.hasEnoughDreams || emotionProfile.distinctFamilies > 0) ? (
-              <View style={[styles.section, isDesktopLayout && styles.sectionEmotionsDesktop]}>
+              <View className={`mb-9${isDesktopLayout ? ' w-[40%] min-w-[320px]' : ''}`}>
                 <StatsEmotionsSection
                   noctalia={noctalia}
                   colors={colors}
@@ -2489,7 +2472,7 @@ export default function StatisticsScreen() {
             */}
             {showDeferredSections && themeTrend.series.length > 0 ? (
               <View
-                style={[styles.section, isDesktopLayout && styles.sectionThemeTrendDesktop]}
+                className={`mb-9${isDesktopLayout ? ' w-[60%] min-w-[420px]' : ''}`}
                 testID={TID.Component.StatsThemeTrend}
               >
                 <StatsThemeTrendSection
@@ -2508,57 +2491,57 @@ export default function StatisticsScreen() {
 
             {/* Engagement */}
             {showDeferredSections && (
-              <View style={[styles.section, isDesktopLayout && styles.sectionEngagementDesktop]}>
+              <View className={`mb-9${isDesktopLayout ? ' w-full' : ''}`}>
                 <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.engagement}>
                   <SectionHeading
                     title={t('stats.section.engagement')}
                     icon="bubble.left.and.bubble.right.fill"
                     colors={colors}
                   />
-                  <View style={styles.statsRow}>
+                  <View className="flex-row gap-2">
                     <StatCard
                       title={t('stats.engagement.total_chats')}
+                      index={0}
                       value={formatNumber(stats.totalChatMessages)}
                       noctalia={noctalia}
                       valueTestID={TID.Stats.TotalChatsValue}
                     />
                     <StatCard
                       title={t('stats.engagement.dreams_with_chat')}
+                      index={1}
                       value={formatNumber(stats.dreamsWithChat)}
                       noctalia={noctalia}
                       valueTestID={TID.Stats.DreamsWithChatValue}
                     />
                   </View>
-                  <View style={styles.singleStatCard}>
+                  <View className="mt-2">
                     <StatCard
                       title={t('stats.engagement.analyzed_dreams')}
+                      index={2}
                       value={formatNumber(stats.analyzedDreams)}
                       noctalia={noctalia}
                       valueTestID={TID.Stats.AnalyzedDreamsValue}
                     />
                   </View>
                   {stats.mostDiscussedDream && (
-                    <Pressable
+                    <PressableScale
                       accessibilityRole="button"
                       accessibilityLabel={`${stats.mostDiscussedDream.title}, ${t('stats.engagement.most_discussed.open')}`}
                       testID={TID.Button.StatsMostDiscussedDream}
                       onPress={handleMostDiscussedDreamPress}
-                      style={({ pressed }) => [
-                        styles.mostDiscussedCard,
-                        pressed && styles.pressedButton,
-                      ]}
+                      className="mt-4 rounded-lg overflow-hidden"
                     >
-                      <View style={[styles.mostDiscussedDecoLine, { backgroundColor: noctalia.accent.base }]} />
-                      <View style={styles.mostDiscussedInner}>
+                      <View className="h-0.5 w-full bg-champagne" />
+                      <View className="p-4 gap-1.5">
                         <IconSymbol name="quote.opening" size={18} color={noctalia.accent.text} />
-                        <Text style={[styles.mostDiscussedTitle, { color: noctalia.text.secondary }]}>
+                        <Text className="text-[12px] font-sans text-ivory-muted">
                           {t('stats.engagement.most_discussed')}
                         </Text>
-                        <Text style={[styles.mostDiscussedDreamTitle, { color: noctalia.text.primary }]} numberOfLines={1}>
+                        <Text className="text-[17px] font-display italic text-ivory" numberOfLines={1}>
                           {stats.mostDiscussedDream.title}
                         </Text>
-                        <View style={styles.mostDiscussedFooter}>
-                          <Text style={[styles.mostDiscussedCount, { color: noctalia.accent.text }]}>
+                        <View className="flex-row items-center gap-1">
+                          <Text className="text-[14px] font-sans-medium text-champagne-on">
                             {t(
                               stats.mostDiscussedDreamUserMessages === 1
                                 ? 'stats.engagement.messages_one'
@@ -2569,7 +2552,7 @@ export default function StatisticsScreen() {
                           <IconSymbol name="chevron.right" size={14} color={noctalia.accent.text} />
                         </View>
                       </View>
-                    </Pressable>
+                    </PressableScale>
                   )}
                 </SectionGlass>
               </View>
@@ -2581,625 +2564,3 @@ export default function StatisticsScreen() {
     </ScrollPerfProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: ThemeLayout.spacing.md,
-  },
-  scrollContentDesktop: {
-    paddingHorizontal: ThemeLayout.spacing.md,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: ThemeLayout.spacing.md,
-  },
-
-  // Desktop header actions (PageHeader takes no actions prop)
-  desktopHeaderActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    gap: ThemeLayout.spacing.sm,
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingBottom: ThemeLayout.spacing.sm,
-  },
-  desktopHeaderActionButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  // Sections
-  section: {
-    marginBottom: 36,
-  },
-  sectionOverviewDesktop: {
-    width: '100%',
-  },
-  sectionStreaksDesktop: {
-    width: '100%',
-  },
-  sectionInsightDesktop: {
-    width: '100%',
-  },
-  sectionChartDesktop: {
-    width: '60%',
-    minWidth: 420,
-  },
-  sectionTopThemesDesktop: {
-    width: '40%',
-    minWidth: 320,
-  },
-  // Full width: Rythme sits between two full-width cards, and a 60% card there would leave a
-  // 40% hole in the grid.
-  sectionRhythmDesktop: {
-    width: '100%',
-  },
-  sectionThemeTrendDesktop: {
-    width: '60%',
-    minWidth: 420,
-  },
-  // Declared for S2, which is a ranked list like Top themes.
-  sectionEmotionsDesktop: {
-    width: '40%',
-    minWidth: 320,
-  },
-  sectionEngagementDesktop: {
-    width: '100%',
-  },
-
-  // Glass section wrapper
-  sectionGlassCard: {
-    borderRadius: 24,
-    overflow: 'hidden',
-    padding: 0,
-  },
-  sectionAccentStripe: {
-    ...DecoLines.stripe,
-    height: 3,
-    opacity: 0.85,
-  },
-  sectionInner: {
-    padding: SECTION_INNER_PADDING,
-  },
-
-  // Stat cards
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: ThemeLayout.spacing.sm,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    gap: ThemeLayout.spacing.sm,
-  },
-  singleStatCard: {
-    marginTop: ThemeLayout.spacing.sm,
-  },
-  statCard: {
-    flex: 1,
-    borderRadius: ThemeLayout.borderRadius.md,
-    padding: ThemeLayout.spacing.md,
-    minWidth: '48%',
-  },
-  statTitle: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textTransform: 'uppercase',
-    marginBottom: ThemeLayout.spacing.xs,
-  },
-  statValue: {
-    fontSize: 36,
-    fontFamily: Fonts.fraunces.bold,
-  },
-  statValueUnderline: {
-    width: 24,
-    height: 2,
-    borderRadius: 1,
-    marginTop: 6,
-  },
-  statSubtitle: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    marginTop: ThemeLayout.spacing.xs,
-  },
-
-  // Insight card
-  insightCard: {
-    borderRadius: 26,
-    overflow: 'hidden',
-    padding: 0,
-  },
-  insightAccent: {
-    height: 3,
-    opacity: 0.9,
-  },
-  insightInner: {
-    padding: 22,
-    gap: 18,
-  },
-  insightHeaderRow: {
-    flexDirection: 'row',
-    gap: 14,
-    alignItems: 'flex-start',
-  },
-  insightIconWrap: {
-    width: 46,
-    height: 46,
-    borderRadius: 15,
-    borderCurve: 'continuous',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  insightCopy: {
-    flex: 1,
-    gap: 5,
-  },
-  insightEyebrow: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textTransform: 'uppercase',
-  },
-  insightTitle: {
-    fontSize: 24,
-    lineHeight: 30,
-    fontFamily: Fonts.fraunces.semiBold,
-  },
-  insightBody: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontFamily: Fonts.spaceGrotesk.regular,
-  },
-  insightProgressGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
-  insightProgressItem: {
-    flex: 1,
-    minWidth: 138,
-    borderWidth: 1,
-    borderRadius: 16,
-    borderCurve: 'continuous',
-    padding: 12,
-    gap: 9,
-  },
-  insightMetricRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 10,
-  },
-  insightMetricLabel: {
-    flex: 1,
-    fontSize: 11,
-    lineHeight: 14,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textTransform: 'uppercase',
-  },
-  insightMetricValue: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontVariant: ['tabular-nums'],
-  },
-  insightTrack: {
-    height: 5,
-    borderRadius: 999,
-    overflow: 'hidden',
-  },
-  insightFill: {
-    height: '100%',
-    borderRadius: 999,
-  },
-  insightButton: {
-    minHeight: 48,
-    borderRadius: 18,
-    borderCurve: 'continuous',
-    paddingHorizontal: 18,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    alignSelf: 'flex-start',
-  },
-  insightButtonText: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-  pressedButton: {
-    opacity: 0.82,
-    transform: [{ scale: 0.98 }],
-  },
-
-  // Dream profile
-  profileCard: {
-    borderRadius: 26,
-    overflow: 'hidden',
-    padding: 0,
-  },
-  profileAccent: {
-    height: 3,
-    opacity: 0.9,
-  },
-  profileInner: {
-    padding: 22,
-    gap: 16,
-  },
-  profileHeaderRow: {
-    flexDirection: 'row',
-    gap: 14,
-    alignItems: 'flex-start',
-  },
-  profileIconWrap: {
-    width: 46,
-    height: 46,
-    borderRadius: 15,
-    borderCurve: 'continuous',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  profileCopy: {
-    flex: 1,
-    gap: 5,
-  },
-  profileEyebrow: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textTransform: 'uppercase',
-  },
-  profileTitle: {
-    fontSize: 24,
-    lineHeight: 30,
-    fontFamily: Fonts.fraunces.semiBold,
-  },
-  profileBody: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontFamily: Fonts.spaceGrotesk.regular,
-  },
-  profileReadinessPill: {
-    alignSelf: 'flex-start',
-    borderWidth: 1,
-    borderRadius: 999,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    minHeight: 34,
-    paddingHorizontal: 12,
-  },
-  profileReadinessText: {
-    fontSize: 13,
-    lineHeight: 17,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-  profileMetricGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
-  profileMetric: {
-    flex: 1,
-    minWidth: 132,
-    borderWidth: 1,
-    borderRadius: 16,
-    borderCurve: 'continuous',
-    padding: 12,
-    gap: 4,
-  },
-  profileMetricValue: {
-    fontSize: 24,
-    fontFamily: Fonts.fraunces.bold,
-    fontVariant: ['tabular-nums'],
-  },
-  profileMetricLabel: {
-    fontSize: 11,
-    lineHeight: 14,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textTransform: 'uppercase',
-  },
-  profileSignalGrid: {
-    gap: 9,
-  },
-  profileSignal: {
-    borderWidth: 1,
-    borderRadius: 14,
-    borderCurve: 'continuous',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    gap: 3,
-  },
-  profileSignalLabel: {
-    fontSize: 11,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textTransform: 'uppercase',
-  },
-  profileSignalValue: {
-    fontSize: 15,
-    lineHeight: 19,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-  profilePlusPreview: {
-    borderWidth: 1,
-    borderRadius: 18,
-    borderCurve: 'continuous',
-    padding: 14,
-    gap: 12,
-  },
-  profilePlusPreviewHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  profilePlusPreviewTitle: {
-    flex: 1,
-    fontSize: 15,
-    lineHeight: 20,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-  profilePlusPreviewBody: {
-    fontSize: 13,
-    lineHeight: 18,
-    fontFamily: Fonts.spaceGrotesk.regular,
-  },
-  profileSignalLockedValue: {
-    fontSize: 14,
-    lineHeight: 18,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-  profileUpgradeButton: {
-    minHeight: 42,
-    borderRadius: 15,
-    borderCurve: 'continuous',
-    borderWidth: 1,
-    paddingHorizontal: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    alignSelf: 'flex-start',
-  },
-  profileUpgradeButtonText: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    textAlign: 'center',
-  },
-  profileButton: {
-    minHeight: 48,
-    borderRadius: 18,
-    borderCurve: 'continuous',
-    paddingHorizontal: 18,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    alignSelf: 'flex-start',
-  },
-  profileButtonText: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    textAlign: 'center',
-  },
-
-  // Chart / Pie
-  chartContainer: {
-    borderRadius: ThemeLayout.borderRadius.md,
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingVertical: ThemeLayout.spacing.xs,
-    alignItems: 'center',
-  },
-  pieChartWrapper: {
-    alignItems: 'center',
-    marginBottom: ThemeLayout.spacing.sm,
-  },
-  // The gifted-charts wrapper does its own vertical maths (container height = plot + 50, with
-  // marginBottom = xAxisLabelsHeight - 55), so this frame only centres — it must not impose a
-  // height or clip overflow.
-  chartFrame: {
-    alignSelf: 'center',
-    marginBottom: ThemeLayout.spacing.sm,
-  },
-  chartAxisLabel: {
-    fontSize: 11,
-    fontFamily: Fonts.spaceGrotesk.regular,
-  },
-  chartXAxisLabel: {
-    fontSize: 11,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textAlign: 'center',
-  },
-  pieChartCenterText: {
-    fontSize: 24,
-    fontFamily: Fonts.fraunces.bold,
-    textAlign: 'center',
-  },
-  pieChartCenterSubtext: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    textAlign: 'center',
-  },
-  legendContainer: {
-    width: '100%',
-    gap: ThemeLayout.spacing.sm,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: ThemeLayout.spacing.sm,
-    borderRadius: 12,
-    padding: 10,
-  },
-  legendColor: {
-    width: 16,
-    height: 16,
-    borderRadius: 4,
-  },
-  legendText: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
-  },
-
-  // Most Discussed
-  mostDiscussedCard: {
-    marginTop: ThemeLayout.spacing.md,
-    borderRadius: ThemeLayout.borderRadius.lg,
-    overflow: 'hidden',
-  },
-  mostDiscussedDecoLine: {
-    height: 2,
-    width: '100%',
-  },
-  mostDiscussedInner: {
-    padding: ThemeLayout.spacing.md,
-    gap: 6,
-  },
-  mostDiscussedTitle: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.regular,
-  },
-  mostDiscussedDreamTitle: {
-    fontSize: 17,
-    fontFamily: Fonts.fraunces.regular,
-    fontStyle: 'italic',
-  },
-  mostDiscussedFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  mostDiscussedCount: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.medium,
-  },
-
-  // Period Sheet
-  periodSheet: {
-    gap: ThemeLayout.spacing.md,
-    paddingBottom: ThemeLayout.spacing.xl,
-  },
-  periodSheetTitle: {
-    fontSize: 24,
-    lineHeight: 30,
-    fontFamily: Fonts.fraunces.semiBold,
-  },
-  periodOptions: {
-    gap: ThemeLayout.spacing.sm,
-  },
-  periodOption: {
-    minHeight: 54,
-    borderWidth: 1,
-    borderRadius: 18,
-    borderCurve: 'continuous',
-    paddingHorizontal: ThemeLayout.spacing.md,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: ThemeLayout.spacing.md,
-  },
-  periodOptionText: {
-    flex: 1,
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-  periodChipRow: {
-    width: '100%',
-    flexDirection: 'row',
-    marginBottom: ThemeLayout.spacing.md,
-  },
-  periodChip: {
-    borderWidth: 1,
-    borderRadius: 999,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    minHeight: 30,
-    paddingHorizontal: 10,
-  },
-  periodChipText: {
-    fontSize: 12,
-    lineHeight: 16,
-    fontFamily: Fonts.spaceGrotesk.medium,
-  },
-  periodEmptyCard: {
-    borderWidth: 1,
-    borderRadius: 20,
-    borderCurve: 'continuous',
-    padding: ThemeLayout.spacing.lg,
-    gap: ThemeLayout.spacing.sm,
-    alignItems: 'center',
-  },
-  periodEmptyTitle: {
-    fontSize: 20,
-    lineHeight: 26,
-    fontFamily: Fonts.fraunces.semiBold,
-    textAlign: 'center',
-  },
-  periodEmptyBody: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    textAlign: 'center',
-    marginBottom: ThemeLayout.spacing.xs,
-  },
-
-  // Empty / Loading
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
-  },
-  emptyState: {
-    gap: ThemeLayout.spacing.lg,
-    padding: ThemeLayout.spacing.lg,
-  },
-  emptyCopy: {
-    alignItems: 'center',
-    gap: ThemeLayout.spacing.sm,
-  },
-  emptyHeading: {
-    fontSize: 20,
-    lineHeight: 26,
-    fontFamily: Fonts.fraunces.semiBold,
-    textAlign: 'center',
-  },
-  emptyBody: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    textAlign: 'center',
-    maxWidth: 320,
-    alignSelf: 'center',
-  },
-  emptyScrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    paddingBottom: ThemeLayout.spacing.xl,
-  },
-  emptyPrimaryButton: {
-    minHeight: 50,
-    borderRadius: 18,
-    borderCurve: 'continuous',
-    borderWidth: 1,
-    paddingHorizontal: 18,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    alignSelf: 'center',
-  },
-  emptyPrimaryButtonText: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-});

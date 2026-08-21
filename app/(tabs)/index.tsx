@@ -2,12 +2,11 @@ import { router, useFocusEffect } from "expo-router";
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Platform,
-  Pressable,
   ScrollView,
-  StyleSheet,
   Text,
   View,
   useWindowDimensions,
+  type ViewStyle,
 } from "react-native";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { AtmosphericBackground } from "@/components/inspiration/AtmosphericBackground";
@@ -21,14 +20,14 @@ import { PageHeader } from "@/components/inspiration/PageHeader";
 import { SectionHeading } from "@/components/inspiration/SectionHeading";
 import { DreamCard } from "@/components/journal/DreamCard";
 import { NoctaliaScreenHeader } from "@/components/NoctaliaScreenHeader";
+import { PressableScale, Reveal } from "@/components/motion";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { DecoLines, ThemeLayout } from "@/constants/journalTheme";
+import { ThemeLayout } from "@/constants/journalTheme";
 import {
   DESKTOP_BREAKPOINT,
   getBottomNavigationLayout,
 } from "@/constants/layout";
 import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from "@/constants/noctaliaDesign";
-import { Fonts } from "@/constants/theme";
 import { useDreamsData } from "@/context/DreamsContext";
 import { useTheme } from "@/context/ThemeContext";
 import { ScrollPerfProvider } from "@/context/ScrollPerfContext";
@@ -68,6 +67,23 @@ const TIP_KEYS = [
 
 const DATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
 
+/**
+ * `ReminderOptInCard`, `FlatGlassCard` and friends take a `ViewStyle` prop rather than a
+ * `className`, and `FlatGlassCard` merges that style *after* its own frame — which is the
+ * only way to override the glass radius and ground. So the card frames below stay style
+ * objects; everything inside them is `className`.
+ */
+const REMINDER_CARD_SPACING: ViewStyle = { marginBottom: 24 };
+const DREAM_GUIDES_CARD_FRAME: ViewStyle = {
+  borderRadius: 24,
+  borderCurve: "continuous",
+  overflow: "hidden",
+};
+const TIP_CARD_FRAME: ViewStyle = {
+  borderRadius: 24,
+  overflow: "hidden",
+  position: "relative",
+};
 
 /**
  * Inspiration / rituals screen.
@@ -95,6 +111,11 @@ export default function InspirationScreen() {
 
   const isDesktopLayout = Platform.OS === "web" && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height);
+
+  // Section geometry, kept in one place so a section can't drift from its neighbours.
+  const mobilePadding = isDesktopLayout ? "" : "px-5";
+  const desktopFullSection = isDesktopLayout ? "w-full px-3" : "";
+  const desktopSideSection = isDesktopLayout ? "w-1/3 min-w-[320px] px-3" : "";
 
   const scrollContentBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
@@ -288,9 +309,7 @@ export default function InspirationScreen() {
 
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-      <View
-        style={[styles.container, { backgroundColor: noctalia.screen.background }]}
-      >
+      <View className="flex-1 bg-ink">
         {/* Atmospheric dreamlike background */}
         <AtmosphericBackground />
 
@@ -299,7 +318,7 @@ export default function InspirationScreen() {
             titleKey="inspiration.title"
             animationSeed={showAnimations ? 1 : 0}
             topSpacing={ThemeLayout.spacing.md}
-            style={styles.pageHeader}
+            style={{ paddingBottom: ThemeLayout.spacing.md }}
           />
         ) : (
           <NoctaliaScreenHeader
@@ -309,70 +328,46 @@ export default function InspirationScreen() {
         )}
 
         <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={[
-            styles.scrollContent,
-            { paddingBottom: scrollContentBottomPadding },
-          ]}
+          className="flex-1"
+          contentContainerStyle={{ paddingBottom: scrollContentBottomPadding }}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-          <ScreenContainer
-            style={[
-              styles.contentContainer,
-              !isDesktopLayout && styles.mobileRootContainer,
-            ]}
-          >
-            <View style={isDesktopLayout ? styles.desktopGrid : undefined}>
+          <ScreenContainer className={`pt-4 ${isDesktopLayout ? "px-5" : "px-0"}`}>
+            <View className={isDesktopLayout ? "-mx-3 flex-row flex-wrap" : undefined}>
               {/* Personal journal pulse */}
-              <View
-                style={[
-                  styles.homeSectionSpacing,
-                  !isDesktopLayout && styles.mobileSectionPadding,
-                  isDesktopLayout && styles.desktopFullSection,
-                ]}
-              >
-                <DreamPulseCard pulse={pulse} onPressCta={handlePulseCta} />
-              </View>
+              <Reveal index={0} className={`mb-[34px] ${mobilePadding} ${desktopFullSection}`}>
+                <DreamPulseCard
+                  pulse={pulse}
+                  onPressCta={handlePulseCta}
+                  animateOnMount={false}
+                />
+              </Reveal>
 
               {/* Morning reminder opt-in (one-time, native only) */}
-              <View
-                style={[
-                  !isDesktopLayout && styles.mobileSectionPadding,
-                  isDesktopLayout && styles.desktopFullSection,
-                ]}
-              >
-                <ReminderOptInCard surface="home" style={styles.reminderOptInCard} />
-              </View>
+              <Reveal index={1} className={`${mobilePadding} ${desktopFullSection}`}>
+                <ReminderOptInCard surface="home" style={REMINDER_CARD_SPACING} />
+              </Reveal>
 
               {/* Reading of the day — derived from the user's own journal */}
               {personalReading ? (
-                <View
-                  style={[
-                    styles.homeSectionSpacing,
-                    !isDesktopLayout && styles.mobileSectionPadding,
-                    isDesktopLayout && styles.desktopFullSection,
-                  ]}
-                >
-                  <PersonalReadingCard reading={personalReading} nextReminderText={nextReminderText} />
-                </View>
+                <Reveal index={2} className={`mb-[34px] ${mobilePadding} ${desktopFullSection}`}>
+                  <PersonalReadingCard
+                    reading={personalReading}
+                    nextReminderText={nextReminderText}
+                    animateOnMount={false}
+                  />
+                </Reveal>
               ) : null}
 
               {/* Latest dream hero */}
               {lastDream ? (
-                <View
-                  style={[
-                    styles.homeSectionSpacing,
-                    !isDesktopLayout && styles.mobileSectionPadding,
-                    isDesktopLayout && styles.desktopFullSection,
-                  ]}
-                >
+                <Reveal index={3} className={`mb-[34px] ${mobilePadding} ${desktopFullSection}`}>
                   <SectionHeading
                     title={t("inspiration.lastDream.title")}
                     subtitle={t("inspiration.lastDream.subtitle")}
-                    colors={colors}
                     icon="moon.stars.fill"
                   />
                   <DreamCard
@@ -383,19 +378,12 @@ export default function InspirationScreen() {
                     testID={TID.List.DreamItem(`home-${lastDream.id}`)}
                   />
                   {isDreamAnalyzed(lastDream) ? (
-                    <Pressable
+                    <PressableScale
                       onPress={handleOpenLastDreamChat}
                       accessibilityRole="button"
                       accessibilityLabel={t("inspiration.lastDream.chat_cta")}
                       testID={TID.Button.InspirationLastDreamChat}
-                      style={({ pressed }) => [
-                        styles.lastDreamChatButton,
-                        {
-                          backgroundColor: noctalia.surface.soft,
-                          borderColor: noctalia.surface.border,
-                        },
-                        pressed && styles.pressedButton,
-                      ]}
+                      className="mt-3.5 flex-row items-center justify-center gap-2 rounded-full border border-line bg-ink-soft px-5 py-3"
                     >
                       <IconSymbol
                         name="bubble.left.and.bubble.right.fill"
@@ -403,41 +391,27 @@ export default function InspirationScreen() {
                         color={noctalia.accent.text}
                       />
                       <Text
-                        style={[
-                          styles.lastDreamChatLabel,
-                          { color: noctalia.accent.text },
-                        ]}
+                        className="font-sans-bold text-[14px] text-champagne-on"
                         numberOfLines={1}
                       >
                         {t("inspiration.lastDream.chat_cta")}
                       </Text>
-                    </Pressable>
+                    </PressableScale>
                   ) : null}
-                </View>
+                </Reveal>
               ) : null}
 
-              <View
-                style={[
-                  styles.homeSectionSpacing,
-                  isDesktopLayout && styles.desktopFullSection,
-                ]}
-              >
+              <Reveal index={4} className={`mb-[34px] ${desktopFullSection}`}>
                 <HomeStudioSection
-                  colors={colors}
                   noctalia={noctalia}
                   mode={mode}
                   t={t}
                   isDesktopLayout={isDesktopLayout}
                   onOpenSymbols={handleOpenSymbols}
                 />
-              </View>
+              </Reveal>
 
-              <View
-                style={[
-                  styles.homeSectionSpacing,
-                  isDesktopLayout && styles.desktopFullSection,
-                ]}
-              >
+              <Reveal index={5} className={`mb-[34px] ${desktopFullSection}`}>
                 <DreamGuidesHomeCard
                   noctalia={noctalia}
                   kicker={guideCopy.practicalLabel}
@@ -445,16 +419,11 @@ export default function InspirationScreen() {
                   body={guideCopy.screenSubtitle}
                   onPress={handleOpenGuides}
                 />
-              </View>
+              </Reveal>
 
               {/* Sleep sounds entry (feature-flagged, native only) */}
               {sleepSoundsAvailable ? (
-                <View
-                  style={[
-                    styles.homeSectionSpacing,
-                    isDesktopLayout && styles.desktopFullSection,
-                  ]}
-                >
+                <Reveal index={6} className={`mb-[34px] ${desktopFullSection}`}>
                   <DreamGuidesHomeCard
                     noctalia={noctalia}
                     kicker={sleepCopy.entryTitle}
@@ -464,40 +433,30 @@ export default function InspirationScreen() {
                     testID={TID.Button.HomeSleepSounds}
                     onPress={handleOpenSleepSounds}
                   />
-                </View>
+                </Reveal>
               ) : null}
 
               {/* Rituals with Progress Rings */}
-              <View style={styles.sectionSpacing}>
+              <Reveal index={7} className="mb-[44px]">
                 <RitualScrollSection
-                  colors={colors}
                   noctalia={noctalia}
                   rituals={RITUALS}
                   selectedRitualId={selectedRitualId}
                   ritualProgress={ritualProgress}
                   t={t}
-                  mode={mode}
                 />
-              </View>
+              </Reveal>
 
               {/* Tip of the Day - Featured card */}
-              <View
-                style={[
-                  styles.sectionSpacing,
-                  !isDesktopLayout && styles.mobileSectionPadding,
-                  isDesktopLayout && styles.desktopSideSection,
-                ]}
-              >
+              <Reveal index={8} className={`mb-[44px] ${mobilePadding} ${desktopSideSection}`}>
                 <TipCard
-                  colors={colors}
                   noctalia={noctalia}
                   tips={tips}
                   title={t("inspiration.tip.title")}
                   subtitle={t("inspiration.tip.subtitle")}
                   nextLabel={t("inspiration.tip.next")}
-                  mode={mode}
                 />
-              </View>
+              </Reveal>
 
             </View>
           </ScreenContainer>
@@ -509,7 +468,6 @@ export default function InspirationScreen() {
 }
 
 type HomeStudioSectionProps = {
-  colors: ReturnType<typeof useTheme>["colors"];
   noctalia: NoctaliaDesignTokens;
   mode: "light" | "dark";
   t: TranslateFn;
@@ -517,17 +475,9 @@ type HomeStudioSectionProps = {
   onOpenSymbols: () => void;
 };
 
-type DreamSymbolsHeroProps = {
-  colors: ReturnType<typeof useTheme>["colors"];
-  noctalia: NoctaliaDesignTokens;
-  mode: "light" | "dark";
-  t: TranslateFn;
-  isDesktopLayout: boolean;
-  onOpenSymbols: () => void;
-};
+type DreamSymbolsHeroProps = HomeStudioSectionProps;
 
 const HomeStudioSection = memo(function HomeStudioSection({
-  colors,
   noctalia,
   mode,
   t,
@@ -536,7 +486,6 @@ const HomeStudioSection = memo(function HomeStudioSection({
 }: HomeStudioSectionProps) {
   return (
     <DreamSymbolsHero
-      colors={colors}
       noctalia={noctalia}
       mode={mode}
       t={t}
@@ -547,75 +496,57 @@ const HomeStudioSection = memo(function HomeStudioSection({
 });
 
 const DreamSymbolsHero = memo(function DreamSymbolsHero({
-  colors,
   noctalia,
   mode,
   t,
   isDesktopLayout,
   onOpenSymbols,
 }: DreamSymbolsHeroProps) {
-  const accentFill = noctalia.accent.base;
+  // `IconSymbol` takes a colour value, not a style.
   const accentText = noctalia.accent.text;
-  const symbolCardStyle = StyleSheet.flatten([
-    styles.symbolHeroCard,
-    isDesktopLayout && styles.symbolHeroCardDesktop,
-    {
+  const symbolCardStyle = useMemo<ViewStyle>(
+    () => ({
+      borderRadius: 26,
+      borderWidth: 1,
+      overflow: "hidden",
       backgroundColor: noctalia.surface.raised,
       borderColor: noctalia.surface.border,
-    },
-  ]);
+      ...(isDesktopLayout ? { maxWidth: 760 } : null),
+    }),
+    [isDesktopLayout, noctalia.surface.border, noctalia.surface.raised],
+  );
 
   return (
-    <View style={styles.symbolHeroContainer}>
-      <FlatGlassCard intensity="strong" style={symbolCardStyle}>
-        <View
-          style={[
-            styles.symbolHeroAccentLine,
-            { backgroundColor: accentFill },
-          ]}
-        />
-        <View style={styles.symbolHeroContent}>
-          <View style={styles.symbolHeroTopRow}>
-            <View
-              style={[
-                styles.symbolHeroIconWrap,
-                {
-                  backgroundColor: noctalia.surface.soft,
-                },
-              ]}
-            >
+    <View className="px-5">
+      <FlatGlassCard intensity="strong" style={symbolCardStyle} animateOnMount={false}>
+        <View className="h-[3px] w-full bg-champagne" />
+        <View className="gap-[13px] p-[18px]">
+          <View className="flex-row items-center gap-2.5">
+            <View className="h-[42px] w-[42px] items-center justify-center rounded-[15px] bg-ink-soft">
               <IconSymbol name="book.closed.fill" size={22} color={accentText} />
             </View>
-            <Text style={[styles.symbolHeroKicker, { color: accentText }]}>
+            <Text className="flex-1 font-sans-bold text-[12px] uppercase text-champagne-on">
               {t("symbols.home_card_kicker")}
             </Text>
           </View>
 
           <Text
-            style={[styles.symbolHeroTitle, { color: noctalia.text.primary }]}
+            className="font-display-semibold text-[33px] leading-[38px] text-ivory"
             numberOfLines={2}
             adjustsFontSizeToFit
             minimumFontScale={0.84}
           >
             {t("symbols.home_card_title")}
           </Text>
-          <Text style={[styles.symbolHeroBody, { color: noctalia.text.secondary }]}>
+          <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
             {t("symbols.home_card_body")}
           </Text>
 
-          <Pressable
+          <PressableScale
             onPress={onOpenSymbols}
             accessibilityRole="button"
             accessibilityLabel={t("symbols.home_explore_button")}
-            style={({ pressed }) => [
-              styles.symbolHeroExploreButton,
-              {
-                backgroundColor:
-                  mode === "dark" ? noctalia.surface.active : noctalia.action.primary,
-                borderColor: noctalia.action.primaryBorder,
-              },
-              pressed && styles.pressedButton,
-            ]}
+            className="min-h-[50px] flex-row items-center justify-center gap-[9px] rounded-[18px] border border-champagne-soft bg-champagne px-4 dark:bg-ink-active"
           >
             <IconSymbol
               name="book.closed.fill"
@@ -623,23 +554,15 @@ const DreamSymbolsHero = memo(function DreamSymbolsHero({
               color={mode === "dark" ? accentText : noctalia.action.primaryText}
             />
             <Text
-              style={[
-                styles.symbolHeroExploreText,
-                { color: mode === "dark" ? accentText : noctalia.action.primaryText },
-              ]}
+              className="font-sans-bold text-[15px] text-on-champagne dark:text-champagne-on"
               numberOfLines={1}
             >
               {t("symbols.home_explore_button")}
             </Text>
-            <Text
-              style={[
-                styles.symbolHeroExploreArrow,
-                { color: mode === "dark" ? accentText : noctalia.action.primaryText },
-              ]}
-            >
+            <Text className="font-sans-bold text-[17px] leading-[19px] text-on-champagne dark:text-champagne-on">
               →
             </Text>
-          </Pressable>
+          </PressableScale>
 
         </View>
       </FlatGlassCard>
@@ -667,42 +590,31 @@ const DreamGuidesHomeCard = memo(function DreamGuidesHomeCard({
   testID = "btn.home.dreamGuides",
 }: DreamGuidesHomeCardProps) {
   return (
-    <View style={styles.dreamGuidesHomeContainer}>
-      <FlatGlassCard intensity="strong" style={styles.dreamGuidesHomeCard}>
-        <Pressable
+    <View className="px-5">
+      <FlatGlassCard intensity="strong" style={DREAM_GUIDES_CARD_FRAME} animateOnMount={false}>
+        <PressableScale
           onPress={onPress}
           accessibilityRole="button"
           accessibilityLabel={title}
           testID={testID}
-          style={({ pressed }) => [
-            styles.dreamGuidesHomeButton,
-            pressed && styles.pressedButton,
-          ]}
+          className="min-h-[126px] flex-row items-center gap-3.5 p-[18px]"
         >
-          <View
-            style={[
-              styles.dreamGuidesHomeIcon,
-              { backgroundColor: noctalia.surface.soft },
-            ]}
-          >
+          <View className="h-[50px] w-[50px] items-center justify-center rounded-[17px] bg-ink-soft">
             <IconSymbol name={icon} size={23} color={noctalia.accent.text} />
           </View>
-          <View style={styles.dreamGuidesHomeCopy}>
-            <Text style={[styles.dreamGuidesHomeKicker, { color: noctalia.accent.text }]}>
+          <View className="flex-1 gap-1">
+            <Text className="font-sans-bold text-[11px] uppercase leading-[15px] text-champagne-on">
               {kicker}
             </Text>
-            <Text style={[styles.dreamGuidesHomeTitle, { color: noctalia.text.primary }]}>
+            <Text className="font-display-semibold text-[21px] leading-[26px] text-ivory">
               {title}
             </Text>
-            <Text
-              style={[styles.dreamGuidesHomeBody, { color: noctalia.text.secondary }]}
-              numberOfLines={2}
-            >
+            <Text className="font-sans text-[13px] leading-[19px] text-ivory-muted" numberOfLines={2}>
               {body}
             </Text>
           </View>
           <IconSymbol name="chevron.right" size={20} color={noctalia.accent.text} />
-        </Pressable>
+        </PressableScale>
       </FlatGlassCard>
     </View>
   );
@@ -719,23 +631,19 @@ const RITUAL_ICONS: Record<RitualId, string> = {
 };
 
 type RitualScrollSectionProps = {
-  colors: ReturnType<typeof useTheme>["colors"];
   noctalia: NoctaliaDesignTokens;
   rituals: RitualConfig[];
   selectedRitualId: RitualId;
   ritualProgress: RitualProgressState;
   t: TranslateFn;
-  mode: "light" | "dark";
 };
 
 const RitualScrollSection = memo(function RitualScrollSection({
-  colors,
   noctalia,
   rituals,
   selectedRitualId,
   ritualProgress,
   t,
-  mode,
 }: RitualScrollSectionProps) {
   const ritualCards = useMemo(
     () =>
@@ -757,26 +665,28 @@ const RitualScrollSection = memo(function RitualScrollSection({
 
   return (
     <View>
-      <View style={styles.popularHeader}>
-        <Text style={[styles.popularTitle, { color: noctalia.text.primary }]}>
+      <View className="mb-4 px-5">
+        <Text className="font-display-semibold text-[20px] text-ivory">
           {t("inspiration.ritual.title")}
         </Text>
       </View>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.ritualScrollContainer}
+        contentContainerClassName="gap-3 px-5 py-2"
       >
-        {ritualCards.map(({ ritual, completedCount, progressRatio, totalSteps, iconName }, index) => {
+        {ritualCards.map(({ ritual, completedCount, progressRatio, totalSteps, iconName }) => {
           const isActive = ritual.id === selectedRitualId;
-          const ritualCardStyle = StyleSheet.flatten([
-            styles.ritualCard,
-            isActive && styles.ritualCardActive,
-            {
-              backgroundColor: noctalia.surface.raised,
-              borderColor: isActive ? noctalia.accent.base : noctalia.surface.border,
-            },
-          ]);
+          const ritualCardStyle: ViewStyle = {
+            width: 200,
+            borderRadius: 22,
+            padding: 18,
+            justifyContent: "flex-start",
+            gap: 8,
+            backgroundColor: noctalia.surface.raised,
+            borderColor: isActive ? noctalia.accent.base : noctalia.surface.border,
+            ...(isActive ? { borderWidth: 2 } : null),
+          };
 
           return (
             <FlatGlassCard
@@ -784,18 +694,13 @@ const RitualScrollSection = memo(function RitualScrollSection({
               testID={TID.Button.InspirationRitualVariant(ritual.id)}
               intensity="subtle"
               style={ritualCardStyle}
-              animationDelay={120 * index}
+              animateOnMount={false}
               onPress={() => router.push(`/ritual/${ritual.id}` as any)}
               accessibilityRole="button"
               accessibilityLabel={t(ritual.labelKey)}
             >
               {/* Icon */}
-              <View
-                style={[
-                  styles.ritualIconWrapper,
-                  { backgroundColor: noctalia.surface.soft },
-                ]}
-              >
+              <View className="mb-0.5 h-10 w-10 items-center justify-center rounded-md bg-ink-soft">
                 <IconSymbol
                   name={iconName as any}
                   size={20}
@@ -803,45 +708,23 @@ const RitualScrollSection = memo(function RitualScrollSection({
                 />
               </View>
 
-              <Text
-                style={[styles.ritualName, { color: noctalia.text.primary }]}
-                numberOfLines={1}
-              >
+              <Text className="font-sans-medium text-[15px] text-ivory" numberOfLines={1}>
                 {t(ritual.labelKey)}
               </Text>
-              <Text
-                style={[
-                  styles.ritualDescription,
-                  { color: noctalia.text.secondary },
-                ]}
-                numberOfLines={3}
-              >
+              <Text className="font-sans text-[12px] leading-4 text-ivory-muted" numberOfLines={3}>
                 {t(ritual.descriptionKey)}
               </Text>
 
               {/* Progress bar */}
-              <View style={styles.ritualProgressBar}>
-                <View
-                  style={[
-                    styles.ritualProgressBarTrack,
-                    {
-                      backgroundColor: noctalia.surface.border,
-                    },
-                  ]}
-                >
+              <View className="mt-1 gap-1.5">
+                <View className="h-1 overflow-hidden rounded-[2px] bg-line">
                   <View
-                    style={[
-                      styles.ritualProgressBarFill,
-                      {
-                        backgroundColor: noctalia.accent.base,
-                        width: `${Math.max(progressRatio * 100, 0)}%` as any,
-                      },
-                    ]}
+                    className="h-1 rounded-[2px] bg-champagne"
+                    // Progress is a runtime ratio, so only its width can be inline.
+                    style={{ width: `${Math.max(progressRatio * 100, 0)}%` }}
                   />
                 </View>
-                <Text
-                  style={[styles.ritualProgressText, { color: noctalia.accent.text }]}
-                >
+                <Text className="font-sans-medium text-[11px] text-champagne-on">
                   {t("inspiration.ritual.steps_progress")
                     .replace("{completed}", String(completedCount))
                     .replace("{total}", String(totalSteps))}
@@ -858,23 +741,19 @@ const RitualScrollSection = memo(function RitualScrollSection({
 // ─── Tip Card ────────────────────────────────────────────────────────────────
 
 type TipCardProps = {
-  colors: ReturnType<typeof useTheme>["colors"];
   noctalia: NoctaliaDesignTokens;
   title: string;
   subtitle: string;
   tips: string[];
   nextLabel: string;
-  mode: "light" | "dark";
 };
 
 const TipCard = memo(function TipCard({
-  colors,
   noctalia,
   title,
   subtitle,
   tips,
   nextLabel,
-  mode,
 }: TipCardProps) {
   const [tipIndex, setTipIndex] = useState(0);
 
@@ -890,49 +769,34 @@ const TipCard = memo(function TipCard({
   return (
     <FlatGlassCard
       intensity="moderate"
-      style={styles.tipCard}
-      animationDelay={300}
+      style={TIP_CARD_FRAME}
+      animateOnMount={false}
       testID={TID.Component.InspirationTip}
     >
       {/* Decorative accent stripe */}
-      <View
-        style={[styles.tipAccentStripe, { backgroundColor: noctalia.accent.base }]}
-      />
-      <View style={styles.tipInner}>
-        <View style={styles.tipHeaderRow}>
-          <View style={styles.tipHeader}>
-            <Text style={[styles.tipTitle, { color: noctalia.text.primary }]}>
+      <View className="h-[3px] w-full bg-champagne opacity-85" />
+      <View className="gap-3.5 p-[22px]">
+        <View className="flex-row items-start justify-between">
+          <View className="flex-1 pr-3">
+            <Text className="mb-1 font-display-semibold text-[19px] text-ivory">
               {title}
             </Text>
-            <Text style={[styles.tipSubtitle, { color: noctalia.text.secondary }]}>
+            <Text className="font-sans text-[14px] text-ivory-muted">
               {subtitle}
             </Text>
           </View>
-          <View
-            style={[
-              styles.tipBadgeCircle,
-              {
-                backgroundColor: noctalia.surface.soft,
-              },
-            ]}
-          >
+          <View className="h-9 w-9 items-center justify-center rounded-[18px] bg-ink-soft">
             <IconSymbol name="sparkles" size={18} color={noctalia.accent.text} />
           </View>
         </View>
 
-        <Text style={[styles.tipBody, { color: noctalia.text.primary }]}>
+        <Text className="font-sans text-body text-ivory">
           {tips[tipIndex]}
         </Text>
 
-        <Pressable
+        <PressableScale
           onPress={handleNext}
-          style={({ pressed }) => [
-            styles.tipButton,
-            {
-              backgroundColor: noctalia.surface.soft,
-            },
-            pressed && { opacity: 0.6 },
-          ]}
+          className="flex-row items-center gap-1.5 self-start rounded-[20px] bg-ink-soft px-3.5 py-2"
           testID={TID.Button.InspirationTipNext}
         >
           <IconSymbol
@@ -940,10 +804,10 @@ const TipCard = memo(function TipCard({
             size={16}
             color={noctalia.accent.text}
           />
-          <Text style={[styles.tipButtonLabel, { color: noctalia.accent.text }]}>
+          <Text className="font-sans-medium text-[14px] text-champagne-on">
             {nextLabel}
           </Text>
-        </Pressable>
+        </PressableScale>
       </View>
     </FlatGlassCard>
   );
@@ -951,386 +815,3 @@ const TipCard = memo(function TipCard({
 
 // QuickAccess section intentionally removed to keep the home
 // focused on guidance, rituals and inspiration rather than navigation.
-
-// ─── Info Card ───────────────────────────────────────────────────────────────
-
-
-
-// ─── Quote Card ──────────────────────────────────────────────────────────────
-
-
-// ─── Styles ──────────────────────────────────────────────────────────────────
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  // Scroll & Content
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 0,
-  },
-  contentContainer: {
-    paddingHorizontal: 20,
-    paddingTop: ThemeLayout.spacing.md,
-  },
-  pageHeader: {
-    paddingBottom: ThemeLayout.spacing.md,
-  },
-  mobileRootContainer: {
-    paddingHorizontal: 0,
-  },
-  mobileSectionPadding: {
-    paddingHorizontal: 20,
-  },
-  desktopGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginHorizontal: -12,
-  },
-  reminderOptInCard: {
-    marginBottom: 24,
-  },
-  desktopFullSection: {
-    width: "100%",
-    paddingHorizontal: 12,
-  },
-  desktopSideSection: {
-    width: "33.3333%",
-    minWidth: 320,
-    paddingHorizontal: 12,
-  },
-  desktopHalfSection: {
-    width: "50%",
-    minWidth: 320,
-    paddingHorizontal: 12,
-  },
-  sectionSpacing: {
-    marginBottom: 44,
-  },
-  homeSectionSpacing: {
-    marginBottom: 34,
-  },
-
-  pressedButton: {
-    opacity: 0.82,
-    transform: [{ scale: 0.98 }],
-  },
-
-  lastDreamChatButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    borderRadius: 999,
-    borderWidth: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    marginTop: 14,
-  },
-  lastDreamChatLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 14,
-  },
-
-  // Info cards stack
-  stack: {
-    gap: 14,
-  },
-
-  symbolHeroContainer: {
-    paddingHorizontal: 20,
-  },
-  symbolHeroCard: {
-    borderRadius: 26,
-    borderWidth: 1,
-    overflow: "hidden",
-  },
-  symbolHeroCardDesktop: {
-    maxWidth: 760,
-  },
-  symbolHeroAccentLine: {
-    height: 3,
-    width: "100%",
-  },
-  symbolHeroContent: {
-    padding: 18,
-    gap: 13,
-  },
-  symbolHeroTopRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  symbolHeroIconWrap: {
-    width: 42,
-    height: 42,
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  symbolHeroKicker: {
-    flex: 1,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
-    textTransform: "uppercase",
-  },
-  symbolHeroTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 33,
-    lineHeight: 38,
-  },
-  symbolHeroBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 22,
-  },
-  symbolHeroExploreButton: {
-    minHeight: 50,
-    borderRadius: 18,
-    borderWidth: 1,
-    paddingHorizontal: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 9,
-  },
-  symbolHeroExploreText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
-  },
-  symbolHeroExploreArrow: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 17,
-    lineHeight: 19,
-  },
-  dreamGuidesHomeContainer: {
-    paddingHorizontal: 20,
-  },
-  dreamGuidesHomeCard: {
-    borderRadius: 24,
-    borderCurve: "continuous",
-    overflow: "hidden",
-  },
-  dreamGuidesHomeButton: {
-    minHeight: 126,
-    padding: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-  },
-  dreamGuidesHomeIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 17,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  dreamGuidesHomeCopy: {
-    flex: 1,
-    gap: 4,
-  },
-  dreamGuidesHomeKicker: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 11,
-    lineHeight: 15,
-    textTransform: "uppercase",
-  },
-  dreamGuidesHomeTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 21,
-    lineHeight: 26,
-  },
-  dreamGuidesHomeBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 19,
-  },
-  // Ritual Cards
-  popularHeader: {
-    paddingHorizontal: 20,
-    marginBottom: 16,
-  },
-  popularTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 20,
-  },
-  ritualScrollContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    gap: 12,
-  },
-  ritualCard: {
-    width: 200,
-    borderRadius: 22,
-    padding: 18,
-    justifyContent: "flex-start",
-    gap: 8,
-  },
-  ritualCardActive: {
-    borderWidth: 2,
-  },
-  ritualIconWrapper: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 2,
-  },
-  ritualName: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 15,
-  },
-  ritualDescription: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
-    lineHeight: 16,
-  },
-  ritualProgressBar: {
-    marginTop: 4,
-    gap: 6,
-  },
-  ritualProgressBarTrack: {
-    height: 4,
-    borderRadius: 2,
-    overflow: "hidden",
-  },
-  ritualProgressBarFill: {
-    height: 4,
-    borderRadius: 2,
-  },
-  ritualProgressText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 11,
-  },
-
-  // Tip Card
-  tipCard: {
-    borderRadius: 24,
-    overflow: "hidden",
-    position: "relative",
-  },
-  tipAccentStripe: {
-    ...DecoLines.stripe,
-    height: 3,
-    opacity: 0.85,
-  },
-  tipInner: {
-    padding: 22,
-    gap: 14,
-  },
-  tipHeaderRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-  },
-  tipHeader: {
-    flex: 1,
-    paddingRight: 12,
-  },
-  tipBadgeCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  tipTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 19,
-    marginBottom: 4,
-  },
-  tipSubtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
-  },
-  tipBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  tipButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
-    gap: 6,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 20,
-  },
-  tipButtonLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 14,
-  },
-
-  // Info Card
-  infoCard: {
-    borderRadius: 18,
-    padding: 16,
-    borderWidth: 1,
-    flexDirection: "row",
-    gap: 14,
-  },
-  infoIconWrapper: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  infoContent: {
-    flex: 1,
-    gap: 4,
-  },
-  infoTitle: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 15,
-  },
-  infoBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
-    lineHeight: 20,
-  },
-
-  // Quote Card
-  quoteCard: {
-    borderRadius: 24,
-    borderWidth: 1,
-    overflow: "hidden",
-  },
-  quoteDecoLine: {
-    height: 2,
-    width: "100%",
-  },
-  quoteInner: {
-    padding: 26,
-    gap: 14,
-  },
-  quoteText: {
-    fontFamily: Fonts.fraunces.regular,
-    fontSize: 18,
-    lineHeight: 28,
-    fontStyle: "italic",
-  },
-  quoteAttribution: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 2,
-  },
-  quoteAttributionDash: {
-    width: 16,
-    height: 1.5,
-    borderRadius: 1,
-    opacity: 0.5,
-  },
-  quoteAuthor: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
-  },
-
-});

@@ -1,0 +1,42 @@
+# Theme and language, the two settings that repaint the whole app.
+appId: com.noctalia.meditation
+---
+- runFlow: onboarding.yml
+
+- tapOn:
+    id: 'tab.profile'
+- assertVisible:
+    id: 'screen.profile'
+
+- scrollUntilVisible:
+    element:
+      text: '.*'
+    direction: DOWN
+- tapOn:
+    point: '50%,80%'
+- assertVisible:
+    id: 'screen.settings'
+
+# The theme row cycles auto → light → dark. Three taps return to the start,
+# which is the assertion: the cycle closes rather than dead-ending.
+- tapOn:
+    id: 'btn.settings.theme'
+- tapOn:
+    id: 'btn.settings.theme'
+- tapOn:
+    id: 'btn.settings.theme'
+- assertVisible:
+    id: 'screen.settings'
+
+- tapOn:
+    id: 'btn.settings.language'
+- assertVisible:
+    id: 'screen.settings.language'
+
+# Switching to German must repaint immediately, including the catalogue.
+- tapOn:
+    id: 'lang.de'
+- assertVisible: 'Sprache'
+- tapOn:
+    id: 'lang.fr'
+- assertVisible: 'Langue'

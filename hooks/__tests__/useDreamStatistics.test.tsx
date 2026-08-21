@@ -7,7 +7,24 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { UNKNOWN_DREAM_TYPE } from '../../lib/dreamLabels';
 import { buildDreamProfile } from '../../lib/dreamProfile';
 import type { DreamAnalysis } from '../../lib/types';
-import { useDreamStatistics } from '../useDreamStatistics';
+import { DEFAULT_STATS_WINDOW_DAYS, useDreamStatistics } from '../useDreamStatistics';
+
+// Local noon on the day `days` away from today. Stepping with setDate() from a noon anchor
+// keeps every fixture on the intended LOCAL day even across a DST boundary, where subtracting
+// 24 h in milliseconds lands an hour early and can slip into the previous day.
+const dayOffset = (days: number) => {
+  const date = new Date();
+  date.setHours(12, 0, 0, 0);
+  date.setDate(date.getDate() + days);
+  return date.getTime();
+};
+
+// The local midnight the series buckets are keyed on, for the same day.
+const startOfLocalDay = (days: number) => {
+  const date = new Date(dayOffset(days));
+  date.setHours(0, 0, 0, 0);
+  return date.getTime();
+};
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   id: Date.now(),
@@ -243,12 +260,13 @@ describe('useDreamStatistics', () => {
   });
 
   describe('dreams over time', () => {
-    it('generates 30-day time series', () => {
+    it('defaults to a 30-day series when the caller names no window', () => {
       const dreams = [buildDream({ id: Date.now() })];
 
       const { result } = renderHook(() => useDreamStatistics(dreams));
 
-      expect(result.current.dreamsOverTime).toHaveLength(30);
+      expect(result.current.dreamsOverTime).toHaveLength(DEFAULT_STATS_WINDOW_DAYS);
+      expect(result.current.dreamsOverTimeBucketDays).toBe(1);
     });
 
     it('aggregates dreams by date', () => {
@@ -286,6 +304,124 @@ describe('useDreamStatistics', () => {
       // Most days should have 0 dreams
       const daysWithZero = result.current.dreamsOverTime.filter((d) => d.count === 0);
       expect(daysWithZero.length).toBeGreaterThan(20);
+    });
+
+    it('follows a 7-day window when the caller names one', () => {
+      // Revert: hard-code the loop back to 30 days -> the series keeps restating "last 30
+      // days" under the screen's 7-day filter, which is the bug this window closes.
+      const dreams = [
+        buildDream({ id: dayOffset(0) }),
+        buildDream({ id: dayOffset(-2) }),
+        buildDream({ id: dayOffset(-10) }), // outside the 7-day window
+      ];
+
+      const { result } = renderHook(() => useDreamStatistics(dreams, 7));
+
+      expect(result.current.dreamsOverTime).toHaveLength(7);
+      expect(result.current.dreamsOverTimeBucketDays).toBe(1);
+      expect(result.current.dreamsOverTime.map((point) => point.count)).toEqual([
+        0, 0, 0, 0, 1, 0, 1,
+      ]);
+    });
+
+    it('anchors any window on today', () => {
+      const { result } = renderHook(() =>
+        useDreamStatistics([buildDream({ id: dayOffset(0) })], 7),
+      );
+
+      const series = result.current.dreamsOverTime;
+      expect(series[series.length - 1].timestamp).toBe(startOfLocalDay(0));
+      expect(series[0].timestamp).toBe(startOfLocalDay(-6));
+    });
+
+    it('buckets a 12-month window instead of drawing one point per day', () => {
+      // 365 days / 30 points -> 13-day buckets -> 29 points. Revert: drop the bucketing and
+      // the series becomes 365 objects rebuilt on every dream-list change.
+      const dreams = [
+        buildDream({ id: dayOffset(0) }),
+        buildDream({ id: dayOffset(-200) }),
+        buildDream({ id: dayOffset(-400) }), // older than the window
+      ];
+
+      const { result } = renderHook(() => useDreamStatistics(dreams, 365));
+
+      const series = result.current.dreamsOverTime;
+      expect(series).toHaveLength(29);
+      expect(result.current.dreamsOverTimeBucketDays).toBe(13);
+      expect(series.reduce((sum, point) => sum + point.count, 0)).toBe(2);
+      // Today lands in the last bucket, never past the end of the array.
+      expect(series[series.length - 1].count).toBe(1);
+    });
+
+    it('covers the observed span when the window is the whole journal', () => {
+      const dreams = [buildDream({ id: dayOffset(0) }), buildDream({ id: dayOffset(-9) })];
+
+      const { result } = renderHook(() => useDreamStatistics(dreams, null));
+
+      const series = result.current.dreamsOverTime;
+      expect(series).toHaveLength(10);
+      expect(series[0].count).toBe(1);
+      expect(series[9].count).toBe(1);
+      expect(result.current.dreamsOverTimeBucketDays).toBe(1);
+    });
+
+    it('draws a single point for a one-dream journal read over all time', () => {
+      const { result } = renderHook(() =>
+        useDreamStatistics([buildDream({ id: dayOffset(0) })], null),
+      );
+
+      expect(result.current.dreamsOverTime).toEqual([
+        { timestamp: startOfLocalDay(0), count: 1 },
+      ]);
+    });
+
+    it('keeps every bucket of a window that outruns the journal', () => {
+      // "12 months" over a one-day journal must still read as twelve months of near-silence,
+      // not as one busy day. Revert: clamp the window to the observed span -> 1 point.
+      const dreams = [buildDream({ id: dayOffset(0) }), buildDream({ id: dayOffset(0) + 1000 })];
+
+      const { result } = renderHook(() => useDreamStatistics(dreams, 365));
+
+      const series = result.current.dreamsOverTime;
+      expect(series).toHaveLength(29);
+      expect(series.filter((point) => point.count > 0)).toHaveLength(1);
+      expect(series[series.length - 1].count).toBe(2);
+    });
+
+    it('returns an all-zero series for an empty journal', () => {
+      const { result } = renderHook(() => useDreamStatistics([], 7));
+
+      expect(result.current.dreamsOverTime).toHaveLength(7);
+      expect(result.current.dreamsOverTime.every((point) => point.count === 0)).toBe(true);
+    });
+
+    it('returns today alone for an empty journal read over all time', () => {
+      // No dream means no observed span, so the window collapses to the current day rather
+      // than to an empty array a chart would have to special-case.
+      const { result } = renderHook(() => useDreamStatistics([], null));
+
+      expect(result.current.dreamsOverTime).toEqual([
+        { timestamp: startOfLocalDay(0), count: 0 },
+      ]);
+    });
+
+    it('recomputes when the window changes but the dreams do not', () => {
+      // Revert: leave `windowDays` out of the useMemo deps -> the series stays on the first
+      // window the screen ever asked for, so switching period changes nothing.
+      const dreams = [buildDream({ id: dayOffset(-10) })];
+      const { result, rerender } = renderHook(
+        ({ windowDays }: { windowDays: number | null }) =>
+          useDreamStatistics(dreams, windowDays),
+        { initialProps: { windowDays: 7 as number | null } },
+      );
+
+      expect(result.current.dreamsOverTime).toHaveLength(7);
+      expect(result.current.dreamsOverTime.every((point) => point.count === 0)).toBe(true);
+
+      rerender({ windowDays: 30 });
+
+      expect(result.current.dreamsOverTime).toHaveLength(30);
+      expect(result.current.dreamsOverTime.reduce((sum, point) => sum + point.count, 0)).toBe(1);
     });
   });
 

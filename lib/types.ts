@@ -182,6 +182,10 @@ export interface NotificationSettings {
   weekendTime: string; // "HH:MM"
   /** Sunday-morning "your week in dreams" recap. Optional for settings saved before it existed. */
   weeklyRecapEnabled?: boolean;
+  /** Evening heads-up on the night an ongoing streak would end. Optional for settings saved before it existed. */
+  streakRiskEnabled?: boolean;
+  /** Comeback nudges after 3 and 7 silent nights. Optional for settings saved before it existed. */
+  inactivityNudgeEnabled?: boolean;
 }
 
 export interface RitualStepProgress {

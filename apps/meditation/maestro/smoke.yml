@@ -1,0 +1,21 @@
+# The shortest flow that proves the build is not broken: every tab mounts.
+appId: com.noctalia.meditation
+---
+- runFlow: onboarding.yml
+
+- tapOn:
+    id: 'tab.breathe'
+- assertVisible:
+    id: 'screen.breathe'
+- tapOn:
+    id: 'tab.search'
+- assertVisible:
+    id: 'screen.search'
+- tapOn:
+    id: 'tab.profile'
+- assertVisible:
+    id: 'screen.profile'
+- tapOn:
+    id: 'tab.home'
+- assertVisible:
+    id: 'screen.home'

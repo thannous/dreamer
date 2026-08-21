@@ -1,18 +1,22 @@
 import React, { useMemo } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
+import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
 export type BottomSheetActionState = 'enabled' | 'disabled' | 'loading';
 export type BottomSheetActionIcon = React.ComponentProps<typeof IconSymbol>['name'];
 
+/** Buttons are already 44pt+ tall and sit 12px apart; extra hit slop would overlap them. */
+const NO_HIT_SLOP = 0;
+
+const cx = (...parts: (string | false | null | undefined)[]) => parts.filter(Boolean).join(' ');
+
 export function BottomSheetActions({ children }: { children: React.ReactNode }) {
   return (
-    <View style={styles.container}>
+    <View className="w-full gap-3">
       {children}
     </View>
   );
@@ -44,24 +48,21 @@ export function BottomSheetPrimaryAction({
 
   const isDisabled = state !== 'enabled';
   const isLoading = state === 'loading';
-  const backgroundColor = variant === 'danger' ? noctalia.status.danger.background : noctalia.action.primary;
-  const borderColor = variant === 'danger' ? noctalia.status.danger.border : noctalia.action.primaryBorder;
-  const textColor = variant === 'danger' ? noctalia.status.danger.text : noctalia.action.primaryText;
+  const isDanger = variant === 'danger';
+  // Icons and the activity indicator take a colour value, not a style.
+  const textColor = isDanger ? noctalia.status.danger.text : noctalia.action.primaryText;
   const usesRichLayout = Boolean(detail || leadingIcon || trailingIcon);
 
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.primaryButton,
-        usesRichLayout && styles.richButton,
-        detail && styles.richButtonWithDetail,
-        {
-          backgroundColor,
-          borderColor,
-        },
-        isDisabled && styles.disabledButton,
-        pressed && !isDisabled && styles.pressedButton,
-      ]}
+    <PressableScale
+      className={cx(
+        'items-center justify-center rounded-lg border py-4',
+        isDanger ? 'border-danger-line bg-danger' : 'border-champagne-soft bg-champagne',
+        usesRichLayout && 'min-h-[72px] items-stretch px-3.5 py-3',
+        detail && 'min-h-[88px]',
+        isDisabled && 'opacity-60'
+      )}
+      hitSlop={NO_HIT_SLOP}
       onPress={onPress}
       disabled={isDisabled}
       accessibilityLabel={label}
@@ -72,18 +73,30 @@ export function BottomSheetPrimaryAction({
       {isLoading ? (
         <ActivityIndicator color={textColor} size="small" />
       ) : (
-        <View style={[styles.actionContent, !usesRichLayout && styles.centeredActionContent]}>
+        <View className={cx('w-full flex-row items-center gap-3', !usesRichLayout && 'justify-center')}>
           {leadingIcon ? (
-            <View style={[styles.primaryIconSurface, { borderColor: textColor }]}>
+            <View
+              className={cx(
+                'h-12 w-12 items-center justify-center rounded-xl border',
+                isDanger ? 'border-danger-on' : 'border-on-champagne'
+              )}
+            >
               <IconSymbol name={leadingIcon} size={24} color={textColor} />
             </View>
           ) : null}
-          <View style={[styles.actionCopy, !usesRichLayout && styles.centeredActionCopy]}>
-            <Text style={[styles.primaryButtonText, { color: textColor }]}>
+          <View className={cx('flex-1 gap-[3px]', !usesRichLayout && 'items-center')}>
+            <Text
+              className={cx('font-sans-bold text-[16px]', isDanger ? 'text-danger-on' : 'text-on-champagne')}
+            >
               {label}
             </Text>
             {detail ? (
-              <Text style={[styles.primaryButtonDetail, { color: textColor, opacity: 0.72 }]}>
+              <Text
+                className={cx(
+                  'font-sans-medium text-[13px] leading-[18px] opacity-[0.72]',
+                  isDanger ? 'text-danger-on' : 'text-on-champagne'
+                )}
+              >
                 {detail}
               </Text>
             ) : null}
@@ -93,7 +106,7 @@ export function BottomSheetPrimaryAction({
           ) : null}
         </View>
       )}
-    </Pressable>
+    </PressableScale>
   );
 }
 
@@ -122,43 +135,31 @@ export function BottomSheetSecondaryAction({
   const usesRichLayout = Boolean(detail || leadingIcon || trailingIcon);
 
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.secondaryButton,
-        usesRichLayout && styles.richButton,
-        detail && styles.richButtonWithDetail,
-        {
-          borderColor: noctalia.surface.border,
-          backgroundColor: noctalia.surface.soft,
-        },
-        isDisabled && styles.disabledButton,
-        pressed && !isDisabled && styles.pressedButton,
-      ]}
+    <PressableScale
+      className={cx(
+        'items-center justify-center rounded-lg border border-line bg-ink-soft py-3.5',
+        usesRichLayout && 'min-h-[72px] items-stretch px-3.5 py-3',
+        detail && 'min-h-[88px]',
+        isDisabled && 'opacity-60'
+      )}
+      hitSlop={NO_HIT_SLOP}
       onPress={onPress}
       disabled={isDisabled}
       accessibilityRole="button"
       testID={testID}
     >
-      <View style={[styles.actionContent, !usesRichLayout && styles.centeredActionContent]}>
+      <View className={cx('w-full flex-row items-center gap-3', !usesRichLayout && 'justify-center')}>
         {leadingIcon ? (
-          <View
-            style={[
-              styles.secondaryIconSurface,
-              {
-                backgroundColor: noctalia.surface.raised,
-                borderColor: noctalia.surface.borderStrong ?? noctalia.surface.border,
-              },
-            ]}
-          >
+          <View className="h-12 w-12 items-center justify-center rounded-xl border border-line-strong bg-ink-raised">
             <IconSymbol name={leadingIcon} size={24} color={noctalia.text.secondary} />
           </View>
         ) : null}
-        <View style={[styles.actionCopy, !usesRichLayout && styles.centeredActionCopy]}>
-          <Text style={[styles.secondaryButtonText, { color: noctalia.text.primary }]}>
+        <View className={cx('flex-1 gap-[3px]', !usesRichLayout && 'items-center')}>
+          <Text className="font-sans-medium text-[16px] text-ivory">
             {label}
           </Text>
           {detail ? (
-            <Text style={[styles.secondaryButtonDetail, { color: noctalia.text.secondary }]}>
+            <Text className="font-sans text-[13px] leading-[18px] text-ivory-muted">
               {detail}
             </Text>
           ) : null}
@@ -167,7 +168,7 @@ export function BottomSheetSecondaryAction({
           <IconSymbol name={trailingIcon} size={24} color={noctalia.text.secondary} />
         ) : null}
       </View>
-    </Pressable>
+    </PressableScale>
   );
 }
 
@@ -178,119 +179,18 @@ export type BottomSheetLinkActionProps = {
 };
 
 export function BottomSheetLinkAction({ label, onPress, testID }: BottomSheetLinkActionProps) {
-  const { colors, mode } = useTheme();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.linkButton,
-        pressed && styles.pressedButton,
-      ]}
+    <PressableScale
+      className="min-h-11 items-center justify-center py-1"
+      hitSlop={NO_HIT_SLOP}
       onPress={onPress}
       testID={testID}
     >
-      <Text style={[styles.linkButtonText, { color: noctalia.text.secondary }]}>
+      <Text className="font-sans-medium text-[14px] text-ivory-muted">
         {label}
       </Text>
-    </Pressable>
+    </PressableScale>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    gap: 12,
-  },
-  primaryButton: {
-    borderWidth: 1,
-    borderRadius: ThemeLayout.borderRadius.lg,
-    paddingVertical: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  primaryButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
-  },
-  primaryButtonDetail: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  secondaryButton: {
-    borderWidth: 1,
-    borderRadius: ThemeLayout.borderRadius.lg,
-    paddingVertical: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  secondaryButtonText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 16,
-  },
-  secondaryButtonDetail: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  richButton: {
-    minHeight: 72,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    alignItems: 'stretch',
-  },
-  richButtonWithDetail: {
-    minHeight: 88,
-  },
-  actionContent: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  centeredActionContent: {
-    justifyContent: 'center',
-  },
-  actionCopy: {
-    flex: 1,
-    gap: 3,
-  },
-  centeredActionCopy: {
-    alignItems: 'center',
-  },
-  primaryIconSurface: {
-    width: 48,
-    height: 48,
-    borderWidth: 1,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  secondaryIconSurface: {
-    width: 48,
-    height: 48,
-    borderWidth: 1,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  linkButton: {
-    minHeight: 44,
-    paddingVertical: ThemeLayout.spacing.xs,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  linkButtonText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 14,
-  },
-  disabledButton: {
-    opacity: 0.6,
-  },
-  pressedButton: {
-    opacity: 0.8,
-  },
-});
 
 export default BottomSheetActions;

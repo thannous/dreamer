@@ -13,9 +13,11 @@
     "**/*.test.tsx",
     "**/__tests__/**/*.ts",
     "**/__tests__/**/*.tsx",
-    "tests/**/*"
+    "tests/**/*",
+    "uniwind-types.d.ts"
   ],
   "exclude": [
+    "apps/**",
     "supabase/functions/**"
   ]
 }

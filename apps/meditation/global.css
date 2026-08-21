@@ -1,0 +1,98 @@
+@import 'tailwindcss';
+@import 'uniwind';
+
+/**
+ * Noctalia design tokens — Tailwind v4 CSS-first configuration.
+ * No tailwind.config.js: colours live per theme, everything else is invariant.
+ */
+@theme {
+  --font-display: 'Fraunces_600SemiBold';
+  --font-display-bold: 'Fraunces_700Bold';
+  --font-display-light: 'Fraunces_400Regular';
+  --font-sans: 'SpaceGrotesk_400Regular';
+  --font-medium: 'SpaceGrotesk_500Medium';
+  --font-bold: 'SpaceGrotesk_700Bold';
+  --font-serif: 'Lora_400Regular';
+  --font-serif-italic: 'Lora_400Regular_Italic';
+
+  --text-display: 34px;
+  --text-display--line-height: 40px;
+  --text-h1: 28px;
+  --text-h1--line-height: 34px;
+  --text-h2: 22px;
+  --text-h2--line-height: 28px;
+  --text-h3: 18px;
+  --text-h3--line-height: 24px;
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-overline: 11px;
+  --text-overline--line-height: 14px;
+  --text-overline--letter-spacing: 1.3px;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-artwork: 28px;
+
+  --spacing-gutter: 20px;
+
+  /* Declared so the utilities exist; real values come from the themes below. */
+  --color-ink: #fbfaf7;
+  --color-ink-card: #fffdf8;
+  --color-ink-panel: #f3efe7;
+  --color-ivory: #2a2838;
+  --color-ivory-muted: #6b6880;
+  --color-ivory-faint: #6f6c84;
+  --color-champagne: #d4a574;
+  --color-champagne-text: #9a6332;
+  --color-champagne-deep: #9a6332;
+  --color-champagne-soft: #ead4b4;
+  --color-champagne-on: #4a2f1b;
+  --color-hairline: #e4ddd2;
+  --color-navbar: #fbfaf7;
+  --color-navbar-border: #e8e2d8;
+}
+
+@layer theme {
+  :root {
+    @variant light {
+      --color-ink: #fbfaf7;
+      --color-ink-card: #fffdf8;
+      --color-ink-panel: #f3efe7;
+      --color-ivory: #2a2838;
+      --color-ivory-muted: #6b6880;
+      --color-ivory-faint: #6f6c84;
+      /* `champagne` is a FILL, never a text colour — use champagne-text. */
+      --color-champagne: #d4a574;
+      --color-champagne-text: #9a6332;
+      --color-champagne-deep: #9a6332;
+      --color-champagne-soft: #ead4b4;
+      --color-champagne-on: #4a2f1b;
+      --color-hairline: #e4ddd2;
+      --color-navbar: #fbfaf7;
+      --color-navbar-border: #e8e2d8;
+    }
+
+    @variant dark {
+      --color-ink: #03040d;
+      --color-ink-card: #0d0b1c;
+      --color-ink-panel: #192344;
+      --color-ivory: #fff9ef;
+      --color-ivory-muted: #b7aec9;
+      --color-ivory-faint: #8e84a7;
+      --color-champagne: #d4a574;
+      --color-champagne-text: #ead4b4;
+      --color-champagne-deep: #9a6332;
+      --color-champagne-soft: #ead4b4;
+      --color-champagne-on: #3b2412;
+      --color-hairline: #514637;
+      --color-navbar: #050510;
+      --color-navbar-border: #514637;
+    }
+  }
+}
