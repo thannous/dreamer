@@ -1,9 +1,19 @@
 import React from 'react';
 import { View } from 'react-native';
-import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
+import { SafeAreaView as RNSafeAreaView, type Edge } from 'react-native-safe-area-context';
+import { withUniwind } from 'uniwind';
 
 import { NightBackground, type AtmosphereVariant } from './NightBackground';
 import { VideoBackground, type VideoBackgroundName } from './VideoBackground';
+
+/**
+ * Uniwind only teaches `className` to React Native's own components. On a third
+ * party one the prop is silently dropped on native — the class never becomes a
+ * style, the view collapses to its content height, and every screen ends up
+ * squeezed into a couple hundred points. Web hides this: there `className`
+ * reaches the DOM and the CSS applies anyway.
+ */
+const SafeAreaView = withUniwind(RNSafeAreaView);
 
 type Props = React.PropsWithChildren<{
   variant?: AtmosphereVariant;

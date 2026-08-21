@@ -27,6 +27,7 @@ export default function IntentionStep() {
       {DAILY_INTENTIONS.map((minutes) => (
         <SelectableCard
           key={minutes}
+          testID={minutes === 5 ? TID.Option.IntentionFive : undefined}
           mode="single"
           label={t('onboarding.intention.minutes', { count: minutes })}
           hint={t(`onboarding.intention.hint.${minutes}` as TranslationKey)}

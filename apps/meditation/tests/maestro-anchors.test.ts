@@ -17,7 +17,9 @@ const ROOT = path.resolve(__dirname, '..');
 const FLOW_DIR = path.join(ROOT, 'maestro');
 
 const readSource = (): string => {
-  const dirs = ['app', 'components', 'lib'];
+  // `context` counts too: a provider can render chrome of its own — the touch
+  // catcher behind progressive silence lives in one.
+  const dirs = ['app', 'components', 'context', 'lib'];
   const files: string[] = [];
 
   const walk = (dir: string) => {

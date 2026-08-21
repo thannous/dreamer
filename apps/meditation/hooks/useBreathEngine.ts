@@ -67,6 +67,10 @@ export function useBreathEngine({
   const state = breathStateAt(pattern, elapsedMs);
   const remainingSec = Math.max(0, Math.ceil((totalMs - elapsedMs) / 1000));
   const finished = elapsedMs >= totalMs;
+  // Derived rather than written back by an effect: reaching the end used to
+  // call `setRunning(false)` from inside one, which is a cascading render the
+  // linter rightly refuses. Nothing else has to know the difference.
+  const active = running && !finished;
 
   const animateRing = useCallback(() => {
     if (reducedMotion) {
@@ -77,18 +81,20 @@ export function useBreathEngine({
 
     const steps = ringKeyframes(pattern);
     scale.set(RING_SCALE_MIN);
-    scale.set(withRepeat(
-      withSequence(
-        ...steps.map((step) =>
-          withTiming(step.to, {
-            duration: step.durationMs,
-            easing: Easing.inOut(Easing.sin),
-          })
-        )
-      ),
-      -1,
-      false
-    ));
+    scale.set(
+      withRepeat(
+        withSequence(
+          ...steps.map((step) =>
+            withTiming(step.to, {
+              duration: step.durationMs,
+              easing: Easing.inOut(Easing.sin),
+            })
+          )
+        ),
+        -1,
+        false
+      )
+    );
   }, [pattern, reducedMotion, scale]);
 
   const start = useCallback(() => {
@@ -121,11 +127,11 @@ export function useBreathEngine({
   // Restarting the ring when the pattern changes mid-exercise keeps the visual
   // and the clock describing the same rhythm.
   useEffect(() => {
-    if (running) animateRing();
-  }, [pattern, running, animateRing]);
+    if (active) animateRing();
+  }, [pattern, active, animateRing]);
 
   useEffect(() => {
-    if (!running) return;
+    if (!active) return;
 
     const tick = setInterval(() => {
       const base = accumulatedRef.current;
@@ -140,12 +146,12 @@ export function useBreathEngine({
     }, TICK_MS);
 
     return () => clearInterval(tick);
-  }, [running, scale, totalMs]);
+  }, [active, scale, totalMs]);
 
   // One tick at each phase boundary — the whole point of the haptic is that it
   // marks the transition, so it must never fire twice inside a phase.
   useEffect(() => {
-    if (!running) return;
+    if (!active) return;
     if (lastPhaseIndexRef.current === state.phaseIndex) return;
 
     const isFirst = lastPhaseIndexRef.current === null;
@@ -155,11 +161,17 @@ export function useBreathEngine({
     if (hapticsEnabled && !reducedMotion) {
       Haptics.selectionAsync().catch(() => {});
     }
-  }, [state.phaseIndex, running, hapticsEnabled, reducedMotion]);
+  }, [state.phaseIndex, active, hapticsEnabled, reducedMotion]);
+
+  // Stopping the ring is a genuine side effect; the state that drove it is not.
+  useEffect(() => {
+    if (active) return;
+    cancelAnimation(scale);
+  }, [active, scale]);
 
   useEffect(() => () => cancelAnimation(scale), [scale]);
 
-  return { state, scale, running, remainingSec, finished, start, pause, reset };
+  return { state, scale, running: active, remainingSec, finished, start, pause, reset };
 }
 
 export { cycleDurationMs };

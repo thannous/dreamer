@@ -27,6 +27,7 @@ export default function ExperienceStep() {
       {EXPERIENCE_LEVELS.map((level) => (
         <SelectableCard
           key={level}
+          testID={level === 'beginner' ? TID.Option.ExperienceBeginner : undefined}
           mode="single"
           label={t(`onboarding.experience.${level}` as TranslationKey)}
           hint={t(`onboarding.experience.${level}.hint` as TranslationKey)}

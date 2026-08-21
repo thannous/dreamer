@@ -12,8 +12,18 @@ appId: com.noctalia.meditation
     id: 'screen.search'
 
 # The first row of the catalogue is the first free session.
+- scrollUntilVisible:
+    element:
+      id: 'option.session.sleep-descent'
+    direction: DOWN
+# Maestro considers the row visible even while the floating tab bar covers its
+# centre. Lift it into the unobstructed viewport before tapping it.
+- swipe:
+    start: 50%, 75%
+    end: 50%, 45%
+    duration: 400
 - tapOn:
-    point: '50%,72%'
+    id: 'option.session.sleep-descent'
 - assertVisible:
     id: 'screen.session'
 
@@ -28,9 +38,11 @@ appId: com.noctalia.meditation
 - waitForAnimationToEnd:
     timeout: 6000
 
-# One touch brings the controls back, then the transport answers.
+# One touch anywhere brings the controls back — including over the artwork,
+# which is most of the screen and belongs to no control. Then the transport
+# answers, which is what proves the whole chrome returned and not just a part.
 - tapOn:
-    point: '50%,45%'
+    id: 'btn.player.reveal'
 - tapOn:
     id: 'btn.player.forward'
 - tapOn:
@@ -42,6 +54,8 @@ appId: com.noctalia.meditation
     id: 'screen.session'
 
 # A started session shows up as resumable on the home screen.
+- tapOn:
+    id: 'btn.session.back'
 - tapOn:
     id: 'tab.home'
 - assertVisible:

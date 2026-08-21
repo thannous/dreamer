@@ -8,6 +8,8 @@ import { Chip, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
 import { useOnboarding } from '@/context/OnboardingContext';
+import { useSettings } from '@/context/SettingsContext';
+import { requestPermission, syncReminders } from '@/services/notificationService';
 
 /** Evening slots. A meditation reminder at 08:00 would miss the point. */
 const SLOTS: { hour: number; minute: number }[] = [
@@ -21,17 +23,48 @@ const formatSlot = (hour: number, minute: number) =>
   `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
 
 /**
- * Last step. Scheduling the notification itself is L6 — here we only capture
- * the intent, so the permission prompt lands when the app can honour it.
+ * Last step.
+ *
+ * Opting in here has to reach the same scheduler the settings screen drives:
+ * the onboarding state is its own store, so capturing the choice in it alone
+ * left the reminder switched on in the interface and scheduled nowhere, with
+ * the permission never even asked for. Skipping stays a pure skip — someone
+ * who taps "not now" after ticking the box means not now.
  */
 export default function ReminderStep() {
   const router = useRouter();
   const { t } = useTranslation();
   const { state, update, complete } = useOnboarding();
+  const { setReminders } = useSettings();
+
+  const leave = async () => {
+    await complete();
+    router.replace('/(drawer)/(tabs)');
+  };
 
   const finish = async () => {
-    await complete();
-    router.replace('/(tabs)');
+    if (state.reminder.enabled) {
+      const granted = await requestPermission();
+
+      if (granted) {
+        const schedule = {
+          enabled: true,
+          hour: state.reminder.hour,
+          minute: state.reminder.minute,
+          days: [],
+        };
+
+        await setReminders(schedule);
+        // A refused or failed scheduling must not strand the user in
+        // onboarding: the reminder is a nicety, reaching the app is not.
+        await syncReminders(schedule, {
+          title: t('reminders.notification.title'),
+          body: t('reminders.notification.body'),
+        }).catch(() => {});
+      }
+    }
+
+    await leave();
   };
 
   return (
@@ -43,7 +76,7 @@ export default function ReminderStep() {
       subtitle={t('onboarding.reminder.subtitle')}
       ctaLabel={t('onboarding.reminder.done')}
       onContinue={finish}
-      onSkip={finish}
+      onSkip={leave}
       skipLabel={t('common.later')}>
       <SelectableCard
         label={t('onboarding.reminder.enable')}
@@ -60,7 +93,7 @@ export default function ReminderStep() {
 
       {state.reminder.enabled ? (
         <View className="gap-3">
-          <Text variant="overline">{t('onboarding.reminder.hour', { time: '' }).trim()}</Text>
+          <Text variant="overline">{t('onboarding.reminder.at')}</Text>
           <View className="flex-row flex-wrap gap-2">
             {SLOTS.map((slot) => (
               <Chip

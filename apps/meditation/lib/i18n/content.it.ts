@@ -15,7 +15,7 @@ export const contentIt = {
 
   'narrator.camille.bio': 'Voce dolce, ritmo lento.',
   'narrator.adrien.bio': 'Voce grave, frasi brevi.',
-  'narrator.wordless.bio': 'Senza voce: respiro e silenzio.',
+  'narrator.wordless.bio': 'Respiro e silenzio, nulla da seguire.',
 
   'session.sleep-descent.title': 'Abbassare il respiro',
   'session.sleep-descent.description':
@@ -35,7 +35,7 @@ export const contentIt = {
   'session.sleep-body-scan.description':
     'Un percorso lento del corpo, dai piedi alla fronte, senza cercare di rilassare nulla.',
   'session.sleep-body-scan.benefit.1': 'Scioglie le tensioni',
-  'session.sleep-body-scan.benefit.2': 'Ancora l’attenzione',
+  'session.sleep-body-scan.benefit.2': 'Fissa l’attenzione',
   'session.sleep-body-scan.benefit.3': 'Pratica lunga',
 
   'session.sleep-night-return.title': 'Tornare alla notte',
@@ -68,7 +68,7 @@ export const contentIt = {
 
   'session.stress-storm.title': 'Attraversare la tempesta',
   'session.stress-storm.description':
-    'Per le giornate in cui arriva tutto insieme. Non calmiamo nulla, teniamo.',
+    'Per le giornate in cui arriva tutto insieme. Non calmiamo nulla: reggiamo.',
   'session.stress-storm.benefit.1': 'Periodi intensi',
   'session.stress-storm.benefit.2': 'Non chiede la calma',
   'session.stress-storm.benefit.3': 'Pratica lunga',
@@ -113,7 +113,7 @@ export const contentIt = {
     'L’ansia sale e ridiscende. Impariamo a non seguirla fino in cima.',
   'session.anxiety-wave.benefit.1': 'Non combatte l’ansia',
   'session.anxiety-wave.benefit.2': 'Insegna ad aspettare',
-  'session.anxiety-wave.benefit.3': 'Voce rassicurante',
+  'session.anxiety-wave.benefit.3': 'Voce ferma',
 
   'session.anxiety-chest.title': 'Aprire il petto',
   'session.anxiety-chest.description':
@@ -150,7 +150,7 @@ export const contentIt = {
   'session.gratitude-ordinary.benefit.2': 'Guarda il quotidiano',
   'session.gratitude-ordinary.benefit.3': 'Quindici minuti',
 
-  'session.gratitude-year.title': 'Un anno indietro',
+  'session.gratitude-year.title': 'Un anno fa',
   'session.gratitude-year.description':
     'Un anno esatto. Ciò che è cambiato, ciò che ha tenuto, ciò che ti ha portato.',
   'session.gratitude-year.benefit.1': 'Presa di distanza',

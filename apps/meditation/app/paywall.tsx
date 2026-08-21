@@ -1,19 +1,15 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Linking, Pressable, ScrollView, View } from 'react-native';
-import Animated from 'react-native-reanimated';
+import { Linking, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 
 import { Screen } from '@/components/atmosphere/Screen';
 import { BackLink, Button, Card, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
 import { useSubscription } from '@/context/SubscriptionContext';
-import { usePressMotion } from '@/hooks/usePressMotion';
 import type { GateReason } from '@/lib/entitlements';
 import type { TranslationKey } from '@/lib/i18n';
 import * as subscriptions from '@/services/subscriptionService';
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const BENEFITS = [1, 2, 3, 4] as const;
 const TERMS_URL = 'https://noctalia.app/terms';
@@ -28,18 +24,14 @@ function PlanCard({
   onPress: () => void;
 }) {
   const { t } = useTranslation();
-  const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
 
   return (
-    <AnimatedPressable
+    <Pressable
       accessibilityRole="radio"
       accessibilityState={{ checked: selected }}
       aria-checked={selected}
       onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      style={style}
-      className={`rounded-xl border p-gutter ${
+      className={`rounded-xl border p-gutter active:opacity-80 ${
         selected ? 'border-champagne bg-ink-panel' : 'border-hairline bg-ink-card'
       }`}>
       <View className="flex-row items-center justify-between">
@@ -53,7 +45,7 @@ function PlanCard({
           ? t('paywall.plan.trial', { price: offer.priceLabel })
           : t('paywall.plan.per.monthly')}
       </Text>
-    </AnimatedPressable>
+    </Pressable>
   );
 }
 
@@ -61,7 +53,9 @@ export default function PaywallScreen() {
   const { reason } = useLocalSearchParams<{ reason?: GateReason }>();
   const router = useRouter();
   const { t } = useTranslation();
+  const { fontScale } = useWindowDimensions();
   const { isPlus, applyTier, remainingPlays } = useSubscription();
+  const largeText = fontScale >= 1.5;
 
   const [offers, setOffers] = useState<subscriptions.Offer[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
@@ -76,9 +70,9 @@ export default function PaywallScreen() {
       .then((list) => {
         if (!mounted) return;
         setOffers(list);
-        // The yearly plan is preselected: it carries the trial, and a paywall
-        // that preselects nothing makes the reader do the work twice.
-        setSelected(list.find((offer) => offer.period === 'annual')?.id ?? list[0]?.id ?? null);
+        // The annual plan carries the trial, so highlight it without removing
+        // the monthly offer required by the monetization contract.
+        setSelected(list.find((item) => item.period === 'annual')?.id ?? list[0]?.id ?? null);
       })
       .catch(() => {});
 
@@ -118,6 +112,36 @@ export default function PaywallScreen() {
     }
   };
 
+  const purchaseActions = (
+    <View
+      className={
+        largeText
+          ? 'gap-2 pb-4 pt-2'
+          : 'gap-2 border-t border-hairline bg-ink-raised px-gutter pb-4 pt-3'
+      }>
+      <Button
+        testID={TID.Button.PaywallBuy}
+        label={t('paywall.cta')}
+        loading={busy}
+        disabled={!selected}
+        onPress={buy}
+      />
+      {/* Both are mandatory on a paywall, on either store. */}
+      <Button
+        testID={TID.Button.PaywallRestore}
+        label={t('paywall.restore')}
+        variant="ghost"
+        onPress={restore}
+      />
+      <Pressable
+        accessibilityRole="link"
+        onPress={() => Linking.openURL(TERMS_URL).catch(() => {})}
+        className="items-center py-1 active:opacity-70">
+        <Text variant="caption">{t('paywall.legal')}</Text>
+      </Pressable>
+    </View>
+  );
+
   if (isPlus) {
     return (
       <Screen variant="immersive">
@@ -156,6 +180,17 @@ export default function PaywallScreen() {
           ) : null}
         </View>
 
+        <View className="gap-3">
+          {offers.map((offer) => (
+            <PlanCard
+              key={offer.id}
+              offer={offer}
+              selected={selected === offer.id}
+              onPress={() => setSelected(offer.id)}
+            />
+          ))}
+        </View>
+
         <Card featured>
           <View className="gap-3">
             {BENEFITS.map((index) => (
@@ -169,48 +204,26 @@ export default function PaywallScreen() {
           </View>
         </Card>
 
-        <View className="gap-3">
-          {offers.map((offer) => (
-            <PlanCard
-              key={offer.id}
-              offer={offer}
-              selected={selected === offer.id}
-              onPress={() => setSelected(offer.id)}
-            />
-          ))}
-        </View>
-
         {failed ? <Text variant="bodySm">{t('paywall.error')}</Text> : null}
 
         <Text variant="caption" className="text-center">
-          {remainingPlays > 0
-            ? t('paywall.remaining', { count: remainingPlays })
-            : t('paywall.remaining.none')}
+          {remainingPlays === 0
+            ? t('paywall.remaining.none')
+            : remainingPlays === 1
+              ? t('paywall.remaining.one')
+              : t('paywall.remaining', { count: remainingPlays })}
         </Text>
+
+        {/* At accessibility text sizes a sticky footer can consume most of a
+            phone screen. Let the actions follow the offer instead, so the
+            complete proposition remains readable before purchase. */}
+        {largeText ? purchaseActions : null}
       </ScrollView>
 
-      <View className="gap-2 px-gutter pb-4">
-        <Button
-          testID={TID.Button.PaywallBuy}
-          label={t('paywall.cta')}
-          loading={busy}
-          disabled={!selected}
-          onPress={buy}
-        />
-        {/* Both are mandatory on a paywall, on either store. */}
-        <Button
-          testID={TID.Button.PaywallRestore}
-          label={t('paywall.restore')}
-          variant="ghost"
-          onPress={restore}
-        />
-        <Pressable
-          accessibilityRole="link"
-          onPress={() => Linking.openURL(TERMS_URL).catch(() => {})}
-          className="items-center py-1 active:opacity-70">
-          <Text variant="caption">{t('paywall.legal')}</Text>
-        </Pressable>
-      </View>
+      {/* Chrome over scrolling content, so it says so: the hairline and the
+          raised fill are what tell the eye the page continues underneath
+          instead of ending at the button. */}
+      {largeText ? null : purchaseActions}
     </Screen>
   );
 }

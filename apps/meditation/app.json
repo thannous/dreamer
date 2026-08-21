@@ -7,7 +7,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "noctaliameditation",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "backgroundColor": "#03040D",
     "ios": {
       "bundleIdentifier": "com.noctalia.meditation",
@@ -21,7 +20,6 @@
     },
     "android": {
       "package": "com.noctalia.meditation",
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "adaptiveIcon": {
         "backgroundColor": "#03040D",
@@ -55,7 +53,8 @@
         }
       ],
       "expo-audio",
-      "expo-video"
+      "expo-video",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true,

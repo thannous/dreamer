@@ -45,6 +45,7 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   'chevron.right': 'chevron-right',
   'chevron.down': 'expand-more',
   'chevron.up': 'expand-less',
+  'line.3.horizontal': 'menu',
   xmark: 'close',
   plus: 'add',
   minus: 'remove',

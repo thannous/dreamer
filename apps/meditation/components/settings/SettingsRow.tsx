@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, View, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { IconSymbol, Text } from '@/components/ui';
@@ -28,7 +28,9 @@ export function SettingsRow({
   inline = false,
   testID,
 }: Props) {
+  const { fontScale } = useWindowDimensions();
   const { colors } = useTheme();
+  const stackValue = fontScale >= 1.5 && !!value;
   const { style, handlePressIn, handlePressOut } = usePressMotion({
     surface: 'card',
     restOpacity: disabled ? 0.4 : 1,
@@ -44,9 +46,18 @@ export function SettingsRow({
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       style={style}
-      className="flex-row items-center justify-between border-b border-hairline px-gutter py-4">
-      <Text variant="body">{label}</Text>
-      <View className="flex-row items-center gap-2">
+      className={[
+        'border-b border-hairline px-gutter py-4',
+        stackValue ? 'gap-2' : 'flex-row items-center justify-between',
+      ].join(' ')}>
+      <Text variant="body" className={stackValue ? '' : 'flex-1'}>
+        {label}
+      </Text>
+      <View
+        className={[
+          'flex-shrink-0 flex-row items-center gap-2',
+          stackValue ? 'justify-end' : 'ml-3',
+        ].join(' ')}>
         {value ? (
           <Text variant="bodySm" tone="accent">
             {value}

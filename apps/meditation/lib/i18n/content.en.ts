@@ -1,4 +1,4 @@
-/** Catalogue copy: sessions, categories and narrators. UI chrome lives in `fr.ts`. */
+/** Catalogue copy: sessions, categories and narrators. UI chrome lives in `en.ts`. */
 export const contentEn = {
   'category.sleep.name': "Sleep",
   'category.sleep.tagline': "Down towards the night",
@@ -15,13 +15,13 @@ export const contentEn = {
 
   'narrator.camille.bio': "Soft voice, slow pace.",
   'narrator.adrien.bio': "Low voice, short sentences.",
-  'narrator.wordless.bio': "No voice — breath and silence.",
+  'narrator.wordless.bio': 'Breath and silence, nothing to follow.',
 
-  'session.sleep-descent.title': "Letting the breath down",
+  'session.sleep-descent.title': "Bringing the breath down",
   'session.sleep-descent.description': "An exhale longer than the inhale, until the body understands the day is over.",
   'session.sleep-descent.benefit.1': "Slows the heart rate",
   'session.sleep-descent.benefit.2': "Prepares for sleep",
-  'session.sleep-descent.benefit.3': "Practise lying down",
+  'session.sleep-descent.benefit.3': "Done lying down",
 
   'session.sleep-quick-fall.title': "Falling asleep in five",
   'session.sleep-quick-fall.description': "Nothing to listen to, nothing to follow: a guided breath that fades as you go.",
@@ -84,7 +84,7 @@ export const contentEn = {
   'session.focus-thread.benefit.3': "Daytime",
 
   'session.focus-deep.title': "Down into the work",
-  'session.focus-deep.description': "Twenty minutes to set up an attention that holds for more than an hour.",
+  'session.focus-deep.description': "Twenty minutes to build attention that holds for more than an hour.",
   'session.focus-deep.benefit.1': "Deep work",
   'session.focus-deep.benefit.2': "Before a long session",
   'session.focus-deep.benefit.3': "A demanding practice",
@@ -135,7 +135,7 @@ export const contentEn = {
   'session.gratitude-year.description': "One year ago to the day. What changed, what held, what carried you.",
   'session.gratitude-year.benefit.1': "Takes a step back",
   'session.gratitude-year.benefit.2': "A long practice",
-  'session.gratitude-year.benefit.3': "Do it alone",
+  'session.gratitude-year.benefit.3': "Done alone",
 
   'session.dream-threshold.title': "The threshold",
   'session.dream-threshold.description': "The last minutes before sleep are the ones the dream listens to. We prepare them.",
@@ -159,6 +159,6 @@ export const contentEn = {
   'session.dream-lucid.description': "The base training for lucidity: spotting, while awake, what gives a dream away.",
   'session.dream-lucid.benefit.1': "Lucid dreaming",
   'session.dream-lucid.benefit.2': "A demanding practice",
-  'session.dream-lucid.benefit.3': "Repeat it",
+  'session.dream-lucid.benefit.3': "Needs repeating",
 
 } as const;

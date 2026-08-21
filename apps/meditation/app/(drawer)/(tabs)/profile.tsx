@@ -8,6 +8,7 @@ import { StatTile } from '@/components/profile/StatTile';
 import { StreakCalendar } from '@/components/profile/StreakCalendar';
 import { Button, Card, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
+import { useTabBarInset } from '@/hooks/useTabBarInset';
 import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
 import { calendarDays, computeStats, computeStreak, toLocalDay } from '@/lib/streak';
@@ -15,6 +16,7 @@ import { calendarDays, computeStats, computeStreak, toLocalDay } from '@/lib/str
 export default function ProfileTab() {
   const router = useRouter();
   const { t } = useTranslation();
+  const tabBarInset = useTabBarInset();
   const { practiceLog, favorites } = useLibrary();
 
   // Read once per mount: `new Date()` in a render body is a moving dependency,
@@ -31,7 +33,8 @@ export default function ProfileTab() {
     <Screen variant="subtle" edges={['top']}>
       <ScrollView
         testID={TID.Screen.Profile}
-        contentContainerClassName="px-gutter pb-24 pt-4 gap-6"
+        contentContainerClassName="px-gutter pt-4 gap-6"
+        contentContainerStyle={{ paddingBottom: tabBarInset }}
         showsVerticalScrollIndicator={false}>
         <View className="gap-3">
           <Text variant="h1">{t('profile.title')}</Text>
@@ -98,6 +101,7 @@ export default function ProfileTab() {
               onPress={() => router.push('/favorites')}
             />
             <Button
+              testID={TID.Button.ProfileSettings}
               label={t('profile.settings')}
               variant="ghost"
               onPress={() => router.push('/settings')}
