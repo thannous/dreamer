@@ -85,7 +85,7 @@ const DREAM_GUIDE_COPY: Record<DreamGuideLanguage, DreamGuideUiCopy> = {
     screenTitle: 'Guias de sonhos',
     screenSubtitle: 'Entenda seus sonhos, melhore a lembrança e explore os temas e símbolos essenciais da Noctalia.',
     dictionaryTitle: 'Dicionário de símbolos',
-    dictionaryBody: 'Procurando uma imagem específica? Explore os 150 símbolos, seus significados, variações e perguntas de reflexão.',
+    dictionaryBody: 'Procurando uma imagem específica? Explore os 160 símbolos, seus significados, variações e perguntas de reflexão.',
     dictionaryCta: 'Abrir o dicionário',
     guideLabel: 'Guia de sonhos',
     practicalLabel: 'Guias práticos',
