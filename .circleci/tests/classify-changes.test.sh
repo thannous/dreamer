@@ -11,9 +11,10 @@ git -C "$test_root" init -q -b master
 git -C "$test_root" config user.email ci-test@noctalia.invalid
 git -C "$test_root" config user.name "Noctalia CI test"
 
-mkdir -p "$test_root/app"
+mkdir -p "$test_root/app" "$test_root/docs-src/content"
 echo initial > "$test_root/app/index.ts"
-git -C "$test_root" add app/index.ts
+echo editorial > "$test_root/docs-src/content/reference.md"
+git -C "$test_root" add app/index.ts docs-src/content/reference.md
 git -C "$test_root" commit -qm initial
 base_revision="$(git -C "$test_root" rev-parse HEAD)"
 
@@ -48,10 +49,11 @@ assert_parameters() {
 
 commit_change() {
   local path="$1"
+  local message="${2:-$path}"
   mkdir -p "$test_root/$(dirname "$path")"
   echo changed > "$test_root/$path"
   git -C "$test_root" add "$path"
-  git -C "$test_root" commit -qm "$path"
+  git -C "$test_root" commit -qm "$message"
   git -C "$test_root" rev-parse HEAD
 }
 
@@ -73,12 +75,32 @@ full="$(parameters_json full "" true true true true true false true true true fa
 release="$(parameters_json full "" true true true true true false true true false false false)"
 fallback="$(parameters_json affected "" true true true true true false false false false false false)"
 none="$(parameters_json affected "$base_revision" false false false false false false false false false false false)"
+all_surfaces="$(parameters_json affected "$base_revision" true true true true true true false false false false false)"
 
 assert_parameters "full mode" "$full" full "" "$base_revision"
 assert_parameters "release mode" "$release" release "" "$base_revision"
 assert_parameters "invalid PR base fail-safe" "$fallback" pr deadbeef "$base_revision"
 assert_parameters "invalid main base fail-safe" "$fallback" main deadbeef "$base_revision"
 assert_parameters "no changes" "$none" pr "$base_revision" "$base_revision"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+git -C "$test_root" rm -q docs-src/content/reference.md
+git -C "$test_root" commit -qm "delete editorial source"
+destructive_head="$(git -C "$test_root" rev-parse HEAD)"
+assert_parameters "editorial deletion fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+git -C "$test_root" mv docs-src/content/reference.md docs-src/content/renamed.md
+git -C "$test_root" commit -qm "rename editorial source"
+destructive_head="$(git -C "$test_root" rev-parse HEAD)"
+assert_parameters "editorial rename fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+cp "$test_root/docs-src/content/reference.md" "$test_root/docs-src/content/copied.md"
+git -C "$test_root" add docs-src/content/copied.md
+git -C "$test_root" commit -qm "copy editorial source"
+destructive_head="$(git -C "$test_root" rev-parse HEAD)"
+assert_parameters "editorial copy fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
 
 assert_change \
   "Noctalia app change" app/feature.ts pr \
@@ -91,7 +113,7 @@ assert_change \
 git -C "$test_root" reset -q --hard "$base_revision"
 commit_change app/main-batch.ts >/dev/null
 main_batch_head="$(commit_change docs-src/content/main-batch.md)"
-expected="$(parameters_json affected "$base_revision" true false true false false true false false false false false)"
+expected="$(parameters_json affected "$base_revision" true false false false false true false false false false false)"
 assert_parameters \
   "main multi-commit push covers every changed surface" \
   "$expected" \
@@ -104,7 +126,67 @@ assert_change \
   false true false false false false false false false false false
 
 assert_change \
-  "site source change" docs-src/content/page.md pr \
+  "site source change takes the no-op route" docs-src/content/page.md pr \
+  false false false false false false false false false false false
+
+assert_change \
+  "generated docs output is a no-op" docs/index.html pr \
+  false false false false false false false false false false false
+
+assert_change \
+  "docs-src generator still runs the site" docs-src/static/scripts/generate-symbol-pages.js pr \
+  false false true false false false false false false true false
+
+assert_change \
+  "docs-src experience generator still runs the site" docs-src/experience/experience.js pr \
+  false false true false false false false false false true false
+
+git -C "$test_root" reset -q --hard "$base_revision"
+skip_head="$(commit_change docs-src/content/skip.md '[ci skip] SEO-only batch')"
+assert_parameters "explicit CI opt-out for editorial site sources" "$none" pr "$base_revision" "$skip_head"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+alt_skip_head="$(commit_change docs-src/content/skip-alt.md '[skip ci] SEO-only batch')"
+assert_parameters "skip ci alias also no-ops editorial site sources" "$none" pr "$base_revision" "$alt_skip_head"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+ignored_skip_head="$(commit_change app/skip-ci.ts '[ci skip] app change')"
+expected="$(parameters_json affected "$base_revision" true false false false false true false false false false false)"
+assert_parameters "CI opt-out does not skip Noctalia" "$expected" pr "$base_revision" "$ignored_skip_head"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+generator_skip_head="$(commit_change scripts/docs-check.js '[ci skip] generator change')"
+expected="$(parameters_json affected "$base_revision" false false true false false false false false false true false)"
+assert_parameters "CI opt-out does not skip site generators" "$expected" pr "$base_revision" "$generator_skip_head"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+shared_skip_head="$(commit_change data/dream-symbols.json '[skip ci] shared data')"
+expected="$(parameters_json affected "$base_revision" true false true false false true false false false false false)"
+assert_parameters "CI opt-out does not skip shared data" "$expected" pr "$base_revision" "$shared_skip_head"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+full_skip_head="$(commit_change app/full-skip.ts '[ci skip] full override')"
+assert_parameters "full mode outranks CI opt-out" "$full" full "$base_revision" "$full_skip_head"
+assert_parameters "release mode outranks CI opt-out" "$release" release "$base_revision" "$full_skip_head"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+padding="$(printf 'x%.0s' {1..240})"
+late_skip_head="$(commit_change app/late.ts "app update
+
+${padding}[ci skip]")"
+expected="$(parameters_json affected "$base_revision" true false false false false true false false false false false)"
+assert_parameters "CI opt-out after the first 250 characters does not skip Noctalia" "$expected" pr "$base_revision" "$late_skip_head"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+upper_skip_head="$(commit_change docs-src/content/upper.md '[CI SKIP] editorial')"
+assert_parameters "uppercase CI opt-out still no-ops editorial sources" "$none" pr "$base_revision" "$upper_skip_head"
+
+assert_change \
+  "docs-src config remains a site no-op" docs-src/config/site.config.json pr \
+  false false false false false false false false false false false
+
+assert_change \
+  "generic site data still runs the site" data/seo-url-contract-baseline.json pr \
   false false true false false false false false false true false
 
 assert_change \

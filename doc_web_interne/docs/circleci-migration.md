@@ -1,8 +1,8 @@
 # Migration CI Noctalia vers CircleCI Free
 
-État au 20 août 2026 : CircleCI est configuré en validation pure, sans commande
-de déploiement. Le workflow GitHub Actions `Quality` reste présent et aucune
-protection de branche n'est modifiée par cette configuration.
+État au 21 août 2026 : CircleCI est configuré en validation pure, sans commande
+de déploiement. Le workflow GitHub Actions `Quality`, devenu une duplication de
+la même validation, est retiré. Le ruleset de `master` ne requiert aucun check.
 
 ## Architecture et frontière des responsabilités
 
@@ -12,7 +12,8 @@ flowchart LR
   S --> C{Classification du diff}
   C -->|Noctalia racine| N[Types, lint, Jest ciblé + JUnit]
   C -->|apps/meditation| M[Types, lint, Jest Meditation + JUnit]
-  C -->|site| D[docs:build et docs:check]
+  C -->|site SEO/vitrine seul| Z[No-op explicite]
+  C -->|générateur ou donnée partagée site| D[docs:build et docs:check]
   C -->|Edge runtime| E[Deno check et tests + JUnit]
   C -->|Supabase DB| B[Contrats statiques Jest + JUnit]
   C -->|documentation interne| Z[No-op explicite]
@@ -27,16 +28,16 @@ reste responsable du site et EAS des builds mobiles. Les contrôles DB sont
 statiques : `db:contract:check` nécessite une base et reste une validation
 opérateur, pas un accès implicite à une base distante depuis la CI.
 
-## Mapping GitHub Actions vers CircleCI
+## Mapping de l'ancien workflow GitHub Actions vers CircleCI
 
-| GitHub Actions `quality.yml` | CircleCI | Déclenchement |
+| Ancien job `quality.yml` | CircleCI | Déclenchement |
 | --- | --- | --- |
 | `changes` | setup `classify-and-continue` + `classify-changes.sh` | Toute pipeline, `small` |
 | `pr-quality` | `noctalia-quality` + JSON/JUnit | Diff Noctalia racine ou entrée partagée vérifiée |
 | non couvert auparavant | `meditation-quality` + JSON/JUnit | `apps/meditation/**` ou outil Node global |
 | `test-fast` | suite complète dans `noctalia-quality` | tag/release ou `force_full_validation=true` seulement |
 | artifact `jest-timing` | artifact + cache `jest-timing-master-v1-` | baseline publiée seulement par un full manuel sur `master` |
-| `site-build` | `site-build` | Sources et générateurs du site seulement |
+| `site-build` | `site-build` | Générateurs et données partagées du site seulement |
 | `edge-functions` | `edge-functions` | Runtime Deno et lockfile Edge |
 | contrats noyés dans Jest racine | `edge-contracts` | migrations, manifest DB et routes à contrat croisé |
 
@@ -48,7 +49,9 @@ aucun import traversant vers la racine. Son job exécute donc exclusivement
 
 Noctalia garde les deux typechecks, `lint`, `lint:scripts` et les tests liés au
 diff. Les validations complètes ajoutent `test:fast` dans le même job afin de ne
-pas refaire un second `npm ci`. Le site garde `docs:build` et `docs:check`. Edge
+pas refaire un second `npm ci`. Les changements purs `docs-src/**` de la vitrine
+sont laissés au build Cloudflare Pages ; les générateurs et données partagées
+gardent `docs:build` et `docs:check`. Edge
 vérifie les quatre entrypoints Deno et teste `api` plus `revenuecat-webhook`.
 Les contrats DB exécutent uniquement les huit tests Node qui lisent les
 migrations, le manifest ou les routes partagées. Tous les jobs de test publient
@@ -62,8 +65,9 @@ La classification est une allowlist avec repli fail-closed :
   assets et configs racine activent Noctalia, sans site ;
 - `apps/meditation/**` active seulement Meditation, y compris son package et
   son lockfile ;
-- `docs-src/`, `docs/`, les entrées site de `data/` et les générateurs site
-  identifiés activent seulement le site ;
+- `docs-src/` éditorial et `docs/` seuls produisent un no-op, sans install,
+  build ni tests ; `docs-src/static/scripts/**`, `docs-src/experience/**`, les
+  entrées site de `data/` et les générateurs identifiés activent le build site ;
 - `supabase/functions/`, `supabase/lib/` et les lockfiles Deno activent Deno ;
 - migrations, manifest DB et tests de contrat identifiés activent seulement
   `edge-contracts` ; trois routes Edge lues directement par ces contrats
@@ -79,9 +83,22 @@ La classification est une allowlist avec repli fail-closed :
 - `doc_web_interne/`, `marketing/`, `specs/` et les Markdown isolés produisent
   un no-op explicite.
 
-Les tests synthétiques couvrent Noctalia seul, Meditation seul, site seul, Edge
-Deno seul, migration seule, documentation interne, fichiers partagés, lockfiles
-et fallback global.
+Les 250 premiers caractères du dernier commit peuvent aussi contenir
+`[ci skip]` ou `[skip ci]` pour forcer ce no-op. Cette lecture n'a lieu qu'après
+la classification des chemins, et seulement en mode `pr`/`main` : tags, branches
+`release`/`release/*` et `force_full_validation=true` restent prioritaires.
+L'opt-out ne couvre jamais une dépendance, Noctalia, Meditation, Supabase, une
+donnée partagée ou un générateur.
+
+Selon le type de trigger, CircleCI peut toutefois appliquer son saut natif sur
+le push avant même d'exécuter ce classificateur. Le marqueur ne doit donc être
+utilisé que sur un diff déjà entièrement éditorial/no-code ; le routage
+automatique par chemins reste la méthode recommandée. Les suppressions,
+renommages et copies échouent fermés sur toutes les surfaces.
+
+Les tests synthétiques couvrent Noctalia seul, Meditation seul, site no-op, Edge
+Deno seul, migration seule, documentation interne, fichiers partagés, lockfiles,
+générateurs `docs-src`, opt-out CI et fallback global.
 
 ## PR, master et validations complètes
 
@@ -139,7 +156,8 @@ réelle a approché 11 min 40.
 | --- | --- | --- | ---: |
 | Noctalia seul, PR/master | Noctalia ; master forçait aussi full/site/Edge | setup + Noctalia affecté | 85 |
 | Meditation seul | Noctalia incorrectement ; Meditation non testée | setup + Meditation | 55 |
-| Site seul | site ; master forçait tout | setup + site | 125 |
+| Site SEO/vitrine seul | site ; master forçait tout | setup + no-op | 10 |
+| Générateur ou donnée site partagée | site ; master forçait tout | setup + site | 125 |
 | Edge Function simple | Noctalia + Edge ; master forçait tout | setup + Edge Deno | 55 |
 | Migration DB | Noctalia + Edge Deno | setup + contrats ciblés | 45 |
 | Documentation interne | no-op | no-op | 10 |
@@ -161,19 +179,20 @@ Le projet reste connecté via la GitHub App CircleCI avec les triggers PR,
 branche par défaut et tags. Une future branche `release/*` doit être incluse
 dans les triggers du projet. Dynamic Config doit rester activé.
 
-## Procédure de bascule
+## Procédure d'exploitation
 
-1. Garder GitHub Actions `Quality` actif pendant la validation parallèle.
-2. Vérifier une PR témoin par surface et un no-op de documentation interne.
-3. Lancer `force_full_validation=true` sur `master` pour vérifier le portfolio,
+1. Vérifier une PR témoin par surface et un no-op de documentation interne.
+2. Lancer `force_full_validation=true` sur `master` pour vérifier le portfolio,
    les cinq JUnit/artifacts attendus et amorcer la baseline Noctalia.
-4. Observer au moins 20 pipelines, relever les durées et recalculer les crédits.
-5. Après validation orchestrateur seulement, modifier les required checks ; ne
-   supprimer `quality.yml` que dans une PR séparée après la fenêtre stable.
+3. Observer les durées p50/p95 et recalculer les crédits après les changements
+   structurels de routage.
+4. Garder l'annulation des pipelines obsolètes activée par branche dans les
+   réglages CircleCI.
 
 ## Retour arrière
 
-1. Garder ou rendre GitHub Actions `Quality` obligatoire sur `master`.
+1. Revert ciblé du commit de bascule pour restaurer `quality.yml`, puis attendre
+   un run GitHub Actions réussi.
 2. Désactiver le trigger CircleCI pour arrêter la consommation sans effacer les
    artifacts utiles au diagnostic.
 3. Corriger ou revert la configuration CircleCI dans une PR ciblée.
