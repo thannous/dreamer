@@ -86,9 +86,12 @@ et fallback global.
 ## PR, master et validations complètes
 
 Sur PR, la base est le `merge-base` avec `origin/master`. Sur un push normal à
-`master`, la base est le parent du commit fusionné : seuls les chemins affectés
-et leur smoke minimal s'exécutent. Un changement Noctalia lance les tests liés
-au diff ; Meditation utilise sa petite suite autonome ; le site et Edge restent
+`master`, la base est `pipeline.git.base_revision`, soit la révision de la
+pipeline précédente : un push contenant plusieurs commits rejoue donc chaque
+surface affectée sur tout l'intervalle. Si cette base manque, n'est pas
+récupérable ou n'est pas un ancêtre du head, le classificateur échoue fermé en
+activant toutes les surfaces. Un changement Noctalia lance les tests liés au
+diff ; Meditation utilise sa petite suite autonome ; le site et Edge restent
 strictement indépendants.
 
 Le portfolio complet est réservé aux tags, aux branches `release`/`release/*`

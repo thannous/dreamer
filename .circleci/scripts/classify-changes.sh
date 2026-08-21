@@ -64,7 +64,8 @@ fi
 
 if [[ -z "$base_revision" ]] || \
   ! git cat-file -e "${base_revision}^{commit}" 2>/dev/null || \
-  ! git cat-file -e "${head_revision}^{commit}" 2>/dev/null; then
+  ! git cat-file -e "${head_revision}^{commit}" 2>/dev/null || \
+  ! git merge-base --is-ancestor "$base_revision" "$head_revision"; then
   echo "No usable diff base; running every affected gate without the exhaustive portfolio."
   write_parameters affected "" true true true true true false false false false false false
   exit 0

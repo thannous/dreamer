@@ -88,6 +88,17 @@ assert_change \
   "main uses affected Noctalia smoke" app/main-feature.ts main \
   true false false false false true false false false false false
 
+git -C "$test_root" reset -q --hard "$base_revision"
+commit_change app/main-batch.ts >/dev/null
+main_batch_head="$(commit_change docs-src/content/main-batch.md)"
+expected="$(parameters_json affected "$base_revision" true false true false false true false false false false false)"
+assert_parameters \
+  "main multi-commit push covers every changed surface" \
+  "$expected" \
+  main \
+  "$base_revision" \
+  "$main_batch_head"
+
 assert_change \
   "Meditation app change" apps/meditation/app/index.tsx pr \
   false true false false false false false false false false false

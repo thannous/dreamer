@@ -37,8 +37,19 @@ jobs:
               mode=release
             elif [[ "${CIRCLE_BRANCH:-}" == "master" ]]; then
               mode=main
-              git fetch --no-tags --depth=2 origin master
-              base_revision="$(git rev-parse "${CIRCLE_SHA1}^" 2>/dev/null || true)"
+              base_revision='<< pipeline.git.base_revision >>'
+
+              if [[ "$base_revision" == "<nil>" ]]; then
+                base_revision=
+              fi
+
+              if [[ -n "$base_revision" ]] && \
+                ! git cat-file -e "${base_revision}^{commit}" 2>/dev/null; then
+                if ! git fetch --no-tags origin "$base_revision"; then
+                  echo "Unable to fetch the previous master pipeline revision; failing closed." >&2
+                  base_revision=
+                fi
+              fi
             else
               git fetch --no-tags origin master:refs/remotes/origin/master
               base_revision="$(git merge-base "$CIRCLE_SHA1" origin/master || true)"
