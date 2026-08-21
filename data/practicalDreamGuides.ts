@@ -66,6 +66,18 @@ export const PRACTICAL_DREAM_GUIDES: readonly PracticalDreamGuide[] = [
       ],
       outro: 'Usa queste teorie come prospettive utili, non come risposte definitive. Annota immagini ed emozioni ricorrenti per riconoscere i tuoi schemi.',
     },
+    pt: {
+      title: 'Por que sonhamos?',
+      metaDescription: 'As principais teorias científicas sobre os sonhos, a memória, as emoções e a consciência.',
+      intro: 'O sonho continua sendo uma questão científica em aberto. Várias teorias complementares explicam como o cérebro adormecido pode processar memórias, emoções e possíveis ameaças.',
+      essentialPoints: [
+        'Os sonhos vívidos são frequentes durante o sono REM, mas também podem surgir em outras fases.',
+        'A ativação-síntese propõe que o cérebro constrói uma história a partir da atividade neural espontânea.',
+        'Outras pesquisas ligam os sonhos à consolidação da memória, ao processamento emocional e à simulação de ameaças.',
+        'O significado pessoal de um sonho depende mais das suas emoções e do seu contexto do que de um código universal.',
+      ],
+      outro: 'Trate as teorias como lentes úteis, não como respostas definitivas. Anote as imagens e as emoções recorrentes para ver quais padrões importam na sua vida.',
+    },
   },
   {
     kind: 'practical',
@@ -130,6 +142,18 @@ export const PRACTICAL_DREAM_GUIDES: readonly PracticalDreamGuide[] = [
         'Proteggi il sonno e accetta le mattine vuote: la costanza conta più del successo quotidiano.',
       ],
       outro: 'Un titolo, tre parole chiave e un’emozione sono già un’annotazione utile. I piccoli frammenti spesso fanno riaffiorare altri dettagli.',
+    },
+    pt: {
+      title: 'Como lembrar dos seus sonhos',
+      metaDescription: 'Uma rotina suave ao acordar para capturar os fragmentos antes que eles desapareçam.',
+      intro: 'As lembranças de um sonho podem desaparecer em poucos instantes. A recordação melhora sobretudo quando você protege os primeiros minutos após acordar e registra o que voltar, sem forçar uma história completa.',
+      essentialPoints: [
+        'Fique imóvel por alguns segundos, mantenha os olhos fechados e volte à última imagem, emoção ou sensação do corpo.',
+        'Reconstrua o sonho de trás para frente e registre os fragmentos nos três primeiros minutos.',
+        'Deixe um caderno ou um gravador de voz por perto e defina uma intenção simples antes de dormir.',
+        'Proteja o seu sono e aceite as manhãs em branco: a regularidade importa mais do que acertar todos os dias.',
+      ],
+      outro: 'Um título, três palavras-chave e uma emoção já formam um registro útil. Pequenos fragmentos costumam trazer de volta mais detalhes depois.',
     },
   },
   {
@@ -196,6 +220,18 @@ export const PRACTICAL_DREAM_GUIDES: readonly PracticalDreamGuide[] = [
       ],
       outro: 'La costanza conta più della lunghezza. Una nota di 60 secondi al risveglio è più utile di un racconto perfetto scritto ore dopo.',
     },
+    pt: {
+      title: 'Comece um diário de sonhos',
+      metaDescription: 'Um modelo simples e uma rotina sustentável para registrar os sonhos todas as manhãs.',
+      intro: 'Um diário de sonhos preserva a lembrança bruta antes da interpretação. Você não precisa de várias páginas: uma nota de voz, algumas palavras-chave e uma emoção bastam para criar o hábito.',
+      essentialPoints: [
+        'Escolha o formato que exigir menos esforço: caderno, nota de voz ou o diário do Noctalia.',
+        'Anote a data, o cenário, as pessoas, a ação principal, a emoção dominante e um detalhe incomum.',
+        'Capture primeiro a lembrança; acrescente possíveis significados ou perguntas só depois.',
+        'Releia as anotações uma vez por semana para perceber emoções, pessoas, lugares e símbolos recorrentes.',
+      ],
+      outro: 'A constância importa mais do que o tamanho. Um registro de 60 segundos feito logo ao acordar é mais útil do que um relato caprichado escrito horas depois.',
+    },
   },
   {
     kind: 'practical',
@@ -260,6 +296,18 @@ export const PRACTICAL_DREAM_GUIDES: readonly PracticalDreamGuide[] = [
         'WBTB è facoltativa. Evita metodi che riducono il sonno, aumentano la stanchezza o causano ansia.',
       ],
       outro: 'La lucidità non è garantita e può richiedere tempo. Proteggi prima la qualità del sonno e interrompi le tecniche invasive se compromettono il benessere.',
+    },
+    pt: {
+      title: 'Sonhos lúcidos para iniciantes',
+      metaDescription: 'Uma introdução segura ao diário de sonhos, aos testes de realidade e à técnica MILD.',
+      intro: 'Um sonho lúcido é um sonho em que você sabe que está sonhando enquanto ainda dorme. Quem está começando pode combinar recordação, testes de realidade atentos e uma intenção simples sem sacrificar o sono necessário.',
+      essentialPoints: [
+        'Desenvolva primeiro a recordação dos sonhos: reconhecer os sinais recorrentes torna a lucidez mais fácil.',
+        'Faça alguns testes de realidade conscientes ao longo do dia, em vez de repeti-los de forma automática.',
+        'Com a técnica MILD, relembre um sonho na hora de dormir e imagine o momento em que você percebe que está sonhando.',
+        'A WBTB é opcional. Evite qualquer método que reduza o sono, aumente o cansaço ou gere ansiedade.',
+      ],
+      outro: 'A lucidez nunca é garantida e pode levar tempo. Proteja primeiro a qualidade do sono, mantenha a curiosidade e interrompa as técnicas que atrapalharem o seu bem-estar.',
     },
   },
 ];

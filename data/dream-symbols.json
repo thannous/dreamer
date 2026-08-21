@@ -8,7 +8,8 @@
       "fr",
       "es",
       "de",
-      "it"
+      "it",
+      "pt"
     ],
     "symbolCount": 160
   },
@@ -18,56 +19,64 @@
       "fr": "Nature",
       "es": "Naturaleza",
       "de": "Natur",
-      "it": "Natura"
+      "it": "Natura",
+      "pt": "Natureza"
     },
     "animals": {
       "en": "Animals",
       "fr": "Animaux",
       "es": "Animales",
       "de": "Tiere",
-      "it": "Animali"
+      "it": "Animali",
+      "pt": "Animais"
     },
     "body": {
       "en": "Body",
       "fr": "Corps",
       "es": "Cuerpo",
       "de": "Körper",
-      "it": "Corpo"
+      "it": "Corpo",
+      "pt": "Corpo"
     },
     "places": {
       "en": "Places",
       "fr": "Lieux",
       "es": "Lugares",
       "de": "Orte",
-      "it": "Luoghi"
+      "it": "Luoghi",
+      "pt": "Lugares"
     },
     "objects": {
       "en": "Objects",
       "fr": "Objets",
       "es": "Objetos",
       "de": "Objekte",
-      "it": "Oggetti"
+      "it": "Oggetti",
+      "pt": "Objetos"
     },
     "actions": {
       "en": "Actions",
       "fr": "Actions",
       "es": "Acciones",
       "de": "Handlungen",
-      "it": "Azioni"
+      "it": "Azioni",
+      "pt": "Ações"
     },
     "people": {
       "en": "People",
       "fr": "Personnes",
       "es": "Personas",
       "de": "Menschen",
-      "it": "Persone"
+      "it": "Persone",
+      "pt": "Pessoas"
     },
     "celestial": {
       "en": "Celestial",
       "fr": "Céleste",
       "es": "Celestial",
       "de": "Himmlisch",
-      "it": "Celeste"
+      "it": "Celeste",
+      "pt": "Celeste"
     }
   },
   "symbols": [
@@ -233,6 +242,35 @@
         },
         "modifiedAt": "2026-07-16"
       },
+      "pt": {
+        "slug": "agua",
+        "name": "Água",
+        "shortDescription": "Esta referência rápida resume a água como um sinal emocional: limpa, suja, subindo ou turbulenta. Use o guia de sonhos com água indicado no link para os cenários completos de enchente, oceano e afogamento.",
+        "askYourself": [
+          "A água estava limpa, suja, calma ou turbulenta?",
+          "Eu me senti seguro, puxado para o fundo ou no controle?",
+          "Qual emoção da minha vida desperta se parece com o estado da água?"
+        ],
+        "seoTitle": "água limpa, suja ou profunda",
+        "faq": [
+          {
+            "question": "O que significa sonhar com água?",
+            "answer": "Sonhos com água costumam falar de emoções, memória e vida interior. O significado depende da aparência da água e de como você se sentiu no sonho."
+          },
+          {
+            "question": "O que significa água limpa em um sonho?",
+            "answer": "Água limpa pode sugerir clareza emocional, alívio, cura ou uma situação que está ficando mais fácil de entender."
+          },
+          {
+            "question": "O que significa água suja em um sonho?",
+            "answer": "Água suja aponta para confusão, cansaço emocional ou uma situação que você ainda não consegue enxergar com clareza."
+          },
+          {
+            "question": "O que significa água profunda ou turbulenta em um sonho?",
+            "answer": "Água profunda, alta ou agitada muitas vezes reflete emoções intensas, estresse ou uma responsabilidade que parece difícil de conter."
+          }
+        ]
+      },
       "relatedSymbols": [
         "flood",
         "ocean",
@@ -325,6 +363,15 @@
           "Ho paura di perdere qualcosa di importante?"
         ]
       },
+      "pt": {
+        "slug": "dentes-perder-os-dentes",
+        "name": "Dentes (perder os dentes)",
+        "shortDescription": "Perder os dentes é um sonho muito comum. Simboliza ansiedade, medo de envelhecer, perda de poder ou preocupações com a aparência e a autoimagem.",
+        "askYourself": [
+          "Estou ansioso com a minha aparência?",
+          "Tenho medo de perder algo importante?"
+        ]
+      },
       "relatedSymbols": [
         "mouth",
         "mirror"
@@ -412,6 +459,15 @@
           "Cosa ho bisogno di lasciar andare?"
         ]
       },
+      "pt": {
+        "slug": "queda",
+        "name": "Queda",
+        "shortDescription": "A queda é um dos sonhos mais comuns. Ela simboliza perda de controle, insegurança ou medo de fracassar. Também pode indicar a necessidade de soltar.",
+        "askYourself": [
+          "Em que área da minha vida eu me sinto sem controle?",
+          "O que eu preciso soltar?"
+        ]
+      },
       "relatedSymbols": [
         "flying",
         "cliff",
@@ -474,6 +530,15 @@
         "askYourself": [
           "Da quale situazione vorrei liberarmi?",
           "Dove mi sento limitato?"
+        ]
+      },
+      "pt": {
+        "slug": "voar",
+        "name": "Voar",
+        "shortDescription": "Esta referência rápida lê o ato de voar como liberdade, perspectiva ou dificuldade de superar um obstáculo. Use o artigo indicado para ver os cenários completos, as emoções e o contexto do sonho lúcido.",
+        "askYourself": [
+          "Do que eu preciso me libertar?",
+          "Que limites eu estou pronto para ultrapassar?"
         ]
       },
       "relatedSymbols": [
@@ -539,6 +604,15 @@
           "Quale trasformazione sto attraversando?"
         ]
       },
+      "pt": {
+        "slug": "cobra",
+        "name": "Cobra",
+        "shortDescription": "A cobra é um símbolo complexo: transformação, sabedoria, sexualidade ou perigo. Seu significado depende muito da sua relação pessoal com as cobras.",
+        "askYourself": [
+          "Há alguma transformação em curso?",
+          "O que a cobra representa para mim, pessoalmente?"
+        ]
+      },
       "relatedSymbols": [
         "spider",
         "death",
@@ -597,6 +671,14 @@
         "askYourself": [
           "Cosa sta finendo nella mia vita?",
           "Quale cambiamento sto evitando?"
+        ]
+      },
+      "pt": {
+        "slug": "morte",
+        "name": "Morte",
+        "shortDescription": "A morte nos sonhos raramente simboliza a morte literal. Ela representa o fim de uma fase, uma grande transformação ou a necessidade de deixar algo ir.",
+        "askYourself": [
+          "O que precisa \"morrer\" na minha vida para que eu possa evoluir?"
         ]
       },
       "relatedSymbols": [
@@ -690,6 +772,15 @@
         "askYourself": [
           "Da cosa o da chi sto fuggendo?",
           "Quale problema sto evitando?"
+        ]
+      },
+      "pt": {
+        "slug": "perseguicao-ser-perseguido",
+        "name": "Perseguição / Ser perseguido",
+        "shortDescription": "Ser perseguido costuma simbolizar a fuga de um problema ou de uma emoção. O que persegue você geralmente representa aquilo de que você foge na vida desperta.",
+        "askYourself": [
+          "O que estou evitando?",
+          "De que medo estou fugindo?"
         ]
       },
       "relatedSymbols": [
@@ -878,6 +969,35 @@
         ],
         "modifiedAt": "2026-07-06"
       },
+      "pt": {
+        "slug": "casa",
+        "name": "Casa",
+        "shortDescription": "Um sonho com casa costuma falar sobre o eu, a segurança interior e a história pessoal. Uma casa desconhecida pode revelar uma parte inexplorada de você; uma casa em ruínas convida a reconstruir ou a proteger o que importa.",
+        "askYourself": [
+          "A casa era familiar, desconhecida, antiga ou estava em ruínas?",
+          "Em qual cômodo eu estava, e qual emoção predominou?",
+          "Qual parte da minha vida interior precisa de mais atenção?"
+        ],
+        "seoTitle": "casa desconhecida, antiga ou em ruínas",
+        "faq": [
+          {
+            "question": "O que significa sonhar com uma casa?",
+            "answer": "A casa costuma apontar para o seu mundo interior, para a segurança, a família ou a identidade. Os cômodos, o estado da casa e a emoção guiam a interpretação."
+          },
+          {
+            "question": "O que significa sonhar com uma casa desconhecida?",
+            "answer": "Uma casa desconhecida pode representar uma parte de você que está sendo descoberta, uma mudança de referências ou uma situação nova em que você tenta encontrar o seu lugar."
+          },
+          {
+            "question": "O que significa sonhar com uma casa antiga?",
+            "answer": "Uma casa antiga costuma evocar o passado, as memórias de família ou hábitos antigos que ainda moldam o presente."
+          },
+          {
+            "question": "O que significa sonhar com uma casa em ruínas?",
+            "answer": "Uma casa em ruínas pode sugerir cansaço, perda de segurança ou a necessidade de reconstruir uma base emocional mais firme."
+          }
+        ]
+      },
       "relatedSymbols": [
         "door",
         "bedroom",
@@ -978,6 +1098,14 @@
         ],
         "modifiedAt": "2026-07-10"
       },
+      "pt": {
+        "slug": "oceano-mar",
+        "name": "Oceano / Mar",
+        "shortDescription": "O oceano representa o inconsciente coletivo e as emoções profundas. Nadar no mar pode indicar autoexploração, enquanto se afogar sugere estar sobrecarregado pelas emoções.",
+        "askYourself": [
+          "Estou me deixando levar ou me sentindo sobrecarregado pelas minhas emoções?"
+        ]
+      },
       "relatedSymbols": [
         "water",
         "drowning",
@@ -1038,6 +1166,15 @@
         "askYourself": [
           "Cosa sta iniziando di nuovo nella mia vita?",
           "Cosa ha bisogno delle mie cure e attenzioni?"
+        ]
+      },
+      "pt": {
+        "slug": "bebe",
+        "name": "Bebê",
+        "shortDescription": "Um bebê simboliza novos começos, inocência ou um projeto que está nascendo. Pode representar uma parte vulnerável de você que precisa de atenção.",
+        "askYourself": [
+          "Que novo projeto ou ideia estou desenvolvendo?",
+          "Existe uma parte de mim que precisa de cuidado?"
         ]
       },
       "relatedSymbols": [
@@ -1223,6 +1360,35 @@
         },
         "modifiedAt": "2026-07-17"
       },
+      "pt": {
+        "slug": "cachorro",
+        "name": "Cachorro",
+        "shortDescription": "Sonhar com um cachorro costuma falar de confiança, lealdade e proteção. Um cachorro amigável sugere apoio; um cachorro que ataca, morde ou rosna pode apontar para conflito, ansiedade diante de uma traição ou uma relação que não parece segura.",
+        "askYourself": [
+          "O cachorro era amigável, agressivo, de rua ou protetor?",
+          "Ele atacou, mordeu, seguiu ou defendeu alguém?",
+          "Qual relação de confiança parece forte, frágil ou ferida neste momento?"
+        ],
+        "seoTitle": "cachorro, cachorros ou ataque de cachorro",
+        "faq": [
+          {
+            "question": "O que significa sonhar com cachorro?",
+            "answer": "Um sonho com cachorro costuma envolver confiança, lealdade, proteção e relacionamentos. O significado muda conforme o cachorro seja amigável, agressivo, de rua, machucado ou esteja seguindo você."
+          },
+          {
+            "question": "O que significa sonhar com cachorros?",
+            "answer": "Vários cachorros podem representar um grupo, a família, os amigos ou dinâmicas sociais. Cachorros calmos sugerem apoio; cachorros agressivos sugerem pressão ou conflito."
+          },
+          {
+            "question": "O que significa sonhar que um cachorro está te atacando?",
+            "answer": "Um ataque de cachorro pode indicar medo de traição, conflito em uma relação ou uma ameaça percebida vinda de alguém que deveria inspirar confiança."
+          },
+          {
+            "question": "O que significa sonhar com mordida de cachorro?",
+            "answer": "Uma mordida de cachorro pode simbolizar confiança ferida, palavras duras ou uma relação protetora que se tornou dolorosa."
+          }
+        ]
+      },
       "relatedSymbols": [
         "wolf",
         "cat",
@@ -1282,6 +1448,15 @@
         "askYourself": [
           "Quanto sono connesso con la mia intuizione?",
           "Ho bisogno di più indipendenza?"
+        ]
+      },
+      "pt": {
+        "slug": "gato",
+        "name": "Gato",
+        "shortDescription": "Os gatos simbolizam independência, intuição feminina e mistério. Podem representar seu lado selvagem ou uma situação que está escapando do seu controle.",
+        "askYourself": [
+          "Estou escutando minha intuição o suficiente?",
+          "Preciso de mais independência?"
         ]
       },
       "relatedSymbols": [
@@ -1360,6 +1535,15 @@
           }
         ],
         "modifiedAt": "2026-07-06"
+      },
+      "pt": {
+        "slug": "aranha",
+        "name": "Aranha",
+        "shortDescription": "As aranhas costumam simbolizar criatividade, paciência e o ato de tecer o próprio destino. Também podem representar medos ou a sensação de estar preso.",
+        "askYourself": [
+          "Eu me sinto preso em alguma situação?",
+          "Estou tecendo alguma coisa nova?"
+        ]
       },
       "relatedSymbols": [
         "snake",
@@ -1532,6 +1716,35 @@
         },
         "modifiedAt": "2026-07-17"
       },
+      "pt": {
+        "slug": "fogo",
+        "name": "Fogo",
+        "shortDescription": "Sonhar com fogo pode sinalizar paixão, raiva, transformação ou urgência. O fogo controlado sugere energia criativa; um incêndio ou chamas fora de controle apontam para emoções intensas ou uma mudança que avança rápido demais.",
+        "askYourself": [
+          "O fogo aquecia, iluminava ou destruía?",
+          "Eu senti fascínio, medo, raiva ou alívio?",
+          "Qual mudança na minha vida parece urgente ou fora de controle?"
+        ],
+        "seoTitle": "fogo, incêndio ou chamas",
+        "faq": [
+          {
+            "question": "O que significa sonhar com fogo?",
+            "answer": "O fogo nos sonhos pode representar energia, desejo, raiva, transformação ou purificação. O significado depende de o fogo ter sido útil ou ter saído do controle."
+          },
+          {
+            "question": "O que significa sonhar com incêndio ou com a casa pegando fogo?",
+            "answer": "Um incêndio costuma sugerir emoção intensa, conflito ou uma situação que pode consumir energia demais se não for cuidada."
+          },
+          {
+            "question": "O que significa sonhar com chamas?",
+            "answer": "As chamas podem apontar para paixão, criatividade ou raiva. Se elas assustam você, o sonho sugere que a intensidade emocional ficou difícil de conter."
+          },
+          {
+            "question": "Sonhar com fogo é positivo ou negativo?",
+            "answer": "Pode ser um ou outro. Um fogo que aquece ou ilumina o caminho é diferente de um fogo que destrói. Repare no controle, na distância e na emoção dominante."
+          }
+        ]
+      },
       "relatedSymbols": [
         "house",
         "sun",
@@ -1700,6 +1913,35 @@
         ],
         "modifiedAt": "2026-08-18"
       },
+      "pt": {
+        "slug": "enchente",
+        "name": "Enchente",
+        "shortDescription": "Esta referência rápida resume a enchente como transbordamento emocional, estresse ou limites invadidos. Use o guia de sonhos com água para os cenários completos de casa alagada, água suja, mar e fuga.",
+        "askYourself": [
+          "A enchente era de água limpa, suja, de chuva ou do mar?",
+          "A água estava entrando na minha casa, me levando embora ou me deixando escapar?",
+          "Qual situação está transbordando na minha vida desperta?"
+        ],
+        "seoTitle": "enchente, casa alagada ou água suja",
+        "faq": [
+          {
+            "question": "O que significa sonhar com enchente?",
+            "answer": "Sonhar com enchente costuma sugerir emoções, estresse ou mudanças difíceis de conter. Pode aparecer quando a pressão da família, do trabalho ou de um relacionamento fica grande demais."
+          },
+          {
+            "question": "O que significa sonhar com casa alagada?",
+            "answer": "A casa alagada sugere preocupações, conflitos ou sentimentos intensos entrando no seu espaço íntimo e na sua sensação de segurança."
+          },
+          {
+            "question": "O que significa sonhar com enchente de água limpa?",
+            "answer": "A água limpa da enchente pode sugerir liberação emocional, clareza ou uma limpeza necessária depois de um período de tensão."
+          },
+          {
+            "question": "O que significa sonhar com enchente de água suja?",
+            "answer": "A água suja da enchente aponta para confusão, cansaço ou emoções misturadas que ainda precisam ser organizadas."
+          }
+        ]
+      },
       "relatedSymbols": [
         "water",
         "house",
@@ -1853,6 +2095,15 @@
           }
         ],
         "modifiedAt": "2026-08-11"
+      },
+      "pt": {
+        "slug": "carro",
+        "name": "Carro",
+        "shortDescription": "O carro representa o controle sobre a sua vida. Estar no banco do motorista indica controle; estar no banco do passageiro pode sugerir que outra pessoa está conduzindo a sua vida.",
+        "askYourself": [
+          "Estou no controle da minha vida?",
+          "Quem está conduzindo a minha trajetória?"
+        ]
       },
       "relatedSymbols": [
         "road",
@@ -2030,6 +2281,35 @@
         "seoTitle": "porta aperta o chiusa",
         "modifiedAt": "2026-07-17"
       },
+      "pt": {
+        "slug": "porta",
+        "name": "Porta",
+        "shortDescription": "Um sonho com porta fala sobre oportunidades, decisões e limites. Abrir uma porta fechada sugere superar um bloqueio; uma porta aberta pode significar acesso ou vulnerabilidade; uma porta que não abre aponta para uma escolha pendente.",
+        "askYourself": [
+          "A porta estava aberta, fechada, bloqueada ou quebrada?",
+          "Eu estava abrindo, fechando ou passando por ela?",
+          "Qual decisão, limite ou oportunidade está presente na minha vida agora?"
+        ],
+        "seoTitle": "porta aberta, fechada ou bloqueada",
+        "faq": [
+          {
+            "question": "O que significa sonhar com portas?",
+            "answer": "As portas nos sonhos costumam se relacionar a oportunidades, decisões e transições. O significado depende de a porta estar aberta, fechada, bloqueada ou de você tê-la atravessado."
+          },
+          {
+            "question": "O que significa abrir uma porta fechada em um sonho?",
+            "answer": "Abrir uma porta fechada sugere tentar superar um bloqueio, alcançar uma oportunidade ou resolver algo que parecia inacessível."
+          },
+          {
+            "question": "O que significa sonhar com a porta da frente aberta?",
+            "answer": "Uma porta da frente aberta pode sugerir vulnerabilidade, confiança, exposição ou abertura emocional."
+          },
+          {
+            "question": "O que significa uma porta que não abre?",
+            "answer": "Costuma mostrar frustração, medo de rejeição ou uma oportunidade que precisa de mais preparo, de paciência ou de uma chave simbólica."
+          }
+        ]
+      },
       "relatedSymbols": [
         "key",
         "house",
@@ -2090,6 +2370,15 @@
           "Ho paura di fallire?"
         ]
       },
+      "pt": {
+        "slug": "prova-exame",
+        "name": "Prova / Exame",
+        "shortDescription": "Sonhar com uma prova, principalmente com ser reprovado, simboliza ansiedade em relação a ser avaliado, perfeccionismo ou síndrome do impostor. É um sonho muito comum entre adultos.",
+        "askYourself": [
+          "Tenho medo de não estar à altura?",
+          "Em que área eu me sinto julgado?"
+        ]
+      },
       "relatedSymbols": [
         "school",
         "classroom"
@@ -2146,6 +2435,15 @@
         "askYourself": [
           "Dove mi sento vulnerabile o esposto?",
           "Cosa nascondo agli altri?"
+        ]
+      },
+      "pt": {
+        "slug": "nudez",
+        "name": "Nudez",
+        "shortDescription": "Estar nu em público simboliza vulnerabilidade, medo de ser julgado ou a sensação de estar exposto. É um sonho muito comum, ligado à ansiedade social.",
+        "askYourself": [
+          "Tenho medo de ser julgado?",
+          "Existe algo que estou escondendo dos outros?"
         ]
       },
       "relatedSymbols": [
@@ -2205,6 +2503,15 @@
         "askYourself": [
           "Quali sentimenti irrisolti ho verso questa persona?",
           "Cosa ho bisogno di lasciar andare o accettare?"
+        ]
+      },
+      "pt": {
+        "slug": "pessoa-falecida",
+        "name": "Pessoa falecida",
+        "shortDescription": "Sonhar com uma pessoa querida que faleceu pode representar luto, lembranças ou uma mensagem do seu subconsciente. Também pode simbolizar uma parte de você associada a essa pessoa.",
+        "askYourself": [
+          "Que mensagem essa pessoa poderia me trazer?",
+          "O que ela representava para mim?"
         ]
       },
       "relatedSymbols": [
@@ -2267,6 +2574,15 @@
         "askYourself": [
           "Di quale prospettiva più elevata ho bisogno?",
           "Dove desidero più libertà?"
+        ]
+      },
+      "pt": {
+        "slug": "passaro",
+        "name": "Pássaro",
+        "shortDescription": "Pássaros simbolizam liberdade, aspiração espiritual e perspectivas mais elevadas. Um pássaro na gaiola pode representar a sensação de estar preso.",
+        "askYourself": [
+          "Eu me sinto livre?",
+          "Quais são as minhas maiores aspirações?"
         ]
       },
       "relatedSymbols": [
@@ -2356,6 +2672,15 @@
         "askYourself": [
           "Quale transizione sto attraversando?",
           "Cosa sto collegando nella mia vita?"
+        ]
+      },
+      "pt": {
+        "slug": "ponte",
+        "name": "Ponte",
+        "shortDescription": "A ponte simboliza transição, a passagem de um estado para outro. Atravessar uma ponte sugere mudança, enquanto uma ponte desabada indica obstáculos.",
+        "askYourself": [
+          "Por qual transição estou passando?",
+          "Estou pronto para seguir em frente?"
         ]
       },
       "relatedSymbols": [
@@ -2448,6 +2773,15 @@
           "In quale direzione mi sto muovendo?"
         ]
       },
+      "pt": {
+        "slug": "escada",
+        "name": "Escada",
+        "shortDescription": "A escada simboliza progressão, ascensão social ou espiritual. Subir indica crescimento; descer pode sugerir uma exploração do subconsciente.",
+        "askYourself": [
+          "Estou avançando na minha vida?",
+          "Que direção estou tomando?"
+        ]
+      },
       "relatedSymbols": [
         "house",
         "mountain",
@@ -2507,6 +2841,15 @@
           "Sto ascoltando la mia intuizione?"
         ]
       },
+      "pt": {
+        "slug": "lua",
+        "name": "Lua",
+        "shortDescription": "A lua simboliza a feminilidade, a intuição e os ciclos naturais. Ela também representa aspectos ocultos de si mesmo e emoções profundas.",
+        "askYourself": [
+          "Eu estou escutando a minha intuição?",
+          "Que ciclos estão atravessando a minha vida?"
+        ]
+      },
       "relatedSymbols": [
         "sun",
         "night"
@@ -2563,6 +2906,15 @@
         "askYourself": [
           "Cosa porta luce e chiarezza nella mia vita?",
           "Dove trovo energia e vitalità?"
+        ]
+      },
+      "pt": {
+        "slug": "sol",
+        "name": "Sol",
+        "shortDescription": "O sol simboliza a consciência, a energia vital e o otimismo. Ele representa clareza, verdade e iluminação espiritual.",
+        "askYourself": [
+          "O que me dá energia?",
+          "Que verdade eu preciso enxergar?"
         ]
       },
       "relatedSymbols": [
@@ -2644,6 +2996,15 @@
           }
         ],
         "modifiedAt": "2026-08-11"
+      },
+      "pt": {
+        "slug": "chuva",
+        "name": "Chuva",
+        "shortDescription": "A chuva pode simbolizar purificação, renovação ou tristeza. Uma chuva suave sugere cura, enquanto uma tempestade indica emoções intensas.",
+        "askYourself": [
+          "Preciso deixar minhas emoções fluírem?",
+          "Que renovação é possível?"
+        ]
       },
       "relatedSymbols": [
         "water",
@@ -2766,6 +3127,35 @@
           "Mi sento perso in qualche situazione?"
         ]
       },
+      "pt": {
+        "slug": "floresta",
+        "name": "Floresta",
+        "shortDescription": "Uma floresta no sonho pode representar incerteza, exploração, privacidade, crescimento ou a sensação de estar sobrecarregado. Seu significado depende de a floresta ter parecido escura ou verdejante, de você estar perdido ou não, e do que estava acontecendo na sua vida desperta.",
+        "askYourself": [
+          "Como era a floresta e que sensação ela passava — escura, verde, densa, acolhedora ou ameaçadora?",
+          "Eu estava perdido, explorando, me escondendo ou seguindo um caminho?",
+          "Que situação da minha vida desperta parece incerta, íntima ou pronta para crescer?"
+        ],
+        "faq": [
+          {
+            "question": "O que significa sonhar com floresta?",
+            "answer": "Uma floresta pode representar incerteza, exploração, privacidade, crescimento ou uma situação que parece complexa. Não existe um significado universal, então considere o estado da floresta, as suas emoções e o que você estava fazendo no sonho."
+          },
+          {
+            "question": "O que significa sonhar com uma floresta escura?",
+            "answer": "Uma floresta escura pode refletir incerteza, medo, falta de informação ou dificuldade de enxergar um caminho adiante. Se você sentiu curiosidade em vez de medo, ela pode apontar, ao contrário, para a exploração de algo desconhecido."
+          },
+          {
+            "question": "O que significa sonhar com uma floresta verde?",
+            "answer": "Uma floresta verde pode sugerir crescimento, vitalidade, restauração ou uma necessidade de espaço e calma. O significado muda com a atmosfera: uma floresta verde e tranquila é diferente de uma floresta densa ou difícil de atravessar."
+          },
+          {
+            "question": "O que significa sonhar que está perdido na floresta?",
+            "answer": "Estar perdido em uma floresta pode espelhar confusão, excesso de opções ou falta de direção, mas também pode acompanhar exploração e mudança. Repare se você encontrou um caminho, pediu ajuda ou se sentiu seguro, porque esses detalhes acrescentam contexto."
+          }
+        ],
+        "modifiedAt": "2026-07-23"
+      },
       "relatedSymbols": [
         "tree",
         "night",
@@ -2860,6 +3250,15 @@
           "Sto crescendo nella direzione giusta?"
         ]
       },
+      "pt": {
+        "slug": "arvore",
+        "name": "Árvore",
+        "shortDescription": "A árvore simboliza crescimento pessoal, raízes familiares e o ciclo da vida. Uma árvore morta pode representar o fim de uma fase ou a necessidade de renovação.",
+        "askYourself": [
+          "Estou bem enraizado na minha vida?",
+          "Que parte de mim precisa crescer?"
+        ]
+      },
       "relatedSymbols": [
         "forest",
         "garden"
@@ -2916,6 +3315,15 @@
         "askYourself": [
           "Quale grande sfida ho davanti a me?",
           "Quali ambizioni sto perseguendo?"
+        ]
+      },
+      "pt": {
+        "slug": "montanha",
+        "name": "Montanha",
+        "shortDescription": "A montanha representa desafios, metas ambiciosas e busca espiritual. Escalar uma montanha simboliza os esforços para alcançar seus objetivos.",
+        "askYourself": [
+          "Que desafio estou enfrentando?",
+          "O esforço vale a pena?"
         ]
       },
       "relatedSymbols": [
@@ -2977,6 +3385,15 @@
           "Come gestisco il mio potere personale?"
         ]
       },
+      "pt": {
+        "slug": "leao",
+        "name": "Leão",
+        "shortDescription": "O leão representa força, coragem e liderança. Ele pode simbolizar o seu próprio poder ou uma figura de autoridade na sua vida.",
+        "askYourself": [
+          "Estou em contato com a minha força interior?",
+          "Como eu expresso o meu poder?"
+        ]
+      },
       "relatedSymbols": [
         "cat",
         "bear",
@@ -3034,6 +3451,15 @@
         "askYourself": [
           "Come mi vedo veramente?",
           "Sono onesto con me stesso?"
+        ]
+      },
+      "pt": {
+        "slug": "espelho",
+        "name": "Espelho",
+        "shortDescription": "O espelho simboliza introspecção e autoimagem. Um reflexo distorcido pode indicar uma percepção alterada de si mesmo ou a necessidade de se enxergar com mais clareza.",
+        "askYourself": [
+          "Como eu me percebo?",
+          "Minha autoimagem é realista?"
         ]
       },
       "relatedSymbols": [
@@ -3095,6 +3521,15 @@
           "Mi sento sicuro nella mia situazione attuale?"
         ]
       },
+      "pt": {
+        "slug": "dinheiro",
+        "name": "Dinheiro",
+        "shortDescription": "Dinheiro nos sonhos costuma representar o seu valor próprio, poder ou energia vital. Perder dinheiro pode simbolizar uma sensação de perda ou insegurança.",
+        "askYourself": [
+          "Como eu me sinto em relação ao meu próprio valor?",
+          "O que tem valor para mim?"
+        ]
+      },
       "relatedSymbols": [
         "ring",
         "lost",
@@ -3152,6 +3587,15 @@
         "askYourself": [
           "Dove sto perdendo energia nella mia vita?",
           "Quali emozioni profonde hanno bisogno di attenzione?"
+        ]
+      },
+      "pt": {
+        "slug": "sangue",
+        "name": "Sangue",
+        "shortDescription": "O sangue representa força vital, laços de família ou perda de energia. Perder sangue pode simbolizar esgotamento ou sacrifício.",
+        "askYourself": [
+          "Tem algo drenando a minha energia?",
+          "Que laços me conectam à minha família?"
         ]
       },
       "relatedSymbols": [
@@ -3234,6 +3678,15 @@
         ],
         "modifiedAt": "2026-08-18"
       },
+      "pt": {
+        "slug": "crianca",
+        "name": "Criança",
+        "shortDescription": "Uma criança costuma representar sua criança interior, a inocência ou aspectos do seu passado. Também pode simbolizar um novo projeto ou uma parte de você em desenvolvimento.",
+        "askYourself": [
+          "Como está minha criança interior?",
+          "Existem feridas do passado para curar?"
+        ]
+      },
       "relatedSymbols": [
         "baby",
         "friend"
@@ -3287,6 +3740,14 @@
         "askYourself": [
           "Quale immagine mostro al mondo?",
           "Mi sento a mio agio nel mio ruolo sociale?"
+        ]
+      },
+      "pt": {
+        "slug": "roupas",
+        "name": "Roupas",
+        "shortDescription": "As roupas representam a imagem que você projeta para o mundo. Uma roupa inadequada pode indicar a sensação de estar deslocado.",
+        "askYourself": [
+          "Minha imagem pública reflete quem eu realmente sou?"
         ]
       },
       "relatedSymbols": [
@@ -3348,6 +3809,15 @@
           "Quale decisione devo affrontare?"
         ]
       },
+      "pt": {
+        "slug": "caminho",
+        "name": "Caminho",
+        "shortDescription": "Um caminho representa a sua jornada de vida e as escolhas que estão por vir. Um caminho bloqueado sugere obstáculos, enquanto uma encruzilhada simboliza uma decisão importante.",
+        "askYourself": [
+          "Estou no caminho certo?",
+          "Existe alguma decisão que estou evitando?"
+        ]
+      },
       "relatedSymbols": [
         "road",
         "bridge"
@@ -3406,6 +3876,15 @@
           "Ci sono problemi di comunicazione nella mia vita?"
         ]
       },
+      "pt": {
+        "slug": "celular",
+        "name": "Celular",
+        "shortDescription": "O celular representa comunicação. Um celular que não funciona pode indicar dificuldade de se conectar com os outros ou uma mensagem que você não consegue transmitir.",
+        "askYourself": [
+          "Existe alguém com quem eu preciso conversar?",
+          "Estou me comunicando de forma eficaz?"
+        ]
+      },
       "relatedSymbols": [
         "letter",
         "friend"
@@ -3462,6 +3941,15 @@
         "askYourself": [
           "Quali grandi ambizioni sto perseguendo?",
           "Ho paura di fallire in un progetto importante?"
+        ]
+      },
+      "pt": {
+        "slug": "aviao",
+        "name": "Avião",
+        "shortDescription": "O avião representa ambições elevadas, vontade de escapar ou uma jornada de transformação. Um avião caindo pode indicar medo de fracassar.",
+        "askYourself": [
+          "Quais são os meus objetivos de longo prazo?",
+          "Preciso ganhar perspectiva?"
         ]
       },
       "relatedSymbols": [
@@ -3527,6 +4015,15 @@
           "Ho paura di perdere un'opportunità importante?"
         ]
       },
+      "pt": {
+        "slug": "trem",
+        "name": "Trem",
+        "shortDescription": "O trem simboliza a jornada da vida e a sua trajetória. Perder o trem pode indicar uma oportunidade perdida ou o medo de não alcançar seus objetivos a tempo.",
+        "askYourself": [
+          "Estou no caminho certo?",
+          "Tenho medo de perder alguma coisa?"
+        ]
+      },
       "relatedSymbols": [
         "bus",
         "road",
@@ -3586,6 +4083,15 @@
           "Quali paure ho dell'ignoto?"
         ]
       },
+      "pt": {
+        "slug": "noite-escuridao",
+        "name": "Noite / Escuridão",
+        "shortDescription": "A noite representa o desconhecido, os medos escondidos ou o subconsciente. Também pode simbolizar um período de incerteza ou de introspecção.",
+        "askYourself": [
+          "O que eu não estou enxergando com clareza?",
+          "Que medos estão escondidos dentro de mim?"
+        ]
+      },
       "relatedSymbols": [
         "moon",
         "shadow",
@@ -3643,6 +4149,15 @@
         "askYourself": [
           "Quale soluzione sto cercando?",
           "Cosa sto cercando di aprire o scoprire?"
+        ]
+      },
+      "pt": {
+        "slug": "chave",
+        "name": "Chave",
+        "shortDescription": "A chave simboliza acesso, soluções e novas oportunidades. Perder uma chave pode indicar a sensação de estar bloqueado ou de ter perdido uma oportunidade.",
+        "askYourself": [
+          "Que porta estou pronto para abrir?",
+          "Que solução está me escapando?"
         ]
       },
       "relatedSymbols": [
@@ -3731,6 +4246,15 @@
           "Sto davvero ascoltando gli altri?"
         ]
       },
+      "pt": {
+        "slug": "boca",
+        "name": "Boca",
+        "shortDescription": "A boca representa a comunicação, a autoexpressão e as necessidades. Uma boca fechada pode indicar dificuldade de se expressar ou segredos guardados.",
+        "askYourself": [
+          "Existe algo que eu preciso dizer?",
+          "Estou me segurando para não me expressar?"
+        ]
+      },
       "relatedSymbols": [
         "teeth",
         "unable-to-speak",
@@ -3788,6 +4312,15 @@
         "askYourself": [
           "Quali aspetti della mia vita sto integrando?",
           "Sono pronto per un impegno più profondo?"
+        ]
+      },
+      "pt": {
+        "slug": "casamento",
+        "name": "Casamento",
+        "shortDescription": "Sonhos com casamento costumam simbolizar compromisso, novos começos ou transições de vida importantes que vão além do matrimônio.",
+        "askYourself": [
+          "Que compromisso eu estou assumindo ou considerando?",
+          "Que novo capítulo está começando na minha vida?"
         ]
       },
       "relatedSymbols": [
@@ -3960,6 +4493,35 @@
         ],
         "seoTitle": "ospedale, medici o persone malate"
       },
+      "pt": {
+        "slug": "hospital",
+        "name": "Hospital",
+        "shortDescription": "Um sonho com hospital costuma apontar para cura, vulnerabilidade, ansiedade com a saúde ou a necessidade de aceitar ajuda antes que o estresse se torne urgente. Repare se você era paciente, visitante, médico ou se estava esperando notícias.",
+        "askYourself": [
+          "Eu era paciente, visitante, médico ou estava buscando ajuda?",
+          "O sonho parecia uma emergência, uma espera, um alívio ou um medo?",
+          "Que parte da minha vida precisa de cuidado, descanso ou apoio agora?"
+        ],
+        "faq": [
+          {
+            "question": "O que significa sonhar com hospital?",
+            "answer": "Sonhar com hospital geralmente sugere que algo precisa de cuidado, cura ou atenção mais próxima. Pode apontar para preocupações com a saúde, esgotamento emocional, aflição com a família ou uma situação em que você precisa de apoio, e não de controle."
+          },
+          {
+            "question": "O que significa sonhar que você está em um hospital?",
+            "answer": "Estar em um hospital muitas vezes reflete vulnerabilidade e recuperação. O sonho pode mostrar que você precisa de descanso, orientação, tratamento ou ajuda para elaborar um período estressante."
+          },
+          {
+            "question": "O que significam médicos ou enfermeiros em um sonho com hospital?",
+            "answer": "Médicos e enfermeiros podem simbolizar orientação, diagnóstico ou a parte de você que sabe o que precisa ser reparado."
+          },
+          {
+            "question": "O que significa sonhar com pessoas doentes em um hospital?",
+            "answer": "Pessoas doentes podem refletir preocupação com os outros, uma parte negligenciada do seu próprio bem-estar ou um relacionamento que precisa de mais cuidado."
+          }
+        ],
+        "seoTitle": "hospital, médicos ou pessoas doentes"
+      },
       "relatedSymbols": [
         "doctor",
         "illness",
@@ -4022,6 +4584,15 @@
           "Verso quale obiettivo mi sto muovendo?"
         ]
       },
+      "pt": {
+        "slug": "correr",
+        "name": "Correr",
+        "shortDescription": "Correr nos sonhos pode simbolizar fuga, busca de objetivos ou urgência na vida. O contexto determina se você está fugindo ou perseguindo.",
+        "askYourself": [
+          "Do que estou fugindo ou para o que estou correndo?",
+          "Existe alguma urgência na minha vida desperta?"
+        ]
+      },
       "relatedSymbols": [
         "chase",
         "hiding",
@@ -4081,6 +4652,15 @@
           "Quali competenze devo sviluppare?"
         ]
       },
+      "pt": {
+        "slug": "escola",
+        "name": "Escola",
+        "shortDescription": "A escola nos sonhos costuma representar aprendizado, avaliação, ansiedade social ou o retorno a experiências e lições do passado.",
+        "askYourself": [
+          "Que lição estou aprendendo?",
+          "Estou sendo testado ou avaliado de alguma forma?"
+        ]
+      },
       "relatedSymbols": [
         "exam",
         "classroom",
@@ -4138,6 +4718,15 @@
         "askYourself": [
           "Cosa si sta sviluppando di nuovo nella mia vita?",
           "Quale progetto creativo sto nutrendo?"
+        ]
+      },
+      "pt": {
+        "slug": "gravidez",
+        "name": "Gravidez",
+        "shortDescription": "Sonhos de gravidez simbolizam criação, novos projetos, potencial ou grandes mudanças de vida se desenvolvendo dentro de você.",
+        "askYourself": [
+          "O que estou criando ou desenvolvendo?",
+          "Que novo aspecto de mim está crescendo?"
         ]
       },
       "relatedSymbols": [
@@ -4202,6 +4791,15 @@
           "Mi sento a mio agio nella mia profondità emotiva?"
         ]
       },
+      "pt": {
+        "slug": "nadar",
+        "name": "Nadar",
+        "shortDescription": "Nadar nos sonhos representa atravessar as emoções e os desafios da vida. A facilidade ou a dificuldade para nadar reflete a sua capacidade de lidar com o que sente.",
+        "askYourself": [
+          "Como estou lidando com a minha vida emocional?",
+          "Estou me mantendo à tona ou me debatendo com o que sinto?"
+        ]
+      },
       "relatedSymbols": [
         "water",
         "ocean",
@@ -4264,6 +4862,15 @@
           "Cosa ha bisogno di espressione emotiva nella mia vita?"
         ]
       },
+      "pt": {
+        "slug": "chorar",
+        "name": "Chorar",
+        "shortDescription": "Chorar nos sonhos costuma representar liberação emocional, cura ou sentimentos não expressos que buscam ser reconhecidos. Pode ser uma experiência catártica.",
+        "askYourself": [
+          "Que emoções estou segurando?",
+          "O que precisa ser liberado ou expresso?"
+        ]
+      },
       "relatedSymbols": [
         "water",
         "abandonment",
@@ -4321,6 +4928,15 @@
         "askYourself": [
           "Sto vivendo cambiamenti rapidi?",
           "In quale direzione si sta muovendo la mia vita?"
+        ]
+      },
+      "pt": {
+        "slug": "elevador",
+        "name": "Elevador",
+        "shortDescription": "Elevadores simbolizam transições, mobilidade social e mudanças de status na vida. Subir sugere avanço; descer pode indicar retrocessos ou a exploração de níveis mais profundos.",
+        "askYourself": [
+          "Que transição estou vivendo?",
+          "Estou subindo ou descendo em alguma área da minha vida?"
         ]
       },
       "relatedSymbols": [
@@ -4385,6 +5001,15 @@
           "Qual è il prossimo passo che devo osare?"
         ]
       },
+      "pt": {
+        "slug": "penhasco",
+        "name": "Penhasco",
+        "shortDescription": "Os penhascos representam grandes decisões, perigo ou o momento de estar à beira de uma mudança importante. Simbolizam o ato de correr riscos e o medo de dar o próximo passo.",
+        "askYourself": [
+          "Que decisão estou enfrentando?",
+          "Que risco tenho medo de correr?"
+        ]
+      },
       "relatedSymbols": [
         "falling",
         "mountain"
@@ -4444,6 +5069,15 @@
         "askYourself": [
           "Dove mi sento disorientato?",
           "Cosa ho perso di vista?"
+        ]
+      },
+      "pt": {
+        "slug": "estar-perdido",
+        "name": "Estar perdido",
+        "shortDescription": "Estar perdido nos sonhos simboliza confusão, falta de direção ou incerteza sobre o caminho de vida. Muitas vezes reflete a sensação de estar sobrecarregado ou desconectado do seu propósito.",
+        "askYourself": [
+          "Em que área da minha vida eu me sinto sem rumo?",
+          "De que orientação ou clareza eu preciso?"
         ]
       },
       "relatedSymbols": [
@@ -4613,6 +5247,35 @@
           }
         ]
       },
+      "pt": {
+        "slug": "lobo",
+        "name": "Lobo",
+        "shortDescription": "Sonhar com lobos aponta para instinto, proteção, perigo e pertencimento. Um lobo solitário pode sugerir independência ou intuição; uma alcateia ou lobos atacando costumam refletir pressão, conflito ou medo de perder o controle.",
+        "askYourself": [
+          "Era um lobo, vários lobos ou uma alcateia?",
+          "O lobo estava atacando, protegendo, perseguindo ou observando?",
+          "Que instinto estou ignorando, ou que grupo está me pressionando?"
+        ],
+        "seoTitle": "lobos, lobo solitário ou ataque de lobo",
+        "faq": [
+          {
+            "question": "O que significa sonhar com lobos?",
+            "answer": "Nos sonhos, os lobos podem representar instinto, ameaça, proteção ou o pertencimento a um grupo. O significado muda se os lobos atacam, acompanham você, perseguem você ou aparecem em alcateia."
+          },
+          {
+            "question": "O que significa sonhar com um lobo solitário?",
+            "answer": "Um lobo solitário costuma apontar para intuição, independência ou uma parte instintiva de você que precisa de atenção."
+          },
+          {
+            "question": "O que significa sonhar com lobos atacando?",
+            "answer": "Lobos atacando podem refletir pressão, medo, conflito ou uma emoção instintiva que parece fora de controle."
+          },
+          {
+            "question": "O que significa sonhar com uma alcateia de lobos?",
+            "answer": "A alcateia pode simbolizar lealdade e força coletiva, mas também pressão social. A sensação que você teve no sonho é a diferença decisiva."
+          }
+        ]
+      },
       "relatedSymbols": [
         "dog",
         "forest",
@@ -4674,6 +5337,15 @@
           "Quale viaggio sto facendo?"
         ]
       },
+      "pt": {
+        "slug": "cavalo",
+        "name": "Cavalo",
+        "shortDescription": "Os cavalos representam liberdade, poder e a jornada da vida. Eles simbolizam a força pessoal, a energia sexual e o desejo de seguir em frente na vida.",
+        "askYourself": [
+          "Em que área da minha vida eu preciso de mais liberdade?",
+          "Em que jornada eu estou?"
+        ]
+      },
       "relatedSymbols": [
         "dog",
         "running",
@@ -4731,6 +5403,15 @@
         "askYourself": [
           "Quali sentimenti irrisolti ho ancora?",
           "Cosa mi ha insegnato questa relazione?"
+        ]
+      },
+      "pt": {
+        "slug": "ex-parceiro",
+        "name": "Ex-parceiro",
+        "shortDescription": "Sonhar com um ex-parceiro costuma representar sentimentos não resolvidos, lições de relacionamentos passados ou aspectos de você mesmo que você associa àquela pessoa — e não um desejo literal de reatar.",
+        "askYourself": [
+          "Que sentimentos não resolvidos ainda tenho?",
+          "O que esse relacionamento me ensinou?"
         ]
       },
       "relatedSymbols": [
@@ -4795,6 +5476,15 @@
           "Quale trasformazione sto vivendo?"
         ]
       },
+      "pt": {
+        "slug": "arco-iris",
+        "name": "Arco-íris",
+        "shortDescription": "O arco-íris simboliza esperança, transformação e promessa depois de tempos difíceis. Ele representa a beleza que surge após as tempestades e a ligação entre o céu e a terra.",
+        "askYourself": [
+          "Que esperança está surgindo depois de um período difícil?",
+          "Que transformação estou vivendo?"
+        ]
+      },
       "relatedSymbols": [
         "rain",
         "storm",
@@ -4854,6 +5544,15 @@
           "Cosa ha bisogno di essere eliminato nella mia vita?"
         ]
       },
+      "pt": {
+        "slug": "tempestade",
+        "name": "Tempestade",
+        "shortDescription": "As tempestades simbolizam turbulência emocional, mudanças drásticas e forças poderosas que estão fora do seu controle. Podem representar tanto destruição quanto uma limpeza necessária.",
+        "askYourself": [
+          "Que turbulência emocional estou vivendo?",
+          "O que precisa ser varrido da minha vida?"
+        ]
+      },
       "relatedSymbols": [
         "rain",
         "lightning"
@@ -4910,6 +5609,15 @@
         "askYourself": [
           "Ho paura di essere lasciato indietro o rifiutato?",
           "Ci sono relazioni nella mia vita che sembrano instabili?"
+        ]
+      },
+      "pt": {
+        "slug": "abandono",
+        "name": "Abandono",
+        "shortDescription": "Sonhar que você é abandonado reflete medos profundos de rejeição, solidão ou de perder relações importantes. Muitas vezes sinaliza questões de apego não resolvidas ou insegurança.",
+        "askYourself": [
+          "Tenho medo de ser deixado para trás ou rejeitado?",
+          "Existem relações na minha vida que parecem instáveis?"
         ]
       },
       "relatedSymbols": [
@@ -4974,6 +5682,15 @@
           "Sto prendendo rischi con cui non mi sento a mio agio?"
         ]
       },
+      "pt": {
+        "slug": "acidente",
+        "name": "Acidente",
+        "shortDescription": "Sonhos com acidentes simbolizam o medo de perder o controle, a ansiedade diante de mudanças inesperadas ou um aviso para desacelerar. Muitas vezes refletem estresse ou uma sensação de vulnerabilidade.",
+        "askYourself": [
+          "Sinto que algo na minha vida está saindo do controle?",
+          "Estou correndo riscos com os quais não me sinto confortável?"
+        ]
+      },
       "relatedSymbols": [
         "car",
         "falling",
@@ -5034,6 +5751,15 @@
         "askYourself": [
           "Sto cercando una guida o rassicurazione nella mia vita?",
           "C'è un messaggio o un'intuizione che ho ignorato?"
+        ]
+      },
+      "pt": {
+        "slug": "anjo",
+        "name": "Anjo",
+        "shortDescription": "Anjos nos sonhos representam orientação, proteção, esperança ou uma mensagem espiritual. Podem aparecer em momentos de crise para oferecer conforto ou sinalizar uma transição importante.",
+        "askYourself": [
+          "Estou buscando orientação ou algum tipo de conforto na minha vida?",
+          "Existe alguma mensagem ou intuição que venho ignorando?"
         ]
       },
       "relatedSymbols": [
@@ -5098,6 +5824,15 @@
           "Sto trattenendo parole che ho bisogno di dire?"
         ]
       },
+      "pt": {
+        "slug": "discussao",
+        "name": "Discussão",
+        "shortDescription": "Sonhos com discussões refletem conflito interno, tensão não resolvida ou frustração reprimida. Costumam apontar para problemas de comunicação ou desentendimentos não ditos na vida desperta.",
+        "askYourself": [
+          "Existe um conflito não resolvido que eu preciso encarar?",
+          "Estou segurando palavras que preciso dizer?"
+        ]
+      },
       "relatedSymbols": [
         "ex-partner",
         "mouth",
@@ -5158,6 +5893,15 @@
         "askYourself": [
           "Sto attraversando una grande transizione o sconvolgimento di vita?",
           "Mi sento sopraffatto da forze fuori dal mio controllo?"
+        ]
+      },
+      "pt": {
+        "slug": "apocalipse",
+        "name": "Apocalipse",
+        "shortDescription": "Sonhos com o apocalipse simbolizam uma grande reviravolta na vida, o fim de um capítulo ou uma ansiedade avassaladora em relação ao futuro. Muitas vezes representam transformação, e não destruição literal.",
+        "askYourself": [
+          "Estou passando por uma grande transição ou reviravolta na minha vida?",
+          "Eu me sinto sobrecarregado por forças que estão além do meu controle?"
         ]
       },
       "relatedSymbols": [
@@ -5230,6 +5974,17 @@
         "askYourself": [
           "Che cosa ha cambiato madre nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "mae",
+        "name": "Mãe",
+        "shortDescription": "Uma figura materna no sonho pode trazer à tona memórias pessoais, cuidado, expectativas, proximidade ou distância. O comportamento dela e o que você sente perto dela dão à cena o seu contexto individual.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a mãe mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -5306,6 +6061,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "pai",
+        "name": "Pai",
+        "shortDescription": "A figura do pai pode trazer à tona memórias pessoais, além de apoio, autoridade ou expectativas. O papel que ele assumiu na cena e o que você sentiu em relação a ele oferecem o contexto mais útil.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o pai mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "mother",
         "child",
@@ -5376,6 +6142,17 @@
         "askYourself": [
           "Che cosa ha cambiato fratello o sorella nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "irmao-ou-irma",
+        "name": "Irmão ou irmã",
+        "shortDescription": "Um irmão ou irmã em um sonho pode reavivar uma história compartilhada, proximidade, rivalidade ou papéis antigos da família. O que vocês fizeram juntos e o clima entre vocês indicam qual fio combina melhor com a cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o irmão ou irmã mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -5454,6 +6231,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "parceiro",
+        "name": "Parceiro",
+        "shortDescription": "O parceiro em um sonho pode refletir a relação real, um desejo, um conflito ou um limite que você está negociando. Repare em quem era essa pessoa, no que aconteceu entre vocês e em como foi a sensação desse encontro.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o parceiro mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "ex-partner",
         "wedding",
@@ -5524,6 +6312,17 @@
         "askYourself": [
           "Che cosa ha cambiato amico nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "amigo",
+        "name": "Amigo",
+        "shortDescription": "Um amigo no sonho pode chamar atenção para a relação real, para uma memória compartilhada ou para uma qualidade que você associa àquela pessoa. O que ele fez e o clima entre vocês tornam a cena pessoal.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o amigo mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -5602,6 +6401,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "desconhecido",
+        "name": "Desconhecido",
+        "shortDescription": "Encontrar um desconhecido em um sonho pode acompanhar uma situação pouco familiar, um novo encontro ou uma incerteza diante das outras pessoas. A aparência dele, seu comportamento e a sua reação dão à cena o contexto pessoal.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o desconhecido mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "shadow",
         "night",
@@ -5674,6 +6484,17 @@
         "askYourself": [
           "Che cosa ha cambiato insegnante nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "professor",
+        "name": "Professor",
+        "shortDescription": "Um professor em um sonho pode reavivar experiências de aprendizado, avaliação, orientação ou autoridade. A tarefa que você enfrentou e o fato de o professor ter incentivado ou pressionado você ajudam a situar a cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o professor mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -5750,6 +6571,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "policia",
+        "name": "Polícia",
+        "shortDescription": "A polícia em um sonho pode colocar em foco regras, proteção, controle ou um conflito em torno de limites. Pedir ajuda, ser perseguido ou ter que assumir responsabilidade dão à cena direções diferentes.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a polícia mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "car",
         "arguing",
@@ -5820,6 +6652,17 @@
         "askYourself": [
           "Che cosa ha cambiato medico nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "medico",
+        "name": "Médico",
+        "shortDescription": "A figura de um médico pode tocar em preocupação, cuidado, confiança ou no desejo de apoio, sem trazer nenhuma mensagem médica. Repare em quem foi examinado e se você se sentiu ouvido ou vulnerável.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o médico mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -5898,6 +6741,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "colega-de-trabalho",
+        "name": "Colega de trabalho",
+        "shortDescription": "Um colega de trabalho no sonho pode envolver trabalho em equipe, competição, reconhecimento ou a pressão do dia a dia no trabalho. A tarefa em questão e a sua relação real com essa pessoa dizem mais do que o cargo sozinho.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o colega de trabalho mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "arguing",
         "phone",
@@ -5968,6 +6822,17 @@
         "askYourself": [
           "Che cosa ha cambiato nonna nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "avo-2",
+        "name": "Avó",
+        "shortDescription": "Sua avó ou outra figura de avó pode evocar memórias pessoais, cuidado, padrões familiares ou tradições herdadas. A atitude dela e o que você sentiu na presença dela ajudam a situar a cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a avó mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -6044,6 +6909,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "nascimento",
+        "name": "Nascimento",
+        "shortDescription": "Um nascimento pode colocar um começo, uma responsabilidade crescente ou uma mudança exigente no centro do sonho. Ele não prevê nenhum acontecimento; as pessoas envolvidas e a forma como a cena se desenrolou é que importam mais.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o nascimento mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "baby",
         "pregnancy",
@@ -6114,6 +6990,17 @@
         "askYourself": [
           "Che cosa ha cambiato funerale nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "funeral",
+        "name": "Funeral",
+        "shortDescription": "Um sonho com funeral pode dar forma à despedida, à memória, ao luto ou ao fim de uma fase. Ele não prevê nenhuma morte; a pessoa que está sendo velada e a sua reação oferecem um contexto mais confiável.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o funeral mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -6190,6 +7077,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "avo",
+        "name": "Avô",
+        "shortDescription": "Um avô em um sonho pode trazer para o primeiro plano memórias compartilhadas, valores de família, conselhos ou autoridade. Repare se a presença dele ofereceu apoio, criou distância ou reabriu uma questão antiga.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o avô mudou na cena?",
+          "Qual sensação permaneceu comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "deceased-person",
         "house",
@@ -6260,6 +7158,17 @@
         "askYourself": [
           "Che cosa ha cambiato aula nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "sala-de-aula",
+        "name": "Sala de aula",
+        "shortDescription": "Uma sala de aula pode reavivar experiências de aprendizado, desempenho, pertencimento ou avaliação. Estar ali como aluno, professor ou observador muda a sua posição e o tom emocional do que acontece.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a sala de aula mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -6336,6 +7245,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "banheiro",
+        "name": "Banheiro",
+        "shortDescription": "Um banheiro pode colocar em foco a privacidade, o cuidado com o corpo, o alívio ou a vulnerabilidade. O estado dele, o acesso que você tinha e as pessoas presentes mostram se você se sentiu protegido ou exposto.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o banheiro mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "water",
         "mirror",
@@ -6409,6 +7329,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "quarto",
+        "name": "Quarto",
+        "shortDescription": "Um quarto pode colocar em foco o descanso, a intimidade, o recolhimento ou os limites pessoais. Se o cômodo era familiar, estava modificado ou se outras pessoas entraram nele diz mais do que o lugar em si.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o quarto mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "house",
         "night"
@@ -6478,6 +7409,17 @@
         "askYourself": [
           "Che cosa ha cambiato cucina nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "cozinha",
+        "name": "Cozinha",
+        "shortDescription": "A cozinha pode tornar tangíveis o cuidado diário, a cooperação, a criatividade ou as rotinas de família. O que estava sendo preparado e as pessoas que dividiam o espaço dão à cena o seu caráter pessoal.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a cozinha mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -6556,6 +7498,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "local-de-trabalho",
+        "name": "Local de trabalho",
+        "shortDescription": "Um sonho com o local de trabalho pode se alimentar das tarefas do momento, da pressão por desempenho, do reconhecimento ou dos limites entre trabalho e vida pessoal. Compare o que coincidiu com a realidade e o que apareceu estranhamente alterado.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o local de trabalho mudou na cena?",
+          "Qual sensação permaneceu comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "arguing",
         "phone",
@@ -6626,6 +7579,17 @@
         "askYourself": [
           "Che cosa ha cambiato strada nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "estrada",
+        "name": "Estrada",
+        "shortDescription": "Uma estrada pode tornar visível a direção que você está seguindo, uma decisão ou os obstáculos ao seu avanço. O traçado, o estado da via e o seu modo de percorrê-la conectam o cenário à sua situação.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a estrada mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -6704,6 +7668,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "onibus",
+        "name": "Ônibus",
+        "shortDescription": "Uma viagem de ônibus pode destacar um trajeto compartilhado, horários fixos ou a dependência das decisões de outras pessoas. Embarcar, descer ou ficar para trás dá a direção emocional dessa viagem.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o ônibus mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "car",
         "train",
@@ -6776,6 +7751,17 @@
         "askYourself": [
           "Che cosa ha cambiato bicicletta nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "bicicleta",
+        "name": "Bicicleta",
+        "shortDescription": "Andar de bicicleta pode tornar visíveis a independência, o equilíbrio, o esforço ou o seu ritmo pessoal. O terreno, o estado da bicicleta e o quanto de controle você tinha dão o contexto relevante.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a bicicleta mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -6853,6 +7839,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "barco",
+        "name": "Barco",
+        "shortDescription": "Mover-se de barco em um sonho pode refletir como você navega por uma transição ou por uma situação incerta. A água, o clima, os passageiros e o seu controle sobre a embarcação tornam a travessia algo pessoal.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o barco mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "water",
         "ocean",
@@ -6923,6 +7920,17 @@
         "askYourself": [
           "Che cosa ha cambiato aeroporto nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "aeroporto",
+        "name": "Aeroporto",
+        "shortDescription": "Um aeroporto pode concentrar expectativa, despedida, transição ou preparação para uma grande mudança. O destino, a pressão do tempo e os obstáculos mostram qual parte desse movimento teve importância para você.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o aeroporto mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -7001,6 +8009,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "mala",
+        "name": "Mala",
+        "shortDescription": "A mala pode envolver preparação, experiência carregada ou responsabilidade em meio a uma mudança. O conteúdo, o peso e o fato de você tê-la arrumado ou perdido tornam concreta a ligação com a cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a mala mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "plane",
         "door",
@@ -7072,6 +8091,17 @@
         "askYourself": [
           "Che cosa ha cambiato passaporto nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "passaporte",
+        "name": "Passaporte",
+        "shortDescription": "Quando um passaporte tem peso em um sonho, questões de identidade, pertencimento, acesso ou liberdade de movimento podem vir à tona. O fato de ele estar válido, perdido ou sendo inspecionado dá forma à cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o passaporte mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -7149,6 +8179,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "anel",
+        "name": "Anel",
+        "shortDescription": "Um anel pode colocar no centro do sonho uma relação, uma promessa, um compromisso ou um valor pessoal. Quem o usava e se ele foi dado, perdido ou tirado importam mais do que um significado fixo.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o anel mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "wedding",
         "partner",
@@ -7219,6 +8260,17 @@
         "askYourself": [
           "Che cosa ha cambiato orologio nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "relogio",
+        "name": "Relógio",
+        "shortDescription": "Um relógio pode colocar em foco a pressão do tempo, a espera, o planejamento ou a busca por um ritmo que funcione. A hora marcada, o fato de ele funcionar ou não e a sua reação dão contexto ao momento.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o relógio mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -7295,6 +8347,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "livro",
+        "name": "Livro",
+        "shortDescription": "Um livro pode colocar o conhecimento, as memórias, uma história não contada ou a busca por uma resposta no centro de um sonho. O título, o conteúdo e o fato de você conseguir ou não lê-lo dão o contexto.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o livro mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "school",
         "exam",
@@ -7365,6 +8428,17 @@
         "askYourself": [
           "Che cosa ha cambiato lettera nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "carta",
+        "name": "Carta",
+        "shortDescription": "Uma carta pode colocar no centro uma mensagem esperada, uma lembrança ou o desejo de uma comunicação clara. Quem enviou, se você conseguiu ler e como reagiu ao conteúdo tornam o contexto pessoal.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a carta mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -7442,6 +8516,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "cabelo",
+        "name": "Cabelo",
+        "shortDescription": "O cabelo costuma se destacar quando é cortado, perdido, transformado ou exibido em um sonho. Se essa mudança pareceu libertadora, constrangedora, controlada ou estranha, é o que dá direção à cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o cabelo mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "mirror",
         "clothes"
@@ -7514,6 +8599,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "olhos",
+        "name": "Olhos",
+        "shortDescription": "Os olhos direcionam o sonho para o olhar: quem observa quem, e o que continua invisível? O fato de o olhar ter parecido familiar, julgador ou ameaçador molda a cena mais do que o símbolo sozinho.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que os olhos mudaram na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "mirror",
         "night",
@@ -7583,6 +8679,17 @@
         "askYourself": [
           "Che cosa ha cambiato mani nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": [],
+        "modifiedAt": "2026-07-24"
+      },
+      "pt": {
+        "slug": "maos",
+        "name": "Mãos",
+        "shortDescription": "Mãos em um sonho raramente têm um sentido único. Podem trazer à tona como a emoção se manifesta no corpo, o que você mostra, o que você esconde e o que pede cuidado, principalmente se a cena pareceu especialmente vívida ou inacabada.",
+        "askYourself": [
+          "O que as mãos mudaram na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": [],
         "modifiedAt": "2026-07-24"
@@ -7660,6 +8767,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "pes",
+        "name": "Pés",
+        "shortDescription": "Os pés ligam você ao chão e à direção tomada no sonho. Se eles carregaram você com firmeza, estavam machucados ou não conseguiam avançar, o tom emocional da cena muda.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que os pés mudaram na cena?",
+          "Que sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "path",
         "running",
@@ -7730,6 +8848,17 @@
         "askYourself": [
           "Che cosa ha cambiato cuore nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "coracao",
+        "name": "Coração",
+        "shortDescription": "Um coração visível, ferido ou batendo com força traz sentimentos e sensação corporal para a cena. O que aconteceu logo antes e quem estava presente ajudam a enquadrar a imagem sem sugerir nenhuma mensagem médica.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o coração mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -7806,6 +8935,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "teste-de-gravidez",
+        "name": "Teste de gravidez",
+        "shortDescription": "Um teste de gravidez concentra a espera e a incerteza em um resultado visível. Quem aguardava esse resultado e as consequências que você imaginou moldam a cena; o sonho não prevê uma gravidez.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o teste de gravidez mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "pregnancy",
         "baby",
@@ -7879,6 +9019,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "doenca",
+        "name": "Doença",
+        "shortDescription": "A doença em um sonho pode compor uma cena de preocupação, dependência, esgotamento ou cuidado sem prever nada sobre a sua saúde. Quem estava doente, que ajuda existia e o que assustou você é o que torna tudo pessoal.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a doença mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "hospital",
         "doctor",
@@ -7949,6 +9100,17 @@
         "askYourself": [
           "Che cosa ha cambiato seminterrato nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "porao",
+        "name": "Porão",
+        "shortDescription": "O porão leva o sonho para uma parte reservada da casa. A luz, o cheiro, a organização e a existência de uma saída determinam se você sentiu curiosidade, familiaridade ou desconforto ali.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o porão mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -8027,6 +9189,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "cirurgia",
+        "name": "Cirurgia",
+        "shortDescription": "A cirurgia coloca o corpo, a confiança e uma intervenção deliberada no centro do sonho. Ser operado, realizar o procedimento ou apenas assistir dá a você um papel bem diferente na cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a cirurgia mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "hospital",
         "blood",
@@ -8097,6 +9270,17 @@
         "askYourself": [
           "Che cosa ha cambiato sanguinamento nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "sangramento",
+        "name": "Sangramento",
+        "shortDescription": "O sangramento torna uma ferida ou uma perda imediatamente visível dentro do sonho. A quantidade de sangue, a dor, a causa e a ajuda disponível diferenciam o susto, a impotência e a sensação de ser cuidado.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o sangramento mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -8173,6 +9357,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "afogamento",
+        "name": "Afogamento",
+        "shortDescription": "O afogamento faz com que o fôlego, a força e o tempo pareçam escassos dentro do sonho. O tipo de água, a ajuda disponível e sua tentativa de vir à tona determinam a tensão particular da cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o afogamento mudou na cena?",
+          "Qual sensação permaneceu comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "water",
         "ocean",
@@ -8246,6 +9441,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "estar-preso",
+        "name": "Estar preso",
+        "shortDescription": "A sensação de estar preso costuma começar com uma barreira específica: uma porta trancada, um espaço apertado ou alguém bloqueando a passagem. Procurar uma saída, receber ajuda ou desistir muda a força emocional da cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que estar preso mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "door",
         "elevator",
@@ -8316,6 +9522,17 @@
         "askYourself": [
           "Che cosa ha cambiato soffitta nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "sotao",
+        "name": "Sótão",
+        "shortDescription": "O sótão leva você a uma parte pouco usada da casa, onde os objetos ficam guardados fora da vida cotidiana. O que você encontrou lá e se subir foi uma escolha sua tornam esse cenário pessoal.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o sótão mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -8394,6 +9611,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "estar-atrasado",
+        "name": "Estar atrasado",
+        "shortDescription": "Estar atrasado cria pressão de tempo antes mesmo de o destino ser alcançado. Onde você precisava estar, quem esperava por você e as consequências que você imaginava moldam a mistura de vergonha, frustração ou alívio.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que estar atrasado mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "exam",
         "train",
@@ -8464,6 +9692,17 @@
         "askYourself": [
           "Che cosa ha cambiato perdere un treno nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "perder-o-trem",
+        "name": "Perder o trem",
+        "shortDescription": "Perder o trem combina um horário fixo com uma viagem que de repente deixa de estar disponível. Chegar atrasado, encontrar um obstáculo ou esperar na plataforma errada desloca o foco do sonho.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que perder o trem mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -8540,6 +9779,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "nao-conseguir-falar",
+        "name": "Não conseguir falar",
+        "shortDescription": "Não conseguir falar coloca a falta de palavras ou de acesso à sua voz no centro do sonho. Com quem você queria falar e como essa pessoa reagiu ao seu silêncio dão forma a essa troca bloqueada.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que não conseguir falar mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "mouth",
         "arguing",
@@ -8610,6 +9860,17 @@
         "askYourself": [
           "Che cosa ha cambiato paralisi nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "paralisia",
+        "name": "Paralisia",
+        "shortDescription": "A paralisia torna o movimento impossível enquanto o sonho continua ao seu redor. A sua posição, algum perigo imediato e a reação das outras pessoas definem se você sentiu impotência, calma ou resistência.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a paralisia mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -8685,6 +9946,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "gritar",
+        "name": "Gritar",
+        "shortDescription": "Um grito pode preencher o sonho ou não ser ouvido, por mais que você tente. O que o provocou, como ele soou e quem respondeu revelam se ele liberou uma emoção, deu um alerta ou pediu socorro.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que gritar mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "mouth",
         "arguing"
@@ -8757,6 +10029,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "esconder-se",
+        "name": "Esconder-se",
+        "shortDescription": "Ao se esconder em um sonho, repare de quem ou do que você está fugindo e se o recuo foi escolhido ou imposto. A segurança do esconderijo e o risco de ser descoberto definem boa parte da tensão.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o ato de se esconder mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "shadow",
         "night"
@@ -8826,6 +10109,17 @@
         "askYourself": [
           "Che cosa ha cambiato ombra nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "sombra",
+        "name": "Sombra",
+        "shortDescription": "Uma sombra pode ser sua, ser projetada por outra pessoa ou se mover sem uma fonte visível. Sua forma, sua distância e seu comportamento determinam se ela pareceu comum, protetora ou ameaçadora.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a sombra mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -8904,6 +10198,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "fantasma",
+        "name": "Fantasma",
+        "shortDescription": "O fantasma traz uma pessoa ou presença que parece ao mesmo tempo presente e inalcançável, às vezes ligada a uma memória. Reconhecê-lo, falar com ele ou temê-lo muda o contexto pessoal do sonho.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o fantasma mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "deceased-person",
         "night",
@@ -8974,6 +10279,17 @@
         "askYourself": [
           "Che cosa ha cambiato demone nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "demonio",
+        "name": "Demônio",
+        "shortDescription": "Um demônio pode aparecer como uma figura intimidadora moldada por imagens pessoais, religiosas ou culturais. O poder dele e o fato de você ter fugido, negociado ou resistido definem a cena; o sonho não é prova de uma presença sobrenatural.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o demônio mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -9050,6 +10366,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "monstro",
+        "name": "Monstro",
+        "shortDescription": "Um monstro pode combinar traços familiares em uma ameaça desconhecida ou em uma criatura fascinante. O tamanho, o comportamento, o entorno e a sua reação mostram o que tornou essa figura do sonho tão poderosa.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o monstro mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "night"
       ],
@@ -9118,6 +10445,17 @@
         "askYourself": [
           "Che cosa ha cambiato zombie nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "zumbi",
+        "name": "Zumbi",
+        "shortDescription": "Os zumbis mostram pessoas ou corpos que se movem parecendo alterados ou inalcançáveis. Uma única pessoa conhecida e uma multidão ameaçadora criam formas diferentes de perigo e pedem respostas diferentes.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o zumbi mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -9190,6 +10528,17 @@
         "askYourself": [
           "Che cosa ha cambiato prigione nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "prisao",
+        "name": "Prisão",
+        "shortDescription": "A prisão torna visíveis as regras, as portas trancadas, a vigilância e o movimento restrito. Estar ali como detento, visitante ou guarda muda a sua responsabilidade e o foco emocional do sonho.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a prisão mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -9266,6 +10615,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "terremoto",
+        "name": "Terremoto",
+        "shortDescription": "Um terremoto tira o chão firme e transforma um cenário familiar em questão de segundos. O que desabou, o que continuou de pé e quem você tentou proteger tornam a cena pessoal.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o terremoto mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "apocalypse",
         "mountain",
@@ -9339,6 +10699,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "tornado",
+        "name": "Tornado",
+        "shortDescription": "Um tornado se aproxima depressa, muda de direção e pode levar objetos ou pessoas embora. A distância dele, a sua rota de fuga e o abrigo disponível mostram quanto controle você sentiu ter.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o tornado mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "storm",
         "apocalypse"
@@ -9408,6 +10779,17 @@
         "askYourself": [
           "Che cosa ha cambiato hotel nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "hotel",
+        "name": "Hotel",
+        "shortDescription": "O hotel é um lugar temporário, dividido com hóspedes desconhecidos e organizado por rotinas prontas. O quarto, a bagagem, o acesso e o motivo da estadia mostram se a parada foi de descanso ou de desorientação.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o hotel mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -9486,6 +10868,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "raio",
+        "name": "Raio",
+        "shortDescription": "O raio interrompe um sonho com uma luz repentina, um trovão ou um impacto. O que ele revelou ou atingiu, e se você se sentiu assustado ou fascinado, dá o contexto do momento.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o raio mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "storm",
         "fire",
@@ -9559,6 +10952,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "neve",
+        "name": "Neve",
+        "shortDescription": "A neve muda os caminhos, os sons e o movimento familiares dentro de um sonho. O fato de ela estar fresca, suja, derretendo ou levada por uma tempestade determina se a paisagem pareceu calma, estranha ou perigosa.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a neve mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "rain",
         "mountain",
@@ -9629,6 +11033,17 @@
         "askYourself": [
           "Che cosa ha cambiato centro commerciale nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "shopping",
+        "name": "Shopping",
+        "shortDescription": "Um shopping pode colocar em primeiro plano a escolha, o consumo e o movimento entre muitas opções. Procurar um item específico, olhar as vitrines ou se perder no meio da multidão cria experiências diferentes.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o shopping mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -9707,6 +11122,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "vaca",
+        "name": "Vaca",
+        "shortDescription": "Uma vaca pode colocar em foco calma, sustento, paciência ou força física. Se ela pastava tranquilamente, protegia você ou se aproximava de um jeito ameaçador, isso muda o caráter da cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a vaca mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "horse",
         "mother"
@@ -9778,6 +11204,17 @@
         "askYourself": [
           "Che cosa ha cambiato coniglio nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "coelho",
+        "name": "Coelho",
+        "shortDescription": "Um coelho pode colocar em foco timidez, atenção, rapidez ou cuidado. Se ele fugiu, se escondeu ou se aproximou de você com confiança, isso muda o caráter pessoal do encontro.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o coelho mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -9856,6 +11293,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "camundongo",
+        "name": "Camundongo",
+        "shortDescription": "Um camundongo pode chamar atenção para algo pequeno, despercebido ou persistente. Correr solto, se esconder ou causar incômodo no seu espaço é o que dá ao animal o seu papel específico.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o camundongo mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "cat",
         "house"
@@ -9927,6 +11375,17 @@
         "askYourself": [
           "Che cosa ha cambiato ratto nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "rato",
+        "name": "Rato",
+        "shortDescription": "Um rato pode trazer nojo, desconfiança, adaptabilidade ou sobrevivência para o clima de um sonho. Se ele ameaçou você, fugiu ou apenas abriu caminho em silêncio, isso é o que dá o tom a esse encontro específico.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o rato mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -10005,6 +11464,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "urso",
+        "name": "Urso",
+        "shortDescription": "Ver um urso pode fazer com que força, proteção, recuo ou perigo imediato pareçam presentes. O comportamento dele e a distância entre vocês dizem mais do que atribuir um significado fixo.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o urso mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "forest",
         "wolf",
@@ -10077,6 +11547,17 @@
         "askYourself": [
           "Che cosa ha cambiato elefante nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "elefante",
+        "name": "Elefante",
+        "shortDescription": "O tamanho de um elefante pode enfatizar memória, vínculo ou força tranquila. Bloquear o caminho, liderar uma manada ou buscar um contato delicado muda sua relação com a presença dele.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o elefante mudou na cena?",
+          "Qual sensação permaneceu comigo ao acordar?"
         ],
         "faq": []
       },
@@ -10154,6 +11635,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "peixe",
+        "name": "Peixe",
+        "shortDescription": "Um peixe pode destacar a liberdade de movimento, a adaptação ou a sensação de estar preso. Nadar livremente, ficar preso ou estar fora d'água muda a cena por completo.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o peixe mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "water",
         "ocean",
@@ -10227,6 +11719,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "tubarao",
+        "name": "Tubarão",
+        "shortDescription": "Um tubarão na água pode tornar imediata uma ameaça percebida, uma pressão forte ou uma presença dominante. Atacar, passar tranquilamente ou permanecer lá no fundo cria cenas diferentes.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o tubarão mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "ocean",
         "water"
@@ -10296,6 +11799,17 @@
         "askYourself": [
           "Che cosa ha cambiato balena nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "baleia",
+        "name": "Baleia",
+        "shortDescription": "Encontrar uma baleia pode criar uma sensação de profundidade, de calma ou de sobrecarga. Se ela vem à tona, canta, acompanha você ou encalha, isso define a direção emocional da cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a baleia mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -10372,6 +11886,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "golfinho",
+        "name": "Golfinho",
+        "shortDescription": "Nadar com um golfinho pode colocar em foco a brincadeira, o contato, a orientação ou a ajuda mútua. Uma companhia amigável, um resgate ou uma agressividade inesperada levam a cena para direções diferentes.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o golfinho mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "ocean",
         "water",
@@ -10442,6 +11967,17 @@
         "askYourself": [
           "Che cosa ha cambiato rana nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "sapo",
+        "name": "Sapo",
+        "shortDescription": "O sapo transita entre a água e a terra e pode introduzir mudança ou desconforto corporal em um sonho. O pulo, o coaxar e o lugar onde ele estava ajudam a situar esse encontro em particular.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o sapo mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -10520,6 +12056,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "borboleta",
+        "name": "Borboleta",
+        "shortDescription": "Uma borboleta pode tornar presente uma mudança delicada, a liberdade ou um instante passageiro. Pousar em você, voar para longe, ser capturada ou ter as asas danificadas muda o tom da cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a borboleta mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "forest",
         "sun",
@@ -10595,6 +12142,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "abelha",
+        "name": "Abelha",
+        "shortDescription": "Uma abelha pode colocar em foco o trabalho, a cooperação, limites claros ou o medo de uma ferroada. Visitar flores, colher mel ou circular ao seu redor define se a cena pareceu tranquila ou ameaçadora.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a abelha mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "workplace",
         "sun"
@@ -10666,6 +12224,17 @@
         "askYourself": [
           "Che cosa ha cambiato formica nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "formiga",
+        "name": "Formiga",
+        "shortDescription": "As formigas podem colocar em foco a resistência, a cooperação ou o peso de uma quantidade avassaladora. A trilha, o destino delas e a sua reação mostram se a cena pareceu organizada ou invasiva.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a formiga mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -10744,6 +12313,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "coruja",
+        "name": "Coruja",
+        "shortDescription": "O olhar de uma coruja pode enfatizar a observação silenciosa, a atenção no escuro ou a sensação de estar sendo observado. Encarar você, piar ou voar embora sem fazer barulho molda a impressão que fica.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a coruja mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "bird",
         "night",
@@ -10816,6 +12396,17 @@
         "askYourself": [
           "Che cosa ha cambiato aquila nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "aguia",
+        "name": "Águia",
+        "shortDescription": "Uma águia pode colocar em foco visão ampla, distância, ambição ou um perigo vindo de cima. Voar em círculos com liberdade, capturar uma presa ou estar aprisionada muda sua relação com a ave.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a águia mudou na cena?",
+          "Qual sensação permaneceu comigo ao acordar?"
         ],
         "faq": []
       },
@@ -10892,6 +12483,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "corvo",
+        "name": "Corvo",
+        "shortDescription": "Os grasnados, o voo e o comportamento de um corvo podem colocar em foco curiosidade, atenção ou desconforto. Seguir você, carregar alguma coisa ou simplesmente grasnar alto é o que dá caráter ao encontro.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o corvo mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "bird",
         "death",
@@ -10965,6 +12567,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "rosa",
+        "name": "Rosa",
+        "shortDescription": "Uma rosa pode trazer beleza, proximidade, afeto ou vulnerabilidade para a cena. A cor dela, o estado em que estava e a forma como você lidou com os espinhos dão à flor o seu significado pessoal.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a rosa mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "partner",
         "wedding",
@@ -11035,6 +12648,17 @@
         "askYourself": [
           "Che cosa ha cambiato giardino nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "jardim",
+        "name": "Jardim",
+        "shortDescription": "O estado do jardim e o que você faz nele podem tornar visíveis o cuidado, o crescimento, a ordem ou o abandono. Cuidar dele, descansar nele ou ter a entrada negada liga esse lugar à sua experiência atual.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o jardim mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -11113,6 +12737,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "deserto",
+        "name": "Deserto",
+        "shortDescription": "Um deserto pode tornar imediatas as sensações de vazio, amplidão, resistência ou desorientação. O clima, os suprimentos e a presença ou não de companhia mostram se a paisagem ofereceu liberdade ou impôs dificuldades.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o deserto mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "lost",
         "sun",
@@ -11188,6 +12823,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "ilha",
+        "name": "Ilha",
+        "shortDescription": "Uma ilha pode colocar distância, abrigo, independência ou isolamento dentro da cena. Querer ficar ou procurar um jeito de voltar muda o significado emocional da paisagem.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a ilha mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "ocean",
         "water",
@@ -11258,6 +12904,17 @@
         "askYourself": [
           "Che cosa ha cambiato grotta nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "caverna",
+        "name": "Caverna",
+        "shortDescription": "Entrar em uma caverna ou avistá-la pode envolver abrigo, recolhimento, descoberta ou incerteza diante do desconhecido. A entrada, a profundidade e a luz disponível mostram o quanto ela pareceu acessível ou ameaçadora.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a caverna mudou na cena?",
+          "Que sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -11336,6 +12993,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "rio",
+        "name": "Rio",
+        "shortDescription": "A correnteza de um rio pode tornar visível o movimento, uma transição ou algo que segue em curso. A direção dela e a sua posição em relação à água mostram se você foi junto ou resistiu.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o rio mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "water",
         "ocean",
@@ -11406,6 +13074,17 @@
         "askYourself": [
           "Che cosa ha cambiato lago nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "lago",
+        "name": "Lago",
+        "shortDescription": "Um lago pode criar calma, profundidade, separação ou um estado emocional difícil de decifrar. A superfície, a margem e tudo o que se vê lá embaixo dão ao cenário seu caráter particular.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o lago mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -11482,6 +13161,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "cachoeira",
+        "name": "Cachoeira",
+        "shortDescription": "Uma cachoeira pode tornar imediata a sensação de movimento intenso, de alívio ou de estar sobrecarregado. Estar acima, embaixo ou atrás da água que cai muda o seu papel e a sua exposição dentro da cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a cachoeira mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "water",
         "river",
@@ -11555,6 +13245,17 @@
         ],
         "faq": []
       },
+      "pt": {
+        "slug": "vulcao",
+        "name": "Vulcão",
+        "shortDescription": "Um vulcão pode colocar em foco uma pressão que sobe, uma mudança intensa ou uma força difícil de controlar. Se ele estava adormecido, fumegando ou em erupção, isso mostra o quanto a tensão parecia urgente.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que o vulcão mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
+        ],
+        "faq": []
+      },
       "relatedSymbols": [
         "fire",
         "mountain",
@@ -11625,6 +13326,17 @@
         "askYourself": [
           "Che cosa ha cambiato maschera nella scena?",
           "Quale emozione è rimasta dopo il risveglio?"
+        ],
+        "faq": []
+      },
+      "pt": {
+        "slug": "mascara",
+        "name": "Máscara",
+        "shortDescription": "Uma máscara pode colocar em foco um lado escondido, um papel encenado ou a incerteza a respeito de outra pessoa. Quem a usava e se ela podia ser tirada definem a tensão pessoal da cena.",
+        "modifiedAt": "2026-07-24",
+        "askYourself": [
+          "O que a máscara mudou na cena?",
+          "Qual sensação ficou comigo ao acordar?"
         ],
         "faq": []
       },
@@ -11800,6 +13512,37 @@
           }
         ]
       },
+      "pt": {
+        "slug": "coco",
+        "name": "Cocô",
+        "seoTitle": "cocô ou fezes",
+        "documentTitle": "Sonhar com cocô: significado e contexto",
+        "documentMetaDescription": "Sonhou com cocô ou fezes? Compare vaso sanitário, limpeza, ingestão, vergonha, alívio e cenas recorrentes sem tratar o sonho como uma previsão.",
+        "shortDescription": "Cocô ou fezes em um sonho podem chamar atenção para constrangimento, liberação, privacidade ou algo que você quer remover. O cenário, o que aconteceu com aquilo e se você sentiu nojo, alívio ou indiferença importam mais do que um significado fixo.",
+        "askYourself": [
+          "O cocô estava no vaso sanitário, no chão, na roupa, na boca ou em algum lugar inesperado?",
+          "Eu escondi, limpei, toquei, pisei nele ou senti alívio depois que ele sumiu?",
+          "Que situação recente envolveu privacidade, vergonha, bagunça, dinheiro, saúde ou a necessidade de deixar algo ir?"
+        ],
+        "faq": [
+          {
+            "question": "O que significa sonhar com cocô ou fezes?",
+            "answer": "Pode ter relação com liberação, constrangimento, privacidade, limites ou um problema desagradável de lidar. Sua ação e sua emoção na cena são mais úteis do que uma definição universal."
+          },
+          {
+            "question": "O que significa limpar cocô em sonho?",
+            "answer": "Limpar pode refletir assumir responsabilidade, reparar um erro ou tentar restaurar a ordem. Repare se a tarefa parecia possível, injusta, urgente ou sem fim."
+          },
+          {
+            "question": "O que significa sonhar com cocô na boca ou comer cocô?",
+            "answer": "Essa cena perturbadora pode expressar nojo, humilhação, palavras das quais você se arrepende ou pressão para aceitar algo indesejado. Não é uma previsão e também pode vir de uma memória sensorial recente."
+          },
+          {
+            "question": "Sonhar com cocô prevê dinheiro ou sorte?",
+            "answer": "Algumas tradições ligam as fezes a dinheiro ou sorte, mas não existe regra preditiva confiável. Compare essa associação com o que você sentiu, com acontecimentos recentes e com o cenário exato do sonho."
+          }
+        ]
+      },
       "relatedSymbols": [
         "bathroom",
         "mouth",
@@ -11963,6 +13706,37 @@
           {
             "question": "Perché sognare tanti vermi o vermi nel cibo?",
             "answer": "Una grande quantità può amplificare una piccola preoccupazione; il cibo può collegarsi a fiducia, appetito o contaminazione. Pasti, giardinaggio o immagini recenti possono attivare la scena."
+          }
+        ]
+      },
+      "pt": {
+        "slug": "vermes",
+        "name": "Vermes",
+        "seoTitle": "vermes ou minhocas",
+        "documentTitle": "Sonhar com vermes: significado e contexto",
+        "documentMetaDescription": "Sonhou com vermes? Compare vermes na terra, na comida, na boca ou no corpo e use a emoção e os acontecimentos recentes para interpretar a cena sem previsões.",
+        "shortDescription": "Vermes no sonho podem chamar atenção para algo escondido, persistente, em decomposição ou que muda devagar sob a superfície. O lugar onde estavam, a quantidade, o movimento e a sua reação ajudam a distinguir o nojo ou a preocupação da renovação e da memória comum.",
+        "askYourself": [
+          "Os vermes estavam na terra, na comida, na água, na boca, no corpo ou em outro lugar inesperado?",
+          "Eles eram brancos, escuros, vivos, parados, se multiplicando ou saindo da cena?",
+          "Eu senti nojo, medo, curiosidade, responsabilidade ou alívio, e que acontecimento recente carrega essa sensação?"
+        ],
+        "faq": [
+          {
+            "question": "O que significa sonhar com vermes?",
+            "answer": "Os vermes podem se encaixar em temas de preocupação escondida, persistência, decomposição ou renovação. O lugar onde o sonho acontece e o tom emocional importam mais do que tratar os vermes como um símbolo fixo."
+          },
+          {
+            "question": "O que significa sonhar com vermes na boca ou no corpo?",
+            "answer": "Essa cena pode expressar nojo, pensamentos intrusivos, ansiedade com a saúde ou palavras que parecem difíceis de dizer. Ela não diagnostica nenhuma doença, então separe as imagens do sonho dos sintomas reais."
+          },
+          {
+            "question": "O que significa sonhar com vermes brancos ou vivos?",
+            "answer": "A cor e o movimento podem deixar a imagem mais vívida, mas não têm um código universal. Pergunte-se se os vermes pareciam ameaçadores, naturais, úteis ou apenas inesperados."
+          },
+          {
+            "question": "Por que os sonhos mostram muitos vermes ou vermes na comida?",
+            "answer": "Uma grande quantidade pode amplificar uma preocupação pequena, enquanto a comida pode ligar a cena à confiança, ao apetite ou à contaminação. Refeições recentes, jardinagem ou algo visto recentemente na mídia também podem ser o gatilho direto."
           }
         ]
       },
@@ -12133,6 +13907,37 @@
           }
         ]
       },
+      "pt": {
+        "slug": "barata",
+        "name": "Barata",
+        "seoTitle": "barata ou baratas",
+        "documentTitle": "Sonhar com baratas: significado",
+        "documentMetaDescription": "Sonhou com baratas? Compare uma única barata, uma infestação, matá-las ou limpar o lugar, e a emoção que tornou a cena marcante.",
+        "shortDescription": "Uma barata no sonho pode tornar visível a persistência, a invasão, o nojo ou um problema que não para de voltar. A quantidade, o lugar, o movimento e a sua reação ajudam a separar um medo pessoal da resiliência ou de um gatilho recente da vida cotidiana.",
+        "askYourself": [
+          "Era uma barata só ou várias, e foi na cozinha, no quarto, no banheiro ou ao ar livre?",
+          "Eu congelei, corri, matei a barata, limpei o lugar, vi que ela escapou ou fiquei estranhamente calmo?",
+          "Qual problema atual parece invasivo, difícil de eliminar, constrangedor ou resistente de um jeito inesperado?"
+        ],
+        "faq": [
+          {
+            "question": "O que significa sonhar com baratas?",
+            "answer": "As baratas podem se encaixar em temas de invasão, nojo, persistência ou resiliência. A sua relação com insetos e o cenário exato importam mais do que um significado universal único."
+          },
+          {
+            "question": "O que significa sonhar com muitas baratas ou com uma infestação?",
+            "answer": "Muitos insetos podem amplificar uma preocupação que parece difícil de conter. A cena pode refletir estresse ou um encontro recente, mas não prevê uma infestação real."
+          },
+          {
+            "question": "O que significa sonhar que está matando ou limpando baratas?",
+            "answer": "Eliminá-las pode refletir o ato de estabelecer um limite, encarar um problema repetido ou restaurar a ordem. Repare se o esforço funcionou e se você sentiu alívio, culpa ou medo."
+          },
+          {
+            "question": "O que significa sonhar com barata em casa ou na cama?",
+            "answer": "Um cenário íntimo pode direcionar o sonho para segurança, intimidade ou uma invasão indesejada. Ter visto uma barata de verdade, uma preocupação com pragas ou uma imagem vista naquele dia também são gatilhos diretos possíveis."
+          }
+        ]
+      },
       "relatedSymbols": [
         "ant",
         "house",
@@ -12297,6 +14102,37 @@
           {
             "question": "Che cosa significa camminare senza scarpe in sogno?",
             "answer": "Essere scalzi può sembrare libero, vulnerabile, radicato o impreparato secondo il terreno e l’emozione. Confronta la scena con il tuo senso reale di sicurezza."
+          }
+        ]
+      },
+      "pt": {
+        "slug": "sapatos",
+        "name": "Sapatos",
+        "seoTitle": "sapatos, sapatos perdidos ou sapatos novos",
+        "documentTitle": "Sonhar com Sapatos: Significado e Contexto",
+        "documentMetaDescription": "Sonhou com sapatos? Compare sapatos novos, perdidos, quebrados, trocados ou ausentes e use o caminho, o quanto eles serviam e a emoção para entender a cena no contexto.",
+        "shortDescription": "Os sapatos em um sonho podem chamar a atenção para direção, preparo, identidade ou o quanto um papel serve em você. O estado deles, se eram seus e o caminho à frente ajudam a distinguir uma lembrança prática de uma escolha ou de uma transição.",
+        "askYourself": [
+          "Os sapatos estavam novos, velhos, perdidos, quebrados, apertados demais, grandes demais ou diferentes um do outro?",
+          "Eu estava calçando-os, escolhendo um par, procurando um sapato ou sem conseguir andar com conforto?",
+          "Qual papel, decisão ou próximo passo da minha vida parece servir bem, servir mal ou ainda não estar pronto?"
+        ],
+        "faq": [
+          {
+            "question": "O que significa sonhar com sapatos?",
+            "answer": "Os sapatos podem ter a ver com direção, preparação, identidade ou o papel que você está assumindo. O quanto eles serviam, o estado deles e o destino são mais úteis do que uma interpretação fixa."
+          },
+          {
+            "question": "O que significa sonhar com sapatos novos, quebrados ou perdidos?",
+            "answer": "Sapatos novos podem combinar com preparo ou experimentação; sapatos quebrados ou perdidos podem refletir atraso, desconforto ou incerteza. Lembranças pessoais e necessidades práticas também podem explicá-los."
+          },
+          {
+            "question": "O que significa escolher ou calçar os sapatos errados em um sonho?",
+            "answer": "Escolher um par pode espelhar uma comparação ou uma preparação. Sapatos que não servem podem destacar um papel, plano ou expectativa que parece desconfortável, em vez de prever um fracasso."
+          },
+          {
+            "question": "O que significa sonhar que anda descalço?",
+            "answer": "Estar descalço pode dar uma sensação de liberdade, de exposição, de enraizamento ou de despreparo, dependendo da superfície e da emoção. Compare a cena com o seu senso real de segurança e de preparo."
           }
         ]
       },
@@ -12467,6 +14303,37 @@
           }
         ]
       },
+      "pt": {
+        "slug": "tartarugas",
+        "name": "Tartarugas",
+        "seoTitle": "tartarugas, casco de tartaruga ou filhotes de tartaruga",
+        "documentTitle": "Sonhar com tartarugas: significado e contexto",
+        "documentMetaDescription": "Sonhou com tartarugas? Compare água, casco, recolhimento, movimento lento e filhotes de tartaruga a partir da sua emoção e das suas experiências recentes, não de previsões.",
+        "shortDescription": "Uma tartaruga no sonho pode chamar atenção para ritmo, proteção, persistência ou recolhimento. O fato de ela andar em terra ou na água, de se esconder no casco, de se aproximar de você ou de precisar de ajuda muda o contexto pessoal.",
+        "askYourself": [
+          "A tartaruga estava em terra, nadando, escondida no casco, me seguindo ou sem conseguir se mover?",
+          "O ritmo dela parecia tranquilizador, frustrante, vulnerável ou exatamente certo para a cena?",
+          "Que situação atual envolve paciência, proteção, um avanço constante ou a necessidade de sair do recolhimento?"
+        ],
+        "faq": [
+          {
+            "question": "O que significa sonhar com tartaruga?",
+            "answer": "A tartaruga pode combinar com temas de paciência, proteção, persistência ou recolhimento. O comportamento dela e a sua emoção são mais úteis do que atribuir um significado universal."
+          },
+          {
+            "question": "O que significa sonhar com tartaruga na água?",
+            "answer": "A água pode deslocar a atenção para a emoção, a adaptação ou um movimento com menos resistência. Repare se a tartaruga nadava com calma, se estava se debatendo ou se sumiu de vista."
+          },
+          {
+            "question": "O que significa sonhar com tartaruga escondida no casco?",
+            "answer": "Recolher-se no casco pode espelhar um desejo de privacidade, de segurança ou de tempo antes de responder. Também pode ser apenas a repetição de uma imagem literal, sem nenhuma mensagem oculta."
+          },
+          {
+            "question": "O que significa sonhar com filhotes de tartaruga ou com muitas tartarugas?",
+            "answer": "Filhotes de tartaruga podem destacar começos frágeis ou passos pequenos, enquanto muitas tartarugas podem enfatizar um ritmo compartilhado ou uma responsabilidade que se repete. Nenhuma das cenas prevê um desfecho."
+          }
+        ]
+      },
       "relatedSymbols": [
         "water",
         "ocean",
@@ -12631,6 +14498,37 @@
           {
             "question": "Che cosa significa un coccodrillo tranquillo o dentro casa?",
             "answer": "Un animale tranquillo può spostare l’attenzione su rispetto, controllo o convivenza. In casa, questi temi entrano in un confine personale; anche un’immagine recente può spiegare la scena."
+          }
+        ]
+      },
+      "pt": {
+        "slug": "crocodilos",
+        "name": "Crocodilos",
+        "seoTitle": "crocodilos, ataques ou crocodilos na água",
+        "documentTitle": "Sonhar com Crocodilos: Significado e Contexto",
+        "documentMetaDescription": "Sonhou com crocodilos? Compare cenas de água, perseguição, ataque, casa e crocodilo calmo usando sua emoção e seu contexto recente, sem previsões.",
+        "shortDescription": "Um crocodilo no sonho pode chamar a atenção para a vigilância, os limites, uma tensão escondida ou uma força contida. A distância, o movimento, o cenário e a sua reação distinguem uma ameaça percebida de um encontro tranquilo ou de uma lembrança recente.",
+        "askYourself": [
+          "O crocodilo estava na água, me perseguindo ou me atacando, dentro de casa, parado ou inesperadamente calmo?",
+          "Senti medo, fascínio, controle, nojo ou respeito diante da distância e da força dele?",
+          "Que situação atual pede limites mais claros, observação paciente ou uma resposta a uma pressão que ficou abaixo da superfície?"
+        ],
+        "faq": [
+          {
+            "question": "O que significa sonhar com crocodilo?",
+            "answer": "Um crocodilo pode se encaixar em temas de vigilância, limites, tensão escondida ou força contida. O comportamento dele e a sua emoção dão mais contexto do que uma definição universal."
+          },
+          {
+            "question": "O que significa sonhar com crocodilo na água?",
+            "answer": "A água pode dar mais destaque a uma sensação ou situação pouco clara. Repare se o animal ficou distante, veio à tona devagar, seguiu você ou bloqueou o seu caminho."
+          },
+          {
+            "question": "O que significa ser perseguido ou atacado por um crocodilo?",
+            "answer": "Uma perseguição ou um ataque pode espelhar urgência, fuga ou a sensação de estar sob pressão. Isso não prevê nenhum dano; compare a cena com o estresse atual e com a forma como você tentou chegar a um lugar seguro."
+          },
+          {
+            "question": "O que significa sonhar com crocodilo calmo ou crocodilo dentro de casa?",
+            "answer": "Um animal calmo pode deslocar a atenção para o respeito, a contenção ou a convivência. Um crocodilo dentro de casa pode colocar esses temas dentro de um limite pessoal, e conteúdos vistos recentemente também podem fornecer a imagem diretamente."
           }
         ]
       },
@@ -12801,6 +14699,37 @@
           }
         ]
       },
+      "pt": {
+        "slug": "piolhos",
+        "name": "Piolhos",
+        "seoTitle": "piolhos no cabelo, tirar piolhos ou muitos piolhos",
+        "documentTitle": "Sonhar com piolhos: significado e contexto",
+        "documentMetaDescription": "Sonhou com piolhos? Compare piolhos no cabelo, tirar piolhos, muitos piolhos e encontrá-los em alguém a partir da emoção e do contexto recente, sem previsões.",
+        "shortDescription": "Piolhos em um sonho podem colocar em foco uma irritação repetida, limites muito próximos, cuidado ou medo de exposição social. Quem os tinha, quantos apareceram e se você os removeu ajudam a separar uma preocupação prática de um tema emocional mais amplo.",
+        "askYourself": [
+          "Os piolhos estavam no meu cabelo, eram muitos, estavam sendo removidos ou foram encontrados em uma criança ou em outra pessoa?",
+          "Senti coceira, nojo, vergonha, urgência, alívio, vontade de proteger ou uma concentração paciente?",
+          "Um comunicado da escola, uma preocupação de família, uma tarefa de limpeza, um contato próximo ou um pequeno problema repetido ocupou minha atenção recentemente?"
+        ],
+        "faq": [
+          {
+            "question": "O que significa sonhar com piolhos?",
+            "answer": "Piolhos podem corresponder a uma irritação repetida, preocupações invasivas, limites muito próximos, cuidado ou desconforto social. A pessoa afetada e sua reação dão mais contexto do que um significado único e fixo."
+          },
+          {
+            "question": "O que significa sonhar com piolhos no cabelo?",
+            "answer": "Piolhos no seu próprio cabelo podem fazer com que uma preocupação persistente pareça pessoal e difícil de ignorar. Uma coceira recente, um aviso de saúde ou o gesto de checar o cabelo de alguém também podem fornecer a imagem diretamente."
+          },
+          {
+            "question": "O que significa sonhar que está tirando ou matando piolhos?",
+            "answer": "Tirar piolhos pode enfatizar a resolução cuidadosa de problemas, limpeza, alívio ou a vontade de retomar o controle sobre pequenas pressões repetidas. Isso não prevê uma infestação real."
+          },
+          {
+            "question": "O que significa sonhar com muitos piolhos ou com piolhos em uma criança?",
+            "answer": "Muitos piolhos podem amplificar a sobrecarga ou a repetição. Encontrá-los em uma criança ou em outra pessoa pode destacar cuidado e responsabilidade, especialmente depois de uma preocupação real de escola, família ou saúde."
+          }
+        ]
+      },
       "relatedSymbols": [
         "hair",
         "child",
@@ -12965,6 +14894,37 @@
           {
             "question": "Che cosa significa uno scorpione tranquillo o in casa?",
             "answer": "Un animale tranquillo può spostare l’attenzione su controllo e rispetto. In casa può richiamare privacy o confini, soprattutto dopo un’immagine o un incontro recente."
+          }
+        ]
+      },
+      "pt": {
+        "slug": "escorpioes",
+        "name": "Escorpiões",
+        "seoTitle": "escorpiões, ferroadas ou escorpiões escondidos",
+        "documentTitle": "Sonhar com escorpiões: significado e contexto",
+        "documentMetaDescription": "Sonhou com escorpiões? Compare um escorpião calmo ou escondido, uma ferroada, muitos escorpiões e o lugar onde apareceram usando a emoção e o contexto recente.",
+        "shortDescription": "Um escorpião em um sonho pode colocar em foco vigilância, limites, tensão oculta ou autoproteção. A distância, o movimento, o lugar e a sua reação ajudam a distinguir uma imagem recente e marcante de um tema emocional mais amplo.",
+        "askYourself": [
+          "O escorpião estava calmo, escondido, se aproximando, ferroando, dentro de casa ou era um entre muitos?",
+          "Senti medo, nojo, curiosidade, controle, dor, cautela ou respeito pela distância dele?",
+          "Um documentário, um encontro ao ar livre, um aviso, um conflito ou uma questão de limites ocupou minha atenção recentemente?"
+        ],
+        "faq": [
+          {
+            "question": "O que significa sonhar com escorpiões?",
+            "answer": "Escorpiões podem combinar com vigilância, limites, tensão oculta ou proteção. O comportamento deles, o lugar e a sua emoção dão um contexto mais útil do que um significado universal fixo."
+          },
+          {
+            "question": "O que significa uma ferroada de escorpião em sonho?",
+            "answer": "Uma ferroada pode tornar vívido um comentário ferino, um conflito repentino ou um limite frágil. Ela não prevê ferimentos; compare a cena com pressões recentes e com qualquer sensação física durante o sono."
+          },
+          {
+            "question": "O que significam muitos escorpiões ou escorpiões escondidos em sonho?",
+            "answer": "Muitos escorpiões podem amplificar preocupações que se repetem, enquanto um escondido pode destacar incerteza ou atenção cuidadosa. Nenhuma das cenas prova que outra pessoa esteja sendo desonesta."
+          },
+          {
+            "question": "O que significa um escorpião calmo ou dentro de casa?",
+            "answer": "Um escorpião calmo pode deslocar o foco para a contenção e o respeito. Dentro de casa, a mesma imagem pode enfatizar privacidade ou limites, especialmente depois de uma imagem ou de um encontro recente."
           }
         ]
       },
@@ -13135,6 +15095,37 @@
           }
         ]
       },
+      "pt": {
+        "slug": "cemiterio",
+        "name": "Cemitério",
+        "seoTitle": "cemitério, túmulos ou visita ao cemitério",
+        "documentTitle": "Sonhar com cemitério: túmulos, visitas e contexto",
+        "documentMetaDescription": "Sonhou com cemitério ou túmulos? Compare os túmulos, a caminhada, as visitas, a noite e a sua emoção dentro do contexto, sem previsões espirituais fixas.",
+        "shortDescription": "Um cemitério no sonho pode colocar em foco a memória, o luto, uma transição ou a vontade de revisitar algo que já terminou. Os túmulos, o horário do dia, as pessoas presentes e o que você estava fazendo distinguem uma lembrança recente de um tema pessoal mais amplo.",
+        "askYourself": [
+          "Eu estava caminhando entre os túmulos, procurando um deles, visitando alguém, participando de uma reunião ou tentando ir embora?",
+          "O cemitério parecia tranquilo, abandonado, cheio, assustador, familiar ou inesperadamente comum?",
+          "Que lembrança recente, perda, término, história de família, visita ou imagem pode ter fornecido justamente esse lugar?"
+        ],
+        "faq": [
+          {
+            "question": "O que significa sonhar com cemitério?",
+            "answer": "Um cemitério pode se encaixar em temas de memória, luto, transição ou reflexão sobre algo que terminou. O cenário, a ação e a emoção são mais úteis do que um significado fixo."
+          },
+          {
+            "question": "O que significa sonhar que caminha entre túmulos à noite?",
+            "answer": "A noite pode intensificar a incerteza ou o medo, enquanto caminhar pode mostrar exploração ou uma tentativa de encontrar direção. Uma visita, uma história ou uma imagem recente também podem explicar a cena diretamente."
+          },
+          {
+            "question": "O que significa sonhar que visita o túmulo de alguém?",
+            "answer": "A visita pode colocar em foco a lembrança, uma conversa inacabada ou o desejo de conexão. Ela não comprova contato com quem morreu nem carrega uma mensagem universal."
+          },
+          {
+            "question": "Sonhar com cemitério prevê morte ou má notícia?",
+            "answer": "Não. Um sonho não pode prever uma morte nem uma má notícia. Compare a cena com experiências e emoções recentes, em vez de tratá-la como um aviso."
+          }
+        ]
+      },
       "relatedSymbols": [
         "death",
         "deceased-person",
@@ -13299,6 +15290,37 @@
           {
             "question": "Che cosa significano un nido di vespe o molte vespe?",
             "answer": "Il nido può indicare una fonte di tensione vicina, in casa o al lavoro; molte vespe amplificano uno sciame di piccole preoccupazioni. La scena non dimostra ostilità intorno a te."
+          }
+        ]
+      },
+      "pt": {
+        "slug": "vespas",
+        "name": "Vespas",
+        "seoTitle": "vespas, ferroadas, ataques ou ninho",
+        "documentTitle": "Sonhar com vespas: ferroada, ataque ou ninho",
+        "documentMetaDescription": "Sonhou com vespas? Compare uma ferroada, um ataque ou perseguição, um ninho de vespas, muitas vespas e vespas calmas usando a sua emoção e o contexto recente.",
+        "shortDescription": "Uma vespa em um sonho pode colocar em foco irritação, limites, raiva ou uma ameaça percebida. O comportamento dela — ferroar, perseguir, fazer um ninho por perto ou simplesmente estar presente — e a sua reação ajudam a separar uma imagem recente e marcante de um tema emocional mais amplo.",
+        "askYourself": [
+          "A vespa estava ferroando, atacando, me perseguindo, calma, perto de um ninho ou era uma entre muitas?",
+          "Senti medo, dor, irritação, pânico, controle ou apenas cautela perto dela?",
+          "Uma discussão, um comentário ferino, um encontro com insetos ou um ninho por perto ocupou minha atenção recentemente?"
+        ],
+        "faq": [
+          {
+            "question": "O que significa sonhar com vespas?",
+            "answer": "Vespas podem combinar com irritação, raiva, limites ou uma ameaça percebida. O comportamento da vespa, o lugar e a sua emoção dão um contexto mais útil do que um significado universal fixo."
+          },
+          {
+            "question": "O que significa uma ferroada de vespa em sonho?",
+            "answer": "Uma ferroada pode tornar vívido um comentário que machucou, um conflito repentino ou um limite ultrapassado. Ela não prevê ferimentos; compare a cena com tensões recentes e com qualquer sensação física durante o sono."
+          },
+          {
+            "question": "O que significa ser atacado ou perseguido por vespas?",
+            "answer": "Um ataque ou uma perseguição pode espelhar uma pressão da qual parece difícil escapar — críticas, conflito ou irritação acumulada. Isso reflete intensidade, não um perigo real esperando por você."
+          },
+          {
+            "question": "O que significa um ninho de vespas ou muitas vespas em sonho?",
+            "answer": "Um ninho pode apontar para uma fonte de tensão perto de casa ou do trabalho; muitas vespas podem amplificar um enxame de pequenas preocupações. Nenhuma das cenas prova que as pessoas ao seu redor sejam hostis."
           }
         ]
       },

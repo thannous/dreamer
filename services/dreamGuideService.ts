@@ -25,6 +25,7 @@ type CurationPage = {
   es: LocalizedDreamGuideContent;
   de: LocalizedDreamGuideContent;
   it: LocalizedDreamGuideContent;
+  pt: LocalizedDreamGuideContent;
 };
 
 // Keep this order aligned with docs-src/config/site.config.json#featuredGuideEntries.
