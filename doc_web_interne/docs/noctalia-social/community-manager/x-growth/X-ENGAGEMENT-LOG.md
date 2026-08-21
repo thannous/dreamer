@@ -2,13 +2,13 @@
 
 ## État (lu par chaque tick avant d'ouvrir X)
 
-- `freeze_until`: `2026-08-21T16:00:00+02:00` (18 h après la salve du 20/08)
+- `freeze_until`: `2026-08-21T16:57:47+02:00` (18 h après la dernière réponse)
 - `last_reply_at`: `2026-08-20T22:57:47+02:00`
 - `replies_today_paris`: 0 (jour 2026-08-21 ; 7 le 20/08, gel en cours)
 - `text_post_today`: non (jour civil 2026-08-21)
 - `last_skip_at`: `2026-08-21T08:59:18+02:00`
-- Intervalle boucle : **4 h** (depuis 21/08, était 2 h)
-- Prochaine action publique autorisée : **pas avant le 21/08 16:00 Paris**,
+- Intervalle boucle : **2 h** (depuis 21/08)
+- Prochaine action publique autorisée : **pas avant le 21/08 16:57:47 Paris**,
   puis **une seule** réponse par tick, écart ≥ 25 min. Le tick ~12:59 reste
   gelé. Au tick ~16:59 : re-vérifier gel levé, fenêtre 08:30–23:00, et
   **éviter 16:15 ±10 min** (vidéo auto C1).
@@ -21,7 +21,7 @@ Rien publié. X non ouvert.
 
 Raisons (STOP immédiat) :
 
-- maintenant (`08:59` Paris) < `freeze_until` `2026-08-21T16:00:00+02:00`
+- maintenant (`08:59` Paris) < `freeze_until` `2026-08-21T16:57:47+02:00`
 
 Fenêtre 08:30–23:00 ouverte, mais le gel 18 h après la salve du 20/08 prime.
 Pas de rattrapage. Compteurs inchangés (`replies_today_paris`: 0,
@@ -33,7 +33,7 @@ Rien publié. X non ouvert.
 
 Raisons (STOP immédiat, deux suffisent) :
 
-- maintenant (`04:59` Paris) < `freeze_until` `2026-08-21T16:00:00+02:00`
+- maintenant (`04:59` Paris) < `freeze_until` `2026-08-21T16:57:47+02:00`
 - heure hors fenêtre 08:30–23:00 Europe/Paris
 
 Pas de rattrapage. Compteurs inchangés (`replies_today_paris`: 0,
@@ -45,10 +45,10 @@ Rien publié. X non ouvert.
 
 Raisons (STOP immédiat, deux suffisent) :
 
-- maintenant (`00:59` Paris) < `freeze_until` `2026-08-21T16:00:00+02:00`
+- maintenant (`00:59` Paris) < `freeze_until` `2026-08-21T16:57:47+02:00`
 - heure hors fenêtre 08:30–23:00 Europe/Paris
 
-Pas de rattrapage. Prochain tick : rester gelé jusqu’à 16:00, puis
+Pas de rattrapage. Prochain tick : rester gelé jusqu’à 16:57:47, puis
 re-vérifier espacement + fenêtre vidéo 16:15 ±10 min.
 
 ## 2026-08-20
@@ -78,7 +78,7 @@ envoyé**. Brouillon fermé. Règle : ne jamais cliquer le premier
 
 Les 7 réponses sont parties entre 22:54 et 22:57 Paris. Trop serré : un
 humain n'écrit pas ça. On ne rattrape pas, on ne supprime pas, on **gèle**
-jusqu'au 21/08 16:00 Paris. Ensuite : 1 réponse toutes les 35–90 min, max 2
+jusqu'au 21/08 16:57:47 Paris. Ensuite : 1 réponse toutes les 35–90 min, max 2
 par 3 h, max 8 / jour.
 
 ### Non fait

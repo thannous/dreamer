@@ -111,10 +111,11 @@ programmées, boost payant, changement de bio, suppression de posts. Le
 protocole opérationnel est
 [`x-growth/X-GROWTH-PROTOCOL.md`](./x-growth/X-GROWTH-PROTOCOL.md).
 
-Ces actions sont autorisées sur les six comptes listés, sans nouvelle validation
-publication par publication, tant que le contenu, l'asset, la date et le compte
-correspondent exactement au calendrier validé. Le volet X ci-dessus s'ajoute à
-ce calendrier, il ne le remplace pas.
+Les actions générales de publication sont autorisées sur les six comptes listés,
+sans nouvelle validation publication par publication, tant que le contenu,
+l'asset, la date et le compte correspondent exactement au calendrier validé.
+Le volet X ci-dessus est une autorisation distincte et s'applique exclusivement
+à `@NoctaliaDreams` ; il s'ajoute à ce calendrier sans le remplacer.
 
 ## Actions restant soumises à une autorisation spécifique
 

@@ -3,9 +3,10 @@
 Créé le 2026-08-20. Propriétaire opérationnel : agent responsable X, sur
 mandat du propriétaire Noctalia.
 
-Ce fichier est la source de vérité pour X. Il **n'annule pas** les trois
-vidéos quotidiennes déjà programmées jusqu'au 10 septembre. Il ajoute la
-couche qui manquait : conversation, texte, réponses.
+Ce fichier est la source de vérité pour X et s'applique exclusivement à
+`@NoctaliaDreams`. Il **n'annule pas** les trois vidéos quotidiennes déjà
+programmées jusqu'au 10 septembre. Il ajoute la couche qui manquait :
+conversation, texte, réponses.
 
 ## Diagnostic figé (20/08/2026)
 
@@ -39,11 +40,12 @@ X n'est pas TikTok. Sur ce compte, l'ordre des leviers est :
 
 1. réponses sous des posts d'humains qui parlent vraiment de rêves
 2. 1 post texte / jour, sans lien, sans hashtag
-3. 1 vidéo / jour maximum comme illustration, pas 3 dumps identiques
+3. au plus 1 **nouvelle** vidéo / jour comme illustration, pas 3 dumps
+   identiques
 
-Les créneaux vidéo C1/C2/C3 déjà nativement programmés restent en place
-jusqu'au 10/09. On ne les annule pas sans autorisation spécifique. On
-n'ajoute plus de quatrième vidéo.
+La limite ne réduit pas la file C1/C2/C3 déjà nativement programmée : ses
+créneaux restent inchangés jusqu'au 10/09 et ne sont ni annulés ni supprimés
+sans autorisation spécifique. On n'ajoute pas de quatrième vidéo.
 
 ## Cadence — un humain, pas une salve
 
@@ -63,9 +65,10 @@ Paris) ressemble à un script. **On ne recommence pas.**
 | Interdit autour des vidéos auto | ±10 min de 16:15 / 20:15 / 23:15 Paris |
 | Après une salve (3+ en 10 min) | **18 h sans nouvelle réponse** |
 
-La boucle tourne **toutes les 4 heures**. Un tick = **au plus une** action
-publique : soit 1 réponse, soit 1 like seul, soit 1 texte, soit rien. Jamais
-2 réponses dans le même run.
+La boucle tourne **toutes les 2 heures**. Un tick = **au plus une** réponse
+publique, ou rien ; jamais 2 réponses dans le même run. Le texte original,
+limité à un par jour, se fait dans un créneau séparé et ne consomme pas un tick
+de réponse.
 
 Certains ticks doivent volontairement **ne rien publier** (environ 1 sur 3)
 pour casser le métronome.
