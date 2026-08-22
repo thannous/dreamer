@@ -151,27 +151,27 @@
 <li>Expérimenter des situations avant de les vivre</li>
 <li>Accéder à des insights de l'inconscient</li>
 </ul>
-<h3>Booster sa creativite grace au rêve lucide</h3>
+<h3>Booster sa créativité grâce au rêve lucide</h3>
 <ul>
 <li>Explorer des idées sans limites physiques</li>
 <li>De nombreux artistes et scientifiques s'en inspirent</li>
 <li>Salvador Dali et Paul McCartney ont crédit leurs rêves</li>
 </ul>
-<h3>Benefices therapeutiques du rêve lucide</h3>
+<h3>Bénéfices thérapeutiques du rêve lucide</h3>
 <ul>
 <li>Traitement des cauchemars récurrents</li>
 <li>Gestion du stress post-traumatique (en complément)</li>
 <li>Amélioration de la confiance en soi</li>
 </ul>
-<h2 id="prerequis">Les prerequis pour faire un rêve lucide</h2>
+<h2 id="prerequis">Les prérequis pour faire un rêve lucide</h2>
 <p>
                     Avant de vous lancer dans les techniques d'induction, deux fondations sont absolument nécessaires :
                 </p>
-<h3>1. Tenir un journal de rêves pour la lucidite</h3>
+<h3>1. Tenir un journal de rêves pour la lucidité</h3>
 <p>
                     C'est <strong>LA base incontournable</strong>. Sans mémoire de vos rêves, vous ne saurez jamais si vous avez été lucide. Notez vos rêves chaque matin, même les fragments. En quelques semaines, votre mémoire onirique s'améliorera nettement.
                 </p>
-<h3>2. Hygiene de sommeil pour favoriser le rêve lucide</h3>
+<h3>2. Hygiène de sommeil pour favoriser le rêve lucide</h3>
 <p>
                     Les rêves lucides surviennent principalement pendant le sommeil REM, plus abondant en fin de nuit. Dormez suffisamment (7-9h) et a horaires réguliers pour maximiser vos chances.
                 </p>
@@ -189,7 +189,7 @@
 </div>
 </div>
 </aside>
-<h2 id="reality-checks">Reality checks : les tests de realite pour le rêve lucide</h2>
+<h2 id="reality-checks">Reality checks : les tests de réalité pour le rêve lucide</h2>
 <p>
                     Les reality checks sont des <strong>tests que vous effectuez régulièrement</strong> pour vérifier si vous rêvez. L'idée est de créer une habitude si forte qu'elle se reproduit automatiquement dans vos rêves.
                 </p>
@@ -253,17 +253,17 @@
 <p>
                     Voici quatre méthodes courantes, de la plus accessible à la plus exigeante. Leur efficacité varie selon les personnes et aucune ne garantit un rêve lucide :
                 </p>
-<h3>1. Technique MILD pour debutants</h3>
+<h3>1. Technique MILD pour débutants</h3>
 <p>
                     Développée par Stephen LaBerge, c'est la technique idéale pour débuter :
                 </p>
 <ol>
-<li>Réveillez-vous apres 5-6 heures de sommeil</li>
+<li>Réveillez-vous après 5-6 heures de sommeil</li>
 <li>Rappelez-vous votre dernier rêve en détail</li>
 <li>En vous rendormant, répétez : "La prochaine fois que je rêve, je saurai que je rêve"</li>
 <li>Visualisez-vous devenant lucide dans ce même rêve</li>
 </ol>
-<h3>2. Methode WBTB : se reveiller pour rêver lucide</h3>
+<h3>2. Méthode WBTB : se réveiller pour rêver lucide</h3>
 <p>
                     WBTB interrompt volontairement le sommeil avant une nouvelle tentative MILD :
                 </p>
@@ -287,12 +287,12 @@
 <p>
                     Pour favoriser les DILD, identifiez vos dream signs grâce à votre journal et programmez-vous mentalement à les reconnaître. Notre <a class="text-dream-salmon hover:underline" href="../guides/dictionnaire-symboles-reves">guide des symboles de rêves</a> peut vous aider à cataloguer et comprendre les signes récurrents.
                 </p>
-<h3>4. Technique WILD avancee pour rêve lucide</h3>
+<h3>4. Technique WILD avancée pour rêve lucide</h3>
 <p>
                     Technique avancée consistant à passer directement de l'éveil au rêve :
                 </p>
 <ol>
-<li>Apres WBTB, allongez-vous sans bouger</li>
+<li>Après WBTB, allongez-vous sans bouger</li>
 <li>Restez conscient pendant que votre corps s'endort</li>
 <li>Observez les images hypnagogiques sans vous y attacher</li>
 <li>Entrez progressivement dans le rêve conscient</li>
@@ -304,7 +304,7 @@
 <p>
                     Votre premier rêve lucide sera probablement bref - quelques secondes avant de se réveiller ou de perdre la lucidité. Voici comment prolonger l'expérience :
                 </p>
-<h3>Techniques pour ne pas se reveiller en rêve lucide</h3>
+<h3>Techniques pour ne pas se réveiller en rêve lucide</h3>
 <ul>
 <li><strong>Frotter ses mains :</strong> Crée une sensation tactile qui ancre dans le rêve</li>
 <li><strong>Toucher le sol/murs :</strong> Active les sens pour maintenir la conscience</li>
@@ -312,18 +312,18 @@
 <li><strong>Tourner sur soi-même :</strong> Technique de LaBerge pour rester dans le rêve</li>
 <li><strong>Commander "Clarté maintenant!" :</strong> Verbalisez vos intentions</li>
 </ul>
-<h3>Erreurs qui font perdre la lucidite</h3>
+<h3>Erreurs qui font perdre la lucidité</h3>
 <ul>
 <li>S'exciter excessivement (réveille)</li>
 <li>Fermer les yeux longtemps (risque de faux réveil ou réveil)</li>
 <li>Se concentrer trop sur le fait qu'on rêve</li>
 </ul>
-<h2 id="erreurs">Erreurs de debutant en rêve lucide a eviter</h2>
+<h2 id="erreurs">Erreurs de débutant en rêve lucide à éviter</h2>
 <h3>1. Ne pas tenir de journal de rêves</h3>
 <p>
                     Sans journal, vous oublierez vos rêves lucides ou ne remarquerez pas les progrès. C'est le fondement de tout.
                 </p>
-<h3>2. Pratiquer les techniques de facon irreguliere</h3>
+<h3>2. Pratiquer les techniques de façon irrégulière</h3>
 <p>
                     La régularité prime sur l'intensité. Mieux vaut 5 minutes de pratique quotidienne que 2 heures une fois par semaine.
                 </p>

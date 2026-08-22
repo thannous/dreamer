@@ -31,7 +31,7 @@
   "jsonLd": [
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir\",\n  \"description\": \"Guide complet pour comprendre la paralysie du sommeil, ses causes et les techniques prouvées pour prévenir les épisodes.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/sleep-paralysis-guide.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/fr/a-propos\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-01-06\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\"\n  },\n  \"inLanguage\": \"fr\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1325,\n  \"timeRequired\": \"PT5M\",\n  \"url\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\",\n  \"url\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\",\n  \"name\": \"Paralysie du sommeil : causes et solutions efficaces | Noctalia\",\n  \"inLanguage\": \"fr\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"La paralysie du sommeil est-elle dangereuse ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Non, la paralysie du sommeil n'est pas dangereuse. Bien que l'expérience puisse être terrifiante, c'est une condition bénigne qui ne cause pas de dommage physique. Les épisodes durent généralement de quelques secondes a deux minutes et se terminent d'eux-memes.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Peut-on mourir de paralysie du sommeil ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Non, la paralysie du sommeil ne peut pas causer la mort. Malgré la sensation terrifiante de ne pas pouvoir respirer, votre corps continue de respirer automatiquement. La sensation de pression sur la poitrine est une hallucination, pas une restriction respiratoire réelle.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Comment arrêter une paralysie du sommeil immédiatement ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Pour sortir de la paralysie du sommeil, concentrez-vous sur le mouvement de petites parties du corps comme vos doigts ou orteils. Essayez de les bouger ou de fermer le poing. Certaines personnes trouvent que se concentrer sur la respiration ou essayer de faire un petit son aide. Restez calme et rappelez-vous que l'épisode se terminera bientôt.\"\n      }\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"La paralysie du sommeil est-elle dangereuse ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Non, la paralysie du sommeil n'est pas dangereuse. Bien que l'expérience puisse être terrifiante, c'est une condition bénigne qui ne cause pas de dommage physique. Les épisodes durent généralement de quelques secondes à deux minutes et se terminent d'eux-mêmes.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Peut-on mourir de paralysie du sommeil ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Non, la paralysie du sommeil ne peut pas causer la mort. Malgré la sensation terrifiante de ne pas pouvoir respirer, votre corps continue de respirer automatiquement. La sensation de pression sur la poitrine est une hallucination, pas une restriction respiratoire réelle.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Comment arrêter une paralysie du sommeil immédiatement ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Pour sortir de la paralysie du sommeil, concentrez-vous sur le mouvement de petites parties du corps comme vos doigts ou orteils. Essayez de les bouger ou de fermer le poing. Certaines personnes trouvent que se concentrer sur la respiration ou essayer de faire un petit son aide. Restez calme et rappelez-vous que l'épisode se terminera bientôt.\"\n      }\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressources\",\n      \"item\": \"https://noctalia.app/fr/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Guide paralysie du sommeil\",\n      \"item\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -117,18 +117,18 @@
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#quest-ce-que">1. Qu'est-ce que la paralysie du sommeil</a></li>
-<li><a class="toc-link block" href="#symptomes">2. Symptomes de la paralysie du sommeil</a></li>
+<li><a class="toc-link block" href="#symptomes">2. Symptômes de la paralysie du sommeil</a></li>
 <li><a class="toc-link block" href="#science">3. Explication scientifique de la paralysie</a></li>
-<li><a class="toc-link block" href="#causes">4. Causes et facteurs declencheurs</a></li>
-<li><a class="toc-link block" href="#hallucinations">5. Pourquoi voit-on des presences</a></li>
+<li><a class="toc-link block" href="#causes">4. Causes et facteurs déclencheurs</a></li>
+<li><a class="toc-link block" href="#hallucinations">5. Pourquoi voit-on des présences</a></li>
 <li><a class="toc-link block" href="#arreter">6. Comment sortir d'une paralysie</a></li>
-<li><a class="toc-link block" href="#prevenir">7. Comment eviter la paralysie du sommeil</a></li>
-<li><a class="toc-link block" href="#quand-consulter">8. Quand consulter un medecin</a></li>
+<li><a class="toc-link block" href="#prevenir">7. Comment éviter la paralysie du sommeil</a></li>
+<li><a class="toc-link block" href="#quand-consulter">8. Quand consulter un médecin</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="quest-ce-que">Qu'est-ce que la paralysie du sommeil et comment la reconnaitre</h2>
+<h2 id="quest-ce-que">Qu'est-ce que la paralysie du sommeil et comment la reconnaître</h2>
 <p>
                     La paralysie du sommeil est une incapacité temporaire à bouger ou parler qui survient <strong>au réveil ou à l'endormissement</strong>. Pendant un épisode, vous êtes pleinement conscient mais votre corps reste dans l'état paralyse du <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>. Cette déconnexion entre l'esprit et le corps crée l'une des expériences les plus effrayantes du sommeil humain.
                 </p>
@@ -144,11 +144,11 @@
 <p>
                     Aujourd'hui, la science à une explication claire pour ce phénomène, et le comprendre peut aider à réduire la peur associée aux épisodes.
                 </p>
-<h2 id="symptomes">Symptomes de la paralysie du sommeil : que ressent-on</h2>
+<h2 id="symptomes">Symptômes de la paralysie du sommeil : que ressent-on</h2>
 <p>
                     Les épisodes de paralysie du sommeil incluent généralement plusieurs symptômes distincts :
                 </p>
-<h3>Symptomes physiques de la paralysie nocturne</h3>
+<h3>Symptômes physiques de la paralysie nocturne</h3>
 <ul>
 <li><strong>Paralysie musculaire complète :</strong> Incapacité de bouger les membres, le torse ou la tete</li>
 <li><strong>Pression thoracique :</strong> Sensation de poids sur la poitrine, difficulté à respirer</li>
@@ -172,7 +172,7 @@
 <p>
                     Pendant le sommeil paradoxal normal, votre cerveau paralyse vos muscles par un processus appelé <strong>atonie REM</strong>. Cela vous empêche d'agir vos rêves - un mécanisme de sécurité crucial. La paralysie du sommeil survient quand cette atonie persiste dans l'éveil ou commence avant que vous ne soyez complètement endormi.
                 </p>
-<h3>Mecanisme cerebral de la paralysie du sommeil</h3>
+<h3>Mécanisme cérébral de la paralysie du sommeil</h3>
 <ul>
 <li>La <strong>zone preoptique ventrolaterale</strong> échoue à transitionner correctement entre les états de sommeil et d'éveil</li>
 <li>Les neurotransmetteurs <strong>glycine et GABA</strong> continuent de supprimer les neurones moteurs</li>
@@ -182,24 +182,24 @@
 <p>
                     Une recherche de l'Université de Waterloo a trouve que la paralysie du sommeil survient chez environ <strong>7,6% de la population générale</strong>, avec des taux plus eleves chez les étudiants (28,3%) et les patients psychiatriques (31,9%).
                 </p>
-<h2 id="causes">Causes de la paralysie du sommeil : facteurs declencheurs</h2>
+<h2 id="causes">Causes de la paralysie du sommeil : facteurs déclencheurs</h2>
 <p>
                     Bien que n'importe qui puisse expérimenter la paralysie du sommeil, certains facteurs augmentent nettement la probabilité :
                 </p>
-<h3>Manque de sommeil et horaires irreguliers</h3>
+<h3>Manque de sommeil et horaires irréguliers</h3>
 <ul>
 <li><strong>Manque de sommeil :</strong> Le déclencheur le plus courant</li>
 <li><strong>Horaires de sommeil irréguliers :</strong> Travail poste, décalage horaire, heures de coucher inconsistantes</li>
 <li><strong>Dormir sur le dos :</strong> La position supine augmente la fréquence des épisodes</li>
 <li><strong>Narcolepsie :</strong> La paralysie du sommeil est un symptôme clé de ce trouble</li>
 </ul>
-<h3>Stress et anxiete comme declencheurs</h3>
+<h3>Stress et anxiété comme déclencheurs</h3>
 <ul>
 <li><strong>Stress et anxiété :</strong> Forte corrélation avec la fréquence des épisodes</li>
 <li><strong>Consommation de substances :</strong> Alcool, caféine et certains médicaments</li>
 <li><strong>Mauvaise hygiène de sommeil :</strong> Utilisation d'écrans avant le coucher, environnement de sommeil inconfortable</li>
 </ul>
-<h3>Troubles du sommeil associes a la paralysie</h3>
+<h3>Troubles du sommeil associés à la paralysie</h3>
 <ul>
 <li><strong>Apnée du sommeil :</strong> Interruptions de la respiration pendant le sommeil</li>
 <li><strong>TSPT :</strong> Le stress post-traumatique augmente la vulnérabilité</li>
@@ -235,15 +235,15 @@
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="hallucinations">Pourquoi voit-on des presences pendant la paralysie</h2>
+<h2 id="hallucinations">Pourquoi voit-on des présences pendant la paralysie</h2>
 <p>
                     Ces hallucinations ne sont pas aléatoires - elles suivent des schémas prévisibles expliqués par les neurosciences :
                 </p>
-<h3>Sensation de presence malveillante expliquee</h3>
+<h3>Sensation de présence malveillante expliquée</h3>
 <p>
                     Ce sentiment de présence menaçante résulte de l'<strong>hyperactivation de votre amygdale</strong>. Normalement, le cortex préfrontal modère les réponses de peur, mais pendant la paralysie du sommeil, cette régulation échoue. Votre cerveau interprète la paralysie comme une menace et crée une source pour ce danger.
                 </p>
-<h3>Pression sur la poitrine et difficulte a respirer</h3>
+<h3>Pression sur la poitrine et difficulté à respirer</h3>
 <p>
                     Pression thoracique et difficulté à respirer surviennent parce que les muscles respiratoires (bien que fonctionnant toujours) semblent restreints. Votre cerveau interprète cela comme quelque chose appuyant sur vous, souvent visualisé comme une figure assise sur votre poitrine.
                 </p>
@@ -269,7 +269,7 @@
 <p>
                     Quand vous vous trouvez en paralysie du sommeil, ces techniques peuvent vous aider a vous libérer :
                 </p>
-<h3>Techniques pour se liberer de la paralysie</h3>
+<h3>Techniques pour se libérer de la paralysie</h3>
 <ol>
 <li><strong>Concentrez-vous sur les petits mouvements :</strong> Concentrez-vous sur le mouvement de vos doigts, orteils ou muscles faciaux. Ceux-ci brisent souvent la paralysie</li>
 <li><strong>Contrôlez votre respiration :</strong> Prenez des respirations lentes et profondes. Cela active votre système nerveux parasympathique</li>
@@ -286,11 +286,11 @@
 <blockquote>
                     "Au moment ou j'ai arrête de lutter et que je me suis juste concentre sur le mouvement de mon petit doigt, la paralysie s'est brisée en quelques secondes."
                 </blockquote>
-<h2 id="prevenir">Comment eviter la paralysie du sommeil : prevention</h2>
+<h2 id="prevenir">Comment éviter la paralysie du sommeil : prévention</h2>
 <p>
                     Bien que vous ne puissiez pas garantir la prévention, ces stratégies réduisent nettement la fréquence des épisodes :
                 </p>
-<h3>Hygiene du sommeil pour prevenir les episodes</h3>
+<h3>Hygiène du sommeil pour prévenir les épisodes</h3>
 <ul>
 <li><strong>Maintenez des heures de sommeil constantes :</strong> Couchez-vous et réveillez-vous à là même heure quotidiennement</li>
 <li><strong>Dormez suffisamment :</strong> Visez 7-9 heures par nuit</li>
@@ -304,14 +304,14 @@
 <li><strong>Exercice régulier :</strong> Mais pas dans les 3 heures avant le sommeil</li>
 <li><strong>Gérez le temps d'écran :</strong> Pas d'écrans 1-2 heures avant le coucher</li>
 </ul>
-<h3>Paralysie du sommeil frequente : que faire</h3>
+<h3>Paralysie du sommeil fréquente : que faire</h3>
 <ul>
 <li><strong>Tenez un journal de sommeil :</strong> Suivez les patterns, déclencheurs et fréquence</li>
 <li><strong>Pratiquez la méditation de sommeil :</strong> Relaxation guidée avant le coucher</li>
 <li><strong>Considérez la TCC-I :</strong> Thérapie Cognitivo-Comportementale pour l'Insomnie</li>
 <li><strong>Traitez les conditions sous-jacentes :</strong> Traitez l'anxiété, la dépression ou les troubles du sommeil</li>
 </ul>
-<h2 id="quand-consulter">Quand consulter un medecin pour la paralysie du sommeil</h2>
+<h2 id="quand-consulter">Quand consulter un médecin pour la paralysie du sommeil</h2>
 <p>
                     La paralysie du sommeil est généralement bénigne, mais consultez un professionnel de santé si :
                 </p>
@@ -320,7 +320,7 @@
 <li>Vous expérimentez une <strong>somnolence diurne excessive</strong></li>
 <li>Les épisodes causent une <strong>anxiété significative ou un évitement du sommeil</strong></li>
 <li>Vous avez d'autres symptômes de <strong>narcolepsie</strong> (faiblesse musculaire soudaine, rêves vivides)</li>
-<li>La paralysie du sommeil a commence apres un <strong>traumatisme ou des changements de médication</strong></li>
+<li>La paralysie du sommeil a commencé après un <strong>traumatisme ou des changements de médication</strong></li>
 </ul>
 <p>
                     Un spécialiste du sommeil peut recommander une <strong>polysomnographie</strong> (étude du sommeil) pour exclure la narcolepsie ou d'autres troubles du sommeil. Dans certains cas, des médicaments comme les ISRS peuvent aider à réduire la fréquence des épisodes.
@@ -352,7 +352,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Non, la paralysie du sommeil n'est pas dangereuse. Bien que l'expérience puisse être terrifiante, c'est une condition bénigne qui ne cause pas de dommage physique. Les épisodes durent généralement de quelques secondes a deux minutes et se terminent d'eux-memes.
+                            Non, la paralysie du sommeil n'est pas dangereuse. Bien que l'expérience puisse être terrifiante, c'est une condition bénigne qui ne cause pas de dommage physique. Les épisodes durent généralement de quelques secondes à deux minutes et se terminent d'eux-mêmes.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">

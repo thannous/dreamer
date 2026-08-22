@@ -414,7 +414,7 @@
 <p class="mt-6 text-xs text-purple-200/60">Actualizado el 28 de julio de 2026</p>
 </section>
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Articulos relacionados</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Artículos relacionados</h2>
 <div class="grid md:grid-cols-2 gap-6">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="significado-suenos-recurrentes">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>

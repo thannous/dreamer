@@ -94,11 +94,11 @@
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#que-sont">1. Qu'est-ce qu'un cauchemar et pourquoi en fait-on ?</a></li>
-<li><a class="toc-link block" href="#causes">2. Les causes principales des cauchemars recurrents</a></li>
-<li><a class="toc-link block" href="#signification">3. Signification des cauchemars : ce qu'ils revelent</a></li>
-<li><a class="toc-link block" href="#types">4. Les differents types de cauchemars et mauvais reves</a></li>
-<li><a class="toc-link block" href="#arreter">5. Comment arreter de faire des cauchemars</a></li>
-<li><a class="toc-link block" href="#aide">6. Quand consulter un medecin pour des cauchemars</a></li>
+<li><a class="toc-link block" href="#causes">2. Les causes principales des cauchemars récurrents</a></li>
+<li><a class="toc-link block" href="#signification">3. Signification des cauchemars : ce qu'ils révèlent</a></li>
+<li><a class="toc-link block" href="#types">4. Les différents types de cauchemars et mauvais rêves</a></li>
+<li><a class="toc-link block" href="#arreter">5. Comment arrêter de faire des cauchemars</a></li>
+<li><a class="toc-link block" href="#aide">6. Quand consulter un médecin pour des cauchemars</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
@@ -115,7 +115,7 @@
 <p>
                     Les cauchemars diffèrent des terreurs nocturnes, qui surviennent pendant le sommeil non-REM, impliquent des réactions physiques comme des cris, et sont rarement mémorisées. Les cauchemars sont entièrement mémorisés et se produisent pendant les phases de sommeil plus légères.
                 </p>
-<h2 id="causes">Les causes principales des cauchemars recurrents</h2>
+<h2 id="causes">Les causes principales des cauchemars récurrents</h2>
 <p>
                     Comprendre ce qui déclenche les cauchemars est la première étape pour les réduire :
                 </p>
@@ -190,30 +190,30 @@
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="signification">Signification des cauchemars : ce qu'ils revelent</h2>
+<h2 id="signification">Signification des cauchemars : ce qu'ils révèlent</h2>
 <p>
                     Vos cauchemars ne sont pas aléatoires - ils portent souvent des messages significatifs de votre subconscient :
                 </p>
 <p>
                     Si vos cauchemars tournent autour de thèmes comme <a class="text-dream-salmon hover:underline" href="../symboles/poursuite">être poursuivi</a>, <a class="text-dream-salmon hover:underline" href="../symboles/chute">chuter</a>, la <a class="text-dream-salmon hover:underline" href="../symboles/mort">mort</a>, ou des créatures inquiétantes comme un <a class="text-dream-salmon hover:underline" href="../symboles/serpent">serpent</a> ou une <a class="text-dream-salmon hover:underline" href="../symboles/araignee">araignée</a>, rechercher ces symboles peut aider à comprendre le message en profondeur.
                 </p>
-<h3>Les cauchemars comme traitement emotionnel</h3>
+<h3>Les cauchemars comme traitement émotionnel</h3>
 <p>
                     Votre cerveau utilise les rêves pour <strong>traiter les émotions que vous n'avez pas entièrement gérées éveillé</strong>. Les cauchemars peuvent surgir quand les émotions deviennent trop intenses pour être ignorées. La peur dans le rêve reflète souvent des peurs réelles que vous réprimez.
                 </p>
-<h3>Les mauvais reves comme systeme d'alerte</h3>
+<h3>Les mauvais rêves comme système d'alerte</h3>
 <p>
                     Certains cauchemars fonctionnent comme un <strong>système d'alerte précoce</strong>, mettant en lumière des problèmes ou menaces que vous n'admettez pas consciemment. Prêtez attention aux thèmes récurrents - ils peuvent pointer vers des problèmes nécessitant attention.
                 </p>
-<h3>Role des cauchemars dans la memoire</h3>
+<h3>Rôle des cauchemars dans la mémoire</h3>
 <p>
                     Pendant le sommeil, votre cerveau consolide les souvenirs et expériences. <strong>Les événements stressants sont rejoués</strong> alors que votre esprit tente de les traiter et les archiver. C'est pourquoi les cauchemars suivent souvent des journées difficiles.
                 </p>
 <p>
                     Les cauchemars peuvent attirer l’attention sur du stress ou des expériences qui semblent encore non résolues. Ils ne constituent pas une punition, et un rêve isolé ne permet pas d’établir un diagnostic.
                 </p>
-<h2 id="types">Les differents types de cauchemars et mauvais reves</h2>
-<h3>Cauchemars lies au stress et a l'anxiete</h3>
+<h2 id="types">Les différents types de cauchemars et mauvais rêves</h2>
+<h3>Cauchemars liés au stress et à l'anxiété</h3>
 <p>
                     C'est le type le plus courant, directement lié aux facteurs de stress quotidiens. Ces cauchemars présentent souvent <strong>des scénarios d'impréparation, d'échec ou de situations embarrassantes</strong>. Ils diminuent généralement quand le stress est résolu.
                 </p>
@@ -221,7 +221,7 @@
 <p>
                     Suite à des événements traumatisants, les cauchemars peuvent <strong>rejouer le trauma ou des thèmes associés</strong>. Ils sont particulièrement persistants et peuvent nécessiter un traitement professionnel. Ils sont un symptôme caractéristique du SSPT.
                 </p>
-<h3>Cauchemars repetitifs : pourquoi le même reve revient</h3>
+<h3>Cauchemars répétitifs : pourquoi le même rêve revient</h3>
 <p>
                     Quand le même cauchemar se répète nuit après nuit, il suggère un <strong>problème non résolu que votre psyché tente de traiter</strong>. Attendez-vous à ce que la répétition continue jusqu'à ce que vous abordiez le problème sous-jacent.
                 </p>
@@ -243,15 +243,15 @@
 </div>
 </div>
 </aside>
-<h2 id="arreter">Comment arreter de faire des cauchemars : 6 techniques</h2>
+<h2 id="arreter">Comment arrêter de faire des cauchemars : 6 techniques</h2>
 <p>
                     Techniques prouvées pour réduire la fréquence et l'intensité des cauchemars :
                 </p>
-<h3>1. Therapie par Repetition d'Images contre les cauchemars</h3>
+<h3>1. Thérapie par Répétition d'Images contre les cauchemars</h3>
 <p>
                     Considérez cette technique comme la référence pour les cauchemars récurrents. <strong>Éveillé, visualisez le cauchemar mais changez la fin</strong> pour quelque chose de neutre ou positif. Pratiquez cette nouvelle version quotidiennement pendant 10-20 minutes. Les études montrent que l'IRT peut réduire la fréquence des cauchemars de 50 à 80%.
                 </p>
-<h3>2. Ameliorer son hygiene de sommeil pour moins de cauchemars</h3>
+<h3>2. Améliorer son hygiène de sommeil pour moins de cauchemars</h3>
 <p>
                     Un meilleur sommeil signifie moins de cauchemars :
                 </p>
@@ -262,7 +262,7 @@
 <li>Ne mangez pas de repas lourds tard le soir</li>
 <li>Limitez l'alcool et la caféine</li>
 </ul>
-<h3>3. Reduire le stress pour eviter les mauvais reves</h3>
+<h3>3. Réduire le stress pour éviter les mauvais rêves</h3>
 <p>
                     Puisque le stress est la cause principale des cauchemars :
                 </p>
@@ -276,15 +276,15 @@
 <p>
 <strong>Ce que vous faites avant de dormir affecte vos rêves</strong>. Évitez les contenus perturbants. Au lieu de cela, lisez quelque chose d'agréable, écoutez de la musique apaisante ou pratiquez la gratitude. Cela prépare votre cerveau pour un contenu onirique plus positif.
                 </p>
-<h3>5. Reve lucide pour controler ses cauchemars</h3>
+<h3>5. Rêve lucide pour contrôler ses cauchemars</h3>
 <p>
                     Apprendre à reconnaître que vous rêvez vous permet de <strong>changer le cauchemar de l'intérieur</strong>. Lucide, vous pouvez affronter les figures du cauchemar, changer les scénarios ou simplement vous réveiller. Les tests de réalité pendant la journée aident à développer cette compétence.
                 </p>
-<h3>6. Tenir un journal de reves pour analyser ses cauchemars</h3>
+<h3>6. Tenir un journal de rêves pour analyser ses cauchemars</h3>
 <p>
 <strong>Écrire les cauchemars peut réduire leur pouvoir</strong>. Les noter vous aide à identifier les patterns, traiter le contenu consciemment et suivre si les interventions fonctionnent.
                 </p>
-<h2 id="aide">Quand consulter un medecin pour des cauchemars</h2>
+<h2 id="aide">Quand consulter un médecin pour des cauchemars</h2>
 <p>
                     Envisagez une aide professionnelle si :
                 </p>
@@ -404,7 +404,7 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article précédent</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Rêves de Grossesse : Ce Qu'ils Signifient (Meme Si Vous N'Êtes Pas Enceinte)</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Rêves de Grossesse : Ce Qu'ils Signifient (Même Si Vous N'Êtes Pas Enceinte)</div>
       </div>
     </a>
     <a href="guide-paralysie-sommeil" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">

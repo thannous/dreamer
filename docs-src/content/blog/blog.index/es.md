@@ -642,7 +642,7 @@
 </a>
 </article>
 <!-- Article 9 - Incubación de sueños -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guia" data-reading-time="4" data-title="Incubación de sueños: como soñar exactamente lo que quieres esta noche">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guia" data-reading-time="4" data-title="Incubación de sueños: cómo soñar exactamente lo que quieres esta noche">
 <a class="block" href="guia-incubacion-suenos">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Técnica de incubación de sueños" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-incubation-guide.webp" srcset="../../img/blog/dream-incubation-guide-480w.webp 480w, ../../img/blog/dream-incubation-guide-800w.webp 800w, ../../img/blog/dream-incubation-guide-1200w.webp 1200w" width="800">
@@ -653,7 +653,7 @@
 <span class="text-xs text-purple-300/60">4 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Incubación de sueños: como soñar exactamente lo que quieres esta noche
+                                Incubación de sueños: cómo soñar exactamente lo que quieres esta noche
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Aprende el arte antiguo de la incubación onírica para resolver problemas y estimular tu
