@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-08-18",
+    "lastUpdated": "2026-08-20",
     "totalSymbols": 160,
     "languages": [
       "en",
@@ -2721,6 +2721,7 @@
       "es": {
         "slug": "escaleras",
         "name": "Escaleras",
+        "documentMetaDescription": "Soñar con escaleras: interpreta subir, bajar, caer, peldaños rotos o una subida difícil según el rumbo, el esfuerzo y la emoción del sueño.",
         "shortDescription": "Soñar con escaleras suele representar avance, retroceso y cambios de etapa: subir con facilidad, bajar, caer, encontrar escalones rotos o no llegar al final puede reflejar cómo vives una meta, una transición o una pérdida de control.",
         "askYourself": [
           "¿Subía, bajaba, caía o no lograba llegar al final?",
@@ -2753,7 +2754,7 @@
           "button": "Explorar el diccionario",
           "href": "/es/diccionario-de-suenos-app"
         },
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-08-20"
       },
       "de": {
         "slug": "treppe",
