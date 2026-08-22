@@ -121,6 +121,20 @@ subject. No prior send, reply, bounce, opt-out, draft or delivery warning was
 visible. D2 remains unsent and must not be transmitted until the user explicitly
 authorizes it and the public and mailbox gates are repeated immediately.
 
+## 2026-08-22 authorization-ready refresh
+
+The public article still contains the two `40–60 %` formulations, exactly one
+plain-text `(Source : Noctalia, 2026)` attribution and no `noctalia.app` link.
+It remains self-canonical and `follow, index`. The corrected Noctalia source is
+still public with the 55–70% belief range, the belief-versus-self-reported-
+experience distinction and DOI `10.1016/j.paid.2015.07.028`.
+
+The official recipient remains `contact@marikapech.com`. A fresh authenticated
+Gmail search across all mail found no matching send, draft, reply, bounce or
+opt-out. No message or draft was created. The prepared copy is ready for at
+most one factual correction request, but browser policy requires the user's
+confirmation immediately before the external send.
+
 ## External-action stop gate
 
 Before any transmission:
