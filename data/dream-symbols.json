@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-08-20",
+    "lastUpdated": "2026-08-23",
     "totalSymbols": 160,
     "languages": [
       "en",
@@ -204,13 +204,13 @@
       "it": {
         "slug": "acqua",
         "name": "Acqua",
-        "shortDescription": "Questa scheda rapida riassume il simbolo acqua: limpida, torbida, alta, corrente o dentro casa. Per confrontare alluvioni, mare, annegamento e altri scenari completi, usa la guida ai sogni d’acqua collegata in fondo alla pagina.",
+        "shortDescription": "Sognare acqua sporca o torbida può indicare confusione, stanchezza emotiva o una situazione difficile da leggere. La scheda distingue anche acqua pulita, limpida, corrente o in casa; la guida collegata tratta alluvioni, mare e annegamento.",
         "askYourself": [
           "L’acqua era pulita, limpida, torbida, sporca o in movimento?",
           "Stavo nuotando, osservando l’acqua o venivo trascinato?",
           "Quale emozione attuale somiglia allo stato dell’acqua?"
         ],
-        "seoTitle": "acqua pulita, limpida o sporca",
+        "seoTitle": "acqua sporca, torbida o limpida",
         "faq": [
           {
             "question": "Cosa significa sognare acqua?",
@@ -222,7 +222,7 @@
           },
           {
             "question": "Cosa significa sognare acqua torbida o sporca?",
-            "answer": "Acqua torbida o sporca suggerisce confusione, stanchezza emotiva o una situazione che non riesci ancora a leggere con lucidità."
+            "answer": "Sognare acqua torbida o sporca può suggerire confusione, stanchezza emotiva o una situazione che non riesci ancora a leggere con lucidità. Nota anche odore, profondità, movimento e ciò che provavi."
           },
           {
             "question": "Cosa significa sognare acqua che scorre?",
@@ -240,7 +240,7 @@
           "button": "Prova l'app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-07-16"
+        "modifiedAt": "2026-08-23"
       },
       "pt": {
         "slug": "agua",
