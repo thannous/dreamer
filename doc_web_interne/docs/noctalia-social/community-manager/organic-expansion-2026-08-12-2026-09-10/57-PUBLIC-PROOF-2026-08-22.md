@@ -8,13 +8,13 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | Créneau | Plateforme et compte | Heure | Asset exact | État préparatoire | URL publique vérifiée |
 |---|---|---:|---|---|---|
 | C1 | TikTok `@noctaliadreams` | 15:30 | `NOC_REVEIL_S02_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672914780075724054) ouvert vers 15:30, vu en direct à 15:31 |
-| C1 | Instagram `@noctaliadreams` | 15:45 | `NOC_REVEIL_S02_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/reel/DcWD7g0JJlc/) partagé vers 15:50 |
+| C1 | Instagram `@noctaliadreams` | 15:45 | `NOC_REVEIL_S02_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcWD7g0JJlc/) partagé vers 15:50 |
 | C1 | X `@NoctaliaDreams` | 16:15 | `NOC_REVEIL_S02_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | URL à collecter |
 | C2 | TikTok `@noctaliadreams` | 19:30 | `NOC_REVEIL_S03_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672914844755987734) ouvert public, vu en direct vers 19:53 |
-| C2 | Instagram `@noctaliadreams` | 19:45 | `NOC_REVEIL_S03_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/reel/DcWfSFypm93/) partagé vers 19:50 |
+| C2 | Instagram `@noctaliadreams` | 19:45 | `NOC_REVEIL_S03_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcWfSFypm93/) partagé vers 19:50 |
 | C2 | X `@NoctaliaDreams` | 20:15 | `NOC_REVEIL_S03_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | URL à collecter |
 | C3 | TikTok `@noctaliadreams` | 22:30 | `NOC_REVEIL_S04_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672914883452865794) ouvert vers 22:30, vu en direct à 22:31 |
-| C3 | Instagram `@noctaliadreams` | 22:45 | `NOC_REVEIL_S04_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/reel/DcW0OAuJszM/) partagé vers 22:50 |
+| C3 | Instagram `@noctaliadreams` | 22:45 | `NOC_REVEIL_S04_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcW0OAuJszM/) partagé vers 22:50 |
 | C3 | X `@NoctaliaDreams` | 23:15 | `NOC_REVEIL_S04_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | URL à collecter |
 
 ## Hero secondaire — 3 preuves
@@ -46,7 +46,7 @@ commence par `You wake underwater but never need to breathe. Would you stay?` ;
 le label créateur IA est activé.
 
 Instagram C1 est **PUBLIÉ**, partagé une fois vers 15:50 Paris :
-`https://www.instagram.com/reel/DcWD7g0JJlc/`. Légende verbatim
+`https://www.instagram.com/noctaliadreams/reel/DcWD7g0JJlc/`. Légende verbatim
 `You wake underwater but never need to breathe. Would you stay? #Noctalia #DreamJournal #SurrealDreams`.
 Label IA natif activé : *About this reel*, `noctaliadreams added an AI label`.
 Le compte passe de 38 à 39 publications. Les Reels de la veille
@@ -65,7 +65,7 @@ commence par `You wake above the city with no ground beneath you. What do you fe
 le label créateur IA est activé.
 
 Instagram C2 est **PUBLIÉ**, partagé une fois vers 19:50 Paris :
-`https://www.instagram.com/reel/DcWfSFypm93/`. Légende verbatim
+`https://www.instagram.com/noctaliadreams/reel/DcWfSFypm93/`. Légende verbatim
 `You wake above the city with no ground beneath you. What do you feel? #Noctalia #DreamJournal #SurrealDreams`.
 Label IA natif activé : *About this reel*, `noctaliadreams added an AI label`.
 Le compte passe de 39 à 40 publications. Le Reel C1 `DcWD7g0JJlc` n'a pas
@@ -84,7 +84,7 @@ commence par `Your reflection wakes before you do. What would it say?` ;
 le label créateur IA est activé.
 
 Instagram C3 est **PUBLIÉ**, partagé une fois vers 22:50 Paris :
-`https://www.instagram.com/reel/DcW0OAuJszM/`. Légende verbatim
+`https://www.instagram.com/noctaliadreams/reel/DcW0OAuJszM/`. Légende verbatim
 `Your reflection wakes before you do. What would it say? #Noctalia #DreamJournal #SurrealDreams`.
 Label IA natif activé : *About this reel*, `noctaliadreams added an AI label`.
 Le compte passe de 40 à 41 publications. Les Reels C1 `DcWD7g0JJlc` et C2
