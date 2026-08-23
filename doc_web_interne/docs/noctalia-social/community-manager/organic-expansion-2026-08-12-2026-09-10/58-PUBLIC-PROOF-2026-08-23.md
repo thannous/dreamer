@@ -11,7 +11,7 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | C1 | Instagram `@noctaliadreams` | 15:45 | `NOC_REVEIL_S05_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcYouwQp_od/) partagé vers 15:50 Paris |
 | C1 | X `@NoctaliaDreams` | 16:15 | `NOC_REVEIL_S05_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | URL à collecter |
 | C2 | TikTok `@noctaliadreams` | 19:30 | `NOC_REVEIL_S06_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672915873992019222) vu vers 19:52 Paris |
-| C2 | Instagram `@noctaliadreams` | 19:45 | `NOC_REVEIL_S06_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/reel/DcZD6VgpUGp/) partagé vers 19:45 Paris |
+| C2 | Instagram `@noctaliadreams` | 19:45 | `NOC_REVEIL_S06_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcZD6VgpUGp/) partagé vers 19:45 Paris |
 | C2 | X `@NoctaliaDreams` | 20:15 | `NOC_REVEIL_S06_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | URL à collecter |
 | C3 | TikTok `@noctaliadreams` | 22:30 | `NOC_REVEIL_S07_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | À vérifier après 22:30 |
 | C3 | Instagram `@noctaliadreams` | 22:45 | `NOC_REVEIL_S07_VIDEO_1080p_v01.mp4` | **PRÊT — DIRECT** | À vérifier après 22:45 |
@@ -71,7 +71,7 @@ La légende commence par `A memory circles you like smoke. Would you follow it?`
 Durée 00:15, son `son original - Noctalia`, label créateur IA activé.
 
 Instagram C2 est **PUBLIÉ**, partagé une fois vers 19:45 Paris :
-`https://www.instagram.com/reel/DcZD6VgpUGp/`. Même légende. Label IA
+`https://www.instagram.com/noctaliadreams/reel/DcZD6VgpUGp/`. Même légende. Label IA
 natif activé : *About this reel*, `noctaliadreams added an AI label`.
 Compteur de publications 42→43. Le Reel C1 `DcYouwQp_od` n'a pas été
 retouché.
