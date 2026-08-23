@@ -24,6 +24,7 @@ const WIDTHS = SYMBOL_RESPONSIVE_WIDTHS;
 const CARD_MAX_BYTES = 30_000;
 const MAX_BYTES = 250_000;
 const WARN_BYTES = 180_000;
+const GENERATION_PROGRESS_INTERVAL = 25;
 
 function collectIllustrations(payload) {
   const illustrations = new Map();
@@ -160,6 +161,11 @@ async function generateIllustrations(illustrations, { force = false } = {}) {
         })
         .toFile(target);
       generated += 1;
+      if (generated % GENERATION_PROGRESS_INTERVAL === 0) {
+        console.log(
+          `[generate-symbol-responsive-images] regenerated ${generated}/${illustrations.length * WIDTHS.length} variants...`
+        );
+      }
     }
   }
   if (generated < total) {

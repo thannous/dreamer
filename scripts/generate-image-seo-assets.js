@@ -13,6 +13,7 @@ const { readCompleteImageAssetRegistry } = require('./lib/page-illustrations');
 
 const MAX_1200_BYTES = 250 * 1024;
 const WARN_1200_BYTES = 180 * 1024;
+const GENERATION_PROGRESS_INTERVAL = 25;
 
 function outputPathForUrl(url) {
   if (!url.startsWith('/img/')) throw new Error(`Refusing non-image output URL: ${url}`);
@@ -192,6 +193,11 @@ async function generateAssets(registry, { force = false } = {}) {
     const pipeline = await sourcePipeline(variant.asset, variant.aspect, variant.width);
     await encode(pipeline, variant.format).toFile(variant.outputPath);
     generated += 1;
+    if (generated % GENERATION_PROGRESS_INTERVAL === 0) {
+      console.log(
+        `[generate-image-seo-assets] regenerated ${generated}/${variants.length} variants...`
+      );
+    }
   }
   if (generated < variants.length) {
     console.log(
