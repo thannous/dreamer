@@ -13,6 +13,18 @@ const { readCompleteImageAssetRegistry } = require('./lib/page-illustrations');
 
 const MAX_1200_BYTES = 250 * 1024;
 const WARN_1200_BYTES = 180 * 1024;
+const GENERATION_PROGRESS_INTERVAL = 25;
+const VALIDATION_PROGRESS_INTERVAL = 100;
+
+function emitProgress(message) {
+  // CircleCI kills steps after 10 minutes with no output. stdout is often
+  // fully buffered when it is not a TTY, so write the heartbeat to stderr.
+  try {
+    fs.writeSync(2, `${message}\n`);
+  } catch {
+    console.error(message);
+  }
+}
 
 function outputPathForUrl(url) {
   if (!url.startsWith('/img/')) throw new Error(`Refusing non-image output URL: ${url}`);
@@ -127,6 +139,8 @@ function expectedVariants(registry) {
 
 async function validateSources(registry) {
   const errors = [];
+  const assetCount = Object.keys(registry.assets).length;
+  emitProgress(`[generate-image-seo-assets] validating ${assetCount} sources...`);
   for (const [assetId, asset] of Object.entries(registry.assets)) {
     for (const [aspectName, aspect] of Object.entries(asset.aspects)) {
       const source = aspect.source || asset.source;
@@ -192,6 +206,11 @@ async function generateAssets(registry, { force = false } = {}) {
     const pipeline = await sourcePipeline(variant.asset, variant.aspect, variant.width);
     await encode(pipeline, variant.format).toFile(variant.outputPath);
     generated += 1;
+    if (generated % GENERATION_PROGRESS_INTERVAL === 0) {
+      emitProgress(
+        `[generate-image-seo-assets] regenerated ${generated}/${variants.length} variants...`
+      );
+    }
   }
   if (generated < variants.length) {
     console.log(
@@ -207,6 +226,8 @@ async function validateOutputs(registry) {
   const errors = [];
   const warnings = [];
   let totalBytes = 0;
+  let checked = 0;
+  emitProgress(`[generate-image-seo-assets] checking ${variants.length} variants...`);
   for (const variant of variants) {
     if (!fs.existsSync(variant.outputPath)) {
       errors.push(`${variant.assetId}: missing ${variant.url}`);
@@ -214,6 +235,10 @@ async function validateOutputs(registry) {
     }
     const stats = fs.statSync(variant.outputPath);
     const metadata = await sharp(variant.outputPath).metadata();
+    checked += 1;
+    if (checked % VALIDATION_PROGRESS_INTERVAL === 0) {
+      emitProgress(`[generate-image-seo-assets] checked ${checked}/${variants.length} variants...`);
+    }
     totalBytes += stats.size;
     if (metadata.width !== variant.width || metadata.height !== variant.height) {
       errors.push(
@@ -251,6 +276,9 @@ function validatePageImageResolution(registry) {
 async function main() {
   const checkOnly = process.argv.includes('--check');
   const force = process.argv.includes('--force');
+  emitProgress(
+    `[generate-image-seo-assets] starting ${checkOnly ? 'check' : 'generation'}...`
+  );
   generateEducationalDiagramSources({ checkOnly });
   const registry = readCompleteImageAssetRegistry();
   await validateSources(registry);

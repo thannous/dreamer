@@ -24,6 +24,15 @@ const WIDTHS = SYMBOL_RESPONSIVE_WIDTHS;
 const CARD_MAX_BYTES = 30_000;
 const MAX_BYTES = 250_000;
 const WARN_BYTES = 180_000;
+const GENERATION_PROGRESS_INTERVAL = 25;
+
+function emitProgress(message) {
+  try {
+    fs.writeSync(2, `${message}\n`);
+  } catch {
+    console.error(message);
+  }
+}
 
 function collectIllustrations(payload) {
   const illustrations = new Map();
@@ -160,6 +169,11 @@ async function generateIllustrations(illustrations, { force = false } = {}) {
         })
         .toFile(target);
       generated += 1;
+      if (generated % GENERATION_PROGRESS_INTERVAL === 0) {
+        emitProgress(
+          `[generate-symbol-responsive-images] regenerated ${generated}/${illustrations.length * WIDTHS.length} variants...`
+        );
+      }
     }
   }
   if (generated < total) {
@@ -174,6 +188,9 @@ async function validateIllustrations(illustrations) {
   const errors = [];
   const warnings = [];
   const bytesByWidth = Object.fromEntries(WIDTHS.map((width) => [width, 0]));
+  emitProgress(
+    `[generate-symbol-responsive-images] checking ${illustrations.length} illustrations...`
+  );
   for (const illustration of illustrations) {
     if (!fs.existsSync(illustration.sourcePath)) {
       errors.push(`${illustration.symbolId}: missing source ${illustration.src}`);
@@ -217,6 +234,9 @@ async function validateIllustrations(illustrations) {
 async function main() {
   const checkOnly = process.argv.includes('--check');
   const force = process.argv.includes('--force');
+  emitProgress(
+    `[generate-symbol-responsive-images] starting ${checkOnly ? 'check' : 'generation'}...`
+  );
   const registry = loadSymbolImageRegistry();
   const editorial = SOURCE_DATA_PATHS
     .filter((sourcePath) => fs.existsSync(sourcePath))
