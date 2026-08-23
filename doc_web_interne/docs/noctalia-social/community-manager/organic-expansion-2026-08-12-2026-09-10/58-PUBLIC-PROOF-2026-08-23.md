@@ -8,7 +8,7 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | Créneau | Plateforme et compte | Heure | Asset exact | État préparatoire | URL publique vérifiée |
 |---|---|---:|---|---|---|
 | C1 | TikTok `@noctaliadreams` | 15:30 | `NOC_REVEIL_S05_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672915826298653974) vu vers 15:54 Paris |
-| C1 | Instagram `@noctaliadreams` | 15:45 | `NOC_REVEIL_S05_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/reel/DcYouwQp_od/) partagé vers 15:50 Paris |
+| C1 | Instagram `@noctaliadreams` | 15:45 | `NOC_REVEIL_S05_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcYouwQp_od/) partagé vers 15:50 Paris |
 | C1 | X `@NoctaliaDreams` | 16:15 | `NOC_REVEIL_S05_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | URL à collecter |
 | C2 | TikTok `@noctaliadreams` | 19:30 | `NOC_REVEIL_S06_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672915873992019222) vu vers 19:52 Paris |
 | C2 | Instagram `@noctaliadreams` | 19:45 | `NOC_REVEIL_S06_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/reel/DcZD6VgpUGp/) partagé vers 19:45 Paris |
@@ -47,7 +47,7 @@ public, vu vers 15:54 Paris comme « 24m ago » —
 le label créateur IA est activé.
 
 Instagram C1 est **PUBLIÉ**, partagé une fois vers 15:50 Paris :
-`https://www.instagram.com/reel/DcYouwQp_od/`. Légende verbatim
+`https://www.instagram.com/noctaliadreams/reel/DcYouwQp_od/`. Légende verbatim
 `The forest remembers your dream before you do. What would you ask it? #Noctalia #DreamJournal #SurrealDreams`.
 Label IA natif activé : *About this reel*, `noctaliadreams added an AI label`.
 Compteur de publications 41→42. Le Reel C3 d'hier `DcW0OAuJszM` n'a pas
