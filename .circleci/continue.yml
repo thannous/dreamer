@@ -257,9 +257,11 @@ jobs:
       - run:
           name: Build site
           command: npm run docs:build
+          no_output_timeout: 30m
       - run:
           name: Check site
           command: npm run docs:check
+          no_output_timeout: 30m
       - run:
           name: Test site tooling changed since the diff base
           environment:
