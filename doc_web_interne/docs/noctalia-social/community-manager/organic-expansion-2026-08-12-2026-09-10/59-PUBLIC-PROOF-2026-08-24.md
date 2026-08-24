@@ -7,8 +7,8 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 
 | Créneau | Plateforme et compte | Heure | Asset exact | État préparatoire | URL publique vérifiée |
 |---|---|---:|---|---|---|
-| C1 | TikTok `@noctaliadreams` | 15:30 | `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | À vérifier après 15:30 |
-| C1 | Instagram `@noctaliadreams` | 15:45 | `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4` | **PRÊT — DIRECT** | À vérifier après 15:45 |
+| C1 | TikTok `@noctaliadreams` | 15:30 | `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672916773661838614) ouvert public |
+| C1 | Instagram `@noctaliadreams` | 15:45 | `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcbNQhdp5vx/) ouvert après Share ; capturé `https://www.instagram.com/p/DcbNQhdp5vx/` |
 | C1 | X `@NoctaliaDreams` | 16:15 | `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | À vérifier après 16:15 |
 | C2 | TikTok `@noctaliadreams` | 19:30 | `NOC_REVEIL_S09_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | À vérifier après 19:30 |
 | C2 | Instagram `@noctaliadreams` | 19:45 | `NOC_REVEIL_S09_VIDEO_1080p_v01.mp4` | **PRÊT — DIRECT** | À vérifier après 19:45 |
@@ -33,7 +33,29 @@ Pour chaque ligne : attendre l'heure, vérifier le compte, le master exact, le
 hook et l'absence de doublon, puis ouvrir l'URL publique. En l'absence d'URL,
 conserver le statut préparatoire et ne jamais republier par supposition.
 
-- Principal : `0/9` avant le 24/08.
-- Hero secondaire : `0/3` avant le 24/08.
-- Total : `0/12` avant diffusion.
+- Principal : `2/9` vérifiées (TikTok C1, Instagram C1 ; X C1 reste sans permalink).
+- Hero secondaire : `0/3` avant vérification publique.
+- Total : `2/12` vérifiées ; C2/C3 et heroes restent préparatoires ; aucune URL X inventée.
+
+## Contrôle du 24/08 — C1
+
+Vérifié le 24 août 2026, Europe/Paris. TikTok C1 est **PUBLIÉ** : ouvert
+public —
+`https://www.tiktok.com/@noctaliadreams/video/7672916773661838614`. Asset
+`NOC_REVEIL_S08_VIDEO_1080p_v01.mp4`, SHA-256
+`3cbcbf99c19c490a234a26688961506d902fa2fdbd965d8b7e1022d7f2f3e9f8`.
+La légende commence par
+`The ocean pauses under a single star. What would you wish for?` ;
+le badge IA généré est activé.
+
+Instagram C1 est **PUBLIÉ**, ouvert après Share :
+`https://www.instagram.com/p/DcbNQhdp5vx/` (aussi
+`https://www.instagram.com/noctaliadreams/reel/DcbNQhdp5vx/`). Légende exacte
+de la fiche
+`The ocean pauses under a single star. What would you wish for? #Noctalia #DreamJournal #SurrealDreams`.
+Label IA natif activé.
+
+X C1 reste **PROGRAMMÉ**, à vérifier. Aucun status ID inventé. C2 et
+C3 restent **PROGRAMMÉ** / **PRÊT — DIRECT**. Heroes Pinterest 17:30,
+YouTube 18:00 et Facebook 18:15 restent inchangés.
 
