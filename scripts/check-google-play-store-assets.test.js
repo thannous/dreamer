@@ -3,6 +3,7 @@
 const fs = require('fs');
 const {
   ASO_SOURCE,
+  LOCALE_CONFIGS,
   SCREENSHOT_LAYOUT,
   escapeXml,
   validateBriefAgainstLayout,
@@ -19,6 +20,11 @@ describe('Google Play store asset recipe', () => {
     expect(SCREENSHOT_LAYOUT).toHaveLength(7);
   });
 
+  it('keeps French and English executions on the same seven-shot system', () => {
+    const englishBrief = JSON.parse(fs.readFileSync(LOCALE_CONFIGS['en-US'].asoSource, 'utf8'));
+    expect(validateBriefAgainstLayout(englishBrief)).toEqual({ valid: true, errors: [] });
+  });
+
   it('rejects a reordered surface', () => {
     const brief = loadBrief();
     brief.screenshot_brief[0].surface = 'capture';
@@ -28,11 +34,11 @@ describe('Google Play store asset recipe', () => {
     });
   });
 
-  it('keeps capture in the conversion-critical second position', () => {
+  it('keeps the approved conversion story order', () => {
     expect(SCREENSHOT_LAYOUT.map(({ surface }) => surface)).toEqual([
       'journal',
-      'capture',
       'dream-art',
+      'capture',
       'dream-chat',
       'symbols-guides',
       'patterns',

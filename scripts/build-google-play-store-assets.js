@@ -6,8 +6,27 @@ const path = require('path');
 const sharp = require('sharp');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
-const ASO_SOURCE = path.join(ROOT_DIR, 'marketing', 'aso', 'google-play-fr-2026-08-09.json');
-const OUTPUT_ROOT = path.join(ROOT_DIR, 'output', 'google-play', 'fr-FR');
+const LOCALE_CONFIGS = Object.freeze({
+  'fr-FR': Object.freeze({
+    asoSource: path.join(ROOT_DIR, 'marketing', 'aso', 'google-play-fr-2026-08-09.json'),
+    outputRoot: path.join(ROOT_DIR, 'output', 'google-play', 'fr-FR'),
+    eyebrow: 'NOCTALIA  •  JOURNAL DE RÊVES',
+    featureFilename: 'feature-graphic-fr.png',
+    featureHeadline: ['Ton journal', 'de rêves'],
+    featureSubhead: 'Souviens-toi. Observe. Explore.',
+  }),
+  'en-US': Object.freeze({
+    asoSource: path.join(ROOT_DIR, 'marketing', 'aso', 'google-play-en-us-2026-08-25.json'),
+    outputRoot: path.join(ROOT_DIR, 'output', 'google-play', 'en-US'),
+    eyebrow: 'NOCTALIA  •  DREAM JOURNAL',
+    featureFilename: 'feature-graphic-en.png',
+    featureHeadline: ['Your dream', 'journal'],
+    featureSubhead: 'Remember. Notice. Explore.',
+  }),
+});
+const DEFAULT_LOCALE = 'fr-FR';
+const ASO_SOURCE = LOCALE_CONFIGS[DEFAULT_LOCALE].asoSource;
+const OUTPUT_ROOT = LOCALE_CONFIGS[DEFAULT_LOCALE].outputRoot;
 const SCREENSHOT_SIZE = Object.freeze({ width: 1080, height: 1920 });
 const FEATURE_SIZE = Object.freeze({ width: 1024, height: 500 });
 const SCREENSHOT_LAYOUT = Object.freeze([
@@ -62,7 +81,7 @@ function validateBriefAgainstLayout(brief) {
   return { valid: errors.length === 0, errors };
 }
 
-function screenshotBackground(shot) {
+function screenshotBackground(shot, localeConfig = LOCALE_CONFIGS[DEFAULT_LOCALE]) {
   const text = wrapCaption(shot.caption)
     .map((line, index) => `<text x="90" y="${205 + index * 72}" class="headline">${escapeXml(line)}</text>`)
     .join('');
@@ -80,7 +99,7 @@ function screenshotBackground(shot) {
       <circle cx="963" cy="155" r="276" fill="none" stroke="#d9aa72" stroke-opacity="0.16" stroke-width="2"/>
       <circle cx="963" cy="155" r="208" fill="#d9aa72" fill-opacity="0.025"/>
       <path d="M-90 1710 C260 1470 620 1950 1150 1630" fill="none" stroke="#a9a0c7" stroke-opacity="0.09" stroke-width="2"/>
-      <text x="90" y="94" class="eyebrow">NOCTALIA  •  JOURNAL DE RÊVES</text>
+      <text x="90" y="94" class="eyebrow">${escapeXml(localeConfig.eyebrow)}</text>
       ${text}
       <rect x="89" y="433" width="902" height="1412" rx="54" fill="#05050d" stroke="#d9aa72" stroke-opacity="0.52" stroke-width="2"/>
       <text x="947" y="1875" class="number">${String(shot.order).padStart(2, '0')} / 07</text>
@@ -111,12 +130,12 @@ async function prepareScreenshot(source, crop, position = 'top') {
     .toBuffer();
 }
 
-async function buildScreenshot(shot, layout, sourceRoot, generatedRoot) {
+async function buildScreenshot(shot, layout, sourceRoot, generatedRoot, localeConfig) {
   const source = path.join(sourceRoot, layout.source);
   const output = path.join(generatedRoot, layout.filename);
   if (!fs.existsSync(source)) throw new Error(`Source locale absente : ${source}`);
   const appScreenshot = await prepareScreenshot(source, layout.crop, layout.position);
-  await sharp(screenshotBackground(shot))
+  await sharp(screenshotBackground(shot, localeConfig))
     .composite([{ input: appScreenshot, left: 110, top: 454 }])
     .removeAlpha()
     .png({ compressionLevel: 9 })
@@ -124,7 +143,8 @@ async function buildScreenshot(shot, layout, sourceRoot, generatedRoot) {
   return output;
 }
 
-function featureGraphicOverlaySvg() {
+function featureGraphicOverlaySvg(localeConfig = LOCALE_CONFIGS[DEFAULT_LOCALE]) {
+  const [headline1, headline2] = localeConfig.featureHeadline;
   return Buffer.from(`
     <svg width="1024" height="500" viewBox="0 0 1024 500" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -136,9 +156,9 @@ function featureGraphicOverlaySvg() {
       </defs>
       <rect width="1024" height="500" fill="url(#shade)"/>
       <text x="72" y="92" class="brand">NOCTALIA</text>
-      <text x="72" y="224" class="headline">Ton journal</text>
-      <text x="72" y="294" class="headline">de rêves</text>
-      <text x="74" y="374" class="subhead">Souviens-toi. Observe. Explore.</text>
+      <text x="72" y="224" class="headline">${escapeXml(headline1)}</text>
+      <text x="72" y="294" class="headline">${escapeXml(headline2)}</text>
+      <text x="74" y="374" class="subhead">${escapeXml(localeConfig.featureSubhead)}</text>
       <style>
         .brand { fill: #d9aa72; font: 600 25px Arial, sans-serif; letter-spacing: 6px; }
         .headline { fill: #f6f0e6; font: 700 58px Georgia, serif; }
@@ -147,19 +167,41 @@ function featureGraphicOverlaySvg() {
     </svg>`);
 }
 
-async function buildFeatureGraphic(sourceRoot, output) {
+async function buildFeatureGraphic(sourceRoot, output, localeConfig = LOCALE_CONFIGS[DEFAULT_LOCALE]) {
   const source = path.join(sourceRoot, 'dream-art-bridge.png');
   if (!fs.existsSync(source)) throw new Error(`Source locale absente : ${source}`);
   await sharp(source)
     .resize({ ...FEATURE_SIZE, fit: 'cover', position: 'centre' })
-    .composite([{ input: featureGraphicOverlaySvg() }])
+    .composite([{ input: featureGraphicOverlaySvg(localeConfig) }])
     .removeAlpha()
     .png({ compressionLevel: 9 })
     .toFile(output);
 }
 
-async function buildAssets(outputRoot = OUTPUT_ROOT) {
-  const brief = JSON.parse(fs.readFileSync(ASO_SOURCE, 'utf8'));
+function resolveLocaleConfig(locale = DEFAULT_LOCALE) {
+  const config = LOCALE_CONFIGS[locale];
+  if (!config) throw new Error(`Locale inconnue : ${locale}.`);
+  return config;
+}
+
+function parseArgs(argv) {
+  const args = { locale: DEFAULT_LOCALE };
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (arg === '--locale') {
+      const value = argv[index + 1];
+      if (!value || value.startsWith('--')) throw new Error('Valeur manquante pour --locale.');
+      args.locale = value;
+      index += 1;
+    } else if (arg === '--help' || arg === '-h') args.help = true;
+    else throw new Error(`Option inconnue : ${arg}`);
+  }
+  return args;
+}
+
+async function buildAssets(outputRoot = OUTPUT_ROOT, locale = DEFAULT_LOCALE) {
+  const localeConfig = resolveLocaleConfig(locale);
+  const brief = JSON.parse(fs.readFileSync(localeConfig.asoSource, 'utf8'));
   const validation = validateBriefAgainstLayout(brief);
   if (!validation.valid) throw new Error(validation.errors.join('\n'));
 
@@ -170,17 +212,29 @@ async function buildAssets(outputRoot = OUTPUT_ROOT) {
   const outputs = [];
   for (let index = 0; index < SCREENSHOT_LAYOUT.length; index += 1) {
     outputs.push(
-      await buildScreenshot(brief.screenshot_brief[index], SCREENSHOT_LAYOUT[index], sourceRoot, generatedRoot)
+      await buildScreenshot(
+        brief.screenshot_brief[index],
+        SCREENSHOT_LAYOUT[index],
+        sourceRoot,
+        generatedRoot,
+        localeConfig
+      )
     );
   }
-  const featureGraphic = path.join(generatedRoot, 'feature-graphic-fr.png');
-  await buildFeatureGraphic(sourceRoot, featureGraphic);
+  const featureGraphic = path.join(generatedRoot, localeConfig.featureFilename);
+  await buildFeatureGraphic(sourceRoot, featureGraphic, localeConfig);
   outputs.push(featureGraphic);
   return outputs;
 }
 
 async function main() {
-  const outputs = await buildAssets();
+  const args = parseArgs(process.argv.slice(2));
+  if (args.help) {
+    console.log('Usage: npm run aso:google-play:assets -- [--locale fr-FR|en-US]');
+    return;
+  }
+  const localeConfig = resolveLocaleConfig(args.locale);
+  const outputs = await buildAssets(localeConfig.outputRoot, args.locale);
   console.log(`Assets Google Play générés hors Git : ${outputs.length - 1}/7 captures + visuel promotionnel.`);
   console.log(path.relative(ROOT_DIR, path.dirname(outputs[0])));
 }
@@ -194,7 +248,9 @@ if (require.main === module) {
 
 module.exports = {
   ASO_SOURCE,
+  DEFAULT_LOCALE,
   FEATURE_SIZE,
+  LOCALE_CONFIGS,
   OUTPUT_ROOT,
   SCREENSHOT_LAYOUT,
   SCREENSHOT_SIZE,
@@ -202,6 +258,8 @@ module.exports = {
   buildFeatureGraphic,
   escapeXml,
   featureGraphicOverlaySvg,
+  parseArgs,
+  resolveLocaleConfig,
   validateBriefAgainstLayout,
   wrapCaption,
 };

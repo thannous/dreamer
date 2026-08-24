@@ -7,6 +7,10 @@ const path = require('path');
 const ROOT_DIR = path.resolve(__dirname, '..');
 const DEFAULT_SOURCE = path.join(ROOT_DIR, 'marketing', 'aso', 'google-play-fr-2026-08-09.json');
 const LIMITS = Object.freeze({ title: 30, short_description: 80, full_description: 4000 });
+const PRIMARY_PROMISES = Object.freeze({
+  'fr-FR': 'journal de rêves vivant',
+  'en-US': 'living dream journal',
+});
 
 function codePointLength(value) {
   return Array.from(String(value || '')).length;
@@ -20,7 +24,7 @@ function validateAsoSource(document) {
   if (document.package_name !== 'com.tanuki75.noctalia') {
     errors.push('package_name doit être com.tanuki75.noctalia.');
   }
-  if (document.locale !== 'fr-FR') errors.push('locale doit être fr-FR.');
+  if (!PRIMARY_PROMISES[document.locale]) errors.push('locale doit être fr-FR ou en-US.');
   if (document.status !== 'draft') errors.push('status doit rester draft avant publication manuelle.');
   if (document.publication?.mode !== 'manual') errors.push('publication.mode doit être manual.');
   if (document.publication?.play_console_mutation_allowed !== false) {
@@ -36,8 +40,9 @@ function validateAsoSource(document) {
   }
 
   const primaryPromise = String(document.positioning?.primary_promise || '').toLowerCase();
-  if (!primaryPromise.includes('journal de rêves vivant')) {
-    errors.push('La promesse principale doit contenir « journal de rêves vivant ».');
+  const expectedPromise = PRIMARY_PROMISES[document.locale];
+  if (expectedPromise && !primaryPromise.includes(expectedPromise)) {
+    errors.push(`La promesse principale doit contenir « ${expectedPromise} ».`);
   }
 
   const screenshots = Array.isArray(document.screenshot_brief) ? document.screenshot_brief : [];
@@ -55,7 +60,7 @@ function validateAsoSource(document) {
   if (core.some((shot) => shot.role !== 'core')) {
     errors.push('Les trois premières captures doivent porter la promesse cœur.');
   }
-  if (core.some((shot) => /dict|vocal|voix|micro/i.test(shot.caption || ''))) {
+  if (core.some((shot) => /dict|vocal|voix|voice|microphone/i.test(shot.caption || ''))) {
     errors.push('La voix ne doit pas diriger les trois premières captures.');
   }
 
@@ -92,7 +97,8 @@ function main() {
   const result = checkFile(args.source);
   if (args.json) console.log(JSON.stringify(result, null, 2));
   else {
-    console.log(`Google Play FR : ${result.valid ? 'VALIDE' : 'INVALIDE'}`);
+    const document = JSON.parse(fs.readFileSync(args.source, 'utf8'));
+    console.log(`Google Play ${document.locale} : ${result.valid ? 'VALIDE' : 'INVALIDE'}`);
     console.log(`Titre ${result.counts.title}/${LIMITS.title} · Description courte ${result.counts.short_description}/${LIMITS.short_description} · Description longue ${result.counts.full_description}/${LIMITS.full_description}`);
     result.errors.forEach((error) => console.error(`- ${error}`));
   }

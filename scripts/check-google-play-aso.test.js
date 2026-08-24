@@ -1,6 +1,7 @@
 /* global describe, it, expect */
 
 const fs = require('fs');
+const path = require('path');
 const { DEFAULT_SOURCE, codePointLength, validateAsoSource } = require('./check-google-play-aso');
 
 function source(overrides = {}) {
@@ -11,6 +12,17 @@ function source(overrides = {}) {
 describe('Google Play ASO source validator', () => {
   it('accepts the canonical French draft', () => {
     const result = validateAsoSource(source());
+    expect(result).toMatchObject({ valid: true, errors: [] });
+    expect(result.counts.title).toBeLessThanOrEqual(30);
+    expect(result.counts.short_description).toBeLessThanOrEqual(80);
+    expect(result.counts.full_description).toBeLessThanOrEqual(4000);
+  });
+
+  it('accepts the canonical English draft', () => {
+    const english = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', 'marketing', 'aso', 'google-play-en-us-2026-08-25.json'), 'utf8')
+    );
+    const result = validateAsoSource(english);
     expect(result).toMatchObject({ valid: true, errors: [] });
     expect(result.counts.title).toBeLessThanOrEqual(30);
     expect(result.counts.short_description).toBeLessThanOrEqual(80);

@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "package_name": "com.tanuki75.noctalia",
+  "locale": "en-US",
+  "status": "draft",
+  "effective_date": "2026-08-25",
+  "positioning": {
+    "primary_promise": "A living dream journal to notice patterns and explore possible meanings night after night.",
+    "voice_role": "Voice dictation is an optional capture method, never the primary promise.",
+    "trust_boundary": "Noctalia offers possible perspectives, never a diagnosis or prediction."
+  },
+  "publication": {
+    "mode": "manual",
+    "play_console_mutation_allowed": false,
+    "notes": "Locally validated working source. Any Google Play publication requires explicit authorization."
+  },
+  "listing": {
+    "title": "Noctalia: Dream Journal",
+    "short_description": "A living dream journal to notice patterns and explore possible meanings.",
+    "full_description": "Every dream leaves a trace. Noctalia turns what you remember into a living dream journal that grows night after night.\n\nCapture a dream when you wake up, by text or optional voice dictation. Add the emotions, symbols, and details you remember, then return to them in a clear, personal journal.\n\nA JOURNAL THAT GROWS WITH YOU\n• Save dreams before they fade.\n• Browse them by date, search your journal, and notice what returns.\n• Observe recurring emotions, themes, and symbols over time.\n\nPOSSIBILITIES, NEVER A FINAL ANSWER\n• Explore reflection prompts grounded in your dream.\n• Discuss a detail to consider what it may mean to you.\n• Use the symbol dictionary and guides as starting points, never as certain meanings.\n\nA VISUAL MEMORY OF YOUR DREAM\n• Give shape to the dream’s atmosphere with a dream-inspired illustration.\n• Return to each entry as an organized memory without forcing one interpretation.\n\nYOUR SPACE, YOUR PACE\nNoctalia helps you remember, observe, and reflect. Its analyses and dream interpretations offer possible perspectives. They are not a diagnosis, medical or psychological advice, or a prediction.\n\nStart your dream journal and let your nighttime story take shape, one dream at a time."
+  },
+  "indexed_keywords": [
+    "dream journal",
+    "dream diary",
+    "dream interpretation",
+    "dream symbols",
+    "recurring dreams",
+    "dream meanings",
+    "dream tracking"
+  ],
+  "screenshot_brief": [
+    {
+      "order": 1,
+      "role": "core",
+      "surface": "journal",
+      "caption": "Your dreams, night after night",
+      "proof": "Show a connected journal with a real English dream and its illustration.",
+      "requirements": ["Android interface", "English UI", "No microphone in the foreground"]
+    },
+    {
+      "order": 2,
+      "role": "core",
+      "surface": "dream-art",
+      "caption": "Give shape to the dream’s atmosphere",
+      "proof": "Show a genuine illustration generated for an already saved dream.",
+      "requirements": ["Android interface", "The image supports memory without a divinatory promise"]
+    },
+    {
+      "order": 3,
+      "role": "core",
+      "surface": "capture",
+      "caption": "Capture it before it fades",
+      "proof": "Show writing as the primary path and voice dictation as an option.",
+      "requirements": ["Android interface", "English UI", "Voice remains visually secondary"]
+    },
+    {
+      "order": 4,
+      "role": "trust",
+      "surface": "dream-chat",
+      "caption": "Ask questions at your own pace",
+      "proof": "Show the real exploration space and contextual discussion prompt without a verdict.",
+      "requirements": ["Android interface", "Connected QA account", "No personal data"]
+    },
+    {
+      "order": 5,
+      "role": "support",
+      "surface": "symbols-guides",
+      "caption": "Explore symbols and guides",
+      "proof": "Show the symbol dictionary and direct access to dream guides.",
+      "requirements": ["Android interface", "English UI", "Symbols and Guides visible together"]
+    },
+    {
+      "order": 6,
+      "role": "support",
+      "surface": "patterns",
+      "caption": "Notice what keeps returning",
+      "proof": "Show recurring themes from the connected journal without claiming certainty.",
+      "requirements": ["Android interface", "English UI", "Recurring themes readable at a glance"]
+    },
+    {
+      "order": 7,
+      "role": "support",
+      "surface": "emotions",
+      "caption": "Explore feelings and reflection prompts",
+      "proof": "Show emotions and reflection questions from a real analyzed dream.",
+      "requirements": ["Android interface", "English UI", "No diagnostic or predictive caption"]
+    }
+  ]
+}

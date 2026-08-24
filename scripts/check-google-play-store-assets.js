@@ -4,12 +4,14 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 const {
-  ASO_SOURCE,
+  DEFAULT_LOCALE,
   FEATURE_SIZE,
   OUTPUT_ROOT,
   SCREENSHOT_LAYOUT,
   SCREENSHOT_SIZE,
   validateBriefAgainstLayout,
+  parseArgs,
+  resolveLocaleConfig,
 } = require('./build-google-play-store-assets');
 
 async function validateDimensions(file, expected, label, errors) {
@@ -26,8 +28,9 @@ async function validateDimensions(file, expected, label, errors) {
   }
 }
 
-async function checkAssets(outputRoot = OUTPUT_ROOT) {
-  const brief = JSON.parse(fs.readFileSync(ASO_SOURCE, 'utf8'));
+async function checkAssets(outputRoot = OUTPUT_ROOT, locale = DEFAULT_LOCALE) {
+  const localeConfig = resolveLocaleConfig(locale);
+  const brief = JSON.parse(fs.readFileSync(localeConfig.asoSource, 'utf8'));
   const structural = validateBriefAgainstLayout(brief);
   const errors = [...structural.errors];
   const sourceRoot = path.join(outputRoot, 'source');
@@ -45,7 +48,7 @@ async function checkAssets(outputRoot = OUTPUT_ROOT) {
     );
   }
   await validateDimensions(
-    path.join(generatedRoot, 'feature-graphic-fr.png'),
+    path.join(generatedRoot, localeConfig.featureFilename),
     FEATURE_SIZE,
     'Visuel promotionnel',
     errors
@@ -55,8 +58,14 @@ async function checkAssets(outputRoot = OUTPUT_ROOT) {
 }
 
 async function main() {
-  const result = await checkAssets();
-  console.log(`Assets Google Play FR : ${result.valid ? '7/7 VALIDES' : 'INVALIDES'}`);
+  const args = parseArgs(process.argv.slice(2));
+  if (args.help) {
+    console.log('Usage: npm run aso:google-play:assets:check -- [--locale fr-FR|en-US]');
+    return;
+  }
+  const localeConfig = resolveLocaleConfig(args.locale);
+  const result = await checkAssets(localeConfig.outputRoot, args.locale);
+  console.log(`Assets Google Play ${args.locale} : ${result.valid ? '7/7 VALIDES' : 'INVALIDES'}`);
   result.errors.forEach((error) => console.error(`- ${error}`));
   if (!result.valid) process.exitCode = 1;
 }
