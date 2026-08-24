@@ -55,14 +55,22 @@
     },
     {
       "order": 4,
-      "role": "support",
-      "surface": "dream-detail",
-      "caption": "Explore ton rêve sous un autre angle",
-      "proof": "Montrer une fiche de rêve riche avec récit, émotion et symboles.",
-      "requirements": ["Interface Android", "Hiérarchie de lecture nette"]
+      "role": "core",
+      "surface": "dream-chat",
+      "caption": "Pose tes questions. Le rêve continue.",
+      "proof": "Montrer une vraie question suivie d’une réponse contextualisée sur le rêve.",
+      "requirements": ["Interface Android", "Conversation contextualisée visible", "Compte connecté sans donnée personnelle"]
     },
     {
       "order": 5,
+      "role": "support",
+      "surface": "symbols-guides",
+      "caption": "Explore 150 symboles et des guides",
+      "proof": "Montrer le dictionnaire, des symboles populaires et l’accès direct aux guides des rêves.",
+      "requirements": ["Interface Android", "Symboles et Guides visibles dans la même capture", "Recherche immédiatement compréhensible"]
+    },
+    {
+      "order": 6,
       "role": "support",
       "surface": "patterns",
       "caption": "Repère les thèmes qui reviennent",
@@ -70,20 +78,12 @@
       "requirements": ["Interface Android", "Récurrence compréhensible sans petit texte", "Aucun microphone au premier plan"]
     },
     {
-      "order": 6,
+      "order": 7,
       "role": "core",
       "surface": "emotions",
       "caption": "Suis tes émotions nuit après nuit",
       "proof": "Montrer les émotions dominantes sur plusieurs rêves.",
       "requirements": ["Interface Android", "Évolution visible en moins de deux secondes", "Aucun microphone au premier plan"]
-    },
-    {
-      "order": 7,
-      "role": "trust",
-      "surface": "reflection",
-      "caption": "Explore avec des pistes, jamais des certitudes",
-      "proof": "Montrer des questions ou pistes de réflexion ouvertes.",
-      "requirements": ["Interface Android", "Aucune promesse médicale ou prédictive"]
     }
   ]
 }

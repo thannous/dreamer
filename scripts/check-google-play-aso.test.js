@@ -32,7 +32,7 @@ describe('Google Play ASO source validator', () => {
     expect(result.errors).toEqual(
       expect.arrayContaining([
         'publication.play_console_mutation_allowed doit être false.',
-        'La voix ou la capture ne doit pas diriger les trois premières captures.',
+        'La voix ne doit pas diriger les trois premières captures.',
       ])
     );
   });

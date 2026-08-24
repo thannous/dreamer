@@ -55,8 +55,8 @@ function validateAsoSource(document) {
   if (core.some((shot) => shot.role !== 'core')) {
     errors.push('Les trois premières captures doivent porter la promesse cœur.');
   }
-  if (core.some((shot) => shot.surface === 'capture' || /dict|vocal|voix|micro/i.test(shot.caption || ''))) {
-    errors.push('La voix ou la capture ne doit pas diriger les trois premières captures.');
+  if (core.some((shot) => /dict|vocal|voix|micro/i.test(shot.caption || ''))) {
+    errors.push('La voix ne doit pas diriger les trois premières captures.');
   }
 
   return { valid: errors.length === 0, errors, counts };

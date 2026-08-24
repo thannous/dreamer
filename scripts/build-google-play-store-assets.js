@@ -14,10 +14,10 @@ const SCREENSHOT_LAYOUT = Object.freeze([
   { surface: 'journal', source: 'journal.png', filename: '01-journal.png', crop: { top: 90, bottom: 650 } },
   { surface: 'capture', source: 'capture.png', filename: '02-capture.png', crop: { top: 90, bottom: 90 }, position: 'centre' },
   { surface: 'dream-art', source: 'dream-art-app.png', filename: '03-dream-art.png', crop: { top: 90, bottom: 90 }, position: 'centre' },
-  { surface: 'dream-detail', source: 'dream-detail.png', filename: '04-dream-detail.png', crop: { top: 90, bottom: 90 }, position: 'centre' },
-  { surface: 'patterns', source: 'patterns.png', filename: '05-patterns.png', crop: { top: 90, bottom: 650 } },
-  { surface: 'emotions', source: 'emotions.png', filename: '06-emotions.png', crop: { top: 90, bottom: 650 } },
-  { surface: 'reflection', source: 'reflection.png', filename: '07-reflection.png', crop: { top: 90, bottom: 550 } },
+  { surface: 'dream-chat', source: 'dream-chat.png', filename: '04-dream-chat.png', crop: { top: 90, bottom: 350 }, position: 'bottom' },
+  { surface: 'symbols-guides', source: 'symbols-guides.png', filename: '05-symbols-guides.png', crop: { top: 90, bottom: 90 } },
+  { surface: 'patterns', source: 'patterns.png', filename: '06-patterns.png', crop: { top: 90, bottom: 650 } },
+  { surface: 'emotions', source: 'emotions.png', filename: '07-emotions.png', crop: { top: 90, bottom: 650 } },
 ]);
 
 function escapeXml(value) {

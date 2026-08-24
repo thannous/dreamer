@@ -33,10 +33,10 @@ describe('Google Play store asset recipe', () => {
       'journal',
       'capture',
       'dream-art',
-      'dream-detail',
+      'dream-chat',
+      'symbols-guides',
       'patterns',
       'emotions',
-      'reflection',
     ]);
   });
 
