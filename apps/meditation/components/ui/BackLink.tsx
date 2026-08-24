@@ -1,22 +1,19 @@
-import { useRouter } from 'expo-router';
-import React from 'react';
+import { type Href, useRouter } from 'expo-router';
+import React, { useRef } from 'react';
 import { Pressable, View } from 'react-native';
-import Animated from 'react-native-reanimated';
 
+import { PressOpacity } from '@/constants/motion';
 import { useTheme } from '@/context/ThemeContext';
-import { usePressMotion } from '@/hooks/usePressMotion';
 
 import { IconSymbol } from './icon-symbol';
 import { Text } from './Text';
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 type Props = {
   label: string;
   /** Where to land when there is no history — a deep link opened cold. */
   // The tabs sit under two route groups, so the canonical href names both.
   // Plain '/' is ambiguous with `app/index.tsx` and redirects onto itself.
-  fallbackHref?: '/(drawer)/(tabs)' | '/search';
+  fallbackHref?: Href;
   className?: string;
   testID?: string;
 };
@@ -29,9 +26,15 @@ type Props = {
 export function BackLink({ label, fallbackHref = '/(drawer)/(tabs)', className, testID }: Props) {
   const router = useRouter();
   const { colors } = useTheme();
-  const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'link' });
+  const navigationCommitted = useRef(false);
 
   const goBack = () => {
+    // A second tap in the same mounted frame must not pop another route. The
+    // component unmounts after a successful navigation, naturally resetting
+    // the lock for the previous screen.
+    if (navigationCommitted.current) return;
+    navigationCommitted.current = true;
+
     if (router.canGoBack()) {
       router.back();
       return;
@@ -41,20 +44,20 @@ export function BackLink({ label, fallbackHref = '/(drawer)/(tabs)', className, 
 
   return (
     <View className={className}>
-      <AnimatedPressable
+      <Pressable
         testID={testID}
         accessibilityRole="button"
+        accessibilityLabel={label}
         onPress={goBack}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
         hitSlop={12}
-        style={style}
+        pressRetentionOffset={12}
+        style={({ pressed }) => ({ opacity: pressed ? PressOpacity.link : 1 })}
         className="flex-row items-center gap-1 self-start">
         <IconSymbol name="chevron.left" color={colors.accentText} size={18} />
         <Text variant="bodySm" tone="accent">
           {label}
         </Text>
-      </AnimatedPressable>
+      </Pressable>
     </View>
   );
 }
