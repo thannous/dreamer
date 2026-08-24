@@ -131,5 +131,5 @@
 <li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1177/02762366241254818" rel="nofollow noopener noreferrer" target="_blank">Schredl (2024), continuity between waking life and dreaming</a></li>
 </ul>
 </section>
-<p class="text-sm text-purple-200/70 mt-10"><a class="text-dream-salmon hover:underline" href="../symboles/examen">rêver d’examen</a> · <a class="text-dream-salmon hover:underline" href="reves-anxiete-signification">rêves d’anxiété</a> · <a class="text-dream-salmon hover:underline" href="signification-reves-recurrents">rêves récurrents</a></p>
+<p class="text-sm text-purple-200/70 mt-10"><a class="text-dream-salmon hover:underline" href="../symboles/examen">rêver d’examen</a> · <a class="text-dream-salmon hover:underline" href="reves-anxiete-signification">rêves d’anxiété</a> · <a class="text-dream-salmon hover:underline" href="signification-reves-recurrents">rêves récurrents</a> · <a class="text-dream-salmon hover:underline" href="rever-retourner-ecole">rêver de retourner à l’école</a></p>
 </article>

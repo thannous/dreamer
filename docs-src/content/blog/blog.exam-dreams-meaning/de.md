@@ -131,5 +131,5 @@
 <li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1177/02762366241254818" rel="nofollow noopener noreferrer" target="_blank">Schredl (2024), continuity between waking life and dreaming</a></li>
 </ul>
 </section>
-<p class="text-sm text-purple-200/70 mt-10"><a class="text-dream-salmon hover:underline" href="../traumsymbole/pruefung">Prüfung im Traum</a> · <a class="text-dream-salmon hover:underline" href="angsttraeume-bedeutung">Angstträume</a> · <a class="text-dream-salmon hover:underline" href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen">wiederkehrende Träume</a></p>
+<p class="text-sm text-purple-200/70 mt-10"><a class="text-dream-salmon hover:underline" href="../traumsymbole/pruefung">Prüfung im Traum</a> · <a class="text-dream-salmon hover:underline" href="angsttraeume-bedeutung">Angstträume</a> · <a class="text-dream-salmon hover:underline" href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen">wiederkehrende Träume</a> · <a class="text-dream-salmon hover:underline" href="traum-zurueck-in-die-schule">Traum von der Rückkehr in die Schule</a></p>
 </article>

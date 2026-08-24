@@ -1,8 +1,10 @@
 # Unlinked brand mention reclamation — Marika Pech — 2026-08-09
 
 This dossier converts a current plain-text attribution into a factual source
-correction and possible editorial backlink. It is ready for review only. No
-email, contact form, account, comment or other external action was used.
+correction and possible editorial backlink. The initial 2026-08-09 state was
+review-only and used no external contact route. The current state is recorded
+in the 2026-08-24 reconciliation below: one message was sent on 2026-08-23 and
+must not be duplicated.
 
 ## Decision
 
@@ -62,7 +64,7 @@ Requested source destination:
 
 `https://noctalia.app/fr/blog/reves-premonitoires-science`
 
-## Unsent French contact copy
+## Original unsent French contact copy
 
 **Objet :** Source Noctalia à préciser dans votre article sur les rêves
 prémonitoires
@@ -154,3 +156,18 @@ corrected Noctalia source create no backlink, referring domain, indexation
 event, referral session or DR movement. A result can be recorded only after a
 public clickable source link is independently verified, including its
 indexability, canonical and link attributes.
+
+## 2026-08-24 send reconciliation
+
+The authenticated `contact@noctalia.app` Zimbra mailbox contains one sent
+message to `contact@marikapech.com`, dated 2026-08-23 at 16:45 CEST, with the
+subject `Petite précision concernant votre article sur les rêves
+prémonitoires`. The message requests the factual belief-versus-experience
+correction and, if editorially relevant, a link from `Source : Noctalia` to
+`https://noctalia.app/fr/blog/reves-premonitoires-science`.
+
+The conversation contains one message and no visible reply. On 2026-08-24 the
+publisher page still displayed the old `40–60 %` formulation and the plain-text
+attribution `Source : Noctalia, 2026`, with no clickable `noctalia.app` link.
+Decision: no duplicate outreach. Monitor the existing conversation and the
+public page before considering any follow-up.
