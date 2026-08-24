@@ -21,6 +21,9 @@ async function validateDimensions(file, expected, label, errors) {
   if (metadata.width !== expected.width || metadata.height !== expected.height) {
     errors.push(`${label} doit mesurer ${expected.width}x${expected.height}, reçu ${metadata.width}x${metadata.height}.`);
   }
+  if (metadata.hasAlpha) {
+    errors.push(`${label} ne doit pas contenir de canal alpha.`);
+  }
 }
 
 async function checkAssets(outputRoot = OUTPUT_ROOT) {
@@ -32,7 +35,7 @@ async function checkAssets(outputRoot = OUTPUT_ROOT) {
 
   for (let index = 0; index < SCREENSHOT_LAYOUT.length; index += 1) {
     const layout = SCREENSHOT_LAYOUT[index];
-    const source = path.join(sourceRoot, layout.filename);
+    const source = path.join(sourceRoot, layout.source);
     if (!fs.existsSync(source)) errors.push(`Source ${index + 1}/7 absente : ${source}`);
     await validateDimensions(
       path.join(generatedRoot, layout.filename),

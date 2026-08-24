@@ -33,57 +33,57 @@
       "order": 1,
       "role": "core",
       "surface": "journal",
-      "caption": "Un journal qui grandit avec chaque rêve",
+      "caption": "Tous tes rêves, au même endroit",
       "proof": "Montrer plusieurs rêves datés et une continuité visuelle entre les nuits.",
       "requirements": ["Interface Android", "Aucune Dynamic Island", "Contenu de démonstration lisible", "Aucun microphone au premier plan"]
     },
     {
       "order": 2,
       "role": "core",
-      "surface": "patterns",
-      "caption": "Retrouve les symboles qui reviennent",
-      "proof": "Montrer des symboles ou thèmes récurrents reliés à plusieurs rêves.",
-      "requirements": ["Interface Android", "Récurrence compréhensible sans petit texte", "Aucun microphone au premier plan"]
+      "surface": "capture",
+      "caption": "Capture ton rêve avant qu’il ne s’efface",
+      "proof": "Montrer l’écriture comme chemin principal et la dictée comme option.",
+      "requirements": ["Interface Android", "La dictée reste visuellement secondaire"]
     },
     {
       "order": 3,
       "role": "core",
-      "surface": "emotions",
-      "caption": "Observe ce qui évolue au fil des nuits",
-      "proof": "Montrer une évolution d’émotions ou de motifs dans le temps.",
-      "requirements": ["Interface Android", "Évolution visible en moins de deux secondes", "Aucun microphone au premier plan"]
+      "surface": "dream-art",
+      "caption": "Donne vie à l’atmosphère du rêve",
+      "proof": "Montrer une illustration associée à un rêve déjà consigné.",
+      "requirements": ["Interface Android", "L’image sert le souvenir, sans promesse divinatoire"]
     },
     {
       "order": 4,
       "role": "support",
       "surface": "dream-detail",
-      "caption": "Relis chaque rêve comme une histoire",
+      "caption": "Explore ton rêve sous un autre angle",
       "proof": "Montrer une fiche de rêve riche avec récit, émotion et symboles.",
       "requirements": ["Interface Android", "Hiérarchie de lecture nette"]
     },
     {
       "order": 5,
       "role": "support",
-      "surface": "dream-art",
-      "caption": "Donne une image à l’atmosphère du rêve",
-      "proof": "Montrer une illustration associée à un rêve déjà consigné.",
-      "requirements": ["Interface Android", "L’image sert le souvenir, sans promesse divinatoire"]
+      "surface": "patterns",
+      "caption": "Repère les thèmes qui reviennent",
+      "proof": "Montrer des thèmes récurrents reliés à plusieurs rêves.",
+      "requirements": ["Interface Android", "Récurrence compréhensible sans petit texte", "Aucun microphone au premier plan"]
     },
     {
       "order": 6,
-      "role": "trust",
-      "surface": "reflection",
-      "caption": "Explore sans diagnostic ni prédiction",
-      "proof": "Montrer des questions ou pistes de réflexion ouvertes.",
-      "requirements": ["Interface Android", "Aucune promesse médicale ou prédictive"]
+      "role": "core",
+      "surface": "emotions",
+      "caption": "Suis tes émotions nuit après nuit",
+      "proof": "Montrer les émotions dominantes sur plusieurs rêves.",
+      "requirements": ["Interface Android", "Évolution visible en moins de deux secondes", "Aucun microphone au premier plan"]
     },
     {
       "order": 7,
-      "role": "secondary",
-      "surface": "capture",
-      "caption": "Écris ou dicte quand le souvenir est frais",
-      "proof": "Montrer l’écriture comme chemin principal et la dictée comme option.",
-      "requirements": ["Interface Android", "La dictée reste visuellement secondaire"]
+      "role": "trust",
+      "surface": "reflection",
+      "caption": "Explore avec des pistes, jamais des certitudes",
+      "proof": "Montrer des questions ou pistes de réflexion ouvertes.",
+      "requirements": ["Interface Android", "Aucune promesse médicale ou prédictive"]
     }
   ]
 }

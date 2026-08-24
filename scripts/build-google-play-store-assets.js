@@ -11,13 +11,13 @@ const OUTPUT_ROOT = path.join(ROOT_DIR, 'output', 'google-play', 'fr-FR');
 const SCREENSHOT_SIZE = Object.freeze({ width: 1080, height: 1920 });
 const FEATURE_SIZE = Object.freeze({ width: 1024, height: 500 });
 const SCREENSHOT_LAYOUT = Object.freeze([
-  { surface: 'journal', filename: '01-journal.png', crop: { top: 90, bottom: 650 } },
-  { surface: 'patterns', filename: '02-patterns.png', crop: { top: 90, bottom: 650 } },
-  { surface: 'emotions', filename: '03-emotions.png', crop: { top: 90, bottom: 650 } },
-  { surface: 'dream-detail', filename: '04-dream-detail.png', crop: { top: 90, bottom: 90 } },
-  { surface: 'dream-art', filename: '05-dream-art.png', crop: { top: 90, bottom: 90 } },
-  { surface: 'reflection', filename: '06-reflection.png', crop: { top: 90, bottom: 550 } },
-  { surface: 'capture', filename: '07-capture.png', crop: { top: 90, bottom: 650 } },
+  { surface: 'journal', source: 'journal.png', filename: '01-journal.png', crop: { top: 90, bottom: 650 } },
+  { surface: 'capture', source: 'capture.png', filename: '02-capture.png', crop: { top: 90, bottom: 90 }, position: 'centre' },
+  { surface: 'dream-art', source: 'dream-art-app.png', filename: '03-dream-art.png', crop: { top: 90, bottom: 90 }, position: 'centre' },
+  { surface: 'dream-detail', source: 'dream-detail.png', filename: '04-dream-detail.png', crop: { top: 90, bottom: 90 }, position: 'centre' },
+  { surface: 'patterns', source: 'patterns.png', filename: '05-patterns.png', crop: { top: 90, bottom: 650 } },
+  { surface: 'emotions', source: 'emotions.png', filename: '06-emotions.png', crop: { top: 90, bottom: 650 } },
+  { surface: 'reflection', source: 'reflection.png', filename: '07-reflection.png', crop: { top: 90, bottom: 550 } },
 ]);
 
 function escapeXml(value) {
@@ -92,7 +92,7 @@ function screenshotBackground(shot) {
     </svg>`);
 }
 
-async function prepareScreenshot(source, crop) {
+async function prepareScreenshot(source, crop, position = 'top') {
   const image = sharp(source);
   const metadata = await image.metadata();
   const top = crop?.top || 0;
@@ -105,56 +105,57 @@ async function prepareScreenshot(source, crop) {
   const mask = Buffer.from('<svg width="860" height="1370"><rect width="860" height="1370" rx="38" fill="white"/></svg>');
   return image
     .extract({ left: 0, top, width: metadata.width, height })
-    .resize({ width: 860, height: 1370, fit: 'cover', position: 'top' })
+    .resize({ width: 860, height: 1370, fit: 'cover', position })
     .composite([{ input: mask, blend: 'dest-in' }])
     .png()
     .toBuffer();
 }
 
 async function buildScreenshot(shot, layout, sourceRoot, generatedRoot) {
-  const source = path.join(sourceRoot, layout.filename);
+  const source = path.join(sourceRoot, layout.source);
   const output = path.join(generatedRoot, layout.filename);
   if (!fs.existsSync(source)) throw new Error(`Source locale absente : ${source}`);
-  const appScreenshot = await prepareScreenshot(source, layout.crop);
+  const appScreenshot = await prepareScreenshot(source, layout.crop, layout.position);
   await sharp(screenshotBackground(shot))
     .composite([{ input: appScreenshot, left: 110, top: 454 }])
+    .removeAlpha()
     .png({ compressionLevel: 9 })
     .toFile(output);
   return output;
 }
 
-function featureGraphicSvg() {
+function featureGraphicOverlaySvg() {
   return Buffer.from(`
     <svg width="1024" height="500" viewBox="0 0 1024 500" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="ground" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#070711"/>
-          <stop offset="0.62" stop-color="#15132e"/>
-          <stop offset="1" stop-color="#20345d"/>
+        <linearGradient id="shade" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#070711" stop-opacity="0.96"/>
+          <stop offset="0.52" stop-color="#070711" stop-opacity="0.72"/>
+          <stop offset="1" stop-color="#070711" stop-opacity="0.12"/>
         </linearGradient>
-        <radialGradient id="glow">
-          <stop offset="0" stop-color="#d9aa72" stop-opacity="0.2"/>
-          <stop offset="1" stop-color="#d9aa72" stop-opacity="0"/>
-        </radialGradient>
       </defs>
-      <rect width="1024" height="500" fill="url(#ground)"/>
-      <circle cx="830" cy="215" r="235" fill="url(#glow)"/>
-      <circle cx="846" cy="201" r="128" fill="#f6f0e6"/>
-      <circle cx="900" cy="156" r="128" fill="#171831"/>
-      <circle cx="762" cy="111" r="5" fill="#d9aa72"/>
-      <circle cx="947" cy="323" r="4" fill="#f6f0e6" fill-opacity="0.8"/>
-      <path d="M719 363 C799 330 886 330 963 363" fill="none" stroke="#d9aa72" stroke-opacity="0.55" stroke-width="2"/>
+      <rect width="1024" height="500" fill="url(#shade)"/>
       <text x="72" y="92" class="brand">NOCTALIA</text>
-      <text x="72" y="205" class="headline">Ton journal de rêves</text>
-      <text x="72" y="276" class="headline">vivant</text>
-      <text x="74" y="350" class="subhead">Symboles • émotions • motifs</text>
-      <line x1="74" y1="386" x2="508" y2="386" stroke="#d9aa72" stroke-width="3"/>
+      <text x="72" y="224" class="headline">Ton journal</text>
+      <text x="72" y="294" class="headline">de rêves</text>
+      <text x="74" y="374" class="subhead">Souviens-toi. Observe. Explore.</text>
       <style>
         .brand { fill: #d9aa72; font: 600 25px Arial, sans-serif; letter-spacing: 6px; }
         .headline { fill: #f6f0e6; font: 700 58px Georgia, serif; }
-        .subhead { fill: #c5bdd8; font: 400 25px Arial, sans-serif; letter-spacing: 1px; }
+        .subhead { fill: #e5deee; font: 400 24px Arial, sans-serif; letter-spacing: 0.5px; }
       </style>
     </svg>`);
+}
+
+async function buildFeatureGraphic(sourceRoot, output) {
+  const source = path.join(sourceRoot, 'dream-art-bridge.png');
+  if (!fs.existsSync(source)) throw new Error(`Source locale absente : ${source}`);
+  await sharp(source)
+    .resize({ ...FEATURE_SIZE, fit: 'cover', position: 'centre' })
+    .composite([{ input: featureGraphicOverlaySvg() }])
+    .removeAlpha()
+    .png({ compressionLevel: 9 })
+    .toFile(output);
 }
 
 async function buildAssets(outputRoot = OUTPUT_ROOT) {
@@ -164,6 +165,7 @@ async function buildAssets(outputRoot = OUTPUT_ROOT) {
 
   const sourceRoot = path.join(outputRoot, 'source');
   const generatedRoot = path.join(outputRoot, 'generated');
+  fs.rmSync(generatedRoot, { recursive: true, force: true });
   fs.mkdirSync(generatedRoot, { recursive: true });
   const outputs = [];
   for (let index = 0; index < SCREENSHOT_LAYOUT.length; index += 1) {
@@ -172,7 +174,7 @@ async function buildAssets(outputRoot = OUTPUT_ROOT) {
     );
   }
   const featureGraphic = path.join(generatedRoot, 'feature-graphic-fr.png');
-  await sharp(featureGraphicSvg()).png({ compressionLevel: 9 }).toFile(featureGraphic);
+  await buildFeatureGraphic(sourceRoot, featureGraphic);
   outputs.push(featureGraphic);
   return outputs;
 }
@@ -197,7 +199,9 @@ module.exports = {
   SCREENSHOT_LAYOUT,
   SCREENSHOT_SIZE,
   buildAssets,
+  buildFeatureGraphic,
   escapeXml,
+  featureGraphicOverlaySvg,
   validateBriefAgainstLayout,
   wrapCaption,
 };

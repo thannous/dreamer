@@ -17,6 +17,8 @@ import type {
 import { migrateLegacyDreamMutation } from '@/lib/dreamUtils';
 import { reportSyncQueueClearedWithPending } from '@/lib/syncObservability';
 import { getPredefinedDreamsWithTimestamps } from '@/mock-data/predefinedDreams';
+import { getAsoStoreDreamsWithTimestamps } from '@/mock-data/asoStoreDreams';
+import { isAsoScreenshotModeEnabled } from '@/lib/env';
 
 // In-memory storage
 const mockStorage: Record<string, string> = {};
@@ -86,7 +88,9 @@ function ensureDreamsPreloaded(): void {
   if (dreamsPreloaded || !shouldPreloadDreams) return;
 
   console.log('[MOCK STORAGE] Pre-loading predefined dreams...');
-  const predefinedDreams = getPredefinedDreamsWithTimestamps();
+  const predefinedDreams = isAsoScreenshotModeEnabled()
+    ? getAsoStoreDreamsWithTimestamps()
+    : getPredefinedDreamsWithTimestamps();
   mockStorage['gemini_dream_journal_dreams'] = JSON.stringify(predefinedDreams);
   dreamsPreloaded = true;
   console.log(`[MOCK STORAGE] Loaded ${predefinedDreams.length} predefined dreams`);

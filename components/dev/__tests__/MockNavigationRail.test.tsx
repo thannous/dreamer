@@ -8,6 +8,7 @@ import { TID } from '@/lib/testIDs';
 
 const mockPush = jest.fn();
 let mockPathname = '/settings';
+let mockAsoScreenshotMode = false;
 
 jest.mock('react-native', () => {
   const React = require('react');
@@ -78,11 +79,15 @@ jest.mock('@/hooks/useTranslation', () => ({
   }),
 }));
 
-jest.mock('@/lib/env', () => ({ isMockModeEnabled: () => true }));
+jest.mock('@/lib/env', () => ({
+  isAsoScreenshotModeEnabled: () => mockAsoScreenshotMode,
+  isMockModeEnabled: () => true,
+}));
 
 describe('MockNavigationRail', () => {
   beforeEach(() => {
     mockPathname = '/settings';
+    mockAsoScreenshotMode = false;
     mockPush.mockClear();
   });
 
@@ -101,5 +106,13 @@ describe('MockNavigationRail', () => {
     fireEvent.click(screen.getByTestId(TID.Button.MockNavJournal));
 
     expect(mockPush).toHaveBeenCalledWith('/(tabs)/journal');
+  });
+
+  it('stays hidden while capturing ASO screenshots', () => {
+    mockAsoScreenshotMode = true;
+
+    render(<MockNavigationRail />);
+
+    expect(screen.queryByTestId(TID.Button.MockNavJournal)).toBeNull();
   });
 });

@@ -28,6 +28,22 @@ describe('Google Play store asset recipe', () => {
     });
   });
 
+  it('keeps capture in the conversion-critical second position', () => {
+    expect(SCREENSHOT_LAYOUT.map(({ surface }) => surface)).toEqual([
+      'journal',
+      'capture',
+      'dream-art',
+      'dream-detail',
+      'patterns',
+      'emotions',
+      'reflection',
+    ]);
+  });
+
+  it('maps every generated screenshot to an explicit local source', () => {
+    expect(SCREENSHOT_LAYOUT.every(({ source }) => typeof source === 'string' && source.length > 0)).toBe(true);
+  });
+
   it('wraps captions and escapes SVG text safely', () => {
     expect(wrapCaption('Un journal qui grandit avec chaque rêve')).toEqual([
       'Un journal qui grandit',

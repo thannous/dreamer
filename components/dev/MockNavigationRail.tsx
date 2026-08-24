@@ -7,11 +7,8 @@ import { Fonts } from '@/constants/theme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import { isMockModeEnabled } from '@/lib/env';
+import { isAsoScreenshotModeEnabled, isMockModeEnabled } from '@/lib/env';
 import { TID } from '@/lib/testIDs';
-
-const isMockMode = isMockModeEnabled();
-const shouldShowMockRail = isMockMode && Platform.OS !== 'web';
 
 const ITEMS = [
   { shortLabel: 'H', translationKey: 'nav.home', route: 'home', testID: TID.Button.MockNavHome, href: '/(tabs)' as const },
@@ -26,6 +23,10 @@ export function MockNavigationRail() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
+
+  const shouldShowMockRail = isMockModeEnabled()
+    && !isAsoScreenshotModeEnabled()
+    && Platform.OS !== 'web';
 
   if (!shouldShowMockRail) {
     return null;

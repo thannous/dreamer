@@ -8,6 +8,7 @@
   "scripts": {
     "start": "node ./scripts/expo-safe-runner.js start",
     "start:mock": "node ./scripts/expo-safe-runner.js --profile .env.mock start",
+    "start:aso": "node ./scripts/expo-safe-runner.js --profile .env.aso start",
     "start:lucid": "node ./scripts/expo-safe-runner.js --profile .env.lucid start",
     "start:lucid:mock": "node ./scripts/expo-safe-runner.js --profile .env.lucid.mock start",
     "lucid:gates": "node ./scripts/check-lucid-trainer-gates.js",
