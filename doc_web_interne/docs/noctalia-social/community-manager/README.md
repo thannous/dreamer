@@ -1,6 +1,6 @@
 # Noctalia — Espace Community & Social Media Manager
 
-Créé le 2026-07-29. Mandat mis à jour le 2026-08-13.
+Créé le 2026-07-29. Mandat mis à jour le 2026-08-24.
 
 Ce dossier est mon espace de travail opérationnel pour le community management et
 le social media management organiques de Noctalia. Le registre éditorial officiel
@@ -71,8 +71,10 @@ dans la plateforme native.
 - DreamViews est autorisé sous mandat communautaire distinct pour des
   contributions manuelles, utiles, espacées et sans lien, après contrôle de la
   session et du fil. Reddit reste hors mandat jusqu'à la création et la
-  maturation d'un compte Noctalia dédié. Snapchat reste bloqué par sa porte de
-  performance.
+  maturation d'un compte Noctalia dédié. Snapchat : porte qualitative levée le
+  24 août 2026 par override propriétaire (`OPEN-PENDING-ACCOUNT`) ; ce n'est
+  pas un compte autorisé live et aucune publication n'est permise tant que le
+  handle, l'URL publique et la session n'existent pas.
 - Audience : adultes curieux de leurs rêves, du journal de rêves, de la
   connaissance de soi et du rêve lucide.
 - Langues du produit : français, anglais, espagnol, allemand et italien.
@@ -197,8 +199,9 @@ renomme pas rétroactivement les fichiers déjà publiés ou archivés.
 - [`organic-expansion-2026-08-12-2026-09-10/`](./organic-expansion-2026-08-12-2026-09-10/) :
   programme opérationnel de 30 jours pour YouTube Shorts, Facebook Reels,
   Pinterest et la participation Reddit/DreamViews. Les nouveaux comptes restent
-  à configurer et à ajouter au mandat avant publication ; Snapchat reste bloqué
-  jusqu'à identification de deux formats gagnants.
+  à configurer et à ajouter au mandat avant publication ; Snapchat a sa porte
+  qualitative levée le 24 août 2026, mais n'est pas un compte live tant qu'un
+  handle réel n'est pas créé et inscrit au mandat.
 - [`../MEDIA-INVENTORY.md`](../MEDIA-INVENTORY.md) : inventaire des masters
   locaux, des lots Drive, des noms historiques, des propositions de migration
   et de l'historique de publication vérifié.

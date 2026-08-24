@@ -1,6 +1,6 @@
 # Noctalia — Comptes sociaux et mandat opérationnel
 
-Dernière vérification : 2026-08-14.
+Dernière vérification : 2026-08-24.
 
 Statut : **mandat actif**.
 
@@ -50,6 +50,17 @@ programme communautaire : ancienneté minimale, contributions utiles sans lien,
 échanges organiques et absence d'incident modérateur. Ce seuil n'autorise pas à
 lui seul une mention produit : la première mention ou le premier lien exige
 encore l'accord explicite des modérateurs de la communauté concernée.
+
+Le 24 août 2026 vers 03:24 Europe/Paris, le propriétaire thanh a levé la porte
+qualitative Snapchat (choix explicite « Ouvrir Snapchat maintenant », consigné
+dans
+[`organic-expansion-2026-08-12-2026-09-10/04-METRICS-AND-SNAPCHAT-GATE.md`](./organic-expansion-2026-08-12-2026-09-10/04-METRICS-AND-SNAPCHAT-GATE.md)).
+Snapchat n'est toujours pas un compte autorisé live : aucun profil public
+Noctalia n'a été trouvé, aucune ligne n'est ajoutée au tableau ci-dessus, et
+aucune publication Spotlight n'est autorisée tant que le compte n'existe pas,
+n'est pas inscrit ici avec une URL publique réelle, et qu'une session n'est
+pas vérifiée. Handle envisagé **si** création : `@noctaliadreams`, contact
+`contact@noctalia.app`. Ce compte n'est pas créé.
 
 Le rattrapage des vidéos déjà publiques sur les réseaux principaux est inclus
 dans la préparation éditoriale. Leur diffusion sur YouTube, Facebook ou
