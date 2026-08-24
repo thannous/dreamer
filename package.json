@@ -72,6 +72,8 @@
     "docs:audit-blog-i18n": "node ./scripts/audit-blog-i18n-parity.js",
     "seo:gsc:export": "node ./scripts/export-search-console.js",
     "aso:google-play:check": "node ./scripts/check-google-play-aso.js",
+    "aso:google-play:assets": "node ./scripts/build-google-play-store-assets.js",
+    "aso:google-play:assets:check": "node ./scripts/check-google-play-store-assets.js",
     "aso:google-play:snapshot": "node ./scripts/build-google-play-aso-snapshot.js",
     "aso:google-play:vitals": "node ./scripts/export-google-play-vitals.js",
     "aso:google-play:listing": "node ./scripts/export-google-play-listing.js",
