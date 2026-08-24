@@ -167,6 +167,9 @@
 <p>
                     I bambini in età scolare sognano sempre più <strong>situazioni sociali</strong>: amicizie, conflitti con i coetanei, insegnanti e scenari legati alla <a class="text-dream-salmon hover:underline" href="../simboli/scuola">scuola</a>. I sogni di essere inseguiti, cadere o essere umiliati in pubblico diventano più comuni in questo periodo, rispecchiando la crescente importanza dello status sociale e dell'ansia da prestazione nella vita del bambino.
                 </p>
+<p>
+                    Quando questi sogni si concentrano intorno al rientro scolastico, la nostra guida sugli <a class="text-dream-salmon hover:underline" href="incubi-rientro-scolastico-bambini">incubi da rientro nei bambini</a> aiuta i genitori a distinguere un brutto sogno, un incubo e un terrore notturno.
+                </p>
 <h3>Adolescenti: Identità ed emozioni</h3>
 <p>
                     I sogni degli adolescenti assomigliano a quelli degli adulti per complessità. Temi come identità, relazioni sentimentali, immagine corporea e aspirazioni future dominano. Gli adolescenti sperimentano anche più <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">incubi</a> durante periodi di cambiamenti ormonali e pressione scolastica. Capire <a class="text-dream-salmon hover:underline" href="perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne">perché sogniamo</a> può aiutare gli adolescenti a dare un senso all'intensità emotiva che sperimentano durante il sonno.

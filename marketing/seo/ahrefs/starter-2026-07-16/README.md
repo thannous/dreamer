@@ -261,3 +261,26 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
   avertissement), tests node 88/88, contrat URL inchangé. Aucun crédit
   Ahrefs, changement Rank Tracker ni demande d'indexation. Lecture prévue à
   partir du 16 septembre. Détails : `j35-exact-query-matching-2026-08-18.md`.
+
+## Actualisation J40 au 24 août 2026 — découverte des articles rentrée
+
+- GSC complet au 22 août affiche `4 708` clics, `614 641` impressions, CTR
+  `0,8 %` et position `7,6` sur 28 jours.
+- Les dix articles rentrée sont encore à `0` clic et `0` impression. Les dix
+  sont non indexés, sans crawl connu et sans page d'origine détectée ; un seul
+  est déjà détecté avec le sitemap comme source.
+- Dix pages éditoriales existantes et déjà visibles dans GSC reçoivent un lien
+  contextuel : cinq articles sur les examens vers les intentions « retourner à
+  l'école » et cinq guides sur les rêves d'enfants vers les cauchemars de
+  rentrée.
+- `scuola`, `casa`, `ragno`, `perro`, `flying dreams`, les 50 suivis et leurs
+  tags restent inchangés. Aucune demande d'indexation ni dépense Ahrefs
+  générale.
+- Ahrefs reste à `21` crédits généraux utilisés, Rank Tracker `50/50` et Site
+  Audit `1 000/10 000`. Le crawl automatique du 24 août conserve un Health
+  Score de `100`; son unique erreur concerne `dream.noctalia.app`, hors contenu
+  éditorial du site marketing.
+- Le dossier Marika Pech est réconcilié : un message a déjà été envoyé le
+  23 août à 16:45 depuis `contact@noctalia.app`; aucune réponse ni mise à jour
+  publique n'est visible à J40. Aucun doublon n'est envoyé.
+- Détails et protocole de mesure : `j40-execution-2026-08-24.md`.

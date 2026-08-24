@@ -167,6 +167,9 @@
 <p>
                     School-age children dream increasingly about <strong>social situations</strong>: friendships, conflicts with peers, teachers, and <a class="text-dream-salmon hover:underline" href="../symbols/school">school</a> scenarios. Dreams about being chased, falling, or being embarrassed in public become more common during this period, mirroring the growing importance of social standing and performance anxiety in a child's life.
                 </p>
+<p>
+                    When these dreams cluster around a new term, our guide to <a class="text-dream-salmon hover:underline" href="back-to-school-nightmares-children">back-to-school nightmares in children</a> helps parents distinguish a bad dream from a nightmare or night terror.
+                </p>
 <h3>Teenagers: Identity and emotion</h3>
 <p>
                     Adolescent dreams resemble adult dreams in their complexity. Themes of identity, romantic relationships, body image, and future aspirations dominate. Teens also experience more <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a> during periods of hormonal change and academic pressure. Understanding <a class="text-dream-salmon hover:underline" href="why-we-dream-science">why we dream</a> can help teenagers make sense of the emotional intensity they experience during sleep.
