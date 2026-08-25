@@ -18,11 +18,13 @@ describe('Google Play ASO source validator', () => {
     expect(result.counts.full_description).toBeLessThanOrEqual(4000);
   });
 
-  it('accepts the canonical English draft', () => {
-    const english = JSON.parse(
-      fs.readFileSync(path.join(__dirname, '..', 'marketing', 'aso', 'google-play-en-us-2026-08-25.json'), 'utf8')
-    );
-    const result = validateAsoSource(english);
+  it.each([
+    'google-play-en-us-2026-08-25.json',
+    'google-play-es-es-2026-08-25.json',
+    'google-play-it-it-2026-08-25.json',
+  ])('accepts the canonical localized draft %s', (filename) => {
+    const localized = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'marketing', 'aso', filename), 'utf8'));
+    const result = validateAsoSource(localized);
     expect(result).toMatchObject({ valid: true, errors: [] });
     expect(result.counts.title).toBeLessThanOrEqual(30);
     expect(result.counts.short_description).toBeLessThanOrEqual(80);

@@ -60,7 +60,7 @@ async function checkAssets(outputRoot = OUTPUT_ROOT, locale = DEFAULT_LOCALE) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help) {
-    console.log('Usage: npm run aso:google-play:assets:check -- [--locale fr-FR|en-US]');
+    console.log('Usage: npm run aso:google-play:assets:check -- [--locale fr-FR|en-US|es-ES|it-IT]');
     return;
   }
   const localeConfig = resolveLocaleConfig(args.locale);

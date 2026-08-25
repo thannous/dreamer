@@ -20,9 +20,9 @@ describe('Google Play store asset recipe', () => {
     expect(SCREENSHOT_LAYOUT).toHaveLength(7);
   });
 
-  it('keeps French and English executions on the same seven-shot system', () => {
-    const englishBrief = JSON.parse(fs.readFileSync(LOCALE_CONFIGS['en-US'].asoSource, 'utf8'));
-    expect(validateBriefAgainstLayout(englishBrief)).toEqual({ valid: true, errors: [] });
+  it.each(['en-US', 'es-ES', 'it-IT'])('keeps the %s execution on the same seven-shot system', (locale) => {
+    const localizedBrief = JSON.parse(fs.readFileSync(LOCALE_CONFIGS[locale].asoSource, 'utf8'));
+    expect(validateBriefAgainstLayout(localizedBrief)).toEqual({ valid: true, errors: [] });
   });
 
   it('rejects a reordered surface', () => {

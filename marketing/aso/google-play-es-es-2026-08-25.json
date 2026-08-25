@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "package_name": "com.tanuki75.noctalia",
+  "locale": "es-ES",
+  "status": "draft",
+  "effective_date": "2026-08-25",
+  "positioning": {
+    "primary_promise": "Un diario de sueños vivo para guardar tus noches, reencontrar sus símbolos y seguir la historia que va tomando forma.",
+    "voice_role": "El dictado es una opción de captura secundaria, nunca la promesa principal.",
+    "trust_boundary": "Noctalia ofrece perspectivas posibles, nunca un diagnóstico ni una predicción."
+  },
+  "publication": {
+    "mode": "manual",
+    "play_console_mutation_allowed": false,
+    "notes": "Fuente de trabajo validada localmente. Cualquier publicación en Google Play requiere autorización explícita."
+  },
+  "listing": {
+    "title": "Noctalia: Diario de sueños",
+    "short_description": "Guarda tus sueños, explora sus símbolos y descubre lo que vuelve a ti.",
+    "full_description": "¿Y si tus sueños no tuvieran que desaparecer al despertar?\n\nNoctalia convierte cada recuerdo nocturno en una página de tu diario de sueños. Bastan unas palabras para guardar una escena, una emoción o un símbolo y volver a lo que se quedó contigo cuando quieras.\n\nCONSERVA LA HISTORIA DE TUS NOCHES\n• Escribe un sueño al despertar o utiliza el dictado opcional.\n• Añade las emociones, los símbolos y los detalles que recuerdes.\n• Guarda cada sueño en un diario íntimo, visual y fácil de recorrer.\n\nMIRA CÓMO COBRA FORMA TU MUNDO ONÍRICO\n• Da forma a la atmósfera de un sueño con una ilustración inspirada en él.\n• Vuelve a tus recuerdos como si fueran capítulos de una historia solo tuya.\n• Busca en tu diario, marca favoritos y conserva cerca los sueños importantes.\n\nDESCUBRE LO QUE REGRESA\n• Observa emociones, temas y símbolos de los sueños a lo largo del tiempo.\n• Sigue los patrones recurrentes que conectan varios sueños.\n• Descubre cómo evoluciona tu diario de sueños a tu propio ritmo.\n\nSIGUE EXPLORANDO EL SUEÑO\n• Haz preguntas sobre ese detalle que todavía te intriga.\n• Explora el diccionario de símbolos y las guías cuando quieras profundizar.\n• Descubre perspectivas de interpretación de los sueños sin encerrar tu experiencia en un único significado.\n\nNoctalia te ayuda a recordar, observar y reflexionar. Sus análisis e interpretaciones de sueños ofrecen perspectivas posibles. No son un diagnóstico, un consejo médico o psicológico ni una predicción.\n\nAbre tu diario de sueños y deja que la historia de tus noches se despliegue, sueño a sueño."
+  },
+  "indexed_keywords": [
+    "diario de sueños",
+    "interpretación de sueños",
+    "significado de los sueños",
+    "símbolos de los sueños",
+    "sueños recurrentes",
+    "registrar sueños",
+    "mundo onírico"
+  ],
+  "screenshot_brief": [
+    {
+      "order": 1,
+      "role": "core",
+      "surface": "journal",
+      "caption": "Vuelve a la historia de tus noches",
+      "proof": "Mostrar un diario conectado con varios sueños de ejemplo en español.",
+      "requirements": ["Interfaz Android", "Modo oscuro real", "Interfaz en español", "Sin micrófono en primer plano"]
+    },
+    {
+      "order": 2,
+      "role": "core",
+      "surface": "dream-art",
+      "caption": "Da forma a lo que aún recuerdas",
+      "proof": "Mostrar una ilustración real asociada a un sueño ya guardado.",
+      "requirements": ["Interfaz Android", "Modo oscuro real", "La imagen acompaña el recuerdo sin promesa adivinatoria"]
+    },
+    {
+      "order": 3,
+      "role": "core",
+      "surface": "capture",
+      "caption": "Guárdalo antes de que se desvanezca",
+      "proof": "Mostrar la escritura como vía principal y el dictado como opción.",
+      "requirements": ["Interfaz Android", "Modo oscuro real", "Interfaz en español", "El dictado permanece en segundo plano"]
+    },
+    {
+      "order": 4,
+      "role": "trust",
+      "surface": "dream-chat",
+      "caption": "Sigue el hilo de tu sueño",
+      "proof": "Mostrar el espacio de exploración con una pregunta contextualizada y sin veredicto.",
+      "requirements": ["Interfaz Android", "Modo oscuro real", "Cuenta conectada sin datos personales"]
+    },
+    {
+      "order": 5,
+      "role": "support",
+      "surface": "symbols-guides",
+      "caption": "Explora símbolos y guías",
+      "proof": "Mostrar el diccionario de símbolos y el acceso directo a las guías de sueños.",
+      "requirements": ["Interfaz Android", "Modo oscuro real", "Interfaz en español", "Símbolos y Guías visibles juntos"]
+    },
+    {
+      "order": 6,
+      "role": "support",
+      "surface": "patterns",
+      "caption": "Descubre lo que vuelve",
+      "proof": "Mostrar temas recurrentes vinculados a varios sueños.",
+      "requirements": ["Interfaz Android", "Modo oscuro real", "Interfaz en español", "Patrones legibles de un vistazo"]
+    },
+    {
+      "order": 7,
+      "role": "support",
+      "surface": "emotions",
+      "caption": "Escucha lo que cuentan tus emociones",
+      "proof": "Mostrar las emociones de un sueño analizado sin formular un diagnóstico.",
+      "requirements": ["Interfaz Android", "Modo oscuro real", "Interfaz en español", "Sin promesa diagnóstica ni predictiva"]
+    }
+  ]
+}

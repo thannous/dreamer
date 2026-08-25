@@ -10,6 +10,8 @@ const LIMITS = Object.freeze({ title: 30, short_description: 80, full_descriptio
 const PRIMARY_PROMISES = Object.freeze({
   'fr-FR': 'journal de rêves vivant',
   'en-US': 'living dream journal',
+  'es-ES': 'diario de sueños vivo',
+  'it-IT': 'diario dei sogni vivo',
 });
 
 function codePointLength(value) {
@@ -24,7 +26,7 @@ function validateAsoSource(document) {
   if (document.package_name !== 'com.tanuki75.noctalia') {
     errors.push('package_name doit être com.tanuki75.noctalia.');
   }
-  if (!PRIMARY_PROMISES[document.locale]) errors.push('locale doit être fr-FR ou en-US.');
+  if (!PRIMARY_PROMISES[document.locale]) errors.push('locale doit être fr-FR, en-US, es-ES ou it-IT.');
   if (document.status !== 'draft') errors.push('status doit rester draft avant publication manuelle.');
   if (document.publication?.mode !== 'manual') errors.push('publication.mode doit être manual.');
   if (document.publication?.play_console_mutation_allowed !== false) {

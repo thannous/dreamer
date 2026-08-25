@@ -5,7 +5,7 @@
   "status": "draft",
   "effective_date": "2026-08-09",
   "positioning": {
-    "primary_promise": "Un journal de rêves vivant pour observer les motifs et explorer des pistes au fil des nuits.",
+    "primary_promise": "Un journal de rêves vivant pour conserver ses nuits, retrouver leurs symboles et suivre l’histoire qui se dessine.",
     "voice_role": "La dictée est une option de saisie secondaire, jamais la promesse principale.",
     "trust_boundary": "Noctalia propose des pistes de réflexion, jamais un diagnostic ni une prédiction."
   },
@@ -16,8 +16,8 @@
   },
   "listing": {
     "title": "Noctalia : Journal de rêves",
-    "short_description": "Ton journal de rêves vivant : observe les motifs et explore des pistes.",
-    "full_description": "Chaque rêve laisse une trace. Noctalia transforme tes souvenirs en un journal de rêves vivant qui grandit avec chaque nuit.\n\nNote un rêve dès le réveil, par écrit ou avec la dictée facultative. Ajoute les émotions, les symboles et les détails dont tu te souviens, puis retrouve-les dans un journal clair et personnel.\n\nUN JOURNAL QUI GRANDIT AVEC TOI\n• Conserve tes rêves avant qu’ils ne s’effacent.\n• Relis-les par date, recherche-les et repère ce qui revient.\n• Observe l’évolution de tes émotions, thèmes et symboles au fil du temps.\n\nDES PISTES, JAMAIS UNE VÉRITÉ TOUTE FAITE\n• Explore des questions de réflexion inspirées par le contenu de ton rêve.\n• Discute d’un détail pour approfondir ce qu’il évoque pour toi.\n• Consulte le dictionnaire de symboles et les guides comme des points de départ, jamais comme des significations certaines.\n\nUNE MÉMOIRE AUSSI VISUELLE\n• Donne une image à l’atmosphère de ton rêve avec une illustration onirique.\n• Retrouve chaque rêve comme un souvenir organisé, sans lui imposer une interprétation unique.\n\nTON ESPACE, TON RYTHME\nNoctalia aide à se souvenir, observer et réfléchir. Les analyses et interprétations proposées sont des pistes possibles : elles ne constituent ni un diagnostic, ni un avis médical ou psychologique, ni une prédiction.\n\nCommence ton journal de rêves et laisse ton histoire nocturne prendre forme, une nuit après l’autre."
+    "short_description": "Garde tes rêves près de toi, explore leurs symboles et retrouve leur histoire.",
+    "full_description": "Et si tes rêves ne disparaissaient plus au réveil ?\n\nNoctalia transforme chaque souvenir nocturne en une page de ton journal de rêves. Quelques mots suffisent pour garder une scène, une émotion ou un symbole, puis revenir à ce qui t’a marqué quand tu en as envie.\n\nGARDE LA TRACE DE TES NUITS\n• Écris ton rêve dès le réveil ou utilise la dictée facultative.\n• Ajoute les émotions, les symboles et les détails dont tu te souviens.\n• Retrouve tous tes rêves dans un journal intime, visuel et facile à parcourir.\n\nVOIS TON UNIVERS PRENDRE FORME\n• Donne une image à l’atmosphère d’un rêve avec une illustration onirique.\n• Revisite tes souvenirs comme les chapitres d’une histoire qui n’appartient qu’à toi.\n• Recherche un rêve, marque tes favoris et garde près de toi ceux qui comptent.\n\nDÉCOUVRE CE QUI REVIENT\n• Observe les émotions, les thèmes et les symboles présents au fil des nuits.\n• Retrouve les motifs récurrents qui relient plusieurs rêves.\n• Suis l’évolution de ton journal de rêves à ton rythme.\n\nPROLONGE LE RÊVE\n• Pose des questions sur un détail qui t’intrigue.\n• Explore le dictionnaire de symboles et les guides pour nourrir ta réflexion.\n• Découvre des pistes d’interprétation des rêves sans enfermer ton expérience dans une réponse unique.\n\nNoctalia t’aide à te souvenir, observer et réfléchir. Les analyses et interprétations proposées sont des perspectives possibles : elles ne constituent ni un diagnostic, ni un avis médical ou psychologique, ni une prédiction.\n\nOuvre ton journal de rêves et laisse l’histoire de tes nuits se révéler, un rêve après l’autre."
   },
   "indexed_keywords": [
     "journal de rêves",
@@ -33,57 +33,57 @@
       "order": 1,
       "role": "core",
       "surface": "journal",
-      "caption": "Tous tes rêves, au même endroit",
+      "caption": "Retrouve l’histoire de tes nuits",
       "proof": "Montrer plusieurs rêves datés et une continuité visuelle entre les nuits.",
-      "requirements": ["Interface Android", "Aucune Dynamic Island", "Contenu de démonstration lisible", "Aucun microphone au premier plan"]
+      "requirements": ["Interface Android", "Mode sombre réel", "Aucune Dynamic Island", "Contenu de démonstration lisible", "Aucun microphone au premier plan"]
     },
     {
       "order": 2,
       "role": "core",
       "surface": "dream-art",
-      "caption": "Donne vie à l’atmosphère du rêve",
+      "caption": "Donne forme à ce qui t’est resté",
       "proof": "Montrer une illustration associée à un rêve déjà consigné.",
-      "requirements": ["Interface Android", "L’image sert le souvenir, sans promesse divinatoire"]
+      "requirements": ["Interface Android", "Mode sombre réel", "L’image sert le souvenir, sans promesse divinatoire"]
     },
     {
       "order": 3,
       "role": "core",
       "surface": "capture",
-      "caption": "Capture ton rêve avant qu’il ne s’efface",
+      "caption": "Garde le rêve avant qu’il ne s’efface",
       "proof": "Montrer l’écriture comme chemin principal et la dictée comme option.",
-      "requirements": ["Interface Android", "La dictée reste visuellement secondaire"]
+      "requirements": ["Interface Android", "Mode sombre réel", "La dictée reste visuellement secondaire"]
     },
     {
       "order": 4,
       "role": "trust",
       "surface": "dream-chat",
-      "caption": "Pose tes questions. Le rêve continue.",
+      "caption": "Poursuis le fil de ton rêve",
       "proof": "Montrer une vraie question contextualisée sans verdict imposé.",
-      "requirements": ["Interface Android", "Question contextualisée visible", "Aucune formulation certaine ou oraculaire", "Compte connecté sans donnée personnelle"]
+      "requirements": ["Interface Android", "Mode sombre réel", "Question contextualisée visible", "Aucune formulation certaine ou oraculaire", "Compte connecté sans donnée personnelle"]
     },
     {
       "order": 5,
       "role": "support",
       "surface": "symbols-guides",
-      "caption": "Explore 150 symboles et des guides",
+      "caption": "Explore symboles et guides",
       "proof": "Montrer le dictionnaire, des symboles populaires et l’accès direct aux guides des rêves.",
-      "requirements": ["Interface Android", "Symboles et Guides visibles dans la même capture", "Recherche immédiatement compréhensible"]
+      "requirements": ["Interface Android", "Mode sombre réel", "Symboles et Guides visibles dans la même capture", "Recherche immédiatement compréhensible"]
     },
     {
       "order": 6,
       "role": "support",
       "surface": "patterns",
-      "caption": "Repère les thèmes qui reviennent",
+      "caption": "Découvre ce qui revient",
       "proof": "Montrer des thèmes récurrents reliés à plusieurs rêves.",
-      "requirements": ["Interface Android", "Récurrence compréhensible sans petit texte", "Aucun microphone au premier plan"]
+      "requirements": ["Interface Android", "Mode sombre réel", "Récurrence compréhensible sans petit texte", "Aucun microphone au premier plan"]
     },
     {
       "order": 7,
       "role": "core",
       "surface": "emotions",
-      "caption": "Suis tes émotions nuit après nuit",
+      "caption": "Écoute ce que racontent tes émotions",
       "proof": "Montrer les émotions dominantes sur plusieurs rêves.",
-      "requirements": ["Interface Android", "Évolution visible en moins de deux secondes", "Aucun microphone au premier plan"]
+      "requirements": ["Interface Android", "Mode sombre réel", "Évolution visible en moins de deux secondes", "Aucun microphone au premier plan"]
     }
   ]
 }

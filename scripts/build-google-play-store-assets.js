@@ -23,6 +23,22 @@ const LOCALE_CONFIGS = Object.freeze({
     featureHeadline: ['Your dream', 'journal'],
     featureSubhead: 'Remember. Notice. Explore.',
   }),
+  'es-ES': Object.freeze({
+    asoSource: path.join(ROOT_DIR, 'marketing', 'aso', 'google-play-es-es-2026-08-25.json'),
+    outputRoot: path.join(ROOT_DIR, 'output', 'google-play', 'es-ES'),
+    eyebrow: 'NOCTALIA  •  DIARIO DE SUEÑOS',
+    featureFilename: 'feature-graphic-es.png',
+    featureHeadline: ['Tu diario', 'de sueños'],
+    featureSubhead: 'Recuerda. Descubre. Explora.',
+  }),
+  'it-IT': Object.freeze({
+    asoSource: path.join(ROOT_DIR, 'marketing', 'aso', 'google-play-it-it-2026-08-25.json'),
+    outputRoot: path.join(ROOT_DIR, 'output', 'google-play', 'it-IT'),
+    eyebrow: 'NOCTALIA  •  DIARIO DEI SOGNI',
+    featureFilename: 'feature-graphic-it.png',
+    featureHeadline: ['Il tuo diario', 'dei sogni'],
+    featureSubhead: 'Ricorda. Scopri. Esplora.',
+  }),
 });
 const DEFAULT_LOCALE = 'fr-FR';
 const ASO_SOURCE = LOCALE_CONFIGS[DEFAULT_LOCALE].asoSource;
@@ -230,7 +246,7 @@ async function buildAssets(outputRoot = OUTPUT_ROOT, locale = DEFAULT_LOCALE) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help) {
-    console.log('Usage: npm run aso:google-play:assets -- [--locale fr-FR|en-US]');
+    console.log('Usage: npm run aso:google-play:assets -- [--locale fr-FR|en-US|es-ES|it-IT]');
     return;
   }
   const localeConfig = resolveLocaleConfig(args.locale);

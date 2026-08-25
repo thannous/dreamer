@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "package_name": "com.tanuki75.noctalia",
+  "locale": "it-IT",
+  "status": "draft",
+  "effective_date": "2026-08-25",
+  "positioning": {
+    "primary_promise": "Un diario dei sogni vivo per custodire le tue notti, ritrovare i loro simboli e seguire la storia che prende forma.",
+    "voice_role": "La dettatura è un metodo di inserimento facoltativo, mai la promessa principale.",
+    "trust_boundary": "Noctalia propone prospettive possibili, mai una diagnosi o una previsione."
+  },
+  "publication": {
+    "mode": "manual",
+    "play_console_mutation_allowed": false,
+    "notes": "Fonte di lavoro convalidata localmente. Qualsiasi pubblicazione su Google Play richiede un’autorizzazione esplicita."
+  },
+  "listing": {
+    "title": "Noctalia: Diario dei sogni",
+    "short_description": "Custodisci i sogni, esplora i simboli e scopri ciò che ritorna.",
+    "full_description": "E se i tuoi sogni non dovessero più svanire al risveglio?\n\nNoctalia trasforma ogni ricordo notturno in una pagina del tuo diario dei sogni. Bastano poche parole per custodire una scena, un’emozione o un simbolo e tornare a ciò che ti è rimasto dentro quando vuoi.\n\nCUSTODISCI LA STORIA DELLE TUE NOTTI\n• Scrivi un sogno appena ti svegli o usa la dettatura facoltativa.\n• Aggiungi le emozioni, i simboli e i dettagli che ricordi.\n• Conserva ogni sogno in un diario intimo, visivo e facile da esplorare.\n\nGUARDA IL TUO MONDO ONIRICO PRENDERE FORMA\n• Dai forma all’atmosfera di un sogno con un’illustrazione che ne trae ispirazione.\n• Rivedi i tuoi ricordi come capitoli di una storia che appartiene solo a te.\n• Cerca nel diario, salva i preferiti e tieni vicini i sogni più importanti.\n\nSCOPRI CIÒ CHE RITORNA\n• Osserva emozioni, temi e simboli dei sogni nel corso del tempo.\n• Segui i motivi ricorrenti che collegano più sogni.\n• Guarda come evolve il tuo diario dei sogni, seguendo il tuo ritmo.\n\nCONTINUA A ESPLORARE IL SOGNO\n• Fai domande su quel dettaglio che continua a incuriosirti.\n• Esplora il dizionario dei simboli e le guide quando vuoi andare più a fondo.\n• Scopri prospettive di interpretazione dei sogni senza ridurre la tua esperienza a un unico significato.\n\nNoctalia ti aiuta a ricordare, osservare e riflettere. Le analisi e le interpretazioni dei sogni offrono prospettive possibili. Non sono una diagnosi, un consiglio medico o psicologico né una previsione.\n\nApri il tuo diario dei sogni e lascia che la storia delle tue notti prenda forma, un sogno alla volta."
+  },
+  "indexed_keywords": [
+    "diario dei sogni",
+    "interpretazione dei sogni",
+    "significato dei sogni",
+    "simboli dei sogni",
+    "sogni ricorrenti",
+    "annotare i sogni",
+    "mondo onirico"
+  ],
+  "screenshot_brief": [
+    {
+      "order": 1,
+      "role": "core",
+      "surface": "journal",
+      "caption": "Ritrova la storia delle tue notti",
+      "proof": "Mostrare un diario connesso con diversi sogni di esempio in italiano.",
+      "requirements": ["Interfaccia Android", "Modalità scura reale", "Interfaccia in italiano", "Nessun microfono in primo piano"]
+    },
+    {
+      "order": 2,
+      "role": "core",
+      "surface": "dream-art",
+      "caption": "Dai forma a ciò che ricordi",
+      "proof": "Mostrare un’illustrazione reale associata a un sogno già salvato.",
+      "requirements": ["Interfaccia Android", "Modalità scura reale", "L’immagine accompagna il ricordo senza promesse divinatorie"]
+    },
+    {
+      "order": 3,
+      "role": "core",
+      "surface": "capture",
+      "caption": "Custodiscilo prima che svanisca",
+      "proof": "Mostrare la scrittura come percorso principale e la dettatura come opzione.",
+      "requirements": ["Interfaccia Android", "Modalità scura reale", "Interfaccia in italiano", "La dettatura resta in secondo piano"]
+    },
+    {
+      "order": 4,
+      "role": "trust",
+      "surface": "dream-chat",
+      "caption": "Segui il filo del tuo sogno",
+      "proof": "Mostrare lo spazio di esplorazione con una domanda contestuale e senza verdetti.",
+      "requirements": ["Interfaccia Android", "Modalità scura reale", "Account connesso senza dati personali"]
+    },
+    {
+      "order": 5,
+      "role": "support",
+      "surface": "symbols-guides",
+      "caption": "Esplora simboli e guide",
+      "proof": "Mostrare il dizionario dei simboli e l’accesso diretto alle guide dei sogni.",
+      "requirements": ["Interfaccia Android", "Modalità scura reale", "Interfaccia in italiano", "Simboli e Guide visibili insieme"]
+    },
+    {
+      "order": 6,
+      "role": "support",
+      "surface": "patterns",
+      "caption": "Scopri ciò che ritorna",
+      "proof": "Mostrare temi ricorrenti collegati a più sogni.",
+      "requirements": ["Interfaccia Android", "Modalità scura reale", "Interfaccia in italiano", "Motivi leggibili a colpo d’occhio"]
+    },
+    {
+      "order": 7,
+      "role": "support",
+      "surface": "emotions",
+      "caption": "Ascolta ciò che raccontano le emozioni",
+      "proof": "Mostrare le emozioni di un sogno analizzato senza formulare diagnosi.",
+      "requirements": ["Interfaccia Android", "Modalità scura reale", "Interfaccia in italiano", "Nessuna promessa diagnostica o predittiva"]
+    }
+  ]
+}
