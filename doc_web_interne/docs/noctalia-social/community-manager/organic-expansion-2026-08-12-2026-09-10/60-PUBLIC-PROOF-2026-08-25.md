@@ -13,8 +13,8 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | C2 | TikTok `@noctaliadreams` | 19:30 | `AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PUBLIÉ** | [https://www.tiktok.com/@noctaliadreams/video/7672917947765083414](https://www.tiktok.com/@noctaliadreams/video/7672917947765083414) — compte exact, hook exact, `statusCode=0`, `createTime=2026-08-25 19:30:00 Europe/Paris`, `aigcLabelType=1` et `ShowAIGC=true` vérifiés après 19:30 |
 | C2 | Instagram `@noctaliadreams` | 19:45 | `AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique : aucun Reel avec le hook exact n'est exposé au checkpoint 20:05 et aucune session native authentifiée n'est disponible ; aucun second clic, import ou rejeu |
 | C2 | X `@NoctaliaDreams` | 20:15 | `AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PUBLIÉ** | [https://x.com/NoctaliaDreams/status/2092314816350146581](https://x.com/NoctaliaDreams/status/2092314816350146581) — compte exact, hook exact, `datePublished=2026-08-25 20:15:00 Europe/Paris`, vidéo `PT15S` en 720×1280 et label public `Made with AI` vérifiés sur l'URL directe |
-| C3 | TikTok `@noctaliadreams` | 22:30 | `NIGHT_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PROGRAMMÉ** | À vérifier après 22:30 |
-| C3 | Instagram `@noctaliadreams` | 22:45 | `NIGHT_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PRÊT — DIRECT** | À publier puis vérifier après 22:45 |
+| C3 | TikTok `@noctaliadreams` | 22:30 | `NIGHT_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PUBLIÉ** | [https://www.tiktok.com/@noctaliadreams/video/7672918015448567062](https://www.tiktok.com/@noctaliadreams/video/7672918015448567062) — compte exact, hook exact, `statusCode=0`, `createTime=2026-08-25 22:30:00 Europe/Paris` et `aigcLabelType=1` vérifiés après 22:30 |
+| C3 | Instagram `@noctaliadreams` | 22:45 | `NIGHT_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique : aucun Reel avec le hook exact n'est exposé après 22:45 et aucune session native authentifiée n'est disponible ; aucun second clic, import ou rejeu |
 | C3 | X `@NoctaliaDreams` | 23:15 | `NIGHT_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PROGRAMMÉ** | À vérifier après 23:15 |
 
 ## Hero secondaire — 3 preuves
@@ -33,6 +33,6 @@ Pour chaque ligne : attendre l'heure, vérifier le compte, le master exact, le
 hook et l'absence de doublon, puis ouvrir l'URL publique. En l'absence d'URL,
 conserver le statut préparatoire et ne jamais republier par supposition.
 
-- Principal : `5/9` prouvés après X C2 ; TikTok et X C2 sont publics, Instagram C2 reste explicitement `ÉCHEC — NON PUBLIÉ`.
+- Principal : `6/9` prouvés après TikTok C3 ; TikTok C3 est public, Instagram C2 et C3 restent explicitement `ÉCHEC — NON PUBLIÉ`, X C3 reste futur jusqu'à 23:15.
 - Hero secondaire : `1/3` preuve publique ; Pinterest et Facebook sont explicitement `ÉCHEC — NON PUBLIÉ`, YouTube est public.
-- Total : `6/12` URL publiques, avec trois échecs explicites et aucune URL future comptée.
+- Total : `7/12` URL publiques, avec quatre échecs explicites et aucune URL future comptée.
