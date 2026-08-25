@@ -195,7 +195,9 @@ export default function LucidProgramDetailScreen() {
   const handleStart = async () => {
     setBusy(true);
     try {
-      await startProgram(id);
+      if (progress?.status !== 'completed') {
+        await startProgram(id);
+      }
       const day = progress?.currentDay ?? 1;
       // Commit the visual reset before pushing: the underlying screen may be
       // frozen by the navigator as soon as the session gains focus.

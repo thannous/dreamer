@@ -8,6 +8,7 @@ const path = require('node:path');
 const {
   assertInstalledReleaseBinary,
   assertReleaseSuiteDoesNotStartMetro,
+  buildMetroLaunchSpec,
   assertVoiceFlowAuthorization,
   assertSensitiveFlowAuthorization,
   buildMaestroEnv,
@@ -54,6 +55,18 @@ describe('run-maestro-android Release preflight', () => {
       });
     expect(() => parseArgs(['--metro-port', '0'])).toThrow('Invalid --metro-port value');
     expect(() => parseArgs(['--metro-port', '65536'])).toThrow('Invalid --metro-port value');
+  });
+
+  it('forwards the selected Metro port into expo start on every platform', () => {
+    const unix = buildMetroLaunchSpec(8082, 'linux');
+    expect(unix.command).toBe('npx');
+    expect(unix.args).toEqual(['expo', 'start', '--dev-client', '--clear', '--port', '8082']);
+
+    const windows = buildMetroLaunchSpec(8082, 'win32');
+    expect(windows.command).toBe('cmd.exe');
+    expect(windows.args[0]).toBe('/c');
+    expect(windows.args[1]).toMatch(/start-metro-background\.cmd$/);
+    expect(windows.args[2]).toBe('8082');
   });
 
   it('reads the expected Android package and versions from app.json', () => {

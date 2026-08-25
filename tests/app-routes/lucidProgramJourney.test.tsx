@@ -471,6 +471,26 @@ describe('Lucid MILD journey behavior', () => {
     expect(mockPauseProgram).toHaveBeenCalledWith('mild');
   });
 
+  it('reviews a completed program without calling startProgram', async () => {
+    mockProgress = {
+      technique: 'mild',
+      status: 'completed',
+      currentDay: mildSessions.length,
+      completedExerciseIds: mildSessions.map((session: { id: string }) => session.id),
+      startedAt: Date.UTC(2026, 7, 18, 8),
+    };
+
+    render(<LucidProgramDetailScreen />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Review program' }));
+
+    await waitFor(() => {
+      expect(mockPush).toHaveBeenCalledTimes(1);
+      expect(mockPush).toHaveBeenCalledWith(`/lucid/session/mild/${mildSessions.length}`);
+    });
+    expect(mockStartProgram).not.toHaveBeenCalled();
+  });
+
   it('keeps completed history readable while paused and resumes only through the CTA', async () => {
     mockProgress = {
       technique: 'mild',

@@ -427,23 +427,39 @@ async function waitForPort(port, timeoutMs, host = '127.0.0.1') {
   return false;
 }
 
-function startMetroDetached() {
-  if (process.platform === 'win32') {
-    const scriptPath = path.resolve(ROOT, 'scripts', 'start-metro-background.cmd');
-    spawn('cmd.exe', ['/c', scriptPath], {
-      cwd: ROOT,
-      detached: true,
-      stdio: 'ignore',
-    }).unref();
-    return;
+function buildMetroLaunchSpec(port, platform = process.platform) {
+  const metroPort = String(port);
+  if (platform === 'win32') {
+    return {
+      command: 'cmd.exe',
+      args: [
+        '/c',
+        path.resolve(ROOT, 'scripts', 'start-metro-background.cmd'),
+        metroPort,
+      ],
+      options: {
+        cwd: ROOT,
+        detached: true,
+        stdio: 'ignore',
+      },
+    };
   }
 
-  spawn('npx', ['expo', 'start', '--dev-client', '--clear'], {
-    cwd: ROOT,
-    env: { ...process.env, CI: 'true' },
-    detached: true,
-    stdio: 'ignore',
-  }).unref();
+  return {
+    command: 'npx',
+    args: ['expo', 'start', '--dev-client', '--clear', '--port', metroPort],
+    options: {
+      cwd: ROOT,
+      env: { ...process.env, CI: 'true' },
+      detached: true,
+      stdio: 'ignore',
+    },
+  };
+}
+
+function startMetroDetached(port) {
+  const spec = buildMetroLaunchSpec(port);
+  spawn(spec.command, spec.args, spec.options).unref();
 }
 
 function lookupMetroPids(port) {
@@ -1174,10 +1190,10 @@ async function main() {
       console.log(`Restarting Metro on port ${options.metroPort}...`);
       stopMetro(options.metroPort);
       await sleep(2000);
-      startMetroDetached();
+      startMetroDetached(options.metroPort);
     } else if (!portReady) {
       console.log(`Starting Metro on port ${options.metroPort}...`);
-      startMetroDetached();
+      startMetroDetached(options.metroPort);
     } else {
       console.log(`Metro already listening on port ${options.metroPort}`);
     }
@@ -1258,6 +1274,7 @@ if (require.main === module) {
 module.exports = {
   assertInstalledReleaseBinary,
   assertReleaseSuiteDoesNotStartMetro,
+  buildMetroLaunchSpec,
   assertVoiceFlowAuthorization,
   assertSensitiveFlowAuthorization,
   buildMaestroEnv,

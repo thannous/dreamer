@@ -480,6 +480,13 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const startProgram = useCallback(
     async (technique: LucidTechnique) => {
       await commit((current, now) => {
+        const existing = current.progress.find((item) => item.technique === technique);
+        // Reviewing a finished program must not exclusive-activate it: that
+        // would pause the user's current training, and the opened last session
+        // is already complete so its CTA only closes and never restores status.
+        if (existing?.status === 'completed') {
+          return { next: current, changed: [] };
+        }
         const { next, changed } = activateExclusiveLucidProgram(current, technique, now);
         return { next, changed: changed.map(entityForProgress) };
       });

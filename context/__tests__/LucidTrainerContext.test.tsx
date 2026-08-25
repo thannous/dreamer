@@ -203,6 +203,67 @@ describe('LucidTrainerContext account boundary', () => {
     );
   });
 
+  it('reviews a completed program without pausing the active program', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      progress: [
+        {
+          ...createLucidProgramProgress('mild', initial.createdAt),
+          status: 'active',
+          currentDay: 3,
+          completedExerciseIds: ['mild-01', 'mild-02'],
+          startedAt: initial.createdAt,
+        },
+        {
+          ...createLucidProgramProgress('ssild', initial.createdAt),
+          status: 'completed',
+          currentDay: 7,
+          completedExerciseIds: ['ssild-01', 'ssild-02', 'ssild-03', 'ssild-04', 'ssild-05', 'ssild-06', 'ssild-07'],
+          startedAt: initial.createdAt,
+          completedAt: initial.createdAt,
+        },
+      ],
+    };
+
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await result.current.startProgram('ssild');
+    });
+
+    expect(result.current.state?.progress.filter(
+      (item: LucidTrainerState['progress'][number]) => item.status === 'active'
+    )).toEqual([
+      expect.objectContaining({ technique: 'mild', currentDay: 3 }),
+    ]);
+    expect(result.current.state?.progress.find(
+      (item: LucidTrainerState['progress'][number]) => item.technique === 'ssild'
+    )).toEqual(
+      expect.objectContaining({
+        status: 'completed',
+        currentDay: 7,
+        completedAt: initial.createdAt,
+      })
+    );
+  });
+
   it('keeps a single active program when completing a session from a paused program', async () => {
     const initial = createInitialLucidTrainerState({
       now: 1_700_000_000_000,
