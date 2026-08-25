@@ -193,7 +193,7 @@ export interface RitualStepProgress {
   steps: Partial<Record<RitualId, Record<string, boolean>>>;
 }
 
-export type ThemePreference = 'light' | 'dark' | 'auto';
+export type ThemePreference = 'dynamic' | 'light' | 'dark' | 'auto';
 
 export type ThemeMode = 'light' | 'dark';
 

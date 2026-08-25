@@ -755,7 +755,7 @@ const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
   weekendTime: '10:00',
 };
 
-const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
+const DEFAULT_THEME_PREFERENCE: ThemePreference = 'dynamic';
 
 const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
 const DEFAULT_JOURNAL_LAYOUT_PREFERENCE: JournalLayoutPreference = 'cards';

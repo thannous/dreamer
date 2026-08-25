@@ -1,25 +1,31 @@
 # The companion is a separate store application: com.tanuki75.noctalia.lucid,
 # never com.tanuki75.noctalia. Both dev clients can sit on the same device.
 appId: com.tanuki75.noctalia.lucid
-env:
-  # expo-dev-client dérive son schéma du SLUG, pas du champ `scheme` :
-  # getDefaultScheme.js retourne `exp+${slug}`. Le slug Lucid est
-  # `noctalia-lucid-trainer` (app.config.ts:98), son scheme applicatif est
-  # `noctalia-lucid` (:99) — les deux diffèrent, contrairement à l'app
-  # principale où slug et scheme valent tous deux `noctalia`.
-  DEV_CLIENT_URL: exp+noctalia-lucid-trainer://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081
 ---
 - launchApp:
     clearState: true
-- waitForAnimationToEnd
-- openLink: ${DEV_CLIENT_URL}
-# "Continue" is also the label of the onboarding primary button in English:
-# only tap the dev-client dialog while the Lucid shell is not mounted yet.
+# The development launcher keeps animating its discovery surface. Waiting for
+# global animation idleness here makes Maestro's Android driver drop before the
+# bundle is opened; the explicit waits below are the real synchronization.
+# Do not use the generated Expo scheme here: another installed dev-client can
+# claim it and steal the intent. Wait for this package's discovered server.
+- extendedWaitUntil:
+    visible: "DEVELOPMENT SERVERS"
+    timeout: 60000
+- tapOn:
+    point: "50%,26%"
+# Server selection returns before either the developer menu or app shell is ready.
+# Synchronize on the primary label shared by those two possible states, then
+# use the runtime-version anchor below to decide whether the overlay needs a tap.
+- extendedWaitUntil:
+    visible: "Continue|Continuer|Continuar|Weiter|Continua"
+    timeout: 240000
+# "Continue" is also the label of the onboarding primary button in English.
+# Anchor the tap to Expo's developer-menu copy: on Android the Lucid shell can
+# already be mounted behind this overlay and therefore remain accessible.
 - runFlow:
     when:
-      visible: "Continue"
-      notVisible:
-        id: lucid-onboarding
+      visible: "Runtime version:.*"
     commands:
       - tapOn:
           text: "Continue"

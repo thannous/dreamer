@@ -107,5 +107,13 @@ describe('Lucid tabs layout', () => {
     for (const [name, options] of firstScreenOptions) {
       expect(mockScreenOptions.get(name)).toBe(options);
     }
+
+    expect(mockScreenOptions.get('night')).toMatchObject({ href: null, title: 'Night' });
+    expect(mockScreenOptions.get('settings')).toMatchObject({ href: null, title: 'Settings' });
+    expect(
+      [...mockScreenOptions.values()].filter(
+        (options) => (options as { href?: unknown }).href !== null
+      )
+    ).toHaveLength(3);
   });
 });

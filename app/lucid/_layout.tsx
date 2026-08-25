@@ -1,35 +1,45 @@
-import { Stack, router, usePathname } from 'expo-router';
-import React, { useEffect, useRef } from 'react';
+import { Stack, useGlobalSearchParams } from 'expo-router';
+import React, { useMemo } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { LucidSpace, LucidType, getLucidPalette } from '@/constants/lucidTheme';
 import { LucidButton } from '@/components/lucid/LucidUI';
 import { LucidTrainerProvider, useLucidTrainer } from '@/context/LucidTrainerContext';
-import { useTheme } from '@/context/ThemeContext';
-import { resolveLucidOnboardingGate } from '@/lib/lucid/routes';
+import { ThemeAmbienceScope, useTheme } from '@/context/ThemeContext';
+import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
+import { isThemeAmbience } from '@/lib/themeAmbience';
+
+function LucidThemePreview({ children }: React.PropsWithChildren) {
+  const params = useGlobalSearchParams<{ ambience?: string | string[] }>();
+  const requestedAmbience = Array.isArray(params.ambience)
+    ? params.ambience[0]
+    : params.ambience;
+
+  if (!__DEV__ || !isThemeAmbience(requestedAmbience)) {
+    return children;
+  }
+
+  return (
+    <ThemeAmbienceScope ambience={requestedAmbience}>
+      {children}
+    </ThemeAmbienceScope>
+  );
+}
 
 function LucidRouter() {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const pathname = usePathname();
   const { state, content, loading, error, reload } = useLucidTrainer();
-  const pendingGateHref = useRef<string | null>(null);
-  const onboardingStatus = state?.onboarding.status;
-
-  useEffect(() => {
-    const next = resolveLucidOnboardingGate({
-      pathname,
-      onboardingStatus,
-      loading,
-    });
-    if (!next) {
-      pendingGateHref.current = null;
-      return;
-    }
-    if (pendingGateHref.current === next) return;
-    pendingGateHref.current = next;
-    router.replace(next);
-  }, [loading, onboardingStatus, pathname]);
+  const reduceMotion = useLucidReducedMotion();
+  const onboardingComplete = state?.onboarding.status === 'completed';
+  const stackScreenOptions = useMemo(
+    () => ({
+      headerShown: false,
+      contentStyle: { backgroundColor: palette.background },
+      animation: reduceMotion ? ('fade' as const) : ('default' as const),
+    }),
+    [palette.background, reduceMotion]
+  );
 
   if (loading || !state) {
     return (
@@ -47,25 +57,26 @@ function LucidRouter() {
   }
 
   return (
-    <Stack
-      initialRouteName="(tabs)"
-      screenOptions={{ headerShown: false, contentStyle: { backgroundColor: palette.background } }}
-    >
-      <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="program/[id]" />
-      <Stack.Screen name="session/[program]/[session]" />
-      <Stack.Screen name="reality-check" options={{ presentation: 'modal' }} />
-      <Stack.Screen name="morning" options={{ presentation: 'modal' }} />
-      <Stack.Screen name="weekly" />
-      <Stack.Screen name="permissions" />
-      <Stack.Screen name="science" />
-      <Stack.Screen name="privacy" />
-      <Stack.Screen name="data" />
-      <Stack.Screen name="help" />
-      <Stack.Screen name="about" />
-      <Stack.Screen name="account" />
-      <Stack.Screen name="subscription" />
+    <Stack initialRouteName={onboardingComplete ? '(tabs)' : 'onboarding'} screenOptions={stackScreenOptions}>
+      <Stack.Protected guard={!onboardingComplete}>
+        <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
+      </Stack.Protected>
+      <Stack.Protected guard={onboardingComplete}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="program/[id]" />
+        <Stack.Screen name="session/[program]/[session]" />
+        <Stack.Screen name="reality-check" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="morning" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="weekly" />
+        <Stack.Screen name="permissions" />
+        <Stack.Screen name="science" />
+        <Stack.Screen name="privacy" />
+        <Stack.Screen name="data" />
+        <Stack.Screen name="help" />
+        <Stack.Screen name="about" />
+        <Stack.Screen name="account" />
+        <Stack.Screen name="subscription" />
+      </Stack.Protected>
     </Stack>
   );
 }
@@ -73,7 +84,9 @@ function LucidRouter() {
 export default function LucidLayout() {
   return (
     <LucidTrainerProvider>
-      <LucidRouter />
+      <LucidThemePreview>
+        <LucidRouter />
+      </LucidThemePreview>
     </LucidTrainerProvider>
   );
 }

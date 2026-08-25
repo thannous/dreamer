@@ -955,6 +955,8 @@ const translations: Record<string, string> = {
     'settings.account.alert.signout_failed.title': 'Abmeldung fehlgeschlagen',
     'settings.theme.title': 'Erscheinungsbild',
     'settings.theme.description': 'Wähle dein bevorzugtes Design für die App',
+    'settings.theme.option.dynamic.label': 'Dynamisch',
+    'settings.theme.option.dynamic.description': 'Wechselt mit der Ortszeit zwischen Morgen, Tag, Abendglühen und Nacht',
     'settings.theme.option.auto.label': 'Automatisch',
     'settings.theme.option.auto.description': 'Systemdesign übernehmen',
     'settings.theme.option.light.label': 'Hell',

@@ -955,6 +955,8 @@ const translations: Record<string, string> = {
     'settings.account.alert.signout_failed.title': 'Fallo al cerrar sesión',
     'settings.theme.title': 'Apariencia',
     'settings.theme.description': 'Elige tu tema preferido para la app',
+    'settings.theme.option.dynamic.label': 'Dinámico',
+    'settings.theme.option.dynamic.description': 'Cambia entre mañana, día, resplandor del atardecer y noche según la hora local',
     'settings.theme.option.auto.label': 'Automático',
     'settings.theme.option.auto.description': 'Seguir tema del sistema',
     'settings.theme.option.light.label': 'Claro',

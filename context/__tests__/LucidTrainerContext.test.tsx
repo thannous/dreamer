@@ -3,6 +3,9 @@
 import React from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
+import type { LucidTrainerState } from '@/lib/lucid/model';
+import type { LucidReminderReconciliationResult } from '@/services/lucidTrainerNotifications';
+
 const mockClaimGuestScope = jest.fn();
 const mockHasGuestData = jest.fn();
 const mockLoadState = jest.fn();
@@ -10,7 +13,9 @@ const mockGetState = jest.fn();
 const mockLoadQueue = jest.fn();
 const mockUpdateQueue = jest.fn();
 const mockUpdateState = jest.fn();
+const mockSaveState = jest.fn();
 const mockClearLocalData = jest.fn();
+const mockReconcileReminders = jest.fn();
 
 jest.mock('react-native', () => jest.requireActual('../../tests/react-native-stub'));
 jest.mock('expo-localization', () => ({ getLocales: () => [{ languageTag: 'en-US' }] }));
@@ -24,7 +29,7 @@ jest.mock('@/lib/appVariant', () => ({ isLucidTrainer: true }));
 jest.mock('@/lib/analytics', () => ({ trackProductEvent: jest.fn() }));
 jest.mock('@/lib/productAnalytics', () => ({ setProductAnalyticsEnabled: jest.fn() }));
 jest.mock('@/services/lucidTrainerNotifications', () => ({
-  reconcileLucidTrainerReminders: jest.fn(),
+  reconcileLucidTrainerReminders: (...args: unknown[]) => mockReconcileReminders(...args),
 }));
 
 jest.mock('@/services/lucidTrainerSync', () => ({
@@ -41,12 +46,12 @@ jest.mock('@/services/lucidTrainerStorage', () => ({
   getLucidTrainerState: (...args: unknown[]) => mockGetState(...args),
   loadLucidTrainerState: (...args: unknown[]) => mockLoadState(...args),
   loadLucidTrainerSyncQueue: (...args: unknown[]) => mockLoadQueue(...args),
-  saveLucidTrainerState: jest.fn(),
+  saveLucidTrainerState: (...args: unknown[]) => mockSaveState(...args),
   updateLucidTrainerState: (...args: unknown[]) => mockUpdateState(...args),
   updateLucidTrainerSyncQueue: (...args: unknown[]) => mockUpdateQueue(...args),
 }));
 
-const { createInitialLucidTrainerState } = require('@/lib/lucid/domain');
+const { createInitialLucidTrainerState, createLucidProgramProgress } = require('@/lib/lucid/domain');
 const { LucidTrainerProvider, useLucidTrainer } = require('../LucidTrainerContext');
 
 describe('LucidTrainerContext account boundary', () => {
@@ -61,6 +66,14 @@ describe('LucidTrainerContext account boundary', () => {
     mockUpdateQueue.mockImplementation(async (_scope, updater) => updater([]));
     mockUpdateState.mockImplementation(async (_scope, updater) => updater(state));
     mockClearLocalData.mockResolvedValue(undefined);
+    mockReconcileReminders.mockResolvedValue({
+      permission: 'undetermined',
+      canAskAgain: true,
+      scheduledIds: [],
+      cancelledIds: [],
+      unchangedOccurrenceIds: [],
+      timeContextChanged: false,
+    });
   });
 
   const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -87,4 +100,351 @@ describe('LucidTrainerContext account boundary', () => {
     );
     expect(result.current.guestImportAvailable).toBe(false);
   });
+
+  it('completes onboarding without waiting for native reminder reconciliation', async () => {
+    const neverSettles = new Promise<LucidReminderReconciliationResult>(() => {});
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    mockReconcileReminders.mockReturnValueOnce(neverSettles);
+
+    const completion = result.current.completeOnboarding({
+      goal: 'improve_recall',
+      experience: 'beginner',
+      weeklyTarget: 3,
+      sleepSchedule: { bedtime: '22:30', wakeTime: '07:00', timeZone: 'UTC' },
+      notificationsPermission: 'unknown',
+      notificationsExplained: false,
+      audioSafetyAccepted: false,
+      analyticsConsent: false,
+      accessibility: {
+        reduceMotion: false,
+        largerText: false,
+        screenReaderOptimized: false,
+      },
+      cloudSyncEnabled: false,
+      noctaliaLinkEnabled: false,
+    });
+
+    await expect(Promise.race([
+      completion.then(() => 'completed'),
+      new Promise<string>((resolve) => setTimeout(() => resolve('timed-out'), 100)),
+    ])).resolves.toBe('completed');
+    await waitFor(() => expect(result.current.state?.onboarding.status).toBe('completed'));
+    expect(result.current.state?.preferences.cloudSyncEnabled).toBe(false);
+    expect(result.current.state?.preferences.noctaliaLinkEnabled).toBe(false);
+  });
+
+  it('pauses the previous program when another program starts', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      progress: [
+        {
+          ...createLucidProgramProgress('mild', initial.createdAt),
+          status: 'active',
+          currentDay: 3,
+          completedExerciseIds: ['mild-01', 'mild-02'],
+          startedAt: initial.createdAt,
+        },
+        {
+          ...createLucidProgramProgress('ssild', initial.createdAt),
+          status: 'paused',
+          currentDay: 2,
+          completedExerciseIds: ['ssild-01'],
+          startedAt: initial.createdAt,
+        },
+      ],
+    };
+
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await result.current.startProgram('ssild');
+    });
+
+    expect(result.current.state?.progress.filter(
+      (item: LucidTrainerState['progress'][number]) => item.status === 'active'
+    )).toEqual([
+      expect.objectContaining({ technique: 'ssild' }),
+    ]);
+    expect(result.current.state?.progress.find(
+      (item: LucidTrainerState['progress'][number]) => item.technique === 'mild'
+    )).toEqual(
+      expect.objectContaining({
+        status: 'paused',
+        currentDay: 3,
+        completedExerciseIds: ['mild-01', 'mild-02'],
+      })
+    );
+    expect(result.current.state?.progress.find(
+      (item: LucidTrainerState['progress'][number]) => item.technique === 'ssild'
+    )).toEqual(
+      expect.objectContaining({
+        status: 'active',
+        currentDay: 2,
+        completedExerciseIds: ['ssild-01'],
+      })
+    );
+  });
+
+  it('keeps a single active program when completing a session from a paused program', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      progress: [
+        {
+          ...createLucidProgramProgress('mild', initial.createdAt),
+          status: 'active',
+          currentDay: 3,
+          completedExerciseIds: ['mild-01', 'mild-02'],
+          startedAt: initial.createdAt,
+        },
+        {
+          ...createLucidProgramProgress('ssild', initial.createdAt),
+          status: 'paused',
+          currentDay: 2,
+          completedExerciseIds: ['ssild-01'],
+          startedAt: initial.createdAt,
+        },
+      ],
+    };
+
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await result.current.completeProgramSession('ssild', 'ssild-02', 2, 7);
+    });
+
+    expect(result.current.state?.progress.filter(
+      (item: LucidTrainerState['progress'][number]) => item.status === 'active'
+    )).toEqual([
+      expect.objectContaining({ technique: 'ssild' }),
+    ]);
+    expect(result.current.state?.progress.find(
+      (item: LucidTrainerState['progress'][number]) => item.technique === 'mild'
+    )).toEqual(
+      expect.objectContaining({
+        status: 'paused',
+        currentDay: 3,
+        completedExerciseIds: ['mild-01', 'mild-02'],
+      })
+    );
+    expect(result.current.state?.progress.find(
+      (item: LucidTrainerState['progress'][number]) => item.technique === 'ssild'
+    )).toEqual(
+      expect.objectContaining({
+        status: 'active',
+        currentDay: 3,
+        completedExerciseIds: ['ssild-01', 'ssild-02'],
+      })
+    );
+  });
+
+  it('reconciles notification permission without replacing progress completed in parallel', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      onboarding: {
+        ...initial.onboarding,
+        status: 'completed',
+        completedAt: initial.createdAt,
+      },
+    };
+    let resolveReconciliation!: (value: LucidReminderReconciliationResult) => void;
+    const pendingReconciliation = new Promise<LucidReminderReconciliationResult>((resolve) => {
+      resolveReconciliation = resolve;
+    });
+
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+    mockSaveState.mockImplementation(async (_scope: string, next: LucidTrainerState) => {
+      persistedState = next;
+    });
+    mockReconcileReminders.mockReturnValueOnce(pendingReconciliation);
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.state).not.toBeNull());
+
+    await act(async () => {
+      await result.current.completeProgramSession('mild', 'mild-session-1', 1, 7);
+    });
+
+    await act(async () => {
+      resolveReconciliation({
+        permission: 'granted',
+        canAskAgain: false,
+        scheduledIds: [],
+        cancelledIds: [],
+        unchangedOccurrenceIds: [],
+        timeContextChanged: false,
+      });
+      await pendingReconciliation;
+    });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    expect(result.current.state?.onboarding.notificationsPermission).toBe('granted');
+    expect(result.current.state?.progress[0]?.completedExerciseIds).toContain('mild-session-1');
+    expect(persistedState.onboarding.notificationsPermission).toBe('granted');
+    expect(persistedState.progress[0]?.completedExerciseIds).toContain('mild-session-1');
+    expect(mockSaveState).not.toHaveBeenCalled();
+  });
+
+  it('persists audio safety consent independently of onboarding', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      onboarding: {
+        ...initial.onboarding,
+        status: 'completed',
+        completedAt: initial.createdAt,
+        audioSafetyAccepted: false,
+      },
+    };
+
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.state).not.toBeNull());
+    expect(result.current.state?.onboarding.audioSafetyAccepted).toBe(false);
+
+    await act(async () => {
+      await result.current.updateAudioSafetyConsent(true);
+    });
+
+    expect(result.current.state?.onboarding.audioSafetyAccepted).toBe(true);
+    expect(persistedState.onboarding.audioSafetyAccepted).toBe(true);
+    expect(persistedState.onboarding.status).toBe('completed');
+  });
+
+  it('rejects a future session at the context boundary', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      progress: [{
+        ...createLucidProgramProgress('mild', initial.createdAt),
+        status: 'active',
+        currentDay: 1,
+        updatedAt: initial.createdAt,
+      }],
+    };
+
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await expect(
+        result.current.completeProgramSession('mild', 'mild-03', 3, 7)
+      ).rejects.toThrow('Lucid session is locked');
+    });
+    expect(result.current.error).toBe('Lucid session is locked');
+  });
+
+  it('pauses a program with a monotonic updatedAt that outranks the current state', async () => {
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    const now = 1_700_000_000_000;
+    const seeded: LucidTrainerState = {
+      ...(result.current.state as LucidTrainerState),
+      updatedAt: now + 50,
+      progress: [{
+        ...createLucidProgramProgress('mild', now),
+        status: 'active',
+        currentDay: 2,
+        completedExerciseIds: ['mild-01'],
+        startedAt: now,
+        updatedAt: now + 40,
+      }],
+    };
+    mockUpdateState.mockImplementation(async (_scope: string, updater: (current: LucidTrainerState) => LucidTrainerState) =>
+      updater(seeded)
+    );
+
+    await act(async () => {
+      await result.current.pauseProgram('mild');
+    });
+
+    const updater = mockUpdateState.mock.calls.at(-1)?.[1] as (current: LucidTrainerState) => LucidTrainerState;
+    const next = updater(seeded);
+    const paused = next.progress.find((item) => item.technique === 'mild');
+    expect(paused).toMatchObject({
+      status: 'paused',
+      currentDay: 2,
+      completedExerciseIds: ['mild-01'],
+    });
+    expect(paused?.updatedAt).toBeGreaterThan(Math.max(now, seeded.updatedAt, seeded.progress[0].updatedAt));
+  });
+
 });

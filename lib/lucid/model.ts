@@ -73,7 +73,7 @@ export interface LucidOnboardingState {
 
 export interface LucidTrainerPreferences {
   locale: LucidLocale;
-  theme: 'system' | 'light' | 'dark';
+  theme: 'dynamic' | 'system' | 'light' | 'dark';
   cloudSyncEnabled: boolean;
   noctaliaLinkEnabled: boolean;
   notificationsEnabled: boolean;
@@ -334,7 +334,7 @@ export function isLucidTrainerPreferences(value: unknown): value is LucidTrainer
   if (!isRecord(value)) return false;
   return (
     isEnumValue(LUCID_LOCALES, value.locale) &&
-    isEnumValue(['system', 'light', 'dark'] as const, value.theme) &&
+    isEnumValue(['dynamic', 'system', 'light', 'dark'] as const, value.theme) &&
     typeof value.cloudSyncEnabled === 'boolean' &&
     typeof value.noctaliaLinkEnabled === 'boolean' &&
     typeof value.notificationsEnabled === 'boolean' &&

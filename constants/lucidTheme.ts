@@ -37,6 +37,17 @@ export const LucidSpace = { xs: 4, sm: 8, md: 12, lg: 16, gutter: 20, xl: 24 } a
 /** Retour de pression, déclaré une fois. Quatre littéraux le contredisaient. */
 export const LucidPress = { opacity: 0.78, scale: 0.97 } as const;
 
+/**
+ * Contraste stable au-dessus des décors illustrés. Ces couleurs ne suivent pas
+ * le thème de surface : une image nocturne reste sombre même en mode clair.
+ */
+export const LucidScene = {
+  text: '#F2FAF7',
+  textSecondary: '#C7DBD7',
+  surface: 'rgba(3, 11, 16, 0.62)',
+  border: 'rgba(232, 242, 241, 0.18)',
+} as const;
+
 // Identité Lucid Trainer — « nuit jade ».
 //
 // Sœur de Noctalia par le vocabulaire : mêmes fontes, même rayon de carte (24),
@@ -66,6 +77,71 @@ export const LucidPress = { opacity: 0.78, scale: 0.97 } as const;
 // quatre surfaces de chaque thème.
 export function getLucidPalette(colors: ThemeColors, mode: 'light' | 'dark') {
   const dark = mode === 'dark';
+
+  if (colors.ambience === 'morning') {
+    return {
+      background: '#F4EBDD',
+      backgroundDeep: '#E7D8C5',
+      surface: '#FFF8ED',
+      surfaceRaised: '#F3E2CF',
+      surfaceMuted: '#EEDCC9',
+      border: '#D9C4B1',
+      borderInteractive: '#927768',
+      text: '#2E2724',
+      textSecondary: '#6D5C53',
+      textMuted: '#76645A',
+      accent: '#BF7049',
+      accentStrong: '#8D4A2F',
+      accentSoft: '#F4D8C3',
+      accentOn: '#82432C',
+      amber: '#8A5A12',
+      amberSoft: '#F7E6C9',
+      success: '#35684A',
+      successSoft: '#E1EEE4',
+      danger: '#A63B42',
+      dangerSoft: '#F7E3E1',
+      overlay: 'rgba(244, 235, 221, 0.9)',
+      atmosphere: [
+        'rgba(213, 138, 89, 0.14)',
+        'rgba(244, 235, 221, 0)',
+        'rgba(135, 176, 184, 0.11)',
+      ] as const,
+      inheritedAccent: colors.accent,
+    } as const;
+  }
+
+  if (colors.ambience === 'afterglow') {
+    return {
+      background: '#160F22',
+      backgroundDeep: '#0D0917',
+      surface: '#25182F',
+      surfaceRaised: '#382342',
+      surfaceMuted: '#1E142A',
+      border: '#543A59',
+      borderInteractive: '#A57A91',
+      text: '#FFF3E8',
+      textSecondary: '#D3B7C5',
+      textMuted: '#B69BAC',
+      accent: '#E99275',
+      accentStrong: '#FFC09D',
+      accentSoft: '#4A2436',
+      accentOn: '#FFC09D',
+      amber: '#F3C37D',
+      amberSoft: '#3A291E',
+      success: '#A7D6A8',
+      successSoft: '#203226',
+      danger: '#FF9EA1',
+      dangerSoft: '#3B1D29',
+      overlay: 'rgba(22, 15, 34, 0.9)',
+      atmosphere: [
+        'rgba(126, 76, 139, 0.22)',
+        'rgba(22, 15, 34, 0)',
+        'rgba(233, 146, 117, 0.2)',
+      ] as const,
+      inheritedAccent: colors.accent,
+    } as const;
+  }
+
   return {
     background: dark ? '#06131A' : '#F2F6F6',
     backgroundDeep: dark ? '#030B10' : '#E6EDED',

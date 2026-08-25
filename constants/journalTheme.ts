@@ -1,4 +1,5 @@
 import { Platform, type ViewStyle } from 'react-native';
+import type { ThemeAmbience } from '@/lib/themeAmbience';
 
 /**
  * Journal-specific theme constants
@@ -6,6 +7,9 @@ import { Platform, type ViewStyle } from 'react-native';
  */
 
 export interface ThemeColors {
+  /** Ambient identity used by feature palettes that retain their own brand colors. */
+  ambience: ThemeAmbience;
+
   // Background colors
   backgroundDark: string;
   backgroundCard: string;
@@ -48,6 +52,7 @@ export interface ThemeColors {
  * Dark theme - original purple and gold theme
  */
 export const DarkTheme: ThemeColors = {
+  ambience: 'dark',
   // Background colors
   backgroundDark: '#03040D', // Deep nocturnal base used by the premium onboarding direction
   backgroundCard: '#0D0B1C', // Matte card surface with a quiet navy/purple undertone
@@ -89,6 +94,7 @@ export const DarkTheme: ThemeColors = {
  * Light theme - soft cream and champagne gold for gentle morning viewing
  */
 export const LightTheme: ThemeColors = {
+  ambience: 'light',
   // Background colors
   backgroundDark: '#FBFAF7', // Main background - quiet paper tone
   backgroundCard: '#FFFDF8', // Card background - clean readable surface
@@ -123,6 +129,66 @@ export const LightTheme: ThemeColors = {
     mystical: '#C5B8D8',
     calm: '#A5C4E0',
     noir: '#A8A8C0',
+  },
+};
+
+/** Warm, low-contrast palette for the first hours after waking. */
+export const MorningTheme: ThemeColors = {
+  ...LightTheme,
+  ambience: 'morning',
+  backgroundDark: '#F5EBDD',
+  backgroundCard: '#FFF8EC',
+  backgroundSecondary: '#EBDCCB',
+  textPrimary: '#302722',
+  textSecondary: '#705F56',
+  textTertiary: '#79675D',
+  textOnAccentSurface: '#3D281C',
+  accent: '#D58A59',
+  accentDark: '#955433',
+  accentLight: '#F0C9A8',
+  accentText: '#8A4B2D',
+  timeline: '#DFCAB8',
+  divider: '#DDCBBB',
+  overlay: 'rgba(255, 248, 236, 0.9)',
+  navbarBg: '#F5EBDD',
+  navbarBorder: '#DDCBBB',
+  navbarTextActive: '#302722',
+  navbarTextInactive: '#79675D',
+  tags: {
+    surreal: '#C5B2C7',
+    mystical: '#D1B8CE',
+    calm: '#AFCBD2',
+    noir: '#B7AEB6',
+  },
+};
+
+/** Violet, rose and ember palette for the transition between day and night. */
+export const AfterglowTheme: ThemeColors = {
+  ...DarkTheme,
+  ambience: 'afterglow',
+  backgroundDark: '#160F22',
+  backgroundCard: '#24172D',
+  backgroundSecondary: '#3A2444',
+  textPrimary: '#FFF4E9',
+  textSecondary: '#D5BBC9',
+  textTertiary: '#B79BAE',
+  textOnAccentSurface: '#3A1F21',
+  accent: '#E99A79',
+  accentDark: '#A9565C',
+  accentLight: '#F5C0A1',
+  accentText: '#F5C0A1',
+  timeline: '#7E4C64',
+  divider: '#624158',
+  overlay: 'rgba(22, 15, 34, 0.9)',
+  navbarBg: '#160F22',
+  navbarBorder: '#624158',
+  navbarTextActive: '#FFF4E9',
+  navbarTextInactive: '#B79BAE',
+  tags: {
+    surreal: '#9A6E9D',
+    mystical: '#82588D',
+    calm: '#566F95',
+    noir: '#493B59',
   },
 };
 

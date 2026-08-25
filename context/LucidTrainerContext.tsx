@@ -16,8 +16,11 @@ import { useAuth } from '@/context/AuthContext';
 import { trackProductEvent } from '@/lib/analytics';
 import { isLucidTrainer } from '@/lib/appVariant';
 import {
+  activateExclusiveLucidProgram,
+  applyLucidProgramProgress,
   applyLucidSyncEntity,
   createLucidProgramProgress,
+  diffLucidProgramProgress,
   getLucidSyncEntities,
   type LucidTrainerState,
 } from '@/lib/lucid/domain';
@@ -34,6 +37,8 @@ import type {
   LucidWeeklyReview,
 } from '@/lib/lucid/model';
 import { buildLucidReminderPlan } from '@/lib/lucid/reminders';
+import { evaluateLucidSessionAccess } from '@/lib/lucid/safety';
+import { resetLucidOnboardingCompletionNavigationClaim } from '@/lib/lucid/routes';
 import { setProductAnalyticsEnabled } from '@/lib/productAnalytics';
 import { reconcileLucidTrainerReminders } from '@/services/lucidTrainerNotifications';
 import {
@@ -50,7 +55,6 @@ import {
   getLucidTrainerState,
   loadLucidTrainerState,
   loadLucidTrainerSyncQueue,
-  saveLucidTrainerState,
   updateLucidTrainerState,
   updateLucidTrainerSyncQueue,
 } from '@/services/lucidTrainerStorage';
@@ -68,7 +72,7 @@ type CompleteOnboardingInput = Pick<
   | 'audioSafetyAccepted'
   | 'analyticsConsent'
   | 'accessibility'
->;
+> & Pick<LucidTrainerPreferences, 'cloudSyncEnabled' | 'noctaliaLinkEnabled'>;
 
 type ExperimentInput = {
   technique: LucidTechnique;
@@ -95,9 +99,10 @@ export type LucidTrainerContextValue = {
   importGuestData: () => Promise<void>;
   completeOnboarding: (input: CompleteOnboardingInput) => Promise<void>;
   updateAnalyticsConsent: (enabled: boolean) => Promise<void>;
+  updateAudioSafetyConsent: (enabled: boolean) => Promise<void>;
   updatePreferences: (patch: Partial<LucidTrainerPreferences>) => Promise<void>;
   startProgram: (technique: LucidTechnique) => Promise<void>;
-  completeProgramSession: (technique: LucidTechnique, exerciseId: string, sessionCount: number) => Promise<void>;
+  completeProgramSession: (technique: LucidTechnique, exerciseId: string, sessionNumber: number, sessionCount: number) => Promise<void>;
   pauseProgram: (technique: LucidTechnique) => Promise<void>;
   addExperiment: (input: ExperimentInput) => Promise<LucidExperiment>;
   addRealityCheck: (input: RealityCheckInput) => Promise<LucidRealityCheck>;
@@ -153,6 +158,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const activeScopeRef = useRef(userScope);
 
   if (activeScope !== userScope) {
+    resetLucidOnboardingCompletionNavigationClaim();
     setActiveScope(userScope);
     setState(null);
     setGuestImportAvailable(false);
@@ -177,12 +183,19 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
             : result.permission === 'denied'
               ? 'denied'
               : 'unknown';
-        if (permission === current.onboarding.notificationsPermission) return current;
-        const now = Date.now();
-        const onboarding = { ...current.onboarding, notificationsPermission: permission, updatedAt: now };
-        const next = { ...current, onboarding, updatedAt: now };
-        await saveLucidTrainerState(requestedScope, next);
-        if (activeScopeRef.current === requestedScope) setState(next);
+        let permissionChanged = false;
+        const next = await updateLucidTrainerState(requestedScope, (latest) => {
+          if (permission === latest.onboarding.notificationsPermission) return latest;
+          permissionChanged = true;
+          const now = Date.now();
+          const onboarding = {
+            ...latest.onboarding,
+            notificationsPermission: permission,
+            updatedAt: now,
+          };
+          return { ...latest, onboarding, updatedAt: now };
+        });
+        if (permissionChanged && activeScopeRef.current === requestedScope) setState(next);
         return next;
       } catch (cause) {
         if (__DEV__) console.warn('[LucidTrainer] Reminder reconciliation failed', cause);
@@ -347,10 +360,15 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
 
   const completeOnboarding = useCallback(
     async (input: CompleteOnboardingInput) => {
+      const {
+        cloudSyncEnabled,
+        noctaliaLinkEnabled,
+        ...onboardingInput
+      } = input;
       const next = await commit((current, now) => {
         const onboarding: LucidOnboardingState = {
           ...current.onboarding,
-          ...input,
+          ...onboardingInput,
           status: 'completed',
           completedAt: now,
           updatedAt: now,
@@ -359,31 +377,45 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
           ...current.preferences,
           locale: normalizeLucidLocale(current.preferences.locale),
           notificationsEnabled: input.notificationsPermission === 'granted',
+          cloudSyncEnabled,
+          noctaliaLinkEnabled,
           timeZone: input.sleepSchedule.timeZone,
           updatedAt: now,
         };
         const next = { ...current, onboarding, preferences, updatedAt: now };
         return {
           next,
-          changed: [
-            { entityType: 'onboarding', entityKey: 'onboarding', value: onboarding },
-            { entityType: 'preferences', entityKey: 'preferences', value: preferences },
-          ],
+          changed: cloudSyncEnabled
+            ? getLucidSyncEntities(next)
+            : [
+                { entityType: 'onboarding', entityKey: 'onboarding', value: onboarding },
+                { entityType: 'preferences', entityKey: 'preferences', value: preferences },
+              ],
         };
       });
-      if (input.analyticsConsent && input.goal && input.experience) {
-        await setProductAnalyticsEnabled(true);
-        await trackProductEvent('lucid_activation_completed', {
-          goal: activationGoal(input.goal),
-          experience: input.experience === 'beginner' ? 'new' : input.experience === 'occasional' ? 'some' : 'experienced',
-          reminder_frequency: reminderBucket(next.preferences.realityCheckRemindersPerDay),
-        });
-      } else if (isLucidTrainer) {
-        await setProductAnalyticsEnabled(false);
+      // The durable local write above is the completion boundary. Native
+      // notification APIs, analytics and first cloud sync are best-effort and
+      // must never hold the final onboarding CTA in a busy state.
+      void (async () => {
+        if (input.analyticsConsent && input.goal && input.experience) {
+          await setProductAnalyticsEnabled(true);
+          await trackProductEvent('lucid_activation_completed', {
+            goal: activationGoal(input.goal),
+            experience: input.experience === 'beginner' ? 'new' : input.experience === 'occasional' ? 'some' : 'experienced',
+            reminder_frequency: reminderBucket(next.preferences.realityCheckRemindersPerDay),
+          });
+        } else if (isLucidTrainer) {
+          await setProductAnalyticsEnabled(false);
+        }
+      })().catch((cause) => {
+        if (__DEV__) console.warn('[LucidTrainer] Activation analytics failed', cause);
+      });
+      void reconcileLoadedState(next, userScope);
+      if (cloudSyncEnabled && userId) {
+        void runSync(next, userScope);
       }
-      await reconcileLoadedState(next, userScope);
     },
-    [commit, reconcileLoadedState, userScope]
+    [commit, reconcileLoadedState, runSync, userId, userScope]
   );
 
   const updatePreferences = useCallback(
@@ -428,27 +460,46 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     [commit]
   );
 
+  const updateAudioSafetyConsent = useCallback(
+    async (enabled: boolean) => {
+      await commit((current, now) => {
+        const onboarding: LucidOnboardingState = {
+          ...current.onboarding,
+          audioSafetyAccepted: enabled,
+          updatedAt: now,
+        };
+        return {
+          next: { ...current, onboarding, updatedAt: now },
+          changed: [{ entityType: 'onboarding', entityKey: 'onboarding', value: onboarding }],
+        };
+      });
+    },
+    [commit]
+  );
+
   const startProgram = useCallback(
     async (technique: LucidTechnique) => {
       await commit((current, now) => {
-        const existing = current.progress.find((item) => item.technique === technique) ?? createLucidProgramProgress(technique, now);
-        const progress: LucidProgramProgress = {
-          ...existing,
-          status: 'active',
-          startedAt: existing.startedAt ?? now,
-          updatedAt: now,
-        };
-        const next = applyLucidSyncEntity(current, entityForProgress(progress));
-        return { next, changed: [entityForProgress(progress)] };
+        const { next, changed } = activateExclusiveLucidProgram(current, technique, now);
+        return { next, changed: changed.map(entityForProgress) };
       });
     },
     [commit]
   );
 
   const completeProgramSession = useCallback(
-    async (technique: LucidTechnique, exerciseId: string, sessionCount: number) => {
+    async (technique: LucidTechnique, exerciseId: string, sessionNumber: number, sessionCount: number) => {
       const next = await commit((current, now) => {
         const existing = current.progress.find((item) => item.technique === technique) ?? createLucidProgramProgress(technique, now);
+        const access = evaluateLucidSessionAccess({
+          sessionNumber,
+          sessionCount,
+          exerciseId,
+          progress: existing,
+        });
+        if (!access.allowed) throw new Error('Lucid session is locked');
+        const mutationUpdatedAt =
+          Math.max(now, current.updatedAt, ...current.progress.map((item) => item.updatedAt)) + 1;
         const completedExerciseIds = [...new Set([...existing.completedExerciseIds, exerciseId])];
         const completed = completedExerciseIds.length >= sessionCount;
         const progress: LucidProgramProgress = {
@@ -459,10 +510,17 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
           practiceDates: [...new Set([...existing.practiceDates, localDateKey(now)])],
           startedAt: existing.startedAt ?? now,
           completedAt: completed ? now : null,
-          updatedAt: now,
+          updatedAt: mutationUpdatedAt,
         };
-        const next = applyLucidSyncEntity(current, entityForProgress(progress));
-        return { next, changed: [entityForProgress(progress)] };
+        const next = applyLucidProgramProgress(
+          current,
+          progress,
+          progress.status === 'active' ? technique : undefined
+        );
+        return {
+          next,
+          changed: diffLucidProgramProgress(current.progress, next.progress).map(entityForProgress),
+        };
       });
       if (next.onboarding.analyticsConsent === true) {
         await trackProductEvent('lucid_training_completed', {
@@ -480,8 +538,9 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     async (technique: LucidTechnique) => {
       await commit((current, now) => {
         const existing = current.progress.find((item) => item.technique === technique) ?? createLucidProgramProgress(technique, now);
-        const progress: LucidProgramProgress = { ...existing, status: 'paused', updatedAt: now };
-        const next = applyLucidSyncEntity(current, entityForProgress(progress));
+        const mutationUpdatedAt = Math.max(now, current.updatedAt, ...current.progress.map((item) => item.updatedAt)) + 1;
+        const progress: LucidProgramProgress = { ...existing, status: 'paused', updatedAt: mutationUpdatedAt };
+        const next = applyLucidProgramProgress(current, progress);
         return { next, changed: [entityForProgress(progress)] };
       });
     },
@@ -591,6 +650,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   }, [reconcileReminders, state?.preferences.cloudSyncEnabled, syncNow, user?.id]);
 
   const resetLocalData = useCallback(async () => {
+    resetLucidOnboardingCompletionNavigationClaim();
     await clearLucidTrainerLocalData(userScope);
     setLoading(true);
     await load();
@@ -615,6 +675,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       importGuestData,
       completeOnboarding,
       updateAnalyticsConsent,
+      updateAudioSafetyConsent,
       updatePreferences,
       startProgram,
       completeProgramSession,
@@ -639,6 +700,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       importGuestData,
       completeOnboarding,
       updateAnalyticsConsent,
+      updateAudioSafetyConsent,
       updatePreferences,
       startProgram,
       completeProgramSession,

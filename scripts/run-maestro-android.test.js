@@ -19,6 +19,7 @@ const {
   getMaestroArtifactPolicy,
   getSensitiveFlowGuardToken,
   normalizeFlow,
+  parseArgs,
   parseInstalledAndroidBuild,
   readExpectedAndroidBuild,
   redactSensitiveText,
@@ -44,6 +45,17 @@ const RELEASE_DUMPSYS = `
 `;
 
 describe('run-maestro-android Release preflight', () => {
+  it('accepts an explicit Metro port without disturbing another local project', () => {
+    expect(parseArgs(['--suite', 'lucid', '--metro-port', '8082', '--no-restart-metro']))
+      .toMatchObject({
+        suite: 'lucid',
+        metroPort: 8082,
+        restartMetro: false,
+      });
+    expect(() => parseArgs(['--metro-port', '0'])).toThrow('Invalid --metro-port value');
+    expect(() => parseArgs(['--metro-port', '65536'])).toThrow('Invalid --metro-port value');
+  });
+
   it('reads the expected Android package and versions from app.json', () => {
     const readFileSync = jest.fn(() => JSON.stringify({
       expo: {

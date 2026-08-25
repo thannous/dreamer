@@ -76,7 +76,7 @@
     "aso:google-play:vitals": "node ./scripts/export-google-play-vitals.js",
     "aso:google-play:listing": "node ./scripts/export-google-play-listing.js",
     "seo:backlinks:check": "node ./scripts/check-backlink-results.js",
-    "uniwind:types": "uniwind generate-artifacts --css ./global.css --dts ./uniwind-types.d.ts",
+    "uniwind:types": "uniwind generate-artifacts --css ./global.css --theme morning --theme afterglow --dts ./uniwind-types.d.ts",
     "lint": "expo lint app components hooks lib context constants services tests supabase/functions scripts",
     "lint:scripts": "expo lint scripts --max-warnings=0",
     "scripts:list": "node ./scripts/list-scripts.js",

@@ -2,26 +2,35 @@
 appId: com.tanuki75.noctalia.lucid
 ---
 - runFlow: subflows/open-lucid-app.yml
-- runFlow: subflows/complete-lucid-onboarding.yml
+- runFlow:
+    file: subflows/complete-lucid-onboarding.yml
+    env:
+      ACCEPT_AUDIO_SAFETY: "false"
 
-# Today is where onboarding lands, and it carries the screen title, not just the
-# tab label: a tab that mounts an empty shell would still show its own label.
+# Today is where onboarding lands. Its primary guided-practice action proves
+# that the redesigned content mounted, not only the persistent tab label.
 - assertVisible:
     id: lucid-today
-- assertVisible: "Train awareness, protect sleep|Entraînez l’attention, protégez le sommeil|Entrena la atención, protege el sueño|Achtsamkeit trainieren, Schlaf schützen|Allena l’attenzione, proteggi il sonno"
+- assertVisible:
+    id: lucid-today-primary
 
 - tapOn:
     id: lucid-tab-programs
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: lucid-programs
     timeout: 20000
-- assertVisible: "Train with a plan|Un entraînement structuré|Entrena con un plan|Training mit Plan|Allenati con un piano"
+- assertVisible: "Choose your path|Choisissez votre chemin|Elige tu camino|Wähle deinen Weg|Scegli il tuo percorso"
 
+# Night is contextual: return to Today before opening it.
+- tapOn:
+    id: lucid-tab-today
+- extendedWaitUntil:
+    visible:
+      id: lucid-today
+    timeout: 20000
 - tapOn:
     id: lucid-tab-night
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: lucid-night
@@ -30,16 +39,22 @@ appId: com.tanuki75.noctalia.lucid
 
 - tapOn:
     id: lucid-tab-progress
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: lucid-progress
     timeout: 20000
-- assertVisible: "Patterns, not promises|Des tendances, pas des promesses|Patrones, no promesas|Muster statt Versprechen|Schemi, non promesse"
+- assertVisible: "Remember more|Mieux se souvenir|Recordar más|Mehr erinnern|Ricordare di più"
 
+# Settings is contextual as well and keeps its historical automation ID on
+# Today's discreet gear action.
+- tapOn:
+    id: lucid-tab-today
+- extendedWaitUntil:
+    visible:
+      id: lucid-today
+    timeout: 20000
 - tapOn:
     id: lucid-tab-settings
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: lucid-settings
@@ -49,16 +64,16 @@ appId: com.tanuki75.noctalia.lucid
 # Back to the first tab: the bar keeps working after a full round trip.
 - tapOn:
     id: lucid-tab-today
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: lucid-today
     timeout: 20000
 
-# The reality check is a modal on its own route, and it answers to the same rule
+# The reality check is a contextual action on Today and answers to the same rule
 # as the morning review: nothing is pre-answered, so nothing is saveable in one
-# tap. Reached by deep link because the Today card has no identifier of its own.
-- openLink: noctalia-lucid://lucid/reality-check
+# tap.
+- tapOn:
+    id: lucid-today-reality
 - extendedWaitUntil:
     visible:
       id: lucid-reality-check
@@ -71,7 +86,6 @@ appId: com.tanuki75.noctalia.lucid
 - assertVisible: ".*Still to answer.*|.*À renseigner.*|.*Falta responder.*|.*Noch offen.*|.*Ancora da indicare.*"
 - tapOn:
     id: lucid-reality-save
-- waitForAnimationToEnd
 - assertNotVisible: "Check saved|Test enregistré|Prueba guardada|Check gespeichert|Test salvato"
 - assertVisible:
     id: lucid-reality-check

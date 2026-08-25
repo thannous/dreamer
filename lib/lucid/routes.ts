@@ -1,7 +1,26 @@
 import type { Href } from 'expo-router';
 
 export const LUCID_HOME_HREF = '/lucid' as const;
+export const LUCID_TABS_HREF = '/lucid/(tabs)' as const;
 export const LUCID_ONBOARDING_HREF = '/lucid/onboarding' as const;
+
+let completionNavigationClaimed = false;
+
+/**
+ * Bridge the brief overlap where native-stack keeps the outgoing and incoming
+ * Lucid layouts alive with different context snapshots.
+ */
+export function claimLucidOnboardingCompletionNavigation(): void {
+  completionNavigationClaimed = true;
+}
+
+export function hasLucidOnboardingCompletionNavigationClaim(): boolean {
+  return completionNavigationClaimed;
+}
+
+export function resetLucidOnboardingCompletionNavigationClaim(): void {
+  completionNavigationClaimed = false;
+}
 
 export type LucidOnboardingGateHref =
   | typeof LUCID_HOME_HREF
@@ -78,9 +97,11 @@ export function isLucidHomePath(pathname: string | null | undefined): boolean {
 }
 
 /**
- * Decide whether the Lucid shell must leave onboarding or return to it.
+ * Decide whether the Lucid shell must return to onboarding.
  * Returns null when the current path is already the right place, so callers
  * can avoid replace loops on web where `/lucid/(tabs)` and `/lucid` collide.
+ * The onboarding screen owns its completed transition after its async writes
+ * settle; mounting tabs from this provider-driven gate races Android/Fabric.
  */
 export function resolveLucidOnboardingGate(input: {
   pathname: string | null | undefined;
@@ -91,6 +112,5 @@ export function resolveLucidOnboardingGate(input: {
   const complete = input.onboardingStatus === 'completed';
   const inOnboarding = isLucidOnboardingPath(input.pathname);
   if (!complete && !inOnboarding) return LUCID_ONBOARDING_HREF;
-  if (complete && inOnboarding) return LUCID_HOME_HREF;
   return null;
 }

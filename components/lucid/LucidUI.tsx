@@ -19,8 +19,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { LucidGlass } from '@/components/lucid/LucidGlass';
 import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
-import { useOptionalLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -33,7 +33,9 @@ export const LUCID_TAB_BAR_INSET = 92;
 
 export function LucidScreen({
   children,
+  background,
   eyebrow,
+  eyebrowTone = 'muted',
   title,
   subtitle,
   status,
@@ -42,11 +44,15 @@ export function LucidScreen({
   footer,
   scroll = true,
   contentStyle,
+  colorMode = 'theme',
   testID,
   ...scrollProps
 }: {
   children: ReactNode;
+  /** Decorative layer behind the screen chrome, e.g. an immersive journey scene. */
+  background?: ReactNode;
   eyebrow?: string;
+  eyebrowTone?: 'muted' | 'accent';
   title?: string;
   subtitle?: string;
   // Statut d'écran (synchronisation, mode). Il occupe sa propre ligne : posé à
@@ -63,10 +69,12 @@ export function LucidScreen({
   footer?: ReactNode;
   scroll?: boolean;
   contentStyle?: ViewStyle;
+  /** Fixed dark artwork keeps its audited dark text palette in either app theme. */
+  colorMode?: 'theme' | 'dark';
   testID?: string;
 } & Omit<ScrollViewProps, 'contentContainerStyle'>) {
   const { colors, mode } = useTheme();
-  const palette = getLucidPalette(colors, mode);
+  const palette = getLucidPalette(colors, colorMode === 'dark' ? 'dark' : mode);
   const insets = useSafeAreaInsets();
   const content = (
     <ScreenContainer style={styles.screenContainer} maxWidth={760}>
@@ -85,7 +93,14 @@ export function LucidScreen({
           <View style={styles.headerRow}>
             <View style={styles.headerCopy}>
               {eyebrow ? (
-                <Text style={[styles.eyebrow, { color: palette.textMuted }]}>{eyebrow}</Text>
+                <Text
+                  style={[
+                    styles.eyebrow,
+                    { color: eyebrowTone === 'accent' ? palette.accentStrong : palette.textMuted },
+                  ]}
+                >
+                  {eyebrow}
+                </Text>
               ) : null}
               {title ? (
                 <Text accessibilityRole="header" style={[styles.title, { color: palette.text }]}>
@@ -106,6 +121,7 @@ export function LucidScreen({
 
   return (
     <View testID={testID} style={[styles.root, { backgroundColor: palette.background }]}>
+      {background}
       <LinearGradient
         colors={palette.atmosphere}
         locations={[0, 0.48, 1]}
@@ -155,8 +171,7 @@ export function LucidCard({
 }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const reduceMotion =
-    useOptionalLucidTrainer()?.state?.onboarding.accessibility.reduceMotion ?? false;
+  const reduceMotion = useLucidReducedMotion();
   const accentColor =
     accent === 'accent' ? palette.accent : accent === 'amber' ? palette.amber : palette.border;
   // Une carte pressable est un contrôle : son bord doit tenir 3:1. En thème
@@ -219,6 +234,7 @@ export function LucidButton({
   disabled = false,
   disabledReason,
   loading = false,
+  immersive = false,
   accessibilityHint,
   testID,
 }: {
@@ -231,6 +247,8 @@ export function LucidButton({
   // name the condition it is waiting for, never leave the user guessing.
   disabledReason?: string;
   loading?: boolean;
+  /** Journey CTA with an independently centred label and a leading icon disc. */
+  immersive?: boolean;
   accessibilityHint?: string;
   testID?: string;
 }) {
@@ -251,6 +269,7 @@ export function LucidButton({
   const button = (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={label}
       accessibilityHint={accessibilityHint ?? reason ?? undefined}
       accessibilityState={{ disabled, busy: loading }}
       disabled={disabled || loading}
@@ -258,6 +277,7 @@ export function LucidButton({
       testID={testID}
       style={({ pressed }) => [
         styles.button,
+        immersive && styles.buttonImmersive,
         {
           backgroundColor: background,
           // La bordure délimite une cible tactile : 3:1 minimum. À 40% d'opacité
@@ -268,14 +288,20 @@ export function LucidButton({
         },
       ]}
     >
-      {loading ? (
-        <ActivityIndicator color={foreground} />
-      ) : (
-        <>
-          {icon ? <Ionicons name={icon} color={foreground} size={LucidIcon.md} /> : null}
-          <Text style={[styles.buttonLabel, { color: foreground }]}>{label}</Text>
-        </>
-      )}
+      {loading ? <ActivityIndicator color={foreground} /> : null}
+      {!loading && icon && immersive ? (
+        <View
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+          style={[styles.buttonImmersiveIcon, { backgroundColor: palette.backgroundDeep }]}
+        >
+          <Ionicons name={icon} color={palette.accentStrong} size={LucidIcon.lg} />
+        </View>
+      ) : null}
+      {!loading && icon && !immersive ? (
+        <Ionicons name={icon} color={foreground} size={LucidIcon.md} />
+      ) : null}
+      <Text style={[styles.buttonLabel, { color: foreground }]}>{label}</Text>
     </Pressable>
   );
 
@@ -474,12 +500,48 @@ export function LucidToggleRow({
 // 44×44 : la seule cible tactile d'un écran qui n'a que la place d'une icône.
 // `tone="danger"` reprend l'habillage du bouton danger — une action destructive
 // se reconnaît avant d'être touchée, pas après.
-export function LucidIconAction({ label, icon, onPress, role = 'button', tone = 'neutral' }: { label: string; icon: IconName; onPress: () => void; role?: AccessibilityRole; tone?: 'neutral' | 'danger' }) {
+export function LucidIconAction({
+  label,
+  icon,
+  onPress,
+  role = 'button',
+  tone = 'neutral',
+  variant = 'default',
+}: {
+  label: string;
+  icon: IconName;
+  onPress: () => void;
+  role?: AccessibilityRole;
+  tone?: 'neutral' | 'danger';
+  variant?: 'default' | 'immersive';
+}) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const danger = tone === 'danger';
+  const immersive = variant === 'immersive';
   return (
-    <Pressable accessibilityRole={role} accessibilityLabel={label} onPress={onPress} hitSlop={4} style={({ pressed }) => [styles.iconAction, { backgroundColor: danger ? palette.dangerSoft : palette.surfaceRaised, borderColor: danger ? palette.danger : palette.borderInteractive, opacity: pressed ? LucidPress.opacity : 1 }]}>
+    <Pressable
+      accessibilityRole={role}
+      accessibilityLabel={label}
+      hitSlop={4}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.iconAction,
+        {
+          backgroundColor: danger
+            ? palette.dangerSoft
+            : immersive
+              ? 'transparent'
+              : palette.surfaceRaised,
+          borderColor: danger
+            ? palette.danger
+            : immersive
+              ? palette.border
+              : palette.borderInteractive,
+          opacity: pressed ? LucidPress.opacity : immersive ? 0.82 : 1,
+        },
+      ]}
+    >
       <Ionicons name={icon} size={LucidIcon.md} color={danger ? palette.danger : palette.text} />
     </Pressable>
   );
@@ -510,6 +572,20 @@ const styles = StyleSheet.create({
   pressed: { opacity: LucidPress.opacity, transform: [{ scale: LucidPress.scale }] },
   pressedWithoutMotion: { opacity: LucidPress.opacity },
   button: { minHeight: 52, borderRadius: LucidRadius.lg, borderWidth: 1, paddingHorizontal: LucidSpace.lg, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: LucidSpace.sm },
+  buttonImmersive: {
+    minHeight: 60,
+    borderRadius: LucidRadius.full,
+    paddingHorizontal: 64,
+  },
+  buttonImmersiveIcon: {
+    position: 'absolute',
+    left: LucidSpace.sm,
+    width: 44,
+    height: 44,
+    borderRadius: LucidRadius.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   buttonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1], textAlign: 'center' },
   buttonBlock: { gap: LucidSpace.sm },
   buttonReason: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1], textAlign: 'center' },

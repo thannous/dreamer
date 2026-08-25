@@ -97,6 +97,272 @@ Result:
 - Passed: Mobile journal now keeps the new Atlas-style header in both layouts and hides the web mock debug rail.
 
 final result: passed
+
+## Lucid onboarding — horizon à quatre destinations — 2026-08-22
+
+Source and implementation evidence:
+- Previous raster: `assets/images/lucid/onboarding/onboarding-step-2.jpg`.
+- Replacement raster: `assets/images/lucid/onboarding/onboarding-step-2-waypoints.jpg`.
+- Generation provenance: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/02-waypoints-prompt.md`.
+- Emulator result: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/02-emulator-393x850-final.png`.
+- Polished emulator result: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/02-emulator-393x850-polished.png`.
+- Energy-bubble emulator result: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/02-emulator-393x850-energy-bubble.png`.
+- Integrated-horizon emulator result: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/02-emulator-393x850-integrated-horizon.png`.
+- Energy-slab emulator result: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/02-emulator-393x850-energy-slab.png`.
+
+Comparison and interaction evidence:
+- The previous four arched alcoves read as caves and did not align with the native 2-by-2 goal grid.
+- The replacement preserves the nocturnal portal, crescent, mountain horizon and branching luminous route, but ends each branch on an open neutral stone waypoint. No icon, text, check, halo or selected state is baked into the raster.
+- The normal layout places the native icon layer on the four waypoint centers. The reflow keeps autonomous native surfaces so options remain readable when the artwork can no longer be used as the control geometry.
+- All four choices were selected independently on the Android emulator. Each remained an `android.widget.RadioButton`, reported `checked="true"` and `selected="true"` when active, and retained its existing `lucid-goal-*` test ID.
+- The selected halo/check and all localized labels remain React Native layers. Persisted goal IDs, single-selection logic, validation and CTA behavior are unchanged.
+- Final polish replaces the heavy mixed Ionicons with four consistent thin Feather outlines, follows each stone top with a true SVG ellipse instead of a circular/capsule ring, reduces the check badge, and quiets the onboarding back-button chrome without shrinking its 44 dp target.
+- Artistic pass turns the selected waypoint into a translucent energy sphere with a radial core, incomplete light arcs, particles and a grounded elliptical reflection. It breathes twice on selection using UI-thread transform/opacity only, and becomes static under reduced motion.
+- Integration pass lowers the sphere into the stone support, replaces the dark active glyph with a smaller ivory outline, turns the external check badge into an internal glint, strengthens the contact filament/reflection, keeps the active label ivory and adds only a broad low-opacity glow over the selected branch. The compact reflow retains its explicit check because each option becomes an autonomous surface there.
+- Final slab pass replaces the remaining circular glass treatment with an elliptical radial charge aligned to the stone perspective, makes inactive glyphs smaller but legible in ivory, strengthens the active glyph, restores a mint active label and reduces the title to the `h2` scale. A native branch overlay was tested on Android and removed because its diagonal did not follow the painted path accurately; the neutral raster remains the sole owner of route geometry.
+- At the `393x850dp` target layout, the Android hierarchy exposes zero `scrollable="true"` nodes and the enabled `lucid-onboarding-continue` button remains pinned below the stage.
+- Passed: focused onboarding Jest suite, 4 tests; app typecheck; tests typecheck; scoped Expo lint; `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: the Expo development `Tools` overlay remains visible in emulator evidence; it is development chrome, not application UI.
+
+final result: passed
+
+## Lucid onboarding — pratique en trois moments — 2026-08-22
+
+Source and implementation evidence:
+- Reference: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/01-practice-three-moments.png`
+- Physical-device result: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/01-motorola-final.png`
+- Side-by-side comparison: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/01-reference-vs-motorola.png`
+- Generated-background provenance: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/01-background-prompt.md`
+
+State and device:
+- Physical Motorola Edge 60 Fusion over Wi-Fi ADB, serial `192.168.1.176:38685`, viewport `1220x2712`, density `450`, font scale `1.0`, French locale.
+- Step 1 / 5 in the local Expo development client `com.tanuki75.noctalia.lucid`; this is physical-device development proof, not Play-distributed-binary proof.
+- The source is `853x1844`; the full-view comparison normalizes both views to `1356px` height while preserving each device aspect ratio.
+
+Comparison and iteration history:
+- The initial implementation used a much wider landscape with a tiny distant portal and a dim route. It also left the title lower than the source and rendered the shared `52dp` CTA without the source’s black leading disc.
+- The final pass uses a new neutral `841x1870` raster grounded in the supplied source: the portal, luminous route, crescent, clouds and quiet lower text field now occupy matching visual landmarks. No UI or selection state is baked into the asset.
+- Native React Native overlays retain the five-segment progress, three path pictograms, localized copy and CTA. The title has the source’s deliberate two-line break while retaining the original unbroken accessibility label.
+- The final pictogram pass replaces the heavier generic symbols with thin source-matched treatments: library icons for the outlined sun and crescent with two small sparkles, plus a transparent generated twilight asset with a hollow half-sun, delicate rays and two horizon lines. The asset remains palette-tinted at runtime; path anchors and the decorative accessibility contract are unchanged.
+- The immersive CTA is `60dp` high, full width, fully rounded, independently centers its label and carries the black leading icon disc. The existing `lucid-onboarding-continue` test ID and action remain unchanged.
+- The final source-versus-device comparison shows matching portal/path scale, icon landmarks, title block and CTA baseline. Remaining visible differences are Motorola status/GameTime chrome and the source device frame, not application UI.
+
+Primary interactions and runtime evidence:
+- Passed: the CTA is a native accessible button at `[56,2341][1164,2510]`; the leading disc is decorative and hidden from assistive technology.
+- Passed: the onboarding hierarchy contains zero `scrollable="true"` nodes at this viewport. A physical upward swipe produced a byte-identical accessibility tree before and after.
+- Passed: the persisted onboarding data, translations, validation flow and existing Maestro test ID contract are unchanged.
+- Passed: focused onboarding Jest suite, 4 tests; app typecheck; tests typecheck; scoped Expo lint; `git diff --check`.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none in the tested step-1 scope.
+
+final result: passed
+
+## Lucid onboarding — niveaux d’expérience — 2026-08-21
+
+Source and implementation evidence:
+- Reference: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/03-experience-levels.png`
+- Physical-device result: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/03-motorola-final.png`
+- Side-by-side comparison: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/03-reference-vs-motorola.png`
+
+State and device:
+- Physical Motorola Edge 60 Fusion, `1220x2712`, density `450`, French locale.
+- Selected state: `Débutant`; the two other options were also selected independently on-device.
+- Local Expo development client `com.tanuki75.noctalia.lucid`; this is device QA, not Play-distributed-binary proof.
+- Source pixels: `852x1848`; implementation pixels: `1220x2712`. For the full-view comparison, the source was contained at `610x1323` on a `610x1356` half-canvas and the implementation was downsampled to `610x1356`. The small residual aspect-ratio difference comes from the source device frame and Android system chrome, not the app layout; no CSS viewport applies to this native-device capture.
+
+Comparison and interaction evidence:
+- The first positioned pass still used flat Ionicons inside bordered circles. The user correctly rejected that effect as materially different from the source. The revised pass replaces only the visual inside each radio with a transparent volumetric moon asset and keeps the selection ring and glow as native state layers.
+- The next pass followed the source-image coordinates but left the moons floating beside the stone platforms in the neutral implementation backdrop. Moving the entire horizontal rows onto the real platform centers then compressed the long `Occasionnel` label at the right edge.
+- The final composition gives each native radio an ID-specific platform-center anchor and stacks its localized copy below the moon. Physical-device micro-adjustments raised `Régulier` by `3.5%` and `Occasionnel` by `3%` from the first vertical composition, while increasing the clear gap between their radio bounds from `10px` to `20px`: `Régulier` at `[462,895][912,1250]`, `Occasionnel` at `[440,1270][890,1626]`, and unchanged `Débutant` at `[396,1732][846,2088]`. Their moons align with the perspective centers of the stone circles and no label wraps or clips.
+- The referenced Ox Alpha orb audit was reviewed against the final implementation. Its core recommendations are present: a transparent volumetric moon asset, native selection halo/ring, true accessible radios, stable IDs/test IDs, neutral backdrop and reflow. The optional check badge and three separate sphere variants were not added because the selected visual reference communicates selection with the halo alone and uses a coherent repeated moon treatment.
+- The final readability pass keeps the immersive composition free of opaque cards: the two unselected hints now use the stronger secondary-text token and medium weight, all stage copy receives a restrained dark text shadow, and only the experience backdrop receives a slightly denser `0.34` night scrim. The platform anchors and radio bounds are unchanged.
+- A physical upward swipe left all three bounds unchanged; the Android accessibility hierarchy exposed zero `scrollable="true"` nodes in the normal layout.
+- All three controls remained `android.widget.RadioButton` nodes and reported their checked/selected state correctly after interaction.
+- The persisted IDs, test IDs, copy, CTA behavior, and semantic accessibility order were not changed.
+- Passed: 2 focused Jest suites, 18 tests; app and test typechecks; scoped Expo lint; `git diff --check`.
+- Typography and copy preserve the existing Fraunces/Space Grotesk hierarchy and localized strings; colors continue to use the Lucid palette; the neutral raster backdrop remains sharp and selection-free; spacing now follows the three visible terraces and luminous route. The generated `512x512` RGBA moon is neutral and selection-free, while the native accent ring and strengthened hint copy remain clearly readable in the full-view comparison. A separate focused crop was not necessary.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none in the tested step-3 scope.
+
+final result: passed
+
+## Lucid onboarding sleep window — 2026-08-21
+
+Source visual truth path:
+- `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/05-sleep-window.png`
+
+Implementation and comparison evidence:
+- Final Motorola capture: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/05-motorola-final.png`
+- Native Android time picker: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/05-android-time-picker.png`
+- Full source-versus-device comparison: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/05-reference-vs-motorola.png`
+- Focused controls comparison: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/05-controls-comparison.png`
+
+State and viewport:
+- Physical Motorola Edge 60 Fusion over Wi-Fi ADB, serial `192.168.1.176:38685`, viewport `1220x2712`, density `450`, font scale `1.0`, French locale.
+- Step 5 / 5 with persisted `22:30` bedtime, `07:00` wake time, beginner experience and three-day rhythm.
+- The source is `852x1846`; full comparisons normalize both views to the same height and focused comparisons normalize both to `852px` width before cropping the same vertical region.
+
+Comparison and iteration history:
+- The initial pass placed the sleep controls and text block too high and kept the onboarding inside a vertical `ScrollView` at ordinary phone dimensions.
+- The final pass places the arc, time values, title, journey summary and sleep-first reminder on the same relative vertical landmarks as the source.
+- The ordinary layout now renders without a `ScrollView`; compact widths below `380dp` or text scale at or above `130%` retain the accessible reflow fallback.
+- The source's visual time markers remain real native `Pressable` controls with stable test IDs, named accessibility values and the platform time dialog. No selection state is baked into the backdrop.
+
+Primary interactions and runtime evidence:
+- Passed: both time controls expose `lucid-sleep-bedtime` and `lucid-sleep-wake-time`; the Android system picker opens in 24-hour mode with localized `Annuler` and `Terminé` actions.
+- Passed: a physical upward swipe from `[610,2100]` to `[610,900]` produced byte-identical accessibility trees before and after. The onboarding root reports `scrollable=false`, and control bounds remained unchanged.
+- Passed: the final screenshot keeps the complete summary, sleep-first reminder and fixed full-width CTA visible without clipping.
+- Passed: related Jest suite, 4 tests; app typecheck; tests typecheck; scoped Expo lint.
+- Environment note: the first live reload used a stale Metro cache and returned a module-resolution 500 for an existing untracked WIP component. Restarting the same worktree's canonical Expo script with `--clear` rebuilt 3583 modules and restored the app; this was environment/cache failure, not a product regression.
+- Evidence boundary: this is local Expo development-client proof on a physical Motorola, not Play-distributed binary proof.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the vertical-position and non-scrolling fixes.
+
+final result: passed
+
+## Lucid Trainer interactive redesign — 2026-08-20
+
+Source visual truth paths:
+- Today / Dream Atlas: `/Users/tanuki/.codex/generated_images/01a01e4d-41d4-7a00-8508-2f2ae74f0978/exec-4717a20c-591e-430d-8b2a-70c99526267c.png`
+- Reality-check guide: `/Users/tanuki/.codex/generated_images/01a01e4d-41d4-7a00-8508-2f2ae74f0978/exec-06caa82b-45d8-409d-9aa2-ee3b60c2bf68.png`
+- MILD journey: `/Users/tanuki/.codex/generated_images/01a01e4d-41d4-7a00-8508-2f2ae74f0978/exec-f678bc53-6e89-4630-8e09-0f2f7a5ea489.png`
+
+Implementation screenshot paths:
+- Today: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/option1-final-pass.png`
+- Reality check: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/option2-final-pass.png`
+- MILD journey: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/option3-final-pass3.png`
+
+State and viewport:
+- Physical Motorola Edge 60 Fusion over Wi-Fi ADB, serial `192.168.1.176:38685`, viewport `1220x2712`, density `450`, French locale, dark theme.
+- Today was captured with a real MILD program at day 1 / 7, so the CTA, duration and progress use persisted product data.
+- Reality check was captured at Observer, step 1 / 3, with no answer selected and the real validation reason visible.
+- Journey was captured before program start at an honest 0 / 7; no concept-only 3 / 7 progress was fabricated.
+
+Full-view comparison evidence:
+- Today: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/comparison-option1-final.png`
+- Reality check: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/comparison-option2-final2.png`
+- MILD journey: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/comparison-option3-final3.png`
+- A separate focused crop was not needed: each target is a single mobile viewport and its full comparison already isolates the hero, primary action and progression surface at readable scale.
+
+Comparison and iteration history:
+- Today iteration 1 exposed a false active first milestone at 0 / 7 and a flatter CTA. The milestone now derives only from real active progress, the final capture uses real MILD day 1 data, and the CTA uses the concept's mint gradient.
+- Reality-check iteration 1 exposed an opaque square around the generated orb. The final RGBA raster has real transparency, the orb is constrained to the measured slot, and its finite halo respects both system and app reduced-motion preferences.
+- Journey iteration 1 read as a detached list, overflowed the first viewport and allowed the current node to bypass program start. The journey is now compact, the current node is disabled at 0 / 7, and only the primary CTA starts the program before navigation.
+- Journey iteration 2 still placed several orbs beside the luminous route and truncated J6/J4. The final raster route and fixed per-day anchors align all seven orbs, while three-line labels preserve the complete session titles independently of orb position.
+
+Required fidelity surfaces:
+- Typography: existing Fraunces and Space Grotesk families preserve the concept's editorial-title and functional-copy hierarchy.
+- Layout: hero image, dominant CTA, three-step guide and seven-stop journey reproduce the proposed visual hierarchy while retaining real routes and data.
+- Color: nocturnal ink surfaces and jade accents come from the Lucid theme; the fixed journey image is intentionally dark in both themes for legibility.
+- Assets: all three visible hero assets are real generated PNGs sized for their slots; the guide orb composites with alpha rather than a simulated code effect.
+- Motion: entry and state motion are short and purposeful; no tabs slide, and reduced-motion is honored.
+
+Primary interactions and runtime evidence:
+- Passed: multi-agent visual review for each option reported no P0, P1 or P2 after the final device capture.
+- Passed: manual device proof showed the current MILD node cannot open a session at 0 / 7, while `Commencer le programme` starts the real program and opens session 1.
+- Passed: all four Maestro Lucid flows on the Motorola (`lucid-smoke`, `lucid-morning-review`, `lucid-night-safety`, `lucid-night-unlock`) completed on their first attempt.
+- Passed: 3 focused Jest suites / 10 tests, app typecheck, tests typecheck, scoped Expo lint and `git diff --check`.
+- P3 only: the Motorola GameTime tools overlay covers part of the close action in screenshots; it is device chrome, not an app element.
+- P3 only: real data differs from concept copy and progress where appropriate, and the program detail stays an immersive stack route without a tab bar.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after the transparent-orb, journey-anchor and label-width fixes.
+
+final result: passed
+
+### MILD journey trainer follow-up — 2026-08-20
+
+Source and comparison evidence:
+- Visual source: `/Users/tanuki/.codex/generated_images/01a01e4d-41d4-7a00-8508-2f2ae74f0978/exec-f678bc53-6e89-4630-8e09-0f2f7a5ea489.png`
+- Previous accepted implementation: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/option3-final-pass3.png`
+- Final physical-device capture: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/mild-redesign-pass4b-current.png`
+- Source versus final comparison: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/mild-redesign-source-vs-final.png`
+- Previous implementation versus final comparison: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/mild-redesign-before-vs-final.png`
+- Started-but-zero-completed state: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/mild-redesign-pass3-started-top.png`
+
+State and viewport:
+- Physical Motorola Edge 60 Fusion over Wi-Fi ADB, serial `192.168.1.176:38685`, viewport `1220x2712`, density `450`, French locale, dark theme.
+- Final capture is a clean, not-yet-started MILD program after the regression suite cleared app state. It announces `0 / 7` and `Commencer le programme`; no concept-only `3 / 7` was seeded. The separate started-state capture proves that zero completed sessions remains `0 / 7` after activation.
+- The GameTime overlay still covers part of the back action in screenshots. This is Motorola system chrome, not an app surface.
+
+Comparison and iteration history:
+- Pass 1 exposed overlapping labels and path markers. The atlas now uses seven absolute normalized anchors over the native `915 / 1719` image ratio, with independent two-line labels and no truncated session title.
+- Pass 2 was visually strong but made the user cross the whole atlas to reach the current-session CTA. The final information order is progress, current session and its single CTA, sleep safety, then the optional seven-step atlas.
+- The first editorial introduction was too long for repeat use. Before starting it now uses a compact body summary; after starting it replaces that summary with the real program status and computed session metadata.
+- Device QA found a stale loading indicator after starting, opening session 1 and returning. The program screen now resets transient loading on blur/focus and before navigation; the returned CTA correctly announces `Reprendre l’entraînement`.
+- Final code review found that paused programs could still open their current or missed session directly. Paused current/available nodes now remain disabled until the single Resume CTA reactivates the program; completed sessions remain readable.
+- Progress segments now derive from each completed exercise ID instead of assuming contiguous completion. A stored 1+3 completion pattern therefore shows `2 / 7` with only segments 1 and 3 active.
+- The atlas switches to its non-truncating list reflow below `380 dp` as well as at `130%` text scale, and its immutable background uses memory/disk caching.
+
+Primary interactions and runtime evidence:
+- Passed: before start, tapping session 1 remained on the `0 / 7` program screen; only `Commencer le programme` called `startProgram` and opened session 1.
+- Passed: after start but before completion, the counter remained `0 / 7`, session 1 became directly openable, and the CTA returned from the session without a stale spinner.
+- Passed: independent final visual review reported no P0, P1 or P2. The CTA, safety note and top of the atlas are all visible in the first Motorola viewport.
+- Passed: independent final code review's paused-state, non-contiguous progress and narrow-width findings were fixed and independently covered.
+- Passed: 3 focused Jest suites / 32 tests, app typecheck, tests typecheck, scoped Expo lint, `git diff --check` and trailing-whitespace checks.
+- Passed: all four Lucid Maestro flows (`lucid-smoke`, `lucid-morning-review`, `lucid-night-safety`, `lucid-night-unlock`) passed on the Wi-Fi Motorola on their first attempt.
+- Passed: the new dedicated `lucid-program-journey` Maestro flow also passed on its first fail-fast attempt. It proves the real `0 / 7` start gate, session navigation, return, pause lock and CTA-only resume path; the `lucid` suite now contains five flows.
+- P3 only: large-text reflow is covered at `360 dp / 100%`, `390 dp / 130%` and `390 dp / 100%`, but the physical device was not switched to a larger system text scale for a screenshot.
+- Evidence boundary: this is Expo development-client proof on the physical Motorola, not Play-distributed binary proof.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none.
+
+final result: passed
+
+### MILD immersive-atlas restoration — 2026-08-20
+
+Source and comparison evidence:
+- User-selected left-hand reference: `/var/folders/43/xbm0tcvd4hx6_0648bm4y5b00000gn/T/codex-clipboard-505cc86b-4508-43d5-b218-2876a9cf3ed1.png`
+- Final not-yet-started first viewport: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/mild-immersive-final-top.png`
+- Final started, zero-completed first viewport: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/mild-immersive-final-active-top.png`
+- Final atlas viewport: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/mild-immersive-final-atlas.png`
+- Source versus final combined comparison: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/mild-immersive-source-vs-final.png`
+
+State and viewport:
+- Physical Motorola Edge 60 Fusion over Wi-Fi ADB, serial `192.168.1.176:38685`, viewport `1220x2712`, density `450`, French locale, dark theme.
+- The implementation uses the real MILD state. Starting the program without finishing a session remains honestly at `0 / 7`; no reference-only `3 / 7` progress was seeded.
+- The final active capture shows the retained current-session card and the real `Reprendre l’entraînement` CTA after opening session 1 and returning.
+
+Comparison and implementation decisions:
+- Restored the selected reference's single continuous night scene behind the complete MILD header, progress, current-session CTA, safety message and seven-step atlas.
+- Removed the journey component's second copy of the scene in immersive mode, preventing a visible image restart while preserving the contained presentation for non-immersive consumers.
+- Kept the redesigned action order: progress and the current-session CTA remain in the first viewport; the long atlas is optional exploration rather than a prerequisite for starting or resuming.
+- Preserved the established journey semantics, fixed anchors, complete titles, reduced-motion handling, responsive large-text reflow, stable test IDs and route behavior.
+- Scope is MILD only. SSILD and WBTB keep their existing program-detail presentation.
+
+Primary interactions and runtime evidence:
+- Passed on the physical device: `Commencer le programme` starts the real program and opens MILD session 1.
+- Passed on the physical device: returning from session 1 restores the program screen with `Reprendre l’entraînement`, no stale loading state and an honest `0 / 7` counter.
+- Passed: 3 focused Jest suites / 32 tests, app typecheck, tests typecheck, scoped Expo lint and `git diff --check`.
+- Environment block: a fresh dedicated Maestro rerun stopped during the first `waitForAnimationToEnd` screenshot immediately after dev-client launch, before any product assertion ran. This runner/driver abort is not counted as an app pass or failure; the current interaction proof is the manual physical-device run above plus the focused tests. Log: `maestro-results/android/core/192.168.1.176:38685/lucid-program-journey/lucid-program-journey-5/logs/maestro.log`.
+- P3 only: the Motorola GameTime overlay overlaps the back action in the screenshot; it is device chrome, not an app element.
+- Evidence boundary: this is Expo development-client proof on the physical Motorola, not Play-distributed binary proof.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none after restoring the continuous background while retaining the immediate CTA hierarchy.
+
+final result: passed
+
 ## Noctalia Plus comparison paywall - 2026-07-15
 
 Source visual truth path:
@@ -1003,5 +1269,48 @@ Findings:
 - P0: none.
 - P1: none after the fix.
 - P2: none in the tested account-sheet keyboard scope.
+
+final result: passed
+
+## Lucid MILD path-first journey — 2026-08-20
+
+Source visual truth path:
+- `/var/folders/43/xbm0tcvd4hx6_0648bm4y5b00000gn/T/codex-clipboard-2a7be78e-f840-4769-9abc-fc03fdefda2f.png`
+
+Implementation evidence:
+- Initial `0/7`: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/mild-path-first-v3-zero-of-seven.png`
+- Progressed `1/7`, current session 2: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/mild-path-first-v3-progressed.png`
+- Source-versus-device comparison: `/Users/tanuki/.codex/visualizations/2026/08/20/01a01e4d-41d4-7a00-8508-2f2ae74f0978/mild-path-first-v3-source-vs-device.png`
+
+State and device:
+- Physical Motorola Edge 60 Fusion, `1220x2712`, density `2.8125`, French locale.
+- Local Expo development client `com.tanuki75.noctalia.lucid`; this is device QA, not proof of the Play-distributed binary.
+- Compared both the honest initial `0/7` state and a real progressed `1/7` state with session 2 current.
+
+Comparison history:
+- Initial implementation put a brochure-style title, summary, pills, progress card, CTA, and safety card before the illustrated route.
+- The first path-first pass exposed the route immediately, but the progress segments collided with session 7 and an absolutely positioned CTA could cover markers for middle sessions.
+- Final pass uses a compact overlaid title and honest counter, renders the CTA immediately after the current node, and splits the image at that node so the lower image and lower markers move together.
+- The inserted card gap was tuned from `192dp` to `168dp` after physical-device inspection.
+- Independent visual QA passed with no P0 or P1 findings.
+
+Required fidelity surfaces:
+- Route and progress appear immediately; secondary MILD description, metadata, safety details, and evidence are below the interactive journey.
+- The single `915/1719` illustration owns the same coordinate space as all seven markers, preserving marker-to-path alignment.
+- Visible order and accessibility order are `7 -> current -> CTA -> remaining sessions -> 1`.
+- The current CTA keeps the real start/resume behavior and never manufactures progress; `0/7` remains valid after starting until a session is actually completed.
+- Compact mode omits the objective rather than truncating it. Reflow at large text scale restores the complete objective.
+
+Primary interactions and runtime evidence:
+- Passed on the Motorola: initial route, start, session 1, return, `0/7`, resume, pause, disabled current marker while paused, and `1/7` route assertion.
+- Passed: one complete Maestro traversal reached all final assertions. Subsequent cold-state retries were interrupted before app assertions by a Maestro host `Signal 6` crash during initial screenshot sampling; this is recorded separately from product behavior.
+- Passed: 4 focused Jest suites, 40 tests; app and test typechecks; scoped Expo lint; `git diff --check`.
+- Passed: deterministic regression coverage for the pre-existing asynchronous notification reconciliation race, proving that a newly completed session remains in both context and storage.
+- The floating GameTime gear visible in device captures is Motorola chrome, not part of Noctalia.
+
+Findings:
+- P0: none.
+- P1: none.
+- P2: none. The compact objective omission is an intentional density tradeoff and its content remains accessible and available in reflow.
 
 final result: passed

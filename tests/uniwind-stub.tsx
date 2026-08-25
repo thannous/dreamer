@@ -8,7 +8,7 @@
  */
 import React from 'react';
 
-type ThemeName = 'light' | 'dark' | 'system';
+type ThemeName = 'morning' | 'light' | 'afterglow' | 'dark' | 'system';
 
 let currentTheme: ThemeName = 'light';
 let hasAdaptiveThemes = true;

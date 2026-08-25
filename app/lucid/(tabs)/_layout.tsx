@@ -74,12 +74,18 @@ export default function LucidTabsLayout() {
       ),
     });
 
+    // Night and Settings remain routable peers in this navigator, but they are
+    // contextual destinations rather than permanent navigation choices. Expo
+    // Router's `href: null` keeps direct/deep-link navigation intact while
+    // removing them from the tab bar and its accessibility order.
+    const hiddenScreen = (title: string) => ({ title, href: null });
+
     return {
       today: screen(labels.today, 'sparkles', 'lucid-tab-today'),
       programs: screen(labels.programs, 'map', 'lucid-tab-programs'),
-      night: screen(labels.night, 'moon', 'lucid-tab-night'),
+      night: hiddenScreen(labels.night),
       progress: screen(labels.progress, 'stats-chart', 'lucid-tab-progress'),
-      settings: screen(labels.settings, 'settings', 'lucid-tab-settings'),
+      settings: hiddenScreen(labels.settings),
     };
   }, [labels.night, labels.programs, labels.progress, labels.settings, labels.today]);
 

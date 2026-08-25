@@ -1,8 +1,8 @@
 # Ensure the bundle identifier matches the local Lucid Trainer dev build.
 appId: com.tanuki75.noctalia.lucid
 ---
-# The onboarding walker leaves audio safety unaccepted, which is exactly the
-# state the night gate exists for.
+# The five-step onboarding walker never asks for audio safety, which is exactly
+# the state the Night gate exists for.
 - runFlow: subflows/open-lucid-app.yml
 - runFlow: subflows/complete-lucid-onboarding.yml
 
@@ -15,14 +15,20 @@ appId: com.tanuki75.noctalia.lucid
     timeout: 20000
 
 # Disabled, and saying why: audio safety was never accepted and the playback
-# route was never confirmed.
+# route was never confirmed. The consent switch itself is present and off.
 - assertVisible:
     id: lucid-night-start
 - assertVisible: "Start night signals|Démarrer les signaux|Iniciar señales|Nachtsignale starten|Avvia segnali"
 - assertVisible: ".*Still required.*|.*Encore nécessaire.*|.*Aún necesario.*|.*Noch nötig.*|.*Ancora necessario.*"
 - assertVisible: ".*accept audio safety.*|.*accepter la sécurité audio.*|.*aceptar la seguridad de audio.*|.*Audio-Sicherheit bestätigen.*|.*accettare la sicurezza audio.*"
+- scrollUntilVisible:
+    element:
+      id: lucid-night-audio-safety
+    direction: DOWN
+- assertVisible:
+    id: lucid-night-audio-safety
 
-# Pressing it must schedule nothing: no active plan, no stop button, no exit.
+# Pressing Start must schedule nothing: no active plan, no stop button, no exit.
 - tapOn:
     id: lucid-night-start
 - waitForAnimationToEnd
@@ -53,4 +59,5 @@ appId: com.tanuki75.noctalia.lucid
 - assertVisible:
     id: lucid-night-start
 - assertVisible: ".*Still required.*|.*Encore nécessaire.*|.*Aún necesario.*|.*Noch nötig.*|.*Ancora necessario.*"
+- assertVisible: ".*accept audio safety.*|.*accepter la sécurité audio.*|.*aceptar la seguridad de audio.*|.*Audio-Sicherheit bestätigen.*|.*accettare la sicurezza audio.*"
 - assertNotVisible: "Stop signals|Arrêter les signaux|Detener señales|Signale stoppen|Ferma segnali"

@@ -21,6 +21,7 @@ describe('Lucid Trainer model', () => {
 
     expect(isLucidTrainerState(state)).toBe(true);
     expect(state.preferences).toMatchObject({
+      theme: 'dynamic',
       cloudSyncEnabled: false,
       noctaliaLinkEnabled: false,
       audioCuesEnabled: false,

@@ -30,7 +30,7 @@ const state = {
   updatedAt: 1,
   onboarding: {
     status: 'completed',
-    goal: 'explore_lucidity',
+    goal: 'first_lucid_dream',
     experience: 'beginner',
     weeklyTarget: 3,
     sleepSchedule: { bedtime: '22:30', wakeTime: '07:00', timeZone: 'Europe/Paris' },
@@ -174,6 +174,11 @@ describe('Lucid Trainer settings', () => {
     mockUser = null;
     mockSyncStatus = 'local';
     mockLastSyncResult = null;
+    state.onboarding.weeklyTarget = 3;
+    state.onboarding.goal = 'first_lucid_dream';
+    state.onboarding.experience = 'beginner';
+    state.preferences.notificationsEnabled = true;
+    state.preferences.realityCheckRemindersPerDay = 3;
   });
 
   afterEach(cleanup);
@@ -181,6 +186,7 @@ describe('Lucid Trainer settings', () => {
   it('keeps account management inside the Lucid shell', () => {
     render(<LucidSettingsScreen />);
 
+    fireEvent.click(screen.getByTestId('lucid-settings-account'));
     fireEvent.click(screen.getByRole('button', { name: 'Open account controls' }));
 
     expect(mockPush).toHaveBeenCalledWith('/lucid/account');
@@ -209,6 +215,57 @@ describe('Lucid Trainer settings', () => {
     });
   });
 
+  it('disables notifications immediately without changing reminder count', async () => {
+    render(<LucidSettingsScreen />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Training notifications' }));
+
+    await waitFor(() => {
+      expect(mockUpdatePreferences).toHaveBeenCalledWith({ notificationsEnabled: false });
+    });
+    expect(mockUpdatePreferences).not.toHaveBeenCalledWith(
+      expect.objectContaining({ realityCheckRemindersPerDay: expect.anything() })
+    );
+    expect(mockPush).not.toHaveBeenCalled();
+  });
+
+  it('opens permissions when enabling notifications', () => {
+    state.preferences.notificationsEnabled = false;
+    render(<LucidSettingsScreen />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Training notifications' }));
+
+    expect(mockPush).toHaveBeenCalledWith('/lucid/permissions');
+    expect(mockUpdatePreferences).not.toHaveBeenCalled();
+  });
+
+  it('moves the weekly target only through the persisted 2/3/5/7 choices', async () => {
+    render(<LucidSettingsScreen />);
+
+    fireEvent.click(screen.getByTestId('lucid-weekly-increase'));
+
+    await waitFor(() => expect(mockUpdateLucidTrainerState).toHaveBeenCalled());
+    const updater = mockUpdateLucidTrainerState.mock.calls[0][1];
+    expect(updater(state).onboarding.weeklyTarget).toBe(5);
+  });
+
+  it('keeps the onboarding horizon and starting point visible and editable', async () => {
+    render(<LucidSettingsScreen />);
+
+    expect(screen.queryByTestId('lucid-settings-goal-improve_recall')).toBeNull();
+    fireEvent.click(screen.getByTestId('lucid-settings-journey'));
+
+    fireEvent.click(screen.getByTestId('lucid-settings-goal-improve_recall'));
+    await waitFor(() => expect(mockUpdateLucidTrainerState).toHaveBeenCalledTimes(1));
+    const goalUpdater = mockUpdateLucidTrainerState.mock.calls[0][1];
+    expect(goalUpdater(state).onboarding.goal).toBe('improve_recall');
+
+    fireEvent.click(screen.getByTestId('lucid-settings-experience-experienced'));
+    await waitFor(() => expect(mockUpdateLucidTrainerState).toHaveBeenCalledTimes(2));
+    const experienceUpdater = mockUpdateLucidTrainerState.mock.calls[1][1];
+    expect(experienceUpdater(state).onboarding.experience).toBe('experienced');
+  });
+
   it('validates and persists the sleep window without changing the journal', async () => {
     render(<LucidSettingsScreen />);
 
@@ -234,6 +291,7 @@ describe('Lucid Trainer settings', () => {
   it('persists the reduce-motion choice in onboarding accessibility state', async () => {
     render(<LucidSettingsScreen />);
 
+    fireEvent.click(screen.getByTestId('lucid-settings-accessibility'));
     fireEvent.click(screen.getByRole('button', { name: 'Reduce motion' }));
 
     await waitFor(() => expect(mockUpdateLucidTrainerState).toHaveBeenCalled());
@@ -261,9 +319,24 @@ describe('Lucid Trainer settings', () => {
     render(<LucidSettingsScreen />);
 
     expect(screen.getByText('Sync needs attention')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('lucid-settings-sync'));
     expect(screen.getByText(/1 conflicts · 1 failed · 0 blocked · 2 pending/)).toBeTruthy();
     fireEvent.click(screen.getByTestId('lucid-sync-retry'));
 
     await waitFor(() => expect(mockSyncNow).toHaveBeenCalled());
+  });
+
+  it('keeps the daily controls immediate and reveals secondary controls on demand', () => {
+    render(<LucidSettingsScreen />);
+
+    expect(screen.getByTestId('lucid-theme-dynamic')).toBeTruthy();
+    expect(screen.getByTestId('lucid-weekly-increase')).toBeTruthy();
+    expect(screen.getByTestId('lucid-reminders-increase')).toBeTruthy();
+    expect(screen.getByTestId('lucid-bedtime-input')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Reduce motion' })).toBeNull();
+
+    fireEvent.click(screen.getByTestId('lucid-settings-accessibility'));
+
+    expect(screen.getByRole('button', { name: 'Reduce motion' })).toBeTruthy();
   });
 });

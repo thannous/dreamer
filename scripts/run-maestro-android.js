@@ -139,6 +139,7 @@ const SUITES = {
   // --env-file .env.lucid.mock so Metro serves the Lucid Trainer variant.
   lucid: [
     'maestro/lucid-smoke.yml',
+    'maestro/lucid-program-journey.yml',
     'maestro/lucid-morning-review.yml',
     'maestro/lucid-night-safety.yml',
     'maestro/lucid-night-unlock.yml',
@@ -251,6 +252,12 @@ function parseArgs(argv) {
       continue;
     }
 
+    if (arg === '--metro-port') {
+      options.metroPort = Number.parseInt(argv[i + 1] ?? String(options.metroPort), 10);
+      i += 1;
+      continue;
+    }
+
     if (arg === '--env-file') {
       options.envFile = argv[i + 1] ?? options.envFile;
       i += 1;
@@ -268,6 +275,9 @@ function parseArgs(argv) {
   if (Number.isNaN(options.retries) || options.retries < 0) {
     throw new Error(`Invalid --retries value: ${options.retries}`);
   }
+  if (Number.isNaN(options.metroPort) || options.metroPort < 1 || options.metroPort > 65535) {
+    throw new Error(`Invalid --metro-port value: ${options.metroPort}`);
+  }
 
   return options;
 }
@@ -279,7 +289,7 @@ function printHelp() {
 
   console.log(`
 Usage:
-  node ./scripts/run-maestro-android.js [--suite <name>] [--parallel auto|<n>] [--retries <n>] [--device <id1,id2>] [--flow <path>]... [--no-restart-metro] [--no-start-metro]
+  node ./scripts/run-maestro-android.js [--suite <name>] [--parallel auto|<n>] [--retries <n>] [--device <id1,id2>] [--flow <path>]... [--metro-port <port>] [--no-restart-metro] [--no-start-metro]
 
 Suites:
 ${suites}
@@ -296,7 +306,7 @@ Examples:
   npm run test:e2e:canary
   npm run test:e2e:canary:fast
   node ./scripts/run-maestro-android.js --suite quotas --parallel auto
-  node ./scripts/run-maestro-android.js --suite canary --retries 0 --no-restart-metro
+  node ./scripts/run-maestro-android.js --suite canary --retries 0 --metro-port 8082 --no-restart-metro
   node ./scripts/run-maestro-android.js --flow maestro/smoke.yml --flow maestro/recording-bottom-sheet.yml --retries 2
 `.trim());
 }
