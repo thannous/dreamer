@@ -17,8 +17,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { getLucidPalette } from '@/constants/lucidTheme';
-import { useOptionalLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -124,8 +124,7 @@ export function LucidCard({
 }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const reduceMotion =
-    useOptionalLucidTrainer()?.state?.onboarding.accessibility.reduceMotion ?? false;
+  const reduceMotion = useLucidReducedMotion();
   const accentColor =
     accent === 'violet'
       ? palette.accent
@@ -168,6 +167,7 @@ export function LucidButton({
   disabled = false,
   loading = false,
   accessibilityHint,
+  disabledReason,
   testID,
 }: {
   label: string;
@@ -177,6 +177,7 @@ export function LucidButton({
   disabled?: boolean;
   loading?: boolean;
   accessibilityHint?: string;
+  disabledReason?: string;
   testID?: string;
 }) {
   const { colors, mode } = useTheme();
@@ -191,11 +192,14 @@ export function LucidButton({
       : variant === 'secondary'
         ? palette.surfaceRaised
         : 'transparent';
+  const resolvedHint =
+    accessibilityHint ?? (disabled && disabledReason ? disabledReason : undefined);
+  const showDisabledReason = Boolean(disabled && disabledReason && !accessibilityHint);
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityHint={accessibilityHint}
+      accessibilityHint={resolvedHint}
       accessibilityState={{ disabled, busy: loading }}
       disabled={disabled || loading}
       onPress={onPress}
@@ -207,6 +211,7 @@ export function LucidButton({
           borderColor: danger ? `${palette.danger}66` : primary ? palette.accentStrong : palette.border,
           opacity: disabled ? 0.45 : pressed ? 0.78 : 1,
         },
+        showDisabledReason ? styles.buttonWithReason : null,
       ]}
     >
       {loading ? (
@@ -217,6 +222,15 @@ export function LucidButton({
           <Text style={[styles.buttonLabel, { color: foreground }]}>{label}</Text>
         </>
       )}
+      {showDisabledReason ? (
+        <Text
+          accessibilityElementsHidden
+          importantForAccessibility="no"
+          style={[styles.buttonDisabledReason, { color: foreground }]}
+        >
+          {disabledReason}
+        </Text>
+      ) : null}
     </Pressable>
   );
 }
@@ -381,7 +395,9 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.82, transform: [{ scale: 0.992 }] },
   pressedWithoutMotion: { opacity: 0.82 },
   button: { minHeight: 52, borderRadius: 16, borderWidth: 1, paddingHorizontal: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 9 },
+  buttonWithReason: { flexDirection: 'column', paddingVertical: 10, gap: 4 },
   buttonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 15, textAlign: 'center' },
+  buttonDisabledReason: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 12, lineHeight: 16, textAlign: 'center', opacity: 0.86 },
   sectionHeader: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 12, marginTop: 4 },
   sectionCopy: { flex: 1, gap: 3 },
   sectionTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 20, lineHeight: 26 },

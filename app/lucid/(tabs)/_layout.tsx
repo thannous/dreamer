@@ -11,13 +11,34 @@ import { useTheme } from '@/context/ThemeContext';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
-function TabIcon({ icon, label, focused }: { icon: IconName; label: string; focused: boolean }) {
-  const { colors, mode } = useTheme();
-  const palette = getLucidPalette(colors, mode);
+function TabIcon({
+  icon,
+  label,
+  focused,
+  activeColor,
+  inactiveColor,
+  textColor,
+}: {
+  icon: IconName;
+  label: string;
+  focused: boolean;
+  activeColor: string;
+  inactiveColor: string;
+  textColor: string;
+}) {
   return (
     <View style={styles.tabItem}>
-      <Ionicons name={focused ? icon : (`${icon}-outline` as IconName)} size={22} color={focused ? palette.accentStrong : palette.textMuted} />
-      <Text numberOfLines={1} style={[styles.tabLabel, { color: focused ? palette.text : palette.textMuted }]}>{label}</Text>
+      <Ionicons
+        name={focused ? icon : (`${icon}-outline` as IconName)}
+        size={22}
+        color={focused ? activeColor : inactiveColor}
+      />
+      <Text
+        numberOfLines={1}
+        style={[styles.tabLabel, { color: focused ? textColor : inactiveColor }]}
+      >
+        {label}
+      </Text>
     </View>
   );
 }
@@ -32,7 +53,8 @@ export default function LucidTabsLayout() {
   const compact = width < 370;
 
   // Expo Router applies each Screen's options in an effect. Keep the option
-  // objects stable so applying them cannot trigger a setOptions/render loop.
+  // objects stable and the tab icons presentational. The navigator passes its
+  // palette into icon renderers instead of reading context there.
   const tabOptions = useMemo(() => {
     const screen = (title: string, icon: IconName, testID: string) => ({
       title,
@@ -40,7 +62,14 @@ export default function LucidTabsLayout() {
         <HapticTab {...props} testID={testID} accessibilityLabel={title} />
       ),
       tabBarIcon: ({ focused }: { focused: boolean }) => (
-        <TabIcon focused={focused} icon={icon} label={title} />
+        <TabIcon
+          focused={focused}
+          icon={icon}
+          label={title}
+          activeColor={palette.accentStrong}
+          inactiveColor={palette.textMuted}
+          textColor={palette.text}
+        />
       ),
     });
 
@@ -51,7 +80,16 @@ export default function LucidTabsLayout() {
       progress: screen(labels.progress, 'stats-chart', 'lucid-tab-progress'),
       settings: screen(labels.settings, 'settings', 'lucid-tab-settings'),
     };
-  }, [labels.night, labels.programs, labels.progress, labels.settings, labels.today]);
+  }, [
+    labels.night,
+    labels.programs,
+    labels.progress,
+    labels.settings,
+    labels.today,
+    palette.accentStrong,
+    palette.text,
+    palette.textMuted,
+  ]);
 
   const navigatorOptions = useMemo(
     () => ({
@@ -95,6 +133,8 @@ export default function LucidTabsLayout() {
   );
 
   return (
+    // Tabs are peers; keep the navigator default (`none`) and avoid adding
+    // transition configuration to this high-frequency surface.
     <Tabs screenOptions={navigatorOptions}>
       <Tabs.Screen name="index" options={tabOptions.today} />
       <Tabs.Screen name="programs" options={tabOptions.programs} />

@@ -22,7 +22,11 @@ const state = {
     analyticsConsent: false,
   },
   experiments: [],
-  progress: [],
+  progress: [] as Array<{
+    technique: string;
+    currentDay: number;
+    completedExerciseIds: string[];
+  }>,
   preferences: {
     noctaliaLinkEnabled: false,
     timeZone: 'UTC',
@@ -123,15 +127,18 @@ jest.mock('@/services/lucidTrainerNotifications', () => ({
 jest.mock('@/components/lucid/LucidUI', () => ({
   LucidScreen: ({
     children,
+    subtitle,
     testID,
     trailing,
   }: {
     children: React.ReactNode;
+    subtitle?: string;
     testID?: string;
     trailing?: React.ReactNode;
   }) => (
     <main data-testid={testID}>
       {trailing}
+      {subtitle ? <p>{subtitle}</p> : null}
       {children}
     </main>
   ),
@@ -227,6 +234,16 @@ const coldRoutes = [
   },
 ] as const;
 
+function chooseMorningScore(title: string, value: string) {
+  const heading = screen.getByText(title);
+  const block = heading.closest('div')?.parentElement;
+  const button = Array.from(block?.querySelectorAll('button') ?? []).find(
+    (item) => item.textContent === value
+  );
+  if (!button) throw new Error(`Missing score ${value} for ${title}`);
+  fireEvent.click(button);
+}
+
 describe('Lucid cold-route navigation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -264,6 +281,11 @@ describe('Lucid cold-route navigation', () => {
   it('uses the same cold-launch fallback after saving a morning review', async () => {
     render(<LucidMorningScreen />);
 
+    fireEvent.click(screen.getByText('MILD'));
+    fireEvent.click(screen.getByText('10 minutes'));
+    fireEvent.click(screen.getByText('No lucidity'));
+    chooseMorningScore('Dream recall', '2');
+    chooseMorningScore('Sleep quality', '4');
     fireEvent.click(screen.getByTestId('lucid-morning-save'));
     await waitFor(() => expect(mockAlert).toHaveBeenCalledTimes(1));
 
@@ -272,5 +294,39 @@ describe('Lucid cold-route navigation', () => {
 
     expect(mockReplace).toHaveBeenCalledWith('/lucid');
     expect(mockBack).not.toHaveBeenCalled();
+  });
+
+  it('blocks a future sequential session opened by URL and offers an explicit return', () => {
+    state.progress = [
+      {
+        technique: 'mild',
+        currentDay: 1,
+        completedExerciseIds: [],
+      },
+    ];
+    mockRouteParams = { id: 'mild', program: 'mild', session: '3' };
+    render(<LucidSessionScreen />);
+
+    expect(
+      screen.getByText('This session opens after the previous one. The calendar is only a suggestion.')
+    ).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Back to program' }));
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/program/mild');
+    expect(mockBack).not.toHaveBeenCalled();
+  });
+
+  it('still reopens a completed session from a direct URL', () => {
+    state.progress = [
+      {
+        technique: 'mild',
+        currentDay: 3,
+        completedExerciseIds: ['mild-01', 'mild-02'],
+      },
+    ];
+    mockRouteParams = { id: 'mild', program: 'mild', session: '1' };
+    render(<LucidSessionScreen />);
+
+    expect(screen.getByTestId('lucid-session-complete')).toBeTruthy();
+    expect(screen.queryByTestId('lucid-session-unavailable-back')).toBeNull();
   });
 });

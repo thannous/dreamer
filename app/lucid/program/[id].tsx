@@ -21,6 +21,7 @@ import {
   getLucidLocalDateKey,
   type LucidProgramCalendarStatus,
 } from '@/lib/lucid/calendar';
+import { evaluateLucidSessionAccess } from '@/lib/lucid/safety';
 import type { LucidTechnique } from '@/lib/lucid/model';
 import { closeLucidRoute } from '@/lib/lucid/routes';
 
@@ -125,10 +126,17 @@ export default function LucidProgramDetailScreen() {
 
       <LucidSectionHeader title={copy.plan} />
       {program.sessions.map((session) => {
-        const done = progress?.completedExerciseIds.includes(session.id) ?? false;
-        const locked = !done && session.session > (progress?.currentDay ?? 1);
+        const access = evaluateLucidSessionAccess({
+          sessionNumber: session.session,
+          sessionCount: program.sessions.length,
+          exerciseId: session.id,
+          progress,
+          calendarStatus: calendar.find((entry) => entry.session === session.session)?.status,
+        });
+        const done = access.reason === 'completed';
+        const locked = !access.allowed;
         return (
-          <LucidCard key={session.id} onPress={locked ? undefined : () => router.push(`/lucid/session/${id}/${session.session}`)} accessibilityLabel={session.title}>
+          <LucidCard key={session.id} onPress={locked ? undefined : () => router.push(`/lucid/session/${id}/${session.session}`)} accessibilityLabel={session.title} testID={`lucid-program-session-${session.session}`}>
             <View style={styles.sessionRow}>
               <View style={[styles.sessionNumber, { backgroundColor: done ? palette.cyanSoft : palette.surfaceRaised }]}>
                 {done ? <Ionicons name="checkmark" size={18} color={palette.cyan} /> : <Text style={[styles.sessionNumberText, { color: locked ? palette.textMuted : palette.text }]}>{session.session}</Text>}

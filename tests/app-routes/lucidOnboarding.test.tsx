@@ -296,12 +296,12 @@ describe('Lucid Trainer onboarding', () => {
       cloudSyncEnabled: true,
       noctaliaLinkEnabled: true,
     });
-    expect(mockReplace).toHaveBeenCalledWith('/lucid');
-    expect(mockCompleteOnboarding.mock.invocationCallOrder[0]).toBeLessThan(
-      mockUpdatePreferences.mock.invocationCallOrder[0]
-    );
+    expect(mockReplace).not.toHaveBeenCalled();
     expect(mockUpdatePreferences.mock.invocationCallOrder[0]).toBeLessThan(
-      mockReplace.mock.invocationCallOrder[0]
+      mockCompleteOnboarding.mock.invocationCallOrder[0]
+    );
+    expect(mockCompleteOnboarding.mock.invocationCallOrder[0]).toBeGreaterThan(
+      mockUpdatePreferences.mock.invocationCallOrder[0]
     );
   });
 
@@ -330,7 +330,7 @@ describe('Lucid Trainer onboarding', () => {
       cloudSyncEnabled: false,
       noctaliaLinkEnabled: false,
     });
-    expect(mockReplace).toHaveBeenCalledWith('/lucid');
+    expect(mockReplace).not.toHaveBeenCalled();
   });
 
   it('blocks an invalid sleep time and resumes once the value is corrected', () => {

@@ -56,6 +56,8 @@ const COPY = {
     nightsPerWeek: 'nights per week',
     reminders: 'Reality-check reminders',
     perDay: 'per day',
+    notifications: 'Training notifications',
+    notificationsBody: 'Master switch for Lucid reminders. Turning this off cancels every owned reminder without changing how many reality checks you want.',
     decrease: 'Decrease',
     increase: 'Increase',
     schedule: 'Sleep window',
@@ -118,6 +120,8 @@ const COPY = {
     nightsPerWeek: 'nuits par semaine',
     reminders: 'Rappels de tests de réalité',
     perDay: 'par jour',
+    notifications: 'Notifications d’entraînement',
+    notificationsBody: 'Interrupteur maître des rappels Lucid. Le désactiver annule tous les rappels possédés, sans changer le nombre de tests de réalité souhaités.',
     decrease: 'Diminuer',
     increase: 'Augmenter',
     schedule: 'Fenêtre de sommeil',
@@ -180,6 +184,8 @@ const COPY = {
     nightsPerWeek: 'noches por semana',
     reminders: 'Recordatorios de realidad',
     perDay: 'al día',
+    notifications: 'Notificaciones de entrenamiento',
+    notificationsBody: 'Interruptor maestro de los recordatorios de Lucid. Al desactivarlo se cancelan todos los recordatorios propios, sin cambiar cuántas pruebas de realidad quieres.',
     decrease: 'Reducir',
     increase: 'Aumentar',
     schedule: 'Horario de sueño',
@@ -242,6 +248,8 @@ const COPY = {
     nightsPerWeek: 'Nächte pro Woche',
     reminders: 'Realitätscheck-Erinnerungen',
     perDay: 'pro Tag',
+    notifications: 'Trainingsbenachrichtigungen',
+    notificationsBody: 'Hauptschalter für Lucid-Erinnerungen. Aus schaltet alle eigenen Erinnerungen ab, ohne die gewünschte Zahl der Realitätschecks zu ändern.',
     decrease: 'Verringern',
     increase: 'Erhöhen',
     schedule: 'Schlaffenster',
@@ -304,6 +312,8 @@ const COPY = {
     nightsPerWeek: 'notti a settimana',
     reminders: 'Promemoria test di realtà',
     perDay: 'al giorno',
+    notifications: 'Notifiche di training',
+    notificationsBody: 'Interruttore principale dei promemoria Lucid. Disattivarlo annulla tutti i promemoria posseduti, senza cambiare quanti test di realtà vuoi.',
     decrease: 'Riduci',
     increase: 'Aumenta',
     schedule: 'Finestra di sonno',
@@ -550,6 +560,15 @@ export default function LucidSettingsScreen() {
     );
   };
 
+  const changeNotificationsEnabled = (enabled: boolean) => {
+    if (enabled === state.preferences.notificationsEnabled) return;
+    if (enabled) {
+      router.push('/lucid/permissions' as never);
+      return;
+    }
+    void runSettingChange(() => updatePreferences({ notificationsEnabled: false }));
+  };
+
   const saveSchedule = () => {
     if (!scheduleIsValid) {
       setSettingStatus(null);
@@ -738,6 +757,14 @@ export default function LucidSettingsScreen() {
             />
           </View>
         </View>
+        <LucidToggleRow
+          title={copy.notifications}
+          description={copy.notificationsBody}
+          value={state.preferences.notificationsEnabled}
+          disabled={savingSetting}
+          onValueChange={changeNotificationsEnabled}
+          icon="notifications"
+        />
         <LucidToggleRow
           title={copy.sync}
           description={copy.syncBody}

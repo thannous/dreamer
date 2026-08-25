@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
@@ -20,7 +19,6 @@ import type {
   LucidPermissionState,
 } from '@/lib/lucid/model';
 import { isLucidLocalTime } from '@/lib/lucid/model';
-import { LUCID_HOME_HREF } from '@/lib/lucid/routes';
 import { reconcileLucidTrainerReminders } from '@/services/lucidTrainerNotifications';
 
 const STEP_COUNT = 7;
@@ -85,6 +83,7 @@ export default function LucidOnboardingScreen() {
     if (!goal || !experience) return;
     setSaving(true);
     try {
+      await updatePreferences({ cloudSyncEnabled, noctaliaLinkEnabled });
       await completeOnboarding({
         goal,
         experience,
@@ -102,8 +101,6 @@ export default function LucidOnboardingScreen() {
           screenReaderOptimized: initial.accessibility.screenReaderOptimized,
         },
       });
-      await updatePreferences({ cloudSyncEnabled, noctaliaLinkEnabled });
-      router.replace(LUCID_HOME_HREF);
     } finally {
       setSaving(false);
     }

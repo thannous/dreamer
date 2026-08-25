@@ -167,6 +167,8 @@ describe('Lucid Trainer settings', () => {
     mockUser = null;
     mockSyncStatus = 'local';
     mockLastSyncResult = null;
+    state.preferences.notificationsEnabled = true;
+    state.preferences.realityCheckRemindersPerDay = 3;
   });
 
   afterEach(cleanup);
@@ -200,6 +202,30 @@ describe('Lucid Trainer settings', () => {
         realityCheckRemindersPerDay: 4,
       });
     });
+  });
+
+  it('disables notifications immediately without changing reminder count', async () => {
+    render(<LucidSettingsScreen />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Training notifications' }));
+
+    await waitFor(() => {
+      expect(mockUpdatePreferences).toHaveBeenCalledWith({ notificationsEnabled: false });
+    });
+    expect(mockUpdatePreferences).not.toHaveBeenCalledWith(
+      expect.objectContaining({ realityCheckRemindersPerDay: expect.anything() }),
+    );
+    expect(mockPush).not.toHaveBeenCalled();
+  });
+
+  it('opens permissions when enabling notifications', () => {
+    state.preferences.notificationsEnabled = false;
+    render(<LucidSettingsScreen />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Training notifications' }));
+
+    expect(mockPush).toHaveBeenCalledWith('/lucid/permissions');
+    expect(mockUpdatePreferences).not.toHaveBeenCalled();
   });
 
   it('validates and persists the sleep window without changing the journal', async () => {

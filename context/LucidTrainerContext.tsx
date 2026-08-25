@@ -16,8 +16,11 @@ import { useAuth } from '@/context/AuthContext';
 import { trackProductEvent } from '@/lib/analytics';
 import { isLucidTrainer } from '@/lib/appVariant';
 import {
+  activateExclusiveLucidProgram,
+  applyLucidProgramProgress,
   applyLucidSyncEntity,
   createLucidProgramProgress,
+  diffLucidProgramProgress,
   getLucidSyncEntities,
   type LucidTrainerState,
 } from '@/lib/lucid/domain';
@@ -34,6 +37,7 @@ import type {
   LucidWeeklyReview,
 } from '@/lib/lucid/model';
 import { buildLucidReminderPlan } from '@/lib/lucid/reminders';
+import { evaluateLucidSessionAccess } from '@/lib/lucid/safety';
 import { setProductAnalyticsEnabled } from '@/lib/productAnalytics';
 import { reconcileLucidTrainerReminders } from '@/services/lucidTrainerNotifications';
 import {
@@ -97,7 +101,7 @@ export type LucidTrainerContextValue = {
   updateAnalyticsConsent: (enabled: boolean) => Promise<void>;
   updatePreferences: (patch: Partial<LucidTrainerPreferences>) => Promise<void>;
   startProgram: (technique: LucidTechnique) => Promise<void>;
-  completeProgramSession: (technique: LucidTechnique, exerciseId: string, sessionCount: number) => Promise<void>;
+  completeProgramSession: (technique: LucidTechnique, exerciseId: string, sessionNumber: number, sessionCount: number) => Promise<void>;
   pauseProgram: (technique: LucidTechnique) => Promise<void>;
   addExperiment: (input: ExperimentInput) => Promise<LucidExperiment>;
   addRealityCheck: (input: RealityCheckInput) => Promise<LucidRealityCheck>;
@@ -431,24 +435,28 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const startProgram = useCallback(
     async (technique: LucidTechnique) => {
       await commit((current, now) => {
-        const existing = current.progress.find((item) => item.technique === technique) ?? createLucidProgramProgress(technique, now);
-        const progress: LucidProgramProgress = {
-          ...existing,
-          status: 'active',
-          startedAt: existing.startedAt ?? now,
-          updatedAt: now,
+        const { next, changed } = activateExclusiveLucidProgram(current, technique, now);
+        return {
+          next,
+          changed: changed.map((progress) => entityForProgress(progress)),
         };
-        const next = applyLucidSyncEntity(current, entityForProgress(progress));
-        return { next, changed: [entityForProgress(progress)] };
       });
     },
     [commit]
   );
 
   const completeProgramSession = useCallback(
-    async (technique: LucidTechnique, exerciseId: string, sessionCount: number) => {
+    async (technique: LucidTechnique, exerciseId: string, sessionNumber: number, sessionCount: number) => {
       const next = await commit((current, now) => {
         const existing = current.progress.find((item) => item.technique === technique) ?? createLucidProgramProgress(technique, now);
+        const access = evaluateLucidSessionAccess({
+          sessionNumber,
+          sessionCount,
+          exerciseId,
+          progress: existing,
+        });
+        if (!access.allowed) throw new Error('Lucid session is locked');
+        const mutationUpdatedAt = Math.max(now, current.updatedAt, ...current.progress.map((item) => item.updatedAt)) + 1;
         const completedExerciseIds = [...new Set([...existing.completedExerciseIds, exerciseId])];
         const completed = completedExerciseIds.length >= sessionCount;
         const progress: LucidProgramProgress = {
@@ -459,10 +467,19 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
           practiceDates: [...new Set([...existing.practiceDates, localDateKey(now)])],
           startedAt: existing.startedAt ?? now,
           completedAt: completed ? now : null,
-          updatedAt: now,
+          updatedAt: mutationUpdatedAt,
         };
-        const next = applyLucidSyncEntity(current, entityForProgress(progress));
-        return { next, changed: [entityForProgress(progress)] };
+        const next = applyLucidProgramProgress(
+          current,
+          progress,
+          progress.status === 'active' ? technique : undefined
+        );
+        return {
+          next,
+          changed: diffLucidProgramProgress(current.progress, next.progress).map((item) =>
+            entityForProgress(item)
+          ),
+        };
       });
       if (next.onboarding.analyticsConsent === true) {
         await trackProductEvent('lucid_training_completed', {
@@ -480,8 +497,9 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     async (technique: LucidTechnique) => {
       await commit((current, now) => {
         const existing = current.progress.find((item) => item.technique === technique) ?? createLucidProgramProgress(technique, now);
-        const progress: LucidProgramProgress = { ...existing, status: 'paused', updatedAt: now };
-        const next = applyLucidSyncEntity(current, entityForProgress(progress));
+        const mutationUpdatedAt = Math.max(now, current.updatedAt, ...current.progress.map((item) => item.updatedAt)) + 1;
+        const progress: LucidProgramProgress = { ...existing, status: 'paused', updatedAt: mutationUpdatedAt };
+        const next = applyLucidProgramProgress(current, progress);
         return { next, changed: [entityForProgress(progress)] };
       });
     },

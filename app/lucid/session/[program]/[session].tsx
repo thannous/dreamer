@@ -7,15 +7,16 @@ import { LucidButton, LucidCard, LucidIconAction, LucidPill, LucidProgressBar, L
 import { getLucidPalette } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
+import { evaluateLucidSessionAccess } from '@/lib/lucid/safety';
 import type { LucidTechnique } from '@/lib/lucid/model';
 import { closeLucidRoute } from '@/lib/lucid/routes';
 
 const COPY = {
-  en: { guided: 'Guided practice', step: 'Step', reflect: 'Reflection', caution: 'Keep in mind', complete: 'Complete session', done: 'Session completed', invalid: 'Session unavailable' },
-  fr: { guided: 'Pratique guidée', step: 'Étape', reflect: 'Réflexion', caution: 'À garder en tête', complete: 'Terminer la séance', done: 'Séance terminée', invalid: 'Séance indisponible' },
-  es: { guided: 'Práctica guiada', step: 'Paso', reflect: 'Reflexión', caution: 'Ten en cuenta', complete: 'Completar sesión', done: 'Sesión completada', invalid: 'Sesión no disponible' },
-  de: { guided: 'Geführte Übung', step: 'Schritt', reflect: 'Reflexion', caution: 'Beachte', complete: 'Einheit abschließen', done: 'Einheit abgeschlossen', invalid: 'Einheit nicht verfügbar' },
-  it: { guided: 'Pratica guidata', step: 'Passaggio', reflect: 'Riflessione', caution: 'Da ricordare', complete: 'Completa sessione', done: 'Sessione completata', invalid: 'Sessione non disponibile' },
+  en: { guided: 'Guided practice', step: 'Step', reflect: 'Reflection', caution: 'Keep in mind', complete: 'Complete session', done: 'Session completed', invalid: 'Session unavailable', locked: 'This session opens after the previous one. The calendar is only a suggestion.', backToProgram: 'Back to program' },
+  fr: { guided: 'Pratique guidée', step: 'Étape', reflect: 'Réflexion', caution: 'À garder en tête', complete: 'Terminer la séance', done: 'Séance terminée', invalid: 'Séance indisponible', locked: "Cette séance s'ouvre après la précédente. Le calendrier n’est qu’une suggestion.", backToProgram: 'Retour au programme' },
+  es: { guided: 'Práctica guiada', step: 'Paso', reflect: 'Reflexión', caution: 'Ten en cuenta', complete: 'Completar sesión', done: 'Sesión completada', invalid: 'Sesión no disponible', locked: 'Esta sesión se abre después de la anterior. El calendario es solo una sugerencia.', backToProgram: 'Volver al programa' },
+  de: { guided: 'Geführte Übung', step: 'Schritt', reflect: 'Reflexion', caution: 'Beachte', complete: 'Einheit abschließen', done: 'Einheit abgeschlossen', invalid: 'Einheit nicht verfügbar', locked: 'Diese Einheit öffnet sich nach der vorherigen. Der Kalender ist nur ein Vorschlag.', backToProgram: 'Zurück zum Programm' },
+  it: { guided: 'Pratica guidata', step: 'Passaggio', reflect: 'Riflessione', caution: 'Da ricordare', complete: 'Completa sessione', done: 'Sessione completata', invalid: 'Sessione non disponibile', locked: 'Questa sessione si apre dopo la precedente. Il calendario è solo un suggerimento.', backToProgram: 'Torna al programma' },
 } as const;
 
 function isTechnique(value: string | string[] | undefined): value is LucidTechnique {
@@ -36,19 +37,34 @@ export default function LucidSessionScreen() {
   const valid = isTechnique(params.program) && Number.isInteger(sessionNumber) && sessionNumber >= 1 && sessionNumber <= content.programs[params.program].sessions.length;
   const program = valid && isTechnique(params.program) ? content.programs[params.program] : null;
   const session = program?.sessions[sessionNumber - 1];
-  const alreadyDone = !!session && state!.progress.find((item) => item.technique === params.program)?.completedExerciseIds.includes(session.id);
+  const programProgress = valid && isTechnique(params.program)
+    ? state!.progress.find((item) => item.technique === params.program)
+    : undefined;
+  const access = evaluateLucidSessionAccess({
+    sessionNumber,
+    sessionCount: program?.sessions.length ?? 0,
+    exerciseId: session?.id,
+    progress: programProgress,
+  });
+  const alreadyDone = access.reason === 'completed';
   const [checked, setChecked] = useState<boolean[]>(() => session?.steps.map(() => false) ?? []);
   const [saving, setSaving] = useState(false);
   const progress = useMemo(() => checked.length ? checked.filter(Boolean).length / checked.length : 0, [checked]);
   const close = () => closeLucidRoute(router, sessionFallback(params.program));
 
-  if (!program || !session || !isTechnique(params.program)) {
+  if (!program || !session || !isTechnique(params.program) || !access.allowed) {
+    const locked = access.reason === 'sequential_lock';
     return (
       <LucidScreen
         title={copy.invalid}
+        subtitle={locked ? copy.locked : undefined}
         trailing={<LucidIconAction label={content.chrome.common.back} icon="close" onPress={close} />}
       >
-        <LucidButton label={content.chrome.common.back} onPress={close} />
+        <LucidButton
+          label={locked ? copy.backToProgram : content.chrome.common.back}
+          onPress={close}
+          testID="lucid-session-unavailable-back"
+        />
       </LucidScreen>
     );
   }
@@ -57,7 +73,7 @@ export default function LucidSessionScreen() {
   const finish = async () => {
     setSaving(true);
     try {
-      await completeProgramSession(technique, session.id, program.sessions.length);
+      await completeProgramSession(technique, session.id, session.session, program.sessions.length);
       Alert.alert(copy.done, session.reflectionPrompt, [{ text: content.chrome.common.done, onPress: close }]);
     } finally { setSaving(false); }
   };
