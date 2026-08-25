@@ -5,7 +5,9 @@
 - Statut : **EN COURS D’EXÉCUTION — MANDAT ET COMPTES CONFIRMÉS**.
 - Canaux d'extension mandatés : YouTube Shorts, Facebook Reels et Pinterest.
 - Communautés préparées sous gate distincte : DreamViews, puis Reddit.
-- Snapchat : **BLOQUÉ** jusqu'à validation de deux formats gagnants.
+- Snapchat : **OPEN-PENDING-ACCOUNT** — porte levée le 24 août 2026 par
+  override propriétaire ; aucun compte live, aucune publication tant que le
+  handle et la session n'existent pas.
 
 ## Objectif
 
@@ -26,7 +28,9 @@ Objectifs opérationnels à J30 :
 3. documenter toutes les URL publiques et les mesures à 24 heures et 7 jours ;
 4. identifier deux formats capables de franchir la règle de victoire décrite
    dans [`04-METRICS-AND-SNAPCHAT-GATE.md`](./04-METRICS-AND-SNAPCHAT-GATE.md) ;
-5. ne lancer Snapchat que si la porte de décision est réellement franchie.
+5. ne publier sur Snapchat qu'après création du compte, inscription au mandat
+   avec une URL publique réelle et vérification de session (porte qualitative
+   levée le 24 août 2026 ; le compte n'existe pas encore).
 
 ## Politique de rattrapage d'archives
 
@@ -200,5 +204,7 @@ journée ne dépende pas d'une liste de fichiers maintenue manuellement.
 
 Le programme est terminé lorsque les 30 journées sont documentées, que chaque
 statut correspond à une preuve réelle, que les mesures J7 disponibles ont été
-relevées et qu'une décision explicite est inscrite : `OUVRIR SNAPCHAT`,
-`PROLONGER LE TEST` ou `NE PAS OUVRIR SNAPCHAT`.
+relevées et qu'une décision explicite est inscrite. Le 24 août 2026, le
+propriétaire a levé la porte qualitative Snapchat (`OPEN-PENDING-ACCOUNT`) ;
+cette décision ne crée pas de compte, n'autorise aucune publication Spotlight
+et ne remplace pas la classification J30 des formats A et B.
