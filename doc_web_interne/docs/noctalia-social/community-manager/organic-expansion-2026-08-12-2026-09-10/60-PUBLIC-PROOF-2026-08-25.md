@@ -10,8 +10,8 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | C1 | TikTok `@noctaliadreams` | 15:30 | `SUNSET_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672917900054777110) ouvert public |
 | C1 | Instagram `@noctaliadreams` | 15:45 | `SUNSET_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcdyfPzptHe/) ouvert après Share ; capturé `https://www.instagram.com/noctaliadreams/p/DcdyfPzptHe/` |
 | C1 | X `@NoctaliaDreams` | 16:15 | `SUNSET_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PROGRAMMÉ** | À vérifier après 16:15 |
-| C2 | TikTok `@noctaliadreams` | 19:30 | `AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PROGRAMMÉ** | À vérifier après 19:30 |
-| C2 | Instagram `@noctaliadreams` | 19:45 | `AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PRÊT — DIRECT** | À publier puis vérifier après 19:45 |
+| C2 | TikTok `@noctaliadreams` | 19:30 | `AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672917947765083414) ouvert public, sans badge Scheduled |
+| C2 | Instagram `@noctaliadreams` | 19:45 | `AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DceNs3MJh4W/) ouvert après Share ; capturé `https://www.instagram.com/noctaliadreams/p/DceNs3MJh4W/` |
 | C2 | X `@NoctaliaDreams` | 20:15 | `AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PROGRAMMÉ** | À vérifier après 20:15 |
 | C3 | TikTok `@noctaliadreams` | 22:30 | `NIGHT_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PROGRAMMÉ** | À vérifier après 22:30 |
 | C3 | Instagram `@noctaliadreams` | 22:45 | `NIGHT_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PRÊT — DIRECT** | À publier puis vérifier après 22:45 |
@@ -33,9 +33,9 @@ Pour chaque ligne : attendre l'heure, vérifier le compte, le master exact, le
 hook et l'absence de doublon, puis ouvrir l'URL publique. En l'absence d'URL,
 conserver le statut préparatoire et ne jamais republier par supposition.
 
-- Principal : `2/9` vérifiées (TikTok C1, Instagram C1 ; X C1 reste sans permalink).
+- Principal : `4/9` vérifiées (TikTok C1+C2, Instagram C1+C2 ; X C1 et X C2 restent sans permalink).
 - Hero secondaire : `0/3` avant vérification publique.
-- Total : `2/12` vérifiées ; C2/C3 et heroes restent préparatoires ; aucune URL X inventée.
+- Total : `4/12` vérifiées ; C3 et heroes restent préparatoires ; aucune URL X inventée.
 
 ## Contrôle du 25/08 — C1
 
@@ -57,5 +57,27 @@ Label IA natif activé. Partage unique après anti-doublon.
 
 X C1 reste **PROGRAMMÉ**, à vérifier. Aucun status ID inventé. C2 et
 C3 restent **PROGRAMMÉ** / **PRÊT — DIRECT**. Heroes Pinterest 17:30,
+YouTube 18:00 et Facebook 18:15 restent inchangés.
+
+## Contrôle du 25/08 — C2
+
+Vérifié le 25 août 2026, Europe/Paris. TikTok C2 est **PUBLIÉ** : ouvert
+public, sans badge Scheduled —
+`https://www.tiktok.com/@noctaliadreams/video/7672917947765083414`. Master
+`AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4`, SHA-256
+`4aea7e1bb610e2b701d11c1509fe0167d744985059c31fa733630663c3c9d308`.
+Légende exacte
+`Afterglow turns the sky into a road. Where would it lead? #Noctalia #Dreamscape #SurrealDreams` ;
+le label IA généré est activé.
+
+Instagram C2 est **PUBLIÉ**, ouvert après Share :
+`https://www.instagram.com/noctaliadreams/p/DceNs3MJh4W/` (aussi
+`https://www.instagram.com/noctaliadreams/reel/DceNs3MJh4W/`). Légende exacte
+de la fiche
+`Afterglow turns the sky into a road. Where would it lead? #Noctalia #Dreamscape #SurrealDreams`.
+Label IA natif activé. Partage unique après anti-doublon.
+
+X C1 et X C2 restent **PROGRAMMÉ**, à vérifier. Aucun status ID inventé.
+C3 reste **PROGRAMMÉ** / **PRÊT — DIRECT**. Heroes Pinterest 17:30,
 YouTube 18:00 et Facebook 18:15 restent inchangés.
 
