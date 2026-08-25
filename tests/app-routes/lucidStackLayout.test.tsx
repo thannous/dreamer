@@ -34,8 +34,9 @@ jest.mock('expo-router', () => {
     children?: React.ReactNode;
   }) {
     const names = React.Children.toArray(children).flatMap((child: unknown) => {
-      if (!React.isValidElement(child)) return [];
-      const name = (child.props as { name?: string }).name;
+      if (!React.isValidElement<{ name?: string }>(child)) return [];
+      const element = child as React.ReactElement<{ name?: string }>;
+      const name = element.props.name;
       return name ? [name] : [];
     });
     capturedGuards.push({ guard, names });
