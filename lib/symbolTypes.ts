@@ -26,6 +26,7 @@ export interface DreamSymbol {
   es: LocalizedSymbolContent;
   de: LocalizedSymbolContent;
   it: LocalizedSymbolContent;
+  pt: LocalizedSymbolContent;
   relatedSymbols: string[];
   relatedArticles: Record<string, string>;
 }
@@ -46,6 +47,7 @@ export interface ExtendedSymbolData {
   es?: ExtendedSymbolContent;
   de?: ExtendedSymbolContent;
   it?: ExtendedSymbolContent;
+  pt?: ExtendedSymbolContent;
 }
 
 export interface SymbolCategoryInfo {
@@ -54,6 +56,7 @@ export interface SymbolCategoryInfo {
   es: string;
   de: string;
   it: string;
+  pt: string;
 }
 
 export interface SymbolsDataFile {
@@ -67,4 +70,9 @@ export interface ExtendedSymbolsDataFile {
   symbols: Record<string, ExtendedSymbolData>;
 }
 
-export type SymbolLanguage = 'en' | 'fr' | 'es' | 'de' | 'it';
+/**
+ * Languages the in-app dictionary ships content for. Wider than the site's
+ * `symbols` collection (en/fr/es/de/it): pt-BR is bundled in the app but not
+ * published as symbol pages on noctalia.app.
+ */
+export type SymbolLanguage = 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt';

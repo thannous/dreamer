@@ -81,6 +81,22 @@ const DREAM_GUIDE_COPY: Record<DreamGuideLanguage, DreamGuideUiCopy> = {
     symbolCount: (count) => `${count} simboli`,
     notFound: 'Guida non trovata',
   },
+  pt: {
+    screenTitle: 'Guias de sonhos',
+    screenSubtitle: 'Entenda seus sonhos, melhore a lembrança e explore os temas e símbolos essenciais da Noctalia.',
+    dictionaryTitle: 'Dicionário de símbolos',
+    dictionaryBody: 'Procurando uma imagem específica? Explore os 150 símbolos, seus significados, variações e perguntas de reflexão.',
+    dictionaryCta: 'Abrir o dicionário',
+    guideLabel: 'Guia de sonhos',
+    practicalLabel: 'Guias práticos',
+    symbolGuidesLabel: 'Guias de símbolos',
+    essentialsHeading: 'O essencial',
+    symbolsHeading: 'Símbolos deste guia',
+    conclusionHeading: 'Tenha em mente',
+    readingTime: (minutes) => `${minutes} min de leitura`,
+    symbolCount: (count) => `${count} símbolos`,
+    notFound: 'Guia não encontrado',
+  },
 };
 
 export function getDreamGuideCopy(language: DreamGuideLanguage): DreamGuideUiCopy {

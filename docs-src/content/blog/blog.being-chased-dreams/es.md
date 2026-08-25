@@ -188,7 +188,7 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="copy"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Tu mismo</h3>
+<h3 class="font-serif text-lg text-dream-cream">Tú mismo</h3>
 </div>
 <p class="text-sm text-gray-300">
                         Ser perseguido por ti mismo o tu doble sugiere <strong>conflicto interno</strong> - partes de tu personalidad o elecciones pasadas de las que estás tratando de escapar.
@@ -269,7 +269,7 @@
 <p>
                     La pesadilla clasica - intentas correr pero tus piernas no funcionan, o te mueves en camara lenta. Esto refleja <strong>sentirte impotente o atascado</strong> en una situación de la vida consciente. Quieres escapar pero te sientes incapaz.
                 </p>
-<h3>Esconderse con exito</h3>
+<h3>Esconderse con éxito</h3>
 <p>
                     Si encuentras un escondite y evades a tu perseguidor, esto sugiere que tienes <strong>mecanismos de afrontamiento que funcionan</strong>. Sin embargo, también puede indicar evitación prolongada en lugar de resolución.
                 </p>

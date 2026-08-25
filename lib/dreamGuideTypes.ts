@@ -33,6 +33,7 @@ interface LocalizedDreamGuideFields<TContent extends LocalizedDreamGuideContent>
   es: TContent;
   de: TContent;
   it: TContent;
+  pt: TContent;
 }
 
 export interface SymbolDreamGuide

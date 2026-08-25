@@ -99,21 +99,21 @@
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="quest-ce-que">Qu'est-ce que l'incubation de reves et comment ca fonctionne</h2>
+<h2 id="quest-ce-que">Qu'est-ce que l'incubation de rêves et comment ça fonctionne</h2>
 <p>L'incubation de rêves est une pratique d’attention : avant de dormir, vous choisissez une question, un sujet ou une image, puis vous notez au réveil ce dont vous vous souvenez. Le thème peut réapparaître directement, par association, ou ne pas apparaître du tout.</p>
 <p>Contrairement au <a class="text-dream-salmon hover:underline" href="guide-reve-lucide-debutant">rêve lucide</a>, l’objectif n’est pas de devenir conscient pendant le rêve. Vous préparez simplement un sujet avant le coucher et comparez ensuite votre intention au récit réellement mémorisé.</p>
 <p>Pensez-y comme une expérience personnelle à documenter : formulez une intention simple, protégez votre temps de sommeil, puis consignez aussi bien les correspondances que les écarts et les nuits sans souvenir.</p>
-<h2 id="histoire">Histoire de l'incubation onirique : des temples antiques a la science</h2>
+<h2 id="histoire">Histoire de l'incubation onirique : des temples antiques à la science</h2>
 <p>L'incubation de rêves n'est pas une invention new-age - c'est l'une des plus anciennes pratiques spirituelles de l'humanité.</p>
-<h3>Incubation de reves dans la Grece antique</h3>
+<h3>Incubation de rêves dans la Grèce antique</h3>
 <p>Les Grecs ont construit plus de 300 <strong>"Asclépiéia"</strong> - des temples dédiés aux rêves de guérison. Les pèlerins malades subissaient des rituels de purification, faisaient des offrandes, puis dormaient dans des chambres sacrées espérant des visions de guérison d'Asclépios, le dieu de la médecine. Nombre d'entre eux rapportaient des guérisons.</p>
-<h3>Pratiques oniriques en Egypte ancienne</h3>
+<h3>Pratiques oniriques en Égypte ancienne</h3>
 <p>Les Égyptiens pratiquaient le sommeil "Sérapéum" - passant des nuits dans des temples pour recevoir des messages divins par les rêves. Les <strong>interprètes de rêves</strong> occupaient des positions importantes dans la société, et plusieurs pharaons prenaient des décisions majeures basées sur des rêves incubés.</p>
-<h3>Reves sacres dans les cultures autochtones</h3>
+<h3>Rêves sacrés dans les cultures autochtones</h3>
 <p>Des quêtes de vision amérindiennes aux pratiques aborigènes du temps du rêve, le <strong>rêve intentionnel</strong> apparaît dans pratiquement toutes les cultures autochtones. Ces traditions comprenaient quelque chose que la science moderne ne fait que confirmer.</p>
 <h3>Recherches contemporaines sur l'incubation de rêves</h3>
 <p>Des travaux expérimentaux ont étudié la présence, dans les rêves rapportés, d’un thème préparé avant le sommeil. Ils suggèrent que l’intention peut parfois influencer le contenu mémorisé, sans permettre de prévoir un rêve précis ni de garantir une solution.</p>
-<h2 id="comment-ca-marche">Comment le cerveau repond a l'incubation de reves</h2>
+<h2 id="comment-ca-marche">Comment le cerveau répond à l'incubation de rêves</h2>
 <p>Pourquoi se concentrer sur quelque chose avant de dormir influence-t-il vos rêves ? Plusieurs mécanismes sont en jeu :</p>
 </div>
 <!-- Mechanism Cards -->
@@ -193,7 +193,7 @@
 <div class="flex gap-4">
 <div class="step-number">5</div>
 <div>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Noter ses reves au reveil</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Noter ses rêves au réveil</h3>
 <p class="text-sm text-gray-300">Gardez un journal ou Noctalia près du lit. À votre prochain réveil naturel, notez rapidement le rêve, même sous forme de fragments, sans interrompre volontairement votre nuit.</p>
 </div>
 </div>
@@ -236,17 +236,17 @@
 <p>Vous pouvez penser à une compétence avant de dormir et noter si elle apparaît dans le rêve. Cette expérience ne remplace ni l’entraînement réel, ni le repos, ni les conseils d’un professionnel.</p>
 <h2 id="conseils">Conseils pratiques pour tester l'incubation de rêves</h2>
 <p>Ces repères rendent l’expérience plus facile à documenter et limitent les conclusions hâtives :</p>
-<h3>Horaire de sommeil regulier pour mieux rever</h3>
+<h3>Horaire de sommeil régulier pour mieux rêver</h3>
 <p><strong>Des patterns de sommeil réguliers renforcent le rappel des rêves</strong>. Couchez-vous et réveillez-vous à des heures constantes. Vos cycles REM - quand les rêves les plus vifs se produisent - deviennent plus prévisibles et accessibles.</p>
 <h3>Ne pas modifier sa santé pour obtenir un rêve</h3>
 <p>L’alcool, le cannabis, les médicaments et d’autres substances peuvent modifier le sommeil et le rappel. N’en commencez, n’en arrêtez ou n’en changez aucune pour cette pratique sans l’avis d’un professionnel de santé.</p>
-<h3>Objet-ancrage pour influencer le contenu des reves</h3>
+<h3>Objet-ancrage pour influencer le contenu des rêves</h3>
 <p>Placez un objet lié à votre intention près du journal. Ce rappel physique sert surtout à vous souvenir de noter le thème avant le coucher et le récit au réveil.</p>
-<h3>Technique WBTB pour l'incubation de reves</h3>
+<h3>Technique WBTB pour l'incubation de rêves</h3>
 <p>WBTB interrompt volontairement le sommeil. Si vous l’essayez, faites-le seulement lorsque cela ne réduit pas le repos dont vous avez besoin, restez éveillé brièvement (5 à 20 minutes) et arrêtez si votre sommeil ou votre vigilance en journée se dégrade. Évitez cette méthode en cas d’insomnie ou de dette de sommeil.</p>
-<h3>Perseverance : combien de temps pour incuber un reve</h3>
+<h3>Persévérance : combien de temps pour incuber un rêve</h3>
 <p>Il n’existe pas de délai garanti. Essayez quelques nuits sans pression, notez les correspondances, les écarts et les absences de souvenir, puis décidez si cette routine vous apporte quelque chose.</p>
-<h3>Decoder le symbolisme des reves incubes</h3>
+<h3>Décoder le symbolisme des rêves incubés</h3>
 <p>Une image peut vous rappeler plusieurs expériences. Commencez par décrire la scène et l’émotion, puis demandez-vous à quoi elles font penser dans votre contexte personnel sans leur attribuer un sens universel.</p>
 <p>Le journal sert ici de garde-fou : il vous aide à distinguer ce qui a réellement été rêvé de l’interprétation ajoutée après coup.</p>
 </div>
