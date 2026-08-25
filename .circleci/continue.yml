@@ -1,0 +1,438 @@
+version: 2.1
+
+parameters:
+  pipeline_kind:
+    type: enum
+    enum:
+      - affected
+      - full
+    default: affected
+  diff_base:
+    type: string
+    default: ""
+  run_noctalia:
+    type: boolean
+    default: false
+  run_meditation:
+    type: boolean
+    default: false
+  run_site:
+    type: boolean
+    default: false
+  run_edge_functions:
+    type: boolean
+    default: false
+  run_edge_contracts:
+    type: boolean
+    default: false
+  run_changed_tests:
+    type: boolean
+    default: false
+  run_full_tests:
+    type: boolean
+    default: false
+  require_timing_baseline:
+    type: boolean
+    default: false
+  publish_timing_baseline:
+    type: boolean
+    default: false
+  save_site_npm_cache:
+    type: boolean
+    default: false
+  save_edge_contracts_npm_cache:
+    type: boolean
+    default: false
+
+executors:
+  node:
+    docker:
+      - image: cimg/node:24.19.0
+    resource_class: medium
+    environment:
+      NPM_CONFIG_CACHE: /home/circleci/.npm
+
+  base:
+    docker:
+      - image: cimg/base:stable
+    resource_class: small
+
+commands:
+  install-root-dependencies:
+    parameters:
+      save_cache:
+        type: boolean
+        default: true
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - npm-node24-v1-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install root dependencies
+          command: npm ci
+      - when:
+          condition: << parameters.save_cache >>
+          steps:
+            - save_cache:
+                key: npm-node24-v1-{{ checksum "package-lock.json" }}
+                paths:
+                  - /home/circleci/.npm
+
+  install-meditation-dependencies:
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - meditation-npm-node24-v1-{{ checksum "apps/meditation/package-lock.json" }}
+      - run:
+          name: Install Meditation dependencies
+          working_directory: apps/meditation
+          command: npm ci
+      - save_cache:
+          key: meditation-npm-node24-v1-{{ checksum "apps/meditation/package-lock.json" }}
+          paths:
+            - /home/circleci/.npm
+
+jobs:
+  noctalia-quality:
+    executor: node
+    parameters:
+      run_changed_tests:
+        type: boolean
+        default: false
+      run_full_tests:
+        type: boolean
+        default: false
+      diff_base:
+        type: string
+        default: ""
+      require_timing_baseline:
+        type: boolean
+        default: false
+      publish_timing_baseline:
+        type: boolean
+        default: false
+    steps:
+      - install-root-dependencies
+      - run:
+          name: Typecheck Noctalia application
+          command: npm run typecheck:app
+      - run:
+          name: Typecheck Noctalia tests
+          command: npm run typecheck:tests
+      - run:
+          name: Lint Noctalia and root tooling
+          command: npm run lint
+      - run:
+          name: Enforce warning-free active scripts
+          command: npm run lint:scripts
+      - when:
+          condition: << parameters.run_changed_tests >>
+          steps:
+            - run:
+                name: Test Noctalia files changed since the diff base
+                environment:
+                  JEST_CHANGED_SINCE: << parameters.diff_base >>
+                  JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
+                  JEST_JUNIT_OUTPUT_DIR: artifacts/test-results
+                  JEST_JUNIT_OUTPUT_NAME: jest.xml
+                command: |
+                  set -euo pipefail
+                  if ! git cat-file -e "${JEST_CHANGED_SINCE}^{commit}" 2>/dev/null; then
+                    git fetch --no-tags origin "$JEST_CHANGED_SINCE"
+                  fi
+                  mkdir -p artifacts/test-results
+                  npm run test:changed -- \
+                    --json \
+                    --outputFile=artifacts/jest-results.json \
+                    --reporters=default \
+                    --reporters=jest-junit
+            - store_artifacts:
+                path: artifacts/jest-results.json
+                destination: noctalia-jest-timing/jest-results.json
+            - store_test_results:
+                path: artifacts/test-results
+            - store_artifacts:
+                path: artifacts/test-results
+                destination: test-results/noctalia
+      - when:
+          condition: << parameters.run_full_tests >>
+          steps:
+            - when:
+                condition: << parameters.require_timing_baseline >>
+                steps:
+                  - restore_cache:
+                      keys:
+                        - jest-timing-master-v1-
+            - run:
+                name: Run full Noctalia Jest suite and capture timing JSON
+                environment:
+                  JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
+                  JEST_JUNIT_OUTPUT_DIR: artifacts/test-results
+                  JEST_JUNIT_OUTPUT_NAME: jest.xml
+                command: |
+                  mkdir -p artifacts/test-results
+                  npm run test:fast -- \
+                    --json \
+                    --outputFile=artifacts/jest-results.json \
+                    --reporters=default \
+                    --reporters=jest-junit
+            - run:
+                name: Enforce the 20% duration budget or bootstrap the baseline
+                when: always
+                command: |
+                  if [[ -f artifacts/jest-results.json ]]; then
+                    node ./scripts/check-jest-duration-regression.js --allow-missing-baseline
+                  fi
+            - when:
+                condition: << parameters.publish_timing_baseline >>
+                steps:
+                  - run:
+                      name: Prepare successful master timing baseline
+                      command: |
+                        mkdir -p artifacts/baseline
+                        cp artifacts/jest-results.json artifacts/baseline/jest-results.json
+                  - save_cache:
+                      key: jest-timing-master-v1-{{ epoch }}
+                      paths:
+                        - artifacts/baseline/jest-results.json
+            - store_artifacts:
+                path: artifacts/jest-results.json
+                destination: noctalia-jest-timing/jest-results.json
+            - store_test_results:
+                path: artifacts/test-results
+            - store_artifacts:
+                path: artifacts/test-results
+                destination: test-results/noctalia
+
+  meditation-quality:
+    executor: node
+    steps:
+      - install-meditation-dependencies
+      - run:
+          name: Typecheck Meditation application
+          working_directory: apps/meditation
+          command: npm run typecheck
+      - run:
+          name: Lint Meditation application
+          working_directory: apps/meditation
+          command: npm run lint
+      - run:
+          name: Test Meditation application with timing and JUnit
+          working_directory: apps/meditation
+          environment:
+            JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
+            JEST_JUNIT_OUTPUT_DIR: ../../artifacts/meditation/test-results
+            JEST_JUNIT_OUTPUT_NAME: jest.xml
+          command: |
+            mkdir -p ../../artifacts/meditation/test-results
+            npm test -- \
+              --ci \
+              --json \
+              --outputFile=../../artifacts/meditation/jest-results.json \
+              --reporters=default \
+              --reporters=jest-junit
+      - store_artifacts:
+          path: artifacts/meditation/jest-results.json
+          destination: meditation-jest-timing/jest-results.json
+      - store_test_results:
+          path: artifacts/meditation/test-results
+      - store_artifacts:
+          path: artifacts/meditation/test-results
+          destination: test-results/meditation
+
+  site-build:
+    executor: node
+    parameters:
+      diff_base:
+        type: string
+        default: ""
+      save_npm_cache:
+        type: boolean
+        default: false
+    steps:
+      - install-root-dependencies:
+          save_cache: << parameters.save_npm_cache >>
+      - run:
+          name: Build site
+          command: npm run docs:build
+          no_output_timeout: 30m
+      - run:
+          name: Check site
+          command: npm run docs:check
+          no_output_timeout: 30m
+      - run:
+          name: Test site tooling changed since the diff base
+          environment:
+            JEST_CHANGED_SINCE: << parameters.diff_base >>
+          command: |
+            set -euo pipefail
+            if [[ -n "$JEST_CHANGED_SINCE" ]] && \
+              ! git cat-file -e "${JEST_CHANGED_SINCE}^{commit}" 2>/dev/null; then
+              git fetch --no-tags origin "$JEST_CHANGED_SINCE"
+            fi
+            npm run test:changed -- --runInBand
+
+  edge-functions:
+    executor: node
+    environment:
+      DENO_DIR: /home/circleci/.cache/deno
+      DENO_INSTALL: /home/circleci/.deno
+    steps:
+      - install-root-dependencies:
+          save_cache: false
+      - restore_cache:
+          keys:
+            - deno-2.7.14-v2-{{ checksum "supabase/functions/deno.lock" }}
+      - run:
+          name: Install Deno 2.7.14 when not cached
+          command: |
+            if [[ ! -x "$DENO_INSTALL/bin/deno" ]]; then
+              curl -fsSL https://deno.land/install.sh | sh -s v2.7.14
+            fi
+            echo 'export PATH="$DENO_INSTALL/bin:$PATH"' >> "$BASH_ENV"
+            "$DENO_INSTALL/bin/deno" --version
+      - run:
+          name: Lint Edge Functions
+          command: npx expo lint supabase/functions
+      - run:
+          name: Check Edge Function entrypoints
+          working_directory: supabase/functions
+          command: |
+            deno check --frozen \
+              api/index.ts \
+              analysis-job-worker/index.ts \
+              image-job-worker/index.ts \
+              revenuecat-webhook/index.ts
+      - run:
+          name: Test Edge Functions
+          working_directory: supabase/functions
+          command: |
+            mkdir -p ../../artifacts/test-results
+            deno test \
+              --frozen \
+              --allow-env \
+              --junit-path=../../artifacts/test-results/deno.xml \
+              api \
+              revenuecat-webhook
+      - save_cache:
+          key: deno-2.7.14-v2-{{ checksum "supabase/functions/deno.lock" }}
+          paths:
+            - /home/circleci/.cache/deno
+            - /home/circleci/.deno
+      - store_test_results:
+          path: artifacts/test-results
+      - store_artifacts:
+          path: artifacts/test-results
+          destination: test-results/edge
+
+  edge-contracts:
+    executor: node
+    parameters:
+      save_npm_cache:
+        type: boolean
+        default: false
+    steps:
+      - install-root-dependencies:
+          save_cache: << parameters.save_npm_cache >>
+      - run:
+          name: Test static Supabase and Edge contracts
+          environment:
+            JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
+            JEST_JUNIT_OUTPUT_DIR: artifacts/edge-contracts/test-results
+            JEST_JUNIT_OUTPUT_NAME: jest.xml
+          command: |
+            mkdir -p artifacts/edge-contracts/test-results
+            npm run test:file -- \
+              scripts/analysis-idempotency-migration.test.js \
+              scripts/check-db-contract.test.js \
+              scripts/dream-images-auth-user-policy-migration.test.js \
+              scripts/guest-chat-route-contract.test.js \
+              scripts/guest-qa-passport-migration.test.js \
+              scripts/interpretation-entitlement-migration.test.js \
+              scripts/product-analytics-migration.test.js \
+              scripts/product-analytics-schema-parity.test.js \
+              --json \
+              --outputFile=artifacts/edge-contracts/jest-results.json \
+              --reporters=default \
+              --reporters=jest-junit
+      - store_artifacts:
+          path: artifacts/edge-contracts/jest-results.json
+          destination: edge-contract-timing/jest-results.json
+      - store_test_results:
+          path: artifacts/edge-contracts/test-results
+      - store_artifacts:
+          path: artifacts/edge-contracts/test-results
+          destination: test-results/edge-contracts
+
+  nothing-to-run:
+    executor: base
+    steps:
+      - run:
+          name: Confirm path-only no-op
+          command: echo "No Noctalia, Meditation, site, Edge, or database contract checks are needed."
+
+workflows:
+  noctalia:
+    when: << pipeline.parameters.run_noctalia >>
+    jobs:
+      - noctalia-quality:
+          run_changed_tests: << pipeline.parameters.run_changed_tests >>
+          run_full_tests: << pipeline.parameters.run_full_tests >>
+          diff_base: << pipeline.parameters.diff_base >>
+          require_timing_baseline: << pipeline.parameters.require_timing_baseline >>
+          publish_timing_baseline: << pipeline.parameters.publish_timing_baseline >>
+          filters:
+            tags:
+              only: /.*/
+
+  meditation:
+    when: << pipeline.parameters.run_meditation >>
+    jobs:
+      - meditation-quality:
+          filters:
+            tags:
+              only: /.*/
+
+  site:
+    when: << pipeline.parameters.run_site >>
+    jobs:
+      - site-build:
+          diff_base: << pipeline.parameters.diff_base >>
+          save_npm_cache: << pipeline.parameters.save_site_npm_cache >>
+          filters:
+            tags:
+              only: /.*/
+
+  edge-functions:
+    when: << pipeline.parameters.run_edge_functions >>
+    jobs:
+      - edge-functions:
+          filters:
+            tags:
+              only: /.*/
+
+  edge-contracts:
+    when: << pipeline.parameters.run_edge_contracts >>
+    jobs:
+      - edge-contracts:
+          save_npm_cache: << pipeline.parameters.save_edge_contracts_npm_cache >>
+          filters:
+            tags:
+              only: /.*/
+
+  no-op:
+    when:
+      not:
+        or:
+          - << pipeline.parameters.run_noctalia >>
+          - << pipeline.parameters.run_meditation >>
+          - << pipeline.parameters.run_site >>
+          - << pipeline.parameters.run_edge_functions >>
+          - << pipeline.parameters.run_edge_contracts >>
+    jobs:
+      - nothing-to-run:
+          filters:
+            tags:
+              only: /.*/
