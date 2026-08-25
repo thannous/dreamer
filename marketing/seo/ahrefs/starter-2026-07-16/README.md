@@ -284,3 +284,20 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
   23 août à 16:45 depuis `contact@noctalia.app`; aucune réponse ni mise à jour
   publique n'est visible à J40. Aucun doublon n'est envoyé.
 - Détails et protocole de mesure : `j40-execution-2026-08-24.md`.
+
+## Actualisation J41 au 25 août 2026 — preuves « precognitive dreams »
+
+- L'URL EN existante `/en/blog/precognitive-dreams-science` concentre
+  `20 238` impressions, `4` clics et une position moyenne de `7,8` sur
+  28 jours complets au 23 août. Le CTR calculé est `0,0198 %`.
+- Le lot local remplace les anecdotes et théories spéculatives non étayées par
+  trois études primaires : résultat positif limité en ligne, absence d'effet
+  dans le laboratoire suivant et mécanismes mesurés de rappel sélectif.
+- Title, H1, description, données sociales, JSON-LD, quick answer, FAQ et CTA
+  sont alignés sur une promesse prudente : une trace horodatée réduit le recul,
+  elle ne prouve pas la précognition.
+- Route, canonical, hreflang et sitemap restent inchangés. Aucune nouvelle
+  page, aucun crédit Ahrefs général, aucune demande d'indexation et aucune
+  mutation des expériences ou des 50 suivis.
+- Détails et plan de mesure :
+  `j41-precognitive-evidence-refresh-2026-08-25.md`.
