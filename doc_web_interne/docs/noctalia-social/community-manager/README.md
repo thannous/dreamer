@@ -43,6 +43,10 @@ dans la plateforme native.
 - piloter la diffusion principale de trois vidéos distinctes par jour sur
   TikTok, Instagram et X, puis la vidéo hero quotidienne sur YouTube Shorts,
   Facebook Reels et Pinterest ;
+- sur X `@NoctaliaDreams` uniquement : exécuter le protocole de croissance
+  (réponses, 1 texte/jour, légendes X) décrit dans
+  [`x-growth/X-GROWTH-PROTOCOL.md`](./x-growth/X-GROWTH-PROTOCOL.md), sans
+  annuler la file vidéo déjà programmée ;
 - résorber progressivement le retard des plateformes d'extension avec une file
   `ARCHIVE` séparée, limitée à une ancienne vidéo supplémentaire par jour et
   strictement contrôlée par plateforme ;

@@ -83,6 +83,19 @@ describe('social public proof guard', () => {
       .toEqual({ rows: 12, urls: 12 });
   });
 
+  it('accepts an explicitly acknowledged publication failure only when enabled', () => {
+    const failed = register({ published: true }).replace(
+      '| C1 | Instagram `@noctaliadreams` | 15:45 | `asset-C1.mp4` | **PUBLIÉ** | [URL](https://www.instagram.com/noctaliadreams/reel/main1/) |',
+      '| C1 | Instagram `@noctaliadreams` | 15:45 | `asset-C1.mp4` | **ÉCHEC — NON PUBLIÉ** | À vérifier |',
+    );
+    expect(() => validatePublicProof(failed, { requirePublished: true }))
+      .toThrow('statut PUBLIÉ manquant');
+    expect(validatePublicProof(failed, {
+      requirePublished: true,
+      allowAcknowledgedFailures: true,
+    })).toEqual({ rows: 12, urls: 11, acknowledgedFailures: 1 });
+  });
+
   it('rejects closure when public URLs are missing', () => {
     expect(() => validatePublicProof(register(), { requirePublished: true }))
       .toThrow('statut PUBLIÉ manquant');

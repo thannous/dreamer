@@ -159,13 +159,19 @@ function validateProofDirectory(
 
   let rows = 0;
   let urls = 0;
+  let acknowledgedFailures = 0;
   let closed = 0;
   let open = 0;
   for (const file of files) {
     const date = registerDate(file);
     const requirePublished = date < today && date <= campaignEnd;
     const content = fs.readFileSync(path.join(directory, file), 'utf8');
-    const result = validatePublicProof(content, { requirePublished });
+    const result = validatePublicProof(content, {
+      requirePublished,
+      // A past row may be explicitly acknowledged as ÉCHEC — NON PUBLIÉ.
+      // That closes the checkpoint without inventing a public URL.
+      allowAcknowledgedFailures: requirePublished,
+    });
     if (expectedAssetsByDate.has(date)) {
       const actualAssets = proofPrimaryAssets(content);
       for (const [slot, expectedAsset] of expectedAssetsByDate.get(date)) {
@@ -196,10 +202,13 @@ function validateProofDirectory(
     }
     rows += result.rows;
     urls += result.urls;
+    acknowledgedFailures += result.acknowledgedFailures || 0;
     if (requirePublished) closed += 1;
     else open += 1;
   }
-  return { files: files.length, rows, urls, closed, open };
+  const result = { files: files.length, rows, urls, closed, open };
+  if (acknowledgedFailures > 0) result.acknowledgedFailures = acknowledgedFailures;
+  return result;
 }
 
 function parseArguments(argv) {
@@ -235,7 +244,10 @@ function main(argv = process.argv.slice(2)) {
   );
   process.stdout.write(
     `Social proof registers valid: ${result.files} registre(s), ${result.closed} clos, ` +
-    `${result.open} ouvert(s), ${result.rows} ligne(s), ${result.urls} URL publique(s).\n`,
+    `${result.open} ouvert(s), ${result.rows} ligne(s), ${result.urls} URL publique(s)` +
+    (result.acknowledgedFailures
+      ? `, ${result.acknowledgedFailures} échec(s) explicitement signalé(s)`
+      : '') + '.\n',
   );
 }
 

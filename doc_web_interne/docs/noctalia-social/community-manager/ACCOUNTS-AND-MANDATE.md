@@ -91,9 +91,30 @@ Dans le respect de la voix de marque, du calendrier et des statuts éditoriaux :
 - renseigner les URL publiques, métriques à 24 heures et à 7 jours, puis les
   apprentissages dans le registre Markdown.
 
+### Autorisation X du 20 août 2026 — croissance organique
+
+Le propriétaire a chargé un agent d'améliorer la portée de `@NoctaliaDreams`.
+Dans ce cadre, et **uniquement** sur ce compte, sont autorisés sans nouvelle
+validation individuelle :
+
+- réponses publiques sortantes, utiles, sans lien produit, sans diagnostic
+  médical et sans interprétation universelle, au plus 8 par jour, espacées
+  d'au moins 25 minutes (voir protocole X) ;
+- un post texte original par jour, sans lien dans le corps, sans hashtag
+  empilé ;
+- adaptation native des légendes X **non encore publiées** (retrait des
+  hashtags surnuméraires), sans toucher TikTok / Instagram ;
+- le journal et le protocole dans `x-growth/`.
+
+Restent interdits sans autorisation spécifique : annulation des vidéos déjà
+programmées, boost payant, changement de bio, suppression de posts. Le
+protocole opérationnel est
+[`x-growth/X-GROWTH-PROTOCOL.md`](./x-growth/X-GROWTH-PROTOCOL.md).
+
 Ces actions sont autorisées sur les six comptes listés, sans nouvelle validation
 publication par publication, tant que le contenu, l'asset, la date et le compte
-correspondent exactement au calendrier validé.
+correspondent exactement au calendrier validé. Le volet X ci-dessus s'ajoute à
+ce calendrier, il ne le remplace pas.
 
 ## Actions restant soumises à une autorisation spécifique
 

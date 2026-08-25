@@ -66,6 +66,10 @@ function isPublishedStatus(cell) {
   return !/(?:ÉCHEC|NON\s+PUBLIÉ)/iu.test(cell) && /PUBLI(?:É|ÉE)/iu.test(cell);
 }
 
+function isAcknowledgedFailureStatus(cell) {
+  return /ÉCHEC/iu.test(cell) && /NON\s+PUBLIÉ/iu.test(cell);
+}
+
 function assetFromCell(cell) {
   const match = cell.match(/`([^`]+\.mp4)`/u);
   return match ? path.basename(match[1]) : '';
@@ -117,12 +121,14 @@ function parseArguments(argv) {
 
 function validatePublicProof(content, options = {}) {
   const requirePublished = Boolean(options.requirePublished);
+  const allowAcknowledgedFailures = Boolean(options.allowAcknowledgedFailures);
   const rows = parseTableRows(content);
   if (rows.length !== 12) {
     throw new Error(`12 lignes de preuve attendues, ${rows.length} trouvées.`);
   }
 
   const urls = [];
+  let acknowledgedFailures = 0;
   const primaryAssets = new Map();
   const heroAsset = declaredHeroAsset(content);
   if (!heroAsset) throw new Error('Asset MP4 du hero secondaire non déclaré.');
@@ -160,6 +166,8 @@ function validatePublicProof(content, options = {}) {
 
     const url = urlFromCell(proofCell);
     const published = isPublishedStatus(statusCell);
+    const acknowledgedFailure = isAcknowledgedFailureStatus(statusCell);
+    if (acknowledgedFailure) acknowledgedFailures += 1;
     if (/\bPUBLIC\b/iu.test(statusCell) && !published) {
       throw new Error(
         `Ligne ${index + 1}: statut PUBLIC ambigu sans preuve PUBLIÉ pour ${expectedPlatform}.`,
@@ -171,10 +179,10 @@ function validatePublicProof(content, options = {}) {
     if (published && !url) {
       throw new Error(`Ligne ${index + 1}: statut PUBLIÉ sans URL publique HTTPS pour ${expectedPlatform}.`);
     }
-    if (requirePublished && !isPublishedStatus(statusCell)) {
+    if (requirePublished && !published && !(allowAcknowledgedFailures && acknowledgedFailure)) {
       throw new Error(`Ligne ${index + 1}: statut PUBLIÉ manquant pour ${expectedPlatform}.`);
     }
-    if (requirePublished && !url) {
+    if (requirePublished && !url && !(allowAcknowledgedFailures && acknowledgedFailure)) {
       throw new Error(`Ligne ${index + 1}: URL publique HTTPS manquante pour ${expectedPlatform}.`);
     }
     if (url && !hostMatchesPlatform(url, expectedPlatform)) {
@@ -194,11 +202,13 @@ function validatePublicProof(content, options = {}) {
   if (primaryAssets.get('C1') !== heroAsset) {
     throw new Error('Le hero secondaire doit reprendre exactement le master MP4 du créneau C1.');
   }
-  if (requirePublished && urls.length !== 12) {
+  if (requirePublished && !allowAcknowledgedFailures && urls.length !== 12) {
     throw new Error(`12 URL publiques attendues, ${urls.length} trouvées.`);
   }
 
-  return { rows: rows.length, urls: urls.length };
+  const result = { rows: rows.length, urls: urls.length };
+  if (acknowledgedFailures > 0) result.acknowledgedFailures = acknowledgedFailures;
+  return result;
 }
 
 function main(argv = process.argv.slice(2)) {
@@ -236,6 +246,7 @@ module.exports = {
   declaredHeroAsset,
   hostMatchesPlatform,
   isPublishedStatus,
+  isAcknowledgedFailureStatus,
   parseArguments,
   parseTableRows,
   urlMatchesAccount,
