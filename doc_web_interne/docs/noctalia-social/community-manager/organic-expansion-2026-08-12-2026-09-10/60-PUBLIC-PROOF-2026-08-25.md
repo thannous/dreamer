@@ -8,7 +8,7 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | Créneau | Plateforme et compte | Heure | Asset exact | État préparatoire | URL publique vérifiée |
 |---|---|---:|---|---|---|
 | C1 | TikTok `@noctaliadreams` | 15:30 | `SUNSET_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672917900054777110) ouvert public |
-| C1 | Instagram `@noctaliadreams` | 15:45 | `SUNSET_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/reel/DcdyfPzptHe/) ouvert après Share ; capturé `https://www.instagram.com/p/DcdyfPzptHe/` |
+| C1 | Instagram `@noctaliadreams` | 15:45 | `SUNSET_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcdyfPzptHe/) ouvert après Share ; capturé `https://www.instagram.com/noctaliadreams/p/DcdyfPzptHe/` |
 | C1 | X `@NoctaliaDreams` | 16:15 | `SUNSET_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PROGRAMMÉ** | À vérifier après 16:15 |
 | C2 | TikTok `@noctaliadreams` | 19:30 | `AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PROGRAMMÉ** | À vérifier après 19:30 |
 | C2 | Instagram `@noctaliadreams` | 19:45 | `AFTERGLOW_AETHERPUNK_CELESTIAL_FLOATING_02.mp4` | **PRÊT — DIRECT** | À publier puis vérifier après 19:45 |
@@ -49,8 +49,8 @@ La légende commence par
 le badge IA généré est activé.
 
 Instagram C1 est **PUBLIÉ**, ouvert après Share :
-`https://www.instagram.com/p/DcdyfPzptHe/` (aussi
-`https://www.instagram.com/reel/DcdyfPzptHe/`). Légende exacte
+`https://www.instagram.com/noctaliadreams/p/DcdyfPzptHe/` (aussi
+`https://www.instagram.com/noctaliadreams/reel/DcdyfPzptHe/`). Légende exacte
 de la fiche
 `At sunset, a city blooms above the clouds. Would you cross the bridge? #Noctalia #Dreamscape #SurrealDreams`.
 Label IA natif activé. Partage unique après anti-doublon.
