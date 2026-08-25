@@ -1,0 +1,25 @@
+# The chosen world must remain the visual context when a listener enters a
+# session and then the player. The route anchors make this portable across all
+# six locales; the dedicated trainer artwork is covered by the Jest regression
+# test in tests/worlds/SessionWorldContinuity.test.tsx.
+appId: com.noctalia.meditation
+---
+- runFlow: onboarding.yml
+
+- tapOn:
+    id: 'home.world-switcher.forest'
+- assertVisible:
+    id: 'home.journey.cta'
+- tapOn:
+    id: 'home.journey.cta'
+- assertVisible:
+    id: 'screen.session'
+
+- tapOn:
+    id: 'btn.session.play'
+- assertVisible:
+    id: 'screen.player'
+- assertVisible:
+    id: 'btn.player.close'
+- assertVisible:
+    id: 'btn.player.toggle'

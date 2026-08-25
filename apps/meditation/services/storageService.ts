@@ -13,6 +13,8 @@ export const StorageKey = {
   streak: `${PREFIX}streak`,
   theme: `${PREFIX}theme`,
   language: `${PREFIX}language`,
+  world: `${PREFIX}world`,
+  purchasedWorlds: `${PREFIX}purchased-worlds`,
   reminders: `${PREFIX}reminders`,
   playerPrefs: `${PREFIX}player-prefs`,
 } as const;

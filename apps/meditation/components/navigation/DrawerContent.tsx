@@ -7,10 +7,11 @@ import React from 'react';
 import { Pressable, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ScopedTheme } from 'uniwind';
 
 import { IconSymbol, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
-import { useTheme } from '@/context/ThemeContext';
+import { useChromeTheme } from '@/hooks/useChromeTheme';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import type { TranslationKey } from '@/lib/i18n';
 
@@ -38,7 +39,7 @@ function DrawerLink({
   label: string;
   onNavigate: (href: string) => void;
 }) {
-  const { colors } = useTheme();
+  const { colors } = useChromeTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
 
   return (
@@ -65,7 +66,7 @@ function DrawerLink({
  */
 export function DrawerContent({ navigation }: DrawerContentComponentProps) {
   const { t } = useTranslation();
-  const { mode, colors } = useTheme();
+  const { mode, colors } = useChromeTheme();
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
@@ -86,22 +87,26 @@ export function DrawerContent({ navigation }: DrawerContentComponentProps) {
         paddingTop: insets.top + 24,
         paddingBottom: insets.bottom + 16,
       }}>
-      <View className="gap-2 px-5 pb-6">
-        <Text variant="overline">{t('welcome.tagline')}</Text>
-        <Rule className="self-start" />
-      </View>
+      <ScopedTheme theme={mode}>
+        <View className="flex-1">
+          <View className="gap-2 px-5 pb-6">
+            <Text variant="overline">{t('welcome.tagline')}</Text>
+            <Rule className="self-start" />
+          </View>
 
-      <View className="gap-1 px-2">
-        {LINKS.map((link) => (
-          <DrawerLink
-            key={link.href}
-            href={link.href}
-            icon={link.icon}
-            label={t(link.label as TranslationKey)}
-            onNavigate={go}
-          />
-        ))}
-      </View>
+          <View className="gap-1 px-2">
+            {LINKS.map((link) => (
+              <DrawerLink
+                key={link.href}
+                href={link.href}
+                icon={link.icon}
+                label={t(link.label as TranslationKey)}
+                onNavigate={go}
+              />
+            ))}
+          </View>
+        </View>
+      </ScopedTheme>
     </BlurView>
   );
 }

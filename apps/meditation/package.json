@@ -30,6 +30,7 @@
     "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/drawer": "^7.13.9",
+    "@shopify/react-native-skia": "2.6.2",
     "expo": "~57.0.15",
     "expo-asset": "~57.0.13",
     "expo-audio": "~57.0.4",

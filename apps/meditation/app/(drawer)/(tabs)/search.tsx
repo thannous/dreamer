@@ -1,13 +1,14 @@
 import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { EmptyIllustration } from '@/components/atmosphere/EmptyIllustration';
-import { Screen } from '@/components/atmosphere/Screen';
-import { SessionArtwork } from '@/components/session/SessionArtwork';
 import { SessionCard } from '@/components/session/SessionCard';
-import { Chip, Rule, Text, TextField } from '@/components/ui';
+import { ArtworkGlassPanel, Chip, Rule, Text, TextField } from '@/components/ui';
+import { WorldScene } from '@/components/worlds/WorldScene';
+import { getCategoryArtwork } from '@/constants/catalogArtwork';
+import { Atmosphere, Themes, type ThemeMode } from '@/constants/theme';
 import { CATEGORIES } from '@/content/categories';
 import { SESSIONS } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
@@ -17,12 +18,22 @@ import { usePressMotion } from '@/hooks/usePressMotion';
 import type { TranslationKey } from '@/lib/i18n';
 import { searchSessions } from '@/lib/library';
 import type { Category } from '@/lib/types';
+import { useCompactLayout } from '@/hooks/useCompactLayout';
+import { useWorld } from '@/context/WorldContext';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const LENGTHS = [5, 10, 15] as const;
 
-function CategoryTile({ category }: { category: Category }) {
+function CategoryTile({
+  category,
+  compact,
+  appearance,
+}: {
+  category: Category;
+  compact: boolean;
+  appearance: ThemeMode;
+}) {
   const router = useRouter();
   const { t } = useTranslation();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
@@ -35,14 +46,17 @@ function CategoryTile({ category }: { category: Category }) {
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       style={style}
-      className="w-[48%]">
-      <SessionArtwork accent={category.accent} className="min-h-24 justify-end">
-        <View className="p-3">
-          <Text variant="h3" numberOfLines={1}>
-            {t(`category.${category.slug}.name` as TranslationKey)}
-          </Text>
-        </View>
-      </SessionArtwork>
+      className="w-[48%] rounded-xl">
+      <ArtworkGlassPanel
+        appearance={appearance}
+        artwork={getCategoryArtwork(category.slug, appearance)}
+        contentStyle={compact ? styles.compactCategory : styles.category}
+        style={{ borderLeftColor: category.accent[0], borderLeftWidth: 3 }}
+        testID={`search.category-glass.${category.slug}`}>
+        <Text variant="h3" numberOfLines={1}>
+          {t(`category.${category.slug}.name` as TranslationKey)}
+        </Text>
+      </ArtworkGlassPanel>
     </AnimatedPressable>
   );
 }
@@ -52,6 +66,9 @@ export default function SearchTab() {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [maxLength, setMaxLength] = useState<number | null>(null);
+  const compact = useCompactLayout();
+  const { world } = useWorld();
+  const worldColors = Themes[world.appearance];
 
   const results = useMemo(() => {
     const byLength = maxLength
@@ -72,15 +89,19 @@ export default function SearchTab() {
         : t('search.results', { count: results.length });
 
   return (
-    <Screen variant="subtle" edges={['top']}>
+    <WorldScene
+      world={world}
+      artwork="journey"
+      edges={['top']}
+      scrimStrength={1.12}>
       <ScrollView
         testID={TID.Screen.Search}
-        contentContainerClassName="px-gutter pt-4 gap-6"
+        contentContainerClassName={compact ? 'gap-4 px-4 pt-3' : 'gap-6 px-gutter pt-4'}
         contentContainerStyle={{ paddingBottom: tabBarInset }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
         <View className="gap-3">
-          <Text variant="h1">{t('search.title')}</Text>
+          <Text variant={compact ? 'h2' : 'h1'}>{t('search.title')}</Text>
           <Rule className="self-start" />
         </View>
 
@@ -88,6 +109,7 @@ export default function SearchTab() {
           label={t('search.title')}
           hideLabel
           icon="magnifyingglass"
+          appearance={world.appearance}
           value={query}
           onChangeText={setQuery}
           placeholder={t('search.placeholder')}
@@ -112,11 +134,16 @@ export default function SearchTab() {
         </View>
 
         {!isFiltered ? (
-          <View className="gap-3">
+          <View className={compact ? 'gap-2' : 'gap-3'}>
             <Text variant="h2">{t('search.categories')}</Text>
-            <View className="flex-row flex-wrap justify-between gap-3">
+            <View className={`flex-row flex-wrap justify-between ${compact ? 'gap-2' : 'gap-3'}`}>
               {CATEGORIES.map((category) => (
-                <CategoryTile key={category.slug} category={category} />
+                <CategoryTile
+                  key={category.slug}
+                  category={category}
+                  compact={compact}
+                  appearance={world.appearance}
+                />
               ))}
             </View>
           </View>
@@ -127,20 +154,28 @@ export default function SearchTab() {
           <Rule className="self-start" />
 
           {results.length === 0 ? (
-            <View className="items-center gap-2 py-8">
-              <EmptyIllustration name="search" />
+            <ArtworkGlassPanel
+              appearance={world.appearance}
+              contentStyle={styles.emptyState}
+              testID="search.empty-glass">
+              <EmptyIllustration
+                name="search"
+                lineColor={worldColors.accentText}
+                dustColor={Atmosphere[world.appearance].star}
+              />
               <Text variant="h3" className="text-center">
                 {t('search.empty.title')}
               </Text>
               <Text variant="bodySm" className="text-center">
                 {t('search.empty.subtitle')}
               </Text>
-            </View>
+            </ArtworkGlassPanel>
           ) : (
             results.map((session) => (
               <SessionCard
                 key={session.id}
                 session={session}
+                appearance={world.appearance}
                 testID={
                   session.id === 'sleep-descent' ? TID.Option.SearchSleepDescent : undefined
                 }
@@ -149,6 +184,25 @@ export default function SearchTab() {
           )}
         </View>
       </ScrollView>
-    </Screen>
+    </WorldScene>
   );
 }
+
+const styles = StyleSheet.create({
+  compactCategory: {
+    minHeight: 80,
+    justifyContent: 'flex-end',
+    padding: 12,
+  },
+  category: {
+    minHeight: 96,
+    justifyContent: 'flex-end',
+    padding: 12,
+  },
+  emptyState: {
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 32,
+  },
+});

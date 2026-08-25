@@ -1,7 +1,8 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { MiniPlayerHeight, TabBar } from '@/constants/layout';
+import { CompactTabBar, MiniPlayerHeight, TabBar } from '@/constants/layout';
 import { usePlayer } from '@/context/PlayerContext';
+import { useCompactLayout } from '@/hooks/useCompactLayout';
 
 /**
  * Bottom padding a tab screen's scroll view needs so its last row clears the
@@ -13,8 +14,10 @@ import { usePlayer } from '@/context/PlayerContext';
 export function useTabBarInset(): number {
   const insets = useSafeAreaInsets();
   const { session } = usePlayer();
+  const compact = useCompactLayout();
+  const tabBar = compact ? CompactTabBar : TabBar;
 
   return (
-    TabBar.height + TabBar.margin * 2 + insets.bottom + (session ? MiniPlayerHeight : 0)
+    tabBar.height + tabBar.margin * 2 + insets.bottom + (session ? MiniPlayerHeight : 0)
   );
 }

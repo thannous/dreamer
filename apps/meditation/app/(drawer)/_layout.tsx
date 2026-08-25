@@ -2,7 +2,7 @@ import { Drawer } from 'expo-router/drawer';
 import React from 'react';
 
 import { DrawerContent } from '@/components/navigation/DrawerContent';
-import { useTheme } from '@/context/ThemeContext';
+import { useChromeTheme } from '@/hooks/useChromeTheme';
 
 /**
  * A drawer wrapped around the tabs.
@@ -16,7 +16,7 @@ import { useTheme } from '@/context/ThemeContext';
  * drawer is a way in, not a reason to move screens.
  */
 export default function DrawerLayout() {
-  const { mode } = useTheme();
+  const { mode } = useChromeTheme();
 
   return (
     <Drawer

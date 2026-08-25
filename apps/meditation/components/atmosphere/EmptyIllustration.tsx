@@ -9,6 +9,8 @@ export type EmptyIllustrationName = 'saved' | 'search' | 'practice' | 'offline';
 type Props = {
   name: EmptyIllustrationName;
   size?: number;
+  lineColor?: string;
+  dustColor?: string;
 };
 
 /**
@@ -22,17 +24,17 @@ type Props = {
  * Each one shows an absence, never a failure: an orbit with nothing on it, a
  * lens over empty sky. Nobody needs to be told off for not having practised.
  */
-export function EmptyIllustration({ name, size = 132 }: Props) {
+export function EmptyIllustration({ name, size = 132, lineColor, dustColor }: Props) {
   const { colors, atmosphere } = useTheme();
 
   const line = {
-    stroke: colors.accentText,
+    stroke: lineColor ?? colors.accentText,
     strokeWidth: 1.4,
     strokeLinecap: 'round' as const,
     fill: 'none',
   };
   const faint = { ...line, opacity: 0.45 };
-  const dust = atmosphere.star;
+  const dust = dustColor ?? atmosphere.star;
 
   return (
     <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">

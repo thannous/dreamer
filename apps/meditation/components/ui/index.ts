@@ -1,5 +1,6 @@
 export { IconSymbol } from './icon-symbol';
 export { BackLink } from './BackLink';
+export { ArtworkGlassPanel } from './ArtworkGlassPanel';
 export { Button, type ButtonSize, type ButtonVariant } from './Button';
 export { Card } from './Card';
 export { Chip } from './Chip';

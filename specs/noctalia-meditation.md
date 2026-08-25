@@ -111,7 +111,7 @@ apps/meditation/
 │   ├── atmosphere/                   # NightBackground, StarField, GlowOrb, AuroraVeil
 │   ├── ui/                           # Button, Card, GlassCard, Chip, Sheet, Slider, Toggle…
 │   ├── home/                         # TodayCard, QuickSessionRow, StreakBadge, GreetingHeader
-│   ├── session/                      # SessionCard, SessionList, NarratorBlock, BenefitList
+│   ├── session/                      # SessionCard, SessionList, BenefitList
 │   ├── player/                       # PlayerArtwork, PlayerControls, ProgressScrubber, TimerSheet
 │   ├── breathe/                      # BreathRing, BreathPhaseLabel, PatternCard, BreathTimer
 │   ├── profile/                      # StatTile, StreakCalendar, AvatarPicker
@@ -123,14 +123,14 @@ apps/meditation/
 ├── content/
 │   ├── sessions.ts                   # catalogue statique typé
 │   ├── categories.ts
-│   ├── narrators.ts
+│   ├── worldSounds.ts                # personnalité sonore locale des 6 univers
 │   └── breathing.ts                  # 4 patterns
 ├── context/                          # ThemeProvider, AuthProvider, PlayerProvider,
 │                                     # SubscriptionProvider, LanguageProvider, LibraryProvider
 ├── hooks/                            # useAudioPlayer, useBreathEngine, useStreak,
 │                                     # useFavorites, useSessionProgress, useTranslation
 ├── lib/                              # env.ts, storage.ts, i18n/, analytics.ts, types.ts, format.ts
-├── services/                         # audioService, mediaService, storageService,
+├── services/                         # audioService, storageService,
 │                                     # purchaseService, notificationService (+ mocks/)
 ├── assets/
 │   ├── audio/sessions/               # pistes .m4a
@@ -162,11 +162,11 @@ La galerie de Zen compte 23 captures, dont 4 variantes en thème sombre : **19 �
 | 5 | *(ajout Noctalia, remplace rien)* rappel | `/(onboarding)/reminder` | Opt-in notification + heure. **Note :** si l'on veut rester strictement à 23 écrans, cette étape est fusionnée dans l'écran 4. Recommandation : la garder séparée (cf. §20 Q1) |
 | 6 | Sign in (Apple / Google / email) | `/(auth)/sign-in` | Construit mais **désactivé en v1.0** par `EXPO_PUBLIC_ACCOUNTS_ENABLED=false` (cf. §10) |
 | 7 | Saisie email | `/(auth)/email` | Idem : construit, inaccessible dans les builds store v1.0 |
-| 8 | Home — pratique du jour | `/(drawer)/(tabs)/index` | Salutation contextuelle, `TodayCard`, reprise en cours, sessions rapides (5/10/15 min), bandeau série |
+| 8 | Home — parcours immersif | `/(drawer)/(tabs)/index` | Salutation contextuelle, progression hebdomadaire, carrousel de 6 mondes (3 gratuits / 3 Plus), pratique recommandée et rail « À suivre » |
 | 9 | Breathe — patterns | `/(drawer)/(tabs)/breathe` | 4 cartes : Apaisant · Carré · 4-7-8 · Cohérence cardiaque |
-| 10 | Search — catégories + bibliothèque | `/(drawer)/(tabs)/search` | Champ de recherche, grille de catégories, liste complète filtrable (durée, narrateur, thème) |
+| 10 | Search — catégories + bibliothèque | `/(drawer)/(tabs)/search` | Champ de recherche, grille de catégories, liste complète filtrable (durée, thème) |
 | 11 | Profile — statistiques | `/(drawer)/(tabs)/profile` | Série en cours / record, sessions, minutes totales, calendrier de pratique, accès Favoris & Réglages |
-| 12 | Session detail | `/session/[id]` | Artwork, titre, durée, narrateur, description, liste de bénéfices, CTA lecture, favori, badge Plus |
+| 12 | Session detail | `/session/[id]` | Artwork, titre, durée, univers sonore, description, liste de bénéfices, CTA lecture, favori, badge Plus |
 | 13 | Full-screen player | `/player/[id]` | Artwork dégradé animé, scrubber, ±15 s, play/pause, vitesse, minuteur de fondu, AirPlay/Cast (iOS), fond vidéo optionnel |
 | 14 | Breathing exercise animé | `/breathe/[pattern]` | Anneau respiratoire animé, phase (Inspire/Retiens/Expire/Pause), compte à rebours, haptique, ambiance sonore |
 | 15 | Category — ex. Sommeil | `/category/[slug]` | En-tête illustré + liste des sessions de la catégorie |
@@ -185,12 +185,13 @@ La galerie de Zen compte 23 captures, dont 4 variantes en thème sombre : **19 �
 ### 4.1 Détail des écrans clés
 
 **`/(drawer)/(tabs)/index` — Accueil**
-- En-tête : salutation dépendant de l'heure (« Bonsoir » après 18 h), date, `StreakBadge`.
-- `TodayCard` : session recommandée du jour (déterministe par `hash(userId + date)` sur le catalogue, filtrée par les objectifs d'onboarding), artwork plein largeur, durée, CTA « Commencer ».
-- Section « Reprendre » : visible seulement si une session a une progression 5 % < p < 95 %.
-- Section « Sessions rapides » : chips 5 / 10 / 15 min → liste horizontale.
-- Section « Respirer » : raccourci vers le pattern préféré.
-- Section « Pour ce soir » : sessions de la catégorie Sommeil.
+- En-tête : salutation dépendant de l'heure (« Bonsoir » après 18 h) et description du monde actif.
+- Progression hebdomadaire placée avant le choix du parcours.
+- Carrousel horizontal manuel de six mondes immersifs : **Constellation**, **Aube intérieure** et **Forêt intérieure** sont gratuits ; **Marée profonde**, **Sanctuaire lunaire** et **Temple des nuages** demandent Noctalia Plus.
+- La carte sélectionnée s'agrandit et porte le CTA de la pratique. Un monde Plus reste prévisualisable par tous ; pour une personne non abonnée, son CTA devient « Déverrouiller ce monde » et ouvre le paywall.
+- Aucun autoplay. Le changement de monde produit uniquement un retour de sélection bref, respecte Réduire les animations et conserve le souffle global comme signature.
+- Le badge Premium décrit l'accès au **monde**, jamais le statut de la séance recommandée.
+- Rail « À suivre » séparé : il contient les prochaines séances, pas les mondes.
 
 **`/player/[id]` — Lecteur**
 - Artwork : dégradé Noctalia animé (Reanimated, cycle de 12 s) + halo or, ou fond vidéo si la session en déclare un.
@@ -355,17 +356,13 @@ export type MeditationSession = {
   titleKey: string;            // clé i18n
   descriptionKey: string;
   categorySlug: SessionCategorySlug;
-  narratorId: string;
   durationSec: number;
-  audio: AudioSource;          // require(...) local en v1
   artwork: ImageSource;
   videoBackground?: VideoSource;
   benefitKeys: string[];       // 3 à 5 puces
   isPremium: boolean;
   accent: [string, string];    // dégradé d'artwork
 };
-
-export type Narrator = { id: string; name: string; bioKey: string; avatar: ImageSource };
 
 export type BreathingPatternId = 'calm' | 'box' | 'four-seven-eight' | 'coherent';
 export type BreathingPattern = {
@@ -395,7 +392,7 @@ Clés AsyncStorage (préfixe `@noctalia-med/`) : `profile`, `onboarding`, `favor
 
 - **6 catégories** : Sommeil, Stress, Concentration, Anxiété, Gratitude, Préparation au rêve (la dernière est le pont éditorial avec Noctalia).
 - **24 sessions** (4 par catégorie), durées 3 / 5 / 10 / 20 min. **8 gratuites** (au moins une par catégorie sauf « Préparation au rêve »), 16 réservées à Noctalia Plus.
-- **3 narrateurs** (voix féminine, voix masculine, voix neutre/instrumentale).
+- **6 personnalités sonores**, une par univers, composées localement à partir de pluie, océan, bruit brun et d'un signal de premier souffle. Aucune parole en v1.
 - **4 patterns de respiration** :
   | Pattern | Cycle |
   |---|---|
@@ -414,34 +411,30 @@ Le catalogue est **statique et typé** (`content/sessions.ts`) en v1 — comme Z
 ### 8.1 Lecture
 
 - `services/audioService.ts` encapsule `expo-audio` ; interface unique consommée par `PlayerProvider`.
-- Un seul lecteur « session » + un lecteur « ambiance » superposable (volume indépendant).
+- Un lecteur de parcours calé sur la durée de séance + une texture secondaire optionnelle selon l'univers.
 - Mode audio : `playsInSilentMode: true`, `shouldPlayInBackground: true`, ducking désactivé.
 - iOS : `UIBackgroundModes: ["audio"]`. Android : service de premier plan + notification média.
 - Reprise : la position est écrite toutes les 5 s et à chaque pause dans `progress`.
 - Mini-player : composant persistant rendu dans `(drawer)/(tabs)/_layout.tsx`, masqué sur `/player/[id]`.
-- **Mode mock** (`EXPO_PUBLIC_MOCK_MODE=true`) : `services/mocks/audioServiceMock.ts` simule la progression sans fichier audio, pour l'E2E et le dev sans assets. Même convention que Noctalia : module conditionnel + `*Real` + `mocks/*Mock`, jamais d'import direct de l'implémentation.
+- **Mode mock applicatif** (`EXPO_PUBLIC_MOCK_MODE=true`) : les achats et données sont simulés, mais les sons locaux restent réels pour les revues produit. `EXPO_PUBLIC_MOCK_AUDIO=true` est le seul opt-in qui simule la progression sans fichier audio.
 
-### 8.2 Budget de taille — pourquoi tout embarquer est impossible
+### 8.2 Budget audio local
 
-Référence mesurée sur les boucles Noctalia existantes : 1,5 Mo pour 5 min, soit ~40 kbps / **0,3 Mo par minute**. À 48 kbps mono (suffisant pour de la voix) :
+Référence mesurée sur les boucles Noctalia existantes : 1,5 Mo pour 5 min, soit ~40 kbps / **0,3 Mo par minute** :
 
 | Poste | Volume |
 |---|---|
-| 24 sessions × ~10 min | **~86 Mo** |
-| 3 ambiances × 5 min | 4,5 Mo |
-| 24 artworks WebP 1080² | ~3 Mo |
-| 3–4 fonds vidéo | ~24 Mo |
-| **Total si tout est embarqué** | **~118 Mo** |
+| 3 boucles locales × 5 min | **4,5 Mo** |
+| Signal bref de premier souffle | < 0,1 Mo |
+| **Total audio v1 embarqué** | **< 5 Mo** |
 
-Or le module de base d'un AAB Play plafonne à 150 Mo installés, et une app lourde dégrade le taux d'installation. Tout embarquer est donc exclu.
+Les boucles sont embarquées : l'expérience reste instantanée et hors ligne, sans dépendre d'un catalogue de paroles distant.
 
 ### 8.3 Distribution retenue
 
-- **Embarqué dans le bundle** : les 3 ambiances, les artworks, **les 4 sessions offertes du premier lancement** (~15 Mo). L'app est utilisable immédiatement, hors ligne, dès l'installation — sans le moindre appel réseau.
-- **Distant** : les 20 autres sessions et les fonds vidéo, servis en **fichiers statiques depuis un bucket Cloudflare R2** (`EXPO_PUBLIC_MEDIA_BASE_URL`), déjà dans l'écosystème Cloudflare du site marketing.
-- **Cache** : `mediaService` télécharge via `expo-file-system` vers un répertoire persistant, indexe `{sessionId → uri locale}` en AsyncStorage, purge en LRU au-delà de 300 Mo. Une session déjà écoutée ne se retélécharge jamais.
-- **Ce n'est pas un backend** : bucket de fichiers statiques derrière un CDN, zéro base de données, zéro exécution serveur, zéro donnée utilisateur sortante.
-- **Gating des pistes premium** : les URLs sont non devinables (chemin UUID) mais **non signées** en v1 — un fichier premium reste techniquement récupérable par qui connaît son URL. Risque assumé pour du contenu audio non exclusif. Si cela devient un enjeu, la signature se fait par un Worker Cloudflare qui interroge l'API REST RevenueCat (~50 lignes), sans introduire de base de données.
+- **Tout l'audio v1 est embarqué** : trois boucles de cinq minutes et un signal bref. Le parcours reste instantané et hors ligne.
+- Le lecteur répète la boucle native autant de fois que nécessaire tout en exposant la durée réelle de la séance (5, 10, 15 ou 20 min) à la progression et à l'accessibilité.
+- Les six univers se différencient par la matière, la superposition, le niveau et un léger changement de vitesse ; aucun fichier parlé, bucket distant ou cache média n'est requis.
 - **Objectif de taille** : téléchargement store ≤ 60 Mo iOS et ≤ 50 Mo Android.
 
 ---
@@ -488,7 +481,7 @@ Le jour venu, la marche est courte : Supabase est déjà en place pour Noctalia,
 - **Noctalia Plus** (nom du plan repris de l'app existante), RevenueCat.
 - Offres : **annuel** (mis en avant, badge « −xx % ») et **mensuel**, essai gratuit 7 jours sur l'annuel.
 - Entitlement : `meditation_plus`, propre à cette app. Sans compte, RevenueCat fonctionne en `appUserID` anonyme : « Restaurer les achats » rétablit l'abonnement via le compte App Store / Play sur la même plateforme — ce qui couvre la réinstallation et le changement d'appareil du même écosystème. Le partage d'abonnement avec l'app Noctalia suppose une identité commune : reporté avec les comptes (cf. §10.2 et §20 Q2).
-- Points de déclenchement du paywall : session premium, 3ᵉ session gratuite du mois épuisée, pattern de respiration avancé, minuteur > 15 min, téléchargement hors-ligne.
+- Points de déclenchement du paywall : monde Plus, session premium, 3ᵉ session gratuite du mois épuisée, pattern de respiration avancé, minuteur > 15 min, téléchargement hors-ligne.
 - Écran paywall = écran 17 ; « Restaurer les achats » et liens légaux obligatoires.
 - Mode `teststore` pour la QA, comme dans Noctalia.
 
@@ -542,11 +535,10 @@ Le jour venu, la marche est courte : Supabase est déjà en place pour Noctalia,
 
 | Asset | Quantité | Spécification |
 |---|---|---|
-| Pistes audio de sessions | 24 | `.m4a` AAC **48 kbps mono** (débit retenu au §8.2), normalisées à −16 LUFS, fondus 1,5 s |
 | Boucles d'ambiance | 3 | `.m4a` ~40 kbps, 5 min, boucle sans couture (réutilisables depuis `assets/audio/sleep/` de Noctalia) |
+| Signal de premier souffle | 1 | `.m4a` bref, doux, jamais bouclé |
 | ~~Artworks de sessions~~ | — | **Supprimé en L2** : l'artwork est peint depuis la paire d'accent de la catégorie (`SessionArtwork`) plus le grain. 24 bitmaps représentaient un poids réel pour ce que la palette exprime déjà, et le dégradé reste dans la marque par construction. |
 | Fonds vidéo | ✅ 4 | Générés puis réencodés en 720×1278, muets, **696 Ko au total** — des dégradés flous se compressent énormément et le 1080p ne portait aucune information de plus. Placés par `Screen`, sous l'atmosphère. |
-| Avatars de narrateurs | 3 | 512×512 WebP |
 | Icône d'app + splash | ✅ | Croissant champagne dans un anneau fin, généré par `scripts/generate-brand-assets.py` — rendu analytique, aucune dépendance graphique. Sept fichiers, 115 Ko. Splash décliné : ambre profond sur papier (4,1:1), champagne sur encre (9,2:1). |
 | Illustrations d'états vides | ✅ 4 | Traits champagne dans le langage de l'atmosphère (`EmptyIllustration`) : signet vide, loupe sur ciel vide, pastilles de calendrier creuses, croissant dans une orbite rompue. Chacune montre une absence, jamais un échec. |
 | Icônes | ✅ | `IconSymbol` repris de l'app journal : SF Symbols sur iOS, MaterialIcons ailleurs. Aucun jeu maison. |
@@ -584,8 +576,8 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 |---|---|---|
 | **L0 — Fondations** | Scaffold Expo 57 + NativeWind v4 + Tailwind mappé sur les tokens Noctalia, polices, `ThemeProvider`, `NightBackground`, kit UI (Button, Card, GlassCard, Chip, Sheet) | Écran de démo qui prouve clair/sombre |
 | **L1 — Parcours d'entrée** | Welcome, 4 étapes d'onboarding, écrans d'auth derrière `ACCOUNTS_ENABLED`, routeur de démarrage, **plomberie i18n (en/fr)** | Écrans 1–7 |
-| **L2 — Bibliothèque** | Catalogue statique (24 séances, 6 catégories, 3 voix), barre d'onglets, Accueil, Recherche, Catégorie, Détail de séance, Favoris | Écrans 8, 10, 12, 15, 16 |
-| **L3 — Lecture** | `audioService` (+ mock), `mediaService`, `PlayerProvider`, lecteur plein écran avec silence progressif, mini-lecteur, ambiances, vitesse, minuteur de fondu, fin de séance | Écrans 13, 23 |
+| **L2 — Bibliothèque** | Catalogue statique (24 séances, 6 catégories, 6 univers), barre d'onglets, Accueil, Recherche, Catégorie, Détail de séance, Favoris | Écrans 8, 10, 12, 15, 16 |
+| **L3 — Lecture** | `audioService` (+ mock audio explicite), `PlayerProvider`, lecteur plein écran, personnalité sonore de l'univers, coupure du son, silence progressif, mini-lecteur, minuteur de fondu, fin de séance | Écrans 13, 23 |
 | **L4 — Respiration** | `useBreathEngine` (horloge unique, phases pures), liste des 4 rythmes, exercice animé, repli `prefers-reduced-motion`, journal de pratique | Écrans 9, 14 |
 | **L5 — Profil & séries** | Journal de pratique, séries, statistiques, calendrier | Écran 11 |
 | **L6 — Réglages** | Réglages, profil local + photo, langue, rappels planifiés (`notificationService` + mock), aide/FAQ, légal | Écrans 18–22, 24 |
@@ -601,7 +593,7 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 - Téléchargement hors-ligne explicite « à la demande » (le cache CDN couvre l'usage courant ; bouton dédié prévu v1.2).
 - Programmes/parcours multi-jours, défis, social, partage.
 - Apple Watch / widgets / Live Activities.
-- Voix off localisées (UI localisée uniquement).
+- Voix humaines ou guidage parlé, quelle que soit la langue. Cette capacité est reportée à une feature dédiée après la v1.
 - Version web.
 
 ---
@@ -611,7 +603,7 @@ Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter m
 1. **Étape « rappel » dans l'onboarding** : étape dédiée (recommandé, meilleure opt-in) ou fusionnée dans l'écran « intention » pour coller exactement aux 4 étapes de Zen ?
 2. **Abonnement** : abonnement propre à Meditation (retenu par défaut, seule option sans compte) ou, plus tard, Noctalia Plus unique couvrant les deux apps ? À rouvrir seulement si les comptes arrivent.
 3. ~~**Dépôt**~~ — **tranché le 2026-08-19 : monorepo.** L'app vit dans `apps/meditation/` du dépôt `dreamer` (cf. §3).
-4. **Voix** : narrateurs enregistrés en studio, ou synthèse vocale premium (ElevenLabs) pour la v1 ?
+4. ~~**Voix**~~ — **tranché pour la v1 : aucune voix humaine ou synthétique.** Une feature future devra faire l'objet d'un choix produit distinct et rester optionnelle.
 5. **Hébergement des pistes** : bucket Cloudflare R2 (retenu, cohérent avec le site) ou embarquer davantage de sessions au prix d'un bundle plus lourd ?
 6. ~~**NativeWind v4 ou Uniwind**~~ — **tranché le 2026-08-19 : Uniwind** (cf. [ADR-001](adr-001-nativewind-vs-uniwind.md)). Le §2 est mis à jour en conséquence.
 

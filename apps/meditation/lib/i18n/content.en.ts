@@ -1,4 +1,4 @@
-/** Catalogue copy: sessions, categories and narrators. UI chrome lives in `en.ts`. */
+/** Catalogue copy: sessions and categories. UI chrome lives in `en.ts`. */
 export const contentEn = {
   'category.sleep.name': "Sleep",
   'category.sleep.tagline': "Down towards the night",
@@ -13,10 +13,6 @@ export const contentEn = {
   'category.dream-prep.name': "Dream preparation",
   'category.dream-prep.tagline': "Ask the night a question",
 
-  'narrator.camille.bio': "Soft voice, slow pace.",
-  'narrator.adrien.bio': "Low voice, short sentences.",
-  'narrator.wordless.bio': 'Breath and silence, nothing to follow.',
-
   'session.sleep-descent.title': "Bringing the breath down",
   'session.sleep-descent.description': "An exhale longer than the inhale, until the body understands the day is over.",
   'session.sleep-descent.benefit.1': "Slows the heart rate",
@@ -26,7 +22,7 @@ export const contentEn = {
   'session.sleep-quick-fall.title': "Falling asleep in five",
   'session.sleep-quick-fall.description': "Nothing to listen to, nothing to follow: a guided breath that fades as you go.",
   'session.sleep-quick-fall.benefit.1': "For short nights",
-  'session.sleep-quick-fall.benefit.2': "No voice",
+  'session.sleep-quick-fall.benefit.2': "Breath and silence",
   'session.sleep-quick-fall.benefit.3': "Ends on its own",
 
   'session.sleep-body-scan.title': "The body settling",
@@ -39,7 +35,7 @@ export const contentEn = {
   'session.sleep-night-return.description': "For 3 a.m. wakings: returning to sleep without fighting the insomnia.",
   'session.sleep-night-return.benefit.1': "Night wakings",
   'session.sleep-night-return.benefit.2': "Screen-free",
-  'session.sleep-night-return.benefit.3': "Very low voice",
+  'session.sleep-night-return.benefit.3': "Quiet ambience",
 
   'session.stress-shoulders.title': "Setting the shoulders down",
   'session.stress-shoulders.description': "Five minutes to hand back what the body has carried since morning.",
@@ -78,9 +74,9 @@ export const contentEn = {
   'session.focus-one-thing.benefit.3': "Good for beginners",
 
   'session.focus-thread.title': "Picking the thread back up",
-  'session.focus-thread.description': "After an interruption, ten wordless minutes to find where you were.",
+  'session.focus-thread.description': "After an interruption, ten minutes of breath and silence to find where you were.",
   'session.focus-thread.benefit.1': "After a break",
-  'session.focus-thread.benefit.2': "No voice",
+  'session.focus-thread.benefit.2': "Breath and silence",
   'session.focus-thread.benefit.3': "Daytime",
 
   'session.focus-deep.title': "Down into the work",
@@ -99,7 +95,7 @@ export const contentEn = {
   'session.anxiety-wave.description': "Anxiety rises and falls. We learn not to follow it all the way up.",
   'session.anxiety-wave.benefit.1': "Does not fight anxiety",
   'session.anxiety-wave.benefit.2': "Teaches waiting",
-  'session.anxiety-wave.benefit.3': "A steady voice",
+  'session.anxiety-wave.benefit.3': "A steady pace",
 
   'session.anxiety-chest.title': "Opening the chest",
   'session.anxiety-chest.description': "When the breath jams high in the chest, we bring it back down.",

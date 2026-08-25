@@ -1,108 +1,218 @@
-import { useRouter } from 'expo-router';
-import React, { useMemo, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { useIsFocused, useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ScrollView, View, useWindowDimensions } from 'react-native';
 
-import { Screen } from '@/components/atmosphere/Screen';
-import { SessionCard } from '@/components/session/SessionCard';
-import { Button, Card, Rule, Text } from '@/components/ui';
-import { sessionsInCategory, sessionsUpTo } from '@/content/sessions';
+import { DailyRitualShelf } from '@/components/journey/DailyRitualShelf';
+import { UpcomingJourneyRail } from '@/components/journey/UpcomingJourneyRail';
+import { WeeklyJourney } from '@/components/journey/WeeklyJourney';
+import { WorldJourneyPicker } from '@/components/journey/WorldJourneyPicker';
+import { WorldPreviewShelf } from '@/components/journey/WorldPreviewShelf';
+import { Text } from '@/components/ui';
+import { WorldScene } from '@/components/worlds/WorldScene';
+import { DEFAULT_WORLD_ID, WORLD_BY_ID, WORLD_IDS, type WorldId } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
-import { useTabBarInset } from '@/hooks/useTabBarInset';
-import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
-import { useOnboarding } from '@/context/OnboardingContext';
+import { useSubscription } from '@/context/SubscriptionContext';
+import { useWorld } from '@/context/WorldContext';
+import { useWorldPurchases } from '@/context/WorldPurchaseContext';
+import { useTabBarInset } from '@/hooks/useTabBarInset';
 import type { TranslationKey } from '@/lib/i18n';
-import { greetingKey, resumableSession, sessionOfTheDay, toMinutes } from '@/lib/library';
+import { greetingKey } from '@/lib/library';
+import { toLocalDay } from '@/lib/streak';
+import { TID } from '@/lib/testIDs';
+import {
+  recommendedSessionForWorld,
+  resumableSessionForWorld,
+  isSessionIncludedInOwnedWorld,
+  upcomingSessionsForWorld,
+} from '@/lib/worldJourneys';
 
-/** How many short sessions the "if you only have a moment" row offers. */
-const QUICK_COUNT = 4;
+const WORLDS = WORLD_IDS.map((worldId) => WORLD_BY_ID[worldId]);
+const SHORT_VIEWPORT_HEIGHT = 700;
 
 export default function HomeTab() {
   const router = useRouter();
   const { t } = useTranslation();
   const tabBarInset = useTabBarInset();
-  const { state } = useOnboarding();
-  const { progress } = useLibrary();
+  const { width, height, fontScale } = useWindowDimensions();
+  const compactViewport = height < SHORT_VIEWPORT_HEIGHT || fontScale > 1.15;
+  const narrowViewport = width < 375;
+  const { progress, practiceLog } = useLibrary();
+  const { gateForSession, openPaywall } = useSubscription();
+  const {
+    worldId,
+    previewWorldId,
+    presentationWorldId,
+    presentationWorld,
+    setWorld,
+    setPreviewWorld,
+  } = useWorld();
+  const { loaded: worldPurchasesLoaded, isWorldOwned, offerForWorld } = useWorldPurchases();
+  const focused = useIsFocused();
+  const selectedWorldId = isWorldOwned(worldId) ? worldId : DEFAULT_WORLD_ID;
+  const activeWorldId = presentationWorldId;
+  const world = presentationWorld;
 
-  // Read once per mount rather than per render: `new Date()` in a render body
-  // is a moving dependency, and the recommendation must not change under the
-  // user between two glances at the same screen.
-  const [today] = useState(() => new Date().toISOString().slice(0, 10));
-  const [hour] = useState(() => new Date().getHours());
+  useEffect(() => {
+    if (worldPurchasesLoaded && !previewWorldId && worldId !== selectedWorldId) {
+      void setWorld(selectedWorldId);
+    }
+  }, [previewWorldId, selectedWorldId, setWorld, worldId, worldPurchasesLoaded]);
 
-  const todaySession = useMemo(() => sessionOfTheDay(today, state.goals), [today, state.goals]);
+  useEffect(() => {
+    if (!focused && previewWorldId) {
+      setPreviewWorld(null);
+    }
+  }, [focused, previewWorldId, setPreviewWorld]);
 
-  const resume = useMemo(() => resumableSession(progress), [progress]);
+  // The recommendation stays stable for the whole visit. Use the local day:
+  // a late-night ritual must belong to the evening the listener is living.
+  const [now] = useState(() => new Date());
+  const today = toLocalDay(now);
+  const hour = now.getHours();
 
-  const quick = useMemo(
-    () => sessionsUpTo(state.dailyIntentionMin ?? 10).slice(0, QUICK_COUNT),
-    [state.dailyIntentionMin]
+  const todaySession = useMemo(
+    () => recommendedSessionForWorld(activeWorldId, today, progress),
+    [activeWorldId, progress, today]
+  );
+  const resume = useMemo(
+    () => resumableSessionForWorld(activeWorldId, progress),
+    [activeWorldId, progress]
+  );
+  const activeSession = resume?.session ?? todaySession;
+  const activeProgress = progress[activeSession.id];
+  const upcoming = useMemo(
+    () => upcomingSessionsForWorld(activeWorldId, activeSession.id, progress),
+    [activeSession.id, activeWorldId, progress]
   );
 
-  const tonight = useMemo(() => sessionsInCategory('sleep').slice(0, 3), []);
+  const openActive = useCallback(
+    (shouldResume: boolean) => {
+      if (
+        shouldResume &&
+        !isSessionIncludedInOwnedWorld(activeWorldId, activeSession.id, isWorldOwned)
+      ) {
+        const gate = gateForSession(activeSession);
+        if (!gate.allowed) {
+          openPaywall(gate.reason);
+          return;
+        }
+      }
+
+      router.push(
+        shouldResume
+          ? `/player/${activeSession.id}?worldId=${activeWorldId}`
+          : `/session/${activeSession.id}?worldId=${activeWorldId}`
+      );
+    },
+    [activeSession, activeWorldId, gateForSession, isWorldOwned, openPaywall, router]
+  );
+
+  const handleSelectWorld = useCallback(
+    (nextWorldId: WorldId) => {
+      if (!isWorldOwned(nextWorldId)) {
+        setPreviewWorld(nextWorldId);
+        return;
+      }
+
+      void setWorld(nextWorldId);
+    },
+    [isWorldOwned, setPreviewWorld, setWorld]
+  );
+
+  const handlePreviewWorld = useCallback(
+    (nextWorldId: WorldId) => {
+      router.push(`/world/${nextWorldId}`);
+    },
+    [router]
+  );
+  const worldLocked = world.access === 'purchase' && !isWorldOwned(activeWorldId);
+  const worldPrice = offerForWorld(activeWorldId)?.priceLabel ?? '0,99 €';
 
   return (
-    <Screen variant="subtle" edges={['top']}>
+    <WorldScene
+      world={world}
+      artwork="journey"
+      edges={['top']}
+      className="flex-1">
       <ScrollView
         testID={TID.Screen.Home}
-        contentContainerClassName="px-gutter pt-4 gap-8"
+        contentContainerClassName="px-gutter pb-4 pt-3"
         contentContainerStyle={{ paddingBottom: tabBarInset }}
-        showsVerticalScrollIndicator={false}>
-        <View className="gap-1">
-          <Text variant="h1">{t(greetingKey(hour))}</Text>
-          <Text variant="bodySm">{t('home.today.label')}</Text>
+        alwaysBounceVertical={false}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
+        <View
+          className={
+            narrowViewport
+              ? 'max-w-[90%] gap-1'
+              : compactViewport
+                ? 'max-w-[82%] gap-1 pr-8'
+                : 'max-w-[78%] gap-2 pr-8'
+          }>
+          <Text variant="overline">{t(world.nameKey)}</Text>
+          <Text variant={narrowViewport ? 'h2' : compactViewport ? 'h1' : 'display'}>
+            {t(greetingKey(hour))}
+          </Text>
+          <Text
+            variant="bodySm"
+            numberOfLines={narrowViewport ? 1 : compactViewport ? 2 : undefined}>
+            {t(`world.${world.id}.role` as TranslationKey)}
+          </Text>
         </View>
 
-        <SessionCard session={todaySession} variant="feature" />
+        <View className={compactViewport ? 'mt-4' : 'mt-6'}>
+          <WeeklyJourney practiceLog={practiceLog} today={today} />
+        </View>
 
-        {resume ? (
-          <View className="gap-3">
-            <Text variant="h2">{t('home.resume.title')}</Text>
-            <Rule className="self-start" />
-            <SessionCard session={resume.session} />
-            <Text variant="caption">
-              {toMinutes(resume.remainingSec) === 1
-                ? t('home.resume.left.one')
-                : t('home.resume.left', { count: toMinutes(resume.remainingSec) })}
-            </Text>
+        <View
+          className={compactViewport ? 'mt-4 gap-3' : 'mt-5 gap-3'}
+          testID="home.journey.deck">
+          <WorldJourneyPicker
+            worlds={WORLDS}
+            selectedWorldId={selectedWorldId}
+            previewedWorldId={previewWorldId}
+            onSelect={handleSelectWorld}
+            isWorldOwned={isWorldOwned}
+            priceForWorld={(nextWorldId) => offerForWorld(nextWorldId)?.priceLabel}
+            accessibilityLabel={t('home.journey.worldLabel')}
+            testID="home.world-switcher"
+          />
+          {worldLocked ? (
+            <WorldPreviewShelf
+              world={world}
+              priceLabel={worldPrice}
+              onPreview={() => handlePreviewWorld(activeWorldId)}
+            />
+          ) : (
+            <DailyRitualShelf
+              world={world}
+              session={activeSession}
+              sessionProgress={activeProgress}
+              journeyProgress={progress}
+              isSessionIncluded={(sessionId) =>
+                isSessionIncludedInOwnedWorld(activeWorldId, sessionId, isWorldOwned)
+              }
+              onOpen={openActive}
+            />
+          )}
+        </View>
+
+        {!worldLocked ? (
+          <View className={compactViewport ? 'mt-4' : 'mt-5'}>
+            <UpcomingJourneyRail
+              sessions={upcoming}
+              appearance={world.appearance}
+              isSessionIncluded={(sessionId) =>
+                isSessionIncludedInOwnedWorld(activeWorldId, sessionId, isWorldOwned)
+              }
+              onOpen={(sessionId) =>
+                router.push(`/session/${sessionId}?worldId=${activeWorldId}`)
+              }
+            />
           </View>
         ) : null}
-
-        <View className="gap-3">
-          <Text variant="h2">{t('home.quick.title')}</Text>
-          <Rule className="self-start" />
-          {quick.map((session) => (
-            <SessionCard key={session.id} session={session} />
-          ))}
-        </View>
-
-        <View className="gap-3">
-          <Text variant="h2">{t('home.tonight.title')}</Text>
-          <Rule className="self-start" />
-          <Text variant="bodySm">{t('home.tonight.subtitle')}</Text>
-          {tonight.map((session) => (
-            <SessionCard key={session.id} session={session} />
-          ))}
-        </View>
-
-        <Card>
-          <Text variant="h3">{t('home.breathe.title')}</Text>
-          <Text variant="bodySm" className="mt-1">
-            {t('home.breathe.subtitle')}
-          </Text>
-          <Button
-            label={t('tabs.breathe')}
-            variant="secondary"
-            className="mt-4"
-            onPress={() => router.push('/breathe')}
-          />
-        </Card>
-
-        <Text variant="caption" className="text-center">
-          {t('category.count', { count: 24 })} ·{' '}
-          {t(`category.${todaySession.categorySlug}.tagline` as TranslationKey)}
-        </Text>
       </ScrollView>
-    </Screen>
+    </WorldScene>
   );
 }

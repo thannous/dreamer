@@ -63,7 +63,7 @@ export default function FoundationsScreen() {
             Descendre le souffle
           </Text>
           <Text variant="bodySm" className="mt-2">
-            10 min · Camille · Sommeil
+            10 min · Sommeil
           </Text>
           <Text variant="quote" className="mt-4">
             « On ne force pas le sommeil, on lui laisse la place. »

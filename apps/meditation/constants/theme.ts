@@ -62,8 +62,8 @@ export const PaperTheme: ThemeColors = {
   backgroundRaised: 'rgba(252, 251, 248, 0.92)',
   glassTint: '#FFFDF8',
   textPrimary: '#2A2838',
-  textSecondary: '#6B6880',
-  textTertiary: '#6F6C84',
+  textSecondary: '#4F4C63',
+  textTertiary: '#5C5870',
   accent: '#D4A574',
   accentText: '#9A6332',
   accentDark: '#9A6332',
@@ -134,6 +134,61 @@ export const Atmosphere = {
 
 /** Opacity of the glass card fill, per mode (matches the Noctalia journal app). */
 export const GlassOpacity: Record<ThemeMode, number> = { dark: 0.3, light: 0.96 };
+
+/** Readability veil for copy rendered over world thumbnails. Native prop
+ * colours live here rather than as one-off RGBA literals in components. */
+export const ArtworkScrim = {
+  transparent: 'rgba(3, 4, 13, 0.04)',
+  strong: 'rgba(3, 4, 13, 0.84)',
+} as const;
+
+/**
+ * Theme-aware material placed over world artwork. These values stay in
+ * TypeScript because they feed native colour and border props rather than
+ * utility classes.
+ */
+export const ArtworkGlass = {
+  light: {
+    fill: PaperTheme.backgroundCard,
+    border: PaperTheme.divider,
+    specular: 'rgba(255, 255, 255, 0.56)',
+    artworkFill: 'rgba(255, 253, 248, 0.12)',
+    artworkBorder: 'rgba(154, 99, 50, 0.08)',
+    artworkOpacity: 1,
+    artworkScrim: [
+      'rgba(245, 240, 232, 0.56)',
+      'rgba(245, 240, 232, 0.16)',
+      'rgba(245, 240, 232, 0.00)',
+    ],
+    artworkScrimLocations: [0, 0.42, 1],
+    artworkScrimEnd: { x: 0.76, y: 0 },
+  },
+  dark: {
+    fill: NightTheme.backgroundCard,
+    border: 'rgba(255, 249, 239, 0.12)',
+    specular: 'rgba(255, 249, 239, 0.24)',
+    artworkFill: 'rgba(20, 18, 40, 0.18)',
+    artworkBorder: 'rgba(255, 249, 239, 0.08)',
+    artworkOpacity: 1,
+    artworkScrim: [
+      'rgba(3, 4, 13, 0.90)',
+      'rgba(3, 4, 13, 0.48)',
+      'rgba(3, 4, 13, 0.00)',
+    ],
+    artworkScrimLocations: [0, 0.46, 1],
+    artworkScrimEnd: { x: 0.72, y: 0 },
+  },
+} as const satisfies Record<ThemeMode, {
+  fill: string;
+  border: string;
+  specular: string;
+  artworkFill: string;
+  artworkBorder: string;
+  artworkOpacity: number;
+  artworkScrim: readonly [string, string, string];
+  artworkScrimLocations: readonly [number, number, number];
+  artworkScrimEnd: { x: number; y: number };
+}>;
 
 export const Radius = { sm: 8, md: 12, lg: 16, xl: 24, artwork: 28, full: 999 } as const;
 

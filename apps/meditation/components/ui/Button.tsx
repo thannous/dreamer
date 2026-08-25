@@ -1,11 +1,18 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { ActivityIndicator, Pressable, View, type PressableProps } from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  View,
+  type PressableProps,
+} from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useTheme } from '@/context/ThemeContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 
-import { Text, type TextTone } from './Text';
+import { Text, type TextTone, type TextVariant } from './Text';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 export type ButtonSize = 'md' | 'lg';
@@ -16,6 +23,9 @@ type Props = Omit<PressableProps, 'children' | 'style'> & {
   size?: ButtonSize;
   loading?: boolean;
   className?: string;
+  labelVariant?: TextVariant;
+  labelTone?: TextTone;
+  luminous?: boolean;
 };
 
 const CONTAINER: Record<ButtonVariant, string> = {
@@ -50,6 +60,9 @@ export function Button({
   loading = false,
   disabled,
   className,
+  labelVariant = 'h3',
+  labelTone,
+  luminous = false,
   onPressIn,
   onPressOut,
   ...rest
@@ -73,12 +86,22 @@ export function Button({
       onPressOut={handlePressOut}
       style={style}
       className={[
-        'flex-row items-center justify-center rounded-full',
+        'flex-row items-center justify-center overflow-hidden rounded-full',
         CONTAINER[variant],
         SIZE[size],
         className ?? '',
       ].join(' ')}
       {...rest}>
+      {luminous && variant === 'primary' ? (
+        <LinearGradient
+          pointerEvents="none"
+          colors={[colors.accentLight, colors.accent, colors.accent]}
+          locations={[0, 0.58, 1]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={StyleSheet.absoluteFill}
+        />
+      ) : null}
       {loading ? (
         <ActivityIndicator
           size="small"
@@ -86,7 +109,7 @@ export function Button({
         />
       ) : (
         <View className="flex-row items-center gap-2">
-          <Text variant="h3" tone={LABEL_TONE[variant]}>
+          <Text variant={labelVariant} tone={labelTone ?? LABEL_TONE[variant]}>
             {label}
           </Text>
         </View>

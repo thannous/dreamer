@@ -10,6 +10,9 @@ import { Text } from './Text';
 
 type Props = {
   label: string;
+  /** Native icon colour for a surface whose scoped Uniwind theme differs
+   * from the app-wide ThemeContext (for example, a light meditation world). */
+  iconColor?: string;
   /** Where to land when there is no history — a deep link opened cold. */
   // The tabs sit under two route groups, so the canonical href names both.
   // Plain '/' is ambiguous with `app/index.tsx` and redirects onto itself.
@@ -23,7 +26,13 @@ type Props = {
  * its own: it does not exist on Android hardware-button setups, and a
  * deep-linked screen may have nothing to go back to at all.
  */
-export function BackLink({ label, fallbackHref = '/(drawer)/(tabs)', className, testID }: Props) {
+export function BackLink({
+  label,
+  iconColor,
+  fallbackHref = '/(drawer)/(tabs)',
+  className,
+  testID,
+}: Props) {
   const router = useRouter();
   const { colors } = useTheme();
   const navigationCommitted = useRef(false);
@@ -53,7 +62,7 @@ export function BackLink({ label, fallbackHref = '/(drawer)/(tabs)', className, 
         pressRetentionOffset={12}
         style={({ pressed }) => ({ opacity: pressed ? PressOpacity.link : 1 })}
         className="flex-row items-center gap-1 self-start">
-        <IconSymbol name="chevron.left" color={colors.accentText} size={18} />
+        <IconSymbol name="chevron.left" color={iconColor ?? colors.accentText} size={18} />
         <Text variant="bodySm" tone="accent">
           {label}
         </Text>

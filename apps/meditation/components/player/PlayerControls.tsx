@@ -15,6 +15,8 @@ type Props = {
   playing: boolean;
   onToggle: () => void;
   onSkip: (deltaSec: number) => void;
+  secondaryIconColor?: string;
+  primaryIconColor?: string;
 };
 
 function SkipButton({
@@ -22,11 +24,13 @@ function SkipButton({
   icon,
   onPress,
   testID,
+  iconColor,
 }: {
   label: string;
   icon: 'gobackward.15' | 'goforward.15';
   onPress: () => void;
   testID: string;
+  iconColor?: string;
 }) {
   const { colors } = useTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'chip' });
@@ -42,13 +46,19 @@ function SkipButton({
       hitSlop={16}
       style={style}
       className="h-12 w-12 items-center justify-center rounded-full border border-hairline">
-      <IconSymbol name={icon} color={colors.accentText} size={22} />
+      <IconSymbol name={icon} color={iconColor ?? colors.accentText} size={22} />
     </AnimatedPressable>
   );
 }
 
 /** Three controls, nothing else. The rest of the screen is the session. */
-export function PlayerControls({ playing, onToggle, onSkip }: Props) {
+export function PlayerControls({
+  playing,
+  onToggle,
+  onSkip,
+  secondaryIconColor,
+  primaryIconColor,
+}: Props) {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'button' });
@@ -59,6 +69,7 @@ export function PlayerControls({ playing, onToggle, onSkip }: Props) {
         testID={TID.Button.PlayerBack}
         label={t('player.back15')}
         icon="gobackward.15"
+        iconColor={secondaryIconColor}
         onPress={() => onSkip(-SEEK_STEP_SEC)}
       />
 
@@ -73,7 +84,7 @@ export function PlayerControls({ playing, onToggle, onSkip }: Props) {
         className="h-20 w-20 items-center justify-center rounded-full border border-champagne-soft bg-champagne">
         <IconSymbol
           name={playing ? 'pause.fill' : 'play.fill'}
-          color={colors.textOnAccent}
+          color={primaryIconColor ?? colors.textOnAccent}
           size={28}
         />
       </AnimatedPressable>
@@ -82,6 +93,7 @@ export function PlayerControls({ playing, onToggle, onSkip }: Props) {
         testID={TID.Button.PlayerForward}
         label={t('player.forward15')}
         icon="goforward.15"
+        iconColor={secondaryIconColor}
         onPress={() => onSkip(SEEK_STEP_SEC)}
       />
     </View>

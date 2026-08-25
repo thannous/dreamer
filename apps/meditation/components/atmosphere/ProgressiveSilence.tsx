@@ -4,6 +4,7 @@ import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { Curve, Duration } from '@/constants/motion';
 import { useSilence } from '@/context/SilenceContext';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useScreenReader } from '@/hooks/useScreenReader';
 
 type Props = React.PropsWithChildren<{
   className?: string;
@@ -22,10 +23,12 @@ type Props = React.PropsWithChildren<{
  */
 export function ProgressiveSilence({ children, className }: Props) {
   const reducedMotion = useReducedMotion();
+  const screenReader = useScreenReader();
   const { visible } = useSilence();
+  const controlsVisible = visible || screenReader;
 
   const style = useAnimatedStyle(() => ({
-    opacity: withTiming(visible ? 1 : 0, {
+    opacity: withTiming(controlsVisible ? 1 : 0, {
       duration: reducedMotion ? Duration.fast : Duration.slow,
       easing: Curve.standard,
     }),
@@ -34,9 +37,9 @@ export function ProgressiveSilence({ children, className }: Props) {
   return (
     <Animated.View
       className={className}
-      style={[style, { pointerEvents: visible ? 'auto' : 'none' }]}
-      accessibilityElementsHidden={!visible}
-      importantForAccessibility={visible ? 'auto' : 'no-hide-descendants'}>
+      style={[style, { pointerEvents: controlsVisible ? 'auto' : 'none' }]}
+      accessibilityElementsHidden={!controlsVisible}
+      importantForAccessibility={controlsVisible ? 'auto' : 'no-hide-descendants'}>
       {children}
     </Animated.View>
   );

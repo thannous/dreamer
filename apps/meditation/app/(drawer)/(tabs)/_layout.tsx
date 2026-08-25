@@ -7,7 +7,7 @@ import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { MiniPlayer } from '@/components/player/MiniPlayer';
-import { TabBar } from '@/constants/layout';
+import { CompactTabBar, TabBar } from '@/constants/layout';
 
 import { IconSymbol, Text } from '@/components/ui';
 import { usePressMotion } from '@/hooks/usePressMotion';
@@ -15,7 +15,8 @@ import { Radius } from '@/constants/theme';
 import { FontFamily } from '@/constants/typography';
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
-import { useTheme } from '@/context/ThemeContext';
+import { useChromeTheme } from '@/hooks/useChromeTheme';
+import { useCompactLayout } from '@/hooks/useCompactLayout';
 
 /**
  * Four tabs, in a pill that floats over the screen.
@@ -37,7 +38,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
  */
 function DrawerButton() {
   const { t } = useTranslation();
-  const { colors, mode } = useTheme();
+  const { colors, mode } = useChromeTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<DrawerNavigationProp<Record<string, undefined>>>();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
@@ -49,6 +50,7 @@ function DrawerButton() {
       onPress={() => navigation.openDrawer()}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
+      hitSlop={4}
       style={[style, { position: 'absolute', right: 20, top: insets.top + 8, zIndex: 20 }]}>
       <BlurView
         intensity={mode === 'dark' ? 32 : 40}
@@ -72,8 +74,11 @@ function DrawerButton() {
 
 export default function TabsLayout() {
   const { t } = useTranslation();
-  const { colors, mode } = useTheme();
+  const { colors, mode } = useChromeTheme();
   const insets = useSafeAreaInsets();
+  const compact = useCompactLayout();
+  const tabBar = compact ? CompactTabBar : TabBar;
+  const iconSize = compact ? 20 : 22;
 
   return (
     <View className="flex-1">
@@ -89,8 +94,8 @@ export default function TabsLayout() {
           backgroundColor: 'transparent',
           borderTopWidth: 0,
           elevation: 0,
-          height: TabBar.height + insets.bottom,
-          paddingTop: 6,
+          height: tabBar.height + insets.bottom,
+          paddingTop: compact ? 3 : 6,
           paddingBottom: insets.bottom,
         },
         // The pill is drawn behind the items rather than by styling the bar
@@ -107,10 +112,10 @@ export default function TabsLayout() {
             tint={mode === 'dark' ? 'dark' : 'light'}
             style={{
               position: 'absolute',
-              left: TabBar.margin,
-              right: TabBar.margin,
+              left: tabBar.margin,
+              right: tabBar.margin,
               top: 0,
-              bottom: Math.max(insets.bottom - TabBar.margin, TabBar.margin),
+              bottom: Math.max(insets.bottom - tabBar.margin, tabBar.margin),
               backgroundColor: colors.navbarBg,
               borderColor: colors.navbarBorder,
               borderWidth: 1,
@@ -121,8 +126,8 @@ export default function TabsLayout() {
         ),
         tabBarActiveTintColor: colors.textPrimary,
         tabBarInactiveTintColor: colors.textTertiary,
-        tabBarLabelStyle: { fontFamily: FontFamily.medium, fontSize: 12 },
-        tabBarIcon: ({ color }) => <IconSymbol name="house" color={color} size={22} />,
+        tabBarLabelStyle: { fontFamily: FontFamily.medium, fontSize: compact ? 11 : 12 },
+        tabBarIcon: ({ color }) => <IconSymbol name="house" color={color} size={iconSize} />,
       }}>
         <Tabs.Screen
           name="index"
@@ -133,7 +138,7 @@ export default function TabsLayout() {
           options={{
             title: t('tabs.breathe'),
             tabBarButtonTestID: TID.Tab.Breathe,
-            tabBarIcon: ({ color }) => <IconSymbol name="wind" color={color} size={22} />,
+            tabBarIcon: ({ color }) => <IconSymbol name="wind" color={color} size={iconSize} />,
           }}
         />
         <Tabs.Screen
@@ -142,7 +147,7 @@ export default function TabsLayout() {
             title: t('tabs.search'),
             tabBarButtonTestID: TID.Tab.Search,
             tabBarIcon: ({ color }) => (
-              <IconSymbol name="magnifyingglass" color={color} size={22} />
+              <IconSymbol name="magnifyingglass" color={color} size={iconSize} />
             ),
           }}
         />
@@ -151,7 +156,7 @@ export default function TabsLayout() {
           options={{
             title: t('tabs.profile'),
             tabBarButtonTestID: TID.Tab.Profile,
-            tabBarIcon: ({ color }) => <IconSymbol name="person" color={color} size={22} />,
+            tabBarIcon: ({ color }) => <IconSymbol name="person" color={color} size={iconSize} />,
           }}
         />
       </Tabs>
@@ -166,7 +171,7 @@ export default function TabsLayout() {
           position: 'absolute',
           left: 0,
           right: 0,
-          bottom: TabBar.height + insets.bottom + TabBar.margin,
+          bottom: tabBar.height + insets.bottom + tabBar.margin,
           zIndex: 10,
         }}>
         <MiniPlayer />

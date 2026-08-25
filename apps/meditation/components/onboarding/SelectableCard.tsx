@@ -10,6 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { Text } from '@/components/ui';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Curve, Duration } from '@/constants/motion';
 import { useTheme } from '@/context/ThemeContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
@@ -29,8 +30,10 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 /**
  * One option in an onboarding step. Selection is carried by the border and a
- * champagne dot, never by colour alone — the fill stays subtle so a screen of
- * six options does not turn into a wall of gold.
+ * champagne mark, never by colour alone — the fill stays subtle so a screen of
+ * six options does not turn into a wall of gold. Exclusive steps keep a radio
+ * disc; multi-select steps keep a rounded square with a check, so a tap does
+ * not look like it replaced the other choices.
  *
  * Border, fill and dot cross-fade on one curve, so the card settles as a single
  * gesture instead of four simultaneous jump cuts. The animated colours are the
@@ -48,6 +51,7 @@ export function SelectableCard({
 }: Props) {
   const { colors } = useTheme();
   const reducedMotion = useReducedMotion();
+  const exclusive = mode === 'single';
   // Same driver as the rest of the kit, consumed as a raw value: press has to
   // merge with the selection colours inside ONE style (see below).
   const { press, scaleTo, opacityTo, handlePressIn, handlePressOut } = usePressMotion({
@@ -102,7 +106,7 @@ export function SelectableCard({
       onPress={handlePress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      accessibilityRole={mode === 'single' ? 'radio' : 'checkbox'}
+      accessibilityRole={exclusive ? 'radio' : 'checkbox'}
       accessibilityState={{ checked: selected }}
       // react-native-web does not map accessibilityState.checked onto
       // aria-checked; RN maps the aria prop natively, so pass both.
@@ -111,8 +115,16 @@ export function SelectableCard({
       className="flex-row items-center gap-4 rounded-xl border p-gutter">
       <Animated.View
         style={ringStyle}
-        className="h-5 w-5 items-center justify-center rounded-full border">
-        <Animated.View style={dotStyle} className="h-2 w-2 rounded-full bg-champagne-on" />
+        className={`h-5 w-5 items-center justify-center border ${
+          exclusive ? 'rounded-full' : 'rounded-sm'
+        }`}>
+        {exclusive ? (
+          <Animated.View style={dotStyle} className="h-2 w-2 rounded-full bg-champagne-on" />
+        ) : (
+          <Animated.View style={dotStyle} className="items-center justify-center">
+            <IconSymbol name="checkmark" size={12} color={colors.textOnAccent} />
+          </Animated.View>
+        )}
       </Animated.View>
       <View className="flex-1">
         <Text variant="h3">{label}</Text>

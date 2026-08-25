@@ -13,6 +13,15 @@ appId: com.noctalia.meditation
 - tapOn:
     id: 'btn.welcome.start'
 
+# A first optional breath before the questions. The halo must answer a touch,
+# but continuing never depends on haptics being available.
+- assertVisible:
+    id: 'screen.onboarding.breathIntro'
+- tapOn:
+    id: 'btn.onboarding.breathIntro.halo'
+- tapOn:
+    id: 'btn.onboarding.continue'
+
 # 1 — goals. Multi-select, and Continue stays inert until one is chosen.
 - assertVisible:
     id: 'screen.onboarding.goals'
@@ -28,6 +37,14 @@ appId: com.noctalia.meditation
 - assertVisible:
     id: 'screen.onboarding.experience'
 - tapOn:
+    id: 'btn.onboarding.back'
+- assertVisible:
+    id: 'screen.onboarding.goals'
+- tapOn:
+    id: 'btn.onboarding.continue'
+- assertVisible:
+    id: 'screen.onboarding.experience'
+- tapOn:
     id: 'option.onboarding.experience.beginner'
 - tapOn:
     id: 'btn.onboarding.continue'
@@ -36,11 +53,27 @@ appId: com.noctalia.meditation
 - assertVisible:
     id: 'screen.onboarding.intention'
 - tapOn:
-    id: 'option.onboarding.intention.5'
+    id: 'btn.onboarding.back'
+- assertVisible:
+    id: 'screen.onboarding.experience'
+- tapOn:
+    id: 'btn.onboarding.continue'
+- assertVisible:
+    id: 'screen.onboarding.intention'
+- tapOn:
+    id: 'btn.onboarding.intention.previous'
 - tapOn:
     id: 'btn.onboarding.continue'
 
 # 4 — reminder. Skipping must still finish onboarding.
+- assertVisible:
+    id: 'screen.onboarding.reminder'
+- tapOn:
+    id: 'btn.onboarding.back'
+- assertVisible:
+    id: 'screen.onboarding.intention'
+- tapOn:
+    id: 'btn.onboarding.continue'
 - assertVisible:
     id: 'screen.onboarding.reminder'
 - tapOn:

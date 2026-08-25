@@ -2,43 +2,64 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 
-import { Screen } from '@/components/atmosphere/Screen';
+import { WorldScene } from '@/components/worlds/WorldScene';
+import { PracticeProgress } from '@/components/journey/PracticeProgress';
 import { BenefitList } from '@/components/session/BenefitList';
-import { SessionArtwork } from '@/components/session/SessionArtwork';
 import { BackLink, Button, Card, IconSymbol, Rule, Text } from '@/components/ui';
-import { NARRATOR_BY_ID } from '@/content/narrators';
+import { Themes } from '@/constants/theme';
+import {
+  canAccessWorld,
+  DEFAULT_WORLD_ID,
+  isWorldId,
+  WORLD_BY_ID,
+} from '@/constants/worlds';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
 import { useSubscription } from '@/context/SubscriptionContext';
-import { useTheme } from '@/context/ThemeContext';
+import { useWorld } from '@/context/WorldContext';
+import { useWorldPurchases } from '@/context/WorldPurchaseContext';
 import type { TranslationKey } from '@/lib/i18n';
 import { toMinutes } from '@/lib/library';
 import { RESUME_MAX_RATIO, RESUME_MIN_RATIO } from '@/lib/types';
+import { isSessionIncludedInOwnedWorld } from '@/lib/worldJourneys';
 
 export default function SessionDetail() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, worldId: worldParam } = useLocalSearchParams<{
+    id: string;
+    worldId?: string;
+  }>();
   const router = useRouter();
   const { t } = useTranslation();
   const { isFavorite, toggleFavorite, progress } = useLibrary();
   const { gateForSession, openPaywall } = useSubscription();
-  const { colors } = useTheme();
+  const { world: selectedWorld } = useWorld();
+  const { isWorldOwned } = useWorldPurchases();
+  const fallbackWorld = canAccessWorld(selectedWorld.id, isWorldOwned)
+    ? selectedWorld
+    : WORLD_BY_ID[DEFAULT_WORLD_ID];
+  const world =
+    worldParam && isWorldId(worldParam) && canAccessWorld(worldParam, isWorldOwned)
+      ? WORLD_BY_ID[worldParam]
+      : fallbackWorld;
+  const worldColors = Themes[world.appearance];
 
   const session = id ? SESSION_BY_ID[id] : undefined;
 
   // A stale deep link to a session that no longer exists must not crash.
   if (!session) {
     return (
-      <Screen variant="subtle">
+      <WorldScene world={world} artwork="trainer" scrimStrength={1.2}>
         <View className="flex-1 items-center justify-center px-gutter">
-          <Text variant="h3">{t('search.empty.title')}</Text>
+          <Card className="w-full max-w-md">
+            <Text variant="h3">{t('search.empty.title')}</Text>
+          </Card>
         </View>
-      </Screen>
+      </WorldScene>
     );
   }
 
-  const narrator = NARRATOR_BY_ID[session.narratorId];
   const entry = progress[session.id];
   const ratio = entry ? entry.positionSec / session.durationSec : 0;
   const canResume = ratio >= RESUME_MIN_RATIO && ratio <= RESUME_MAX_RATIO;
@@ -51,88 +72,73 @@ export default function SessionDetail() {
       : t('session.play');
 
   return (
-    <Screen variant="immersive" edges={['top']}>
+    <WorldScene world={world} artwork="trainer" edges={['top', 'bottom']}>
       <BackLink
         testID={TID.Button.SessionBack}
         label={t('common.back')}
+        iconColor={worldColors.accentText}
         className="px-gutter pb-2 pt-2"
       />
 
       <ScrollView
         testID={TID.Screen.SessionDetail}
-        contentContainerClassName="pb-10 gap-6"
+        contentContainerClassName="gap-6 px-gutter pb-8 pt-4"
         showsVerticalScrollIndicator={false}>
-        <SessionArtwork
-          accent={session.accent}
-          rounded="artwork"
-          className="mx-gutter min-h-56 justify-end">
-          <View className="gap-1 p-gutter">
-            {session.isPremium ? <Text variant="overline">{t('common.plus')}</Text> : null}
-            <Text variant="h1">{t(`session.${session.id}.title` as TranslationKey)}</Text>
-            <Text variant="bodySm">
-              {t('common.minutes', { count: toMinutes(session.durationSec) })} ·{' '}
-              {t(`category.${session.categorySlug}.name` as TranslationKey)}
-            </Text>
-          </View>
-        </SessionArtwork>
-
-        <View className="gap-6 px-gutter">
-          <Text variant="quote">{t(`session.${session.id}.description` as TranslationKey)}</Text>
-
-          <View className="gap-3">
-            <Text variant="overline">{t('session.benefits')}</Text>
-            <BenefitList session={session} />
-          </View>
-
-          {/* A wordless session has no one guiding it, so it gets no "guided
-              by" and no name line — the label carries the whole idea, and the
-              player already says the same thing the same way. */}
-          <Card>
-            <Text variant="overline">
-              {session.narratorId === 'wordless'
-                ? t('session.narrator.wordless')
-                : t('session.narrator')}
-            </Text>
-            {session.narratorId === 'wordless' ? null : (
-              <Text variant="h3" className="mt-2">
-                {narrator.name}
-              </Text>
-            )}
-            <Text variant="bodySm" className="mt-2">
-              {t(`narrator.${session.narratorId}.bio` as TranslationKey)}
-            </Text>
-          </Card>
-
-          {(entry?.completedCount ?? 0) > 0 ? (
-            <Text variant="caption">
-              {(entry?.completedCount ?? 0) === 1
-                ? t('session.completed.one')
-                : t('session.completed', { count: entry?.completedCount ?? 0 })}
-            </Text>
-          ) : null}
-
-          {session.isPremium ? (
-            <Card featured>
-              <Text variant="h3">{t('session.premium.title')}</Text>
-              <Rule className="mt-3 self-start" />
-            </Card>
-          ) : null}
+        <View className="gap-2 pt-3">
+          {session.isPremium ? <Text variant="overline">{t('common.plus')}</Text> : null}
+          <Text variant="h1">{t(`session.${session.id}.title` as TranslationKey)}</Text>
+          <Text variant="bodySm">
+            {t('common.minutes', { count: toMinutes(session.durationSec) })} ·{' '}
+            {t(`category.${session.categorySlug}.name` as TranslationKey)}
+          </Text>
+          <PracticeProgress world={world} stage="prepare" className="mt-3" />
+          <Text variant="bodySm" tone="muted" numberOfLines={2}>
+            {t(`world.${world.id}.ritual` as TranslationKey)}
+          </Text>
         </View>
+
+        <Card>
+          <View className="gap-6">
+            <Text variant="quote">{t(`session.${session.id}.description` as TranslationKey)}</Text>
+
+            <View className="gap-3">
+              <Text variant="overline">{t('session.benefits')}</Text>
+              <BenefitList session={session} />
+            </View>
+
+            {(entry?.completedCount ?? 0) > 0 ? (
+              <Text variant="caption">
+                {(entry?.completedCount ?? 0) === 1
+                  ? t('session.completed.one')
+                  : t('session.completed', { count: entry?.completedCount ?? 0 })}
+              </Text>
+            ) : null}
+
+            {session.isPremium ? (
+              <View className="gap-2 border-t border-hairline pt-5">
+                <Text variant="h3">{t('session.premium.title')}</Text>
+                <Rule className="mt-3 self-start" />
+              </View>
+            ) : null}
+          </View>
+        </Card>
       </ScrollView>
 
-      <View className="gap-3 px-gutter pb-4">
+      <View className="gap-3 border-t border-hairline bg-ink-raised px-gutter pb-3 pt-3">
         <Button
           testID={TID.Button.SessionPlay}
           label={ctaLabel}
           onPress={() => {
             // The gate is checked here rather than inside the player: a listener
             // should meet the paywall before the artwork, not after it.
-            const gate = gateForSession(session);
-            if (!gate.allowed) {
-              openPaywall(gate.reason);
-              return;
+            if (!isSessionIncludedInOwnedWorld(world.id, session.id, isWorldOwned)) {
+              const gate = gateForSession(session);
+              if (!gate.allowed) {
+                openPaywall(gate.reason);
+                return;
+              }
             }
-            router.push(`/player/${session.id}`);
+            router.push(`/player/${session.id}?worldId=${world.id}`);
           }}
         />
         <Pressable
@@ -143,7 +149,7 @@ export default function SessionDetail() {
           className="flex-row items-center justify-center gap-2 py-2 active:opacity-70">
           <IconSymbol
             name={saved ? 'bookmark.fill' : 'bookmark'}
-            color={colors.accentText}
+            color={worldColors.accentText}
             size={18}
           />
           <Text variant="bodySm" tone="accent">
@@ -151,6 +157,6 @@ export default function SessionDetail() {
           </Text>
         </Pressable>
       </View>
-    </Screen>
+    </WorldScene>
   );
 }
