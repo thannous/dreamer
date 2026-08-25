@@ -1,4 +1,5 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { type AiLanguage, localizedForAi } from '../lib/aiLanguage.ts';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { buildDreamContextPrompt } from '../lib/prompts.ts';
 import {
@@ -21,6 +22,15 @@ import {
 } from '../lib/aiRequestPolicy.ts';
 import { admitSynchronousAiRequest } from '../services/aiAdmission.ts';
 import type { ApiContext } from '../types.ts';
+
+const CHAT_SYSTEM_PREAMBLES: Record<AiLanguage, string> = {
+  en: 'You are an empathetic assistant helping interpret dreams. Be clear and kind, avoid medical claims. Reply in English.',
+  fr: 'Tu es un assistant empathique qui aide à interpréter les rêves. Sois clair, bienveillant et évite les affirmations médicales. Réponds en français.',
+  es: 'Eres un asistente empático que ayuda a interpretar sueños. Sé claro y amable, evita afirmaciones médicas. Responde en español.',
+  de: 'Du bist ein einfühlsamer Assistent, der bei der Traumdeutung hilft. Sei klar und freundlich, vermeide medizinische Aussagen. Antworte auf Deutsch.',
+  it: 'Sei un assistente empatico che aiuta a interpretare i sogni. Sii chiaro e gentile, evita affermazioni mediche. Rispondi in italiano.',
+  pt: 'Você é um assistente acolhedor que ajuda a interpretar sonhos. Seja claro e gentil, evite afirmações médicas. Responda em português do Brasil.',
+};
 
 const MAX_HISTORY_TURNS = 20;
 
@@ -643,16 +653,7 @@ export async function handleChat(
     const apiKey = Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
-    const systemPreamble =
-      lang === 'fr'
-        ? 'Tu es un assistant empathique qui aide à interpréter les rêves. Sois clair, bienveillant et évite les affirmations médicales. Réponds en français.'
-        : lang === 'es'
-          ? 'Eres un asistente empático que ayuda a interpretar sueños. Sé claro y amable, evita afirmaciones médicas. Responde en español.'
-          : lang === 'de'
-            ? 'Du bist ein einfühlsamer Assistent, der bei der Traumdeutung hilft. Sei klar und freundlich, vermeide medizinische Aussagen. Antworte auf Deutsch.'
-            : lang === 'it'
-              ? 'Sei un assistente empatico che aiuta a interpretare i sogni. Sii chiaro e gentile, evita affermazioni mediche. Rispondi in italiano.'
-              : 'You are an empathetic assistant helping interpret dreams. Be clear and kind, avoid medical claims. Reply in English.';
+    const systemPreamble = localizedForAi(lang, CHAT_SYSTEM_PREAMBLES);
 
     const contents: { role: 'user' | 'model'; parts: GeminiPart[] }[] = [];
     const { prompt: dreamContextPrompt, debug: contextDebug } = buildDreamContextPrompt(dream, lang);
