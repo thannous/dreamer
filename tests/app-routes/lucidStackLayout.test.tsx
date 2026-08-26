@@ -12,7 +12,7 @@ let capturedScreenOptions: { animation?: string } | undefined;
 const capturedGuards: { guard: boolean; names: string[] }[] = [];
 
 jest.mock('expo-router', () => {
-  const React = require('react');
+  const React = require('react') as typeof import('react');
   const Stack = ({
     children,
     screenOptions,
@@ -33,10 +33,9 @@ jest.mock('expo-router', () => {
     guard: boolean;
     children?: React.ReactNode;
   }) {
-    const names = React.Children.toArray(children).flatMap((child: unknown) => {
+    const names = React.Children.toArray(children).flatMap((child) => {
       if (!React.isValidElement<{ name?: string }>(child)) return [];
-      const element = child as React.ReactElement<{ name?: string }>;
-      const name = element.props.name;
+      const name = child.props.name;
       return name ? [name] : [];
     });
     capturedGuards.push({ guard, names });
