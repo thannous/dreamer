@@ -113,7 +113,7 @@ assert_change \
 git -C "$test_root" reset -q --hard "$base_revision"
 commit_change app/main-batch.ts >/dev/null
 main_batch_head="$(commit_change docs-src/content/main-batch.md)"
-expected="$(parameters_json affected "$base_revision" true false false false false true false false false false false)"
+expected="$(parameters_json affected "$base_revision" true false true false false true false false false false false)"
 assert_parameters \
   "main multi-commit push covers every changed surface" \
   "$expected" \
@@ -126,8 +126,8 @@ assert_change \
   false true false false false false false false false false false
 
 assert_change \
-  "site source change takes the no-op route" docs-src/content/page.md pr \
-  false false false false false false false false false false false
+  "tracked docs-src content runs the site without Noctalia" docs-src/content/page.md pr \
+  false false true false false false false false false true false
 
 assert_change \
   "generated docs output is a no-op" docs/index.html pr \
@@ -143,11 +143,12 @@ assert_change \
 
 git -C "$test_root" reset -q --hard "$base_revision"
 skip_head="$(commit_change docs-src/content/skip.md '[ci skip] SEO-only batch')"
-assert_parameters "explicit CI opt-out for editorial site sources" "$none" pr "$base_revision" "$skip_head"
+expected="$(parameters_json affected "$base_revision" false false true false false false false false false true false)"
+assert_parameters "CI opt-out does not skip tracked docs-src sources" "$expected" pr "$base_revision" "$skip_head"
 
 git -C "$test_root" reset -q --hard "$base_revision"
 alt_skip_head="$(commit_change docs-src/content/skip-alt.md '[skip ci] SEO-only batch')"
-assert_parameters "skip ci alias also no-ops editorial site sources" "$none" pr "$base_revision" "$alt_skip_head"
+assert_parameters "skip ci alias does not skip tracked docs-src sources" "$expected" pr "$base_revision" "$alt_skip_head"
 
 git -C "$test_root" reset -q --hard "$base_revision"
 ignored_skip_head="$(commit_change app/skip-ci.ts '[ci skip] app change')"
@@ -179,11 +180,16 @@ assert_parameters "CI opt-out after the first 250 characters does not skip Nocta
 
 git -C "$test_root" reset -q --hard "$base_revision"
 upper_skip_head="$(commit_change docs-src/content/upper.md '[CI SKIP] editorial')"
-assert_parameters "uppercase CI opt-out still no-ops editorial sources" "$none" pr "$base_revision" "$upper_skip_head"
+expected="$(parameters_json affected "$base_revision" false false true false false false false false false true false)"
+assert_parameters "uppercase CI opt-out does not skip tracked docs-src sources" "$expected" pr "$base_revision" "$upper_skip_head"
 
 assert_change \
-  "docs-src config remains a site no-op" docs-src/config/site.config.json pr \
-  false false false false false false false false false false false
+  "docs-src config runs the site without Noctalia" docs-src/config/site.config.json pr \
+  false false true false false false false false false true false
+
+assert_change \
+  "ordinary tracked docs-src file selects site-build only" docs-src/content/pages/page.home/en.md pr \
+  false false true false false false false false false true false
 
 assert_change \
   "generic site data still runs the site" data/seo-url-contract-baseline.json pr \

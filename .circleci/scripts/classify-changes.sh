@@ -158,9 +158,13 @@ else
       # Site generators that live under docs-src still need docs:build/docs:check.
       run_site=true
       ;;
-    docs-src/*|docs/*)
-      # Editorial SEO/showcase sources are validated by the Cloudflare Pages
-      # deployment build, not by installing and rebuilding them in CI.
+    docs-src/*)
+      # Tracked marketing-site sources must run docs:build/docs:check in CI.
+      # Cloudflare Pages still deploys later; it is not the first validation gate.
+      run_site=true
+      ;;
+    docs/*)
+      # Generated output is not a source of truth and is not a CI product surface.
       ;;
     data/*)
       run_site=true
