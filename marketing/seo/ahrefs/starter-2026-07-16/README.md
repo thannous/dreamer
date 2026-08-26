@@ -56,6 +56,14 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j32-catch-up-2026-08-16.md`](./j32-catch-up-2026-08-16.md) : rattrapage du checkpoint J+7, reset Starter confirmé, lecture Rank Tracker/Site Audit et implémentation locale des cinq propriétaires `cemetery`, avec séparation du contrat URL et de la publication.
 - [`j34-execution-2026-08-18.md`](./j34-execution-2026-08-18.md) : reprise J34, preuve publique des 15 URL du lot rentrée/guêpes, baseline GSC à 0/0, nouveau cycle Starter et raccourcissement ciblé de trois titles FR (`porte`, `voiture`, `foret`).
 - [`j35-exact-query-matching-2026-08-18.md`](./j35-exact-query-matching-2026-08-18.md) : vérification GSC d'une proposition externe (sept URL, trois titles), courbe CTR du site par position, inspection URL de `alluvione` et lot d'appariement des requêtes exactes ES/IT sur les pages existantes, sans nouvelle URL ni changement de title.
+- [`j36-plan-2026-08-20.md`](./j36-plan-2026-08-20.md) : plan J36 depuis le `master` synchronisé, réconciliation gratuite, gate metadata `scuola`, contrôle d'indexation `alluvione` et micro-lot Starter plafonné pour qualifier `bread` puis `eggs`.
+- [`j36-execution-2026-08-20.md`](./j36-execution-2026-08-20.md) : exécution J36, coupure GSC au 18 août, compteurs Ahrefs 2 → 7, verdicts `scuola`/`alluvione`/`bread` et levier metadata local limité à la fiche ES `escaleras`.
+- [`j36-bread-implementation-brief-2026-08-20.md`](./j36-bread-implementation-brief-2026-08-20.md) : brief durable `bread`, contrat proposé à cinq marchés, scénarios communs et gates à satisfaire avant toute création de route.
+- [`j37-plan-2026-08-21.md`](./j37-plan-2026-08-21.md) : plan J37 avec fermeture séparée du lot local `escaleras`, lectures GSC gratuites, micro-lot Starter `eggs` plafonné à 8 crédits et préparation sans envoi d'un dossier d'autorité externe.
+- [`j37-execution-2026-08-21.md`](./j37-execution-2026-08-21.md) : exécution J37, fermeture locale J36 sur `master` frais, coupure GSC au 19 août, compteur Ahrefs 7 → 12, verdict `eggs` HOLD et dossier Marika Pech prêt sans envoi.
+- [`j38-plan-2026-08-22.md`](./j38-plan-2026-08-22.md) : plan J38 avec triage du mail Rank Tracker 10 up / 16 down, checkpoint GSC J+14 de `casa`–`ragno`–`perro`, décision de publication séparée pour `escaleras`, micro-lot Starter `snail` plafonné à 8 crédits et contrôle DreamWell sans envoi.
+- [`j38-execution-2026-08-22.md`](./j38-execution-2026-08-22.md) : exécution P0/P1 J38, publication publique de `escaleras`, checkpoint GSC partiel au 20 août, micro-lot `snail` avec verdict `HOLD_EVIDENCE`, arrêt coût 12 → 21 et dossier Marika Pech prêt pour confirmation au moment de l'envoi.
+- [`j39-p0-p1-execution-2026-08-23.md`](./j39-p0-p1-execution-2026-08-23.md) : fenêtre GSC complète du cluster eau IT, optimisation bornée de la fiche propriétaire et garde-fou maintenant l’article EN `flying-dreams-meaning` gelé jusqu’au checkpoint du 25 août.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
 - [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27, Misabueso GSC et preuves brutes, périmètres synchronisés et règles de conservation.
@@ -253,3 +261,63 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
   avertissement), tests node 88/88, contrat URL inchangé. Aucun crédit
   Ahrefs, changement Rank Tracker ni demande d'indexation. Lecture prévue à
   partir du 16 septembre. Détails : `j35-exact-query-matching-2026-08-18.md`.
+
+## Actualisation J40 au 24 août 2026 — découverte des articles rentrée
+
+- GSC complet au 22 août affiche `4 708` clics, `614 641` impressions, CTR
+  `0,8 %` et position `7,6` sur 28 jours.
+- Les dix articles rentrée sont encore à `0` clic et `0` impression. Les dix
+  sont non indexés, sans crawl connu et sans page d'origine détectée ; un seul
+  est déjà détecté avec le sitemap comme source.
+- Dix pages éditoriales existantes et déjà visibles dans GSC reçoivent un lien
+  contextuel : cinq articles sur les examens vers les intentions « retourner à
+  l'école » et cinq guides sur les rêves d'enfants vers les cauchemars de
+  rentrée.
+- `scuola`, `casa`, `ragno`, `perro`, `flying dreams`, les 50 suivis et leurs
+  tags restent inchangés. Aucune demande d'indexation ni dépense Ahrefs
+  générale.
+- Ahrefs reste à `21` crédits généraux utilisés, Rank Tracker `50/50` et Site
+  Audit `1 000/10 000`. Le crawl automatique du 24 août conserve un Health
+  Score de `100`; son unique erreur concerne `dream.noctalia.app`, hors contenu
+  éditorial du site marketing.
+- Le dossier Marika Pech est réconcilié : un message a déjà été envoyé le
+  23 août à 16:45 depuis `contact@noctalia.app`; aucune réponse ni mise à jour
+  publique n'est visible à J40. Aucun doublon n'est envoyé.
+- Détails et protocole de mesure : `j40-execution-2026-08-24.md`.
+
+## Actualisation J41 au 25 août 2026 — preuves « precognitive dreams »
+
+- L'URL EN existante `/en/blog/precognitive-dreams-science` concentre
+  `20 238` impressions, `4` clics et une position moyenne de `7,8` sur
+  28 jours complets au 23 août. Le CTR calculé est `0,0198 %`.
+- Le lot local remplace les anecdotes et théories spéculatives non étayées par
+  trois études primaires : résultat positif limité en ligne, absence d'effet
+  dans le laboratoire suivant et mécanismes mesurés de rappel sélectif.
+- Title, H1, description, données sociales, JSON-LD, quick answer, FAQ et CTA
+  sont alignés sur une promesse prudente : une trace horodatée réduit le recul,
+  elle ne prouve pas la précognition.
+- Route, canonical, hreflang et sitemap restent inchangés. Aucune nouvelle
+  page, aucun crédit Ahrefs général, aucune demande d'indexation et aucune
+  mutation des expériences ou des 50 suivis.
+- Détails et plan de mesure :
+  `j41-precognitive-evidence-refresh-2026-08-25.md`.
+
+## Actualisation J42 au 26 août 2026 — preuves « flying dreams »
+
+- La fenêtre postérieure à la modification du 28 juillet est complète :
+  `/en/blog/flying-dreams-meaning` cumule `31` clics, `5 723` impressions,
+  un CTR calculé de `0,542 %` et une position moyenne de `11,9` sur 28 jours
+  complets au 24 août.
+- Les requêtes propriétaires restent faibles : `flying dreams` est en position
+  `21,2`, `flying dreams meaning` en `23,6`, `dreaming of flying` en `22,9`
+  et `dream of flying` en `23,7`. Aucune nouvelle URL n'est créée.
+- Le lot local remplace le taux non sourcé de 33 %, les interprétations
+  universelles et les techniques dites « proven » par trois études primaires,
+  six scénarios contextuels et une méthode de journalisation qui conserve les
+  hypothèses ouvertes.
+- Title, H1, description, données sociales, JSON-LD automatique, quick answer,
+  FAQ et CTA sont alignés sur une promesse prudente. Route, canonical,
+  hreflang, image et sitemap restent inchangés.
+- Aucun crédit Ahrefs général, aucune demande d'indexation et aucune mutation
+  des expériences ou des 50 suivis. Détails et plan de mesure :
+  `j42-flying-dreams-evidence-refresh-2026-08-26.md`.

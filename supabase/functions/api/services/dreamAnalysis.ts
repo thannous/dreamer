@@ -1,3 +1,4 @@
+import { aiLanguageName, type AiLanguage, localizedForAi } from '../lib/aiLanguage.ts';
 import { ANALYZE_DREAM_SCHEMA } from '../lib/schemas.ts';
 import {
   callGeminiWithFallback,
@@ -6,20 +7,13 @@ import {
   resolveTextModel,
 } from './gemini.ts';
 
-const ANALYSIS_LANG_NAMES: Record<string, string> = {
-  en: 'English',
-  fr: 'French',
-  es: 'Spanish',
-  de: 'German',
-  it: 'Italian',
-};
-
-const ANALYSIS_SYSTEM_INSTRUCTIONS: Record<string, string> = {
+const ANALYSIS_SYSTEM_INSTRUCTIONS: Record<AiLanguage, string> = {
   en: 'You are an expert, empathetic dream analyst. Return ONLY valid JSON.',
   fr: 'Tu es un analyste de rêves expert et bienveillant. Retourne UNIQUEMENT du JSON valide.',
   es: 'Eres un analista de sueños experto y empático. Devuelve SOLO JSON válido.',
   de: 'Du bist ein erfahrener, einfühlsamer Traumanalyst. Gib NUR gültiges JSON zurück.',
   it: 'Sei un analista di sogni esperto ed empatico. Restituisci SOLO JSON valido.',
+  pt: 'Você é um analista de sonhos experiente e acolhedor. Retorne APENAS JSON válido.',
 };
 
 const buildAnalysisPrompt = (transcript: string, langName: string): string =>
@@ -50,7 +44,7 @@ export type DreamAnalysisDetails = {
  * output-quality regression can be attributed to a prompt change. It is
  * returned to the client and stored with the dream (`promptVersion`).
  */
-export const ANALYSIS_PROMPT_VERSION = 'analysis-2026-08-19.1';
+export const ANALYSIS_PROMPT_VERSION = 'analysis-2026-08-20.1';
 
 export type StructuredDreamAnalysis = {
   title: string;
@@ -103,8 +97,8 @@ export const runDreamAnalysis = async (options: {
   route: string;
 }): Promise<StructuredDreamAnalysis> => {
   const { apiKey, transcript, lang, route } = options;
-  const langName = ANALYSIS_LANG_NAMES[lang] ?? ANALYSIS_LANG_NAMES.en;
-  const systemInstruction = ANALYSIS_SYSTEM_INSTRUCTIONS[lang] ?? ANALYSIS_SYSTEM_INSTRUCTIONS.en;
+  const langName = aiLanguageName(lang);
+  const systemInstruction = localizedForAi(lang, ANALYSIS_SYSTEM_INSTRUCTIONS);
 
   const primaryModel = resolveTextModel('GEMINI_MODEL', GEMINI_FLASH_MODEL);
   const fallbackModel = resolveTextModel('GEMINI_FALLBACK_MODEL', GEMINI_FLASH_LITE_MODEL);

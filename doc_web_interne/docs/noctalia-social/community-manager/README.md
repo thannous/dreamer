@@ -17,8 +17,10 @@ n'est ni validé, ni planifié, ni publié.
 - `npm run social:proof -- <registre-du-jour.md>` : valide la structure et les
   domaines des preuves déjà collectées sans exiger que la journée soit close.
 - `npm run social:proof:close -- <registre-du-jour.md>` : ne doit passer qu'en
-  fin de journée, lorsque les 12 lignes sont `PUBLIÉES` avec 12 URL publiques
-  distinctes sur les domaines attendus.
+  fin de journée, lorsque les 12 lignes ont un état terminal : soit `PUBLIÉ`
+  avec une URL publique distincte sur le domaine attendu, soit exactement
+  `ÉCHEC — NON PUBLIÉ` sans URL. Un échec terminal reste une dette réelle et
+  n'est jamais compté comme une publication.
 - `npm run social:proof:registers` : découvre automatiquement les registres
   `PUBLIC-PROOF-AAAA-MM-JJ.md`; toute date antérieure à aujourd'hui
   (`Europe/Paris`) doit être strictement close, tandis qu'aujourd'hui et les
@@ -43,6 +45,10 @@ dans la plateforme native.
 - piloter la diffusion principale de trois vidéos distinctes par jour sur
   TikTok, Instagram et X, puis la vidéo hero quotidienne sur YouTube Shorts,
   Facebook Reels et Pinterest ;
+- sur X `@NoctaliaDreams` uniquement : exécuter le protocole de croissance
+  (réponses, 1 texte/jour, légendes X) décrit dans
+  [`x-growth/X-GROWTH-PROTOCOL.md`](./x-growth/X-GROWTH-PROTOCOL.md), sans
+  annuler la file vidéo déjà programmée ;
 - résorber progressivement le retard des plateformes d'extension avec une file
   `ARCHIVE` séparée, limitée à une ancienne vidéo supplémentaire par jour et
   strictement contrôlée par plateforme ;

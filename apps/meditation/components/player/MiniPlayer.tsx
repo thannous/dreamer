@@ -41,7 +41,7 @@ export function MiniPlayer() {
   const playing = status === 'playing';
 
   return (
-    <Animated.View className="border-t border-hairline bg-ink-card">
+    <Animated.View className="mx-2.5 overflow-hidden rounded-full border border-hairline bg-ink-raised">
       <View className="flex-row items-center gap-3 px-gutter py-2">
         <AnimatedPressable
           accessibilityRole="button"

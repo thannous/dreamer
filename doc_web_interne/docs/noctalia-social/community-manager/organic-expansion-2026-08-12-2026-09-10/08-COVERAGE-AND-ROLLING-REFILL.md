@@ -16,6 +16,35 @@ d'exécution.
 | YouTube `Noctalia` | Hero à 18:00 | **18/28 heroes exacts** programmés dans la fenêtre jusqu'au **01/09** ; la ligne du 30/08 utilise encore l'ancien master `DAY_LUNARPUNK…` bloqué QA | **10 actions** : remplacer le 30/08 à 18:00 par `AFTERGLOW_SURREAL_FLOWER_WORLD_FLIGHT_01.mp4`, puis programmer les 9 heroes du 02 au 10/09 ; limite quotidienne d'upload rencontrée |
 | Facebook `Noctalia` | Hero à 18:15 | **28/28 heroes exacts** programmés jusqu'au **10/09** ; le média et la copie du 30/08 ont été remplacés dans la même ligne native ID `1808499846845426` et l'aperçu 10 s a été vérifié | Dette hero `0/28 = 0 %` ; conserver le pilote archive déjà programmé et mesurer séparément ses résultats |
 
+Contrôle public du 20/08 C1 : le Reel Instagram `HIGGS_2026-08-06_002_FP_CITY.mp4` est désormais
+ouvert sur le compte exact `@noctaliadreams` à [cette URL](https://www.instagram.com/noctaliadreams/reel/DcQ6OU6pkea/),
+avec le hook attendu. La ligne était déjà comptée dans les `81/84` comme `PRÊT — DIRECT` ; la
+preuve publique ne change donc pas le compteur roulant. La page publique n'expose pas de libellé
+IA natif, ce qui est consigné dans le registre quotidien sans action de republication.
+
+Contrôle public du 20/08 C2 : le Reel Instagram `HIGGS_2026-08-06_003_FP_CITY.mp4` est ouvert sur
+le compte exact à [cette URL](https://www.instagram.com/noctaliadreams/reel/DcRV8lPJ6d2/) avec le hook
+attendu. Cette ligne était elle aussi déjà incluse dans les `81/84` comme `PRÊT — DIRECT` ; le
+compteur roulant reste donc inchangé. Aucun libellé IA natif n'est exposé par la page publique.
+
+Après le contrôle C2 du 20/08, TikTok Studio reste non authentifié (`Se connecter` visible) : aucune
+capacité native réelle n'est prouvée. La prochaine ligne demeure donc le 30/08 C3
+`AFTERGLOW_LUNARPUNK_SILVER_LUNAR_02.mp4`, `PRÊT — NON PROGRAMMÉ`, sans saut ni suppression.
+
+Contrôle public du 20/08 C3 : le Reel Instagram `HIGGS_2026-08-06_004_FP_CITY.mp4` est ouvert sur
+le compte exact à [cette URL](https://www.instagram.com/noctaliadreams/reel/DcRrP-Bp0Tm/) ; le
+hook et la date du 20/08 sont concordants. La publication est apparue à 22:59:10 Europe/Paris,
+donc tardive mais non anticipée. Le post X C3 est clos à [cette URL](https://x.com/NoctaliaDreams/status/2090548175711216121),
+avec l'heure native `23:15 · 20 août 2026` et `Fabriqué avec l'IA`. Ces preuves ne changent pas
+le compteur Instagram roulant `81/84`, qui conserve la dette historique explicite du 14/08.
+
+Contrôle public des HEROES du 20/08 : Pinterest est clos par [l'épingle
+1127940669218325376](https://fr.pinterest.com/pin/1127940669218325376/) (tableau `Lucid Dream
+Inspiration`, UTM et label `Modifiée par IA` concordants) et Facebook par [le Reel
+1416489937207759](https://www.facebook.com/reel/1416489937207759/) (page `Noctalia`, audience
+`Public`, création 18:15:24 Europe/Paris). Les deux URL ont été ouvertes après échéance et
+ajoutées au registre quotidien ; aucune republication ni modification de file n'a été effectuée.
+
 Les heroes du **04 au 10 septembre** sont désormais couverts par sept masters
 Magnific/Pikaso distincts, validés explicitement par le propriétaire le 13 août
 après QA technique et visuelle locale. Les sept masters HERO ont leurs liens

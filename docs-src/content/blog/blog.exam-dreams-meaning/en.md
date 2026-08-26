@@ -127,5 +127,5 @@
 <li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1177/02762366241254818" rel="nofollow noopener noreferrer" target="_blank">Schredl (2024), continuity between waking life and dreaming</a></li>
 </ul>
 </section>
-<p class="text-sm text-purple-200/70 mt-10"><a class="text-dream-salmon hover:underline" href="../symbols/exam">exam symbol</a> · <a class="text-dream-salmon hover:underline" href="anxiety-dreams-meaning">anxiety dreams</a> · <a class="text-dream-salmon hover:underline" href="recurring-dreams-meaning">recurring dreams</a></p>
+<p class="text-sm text-purple-200/70 mt-10"><a class="text-dream-salmon hover:underline" href="../symbols/exam">exam symbol</a> · <a class="text-dream-salmon hover:underline" href="anxiety-dreams-meaning">anxiety dreams</a> · <a class="text-dream-salmon hover:underline" href="recurring-dreams-meaning">recurring dreams</a> · <a class="text-dream-salmon hover:underline" href="back-to-school-dreams-meaning">back-to-school dreams</a></p>
 </article>

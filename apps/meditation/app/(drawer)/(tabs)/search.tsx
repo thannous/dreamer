@@ -11,6 +11,7 @@ import { Chip, Rule, Text, TextField } from '@/components/ui';
 import { CATEGORIES } from '@/content/categories';
 import { SESSIONS } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
+import { useTabBarInset } from '@/hooks/useTabBarInset';
 import { TID } from '@/lib/testIDs';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import type { TranslationKey } from '@/lib/i18n';
@@ -28,6 +29,7 @@ function CategoryTile({ category }: { category: Category }) {
 
   return (
     <AnimatedPressable
+      testID={category.slug === 'dream-prep' ? TID.Option.CategoryDreamPrep : undefined}
       accessibilityRole="button"
       onPress={() => router.push(`/category/${category.slug}`)}
       onPressIn={handlePressIn}
@@ -46,6 +48,7 @@ function CategoryTile({ category }: { category: Category }) {
 }
 
 export default function SearchTab() {
+  const tabBarInset = useTabBarInset();
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [maxLength, setMaxLength] = useState<number | null>(null);
@@ -72,7 +75,8 @@ export default function SearchTab() {
     <Screen variant="subtle" edges={['top']}>
       <ScrollView
         testID={TID.Screen.Search}
-        contentContainerClassName="px-gutter pb-10 pt-4 gap-6"
+        contentContainerClassName="px-gutter pt-4 gap-6"
+        contentContainerStyle={{ paddingBottom: tabBarInset }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
         <View className="gap-3">
@@ -133,7 +137,15 @@ export default function SearchTab() {
               </Text>
             </View>
           ) : (
-            results.map((session) => <SessionCard key={session.id} session={session} />)
+            results.map((session) => (
+              <SessionCard
+                key={session.id}
+                session={session}
+                testID={
+                  session.id === 'sleep-descent' ? TID.Option.SearchSleepDescent : undefined
+                }
+              />
+            ))
           )}
         </View>
       </ScrollView>

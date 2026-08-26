@@ -14,7 +14,9 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 type Props = {
   label: string;
   /** Where to land when there is no history — a deep link opened cold. */
-  fallbackHref?: '/' | '/(tabs)' | '/search';
+  // The tabs sit under two route groups, so the canonical href names both.
+  // Plain '/' is ambiguous with `app/index.tsx` and redirects onto itself.
+  fallbackHref?: '/(drawer)/(tabs)' | '/search';
   className?: string;
   testID?: string;
 };
@@ -24,7 +26,7 @@ type Props = {
  * its own: it does not exist on Android hardware-button setups, and a
  * deep-linked screen may have nothing to go back to at all.
  */
-export function BackLink({ label, fallbackHref = '/(tabs)', className, testID }: Props) {
+export function BackLink({ label, fallbackHref = '/(drawer)/(tabs)', className, testID }: Props) {
   const router = useRouter();
   const { colors } = useTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'link' });

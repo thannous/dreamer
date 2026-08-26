@@ -52,7 +52,11 @@ export default function SessionDetail() {
 
   return (
     <Screen variant="immersive" edges={['top']}>
-      <BackLink label={t('common.back')} className="px-gutter pb-2 pt-2" />
+      <BackLink
+        testID={TID.Button.SessionBack}
+        label={t('common.back')}
+        className="px-gutter pb-2 pt-2"
+      />
 
       <ScrollView
         testID={TID.Screen.SessionDetail}
@@ -80,19 +84,30 @@ export default function SessionDetail() {
             <BenefitList session={session} />
           </View>
 
+          {/* A wordless session has no one guiding it, so it gets no "guided
+              by" and no name line — the label carries the whole idea, and the
+              player already says the same thing the same way. */}
           <Card>
-            <Text variant="overline">{t('session.narrator')}</Text>
-            <Text variant="h3" className="mt-2">
-              {session.narratorId === 'wordless' ? t('session.narrator.wordless') : narrator.name}
+            <Text variant="overline">
+              {session.narratorId === 'wordless'
+                ? t('session.narrator.wordless')
+                : t('session.narrator')}
             </Text>
-            <Text variant="bodySm" className="mt-1">
+            {session.narratorId === 'wordless' ? null : (
+              <Text variant="h3" className="mt-2">
+                {narrator.name}
+              </Text>
+            )}
+            <Text variant="bodySm" className="mt-2">
               {t(`narrator.${session.narratorId}.bio` as TranslationKey)}
             </Text>
           </Card>
 
           {(entry?.completedCount ?? 0) > 0 ? (
             <Text variant="caption">
-              {t('session.completed', { count: entry?.completedCount ?? 0 })}
+              {(entry?.completedCount ?? 0) === 1
+                ? t('session.completed.one')
+                : t('session.completed', { count: entry?.completedCount ?? 0 })}
             </Text>
           ) : null}
 

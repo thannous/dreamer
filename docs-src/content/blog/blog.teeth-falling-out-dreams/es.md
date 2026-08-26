@@ -423,7 +423,7 @@
         </a>
         <a href="suenos-de-volar" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de volar: que significa volar en sueños</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de volar: qué significa volar en sueños</h3>
             <p class="text-sm text-gray-400">¿Por qué sueñas con volar? Descubre lo que los sueños de volar revelan sobre la libertad y la ambición.</p>
         </a>
   </div>

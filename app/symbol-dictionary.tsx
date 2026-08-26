@@ -90,7 +90,9 @@ export default function SymbolDictionaryScreen() {
   const { colors, shadows, mode } = useTheme();
   const { t, currentLang } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const lang = (currentLang ?? "en") as SymbolLanguage;
+  // Direct assignment on purpose: it is a compile error if AppLanguage ever
+  // gains a language the bundled dictionary has no content for.
+  const lang: SymbolLanguage = currentLang;
   const guideCopy = getDreamGuideCopy(lang);
   const useNativeHeaderSearch =
     process.env.EXPO_OS === "ios" && typeof document === "undefined";

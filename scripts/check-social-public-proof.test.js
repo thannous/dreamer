@@ -85,6 +85,30 @@ describe('social public proof guard', () => {
 
   it('rejects closure when public URLs are missing', () => {
     expect(() => validatePublicProof(register(), { requirePublished: true }))
+      .toThrow('statut PUBLIÉ manquant (sauf ÉCHEC — NON PUBLIÉ terminal)');
+  });
+
+  it('accepts a terminal ÉCHEC — NON PUBLIÉ without a URL when closing a past register', () => {
+    const failed = register({ published: true })
+      .replace('**PUBLIÉ**', '**ÉCHEC — NON PUBLIÉ**')
+      .replace(`[URL](${proofUrl('TikTok', 0, 'main')})`, 'Aucune URL publique');
+
+    expect(validatePublicProof(failed, { requirePublished: true })).toEqual({ rows: 12, urls: 11 });
+  });
+
+  it('rejects a terminal ÉCHEC — NON PUBLIÉ paired with a public URL', () => {
+    const failedWithUrl = register({ published: true }).replace('**PUBLIÉ**', '**ÉCHEC — NON PUBLIÉ**');
+
+    expect(() => validatePublicProof(failedWithUrl, { requirePublished: true }))
+      .toThrow('ÉCHEC — NON PUBLIÉ incompatible avec une URL publique');
+  });
+
+  it('rejects a qualified failure that is not the explicit terminal status', () => {
+    const retryableFailure = register({ published: true })
+      .replace('**PUBLIÉ**', '**ÉCHEC — NON PUBLIÉ — À RÉESSAYER**')
+      .replace(`[URL](${proofUrl('TikTok', 0, 'main')})`, 'Aucune URL publique');
+
+    expect(() => validatePublicProof(retryableFailure, { requirePublished: true }))
       .toThrow('statut PUBLIÉ manquant');
   });
 

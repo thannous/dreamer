@@ -284,7 +284,7 @@
 <ul>
 <li><strong>Occurrence chaque nuit :</strong> Rêver du travail chaque nuit pendant plus de deux semaines consécutives</li>
 <li><strong>Évitement du sommeil :</strong> Veiller tard pour éviter les <a class="text-dream-salmon hover:underline" href="guide-cauchemars">cauchemars</a> liés au travail</li>
-<li><strong>Appréhension matinale :</strong> Se réveiller de rêves de travail avec des symptômes physiques (coeur qui s'emballe, nausées, sueurs)</li>
+<li><strong>Appréhension matinale :</strong> Se réveiller de rêves de travail avec des symptômes physiques (cœur qui s'emballe, nausées, sueurs)</li>
 <li><strong>Flashbacks diurnes :</strong> Les scènes de rêves de travail s'immiscent dans vos pensées éveillées</li>
 <li><strong>Engourdissement émotionnel :</strong> Se sentir détaché ou cynique envers le travail après des rêves persistants</li>
 <li><strong>Recours aux substances :</strong> Utiliser l'alcool ou des somnifères pour supprimer les rêves de travail</li>

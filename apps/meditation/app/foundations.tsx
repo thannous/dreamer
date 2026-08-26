@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { ProgressiveSilence } from '@/components/atmosphere/ProgressiveSilence';
+import { SilenceProvider } from '@/context/SilenceContext';
 import { Screen } from '@/components/atmosphere/Screen';
 import { Button, Card, Chip, GlassCard, Rule, Sheet, Text } from '@/components/ui';
 import type { ThemePreference } from '@/constants/theme';
@@ -146,15 +147,17 @@ export default function FoundationsScreen() {
             secondes sans geste. Un toucher les rappelle.
           </Text>
           <Card>
-            <ProgressiveSilence active={silence} delayMs={4000}>
-              <View className="gap-2">
-                <Text variant="overline">Commandes</Text>
-                <Text variant="h3">Ceci s&apos;efface tout seul</Text>
-                <Text variant="bodySm">
-                  Touchez la carte pour les faire revenir.
-                </Text>
-              </View>
-            </ProgressiveSilence>
+            <SilenceProvider active={silence} delayMs={4000}>
+              <ProgressiveSilence>
+                <View className="gap-2">
+                  <Text variant="overline">Commandes</Text>
+                  <Text variant="h3">Ceci s&apos;efface tout seul</Text>
+                  <Text variant="bodySm">
+                    Touchez le bloc effacé pour le faire revenir.
+                  </Text>
+                </View>
+              </ProgressiveSilence>
+            </SilenceProvider>
             <View className="mt-4 flex-row gap-2">
               <Chip
                 label={silence ? 'Séance en cours' : 'En pause'}

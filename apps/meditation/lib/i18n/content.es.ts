@@ -10,12 +10,12 @@ export const contentEs = {
   'category.anxiety.tagline': 'Dejar pasar la ola',
   'category.gratitude.name': 'Gratitud',
   'category.gratitude.tagline': 'Ver lo que ya está ahí',
-  'category.dream-prep.name': 'Preparación al sueño',
+  'category.dream-prep.name': 'Preparación para soñar',
   'category.dream-prep.tagline': 'Hacerle una pregunta a la noche',
 
   'narrator.camille.bio': 'Voz suave, ritmo lento.',
   'narrator.adrien.bio': 'Voz grave, frases cortas.',
-  'narrator.wordless.bio': 'Sin voz: aliento y silencio.',
+  'narrator.wordless.bio': 'Aliento y silencio, nada que seguir.',
 
   'session.sleep-descent.title': 'Bajar la respiración',
   'session.sleep-descent.description':
@@ -63,7 +63,7 @@ export const contentEs = {
   'session.stress-day-close.description':
     'Un ritual de fin de jornada: lo hecho, hecho está; el resto esperará a mañana.',
   'session.stress-day-close.benefit.1': 'Marca el corte',
-  'session.stress-day-close.benefit.2': 'Antes de la tarde',
+  'session.stress-day-close.benefit.2': 'Antes de la noche',
   'session.stress-day-close.benefit.3': 'Suelta la carga mental',
 
   'session.stress-storm.title': 'Atravesar la tormenta',
@@ -152,14 +152,14 @@ export const contentEs = {
 
   'session.gratitude-year.title': 'Un año atrás',
   'session.gratitude-year.description':
-    'Un año, día por día. Lo que cambió, lo que aguantó, lo que te sostuvo.',
+    'Hoy hace un año. Lo que cambió, lo que aguantó, lo que te sostuvo.',
   'session.gratitude-year.benefit.1': 'Toma de distancia',
   'session.gratitude-year.benefit.2': 'Práctica larga',
   'session.gratitude-year.benefit.3': 'Hacerla a solas',
 
   'session.dream-threshold.title': 'El umbral',
   'session.dream-threshold.description':
-    'Los últimos minutos antes del sueño son los que el sueño escucha. Los preparamos.',
+    'Los últimos minutos antes de dormir son los que el sueño escucha. Los preparamos.',
   'session.dream-threshold.benefit.1': 'Justo antes de dormir',
   'session.dream-threshold.benefit.2': 'Abre el sueño',
   'session.dream-threshold.benefit.3': 'Ligada a Noctalia',

@@ -2,7 +2,16 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo } from 'react';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import Animated, { interpolate, useAnimatedStyle } from 'react-native-reanimated';
-import Svg, { Circle, Defs, Ellipse, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
+import Svg, {
+  Circle,
+  Defs,
+  Ellipse,
+  LinearGradient as SvgLinearGradient,
+  Path,
+  RadialGradient,
+  Rect,
+  Stop,
+} from 'react-native-svg';
 
 import { BreathAmplitude } from '@/constants/motion';
 import { useBreath } from '@/context/BreathContext';
@@ -60,6 +69,9 @@ export function NightBackground({ variant = 'immersive' }: Props) {
   const starOpacity = isSubtle ? 0.35 : 1;
   const baseGlow = isSubtle ? atmosphere.glowOpacity * 0.5 : atmosphere.glowOpacity;
   const horizonOpacity = isSubtle ? (isDark ? 0.22 : 0.16) : isDark ? 0.74 : 0.48;
+  // Barely damped behind lists: the colour has to survive under a wall of
+  // cards, since those cards are the surfaces meant to be sampling it.
+  const auroraOpacity = isSubtle ? 0.85 : 1;
 
   // The halo lives in its own layer so the breath animates a plain opacity on
   // the UI thread, instead of driving SVG props frame by frame.
@@ -83,6 +95,30 @@ export function NightBackground({ variant = 'immersive' }: Props) {
         end={{ x: 0.9, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
+
+      {/* Aurora: a few very wide colour fields under everything else. They are
+          what the translucent surfaces sample — without them the light theme
+          has nothing but beige behind the glass. Static, so they stay in their
+          own layer rather than re-rendering with the breath. */}
+      <Svg width={width} height={height} style={StyleSheet.absoluteFill}>
+        <Defs>
+          {atmosphere.aurora.map((field, index) => (
+            <RadialGradient key={index} id={`aurora-${index}`} cx="50%" cy="50%" r="50%">
+              <Stop offset="0" stopColor={field.color} stopOpacity={field.opacity * auroraOpacity} />
+              <Stop offset="1" stopColor={field.color} stopOpacity={0} />
+            </RadialGradient>
+          ))}
+        </Defs>
+        {atmosphere.aurora.map((field, index) => (
+          <Circle
+            key={index}
+            cx={width * field.cx}
+            cy={height * field.cy}
+            r={Math.max(width, height) * field.r}
+            fill={`url(#aurora-${index})`}
+          />
+        ))}
+      </Svg>
 
       <Animated.View style={[StyleSheet.absoluteFill, haloStyle]}>
         <Svg width={width} height={height}>
@@ -150,13 +186,23 @@ export function NightBackground({ variant = 'immersive' }: Props) {
           fill="none"
         />
 
-        {/* Veil: settles the lower half so text always stays readable. */}
+        {/* Veil: settles the lower half so text always stays readable.
+            It ramps in from nothing rather than starting flat. A plain
+            rectangle put a hard edge straight across the screen, a few points
+            above the horizon curve it was supposed to sit under — invisible
+            behind the player artwork, glaring on the breathing screen. */}
+        <Defs>
+          <SvgLinearGradient id="veil" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={atmosphere.veil} stopOpacity={0} />
+            <Stop offset="0.45" stopColor={atmosphere.veil} stopOpacity={1} />
+          </SvgLinearGradient>
+        </Defs>
         <Rect
           x={0}
-          y={height * 0.55}
+          y={height * 0.4}
           width={width}
-          height={height * 0.45}
-          fill={atmosphere.veil}
+          height={height * 0.6}
+          fill="url(#veil)"
           opacity={isSubtle ? 0.5 : 1}
         />
       </Svg>

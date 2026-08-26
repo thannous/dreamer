@@ -438,7 +438,7 @@ Les liens contextuels supplémentaires restent autorisés. Le contrôle ne doit 
 - `scripts/docs-check.js` : ajout des deux contrats ;
 - `package.json` : commandes ciblées `docs:check-content-hubs` et `docs:check-url-stability`.
 
-La workflow `.github/workflows/quality.yml` exécute déjà `docs:build` puis `docs:check` lorsque `docs-src/`, `data/` ou `scripts/` change. Aucune modification de workflow n’est nécessaire si les deux contrôles sont bien intégrés à `docs:check`.
+Le job CircleCI `site-build` exécute `docs:build` puis `docs:check` lorsque les générateurs, `data/` ou les scripts site changent. Un changement pur `docs-src/` de la vitrine reste un no-op CI, validé par le build Cloudflare Pages. Aucune modification du routage n’est nécessaire si les deux contrôles sont bien intégrés à `docs:check`.
 
 ### Fichiers explicitement inchangés dans le MVP
 

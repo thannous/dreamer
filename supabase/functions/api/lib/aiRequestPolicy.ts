@@ -1,3 +1,4 @@
+import { isAiLanguage } from './aiLanguage.ts';
 import { corsHeaders } from './constants.ts';
 
 export const AI_REQUEST_LIMITS = {
@@ -60,11 +61,9 @@ const UUID_PATTERN =
 
 export const isValidUuid = (value: string): boolean => UUID_PATTERN.test(value);
 
-const SUPPORTED_AI_LANGUAGES = new Set(['en', 'fr', 'es', 'de', 'it', 'pt']);
-
 export const normalizeAiLanguage = (value: string): string => {
   const base = value.toLowerCase().split(/[-_]/)[0];
-  return SUPPORTED_AI_LANGUAGES.has(base) ? base : 'en';
+  return isAiLanguage(base) ? base : 'en';
 };
 
 export const aiInputErrorResponse = (

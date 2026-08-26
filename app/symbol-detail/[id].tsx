@@ -33,7 +33,9 @@ export default function SymbolDetailScreen() {
   const { colors, shadows, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, currentLang } = useTranslation();
-  const lang = (currentLang ?? 'en') as SymbolLanguage;
+  // Direct assignment on purpose: it is a compile error if AppLanguage ever
+  // gains a language the bundled dictionary has no content for.
+  const lang: SymbolLanguage = currentLang;
   const scrollPerf = useScrollIdle();
   const trackedSymbolRef = useRef<string | null>(null);
 

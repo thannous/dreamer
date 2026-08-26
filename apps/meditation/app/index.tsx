@@ -13,5 +13,5 @@ export default function StartupRoute() {
 
   if (!loaded) return null;
 
-  return <Redirect href={state.completed ? '/(tabs)' : '/welcome'} />;
+  return <Redirect href={state.completed ? '/(drawer)/(tabs)' : '/welcome'} />;
 }

@@ -167,6 +167,9 @@
 <p>
                     Los niños en edad escolar sueñan cada vez más con <strong>situaciones sociales</strong>: amistades, conflictos con compañeros, profesores y escenarios de la <a class="text-dream-salmon hover:underline" href="../simbolos/escuela">escuela</a>. Los sueños de ser perseguido, caer o pasar vergüenza en público se vuelven más comunes durante este período, reflejando la creciente importancia del estatus social y la ansiedad por el rendimiento en la vida del niño.
                 </p>
+<p>
+                    Cuando estos sueños se concentran alrededor del nuevo curso, nuestra guía sobre <a class="text-dream-salmon hover:underline" href="pesadillas-vuelta-al-cole-ninos">pesadillas de vuelta al cole en niños</a> ayuda a los padres a distinguir un mal sueño, una pesadilla y un terror nocturno.
+                </p>
 <h3>Adolescentes: Identidad y emociones</h3>
 <p>
                     Los sueños de los adolescentes se asemejan a los de los adultos en su complejidad. Dominan los temas de identidad, relaciones románticas, imagen corporal y aspiraciones futuras. Los adolescentes también experimentan más <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a> durante los períodos de cambios hormonales y presión académica. Entender <a class="text-dream-salmon hover:underline" href="por-que-sonamos-ciencia">por qué soñamos</a> puede ayudar a los adolescentes a dar sentido a la intensidad emocional que experimentan durante el sueño.

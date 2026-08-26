@@ -166,6 +166,9 @@
 <p>
                     Im Schulalter tauchen häufiger Freundschaften, Konflikte, Lehrkräfte und die <a class="text-dream-salmon hover:underline" href="../traumsymbole/schule">Schule</a> auf. Ein peinlicher oder bedrohlicher Traum kann an ein Tageserlebnis erinnern, muss aber weder Leistungsangst noch ein verborgenes Problem beweisen.
                 </p>
+<p>
+                    Häufen sich solche Träume zum Schulstart, hilft unser Ratgeber zu <a class="text-dream-salmon hover:underline" href="albtraeume-schulanfang-kinder">Albträumen bei Kindern zum Schulanfang</a>, schlechte Träume, Albträume und Nachtschreck voneinander zu unterscheiden.
+                </p>
 <h3>Jugendliche: Identität und Emotionen</h3>
 <p>
                     Jugendliche berichten ähnlich komplexe Handlungen wie Erwachsene. Identität, Beziehungen, Körperbild und Zukunft können darin vorkommen, ebenso völlig alltägliche oder absurde Szenen. Bei belastenden <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Albträumen</a> ist das offene Gespräch wichtiger als eine schnelle Symboldeutung. Unser Überblick erklärt außerdem, <a class="text-dream-salmon hover:underline" href="warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern">welche Theorien es zum Träumen gibt</a>.

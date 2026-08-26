@@ -132,7 +132,7 @@
 <li><strong>Résolution de problèmes :</strong> Votre subconscient travaille sur les défis pendant votre sommeil</li>
 <li><strong>Connaissance de soi :</strong> Comprenez vos peurs, désirs et pensées cachées</li>
 </ul>
-<h3>Benefices pratiques du journal onirique</h3>
+<h3>Bénéfices pratiques du journal onirique</h3>
 <ul>
 <li><strong>Mémoire améliorée :</strong> Entraîner le rappel des rêves renforce la mémoire globale</li>
 <li><strong>Meilleure conscience du sommeil :</strong> Remarquez les patterns affectant la qualité du sommeil</li>
@@ -158,9 +158,9 @@
 <li>Les <strong>nouvelles entrées sensorielles</strong> commencent immédiatement à écraser les souvenirs de rêves</li>
 <li>Le <strong>cortex préfrontal</strong> active la pensée logique, qui peut "rejeter" le contenu illogique des rêves</li>
 </ul>
-<h3>Fenetre de 5 minutes : quand noter ses rêves</h3>
+<h3>Fenêtre de 5 minutes : quand noter ses rêves</h3>
 <p>
-                    La recherche montre que <strong>dans les 5 minutes suivant le réveil</strong>, 50% du contenu du rêve est oublie. Apres 10 minutes, jusqu'à 90% a disparu. C'est pourquoi capturer les rêves immédiatement au réveil est crucial.
+                    La recherche montre que <strong>dans les 5 minutes suivant le réveil</strong>, 50% du contenu du rêve est oublié. Après 10 minutes, jusqu'à 90% a disparu. C'est pourquoi capturer les rêves immédiatement au réveil est crucial.
                 </p>
 <p>
                     La bonne nouvelle ? <strong>Le rappel des rêves est entraînable</strong>. Les études montrent qu'un journaling régulier augmente le rappel des rêves d'une moyenne de 0,5 rêve par nuit a 2-4 rêves en quelques semaines.
@@ -169,21 +169,21 @@
 <p>
                     Démarrer un journal de rêves est simple, mais le format doit correspondre à votre état réel au réveil. Si écrire vous demande trop d’effort, choisissez la voix. Si le papier vous aide à ralentir, gardez un carnet. Si vous voulez retrouver des symboles plus tard, une application devient vite utile.
                 </p>
-<h3>Etape 1 : Choisir entre carnet ou application</h3>
+<h3>Étape 1 : Choisir entre carnet ou application</h3>
 <ul>
 <li><strong>Enregistrement vocal :</strong> Méthode la plus rapide, idéale pour capturer les détails avant qu'ils ne s'effacent</li>
 <li><strong>Journal physique :</strong> Beaucoup trouvent que l'écriture manuscrite aide au traitement et à la mémoire</li>
 <li><strong>Application numérique :</strong> Recherchable, organisée, avec des tags, des symboles et des pistes d’interprétation</li>
 <li><strong>Combinaison :</strong> Enregistrez immédiatement à la voix, transcrivez plus tard</li>
 </ul>
-<h3>Etape 2 : Preparer sa table de chevet</h3>
+<h3>Étape 2 : Préparer sa table de chevet</h3>
 <ul>
 <li>Placez votre journal/téléphone <strong>a portée de main</strong> de votre lit</li>
 <li>Si vous utilisez un stylo, assurez-vous qu'il fonctionne (testez-le chaque soir)</li>
 <li>Considérez une <strong>lumière tamisée</strong> ou un appareil rétroéclairé pour éviter de vous réveiller complètement</li>
 <li>Gardez la barrière d'enregistrement aussi basse que possible</li>
 </ul>
-<h3>Etape 3 : Programmer son esprit avant le sommeil</h3>
+<h3>Étape 3 : Programmer son esprit avant le sommeil</h3>
 <p>
                     Avant de dormir, dites-vous : <strong>"Je me souviendrai de mes rêves."</strong> Cette simple fixation d'intention améliore de façon mesurable le rappel des rêves. Visualisez-vous vous réveiller et enregistrer vos rêves.
                 </p>
@@ -205,15 +205,15 @@
 <p>
                     Une bonne entrée capture plus que l’histoire. Elle garde le contexte qui permettra, plus tard, de distinguer un symbole isolé d’un motif récurrent. Utilisez toujours les mêmes champs pour rendre la relecture plus facile.
                 </p>
-<h3>Elements essentiels a noter dans chaque rêve</h3>
+<h3>Éléments essentiels à noter dans chaque rêve</h3>
 <ul>
 <li><strong>Date et heure :</strong> Suivez les patterns de quand les rêves vivides surviennent</li>
 <li><strong>Récit :</strong> L'histoire de ce qui s'est passe, au présent</li>
-<li><strong>Émotions :</strong> Comment vous vous êtes senti pendant et apres le rêve</li>
+<li><strong>Émotions :</strong> Comment vous vous êtes senti pendant et après le rêve</li>
 <li><strong>Personnages :</strong> Qui est apparu - personnes réelles, inconnus, vous-même</li>
 <li><strong>Lieux :</strong> Ou cela s'est passe - endroits familiers, étranges, spécifiques</li>
 </ul>
-<h3>Details oniriques pour enrichir le journal</h3>
+<h3>Détails oniriques pour enrichir le journal</h3>
 <ul>
 <li><strong>Couleurs :</strong> Les couleurs vives portent souvent une signification</li>
 <li><strong>Symboles :</strong> Objets, animaux ou éléments récurrents - consultez notre <a class="text-dream-salmon hover:underline" href="../guides/dictionnaire-symboles-reves">dictionnaire des symboles de rêves</a> pour décoder les motifs courants</li>
@@ -221,10 +221,10 @@
 <li><strong>Sensations physiques :</strong> Toucher, température, mouvement</li>
 <li><strong>Niveau de lucidité :</strong> Étiez-vous conscient de rêver ?</li>
 </ul>
-<h3>Contexte de vie a associer aux rêves</h3>
+<h3>Contexte de vie à associer aux rêves</h3>
 <ul>
 <li><strong>Qualité du sommeil :</strong> Avez-vous bien dormi ?</li>
-<li><strong>Connexions avec la vie éveillée :</strong> Evenements de la veille</li>
+<li><strong>Connexions avec la vie éveillée :</strong> Événements de la veille</li>
 <li><strong>Signes oniriques :</strong> Éléments qui pourraient indiquer le rêve</li>
 </ul>
 </div>
@@ -260,7 +260,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Notez les fragments</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Meme une seule image, sentiment ou mot vaut la peine d'être enregistre. Les fragments déclenchent souvent des souvenirs plus complets.
+                        Même une seule image, sentiment ou mot vaut la peine d'être enregistré. Les fragments déclenchent souvent des souvenirs plus complets.
                     </p>
 </div>
 <div class="tip-card glass-panel rounded-xl p-6 border border-transparent">
@@ -280,7 +280,7 @@
 <p>
 	                    Si vous avez du mal a vous souvenir de vos rêves, ces techniques prouvées peuvent améliorer dramatiquement le rappel. Pour un guide dédié, lisez aussi <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">comment se souvenir de ses rêves</a> :
 	                </p>
-<h3>Strategies de reveil pour capter les rêves</h3>
+<h3>Stratégies de réveil pour capter les rêves</h3>
 <ol>
 <li><strong>Restez immobile :</strong> Ne bougez pas au réveil. Le mouvement signale à votre cerveau de changer de focus</li>
 <li><strong>Gardez les yeux fermes :</strong> L'entrée visuelle écrase les souvenirs de rêves</li>
@@ -289,12 +289,12 @@
 </ol>
 <h3>Optimiser son sommeil pour plus de rêves</h3>
 <ul>
-<li><strong>Fixez des alarmes d'intention :</strong> Réveillez-vous 5-6 heures apres le coucher (pendant le REM)</li>
+<li><strong>Fixez des alarmes d'intention :</strong> Réveillez-vous 5-6 heures après le coucher (pendant le REM)</li>
 <li><strong>Pratiquez le WBTB :</strong> Réveillez-vous, enregistrez, rendormez-vous</li>
 <li><strong>Dormez plus longtemps :</strong> Plus de sommeil = plus de REM = plus de rêves à retenir</li>
 <li><strong>Programme régulier :</strong> Des patterns de sommeil réguliers améliorent la clarté des rêves</li>
 </ul>
-<h3>Rituels du soir pour stimuler la memoire onirique</h3>
+<h3>Rituels du soir pour stimuler la mémoire onirique</h3>
 <ul>
 <li><strong>Relisez les rêves précédents :</strong> Lire d'anciennes entrées avant de dormir prépare votre cerveau</li>
 <li><strong>Visualisation :</strong> Imaginez-vous enregistrer vos rêves au réveil</li>
@@ -336,7 +336,7 @@
 <p>
                     Enregistrer n’est que la première étape. Le sens apparaît souvent à la relecture, quand plusieurs rêves se répondent. Pour dégager des pistes d’interprétation, essayez ces approches :
                 </p>
-<h3>Identifier les symboles recurrents dans ses rêves</h3>
+<h3>Identifier les symboles récurrents dans ses rêves</h3>
 <ul>
 <li>Notez les <strong>symboles récurrents</strong> - qu'est-ce qui apparaît encore et encore ?</li>
 <li>Suivez les <strong>thèmes communs</strong> - être poursuivi, voler, eau, etc.</li>
@@ -347,7 +347,7 @@
 <p>
                     Plutôt que de chercher une signification unique, demandez-vous : <strong>"Que signifie ce symbole pour moi ?"</strong> Un serpent pourrait évoquer la peur pour une personne et la transformation pour une autre. Le <a class="text-dream-salmon hover:underline" href="/fr/guides/dictionnaire-symboles-reves">dictionnaire des rêves</a> donne des repères, puis votre contexte personnel affine les pistes.
                 </p>
-<h3>Relier ses rêves a la vie quotidienne</h3>
+<h3>Relier ses rêves à la vie quotidienne</h3>
 <p>
                     Les rêves traitent souvent les expériences récentes. Demandez :
                 </p>
@@ -359,21 +359,21 @@
 <h2 id="erreurs">Erreurs courantes avec le journal de rêves</h2>
 <h3>Attendre trop longtemps pour noter ses rêves</h3>
 <p>
-                    Meme 5 minutes de délai peuvent effacer la plupart du contenu du rêve. Enregistrez d'abord, prenez votre café ensuite.
+                    Même 5 minutes de délai peuvent effacer la plupart du contenu du rêve. Enregistrez d'abord, prenez votre café ensuite.
                 </p>
-<h3>Ignorer les rêves banals ou fragmentes</h3>
+<h3>Ignorer les rêves banals ou fragmentés</h3>
 <p>
                     Chaque rêve compte. Les rêves banals révèlent quand même des patterns et renforcent la capacité de rappel.
                 </p>
-<h3>Manque de regularite dans le journal</h3>
+<h3>Manque de régularité dans le journal</h3>
 <p>
-                    Le rappel des rêves est une compétence qui s'atrophie rapidement. Meme enregistrer "pas de rêves rappelés" garde l'habitude vivante.
+                    Le rappel des rêves est une compétence qui s'atrophie rapidement. Même enregistrer "pas de rêves rappelés" garde l'habitude vivante.
                 </p>
-<h3>Sur-interpreter chaque symbole onirique</h3>
+<h3>Sur-interpréter chaque symbole onirique</h3>
 <p>
                     Tous les rêves ne sont pas profondément significatifs. Parfois un chien n'est qu'un chien. Concentrez-vous sur les patterns au fil du temps.
                 </p>
-<h3>Se limiter a une seule methode de notation</h3>
+<h3>Se limiter à une seule méthode de notation</h3>
 <p>
                     Si écrire semble trop d'effort a moitie endormi, essayez l'enregistrement vocal. Éliminez toute friction du processus.
                 </p>
