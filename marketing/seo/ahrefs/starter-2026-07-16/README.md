@@ -301,3 +301,23 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
   mutation des expériences ou des 50 suivis.
 - Détails et plan de mesure :
   `j41-precognitive-evidence-refresh-2026-08-25.md`.
+
+## Actualisation J42 au 26 août 2026 — preuves « flying dreams »
+
+- La fenêtre postérieure à la modification du 28 juillet est complète :
+  `/en/blog/flying-dreams-meaning` cumule `31` clics, `5 723` impressions,
+  un CTR calculé de `0,542 %` et une position moyenne de `11,9` sur 28 jours
+  complets au 24 août.
+- Les requêtes propriétaires restent faibles : `flying dreams` est en position
+  `21,2`, `flying dreams meaning` en `23,6`, `dreaming of flying` en `22,9`
+  et `dream of flying` en `23,7`. Aucune nouvelle URL n'est créée.
+- Le lot local remplace le taux non sourcé de 33 %, les interprétations
+  universelles et les techniques dites « proven » par trois études primaires,
+  six scénarios contextuels et une méthode de journalisation qui conserve les
+  hypothèses ouvertes.
+- Title, H1, description, données sociales, JSON-LD automatique, quick answer,
+  FAQ et CTA sont alignés sur une promesse prudente. Route, canonical,
+  hreflang, image et sitemap restent inchangés.
+- Aucun crédit Ahrefs général, aucune demande d'indexation et aucune mutation
+  des expériences ou des 50 suivis. Détails et plan de mesure :
+  `j42-flying-dreams-evidence-refresh-2026-08-26.md`.
