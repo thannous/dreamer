@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, View } from 'react-native';
+import { ActivityIndicator, Pressable, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { IconSymbol } from '@/components/ui';
@@ -13,6 +13,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 type Props = {
   playing: boolean;
+  loading?: boolean;
   onToggle: () => void;
   onSkip: (deltaSec: number) => void;
   secondaryIconColor?: string;
@@ -54,6 +55,7 @@ function SkipButton({
 /** Three controls, nothing else. The rest of the screen is the session. */
 export function PlayerControls({
   playing,
+  loading = false,
   onToggle,
   onSkip,
   secondaryIconColor,
@@ -77,16 +79,25 @@ export function PlayerControls({
         testID={TID.Button.PlayerToggle}
         accessibilityRole="button"
         accessibilityLabel={playing ? t('player.pause') : t('player.play')}
+        accessibilityState={{ busy: loading }}
+        disabled={loading}
         onPress={onToggle}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         style={style}
         className="h-20 w-20 items-center justify-center rounded-full border border-champagne-soft bg-champagne">
-        <IconSymbol
-          name={playing ? 'pause.fill' : 'play.fill'}
-          color={primaryIconColor ?? colors.textOnAccent}
-          size={28}
-        />
+        {loading ? (
+          <ActivityIndicator
+            size="small"
+            color={primaryIconColor ?? colors.textOnAccent}
+          />
+        ) : (
+          <IconSymbol
+            name={playing ? 'pause.fill' : 'play.fill'}
+            color={primaryIconColor ?? colors.textOnAccent}
+            size={28}
+          />
+        )}
       </AnimatedPressable>
 
       <SkipButton

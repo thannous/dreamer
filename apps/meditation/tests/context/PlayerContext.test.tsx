@@ -22,6 +22,7 @@ jest.mock('@/context/LibraryContext', () => ({
 
 jest.mock('@/services/audioService', () => ({
   configureAudioSession: jest.fn().mockResolvedValue(undefined),
+  resolvePlayableSource: jest.fn(async (source) => source),
   createSessionPlayer: jest.fn(() => ({
     currentTime: 0,
     duration: 600,
@@ -71,6 +72,7 @@ describe('PlayerContext world continuity', () => {
       result.current.open('sleep-descent', 0, 'constellation');
     });
 
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
     await waitFor(() => expect(result.current.worldId).toBe('constellation'));
     const primaryPlayer = jest.mocked(audio.createSessionPlayer).mock.results[0].value;
     expect(audio.createSessionPlayer).toHaveBeenCalledWith(expect.anything(), 600, 300);
@@ -106,6 +108,7 @@ describe('PlayerContext world continuity', () => {
       result.current.open('anxiety-ground', 0, 'forest');
     });
 
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
     await waitFor(() => expect(result.current.worldId).toBe('forest'));
     const primaryPlayer = jest.mocked(audio.createSessionPlayer).mock.results[0].value;
     const texturePlayer = jest.mocked(audio.createPlayer).mock.results[0].value;
@@ -134,4 +137,47 @@ describe('PlayerContext world continuity', () => {
     expect(audio.setVolume).toHaveBeenCalledWith(primaryPlayer, 0.26);
     expect(audio.play).toHaveBeenCalledWith(texturePlayer);
   });
+  it('marks the session unavailable when native playback reports an error', async () => {
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <PlayerProvider>{children}</PlayerProvider>
+    );
+    const { result } = renderHook(() => usePlayer(), { wrapper });
+
+    act(() => {
+      result.current.open('sleep-descent', 0, 'constellation');
+    });
+
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    await waitFor(() => expect(playbackListener).not.toBeNull());
+
+    act(() => {
+      playbackListener?.({
+        currentTime: 0,
+        duration: 600,
+        playing: false,
+        didJustFinish: false,
+        error: 'Source error',
+      });
+    });
+
+    await waitFor(() => expect(result.current.status).toBe('unavailable'));
+  });
+
+
+  it('marks the session unavailable when the audio cache fails before playback', async () => {
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <PlayerProvider>{children}</PlayerProvider>
+    );
+    const { result } = renderHook(() => usePlayer(), { wrapper });
+    jest.mocked(audio.resolvePlayableSource).mockRejectedValueOnce(new Error('cache failed'));
+
+    act(() => {
+      result.current.open('sleep-descent', 0, 'constellation');
+    });
+
+    await waitFor(() => expect(result.current.status).toBe('unavailable'));
+    expect(audio.createSessionPlayer).not.toHaveBeenCalled();
+    expect(audio.play).not.toHaveBeenCalled();
+  });
+
 });

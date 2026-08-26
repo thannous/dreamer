@@ -18,6 +18,13 @@ let nextPlayerId = 1;
 
 export async function configureAudioSession(): Promise<void> {}
 
+export async function resolvePlayableSource(source: AudioSource): Promise<AudioSource> {
+  if (source == null) {
+    throw new Error('Audio source is missing');
+  }
+  return source;
+}
+
 function createMockPlayer(
   _source: AudioSource,
   durationSec: number,

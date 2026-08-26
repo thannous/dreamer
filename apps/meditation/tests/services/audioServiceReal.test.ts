@@ -1,11 +1,19 @@
 import { createAudioPlaylist } from 'expo-audio';
+import { Asset } from 'expo-asset';
 
-import { createSessionPlayer } from '@/services/audioServiceReal';
+import { createSessionPlayer, resolvePlayableSource } from '@/services/audioServiceReal';
 
 jest.mock('expo-audio', () => ({
   createAudioPlayer: jest.fn(),
   createAudioPlaylist: jest.fn(),
   setAudioModeAsync: jest.fn().mockResolvedValue(undefined),
+}));
+
+jest.mock('expo-asset', () => ({
+  Asset: {
+    fromModule: jest.fn(),
+    fromURI: jest.fn(),
+  },
 }));
 
 const statusAt = (currentTime: number, currentIndex = 0) => ({
@@ -93,5 +101,79 @@ describe('audioServiceReal session timeline', () => {
     );
     expect(playlist.skipTo).toHaveBeenCalledWith(1);
     expect(playlist.seekTo).toHaveBeenCalledWith(150);
+  });
+  it('surfaces a playlist load error instead of swallowing it', () => {
+    const player = createSessionPlayer(1, 180, 300);
+    const listener = jest.fn();
+    player.addListener('playbackStatusUpdate', listener);
+
+    playlistListener?.({
+      ...statusAt(0),
+      playing: false,
+      isLoaded: false,
+      error: { message: 'Source error', code: 2000 },
+    } as never);
+
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({ error: 'Source error', playing: false, didJustFinish: false })
+    );
+  });
+
+});
+
+describe('audioServiceReal playable source cache', () => {
+  beforeEach(() => {
+    jest.mocked(Asset.fromModule).mockReset();
+    jest.mocked(Asset.fromURI).mockReset();
+  });
+
+  it('returns a file URI after a successful download', async () => {
+    const asset = {
+      localUri: 'file:///cache/brown-noise.m4a',
+      downloadAsync: jest.fn().mockResolvedValue(undefined),
+    };
+    jest.mocked(Asset.fromModule).mockReturnValue(asset as never);
+
+    await expect(resolvePlayableSource(42)).resolves.toEqual({
+      uri: 'file:///cache/brown-noise.m4a',
+    });
+    expect(asset.downloadAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps object metadata and overwrites the URI with the cached file', async () => {
+    const asset = {
+      localUri: 'file:///cache/rain.m4a',
+      downloadAsync: jest.fn().mockResolvedValue(undefined),
+    };
+    jest.mocked(Asset.fromURI).mockReturnValue(asset as never);
+
+    await expect(
+      resolvePlayableSource({ uri: 'http://localhost:8081/assets/rain.m4a', name: 'rain' })
+    ).resolves.toEqual({
+      uri: 'file:///cache/rain.m4a',
+      name: 'rain',
+    });
+  });
+
+  it('throws when the cached file URI is missing', async () => {
+    const asset = {
+      localUri: null,
+      downloadAsync: jest.fn().mockResolvedValue(undefined),
+    };
+    jest.mocked(Asset.fromModule).mockReturnValue(asset as never);
+
+    await expect(resolvePlayableSource(7)).rejects.toThrow('Audio source could not be cached');
+  });
+
+  it('throws when downloadAsync fails', async () => {
+    const asset = {
+      localUri: 'file:///cache/ocean.m4a',
+      downloadAsync: jest.fn().mockRejectedValue(new Error('network down')),
+    };
+    jest.mocked(Asset.fromURI).mockReturnValue(asset as never);
+
+    await expect(resolvePlayableSource('http://localhost:8081/ocean.m4a')).rejects.toThrow(
+      'network down'
+    );
   });
 });

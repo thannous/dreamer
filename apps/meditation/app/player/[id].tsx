@@ -179,6 +179,7 @@ export default function PlayerScreen() {
 
               <PlayerControls
                 playing={playing}
+                loading={player.status === 'loading'}
                 onToggle={player.toggle}
                 onSkip={player.skip}
                 secondaryIconColor={worldColors.accentText}

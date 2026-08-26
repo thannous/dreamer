@@ -1,3 +1,4 @@
+import { Asset } from 'expo-asset';
 import {
   createAudioPlayer,
   createAudioPlaylist,
@@ -29,6 +30,46 @@ export async function configureAudioSession(): Promise<void> {
     interruptionMode: 'doNotMix',
     shouldRouteThroughEarpiece: false,
   });
+}
+
+function assetFromSource(source: AudioSource): Asset | null {
+  if (source == null) return null;
+  if (typeof source === 'number') return Asset.fromModule(source);
+  if (typeof source === 'string') return Asset.fromURI(source);
+  if (typeof source === 'object') {
+    if ('assetId' in source && typeof source.assetId === 'number') {
+      return Asset.fromModule(source.assetId);
+    }
+    if ('uri' in source && typeof source.uri === 'string') {
+      return Asset.fromURI(source.uri);
+    }
+  }
+  return null;
+}
+
+/**
+ * Cache a packager or remote source to a file URI before native playback.
+ * Metro `http://localhost:8081` URIs die as soon as the bundler is gone;
+ * expo-asset keeps the file after the first successful download.
+ */
+export async function resolvePlayableSource(source: AudioSource): Promise<AudioSource> {
+  const asset = assetFromSource(source);
+  if (!asset) {
+    if (source == null) {
+      throw new Error('Audio source is missing');
+    }
+    return source;
+  }
+
+  await asset.downloadAsync();
+  if (!asset.localUri) {
+    throw new Error('Audio source could not be cached');
+  }
+
+  if (source && typeof source === 'object') {
+    return { ...source, uri: asset.localUri };
+  }
+  return { uri: asset.localUri };
 }
 
 export function createPlayer(source: AudioSource, updateIntervalMs = 500): PlayerHandle {
@@ -74,6 +115,15 @@ export function createSessionPlayer(
   });
   let finished = false;
 
+  const playlistError = (status: AudioPlaylistStatus): string | null => {
+    const error = (status as AudioPlaylistStatus & {
+      error?: string | { message?: string | null } | null;
+    }).error;
+    if (!error) return null;
+    if (typeof error === 'string') return error;
+    return error.message ?? 'Audio playback failed';
+  };
+
   const globalTime = (status: AudioPlaylistStatus): number =>
     Math.min(
       safeDuration,
@@ -104,7 +154,7 @@ export function createSessionPlayer(
     shouldCorrectPitch: true,
     isLive: false,
     currentOffsetFromLive: null,
-    error: null,
+    error: playlistError(status),
   });
 
   return {

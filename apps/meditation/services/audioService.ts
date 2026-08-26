@@ -33,6 +33,9 @@ export type PlayerHandle = {
 };
 
 export const configureAudioSession = implementation.configureAudioSession;
+export const resolvePlayableSource = (
+  source: AudioSource
+): Promise<AudioSource> => implementation.resolvePlayableSource(source);
 export const createPlayer = (source: AudioSource, updateIntervalMs = 500): PlayerHandle =>
   implementation.createPlayer(source, updateIntervalMs);
 export const createSessionPlayer = (
