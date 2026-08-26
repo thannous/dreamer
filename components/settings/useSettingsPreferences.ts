@@ -48,7 +48,7 @@ type RecordingGuideActionController = {
   replay: () => Promise<void>;
 };
 
-const THEME_VALUES: ThemePreference[] = ['auto', 'light', 'dark'];
+const THEME_VALUES: ThemePreference[] = ['dynamic', 'auto', 'light', 'dark'];
 const LANGUAGE_VALUES: LanguagePreference[] = ['auto', 'en', 'fr', 'es', 'de', 'it', 'pt'];
 const JOURNAL_LAYOUT_VALUES: JournalLayoutPreference[] = ['cards', 'compact'];
 

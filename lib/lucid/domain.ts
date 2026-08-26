@@ -1,5 +1,6 @@
 import {
   LUCID_TRAINER_SCHEMA_VERSION,
+  LUCID_TECHNIQUES,
   type LucidOnboardingState,
   type LucidProgramProgress,
   type LucidSyncEntity,
@@ -77,6 +78,56 @@ export function mergeLucidProgramProgress(
   };
 }
 
+/**
+ * At most one program may be `active`. Extra actives are paused in place so
+ * their cursor, completed sessions and practice dates are preserved.
+ * A local user action may pass `preferredTechnique`. Sync/apply must omit it
+ * so the newest `updatedAt` wins, then the earliest technique name.
+ */
+export function enforceLucidSingleActiveProgram(
+  progressList: readonly LucidProgramProgress[],
+  preferredTechnique?: LucidTechnique
+): LucidProgramProgress[] {
+  const sorted = [...progressList].sort((left, right) => left.technique.localeCompare(right.technique));
+  const active = sorted.filter((item) => item.status === 'active');
+  if (active.length <= 1) return sorted;
+
+  const preferred = preferredTechnique
+    ? active.find((item) => item.technique === preferredTechnique)
+    : undefined;
+  const winner =
+    preferred ??
+    [...active].sort((left, right) => {
+      if (left.updatedAt !== right.updatedAt) return right.updatedAt - left.updatedAt;
+      return left.technique.localeCompare(right.technique);
+    })[0];
+
+  const pauseUpdatedAt = Math.max(winner.updatedAt, ...active.map((item) => item.updatedAt));
+  return sorted.map((item) =>
+    item.status === 'active' && item.technique !== winner.technique
+      ? { ...item, status: 'paused' as const, updatedAt: pauseUpdatedAt }
+      : item
+  );
+}
+
+export function applyLucidProgramProgress(
+  state: LucidTrainerState,
+  progress: LucidProgramProgress,
+  preferredTechnique?: LucidTechnique
+): LucidTrainerState {
+  return {
+    ...state,
+    updatedAt: Math.max(state.updatedAt, progress.updatedAt),
+    progress: enforceLucidSingleActiveProgram(
+      [
+        ...state.progress.filter((item) => item.technique !== progress.technique),
+        progress,
+      ],
+      preferredTechnique
+    ),
+  };
+}
+
 export function createInitialLucidTrainerState(params: {
   now: number;
   timeZone: string;
@@ -111,7 +162,7 @@ export function createInitialLucidTrainerState(params: {
     },
     preferences: {
       locale,
-      theme: 'system',
+      theme: 'dynamic',
       cloudSyncEnabled: false,
       noctaliaLinkEnabled: false,
       notificationsEnabled: false,
@@ -232,14 +283,9 @@ export function applyLucidSyncEntity(
     case 'preferences':
       return { ...state, preferences: entity.value, updatedAt };
     case 'progress':
-      return {
-        ...state,
-        updatedAt,
-        progress: [
-          ...state.progress.filter((item) => item.technique !== entity.entityKey),
-          entity.value,
-        ].sort((a, b) => a.technique.localeCompare(b.technique)),
-      };
+      // Remote/apply order must not decide the active program. The newest
+      // active entity wins deterministically on every device.
+      return applyLucidProgramProgress(state, entity.value);
     case 'experiment':
       return {
         ...state,
@@ -268,6 +314,64 @@ export function applyLucidSyncEntity(
         ].sort((a, b) => b.weekStart.localeCompare(a.weekStart) || a.id.localeCompare(b.id)),
       };
   }
+}
+
+export function diffLucidProgramProgress(
+  previous: readonly LucidProgramProgress[],
+  next: readonly LucidProgramProgress[]
+): LucidProgramProgress[] {
+  const previousByTechnique = new Map(previous.map((item) => [item.technique, item]));
+  return next.filter((item) => {
+    const before = previousByTechnique.get(item.technique);
+    return !before || canonicalLucidJson(before) !== canonicalLucidJson(item);
+  });
+}
+
+/**
+ * Exclusive activations share one strictly monotone batch timestamp.
+ * The block is larger than the number of techniques, then ordered by the
+ * stable technique rank, so two same-millisecond activations never collide
+ * and the entire winning batch outranks the losing one during merge.
+ */
+function lucidActivationBatchUpdatedAt(
+  baseline: number,
+  now: number,
+  technique: LucidTechnique
+): number {
+  const techniqueCount = LUCID_TECHNIQUES.length;
+  const techniqueRank = LUCID_TECHNIQUES.indexOf(technique);
+  const blockSize = techniqueCount + 1;
+  const floor = Math.max(now, baseline) + 1;
+  const blockStart = Math.ceil(floor / blockSize) * blockSize;
+  return blockStart + techniqueRank;
+}
+
+/**
+ * Activates `technique` and pauses every other active program in place.
+ * Progress, cursor and practice dates of paused programs are preserved.
+ * The active target and every auto-paused peer share this batch timestamp.
+ */
+export function activateExclusiveLucidProgram(
+  state: LucidTrainerState,
+  technique: LucidTechnique,
+  now: number
+): { next: LucidTrainerState; changed: LucidProgramProgress[] } {
+  const existing =
+    state.progress.find((item) => item.technique === technique) ??
+    createLucidProgramProgress(technique, now);
+  const baseline = Math.max(
+    state.updatedAt,
+    ...state.progress.map((item) => item.updatedAt)
+  );
+  const mutationUpdatedAt = lucidActivationBatchUpdatedAt(baseline, now, technique);
+  const progress: LucidProgramProgress = {
+    ...existing,
+    status: 'active',
+    startedAt: existing.startedAt ?? now,
+    updatedAt: mutationUpdatedAt,
+  };
+  const next = applyLucidProgramProgress(state, progress, technique);
+  return { next, changed: diffLucidProgramProgress(state.progress, next.progress) };
 }
 
 export function removeLucidSyncEntity(
@@ -333,12 +437,14 @@ export function mergeLucidTrainerStates(
     updatedAt: Math.max(left.updatedAt, right.updatedAt),
     onboarding: onboarding.value,
     preferences: preferences.value,
-    progress: mergedEntities
-      .filter(
-        (entity): entity is Extract<LucidSyncEntity, { entityType: 'progress' }> =>
-          entity.entityType === 'progress'
-      )
-      .map((entity) => entity.value),
+    progress: enforceLucidSingleActiveProgram(
+      mergedEntities
+        .filter(
+          (entity): entity is Extract<LucidSyncEntity, { entityType: 'progress' }> =>
+            entity.entityType === 'progress'
+        )
+        .map((entity) => entity.value)
+    ),
     experiments: mergedEntities
       .filter(
         (entity): entity is Extract<LucidSyncEntity, { entityType: 'experiment' }> =>

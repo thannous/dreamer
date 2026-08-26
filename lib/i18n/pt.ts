@@ -955,6 +955,8 @@ const translations: Record<string, string> = {
     'settings.account.alert.signout_failed.title': 'Falha ao sair',
     'settings.theme.title': 'Aparência',
     'settings.theme.description': 'Escolha seu tema preferido para o app',
+    'settings.theme.option.dynamic.label': 'Dinâmico',
+    'settings.theme.option.dynamic.description': 'Acompanha a hora local entre manhã, dia, brilho do entardecer e noite',
     'settings.theme.option.auto.label': 'Automático',
     'settings.theme.option.auto.description': 'Seguir o tema do sistema',
     'settings.theme.option.light.label': 'Claro',

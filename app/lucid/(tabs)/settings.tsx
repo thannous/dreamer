@@ -1,23 +1,27 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
 
 import {
+  LUCID_TAB_BAR_INSET,
   LucidButton,
   LucidCard,
+  LucidIconTile,
   LucidPill,
   LucidScreen,
   LucidSectionHeader,
   LucidToggleRow,
 } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useAuth } from '@/context/AuthContext';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { isLucidLocalTime } from '@/lib/lucid/model';
 import type {
   LucidAccessibilityPreferences,
+  LucidExperienceLevel,
+  LucidGoal,
   LucidLocale,
   LucidSleepSchedule,
   LucidSyncEntity,
@@ -47,19 +51,25 @@ const COPY = {
     syncPending: 'pending',
     retrySync: 'Retry sync',
     appearance: 'Appearance',
-    appearanceBody: 'Choose a Trainer appearance. System follows this device.',
+    appearanceBody: 'Dynamic follows morning, daylight, afterglow and night.',
+    dynamic: 'Dynamic',
     system: 'System',
     light: 'Light',
     dark: 'Dark',
+    journey: 'My journey',
+    horizon: 'Horizon',
+    experience: 'Starting point',
     training: 'Training preferences',
     weekly: 'Practice rhythm',
     nightsPerWeek: 'nights per week',
     reminders: 'Reality-check reminders',
     perDay: 'per day',
+    notifications: 'Training notifications',
+    notificationsBody: 'Master switch for Lucid training reminders. Turning it off cancels scheduled reminders without changing how many reality checks you want.',
     decrease: 'Decrease',
     increase: 'Increase',
     schedule: 'Sleep window',
-    scheduleBody: 'Preparation and reminders stay within your usual local sleep window.',
+    scheduleBody: 'Preparation and reminders stay within your sleep window.',
     bedtime: 'Bedtime',
     wakeTime: 'Wake time',
     timeZone: 'Time zone',
@@ -73,7 +83,7 @@ const COPY = {
     reduceMotion: 'Reduce motion',
     reduceMotionBody: 'Keep decorative transitions to a minimum throughout Trainer.',
     systemText: 'System text size',
-    systemTextBody: 'Text follows the size selected in device accessibility settings.',
+    systemTextBody: 'Trainer inherits the size chosen in your device accessibility settings. It has no text size setting of its own.',
     screenReader: 'Screen reader labels',
     screenReaderBody: 'Buttons, toggles, progress and inputs expose names and states.',
     sync: 'Cloud sync',
@@ -109,19 +119,25 @@ const COPY = {
     syncPending: 'en attente',
     retrySync: 'Réessayer la synchronisation',
     appearance: 'Apparence',
-    appearanceBody: 'Choisissez l’apparence du Trainer. Le mode système suit cet appareil.',
+    appearanceBody: 'Le mode dynamique suit le matin, le jour, l’afterglow et la nuit.',
+    dynamic: 'Dynamique',
     system: 'Système',
     light: 'Clair',
     dark: 'Sombre',
+    journey: 'Mon parcours',
+    horizon: 'Horizon',
+    experience: 'Point de départ',
     training: 'Préférences d’entraînement',
     weekly: 'Rythme de pratique',
     nightsPerWeek: 'nuits par semaine',
     reminders: 'Rappels de tests de réalité',
     perDay: 'par jour',
+    notifications: 'Notifications d’entraînement',
+    notificationsBody: 'Interrupteur maître des rappels d’entraînement Lucid. Le désactiver annule les rappels programmés, sans changer le nombre de tests de réalité souhaités.',
     decrease: 'Diminuer',
     increase: 'Augmenter',
     schedule: 'Fenêtre de sommeil',
-    scheduleBody: 'La préparation et les rappels restent dans votre fenêtre de sommeil locale habituelle.',
+    scheduleBody: 'La préparation et les rappels restent dans votre fenêtre de sommeil.',
     bedtime: 'Coucher',
     wakeTime: 'Réveil',
     timeZone: 'Fuseau horaire',
@@ -135,7 +151,7 @@ const COPY = {
     reduceMotion: 'Réduire les mouvements',
     reduceMotionBody: 'Limiter au minimum les transitions décoratives dans le Trainer.',
     systemText: 'Taille de texte système',
-    systemTextBody: 'Le texte suit la taille choisie dans les réglages d’accessibilité de l’appareil.',
+    systemTextBody: 'Le Trainer hérite de la taille choisie dans les réglages d’accessibilité de l’appareil. Il n’a pas de réglage de taille propre.',
     screenReader: 'Libellés pour lecteur d’écran',
     screenReaderBody: 'Les boutons, interrupteurs, progressions et champs exposent leur nom et leur état.',
     sync: 'Synchronisation cloud',
@@ -171,19 +187,25 @@ const COPY = {
     syncPending: 'pendientes',
     retrySync: 'Reintentar sincronización',
     appearance: 'Apariencia',
-    appearanceBody: 'Elige la apariencia del Trainer. Sistema sigue a este dispositivo.',
+    appearanceBody: 'Dinámico sigue la mañana, el día, el resplandor del atardecer y la noche.',
+    dynamic: 'Dinámico',
     system: 'Sistema',
     light: 'Claro',
     dark: 'Oscuro',
+    journey: 'Mi recorrido',
+    horizon: 'Horizonte',
+    experience: 'Punto de partida',
     training: 'Preferencias de entrenamiento',
     weekly: 'Ritmo de práctica',
     nightsPerWeek: 'noches por semana',
     reminders: 'Recordatorios de realidad',
     perDay: 'al día',
+    notifications: 'Notificaciones de entrenamiento',
+    notificationsBody: 'Interruptor maestro de los recordatorios de entrenamiento Lucid. Al desactivarlo se cancelan los recordatorios programados, sin cambiar cuántas pruebas de realidad quieres.',
     decrease: 'Reducir',
     increase: 'Aumentar',
     schedule: 'Horario de sueño',
-    scheduleBody: 'La preparación y los recordatorios permanecen dentro de tu horario local habitual.',
+    scheduleBody: 'La preparación y los recordatorios respetan tu horario de sueño.',
     bedtime: 'Hora de dormir',
     wakeTime: 'Hora de despertar',
     timeZone: 'Zona horaria',
@@ -197,7 +219,7 @@ const COPY = {
     reduceMotion: 'Reducir movimiento',
     reduceMotionBody: 'Mantiene al mínimo las transiciones decorativas del Trainer.',
     systemText: 'Tamaño de texto del sistema',
-    systemTextBody: 'El texto sigue el tamaño elegido en los ajustes de accesibilidad del dispositivo.',
+    systemTextBody: 'Trainer hereda el tamaño elegido en los ajustes de accesibilidad del dispositivo. No tiene un ajuste de tamaño propio.',
     screenReader: 'Etiquetas para lector de pantalla',
     screenReaderBody: 'Botones, interruptores, progreso y campos exponen su nombre y estado.',
     sync: 'Sincronización en nube',
@@ -233,19 +255,25 @@ const COPY = {
     syncPending: 'ausstehend',
     retrySync: 'Synchronisierung erneut versuchen',
     appearance: 'Darstellung',
-    appearanceBody: 'Wähle das Trainer-Design. System folgt diesem Gerät.',
+    appearanceBody: 'Dynamisch folgt Morgen, Tag, Abendglühen und Nacht.',
+    dynamic: 'Dynamisch',
     system: 'System',
     light: 'Hell',
     dark: 'Dunkel',
+    journey: 'Mein Weg',
+    horizon: 'Horizont',
+    experience: 'Ausgangspunkt',
     training: 'Trainingseinstellungen',
     weekly: 'Übungsrhythmus',
     nightsPerWeek: 'Nächte pro Woche',
     reminders: 'Realitätscheck-Erinnerungen',
     perDay: 'pro Tag',
+    notifications: 'Trainingsbenachrichtigungen',
+    notificationsBody: 'Hauptschalter für Lucid-Trainingserinnerungen. Aus löscht geplante Erinnerungen, ohne die gewünschte Zahl der Realitätschecks zu ändern.',
     decrease: 'Verringern',
     increase: 'Erhöhen',
     schedule: 'Schlaffenster',
-    scheduleBody: 'Vorbereitung und Hinweise bleiben in deinem üblichen lokalen Schlaffenster.',
+    scheduleBody: 'Vorbereitung und Hinweise bleiben in deinem Schlaffenster.',
     bedtime: 'Schlafenszeit',
     wakeTime: 'Aufstehzeit',
     timeZone: 'Zeitzone',
@@ -259,7 +287,7 @@ const COPY = {
     reduceMotion: 'Bewegung reduzieren',
     reduceMotionBody: 'Beschränkt dekorative Übergänge im Trainer auf ein Minimum.',
     systemText: 'Systemtextgröße',
-    systemTextBody: 'Text folgt der in den Gerätehilfen gewählten Größe.',
+    systemTextBody: 'Trainer übernimmt die in den Bedienungshilfen des Geräts gewählte Größe. Eine eigene Textgröße gibt es hier nicht.',
     screenReader: 'Screenreader-Beschriftungen',
     screenReaderBody: 'Schaltflächen, Umschalter, Fortschritt und Felder geben Namen und Status aus.',
     sync: 'Cloud-Synchronisierung',
@@ -295,19 +323,25 @@ const COPY = {
     syncPending: 'in attesa',
     retrySync: 'Riprova sincronizzazione',
     appearance: 'Aspetto',
-    appearanceBody: 'Scegli l’aspetto del Trainer. Sistema segue questo dispositivo.',
+    appearanceBody: 'Dinamico segue mattino, giorno, bagliore serale e notte.',
+    dynamic: 'Dinamico',
     system: 'Sistema',
     light: 'Chiaro',
     dark: 'Scuro',
+    journey: 'Il mio percorso',
+    horizon: 'Orizzonte',
+    experience: 'Punto di partenza',
     training: 'Preferenze training',
     weekly: 'Ritmo di pratica',
     nightsPerWeek: 'notti a settimana',
     reminders: 'Promemoria test di realtà',
     perDay: 'al giorno',
+    notifications: 'Notifiche di training',
+    notificationsBody: 'Interruttore principale dei promemoria di training Lucid. Disattivarlo annulla i promemoria programmati, senza cambiare quanti test di realtà vuoi.',
     decrease: 'Riduci',
     increase: 'Aumenta',
     schedule: 'Finestra di sonno',
-    scheduleBody: 'Preparazione e promemoria restano nella tua abituale finestra di sonno locale.',
+    scheduleBody: 'Preparazione e promemoria restano nella tua finestra di sonno.',
     bedtime: 'Ora di dormire',
     wakeTime: 'Ora di sveglia',
     timeZone: 'Fuso orario',
@@ -321,7 +355,7 @@ const COPY = {
     reduceMotion: 'Riduci movimento',
     reduceMotionBody: 'Mantiene al minimo le transizioni decorative del Trainer.',
     systemText: 'Dimensione testo di sistema',
-    systemTextBody: 'Il testo segue la dimensione scelta nelle impostazioni di accessibilità del dispositivo.',
+    systemTextBody: 'Trainer eredita la dimensione scelta nelle impostazioni di accessibilità del dispositivo. Non ha un’impostazione di dimensione propria.',
     screenReader: 'Etichette per lettore di schermo',
     screenReaderBody: 'Pulsanti, interruttori, avanzamento e campi espongono nome e stato.',
     sync: 'Sincronizzazione cloud',
@@ -343,12 +377,17 @@ const COPY = {
 } as const;
 
 type OnboardingSettingsPatch = {
+  goal?: LucidGoal;
+  experience?: LucidExperienceLevel;
   weeklyTarget?: number;
   sleepSchedule?: LucidSleepSchedule;
   accessibility?: LucidAccessibilityPreferences;
 };
 
+const WEEKLY_TARGET_OPTIONS = [2, 3, 5, 7] as const;
+
 const THEME_ICONS: Record<LucidTrainerPreferences['theme'], keyof typeof Ionicons.glyphMap> = {
+  dynamic: 'time-outline',
   system: 'phone-portrait-outline',
   light: 'sunny-outline',
   dark: 'moon-outline',
@@ -391,6 +430,11 @@ export default function LucidSettingsScreen() {
   const [savingSetting, setSavingSetting] = useState(false);
   const [settingError, setSettingError] = useState<string | null>(null);
   const [settingStatus, setSettingStatus] = useState<string | null>(null);
+  const [expandedSection, setExpandedSection] = useState<
+    'account' | 'accessibility' | 'journey' | 'language' | 'resources' | 'sync' | null
+  >(null);
+  const { fontScale, width } = useWindowDimensions();
+  const compactLayout = width < 380 || fontScale >= 1.3;
 
   const persistOnboardingSettings = useCallback(
     async (
@@ -465,6 +509,7 @@ export default function LucidSettingsScreen() {
     return (
       <LucidScreen
         testID="lucid-settings"
+        bottomInset={LUCID_TAB_BAR_INSET}
         eyebrow={copy.eyebrow}
         title={copy.title}
         subtitle={content.chrome.common.loading}
@@ -480,10 +525,20 @@ export default function LucidSettingsScreen() {
     value: LucidTrainerPreferences['theme'];
     label: string;
   }[] = [
+    { value: 'dynamic', label: copy.dynamic },
     { value: 'system', label: copy.system },
     { value: 'light', label: copy.light },
     { value: 'dark', label: copy.dark },
   ];
+  const selectedGoal = content.onboarding.goals.find(
+    (choice) => choice.id === state.onboarding.goal,
+  );
+  const selectedExperience = content.onboarding.experienceLevels.find(
+    (choice) => choice.id === state.onboarding.experience,
+  );
+  const journeySummary = [selectedGoal?.title, selectedExperience?.title]
+    .filter((value): value is string => Boolean(value))
+    .join(' · ');
   const rows: {
     label: string;
     icon: keyof typeof Ionicons.glyphMap;
@@ -534,9 +589,22 @@ export default function LucidSettingsScreen() {
   };
 
   const changeWeeklyTarget = (delta: number) => {
-    const next = Math.max(1, Math.min(7, state.onboarding.weeklyTarget + delta));
-    if (next === state.onboarding.weeklyTarget) return;
+    const current = state.onboarding.weeklyTarget;
+    const next = delta < 0
+      ? [...WEEKLY_TARGET_OPTIONS].reverse().find((value) => value < current)
+      : WEEKLY_TARGET_OPTIONS.find((value) => value > current);
+    if (next === undefined) return;
     void runSettingChange(() => persistOnboardingSettings({ weeklyTarget: next }));
+  };
+
+  const changeGoal = (goal: LucidGoal) => {
+    if (goal === state.onboarding.goal) return;
+    void runSettingChange(() => persistOnboardingSettings({ goal }));
+  };
+
+  const changeExperience = (experience: LucidExperienceLevel) => {
+    if (experience === state.onboarding.experience) return;
+    void runSettingChange(() => persistOnboardingSettings({ experience }));
   };
 
   const changeReminderCount = (delta: number) => {
@@ -548,6 +616,15 @@ export default function LucidSettingsScreen() {
     void runSettingChange(() =>
       updatePreferences({ realityCheckRemindersPerDay: next }),
     );
+  };
+
+  const changeNotificationsEnabled = (enabled: boolean) => {
+    if (enabled === state.preferences.notificationsEnabled) return;
+    if (enabled) {
+      router.push('/lucid/permissions' as never);
+      return;
+    }
+    void runSettingChange(() => updatePreferences({ notificationsEnabled: false }));
   };
 
   const saveSchedule = () => {
@@ -577,74 +654,10 @@ export default function LucidSettingsScreen() {
   return (
     <LucidScreen
       testID="lucid-settings"
+      bottomInset={LUCID_TAB_BAR_INSET}
       eyebrow={copy.eyebrow}
       title={copy.title}
-      subtitle={content.privacy.consentControl}
     >
-      <LucidSectionHeader title={copy.account} />
-      <LucidCard accent="violet">
-        <View style={styles.accountTop}>
-          <View style={[styles.accountIcon, { backgroundColor: palette.accentSoft }]}>
-            <Ionicons
-              name={user ? 'person-circle' : 'person-outline'}
-              size={30}
-              color={palette.accent}
-            />
-          </View>
-          <View style={styles.accountCopy}>
-            <Text style={[styles.accountTitle, { color: palette.text }]}>
-              {user ? copy.signed : copy.guest}
-            </Text>
-            <Text style={[styles.accountSub, { color: palette.textSecondary }]}>
-              {user?.email ?? copy.accountBody}
-            </Text>
-          </View>
-          <LucidPill
-            label={syncStatus}
-            tone={syncStatus === 'synced' ? 'cyan' : 'neutral'}
-          />
-        </View>
-        <LucidButton
-          label={copy.manage}
-          variant={user ? 'secondary' : 'primary'}
-          icon={user ? 'person' : 'log-in'}
-          onPress={() => router.push('/lucid/account' as never)}
-        />
-      </LucidCard>
-
-      {syncNeedsRecovery ? (
-        <LucidCard accent="amber">
-          <View style={styles.syncRecoveryHeader}>
-            <Ionicons name="cloud-offline-outline" size={24} color={palette.amber} />
-            <View style={styles.counterCopy}>
-              <Text style={[styles.accountTitle, { color: palette.text }]}>
-                {copy.syncRecovery}
-              </Text>
-              <Text
-                accessibilityLiveRegion="polite"
-                selectable
-                style={[styles.accountSub, { color: palette.textSecondary }]}
-              >
-                {lastSyncResult?.outcome === 'offline'
-                  ? `${copy.syncOffline} ${syncRecoverySummary}`
-                  : syncRecoverySummary}
-              </Text>
-            </View>
-          </View>
-          <LucidButton
-            label={copy.retrySync}
-            variant="secondary"
-            icon="refresh"
-            disabled={!user || savingSetting}
-            loading={syncStatus === 'syncing'}
-            onPress={() =>
-              void runSettingChange(async () => { await syncNow(); }, undefined, false)
-            }
-            testID="lucid-sync-retry"
-          />
-        </LucidCard>
-      ) : null}
-
       <LucidSectionHeader title={copy.appearance} caption={copy.appearanceBody} />
       <View accessibilityRole="radiogroup" style={styles.optionGrid}>
         {themeOptions.map((option) => {
@@ -653,7 +666,7 @@ export default function LucidSettingsScreen() {
             <Pressable
               key={option.value}
               accessibilityRole="radio"
-              accessibilityState={{ selected, disabled: savingSetting }}
+              accessibilityState={{ checked: selected, selected, disabled: savingSetting }}
               disabled={savingSetting}
               onPress={() => changeTheme(option.value)}
               testID={`lucid-theme-${option.value}`}
@@ -661,14 +674,14 @@ export default function LucidSettingsScreen() {
                 styles.option,
                 {
                   backgroundColor: selected ? palette.accentSoft : palette.surface,
-                  borderColor: selected ? palette.accent : palette.border,
-                  opacity: pressed ? 0.76 : 1,
+                  borderColor: selected ? palette.accent : palette.borderInteractive,
+                  opacity: pressed ? LucidPress.opacity : 1,
                 },
               ]}
             >
               <Ionicons
                 name={THEME_ICONS[option.value]}
-                size={20}
+                size={LucidIcon.md}
                 color={selected ? palette.accent : palette.textSecondary}
               />
               <Text
@@ -684,6 +697,102 @@ export default function LucidSettingsScreen() {
         })}
       </View>
 
+      <SettingsDisclosure
+        expanded={expandedSection === 'journey'}
+        icon="compass-outline"
+        onPress={() => setExpandedSection((current) => current === 'journey' ? null : 'journey')}
+        palette={palette}
+        summary={journeySummary}
+        testID="lucid-settings-journey"
+        title={copy.journey}
+      >
+        <Text accessibilityRole="header" style={[styles.journeySectionLabel, { color: palette.text }]}>
+          {copy.horizon}
+        </Text>
+        <View
+          accessibilityLabel={copy.horizon}
+          accessibilityRole="radiogroup"
+          style={styles.journeyChoices}
+        >
+          {content.onboarding.goals.map((choice) => {
+            const selected = choice.id === state.onboarding.goal;
+            return (
+              <Pressable
+                key={choice.id}
+                accessibilityLabel={choice.title}
+                accessibilityRole="radio"
+                accessibilityState={{ checked: selected, selected, disabled: savingSetting }}
+                disabled={savingSetting}
+                onPress={() => changeGoal(choice.id)}
+                testID={`lucid-settings-goal-${choice.id}`}
+                style={({ pressed }) => [
+                  styles.journeyChoice,
+                  {
+                    backgroundColor: selected ? palette.accentSoft : 'transparent',
+                    borderColor: selected ? palette.accent : palette.border,
+                    opacity: pressed ? LucidPress.opacity : 1,
+                  },
+                ]}
+              >
+                <Ionicons
+                  accessibilityElementsHidden
+                  importantForAccessibility="no-hide-descendants"
+                  color={selected ? palette.accent : palette.textMuted}
+                  name={selected ? 'radio-button-on' : 'radio-button-off'}
+                  size={LucidIcon.md}
+                />
+                <Text style={[styles.journeyChoiceLabel, { color: palette.text }]}>
+                  {choice.title}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        <Text accessibilityRole="header" style={[styles.journeySectionLabel, { color: palette.text }]}>
+          {copy.experience}
+        </Text>
+        <View
+          accessibilityLabel={copy.experience}
+          accessibilityRole="radiogroup"
+          style={styles.journeyChoices}
+        >
+          {content.onboarding.experienceLevels.map((choice) => {
+            const selected = choice.id === state.onboarding.experience;
+            return (
+              <Pressable
+                key={choice.id}
+                accessibilityLabel={choice.title}
+                accessibilityRole="radio"
+                accessibilityState={{ checked: selected, selected, disabled: savingSetting }}
+                disabled={savingSetting}
+                onPress={() => changeExperience(choice.id)}
+                testID={`lucid-settings-experience-${choice.id}`}
+                style={({ pressed }) => [
+                  styles.journeyChoice,
+                  {
+                    backgroundColor: selected ? palette.accentSoft : 'transparent',
+                    borderColor: selected ? palette.accent : palette.border,
+                    opacity: pressed ? LucidPress.opacity : 1,
+                  },
+                ]}
+              >
+                <Ionicons
+                  accessibilityElementsHidden
+                  importantForAccessibility="no-hide-descendants"
+                  color={selected ? palette.accent : palette.textMuted}
+                  name={selected ? 'radio-button-on' : 'radio-button-off'}
+                  size={LucidIcon.md}
+                />
+                <Text style={[styles.journeyChoiceLabel, { color: palette.text }]}>
+                  {choice.title}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </SettingsDisclosure>
+
       <LucidSectionHeader title={copy.training} />
       <LucidCard>
         <View style={styles.counter}>
@@ -697,7 +806,7 @@ export default function LucidSettingsScreen() {
             <CounterButton
               accessibilityLabel={`${copy.decrease}: ${copy.weekly}`}
               color={palette.textSecondary}
-              disabled={savingSetting || state.onboarding.weeklyTarget <= 1}
+              disabled={savingSetting || state.onboarding.weeklyTarget <= WEEKLY_TARGET_OPTIONS[0]}
               icon="remove"
               onPress={() => changeWeeklyTarget(-1)}
               testID="lucid-weekly-decrease"
@@ -705,7 +814,7 @@ export default function LucidSettingsScreen() {
             <CounterButton
               accessibilityLabel={`${copy.increase}: ${copy.weekly}`}
               color={palette.accent}
-              disabled={savingSetting || state.onboarding.weeklyTarget >= 7}
+              disabled={savingSetting || state.onboarding.weeklyTarget >= WEEKLY_TARGET_OPTIONS[WEEKLY_TARGET_OPTIONS.length - 1]}
               icon="add"
               onPress={() => changeWeeklyTarget(1)}
               testID="lucid-weekly-increase"
@@ -739,43 +848,18 @@ export default function LucidSettingsScreen() {
           </View>
         </View>
         <LucidToggleRow
-          title={copy.sync}
-          description={copy.syncBody}
-          value={state.preferences.cloudSyncEnabled}
-          disabled={!user || savingSetting}
-          onValueChange={(value) => {
-            void runSettingChange(async () => {
-              await updatePreferences({ cloudSyncEnabled: value });
-              if (value) await syncNow();
-            }, undefined, false);
-          }}
-          icon="cloud-upload"
-        />
-        <LucidToggleRow
-          title={copy.link}
-          description={copy.linkBody}
-          value={state.preferences.noctaliaLinkEnabled}
+          title={copy.notifications}
+          description={copy.notificationsBody}
+          value={state.preferences.notificationsEnabled}
           disabled={savingSetting}
-          onValueChange={(value) =>
-            void runSettingChange(() => updatePreferences({ noctaliaLinkEnabled: value }))
-          }
-          icon="link"
-        />
-        <LucidToggleRow
-          title={copy.analytics}
-          description={copy.analyticsBody}
-          value={state.onboarding.analyticsConsent === true}
-          disabled={savingSetting}
-          onValueChange={(value) =>
-            void runSettingChange(() => updateAnalyticsConsent(value))
-          }
-          icon="analytics"
+          onValueChange={changeNotificationsEnabled}
+          icon="notifications"
         />
       </LucidCard>
 
       <LucidSectionHeader title={copy.schedule} caption={copy.scheduleBody} />
-      <LucidCard accent="cyan">
-        <View style={styles.timeRow}>
+      <LucidCard accent="accent">
+        <View style={[styles.timeRow, compactLayout && styles.timeRowCompact]}>
           <TimeField
             label={copy.bedtime}
             onChangeText={setBedtime}
@@ -791,7 +875,7 @@ export default function LucidSettingsScreen() {
             value={wakeTime}
           />
         </View>
-        <View style={styles.zoneRow}>
+        <View style={[styles.zoneRow, compactLayout && styles.zoneRowCompact]}>
           <View style={styles.counterCopy}>
             <Text style={[styles.fieldLabel, { color: palette.text }]}>{copy.timeZone}</Text>
             <Text selectable style={[styles.zoneValue, { color: palette.textSecondary }]}>
@@ -807,8 +891,8 @@ export default function LucidSettingsScreen() {
               styles.zoneButton,
               {
                 backgroundColor: palette.surfaceRaised,
-                borderColor: palette.border,
-                opacity: pressed ? 0.76 : 1,
+                borderColor: palette.borderInteractive,
+                opacity: pressed ? LucidPress.opacity : 1,
               },
             ]}
           >
@@ -832,30 +916,6 @@ export default function LucidSettingsScreen() {
         />
       </LucidCard>
 
-      <LucidSectionHeader title={copy.accessibility} caption={copy.accessibilityBody} />
-      <LucidCard>
-        <LucidToggleRow
-          title={copy.reduceMotion}
-          description={copy.reduceMotionBody}
-          value={state.onboarding.accessibility.reduceMotion}
-          disabled={savingSetting}
-          onValueChange={changeAccessibility}
-          icon="accessibility"
-        />
-        <AccessibilityStatusRow
-          icon="text"
-          title={copy.systemText}
-          description={copy.systemTextBody}
-          palette={palette}
-        />
-        <AccessibilityStatusRow
-          icon="ear-outline"
-          title={copy.screenReader}
-          description={copy.screenReaderBody}
-          palette={palette}
-        />
-      </LucidCard>
-
       {settingError ? (
         <Text
           accessibilityLiveRegion="polite"
@@ -870,72 +930,278 @@ export default function LucidSettingsScreen() {
         <Text
           accessibilityLiveRegion="polite"
           accessibilityRole="text"
-          style={[styles.feedback, { color: palette.cyan }]}
+          style={[styles.feedback, { color: palette.accent }]}
         >
           {settingStatus}
         </Text>
       ) : null}
 
-      <LucidSectionHeader title={copy.language} />
-      <View accessibilityRole="radiogroup" style={styles.languages}>
-        {(['fr', 'en', 'es', 'de', 'it'] as LucidLocale[]).map((locale) => (
-          <Pressable
-            key={locale}
-            accessibilityRole="radio"
-            accessibilityState={{ selected: state.preferences.locale === locale }}
-            onPress={() => void updatePreferences({ locale })}
-            style={[
-              styles.language,
-              {
-                backgroundColor:
-                  state.preferences.locale === locale
-                    ? palette.accentSoft
-                    : palette.surfaceRaised,
-                borderColor:
-                  state.preferences.locale === locale ? palette.accent : palette.border,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.languageLabel,
-                {
-                  color:
-                    state.preferences.locale === locale
-                      ? palette.accent
-                      : palette.textSecondary,
+      <View style={styles.disclosureStack}>
+        <SettingsDisclosure
+          expanded={expandedSection === 'account'}
+          icon={user ? 'person-circle' : 'person-outline'}
+          onPress={() => setExpandedSection((section) => section === 'account' ? null : 'account')}
+          palette={palette}
+          summary={user?.email ?? copy.guest}
+          testID="lucid-settings-account"
+          title={copy.account}
+        >
+          <View style={styles.accountTop}>
+            <LucidIconTile icon={user ? 'person-circle' : 'person-outline'} tone="accent" size="md" />
+            <View style={styles.accountCopy}>
+              <Text style={[styles.accountTitle, { color: palette.text }]}>
+                {user ? copy.signed : copy.guest}
+              </Text>
+              <Text style={[styles.accountSub, { color: palette.textSecondary }]}>
+                {user?.email ?? copy.accountBody}
+              </Text>
+            </View>
+            <LucidPill label={syncStatus} tone={syncStatus === 'synced' ? 'accent' : 'neutral'} />
+          </View>
+          <LucidButton
+            label={copy.manage}
+            variant={user ? 'secondary' : 'primary'}
+            icon={user ? 'person' : 'log-in'}
+            onPress={() => router.push('/lucid/account' as never)}
+          />
+        </SettingsDisclosure>
+
+        <SettingsDisclosure
+          expanded={expandedSection === 'sync'}
+          icon="shield-checkmark"
+          onPress={() => setExpandedSection((section) => section === 'sync' ? null : 'sync')}
+          palette={palette}
+          summary={syncNeedsRecovery ? copy.syncRecovery : syncStatus}
+          testID="lucid-settings-sync"
+          title={copy.sync}
+        >
+          {syncNeedsRecovery ? (
+            <View style={styles.syncRecoveryContent}>
+              <View style={styles.syncRecoveryHeader}>
+                <Ionicons name="cloud-offline-outline" size={LucidIcon.lg} color={palette.amber} />
+                <View style={styles.counterCopy}>
+                  <Text style={[styles.accountTitle, { color: palette.text }]}>{copy.syncRecovery}</Text>
+                  <Text
+                    accessibilityLiveRegion="polite"
+                    selectable
+                    style={[styles.accountSub, { color: palette.textSecondary }]}
+                  >
+                    {lastSyncResult?.outcome === 'offline'
+                      ? `${copy.syncOffline} ${syncRecoverySummary}`
+                      : syncRecoverySummary}
+                  </Text>
+                </View>
+              </View>
+              <LucidButton
+                label={copy.retrySync}
+                variant="secondary"
+                icon="refresh"
+                disabled={!user || savingSetting}
+                loading={syncStatus === 'syncing'}
+                onPress={() =>
+                  void runSettingChange(async () => { await syncNow(); }, undefined, false)
+                }
+                testID="lucid-sync-retry"
+              />
+            </View>
+          ) : null}
+          <LucidToggleRow
+            title={copy.sync}
+            description={copy.syncBody}
+            value={state.preferences.cloudSyncEnabled}
+            disabled={!user || savingSetting}
+            onValueChange={(value) => {
+              void runSettingChange(async () => {
+                await updatePreferences({ cloudSyncEnabled: value });
+                if (value) await syncNow();
+              }, undefined, false);
+            }}
+            icon="cloud-upload"
+          />
+          <LucidToggleRow
+            title={copy.link}
+            description={copy.linkBody}
+            value={state.preferences.noctaliaLinkEnabled}
+            disabled={savingSetting}
+            onValueChange={(value) =>
+              void runSettingChange(() => updatePreferences({ noctaliaLinkEnabled: value }))
+            }
+            icon="link"
+          />
+          <LucidToggleRow
+            title={copy.analytics}
+            description={copy.analyticsBody}
+            value={state.onboarding.analyticsConsent === true}
+            disabled={savingSetting}
+            onValueChange={(value) =>
+              void runSettingChange(() => updateAnalyticsConsent(value))
+            }
+            icon="analytics"
+            divider={false}
+          />
+        </SettingsDisclosure>
+
+        <SettingsDisclosure
+          expanded={expandedSection === 'accessibility'}
+          icon="accessibility"
+          onPress={() => setExpandedSection((section) => section === 'accessibility' ? null : 'accessibility')}
+          palette={palette}
+          summary={state.onboarding.accessibility.reduceMotion ? copy.reduceMotion : copy.systemText}
+          testID="lucid-settings-accessibility"
+          title={copy.accessibility}
+        >
+          <LucidToggleRow
+            title={copy.reduceMotion}
+            description={copy.reduceMotionBody}
+            value={state.onboarding.accessibility.reduceMotion}
+            disabled={savingSetting}
+            onValueChange={changeAccessibility}
+            icon="accessibility"
+          />
+          <AccessibilityStatusRow
+            icon="text"
+            title={copy.systemText}
+            description={copy.systemTextBody}
+            palette={palette}
+          />
+          <AccessibilityStatusRow
+            icon="ear-outline"
+            title={copy.screenReader}
+            description={copy.screenReaderBody}
+            palette={palette}
+          />
+        </SettingsDisclosure>
+
+        <SettingsDisclosure
+          expanded={expandedSection === 'language'}
+          icon="language"
+          onPress={() => setExpandedSection((section) => section === 'language' ? null : 'language')}
+          palette={palette}
+          summary={state.preferences.locale.toUpperCase()}
+          testID="lucid-settings-language"
+          title={copy.language}
+        >
+          <View accessibilityRole="radiogroup" style={styles.languages}>
+            {(['fr', 'en', 'es', 'de', 'it'] as LucidLocale[]).map((locale) => (
+              <Pressable
+                key={locale}
+                accessibilityRole="radio"
+                accessibilityState={{
+                  checked: state.preferences.locale === locale,
+                  selected: state.preferences.locale === locale,
+                }}
+                onPress={() => void updatePreferences({ locale })}
+                style={[
+                  styles.language,
+                  {
+                    backgroundColor:
+                      state.preferences.locale === locale
+                        ? palette.accentSoft
+                        : palette.surfaceRaised,
+                    borderColor:
+                      state.preferences.locale === locale ? palette.accent : palette.borderInteractive,
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.languageLabel,
+                    {
+                      color:
+                        state.preferences.locale === locale
+                          ? palette.accent
+                          : palette.textSecondary,
+                    },
+                  ]}
+                >
+                  {locale.toUpperCase()}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </SettingsDisclosure>
+
+        <SettingsDisclosure
+          expanded={expandedSection === 'resources'}
+          icon="ellipsis-horizontal-circle"
+          onPress={() => setExpandedSection((section) => section === 'resources' ? null : 'resources')}
+          palette={palette}
+          testID="lucid-settings-resources"
+          title={copy.secondary}
+        >
+          {rows.map((row, index) => (
+            <Pressable
+              key={row.route}
+              accessibilityRole="link"
+              onPress={() => router.push(row.route as never)}
+              style={({ pressed }) => [
+                styles.settingRow,
+                index < rows.length - 1 && {
+                  borderBottomColor: palette.border,
+                  borderBottomWidth: StyleSheet.hairlineWidth,
                 },
+                pressed && styles.pressed,
               ]}
             >
-              {locale.toUpperCase()}
-            </Text>
-          </Pressable>
-        ))}
+              <Ionicons name={row.icon} size={LucidIcon.md} color={palette.accent} />
+              <Text style={[styles.settingLabel, { color: palette.text }]}>{row.label}</Text>
+              <Ionicons name="chevron-forward" size={LucidIcon.md} color={palette.textMuted} />
+            </Pressable>
+          ))}
+        </SettingsDisclosure>
       </View>
-
-      <LucidSectionHeader title={copy.secondary} />
-      <LucidCard>
-        {rows.map((row, index) => (
-          <Pressable
-            key={row.route}
-            accessibilityRole="link"
-            onPress={() => router.push(row.route as never)}
-            style={({ pressed }) => [
-              styles.settingRow,
-              index < rows.length - 1 && {
-                borderBottomColor: palette.border,
-                borderBottomWidth: StyleSheet.hairlineWidth,
-              },
-              pressed && styles.pressed,
-            ]}
-          >
-            <Ionicons name={row.icon} size={21} color={palette.accent} />
-            <Text style={[styles.settingLabel, { color: palette.text }]}>{row.label}</Text>
-            <Ionicons name="chevron-forward" size={19} color={palette.textMuted} />
-          </Pressable>
-        ))}
-      </LucidCard>
     </LucidScreen>
+  );
+}
+
+function SettingsDisclosure({
+  children,
+  expanded,
+  icon,
+  onPress,
+  palette,
+  summary,
+  testID,
+  title,
+}: {
+  children: React.ReactNode;
+  expanded: boolean;
+  icon: keyof typeof Ionicons.glyphMap;
+  onPress: () => void;
+  palette: ReturnType<typeof getLucidPalette>;
+  summary?: string;
+  testID: string;
+  title: string;
+}) {
+  return (
+    <View style={[styles.disclosure, { backgroundColor: palette.surface, borderColor: palette.border }]}>
+      <Pressable
+        accessibilityLabel={title}
+        accessibilityRole="button"
+        accessibilityState={{ expanded }}
+        onPress={onPress}
+        testID={testID}
+        style={({ pressed }) => [styles.disclosureTrigger, pressed && styles.pressed]}
+      >
+        <Ionicons name={icon} size={LucidIcon.md} color={palette.accent} />
+        <View style={styles.disclosureCopy}>
+          <Text style={[styles.accountTitle, { color: palette.text }]}>{title}</Text>
+          {summary ? (
+            <Text numberOfLines={1} style={[styles.disclosureSummary, { color: palette.textSecondary }]}>
+              {summary}
+            </Text>
+          ) : null}
+        </View>
+        <Ionicons
+          name={expanded ? 'chevron-up' : 'chevron-down'}
+          size={LucidIcon.md}
+          color={palette.textMuted}
+        />
+      </Pressable>
+      {expanded ? (
+        <View style={[styles.disclosureBody, { borderTopColor: palette.border }]}>{children}</View>
+      ) : null}
+    </View>
   );
 }
 
@@ -960,12 +1226,12 @@ function CounterButton({
       accessibilityRole="button"
       accessibilityState={{ disabled }}
       disabled={disabled}
-      hitSlop={6}
+      hitSlop={LucidSpace.xs}
       onPress={onPress}
       testID={testID}
-      style={({ pressed }) => [styles.counterButton, { opacity: disabled ? 0.38 : pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [styles.counterButton, { opacity: disabled ? 0.38 : pressed ? LucidPress.opacity : 1 }]}
     >
-      <Ionicons name={`${icon}-circle`} size={31} color={color} />
+      <Ionicons name={`${icon}-circle`} size={LucidIcon.xl} color={color} />
     </Pressable>
   );
 }
@@ -999,7 +1265,7 @@ function TimeField({
           styles.timeInput,
           {
             backgroundColor: palette.surfaceRaised,
-            borderColor: valid ? palette.border : palette.danger,
+            borderColor: valid ? palette.borderInteractive : palette.danger,
             color: palette.text,
           },
         ]}
@@ -1023,7 +1289,7 @@ function AccessibilityStatusRow({
 }) {
   return (
     <View style={[styles.accessibilityRow, { borderTopColor: palette.border }]}>
-      <Ionicons name={icon} size={21} color={palette.accent} />
+      <Ionicons name={icon} size={LucidIcon.md} color={palette.accent} />
       <View style={styles.counterCopy}>
         <Text style={[styles.accountTitle, { color: palette.text }]}>{title}</Text>
         <Text style={[styles.accountSub, { color: palette.textSecondary }]}>{description}</Text>
@@ -1034,33 +1300,49 @@ function AccessibilityStatusRow({
 }
 
 const styles = StyleSheet.create({
-  accountTop: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  accountIcon: { width: 52, height: 52, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
-  accountCopy: { flex: 1, gap: 3 },
-  accountTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 15 },
-  accountSub: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 12, lineHeight: 17 },
-  optionGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 9 },
-  option: { minHeight: 52, minWidth: 104, flex: 1, borderRadius: 17, borderWidth: 1, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
-  optionLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 14 },
-  counter: { minHeight: 70, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10 },
-  counterCopy: { flex: 1, gap: 3 },
-  counterButtons: { flexDirection: 'row', gap: 4 },
+  accountTop: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  accountCopy: { flex: 1, gap: LucidSpace.xs },
+  accountTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  accountSub: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  disclosureStack: { gap: LucidSpace.sm },
+  disclosure: { overflow: 'hidden', borderRadius: LucidRadius.lg, borderWidth: 1 },
+  disclosureTrigger: { minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md, paddingHorizontal: LucidSpace.lg, paddingVertical: LucidSpace.md },
+  disclosureCopy: { flex: 1, gap: 2 },
+  disclosureSummary: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  disclosureBody: { gap: LucidSpace.md, borderTopWidth: StyleSheet.hairlineWidth, padding: LucidSpace.lg },
+  journeySectionLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], letterSpacing: 1.1, textTransform: 'uppercase' },
+  journeyChoices: { gap: 2 },
+  journeyChoice: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.sm, borderBottomWidth: StyleSheet.hairlineWidth, borderRadius: LucidRadius.md, paddingHorizontal: LucidSpace.sm, paddingVertical: LucidSpace.sm },
+  journeyChoiceLabel: { flex: 1, fontFamily: 'SpaceGrotesk_600SemiBold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  optionGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
+  // Trois options, une ligne. À 104 de large et 9 de gouttière elles réclamaient
+  // 330px pour les 320 d'un écran de 360 dp, et le sélecteur se repliait en 2+1
+  // dès qu'on descendait sous 370 dp. À 92 et une gouttière de 8, la rangée
+  // redescend à 292px de minimum : elle tient, et `flex: 1` rend le reste.
+  option: { minHeight: 52, minWidth: 92, flex: 1, borderRadius: LucidRadius.lg, borderWidth: 1, paddingHorizontal: LucidSpace.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: LucidSpace.sm },
+  optionLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  counter: { minHeight: 70, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md, paddingVertical: LucidSpace.md },
+  counterCopy: { flex: 1, gap: LucidSpace.xs },
+  counterButtons: { flexDirection: 'row', gap: LucidSpace.xs },
   counterButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
-  timeRow: { flexDirection: 'row', gap: 12 },
-  timeField: { flex: 1, gap: 7 },
-  fieldLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 13 },
-  timeInput: { minHeight: 50, borderRadius: 15, borderWidth: 1, paddingHorizontal: 15, fontFamily: 'SpaceGrotesk_700Bold', fontSize: 18, fontVariant: ['tabular-nums'], textAlign: 'center' },
-  zoneRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  zoneValue: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 12, lineHeight: 17 },
-  zoneButton: { minHeight: 44, maxWidth: '54%', borderRadius: 14, borderWidth: 1, paddingHorizontal: 12, alignItems: 'center', justifyContent: 'center' },
-  zoneButtonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 11, lineHeight: 15, textAlign: 'center' },
-  accessibilityRow: { minHeight: 70, borderTopWidth: StyleSheet.hairlineWidth, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 },
-  syncRecoveryHeader: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  feedback: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 13, lineHeight: 19 },
-  languages: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  language: { minHeight: 44, minWidth: 54, overflow: 'hidden', borderRadius: 14, borderWidth: 1, paddingHorizontal: 15, alignItems: 'center', justifyContent: 'center' },
-  languageLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 12 },
-  settingRow: { minHeight: 57, flexDirection: 'row', alignItems: 'center', gap: 12 },
-  settingLabel: { flex: 1, fontFamily: 'SpaceGrotesk_700Bold', fontSize: 14 },
-  pressed: { opacity: 0.76 },
+  timeRow: { flexDirection: 'row', gap: LucidSpace.md },
+  timeRowCompact: { flexDirection: 'column' },
+  timeField: { flex: 1, gap: LucidSpace.sm },
+  fieldLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  timeInput: { minHeight: 50, borderRadius: LucidRadius.md, borderWidth: 1, paddingHorizontal: LucidSpace.lg, fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h3[0], lineHeight: LucidType.h3[1], fontVariant: ['tabular-nums'], textAlign: 'center' },
+  zoneRow: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  zoneRowCompact: { alignItems: 'stretch', flexDirection: 'column' },
+  zoneValue: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  zoneButton: { minHeight: 44, maxWidth: '54%', borderRadius: LucidRadius.md, borderWidth: 1, paddingHorizontal: LucidSpace.md, alignItems: 'center', justifyContent: 'center' },
+  zoneButtonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], textAlign: 'center' },
+  accessibilityRow: { minHeight: 70, borderTopWidth: StyleSheet.hairlineWidth, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md, paddingVertical: LucidSpace.md },
+  syncRecoveryHeader: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  syncRecoveryContent: { gap: LucidSpace.md, paddingBottom: LucidSpace.sm },
+  feedback: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  languages: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
+  language: { minHeight: 44, minWidth: 54, overflow: 'hidden', borderRadius: LucidRadius.md, borderWidth: 1, paddingHorizontal: LucidSpace.lg, alignItems: 'center', justifyContent: 'center' },
+  languageLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  settingRow: { minHeight: 57, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  settingLabel: { flex: 1, fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  pressed: { opacity: LucidPress.opacity },
 });

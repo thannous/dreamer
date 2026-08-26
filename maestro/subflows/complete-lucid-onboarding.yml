@@ -1,0 +1,60 @@
+appId: com.tanuki75.noctalia.lucid
+---
+# Walks the five setup steps. Optional permissions and data choices now stay
+# out of activation and are requested only where their feature is used.
+# The flow still proves that a disabled step names its condition.
+- assertVisible:
+    id: lucid-onboarding-continue
+
+# Step 1 / 5 — concrete daily rhythm. Nothing to answer.
+- tapOn:
+    id: lucid-onboarding-continue
+
+# Step 2 / 5 — one goal. The primary action refuses until a card is picked and
+# says so under itself instead of leaving the user guessing.
+- extendedWaitUntil:
+    visible:
+      id: lucid-goal-improve_recall
+    timeout: 20000
+- assertVisible: ".*Pick one option to continue.*|.*Choisissez une option pour continuer.*|.*Elige una opción para continuar.*|.*Wähle eine Option, um fortzufahren.*|.*Scegli un’opzione per continuare.*"
+- tapOn:
+    id: lucid-goal-improve_recall
+- assertNotVisible: ".*Pick one option to continue.*|.*Choisissez une option pour continuer.*|.*Elige una opción para continuar.*|.*Wähle eine Option, um fortzufahren.*|.*Scegli un’opzione per continuare.*"
+- tapOn:
+    id: lucid-onboarding-continue
+
+# Step 3 / 5 — experience level.
+- extendedWaitUntil:
+    visible:
+      id: lucid-experience-beginner
+    timeout: 20000
+- tapOn:
+    id: lucid-experience-beginner
+- tapOn:
+    id: lucid-onboarding-continue
+
+# Step 4 / 5 — practice rhythm.
+- extendedWaitUntil:
+    visible:
+      id: lucid-weekly-target-3
+    timeout: 20000
+- tapOn:
+    id: lucid-weekly-target-3
+- tapOn:
+    id: lucid-onboarding-continue
+
+# Step 5 / 5 — sleep window plus compact setup summary. The seeded 22:30
+# default is valid, so the final CTA can complete without opening the keyboard.
+- extendedWaitUntil:
+    visible: "22:30"
+    timeout: 20000
+- tapOn:
+    id: lucid-onboarding-continue
+
+# Completing onboarding is what releases the shell gate onto Today.
+- extendedWaitUntil:
+    visible:
+      id: lucid-today
+    timeout: 60000
+- assertVisible:
+    id: lucid-today

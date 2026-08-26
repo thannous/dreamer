@@ -1,0 +1,96 @@
+# Ensure the bundle identifier matches the local Lucid Trainer dev build.
+appId: com.tanuki75.noctalia.lucid
+---
+- runFlow: subflows/open-lucid-app.yml
+- runFlow:
+    file: subflows/complete-lucid-onboarding.yml
+    env:
+      ACCEPT_AUDIO_SAFETY: "false"
+
+# Today is where onboarding lands. Its primary guided-practice action proves
+# that the redesigned content mounted, not only the persistent tab label.
+- assertVisible:
+    id: lucid-today
+- assertVisible:
+    id: lucid-today-primary
+
+- tapOn:
+    id: lucid-tab-programs
+- extendedWaitUntil:
+    visible:
+      id: lucid-programs
+    timeout: 20000
+- assertVisible: "Choose your path|Choisissez votre chemin|Elige tu camino|Wähle deinen Weg|Scegli il tuo percorso"
+
+# Night is contextual: return to Today before opening it.
+- tapOn:
+    id: lucid-tab-today
+- extendedWaitUntil:
+    visible:
+      id: lucid-today
+    timeout: 20000
+- tapOn:
+    id: lucid-tab-night
+- extendedWaitUntil:
+    visible:
+      id: lucid-night
+    timeout: 20000
+- assertVisible: "Set a quiet intention|Posez une intention calme|Fija una intención tranquila|Eine ruhige Absicht setzen|Imposta un’intenzione calma"
+
+- tapOn:
+    id: lucid-tab-progress
+- extendedWaitUntil:
+    visible:
+      id: lucid-progress
+    timeout: 20000
+- assertVisible: "Remember more|Mieux se souvenir|Recordar más|Mehr erinnern|Ricordare di più"
+
+# Settings is contextual as well and keeps its historical automation ID on
+# Today's discreet gear action.
+- tapOn:
+    id: lucid-tab-today
+- extendedWaitUntil:
+    visible:
+      id: lucid-today
+    timeout: 20000
+- tapOn:
+    id: lucid-tab-settings
+- extendedWaitUntil:
+    visible:
+      id: lucid-settings
+    timeout: 20000
+- assertVisible: "Your trainer, your choices|Votre entraînement, vos choix|Tu entrenamiento, tus decisiones|Dein Training, deine Wahl|Il tuo training, le tue scelte"
+
+# Back to the first tab: the bar keeps working after a full round trip.
+- tapOn:
+    id: lucid-tab-today
+- extendedWaitUntil:
+    visible:
+      id: lucid-today
+    timeout: 20000
+
+# The reality check is a contextual action on Today and answers to the same rule
+# as the morning review: nothing is pre-answered, so nothing is saveable in one
+# tap.
+- tapOn:
+    id: lucid-today-reality
+- extendedWaitUntil:
+    visible:
+      id: lucid-reality-check
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: lucid-reality-save
+    direction: DOWN
+    timeout: 30000
+- assertVisible: ".*Still to answer.*|.*À renseigner.*|.*Falta responder.*|.*Noch offen.*|.*Ancora da indicare.*"
+- tapOn:
+    id: lucid-reality-save
+- assertNotVisible: "Check saved|Test enregistré|Prueba guardada|Check gespeichert|Test salvato"
+- assertVisible:
+    id: lucid-reality-check
+- pressKey: back
+- extendedWaitUntil:
+    visible:
+      id: lucid-today
+    timeout: 20000

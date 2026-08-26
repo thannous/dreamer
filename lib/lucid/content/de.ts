@@ -35,7 +35,7 @@ const content = {
     notificationPermission: 'Benachrichtigungen werden erst angefragt, nachdem du eine Erinnerung erstellt hast. Bei Ablehnung bleibt das Training mit manuellen Hinweisen nutzbar.',
     audioPermission: 'Nacht-Audio ist zunächst ausgeschaltet. Höre es dir im Wachzustand an, stelle eine leise Lautstärke und einen Timer ein und entscheide dann über die Aktivierung. Das Mikrofon wird nicht benötigt.',
     accessibilityTitle: 'Passe die Nutzung an',
-    accessibilityBody: 'Systemschriftgröße, Screenreader, reduzierte Bewegungen sowie helles und dunkles Design werden unterstützt. Wesentliche Schritte beruhen nie allein auf Farbe oder Animation.',
+    accessibilityBody: 'Systemschriftgröße, Screenreader, reduzierte Bewegungen sowie dynamisches, helles und dunkles Design werden unterstützt. Wesentliche Schritte beruhen nie allein auf Farbe oder Animation.',
     consentTitle: 'Du behältst die Kontrolle',
     consentItems: [
       'Das Training funktioniert offline und ohne Konto.',
@@ -216,7 +216,7 @@ const content = {
     consentControl: 'Du kannst eine Einwilligung prüfen oder widerrufen, ohne das Offline-Training zu blockieren.',
   },
   settings: {
-    title: 'Einstellungen', reminders: 'Erinnerungen für Realitätschecks', sleepWindow: 'Übliches Schlaffenster', nightSignals: 'Nächtliche Audiosignale', permissions: 'Berechtigungen', accessibility: 'Barrierefreiheit und Bewegung', language: 'Sprache', appearance: 'Helles, dunkles oder Systemdesign', privacy: 'Datenschutz und Analyse', dataManagement: 'Daten exportieren und löschen', subscription: 'Noctalia Plus und Käufe', noctaliaConnection: 'Verbindung zu Noctalia', scienceAndLimits: 'Wissenschaft und Grenzen', help: 'Hilfe und Sicherheit', about: 'Über Lucid Trainer',
+    title: 'Einstellungen', reminders: 'Erinnerungen für Realitätschecks', sleepWindow: 'Übliches Schlaffenster', nightSignals: 'Nächtliche Audiosignale', permissions: 'Berechtigungen', accessibility: 'Barrierefreiheit und Bewegung', language: 'Sprache', appearance: 'Dynamisches, helles, dunkles oder Systemdesign', privacy: 'Datenschutz und Analyse', dataManagement: 'Daten exportieren und löschen', subscription: 'Noctalia Plus und Käufe', noctaliaConnection: 'Verbindung zu Noctalia', scienceAndLimits: 'Wissenschaft und Grenzen', help: 'Hilfe und Sicherheit', about: 'Über Lucid Trainer',
   },
 } as const satisfies LucidTrainerContent;
 

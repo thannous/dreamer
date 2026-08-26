@@ -87,6 +87,7 @@ describe('settings preference controllers', () => {
       value: option.value,
       current: option.current,
     }))).toEqual([
+      { value: 'dynamic', current: false },
       { value: 'auto', current: true },
       { value: 'light', current: false },
       { value: 'dark', current: false },

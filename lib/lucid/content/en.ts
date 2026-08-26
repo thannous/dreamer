@@ -51,7 +51,7 @@ const content = {
     notificationPermission: 'Notifications are requested only after you create a reminder. If you decline, the training remains usable and shows manual prompts.',
     audioPermission: 'Night audio is off by default. Preview it while awake, set a quiet volume and timer, then choose whether to enable it. The microphone is not needed.',
     accessibilityTitle: 'Adapt the experience',
-    accessibilityBody: 'System text size, screen readers, reduced motion and light or dark appearance are supported. Essential steps never rely on color or animation alone.',
+    accessibilityBody: 'System text size, screen readers, reduced motion and dynamic, light or dark appearance are supported. Essential steps never rely on color or animation alone.',
     consentTitle: 'Your choices stay yours',
     consentItems: [
       'Training works offline without an account.',
@@ -334,7 +334,7 @@ const content = {
     consentControl: 'Consent can be reviewed or withdrawn without blocking offline training.',
   },
   settings: {
-    title: 'Settings', reminders: 'Reality-check reminders', sleepWindow: 'Usual sleep window', nightSignals: 'Night audio cues', permissions: 'Permissions', accessibility: 'Accessibility and motion', language: 'Language', appearance: 'Light, dark or system appearance', privacy: 'Privacy and analytics', dataManagement: 'Export and delete data', subscription: 'Noctalia Plus and purchases', noctaliaConnection: 'Connection to Noctalia', scienceAndLimits: 'Science and limits', help: 'Help and safety', about: 'About Lucid Trainer',
+    title: 'Settings', reminders: 'Reality-check reminders', sleepWindow: 'Usual sleep window', nightSignals: 'Night audio cues', permissions: 'Permissions', accessibility: 'Accessibility and motion', language: 'Language', appearance: 'Dynamic, light, dark or system appearance', privacy: 'Privacy and analytics', dataManagement: 'Export and delete data', subscription: 'Noctalia Plus and purchases', noctaliaConnection: 'Connection to Noctalia', scienceAndLimits: 'Science and limits', help: 'Help and safety', about: 'About Lucid Trainer',
   },
 } as const satisfies LucidTrainerContent;
 

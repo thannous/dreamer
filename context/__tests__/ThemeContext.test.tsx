@@ -90,7 +90,7 @@ describe('ThemeContext', () => {
   it('given missing provider__when using hook__then returns default snapshot', () => {
     const { result } = renderHook(() => useTheme());
 
-    expect(result.current.preference).toBe('auto');
+    expect(result.current.preference).toBe('dynamic');
     expect(result.current.mode).toBe('light');
     expect(result.current.colors).toBe(LightTheme);
     expect(result.current.shadows).toBe(Shadows.light);

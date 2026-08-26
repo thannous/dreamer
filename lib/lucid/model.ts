@@ -46,6 +46,12 @@ export interface LucidSleepSchedule {
 
 export interface LucidAccessibilityPreferences {
   reduceMotion: boolean;
+  // Vestigiaux. Aucun écran ne les positionne — l'onboarding ne propose plus que
+  // `reduceMotion` — et personne ne les lit : la taille de texte et la sémantique
+  // lecteur d'écran appartiennent au système, pas à un mode applicatif, et
+  // `settings.tsx` le dit désormais au lieu de le promettre. Les retirer d'ici
+  // suppose de toucher `lib/lucid/domain.ts`, `app/lucid/onboarding.tsx` et les
+  // deux tests d'écran, qui fournissent encore les deux clés.
   largerText: boolean;
   screenReaderOptimized: boolean;
 }
@@ -67,7 +73,7 @@ export interface LucidOnboardingState {
 
 export interface LucidTrainerPreferences {
   locale: LucidLocale;
-  theme: 'system' | 'light' | 'dark';
+  theme: 'dynamic' | 'system' | 'light' | 'dark';
   cloudSyncEnabled: boolean;
   noctaliaLinkEnabled: boolean;
   notificationsEnabled: boolean;
@@ -328,7 +334,7 @@ export function isLucidTrainerPreferences(value: unknown): value is LucidTrainer
   if (!isRecord(value)) return false;
   return (
     isEnumValue(LUCID_LOCALES, value.locale) &&
-    isEnumValue(['system', 'light', 'dark'] as const, value.theme) &&
+    isEnumValue(['dynamic', 'system', 'light', 'dark'] as const, value.theme) &&
     typeof value.cloudSyncEnabled === 'boolean' &&
     typeof value.noctaliaLinkEnabled === 'boolean' &&
     typeof value.notificationsEnabled === 'boolean' &&

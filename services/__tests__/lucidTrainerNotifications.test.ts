@@ -3,7 +3,9 @@ import {
   cancelAllLucidTrainerNotifications,
   cancelLucidNightCues,
   cancelLucidTrainerReminders,
+  expoLucidNotificationAdapter,
   LUCID_NIGHT_CUE_NOTIFICATION_CHANNEL_IDS,
+  LUCID_TRAINER_NOTIFICATION_CHANNEL_ID,
   normalizeLucidNotificationPermission,
   reconcileLucidTrainerReminders,
   restoreLucidNightSignalPlan,
@@ -244,6 +246,70 @@ describe('lucidTrainerNotifications', () => {
     expect(mock.events).toEqual(['channel', 'get-permission', 'request-permission']);
   });
 
+  it('uses the Android system sound for ordinary reminders and never a custom default file', async () => {
+    const mock = adapterFactory({ platform: 'android' });
+    const silentPlan = plan();
+    silentPlan.reminders.push({
+      id: 'quiet-morning',
+      family: 'morning_review',
+      enabled: true,
+      weekdays: [2],
+      time: '07:15',
+      title: 'Morning review',
+      body: 'Record the outcome of last night.',
+      url: '/lucid/morning',
+      sound: false,
+    });
+
+    await reconcileLucidTrainerReminders(silentPlan, {
+      adapter: mock.adapter,
+      timeZoneOffsetMinutes: -120,
+    });
+
+    const scheduledContents = (mock.adapter.schedule as jest.Mock).mock.calls.map(
+      ([request]) => request.content.sound
+    );
+    expect(scheduledContents).toEqual([false, true, true]);
+    expect(mock.adapter.schedule).toHaveBeenCalledWith(
+      expect.objectContaining({
+        content: expect.objectContaining({ sound: true }),
+        trigger: expect.objectContaining({
+          type: 'weekly',
+          channelId: LUCID_TRAINER_NOTIFICATION_CHANNEL_ID,
+        }),
+      })
+    );
+    for (const [request] of (mock.adapter.schedule as jest.Mock).mock.calls) {
+      expect(request.content.sound).not.toBe('default');
+    }
+  });
+
+  it('keeps the iOS system sound boolean and does not configure an Android reminder channel', async () => {
+    const ios = adapterFactory({ platform: 'ios' });
+    const silentPlan = plan();
+    silentPlan.reminders[0] = { ...silentPlan.reminders[0], sound: false };
+
+    await reconcileLucidTrainerReminders(silentPlan, {
+      adapter: ios.adapter,
+      timeZoneOffsetMinutes: -120,
+    });
+
+    expect(ios.adapter.configureChannel).not.toHaveBeenCalled();
+    expect(ios.adapter.schedule).toHaveBeenCalledWith(
+      expect.objectContaining({
+        content: expect.objectContaining({ sound: false }),
+        trigger: expect.objectContaining({
+          type: 'calendar',
+          timezone: 'Europe/Paris',
+        }),
+      })
+    );
+    for (const [request] of (ios.adapter.schedule as jest.Mock).mock.calls) {
+      expect(request.content.sound).toBe(false);
+      expect(request.trigger).not.toHaveProperty('channelId');
+    }
+  });
+
   it('targets cancellation by reminder family and product identifiers', async () => {
     const mock = adapterFactory({});
     const mixedPlan = plan();
@@ -346,6 +412,45 @@ describe('lucidTrainerNotifications', () => {
         },
       })
     );
+  });
+
+  it('keeps custom night cue sound files on the dedicated Android channel', async () => {
+    const Notifications = require('expo-notifications') as {
+      setNotificationChannelAsync: jest.Mock;
+    };
+    const { Platform } = require('react-native') as { Platform: { OS: string } };
+    const previousOs = Platform.OS;
+    Platform.OS = 'android';
+    Notifications.setNotificationChannelAsync.mockClear();
+
+    try {
+      await expoLucidNotificationAdapter.configureChannel();
+      await expoLucidNotificationAdapter.configureNightCueChannel('ocean', 'gentle');
+
+      expect(Notifications.setNotificationChannelAsync).toHaveBeenNthCalledWith(
+        1,
+        LUCID_TRAINER_NOTIFICATION_CHANNEL_ID,
+        expect.objectContaining({
+          name: 'Lucid Trainer reminders',
+          vibrationPattern: [0, 150],
+        })
+      );
+      const reminderChannel = Notifications.setNotificationChannelAsync.mock.calls[0][1] as Record<
+        string,
+        unknown
+      >;
+      expect(reminderChannel).not.toHaveProperty('sound');
+
+      expect(Notifications.setNotificationChannelAsync).toHaveBeenNthCalledWith(
+        2,
+        LUCID_NIGHT_CUE_NOTIFICATION_CHANNEL_IDS.ocean.gentle,
+        expect.objectContaining({
+          sound: 'lucid_cue_ocean.wav',
+        })
+      );
+    } finally {
+      Platform.OS = previousOs;
+    }
   });
 
   it('does not let reminder reconciliation cancel night cue notifications', async () => {

@@ -288,7 +288,7 @@ describe('storageServiceMock', () => {
       const preference = await getThemePreference();
 
       // Then
-      expect(preference).toBe('auto');
+      expect(preference).toBe('dynamic');
     });
   });
 

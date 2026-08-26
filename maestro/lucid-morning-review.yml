@@ -1,0 +1,65 @@
+# Ensure the bundle identifier matches the local Lucid Trainer dev build.
+appId: com.tanuki75.noctalia.lucid
+---
+- runFlow: subflows/open-lucid-app.yml
+- runFlow:
+    file: subflows/complete-lucid-onboarding.yml
+    env:
+      ACCEPT_AUDIO_SAFETY: "false"
+
+# Morning review is a contextual action on Today rather than a permanent tab.
+- tapOn:
+    id: lucid-today-morning
+- extendedWaitUntil:
+    visible:
+      id: lucid-morning
+    timeout: 30000
+
+# A morning review opens with every answer empty. Its first step must refuse to
+# advance and tell the person what to do; save is available only on the recap.
+- assertVisible: ".*Choose an answer to continue.*|.*Choisissez une réponse pour continuer.*|.*Elige una respuesta para continuar.*|.*Wähle eine Antwort, um fortzufahren.*|.*Scegli una risposta per continuare.*"
+- tapOn:
+    id: lucid-morning-next
+- waitForAnimationToEnd
+- assertVisible: ".*Choose an answer to continue.*|.*Choisissez une réponse pour continuer.*|.*Elige una respuesta para continuar.*|.*Wähle eine Antwort, um fortzufahren.*|.*Scegli una risposta per continuare.*"
+- assertVisible:
+    id: lucid-morning
+
+# Answer the five required fields one decision at a time. Programme names are
+# identical in the five locales; everything else is matched through translations.
+- tapOn:
+    text: "MILD"
+- tapOn:
+    id: lucid-morning-next
+- tapOn:
+    text: "10 minutes|10 minutos|10 Minuten|10 minuti"
+- tapOn:
+    id: lucid-morning-next
+# "No lucidity" keeps the conditional lucidity score out of the required set.
+- tapOn:
+    text: "No lucidity|Pas de lucidité|Sin lucidez|Keine Klarheit|Nessuna lucidità"
+- tapOn:
+    id: lucid-morning-next
+- tapOn:
+    text: "4"
+- assertVisible: "4 / 5"
+- tapOn:
+    id: lucid-morning-next
+- tapOn:
+    text: "4"
+- tapOn:
+    id: lucid-morning-next
+# Context is optional. Review then save the final recap.
+- tapOn:
+    id: lucid-morning-next
+- tapOn:
+    id: lucid-morning-save
+- extendedWaitUntil:
+    visible: "Saved offline|Enregistré hors ligne|Guardado sin conexión|Offline gespeichert|Salvato offline"
+    timeout: 30000
+- tapOn:
+    text: "Done|Terminé|Listo|Fertig|Fatto"
+- extendedWaitUntil:
+    visible:
+      id: lucid-today
+    timeout: 30000

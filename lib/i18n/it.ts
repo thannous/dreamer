@@ -955,6 +955,8 @@ const translations: Record<string, string> = {
     'settings.account.alert.signout_failed.title': 'Disconnessione non riuscita',
     'settings.theme.title': 'Aspetto',
     'settings.theme.description': 'Scegli il tema preferito per l\'app',
+    'settings.theme.option.dynamic.label': 'Dinamico',
+    'settings.theme.option.dynamic.description': 'Segue l’ora locale tra mattino, giorno, bagliore serale e notte',
     'settings.theme.option.auto.label': 'Automatico',
     'settings.theme.option.auto.description': 'Segui il tema di sistema',
     'settings.theme.option.light.label': 'Chiaro',

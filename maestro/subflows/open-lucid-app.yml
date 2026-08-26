@@ -1,0 +1,62 @@
+# The companion is a separate store application: com.tanuki75.noctalia.lucid,
+# never com.tanuki75.noctalia. Both dev clients can sit on the same device.
+appId: com.tanuki75.noctalia.lucid
+---
+- launchApp:
+    clearState: true
+# The development launcher keeps animating its discovery surface. Waiting for
+# global animation idleness here makes Maestro's Android driver drop before the
+# bundle is opened; the explicit waits below are the real synchronization.
+# Do not use the generated Expo scheme here: another installed dev-client can
+# claim it and steal the intent. Wait for this package's discovered server.
+- extendedWaitUntil:
+    visible: "DEVELOPMENT SERVERS"
+    timeout: 60000
+- tapOn:
+    point: "50%,26%"
+# Server selection returns before either the developer menu or app shell is ready.
+# Synchronize on the primary label shared by those two possible states, then
+# use the runtime-version anchor below to decide whether the overlay needs a tap.
+- extendedWaitUntil:
+    visible: "Continue|Continuer|Continuar|Weiter|Continua"
+    timeout: 240000
+# "Continue" is also the label of the onboarding primary button in English.
+# Anchor the tap to Expo's developer-menu copy: on Android the Lucid shell can
+# already be mounted behind this overlay and therefore remain accessible.
+- runFlow:
+    when:
+      visible: "Runtime version:.*"
+    commands:
+      - tapOn:
+          text: "Continue"
+          retryTapIfNoChange: true
+          optional: true
+- runFlow:
+    when:
+      visible: "Reload"
+    commands:
+      - pressKey: back
+- runFlow:
+    when:
+      visible: "Dismiss"
+    commands:
+      - tapOn:
+          text: "Dismiss"
+          retryTapIfNoChange: true
+          optional: true
+- runFlow:
+    when:
+      visible: "Minimize"
+    commands:
+      - tapOn:
+          text: "Minimize"
+          retryTapIfNoChange: true
+          optional: true
+# A cleared install has no completed onboarding, so the Lucid shell must gate
+# every route to /lucid/onboarding before anything else can be reached.
+- extendedWaitUntil:
+    visible:
+      id: lucid-onboarding
+    timeout: 90000
+- assertVisible:
+    id: lucid-onboarding

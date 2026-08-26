@@ -1,35 +1,43 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React, { useMemo, type ComponentProps } from 'react';
-import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Platform, StyleSheet, Text, useWindowDimensions, type ColorValue } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { LucidGlass } from '@/components/lucid/LucidGlass';
+import { getLucidPalette, LucidIcon, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
-function TabIcon({ icon, label, focused }: { icon: IconName; label: string; focused: boolean }) {
-  const { colors, mode } = useTheme();
-  const palette = getLucidPalette(colors, mode);
-  return (
-    <View style={styles.tabItem}>
-      <Ionicons name={focused ? icon : (`${icon}-outline` as IconName)} size={22} color={focused ? palette.accentStrong : palette.textMuted} />
-      <Text numberOfLines={1} style={[styles.tabLabel, { color: focused ? palette.text : palette.textMuted }]}>{label}</Text>
-    </View>
-  );
-}
+// Le libellé d'onglet suit l'agrandissement système, mais pas au-delà de 1,2 :
+// la barre est le seul élément permanent de l'interface, elle ne peut pas doubler
+// de hauteur parce qu'un réglage le demande. Le même plafond borne le texte et
+// la barre qui le porte, sinon l'un des deux déborde de l'autre.
+const TAB_LABEL_MAX_FONT_SCALE = 1.2;
+// Plafond de hauteur. Les écrans réservent `Math.max(insets.bottom, 20) + 92`
+// sous leur contenu, la barre occupe `Math.max(insets.bottom, 10) + hauteur` :
+// la collision se produirait à 92, on s'arrête à 84 pour garder une marge.
+const TAB_BAR_MAX_HEIGHT = 84;
 
 export default function LucidTabsLayout() {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const { content } = useLucidTrainer();
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
+  const { width, fontScale } = useWindowDimensions();
   const labels = content.chrome.tabs;
   const compact = width < 370;
+  // Hauteur de barre. Deux principes : iOS pose ses onglets plus haut qu'Android
+  // (49pt + libellé contre 56dp Material), et la hauteur suit le fontScale —
+  // figée à 70, elle rognait le libellé dès le premier cran d'agrandissement.
+  // La barre grandit exactement autant que le texte qu'elle porte, jamais plus.
+  const tabBarHeight = Math.min(
+    Math.round((Platform.OS === 'ios' ? (compact ? 64 : 70) : compact ? 60 : 66) * Math.min(fontScale, TAB_LABEL_MAX_FONT_SCALE)),
+    TAB_BAR_MAX_HEIGHT
+  );
 
   // Expo Router applies each Screen's options in an effect. Keep the option
   // objects stable so applying them cannot trigger a setOptions/render loop.
@@ -39,17 +47,45 @@ export default function LucidTabsLayout() {
       tabBarButton: (props: ComponentProps<typeof HapticTab>) => (
         <HapticTab {...props} testID={testID} accessibilityLabel={title} />
       ),
-      tabBarIcon: ({ focused }: { focused: boolean }) => (
-        <TabIcon focused={focused} icon={icon} label={title} />
+      // L'icône reste seule dans son emplacement : c'est le navigateur qui empile
+      // le libellé dessous, lui seul connaît la hauteur disponible.
+      tabBarIcon: ({ color, focused }: { color: ColorValue; focused: boolean }) => (
+        <Ionicons name={focused ? icon : (`${icon}-outline` as IconName)} size={LucidIcon.lg} color={color} />
+      ),
+      // Le libellé est repris au navigateur pour une raison : il le rend sans
+      // plafond d'agrandissement. À 360 dp un onglet mesure 65px, où « Einstellungen »
+      // tient déjà au pixel près ; à 200 % de taille système il pousserait la barre
+      // hors de l'écran. `maxFontSizeMultiplier` borne le texte, `flexShrink` le
+      // laisse céder dans son emplacement au lieu d'élargir la barre.
+      // `adjustsFontSizeToFit` est la pièce qui manquait : à 11px, « Programmes »
+      // demande 66px pour 59 disponibles et se faisait tronquer. Un libellé trop
+      // long rétrécit jusqu'à 85 % au lieu de perdre ses lettres — un problème de
+      // largeur se règle dans la largeur, jamais en raccourcissant la traduction.
+      tabBarLabel: ({ color }: { color: ColorValue }) => (
+        <Text
+          adjustsFontSizeToFit
+          minimumFontScale={0.85}
+          numberOfLines={1}
+          maxFontSizeMultiplier={TAB_LABEL_MAX_FONT_SCALE}
+          style={[styles.tabLabel, { color }]}
+        >
+          {title}
+        </Text>
       ),
     });
+
+    // Night and Settings remain routable peers in this navigator, but they are
+    // contextual destinations rather than permanent navigation choices. Expo
+    // Router's `href: null` keeps direct/deep-link navigation intact while
+    // removing them from the tab bar and its accessibility order.
+    const hiddenScreen = (title: string) => ({ title, href: null });
 
     return {
       today: screen(labels.today, 'sparkles', 'lucid-tab-today'),
       programs: screen(labels.programs, 'map', 'lucid-tab-programs'),
-      night: screen(labels.night, 'moon', 'lucid-tab-night'),
+      night: hiddenScreen(labels.night),
       progress: screen(labels.progress, 'stats-chart', 'lucid-tab-progress'),
-      settings: screen(labels.settings, 'settings', 'lucid-tab-settings'),
+      settings: hiddenScreen(labels.settings),
     };
   }, [labels.night, labels.programs, labels.progress, labels.settings, labels.today]);
 
@@ -57,24 +93,30 @@ export default function LucidTabsLayout() {
     () => ({
       headerShown: false,
       sceneStyle: { backgroundColor: palette.background },
-      tabBarShowLabel: false,
+      tabBarShowLabel: true,
+      tabBarActiveTintColor: palette.accentStrong,
+      tabBarInactiveTintColor: palette.textMuted,
       tabBarHideOnKeyboard: true,
       tabBarButton: HapticTab,
+      // La barre flottait déjà au-dessus du contenu avec un overlay à 0,86 :
+      // c'était du verre qui s'ignorait. `tabBarBackground` le rend explicite,
+      // avec flou sur iOS et l'overlay seul partout ailleurs.
+      tabBarBackground: () => <LucidGlass pointerEvents="none" radius={24} style={StyleSheet.absoluteFill as never} />,
       tabBarItemStyle: styles.tabBarItem,
       tabBarStyle: {
         position: 'absolute' as const,
         left: width > 760 ? (width - 720) / 2 : 12,
         right: width > 760 ? (width - 720) / 2 : 12,
         bottom: Math.max(insets.bottom, 10),
-        height: compact ? 62 : 70,
-        paddingTop: 7,
-        paddingBottom: 6,
-        paddingHorizontal: 4,
-        backgroundColor: palette.overlay,
-        borderTopColor: palette.border,
-        borderColor: palette.border,
-        borderWidth: 1,
-        borderRadius: 24,
+        height: tabBarHeight,
+        paddingTop: LucidSpace.sm,
+        paddingBottom: LucidSpace.sm,
+        paddingHorizontal: LucidSpace.xs,
+        backgroundColor: 'transparent',
+        borderTopColor: 'transparent',
+        borderColor: 'transparent',
+        borderWidth: 0,
+        borderRadius: LucidRadius.xl,
         elevation: 12,
         shadowColor: '#000',
         shadowOpacity: mode === 'dark' ? 0.38 : 0.12,
@@ -84,12 +126,12 @@ export default function LucidTabsLayout() {
       },
     }),
     [
-      compact,
       insets.bottom,
       mode,
+      palette.accentStrong,
       palette.background,
-      palette.border,
-      palette.overlay,
+      palette.textMuted,
+      tabBarHeight,
       width,
     ]
   );
@@ -106,7 +148,10 @@ export default function LucidTabsLayout() {
 }
 
 const styles = StyleSheet.create({
-  tabBarItem: { height: '100%' },
-  tabItem: { flex: 1, minWidth: 46, alignItems: 'center', justifyContent: 'center', gap: 3 },
-  tabLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: 10, maxWidth: 70, textAlign: 'center' },
+  // Un onglet cède de la largeur à ses voisins au lieu d'élargir la barre : aucune
+  // largeur figée ici, les cinq emplacements se partagent la place disponible.
+  tabBarItem: { height: '100%', flexShrink: 1 },
+  // Palier « overline » : 11/14. En dessous (10pt) le libellé passait sous les 11pt
+  // des HIG et les 12sp de Material, sur l'élément le plus permanent de l'app.
+  tabLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], textAlign: 'center', flexShrink: 1 },
 });

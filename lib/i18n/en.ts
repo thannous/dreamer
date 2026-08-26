@@ -955,6 +955,8 @@ const translations: Record<string, string> = {
     'settings.account.alert.signout_failed.title': 'Sign out failed',
     'settings.theme.title': 'Appearance',
     'settings.theme.description': 'Choose your preferred theme for the app',
+    'settings.theme.option.dynamic.label': 'Dynamic',
+    'settings.theme.option.dynamic.description': 'Moves through morning, daylight, afterglow and night with local time',
     'settings.theme.option.auto.label': 'Automatic',
     'settings.theme.option.auto.description': 'Follow system theme',
     'settings.theme.option.light.label': 'Light',

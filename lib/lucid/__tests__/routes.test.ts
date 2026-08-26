@@ -1,12 +1,16 @@
 import {
   closeLucidRoute,
+  claimLucidOnboardingCompletionNavigation,
+  hasLucidOnboardingCompletionNavigationClaim,
   isLucidHomePath,
   isLucidOnboardingPath,
   isSafeLucidNotificationRoute,
-  LUCID_HOME_HREF,
   LUCID_ONBOARDING_HREF,
+  resetLucidOnboardingCompletionNavigationClaim,
   resolveLucidOnboardingGate,
 } from '@/lib/lucid/routes';
+
+afterEach(() => resetLucidOnboardingCompletionNavigationClaim());
 
 describe('Lucid Trainer notification routes', () => {
   it.each([
@@ -60,6 +64,14 @@ describe('closeLucidRoute', () => {
 });
 
 describe('resolveLucidOnboardingGate', () => {
+  it('shares a completion-navigation claim across overlapping layouts', () => {
+    claimLucidOnboardingCompletionNavigation();
+
+    expect(hasLucidOnboardingCompletionNavigationClaim()).toBe(true);
+    resetLucidOnboardingCompletionNavigationClaim();
+    expect(hasLucidOnboardingCompletionNavigationClaim()).toBe(false);
+  });
+
   it('sends incomplete trainers to onboarding from the home URL', () => {
     expect(
       resolveLucidOnboardingGate({
@@ -85,13 +97,13 @@ describe('resolveLucidOnboardingGate', () => {
     ).toBeNull();
   });
 
-  it('opens the tab home after onboarding instead of /lucid/(tabs)', () => {
+  it('leaves the completed onboarding transition to the screen owner', () => {
     expect(
       resolveLucidOnboardingGate({
         pathname: '/lucid/onboarding',
         onboardingStatus: 'completed',
       })
-    ).toBe(LUCID_HOME_HREF);
+    ).toBeNull();
     expect(isLucidHomePath('/lucid')).toBe(true);
     expect(isLucidHomePath('/lucid/(tabs)')).toBe(true);
     expect(

@@ -53,10 +53,11 @@ jest.mock('expo-crypto', () => {
       this.mockRaw = value;
     }
 
-    static fromCombined(value: string | Uint8Array) {
-      return new MockSealedData(
-        typeof value === 'string' ? Buffer.from(value, 'base64') : Buffer.from(value)
-      );
+    static fromCombined(value: string | Uint8Array, _config?: { ivLength: number; tagLength: number }) {
+      if (typeof value === 'string') {
+        throw new TypeError('Android fromCombined expects a ByteArray, not a base64 string');
+      }
+      return new MockSealedData(Buffer.from(value));
     }
 
     async combined(encoding: 'base64') {
@@ -151,6 +152,21 @@ describe('lucidTrainerSecureStorage', () => {
       expect.any(String),
       { keychainAccessible: 'WHEN_UNLOCKED_THIS_DEVICE_ONLY' }
     );
+  });
+
+  it('decrypts immediately and after a process-like key cache reset', async () => {
+    const encrypted = await protectLucidTrainerStoredValue(STORAGE_KEY, 'completed onboarding');
+
+    await expect(revealLucidTrainerStoredValue(STORAGE_KEY, encrypted)).resolves.toBe(
+      'completed onboarding'
+    );
+
+    resetLucidTrainerSecureStorageForTesting();
+
+    await expect(revealLucidTrainerStoredValue(STORAGE_KEY, encrypted)).resolves.toBe(
+      'completed onboarding'
+    );
+    expect(SecureStore.getItemAsync).toHaveBeenCalled();
   });
 
   it('authenticates the full storage key as AAD', async () => {

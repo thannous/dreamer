@@ -51,7 +51,7 @@ const content = {
     notificationPermission: 'Les notifications ne sont demandées qu’après la création d’un rappel. Si tu refuses, l’entraînement reste utilisable avec des invitations manuelles.',
     audioPermission: 'L’audio nocturne est désactivé au départ. Écoute-le éveillé, règle un volume discret et un minuteur, puis décide de l’activer ou non. Le microphone n’est pas nécessaire.',
     accessibilityTitle: 'Adapte l’expérience',
-    accessibilityBody: 'La taille de texte système, les lecteurs d’écran, la réduction des animations et les apparences claire ou sombre sont prises en charge. Les étapes essentielles ne reposent jamais uniquement sur la couleur ou le mouvement.',
+    accessibilityBody: 'La taille de texte système, les lecteurs d’écran, la réduction des animations et les apparences dynamique, claire ou sombre sont prises en charge. Les étapes essentielles ne reposent jamais uniquement sur la couleur ou le mouvement.',
     consentTitle: 'Tes choix restent les tiens',
     consentItems: [
       'L’entraînement fonctionne hors ligne sans compte.',
@@ -334,7 +334,7 @@ const content = {
     consentControl: 'Le consentement peut être revu ou retiré sans bloquer l’entraînement hors ligne.',
   },
   settings: {
-    title: 'Réglages', reminders: 'Rappels des tests de réalité', sleepWindow: 'Plage de sommeil habituelle', nightSignals: 'Signaux audio nocturnes', permissions: 'Autorisations', accessibility: 'Accessibilité et animations', language: 'Langue', appearance: 'Apparence claire, sombre ou système', privacy: 'Confidentialité et statistiques', dataManagement: 'Exporter et supprimer les données', subscription: 'Noctalia Plus et achats', noctaliaConnection: 'Connexion à Noctalia', scienceAndLimits: 'Science et limites', help: 'Aide et sécurité', about: 'À propos de Lucid Trainer',
+    title: 'Réglages', reminders: 'Rappels des tests de réalité', sleepWindow: 'Plage de sommeil habituelle', nightSignals: 'Signaux audio nocturnes', permissions: 'Autorisations', accessibility: 'Accessibilité et animations', language: 'Langue', appearance: 'Apparence dynamique, claire, sombre ou système', privacy: 'Confidentialité et statistiques', dataManagement: 'Exporter et supprimer les données', subscription: 'Noctalia Plus et achats', noctaliaConnection: 'Connexion à Noctalia', scienceAndLimits: 'Science et limites', help: 'Aide et sécurité', about: 'À propos de Lucid Trainer',
   },
 } as const satisfies LucidTrainerContent;
 
