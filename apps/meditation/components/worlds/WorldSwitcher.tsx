@@ -14,7 +14,7 @@ import { ScopedTheme } from 'uniwind';
 
 import { Text } from '@/components/ui/Text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ArtworkScrim, NightTheme } from '@/constants/theme';
+import { ArtworkScrim, NightTheme, Radius } from '@/constants/theme';
 import type { MeditationWorld, WorldId } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
@@ -65,44 +65,50 @@ export function WorldChoice({
   };
 
   return (
-    <ScopedTheme theme="dark">
-      <AnimatedPressable
-        accessibilityRole="radio"
-        accessibilityLabel={name}
-        accessibilityHint={description}
-        accessibilityState={{ checked: selected, selected }}
-        hitSlop={HIT_SLOP}
-        pressRetentionOffset={PRESS_RETENTION}
-        onPress={handlePress}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        style={style}
-        className={`min-h-28 flex-1 overflow-hidden rounded-xl ${
-          selected ? 'border-[1.5px] border-champagne-soft' : 'border border-hairline'
-        }`}
-        testID={testID}
-        {...rest}>
-        <Image
-          accessible={false}
-          source={world.thumbnail as ImageProps['source']}
-          contentFit="cover"
-          recyclingKey={`${world.id}-choice`}
-          style={StyleSheet.absoluteFill}
-        />
-        <LinearGradient
-          colors={[ArtworkScrim.transparent, ArtworkScrim.strong]}
-          locations={[0.2, 1]}
-          style={StyleSheet.absoluteFill}
-        />
+    <AnimatedPressable
+      accessibilityRole="radio"
+      accessibilityLabel={name}
+      accessibilityHint={description}
+      accessibilityState={{ checked: selected, selected }}
+      hitSlop={HIT_SLOP}
+      pressRetentionOffset={PRESS_RETENTION}
+      onPress={handlePress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={[
+        style,
+        {
+          borderColor: selected ? NightTheme.accentLight : NightTheme.divider,
+          borderRadius: Radius.xl,
+          borderWidth: selected ? 1.5 : 1,
+          overflow: 'hidden',
+        },
+      ]}
+      className="min-h-28 flex-1 overflow-hidden"
+      testID={testID}
+      {...rest}>
+      <Image
+        accessible={false}
+        source={world.thumbnail as ImageProps['source']}
+        contentFit="cover"
+        recyclingKey={`${world.id}-choice`}
+        style={StyleSheet.absoluteFill}
+      />
+      <LinearGradient
+        colors={[ArtworkScrim.transparent, ArtworkScrim.strong]}
+        locations={[0.2, 1]}
+        style={StyleSheet.absoluteFill}
+      />
 
+      <ScopedTheme theme="dark">
         <View className="min-h-28 flex-1 justify-between p-3">
           <View className="items-end">
             <View
-              className={`h-7 w-7 items-center justify-center rounded-full border ${
-                selected
-                  ? 'border-champagne-soft bg-champagne'
-                  : 'border-hairline bg-ink-card'
-              }`}>
+              className="h-7 w-7 items-center justify-center rounded-full border"
+              style={{
+                backgroundColor: selected ? NightTheme.accent : NightTheme.backgroundCard,
+                borderColor: selected ? NightTheme.accentLight : NightTheme.divider,
+              }}>
               {selected ? (
                 <IconSymbol
                   name="checkmark"
@@ -118,8 +124,8 @@ export function WorldChoice({
             {name}
           </Text>
         </View>
-      </AnimatedPressable>
-    </ScopedTheme>
+      </ScopedTheme>
+    </AnimatedPressable>
   );
 }
 

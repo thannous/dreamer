@@ -49,6 +49,24 @@ Cloudflare Pages builds `docs/` from tracked sources on `master`; verify the bra
 9. Preserve unrelated work and never take destructive, production, or external actions beyond what the user authorized
 10. Report meaningful blockers, outcomes, and evidence without noisy progress
 
+## Multi-Agent Implementation
+
+- When implementation is delegated, the coordinating Codex agent inventories existing WIP,
+  defines independent non-overlapping file scopes, and remains responsible for integration,
+  review, conflict resolution, and the final completion claim.
+- Use `grok-oauth/grok-4.6` for Grok implementation agents. Implementation work always runs
+  at `high` reasoning for bounded local changes or `xhigh` for cross-cutting state, navigation,
+  architecture, concurrency, or other complex changes; never use a lower reasoning level.
+- Do not let implementation agents write the same file concurrently. Sequence dependent work
+  explicitly and preserve every unrelated or pre-existing modification.
+- Do not replace an implementation agent merely because it is taking time. Request a concise
+  checkpoint, evaluate the approach, and resume the same agent when the method is sound so its
+  reasoning and partial work are preserved. Restart from scratch only when the approach is
+  invalid, unsafe, or has no recoverable progress.
+- Subagents do not commit, push, deploy, publish, or perform destructive actions unless the user
+  explicitly authorizes that exact step. The coordinating agent reviews the combined diff and
+  validates observable behavior, including the real Android interface when applicable.
+
 ## Project Rules
 
 - Start with `git status --short`; preserve all unrelated and pre-existing changes.

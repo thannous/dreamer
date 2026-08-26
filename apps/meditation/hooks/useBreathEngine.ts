@@ -83,13 +83,13 @@ export function useBreathEngine({
     scale.set(RING_SCALE_MIN);
     scale.set(
       withRepeat(
-        withSequence(
-          ...steps.map((step) =>
-            withTiming(step.to, {
-              duration: step.durationMs,
-              easing: Easing.inOut(Easing.sin),
-            })
-          )
+      withSequence(
+        ...steps.map((step) =>
+          withTiming(step.to, {
+            duration: step.durationMs,
+            easing: Easing.inOut(Easing.sin),
+          })
+        )
         ),
         -1,
         false
@@ -136,17 +136,11 @@ export function useBreathEngine({
     const tick = setInterval(() => {
       const base = accumulatedRef.current;
       const live = startedAtRef.current === null ? 0 : Date.now() - startedAtRef.current;
-      const nextElapsedMs = Math.min(totalMs, base + live);
-      setElapsedMs(nextElapsedMs);
-
-      if (nextElapsedMs >= totalMs) {
-        cancelAnimation(scale);
-        setRunning(false);
-      }
+      setElapsedMs(Math.min(totalMs, base + live));
     }, TICK_MS);
 
     return () => clearInterval(tick);
-  }, [active, scale, totalMs]);
+  }, [active, totalMs]);
 
   // One tick at each phase boundary — the whole point of the haptic is that it
   // marks the transition, so it must never fire twice inside a phase.

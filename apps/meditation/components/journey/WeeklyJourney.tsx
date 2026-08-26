@@ -46,15 +46,25 @@ export function WeeklyJourney({ practiceLog, today }: Props) {
   const days = useMemo(() => weekJourney(practiceLog, today), [practiceLog, today]);
   const completedCount = days.filter((day) => day.practised).length;
   const progressLabel = t('home.journey.progressLabel', {
-    count: Math.round((completedCount / days.length) * 100),
+    completed: completedCount,
+    total: days.length,
+  });
+  const compactProgress = t('home.journey.progressCompact', {
+    completed: completedCount,
+    total: days.length,
   });
 
   return (
-    <View className="gap-3" accessible accessibilityLabel={progressLabel}>
+    <View
+      className="gap-3"
+      accessible
+      accessibilityRole="progressbar"
+      accessibilityLabel={`${t('home.journey.progress')}. ${progressLabel}`}
+      accessibilityValue={{ min: 0, max: days.length, now: completedCount }}>
       <View className="flex-row items-end justify-between gap-3">
         <Text variant="overline">{t('home.journey.progress')}</Text>
-        <Text variant="caption" tone="default" className="shrink text-right">
-          {progressLabel}
+        <Text variant="caption" tone="default" className="shrink text-right" accessibilityElementsHidden>
+          {compactProgress}
         </Text>
       </View>
 

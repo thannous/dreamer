@@ -17,7 +17,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'sleep-descent',
     categorySlug: 'sleep',
-    narratorId: 'camille',
     durationSec: 600,
     benefitCount: 3,
     isPremium: false,
@@ -26,7 +25,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'sleep-quick-fall',
     categorySlug: 'sleep',
-    narratorId: 'wordless',
     durationSec: 300,
     benefitCount: 3,
     isPremium: false,
@@ -35,7 +33,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'sleep-body-scan',
     categorySlug: 'sleep',
-    narratorId: 'adrien',
     durationSec: 1200,
     benefitCount: 3,
     isPremium: true,
@@ -44,7 +41,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'sleep-night-return',
     categorySlug: 'sleep',
-    narratorId: 'camille',
     durationSec: 900,
     benefitCount: 3,
     isPremium: true,
@@ -53,7 +49,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'stress-shoulders',
     categorySlug: 'stress',
-    narratorId: 'adrien',
     durationSec: 300,
     benefitCount: 3,
     isPremium: false,
@@ -62,7 +57,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'stress-unclench',
     categorySlug: 'stress',
-    narratorId: 'camille',
     durationSec: 600,
     benefitCount: 3,
     isPremium: false,
@@ -71,7 +65,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'stress-day-close',
     categorySlug: 'stress',
-    narratorId: 'camille',
     durationSec: 900,
     benefitCount: 3,
     isPremium: true,
@@ -80,7 +73,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'stress-storm',
     categorySlug: 'stress',
-    narratorId: 'adrien',
     durationSec: 1200,
     benefitCount: 3,
     isPremium: true,
@@ -89,7 +81,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'focus-morning',
     categorySlug: 'focus',
-    narratorId: 'adrien',
     durationSec: 300,
     benefitCount: 3,
     isPremium: false,
@@ -98,7 +89,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'focus-one-thing',
     categorySlug: 'focus',
-    narratorId: 'camille',
     durationSec: 600,
     benefitCount: 3,
     isPremium: false,
@@ -107,7 +97,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'focus-thread',
     categorySlug: 'focus',
-    narratorId: 'wordless',
     durationSec: 600,
     benefitCount: 3,
     isPremium: true,
@@ -116,7 +105,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'focus-deep',
     categorySlug: 'focus',
-    narratorId: 'adrien',
     durationSec: 1200,
     benefitCount: 3,
     isPremium: true,
@@ -125,7 +113,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'anxiety-ground',
     categorySlug: 'anxiety',
-    narratorId: 'camille',
     durationSec: 300,
     benefitCount: 3,
     isPremium: false,
@@ -134,7 +121,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'anxiety-wave',
     categorySlug: 'anxiety',
-    narratorId: 'camille',
     durationSec: 600,
     benefitCount: 3,
     isPremium: true,
@@ -143,7 +129,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'anxiety-chest',
     categorySlug: 'anxiety',
-    narratorId: 'adrien',
     durationSec: 900,
     benefitCount: 3,
     isPremium: true,
@@ -152,7 +137,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'anxiety-evening',
     categorySlug: 'anxiety',
-    narratorId: 'camille',
     durationSec: 1200,
     benefitCount: 3,
     isPremium: true,
@@ -161,7 +145,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'gratitude-three',
     categorySlug: 'gratitude',
-    narratorId: 'camille',
     durationSec: 300,
     benefitCount: 3,
     isPremium: false,
@@ -170,7 +153,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'gratitude-people',
     categorySlug: 'gratitude',
-    narratorId: 'adrien',
     durationSec: 600,
     benefitCount: 3,
     isPremium: true,
@@ -179,7 +161,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'gratitude-ordinary',
     categorySlug: 'gratitude',
-    narratorId: 'camille',
     durationSec: 900,
     benefitCount: 3,
     isPremium: true,
@@ -188,7 +169,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'gratitude-year',
     categorySlug: 'gratitude',
-    narratorId: 'adrien',
     durationSec: 1200,
     benefitCount: 3,
     isPremium: true,
@@ -197,7 +177,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'dream-threshold',
     categorySlug: 'dream-prep',
-    narratorId: 'camille',
     durationSec: 600,
     benefitCount: 3,
     isPremium: true,
@@ -206,7 +185,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'dream-recall',
     categorySlug: 'dream-prep',
-    narratorId: 'adrien',
     durationSec: 300,
     benefitCount: 3,
     isPremium: true,
@@ -215,7 +193,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'dream-question',
     categorySlug: 'dream-prep',
-    narratorId: 'camille',
     durationSec: 900,
     benefitCount: 3,
     isPremium: true,
@@ -224,7 +201,6 @@ export const SESSIONS: MeditationSession[] = [
   {
     id: 'dream-lucid',
     categorySlug: 'dream-prep',
-    narratorId: 'adrien',
     durationSec: 1200,
     benefitCount: 3,
     isPremium: true,

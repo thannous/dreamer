@@ -6,13 +6,18 @@ import { ScrollView } from 'react-native';
 import BreatheExercise from '@/app/breathe/[pattern]';
 import { BreathGauge } from '@/components/breathe/BreathGauge';
 import { BreathRing } from '@/components/breathe/BreathRing';
+import { WorldTrainerSignature } from '@/components/trainer/WorldTrainerSignature';
 import type { BreathEngine } from '@/hooks/useBreathEngine';
 import { TID } from '@/lib/testIDs';
 
 const mockStart = jest.fn();
 const mockPause = jest.fn();
 const mockReset = jest.fn();
+const mockToggleSound = jest.fn();
+const mockTogglePlayer = jest.fn();
 let mockReducedMotion = false;
+let mockSoundEnabled = true;
+let mockPlayerStatus = 'idle';
 let mockEngine: BreathEngine;
 
 jest.mock('expo-router', () => ({
@@ -40,6 +45,17 @@ jest.mock('@/hooks/useReducedMotion', () => ({
 
 jest.mock('@/hooks/useScreenReader', () => ({
   useScreenReader: () => false,
+}));
+
+jest.mock('@/hooks/useWorldSoundscape', () => ({
+  useWorldSoundscape: () => ({
+    soundEnabled: mockSoundEnabled,
+    toggleSound: mockToggleSound,
+  }),
+}));
+
+jest.mock('@/context/PlayerContext', () => ({
+  usePlayer: () => ({ status: mockPlayerStatus, toggle: mockTogglePlayer }),
 }));
 
 jest.mock('uniwind', () => ({
@@ -77,6 +93,10 @@ const engineState = (overrides: Partial<BreathEngine> = {}): BreathEngine => ({
 describe('immersive breathing trainer', () => {
   beforeEach(() => {
     mockReducedMotion = false;
+    mockSoundEnabled = true;
+    mockPlayerStatus = 'idle';
+    mockToggleSound.mockClear();
+    mockTogglePlayer.mockClear();
     mockEngine = engineState();
   });
 
@@ -88,6 +108,16 @@ describe('immersive breathing trainer', () => {
 
     fireEvent.press(screen.getByTestId(TID.Button.BreatheStart));
     expect(mockStart).toHaveBeenCalledTimes(1);
+  });
+
+  it('provides a distinct static mark for the selected world motion', () => {
+    const view = render(
+      <WorldTrainerSignature motion="orbit" size={240}>
+        <ReactNative.View />
+      </WorldTrainerSignature>
+    );
+
+    expect(view.UNSAFE_getByProps({ testID: 'trainer.signature.orbit' })).toBeTruthy();
   });
 
   it('keeps phase semantics and maps the same action to pause while running', () => {
@@ -103,6 +133,32 @@ describe('immersive breathing trainer', () => {
     expect(action).toHaveTextContent('Pause');
     fireEvent.press(action);
     expect(mockPause).toHaveBeenCalledTimes(1);
+  });
+
+  it('exposes one native accessible sound switch without spoken guidance', () => {
+    render(<BreatheExercise />);
+
+    const sound = screen.getByTestId(TID.Button.BreatheSound);
+    expect(sound.props).toMatchObject({
+      accessibilityRole: 'switch',
+      accessibilityState: { checked: true },
+    });
+
+    fireEvent.press(sound);
+    expect(mockToggleSound).toHaveBeenCalledTimes(1);
+  });
+
+  it('pauses a playing session before the trainer takes over the soundscape', () => {
+    mockPlayerStatus = 'playing';
+    render(<BreatheExercise />);
+
+    fireEvent.press(screen.getByTestId(TID.Button.BreatheStart));
+
+    expect(mockTogglePlayer).toHaveBeenCalledTimes(1);
+    expect(mockStart).toHaveBeenCalledTimes(1);
+    expect(mockTogglePlayer.mock.invocationCallOrder[0]).toBeLessThan(
+      mockStart.mock.invocationCallOrder[0]
+    );
   });
 
   it('replaces the animated ring with a static gauge under reduced motion', () => {

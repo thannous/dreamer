@@ -1,9 +1,9 @@
 import { BlurView } from 'expo-blur';
 import React from 'react';
-import { ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 
 import { GrainOverlay } from '@/components/atmosphere/GrainOverlay';
-import { Button, Chip, Text } from '@/components/ui';
+import { Button, Chip, IconSymbol, Text } from '@/components/ui';
 import { GlassOpacity, Radius, Themes, type ThemeMode } from '@/constants/theme';
 import type { BreathDurationMinutes } from '@/content/breathing';
 
@@ -20,9 +20,13 @@ type Props = {
   durationMin: BreathDurationMinutes;
   durations: readonly DurationOption[];
   showDurations: boolean;
+  soundEnabled: boolean;
+  soundLabel: string;
+  soundTestID: string;
   testID: string;
   onAction: () => void;
   onDurationChange: (minutes: BreathDurationMinutes) => void;
+  onToggleSound: () => void;
 };
 
 /** The trainer's sole glass surface: setup and transport share one shelf. */
@@ -34,9 +38,13 @@ export function TrainerControls({
   durationMin,
   durations,
   showDurations,
+  soundEnabled,
+  soundLabel,
+  soundTestID,
   testID,
   onAction,
   onDurationChange,
+  onToggleSound,
 }: Props) {
   const colors = Themes[appearance];
 
@@ -84,7 +92,28 @@ export function TrainerControls({
             </View>
           ) : null}
 
-          <Button testID={testID} label={actionLabel} onPress={onAction} />
+          <View className="flex-row items-center gap-3">
+            <Button
+              testID={testID}
+              label={actionLabel}
+              onPress={onAction}
+              className="flex-1"
+            />
+            <Pressable
+              testID={soundTestID}
+              accessibilityRole="switch"
+              accessibilityLabel={soundLabel}
+              accessibilityState={{ checked: soundEnabled }}
+              hitSlop={8}
+              onPress={onToggleSound}
+              className="h-12 w-12 items-center justify-center rounded-full active:opacity-70">
+              <IconSymbol
+                name={soundEnabled ? 'speaker.wave.2.fill' : 'speaker.slash.fill'}
+                color={colors.accentText}
+                size={22}
+              />
+            </Pressable>
+          </View>
         </View>
       </BlurView>
     </View>

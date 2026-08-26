@@ -14,26 +14,11 @@ import * as subscriptions from '@/services/subscriptionService';
 const BENEFITS = [1, 2, 3, 4] as const;
 const TERMS_URL = 'https://noctalia.app/terms';
 
-function PlanCard({
-  offer,
-  selected,
-  onPress,
-}: {
-  offer: subscriptions.Offer;
-  selected: boolean;
-  onPress: () => void;
-}) {
+function PlanCard({ offer }: { offer: subscriptions.Offer }) {
   const { t } = useTranslation();
 
   return (
-    <Pressable
-      accessibilityRole="radio"
-      accessibilityState={{ checked: selected }}
-      aria-checked={selected}
-      onPress={onPress}
-      className={`rounded-xl border p-gutter active:opacity-80 ${
-        selected ? 'border-champagne bg-ink-panel' : 'border-hairline bg-ink-card'
-      }`}>
+    <View className="rounded-xl border border-champagne bg-ink-panel p-gutter">
       <View className="flex-row items-center justify-between">
         <Text variant="h3">{t(`paywall.plan.${offer.period}` as TranslationKey)}</Text>
         <Text variant="h3" tone="accent">
@@ -45,7 +30,7 @@ function PlanCard({
           ? t('paywall.plan.trial', { price: offer.priceLabel })
           : t('paywall.plan.per.monthly')}
       </Text>
-    </Pressable>
+    </View>
   );
 }
 
@@ -57,8 +42,7 @@ export default function PaywallScreen() {
   const { isPlus, applyTier, remainingPlays } = useSubscription();
   const largeText = fontScale >= 1.5;
 
-  const [offers, setOffers] = useState<subscriptions.Offer[]>([]);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [offer, setOffer] = useState<subscriptions.Offer | null>(null);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
 
@@ -69,10 +53,11 @@ export default function PaywallScreen() {
       .listOffers()
       .then((list) => {
         if (!mounted) return;
-        setOffers(list);
-        // The annual plan carries the trial, so highlight it without removing
-        // the monthly offer required by the monetization contract.
-        setSelected(list.find((item) => item.period === 'annual')?.id ?? list[0]?.id ?? null);
+        // One decision, one offer: the annual plan carries the trial and is the
+        // only purchase presented. Keeping the monthly fallback here still
+        // leaves the paywall usable if a store configuration temporarily omits
+        // the annual package.
+        setOffer(list.find((item) => item.period === 'annual') ?? list[0] ?? null);
       })
       .catch(() => {});
 
@@ -82,7 +67,6 @@ export default function PaywallScreen() {
   }, []);
 
   const buy = async () => {
-    const offer = offers.find((item) => item.id === selected);
     if (!offer) return;
 
     setBusy(true);
@@ -123,7 +107,7 @@ export default function PaywallScreen() {
         testID={TID.Button.PaywallBuy}
         label={t('paywall.cta')}
         loading={busy}
-        disabled={!selected}
+        disabled={!offer}
         onPress={buy}
       />
       {/* Both are mandatory on a paywall, on either store. */}
@@ -180,16 +164,7 @@ export default function PaywallScreen() {
           ) : null}
         </View>
 
-        <View className="gap-3">
-          {offers.map((offer) => (
-            <PlanCard
-              key={offer.id}
-              offer={offer}
-              selected={selected === offer.id}
-              onPress={() => setSelected(offer.id)}
-            />
-          ))}
-        </View>
+        {offer ? <PlanCard offer={offer} /> : null}
 
         <Card featured>
           <View className="gap-3">

@@ -5,6 +5,8 @@ import Animated from 'react-native-reanimated';
 
 import { SessionArtwork } from '@/components/session/SessionArtwork';
 import { IconSymbol, Text } from '@/components/ui';
+import { getSessionArtwork } from '@/constants/catalogArtwork';
+import { WORLD_BY_ID } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
 import { usePlayer } from '@/context/PlayerContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -23,12 +25,20 @@ export function MiniPlayer() {
   const router = useRouter();
   const segments = useSegments();
   const { t } = useTranslation();
-  const { session, status, toggle } = usePlayer();
+  const { session, worldId, status, toggle } = usePlayer();
   const { colors } = useTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
 
   const onPlayerScreen = segments.some((segment) => segment === 'player');
-  if (!session || status === 'idle' || onPlayerScreen) return null;
+  // An unavailable session owns no playable handle. Keeping a mini-player for
+  // it would expose a play button that can never respond after leaving the
+  // immersive error state.
+  if (!session || status === 'idle' || status === 'unavailable' || onPlayerScreen) return null;
+
+  const artwork = getSessionArtwork(
+    session.id,
+    worldId ? WORLD_BY_ID[worldId].appearance : 'dark'
+  );
 
   /**
    * No entrance animation on purpose.
@@ -46,12 +56,21 @@ export function MiniPlayer() {
         <AnimatedPressable
           accessibilityRole="button"
           accessibilityLabel={t('mini.playing')}
-          onPress={() => router.push(`/player/${session.id}`)}
+          onPress={() =>
+            router.push(
+              worldId ? `/player/${session.id}?worldId=${worldId}` : `/player/${session.id}`
+            )
+          }
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           style={style}
           className="flex-1 flex-row items-center gap-3">
-          <SessionArtwork accent={session.accent} rounded="md" className="h-10 w-10" />
+          <SessionArtwork
+            accent={session.accent}
+            source={artwork}
+            rounded="md"
+            className="h-10 w-10"
+          />
           <Text variant="bodySm" tone="default" numberOfLines={1} className="flex-1">
             {t(`session.${session.id}.title` as TranslationKey)}
           </Text>

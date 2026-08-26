@@ -17,6 +17,14 @@ jest.mock('expo-router', () => ({
   useRouter: () => ({ replace: mockReplace }),
 }));
 
+jest.mock('@/context/WorldPurchaseContext', () => ({
+  useWorldPurchases: () => ({
+    loaded: true,
+    isWorldOwned: (worldId: string) =>
+      ['constellation', 'dawn', 'forest'].includes(worldId),
+  }),
+}));
+
 jest.mock('uniwind', () => ({
   ScopedTheme: ({ children }: React.PropsWithChildren<{ theme: string }>) => children,
   Uniwind: { setTheme: jest.fn() },
@@ -39,6 +47,7 @@ describe('immersive session completion', () => {
     );
 
     expect(screen.getByTestId(TID.Screen.SessionComplete)).toBeTruthy();
+    expect(screen.queryByText('world.dawn.progress.discovery')).toBeNull();
     const finish = screen.getByRole('button', { name: 'Finish' });
     fireEvent.press(finish);
 

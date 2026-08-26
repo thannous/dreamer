@@ -1,9 +1,11 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { Text } from '@/components/ui';
+import { ArtworkGlassPanel, Text } from '@/components/ui';
+import { getSessionArtwork } from '@/constants/catalogArtwork';
+import type { ThemeMode } from '@/constants/theme';
 import { useTranslation } from '@/context/LanguageContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import type { TranslationKey } from '@/lib/i18n';
@@ -18,10 +20,11 @@ type Props = {
   session: MeditationSession;
   /** `row` for lists, `feature` for the one hero card on a screen. */
   variant?: 'row' | 'feature';
+  appearance?: ThemeMode;
   testID?: string;
 };
 
-export function SessionCard({ session, variant = 'row', testID }: Props) {
+export function SessionCard({ session, variant = 'row', appearance, testID }: Props) {
   const router = useRouter();
   const { t } = useTranslation();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
@@ -31,6 +34,7 @@ export function SessionCard({ session, variant = 'row', testID }: Props) {
   const meta = `${t('common.minutes', { count: minutes })} · ${t(
     `category.${session.categorySlug}.name` as TranslationKey
   )}`;
+  const artwork = getSessionArtwork(session.id, appearance);
 
   const open = () => router.push(`/session/${session.id}`);
 
@@ -44,7 +48,11 @@ export function SessionCard({ session, variant = 'row', testID }: Props) {
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         style={style}>
-        <SessionArtwork accent={session.accent} rounded="artwork" className="min-h-48 justify-end">
+        <SessionArtwork
+          accent={session.accent}
+          source={artwork}
+          rounded="artwork"
+          className="min-h-48 justify-end">
           <View className="gap-1 p-gutter">
             {session.isPremium ? <Text variant="overline">{t('common.plus')}</Text> : null}
             <Text variant="h1">{title}</Text>
@@ -55,6 +63,28 @@ export function SessionCard({ session, variant = 'row', testID }: Props) {
     );
   }
 
+  const rowContent = (
+    <>
+      {!appearance ? (
+        <SessionArtwork
+          accent={session.accent}
+          source={artwork}
+          rounded="md"
+          className="h-16 w-16"
+        />
+      ) : null}
+      <View className="flex-1">
+        <Text variant="h3" numberOfLines={1}>
+          {title}
+        </Text>
+        <Text variant="bodySm" tone={appearance ? 'default' : undefined} className="mt-1">
+          {meta}
+        </Text>
+      </View>
+      {session.isPremium ? <Text variant="overline">{t('common.plus')}</Text> : null}
+    </>
+  );
+
   return (
     <AnimatedPressable
       testID={testID}
@@ -64,17 +94,27 @@ export function SessionCard({ session, variant = 'row', testID }: Props) {
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       style={style}
-      className="flex-row items-center gap-4 rounded-xl border border-hairline bg-ink-card p-3">
-      <SessionArtwork accent={session.accent} rounded="md" className="h-16 w-16" />
-      <View className="flex-1">
-        <Text variant="h3" numberOfLines={1}>
-          {title}
-        </Text>
-        <Text variant="bodySm" className="mt-1">
-          {meta}
-        </Text>
-      </View>
-      {session.isPremium ? <Text variant="overline">{t('common.plus')}</Text> : null}
+      className={appearance ? 'rounded-xl' : 'flex-row items-center gap-4 rounded-xl border border-hairline bg-ink-card p-3'}>
+      {appearance ? (
+        <ArtworkGlassPanel
+          appearance={appearance}
+          artwork={artwork}
+          contentStyle={styles.glassRow}
+          testID={testID ? `${testID}.glass` : undefined}>
+          {rowContent}
+        </ArtworkGlassPanel>
+      ) : (
+        rowContent
+      )}
     </AnimatedPressable>
   );
 }
+
+const styles = StyleSheet.create({
+  glassRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    padding: 12,
+  },
+});

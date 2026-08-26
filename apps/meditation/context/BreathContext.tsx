@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useCallback, useContext, useEffect } from 'react';
 import {
   cancelAnimation,
   useSharedValue,
@@ -26,6 +26,12 @@ type BreathContextValue = {
   progress: SharedValue<number>;
   /** True when the system asked for reduced motion: `progress` is pinned mid-way. */
   isStill: boolean;
+  /** Stops the shared breath and parks it fully exhaled. */
+  holdAtExhale: () => void;
+  /** Plays exactly one coherent 5.5 s in / 5.5 s out cycle. */
+  playOneCycle: () => void;
+  /** Returns the shared breath to its ambient app-wide loop. */
+  resumeAmbient: () => void;
 };
 
 const BreathContext = createContext<BreathContextValue | null>(null);
@@ -34,30 +40,58 @@ export const BreathProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   const progress = useSharedValue(0);
   const reducedMotion = useReducedMotion();
 
-  useEffect(() => {
+  const resumeAmbient = useCallback(() => {
+    cancelAnimation(progress);
     if (reducedMotion) {
-      cancelAnimation(progress);
       // Park it at the middle of the cycle: every surface lands on its average
       // value, so a still app looks intentional rather than half-finished.
-      progress.value = 0.5;
+      progress.set(0.5);
       return;
     }
 
-    progress.value = 0;
-    progress.value = withRepeat(
+    progress.set(0);
+    progress.set(
+      withRepeat(
+        withSequence(
+          withTiming(1, { duration: Breath.inhaleMs, easing: Curve.breath }),
+          withTiming(0, { duration: Breath.exhaleMs, easing: Curve.breath })
+        ),
+        -1,
+        false
+      )
+    );
+  }, [progress, reducedMotion]);
+
+  const holdAtExhale = useCallback(() => {
+    cancelAnimation(progress);
+    progress.set(reducedMotion ? 0.5 : 0);
+  }, [progress, reducedMotion]);
+
+  const playOneCycle = useCallback(() => {
+    cancelAnimation(progress);
+    if (reducedMotion) {
+      progress.set(0.5);
+      return;
+    }
+
+    progress.set(0);
+    progress.set(
       withSequence(
         withTiming(1, { duration: Breath.inhaleMs, easing: Curve.breath }),
         withTiming(0, { duration: Breath.exhaleMs, easing: Curve.breath })
-      ),
-      -1,
-      false
+      )
     );
-
-    return () => cancelAnimation(progress);
   }, [progress, reducedMotion]);
 
+  useEffect(() => {
+    resumeAmbient();
+
+    return () => cancelAnimation(progress);
+  }, [progress, resumeAmbient]);
+
   return (
-    <BreathContext.Provider value={{ progress, isStill: reducedMotion }}>
+    <BreathContext.Provider
+      value={{ progress, isStill: reducedMotion, holdAtExhale, playOneCycle, resumeAmbient }}>
       {children}
     </BreathContext.Provider>
   );
@@ -70,6 +104,15 @@ export const BreathProvider: React.FC<React.PropsWithChildren> = ({ children }) 
 export const useBreath = (): BreathContextValue => {
   const ctx = useContext(BreathContext);
   const fallback = useSharedValue(0.5);
+  const noop = useCallback(() => {}, []);
 
-  return ctx ?? { progress: fallback, isStill: true };
+  return (
+    ctx ?? {
+      progress: fallback,
+      isStill: true,
+      holdAtExhale: noop,
+      playOneCycle: noop,
+      resumeAmbient: noop,
+    }
+  );
 };

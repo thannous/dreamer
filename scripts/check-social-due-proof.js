@@ -4,6 +4,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const {
+  isAcknowledgedFailureStatus,
   isPublishedStatus,
   parseTableRows,
   validatePublicProof,
@@ -56,14 +57,21 @@ function validateDueProof(content, now = new Date()) {
 
   const rows = parseTableRows(content);
   const due = CHECKPOINTS.filter((checkpoint) => time >= checkpoint.at);
-  const missing = due.filter((checkpoint) => !isPublishedStatus(rows[checkpoint.row][rows[checkpoint.row].length - 2] || ''));
+  const published = due.filter((checkpoint) => isPublishedStatus(rows[checkpoint.row][rows[checkpoint.row].length - 2] || ''));
+  const acknowledgedFailures = due.filter((checkpoint) => isAcknowledgedFailureStatus(rows[checkpoint.row][rows[checkpoint.row].length - 2] || ''));
+  const missing = due.filter((checkpoint) => {
+    const statusCell = rows[checkpoint.row][rows[checkpoint.row].length - 2] || '';
+    return !isPublishedStatus(statusCell) && !isAcknowledgedFailureStatus(statusCell);
+  });
   if (missing.length > 0) {
     throw new Error(
       `Preuves publiques échues manquantes à ${time} Europe/Paris: ` +
       missing.map((checkpoint) => `${checkpoint.label} (contrôle ${checkpoint.at})`).join(', ') + '.',
     );
   }
-  return { date, time, due: due.length, published: due.length, skipped: false };
+  const result = { date, time, due: due.length, published: published.length, skipped: false };
+  if (acknowledgedFailures.length > 0) result.acknowledgedFailures = acknowledgedFailures.length;
+  return result;
 }
 
 function parseArguments(argv) {
@@ -100,7 +108,10 @@ function main(argv = process.argv.slice(2)) {
   const result = validateDueProof(fs.readFileSync(path.join(directory, matches[0]), 'utf8'), now);
   process.stdout.write(
     `Social due proof valid: ${result.date} ${result.time} Europe/Paris, ` +
-    `${result.published}/${result.due} preuve(s) échue(s).\n`,
+    `${result.published}/${result.due} preuve(s) publiques échue(s)` +
+    (result.acknowledgedFailures
+      ? `, ${result.acknowledgedFailures} échec(s) explicitement signalé(s)`
+      : '') + '.\n',
   );
 }
 

@@ -1,7 +1,9 @@
 import {
   DEFAULT_SCHEDULE,
   formatHour,
+  formatTimeEntry,
   nextOccurrence,
+  parseTimeEntry,
   scheduleTriggers,
   toggleDay,
   WEEKDAYS,
@@ -18,6 +20,24 @@ describe('formatHour', () => {
   it('pads both parts', () => {
     expect(formatHour(9, 5)).toBe('09:05');
     expect(formatHour(21, 30)).toBe('21:30');
+  });
+});
+
+describe('editable reminder time', () => {
+  it('formats four numeric keystrokes as HH:MM', () => {
+    expect(formatTimeEntry('2')).toBe('2');
+    expect(formatTimeEntry('22')).toBe('22');
+    expect(formatTimeEntry('223')).toBe('22:3');
+    expect(formatTimeEntry('22:30')).toBe('22:30');
+    expect(formatTimeEntry('22h30')).toBe('22:30');
+  });
+
+  it('accepts only a complete 24-hour time', () => {
+    expect(parseTimeEntry('21:30')).toEqual({ hour: 21, minute: 30 });
+    expect(parseTimeEntry('07:05')).toEqual({ hour: 7, minute: 5 });
+    expect(parseTimeEntry('7:05')).toBeNull();
+    expect(parseTimeEntry('24:00')).toBeNull();
+    expect(parseTimeEntry('21:60')).toBeNull();
   });
 });
 

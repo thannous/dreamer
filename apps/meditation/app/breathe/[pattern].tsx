@@ -4,6 +4,7 @@ import { AccessibilityInfo, useWindowDimensions, View } from 'react-native';
 
 import { TrainerControls } from '@/components/trainer/TrainerControls';
 import { TrainerFocus } from '@/components/trainer/TrainerFocus';
+import { PracticeProgress } from '@/components/journey/PracticeProgress';
 import { BackLink, Text } from '@/components/ui';
 import { WorldScene } from '@/components/worlds/WorldScene';
 import {
@@ -16,10 +17,12 @@ import {
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
+import { usePlayer } from '@/context/PlayerContext';
 import { useWorld } from '@/context/WorldContext';
 import { cycleDurationMs, useBreathEngine } from '@/hooks/useBreathEngine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useScreenReader } from '@/hooks/useScreenReader';
+import { useWorldSoundscape } from '@/hooks/useWorldSoundscape';
 import { formatTime } from '@/lib/audio';
 import type { TranslationKey } from '@/lib/i18n';
 
@@ -38,6 +41,7 @@ export default function BreatheExercise() {
   const reducedMotion = useReducedMotion();
   const screenReader = useScreenReader();
   const { recordPractice } = useLibrary();
+  const player = usePlayer();
   const { world } = useWorld();
 
   const valid = patternParam && isBreathingPatternId(patternParam);
@@ -48,6 +52,10 @@ export default function BreatheExercise() {
   );
 
   const engine = useBreathEngine({ pattern, durationMin });
+  const soundscape = useWorldSoundscape(
+    world.id,
+    engine.running && !engine.finished
+  );
 
   /**
    * Speak each phase change.
@@ -121,7 +129,12 @@ export default function BreatheExercise() {
   // Several locales intentionally use the same terse word for the instruction
   // and its cue. Repeating it under itself adds noise, so only show the cue
   // when the translation contributes something new.
-  const phaseCue = translatedCue === phaseLabel ? null : translatedCue;
+  const worldRitual = t(`world.${world.id}.ritual` as TranslationKey);
+  const phaseCue = !started
+    ? worldRitual
+    : translatedCue === phaseLabel
+      ? null
+      : translatedCue;
   const nextLabel =
     started && !engine.finished && hasTrainerCopy(nextPhase)
       ? t(`trainer.next.${nextPhase}` as TranslationKey)
@@ -137,14 +150,24 @@ export default function BreatheExercise() {
       : started
         ? t('breathe.resume')
         : t('breathe.start');
-  const handleAction = engine.finished
-    ? engine.reset
-    : engine.running
-      ? engine.pause
-      : engine.start;
+  const handleAction = () => {
+    if (engine.finished) {
+      engine.reset();
+      return;
+    }
+    if (engine.running) {
+      engine.pause();
+      return;
+    }
+
+    // A trainer owns the soundscape while it runs. Preserve the other
+    // session's position in the mini-player, but never mix both experiences.
+    if (player.status === 'playing') player.toggle();
+    engine.start();
+  };
 
   return (
-    <WorldScene world={world} artwork="trainer" scrimStrength={1.1}>
+    <WorldScene world={world} artwork="trainer" scrimStrength={1.1} breathMotion={false}>
       <View className="flex-1">
         <BackLink
           testID={TID.Button.BreatheClose}
@@ -154,6 +177,7 @@ export default function BreatheExercise() {
         />
 
         <View testID={TID.Screen.BreatheExercise} className="flex-1 px-gutter">
+          <PracticeProgress world={world} stage="practice" className="pt-1" />
           {!compact ? (
             <View className="items-center gap-1 pt-1">
               <Text variant="overline">
@@ -179,6 +203,7 @@ export default function BreatheExercise() {
             remainingLabel={formatTime(engine.remainingSec)}
             ringSize={ringSize}
             scale={engine.scale}
+            worldMotion={world.motion}
           />
         </View>
 
@@ -190,9 +215,13 @@ export default function BreatheExercise() {
           durationMin={durationMin}
           durations={durationOptions}
           showDurations={!started}
+          soundEnabled={soundscape.soundEnabled}
+          soundLabel={t('trainer.sound')}
+          soundTestID={TID.Button.BreatheSound}
           testID={TID.Button.BreatheStart}
           onAction={handleAction}
           onDurationChange={setDurationMin}
+          onToggleSound={soundscape.toggleSound}
         />
       </View>
     </WorldScene>

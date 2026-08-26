@@ -5,9 +5,11 @@ import type { SharedValue } from 'react-native-reanimated';
 import { BreathGauge } from '@/components/breathe/BreathGauge';
 import { BreathRing } from '@/components/breathe/BreathRing';
 import { Text } from '@/components/ui';
+import type { WorldMotion } from '@/constants/worlds';
 import type { AccentPair } from '@/lib/types';
 
 import { TrainerProgress } from './TrainerProgress';
+import { WorldTrainerSignature } from './WorldTrainerSignature';
 
 type Props = {
   accent: AccentPair;
@@ -26,6 +28,7 @@ type Props = {
   ringSize: number;
   scale: SharedValue<number>;
   phaseTestID: string;
+  worldMotion: WorldMotion;
 };
 
 /**
@@ -49,6 +52,7 @@ export function TrainerFocus({
   ringSize,
   scale,
   phaseTestID,
+  worldMotion,
 }: Props) {
   return (
     <View
@@ -81,7 +85,9 @@ export function TrainerFocus({
           className="items-center justify-center"
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants">
-          <BreathRing scale={scale} accent={accent} size={ringSize} />
+          <WorldTrainerSignature motion={worldMotion} size={ringSize}>
+            <BreathRing scale={scale} accent={accent} size={ringSize} />
+          </WorldTrainerSignature>
           <View className="absolute inset-0 items-center justify-center">
             <Text variant="h1">{finished ? '·' : phaseRemainingSec}</Text>
           </View>

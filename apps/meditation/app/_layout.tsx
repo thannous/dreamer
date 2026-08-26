@@ -16,6 +16,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import * as SystemUI from 'expo-system-ui';
 import React, { useEffect } from 'react';
+import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -29,14 +30,29 @@ import { SettingsProvider } from '@/context/SettingsContext';
 import { SubscriptionProvider } from '@/context/SubscriptionContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { WorldProvider, useWorld } from '@/context/WorldContext';
+import { WorldPurchaseProvider, useWorldPurchases } from '@/context/WorldPurchaseContext';
 
 SplashScreen.preventAutoHideAsync().catch(() => {
   // Splash may already be hidden on fast refresh — not an error worth surfacing.
 });
 
+// RN 0.86 + Fabric can race Reanimated updates against Android native-stack
+// teardown. The failure is intermittent and happens most often on rapid back
+// navigation, so Android uses an immediate platform transition until the
+// upstream SurfaceMountingManager issue is fixed. iOS keeps Noctalia's fade.
+const rootStackMotion =
+  Platform.OS === 'android'
+    ? ({ animation: 'none' } as const)
+    : ({
+        animation: 'fade',
+        animationDuration: Duration.base,
+        animationMatchesGesture: true,
+      } as const);
+
 function RootNavigator() {
   const { mode, colors, loaded: themeLoaded } = useTheme();
   const { loaded: worldLoaded } = useWorld();
+  const { loaded: worldPurchasesLoaded } = useWorldPurchases();
 
   const [fontsLoaded, fontError] = useFonts({
     Fraunces_400Regular,
@@ -52,11 +68,11 @@ function RootNavigator() {
   });
 
   // A missing font must not strand the user on the splash screen.
-  const ready = (fontsLoaded || !!fontError) && themeLoaded && worldLoaded;
+  const ready =
+    (fontsLoaded || !!fontError) && themeLoaded && worldLoaded && worldPurchasesLoaded;
 
-  // Android crossfades screens, so the root view shows through at the midpoint
-  // of every transition. Left on a single static colour it flashes ink in light
-  // theme; following the resolved theme makes it invisible in both.
+  // The native surface can briefly expose the root view while routes mount.
+  // Following the resolved theme keeps that hand-off invisible in both themes.
   useEffect(() => {
     SystemUI.setBackgroundColorAsync(colors.background).catch(() => {});
   }, [colors.background]);
@@ -74,15 +90,7 @@ function RootNavigator() {
         screenOptions={{
           headerShown: false,
           contentStyle: { backgroundColor: 'transparent' },
-          // Fades only — nothing in this app slides, the back gesture included.
-          // 500 ms is the library default, not a choice: it leaves two legible
-          // screens superimposed for half a second. iOS-only, like the two
-          // gesture options; Android's fade is fixed at 150 ms.
-          animation: 'fade',
-          animationDuration: Duration.base,
-          // Without this the swipe-back slides instead of dissolving. Paired
-          // with the edge-only gesture, so a drag over content never starts it.
-          animationMatchesGesture: true,
+          ...rootStackMotion,
           fullScreenGestureEnabled: false,
         }}
       />
@@ -97,22 +105,24 @@ export default function RootLayout() {
         <LanguageProvider>
           <ThemeProvider>
             <WorldProvider>
-              {/* One breath for the whole app — a single UI-thread animation. */}
-              <BreathProvider>
-                <OnboardingProvider>
-                  <SettingsProvider>
-                    <LibraryProvider>
-                      {/* Below LibraryProvider: the monthly quota is counted
-                          from the practice log. */}
-                      <SubscriptionProvider>
-                        <PlayerProvider>
-                          <RootNavigator />
-                        </PlayerProvider>
-                      </SubscriptionProvider>
-                    </LibraryProvider>
-                  </SettingsProvider>
-                </OnboardingProvider>
-              </BreathProvider>
+              <WorldPurchaseProvider>
+                {/* One breath for the whole app — a single UI-thread animation. */}
+                <BreathProvider>
+                  <OnboardingProvider>
+                    <SettingsProvider>
+                      <LibraryProvider>
+                        {/* Below LibraryProvider: the monthly quota is counted
+                            from the practice log. */}
+                        <SubscriptionProvider>
+                          <PlayerProvider>
+                            <RootNavigator />
+                          </PlayerProvider>
+                        </SubscriptionProvider>
+                      </LibraryProvider>
+                    </SettingsProvider>
+                  </OnboardingProvider>
+                </BreathProvider>
+              </WorldPurchaseProvider>
             </WorldProvider>
           </ThemeProvider>
         </LanguageProvider>

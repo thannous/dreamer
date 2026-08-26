@@ -18,6 +18,9 @@ module.exports = {
     // prop under the preset, but the two module shapes below have to be faked.
     '\\.css$': '<rootDir>/tests/mocks/styleMock.ts',
     '^uniwind$': '<rootDir>/tests/mocks/uniwind.ts',
+    // Skia is an ESM/native renderer. Unit tests verify scene composition with
+    // a host-view mock; real drawing and performance are validated on-device.
+    '^@shopify/react-native-skia$': '<rootDir>/tests/mocks/reactNativeSkia.tsx',
   },
   clearMocks: true,
 };
