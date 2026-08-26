@@ -322,4 +322,80 @@ describe('Lucid Trainer domain', () => {
       .reduce(applyLucidSyncEntity, state);
     expect(replayedInReverse.progress).toEqual(next.progress);
   });
+
+  it('gives concurrent exclusive activations a deterministic batch winner', () => {
+    const state = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    const mildBaseline = {
+      ...createLucidProgramProgress('mild', NOW),
+      status: 'active' as const,
+      currentDay: 4,
+      completedExerciseIds: ['mild-01', 'mild-02'],
+      practiceDates: ['2026-08-10'],
+      startedAt: NOW - 20,
+      updatedAt: NOW,
+    };
+    const ssildBaseline = {
+      ...createLucidProgramProgress('ssild', NOW),
+      status: 'paused' as const,
+      currentDay: 2,
+      completedExerciseIds: ['ssild-01'],
+      practiceDates: ['2026-08-11'],
+      startedAt: NOW - 10,
+      updatedAt: NOW,
+    };
+    state.progress = [mildBaseline, ssildBaseline];
+    const baseline = Math.max(state.updatedAt, ...state.progress.map((item) => item.updatedAt));
+
+    const deviceA = activateExclusiveLucidProgram(state, 'mild', NOW);
+    const deviceB = activateExclusiveLucidProgram(state, 'ssild', NOW);
+
+    const mildTimestamp = deviceA.next.progress.find((item) => item.technique === 'mild')!.updatedAt;
+    const ssildTimestamp = deviceB.next.progress.find((item) => item.technique === 'ssild')!
+      .updatedAt;
+
+    expect(mildTimestamp).toBeGreaterThan(baseline);
+    expect(ssildTimestamp).toBeGreaterThan(baseline);
+    expect(mildTimestamp).not.toBe(ssildTimestamp);
+    expect(new Set(deviceA.changed.map((item) => item.updatedAt))).toEqual(new Set([mildTimestamp]));
+    expect(new Set(deviceB.changed.map((item) => item.updatedAt))).toEqual(new Set([ssildTimestamp]));
+
+    const identicalStamp = baseline + 1;
+    const staleA = {
+      ...deviceA.next,
+      progress: deviceA.next.progress.map((item) => ({ ...item, updatedAt: identicalStamp })),
+      updatedAt: identicalStamp,
+    };
+    const staleB = {
+      ...deviceB.next,
+      progress: deviceB.next.progress.map((item) => ({ ...item, updatedAt: identicalStamp })),
+      updatedAt: identicalStamp,
+    };
+    const staleMerged = mergeLucidTrainerStates(staleA, staleB);
+    expect(staleA.progress.find((item) => item.technique === 'mild')?.status).toBe('active');
+    expect(staleA.progress.find((item) => item.technique === 'ssild')?.status).toBe('paused');
+    expect(staleB.progress.find((item) => item.technique === 'mild')?.status).toBe('paused');
+    expect(staleB.progress.find((item) => item.technique === 'ssild')?.status).toBe('active');
+    expect(
+      staleMerged.progress.filter((item) => item.status === 'active').map((item) => item.technique)
+    ).toEqual([]);
+
+    const merged = mergeLucidTrainerStates(deviceA.next, deviceB.next);
+    const reversed = mergeLucidTrainerStates(deviceB.next, deviceA.next);
+    expect(merged).toEqual(reversed);
+    expect(
+      merged.progress.filter((item) => item.status === 'active').map((item) => item.technique)
+    ).toEqual(['ssild']);
+    expect(merged.progress.find((item) => item.technique === 'mild')).toMatchObject({
+      status: 'paused',
+      currentDay: 4,
+      completedExerciseIds: ['mild-01', 'mild-02'],
+      practiceDates: ['2026-08-10'],
+    });
+    expect(merged.progress.find((item) => item.technique === 'ssild')).toMatchObject({
+      status: 'active',
+      currentDay: 2,
+      completedExerciseIds: ['ssild-01'],
+      practiceDates: ['2026-08-11'],
+    });
+  });
 });

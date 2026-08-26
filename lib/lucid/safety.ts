@@ -6,7 +6,8 @@ export type LucidSessionAccessReason =
   | 'completed'
   | 'current'
   | 'previous'
-  | 'sequential_lock';
+  | 'sequential_lock'
+  | 'paused';
 
 export type LucidSessionAccess = {
   allowed: boolean;
@@ -17,7 +18,7 @@ export type LucidSessionAccessInput = {
   sessionNumber: number;
   sessionCount: number;
   exerciseId?: string;
-  progress?: Pick<LucidProgramProgress, 'currentDay' | 'completedExerciseIds'> | null;
+  progress?: Pick<LucidProgramProgress, 'currentDay' | 'completedExerciseIds' | 'status'> | null;
   /**
    * Recommended cadence only. Calendar statuses such as `upcoming` never lock
    * or unlock a session; sequential progress is the only access gate.
@@ -41,7 +42,9 @@ export function isLucidSessionCompleted(
 
 /**
  * Sequential lock: a later session cannot run until the program cursor reaches it.
- * Completed sessions stay reopenable. The practice calendar is not consulted.
+ * Completed sessions stay reopenable. A paused program cannot enter or complete
+ * the current session until Resume; history already completed remains readable.
+ * The practice calendar is not consulted.
  */
 export function evaluateLucidSessionAccess(input: LucidSessionAccessInput): LucidSessionAccess {
   const { sessionNumber, sessionCount, exerciseId, progress } = input;
@@ -57,6 +60,10 @@ export function evaluateLucidSessionAccess(input: LucidSessionAccessInput): Luci
 
   if (exerciseId && isLucidSessionCompleted(progress, exerciseId)) {
     return { allowed: true, reason: 'completed' };
+  }
+
+  if (progress?.status === 'paused') {
+    return { allowed: false, reason: 'paused' };
   }
 
   const cursor = getLucidSequentialSessionCursor(progress);

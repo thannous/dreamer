@@ -23,6 +23,7 @@ import {
   getLucidGuidanceProfile,
   type LucidDayPhase,
 } from '@/lib/lucid/personalization';
+import { evaluateLucidSessionAccess } from '@/lib/lucid/safety';
 
 const DREAM_ATLAS = require('../../../assets/images/lucid/today-dream-atlas.png');
 const GUIDE_ORB = require('../../../assets/images/lucid/lucid-guide-orb.png');
@@ -237,6 +238,16 @@ export default function LucidTodayScreen() {
 
   const openPrimaryAction = () => {
     if (active && session) {
+      const access = evaluateLucidSessionAccess({
+        sessionNumber: active.currentDay,
+        sessionCount: program?.sessions.length ?? 0,
+        exerciseId: session.id,
+        progress: active,
+      });
+      if (!access.allowed) {
+        router.push(`/lucid/program/${active.technique}`);
+        return;
+      }
       router.push(`/lucid/session/${active.technique}/${active.currentDay}`);
       return;
     }

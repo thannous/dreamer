@@ -6,7 +6,7 @@ import { cleanup, fireEvent, render, screen, within } from '@testing-library/rea
 const mockPush = jest.fn();
 let mockProgress: {
   technique: 'mild';
-  status: 'active';
+  status: 'active' | 'paused';
   currentDay: number;
   completedExerciseIds: string[];
 }[] = [];
@@ -186,6 +186,23 @@ describe('Lucid Trainer today screen', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Continuer · 8 min' }));
     expect(mockPush).toHaveBeenCalledWith('/lucid/session/mild/3');
+  });
+
+  it('does not open the current session from Today while the only program is paused', () => {
+    mockProgress = [
+      {
+        technique: 'mild',
+        status: 'paused',
+        currentDay: 3,
+        completedExerciseIds: ['mild-01', 'mild-02'],
+      },
+    ];
+
+    render(<LucidTodayScreen />);
+
+    fireEvent.click(screen.getByTestId('lucid-today-primary'));
+    expect(mockPush).toHaveBeenCalledWith('/lucid/program/mild');
+    expect(mockPush).not.toHaveBeenCalledWith('/lucid/session/mild/3');
   });
 
   it('keeps contextual actions directly reachable while preserving automation IDs', () => {

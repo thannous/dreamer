@@ -10,6 +10,7 @@ const mockCanGoBack = jest.fn(() => true);
 let mockRouteParams = { program: 'mild', session: '1' };
 let mockProgress: {
   technique: 'mild';
+  status: 'active' | 'paused';
   currentDay: number;
   completedExerciseIds: string[];
 }[] = [];
@@ -145,7 +146,7 @@ describe('Lucid Trainer session', () => {
 
   it('blocks a future sequential session opened by URL and returns to the program', () => {
     mockRouteParams = { program: 'mild', session: '3' };
-    mockProgress = [{ technique: 'mild', currentDay: 1, completedExerciseIds: [] }];
+    mockProgress = [{ technique: 'mild', status: 'active', currentDay: 1, completedExerciseIds: [] }];
     mockCanGoBack.mockReturnValue(false);
 
     render(<LucidSessionScreen />);
@@ -159,6 +160,41 @@ describe('Lucid Trainer session', () => {
   it('still reopens a completed session from a direct URL', () => {
     mockProgress = [{
       technique: 'mild',
+      status: 'active',
+      currentDay: 3,
+      completedExerciseIds: ['mild-01', 'mild-02'],
+    }];
+
+    render(<LucidSessionScreen />);
+
+    expect(screen.getByTestId('lucid-session-complete')).not.toBeNull();
+    expect(screen.queryByTestId('lucid-session-unavailable-back')).toBeNull();
+  });
+
+  it('blocks the current session of a paused program from a direct URL', () => {
+    mockRouteParams = { program: 'mild', session: '3' };
+    mockProgress = [{
+      technique: 'mild',
+      status: 'paused',
+      currentDay: 3,
+      completedExerciseIds: ['mild-01', 'mild-02'],
+    }];
+    mockCanGoBack.mockReturnValue(false);
+
+    render(<LucidSessionScreen />);
+
+    expect(screen.getByTestId('lucid-session-unavailable-back')).not.toBeNull();
+    expect(screen.queryByTestId('lucid-session-complete')).toBeNull();
+    fireEvent.click(screen.getByTestId('lucid-session-unavailable-back'));
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/program/mild');
+    expect(mockCompleteProgramSession).not.toHaveBeenCalled();
+  });
+
+  it('still reopens completed history while the program is paused', () => {
+    mockRouteParams = { program: 'mild', session: '1' };
+    mockProgress = [{
+      technique: 'mild',
+      status: 'paused',
       currentDay: 3,
       completedExerciseIds: ['mild-01', 'mild-02'],
     }];

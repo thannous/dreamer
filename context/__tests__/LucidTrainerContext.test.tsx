@@ -264,7 +264,7 @@ describe('LucidTrainerContext account boundary', () => {
     );
   });
 
-  it('keeps a single active program when completing a session from a paused program', async () => {
+  it('rejects completing the current session of a paused program until it is resumed', async () => {
     const initial = createInitialLucidTrainerState({
       now: 1_700_000_000_000,
       timeZone: 'UTC',
@@ -305,30 +305,24 @@ describe('LucidTrainerContext account boundary', () => {
     await waitFor(() => expect(result.current.loading).toBe(false));
 
     await act(async () => {
-      await result.current.completeProgramSession('ssild', 'ssild-02', 2, 7);
+      await expect(
+        result.current.completeProgramSession('ssild', 'ssild-02', 2, 7)
+      ).rejects.toThrow('Lucid session is locked');
     });
 
+    expect(result.current.error).toBe('Lucid session is locked');
     expect(result.current.state?.progress.filter(
       (item: LucidTrainerState['progress'][number]) => item.status === 'active'
     )).toEqual([
-      expect.objectContaining({ technique: 'ssild' }),
+      expect.objectContaining({ technique: 'mild' }),
     ]);
-    expect(result.current.state?.progress.find(
-      (item: LucidTrainerState['progress'][number]) => item.technique === 'mild'
-    )).toEqual(
-      expect.objectContaining({
-        status: 'paused',
-        currentDay: 3,
-        completedExerciseIds: ['mild-01', 'mild-02'],
-      })
-    );
     expect(result.current.state?.progress.find(
       (item: LucidTrainerState['progress'][number]) => item.technique === 'ssild'
     )).toEqual(
       expect.objectContaining({
-        status: 'active',
-        currentDay: 3,
-        completedExerciseIds: ['ssild-01', 'ssild-02'],
+        status: 'paused',
+        currentDay: 2,
+        completedExerciseIds: ['ssild-01'],
       })
     );
   });

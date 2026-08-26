@@ -1,5 +1,6 @@
 import {
   LUCID_TRAINER_SCHEMA_VERSION,
+  LUCID_TECHNIQUES,
   type LucidOnboardingState,
   type LucidProgramProgress,
   type LucidSyncEntity,
@@ -327,8 +328,28 @@ export function diffLucidProgramProgress(
 }
 
 /**
+ * Exclusive activations share one strictly monotone batch timestamp.
+ * The block is larger than the number of techniques, then ordered by the
+ * stable technique rank, so two same-millisecond activations never collide
+ * and the entire winning batch outranks the losing one during merge.
+ */
+function lucidActivationBatchUpdatedAt(
+  baseline: number,
+  now: number,
+  technique: LucidTechnique
+): number {
+  const techniqueCount = LUCID_TECHNIQUES.length;
+  const techniqueRank = LUCID_TECHNIQUES.indexOf(technique);
+  const blockSize = techniqueCount + 1;
+  const floor = Math.max(now, baseline) + 1;
+  const blockStart = Math.ceil(floor / blockSize) * blockSize;
+  return blockStart + techniqueRank;
+}
+
+/**
  * Activates `technique` and pauses every other active program in place.
  * Progress, cursor and practice dates of paused programs are preserved.
+ * The active target and every auto-paused peer share this batch timestamp.
  */
 export function activateExclusiveLucidProgram(
   state: LucidTrainerState,
@@ -338,8 +359,11 @@ export function activateExclusiveLucidProgram(
   const existing =
     state.progress.find((item) => item.technique === technique) ??
     createLucidProgramProgress(technique, now);
-  const mutationUpdatedAt =
-    Math.max(now, state.updatedAt, ...state.progress.map((item) => item.updatedAt)) + 1;
+  const baseline = Math.max(
+    state.updatedAt,
+    ...state.progress.map((item) => item.updatedAt)
+  );
+  const mutationUpdatedAt = lucidActivationBatchUpdatedAt(baseline, now, technique);
   const progress: LucidProgramProgress = {
     ...existing,
     status: 'active',
