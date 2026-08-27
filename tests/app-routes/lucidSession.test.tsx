@@ -8,8 +8,9 @@ const mockReplace = jest.fn();
 const mockBack = jest.fn();
 const mockCanGoBack = jest.fn(() => true);
 let mockRouteParams = { program: 'mild', session: '1' };
+let mockAudioSafetyAccepted = false;
 let mockProgress: {
-  technique: 'mild';
+  technique: 'mild' | 'wbtb';
   status: 'active' | 'paused';
   currentDay: number;
   completedExerciseIds: string[];
@@ -100,7 +101,10 @@ jest.mock('@/context/LucidTrainerContext', () => {
   const { getLucidContent } = jest.requireActual('@/lib/lucid/content');
   return {
     useLucidTrainer: () => ({
-      state: { progress: mockProgress },
+      state: {
+        onboarding: { audioSafetyAccepted: mockAudioSafetyAccepted },
+        progress: mockProgress,
+      },
       content: getLucidContent('en'),
       completeProgramSession: mockCompleteProgramSession,
     }),
@@ -115,6 +119,7 @@ describe('Lucid Trainer session', () => {
     jest.clearAllMocks();
     mockRouteParams = { program: 'mild', session: '1' };
     mockProgress = [];
+    mockAudioSafetyAccepted = false;
     mockCanGoBack.mockReturnValue(true);
   });
 
@@ -188,6 +193,45 @@ describe('Lucid Trainer session', () => {
     fireEvent.click(screen.getByTestId('lucid-session-unavailable-back'));
     expect(mockReplace).toHaveBeenCalledWith('/lucid/program/mild');
     expect(mockCompleteProgramSession).not.toHaveBeenCalled();
+  });
+
+  it('blocks a WBTB session opened by URL when the safety policy forbids it', () => {
+    mockRouteParams = { program: 'wbtb', session: '1' };
+    mockCanGoBack.mockReturnValue(false);
+
+    render(<LucidSessionScreen />);
+
+    expect(screen.getByTestId('lucid-session-unavailable-back')).not.toBeNull();
+    expect(screen.queryByTestId('lucid-session-complete')).toBeNull();
+    fireEvent.click(screen.getByTestId('lucid-session-unavailable-back'));
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/program/wbtb');
+    expect(mockCompleteProgramSession).not.toHaveBeenCalled();
+  });
+
+  it('still reopens a completed WBTB session from a direct URL when WBTB is blocked', () => {
+    mockRouteParams = { program: 'wbtb', session: '1' };
+    mockProgress = [{
+      technique: 'wbtb',
+      status: 'active',
+      currentDay: 2,
+      completedExerciseIds: ['wbtb-01'],
+    }];
+
+    render(<LucidSessionScreen />);
+
+    expect(screen.getByTestId('lucid-session-complete')).not.toBeNull();
+    expect(screen.queryByTestId('lucid-session-unavailable-back')).toBeNull();
+    expect(screen.getByRole('heading', { name: 'Check readiness' })).not.toBeNull();
+  });
+
+  it('opens the current WBTB session when audio safety is consented', () => {
+    mockRouteParams = { program: 'wbtb', session: '1' };
+    mockAudioSafetyAccepted = true;
+
+    render(<LucidSessionScreen />);
+
+    expect(screen.getByTestId('lucid-session-complete')).not.toBeNull();
+    expect(screen.queryByTestId('lucid-session-unavailable-back')).toBeNull();
   });
 
   it('still reopens completed history while the program is paused', () => {

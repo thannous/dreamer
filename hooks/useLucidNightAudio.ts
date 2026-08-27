@@ -11,10 +11,12 @@ import {
   createLucidPreviewPlan,
   getLucidNightSoundFile,
   MAX_LUCID_PREVIEW_VOLUME,
+  shouldRestoreLucidNightSignalPlan,
   type LucidAudioSafety,
   type LucidNightSignalPlan,
   type LucidNightSoundId,
 } from '@/lib/lucid/audio';
+import { canUseLucidNightSignals, type LucidSafetyPolicy } from '@/lib/lucid/safety';
 import {
   cancelLucidNightCues,
   restoreLucidNightSignalPlan,
@@ -48,6 +50,7 @@ export function useLucidNightAudio(params: {
   volume: number;
   timerMinutes: number;
   safety: LucidAudioSafety;
+  policy: LucidSafetyPolicy;
   notificationTitle: string;
   notificationBody: string;
 }) {
@@ -66,6 +69,9 @@ export function useLucidNightAudio(params: {
   const stopTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const remainingRef = useRef(0);
   const remainingListenersRef = useRef<Set<() => void>>(new Set());
+  const policyRef = useRef(params.policy);
+  const nightGenerationRef = useRef(0);
+  const startInFlightRef = useRef(false);
 
   const setRemainingSeconds = useCallback((seconds: number) => {
     if (remainingRef.current === seconds) return;
@@ -134,6 +140,7 @@ export function useLucidNightAudio(params: {
       requestedDurationMs: 7_000,
       soundId: params.soundId,
       safety: params.safety,
+      policy: params.policy,
     });
     if (result.status === 'blocked') {
       setError(result.reason);
@@ -146,30 +153,38 @@ export function useLucidNightAudio(params: {
       setError(cause instanceof Error ? cause.message : 'playback_failed');
       return false;
     }
-  }, [params.safety, params.soundId, params.volume, playPreview]);
+  }, [params.policy, params.safety, params.soundId, params.volume, playPreview]);
   /* eslint-enable react-hooks/immutability */
 
+  const bumpNightGeneration = useCallback(() => {
+    nightGenerationRef.current += 1;
+    return nightGenerationRef.current;
+  }, []);
+
   const startNight = useCallback(async () => {
+    if (startInFlightRef.current) return false;
+    startInFlightRef.current = true;
     setError(null);
     setIsScheduling(true);
-    const sessionStartAt = Date.now();
-    const result = createLucidNightSignalPlan({
-      enabled: true,
-      sessionStartAt,
-      timerMinutes: params.timerMinutes,
-      cueOffsetsMinutes: [120, 180, 240, 300],
-      requestedVolume: params.volume,
-      requestedCueDurationMs: 7_000,
-      soundId: params.soundId,
-      safety: params.safety,
-    });
-    if (result.status === 'blocked') {
-      setError(result.reason);
-      setIsScheduling(false);
-      return false;
-    }
-
+    const generation = bumpNightGeneration();
     try {
+      const sessionStartAt = Date.now();
+      const result = createLucidNightSignalPlan({
+        enabled: true,
+        sessionStartAt,
+        timerMinutes: params.timerMinutes,
+        cueOffsetsMinutes: [120, 180, 240, 300],
+        requestedVolume: params.volume,
+        requestedCueDurationMs: 7_000,
+        soundId: params.soundId,
+        safety: params.safety,
+        policy: params.policy,
+      });
+      if (result.status === 'blocked') {
+        setError(result.reason);
+        return false;
+      }
+
       await stopPlayback();
       const scheduled = await scheduleLucidNightCues(result.plan, {
         now: sessionStartAt,
@@ -184,20 +199,54 @@ export function useLucidNightAudio(params: {
         setError(`notifications_${scheduled.permission}`);
         return false;
       }
-      setPlan(result.plan);
-      setRemainingSeconds(
-        Math.max(0, Math.ceil((result.plan.timerEndsAt - Date.now()) / 1000))
+
+      const remainingSeconds = Math.max(
+        0,
+        Math.ceil((result.plan.timerEndsAt - Date.now()) / 1000)
       );
+      const cancelNewlyScheduledSession = async (): Promise<'cancelled' | 'failed' | 'superseded'> => {
+        const expectedGeneration = nightGenerationRef.current;
+        try {
+          await cancelLucidNightCues({ sessionId: result.plan.sessionId });
+        } catch {
+          if (expectedGeneration !== nightGenerationRef.current) return 'superseded';
+          setPlan(result.plan);
+          setRemainingSeconds(remainingSeconds);
+          setError('notification_cancel_failed');
+          await stopPlayback();
+          return 'failed';
+        }
+        if (expectedGeneration !== nightGenerationRef.current) return 'superseded';
+        return 'cancelled';
+      };
+
+      if (generation !== nightGenerationRef.current) {
+        await cancelNewlyScheduledSession();
+        return false;
+      }
+      const currentPolicy = policyRef.current;
+      if (!canUseLucidNightSignals(currentPolicy)) {
+        const outcome = await cancelNewlyScheduledSession();
+        if (outcome === 'cancelled') {
+          setError(currentPolicy.reasons[0] ?? 'night_signals_blocked');
+        }
+        return false;
+      }
+      setPlan(result.plan);
+      setRemainingSeconds(remainingSeconds);
       return true;
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'notification_schedule_failed');
       return false;
     } finally {
+      startInFlightRef.current = false;
       setIsScheduling(false);
     }
   }, [
+    bumpNightGeneration,
     params.notificationBody,
     params.notificationTitle,
+    params.policy,
     params.safety,
     params.soundId,
     params.timerMinutes,
@@ -206,37 +255,72 @@ export function useLucidNightAudio(params: {
     stopPlayback,
   ]);
 
-  const stopNight = useCallback(async () => {
-    setError(null);
+  const stopNight = useCallback(async (blockReason?: string | null) => {
+    const generation = bumpNightGeneration();
     try {
       await cancelLucidNightCues();
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'notification_cancel_failed');
+    } catch {
+      if (generation !== nightGenerationRef.current) return;
+      setError('notification_cancel_failed');
+      await stopPlayback();
+      return;
     }
+    if (generation !== nightGenerationRef.current) return;
     setPlan(null);
     setRemainingSeconds(0);
+    setError(blockReason ?? null);
     await stopPlayback();
-  }, [setRemainingSeconds, stopPlayback]);
+  }, [bumpNightGeneration, setRemainingSeconds, stopPlayback]);
+
+  useEffect(() => {
+    policyRef.current = params.policy;
+  }, [params.policy]);
 
   useEffect(() => {
     let active = true;
+    const generation = nightGenerationRef.current;
     void restoreLucidNightSignalPlan()
-      .then((restored) => {
-        if (!active || !restored) return;
+      .then(async (restored) => {
+        if (!active || generation !== nightGenerationRef.current) return;
+        if (!restored) return;
+        if (!shouldRestoreLucidNightSignalPlan(restored, policyRef.current)) {
+          try {
+            await cancelLucidNightCues();
+          } catch {
+            if (!active || generation !== nightGenerationRef.current) return;
+            setPlan(restored);
+            setRemainingSeconds(
+              Math.max(0, Math.ceil((restored.timerEndsAt - Date.now()) / 1000))
+            );
+            setError('notification_cancel_failed');
+            await stopPlayback();
+            return;
+          }
+          if (!active || generation !== nightGenerationRef.current) return;
+          setPlan(null);
+          setRemainingSeconds(0);
+          setError(policyRef.current.reasons[0] ?? 'night_signals_blocked');
+          return;
+        }
         setPlan(restored);
         setRemainingSeconds(
           Math.max(0, Math.ceil((restored.timerEndsAt - Date.now()) / 1000))
         );
       })
       .catch((cause: unknown) => {
-        if (active) {
+        if (active && generation === nightGenerationRef.current) {
           setError(cause instanceof Error ? cause.message : 'notification_restore_failed');
         }
       });
     return () => {
       active = false;
     };
-  }, [setRemainingSeconds]);
+  }, [setRemainingSeconds, stopPlayback]);
+
+  useEffect(() => {
+    if (!plan || canUseLucidNightSignals(params.policy)) return;
+    void stopNight(params.policy.reasons[0] ?? 'night_signals_blocked');
+  }, [plan, params.policy, stopNight]);
 
   useEffect(() => {
     if (!plan) return;

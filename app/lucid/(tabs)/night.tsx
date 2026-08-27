@@ -18,6 +18,10 @@ import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidNightAudio, type LucidNightRemaining } from '@/hooks/useLucidNightAudio';
 import { MAX_LUCID_NIGHT_VOLUME } from '@/lib/lucid/audio';
+import {
+  canUseLucidNightSignals,
+  evaluateLucidSafetyPolicyFromState,
+} from '@/lib/lucid/safety';
 import { SLEEP_SOUNDS, type SleepSoundId } from '@/lib/sleepSounds';
 
 const NIGHT_SANCTUARY = require('../../../assets/images/lucid/night-ritual-sanctuary.png');
@@ -348,6 +352,14 @@ export default function LucidNightScreen() {
   const [hearing, setHearing] = useState(false);
   const [signalsOpen, setSignalsOpen] = useState(false);
   const volume = Math.min(MAX_LUCID_NIGHT_VOLUME, state!.preferences.audioVolume);
+  const policy = useMemo(
+    () =>
+      evaluateLucidSafetyPolicyFromState(state, {
+        sleepIsFragile: fragile,
+        hearingConcern: hearing,
+      }),
+    [fragile, hearing, state],
+  );
   const safety = useMemo(
     () => ({
       acknowledged: state!.onboarding.audioSafetyAccepted,
@@ -362,10 +374,11 @@ export default function LucidNightScreen() {
     volume,
     timerMinutes,
     safety,
+    policy,
     notificationTitle: copy.cueTitle,
     notificationBody: copy.cueBody,
   });
-  const safe = safety.acknowledged && speaker && !fragile && !hearing;
+  const signalsAllowed = speaker && canUseLucidNightSignals(policy);
   const missing = (
     [
       safety.acknowledged ? null : copy.needAck,
@@ -377,7 +390,7 @@ export default function LucidNightScreen() {
   const showSignals = signalsOpen || !!audio.plan;
 
   const start = async () => {
-    if (!safe) return;
+    if (!signalsAllowed) return;
     if (!state!.preferences.audioCuesEnabled) await updatePreferences({ audioCuesEnabled: true });
     if (!(await audio.startNight())) Alert.alert(copy.safety, copy.blocked);
   };
@@ -450,13 +463,25 @@ export default function LucidNightScreen() {
           </View>
           <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.next}</Text>
           {audio.plan ? (
-            <LucidButton label={copy.stop} variant="danger" icon="stop" onPress={() => void audio.stopNight()} />
+            <LucidButton
+              label={copy.stop}
+              variant="danger"
+              icon="stop"
+              onPress={() => void audio.stopNight()}
+              testID="lucid-night-stop"
+            />
           ) : (
             <LucidButton
               label={copy.start}
               icon="moon"
-              disabled={!safe || audio.isScheduling}
-              disabledReason={missing.length ? `${copy.needs} ${missing.join(', ')}` : undefined}
+              disabled={!signalsAllowed || audio.isScheduling}
+              disabledReason={
+                !signalsAllowed
+                  ? missing.length
+                    ? `${copy.needs} ${missing.join(', ')}`
+                    : copy.blocked
+                  : undefined
+              }
               onPress={() => void start()}
               testID="lucid-night-start"
             />
@@ -591,7 +616,7 @@ export default function LucidNightScreen() {
               label={copy.preview}
               variant="secondary"
               icon={audio.isPlaying ? 'volume-high' : 'play'}
-              disabled={!safe || !audio.isLoaded || audio.isScheduling || !!audio.plan}
+              disabled={!signalsAllowed || !audio.isLoaded || audio.isScheduling || !!audio.plan}
               onPress={() => void audio.preview()}
             />
 

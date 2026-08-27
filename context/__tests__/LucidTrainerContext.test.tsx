@@ -502,4 +502,166 @@ describe('LucidTrainerContext account boundary', () => {
     expect(paused?.updatedAt).toBeGreaterThan(Math.max(now, seeded.updatedAt, seeded.progress[0].updatedAt));
   });
 
+  it('rejects starting or completing WBTB when the safety policy forbids it', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      progress: [{
+        ...createLucidProgramProgress('wbtb', initial.createdAt),
+        status: 'active',
+        currentDay: 1,
+        startedAt: initial.createdAt,
+      }],
+    };
+
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await expect(result.current.startProgram('wbtb')).rejects.toThrow('audio_not_consented');
+    });
+    await act(async () => {
+      await expect(
+        result.current.completeProgramSession('wbtb', 'wbtb-01', 1, 7)
+      ).rejects.toThrow('audio_not_consented');
+    });
+
+    expect(result.current.state?.progress.find(
+      (item: LucidTrainerState['progress'][number]) => item.technique === 'wbtb'
+    )).toEqual(expect.objectContaining({
+      status: 'active',
+      currentDay: 1,
+      completedExerciseIds: [],
+    }));
+  });
+
+  it('starts WBTB and still advances MILD when audio safety is the only missing night fact', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      onboarding: {
+        ...initial.onboarding,
+        audioSafetyAccepted: true,
+      },
+    };
+
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await result.current.startProgram('wbtb');
+    });
+    expect(result.current.state?.progress.find(
+      (item: LucidTrainerState['progress'][number]) => item.technique === 'wbtb'
+    )).toEqual(expect.objectContaining({ status: 'active', technique: 'wbtb' }));
+
+    await act(async () => {
+      await result.current.startProgram('mild');
+    });
+    await act(async () => {
+      await result.current.completeProgramSession('mild', 'mild-01', 1, 7);
+    });
+
+    expect(result.current.state?.progress.find(
+      (item: LucidTrainerState['progress'][number]) => item.technique === 'mild'
+    )).toEqual(expect.objectContaining({
+      status: 'active',
+      completedExerciseIds: ['mild-01'],
+    }));
+    expect(result.current.state?.progress.find(
+      (item: LucidTrainerState['progress'][number]) => item.technique === 'wbtb'
+    )).toEqual(expect.objectContaining({ status: 'paused', technique: 'wbtb' }));
+  });
+
+  it('does not create WBTB progress when reviewing a completed program under a blocking policy', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      progress: [{
+        ...createLucidProgramProgress('wbtb', initial.createdAt),
+        status: 'completed',
+        currentDay: 7,
+        completedExerciseIds: ['wbtb-01', 'wbtb-02', 'wbtb-03', 'wbtb-04', 'wbtb-05', 'wbtb-06', 'wbtb-07'],
+        startedAt: initial.createdAt,
+        completedAt: initial.createdAt,
+      }],
+    };
+
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await result.current.startProgram('wbtb');
+    });
+    await act(async () => {
+      await result.current.completeProgramSession('wbtb', 'wbtb-01', 1, 7);
+    });
+
+    expect(result.current.state?.progress.find(
+      (item: LucidTrainerState['progress'][number]) => item.technique === 'wbtb'
+    )).toEqual(expect.objectContaining({
+      status: 'completed',
+      currentDay: 7,
+      completedAt: initial.createdAt,
+    }));
+  });
+
+  it('still starts SSILD while WBTB is blocked by missing audio consent', async () => {
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await result.current.startProgram('ssild');
+    });
+
+    expect(result.current.state?.progress.find(
+      (item: LucidTrainerState['progress'][number]) => item.technique === 'ssild'
+    )).toEqual(expect.objectContaining({ status: 'active', technique: 'ssild' }));
+  });
+
 });

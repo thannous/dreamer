@@ -14,6 +14,7 @@ import {
   type LucidReminderPlan,
 } from '@/services/lucidTrainerNotifications';
 import { createLucidNightSignalPlan } from '@/lib/lucid/audio';
+import { evaluateLucidSafetyPolicy } from '@/lib/lucid/safety';
 
 jest.mock('expo-notifications', () => ({
   AndroidImportance: { DEFAULT: 3 },
@@ -138,6 +139,13 @@ function nightPlan(startAt = NIGHT_START) {
       sleepIsFragile: false,
       hearingConcern: false,
     },
+    policy: evaluateLucidSafetyPolicy({
+      recoveryRequested: false,
+      recentSleepDegraded: false,
+      sleepIsFragile: false,
+      hearingConcern: false,
+      audioConsented: true,
+    }),
   });
   if (result.status !== 'ready') throw new Error('Expected a night plan');
   return result.plan;

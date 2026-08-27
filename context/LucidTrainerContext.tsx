@@ -37,7 +37,11 @@ import type {
   LucidWeeklyReview,
 } from '@/lib/lucid/model';
 import { buildLucidReminderPlan } from '@/lib/lucid/reminders';
-import { evaluateLucidSessionAccess } from '@/lib/lucid/safety';
+import {
+  evaluateLucidSafetyPolicyFromState,
+  evaluateLucidSessionAccess,
+  getLucidWbtbDenialReason,
+} from '@/lib/lucid/safety';
 import { resetLucidOnboardingCompletionNavigationClaim } from '@/lib/lucid/routes';
 import { setProductAnalyticsEnabled } from '@/lib/productAnalytics';
 import { reconcileLucidTrainerReminders } from '@/services/lucidTrainerNotifications';
@@ -487,6 +491,10 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         if (existing?.status === 'completed') {
           return { next: current, changed: [] };
         }
+        if (technique === 'wbtb') {
+          const reason = getLucidWbtbDenialReason(evaluateLucidSafetyPolicyFromState(current));
+          if (reason) throw new Error(reason);
+        }
         const { next, changed } = activateExclusiveLucidProgram(current, technique, now);
         return { next, changed: changed.map(entityForProgress) };
       });
@@ -505,6 +513,13 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
           progress: existing,
         });
         if (!access.allowed) throw new Error('Lucid session is locked');
+        if (technique === 'wbtb') {
+          const reason = getLucidWbtbDenialReason(evaluateLucidSafetyPolicyFromState(current));
+          if (reason) {
+            if (access.reason === 'completed') return { next: current, changed: [] };
+            throw new Error(reason);
+          }
+        }
         const mutationUpdatedAt =
           Math.max(now, current.updatedAt, ...current.progress.map((item) => item.updatedAt)) + 1;
         const completedExerciseIds = [...new Set([...existing.completedExerciseIds, exerciseId])];

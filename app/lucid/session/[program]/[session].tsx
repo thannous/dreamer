@@ -13,7 +13,11 @@ import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { LucidTechnique } from '@/lib/lucid/model';
 import { closeLucidRoute } from '@/lib/lucid/routes';
-import { evaluateLucidSessionAccess } from '@/lib/lucid/safety';
+import {
+  canUseLucidWbtb,
+  evaluateLucidSafetyPolicyFromState,
+  evaluateLucidSessionAccess,
+} from '@/lib/lucid/safety';
 
 const COPY = {
   en: { guided: 'Guided practice', step: 'Step', reflect: 'After the practice', caution: 'Keep in mind', complete: 'Complete session', done: 'Session completed', invalid: 'Session unavailable', locked: 'This session opens after the previous one. The calendar is only a suggestion.', backToProgram: 'Back to program', stepsChecked: 'Steps checked:', progress: 'Practice progress' },
@@ -56,13 +60,19 @@ export default function LucidSessionScreen() {
     exerciseId: session?.id,
     progress: programProgress,
   });
+  const safetyPolicy = evaluateLucidSafetyPolicyFromState(state);
+  const wbtbBlocked =
+    isTechnique(params.program) &&
+    params.program === 'wbtb' &&
+    !canUseLucidWbtb(safetyPolicy) &&
+    access.reason !== 'completed';
   const alreadyDone = access.reason === 'completed';
   const [checked, setChecked] = useState<boolean[]>(() => session?.steps.map(() => false) ?? []);
   const [saving, setSaving] = useState(false);
   const progress = useMemo(() => checked.length ? checked.filter(Boolean).length / checked.length : 0, [checked]);
   const close = () => closeLucidRoute(router, sessionFallback(params.program));
 
-  if (!program || !session || !isTechnique(params.program) || !access.allowed) {
+  if (!program || !session || !isTechnique(params.program) || !access.allowed || wbtbBlocked) {
     const locked = access.reason === 'sequential_lock';
     return (
       <LucidScreen

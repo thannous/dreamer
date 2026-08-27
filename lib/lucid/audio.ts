@@ -1,5 +1,13 @@
+import {
+  canUseLucidNightSignals,
+  isLucidNightSignalIntensityReduced,
+  type LucidSafetyPolicy,
+} from '@/lib/lucid/safety';
+
 export const MAX_LUCID_NIGHT_VOLUME = 0.3;
 export const MAX_LUCID_PREVIEW_VOLUME = 0.2;
+/** Top of the `very_low` band — reduced-intensity night signals stay here. */
+export const MAX_LUCID_REDUCED_NIGHT_VOLUME = 0.15;
 export const MAX_LUCID_PREVIEW_DURATION_MS = 10_000;
 export const MAX_LUCID_CUE_DURATION_MS = 8_000;
 export const MIN_LUCID_FIRST_CUE_DELAY_MS = 90 * 60 * 1000;
@@ -58,6 +66,8 @@ export type LucidAudioBlockReason =
   | 'unsafe_route'
   | 'fragile_sleep'
   | 'hearing_concern'
+  | 'recovery_requested'
+  | 'night_signals_blocked'
   | 'invalid_deadline'
   | 'invalid_timer'
   | 'invalid_volume'
@@ -125,6 +135,7 @@ export type LucidPreviewRequest = {
   requestedDurationMs: number;
   soundId: LucidNightSoundId;
   safety: LucidAudioSafety;
+  policy: LucidSafetyPolicy;
 };
 
 export type LucidNightSignalRequest = {
@@ -136,6 +147,7 @@ export type LucidNightSignalRequest = {
   requestedCueDurationMs?: number;
   soundId: LucidNightSoundId;
   safety: LucidAudioSafety;
+  policy: LucidSafetyPolicy;
 };
 
 export type LucidNightSignalState =
@@ -165,6 +177,18 @@ function getSafetyBlockReason(
   return null;
 }
 
+function getPolicyNightSignalBlockReason(
+  policy: LucidSafetyPolicy | null | undefined
+): LucidAudioBlockReason | null {
+  if (policy == null || typeof policy !== 'object') return 'night_signals_blocked';
+  if (policy.allowNightSignals) return null;
+  if (policy.reasons.includes('audio_not_consented')) return 'safety_not_acknowledged';
+  if (policy.reasons.includes('hearing_concern')) return 'hearing_concern';
+  if (policy.reasons.includes('fragile_sleep')) return 'fragile_sleep';
+  if (policy.reasons.includes('recovery_requested')) return 'recovery_requested';
+  return 'night_signals_blocked';
+}
+
 function isFiniteDeadline(value: number): boolean {
   return Number.isFinite(value) && Number.isSafeInteger(value) && value >= 0;
 }
@@ -172,6 +196,28 @@ function isFiniteDeadline(value: number): boolean {
 function clampPositive(value: number, maximum: number): number | null {
   if (!Number.isFinite(value) || value <= 0) return null;
   return Math.min(value, maximum);
+}
+
+function resolvePlanVolume(
+  requestedVolume: number,
+  absoluteMax: number,
+  policy: LucidSafetyPolicy
+): number | null {
+  const cap = isLucidNightSignalIntensityReduced(policy)
+    ? Math.min(absoluteMax, MAX_LUCID_REDUCED_NIGHT_VOLUME)
+    : absoluteMax;
+  return clampPositive(requestedVolume, cap);
+}
+
+export function shouldRestoreLucidNightSignalPlan(
+  plan: LucidNightSignalPlan,
+  policy: LucidSafetyPolicy
+): boolean {
+  if (!canUseLucidNightSignals(policy)) return false;
+  if (isLucidNightSignalIntensityReduced(policy) && plan.volume > MAX_LUCID_REDUCED_NIGHT_VOLUME) {
+    return false;
+  }
+  return true;
 }
 
 export function isLucidNightSoundId(value: unknown): value is LucidNightSoundId {
@@ -196,10 +242,16 @@ export function createLucidPreviewPlan(
 ): LucidPreviewPlanResult {
   const safetyBlock = getSafetyBlockReason(request.safety);
   if (safetyBlock) return { status: 'blocked', reason: safetyBlock };
+  const policyBlock = getPolicyNightSignalBlockReason(request.policy);
+  if (policyBlock) return { status: 'blocked', reason: policyBlock };
   if (!isFiniteDeadline(request.nowAt)) {
     return { status: 'blocked', reason: 'invalid_deadline' };
   }
-  const volume = clampPositive(request.requestedVolume, MAX_LUCID_PREVIEW_VOLUME);
+  const volume = resolvePlanVolume(
+    request.requestedVolume,
+    MAX_LUCID_PREVIEW_VOLUME,
+    request.policy
+  );
   if (volume === null) return { status: 'blocked', reason: 'invalid_volume' };
   const duration = clampPositive(
     request.requestedDurationMs,
@@ -243,6 +295,8 @@ export function createLucidNightSignalPlan(
   if (!request.enabled) return { status: 'blocked', reason: 'disabled' };
   const safetyBlock = getSafetyBlockReason(request.safety);
   if (safetyBlock) return { status: 'blocked', reason: safetyBlock };
+  const policyBlock = getPolicyNightSignalBlockReason(request.policy);
+  if (policyBlock) return { status: 'blocked', reason: policyBlock };
   if (!isFiniteDeadline(request.sessionStartAt)) {
     return { status: 'blocked', reason: 'invalid_deadline' };
   }
@@ -254,7 +308,11 @@ export function createLucidNightSignalPlan(
     return { status: 'blocked', reason: 'invalid_timer' };
   }
 
-  const volume = clampPositive(request.requestedVolume, MAX_LUCID_NIGHT_VOLUME);
+  const volume = resolvePlanVolume(
+    request.requestedVolume,
+    MAX_LUCID_NIGHT_VOLUME,
+    request.policy
+  );
   if (volume === null) return { status: 'blocked', reason: 'invalid_volume' };
   const cueDuration = clampPositive(
     request.requestedCueDurationMs ?? MAX_LUCID_CUE_DURATION_MS,

@@ -10,6 +10,9 @@ const mockStopNight = jest.fn().mockResolvedValue(undefined);
 const mockPreview = jest.fn().mockResolvedValue(undefined);
 
 let mockAudioSafetyAccepted = false;
+let mockNightPlan: { sessionId: string; soundId: string } | null = null;
+let lastNightAudioParams: { policy?: { mode: string; allowNightSignals: boolean; reasons: string[] } } | null =
+  null;
 
 jest.mock('react-native', () => {
   const native = jest.requireActual('../react-native-stub');
@@ -106,17 +109,20 @@ jest.mock('@/context/LucidTrainerContext', () => {
 });
 
 jest.mock('@/hooks/useLucidNightAudio', () => ({
-  useLucidNightAudio: () => ({
-    error: null,
-    isLoaded: true,
-    isPlaying: false,
-    isScheduling: false,
-    plan: null,
-    preview: mockPreview,
-    remaining: { getSnapshot: () => 0, subscribe: () => () => {} },
-    startNight: mockStartNight,
-    stopNight: mockStopNight,
-  }),
+  useLucidNightAudio: (params: { policy?: { mode: string; allowNightSignals: boolean; reasons: string[] } }) => {
+    lastNightAudioParams = params;
+    return {
+      error: null,
+      isLoaded: true,
+      isPlaying: false,
+      isScheduling: false,
+      plan: mockNightPlan,
+      preview: mockPreview,
+      remaining: { getSnapshot: () => 0, subscribe: () => () => {} },
+      startNight: mockStartNight,
+      stopNight: mockStopNight,
+    };
+  },
 }));
 
 jest.mock('@/components/lucid/LucidUI', () => ({
@@ -164,6 +170,8 @@ describe('Lucid Trainer night audio safety', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockAudioSafetyAccepted = false;
+    mockNightPlan = null;
+    lastNightAudioParams = null;
     mockUpdateAudioSafetyConsent.mockResolvedValue(undefined);
     mockUpdatePreferences.mockResolvedValue(undefined);
     mockStartNight.mockResolvedValue(true);
@@ -219,5 +227,64 @@ describe('Lucid Trainer night audio safety', () => {
     expect(screen.getByText('Soft rain')).not.toBeNull();
     expect(screen.getByText('Prudent volume')).not.toBeNull();
     expect(screen.getByRole('radio', { name: 'Soft rain' })).not.toBeNull();
+  });
+
+  it('computes one safety policy from persisted consent and current toggles', () => {
+    render(<LucidNightScreen />);
+    expect(lastNightAudioParams?.policy).toEqual(
+      expect.objectContaining({
+        mode: 'nightFeaturesBlocked',
+        allowNightSignals: false,
+        reasons: ['audio_not_consented'],
+      })
+    );
+    cleanup();
+
+    mockAudioSafetyAccepted = true;
+    render(<LucidNightScreen />);
+    expect(lastNightAudioParams?.policy).toEqual(
+      expect.objectContaining({
+        mode: 'normal',
+        allowNightSignals: true,
+        allowWbtb: true,
+        reasons: [],
+      })
+    );
+    expect((screen.getByTestId('lucid-night-start') as HTMLButtonElement).disabled).toBe(true);
+
+    fireEvent.click(screen.getByTestId('lucid-night-speaker'));
+    expect((screen.getByTestId('lucid-night-start') as HTMLButtonElement).disabled).toBe(false);
+
+    fireEvent.click(screen.getByTestId('lucid-night-fragile'));
+    expect(lastNightAudioParams?.policy).toEqual(
+      expect.objectContaining({
+        mode: 'reducedIntensity',
+        allowNightSignals: false,
+        allowWbtb: false,
+        nightSignalIntensity: 'blocked',
+        reasons: ['fragile_sleep'],
+      })
+    );
+    expect((screen.getByTestId('lucid-night-start') as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByText(/Still required:.*uncheck “fragile sleep”/)).not.toBeNull();
+    fireEvent.click(screen.getByTestId('lucid-night-start'));
+    expect(mockStartNight).not.toHaveBeenCalled();
+  });
+
+  it('does not policy-gate or paywall stop while a plan is still active', () => {
+    mockAudioSafetyAccepted = true;
+    mockNightPlan = { sessionId: 'lucid-night-1', soundId: 'rain' };
+    render(<LucidNightScreen />);
+
+    fireEvent.click(screen.getByTestId('lucid-night-speaker'));
+    fireEvent.click(screen.getByTestId('lucid-night-fragile'));
+
+    const stop = screen.getByTestId('lucid-night-stop') as HTMLButtonElement;
+    expect(stop.disabled).toBe(false);
+    expect(screen.queryByTestId('lucid-night-start')).toBeNull();
+
+    fireEvent.click(stop);
+    expect(mockStopNight).toHaveBeenCalledTimes(1);
+    expect(mockStartNight).not.toHaveBeenCalled();
   });
 });

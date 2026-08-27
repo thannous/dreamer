@@ -27,6 +27,7 @@ import {
 } from '@/lib/lucid/calendar';
 import type { LucidTechnique } from '@/lib/lucid/model';
 import { closeLucidRoute } from '@/lib/lucid/routes';
+import { canUseLucidWbtb, evaluateLucidSafetyPolicyFromState } from '@/lib/lucid/safety';
 
 const COPY = {
   en: {
@@ -151,6 +152,8 @@ export default function LucidProgramDetailScreen() {
 
   const program = content.programs[id];
   const progress = state!.progress.find((item) => item.technique === id);
+  const safetyPolicy = evaluateLucidSafetyPolicyFromState(state);
+  const wbtbBlocked = id === 'wbtb' && !canUseLucidWbtb(safetyPolicy);
   const completed = program.sessions.filter((session) =>
     progress?.completedExerciseIds.includes(session.id)
   ).length;
@@ -193,6 +196,7 @@ export default function LucidProgramDetailScreen() {
   });
 
   const handleStart = async () => {
+    if (wbtbBlocked && progress?.status !== 'completed') return;
     setBusy(true);
     try {
       if (progress?.status !== 'completed') {
@@ -269,7 +273,7 @@ export default function LucidProgramDetailScreen() {
       progressValue={completed}
       programLabel={id === 'mild' ? `${copy.journey} ${program.title}` : copy.journey}
       reduceMotion={state?.onboarding.accessibility?.reduceMotion ?? false}
-      sessionsEnabled={active || progress?.status === 'completed'}
+      sessionsEnabled={wbtbBlocked ? false : active || progress?.status === 'completed'}
       started={startedAt !== null}
       trailing={id === 'mild' ? (
         <LucidIconAction
@@ -279,7 +283,10 @@ export default function LucidProgramDetailScreen() {
         />
       ) : undefined}
       onPrimaryAction={() => void handleStart()}
-      onSessionPress={(session) => router.push(`/lucid/session/${id}/${session.session}`)}
+      onSessionPress={(session) => {
+        if (wbtbBlocked && !progress?.completedExerciseIds.includes(session.id)) return;
+        router.push(`/lucid/session/${id}/${session.session}`);
+      }}
     />
   );
 
