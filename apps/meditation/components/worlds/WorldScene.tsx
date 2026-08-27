@@ -20,7 +20,7 @@ import { ScopedTheme, withUniwind } from 'uniwind';
 import { GrainOverlay } from '@/components/atmosphere/GrainOverlay';
 import { ImmersiveScene } from '@/components/immersive';
 import { BreathAmplitude, Curve, Duration } from '@/constants/motion';
-import { Atmosphere, NightTheme, Themes } from '@/constants/theme';
+import { Atmosphere, NightTheme, PaperTheme, Themes } from '@/constants/theme';
 import type { MeditationWorld, WorldMotion } from '@/constants/worlds';
 import { useBreath } from '@/context/BreathContext';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -68,7 +68,23 @@ export function worldArtworkMotionStyle(motion: WorldMotion, breath: number): Vi
   }
 }
 
-function withAlpha(color: string, alpha: number): string {
+export const WORLD_PURCHASE_BACKING_ALPHA = {
+  dark: 0.96,
+  light: 0.82,
+} as const;
+
+/** Full-screen purchase veil stays thin so artwork remains visible between copy. */
+export const WORLD_PURCHASE_VEIL = {
+  locations: [0, 0.36, 1] as const,
+  topAlpha: 0.05,
+  centreAlpha: 0.2,
+  bottomAlpha: 0.88,
+  topAlphaMax: 0.18,
+  centreAlphaMax: 0.36,
+  bottomAlphaMax: 0.94,
+} as const;
+
+export function withAlpha(color: string, alpha: number): string {
   const hex = color.startsWith('#') ? color.slice(1) : color;
   if (!/^[0-9a-f]{6}$/i.test(hex)) return 'transparent';
 
@@ -76,6 +92,58 @@ function withAlpha(color: string, alpha: number): string {
   const green = Number.parseInt(hex.slice(2, 4), 16);
   const blue = Number.parseInt(hex.slice(4, 6), 16);
   return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+}
+
+export function worldPurchaseBackingFill(appearance: 'dark' | 'light'): string {
+  const ground = appearance === 'dark' ? NightTheme.background : PaperTheme.background;
+  return withAlpha(ground, WORLD_PURCHASE_BACKING_ALPHA[appearance]);
+}
+
+export function worldPurchaseVeilColors(
+  scrimColor: string,
+  strength: number
+): readonly [string, string, string] {
+  const clamped = Math.max(0, Math.min(strength, 1.5));
+  return [
+    withAlpha(
+      scrimColor,
+      Math.min(WORLD_PURCHASE_VEIL.topAlpha * clamped, WORLD_PURCHASE_VEIL.topAlphaMax)
+    ),
+    withAlpha(
+      scrimColor,
+      Math.min(WORLD_PURCHASE_VEIL.centreAlpha * clamped, WORLD_PURCHASE_VEIL.centreAlphaMax)
+    ),
+    withAlpha(
+      scrimColor,
+      Math.min(WORLD_PURCHASE_VEIL.bottomAlpha * clamped, WORLD_PURCHASE_VEIL.bottomAlphaMax)
+    ),
+  ];
+}
+
+/** Local readable backing for purchase copy. The scene stays visible around it. */
+export function WorldPurchaseReadableBlock({
+  appearance,
+  testID,
+  className,
+  children,
+}: React.PropsWithChildren<{
+  appearance: 'dark' | 'light';
+  testID?: string;
+  className?: string;
+}>) {
+  return (
+    <View
+      testID={testID}
+      className={className}
+      style={{
+        backgroundColor: worldPurchaseBackingFill(appearance),
+        borderRadius: 12,
+        paddingHorizontal: 16,
+        paddingVertical: 14,
+      }}>
+      {children}
+    </View>
+  );
 }
 
 export type WorldArtworkKey = keyof MeditationWorld['artwork'];
@@ -118,7 +186,11 @@ export function WorldScene({
   const previousWorldId = useRef(world.id);
   const reveal = useSharedValue(0);
   const strength = Math.max(0, Math.min(scrimStrength, 1.5));
-  const overlayOpacity = Math.min(world.atmosphere.overlayOpacity * strength, 1);
+  const isPurchaseArtwork = artwork === 'purchase';
+  const overlayOpacity = Math.min(
+    world.atmosphere.overlayOpacity * strength * (isPurchaseArtwork ? 0.35 : 1),
+    1
+  );
   const colors = Themes[world.appearance];
   const ambientMotionPaused = reducedMotion || !breathMotion;
   const centreScrim = withAlpha(
@@ -171,7 +243,7 @@ export function WorldScene({
           accessible={false}
           source={world.artwork[artwork] as ImageProps['source']}
           contentFit="cover"
-          contentPosition="center"
+          contentPosition={isPurchaseArtwork ? 'top' : 'center'}
           recyclingKey={`${world.id}-${artwork}`}
           transition={reducedMotion ? 0 : Duration.slow}
           style={StyleSheet.absoluteFill}
@@ -206,16 +278,21 @@ export function WorldScene({
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
         pointerEvents="none"
-        colors={[
-          world.atmosphere.scrimColor,
-          centreScrim,
-          world.atmosphere.scrimColor,
-        ]}
-        locations={[0, 0.46, 1]}
+        colors={
+          isPurchaseArtwork
+            ? [...worldPurchaseVeilColors(world.atmosphere.scrimColor, strength)]
+            : [world.atmosphere.scrimColor, centreScrim, world.atmosphere.scrimColor]
+        }
+        locations={isPurchaseArtwork ? [...WORLD_PURCHASE_VEIL.locations] : [0, 0.46, 1]}
         style={[
           StyleSheet.absoluteFill,
-          { opacity: Math.min(world.atmosphere.scrimOpacity * strength, 1) },
+          {
+            opacity: isPurchaseArtwork
+              ? 1
+              : Math.min(world.atmosphere.scrimOpacity * strength, 1),
+          },
         ]}
+        testID={isPurchaseArtwork ? 'world-scene-purchase-veil' : undefined}
       />
 
       {immersive ? (

@@ -83,6 +83,25 @@ describe('audioServiceMock', () => {
     expect(jest.getTimerCount()).toBe(0);
   });
 
+  it('pauses and resumes the same clock without jumping or finishing twice', () => {
+    const player = createSessionPlayer(null, 120, 300, 1_000);
+    const listener = jest.fn<void, [AudioStatus]>();
+
+    player.addListener('playbackStatusUpdate', listener);
+    player.play();
+    jest.advanceTimersByTime(3_000);
+    player.pause();
+    const pausedAt = player.currentTime;
+    jest.advanceTimersByTime(5_000);
+    expect(player.currentTime).toBe(pausedAt);
+    player.play();
+    jest.advanceTimersByTime(1_000);
+
+    expect(player.playing).toBe(true);
+    expect(player.currentTime).toBeGreaterThan(pausedAt);
+    expect(listener.mock.calls.some(([status]) => status.didJustFinish)).toBe(false);
+  });
+
   it('uses the requested session duration instead of the five-minute loop length', () => {
     const player = createSessionPlayer(null, 1_200, 300, 1_000);
     const listener = jest.fn<void, [AudioStatus]>();

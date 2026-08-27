@@ -8,6 +8,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { AppState, type AppStateStatus } from 'react-native';
 
 import { SESSION_BY_ID } from '@/content/sessions';
 import {
@@ -16,6 +17,7 @@ import {
 } from '@/content/worldSounds';
 import { DEFAULT_WORLD_ID, type WorldId } from '@/constants/worlds';
 import { useLibrary } from '@/context/LibraryContext';
+import { useTranslation } from '@/context/LanguageContext';
 import {
   clampSeek,
   effectiveDuration,
@@ -25,7 +27,8 @@ import {
   SEEK_STEP_SEC,
   type FadeTimerMinutes,
 } from '@/lib/audio';
-import type { MeditationSession, SessionId } from '@/lib/types';
+import type { TranslationKey } from '@/lib/i18n';
+import { RESUME_MAX_RATIO, type MeditationSession, type SessionId } from '@/lib/types';
 import * as audio from '@/services/audioService';
 
 /** How often the listening position is written to storage. */
@@ -57,6 +60,7 @@ const PlayerContext = createContext<PlayerContextValue | null>(null);
 export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const router = useRouter();
   const { recordProgress, recordPractice } = useLibrary();
+  const { t } = useTranslation();
 
   const [session, setSession] = useState<MeditationSession | null>(null);
   const [worldId, setWorldId] = useState<WorldId | null>(null);
@@ -74,7 +78,12 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   const subscriptionRef = useRef<{ remove: () => void } | null>(null);
   const lastPersistedRef = useRef(0);
   const completedRef = useRef(false);
+  const practisedLoggedRef = useRef(false);
   const openGenerationRef = useRef(0);
+  const statusRef = useRef<PlayerStatus>('idle');
+  const sessionRef = useRef<MeditationSession | null>(null);
+  const positionSecRef = useRef(0);
+  const soundEnabledRef = useRef(soundEnabled);
 
   useEffect(() => {
     audio.configureAudioSession().catch(() => {
@@ -108,25 +117,50 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     },
     [recordProgress]
   );
+  const persistRef = useRef(persist);
+
+  const resetIdleState = useCallback(() => {
+    statusRef.current = 'idle';
+    sessionRef.current = null;
+    setSession(null);
+    setWorldId(null);
+    setStatus('idle');
+    positionSecRef.current = 0;
+    setPositionSec(0);
+    setFadeMinutes(null);
+    setFadeRemaining(null);
+  }, []);
 
   const open = useCallback(
     (sessionId: SessionId, startAtSec = 0, openedWorldId?: WorldId) => {
       const next = SESSION_BY_ID[sessionId];
       if (!next) return;
 
+      // Replay must start at 0. A finished session still stores its last
+      // second, and that saved position would otherwise reopen a dead loop.
+      const requestedStart = Number.isFinite(startAtSec) ? Math.max(0, startAtSec) : 0;
+      const startAt =
+        next.durationSec > 0 && requestedStart / next.durationSec > RESUME_MAX_RATIO
+          ? 0
+          : requestedStart;
+
       const generation = ++openGenerationRef.current;
       teardown();
       completedRef.current = false;
-      lastPersistedRef.current = 0;
+      practisedLoggedRef.current = false;
+      lastPersistedRef.current = startAt;
       setSession(next);
+      sessionRef.current = next;
       const resolvedWorldId = openedWorldId ?? DEFAULT_WORLD_ID;
       const sound = WORLD_SOUND_BY_ID[resolvedWorldId];
 
       setWorldId(resolvedWorldId);
-      setPositionSec(startAtSec);
+      setPositionSec(startAt);
+      positionSecRef.current = startAt;
       setLoadedDuration(0);
       setFadeMinutes(null);
       setFadeRemaining(null);
+      statusRef.current = 'loading';
       setStatus('loading');
       primaryVolumeRef.current = sound.primary.volume;
       textureVolumeRef.current = sound.secondary?.volume ?? 0;
@@ -142,7 +176,13 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
           const player = audio.createSessionPlayer(
             primarySource,
             next.durationSec,
-            WORLD_SOUND_TRACK_DURATION_SEC
+            WORLD_SOUND_TRACK_DURATION_SEC,
+            500,
+            {
+              title: t(`session.${next.id}.title` as TranslationKey),
+              artist: 'Noctalia Meditation',
+              albumTitle: t(`world.${resolvedWorldId}.name` as TranslationKey),
+            }
           );
           audio.setVolume(player, soundEnabled ? sound.primary.volume : 0);
 
@@ -165,12 +205,24 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
 
           subscriptionRef.current = player.addListener('playbackStatusUpdate', (statusUpdate) => {
             if (statusUpdate.error) {
+              if (textureRef.current) audio.pause(textureRef.current);
+              statusRef.current = 'unavailable';
               setStatus('unavailable');
               return;
             }
             setLoadedDuration(statusUpdate.duration);
             setPositionSec(statusUpdate.currentTime);
-            setStatus(statusUpdate.playing ? 'playing' : 'paused');
+            positionSecRef.current = statusUpdate.currentTime;
+            const nextStatus: PlayerStatus = statusUpdate.playing ? 'playing' : 'paused';
+            statusRef.current = nextStatus;
+            setStatus(nextStatus);
+            if (textureRef.current) {
+              if (statusUpdate.playing && !statusUpdate.didJustFinish && soundEnabledRef.current) {
+                audio.play(textureRef.current);
+              } else {
+                audio.pause(textureRef.current);
+              }
+            }
 
             if (statusUpdate.currentTime - lastPersistedRef.current >= PERSIST_EVERY_SEC) {
               lastPersistedRef.current = statusUpdate.currentTime;
@@ -178,47 +230,68 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
             }
 
             const total = effectiveDuration(statusUpdate.duration, next.durationSec);
-            if (!completedRef.current && isPractised(statusUpdate.currentTime, total)) {
-              completedRef.current = true;
-              persist(next.id, statusUpdate.currentTime, true);
-              // Same log a breathing exercise writes to: L5 counts both alike.
-              recordPractice({
-                sessionId: next.id,
-                seconds: Math.round(statusUpdate.currentTime),
-              }).catch(() => {});
+            if (isPractised(statusUpdate.currentTime, total)) {
+              if (!completedRef.current) {
+                completedRef.current = true;
+                persist(next.id, statusUpdate.currentTime, true);
+              }
+              if (!practisedLoggedRef.current) {
+                practisedLoggedRef.current = true;
+                recordPractice({
+                  sessionId: next.id,
+                  seconds: Math.round(statusUpdate.currentTime),
+                }).catch(() => {});
+              }
             }
 
             if (statusUpdate.didJustFinish) {
+              if (!completedRef.current) {
+                completedRef.current = true;
+                persist(next.id, statusUpdate.currentTime, true);
+              }
+              if (generation !== openGenerationRef.current) return;
               const worldParam = `&worldId=${resolvedWorldId}`;
               router.replace(`/session-complete?id=${next.id}${worldParam}`);
+              // Release after the native finish: session-complete has no
+              // transport, and a leftover looping handle would keep lock-screen
+              // controls or a mini-player for a session that already ended.
+              openGenerationRef.current += 1;
+              teardown();
+              resetIdleState();
             }
           });
 
-          if (startAtSec > 0) audio.seekTo(player, startAtSec).catch(() => {});
+          if (startAt > 0) audio.seekTo(player, startAt).catch(() => {});
           audio.play(player);
           if (soundEnabled && textureRef.current) audio.play(textureRef.current);
         } catch {
           if (generation !== openGenerationRef.current) return;
           teardown();
+          statusRef.current = 'unavailable';
           setStatus('unavailable');
         }
       })();
     },
-    [persist, recordPractice, router, soundEnabled, teardown]
+    [persist, recordPractice, resetIdleState, router, soundEnabled, t, teardown]
   );
 
   const toggle = useCallback(() => {
     const player = playerRef.current;
-    if (!player || status === 'loading' || status === 'unavailable') return;
+    if (!player || status === 'loading' || status === 'unavailable' || status === 'idle') return;
 
     if (status === 'playing') {
       audio.pause(player);
+      statusRef.current = 'paused';
+      setStatus('paused');
       if (session) persist(session.id, positionSec);
       if (textureRef.current) audio.pause(textureRef.current);
-    } else {
-      audio.play(player);
-      if (soundEnabled && textureRef.current) audio.play(textureRef.current);
+      return;
     }
+
+    audio.play(player);
+    statusRef.current = 'playing';
+    setStatus('playing');
+    if (soundEnabled && textureRef.current) audio.play(textureRef.current);
   }, [persist, positionSec, session, soundEnabled, status]);
 
   const seekTo = useCallback(
@@ -227,6 +300,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       if (!player) return;
       const target = clampSeek(seconds, durationSec);
       setPositionSec(target);
+      positionSecRef.current = target;
       audio.seekTo(player, target).catch(() => {});
     },
     [durationSec]
@@ -287,6 +361,8 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
         if (next <= 0) {
           if (player) audio.pause(player);
           if (textureRef.current) audio.pause(textureRef.current);
+          statusRef.current = 'paused';
+          setStatus('paused');
           return null;
         }
         return next;
@@ -300,13 +376,28 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     openGenerationRef.current += 1;
     if (session && positionSec > 0) persist(session.id, positionSec);
     teardown();
-    setSession(null);
-    setWorldId(null);
-    setStatus('idle');
-    setPositionSec(0);
-    setFadeMinutes(null);
-    setFadeRemaining(null);
-  }, [persist, positionSec, session, teardown]);
+    resetIdleState();
+  }, [persist, positionSec, resetIdleState, session, teardown]);
+
+  useEffect(() => {
+    persistRef.current = persist;
+  }, [persist]);
+
+  useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+  }, [soundEnabled]);
+
+  useEffect(() => {
+    const onAppState = (next: AppStateStatus) => {
+      if (next === 'active') return;
+      const currentSession = sessionRef.current;
+      if (!currentSession || statusRef.current === 'idle') return;
+      persistRef.current(currentSession.id, positionSecRef.current);
+    };
+
+    const appSub = AppState.addEventListener('change', onAppState);
+    return () => appSub.remove();
+  }, []);
 
   const value = useMemo(
     () => ({

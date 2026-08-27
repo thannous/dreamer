@@ -79,7 +79,7 @@ export function PlayerControls({
         testID={TID.Button.PlayerToggle}
         accessibilityRole="button"
         accessibilityLabel={playing ? t('player.pause') : t('player.play')}
-        accessibilityState={{ busy: loading }}
+        accessibilityState={{ busy: loading, selected: playing }}
         disabled={loading}
         onPress={onToggle}
         onPressIn={handlePressIn}

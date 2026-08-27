@@ -2,6 +2,8 @@ import {
   calendarDays,
   computeStats,
   computeStreak,
+  computeWeekPractice,
+  dailyReturnOffer,
   daysBetween,
   practiceDays,
   shiftDay,
@@ -147,5 +149,48 @@ describe('practiceDays', () => {
       '2026-08-19',
       '2026-08-17',
     ]);
+  });
+});
+
+describe('computeWeekPractice', () => {
+  it('counts only this week practised days and minutes', () => {
+    const week = computeWeekPractice(
+      [
+        entry('2026-08-17', 600),
+        entry('2026-08-18', 300),
+        entry('2026-08-19', 600),
+        entry('2026-08-10', 1200),
+      ],
+      '2026-08-19'
+    );
+
+    expect(week).toEqual({ practisedDays: 3, minutes: 25 });
+  });
+
+  it('ignores a later day rather than inventing a deficit', () => {
+    expect(computeWeekPractice([entry('2026-08-24')], '2026-08-19')).toEqual({
+      practisedDays: 0,
+      minutes: 0,
+    });
+  });
+});
+
+describe('dailyReturnOffer', () => {
+  it('prefers the most recent practised session over a saved one', () => {
+    const offer = dailyReturnOffer(
+      [entry('2026-08-18'), { dateISO: '2026-08-19', sessionId: 'sleep-descent', seconds: 600 }],
+      ['sleep-body-scan']
+    );
+
+    expect(offer).toMatchObject({ kind: 'recent', session: { id: 'sleep-descent' } });
+  });
+
+  it('falls back to a saved session when the log has no session id', () => {
+    const offer = dailyReturnOffer([entry('2026-08-19')], ['sleep-body-scan']);
+    expect(offer).toMatchObject({ kind: 'saved', session: { id: 'sleep-body-scan' } });
+  });
+
+  it('returns nothing when there is no familiar session to reopen', () => {
+    expect(dailyReturnOffer([], [])).toBeNull();
   });
 });

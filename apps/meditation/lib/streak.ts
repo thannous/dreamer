@@ -1,4 +1,5 @@
-import type { PracticeEntry } from '@/lib/types';
+import { SESSION_BY_ID } from '@/content/sessions';
+import type { MeditationSession, PracticeEntry, SessionId } from '@/lib/types';
 
 /**
  * Streaks and statistics, computed from the practice log.
@@ -87,6 +88,59 @@ export function computeStats(log: PracticeEntry[]): PracticeStats {
     totalMinutes: Math.round(totalSeconds / 60),
     totalDays: practiceDays(log).length,
   };
+}
+
+export type WeekPractice = {
+  practisedDays: number;
+  minutes: number;
+};
+
+function mondayOf(day: string): string {
+  const [year, month, date] = day.split('-').map(Number);
+  const weekday = (new Date(Date.UTC(year, month - 1, date)).getUTCDay() + 6) % 7;
+  return shiftDay(day, -weekday);
+}
+
+/**
+ * This week's practice, Monday to today. A missed day simply stays out of the
+ * count — there is no deficit to display.
+ */
+export function computeWeekPractice(log: PracticeEntry[], today: string): WeekPractice {
+  const start = mondayOf(today);
+  const weekEntries = log.filter((entry) => entry.dateISO >= start && entry.dateISO <= today);
+  const totalSeconds = weekEntries.reduce((sum, entry) => sum + Math.max(0, entry.seconds), 0);
+
+  return {
+    practisedDays: practiceDays(weekEntries).length,
+    minutes: Math.round(totalSeconds / 60),
+  };
+}
+
+export type DailyReturnOffer = {
+  kind: 'recent' | 'saved';
+  session: MeditationSession;
+};
+
+/**
+ * The quiet next step on Profile: a recently finished session, then a saved
+ * one. Catalogue browsing stays the empty-state fallback, never a surprise.
+ */
+export function dailyReturnOffer(
+  log: PracticeEntry[],
+  favorites: SessionId[]
+): DailyReturnOffer | null {
+  for (let index = log.length - 1; index >= 0; index -= 1) {
+    const sessionId = log[index]?.sessionId;
+    const session = sessionId ? SESSION_BY_ID[sessionId] : undefined;
+    if (session) return { kind: 'recent', session };
+  }
+
+  for (const favoriteId of favorites) {
+    const session = SESSION_BY_ID[favoriteId];
+    if (session) return { kind: 'saved', session };
+  }
+
+  return null;
 }
 
 export type CalendarDay = {

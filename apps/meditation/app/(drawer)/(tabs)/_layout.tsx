@@ -2,14 +2,14 @@ import { BlurView } from 'expo-blur';
 import { Tabs, useNavigation } from 'expo-router';
 import type { DrawerNavigationProp } from 'expo-router/drawer';
 import React from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, Text, useWindowDimensions, View, type ColorValue } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { MiniPlayer } from '@/components/player/MiniPlayer';
 import { CompactTabBar, TabBar } from '@/constants/layout';
 
-import { IconSymbol, Text } from '@/components/ui';
+import { IconSymbol } from '@/components/ui';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import { Radius } from '@/constants/theme';
 import { FontFamily } from '@/constants/typography';
@@ -17,6 +17,7 @@ import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
 import { useChromeTheme } from '@/hooks/useChromeTheme';
 import { useCompactLayout } from '@/hooks/useCompactLayout';
+import { accessibleTabBarHeight } from '@/hooks/useTabBarInset';
 
 /**
  * Four tabs, in a pill that floats over the screen.
@@ -28,6 +29,158 @@ import { useCompactLayout } from '@/hooks/useCompactLayout';
  */
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
+type TabLabelProps = {
+  children: string;
+  color: ColorValue;
+  compact: boolean;
+  fontScale: number;
+  maxWidth: number;
+  testID?: string;
+};
+
+/**
+ * Visual-only wrap for a tab name. TalkBack still reads the unsplit label on
+ * the parent tab, so this never changes the accessible name.
+ */
+export function tabLabelMaxWidth(screenWidth: number, tabCount: number, compact: boolean): number {
+  const margin = compact ? CompactTabBar.margin : TabBar.margin;
+  return Math.max(48, Math.floor((screenWidth - margin * 2) / Math.max(tabCount, 1)) - 8);
+}
+
+export function reflowTabLabel(label: string, fontScale: number, maxWidth: number): string {
+  const characters = Array.from(label);
+  if (fontScale < 1.5 || /\s/.test(label) || characters.length < 5) return label;
+
+  const estimatedWidth = Math.ceil(characters.length * 11 * fontScale * 0.62);
+  if (estimatedWidth <= maxWidth) return label;
+
+  const splitAt = Math.max(3, Math.ceil(characters.length / 2));
+  return `${characters.slice(0, splitAt).join('')}\n${characters.slice(splitAt).join('')}`;
+}
+
+/** Keep every tab name visible at Android font scales up to and beyond 200%. */
+export function TabLabel({ children, color, compact, fontScale, maxWidth, testID }: TabLabelProps) {
+  const fontSize = compact ? 11 : 12;
+
+  return (
+    <Text
+      testID={testID}
+      allowFontScaling
+      numberOfLines={2}
+      importantForAccessibility="no"
+      accessibilityElementsHidden
+      style={{
+        color,
+        width: maxWidth,
+        flexShrink: 1,
+        fontFamily: FontFamily.medium,
+        fontSize,
+        lineHeight: Math.ceil((compact ? 12 : 14) * fontScale),
+        textAlign: 'center',
+      }}>
+      {reflowTabLabel(children, fontScale, maxWidth)}
+    </Text>
+  );
+}
+
+type AccessibleTabBarProps = Parameters<
+  NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>
+>[0];
+
+function tabIconName(routeName: string) {
+  switch (routeName) {
+    case 'breathe':
+      return 'wind' as const;
+    case 'search':
+      return 'magnifyingglass' as const;
+    case 'profile':
+      return 'person' as const;
+    default:
+      return 'house' as const;
+  }
+}
+
+/** A wrapping tab bar; React Navigation's stock label is hard-coded to one line. */
+export function AccessibleTabBar({ state, descriptors, navigation, insets }: AccessibleTabBarProps) {
+  const { colors, mode } = useChromeTheme();
+  const { width, fontScale } = useWindowDimensions();
+  const compact = useCompactLayout();
+  const tabBar = compact ? CompactTabBar : TabBar;
+  const tabBarHeight = accessibleTabBarHeight(tabBar.height, fontScale);
+  const iconSize = compact ? 20 : 22;
+  const labelMaxWidth = tabLabelMaxWidth(width, state.routes.length, compact);
+
+  return (
+    <View
+      role="tablist"
+      style={{
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        height: tabBarHeight + insets.bottom,
+        paddingBottom: insets.bottom,
+        paddingTop: compact ? 3 : 6,
+      }}>
+      <BlurView
+        intensity={mode === 'dark' ? 32 : 40}
+        tint={mode === 'dark' ? 'dark' : 'light'}
+        style={{
+          position: 'absolute',
+          left: tabBar.margin,
+          right: tabBar.margin,
+          top: 0,
+          bottom: Math.max(insets.bottom - tabBar.margin, tabBar.margin),
+          backgroundColor: colors.navbarBg,
+          borderColor: colors.navbarBorder,
+          borderWidth: 1,
+          borderRadius: Radius.full,
+          overflow: 'hidden',
+        }}
+      />
+      <View className="flex-1 flex-row" style={{ paddingHorizontal: tabBar.margin }}>
+        {state.routes.map((route) => {
+          const focused = state.routes[state.index].key === route.key;
+          const options = descriptors[route.key].options;
+          const label = typeof options.title === 'string' ? options.title : route.name;
+          const color = focused ? colors.textPrimary : colors.textTertiary;
+
+          const onPress = () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+            if (!focused && !event.defaultPrevented) navigation.navigate(route.name, route.params);
+          };
+
+          return (
+            <Pressable
+              key={route.key}
+              accessibilityRole="tab"
+              accessibilityLabel={options.tabBarAccessibilityLabel ?? label}
+              accessibilityState={{ selected: focused }}
+              testID={options.tabBarButtonTestID}
+              onPress={onPress}
+              onLongPress={() => navigation.emit({ type: 'tabLongPress', target: route.key })}
+              style={{ flex: 1, minHeight: 48, alignItems: 'center', justifyContent: 'center', overflow: 'visible' }}>
+              <IconSymbol name={tabIconName(route.name)} color={color} size={iconSize} />
+              <TabLabel
+                compact={compact}
+                fontScale={fontScale}
+                color={color}
+                maxWidth={labelMaxWidth}
+                testID={options.tabBarButtonTestID ? `${options.tabBarButtonTestID}.label` : undefined}>
+                {label}
+              </TabLabel>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
 /**
  * Opens the drawer from anywhere in the tabs.
  *
@@ -36,7 +189,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
  * them. This layout is the drawer's own screen, so `useNavigation` hands back
  * the drawer's navigation directly — no reaching for a parent by id.
  */
-function DrawerButton() {
+export function DrawerButton() {
   const { t } = useTranslation();
   const { colors, mode } = useChromeTheme();
   const insets = useSafeAreaInsets();
@@ -47,17 +200,18 @@ function DrawerButton() {
     <AnimatedPressable
       accessibilityRole="button"
       accessibilityLabel={t('drawer.open')}
+      testID="btn.drawer.open"
       onPress={() => navigation.openDrawer()}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      hitSlop={4}
-      style={[style, { position: 'absolute', right: 20, top: insets.top + 8, zIndex: 20 }]}>
+      hitSlop={8}
+      style={[style, { position: 'absolute', right: 20, top: insets.top + 8, zIndex: 20, height: 48, width: 48 }]}>
       <BlurView
         intensity={mode === 'dark' ? 32 : 40}
         tint={mode === 'dark' ? 'dark' : 'light'}
         style={{
-          height: 40,
-          width: 40,
+          height: 48,
+          width: 48,
           alignItems: 'center',
           justifyContent: 'center',
           borderRadius: Radius.full,
@@ -74,69 +228,34 @@ function DrawerButton() {
 
 export default function TabsLayout() {
   const { t } = useTranslation();
-  const { colors, mode } = useChromeTheme();
   const insets = useSafeAreaInsets();
+  const { fontScale } = useWindowDimensions();
   const compact = useCompactLayout();
   const tabBar = compact ? CompactTabBar : TabBar;
+  const tabBarHeight = accessibleTabBarHeight(tabBar.height, fontScale);
   const iconSize = compact ? 20 : 22;
 
   return (
     <View className="flex-1">
       <Tabs
+        tabBar={(props) => <AccessibleTabBar {...props} />}
         screenOptions={{
         headerShown: false,
         sceneStyle: { backgroundColor: 'transparent' },
-        tabBarStyle: {
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'transparent',
-          borderTopWidth: 0,
-          elevation: 0,
-          height: tabBar.height + insets.bottom,
-          paddingTop: compact ? 3 : 6,
-          paddingBottom: insets.bottom,
-        },
-        // The pill is drawn behind the items rather than by styling the bar
-        // itself: the bar has to span the full width to lay the four tabs out,
-        // the pill does not.
-        //
-        // The one real blur in the app, and the place it earns its cost: a
-        // single surface that never scrolls, sitting over content that moves
-        // under it. A flat translucent fill let the text underneath ghost
-        // through; frosting it is what makes the bar read as glass instead.
-        tabBarBackground: () => (
-          <BlurView
-            intensity={mode === 'dark' ? 32 : 40}
-            tint={mode === 'dark' ? 'dark' : 'light'}
-            style={{
-              position: 'absolute',
-              left: tabBar.margin,
-              right: tabBar.margin,
-              top: 0,
-              bottom: Math.max(insets.bottom - tabBar.margin, tabBar.margin),
-              backgroundColor: colors.navbarBg,
-              borderColor: colors.navbarBorder,
-              borderWidth: 1,
-              borderRadius: Radius.full,
-              overflow: 'hidden',
-            }}
-          />
-        ),
-        tabBarActiveTintColor: colors.textPrimary,
-        tabBarInactiveTintColor: colors.textTertiary,
-        tabBarLabelStyle: { fontFamily: FontFamily.medium, fontSize: compact ? 11 : 12 },
-        tabBarIcon: ({ color }) => <IconSymbol name="house" color={color} size={iconSize} />,
       }}>
         <Tabs.Screen
           name="index"
-          options={{ title: t('tabs.home'), tabBarButtonTestID: TID.Tab.Home }}
+          options={{
+            title: t('tabs.home'),
+            tabBarAccessibilityLabel: t('tabs.home'),
+            tabBarButtonTestID: TID.Tab.Home,
+          }}
         />
         <Tabs.Screen
           name="breathe"
           options={{
             title: t('tabs.breathe'),
+            tabBarAccessibilityLabel: t('tabs.breathe'),
             tabBarButtonTestID: TID.Tab.Breathe,
             tabBarIcon: ({ color }) => <IconSymbol name="wind" color={color} size={iconSize} />,
           }}
@@ -145,6 +264,7 @@ export default function TabsLayout() {
           name="search"
           options={{
             title: t('tabs.search'),
+            tabBarAccessibilityLabel: t('tabs.search'),
             tabBarButtonTestID: TID.Tab.Search,
             tabBarIcon: ({ color }) => (
               <IconSymbol name="magnifyingglass" color={color} size={iconSize} />
@@ -155,6 +275,7 @@ export default function TabsLayout() {
           name="profile"
           options={{
             title: t('tabs.profile'),
+            tabBarAccessibilityLabel: t('tabs.profile'),
             tabBarButtonTestID: TID.Tab.Profile,
             tabBarIcon: ({ color }) => <IconSymbol name="person" color={color} size={iconSize} />,
           }}
@@ -171,7 +292,7 @@ export default function TabsLayout() {
           position: 'absolute',
           left: 0,
           right: 0,
-          bottom: tabBar.height + insets.bottom + tabBar.margin,
+          bottom: tabBarHeight + insets.bottom + tabBar.margin,
           zIndex: 10,
         }}>
         <MiniPlayer />
@@ -181,6 +302,3 @@ export default function TabsLayout() {
     </View>
   );
 }
-
-/** Re-exported so the unused import lint rule does not flag the Text kit here. */
-export const TAB_LABEL_COMPONENT = Text;

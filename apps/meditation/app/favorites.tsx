@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyIllustration } from '@/components/atmosphere/EmptyIllustration';
 import { Screen } from '@/components/atmosphere/Screen';
@@ -9,11 +10,14 @@ import { BackLink, Button, Rule, Text } from '@/components/ui';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
 import { useLibrary } from '@/context/LibraryContext';
+import { useWorld } from '@/context/WorldContext';
 
 export default function FavoritesScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const { favorites } = useLibrary();
+  const { world } = useWorld();
+  const insets = useSafeAreaInsets();
 
   // Saved ids are filtered through the catalogue: an id left over from a
   // removed session must not render an empty row.
@@ -27,7 +31,8 @@ export default function FavoritesScreen() {
       <BackLink label={t('common.back')} className="px-gutter pb-2 pt-2" />
 
       <ScrollView
-        contentContainerClassName="px-gutter pb-10 pt-4 gap-6"
+        contentContainerClassName="px-gutter pt-4 gap-6"
+        contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 24) + 32 }}
         showsVerticalScrollIndicator={false}>
         <View className="gap-3">
           <Text variant="h1">{t('favorites.title')}</Text>
@@ -51,7 +56,14 @@ export default function FavoritesScreen() {
             />
           </View>
         ) : (
-          sessions.map((session) => <SessionCard key={session.id} session={session} />)
+          sessions.map((session) => (
+            <SessionCard
+              key={session.id}
+              session={session}
+              appearance={world.appearance}
+              testID={`favorites.session.${session.id}`}
+            />
+          ))
         )}
       </ScrollView>
     </Screen>

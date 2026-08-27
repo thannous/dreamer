@@ -36,19 +36,27 @@ export const configureAudioSession = implementation.configureAudioSession;
 export const resolvePlayableSource = (
   source: AudioSource
 ): Promise<AudioSource> => implementation.resolvePlayableSource(source);
+export type SessionLockScreenMetadata = {
+  title: string;
+  artist?: string;
+  albumTitle?: string;
+};
+
 export const createPlayer = (source: AudioSource, updateIntervalMs = 500): PlayerHandle =>
   implementation.createPlayer(source, updateIntervalMs);
 export const createSessionPlayer = (
   source: AudioSource,
   durationSec: number,
   trackDurationSec: number,
-  updateIntervalMs = 500
+  updateIntervalMs = 500,
+  lockScreen?: SessionLockScreenMetadata
 ): PlayerHandle =>
-  implementation.createSessionPlayer(
+  (implementation.createSessionPlayer as typeof real.createSessionPlayer)(
     source,
     durationSec,
     trackDurationSec,
-    updateIntervalMs
+    updateIntervalMs,
+    lockScreen
   );
 
 /**

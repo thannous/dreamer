@@ -39,8 +39,9 @@ export function SettingsRow({
   return (
     <AnimatedPressable
       testID={testID}
-      accessibilityRole="button"
-      accessibilityState={{ disabled }}
+      accessibilityRole={onPress ? 'button' : 'text'}
+      accessibilityLabel={value ? `${label}. ${value}` : label}
+      accessibilityState={onPress ? { disabled } : undefined}
       disabled={disabled || !onPress}
       onPress={onPress}
       onPressIn={handlePressIn}

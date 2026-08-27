@@ -1,7 +1,13 @@
-import { act, renderHook, waitFor } from '@testing-library/react-native';
+/* eslint-disable @typescript-eslint/no-require-imports -- Jest hoists module factories above imports. */
+import { act, render, renderHook, screen, waitFor } from '@testing-library/react-native';
 import React from 'react';
+import { AppState } from 'react-native';
 
+import { MiniPlayer } from '@/components/player/MiniPlayer';
+import { PlayerControls } from '@/components/player/PlayerControls';
 import { PlayerProvider, usePlayer } from '@/context/PlayerContext';
+import { fadeVolume } from '@/lib/audio';
+import { TID } from '@/lib/testIDs';
 import * as audio from '@/services/audioService';
 
 const mockRecordProgress = jest.fn().mockResolvedValue(undefined);
@@ -10,8 +16,21 @@ const mockReplace = jest.fn();
 let playbackListener: ((status: Record<string, unknown>) => void) | null = null;
 
 jest.mock('expo-router', () => ({
-  useRouter: () => ({ replace: mockReplace }),
+  useRouter: () => ({ replace: mockReplace, push: jest.fn() }),
+  useSegments: () => ['(drawer)', '(tabs)'],
 }));
+
+jest.mock('expo-localization', () => ({
+  getLocales: () => [{ languageCode: 'en' }],
+}));
+
+jest.mock('@/components/session/SessionArtwork', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return {
+    SessionArtwork: () => React.createElement(View, { testID: 'session-artwork' }),
+  };
+});
 
 jest.mock('@/context/LibraryContext', () => ({
   useLibrary: () => ({
@@ -54,12 +73,23 @@ jest.mock('@/services/audioService', () => ({
 }));
 
 describe('PlayerContext world continuity', () => {
+  let appStateHandler: ((next: string) => void) | null = null;
+
   beforeEach(() => {
     playbackListener = null;
+    appStateHandler = null;
     mockRecordProgress.mockClear();
     mockRecordPractice.mockClear();
     mockReplace.mockClear();
     jest.clearAllMocks();
+    jest.spyOn(AppState, 'addEventListener').mockImplementation((event, listener) => {
+      if (event === 'change') appStateHandler = listener as (next: string) => void;
+      return { remove: jest.fn() };
+    });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('persists completion against the opened session and carries its world to the finish route', async () => {
@@ -75,7 +105,17 @@ describe('PlayerContext world continuity', () => {
     await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
     await waitFor(() => expect(result.current.worldId).toBe('constellation'));
     const primaryPlayer = jest.mocked(audio.createSessionPlayer).mock.results[0].value;
-    expect(audio.createSessionPlayer).toHaveBeenCalledWith(expect.anything(), 600, 300);
+    expect(audio.createSessionPlayer).toHaveBeenCalledWith(
+      expect.anything(),
+      600,
+      300,
+      500,
+      expect.objectContaining({
+        title: 'Bringing the breath down',
+        artist: 'Noctalia Meditation',
+        albumTitle: 'Constellation',
+      })
+    );
     expect(audio.setVolume).toHaveBeenCalledWith(primaryPlayer, 0.2);
     expect(playbackListener).not.toBeNull();
 
@@ -95,6 +135,44 @@ describe('PlayerContext world continuity', () => {
     });
     expect(mockReplace).toHaveBeenCalledWith(
       '/session-complete?id=sleep-descent&worldId=constellation'
+    );
+    expect(audio.release).toHaveBeenCalledWith(primaryPlayer);
+    expect(result.current.session).toBeNull();
+    expect(result.current.status).toBe('idle');
+    expect(result.current.positionSec).toBe(0);
+  });
+
+  it('replays a finished session from the start instead of seeking into a dead loop', async () => {
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <PlayerProvider>{children}</PlayerProvider>
+    );
+    const { result } = renderHook(() => usePlayer(), { wrapper });
+
+    act(() => {
+      result.current.open('sleep-descent', 580, 'constellation');
+    });
+
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    await waitFor(() => expect(result.current.positionSec).toBe(0));
+    expect(audio.seekTo).not.toHaveBeenCalled();
+    expect(audio.play).toHaveBeenCalled();
+  });
+
+  it('resumes an in-progress session at the saved position', async () => {
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <PlayerProvider>{children}</PlayerProvider>
+    );
+    const { result } = renderHook(() => usePlayer(), { wrapper });
+
+    act(() => {
+      result.current.open('sleep-descent', 120, 'constellation');
+    });
+
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    await waitFor(() => expect(result.current.positionSec).toBe(120));
+    expect(audio.seekTo).toHaveBeenCalledWith(
+      jest.mocked(audio.createSessionPlayer).mock.results[0].value,
+      120
     );
   });
 
@@ -180,4 +258,462 @@ describe('PlayerContext world continuity', () => {
     expect(audio.play).not.toHaveBeenCalled();
   });
 
+  it('toggles pause and resume without duplicating a practised log', async () => {
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <PlayerProvider>{children}</PlayerProvider>
+    );
+    const { result } = renderHook(() => usePlayer(), { wrapper });
+
+    act(() => {
+      result.current.open('sleep-descent', 0, 'constellation');
+    });
+
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    await waitFor(() => expect(playbackListener).not.toBeNull());
+    const primaryPlayer = jest.mocked(audio.createSessionPlayer).mock.results[0].value;
+
+    act(() => {
+      playbackListener?.({
+        currentTime: 12,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+      });
+    });
+    expect(result.current.status).toBe('playing');
+
+    act(() => result.current.toggle());
+    expect(audio.pause).toHaveBeenCalledWith(primaryPlayer);
+    expect(result.current.status).toBe('paused');
+    expect(mockRecordProgress).toHaveBeenCalledWith('sleep-descent', 12, false);
+
+    act(() => result.current.toggle());
+    expect(audio.play).toHaveBeenCalledWith(primaryPlayer);
+    expect(result.current.status).toBe('playing');
+
+    act(() => {
+      playbackListener?.({
+        currentTime: 540,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+      });
+    });
+    act(() => {
+      playbackListener?.({
+        currentTime: 550,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+      });
+    });
+
+    expect(mockRecordPractice).toHaveBeenCalledTimes(1);
+    expect(mockRecordProgress.mock.calls.filter((call) => call[2] === true)).toHaveLength(1);
+  });
+
+  it('keeps playing in the background and only persists the latest position', async () => {
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <PlayerProvider>{children}</PlayerProvider>
+    );
+    const { result } = renderHook(() => usePlayer(), { wrapper });
+
+    act(() => {
+      result.current.open('sleep-descent', 0, 'constellation');
+    });
+
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    await waitFor(() => expect(playbackListener).not.toBeNull());
+    const primaryPlayer = jest.mocked(audio.createSessionPlayer).mock.results[0].value;
+    expect(audio.createSessionPlayer).toHaveBeenCalledWith(
+      expect.anything(),
+      600,
+      300,
+      500,
+      expect.objectContaining({
+        title: 'Bringing the breath down',
+        artist: 'Noctalia Meditation',
+        albumTitle: 'Constellation',
+      })
+    );
+
+    act(() => {
+      playbackListener?.({
+        currentTime: 20,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+      });
+    });
+    expect(result.current.status).toBe('playing');
+
+    expect(appStateHandler).not.toBeNull();
+    act(() => {
+      appStateHandler?.('background');
+    });
+
+    expect(audio.pause).not.toHaveBeenCalledWith(primaryPlayer);
+    expect(result.current.status).toBe('playing');
+    expect(mockRecordProgress).toHaveBeenCalledWith('sleep-descent', 20, false);
+  });
+
+  it('mirrors lock-screen pause onto the layered texture without duplicating practice', async () => {
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <PlayerProvider>{children}</PlayerProvider>
+    );
+    const { result } = renderHook(() => usePlayer(), { wrapper });
+
+    act(() => {
+      result.current.open('anxiety-ground', 0, 'forest');
+    });
+
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    await waitFor(() => expect(playbackListener).not.toBeNull());
+    const texturePlayer = jest.mocked(audio.createPlayer).mock.results[0].value;
+
+    act(() => {
+      playbackListener?.({
+        currentTime: 18,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+      });
+    });
+    expect(result.current.status).toBe('playing');
+
+    act(() => {
+      playbackListener?.({
+        currentTime: 19,
+        duration: 600,
+        playing: false,
+        didJustFinish: false,
+      });
+    });
+    expect(result.current.status).toBe('paused');
+    expect(audio.pause).toHaveBeenCalledWith(texturePlayer);
+    expect(mockRecordPractice).not.toHaveBeenCalled();
+  });
+
+  it('exposes localized play/pause labels without internal-state TalkBack hints', async () => {
+    const onToggle = jest.fn();
+    const onSkip = jest.fn();
+    const view = render(
+      <PlayerControls playing={false} loading={false} onToggle={onToggle} onSkip={onSkip} />
+    );
+    const toggle = screen.getByTestId(TID.Button.PlayerToggle);
+    expect(toggle.props.accessibilityLabel).toBe('Play');
+    expect(toggle.props.accessibilityHint).toBeUndefined();
+    expect(toggle.props.accessibilityState).toMatchObject({ busy: false, selected: false });
+    view.unmount();
+
+    const pauseView = render(
+      <PlayerControls playing loading={false} onToggle={onToggle} onSkip={onSkip} />
+    );
+    const pause = screen.getByTestId(TID.Button.PlayerToggle);
+    expect(pause.props.accessibilityLabel).toBe('Pause');
+    expect(pause.props.accessibilityHint).toBeUndefined();
+    expect(pause.props.accessibilityState).toMatchObject({ busy: false, selected: true });
+    pauseView.unmount();
+
+    const { result } = renderHook(() => usePlayer(), {
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <PlayerProvider>
+          <MiniPlayer />
+          {children}
+        </PlayerProvider>
+      ),
+    });
+    act(() => {
+      result.current.open('sleep-descent', 0, 'constellation');
+    });
+    await waitFor(() => expect(playbackListener).not.toBeNull());
+    act(() => {
+      playbackListener?.({
+        currentTime: 4,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+      });
+    });
+    await waitFor(() => expect(result.current.status).toBe('playing'));
+    const miniToggle = screen.getByLabelText('Pause');
+    expect(miniToggle.props.accessibilityHint).toBeUndefined();
+    expect(miniToggle.props.accessibilityState).toMatchObject({ selected: true });
+  });
+
+  it('keeps one AppState listener and persists the latest position after later ticks', async () => {
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <PlayerProvider>{children}</PlayerProvider>
+    );
+    const { result } = renderHook(() => usePlayer(), { wrapper });
+
+    act(() => {
+      result.current.open('sleep-descent', 0, 'constellation');
+    });
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    await waitFor(() => expect(playbackListener).not.toBeNull());
+    expect(
+      jest.mocked(AppState.addEventListener).mock.calls.filter(([event]) => event === 'change')
+    ).toHaveLength(1);
+
+    act(() => {
+      playbackListener?.({
+        currentTime: 8,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+      });
+    });
+    act(() => {
+      playbackListener?.({
+        currentTime: 27,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+      });
+    });
+    expect(result.current.positionSec).toBe(27);
+    expect(
+      jest.mocked(AppState.addEventListener).mock.calls.filter(([event]) => event === 'change')
+    ).toHaveLength(1);
+
+    act(() => {
+      appStateHandler?.('inactive');
+    });
+    expect(result.current.status).toBe('playing');
+    expect(mockRecordProgress).toHaveBeenCalledWith('sleep-descent', 27, false);
+  });
+});
+
+describe('PlayerContext fade timer', () => {
+  const wrapper = ({ children }: React.PropsWithChildren) => (
+    <PlayerProvider>{children}</PlayerProvider>
+  );
+
+  const openPlayingForestSession = async () => {
+    const { result, unmount } = renderHook(() => usePlayer(), { wrapper });
+
+    act(() => {
+      result.current.open('anxiety-ground', 0, 'forest');
+    });
+
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    await waitFor(() => expect(playbackListener).not.toBeNull());
+
+    const primaryPlayer = jest.mocked(audio.createSessionPlayer).mock.results.at(-1)?.value;
+    const texturePlayer = jest.mocked(audio.createPlayer).mock.results.at(-1)?.value;
+
+    act(() => {
+      playbackListener?.({
+        currentTime: 12,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+      });
+    });
+    expect(result.current.status).toBe('playing');
+
+    return { result, unmount, primaryPlayer, texturePlayer };
+  };
+
+  beforeEach(() => {
+    playbackListener = null;
+    mockRecordProgress.mockClear();
+    mockRecordPractice.mockClear();
+    mockReplace.mockClear();
+    jest.clearAllMocks();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('starts a fade, ramps the last minute, then pauses without logging extra practice', async () => {
+    const { result, unmount, primaryPlayer, texturePlayer } = await openPlayingForestSession();
+
+    act(() => {
+      result.current.setFadeTimer(5);
+    });
+    expect(result.current.fadeMinutes).toBe(5);
+    expect(result.current.fadeRemainingSec).toBe(300);
+
+    act(() => {
+      jest.advanceTimersByTime(241_000);
+    });
+    expect(result.current.fadeRemainingSec).toBe(59);
+    expect(audio.setVolume).toHaveBeenCalledWith(primaryPlayer, fadeVolume(59, 0.26));
+    expect(audio.setVolume).toHaveBeenCalledWith(texturePlayer, fadeVolume(59, 0.11));
+
+    const progressBeforeExpiry = mockRecordProgress.mock.calls.length;
+    const practiceBeforeExpiry = mockRecordPractice.mock.calls.length;
+
+    act(() => {
+      jest.advanceTimersByTime(59_000);
+    });
+    expect(result.current.fadeRemainingSec).toBeNull();
+    expect(audio.setVolume).toHaveBeenCalledWith(primaryPlayer, 0);
+    expect(audio.setVolume).toHaveBeenCalledWith(texturePlayer, 0);
+    expect(audio.pause).toHaveBeenCalledWith(primaryPlayer);
+    expect(audio.pause).toHaveBeenCalledWith(texturePlayer);
+    expect(result.current.status).toBe('paused');
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(mockRecordPractice).toHaveBeenCalledTimes(practiceBeforeExpiry);
+    expect(mockRecordProgress.mock.calls.length).toBe(progressBeforeExpiry);
+
+    const pauseCalls = jest.mocked(audio.pause).mock.calls.length;
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+    expect(jest.mocked(audio.pause).mock.calls.length).toBe(pauseCalls);
+    expect(result.current.fadeRemainingSec).toBeNull();
+    expect(result.current.status).toBe('paused');
+
+    act(() => result.current.toggle());
+    expect(result.current.status).toBe('playing');
+    expect(audio.play).toHaveBeenCalledWith(primaryPlayer);
+
+    unmount();
+  });
+
+  it('replaces an existing fade instead of stacking intervals', async () => {
+    const { result, unmount, primaryPlayer } = await openPlayingForestSession();
+
+    act(() => {
+      result.current.setFadeTimer(5);
+    });
+    act(() => {
+      jest.advanceTimersByTime(3_000);
+    });
+    expect(result.current.fadeRemainingSec).toBe(297);
+
+    act(() => {
+      result.current.setFadeTimer(10);
+    });
+    expect(result.current.fadeMinutes).toBe(10);
+    expect(result.current.fadeRemainingSec).toBe(600);
+
+    act(() => {
+      jest.advanceTimersByTime(4_000);
+    });
+    expect(result.current.fadeRemainingSec).toBe(596);
+    expect(audio.setVolume).toHaveBeenCalledWith(primaryPlayer, 0.26);
+
+    unmount();
+  });
+
+  it('freezes on pause and resumes from the remaining time', async () => {
+    const { result, unmount, primaryPlayer } = await openPlayingForestSession();
+
+    act(() => {
+      result.current.setFadeTimer(5);
+    });
+    act(() => {
+      jest.advanceTimersByTime(8_000);
+    });
+    expect(result.current.fadeRemainingSec).toBe(292);
+
+    const volumeCalls = jest.mocked(audio.setVolume).mock.calls.length;
+    act(() => result.current.toggle());
+    expect(result.current.status).toBe('paused');
+
+    act(() => {
+      jest.advanceTimersByTime(12_000);
+    });
+    expect(result.current.fadeRemainingSec).toBe(292);
+    expect(jest.mocked(audio.setVolume).mock.calls.length).toBe(volumeCalls);
+
+    act(() => result.current.toggle());
+    expect(result.current.status).toBe('playing');
+    act(() => {
+      jest.advanceTimersByTime(3_000);
+    });
+    expect(result.current.fadeRemainingSec).toBe(289);
+    expect(audio.setVolume).toHaveBeenCalledWith(primaryPlayer, 0.26);
+
+    unmount();
+  });
+
+  it('cancels a fade without pausing playback, and close/finish do not double-release or double-log', async () => {
+    const { result, unmount, primaryPlayer, texturePlayer } = await openPlayingForestSession();
+
+    act(() => {
+      result.current.setFadeTimer(5);
+    });
+    act(() => {
+      jest.advanceTimersByTime(2_000);
+    });
+    expect(result.current.fadeRemainingSec).toBe(298);
+
+    const pauseCalls = jest.mocked(audio.pause).mock.calls.length;
+    act(() => {
+      result.current.setFadeTimer(null);
+    });
+    expect(result.current.fadeMinutes).toBeNull();
+    expect(result.current.fadeRemainingSec).toBeNull();
+
+    act(() => {
+      jest.advanceTimersByTime(8_000);
+    });
+    expect(result.current.fadeRemainingSec).toBeNull();
+    expect(jest.mocked(audio.pause).mock.calls.length).toBe(pauseCalls);
+    expect(result.current.status).toBe('playing');
+
+    const {
+      result: finished,
+      unmount: unmountFinished,
+      primaryPlayer: finishedPlayer,
+    } = await openPlayingForestSession();
+    act(() => {
+      finished.current.setFadeTimer(5);
+    });
+    act(() => {
+      playbackListener?.({
+        currentTime: 580,
+        duration: 600,
+        playing: false,
+        didJustFinish: true,
+      });
+    });
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(audio.release).toHaveBeenCalledWith(finishedPlayer);
+    expect(finished.current.status).toBe('idle');
+    expect(finished.current.fadeRemainingSec).toBeNull();
+
+    const releaseCalls = jest.mocked(audio.release).mock.calls.length;
+    const practiceCalls = mockRecordPractice.mock.calls.length;
+    act(() => {
+      jest.advanceTimersByTime(3_000);
+    });
+    expect(jest.mocked(audio.release).mock.calls.length).toBe(releaseCalls);
+    expect(mockRecordPractice).toHaveBeenCalledTimes(practiceCalls);
+
+    const {
+      result: closed,
+      unmount: unmountClosed,
+      primaryPlayer: closedPlayer,
+    } = await openPlayingForestSession();
+    act(() => {
+      closed.current.setFadeTimer(5);
+    });
+    act(() => {
+      closed.current.close();
+    });
+    expect(closed.current.status).toBe('idle');
+    expect(closed.current.fadeRemainingSec).toBeNull();
+    expect(audio.release).toHaveBeenCalledWith(closedPlayer);
+
+    const releaseAfterClose = jest.mocked(audio.release).mock.calls.length;
+    act(() => {
+      jest.advanceTimersByTime(4_000);
+    });
+    expect(jest.mocked(audio.release).mock.calls.length).toBe(releaseAfterClose);
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+
+    unmount();
+    unmountFinished();
+    unmountClosed();
+    expect(primaryPlayer).toBeTruthy();
+    expect(texturePlayer).toBeTruthy();
+  });
 });

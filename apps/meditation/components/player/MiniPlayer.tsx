@@ -49,13 +49,15 @@ export function MiniPlayer() {
    * that is sometimes invisible is a far worse defect than a missing fade.
    */
   const playing = status === 'playing';
+  const sessionTitle = t(`session.${session.id}.title` as TranslationKey);
 
   return (
     <Animated.View className="mx-2.5 overflow-hidden rounded-full border border-hairline bg-ink-raised">
       <View className="flex-row items-center gap-3 px-gutter py-2">
         <AnimatedPressable
           accessibilityRole="button"
-          accessibilityLabel={t('mini.playing')}
+          accessibilityLabel={`${t('mini.playing')}. ${sessionTitle}`}
+          testID="btn.mini.open"
           onPress={() =>
             router.push(
               worldId ? `/player/${session.id}?worldId=${worldId}` : `/player/${session.id}`
@@ -64,7 +66,7 @@ export function MiniPlayer() {
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           style={style}
-          className="flex-1 flex-row items-center gap-3">
+          className="min-h-12 flex-1 flex-row items-center gap-3">
           <SessionArtwork
             accent={session.accent}
             source={artwork}
@@ -72,16 +74,19 @@ export function MiniPlayer() {
             className="h-10 w-10"
           />
           <Text variant="bodySm" tone="default" numberOfLines={1} className="flex-1">
-            {t(`session.${session.id}.title` as TranslationKey)}
+            {sessionTitle}
           </Text>
         </AnimatedPressable>
 
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={playing ? t('player.pause') : t('player.play')}
+          accessibilityState={{ selected: playing }}
+          testID="btn.mini.toggle"
           onPress={toggle}
-          hitSlop={{ top: 4, bottom: 4, left: 12, right: 12 }}
-          className="h-9 w-9 items-center justify-center rounded-full border border-hairline active:opacity-70">
+          hitSlop={8}
+          style={{ minHeight: 48, minWidth: 48 }}
+          className="h-12 w-12 items-center justify-center rounded-full border border-hairline active:opacity-70">
           <IconSymbol
             name={playing ? 'pause.fill' : 'play.fill'}
             color={colors.accentText}

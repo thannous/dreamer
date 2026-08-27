@@ -1,5 +1,6 @@
-# A premium session sends a free listener to the paywall, and the purchase
-# opens the gate. Runs against the mock store — see config.yaml.
+# A premium session sends a free listener to the paywall. The mock store is
+# available, but this flow never purchases: it only checks that the offer and
+# both legal links are visible before the listener leaves.
 appId: com.noctalia.meditation
 ---
 - runFlow: onboarding.yml
@@ -30,21 +31,31 @@ appId: com.noctalia.meditation
 - assertVisible:
     id: 'screen.paywall'
 
-# Restore and the legal links are mandatory on a paywall, on either store.
+# Trial, price, period and renewal stay visible on the Plus-session gate.
+# Monthly-quota is covered by unit tests: exhausting three free plays here
+# would make the flow brittle without adding a second commercial surface.
+- assertVisible:
+    id: 'btn.paywall.close'
 - assertVisible:
     id: 'btn.paywall.restore'
+- assertVisible:
+    id: 'paywall.plan.trial'
+- assertVisible:
+    id: 'paywall.plan.price'
+- assertVisible:
+    id: 'paywall.plan.period'
+- assertVisible:
+    id: 'paywall.plan.renewal'
+- assertVisible:
+    id: 'paywall.legal.terms'
+- assertVisible:
+    id: 'paywall.legal.privacy'
 
+# Leave without buying. The session remains gated; the listener is back on
+# the detail screen rather than inside a purchase or a browser.
 - tapOn:
-    id: 'btn.paywall.buy'
+    id: 'btn.paywall.close'
 - assertVisible:
     id: 'screen.session'
-
-# The same button now passes the entitlement gate. Premium media is remote in
-# v1, so the clean simulator reaches the explicit offline state until a media
-# bucket is configured; that is still proof that the paywall no longer blocks.
-- tapOn:
-    id: 'btn.session.play'
-- assertVisible:
-    id: 'screen.player.unavailable'
 - assertNotVisible:
     id: 'screen.paywall'

@@ -2,6 +2,7 @@ import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Screen } from '@/components/atmosphere/Screen';
 import { SettingsGroup, SettingsRow } from '@/components/settings/SettingsRow';
@@ -18,6 +19,7 @@ export default function SettingsScreen() {
   const { t, language } = useTranslation();
   const { preference, setPreference } = useTheme();
   const { reminders, videoBackgrounds, setVideoBackgrounds } = useSettings();
+  const insets = useSafeAreaInsets();
 
   const version = Constants.expoConfig?.version ?? '—';
 
@@ -34,7 +36,8 @@ export default function SettingsScreen() {
 
       <ScrollView
         testID={TID.Screen.Settings}
-        contentContainerClassName="pb-16 pt-2 gap-6"
+        contentContainerClassName="pt-2 gap-6"
+        contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 24) + 48 }}
         showsVerticalScrollIndicator={false}>
         <View className="gap-3 px-gutter">
           <Text variant="h1">{t('settings.title')}</Text>
@@ -55,6 +58,12 @@ export default function SettingsScreen() {
             label={t('settings.account')}
             onPress={() => router.push('/settings/account')}
           />
+          <SettingsRow
+            testID="btn.settings.restore"
+            label={t('paywall.restore')}
+            value={t('paywall.title')}
+            onPress={() => router.push('/paywall')}
+          />
         </SettingsGroup>
 
         <SettingsGroup title={t('settings.group.app')}>
@@ -70,6 +79,11 @@ export default function SettingsScreen() {
             value={videoBackgrounds ? t('settings.video.on') : t('settings.video.off')}
             inline
             onPress={() => setVideoBackgrounds(!videoBackgrounds)}
+          />
+          <SettingsRow
+            testID="settings.motion"
+            label={t('settings.motion')}
+            value={t('settings.motion.system')}
           />
           <SettingsRow
             testID={TID.Button.SettingsLanguage}

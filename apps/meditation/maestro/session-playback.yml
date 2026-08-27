@@ -31,6 +31,8 @@ appId: com.noctalia.meditation
     id: 'btn.session.play'
 - assertVisible:
     id: 'screen.player'
+- assertVisible:
+    id: 'btn.player.toggle'
 
 # Playback starts on its own; the chrome then withdraws (progressive silence).
 - assertVisible:

@@ -1,14 +1,16 @@
-import { SESSION_BY_ID } from '@/content/sessions';
+import { SESSION_BY_ID, SESSIONS } from '@/content/sessions';
 import {
   WORLD_BY_ID,
   type WorldId,
   type WorldJourneyStageId,
 } from '@/constants/worlds';
-import { stableIndex, type ResumableSession } from '@/lib/library';
+import { sessionsMatchingIntention, stableIndex, type ResumableSession } from '@/lib/library';
 import {
   RESUME_MAX_RATIO,
   RESUME_MIN_RATIO,
+  type DailyIntention,
   type MeditationSession,
+  type PracticeGoal,
   type SessionId,
   type SessionProgress,
 } from '@/lib/types';
@@ -77,8 +79,87 @@ export function sessionOfTheDayForWorld(
   return sessions[stableIndex(`${worldId}:${dateISO}`, sessions.length)];
 }
 
+export type HomeRecommendationPreference = {
+  goals?: PracticeGoal[];
+  dailyIntentionMin?: DailyIntention | null;
+  /**
+   * Purchased worlds keep their curated path. When no world practice fits the
+   * chosen duration, the editorial step stays and the UI can explain the
+   * fallback instead of reaching into the global catalogue.
+   */
+  lockToWorld?: boolean;
+};
+
+export type HomeRecommendationReason = 'goal' | 'duration' | 'goal-duration' | 'editorial';
+
+export type HomeRecommendation = {
+  session: MeditationSession;
+  reason: HomeRecommendationReason;
+  matchedGoal: PracticeGoal | null;
+  source: 'world' | 'catalogue';
+};
+
 /** The path step drives the main CTA until all three practices are complete. */
 export function recommendedSessionForWorld(
+  worldId: WorldId,
+  dateISO: string,
+  progress: Record<SessionId, SessionProgress>,
+  isPlayable?: (session: MeditationSession) => boolean,
+  preference?: HomeRecommendationPreference
+): MeditationSession {
+  return homeRecommendationForWorld(worldId, dateISO, progress, isPlayable, preference).session;
+}
+
+/**
+ * Prefer a playable world practice that matches onboarding goals and duration.
+ * If the world has nothing that fits the chosen pause, a free world may take a
+ * playable catalogue session of the same duration. Purchased worlds stay locked
+ * to their path and fall back to editorial order.
+ */
+export function homeRecommendationForWorld(
+  worldId: WorldId,
+  dateISO: string,
+  progress: Record<SessionId, SessionProgress>,
+  isPlayable?: (session: MeditationSession) => boolean,
+  preference?: HomeRecommendationPreference
+): HomeRecommendation {
+  const worldSessions = sessionsForWorld(worldId);
+  const editorial = editorialSessionForWorld(worldId, dateISO, progress);
+  const playableWorld = isPlayable ? worldSessions.filter(isPlayable) : worldSessions;
+  const preferredWorld = preferredSessionFromPool(
+    playableWorld,
+    dateISO,
+    progress,
+    preference,
+    'world'
+  );
+
+  if (preferredWorld) return preferredWorld;
+
+  if (!preference?.lockToWorld) {
+    const cataloguePool = isPlayable ? SESSIONS.filter(isPlayable) : SESSIONS;
+    const preferredCatalogue = preferredSessionFromPool(
+      cataloguePool,
+      dateISO,
+      progress,
+      preference,
+      'catalogue',
+      { requireDurationFit: true }
+    );
+    if (preferredCatalogue) return preferredCatalogue;
+  }
+
+  if (!isPlayable || isPlayable(editorial) || playableWorld.length === 0) {
+    return recommendationFromSession(editorial, preference, 'world');
+  }
+
+  const incompletePlayable = playableWorld.filter(
+    ({ id }) => (progress[id]?.completedCount ?? 0) === 0
+  );
+  return recommendationFromSession(incompletePlayable[0] ?? playableWorld[0], preference, 'world');
+}
+
+function editorialSessionForWorld(
   worldId: WorldId,
   dateISO: string,
   progress: Record<SessionId, SessionProgress>
@@ -91,6 +172,70 @@ export function recommendedSessionForWorld(
   return hasIncompleteStep
     ? journeyStateForWorld(worldId, progress).session
     : sessionOfTheDayForWorld(worldId, dateISO);
+}
+
+function preferredSessionFromPool(
+  pool: MeditationSession[],
+  dateISO: string,
+  progress: Record<SessionId, SessionProgress>,
+  preference: HomeRecommendationPreference | undefined,
+  source: 'world' | 'catalogue',
+  options: { requireDurationFit?: boolean } = {}
+): HomeRecommendation | null {
+  const goals = preference?.goals ?? [];
+  const dailyIntentionMin = preference?.dailyIntentionMin ?? null;
+  if (!pool.length || (!goals.length && dailyIntentionMin == null)) return null;
+
+  const matchingGoals = goals.length
+    ? pool.filter((session) => goals.includes(session.categorySlug))
+    : [];
+  const matchingDuration = sessionsMatchingIntention(pool, dailyIntentionMin);
+  const matchingBoth = sessionsMatchingIntention(matchingGoals, dailyIntentionMin);
+  const requireDuration = Boolean(options.requireDurationFit || dailyIntentionMin != null);
+
+  const candidates = matchingBoth.length
+    ? matchingBoth
+    : matchingDuration.length
+      ? matchingDuration
+      : requireDuration
+        ? []
+        : matchingGoals;
+  if (!candidates.length) return null;
+
+  const incomplete = candidates.filter(
+    ({ id }) => (progress[id]?.completedCount ?? 0) === 0
+  );
+  const ranked = incomplete.length ? incomplete : candidates;
+  const ordered = [...ranked].sort((a, b) => a.id.localeCompare(b.id));
+  const session = ordered[stableIndex(`pref:${dateISO}`, ordered.length)];
+  return recommendationFromSession(session, preference, source);
+}
+
+function recommendationFromSession(
+  session: MeditationSession,
+  preference: HomeRecommendationPreference | undefined,
+  source: 'world' | 'catalogue'
+): HomeRecommendation {
+  const goals = preference?.goals ?? [];
+  const matchedGoal = goals.includes(session.categorySlug) ? session.categorySlug : null;
+  const fitsDuration =
+    preference?.dailyIntentionMin != null &&
+    session.durationSec <= preference.dailyIntentionMin * 60;
+  const reason: HomeRecommendationReason =
+    matchedGoal && fitsDuration
+      ? 'goal-duration'
+      : matchedGoal
+        ? 'goal'
+        : fitsDuration
+          ? 'duration'
+          : 'editorial';
+
+  return {
+    session,
+    reason,
+    matchedGoal,
+    source,
+  };
 }
 
 /** Later steps stay in editorial order; no unrelated fourth category item. */

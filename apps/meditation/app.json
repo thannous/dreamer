@@ -52,7 +52,12 @@
           "imageWidth": 120
         }
       ],
-      "expo-audio",
+      [
+        "expo-audio",
+        {
+          "enableBackgroundPlayback": true
+        }
+      ],
       "expo-video",
       "expo-asset"
     ],

@@ -21,6 +21,7 @@ import { useSubscription } from '@/context/SubscriptionContext';
 import { useWorld } from '@/context/WorldContext';
 import { useWorldPurchases } from '@/context/WorldPurchaseContext';
 import type { TranslationKey } from '@/lib/i18n';
+import { formatQuotaResetDate } from '@/lib/entitlements';
 import { toMinutes } from '@/lib/library';
 import { RESUME_MAX_RATIO, RESUME_MIN_RATIO } from '@/lib/types';
 import { isSessionIncludedInOwnedWorld } from '@/lib/worldJourneys';
@@ -31,9 +32,9 @@ export default function SessionDetail() {
     worldId?: string;
   }>();
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { isFavorite, toggleFavorite, progress } = useLibrary();
-  const { gateForSession, openPaywall } = useSubscription();
+  const { gateForSession, openPaywall, remainingPlays, quotaResetDay, isPlus } = useSubscription();
   const { world: selectedWorld } = useWorld();
   const { isWorldOwned } = useWorldPurchases();
   const fallbackWorld = canAccessWorld(selectedWorld.id, isWorldOwned)
@@ -65,11 +66,26 @@ export default function SessionDetail() {
   const canResume = ratio >= RESUME_MIN_RATIO && ratio <= RESUME_MAX_RATIO;
   const saved = isFavorite(session.id);
 
-  const ctaLabel = canResume
-    ? t('session.resume')
-    : (entry?.completedCount ?? 0) > 0
-      ? t('session.replay')
-      : t('session.play');
+  const included = isSessionIncludedInOwnedWorld(world.id, session.id, isWorldOwned);
+  const gate = included ? { allowed: true as const } : gateForSession(session);
+  const remainingCopy =
+    remainingPlays === 0
+      ? t('paywall.remaining.none')
+      : remainingPlays === 1
+        ? t('paywall.remaining.one')
+        : t('paywall.remaining', { count: remainingPlays });
+  const resetLabel = t('paywall.reset', {
+    date: formatQuotaResetDate(quotaResetDay, language),
+  });
+  const showsQuota = !isPlus && !session.isPremium;
+  const ctaLabel = !gate.allowed
+    ? t('paywall.options')
+    : canResume
+      ? t('session.resume')
+      : (entry?.completedCount ?? 0) > 0
+        ? t('session.replay')
+        : t('session.play');
+  const accessLabel = session.isPremium ? t('common.plus') : t('common.free');
 
   return (
     <WorldScene world={world} artwork="trainer" edges={['top', 'bottom']}>
@@ -85,7 +101,19 @@ export default function SessionDetail() {
         contentContainerClassName="gap-6 px-gutter pb-8 pt-4"
         showsVerticalScrollIndicator={false}>
         <View className="gap-2 pt-3">
-          {session.isPremium ? <Text variant="overline">{t('common.plus')}</Text> : null}
+          <Text variant="overline" testID="session.access">
+            {accessLabel}
+          </Text>
+          {showsQuota ? (
+            <View className="gap-1" testID="session.quota">
+              <Text variant="caption" tone="muted">
+                {remainingCopy}
+              </Text>
+              <Text variant="caption" tone="muted" testID="session.quota-reset">
+                {resetLabel}
+              </Text>
+            </View>
+          ) : null}
           <Text variant="h1">{t(`session.${session.id}.title` as TranslationKey)}</Text>
           <Text variant="bodySm">
             {t('common.minutes', { count: toMinutes(session.durationSec) })} ·{' '}
@@ -125,28 +153,35 @@ export default function SessionDetail() {
       </ScrollView>
 
       <View className="gap-3 border-t border-hairline bg-ink-raised px-gutter pb-3 pt-3">
+        {!gate.allowed && gate.reason === 'monthly-quota' ? (
+          <Button
+            variant="secondary"
+            testID="session.quota-alternative"
+            label={t('home.breathe.title')}
+            onPress={() => router.push('/breathe')}
+          />
+        ) : null}
         <Button
           testID={TID.Button.SessionPlay}
           label={ctaLabel}
           onPress={() => {
             // The gate is checked here rather than inside the player: a listener
             // should meet the paywall before the artwork, not after it.
-            if (!isSessionIncludedInOwnedWorld(world.id, session.id, isWorldOwned)) {
-              const gate = gateForSession(session);
-              if (!gate.allowed) {
-                openPaywall(gate.reason);
-                return;
-              }
+            if (!gate.allowed) {
+              openPaywall(gate.reason);
+              return;
             }
             router.push(`/player/${session.id}?worldId=${world.id}`);
           }}
         />
         <Pressable
           accessibilityRole="button"
+          accessibilityLabel={saved ? t('session.favorite.remove') : t('session.favorite.add')}
           accessibilityState={{ selected: saved }}
           testID={TID.Button.SessionFavorite}
           onPress={() => toggleFavorite(session.id)}
-          className="flex-row items-center justify-center gap-2 py-2 active:opacity-70">
+          style={{ minHeight: 48 }}
+          className="min-h-12 flex-row items-center justify-center gap-2 py-2 active:opacity-70">
           <IconSymbol
             name={saved ? 'bookmark.fill' : 'bookmark'}
             color={worldColors.accentText}

@@ -47,8 +47,18 @@ describe('immersive session completion', () => {
     );
 
     expect(screen.getByTestId(TID.Screen.SessionComplete)).toBeTruthy();
+    expect(screen.getByTestId('complete.saved')).toHaveTextContent(
+      'This practice is saved on this device.'
+    );
+    expect(screen.getByTestId('complete.rest')).toHaveTextContent(
+      'That is enough for tonight. Come back when you want to.'
+    );
+    expect(screen.queryByText(/days in a row/i)).toBeNull();
     expect(screen.queryByText('world.dawn.progress.discovery')).toBeNull();
-    const finish = screen.getByRole('button', { name: 'Finish' });
+    const finish = screen.getByTestId('btn.complete.home');
+    expect(finish.props.accessibilityRole).toBe('button');
+    expect(finish.props.accessibilityLabel ?? 'Back to home').toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Back to home' })).toBeTruthy();
     fireEvent.press(finish);
 
     expect(mockReplace).toHaveBeenCalledWith('/(drawer)/(tabs)');

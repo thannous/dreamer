@@ -1,4 +1,4 @@
-import { createAudioPlaylist } from 'expo-audio';
+import { createAudioPlayer } from 'expo-audio';
 import { Asset } from 'expo-asset';
 
 import { createSessionPlayer, resolvePlayableSource } from '@/services/audioServiceReal';
@@ -16,61 +16,75 @@ jest.mock('expo-asset', () => ({
   },
 }));
 
-const statusAt = (currentTime: number, currentIndex = 0) => ({
-  id: 'playlist',
-  currentIndex,
-  trackCount: 1,
+const statusAt = (currentTime: number, extras: Record<string, unknown> = {}) => ({
+  id: 'player',
   currentTime,
   duration: 300,
   playing: true,
   isBuffering: false,
   isLoaded: true,
   playbackRate: 1,
-  muted: false,
+  mute: false,
   volume: 1,
-  loop: 'none' as const,
+  loop: true,
   didJustFinish: false,
+  playbackState: 'playing' as const,
+  timeControlStatus: 'playing' as const,
+  reasonForWaitingToPlay: '',
+  shouldCorrectPitch: true,
+  isLive: false,
+  currentOffsetFromLive: null,
+  error: null,
+  ...extras,
 });
 
 describe('audioServiceReal session timeline', () => {
-  let playlistListener: ((status: ReturnType<typeof statusAt>) => void) | null;
-  let playlist: {
-    currentIndex: number;
-    currentStatus: ReturnType<typeof statusAt>;
+  let nativeListener: ((status: ReturnType<typeof statusAt>) => void) | null;
+  let nativePlayer: {
+    currentTime: number;
+    duration: number;
     playing: boolean;
     volume: number;
-    loop: 'none' | 'all';
-    playbackRate: number;
+    loop: boolean;
     play: jest.Mock;
     pause: jest.Mock;
-    skipTo: jest.Mock;
     seekTo: jest.Mock;
+    setPlaybackRate: jest.Mock;
     addListener: jest.Mock;
-    destroy: jest.Mock;
+    remove: jest.Mock;
+    setActiveForLockScreen: jest.Mock;
+    clearLockScreenControls: jest.Mock;
+    updateLockScreenMetadata: jest.Mock;
   };
 
   beforeEach(() => {
-    playlistListener = null;
-    playlist = {
-      currentIndex: 0,
-      currentStatus: statusAt(0),
+    nativeListener = null;
+    nativePlayer = {
+      currentTime: 0,
+      duration: 300,
       playing: false,
       volume: 1,
-      loop: 'none',
-      playbackRate: 1,
-      play: jest.fn(),
-      pause: jest.fn(),
-      skipTo: jest.fn((index: number) => {
-        playlist.currentIndex = index;
+      loop: false,
+      play: jest.fn(() => {
+        nativePlayer.playing = true;
       }),
-      seekTo: jest.fn().mockResolvedValue(undefined),
+      pause: jest.fn(() => {
+        nativePlayer.playing = false;
+      }),
+      seekTo: jest.fn(async (seconds: number) => {
+        nativePlayer.currentTime = seconds;
+      }),
+      setPlaybackRate: jest.fn(),
       addListener: jest.fn((_eventName, listener) => {
-        playlistListener = listener;
+        nativeListener = listener;
         return { remove: jest.fn() };
       }),
-      destroy: jest.fn(),
+      remove: jest.fn(),
+      setActiveForLockScreen: jest.fn(),
+      clearLockScreenControls: jest.fn(),
+      updateLockScreenMetadata: jest.fn(),
     };
-    jest.mocked(createAudioPlaylist).mockReturnValue(playlist as never);
+    jest.mocked(createAudioPlayer).mockReturnValue(nativePlayer as never);
   });
 
   it('ends a three-minute session without waiting for the five-minute source', () => {
@@ -78,8 +92,8 @@ describe('audioServiceReal session timeline', () => {
     const listener = jest.fn();
     player.addListener('playbackStatusUpdate', listener);
 
-    playlistListener?.(statusAt(179));
-    playlistListener?.(statusAt(180));
+    nativeListener?.(statusAt(179));
+    nativeListener?.(statusAt(180));
 
     expect(listener).toHaveBeenNthCalledWith(
       1,
@@ -88,7 +102,9 @@ describe('audioServiceReal session timeline', () => {
     expect(listener).toHaveBeenLastCalledWith(
       expect.objectContaining({ currentTime: 180, duration: 180, playing: false, didJustFinish: true })
     );
-    expect(playlist.pause).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.pause).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.loop).toBe(false);
+    expect(nativePlayer.clearLockScreenControls).toHaveBeenCalled();
   });
 
   it('maps seeking across repeated five-minute tracks', async () => {
@@ -96,22 +112,52 @@ describe('audioServiceReal session timeline', () => {
 
     await player.seekTo(450);
 
-    expect(createAudioPlaylist).toHaveBeenCalledWith(
-      expect.objectContaining({ sources: [1, 1], loop: 'none' })
+    expect(createAudioPlayer).toHaveBeenCalledWith(
+      1,
+      expect.objectContaining({ keepAudioSessionActive: true })
     );
-    expect(playlist.skipTo).toHaveBeenCalledWith(1);
-    expect(playlist.seekTo).toHaveBeenCalledWith(150);
+    expect(nativePlayer.seekTo).toHaveBeenCalledWith(150);
+    expect(player.currentTime).toBe(450);
   });
-  it('surfaces a playlist load error instead of swallowing it', () => {
+
+  it('keeps a session looping until its advertised duration without saturating the clock', () => {
+    const player = createSessionPlayer(1, 600, 300);
+    const listener = jest.fn();
+    player.addListener('playbackStatusUpdate', listener);
+
+    nativeListener?.(statusAt(299));
+    nativeListener?.(statusAt(0.4, { duration: 300 }));
+
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentTime: 299,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+        loop: false,
+      })
+    );
+    expect(listener).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        currentTime: 300.4,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+      })
+    );
+    expect(nativePlayer.pause).not.toHaveBeenCalled();
+  });
+
+  it('surfaces a native load error instead of swallowing it', () => {
     const player = createSessionPlayer(1, 180, 300);
     const listener = jest.fn();
     player.addListener('playbackStatusUpdate', listener);
 
-    playlistListener?.({
+    nativeListener?.({
       ...statusAt(0),
       playing: false,
       isLoaded: false,
-      error: { message: 'Source error', code: 2000 },
+      error: 'Source error',
     } as never);
 
     expect(listener).toHaveBeenCalledWith(
@@ -119,6 +165,69 @@ describe('audioServiceReal session timeline', () => {
     );
   });
 
+  it('freezes the virtual clock across a native lock-screen pause', () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-08-26T12:00:00.000Z'));
+    const player = createSessionPlayer(1, 600, 300);
+    const listener = jest.fn();
+    player.addListener('playbackStatusUpdate', listener);
+
+    player.play();
+    nativeListener?.(statusAt(12));
+    expect(player.currentTime).toBe(12);
+
+    jest.advanceTimersByTime(8_000);
+    nativeListener?.(statusAt(20));
+    expect(player.currentTime).toBe(20);
+
+    nativeListener?.(statusAt(20, { playing: false, playbackState: 'paused', timeControlStatus: 'paused' }));
+    expect(player.currentTime).toBe(20);
+    expect(listener).toHaveBeenLastCalledWith(
+      expect.objectContaining({ currentTime: 20, playing: false, didJustFinish: false })
+    );
+
+    jest.advanceTimersByTime(45_000);
+    expect(player.currentTime).toBe(20);
+    nativeListener?.(statusAt(20, { playing: false, playbackState: 'paused', timeControlStatus: 'paused' }));
+    expect(player.currentTime).toBe(20);
+
+    nativeListener?.(statusAt(20.2));
+    expect(player.currentTime).toBe(20.2);
+    jest.advanceTimersByTime(5_000);
+    nativeListener?.(statusAt(25.2));
+    expect(player.currentTime).toBe(25.2);
+    expect(listener).toHaveBeenLastCalledWith(
+      expect.objectContaining({ currentTime: 25.2, playing: true, didJustFinish: false })
+    );
+    jest.useRealTimers();
+  });
+
+  it('activates live lock-screen controls and clears them on release', () => {
+    const player = createSessionPlayer(1, 600, 300, 500, {
+      title: 'Bringing the breath down',
+      artist: 'Noctalia Meditation',
+      albumTitle: 'Constellation',
+    });
+
+    expect(nativePlayer.loop).toBe(true);
+    expect(nativePlayer.setActiveForLockScreen).toHaveBeenCalledWith(
+      true,
+      {
+        title: 'Bringing the breath down',
+        artist: 'Noctalia Meditation',
+        albumTitle: 'Constellation',
+      },
+      {
+        showSeekForward: false,
+        showSeekBackward: false,
+        isLiveStream: true,
+      }
+    );
+
+    player.remove();
+    expect(nativePlayer.clearLockScreenControls).toHaveBeenCalled();
+    expect(nativePlayer.remove).toHaveBeenCalled();
+  });
 });
 
 describe('audioServiceReal playable source cache', () => {

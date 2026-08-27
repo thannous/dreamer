@@ -7,7 +7,15 @@ import { Text as RNText } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { GrainOverlay } from '@/components/atmosphere/GrainOverlay';
-import { WorldScene, worldArtworkMotionStyle } from '@/components/worlds/WorldScene';
+import {
+  WORLD_PURCHASE_BACKING_ALPHA,
+  WORLD_PURCHASE_VEIL,
+  WorldPurchaseReadableBlock,
+  WorldScene,
+  worldArtworkMotionStyle,
+  worldPurchaseBackingFill,
+  worldPurchaseVeilColors,
+} from '@/components/worlds/WorldScene';
 import { Duration } from '@/constants/motion';
 import { NightTheme, PaperTheme } from '@/constants/theme';
 import { WORLD_BY_ID, WORLD_IDS } from '@/constants/worlds';
@@ -232,6 +240,69 @@ describe('WorldScene', () => {
 
     expect(new Set(stops).size).toBe(WORLD_IDS.length);
     expect(stops.every((stop) => stop.startsWith('rgba('))).toBe(true);
+  });
+
+  it('keeps purchase artwork visible instead of a full-screen night veil', () => {
+    const world = WORLD_BY_ID.tide;
+    const view = render(
+      <WorldScene world={world} artwork="purchase" scrimStrength={0.42}>
+        <RNText>Aperçu</RNText>
+      </WorldScene>
+    );
+
+    const image = view.UNSAFE_getByType(Image);
+    expect(image.props.source).toBe(world.artwork.purchase);
+    expect(image.props.contentPosition).toBe('top');
+    expect(image.props.recyclingKey).toBe('tide-purchase');
+
+    const veil = view.root.findByProps({ testID: 'world-scene-purchase-veil' });
+    const expected = worldPurchaseVeilColors(world.atmosphere.scrimColor, 0.42);
+    expect(veil.props.colors).toEqual([...expected]);
+    expect(veil.props.colors[0]).not.toBe(world.atmosphere.scrimColor);
+    expect(veil.props.locations).toEqual([...WORLD_PURCHASE_VEIL.locations]);
+    expect(veil.props.style[1]).toMatchObject({ opacity: 1 });
+    expect(expected[0]).toBe('rgba(3, 4, 13, 0.021)');
+    expect(expected[1]).toBe('rgba(3, 4, 13, 0.084)');
+    expect(expected[2]).toBe('rgba(3, 4, 13, 0.3696)');
+  });
+
+  it('keeps purchase backing darker on night worlds and paler on daylight worlds', () => {
+    const dark = render(
+      <WorldPurchaseReadableBlock appearance="dark" testID="world.purchase.intro-backing">
+        <RNText>Copy dark</RNText>
+      </WorldPurchaseReadableBlock>
+    );
+    const light = render(
+      <WorldPurchaseReadableBlock appearance="light" testID="world.purchase.intro-backing">
+        <RNText>Copy light</RNText>
+      </WorldPurchaseReadableBlock>
+    );
+
+    expect(dark.getByTestId('world.purchase.intro-backing').props.style).toMatchObject({
+      backgroundColor: worldPurchaseBackingFill('dark'),
+    });
+    expect(light.getByTestId('world.purchase.intro-backing').props.style).toMatchObject({
+      backgroundColor: worldPurchaseBackingFill('light'),
+    });
+    expect(worldPurchaseBackingFill('dark')).toBe(
+      `rgba(3, 4, 13, ${WORLD_PURCHASE_BACKING_ALPHA.dark})`
+    );
+    expect(worldPurchaseBackingFill('light')).toBe(
+      `rgba(245, 240, 232, ${WORLD_PURCHASE_BACKING_ALPHA.light})`
+    );
+    expect(WORLD_PURCHASE_BACKING_ALPHA.dark).toBeGreaterThan(WORLD_PURCHASE_BACKING_ALPHA.light);
+  });
+
+  it('leaves journey artwork on the authored centre veil', () => {
+    const world = WORLD_BY_ID.tide;
+    const view = render(
+      <WorldScene world={world} artwork="journey">
+        <RNText>Parcours</RNText>
+      </WorldScene>
+    );
+
+    expect(view.UNSAFE_getByType(Image).props.contentPosition).toBe('center');
+    expect(view.queryByTestId('world-scene-purchase-veil')).toBeNull();
   });
 
   it('owns the status bar only while focused and follows the world appearance', () => {

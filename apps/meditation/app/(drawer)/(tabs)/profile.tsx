@@ -3,24 +3,35 @@ import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { EmptyIllustration } from '@/components/atmosphere/EmptyIllustration';
+import { DailyReturnCard } from '@/components/profile/DailyReturnCard';
 import { StatTile } from '@/components/profile/StatTile';
 import { StreakCalendar } from '@/components/profile/StreakCalendar';
 import { ArtworkGlassPanel, Button, Rule, Text } from '@/components/ui';
 import { WorldScene } from '@/components/worlds/WorldScene';
 import { Atmosphere, Themes } from '@/constants/theme';
+import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
-import { useTabBarInset } from '@/hooks/useTabBarInset';
-import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
-import { calendarDays, computeStats, computeStreak, toLocalDay } from '@/lib/streak';
-import { useCompactLayout } from '@/hooks/useCompactLayout';
+import { useSubscription } from '@/context/SubscriptionContext';
 import { useWorld } from '@/context/WorldContext';
+import { useCompactLayout } from '@/hooks/useCompactLayout';
+import { DrawerButtonClearance, useTabBarInset } from '@/hooks/useTabBarInset';
+import {
+  calendarDays,
+  computeStats,
+  computeStreak,
+  computeWeekPractice,
+  dailyReturnOffer,
+  toLocalDay,
+} from '@/lib/streak';
+import { TID } from '@/lib/testIDs';
 
 export default function ProfileTab() {
   const router = useRouter();
   const { t } = useTranslation();
   const tabBarInset = useTabBarInset();
   const { practiceLog, favorites } = useLibrary();
+  const { isPlus } = useSubscription();
   const compact = useCompactLayout();
   const { world } = useWorld();
   const worldColors = Themes[world.appearance];
@@ -31,9 +42,24 @@ export default function ProfileTab() {
 
   const streak = useMemo(() => computeStreak(practiceLog, today), [practiceLog, today]);
   const stats = useMemo(() => computeStats(practiceLog), [practiceLog]);
+  const week = useMemo(() => computeWeekPractice(practiceLog, today), [practiceLog, today]);
   const days = useMemo(() => calendarDays(practiceLog, today), [practiceLog, today]);
+  const offer = useMemo(
+    () => dailyReturnOffer(practiceLog, favorites),
+    [favorites, practiceLog]
+  );
 
   const empty = practiceLog.length === 0;
+  const lockedOffer = Boolean(offer?.session.isPremium && !isPlus);
+  const lockedSavedCount = favorites.filter((id) => SESSION_BY_ID[id]?.isPremium && !isPlus).length;
+
+  const openOffer = () => {
+    if (offer) {
+      router.push(`/session/${offer.session.id}`);
+      return;
+    }
+    router.push('/search');
+  };
 
   return (
     <WorldScene
@@ -46,14 +72,9 @@ export default function ProfileTab() {
         contentContainerClassName={compact ? 'gap-4 px-4 pt-3' : 'gap-6 px-gutter pt-4'}
         contentContainerStyle={{ paddingBottom: tabBarInset }}
         showsVerticalScrollIndicator={false}>
-        <View className="gap-3">
+        <View testID="profile.title-row" className="gap-3" style={{ paddingRight: DrawerButtonClearance }}>
           <Text variant={compact ? 'h2' : 'h1'}>{t('profile.title')}</Text>
           <Rule className="self-start" />
-          {!empty ? (
-            <Text variant="bodySm">
-              {streak.practisedToday ? t('profile.today.done') : t('profile.today.pending')}
-            </Text>
-          ) : null}
         </View>
 
         {empty ? (
@@ -81,18 +102,26 @@ export default function ProfileTab() {
           </ArtworkGlassPanel>
         ) : (
           <>
+            <DailyReturnCard
+              offer={offer}
+              practisedToday={streak.practisedToday}
+              locked={lockedOffer}
+              compact={compact}
+              appearance={world.appearance}
+              onPress={openOffer}
+            />
+
             <View className={`flex-row ${compact ? 'gap-2' : 'gap-3'}`}>
               <StatTile
-                testID={TID.Text.ProfileStreak}
-                value={streak.current}
-                label={t('profile.streak.current')}
+                value={week.practisedDays}
+                label={t('profile.week.days')}
                 featured
                 compact={compact}
                 appearance={world.appearance}
               />
               <StatTile
-                value={streak.longest}
-                label={t('profile.streak.longest')}
+                value={week.minutes}
+                label={t('profile.week.minutes')}
                 compact={compact}
                 appearance={world.appearance}
               />
@@ -100,8 +129,9 @@ export default function ProfileTab() {
 
             <View className={`flex-row ${compact ? 'gap-2' : 'gap-3'}`}>
               <StatTile
-                value={stats.totalSessions}
-                label={t('profile.stats.sessions')}
+                testID={TID.Text.ProfileStreak}
+                value={streak.current}
+                label={t('profile.streak.current')}
                 compact={compact}
                 appearance={world.appearance}
               />
@@ -112,6 +142,12 @@ export default function ProfileTab() {
                 appearance={world.appearance}
               />
             </View>
+
+            {streak.longest > streak.current ? (
+              <Text variant="caption" testID="profile.streak.history">
+                {t('profile.streak.history', { count: streak.longest })}
+              </Text>
+            ) : null}
 
             <View className="gap-3">
               <Text variant="h2">{t('profile.calendar.title')}</Text>
@@ -140,6 +176,11 @@ export default function ProfileTab() {
               variant="secondary"
               onPress={() => router.push('/favorites')}
             />
+            {lockedSavedCount > 0 ? (
+              <Text variant="caption" testID="profile.favorites.locked">
+                {t('profile.favorites.locked')}
+              </Text>
+            ) : null}
             <Button
               testID={TID.Button.ProfileSettings}
               label={t('profile.settings')}

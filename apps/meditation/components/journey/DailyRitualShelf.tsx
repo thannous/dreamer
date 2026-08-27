@@ -7,6 +7,7 @@ import { ArtworkGlassPanel, Button, IconSymbol, Text } from '@/components/ui';
 import { Themes } from '@/constants/theme';
 import { useTranslation } from '@/context/LanguageContext';
 import type { MeditationWorld } from '@/constants/worlds';
+import { formatQuotaResetDate, type Gate, type GateReason } from '@/lib/entitlements';
 import type { MeditationSession, SessionId, SessionProgress } from '@/lib/types';
 import type { TranslationKey } from '@/lib/i18n';
 import { toMinutes } from '@/lib/library';
@@ -17,9 +18,25 @@ type Props = {
   sessionProgress?: SessionProgress;
   journeyProgress: Record<SessionId, SessionProgress>;
   world: MeditationWorld;
+  recommendationSource?: 'world' | 'catalogue';
   isSessionIncluded?: (sessionId: SessionId) => boolean;
+  accessGate: Gate;
+  remainingPlays: number;
+  quotaResetDay: string;
+  isPlus: boolean;
   onOpen: (resume: boolean) => void;
+  onOpenPaywall: (reason: GateReason) => void;
+  onOpenAlternative?: () => void;
 };
+
+function remainingQuotaCopy(
+  remainingPlays: number,
+  t: (key: TranslationKey, values?: Record<string, string | number>) => string
+): string {
+  if (remainingPlays === 0) return t('paywall.remaining.none');
+  if (remainingPlays === 1) return t('paywall.remaining.one');
+  return t('paywall.remaining', { count: remainingPlays });
+}
 
 /**
  * The only glass-like support shelf on the immersive home. It carries one
@@ -30,17 +47,47 @@ export function DailyRitualShelf({
   sessionProgress,
   journeyProgress,
   world,
+  recommendationSource = 'world',
   isSessionIncluded,
+  accessGate,
+  remainingPlays,
+  quotaResetDay,
+  isPlus,
   onOpen,
+  onOpenPaywall,
+  onOpenAlternative,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const ratio = sessionProgress ? sessionProgress.positionSec / session.durationSec : 0;
   const canResume = ratio >= RESUME_MIN_RATIO && ratio <= RESUME_MAX_RATIO;
   const progressPercent = Math.round(Math.min(Math.max(ratio, 0), 1) * 100);
   const title = t(`session.${session.id}.title` as TranslationKey);
+  const included = isSessionIncluded?.(session.id) ?? false;
+  const gate: Gate = included ? { allowed: true } : accessGate;
+  const showsPlus = session.isPremium && !included;
+  const accessLabel = showsPlus ? t('common.plus') : t('common.free');
+  const quotaRelevant = !isPlus && !showsPlus && Number.isFinite(remainingPlays);
+  const quotaCopy = quotaRelevant ? remainingQuotaCopy(remainingPlays, t) : null;
   const meta = `${t('home.journey.minutes', { count: toMinutes(session.durationSec) })} · ${t(
     `category.${session.categorySlug}.name` as TranslationKey
   )}`;
+
+  const blockedReason = gate.allowed ? null : gate.reason;
+  const resetLabel = t('paywall.reset', {
+    date: formatQuotaResetDate(quotaResetDay, language),
+  });
+  const ctaKey: TranslationKey =
+    blockedReason === 'premium-session' || blockedReason === 'monthly-quota'
+      ? 'paywall.options'
+      : canResume
+        ? 'session.resume'
+        : 'session.play';
+  const accessibilityLead: TranslationKey =
+    blockedReason === 'premium-session' || blockedReason === 'monthly-quota'
+      ? 'paywall.options'
+      : canResume
+        ? 'home.journey.continue'
+        : 'home.journey.begin';
 
   return (
       <ArtworkGlassPanel
@@ -49,24 +96,40 @@ export function DailyRitualShelf({
         testID="home.journey.ritual-glass">
         <View className="gap-2">
           <View className="flex-row flex-wrap items-center gap-2">
-            <Text variant="overline">
-              {t(`world.${world.id}.role` as TranslationKey)}
+            <Text variant="overline" testID="home.journey.ritual-overline">
+              {recommendationSource === 'catalogue'
+                ? t('home.recommended.forYou')
+                : t(`world.${world.id}.role` as TranslationKey)}
             </Text>
-            <Text variant="caption" tone="muted">
-              {t(`world.${world.id}.moment` as TranslationKey)}
-            </Text>
+            {recommendationSource === 'catalogue' ? null : (
+              <Text variant="caption" tone="muted">
+                {t(`world.${world.id}.moment` as TranslationKey)}
+              </Text>
+            )}
           </View>
-          <WorldPathProgress world={world} progress={journeyProgress} />
-          <Text variant="h2" numberOfLines={2}>
+          {recommendationSource === 'catalogue' ? null : (
+            <WorldPathProgress world={world} progress={journeyProgress} />
+          )}
+          <Text variant="h2" testID="home.journey.ritual-title">
             {title}
           </Text>
-          <View className="mt-1 flex-row items-center gap-2">
+          <View className="mt-1 flex-row flex-wrap items-center gap-2">
             <IconSymbol name="clock" size={15} color={Themes[world.appearance].textSecondary} />
             <Text variant="bodySm">{meta}</Text>
-            {session.isPremium && !isSessionIncluded?.(session.id) ? (
-              <Text variant="overline">{t('common.plus')}</Text>
-            ) : null}
+            <Text variant="overline" testID="home.journey.ritual-access">
+              {accessLabel}
+            </Text>
           </View>
+          {quotaCopy ? (
+            <View className="gap-1" testID="home.journey.quota">
+              <Text variant="caption" tone="muted">
+                {quotaCopy}
+              </Text>
+              <Text variant="caption" tone="muted" testID="home.journey.quota-reset">
+                {resetLabel}
+              </Text>
+            </View>
+          ) : null}
         </View>
 
         {canResume ? (
@@ -88,12 +151,26 @@ export function DailyRitualShelf({
         <Button
           testID={ACTIVE_JOURNEY_CTA_TEST_ID}
           className="mt-5"
-          label={t(canResume ? 'session.resume' : 'session.play')}
-          accessibilityLabel={`${t(
-            canResume ? 'home.journey.continue' : 'home.journey.begin'
-          )}. ${title}. ${meta}`}
-          onPress={() => onOpen(canResume)}
+          label={t(ctaKey)}
+          accessibilityLabel={`${t(accessibilityLead)}. ${title}. ${meta}. ${accessLabel}`}
+          onPress={() => {
+            if (blockedReason) {
+              onOpenPaywall(blockedReason);
+              return;
+            }
+            onOpen(canResume);
+          }}
         />
+        {blockedReason && onOpenAlternative ? (
+          <Button
+            className="mt-2"
+            variant="secondary"
+            testID="home.journey.quota-alternative"
+            label={t('home.breathe.title')}
+            accessibilityLabel={t('home.breathe.subtitle')}
+            onPress={onOpenAlternative}
+          />
+        ) : null}
       </ArtworkGlassPanel>
   );
 }

@@ -23,6 +23,7 @@ type Props = {
   phaseLabel: string;
   phaseProgress: number;
   phaseRemainingSec: number;
+  ready?: boolean;
   reducedMotion: boolean;
   remainingLabel: string;
   ringSize: number;
@@ -47,6 +48,7 @@ export function TrainerFocus({
   phaseLabel,
   phaseProgress,
   phaseRemainingSec,
+  ready = false,
   reducedMotion,
   remainingLabel,
   ringSize,
@@ -56,14 +58,12 @@ export function TrainerFocus({
 }: Props) {
   return (
     <View
-      className={`w-full flex-1 items-center justify-center ${compact ? 'gap-2' : 'gap-5'}`}>
-      <View className="items-center gap-2 px-4">
+      className={`w-full items-center ${compact ? 'shrink gap-2 pt-1' : 'flex-1 justify-center gap-5'}`}>
+      <View className="w-full items-center gap-2 px-1">
         <Text
           testID={phaseTestID}
-          variant="display"
+          variant={compact ? 'h2' : 'display'}
           className="text-center"
-          maxFontSizeMultiplier={compact ? 1.35 : 2}
-          accessibilityLiveRegion="polite"
           accessibilityRole="header">
           {phaseLabel}
         </Text>
@@ -74,7 +74,7 @@ export function TrainerFocus({
         ) : null}
       </View>
 
-      {reducedMotion || compact ? (
+      {ready && compact ? null : reducedMotion || compact ? (
         <BreathGauge
           progress={phaseProgress}
           remainingSec={phaseRemainingSec}
@@ -89,26 +89,29 @@ export function TrainerFocus({
             <BreathRing scale={scale} accent={accent} size={ringSize} />
           </WorldTrainerSignature>
           <View className="absolute inset-0 items-center justify-center">
-            <Text variant="h1">{finished ? '·' : phaseRemainingSec}</Text>
+            <Text variant="h1">{finished || ready ? '·' : phaseRemainingSec}</Text>
           </View>
         </View>
       )}
 
-      <View className="w-full items-center gap-3 px-7">
+      <View className={`w-full items-center ${compact ? 'gap-2 px-1' : 'gap-3 px-7'}`}>
         {nextLabel && !compact ? (
           <Text variant="caption" tone="default" className="text-center">
             {nextLabel}
           </Text>
         ) : null}
-        <Text variant="h3" maxFontSizeMultiplier={compact ? 1.35 : 2}>
+        <Text variant="h3" className="text-center">
           {remainingLabel}
         </Text>
-        <TrainerProgress
-          label={cycleLabel}
-          current={cycleCurrent}
-          total={cycleTotal}
-          compact={compact}
-        />
+        {ready ? null : (
+          <TrainerProgress
+            compact={compact}
+            current={cycleCurrent}
+            label={cycleLabel}
+            ready={ready}
+            total={cycleTotal}
+          />
+        )}
       </View>
     </View>
   );

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Jest hoists module factories above imports. */
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import React from 'react';
 import * as ReactNative from 'react-native';
@@ -5,12 +6,37 @@ import * as ReactNative from 'react-native';
 import { NightBackground } from '@/components/atmosphere/NightBackground';
 import { ProgressScrubber } from '@/components/player/ProgressScrubber';
 import { StreakCalendar } from '@/components/profile/StreakCalendar';
+import { SessionCard } from '@/components/session/SessionCard';
 import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
 import { Text } from '@/components/ui/Text';
 import { TextField } from '@/components/ui/TextField';
+import { SESSION_BY_ID } from '@/content/sessions';
 import { SEEK_STEP_SEC } from '@/lib/audio';
 import { calendarDays } from '@/lib/streak';
+
+jest.mock('expo-router', () => ({
+  useRouter: () => ({ push: jest.fn() }),
+}));
+
+jest.mock('uniwind', () => ({
+  ScopedTheme: ({ children }: React.PropsWithChildren) => children,
+  Uniwind: { setTheme: jest.fn() },
+  useUniwind: () => ({ theme: 'dark' }),
+  withUniwind: (Component: React.ComponentType<object>) => Component,
+}));
+
+jest.mock('@/components/session/SessionArtwork', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return {
+    SessionArtwork: ({ children }: React.PropsWithChildren) => React.createElement(View, null, children),
+  };
+});
+
+jest.mock('@/context/SubscriptionContext', () => ({
+  useSubscription: () => ({ isPlus: false }),
+}));
 
 /**
  * Accessibility invariants.
@@ -63,6 +89,24 @@ describe('text scaling', () => {
       expect.objectContaining({ lineHeight: 68 })
     );
     dimensions.mockRestore();
+  });
+
+  it('lets a session card title grow instead of clipping it to one line', () => {
+    render(
+      <SessionCard
+        session={SESSION_BY_ID['sleep-descent']}
+        testID="a11y.session.sleep-descent"
+      />
+    );
+
+    const title = screen.getByTestId('a11y.session.sleep-descent.title');
+    expect(title.props.numberOfLines).toBeUndefined();
+    expect(title.props.allowFontScaling).not.toBe(false);
+    expect(hasFixedHeight(screen.getByRole('button').props.style)).toBe(false);
+    expect(screen.getByTestId('a11y.session.sleep-descent.access')).toHaveTextContent('Free');
+    expect(screen.getByRole('button').props.accessibilityLabel).toEqual(
+      expect.stringContaining('Free')
+    );
   });
 });
 

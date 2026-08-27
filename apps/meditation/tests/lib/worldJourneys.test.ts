@@ -3,6 +3,7 @@ import { SESSION_BY_ID } from '@/content/sessions';
 import { WORLD_BY_ID, WORLD_IDS } from '@/constants/worlds';
 import { canUseBreathingPattern } from '@/lib/entitlements';
 import {
+  homeRecommendationForWorld,
   journeyStateForWorld,
   isSessionIncludedInOwnedWorld,
   isSessionInWorldJourney,
@@ -166,5 +167,140 @@ describe('resumableSessionForWorld', () => {
     });
 
     expect(result).toBeNull();
+  });
+});
+
+describe('playable home recommendation', () => {
+  it('keeps the editorial step when it is already playable', () => {
+    expect(
+      recommendedSessionForWorld('constellation', DATE, {}, (session) => !session.isPremium).id
+    ).toBe('sleep-descent');
+  });
+
+  it('falls back to a playable session when the editorial step is gated', () => {
+    const progress = {
+      'sleep-descent': {
+        ...progressFor('sleep-descent', 1, '2026-08-23T21:00:00.000Z'),
+        completedCount: 1,
+      },
+    };
+
+    expect(recommendedSessionForWorld('constellation', DATE, progress).id).toBe('dream-threshold');
+    expect(
+      recommendedSessionForWorld('constellation', DATE, progress, (session) => !session.isPremium).id
+    ).toBe('sleep-descent');
+  });
+
+  it('keeps the editorial Plus session when nothing in the world is playable', () => {
+    const progress = {
+      'sleep-descent': {
+        ...progressFor('sleep-descent', 1, '2026-08-23T21:00:00.000Z'),
+        completedCount: 1,
+      },
+    };
+
+    expect(recommendedSessionForWorld('constellation', DATE, progress, () => false).id).toBe(
+      'dream-threshold'
+    );
+  });
+});
+
+describe('personalized home recommendation', () => {
+  it('lets opposing onboarding goals change the playable home practice', () => {
+    const sleep = homeRecommendationForWorld('constellation', DATE, {}, undefined, {
+      goals: ['sleep'],
+      dailyIntentionMin: 10,
+    });
+    const anxiety = homeRecommendationForWorld('forest', DATE, {}, undefined, {
+      goals: ['anxiety'],
+      dailyIntentionMin: 5,
+    });
+
+    expect(sleep.session.categorySlug).toBe('sleep');
+    expect(sleep.matchedGoal).toBe('sleep');
+    expect(anxiety.session.categorySlug).toBe('anxiety');
+    expect(anxiety.matchedGoal).toBe('anxiety');
+    expect(sleep.session.id).not.toBe(anxiety.session.id);
+    expect(sleep.reason === 'goal' || sleep.reason === 'goal-duration').toBe(true);
+    expect(anxiety.reason === 'goal' || anxiety.reason === 'goal-duration').toBe(true);
+  });
+
+  it('reaches a catalogue session when no world practice fits a 5-minute intention', () => {
+    const recommendation = homeRecommendationForWorld(
+      'constellation',
+      DATE,
+      {},
+      (session) => !session.isPremium,
+      { goals: ['sleep'], dailyIntentionMin: 5 }
+    );
+
+    expect(recommendation.session.id).toBe('sleep-quick-fall');
+    expect(recommendation.session.durationSec).toBeLessThanOrEqual(5 * 60);
+    expect(recommendation.source).toBe('catalogue');
+    expect(recommendation.reason).toBe('goal-duration');
+  });
+
+  it('keeps a purchased world locked to its path even when a shorter catalogue session exists', () => {
+    const unlocked = homeRecommendationForWorld(
+      'constellation',
+      DATE,
+      {},
+      (session) => !session.isPremium,
+      { goals: ['sleep'], dailyIntentionMin: 5 }
+    );
+    const locked = homeRecommendationForWorld(
+      'constellation',
+      DATE,
+      {},
+      (session) => !session.isPremium,
+      { goals: ['sleep'], dailyIntentionMin: 5, lockToWorld: true }
+    );
+
+    expect(unlocked.session.id).toBe('sleep-quick-fall');
+    expect(unlocked.source).toBe('catalogue');
+    expect(locked.session.id).toBe('sleep-descent');
+    expect(locked.source).toBe('world');
+    expect(locked.reason).toBe('goal');
+  });
+
+  it('falls back editorially inside a locked world when no duration fits', () => {
+    const recommendation = homeRecommendationForWorld(
+      'constellation',
+      DATE,
+      {},
+      undefined,
+      { dailyIntentionMin: 5, lockToWorld: true }
+    );
+
+    expect(recommendation.session.id).toBe('sleep-descent');
+    expect(recommendation.source).toBe('world');
+    expect(recommendation.reason).toBe('editorial');
+  });
+
+  it('is deterministic for the same goals, duration and access state', () => {
+    const preference = { goals: ['sleep'] as ['sleep'], dailyIntentionMin: 10 as const };
+    const first = homeRecommendationForWorld('constellation', DATE, {}, undefined, preference);
+    const second = homeRecommendationForWorld('constellation', DATE, {}, undefined, preference);
+
+    expect(second).toEqual(first);
+  });
+
+  it('does not override a gated editorial step with an unplayable preferred session', () => {
+    const progress = {
+      'sleep-descent': {
+        ...progressFor('sleep-descent', 1, '2026-08-23T21:00:00.000Z'),
+        completedCount: 1,
+      },
+    };
+
+    expect(
+      recommendedSessionForWorld(
+        'constellation',
+        DATE,
+        progress,
+        (session) => !session.isPremium,
+        { goals: ['dream-prep'], dailyIntentionMin: 20 }
+      ).id
+    ).toBe('sleep-descent');
   });
 });

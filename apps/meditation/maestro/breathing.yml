@@ -15,7 +15,13 @@ appId: com.noctalia.meditation
     id: 'screen.breathe.exercise'
 - assertVisible:
     id: 'text.breathe.phase'
+- assertVisible:
+    id: 'btn.breathe.start'
+- assertNotVisible: 'Inspirez'
+- assertNotVisible: 'Breathe in'
 
+# Ready is preparatory: the CTA still says start, and the first inhale
+# has not begun. The next tap is what enters the active exercise.
 - tapOn:
     id: 'btn.breathe.start'
 

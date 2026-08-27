@@ -78,12 +78,16 @@ function WorldJourneyCard({
   const moment = t(`world.${world.id}.moment` as TranslationKey);
   const ritual = t(`world.${world.id}.ritual` as TranslationKey);
   const purchasable = world.access === 'purchase';
-  const locked = purchasable && !isWorldOwned(world.id);
+  const owned = purchasable && isWorldOwned(world.id);
+  const locked = purchasable && !owned;
   const priceLabel = priceForWorld(world.id) ?? '0,99 €';
+  const ownedLabel = t('world.purchase.owned');
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
   const accessibilityHint = locked
     ? `${role}. ${ritual} ${t('world.purchase.oneTime')}. ${priceLabel}.`
-    : `${role}. ${ritual}`;
+    : owned
+      ? `${role}. ${ritual} ${ownedLabel}.`
+      : `${role}. ${ritual}`;
 
   const highlighted = selected || previewed;
 
@@ -135,10 +139,20 @@ function WorldJourneyCard({
         <View className="flex-1 justify-between gap-3 p-3">
           <View className="flex-row items-center justify-between gap-2">
             {locked ? (
-              <View className="flex-row items-center gap-1 rounded-full bg-ink-panel px-2 py-1">
+              <View
+                className="flex-row items-center gap-1 rounded-full bg-ink-panel px-2 py-1"
+                testID={testID ? `${testID}.locked` : undefined}>
                 <IconSymbol name="lock.fill" size={12} color={NightTheme.textPrimary} />
-                <Text variant="overline" numberOfLines={1}>
+                <Text variant="overline">
                   {priceLabel}
+                </Text>
+              </View>
+            ) : owned ? (
+              <View
+                className="rounded-full bg-ink-panel px-2 py-1"
+                testID={testID ? `${testID}.owned` : undefined}>
+                <Text variant="overline">
+                  {ownedLabel}
                 </Text>
               </View>
             ) : (
@@ -160,17 +174,13 @@ function WorldJourneyCard({
           </View>
 
           <View className="gap-1">
-            <Text
-              variant="h3"
-              numberOfLines={1}
-              adjustsFontSizeToFit
-              minimumFontScale={0.72}>
+            <Text variant="h3" testID={testID ? `${testID}.name` : undefined}>
               {name}
             </Text>
-            <Text variant="bodySm" numberOfLines={1}>
+            <Text variant="bodySm">
               {role}
             </Text>
-            <Text variant="caption" tone="muted" numberOfLines={1}>
+            <Text variant="caption" tone="muted">
               {moment}
             </Text>
           </View>

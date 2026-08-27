@@ -2,6 +2,7 @@ import { Drawer } from 'expo-router/drawer';
 import React from 'react';
 
 import { DrawerContent } from '@/components/navigation/DrawerContent';
+import { useTranslation } from '@/context/LanguageContext';
 import { useChromeTheme } from '@/hooks/useChromeTheme';
 
 /**
@@ -17,6 +18,7 @@ import { useChromeTheme } from '@/hooks/useChromeTheme';
  */
 export default function DrawerLayout() {
   const { mode } = useChromeTheme();
+  const { t } = useTranslation();
 
   return (
     <Drawer
@@ -33,6 +35,7 @@ export default function DrawerLayout() {
         // take that gesture away.
         swipeEdgeWidth: 40,
         overlayColor: mode === 'dark' ? 'rgba(3, 4, 13, 0.55)' : 'rgba(42, 40, 56, 0.28)',
+        overlayAccessibilityLabel: t('drawer.close'),
       }}>
       <Drawer.Screen name="(tabs)" />
     </Drawer>

@@ -4,6 +4,8 @@ import React from 'react';
 
 import SessionDetail from '@/app/session/[id]';
 import PlayerScreen from '@/app/player/[id]';
+import { SessionCard } from '@/components/session/SessionCard';
+import { SESSION_BY_ID } from '@/content/sessions';
 import { WORLD_BY_ID as mockWorldById, type MeditationWorld, type WorldId } from '@/constants/worlds';
 import { TID } from '@/lib/testIDs';
 
@@ -12,13 +14,18 @@ const mockOpenPaywall = jest.fn();
 const mockToggleFavorite = jest.fn();
 const mockPlayerOpen = jest.fn();
 let mockWorldId: WorldId = 'constellation';
-let mockPlayerStatus: 'paused' | 'unavailable' = 'paused';
+let mockPlayerStatus: 'idle' | 'paused' | 'unavailable' = 'paused';
 let mockRouteSessionId = 'sleep-descent';
 let mockRouteWorldId: WorldId | undefined;
 let mockOwnedWorldIds: WorldId[] = [];
-let mockSessionGate: { allowed: true } | { allowed: false; reason: 'premium-session' } = {
+let mockSessionGate:
+  | { allowed: true }
+  | { allowed: false; reason: 'premium-session' | 'monthly-quota' } = {
   allowed: true,
 };
+let mockRemainingPlays = 3;
+let mockQuotaResetDay = '2026-09-01';
+let mockIsPlus = false;
 
 jest.mock('expo-router', () => ({
   useLocalSearchParams: () => ({ id: mockRouteSessionId, worldId: mockRouteWorldId }),
@@ -159,11 +166,22 @@ jest.mock('@/context/ThemeContext', () => ({
 
 jest.mock('@/context/LanguageContext', () => ({
   useTranslation: () => ({
+    language: 'en',
     t: (key: string, values?: Record<string, string | number>) => {
       const copy: Record<string, string> = {
         'common.back': 'Back',
         'common.minutes': `${values?.count ?? 0} min`,
         'common.plus': 'Plus',
+        'common.free': 'Free',
+        'session.sleep-descent.title': 'Bringing the breath down',
+        'session.sleep-descent.benefit.1': 'Slows the heart rate',
+        'session.sleep-descent.benefit.2': 'Prepares for sleep',
+        'session.sleep-descent.benefit.3': 'Done lying down',
+        'session.sleep-body-scan.title': 'The body settling',
+        'session.sleep-body-scan.benefit.1': 'Releases tension',
+        'session.sleep-body-scan.benefit.2': 'Anchors attention',
+        'session.sleep-body-scan.benefit.3': 'A long practice',
+        'category.sleep.name': 'Sleep',
         'session.play': 'Play',
         'session.resume': 'Resume',
         'session.replay': 'Replay',
@@ -171,7 +189,14 @@ jest.mock('@/context/LanguageContext', () => ({
         'session.favorite.add': 'Add to favourites',
         'session.favorite.remove': 'Remove from favourites',
         'session.premium.title': 'Noctalia Plus',
+        'session.premium.cta': 'See Noctalia Plus',
         'session.completed': `${values?.count ?? 0} sessions`,
+        'paywall.remaining': `${values?.count ?? 0} free sessions left this month`,
+        'paywall.remaining.one': '1 free session left this month',
+        'paywall.remaining.none': 'No free sessions left this month',
+        'paywall.reset': `Resets on ${values?.date ?? ''}`,
+        'paywall.options': 'See Plus options',
+        'home.breathe.title': 'Or just breathe',
         'player.close': 'Close',
         'player.play': 'Play',
         'player.pause': 'Pause',
@@ -192,6 +217,7 @@ jest.mock('@/context/LanguageContext', () => ({
 
 jest.mock('@/context/LibraryContext', () => ({
   useLibrary: () => ({
+    favorites: [],
     isFavorite: () => false,
     toggleFavorite: mockToggleFavorite,
     progress: {},
@@ -203,6 +229,9 @@ jest.mock('@/context/SubscriptionContext', () => ({
     gateForSession: () => mockSessionGate,
     gateForTimer: () => ({ allowed: true }),
     openPaywall: mockOpenPaywall,
+    remainingPlays: mockRemainingPlays,
+    quotaResetDay: mockQuotaResetDay,
+    isPlus: mockIsPlus,
   }),
 }));
 
@@ -236,6 +265,9 @@ describe('world continuity from journey into practice', () => {
     mockRouteWorldId = undefined;
     mockOwnedWorldIds = [];
     mockSessionGate = { allowed: true };
+    mockRemainingPlays = 3;
+    mockQuotaResetDay = '2026-09-01';
+    mockIsPlus = false;
     mockPush.mockClear();
     mockOpenPaywall.mockClear();
     mockToggleFavorite.mockClear();
@@ -275,6 +307,18 @@ describe('world continuity from journey into practice', () => {
     expect(screen.getByTestId(TID.Button.PlayerBack)).toBeTruthy();
     expect(screen.getByTestId(TID.Button.PlayerForward)).toBeTruthy();
     expect(screen.queryByTestId('generic-session-artwork')).toBeNull();
+    expect(mockPlayerOpen).toHaveBeenCalledWith('sleep-descent', 0, 'constellation');
+  });
+
+  it('does not reopen audio after a natural finish while the player route is still mounted', () => {
+    mockWorldId = 'constellation';
+    mockPlayerStatus = 'paused';
+    const { rerender } = render(<PlayerScreen />);
+    expect(mockPlayerOpen).toHaveBeenCalledTimes(1);
+
+    mockPlayerStatus = 'idle';
+    rerender(<PlayerScreen />);
+    expect(mockPlayerOpen).toHaveBeenCalledTimes(1);
   });
 
   it('preserves controls and the unavailable escape hatch when audio cannot load', () => {
@@ -329,4 +373,106 @@ describe('world continuity from journey into practice', () => {
     expect(mockOpenPaywall).not.toHaveBeenCalled();
     expect(mockPlayerOpen).toHaveBeenCalledWith('stress-storm', 0, 'tide');
   });
+
+  it('shows remaining quota on a free session before play', () => {
+    mockRemainingPlays = 2;
+    render(<SessionDetail />);
+
+    expect(screen.getByTestId('session.access')).toHaveTextContent('Free');
+    expect(screen.getByTestId('session.access')).not.toHaveTextContent('Plus');
+    expect(screen.queryByText('Plus')).toBeNull();
+    expect(screen.getByTestId('session.quota')).toHaveTextContent(
+      /2 free sessions left this month/
+    );
+    expect(screen.getByTestId('session.quota-reset')).toHaveTextContent('Resets on 1 September 2026');
+    expect(screen.getByTestId(TID.Button.SessionPlay)).toHaveTextContent('Play');
+    expect(screen.getByTestId('session.quota')).not.toHaveTextContent('2026-09-01');
+  });
+
+  it('sends a Plus session to the paywall with an honest CTA', () => {
+    mockRouteSessionId = 'dream-threshold';
+    mockSessionGate = { allowed: false, reason: 'premium-session' };
+    render(<SessionDetail />);
+
+    expect(screen.getByTestId('session.access')).toHaveTextContent('Plus');
+    expect(screen.getByTestId('session.access')).not.toHaveTextContent('Free');
+    expect(screen.queryByText('Free')).toBeNull();
+    expect(screen.queryByTestId('session.quota')).toBeNull();
+    expect(screen.getByTestId(TID.Button.SessionPlay)).toHaveTextContent('See Plus options');
+    fireEvent.press(screen.getByTestId(TID.Button.SessionPlay));
+    expect(mockOpenPaywall).toHaveBeenCalledWith('premium-session');
+    expect(mockPush).not.toHaveBeenCalled();
+  });
+
+  it('does not keep a start action when the monthly quota is spent', () => {
+    mockRemainingPlays = 0;
+    mockSessionGate = { allowed: false, reason: 'monthly-quota' };
+    render(<SessionDetail />);
+
+    expect(screen.getByTestId('session.access')).toHaveTextContent('Free');
+    expect(screen.getByTestId('session.access')).not.toHaveTextContent('Plus');
+    expect(screen.getByTestId('session.quota')).toHaveTextContent(
+      /No free sessions left this month/
+    );
+    expect(screen.getByTestId('session.quota-reset')).toHaveTextContent('Resets on 1 September 2026');
+    expect(screen.getByTestId(TID.Button.SessionPlay)).toHaveTextContent('See Plus options');
+    expect(screen.getByTestId(TID.Button.SessionPlay)).not.toHaveTextContent(
+      'No free sessions left this month'
+    );
+    fireEvent.press(screen.getByTestId(TID.Button.SessionPlay));
+    expect(mockOpenPaywall).toHaveBeenCalledWith('monthly-quota');
+    fireEvent.press(screen.getByTestId('session.quota-alternative'));
+    expect(mockPush).toHaveBeenCalledWith('/breathe');
+  });
+
+  it('keeps Free and Plus mutually exclusive on session detail', () => {
+    mockRemainingPlays = 1;
+    const { unmount } = render(<SessionDetail />);
+
+    expect(screen.getByTestId('session.access')).toHaveTextContent('Free');
+    expect(screen.queryByText('Plus')).toBeNull();
+    expect(screen.getByTestId('session.quota')).toHaveTextContent(
+      /1 free session left this month/
+    );
+    unmount();
+
+    mockRouteSessionId = 'dream-threshold';
+    mockSessionGate = { allowed: false, reason: 'premium-session' };
+    render(<SessionDetail />);
+
+    expect(screen.getByTestId('session.access')).toHaveTextContent('Plus');
+    expect(screen.queryByText('Free')).toBeNull();
+    expect(screen.queryByTestId('session.quota')).toBeNull();
+  });
+
+  it('lets compact session cards expose all three benefits without clipping', () => {
+    render(<SessionCard session={SESSION_BY_ID['sleep-descent']} testID="continuity.session.free" />);
+
+    expect(screen.getByTestId('continuity.session.free.access')).toHaveTextContent('Free');
+    expect(screen.getByTestId('continuity.session.free.access')).not.toHaveTextContent('Plus');
+    expect(screen.getByTestId('continuity.session.free.benefit.1')).toHaveTextContent('Slows the heart rate');
+    expect(screen.getByTestId('continuity.session.free.benefit.2')).toHaveTextContent('Prepares for sleep');
+    expect(screen.getByTestId('continuity.session.free.benefit.3')).toHaveTextContent('Done lying down');
+    expect(screen.getByTestId('continuity.session.free.benefit.1').props.numberOfLines).toBeUndefined();
+    expect(screen.getByTestId('continuity.session.free.benefit.2').props.numberOfLines).toBeUndefined();
+    expect(screen.getByTestId('continuity.session.free.benefit.3').props.numberOfLines).toBeUndefined();
+    expect(screen.getByTestId('continuity.session.free.title').props.numberOfLines).toBeUndefined();
+    expect(screen.getByRole('button').props.accessibilityLabel).toEqual(
+      expect.stringContaining('Slows the heart rate. Prepares for sleep. Done lying down. Free')
+    );
+  });
+
+  it('keeps Plus exclusive of Free on a premium session card', () => {
+    render(<SessionCard session={SESSION_BY_ID['sleep-body-scan']} testID="continuity.session.plus" />);
+
+    expect(screen.getByTestId('continuity.session.plus.access')).toHaveTextContent('Plus');
+    expect(screen.getByTestId('continuity.session.plus.access')).not.toHaveTextContent('Free');
+    expect(screen.getByTestId('continuity.session.plus.benefit.1')).toHaveTextContent('Releases tension');
+    expect(screen.getByTestId('continuity.session.plus.benefit.2')).toHaveTextContent('Anchors attention');
+    expect(screen.getByTestId('continuity.session.plus.benefit.3')).toHaveTextContent('A long practice');
+    expect(screen.getByRole('button').props.accessibilityLabel).toEqual(
+      expect.stringContaining('Releases tension. Anchors attention. A long practice. Plus')
+    );
+  });
+
 });

@@ -1,5 +1,5 @@
-import * as Haptics from 'expo-haptics';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { AppState, type AppStateStatus } from 'react-native';
 import {
   cancelAnimation,
   Easing,
@@ -12,6 +12,7 @@ import {
 
 import type { BreathingPattern } from '@/content/breathing';
 import { breathStateAt, cycleDurationMs, RING_SCALE_MIN, ringKeyframes, type BreathState } from '@/lib/breathing';
+import { playBreathHaptic } from '@/lib/breathGuidance';
 
 import { useReducedMotion } from './useReducedMotion';
 
@@ -24,11 +25,15 @@ type Options = {
   hapticsEnabled?: boolean;
 };
 
+export type BreathPracticeStatus = 'ready' | 'active' | 'paused' | 'finished';
+
 export type BreathEngine = {
   state: BreathState;
   /** Ring scale, driven on the UI thread. */
   scale: SharedValue<number>;
+  status: BreathPracticeStatus;
   running: boolean;
+  started: boolean;
   /** Seconds left in the whole exercise. */
   remainingSec: number;
   finished: boolean;
@@ -61,7 +66,7 @@ export function useBreathEngine({
   /** Wall-clock anchor for the current run, plus what earlier runs accumulated. */
   const startedAtRef = useRef<number | null>(null);
   const accumulatedRef = useRef(0);
-  const lastPhaseIndexRef = useRef<number | null>(null);
+  const lastHapticKeyRef = useRef<string | null>(null);
 
   const totalMs = durationMin * 60 * 1000;
   const state = breathStateAt(pattern, elapsedMs);
@@ -71,6 +76,14 @@ export function useBreathEngine({
   // call `setRunning(false)` from inside one, which is a cascading render the
   // linter rightly refuses. Nothing else has to know the difference.
   const active = running && !finished;
+  const started = elapsedMs > 0 || running || finished;
+  const status: BreathPracticeStatus = finished
+    ? 'finished'
+    : active
+      ? 'active'
+      : started
+        ? 'paused'
+        : 'ready';
 
   const animateRing = useCallback(() => {
     if (reducedMotion) {
@@ -114,12 +127,21 @@ export function useBreathEngine({
     setRunning(false);
   }, [running, scale]);
 
+  useEffect(() => {
+    const onAppState = (next: AppStateStatus) => {
+      if (next === 'active') return;
+      pause();
+    };
+    const subscription = AppState.addEventListener('change', onAppState);
+    return () => subscription.remove();
+  }, [pause]);
+
   const reset = useCallback(() => {
     cancelAnimation(scale);
     scale.set(RING_SCALE_MIN);
     startedAtRef.current = null;
     accumulatedRef.current = 0;
-    lastPhaseIndexRef.current = null;
+    lastHapticKeyRef.current = null;
     setElapsedMs(0);
     setRunning(false);
   }, [scale]);
@@ -142,20 +164,20 @@ export function useBreathEngine({
     return () => clearInterval(tick);
   }, [active, totalMs]);
 
-  // One tick at each phase boundary — the whole point of the haptic is that it
-  // marks the transition, so it must never fire twice inside a phase.
+  // One signature at each phase boundary, including the first breath. Reduced
+  // motion stills the ring, not the vibration: haptic-only practice has to
+  // keep working when the visuals stay still.
   useEffect(() => {
-    if (!active) return;
-    if (lastPhaseIndexRef.current === state.phaseIndex) return;
-
-    const isFirst = lastPhaseIndexRef.current === null;
-    lastPhaseIndexRef.current = state.phaseIndex;
-    if (isFirst) return;
-
-    if (hapticsEnabled && !reducedMotion) {
-      Haptics.selectionAsync().catch(() => {});
+    if (!active || !hapticsEnabled) {
+      lastHapticKeyRef.current = null;
+      return;
     }
-  }, [state.phaseIndex, active, hapticsEnabled, reducedMotion]);
+
+    const key = `${state.cycleIndex}:${state.phaseIndex}`;
+    if (lastHapticKeyRef.current === key) return;
+    lastHapticKeyRef.current = key;
+    playBreathHaptic(state.phase).catch(() => {});
+  }, [active, hapticsEnabled, state.cycleIndex, state.phaseIndex, state.phase]);
 
   // Stopping the ring is a genuine side effect; the state that drove it is not.
   useEffect(() => {
@@ -165,7 +187,18 @@ export function useBreathEngine({
 
   useEffect(() => () => cancelAnimation(scale), [scale]);
 
-  return { state, scale, running: active, remainingSec, finished, start, pause, reset };
+  return {
+    state,
+    scale,
+    status,
+    running: active,
+    started,
+    remainingSec,
+    finished,
+    start,
+    pause,
+    reset,
+  };
 }
 
 export { cycleDurationMs };

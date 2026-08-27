@@ -1,6 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SessionArtwork } from '@/components/session/SessionArtwork';
 import { SessionCard } from '@/components/session/SessionCard';
@@ -20,6 +21,7 @@ export default function CategoryScreen() {
   const { t } = useTranslation();
   const { world } = useWorld();
   const worldColors = Themes[world.appearance];
+  const insets = useSafeAreaInsets();
 
   if (!slug || !isCategorySlug(slug)) {
     return (
@@ -44,7 +46,8 @@ export default function CategoryScreen() {
       />
 
       <ScrollView
-        contentContainerClassName="pb-10 gap-6"
+        contentContainerClassName="gap-6 px-0"
+        contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 24) + 32 }}
         showsVerticalScrollIndicator={false}>
         <SessionArtwork
           appearance={world.appearance}

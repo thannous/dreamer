@@ -6,7 +6,9 @@ import Animated from 'react-native-reanimated';
 import { ArtworkGlassPanel, Text } from '@/components/ui';
 import { getSessionArtwork } from '@/constants/catalogArtwork';
 import type { ThemeMode } from '@/constants/theme';
+import { useLibrary } from '@/context/LibraryContext';
 import { useTranslation } from '@/context/LanguageContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import type { TranslationKey } from '@/lib/i18n';
 import { toMinutes } from '@/lib/library';
@@ -27,23 +29,61 @@ type Props = {
 export function SessionCard({ session, variant = 'row', appearance, testID }: Props) {
   const router = useRouter();
   const { t } = useTranslation();
+  const { favorites } = useLibrary();
+  const { isPlus } = useSubscription();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
 
   const title = t(`session.${session.id}.title` as TranslationKey);
   const minutes = toMinutes(session.durationSec);
-  const meta = `${t('common.minutes', { count: minutes })} · ${t(
-    `category.${session.categorySlug}.name` as TranslationKey
-  )}`;
+  const category = t(`category.${session.categorySlug}.name` as TranslationKey);
+  const benefits = Array.from({ length: session.benefitCount }, (_, index) =>
+    t(`session.${session.id}.benefit.${index + 1}` as TranslationKey)
+  );
+  const unlockedPremium = session.isPremium && isPlus;
+  const accessLabel = session.isPremium
+    ? unlockedPremium
+      ? t('paywall.active.title')
+      : t('common.plus')
+    : t('common.free');
+  const saved = favorites.includes(session.id);
+  const savedLabel = saved
+    ? session.isPremium && !unlockedPremium
+      ? t('session.saved.locked')
+      : t('favorites.title')
+    : null;
+  const meta = `${t('common.minutes', { count: minutes })} · ${category}`;
   const artwork = getSessionArtwork(session.id, appearance);
+  const accessibilityLabel = [title, meta, ...benefits, accessLabel, savedLabel]
+    .filter(Boolean)
+    .join('. ');
 
   const open = () => router.push(`/session/${session.id}`);
+
+  const accessBadge = (
+    <Text variant="overline" testID={testID ? `${testID}.access` : undefined}>
+      {accessLabel}
+    </Text>
+  );
+
+  const benefitList = (
+    <View className="mt-1 gap-0.5" testID={testID ? `${testID}.benefits` : undefined}>
+      {benefits.map((benefit, index) => (
+        <Text
+          key={`${session.id}.benefit.${index + 1}`}
+          variant="caption"
+          testID={testID ? `${testID}.benefit.${index + 1}` : undefined}>
+          {benefit}
+        </Text>
+      ))}
+    </View>
+  );
 
   if (variant === 'feature') {
     return (
       <AnimatedPressable
         testID={testID}
         accessibilityRole="button"
-        accessibilityLabel={`${title}. ${meta}`}
+        accessibilityLabel={accessibilityLabel}
         onPress={open}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
@@ -54,9 +94,19 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
           rounded="artwork"
           className="min-h-48 justify-end">
           <View className="gap-1 p-gutter">
-            {session.isPremium ? <Text variant="overline">{t('common.plus')}</Text> : null}
-            <Text variant="h1">{title}</Text>
+            <View className="flex-row flex-wrap items-center gap-2">
+              {accessBadge}
+              {savedLabel ? (
+                <Text variant="caption" tone="muted" testID={testID ? `${testID}.saved` : undefined}>
+                  {savedLabel}
+                </Text>
+              ) : null}
+            </View>
+            <Text variant="h1" testID={testID ? `${testID}.title` : undefined}>
+              {title}
+            </Text>
             <Text variant="bodySm">{meta}</Text>
+            {benefitList}
           </View>
         </SessionArtwork>
       </AnimatedPressable>
@@ -73,15 +123,21 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
           className="h-16 w-16"
         />
       ) : null}
-      <View className="flex-1">
-        <Text variant="h3" numberOfLines={1}>
+      <View className="min-w-0 flex-1">
+        <Text variant="h3" testID={testID ? `${testID}.title` : undefined}>
           {title}
         </Text>
         <Text variant="bodySm" tone={appearance ? 'default' : undefined} className="mt-1">
           {meta}
         </Text>
+        {benefitList}
+        {savedLabel ? (
+          <Text variant="caption" className="mt-1" testID={testID ? `${testID}.saved` : undefined}>
+            {savedLabel}
+          </Text>
+        ) : null}
       </View>
-      {session.isPremium ? <Text variant="overline">{t('common.plus')}</Text> : null}
+      <View className="ml-2 max-w-[30%] items-end">{accessBadge}</View>
     </>
   );
 
@@ -89,12 +145,16 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
     <AnimatedPressable
       testID={testID}
       accessibilityRole="button"
-      accessibilityLabel={`${title}. ${meta}`}
+      accessibilityLabel={accessibilityLabel}
       onPress={open}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       style={style}
-      className={appearance ? 'rounded-xl' : 'flex-row items-center gap-4 rounded-xl border border-hairline bg-ink-card p-3'}>
+      className={
+        appearance
+          ? 'rounded-xl'
+          : 'flex-row items-start gap-4 rounded-xl border border-hairline bg-ink-card p-3'
+      }>
       {appearance ? (
         <ArtworkGlassPanel
           appearance={appearance}
@@ -113,7 +173,7 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
 const styles = StyleSheet.create({
   glassRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: 16,
     padding: 12,
   },

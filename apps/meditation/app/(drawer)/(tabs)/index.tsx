@@ -12,16 +12,18 @@ import { WorldScene } from '@/components/worlds/WorldScene';
 import { DEFAULT_WORLD_ID, WORLD_BY_ID, WORLD_IDS, type WorldId } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
 import { useLibrary } from '@/context/LibraryContext';
+import { useOnboarding } from '@/context/OnboardingContext';
 import { useSubscription } from '@/context/SubscriptionContext';
 import { useWorld } from '@/context/WorldContext';
 import { useWorldPurchases } from '@/context/WorldPurchaseContext';
 import { useTabBarInset } from '@/hooks/useTabBarInset';
 import type { TranslationKey } from '@/lib/i18n';
-import { greetingKey } from '@/lib/library';
+import type { MeditationSession } from '@/lib/types';
+import { greetingKey, toMinutes } from '@/lib/library';
 import { toLocalDay } from '@/lib/streak';
 import { TID } from '@/lib/testIDs';
 import {
-  recommendedSessionForWorld,
+  homeRecommendationForWorld,
   resumableSessionForWorld,
   isSessionIncludedInOwnedWorld,
   upcomingSessionsForWorld,
@@ -38,7 +40,8 @@ export default function HomeTab() {
   const compactViewport = height < SHORT_VIEWPORT_HEIGHT || fontScale > 1.15;
   const narrowViewport = width < 375;
   const { progress, practiceLog } = useLibrary();
-  const { gateForSession, openPaywall } = useSubscription();
+  const { state: onboarding } = useOnboarding();
+  const { gateForSession, openPaywall, remainingPlays, quotaResetDay, isPlus } = useSubscription();
   const {
     worldId,
     previewWorldId,
@@ -71,10 +74,35 @@ export default function HomeTab() {
   const today = toLocalDay(now);
   const hour = now.getHours();
 
-  const todaySession = useMemo(
-    () => recommendedSessionForWorld(activeWorldId, today, progress),
-    [activeWorldId, progress, today]
+  const isPlayable = useCallback(
+    (session: MeditationSession) => {
+      if (isSessionIncludedInOwnedWorld(activeWorldId, session.id, isWorldOwned)) {
+        return true;
+      }
+      return gateForSession(session).allowed;
+    },
+    [activeWorldId, gateForSession, isWorldOwned]
   );
+  const recommendationPreference = useMemo(
+    () => ({
+      goals: onboarding.goals,
+      dailyIntentionMin: onboarding.dailyIntentionMin,
+      lockToWorld: world.access === 'purchase' && isWorldOwned(activeWorldId),
+    }),
+    [activeWorldId, isWorldOwned, onboarding.dailyIntentionMin, onboarding.goals, world.access]
+  );
+  const recommendation = useMemo(
+    () =>
+      homeRecommendationForWorld(
+        activeWorldId,
+        today,
+        progress,
+        isPlayable,
+        recommendationPreference
+      ),
+    [activeWorldId, isPlayable, progress, recommendationPreference, today]
+  );
+  const todaySession = recommendation.session;
   const resume = useMemo(
     () => resumableSessionForWorld(activeWorldId, progress),
     [activeWorldId, progress]
@@ -88,10 +116,7 @@ export default function HomeTab() {
 
   const openActive = useCallback(
     (shouldResume: boolean) => {
-      if (
-        shouldResume &&
-        !isSessionIncludedInOwnedWorld(activeWorldId, activeSession.id, isWorldOwned)
-      ) {
+      if (!isSessionIncludedInOwnedWorld(activeWorldId, activeSession.id, isWorldOwned)) {
         const gate = gateForSession(activeSession);
         if (!gate.allowed) {
           openPaywall(gate.reason);
@@ -156,13 +181,24 @@ export default function HomeTab() {
           </Text>
           <Text
             variant="bodySm"
-            numberOfLines={narrowViewport ? 1 : compactViewport ? 2 : undefined}>
-            {t(`world.${world.id}.role` as TranslationKey)}
+            testID="home.journey.reason">
+            {resume
+              ? t('home.resume.title')
+              : recommendation.reason === 'goal-duration' && recommendation.matchedGoal
+                ? t('home.recommended.because.goalDuration', {
+                    goal: t(`onboarding.goals.${recommendation.matchedGoal}` as TranslationKey),
+                    count: toMinutes(recommendation.session.durationSec),
+                  })
+                : recommendation.reason === 'goal' && recommendation.matchedGoal
+                  ? t('home.recommended.because.goal', {
+                      goal: t(`onboarding.goals.${recommendation.matchedGoal}` as TranslationKey),
+                    })
+                  : recommendation.reason === 'duration' && onboarding.dailyIntentionMin
+                    ? t('home.recommended.because.duration', {
+                        count: onboarding.dailyIntentionMin,
+                      })
+                    : t(`world.${world.id}.role` as TranslationKey)}
           </Text>
-        </View>
-
-        <View className={compactViewport ? 'mt-4' : 'mt-6'}>
-          <WeeklyJourney practiceLog={practiceLog} today={today} />
         </View>
 
         <View
@@ -190,12 +226,23 @@ export default function HomeTab() {
               session={activeSession}
               sessionProgress={activeProgress}
               journeyProgress={progress}
+              recommendationSource={resume ? 'world' : recommendation.source}
               isSessionIncluded={(sessionId) =>
                 isSessionIncludedInOwnedWorld(activeWorldId, sessionId, isWorldOwned)
               }
+              accessGate={gateForSession(activeSession)}
+              remainingPlays={remainingPlays}
+              quotaResetDay={quotaResetDay}
+              isPlus={isPlus}
               onOpen={openActive}
+              onOpenPaywall={openPaywall}
+              onOpenAlternative={() => router.push('/breathe')}
             />
           )}
+        </View>
+
+        <View className={compactViewport ? 'mt-4' : 'mt-6'} testID="home.journey.week">
+          <WeeklyJourney practiceLog={practiceLog} today={today} />
         </View>
 
         {!worldLocked ? (
@@ -205,6 +252,11 @@ export default function HomeTab() {
               appearance={world.appearance}
               isSessionIncluded={(sessionId) =>
                 isSessionIncludedInOwnedWorld(activeWorldId, sessionId, isWorldOwned)
+              }
+              accessForSession={(session) =>
+                isSessionIncludedInOwnedWorld(activeWorldId, session.id, isWorldOwned)
+                  ? { allowed: true }
+                  : gateForSession(session)
               }
               onOpen={(sessionId) =>
                 router.push(`/session/${sessionId}?worldId=${activeWorldId}`)

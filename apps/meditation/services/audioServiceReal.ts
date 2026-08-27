@@ -1,10 +1,9 @@
 import { Asset } from 'expo-asset';
 import {
   createAudioPlayer,
-  createAudioPlaylist,
   setAudioModeAsync,
+  type AudioMetadata,
   type AudioPlayer,
-  type AudioPlaylistStatus,
   type AudioSource,
   type AudioStatus,
 } from 'expo-audio';
@@ -16,12 +15,19 @@ import {
  */
 export type PlayerHandle = AudioPlayer;
 
+export type SessionLockScreenMetadata = {
+  title: string;
+  artist?: string;
+  albumTitle?: string;
+};
+
 /**
  * Set once, before anything plays.
  *
  * `shouldPlayInBackground` is the whole point of the app: a guided session that
  * stops when the screen locks is useless. `playsInSilentMode` matters just as
  * much — people put their phone on silent precisely when going to bed.
+ * `doNotMix` is required for lock-screen controls to stay attached to us.
  */
 export async function configureAudioSession(): Promise<void> {
   await setAudioModeAsync({
@@ -94,117 +100,203 @@ type SessionPlayerHandle = {
   remove(): void;
 };
 
+function nativePosition(sessionTime: number, trackDuration: number): number {
+  if (trackDuration <= 0) return 0;
+  const local = sessionTime % trackDuration;
+  return local === 0 && sessionTime > 0 ? 0 : local;
+}
+
 /**
- * A session is a playlist of the same five-minute world texture. Expo keeps
- * the audio native and gapless while this adapter exposes one continuous
- * timeline to PlayerContext.
+ * A session is one looping five-minute world texture. Expo owns the native
+ * loop and lock-screen controls; this adapter exposes a continuous virtual
+ * timeline to PlayerContext so a 10-minute séance can sit on a 5-minute file.
  */
 export function createSessionPlayer(
   source: AudioSource,
   durationSec: number,
   trackDurationSec: number,
-  updateIntervalMs = 500
+  updateIntervalMs = 500,
+  lockScreen?: SessionLockScreenMetadata
 ): SessionPlayerHandle {
   const safeTrackDuration = Math.max(1, trackDurationSec);
   const safeDuration = Math.max(1, durationSec);
-  const trackCount = Math.max(1, Math.ceil(safeDuration / safeTrackDuration));
-  const playlist = createAudioPlaylist({
-    sources: Array.from({ length: trackCount }, () => source),
+  const player = createAudioPlayer(source, {
     updateInterval: updateIntervalMs,
-    loop: 'none',
+    keepAudioSessionActive: true,
   });
-  let finished = false;
+  player.loop = true;
 
-  const playlistError = (status: AudioPlaylistStatus): string | null => {
-    const error = (status as AudioPlaylistStatus & {
-      error?: string | { message?: string | null } | null;
-    }).error;
-    if (!error) return null;
-    if (typeof error === 'string') return error;
-    return error.message ?? 'Audio playback failed';
+  let finished = false;
+  let loopIndex = 0;
+  let lastNativeTime = 0;
+  let sessionOffset = 0;
+  let playStartedAt: number | null = null;
+  let lockScreenActive = false;
+
+  const metadata: AudioMetadata = {
+    title: lockScreen?.title ?? 'Noctalia Meditation',
+    artist: lockScreen?.artist ?? 'Noctalia Meditation',
+    albumTitle: lockScreen?.albumTitle,
   };
 
-  const globalTime = (status: AudioPlaylistStatus): number =>
-    Math.min(
-      safeDuration,
-      status.currentIndex * safeTrackDuration + status.currentTime
-    );
+  const activateLockScreen = () => {
+    if (typeof player.setActiveForLockScreen !== 'function') return;
+    player.setActiveForLockScreen(true, metadata, {
+      showSeekForward: false,
+      showSeekBackward: false,
+      isLiveStream: true,
+    });
+    lockScreenActive = true;
+  };
 
-  const toStatus = (
-    status: AudioPlaylistStatus,
-    reachedSessionEnd = false
-  ): AudioStatus => ({
-    id: status.id,
-    currentTime: globalTime(status),
+  const deactivateLockScreen = () => {
+    if (!lockScreenActive) return;
+    if (typeof player.clearLockScreenControls === 'function') {
+      player.clearLockScreenControls();
+    } else if (typeof player.setActiveForLockScreen === 'function') {
+      player.setActiveForLockScreen(false);
+    }
+    lockScreenActive = false;
+  };
+
+  const mappedSessionTime = (nativeTime: number): number => {
+    if (nativeTime + 1 < lastNativeTime) {
+      loopIndex += 1;
+    }
+    lastNativeTime = nativeTime;
+    return Math.min(safeDuration, loopIndex * safeTrackDuration + nativeTime);
+  };
+
+  const nowSessionTime = (nativeTime?: number): number => {
+    if (finished) return safeDuration;
+    const mapped =
+      nativeTime == null
+        ? Math.min(safeDuration, sessionOffset)
+        : mappedSessionTime(nativeTime);
+    if (playStartedAt == null) return Math.min(safeDuration, mapped);
+    const wall = sessionOffset + (Date.now() - playStartedAt) / 1000;
+    return Math.min(safeDuration, Math.max(mapped, wall));
+  };
+
+  const freezeClock = (nativeTime?: number) => {
+    sessionOffset = nowSessionTime(nativeTime);
+    playStartedAt = null;
+  };
+
+  const startClock = (nativeTime?: number) => {
+    sessionOffset = nowSessionTime(nativeTime);
+    playStartedAt = Date.now();
+  };
+
+  const toStatus = (status: AudioStatus, reachedSessionEnd: boolean, currentTime: number): AudioStatus => ({
+    ...status,
+    currentTime,
+    duration: safeDuration,
     playbackState: status.playing && !reachedSessionEnd ? 'playing' : 'paused',
     timeControlStatus: status.isBuffering
       ? 'waiting'
       : status.playing && !reachedSessionEnd
         ? 'playing'
         : 'paused',
-    reasonForWaitingToPlay: status.isBuffering ? 'buffering' : '',
-    mute: status.muted,
-    duration: safeDuration,
     playing: status.playing && !reachedSessionEnd,
-    loop: status.loop !== 'none',
+    loop: false,
     didJustFinish: reachedSessionEnd,
-    isBuffering: status.isBuffering,
-    isLoaded: status.isLoaded,
-    playbackRate: status.playbackRate,
-    shouldCorrectPitch: true,
     isLive: false,
     currentOffsetFromLive: null,
-    error: playlistError(status),
   });
+
+  activateLockScreen();
 
   return {
     get currentTime() {
-      return globalTime(playlist.currentStatus);
+      return nowSessionTime();
     },
     get duration() {
       return safeDuration;
     },
     get playing() {
-      return playlist.playing;
+      return player.playing && !finished;
     },
     get volume() {
-      return playlist.volume;
+      return player.volume;
     },
     set volume(value: number) {
-      playlist.volume = value;
+      player.volume = value;
     },
     get loop() {
-      return playlist.loop !== 'none';
+      return false;
     },
-    set loop(value: boolean) {
-      playlist.loop = value ? 'all' : 'none';
+    set loop(_value: boolean) {
+      player.loop = !finished;
     },
-    play: () => playlist.play(),
-    pause: () => playlist.pause(),
+    play: () => {
+      if (finished) return;
+      startClock();
+      player.loop = true;
+      player.play();
+      activateLockScreen();
+    },
+    pause: () => {
+      freezeClock();
+      player.pause();
+    },
     async seekTo(seconds: number) {
       const target = Math.min(Math.max(seconds, 0), safeDuration);
-      const index = Math.min(trackCount - 1, Math.floor(target / safeTrackDuration));
-      const localTime = target - index * safeTrackDuration;
-      if (playlist.currentIndex !== index) playlist.skipTo(index);
-      await playlist.seekTo(localTime);
+      if (target >= safeDuration) {
+        finished = true;
+        playStartedAt = null;
+        sessionOffset = safeDuration;
+        player.loop = false;
+        player.pause();
+        deactivateLockScreen();
+        return;
+      }
+      finished = false;
+      loopIndex = Math.min(
+        Math.floor(target / safeTrackDuration),
+        Math.max(0, Math.ceil(safeDuration / safeTrackDuration) - 1)
+      );
+      lastNativeTime = nativePosition(target, safeTrackDuration);
+      sessionOffset = target;
+      if (playStartedAt != null) playStartedAt = Date.now();
+      player.loop = true;
+      await player.seekTo(lastNativeTime);
     },
     setPlaybackRate: (rate: number) => {
-      playlist.playbackRate = rate;
+      player.setPlaybackRate(rate);
     },
     addListener(_eventName, listener) {
-      return playlist.addListener('playlistStatusUpdate', (status) => {
-        const reachedSessionEnd = globalTime(status) >= safeDuration;
+      return player.addListener('playbackStatusUpdate', (status) => {
+        if (finished) {
+          listener(toStatus(status, true, safeDuration));
+          return;
+        }
+
+        const currentTime = nowSessionTime(status.currentTime);
+        const reachedSessionEnd = currentTime >= safeDuration;
         const didFinishNow = reachedSessionEnd && !finished;
         if (didFinishNow) {
           finished = true;
-          playlist.pause();
-        } else if (!reachedSessionEnd) {
-          finished = false;
+          playStartedAt = null;
+          sessionOffset = safeDuration;
+          player.loop = false;
+          player.pause();
+          deactivateLockScreen();
+        } else if (status.playing) {
+          sessionOffset = currentTime;
+          playStartedAt = Date.now();
+        } else {
+          sessionOffset = currentTime;
+          playStartedAt = null;
         }
-        listener(toStatus(status, didFinishNow));
+        listener(toStatus(status, didFinishNow, currentTime));
       });
     },
-    remove: () => playlist.destroy(),
+    remove: () => {
+      playStartedAt = null;
+      deactivateLockScreen();
+      player.remove();
+    },
   };
 }
 

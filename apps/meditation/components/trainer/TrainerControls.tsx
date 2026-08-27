@@ -22,11 +22,22 @@ type Props = {
   showDurations: boolean;
   soundEnabled: boolean;
   soundLabel: string;
+  soundName: string;
   soundTestID: string;
   testID: string;
   onAction: () => void;
   onDurationChange: (minutes: BreathDurationMinutes) => void;
   onToggleSound: () => void;
+  hapticEnabled?: boolean;
+  hapticLabel?: string;
+  hapticName?: string;
+  hapticTestID?: string;
+  onToggleHaptic?: () => void;
+  voiceEnabled?: boolean;
+  voiceLabel?: string;
+  voiceName?: string;
+  voiceTestID?: string;
+  onToggleVoice?: () => void;
 };
 
 /** The trainer's sole glass surface: setup and transport share one shelf. */
@@ -40,17 +51,61 @@ export function TrainerControls({
   showDurations,
   soundEnabled,
   soundLabel,
+  soundName,
   soundTestID,
   testID,
   onAction,
   onDurationChange,
   onToggleSound,
+  hapticEnabled = false,
+  hapticLabel,
+  hapticName,
+  hapticTestID,
+  onToggleHaptic,
+  voiceEnabled = false,
+  voiceLabel,
+  voiceName,
+  voiceTestID,
+  onToggleVoice,
 }: Props) {
   const colors = Themes[appearance];
+  const assistance = [
+    {
+      testID: soundTestID,
+      label: soundLabel,
+      name: soundName,
+      enabled: soundEnabled,
+      iconOn: 'speaker.wave.2.fill' as const,
+      iconOff: 'speaker.slash.fill' as const,
+      onToggle: onToggleSound,
+    },
+    voiceTestID && voiceLabel && voiceName && onToggleVoice
+      ? {
+          testID: voiceTestID,
+          label: voiceLabel,
+          name: voiceName,
+          enabled: voiceEnabled,
+          iconOn: 'waveform' as const,
+          iconOff: 'waveform' as const,
+          onToggle: onToggleVoice,
+        }
+      : null,
+    hapticTestID && hapticLabel && hapticName && onToggleHaptic
+      ? {
+          testID: hapticTestID,
+          label: hapticLabel,
+          name: hapticName,
+          enabled: hapticEnabled,
+          iconOn: 'water.waves' as const,
+          iconOff: 'water.waves' as const,
+          onToggle: onToggleHaptic,
+        }
+      : null,
+  ].filter((item): item is NonNullable<typeof item> => item !== null);
 
   return (
     <View
-      className="mx-gutter mb-2 overflow-hidden rounded-xl border border-hairline"
+      className={`mx-gutter mb-2 overflow-hidden rounded-xl border border-hairline ${compact ? 'shrink' : ''}`}
       style={{ borderRadius: Radius.xl }}>
       <BlurView
         intensity={appearance === 'dark' ? 24 : 16}
@@ -66,11 +121,13 @@ export function TrainerControls({
               {compact ? (
                 <ScrollView
                   horizontal
+                  nestedScrollEnabled
                   showsHorizontalScrollIndicator={false}
-                  contentContainerClassName="gap-2 py-1">
+                  contentContainerClassName="flex-row items-center gap-2 py-1 pr-4">
                   {durations.map(({ label, value }) => (
                     <Chip
                       key={value}
+                      className="shrink-0"
                       label={label}
                       selected={durationMin === value}
                       onPress={() => onDurationChange(value)}
@@ -92,31 +149,67 @@ export function TrainerControls({
             </View>
           ) : null}
 
-          <View className="flex-row items-center gap-3">
-            <Button
-              testID={testID}
-              label={actionLabel}
-              onPress={onAction}
-              className="flex-1"
-            />
-            <Pressable
-              testID={soundTestID}
-              accessibilityRole="switch"
-              accessibilityLabel={soundLabel}
-              accessibilityState={{ checked: soundEnabled }}
-              hitSlop={8}
-              onPress={onToggleSound}
-              className="h-12 w-12 items-center justify-center rounded-full active:opacity-70">
-              <IconSymbol
-                name={soundEnabled ? 'speaker.wave.2.fill' : 'speaker.slash.fill'}
-                color={colors.accentText}
-                size={22}
-              />
-            </Pressable>
-          </View>
+          <Button
+            testID={testID}
+            label={actionLabel}
+            onPress={onAction}
+          />
+
+          {compact ? (
+            <ScrollView
+              horizontal
+              nestedScrollEnabled
+              showsHorizontalScrollIndicator={false}
+              contentContainerClassName="flex-row items-center gap-2 py-1 pr-4">
+              {assistance.map((item) => (
+                <AssistanceSwitch key={item.testID} {...item} color={colors.accentText} />
+              ))}
+            </ScrollView>
+          ) : (
+            <View className="flex-row flex-wrap items-center gap-2">
+              {assistance.map((item) => (
+                <AssistanceSwitch key={item.testID} {...item} color={colors.accentText} />
+              ))}
+            </View>
+          )}
         </View>
       </BlurView>
     </View>
+  );
+}
+
+function AssistanceSwitch({
+  color,
+  enabled,
+  iconOff,
+  iconOn,
+  label,
+  name,
+  onToggle,
+  testID,
+}: {
+  color: string;
+  enabled: boolean;
+  iconOff: React.ComponentProps<typeof IconSymbol>['name'];
+  iconOn: React.ComponentProps<typeof IconSymbol>['name'];
+  label: string;
+  name: string;
+  onToggle: () => void;
+  testID: string;
+}) {
+  return (
+    <Pressable
+      testID={testID}
+      accessibilityRole="switch"
+      accessibilityLabel={label}
+      accessibilityState={{ checked: enabled }}
+      hitSlop={8}
+      onPress={onToggle}
+      className="min-h-12 shrink-0 flex-row items-center justify-center gap-2 rounded-full px-3 py-2 active:opacity-70">
+      <IconSymbol name={enabled ? iconOn : iconOff} color={color} size={22} />
+      <Text variant="caption">{name}</Text>
+      {enabled ? <IconSymbol name="checkmark" color={color} size={16} /> : null}
+    </Pressable>
   );
 }
 

@@ -46,6 +46,7 @@
     "expo-localization": "~57.0.1",
     "expo-notifications": "~57.0.13",
     "expo-router": "~57.0.15",
+    "expo-speech": "~57.0.2",
     "expo-splash-screen": "~57.0.7",
     "expo-status-bar": "~57.0.1",
     "expo-symbols": "~57.0.2",

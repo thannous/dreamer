@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import { Linking, ScrollView, View } from 'react-native';
 
 import { Button, Card, Rule, Text } from '@/components/ui';
@@ -18,7 +18,6 @@ import { useWorld } from '@/context/WorldContext';
 import { useWorldPurchases } from '@/context/WorldPurchaseContext';
 import { TID } from '@/lib/testIDs';
 import type { TranslationKey } from '@/lib/i18n';
-import { computeStreak, toLocalDay } from '@/lib/streak';
 import { isSessionInWorldJourney, journeyStateForWorld } from '@/lib/worldJourneys';
 
 /** The Noctalia journal app, if it is installed; its store page otherwise. */
@@ -48,11 +47,7 @@ export default function SessionCompleteScreen() {
 
   const session = id ? SESSION_BY_ID[id] : undefined;
 
-  // Read once per mount, like the profile does: the streak must not shift
-  // under the reader while they look at it.
-  const { practiceLog, progress } = useLibrary();
-  const [today] = useState(() => toLocalDay(new Date()));
-  const streak = useMemo(() => computeStreak(practiceLog, today), [practiceLog, today]);
+  const { progress } = useLibrary();
   const journeyState = journeyStateForWorld(world.id, progress);
   const sessionBelongsToJourney = session
     ? isSessionInWorldJourney(world.id, session.id)
@@ -90,15 +85,12 @@ export default function SessionCompleteScreen() {
             </>
           ) : null}
 
-          {/* The reason to come back tomorrow. The practice series is the core
-              loop of the app, and this is the one moment it has earned. */}
-          {streak.current > 0 ? (
-            <Text variant="h2" tone="accent">
-              {streak.current === 1
-                ? t('complete.streak.one')
-                : t('complete.streak', { count: streak.current })}
-            </Text>
-          ) : null}
+          <Text variant="bodySm" testID="complete.saved">
+            {t('complete.saved')}
+          </Text>
+          <Text variant="body" testID="complete.rest">
+            {t('complete.rest')}
+          </Text>
         </View>
 
         <View className="gap-4 pb-4">
@@ -114,7 +106,11 @@ export default function SessionCompleteScreen() {
             </Card>
           ) : null}
 
-          <Button label={t('complete.done')} onPress={() => router.replace('/(drawer)/(tabs)')} />
+          <Button
+            testID="btn.complete.home"
+            label={t('complete.home')}
+            onPress={() => router.replace('/(drawer)/(tabs)')}
+          />
         </View>
       </ScrollView>
     </WorldScene>

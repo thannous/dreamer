@@ -12,7 +12,7 @@ import { Atmosphere, Themes, type ThemeMode } from '@/constants/theme';
 import { CATEGORIES } from '@/content/categories';
 import { SESSIONS } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
-import { useTabBarInset } from '@/hooks/useTabBarInset';
+import { DrawerButtonClearance, useTabBarInset } from '@/hooks/useTabBarInset';
 import { TID } from '@/lib/testIDs';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import type { TranslationKey } from '@/lib/i18n';
@@ -42,6 +42,8 @@ function CategoryTile({
     <AnimatedPressable
       testID={category.slug === 'dream-prep' ? TID.Option.CategoryDreamPrep : undefined}
       accessibilityRole="button"
+      accessibilityLabel={t(`category.${category.slug}.name` as TranslationKey)}
+      accessibilityHint={t(`category.${category.slug}.tagline` as TranslationKey)}
       onPress={() => router.push(`/category/${category.slug}`)}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
@@ -53,7 +55,7 @@ function CategoryTile({
         contentStyle={compact ? styles.compactCategory : styles.category}
         style={{ borderLeftColor: category.accent[0], borderLeftWidth: 3 }}
         testID={`search.category-glass.${category.slug}`}>
-        <Text variant="h3" numberOfLines={1}>
+        <Text variant="h3" testID={`search.category-title.${category.slug}`}>
           {t(`category.${category.slug}.name` as TranslationKey)}
         </Text>
       </ArtworkGlassPanel>
@@ -100,7 +102,7 @@ export default function SearchTab() {
         contentContainerStyle={{ paddingBottom: tabBarInset }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
-        <View className="gap-3">
+        <View testID="search.title-row" className="gap-3" style={{ paddingRight: DrawerButtonClearance }}>
           <Text variant={compact ? 'h2' : 'h1'}>{t('search.title')}</Text>
           <Rule className="self-start" />
         </View>
@@ -190,12 +192,12 @@ export default function SearchTab() {
 
 const styles = StyleSheet.create({
   compactCategory: {
-    minHeight: 80,
+    minHeight: 72,
     justifyContent: 'flex-end',
     padding: 12,
   },
   category: {
-    minHeight: 96,
+    minHeight: 84,
     justifyContent: 'flex-end',
     padding: 12,
   },

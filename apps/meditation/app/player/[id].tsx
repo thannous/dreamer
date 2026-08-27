@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { EmptyIllustration } from '@/components/atmosphere/EmptyIllustration';
@@ -57,11 +57,19 @@ export default function PlayerScreen() {
 
   const session = id ? SESSION_BY_ID[id] : undefined;
   const alreadyOpen = player.session?.id === id;
+  const startedSessionIdRef = useRef<string | null>(null);
 
   // Opening the screen starts the session; coming back to it from the mini
-  // player must NOT restart what is already playing.
+  // player must NOT restart what is already playing. A natural finish also
+  // releases the handle while this route may still be mounted, and must not
+  // immediately reopen the same session.
   useEffect(() => {
-    if (!id || !session || alreadyOpen) return;
+    if (!id || !session) return;
+    if (alreadyOpen) {
+      startedSessionIdRef.current = id;
+      return;
+    }
+    if (startedSessionIdRef.current === id) return;
     if (!isSessionIncludedInOwnedWorld(requestedWorld.id, session.id, isWorldOwned)) {
       const gate = gateForSession(session);
       if (!gate.allowed) {
@@ -69,6 +77,7 @@ export default function PlayerScreen() {
         return;
       }
     }
+    startedSessionIdRef.current = id;
     player.open(id, progress[id]?.positionSec ?? 0, requestedWorld.id);
     // `player` is a new object on every position tick and would restart the
     // practice on each one. The stable open boundary is the route session.
@@ -94,6 +103,7 @@ export default function PlayerScreen() {
   }
 
   const playing = player.status === 'playing';
+  const loading = player.status === 'loading';
 
   if (player.status === 'unavailable') {
     return (
@@ -179,7 +189,7 @@ export default function PlayerScreen() {
 
               <PlayerControls
                 playing={playing}
-                loading={player.status === 'loading'}
+                loading={loading}
                 onToggle={player.toggle}
                 onSkip={player.skip}
                 secondaryIconColor={worldColors.accentText}
@@ -189,7 +199,12 @@ export default function PlayerScreen() {
               <View className="flex-row pt-2">
                 <Chip
                   testID={TID.Button.PlayerSound}
-                  label={t('trainer.sound')}
+                  accessibilityRole="switch"
+                  accessibilityLabel={
+                    player.soundEnabled ? t('trainer.sound.on') : t('trainer.sound.off')
+                  }
+                  accessibilityState={{ checked: player.soundEnabled }}
+                  label={player.soundEnabled ? t('trainer.sound.on') : t('trainer.sound.off')}
                   selected={player.soundEnabled}
                   onPress={player.toggleSound}
                 />

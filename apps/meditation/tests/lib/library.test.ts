@@ -32,6 +32,14 @@ describe('sessionOfTheDay', () => {
     }
   });
 
+  it('stays inside the daily intention when a fitting session exists', () => {
+    for (const date of ['2026-08-19', '2026-08-20', '2026-08-21', '2026-09-01']) {
+      const session = sessionOfTheDay(date, ['sleep'], 5);
+      expect(session.categorySlug).toBe('sleep');
+      expect(session.durationSec).toBeLessThanOrEqual(5 * 60);
+    }
+  });
+
   it('draws from the whole catalogue when no goal was chosen', () => {
     const picks = new Set(
       Array.from({ length: 60 }, (_, day) =>

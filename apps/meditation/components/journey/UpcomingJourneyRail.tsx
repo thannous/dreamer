@@ -8,6 +8,7 @@ import { Themes, type ThemeMode } from '@/constants/theme';
 import { useTranslation } from '@/context/LanguageContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import type { TranslationKey } from '@/lib/i18n';
+import type { Gate } from '@/lib/entitlements';
 import { toMinutes } from '@/lib/library';
 import type { MeditationSession, SessionId } from '@/lib/types';
 
@@ -23,6 +24,7 @@ type Props = {
   sessions: readonly MeditationSession[];
   appearance: ThemeMode;
   isSessionIncluded?: (sessionId: SessionId) => boolean;
+  accessForSession?: (session: MeditationSession) => Gate;
   onOpen: (sessionId: SessionId) => void;
   testID?: string;
 };
@@ -33,6 +35,7 @@ function UpcomingCard({
   milestoneKey,
   width,
   isSessionIncluded,
+  accessGate,
   onOpen,
   testID,
 }: {
@@ -41,6 +44,7 @@ function UpcomingCard({
   milestoneKey: TranslationKey;
   width: number;
   isSessionIncluded?: (sessionId: SessionId) => boolean;
+  accessGate?: Gate;
   onOpen: (sessionId: SessionId) => void;
   testID?: string;
 }) {
@@ -51,9 +55,11 @@ function UpcomingCard({
   const category = t(`category.${session.categorySlug}.name` as TranslationKey);
   const milestone = t(milestoneKey);
   const showsPlus = session.isPremium && !isSessionIncluded?.(session.id);
-  const meta = showsPlus
-    ? `${minutes} · ${category} · ${t('common.plus')}`
-    : `${minutes} · ${category}`;
+  const accessLabel = showsPlus ? t('common.plus') : t('common.free');
+  const quotaBlocked = accessGate?.allowed === false && accessGate.reason === 'monthly-quota';
+  const meta = quotaBlocked
+    ? `${minutes} · ${category} · ${accessLabel} · ${t('paywall.remaining.none')}`
+    : `${minutes} · ${category} · ${accessLabel}`;
 
   return (
     <AnimatedPressable
@@ -71,7 +77,10 @@ function UpcomingCard({
           contentStyle={styles.cardContent}
           testID={`home.journey.upcoming-glass.${session.id}`}>
           <Text variant="overline">{milestone}</Text>
-          <Text variant="h3" numberOfLines={2} className="mt-2">
+          <Text
+            variant="h3"
+            className="mt-2"
+            testID={testID ? `${testID}.title` : undefined}>
             {title}
           </Text>
           <View className="mt-3 flex-row flex-wrap items-center gap-2">
@@ -82,7 +91,12 @@ function UpcomingCard({
             <Text variant="caption" tone="accent">
               {category}
             </Text>
-            {showsPlus ? <Text variant="overline">{t('common.plus')}</Text> : null}
+            <Text variant="overline" testID={testID ? `${testID}.access` : undefined}>
+              {accessLabel}
+            </Text>
+            {quotaBlocked ? (
+              <Text variant="overline">{t('paywall.remaining.none')}</Text>
+            ) : null}
           </View>
         </ArtworkGlassPanel>
     </AnimatedPressable>
@@ -103,6 +117,7 @@ export function UpcomingJourneyRail({
   sessions,
   appearance,
   isSessionIncluded,
+  accessForSession,
   onOpen,
   testID = 'home.journey.up-next',
 }: Props) {
@@ -129,6 +144,7 @@ export function UpcomingJourneyRail({
             milestoneKey={MILESTONE_KEYS[Math.min(index, MILESTONE_KEYS.length - 1)]}
             width={cardWidth}
             isSessionIncluded={isSessionIncluded}
+            accessGate={accessForSession?.(session)}
             onOpen={onOpen}
             testID={`home.journey.upcoming.${session.id}`}
           />

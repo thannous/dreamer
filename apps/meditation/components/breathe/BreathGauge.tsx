@@ -25,9 +25,8 @@ export function BreathGauge({ progress, remainingSec, compact = false }: Props) 
       </View>
       <Text
         variant={compact ? 'h1' : 'display'}
-        className="text-center"
-        maxFontSizeMultiplier={compact ? 1.25 : 2}>
-        {remainingSec}
+        className="text-center">
+        {remainingSec > 0 ? remainingSec : '·'}
       </Text>
     </View>
   );

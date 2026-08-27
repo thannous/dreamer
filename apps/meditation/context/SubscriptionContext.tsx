@@ -13,6 +13,7 @@ import {
   canPlaySession,
   canUseBreathingPattern,
   canUseFadeTimer,
+  freeQuotaResetDay,
   playsThisMonth,
   remainingFreePlays,
   type Gate,
@@ -28,6 +29,8 @@ type SubscriptionContextValue = {
   loaded: boolean;
   monthlyPlays: number;
   remainingPlays: number;
+  /** Local `YYYY-MM-DD` when the free monthly quota resets. */
+  quotaResetDay: string;
   isPlus: boolean;
   /** Gates, pre-bound to the current tier and quota. */
   gateForSession: (session: MeditationSession) => Gate;
@@ -69,10 +72,9 @@ export const SubscriptionProvider: React.FC<React.PropsWithChildren> = ({ childr
     };
   }, []);
 
-  const monthlyPlays = useMemo(
-    () => playsThisMonth(practiceLog, toLocalDay(new Date())),
-    [practiceLog]
-  );
+  const today = toLocalDay(new Date());
+  const monthlyPlays = playsThisMonth(practiceLog, today);
+  const quotaResetDay = freeQuotaResetDay(today);
 
   const refresh = useCallback(async () => {
     setTier(await subscriptions.currentTier());
@@ -84,6 +86,7 @@ export const SubscriptionProvider: React.FC<React.PropsWithChildren> = ({ childr
       loaded,
       monthlyPlays,
       remainingPlays: remainingFreePlays(tier, monthlyPlays),
+      quotaResetDay,
       isPlus: tier === 'plus',
       gateForSession: (session) => canPlaySession(session, tier, monthlyPlays),
       gateForPattern: (patternId) => canUseBreathingPattern(patternId, tier),
@@ -92,7 +95,7 @@ export const SubscriptionProvider: React.FC<React.PropsWithChildren> = ({ childr
       refresh,
       applyTier: setTier,
     }),
-    [tier, loaded, monthlyPlays, refresh, router]
+    [tier, loaded, monthlyPlays, quotaResetDay, refresh, router]
   );
 
   return <SubscriptionContext.Provider value={value}>{children}</SubscriptionContext.Provider>;
@@ -107,6 +110,7 @@ export const useSubscription = (): SubscriptionContextValue => {
       loaded: false,
       monthlyPlays: 0,
       remainingPlays: 3,
+      quotaResetDay: freeQuotaResetDay(toLocalDay(new Date())),
       isPlus: false,
       gateForSession: () => ({ allowed: true }),
       gateForPattern: () => ({ allowed: true }),

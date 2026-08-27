@@ -3,6 +3,7 @@ import { shiftDay } from '@/lib/streak';
 import {
   RESUME_MAX_RATIO,
   RESUME_MIN_RATIO,
+  type DailyIntention,
   type MeditationSession,
   type PracticeGoal,
   type SessionId,
@@ -38,16 +39,33 @@ export function stableIndex(value: string, length: number): number {
  * the whole catalogue as the pool if they chose none. Premium sessions stay in
  * the pool: the recommendation is also where a free user meets Noctalia Plus.
  */
-export function sessionOfTheDay(dateISO: string, goals: PracticeGoal[]): MeditationSession {
+export function sessionOfTheDay(
+  dateISO: string,
+  goals: PracticeGoal[],
+  dailyIntentionMin?: DailyIntention | null
+): MeditationSession {
   const pool = goals.length
     ? SESSIONS.filter((session) => goals.includes(session.categorySlug))
     : SESSIONS;
 
   // A goal set with no sessions would divide by zero; fall back to everything.
   const candidates = pool.length ? pool : SESSIONS;
-  const ordered = [...candidates].sort((a, b) => a.id.localeCompare(b.id));
+  const preferred = sessionsMatchingIntention(candidates, dailyIntentionMin);
+  const poolForDay = preferred.length ? preferred : candidates;
+  const ordered = [...poolForDay].sort((a, b) => a.id.localeCompare(b.id));
 
   return ordered[stableIndex(dateISO, ordered.length)];
+}
+
+/** Keep the daily intention honest: never recommend a practice longer than the chosen pause. */
+export function sessionsMatchingIntention(
+  sessions: MeditationSession[],
+  dailyIntentionMin?: DailyIntention | null
+): MeditationSession[] {
+  if (dailyIntentionMin == null) return sessions;
+
+  const maxSec = dailyIntentionMin * 60;
+  return sessions.filter((session) => session.durationSec <= maxSec);
 }
 
 export const UPCOMING_JOURNEY_COUNT = 3;
