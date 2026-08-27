@@ -273,7 +273,7 @@ describe('Lucid Trainer today screen', () => {
     expect(mockPush).toHaveBeenNthCalledWith(3, '/lucid/(tabs)/night');
     expect(mockPush).toHaveBeenNthCalledWith(4, '/lucid/(tabs)/settings');
     expect(screen.getByRole('button', { name: 'Préparer cette nuit' })).not.toBeNull();
-    expect(screen.getByRole('button', { name: 'Réglages' })).not.toBeNull();
+    expect(screen.getByRole('button', { name: 'Profil' })).not.toBeNull();
   });
 
   it('keeps beginner weak recall on morning capture and explains why', () => {

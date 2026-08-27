@@ -35,6 +35,7 @@ export type LucidNotificationRoute =
   | '/lucid/program/ssild'
   | '/lucid/program/wbtb'
   | '/lucid/(tabs)'
+  | '/lucid/(tabs)/journal'
   | '/lucid/(tabs)/night'
   | '/lucid/(tabs)/progress'
   | '/lucid/(tabs)/programs'
@@ -49,6 +50,7 @@ const SAFE_LUCID_NOTIFICATION_ROUTES: ReadonlySet<string> = new Set<LucidNotific
   '/lucid/program/ssild',
   '/lucid/program/wbtb',
   '/lucid/(tabs)',
+  '/lucid/(tabs)/journal',
   '/lucid/(tabs)/night',
   '/lucid/(tabs)/progress',
   '/lucid/(tabs)/programs',

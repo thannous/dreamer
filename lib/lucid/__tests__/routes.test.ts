@@ -17,6 +17,7 @@ describe('Lucid Trainer notification routes', () => {
     '/lucid/reality-check',
     '/lucid/morning',
     '/lucid/program/wbtb',
+    '/lucid/(tabs)/journal',
     '/lucid/(tabs)/night',
   ])('accepts the owned route %s', (route) => {
     expect(isSafeLucidNotificationRoute(route)).toBe(true);

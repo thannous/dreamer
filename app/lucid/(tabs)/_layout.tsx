@@ -82,12 +82,13 @@ export default function LucidTabsLayout() {
 
     return {
       today: screen(labels.today, 'sparkles', 'lucid-tab-today'),
+      journal: screen(labels.journal, 'book', 'lucid-tab-journal'),
       programs: screen(labels.programs, 'map', 'lucid-tab-programs'),
       night: hiddenScreen(labels.night),
       progress: screen(labels.progress, 'stats-chart', 'lucid-tab-progress'),
       settings: hiddenScreen(labels.settings),
     };
-  }, [labels.night, labels.programs, labels.progress, labels.settings, labels.today]);
+  }, [labels.journal, labels.night, labels.programs, labels.progress, labels.settings, labels.today]);
 
   const navigatorOptions = useMemo(
     () => ({
@@ -139,6 +140,7 @@ export default function LucidTabsLayout() {
   return (
     <Tabs screenOptions={navigatorOptions}>
       <Tabs.Screen name="index" options={tabOptions.today} />
+      <Tabs.Screen name="journal" options={tabOptions.journal} />
       <Tabs.Screen name="programs" options={tabOptions.programs} />
       <Tabs.Screen name="night" options={tabOptions.night} />
       <Tabs.Screen name="progress" options={tabOptions.progress} />
@@ -149,7 +151,7 @@ export default function LucidTabsLayout() {
 
 const styles = StyleSheet.create({
   // Un onglet cède de la largeur à ses voisins au lieu d'élargir la barre : aucune
-  // largeur figée ici, les cinq emplacements se partagent la place disponible.
+  // largeur figée ici, les quatre destinations visibles se partagent la place disponible.
   tabBarItem: { height: '100%', flexShrink: 1 },
   // Palier « overline » : 11/14. En dessous (10pt) le libellé passait sous les 11pt
   // des HIG et les 12sp de Material, sur l'élément le plus permanent de l'app.

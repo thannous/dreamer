@@ -5,7 +5,7 @@ const content = {
   chrome: {
     appName: 'Noctalia Lucid Trainer',
     tagline: 'Entrena tu atención sin descuidar el sueño.',
-    tabs: { today: 'Hoy', programs: 'Programas', night: 'Noche', progress: 'Progreso', settings: 'Ajustes' },
+    tabs: { today: 'Hoy', journal: 'Diario', programs: 'Recorridos', night: 'Noche', progress: 'Insights', settings: 'Perfil' },
     common: {
       continue: 'Continuar', back: 'Atrás', save: 'Guardar', cancel: 'Cancelar', done: 'Listo', retry: 'Reintentar', skipTonight: 'Omitir esta noche', optional: 'Opcional', offlineReady: 'Disponible sin conexión', loading: 'Cargando tu entrenamiento…', error: 'No se ha podido cargar. Tu entrenamiento guardado sigue en este dispositivo.',
     },

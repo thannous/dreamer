@@ -77,6 +77,7 @@ export type LucidTrainerContent = Readonly<{
     tagline: string;
     tabs: Readonly<{
       today: string;
+      journal: string;
       programs: string;
       night: string;
       progress: string;
