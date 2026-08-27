@@ -435,6 +435,53 @@ describe('LucidSafetyPolicy', () => {
       expect(policy.allowWbtb).toBe(true);
     });
 
+    it('maps persisted wakeSensitivity without inventing fragility for absent or not_sensitive answers', () => {
+      expect(
+        resolveLucidSafetyFacts({
+          onboarding: { audioSafetyAccepted: true, wakeSensitivity: 'sensitive' },
+        }).sleepIsFragile
+      ).toBe(true);
+      expect(
+        evaluateLucidSafetyPolicyFromState({
+          onboarding: { audioSafetyAccepted: true, wakeSensitivity: 'sensitive' },
+        })
+      ).toMatchObject({
+        mode: 'reducedIntensity',
+        reasons: ['fragile_sleep'],
+        allowWbtb: false,
+        allowNightSignals: false,
+      });
+
+      expect(
+        resolveLucidSafetyFacts({
+          onboarding: { audioSafetyAccepted: true, wakeSensitivity: 'not_sensitive' },
+        }).sleepIsFragile
+      ).toBe(false);
+      expect(
+        resolveLucidSafetyFacts({
+          onboarding: { audioSafetyAccepted: true },
+        }).sleepIsFragile
+      ).toBe(false);
+      expect(
+        resolveLucidSafetyFacts({
+          onboarding: { audioSafetyAccepted: true, wakeSensitivity: null },
+        }).sleepIsFragile
+      ).toBe(false);
+
+      expect(
+        resolveLucidSafetyFacts(
+          { onboarding: { audioSafetyAccepted: true, wakeSensitivity: 'sensitive' } },
+          { sleepIsFragile: false }
+        ).sleepIsFragile
+      ).toBe(false);
+      expect(
+        resolveLucidSafetyFacts(
+          { onboarding: { audioSafetyAccepted: true, wakeSensitivity: 'not_sensitive' } },
+          { sleepIsFragile: true }
+        ).sleepIsFragile
+      ).toBe(true);
+    });
+
     it('lets explicit current facts force every safety fact, including false', () => {
       expect(
         resolveLucidSafetyFacts(

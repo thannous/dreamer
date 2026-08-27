@@ -159,6 +159,10 @@ export function createInitialLucidTrainerState(params: {
       },
       completedAt: null,
       updatedAt: now,
+      wakeSensitivity: null,
+      draftStep: 0,
+      sleepScheduleConfirmed: false,
+      sleepScheduleDraft: { bedtime: null, wakeTime: null },
     },
     preferences: {
       locale,

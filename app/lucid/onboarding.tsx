@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Modal, Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import {
@@ -7,14 +7,12 @@ import {
   LucidOnboardingStage,
 } from '@/components/lucid/LucidOnboardingBackdrop';
 import {
-  LucidExperienceSelector,
-  LucidGoalSelector,
-  LucidMomentPath,
-  LucidRhythmSelector,
   LucidSegmentedProgress,
 } from '@/components/lucid/LucidOnboardingChoices';
 import {
   LucidButton,
+  LucidCard,
+  LucidChoiceCard,
   LucidIconAction,
   LucidOverline,
   LucidScreen,
@@ -26,42 +24,63 @@ import { useTheme } from '@/context/ThemeContext';
 import type {
   LucidExperienceLevel,
   LucidGoal,
+  LucidWakeSensitivity,
 } from '@/lib/lucid/model';
 import { isLucidLocalTime } from '@/lib/lucid/model';
+import { getLucidPersonalizedPlan } from '@/lib/lucid/personalization';
+import { evaluateLucidSafetyPolicyFromState } from '@/lib/lucid/safety';
 import type { ThemeAmbience } from '@/lib/themeAmbience';
 
-const STEP_COUNT = 5;
+const STEP_COUNT = 4;
 
 const LOCAL = {
   en: {
-    step: 'Step', start: 'Start', startTitle: 'Your practice in three moments', introShort: 'Notice by day. Set an intention. Write on waking.', goal: 'Choose your horizon', experience: 'Choose your level', experienceQuestion: 'Where are you starting?', startingPoint: 'Starting point', reminders: 'Practice rhythm', rhythmTitle: 'Find your rhythm', rhythmSubtitle: 'Three days are enough to begin.', recommended: 'Recommended', sleep: 'Your sleep window', bed: 'Bedtime', wake: 'Wake time', invalidTime: 'Use a valid 24-hour time such as 22:30.', chooseOption: 'Pick one option to continue.', finish: 'Create my training', days: 'days / week', dayUnit: 'days', summary: 'Your journey', goalLabel: 'Goal', levelLabel: 'Level', rhythmLabel: 'Rhythm', sleepFirst: 'Your sleep always comes first.', timePickerHint: 'Opens the system time picker.',
-    startTitleDisplay: 'Your practice\nin three moments',
-    goalShort: { first_lucid_dream: 'First lucid dream', improve_recall: 'Remember my dreams', more_frequent_lucidity: 'More lucid dreams', stabilize_lucidity: 'Stay lucid longer' },
-    experienceHints: { beginner: 'I’m starting', occasional: 'I’ve tried before', experienced: 'I have a routine' },
+    step: 'Step', bed: 'Bedtime', wake: 'Wake time', timePickerHint: 'Opens the system time picker.',
   },
   fr: {
-    step: 'Étape', start: 'Commencer', startTitle: 'Votre pratique en trois moments', introShort: 'Observer le jour. Poser une intention. Noter au réveil.', goal: 'Choisissez votre horizon', experience: 'Votre expérience', experienceQuestion: 'D’où partez-vous ?', startingPoint: 'Point de départ', reminders: 'Rythme d’entraînement', rhythmTitle: 'Trouvez votre rythme', rhythmSubtitle: 'Trois jours suffisent pour commencer.', recommended: 'Recommandé', sleep: 'Votre fenêtre de sommeil', bed: 'Coucher', wake: 'Réveil', invalidTime: 'Utilisez une heure valide au format 24 h, par exemple 22:30.', chooseOption: 'Choisissez une option pour continuer.', finish: 'Créer mon entraînement', days: 'jours / semaine', dayUnit: 'jours', summary: 'Votre parcours', goalLabel: 'Objectif', levelLabel: 'Niveau', rhythmLabel: 'Rythme', sleepFirst: 'Votre sommeil passe toujours en premier.', timePickerHint: 'Ouvre le sélecteur d’heure du système.',
-    startTitleDisplay: 'Votre pratique\nen trois moments',
-    goalShort: { first_lucid_dream: 'Premier rêve lucide', improve_recall: 'Mieux me souvenir', more_frequent_lucidity: 'Plus de rêves lucides', stabilize_lucidity: 'Rester lucide' },
-    experienceHints: { beginner: 'Je découvre', occasional: 'J’ai déjà essayé', experienced: 'J’ai une routine' },
+    step: 'Étape', bed: 'Coucher', wake: 'Réveil', timePickerHint: 'Ouvre le sélecteur d’heure du système.',
   },
   es: {
-    step: 'Paso', start: 'Empezar', startTitle: 'Tu práctica en tres momentos', introShort: 'Observa de día. Fija una intención. Anota al despertar.', goal: 'Elige tu horizonte', experience: 'Tu experiencia', experienceQuestion: '¿Desde dónde empiezas?', startingPoint: 'Punto de partida', reminders: 'Ritmo de práctica', rhythmTitle: 'Encuentra tu ritmo', rhythmSubtitle: 'Tres días bastan para empezar.', recommended: 'Recomendado', sleep: 'Tu horario de sueño', bed: 'Hora de dormir', wake: 'Hora de despertar', invalidTime: 'Usa una hora válida de 24 horas, por ejemplo 22:30.', chooseOption: 'Elige una opción para continuar.', finish: 'Crear mi entrenamiento', days: 'días / semana', dayUnit: 'días', summary: 'Tu recorrido', goalLabel: 'Objetivo', levelLabel: 'Nivel', rhythmLabel: 'Ritmo', sleepFirst: 'Tu sueño siempre es lo primero.', timePickerHint: 'Abre el selector de hora del sistema.',
-    startTitleDisplay: 'Tu práctica\nen tres momentos',
-    goalShort: { first_lucid_dream: 'Primer sueño lúcido', improve_recall: 'Recordar mis sueños', more_frequent_lucidity: 'Más sueños lúcidos', stabilize_lucidity: 'Mantener la lucidez' },
-    experienceHints: { beginner: 'Estoy empezando', occasional: 'Ya lo he probado', experienced: 'Tengo una rutina' },
+    step: 'Paso', bed: 'Hora de dormir', wake: 'Hora de despertar', timePickerHint: 'Abre el selector de hora del sistema.',
   },
   de: {
-    step: 'Schritt', start: 'Starten', startTitle: 'Deine Übung in drei Momenten', introShort: 'Tagsüber beobachten. Eine Absicht setzen. Beim Aufwachen notieren.', goal: 'Wähle deinen Weg', experience: 'Deine Erfahrung', experienceQuestion: 'Wo startest du?', startingPoint: 'Ausgangspunkt', reminders: 'Übungsrhythmus', rhythmTitle: 'Finde deinen Rhythmus', rhythmSubtitle: 'Drei Tage reichen für den Anfang.', recommended: 'Empfohlen', sleep: 'Dein Schlaffenster', bed: 'Schlafenszeit', wake: 'Aufstehzeit', invalidTime: 'Nutze eine gültige 24-Stunden-Zeit, zum Beispiel 22:30.', chooseOption: 'Wähle eine Option, um fortzufahren.', finish: 'Mein Training erstellen', days: 'Tage / Woche', dayUnit: 'Tage', summary: 'Dein Weg', goalLabel: 'Ziel', levelLabel: 'Niveau', rhythmLabel: 'Rhythmus', sleepFirst: 'Dein Schlaf steht immer an erster Stelle.', timePickerHint: 'Öffnet die Zeitauswahl des Systems.',
-    startTitleDisplay: 'Deine Übung\nin drei Momenten',
-    goalShort: { first_lucid_dream: 'Erster Klartraum', improve_recall: 'Träume erinnern', more_frequent_lucidity: 'Mehr Klarträume', stabilize_lucidity: 'Länger klar bleiben' },
-    experienceHints: { beginner: 'Ich fange an', occasional: 'Ich habe es probiert', experienced: 'Ich habe eine Routine' },
+    step: 'Schritt', bed: 'Schlafenszeit', wake: 'Aufstehzeit', timePickerHint: 'Öffnet die Zeitauswahl des Systems.',
   },
   it: {
-    step: 'Passaggio', start: 'Inizia', startTitle: 'La tua pratica in tre momenti', introShort: 'Osserva di giorno. Scegli un intento. Annota al risveglio.', goal: 'Scegli il tuo orizzonte', experience: 'La tua esperienza', experienceQuestion: 'Da dove parti?', startingPoint: 'Punto di partenza', reminders: 'Ritmo di pratica', rhythmTitle: 'Trova il tuo ritmo', rhythmSubtitle: 'Tre giorni bastano per iniziare.', recommended: 'Consigliato', sleep: 'La tua finestra di sonno', bed: 'Ora di dormire', wake: 'Ora di sveglia', invalidTime: 'Usa un orario valido di 24 ore, per esempio 22:30.', chooseOption: 'Scegli un’opzione per continuare.', finish: 'Crea il mio allenamento', days: 'giorni / settimana', dayUnit: 'giorni', summary: 'Il tuo percorso', goalLabel: 'Obiettivo', levelLabel: 'Livello', rhythmLabel: 'Ritmo', sleepFirst: 'Il tuo sonno viene sempre prima di tutto.', timePickerHint: 'Apre il selettore dell’ora di sistema.',
-    startTitleDisplay: 'La tua pratica\nin tre momenti',
-    goalShort: { first_lucid_dream: 'Primo sogno lucido', improve_recall: 'Ricordare i sogni', more_frequent_lucidity: 'Più sogni lucidi', stabilize_lucidity: 'Restare lucido' },
-    experienceHints: { beginner: 'Sto iniziando', occasional: 'Ho già provato', experienced: 'Ho una routine' },
+    step: 'Passaggio', bed: 'Ora di dormire', wake: 'Ora di sveglia', timePickerHint: 'Apre il selettore dell’ora di sistema.',
+  },
+} as const;
+
+const FLOW = {
+  en: {
+    intentionTitle: 'Choose your intention', intentionSubtitle: 'Two answers shape your first week.', goalLabel: 'Goal', experienceLabel: 'Experience', chooseIntention: 'Choose a goal and your experience to continue.',
+    sleepTitle: 'Protect your sleep first', sleepSubtitle: 'Use your usual times. Nothing is enabled at night during onboarding.', notSet: 'Not set', sensitivityLabel: 'Do awakenings make it hard to fall asleep again?', sensitiveTitle: 'Yes, my sleep is sensitive', sensitiveDescription: 'Keep the first week gentle and avoid night interruptions.', notSensitiveTitle: 'No, usually not', notSensitiveDescription: 'Night features still stay off until you explicitly enable them.', chooseSleep: 'Set both times and choose your wake sensitivity.',
+    weekTitle: 'Your first week', weekSubtitle: 'This plan comes from your answers and the current sleep-safety rules.', morningTitle: 'Morning capture', morningDetail: 'A short dream note after waking, for 7 days.', trainingTitle: 'Daytime practice', trainingDetail: (days: number) => `${days} attentive sessions this week.`, ritualTitle: 'Bedtime ritual', restrictionsTitle: 'Night safeguards', reasonLabel: 'Why this plan', reasonPrudent: 'A gentle baseline while the app learns from your observations.', reasonRecall: 'Dream recall comes before adding more demanding techniques.', reasonReduced: 'Your sleep sensitivity keeps this first week low intensity.', reasonRecovery: 'Sleep protection temporarily replaces lucid-dream techniques.', ritualRecall: 'A calm intention and a morning recall habit.', ritualMild: 'A short MILD intention before sleep.', ritualSsild: 'A light SSILD practice before sleep.', ritualQuiet: 'No night technique while sleep recovers.', wbtbAllowed: 'WBTB can be considered later, never required.', wbtbBlocked: 'WBTB is unavailable for this plan.', signalsAllowed: 'Audio cues can be considered later with explicit consent.', signalsBlocked: 'Night audio stays unavailable.',
+    localTitle: 'Ready, without an account', localSubtitle: 'You can start now. Optional capabilities are explained only when you use them.', localStorageTitle: 'Local by default', localStorageDetail: 'Your training and dream notes stay on this device unless you choose sync.', noAccountTitle: 'No account required', noAccountDetail: 'The complete first week works without signing in.', permissionsTitle: 'Permissions at first use', permissionsDetail: 'Notifications, audio, microphone and cloud sync are requested only when the related feature is opened.', finish: 'Create my first week', saveError: 'Your choices could not be saved. Try again.',
+  },
+  fr: {
+    intentionTitle: 'Choisissez votre intention', intentionSubtitle: 'Deux réponses façonnent votre première semaine.', goalLabel: 'Objectif', experienceLabel: 'Expérience', chooseIntention: 'Choisissez un objectif et votre expérience pour continuer.',
+    sleepTitle: 'Protégez d’abord votre sommeil', sleepSubtitle: 'Indiquez vos horaires habituels. Rien n’est activé la nuit pendant l’onboarding.', notSet: 'Non défini', sensitivityLabel: 'Les réveils vous empêchent-ils de vous rendormir facilement ?', sensitiveTitle: 'Oui, mon sommeil est sensible', sensitiveDescription: 'La première semaine restera douce, sans interruption nocturne.', notSensitiveTitle: 'Non, généralement pas', notSensitiveDescription: 'Les fonctions nocturnes restent désactivées jusqu’à votre accord explicite.', chooseSleep: 'Indiquez les deux horaires et votre sensibilité aux réveils.',
+    weekTitle: 'Votre première semaine', weekSubtitle: 'Ce plan vient de vos réponses et des règles actuelles de protection du sommeil.', morningTitle: 'Capture du matin', morningDetail: 'Une note de rêve courte au réveil, pendant 7 jours.', trainingTitle: 'Pratique en journée', trainingDetail: (days: number) => `${days} séances attentives cette semaine.`, ritualTitle: 'Rituel du coucher', restrictionsTitle: 'Protections nocturnes', reasonLabel: 'Pourquoi ce plan', reasonPrudent: 'Une base douce pendant que l’app apprend de vos observations.', reasonRecall: 'Le souvenir des rêves passe avant les techniques plus exigeantes.', reasonReduced: 'Votre sensibilité au réveil maintient une intensité légère.', reasonRecovery: 'La protection du sommeil remplace temporairement les techniques lucides.', ritualRecall: 'Une intention calme et une habitude de rappel au réveil.', ritualMild: 'Une courte intention MILD avant le sommeil.', ritualSsild: 'Une pratique SSILD légère avant le sommeil.', ritualQuiet: 'Aucune technique nocturne pendant la récupération.', wbtbAllowed: 'Le WBTB pourra être envisagé plus tard, jamais imposé.', wbtbBlocked: 'Le WBTB est indisponible pour ce plan.', signalsAllowed: 'Les signaux audio pourront être envisagés avec un accord explicite.', signalsBlocked: 'L’audio nocturne reste indisponible.',
+    localTitle: 'Prêt, sans compte', localSubtitle: 'Vous pouvez commencer. Les fonctions facultatives sont expliquées seulement au moment de les utiliser.', localStorageTitle: 'Local par défaut', localStorageDetail: 'Votre entraînement et vos notes restent sur cet appareil, sauf si vous choisissez la synchronisation.', noAccountTitle: 'Aucun compte requis', noAccountDetail: 'La première semaine complète fonctionne sans connexion.', permissionsTitle: 'Permissions au premier usage', permissionsDetail: 'Notifications, audio, microphone et cloud sont demandés uniquement à l’ouverture de la fonction associée.', finish: 'Créer ma première semaine', saveError: 'Vos choix n’ont pas pu être enregistrés. Réessayez.',
+  },
+  es: {
+    intentionTitle: 'Elige tu intención', intentionSubtitle: 'Dos respuestas dan forma a tu primera semana.', goalLabel: 'Objetivo', experienceLabel: 'Experiencia', chooseIntention: 'Elige un objetivo y tu experiencia para continuar.',
+    sleepTitle: 'Protege primero tu sueño', sleepSubtitle: 'Usa tus horarios habituales. Nada se activa por la noche durante la configuración.', notSet: 'Sin definir', sensitivityLabel: '¿Te cuesta volver a dormir después de despertarte?', sensitiveTitle: 'Sí, mi sueño es sensible', sensitiveDescription: 'La primera semana será suave y sin interrupciones nocturnas.', notSensitiveTitle: 'No, normalmente no', notSensitiveDescription: 'Las funciones nocturnas seguirán apagadas hasta que las actives expresamente.', chooseSleep: 'Indica ambos horarios y tu sensibilidad al despertar.',
+    weekTitle: 'Tu primera semana', weekSubtitle: 'Este plan usa tus respuestas y las reglas actuales de protección del sueño.', morningTitle: 'Registro matinal', morningDetail: 'Una nota breve del sueño al despertar, durante 7 días.', trainingTitle: 'Práctica diurna', trainingDetail: (days: number) => `${days} sesiones atentas esta semana.`, ritualTitle: 'Ritual al acostarte', restrictionsTitle: 'Protecciones nocturnas', reasonLabel: 'Por qué este plan', reasonPrudent: 'Una base suave mientras la app aprende de tus observaciones.', reasonRecall: 'Recordar los sueños va antes que las técnicas más exigentes.', reasonReduced: 'Tu sensibilidad al despertar mantiene baja la intensidad.', reasonRecovery: 'Proteger el sueño reemplaza temporalmente las técnicas lúcidas.', ritualRecall: 'Una intención tranquila y un hábito de recuerdo matinal.', ritualMild: 'Una breve intención MILD antes de dormir.', ritualSsild: 'Una práctica SSILD ligera antes de dormir.', ritualQuiet: 'Sin técnica nocturna durante la recuperación.', wbtbAllowed: 'WBTB podrá considerarse más adelante, nunca es obligatorio.', wbtbBlocked: 'WBTB no está disponible en este plan.', signalsAllowed: 'Las señales de audio podrán considerarse con consentimiento explícito.', signalsBlocked: 'El audio nocturno sigue sin estar disponible.',
+    localTitle: 'Listo, sin cuenta', localSubtitle: 'Puedes empezar ahora. Las funciones opcionales se explican solo cuando las usas.', localStorageTitle: 'Local por defecto', localStorageDetail: 'Tu entrenamiento y tus notas permanecen en este dispositivo salvo que elijas sincronizar.', noAccountTitle: 'No necesitas cuenta', noAccountDetail: 'La primera semana completa funciona sin iniciar sesión.', permissionsTitle: 'Permisos al primer uso', permissionsDetail: 'Notificaciones, audio, micrófono y nube se solicitan solo al abrir la función relacionada.', finish: 'Crear mi primera semana', saveError: 'No se pudieron guardar tus elecciones. Inténtalo de nuevo.',
+  },
+  de: {
+    intentionTitle: 'Wähle deine Absicht', intentionSubtitle: 'Zwei Antworten gestalten deine erste Woche.', goalLabel: 'Ziel', experienceLabel: 'Erfahrung', chooseIntention: 'Wähle ein Ziel und deine Erfahrung, um fortzufahren.',
+    sleepTitle: 'Schütze zuerst deinen Schlaf', sleepSubtitle: 'Nutze deine üblichen Zeiten. Während der Einführung wird nachts nichts aktiviert.', notSet: 'Nicht festgelegt', sensitivityLabel: 'Fällt dir das Wiedereinschlafen nach dem Aufwachen schwer?', sensitiveTitle: 'Ja, mein Schlaf ist empfindlich', sensitiveDescription: 'Die erste Woche bleibt sanft und vermeidet nächtliche Unterbrechungen.', notSensitiveTitle: 'Nein, normalerweise nicht', notSensitiveDescription: 'Nachtfunktionen bleiben aus, bis du sie ausdrücklich aktivierst.', chooseSleep: 'Lege beide Zeiten und deine Aufwachempfindlichkeit fest.',
+    weekTitle: 'Deine erste Woche', weekSubtitle: 'Dieser Plan basiert auf deinen Antworten und den aktuellen Schlafschutzregeln.', morningTitle: 'Morgendliche Notiz', morningDetail: 'Sieben Tage lang eine kurze Traumnotiz nach dem Aufwachen.', trainingTitle: 'Übung am Tag', trainingDetail: (days: number) => `${days} aufmerksame Übungen in dieser Woche.`, ritualTitle: 'Abendritual', restrictionsTitle: 'Schutz in der Nacht', reasonLabel: 'Warum dieser Plan', reasonPrudent: 'Ein sanfter Einstieg, während die App aus deinen Beobachtungen lernt.', reasonRecall: 'Traumerinnerung kommt vor anspruchsvolleren Techniken.', reasonReduced: 'Deine Aufwachempfindlichkeit hält die Intensität niedrig.', reasonRecovery: 'Schlafschutz ersetzt vorübergehend Klartraumtechniken.', ritualRecall: 'Eine ruhige Absicht und morgendliche Traumerinnerung.', ritualMild: 'Eine kurze MILD-Absicht vor dem Schlafen.', ritualSsild: 'Eine leichte SSILD-Übung vor dem Schlafen.', ritualQuiet: 'Keine Nachttechnik während der Erholung.', wbtbAllowed: 'WBTB kann später erwogen werden, ist aber nie Pflicht.', wbtbBlocked: 'WBTB ist für diesen Plan nicht verfügbar.', signalsAllowed: 'Audiosignale können später mit ausdrücklicher Zustimmung erwogen werden.', signalsBlocked: 'Nacht-Audio bleibt nicht verfügbar.',
+    localTitle: 'Bereit, ohne Konto', localSubtitle: 'Du kannst jetzt starten. Optionale Funktionen werden erst bei ihrer Nutzung erklärt.', localStorageTitle: 'Standardmäßig lokal', localStorageDetail: 'Training und Traumnotizen bleiben auf diesem Gerät, sofern du keine Synchronisierung wählst.', noAccountTitle: 'Kein Konto nötig', noAccountDetail: 'Die vollständige erste Woche funktioniert ohne Anmeldung.', permissionsTitle: 'Berechtigungen bei erster Nutzung', permissionsDetail: 'Mitteilungen, Audio, Mikrofon und Cloud werden erst beim Öffnen der jeweiligen Funktion angefragt.', finish: 'Meine erste Woche erstellen', saveError: 'Deine Auswahl konnte nicht gespeichert werden. Versuche es erneut.',
+  },
+  it: {
+    intentionTitle: 'Scegli la tua intenzione', intentionSubtitle: 'Due risposte danno forma alla tua prima settimana.', goalLabel: 'Obiettivo', experienceLabel: 'Esperienza', chooseIntention: 'Scegli un obiettivo e la tua esperienza per continuare.',
+    sleepTitle: 'Proteggi prima il sonno', sleepSubtitle: 'Usa i tuoi orari abituali. Durante l’onboarding non viene attivato nulla di notte.', notSet: 'Non impostato', sensitivityLabel: 'Dopo un risveglio fai fatica a riaddormentarti?', sensitiveTitle: 'Sì, il mio sonno è sensibile', sensitiveDescription: 'La prima settimana resterà delicata e senza interruzioni notturne.', notSensitiveTitle: 'No, di solito no', notSensitiveDescription: 'Le funzioni notturne restano disattivate finché non le abiliti esplicitamente.', chooseSleep: 'Imposta entrambi gli orari e la sensibilità ai risvegli.',
+    weekTitle: 'La tua prima settimana', weekSubtitle: 'Questo piano usa le tue risposte e le regole attuali di protezione del sonno.', morningTitle: 'Nota del mattino', morningDetail: 'Una breve nota del sogno al risveglio, per 7 giorni.', trainingTitle: 'Pratica diurna', trainingDetail: (days: number) => `${days} sessioni attente questa settimana.`, ritualTitle: 'Rituale serale', restrictionsTitle: 'Protezioni notturne', reasonLabel: 'Perché questo piano', reasonPrudent: 'Una base delicata mentre l’app impara dalle tue osservazioni.', reasonRecall: 'Il ricordo dei sogni precede le tecniche più impegnative.', reasonReduced: 'La sensibilità ai risvegli mantiene bassa l’intensità.', reasonRecovery: 'Proteggere il sonno sostituisce temporaneamente le tecniche lucide.', ritualRecall: 'Un’intenzione calma e l’abitudine al ricordo mattutino.', ritualMild: 'Una breve intenzione MILD prima di dormire.', ritualSsild: 'Una pratica SSILD leggera prima di dormire.', ritualQuiet: 'Nessuna tecnica notturna durante il recupero.', wbtbAllowed: 'WBTB potrà essere valutato più avanti, mai imposto.', wbtbBlocked: 'WBTB non è disponibile per questo piano.', signalsAllowed: 'I segnali audio potranno essere valutati con consenso esplicito.', signalsBlocked: 'L’audio notturno resta non disponibile.',
+    localTitle: 'Pronto, senza account', localSubtitle: 'Puoi iniziare subito. Le funzioni opzionali vengono spiegate solo quando le usi.', localStorageTitle: 'Locale per impostazione predefinita', localStorageDetail: 'Allenamento e note restano su questo dispositivo, salvo tua scelta di sincronizzarli.', noAccountTitle: 'Nessun account richiesto', noAccountDetail: 'La prima settimana completa funziona senza accesso.', permissionsTitle: 'Permessi al primo utilizzo', permissionsDetail: 'Notifiche, audio, microfono e cloud vengono richiesti solo aprendo la funzione collegata.', finish: 'Crea la mia prima settimana', saveError: 'Non è stato possibile salvare le scelte. Riprova.',
   },
 } as const;
 
@@ -74,47 +93,139 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const { fontScale, height, width } = useWindowDimensions();
-  const { state, content, completeOnboarding } = useLucidTrainer();
+  const { state, content, completeOnboarding, saveOnboardingDraft } = useLucidTrainer();
   const locale = content.locale;
-  const copy = LOCAL[locale];
+  const legacyCopy = LOCAL[locale];
+  const copy = FLOW[locale];
   const initial = state!.onboarding;
-  const [step, setStep] = useState(0);
+  const initialStep = initial.status === 'in_progress'
+    ? Math.max(0, Math.min(STEP_COUNT - 1, initial.draftStep ?? 0))
+    : 0;
+  const [step, setStep] = useState(initialStep);
   const [stepDirection, setStepDirection] = useState<-1 | 1>(1);
   const [goal, setGoal] = useState<LucidGoal | null>(initial.goal);
   const [experience, setExperience] = useState<LucidExperienceLevel | null>(initial.experience);
-  const [weeklyTarget, setWeeklyTarget] = useState(initial.weeklyTarget);
-  const [bedtime, setBedtime] = useState(initial.sleepSchedule.bedtime);
-  const [wakeTime, setWakeTime] = useState(initial.sleepSchedule.wakeTime);
+  const [wakeSensitivity, setWakeSensitivity] = useState<LucidWakeSensitivity | null>(
+    initial.wakeSensitivity ?? null
+  );
+  const [bedtime, setBedtime] = useState<string | null>(
+    initial.sleepScheduleConfirmed === true
+      ? initial.sleepSchedule.bedtime
+      : initial.sleepScheduleDraft?.bedtime ?? null
+  );
+  const [wakeTime, setWakeTime] = useState<string | null>(
+    initial.sleepScheduleConfirmed === true
+      ? initial.sleepSchedule.wakeTime
+      : initial.sleepScheduleDraft?.wakeTime ?? null
+  );
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const draftQueue = useRef<Promise<void>>(Promise.resolve());
 
   const timeZone = useMemo(() => {
     try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch { return 'UTC'; }
   }, []);
 
-  const canContinue =
-    (step !== 1 || goal !== null) &&
-    (step !== 2 || experience !== null) &&
-    (step !== 4 || (isLucidLocalTime(bedtime) && isLucidLocalTime(wakeTime)));
+  const sleepScheduleReady = bedtime !== null && wakeTime !== null &&
+    isLucidLocalTime(bedtime) && isLucidLocalTime(wakeTime);
+  const answersReady = goal !== null && experience !== null && wakeSensitivity !== null && sleepScheduleReady;
+  const canContinue = step === 0
+    ? goal !== null && experience !== null
+    : step === 1
+      ? sleepScheduleReady && wakeSensitivity !== null
+      : answersReady;
+  const blockedReason = canContinue
+    ? undefined
+    : step === 0
+      ? copy.chooseIntention
+      : copy.chooseSleep;
 
-  // Why the step is blocked is shown under the button itself, so it stays
-  // visible while the user fixes it instead of vanishing with an alert.
-  const blockedReason = canContinue ? undefined : step === 4 ? copy.invalidTime : copy.chooseOption;
+  const previewPolicy = useMemo(
+    () => evaluateLucidSafetyPolicyFromState({
+      onboarding: {
+        audioSafetyAccepted: initial.audioSafetyAccepted,
+        wakeSensitivity,
+      },
+      experiments: state!.experiments,
+    }),
+    [initial.audioSafetyAccepted, state, wakeSensitivity]
+  );
+  const plan = useMemo(
+    () => getLucidPersonalizedPlan({
+      goal,
+      experience,
+      observations: state!.experiments,
+      policy: previewPolicy,
+    }),
+    [experience, goal, previewPolicy, state]
+  );
+  const planRitual = plan.intensity === 'recovery'
+    ? copy.ritualQuiet
+    : plan.primaryAction === 'strengthen_recall'
+      ? copy.ritualRecall
+      : plan.recommendedTechnique === 'ssild'
+        ? copy.ritualSsild
+        : copy.ritualMild;
+  const planReason = plan.intensity === 'recovery'
+    ? copy.reasonRecovery
+    : plan.intensity === 'reduced'
+      ? copy.reasonReduced
+      : plan.primaryAction === 'strengthen_recall'
+        ? copy.reasonRecall
+        : copy.reasonPrudent;
+
+  const enqueueDraft = (patch: Parameters<typeof saveOnboardingDraft>[0]) => {
+    setSaveError(null);
+    const operation = draftQueue.current.then(() => saveOnboardingDraft(patch));
+    draftQueue.current = operation.catch(() => undefined);
+    return operation;
+  };
+
+  const persistSelection = (patch: Parameters<typeof saveOnboardingDraft>[0]) => {
+    void enqueueDraft(patch).catch(() => setSaveError(copy.saveError));
+  };
+
+  const persistSnapshot = (draftStep: 0 | 1 | 2 | 3) => enqueueDraft({
+    goal,
+    experience,
+    wakeSensitivity,
+    draftStep,
+    sleepScheduleDraft: { bedtime, wakeTime },
+    sleepScheduleConfirmed: sleepScheduleReady,
+    ...(sleepScheduleReady
+      ? { sleepSchedule: { bedtime, wakeTime, timeZone } }
+      : {}),
+  });
 
   const next = async () => {
     if (!canContinue) return;
+    setSaving(true);
+    setSaveError(null);
     if (step < STEP_COUNT - 1) {
-      setStepDirection(1);
-      setStep((value) => value + 1);
+      try {
+        const targetStep = (step + 1) as 0 | 1 | 2 | 3;
+        await persistSnapshot(targetStep);
+        setStepDirection(1);
+        setStep(targetStep);
+      } catch {
+        setSaveError(copy.saveError);
+      } finally {
+        setSaving(false);
+      }
       return;
     }
-    if (!goal || !experience) return;
-    setSaving(true);
+    if (!goal || !experience || !wakeSensitivity || !sleepScheduleReady) {
+      setSaving(false);
+      return;
+    }
     try {
       await completeOnboarding({
         goal,
         experience,
-        weeklyTarget,
+        wakeSensitivity,
+        weeklyTarget: initial.weeklyTarget,
         sleepSchedule: { bedtime, wakeTime, timeZone },
+        sleepScheduleConfirmed: true,
         notificationsPermission: initial.notificationsPermission,
         notificationsExplained: initial.notificationsExplained,
         audioSafetyAccepted: initial.audioSafetyAccepted,
@@ -123,39 +234,70 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
         cloudSyncEnabled: state!.preferences.cloudSyncEnabled,
         noctaliaLinkEnabled: state!.preferences.noctaliaLinkEnabled,
       });
+    } catch {
+      setSaveError(copy.saveError);
     } finally {
       setSaving(false);
     }
   };
 
-  const titles = [copy.startTitle, copy.goal, copy.experience, copy.reminders, copy.sleep];
-  const selectedExperience = content.onboarding.experienceLevels.find((choice) => choice.id === experience);
-  const journeySummary = [
-    goal ? copy.goalShort[goal] : '—',
-    selectedExperience?.title ?? '—',
-    `${weeklyTarget} ${copy.days}`,
-  ].join(' · ');
+  const back = async () => {
+    if (step === 0 || saving) return;
+    setSaving(true);
+    setSaveError(null);
+    try {
+      const targetStep = (step - 1) as 0 | 1 | 2 | 3;
+      await persistSnapshot(targetStep);
+      setStepDirection(-1);
+      setStep(targetStep);
+    } catch {
+      setSaveError(copy.saveError);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const updateBedtime = (value: string) => {
+    setBedtime(value);
+    const ready = wakeTime !== null && isLucidLocalTime(value) && isLucidLocalTime(wakeTime);
+    persistSelection({
+      draftStep: 1,
+      sleepScheduleDraft: { bedtime: value, wakeTime },
+      sleepScheduleConfirmed: ready,
+      ...(ready ? { sleepSchedule: { bedtime: value, wakeTime, timeZone } } : {}),
+    });
+  };
+  const updateWakeTime = (value: string) => {
+    setWakeTime(value);
+    const ready = bedtime !== null && isLucidLocalTime(bedtime) && isLucidLocalTime(value);
+    persistSelection({
+      draftStep: 1,
+      sleepScheduleDraft: { bedtime, wakeTime: value },
+      sleepScheduleConfirmed: ready,
+      ...(ready ? { sleepSchedule: { bedtime, wakeTime: value, timeZone } } : {}),
+    });
+  };
+
+  const titles = [copy.intentionTitle, copy.sleepTitle, copy.weekTitle, copy.localTitle];
   const reduceMotion = state!.onboarding.accessibility.reduceMotion;
   const reflow = width < 380 || fontScale >= 1.3;
-  const stageMinHeight = reflow ? Math.max(720, height - 160) : Math.max(520, height - 280);
-  const sleepStepTop = reflow ? 160 : Math.min(280, height * 0.26);
+  const stageMinHeight = reflow ? Math.max(720, height - 160) : Math.max(540, height - 250);
 
   return (
     <LucidScreen
       testID="lucid-onboarding"
       background={<LucidOnboardingBackdrop ambience={ambience} reduceMotion={reduceMotion} step={step} />}
-      bottomInset={reflow ? 112 : 0}
+      bottomInset={112}
       contentStyle={styles.screenContent}
-      eyebrow={`${copy.step} ${step + 1} / ${STEP_COUNT}`}
+      eyebrow={`${legacyCopy.step} ${step + 1} / ${STEP_COUNT}`}
       eyebrowTone="accent"
-      scroll={reflow}
+      scroll
       footer={
-        <View style={[styles.primaryAction, step === 0 && styles.primaryActionIntro]}>
+        <View style={styles.primaryAction}>
           <LucidButton
-            label={step === 0 ? copy.start : step === STEP_COUNT - 1 ? copy.finish : content.chrome.common.continue}
+            label={step === STEP_COUNT - 1 ? copy.finish : content.chrome.common.continue}
             disabled={!canContinue}
             disabledReason={blockedReason}
-            immersive={step === 0}
             loading={saving}
             onPress={() => void next()}
             icon={step === STEP_COUNT - 1 ? 'sparkles' : 'arrow-forward'}
@@ -170,10 +312,7 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
           <LucidIconAction
             icon="arrow-back"
             label={content.chrome.common.back}
-            onPress={() => {
-              setStepDirection(-1);
-              setStep((value) => value - 1);
-            }}
+            onPress={() => void back()}
             variant="immersive"
           />
         ) : null}
@@ -186,100 +325,162 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
         style={[styles.stage, { minHeight: stageMinHeight }]}
       >
         {step === 0 ? (
-          <View style={styles.immersiveStep}>
-            <LucidMomentPath />
-            <View style={styles.introCopy}>
-              <Text
-                accessibilityLabel={copy.startTitle}
-                accessibilityRole="header"
-                style={[styles.immersiveTitle, { color: palette.text }]}
-              >
-                {copy.startTitleDisplay}
-              </Text>
-              <Text style={[styles.introSubtitle, { color: palette.textSecondary }]}>{copy.introShort}</Text>
+          <View style={styles.stepStack}>
+            <OnboardingHeader title={copy.intentionTitle} subtitle={copy.intentionSubtitle} />
+            <View accessibilityRole="radiogroup" accessibilityLabel={copy.goalLabel} style={styles.choiceGroup}>
+              <LucidOverline text={copy.goalLabel} tone="accent" />
+              {content.onboarding.goals.map((choice) => (
+                <LucidChoiceCard
+                  description={choice.description}
+                  key={choice.id}
+                  onPress={() => {
+                    setGoal(choice.id);
+                    persistSelection({ goal: choice.id, draftStep: 0 });
+                  }}
+                  selected={goal === choice.id}
+                  testID={`lucid-goal-${choice.id}`}
+                  title={choice.title}
+                />
+              ))}
+            </View>
+            <View accessibilityRole="radiogroup" accessibilityLabel={copy.experienceLabel} style={styles.choiceGroup}>
+              <LucidOverline text={copy.experienceLabel} tone="accent" />
+              {content.onboarding.experienceLevels.map((choice) => (
+                <LucidChoiceCard
+                  description={choice.description}
+                  key={choice.id}
+                  onPress={() => {
+                    setExperience(choice.id);
+                    persistSelection({ experience: choice.id, draftStep: 0 });
+                  }}
+                  selected={experience === choice.id}
+                  testID={`lucid-experience-${choice.id}`}
+                  title={choice.title}
+                />
+              ))}
             </View>
           </View>
         ) : null}
 
         {step === 1 ? (
-          <LucidGoalSelector
-            choices={content.onboarding.goals}
-            label={copy.goal}
-            onSelect={setGoal}
-            reduceMotion={reduceMotion}
-            selected={goal}
-            shortLabels={copy.goalShort}
-            title={copy.goal}
-          />
-        ) : null}
-
-        {step === 2 ? (
-          <LucidExperienceSelector
-            choices={content.onboarding.experienceLevels}
-            hints={copy.experienceHints}
-            label={copy.experience}
-            onSelect={setExperience}
-            question={copy.experienceQuestion}
-            reduceMotion={reduceMotion}
-            selected={experience}
-            startingPoint={copy.startingPoint}
-          />
-        ) : null}
-
-        {step === 3 ? (
-          <LucidRhythmSelector
-            daysLabel={(value) => `${value} ${copy.dayUnit}`}
-            label={copy.reminders}
-            onSelect={setWeeklyTarget}
-            recommended={copy.recommended}
-            reduceMotion={reduceMotion}
-            selected={weeklyTarget}
-            subtitle={copy.rhythmSubtitle}
-            title={copy.rhythmTitle}
-          />
-        ) : null}
-
-        {step === 4 ? (
-          <View style={[styles.sleepStep, { paddingTop: sleepStepTop }]}>
+          <View style={styles.stepStack}>
+            <OnboardingHeader title={copy.sleepTitle} subtitle={copy.sleepSubtitle} />
             <SleepWindowPicker
               bedtime={bedtime}
-              bedtimeLabel={copy.bed}
+              bedtimeLabel={legacyCopy.bed}
               cancelLabel={content.chrome.common.cancel}
               doneLabel={content.chrome.common.done}
               locale={locale}
-              onBedtimeChange={setBedtime}
-              onWakeTimeChange={setWakeTime}
-              pickerHint={copy.timePickerHint}
+              notSetLabel={copy.notSet}
+              onBedtimeChange={updateBedtime}
+              onWakeTimeChange={updateWakeTime}
+              pickerHint={legacyCopy.timePickerHint}
               reflow={reflow}
-              wakeLabel={copy.wake}
+              wakeLabel={legacyCopy.wake}
               wakeTime={wakeTime}
             />
-            <Text accessibilityRole="header" style={[styles.immersiveTitle, styles.sleepTitle, { color: palette.text }]}>
-              {copy.sleep}
-            </Text>
-            <View style={styles.summaryBlock}>
-              <LucidOverline text={copy.summary} tone="accent" />
-              <Text style={[styles.journeySummary, { color: palette.textSecondary }]}>
-                {journeySummary}
-              </Text>
-              <View style={styles.sleepPriorityRow}>
-                <View
-                  accessibilityElementsHidden
-                  importantForAccessibility="no-hide-descendants"
-                  style={styles.sleepPriorityIcon}
-                >
-                  <Ionicons color={palette.amber} name="shield-checkmark-outline" size={LucidIcon.lg} />
-                </View>
-                <Text style={[styles.sleepPriorityText, { color: palette.amber }]}>
-                  {copy.sleepFirst}
-                </Text>
-              </View>
+            <View accessibilityRole="radiogroup" accessibilityLabel={copy.sensitivityLabel} style={styles.choiceGroup}>
+              <LucidOverline text={copy.sensitivityLabel} tone="accent" />
+              <LucidChoiceCard
+                description={copy.sensitiveDescription}
+                onPress={() => {
+                  setWakeSensitivity('sensitive');
+                  persistSelection({ wakeSensitivity: 'sensitive', draftStep: 1 });
+                }}
+                selected={wakeSensitivity === 'sensitive'}
+                testID="lucid-wake-sensitivity-sensitive"
+                title={copy.sensitiveTitle}
+              />
+              <LucidChoiceCard
+                description={copy.notSensitiveDescription}
+                onPress={() => {
+                  setWakeSensitivity('not_sensitive');
+                  persistSelection({ wakeSensitivity: 'not_sensitive', draftStep: 1 });
+                }}
+                selected={wakeSensitivity === 'not_sensitive'}
+                testID="lucid-wake-sensitivity-not_sensitive"
+                title={copy.notSensitiveTitle}
+              />
             </View>
           </View>
         ) : null}
-      </LucidOnboardingStage>
 
+        {step === 2 ? (
+          <View style={styles.stepStack}>
+            <OnboardingHeader title={copy.weekTitle} subtitle={copy.weekSubtitle} />
+            <LucidCard testID="lucid-onboarding-plan" style={styles.planCard}>
+              <PlanRow icon="sunny-outline" title={copy.morningTitle} detail={copy.morningDetail} />
+              <PlanRow icon="eye-outline" title={copy.trainingTitle} detail={copy.trainingDetail(initial.weeklyTarget)} />
+              <PlanRow icon="moon-outline" title={copy.ritualTitle} detail={planRitual} />
+              <PlanRow
+                icon="shield-checkmark-outline"
+                title={copy.restrictionsTitle}
+                detail={`${plan.allowWbtb ? copy.wbtbAllowed : copy.wbtbBlocked} ${plan.allowNightSignals ? copy.signalsAllowed : copy.signalsBlocked}`}
+              />
+              <View style={[styles.planReason, { borderTopColor: palette.border }]}>
+                <LucidOverline text={copy.reasonLabel} tone="amber" />
+                <Text style={[styles.planReasonText, { color: palette.textSecondary }]}>{planReason}</Text>
+              </View>
+            </LucidCard>
+          </View>
+        ) : null}
+
+        {step === 3 ? (
+          <View style={styles.stepStack} testID="lucid-onboarding-local-first">
+            <OnboardingHeader title={copy.localTitle} subtitle={copy.localSubtitle} />
+            <LucidCard accessibilityLabel={`${copy.localStorageTitle}. ${copy.localStorageDetail}`}>
+              <PlanRow icon="phone-portrait-outline" title={copy.localStorageTitle} detail={copy.localStorageDetail} />
+            </LucidCard>
+            <LucidCard accessibilityLabel={`${copy.noAccountTitle}. ${copy.noAccountDetail}`}>
+              <PlanRow icon="person-outline" title={copy.noAccountTitle} detail={copy.noAccountDetail} />
+            </LucidCard>
+            <LucidCard accessibilityLabel={`${copy.permissionsTitle}. ${copy.permissionsDetail}`}>
+              <PlanRow icon="key-outline" title={copy.permissionsTitle} detail={copy.permissionsDetail} />
+            </LucidCard>
+          </View>
+        ) : null}
+      </LucidOnboardingStage>
+      {saveError ? (
+        <Text accessibilityLiveRegion="assertive" style={[styles.errorText, { color: palette.danger }]}>
+          {saveError}
+        </Text>
+      ) : null}
     </LucidScreen>
+  );
+}
+
+function OnboardingHeader({ title, subtitle }: { title: string; subtitle: string }) {
+  const { colors, mode } = useTheme();
+  const palette = getLucidPalette(colors, mode);
+  return (
+    <View style={styles.sectionHeader}>
+      <Text accessibilityRole="header" style={[styles.immersiveTitle, { color: palette.text }]}>{title}</Text>
+      <Text style={[styles.introSubtitle, { color: palette.textSecondary }]}>{subtitle}</Text>
+    </View>
+  );
+}
+
+function PlanRow({
+  icon,
+  title,
+  detail,
+}: {
+  icon: React.ComponentProps<typeof Ionicons>['name'];
+  title: string;
+  detail: string;
+}) {
+  const { colors, mode } = useTheme();
+  const palette = getLucidPalette(colors, mode);
+  return (
+    <View style={styles.planRow}>
+      <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={[styles.planIcon, { backgroundColor: palette.accentSoft }]}>
+        <Ionicons color={palette.accentOn} name={icon} size={LucidIcon.md} />
+      </View>
+      <View style={styles.planCopy}>
+        <Text style={[styles.planTitle, { color: palette.text }]}>{title}</Text>
+        <Text style={[styles.planDetail, { color: palette.textSecondary }]}>{detail}</Text>
+      </View>
+    </View>
   );
 }
 
@@ -293,7 +494,7 @@ const PICKER_LOCALES = {
   it: 'it_IT',
 } as const;
 
-function localTimeToDate(value: string, fallback: string) {
+function localTimeToDate(value: string | null, fallback: string) {
   const normalized = isLucidLocalTime(value) ? value : fallback;
   const [hours, minutes] = normalized.split(':').map(Number);
   const date = new Date();
@@ -311,6 +512,7 @@ function SleepWindowPicker({
   cancelLabel,
   doneLabel,
   locale,
+  notSetLabel,
   onBedtimeChange,
   onWakeTimeChange,
   pickerHint,
@@ -318,17 +520,18 @@ function SleepWindowPicker({
   wakeLabel,
   wakeTime,
 }: {
-  bedtime: string;
+  bedtime: string | null;
   bedtimeLabel: string;
   cancelLabel: string;
   doneLabel: string;
   locale: keyof typeof PICKER_LOCALES;
+  notSetLabel: string;
   onBedtimeChange: (value: string) => void;
   onWakeTimeChange: (value: string) => void;
   pickerHint: string;
   reflow: boolean;
   wakeLabel: string;
-  wakeTime: string;
+  wakeTime: string | null;
 }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
@@ -374,11 +577,12 @@ function SleepWindowPicker({
             icon="moon-outline"
             label={bedtimeLabel}
             onPress={() => openPicker('bedtime')}
+            notSetLabel={notSetLabel}
             pickerHint={pickerHint}
             reflow={reflow}
             testID="lucid-sleep-bedtime"
             tone="accent"
-            valid={isLucidLocalTime(bedtime)}
+            valid={bedtime === null ? null : isLucidLocalTime(bedtime)}
             value={bedtime}
           />
           <SleepTimeChoice
@@ -386,11 +590,12 @@ function SleepWindowPicker({
             icon="sunny-outline"
             label={wakeLabel}
             onPress={() => openPicker('wakeTime')}
+            notSetLabel={notSetLabel}
             pickerHint={pickerHint}
             reflow={reflow}
             testID="lucid-sleep-wake-time"
             tone="amber"
-            valid={isLucidLocalTime(wakeTime)}
+            valid={wakeTime === null ? null : isLucidLocalTime(wakeTime)}
             value={wakeTime}
           />
         </View>
@@ -456,6 +661,7 @@ function SleepTimeChoice({
   active,
   icon,
   label,
+  notSetLabel,
   onPress,
   pickerHint,
   reflow,
@@ -467,18 +673,22 @@ function SleepTimeChoice({
   active: boolean;
   icon: 'moon-outline' | 'sunny-outline';
   label: string;
+  notSetLabel: string;
   onPress: () => void;
   pickerHint: string;
   reflow: boolean;
   testID: string;
   tone: 'accent' | 'amber';
-  valid: boolean;
-  value: string;
+  valid: boolean | null;
+  value: string | null;
 }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const toneColor = tone === 'accent' ? palette.accentStrong : palette.amber;
   const toneSurface = tone === 'accent' ? palette.accentSoft : palette.amberSoft;
+  const displayValue = value ?? notSetLabel;
+  const borderColor = valid === false ? palette.danger : toneColor;
+  const valueColor = valid === false ? palette.danger : value === null ? palette.textSecondary : toneColor;
 
   return (
     <Pressable
@@ -486,12 +696,12 @@ function SleepTimeChoice({
       accessibilityLabel={label}
       accessibilityRole="button"
       accessibilityState={{ expanded: active }}
-      accessibilityValue={{ text: value }}
+      accessibilityValue={{ text: displayValue }}
       onPress={onPress}
       style={({ pressed }) => [
         styles.timeChoice,
         reflow && styles.timeChoiceReflow,
-        reflow && { backgroundColor: palette.overlay, borderColor: valid ? toneColor : palette.danger },
+        reflow && { backgroundColor: palette.overlay, borderColor },
         pressed && styles.timeChoicePressed,
       ]}
       testID={testID}
@@ -503,16 +713,16 @@ function SleepTimeChoice({
           styles.timeNodeFrame,
           {
             backgroundColor: toneSurface,
-            borderColor: valid ? toneColor : palette.danger,
+            borderColor,
             opacity: active ? 1 : 0.86,
           },
         ]}
       >
-        <View style={[styles.timeNode, { backgroundColor: valid ? toneColor : palette.danger }]} />
+        <View style={[styles.timeNode, { backgroundColor: value === null ? toneSurface : borderColor }]} />
       </View>
       <View style={[styles.timeChoiceCopy, reflow && styles.timeChoiceCopyReflow]}>
         <Ionicons color={toneColor} name={icon} size={LucidIcon.lg} />
-        <Text style={[styles.timeValue, { color: toneColor }]}>{value}</Text>
+        <Text style={[styles.timeValue, { color: valueColor }]}>{displayValue}</Text>
         <Text style={[styles.timeLabel, { color: toneColor }]}>· {label}</Text>
       </View>
     </Pressable>
@@ -523,8 +733,41 @@ const styles = StyleSheet.create({
   screenContent: { gap: LucidSpace.md },
   progressRow: { minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.lg },
   stage: { position: 'relative' },
-  immersiveStep: { flex: 1, position: 'relative' },
-  introCopy: { position: 'absolute', left: 0, right: 0, bottom: 64, gap: LucidSpace.md },
+  stepStack: { flex: 1, gap: LucidSpace.xl },
+  sectionHeader: { gap: LucidSpace.sm },
+  choiceGroup: { gap: LucidSpace.md },
+  planCard: { gap: LucidSpace.lg },
+  planRow: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.md },
+  planIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: LucidRadius.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  planCopy: { flex: 1, gap: LucidSpace.xs },
+  planTitle: {
+    fontFamily: 'SpaceGrotesk_700Bold',
+    fontSize: LucidType.body[0],
+    lineHeight: LucidType.body[1],
+  },
+  planDetail: {
+    fontFamily: 'SpaceGrotesk_400Regular',
+    fontSize: LucidType.bodySm[0],
+    lineHeight: LucidType.bodySm[1],
+  },
+  planReason: { borderTopWidth: 1, paddingTop: LucidSpace.lg, gap: LucidSpace.sm },
+  planReasonText: {
+    fontFamily: 'SpaceGrotesk_500Medium',
+    fontSize: LucidType.bodySm[0],
+    lineHeight: LucidType.bodySm[1],
+  },
+  errorText: {
+    fontFamily: 'SpaceGrotesk_500Medium',
+    fontSize: LucidType.bodySm[0],
+    lineHeight: LucidType.bodySm[1],
+    textAlign: 'center',
+  },
   immersiveTitle: {
     fontFamily: 'Fraunces_600SemiBold',
     fontSize: LucidType.display[0],
@@ -536,8 +779,6 @@ const styles = StyleSheet.create({
     fontSize: LucidType.bodySm[0],
     lineHeight: LucidType.bodySm[1],
   },
-  sleepStep: { flex: 1, gap: LucidSpace.xl },
-  sleepTitle: { maxWidth: 232 },
   // L'arc reprend les proportions de la cible 393dp : il s'aplatit avant que
   // ses deux cibles de 52dp ne se touchent, puis disparaît dans le reflow.
   sleepWindowControl: { minHeight: 206, position: 'relative' },
@@ -610,26 +851,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
     textTransform: 'uppercase',
   },
-  summaryBlock: { gap: LucidSpace.md },
-  journeySummary: {
-    fontFamily: 'SpaceGrotesk_400Regular',
-    fontSize: LucidType.bodySm[0],
-    lineHeight: LucidType.bodySm[1],
-  },
-  sleepPriorityRow: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
-  sleepPriorityIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: LucidRadius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sleepPriorityText: {
-    flex: 1,
-    fontFamily: 'SpaceGrotesk_500Medium',
-    fontSize: LucidType.bodySm[0],
-    lineHeight: LucidType.bodySm[1],
-  },
   nativePickerAnchor: { width: 1, height: 1 },
   pickerModalRoot: {
     flex: 1,
@@ -655,5 +876,4 @@ const styles = StyleSheet.create({
   pickerActions: { flexDirection: 'row', gap: LucidSpace.md },
   pickerAction: { flex: 1 },
   primaryAction: { width: '100%' },
-  primaryActionIntro: { paddingBottom: 48 },
 });

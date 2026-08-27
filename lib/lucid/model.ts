@@ -14,6 +14,9 @@ export type LucidGoal =
   | 'improve_recall';
 
 export type LucidExperienceLevel = 'beginner' | 'occasional' | 'experienced';
+export const LUCID_WAKE_SENSITIVITIES = ['sensitive', 'not_sensitive'] as const;
+export type LucidWakeSensitivity = (typeof LUCID_WAKE_SENSITIVITIES)[number];
+export type LucidOnboardingDraftStep = 0 | 1 | 2 | 3;
 export type LucidPermissionState = 'unknown' | 'granted' | 'denied';
 export type LucidProgramStatus = 'not_started' | 'active' | 'paused' | 'completed';
 export type LucidExperimentResult = 'none' | 'pre_lucid' | 'lucid';
@@ -73,6 +76,11 @@ export interface LucidSleepSchedule {
   timeZone: string;
 }
 
+export interface LucidSleepScheduleDraft {
+  bedtime: string | null;
+  wakeTime: string | null;
+}
+
 export interface LucidAccessibilityPreferences {
   reduceMotion: boolean;
   // Vestigiaux. Aucun écran ne les positionne — l'onboarding ne propose plus que
@@ -98,6 +106,14 @@ export interface LucidOnboardingState {
   accessibility: LucidAccessibilityPreferences;
   completedAt: number | null;
   updatedAt: number;
+  /** Absent on historical v1 states. Null until the user answers. */
+  wakeSensitivity?: LucidWakeSensitivity | null;
+  /** Absent on historical v1 states. 0..3 four-step draft cursor. */
+  draftStep?: LucidOnboardingDraftStep;
+  /** Absent on historical v1 states. True only after the user confirms the sleep window. */
+  sleepScheduleConfirmed?: boolean;
+  /** Absent on historical v1 states. Preserves each explicitly entered time independently. */
+  sleepScheduleDraft?: LucidSleepScheduleDraft;
 }
 
 export interface LucidTrainerPreferences {
@@ -347,6 +363,26 @@ function isAccessibilityPreferences(value: unknown): value is LucidAccessibility
   );
 }
 
+function isOptionalWakeSensitivity(value: unknown): boolean {
+  return value === undefined || value === null || isEnumValue(LUCID_WAKE_SENSITIVITIES, value);
+}
+
+function isOptionalDraftStep(value: unknown): boolean {
+  return value === undefined || (typeof value === 'number' && [0, 1, 2, 3].includes(value));
+}
+
+function isOptionalSleepScheduleConfirmed(value: unknown): boolean {
+  return value === undefined || typeof value === 'boolean';
+}
+
+function isOptionalSleepScheduleDraft(value: unknown): boolean {
+  return value === undefined || (
+    isRecord(value) &&
+    (value.bedtime === null || isLucidLocalTime(value.bedtime)) &&
+    (value.wakeTime === null || isLucidLocalTime(value.wakeTime))
+  );
+}
+
 export function isLucidOnboardingState(value: unknown): value is LucidOnboardingState {
   if (!isRecord(value)) return false;
   return (
@@ -361,7 +397,11 @@ export function isLucidOnboardingState(value: unknown): value is LucidOnboarding
     (value.analyticsConsent === null || typeof value.analyticsConsent === 'boolean') &&
     isAccessibilityPreferences(value.accessibility) &&
     (value.completedAt === null || isFiniteTimestamp(value.completedAt)) &&
-    isFiniteTimestamp(value.updatedAt)
+    isFiniteTimestamp(value.updatedAt) &&
+    isOptionalWakeSensitivity(value.wakeSensitivity) &&
+    isOptionalDraftStep(value.draftStep) &&
+    isOptionalSleepScheduleConfirmed(value.sleepScheduleConfirmed) &&
+    isOptionalSleepScheduleDraft(value.sleepScheduleDraft)
   );
 }
 

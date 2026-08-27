@@ -18,6 +18,7 @@ const mockUpdateState = jest.fn();
 const mockSaveState = jest.fn();
 const mockClearLocalData = jest.fn();
 const mockReconcileReminders = jest.fn();
+const mockQueueMutation = jest.fn();
 
 jest.mock('react-native', () => jest.requireActual('../../tests/react-native-stub'));
 jest.mock('expo-localization', () => ({ getLocales: () => [{ languageTag: 'en-US' }] }));
@@ -39,7 +40,7 @@ jest.mock('@/services/lucidTrainerSync', () => ({
   hasLucidTrainerGuestData: (...args: unknown[]) => mockHasGuestData(...args),
   createLucidTrainerMutation: jest.fn(),
   pullLucidTrainerRemoteState: jest.fn(),
-  queueLucidTrainerMutation: jest.fn(),
+  queueLucidTrainerMutation: (...args: unknown[]) => mockQueueMutation(...args),
   replayLucidTrainerQueue: jest.fn(),
 }));
 
@@ -112,8 +113,10 @@ describe('LucidTrainerContext account boundary', () => {
     const completion = result.current.completeOnboarding({
       goal: 'improve_recall',
       experience: 'beginner',
+      wakeSensitivity: 'not_sensitive',
       weeklyTarget: 3,
       sleepSchedule: { bedtime: '22:30', wakeTime: '07:00', timeZone: 'UTC' },
+      sleepScheduleConfirmed: true,
       notificationsPermission: 'unknown',
       notificationsExplained: false,
       audioSafetyAccepted: false,
@@ -134,6 +137,157 @@ describe('LucidTrainerContext account boundary', () => {
     await waitFor(() => expect(result.current.state?.onboarding.status).toBe('completed'));
     expect(result.current.state?.preferences.cloudSyncEnabled).toBe(false);
     expect(result.current.state?.preferences.noctaliaLinkEnabled).toBe(false);
+  });
+
+  it('merges durable onboarding draft answers without triggering optional services', async () => {
+    let persistedState = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await result.current.saveOnboardingDraft({
+        draftStep: 0,
+        goal: 'first_lucid_dream',
+        sleepScheduleDraft: { bedtime: '23:15', wakeTime: null },
+      });
+      await result.current.saveOnboardingDraft({
+        draftStep: 2,
+        experience: 'beginner',
+        sleepSchedule: { bedtime: '23:15', wakeTime: '07:45', timeZone: 'UTC' },
+        sleepScheduleDraft: { bedtime: '23:15', wakeTime: '07:45' },
+        sleepScheduleConfirmed: true,
+        wakeSensitivity: 'sensitive',
+      });
+    });
+
+    expect(persistedState.onboarding).toMatchObject({
+      status: 'in_progress',
+      draftStep: 2,
+      goal: 'first_lucid_dream',
+      experience: 'beginner',
+      wakeSensitivity: 'sensitive',
+      sleepSchedule: { bedtime: '23:15', wakeTime: '07:45', timeZone: 'UTC' },
+      sleepScheduleDraft: { bedtime: '23:15', wakeTime: '07:45' },
+      sleepScheduleConfirmed: true,
+    });
+    expect(result.current.state?.onboarding).toMatchObject(persistedState.onboarding);
+    expect(mockReconcileReminders).not.toHaveBeenCalled();
+    expect(mockQueueMutation).not.toHaveBeenCalled();
+    expect(trackProductEvent).not.toHaveBeenCalled();
+  });
+
+  it('never downgrades a completed onboarding when a late draft save arrives', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      onboarding: {
+        ...initial.onboarding,
+        status: 'completed',
+        goal: 'improve_recall',
+        experience: 'beginner',
+        wakeSensitivity: 'not_sensitive',
+        sleepScheduleConfirmed: true,
+        completedAt: initial.createdAt,
+      },
+    };
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    const before = persistedState;
+
+    await act(async () => {
+      await result.current.saveOnboardingDraft({
+        draftStep: 1,
+        goal: 'stabilize_lucidity',
+      });
+    });
+
+    expect(persistedState).toBe(before);
+    expect(result.current.state?.onboarding).toMatchObject({
+      status: 'completed',
+      goal: 'improve_recall',
+      draftStep: 0,
+    });
+    expect(mockQueueMutation).not.toHaveBeenCalled();
+  });
+
+  it('rejects an incomplete completion payload without persisting completion', async () => {
+    let persistedState = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    const incomplete = {
+      goal: 'improve_recall',
+      experience: 'beginner',
+      wakeSensitivity: null,
+      weeklyTarget: 3,
+      sleepSchedule: { bedtime: '22:30', wakeTime: '07:00', timeZone: 'UTC' },
+      sleepScheduleConfirmed: false,
+      notificationsPermission: 'unknown',
+      notificationsExplained: false,
+      audioSafetyAccepted: false,
+      analyticsConsent: false,
+      accessibility: {
+        reduceMotion: false,
+        largerText: false,
+        screenReaderOptimized: false,
+      },
+      cloudSyncEnabled: false,
+      noctaliaLinkEnabled: false,
+    } as unknown as Parameters<typeof result.current.completeOnboarding>[0];
+
+    await act(async () => {
+      await expect(result.current.completeOnboarding(incomplete)).rejects.toThrow(
+        'Lucid onboarding is incomplete: wakeSensitivity, sleepScheduleConfirmed'
+      );
+    });
+
+    expect(persistedState.onboarding.status).toBe('not_started');
+    expect(persistedState.onboarding.completedAt).toBeNull();
+    expect(mockQueueMutation).not.toHaveBeenCalled();
   });
 
   it('pauses the previous program when another program starts', async () => {

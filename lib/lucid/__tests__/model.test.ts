@@ -4,6 +4,7 @@ import {
   isLucidLocalTime,
   isLucidSyncMutation,
   isLucidTimeZone,
+  isLucidOnboardingState,
   isLucidTrainerState,
   parseLucidSyncQueue,
   parseLucidTrainerState,
@@ -64,6 +65,40 @@ describe('Lucid Trainer model', () => {
 
     expect(isLucidTrainerState(state)).toBe(false);
     expect(parseLucidTrainerState(JSON.stringify(state))).toBeNull();
+  });
+
+
+  it('initializes optional four-step draft fields without bumping schemaVersion', () => {
+    const state = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    expect(state.schemaVersion).toBe(1);
+    expect(state.onboarding).toMatchObject({
+      wakeSensitivity: null,
+      draftStep: 0,
+      sleepScheduleConfirmed: false,
+      sleepScheduleDraft: { bedtime: null, wakeTime: null },
+    });
+    expect(isLucidOnboardingState(state.onboarding)).toBe(true);
+  });
+
+  it('accepts historical v1 onboarding without the new draft fields', () => {
+    const state = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    const legacy = { ...state.onboarding };
+    delete (legacy as { wakeSensitivity?: unknown }).wakeSensitivity;
+    delete (legacy as { draftStep?: unknown }).draftStep;
+    delete (legacy as { sleepScheduleConfirmed?: unknown }).sleepScheduleConfirmed;
+    delete (legacy as { sleepScheduleDraft?: unknown }).sleepScheduleDraft;
+    expect(isLucidOnboardingState(legacy)).toBe(true);
+  });
+
+  it('rejects invalid four-step draft fields when present', () => {
+    const state = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    expect(isLucidOnboardingState({ ...state.onboarding, wakeSensitivity: 'fragile' })).toBe(false);
+    expect(isLucidOnboardingState({ ...state.onboarding, draftStep: 4 })).toBe(false);
+    expect(isLucidOnboardingState({ ...state.onboarding, sleepScheduleConfirmed: 'yes' })).toBe(false);
+    expect(isLucidOnboardingState({ ...state.onboarding, sleepScheduleDraft: { bedtime: '25:00', wakeTime: null } })).toBe(false);
+    expect(isLucidOnboardingState({ ...state.onboarding, sleepScheduleDraft: { bedtime: null, wakeTime: '7:00' } })).toBe(false);
+    expect(isLucidOnboardingState({ ...state.onboarding, sleepScheduleDraft: { bedtime: '23:15', wakeTime: null } })).toBe(true);
+    expect(isLucidOnboardingState({ ...state.onboarding, wakeSensitivity: 'sensitive', draftStep: 2, sleepScheduleConfirmed: true })).toBe(true);
   });
 
   it('validates local times and real calendar dates', () => {

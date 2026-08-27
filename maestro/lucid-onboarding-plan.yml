@@ -1,0 +1,7 @@
+# Targeted TI-402 proof for the standalone Lucid Trainer application.
+appId: com.tanuki75.noctalia.lucid
+---
+- runFlow: subflows/open-lucid-app.yml
+- runFlow: subflows/complete-lucid-onboarding.yml
+- assertVisible:
+    id: lucid-today

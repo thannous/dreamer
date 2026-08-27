@@ -327,7 +327,8 @@ export function getLucidPersonalizedPlan(
   const policyReduced =
     !policyRecovery &&
     (policy?.mode === 'reducedIntensity' ||
-      (policy?.mode === 'nightFeaturesBlocked' && policyHas('repeated_signal_wakeups')));
+      (policy?.mode === 'nightFeaturesBlocked' &&
+        (policyHas('repeated_signal_wakeups') || policyHas('fragile_sleep'))));
 
   let draft: Omit<LucidPersonalizedPlan, 'allowWbtb' | 'allowNightSignals'> & {
     planAllowWbtb: boolean;

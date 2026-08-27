@@ -93,6 +93,15 @@ describe('Lucid Trainer domain', () => {
     );
   });
 
+  it('creates a four-step draft with no assumed sensitivity or confirmed sleep window', () => {
+    const state = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    expect(state.schemaVersion).toBe(1);
+    expect(state.onboarding.wakeSensitivity).toBeNull();
+    expect(state.onboarding.draftStep).toBe(0);
+    expect(state.onboarding.sleepScheduleConfirmed).toBe(false);
+    expect(state.onboarding.sleepScheduleDraft).toEqual({ bedtime: null, wakeTime: null });
+  });
+
   it('merges complete states and applies deterministic deletions', () => {
     const left = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
     const right = createInitialLucidTrainerState({ now: NOW + 10, timeZone: 'UTC' });

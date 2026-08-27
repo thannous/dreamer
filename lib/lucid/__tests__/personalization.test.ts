@@ -604,6 +604,27 @@ describe('getLucidPersonalizedPlan', () => {
     expect(requested.allowNightSignals).toBe(false);
   });
 
+  it('treats nightFeaturesBlocked with fragile_sleep as reduced protection without reopening night features', () => {
+    const plan = getLucidPersonalizedPlan({
+      goal: 'first_lucid_dream',
+      experience: 'experienced',
+      observations: [remembered('a', 1), remembered('b', 2)],
+      policy: {
+        mode: 'nightFeaturesBlocked',
+        allowWbtb: false,
+        allowNightSignals: false,
+        reasons: ['audio_not_consented', 'fragile_sleep'],
+      },
+    });
+    expect(plan).toMatchObject({
+      reasonCode: 'policy_reduced',
+      primaryAction: 'reduce_night_signals',
+      intensity: 'reduced',
+      allowWbtb: false,
+      allowNightSignals: false,
+    });
+  });
+
   it('keeps reduce_night_signals when nightFeaturesBlocked includes repeated wakeups, with signals still closed', () => {
     const plan = getLucidPersonalizedPlan({
       goal: 'first_lucid_dream',

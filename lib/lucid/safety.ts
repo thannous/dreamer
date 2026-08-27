@@ -1,5 +1,5 @@
 import type { LucidProgramCalendarStatus } from '@/lib/lucid/calendar';
-import type { LucidProgramProgress } from '@/lib/lucid/model';
+import type { LucidProgramProgress, LucidWakeSensitivity } from '@/lib/lucid/model';
 import {
   deriveLucidSafetyObservationFacts,
   type LucidPlanObservation,
@@ -144,7 +144,10 @@ export const DEFAULT_LUCID_SAFETY_FACTS: LucidSafetyFacts = {
  * No extra schema or dead preference is required.
  */
 export type LucidSafetyPersistedState = {
-  onboarding?: { audioSafetyAccepted?: boolean } | null;
+  onboarding?: {
+    audioSafetyAccepted?: boolean;
+    wakeSensitivity?: LucidWakeSensitivity | null;
+  } | null;
   experiments?: readonly LucidPlanObservation[] | null;
 };
 
@@ -266,9 +269,11 @@ function policyFrom(input: LucidSafetyFacts | LucidSafetyPolicy): LucidSafetyPol
 
 /**
  * Maps available persisted state plus optional current facts onto
- * `LucidSafetyFacts`. `audioSafetyAccepted` is read from onboarding. Recent
- * sleep degradation and repeated cue-wakeups can be derived from experiments
- * already on state. Explicit current values, including `false`, always win.
+ * `LucidSafetyFacts`. `audioSafetyAccepted` is read from onboarding. A stored
+ * `wakeSensitivity` of `sensitive` maps to fragile sleep; absent or
+ * `not_sensitive` does not invent fragility. Recent sleep degradation and
+ * repeated cue-wakeups can be derived from experiments already on state.
+ * Explicit current values, including `false`, always win.
  */
 export function resolveLucidSafetyFacts(
   state?: LucidSafetyPersistedState | null,
@@ -278,7 +283,9 @@ export function resolveLucidSafetyFacts(
   return readLucidSafetyFacts({
     recoveryRequested: current?.recoveryRequested ?? DEFAULT_LUCID_SAFETY_FACTS.recoveryRequested,
     recentSleepDegraded: current?.recentSleepDegraded ?? derived.recentSleepDegraded,
-    sleepIsFragile: current?.sleepIsFragile ?? DEFAULT_LUCID_SAFETY_FACTS.sleepIsFragile,
+    sleepIsFragile:
+      current?.sleepIsFragile ??
+      (state?.onboarding?.wakeSensitivity === 'sensitive'),
     hearingConcern: current?.hearingConcern ?? DEFAULT_LUCID_SAFETY_FACTS.hearingConcern,
     audioConsented:
       current?.audioConsented ?? state?.onboarding?.audioSafetyAccepted === true,

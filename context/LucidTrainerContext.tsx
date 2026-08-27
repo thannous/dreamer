@@ -35,14 +35,17 @@ import {
   type LucidExperiment,
   type LucidExperimentResult,
   type LucidNightCueOutcome,
+  type LucidOnboardingDraftStep,
   type LucidOnboardingState,
   type LucidPersonalFactor,
   type LucidProgramProgress,
   type LucidRealityCheck,
+  type LucidSleepSchedule,
   type LucidSyncEntity,
   type LucidTechnique,
   type LucidTrainerPreferences,
   type LucidVoiceCaptureState,
+  type LucidWakeSensitivity,
   type LucidWeeklyReview,
 } from '@/lib/lucid/model';
 import { buildLucidReminderPlan } from '@/lib/lucid/reminders';
@@ -76,8 +79,6 @@ export type LucidSyncStatus = 'local' | 'syncing' | 'synced' | 'offline' | 'erro
 
 type CompleteOnboardingInput = Pick<
   LucidOnboardingState,
-  | 'goal'
-  | 'experience'
   | 'weeklyTarget'
   | 'sleepSchedule'
   | 'notificationsPermission'
@@ -85,7 +86,41 @@ type CompleteOnboardingInput = Pick<
   | 'audioSafetyAccepted'
   | 'analyticsConsent'
   | 'accessibility'
-> & Pick<LucidTrainerPreferences, 'cloudSyncEnabled' | 'noctaliaLinkEnabled'>;
+> &
+  Pick<LucidTrainerPreferences, 'cloudSyncEnabled' | 'noctaliaLinkEnabled'> & {
+    goal: NonNullable<LucidOnboardingState['goal']>;
+    experience: NonNullable<LucidOnboardingState['experience']>;
+    wakeSensitivity: LucidWakeSensitivity;
+    sleepScheduleConfirmed: true;
+  };
+
+export type LucidOnboardingDraftPatch = {
+  goal?: LucidOnboardingState['goal'];
+  experience?: LucidOnboardingState['experience'];
+  wakeSensitivity?: LucidWakeSensitivity | null;
+  sleepSchedule?: LucidSleepSchedule;
+  sleepScheduleDraft?: LucidOnboardingState['sleepScheduleDraft'];
+  sleepScheduleConfirmed?: boolean;
+  draftStep?: LucidOnboardingDraftStep;
+};
+
+function requireCompleteOnboardingAnswers(
+  onboarding: LucidOnboardingState
+): asserts onboarding is LucidOnboardingState & {
+  goal: NonNullable<LucidOnboardingState['goal']>;
+  experience: NonNullable<LucidOnboardingState['experience']>;
+  wakeSensitivity: LucidWakeSensitivity;
+  sleepScheduleConfirmed: true;
+} {
+  const missing: string[] = [];
+  if (!onboarding.goal) missing.push('goal');
+  if (!onboarding.experience) missing.push('experience');
+  if (!onboarding.wakeSensitivity) missing.push('wakeSensitivity');
+  if (onboarding.sleepScheduleConfirmed !== true) missing.push('sleepScheduleConfirmed');
+  if (missing.length > 0) {
+    throw new Error(`Lucid onboarding is incomplete: ${missing.join(', ')}`);
+  }
+}
 
 export type LucidExperimentInput = {
   technique: LucidTechnique | null;
@@ -114,6 +149,7 @@ export type LucidTrainerContextValue = {
   lastSyncResult: LucidSyncReplayResult | null;
   guestImportAvailable: boolean;
   importGuestData: () => Promise<void>;
+  saveOnboardingDraft: (patch: LucidOnboardingDraftPatch) => Promise<void>;
   completeOnboarding: (input: CompleteOnboardingInput) => Promise<void>;
   updateAnalyticsConsent: (enabled: boolean) => Promise<void>;
   updateAudioSafetyConsent: (enabled: boolean) => Promise<void>;
@@ -370,6 +406,27 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     [deviceLocale, queueEntities, userScope]
   );
 
+  const saveOnboardingDraft = useCallback(
+    async (patch: LucidOnboardingDraftPatch) => {
+      await commit((current, now) => {
+        if (current.onboarding.status === 'completed') {
+          return { next: current, changed: [] };
+        }
+        const onboarding: LucidOnboardingState = {
+          ...current.onboarding,
+          ...patch,
+          status: 'in_progress',
+          updatedAt: now,
+        };
+        return {
+          next: { ...current, onboarding, updatedAt: now },
+          changed: [{ entityType: 'onboarding', entityKey: 'onboarding', value: onboarding }],
+        };
+      });
+    },
+    [commit]
+  );
+
   const completeOnboarding = useCallback(
     async (input: CompleteOnboardingInput) => {
       const {
@@ -378,9 +435,20 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         ...onboardingInput
       } = input;
       const next = await commit((current, now) => {
-        const onboarding: LucidOnboardingState = {
+        const completionCandidate: LucidOnboardingState = {
           ...current.onboarding,
           ...onboardingInput,
+          wakeSensitivity: input.wakeSensitivity,
+        };
+        requireCompleteOnboardingAnswers(completionCandidate);
+        const onboarding: LucidOnboardingState = {
+          ...completionCandidate,
+          sleepScheduleConfirmed: true,
+          sleepScheduleDraft: {
+            bedtime: input.sleepSchedule.bedtime,
+            wakeTime: input.sleepSchedule.wakeTime,
+          },
+          draftStep: 3,
           status: 'completed',
           completedAt: now,
           updatedAt: now,
@@ -742,6 +810,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       lastSyncResult,
       guestImportAvailable,
       importGuestData,
+      saveOnboardingDraft,
       completeOnboarding,
       updateAnalyticsConsent,
       updateAudioSafetyConsent,
@@ -767,6 +836,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       lastSyncResult,
       guestImportAvailable,
       importGuestData,
+      saveOnboardingDraft,
       completeOnboarding,
       updateAnalyticsConsent,
       updateAudioSafetyConsent,
