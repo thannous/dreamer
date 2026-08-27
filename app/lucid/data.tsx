@@ -17,6 +17,7 @@ import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { trackProductEvent } from '@/lib/analytics';
 import { buildNoctaliaHandoffLinks, type NoctaliaScoreBand } from '@/lib/lucid/deepLinks';
+import type { LucidExperiment, LucidExperimentResult, LucidTechnique } from '@/lib/lucid/model';
 import { closeLucidRoute } from '@/lib/lucid/routes';
 import { finalizeAccountDeletion, requestAccountDeletion } from '@/services/accountDeletionService';
 import { deleteLucidTrainerCloudData } from '@/services/lucidTrainerCloudData';
@@ -169,6 +170,37 @@ function band(value: number): NoctaliaScoreBand {
   return value <= 0 ? 'none' : value <= 2 ? 'low' : value <= 4 ? 'medium' : 'high';
 }
 
+function isTransferableExperiment(
+  experiment: LucidExperiment
+): experiment is TransferableExperiment {
+  return (
+    experiment.technique != null &&
+    experiment.result != null &&
+    experiment.lucidityLevel != null &&
+    experiment.recallLevel != null
+  );
+}
+
+type TransferableExperiment = LucidExperiment & {
+  technique: LucidTechnique;
+  result: LucidExperimentResult;
+  lucidityLevel: number;
+  recallLevel: number;
+};
+
+function findTransferableExperiment(
+  experiments: readonly LucidExperiment[]
+): TransferableExperiment | undefined {
+  const eligible = experiments.filter(isTransferableExperiment);
+  if (eligible.length === 0) return undefined;
+  return [...eligible].sort(
+    (left, right) =>
+      right.occurredAt - left.occurredAt ||
+      right.updatedAt - left.updatedAt ||
+      left.id.localeCompare(right.id)
+  )[0];
+}
+
 export default function LucidDataScreen() {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
@@ -176,7 +208,7 @@ export default function LucidDataScreen() {
   const { state, content, resetLocalData } = useLucidTrainer();
   const c = COPY[content.locale];
   const [busy, setBusy] = useState<string | null>(null);
-  const latest = state!.experiments[0];
+  const transferable = findTransferableExperiment(state!.experiments);
 
   const reportHandoff = (outcome: 'opened' | 'fallback' | 'cancelled' | 'failed') =>
     state!.onboarding.analyticsConsent === true
@@ -199,18 +231,23 @@ export default function LucidDataScreen() {
   };
 
   const handoff = () => {
-    if (!latest || !state!.preferences.noctaliaLinkEnabled) {
-      Alert.alert(c.unavailable, latest ? content.privacy.minimalTransfer : c.noResult);
+    if (!transferable || !state!.preferences.noctaliaLinkEnabled) {
+      Alert.alert(c.unavailable, transferable ? content.privacy.minimalTransfer : c.noResult);
       return;
     }
 
     const links = buildNoctaliaHandoffLinks(
       {
         schemaVersion: 1,
-        technique: latest.technique,
-        outcome: latest.result === 'lucid' ? 'lucid' : latest.recallLevel > 0 ? 'remembered' : 'no_recall',
-        lucidity: band(latest.result === 'lucid' ? latest.lucidityLevel : 0),
-        recall: band(latest.recallLevel),
+        technique: transferable.technique,
+        outcome:
+          transferable.result === 'lucid'
+            ? 'lucid'
+            : transferable.recallLevel > 0
+              ? 'remembered'
+              : 'no_recall',
+        lucidity: band(transferable.result === 'lucid' ? transferable.lucidityLevel : 0),
+        recall: band(transferable.recallLevel),
       },
       { dataTransfer: true }
     );
@@ -345,7 +382,7 @@ export default function LucidDataScreen() {
           label={c.open}
           variant="secondary"
           icon="open"
-          disabled={!latest || !state!.preferences.noctaliaLinkEnabled}
+          disabled={!transferable || !state!.preferences.noctaliaLinkEnabled}
           onPress={handoff}
         />
       </LucidCard>

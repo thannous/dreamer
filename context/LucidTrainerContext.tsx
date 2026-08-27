@@ -25,16 +25,25 @@ import {
   type LucidTrainerState,
 } from '@/lib/lucid/domain';
 import { getLucidContent, normalizeLucidLocale, type LucidTrainerContent } from '@/lib/lucid/content';
-import type {
-  LucidExperiment,
-  LucidOnboardingState,
-  LucidPersonalFactor,
-  LucidProgramProgress,
-  LucidRealityCheck,
-  LucidSyncEntity,
-  LucidTechnique,
-  LucidTrainerPreferences,
-  LucidWeeklyReview,
+import {
+  getLucidDateKeyInTimeZone,
+  resolvePreviousNightTechniqueLink,
+} from '@/lib/lucid/morningCapture';
+import {
+  isLucidExperiment,
+  type LucidDreamCaptureMode,
+  type LucidExperiment,
+  type LucidExperimentResult,
+  type LucidNightCueOutcome,
+  type LucidOnboardingState,
+  type LucidPersonalFactor,
+  type LucidProgramProgress,
+  type LucidRealityCheck,
+  type LucidSyncEntity,
+  type LucidTechnique,
+  type LucidTrainerPreferences,
+  type LucidVoiceCaptureState,
+  type LucidWeeklyReview,
 } from '@/lib/lucid/model';
 import { buildLucidReminderPlan } from '@/lib/lucid/reminders';
 import {
@@ -78,15 +87,19 @@ type CompleteOnboardingInput = Pick<
   | 'accessibility'
 > & Pick<LucidTrainerPreferences, 'cloudSyncEnabled' | 'noctaliaLinkEnabled'>;
 
-type ExperimentInput = {
-  technique: LucidTechnique;
-  preparationMinutes: number;
-  result: LucidExperiment['result'];
-  lucidityLevel: number;
-  recallLevel: number;
-  sleepQuality: number;
+export type LucidExperimentInput = {
+  technique: LucidTechnique | null;
+  preparationMinutes: number | null;
+  result: LucidExperimentResult | null;
+  lucidityLevel: number | null;
+  recallLevel: number | null;
+  sleepQuality: number | null;
   factors: LucidPersonalFactor[];
   notes?: string;
+  captureMode: LucidDreamCaptureMode;
+  recallText?: string;
+  cueOutcome: LucidNightCueOutcome;
+  voiceCapture?: LucidVoiceCaptureState;
 };
 
 type RealityCheckInput = Omit<LucidRealityCheck, 'id' | 'occurredAt' | 'updatedAt'>;
@@ -108,7 +121,7 @@ export type LucidTrainerContextValue = {
   startProgram: (technique: LucidTechnique) => Promise<void>;
   completeProgramSession: (technique: LucidTechnique, exerciseId: string, sessionNumber: number, sessionCount: number) => Promise<void>;
   pauseProgram: (technique: LucidTechnique) => Promise<void>;
-  addExperiment: (input: ExperimentInput) => Promise<LucidExperiment>;
+  addExperiment: (input: LucidExperimentInput) => Promise<LucidExperiment>;
   addRealityCheck: (input: RealityCheckInput) => Promise<LucidRealityCheck>;
   saveWeeklyReview: (input: Omit<LucidWeeklyReview, 'id' | 'completedAt' | 'updatedAt'>) => Promise<void>;
   deleteExperiment: (id: string) => Promise<void>;
@@ -136,11 +149,6 @@ function getTimeZone(): string {
   } catch {
     return 'UTC';
   }
-}
-
-function localDateKey(now: number): string {
-  const date = new Date(now);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }
 
 function entityForProgress(value: LucidProgramProgress): LucidSyncEntity {
@@ -524,12 +532,16 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
           Math.max(now, current.updatedAt, ...current.progress.map((item) => item.updatedAt)) + 1;
         const completedExerciseIds = [...new Set([...existing.completedExerciseIds, exerciseId])];
         const completed = completedExerciseIds.length >= sessionCount;
+        const practiceDate = getLucidDateKeyInTimeZone(now, current.preferences.timeZone);
+        if (practiceDate === null) {
+          throw new Error('Invalid Lucid timezone');
+        }
         const progress: LucidProgramProgress = {
           ...existing,
           status: completed ? 'completed' : 'active',
           currentDay: Math.min(sessionCount, completedExerciseIds.length + 1),
           completedExerciseIds,
-          practiceDates: [...new Set([...existing.practiceDates, localDateKey(now)])],
+          practiceDates: [...new Set([...existing.practiceDates, practiceDate])],
           startedAt: existing.startedAt ?? now,
           completedAt: completed ? now : null,
           updatedAt: mutationUpdatedAt,
@@ -570,14 +582,49 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   );
 
   const addExperiment = useCallback(
-    async (input: ExperimentInput) => {
+    async (input: LucidExperimentInput) => {
       let created: LucidExperiment | null = null;
       const next = await commit((current, now) => {
-        created = { id: Crypto.randomUUID(), occurredAt: now, updatedAt: now, ...input };
-        const entity: LucidSyncEntity = { entityType: 'experiment', entityKey: created.id, value: created };
+        const recallText = input.recallText?.trim();
+        const techniqueAutoLink = resolvePreviousNightTechniqueLink(
+          current.progress,
+          now,
+          current.preferences.timeZone
+        );
+        const experiment: LucidExperiment = {
+          id: Crypto.randomUUID(),
+          occurredAt: now,
+          updatedAt: now,
+          technique: input.technique,
+          preparationMinutes: input.preparationMinutes,
+          result: input.result,
+          lucidityLevel: input.lucidityLevel,
+          recallLevel: input.recallLevel,
+          sleepQuality: input.sleepQuality,
+          factors: input.factors,
+          captureMode: input.captureMode,
+          cueOutcome: input.cueOutcome,
+        };
+        if (input.notes) experiment.notes = input.notes;
+        if (input.captureMode === 'write' || input.captureMode === 'speak') {
+          if (recallText) experiment.recallText = recallText;
+        }
+        if (input.captureMode === 'speak' && input.voiceCapture) {
+          experiment.voiceCapture = input.voiceCapture;
+        }
+        if (techniqueAutoLink) experiment.techniqueAutoLink = techniqueAutoLink;
+        if (!isLucidExperiment(experiment)) {
+          throw new Error('Invalid Lucid experiment');
+        }
+        created = experiment;
+        const entity: LucidSyncEntity = {
+          entityType: 'experiment',
+          entityKey: experiment.id,
+          value: experiment,
+        };
         return { next: applyLucidSyncEntity(current, entity), changed: [entity] };
       });
-      if (next.onboarding.analyticsConsent === true) {
+      if (next.onboarding.analyticsConsent === true && input.technique) {
         await trackProductEvent('lucid_training_completed', {
           technique: input.technique,
           phase: 'morning',

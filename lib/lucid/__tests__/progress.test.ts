@@ -4,6 +4,7 @@ import {
   compareLucidMethods,
   getDeterministicLucidCoaching,
   getLucidProgressTrend,
+  isLucidTrainingAttempt,
   summarizeLucidProgress,
 } from '@/lib/lucid/progress';
 import type { LucidExperiment } from '@/lib/lucid/model';
@@ -224,6 +225,83 @@ describe('lucid progress', () => {
       factors: ['low_sleep', 'interrupted_sleep', 'stress'],
     });
     expect(adaptLucidExperimentForProgress(experiment)).not.toHaveProperty('notes');
+  });
+
+  it('does not count nothing-for-now or auto-link-only captures as attempts or no_recall', () => {
+    const deferred = record({
+      id: 'deferred',
+      occurredAt: DAY,
+      captureMode: 'nothing_for_now',
+      cueOutcome: 'not_heard',
+      technique: null,
+      preparationMinutes: null,
+      result: null,
+      lucidityLevel: null,
+      recallLevel: null,
+      sleepQuality: 5,
+      factors: ['sleep_debt'],
+    });
+    const writeOnly = record({
+      id: 'write',
+      occurredAt: 2 * DAY,
+      captureMode: 'write',
+      recallText: 'a staircase that kept rearranging',
+      cueOutcome: 'heard_in_dream',
+      technique: null,
+      preparationMinutes: null,
+      result: null,
+      lucidityLevel: null,
+      recallLevel: 4,
+      sleepQuality: 4,
+      techniqueAutoLink: {
+        technique: 'ssild',
+        source: 'program_practice',
+        practiceDate: '2026-08-26',
+      },
+    });
+    const reported = record({
+      id: 'reported',
+      occurredAt: 3 * DAY,
+      technique: 'mild',
+      result: 'lucid',
+      lucidityLevel: 3,
+      recallLevel: 3,
+      sleepQuality: 3,
+    });
+
+    expect(isLucidTrainingAttempt(deferred)).toBe(false);
+    expect(isLucidTrainingAttempt(writeOnly)).toBe(false);
+    expect(isLucidTrainingAttempt(reported)).toBe(true);
+    expect(adaptLucidExperimentForProgress(deferred).outcome).toBeNull();
+    expect(adaptLucidExperimentForProgress(writeOnly)).toMatchObject({
+      technique: null,
+      outcome: 'remembered',
+      recall: 4,
+    });
+
+    const summary = summarizeLucidProgress([deferred, writeOnly, reported]);
+    expect(summary).toMatchObject({
+      records: 3,
+      attempts: 1,
+      lucidDreams: 1,
+      recalledDreams: 1,
+      successRate: 1,
+      recallRate: 1,
+      averageRecall: 3.5,
+      averageSleepQuality: 4,
+    });
+
+    const comparison = compareLucidMethods([deferred, writeOnly, reported], undefined, 1);
+    expect(comparison.leader).toBe('mild');
+    expect(comparison.methods.map(({ technique, attempts, records }) => ({
+      technique,
+      attempts,
+      records,
+    }))).toEqual([
+      { technique: 'mild', attempts: 1, records: 1 },
+      { technique: 'ssild', attempts: 0, records: 0 },
+      { technique: 'wbtb', attempts: 0, records: 0 },
+    ]);
   });
 
   it('rejects invalid or overlapping review windows', () => {

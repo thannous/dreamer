@@ -1,11 +1,13 @@
 import {
   isLucidDateKey,
+  isLucidExperiment,
   isLucidLocalTime,
   isLucidSyncMutation,
   isLucidTimeZone,
   isLucidTrainerState,
   parseLucidSyncQueue,
   parseLucidTrainerState,
+  type LucidExperiment,
 } from '@/lib/lucid/model';
 import { createInitialLucidTrainerState } from '@/lib/lucid/domain';
 
@@ -106,5 +108,134 @@ describe('Lucid Trainer model', () => {
     ).toBe(false);
     expect(parseLucidSyncQueue(JSON.stringify([mutation]))).toEqual([mutation]);
     expect(parseLucidSyncQueue('{bad-json')).toBeNull();
+  });
+
+  describe('morning capture experiment compatibility', () => {
+    const legacy: LucidExperiment = {
+      id: 'exp-legacy',
+      occurredAt: NOW,
+      technique: 'mild',
+      preparationMinutes: 10,
+      result: 'lucid',
+      lucidityLevel: 4,
+      recallLevel: 5,
+      sleepQuality: 3,
+      factors: ['stress'],
+      notes: 'legacy morning review',
+      updatedAt: NOW,
+    };
+
+    const writeCapture: LucidExperiment = {
+      id: 'exp-write',
+      occurredAt: NOW,
+      technique: null,
+      preparationMinutes: null,
+      result: null,
+      lucidityLevel: null,
+      recallLevel: null,
+      sleepQuality: null,
+      factors: [],
+      updatedAt: NOW,
+      captureMode: 'write',
+      recallText: 'the hallway again',
+      cueOutcome: 'indeterminate',
+    };
+
+    it('accepts valid legacy records and valid new capture records in the same state', () => {
+      const state = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+      state.experiments = [legacy, writeCapture];
+
+      expect(isLucidExperiment(legacy)).toBe(true);
+      expect(isLucidExperiment(writeCapture)).toBe(true);
+      expect(isLucidTrainerState(state)).toBe(true);
+      expect(parseLucidTrainerState(JSON.stringify(state))?.experiments).toEqual([
+        legacy,
+        writeCapture,
+      ]);
+    });
+
+    it('requires write and speak captures to keep non-empty recall text and a cue outcome', () => {
+      expect(isLucidExperiment({ ...writeCapture, recallText: '   ' })).toBe(false);
+      expect(isLucidExperiment({ ...writeCapture, recallText: undefined })).toBe(false);
+      expect(isLucidExperiment({ ...writeCapture, cueOutcome: undefined })).toBe(false);
+      expect(
+        isLucidExperiment({
+          ...writeCapture,
+          captureMode: 'speak',
+          voiceCapture: 'stub',
+        })
+      ).toBe(true);
+      expect(
+        isLucidExperiment({
+          ...writeCapture,
+          captureMode: 'speak',
+          voiceCapture: undefined,
+        })
+      ).toBe(false);
+    });
+
+    it('rejects every new-only morning-capture field when captureMode is absent', () => {
+      expect(isLucidExperiment(legacy)).toBe(true);
+      expect(isLucidExperiment({ ...legacy, recallText: 'the hallway' })).toBe(false);
+      expect(isLucidExperiment({ ...legacy, cueOutcome: 'indeterminate' })).toBe(false);
+      expect(isLucidExperiment({ ...legacy, voiceCapture: 'stub' })).toBe(false);
+      expect(
+        isLucidExperiment({
+          ...legacy,
+          techniqueAutoLink: {
+            technique: 'mild',
+            source: 'program_practice',
+            practiceDate: '2026-08-26',
+          },
+        })
+      ).toBe(false);
+    });
+
+    it('rejects malformed new-capture combinations while keeping legacy records intact', () => {
+      expect(
+        isLucidExperiment({
+          ...writeCapture,
+          captureMode: 'nothing_for_now',
+          recallText: undefined,
+          cueOutcome: 'not_heard',
+        })
+      ).toBe(true);
+      expect(
+        isLucidExperiment({
+          ...writeCapture,
+          captureMode: 'nothing_for_now',
+          recallText: 'still a dream',
+          cueOutcome: 'not_heard',
+        })
+      ).toBe(false);
+      expect(
+        isLucidExperiment({
+          ...writeCapture,
+          captureMode: 'nothing_for_now',
+          recallText: undefined,
+          voiceCapture: 'stub',
+          cueOutcome: 'heard_woke',
+        })
+      ).toBe(false);
+      expect(isLucidExperiment({ ...writeCapture, voiceCapture: 'stub' })).toBe(false);
+      expect(
+        isLucidExperiment({
+          ...writeCapture,
+          techniqueAutoLink: { technique: 'mild', source: 'guess', practiceDate: '2026-08-26' },
+        })
+      ).toBe(false);
+      expect(
+        isLucidExperiment({
+          ...writeCapture,
+          techniqueAutoLink: {
+            technique: 'mild',
+            source: 'program_practice',
+            practiceDate: '2026-08-26',
+          },
+        })
+      ).toBe(true);
+      expect(isLucidExperiment({ ...legacy, technique: null })).toBe(false);
+      expect(isLucidExperiment(legacy)).toBe(true);
+    });
   });
 });

@@ -3,6 +3,8 @@
 import React from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
+import { trackProductEvent } from '@/lib/analytics';
+import { getLucidDateKeyInTimeZone } from '@/lib/lucid/morningCapture';
 import type { LucidTrainerState } from '@/lib/lucid/model';
 import type { LucidReminderReconciliationResult } from '@/services/lucidTrainerNotifications';
 
@@ -662,6 +664,173 @@ describe('LucidTrainerContext account boundary', () => {
     expect(result.current.state?.progress.find(
       (item: LucidTrainerState['progress'][number]) => item.technique === 'ssild'
     )).toEqual(expect.objectContaining({ status: 'active', technique: 'ssild' }));
+  });
+
+  it('persists completed practice dates in the stored timezone, not the host calendar', async () => {
+    const NOW = Date.UTC(2026, 7, 26, 12, 0, 0);
+    const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(NOW);
+    try {
+      const host = new Date(NOW);
+      const hostLocalDate = `${host.getFullYear()}-${String(host.getMonth() + 1).padStart(2, '0')}-${String(host.getDate()).padStart(2, '0')}`;
+      const utcDate = getLucidDateKeyInTimeZone(NOW, 'UTC');
+      const preferenceDate = getLucidDateKeyInTimeZone(NOW, 'Pacific/Auckland');
+      expect(utcDate).toBe('2026-08-26');
+      expect(preferenceDate).toBe('2026-08-27');
+
+      const initial = createInitialLucidTrainerState({
+        now: NOW,
+        timeZone: 'Pacific/Auckland',
+      }) as LucidTrainerState;
+      let persistedState: LucidTrainerState = {
+        ...initial,
+        progress: [
+          {
+            ...createLucidProgramProgress('mild', NOW),
+            status: 'active',
+            startedAt: NOW,
+            updatedAt: NOW,
+          },
+        ],
+      };
+      mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+      mockGetState.mockImplementation(async () => persistedState);
+      mockUpdateState.mockImplementation(
+        async (
+          _scope: string,
+          updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+        ) => {
+          persistedState = await updater(persistedState);
+          return persistedState;
+        }
+      );
+
+      const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+      await waitFor(() => expect(result.current.loading).toBe(false));
+
+      await act(async () => {
+        await result.current.completeProgramSession('mild', 'mild-01', 1, 7);
+      });
+
+      const practiceDates = result.current.state?.progress.find(
+        (item: LucidTrainerState['progress'][number]) => item.technique === 'mild'
+      )?.practiceDates;
+      expect(practiceDates).toEqual(['2026-08-27']);
+      expect(practiceDates).not.toEqual([utcDate]);
+      if (hostLocalDate !== preferenceDate) {
+        expect(practiceDates).not.toEqual([hostLocalDate]);
+      }
+    } finally {
+      nowSpy.mockRestore();
+    }
+  });
+
+  it('creates a morning capture with a deterministic auto-link and no invented technique', async () => {
+    const NOW = Date.UTC(2026, 7, 27, 8, 0, 0);
+    const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(NOW);
+    try {
+      const initial = createInitialLucidTrainerState({
+        now: NOW,
+        timeZone: 'UTC',
+      }) as LucidTrainerState;
+      let persistedState: LucidTrainerState = {
+        ...initial,
+        onboarding: { ...initial.onboarding, analyticsConsent: true, status: 'completed' },
+        progress: [
+          {
+            ...createLucidProgramProgress('wbtb', NOW),
+            status: 'active',
+            practiceDates: ['2026-08-27'],
+            startedAt: NOW,
+            updatedAt: NOW,
+          },
+        ],
+      };
+      mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+      mockGetState.mockImplementation(async () => persistedState);
+      mockUpdateState.mockImplementation(
+        async (
+          _scope: string,
+          updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+        ) => {
+          persistedState = await updater(persistedState);
+          return persistedState;
+        }
+      );
+
+      const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+      await waitFor(() => expect(result.current.loading).toBe(false));
+
+      let created: LucidTrainerState['experiments'][number] | undefined;
+      await act(async () => {
+        created = await result.current.addExperiment({
+          technique: null,
+          preparationMinutes: null,
+          result: null,
+          lucidityLevel: null,
+          recallLevel: null,
+          sleepQuality: null,
+          factors: [],
+          captureMode: 'write',
+          recallText: '  fragments of a garden  ',
+          cueOutcome: 'indeterminate',
+        });
+      });
+
+      expect(created).toMatchObject({
+        technique: null,
+        captureMode: 'write',
+        recallText: 'fragments of a garden',
+        cueOutcome: 'indeterminate',
+        techniqueAutoLink: {
+          technique: 'wbtb',
+          source: 'program_practice',
+          practiceDate: '2026-08-27',
+        },
+      });
+      expect(result.current.state?.experiments[0]).toEqual(created);
+      expect(trackProductEvent).not.toHaveBeenCalled();
+
+      await act(async () => {
+        await result.current.addExperiment({
+          technique: 'mild',
+          preparationMinutes: 10,
+          result: 'pre_lucid',
+          lucidityLevel: 2,
+          recallLevel: 3,
+          sleepQuality: 4,
+          factors: [],
+          captureMode: 'speak',
+          recallText: 'typed after the voice stub',
+          cueOutcome: 'heard_in_dream',
+          voiceCapture: 'stub',
+        });
+      });
+      expect(trackProductEvent).toHaveBeenCalledWith('lucid_training_completed', {
+        technique: 'mild',
+        phase: 'morning',
+        outcome: 'completed',
+        duration: 'under_5m',
+      });
+
+      await act(async () => {
+        await expect(
+          result.current.addExperiment({
+            technique: null,
+            preparationMinutes: null,
+            result: null,
+            lucidityLevel: null,
+            recallLevel: null,
+            sleepQuality: null,
+            factors: [],
+            captureMode: 'write',
+            recallText: '   ',
+            cueOutcome: 'not_heard',
+          })
+        ).rejects.toThrow('Invalid Lucid experiment');
+      });
+    } finally {
+      nowSpy.mockRestore();
+    }
   });
 
 });

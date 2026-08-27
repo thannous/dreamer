@@ -3,6 +3,8 @@
 import React from 'react';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
+import type { LucidExperiment } from '@/lib/lucid/model';
+
 const mockAlert = jest.fn();
 const mockCanOpenURL = jest.fn();
 const mockOpenURL = jest.fn();
@@ -35,7 +37,7 @@ function createState() {
         occurredAt: 1_700_000_000_000,
         notes: 'private notes must never leave Lucid Trainer',
       },
-    ],
+    ] as LucidExperiment[],
   };
 }
 
@@ -256,5 +258,79 @@ describe('Lucid Trainer data management', () => {
     expect(mockAlert).toHaveBeenCalledWith(
       'Noctalia is not installed; the secure web fallback will open.'
     );
+  });
+
+  it('transfers an older fully reported result when a newer minimal capture is first', async () => {
+    mockState.preferences.noctaliaLinkEnabled = true;
+    mockState.experiments = [
+      {
+        id: 'older-ssild',
+        technique: 'ssild' as const,
+        result: 'pre_lucid' as const,
+        lucidityLevel: 2,
+        recallLevel: 2,
+        occurredAt: 1_700_000_000_000,
+        updatedAt: 1_700_000_000_000,
+      },
+      {
+        id: 'minimal-new',
+        technique: null,
+        result: null,
+        lucidityLevel: null,
+        recallLevel: null,
+        occurredAt: 1_700_000_300_000,
+        updatedAt: 1_700_000_300_000,
+        captureMode: 'write' as const,
+        recallText: 'a fragment',
+        cueOutcome: 'indeterminate' as const,
+      },
+      {
+        id: 'newer-wbtb',
+        technique: 'wbtb' as const,
+        result: 'lucid' as const,
+        lucidityLevel: 5,
+        recallLevel: 4,
+        occurredAt: 1_700_000_200_000,
+        updatedAt: 1_700_000_200_000,
+      },
+    ] as LucidExperiment[];
+
+    render(<LucidDataScreen />);
+    fireEvent.click(screen.getByRole('button', { name: 'Send latest summary' }));
+    pressAlertAction('Open Noctalia');
+
+    await waitFor(() => expect(mockBuildNoctaliaHandoffLinks).toHaveBeenCalledTimes(1));
+    expect(mockBuildNoctaliaHandoffLinks).toHaveBeenCalledWith(
+      {
+        schemaVersion: 1,
+        technique: 'wbtb',
+        outcome: 'lucid',
+        lucidity: 'high',
+        recall: 'medium',
+      },
+      { dataTransfer: true }
+    );
+  });
+
+  it('keeps transfer disabled when no experiment has a complete reportable summary', () => {
+    mockState.preferences.noctaliaLinkEnabled = true;
+    mockState.experiments = [
+      {
+        id: 'minimal-only',
+        technique: null,
+        result: null,
+        lucidityLevel: null,
+        recallLevel: null,
+        occurredAt: 1_700_000_000_000,
+        captureMode: 'nothing_for_now' as const,
+        cueOutcome: 'not_heard' as const,
+      },
+    ] as LucidExperiment[];
+
+    render(<LucidDataScreen />);
+    const transfer = screen.getByRole('button', { name: 'Send latest summary' });
+    expect((transfer as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(transfer);
+    expect(mockBuildNoctaliaHandoffLinks).not.toHaveBeenCalled();
   });
 });

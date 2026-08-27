@@ -17,6 +17,35 @@ export type LucidExperienceLevel = 'beginner' | 'occasional' | 'experienced';
 export type LucidPermissionState = 'unknown' | 'granted' | 'denied';
 export type LucidProgramStatus = 'not_started' | 'active' | 'paused' | 'completed';
 export type LucidExperimentResult = 'none' | 'pre_lucid' | 'lucid';
+
+export const LUCID_DREAM_CAPTURE_MODES = ['speak', 'write', 'nothing_for_now'] as const;
+export type LucidDreamCaptureMode = (typeof LUCID_DREAM_CAPTURE_MODES)[number];
+
+export const LUCID_NIGHT_CUE_OUTCOMES = [
+  'not_heard',
+  'heard_in_dream',
+  'heard_woke',
+  'indeterminate',
+] as const;
+export type LucidNightCueOutcome = (typeof LUCID_NIGHT_CUE_OUTCOMES)[number];
+
+export const LUCID_VOICE_CAPTURE_STATES = [
+  'stub',
+  'permission_denied',
+  'unavailable',
+] as const;
+export type LucidVoiceCaptureState = (typeof LUCID_VOICE_CAPTURE_STATES)[number];
+
+export const LUCID_TECHNIQUE_AUTO_LINK_SOURCES = ['program_practice'] as const;
+export type LucidTechniqueAutoLinkSource =
+  (typeof LUCID_TECHNIQUE_AUTO_LINK_SOURCES)[number];
+
+export interface LucidTechniqueAutoLink {
+  technique: LucidTechnique;
+  source: LucidTechniqueAutoLinkSource;
+  practiceDate: string;
+}
+
 export type LucidRealityCheckContext =
   | 'scheduled'
   | 'transition'
@@ -99,15 +128,20 @@ export interface LucidProgramProgress {
 export interface LucidExperiment {
   id: string;
   occurredAt: number;
-  technique: LucidTechnique;
-  preparationMinutes: number;
-  result: LucidExperimentResult;
-  lucidityLevel: number;
-  recallLevel: number;
-  sleepQuality: number;
+  technique: LucidTechnique | null;
+  preparationMinutes: number | null;
+  result: LucidExperimentResult | null;
+  lucidityLevel: number | null;
+  recallLevel: number | null;
+  sleepQuality: number | null;
   factors: LucidPersonalFactor[];
   notes?: string;
   updatedAt: number;
+  captureMode?: LucidDreamCaptureMode;
+  recallText?: string;
+  cueOutcome?: LucidNightCueOutcome;
+  techniqueAutoLink?: LucidTechniqueAutoLink | null;
+  voiceCapture?: LucidVoiceCaptureState;
 }
 
 export interface LucidRealityCheck {
@@ -192,6 +226,7 @@ const PROGRAM_STATUSES: readonly LucidProgramStatus[] = [
   'completed',
 ];
 const EXPERIMENT_RESULTS: readonly LucidExperimentResult[] = ['none', 'pre_lucid', 'lucid'];
+const MAX_NOTE_LENGTH = 4_000;
 const REALITY_CONTEXTS: readonly LucidRealityCheckContext[] = [
   'scheduled',
   'transition',
@@ -366,24 +401,109 @@ export function isLucidProgramProgress(value: unknown): value is LucidProgramPro
   );
 }
 
-export function isLucidExperiment(value: unknown): value is LucidExperiment {
-  if (!isRecord(value)) return false;
+function isNullableEnum<T extends string>(
+  values: readonly T[],
+  value: unknown
+): value is T | null {
+  return value === null || isEnumValue(values, value);
+}
+
+function isNullableIntegerInRange(value: unknown, min: number, max: number): boolean {
+  return value === null || isIntegerInRange(value, min, max);
+}
+
+function isOptionalNote(value: unknown): boolean {
+  return value === undefined || (typeof value === 'string' && value.length <= MAX_NOTE_LENGTH);
+}
+
+function isNonEmptyBoundedText(value: unknown, maxLength = MAX_NOTE_LENGTH): value is string {
+  return typeof value === 'string' && value.trim().length > 0 && value.length <= maxLength;
+}
+
+export function isLucidTechniqueAutoLink(value: unknown): value is LucidTechniqueAutoLink {
   return (
-    isBoundedString(value.id, 128) &&
-    isFiniteTimestamp(value.occurredAt) &&
+    isRecord(value) &&
+    isEnumValue(LUCID_TECHNIQUES, value.technique) &&
+    isEnumValue(LUCID_TECHNIQUE_AUTO_LINK_SOURCES, value.source) &&
+    isLucidDateKey(value.practiceDate)
+  );
+}
+
+function isOptionalTechniqueAutoLink(value: unknown): boolean {
+  return value === undefined || value === null || isLucidTechniqueAutoLink(value);
+}
+
+function isLegacyCaptureFields(value: Record<string, unknown>): boolean {
+  return (
     isEnumValue(LUCID_TECHNIQUES, value.technique) &&
     isIntegerInRange(value.preparationMinutes, 0, 240) &&
     isEnumValue(EXPERIMENT_RESULTS, value.result) &&
     isIntegerInRange(value.lucidityLevel, 0, 5) &&
     isIntegerInRange(value.recallLevel, 0, 5) &&
-    isIntegerInRange(value.sleepQuality, 0, 5) &&
+    isIntegerInRange(value.sleepQuality, 0, 5)
+  );
+}
+
+function isNewCaptureFields(value: Record<string, unknown>): boolean {
+  return (
+    isNullableEnum(LUCID_TECHNIQUES, value.technique) &&
+    isNullableIntegerInRange(value.preparationMinutes, 0, 240) &&
+    isNullableEnum(EXPERIMENT_RESULTS, value.result) &&
+    isNullableIntegerInRange(value.lucidityLevel, 0, 5) &&
+    isNullableIntegerInRange(value.recallLevel, 0, 5) &&
+    isNullableIntegerInRange(value.sleepQuality, 0, 5)
+  );
+}
+
+function isSharedExperimentShape(value: Record<string, unknown>): boolean {
+  return (
+    isBoundedString(value.id, 128) &&
+    isFiniteTimestamp(value.occurredAt) &&
     Array.isArray(value.factors) &&
     value.factors.length <= PERSONAL_FACTORS.length &&
     value.factors.every((factor) => isEnumValue(PERSONAL_FACTORS, factor)) &&
     hasUniqueStrings(value.factors as string[]) &&
-    (value.notes === undefined || (typeof value.notes === 'string' && value.notes.length <= 4_000)) &&
+    isOptionalNote(value.notes) &&
     isFiniteTimestamp(value.updatedAt)
   );
+}
+
+function isLegacyExperiment(value: Record<string, unknown>): boolean {
+  if (value.captureMode !== undefined) return false;
+  if (
+    value.recallText !== undefined ||
+    value.cueOutcome !== undefined ||
+    value.voiceCapture !== undefined ||
+    value.techniqueAutoLink !== undefined
+  ) {
+    return false;
+  }
+  return isLegacyCaptureFields(value) && isSharedExperimentShape(value);
+}
+
+function isNewExperiment(value: Record<string, unknown>): boolean {
+  if (!isEnumValue(LUCID_DREAM_CAPTURE_MODES, value.captureMode)) return false;
+  if (!isNewCaptureFields(value) || !isSharedExperimentShape(value)) return false;
+  if (!isOptionalTechniqueAutoLink(value.techniqueAutoLink)) return false;
+  if (!isEnumValue(LUCID_NIGHT_CUE_OUTCOMES, value.cueOutcome)) return false;
+
+  const captureMode = value.captureMode;
+  if (captureMode === 'nothing_for_now') {
+    return value.recallText === undefined && value.voiceCapture === undefined;
+  }
+
+  if (!isNonEmptyBoundedText(value.recallText)) return false;
+
+  if (captureMode === 'write') {
+    return value.voiceCapture === undefined;
+  }
+
+  return isEnumValue(LUCID_VOICE_CAPTURE_STATES, value.voiceCapture);
+}
+
+export function isLucidExperiment(value: unknown): value is LucidExperiment {
+  if (!isRecord(value)) return false;
+  return value.captureMode === undefined ? isLegacyExperiment(value) : isNewExperiment(value);
 }
 
 export function isLucidRealityCheck(value: unknown): value is LucidRealityCheck {
@@ -410,7 +530,7 @@ export function isLucidWeeklyReview(value: unknown): value is LucidWeeklyReview 
     isIntegerInRange(value.lucidDreams, 0, 100) &&
     (value.recommendedTechnique === null ||
       isEnumValue(LUCID_TECHNIQUES, value.recommendedTechnique)) &&
-    (value.notes === undefined || (typeof value.notes === 'string' && value.notes.length <= 4_000)) &&
+    isOptionalNote(value.notes) &&
     isFiniteTimestamp(value.updatedAt)
   );
 }

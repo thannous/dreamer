@@ -351,6 +351,35 @@ describe('lucidTrainerStorage', () => {
     expect(csv).toContain('"2"');
     expect(csv).toContain('"\'=unsafe-id"');
     expect(csv.endsWith('\r\n')).toBe(true);
+    expect(csv).not.toContain('captureMode');
+
+    current.experiments.push({
+      id: 'capture-1',
+      occurredAt: NOW + 1,
+      technique: null,
+      preparationMinutes: null,
+      result: null,
+      lucidityLevel: null,
+      recallLevel: null,
+      sleepQuality: null,
+      factors: [],
+      updatedAt: NOW + 1,
+      captureMode: 'write',
+      recallText: '=hallway',
+      cueOutcome: 'heard_in_dream',
+      techniqueAutoLink: {
+        technique: 'wbtb',
+        source: 'program_practice',
+        practiceDate: '2026-08-26',
+      },
+    });
+    const csvWithCapture = exportLucidTrainerCsv(current);
+    expect(csvWithCapture).toContain('"captureMode"');
+    expect(csvWithCapture).toContain('"write"');
+    expect(csvWithCapture).toContain('"heard_in_dream"');
+    expect(csvWithCapture).toContain('"=hallway"');
+    expect(csvWithCapture).toContain('"program_practice"');
+    expect(csvWithCapture.split('\r\n')[1]).toContain('"experiment"');
   });
 
   it('clears state and queue keys without touching other data', async () => {

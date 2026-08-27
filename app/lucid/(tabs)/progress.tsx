@@ -25,7 +25,7 @@ import { useLucidNow } from '@/hooks/useLucidNow';
 import { getLucidGuidanceProfile } from '@/lib/lucid/personalization';
 import type { LucidGuidanceFocus } from '@/lib/lucid/personalization';
 import { buildLucidWeeklyReview } from '@/lib/lucid/progress';
-import type { LucidTechnique } from '@/lib/lucid/model';
+import type { LucidExperiment, LucidTechnique } from '@/lib/lucid/model';
 
 const PROGRESS_CONSTELLATION = require('../../../assets/images/lucid/progress-constellation.png');
 
@@ -79,6 +79,15 @@ const COPY = {
     methodDetail: 'Method details',
     showMethodDetail: 'Show method bars and evidence',
     hideMethodDetail: 'Hide method bars and evidence',
+    captureNeutral: 'Morning capture',
+    nothingForNow: 'Nothing for now',
+    writeCapture: 'Written capture',
+    speakCapture: 'Typed after speaking',
+    linkedPractice: 'Linked practice',
+    cue_not_heard: 'Cue not heard',
+    cue_heard_in_dream: 'Cue heard in the dream',
+    cue_heard_woke: 'Cue heard and woke me',
+    cue_indeterminate: 'Cue unsure',
   },
   fr: {
     eyebrow: 'Progression',
@@ -123,6 +132,15 @@ const COPY = {
     methodDetail: 'Détail des méthodes',
     showMethodDetail: 'Afficher les barres et le niveau de preuve',
     hideMethodDetail: 'Masquer les barres et le niveau de preuve',
+    captureNeutral: 'Capture du matin',
+    nothingForNow: 'Rien pour l’instant',
+    writeCapture: 'Capture écrite',
+    speakCapture: 'Texte après avoir parlé',
+    linkedPractice: 'Pratique liée',
+    cue_not_heard: 'Signal non entendu',
+    cue_heard_in_dream: 'Signal entendu dans le rêve',
+    cue_heard_woke: 'Signal entendu, réveil',
+    cue_indeterminate: 'Signal incertain',
   },
   es: {
     eyebrow: 'Progreso',
@@ -167,6 +185,15 @@ const COPY = {
     methodDetail: 'Detalle de métodos',
     showMethodDetail: 'Mostrar barras y evidencia',
     hideMethodDetail: 'Ocultar barras y evidencia',
+    captureNeutral: 'Captura de la mañana',
+    nothingForNow: 'Nada por ahora',
+    writeCapture: 'Captura escrita',
+    speakCapture: 'Texto después de hablar',
+    linkedPractice: 'Práctica vinculada',
+    cue_not_heard: 'Señal no oída',
+    cue_heard_in_dream: 'Señal oída en el sueño',
+    cue_heard_woke: 'Señal oída y despertó',
+    cue_indeterminate: 'Señal incierta',
   },
   de: {
     eyebrow: 'Fortschritt',
@@ -211,6 +238,15 @@ const COPY = {
     methodDetail: 'Methodendetails',
     showMethodDetail: 'Balken und Evidenz anzeigen',
     hideMethodDetail: 'Balken und Evidenz ausblenden',
+    captureNeutral: 'Morgennotiz',
+    nothingForNow: 'Jetzt nichts',
+    writeCapture: 'Geschriebene Notiz',
+    speakCapture: 'Getippt nach dem Sprechen',
+    linkedPractice: 'Verknüpfte Übung',
+    cue_not_heard: 'Signal nicht gehört',
+    cue_heard_in_dream: 'Signal im Traum gehört',
+    cue_heard_woke: 'Signal gehört, aufgewacht',
+    cue_indeterminate: 'Signal unsicher',
   },
   it: {
     eyebrow: 'Progressi',
@@ -255,8 +291,42 @@ const COPY = {
     methodDetail: 'Dettaglio metodi',
     showMethodDetail: 'Mostra barre e evidenza',
     hideMethodDetail: 'Nascondi barre e evidenza',
+    captureNeutral: 'Cattura del mattino',
+    nothingForNow: 'Niente per ora',
+    writeCapture: 'Cattura scritta',
+    speakCapture: 'Testo dopo aver parlato',
+    linkedPractice: 'Pratica collegata',
+    cue_not_heard: 'Segnale non udito',
+    cue_heard_in_dream: 'Segnale udito nel sogno',
+    cue_heard_woke: 'Segnale udito, risveglio',
+    cue_indeterminate: 'Segnale incerto',
   },
 } as const;
+
+type ProgressCopy = (typeof COPY)[keyof typeof COPY];
+
+function historyTitle(
+  item: LucidExperiment,
+  copy: ProgressCopy,
+  programs: ReturnType<typeof useLucidTrainer>['content']['programs']
+): string {
+  if (item.technique) return programs[item.technique].title;
+  if (item.captureMode === 'nothing_for_now') return copy.nothingForNow;
+  if (item.techniqueAutoLink) {
+    return `${copy.linkedPractice}: ${programs[item.techniqueAutoLink.technique].title}`;
+  }
+  if (item.captureMode === 'write') return copy.writeCapture;
+  if (item.captureMode === 'speak') return copy.speakCapture;
+  return copy.captureNeutral;
+}
+
+function historyMeta(item: LucidExperiment, copy: ProgressCopy, date: string): string {
+  const parts = [date];
+  if (item.result === 'lucid') parts.push(copy.resultLucid);
+  else if (item.result) parts.push(copy[item.result]);
+  if (item.cueOutcome) parts.push(copy[`cue_${item.cueOutcome}`]);
+  return parts.join(' · ');
+}
 
 function formatPercent(value: number | null) {
   return value == null ? '—' : `${Math.round(value * 100)}%`;
@@ -620,6 +690,7 @@ export default function LucidProgressScreen() {
         ) : (
           state!.experiments.slice(0, 12).map((item) => {
             const date = new Intl.DateTimeFormat(content.locale, { dateStyle: 'medium' }).format(item.occurredAt);
+            const title = historyTitle(item, copy, content.programs);
             return (
               <View
                 key={item.id}
@@ -627,29 +698,38 @@ export default function LucidProgressScreen() {
               >
                 <View style={styles.historyTop}>
                   <View style={styles.historyCopy}>
-                    <Text style={[styles.methodName, { color: palette.text }]}>
-                      {content.programs[item.technique].title}
-                    </Text>
+                    <Text style={[styles.methodName, { color: palette.text }]}>{title}</Text>
                     <Text style={[styles.methodMeta, { color: palette.textSecondary }]}>
-                      {date} · {item.result === 'lucid' ? copy.resultLucid : copy[item.result]}
+                      {historyMeta(item, copy, date)}
                     </Text>
                   </View>
                   {/* Une icône de 19pt sans rôle, portant le même libellé sur les douze cartes : douze boutons « Supprimer » indiscernables. La cible fait 44 et nomme le bilan qu'elle détruit. */}
                   <LucidIconAction
-                    label={`${copy.confirm}: ${content.programs[item.technique].title}, ${date}`}
+                    label={`${copy.confirm}: ${title}, ${date}`}
                     icon="trash-outline"
                     tone="danger"
                     onPress={() => confirmDelete(item.id)}
                   />
                 </View>
-                <View style={styles.historyScores}>
-                  <Text style={[styles.score, { color: palette.textSecondary, backgroundColor: palette.surfaceRaised }]}>
-                    {`${copy.recall}: ${item.recallLevel}/5`}
+                {item.recallLevel != null || item.sleepQuality != null ? (
+                  <View style={styles.historyScores}>
+                    {item.recallLevel != null ? (
+                      <Text style={[styles.score, { color: palette.textSecondary, backgroundColor: palette.surfaceRaised }]}>
+                        {`${copy.recall}: ${item.recallLevel}/5`}
+                      </Text>
+                    ) : null}
+                    {item.sleepQuality != null ? (
+                      <Text style={[styles.score, { color: palette.textSecondary, backgroundColor: palette.surfaceRaised }]}>
+                        {`${copy.sleep}: ${item.sleepQuality}/5`}
+                      </Text>
+                    ) : null}
+                  </View>
+                ) : null}
+                {item.recallText ? (
+                  <Text numberOfLines={2} style={[styles.small, { color: palette.textSecondary }]}>
+                    {item.recallText}
                   </Text>
-                  <Text style={[styles.score, { color: palette.textSecondary, backgroundColor: palette.surfaceRaised }]}>
-                    {`${copy.sleep}: ${item.sleepQuality}/5`}
-                  </Text>
-                </View>
+                ) : null}
                 {item.notes ? (
                   <Text numberOfLines={2} style={[styles.small, { color: palette.textSecondary }]}>
                     {item.notes}

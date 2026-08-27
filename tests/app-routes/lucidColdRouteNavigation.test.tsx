@@ -46,6 +46,10 @@ jest.mock('expo-image', () => ({
   Image: ({ testID }: { testID?: string }) => <img alt="" data-testid={testID} />,
 }));
 
+jest.mock('expo-audio', () => ({
+  requestRecordingPermissionsAsync: jest.fn().mockResolvedValue({ granted: true }),
+}));
+
 jest.mock('expo-router', () => ({
   router: {
     back: mockBack,
@@ -290,18 +294,8 @@ describe('Lucid cold-route navigation', () => {
   it('uses the same cold-launch fallback after saving a morning review', async () => {
     render(<LucidMorningScreen />);
 
-    // Nothing is pre-answered. The short flow must still write exactly the
-    // answers the person reported before its final recap is saveable.
-    fireEvent.click(screen.getByRole('button', { name: 'MILD' }));
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
-    fireEvent.click(screen.getByRole('button', { name: '10 minutes' }));
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
-    fireEvent.click(screen.getByRole('button', { name: 'No lucidity' }));
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
-    fireEvent.click(screen.getByRole('button', { name: '3' }));
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
-    fireEvent.click(screen.getByRole('button', { name: '3' }));
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
+    fireEvent.click(screen.getByRole('button', { name: 'Nothing for now' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Unsure' }));
     fireEvent.click(screen.getByTestId('lucid-morning-next'));
 
     fireEvent.click(screen.getByTestId('lucid-morning-save'));

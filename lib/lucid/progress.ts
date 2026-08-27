@@ -22,9 +22,9 @@ export type LucidFactor =
 export type LucidProgressObservation = {
   id: string;
   occurredAt: number;
-  technique: LucidTechnique;
-  preparationMinutes: number;
-  outcome: LucidOutcome;
+  technique: LucidTechnique | null;
+  preparationMinutes: number | null;
+  outcome: LucidOutcome | null;
   lucidity: number | null;
   recall: number | null;
   sleepQuality: number | null;
@@ -174,22 +174,38 @@ function assertProgressWindow(window: LucidProgressWindow, label: string): void 
   }
 }
 
+export function isLucidTrainingAttempt(experiment: LucidExperiment): boolean {
+  if (experiment.captureMode === 'nothing_for_now') return false;
+  return experiment.technique != null && experiment.result != null;
+}
+
+function adaptLucidOutcome(experiment: LucidExperiment): LucidOutcome | null {
+  if (experiment.captureMode === 'nothing_for_now') return null;
+  if (experiment.result === 'lucid') return 'lucid';
+  if (experiment.result === 'pre_lucid') return 'remembered';
+  if (typeof experiment.recallLevel === 'number' && experiment.recallLevel > 0) {
+    return 'remembered';
+  }
+  if (experiment.recallText?.trim()) return 'remembered';
+  if (experiment.result === 'none' && typeof experiment.recallLevel === 'number') {
+    return 'no_recall';
+  }
+  return null;
+}
+
 export function adaptLucidExperimentForProgress(
   experiment: LucidExperiment
 ): LucidProgressObservation {
-  const outcome: LucidOutcome =
-    experiment.result === 'lucid'
-      ? 'lucid'
-      : experiment.result === 'pre_lucid' || experiment.recallLevel > 0
-        ? 'remembered'
-        : 'no_recall';
-
   return {
     id: experiment.id,
     occurredAt: experiment.occurredAt,
-    technique: experiment.technique,
-    preparationMinutes: experiment.preparationMinutes,
-    outcome,
+    technique: isLucidTechnique(experiment.technique) ? experiment.technique : null,
+    preparationMinutes:
+      typeof experiment.preparationMinutes === 'number' &&
+      Number.isFinite(experiment.preparationMinutes)
+        ? experiment.preparationMinutes
+        : null,
+    outcome: adaptLucidOutcome(experiment),
     lucidity: getValidScore(experiment.lucidityLevel),
     recall: getValidScore(experiment.recallLevel),
     sleepQuality: getValidScore(experiment.sleepQuality),
@@ -203,48 +219,54 @@ export function adaptLucidExperimentsForProgress(
   return experiments.map(adaptLucidExperimentForProgress);
 }
 
-function isRecordInWindow(
-  record: LucidProgressObservation,
+function isExperimentInWindow(
+  experiment: LucidExperiment,
   window?: LucidProgressWindow
 ): boolean {
-  if (!Number.isFinite(record.occurredAt) || !isLucidTechnique(record.technique)) {
-    return false;
-  }
-  return !window ||
-    (record.occurredAt >= window.startAt && record.occurredAt < window.endAt);
+  if (!Number.isFinite(experiment.occurredAt)) return false;
+  return (
+    !window ||
+    (experiment.occurredAt >= window.startAt && experiment.occurredAt < window.endAt)
+  );
 }
 
-function getRecordsInWindow(
+function getExperimentsInWindow(
   experiments: readonly LucidExperiment[],
   window?: LucidProgressWindow
-): LucidProgressObservation[] {
+): LucidExperiment[] {
   if (window) assertProgressWindow(window, 'Progress window');
-  return adaptLucidExperimentsForProgress(experiments).filter((record) =>
-    isRecordInWindow(record, window)
-  );
+  return experiments.filter((experiment) => isExperimentInWindow(experiment, window));
 }
 
 export function summarizeLucidProgress(
   experiments: readonly LucidExperiment[],
   window?: LucidProgressWindow
 ): LucidProgressSummary {
-  const relevantRecords = getRecordsInWindow(experiments, window);
+  const relevantExperiments = getExperimentsInWindow(experiments, window);
   let attempts = 0;
   let lucidDreams = 0;
   let recalledDreams = 0;
   let preparedAttempts = 0;
+  let preparationObserved = 0;
   const lucidityScores: number[] = [];
   const recallScores: number[] = [];
   const sleepQualityScores: number[] = [];
   const factorCounts = new Map<LucidFactor, number>();
 
-  for (const record of relevantRecords) {
-    attempts += 1;
-    if (record.outcome === 'lucid') lucidDreams += 1;
-    if (record.outcome === 'lucid' || record.outcome === 'remembered') {
-      recalledDreams += 1;
+  for (const experiment of relevantExperiments) {
+    const record = adaptLucidExperimentForProgress(experiment);
+    const attempt = isLucidTrainingAttempt(experiment);
+    if (attempt) {
+      attempts += 1;
+      if (record.outcome === 'lucid') lucidDreams += 1;
+      if (record.outcome === 'lucid' || record.outcome === 'remembered') {
+        recalledDreams += 1;
+      }
+      if (record.preparationMinutes != null) {
+        preparationObserved += 1;
+        if (record.preparationMinutes > 0) preparedAttempts += 1;
+      }
     }
-    if (record.preparationMinutes > 0) preparedAttempts += 1;
 
     const lucidity = getValidScore(record.lucidity);
     const recall = getValidScore(record.recall);
@@ -268,14 +290,14 @@ export function summarizeLucidProgress(
     );
 
   return {
-    records: relevantRecords.length,
+    records: relevantExperiments.length,
     attempts,
     lucidDreams,
     recalledDreams,
     preparedAttempts,
     successRate: getRate(lucidDreams, attempts),
     recallRate: getRate(recalledDreams, attempts),
-    preparationRate: getRate(preparedAttempts, attempts),
+    preparationRate: getRate(preparedAttempts, preparationObserved),
     averageLucidity: getAverage(lucidityScores),
     averageRecall: getAverage(recallScores),
     averageSleepQuality: getAverage(sleepQualityScores),
@@ -305,17 +327,14 @@ export function compareLucidMethods(
     throw new RangeError('minimumAttempts must be a positive integer.');
   }
 
-  const relevantExperiments = window
-    ? experiments.filter(
-        (experiment) =>
-          experiment.occurredAt >= window.startAt && experiment.occurredAt < window.endAt
-      )
-    : [...experiments];
-  if (window) assertProgressWindow(window, 'Progress window');
+  const relevantExperiments = getExperimentsInWindow(experiments, window);
   const methods = LUCID_TECHNIQUES.map((technique) => ({
     technique,
     ...summarizeLucidProgress(
-      relevantExperiments.filter((experiment) => experiment.technique === technique)
+      relevantExperiments.filter(
+        (experiment): experiment is LucidExperiment & { technique: typeof technique } =>
+          experiment.technique === technique
+      )
     ),
   }));
   const eligible = methods
@@ -405,7 +424,7 @@ export function getDeterministicLucidCoaching(
   }
   if (
     hasFrequentSleepRisk(
-      adaptLucidExperimentsForProgress(experiments),
+      adaptLucidExperimentsForProgress(experiments.filter(isLucidTrainingAttempt)),
       current.attempts
     )
   ) {

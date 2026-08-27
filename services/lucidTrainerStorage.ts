@@ -403,6 +403,13 @@ export function exportLucidTrainerCsv(state: LucidTrainerState): string {
         preparationMinutes: experiment.preparationMinutes,
         factors: experiment.factors,
         notes: experiment.notes ?? '',
+        ...(experiment.captureMode !== undefined ? { captureMode: experiment.captureMode } : {}),
+        ...(experiment.recallText !== undefined ? { recallText: experiment.recallText } : {}),
+        ...(experiment.cueOutcome !== undefined ? { cueOutcome: experiment.cueOutcome } : {}),
+        ...(experiment.voiceCapture !== undefined ? { voiceCapture: experiment.voiceCapture } : {}),
+        ...(experiment.techniqueAutoLink !== undefined
+          ? { techniqueAutoLink: experiment.techniqueAutoLink }
+          : {}),
       }),
     ]);
   });
