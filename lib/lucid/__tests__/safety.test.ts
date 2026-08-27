@@ -191,15 +191,26 @@ describe('LucidSafetyPolicy', () => {
         evaluateLucidSafetyPolicy(consentedFacts({ recoveryRequested: true, sleepIsFragile: true }))
           .mode
       ).toBe('recovery');
+      expect(
+        evaluateLucidSafetyPolicy(
+          consentedFacts({ recentSleepDegraded: true, repeatedSignalWakeups: true })
+        ).mode
+      ).toBe('recovery');
     });
 
-    it('selects reducedIntensity over normal for degraded or fragile sleep', () => {
+    it('selects recovery when recent sleep is degraded', () => {
       expect(evaluateLucidSafetyPolicy(consentedFacts({ recentSleepDegraded: true })).mode).toBe(
-        'reducedIntensity'
+        'recovery'
       );
+    });
+
+    it('selects reducedIntensity over normal for fragile sleep or repeated cue wakeups', () => {
       expect(evaluateLucidSafetyPolicy(consentedFacts({ sleepIsFragile: true })).mode).toBe(
         'reducedIntensity'
       );
+      expect(
+        evaluateLucidSafetyPolicy(consentedFacts({ repeatedSignalWakeups: true })).mode
+      ).toBe('reducedIntensity');
     });
 
     it('uses a stable most-restrictive-first precedence list', () => {
@@ -221,6 +232,7 @@ describe('LucidSafetyPolicy', () => {
           sleepIsFragile: true,
           hearingConcern: true,
           audioConsented: false,
+          repeatedSignalWakeups: true,
         })
       );
 
@@ -231,6 +243,7 @@ describe('LucidSafetyPolicy', () => {
         'recovery_requested',
         'fragile_sleep',
         'recent_sleep_degraded',
+        'repeated_signal_wakeups',
       ]);
     });
 
@@ -241,6 +254,7 @@ describe('LucidSafetyPolicy', () => {
         audioConsented: true,
         sleepIsFragile: false,
         recoveryRequested: true,
+        repeatedSignalWakeups: false,
       });
       const right = evaluateLucidSafetyPolicy({
         audioConsented: true,
@@ -248,6 +262,7 @@ describe('LucidSafetyPolicy', () => {
         sleepIsFragile: false,
         hearingConcern: true,
         recentSleepDegraded: true,
+        repeatedSignalWakeups: false,
       });
 
       expect(left).toEqual(right);
@@ -280,10 +295,21 @@ describe('LucidSafetyPolicy', () => {
       });
     });
 
-    it('blocks WBTB and reduces signal intensity when only recent sleep is degraded', () => {
+    it('blocks WBTB and night signals when recent sleep is degraded', () => {
       const policy = evaluateLucidSafetyPolicy(consentedFacts({ recentSleepDegraded: true }));
-      expect(policy.mode).toBe('reducedIntensity');
+      expect(policy.mode).toBe('recovery');
       expect(policy.reasons).toEqual(['recent_sleep_degraded']);
+      expectAuthorizations(policy, {
+        allowWbtb: false,
+        allowNightSignals: false,
+        nightSignalIntensity: 'blocked',
+      });
+    });
+
+    it('reduces night-signal intensity after repeated cue wakeups without blocking them', () => {
+      const policy = evaluateLucidSafetyPolicy(consentedFacts({ repeatedSignalWakeups: true }));
+      expect(policy.mode).toBe('reducedIntensity');
+      expect(policy.reasons).toEqual(['repeated_signal_wakeups']);
       expectAuthorizations(policy, {
         allowWbtb: false,
         allowNightSignals: true,
@@ -334,10 +360,10 @@ describe('LucidSafetyPolicy', () => {
 
     it('blocks night signals for fragile sleep without leaving reducedIntensity', () => {
       const policy = evaluateLucidSafetyPolicy(
-        consentedFacts({ sleepIsFragile: true, recentSleepDegraded: true })
+        consentedFacts({ sleepIsFragile: true, repeatedSignalWakeups: true })
       );
       expect(policy.mode).toBe('reducedIntensity');
-      expect(policy.reasons).toEqual(['fragile_sleep', 'recent_sleep_degraded']);
+      expect(policy.reasons).toEqual(['fragile_sleep', 'repeated_signal_wakeups']);
       expect(policy.allowWbtb).toBe(false);
       expect(policy.allowNightSignals).toBe(false);
       expect(policy.nightSignalIntensity).toBe('blocked');
@@ -355,7 +381,8 @@ describe('LucidSafetyPolicy', () => {
   describe('route and audio helpers', () => {
     it('mirrors policy decisions for WBTB, signals, and reduced intensity', () => {
       const normal = consentedFacts();
-      const reduced = consentedFacts({ recentSleepDegraded: true });
+      const reduced = consentedFacts({ repeatedSignalWakeups: true });
+      const recovery = consentedFacts({ recentSleepDegraded: true });
       const blocked = consentedFacts({ hearingConcern: true });
 
       expect(canUseLucidWbtb(normal)).toBe(true);
@@ -367,6 +394,10 @@ describe('LucidSafetyPolicy', () => {
       expect(canUseLucidNightSignals(reduced)).toBe(true);
       expect(getLucidNightSignalIntensity(reduced)).toBe('reduced');
       expect(isLucidNightSignalIntensityReduced(reduced)).toBe(true);
+
+      expect(canUseLucidWbtb(recovery)).toBe(false);
+      expect(canUseLucidNightSignals(recovery)).toBe(false);
+      expect(getLucidNightSignalIntensity(recovery)).toBe('blocked');
 
       const blockedPolicy = evaluateLucidSafetyPolicy(blocked);
       expect(canUseLucidWbtb(blockedPolicy)).toBe(false);
@@ -388,6 +419,7 @@ describe('LucidSafetyPolicy', () => {
         sleepIsFragile: false,
         hearingConcern: false,
         audioConsented: true,
+        repeatedSignalWakeups: false,
       });
       expect(evaluateLucidSafetyPolicyFromState({ onboarding: { audioSafetyAccepted: true } })).toEqual(
         evaluateLucidSafetyPolicy(consentedFacts())
@@ -413,6 +445,7 @@ describe('LucidSafetyPolicy', () => {
             recentSleepDegraded: true,
             sleepIsFragile: true,
             hearingConcern: true,
+            repeatedSignalWakeups: true,
           }
         )
       ).toEqual({
@@ -421,6 +454,7 @@ describe('LucidSafetyPolicy', () => {
         sleepIsFragile: true,
         hearingConcern: true,
         audioConsented: true,
+        repeatedSignalWakeups: true,
       });
 
       expect(
@@ -430,15 +464,25 @@ describe('LucidSafetyPolicy', () => {
         )
       ).toEqual(DEFAULT_LUCID_SAFETY_FACTS);
 
-      const reduced = evaluateLucidSafetyPolicyFromState(
+      const recoveryFromSleep = evaluateLucidSafetyPolicyFromState(
         { onboarding: { audioSafetyAccepted: true } },
         { recentSleepDegraded: true }
+      );
+      expect(recoveryFromSleep.mode).toBe('recovery');
+      expect(recoveryFromSleep.allowWbtb).toBe(false);
+      expect(recoveryFromSleep.allowNightSignals).toBe(false);
+      expect(recoveryFromSleep.nightSignalIntensity).toBe('blocked');
+      expect(getLucidWbtbDenialReason(recoveryFromSleep)).toBe('recent_sleep_degraded');
+
+      const reduced = evaluateLucidSafetyPolicyFromState(
+        { onboarding: { audioSafetyAccepted: true } },
+        { repeatedSignalWakeups: true }
       );
       expect(reduced.mode).toBe('reducedIntensity');
       expect(reduced.allowWbtb).toBe(false);
       expect(reduced.allowNightSignals).toBe(true);
       expect(reduced.nightSignalIntensity).toBe('reduced');
-      expect(getLucidWbtbDenialReason(reduced)).toBe('recent_sleep_degraded');
+      expect(getLucidWbtbDenialReason(reduced)).toBe('repeated_signal_wakeups');
 
       const recovery = evaluateLucidSafetyPolicyFromState(
         { onboarding: { audioSafetyAccepted: true } },
@@ -449,6 +493,76 @@ describe('LucidSafetyPolicy', () => {
       expect(recovery.allowNightSignals).toBe(false);
       expect(getLucidWbtbDenialReason(recovery)).toBe('recovery_requested');
       expect(getLucidWbtbDenialReason(consentedFacts())).toBeNull();
+    });
+
+    it('derives degraded sleep and repeated cue wakeups from experiments without mutating them', () => {
+      const experiments = [
+        {
+          id: 'older',
+          occurredAt: 1,
+          updatedAt: 1,
+          sleepQuality: 5,
+          factors: [],
+          cueOutcome: 'not_heard' as const,
+        },
+        {
+          id: 'mid',
+          occurredAt: 2,
+          updatedAt: 2,
+          sleepQuality: 4,
+          factors: [],
+          cueOutcome: 'heard_woke' as const,
+        },
+        {
+          id: 'newest',
+          occurredAt: 3,
+          updatedAt: 3,
+          sleepQuality: 1,
+          factors: ['sleep_debt' as const],
+          cueOutcome: 'heard_woke' as const,
+        },
+      ];
+      const snapshot = JSON.parse(JSON.stringify(experiments));
+
+      const policy = evaluateLucidSafetyPolicyFromState({
+        onboarding: { audioSafetyAccepted: true },
+        experiments,
+      });
+      expect(policy.mode).toBe('recovery');
+      expect(policy.reasons).toEqual(['recent_sleep_degraded', 'repeated_signal_wakeups']);
+      expect(policy.allowWbtb).toBe(false);
+      expect(policy.allowNightSignals).toBe(false);
+      expect(experiments).toEqual(snapshot);
+    });
+
+    it('lets current false override derived sleep and cue facts', () => {
+      const experiments = [
+        {
+          id: 'a',
+          occurredAt: 10,
+          updatedAt: 10,
+          sleepQuality: 1,
+          factors: ['sleep_debt' as const],
+          cueOutcome: 'heard_woke' as const,
+        },
+        {
+          id: 'b',
+          occurredAt: 11,
+          updatedAt: 11,
+          sleepQuality: 1,
+          factors: [],
+          cueOutcome: 'heard_woke' as const,
+        },
+      ];
+
+      const overridden = evaluateLucidSafetyPolicyFromState(
+        { onboarding: { audioSafetyAccepted: true }, experiments },
+        { recentSleepDegraded: false, repeatedSignalWakeups: false }
+      );
+      expect(overridden.mode).toBe('normal');
+      expect(overridden.reasons).toEqual([]);
+      expect(overridden.allowWbtb).toBe(true);
+      expect(overridden.allowNightSignals).toBe(true);
     });
   });
 });

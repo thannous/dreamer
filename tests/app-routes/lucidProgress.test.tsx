@@ -223,7 +223,7 @@ describe('Lucid Trainer progress screen', () => {
     mockTrainerState.onboarding.experience = 'occasional';
     render(<LucidProgressScreen />);
 
-    expect(screen.getByText('Remember more')).not.toBeNull();
+    expect(screen.getAllByText('Remember more')).toHaveLength(1);
     const metricIds = screen
       .getAllByTestId(/metric-/)
       .map((node) => node.getAttribute('data-testid'));

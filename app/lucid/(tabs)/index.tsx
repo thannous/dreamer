@@ -20,10 +20,15 @@ import { useTheme } from '@/context/ThemeContext';
 import { useLucidNow } from '@/hooks/useLucidNow';
 import {
   getLucidDayPhase,
-  getLucidGuidanceProfile,
+  getLucidPersonalizedPlan,
   type LucidDayPhase,
+  type LucidPersonalizedPlan,
+  type LucidPlanPrimaryAction,
 } from '@/lib/lucid/personalization';
-import { evaluateLucidSessionAccess } from '@/lib/lucid/safety';
+import {
+  evaluateLucidSafetyPolicyFromState,
+  evaluateLucidSessionAccess,
+} from '@/lib/lucid/safety';
 
 const DREAM_ATLAS = require('../../../assets/images/lucid/today-dream-atlas.png');
 const GUIDE_ORB = require('../../../assets/images/lucid/lucid-guide-orb.png');
@@ -53,6 +58,29 @@ const COPY = {
     prepareNight: 'Prepare for tonight',
     nightHint: 'Settle into your usual sleep window',
     sleepHint: 'Protect sleep; open night tools only when useful',
+    recallNow: 'Strengthen recall',
+    recallHint: 'Capture what remains before training tonight.',
+    recallAction: 'Capture this morning',
+    protectNow: 'Protect sleep',
+    protectHint: 'Pause interruptions until sleep recovers.',
+    protectAction: 'Check last night',
+    reduceNow: 'Ease night signals',
+    reduceHint: 'Open Night to pause or reduce cues that woke you.',
+    reduceAction: 'Review night signals',
+    why: 'Why?',
+    whyHide: 'Hide the reason',
+    whyReasons: {
+      prudent_defaults: 'A cautious MILD start matches your current profile.',
+      weak_recall: 'Recent mornings show little dream recall, so recall comes first.',
+      beginner_weak_recall: 'As a beginner with weak recall, dream memory comes before night techniques.',
+      first_lucid_mild: 'Enough recall is in place for a first lucid attempt with guided MILD.',
+      frequent_lucidity_ssild: 'SSILD is the suggested next practice for more frequent lucidity.',
+      recall_goal: 'Your chosen goal is stronger dream recall.',
+      sleep_recovery: 'Recent sleep looks strained, so interruptions stay paused.',
+      repeated_signal_wakeups: 'Night signals woke you twice recently, so cues are reduced or paused.',
+      policy_recovery: 'Safety recovery is active, so night interruptions stay off.',
+      policy_reduced: 'Safety reduced intensity is active for night practice.',
+    },
   },
   fr: {
     day: 'Jour',
@@ -78,6 +106,29 @@ const COPY = {
     prepareNight: 'Préparer cette nuit',
     nightHint: 'Entrez doucement dans votre fenêtre de sommeil',
     sleepHint: 'Protégez le sommeil ; ouvrez Nuit seulement si utile',
+    recallNow: 'Renforcer le rappel',
+    recallHint: 'Notez ce qui reste avant d’entraîner cette nuit.',
+    recallAction: 'Faire le bilan du matin',
+    protectNow: 'Protéger le sommeil',
+    protectHint: 'Suspendez les interruptions le temps de récupérer.',
+    protectAction: 'Revoir la nuit passée',
+    reduceNow: 'Alléger les signaux',
+    reduceHint: 'Ouvrez Nuit pour réduire ou pauser les signaux qui vous ont réveillé.',
+    reduceAction: 'Revoir les signaux',
+    why: 'Pourquoi ?',
+    whyHide: 'Masquer la raison',
+    whyReasons: {
+      prudent_defaults: 'Un départ MILD prudent correspond à votre profil actuel.',
+      weak_recall: 'Les matins récents montrent peu de rappel, donc le rappel passe d’abord.',
+      beginner_weak_recall: 'Débutant avec un rappel faible : la mémoire des rêves passe avant les techniques de nuit.',
+      first_lucid_mild: 'Le rappel suffit pour un premier essai lucide avec MILD guidé.',
+      frequent_lucidity_ssild: 'SSILD est la pratique suggérée pour une lucidité plus fréquente.',
+      recall_goal: 'Votre objectif choisi est un meilleur rappel des rêves.',
+      sleep_recovery: 'Le sommeil récent paraît fragile, donc les interruptions restent en pause.',
+      repeated_signal_wakeups: 'Les signaux vous ont réveillé deux fois récemment, donc ils sont réduits ou en pause.',
+      policy_recovery: 'Le mode récupération de sécurité est actif, donc les interruptions restent coupées.',
+      policy_reduced: 'L’intensité réduite de sécurité s’applique à la pratique de nuit.',
+    },
   },
   es: {
     day: 'Día',
@@ -103,6 +154,29 @@ const COPY = {
     prepareNight: 'Preparar esta noche',
     nightHint: 'Entra con calma en tu horario de sueño',
     sleepHint: 'Protege el sueño; abre Noche solo si te ayuda',
+    recallNow: 'Reforzar el recuerdo',
+    recallHint: 'Anota lo que queda antes de entrenar esta noche.',
+    recallAction: 'Hacer la revisión matinal',
+    protectNow: 'Proteger el sueño',
+    protectHint: 'Pausa las interrupciones hasta recuperar el sueño.',
+    protectAction: 'Revisar anoche',
+    reduceNow: 'Suavizar las señales',
+    reduceHint: 'Abre Noche para pausar o reducir las señales que te despertaron.',
+    reduceAction: 'Revisar las señales',
+    why: '¿Por qué?',
+    whyHide: 'Ocultar el motivo',
+    whyReasons: {
+      prudent_defaults: 'Un inicio prudente con MILD encaja con tu perfil actual.',
+      weak_recall: 'Las mañanas recientes muestran poco recuerdo, así que el recuerdo va primero.',
+      beginner_weak_recall: 'Como principiante con poco recuerdo, la memoria onírica va antes que las técnicas nocturnas.',
+      first_lucid_mild: 'Hay recuerdo suficiente para un primer intento lúcido con MILD guiado.',
+      frequent_lucidity_ssild: 'SSILD es la práctica sugerida para una lucidez más frecuente.',
+      recall_goal: 'Tu objetivo elegido es un mejor recuerdo de los sueños.',
+      sleep_recovery: 'El sueño reciente parece frágil, así que las interrupciones siguen en pausa.',
+      repeated_signal_wakeups: 'Las señales te despertaron dos veces recientemente, así que se reducen o pausan.',
+      policy_recovery: 'La recuperación de seguridad está activa, así que las interrupciones siguen apagadas.',
+      policy_reduced: 'La intensidad reducida de seguridad se aplica a la práctica nocturna.',
+    },
   },
   de: {
     day: 'Tag',
@@ -128,6 +202,29 @@ const COPY = {
     prepareNight: 'Für diese Nacht vorbereiten',
     nightHint: 'Komme ruhig in deinem Schlaffenster an',
     sleepHint: 'Schütze deinen Schlaf; öffne Nacht nur bei Bedarf',
+    recallNow: 'Erinnerung stärken',
+    recallHint: 'Halte fest, was bleibt, bevor du heute Nacht übst.',
+    recallAction: 'Morgenrückblick starten',
+    protectNow: 'Schlaf schützen',
+    protectHint: 'Unterbrechungen pausieren, bis der Schlaf sich erholt.',
+    protectAction: 'Letzte Nacht prüfen',
+    reduceNow: 'Nachtsignale dämpfen',
+    reduceHint: 'Öffne Nacht, um Signale zu reduzieren oder zu pausieren, die dich weckten.',
+    reduceAction: 'Nachtsignale prüfen',
+    why: 'Warum?',
+    whyHide: 'Grund ausblenden',
+    whyReasons: {
+      prudent_defaults: 'Ein vorsichtiger MILD-Start passt zu deinem aktuellen Profil.',
+      weak_recall: 'Die letzten Morgen zeigen wenig Traumerinnerung, deshalb kommt Erinnerung zuerst.',
+      beginner_weak_recall: 'Als Anfänger mit schwacher Erinnerung kommt Traumgedächtnis vor Nachttechniken.',
+      first_lucid_mild: 'Die Erinnerung reicht für einen ersten Klartraumversuch mit geführtem MILD.',
+      frequent_lucidity_ssild: 'SSILD ist die vorgeschlagene Praxis für häufigere Klarträume.',
+      recall_goal: 'Dein gewähltes Ziel ist eine stärkere Traumerinnerung.',
+      sleep_recovery: 'Der letzte Schlaf wirkt belastet, deshalb bleiben Unterbrechungen pausiert.',
+      repeated_signal_wakeups: 'Nachtsignale haben dich kürzlich zweimal geweckt, deshalb werden sie reduziert oder pausiert.',
+      policy_recovery: 'Die Sicherheits-Erholung ist aktiv, deshalb bleiben Unterbrechungen aus.',
+      policy_reduced: 'Die reduzierte Sicherheitsintensität gilt für die Nachtpraxis.',
+    },
   },
   it: {
     day: 'Giorno',
@@ -153,6 +250,29 @@ const COPY = {
     prepareNight: 'Preparati per stanotte',
     nightHint: 'Entra con calma nella tua finestra di sonno',
     sleepHint: 'Proteggi il sonno; apri Notte solo se utile',
+    recallNow: 'Rafforzare il ricordo',
+    recallHint: 'Annota ciò che resta prima di allenarti stanotte.',
+    recallAction: 'Fai il bilancio mattutino',
+    protectNow: 'Proteggere il sonno',
+    protectHint: 'Sospendi le interruzioni finché il sonno non si riprende.',
+    protectAction: 'Rivedi la notte',
+    reduceNow: 'Alleggerire i segnali',
+    reduceHint: 'Apri Notte per ridurre o mettere in pausa i segnali che ti hanno svegliato.',
+    reduceAction: 'Rivedi i segnali',
+    why: 'Perché?',
+    whyHide: 'Nascondi il motivo',
+    whyReasons: {
+      prudent_defaults: 'Un avvio MILD prudente corrisponde al tuo profilo attuale.',
+      weak_recall: 'Le mattine recenti mostrano poco ricordo, quindi il ricordo viene prima.',
+      beginner_weak_recall: 'Da principiante con ricordo debole, la memoria dei sogni viene prima delle tecniche notturne.',
+      first_lucid_mild: 'C’è ricordo sufficiente per un primo tentativo lucido con MILD guidato.',
+      frequent_lucidity_ssild: 'SSILD è la pratica suggerita per una lucidità più frequente.',
+      recall_goal: 'Il tuo obiettivo scelto è un ricordo dei sogni più forte.',
+      sleep_recovery: 'Il sonno recente sembra affaticato, quindi le interruzioni restano in pausa.',
+      repeated_signal_wakeups: 'I segnali ti hanno svegliato due volte di recente, quindi sono ridotti o in pausa.',
+      policy_recovery: 'Il recupero di sicurezza è attivo, quindi le interruzioni restano spente.',
+      policy_reduced: 'L’intensità ridotta di sicurezza si applica alla pratica notturna.',
+    },
   },
 } as const;
 
@@ -172,6 +292,57 @@ function getFeaturedContextKey(phase: LucidDayPhase): ContextAction['key'] {
   return 'night';
 }
 
+type LucidTodayCopy = (typeof COPY)[keyof typeof COPY];
+
+function isPlanOverrideAction(action: LucidPlanPrimaryAction): boolean {
+  return (
+    action === 'strengthen_recall' ||
+    action === 'protect_sleep' ||
+    action === 'reduce_night_signals'
+  );
+}
+
+function shouldOverrideActiveProgram(plan: LucidPersonalizedPlan): boolean {
+  return isPlanOverrideAction(plan.primaryAction);
+}
+
+function getPlanRecommendedTechnique(
+  plan: LucidPersonalizedPlan
+): 'mild' | 'ssild' {
+  return plan.recommendedTechnique ?? 'mild';
+}
+
+function getPlanPrimaryCopy(
+  copy: LucidTodayCopy,
+  action: LucidPlanPrimaryAction
+): { overline: string; title: string; hint: string; action: string } | null {
+  if (action === 'strengthen_recall') {
+    return {
+      overline: copy.recallNow,
+      title: copy.focusTitle.recall,
+      hint: copy.recallHint,
+      action: copy.recallAction,
+    };
+  }
+  if (action === 'protect_sleep') {
+    return {
+      overline: copy.protectNow,
+      title: copy.focusTitle.stability,
+      hint: copy.protectHint,
+      action: copy.protectAction,
+    };
+  }
+  if (action === 'reduce_night_signals') {
+    return {
+      overline: copy.reduceNow,
+      title: copy.focusTitle.stability,
+      hint: copy.reduceHint,
+      action: copy.reduceAction,
+    };
+  }
+  return null;
+}
+
 export default function LucidTodayScreen() {
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
@@ -179,27 +350,36 @@ export default function LucidTodayScreen() {
   const { state, content } = useLucidTrainer();
   const copy = COPY[content.locale];
   const now = useLucidNow();
-  const guidance = getLucidGuidanceProfile({
+  const [whyOpen, setWhyOpen] = React.useState(false);
+  const safetyPolicy = evaluateLucidSafetyPolicyFromState(state);
+  const plan = getLucidPersonalizedPlan({
     goal: state!.onboarding.goal,
     experience: state!.onboarding.experience,
+    observations: state!.experiments,
+    policy: safetyPolicy,
   });
-  const recommendedProgram = content.programs[guidance.recommendedTechnique];
+  const recommendedTechnique = getPlanRecommendedTechnique(plan);
+  const recommendedProgram = content.programs[recommendedTechnique];
   const dayPhase = getLucidDayPhase(now, state!.onboarding.sleepSchedule);
   const active =
     state!.progress.find((item) => item.status === 'active') ??
     state!.progress.find((item) => item.status === 'paused');
-  const program = active ? content.programs[active.technique] : null;
-  const sessionIndex = active && program
+  const overrideActive = shouldOverrideActiveProgram(plan);
+  const useActiveProgram = Boolean(active) && !overrideActive;
+  const program = useActiveProgram && active ? content.programs[active.technique] : null;
+  const sessionIndex = useActiveProgram && active && program
     ? Math.min(program.sessions.length - 1, Math.max(0, active.currentDay - 1))
     : 0;
   const session = program?.sessions[sessionIndex] ?? null;
-  const currentDay = active ? active.currentDay : 0;
-  const completedDays = active && program
+  const currentDay = useActiveProgram && active ? active.currentDay : 0;
+  const completedDays = useActiveProgram && active && program
     ? Math.min(active.completedExerciseIds.length, program.sessions.length)
     : 0;
-  const primaryLabel = active && session
+  const showPlanReason = !useActiveProgram;
+  const planCopy = getPlanPrimaryCopy(copy, plan.primaryAction);
+  const primaryLabel = useActiveProgram && active && session
     ? `${completedDays === 0 ? copy.start : copy.continue} · ${session.durationMinutes} min`
-    : copy.explore(recommendedProgram.title);
+    : planCopy?.action ?? copy.explore(recommendedProgram.title);
   const progressText = program
     ? `${currentDay}/${program.sessions.length} ${copy.today}`
     : null;
@@ -237,7 +417,15 @@ export default function LucidTodayScreen() {
   const secondaryContexts = contextActions.filter((action) => action.key !== featuredContextKey);
 
   const openPrimaryAction = () => {
-    if (active && session) {
+    if (plan.primaryAction === 'strengthen_recall' || plan.primaryAction === 'protect_sleep') {
+      router.push('/lucid/morning');
+      return;
+    }
+    if (plan.primaryAction === 'reduce_night_signals') {
+      router.push('/lucid/(tabs)/night');
+      return;
+    }
+    if (useActiveProgram && active && session) {
       const access = evaluateLucidSessionAccess({
         sessionNumber: active.currentDay,
         sessionCount: program?.sessions.length ?? 0,
@@ -297,15 +485,21 @@ export default function LucidTodayScreen() {
       <Reveal index={1} distance={LucidSpace.sm} style={styles.mainContent}>
         <View style={styles.practiceCopy}>
           <Text style={[styles.overline, { color: palette.accent }]}>
-            {active && program
+            {useActiveProgram && active && program
               ? `${copy.day} ${active.currentDay} · ${program.title}`
-              : `${copy.suggested} · ${recommendedProgram.title}`}
+              : planCopy
+                ? planCopy.overline
+                : `${copy.suggested} · ${recommendedProgram.title}`}
           </Text>
           <Text accessibilityRole="header" style={[styles.title, { color: palette.text }]}>
-            {session?.title ?? copy.focusTitle[guidance.focus]}
+            {useActiveProgram && session
+              ? session.title
+              : planCopy?.title ?? copy.focusTitle[plan.focus]}
           </Text>
           <Text style={[styles.objective, { color: palette.textSecondary }]}>
-            {session?.objective ?? copy.focusHint[guidance.focus]}
+            {useActiveProgram && session
+              ? session.objective
+              : planCopy?.hint ?? copy.focusHint[plan.focus]}
           </Text>
         </View>
 
@@ -326,7 +520,7 @@ export default function LucidTodayScreen() {
           <View style={[styles.primaryIcon, { backgroundColor: palette.backgroundDeep }]}>
             <Ionicons
               color={mode === 'dark' ? palette.accent : palette.accentStrong}
-              name={active ? 'arrow-forward' : 'map-outline'}
+              name={useActiveProgram ? 'arrow-forward' : 'map-outline'}
               size={LucidIcon.lg}
             />
           </View>
@@ -335,7 +529,33 @@ export default function LucidTodayScreen() {
           </Text>
         </PressableScale>
 
-        {active && program && progressText ? (
+        {showPlanReason ? (
+          <View style={styles.whyBlock}>
+            <PressableScale
+              accessibilityLabel={whyOpen ? copy.whyHide : copy.why}
+              accessibilityRole="button"
+              accessibilityState={{ expanded: whyOpen }}
+              haptic="none"
+              onPress={() => setWhyOpen((open) => !open)}
+              scale={1}
+              style={styles.whyToggle}
+              testID="lucid-today-why"
+            >
+              <Text style={[styles.whyLabel, { color: palette.accent }]}>{whyOpen ? copy.whyHide : copy.why}</Text>
+            </PressableScale>
+            {whyOpen ? (
+              <Text
+                accessibilityLiveRegion="polite"
+                style={[styles.whyReason, { color: palette.textSecondary }]}
+                testID="lucid-today-why-reason"
+              >
+                {copy.whyReasons[plan.reasonCode]}
+              </Text>
+            ) : null}
+          </View>
+        ) : null}
+
+        {useActiveProgram && active && program && progressText ? (
           <View
             accessibilityLabel={`${copy.journey(program.sessions.length)}. ${progressText}`}
             accessibilityRole="progressbar"
@@ -552,6 +772,26 @@ const styles = StyleSheet.create({
     fontSize: LucidType.body[0],
     lineHeight: LucidType.body[1],
     textAlign: 'center',
+  },
+  whyBlock: {
+    gap: LucidSpace.xs,
+  },
+  whyToggle: {
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignSelf: 'flex-start',
+    paddingVertical: LucidSpace.xs,
+  },
+  whyLabel: {
+    fontFamily: 'SpaceGrotesk_700Bold',
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
+  },
+  whyReason: {
+    fontFamily: 'SpaceGrotesk_400Regular',
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
   },
   progressBlock: { gap: LucidSpace.md },
   progressHeader: {

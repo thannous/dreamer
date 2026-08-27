@@ -1,5 +1,9 @@
 import type { LucidProgramCalendarStatus } from '@/lib/lucid/calendar';
 import type { LucidProgramProgress } from '@/lib/lucid/model';
+import {
+  deriveLucidSafetyObservationFacts,
+  type LucidPlanObservation,
+} from '@/lib/lucid/personalization';
 
 export type LucidSessionAccessReason =
   | 'invalid'
@@ -102,6 +106,7 @@ export const LUCID_SAFETY_REASON_CODES = [
   'recovery_requested',
   'fragile_sleep',
   'recent_sleep_degraded',
+  'repeated_signal_wakeups',
 ] as const;
 export type LucidSafetyReasonCode = (typeof LUCID_SAFETY_REASON_CODES)[number];
 
@@ -118,6 +123,8 @@ export type LucidSafetyFacts = {
   sleepIsFragile: boolean;
   hearingConcern: boolean;
   audioConsented: boolean;
+  /** Optional on public input; `readLucidSafetyFacts` normalizes a missing value to false. */
+  repeatedSignalWakeups?: boolean;
 };
 
 /** Fail-closed: audio stays unconsented until a caller supplies an explicit yes. */
@@ -127,15 +134,18 @@ export const DEFAULT_LUCID_SAFETY_FACTS: LucidSafetyFacts = {
   sleepIsFragile: false,
   hearingConcern: false,
   audioConsented: false,
+  repeatedSignalWakeups: false,
 };
 
 /**
  * Persisted slice the adapter may read. Callers pass current facts to force
- * recovery, sleep degradation, fragility, hearing, or audio consent. No extra
- * schema or dead preference is required.
+ * recovery, sleep degradation, fragility, hearing, audio consent, or repeated
+ * signal wakeups. Experiments already on state can derive sleep and cue facts.
+ * No extra schema or dead preference is required.
  */
 export type LucidSafetyPersistedState = {
   onboarding?: { audioSafetyAccepted?: boolean } | null;
+  experiments?: readonly LucidPlanObservation[] | null;
 };
 
 /** Explicit values override persisted/default facts, including `false`. */
@@ -156,6 +166,7 @@ const REASON_WHEN: Readonly<Record<LucidSafetyReasonCode, (facts: LucidSafetyFac
   recovery_requested: (facts) => facts.recoveryRequested === true,
   fragile_sleep: (facts) => facts.sleepIsFragile === true,
   recent_sleep_degraded: (facts) => facts.recentSleepDegraded === true,
+  repeated_signal_wakeups: (facts) => facts.repeatedSignalWakeups === true,
 };
 
 function readLucidSafetyFacts(facts: LucidSafetyFacts): LucidSafetyFacts {
@@ -165,6 +176,7 @@ function readLucidSafetyFacts(facts: LucidSafetyFacts): LucidSafetyFacts {
     sleepIsFragile: facts.sleepIsFragile === true,
     hearingConcern: facts.hearingConcern === true,
     audioConsented: facts.audioConsented === true,
+    repeatedSignalWakeups: facts.repeatedSignalWakeups === true,
   };
 }
 
@@ -174,8 +186,8 @@ function collectLucidSafetyReasons(facts: LucidSafetyFacts): LucidSafetyReasonCo
 
 function resolveLucidSafetyMode(facts: LucidSafetyFacts): LucidSafetyMode {
   if (!facts.audioConsented || facts.hearingConcern) return 'nightFeaturesBlocked';
-  if (facts.recoveryRequested) return 'recovery';
-  if (facts.recentSleepDegraded || facts.sleepIsFragile) return 'reducedIntensity';
+  if (facts.recoveryRequested || facts.recentSleepDegraded) return 'recovery';
+  if (facts.sleepIsFragile || facts.repeatedSignalWakeups) return 'reducedIntensity';
   return 'normal';
 }
 
@@ -198,12 +210,13 @@ export function evaluateLucidSafetyPolicy(facts: LucidSafetyFacts): LucidSafetyP
     resolved.audioConsented &&
     !resolved.hearingConcern &&
     !resolved.sleepIsFragile &&
-    !resolved.recoveryRequested;
+    !resolved.recoveryRequested &&
+    !resolved.recentSleepDegraded;
 
   let nightSignalIntensity: LucidNightSignalIntensity = 'normal';
   if (!allowNightSignals) {
     nightSignalIntensity = 'blocked';
-  } else if (mode === 'reducedIntensity' || resolved.recentSleepDegraded) {
+  } else if (mode === 'reducedIntensity' || resolved.repeatedSignalWakeups) {
     nightSignalIntensity = 'reduced';
   }
 
@@ -253,22 +266,23 @@ function policyFrom(input: LucidSafetyFacts | LucidSafetyPolicy): LucidSafetyPol
 
 /**
  * Maps available persisted state plus optional current facts onto
- * `LucidSafetyFacts`. Only `audioSafetyAccepted` is read from storage;
- * recovery, degraded sleep, fragility and hearing stay explicit unless a
- * caller forces them.
+ * `LucidSafetyFacts`. `audioSafetyAccepted` is read from onboarding. Recent
+ * sleep degradation and repeated cue-wakeups can be derived from experiments
+ * already on state. Explicit current values, including `false`, always win.
  */
 export function resolveLucidSafetyFacts(
   state?: LucidSafetyPersistedState | null,
   current?: LucidSafetyCurrentFacts | null
 ): LucidSafetyFacts {
+  const derived = deriveLucidSafetyObservationFacts(state?.experiments ?? []);
   return readLucidSafetyFacts({
     recoveryRequested: current?.recoveryRequested ?? DEFAULT_LUCID_SAFETY_FACTS.recoveryRequested,
-    recentSleepDegraded:
-      current?.recentSleepDegraded ?? DEFAULT_LUCID_SAFETY_FACTS.recentSleepDegraded,
+    recentSleepDegraded: current?.recentSleepDegraded ?? derived.recentSleepDegraded,
     sleepIsFragile: current?.sleepIsFragile ?? DEFAULT_LUCID_SAFETY_FACTS.sleepIsFragile,
     hearingConcern: current?.hearingConcern ?? DEFAULT_LUCID_SAFETY_FACTS.hearingConcern,
     audioConsented:
       current?.audioConsented ?? state?.onboarding?.audioSafetyAccepted === true,
+    repeatedSignalWakeups: current?.repeatedSignalWakeups ?? derived.repeatedSignalWakeups,
   });
 }
 

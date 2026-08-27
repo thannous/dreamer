@@ -227,7 +227,7 @@ describe('lucid audio safety policy', () => {
   };
 
   it('lowers preview and night volume to the lowest prudent band when intensity is reduced', () => {
-    const reduced = policyFrom({ recentSleepDegraded: true });
+    const reduced = policyFrom({ repeatedSignalWakeups: true });
     expect(reduced.nightSignalIntensity).toBe('reduced');
 
     const preview = createLucidPreviewPlan({ ...previewRequest, policy: reduced });
@@ -247,7 +247,7 @@ describe('lucid audio safety policy', () => {
   });
 
   it('keeps a requested volume already inside the reduced band', () => {
-    const reduced = policyFrom({ recentSleepDegraded: true });
+    const reduced = policyFrom({ repeatedSignalWakeups: true });
     const preview = createLucidPreviewPlan({
       ...previewRequest,
       requestedVolume: 0.1,
@@ -280,6 +280,25 @@ describe('lucid audio safety policy', () => {
         policy: policyFrom({ sleepIsFragile: true }),
       })
     ).toEqual({ status: 'blocked', reason: 'fragile_sleep' });
+
+    const degradedSleep = policyFrom({ recentSleepDegraded: true });
+    expect(degradedSleep.mode).toBe('recovery');
+    expect(degradedSleep.allowNightSignals).toBe(false);
+    expect(degradedSleep.nightSignalIntensity).toBe('blocked');
+    expect(degradedSleep.reasons).toEqual(['recent_sleep_degraded']);
+    expect(
+      createLucidPreviewPlan({
+        ...previewRequest,
+        policy: degradedSleep,
+      })
+    ).toEqual({ status: 'blocked', reason: 'night_signals_blocked' });
+
+    expect(
+      createLucidNightSignalPlan({
+        ...nightRequest,
+        policy: degradedSleep,
+      })
+    ).toEqual({ status: 'blocked', reason: 'night_signals_blocked' });
   });
 
   it('still applies speaker, timer, and volume guards ahead of a permissive policy', () => {
@@ -317,7 +336,7 @@ describe('lucid audio safety policy', () => {
     expect(
       shouldRestoreLucidNightSignalPlan(
         { ...ready.plan, volume: MAX_LUCID_REDUCED_NIGHT_VOLUME, volumeBand: 'very_low' },
-        policyFrom({ recentSleepDegraded: true })
+        policyFrom({ repeatedSignalWakeups: true })
       )
     ).toBe(true);
     expect(ready.plan.volume).toBe(MAX_LUCID_NIGHT_VOLUME);
