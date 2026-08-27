@@ -21,17 +21,13 @@ import { useLucidNow } from '@/hooks/useLucidNow';
 import {
   getLucidDayPhase,
   getLucidPersonalizedPlan,
-  type LucidDayPhase,
   type LucidPersonalizedPlan,
   type LucidPlanPrimaryAction,
 } from '@/lib/lucid/personalization';
-import {
-  evaluateLucidSafetyPolicyFromState,
-  evaluateLucidSessionAccess,
-} from '@/lib/lucid/safety';
+import { evaluateLucidSafetyPolicyFromState } from '@/lib/lucid/safety';
+import { resolveLucidTodayAction } from '@/lib/lucid/todayAction';
 
 const DREAM_ATLAS = require('../../../assets/images/lucid/today-dream-atlas.png');
-const GUIDE_ORB = require('../../../assets/images/lucid/lucid-guide-orb.png');
 
 const COPY = {
   en: {
@@ -40,6 +36,8 @@ const COPY = {
     guided: 'Guided practice',
     start: 'Start',
     continue: 'Continue',
+    resumeTraining: 'Resume training',
+    viewJourney: 'View journey',
     choose: 'Choose a journey',
     suggested: 'Suggested starting point',
     explore: (program: string) => `Explore ${program}`,
@@ -88,6 +86,8 @@ const COPY = {
     guided: 'Pratique guidée',
     start: 'Commencer',
     continue: 'Continuer',
+    resumeTraining: 'Reprendre l’entraînement',
+    viewJourney: 'Voir le parcours',
     choose: 'Choisir un parcours',
     suggested: 'Point de départ suggéré',
     explore: (program: string) => `Découvrir ${program}`,
@@ -136,6 +136,8 @@ const COPY = {
     guided: 'Práctica guiada',
     start: 'Empezar',
     continue: 'Continuar',
+    resumeTraining: 'Reanudar entrenamiento',
+    viewJourney: 'Ver el recorrido',
     choose: 'Elegir un recorrido',
     suggested: 'Punto de partida sugerido',
     explore: (program: string) => `Explorar ${program}`,
@@ -184,6 +186,8 @@ const COPY = {
     guided: 'Geführte Übung',
     start: 'Starten',
     continue: 'Fortsetzen',
+    resumeTraining: 'Training fortsetzen',
+    viewJourney: 'Programm ansehen',
     choose: 'Programm wählen',
     suggested: 'Empfohlener Startpunkt',
     explore: (program: string) => `${program} entdecken`,
@@ -232,6 +236,8 @@ const COPY = {
     guided: 'Pratica guidata',
     start: 'Inizia',
     continue: 'Continua',
+    resumeTraining: 'Riprendi allenamento',
+    viewJourney: 'Vedi il percorso',
     choose: 'Scegli un percorso',
     suggested: 'Punto di partenza suggerito',
     explore: (program: string) => `Scopri ${program}`,
@@ -283,14 +289,7 @@ type ContextAction = {
   icon: 'sunny-outline' | 'eye-outline' | 'moon-outline';
   label: string;
   accessibilityLabel: string;
-  hint: string;
 };
-
-function getFeaturedContextKey(phase: LucidDayPhase): ContextAction['key'] {
-  if (phase === 'morning') return 'morning';
-  if (phase === 'day') return 'reality';
-  return 'night';
-}
 
 type LucidTodayCopy = (typeof COPY)[keyof typeof COPY];
 
@@ -300,10 +299,6 @@ function isPlanOverrideAction(action: LucidPlanPrimaryAction): boolean {
     action === 'protect_sleep' ||
     action === 'reduce_night_signals'
   );
-}
-
-function shouldOverrideActiveProgram(plan: LucidPersonalizedPlan): boolean {
-  return isPlanOverrideAction(plan.primaryAction);
 }
 
 function getPlanRecommendedTechnique(
@@ -364,25 +359,73 @@ export default function LucidTodayScreen() {
   const active =
     state!.progress.find((item) => item.status === 'active') ??
     state!.progress.find((item) => item.status === 'paused');
-  const overrideActive = shouldOverrideActiveProgram(plan);
-  const useActiveProgram = Boolean(active) && !overrideActive;
-  const program = useActiveProgram && active ? content.programs[active.technique] : null;
-  const sessionIndex = useActiveProgram && active && program
+  const program = active ? content.programs[active.technique] : null;
+  const sessionIndex = active && program
     ? Math.min(program.sessions.length - 1, Math.max(0, active.currentDay - 1))
     : 0;
   const session = program?.sessions[sessionIndex] ?? null;
-  const currentDay = useActiveProgram && active ? active.currentDay : 0;
-  const completedDays = useActiveProgram && active && program
+  const currentDay = active?.currentDay ?? 0;
+  const completedDays = active && program
     ? Math.min(active.completedExerciseIds.length, program.sessions.length)
     : 0;
-  const showPlanReason = !useActiveProgram;
   const planCopy = getPlanPrimaryCopy(copy, plan.primaryAction);
-  const primaryLabel = useActiveProgram && active && session
-    ? `${completedDays === 0 ? copy.start : copy.continue} · ${session.durationMinutes} min`
-    : planCopy?.action ?? copy.explore(recommendedProgram.title);
+  const showPlanSummary = !active || isPlanOverrideAction(plan.primaryAction);
   const progressText = program
     ? `${currentDay}/${program.sessions.length} ${copy.today}`
     : null;
+  const todayAction = resolveLucidTodayAction({
+    phase: dayPhase,
+    plan,
+    policy: safetyPolicy,
+    program: active,
+    sessionCount: program?.sessions.length,
+    sessionId: session?.id,
+  });
+  const primaryPresentation: {
+    overline: string;
+    title: string;
+    hint: string;
+    label: string;
+    icon: 'sunny-outline' | 'eye-outline' | 'moon-outline' | 'arrow-forward' | 'refresh-outline' | 'map-outline';
+  } = (() => {
+    if (todayAction.kind === 'morning_capture') {
+      return { overline: copy.now, title: copy.morning, hint: copy.morningHint, label: copy.log, icon: 'sunny-outline' };
+    }
+    if (todayAction.kind === 'reality_check') {
+      return { overline: copy.now, title: copy.reality, hint: copy.realityHint, label: copy.doCheck, icon: 'eye-outline' };
+    }
+    if (todayAction.kind === 'night_tools') {
+      return { overline: copy.now, title: content.chrome.tabs.night, hint: copy.sleepHint, label: copy.prepareNight, icon: 'moon-outline' };
+    }
+    if (todayAction.kind === 'sleep_recovery') {
+      return { overline: copy.protectNow, title: copy.focusTitle.stability, hint: copy.protectHint, label: copy.protectAction, icon: 'sunny-outline' };
+    }
+    if (todayAction.kind === 'guided_ritual' && active && program && session) {
+      return {
+        overline: `${copy.day} ${active.currentDay} · ${program.title}`,
+        title: session.title,
+        hint: session.objective,
+        label: `${completedDays === 0 ? copy.start : copy.continue} · ${session.durationMinutes} min`,
+        icon: 'arrow-forward',
+      };
+    }
+    if (todayAction.kind === 'resume_program' && program) {
+      return {
+        overline: `${program.title} · ${progressText ?? ''}`,
+        title: copy.resumeTraining,
+        hint: session?.objective ?? copy.focusHint[plan.focus],
+        label: copy.resumeTraining,
+        icon: 'refresh-outline',
+      };
+    }
+    return {
+      overline: `${copy.suggested} · ${recommendedProgram.title}`,
+      title: copy.focusTitle[plan.focus],
+      hint: copy.focusHint[plan.focus],
+      label: copy.explore(recommendedProgram.title),
+      icon: 'map-outline',
+    };
+  })();
   const contextActions: ContextAction[] = [
     {
       key: 'morning',
@@ -391,7 +434,6 @@ export default function LucidTodayScreen() {
       icon: 'sunny-outline',
       label: copy.morning,
       accessibilityLabel: copy.log,
-      hint: copy.morningHint,
     },
     {
       key: 'reality',
@@ -400,7 +442,6 @@ export default function LucidTodayScreen() {
       icon: 'eye-outline',
       label: copy.reality,
       accessibilityLabel: copy.doCheck,
-      hint: copy.realityHint,
     },
     {
       key: 'night',
@@ -409,38 +450,8 @@ export default function LucidTodayScreen() {
       icon: 'moon-outline',
       label: content.chrome.tabs.night,
       accessibilityLabel: copy.prepareNight,
-      hint: dayPhase === 'sleep' ? copy.sleepHint : copy.nightHint,
     },
   ];
-  const featuredContextKey = getFeaturedContextKey(dayPhase);
-  const featuredContext = contextActions.find((action) => action.key === featuredContextKey)!;
-  const secondaryContexts = contextActions.filter((action) => action.key !== featuredContextKey);
-
-  const openPrimaryAction = () => {
-    if (plan.primaryAction === 'strengthen_recall' || plan.primaryAction === 'protect_sleep') {
-      router.push('/lucid/morning');
-      return;
-    }
-    if (plan.primaryAction === 'reduce_night_signals') {
-      router.push('/lucid/(tabs)/night');
-      return;
-    }
-    if (useActiveProgram && active && session) {
-      const access = evaluateLucidSessionAccess({
-        sessionNumber: active.currentDay,
-        sessionCount: program?.sessions.length ?? 0,
-        exerciseId: session.id,
-        progress: active,
-      });
-      if (!access.allowed) {
-        router.push(`/lucid/program/${active.technique}`);
-        return;
-      }
-      router.push(`/lucid/session/${active.technique}/${active.currentDay}`);
-      return;
-    }
-    router.push('/lucid/(tabs)/programs');
-  };
 
   return (
     <LucidScreen
@@ -485,28 +496,20 @@ export default function LucidTodayScreen() {
       <Reveal index={1} distance={LucidSpace.sm} style={styles.mainContent}>
         <View style={styles.practiceCopy}>
           <Text style={[styles.overline, { color: palette.accent }]}>
-            {useActiveProgram && active && program
-              ? `${copy.day} ${active.currentDay} · ${program.title}`
-              : planCopy
-                ? planCopy.overline
-                : `${copy.suggested} · ${recommendedProgram.title}`}
+            {primaryPresentation.overline}
           </Text>
           <Text accessibilityRole="header" style={[styles.title, { color: palette.text }]}>
-            {useActiveProgram && session
-              ? session.title
-              : planCopy?.title ?? copy.focusTitle[plan.focus]}
+            {primaryPresentation.title}
           </Text>
           <Text style={[styles.objective, { color: palette.textSecondary }]}>
-            {useActiveProgram && session
-              ? session.objective
-              : planCopy?.hint ?? copy.focusHint[plan.focus]}
+            {primaryPresentation.hint}
           </Text>
         </View>
 
         <PressableScale
-          accessibilityLabel={primaryLabel}
+          accessibilityLabel={primaryPresentation.label}
           accessibilityRole="button"
-          onPress={openPrimaryAction}
+          onPress={() => router.push(todayAction.route)}
           testID="lucid-today-primary"
           style={styles.primaryAction}
         >
@@ -520,16 +523,30 @@ export default function LucidTodayScreen() {
           <View style={[styles.primaryIcon, { backgroundColor: palette.backgroundDeep }]}>
             <Ionicons
               color={mode === 'dark' ? palette.accent : palette.accentStrong}
-              name={useActiveProgram ? 'arrow-forward' : 'map-outline'}
+              name={primaryPresentation.icon}
               size={LucidIcon.lg}
             />
           </View>
           <Text style={[styles.primaryLabel, { color: palette.backgroundDeep }]}>
-            {primaryLabel}
+            {primaryPresentation.label}
           </Text>
         </PressableScale>
 
-        {showPlanReason ? (
+        {showPlanSummary ? (
+          <View style={styles.planSummary} testID="lucid-today-plan">
+            <Text style={[styles.overline, { color: palette.accent }]}>
+              {planCopy?.overline ?? `${copy.suggested} · ${recommendedProgram.title}`}
+            </Text>
+            <Text style={[styles.planSummaryTitle, { color: palette.text }]}>
+              {planCopy?.title ?? copy.focusTitle[plan.focus]}
+            </Text>
+            <Text style={[styles.planSummaryHint, { color: palette.textSecondary }]}>
+              {planCopy?.hint ?? copy.focusHint[plan.focus]}
+            </Text>
+          </View>
+        ) : null}
+
+        {showPlanSummary ? (
           <View style={styles.whyBlock}>
             <PressableScale
               accessibilityLabel={whyOpen ? copy.whyHide : copy.why}
@@ -555,62 +572,78 @@ export default function LucidTodayScreen() {
           </View>
         ) : null}
 
-        {useActiveProgram && active && program && progressText ? (
-          <View
-            accessibilityLabel={`${copy.journey(program.sessions.length)}. ${progressText}`}
-            accessibilityRole="progressbar"
-            accessibilityValue={{
-              min: 0,
-              max: program.sessions.length,
-              now: currentDay,
-              text: progressText,
-            }}
-            style={styles.progressBlock}
-            testID="lucid-today-progress"
-          >
-            <View style={styles.progressHeader}>
-              <Text style={[styles.progressLabel, { color: palette.accent }]}>
-                {copy.journey(program.sessions.length)}
-              </Text>
-              <Text style={[styles.progressLabel, { color: palette.accent }]}>{progressText}</Text>
-            </View>
-            <View style={styles.progressSteps}>
-              {program.sessions.map((item, index) => {
-                const completed = index < completedDays;
-                const current = index === currentDay - 1;
-                return (
-                  <React.Fragment key={item.id}>
-                    {index > 0 ? (
-                      <View
-                        style={[
-                          styles.progressConnector,
-                          {
-                            backgroundColor:
-                              index <= completedDays ? palette.accent : palette.borderInteractive,
-                          },
-                        ]}
-                      />
-                    ) : null}
-                    <View
-                      style={[
-                        styles.progressDot,
-                        {
-                          borderColor:
-                            completed || current ? palette.accent : palette.borderInteractive,
-                          backgroundColor: completed ? palette.accent : palette.background,
-                        },
-                      ]}
-                    >
-                      {current && !completed ? (
+        {active && program && progressText ? (
+          <View style={styles.progressBlock} testID="lucid-today-progress">
+            <View
+              accessible
+              accessibilityLabel={`${copy.journey(program.sessions.length)}. ${progressText}`}
+              accessibilityRole="progressbar"
+              accessibilityValue={{
+                min: 0,
+                max: program.sessions.length,
+                now: currentDay,
+                text: progressText,
+              }}
+              style={styles.progressMetric}
+            >
+              <View style={styles.progressHeader}>
+                <Text style={[styles.progressLabel, { color: palette.accent }]}>
+                  {copy.journey(program.sessions.length)}
+                </Text>
+                <Text style={[styles.progressLabel, { color: palette.accent }]}>{progressText}</Text>
+              </View>
+              <View style={styles.progressSteps}>
+                {program.sessions.map((item, index) => {
+                  const completed = index < completedDays;
+                  const current = index === currentDay - 1;
+                  return (
+                    <React.Fragment key={item.id}>
+                      {index > 0 ? (
                         <View
-                          style={[styles.progressDotCurrent, { backgroundColor: palette.accent }]}
+                          style={[
+                            styles.progressConnector,
+                            {
+                              backgroundColor:
+                                index <= completedDays ? palette.accent : palette.borderInteractive,
+                            },
+                          ]}
                         />
                       ) : null}
-                    </View>
-                  </React.Fragment>
-                );
-              })}
+                      <View
+                        style={[
+                          styles.progressDot,
+                          {
+                            borderColor:
+                              completed || current ? palette.accent : palette.borderInteractive,
+                            backgroundColor: completed ? palette.accent : palette.background,
+                          },
+                        ]}
+                      >
+                        {current && !completed ? (
+                          <View
+                            style={[styles.progressDotCurrent, { backgroundColor: palette.accent }]}
+                          />
+                        ) : null}
+                      </View>
+                    </React.Fragment>
+                  );
+                })}
+              </View>
             </View>
+            <PressableScale
+              accessibilityLabel={active.status === 'paused' ? copy.resumeTraining : copy.viewJourney}
+              accessibilityRole="button"
+              haptic="none"
+              onPress={() => router.push(`/lucid/program/${active.technique}`)}
+              scale={1}
+              style={styles.progressAction}
+              testID="lucid-today-progress-action"
+            >
+              <Text style={[styles.progressActionLabel, { color: palette.accent }]}>
+                {active.status === 'paused' ? copy.resumeTraining : copy.viewJourney}
+              </Text>
+              <Ionicons color={palette.accent} name="arrow-forward" size={LucidIcon.sm} />
+            </PressableScale>
           </View>
         ) : null}
 
@@ -641,61 +674,29 @@ export default function LucidTodayScreen() {
           </View>
         </View>
 
-        <View style={styles.contextActions}>
-          <View testID="lucid-today-context-primary">
+        <View style={styles.contextActions} testID="lucid-today-shortcuts">
+          <View style={styles.secondaryContexts}>
+            {contextActions.map((action) => (
             <PressableScale
-              accessibilityLabel={featuredContext.accessibilityLabel}
+              key={action.key}
+              accessibilityLabel={action.accessibilityLabel}
               accessibilityRole="button"
-              onPress={() => router.push(featuredContext.route)}
-              testID={featuredContext.testID}
+              onPress={() => router.push(action.route)}
+              testID={action.testID}
               style={[
-                styles.featuredContextAction,
-                { backgroundColor: palette.surface, borderColor: palette.accent },
+                styles.contextAction,
+                { backgroundColor: palette.surface, borderColor: palette.borderInteractive },
               ]}
             >
-              <Image
-                accessible={false}
-                contentFit="contain"
-                source={GUIDE_ORB}
-                style={styles.contextOrb}
+              <Ionicons
+                color={action.key === 'morning' ? palette.amber : palette.accent}
+                name={action.icon}
+                size={LucidIcon.md}
               />
-              <View style={styles.featuredContextCopy}>
-                <Text style={[styles.contextOverline, { color: palette.accent }]}>
-                  {copy.now}
-                </Text>
-                <Text style={[styles.featuredContextLabel, { color: palette.text }]}>
-                  {featuredContext.label}
-                </Text>
-                <Text style={[styles.featuredContextHint, { color: palette.textSecondary }]}>
-                  {featuredContext.hint}
-                </Text>
-              </View>
-              <Ionicons color={palette.accent} name="arrow-forward" size={LucidIcon.md} />
+              <Text numberOfLines={1} style={[styles.contextLabel, { color: palette.text }]}>
+                {action.label}
+              </Text>
             </PressableScale>
-          </View>
-
-          <View style={styles.secondaryContexts}>
-            {secondaryContexts.map((action) => (
-              <PressableScale
-                key={action.key}
-                accessibilityLabel={action.accessibilityLabel}
-                accessibilityRole="button"
-                onPress={() => router.push(action.route)}
-                testID={action.testID}
-                style={[
-                  styles.contextAction,
-                  { backgroundColor: palette.surface, borderColor: palette.borderInteractive },
-                ]}
-              >
-                <Ionicons
-                  color={action.key === 'morning' ? palette.amber : palette.accent}
-                  name={action.icon}
-                  size={LucidIcon.md}
-                />
-                <Text numberOfLines={1} style={[styles.contextLabel, { color: palette.text }]}>
-                  {action.label}
-                </Text>
-              </PressableScale>
             ))}
           </View>
         </View>
@@ -773,6 +774,17 @@ const styles = StyleSheet.create({
     lineHeight: LucidType.body[1],
     textAlign: 'center',
   },
+  planSummary: { gap: LucidSpace.xs, paddingTop: LucidSpace.sm },
+  planSummaryTitle: {
+    fontFamily: 'SpaceGrotesk_700Bold',
+    fontSize: LucidType.bodySm[0],
+    lineHeight: LucidType.bodySm[1],
+  },
+  planSummaryHint: {
+    fontFamily: 'SpaceGrotesk_400Regular',
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
+  },
   whyBlock: {
     gap: LucidSpace.xs,
   },
@@ -794,6 +806,7 @@ const styles = StyleSheet.create({
     lineHeight: LucidType.caption[1],
   },
   progressBlock: { gap: LucidSpace.md },
+  progressMetric: { gap: LucidSpace.md },
   progressHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -822,6 +835,18 @@ const styles = StyleSheet.create({
     height: LucidSpace.md,
     borderRadius: LucidRadius.full,
   },
+  progressAction: {
+    minHeight: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: LucidSpace.xs,
+  },
+  progressActionLabel: {
+    fontFamily: 'SpaceGrotesk_700Bold',
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
+  },
   rhythm: {
     minHeight: 24,
     flexDirection: 'row',
@@ -846,43 +871,6 @@ const styles = StyleSheet.create({
     borderRadius: LucidRadius.full,
   },
   contextActions: { gap: LucidSpace.sm },
-  featuredContextAction: {
-    minHeight: 104,
-    borderRadius: LucidRadius.xl,
-    borderWidth: 1,
-    overflow: 'hidden',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: LucidSpace.md,
-    paddingHorizontal: LucidSpace.md,
-    paddingVertical: LucidSpace.sm,
-  },
-  contextOrb: {
-    width: 68,
-    height: 68,
-  },
-  featuredContextCopy: {
-    flex: 1,
-    minWidth: 0,
-    gap: 2,
-  },
-  contextOverline: {
-    fontFamily: 'SpaceGrotesk_700Bold',
-    fontSize: LucidType.overline[0],
-    lineHeight: LucidType.overline[1],
-    letterSpacing: 1.1,
-    textTransform: 'uppercase',
-  },
-  featuredContextLabel: {
-    fontFamily: 'Fraunces_600SemiBold',
-    fontSize: LucidType.h3[0],
-    lineHeight: LucidType.h3[1],
-  },
-  featuredContextHint: {
-    fontFamily: 'SpaceGrotesk_400Regular',
-    fontSize: LucidType.caption[0],
-    lineHeight: LucidType.caption[1],
-  },
   secondaryContexts: {
     flexDirection: 'row',
     alignItems: 'stretch',

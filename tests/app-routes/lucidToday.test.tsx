@@ -1,7 +1,7 @@
 /* @jest-environment jsdom */
 
 import React from 'react';
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 
 const mockPush = jest.fn();
 let mockProgress: {
@@ -178,7 +178,7 @@ describe('Lucid Trainer today screen', () => {
     };
   });
 
-  it('turns the onboarding recall goal into a morning capture instead of a night program', () => {
+  it('keeps the personalized recall plan secondary to the daytime action', () => {
     render(<LucidTodayScreen />);
 
     expect(screen.getByText('Renforcer le rappel')).not.toBeNull();
@@ -192,31 +192,31 @@ describe('Lucid Trainer today screen', () => {
     expect(screen.queryByTestId('lucid-today-why-reason')).toBeNull();
 
     fireEvent.click(screen.getByTestId('lucid-today-primary'));
-    expect(mockPush).toHaveBeenCalledWith('/lucid/morning');
+    expect(mockPush).toHaveBeenCalledWith('/lucid/reality-check');
   });
 
-  it('features the action that matches the current sleep-window phase', () => {
+  it('exposes exactly one primary CTA for the current sleep-window phase', () => {
     render(<LucidTodayScreen />);
 
-    const featured = screen.getByTestId('lucid-today-context-primary');
-    expect(within(featured).getByRole('button', { name: 'Faire un test conscient' })).not.toBeNull();
-    expect(within(featured).getByText('Maintenant')).not.toBeNull();
-    expect(within(featured).getByText('Test de réalité')).not.toBeNull();
+    expect(screen.getAllByTestId('lucid-today-primary')).toHaveLength(1);
+    expect(screen.queryByTestId('lucid-today-context-primary')).toBeNull();
+    expect(screen.getByTestId('lucid-today-primary').getAttribute('aria-label')).toBe('Faire un test conscient');
+    expect(screen.getByText('Maintenant')).not.toBeNull();
+    expect(screen.getAllByText('Test de réalité').length).toBeGreaterThan(0);
   });
 
   it('prioritizes the morning review during the configured wake window', () => {
     mockNow = Date.UTC(2026, 7, 24, 8, 0);
     render(<LucidTodayScreen />);
 
-    expect(
-      within(screen.getByTestId('lucid-today-context-primary')).getByRole('button', {
-        name: 'Noter la nuit passée',
-      })
-    ).not.toBeNull();
+    expect(screen.getByTestId('lucid-today-primary').getAttribute('aria-label')).toBe('Noter la nuit passée');
+    fireEvent.click(screen.getByTestId('lucid-today-primary'));
+    expect(mockPush).toHaveBeenCalledWith('/lucid/morning');
   });
 
   it('uses the active session, real seven-day position and current duration', () => {
     usePracticeOnboarding();
+    mockNow = Date.UTC(2026, 7, 24, 21, 30);
     mockProgress = [
       {
         technique: 'mild',
@@ -241,6 +241,7 @@ describe('Lucid Trainer today screen', () => {
 
   it('does not open the current session from Today while the only program is paused', () => {
     usePracticeOnboarding();
+    mockNow = Date.UTC(2026, 7, 24, 21, 30);
     mockProgress = [
       {
         technique: 'mild',
@@ -252,6 +253,8 @@ describe('Lucid Trainer today screen', () => {
 
     render(<LucidTodayScreen />);
 
+    expect(screen.getByTestId('lucid-today-primary').getAttribute('aria-label')).toBe('Reprendre l’entraînement');
+    expect(screen.getByTestId('lucid-today-progress-action').getAttribute('aria-label')).toBe('Reprendre l’entraînement');
     fireEvent.click(screen.getByTestId('lucid-today-primary'));
     expect(mockPush).toHaveBeenCalledWith('/lucid/program/mild');
     expect(mockPush).not.toHaveBeenCalledWith('/lucid/session/mild/3');
@@ -261,7 +264,7 @@ describe('Lucid Trainer today screen', () => {
     render(<LucidTodayScreen />);
 
     fireEvent.click(screen.getByTestId('lucid-today-morning'));
-    fireEvent.click(screen.getByRole('button', { name: 'Faire un test conscient' }));
+    fireEvent.click(screen.getByTestId('lucid-today-reality'));
     fireEvent.click(screen.getByTestId('lucid-tab-night'));
     fireEvent.click(screen.getByTestId('lucid-tab-settings'));
 
@@ -289,7 +292,7 @@ describe('Lucid Trainer today screen', () => {
     expect(screen.getByText('Renforcer le rappel')).not.toBeNull();
     expect(screen.queryByRole('progressbar')).toBeNull();
     fireEvent.click(screen.getByTestId('lucid-today-primary'));
-    expect(mockPush).toHaveBeenCalledWith('/lucid/morning');
+    expect(mockPush).toHaveBeenCalledWith('/lucid/reality-check');
 
     const why = screen.getByTestId('lucid-today-why');
     expect(why.getAttribute('aria-expanded')).toBe('false');
@@ -317,8 +320,8 @@ describe('Lucid Trainer today screen', () => {
 
     expect(screen.getByText('Point de départ suggéré · MILD')).not.toBeNull();
     expect(screen.getByText('Remarquez ce qui semble étrange')).not.toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: 'Découvrir MILD' }));
-    expect(mockPush).toHaveBeenCalledWith('/lucid/(tabs)/programs');
+    fireEvent.click(screen.getByTestId('lucid-today-primary'));
+    expect(mockPush).toHaveBeenCalledWith('/lucid/reality-check');
     fireEvent.click(screen.getByTestId('lucid-today-why'));
     expect(screen.getByTestId('lucid-today-why-reason').textContent).toBe(
       'Le rappel suffit pour un premier essai lucide avec MILD guidé.'
@@ -343,12 +346,13 @@ describe('Lucid Trainer today screen', () => {
         completedExerciseIds: ['mild-01', 'mild-02'],
       },
     ];
+    mockNow = Date.UTC(2026, 7, 24, 23, 30);
 
     render(<LucidTodayScreen />);
 
     expect(screen.getAllByText('Protéger le sommeil').length).toBeGreaterThan(0);
-    expect(screen.getByText('Restez lucide, calmement')).not.toBeNull();
-    expect(screen.queryByRole('progressbar')).toBeNull();
+    expect(screen.getAllByText('Restez lucide, calmement').length).toBeGreaterThan(0);
+    expect(screen.getByRole('progressbar')).not.toBeNull();
     fireEvent.click(screen.getByTestId('lucid-today-primary'));
     expect(mockPush).toHaveBeenCalledWith('/lucid/morning');
     fireEvent.click(screen.getByTestId('lucid-today-why'));
@@ -374,6 +378,7 @@ describe('Lucid Trainer today screen', () => {
         completedExerciseIds: ['mild-01', 'mild-02'],
       },
     ];
+    mockNow = Date.UTC(2026, 7, 24, 23, 30);
 
     render(<LucidTodayScreen />);
 
@@ -405,11 +410,10 @@ describe('Lucid Trainer today screen', () => {
 
     render(<LucidTodayScreen />);
 
-    expect(screen.getByText('Jour 3 · MILD')).not.toBeNull();
     expect(screen.getByRole('progressbar')).not.toBeNull();
     expect(screen.queryByTestId('lucid-today-why')).toBeNull();
     expect(screen.queryByTestId('lucid-today-why-reason')).toBeNull();
     fireEvent.click(screen.getByTestId('lucid-today-primary'));
-    expect(mockPush).toHaveBeenCalledWith('/lucid/session/mild/3');
+    expect(mockPush).toHaveBeenCalledWith('/lucid/reality-check');
   });
 });
