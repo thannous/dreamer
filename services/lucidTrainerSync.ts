@@ -148,6 +148,7 @@ function hasLucidTrainerStateData(state: LucidTrainerState): boolean {
     state.experiments.length > 0 ||
     state.realityChecks.length > 0 ||
     state.weeklyReviews.length > 0 ||
+    (state.dreamSignDecisions?.length ?? 0) > 0 ||
     state.updatedAt > state.createdAt
   );
 }
@@ -291,6 +292,7 @@ const LUCID_REMOTE_ENTITY_TYPES = [
   'experiment',
   'reality_check',
   'weekly_review',
+  'dream_sign',
 ] as const satisfies readonly LucidSyncEntity['entityType'][];
 
 function isRecord(value: unknown): value is Record<string, unknown> {

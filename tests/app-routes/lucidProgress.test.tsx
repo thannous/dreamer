@@ -156,6 +156,7 @@ const mockTrainerState = {
     updatedAt: number;
   }[],
 };
+let mockActiveDreamSigns: { id: string; label: string; distinctDreamCount: number }[] = [];
 
 jest.mock('@/context/LucidTrainerContext', () => {
   const { getLucidContent } = jest.requireActual('@/lib/lucid/content');
@@ -163,6 +164,7 @@ jest.mock('@/context/LucidTrainerContext', () => {
     useLucidTrainer: () => ({
       state: mockTrainerState,
       content: getLucidContent('en'),
+      activeDreamSigns: mockActiveDreamSigns,
       deleteExperiment: jest.fn(),
     }),
   };
@@ -187,6 +189,7 @@ describe('Lucid Trainer progress screen', () => {
     mockTrainerState.onboarding.experience = 'beginner';
     mockTrainerState.weeklyReviews = [];
     mockTrainerState.experiments = [...originalExperiments];
+    mockActiveDreamSigns = [];
     cleanup();
   });
 
@@ -303,6 +306,15 @@ describe('Lucid Trainer progress screen', () => {
     expect(
       screen.getByText('Saved weekly reviews will appear here after you complete one.'),
     ).not.toBeNull();
+  });
+
+  it('shows only confirmed dream signs in Insights', () => {
+    mockActiveDreamSigns = [{ id: 'sign:mirror', label: 'My mirror', distinctDreamCount: 3 }];
+    render(<LucidProgressScreen />);
+
+    expect(screen.getByTestId('lucid-progress-dream-sign-sign:mirror')).not.toBeNull();
+    expect(screen.getByText('My mirror')).not.toBeNull();
+    expect(screen.getByText('3 source dreams')).not.toBeNull();
   });
 
   it('renders a write capture with linked practice without treating it as a reported method or null scores', () => {

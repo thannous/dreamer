@@ -48,19 +48,19 @@ const STEP_COUNT = 3;
 
 const COPY = {
   en: {
-    eyebrow: 'Mindful pause', title: 'Is this a dream?', subtitle: 'Slow down for a moment. Evidence matters more than the answer you expect.', guide: 'Lucid guide', progress: 'Reality-check progress', step: 'Step', of: 'of', complete: 'complete', current: 'current', upcoming: 'upcoming', previous: 'Previous step', observe: 'Observe', name: 'Name', verify: 'Verify', observePrompt: 'Choose one stable detail to test', observeBody: 'Carry out the check slowly. Look for evidence instead of the answer you expect.', observeAction: 'I observed carefully', namePrompt: 'Name what interrupted autopilot', nameBody: 'Choose the real context that prompted this pause.', nameAction: 'Continue to verification', verifyPrompt: 'Verify what happened', verifyBody: 'Answer plainly, without trying to produce a dream-like anomaly.', method: 'Choose a check', context: 'What prompted it?', outcome: 'What did you notice?', awake: 'Awake', dreaming: 'Dreaming', uncertain: 'Unsure', mindful: 'I paused and genuinely questioned the moment', save: 'Save reality check', saved: 'Check saved', incomplete: 'Still to answer:', confirm: 'Confirmation', nose_breathing: 'Pinch nose and breathe', finger_count: 'Count your fingers twice', text_reread: 'Read, look away, read again', memory_trace: 'Trace the last few minutes', scheduled: 'Scheduled reminder', transition: 'Place or activity change', emotion: 'Strong emotion', dream_sign: 'Personal dream sign', spontaneous: 'Spontaneous thought',
+    eyebrow: 'Mindful pause', title: 'Is this a dream?', subtitle: 'Slow down for a moment. Evidence matters more than the answer you expect.', guide: 'Lucid guide', progress: 'Reality-check progress', step: 'Step', of: 'of', complete: 'complete', current: 'current', upcoming: 'upcoming', previous: 'Previous step', observe: 'Observe', name: 'Name', verify: 'Verify', observePrompt: 'Choose one stable detail to test', observeBody: 'Carry out the check slowly. Look for evidence instead of the answer you expect.', observeAction: 'I observed carefully', namePrompt: 'Name what interrupted autopilot', nameBody: 'Choose the real context that prompted this pause.', nameAction: 'Continue to verification', verifyPrompt: 'Verify what happened', verifyBody: 'Answer plainly, without trying to produce a dream-like anomaly.', method: 'Choose a check', context: 'What prompted it?', outcome: 'What did you notice?', awake: 'Awake', dreaming: 'Dreaming', uncertain: 'Unsure', mindful: 'I paused and genuinely questioned the moment', save: 'Save reality check', saved: 'Check saved', incomplete: 'Still to answer:', confirm: 'Confirmation', nose_breathing: 'Pinch nose and breathe', finger_count: 'Count your fingers twice', text_reread: 'Read, look away, read again', memory_trace: 'Trace the last few minutes', scheduled: 'Scheduled reminder', transition: 'Place or activity change', emotion: 'Strong emotion', dream_sign: 'Personal dream sign', spontaneous: 'Spontaneous thought', chooseSign: 'Which confirmed sign?', noConfirmedSign: 'Confirm a dream sign in your Journal first.',
   },
   fr: {
-    eyebrow: 'Pause consciente', title: 'Est-ce un rêve ?', subtitle: 'Ralentissez un instant. Les indices comptent plus que la réponse attendue.', guide: 'Guide lucide', progress: 'Progression du test de réalité', step: 'Étape', of: 'sur', complete: 'terminée', current: 'en cours', upcoming: 'à venir', previous: 'Étape précédente', observe: 'Observer', name: 'Nommer', verify: 'Vérifier', observePrompt: 'Choisissez un détail stable à tester', observeBody: 'Effectuez le test lentement. Cherchez un indice plutôt que la réponse attendue.', observeAction: 'J’ai observé attentivement', namePrompt: 'Nommez ce qui a interrompu le pilote automatique', nameBody: 'Choisissez le contexte réel qui a déclenché cette pause.', nameAction: 'Continuer vers la vérification', verifyPrompt: 'Vérifiez ce qui s’est passé', verifyBody: 'Répondez simplement, sans chercher à provoquer une anomalie onirique.', method: 'Choisissez un test', context: 'Qu’est-ce qui l’a déclenché ?', outcome: 'Qu’avez-vous observé ?', awake: 'Éveillé', dreaming: 'En rêve', uncertain: 'Incertain', mindful: 'J’ai réellement pris le temps de questionner ce moment', save: 'Enregistrer le test', saved: 'Test enregistré', incomplete: 'À renseigner :', confirm: 'Confirmation', nose_breathing: 'Pincer le nez et respirer', finger_count: 'Compter deux fois ses doigts', text_reread: 'Lire, détourner le regard, relire', memory_trace: 'Retracer les dernières minutes', scheduled: 'Rappel planifié', transition: 'Changement de lieu ou d’activité', emotion: 'Émotion forte', dream_sign: 'Signe onirique personnel', spontaneous: 'Pensée spontanée',
+    eyebrow: 'Pause consciente', title: 'Est-ce un rêve ?', subtitle: 'Ralentissez un instant. Les indices comptent plus que la réponse attendue.', guide: 'Guide lucide', progress: 'Progression du test de réalité', step: 'Étape', of: 'sur', complete: 'terminée', current: 'en cours', upcoming: 'à venir', previous: 'Étape précédente', observe: 'Observer', name: 'Nommer', verify: 'Vérifier', observePrompt: 'Choisissez un détail stable à tester', observeBody: 'Effectuez le test lentement. Cherchez un indice plutôt que la réponse attendue.', observeAction: 'J’ai observé attentivement', namePrompt: 'Nommez ce qui a interrompu le pilote automatique', nameBody: 'Choisissez le contexte réel qui a déclenché cette pause.', nameAction: 'Continuer vers la vérification', verifyPrompt: 'Vérifiez ce qui s’est passé', verifyBody: 'Répondez simplement, sans chercher à provoquer une anomalie onirique.', method: 'Choisissez un test', context: 'Qu’est-ce qui l’a déclenché ?', outcome: 'Qu’avez-vous observé ?', awake: 'Éveillé', dreaming: 'En rêve', uncertain: 'Incertain', mindful: 'J’ai réellement pris le temps de questionner ce moment', save: 'Enregistrer le test', saved: 'Test enregistré', incomplete: 'À renseigner :', confirm: 'Confirmation', nose_breathing: 'Pincer le nez et respirer', finger_count: 'Compter deux fois ses doigts', text_reread: 'Lire, détourner le regard, relire', memory_trace: 'Retracer les dernières minutes', scheduled: 'Rappel planifié', transition: 'Changement de lieu ou d’activité', emotion: 'Émotion forte', dream_sign: 'Signe onirique personnel', spontaneous: 'Pensée spontanée', chooseSign: 'Quel signe confirmé ?', noConfirmedSign: 'Confirme d’abord un signe onirique dans ton Journal.',
   },
   es: {
-    eyebrow: 'Pausa consciente', title: '¿Es esto un sueño?', subtitle: 'Reduce el ritmo un instante. Las pruebas importan más que la respuesta esperada.', guide: 'Guía lúcida', progress: 'Progreso de la prueba de realidad', step: 'Paso', of: 'de', complete: 'completado', current: 'actual', upcoming: 'próximo', previous: 'Paso anterior', observe: 'Observar', name: 'Nombrar', verify: 'Verificar', observePrompt: 'Elige un detalle estable para comprobar', observeBody: 'Haz la prueba despacio. Busca evidencias en lugar de la respuesta que esperas.', observeAction: 'He observado con atención', namePrompt: 'Nombra qué interrumpió el piloto automático', nameBody: 'Elige el contexto real que provocó esta pausa.', nameAction: 'Continuar a la verificación', verifyPrompt: 'Verifica qué ocurrió', verifyBody: 'Responde con sencillez, sin intentar provocar una anomalía onírica.', method: 'Elige una prueba', context: '¿Qué la provocó?', outcome: '¿Qué notaste?', awake: 'Despierto', dreaming: 'Soñando', uncertain: 'Inseguro', mindful: 'Me detuve y cuestioné realmente el momento', save: 'Guardar prueba', saved: 'Prueba guardada', incomplete: 'Falta responder:', confirm: 'Confirmación', nose_breathing: 'Tapar la nariz y respirar', finger_count: 'Contar los dedos dos veces', text_reread: 'Leer, apartar la vista y releer', memory_trace: 'Reconstruir los últimos minutos', scheduled: 'Recordatorio programado', transition: 'Cambio de lugar o actividad', emotion: 'Emoción fuerte', dream_sign: 'Señal onírica personal', spontaneous: 'Pensamiento espontáneo',
+    eyebrow: 'Pausa consciente', title: '¿Es esto un sueño?', subtitle: 'Reduce el ritmo un instante. Las pruebas importan más que la respuesta esperada.', guide: 'Guía lúcida', progress: 'Progreso de la prueba de realidad', step: 'Paso', of: 'de', complete: 'completado', current: 'actual', upcoming: 'próximo', previous: 'Paso anterior', observe: 'Observar', name: 'Nombrar', verify: 'Verificar', observePrompt: 'Elige un detalle estable para comprobar', observeBody: 'Haz la prueba despacio. Busca evidencias en lugar de la respuesta que esperas.', observeAction: 'He observado con atención', namePrompt: 'Nombra qué interrumpió el piloto automático', nameBody: 'Elige el contexto real que provocó esta pausa.', nameAction: 'Continuar a la verificación', verifyPrompt: 'Verifica qué ocurrió', verifyBody: 'Responde con sencillez, sin intentar provocar una anomalía onírica.', method: 'Elige una prueba', context: '¿Qué la provocó?', outcome: '¿Qué notaste?', awake: 'Despierto', dreaming: 'Soñando', uncertain: 'Inseguro', mindful: 'Me detuve y cuestioné realmente el momento', save: 'Guardar prueba', saved: 'Prueba guardada', incomplete: 'Falta responder:', confirm: 'Confirmación', nose_breathing: 'Tapar la nariz y respirar', finger_count: 'Contar los dedos dos veces', text_reread: 'Leer, apartar la vista y releer', memory_trace: 'Reconstruir los últimos minutos', scheduled: 'Recordatorio programado', transition: 'Cambio de lugar o actividad', emotion: 'Emoción fuerte', dream_sign: 'Señal onírica personal', spontaneous: 'Pensamiento espontáneo', chooseSign: '¿Qué señal confirmada?', noConfirmedSign: 'Confirma primero una señal onírica en tu Diario.',
   },
   de: {
-    eyebrow: 'Bewusste Pause', title: 'Ist das ein Traum?', subtitle: 'Werde einen Moment langsamer. Hinweise zählen mehr als die erwartete Antwort.', guide: 'Klartraum-Guide', progress: 'Fortschritt des Realitätschecks', step: 'Schritt', of: 'von', complete: 'abgeschlossen', current: 'aktuell', upcoming: 'als Nächstes', previous: 'Vorheriger Schritt', observe: 'Beobachten', name: 'Benennen', verify: 'Überprüfen', observePrompt: 'Wähle ein stabiles Detail zum Prüfen', observeBody: 'Führe den Test langsam aus. Suche nach Hinweisen statt nach der erwarteten Antwort.', observeAction: 'Ich habe aufmerksam beobachtet', namePrompt: 'Benenne, was den Autopiloten unterbrochen hat', nameBody: 'Wähle den tatsächlichen Kontext, der diese Pause ausgelöst hat.', nameAction: 'Weiter zur Überprüfung', verifyPrompt: 'Überprüfe, was geschehen ist', verifyBody: 'Antworte schlicht, ohne eine traumartige Abweichung erzwingen zu wollen.', method: 'Test wählen', context: 'Was war der Auslöser?', outcome: 'Was hast du bemerkt?', awake: 'Wach', dreaming: 'Träumend', uncertain: 'Unsicher', mindful: 'Ich habe den Moment wirklich hinterfragt', save: 'Realitätscheck speichern', saved: 'Check gespeichert', incomplete: 'Noch offen:', confirm: 'Bestätigung', nose_breathing: 'Nase zuhalten und atmen', finger_count: 'Finger zweimal zählen', text_reread: 'Lesen, wegsehen, erneut lesen', memory_trace: 'Letzte Minuten nachvollziehen', scheduled: 'Geplante Erinnerung', transition: 'Orts- oder Aktivitätswechsel', emotion: 'Starke Emotion', dream_sign: 'Persönliches Traumzeichen', spontaneous: 'Spontaner Gedanke',
+    eyebrow: 'Bewusste Pause', title: 'Ist das ein Traum?', subtitle: 'Werde einen Moment langsamer. Hinweise zählen mehr als die erwartete Antwort.', guide: 'Klartraum-Guide', progress: 'Fortschritt des Realitätschecks', step: 'Schritt', of: 'von', complete: 'abgeschlossen', current: 'aktuell', upcoming: 'als Nächstes', previous: 'Vorheriger Schritt', observe: 'Beobachten', name: 'Benennen', verify: 'Überprüfen', observePrompt: 'Wähle ein stabiles Detail zum Prüfen', observeBody: 'Führe den Test langsam aus. Suche nach Hinweisen statt nach der erwarteten Antwort.', observeAction: 'Ich habe aufmerksam beobachtet', namePrompt: 'Benenne, was den Autopiloten unterbrochen hat', nameBody: 'Wähle den tatsächlichen Kontext, der diese Pause ausgelöst hat.', nameAction: 'Weiter zur Überprüfung', verifyPrompt: 'Überprüfe, was geschehen ist', verifyBody: 'Antworte schlicht, ohne eine traumartige Abweichung erzwingen zu wollen.', method: 'Test wählen', context: 'Was war der Auslöser?', outcome: 'Was hast du bemerkt?', awake: 'Wach', dreaming: 'Träumend', uncertain: 'Unsicher', mindful: 'Ich habe den Moment wirklich hinterfragt', save: 'Realitätscheck speichern', saved: 'Check gespeichert', incomplete: 'Noch offen:', confirm: 'Bestätigung', nose_breathing: 'Nase zuhalten und atmen', finger_count: 'Finger zweimal zählen', text_reread: 'Lesen, wegsehen, erneut lesen', memory_trace: 'Letzte Minuten nachvollziehen', scheduled: 'Geplante Erinnerung', transition: 'Orts- oder Aktivitätswechsel', emotion: 'Starke Emotion', dream_sign: 'Persönliches Traumzeichen', spontaneous: 'Spontaner Gedanke', chooseSign: 'Welches bestätigte Zeichen?', noConfirmedSign: 'Bestätige zuerst ein Traumzeichen im Journal.',
   },
   it: {
-    eyebrow: 'Pausa consapevole', title: 'È un sogno?', subtitle: 'Rallenta per un momento. Gli indizi contano più della risposta attesa.', guide: 'Guida lucida', progress: 'Avanzamento del test di realtà', step: 'Passaggio', of: 'di', complete: 'completato', current: 'attuale', upcoming: 'successivo', previous: 'Passaggio precedente', observe: 'Osservare', name: 'Nominare', verify: 'Verificare', observePrompt: 'Scegli un dettaglio stabile da verificare', observeBody: 'Esegui il test lentamente. Cerca indizi invece della risposta che ti aspetti.', observeAction: 'Ho osservato con attenzione', namePrompt: 'Nomina ciò che ha interrotto il pilota automatico', nameBody: 'Scegli il contesto reale che ha attivato questa pausa.', nameAction: 'Continua alla verifica', verifyPrompt: 'Verifica cosa è successo', verifyBody: 'Rispondi con semplicità, senza cercare di provocare un’anomalia onirica.', method: 'Scegli un test', context: 'Cosa lo ha attivato?', outcome: 'Cosa hai notato?', awake: 'Sveglio', dreaming: 'In sogno', uncertain: 'Incerto', mindful: 'Mi sono fermato e ho davvero messo in dubbio il momento', save: 'Salva test', saved: 'Test salvato', incomplete: 'Ancora da indicare:', confirm: 'Conferma', nose_breathing: 'Chiudi il naso e respira', finger_count: 'Conta le dita due volte', text_reread: 'Leggi, distogli lo sguardo, rileggi', memory_trace: 'Ripercorri gli ultimi minuti', scheduled: 'Promemoria programmato', transition: 'Cambio di luogo o attività', emotion: 'Emozione forte', dream_sign: 'Segnale onirico personale', spontaneous: 'Pensiero spontaneo',
+    eyebrow: 'Pausa consapevole', title: 'È un sogno?', subtitle: 'Rallenta per un momento. Gli indizi contano più della risposta attesa.', guide: 'Guida lucida', progress: 'Avanzamento del test di realtà', step: 'Passaggio', of: 'di', complete: 'completato', current: 'attuale', upcoming: 'successivo', previous: 'Passaggio precedente', observe: 'Osservare', name: 'Nominare', verify: 'Verificare', observePrompt: 'Scegli un dettaglio stabile da verificare', observeBody: 'Esegui il test lentamente. Cerca indizi invece della risposta che ti aspetti.', observeAction: 'Ho osservato con attenzione', namePrompt: 'Nomina ciò che ha interrotto il pilota automatico', nameBody: 'Scegli il contesto reale che ha attivato questa pausa.', nameAction: 'Continua alla verifica', verifyPrompt: 'Verifica cosa è successo', verifyBody: 'Rispondi con semplicità, senza cercare di provocare un’anomalia onirica.', method: 'Scegli un test', context: 'Cosa lo ha attivato?', outcome: 'Cosa hai notato?', awake: 'Sveglio', dreaming: 'In sogno', uncertain: 'Incerto', mindful: 'Mi sono fermato e ho davvero messo in dubbio il momento', save: 'Salva test', saved: 'Test salvato', incomplete: 'Ancora da indicare:', confirm: 'Conferma', nose_breathing: 'Chiudi il naso e respira', finger_count: 'Conta le dita due volte', text_reread: 'Leggi, distogli lo sguardo, rileggi', memory_trace: 'Ripercorri gli ultimi minuti', scheduled: 'Promemoria programmato', transition: 'Cambio di luogo o attività', emotion: 'Emozione forte', dream_sign: 'Segnale onirico personale', spontaneous: 'Pensiero spontaneo', chooseSign: 'Quale segnale confermato?', noConfirmedSign: 'Conferma prima un segnale onirico nel Diario.',
   },
 } as const;
 
@@ -69,13 +69,14 @@ type StepIndex = 0 | 1 | 2;
 export default function LucidRealityCheckScreen() {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const { content, state, addRealityCheck } = useLucidTrainer();
+  const { content, state, activeDreamSigns = [], addRealityCheck } = useLucidTrainer();
   const copy = COPY[content.locale];
   const [step, setStep] = useState<StepIndex>(0);
   // Nothing is pre-answered: a check the user never performed must not be
   // recordable in one tap, least of all its outcome.
   const [method, setMethod] = useState<LucidRealityCheckMethod | null>(null);
   const [context, setContext] = useState<LucidRealityCheckContext | null>(null);
+  const [selectedDreamSignId, setSelectedDreamSignId] = useState<string | null>(null);
   const [outcome, setOutcome] = useState<LucidRealityCheckOutcome | null>(null);
   const [mindful, setMindful] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -88,9 +89,11 @@ export default function LucidRealityCheckScreen() {
     () => [copy.observeBody, copy.nameBody, copy.verifyBody] as const,
     [copy]
   );
+  const selectedDreamSign = activeDreamSigns.find((sign) => sign.id === selectedDreamSignId);
   const missing = ([
     method === null ? copy.method : null,
     context === null ? copy.context : null,
+    context === 'dream_sign' && !selectedDreamSign ? copy.chooseSign : null,
     outcome === null ? copy.outcome : null,
     mindful ? null : copy.confirm,
   ] as (string | null)[]).filter((label): label is string => label !== null);
@@ -107,7 +110,15 @@ export default function LucidRealityCheckScreen() {
     if (method === null || context === null || outcome === null || !mindful) return;
     setSaving(true);
     try {
-      await addRealityCheck({ method, context, outcome, mindful });
+      await addRealityCheck({
+        method,
+        context,
+        outcome,
+        mindful,
+        ...(context === 'dream_sign' && selectedDreamSign
+          ? { dreamSignId: selectedDreamSign.id, dreamSignLabel: selectedDreamSign.label }
+          : {}),
+      });
       if (Platform.OS !== 'web') {
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       }
@@ -127,7 +138,7 @@ export default function LucidRealityCheckScreen() {
       return;
     }
     if (step === 1) {
-      if (context === null) return;
+      if (context === null || (context === 'dream_sign' && !selectedDreamSign)) return;
       setStep(2);
       return;
     }
@@ -141,8 +152,20 @@ export default function LucidRealityCheckScreen() {
   };
 
   const actionLabel = step === 0 ? copy.observeAction : step === 1 ? copy.nameAction : copy.save;
-  const disabled = step === 0 ? method === null : step === 1 ? context === null : missing.length > 0;
-  const visibleMissing = step === 0 ? [copy.method] : step === 1 ? [copy.context] : missing;
+  const disabled = step === 0
+    ? method === null
+    : step === 1
+      ? context === null || (context === 'dream_sign' && !selectedDreamSign)
+      : missing.length > 0;
+  const visibleMissing = step === 0
+    ? [copy.method]
+    : step === 1
+      ? context === null
+        ? [copy.context]
+        : context === 'dream_sign' && !selectedDreamSign
+          ? [copy.chooseSign]
+          : []
+      : missing;
 
   return (
     <LucidScreen
@@ -223,10 +246,33 @@ export default function LucidRealityCheckScreen() {
                 label={copy[item]}
                 groupLabel={copy.context}
                 selected={context === item}
-                onPress={() => setContext(item)}
+                onPress={() => {
+                  setContext(item);
+                  if (item !== 'dream_sign') setSelectedDreamSignId(null);
+                }}
                 testID={`lucid-reality-context-${item}`}
               />
             ))}
+            {context === 'dream_sign' ? (
+              activeDreamSigns.length > 0 ? (
+                <View accessibilityRole="radiogroup" accessibilityLabel={copy.chooseSign} style={styles.signChoices}>
+                  {activeDreamSigns.map((sign) => (
+                    <LucidPillButton
+                      groupLabel={copy.chooseSign}
+                      key={sign.id}
+                      label={sign.label}
+                      onPress={() => setSelectedDreamSignId(sign.id)}
+                      selected={selectedDreamSignId === sign.id}
+                      testID={`lucid-reality-sign-${sign.id}`}
+                    />
+                  ))}
+                </View>
+              ) : (
+                <Text style={[styles.body, styles.signHint, { color: palette.textSecondary }]}>
+                  {copy.noConfirmedSign}
+                </Text>
+              )
+            ) : null}
           </View>
         ) : null}
 
@@ -347,6 +393,8 @@ const styles = StyleSheet.create({
   body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
   group: { gap: LucidSpace.md },
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
+  signChoices: { width: '100%', flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
+  signHint: { width: '100%', paddingTop: LucidSpace.xs },
   pillButton: { minHeight: 44, justifyContent: 'center', borderRadius: LucidRadius.lg, borderWidth: 1, paddingHorizontal: LucidSpace.md, paddingVertical: LucidSpace.md },
   pillButtonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   confirmation: { minHeight: 64, borderRadius: LucidRadius.lg, padding: LucidSpace.md, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },

@@ -66,6 +66,7 @@ function LucidRouter() {
         <Stack.Screen name="program/[id]" />
         <Stack.Screen name="session/[program]/[session]" />
         <Stack.Screen name="reality-check" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="dream-signs" />
         <Stack.Screen name="morning" options={{ presentation: 'modal' }} />
         <Stack.Screen name="weekly" />
         <Stack.Screen name="permissions" />

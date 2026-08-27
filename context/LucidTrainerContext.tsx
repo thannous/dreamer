@@ -13,12 +13,14 @@ import React, {
 import { AppState } from 'react-native';
 
 import { useAuth } from '@/context/AuthContext';
+import { useDreamsData } from '@/context/DreamsContext';
 import { trackProductEvent } from '@/lib/analytics';
 import { isLucidTrainer } from '@/lib/appVariant';
 import {
   activateExclusiveLucidProgram,
   applyLucidProgramProgress,
   applyLucidSyncEntity,
+  canonicalLucidJson,
   createLucidProgramProgress,
   diffLucidProgramProgress,
   getLucidSyncEntities,
@@ -30,14 +32,24 @@ import {
   resolvePreviousNightTechniqueLink,
 } from '@/lib/lucid/morningCapture';
 import {
+  extractLucidDreamSignCandidates,
+  getActiveLucidDreamSigns,
+  type LucidActiveDreamSign,
+  type LucidDreamSignCandidate,
+} from '@/lib/lucid/dreamSigns';
+import {
   isLucidExperiment,
+  isLucidPersistedDreamSignDecision,
+  isLucidRealityCheck,
   type LucidDreamCaptureMode,
+  type LucidDreamSignDecision,
   type LucidExperiment,
   type LucidExperimentResult,
   type LucidNightCueOutcome,
   type LucidOnboardingDraftStep,
   type LucidOnboardingState,
   type LucidPersonalFactor,
+  type LucidPersistedDreamSignDecision,
   type LucidProgramProgress,
   type LucidRealityCheck,
   type LucidSleepSchedule,
@@ -137,6 +149,13 @@ export type LucidExperimentInput = {
   voiceCapture?: LucidVoiceCaptureState;
 };
 
+export type LucidDreamSignDecisionInput = {
+  id: string;
+  decision: LucidDreamSignDecision;
+  customLabel?: string | null;
+  sourceDreamIds: string[];
+};
+
 type RealityCheckInput = Omit<LucidRealityCheck, 'id' | 'occurredAt' | 'updatedAt'>;
 
 export type LucidTrainerContextValue = {
@@ -148,6 +167,8 @@ export type LucidTrainerContextValue = {
   syncStatus: LucidSyncStatus;
   lastSyncResult: LucidSyncReplayResult | null;
   guestImportAvailable: boolean;
+  dreamSignCandidates: LucidDreamSignCandidate[];
+  activeDreamSigns: LucidActiveDreamSign[];
   importGuestData: () => Promise<void>;
   saveOnboardingDraft: (patch: LucidOnboardingDraftPatch) => Promise<void>;
   completeOnboarding: (input: CompleteOnboardingInput) => Promise<void>;
@@ -159,6 +180,7 @@ export type LucidTrainerContextValue = {
   pauseProgram: (technique: LucidTechnique) => Promise<void>;
   addExperiment: (input: LucidExperimentInput) => Promise<LucidExperiment>;
   addRealityCheck: (input: RealityCheckInput) => Promise<LucidRealityCheck>;
+  saveDreamSignDecision: (input: LucidDreamSignDecisionInput) => Promise<void>;
   saveWeeklyReview: (input: Omit<LucidWeeklyReview, 'id' | 'completedAt' | 'updatedAt'>) => Promise<void>;
   deleteExperiment: (id: string) => Promise<void>;
   syncNow: () => Promise<LucidSyncReplayResult | null>;
@@ -193,6 +215,7 @@ function entityForProgress(value: LucidProgramProgress): LucidSyncEntity {
 
 export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const { dreams, loaded: dreamsLoaded } = useDreamsData();
   const userId = user?.id;
   const userScope = userId ? `user:${userId}` : 'guest';
   const deviceLocale = normalizeLucidLocale(getLocales()[0]?.languageTag);
@@ -204,6 +227,14 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const [guestImportAvailable, setGuestImportAvailable] = useState(false);
   const [activeScope, setActiveScope] = useState(userScope);
   const activeScopeRef = useRef(userScope);
+  const dreamSignCandidates = useMemo(
+    () => extractLucidDreamSignCandidates(dreams),
+    [dreams]
+  );
+  const activeDreamSigns = useMemo(
+    () => getActiveLucidDreamSigns(dreamSignCandidates, state?.dreamSignDecisions ?? []),
+    [dreamSignCandidates, state?.dreamSignDecisions]
+  );
 
   if (activeScope !== userScope) {
     resetLucidOnboardingCompletionNavigationClaim();
@@ -711,6 +742,9 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       let created: LucidRealityCheck | null = null;
       await commit((current, now) => {
         created = { id: Crypto.randomUUID(), occurredAt: now, updatedAt: now, ...input };
+        if (!isLucidRealityCheck(created)) {
+          throw new Error('Invalid Lucid reality check');
+        }
         const entity: LucidSyncEntity = { entityType: 'reality_check', entityKey: created.id, value: created };
         return { next: applyLucidSyncEntity(current, entity), changed: [entity] };
       });
@@ -718,6 +752,70 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       return created;
     },
     [commit]
+  );
+
+  const saveDreamSignDecision = useCallback(
+    async (input: LucidDreamSignDecisionInput) => {
+      const candidate = dreamSignCandidates.find((item) => item.id === input.id);
+      if (
+        input.decision !== 'pending' &&
+        (!candidate ||
+          canonicalLucidJson(candidate.sourceDreamIds) !==
+            canonicalLucidJson([...new Set(input.sourceDreamIds)].sort()))
+      ) {
+        throw new Error('Dream sign must match current local journal evidence');
+      }
+      let deleted = false;
+      const next = await commit((current, now) => {
+        const existing = (current.dreamSignDecisions ?? []).find(
+          (item) => item.id === input.id
+        );
+        if (input.decision === 'pending') {
+          if (!existing) return { next: current, changed: [] };
+          deleted = true;
+          return {
+            next: {
+              ...current,
+              updatedAt: now,
+              dreamSignDecisions: (current.dreamSignDecisions ?? []).filter(
+                (item) => item.id !== input.id
+              ),
+            },
+            changed: [],
+          };
+        }
+
+        const customLabel = input.customLabel?.replace(/\s+/g, ' ').trim() || undefined;
+        const record: LucidPersistedDreamSignDecision = {
+          id: input.id,
+          decision: input.decision,
+          sourceDreamIds: [...candidate!.sourceDreamIds],
+          updatedAt: now,
+          ...(customLabel ? { customLabel } : {}),
+        };
+        if (!isLucidPersistedDreamSignDecision(record)) {
+          throw new Error('Invalid Lucid dream-sign decision');
+        }
+        const entity: LucidSyncEntity = {
+          entityType: 'dream_sign',
+          entityKey: record.id,
+          value: record,
+        };
+        return { next: applyLucidSyncEntity(current, entity), changed: [entity] };
+      });
+
+      if (deleted && user?.id && next.preferences.cloudSyncEnabled) {
+        await queueLucidTrainerMutation(
+          createLucidTrainerMutation({
+            userScope,
+            operation: 'delete',
+            entityType: 'dream_sign',
+            entityKey: input.id,
+          })
+        );
+      }
+    },
+    [commit, dreamSignCandidates, user?.id, userScope]
   );
 
   const saveWeeklyReview = useCallback(
@@ -772,6 +870,83 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     [deviceLocale, state?.preferences.locale]
   );
 
+  useEffect(() => {
+    const decisions = state?.dreamSignDecisions ?? [];
+    if (!dreamsLoaded || decisions.length === 0) return;
+    const candidatesById = new Map(
+      dreamSignCandidates.map((candidate) => [candidate.id, candidate] as const)
+    );
+    const needsReconciliation = decisions.some((decision) => {
+      const candidate = candidatesById.get(decision.id);
+      return (
+        !candidate ||
+        canonicalLucidJson(decision.sourceDreamIds) !==
+          canonicalLucidJson(candidate.sourceDreamIds)
+      );
+    });
+    if (!needsReconciliation) return;
+
+    void (async () => {
+      const deletedIds: string[] = [];
+      const next = await commit((current, now) => {
+        deletedIds.length = 0;
+        const changed: LucidSyncEntity[] = [];
+        const reconciled: LucidPersistedDreamSignDecision[] = [];
+        for (const decision of current.dreamSignDecisions ?? []) {
+          const candidate = candidatesById.get(decision.id);
+          if (!candidate) {
+            deletedIds.push(decision.id);
+            continue;
+          }
+          if (
+            canonicalLucidJson(decision.sourceDreamIds) ===
+            canonicalLucidJson(candidate.sourceDreamIds)
+          ) {
+            reconciled.push(decision);
+            continue;
+          }
+          const updated: LucidPersistedDreamSignDecision = {
+            ...decision,
+            sourceDreamIds: [...candidate.sourceDreamIds],
+            updatedAt: now,
+          };
+          reconciled.push(updated);
+          changed.push({
+            entityType: 'dream_sign',
+            entityKey: updated.id,
+            value: updated,
+          });
+        }
+        if (changed.length === 0 && deletedIds.length === 0) {
+          return { next: current, changed: [] };
+        }
+        return {
+          next: {
+            ...current,
+            updatedAt: now,
+            dreamSignDecisions: reconciled.sort((a, b) => a.id.localeCompare(b.id)),
+          },
+          changed,
+        };
+      });
+      if (user?.id && next.preferences.cloudSyncEnabled) {
+        for (const id of [...new Set(deletedIds)]) {
+          await queueLucidTrainerMutation(
+            createLucidTrainerMutation({
+              userScope,
+              operation: 'delete',
+              entityType: 'dream_sign',
+              entityKey: id,
+            })
+          );
+        }
+        if (deletedIds.length > 0) setSyncStatus('local');
+      }
+    })().catch((cause) => {
+      if (__DEV__) console.warn('[LucidTrainer] Dream-sign reconciliation failed', cause);
+    });
+  }, [commit, dreamSignCandidates, dreamsLoaded, state?.dreamSignDecisions, user?.id, userScope]);
+
   const reconcileReminders = useCallback(async () => {
     if (!state) return;
     await reconcileLoadedState(state, userScope);
@@ -809,6 +984,8 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       syncStatus,
       lastSyncResult,
       guestImportAvailable,
+      dreamSignCandidates,
+      activeDreamSigns,
       importGuestData,
       saveOnboardingDraft,
       completeOnboarding,
@@ -820,6 +997,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       pauseProgram,
       addExperiment,
       addRealityCheck,
+      saveDreamSignDecision,
       saveWeeklyReview,
       deleteExperiment,
       syncNow,
@@ -835,6 +1013,8 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       syncStatus,
       lastSyncResult,
       guestImportAvailable,
+      dreamSignCandidates,
+      activeDreamSigns,
       importGuestData,
       saveOnboardingDraft,
       completeOnboarding,
@@ -846,6 +1026,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       pauseProgram,
       addExperiment,
       addRealityCheck,
+      saveDreamSignDecision,
       saveWeeklyReview,
       deleteExperiment,
       syncNow,

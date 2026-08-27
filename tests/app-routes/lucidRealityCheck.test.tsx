@@ -6,6 +6,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 const mockAlert = jest.fn();
 const mockAddRealityCheck = jest.fn().mockResolvedValue(undefined);
 const mockHaptic = jest.fn().mockResolvedValue(undefined);
+let mockActiveDreamSigns: { id: string; label: string }[] = [];
 
 jest.mock('react-native', () => ({
   ...jest.requireActual('../react-native-stub'),
@@ -49,6 +50,7 @@ jest.mock('@/context/LucidTrainerContext', () => {
     useLucidTrainer: () => ({
       state: { onboarding: { accessibility: { reduceMotion: false } } },
       content: getLucidContent('en'),
+      activeDreamSigns: mockActiveDreamSigns,
       addRealityCheck: mockAddRealityCheck,
     }),
   };
@@ -98,6 +100,7 @@ describe('Lucid reality-check guide', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockAddRealityCheck.mockResolvedValue(undefined);
+    mockActiveDreamSigns = [];
   });
 
   afterEach(cleanup);
@@ -156,5 +159,28 @@ describe('Lucid reality-check guide', () => {
 
     expect(screen.getByText('Step 1 · Observe')).not.toBeNull();
     expect((screen.getByRole('button', { name: 'I observed carefully' }) as HTMLButtonElement).disabled).toBe(false);
+  });
+
+  it('allows only a confirmed personal sign to drive the dream-sign context', async () => {
+    mockActiveDreamSigns = [{ id: 'sign:mirror', label: 'My mirror' }];
+    render(<LucidRealityCheckScreen />);
+
+    fireEvent.click(screen.getByTestId('lucid-reality-method-nose_breathing'));
+    fireEvent.click(screen.getByRole('button', { name: 'I observed carefully' }));
+    fireEvent.click(screen.getByRole('button', { name: 'What prompted it?, Personal dream sign' }));
+    expect(screen.getByText(/Still to answer: Which confirmed sign/)).not.toBeNull();
+    fireEvent.click(screen.getByTestId('lucid-reality-sign-sign:mirror'));
+    fireEvent.click(screen.getByRole('button', { name: 'Continue to verification' }));
+    fireEvent.click(screen.getByRole('button', { name: 'What did you notice?, Awake' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save reality check' }));
+
+    await waitFor(() => expect(mockAddRealityCheck).toHaveBeenCalledWith({
+      method: 'nose_breathing',
+      context: 'dream_sign',
+      outcome: 'awake',
+      mindful: true,
+      dreamSignId: 'sign:mirror',
+      dreamSignLabel: 'My mirror',
+    }));
   });
 });

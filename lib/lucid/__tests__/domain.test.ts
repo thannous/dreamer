@@ -146,6 +146,51 @@ describe('Lucid Trainer domain', () => {
     ).toHaveLength(0);
   });
 
+  it('merges, applies and removes dream-sign decisions as sync entities', () => {
+    const left = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    const right = createInitialLucidTrainerState({ now: NOW + 1, timeZone: 'UTC' });
+    left.dreamSignDecisions = [{
+      id: 'sign:mirror',
+      decision: 'confirmed',
+      customLabel: 'Mirror',
+      sourceDreamIds: ['101', '102'],
+      updatedAt: NOW + 10,
+    }];
+    right.dreamSignDecisions = [{
+      id: 'sign:mirror',
+      decision: 'rejected',
+      sourceDreamIds: ['101', '102'],
+      updatedAt: NOW + 20,
+    }];
+
+    const merged = mergeLucidTrainerStates(left, right);
+    expect(merged.dreamSignDecisions).toEqual([
+      expect.objectContaining({ id: 'sign:mirror', decision: 'rejected', updatedAt: NOW + 20 }),
+    ]);
+    expect(mergeLucidTrainerStates(right, left).dreamSignDecisions).toEqual(
+      merged.dreamSignDecisions
+    );
+
+    const applied = applyLucidSyncEntity(left, {
+      entityType: 'dream_sign',
+      entityKey: 'sign:school',
+      value: {
+        id: 'sign:school',
+        decision: 'confirmed',
+        sourceDreamIds: ['201', '202'],
+        updatedAt: NOW + 30,
+      },
+    });
+    expect(applied.dreamSignDecisions?.map((item) => item.id)).toEqual([
+      'sign:mirror',
+      'sign:school',
+    ]);
+    expect(
+      removeLucidSyncEntity(applied, 'dream_sign', 'sign:mirror', NOW + 40)
+        .dreamSignDecisions
+    ).toEqual([expect.objectContaining({ id: 'sign:school' })]);
+  });
+
   it('pauses extra active programs without losing their sequential progress', () => {
     const mild = {
       ...createLucidProgramProgress('mild', NOW),

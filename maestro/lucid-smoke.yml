@@ -24,6 +24,18 @@ appId: com.tanuki75.noctalia.lucid
     id: lucid-journal-capture
 - assertVisible:
     id: lucid-journal-signs
+- tapOn:
+    id: lucid-journal-signs
+- extendedWaitUntil:
+    visible:
+      id: lucid-dream-signs
+    timeout: 20000
+- assertVisible: "Dream signs|Signes oniriques|Señales oníricas|Traumzeichen|Segnali onirici"
+- pressKey: back
+- extendedWaitUntil:
+    visible:
+      id: lucid-journal
+    timeout: 20000
 
 - tapOn:
     id: lucid-tab-programs

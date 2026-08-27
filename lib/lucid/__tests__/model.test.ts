@@ -1,6 +1,8 @@
 import {
   isLucidDateKey,
   isLucidExperiment,
+  isLucidPersistedDreamSignDecision,
+  isLucidRealityCheck,
   isLucidLocalTime,
   isLucidSyncMutation,
   isLucidTimeZone,
@@ -88,6 +90,44 @@ describe('Lucid Trainer model', () => {
     delete (legacy as { sleepScheduleConfirmed?: unknown }).sleepScheduleConfirmed;
     delete (legacy as { sleepScheduleDraft?: unknown }).sleepScheduleDraft;
     expect(isLucidOnboardingState(legacy)).toBe(true);
+  });
+
+  it('accepts historical v1 state without dream signs and validates bounded decisions', () => {
+    const state = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    delete (state as { dreamSignDecisions?: unknown }).dreamSignDecisions;
+    expect(isLucidTrainerState(state)).toBe(true);
+
+    const decision = {
+      id: 'sign:mirror',
+      decision: 'confirmed',
+      customLabel: 'My mirror',
+      sourceDreamIds: ['101', '102'],
+      updatedAt: NOW,
+    };
+    expect(isLucidPersistedDreamSignDecision(decision)).toBe(true);
+    expect(isLucidTrainerState({ ...state, dreamSignDecisions: [decision] })).toBe(true);
+    expect(isLucidPersistedDreamSignDecision({ ...decision, decision: 'pending' })).toBe(false);
+    expect(isLucidPersistedDreamSignDecision({ ...decision, sourceDreamIds: ['101', '101'] })).toBe(false);
+    expect(isLucidPersistedDreamSignDecision({ ...decision, customLabel: 'x'.repeat(81) })).toBe(false);
+  });
+
+  it('links reality checks only to a complete confirmed-sign identity', () => {
+    const check = {
+      id: 'check-1',
+      occurredAt: NOW,
+      context: 'dream_sign',
+      method: 'nose_breathing',
+      outcome: 'awake',
+      mindful: true,
+      dreamSignId: 'sign:mirror',
+      dreamSignLabel: 'My mirror',
+      updatedAt: NOW,
+    };
+    expect(isLucidRealityCheck(check)).toBe(true);
+    expect(isLucidRealityCheck({ ...check, dreamSignLabel: undefined })).toBe(false);
+    expect(isLucidRealityCheck({ ...check, context: 'scheduled' })).toBe(false);
+    const { dreamSignId: _id, dreamSignLabel: _label, ...historical } = check;
+    expect(isLucidRealityCheck(historical)).toBe(true);
   });
 
   it('rejects invalid four-step draft fields when present', () => {

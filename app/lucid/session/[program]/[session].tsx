@@ -20,11 +20,11 @@ import {
 } from '@/lib/lucid/safety';
 
 const COPY = {
-  en: { guided: 'Guided practice', step: 'Step', reflect: 'After the practice', caution: 'Keep in mind', complete: 'Complete session', done: 'Session completed', invalid: 'Session unavailable', locked: 'This session opens after the previous one. The calendar is only a suggestion.', backToProgram: 'Back to program', stepsChecked: 'Steps checked:', progress: 'Practice progress' },
-  fr: { guided: 'Pratique guidée', step: 'Étape', reflect: 'Après la pratique', caution: 'À garder en tête', complete: 'Terminer la séance', done: 'Séance terminée', invalid: 'Séance indisponible', locked: "Cette séance s'ouvre après la précédente. Le calendrier n’est qu’une suggestion.", backToProgram: 'Retour au programme', stepsChecked: 'Étapes cochées :', progress: 'Progression de la pratique' },
-  es: { guided: 'Práctica guiada', step: 'Paso', reflect: 'Después de la práctica', caution: 'Ten en cuenta', complete: 'Completar sesión', done: 'Sesión completada', invalid: 'Sesión no disponible', locked: 'Esta sesión se abre después de la anterior. El calendario es solo una sugerencia.', backToProgram: 'Volver al programa', stepsChecked: 'Pasos marcados:', progress: 'Progreso de la práctica' },
-  de: { guided: 'Geführte Übung', step: 'Schritt', reflect: 'Nach der Übung', caution: 'Beachte', complete: 'Einheit abschließen', done: 'Einheit abgeschlossen', invalid: 'Einheit nicht verfügbar', locked: 'Diese Einheit öffnet sich nach der vorherigen. Der Kalender ist nur ein Vorschlag.', backToProgram: 'Zurück zum Programm', stepsChecked: 'Abgehakte Schritte:', progress: 'Übungsfortschritt' },
-  it: { guided: 'Pratica guidata', step: 'Passaggio', reflect: 'Dopo la pratica', caution: 'Da ricordare', complete: 'Completa sessione', done: 'Sessione completata', invalid: 'Sessione non disponibile', locked: 'Questa sessione si apre dopo la precedente. Il calendario è solo un suggerimento.', backToProgram: 'Torna al programma', stepsChecked: 'Passi spuntati:', progress: 'Progresso della pratica' },
+  en: { guided: 'Guided practice', step: 'Step', reflect: 'After the practice', caution: 'Keep in mind', complete: 'Complete session', done: 'Session completed', invalid: 'Session unavailable', locked: 'This session opens after the previous one. The calendar is only a suggestion.', backToProgram: 'Back to program', stepsChecked: 'Steps checked:', progress: 'Practice progress', personalCue: 'Your confirmed MILD cue' },
+  fr: { guided: 'Pratique guidée', step: 'Étape', reflect: 'Après la pratique', caution: 'À garder en tête', complete: 'Terminer la séance', done: 'Séance terminée', invalid: 'Séance indisponible', locked: "Cette séance s'ouvre après la précédente. Le calendrier n’est qu’une suggestion.", backToProgram: 'Retour au programme', stepsChecked: 'Étapes cochées :', progress: 'Progression de la pratique', personalCue: 'Ton indice MILD confirmé' },
+  es: { guided: 'Práctica guiada', step: 'Paso', reflect: 'Después de la práctica', caution: 'Ten en cuenta', complete: 'Completar sesión', done: 'Sesión completada', invalid: 'Sesión no disponible', locked: 'Esta sesión se abre después de la anterior. El calendario es solo una sugerencia.', backToProgram: 'Volver al programa', stepsChecked: 'Pasos marcados:', progress: 'Progreso de la práctica', personalCue: 'Tu señal MILD confirmada' },
+  de: { guided: 'Geführte Übung', step: 'Schritt', reflect: 'Nach der Übung', caution: 'Beachte', complete: 'Einheit abschließen', done: 'Einheit abgeschlossen', invalid: 'Einheit nicht verfügbar', locked: 'Diese Einheit öffnet sich nach der vorherigen. Der Kalender ist nur ein Vorschlag.', backToProgram: 'Zurück zum Programm', stepsChecked: 'Abgehakte Schritte:', progress: 'Übungsfortschritt', personalCue: 'Dein bestätigtes MILD-Zeichen' },
+  it: { guided: 'Pratica guidata', step: 'Passaggio', reflect: 'Dopo la pratica', caution: 'Da ricordare', complete: 'Completa sessione', done: 'Sessione completata', invalid: 'Sessione non disponibile', locked: 'Questa sessione si apre dopo la precedente. Il calendario è solo un suggerimento.', backToProgram: 'Torna al programma', stepsChecked: 'Passi spuntati:', progress: 'Progresso della pratica', personalCue: 'Il tuo segnale MILD confermato' },
 } as const;
 
 const PROGRAM_ART: Readonly<Record<LucidTechnique, number>> = {
@@ -45,7 +45,7 @@ export default function LucidSessionScreen() {
   const params = useLocalSearchParams<{ program: string; session: string }>();
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const { state, content, completeProgramSession } = useLucidTrainer();
+  const { state, content, activeDreamSigns = [], completeProgramSession } = useLucidTrainer();
   const copy = COPY[content.locale];
   const sessionNumber = Number(params.session);
   const valid = isTechnique(params.program) && Number.isInteger(sessionNumber) && sessionNumber >= 1 && sessionNumber <= content.programs[params.program].sessions.length;
@@ -161,6 +161,21 @@ export default function LucidSessionScreen() {
         />
       </View>
 
+      {technique === 'mild' && activeDreamSigns.length > 0 ? (
+        <View
+          accessible
+          accessibilityLabel={`${copy.personalCue}: ${activeDreamSigns[0].label}`}
+          style={[styles.personalCue, { backgroundColor: palette.accentSoft, borderColor: palette.accent }]}
+          testID="lucid-session-personal-dream-sign"
+        >
+          <Ionicons name="shapes-outline" size={LucidIcon.md} color={palette.accent} />
+          <View style={styles.personalCueCopy}>
+            <LucidOverline text={copy.personalCue} tone="accent" />
+            <Text style={[styles.personalCueText, { color: palette.text }]}>{activeDreamSigns[0].label}</Text>
+          </View>
+        </View>
+      ) : null}
+
       <View accessibilityRole="list" style={[styles.steps, { borderColor: palette.border }]}>
         {session.steps.map((stepText, index) => {
           const done = alreadyDone || checked[index];
@@ -215,6 +230,9 @@ const styles = StyleSheet.create({
   progressCopy: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: LucidSpace.md },
   progressLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   progressValue: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  personalCue: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md, borderWidth: 1, borderRadius: LucidRadius.lg, padding: LucidSpace.md },
+  personalCueCopy: { flex: 1, gap: LucidSpace.xs },
+  personalCueText: { fontFamily: 'Fraunces_500Medium', fontSize: LucidType.h3[0], lineHeight: LucidType.h3[1] },
   steps: { borderWidth: StyleSheet.hairlineWidth, borderRadius: LucidRadius.xl, overflow: 'hidden' },
   stepRow: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md, paddingHorizontal: LucidSpace.lg, paddingVertical: LucidSpace.md },
   check: { width: 32, height: 32, borderRadius: LucidRadius.full, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },

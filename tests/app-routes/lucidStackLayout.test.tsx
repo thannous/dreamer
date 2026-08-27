@@ -156,6 +156,7 @@ describe('Lucid stack onboarding protection', () => {
     expect(screen.queryByTestId('screen-onboarding')).toBeNull();
     expect(screen.getByTestId('screen-(tabs)')).toBeTruthy();
     expect(screen.getByTestId('screen-program/[id]')).toBeTruthy();
+    expect(screen.getByTestId('screen-dream-signs')).toBeTruthy();
     expect(capturedGuards).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ guard: false, names: ['onboarding'] }),

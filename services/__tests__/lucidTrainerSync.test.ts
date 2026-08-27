@@ -113,6 +113,31 @@ describe('lucidTrainerSync', () => {
     expect(current.preferences.cloudSyncEnabled).toBe(false);
   });
 
+  it('serializes confirmed dream signs as optional sync entities', () => {
+    const entity: LucidSyncEntity = {
+      entityType: 'dream_sign',
+      entityKey: 'sign:mirror',
+      value: {
+        id: 'sign:mirror',
+        decision: 'confirmed',
+        customLabel: 'My mirror',
+        sourceDreamIds: ['101', '102'],
+        updatedAt: NOW,
+      },
+    };
+    const ids = ['sign-mutation', 'sign-request'];
+    const created = createLucidTrainerMutation(
+      { userScope: SCOPE, operation: 'upsert', entity },
+      { now: () => NOW, idFactory: () => ids.shift()! }
+    );
+
+    expect(created).toMatchObject({
+      entityType: 'dream_sign',
+      entityKey: 'sign:mirror',
+      payload: { entity },
+    });
+  });
+
   it('never contacts the network until cloud sync is explicitly enabled', async () => {
     const store = memoryAdapter(state(false), [mutation()]);
     const transport: LucidSyncTransport = { push: jest.fn(async () => []) };

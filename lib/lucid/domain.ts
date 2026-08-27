@@ -180,6 +180,7 @@ export function createInitialLucidTrainerState(params: {
     experiments: [],
     realityChecks: [],
     weeklyReviews: [],
+    dreamSignDecisions: [],
   };
 }
 
@@ -273,6 +274,13 @@ export function getLucidSyncEntities(state: LucidTrainerState): LucidSyncEntity[
         value,
       })
     ),
+    ...(state.dreamSignDecisions ?? []).map(
+      (value): LucidSyncEntity => ({
+        entityType: 'dream_sign',
+        entityKey: value.id,
+        value,
+      })
+    ),
   ];
 }
 
@@ -316,6 +324,15 @@ export function applyLucidSyncEntity(
           ...state.weeklyReviews.filter((item) => item.id !== entity.entityKey),
           entity.value,
         ].sort((a, b) => b.weekStart.localeCompare(a.weekStart) || a.id.localeCompare(b.id)),
+      };
+    case 'dream_sign':
+      return {
+        ...state,
+        updatedAt,
+        dreamSignDecisions: [
+          ...(state.dreamSignDecisions ?? []).filter((item) => item.id !== entity.entityKey),
+          entity.value,
+        ].sort((a, b) => a.id.localeCompare(b.id)),
       };
   }
 }
@@ -415,6 +432,14 @@ export function removeLucidSyncEntity(
         updatedAt: nextUpdatedAt,
         weeklyReviews: state.weeklyReviews.filter((item) => item.id !== entityKey),
       };
+    case 'dream_sign':
+      return {
+        ...state,
+        updatedAt: nextUpdatedAt,
+        dreamSignDecisions: (state.dreamSignDecisions ?? []).filter(
+          (item) => item.id !== entityKey
+        ),
+      };
   }
 }
 
@@ -470,6 +495,13 @@ export function mergeLucidTrainerStates(
       )
       .map((entity) => entity.value)
       .sort((a, b) => b.weekStart.localeCompare(a.weekStart) || a.id.localeCompare(b.id)),
+    dreamSignDecisions: mergedEntities
+      .filter(
+        (entity): entity is Extract<LucidSyncEntity, { entityType: 'dream_sign' }> =>
+          entity.entityType === 'dream_sign'
+      )
+      .map((entity) => entity.value)
+      .sort((a, b) => a.id.localeCompare(b.id)),
   };
 }
 

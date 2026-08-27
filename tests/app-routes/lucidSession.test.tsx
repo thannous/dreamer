@@ -9,6 +9,7 @@ const mockBack = jest.fn();
 const mockCanGoBack = jest.fn(() => true);
 let mockRouteParams = { program: 'mild', session: '1' };
 let mockAudioSafetyAccepted = false;
+let mockActiveDreamSigns: { id: string; label: string }[] = [];
 let mockProgress: {
   technique: 'mild' | 'wbtb';
   status: 'active' | 'paused';
@@ -106,6 +107,7 @@ jest.mock('@/context/LucidTrainerContext', () => {
         progress: mockProgress,
       },
       content: getLucidContent('en'),
+      activeDreamSigns: mockActiveDreamSigns,
       completeProgramSession: mockCompleteProgramSession,
     }),
   };
@@ -120,6 +122,7 @@ describe('Lucid Trainer session', () => {
     mockRouteParams = { program: 'mild', session: '1' };
     mockProgress = [];
     mockAudioSafetyAccepted = false;
+    mockActiveDreamSigns = [];
     mockCanGoBack.mockReturnValue(true);
   });
 
@@ -147,6 +150,19 @@ describe('Lucid Trainer session', () => {
     await waitFor(() => {
       expect(mockCompleteProgramSession).toHaveBeenCalledWith('mild', 'mild-01', 1, 7);
     });
+  });
+
+  it('feeds only confirmed personal signs into MILD practice', () => {
+    mockActiveDreamSigns = [{ id: 'sign:mirror', label: 'My mirror' }];
+    render(<LucidSessionScreen />);
+
+    expect(screen.getByTestId('lucid-session-personal-dream-sign')).not.toBeNull();
+    expect(screen.getByText('My mirror')).not.toBeNull();
+
+    cleanup();
+    mockRouteParams = { program: 'ssild', session: '1' };
+    render(<LucidSessionScreen />);
+    expect(screen.queryByTestId('lucid-session-personal-dream-sign')).toBeNull();
   });
 
   it('blocks a future sequential session opened by URL and returns to the program', () => {

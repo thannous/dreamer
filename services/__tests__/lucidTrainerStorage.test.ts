@@ -338,6 +338,13 @@ describe('lucidTrainerStorage', () => {
         updatedAt: NOW,
       },
     ];
+    current.dreamSignDecisions = [{
+      id: 'sign:mirror',
+      decision: 'confirmed',
+      customLabel: '=My mirror',
+      sourceDreamIds: ['101', '102'],
+      updatedAt: NOW,
+    }];
 
     const json = JSON.parse(exportLucidTrainerJson(current, NOW));
     expect(json).toMatchObject({
@@ -345,11 +352,17 @@ describe('lucidTrainerStorage', () => {
       exportedAt: new Date(NOW).toISOString(),
       state: { preferences: { cloudSyncEnabled: false, noctaliaLinkEnabled: false } },
     });
+    expect(json.state.dreamSignDecisions).toEqual([
+      expect.objectContaining({ id: 'sign:mirror', sourceDreamIds: ['101', '102'] }),
+    ]);
 
     const csv = exportLucidTrainerCsv(current);
     expect(csv).toContain('"sleep_quality"');
     expect(csv).toContain('"2"');
     expect(csv).toContain('"\'=unsafe-id"');
+    expect(csv).toContain('"dream_sign"');
+    expect(csv).toContain('"sign:mirror"');
+    expect(csv).toContain('"sourceDreamIds"');
     expect(csv.endsWith('\r\n')).toBe(true);
     expect(csv).not.toContain('captureMode');
 

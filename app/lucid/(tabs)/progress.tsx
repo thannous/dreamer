@@ -88,6 +88,7 @@ const COPY = {
     cue_heard_in_dream: 'Cue heard in the dream',
     cue_heard_woke: 'Cue heard and woke me',
     cue_indeterminate: 'Cue unsure',
+    signs: 'Confirmed dream signs', noSigns: 'No confirmed sign yet. Review suggestions in your Journal.', signFrequency: (count: number) => `${count} source dreams`,
   },
   fr: {
     eyebrow: 'Progression',
@@ -141,6 +142,7 @@ const COPY = {
     cue_heard_in_dream: 'Signal entendu dans le rêve',
     cue_heard_woke: 'Signal entendu, réveil',
     cue_indeterminate: 'Signal incertain',
+    signs: 'Signes oniriques confirmés', noSigns: 'Aucun signe confirmé. Examine les suggestions dans ton Journal.', signFrequency: (count: number) => `${count} rêves sources`,
   },
   es: {
     eyebrow: 'Progreso',
@@ -194,6 +196,7 @@ const COPY = {
     cue_heard_in_dream: 'Señal oída en el sueño',
     cue_heard_woke: 'Señal oída y despertó',
     cue_indeterminate: 'Señal incierta',
+    signs: 'Señales oníricas confirmadas', noSigns: 'Aún no hay señales confirmadas. Revisa las sugerencias en tu Diario.', signFrequency: (count: number) => `${count} sueños de origen`,
   },
   de: {
     eyebrow: 'Fortschritt',
@@ -247,6 +250,7 @@ const COPY = {
     cue_heard_in_dream: 'Signal im Traum gehört',
     cue_heard_woke: 'Signal gehört, aufgewacht',
     cue_indeterminate: 'Signal unsicher',
+    signs: 'Bestätigte Traumzeichen', noSigns: 'Noch kein bestätigtes Zeichen. Prüfe die Vorschläge im Journal.', signFrequency: (count: number) => `${count} Quellträume`,
   },
   it: {
     eyebrow: 'Progressi',
@@ -300,6 +304,7 @@ const COPY = {
     cue_heard_in_dream: 'Segnale udito nel sogno',
     cue_heard_woke: 'Segnale udito, risveglio',
     cue_indeterminate: 'Segnale incerto',
+    signs: 'Segnali onirici confermati', noSigns: 'Nessun segnale confermato. Rivedi i suggerimenti nel Diario.', signFrequency: (count: number) => `${count} sogni di origine`,
   },
 } as const;
 
@@ -346,7 +351,7 @@ export default function LucidProgressScreen() {
   const reflow = shouldUseLucidProgressReflow(width, fontScale);
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const { state, content, deleteExperiment } = useLucidTrainer();
+  const { state, content, activeDreamSigns = [], deleteExperiment } = useLucidTrainer();
   const copy = COPY[content.locale];
   const profile = getLucidGuidanceProfile({
     goal: state!.onboarding.goal,
@@ -608,6 +613,27 @@ export default function LucidProgressScreen() {
             </Text>
           </View>
         ) : null}
+
+        <View
+          style={[styles.signsCard, { backgroundColor: palette.surface, borderColor: palette.border }]}
+          testID="lucid-progress-dream-signs"
+        >
+          <Text accessibilityRole="header" style={[styles.sectionTitle, { color: palette.text }]}>
+            {copy.signs}
+          </Text>
+          {activeDreamSigns.length === 0 ? (
+            <Text style={[styles.small, { color: palette.textSecondary }]}>{copy.noSigns}</Text>
+          ) : (
+            activeDreamSigns.map((sign) => (
+              <View key={sign.id} style={styles.signRow} testID={`lucid-progress-dream-sign-${sign.id}`}>
+                <Text style={[styles.methodName, styles.signName, { color: palette.text }]}>{sign.label}</Text>
+                <Text style={[styles.methodMeta, { color: palette.textSecondary }]}>
+                  {copy.signFrequency(sign.distinctDreamCount)}
+                </Text>
+              </View>
+            ))
+          )}
+        </View>
 
         <LucidButton
           label={copy.weekly}
@@ -906,6 +932,14 @@ const styles = StyleSheet.create({
     padding: LucidSpace.lg,
     gap: LucidSpace.md,
   },
+  signsCard: {
+    borderRadius: LucidRadius.xl,
+    borderWidth: 1,
+    padding: LucidSpace.lg,
+    gap: LucidSpace.md,
+  },
+  signRow: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  signName: { flex: 1, minWidth: 0 },
   method: { gap: LucidSpace.sm },
   methodTop: { flexDirection: 'row', justifyContent: 'space-between', gap: LucidSpace.md },
   methodName: {

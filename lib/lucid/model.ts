@@ -167,6 +167,9 @@ export interface LucidRealityCheck {
   method: LucidRealityCheckMethod;
   outcome: LucidRealityCheckOutcome;
   mindful: boolean;
+  /** Present only when a confirmed personal dream sign initiated the pause. */
+  dreamSignId?: string;
+  dreamSignLabel?: string;
   updatedAt: number;
 }
 
@@ -182,6 +185,21 @@ export interface LucidWeeklyReview {
   updatedAt: number;
 }
 
+export const LUCID_DREAM_SIGN_DECISIONS = ['pending', 'confirmed', 'rejected'] as const;
+export type LucidDreamSignDecision = (typeof LUCID_DREAM_SIGN_DECISIONS)[number];
+
+export interface LucidDreamSignDecisionRecord {
+  id: string;
+  decision: LucidDreamSignDecision;
+  customLabel?: string | null;
+}
+
+export interface LucidPersistedDreamSignDecision extends LucidDreamSignDecisionRecord {
+  decision: Exclude<LucidDreamSignDecision, 'pending'>;
+  sourceDreamIds: string[];
+  updatedAt: number;
+}
+
 export interface LucidTrainerState {
   schemaVersion: typeof LUCID_TRAINER_SCHEMA_VERSION;
   createdAt: number;
@@ -192,6 +210,8 @@ export interface LucidTrainerState {
   experiments: LucidExperiment[];
   realityChecks: LucidRealityCheck[];
   weeklyReviews: LucidWeeklyReview[];
+  /** Absent on historical v1 states; candidates remain derived from the dream journal. */
+  dreamSignDecisions?: LucidPersistedDreamSignDecision[];
 }
 
 export type LucidSyncEntity =
@@ -200,7 +220,8 @@ export type LucidSyncEntity =
   | { entityType: 'progress'; entityKey: string; value: LucidProgramProgress }
   | { entityType: 'experiment'; entityKey: string; value: LucidExperiment }
   | { entityType: 'reality_check'; entityKey: string; value: LucidRealityCheck }
-  | { entityType: 'weekly_review'; entityKey: string; value: LucidWeeklyReview };
+  | { entityType: 'weekly_review'; entityKey: string; value: LucidWeeklyReview }
+  | { entityType: 'dream_sign'; entityKey: string; value: LucidPersistedDreamSignDecision };
 
 export type LucidSyncOperation = 'upsert' | 'delete';
 export type LucidSyncMutationStatus = 'pending' | 'sending' | 'failed' | 'blocked';
@@ -277,6 +298,7 @@ const ENTITY_TYPES: readonly LucidSyncEntity['entityType'][] = [
   'experiment',
   'reality_check',
   'weekly_review',
+  'dream_sign',
 ];
 const MAX_COLLECTION_LENGTH = 10_000;
 
@@ -548,6 +570,7 @@ export function isLucidExperiment(value: unknown): value is LucidExperiment {
 
 export function isLucidRealityCheck(value: unknown): value is LucidRealityCheck {
   if (!isRecord(value)) return false;
+  const hasDreamSign = value.dreamSignId !== undefined || value.dreamSignLabel !== undefined;
   return (
     isBoundedString(value.id, 128) &&
     isFiniteTimestamp(value.occurredAt) &&
@@ -555,6 +578,11 @@ export function isLucidRealityCheck(value: unknown): value is LucidRealityCheck 
     isEnumValue(REALITY_METHODS, value.method) &&
     isEnumValue(REALITY_OUTCOMES, value.outcome) &&
     typeof value.mindful === 'boolean' &&
+    (!hasDreamSign ||
+      (value.context === 'dream_sign' &&
+        isBoundedString(value.dreamSignId, 128) &&
+        value.dreamSignId.startsWith('sign:') &&
+        isBoundedString(value.dreamSignLabel, 80))) &&
     isFiniteTimestamp(value.updatedAt)
   );
 }
@@ -571,6 +599,26 @@ export function isLucidWeeklyReview(value: unknown): value is LucidWeeklyReview 
     (value.recommendedTechnique === null ||
       isEnumValue(LUCID_TECHNIQUES, value.recommendedTechnique)) &&
     isOptionalNote(value.notes) &&
+    isFiniteTimestamp(value.updatedAt)
+  );
+}
+
+export function isLucidPersistedDreamSignDecision(
+  value: unknown
+): value is LucidPersistedDreamSignDecision {
+  if (!isRecord(value)) return false;
+  return (
+    isBoundedString(value.id, 128) &&
+    value.id.startsWith('sign:') &&
+    isEnumValue(['confirmed', 'rejected'] as const, value.decision) &&
+    (value.customLabel === undefined ||
+      value.customLabel === null ||
+      (typeof value.customLabel === 'string' &&
+        value.customLabel.trim().length > 0 &&
+        value.customLabel.length <= 80)) &&
+    isStringList(value.sourceDreamIds, 128) &&
+    value.sourceDreamIds.length > 0 &&
+    hasUniqueStrings(value.sourceDreamIds) &&
     isFiniteTimestamp(value.updatedAt)
   );
 }
@@ -597,7 +645,12 @@ export function isLucidTrainerState(value: unknown): value is LucidTrainerState 
     Array.isArray(value.weeklyReviews) &&
     value.weeklyReviews.length <= MAX_COLLECTION_LENGTH &&
     value.weeklyReviews.every(isLucidWeeklyReview) &&
-    hasUniqueStrings(value.weeklyReviews.map((item) => item.id))
+    hasUniqueStrings(value.weeklyReviews.map((item) => item.id)) &&
+    (value.dreamSignDecisions === undefined ||
+      (Array.isArray(value.dreamSignDecisions) &&
+        value.dreamSignDecisions.length <= MAX_COLLECTION_LENGTH &&
+        value.dreamSignDecisions.every(isLucidPersistedDreamSignDecision) &&
+        hasUniqueStrings(value.dreamSignDecisions.map((item) => item.id))))
   );
 }
 
@@ -633,6 +686,8 @@ export function isLucidSyncEntity(value: unknown): value is LucidSyncEntity {
       return isLucidRealityCheck(value.value) && value.entityKey === value.value.id;
     case 'weekly_review':
       return isLucidWeeklyReview(value.value) && value.entityKey === value.value.id;
+    case 'dream_sign':
+      return isLucidPersistedDreamSignDecision(value.value) && value.entityKey === value.value.id;
   }
 }
 

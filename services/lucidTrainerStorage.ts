@@ -426,7 +426,11 @@ export function exportLucidTrainerCsv(state: LucidTrainerState): string {
       check.context,
       check.method,
       check.outcome,
-      canonicalLucidJson({ mindful: check.mindful }),
+      canonicalLucidJson({
+        mindful: check.mindful,
+        ...(check.dreamSignId ? { dreamSignId: check.dreamSignId } : {}),
+        ...(check.dreamSignLabel ? { dreamSignLabel: check.dreamSignLabel } : {}),
+      }),
     ]);
   });
   state.weeklyReviews.forEach((review) => {
@@ -447,6 +451,25 @@ export function exportLucidTrainerCsv(state: LucidTrainerState): string {
         practiceDays: review.practiceDays,
         lucidDreams: review.lucidDreams,
         notes: review.notes ?? '',
+      }),
+    ]);
+  });
+  (state.dreamSignDecisions ?? []).forEach((sign) => {
+    rows.push([
+      'dream_sign',
+      sign.id,
+      new Date(sign.updatedAt).toISOString(),
+      '',
+      sign.decision,
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      canonicalLucidJson({
+        customLabel: sign.customLabel ?? '',
+        sourceDreamIds: sign.sourceDreamIds,
       }),
     ]);
   });
