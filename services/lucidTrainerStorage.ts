@@ -428,6 +428,14 @@ export function exportLucidTrainerCsv(state: LucidTrainerState): string {
       check.outcome,
       canonicalLucidJson({
         mindful: check.mindful,
+        ...(check.observedDetail ? { observedDetail: check.observedDetail } : {}),
+        ...(check.arrivalPath ? { arrivalPath: check.arrivalPath } : {}),
+        ...(check.nextDreamIntention
+          ? { nextDreamIntention: check.nextDreamIntention }
+          : {}),
+        ...(check.mindfulPauseAnchor
+          ? { mindfulPauseAnchor: check.mindfulPauseAnchor }
+          : {}),
         ...(check.dreamSignId ? { dreamSignId: check.dreamSignId } : {}),
         ...(check.dreamSignLabel ? { dreamSignLabel: check.dreamSignLabel } : {}),
       }),

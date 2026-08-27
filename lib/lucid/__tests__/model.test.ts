@@ -3,6 +3,8 @@ import {
   isLucidExperiment,
   isLucidPersistedDreamSignDecision,
   isLucidRealityCheck,
+  isLucidSyncEntity,
+  persistLucidMindfulPauseTrigger,
   isLucidLocalTime,
   isLucidSyncMutation,
   isLucidTimeZone,
@@ -128,6 +130,127 @@ describe('Lucid Trainer model', () => {
     expect(isLucidRealityCheck({ ...check, context: 'scheduled' })).toBe(false);
     const { dreamSignId: _id, dreamSignLabel: _label, ...historical } = check;
     expect(isLucidRealityCheck(historical)).toBe(true);
+  });
+
+  it('maps mixed-version pause triggers without persisting unusual_event as context', () => {
+    expect(persistLucidMindfulPauseTrigger('scheduled')).toEqual({ context: 'scheduled' });
+    expect(persistLucidMindfulPauseTrigger('transition')).toEqual({
+      context: 'transition',
+      mindfulPauseAnchor: 'transition',
+    });
+    expect(persistLucidMindfulPauseTrigger('emotion')).toEqual({
+      context: 'emotion',
+      mindfulPauseAnchor: 'emotion',
+    });
+    expect(persistLucidMindfulPauseTrigger('dream_sign')).toEqual({
+      context: 'dream_sign',
+      mindfulPauseAnchor: 'dream_sign',
+    });
+    expect(persistLucidMindfulPauseTrigger('unusual_event')).toEqual({
+      context: 'spontaneous',
+      mindfulPauseAnchor: 'unusual_event',
+    });
+  });
+
+  it('accepts historical checks and optional pause-anchor metadata while rejecting persisted unusual_event context', () => {
+    const historical = {
+      id: 'check-historical',
+      occurredAt: NOW,
+      context: 'scheduled',
+      method: 'nose_breathing',
+      outcome: 'awake',
+      mindful: true,
+      updatedAt: NOW,
+    };
+    expect(isLucidRealityCheck(historical)).toBe(true);
+    expect(isLucidRealityCheck({ ...historical, context: 'spontaneous' })).toBe(true);
+    expect(isLucidRealityCheck({ ...historical, context: 'unusual_event' })).toBe(false);
+
+    const unusual = {
+      ...historical,
+      id: 'check-unusual',
+      context: 'spontaneous',
+      mindfulPauseAnchor: 'unusual_event',
+      observedDetail: 'The clock changed twice.',
+      arrivalPath: 'I left the kitchen and walked into this room.',
+      nextDreamIntention: 'When a clock shifts, I will ask whether I am dreaming.',
+    };
+    expect(isLucidRealityCheck(unusual)).toBe(true);
+    expect(isLucidRealityCheck({ ...unusual, context: 'unusual_event' })).toBe(false);
+    expect(isLucidRealityCheck({ ...unusual, context: 'scheduled' })).toBe(false);
+    expect(isLucidRealityCheck({ ...unusual, mindfulPauseAnchor: 'transition' })).toBe(false);
+    expect(isLucidRealityCheck({ ...unusual, observedDetail: '   ' })).toBe(false);
+    expect(isLucidRealityCheck({ ...unusual, arrivalPath: 'x'.repeat(501) })).toBe(false);
+    expect(isLucidRealityCheck({ ...unusual, nextDreamIntention: '' })).toBe(false);
+
+    const transition = {
+      ...historical,
+      id: 'check-transition',
+      context: 'transition',
+      mindfulPauseAnchor: 'transition',
+    };
+    expect(isLucidRealityCheck(transition)).toBe(true);
+    expect(isLucidRealityCheck({ ...transition, mindfulPauseAnchor: 'emotion' })).toBe(false);
+
+    const signed = {
+      ...historical,
+      id: 'check-sign',
+      context: 'dream_sign',
+      mindfulPauseAnchor: 'dream_sign',
+      dreamSignId: 'sign:mirror',
+      dreamSignLabel: 'My mirror',
+    };
+    expect(isLucidRealityCheck(signed)).toBe(true);
+    expect(isLucidRealityCheck({ ...signed, dreamSignLabel: undefined })).toBe(false);
+    expect(isLucidRealityCheck({ ...historical, mindfulPauseAnchor: 'dream_sign' })).toBe(false);
+  });
+
+  it('keeps unusual-event pauses valid as v1-compatible sync entities', () => {
+    const value = {
+      id: 'check-unusual-sync',
+      occurredAt: NOW,
+      context: 'spontaneous',
+      mindfulPauseAnchor: 'unusual_event',
+      method: 'memory_trace',
+      outcome: 'uncertain',
+      mindful: true,
+      updatedAt: NOW,
+    };
+    const entity = {
+      entityType: 'reality_check',
+      entityKey: value.id,
+      value,
+    };
+
+    expect(isLucidSyncEntity(entity)).toBe(true);
+    expect(isLucidSyncEntity({
+      ...entity,
+      value: { ...value, context: 'unusual_event' },
+    })).toBe(false);
+    expect(isLucidSyncEntity({
+      ...entity,
+      value: { ...value, mindfulPauseAnchor: undefined },
+    })).toBe(true);
+  });
+
+  it('keeps reminder anchors optional and validates uniqueness and membership', () => {
+    const state = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    const historical = { ...state.preferences };
+    delete historical.mindfulPauseReminderAnchors;
+
+    expect(isLucidTrainerState({ ...state, preferences: historical })).toBe(true);
+    expect(isLucidTrainerState({
+      ...state,
+      preferences: { ...state.preferences, mindfulPauseReminderAnchors: [] },
+    })).toBe(true);
+    expect(isLucidTrainerState({
+      ...state,
+      preferences: { ...state.preferences, mindfulPauseReminderAnchors: ['emotion', 'emotion'] },
+    })).toBe(false);
+    expect(isLucidTrainerState({
+      ...state,
+      preferences: { ...state.preferences, mindfulPauseReminderAnchors: ['scheduled'] },
+    })).toBe(false);
   });
 
   it('rejects invalid four-step draft fields when present', () => {

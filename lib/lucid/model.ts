@@ -49,12 +49,35 @@ export interface LucidTechniqueAutoLink {
   practiceDate: string;
 }
 
-export type LucidRealityCheckContext =
-  | 'scheduled'
-  | 'transition'
-  | 'emotion'
-  | 'dream_sign'
-  | 'spontaneous';
+export const LUCID_REALITY_CHECK_CONTEXTS = [
+  'scheduled',
+  'transition',
+  'emotion',
+  'dream_sign',
+  'spontaneous',
+] as const;
+export type LucidRealityCheckContext = (typeof LUCID_REALITY_CHECK_CONTEXTS)[number];
+
+export const LUCID_MINDFUL_PAUSE_ANCHORS = [
+  'transition',
+  'emotion',
+  'unusual_event',
+  'dream_sign',
+] as const;
+export type LucidMindfulPauseAnchor = (typeof LUCID_MINDFUL_PAUSE_ANCHORS)[number];
+
+export const LUCID_MINDFUL_PAUSE_TRIGGERS = [
+  'scheduled',
+  'transition',
+  'emotion',
+  'unusual_event',
+  'dream_sign',
+] as const;
+export type LucidMindfulPauseTrigger = (typeof LUCID_MINDFUL_PAUSE_TRIGGERS)[number];
+export const DEFAULT_LUCID_MINDFUL_PAUSE_REMINDER_ANCHORS: readonly LucidMindfulPauseAnchor[] =
+  ['transition'];
+
+export const MAX_LUCID_REALITY_CHECK_RESPONSE_LENGTH = 500;
 export type LucidRealityCheckMethod =
   | 'nose_breathing'
   | 'finger_count'
@@ -127,6 +150,8 @@ export interface LucidTrainerPreferences {
   audioVolume: number;
   timeZone: string;
   updatedAt: number;
+  /** Absent on historical v1 preferences. Unique chosen pause anchors. */
+  mindfulPauseReminderAnchors?: LucidMindfulPauseAnchor[];
 }
 
 export interface LucidProgramProgress {
@@ -170,6 +195,14 @@ export interface LucidRealityCheck {
   /** Present only when a confirmed personal dream sign initiated the pause. */
   dreamSignId?: string;
   dreamSignLabel?: string;
+  /** Absent on historical v1 checks. Selected pause trigger, if any. */
+  mindfulPauseAnchor?: LucidMindfulPauseAnchor;
+  /** Optional short observation of a potentially impossible detail. */
+  observedDetail?: string;
+  /** Optional reconstruction of how the user arrived here. */
+  arrivalPath?: string;
+  /** Optional intention to carry into the next dream. */
+  nextDreamIntention?: string;
   updatedAt: number;
 }
 
@@ -264,13 +297,7 @@ const PROGRAM_STATUSES: readonly LucidProgramStatus[] = [
 ];
 const EXPERIMENT_RESULTS: readonly LucidExperimentResult[] = ['none', 'pre_lucid', 'lucid'];
 const MAX_NOTE_LENGTH = 4_000;
-const REALITY_CONTEXTS: readonly LucidRealityCheckContext[] = [
-  'scheduled',
-  'transition',
-  'emotion',
-  'dream_sign',
-  'spontaneous',
-];
+const REALITY_CONTEXTS: readonly LucidRealityCheckContext[] = LUCID_REALITY_CHECK_CONTEXTS;
 const REALITY_METHODS: readonly LucidRealityCheckMethod[] = [
   'nose_breathing',
   'finger_count',
@@ -427,6 +454,16 @@ export function isLucidOnboardingState(value: unknown): value is LucidOnboarding
   );
 }
 
+function isOptionalMindfulPauseReminderAnchors(value: unknown): boolean {
+  return (
+    value === undefined ||
+    (Array.isArray(value) &&
+      value.length <= LUCID_MINDFUL_PAUSE_ANCHORS.length &&
+      value.every((item) => isEnumValue(LUCID_MINDFUL_PAUSE_ANCHORS, item)) &&
+      hasUniqueStrings(value as string[]))
+  );
+}
+
 export function isLucidTrainerPreferences(value: unknown): value is LucidTrainerPreferences {
   if (!isRecord(value)) return false;
   return (
@@ -442,7 +479,8 @@ export function isLucidTrainerPreferences(value: unknown): value is LucidTrainer
     value.audioVolume >= 0 &&
     value.audioVolume <= 0.5 &&
     isLucidTimeZone(value.timeZone) &&
-    isFiniteTimestamp(value.updatedAt)
+    isFiniteTimestamp(value.updatedAt) &&
+    isOptionalMindfulPauseReminderAnchors(value.mindfulPauseReminderAnchors)
   );
 }
 
@@ -568,9 +606,41 @@ export function isLucidExperiment(value: unknown): value is LucidExperiment {
   return value.captureMode === undefined ? isLegacyExperiment(value) : isNewExperiment(value);
 }
 
+function isOptionalRealityCheckResponse(value: unknown): boolean {
+  return (
+    value === undefined ||
+    (typeof value === 'string' &&
+      value.trim().length > 0 &&
+      value.length <= MAX_LUCID_REALITY_CHECK_RESPONSE_LENGTH)
+  );
+}
+
+function isCompatibleMindfulPauseAnchor(
+  context: LucidRealityCheckContext,
+  anchor: unknown
+): boolean {
+  if (anchor === undefined) return true;
+  if (!isEnumValue(LUCID_MINDFUL_PAUSE_ANCHORS, anchor)) return false;
+  if (context === 'scheduled') return false;
+  if (context === 'spontaneous') return anchor === 'unusual_event';
+  return context === anchor;
+}
+
+export function persistLucidMindfulPauseTrigger(trigger: LucidMindfulPauseTrigger): {
+  context: LucidRealityCheckContext;
+  mindfulPauseAnchor?: LucidMindfulPauseAnchor;
+} {
+  if (trigger === 'scheduled') return { context: 'scheduled' };
+  if (trigger === 'unusual_event') {
+    return { context: 'spontaneous', mindfulPauseAnchor: 'unusual_event' };
+  }
+  return { context: trigger, mindfulPauseAnchor: trigger };
+}
+
 export function isLucidRealityCheck(value: unknown): value is LucidRealityCheck {
   if (!isRecord(value)) return false;
   const hasDreamSign = value.dreamSignId !== undefined || value.dreamSignLabel !== undefined;
+  const requiresDreamSignIdentity = hasDreamSign || value.mindfulPauseAnchor === 'dream_sign';
   return (
     isBoundedString(value.id, 128) &&
     isFiniteTimestamp(value.occurredAt) &&
@@ -578,11 +648,15 @@ export function isLucidRealityCheck(value: unknown): value is LucidRealityCheck 
     isEnumValue(REALITY_METHODS, value.method) &&
     isEnumValue(REALITY_OUTCOMES, value.outcome) &&
     typeof value.mindful === 'boolean' &&
-    (!hasDreamSign ||
+    isCompatibleMindfulPauseAnchor(value.context, value.mindfulPauseAnchor) &&
+    (!requiresDreamSignIdentity ||
       (value.context === 'dream_sign' &&
         isBoundedString(value.dreamSignId, 128) &&
         value.dreamSignId.startsWith('sign:') &&
         isBoundedString(value.dreamSignLabel, 80))) &&
+    isOptionalRealityCheckResponse(value.observedDetail) &&
+    isOptionalRealityCheckResponse(value.arrivalPath) &&
+    isOptionalRealityCheckResponse(value.nextDreamIntention) &&
     isFiniteTimestamp(value.updatedAt)
   );
 }

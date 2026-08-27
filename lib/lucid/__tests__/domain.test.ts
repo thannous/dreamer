@@ -100,6 +100,7 @@ describe('Lucid Trainer domain', () => {
     expect(state.onboarding.draftStep).toBe(0);
     expect(state.onboarding.sleepScheduleConfirmed).toBe(false);
     expect(state.onboarding.sleepScheduleDraft).toEqual({ bedtime: null, wakeTime: null });
+    expect(state.preferences.mindfulPauseReminderAnchors).toEqual(['transition']);
   });
 
   it('merges complete states and applies deterministic deletions', () => {

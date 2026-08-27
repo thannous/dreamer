@@ -741,7 +741,21 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     async (input: RealityCheckInput) => {
       let created: LucidRealityCheck | null = null;
       await commit((current, now) => {
-        created = { id: Crypto.randomUUID(), occurredAt: now, updatedAt: now, ...input };
+        created = {
+          id: Crypto.randomUUID(),
+          occurredAt: now,
+          updatedAt: now,
+          ...input,
+          ...(input.observedDetail !== undefined
+            ? { observedDetail: input.observedDetail.trim() }
+            : {}),
+          ...(input.arrivalPath !== undefined
+            ? { arrivalPath: input.arrivalPath.trim() }
+            : {}),
+          ...(input.nextDreamIntention !== undefined
+            ? { nextDreamIntention: input.nextDreamIntention.trim() }
+            : {}),
+        };
         if (!isLucidRealityCheck(created)) {
           throw new Error('Invalid Lucid reality check');
         }

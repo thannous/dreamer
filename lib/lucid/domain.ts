@@ -1,4 +1,5 @@
 import {
+  DEFAULT_LUCID_MINDFUL_PAUSE_REMINDER_ANCHORS,
   LUCID_TRAINER_SCHEMA_VERSION,
   LUCID_TECHNIQUES,
   type LucidOnboardingState,
@@ -171,6 +172,7 @@ export function createInitialLucidTrainerState(params: {
       noctaliaLinkEnabled: false,
       notificationsEnabled: false,
       realityCheckRemindersPerDay: 3,
+      mindfulPauseReminderAnchors: [...DEFAULT_LUCID_MINDFUL_PAUSE_REMINDER_ANCHORS],
       audioCuesEnabled: false,
       audioVolume: 0.25,
       timeZone,

@@ -345,6 +345,19 @@ describe('lucidTrainerStorage', () => {
       sourceDreamIds: ['101', '102'],
       updatedAt: NOW,
     }];
+    current.realityChecks = [{
+      id: 'pause-1',
+      occurredAt: NOW,
+      context: 'spontaneous',
+      mindfulPauseAnchor: 'unusual_event',
+      method: 'memory_trace',
+      outcome: 'uncertain',
+      mindful: true,
+      observedDetail: '=clock changed',
+      arrivalPath: 'I entered the room',
+      nextDreamIntention: 'If it changes, I will question the dream',
+      updatedAt: NOW,
+    }];
 
     const json = JSON.parse(exportLucidTrainerJson(current, NOW));
     expect(json).toMatchObject({
@@ -363,6 +376,13 @@ describe('lucidTrainerStorage', () => {
     expect(csv).toContain('"dream_sign"');
     expect(csv).toContain('"sign:mirror"');
     expect(csv).toContain('"sourceDreamIds"');
+    expect(csv).toContain('"observedDetail"');
+    expect(csv).toContain('=clock changed');
+    expect(csv).toContain('"nextDreamIntention"');
+    expect(csv).toContain('"mindfulPauseAnchor"');
+    expect(csv).toContain('"unusual_event"');
+    expect(csv).toContain('"spontaneous"');
+    expect(csv).not.toContain('"context":"unusual_event"');
     expect(csv.endsWith('\r\n')).toBe(true);
     expect(csv).not.toContain('captureMode');
 

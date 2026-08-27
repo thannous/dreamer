@@ -1,24 +1,37 @@
 /* @jest-environment jsdom */
 
 import React from 'react';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 const mockAlert = jest.fn();
 const mockAddRealityCheck = jest.fn().mockResolvedValue(undefined);
-const mockHaptic = jest.fn().mockResolvedValue(undefined);
+const mockImpact = jest.fn().mockResolvedValue(undefined);
+const mockNotification = jest.fn().mockResolvedValue(undefined);
 let mockActiveDreamSigns: { id: string; label: string }[] = [];
 
-jest.mock('react-native', () => ({
-  ...jest.requireActual('../react-native-stub'),
-  AccessibilityInfo: { announceForAccessibility: jest.fn() },
-  Alert: { alert: mockAlert },
-}));
+jest.mock('react-native', () => {
+  const ReactForMock = jest.requireActual('react');
+  const stub = jest.requireActual('../react-native-stub');
+  return {
+    ...stub,
+    AccessibilityInfo: { announceForAccessibility: jest.fn() },
+    Alert: { alert: mockAlert },
+    Pressable: ({ children, disabled, onPressIn, onPressOut, testID }: any) =>
+      ReactForMock.createElement(
+        'button',
+        { 'data-testid': testID, disabled, onMouseDown: onPressIn, onMouseUp: onPressOut },
+        typeof children === 'function' ? children({ pressed: false }) : children
+      ),
+  };
+});
 
 jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
 
 jest.mock('expo-haptics', () => ({
+  ImpactFeedbackStyle: { Light: 'light' },
   NotificationFeedbackType: { Success: 'success' },
-  notificationAsync: mockHaptic,
+  impactAsync: mockImpact,
+  notificationAsync: mockNotification,
 }));
 
 jest.mock('expo-router', () => ({
@@ -63,8 +76,14 @@ jest.mock('@/components/lucid/LucidGuideOrb', () => ({
 }));
 
 jest.mock('@/components/motion/PressableScale', () => ({
-  PressableScale: ({ children, accessibilityLabel, disabled, onPress, testID }: any) => (
-    <button aria-label={accessibilityLabel} data-testid={testID} disabled={disabled} onClick={onPress}>
+  PressableScale: ({ accessibilityLabel, accessibilityState, children, disabled, onPress, testID }: any) => (
+    <button
+      aria-checked={accessibilityState?.checked}
+      aria-label={accessibilityLabel}
+      data-testid={testID}
+      disabled={disabled}
+      onClick={onPress}
+    >
       {children}
     </button>
   ),
@@ -72,115 +91,155 @@ jest.mock('@/components/motion/PressableScale', () => ({
 
 jest.mock('@/components/lucid/LucidUI', () => ({
   LucidScreen: ({ children, footer, testID, trailing }: any) => (
-    <main data-testid={testID}>
-      {trailing}
-      {children}
-      {footer}
-    </main>
+    <main data-testid={testID}>{trailing}{children}{footer}</main>
   ),
   LucidIconAction: ({ label, onPress }: any) => <button aria-label={label} onClick={onPress} />,
   LucidButton: ({ disabled, disabledReason, label, loading, onPress, testID }: any) => (
     <div>
-      <button aria-label={label} data-testid={testID} disabled={disabled || loading} onClick={onPress}>
-        {label}
-      </button>
+      <button aria-label={label} data-testid={testID} disabled={disabled || loading} onClick={onPress}>{label}</button>
       {disabled && disabledReason ? <span>{disabledReason}</span> : null}
     </div>
   ),
   LucidCard: ({ children }: any) => <section>{children}</section>,
-  LucidChoiceCard: ({ onPress, testID, title }: any) => (
-    <button data-testid={testID} onClick={onPress}>{title}</button>
-  ),
+  LucidChoiceCard: ({ onPress, testID, title }: any) => <button data-testid={testID} onClick={onPress}>{title}</button>,
   LucidIconTile: () => null,
 }));
 
-const { default: LucidRealityCheckScreen } = require('@/app/lucid/reality-check');
+const {
+  default: LucidRealityCheckScreen,
+  getLucidMindfulHoldTransitionDuration,
+  LUCID_MINDFUL_HOLD_DURATION_MS,
+} = require('@/app/lucid/reality-check');
 
-describe('Lucid reality-check guide', () => {
+function useAccessibleAlternative() {
+  fireEvent.click(screen.getByTestId('lucid-reality-hold-alternative'));
+  fireEvent.click(screen.getByRole('button', { name: 'Continue to observation' }));
+}
+
+function fillObservation(trigger: 'scheduled' | 'transition' | 'emotion' | 'unusual_event' | 'dream_sign' = 'unusual_event') {
+  fireEvent.change(screen.getByTestId('lucid-reality-observed-detail'), { target: { value: '  The clock changed twice.  ' } });
+  fireEvent.click(screen.getByTestId(`lucid-reality-context-${trigger}`));
+}
+
+function advanceThroughTextAndTest() {
+  fireEvent.click(screen.getByRole('button', { name: 'Continue to reconstruction' }));
+  fireEvent.change(screen.getByTestId('lucid-reality-arrival-path'), { target: { value: '  I left the kitchen and entered this room.  ' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Continue to the test' }));
+  fireEvent.click(screen.getByTestId('lucid-reality-method-nose_breathing'));
+  fireEvent.click(screen.getByTestId('lucid-reality-outcome-awake'));
+  fireEvent.click(screen.getByRole('button', { name: 'Continue to intention' }));
+  fireEvent.change(screen.getByTestId('lucid-reality-next-intention'), { target: { value: '  If the clock shifts, I will know I am dreaming.  ' } });
+}
+
+describe('Lucid mindful-pause guide', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
     mockAddRealityCheck.mockResolvedValue(undefined);
     mockActiveDreamSigns = [];
   });
 
-  afterEach(cleanup);
-
-  it('moves through Observe, Name and Verify before saving the real result', async () => {
-    render(<LucidRealityCheckScreen />);
-
-    expect(screen.getByTestId('lucid-guide-orb').getAttribute('aria-label')).toBe('Lucid guide');
-    expect(screen.getByText('Step 1 · Observe')).not.toBeNull();
-    expect((screen.getByTestId('lucid-reality-save') as HTMLButtonElement).disabled).toBe(true);
-    expect(screen.getByText(/Still to answer: Choose a check/)).not.toBeNull();
-
-    fireEvent.click(screen.getByTestId('lucid-reality-method-nose_breathing'));
-    fireEvent.click(screen.getByRole('button', { name: 'I observed carefully' }));
-    expect(screen.getByText('Step 2 · Name')).not.toBeNull();
-
-    fireEvent.click(screen.getByRole('button', { name: 'What prompted it?, Scheduled reminder' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Continue to verification' }));
-    expect(screen.getByText('Step 3 · Verify')).not.toBeNull();
-    expect(screen.getByText('I paused and genuinely questioned the moment')).not.toBeNull();
-
-    fireEvent.click(screen.getByRole('button', { name: 'What did you notice?, Awake' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Save reality check' }));
-
-    await waitFor(() => {
-      expect(mockAddRealityCheck).toHaveBeenCalledWith({
-        method: 'nose_breathing',
-        context: 'scheduled',
-        outcome: 'awake',
-        mindful: true,
-      });
-    });
-    expect(mockAlert).toHaveBeenCalledWith(
-      'Check saved',
-      expect.any(String),
-      expect.any(Array)
-    );
+  afterEach(() => {
+    cleanup();
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 
-  it('keeps the initial primary action inert when the exercise was not performed', () => {
+  it('removes the hold animation when Reduce Motion is active', () => {
+    expect(getLucidMindfulHoldTransitionDuration(false, true)).toBe('2000ms');
+    expect(getLucidMindfulHoldTransitionDuration(true, true)).toBe('0ms');
+    expect(getLucidMindfulHoldTransitionDuration(false, false)).toBe('0ms');
+  });
+
+  it('requires the complete two-second hold and resets when released early', () => {
+    render(<LucidRealityCheckScreen />);
+    const hold = screen.getByTestId('lucid-reality-hold');
+    const next = screen.getByTestId('lucid-reality-save') as HTMLButtonElement;
+
+    expect(screen.getByText('Step 1 · Stop')).not.toBeNull();
+    expect(next.disabled).toBe(true);
+    fireEvent.mouseDown(hold);
+    act(() => jest.advanceTimersByTime(LUCID_MINDFUL_HOLD_DURATION_MS - 1));
+    expect(next.disabled).toBe(true);
+    fireEvent.mouseUp(hold);
+    act(() => jest.advanceTimersByTime(LUCID_MINDFUL_HOLD_DURATION_MS));
+    expect(next.disabled).toBe(true);
+
+    fireEvent.mouseDown(hold);
+    act(() => jest.advanceTimersByTime(LUCID_MINDFUL_HOLD_DURATION_MS));
+    expect((screen.getByTestId('lucid-reality-save') as HTMLButtonElement).disabled).toBe(false);
+    expect(screen.getByText('Pause complete')).not.toBeNull();
+  });
+
+  it('offers an explicit accessible alternative without preselecting an answer', () => {
     render(<LucidRealityCheckScreen />);
 
-    fireEvent.click(screen.getByTestId('lucid-reality-save'));
-
+    expect(screen.getByTestId('lucid-reality-hold-alternative')).not.toBeNull();
     expect(mockAddRealityCheck).not.toHaveBeenCalled();
-    expect(mockAlert).not.toHaveBeenCalled();
-    expect(screen.getByTestId('lucid-reality-check')).not.toBeNull();
+    useAccessibleAlternative();
+
+    expect(screen.getByText('Step 2 · Observe')).not.toBeNull();
+    expect((screen.getByTestId('lucid-reality-save') as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByTestId('lucid-reality-context-scheduled')).not.toBeNull();
+    expect(screen.getByText(/Still to answer: Observed detail, What anchored this pause/)).not.toBeNull();
+    expect((screen.getByTestId('lucid-reality-context-scheduled') as HTMLButtonElement).getAttribute('aria-checked')).not.toBe('true');
+    expect((screen.getByTestId('lucid-reality-context-unusual_event') as HTMLButtonElement).getAttribute('aria-checked')).not.toBe('true');
   });
 
-  it('lets the user return and re-confirm attentive observation', () => {
+  it('persists the complete five-step flow with trimmed short responses', async () => {
     render(<LucidRealityCheckScreen />);
-
-    fireEvent.click(screen.getByTestId('lucid-reality-method-finger_count'));
-    fireEvent.click(screen.getByRole('button', { name: 'I observed carefully' }));
-    fireEvent.click(screen.getByTestId('lucid-reality-previous'));
-
-    expect(screen.getByText('Step 1 · Observe')).not.toBeNull();
-    expect((screen.getByRole('button', { name: 'I observed carefully' }) as HTMLButtonElement).disabled).toBe(false);
-  });
-
-  it('allows only a confirmed personal sign to drive the dream-sign context', async () => {
-    mockActiveDreamSigns = [{ id: 'sign:mirror', label: 'My mirror' }];
-    render(<LucidRealityCheckScreen />);
-
-    fireEvent.click(screen.getByTestId('lucid-reality-method-nose_breathing'));
-    fireEvent.click(screen.getByRole('button', { name: 'I observed carefully' }));
-    fireEvent.click(screen.getByRole('button', { name: 'What prompted it?, Personal dream sign' }));
-    expect(screen.getByText(/Still to answer: Which confirmed sign/)).not.toBeNull();
-    fireEvent.click(screen.getByTestId('lucid-reality-sign-sign:mirror'));
-    fireEvent.click(screen.getByRole('button', { name: 'Continue to verification' }));
-    fireEvent.click(screen.getByRole('button', { name: 'What did you notice?, Awake' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Save reality check' }));
+    useAccessibleAlternative();
+    fillObservation();
+    advanceThroughTextAndTest();
+    fireEvent.click(screen.getByRole('button', { name: 'Save mindful pause' }));
 
     await waitFor(() => expect(mockAddRealityCheck).toHaveBeenCalledWith({
       method: 'nose_breathing',
-      context: 'dream_sign',
+      context: 'spontaneous',
+      mindfulPauseAnchor: 'unusual_event',
       outcome: 'awake',
       mindful: true,
+      observedDetail: 'The clock changed twice.',
+      arrivalPath: 'I left the kitchen and entered this room.',
+      nextDreamIntention: 'If the clock shifts, I will know I am dreaming.',
+    }));
+    expect(mockAlert).toHaveBeenCalledWith('Pause saved', expect.any(String), expect.any(Array));
+  });
+
+  it('requires an explicit confirmed sign for the dream-sign anchor', async () => {
+    mockActiveDreamSigns = [{ id: 'sign:mirror', label: 'My mirror' }];
+    render(<LucidRealityCheckScreen />);
+    useAccessibleAlternative();
+    fillObservation('dream_sign');
+
+    expect(screen.getByText(/Still to answer: Which confirmed sign/)).not.toBeNull();
+    fireEvent.click(screen.getByTestId('lucid-reality-sign-sign:mirror'));
+    advanceThroughTextAndTest();
+    fireEvent.click(screen.getByRole('button', { name: 'Save mindful pause' }));
+
+    await waitFor(() => expect(mockAddRealityCheck).toHaveBeenCalledWith(expect.objectContaining({
+      context: 'dream_sign',
+      mindfulPauseAnchor: 'dream_sign',
       dreamSignId: 'sign:mirror',
       dreamSignLabel: 'My mirror',
+    })));
+  });
+
+  it('lets a notification response persist as scheduled without a real-world anchor', async () => {
+    render(<LucidRealityCheckScreen />);
+    useAccessibleAlternative();
+    fillObservation('scheduled');
+    advanceThroughTextAndTest();
+    fireEvent.click(screen.getByRole('button', { name: 'Save mindful pause' }));
+
+    await waitFor(() => expect(mockAddRealityCheck).toHaveBeenCalledWith({
+      method: 'nose_breathing',
+      context: 'scheduled',
+      outcome: 'awake',
+      mindful: true,
+      observedDetail: 'The clock changed twice.',
+      arrivalPath: 'I left the kitchen and entered this room.',
+      nextDreamIntention: 'If the clock shifts, I will know I am dreaming.',
     }));
   });
 });
