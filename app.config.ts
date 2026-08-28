@@ -2,6 +2,8 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 const LUCID_APP_VERSION = '1.0.0';
 const LUCID_EAS_PROJECT_ID = 'd210576f-5dc4-4f7a-a5e1-a407c209c3a2';
+const LUCID_MICROPHONE_PERMISSION =
+  'Noctalia Lucid Trainer records a morning dream note on this device after you tap Speak. Audio stays local and is never uploaded or transcribed automatically.';
 
 function isLucidNativeMarker(value: string | undefined): boolean {
   if (value === undefined || value === '' || value === 'noctalia') return false;
@@ -112,6 +114,7 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
         ...lucidInfoPlist,
         CADisableMinimumFrameDurationOnPhone: true,
         LSApplicationQueriesSchemes: ['noctalia'],
+        NSMicrophoneUsageDescription: LUCID_MICROPHONE_PERMISSION,
       },
     },
     android: {
@@ -132,8 +135,9 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
       ],
       permissions: [],
       blockedPermissions: [
-        ...(baseExpo.android?.blockedPermissions ?? []),
-        'android.permission.RECORD_AUDIO',
+        ...(baseExpo.android?.blockedPermissions ?? []).filter(
+          (permission) => permission !== 'android.permission.RECORD_AUDIO'
+        ),
       ],
     },
     web: {
@@ -156,7 +160,13 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
           dark: { backgroundColor: '#201131' },
         },
       ],
-      ['expo-audio', { microphonePermission: false, enableBackgroundPlayback: true }],
+      [
+        'expo-audio',
+        {
+          microphonePermission: LUCID_MICROPHONE_PERMISSION,
+          enableBackgroundPlayback: true,
+        },
+      ],
       ['expo-notifications', { sounds: lucidCueSounds }],
       [
         '@kingstinct/react-native-healthkit',

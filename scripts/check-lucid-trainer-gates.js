@@ -3,6 +3,7 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { collectLucidTestStoreGateChecks } = require('./lucid-teststore-profile');
+const { evaluateLucidMicrophoneContract } = require('./lucid-microphone-contract');
 
 const root = path.resolve(__dirname, '..');
 const expoCli = path.join(root, 'node_modules', 'expo', 'bin', 'cli');
@@ -161,11 +162,11 @@ check('Distinct 1024px icon',
     sha256(iconPath) !== sha256(baseIconPath),
   config.icon
 );
-check('Microphone and speech collection removed',
-  config.android?.blockedPermissions?.includes('android.permission.RECORD_AUDIO') &&
-    !config.ios?.infoPlist?.NSMicrophoneUsageDescription &&
-    !config.ios?.infoPlist?.NSSpeechRecognitionUsageDescription &&
-    !plugins.includes('expo-speech-recognition')
+const microphoneContract = evaluateLucidMicrophoneContract(config);
+check(
+  'Local morning-voice microphone is allowed without speech collection',
+  microphoneContract.ok,
+  microphoneContract.detail
 );
 check('Nine bundled prudent cue sounds',
   cueSounds.length === 9 && cueSounds.every((sound) => fs.existsSync(resolveProjectFile(sound))),
