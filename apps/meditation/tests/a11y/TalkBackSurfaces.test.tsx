@@ -6,9 +6,15 @@ import { Linking, StyleSheet } from 'react-native';
 import { AccessibleTabBar, DrawerButton } from '@/app/(drawer)/(tabs)/_layout';
 import SearchTab from '@/app/(drawer)/(tabs)/search';
 import PaywallScreen from '@/app/paywall';
+import SettingsScreen from '@/app/settings';
 import SessionDetail from '@/app/session/[id]';
+import WorldPurchaseScreen from '@/app/world/[id]';
+import { WorldJourneyPicker } from '@/components/journey/WorldJourneyPicker';
 import { MiniPlayer } from '@/components/player/MiniPlayer';
+import { StreakCalendar } from '@/components/profile/StreakCalendar';
+import { WORLD_BY_ID, WORLD_IDS } from '@/constants/worlds';
 import { translate } from '@/lib/i18n';
+import { calendarDays } from '@/lib/streak';
 import { TID } from '@/lib/testIDs';
 
 const mockOpenDrawer = jest.fn();
@@ -17,7 +23,14 @@ const mockToggle = jest.fn();
 const mockToggleFavorite = jest.fn();
 let mockFavorite = false;
 let mockPlayerStatus: 'idle' | 'paused' | 'playing' = 'paused';
-let mockReason: string | undefined = 'premium-session';
+let mockParams: Record<string, string | undefined> = {
+  id: 'sleep-descent',
+  reason: 'premium-session',
+};
+const mockSetWorld = jest.fn();
+const mockToggleSoundscape = jest.fn();
+let mockSoundEnabled = true;
+let mockWorldOwned = false;
 
 jest.mock('@/context/LanguageContext', () => ({
   useTranslation: () => ({
@@ -50,12 +63,13 @@ jest.mock('expo-router', () => ({
   usePathname: () => '/',
   useIsFocused: () => true,
   useSegments: () => ['(drawer)', '(tabs)'],
-  useLocalSearchParams: () => ({ id: 'sleep-descent', reason: mockReason }),
+  useLocalSearchParams: () => mockParams,
   useRouter: () => ({
     push: mockPush,
     back: jest.fn(),
     canGoBack: () => true,
     replace: jest.fn(),
+    dismissTo: jest.fn(),
   }),
 }));
 
@@ -144,9 +158,47 @@ jest.mock('@/context/SubscriptionContext', () => ({
 jest.mock('@/context/WorldPurchaseContext', () => ({
   useWorldPurchases: () => ({
     loaded: true,
-    isWorldOwned: () => false,
+    isWorldOwned: () => mockWorldOwned,
+    offerForWorld: () => ({ worldId: 'tide', priceLabel: '0,99 €', raw: null }),
+    purchaseWorld: jest.fn(),
+    restoreWorlds: jest.fn(),
   }),
 }));
+
+jest.mock('@/context/WorldContext', () => ({
+  useWorld: () => ({
+    loaded: true,
+    worldId: 'constellation',
+    world: require('@/constants/worlds').WORLD_BY_ID.constellation,
+    previewWorldId: null,
+    presentationWorldId: 'constellation',
+    presentationWorld: require('@/constants/worlds').WORLD_BY_ID.constellation,
+    setWorld: mockSetWorld,
+    setPreviewWorld: jest.fn(),
+  }),
+}));
+
+jest.mock('@/hooks/useWorldSoundscape', () => ({
+  useWorldSoundscape: () => ({
+    soundEnabled: mockSoundEnabled,
+    toggleSound: mockToggleSoundscape,
+  }),
+}));
+
+jest.mock('expo-haptics', () => ({
+  NotificationFeedbackType: { Success: 'success' },
+  notificationAsync: jest.fn(async () => {}),
+  selectionAsync: jest.fn(async () => {}),
+}));
+
+jest.mock('@/components/atmosphere/Screen', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return {
+    Screen: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) =>
+      React.createElement(View, props, children),
+  };
+});
 
 jest.mock('@/context/PlayerContext', () => ({
   usePlayer: () => ({
@@ -193,7 +245,11 @@ describe('TI-394 TalkBack surfaces', () => {
     mockToggleFavorite.mockClear();
     mockFavorite = false;
     mockPlayerStatus = 'paused';
-    mockReason = 'premium-session';
+    mockParams = { id: 'sleep-descent', reason: 'premium-session' };
+    mockSoundEnabled = true;
+    mockWorldOwned = false;
+    mockSetWorld.mockClear();
+    mockToggleSoundscape.mockClear();
   });
 
   it('gives the drawer a 48dp target and an explicit Open the menu label', () => {
@@ -303,6 +359,114 @@ describe('TI-394 TalkBack surfaces', () => {
     expect(tabs[0].props.accessibilityState).toMatchObject({ selected: true });
     expect(tabs[1].props.accessibilityState).toMatchObject({ selected: false });
     expect(meetsMinTarget(tabs[0].props.style)).toBe(true);
+  });
+
+  it('summarises the streak calendar as one TalkBack element in weekday order', () => {
+    const days = calendarDays([{ dateISO: '2026-08-19', seconds: 600 }], '2026-08-19');
+    render(<StreakCalendar days={days} />);
+
+    const weekdays = [
+      translate('en', 'profile.weekday.mon'),
+      translate('en', 'profile.weekday.tue'),
+      translate('en', 'profile.weekday.wed'),
+      translate('en', 'profile.weekday.thu'),
+      translate('en', 'profile.weekday.fri'),
+      translate('en', 'profile.weekday.sat'),
+      translate('en', 'profile.weekday.sun'),
+    ];
+    const weekdayNodes = weekdays.map((label) => screen.getAllByText(label)[0]);
+    expect(weekdayNodes.map((node) => node.props.children)).toEqual(weekdays);
+
+    const summary = screen.getByRole('summary');
+    expect(summary.props.accessibilityLabel).toBe(
+      translate('en', 'profile.calendar.summary', { practised: 1, total: days.length })
+    );
+    expect(screen.queryByLabelText('2026-08-19')).toBeNull();
+    days.forEach((day) => {
+      expect(screen.queryByLabelText(day.day)).toBeNull();
+    });
+  });
+
+  it('exposes the home world carousel as radios in visual order', () => {
+    const onSelect = jest.fn();
+    const worlds = WORLD_IDS.map((id) => WORLD_BY_ID[id]);
+    render(
+      <WorldJourneyPicker
+        worlds={worlds}
+        selectedWorldId="constellation"
+        onSelect={onSelect}
+        isWorldOwned={(worldId) => worldId !== 'tide'}
+        priceForWorld={(worldId) => (worldId === 'tide' ? '0,99 €' : undefined)}
+        accessibilityLabel={translate('en', 'home.journey.worldLabel')}
+        testID="home.world-switcher"
+      />
+    );
+
+    const group = screen.getByTestId('home.world-switcher');
+    expect(group.props.accessibilityRole).toBe('radiogroup');
+    expect(group.props.accessibilityLabel).toBe(translate('en', 'home.journey.worldLabel'));
+
+    const radios = screen.getAllByRole('radio');
+    expect(radios.map((radio) => radio.props.accessibilityLabel)).toEqual(
+      WORLD_IDS.map((id) => translate('en', `world.${id}.name`))
+    );
+    expect(radios[0].props.accessibilityState).toMatchObject({
+      checked: true,
+      selected: true,
+    });
+    expect(radios[1].props.accessibilityState).toMatchObject({
+      checked: false,
+      selected: false,
+    });
+    expect(radios[3].props.accessibilityHint).toEqual(expect.stringContaining('0,99'));
+
+    fireEvent.press(radios[2]);
+    expect(onSelect).toHaveBeenCalledWith('forest');
+    fireEvent.press(radios[0]);
+    expect(onSelect).toHaveBeenCalledTimes(1);
+  });
+
+  it('names world-purchase back, preview, buy and restore with explicit roles', () => {
+    mockParams = { id: 'tide' };
+    render(<WorldPurchaseScreen />);
+
+    const back = screen.getByTestId(TID.Button.WorldPurchaseBack);
+    expect(back.props.accessibilityRole).toBe('button');
+    expect(back.props.accessibilityLabel).toBe(translate('en', 'common.back'));
+
+    const preview = screen.getByTestId('btn.worldPurchase.sound');
+    expect(preview.props.accessibilityRole).toBe('button');
+    expect(preview.props.accessibilityLabel).toBe(
+      translate('en', 'world.purchase.preview.soundOn', {
+        world: translate('en', 'world.tide.name'),
+      })
+    );
+    expect(preview.props.accessibilityState).toMatchObject({ selected: false });
+
+    const buy = screen.getByTestId(TID.Button.WorldPurchaseBuy);
+    expect(buy.props.accessibilityRole).toBe('button');
+    expect(buy).toHaveTextContent(
+      translate('en', 'world.purchase.buy', { price: '0,99 €' })
+    );
+
+    const restore = screen.getByTestId(TID.Button.WorldPurchaseRestore);
+    expect(restore.props.accessibilityRole).toBe('button');
+    expect(restore).toHaveTextContent(translate('en', 'world.purchase.restore'));
+  });
+
+  it('presents Reduce animations as a system fact, not a control', () => {
+    render(<SettingsScreen />);
+
+    const motion = screen.getByTestId('settings.motion');
+    expect(motion.props.accessibilityRole).toBe('text');
+    expect(motion.props.accessibilityLabel).toBe(
+      `${translate('en', 'settings.motion')}. ${translate('en', 'settings.motion.system')}`
+    );
+    expect(motion.props.onPress).toBeUndefined();
+    expect(motion.props.accessibilityState).toMatchObject({ disabled: true });
+
+    const theme = screen.getByTestId(TID.Button.SettingsTheme);
+    expect(theme.props.accessibilityRole).toBe('button');
   });
 
 });

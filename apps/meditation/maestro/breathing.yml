@@ -20,8 +20,16 @@ appId: com.noctalia.meditation
 - assertNotVisible: 'Inspirez'
 - assertNotVisible: 'Breathe in'
 
-# Ready is preparatory: the CTA still says start, and the first inhale
-# has not begun. The next tap is what enters the active exercise.
+# Ready is preparatory: the three assistance switches exist before launch,
+# independently of Pause/Resume, and none of them is the primary action.
+- assertVisible:
+    id: 'btn.breathe.sound'
+- assertVisible:
+    id: 'btn.breathe.voice'
+- assertVisible:
+    id: 'btn.breathe.haptic'
+
+# The next tap is what enters the active exercise.
 - tapOn:
     id: 'btn.breathe.start'
 
@@ -31,6 +39,24 @@ appId: com.noctalia.meditation
     timeout: 5000
 - assertVisible:
     id: 'text.breathe.phase'
+- assertVisible:
+    id: 'btn.breathe.start'
+
+# Pause then Resume use the same CTA id; the visible copy is locale-specific.
+- tapOn:
+    id: 'btn.breathe.start'
+- assertVisible:
+    id: 'btn.breathe.start'
+- tapOn:
+    id: 'btn.breathe.start'
+- assertVisible:
+    id: 'text.breathe.phase'
+- assertVisible:
+    id: 'btn.breathe.sound'
+- assertVisible:
+    id: 'btn.breathe.voice'
+- assertVisible:
+    id: 'btn.breathe.haptic'
 
 # Pause, then leave: the exercise must not keep running behind the tab bar.
 - tapOn:

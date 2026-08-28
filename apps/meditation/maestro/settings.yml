@@ -1,4 +1,4 @@
-# Theme and language, the two settings that repaint the whole app.
+# Theme, language, and the reduce-motion fact that must stay a system setting.
 appId: com.noctalia.meditation
 ---
 - runFlow: onboarding.yml
@@ -16,6 +16,18 @@ appId: com.noctalia.meditation
     id: 'btn.profile.settings'
 - assertVisible:
     id: 'screen.settings'
+
+# Reduce animations is not a toggle: it names the OS setting and does nothing.
+- scrollUntilVisible:
+    element:
+      id: 'settings.motion'
+    direction: DOWN
+- assertVisible:
+    id: 'settings.motion'
+- assertVisible:
+    id: 'screen.settings'
+- assertNotVisible:
+    id: 'screen.settings.language'
 
 # The theme row cycles auto → light → dark. Three taps return to the start,
 # which is the assertion: the cycle closes rather than dead-ending.
