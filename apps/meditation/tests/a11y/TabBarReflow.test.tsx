@@ -2,7 +2,11 @@ import { render, screen } from '@testing-library/react-native';
 import React from 'react';
 
 import { reflowTabLabel, TabLabel, tabLabelMaxWidth } from '@/app/(drawer)/(tabs)/_layout';
-import { accessibleTabBarHeight, DrawerButtonClearance } from '@/hooks/useTabBarInset';
+import {
+  accessibleMiniPlayerHeight,
+  accessibleTabBarHeight,
+  DrawerButtonClearance,
+} from '@/hooks/useTabBarInset';
 
 jest.mock('expo-router', () => ({
   Tabs: Object.assign(({ children }: React.PropsWithChildren) => children, {
@@ -36,7 +40,7 @@ describe('accessible tab bar reflow', () => {
     expect(accessibleTabBarHeight(52, fontScale)).toBe(expectedHeight);
   });
 
-  it('keeps the longest French label scalable and able to wrap', () => {
+  it('keeps the longest French label complete and scalable on one line', () => {
     render(
       <TabLabel compact fontScale={2} color="#fff" maxWidth={72} testID="tab.search.label">
         Rechercher
@@ -45,25 +49,28 @@ describe('accessible tab bar reflow', () => {
 
     const label = screen.getByTestId('tab.search.label', { includeHiddenElements: true });
     expect(label.props.allowFontScaling).toBe(true);
-    expect(label.props.numberOfLines).toBe(2);
-    expect(label.props.children).toBe('Reche\nrcher');
+    expect(label.props.numberOfLines).toBe(1);
+    expect(label.props.adjustsFontSizeToFit).toBe(true);
+    expect(label.props.minimumFontScale).toBe(0.5);
+    expect(label.props.children).toBe('Rechercher');
     expect(label.props.style).toEqual(expect.objectContaining({ lineHeight: 24, width: 72 }));
   });
 
-  it('inserts an explicit visual break into long unspaced labels at large scale', () => {
+  it('keeps long unspaced labels complete instead of splitting them mid-word', () => {
     expect(reflowTabLabel('Rechercher', 1.3, 72)).toBe('Rechercher');
-    expect(reflowTabLabel('Rechercher', 1.6, 72)).toBe('Reche\nrcher');
-    expect(reflowTabLabel('Respirer', 2, 72)).toBe('Resp\nirer');
+    expect(reflowTabLabel('Rechercher', 1.6, 72)).toBe('Rechercher');
+    expect(reflowTabLabel('Respirer', 2, 72)).toBe('Respirer');
+    expect(reflowTabLabel('Mon profil', 2, 48)).toBe('Mon\nprofil');
   });
 
-  it('wraps Breathe on a 320dp / 200% compact bar instead of clipping the last letter', () => {
+  it('keeps Breathe complete on a 320dp / 200% compact bar instead of clipping the last letter', () => {
     expect(compact200Width).toBe(69);
-    expect(reflowTabLabel('Breathe', 2, compact200Width)).toBe('Brea\nthe');
+    expect(reflowTabLabel('Breathe', 2, compact200Width)).toBe('Breathe');
     expect(reflowTabLabel('Breathe', 2, 200)).toBe('Breathe');
     expect(reflowTabLabel('Home', 2, compact200Width)).toBe('Home');
   });
 
-  it('keeps the TalkBack name complete while the visual Breathe label wraps', () => {
+  it('keeps the TalkBack name complete while the visual Breathe label stays whole', () => {
     render(
       <TabLabel
         compact
@@ -76,10 +83,21 @@ describe('accessible tab bar reflow', () => {
     );
 
     const label = screen.getByTestId('tab.breathe.label', { includeHiddenElements: true });
-    expect(label.props.children).toBe('Brea\nthe');
+    expect(label.props.children).toBe('Breathe');
+    expect(label.props.numberOfLines).toBe(1);
+    expect(label.props.adjustsFontSizeToFit).toBe(true);
     expect(label.props.accessibilityElementsHidden).toBe(true);
     expect(label.props.importantForAccessibility).toBe('no');
     expect(label.props.style).toEqual(expect.objectContaining({ width: compact200Width }));
+  });
+
+  it.each([
+    [1, 57],
+    [1.3, 81],
+    [1.6, 105],
+    [2, 137],
+  ])('reserves a three-line mini-player at font scale %s', (fontScale, expectedHeight) => {
+    expect(accessibleMiniPlayerHeight(57, fontScale)).toBe(expectedHeight);
   });
 
   it('keeps tab titles clear of the 48dp drawer button', () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 
 import { Text } from '@/components/ui';
 import type { MeditationWorld } from '@/constants/worlds';
@@ -24,6 +24,8 @@ type Props = {
  */
 export function PracticeProgress({ world, stage, className }: Props) {
   const { t } = useTranslation();
+  const { fontScale } = useWindowDimensions();
+  const stackLabels = fontScale >= 1.6;
   const stageIndex = STAGES.indexOf(stage);
   const current = stageIndex + 1;
   const stageLabel = t(`practice.stage.${stage}` as TranslationKey);
@@ -41,11 +43,23 @@ export function PracticeProgress({ world, stage, className }: Props) {
       accessibilityRole="progressbar"
       accessibilityLabel={`${t(world.nameKey)}. ${progressLabel}`}
       accessibilityValue={{ min: 1, max: STAGES.length, now: current }}>
-      <View className="flex-row items-center justify-between gap-3">
-        <Text variant="overline" numberOfLines={1} className="shrink">
+      <View
+        className={
+          stackLabels
+            ? 'gap-1'
+            : 'flex-row items-start justify-between gap-3'
+        }>
+        <Text
+          variant="overline"
+          testID="practice.progress.world"
+          className={stackLabels ? '' : 'min-w-0 shrink'}>
           {t(world.nameKey)}
         </Text>
-        <Text variant="caption" tone="default" numberOfLines={1}>
+        <Text
+          variant="caption"
+          tone="default"
+          testID="practice.progress.stage"
+          className={stackLabels ? '' : 'min-w-0 shrink'}>
           {progressLabel}
         </Text>
       </View>

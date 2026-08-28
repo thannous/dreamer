@@ -12,6 +12,18 @@ const TabOverlapClearance = 28;
 export const DrawerButtonClearance = 56;
 
 /**
+ * Extra height reserved per Dynamic Type step so a wrapping mini-player title
+ * cannot cover the last tab-screen row.
+ *
+ * `bodySm` uses a 20 pt line box. On a 320 dp compact strip the title column
+ * is about 156 px after artwork, gutters and the 48 dp play control, so the
+ * longest session titles can take three lines at 200%. Padding plus that
+ * third line is about 136 px, which is why the compact 57 pt constant is not
+ * enough on its own.
+ */
+const MiniPlayerScaleAllowance = 80;
+
+/**
  * Reserve a second label line as Android accessibility text grows.
  *
  * React Navigation's default bottom-tab label is forced to one line. The tab
@@ -21,6 +33,18 @@ export const DrawerButtonClearance = 56;
 export function accessibleTabBarHeight(baseHeight: number, fontScale: number): number {
   const extraScale = Math.max(0, fontScale - 1);
   return Math.ceil(baseHeight + extraScale * 44);
+}
+
+/**
+ * Reserve the worst-case three-line mini-player title as Android text grows.
+ *
+ * The compact 57 pt strip is artwork plus one `bodySm` line. At 200% that
+ * title can wrap three times, so the tab inset has to grow with the same
+ * curve rather than keep using the compact constant.
+ */
+export function accessibleMiniPlayerHeight(baseHeight: number, fontScale: number): number {
+  const extraScale = Math.max(0, fontScale - 1);
+  return Math.ceil(baseHeight + extraScale * MiniPlayerScaleAllowance);
 }
 
 /**
@@ -43,6 +67,6 @@ export function useTabBarInset(): number {
     tabBar.margin * 2 +
     insets.bottom +
     TabOverlapClearance +
-    (session ? MiniPlayerHeight : 0)
+    (session ? accessibleMiniPlayerHeight(MiniPlayerHeight, fontScale) : 0)
   );
 }

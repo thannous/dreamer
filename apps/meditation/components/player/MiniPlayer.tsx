@@ -1,6 +1,6 @@
 import { useRouter, useSegments } from 'expo-router';
 import React from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, View, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { SessionArtwork } from '@/components/session/SessionArtwork';
@@ -28,6 +28,8 @@ export function MiniPlayer() {
   const { session, worldId, status, toggle } = usePlayer();
   const { colors } = useTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
+  const { fontScale } = useWindowDimensions();
+  const largeText = fontScale >= 1.6;
 
   const onPlayerScreen = segments.some((segment) => segment === 'player');
   // An unavailable session owns no playable handle. Keeping a mini-player for
@@ -52,8 +54,14 @@ export function MiniPlayer() {
   const sessionTitle = t(`session.${session.id}.title` as TranslationKey);
 
   return (
-    <Animated.View className="mx-2.5 overflow-hidden rounded-full border border-hairline bg-ink-raised">
-      <View className="flex-row items-center gap-3 px-gutter py-2">
+    <Animated.View
+      className={`mx-2.5 overflow-hidden border border-hairline bg-ink-raised ${
+        largeText ? 'rounded-3xl' : 'rounded-full'
+      }`}>
+      <View
+        className={`flex-row gap-3 px-gutter py-2 ${
+          largeText ? 'items-start' : 'items-center'
+        }`}>
         <AnimatedPressable
           accessibilityRole="button"
           accessibilityLabel={`${t('mini.playing')}. ${sessionTitle}`}
@@ -66,14 +74,20 @@ export function MiniPlayer() {
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           style={style}
-          className="min-h-12 flex-1 flex-row items-center gap-3">
+          className={`min-h-12 min-w-0 flex-1 flex-row gap-3 ${
+            largeText ? 'items-start' : 'items-center'
+          }`}>
           <SessionArtwork
             accent={session.accent}
             source={artwork}
             rounded="md"
-            className="h-10 w-10"
+            className={`h-10 w-10 ${largeText ? 'mt-1' : ''}`}
           />
-          <Text variant="bodySm" tone="default" numberOfLines={1} className="flex-1">
+          <Text
+            variant="bodySm"
+            tone="default"
+            testID="mini.session-title"
+            className="min-w-0 flex-1">
             {sessionTitle}
           </Text>
         </AnimatedPressable>
@@ -86,7 +100,7 @@ export function MiniPlayer() {
           onPress={toggle}
           hitSlop={8}
           style={{ minHeight: 48, minWidth: 48 }}
-          className="h-12 w-12 items-center justify-center rounded-full border border-hairline active:opacity-70">
+          className="h-12 w-12 shrink-0 items-center justify-center rounded-full border border-hairline active:opacity-70">
           <IconSymbol
             name={playing ? 'pause.fill' : 'play.fill'}
             color={colors.accentText}

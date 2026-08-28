@@ -120,7 +120,7 @@ export default function SessionDetail() {
             {t(`category.${session.categorySlug}.name` as TranslationKey)}
           </Text>
           <PracticeProgress world={world} stage="prepare" className="mt-3" />
-          <Text variant="bodySm" tone="muted" numberOfLines={2}>
+          <Text variant="bodySm" tone="muted" testID="session.ritual">
             {t(`world.${world.id}.ritual` as TranslationKey)}
           </Text>
         </View>
