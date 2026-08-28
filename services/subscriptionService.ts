@@ -2,20 +2,59 @@ import { Platform } from 'react-native';
 
 import * as mockService from './mocks/subscriptionServiceMock';
 import * as realService from './subscriptionServiceReal';
+import { isLucidTrainer } from '@/lib/appVariant';
 import { getExpoPublicEnvValue, isMockModeEnabled } from '@/lib/env';
+
+type SubscriptionServicePlatform = 'ios' | 'android' | 'web' | string;
+
+export type SubscriptionServiceSelectionInput = {
+  isMockMode: boolean;
+  isDev: boolean;
+  isLucidTrainer: boolean;
+  platform: SubscriptionServicePlatform;
+  hasWebKey: boolean;
+  hasAndroidKey: boolean;
+  hasIosKey: boolean;
+};
+
+export function shouldUseMockSubscriptionService(
+  input: SubscriptionServiceSelectionInput
+): boolean {
+  if (input.isMockMode) return true;
+
+  const hasPlatformKey =
+    input.platform === 'web'
+      ? input.hasWebKey
+      : input.platform === 'android'
+        ? input.hasAndroidKey
+        : input.platform === 'ios'
+          ? input.hasIosKey
+          : false;
+
+  if (input.isLucidTrainer) {
+    return false;
+  }
+
+  return (
+    (input.platform === 'web' && !hasPlatformKey) ||
+    (input.isDev && input.platform === 'android' && !input.hasAndroidKey) ||
+    (input.isDev && input.platform === 'ios' && !input.hasIosKey)
+  );
+}
 
 const isMockMode = isMockModeEnabled();
 const hasWebKey = !!getExpoPublicEnvValue('EXPO_PUBLIC_REVENUECAT_WEB_KEY');
 const hasAndroidKey = !!getExpoPublicEnvValue('EXPO_PUBLIC_REVENUECAT_ANDROID_KEY');
 const hasIosKey = !!getExpoPublicEnvValue('EXPO_PUBLIC_REVENUECAT_IOS_KEY');
-// Sur web, on n'active le réel que si une clé web est fournie. Sinon, on mock.
-// En dev local natif, utiliser le mock si la plateforme n'a pas de clé explicite :
-// les simulateurs/émulateurs ne doivent pas afficher une RedBox RevenueCat.
-const shouldMock =
-  isMockMode ||
-  (Platform.OS === 'web' && !hasWebKey) ||
-  (__DEV__ && Platform.OS === 'android' && !hasAndroidKey) ||
-  (__DEV__ && Platform.OS === 'ios' && !hasIosKey);
+const shouldMock = shouldUseMockSubscriptionService({
+  isMockMode,
+  isDev: typeof __DEV__ === 'boolean' ? __DEV__ : process.env.NODE_ENV !== 'production',
+  isLucidTrainer,
+  platform: Platform.OS,
+  hasWebKey,
+  hasAndroidKey,
+  hasIosKey,
+});
 const service = shouldMock ? mockService : realService;
 
 export const initializeSubscription = service.initialize;

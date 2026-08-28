@@ -133,11 +133,13 @@ jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({ colors: {}, mode: 'light' }),
 }));
 
+let mockLocale: 'en' | 'fr' | 'es' | 'de' | 'it' = 'en';
+
 jest.mock('@/context/LucidTrainerContext', () => {
   const { getLucidContent } = jest.requireActual('@/lib/lucid/content');
   return {
     useLucidTrainer: () => ({
-      content: getLucidContent('en'),
+      content: getLucidContent(mockLocale),
       state: {
         onboarding: {
           analyticsConsent: mockAnalyticsConsent,
@@ -178,6 +180,7 @@ describe('Lucid Trainer subscription', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockParams = {};
+    mockLocale = 'en';
     mockAnalyticsConsent = true;
     mockCanGoBack.mockReturnValue(true);
     mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true });
@@ -243,7 +246,18 @@ describe('Lucid Trainer subscription', () => {
     rerender(<LucidSubscriptionScreen />);
 
     expect(screen.getByText('Store temporarily unavailable')).toBeTruthy();
+    expect(screen.queryByText('No offer available')).toBeNull();
+  });
+
+  it('keeps an empty catalog as a distinct unavailable state', () => {
+    mockSubscription = createSubscription({
+      packages: [],
+      status: { tier: 'free', isActive: false, expiryDate: null },
+    });
+    render(<LucidSubscriptionScreen />);
+
     expect(screen.getByText('No offer available')).toBeTruthy();
+    expect(screen.queryByText('Store temporarily unavailable')).toBeNull();
   });
 
   it('restores purchases without analytics when consent is disabled', async () => {
@@ -306,5 +320,91 @@ describe('Lucid Trainer subscription', () => {
 
     expect(screen.getByText('You already rehearsed one scene')).toBeTruthy();
     expect(screen.getByText(/Extra rehearsals use Plus/)).toBeTruthy();
+  });
+
+  it('does not treat an unconfirmed store return as a completed conversion', async () => {
+    mockPurchase.mockResolvedValue({ tier: 'free', isActive: false });
+    render(<LucidSubscriptionScreen />);
+
+    fireEvent.click(screen.getByTestId('lucid-purchase'));
+
+    expect(
+      await screen.findByText(
+        'The store returned without a confirmed Plus entitlement. Check the status or restore purchases before trying again.'
+      )
+    ).toBeTruthy();
+    expect(mockTrackProductEvent).toHaveBeenCalledWith('lucid_conversion', {
+      surface: 'paywall',
+      action: 'started',
+      tier: 'free',
+    });
+    expect(mockTrackProductEvent).not.toHaveBeenCalledWith('lucid_conversion', {
+      surface: 'paywall',
+      action: 'completed',
+      tier: 'free',
+    });
+    expect(mockTrackProductEvent).not.toHaveBeenCalledWith(
+      'lucid_conversion',
+      expect.objectContaining({ action: 'completed' })
+    );
+  });
+
+  it('names expired Plus access without treating it as an active entitlement', () => {
+    mockSubscription = createSubscription({
+      status: {
+        tier: 'plus',
+        isActive: false,
+        expiryDate: '2026-01-15T00:00:00.000Z',
+        willRenew: false,
+      },
+      isActive: false,
+    });
+    render(<LucidSubscriptionScreen />);
+
+    expect(screen.getByText('Plus access ended on Jan 15, 2026')).toBeTruthy();
+    expect(screen.getByText('Free plan')).toBeTruthy();
+    expect(screen.queryByText('Plus active')).toBeNull();
+  });
+
+  it('keeps the same Plus and free IDs across the five locales', () => {
+    const {
+      LUCID_PLUS_CURRENT_BENEFIT_IDS,
+      LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS,
+      listLucidPlusPaywallItems,
+    } = jest.requireActual('@/lib/lucid/plusEntitlements');
+    const { COPY } = jest.requireActual('@/app/lucid/subscription');
+    const locales = ['en', 'fr', 'es', 'de', 'it'] as const;
+
+    expect(locales.every((locale) => COPY[locale])).toBe(true);
+    for (const locale of locales) {
+      const plusIds = listLucidPlusPaywallItems(
+        LUCID_PLUS_CURRENT_BENEFIT_IDS,
+        COPY[locale].benefits
+      ).map((item: { id: string }) => item.id);
+      const freeIds = listLucidPlusPaywallItems(
+        LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS,
+        COPY[locale].remainingFree
+      ).map((item: { id: string }) => item.id);
+      expect(plusIds).toEqual([...LUCID_PLUS_CURRENT_BENEFIT_IDS]);
+      expect(freeIds).toEqual([...LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS]);
+      expect(Object.keys(COPY[locale].benefits)).toEqual([...LUCID_PLUS_CURRENT_BENEFIT_IDS]);
+      expect(Object.keys(COPY[locale].remainingFree)).toEqual([...LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS]);
+    }
+
+    const { rerender } = render(<LucidSubscriptionScreen />);
+    for (const locale of locales) {
+      mockLocale = locale;
+      rerender(<LucidSubscriptionScreen />);
+      expect(screen.queryByText(/multi-week|atlas grouping|advanced transcription|multi-device/i)).toBeNull();
+      for (const label of Object.values(COPY[locale].benefits) as string[]) {
+        expect(screen.getByText(label)).toBeTruthy();
+      }
+      expect(screen.getByText(COPY[locale].remainingFree.safety)).toBeTruthy();
+      expect(screen.getByText(COPY[locale].remainingFree.night_stop)).toBeTruthy();
+      expect(screen.getByText(COPY[locale].remainingFree.export)).toBeTruthy();
+      expect(screen.getByText(COPY[locale].remainingFree.delete)).toBeTruthy();
+      expect(screen.getByText(COPY[locale].remainingFree.accessibility)).toBeTruthy();
+      expect(screen.getByText(COPY[locale].remainingFree.first_immersive_rehearsal)).toBeTruthy();
+    }
   });
 });

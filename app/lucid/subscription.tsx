@@ -29,7 +29,7 @@ import {
 } from '@/lib/lucid/plusEntitlements';
 import type { PurchasePackage, SubscriptionTier } from '@/lib/types';
 
-const COPY = {
+export const COPY = {
   en: {
     eyebrow: 'Noctalia Plus',
     title: 'One subscription, two companions',
@@ -112,6 +112,7 @@ const COPY = {
       'Purchases use the device store through RevenueCat and then converge with the connected Noctalia account.',
     renewsOn: 'Renews on {date}',
     accessUntil: 'Access until {date}',
+    expired: 'Plus access ended on {date}',
     privacy: 'Privacy and data',
     storeNote:
       'Apple or Google handles payment. The final store sheet shows the exact price, billing period and cancellation terms.',
@@ -198,6 +199,7 @@ const COPY = {
       'Les achats passent par la boutique de l’appareil via RevenueCat, puis convergent avec le compte Noctalia connecté.',
     renewsOn: 'Renouvellement le {date}',
     accessUntil: 'Accès jusqu’au {date}',
+    expired: 'Plus a pris fin le {date}',
     privacy: 'Confidentialité et données',
     storeNote:
       'Apple ou Google gère le paiement. La fiche finale de la boutique affiche le prix exact, la période et les modalités de résiliation.',
@@ -284,6 +286,7 @@ const COPY = {
       'Las compras usan la tienda del dispositivo mediante RevenueCat y después convergen con la cuenta de Noctalia conectada.',
     renewsOn: 'Se renueva el {date}',
     accessUntil: 'Acceso hasta el {date}',
+    expired: 'Plus terminó el {date}',
     privacy: 'Privacidad y datos',
     storeNote:
       'Apple o Google gestiona el pago. La ficha final de la tienda muestra el precio, el periodo y las condiciones de cancelación.',
@@ -370,6 +373,7 @@ const COPY = {
       'Käufe laufen über den Gerätestore via RevenueCat und werden anschließend mit dem verbundenen Noctalia-Konto abgeglichen.',
     renewsOn: 'Verlängerung am {date}',
     accessUntil: 'Zugang bis {date}',
+    expired: 'Plus-Zugang endete am {date}',
     privacy: 'Datenschutz und Daten',
     storeNote:
       'Apple oder Google verarbeitet die Zahlung. Das letzte Store-Fenster zeigt Preis, Zeitraum und Kündigungsbedingungen.',
@@ -456,6 +460,7 @@ const COPY = {
       'Gli acquisti usano lo store del dispositivo tramite RevenueCat e poi convergono con l’account Noctalia collegato.',
     renewsOn: 'Rinnovo il {date}',
     accessUntil: 'Accesso fino al {date}',
+    expired: 'L’accesso Plus è terminato il {date}',
     privacy: 'Privacy e dati',
     storeNote:
       'Apple o Google gestisce il pagamento. La schermata finale dello store mostra prezzo, periodo e condizioni di annullamento.',
@@ -603,7 +608,7 @@ export default function LucidSubscriptionScreen() {
         tone: completedTier === 'plus' ? 'success' : 'neutral',
         message: completedTier === 'plus' ? copy.purchaseSuccess : copy.purchasePending,
       });
-      if (analyticsEnabled) {
+      if (analyticsEnabled && completedTier === 'plus') {
         void trackProductEvent('lucid_conversion', {
           surface: 'paywall',
           action: 'completed',
@@ -686,7 +691,11 @@ export default function LucidSubscriptionScreen() {
     : null;
   const expiryLabel = expiry
     ? replaceToken(
-        subscription.status?.willRenew ? copy.renewsOn : copy.accessUntil,
+        !subscription.isActive
+          ? copy.expired
+          : subscription.status?.willRenew
+            ? copy.renewsOn
+            : copy.accessUntil,
         'date',
         expiry
       )
@@ -910,7 +919,7 @@ export default function LucidSubscriptionScreen() {
         </View>
       ) : null}
 
-      {!subscription.loading && !subscription.isActive && sortedPackages.length === 0 ? (
+      {!subscription.loading && !subscription.error && !subscription.isActive && sortedPackages.length === 0 ? (
         <LucidCard>
           <View style={styles.stateRow}>
             <Ionicons name="bag-handle" size={LucidIcon.lg} color={palette.textMuted} />
