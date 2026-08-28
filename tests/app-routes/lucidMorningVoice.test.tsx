@@ -334,6 +334,66 @@ describe('Lucid morning voice notes screen', () => {
     expect(mockShare).not.toHaveBeenCalled();
   });
 
+  it('exposes Speak, Pause, Stop and duration to a screen reader during capture', () => {
+    mockRecorder = {
+      ...mockRecorder,
+      capture: { phase: 'recording', noteId: 'mvn_morning_note01', errorReason: null },
+      durationMillis: 4_000,
+    };
+    const { rerender } = render(<LucidMorningVoiceScreen />);
+    expect(screen.queryByTestId('lucid-morning-voice-speak')).toBeNull();
+    expect(screen.getByTestId('lucid-morning-voice-pause').getAttribute('aria-label')).toBe('Pause');
+    expect(screen.getByTestId('lucid-morning-voice-pause').getAttribute('data-hint')).toMatch(/brouillon reste/i);
+    expect(screen.getByTestId('lucid-morning-voice-stop').getAttribute('aria-label')).toBe('Arrêter');
+    expect(screen.getByTestId('lucid-morning-voice-stop').getAttribute('data-hint')).toMatch(/rien n/i);
+    expect(screen.getByTestId('lucid-morning-voice-status').textContent).toMatch(/cet appareil/i);
+    expect(screen.getByTestId('lucid-morning-voice-duration').textContent).toBe('Durée: 0:04');
+
+    mockRecorder = {
+      ...mockRecorder,
+      capture: { phase: 'paused', noteId: 'mvn_morning_note01', errorReason: null },
+      durationMillis: 4_000,
+    };
+    rerender(<LucidMorningVoiceScreen />);
+    expect(screen.getByTestId('lucid-morning-voice-resume').getAttribute('aria-label')).toBe('Reprendre');
+    expect(screen.getByTestId('lucid-morning-voice-resume').getAttribute('data-hint')).toMatch(/enregistrement local/i);
+  });
+
+  it('keeps a recoverable interrupted draft after an incoming-call style interruption', () => {
+    mockRecorder = {
+      ...mockRecorder,
+      capture: { phase: 'interrupted', noteId: 'mvn_morning_note01', errorReason: 'interrupted' },
+      errorReason: 'interrupted',
+      durationMillis: 4_000,
+      sourceUri: note().uri,
+    };
+    render(<LucidMorningVoiceScreen />);
+    expect(screen.getByTestId('lucid-morning-voice-status').textContent).toMatch(/brouillon récupérable/i);
+    expect(screen.getAllByText(/brouillon récupérable/i).length).toBeGreaterThan(0);
+    expect(screen.queryByTestId('lucid-morning-voice-speak')).toBeNull();
+    expect(screen.queryByText(/note terminée/i)).not.toBeNull();
+  });
+
+  it('surfaces out-of-storage without inventing completion and offers a local retry', () => {
+    mockRecorder = {
+      ...mockRecorder,
+      capture: { phase: 'stopping', noteId: 'mvn_morning_note01', errorReason: 'storage_full' },
+      errorReason: 'storage_full',
+      durationMillis: 4_000,
+      sourceUri: note().uri,
+    };
+    render(<LucidMorningVoiceScreen />);
+    expect(screen.getByTestId('lucid-morning-voice-error').textContent).toMatch(/plus assez d’espace/i);
+    expect(screen.getByTestId('lucid-morning-voice-retry-save').getAttribute('aria-label')).toBe(
+      'Réessayer l’enregistrement'
+    );
+    expect(screen.getByTestId('lucid-morning-voice-retry-save').getAttribute('data-hint')).toMatch(/rien n/i);
+    expect(screen.queryByTestId('lucid-morning-voice-speak')).toBeNull();
+    fireEvent.click(screen.getByTestId('lucid-morning-voice-retry-save'));
+    expect(mockStop).toHaveBeenCalledTimes(1);
+    expect(mockStart).not.toHaveBeenCalled();
+  });
+
   it('surfaces typed permission, storage, interruption and playback errors without blocking a missing transcript', () => {
     mockRecorder = {
       ...mockRecorder,

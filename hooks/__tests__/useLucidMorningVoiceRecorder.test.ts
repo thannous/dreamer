@@ -6,6 +6,7 @@ import {
   setAudioModeAsync,
   useAudioRecorder,
   useAudioRecorderState,
+  type RecordingStatus,
 } from 'expo-audio';
 import { AppState } from 'react-native';
 
@@ -50,6 +51,15 @@ const recorderState = {
   mediaServicesDidReset: false,
   url: SOURCE,
 };
+
+const statusListeners: ((status: RecordingStatus) => void)[] = [];
+
+function mockRecorderWithListener(recorder: ReturnType<typeof createRecorder>) {
+  return ((_options: unknown, listener?: (status: RecordingStatus) => void) => {
+    if (typeof listener === 'function') statusListeners.push(listener);
+    return recorder as never;
+  }) as typeof useAudioRecorder;
+}
 
 jest.mock('expo-audio', () => ({
   AudioModule: {
@@ -114,9 +124,10 @@ describe('useLucidMorningVoiceRecorder', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     appStateListeners.length = 0;
+    statusListeners.length = 0;
     persist.mockClear();
     const recorder = createRecorder();
-    jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+    jest.mocked(useAudioRecorder).mockImplementation(mockRecorderWithListener(recorder));
     jest.mocked(useAudioRecorderState).mockReturnValue({ ...recorderState, isRecording: false } as never);
     jest.mocked(AudioModule.getRecordingPermissionsAsync).mockResolvedValue({ granted: false } as never);
     jest.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValue({ granted: true } as never);
@@ -233,6 +244,73 @@ describe('useLucidMorningVoiceRecorder', () => {
     expect(result.current.capture.phase).toBe('recoverable');
   });
 
+  it('persists a recoverable draft when a native call or media interruption arrives', async () => {
+    persist.mockImplementationOnce(async (input) =>
+      persistedNote({ status: 'draft', recoverable: true, durationMs: input.durationMs })
+    );
+    const { result } = renderRecorder();
+    await act(async () => {
+      await result.current.start();
+    });
+    expect(statusListeners.length).toBeGreaterThan(0);
+    await act(async () => {
+      statusListeners.at(-1)?.({
+        id: 'rec_call',
+        isFinished: false,
+        hasError: true,
+        error: 'AVAudioSession interrupted by incoming call',
+        url: SOURCE,
+      });
+      await Promise.resolve();
+    });
+    expect(persist).toHaveBeenCalledWith(expect.objectContaining({ status: 'draft', sourceUri: SOURCE }));
+    expect(result.current.capture.phase).toBe('recoverable');
+    expect(setAudioModeAsync).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        allowsRecording: false,
+        shouldRouteThroughEarpiece: false,
+      })
+    );
+  });
+
+  it('does not treat a healthy native status update as an interruption', async () => {
+    const { result } = renderRecorder();
+    await act(async () => {
+      await result.current.start();
+    });
+    await act(async () => {
+      statusListeners.at(-1)?.({
+        id: 'rec_ok',
+        isFinished: false,
+        hasError: false,
+        error: null,
+        url: SOURCE,
+      });
+      await Promise.resolve();
+    });
+    expect(persist).not.toHaveBeenCalled();
+    expect(result.current.capture.phase).toBe('recording');
+  });
+
+  it('does not invent a headset or Bluetooth route and keeps OS routing', async () => {
+    const { result } = renderRecorder();
+    await act(async () => {
+      await result.current.start();
+    });
+    expect(setAudioModeAsync).toHaveBeenCalledWith({
+      allowsRecording: true,
+      playsInSilentMode: true,
+      interruptionMode: 'doNotMix',
+      shouldPlayInBackground: false,
+      shouldRouteThroughEarpiece: false,
+      allowsBackgroundRecording: false,
+    });
+    expect(JSON.stringify(jest.mocked(setAudioModeAsync).mock.calls)).not.toMatch(
+      /bluetooth|headset|headphones|airpods/i
+    );
+    expect(result.current.capture.phase).toBe('recording');
+  });
+
   it('persists a recoverable draft when media services reset', async () => {
     persist.mockImplementationOnce(async (input) =>
       persistedNote({ status: 'draft', recoverable: true, durationMs: input.durationMs })
@@ -281,7 +359,8 @@ describe('useLucidMorningVoiceRecorder', () => {
   });
 
   it('fails typed when the recorder URI is missing', async () => {
-    jest.mocked(useAudioRecorder).mockReturnValue(createRecorder({ uri: null }) as never);
+    const missingUriRecorder = createRecorder({ uri: null });
+    jest.mocked(useAudioRecorder).mockImplementation(mockRecorderWithListener(missingUriRecorder));
     const { result } = renderRecorder();
     await act(async () => {
       await result.current.start();
@@ -291,6 +370,25 @@ describe('useLucidMorningVoiceRecorder', () => {
     });
     expect(result.current.errorReason).toBe('invalid_uri');
     expect(['stopping', 'error']).toContain(result.current.capture.phase);
+  });
+
+  it('classifies ENOSPC from persist as storage_full and keeps the URI for retry', async () => {
+    persist.mockRejectedValueOnce(Object.assign(new Error('ENOSPC: no space left on device'), { code: 'ENOSPC' }));
+    persist.mockResolvedValueOnce(persistedNote());
+    const { result } = renderRecorder();
+    await act(async () => {
+      await result.current.start();
+    });
+    await act(async () => {
+      await expect(result.current.stop()).rejects.toMatchObject({ reason: 'storage_full' });
+    });
+    expect(result.current.sourceUri).toBe(SOURCE);
+    expect(result.current.errorReason).toBe('storage_full');
+    await act(async () => {
+      await result.current.stop();
+    });
+    expect(persist).toHaveBeenCalledTimes(2);
+    expect(result.current.capture.phase).toBe('stopped');
   });
 
   it('exposes storage_full and keeps the URI for retry', async () => {
@@ -334,7 +432,7 @@ describe('useLucidMorningVoiceRecorder', () => {
     const recorder = createRecorder({
       prepareToRecordAsync: jest.fn().mockRejectedValue(new Error('recorder unavailable')),
     });
-    jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+    jest.mocked(useAudioRecorder).mockImplementation(mockRecorderWithListener(recorder));
     const { result } = renderRecorder();
     await act(async () => {
       await expect(result.current.start()).rejects.toMatchObject({ reason: 'recorder_unavailable' });
@@ -346,7 +444,7 @@ describe('useLucidMorningVoiceRecorder', () => {
 
   it('persists the max observed duration even if status is 0 after stop', async () => {
     const recorder = createRecorder();
-    jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+    jest.mocked(useAudioRecorder).mockImplementation(mockRecorderWithListener(recorder));
     const { result } = renderRecorder();
     await act(async () => {
       await result.current.start();
@@ -366,7 +464,7 @@ describe('useLucidMorningVoiceRecorder', () => {
         })
     );
     const recorder = createRecorder();
-    jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+    jest.mocked(useAudioRecorder).mockImplementation(mockRecorderWithListener(recorder));
     const { result } = renderRecorder();
     let started: Promise<void> | undefined;
     await act(async () => {
@@ -402,7 +500,7 @@ describe('useLucidMorningVoiceRecorder', () => {
   it('cancels a pending permission wait on unmount and does not start later', async () => {
     (AppState as { currentState: string }).currentState = 'inactive';
     const recorder = createRecorder();
-    jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+    jest.mocked(useAudioRecorder).mockImplementation(mockRecorderWithListener(recorder));
     const { result, unmount } = renderRecorder();
     await act(async () => {
       void result.current.start();
@@ -428,7 +526,7 @@ describe('useLucidMorningVoiceRecorder', () => {
           })
       ),
     });
-    jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+    jest.mocked(useAudioRecorder).mockImplementation(mockRecorderWithListener(recorder));
     const { result, unmount } = renderRecorder();
     let started: Promise<void> | undefined;
     await act(async () => {
@@ -450,7 +548,7 @@ describe('useLucidMorningVoiceRecorder', () => {
         throw new Error('pause failed');
       }),
     });
-    jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+    jest.mocked(useAudioRecorder).mockImplementation(mockRecorderWithListener(recorder));
     const { result } = renderRecorder();
     await act(async () => {
       await result.current.start();
@@ -466,7 +564,7 @@ describe('useLucidMorningVoiceRecorder', () => {
       }),
     });
     (resumeRecorder as { resumeShouldFail?: boolean }).resumeShouldFail = false;
-    jest.mocked(useAudioRecorder).mockReturnValue(resumeRecorder as never);
+    jest.mocked(useAudioRecorder).mockImplementation(mockRecorderWithListener(resumeRecorder));
     const resumed = renderRecorder();
     await act(async () => {
       await resumed.result.current.start();
@@ -494,7 +592,7 @@ describe('useLucidMorningVoiceRecorder', () => {
     persist.mockRejectedValueOnce(new LucidMorningVoiceNoteError('storage_full', 'Local storage is full'));
     persist.mockResolvedValueOnce(persistedNote());
     const recorder = createRecorder();
-    jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+    jest.mocked(useAudioRecorder).mockImplementation(mockRecorderWithListener(recorder));
     const { result } = renderRecorder();
     await act(async () => {
       await result.current.start();
@@ -514,7 +612,7 @@ describe('useLucidMorningVoiceRecorder', () => {
     persist.mockRejectedValueOnce(new LucidMorningVoiceNoteError('persistence_failed'));
     persist.mockResolvedValueOnce(persistedNote({ status: 'draft', recoverable: true }));
     const recorder = createRecorder();
-    jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+    jest.mocked(useAudioRecorder).mockImplementation(mockRecorderWithListener(recorder));
     const { result } = renderRecorder();
     await act(async () => {
       await result.current.start();
@@ -571,9 +669,8 @@ describe('useLucidMorningVoiceRecorder', () => {
   });
 
   it('rejects an unsupported URI extension instead of defaulting to m4a', async () => {
-    jest.mocked(useAudioRecorder).mockReturnValue(
-      createRecorder({ uri: 'file:///tmp/recorder/morning.ogg' }) as never
-    );
+    const oggRecorder = createRecorder({ uri: 'file:///tmp/recorder/morning.ogg' });
+    jest.mocked(useAudioRecorder).mockImplementation(mockRecorderWithListener(oggRecorder));
     const { result } = renderRecorder();
     await act(async () => {
       await result.current.start();

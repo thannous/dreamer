@@ -46,10 +46,15 @@ const COPY = {
     speak: 'Speak',
     speakHint: 'Ask for the microphone, then start recording.',
     pause: 'Pause',
+    pauseHint: 'Pause this local recording. The draft stays on this device.',
     resume: 'Resume',
+    resumeHint: 'Resume this local recording.',
     stop: 'Stop',
+    stopHint: 'Stop and save this local recording. Nothing is uploaded.',
     reset: 'Start over',
     duration: 'Duration',
+    durationLabel: (value: string) => `Duration ${value}`,
+    retrySaveHint: 'Try saving this local recording again. Nothing is uploaded.',
     notes: 'Local notes',
     empty: 'No morning voice notes yet. Speak when you wake, then keep the draft or save it.',
     loading: 'Loading your notes…',
@@ -130,10 +135,15 @@ const COPY = {
     speak: 'Parler',
     speakHint: 'Demander le micro, puis commencer l’enregistrement.',
     pause: 'Pause',
+    pauseHint: 'Mettre en pause cet enregistrement local. Le brouillon reste sur cet appareil.',
     resume: 'Reprendre',
+    resumeHint: 'Reprendre cet enregistrement local.',
     stop: 'Arrêter',
+    stopHint: 'Arrêter et enregistrer localement. Rien n’est envoyé.',
     reset: 'Recommencer',
     duration: 'Durée',
+    durationLabel: (value: string) => `Durée ${value}`,
+    retrySaveHint: 'Réessayer d’enregistrer cette note locale. Rien n’est envoyé.',
     notes: 'Notes locales',
     empty: 'Aucune note vocale du matin. Parle au réveil, puis garde le brouillon ou enregistre-le.',
     loading: 'Chargement de tes notes…',
@@ -214,10 +224,15 @@ const COPY = {
     speak: 'Hablar',
     speakHint: 'Pedir el micrófono y luego empezar a grabar.',
     pause: 'Pausa',
+    pauseHint: 'Pausar esta grabación local. El borrador permanece en este dispositivo.',
     resume: 'Reanudar',
+    resumeHint: 'Reanudar esta grabación local.',
     stop: 'Detener',
+    stopHint: 'Detener y guardar esta grabación local. No se envía nada.',
     reset: 'Empezar de nuevo',
     duration: 'Duración',
+    durationLabel: (value: string) => `Duración ${value}`,
+    retrySaveHint: 'Volver a guardar esta grabación local. No se envía nada.',
     notes: 'Notas locales',
     empty: 'Aún no hay notas de voz de la mañana. Habla al despertar y guarda el borrador o la nota.',
     loading: 'Cargando tus notas…',
@@ -298,10 +313,15 @@ const COPY = {
     speak: 'Sprechen',
     speakHint: 'Mikrofon anfragen und dann aufnehmen.',
     pause: 'Pause',
+    pauseHint: 'Diese lokale Aufnahme pausieren. Der Entwurf bleibt auf diesem Gerät.',
     resume: 'Fortsetzen',
+    resumeHint: 'Diese lokale Aufnahme fortsetzen.',
     stop: 'Stopp',
+    stopHint: 'Diese lokale Aufnahme stoppen und speichern. Nichts wird hochgeladen.',
     reset: 'Neu beginnen',
     duration: 'Dauer',
+    durationLabel: (value: string) => `Dauer ${value}`,
+    retrySaveHint: 'Diese lokale Aufnahme erneut speichern. Nichts wird hochgeladen.',
     notes: 'Lokale Notizen',
     empty: 'Noch keine morgendlichen Sprachnotizen. Sprich nach dem Aufwachen und behalte den Entwurf oder speichere ihn.',
     loading: 'Notizen werden geladen…',
@@ -382,10 +402,15 @@ const COPY = {
     speak: 'Parlare',
     speakHint: 'Chiedere il microfono, poi iniziare a registrare.',
     pause: 'Pausa',
+    pauseHint: 'Metti in pausa questa registrazione locale. La bozza resta su questo dispositivo.',
     resume: 'Riprendi',
+    resumeHint: 'Riprendi questa registrazione locale.',
     stop: 'Arresta',
+    stopHint: 'Arresta e salva questa registrazione locale. Nulla viene caricato.',
     reset: 'Ricomincia',
     duration: 'Durata',
+    durationLabel: (value: string) => `Durata ${value}`,
+    retrySaveHint: 'Riprova a salvare questa registrazione locale. Nulla viene caricato.',
     notes: 'Note locali',
     empty: 'Nessuna nota vocale del mattino. Parla al risveglio, poi tieni la bozza o salvala.',
     loading: 'Caricamento delle note…',
@@ -810,11 +835,20 @@ export default function LucidMorningVoiceScreen() {
         >
           {liveStatus}
         </Text>
-        <Text style={[styles.meta, { color: palette.textMuted }]} testID="lucid-morning-voice-duration">
+        <Text
+          accessibilityLiveRegion="polite"
+          accessibilityLabel={copy.durationLabel(formatDuration(recorder.durationMillis))}
+          style={[styles.meta, { color: palette.textMuted }]}
+          testID="lucid-morning-voice-duration"
+        >
           {copy.duration}: {formatDuration(recorder.durationMillis)}
         </Text>
         {captureError ? (
-          <Text accessibilityLiveRegion="assertive" style={[styles.body, { color: palette.danger }]}>
+          <Text
+            accessibilityLiveRegion="assertive"
+            style={[styles.body, { color: palette.danger }]}
+            testID="lucid-morning-voice-error"
+          >
             {captureError}
           </Text>
         ) : null}
@@ -838,6 +872,7 @@ export default function LucidMorningVoiceScreen() {
           ) : null}
           {canPause ? (
             <LucidButton
+              accessibilityHint={copy.pauseHint}
               label={copy.pause}
               onPress={() => runQuiet(recorder.pause)}
               testID="lucid-morning-voice-pause"
@@ -846,6 +881,7 @@ export default function LucidMorningVoiceScreen() {
           ) : null}
           {canResume ? (
             <LucidButton
+              accessibilityHint={copy.resumeHint}
               label={copy.resume}
               onPress={() => runQuiet(recorder.resume)}
               testID="lucid-morning-voice-resume"
@@ -853,6 +889,7 @@ export default function LucidMorningVoiceScreen() {
           ) : null}
           {canStop ? (
             <LucidButton
+              accessibilityHint={copy.stopHint}
               label={copy.stop}
               onPress={() => runQuiet(recorder.stop)}
               testID="lucid-morning-voice-stop"
@@ -861,6 +898,7 @@ export default function LucidMorningVoiceScreen() {
           ) : null}
           {persistRetryable ? (
             <LucidButton
+              accessibilityHint={copy.retrySaveHint}
               label={copy.retrySave}
               onPress={() => runQuiet(recorder.stop)}
               testID="lucid-morning-voice-retry-save"

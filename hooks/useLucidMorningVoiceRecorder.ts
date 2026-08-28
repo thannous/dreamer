@@ -4,6 +4,7 @@ import {
   setAudioModeAsync,
   useAudioRecorder,
   useAudioRecorderState,
+  type RecordingStatus,
 } from 'expo-audio';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, type AppStateStatus, Platform } from 'react-native';
@@ -121,7 +122,10 @@ async function resetAudioMode(): Promise<void> {
 }
 
 export function useLucidMorningVoiceRecorder(options: UseLucidMorningVoiceRecorderOptions) {
-  const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  const nativeInterruptRef = useRef<(status: RecordingStatus) => void>(() => undefined);
+  const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY, (status) => {
+    nativeInterruptRef.current(status);
+  });
   const recorderState = useAudioRecorderState(recorder);
   const [capture, setCapture] = useState<LucidMorningVoiceCaptureState>(
     createIdleLucidMorningVoiceCaptureState
@@ -442,6 +446,9 @@ export function useLucidMorningVoiceRecorder(options: UseLucidMorningVoiceRecord
         if (!mountedRef.current) return;
       }
       try {
+        // expo-audio can select inputs and avoid the earpiece, but it has no
+        // API to pin playback/record routing to a headset or Bluetooth device.
+        // Leave that route with the OS and keep exclusive focus for calls.
         await setAudioModeAsync({
           allowsRecording: true,
           playsInSilentMode: true,
@@ -519,6 +526,14 @@ export function useLucidMorningVoiceRecorder(options: UseLucidMorningVoiceRecord
   useEffect(() => {
     finalizeRef.current = finalizeSession;
   }, [finalizeSession]);
+
+  useEffect(() => {
+    nativeInterruptRef.current = (status) => {
+      if (captureRef.current.phase !== 'recording' && captureRef.current.phase !== 'paused') return;
+      if (!status.hasError && !status.mediaServicesDidReset) return;
+      void enqueueFinalize('draft');
+    };
+  }, [enqueueFinalize]);
 
   useEffect(() => {
     captureRef.current = capture;
