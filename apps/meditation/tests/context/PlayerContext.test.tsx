@@ -63,8 +63,12 @@ jest.mock('@/services/audioService', () => ({
     addListener: jest.fn(),
     remove: jest.fn(),
   })),
-  play: jest.fn(),
-  pause: jest.fn(),
+  play: jest.fn((player: { playing: boolean }) => {
+    player.playing = true;
+  }),
+  pause: jest.fn((player: { playing: boolean }) => {
+    player.playing = false;
+  }),
   seekTo: jest.fn().mockResolvedValue(undefined),
   setRate: jest.fn(),
   setVolume: jest.fn(),
@@ -392,6 +396,103 @@ describe('PlayerContext world continuity', () => {
     expect(result.current.status).toBe('paused');
     expect(audio.pause).toHaveBeenCalledWith(texturePlayer);
     expect(mockRecordPractice).not.toHaveBeenCalled();
+  });
+
+  it('resyncs a native interruption on AppState active so hidden chrome can return', async () => {
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <PlayerProvider>{children}</PlayerProvider>
+    );
+    const { result } = renderHook(() => usePlayer(), { wrapper });
+
+    act(() => {
+      result.current.open('anxiety-ground', 0, 'forest');
+    });
+
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    await waitFor(() => expect(playbackListener).not.toBeNull());
+    const primaryPlayer = jest.mocked(audio.createSessionPlayer).mock.results[0].value as {
+      playing: boolean;
+      currentTime: number;
+    };
+    const texturePlayer = jest.mocked(audio.createPlayer).mock.results[0].value;
+
+    act(() => {
+      playbackListener?.({
+        currentTime: 83,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+      });
+    });
+    expect(result.current.status).toBe('playing');
+    expect(result.current.positionSec).toBe(83);
+
+    act(() => {
+      appStateHandler?.('background');
+    });
+    expect(result.current.status).toBe('playing');
+
+    primaryPlayer.playing = false;
+    primaryPlayer.currentTime = 83.916;
+    const progressCalls = mockRecordProgress.mock.calls.length;
+
+    act(() => {
+      appStateHandler?.('active');
+    });
+
+    expect(result.current.status).toBe('paused');
+    expect(result.current.positionSec).toBe(83.916);
+    expect(audio.pause).toHaveBeenCalledWith(texturePlayer);
+    expect(mockRecordProgress.mock.calls.length).toBeGreaterThan(progressCalls);
+    expect(mockRecordProgress).toHaveBeenCalledWith('anxiety-ground', 84, false);
+    expect(mockRecordPractice).not.toHaveBeenCalled();
+  });
+
+  it('detects a native interruption when Android keeps both media activities resumed', async () => {
+    jest.useFakeTimers();
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <PlayerProvider>{children}</PlayerProvider>
+    );
+    const { result, unmount } = renderHook(() => usePlayer(), { wrapper });
+
+    act(() => {
+      result.current.open('anxiety-ground', 0, 'forest');
+    });
+
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    await waitFor(() => expect(playbackListener).not.toBeNull());
+    const primaryPlayer = jest.mocked(audio.createSessionPlayer).mock.results[0].value as {
+      playing: boolean;
+      currentTime: number;
+    };
+    const texturePlayer = jest.mocked(audio.createPlayer).mock.results[0].value;
+
+    act(() => {
+      playbackListener?.({
+        currentTime: 14,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+      });
+    });
+    expect(result.current.status).toBe('playing');
+    expect(primaryPlayer.playing).toBe(true);
+
+    primaryPlayer.playing = false;
+    primaryPlayer.currentTime = 14.208;
+
+    act(() => {
+      jest.advanceTimersByTime(500);
+    });
+
+    expect(result.current.status).toBe('paused');
+    expect(result.current.positionSec).toBe(14.208);
+    expect(audio.pause).toHaveBeenCalledWith(texturePlayer);
+    expect(mockRecordProgress).toHaveBeenCalledWith('anxiety-ground', 14, false);
+    expect(mockRecordPractice).not.toHaveBeenCalled();
+
+    unmount();
+    jest.useRealTimers();
   });
 
   it('exposes localized play/pause labels without internal-state TalkBack hints', async () => {

@@ -33,6 +33,7 @@ import * as audio from '@/services/audioService';
 
 /** How often the listening position is written to storage. */
 const PERSIST_EVERY_SEC = 5;
+const NATIVE_STATUS_SYNC_MS = 500;
 
 export type PlayerStatus = 'idle' | 'loading' | 'playing' | 'paused' | 'unavailable';
 
@@ -387,9 +388,54 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     soundEnabledRef.current = soundEnabled;
   }, [soundEnabled]);
 
+  const syncNativePlayback = useCallback((forcePosition = false) => {
+    const player = playerRef.current;
+    const currentSession = sessionRef.current;
+    if (!player || !currentSession) return;
+    if (statusRef.current === 'idle' || statusRef.current === 'loading') return;
+
+    const nativePlaying = player.playing === true;
+    const nextStatus: PlayerStatus = nativePlaying ? 'playing' : 'paused';
+    const statusChanged = statusRef.current !== nextStatus;
+    if (!statusChanged && !forcePosition) return;
+
+    const reportedPosition = player.currentTime;
+    const nativePosition = Number.isFinite(reportedPosition)
+      ? Math.max(0, reportedPosition)
+      : positionSecRef.current;
+    const positionChanged = positionSecRef.current !== nativePosition;
+
+    positionSecRef.current = nativePosition;
+    setPositionSec(nativePosition);
+    statusRef.current = nextStatus;
+    setStatus(nextStatus);
+
+    if (textureRef.current) {
+      if (nativePlaying && soundEnabledRef.current) audio.play(textureRef.current);
+      else audio.pause(textureRef.current);
+    }
+
+    if (statusChanged || positionChanged) {
+      persistRef.current(currentSession.id, nativePosition);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (status !== 'playing') return;
+
+    // Some Android activities can remain simultaneously resumed. In that
+    // state AppState never leaves `active`, even though another media app has
+    // taken audio focus and paused the native player without a JS callback.
+    const timer = setInterval(syncNativePlayback, NATIVE_STATUS_SYNC_MS);
+    return () => clearInterval(timer);
+  }, [status, syncNativePlayback]);
+
   useEffect(() => {
     const onAppState = (next: AppStateStatus) => {
-      if (next === 'active') return;
+      if (next === 'active') {
+        syncNativePlayback(true);
+        return;
+      }
       const currentSession = sessionRef.current;
       if (!currentSession || statusRef.current === 'idle') return;
       persistRef.current(currentSession.id, positionSecRef.current);
@@ -397,7 +443,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
 
     const appSub = AppState.addEventListener('change', onAppState);
     return () => appSub.remove();
-  }, []);
+  }, [syncNativePlayback]);
 
   const value = useMemo(
     () => ({

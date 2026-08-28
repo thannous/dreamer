@@ -202,6 +202,40 @@ describe('audioServiceReal session timeline', () => {
     jest.useRealTimers();
   });
 
+  it('freezes currentTime from the native player when paused without a callback', () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-08-28T16:00:00.000Z'));
+    const player = createSessionPlayer(1, 600, 300);
+    player.addListener('playbackStatusUpdate', jest.fn());
+
+    player.play();
+    nativeListener?.(statusAt(83.916));
+    expect(player.currentTime).toBe(83.916);
+    expect(player.playing).toBe(true);
+
+    nativePlayer.playing = false;
+    nativePlayer.currentTime = 83.916;
+    jest.advanceTimersByTime(45_000);
+
+    expect(player.playing).toBe(false);
+    expect(player.currentTime).toBe(83.916);
+    jest.useRealTimers();
+  });
+
+  it('does not turn an interruption-time native reset into a full source loop', () => {
+    const player = createSessionPlayer(1, 600, 300);
+    player.addListener('playbackStatusUpdate', jest.fn());
+
+    player.play();
+    nativeListener?.(statusAt(37.367));
+    expect(player.currentTime).toBe(37.367);
+
+    nativePlayer.playing = false;
+    nativePlayer.currentTime = 0;
+
+    expect(player.currentTime).toBe(37.367);
+  });
+
   it('activates live lock-screen controls and clears them on release', () => {
     const player = createSessionPlayer(1, 600, 300, 500, {
       title: 'Bringing the breath down',

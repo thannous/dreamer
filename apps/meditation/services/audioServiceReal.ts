@@ -132,6 +132,7 @@ export function createSessionPlayer(
   let sessionOffset = 0;
   let playStartedAt: number | null = null;
   let lockScreenActive = false;
+  const loopEdgeWindowSec = Math.max(2, (updateIntervalMs / 1_000) * 4);
 
   const metadata: AudioMetadata = {
     title: lockScreen?.title ?? 'Noctalia Meditation',
@@ -160,7 +161,12 @@ export function createSessionPlayer(
   };
 
   const mappedSessionTime = (nativeTime: number): number => {
-    if (nativeTime + 1 < lastNativeTime) {
+    // Count only a real end-to-start wrap. Audio focus loss can briefly expose
+    // currentTime=0; treating any backward jump as a loop adds five minutes.
+    if (
+      lastNativeTime >= safeTrackDuration - loopEdgeWindowSec &&
+      nativeTime <= loopEdgeWindowSec
+    ) {
       loopIndex += 1;
     }
     lastNativeTime = nativeTime;
@@ -169,6 +175,15 @@ export function createSessionPlayer(
 
   const nowSessionTime = (nativeTime?: number): number => {
     if (finished) return safeDuration;
+    // A native interruption can pause the handle without a JS callback.
+    // Freeze from the native player so a later getter does not keep adding
+    // wall-clock time from the other app's playback.
+    if (!player.playing && playStartedAt != null) {
+      const mappedPause = mappedSessionTime(nativeTime ?? player.currentTime);
+      sessionOffset = Math.min(safeDuration, Math.max(sessionOffset, mappedPause));
+      playStartedAt = null;
+      return sessionOffset;
+    }
     const mapped =
       nativeTime == null
         ? Math.min(safeDuration, sessionOffset)
