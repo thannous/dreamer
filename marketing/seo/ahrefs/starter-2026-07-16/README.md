@@ -338,8 +338,11 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 - `docs:build`, `docs:check`, les contrats d'URL, liens, profondeur, images et
   surface de déploiement sont verts. Les `1 256` routes canoniques restent
   inchangées.
-- Aucun crédit Ahrefs général, changement Rank Tracker, crawl, demande
-  d'indexation, commit, push ou publication n'a été effectué.
+- Aucun crédit Ahrefs général, changement Rank Tracker, crawl ou demande
+  d'indexation n'a été effectué.
+- Le lot a été publié sur `master` le 28 août via `f9a7e6ec6` ; la route
+  publique répond `200` avec le nouveau title et le sitemap porte un `lastmod`
+  au 28 août.
 - Détails et protocole de mesure :
   `j43-ocean-owner-alignment-2026-08-27.md`.
 
@@ -356,7 +359,10 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 - `docs:build`, `docs:check`, les contrats d'URL, liens, profondeur, images et
   surface de déploiement sont verts. Les `1 256` routes canoniques restent
   inchangées.
-- Aucun crédit Ahrefs général, changement Rank Tracker, crawl, demande
-  d'indexation, commit, push ou publication n'a été effectué.
+- Aucun crédit Ahrefs général, changement Rank Tracker, crawl ou demande
+  d'indexation n'a été effectué.
+- Le lot a été publié sur `master` le 28 août via `f9a7e6ec6` ; la route
+  publique répond `200` avec le nouveau title et le sitemap porte un `lastmod`
+  au 28 août.
 - Détails et protocole de mesure :
   `j44-fire-owner-alignment-2026-08-28.md`.

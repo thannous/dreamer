@@ -81,10 +81,20 @@ redirection n'est créée.
   d'unités n'est pas le compteur général Starter ;
 - observation GSC : terminée en lecture seule ;
 - modification locale : terminée ;
-- commit et push : non réalisés ;
-- publication et preuve publique : non réalisées ;
-- mesure : baseline au jour d'une publication autorisée, contrôle J+7 puis
-  comparaison sur 28 jours complets à J+28.
+- commit et push : réalisés sur `master` le 28 août via le commit de contenu
+  `f9a7e6ec67b72884cda29a7adf13b3d1d16fb62c` ;
+- publication Cloudflare Pages : déploiement
+  `12a5210b-ab14-4983-b51e-ef46fb9bf0f9` réussi en `12m 42s` ;
+- preuve publique : `/it/simboli/fuoco` répond `200` avec le title attendu,
+  son canonical propre et `article:modified_time` au 28 août ; le sitemap
+  public porte également son `lastmod` au 28 août et les hreflang attendus ;
+- mesure : contrôle J+7 le 4 septembre puis comparaison sur 28 jours complets
+  le 25 septembre.
+
+Au moment de la preuve publique, le check GitHub `Cloudflare Pages` affichait
+encore `Building` malgré le succès visible dans Cloudflare et le contenu déjà
+servi sur `noctalia.app`. Ce statut retardé n'est pas utilisé comme preuve de
+publication.
 
 ## Validation locale
 
