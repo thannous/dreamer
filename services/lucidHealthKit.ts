@@ -16,7 +16,9 @@ export type LucidHealthKitEmptyReason =
   | 'ambiguous_empty'
   | 'invalid_range';
 
-export const LUCID_HK_SLEEP_QUERY_LIMIT = 512 as const;
+// kingstinct maps a non-positive limit to HKObjectQueryNoLimit. A positive cap
+// would silently truncate a 7-day sleepAnalysis window.
+export const LUCID_HK_SLEEP_QUERY_LIMIT = 0 as const;
 
 export type LucidHealthKitQueryResult =
   | { status: 'ready'; normalization: LucidHkSleepNormalization }

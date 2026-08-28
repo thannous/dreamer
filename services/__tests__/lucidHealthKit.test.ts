@@ -77,6 +77,7 @@ describe('Lucid HealthKit adapter', () => {
         ascending: true,
       }
     );
+    expect(LUCID_HK_SLEEP_QUERY_LIMIT).toBeLessThanOrEqual(0);
   });
 
   it('rejects an invalid range before calling native HealthKit', async () => {

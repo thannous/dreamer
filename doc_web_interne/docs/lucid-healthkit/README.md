@@ -13,6 +13,7 @@ Isolated retrospective prototype for TI-408. It can import past `HKCategoryTypeI
 
 | Source | Expected prototype behavior | Evidence |
 | --- | --- | --- |
+| 7-day window completeness | Native query uses HealthKit unbounded limit (`<= 0` → `HKObjectQueryNoLimit`); no silent 512-sample cap | Unit-tested local contract; real-device volume INDÉTERMINÉ |
 | Manual iPhone Health sleep | Import past inBed/asleep/awake samples with source name/bundle | INDÉTERMINÉ — no real-device run in this slice |
 | Apple Watch sleep | Import watch samples including core/deep/REM categories when present; treat REM as a stored category, never a live detector | INDÉTERMINÉ — no Watch run in this slice |
 | Third-party sleep app writing to Health | Keep third-party source identity; surface coarse/mixed/unknown granularity honestly | INDÉTERMINÉ — no third-party source run |
