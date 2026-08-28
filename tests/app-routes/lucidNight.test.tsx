@@ -11,8 +11,18 @@ const mockPreview = jest.fn().mockResolvedValue(undefined);
 
 let mockAudioSafetyAccepted = false;
 let mockNightPlan: { sessionId: string; soundId: string } | null = null;
-let lastNightAudioParams: { policy?: { mode: string; allowNightSignals: boolean; reasons: string[] } } | null =
-  null;
+function experiment(cueOutcome: string, index = 1) {
+  return { id: `exp-${index}`, occurredAt: 1_700_000_000_000 + index, cueOutcome };
+}
+let mockExperiments: ReturnType<typeof experiment>[] = [];
+let lastNightAudioParams: {
+  policy?: { mode: string; allowNightSignals: boolean; reasons: string[] };
+  experiments?: unknown;
+  soundId?: unknown;
+} | null = null;
+const mockAmbiencePlay = jest.fn();
+const mockAmbiencePause = jest.fn();
+const mockAmbienceStop = jest.fn();
 
 jest.mock('react-native', () => {
   const native = jest.requireActual('../react-native-stub');
@@ -100,6 +110,7 @@ jest.mock('@/context/LucidTrainerContext', () => {
           sleepSchedule: { bedtime: '22:45', wakeTime: '07:15', timeZone: 'Europe/Paris' },
         },
         preferences: { audioVolume: 0.25, audioCuesEnabled: false },
+        experiments: mockExperiments,
       },
       content: getLucidContent('en'),
       updateAudioSafetyConsent: mockUpdateAudioSafetyConsent,
@@ -108,8 +119,26 @@ jest.mock('@/context/LucidTrainerContext', () => {
   };
 });
 
+jest.mock('@/hooks/useSleepSoundPlayer', () => ({
+  useSleepSoundPlayer: () => ({
+    error: null,
+    hasStarted: false,
+    isLoaded: true,
+    isPlaying: false,
+    isBuffering: false,
+    pause: mockAmbiencePause,
+    play: mockAmbiencePlay,
+    remainingSeconds: 1800,
+    stop: mockAmbienceStop,
+  }),
+}));
+
 jest.mock('@/hooks/useLucidNightAudio', () => ({
-  useLucidNightAudio: (params: { policy?: { mode: string; allowNightSignals: boolean; reasons: string[] } }) => {
+  useLucidNightAudio: (params: {
+    policy?: { mode: string; allowNightSignals: boolean; reasons: string[] };
+    experiments?: unknown;
+    soundId?: unknown;
+  }) => {
     lastNightAudioParams = params;
     return {
       error: null,
@@ -171,10 +200,14 @@ describe('Lucid Trainer night audio safety', () => {
     jest.clearAllMocks();
     mockAudioSafetyAccepted = false;
     mockNightPlan = null;
+    mockExperiments = [];
     lastNightAudioParams = null;
     mockUpdateAudioSafetyConsent.mockResolvedValue(undefined);
     mockUpdatePreferences.mockResolvedValue(undefined);
     mockStartNight.mockResolvedValue(true);
+    mockAmbiencePlay.mockReset();
+    mockAmbiencePause.mockReset();
+    mockAmbienceStop.mockReset();
   });
 
   afterEach(cleanup);
@@ -214,18 +247,18 @@ describe('Lucid Trainer night audio safety', () => {
     await waitFor(() => expect(mockUpdateAudioSafetyConsent).toHaveBeenCalledWith(true));
   });
 
-  it('keeps optional sound, volume and duration behind a disclosure until asked', () => {
+  it('keeps optional ambience and experimental cue behind a disclosure until asked', () => {
     render(<LucidNightScreen />);
 
     expect(screen.getByText('Set a quiet intention')).not.toBeNull();
     expect(screen.getByText('Audio safety')).not.toBeNull();
     expect(screen.queryByText('Soft rain')).toBeNull();
-    expect(screen.queryByText('Prudent volume')).toBeNull();
+    expect(screen.queryByText('Prudent TLR volume')).toBeNull();
 
     fireEvent.click(screen.getByTestId('lucid-night-signals-toggle'));
 
     expect(screen.getByText('Soft rain')).not.toBeNull();
-    expect(screen.getByText('Prudent volume')).not.toBeNull();
+    expect(screen.getByText('Prudent TLR volume')).not.toBeNull();
     expect(screen.getByRole('radio', { name: 'Soft rain' })).not.toBeNull();
   });
 
@@ -286,5 +319,70 @@ describe('Lucid Trainer night audio safety', () => {
     fireEvent.click(stop);
     expect(mockStopNight).toHaveBeenCalledTimes(1);
     expect(mockStartNight).not.toHaveBeenCalled();
+  });
+  it('plays local ambience without night-signal permission and never sends soundId to TLR', () => {
+    render(<LucidNightScreen />);
+    fireEvent.click(screen.getByTestId('lucid-night-signals-toggle'));
+
+    expect(lastNightAudioParams).toEqual(expect.objectContaining({ experiments: [] }));
+    expect(lastNightAudioParams).not.toHaveProperty('soundId');
+    expect((screen.getByTestId('lucid-night-start') as HTMLButtonElement).disabled).toBe(true);
+
+    fireEvent.click(screen.getByTestId('lucid-night-ambience-play'));
+    expect(mockAmbiencePlay).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByTestId('lucid-night-ambience-stop'));
+    expect(mockAmbienceStop).toHaveBeenCalledTimes(1);
+    expect(mockStartNight).not.toHaveBeenCalled();
+    expect(mockPreview).not.toHaveBeenCalled();
+  });
+
+  it('describes the fixed 1.2s experimental cue and keeps the no-REM warning after calibration', () => {
+    mockAudioSafetyAccepted = true;
+    mockExperiments = [experiment('heard_woke')];
+    render(<LucidNightScreen />);
+    fireEvent.click(screen.getByTestId('lucid-night-speaker'));
+    fireEvent.click(screen.getByTestId('lucid-night-signals-toggle'));
+
+    expect(screen.getByText(/TLR is experimental/)).not.toBeNull();
+    expect(screen.getByText(/cannot detect REM in real time/)).not.toBeNull();
+    expect(screen.getByText('After one signal wake, tonight stays at two very-low cues.')).not.toBeNull();
+    expect(screen.getByText('Experimental TLR cue')).not.toBeNull();
+    expect(screen.getByTestId('lucid-night-preview').textContent).toContain('Preview 1.2-second cue');
+    expect(screen.queryByText(/7 seconds/)).toBeNull();
+    expect(lastNightAudioParams?.experiments).toEqual([experiment('heard_woke')]);
+  });
+
+  it('suspends preview and start after two heard_woke cues while Stop stays available', () => {
+    mockAudioSafetyAccepted = true;
+    mockNightPlan = null;
+    mockExperiments = [experiment('heard_woke', 1), experiment('heard_woke', 2)];
+    render(<LucidNightScreen />);
+    fireEvent.click(screen.getByTestId('lucid-night-speaker'));
+    fireEvent.click(screen.getByTestId('lucid-night-signals-toggle'));
+
+    expect(screen.getByText(/TLR is experimental/)).not.toBeNull();
+    expect(screen.getByText(/cannot detect REM in real time/)).not.toBeNull();
+    expect(
+      screen.getByText('After two signal wakes, TLR is suspended until you review it in the morning.')
+    ).not.toBeNull();
+    const preview = screen.getByTestId('lucid-night-preview') as HTMLButtonElement;
+    const start = screen.getByTestId('lucid-night-start') as HTMLButtonElement;
+    expect(preview.disabled).toBe(true);
+    expect(start.disabled).toBe(true);
+    fireEvent.click(preview);
+    fireEvent.click(start);
+    expect(mockPreview).not.toHaveBeenCalled();
+    expect(mockStartNight).not.toHaveBeenCalled();
+    cleanup();
+
+    mockNightPlan = { sessionId: 'lucid-night-1', soundId: 'rain' };
+    render(<LucidNightScreen />);
+    fireEvent.click(screen.getByTestId('lucid-night-signals-toggle'));
+    expect(screen.getByText(/TLR is experimental/)).not.toBeNull();
+    expect(screen.queryByTestId('lucid-night-start')).toBeNull();
+    const stop = screen.getByTestId('lucid-night-stop') as HTMLButtonElement;
+    expect(stop.disabled).toBe(false);
+    fireEvent.click(stop);
+    expect(mockStopNight).toHaveBeenCalledTimes(1);
   });
 });

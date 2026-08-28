@@ -10,11 +10,13 @@ import {
   createLucidNightSignalPlan,
   createLucidPreviewPlan,
   getLucidNightSoundFile,
-  MAX_LUCID_PREVIEW_VOLUME,
+  LUCID_TLR_CUE_DURATION_MS,
+  MAX_LUCID_REDUCED_NIGHT_VOLUME,
+  resolveLucidNightCueCalibration,
   shouldRestoreLucidNightSignalPlan,
   type LucidAudioSafety,
+  type LucidHeardWokeObservation,
   type LucidNightSignalPlan,
-  type LucidNightSoundId,
 } from '@/lib/lucid/audio';
 import { canUseLucidNightSignals, type LucidSafetyPolicy } from '@/lib/lucid/safety';
 import {
@@ -26,17 +28,34 @@ import {
 // The countdown renders hours and minutes only, so a second-by-second tick would
 // buy nothing and cost ~28 800 wake-ups over an eight-hour night.
 const TICK_MS = 15_000;
+const LUCID_TLR_SOUND_ID = 'rain' as const;
 const NIGHT_CUE_SOURCES: Readonly<Record<string, AudioSource>> = {
   'lucid_cue_rain_very_low.wav': require('@/assets/lucid/audio/lucid_cue_rain_very_low.wav'),
   'lucid_cue_rain_low.wav': require('@/assets/lucid/audio/lucid_cue_rain_low.wav'),
   'lucid_cue_rain.wav': require('@/assets/lucid/audio/lucid_cue_rain.wav'),
-  'lucid_cue_ocean_very_low.wav': require('@/assets/lucid/audio/lucid_cue_ocean_very_low.wav'),
-  'lucid_cue_ocean_low.wav': require('@/assets/lucid/audio/lucid_cue_ocean_low.wav'),
-  'lucid_cue_ocean.wav': require('@/assets/lucid/audio/lucid_cue_ocean.wav'),
-  'lucid_cue_brown_noise_very_low.wav': require('@/assets/lucid/audio/lucid_cue_brown_noise_very_low.wav'),
-  'lucid_cue_brown_noise_low.wav': require('@/assets/lucid/audio/lucid_cue_brown_noise_low.wav'),
-  'lucid_cue_brown_noise.wav': require('@/assets/lucid/audio/lucid_cue_brown_noise.wav'),
 };
+
+export type LucidNightAudioExperiment = LucidHeardWokeObservation;
+
+function isStaleRestoredPlan(
+  plan: LucidNightSignalPlan,
+  calibration: ReturnType<typeof resolveLucidNightCueCalibration>
+): boolean {
+  if (calibration.status === 'suspended') return true;
+  if (calibration.status === 'reduced') {
+    return plan.volume > MAX_LUCID_REDUCED_NIGHT_VOLUME || plan.cues.length > calibration.maxCues;
+  }
+  return false;
+}
+
+function currentPlanBlockReason(
+  policy: LucidSafetyPolicy,
+  calibration: ReturnType<typeof resolveLucidNightCueCalibration>
+): string | null {
+  if (calibration.status === 'suspended') return 'no_safe_signals';
+  if (!canUseLucidNightSignals(policy)) return policy.reasons[0] ?? 'night_signals_blocked';
+  return null;
+}
 
 // The remaining seconds live outside React state: only the leaf that draws the
 // countdown subscribes, so a tick never re-renders the whole night screen.
@@ -46,18 +65,30 @@ export type LucidNightRemaining = {
 };
 
 export function useLucidNightAudio(params: {
-  soundId: LucidNightSoundId;
   volume: number;
   timerMinutes: number;
   safety: LucidAudioSafety;
   policy: LucidSafetyPolicy;
   notificationTitle: string;
   notificationBody: string;
+  experiments?: readonly LucidNightAudioExperiment[] | null;
+  /** Ignored: TLR preview/night always use the fixed rain cue. */
+  soundId?: string;
 }) {
-  const previewSoundFile = getLucidNightSoundFile(
-    params.soundId,
-    Math.min(params.volume, MAX_LUCID_PREVIEW_VOLUME)
+  const experiments = useMemo(
+    () => params.experiments ?? [],
+    [params.experiments]
   );
+  const calibration = useMemo(
+    () =>
+      resolveLucidNightCueCalibration({
+        requestedVolume: params.volume,
+        policy: params.policy,
+        experiments,
+      }),
+    [experiments, params.policy, params.volume]
+  );
+  const previewSoundFile = getLucidNightSoundFile(LUCID_TLR_SOUND_ID, calibration.volume || params.volume);
   const player = useAudioPlayer(NIGHT_CUE_SOURCES[previewSoundFile], {
     downloadFirst: true,
     updateInterval: 500,
@@ -70,6 +101,7 @@ export function useLucidNightAudio(params: {
   const remainingRef = useRef(0);
   const remainingListenersRef = useRef<Set<() => void>>(new Set());
   const policyRef = useRef(params.policy);
+  const calibrationRef = useRef(calibration);
   const nightGenerationRef = useRef(0);
   const startInFlightRef = useRef(false);
 
@@ -109,8 +141,11 @@ export function useLucidNightAudio(params: {
 
   /* eslint-disable react-hooks/immutability -- expo-audio player controls are mutable native handles. */
   const playPreview = useCallback(
-    async (durationMs: number) => {
+    async (soundFile: string, durationMs: number) => {
       if (!status.isLoaded) throw new Error('audio_not_loaded');
+      if (soundFile !== previewSoundFile || !NIGHT_CUE_SOURCES[soundFile]) {
+        throw new Error('audio_source_mismatch');
+      }
       await setAudioModeAsync({
         allowsRecording: false,
         interruptionMode: 'doNotMix',
@@ -120,16 +155,14 @@ export function useLucidNightAudio(params: {
       });
       clearStopTimer();
       await player.seekTo(0);
-      // expo-audio controls are mutable native properties by design.
       player.loop = false;
-      // Waveform amplitude encodes the prudent level used by native cues too.
       player.volume = 1;
       player.play();
       stopTimerRef.current = setTimeout(() => {
         void stopPlayback();
       }, durationMs);
     },
-    [clearStopTimer, player, status.isLoaded, stopPlayback]
+    [clearStopTimer, player, previewSoundFile, status.isLoaded, stopPlayback]
   );
 
   const preview = useCallback(async () => {
@@ -137,23 +170,24 @@ export function useLucidNightAudio(params: {
     const result = createLucidPreviewPlan({
       nowAt: Date.now(),
       requestedVolume: params.volume,
-      requestedDurationMs: 7_000,
-      soundId: params.soundId,
+      requestedDurationMs: LUCID_TLR_CUE_DURATION_MS,
+      soundId: LUCID_TLR_SOUND_ID,
       safety: params.safety,
       policy: params.policy,
+      experiments,
     });
     if (result.status === 'blocked') {
       setError(result.reason);
       return false;
     }
     try {
-      await playPreview(result.plan.stopAt - result.plan.startsAt);
+      await playPreview(result.plan.soundFile, result.plan.stopAt - result.plan.startsAt);
       return true;
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'playback_failed');
       return false;
     }
-  }, [params.policy, params.safety, params.soundId, params.volume, playPreview]);
+  }, [experiments, params.policy, params.safety, params.volume, playPreview]);
   /* eslint-enable react-hooks/immutability */
 
   const bumpNightGeneration = useCallback(() => {
@@ -173,12 +207,12 @@ export function useLucidNightAudio(params: {
         enabled: true,
         sessionStartAt,
         timerMinutes: params.timerMinutes,
-        cueOffsetsMinutes: [120, 180, 240, 300],
         requestedVolume: params.volume,
-        requestedCueDurationMs: 7_000,
-        soundId: params.soundId,
+        requestedCueDurationMs: LUCID_TLR_CUE_DURATION_MS,
+        soundId: LUCID_TLR_SOUND_ID,
         safety: params.safety,
         policy: params.policy,
+        experiments,
       });
       if (result.status === 'blocked') {
         setError(result.reason);
@@ -225,10 +259,12 @@ export function useLucidNightAudio(params: {
         return false;
       }
       const currentPolicy = policyRef.current;
-      if (!canUseLucidNightSignals(currentPolicy)) {
+      const currentCalibration = calibrationRef.current;
+      const blockReason = currentPlanBlockReason(currentPolicy, currentCalibration);
+      if (blockReason || isStaleRestoredPlan(result.plan, currentCalibration)) {
         const outcome = await cancelNewlyScheduledSession();
         if (outcome === 'cancelled') {
-          setError(currentPolicy.reasons[0] ?? 'night_signals_blocked');
+          setError(blockReason ?? 'no_safe_signals');
         }
         return false;
       }
@@ -244,11 +280,11 @@ export function useLucidNightAudio(params: {
     }
   }, [
     bumpNightGeneration,
+    experiments,
     params.notificationBody,
     params.notificationTitle,
     params.policy,
     params.safety,
-    params.soundId,
     params.timerMinutes,
     params.volume,
     setRemainingSeconds,
@@ -274,7 +310,8 @@ export function useLucidNightAudio(params: {
 
   useEffect(() => {
     policyRef.current = params.policy;
-  }, [params.policy]);
+    calibrationRef.current = calibration;
+  }, [calibration, params.policy]);
 
   useEffect(() => {
     let active = true;
@@ -283,7 +320,12 @@ export function useLucidNightAudio(params: {
       .then(async (restored) => {
         if (!active || generation !== nightGenerationRef.current) return;
         if (!restored) return;
-        if (!shouldRestoreLucidNightSignalPlan(restored, policyRef.current)) {
+        const currentCalibration = calibrationRef.current;
+        const currentPolicy = policyRef.current;
+        if (
+          !shouldRestoreLucidNightSignalPlan(restored, currentPolicy) ||
+          isStaleRestoredPlan(restored, currentCalibration)
+        ) {
           try {
             await cancelLucidNightCues();
           } catch {
@@ -299,7 +341,7 @@ export function useLucidNightAudio(params: {
           if (!active || generation !== nightGenerationRef.current) return;
           setPlan(null);
           setRemainingSeconds(0);
-          setError(policyRef.current.reasons[0] ?? 'night_signals_blocked');
+          setError(currentPlanBlockReason(currentPolicy, currentCalibration) ?? 'no_safe_signals');
           return;
         }
         setPlan(restored);
@@ -318,9 +360,12 @@ export function useLucidNightAudio(params: {
   }, [setRemainingSeconds, stopPlayback]);
 
   useEffect(() => {
-    if (!plan || canUseLucidNightSignals(params.policy)) return;
-    void stopNight(params.policy.reasons[0] ?? 'night_signals_blocked');
-  }, [plan, params.policy, stopNight]);
+    if (!plan) return;
+    if (error === 'notification_cancel_failed') return;
+    const blockReason = currentPlanBlockReason(params.policy, calibration);
+    if (!blockReason && !isStaleRestoredPlan(plan, calibration)) return;
+    void stopNight(blockReason ?? 'no_safe_signals');
+  }, [calibration, error, plan, params.policy, stopNight]);
 
   useEffect(() => {
     if (!plan) return;

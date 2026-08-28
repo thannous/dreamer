@@ -13,7 +13,7 @@ import {
   type LucidNotificationAdapter,
   type LucidReminderPlan,
 } from '@/services/lucidTrainerNotifications';
-import { createLucidNightSignalPlan } from '@/lib/lucid/audio';
+import { createLucidNightSignalPlan, LUCID_TLR_CUE_DURATION_MS } from '@/lib/lucid/audio';
 import { evaluateLucidSafetyPolicy } from '@/lib/lucid/safety';
 
 jest.mock('expo-notifications', () => ({
@@ -131,7 +131,7 @@ function nightPlan(startAt = NIGHT_START) {
     timerMinutes: 360,
     cueOffsetsMinutes: [90, 180],
     requestedVolume: 0.9,
-    requestedCueDurationMs: 7_000,
+    requestedCueDurationMs: LUCID_TLR_CUE_DURATION_MS,
     soundId: 'ocean',
     safety: {
       acknowledged: true,

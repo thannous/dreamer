@@ -64,7 +64,7 @@ function restoredPlan(now = Date.now()): LucidNightSignalPlan {
         id: `lucid-night-${now}:cue:1`,
         requestedIndex: 0,
         startsAt: now + 90 * 60 * 1000,
-        stopAt: now + 90 * 60 * 1000 + 7_000,
+        stopAt: now + 90 * 60 * 1000 + 1_200,
       },
     ],
     rejectedCues: [],
@@ -73,7 +73,7 @@ function restoredPlan(now = Date.now()): LucidNightSignalPlan {
 }
 
 const baseParams = {
-  soundId: 'rain' as const,
+  soundId: 'ocean' as const,
   volume: 0.25,
   timerMinutes: 360,
   safety: {
@@ -84,12 +84,16 @@ const baseParams = {
   },
   notificationTitle: 'Lucid Trainer',
   notificationBody: 'A gentle reality cue.',
+  experiments: [] as { cueOutcome?: string }[],
 };
 
 describe('useLucidNightAudio policy cleanup', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockStatus.isLoaded = true;
+    mockStatus.playing = false;
     mockPlayer.pause.mockReset();
+    mockPlayer.play.mockReset();
     mockPlayer.seekTo.mockResolvedValue(undefined);
     mockCancelNightCues.mockResolvedValue(undefined);
     mockRestoreNightPlan.mockResolvedValue(null);
@@ -404,5 +408,153 @@ describe('useLucidNightAudio policy cleanup', () => {
     expect(result.current.plan).toBeNull();
     expect(result.current.remaining.getSnapshot()).toBe(0);
     expect(result.current.error).toBeNull();
+  });
+});
+
+describe('useLucidNightAudio TLR calibration', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.clearAllMocks();
+    mockStatus.isLoaded = true;
+    mockStatus.playing = false;
+    mockPlayer.pause.mockReset();
+    mockPlayer.play.mockReset();
+    mockPlayer.seekTo.mockResolvedValue(undefined);
+    mockCancelNightCues.mockResolvedValue(undefined);
+    mockRestoreNightPlan.mockResolvedValue(null);
+    mockScheduleNightCues.mockResolvedValue({ permission: 'granted', scheduledIds: ['cue-1'] });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('previews the rendered calibrated rain file and refuses playback before it is loaded', async () => {
+    const { useAudioPlayer } = jest.requireMock('expo-audio') as { useAudioPlayer: jest.Mock };
+    mockStatus.isLoaded = false;
+    const { result, rerender } = renderHook(() =>
+      useLucidNightAudio({ ...baseParams, policy: policyFrom(), soundId: 'ocean' })
+    );
+    await waitFor(() => expect(mockRestoreNightPlan).toHaveBeenCalled());
+    expect(useAudioPlayer).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ downloadFirst: true })
+    );
+    const loadedSource = useAudioPlayer.mock.calls.at(-1)?.[0];
+
+    await act(async () => {
+      await expect(result.current.preview()).resolves.toBe(false);
+    });
+    expect(result.current.error).toBe('audio_not_loaded');
+    expect(mockPlayer.play).not.toHaveBeenCalled();
+
+    mockStatus.isLoaded = true;
+    await act(async () => {
+      rerender();
+    });
+    await act(async () => {
+      await expect(result.current.preview()).resolves.toBe(true);
+    });
+    expect(mockPlayer.play).toHaveBeenCalled();
+    expect(useAudioPlayer.mock.calls.at(-1)?.[0]).toBe(loadedSource);
+
+    await act(async () => {
+      await expect(result.current.startNight()).resolves.toBe(true);
+    });
+    const scheduled = mockScheduleNightCues.mock.calls[0]?.[0] as LucidNightSignalPlan;
+    expect(scheduled.soundId).toBe('rain');
+    expect(scheduled.soundFile).toBe('lucid_cue_rain_low.wav');
+    expect(scheduled.cues).toHaveLength(4);
+    expect(scheduled.cues.every((cue) => cue.stopAt - cue.startsAt === 1_200)).toBe(true);
+    expect(scheduled.cues.map((cue) => (cue.startsAt - scheduled.sessionStartAt) / 60000)).toEqual([
+      120, 180, 240, 300,
+    ]);
+  });
+
+  it('cancels a restored intense plan after one heard_woke and schedules a reduced restart', async () => {
+    const plan = restoredPlan();
+    mockRestoreNightPlan.mockResolvedValue(plan);
+    const { result, rerender } = renderHook(
+      ({ experiments }) => useLucidNightAudio({ ...baseParams, policy: policyFrom(), experiments }),
+      { initialProps: { experiments: [] as { cueOutcome?: string }[] } }
+    );
+    await waitFor(() => expect(result.current.plan?.sessionId).toBe(plan.sessionId));
+
+    await act(async () => {
+      rerender({ experiments: [{ cueOutcome: 'heard_woke' }] });
+    });
+    await waitFor(() => expect(result.current.plan).toBeNull());
+    expect(mockCancelNightCues).toHaveBeenCalled();
+    expect(result.current.error).toBe('no_safe_signals');
+
+    await act(async () => {
+      await expect(result.current.startNight()).resolves.toBe(true);
+    });
+    const scheduled = mockScheduleNightCues.mock.calls[0]?.[0] as LucidNightSignalPlan;
+    expect(scheduled.volume).toBe(0.15);
+    expect(scheduled.soundFile).toBe('lucid_cue_rain_very_low.wav');
+    expect(scheduled.cues).toHaveLength(2);
+  });
+
+  it('blocks preview and start after two heard_woke even when policy still allows reduced intensity', async () => {
+    const plan = restoredPlan();
+    mockRestoreNightPlan.mockResolvedValue(plan);
+    const { result, rerender } = renderHook(
+      ({ experiments, policy }) => useLucidNightAudio({ ...baseParams, policy, experiments }),
+      {
+        initialProps: {
+          experiments: [] as { cueOutcome?: string }[],
+          policy: policyFrom(),
+        },
+      }
+    );
+    await waitFor(() => expect(result.current.plan?.sessionId).toBe(plan.sessionId));
+
+    await act(async () => {
+      rerender({
+        experiments: [{ cueOutcome: 'heard_woke' }, { cueOutcome: 'heard_woke' }],
+        policy: policyFrom({ repeatedSignalWakeups: true }),
+      });
+    });
+    await waitFor(() => expect(result.current.plan).toBeNull());
+    expect(result.current.error).toBe('no_safe_signals');
+    await act(async () => {
+      await expect(result.current.preview()).resolves.toBe(false);
+      await expect(result.current.startNight()).resolves.toBe(false);
+    });
+    expect(mockScheduleNightCues).not.toHaveBeenCalled();
+  });
+
+  it('cancels an in-flight schedule when experiments become two heard_woke before it resolves', async () => {
+    let releaseSchedule: (value: { permission: string; scheduledIds: string[] }) => void = () => {};
+    mockScheduleNightCues.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          releaseSchedule = resolve;
+        })
+    );
+    const { result, rerender } = renderHook(
+      ({ experiments }) => useLucidNightAudio({ ...baseParams, policy: policyFrom(), experiments }),
+      { initialProps: { experiments: [] as { cueOutcome?: string }[] } }
+    );
+    await waitFor(() => expect(mockRestoreNightPlan).toHaveBeenCalled());
+
+    let started = Promise.resolve(true);
+    await act(async () => {
+      started = result.current.startNight();
+    });
+    const scheduledPlan = mockScheduleNightCues.mock.calls[0]?.[0] as { sessionId: string };
+
+    await act(async () => {
+      rerender({ experiments: [{ cueOutcome: 'heard_woke' }, { cueOutcome: 'heard_woke' }] });
+    });
+    await act(async () => {
+      releaseSchedule({ permission: 'granted', scheduledIds: ['cue-1'] });
+      await started;
+    });
+
+    expect(await started).toBe(false);
+    expect(result.current.plan).toBeNull();
+    expect(mockCancelNightCues).toHaveBeenCalledWith({ sessionId: scheduledPlan.sessionId });
   });
 });
