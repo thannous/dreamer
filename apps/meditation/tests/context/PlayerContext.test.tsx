@@ -180,6 +180,76 @@ describe('PlayerContext world continuity', () => {
     );
   });
 
+  it('persists an explicit backward seek as the resume base even after a stale native tick', async () => {
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <PlayerProvider>{children}</PlayerProvider>
+    );
+    const { result } = renderHook(() => usePlayer(), { wrapper });
+
+    act(() => {
+      result.current.open('anxiety-ground', 0, 'forest');
+    });
+
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    await waitFor(() => expect(playbackListener).not.toBeNull());
+    const primaryPlayer = jest.mocked(audio.createSessionPlayer).mock.results[0].value as {
+      playing: boolean;
+      currentTime: number;
+    };
+
+    act(() => {
+      playbackListener?.({
+        currentTime: 445,
+        duration: 600,
+        playing: true,
+        didJustFinish: false,
+      });
+    });
+    expect(result.current.positionSec).toBe(445);
+    expect(mockRecordProgress).toHaveBeenCalledWith('anxiety-ground', 445, false);
+
+    act(() => result.current.toggle());
+    expect(result.current.status).toBe('paused');
+
+    act(() => result.current.seekTo(37));
+    expect(result.current.positionSec).toBe(37);
+    expect(audio.seekTo).toHaveBeenCalledWith(primaryPlayer, 37);
+    expect(mockRecordProgress).toHaveBeenCalledWith('anxiety-ground', 37, false);
+
+    act(() => {
+      playbackListener?.({
+        currentTime: 445,
+        duration: 600,
+        playing: false,
+        didJustFinish: false,
+      });
+    });
+    expect(result.current.positionSec).toBe(37);
+    expect(mockRecordProgress.mock.calls.at(-1)).toEqual(['anxiety-ground', 37, false]);
+
+    act(() => {
+      appStateHandler?.('background');
+    });
+    expect(mockRecordProgress.mock.calls.at(-1)).toEqual(['anxiety-ground', 37, false]);
+    expect(mockRecordProgress.mock.calls.filter((call) => call[2] === true)).toHaveLength(0);
+
+    const savedPosition = mockRecordProgress.mock.calls.at(-1)?.[1] as number;
+    act(() => {
+      result.current.close();
+    });
+    act(() => {
+      result.current.open('anxiety-ground', savedPosition, 'forest');
+    });
+    await waitFor(() =>
+      expect(audio.seekTo).toHaveBeenCalledWith(
+        jest.mocked(audio.createSessionPlayer).mock.results.at(-1)?.value,
+        37
+      )
+    );
+    expect(result.current.positionSec).toBe(37);
+    expect(mockRecordPractice).not.toHaveBeenCalled();
+  });
+
   it('layers the forest texture and lets the user silence and restore it', async () => {
     const wrapper = ({ children }: React.PropsWithChildren) => (
       <PlayerProvider>{children}</PlayerProvider>

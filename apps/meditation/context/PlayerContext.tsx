@@ -34,6 +34,8 @@ import * as audio from '@/services/audioService';
 /** How often the listening position is written to storage. */
 const PERSIST_EVERY_SEC = 5;
 const NATIVE_STATUS_SYNC_MS = 500;
+/** Ignore native ticks that still report the pre-seek position. */
+const SEEK_SETTLE_SEC = 1.5;
 
 export type PlayerStatus = 'idle' | 'loading' | 'playing' | 'paused' | 'unavailable';
 
@@ -78,6 +80,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   const textureVolumeRef = useRef(0);
   const subscriptionRef = useRef<{ remove: () => void } | null>(null);
   const lastPersistedRef = useRef(0);
+  const pendingSeekRef = useRef<number | null>(null);
   const completedRef = useRef(false);
   const practisedLoggedRef = useRef(false);
   const openGenerationRef = useRef(0);
@@ -128,6 +131,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     setStatus('idle');
     positionSecRef.current = 0;
     setPositionSec(0);
+    pendingSeekRef.current = null;
     setFadeMinutes(null);
     setFadeRemaining(null);
   }, []);
@@ -149,6 +153,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       teardown();
       completedRef.current = false;
       practisedLoggedRef.current = false;
+      pendingSeekRef.current = null;
       lastPersistedRef.current = startAt;
       setSession(next);
       sessionRef.current = next;
@@ -210,6 +215,27 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
               statusRef.current = 'unavailable';
               setStatus('unavailable');
               return;
+            }
+            const pendingSeek = pendingSeekRef.current;
+            if (
+              pendingSeek !== null &&
+              Math.abs(statusUpdate.currentTime - pendingSeek) > SEEK_SETTLE_SEC
+            ) {
+              const nextStatus: PlayerStatus = statusUpdate.playing ? 'playing' : 'paused';
+              statusRef.current = nextStatus;
+              setStatus(nextStatus);
+              setLoadedDuration(statusUpdate.duration);
+              if (textureRef.current) {
+                if (statusUpdate.playing && !statusUpdate.didJustFinish && soundEnabledRef.current) {
+                  audio.play(textureRef.current);
+                } else {
+                  audio.pause(textureRef.current);
+                }
+              }
+              return;
+            }
+            if (pendingSeek !== null) {
+              pendingSeekRef.current = null;
             }
             setLoadedDuration(statusUpdate.duration);
             setPositionSec(statusUpdate.currentTime);
@@ -298,13 +324,17 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   const seekTo = useCallback(
     (seconds: number) => {
       const player = playerRef.current;
-      if (!player) return;
+      const currentSession = sessionRef.current;
+      if (!player || !currentSession) return;
       const target = clampSeek(seconds, durationSec);
-      setPositionSec(target);
+      pendingSeekRef.current = target;
+      lastPersistedRef.current = target;
       positionSecRef.current = target;
+      setPositionSec(target);
+      persist(currentSession.id, target);
       audio.seekTo(player, target).catch(() => {});
     },
-    [durationSec]
+    [durationSec, persist]
   );
 
   const skip = useCallback(
@@ -403,6 +433,22 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     const nativePosition = Number.isFinite(reportedPosition)
       ? Math.max(0, reportedPosition)
       : positionSecRef.current;
+    const pendingSeek = pendingSeekRef.current;
+    if (pendingSeek !== null && Math.abs(nativePosition - pendingSeek) > SEEK_SETTLE_SEC) {
+      if (statusChanged) {
+        statusRef.current = nextStatus;
+        setStatus(nextStatus);
+        if (textureRef.current) {
+          if (nativePlaying && soundEnabledRef.current) audio.play(textureRef.current);
+          else audio.pause(textureRef.current);
+        }
+        persistRef.current(currentSession.id, positionSecRef.current);
+      }
+      return;
+    }
+    if (pendingSeek !== null) {
+      pendingSeekRef.current = null;
+    }
     const positionChanged = positionSecRef.current !== nativePosition;
 
     positionSecRef.current = nativePosition;

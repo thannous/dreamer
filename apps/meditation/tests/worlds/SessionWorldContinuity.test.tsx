@@ -215,12 +215,16 @@ jest.mock('@/context/LanguageContext', () => ({
   }),
 }));
 
+let mockLibraryLoaded = true;
+let mockLibraryProgress: Record<string, { positionSec: number }> = {};
+
 jest.mock('@/context/LibraryContext', () => ({
   useLibrary: () => ({
     favorites: [],
     isFavorite: () => false,
     toggleFavorite: mockToggleFavorite,
-    progress: {},
+    progress: mockLibraryProgress,
+    loaded: mockLibraryLoaded,
   }),
 }));
 
@@ -268,6 +272,8 @@ describe('world continuity from journey into practice', () => {
     mockRemainingPlays = 3;
     mockQuotaResetDay = '2026-09-01';
     mockIsPlus = false;
+    mockLibraryLoaded = true;
+    mockLibraryProgress = {};
     mockPush.mockClear();
     mockOpenPaywall.mockClear();
     mockToggleFavorite.mockClear();
@@ -317,6 +323,25 @@ describe('world continuity from journey into practice', () => {
     expect(mockPlayerOpen).toHaveBeenCalledTimes(1);
 
     mockPlayerStatus = 'idle';
+    rerender(<PlayerScreen />);
+    expect(mockPlayerOpen).toHaveBeenCalledTimes(1);
+  });
+
+  it('waits for library hydration before opening a saved resume position once', () => {
+    mockWorldId = 'constellation';
+    mockLibraryLoaded = false;
+    mockLibraryProgress = {};
+    const { rerender } = render(<PlayerScreen />);
+    expect(mockPlayerOpen).not.toHaveBeenCalled();
+    expect(mockOpenPaywall).not.toHaveBeenCalled();
+
+    mockLibraryLoaded = true;
+    mockLibraryProgress = { 'sleep-descent': { positionSec: 187 } };
+    rerender(<PlayerScreen />);
+    expect(mockPlayerOpen).toHaveBeenCalledTimes(1);
+    expect(mockPlayerOpen).toHaveBeenCalledWith('sleep-descent', 187, 'constellation');
+
+    mockLibraryProgress = { 'sleep-descent': { positionSec: 240 } };
     rerender(<PlayerScreen />);
     expect(mockPlayerOpen).toHaveBeenCalledTimes(1);
   });

@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import type { ReactTestInstance } from 'react-test-renderer';
 
 import { ProgressiveSilence } from '@/components/atmosphere/ProgressiveSilence';
 import { SilenceDelayMs } from '@/constants/motion';
@@ -37,7 +38,9 @@ const letTheChromeWithdraw = () => {
 };
 
 const chromeOpacity = () => {
-  let node = screen.getByTestId('chrome.top', { includeHiddenElements: true });
+  let node: ReactTestInstance | null = screen.getByTestId('chrome.top', {
+    includeHiddenElements: true,
+  });
 
   while (node) {
     const style = StyleSheet.flatten(node.props.style);

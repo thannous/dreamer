@@ -36,7 +36,7 @@ export default function PlayerScreen() {
     worldId?: string;
   }>();
   const { t } = useTranslation();
-  const { progress } = useLibrary();
+  const { loaded, progress } = useLibrary();
   const { gateForSession, gateForTimer, openPaywall } = useSubscription();
   const player = usePlayer();
   const { world: selectedWorld } = useWorld();
@@ -62,7 +62,9 @@ export default function PlayerScreen() {
   // Opening the screen starts the session; coming back to it from the mini
   // player must NOT restart what is already playing. A natural finish also
   // releases the handle while this route may still be mounted, and must not
-  // immediately reopen the same session.
+  // immediately reopen the same session. Cold start / force-stop can mount
+  // this route before LibraryContext hydrates; opening then would lock in
+  // position 0 via startedSessionIdRef and ignore the saved resume point.
   useEffect(() => {
     if (!id || !session) return;
     if (alreadyOpen) {
@@ -70,6 +72,7 @@ export default function PlayerScreen() {
       return;
     }
     if (startedSessionIdRef.current === id) return;
+    if (!loaded) return;
     if (!isSessionIncludedInOwnedWorld(requestedWorld.id, session.id, isWorldOwned)) {
       const gate = gateForSession(session);
       if (!gate.allowed) {
@@ -82,7 +85,7 @@ export default function PlayerScreen() {
     // `player` is a new object on every position tick and would restart the
     // practice on each one. The stable open boundary is the route session.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alreadyOpen, gateForSession, id, isWorldOwned, openPaywall, requestedWorld.id, session]);
+  }, [alreadyOpen, gateForSession, id, isWorldOwned, loaded, openPaywall, requestedWorld.id, session]);
 
   if (!session) {
     return (
