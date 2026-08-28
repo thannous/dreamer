@@ -78,6 +78,14 @@ export function initializeGoogleSignIn() {
   // No-op on web
 }
 
+/**
+ * Web Google sign-in uses Supabase OAuth, not native client IDs.
+ * Keep this export aligned with lib/auth.ts so web Lucid account can import it.
+ */
+export function isGoogleSignInAvailable(): boolean {
+  return true;
+}
+
 export function isAppleSignInAvailable(): boolean {
   return false;
 }

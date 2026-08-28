@@ -64,6 +64,13 @@ describe('web auth helpers', () => {
     });
   });
 
+  it('exports Google sign-in availability for web Lucid account', () => {
+    const auth = require('../auth.web') as typeof import('../auth.web');
+
+    expect(typeof auth.isGoogleSignInAvailable).toBe('function');
+    expect(auth.isGoogleSignInAvailable()).toBe(true);
+  });
+
   it('starts Google OAuth with the production origin as redirect', async () => {
     const auth = require('../auth.web') as typeof import('../auth.web');
 

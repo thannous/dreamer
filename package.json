@@ -10,6 +10,7 @@
     "start:mock": "node ./scripts/expo-safe-runner.js --profile .env.mock start",
     "start:lucid": "node ./scripts/expo-safe-runner.js --profile .env.lucid start",
     "start:lucid:mock": "node ./scripts/expo-safe-runner.js --profile .env.lucid.mock start",
+    "start:lucid:teststore": "node ./scripts/expo-safe-runner.js --profile .env.lucid.teststore start",
     "lucid:gates": "node ./scripts/check-lucid-trainer-gates.js",
     "start:real": "node ./scripts/expo-safe-runner.js --profile .env.real start",
     "start:teststore": "node ./scripts/expo-safe-runner.js --profile .env.teststore start",

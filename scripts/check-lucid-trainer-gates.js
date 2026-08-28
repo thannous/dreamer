@@ -2,6 +2,7 @@ const { spawnSync } = require('node:child_process');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
+const { collectLucidTestStoreGateChecks } = require('./lucid-teststore-profile');
 
 const root = path.resolve(__dirname, '..');
 const expoCli = path.join(root, 'node_modules', 'expo', 'bin', 'cli');
@@ -91,6 +92,7 @@ const baseIconPath = resolveProjectFile('./assets/images/icon.png');
 const iconSize = fs.existsSync(iconPath) ? pngSize(iconPath) : null;
 const envProfile = fs.readFileSync(path.join(root, '.env.lucid'), 'utf8');
 const packageJson = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
+const easJson = JSON.parse(fs.readFileSync(path.join(root, 'eas.json'), 'utf8'));
 const baseResult = runExpoConfig();
 const baseConfig = parseConfig(baseResult);
 const nativeOnlyResult = runExpoConfig({ NOCTALIA_APP_VARIANT: 'lucid' });
@@ -213,6 +215,10 @@ check('Release documentation and additive migrations present',
     'supabase/migrations/20260817012000_product_analytics_events_platform_ios.sql',
   ].every((file) => fs.existsSync(path.join(root, file)))
 );
+
+for (const resultCheck of collectLucidTestStoreGateChecks({ rootDir: root, packageJson, easJson })) {
+  check(resultCheck.label, resultCheck.ok, resultCheck.detail);
+}
 
 process.stdout.write(
   `[lucid-gates] Summary: ${failures.length === 0 ? 'all checks passed' : `${failures.length} failed`}\n`
