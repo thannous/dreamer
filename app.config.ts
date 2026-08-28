@@ -158,6 +158,15 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
       ],
       ['expo-audio', { microphonePermission: false, enableBackgroundPlayback: true }],
       ['expo-notifications', { sounds: lucidCueSounds }],
+      [
+        '@kingstinct/react-native-healthkit',
+        {
+          background: false,
+          NSHealthUpdateUsageDescription: false,
+          NSHealthShareUsageDescription:
+            'Noctalia Lucid Trainer can import your past sleep history from Apple Health on this device so you can compare it with your dream journal. It never writes Health data, detects REM in real time, or controls night cues.',
+        },
+      ],
       './plugins/withLucidNoctaliaQueries',
       ...lucidGooglePlugins,
     ],
