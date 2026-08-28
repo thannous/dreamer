@@ -28,6 +28,7 @@ const state = {
     completedExerciseIds: string[];
   }[],
   preferences: {
+    audioCuesEnabled: false,
     noctaliaLinkEnabled: false,
     timeZone: 'UTC',
   },
@@ -89,18 +90,40 @@ jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({ colors: {}, mode: 'light' }),
 }));
 
+jest.mock('@/context/DreamsContext', () => ({
+  useDreamsData: () => ({ dreams: [], loaded: true }),
+}));
+
+jest.mock('@/hooks/useLucidReducedMotion', () => ({
+  useLucidReducedMotion: () => false,
+}));
+
+jest.mock('@/hooks/useLucidGuidedRitualSound', () => ({
+  useLucidGuidedRitualSound: () => ({
+    playTransition: jest.fn().mockResolvedValue(false),
+    stop: jest.fn().mockResolvedValue(undefined),
+  }),
+}));
+
+jest.mock('@/components/lucid/LucidGuideOrb', () => ({
+  LucidGuideOrb: () => null,
+}));
+
 jest.mock('@/context/LucidTrainerContext', () => {
   const { getLucidContent } = jest.requireActual('@/lib/lucid/content');
   return {
     useLucidTrainer: () => ({
       state,
       content: getLucidContent('en'),
+      activeDreamSigns: [],
       addExperiment: mockAddExperiment,
       addRealityCheck: mockAddRealityCheck,
       saveWeeklyReview: mockSaveWeeklyReview,
       startProgram: mockStartProgram,
       pauseProgram: mockPauseProgram,
       completeProgramSession: jest.fn(),
+      updateGuidedRitual: jest.fn(),
+      completeGuidedRitualSession: jest.fn(),
       resetLocalData: jest.fn(),
     }),
   };
@@ -251,7 +274,7 @@ const coldRoutes = [
   {
     name: 'session',
     screen: <LucidSessionScreen />,
-    closeLabel: 'Back',
+    closeLabel: 'Cancel',
     fallback: '/lucid/program/mild',
   },
 ] as const;

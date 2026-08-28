@@ -491,6 +491,128 @@ describe('LucidTrainerContext account boundary', () => {
     );
   });
 
+  it('persists guided-ritual start, progress, abandon, resume and atomic completion', async () => {
+    let persistedState = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    const mutation = {
+      technique: 'mild' as const,
+      exerciseId: 'mild-01',
+      sessionNumber: 1,
+      sessionCount: 7,
+    };
+
+    await act(async () => {
+      await result.current.updateGuidedRitual({ ...mutation, action: 'start' });
+    });
+    expect(result.current.state?.progress[0]?.guidedRitual).toMatchObject({
+      sessionId: 'mild:mild-01',
+      status: 'in_progress',
+      stepIndex: 0,
+      stepCount: 5,
+      mode: 'full',
+    });
+
+    await act(async () => {
+      await result.current.updateGuidedRitual({ ...mutation, action: 'advance' });
+      await result.current.updateGuidedRitual({ ...mutation, action: 'abandon' });
+    });
+    expect(result.current.state?.progress[0]?.guidedRitual).toMatchObject({
+      status: 'abandoned',
+      stepIndex: 1,
+    });
+
+    await act(async () => {
+      await result.current.updateGuidedRitual({ ...mutation, action: 'resume' });
+    });
+    expect(result.current.state?.progress[0]?.guidedRitual).toMatchObject({
+      status: 'in_progress',
+      stepIndex: 1,
+    });
+
+    await act(async () => {
+      await result.current.updateGuidedRitual({ ...mutation, action: 'advance' });
+      await result.current.updateGuidedRitual({ ...mutation, action: 'advance' });
+      await result.current.updateGuidedRitual({ ...mutation, action: 'advance' });
+      await result.current.completeGuidedRitualSession('mild', 'mild-01', 1, 7);
+    });
+
+    expect(result.current.state?.progress[0]).toMatchObject({
+      technique: 'mild',
+      status: 'active',
+      currentDay: 2,
+      completedExerciseIds: ['mild-01'],
+      guidedRitual: {
+        status: 'completed',
+        stepIndex: 4,
+        stepCount: 5,
+      },
+    });
+    expect(persistedState.progress[0]?.guidedRitual?.completedAt).not.toBeNull();
+  });
+
+  it('never partially completes a guided ritual and enforces sequential access', async () => {
+    let persistedState = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await act(async () => {
+      await result.current.updateGuidedRitual({
+        technique: 'ssild',
+        exerciseId: 'ssild-01',
+        sessionNumber: 1,
+        sessionCount: 7,
+        action: 'start',
+      });
+      await expect(
+        result.current.completeGuidedRitualSession('ssild', 'ssild-01', 1, 7)
+      ).rejects.toThrow('final phase');
+    });
+
+    expect(persistedState.progress[0]?.completedExerciseIds).toEqual([]);
+    expect(persistedState.progress[0]?.guidedRitual?.status).toBe('in_progress');
+
+    await act(async () => {
+      await expect(result.current.updateGuidedRitual({
+        technique: 'ssild',
+        exerciseId: 'ssild-03',
+        sessionNumber: 3,
+        sessionCount: 7,
+        action: 'start',
+      })).rejects.toThrow('Lucid session is locked');
+    });
+    expect(persistedState.progress[0]?.guidedRitual?.sessionId).toBe('ssild:ssild-01');
+  });
+
   it('reconciles notification permission without replacing progress completed in parallel', async () => {
     const initial = createInitialLucidTrainerState({
       now: 1_700_000_000_000,

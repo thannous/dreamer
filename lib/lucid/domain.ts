@@ -3,6 +3,7 @@ import {
   LUCID_TRAINER_SCHEMA_VERSION,
   LUCID_TECHNIQUES,
   type LucidOnboardingState,
+  type LucidGuidedRitualProgress,
   type LucidProgramProgress,
   type LucidSyncEntity,
   type LucidTechnique,
@@ -51,6 +52,15 @@ function maxNullable(left: number | null, right: number | null): number | null {
   return Math.max(left, right);
 }
 
+function mergeLucidGuidedRitualProgress(
+  left: LucidGuidedRitualProgress | undefined,
+  right: LucidGuidedRitualProgress | undefined
+): LucidGuidedRitualProgress | undefined {
+  if (!left) return right;
+  if (!right) return left;
+  return chooseNewest(left, right);
+}
+
 export function mergeLucidProgramProgress(
   left: LucidProgramProgress,
   right: LucidProgramProgress
@@ -62,6 +72,10 @@ export function mergeLucidProgramProgress(
   const newest = chooseNewest(left, right);
   const status =
     left.status === 'completed' || right.status === 'completed' ? 'completed' : newest.status;
+  const guidedRitual = mergeLucidGuidedRitualProgress(
+    left.guidedRitual,
+    right.guidedRitual
+  );
 
   return {
     technique: left.technique,
@@ -76,6 +90,7 @@ export function mergeLucidProgramProgress(
     startedAt: minNullable(left.startedAt, right.startedAt),
     completedAt: status === 'completed' ? maxNullable(left.completedAt, right.completedAt) : null,
     updatedAt: Math.max(left.updatedAt, right.updatedAt),
+    ...(guidedRitual ? { guidedRitual } : {}),
   };
 }
 

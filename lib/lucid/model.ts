@@ -4,6 +4,20 @@ export const LUCID_TRAINER_MUTATION_VERSION = 1 as const;
 export const LUCID_TECHNIQUES = ['mild', 'ssild', 'wbtb'] as const;
 export type LucidTechnique = (typeof LUCID_TECHNIQUES)[number];
 
+export const LUCID_GUIDED_RITUAL_TECHNIQUES = ['mild', 'ssild'] as const;
+export type LucidGuidedRitualTechnique =
+  (typeof LUCID_GUIDED_RITUAL_TECHNIQUES)[number];
+export const LUCID_GUIDED_RITUAL_STATUSES = [
+  'in_progress',
+  'abandoned',
+  'completed',
+] as const;
+export type LucidGuidedRitualStatus =
+  (typeof LUCID_GUIDED_RITUAL_STATUSES)[number];
+export const LUCID_GUIDED_RITUAL_MODES = ['full', 'reduced', 'replacement'] as const;
+export type LucidGuidedRitualMode = (typeof LUCID_GUIDED_RITUAL_MODES)[number];
+export const MAX_LUCID_GUIDED_RITUAL_STEPS = 12;
+
 export const LUCID_LOCALES = ['fr', 'en', 'es', 'de', 'it'] as const;
 export type LucidLocale = (typeof LUCID_LOCALES)[number];
 
@@ -154,6 +168,20 @@ export interface LucidTrainerPreferences {
   mindfulPauseReminderAnchors?: LucidMindfulPauseAnchor[];
 }
 
+export interface LucidGuidedRitualProgress {
+  version: 1;
+  sessionId: string;
+  technique: LucidGuidedRitualTechnique;
+  status: LucidGuidedRitualStatus;
+  stepIndex: number;
+  stepCount: number;
+  mode: LucidGuidedRitualMode;
+  startedAt: number;
+  stepStartedAt: number;
+  completedAt: number | null;
+  updatedAt: number;
+}
+
 export interface LucidProgramProgress {
   technique: LucidTechnique;
   programId: string;
@@ -164,6 +192,8 @@ export interface LucidProgramProgress {
   startedAt: number | null;
   completedAt: number | null;
   updatedAt: number;
+  /** Absent on historical v1 progress. Older clients safely ignore this additive key. */
+  guidedRitual?: LucidGuidedRitualProgress;
 }
 
 export interface LucidExperiment {
@@ -484,6 +514,40 @@ export function isLucidTrainerPreferences(value: unknown): value is LucidTrainer
   );
 }
 
+export function isLucidGuidedRitualProgress(
+  value: unknown,
+  technique?: LucidTechnique
+): value is LucidGuidedRitualProgress {
+  if (!isRecord(value)) return false;
+  if (
+    value.version !== 1 ||
+    !isBoundedString(value.sessionId, 128) ||
+    !isEnumValue(LUCID_GUIDED_RITUAL_TECHNIQUES, value.technique) ||
+    (technique !== undefined && value.technique !== technique) ||
+    !isEnumValue(LUCID_GUIDED_RITUAL_STATUSES, value.status) ||
+    !isIntegerInRange(value.stepCount, 1, MAX_LUCID_GUIDED_RITUAL_STEPS) ||
+    !isIntegerInRange(value.stepIndex, 0, value.stepCount - 1) ||
+    !isEnumValue(LUCID_GUIDED_RITUAL_MODES, value.mode) ||
+    !isFiniteTimestamp(value.startedAt) ||
+    !isFiniteTimestamp(value.stepStartedAt) ||
+    !isFiniteTimestamp(value.updatedAt) ||
+    value.startedAt > value.stepStartedAt ||
+    value.stepStartedAt > value.updatedAt
+  ) {
+    return false;
+  }
+
+  if (value.status === 'completed') {
+    return (
+      value.stepIndex === value.stepCount - 1 &&
+      isFiniteTimestamp(value.completedAt) &&
+      value.completedAt >= value.stepStartedAt &&
+      value.completedAt <= value.updatedAt
+    );
+  }
+  return value.completedAt === null;
+}
+
 export function isLucidProgramProgress(value: unknown): value is LucidProgramProgress {
   if (!isRecord(value)) return false;
   return (
@@ -497,7 +561,9 @@ export function isLucidProgramProgress(value: unknown): value is LucidProgramPro
     value.practiceDates.every(isLucidDateKey) &&
     (value.startedAt === null || isFiniteTimestamp(value.startedAt)) &&
     (value.completedAt === null || isFiniteTimestamp(value.completedAt)) &&
-    isFiniteTimestamp(value.updatedAt)
+    isFiniteTimestamp(value.updatedAt) &&
+    (value.guidedRitual === undefined ||
+      isLucidGuidedRitualProgress(value.guidedRitual, value.technique as LucidTechnique))
   );
 }
 

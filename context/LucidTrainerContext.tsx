@@ -38,6 +38,14 @@ import {
   type LucidDreamSignCandidate,
 } from '@/lib/lucid/dreamSigns';
 import {
+  abandonLucidGuidedRitualProgress,
+  advanceLucidGuidedRitualProgress,
+  completeLucidGuidedRitualProgress,
+  createLucidGuidedRitualPlan,
+  createLucidGuidedRitualProgress,
+  resumeLucidGuidedRitualProgress,
+} from '@/lib/lucid/guidedRitual';
+import {
   isLucidExperiment,
   isLucidPersistedDreamSignDecision,
   isLucidRealityCheck,
@@ -45,6 +53,8 @@ import {
   type LucidDreamSignDecision,
   type LucidExperiment,
   type LucidExperimentResult,
+  type LucidGuidedRitualProgress,
+  type LucidGuidedRitualTechnique,
   type LucidNightCueOutcome,
   type LucidOnboardingDraftStep,
   type LucidOnboardingState,
@@ -158,6 +168,14 @@ export type LucidDreamSignDecisionInput = {
 
 type RealityCheckInput = Omit<LucidRealityCheck, 'id' | 'occurredAt' | 'updatedAt'>;
 
+export type LucidGuidedRitualMutationInput = {
+  technique: LucidGuidedRitualTechnique;
+  exerciseId: string;
+  sessionNumber: number;
+  sessionCount: number;
+  action: 'start' | 'advance' | 'abandon' | 'resume';
+};
+
 export type LucidTrainerContextValue = {
   state: LucidTrainerState | null;
   content: LucidTrainerContent;
@@ -177,6 +195,15 @@ export type LucidTrainerContextValue = {
   updatePreferences: (patch: Partial<LucidTrainerPreferences>) => Promise<void>;
   startProgram: (technique: LucidTechnique) => Promise<void>;
   completeProgramSession: (technique: LucidTechnique, exerciseId: string, sessionNumber: number, sessionCount: number) => Promise<void>;
+  updateGuidedRitual: (
+    input: LucidGuidedRitualMutationInput
+  ) => Promise<LucidGuidedRitualProgress>;
+  completeGuidedRitualSession: (
+    technique: LucidGuidedRitualTechnique,
+    exerciseId: string,
+    sessionNumber: number,
+    sessionCount: number
+  ) => Promise<void>;
   pauseProgram: (technique: LucidTechnique) => Promise<void>;
   addExperiment: (input: LucidExperimentInput) => Promise<LucidExperiment>;
   addRealityCheck: (input: RealityCheckInput) => Promise<LucidRealityCheck>;
@@ -211,6 +238,81 @@ function getTimeZone(): string {
 
 function entityForProgress(value: LucidProgramProgress): LucidSyncEntity {
   return { entityType: 'progress', entityKey: value.technique, value };
+}
+
+function guidedRitualSessionId(
+  technique: LucidGuidedRitualTechnique,
+  exerciseId: string
+): string {
+  return `${technique}:${exerciseId}`;
+}
+
+function completeProgramSessionMutation(params: {
+  current: LucidTrainerState;
+  technique: LucidTechnique;
+  exerciseId: string;
+  sessionNumber: number;
+  sessionCount: number;
+  now: number;
+  guidedRitual?: LucidGuidedRitualProgress;
+}): { next: LucidTrainerState; changed: LucidSyncEntity[] } {
+  const {
+    current,
+    technique,
+    exerciseId,
+    sessionNumber,
+    sessionCount,
+    now,
+    guidedRitual,
+  } = params;
+  const existing =
+    current.progress.find((item) => item.technique === technique) ??
+    createLucidProgramProgress(technique, now);
+  const access = evaluateLucidSessionAccess({
+    sessionNumber,
+    sessionCount,
+    exerciseId,
+    progress: existing,
+  });
+  if (!access.allowed) throw new Error('Lucid session is locked');
+  if (technique === 'wbtb') {
+    const reason = getLucidWbtbDenialReason(evaluateLucidSafetyPolicyFromState(current));
+    if (reason) {
+      if (access.reason === 'completed') return { next: current, changed: [] };
+      throw new Error(reason);
+    }
+  }
+  const mutationUpdatedAt =
+    Math.max(
+      now,
+      current.updatedAt,
+      guidedRitual?.updatedAt ?? 0,
+      ...current.progress.map((item) => item.updatedAt)
+    ) + 1;
+  const completedExerciseIds = [...new Set([...existing.completedExerciseIds, exerciseId])];
+  const completed = completedExerciseIds.length >= sessionCount;
+  const practiceDate = getLucidDateKeyInTimeZone(now, current.preferences.timeZone);
+  if (practiceDate === null) throw new Error('Invalid Lucid timezone');
+  const progress: LucidProgramProgress = {
+    ...existing,
+    ...(guidedRitual ? { guidedRitual } : {}),
+    status: completed ? 'completed' : 'active',
+    currentDay: Math.min(sessionCount, completedExerciseIds.length + 1),
+    completedExerciseIds,
+    practiceDates: [...new Set([...existing.practiceDates, practiceDate])],
+    startedAt: existing.startedAt ?? now,
+    completedAt: completed ? now : null,
+    updatedAt: mutationUpdatedAt,
+  };
+  const next = applyLucidProgramProgress(
+    current,
+    progress,
+    progress.status === 'active' ? technique : undefined
+  );
+  return {
+    next,
+    changed: diffLucidProgramProgress(current.progress, next.progress).map(entityForProgress),
+  };
 }
 
 export function LucidTrainerProvider({ children }: { children: ReactNode }) {
@@ -611,56 +713,136 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
 
   const completeProgramSession = useCallback(
     async (technique: LucidTechnique, exerciseId: string, sessionNumber: number, sessionCount: number) => {
-      const next = await commit((current, now) => {
-        const existing = current.progress.find((item) => item.technique === technique) ?? createLucidProgramProgress(technique, now);
-        const access = evaluateLucidSessionAccess({
+      const next = await commit((current, now) =>
+        completeProgramSessionMutation({
+          current,
+          technique,
+          exerciseId,
           sessionNumber,
           sessionCount,
-          exerciseId,
-          progress: existing,
-        });
-        if (!access.allowed) throw new Error('Lucid session is locked');
-        if (technique === 'wbtb') {
-          const reason = getLucidWbtbDenialReason(evaluateLucidSafetyPolicyFromState(current));
-          if (reason) {
-            if (access.reason === 'completed') return { next: current, changed: [] };
-            throw new Error(reason);
-          }
-        }
-        const mutationUpdatedAt =
-          Math.max(now, current.updatedAt, ...current.progress.map((item) => item.updatedAt)) + 1;
-        const completedExerciseIds = [...new Set([...existing.completedExerciseIds, exerciseId])];
-        const completed = completedExerciseIds.length >= sessionCount;
-        const practiceDate = getLucidDateKeyInTimeZone(now, current.preferences.timeZone);
-        if (practiceDate === null) {
-          throw new Error('Invalid Lucid timezone');
-        }
-        const progress: LucidProgramProgress = {
-          ...existing,
-          status: completed ? 'completed' : 'active',
-          currentDay: Math.min(sessionCount, completedExerciseIds.length + 1),
-          completedExerciseIds,
-          practiceDates: [...new Set([...existing.practiceDates, practiceDate])],
-          startedAt: existing.startedAt ?? now,
-          completedAt: completed ? now : null,
-          updatedAt: mutationUpdatedAt,
-        };
-        const next = applyLucidProgramProgress(
-          current,
-          progress,
-          progress.status === 'active' ? technique : undefined
-        );
-        return {
-          next,
-          changed: diffLucidProgramProgress(current.progress, next.progress).map(entityForProgress),
-        };
-      });
+          now,
+        })
+      );
       if (next.onboarding.analyticsConsent === true) {
         await trackProductEvent('lucid_training_completed', {
           technique,
           phase: technique === 'wbtb' ? 'night' : 'bedtime',
           outcome: 'completed',
           duration: technique === 'wbtb' ? '15m_plus' : '5_15m',
+        });
+      }
+    },
+    [commit]
+  );
+
+  const updateGuidedRitual = useCallback(
+    async (input: LucidGuidedRitualMutationInput) => {
+      let saved: LucidGuidedRitualProgress | null = null;
+      await commit((current, now) => {
+        const existing =
+          current.progress.find((item) => item.technique === input.technique) ??
+          createLucidProgramProgress(input.technique, now);
+        const access = evaluateLucidSessionAccess({
+          sessionNumber: input.sessionNumber,
+          sessionCount: input.sessionCount,
+          exerciseId: input.exerciseId,
+          progress: existing,
+        });
+        if (!access.allowed || access.reason === 'completed') {
+          throw new Error('Lucid session is locked');
+        }
+        const plan = createLucidGuidedRitualPlan(
+          input.technique,
+          evaluateLucidSafetyPolicyFromState(current)
+        );
+        if (plan.status !== 'ready') throw new Error(plan.reason);
+        const sessionId = guidedRitualSessionId(input.technique, input.exerciseId);
+        const currentRitual = existing.guidedRitual;
+        const sameRitual = currentRitual?.sessionId === sessionId;
+        let guidedRitual: LucidGuidedRitualProgress;
+
+        if (input.action === 'start') {
+          guidedRitual = sameRitual && currentRitual
+            ? currentRitual
+            : createLucidGuidedRitualProgress({ plan, sessionId, now });
+        } else {
+          if (!sameRitual || !currentRitual) {
+            throw new Error('Guided ritual has not started');
+          }
+          if (
+            (input.action === 'resume' || input.action === 'advance') &&
+            (currentRitual.mode !== plan.mode || currentRitual.stepCount !== plan.phases.length)
+          ) {
+            guidedRitual = createLucidGuidedRitualProgress({ plan, sessionId, now });
+          } else if (input.action === 'advance') {
+            guidedRitual = advanceLucidGuidedRitualProgress(currentRitual, now);
+          } else if (input.action === 'abandon') {
+            guidedRitual = abandonLucidGuidedRitualProgress(currentRitual, now);
+          } else {
+            guidedRitual = resumeLucidGuidedRitualProgress(currentRitual, now);
+          }
+        }
+
+        saved = guidedRitual;
+        const mutationUpdatedAt =
+          Math.max(
+            now,
+            current.updatedAt,
+            guidedRitual.updatedAt,
+            ...current.progress.map((item) => item.updatedAt)
+          ) + 1;
+        const progress: LucidProgramProgress = {
+          ...existing,
+          status: 'active',
+          startedAt: existing.startedAt ?? now,
+          guidedRitual,
+          updatedAt: mutationUpdatedAt,
+        };
+        const next = applyLucidProgramProgress(current, progress, input.technique);
+        return {
+          next,
+          changed: diffLucidProgramProgress(current.progress, next.progress).map(entityForProgress),
+        };
+      });
+      if (!saved) throw new Error('Guided ritual was not saved');
+      return saved;
+    },
+    [commit]
+  );
+
+  const completeGuidedRitualSession = useCallback(
+    async (
+      technique: LucidGuidedRitualTechnique,
+      exerciseId: string,
+      sessionNumber: number,
+      sessionCount: number
+    ) => {
+      const next = await commit((current, now) => {
+        const existing = current.progress.find((item) => item.technique === technique);
+        const sessionId = guidedRitualSessionId(technique, exerciseId);
+        if (!existing?.guidedRitual || existing.guidedRitual.sessionId !== sessionId) {
+          throw new Error('Guided ritual has not started');
+        }
+        const guidedRitual = completeLucidGuidedRitualProgress(
+          existing.guidedRitual,
+          now
+        );
+        return completeProgramSessionMutation({
+          current,
+          technique,
+          exerciseId,
+          sessionNumber,
+          sessionCount,
+          now,
+          guidedRitual,
+        });
+      });
+      if (next.onboarding.analyticsConsent === true) {
+        await trackProductEvent('lucid_training_completed', {
+          technique,
+          phase: 'bedtime',
+          outcome: 'completed',
+          duration: '5_15m',
         });
       }
     },
@@ -1008,6 +1190,8 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       updatePreferences,
       startProgram,
       completeProgramSession,
+      updateGuidedRitual,
+      completeGuidedRitualSession,
       pauseProgram,
       addExperiment,
       addRealityCheck,
@@ -1037,6 +1221,8 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       updatePreferences,
       startProgram,
       completeProgramSession,
+      updateGuidedRitual,
+      completeGuidedRitualSession,
       pauseProgram,
       addExperiment,
       addRealityCheck,
