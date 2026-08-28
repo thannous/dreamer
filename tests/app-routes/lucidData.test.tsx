@@ -8,8 +8,10 @@ import type { LucidExperiment } from '@/lib/lucid/model';
 const mockAlert = jest.fn();
 const mockCanOpenURL = jest.fn();
 const mockOpenURL = jest.fn();
+const mockPush = jest.fn();
 const mockReplace = jest.fn();
 const mockResetLocalData = jest.fn();
+const mockClearLucidMorningVoiceNotes = jest.fn();
 const mockDeleteLucidTrainerCloudData = jest.fn();
 const mockBuildNoctaliaHandoffLinks = jest.fn();
 const mockShareLucidTrainerExport = jest.fn();
@@ -18,6 +20,8 @@ const mockRequestAccountDeletion = jest.fn();
 const mockFinalizeAccountDeletion = jest.fn();
 
 let mockUser: { id: string } | null;
+let mockUserScope: string;
+let mockLocale: 'en' | 'fr' | 'es' | 'de' | 'it';
 let mockState: ReturnType<typeof createState>;
 
 function createState() {
@@ -58,6 +62,7 @@ jest.mock('expo-router', () => ({
   router: {
     back: jest.fn(),
     canGoBack: jest.fn(() => true),
+    push: (...args: unknown[]) => mockPush(...args),
     replace: (...args: unknown[]) => mockReplace(...args),
   },
 }));
@@ -91,8 +96,9 @@ jest.mock('@/context/LucidTrainerContext', () => {
   return {
     useLucidTrainer: () => ({
       state: mockState,
-      content: getLucidContent('en'),
+      content: getLucidContent(mockLocale),
       resetLocalData: mockResetLocalData,
+      userScope: mockUserScope,
     }),
   };
 });
@@ -138,6 +144,11 @@ jest.mock('@/services/accountDeletionService', () => ({
   finalizeAccountDeletion: (...args: unknown[]) => mockFinalizeAccountDeletion(...args),
 }));
 
+jest.mock('@/services/lucidMorningVoiceNoteStorage', () => ({
+  clearLucidMorningVoiceNotes: (...args: unknown[]) =>
+    mockClearLucidMorningVoiceNotes(...args),
+}));
+
 jest.mock('@/services/lucidTrainerCloudData', () => ({
   deleteLucidTrainerCloudData: (...args: unknown[]) =>
     mockDeleteLucidTrainerCloudData(...args),
@@ -162,9 +173,14 @@ describe('Lucid Trainer data management', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUser = null;
+    mockUserScope = 'guest';
+    mockLocale = 'en';
     mockState = createState();
     mockResetLocalData.mockResolvedValue(undefined);
+    mockClearLucidMorningVoiceNotes.mockResolvedValue(undefined);
     mockDeleteLucidTrainerCloudData.mockResolvedValue(undefined);
+    mockRequestAccountDeletion.mockResolvedValue({ deleted: true });
+    mockFinalizeAccountDeletion.mockResolvedValue(undefined);
     mockCanOpenURL.mockResolvedValue(false);
     mockOpenURL.mockResolvedValue(undefined);
     mockBuildNoctaliaHandoffLinks.mockReturnValue({
@@ -179,8 +195,12 @@ describe('Lucid Trainer data management', () => {
   it('deletes the cloud generation before local data for a signed-in user even when sync is off', async () => {
     const order: string[] = [];
     mockUser = { id: 'user-1' };
+    mockUserScope = 'user:user-1';
     mockDeleteLucidTrainerCloudData.mockImplementation(async () => {
       order.push('cloud');
+    });
+    mockClearLucidMorningVoiceNotes.mockImplementation(async () => {
+      order.push('voice');
     });
     mockResetLocalData.mockImplementation(async () => {
       order.push('local');
@@ -192,8 +212,9 @@ describe('Lucid Trainer data management', () => {
     pressAlertAction('Delete trainer data');
 
     await waitFor(() => expect(mockResetLocalData).toHaveBeenCalledTimes(1));
-    expect(order).toEqual(['cloud', 'local']);
+    expect(order).toEqual(['cloud', 'voice', 'local']);
     expect(mockDeleteLucidTrainerCloudData).toHaveBeenCalledTimes(1);
+    expect(mockClearLucidMorningVoiceNotes).toHaveBeenCalledWith('user:user-1');
   });
 
   it('preserves local data and reports an error when cloud deletion fails', async () => {
@@ -210,15 +231,26 @@ describe('Lucid Trainer data management', () => {
         'The operation could not be completed. Your local data was preserved.'
       )
     );
+    expect(mockClearLucidMorningVoiceNotes).not.toHaveBeenCalled();
     expect(mockResetLocalData).not.toHaveBeenCalled();
   });
 
   it('deletes only local data for a guest', async () => {
+    const order: string[] = [];
+    mockClearLucidMorningVoiceNotes.mockImplementation(async () => {
+      order.push('voice');
+    });
+    mockResetLocalData.mockImplementation(async () => {
+      order.push('local');
+    });
+
     render(<LucidDataScreen />);
     fireEvent.click(screen.getByRole('button', { name: 'Delete trainer data' }));
     pressAlertAction('Delete trainer data');
 
     await waitFor(() => expect(mockResetLocalData).toHaveBeenCalledTimes(1));
+    expect(order).toEqual(['voice', 'local']);
+    expect(mockClearLucidMorningVoiceNotes).toHaveBeenCalledWith('guest');
     expect(mockDeleteLucidTrainerCloudData).not.toHaveBeenCalled();
   });
 
@@ -332,5 +364,161 @@ describe('Lucid Trainer data management', () => {
     expect((transfer as HTMLButtonElement).disabled).toBe(true);
     fireEvent.click(transfer);
     expect(mockBuildNoctaliaHandoffLinks).not.toHaveBeenCalled();
+  });
+
+  it('clears local voice notes then resets before finalizing a confirmed account deletion', async () => {
+    const order: string[] = [];
+    mockUser = { id: 'user-1' };
+    mockUserScope = 'user:user-1';
+    mockRequestAccountDeletion.mockImplementation(async () => {
+      order.push('request');
+      return { deleted: true };
+    });
+    mockClearLucidMorningVoiceNotes.mockImplementation(async () => {
+      order.push('voice');
+    });
+    mockResetLocalData.mockImplementation(async () => {
+      order.push('local');
+    });
+    mockFinalizeAccountDeletion.mockImplementation(async () => {
+      order.push('finalize');
+    });
+
+    render(<LucidDataScreen />);
+    fireEvent.click(screen.getByRole('button', { name: 'Delete entire account' }));
+    pressAlertAction('Delete entire account');
+
+    await waitFor(() => expect(mockFinalizeAccountDeletion).toHaveBeenCalledTimes(1));
+    expect(order).toEqual(['request', 'voice', 'local', 'finalize']);
+    expect(mockClearLucidMorningVoiceNotes).toHaveBeenCalledWith('user:user-1');
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/onboarding');
+  });
+
+  it('does not start local cleanup when account deletion is not confirmed', async () => {
+    mockUser = { id: 'user-1' };
+    mockRequestAccountDeletion.mockResolvedValue({ deleted: false });
+
+    render(<LucidDataScreen />);
+    fireEvent.click(screen.getByRole('button', { name: 'Delete entire account' }));
+    pressAlertAction('Delete entire account');
+
+    await waitFor(() =>
+      expect(mockAlert).toHaveBeenCalledWith(
+        'This could not be loaded. Your saved training remains on this device.',
+        'The operation could not be completed. Your local data was preserved.'
+      )
+    );
+    expect(mockClearLucidMorningVoiceNotes).not.toHaveBeenCalled();
+    expect(mockResetLocalData).not.toHaveBeenCalled();
+    expect(mockFinalizeAccountDeletion).not.toHaveBeenCalled();
+  });
+
+  it('reports a partial error when clearing voice notes fails after cloud deletion', async () => {
+    mockUser = { id: 'user-1' };
+    mockUserScope = 'user:user-1';
+    mockClearLucidMorningVoiceNotes.mockRejectedValue(new Error('voice clear failed'));
+
+    render(<LucidDataScreen />);
+    fireEvent.click(screen.getByRole('button', { name: 'Delete trainer data' }));
+    pressAlertAction('Delete trainer data');
+
+    await waitFor(() =>
+      expect(mockAlert).toHaveBeenCalledWith(
+        'Deletion incomplete',
+        'This operation could not be completed. Some data or media may already have been removed, including a cloud copy if one existed.'
+      )
+    );
+    expect(mockDeleteLucidTrainerCloudData).toHaveBeenCalledTimes(1);
+    expect(mockClearLucidMorningVoiceNotes).toHaveBeenCalledWith('user:user-1');
+    expect(mockResetLocalData).not.toHaveBeenCalled();
+  });
+
+  it('reports a partial error when local reset fails after voice notes are cleared', async () => {
+    mockResetLocalData.mockRejectedValue(new Error('reset failed'));
+
+    render(<LucidDataScreen />);
+    fireEvent.click(screen.getByRole('button', { name: 'Delete trainer data' }));
+    pressAlertAction('Delete trainer data');
+
+    await waitFor(() =>
+      expect(mockAlert).toHaveBeenCalledWith(
+        'Deletion incomplete',
+        'This operation could not be completed. Some data or media may already have been removed, including a cloud copy if one existed.'
+      )
+    );
+    expect(mockClearLucidMorningVoiceNotes).toHaveBeenCalledWith('guest');
+    expect(mockResetLocalData).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    [
+      'en' as const,
+      'Delete trainer data',
+      'Deletion incomplete',
+      'This operation could not be completed. Some data or media may already have been removed, including a cloud copy if one existed.',
+      'JSON and CSV export structured Lucid Trainer data. Audio files stay on this device and must be shared individually from Voice notes. Text notes remain included because this export is for you.',
+      'Open Voice notes',
+      'Optional account sync still excludes media. Audio files are never uploaded.',
+    ],
+    [
+      'fr' as const,
+      'Supprimer les données Trainer',
+      'Suppression incomplète',
+      'L’opération n’a pas abouti. Certaines données ou certains médias peuvent déjà avoir été retirés, y compris une copie cloud s’il en existait une.',
+      'JSON et CSV exportent les données structurées de Lucid Trainer. Les fichiers audio restent locaux et doivent être partagés un par un depuis Notes vocales. Les notes textuelles restent incluses car cet export est pour vous.',
+      'Ouvrir les notes vocales',
+      'La synchronisation facultative du compte exclut toujours les médias. Les fichiers audio ne sont jamais envoyés.',
+    ],
+    [
+      'es' as const,
+      'Eliminar datos',
+      'Eliminación incompleta',
+      'No se pudo completar la operación. Algunos datos o archivos pueden haberse eliminado ya, incluida una copia en la nube si existía.',
+      'JSON y CSV exportan tus datos estructurados de Lucid Trainer. Los archivos de audio permanecen en este dispositivo y deben compartirse uno a uno desde Notas de voz. Las notas de texto se incluyen porque esta exportación es para ti.',
+      'Abrir notas de voz',
+      'La sincronización opcional de la cuenta sigue excluyendo los medios. Los archivos de audio nunca se suben.',
+    ],
+    [
+      'de' as const,
+      'Trainer-Daten löschen',
+      'Löschen unvollständig',
+      'Der Vorgang konnte nicht abgeschlossen werden. Einige Daten oder Medien wurden möglicherweise bereits entfernt, einschließlich einer Cloudkopie, falls vorhanden.',
+      'JSON und CSV exportieren deine strukturierten Lucid-Trainer-Daten. Audiodateien bleiben lokal und müssen einzeln unter Sprachnotizen geteilt werden. Textnotizen sind enthalten, weil dieser Export für dich ist.',
+      'Sprachnotizen öffnen',
+      'Die optionale Kontosynchronisierung schließt Medien weiterhin aus. Audiodateien werden nie hochgeladen.',
+    ],
+    [
+      'it' as const,
+      'Elimina dati Trainer',
+      'Eliminazione incompleta',
+      'Operazione non completata. Alcuni dati o file potrebbero essere già stati rimossi, inclusa una copia cloud se esisteva.',
+      'JSON e CSV esportano i dati strutturati di Lucid Trainer. I file audio restano su questo dispositivo e vanno condivisi uno per uno da Note vocali. Le note testuali restano incluse perché l’export è per te.',
+      'Apri le note vocali',
+      'La sincronizzazione facoltativa dell’account continua a escludere i media. I file audio non vengono mai caricati.',
+    ],
+  ])(
+    'keeps export and partial-deletion copy honest in %s',
+    async (locale, deleteLabel, partialTitle, partialError, exportBody, voiceNotes, syncNote) => {
+      mockLocale = locale;
+      mockClearLucidMorningVoiceNotes.mockRejectedValue(new Error('voice clear failed'));
+
+      render(<LucidDataScreen />);
+      expect(screen.getByText(exportBody)).toBeTruthy();
+      expect(screen.getByText(syncNote)).toBeTruthy();
+      expect(screen.getByRole('button', { name: voiceNotes })).toBeTruthy();
+
+      fireEvent.click(screen.getByRole('button', { name: deleteLabel }));
+      pressAlertAction(deleteLabel);
+
+      await waitFor(() => expect(mockAlert).toHaveBeenCalledWith(partialTitle, partialError));
+      expect(mockResetLocalData).not.toHaveBeenCalled();
+    }
+  );
+
+  it('opens Voice notes without exporting audio files', () => {
+    render(<LucidDataScreen />);
+    fireEvent.click(screen.getByRole('button', { name: 'Open Voice notes' }));
+    expect(mockPush).toHaveBeenCalledWith('/lucid/morning-voice');
+    expect(mockShareLucidTrainerExport).not.toHaveBeenCalled();
   });
 });

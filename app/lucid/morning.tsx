@@ -1,7 +1,6 @@
-import { requestRecordingPermissionsAsync } from 'expo-audio';
 import * as Haptics from 'expo-haptics';
-import { router } from 'expo-router';
-import React, { useMemo, useRef, useState } from 'react';
+import { type Href, router } from 'expo-router';
+import React, { useMemo, useState } from 'react';
 import { Alert, Platform, Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
 
 import { LucidButton, LucidCard, LucidChoiceCard, LucidIconAction, LucidIconTile, LucidPill, LucidScreen } from '@/components/lucid/LucidUI';
@@ -16,7 +15,6 @@ import type {
   LucidNightCueOutcome,
   LucidPersonalFactor,
   LucidTechnique,
-  LucidVoiceCaptureState,
 } from '@/lib/lucid/model';
 import { closeLucidRoute, LUCID_HOME_HREF } from '@/lib/lucid/routes';
 
@@ -33,7 +31,7 @@ const COPY = {
     title: 'What remains this morning?',
     screenTitle: 'Morning check-in',
     speak: 'Speak',
-    speakHint: 'Ask the microphone, then type. Nothing is recorded yet.',
+    speakHint: 'The first tap asks for the microphone. Recording starts only if you allow it. Audio stays on this device and is not synced.',
     write: 'Write',
     writeHint: 'Type a few words while they are still close.',
     nothing: 'Nothing for now',
@@ -41,9 +39,6 @@ const COPY = {
     recallTitle: 'Write what remains',
     recallPlaceholder: 'A place, a feeling, a fragment…',
     recallNeeded: 'Add a few words before continuing.',
-    voiceStub: 'Voice recording is not active yet. Type what you remember. Nothing was recorded.',
-    voiceDenied: 'Microphone access was not granted. Type what you remember. Nothing was recorded.',
-    voiceUnavailable: 'Voice capture is not available here. Type what you remember. Nothing was recorded.',
     cue: 'Did you notice a night cue?',
     cue_not_heard: 'Not heard',
     cue_heard_in_dream: 'Heard in the dream',
@@ -95,7 +90,7 @@ const COPY = {
     title: 'Que reste-t-il ce matin ?',
     screenTitle: 'Point du matin',
     speak: 'Parler',
-    speakHint: 'Demander le micro, puis écrire. Rien n’est enregistré pour l’instant.',
+    speakHint: 'Le premier tap demande le micro. L’enregistrement commence seulement si tu l’autorises. L’audio reste sur cet appareil et n’est pas synchronisé.',
     write: 'Écrire',
     writeHint: 'Notez quelques mots tant qu’ils sont encore proches.',
     nothing: 'Rien pour l’instant',
@@ -103,9 +98,6 @@ const COPY = {
     recallTitle: 'Écrivez ce qui reste',
     recallPlaceholder: 'Un lieu, une sensation, un fragment…',
     recallNeeded: 'Ajoutez quelques mots avant de continuer.',
-    voiceStub: 'L’enregistrement vocal n’est pas encore actif. Écrivez ce dont vous vous souvenez. Rien n’a été enregistré.',
-    voiceDenied: 'L’accès au microphone n’a pas été accordé. Écrivez ce dont vous vous souvenez. Rien n’a été enregistré.',
-    voiceUnavailable: 'La capture vocale n’est pas disponible ici. Écrivez ce dont vous vous souvenez. Rien n’a été enregistré.',
     cue: 'Avez-vous remarqué un signal nocturne ?',
     cue_not_heard: 'Non entendue',
     cue_heard_in_dream: 'Entendue dans le rêve',
@@ -157,7 +149,7 @@ const COPY = {
     title: '¿Qué queda esta mañana?',
     screenTitle: 'Revisión de la mañana',
     speak: 'Hablar',
-    speakHint: 'Pedir el micrófono y luego escribir. Aún no se graba nada.',
+    speakHint: 'El primer toque pide el micrófono. La grabación empieza solo si lo permites. El audio permanece en este dispositivo y no se sincroniza.',
     write: 'Escribir',
     writeHint: 'Anota unas palabras mientras siguen cerca.',
     nothing: 'Nada por ahora',
@@ -165,9 +157,6 @@ const COPY = {
     recallTitle: 'Escribe lo que queda',
     recallPlaceholder: 'Un lugar, una sensación, un fragmento…',
     recallNeeded: 'Añade unas palabras antes de continuar.',
-    voiceStub: 'La grabación de voz aún no está activa. Escribe lo que recuerdas. No se grabó nada.',
-    voiceDenied: 'No se concedió el micrófono. Escribe lo que recuerdas. No se grabó nada.',
-    voiceUnavailable: 'La captura de voz no está disponible aquí. Escribe lo que recuerdas. No se grabó nada.',
     cue: '¿Notaste una señal nocturna?',
     cue_not_heard: 'No la oí',
     cue_heard_in_dream: 'La oí en el sueño',
@@ -219,7 +208,7 @@ const COPY = {
     title: 'Was bleibt heute Morgen?',
     screenTitle: 'Morgen-Check-in',
     speak: 'Sprechen',
-    speakHint: 'Mikrofon anfragen, dann tippen. Es wird noch nichts aufgenommen.',
+    speakHint: 'Der erste Tipp fragt nach dem Mikrofon. Die Aufnahme startet nur, wenn du zustimmst. Das Audio bleibt auf diesem Gerät und wird nicht synchronisiert.',
     write: 'Schreiben',
     writeHint: 'Schreib ein paar Worte, solange sie nah sind.',
     nothing: 'Jetzt nichts',
@@ -227,9 +216,6 @@ const COPY = {
     recallTitle: 'Schreib auf, was bleibt',
     recallPlaceholder: 'Ein Ort, ein Gefühl, ein Fragment…',
     recallNeeded: 'Füge ein paar Worte hinzu, bevor du weitergehst.',
-    voiceStub: 'Die Sprachaufnahme ist noch nicht aktiv. Tippe, woran du dich erinnerst. Es wurde nichts aufgenommen.',
-    voiceDenied: 'Kein Mikrofonzugriff. Tippe, woran du dich erinnerst. Es wurde nichts aufgenommen.',
-    voiceUnavailable: 'Spracheingabe ist hier nicht verfügbar. Tippe, woran du dich erinnerst. Es wurde nichts aufgenommen.',
     cue: 'Hast du ein Nachtsignal bemerkt?',
     cue_not_heard: 'Nicht gehört',
     cue_heard_in_dream: 'Im Traum gehört',
@@ -281,7 +267,7 @@ const COPY = {
     title: 'Cosa resta stamattina?',
     screenTitle: 'Check-in del mattino',
     speak: 'Parlare',
-    speakHint: 'Chiedi il microfono, poi scrivi. Non si registra ancora nulla.',
+    speakHint: 'Il primo tap chiede il microfono. La registrazione inizia solo se lo consenti. L’audio resta su questo dispositivo e non viene sincronizzato.',
     write: 'Scrivere',
     writeHint: 'Annota poche parole mentre sono ancora vicine.',
     nothing: 'Niente per ora',
@@ -289,9 +275,6 @@ const COPY = {
     recallTitle: 'Scrivi ciò che resta',
     recallPlaceholder: 'Un luogo, una sensazione, un frammento…',
     recallNeeded: 'Aggiungi qualche parola prima di continuare.',
-    voiceStub: 'La registrazione vocale non è ancora attiva. Scrivi ciò che ricordi. Non è stato registrato nulla.',
-    voiceDenied: 'Accesso al microfono non concesso. Scrivi ciò che ricordi. Non è stato registrato nulla.',
-    voiceUnavailable: 'La cattura vocale non è disponibile qui. Scrivi ciò che ricordi. Non è stato registrato nulla.',
     cue: 'Hai notato un segnale notturno?',
     cue_not_heard: 'Non udito',
     cue_heard_in_dream: 'Udito nel sogno',
@@ -357,7 +340,6 @@ export default function LucidMorningScreen() {
   const [captureMode, setCaptureMode] = useState<LucidDreamCaptureMode | null>(null);
   const [recallText, setRecallText] = useState('');
   const [cueOutcome, setCueOutcome] = useState<LucidNightCueOutcome | null>(null);
-  const [voiceCapture, setVoiceCapture] = useState<LucidVoiceCaptureState | undefined>(undefined);
   const [technique, setTechnique] = useState<LucidTechnique | null>(null);
   const [preparationMinutes, setPreparationMinutes] = useState<number | null>(null);
   const [result, setResult] = useState<LucidExperimentResult | null>(null);
@@ -368,7 +350,6 @@ export default function LucidMorningScreen() {
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
   const [step, setStep] = useState<MorningStep>('capture');
-  const permissionRequestRef = useRef<Promise<LucidVoiceCaptureState> | null>(null);
   const autoLink = useMemo(
     () =>
       state
@@ -410,35 +391,18 @@ export default function LucidMorningScreen() {
     if (!answerReady) return;
     if (step === 'capture') {
       if (captureMode === 'nothing_for_now') setStep('cue');
-      else if (captureMode === 'write' || captureMode === 'speak') setStep('text');
+      else if (captureMode === 'write') setStep('text');
       return;
     }
     if (step === 'text') setStep('cue');
     if (step === 'cue') setStep('summary');
   };
-  const resolveVoiceCapture = () => {
-    if (!permissionRequestRef.current) {
-      permissionRequestRef.current = (async () => {
-        try {
-          const permission = await requestRecordingPermissionsAsync();
-          const next: LucidVoiceCaptureState = permission.granted ? 'stub' : 'permission_denied';
-          setVoiceCapture(next);
-          return next;
-        } catch {
-          setVoiceCapture('unavailable');
-          return 'unavailable' as const;
-        }
-      })();
-    }
-    return permissionRequestRef.current;
-  };
-  const chooseCapture = async (mode: LucidDreamCaptureMode) => {
-    setCaptureMode(mode);
+  const chooseCapture = (mode: LucidDreamCaptureMode) => {
     if (mode === 'speak') {
-      await resolveVoiceCapture();
-      setStep('text');
+      router.push('/lucid/morning-voice?autoStart=1' as Href);
       return;
     }
+    setCaptureMode(mode);
     if (mode === 'write') {
       setStep('text');
       return;
@@ -455,7 +419,6 @@ export default function LucidMorningScreen() {
   const save = async () => {
     if (captureMode === null || cueOutcome === null) return;
     if (captureMode !== 'nothing_for_now' && trimmedRecall.length === 0) return;
-    if (captureMode === 'speak' && !voiceCapture) return;
     setSaving(true);
     try {
       await addExperiment({
@@ -470,7 +433,6 @@ export default function LucidMorningScreen() {
         captureMode,
         ...(captureMode === 'nothing_for_now' ? {} : { recallText: trimmedRecall }),
         cueOutcome,
-        ...(captureMode === 'speak' && voiceCapture ? { voiceCapture } : {}),
       });
       if (Platform.OS !== 'web') void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       Alert.alert(copy.saved, content.morningReview.saveOfflineNote, [{ text: content.chrome.common.done, onPress: close }]);
@@ -478,13 +440,6 @@ export default function LucidMorningScreen() {
       setSaving(false);
     }
   };
-  const voiceStatus =
-    voiceCapture === 'permission_denied'
-      ? copy.voiceDenied
-      : voiceCapture === 'unavailable'
-        ? copy.voiceUnavailable
-        : copy.voiceStub;
-
   return (
     <LucidScreen
       eyebrow={step === 'details' ? copy.detailsTitle : `${copy.step} ${stepNumber} ${copy.of} ${stepCount}`}
@@ -506,9 +461,9 @@ export default function LucidMorningScreen() {
           title={copy.title}
           groupLabel={copy.title}
           choices={[
-            { label: copy.speak, description: copy.speakHint, selected: captureMode === 'speak', onPress: () => void chooseCapture('speak'), icon: 'mic', testID: 'lucid-morning-speak' },
-            { label: copy.write, description: copy.writeHint, selected: captureMode === 'write', onPress: () => void chooseCapture('write'), icon: 'create', testID: 'lucid-morning-write' },
-            { label: copy.nothing, description: copy.nothingHint, selected: captureMode === 'nothing_for_now', onPress: () => void chooseCapture('nothing_for_now'), icon: 'pause', testID: 'lucid-morning-nothing' },
+            { label: copy.speak, description: copy.speakHint, selected: false, onPress: () => chooseCapture('speak'), icon: 'mic', testID: 'lucid-morning-speak' },
+            { label: copy.write, description: copy.writeHint, selected: captureMode === 'write', onPress: () => chooseCapture('write'), icon: 'create', testID: 'lucid-morning-write' },
+            { label: copy.nothing, description: copy.nothingHint, selected: captureMode === 'nothing_for_now', onPress: () => chooseCapture('nothing_for_now'), icon: 'pause', testID: 'lucid-morning-nothing' },
           ]}
         />
       ) : null}
@@ -517,8 +472,6 @@ export default function LucidMorningScreen() {
           copy={copy}
           value={recallText}
           onChange={setRecallText}
-          showVoiceStub={captureMode === 'speak'}
-          voiceStatus={voiceStatus}
         />
       ) : null}
       {step === 'cue' ? (
@@ -680,14 +633,10 @@ function RecallStep({
   copy,
   value,
   onChange,
-  showVoiceStub,
-  voiceStatus,
 }: {
   copy: LocalCopy;
   value: string;
   onChange: (value: string) => void;
-  showVoiceStub: boolean;
-  voiceStatus: string;
 }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
@@ -697,11 +646,6 @@ function RecallStep({
         <LucidIconTile icon="create" tone="amber" size="lg" />
         <Text accessibilityRole="header" style={[styles.promptTitle, { color: palette.text }]}>{copy.recallTitle}</Text>
       </View>
-      {showVoiceStub ? (
-        <Text accessibilityLiveRegion="polite" style={[styles.voiceStatus, { color: palette.textSecondary }]}>
-          {voiceStatus}
-        </Text>
-      ) : null}
       <TextInput
         accessibilityLabel={copy.recallTitle}
         multiline
@@ -1036,7 +980,6 @@ const styles = StyleSheet.create({
   unset: { minHeight: 44, alignItems: 'center', justifyContent: 'center', borderRadius: LucidRadius.md, borderWidth: 1, paddingHorizontal: LucidSpace.md },
   unsetText: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   notes: { minHeight: 120, borderRadius: LucidRadius.lg, borderWidth: 1, padding: LucidSpace.lg, fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
-  voiceStatus: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1], textAlign: 'center' },
   bannerTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
   bannerHint: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   summaryTop: { alignItems: 'center', gap: LucidSpace.md },

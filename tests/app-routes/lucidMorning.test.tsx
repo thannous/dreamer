@@ -1,14 +1,14 @@
 /* @jest-environment jsdom */
 
 import React from 'react';
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 const mockAlert = jest.fn();
 const mockAddExperiment = jest.fn().mockResolvedValue(undefined);
 const mockReplace = jest.fn();
 const mockBack = jest.fn();
 const mockCanGoBack = jest.fn().mockReturnValue(false);
-const mockRequestRecordingPermissionsAsync = jest.fn();
+const mockPush = jest.fn();
 
 const mockState = {
   progress: [] as {
@@ -83,12 +83,8 @@ jest.mock('expo-router', () => ({
     back: mockBack,
     canGoBack: mockCanGoBack,
     replace: mockReplace,
+    push: (...args: unknown[]) => mockPush(...args),
   },
-}));
-
-jest.mock('expo-audio', () => ({
-  requestRecordingPermissionsAsync: (...args: unknown[]) =>
-    mockRequestRecordingPermissionsAsync(...args),
 }));
 
 jest.mock('@/constants/lucidTheme', () => ({
@@ -119,11 +115,13 @@ jest.mock('@/hooks/useLucidNow', () => ({
   useLucidNow: () => Date.UTC(2026, 7, 27, 8, 0, 0),
 }));
 
+let mockLocale: 'en' | 'fr' | 'es' | 'de' | 'it' = 'en';
+
 jest.mock('@/context/LucidTrainerContext', () => {
   const { getLucidContent } = jest.requireActual('@/lib/lucid/content');
   return {
     useLucidTrainer: () => ({
-      content: getLucidContent('en'),
+      content: { ...getLucidContent(mockLocale), locale: mockLocale },
       addExperiment: mockAddExperiment,
       state: mockState,
     }),
@@ -183,11 +181,13 @@ jest.mock('@/components/lucid/LucidUI', () => ({
     testID?: string;
   }) => <section data-testid={testID}>{children}</section>,
   LucidChoiceCard: ({
+    description,
     onPress,
     selected,
     testID,
     title,
   }: {
+    description?: string;
     onPress: () => void;
     selected: boolean;
     testID?: string;
@@ -195,6 +195,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   }) => (
     <button aria-pressed={selected} data-testid={testID} onClick={onPress}>
       {title}
+      {description ? <span>{description}</span> : null}
     </button>
   ),
   LucidIconTile: () => null,
@@ -212,8 +213,8 @@ async function completeNothingPath(cueLabel = 'Unsure') {
 describe('Lucid morning review form', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLocale = 'en';
     mockState.progress = [];
-    mockRequestRecordingPermissionsAsync.mockResolvedValue({ granted: true });
   });
 
   afterEach(cleanup);
@@ -234,14 +235,14 @@ describe('Lucid morning review form', () => {
     render(<LucidMorningScreen />);
 
     expect(screen.getByTestId('lucid-morning')).toBeTruthy();
-    expect(mockRequestRecordingPermissionsAsync).not.toHaveBeenCalled();
+    expect(mockPush).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByTestId('lucid-morning-write'));
-    expect(mockRequestRecordingPermissionsAsync).not.toHaveBeenCalled();
+    expect(mockPush).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: 'Back' }));
 
     fireEvent.click(screen.getByTestId('lucid-morning-nothing'));
-    expect(mockRequestRecordingPermissionsAsync).not.toHaveBeenCalled();
+    expect(mockPush).not.toHaveBeenCalled();
   });
 
   it('requires non-empty trimmed write text and a cue before save', async () => {
@@ -309,94 +310,37 @@ describe('Lucid morning review form', () => {
     });
   });
 
-  it('requests the microphone once for Speak, shows an honest stub, and stores the matching voice state', async () => {
+  it('opens the local voice notes route with autoStart and does not ask expo-audio or write a stub', () => {
     render(<LucidMorningScreen />);
 
-    fireEvent.click(screen.getByTestId('lucid-morning-speak'));
-    await waitFor(() => expect(mockRequestRecordingPermissionsAsync).toHaveBeenCalledTimes(1));
-    await waitFor(() => expect(screen.getByTestId('lucid-morning-recall-text')).toBeTruthy());
-    expect(screen.getByText(/Voice recording is not active yet/)).toBeTruthy();
-    expect(screen.getByText(/Nothing was recorded/)).toBeTruthy();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-    fireEvent.click(screen.getByTestId('lucid-morning-write'));
-    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-    fireEvent.click(screen.getByTestId('lucid-morning-speak'));
-    expect(mockRequestRecordingPermissionsAsync).toHaveBeenCalledTimes(1);
-    await waitFor(() => expect(screen.getByTestId('lucid-morning-recall-text')).toBeTruthy());
-
-    fireEvent.change(screen.getByTestId('lucid-morning-recall-text'), {
-      target: { value: 'typed after the stub' },
-    });
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
-    fireEvent.click(screen.getByTestId('lucid-morning-cue-not_heard'));
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
-    fireEvent.click(screen.getByTestId('lucid-morning-save'));
-
-    await waitFor(() => expect(mockAddExperiment).toHaveBeenCalledTimes(1));
-    expect(mockAddExperiment).toHaveBeenCalledWith({
-      technique: null,
-      preparationMinutes: null,
-      result: null,
-      lucidityLevel: null,
-      recallLevel: null,
-      sleepQuality: null,
-      factors: [],
-      notes: undefined,
-      captureMode: 'speak',
-      recallText: 'typed after the stub',
-      cueOutcome: 'not_heard',
-      voiceCapture: 'stub',
-    });
-  });
-
-  it('stores permission_denied when Speak is refused and still requires typed fallback', async () => {
-    mockRequestRecordingPermissionsAsync.mockResolvedValue({ granted: false });
-    render(<LucidMorningScreen />);
+    expect(screen.getByText(/The first tap asks for the microphone/)).toBeTruthy();
+    expect(screen.getByText(/Recording starts only if you allow it/)).toBeTruthy();
+    expect(screen.getByText(/Audio stays on this device and is not synced/)).toBeTruthy();
 
     fireEvent.click(screen.getByTestId('lucid-morning-speak'));
-    await waitFor(() =>
-      expect(screen.getByText(/Microphone access was not granted/)).toBeTruthy()
-    );
-    await waitFor(() => expect(screen.getByTestId('lucid-morning-recall-text')).toBeTruthy());
-    fireEvent.change(screen.getByTestId('lucid-morning-recall-text'), {
-      target: { value: 'typed after denial' },
-    });
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
-    fireEvent.click(screen.getByTestId('lucid-morning-cue-heard_woke'));
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
-    fireEvent.click(screen.getByTestId('lucid-morning-save'));
-
-    await waitFor(() => expect(mockAddExperiment).toHaveBeenCalledTimes(1));
-    expect(mockAddExperiment.mock.calls[0][0]).toMatchObject({
-      captureMode: 'speak',
-      voiceCapture: 'permission_denied',
-      recallText: 'typed after denial',
-      cueOutcome: 'heard_woke',
-    });
-  });
-
-  it('does not enter the text step until a shared pending Speak permission resolves once', async () => {
-    let resolvePermission: ((value: { granted: boolean }) => void) | undefined;
-    mockRequestRecordingPermissionsAsync.mockImplementation(
-      () =>
-        new Promise<{ granted: boolean }>((resolve) => {
-          resolvePermission = resolve;
-        })
-    );
-    render(<LucidMorningScreen />);
-
-    fireEvent.click(screen.getByTestId('lucid-morning-speak'));
-    fireEvent.click(screen.getByTestId('lucid-morning-speak'));
+    expect(mockPush).toHaveBeenCalledTimes(1);
+    expect(mockPush).toHaveBeenCalledWith('/lucid/morning-voice?autoStart=1');
     expect(screen.queryByTestId('lucid-morning-recall-text')).toBeNull();
-    expect(mockRequestRecordingPermissionsAsync).toHaveBeenCalledTimes(1);
+    expect(mockAddExperiment).not.toHaveBeenCalled();
+  });
 
-    await act(async () => {
-      resolvePermission?.({ granted: true });
-    });
-    await waitFor(() => expect(screen.getByTestId('lucid-morning-recall-text')).toBeTruthy());
-    expect(mockRequestRecordingPermissionsAsync).toHaveBeenCalledTimes(1);
-    expect(screen.getByText(/Nothing was recorded/)).toBeTruthy();
+  it('keeps honest Speak copy in every locale before the tap', () => {
+    const expected = {
+      en: /The first tap asks for the microphone/,
+      fr: /Le premier tap demande le micro/,
+      es: /El primer toque pide el micrófono/,
+      de: /Der erste Tipp fragt nach dem Mikrofon/,
+      it: /Il primo tap chiede il microfono/,
+    } as const;
+    for (const locale of ['en', 'fr', 'es', 'de', 'it'] as const) {
+      cleanup();
+      mockLocale = locale;
+      render(<LucidMorningScreen />);
+      expect(screen.getByText(expected[locale])).toBeTruthy();
+      const body = screen.getByTestId('lucid-morning').textContent ?? '';
+      expect(body.toLowerCase()).toMatch(/this device|cet appareil|este dispositivo|diesem gerät|questo dispositivo/);
+      expect(body.toLowerCase()).toMatch(/not synced|n’est pas synchronisé|no se sincroniza|nicht synchronisiert|non viene sincronizzato/);
+    }
   });
 
   it('clears optional technique, preparation and result through explicit unset controls', async () => {
