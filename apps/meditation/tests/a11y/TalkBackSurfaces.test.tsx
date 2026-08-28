@@ -459,14 +459,18 @@ describe('TI-394 TalkBack surfaces', () => {
 
     const motion = screen.getByTestId('settings.motion');
     expect(motion.props.accessibilityRole).toBe('text');
+    expect(motion.props.accessible).toBe(true);
     expect(motion.props.accessibilityLabel).toBe(
       `${translate('en', 'settings.motion')}. ${translate('en', 'settings.motion.system')}`
     );
     expect(motion.props.onPress).toBeUndefined();
-    expect(motion.props.accessibilityState).toMatchObject({ disabled: true });
+    expect(motion.props.onPressIn).toBeUndefined();
+    expect(motion.props.accessibilityState).toBeUndefined();
+    expect(motion.props.accessibilityState?.disabled).toBeUndefined();
 
     const theme = screen.getByTestId(TID.Button.SettingsTheme);
     expect(theme.props.accessibilityRole).toBe('button');
+    expect(theme.props.accessibilityState).toMatchObject({ disabled: false });
   });
 
 });

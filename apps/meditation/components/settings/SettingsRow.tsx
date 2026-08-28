@@ -31,26 +31,20 @@ export function SettingsRow({
   const { fontScale } = useWindowDimensions();
   const { colors } = useTheme();
   const stackValue = fontScale >= 1.5 && !!value;
+  const interactive = Boolean(onPress);
   const { style, handlePressIn, handlePressOut } = usePressMotion({
     surface: 'card',
     restOpacity: disabled ? 0.4 : 1,
   });
 
-  return (
-    <AnimatedPressable
-      testID={testID}
-      accessibilityRole={onPress ? 'button' : 'text'}
-      accessibilityLabel={value ? `${label}. ${value}` : label}
-      accessibilityState={onPress ? { disabled } : undefined}
-      disabled={disabled || !onPress}
-      onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      style={style}
-      className={[
-        'border-b border-hairline px-gutter py-4',
-        stackValue ? 'gap-2' : 'flex-row items-center justify-between',
-      ].join(' ')}>
+  const rowClassName = [
+    'border-b border-hairline px-gutter py-4',
+    stackValue ? 'gap-2' : 'flex-row items-center justify-between',
+  ].join(' ');
+  const accessibilityLabel = value ? `${label}. ${value}` : label;
+
+  const content = (
+    <>
       <Text variant="body" className={stackValue ? '' : 'flex-1'}>
         {label}
       </Text>
@@ -66,10 +60,41 @@ export function SettingsRow({
         ) : null}
         {/* Only rows that lead somewhere get the chevron: it promises a screen,
             and the theme row cycles in place. */}
-        {onPress && !inline ? (
+        {interactive && !inline ? (
           <IconSymbol name="chevron.right" color={colors.textTertiary} size={18} />
         ) : null}
       </View>
+    </>
+  );
+
+  if (!interactive) {
+    // A disabled Pressable still lands in Android as clickable/focusable.
+    // Static facts such as Reduce animations must be a real View.
+    return (
+      <View
+        testID={testID}
+        accessible
+        accessibilityRole="text"
+        accessibilityLabel={accessibilityLabel}
+        className={rowClassName}>
+        {content}
+      </View>
+    );
+  }
+
+  return (
+    <AnimatedPressable
+      testID={testID}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityState={{ disabled }}
+      disabled={disabled}
+      onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={style}
+      className={rowClassName}>
+      {content}
     </AnimatedPressable>
   );
 }
