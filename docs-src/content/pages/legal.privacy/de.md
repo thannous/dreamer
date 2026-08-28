@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Datenschutzerklärung",
   "publishedTime": "",
-  "modifiedTime": "2026-07-23",
+  "modifiedTime": "2026-08-27",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Datenschutzerklärung</h1>
-<p class="text-lg text-purple-200/80 mb-10">Gültig ab 23. Juli 2026</p>
+<p class="text-lg text-purple-200/80 mb-10">Gültig ab 27. August 2026</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -80,7 +80,7 @@
       <li><strong>Kontodaten:</strong> E-Mail-Adresse, gehashter Passwortwert, Sprache, Anzeigepräferenzen und Kontoverwaltungsdaten.</li>
       <li><strong>Traumdaten:</strong> Texte, Transkripte, KI-Analysen, Zitate, Themen, Traumtypen, Favoriten, generierte Bilder und Verlauf der geführten Reflexion.</li>
       <li><strong>Audio:</strong> Wenn du die Sprachfunktion nutzt, wird deine Stimme zur Erstellung eines Transkripts verarbeitet. Noctalia speichert Audiodateien nicht dauerhaft auf seinen Servern; sie werden nur im technischen Ablauf verarbeitet. Gespeichert wird das Transkript.</li>
-      <li><strong>Technische Daten:</strong> Fehler-, Leistungs- und Sicherheitsprotokolle, App-Version, Betriebssystem und ein gehashter Geräteindikator ausschließlich zur Verwaltung kostenloser Kontingente. Auf Android kann Noctalia zusätzlich eine begrenzte Zahl funktionaler Ereignisse messen (angezeigter Onboarding-Schritt, getroffene Auswahl, gespeicherter Traum oder aufgerufenes Ergebnis). Dafür wird eine zufällige Journey-Kennung höchstens sieben Tage auf dem Gerät gespeichert. Diese interne Messung enthält niemals Traumtext, Titel oder Analyse und weder E-Mail-Adresse, Konto- oder Gerätekennung noch eine dauerhaft gespeicherte IP-Adresse. Sie verwendet keine Drittanbieter-Marketing-Analytics und kann in der Einführung oder den Einstellungen deaktiviert werden.</li>
+      <li><strong>Technische Daten:</strong> Fehler-, Leistungs- und Sicherheitsprotokolle, App-Version, Betriebssystem und ein gehashter Geräteindikator ausschließlich zur Verwaltung kostenloser Kontingente. Auf Android und iOS kann Noctalia zusätzlich eine begrenzte Zahl funktionaler Ereignisse messen (angezeigter Onboarding-Schritt, getroffene Auswahl, gespeicherter Traum oder aufgerufenes Ergebnis). Dafür wird eine zufällige Journey-Kennung höchstens sieben Tage auf dem Gerät gespeichert. Diese interne Messung enthält niemals Traumtext, Titel oder Analyse und weder E-Mail-Adresse, Konto- oder Gerätekennung noch eine dauerhaft gespeicherte IP-Adresse. Sie verwendet keine Drittanbieter-Marketing-Analytics und kann in der Einführung oder den Einstellungen deaktiviert werden.</li>
       <li><strong>Reichweitenmessung der Website:</strong> Beim Besuch von noctalia.app misst Ahrefs Web Analytics Seitenaufrufe, Referrer und gegebenenfalls Klicks auf externe Links sowie Formularübermittlungen. Außerdem werden Browser, Gerät, Betriebssystem, Sprache und ein ungefährer Standort auf Landes- und Stadtebene abgeleitet. Dabei werden weder Cookies noch dauerhafte Kennungen verwendet. Die rohe IP-Adresse wird nur vorübergehend für den ungefähren Standort und einen täglich gesalzenen Besucher-Hash genutzt und anschließend verworfen, ohne gespeichert zu werden. Konto- oder Trauminhalte werden nicht an Ahrefs übermittelt.</li>
       <li><strong>Nutzungsanalyse der Website mit deiner Einwilligung:</strong> Ausschließlich um Noctalia und diese Website zu verbessern, misst Microsoft Clarity besuchte Seiten, Klicks, Scrollvorgänge und grundlegende technische Informationen und erstellt Heatmaps sowie Sitzungsaufzeichnungen, wenn du Analytics erlaubst. Angezeigte Texte, Eingabefelder und Auswahllisten werden durch strikte Maskierung verborgen. Clarity kann die Cookies <code>_clck</code> und <code>_clsk</code> setzen. Werbespeicherung bleibt abgelehnt; Traum- oder Kontodaten senden wir nicht absichtlich an Clarity.</li>
       <li><strong>Reichweitenmessung mit deiner Einwilligung:</strong> Ausschließlich um Noctalia und diese Website zu verbessern, misst Google Analytics besuchte Seiten, Zugriffsquellen, grundlegende Interaktionen und technische Informationen (Browser, Gerät, Betriebssystem, Sprache, ungefährer Standort auf Länderebene), wenn du Analytics erlaubst. Google Analytics kann die Cookies <code>_ga</code> und <code>_ga_*</code> setzen. Werbefunktionen und Werbespeicherung bleiben deaktiviert; Traum- oder Kontodaten senden wir nicht absichtlich an Google Analytics.</li>
@@ -145,7 +145,7 @@
       <li><strong>Nutzungsanalyse mit Einwilligung:</strong> Microsoft stellt Clarity erst nach deiner Zustimmung bereit. Einzelheiten findest du in der <a href="https://privacy.microsoft.com/privacystatement" class="text-dream-salmon hover:underline">Datenschutzerklärung von Microsoft</a>.</li>
       <li><strong>Reichweitenmessung mit Einwilligung:</strong> Google stellt Google Analytics erst nach deiner Zustimmung bereit. Einzelheiten findest du in der <a href="https://policies.google.com/privacy" class="text-dream-salmon hover:underline">Datenschutzerklärung von Google</a>.</li>
       <li><strong>KI- und Sprachanbieter:</strong> Google Gemini, Google Cloud Speech-to-Text und gegebenenfalls vergleichbare Anbieter.</li>
-      <li><strong>Abonnementverwaltung:</strong> RevenueCat verarbeitet anonyme Nutzerkennungen und Kaufdaten des jeweils genutzten App-Stores, derzeit Google Play. Vollständige Zahlungsdaten laufen nicht über Noctalia. Nach der Kontolöschung löscht Noctalia die Abonnementdaten auf seiner Seite; Kaufaufzeichnungen können jedoch von Google Play und RevenueCat gemäß ihren eigenen gesetzlichen Pflichten aufbewahrt werden. Die Kontolöschung kündigt das Google-Play-Abonnement nicht; es wird in Google Play &gt; Zahlungen und Abos verwaltet.</li>
+      <li><strong>Abonnementverwaltung:</strong> RevenueCat verarbeitet anonyme Nutzerkennungen und Kaufdaten des jeweils genutzten App-Stores, Apple App Store oder Google Play. Vollständige Zahlungsdaten laufen nicht über Noctalia. Nach der Kontolöschung löscht Noctalia die Abonnementdaten auf seiner Seite; Kaufaufzeichnungen können jedoch von Apple, Google Play und RevenueCat gemäß ihren eigenen gesetzlichen Pflichten aufbewahrt werden. Die Kontolöschung kündigt das Abonnement nicht; es wird in den Abonnementeinstellungen des Apple App Store oder von Google Play verwaltet.</li>
       <li><strong>Behörden und Berater:</strong> soweit gesetzlich erforderlich oder zur Wahrung unserer Rechte.</li>
     </ul>
   </section>
