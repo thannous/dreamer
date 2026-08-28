@@ -5,7 +5,9 @@ import { Alert } from 'react-native';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 const mockBack = jest.fn();
+const mockReplace = jest.fn();
 const mockPush = jest.fn();
+let mockCanGoBack = false;
 const mockRefresh = jest.fn();
 const mockRename = jest.fn().mockResolvedValue(undefined);
 const mockHide = jest.fn().mockResolvedValue(undefined);
@@ -70,7 +72,14 @@ let mockAtlasState = {
   error: null as string | null,
 };
 
-jest.mock('expo-router', () => ({ router: { back: mockBack, push: mockPush } }));
+jest.mock('expo-router', () => ({
+  router: {
+    back: mockBack,
+    replace: mockReplace,
+    push: mockPush,
+    canGoBack: () => mockCanGoBack,
+  },
+}));
 jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
 jest.mock('react-native', () => jest.requireActual('../react-native-stub'));
 
@@ -138,6 +147,7 @@ const { default: LucidDreamAtlasScreen } = require('@/app/lucid/dream-atlas');
 
 describe('Lucid dream atlas screen', () => {
   beforeEach(() => {
+    mockCanGoBack = false;
     mockReduceMotion = false;
     mockDreamSignCandidates = [
       {
@@ -294,5 +304,20 @@ describe('Lucid dream atlas screen', () => {
     expect(screen.queryByText('persistence_failed')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Réessayer' }));
     expect(mockRefresh).toHaveBeenCalled();
+  });
+
+  it('replaces to journal when Close has no history', () => {
+    render(<LucidDreamAtlasScreen />);
+    fireEvent.click(screen.getByLabelText('Fermer'));
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/(tabs)/journal');
+    expect(mockBack).not.toHaveBeenCalled();
+  });
+
+  it('uses native back when Close has history', () => {
+    mockCanGoBack = true;
+    render(<LucidDreamAtlasScreen />);
+    fireEvent.click(screen.getByLabelText('Fermer'));
+    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockReplace).not.toHaveBeenCalled();
   });
 });

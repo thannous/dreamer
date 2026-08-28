@@ -18,6 +18,7 @@ const SIGN_ID = 'sign:mirror';
 
 const mockBack = jest.fn();
 const mockReplace = jest.fn();
+let mockCanGoBack = false;
 const mockStart = jest.fn();
 const mockRecognize = jest.fn();
 const mockConfirmIntention = jest.fn();
@@ -91,7 +92,12 @@ function started(now = NOW): LucidDreamRehearsalSession {
 const mockPush = jest.fn();
 
 jest.mock('expo-router', () => ({
-  router: { back: mockBack, replace: mockReplace, push: mockPush },
+  router: {
+    back: mockBack,
+    replace: mockReplace,
+    push: mockPush,
+    canGoBack: () => mockCanGoBack,
+  },
   useLocalSearchParams: () => mockParams,
 }));
 jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
@@ -220,6 +226,7 @@ describe('Lucid dream rehearsal screen', () => {
     mockRefresh.mockReset().mockResolvedValue(undefined);
     mockPlayTransition.mockClear();
     mockSelectionAsync.mockClear();
+    mockCanGoBack = false;
     mockBack.mockClear();
     mockReplace.mockClear();
     mockPush.mockClear();
@@ -305,7 +312,8 @@ describe('Lucid dream rehearsal screen', () => {
     rerender(<LucidDreamRehearsalScreen />);
     fireEvent.click(screen.getByLabelText('Fermer'));
     await waitFor(() => expect(mockInterrupt).toHaveBeenCalled());
-    expect(mockBack).toHaveBeenCalled();
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/dream-atlas');
+    expect(mockBack).not.toHaveBeenCalled();
   });
 
   it('keeps text complete when sound and haptics fail, and uses static presentation with Reduce Motion', async () => {
@@ -389,7 +397,8 @@ describe('Lucid dream rehearsal screen', () => {
     expect(mockStart).not.toHaveBeenCalled();
     expect(mockPush).toHaveBeenCalledWith('/lucid/subscription?source=dream_rehearsal');
     fireEvent.click(screen.getByTestId('lucid-dream-rehearsal-continue-free'));
-    expect(mockBack).toHaveBeenCalled();
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/dream-atlas');
+    expect(mockBack).not.toHaveBeenCalled();
   });
 
   it('lets Plus start another rehearsal after the preview', async () => {
@@ -438,6 +447,45 @@ describe('Lucid dream rehearsal screen', () => {
     fireEvent.click(screen.getByTestId('lucid-dream-rehearsal-primary'));
     await waitFor(() => expect(mockRefreshSubscription).toHaveBeenCalledTimes(1));
     expect(mockStart).not.toHaveBeenCalled();
+  });
+
+  it('keeps native back after interrupting an active rehearsal when history exists', async () => {
+    mockCanGoBack = true;
+    mockRehearsal = { ...mockRehearsal, currentSession: started() };
+    render(<LucidDreamRehearsalScreen />);
+    fireEvent.click(screen.getByLabelText('Fermer'));
+    await waitFor(() => expect(mockInterrupt).toHaveBeenCalled());
+    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('does not close after a failed rehearsal interrupt', async () => {
+    mockInterrupt.mockRejectedValueOnce(new Error('persist failed'));
+    mockRehearsal = { ...mockRehearsal, currentSession: started() };
+    render(<LucidDreamRehearsalScreen />);
+    fireEvent.click(screen.getByLabelText('Fermer'));
+    await waitFor(() => expect(mockInterrupt).toHaveBeenCalled());
+    expect(mockBack).not.toHaveBeenCalled();
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('replaces to the atlas from the checking continue-free button when history is empty', () => {
+    mockSubscription = {
+      ...mockSubscription,
+      requiresAuth: false,
+      loading: false,
+      status: null,
+    };
+    mockRehearsal = {
+      ...mockRehearsal,
+      currentSession: null,
+      completions: [{ sessionId: 'rehearse_done' }],
+    };
+    render(<LucidDreamRehearsalScreen />);
+    expect(screen.getByTestId('lucid-dream-rehearsal-checking')).not.toBeNull();
+    fireEvent.click(screen.getByTestId('lucid-dream-rehearsal-continue-free'));
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/dream-atlas');
+    expect(mockBack).not.toHaveBeenCalled();
   });
 
   it('lets a guest complete the free preview without a paywall', async () => {

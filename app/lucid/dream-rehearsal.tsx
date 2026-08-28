@@ -32,6 +32,7 @@ import {
   canStartLucidDreamRehearsal,
   resolveLucidAdditionalDreamRehearsalAccess,
 } from '@/lib/lucid/plusEntitlements';
+import { closeLucidRoute } from '@/lib/lucid/routes';
 import type { LucidDreamRehearsalStorageErrorReason } from '@/services/lucidDreamRehearsalStorage';
 
 const COPY = {
@@ -483,11 +484,11 @@ export default function LucidDreamRehearsalScreen() {
     if (currentForScene?.status === 'active') {
       await runAction('leave', async () => {
         await rehearsal.interrupt();
-        router.back();
+        closeLucidRoute(router, '/lucid/dream-atlas');
       });
       return;
     }
-    router.back();
+    closeLucidRoute(router, '/lucid/dream-atlas');
   };
 
   const errorMessage = errorCopy(copy, rehearsal.error);
@@ -568,7 +569,7 @@ export default function LucidDreamRehearsalScreen() {
           <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.gateBody}</Text>
           <LucidButton
             label={copy.gateEscape}
-            onPress={() => router.back()}
+            onPress={() => closeLucidRoute(router, '/lucid/dream-atlas')}
             testID="lucid-dream-rehearsal-continue-free"
             variant="secondary"
           />
@@ -581,7 +582,7 @@ export default function LucidDreamRehearsalScreen() {
           <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.checkingBody}</Text>
           <LucidButton
             label={copy.continueFree}
-            onPress={() => router.back()}
+            onPress={() => closeLucidRoute(router, '/lucid/dream-atlas')}
             testID="lucid-dream-rehearsal-continue-free"
             variant="secondary"
           />

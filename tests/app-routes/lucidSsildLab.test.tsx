@@ -15,6 +15,7 @@ import {
 const NOW = 1_700_000_000_000;
 const mockBack = jest.fn();
 const mockReplace = jest.fn();
+let mockCanGoBack = false;
 const mockStartNew = jest.fn();
 const mockTick = jest.fn();
 const mockPause = jest.fn();
@@ -114,7 +115,11 @@ function syncLab(session: LucidSsildSensoryLabSession | null, extras: Partial<ty
 }
 
 jest.mock('expo-router', () => ({
-  router: { back: mockBack, replace: (...args: unknown[]) => mockReplace(...args) },
+  router: {
+    back: mockBack,
+    replace: (...args: unknown[]) => mockReplace(...args),
+    canGoBack: () => mockCanGoBack,
+  },
 }));
 jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
 jest.mock('react-native', () => {
@@ -244,6 +249,7 @@ describe('Lucid SSILD sensory lab screen', () => {
     mockPlayTransition.mockClear();
     mockStopSound.mockClear();
     mockSelectionAsync.mockClear();
+    mockCanGoBack = false;
     mockBack.mockClear();
     mockReplace.mockClear();
   });
@@ -387,7 +393,8 @@ describe('Lucid SSILD sensory lab screen', () => {
     rerender(<LucidSsildSensoryLabScreen />);
     fireEvent.click(screen.getByLabelText('Fermer'));
     await waitFor(() => expect(mockExit).toHaveBeenCalledTimes(1));
-    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/(tabs)/programs');
+    expect(mockBack).not.toHaveBeenCalled();
     expect(mockComplete).not.toHaveBeenCalled();
 
     syncLab(running());
@@ -472,6 +479,36 @@ describe('Lucid SSILD sensory lab screen', () => {
       expect(screen.queryByText(/premium/i)).toBeNull();
       expect(screen.queryByText(/paywall/i)).toBeNull();
     }
+  });
+
+  it('uses native back after exiting a running SSILD lab when history exists', async () => {
+    mockCanGoBack = true;
+    syncLab(running());
+    render(<LucidSsildSensoryLabScreen />);
+    fireEvent.click(screen.getByLabelText('Fermer'));
+    await waitFor(() => expect(mockExit).toHaveBeenCalledTimes(1));
+    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('replaces to programs after leaving a running SSILD lab when history is empty', async () => {
+    syncLab(running());
+    render(<LucidSsildSensoryLabScreen />);
+    fireEvent.click(screen.getByTestId('lucid-ssild-lab-leave'));
+    await waitFor(() => expect(mockExit).toHaveBeenCalledTimes(1));
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/(tabs)/programs');
+    expect(mockBack).not.toHaveBeenCalled();
+    expect(mockComplete).not.toHaveBeenCalled();
+  });
+
+  it('does not close after a failed SSILD exit', async () => {
+    mockExit.mockRejectedValueOnce(new Error('persist failed'));
+    syncLab(running());
+    render(<LucidSsildSensoryLabScreen />);
+    fireEvent.click(screen.getByTestId('lucid-ssild-lab-leave'));
+    await waitFor(() => expect(mockExit).toHaveBeenCalledTimes(1));
+    expect(mockBack).not.toHaveBeenCalled();
+    expect(mockReplace).not.toHaveBeenCalled();
   });
 
   it('retries a failed load and never exposes a no-op Start', async () => {

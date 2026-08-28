@@ -25,6 +25,7 @@ import { useLucidGuidedRitualSound } from '@/hooks/useLucidGuidedRitualSound';
 import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
 import { useLucidSsildSensoryLab } from '@/hooks/useLucidSsildSensoryLab';
 import { createLucidGuidedRitualPlan } from '@/lib/lucid/guidedRitual';
+import { closeLucidRoute } from '@/lib/lucid/routes';
 import { evaluateLucidSafetyPolicyFromState } from '@/lib/lucid/safety';
 import type {
   LucidSsildSensoryFocus,
@@ -605,12 +606,12 @@ export default function LucidSsildSensoryLabScreen() {
       await runAction('leave', async () => {
         await stop();
         await lab.exit();
-        router.back();
+        closeLucidRoute(router, '/lucid/(tabs)/programs');
       });
       return;
     }
     await stop();
-    router.back();
+    closeLucidRoute(router, '/lucid/(tabs)/programs');
   };
 
   const errorMessage = errorCopy(copy, lab.error);

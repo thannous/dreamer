@@ -25,6 +25,7 @@ import { useLucidDreamAtlas } from '@/hooks/useLucidDreamAtlas';
 import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
 import { resolveLucidDreamAtlasRehearsalSignId } from '@/lib/lucid/dreamAtlas';
 import { extractLucidDreamSignCandidates, reconcileLucidDreamSignDecisions } from '@/lib/lucid/dreamSigns';
+import { closeLucidRoute } from '@/lib/lucid/routes';
 
 const COPY = {
   en: {
@@ -324,7 +325,7 @@ export default function LucidDreamAtlasScreen() {
       subtitle={copy.subtitle}
       testID="lucid-dream-atlas"
       title={copy.title}
-      trailing={<LucidIconAction icon="close" label={copy.close} onPress={() => router.back()} />}
+      trailing={<LucidIconAction icon="close" label={copy.close} onPress={() => closeLucidRoute(router, '/lucid/(tabs)/journal')} />}
     >
       <LucidCard accent="accent" style={styles.privacyCard}>
         <Ionicons color={palette.accent} name="phone-portrait-outline" size={LucidIcon.md} />

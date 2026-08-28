@@ -23,6 +23,7 @@ import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { reconcileLucidDreamSignDecisions } from '@/lib/lucid/dreamSigns';
 import type { LucidDreamSignDecision } from '@/lib/lucid/model';
+import { closeLucidRoute } from '@/lib/lucid/routes';
 
 const COPY = {
   en: {
@@ -119,7 +120,7 @@ export default function LucidDreamSignsScreen() {
       subtitle={copy.subtitle}
       testID="lucid-dream-signs"
       title={copy.title}
-      trailing={<LucidIconAction icon="close" label={copy.close} onPress={() => router.back()} />}
+      trailing={<LucidIconAction icon="close" label={copy.close} onPress={() => closeLucidRoute(router, '/lucid/(tabs)/journal')} />}
     >
       <LucidCard accent="accent" style={styles.privacyCard}>
         <Ionicons color={palette.accent} name="phone-portrait-outline" size={LucidIcon.md} />

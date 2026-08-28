@@ -4,7 +4,9 @@ import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 const mockBack = jest.fn();
+const mockReplace = jest.fn();
 const mockPush = jest.fn();
+let mockCanGoBack = false;
 const mockSaveDecision = jest.fn().mockResolvedValue(undefined);
 
 const mockDreams = [
@@ -12,7 +14,14 @@ const mockDreams = [
   { id: 102, title: 'La chambre blanche', transcript: 'Le même miroir revenait.' },
 ];
 
-jest.mock('expo-router', () => ({ router: { back: mockBack, push: mockPush } }));
+jest.mock('expo-router', () => ({
+  router: {
+    back: mockBack,
+    replace: mockReplace,
+    push: mockPush,
+    canGoBack: () => mockCanGoBack,
+  },
+}));
 jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
 jest.mock('react-native', () => jest.requireActual('../react-native-stub'));
 
@@ -69,6 +78,10 @@ jest.mock('@/components/lucid/LucidUI', () => ({
 const { default: LucidDreamSignsScreen } = require('@/app/lucid/dream-signs');
 
 describe('Lucid dream signs', () => {
+  beforeEach(() => {
+    mockCanGoBack = false;
+  });
+
   afterEach(() => {
     cleanup();
     jest.clearAllMocks();
@@ -106,5 +119,20 @@ describe('Lucid dream signs', () => {
 
     fireEvent.click(screen.getByTestId('lucid-dream-sign-source-101'));
     expect(mockPush).toHaveBeenCalledWith('/journal/101');
+  });
+
+  it('replaces to journal when Close has no history', () => {
+    render(<LucidDreamSignsScreen />);
+    fireEvent.click(screen.getByLabelText('Fermer'));
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/(tabs)/journal');
+    expect(mockBack).not.toHaveBeenCalled();
+  });
+
+  it('uses native back when Close has history', () => {
+    mockCanGoBack = true;
+    render(<LucidDreamSignsScreen />);
+    fireEvent.click(screen.getByLabelText('Fermer'));
+    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockReplace).not.toHaveBeenCalled();
   });
 });

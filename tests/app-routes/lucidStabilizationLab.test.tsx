@@ -11,6 +11,8 @@ import {
 
 const NOW = 1_700_000_000_000;
 const mockBack = jest.fn();
+const mockReplace = jest.fn();
+let mockCanGoBack = false;
 const mockStartNew = jest.fn();
 const mockAdvance = jest.fn();
 const mockRepeat = jest.fn();
@@ -53,7 +55,13 @@ function active(overrides: Partial<LucidStabilizationLabSession> = {}): LucidSta
   return { ...startLucidStabilizationLabSession(idle(), NOW + 1), ...overrides };
 }
 
-jest.mock('expo-router', () => ({ router: { back: mockBack } }));
+jest.mock('expo-router', () => ({
+  router: {
+    back: mockBack,
+    replace: mockReplace,
+    canGoBack: () => mockCanGoBack,
+  },
+}));
 jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
 const mockWindow = { width: 390, fontScale: 1 };
 jest.mock('react-native', () => {
@@ -164,7 +172,9 @@ describe('Lucid stabilization lab screen', () => {
     mockPlayTransition.mockClear();
     mockNotificationAsync.mockClear();
     mockSelectionAsync.mockClear();
+    mockCanGoBack = false;
     mockBack.mockClear();
+    mockReplace.mockClear();
     mockWindow.width = 390;
     mockWindow.fontScale = 1;
   });
@@ -268,7 +278,8 @@ describe('Lucid stabilization lab screen', () => {
     rerender(<LucidStabilizationLabScreen />);
     fireEvent.click(screen.getByLabelText('Fermer'));
     await waitFor(() => expect(mockInterrupt).toHaveBeenCalledTimes(1));
-    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/(tabs)/programs');
+    expect(mockBack).not.toHaveBeenCalled();
   });
 
   it('completes only when the last step is already marked', async () => {
@@ -339,10 +350,31 @@ describe('Lucid stabilization lab screen', () => {
   });
 
   it('goes back without interrupting a paused session', () => {
+    mockCanGoBack = true;
     mockLab.currentSession = { ...active(), status: 'paused' };
     render(<LucidStabilizationLabScreen />);
     fireEvent.click(screen.getByLabelText('Fermer'));
     expect(mockInterrupt).not.toHaveBeenCalled();
     expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('replaces to programs after leaving an active lab when history is empty', async () => {
+    mockLab.currentSession = active();
+    render(<LucidStabilizationLabScreen />);
+    fireEvent.click(screen.getByTestId('lucid-stabilization-lab-leave'));
+    await waitFor(() => expect(mockInterrupt).toHaveBeenCalledTimes(1));
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/(tabs)/programs');
+    expect(mockBack).not.toHaveBeenCalled();
+  });
+
+  it('does not close after a failed lab interrupt', async () => {
+    mockInterrupt.mockRejectedValueOnce(new Error('persist failed'));
+    mockLab.currentSession = active();
+    render(<LucidStabilizationLabScreen />);
+    fireEvent.click(screen.getByTestId('lucid-stabilization-lab-leave'));
+    await waitFor(() => expect(mockInterrupt).toHaveBeenCalledTimes(1));
+    expect(mockBack).not.toHaveBeenCalled();
+    expect(mockReplace).not.toHaveBeenCalled();
   });
 });

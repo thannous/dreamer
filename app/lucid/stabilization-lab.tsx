@@ -16,6 +16,7 @@ import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidGuidedRitualSound } from '@/hooks/useLucidGuidedRitualSound';
 import { useLucidStabilizationLab } from '@/hooks/useLucidStabilizationLab';
+import { closeLucidRoute } from '@/lib/lucid/routes';
 import {
   LUCID_STABILIZATION_LAB_STEP_COUNT,
   LUCID_STABILIZATION_LAB_STEPS,
@@ -494,11 +495,11 @@ export default function LucidStabilizationLabScreen() {
     if (session?.status === 'active') {
       await runAction('leave', async () => {
         await lab.interrupt();
-        router.back();
+        closeLucidRoute(router, '/lucid/(tabs)/programs');
       });
       return;
     }
-    router.back();
+    closeLucidRoute(router, '/lucid/(tabs)/programs');
   };
 
   const errorMessage = errorCopy(copy, lab.error);
