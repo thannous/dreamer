@@ -30,6 +30,8 @@ const COPY = {
   en: {
     eyebrow: 'Your dream memory', title: 'Journal', subtitle: 'Real dreams stay at the centre of your practice.',
     profile: 'Open profile', capture: 'Capture a dream', signs: 'Dream signs', signsHint: 'Review patterns before they can guide training.',
+    atlas: 'Dream atlas', atlasHint: 'See confirmed signs and the dreams they come from.',
+    voice: 'Morning voice notes', voiceHint: 'Speak a local morning note. Nothing is uploaded.',
     search: 'Search your dreams', dreams: 'Dreams', dreamCount: (count: number) => `${count} ${count === 1 ? 'dream' : 'dreams'}`,
     empty: 'Your recorded dreams will appear here.', noResults: 'No dream matches this search.', untitled: 'Untitled dream',
     more: (count: number) => `${count} more dreams remain available in your journal.`, openDream: (title: string) => `Open dream: ${title}`,
@@ -37,6 +39,8 @@ const COPY = {
   fr: {
     eyebrow: 'Ta mémoire onirique', title: 'Journal', subtitle: 'Tes rêves réels restent au centre de ta pratique.',
     profile: 'Ouvrir le profil', capture: 'Noter un rêve', signs: 'Signes oniriques', signsHint: 'Examine les motifs avant qu’ils puissent guider l’entraînement.',
+    atlas: 'Atlas des rêves', atlasHint: 'Voir les signes confirmés et les rêves sources.',
+    voice: 'Notes vocales du matin', voiceHint: 'Parle une note locale du matin. Rien n’est envoyé.',
     search: 'Rechercher dans tes rêves', dreams: 'Rêves', dreamCount: (count: number) => `${count} rêve${count > 1 ? 's' : ''}`,
     empty: 'Tes rêves enregistrés apparaîtront ici.', noResults: 'Aucun rêve ne correspond à cette recherche.', untitled: 'Rêve sans titre',
     more: (count: number) => `${count} autres rêves restent disponibles dans ton journal.`, openDream: (title: string) => `Ouvrir le rêve : ${title}`,
@@ -44,6 +48,8 @@ const COPY = {
   es: {
     eyebrow: 'Tu memoria onírica', title: 'Diario', subtitle: 'Tus sueños reales siguen en el centro de la práctica.',
     profile: 'Abrir perfil', capture: 'Anotar un sueño', signs: 'Señales oníricas', signsHint: 'Revisa los patrones antes de que puedan guiar el entrenamiento.',
+    atlas: 'Atlas de sueños', atlasHint: 'Ver las señales confirmadas y los sueños de origen.',
+    voice: 'Notas de voz de la mañana', voiceHint: 'Habla una nota local de la mañana. Nada se envía.',
     search: 'Buscar en tus sueños', dreams: 'Sueños', dreamCount: (count: number) => `${count} ${count === 1 ? 'sueño' : 'sueños'}`,
     empty: 'Tus sueños guardados aparecerán aquí.', noResults: 'Ningún sueño coincide con esta búsqueda.', untitled: 'Sueño sin título',
     more: (count: number) => `${count} sueños más siguen disponibles en tu diario.`, openDream: (title: string) => `Abrir sueño: ${title}`,
@@ -51,6 +57,8 @@ const COPY = {
   de: {
     eyebrow: 'Deine Traumerinnerung', title: 'Journal', subtitle: 'Deine echten Träume bleiben der Mittelpunkt der Übung.',
     profile: 'Profil öffnen', capture: 'Traum notieren', signs: 'Traumzeichen', signsHint: 'Prüfe Muster, bevor sie das Training beeinflussen dürfen.',
+    atlas: 'Traumatlas', atlasHint: 'Bestätigte Zeichen und ihre Quellträume ansehen.',
+    voice: 'Morgendliche Sprachnotizen', voiceHint: 'Sprich eine lokale Morgennotiz. Nichts wird hochgeladen.',
     search: 'Träume durchsuchen', dreams: 'Träume', dreamCount: (count: number) => `${count} ${count === 1 ? 'Traum' : 'Träume'}`,
     empty: 'Deine gespeicherten Träume erscheinen hier.', noResults: 'Kein Traum passt zu dieser Suche.', untitled: 'Traum ohne Titel',
     more: (count: number) => `${count} weitere Träume bleiben in deinem Journal verfügbar.`, openDream: (title: string) => `Traum öffnen: ${title}`,
@@ -58,6 +66,8 @@ const COPY = {
   it: {
     eyebrow: 'La tua memoria onirica', title: 'Diario', subtitle: 'I tuoi sogni reali restano al centro della pratica.',
     profile: 'Apri profilo', capture: 'Annota un sogno', signs: 'Segnali onirici', signsHint: 'Rivedi gli schemi prima che possano guidare l’allenamento.',
+    atlas: 'Atlante dei sogni', atlasHint: 'Vedi i segni confermati e i sogni da cui nascono.',
+    voice: 'Note vocali del mattino', voiceHint: 'Parla una nota locale del mattino. Nulla viene caricato.',
     search: 'Cerca nei tuoi sogni', dreams: 'Sogni', dreamCount: (count: number) => `${count} ${count === 1 ? 'sogno' : 'sogni'}`,
     empty: 'I sogni salvati appariranno qui.', noResults: 'Nessun sogno corrisponde alla ricerca.', untitled: 'Sogno senza titolo',
     more: (count: number) => `${count} altri sogni restano disponibili nel diario.`, openDream: (title: string) => `Apri sogno: ${title}`,
@@ -139,6 +149,36 @@ export default function LucidJournalScreen() {
           </View>
           <Ionicons color={palette.accent} name="chevron-forward" size={LucidIcon.md} />
         </LucidCard>
+        <LucidCard
+          accessibilityLabel={`${copy.atlas}. ${copy.atlasHint}`}
+          onPress={() => router.push('/lucid/dream-atlas' as never)}
+          style={styles.atlasCard}
+          testID="lucid-journal-atlas"
+        >
+          <View style={[styles.signsIcon, { backgroundColor: palette.accentSoft }]}>
+            <Ionicons color={palette.accent} name="map-outline" size={LucidIcon.lg} />
+          </View>
+          <View style={styles.signsCopy}>
+            <Text style={[styles.cardTitle, { color: palette.text }]}>{copy.atlas}</Text>
+            <Text style={[styles.cardBody, { color: palette.textSecondary }]}>{copy.atlasHint}</Text>
+          </View>
+          <Ionicons color={palette.accent} name="chevron-forward" size={LucidIcon.md} />
+        </LucidCard>
+        <LucidCard
+          accessibilityLabel={`${copy.voice}. ${copy.voiceHint}`}
+          onPress={() => router.push('/lucid/morning-voice' as never)}
+          style={styles.atlasCard}
+          testID="lucid-journal-voice"
+        >
+          <View style={[styles.signsIcon, { backgroundColor: palette.accentSoft }]}>
+            <Ionicons color={palette.accent} name="mic-outline" size={LucidIcon.lg} />
+          </View>
+          <View style={styles.signsCopy}>
+            <Text style={[styles.cardTitle, { color: palette.text }]}>{copy.voice}</Text>
+            <Text style={[styles.cardBody, { color: palette.textSecondary }]}>{copy.voiceHint}</Text>
+          </View>
+          <Ionicons color={palette.accent} name="chevron-forward" size={LucidIcon.md} />
+        </LucidCard>
       </View>
 
       <View
@@ -215,6 +255,12 @@ const styles = StyleSheet.create({
   actions: { gap: LucidSpace.sm },
   signsCard: {
     minHeight: 88,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: LucidSpace.md,
+  },
+  atlasCard: {
+    minHeight: 44,
     flexDirection: 'row',
     alignItems: 'center',
     gap: LucidSpace.md,

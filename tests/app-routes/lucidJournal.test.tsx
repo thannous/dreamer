@@ -117,22 +117,34 @@ jest.mock('@/components/lucid/LucidUI', () => ({
 const { default: LucidJournalScreen } = require('@/app/lucid/(tabs)/journal');
 
 describe('Lucid Journal tab', () => {
-  it('uses the real local journal and exposes profile, capture, signs and dream routes', () => {
+  it('uses the real local journal and exposes profile, capture, signs, voice notes and dream routes', () => {
     render(<LucidJournalScreen />);
 
     expect(screen.getByText('La forêt bleue')).not.toBeNull();
     expect(screen.getByText('Train de nuit')).not.toBeNull();
     expect(screen.getByText('2 rêves')).not.toBeNull();
+    expect(screen.getByText('Noter un rêve')).not.toBeNull();
+    expect(screen.getByText('Signes oniriques')).not.toBeNull();
+    expect(screen.getByText('Atlas des rêves')).not.toBeNull();
+    expect(screen.getByText('Voir les signes confirmés et les rêves sources.')).not.toBeNull();
+    expect(screen.getByLabelText('Atlas des rêves. Voir les signes confirmés et les rêves sources.')).not.toBeNull();
+    expect(screen.getByText('Notes vocales du matin')).not.toBeNull();
+    expect(screen.getByText('Parle une note locale du matin. Rien n’est envoyé.')).not.toBeNull();
+    expect(screen.getByLabelText('Notes vocales du matin. Parle une note locale du matin. Rien n’est envoyé.')).not.toBeNull();
 
     fireEvent.click(screen.getByRole('button', { name: 'Ouvrir le profil' }));
     fireEvent.click(screen.getByTestId('lucid-journal-capture'));
     fireEvent.click(screen.getByTestId('lucid-journal-signs'));
+    fireEvent.click(screen.getByTestId('lucid-journal-atlas'));
+    fireEvent.click(screen.getByTestId('lucid-journal-voice'));
     fireEvent.click(screen.getByTestId(`lucid-journal-dream-${mockDreams[0].id}`));
 
     expect(mockPush).toHaveBeenNthCalledWith(1, '/lucid/(tabs)/settings');
     expect(mockPush).toHaveBeenNthCalledWith(2, '/recording');
     expect(mockPush).toHaveBeenNthCalledWith(3, '/lucid/dream-signs');
-    expect(mockPush).toHaveBeenNthCalledWith(4, `/journal/${mockDreams[0].id}`);
+    expect(mockPush).toHaveBeenNthCalledWith(4, '/lucid/dream-atlas');
+    expect(mockPush).toHaveBeenNthCalledWith(5, '/lucid/morning-voice');
+    expect(mockPush).toHaveBeenNthCalledWith(6, `/journal/${mockDreams[0].id}`);
   });
 
   it('searches accent-insensitively without duplicating journal state', () => {

@@ -131,7 +131,9 @@ describe('Lucid Trainer programs', () => {
     expect(mild.getAttribute('aria-label')).toContain('2 / 7 séances');
     expect(screen.getByRole('progressbar', { name: 'MILD, 2 / 7 séances' }).getAttribute('aria-valuenow')).toBe('29');
     expect(screen.queryByText('Point de départ suggéré')).toBeNull();
-    expect(screen.getAllByRole('button').map((card) => card.getAttribute('data-testid'))).toEqual([
+    expect(
+      screen.getAllByRole('button').map((card) => card.getAttribute('data-testid')).filter((id) => id?.startsWith('lucid-program-'))
+    ).toEqual([
       'lucid-program-mild',
       'lucid-program-ssild',
       'lucid-program-wbtb',
@@ -145,11 +147,14 @@ describe('Lucid Trainer programs', () => {
 
     render(<LucidProgramsScreen />);
 
-    expect(screen.getAllByRole('button').map((card) => card.getAttribute('data-testid'))).toEqual([
+    expect(
+      screen.getAllByRole('button').map((card) => card.getAttribute('data-testid')).filter((id) => id?.startsWith('lucid-program-'))
+    ).toEqual([
       'lucid-program-mild',
       'lucid-program-ssild',
       'lucid-program-wbtb',
     ]);
+    expect(screen.getByTestId('lucid-programs-ssild-lab')).not.toBeNull();
     expect(screen.getByTestId('lucid-program-mild-recommended')).not.toBeNull();
     expect(screen.getByTestId('lucid-program-mild-why').textContent).toBe(
       'Pourquoi ? Le rappel suffit pour un premier essai lucide avec MILD guidé.'
@@ -291,5 +296,15 @@ describe('Lucid Trainer programs', () => {
 
     fireEvent.click(screen.getByTestId('lucid-program-ssild'));
     expect(mockPush).toHaveBeenCalledWith('/lucid/program/ssild');
+  });
+
+  it('opens the SSILD sensory lab from Programs without a paywall', () => {
+    render(<LucidProgramsScreen />);
+
+    const lab = screen.getByTestId('lucid-programs-ssild-lab');
+    expect(lab.getAttribute('aria-label')).toContain('laboratoire sensoriel SSILD');
+    expect(screen.queryByText(/premium/i)).toBeNull();
+    fireEvent.click(lab);
+    expect(mockPush).toHaveBeenCalledWith('/lucid/ssild-lab');
   });
 });

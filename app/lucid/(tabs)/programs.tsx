@@ -49,6 +49,8 @@ const COPY = {
     suggested: 'Suggested starting point',
     unavailable: 'Unavailable for now',
     why: 'Why?',
+    ssildLab: 'Open SSILD sensory lab',
+    ssildLabHint: 'A local sight-sound-body rehearsal. Sleep stays first.',
     wbtbBeginnerWarning: 'Interrupts sleep; approach gradually.',
     whyReasons: {
       prudent_defaults: 'A cautious MILD start matches your current profile.',
@@ -74,6 +76,8 @@ const COPY = {
     suggested: 'Point de départ suggéré',
     unavailable: 'Indisponible pour le moment',
     why: 'Pourquoi ?',
+    ssildLab: 'Ouvrir le laboratoire sensoriel SSILD',
+    ssildLabHint: 'Un exercice local vue-son-corps. Le sommeil reste prioritaire.',
     wbtbBeginnerWarning: 'Interrompt le sommeil ; à aborder progressivement.',
     whyReasons: {
       prudent_defaults: 'Un départ MILD prudent correspond à votre profil actuel.',
@@ -99,6 +103,8 @@ const COPY = {
     suggested: 'Punto de partida sugerido',
     unavailable: 'No disponible por ahora',
     why: '¿Por qué?',
+    ssildLab: 'Abrir el laboratorio sensorial SSILD',
+    ssildLabHint: 'Un ensayo local vista-oído-cuerpo. El sueño sigue primero.',
     wbtbBeginnerWarning: 'Interrumpe el sueño; empieza gradualmente.',
     whyReasons: {
       prudent_defaults: 'Un inicio prudente con MILD encaja con tu perfil actual.',
@@ -124,6 +130,8 @@ const COPY = {
     suggested: 'Empfohlener Ausgangspunkt',
     unavailable: 'Zurzeit nicht verfügbar',
     why: 'Warum?',
+    ssildLab: 'SSILD-Sensoriklabor öffnen',
+    ssildLabHint: 'Eine lokale Sehen-Hören-Körper-Übung. Schlaf bleibt vorrangig.',
     wbtbBeginnerWarning: 'Unterbricht den Schlaf; langsam herantasten.',
     whyReasons: {
       prudent_defaults: 'Ein vorsichtiger MILD-Start passt zu deinem aktuellen Profil.',
@@ -149,6 +157,8 @@ const COPY = {
     suggested: 'Punto di partenza suggerito',
     unavailable: 'Non disponibile per ora',
     why: 'Perché?',
+    ssildLab: 'Apri il laboratorio sensoriale SSILD',
+    ssildLabHint: 'Una prova locale vista-suono-corpo. Il sonno resta prima.',
     wbtbBeginnerWarning: 'Interrompe il sonno; procedi gradualmente.',
     whyReasons: {
       prudent_defaults: 'Un avvio MILD prudente corrisponde al tuo profilo attuale.',
@@ -314,6 +324,15 @@ export default function LucidProgramsScreen() {
         <Ionicons accessibilityElementsHidden importantForAccessibility="no-hide-descendants" name="moon-outline" size={LucidIcon.md} color={palette.accent} />
         <Text style={[styles.notice, { color: palette.textSecondary }]}>{content.science.sleepPriority}</Text>
       </View>
+      <LucidCard
+        accessibilityLabel={`${copy.ssildLab}. ${copy.ssildLabHint}`}
+        onPress={() => router.push('/lucid/ssild-lab' as never)}
+        style={styles.labEntry}
+        testID="lucid-programs-ssild-lab"
+      >
+        <Text style={[styles.labTitle, { color: palette.text }]}>{copy.ssildLab}</Text>
+        <Text style={[styles.notice, { color: palette.textSecondary }]}>{copy.ssildLabHint}</Text>
+      </LucidCard>
     </LucidScreen>
   );
 }
@@ -341,4 +360,6 @@ const styles = StyleSheet.create({
   why: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   noticeRow: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.sm, paddingHorizontal: LucidSpace.sm },
   notice: { flex: 1, fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  labEntry: { gap: LucidSpace.xs },
+  labTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1] },
 });
