@@ -114,6 +114,42 @@ function toError(error: unknown, fallback: string): Error {
   return error instanceof Error ? error : new Error(fallback);
 }
 
+async function establishGoogleOAuthSession(params: URLSearchParams): Promise<Session> {
+  const oauthError = params.get('error_description') ?? params.get('error');
+  if (oauthError) {
+    throw new Error(oauthError);
+  }
+
+  const accessToken = params.get('access_token');
+  const refreshToken = params.get('refresh_token');
+  if (accessToken || refreshToken) {
+    if (!accessToken || !refreshToken) {
+      throw new Error('Google sign-in callback was malformed.');
+    }
+    const { data, error } = await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
+    if (error) throw error;
+    if (!data.session) {
+      throw new Error('Google sign-in did not return a session.');
+    }
+    return data.session;
+  }
+
+  const code = params.get('code');
+  if (code) {
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) throw error;
+    if (!data.session) {
+      throw new Error('Google sign-in did not return a session.');
+    }
+    return data.session;
+  }
+
+  throw new Error('Google sign-in callback was missing credentials.');
+}
+
 type OAuthPopupWaiter = {
   abort: (error?: unknown) => void;
   promise: Promise<Session | null>;
@@ -125,7 +161,7 @@ function completeGoogleOAuthPopup(popup: Window): OAuthPopupWaiter {
 
   const promise = new Promise<Session | null>((resolve, reject) => {
     let settled = false;
-    let exchangeStarted = false;
+    let sessionStarted = false;
 
     const cleanup = () => {
       browserWindow.removeEventListener('message', onMessage);
@@ -162,7 +198,7 @@ function completeGoogleOAuthPopup(popup: Window): OAuthPopupWaiter {
       if (event.origin !== browserWindow.location.origin) return;
       if (event.source !== popup) return;
       if (typeof event.data !== 'string' || !event.data) return;
-      if (settled || exchangeStarted) return;
+      if (settled || sessionStarted) return;
 
       let callbackUrl: URL;
       try {
@@ -177,25 +213,12 @@ function completeGoogleOAuthPopup(popup: Window): OAuthPopupWaiter {
         return;
       }
 
-      exchangeStarted = true;
+      sessionStarted = true;
 
       void (async () => {
         try {
-          const params = readOAuthParams(event.data);
-          const oauthError = params.get('error_description') ?? params.get('error');
-          if (oauthError) {
-            throw new Error(oauthError);
-          }
-          const code = params.get('code');
-          if (!code) {
-            throw new Error('Google sign-in failed.');
-          }
-          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-          if (error) throw error;
-          if (!data.session) {
-            throw new Error('Google sign-in did not return a session.');
-          }
-          settleResolve(data.session);
+          const session = await establishGoogleOAuthSession(readOAuthParams(event.data));
+          settleResolve(session);
         } catch (error) {
           settleReject(error);
         }
@@ -205,7 +228,7 @@ function completeGoogleOAuthPopup(popup: Window): OAuthPopupWaiter {
     browserWindow.addEventListener('message', onMessage);
 
     const closedPoll = setInterval(() => {
-      if (popup.closed && !exchangeStarted) {
+      if (popup.closed && !sessionStarted) {
         settleReject(new Error('Google sign-in popup was closed.'));
       }
     }, OAUTH_POPUP_CLOSED_POLL_MS);
@@ -389,9 +412,10 @@ export function onPasswordRecovery(
 }
 
 /**
- * Sign in with Google using a same-origin PKCE popup.
- * The empty popup is opened synchronously to avoid the Chrome blocker, then
- * the opener exchanges the returned code without navigating the app tab.
+ * Sign in with Google using a same-origin OAuth popup.
+ * The empty popup is opened synchronously to avoid the Chrome blocker. The
+ * opener then initializes exactly one session from the callback: implicit
+ * tokens when present, otherwise a PKCE code, without navigating the app tab.
  */
 export async function signInWithGoogleWeb(): Promise<void> {
   if (isMockMode) {
@@ -419,8 +443,7 @@ export async function signInWithGoogleWeb(): Promise<void> {
     }
     waiter = completeGoogleOAuthPopup(popup);
     popup.location.href = data.url;
-    const session = await waiter.promise;
-    await ensureSessionPersistence(session);
+    await waiter.promise;
   } catch (error) {
     waiter?.abort(error);
     try {

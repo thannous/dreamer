@@ -202,12 +202,57 @@ describe('web auth helpers', () => {
 
     expect(mockExchangeCodeForSession).toHaveBeenCalledTimes(1);
     expect(mockExchangeCodeForSession).toHaveBeenCalledWith('oauth-code');
+    expect(mockSetSession).not.toHaveBeenCalled();
+    expect(harness.popup.close).toHaveBeenCalled();
+    expect(harness.browserWindow.removeEventListener).toHaveBeenCalled();
+  });
+
+  it('initializes a session from the implicit callback fragment', async () => {
+    const harness = createOAuthPopupHarness();
+    mockSetSession.mockResolvedValueOnce({
+      data: { session: OAUTH_SESSION },
+      error: null,
+    });
+    const auth = require('../auth.web') as typeof import('../auth.web');
+    const pending = auth.signInWithGoogleWeb();
+
+    await flushMicrotasks();
+    harness.dispatchMessage({
+      origin: PRODUCTION_ORIGIN,
+      source: harness.popup,
+      data: `${PRODUCTION_ORIGIN}/auth-callback.html#access_token=oauth-access&refresh_token=oauth-refresh&token_type=bearer`,
+    });
+    await pending;
+
+    expect(mockSetSession).toHaveBeenCalledTimes(1);
     expect(mockSetSession).toHaveBeenCalledWith({
       access_token: 'oauth-access',
       refresh_token: 'oauth-refresh',
     });
+    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
     expect(harness.popup.close).toHaveBeenCalled();
     expect(harness.browserWindow.removeEventListener).toHaveBeenCalled();
+  });
+
+  it('prefers implicit tokens over a PKCE code so the session is initialized once', async () => {
+    const harness = createOAuthPopupHarness();
+    mockSetSession.mockResolvedValueOnce({
+      data: { session: OAUTH_SESSION },
+      error: null,
+    });
+    const auth = require('../auth.web') as typeof import('../auth.web');
+    const pending = auth.signInWithGoogleWeb();
+
+    await flushMicrotasks();
+    harness.dispatchMessage({
+      origin: PRODUCTION_ORIGIN,
+      source: harness.popup,
+      data: `${PRODUCTION_ORIGIN}/auth-callback.html?code=oauth-code#access_token=oauth-access&refresh_token=oauth-refresh`,
+    });
+    await pending;
+
+    expect(mockSetSession).toHaveBeenCalledTimes(1);
+    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
   });
 
   it('uses the current localhost origin for the static OAuth callback', async () => {
@@ -276,6 +321,45 @@ describe('web auth helpers', () => {
     resolveExchange?.({ data: { session: OAUTH_SESSION }, error: null });
     await pending;
     expect(mockExchangeCodeForSession).toHaveBeenCalledTimes(1);
+    expect(mockSetSession).not.toHaveBeenCalled();
+  });
+
+  it('ignores duplicate implicit callback messages after session initialization starts', async () => {
+    const harness = createOAuthPopupHarness();
+    let resolveSetSession:
+      | ((value: { data: { session: typeof OAUTH_SESSION }; error: null }) => void)
+      | undefined;
+    mockSetSession.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveSetSession = resolve;
+        })
+    );
+    const auth = require('../auth.web') as typeof import('../auth.web');
+    const pending = auth.signInWithGoogleWeb();
+    await flushMicrotasks();
+
+    harness.dispatchMessage({
+      origin: PRODUCTION_ORIGIN,
+      source: harness.popup,
+      data: `${PRODUCTION_ORIGIN}/auth-callback.html#access_token=first-access&refresh_token=first-refresh`,
+    });
+    harness.dispatchMessage({
+      origin: PRODUCTION_ORIGIN,
+      source: harness.popup,
+      data: `${PRODUCTION_ORIGIN}/auth-callback.html#access_token=second-access&refresh_token=second-refresh`,
+    });
+
+    expect(mockSetSession).toHaveBeenCalledTimes(1);
+    expect(mockSetSession).toHaveBeenCalledWith({
+      access_token: 'first-access',
+      refresh_token: 'first-refresh',
+    });
+    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
+
+    resolveSetSession?.({ data: { session: OAUTH_SESSION }, error: null });
+    await pending;
+    expect(mockSetSession).toHaveBeenCalledTimes(1);
   });
 
   it('ignores a same-origin popup message whose data URL is not the static callback', async () => {
@@ -305,6 +389,99 @@ describe('web auth helpers', () => {
 
     expect(mockExchangeCodeForSession).toHaveBeenCalledTimes(1);
     expect(mockExchangeCodeForSession).toHaveBeenCalledWith('valid-code');
+  });
+
+  it('fails when the implicit callback is missing tokens', async () => {
+    const harness = createOAuthPopupHarness();
+    const auth = require('../auth.web') as typeof import('../auth.web');
+    const pending = auth.signInWithGoogleWeb();
+    await flushMicrotasks();
+
+    harness.dispatchMessage({
+      origin: PRODUCTION_ORIGIN,
+      source: harness.popup,
+      data: `${PRODUCTION_ORIGIN}/auth-callback.html#token_type=bearer`,
+    });
+
+    await expect(pending).rejects.toThrow('Google sign-in callback was missing credentials.');
+    expect(mockSetSession).not.toHaveBeenCalled();
+    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
+    expect(harness.popup.close).toHaveBeenCalled();
+  });
+
+  it('fails when the implicit callback is missing a refresh token', async () => {
+    const harness = createOAuthPopupHarness();
+    const auth = require('../auth.web') as typeof import('../auth.web');
+    const pending = auth.signInWithGoogleWeb();
+    await flushMicrotasks();
+
+    harness.dispatchMessage({
+      origin: PRODUCTION_ORIGIN,
+      source: harness.popup,
+      data: `${PRODUCTION_ORIGIN}/auth-callback.html#access_token=oauth-access`,
+    });
+
+    await expect(pending).rejects.toThrow('Google sign-in callback was malformed.');
+    expect(mockSetSession).not.toHaveBeenCalled();
+    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
+    expect(harness.popup.close).toHaveBeenCalled();
+  });
+
+  it('rejects a one-sided implicit fragment even when a PKCE code is also present', async () => {
+    const harness = createOAuthPopupHarness();
+    const auth = require('../auth.web') as typeof import('../auth.web');
+    const pending = auth.signInWithGoogleWeb();
+    await flushMicrotasks();
+
+    harness.dispatchMessage({
+      origin: PRODUCTION_ORIGIN,
+      source: harness.popup,
+      data: `${PRODUCTION_ORIGIN}/auth-callback.html?code=oauth-code#access_token=oauth-access`,
+    });
+
+    await expect(pending).rejects.toThrow('Google sign-in callback was malformed.');
+    expect(mockSetSession).not.toHaveBeenCalled();
+    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
+    expect(harness.popup.close).toHaveBeenCalled();
+  });
+
+  it('rejects a refresh token without an access token even when a PKCE code is also present', async () => {
+    const harness = createOAuthPopupHarness();
+    const auth = require('../auth.web') as typeof import('../auth.web');
+    const pending = auth.signInWithGoogleWeb();
+    await flushMicrotasks();
+
+    harness.dispatchMessage({
+      origin: PRODUCTION_ORIGIN,
+      source: harness.popup,
+      data: `${PRODUCTION_ORIGIN}/auth-callback.html?code=oauth-code#refresh_token=oauth-refresh`,
+    });
+
+    await expect(pending).rejects.toThrow('Google sign-in callback was malformed.');
+    expect(mockSetSession).not.toHaveBeenCalled();
+    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
+    expect(harness.popup.close).toHaveBeenCalled();
+  });
+
+  it('fails when implicit setSession returns no session', async () => {
+    const harness = createOAuthPopupHarness();
+    mockSetSession.mockResolvedValueOnce({
+      data: { session: null },
+      error: null,
+    });
+    const auth = require('../auth.web') as typeof import('../auth.web');
+    const pending = auth.signInWithGoogleWeb();
+    await flushMicrotasks();
+
+    harness.dispatchMessage({
+      origin: PRODUCTION_ORIGIN,
+      source: harness.popup,
+      data: `${PRODUCTION_ORIGIN}/auth-callback.html#access_token=oauth-access&refresh_token=oauth-refresh`,
+    });
+
+    await expect(pending).rejects.toThrow('Google sign-in did not return a session.');
+    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
+    expect(harness.popup.close).toHaveBeenCalled();
   });
 
   it('fails when the code exchange returns no session', async () => {
