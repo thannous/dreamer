@@ -59,6 +59,12 @@ export async function wasAccountCreatedOnDevice(): Promise<boolean> {
   }
 }
 
+const OAUTH_CALLBACK_PATH = '/auth-callback.html';
+const OAUTH_POPUP_NAME = 'noctalia-google-oauth';
+const OAUTH_POPUP_FEATURES = 'popup=yes,width=480,height=720';
+const OAUTH_POPUP_TIMEOUT_MS = 120_000;
+const OAUTH_POPUP_CLOSED_POLL_MS = 250;
+
 function getWebRedirectTo(): string {
   try {
     const location = (
@@ -68,6 +74,148 @@ function getWebRedirectTo(): string {
   } catch {
     return WEB_REDIRECT_FALLBACK;
   }
+}
+
+function getOAuthRedirectTo(): string {
+  return `${getWebRedirectTo()}${OAUTH_CALLBACK_PATH}`;
+}
+
+function getBrowserWindow(): Window {
+  const browserWindow = (globalThis as typeof globalThis & { window?: Window }).window;
+  if (!browserWindow || typeof browserWindow.open !== 'function') {
+    throw new Error('Google sign-in requires a browser window.');
+  }
+  return browserWindow;
+}
+
+function openEmptyOAuthPopup(browserWindow: Window): Window {
+  const popup = browserWindow.open('about:blank', OAUTH_POPUP_NAME, OAUTH_POPUP_FEATURES);
+  if (!popup) {
+    throw new Error('Google sign-in popup was blocked.');
+  }
+  return popup;
+}
+
+function readOAuthParams(href: string): URLSearchParams {
+  const url = new URL(href);
+  const params = new URLSearchParams(url.searchParams);
+  if (url.hash.startsWith('#')) {
+    const hashParams = new URLSearchParams(url.hash.slice(1));
+    hashParams.forEach((value, key) => {
+      if (!params.has(key)) {
+        params.set(key, value);
+      }
+    });
+  }
+  return params;
+}
+
+function toError(error: unknown, fallback: string): Error {
+  return error instanceof Error ? error : new Error(fallback);
+}
+
+type OAuthPopupWaiter = {
+  abort: (error?: unknown) => void;
+  promise: Promise<Session | null>;
+};
+
+function completeGoogleOAuthPopup(popup: Window): OAuthPopupWaiter {
+  const browserWindow = getBrowserWindow();
+  let abort: (error?: unknown) => void = () => {};
+
+  const promise = new Promise<Session | null>((resolve, reject) => {
+    let settled = false;
+    let exchangeStarted = false;
+
+    const cleanup = () => {
+      browserWindow.removeEventListener('message', onMessage);
+      clearInterval(closedPoll);
+      clearTimeout(timeoutId);
+      try {
+        if (!popup.closed) {
+          popup.close();
+        }
+      } catch {
+        // The opener must still settle even if the popup cannot be closed.
+      }
+    };
+
+    const settleReject = (error: unknown) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(toError(error, 'Google sign-in failed.'));
+    };
+
+    const settleResolve = (session: Session | null) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      resolve(session);
+    };
+
+    abort = (error?: unknown) => {
+      settleReject(error ?? new Error('Google sign-in failed.'));
+    };
+
+    const onMessage = (event: MessageEvent) => {
+      if (event.origin !== browserWindow.location.origin) return;
+      if (event.source !== popup) return;
+      if (typeof event.data !== 'string' || !event.data) return;
+      if (settled || exchangeStarted) return;
+
+      let callbackUrl: URL;
+      try {
+        callbackUrl = new URL(event.data);
+      } catch {
+        return;
+      }
+      if (
+        callbackUrl.origin !== browserWindow.location.origin ||
+        callbackUrl.pathname !== OAUTH_CALLBACK_PATH
+      ) {
+        return;
+      }
+
+      exchangeStarted = true;
+
+      void (async () => {
+        try {
+          const params = readOAuthParams(event.data);
+          const oauthError = params.get('error_description') ?? params.get('error');
+          if (oauthError) {
+            throw new Error(oauthError);
+          }
+          const code = params.get('code');
+          if (!code) {
+            throw new Error('Google sign-in failed.');
+          }
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) throw error;
+          if (!data.session) {
+            throw new Error('Google sign-in did not return a session.');
+          }
+          settleResolve(data.session);
+        } catch (error) {
+          settleReject(error);
+        }
+      })();
+    };
+
+    browserWindow.addEventListener('message', onMessage);
+
+    const closedPoll = setInterval(() => {
+      if (popup.closed && !exchangeStarted) {
+        settleReject(new Error('Google sign-in popup was closed.'));
+      }
+    }, OAUTH_POPUP_CLOSED_POLL_MS);
+
+    const timeoutId = setTimeout(() => {
+      settleReject(new Error('Google sign-in timed out.'));
+    }, OAUTH_POPUP_TIMEOUT_MS);
+  });
+
+  return { abort, promise };
 }
 
 /**
@@ -241,7 +389,9 @@ export function onPasswordRecovery(
 }
 
 /**
- * Sign in with Google using Supabase OAuth popup (web)
+ * Sign in with Google using a same-origin PKCE popup.
+ * The empty popup is opened synchronously to avoid the Chrome blocker, then
+ * the opener exchanges the returned code without navigating the app tab.
  */
 export async function signInWithGoogleWeb(): Promise<void> {
   if (isMockMode) {
@@ -249,14 +399,42 @@ export async function signInWithGoogleWeb(): Promise<void> {
     return;
   }
 
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      scopes: 'openid email profile',
-      redirectTo: getWebRedirectTo(),
-    },
-  });
-  if (error) throw error;
+  const browserWindow = getBrowserWindow();
+  const popup = openEmptyOAuthPopup(browserWindow);
+  let waiter: OAuthPopupWaiter | undefined;
+
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        scopes: 'openid email profile',
+        redirectTo: getOAuthRedirectTo(),
+        skipBrowserRedirect: true,
+        queryParams: { prompt: 'select_account' },
+      },
+    });
+    if (error) throw error;
+    if (!data?.url) {
+      throw new Error('Google sign-in failed.');
+    }
+    waiter = completeGoogleOAuthPopup(popup);
+    popup.location.href = data.url;
+    const session = await waiter.promise;
+    await ensureSessionPersistence(session);
+  } catch (error) {
+    waiter?.abort(error);
+    try {
+      if (!popup.closed) {
+        popup.close();
+      }
+    } catch {
+      // Ignore a second close after the waiter already cleaned up.
+    }
+    if (waiter) {
+      await waiter.promise.catch(() => undefined);
+    }
+    throw toError(error, 'Google sign-in failed.');
+  }
 }
 
 /**
