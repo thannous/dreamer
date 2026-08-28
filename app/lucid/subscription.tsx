@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -22,6 +22,11 @@ import {
   calculateMonthlyEquivalent,
   sortPackages,
 } from '@/lib/paywallUtils';
+import {
+  LUCID_PLUS_CURRENT_BENEFIT_IDS,
+  LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS,
+  listLucidPlusPaywallItems,
+} from '@/lib/lucid/plusEntitlements';
 import type { PurchasePackage, SubscriptionTier } from '@/lib/types';
 
 const COPY = {
@@ -38,12 +43,33 @@ const COPY = {
     activeBody:
       'Your Plus entitlement is recognised here and in Noctalia when you use the same account.',
     benefitsTitle: 'What Plus adds',
-    benefitsCaption: 'Optional extras across the Noctalia ecosystem.',
-    benefits: [
-      'Expanded trends and comparisons',
-      'Noctalia premium interpretation features',
-      'One entitlement restored on the same account',
-    ],
+    benefitsCaption: 'Only extras that already exist in this version.',
+    benefits: {
+      additional_immersive_rehearsal: 'Additional immersive scene rehearsals after the free preview',
+      expanded_trends_comparisons: 'Deeper trends and comparisons already in Noctalia',
+      premium_interpretation: 'Noctalia premium interpretation already in the journal',
+      shared_account_entitlement: 'The same Plus right on this account',
+    },
+    remainingFreeTitle: 'What stays free',
+    remainingFree: {
+      journal_text: 'Text journal',
+      programs_mild_ssild_wbtb: 'MILD, SSILD and WBTB programmes',
+      mindful_pauses: 'Mindful pauses',
+      morning_review: 'Morning review',
+      safety: 'Complete safety controls',
+      night_stop: 'Night stop',
+      local_storage: 'Local storage',
+      export: 'Export',
+      delete: 'Delete',
+      basic_stats: 'Basic statistics',
+      weekly_recommendation: 'One weekly recommendation',
+      accessibility: 'Accessibility',
+      dream_atlas: 'Dream atlas',
+      first_immersive_rehearsal: 'The first immersive rehearsal, complete and local',
+    },
+    fromRehearsalTitle: 'You already rehearsed one scene',
+    fromRehearsalSubtitle:
+      'The first immersive rehearsal stays yours. Extra rehearsals use Plus, along with the extras already in this version.',
     plansTitle: 'Choose a plan',
     plansCaption: 'The store confirms the exact price and renewal terms before payment.',
     monthly: 'Monthly',
@@ -103,12 +129,33 @@ const COPY = {
     activeBody:
       'Votre droit Plus est reconnu ici et dans Noctalia lorsque vous utilisez le même compte.',
     benefitsTitle: 'Ce que Plus ajoute',
-    benefitsCaption: 'Des compléments facultatifs dans l’écosystème Noctalia.',
-    benefits: [
-      'Tendances et comparaisons approfondies',
-      'Fonctions d’interprétation premium dans Noctalia',
-      'Un droit restauré avec le même compte',
-    ],
+    benefitsCaption: 'Uniquement des compléments déjà présents dans cette version.',
+    benefits: {
+      additional_immersive_rehearsal: 'Des répétitions immersives supplémentaires après la scène gratuite',
+      expanded_trends_comparisons: 'Tendances et comparaisons approfondies déjà dans Noctalia',
+      premium_interpretation: 'Interprétation premium Noctalia déjà dans le journal',
+      shared_account_entitlement: 'Le même droit Plus sur ce compte',
+    },
+    remainingFreeTitle: 'Ce qui reste gratuit',
+    remainingFree: {
+      journal_text: 'Journal texte',
+      programs_mild_ssild_wbtb: 'Programmes MILD, SSILD et WBTB',
+      mindful_pauses: 'Pauses conscientes',
+      morning_review: 'Bilan du matin',
+      safety: 'Contrôles de sécurité complets',
+      night_stop: 'Arrêt nocturne',
+      local_storage: 'Stockage local',
+      export: 'Export',
+      delete: 'Suppression',
+      basic_stats: 'Statistiques de base',
+      weekly_recommendation: 'Une recommandation hebdomadaire',
+      accessibility: 'Accessibilité',
+      dream_atlas: 'Atlas des rêves',
+      first_immersive_rehearsal: 'La première répétition immersive, complète et locale',
+    },
+    fromRehearsalTitle: 'Tu as déjà répété une scène',
+    fromRehearsalSubtitle:
+      'La première répétition immersive reste à toi. Les suivantes utilisent Plus, avec les compléments déjà présents dans cette version.',
     plansTitle: 'Choisir une formule',
     plansCaption: 'La boutique confirme le prix exact et le renouvellement avant paiement.',
     monthly: 'Mensuelle',
@@ -168,12 +215,33 @@ const COPY = {
     activeBody:
       'Tu derecho Plus se reconoce aquí y en Noctalia cuando utilizas la misma cuenta.',
     benefitsTitle: 'Qué añade Plus',
-    benefitsCaption: 'Extras opcionales en el ecosistema Noctalia.',
-    benefits: [
-      'Tendencias y comparaciones ampliadas',
-      'Funciones premium de interpretación en Noctalia',
-      'Un derecho restaurado con la misma cuenta',
-    ],
+    benefitsCaption: 'Solo extras que ya existen en esta versión.',
+    benefits: {
+      additional_immersive_rehearsal: 'Ensayos inmersivos extra después de la escena gratuita',
+      expanded_trends_comparisons: 'Tendencias y comparaciones ampliadas ya en Noctalia',
+      premium_interpretation: 'Interpretación premium de Noctalia ya en el diario',
+      shared_account_entitlement: 'El mismo derecho Plus en esta cuenta',
+    },
+    remainingFreeTitle: 'Qué sigue gratis',
+    remainingFree: {
+      journal_text: 'Diario de texto',
+      programs_mild_ssild_wbtb: 'Programas MILD, SSILD y WBTB',
+      mindful_pauses: 'Pausas conscientes',
+      morning_review: 'Revisión matinal',
+      safety: 'Controles de seguridad completos',
+      night_stop: 'Parada nocturna',
+      local_storage: 'Almacenamiento local',
+      export: 'Exportar',
+      delete: 'Eliminar',
+      basic_stats: 'Estadísticas básicas',
+      weekly_recommendation: 'Una recomendación semanal',
+      accessibility: 'Accesibilidad',
+      dream_atlas: 'Atlas de sueños',
+      first_immersive_rehearsal: 'El primer ensayo inmersivo, completo y local',
+    },
+    fromRehearsalTitle: 'Ya ensayaste una escena',
+    fromRehearsalSubtitle:
+      'El primer ensayo inmersivo sigue siendo tuyo. Los extra usan Plus, junto con los extras que ya existen en esta versión.',
     plansTitle: 'Elige un plan',
     plansCaption: 'La tienda confirma el precio exacto y la renovación antes del pago.',
     monthly: 'Mensual',
@@ -233,12 +301,33 @@ const COPY = {
     activeBody:
       'Dein Plus-Anspruch wird hier und in Noctalia erkannt, wenn du dasselbe Konto verwendest.',
     benefitsTitle: 'Was Plus ergänzt',
-    benefitsCaption: 'Optionale Extras im Noctalia-Ökosystem.',
-    benefits: [
-      'Erweiterte Trends und Vergleiche',
-      'Premium-Deutungsfunktionen in Noctalia',
-      'Ein Anspruch, der mit demselben Konto wiederhergestellt wird',
-    ],
+    benefitsCaption: 'Nur Extras, die in dieser Version bereits existieren.',
+    benefits: {
+      additional_immersive_rehearsal: 'Weitere immersive Szenenproben nach der kostenlosen Vorschau',
+      expanded_trends_comparisons: 'Tiefere Trends und Vergleiche, die es in Noctalia bereits gibt',
+      premium_interpretation: 'Noctalia-Premiumdeutung, die es im Journal bereits gibt',
+      shared_account_entitlement: 'Derselbe Plus-Anspruch auf diesem Konto',
+    },
+    remainingFreeTitle: 'Was kostenlos bleibt',
+    remainingFree: {
+      journal_text: 'Texttagebuch',
+      programs_mild_ssild_wbtb: 'MILD-, SSILD- und WBTB-Programme',
+      mindful_pauses: 'Achtsame Pausen',
+      morning_review: 'Morgenrückblick',
+      safety: 'Vollständige Sicherheitskontrollen',
+      night_stop: 'Nächtlicher Stopp',
+      local_storage: 'Lokaler Speicher',
+      export: 'Export',
+      delete: 'Löschen',
+      basic_stats: 'Basisstatistiken',
+      weekly_recommendation: 'Eine wöchentliche Empfehlung',
+      accessibility: 'Barrierefreiheit',
+      dream_atlas: 'Traumatlas',
+      first_immersive_rehearsal: 'Die erste immersive Probe, vollständig und lokal',
+    },
+    fromRehearsalTitle: 'Du hast bereits eine Szene geprobt',
+    fromRehearsalSubtitle:
+      'Die erste immersive Probe bleibt bei dir. Weitere Proben nutzen Plus, zusammen mit den Extras, die es in dieser Version schon gibt.',
     plansTitle: 'Abo auswählen',
     plansCaption: 'Der Store bestätigt Preis und Verlängerung vor der Zahlung.',
     monthly: 'Monatlich',
@@ -298,12 +387,33 @@ const COPY = {
     activeBody:
       'Il tuo diritto Plus viene riconosciuto qui e in Noctalia quando usi lo stesso account.',
     benefitsTitle: 'Cosa aggiunge Plus',
-    benefitsCaption: 'Extra facoltativi nell’ecosistema Noctalia.',
-    benefits: [
-      'Tendenze e confronti più approfonditi',
-      'Funzioni premium di interpretazione in Noctalia',
-      'Un diritto ripristinato con lo stesso account',
-    ],
+    benefitsCaption: 'Solo extra già presenti in questa versione.',
+    benefits: {
+      additional_immersive_rehearsal: 'Ripetizioni immersive extra dopo l’anteprima gratuita',
+      expanded_trends_comparisons: 'Tendenze e confronti approfonditi già in Noctalia',
+      premium_interpretation: 'Interpretazione premium Noctalia già nel diario',
+      shared_account_entitlement: 'Lo stesso diritto Plus su questo account',
+    },
+    remainingFreeTitle: 'Cosa resta gratuito',
+    remainingFree: {
+      journal_text: 'Diario di testo',
+      programs_mild_ssild_wbtb: 'Programmi MILD, SSILD e WBTB',
+      mindful_pauses: 'Pause consapevoli',
+      morning_review: 'Bilancio del mattino',
+      safety: 'Controlli di sicurezza completi',
+      night_stop: 'Stop notturno',
+      local_storage: 'Archivio locale',
+      export: 'Esportazione',
+      delete: 'Eliminazione',
+      basic_stats: 'Statistiche di base',
+      weekly_recommendation: 'Una raccomandazione settimanale',
+      accessibility: 'Accessibilità',
+      dream_atlas: 'Atlante dei sogni',
+      first_immersive_rehearsal: 'La prima ripetizione immersiva, completa e locale',
+    },
+    fromRehearsalTitle: 'Hai già ripetuto una scena',
+    fromRehearsalSubtitle:
+      'La prima ripetizione immersiva resta tua. Le successive usano Plus, insieme agli extra già presenti in questa versione.',
     plansTitle: 'Scegli un piano',
     plansCaption: 'Lo store conferma il prezzo esatto e il rinnovo prima del pagamento.',
     monthly: 'Mensile',
@@ -404,12 +514,25 @@ function formatExpiryDate(value: string, locale: string): string | null {
   }
 }
 
+function firstParam(value: string | string[] | undefined): string {
+  if (Array.isArray(value)) return value[0] ?? '';
+  return value ?? '';
+}
+
 export default function LucidSubscriptionScreen() {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const { content, state } = useLucidTrainer();
+  const params = useLocalSearchParams<{ source?: string | string[] }>();
+  const source = firstParam(params.source);
+  const fromRehearsal = source === 'dream_rehearsal';
   const subscription = useSubscription({ loadPackages: true });
   const copy = COPY[content.locale];
+  const plusBenefits = listLucidPlusPaywallItems(LUCID_PLUS_CURRENT_BENEFIT_IDS, copy.benefits);
+  const remainingFree = listLucidPlusPaywallItems(
+    LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS,
+    copy.remainingFree
+  );
   const analyticsEnabled = state?.onboarding.analyticsConsent === true;
   const tier = getTier(subscription.status);
   const sortedPackages = useMemo(
@@ -580,8 +703,8 @@ export default function LucidSubscriptionScreen() {
   return (
     <LucidScreen
       eyebrow={copy.eyebrow}
-      title={copy.title}
-      subtitle={copy.subtitle}
+      title={fromRehearsal ? copy.fromRehearsalTitle : copy.title}
+      subtitle={fromRehearsal ? copy.fromRehearsalSubtitle : copy.subtitle}
       trailing={
         <LucidIconAction label={content.chrome.common.back} icon="close" onPress={close} />
       }
@@ -607,12 +730,26 @@ export default function LucidSubscriptionScreen() {
 
       <LucidCard>
         <LucidSectionHeader title={copy.benefitsTitle} caption={copy.benefitsCaption} />
-        <View style={styles.features}>
-          {copy.benefits.map((feature) => (
-            <View key={feature} style={styles.featureRow}>
+        <View style={styles.features} testID="lucid-subscription-plus-benefits">
+          {plusBenefits.map((feature) => (
+            <View key={feature.id} style={styles.featureRow} testID={`lucid-plus-benefit-${feature.id}`}>
               <Ionicons name="checkmark-circle" size={LucidIcon.md} color={palette.accent} />
               <Text style={[styles.featureText, { color: palette.textSecondary }]}>
-                {feature}
+                {feature.label}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </LucidCard>
+
+      <LucidCard>
+        <LucidSectionHeader title={copy.remainingFreeTitle} />
+        <View style={styles.features} testID="lucid-subscription-free-benefits">
+          {remainingFree.map((feature) => (
+            <View key={feature.id} style={styles.featureRow} testID={`lucid-free-benefit-${feature.id}`}>
+              <Ionicons name="ellipse-outline" size={LucidIcon.md} color={palette.textMuted} />
+              <Text style={[styles.featureText, { color: palette.textSecondary }]}>
+                {feature.label}
               </Text>
             </View>
           ))}

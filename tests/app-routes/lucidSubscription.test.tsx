@@ -33,6 +33,8 @@ const packages = [
 
 jest.mock('react-native', () => jest.requireActual('../react-native-stub'));
 
+let mockParams: { source?: string } = {};
+
 jest.mock('expo-router', () => ({
   router: {
     back: mockBack,
@@ -40,6 +42,7 @@ jest.mock('expo-router', () => ({
     push: mockPush,
     replace: mockReplace,
   },
+  useLocalSearchParams: () => mockParams,
 }));
 
 jest.mock('@/components/lucid/LucidUI', () => ({
@@ -174,6 +177,7 @@ function createSubscription(overrides: Record<string, unknown> = {}) {
 describe('Lucid Trainer subscription', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockParams = {};
     mockAnalyticsConsent = true;
     mockCanGoBack.mockReturnValue(true);
     mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true });
@@ -278,5 +282,29 @@ describe('Lucid Trainer subscription', () => {
 
     expect(mockReplace).toHaveBeenCalledWith('/lucid/(tabs)/settings');
     expect(mockBack).not.toHaveBeenCalled();
+  });
+
+  it('lists only current Plus benefits from the shared matrix and shows remaining free tools', () => {
+    render(<LucidSubscriptionScreen />);
+
+    expect(screen.getByText('Additional immersive scene rehearsals after the free preview')).toBeTruthy();
+    expect(screen.getByText('Deeper trends and comparisons already in Noctalia')).toBeTruthy();
+    expect(screen.getByText('Noctalia premium interpretation already in the journal')).toBeTruthy();
+    expect(screen.getByText('The same Plus right on this account')).toBeTruthy();
+    expect(screen.queryByText(/multi-week|atlas grouping|advanced transcription|multi-device/i)).toBeNull();
+    expect(screen.getByText('Complete safety controls')).toBeTruthy();
+    expect(screen.getByText('Night stop')).toBeTruthy();
+    expect(screen.getByText('Export')).toBeTruthy();
+    expect(screen.getByText('Delete')).toBeTruthy();
+    expect(screen.getByText('Accessibility')).toBeTruthy();
+    expect(screen.getByText('The first immersive rehearsal, complete and local')).toBeTruthy();
+  });
+
+  it('names the already lived rehearsal when opened from the feature gate', () => {
+    mockParams = { source: 'dream_rehearsal' };
+    render(<LucidSubscriptionScreen />);
+
+    expect(screen.getByText('You already rehearsed one scene')).toBeTruthy();
+    expect(screen.getByText(/Extra rehearsals use Plus/)).toBeTruthy();
   });
 });
