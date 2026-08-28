@@ -5,7 +5,10 @@
   },
   "build": {
     "base": {
-      "node": "24.19.0"
+      "node": "24.19.0",
+      "env": {
+        "SHARP_IGNORE_GLOBAL_LIBVIPS": "1"
+      }
     },
     "release": {
       "extends": "base",
