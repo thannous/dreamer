@@ -8,6 +8,11 @@ import {
   type LucidSyncMutation,
   type LucidTrainerState,
 } from '@/lib/lucid/model';
+import { clearLucidDreamAtlasPreferences } from '@/services/lucidDreamAtlasStorage';
+import { clearLucidDreamRehearsalState } from '@/services/lucidDreamRehearsalStorage';
+import { deleteLucidHealthKitSnapshot } from '@/services/lucidHealthKitStorage';
+import { clearLucidSsildSensoryLabCurrentSession } from '@/services/lucidSsildSensoryLabStorage';
+import { clearLucidStabilizationLabSessions } from '@/services/lucidStabilizationLabStorage';
 import {
   isLucidTrainerEncryptedValue,
   isLucidTrainerEncryptedValueError,
@@ -323,7 +328,16 @@ export async function clearLucidTrainerLocalData(
         cancellationError = error;
       }
       await Promise.all([storage.removeItem(keys.state), storage.removeItem(keys.syncQueue)]);
+      const companionResults = await Promise.allSettled([
+        deleteLucidHealthKitSnapshot(userScope, storage),
+        clearLucidDreamRehearsalState(userScope, storage),
+        clearLucidDreamAtlasPreferences(userScope, storage),
+        clearLucidStabilizationLabSessions(userScope, storage),
+        clearLucidSsildSensoryLabCurrentSession(userScope, storage),
+      ]);
       if (cancellationError) throw cancellationError;
+      const companionFailure = companionResults.find((result) => result.status === 'rejected');
+      if (companionFailure?.status === 'rejected') throw companionFailure.reason;
     })
   );
 }

@@ -1,5 +1,10 @@
 import { createInitialLucidTrainerState } from '@/lib/lucid/domain';
 import type { LucidSyncMutation } from '@/lib/lucid/model';
+import { getLucidDreamAtlasStorageKey } from '@/services/lucidDreamAtlasStorage';
+import { getLucidDreamRehearsalStorageKey } from '@/services/lucidDreamRehearsalStorage';
+import { getLucidHealthKitStorageKey } from '@/services/lucidHealthKitStorage';
+import { getLucidSsildSensoryLabStorageKey } from '@/services/lucidSsildSensoryLabStorage';
+import { getLucidStabilizationLabStorageKey } from '@/services/lucidStabilizationLabStorage';
 import {
   isLucidTrainerEncryptedValue,
   protectLucidTrainerStoredValue,
@@ -415,11 +420,21 @@ describe('lucidTrainerStorage', () => {
     expect(csvWithCapture.split('\r\n')[1]).toContain('"experiment"');
   });
 
-  it('clears state and queue keys without touching other data', async () => {
+  it('clears trainer and companion feature keys without touching other data', async () => {
     const keys = getLucidTrainerStorageKeys(SCOPE);
+    const healthKitKey = getLucidHealthKitStorageKey(SCOPE);
+    const rehearsalKey = getLucidDreamRehearsalStorageKey(SCOPE);
+    const atlasKey = getLucidDreamAtlasStorageKey(SCOPE);
+    const stabilizationKey = getLucidStabilizationLabStorageKey(SCOPE);
+    const ssildKey = getLucidSsildSensoryLabStorageKey(SCOPE);
     const storage = memoryStorage({
       [keys.state]: JSON.stringify(state()),
       [keys.syncQueue]: JSON.stringify([mutation()]),
+      [healthKitKey]: JSON.stringify({ status: 'imported' }),
+      [rehearsalKey]: JSON.stringify({ currentSession: { status: 'completed' } }),
+      [atlasKey]: JSON.stringify({ grouping: 'advanced' }),
+      [stabilizationKey]: JSON.stringify({ sessions: [{ status: 'completed' }] }),
+      [ssildKey]: JSON.stringify({ currentSession: { status: 'completed' } }),
       unrelated: 'keep',
     });
     const cancelReminders = jest.fn(async () => undefined);
@@ -429,14 +444,29 @@ describe('lucidTrainerStorage', () => {
     expect(cancelReminders).toHaveBeenCalledTimes(1);
     expect(storage.values.has(keys.state)).toBe(false);
     expect(storage.values.has(keys.syncQueue)).toBe(false);
+    expect(storage.values.has(healthKitKey)).toBe(false);
+    expect(storage.values.has(rehearsalKey)).toBe(false);
+    expect(storage.values.has(atlasKey)).toBe(false);
+    expect(storage.values.has(stabilizationKey)).toBe(false);
+    expect(storage.values.has(ssildKey)).toBe(false);
     expect(storage.values.get('unrelated')).toBe('keep');
   });
 
   it('still removes sensitive local data when OS reminder cleanup fails', async () => {
     const keys = getLucidTrainerStorageKeys(SCOPE);
+    const healthKitKey = getLucidHealthKitStorageKey(SCOPE);
+    const rehearsalKey = getLucidDreamRehearsalStorageKey(SCOPE);
+    const atlasKey = getLucidDreamAtlasStorageKey(SCOPE);
+    const stabilizationKey = getLucidStabilizationLabStorageKey(SCOPE);
+    const ssildKey = getLucidSsildSensoryLabStorageKey(SCOPE);
     const storage = memoryStorage({
       [keys.state]: JSON.stringify(state()),
       [keys.syncQueue]: JSON.stringify([mutation()]),
+      [healthKitKey]: JSON.stringify({ status: 'imported' }),
+      [rehearsalKey]: JSON.stringify({ currentSession: { status: 'completed' } }),
+      [atlasKey]: JSON.stringify({ grouping: 'advanced' }),
+      [stabilizationKey]: JSON.stringify({ sessions: [{ status: 'completed' }] }),
+      [ssildKey]: JSON.stringify({ currentSession: { status: 'completed' } }),
     });
 
     await expect(
@@ -446,5 +476,10 @@ describe('lucidTrainerStorage', () => {
     ).rejects.toThrow('notification API unavailable');
     expect(storage.values.has(keys.state)).toBe(false);
     expect(storage.values.has(keys.syncQueue)).toBe(false);
+    expect(storage.values.has(healthKitKey)).toBe(false);
+    expect(storage.values.has(rehearsalKey)).toBe(false);
+    expect(storage.values.has(atlasKey)).toBe(false);
+    expect(storage.values.has(stabilizationKey)).toBe(false);
+    expect(storage.values.has(ssildKey)).toBe(false);
   });
 });
