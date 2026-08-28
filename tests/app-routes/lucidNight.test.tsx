@@ -363,7 +363,7 @@ describe('Lucid Trainer night audio safety', () => {
     expect(screen.getByText(/TLR is experimental/)).not.toBeNull();
     expect(screen.getByText(/cannot detect REM in real time/)).not.toBeNull();
     expect(
-      screen.getByText('After two signal wakes, TLR is suspended until you review it in the morning.')
+      screen.getByText('After two signal wakes in the last seven check-ins, TLR stays paused.')
     ).not.toBeNull();
     const preview = screen.getByTestId('lucid-night-preview') as HTMLButtonElement;
     const start = screen.getByTestId('lucid-night-start') as HTMLButtonElement;

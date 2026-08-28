@@ -214,7 +214,8 @@ export function evaluateLucidSafetyPolicy(facts: LucidSafetyFacts): LucidSafetyP
     !resolved.hearingConcern &&
     !resolved.sleepIsFragile &&
     !resolved.recoveryRequested &&
-    !resolved.recentSleepDegraded;
+    !resolved.recentSleepDegraded &&
+    !resolved.repeatedSignalWakeups;
 
   let nightSignalIntensity: LucidNightSignalIntensity = 'normal';
   if (!allowNightSignals) {

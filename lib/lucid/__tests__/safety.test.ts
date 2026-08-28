@@ -306,14 +306,14 @@ describe('LucidSafetyPolicy', () => {
       });
     });
 
-    it('reduces night-signal intensity after repeated cue wakeups without blocking them', () => {
+    it('blocks signals after repeated cue wakeups without leaving reducedIntensity', () => {
       const policy = evaluateLucidSafetyPolicy(consentedFacts({ repeatedSignalWakeups: true }));
       expect(policy.mode).toBe('reducedIntensity');
       expect(policy.reasons).toEqual(['repeated_signal_wakeups']);
       expectAuthorizations(policy, {
         allowWbtb: false,
-        allowNightSignals: true,
-        nightSignalIntensity: 'reduced',
+        allowNightSignals: false,
+        nightSignalIntensity: 'blocked',
       });
     });
 
@@ -391,9 +391,9 @@ describe('LucidSafetyPolicy', () => {
       expect(isLucidNightSignalIntensityReduced(normal)).toBe(false);
 
       expect(canUseLucidWbtb(reduced)).toBe(false);
-      expect(canUseLucidNightSignals(reduced)).toBe(true);
-      expect(getLucidNightSignalIntensity(reduced)).toBe('reduced');
-      expect(isLucidNightSignalIntensityReduced(reduced)).toBe(true);
+      expect(canUseLucidNightSignals(reduced)).toBe(false);
+      expect(getLucidNightSignalIntensity(reduced)).toBe('blocked');
+      expect(isLucidNightSignalIntensityReduced(reduced)).toBe(false);
 
       expect(canUseLucidWbtb(recovery)).toBe(false);
       expect(canUseLucidNightSignals(recovery)).toBe(false);
@@ -527,8 +527,8 @@ describe('LucidSafetyPolicy', () => {
       );
       expect(reduced.mode).toBe('reducedIntensity');
       expect(reduced.allowWbtb).toBe(false);
-      expect(reduced.allowNightSignals).toBe(true);
-      expect(reduced.nightSignalIntensity).toBe('reduced');
+      expect(reduced.allowNightSignals).toBe(false);
+      expect(reduced.nightSignalIntensity).toBe('blocked');
       expect(getLucidWbtbDenialReason(reduced)).toBe('repeated_signal_wakeups');
 
       const recovery = evaluateLucidSafetyPolicyFromState(

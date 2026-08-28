@@ -357,7 +357,7 @@ export function getLucidPersonalizedPlan(
       guidance: technique.guidance,
       cautionWbtb: true,
       planAllowWbtb: false,
-      planAllowNightSignals: true,
+      planAllowNightSignals: false,
     };
   } else if (policyRecovery) {
     draft = {

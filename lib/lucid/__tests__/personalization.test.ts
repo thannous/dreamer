@@ -379,7 +379,7 @@ describe('getLucidPersonalizedPlan', () => {
       goal: 'first_lucid_dream',
       experience: 'occasional',
       observations,
-      policy: { mode: 'reducedIntensity', allowWbtb: false, allowNightSignals: true, reasons: ['repeated_signal_wakeups'] },
+      policy: { mode: 'reducedIntensity', allowWbtb: false, allowNightSignals: false, reasons: ['repeated_signal_wakeups'] },
     });
     expect(plan).toMatchObject({
       reasonCode: 'repeated_signal_wakeups',
@@ -387,7 +387,7 @@ describe('getLucidPersonalizedPlan', () => {
       intensity: 'reduced',
       recommendedTechnique: 'mild',
       allowWbtb: false,
-      allowNightSignals: true,
+      allowNightSignals: false,
     });
   });
 
@@ -518,7 +518,7 @@ describe('getLucidPersonalizedPlan', () => {
       policy: {
         mode: 'reducedIntensity',
         allowWbtb: false,
-        allowNightSignals: true,
+        allowNightSignals: false,
         reasons: ['repeated_signal_wakeups'],
       },
     });
@@ -528,7 +528,7 @@ describe('getLucidPersonalizedPlan', () => {
       intensity: 'reduced',
       recommendedTechnique: 'mild',
       allowWbtb: false,
-      allowNightSignals: true,
+      allowNightSignals: false,
     });
   });
 

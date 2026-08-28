@@ -40,6 +40,17 @@ function policyFrom(overrides: Partial<LucidSafetyFacts> = {}) {
   });
 }
 
+function reducedAllowingPolicy() {
+  return {
+    ...policyFrom(),
+    mode: 'reducedIntensity' as const,
+    allowWbtb: false,
+    allowNightSignals: true,
+    nightSignalIntensity: 'reduced' as const,
+    reasons: ['repeated_signal_wakeups'] as const,
+  };
+}
+
 const normalPolicy = policyFrom();
 
 describe('lucid audio safety plans', () => {
@@ -253,7 +264,7 @@ describe('lucid audio safety policy', () => {
   };
 
   it('lowers preview and night volume to the lowest prudent band when intensity is reduced', () => {
-    const reduced = policyFrom({ repeatedSignalWakeups: true });
+    const reduced = reducedAllowingPolicy();
     expect(reduced.nightSignalIntensity).toBe('reduced');
 
     const preview = createLucidPreviewPlan({ ...previewRequest, policy: reduced });
@@ -273,7 +284,7 @@ describe('lucid audio safety policy', () => {
   });
 
   it('keeps a requested volume already inside the reduced band', () => {
-    const reduced = policyFrom({ repeatedSignalWakeups: true });
+    const reduced = reducedAllowingPolicy();
     const preview = createLucidPreviewPlan({
       ...previewRequest,
       requestedVolume: 0.1,
@@ -283,6 +294,25 @@ describe('lucid audio safety policy', () => {
     if (preview.status !== 'ready') throw new Error('Expected a reduced preview.');
     expect(preview.plan.volume).toBe(0.1);
     expect(preview.plan.volumeBand).toBe('very_low');
+  });
+
+  it('blocks preview and night plans after two derived signal wakes', () => {
+    const blocked = policyFrom({ repeatedSignalWakeups: true });
+    expect(blocked.mode).toBe('reducedIntensity');
+    expect(blocked.allowNightSignals).toBe(false);
+    expect(blocked.nightSignalIntensity).toBe('blocked');
+    expect(
+      createLucidPreviewPlan({
+        ...previewRequest,
+        policy: blocked,
+      })
+    ).toEqual({ status: 'blocked', reason: 'night_signals_blocked' });
+    expect(
+      createLucidNightSignalPlan({
+        ...nightRequest,
+        policy: blocked,
+      })
+    ).toEqual({ status: 'blocked', reason: 'night_signals_blocked' });
   });
 
   it('blocks preview and night plans when the policy forbids night signals', () => {
@@ -363,6 +393,12 @@ describe('lucid audio safety policy', () => {
       shouldRestoreLucidNightSignalPlan(
         { ...ready.plan, volume: MAX_LUCID_REDUCED_NIGHT_VOLUME, volumeBand: 'very_low' },
         policyFrom({ repeatedSignalWakeups: true })
+      )
+    ).toBe(false);
+    expect(
+      shouldRestoreLucidNightSignalPlan(
+        { ...ready.plan, volume: MAX_LUCID_REDUCED_NIGHT_VOLUME, volumeBand: 'very_low' },
+        reducedAllowingPolicy()
       )
     ).toBe(true);
     expect(ready.plan.volume).toBe(MAX_LUCID_NIGHT_VOLUME);
@@ -552,6 +588,6 @@ describe('lucid night cue calibration', () => {
         { ...ready.plan, volume: MAX_LUCID_REDUCED_NIGHT_VOLUME, volumeBand: 'very_low' },
         policyFrom({ repeatedSignalWakeups: true })
       )
-    ).toBe(true);
+    ).toBe(false);
   });
 });
