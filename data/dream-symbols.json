@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-08-23",
+    "lastUpdated": "2026-08-28",
     "totalSymbols": 160,
     "languages": [
       "en",
@@ -1070,18 +1070,18 @@
       },
       "it": {
         "slug": "oceano",
-        "name": "Oceano / Mare",
-        "shortDescription": "Sognare l’oceano o il mare può richiamare libertà, emozioni intense, distanza o incertezza. Acqua calma, onde alte, profondità, riva e modo di muoverti cambiano la lettura.",
+        "name": "Mare / Oceano",
+        "shortDescription": "Sognare il mare o l’oceano può richiamare libertà, emozioni intense, distanza o incertezza. Acqua calma, onde alte, profondità, riva e modo di muoverti cambiano la lettura.",
         "askYourself": [
           "Il mare era calmo, agitato, limpido, scuro o molto profondo?",
           "Ero sulla riva, nuotavo, navigavo oppure rischiavo di affondare?",
           "Quale situazione attuale mi sembra vasta, liberatoria o difficile da controllare?"
         ],
-        "seoTitle": "oceano calmo, onde alte o nuotare",
+        "seoTitle": "il mare calmo o agitato",
         "faq": [
           {
-            "question": "Cosa significa sognare l’oceano o il mare?",
-            "answer": "L’oceano può collegarsi a libertà, emozioni, distanza o incertezza. Il tempo, le onde, la profondità, la tua posizione e l’emozione indicano quale lettura è più adatta."
+            "question": "Cosa significa sognare il mare o l’oceano?",
+            "answer": "Il mare o l’oceano possono collegarsi a libertà, emozioni, distanza o incertezza. Il tempo, le onde, la profondità, la tua posizione e l’emozione indicano quale lettura è più adatta."
           },
           {
             "question": "Cosa significa sognare un mare calmo?",
@@ -1096,7 +1096,7 @@
             "answer": "Nuotare può riflettere il modo in cui affronti un compito o un’emozione ampia. Affondare può richiamare sovraccarico, senza essere una diagnosi; conta se comparivano aiuto, riva o una via d’uscita."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-08-28"
       },
       "pt": {
         "slug": "oceano-mar",
@@ -1677,18 +1677,18 @@
       },
       "it": {
         "slug": "fuoco",
-        "name": "Fuoco",
-        "shortDescription": "Sognare il fuoco può accompagnare rabbia, energia, urgenza o un cambiamento vissuto con intensità. Distingui un fuoco utile da un incendio fuori controllo e considera luogo, fumo, persone presenti ed emozione.",
+        "name": "Incendio / Fuoco",
+        "shortDescription": "Sognare un incendio o il fuoco può richiamare energia, rabbia, urgenza o un cambiamento intenso nella vita. Distingui un fuoco utile da fiamme fuori controllo e considera luogo, fumo, persone presenti ed emozione.",
         "askYourself": [
           "Il fuoco scaldava, illuminava, bruciava o distruggeva?",
-          "Era un fuoco controllato, un incendio, un fuoco in casa o c’era del fumo nero?",
+          "Era un incendio, un fuoco controllato, un fuoco in casa o c’era del fumo nero?",
           "Quale emozione nella mia vita sembra accendersi troppo in fretta?"
         ],
-        "seoTitle": "fuoco o incendio in casa",
+        "seoTitle": "un incendio o il fuoco",
         "faq": [
           {
-            "question": "Cosa significa sognare il fuoco?",
-            "answer": "Il fuoco può richiamare energia, desiderio, rabbia, urgenza o cambiamento. Non ha un significato unico: un camino che scalda, una fiamma controllata e un incendio vissuto con paura raccontano scene diverse."
+            "question": "Cosa significa sognare un incendio o il fuoco?",
+            "answer": "Un incendio o il fuoco possono richiamare energia, desiderio, rabbia, urgenza o cambiamento. Non hanno un significato unico: un camino che scalda, una fiamma controllata e un incendio vissuto con paura raccontano scene diverse."
           },
           {
             "question": "Che differenza c’è tra fuoco controllato e incendio?",
@@ -1714,7 +1714,7 @@
           "button": "Prova l'app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-08-28"
       },
       "pt": {
         "slug": "fogo",
