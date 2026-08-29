@@ -132,6 +132,16 @@ export interface DreamAnalysis {
   reflectionQuestions?: string[];
   /** Version of the analysis prompt/schema that produced this reading (server-stamped). */
   promptVersion?: string;
+  /**
+   * Raw analysis_details JSON as stored in Supabase.
+   * Known fields are also exposed on the dream; unknown keys stay here so they round-trip.
+   */
+  analysisDetails?: Record<string, unknown>;
+  /**
+   * Deterministic hash of the transcript that produced the current analysis.
+   * Absent on legacy analyses so they stay unstaled until the next successful analysis.
+   */
+  analysisTranscriptHash?: string;
   imageUrl: string; // Full-resolution image for detail views
   thumbnailUrl?: string; // Smaller thumbnail for list views (optional for backward compatibility)
   imageUpdatedAt?: number; // Timestamp bump to force image refresh when replaced

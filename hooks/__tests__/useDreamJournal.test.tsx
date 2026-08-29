@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { DreamAnalysis, DreamMutation, PendingImageJob, QuotaStatus } from '../../lib/types';
 import { QuotaError, QuotaErrorCode } from '../../lib/errors';
+import { getDreamAnalysisFreshness, hashDreamTranscript } from '../../lib/dreamAnalysisFreshness';
 
 type AnyFunction = (...args: any[]) => any;
 const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
@@ -676,6 +677,37 @@ describe('useDreamJournal', () => {
         ]),
         'user:user-1'
       );
+    });
+
+    it('keeps analysis text when the transcript is edited after analysis', async () => {
+      const existingDream = buildDream({
+        id: 1,
+        transcript: 'Original transcript',
+        interpretation: 'Kept reading',
+        shareableQuote: 'Kept quote',
+        isAnalyzed: true,
+        analysisStatus: 'done',
+        analysisTranscriptHash: hashDreamTranscript('Original transcript'),
+      });
+      mockGetSavedDreams.mockResolvedValue([existingDream]);
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.updateDream({
+          ...existingDream,
+          transcript: 'Edited transcript',
+        });
+      });
+
+      const updated = result.current.dreams[0];
+      expect(updated.transcript).toBe('Edited transcript');
+      expect(updated.interpretation).toBe('Kept reading');
+      expect(updated.shareableQuote).toBe('Kept quote');
+      expect(updated.isAnalyzed).toBe(true);
+      expect(updated.analysisStatus).toBe('done');
+      expect(updated.analysisTranscriptHash).toBe(hashDreamTranscript('Original transcript'));
+      expect(getDreamAnalysisFreshness(updated)).toBe('stale');
     });
   });
 
@@ -1516,6 +1548,8 @@ describe('useDreamJournal', () => {
         imageJobId: undefined,
         imageJobStatus: undefined,
       }));
+      expect(analyzed?.analysisTranscriptHash).toBe(hashDreamTranscript(existingDream.transcript));
+      expect(getDreamAnalysisFreshness(analyzed)).toBe('fresh');
     });
 
     it('registers a server image job only when replaceExistingImage is true', async () => {
@@ -1840,6 +1874,8 @@ describe('useDreamJournal', () => {
       expect(analyzedDream.imageJobStatus).toBe('queued');
       expect(analyzedDream.analyzedAt).toBeDefined();
       expect(analyzedDream.clientUpdatedAt).toEqual(expect.any(Number));
+      expect(analyzedDream.analysisTranscriptHash).toBe(hashDreamTranscript(analyzedDream.transcript));
+      expect(getDreamAnalysisFreshness(analyzedDream)).toBe('fresh');
     });
 
     it('persists the guest interpretation before image admission completes', async () => {

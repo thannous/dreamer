@@ -42,6 +42,7 @@ import {
   setDreamSyncState,
   upsertDream,
 } from '@/lib/dreamUtils';
+import { stampDreamAnalysisTranscript } from '@/lib/dreamAnalysisFreshness';
 import { coerceQuotaError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import { getImageJobPollDelay } from '@/lib/imageJobPolling';
@@ -1288,8 +1289,11 @@ export const useDreamJournal = () => {
 
           emitProgress(AnalysisStep.FINALIZING);
           const remoteDream = await fetchDreamFromSupabase(syncedDream.remoteId!);
-          const refreshedDream = mergeRemoteDreamWithClientState(remoteDream, latestDream);
-          await persistRemoteDreams((prev) => upsertDream(prev, refreshedDream));
+          const mergedDream = mergeRemoteDreamWithClientState(remoteDream, latestDream);
+          const stampedDream = stampDreamAnalysisTranscript(mergedDream, mergedDream.transcript);
+          await updateDream(stampedDream);
+          await syncPendingMutations();
+          const refreshedDream = resolveCurrentDream(stampedDream);
 
           void trackProductEvent('analysis_completed', {
             duration_ms_bucket: getDurationMsBucket(Date.now() - analysisStartedAt),
@@ -1324,6 +1328,7 @@ export const useDreamJournal = () => {
           analyzedAt: Date.now(),
           isAnalyzed: true,
         };
+        next = stampDreamAnalysisTranscript(next, next.transcript);
         if (shouldReplaceImage) {
           next = {
             ...next,

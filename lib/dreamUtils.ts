@@ -349,6 +349,7 @@ type DreamRemoteComparable = {
   explorationStartedAt: number | null;
   clientRequestId: string | null;
   memory: DreamMemoryMetadata | undefined;
+  analysisTranscriptHash: string | null;
 };
 
 const toRemoteComparable = (dream: DreamAnalysis): DreamRemoteComparable => {
@@ -373,6 +374,7 @@ const toRemoteComparable = (dream: DreamAnalysis): DreamRemoteComparable => {
     explorationStartedAt: dream.explorationStartedAt ?? null,
     clientRequestId: dream.clientRequestId ?? null,
     memory: normalizeDreamMemoryMetadata(dream.memory),
+    analysisTranscriptHash: dream.analysisTranscriptHash ?? null,
   };
 };
 
@@ -403,7 +405,8 @@ export const areDreamsEqualForRemoteSync = (a: DreamAnalysis, b: DreamAnalysis):
     left.analysisRequestId !== right.analysisRequestId ||
     left.explorationStartedAt !== right.explorationStartedAt ||
     left.clientRequestId !== right.clientRequestId ||
-    !areDreamMemoryMetadataEqual(left.memory, right.memory)
+    !areDreamMemoryMetadataEqual(left.memory, right.memory) ||
+    left.analysisTranscriptHash !== right.analysisTranscriptHash
   ) {
     return false;
   }
@@ -455,6 +458,7 @@ export const areDreamsEqualForLocalState = (a: DreamAnalysis, b: DreamAnalysis):
   if ((left.imageJobErrorCode ?? null) !== (right.imageJobErrorCode ?? null)) return false;
   if ((left.imageJobErrorMessage ?? null) !== (right.imageJobErrorMessage ?? null)) return false;
   if (!areDreamMemoryMetadataEqual(left.memory, right.memory)) return false;
+  if ((left.analysisTranscriptHash ?? null) !== (right.analysisTranscriptHash ?? null)) return false;
 
   const leftChat = Array.isArray(left.chatHistory) ? left.chatHistory : [];
   const rightChat = Array.isArray(right.chatHistory) ? right.chatHistory : [];

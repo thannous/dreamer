@@ -8,6 +8,10 @@ import {
   getMutationRemoteId,
   normalizeDreamMemoryMetadata,
 } from '@/lib/dreamUtils';
+import {
+  ANALYSIS_TRANSCRIPT_HASH_KEY,
+  isAnalysisTranscriptHash,
+} from '@/lib/dreamAnalysisFreshness';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import * as FileSystem from 'expo-file-system';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
@@ -539,8 +543,14 @@ type SupabaseDreamRow = {
 
 type AnalysisDetailFields = Pick<DreamAnalysis, 'symbols' | 'emotions' | 'reflectionQuestions' | 'promptVersion'>;
 
-const normalizeAnalysisDetails = (value: unknown): AnalysisDetailFields => {
-  const source = (value ?? {}) as Record<string, unknown>;
+type KnownAnalysisDetailFields = AnalysisDetailFields & Pick<DreamAnalysis, 'analysisTranscriptHash'>;
+
+const asAnalysisDetailsRecord = (value: unknown): Record<string, unknown> =>
+  value && typeof value === 'object' && !Array.isArray(value)
+    ? { ...(value as Record<string, unknown>) }
+    : {};
+
+const sanitizeKnownAnalysisDetails = (source: Record<string, unknown>): KnownAnalysisDetailFields => {
   const symbols = Array.isArray(source.symbols)
     ? source.symbols.filter(
         (entry: any) => entry && typeof entry.name === 'string' && typeof entry.meaning === 'string'
@@ -558,22 +568,39 @@ const normalizeAnalysisDetails = (value: unknown): AnalysisDetailFields => {
     typeof source.promptVersion === 'string' && source.promptVersion.length > 0 && source.promptVersion.length <= 64
       ? source.promptVersion
       : undefined;
+  const analysisTranscriptHash = isAnalysisTranscriptHash(source[ANALYSIS_TRANSCRIPT_HASH_KEY])
+    ? source[ANALYSIS_TRANSCRIPT_HASH_KEY]
+    : undefined;
 
   return {
     ...(symbols.length > 0 ? { symbols } : {}),
     ...(emotions.length > 0 ? { emotions } : {}),
     ...(reflectionQuestions.length > 0 ? { reflectionQuestions } : {}),
     ...(promptVersion ? { promptVersion } : {}),
+    ...(analysisTranscriptHash ? { analysisTranscriptHash } : {}),
   };
 };
 
 const toAnalysisDetailsColumn = (dream: DreamAnalysis): Record<string, unknown> | null => {
-  const details = normalizeAnalysisDetails({
-    symbols: dream.symbols,
-    emotions: dream.emotions,
-    reflectionQuestions: dream.reflectionQuestions,
-    promptVersion: dream.promptVersion,
-  });
+  const merged = {
+    ...asAnalysisDetailsRecord(dream.analysisDetails),
+    ...(dream.symbols !== undefined ? { symbols: dream.symbols } : {}),
+    ...(dream.emotions !== undefined ? { emotions: dream.emotions } : {}),
+    ...(dream.reflectionQuestions !== undefined ? { reflectionQuestions: dream.reflectionQuestions } : {}),
+    ...(dream.promptVersion !== undefined ? { promptVersion: dream.promptVersion } : {}),
+    ...(dream.analysisTranscriptHash !== undefined
+      ? { [ANALYSIS_TRANSCRIPT_HASH_KEY]: dream.analysisTranscriptHash }
+      : {}),
+  };
+  const known = sanitizeKnownAnalysisDetails(merged);
+  const details: Record<string, unknown> = { ...merged };
+  delete details.symbols;
+  delete details.emotions;
+  delete details.reflectionQuestions;
+  delete details.promptVersion;
+  delete details[ANALYSIS_TRANSCRIPT_HASH_KEY];
+  Object.assign(details, known);
+
   return Object.keys(details).length > 0 ? details : null;
 };
 
@@ -582,6 +609,8 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
   const imageUrl = row.image_url ?? '';
   const hasImage = Boolean(imageUrl);
   const imageGenerationFailed = hasImage ? false : row.image_generation_failed ?? false;
+  const analysisDetails = asAnalysisDetailsRecord(row.analysis_details);
+  const knownAnalysisDetails = sanitizeKnownAnalysisDetails(analysisDetails);
   return {
     id: createdAt,
     remoteId: row.id,
@@ -609,7 +638,8 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
     hasPerson: row.has_person === null ? undefined : row.has_person,
     hasAnimal: row.has_animal === null ? undefined : row.has_animal,
     memory: normalizeDreamMemoryMetadata(row.memory),
-    ...normalizeAnalysisDetails(row.analysis_details),
+    ...(Object.keys(analysisDetails).length > 0 ? { analysisDetails } : {}),
+    ...knownAnalysisDetails,
   };
 };
 
