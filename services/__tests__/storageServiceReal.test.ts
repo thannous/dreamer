@@ -333,6 +333,39 @@ describe('storageServiceReal', () => {
     }
   });
 
+  it('preserves a 10000-character dream transcript through web localStorage', async () => {
+    const originalIndexedDB = (globalThis as any).indexedDB;
+    try {
+      delete (globalThis as any).indexedDB;
+
+      const storage = require('../storageServiceReal');
+      const longTranscript = 'a'.repeat(10_000);
+      const dream = {
+        id: 123,
+        title: 'A long dream',
+        transcript: longTranscript,
+        interpretation: '',
+        shareableQuote: '',
+        imageUrl: '',
+        dreamType: 'Symbolic Dream',
+        chatHistory: [],
+        isFavorite: false,
+      } as DreamAnalysis;
+
+      await storage.saveDreams([dream]);
+      const loaded = await storage.getSavedDreams();
+      expect(loaded).toHaveLength(1);
+      expect(loaded[0]?.transcript).toBe(longTranscript);
+      expect(loaded[0]?.transcript).toHaveLength(10_000);
+
+      await storage.saveTranscript(longTranscript);
+      expect(await storage.getSavedTranscript()).toBe(longTranscript);
+      expect((await storage.getSavedTranscript()).length).toBe(10_000);
+    } finally {
+      (globalThis as any).indexedDB = originalIndexedDB;
+    }
+  });
+
   it('stores preferences and flags using localStorage on web', async () => {
     const originalIndexedDB = (globalThis as any).indexedDB;
     try {

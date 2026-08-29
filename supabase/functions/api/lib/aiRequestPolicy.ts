@@ -2,7 +2,10 @@ import { isAiLanguage } from './aiLanguage.ts';
 import { corsHeaders } from './constants.ts';
 
 export const AI_REQUEST_LIMITS = {
+  /** Request-abuse bound for optional image-generation transcript fields. */
   transcriptChars: 600,
+  /** Request-abuse bound for stored/source dream transcripts. Prompt copies are bounded separately. */
+  transcriptRequestChars: 100_000,
   imagePromptChars: 1000,
   previousImageUrlChars: 2048,
   clientRequestIdChars: 128,
@@ -64,6 +67,28 @@ export const isValidUuid = (value: string): boolean => UUID_PATTERN.test(value);
 export const normalizeAiLanguage = (value: string): string => {
   const base = value.toLowerCase().split(/[-_]/)[0];
   return isAiLanguage(base) ? base : 'en';
+};
+
+export const parseDreamTextInput = (
+  body: { transcript?: unknown; lang?: unknown }
+): { transcript: string; lang: string } | Response => {
+  const transcript = validateBoundedText(body?.transcript, {
+    field: 'transcript',
+    maxChars: AI_REQUEST_LIMITS.transcriptRequestChars,
+  });
+  if (!transcript.ok) return aiInputErrorResponse(transcript);
+
+  const language = validateBoundedText(body?.lang, {
+    field: 'lang',
+    maxChars: AI_REQUEST_LIMITS.languageChars,
+    required: false,
+  });
+  if (!language.ok) return aiInputErrorResponse(language);
+
+  return {
+    transcript: transcript.value,
+    lang: normalizeAiLanguage(language.value || 'en'),
+  };
 };
 
 export const aiInputErrorResponse = (

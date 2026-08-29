@@ -696,6 +696,28 @@ describe('Recording screen', () => {
     expect(mockAddDream).not.toHaveBeenCalled();
   });
 
+  it.each([601, 1200] as const)(
+    'keeps a typed transcript of %s characters intact when saving',
+    async (length: 601 | 1200) => {
+      const longTranscript = 'a'.repeat(length);
+      render(<RecordingScreen />);
+
+      fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+        target: { value: longTranscript },
+      });
+
+      const saveButton = screen.getByTestId('recording-save') as HTMLButtonElement;
+      expect(saveButton.disabled).toBe(false);
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(mockAddDream).toHaveBeenCalledWith(
+          expect.objectContaining({ transcript: longTranscript })
+        );
+      });
+    }
+  );
+
   it.each(['maman', 'Porte rouge', 'loup blanc'] as const)(
     'keeps the save button visible and enabled for the short fragment %s',
     async (fragment: 'maman' | 'Porte rouge' | 'loup blanc') => {

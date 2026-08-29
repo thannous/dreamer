@@ -1,6 +1,6 @@
 import { type AiLanguage, localizedForAi } from './aiLanguage.ts';
 
-const DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS = 6000;
+export const DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS = 6000;
 const DREAM_CONTEXT_INTERPRETATION_MAX_CHARS = 4000;
 
 /**
@@ -83,6 +83,37 @@ export function truncateForPrompt(input: unknown, maxChars: number): { text: str
   const text = String(input ?? '').trim();
   if (text.length <= maxChars) return { text, truncated: false };
   return { text: text.slice(0, maxChars).trimEnd(), truncated: true };
+}
+
+export function boundTranscriptForPrompt(
+  input: unknown,
+  maxChars: number = DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS
+): { text: string; truncated: boolean } {
+  return truncateForPrompt(input, maxChars);
+}
+
+export function resolveStoredTranscriptForAi(
+  raw: unknown,
+  requestMaxChars: number
+):
+  | {
+      ok: true;
+      storedTranscript: string;
+      promptTranscript: string;
+      truncatedForPrompt: boolean;
+    }
+  | { ok: false } {
+  const storedTranscript = String(raw ?? '').trim();
+  if (!storedTranscript || storedTranscript.length > requestMaxChars) {
+    return { ok: false };
+  }
+  const bounded = boundTranscriptForPrompt(storedTranscript);
+  return {
+    ok: true,
+    storedTranscript,
+    promptTranscript: bounded.text,
+    truncatedForPrompt: bounded.truncated,
+  };
 }
 
 /**

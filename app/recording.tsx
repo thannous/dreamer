@@ -28,7 +28,6 @@ import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RememberedDreamProfileChips } from '@/components/recording/RememberedDreamProfileChips';
 import { Toast } from '@/components/Toast';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
-import { RECORDING } from '@/constants/appConfig';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
@@ -441,24 +440,11 @@ export default function RecordingScreen() {
   const textInputRef = useRef<TextInput | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
   const lastInputSourceRef = useRef<RecordingInputModePreference>('text');
-  const lengthLimitMessage = useCallback(
-    () =>
-      t('recording.alert.length_limit', { limit: RECORDING.MAX_TRANSCRIPT_CHARS }) ||
-      `Limite ${RECORDING.MAX_TRANSCRIPT_CHARS} caractères atteinte`,
-    [t]
-  );
-  const clampTranscript = useCallback((text: string) => {
-    if (text.length <= RECORDING.MAX_TRANSCRIPT_CHARS) {
-      return { text, truncated: false };
-    }
-    return { text: text.slice(0, RECORDING.MAX_TRANSCRIPT_CHARS), truncated: true };
-  }, []);
   const combineTranscript = useCallback(
     (base: string, addition: string) => {
       return combineTranscriptPure({
         base,
         addition,
-        maxChars: RECORDING.MAX_TRANSCRIPT_CHARS,
         devLog: __DEV__,
       });
     },
@@ -521,22 +507,19 @@ export default function RecordingScreen() {
   const handleTranscriptChange = useCallback(
     (text: string) => {
       lastInputSourceRef.current = 'text';
-      const { text: clamped, truncated } = clampTranscript(text);
-      if (!captureStartedTrackedRef.current && clamped.trim().length > 0) {
+      if (!captureStartedTrackedRef.current && text.trim().length > 0) {
         captureStartedTrackedRef.current = true;
         void trackProductEvent('dream_capture_started', {
           input_mode: 'text',
           capture_context: captureIntent,
         });
       }
-      setTranscript(clamped);
-      baseTranscriptRef.current = clamped;
-      setLengthWarning(truncated ? lengthLimitMessage() : '');
+      setTranscript(text);
+      baseTranscriptRef.current = text;
     },
-    [captureIntent, clampTranscript, lengthLimitMessage]
+    [captureIntent]
   );
 
-  const stopRecordingFromPartialRef = useRef<(() => void) | null>(null);
   const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
 
   const recordingSession = useRecordingSession({
@@ -546,13 +529,9 @@ export default function RecordingScreen() {
       stopRecordingFromNativeEndRef.current?.();
     },
     onPartialTranscript: (text) => {
-      const { text: combined, truncated } = combineTranscript(baseTranscriptRef.current, text);
+      const { text: combined } = combineTranscript(baseTranscriptRef.current, text);
       setTranscript(combined);
       baseTranscriptRef.current = combined;
-      setLengthWarning(truncated ? lengthLimitMessage() : '');
-      if (truncated) {
-        stopRecordingFromPartialRef.current?.();
-      }
     },
   });
 
@@ -874,9 +853,8 @@ export default function RecordingScreen() {
           setTranscript(transcriptText);
         } else {
           // Final is significantly different - combine with base
-          const { text: combined, truncated } = combineTranscript(baseTranscriptRef.current, transcriptText);
+          const { text: combined } = combineTranscript(baseTranscriptRef.current, transcriptText);
           baseTranscriptRef.current = combined;
-          setLengthWarning(truncated ? lengthLimitMessage() : '');
           setTranscript((prev) => (prev.trim() === combined.trim() ? prev : combined));
         }
       } else {
@@ -918,21 +896,11 @@ export default function RecordingScreen() {
   }, [
     t,
     combineTranscript,
-    lengthLimitMessage,
     normalizeForComparison,
     handleVoiceCaptureFailure,
     showQuotaSheet,
     stopSessionRecording,
   ]);
-
-  useEffect(() => {
-    stopRecordingFromPartialRef.current = () => {
-      void stopRecording({ silent: true });
-    };
-    return () => {
-      stopRecordingFromPartialRef.current = null;
-    };
-  }, [stopRecording]);
 
   useEffect(() => {
     stopRecordingFromNativeEndRef.current = () => {

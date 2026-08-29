@@ -1,6 +1,7 @@
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { corsHeaders } from '../api/lib/constants.ts';
-import { isValidUuid } from '../api/lib/aiRequestPolicy.ts';
+import { AI_REQUEST_LIMITS, isValidUuid } from '../api/lib/aiRequestPolicy.ts';
+import { resolveStoredTranscriptForAi } from '../api/lib/prompts.ts';
 import {
   ANALYSIS_JOB_WORKER_AUTH_HEADER,
   createAnalysisAdminClient,
@@ -182,8 +183,11 @@ const processAnalysisJob = async (input: {
       return;
     }
 
-    const transcript = String((dream as any).transcript ?? '').trim();
-    if (!transcript || transcript.length > 600) {
+    const resolvedTranscript = resolveStoredTranscriptForAi(
+      (dream as any).transcript,
+      AI_REQUEST_LIMITS.transcriptRequestChars
+    );
+    if (!resolvedTranscript.ok) {
       await failJob(adminClient, job, 'INVALID_TRANSCRIPT', 'Dream transcript is invalid');
       return;
     }
@@ -198,7 +202,7 @@ const processAnalysisJob = async (input: {
     const lang = String(job.request_payload?.lang ?? 'en');
     const analysis = await runDreamAnalysis({
       apiKey,
-      transcript,
+      transcript: resolvedTranscript.promptTranscript,
       lang,
       route: '/analysis-job-worker',
     });

@@ -426,6 +426,53 @@ describe('supabaseDreamService', () => {
     expect(dream.imageGenerationFailed).toBe(false);
   });
 
+  it('syncDreamMutationsInSupabase sends a 10000-character transcript in the create RPC payload', async () => {
+    const longTranscript = 'a'.repeat(10_000);
+    mocks.rpc = jest.fn().mockResolvedValue({
+      data: [
+        {
+          mutation_id: 'mut-create',
+          client_request_id: 'mutation-create',
+          operation: 'create',
+          status: 'ack',
+          remote_id: 42,
+          dream: buildRow({ transcript: longTranscript }),
+        },
+      ],
+      error: null,
+    });
+
+    const { syncDreamMutationsInSupabase } = require('../supabaseDreamService');
+
+    const [result] = await syncDreamMutationsInSupabase(
+      [
+        {
+          version: 1,
+          id: 'mut-create',
+          userScope: 'user:user-1',
+          entityType: 'dream',
+          entityKey: 'client:dream-req-1',
+          operation: 'create',
+          clientRequestId: 'mutation-create',
+          clientUpdatedAt: 1,
+          payload: {
+            dream: buildDream({ transcript: longTranscript }),
+          },
+          status: 'pending',
+          retryCount: 0,
+          createdAt: 1,
+        },
+      ],
+      'user-1',
+    );
+
+    expect(mocks.rpc).toHaveBeenCalledTimes(1);
+    const rpcPayload = mocks.rpc?.mock.calls[0]?.[1]?.mutations?.[0]?.payload as Record<string, unknown>;
+    expect(rpcPayload?.transcript).toBe(longTranscript);
+    expect(String(rpcPayload?.transcript)).toHaveLength(10_000);
+    expect(result).toEqual(expect.objectContaining({ mutationId: 'mut-create', status: 'ack', remoteId: 42 }));
+  });
+
   it('syncDreamMutationsInSupabase splits dependent create and update mutations', async () => {
     mocks.rpc = jest
       .fn()

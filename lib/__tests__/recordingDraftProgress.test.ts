@@ -61,15 +61,33 @@ describe('getRecordingDraftProgress', () => {
     expect(getRecordingDraftProgress(text, 200).state).toBe('ready');
   });
 
-  it('caps progress at the configured limit', () => {
+  it('saturates the visual bar without blocking or reporting a limit', () => {
     const result = getRecordingDraftProgress('abcdef', 3);
 
     expect(result).toEqual({
-      charCount: 3,
+      charCount: 6,
       limit: 3,
       remaining: 0,
       ratio: 1,
-      state: 'full',
+      state: 'short',
     });
+  });
+
+  it('keeps actual counts past the 600-character visual reference and stays saveable', () => {
+    const overReference = 'x'.repeat(601);
+    const muchLonger = 'y'.repeat(1200);
+    const veryLong = 'z'.repeat(10_000);
+
+    expect(getRecordingDraftProgress(overReference)).toMatchObject({
+      charCount: 601,
+      remaining: 0,
+      ratio: 1,
+      state: 'ready',
+    });
+    expect(getRecordingDraftProgress(muchLonger).charCount).toBe(1200);
+    expect(getRecordingDraftProgress(veryLong).charCount).toBe(10_000);
+    expect(getRecordingDraftProgress(veryLong).state).toBe('ready');
+    expect(isTranscriptSaveable(overReference)).toBe(true);
+    expect(isTranscriptSaveable(veryLong)).toBe(true);
   });
 });

@@ -172,8 +172,9 @@ export async function handleTranscribe(
   }
 
   const candidate = providerBody.results?.[0]?.alternatives?.[0]?.transcript;
-  const transcript = typeof candidate === "string"
-    ? candidate.trim().slice(0, AI_REQUEST_LIMITS.transcriptChars)
-    : "";
+  const rawTranscript = typeof candidate === "string" ? candidate.trim() : "";
+  const transcript = rawTranscript.length > AI_REQUEST_LIMITS.transcriptRequestChars
+    ? rawTranscript.slice(0, AI_REQUEST_LIMITS.transcriptRequestChars)
+    : rawTranscript;
   return jsonResponse({ transcript }, 200);
 }

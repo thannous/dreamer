@@ -441,6 +441,47 @@ describe('useDreamJournal', () => {
       setMockUser({ id: 'user-1' });
     });
 
+    it('persists a 10000-character transcript locally and passes it unchanged to remote create', async () => {
+      const longTranscript = 'a'.repeat(10_000);
+      const remoteDream = buildDream({ id: 1, remoteId: 101, transcript: longTranscript });
+      mockCreateDreamInSupabase.mockResolvedValue(remoteDream);
+
+      const { result } = await renderLoadedDreamJournal();
+      const newDream = buildDream({ id: 1, transcript: longTranscript });
+
+      await act(async () => {
+        const saved = await result.current.addDream(newDream);
+        expect(saved.transcript).toBe(longTranscript);
+        expect(saved.transcript).toHaveLength(10_000);
+      });
+
+      expect(result.current.dreams[0].transcript).toBe(longTranscript);
+      expect(mockSaveCachedRemoteDreams).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({ id: 1, transcript: longTranscript }),
+        ]),
+        'user:user-1'
+      );
+      expect(mockSavePendingDreamMutations).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({
+            operation: 'create',
+            payload: expect.objectContaining({
+              dream: expect.objectContaining({ id: 1, transcript: longTranscript }),
+            }),
+          }),
+        ]),
+        'user:user-1'
+      );
+
+      await waitFor(() => {
+        expect(mockCreateDreamInSupabase).toHaveBeenCalledWith(
+          expect.objectContaining({ id: 1, transcript: longTranscript }),
+          'user-1'
+        );
+      }, FAST_WAIT_OPTIONS);
+    });
+
     it('persists locally before creating the authenticated dream in Supabase', async () => {
       const remoteDream = buildDream({ id: 1, remoteId: 101 });
       let resolveRemoteCreate: ((dream: DreamAnalysis) => void) | undefined;

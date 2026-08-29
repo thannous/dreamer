@@ -418,6 +418,28 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
+  it('shows an actual character count in every locale without a 600 limit', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    const countByLocale: Record<(typeof languages)[number], RegExp> = {
+      en: /^601 characters$/,
+      fr: /^601 caractères$/,
+      es: /^601 caracteres$/,
+      de: /^601 Zeichen$/,
+      it: /^601 caratteri$/,
+      pt: /^601 caracteres$/,
+    };
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+      expect(t('recording.draft_progress.full')).toBe('recording.draft_progress.full');
+      const value = t('recording.draft_progress.count', { count: 601 });
+      expect(value).toMatch(countByLocale[lang]);
+      expect(value).not.toContain('601/600');
+      expect(value).not.toContain('/600');
+    }
+  });
+
   it('has translations for first activation insight in all supported languages', async () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
