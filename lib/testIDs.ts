@@ -259,6 +259,7 @@ export const TID = {
     RecordingVoiceStatusDuration: 'text.recording.voiceStatusDuration',
     RecordingVoiceTranscriptPreview: 'text.recording.voiceTranscriptPreview',
     RecordingFallbackNotice: 'text.recording.fallbackNotice',
+    RecordingSaveConfirmation: 'text.recording.saveConfirmation',
     RecordingActivationInsightSummary: 'text.recording.activationInsight.summary',
     RecordingInputMode: (mode: string) => `text.recording.inputMode.${mode}`,
     OnboardingProgress: 'text.onboarding.progress',

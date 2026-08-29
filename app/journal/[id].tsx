@@ -51,6 +51,7 @@ import {
   shouldShowCompletedJournalReading,
 } from '@/lib/journalIllustrationPolicy';
 import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
+import { isJournalSavedConfirmationParam } from '@/lib/journalSavedConfirmation';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
@@ -211,8 +212,11 @@ const TypewriterText = ({ text, className, shouldAnimate }: { text: string; clas
 };
 
 export default function JournalDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, saved: savedParam } = useLocalSearchParams<{ id: string; saved?: string | string[] }>();
   const dreamId = useMemo(() => Number(id), [id]);
+  const [savedConfirmationVisible, setSavedConfirmationVisible] = useState(
+    () => isJournalSavedConfirmationParam(savedParam)
+  );
   const {
     dreams,
     toggleFavorite,
@@ -231,6 +235,13 @@ export default function JournalDetailScreen() {
   const { language } = useLanguage();
   const scrollPerf = useScrollIdle();
   useClearWebFocus();
+
+  useEffect(() => {
+    if (!isJournalSavedConfirmationParam(savedParam)) {
+      return;
+    }
+    router.setParams({ saved: undefined });
+  }, [savedParam]);
   const [isRetryingImage, setIsRetryingImage] = useState(false);
   const [isRetryingSync, setIsRetryingSync] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -2313,6 +2324,15 @@ export default function JournalDetailScreen() {
           onSecondary={handleReferenceSheetClose}
           onImagesSelected={handleReferenceImagesSelected}
         />
+
+        {savedConfirmationVisible ? (
+          <Toast
+            message={t('recording.save.confirmation')}
+            mode="success"
+            onHide={() => setSavedConfirmationVisible(false)}
+            testID={TID.Text.RecordingSaveConfirmation}
+          />
+        ) : null}
 
         {favoriteError ? (
           <Toast

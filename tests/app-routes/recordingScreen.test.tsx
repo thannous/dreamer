@@ -26,6 +26,12 @@ const mockTrackProductEvent = jest.fn().mockResolvedValue(undefined);
 
 let mockCurrentUser: { id: string } | null = { id: 'user-1' };
 let mockDreams: DreamAnalysis[] = [];
+let mockPendingRecordingIntent: {
+  entryId: string;
+  savedDreamId: number;
+  phase: string;
+} | null = null;
+let mockTransitionOnboarding = jest.fn().mockResolvedValue(undefined);
 let mockPlatformOS: 'android' | 'web' = 'web';
 let mockRecordingPermissionState: 'unknown' | 'granted' | 'denied' = 'unknown';
 let mockReferenceImagesEnabled = false;
@@ -385,10 +391,10 @@ jest.doMock('@/context/OnboardingContext', () => ({
       step: 'intro',
       selectedPath: null,
       completionReason: null,
-      pendingRecordingIntent: null,
+      pendingRecordingIntent: mockPendingRecordingIntent,
       completedAt: null,
     },
-    transition: jest.fn().mockResolvedValue(undefined),
+    transition: mockTransitionOnboarding,
   }),
 }));
 
@@ -586,6 +592,8 @@ describe('Recording screen', () => {
   beforeEach(() => {
     mockCurrentUser = { id: 'user-1' };
     mockDreams = [];
+    mockPendingRecordingIntent = null;
+    mockTransitionOnboarding = jest.fn().mockResolvedValue(undefined);
     mockPlatformOS = 'web';
     mockRecordingPermissionState = 'unknown';
     mockReferenceImagesEnabled = false;
@@ -763,46 +771,14 @@ describe('Recording screen', () => {
     }
   );
 
-  it('analyzes a saved dream without waiting for illustration', async () => {
-    mockAnalyzeDream.mockImplementation(async (id: number, transcript: string, options?: {
-      onProgress?: (step: string) => void;
-    }) => {
-      options?.onProgress?.('generating_image');
-      options?.onProgress?.('finalizing');
-      options?.onProgress?.('complete');
-      return {
-        ...buildDream(transcript, id),
-        isAnalyzed: true,
-        analysisStatus: 'done',
-      };
-    });
-    render(<RecordingScreen />);
-
-    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
-      target: { value: 'A blue room under the rain' },
-    });
-    fireEvent.click(await screen.findByTestId('recording-save'));
-    fireEvent.click(await screen.findByTestId('first-dream-analyze'));
-
-    await waitFor(() => {
-      expect(mockAnalyzeDream).toHaveBeenCalledWith(
-        42,
-        'A blue room under the rain',
-        expect.objectContaining({
-          replaceExistingImage: false,
-          lang: 'fr',
-          analyticsSource: 'recording_flow',
+  it('saves a dream without launching analysis or illustration', async () => {
+    let resolveCategorize: ((value: { title: string; theme: string; dreamType: string }) => void) | undefined;
+    mockCategorizeDream.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveCategorize = resolve;
         })
-      );
-    });
-
-    expect(mockAnalysisSetStep).toHaveBeenCalledWith('analyzing');
-    expect(mockAnalysisSetStep).toHaveBeenCalledWith('finalizing');
-    expect(mockAnalysisSetStep).toHaveBeenCalledWith('complete');
-    expect(mockAnalysisSetStep).not.toHaveBeenCalledWith('generating_image');
-  });
-
-  it('saves typed content before offering navigation to the first dream', async () => {
+    );
     render(<RecordingScreen />);
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
@@ -814,18 +790,44 @@ describe('Recording screen', () => {
       expect(mockAddDream).toHaveBeenCalledWith(
         expect.objectContaining({ transcript: 'A blue room under the rain' })
       );
-      expect(screen.getByTestId('first-dream-sheet')).toBeTruthy();
+      expect(mockReplace).toHaveBeenCalledWith({
+        pathname: '/journal/[id]',
+        params: { id: '42', saved: '1' },
+      });
+      expect(screen.queryByTestId(TID.Text.RecordingSaveConfirmation)).toBeNull();
     });
 
-    fireEvent.click(screen.getByTestId('first-dream-journal'));
-
-    await waitFor(() => {
-      expect(mockReplace).toHaveBeenCalledWith('/(tabs)/journal');
-      expect(mockPush).toHaveBeenCalledWith('/journal/42');
-    });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(mockPush).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
+    expect(mockCategorizeDream).toHaveBeenCalledWith('A blue room under the rain', 'fr');
+    resolveCategorize?.({ title: 'Rain Room', theme: 'calm', dreamType: 'Symbolic Dream' });
   });
 
-  it('offers animal reference photos before analyzing a saved animal dream', async () => {
+  it('opens the saved dream immediately after a successful save', async () => {
+    render(<RecordingScreen />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'A blue room under the rain' },
+    });
+    fireEvent.click(await screen.findByTestId('recording-save'));
+
+    await waitFor(() => {
+      expect(mockAddDream).toHaveBeenCalledWith(
+        expect.objectContaining({ transcript: 'A blue room under the rain' })
+      );
+      expect(mockReplace).toHaveBeenCalledWith({
+        pathname: '/journal/[id]',
+        params: { id: '42', saved: '1' },
+      });
+    });
+
+    expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
+    expect(screen.queryByTestId('btn.guestLimit.cta')).toBeNull();
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+  });
+
+  it('does not open reference photos or analysis after saving an animal dream', async () => {
     mockReferenceImagesEnabled = true;
     mockAddDream.mockImplementation(async (dream: DreamAnalysis) => ({
       ...dream,
@@ -839,10 +841,17 @@ describe('Recording screen', () => {
       target: { value: 'A fox waits beside a frozen lake' },
     });
     fireEvent.click(await screen.findByTestId('recording-save'));
-    fireEvent.click(await screen.findByTestId('first-dream-analyze'));
 
-    const proposition = await screen.findByTestId('subject-proposition');
-    expect(proposition.getAttribute('data-subject-type')).toBe('animal');
+    await waitFor(() => {
+      expect(mockAddDream).toHaveBeenCalled();
+      expect(mockReplace).toHaveBeenCalledWith({
+        pathname: '/journal/[id]',
+        params: { id: '42', saved: '1' },
+      });
+    });
+
+    expect(screen.queryByTestId('subject-proposition')).toBeNull();
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
 
   it('restores a saved draft into the editor after remount', async () => {
@@ -984,9 +993,46 @@ describe('Recording screen', () => {
       );
     });
 
+    expect(mockReplace).toHaveBeenCalledWith({
+        pathname: '/journal/[id]',
+        params: { id: '42', saved: '1' },
+      });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
     expect(screen.queryByTestId('btn.guestLimit.cta')).toBeNull();
     expect(screen.queryByTestId('btn.guestLimit.backToText')).toBeNull();
     expect(screen.queryByText(/limit reached|limite atteinte|límite alcanzado/i)).toBeNull();
+  });
+
+  it('resumes a pending saved dream on the journal detail screen', async () => {
+    mockPendingRecordingIntent = {
+      entryId: 'pending-entry',
+      savedDreamId: 42,
+      phase: 'analysis_confirmation',
+    };
+    mockDreams = [buildDream('already saved pending dream', 42)];
+    const { rerender } = render(<RecordingScreen />);
+
+    await waitFor(() => {
+      expect(mockReplace).toHaveBeenCalledWith({
+        pathname: '/journal/[id]',
+        params: { id: '42' },
+      });
+    });
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+
+    mockDreams = [buildDream('already saved pending dream', 42)];
+    mockPendingRecordingIntent = {
+      entryId: 'pending-entry',
+      savedDreamId: 42,
+      phase: 'analysis_confirmation',
+    };
+    rerender(<RecordingScreen />);
+
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+    expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
   });
 
   it('lets typing win over a late restored draft', async () => {

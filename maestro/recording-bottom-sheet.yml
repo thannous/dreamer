@@ -1,10 +1,9 @@
-# Recording bottom-sheet smoke: first dream then analyze prompt on the next one
+# Recording save should open the dream detail without a post-save sheet
 appId: com.tanuki75.noctalia
 ---
 - runFlow: subflows/open-mock-app.yml
 - runFlow: subflows/reset-mock-state.yml
 
-# First dream should open the first-dream sheet
 - runFlow: subflows/ensure-recording-text.yml
 - tapOn:
     id: input.dreamTranscript
@@ -13,11 +12,11 @@ appId: com.tanuki75.noctalia
     id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
-    id: text.firstDream.title
+    id: text.dreamDetail.actionTitle
 - tapOn:
-    id: btn.firstDream.dismiss
+    id: btn.navigateJournal
+- waitForAnimationToEnd
 
-# Second dream should open the analyze-prompt sheet
 - runFlow: subflows/ensure-recording-text.yml
 - tapOn:
     id: input.dreamTranscript
@@ -26,4 +25,4 @@ appId: com.tanuki75.noctalia
     id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
-    id: text.analyzePromptTitle
+    id: text.dreamDetail.actionTitle

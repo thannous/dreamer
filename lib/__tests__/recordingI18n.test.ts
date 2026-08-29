@@ -106,6 +106,7 @@ const recordingStatusKeys = [
   'recording.status.fallback.no_speech',
   'recording.status.fallback.start_failed',
   'recording.status.retry_voice',
+  'recording.save.confirmation',
 ] as const;
 
 const recordingModeKeys = [
