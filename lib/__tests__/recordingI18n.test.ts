@@ -399,6 +399,25 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
+  it('tells every locale that a short fragment is already saveable', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    const saveabilityByLocale: Record<(typeof languages)[number], RegExp> = {
+      en: /enough to save/i,
+      fr: /suffit pour enregistrer/i,
+      es: /ya se puede guardar/i,
+      de: /reicht zum speichern/i,
+      it: /basta per salvare/i,
+      pt: /suficiente para salvar/i,
+    };
+
+    for (const lang of languages) {
+      const value = getTranslator(lang)('recording.draft_progress.short');
+      expect(value).not.toBe('recording.draft_progress.short');
+      expect(value).toMatch(saveabilityByLocale[lang]);
+    }
+  });
+
   it('has translations for first activation insight in all supported languages', async () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 

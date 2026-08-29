@@ -14,6 +14,10 @@ export type RecordingDraftProgress = {
 // the save action should become available without an invisible long-form quota.
 const READY_THRESHOLD_CHARS = 18;
 
+export function isTranscriptSaveable(value: string): boolean {
+  return value.trim().length > 0;
+}
+
 export function getRecordingDraftProgress(
   value: string,
   limit: number = RECORDING.MAX_TRANSCRIPT_CHARS,

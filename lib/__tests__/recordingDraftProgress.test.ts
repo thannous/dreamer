@@ -1,4 +1,22 @@
-import { getRecordingDraftProgress } from '@/lib/recordingDraftProgress';
+import {
+  getRecordingDraftProgress,
+  isTranscriptSaveable,
+} from '@/lib/recordingDraftProgress';
+
+describe('isTranscriptSaveable', () => {
+  it('treats any trimmed fragment as saveable, including short remembered notes', () => {
+    expect(isTranscriptSaveable('maman')).toBe(true);
+    expect(isTranscriptSaveable('Porte rouge')).toBe(true);
+    expect(isTranscriptSaveable('loup blanc')).toBe(true);
+    expect(isTranscriptSaveable('  maman  ')).toBe(true);
+  });
+
+  it('rejects empty and whitespace-only transcripts', () => {
+    expect(isTranscriptSaveable('')).toBe(false);
+    expect(isTranscriptSaveable('   ')).toBe(false);
+    expect(isTranscriptSaveable('\n\t')).toBe(false);
+  });
+});
 
 describe('getRecordingDraftProgress', () => {
   it('returns empty state for blank drafts', () => {
@@ -11,6 +29,11 @@ describe('getRecordingDraftProgress', () => {
     });
   });
 
+  it('classifies whitespace-only drafts as empty and not saveable', () => {
+    expect(getRecordingDraftProgress('   ', 100).state).toBe('empty');
+    expect(isTranscriptSaveable('   ')).toBe(false);
+  });
+
   it('returns short state for early notes', () => {
     const result = getRecordingDraftProgress('A blue door', 100);
 
@@ -18,6 +41,13 @@ describe('getRecordingDraftProgress', () => {
     expect(result.charCount).toBe(11);
     expect(result.remaining).toBe(89);
     expect(result.ratio).toBeCloseTo(0.11);
+  });
+
+  it('keeps short remembered fragments classified as short without blocking save', () => {
+    for (const fragment of ['maman', 'Porte rouge', 'loup blanc']) {
+      expect(getRecordingDraftProgress(fragment, 100).state).toBe('short');
+      expect(isTranscriptSaveable(fragment)).toBe(true);
+    }
   });
 
   it('becomes ready at the minimum fragment length', () => {

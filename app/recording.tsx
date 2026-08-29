@@ -79,7 +79,7 @@ import {
 } from '@/lib/recordingVoiceMode';
 import { canDictate } from '@/lib/speechCapability';
 import { resolveDeviceSpeechCapability } from '@/services/nativeSpeechRecognition';
-import { getRecordingDraftProgress } from '@/lib/recordingDraftProgress';
+import { isTranscriptSaveable } from '@/lib/recordingDraftProgress';
 import {
   getRecordingActivationInsight,
   type RecordingActivationInsight,
@@ -436,8 +436,7 @@ export default function RecordingScreen() {
   const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
   const interactionDisabled = isPersisting || isAnalyzing;
   const isCompactLandscape = viewportWidth > viewportHeight && viewportHeight < 600;
-  const draftProgress = getRecordingDraftProgress(trimmedTranscript);
-  const hasSaveableContent = draftProgress.state === 'ready' || draftProgress.state === 'full';
+  const hasSaveableContent = isTranscriptSaveable(transcript);
   const isSaveDisabled = !hasSaveableContent || interactionDisabled;
   const textInputRef = useRef<TextInput | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
@@ -1045,12 +1044,12 @@ export default function RecordingScreen() {
       await stopRecording();
     }
 
-    const latestTranscript = (baseTranscriptRef.current || transcript).trim();
-
-    if (!latestTranscript) {
+    const latestSource = baseTranscriptRef.current || transcript;
+    if (!isTranscriptSaveable(latestSource)) {
       Alert.alert(t('recording.alert.empty.title'), t('recording.alert.empty.message'));
       return;
     }
+    const latestTranscript = latestSource.trim();
 
     if (!user) {
       const used = await getGuestRecordedDreamCount(dreams.length);
@@ -1555,13 +1554,12 @@ export default function RecordingScreen() {
       isCompactLandscape && styles.mainContentCompact,
       {
         paddingTop: 16 + insets.top,
-        paddingBottom: fixedFooterBottomOffset + (hasSaveableContent ? footerHeight : 0),
+        paddingBottom: fixedFooterBottomOffset + footerHeight,
       },
     ],
     [
       fixedFooterBottomOffset,
       footerHeight,
-      hasSaveableContent,
       insets.top,
       isCompactLandscape,
     ]
@@ -1578,8 +1576,8 @@ export default function RecordingScreen() {
     [fixedFooterBottomOffset, keyboardVisible]
   );
   const subjectPropositionMarginBottom = useMemo(
-    () => fixedFooterBottomOffset + (hasSaveableContent ? footerHeight : 0),
-    [fixedFooterBottomOffset, footerHeight, hasSaveableContent]
+    () => fixedFooterBottomOffset + footerHeight,
+    [fixedFooterBottomOffset, footerHeight]
   );
   const recordingGuideMeasureKey = Math.round(
     viewportWidth * 10000 + viewportHeight * 100 + fixedFooterBottomOffset + recordingGuideStep
@@ -1594,7 +1592,7 @@ export default function RecordingScreen() {
   }, [viewportHeight]);
 
   useEffect(() => {
-    if (!keyboardVisible || !hasSaveableContent || footerHeight === 0) {
+    if (!keyboardVisible || footerHeight === 0) {
       return;
     }
 
@@ -1603,7 +1601,7 @@ export default function RecordingScreen() {
     });
 
     return () => cancelAnimationFrame(frame);
-  }, [footerHeight, hasSaveableContent, keyboardVisible]);
+  }, [footerHeight, keyboardVisible]);
 
   const focusTranscriptEnd = useCallback((value: string) => {
     const len = value.length;
@@ -2155,24 +2153,22 @@ export default function RecordingScreen() {
 
             </View>
           </ScrollView>
-          {hasSaveableContent ? (
-            <View pointerEvents="box-none" style={fixedFooterStyle} onLayout={handleFooterLayout}>
-              <RecordingFooter
-                onSave={handleSaveDream}
-                isSaveDisabled={isSaveDisabled}
-                saveButtonLabel={
-                  captureIntent === 'remembered'
-                    ? t('recording.remembered.save_button')
-                    : t('recording.button.save_dream')
-                }
-                saveButtonAccessibilityLabel={
-                  captureIntent === 'remembered'
-                    ? t('recording.remembered.save_button_accessibility')
-                    : t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })
-                }
-              />
-            </View>
-          ) : null}
+          <View pointerEvents="box-none" style={fixedFooterStyle} onLayout={handleFooterLayout}>
+            <RecordingFooter
+              onSave={handleSaveDream}
+              isSaveDisabled={isSaveDisabled}
+              saveButtonLabel={
+                captureIntent === 'remembered'
+                  ? t('recording.remembered.save_button')
+                  : t('recording.button.save_dream')
+              }
+              saveButtonAccessibilityLabel={
+                captureIntent === 'remembered'
+                  ? t('recording.remembered.save_button_accessibility')
+                  : t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })
+              }
+            />
+          </View>
         </KeyboardAvoidingView>
         {!keyboardVisible && !isDesktopWeb ? (
           <NoctaliaBottomNav

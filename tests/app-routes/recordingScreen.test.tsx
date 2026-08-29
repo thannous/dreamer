@@ -525,6 +525,7 @@ jest.doMock('@/lib/recordingActivation', () => ({
 }));
 
 jest.doMock('@/lib/recordingDraftProgress', () => ({
+  isTranscriptSaveable: (transcript: string) => transcript.trim().length > 0,
   getRecordingDraftProgress: (transcript: string) => ({
     state: transcript.trim() ? 'ready' : 'empty',
   }),
@@ -679,6 +680,44 @@ describe('Recording screen', () => {
       expect(mockSaveInputModePreference).toHaveBeenCalledWith('text', 'guest');
     });
   });
+
+  it('keeps the save button visible and disabled for empty or whitespace drafts', () => {
+    render(<RecordingScreen />);
+
+    const saveButton = screen.getByTestId('recording-save') as HTMLButtonElement;
+    expect(saveButton.disabled).toBe(true);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: '   ' },
+    });
+
+    expect(screen.getByTestId('recording-save')).toBeTruthy();
+    expect((screen.getByTestId('recording-save') as HTMLButtonElement).disabled).toBe(true);
+    expect(mockAddDream).not.toHaveBeenCalled();
+  });
+
+  it.each(['maman', 'Porte rouge', 'loup blanc'] as const)(
+    'keeps the save button visible and enabled for the short fragment %s',
+    async (fragment: 'maman' | 'Porte rouge' | 'loup blanc') => {
+      render(<RecordingScreen />);
+
+      expect(screen.getByTestId('recording-save')).toBeTruthy();
+
+      fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+        target: { value: fragment },
+      });
+
+      const saveButton = screen.getByTestId('recording-save') as HTMLButtonElement;
+      expect(saveButton.disabled).toBe(false);
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(mockAddDream).toHaveBeenCalledWith(
+          expect.objectContaining({ transcript: fragment })
+        );
+      });
+    }
+  );
 
   it('saves typed content before offering navigation to the first dream', async () => {
     render(<RecordingScreen />);

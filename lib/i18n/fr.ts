@@ -485,7 +485,7 @@ const translations: Record<string, string> = {
     'recording.remembered_profile.fragment.fear': 'La peur',
     'recording.remembered_profile.fragment.color': 'Une couleur',
     'recording.draft_progress.empty': 'Commence par une scène, une sensation ou une image.',
-    'recording.draft_progress.short': 'Bon début. Ajoute un lieu, une personne ou une émotion si tu t’en souviens.',
+    'recording.draft_progress.short': 'Ce fragment suffit pour enregistrer. Ajoute un lieu, une personne ou une émotion si tu t’en souviens.',
     'recording.draft_progress.ready': 'Prêt à enregistrer. Un dernier détail peut enrichir l’analyse.',
     'recording.draft_progress.full': 'Limite atteinte. Enregistre ce brouillon avant d’ajouter autre chose.',
     'recording.draft_progress.count': '{count}/{limit}',
