@@ -115,6 +115,7 @@ export const TID = {
     InspirationRitualVariant: (id: string) => `btn.inspiration.ritual.${id}`,
     HeaderHomeDictionary: 'btn.header.home.dictionary',
     HeaderHomeInspiration: 'btn.header.home.inspiration',
+    HeaderHomeSettings: 'btn.header.home.settings',
     HomeTodayCta: 'btn.home.today.cta',
     HeaderStatsPeriod: 'btn.header.stats.period',
     HeaderStatsShare: 'btn.header.stats.share',

@@ -1,12 +1,6 @@
 appId: com.tanuki75.noctalia
 ---
-- runFlow:
-    when:
-      visible:
-        id: tab.settings
-    commands:
-      - tapOn:
-          id: tab.settings
+- openLink: noctalia://settings
 - runFlow:
     when:
       notVisible: "Settings|Paramètres|Configuración|Ajustes"
@@ -21,13 +15,7 @@ appId: com.tanuki75.noctalia
       visible: "Reload"
     commands:
       - pressKey: back
-      - runFlow:
-          when:
-            visible:
-              id: tab.settings
-          commands:
-            - tapOn:
-                id: tab.settings
+      - openLink: noctalia://settings
       - runFlow:
           when:
             notVisible: "Settings|Paramètres|Configuración|Ajustes"

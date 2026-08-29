@@ -5,6 +5,16 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 const mockUseAuth = jest.fn();
 let capturedTabBarStyle: unknown = null;
+type CapturedTabScreen = {
+  name?: string;
+  options?: {
+    href?: unknown;
+    title?: string;
+    tabBarButton?: unknown;
+    tabBarIcon?: (state: { focused: boolean }) => React.ReactNode;
+  };
+};
+let capturedScreens: CapturedTabScreen[] = [];
 let mockPlatformOS: 'android' | 'ios' | 'web' = 'ios';
 let mockWindowWidth = 390;
 let mockWindowHeight = 844;
@@ -26,10 +36,15 @@ jest.doMock('expo-router', () => {
     return <div>{children}</div>;
   };
   const TabsScreen = ({
+    name,
     options,
   }: {
+    name?: string;
     options?: { tabBarIcon?: (state: { focused: boolean }) => React.ReactNode };
-  }) => <div>{options?.tabBarIcon?.({ focused: false })}</div>;
+  }) => {
+    capturedScreens.push({ name, options });
+    return <div data-screen-name={name}>{options?.tabBarIcon?.({ focused: false })}</div>;
+  };
   TabsScreen.displayName = 'MockTabsScreen';
   Tabs.Screen = TabsScreen;
 
@@ -163,6 +178,7 @@ const { default: TabLayout } = require('@/app/(tabs)/_layout');
 describe('TabLayout returning guest navigation', () => {
   beforeEach(() => {
     capturedTabBarStyle = null;
+    capturedScreens = [];
     mockPlatformOS = 'ios';
     mockWindowWidth = 390;
     mockWindowHeight = 844;
@@ -195,6 +211,24 @@ describe('TabLayout returning guest navigation', () => {
     render(<TabLayout />);
 
     expect(capturedTabBarStyle).toEqual({ display: 'none' });
+    expect(capturedScreens.find((screen) => screen.name === 'settings')?.options).toEqual(
+      expect.objectContaining({
+        title: 'nav.settings',
+        tabBarButton: expect.any(Function),
+      })
+    );
+    expect(capturedScreens.find((screen) => screen.name === 'settings')?.options).not.toEqual(
+      expect.objectContaining({
+        href: null,
+      })
+    );
+    ['index', 'journal', 'add-dream', 'statistics'].forEach((name) => {
+      expect(capturedScreens.find((screen) => screen.name === name)?.options).toEqual(
+        expect.objectContaining({
+          href: null,
+        })
+      );
+    });
   });
 
   it('keeps the floating bottom navigation for an active session', () => {
@@ -213,6 +247,24 @@ describe('TabLayout returning guest navigation', () => {
       left: expect.anything(),
       width: expect.anything(),
     }));
+    expect([
+      screen.getByText('nav.home'),
+      screen.getByText('nav.journal'),
+      screen.getByText('nav.capture_dream'),
+      screen.getByText('nav.stats'),
+    ]).toHaveLength(4);
+    expect(screen.queryByText('nav.settings')).toBeNull();
+    expect(capturedScreens.find((tabScreen) => tabScreen.name === 'settings')?.options).toEqual(
+      expect.objectContaining({
+        href: null,
+        title: 'nav.settings',
+      })
+    );
+    expect(capturedScreens.find((tabScreen) => tabScreen.name === 'settings')?.options).not.toEqual(
+      expect.objectContaining({
+        tabBarButton: expect.anything(),
+      })
+    );
   });
 
   it('centers and bounds the tab bar on a wide Android window', () => {
@@ -255,12 +307,13 @@ describe('TabLayout returning guest navigation', () => {
         'nav.journal',
         'nav.capture_dream',
         'nav.stats',
-        'nav.settings',
       ].map((label) => screen.getByText(label));
       const centerClass = screen.getByText('nav.capture_dream').parentElement?.getAttribute(
         'data-native-class'
       );
 
+      expect(labels).toHaveLength(4);
+      expect(screen.queryByText('nav.settings')).toBeNull();
       expect(centerClass).toContain('w-[64px]');
       expect(centerClass).toContain('h-[68px]');
       labels.forEach((label) => {

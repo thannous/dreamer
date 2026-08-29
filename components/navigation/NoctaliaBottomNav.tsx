@@ -24,7 +24,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
-type BottomNavKey = 'home' | 'journal' | 'addDream' | 'stats' | 'settings';
+type BottomNavKey = 'home' | 'journal' | 'addDream' | 'stats';
 
 type BottomNavItem = {
   key: BottomNavKey;
@@ -158,14 +158,6 @@ export function NoctaliaBottomNav({
       icon: 'chart.bar',
       href: '/statistics',
       testID: TID.Tab.Stats,
-    },
-    {
-      key: 'settings',
-      label: t('nav.settings'),
-      accessibilityLabel: t('nav.settings'),
-      icon: 'gear',
-      href: '/settings',
-      testID: TID.Tab.Settings,
     },
   ];
 

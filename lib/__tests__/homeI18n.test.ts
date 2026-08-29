@@ -54,6 +54,22 @@ describe('home today i18n', () => {
     expect(fr['home.today.rest.body']).toBe(
       'Ton rêve est enregistré et exploré. Tu peux revenir au journal quand tu veux.'
     );
-    expect(fr['nav.home']).toBe('Accueil');
+    expect(fr['nav.home']).toBe('Aujourd’hui');
+    expect(fr['nav.stats']).toBe('Tendances');
+  });
+
+  it('uses exact Today/Trends labels for nav.home and nav.stats', () => {
+    expect(en['nav.home']).toBe('Today');
+    expect(en['nav.stats']).toBe('Trends');
+    expect(fr['nav.home']).toBe('Aujourd’hui');
+    expect(fr['nav.stats']).toBe('Tendances');
+    expect(es['nav.home']).toBe('Hoy');
+    expect(es['nav.stats']).toBe('Tendencias');
+    expect(de['nav.home']).toBe('Heute');
+    expect(de['nav.stats']).toBe('Trends');
+    expect(italian['nav.home']).toBe('Oggi');
+    expect(italian['nav.stats']).toBe('Tendenze');
+    expect(pt['nav.home']).toBe('Hoje');
+    expect(pt['nav.stats']).toBe('Tendências');
   });
 });

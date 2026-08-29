@@ -84,19 +84,34 @@ afterEach(() => {
 });
 
 describe('DesktopSidebar', () => {
-  it('exposes Capture next to Journal so desktop web can add a dream', () => {
+  it('keeps Home, Journal, Capture and Stats as primary items with a single Settings footer', () => {
     render(<DesktopSidebar />);
 
+    expect(screen.getByTestId(TID.Tab.Home)).toBeTruthy();
+    expect(screen.getByTestId(TID.Tab.Journal)).toBeTruthy();
     expect(screen.getByTestId(TID.Tab.AddDream)).toBeTruthy();
+    expect(screen.getByTestId(TID.Tab.Stats)).toBeTruthy();
+    expect(screen.getAllByTestId(TID.Tab.Settings)).toHaveLength(1);
+
     fireEvent.click(screen.getByTestId(TID.Tab.AddDream));
     expect(mockPush).toHaveBeenCalledWith('/recording');
+
+    fireEvent.click(screen.getByTestId(TID.Tab.Settings));
+    expect(mockPush).toHaveBeenCalledWith('/settings');
   });
 
-  it('hides Capture when a returning guest is limited to Settings', () => {
+  it('shows only one Settings item and hides the primary tabs when a returning guest is blocked', () => {
     mockReturningGuestBlocked = true;
     render(<DesktopSidebar />);
 
+    expect(screen.queryByTestId(TID.Tab.Home)).toBeNull();
+    expect(screen.queryByTestId(TID.Tab.Journal)).toBeNull();
     expect(screen.queryByTestId(TID.Tab.AddDream)).toBeNull();
-    expect(screen.getByTestId(TID.Tab.Settings)).toBeTruthy();
+    expect(screen.queryByTestId(TID.Tab.Stats)).toBeNull();
+    expect(screen.getAllByTestId(TID.Tab.Settings)).toHaveLength(1);
+
+    fireEvent.click(screen.getByTestId(TID.Tab.Settings));
+    expect(mockPush).toHaveBeenCalledTimes(1);
+    expect(mockPush).toHaveBeenCalledWith('/settings');
   });
 });

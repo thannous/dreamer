@@ -203,6 +203,12 @@ export default function InspirationScreen() {
         accessibilityLabel: t("header.home.inspiration"),
         testID: TID.Button.HeaderHomeInspiration,
       },
+      {
+        icon: "gear" as IconName,
+        onPress: () => router.push("/(tabs)/settings" as any),
+        accessibilityLabel: t("nav.settings"),
+        testID: TID.Button.HeaderHomeSettings,
+      },
     ],
     [selectedRitualId, t],
   );

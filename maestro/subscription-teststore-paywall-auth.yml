@@ -10,12 +10,6 @@ tags:
 ---
 - runFlow: subflows/open-release-app-clear-state.yml
 - openLink: noctalia://settings
-- runFlow:
-    when:
-      notVisible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
-    commands:
-      - tapOn:
-          id: tab.settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000

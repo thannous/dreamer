@@ -293,7 +293,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="settings"
-        options={{
+        options={returningGuestBlocked ? {
           title: t('nav.settings'),
           tabBarButton: (props) => (
             <HapticTab {...props} testID={TID.Tab.Settings} accessibilityLabel={t('nav.settings')} />
@@ -301,6 +301,9 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <TabBarItem icon="gear" label={t('nav.settings')} focused={focused} palette={palette} compact={navigationLayout.compact} narrow={navigationLayout.narrow} />
           ),
+        } : {
+          href: null,
+          title: t('nav.settings'),
         }}
       />
     </Tabs>

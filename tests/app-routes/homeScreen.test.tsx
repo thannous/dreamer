@@ -435,6 +435,23 @@ describe('Home Accueil Aujourd’hui', () => {
     expect(mockPush).toHaveBeenCalledWith('/ritual/lucid');
   });
 
+  it('exposes a mobile settings header action without dropping dictionary or inspiration', async () => {
+    mockPlatformOS = 'ios';
+    mockWidth = 390;
+    await renderHome([]);
+
+    const settings = screen.getByTestId(TID.Button.HeaderHomeSettings);
+    expect(settings).toBeTruthy();
+    expect(settings.getAttribute('aria-label')).toBe('nav.settings');
+    expect(screen.getByTestId(TID.Button.HeaderHomeDictionary)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.HeaderHomeInspiration)).toBeTruthy();
+
+    fireEvent.click(settings);
+    expect(mockPush).toHaveBeenCalledWith('/(tabs)/settings');
+    expect(mockPush).not.toHaveBeenCalledWith('/symbol-dictionary');
+    expect(mockPush).not.toHaveBeenCalledWith(expect.stringMatching(/^\/ritual\//));
+  });
+
   it('rebranche continue_today then capture_due when the local date changes while Home stays open', async () => {
     const intervalCallbacks: (() => void)[] = [];
     const setIntervalSpy = jest.spyOn(global, 'setInterval').mockImplementation((handler: TimerHandler) => {

@@ -26,8 +26,7 @@ onFlowComplete:
     visible:
       id: screen.recording
     timeout: 20000
-- tapOn:
-    id: tab.settings
+- openLink: noctalia://settings
 - extendedWaitUntil:
     visible:
       id: screen.settings
@@ -61,12 +60,7 @@ onFlowComplete:
     permissions:
       all: allow
       notifications: deny
-- extendedWaitUntil:
-    visible:
-      id: tab.settings
-    timeout: 20000
-- tapOn:
-    id: tab.settings
+- openLink: noctalia://settings
 - extendedWaitUntil:
     visible:
       id: screen.settings

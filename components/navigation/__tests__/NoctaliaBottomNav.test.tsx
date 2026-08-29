@@ -173,6 +173,23 @@ describe('NoctaliaBottomNav', () => {
     expect(captureTab.getAttribute('aria-label')).toBe('nav.capture_dream_accessibility');
   });
 
+  it('renders four tabs and keeps settings out of the bar', () => {
+    render(<NoctaliaBottomNav activeKey="home" />);
+
+    expect(screen.getByTestId(TID.Tab.Home)).toBeTruthy();
+    expect(screen.getByTestId(TID.Tab.Journal)).toBeTruthy();
+    expect(screen.getByTestId(TID.Tab.AddDream)).toBeTruthy();
+    expect(screen.getByTestId(TID.Tab.Stats)).toBeTruthy();
+    expect(screen.queryByTestId(TID.Tab.Settings)).toBeNull();
+    expect([
+      screen.getByText('nav.home'),
+      screen.getByText('nav.journal'),
+      screen.getByText('nav.capture_dream'),
+      screen.getByText('nav.stats'),
+    ]).toHaveLength(4);
+    expect(screen.queryByText('nav.settings')).toBeNull();
+  });
+
   it.each([1, 1.3, 2])(
     'constrains every label and reduces the center action at 320 dp with font scale %s',
     (fontScale) => {
@@ -197,7 +214,9 @@ describe('NoctaliaBottomNav', () => {
       expect(barClass).toContain('px-1');
       expect(centerClass).toContain('w-[64px]');
       expect(centerClass).toContain('h-[68px]');
-      expect(labels).toHaveLength(5);
+      expect(labels).toHaveLength(4);
+      expect(screen.queryByTestId(TID.Tab.Settings)).toBeNull();
+      expect(screen.queryByText('nav.settings')).toBeNull();
       labels?.forEach((label) => {
         const labelClass = label.getAttribute('data-native-class');
         expect(labelClass).toContain('text-[11px]');

@@ -25,12 +25,6 @@ onFlowComplete:
     timeout: 20000
 - runFlow: subflows/dismiss-first-launch-onboarding.yml
 - openLink: noctalia://settings
-- runFlow:
-    when:
-      notVisible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
-    commands:
-      - tapOn:
-          id: tab.settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000
@@ -102,12 +96,6 @@ onFlowComplete:
     timeout: 20000
 - runFlow: subflows/dismiss-first-launch-onboarding.yml
 - openLink: noctalia://settings
-- runFlow:
-    when:
-      notVisible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
-    commands:
-      - tapOn:
-          id: tab.settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000
@@ -136,12 +124,6 @@ onFlowComplete:
 
 # Leave the shared QA account signed out.
 - openLink: noctalia://settings
-- runFlow:
-    when:
-      notVisible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
-    commands:
-      - tapOn:
-          id: tab.settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000

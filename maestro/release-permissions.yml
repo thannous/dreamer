@@ -81,8 +81,7 @@ onFlowComplete:
     timeout: 10000
 
 # The settings surface must reflect denied notifications.
-- tapOn:
-    id: tab.settings
+- openLink: noctalia://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 20000
@@ -161,12 +160,7 @@ onFlowComplete:
       all: allow
       microphone: allow
       notifications: deny
-- extendedWaitUntil:
-    visible:
-      id: tab.settings
-    timeout: 20000
-- tapOn:
-    id: tab.settings
+- openLink: noctalia://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 20000

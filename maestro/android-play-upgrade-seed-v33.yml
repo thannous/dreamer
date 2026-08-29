@@ -89,8 +89,7 @@ onFlowComplete:
     visible:
       id: screen.journal
     timeout: 20000
-- tapOn:
-    id: tab.settings
+- openLink: noctalia://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 20000
@@ -142,8 +141,7 @@ onFlowComplete:
     visible:
       id: screen.journal
     timeout: 20000
-- tapOn:
-    id: tab.settings
+- openLink: noctalia://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 20000

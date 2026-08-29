@@ -259,7 +259,7 @@ describe('getTranslator replacement functionality', () => {
     const result = t('nav.home');
 
     // Then
-    expect(result).toBe('Home');
+    expect(result).toBe('Today');
   });
 
   it('given region-specific language when translating then normalizes to base language', async () => {
@@ -281,8 +281,8 @@ describe('getTranslator replacement functionality', () => {
     ];
 
     // Then
-    expect(resultFr).toBe('Accueil');
-    expect(resultEs).toBe('Inicio');
-    expect(resultPt).toEqual(['Início', 'Diário', 'Registrar', 'Dados', 'Ajustes']);
+    expect(resultFr).toBe('Aujourd’hui');
+    expect(resultEs).toBe('Hoy');
+    expect(resultPt).toEqual(['Hoje', 'Diário', 'Registrar', 'Tendências', 'Ajustes']);
   });
 });
