@@ -43,7 +43,9 @@ const COPY = {
     lastSeen: 'Last appearance',
     sources: 'Source dreams',
     sourceFallback: 'Recorded dream',
-    map: 'Decorative map of visible signs',
+    map: 'Map of visible signs',
+    sharedDreams: (left: string, right: string, count: number) =>
+      `${left} · ${right}: ${count} shared ${count === 1 ? 'dream' : 'dreams'}`,
     rename: 'Personal name',
     save: 'Save name',
     hide: 'Hide',
@@ -81,7 +83,9 @@ const COPY = {
     lastSeen: 'Dernière apparition',
     sources: 'Rêves sources',
     sourceFallback: 'Rêve enregistré',
-    map: 'Carte décorative des signes visibles',
+    map: 'Carte des signes visibles',
+    sharedDreams: (left: string, right: string, count: number) =>
+      `${left} · ${right} : ${count} rêve${count > 1 ? 's' : ''} en commun`,
     rename: 'Nom personnel',
     save: 'Enregistrer le nom',
     hide: 'Masquer',
@@ -119,7 +123,9 @@ const COPY = {
     lastSeen: 'Última aparición',
     sources: 'Sueños de origen',
     sourceFallback: 'Sueño registrado',
-    map: 'Mapa decorativo de señales visibles',
+    map: 'Mapa de señales visibles',
+    sharedDreams: (left: string, right: string, count: number) =>
+      `${left} · ${right}: ${count} ${count === 1 ? 'sueño compartido' : 'sueños compartidos'}`,
     rename: 'Nombre personal',
     save: 'Guardar nombre',
     hide: 'Ocultar',
@@ -157,7 +163,9 @@ const COPY = {
     lastSeen: 'Letztes Erscheinen',
     sources: 'Quellträume',
     sourceFallback: 'Gespeicherter Traum',
-    map: 'Dekorative Karte sichtbarer Zeichen',
+    map: 'Karte sichtbarer Zeichen',
+    sharedDreams: (left: string, right: string, count: number) =>
+      `${left} · ${right}: ${count} ${count === 1 ? 'gemeinsamer Traum' : 'gemeinsame Träume'}`,
     rename: 'Persönlicher Name',
     save: 'Name speichern',
     hide: 'Ausblenden',
@@ -195,7 +203,9 @@ const COPY = {
     lastSeen: 'Ultima comparsa',
     sources: 'Sogni di origine',
     sourceFallback: 'Sogno registrato',
-    map: 'Mappa decorativa dei segnali visibili',
+    map: 'Mappa dei segnali visibili',
+    sharedDreams: (left: string, right: string, count: number) =>
+      `${left} · ${right}: ${count} ${count === 1 ? 'sogno in comune' : 'sogni in comune'}`,
     rename: 'Nome personale',
     save: 'Salva nome',
     hide: 'Nascondi',
@@ -239,6 +249,37 @@ function formatDate(value: number, locale: string) {
   }
 }
 
+const MAX_VISIBLE_GRAPH_NODES = 12;
+
+function sharedSourceIds(left: readonly string[], right: readonly string[]): string[] {
+  if (left.length === 0 || right.length === 0) return [];
+  const rightSet = new Set(right);
+  return left.filter((id) => rightSet.has(id));
+}
+
+function buildVisibleGraph<T extends { id: string; label: string; sourceDreamIds: readonly string[] }>(
+  nodes: readonly T[]
+) {
+  const graphNodes = nodes.slice(0, MAX_VISIBLE_GRAPH_NODES);
+  const relations: { id: string; left: string; right: string; count: number }[] = [];
+  for (let i = 0; i < graphNodes.length; i += 1) {
+    for (let j = i + 1; j < graphNodes.length; j += 1) {
+      const leftNode = graphNodes[i];
+      const rightNode = graphNodes[j];
+      if (!leftNode || !rightNode) continue;
+      const count = sharedSourceIds(leftNode.sourceDreamIds, rightNode.sourceDreamIds).length;
+      if (count === 0) continue;
+      relations.push({
+        id: `${leftNode.id}::${rightNode.id}`,
+        left: leftNode.label,
+        right: rightNode.label,
+        count,
+      });
+    }
+  }
+  return { graphNodes, relations };
+}
+
 export default function LucidDreamAtlasScreen() {
   const { dreams, loaded } = useDreamsData();
   const { content, state, userScope, dreamSignCandidates } = useLucidTrainer();
@@ -276,6 +317,7 @@ export default function LucidDreamAtlasScreen() {
   );
 
   const visibleNodes = nodes.filter((node) => !node.hidden);
+  const graph = buildVisibleGraph(visibleNodes);
   const showMap = !reduceMotion && visibleNodes.length > 0;
   const busy = atlas.isMutating;
   const loading = !loaded || atlas.isLoading;
@@ -285,6 +327,12 @@ export default function LucidDreamAtlasScreen() {
 
   const runAtlasAction = (work: () => Promise<void>) => {
     void Promise.resolve(work()).catch(() => undefined);
+  };
+
+  const selectNode = (nodeId: string) => {
+    setSelectedId(nodeId);
+    setDraft(null);
+    setMergeTargetId(null);
   };
 
   const confirmMerge = (fromId: string, intoId: string) => {
@@ -356,24 +404,56 @@ export default function LucidDreamAtlasScreen() {
 
       {showMap ? (
         <View
-          accessibilityElementsHidden
-          importantForAccessibility="no-hide-descendants"
           style={[styles.map, { borderColor: palette.borderInteractive, backgroundColor: palette.surfaceRaised }]}
           testID="lucid-dream-atlas-map"
         >
           <Text style={[styles.mapLabel, { color: palette.textMuted }]}>{copy.map}</Text>
           <View style={styles.mapRow}>
-            {visibleNodes.map((node) => (
-              <View
-                key={node.id}
-                style={[styles.mapNode, { backgroundColor: palette.accentSoft, borderColor: palette.accent }]}
-              >
-                <Text numberOfLines={1} style={[styles.mapNodeLabel, { color: palette.text }]}>
-                  {node.label}
-                </Text>
-              </View>
-            ))}
+            {graph.graphNodes.map((node) => {
+              const active = selected?.id === node.id;
+              const summary = copy.nodeSummary(
+                node.label,
+                copy.visible,
+                copy.frequency(node.distinctDreamCount),
+                `${copy.lastSeen}: ${formatDate(node.lastAppearanceAt, content.locale)}`
+              );
+              return (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={summary}
+                  accessibilityState={{ selected: active }}
+                  key={node.id}
+                  onPress={() => selectNode(node.id)}
+                  style={({ pressed }) => [
+                    styles.mapNode,
+                    {
+                      backgroundColor: active ? palette.accentSoft : palette.surfaceRaised,
+                      borderColor: active ? palette.accent : palette.borderInteractive,
+                    },
+                    pressed && styles.pressed,
+                  ]}
+                  testID={`lucid-dream-atlas-map-node-${node.id}`}
+                >
+                  <Text numberOfLines={1} style={[styles.mapNodeLabel, { color: palette.text }]}>
+                    {node.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
+          {graph.relations.length > 0 ? (
+            <View style={styles.mapRelations} testID="lucid-dream-atlas-map-relations">
+              {graph.relations.map((relation) => (
+                <Text
+                  key={relation.id}
+                  style={[styles.mapRelation, { color: palette.textSecondary }]}
+                  testID={`lucid-dream-atlas-map-relation-${relation.id}`}
+                >
+                  {copy.sharedDreams(relation.left, relation.right, relation.count)}
+                </Text>
+              ))}
+            </View>
+          ) : null}
         </View>
       ) : null}
 
@@ -399,9 +479,7 @@ export default function LucidDreamAtlasScreen() {
             accessibilityState={{ selected: active, expanded: active }}
             key={node.id}
             onPress={() => {
-              setSelectedId(node.id);
-              setDraft(null);
-              setMergeTargetId(null);
+              selectNode(node.id);
             }}
             style={({ pressed }) => [pressed && styles.pressed]}
             testID={`lucid-dream-atlas-node-${node.id}`}
@@ -586,6 +664,12 @@ const styles = StyleSheet.create({
   },
   mapNodeLabel: {
     fontFamily: 'SpaceGrotesk_500Medium',
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
+  },
+  mapRelations: { gap: LucidSpace.xs },
+  mapRelation: {
+    fontFamily: 'SpaceGrotesk_400Regular',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },

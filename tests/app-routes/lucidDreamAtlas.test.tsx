@@ -41,7 +41,7 @@ let mockDreamSignCandidates = [
     evidence: [],
   },
 ];
-let mockAtlasState = {
+const defaultAtlasState = {
   snapshot: {
     version: 1,
     nodes: [
@@ -71,6 +71,7 @@ let mockAtlasState = {
   isMutating: false,
   error: null as string | null,
 };
+let mockAtlasState = defaultAtlasState;
 
 jest.mock('expo-router', () => ({
   router: {
@@ -81,7 +82,41 @@ jest.mock('expo-router', () => ({
   },
 }));
 jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
-jest.mock('react-native', () => jest.requireActual('../react-native-stub'));
+jest.mock('react-native', () => {
+  const actual = jest.requireActual('../react-native-stub');
+  return {
+    ...actual,
+    View: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
+      <div data-testid={testID}>{children}</div>
+    ),
+    Pressable: ({
+      children,
+      onPress,
+      disabled,
+      testID,
+      accessibilityLabel,
+      accessibilityState,
+    }: {
+      children?: React.ReactNode | ((state: { pressed: boolean }) => React.ReactNode);
+      onPress?: () => void;
+      disabled?: boolean;
+      testID?: string;
+      accessibilityLabel?: string;
+      accessibilityState?: { selected?: boolean; expanded?: boolean };
+    }) => (
+      <button
+        aria-expanded={accessibilityState?.expanded}
+        aria-label={accessibilityLabel}
+        aria-selected={accessibilityState?.selected}
+        data-testid={testID}
+        disabled={disabled}
+        onClick={onPress}
+      >
+        {typeof children === 'function' ? children({ pressed: false }) : children}
+      </button>
+    ),
+  };
+});
 
 jest.mock('@/context/DreamsContext', () => ({
   useDreamsData: () => ({ dreams: mockDreams, loaded: true }),
@@ -168,7 +203,7 @@ describe('Lucid dream atlas screen', () => {
       },
     ];
     mockAtlasState = {
-      ...mockAtlasState,
+      ...defaultAtlasState,
       isLoading: false,
       error: null,
     };
@@ -189,7 +224,9 @@ describe('Lucid dream atlas screen', () => {
     expect(screen.getByTestId('lucid-dream-atlas-node-sign:miroir')).not.toBeNull();
     expect(screen.getByTestId('lucid-dream-atlas-node-sign:marie')).not.toBeNull();
     expect(screen.getByText('Masqué')).not.toBeNull();
-    expect(screen.getByText('Carte décorative des signes visibles')).not.toBeNull();
+    expect(screen.getByText('Carte des signes visibles')).not.toBeNull();
+    expect(screen.getByTestId('lucid-dream-atlas-map-node-sign:miroir')).not.toBeNull();
+    expect(screen.queryByTestId('lucid-dream-atlas-map-node-sign:marie')).toBeNull();
     expect(screen.getByTestId('lucid-dream-atlas-node-summary-sign:miroir').textContent).toMatch(
       /Miroir\. Visible\. Vu dans 2 rêves/
     );
@@ -197,11 +234,85 @@ describe('Lucid dream atlas screen', () => {
     expect(mockPush).toHaveBeenCalledWith(`/journal/${mockNow}`);
   });
 
-  it('hides the decorative map when Reduce Motion is on', () => {
+  it('hides the map when Reduce Motion is on and keeps the full sign list', () => {
     mockReduceMotion = true;
     render(<LucidDreamAtlasScreen />);
-    expect(screen.queryByText('Carte décorative des signes visibles')).toBeNull();
+    expect(screen.queryByText('Carte des signes visibles')).toBeNull();
+    expect(screen.queryByTestId('lucid-dream-atlas-map')).toBeNull();
     expect(screen.getByTestId('lucid-dream-atlas-node-sign:miroir')).not.toBeNull();
+    expect(screen.getByTestId('lucid-dream-atlas-node-sign:marie')).not.toBeNull();
+    expect(screen.getByTestId('lucid-dream-atlas-node-summary-sign:marie').textContent).toMatch(
+      /Marie\. Masqué\. Vu dans 2 rêves/
+    );
+  });
+
+  it('lets graph nodes select a sign, announce selection, and show shared-dream relations', () => {
+    mockAtlasState = {
+      ...mockAtlasState,
+      snapshot: {
+        version: 1,
+        nodes: [
+          {
+            id: 'sign:miroir',
+            label: 'Miroir',
+            category: 'object',
+            distinctDreamCount: 2,
+            sourceDreamIds: [String(mockNow), String(mockNow + 1_000)],
+            lastAppearanceAt: mockNow + 1_000,
+            hidden: false,
+          },
+          {
+            id: 'sign:marie',
+            label: 'Marie',
+            category: 'person',
+            distinctDreamCount: 2,
+            sourceDreamIds: [String(mockNow), String(mockNow + 1_000)],
+            lastAppearanceAt: mockNow,
+            hidden: false,
+          },
+        ],
+        preferences: { version: 1, renamed: {}, hidden: [], merges: {}, deleted: [] },
+      },
+    };
+    render(<LucidDreamAtlasScreen />);
+    const miroirNode = screen.getByTestId('lucid-dream-atlas-map-node-sign:miroir');
+    const marieNode = screen.getByTestId('lucid-dream-atlas-map-node-sign:marie');
+    expect(miroirNode.getAttribute('aria-selected')).toBe('true');
+    expect(marieNode.getAttribute('aria-selected')).toBe('false');
+    expect(miroirNode.getAttribute('aria-label') ?? '').toMatch(/Miroir\. Visible\. Vu dans 2 rêves/);
+    expect(miroirNode.getAttribute('aria-label') ?? '').toMatch(/Dernière apparition/);
+    expect(screen.getByTestId('lucid-dream-atlas-detail-sign:miroir')).not.toBeNull();
+    expect(screen.getByText('Miroir · Marie : 2 rêves en commun')).not.toBeNull();
+    fireEvent.click(marieNode);
+    expect(screen.getByTestId('lucid-dream-atlas-map-node-sign:marie').getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByTestId('lucid-dream-atlas-map-node-sign:miroir').getAttribute('aria-selected')).toBe('false');
+    expect(screen.getByTestId('lucid-dream-atlas-detail-sign:marie')).not.toBeNull();
+    expect(screen.queryByTestId('lucid-dream-atlas-detail-sign:miroir')).toBeNull();
+  });
+
+  it('caps visible graph nodes without truncating the structured list', () => {
+    mockAtlasState = {
+      ...mockAtlasState,
+      snapshot: {
+        version: 1,
+        nodes: Array.from({ length: 13 }, (_, index) => ({
+          id: `sign:n${index}`,
+          label: `Signe ${index}`,
+          category: 'object',
+          distinctDreamCount: 1,
+          sourceDreamIds: [String(mockNow + index)],
+          lastAppearanceAt: mockNow + index,
+          hidden: false,
+        })),
+        preferences: { version: 1, renamed: {}, hidden: [], merges: {}, deleted: [] },
+      },
+    };
+    render(<LucidDreamAtlasScreen />);
+    expect(screen.getByTestId('lucid-dream-atlas-map-node-sign:n0')).not.toBeNull();
+    expect(screen.getByTestId('lucid-dream-atlas-map-node-sign:n11')).not.toBeNull();
+    expect(screen.queryByTestId('lucid-dream-atlas-map-node-sign:n12')).toBeNull();
+    expect(screen.getByTestId('lucid-dream-atlas-node-sign:n12')).not.toBeNull();
+    expect(screen.queryByTestId('lucid-dream-atlas-map-relations')).toBeNull();
   });
 
   it('saves a rename, opens a pause, and rehearses the exact chosen source dream', async () => {
