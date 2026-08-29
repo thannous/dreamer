@@ -53,6 +53,7 @@ const PRODUCT_ANALYTICS_EVENT_NAMES = new Set<AnalyticsEventName>([
   'first_value_viewed',
   'paywall_viewed',
   'empty_journal_remembered_cta_clicked',
+  'journal_layout_preference_changed',
   'onboarding_choice_selected',
   'stats_screen_viewed',
   'stats_period_selected',
@@ -179,6 +180,10 @@ const PRODUCT_ANALYTICS_PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySch
     offering_id: nullableIdentifier,
   },
   empty_journal_remembered_cta_clicked: { source: oneOf('journal_empty_state') },
+  journal_layout_preference_changed: {
+    from: oneOf('cards', 'compact'),
+    to: oneOf('cards', 'compact'),
+  },
   onboarding_choice_selected: {
     surface: oneOf('app_onboarding'),
     step: oneOf('intro', 'path'),

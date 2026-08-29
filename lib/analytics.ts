@@ -87,6 +87,10 @@ export type AnalyticsEventMap = {
   empty_journal_remembered_cta_clicked: {
     source: 'journal_empty_state';
   };
+  journal_layout_preference_changed: {
+    from: 'cards' | 'compact';
+    to: 'cards' | 'compact';
+  };
   onboarding_choice_selected: {
     surface: 'app_onboarding';
     step: 'intro' | 'path';

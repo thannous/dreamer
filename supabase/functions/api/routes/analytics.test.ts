@@ -63,6 +63,25 @@ Deno.test('activation insight allowlist excludes dream-derived semantic properti
   }), now), false);
 });
 
+Deno.test('journal layout preference events accept categorical from/to only', () => {
+  const safeProperties = {
+    from: 'cards',
+    to: 'compact',
+  };
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'journal_layout_preference_changed',
+    properties: safeProperties,
+  }), now), true);
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'journal_layout_preference_changed',
+    properties: { from: 'cards', to: 'list' },
+  }), now), false);
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'journal_layout_preference_changed',
+    properties: { from: 'cards', to: 'compact', note: 'switched after reading more' },
+  }), now), false);
+});
+
 Deno.test('purchase funnel events accept categorical properties only', () => {
   const accepted: [string, Record<string, unknown>][] = [
     ['paywall_plan_selected', { trigger: 'analysis_limit', plan: 'annual', tier: 'free' }],

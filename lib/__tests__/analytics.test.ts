@@ -96,6 +96,28 @@ describe('analytics', () => {
     ]);
   });
 
+  it('tracks journal layout preference changes with from/to only', async () => {
+    process.env.EXPO_PUBLIC_MOCK_MODE = 'false';
+    const events: { name: AnalyticsEventName; properties: unknown }[] = [];
+    setAnalyticsProvider({
+      track: async (name, properties) => {
+        events.push({ name, properties });
+      },
+    });
+
+    await trackProductEvent('journal_layout_preference_changed', {
+      from: 'cards',
+      to: 'compact',
+    });
+
+    expect(events).toEqual([
+      {
+        name: 'journal_layout_preference_changed',
+        properties: { from: 'cards', to: 'compact' },
+      },
+    ]);
+  });
+
   it('no-ops safely without a provider or in mock mode', async () => {
     process.env.EXPO_PUBLIC_MOCK_MODE = 'false';
     await expect(trackProductEvent('paywall_viewed', {

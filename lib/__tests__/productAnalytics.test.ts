@@ -159,6 +159,32 @@ describe('first-party product analytics', () => {
     expect(await AsyncStorage.getItem('product-analytics-queue-v1')).toBeNull();
   });
 
+  it('accepts journal layout preference changes and rejects free-form values', async () => {
+    const provider = createProductAnalyticsProvider();
+    const safeProperties = {
+      from: 'cards',
+      to: 'compact',
+    } as const;
+
+    await provider.track('journal_layout_preference_changed', safeProperties);
+    await provider.track('journal_layout_preference_changed', {
+      from: 'cards',
+      to: 'list',
+    } as never);
+    await provider.track('journal_layout_preference_changed', {
+      from: 'cards',
+      to: 'compact',
+      note: 'switched after reading more',
+    } as never);
+
+    const queue = JSON.parse((await AsyncStorage.getItem('product-analytics-queue-v1')) ?? '[]');
+    expect(queue).toHaveLength(1);
+    expect(queue[0]).toEqual(expect.objectContaining({
+      event_name: 'journal_layout_preference_changed',
+      properties: safeProperties,
+    }));
+  });
+
   it('keeps activation insight analytics free of dream-derived semantic properties', async () => {
     const provider = createProductAnalyticsProvider();
     const safeProperties = {

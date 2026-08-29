@@ -29,6 +29,7 @@ const EVENT_NAMES = [
   'first_value_viewed',
   'paywall_viewed',
   'empty_journal_remembered_cta_clicked',
+  'journal_layout_preference_changed',
   'onboarding_choice_selected',
   'stats_screen_viewed',
   'stats_period_selected',
@@ -158,6 +159,10 @@ const PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySchema> = {
     offering_id: nullableShortString,
   },
   empty_journal_remembered_cta_clicked: { source: oneOf('journal_empty_state') },
+  journal_layout_preference_changed: {
+    from: oneOf('cards', 'compact'),
+    to: oneOf('cards', 'compact'),
+  },
   onboarding_choice_selected: {
     surface: oneOf('app_onboarding'),
     step: oneOf('intro', 'path'),

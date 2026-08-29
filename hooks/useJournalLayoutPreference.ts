@@ -1,6 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 
+import { trackProductEvent } from '@/lib/analytics';
 import type { JournalLayoutPreference } from '@/lib/types';
 import {
   getJournalLayoutPreference,
@@ -10,6 +11,7 @@ import {
 export function useJournalLayoutPreference() {
   const [preference, setPreferenceState] = useState<JournalLayoutPreference>('cards');
   const [loaded, setLoaded] = useState(false);
+  const preferenceRef = useRef<JournalLayoutPreference>('cards');
 
   useFocusEffect(
     useCallback(() => {
@@ -19,6 +21,7 @@ export function useJournalLayoutPreference() {
         try {
           const savedPreference = await getJournalLayoutPreference();
           if (mounted) {
+            preferenceRef.current = savedPreference;
             setPreferenceState(savedPreference);
           }
         } catch (error) {
@@ -41,8 +44,17 @@ export function useJournalLayoutPreference() {
   );
 
   const setPreference = useCallback(async (nextPreference: JournalLayoutPreference) => {
+    const previousPreference = preferenceRef.current;
     await saveJournalLayoutPreference(nextPreference);
+    preferenceRef.current = nextPreference;
     setPreferenceState(nextPreference);
+    if (previousPreference === nextPreference) {
+      return;
+    }
+    void trackProductEvent('journal_layout_preference_changed', {
+      from: previousPreference,
+      to: nextPreference,
+    });
   }, []);
 
   return {
