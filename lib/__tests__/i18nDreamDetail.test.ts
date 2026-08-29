@@ -14,6 +14,8 @@ const dreamImageProgressKeys = [
   'journal.detail.image.generate_action',
   'journal.detail.image.quota_exceeded_message',
   'journal.detail.image.no_image_subtitle',
+  'journal.detail.image.expand_accessibility',
+  'journal.detail.image.close_fullscreen',
 ] as const;
 
 const automaticStartPattern = /automat|automatically|se termine avant|before the illustration starts|antes de iniciar|bevor die Illustration startet|prima di avviare|antes de a ilustração/i;

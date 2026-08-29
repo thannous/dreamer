@@ -72,6 +72,9 @@ const detailActionKeys = [
   'journal.detail.zone.memory',
   'journal.detail.zone.reading',
   'journal.detail.zone.actions',
+  'journal.detail.stale.label',
+  'journal.detail.stale.banner',
+  'journal.detail.stale.cta',
 ] as const;
 
 describe('Journal i18n - badges & filter accessibility', () => {
