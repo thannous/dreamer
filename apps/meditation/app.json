@@ -2,6 +2,7 @@
   "expo": {
     "name": "Noctalia Meditation",
     "slug": "noctalia-meditation",
+    "owner": "tanuki75",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -20,6 +21,7 @@
     },
     "android": {
       "package": "com.noctalia.meditation",
+      "versionCode": 2,
       "predictiveBackGestureEnabled": false,
       "adaptiveIcon": {
         "backgroundColor": "#03040D",
@@ -30,7 +32,8 @@
       "permissions": [
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
-        "android.permission.POST_NOTIFICATIONS"
+        "android.permission.POST_NOTIFICATIONS",
+        "com.android.vending.BILLING"
       ]
     },
     "web": {
@@ -64,6 +67,11 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8bd251b4-f3ed-4ae4-a73b-e2cc6c9d30c7"
+      }
     }
   }
 }

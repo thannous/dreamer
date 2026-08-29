@@ -39,34 +39,46 @@ type TabLabelProps = {
 };
 
 /**
- * Visual-only wrap for a tab name. TalkBack still reads the unsplit label on
- * the parent tab, so this never changes the accessible name.
+ * Width budget of one tab name. TalkBack still reads the unsplit label on the
+ * parent tab, so this never changes the accessible name.
  */
 export function tabLabelMaxWidth(screenWidth: number, tabCount: number, compact: boolean): number {
   const margin = compact ? CompactTabBar.margin : TabBar.margin;
   return Math.max(48, Math.floor((screenWidth - margin * 2) / Math.max(tabCount, 1)) - 8);
 }
 
+/**
+ * Keep every tab name at the user's requested font scale. Labels wrap at a
+ * space when possible; a long single word is balanced over two visual lines.
+ * TalkBack still reads the complete, unsplit title from the parent tab.
+ */
 export function reflowTabLabel(label: string, fontScale: number, maxWidth: number): string {
-  const characters = Array.from(label);
-  if (fontScale < 1.5 || /\s/.test(label) || characters.length < 5) return label;
+  if (fontScale < 1.5) return label;
 
+  const characters = Array.from(label);
   const estimatedWidth = Math.ceil(characters.length * 11 * fontScale * 0.62);
   if (estimatedWidth <= maxWidth) return label;
 
-  const splitAt = Math.max(3, Math.ceil(characters.length / 2));
-  return `${characters.slice(0, splitAt).join('')}\n${characters.slice(splitAt).join('')}`;
+  const space = label.search(/\s/);
+  if (space < 1) {
+    const splitAt = Math.ceil(characters.length / 2);
+    return `${characters.slice(0, splitAt).join('')}\n${characters.slice(splitAt).join('')}`;
+  }
+
+  return `${label.slice(0, space)}\n${label.slice(space + 1).trimStart()}`;
 }
 
 /** Keep every tab name visible at Android font scales up to and beyond 200%. */
 export function TabLabel({ children, color, compact, fontScale, maxWidth, testID }: TabLabelProps) {
   const fontSize = compact ? 11 : 12;
+  const wrapped = reflowTabLabel(children, fontScale, maxWidth);
+  const multiline = wrapped.includes('\n');
 
   return (
     <Text
       testID={testID}
       allowFontScaling
-      numberOfLines={2}
+      numberOfLines={multiline ? 2 : 1}
       importantForAccessibility="no"
       accessibilityElementsHidden
       style={{
@@ -78,7 +90,7 @@ export function TabLabel({ children, color, compact, fontScale, maxWidth, testID
         lineHeight: Math.ceil((compact ? 12 : 14) * fontScale),
         textAlign: 'center',
       }}>
-      {reflowTabLabel(children, fontScale, maxWidth)}
+      {wrapped}
     </Text>
   );
 }

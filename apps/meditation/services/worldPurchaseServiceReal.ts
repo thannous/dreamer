@@ -70,5 +70,6 @@ export async function purchase(offer: WorldOffer): Promise<WorldId[]> {
 }
 
 export async function restore(): Promise<WorldId[]> {
+  if (!isConfigured()) return [];
   return ownedWorlds(await Purchases.restorePurchases());
 }

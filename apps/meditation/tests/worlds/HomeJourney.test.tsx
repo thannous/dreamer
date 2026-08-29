@@ -375,6 +375,41 @@ describe('immersive home journey', () => {
     expect(screen.getByTestId('home.world-switcher.forest').props.onLayout).toBeUndefined();
   });
 
+  it('reveals the hydrated initial world once without recentering later choices', async () => {
+    const scrollTo = jest.spyOn(ScrollView.prototype, 'scrollTo').mockImplementation(() => {});
+    try {
+      await AsyncStorage.setItem(StorageKey.world, JSON.stringify('forest'));
+
+      renderHome();
+
+      await waitFor(() =>
+        expect(
+          screen.getByRole('radio', { name: 'Inner forest' }).props.accessibilityState
+        ).toMatchObject({ checked: true })
+      );
+      await waitFor(() => expect(scrollTo).toHaveBeenCalledTimes(1));
+      const cardWidth = StyleSheet.flatten(
+        screen.getByTestId('home.world-switcher.forest').props.style
+      ).width;
+      expect(scrollTo).toHaveBeenCalledWith({
+        x: 2 * (cardWidth + 12),
+        y: 0,
+        animated: false,
+      });
+
+      fireEvent.press(screen.getByRole('radio', { name: 'Inner dawn' }));
+
+      await waitFor(() =>
+        expect(
+          screen.getByRole('radio', { name: 'Inner dawn' }).props.accessibilityState
+        ).toMatchObject({ checked: true })
+      );
+      expect(scrollTo).toHaveBeenCalledTimes(1);
+    } finally {
+      scrollTo.mockRestore();
+    }
+  });
+
   it('keeps world choice semantic and the session action outside the radio card', async () => {
     renderHome();
 
@@ -484,6 +519,34 @@ describe('immersive home journey', () => {
     expect(screen.getByTestId('home.journey.upcoming.stress-storm.access')).toHaveTextContent('Free');
   });
 
+  it('does not show an exhausted monthly quota for a practice included in an owned world', async () => {
+    mockOwnedWorldIds.add('tide');
+    mockSessionGate = { allowed: false, reason: 'monthly-quota' };
+    mockRemainingPlays = 0;
+    renderHome();
+
+    fireEvent.press(await screen.findByRole('radio', { name: 'Deep tide' }));
+
+    await waitFor(() =>
+      expect(screen.getByRole('radio', { name: 'Deep tide' }).props.accessibilityState).toMatchObject({
+        checked: true,
+      })
+    );
+
+    expect(screen.queryByTestId('home.journey.quota')).toBeNull();
+    expect(screen.queryByTestId('home.journey.quota-reset')).toBeNull();
+    expect(screen.queryByTestId('home.journey.quota-alternative')).toBeNull();
+    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
+    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Quota used');
+
+    const cta = screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID);
+    expect(cta).toHaveTextContent(/^Begin$/);
+    fireEvent.press(cta);
+
+    expect(mockOpenPaywall).not.toHaveBeenCalled();
+    expect(mockPush).toHaveBeenCalledWith(expect.stringMatching(/^\/session\/.+\?worldId=tide$/));
+  });
+
   it('shows remaining free sessions before the home CTA', async () => {
     mockRemainingPlays = 2;
     renderHome();
@@ -495,6 +558,8 @@ describe('immersive home journey', () => {
     expect(screen.getByTestId('home.journey.quota')).toHaveTextContent(
       /2 free sessions left this month/
     );
+    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
+    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Quota used');
     expect(screen.getByTestId('home.journey.quota-reset')).toHaveTextContent(
       /Resets on 1 September 2026/
     );
@@ -544,6 +609,8 @@ describe('immersive home journey', () => {
     });
 
     expect(screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID)).toHaveTextContent(/^Begin$/);
+    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
+    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Quota used');
     expect(screen.queryByTestId('home.journey.quota')).toBeNull();
     fireEvent.press(screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID));
     expect(mockPush).toHaveBeenCalledWith('/session/sleep-descent?worldId=constellation');
@@ -558,6 +625,11 @@ describe('immersive home journey', () => {
 
     const cta = await screen.findByTestId(ACTIVE_JOURNEY_CTA_TEST_ID);
     expect(cta).toHaveTextContent('See Plus options');
+    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Quota used');
+    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Free');
+    expect(cta.props.accessibilityLabel).toMatch(/Quota used/);
+    expect(cta.props.accessibilityLabel).not.toMatch(/Free/);
+    expect(cta.props.accessibilityLabel).not.toMatch(/Gratuit/);
     expect(screen.getByTestId('home.journey.quota')).toHaveTextContent(
       /No free sessions left this month/
     );
@@ -708,6 +780,8 @@ describe('immersive home journey', () => {
 
     const cta = screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID);
     expect(cta).toHaveTextContent(/^Begin$/);
+    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
+    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Quota used');
     expect(screen.getByTestId('home.journey.quota')).toHaveTextContent(/1 free session left this month/);
     fireEvent.press(cta);
     expect(mockPush).toHaveBeenCalledWith('/session/sleep-descent?worldId=constellation');

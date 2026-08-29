@@ -6,6 +6,7 @@ import Animated from 'react-native-reanimated';
 import { ArtworkGlassPanel, Text } from '@/components/ui';
 import { getSessionArtwork } from '@/constants/catalogArtwork';
 import type { ThemeMode } from '@/constants/theme';
+import { getSessionPractice } from '@/content/sessionPractice';
 import { useLibrary } from '@/context/LibraryContext';
 import { useTranslation } from '@/context/LanguageContext';
 import { useSubscription } from '@/context/SubscriptionContext';
@@ -30,30 +31,36 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
   const router = useRouter();
   const { t } = useTranslation();
   const { favorites } = useLibrary();
-  const { isPlus } = useSubscription();
+  const { subscriptionsEnabled = true, isPlus } = useSubscription();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
 
   const title = t(`session.${session.id}.title` as TranslationKey);
   const minutes = toMinutes(session.durationSec);
   const category = t(`category.${session.categorySlug}.name` as TranslationKey);
+  const practice = getSessionPractice(session.id);
+  const method = t(`session.method.${practice.method}` as TranslationKey);
+  const guidance = t(`session.guidance.${practice.guidance}` as TranslationKey);
+  const methodLabel = t('session.method.label', { method });
+  const guidanceLabel = t('session.guidance.label', { guidance });
   const benefits = Array.from({ length: session.benefitCount }, (_, index) =>
     t(`session.${session.id}.benefit.${index + 1}` as TranslationKey)
   );
   const unlockedPremium = session.isPremium && isPlus;
-  const accessLabel = session.isPremium
-    ? unlockedPremium
-      ? t('paywall.active.title')
-      : t('common.plus')
-    : t('common.free');
+  const accessLabel =
+    session.isPremium && subscriptionsEnabled
+      ? unlockedPremium
+        ? t('paywall.active.title')
+        : t('common.plus')
+      : t('common.free');
   const saved = favorites.includes(session.id);
   const savedLabel = saved
     ? session.isPremium && !unlockedPremium
       ? t('session.saved.locked')
       : t('favorites.title')
     : null;
-  const meta = `${t('common.minutes', { count: minutes })} · ${category}`;
+  const durationMeta = `${t('common.minutes', { count: minutes })} · ${category}`;
   const artwork = getSessionArtwork(session.id, appearance);
-  const accessibilityLabel = [title, meta, ...benefits, accessLabel, savedLabel]
+  const accessibilityLabel = [title, durationMeta, methodLabel, guidanceLabel, ...benefits, accessLabel, savedLabel]
     .filter(Boolean)
     .join('. ');
 
@@ -63,6 +70,23 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
     <Text variant="overline" testID={testID ? `${testID}.access` : undefined}>
       {accessLabel}
     </Text>
+  );
+
+  const practiceLine = (
+    <View className="mt-1 gap-0.5" testID={testID ? `${testID}.practice` : undefined}>
+      <Text
+        variant="caption"
+        tone="muted"
+        testID={testID ? `${testID}.method` : undefined}>
+        {methodLabel}
+      </Text>
+      <Text
+        variant="caption"
+        tone="muted"
+        testID={testID ? `${testID}.guidance` : undefined}>
+        {guidanceLabel}
+      </Text>
+    </View>
   );
 
   const benefitList = (
@@ -105,7 +129,8 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
             <Text variant="h1" testID={testID ? `${testID}.title` : undefined}>
               {title}
             </Text>
-            <Text variant="bodySm">{meta}</Text>
+            <Text variant="bodySm">{durationMeta}</Text>
+            {practiceLine}
             {benefitList}
           </View>
         </SessionArtwork>
@@ -128,8 +153,9 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
           {title}
         </Text>
         <Text variant="bodySm" tone={appearance ? 'default' : undefined} className="mt-1">
-          {meta}
+          {durationMeta}
         </Text>
+        {practiceLine}
         {benefitList}
         {savedLabel ? (
           <Text variant="caption" className="mt-1" testID={testID ? `${testID}.saved` : undefined}>

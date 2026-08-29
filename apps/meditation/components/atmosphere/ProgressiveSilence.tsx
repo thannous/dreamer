@@ -1,7 +1,7 @@
 import React from 'react';
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Animated, { cubicBezier } from 'react-native-reanimated';
 
-import { Curve, Duration } from '@/constants/motion';
+import { Duration } from '@/constants/motion';
 import { useSilence } from '@/context/SilenceContext';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useScreenReader } from '@/hooks/useScreenReader';
@@ -9,6 +9,8 @@ import { useScreenReader } from '@/hooks/useScreenReader';
 type Props = React.PropsWithChildren<{
   className?: string;
 }>;
+
+const chromeEase = cubicBezier(0.32, 0.72, 0, 1);
 
 /**
  * Fades one piece of chrome in and out with the screen's silence.
@@ -27,17 +29,16 @@ export function ProgressiveSilence({ children, className }: Props) {
   const { visible } = useSilence();
   const controlsVisible = visible || screenReader;
 
-  const style = useAnimatedStyle(() => ({
-    opacity: withTiming(controlsVisible ? 1 : 0, {
-      duration: reducedMotion ? Duration.fast : Duration.slow,
-      easing: Curve.standard,
-    }),
-  }));
-
   return (
     <Animated.View
       className={className}
-      style={[style, { pointerEvents: controlsVisible ? 'auto' : 'none' }]}
+      style={{
+        opacity: controlsVisible ? 1 : 0,
+        pointerEvents: controlsVisible ? 'auto' : 'none',
+        transitionProperty: 'opacity',
+        transitionDuration: reducedMotion ? Duration.fast : Duration.slow,
+        transitionTimingFunction: chromeEase,
+      }}
       accessibilityElementsHidden={!controlsVisible}
       importantForAccessibility={controlsVisible ? 'auto' : 'no-hide-descendants'}>
       {children}

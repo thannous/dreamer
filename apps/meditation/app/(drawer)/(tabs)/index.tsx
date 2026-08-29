@@ -43,6 +43,7 @@ export default function HomeTab() {
   const { state: onboarding } = useOnboarding();
   const { gateForSession, openPaywall, remainingPlays, quotaResetDay, isPlus } = useSubscription();
   const {
+    loaded: worldLoaded,
     worldId,
     previewWorldId,
     presentationWorldId,
@@ -211,6 +212,7 @@ export default function HomeTab() {
             onSelect={handleSelectWorld}
             isWorldOwned={isWorldOwned}
             priceForWorld={(nextWorldId) => offerForWorld(nextWorldId)?.priceLabel}
+            initialSelectionReady={worldLoaded && worldPurchasesLoaded}
             accessibilityLabel={t('home.journey.worldLabel')}
             testID="home.world-switcher"
           />

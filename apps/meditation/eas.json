@@ -1,0 +1,51 @@
+{
+  "cli": {
+    "version": ">= 16.24.1",
+    "appVersionSource": "local"
+  },
+  "build": {
+    "base": {
+      "node": "24.19.0"
+    },
+    "development": {
+      "extends": "base",
+      "developmentClient": true,
+      "distribution": "internal",
+      "environment": "development"
+    },
+    "preview": {
+      "extends": "base",
+      "distribution": "internal",
+      "environment": "preview",
+      "android": {
+        "buildType": "apk",
+        "credentialsSource": "remote"
+      },
+      "env": {
+        "EXPO_PUBLIC_MOCK_MODE": "true",
+        "EXPO_PUBLIC_ACCOUNTS_ENABLED": "false",
+        "EXPO_PUBLIC_SUBSCRIPTIONS_ENABLED": "false"
+      }
+    },
+    "production": {
+      "extends": "base",
+      "environment": "production",
+      "android": {
+        "buildType": "app-bundle",
+        "credentialsSource": "remote"
+      },
+      "env": {
+        "EXPO_PUBLIC_MOCK_MODE": "false",
+        "EXPO_PUBLIC_ACCOUNTS_ENABLED": "false",
+        "EXPO_PUBLIC_SUBSCRIPTIONS_ENABLED": "false"
+      }
+    }
+  },
+  "submit": {
+    "internal": {
+      "android": {
+        "track": "internal"
+      }
+    }
+  }
+}

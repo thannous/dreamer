@@ -26,6 +26,7 @@ let mockSessionGate:
 let mockRemainingPlays = 3;
 let mockQuotaResetDay = '2026-09-01';
 let mockIsPlus = false;
+let mockSubscriptionsEnabled = true;
 
 jest.mock('expo-router', () => ({
   useLocalSearchParams: () => ({ id: mockRouteSessionId, worldId: mockRouteWorldId }),
@@ -41,9 +42,11 @@ jest.mock('@/context/WorldContext', () => ({
   }),
 }));
 
+let mockWorldPurchasesLoaded = true;
+
 jest.mock('@/context/WorldPurchaseContext', () => ({
   useWorldPurchases: () => ({
-    loaded: true,
+    loaded: mockWorldPurchasesLoaded,
     isWorldOwned: (worldId: WorldId) =>
       mockWorldById[worldId].access === 'free' || mockOwnedWorldIds.includes(worldId),
   }),
@@ -119,8 +122,24 @@ jest.mock('@/components/ui', () => {
   const Text = ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
     <RNText {...props}>{children}</RNText>
   );
-  const Button = ({ label, ...props }: { label: string; testID?: string; onPress?: () => void }) => (
-    <Pressable accessibilityRole="button" accessibilityLabel={label} {...props}>
+  const Button = ({
+    label,
+    loading,
+    disabled,
+    ...props
+  }: {
+    label: string;
+    testID?: string;
+    loading?: boolean;
+    disabled?: boolean;
+    onPress?: () => void;
+  }) => (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: !!(disabled || loading), busy: !!loading }}
+      disabled={!!(disabled || loading)}
+      {...props}>
       <RNText>{label}</RNText>
     </Pressable>
   );
@@ -181,7 +200,10 @@ jest.mock('@/context/LanguageContext', () => ({
         'session.sleep-body-scan.benefit.1': 'Releases tension',
         'session.sleep-body-scan.benefit.2': 'Anchors attention',
         'session.sleep-body-scan.benefit.3': 'A long practice',
+        'session.stress-shoulders.title': 'Drop the shoulders',
+        'session.stress-storm.title': 'After the storm',
         'category.sleep.name': 'Sleep',
+        'category.stress.name': 'Stress',
         'session.play': 'Play',
         'session.resume': 'Resume',
         'session.replay': 'Replay',
@@ -215,12 +237,16 @@ jest.mock('@/context/LanguageContext', () => ({
   }),
 }));
 
+let mockLibraryLoaded = true;
+let mockLibraryProgress: Record<string, { positionSec: number }> = {};
+
 jest.mock('@/context/LibraryContext', () => ({
   useLibrary: () => ({
     favorites: [],
     isFavorite: () => false,
     toggleFavorite: mockToggleFavorite,
-    progress: {},
+    progress: mockLibraryProgress,
+    loaded: mockLibraryLoaded,
   }),
 }));
 
@@ -232,6 +258,7 @@ jest.mock('@/context/SubscriptionContext', () => ({
     remainingPlays: mockRemainingPlays,
     quotaResetDay: mockQuotaResetDay,
     isPlus: mockIsPlus,
+    subscriptionsEnabled: mockSubscriptionsEnabled,
   }),
 }));
 
@@ -268,6 +295,10 @@ describe('world continuity from journey into practice', () => {
     mockRemainingPlays = 3;
     mockQuotaResetDay = '2026-09-01';
     mockIsPlus = false;
+    mockSubscriptionsEnabled = true;
+    mockLibraryLoaded = true;
+    mockLibraryProgress = {};
+    mockWorldPurchasesLoaded = true;
     mockPush.mockClear();
     mockOpenPaywall.mockClear();
     mockToggleFavorite.mockClear();
@@ -317,6 +348,25 @@ describe('world continuity from journey into practice', () => {
     expect(mockPlayerOpen).toHaveBeenCalledTimes(1);
 
     mockPlayerStatus = 'idle';
+    rerender(<PlayerScreen />);
+    expect(mockPlayerOpen).toHaveBeenCalledTimes(1);
+  });
+
+  it('waits for library hydration before opening a saved resume position once', () => {
+    mockWorldId = 'constellation';
+    mockLibraryLoaded = false;
+    mockLibraryProgress = {};
+    const { rerender } = render(<PlayerScreen />);
+    expect(mockPlayerOpen).not.toHaveBeenCalled();
+    expect(mockOpenPaywall).not.toHaveBeenCalled();
+
+    mockLibraryLoaded = true;
+    mockLibraryProgress = { 'sleep-descent': { positionSec: 187 } };
+    rerender(<PlayerScreen />);
+    expect(mockPlayerOpen).toHaveBeenCalledTimes(1);
+    expect(mockPlayerOpen).toHaveBeenCalledWith('sleep-descent', 187, 'constellation');
+
+    mockLibraryProgress = { 'sleep-descent': { positionSec: 240 } };
     rerender(<PlayerScreen />);
     expect(mockPlayerOpen).toHaveBeenCalledTimes(1);
   });
@@ -374,6 +424,106 @@ describe('world continuity from journey into practice', () => {
     expect(mockPlayerOpen).toHaveBeenCalledWith('stress-storm', 0, 'tide');
   });
 
+  it('waits for world purchase hydration before opening an owned world player once', () => {
+    mockRouteSessionId = 'stress-storm';
+    mockRouteWorldId = 'tide';
+    mockOwnedWorldIds = [];
+    mockWorldPurchasesLoaded = false;
+    mockSessionGate = { allowed: false, reason: 'premium-session' };
+
+    const { rerender } = render(<PlayerScreen />);
+    expect(mockPlayerOpen).not.toHaveBeenCalled();
+    expect(mockOpenPaywall).not.toHaveBeenCalled();
+
+    mockOwnedWorldIds = ['tide'];
+    mockWorldPurchasesLoaded = true;
+    rerender(<PlayerScreen />);
+    expect(mockOpenPaywall).not.toHaveBeenCalled();
+    expect(mockPlayerOpen).toHaveBeenCalledTimes(1);
+    expect(mockPlayerOpen).toHaveBeenCalledWith('stress-storm', 0, 'tide');
+
+    rerender(<PlayerScreen />);
+    expect(mockPlayerOpen).toHaveBeenCalledTimes(1);
+  });
+
+  it('waits for world purchase hydration before routing an owned world from session detail', () => {
+    mockRouteSessionId = 'stress-storm';
+    mockRouteWorldId = 'tide';
+    mockOwnedWorldIds = [];
+    mockWorldPurchasesLoaded = false;
+    mockSessionGate = { allowed: false, reason: 'monthly-quota' };
+
+    const { rerender } = render(<SessionDetail />);
+    const cta = screen.getByTestId(TID.Button.SessionPlay);
+    expect(cta.props.accessibilityState).toEqual(
+      expect.objectContaining({ disabled: true, busy: true })
+    );
+    expect(screen.queryByTestId('session.quota-alternative')).toBeNull();
+    fireEvent.press(cta);
+    expect(mockPush).not.toHaveBeenCalled();
+    expect(mockOpenPaywall).not.toHaveBeenCalled();
+
+    mockOwnedWorldIds = ['tide'];
+    mockWorldPurchasesLoaded = true;
+    rerender(<SessionDetail />);
+    const readyCta = screen.getByTestId(TID.Button.SessionPlay);
+    expect(readyCta.props.accessibilityState).toEqual(
+      expect.objectContaining({ disabled: false, busy: false })
+    );
+    fireEvent.press(readyCta);
+    expect(mockOpenPaywall).not.toHaveBeenCalled();
+    expect(mockPush).toHaveBeenCalledTimes(1);
+    expect(mockPush).toHaveBeenCalledWith('/player/stress-storm?worldId=tide');
+  });
+
+  it('treats a non-premium included owned-world session as playable without quota copy', () => {
+    mockRouteSessionId = 'stress-shoulders';
+    mockRouteWorldId = 'tide';
+    mockOwnedWorldIds = ['tide'];
+    mockRemainingPlays = 0;
+    mockSessionGate = { allowed: false, reason: 'monthly-quota' };
+
+    render(<SessionDetail />);
+
+    expect(screen.getByTestId('session.access')).toHaveTextContent('Free');
+    expect(screen.getByTestId('session.access')).not.toHaveTextContent('Plus');
+    expect(screen.queryByText('Plus')).toBeNull();
+    expect(screen.queryByTestId('session.quota')).toBeNull();
+    expect(screen.queryByTestId('session.quota-reset')).toBeNull();
+    expect(screen.queryByTestId('session.quota-alternative')).toBeNull();
+    expect(screen.getByTestId(TID.Button.SessionPlay)).toHaveTextContent('Play');
+    fireEvent.press(screen.getByTestId(TID.Button.SessionPlay));
+    expect(mockOpenPaywall).not.toHaveBeenCalled();
+    expect(mockPush).toHaveBeenCalledWith('/player/stress-shoulders?worldId=tide');
+  });
+
+  it.each<{ reason: 'premium-session' | 'monthly-quota' }>([
+    { reason: 'premium-session' },
+    { reason: 'monthly-quota' },
+  ])(
+    'treats a premium included owned-world session as Free when gated as $reason',
+    ({ reason }) => {
+      mockRouteSessionId = 'stress-storm';
+      mockRouteWorldId = 'tide';
+      mockOwnedWorldIds = ['tide'];
+      mockRemainingPlays = 0;
+      mockSessionGate = { allowed: false, reason };
+
+      render(<SessionDetail />);
+
+      expect(screen.getByTestId('session.access')).toHaveTextContent('Free');
+      expect(screen.getByTestId('session.access')).not.toHaveTextContent('Plus');
+      expect(screen.queryByText('Plus')).toBeNull();
+      expect(screen.queryByTestId('session.quota')).toBeNull();
+      expect(screen.queryByTestId('session.quota-reset')).toBeNull();
+      expect(screen.queryByTestId('session.quota-alternative')).toBeNull();
+      expect(screen.getByTestId(TID.Button.SessionPlay)).toHaveTextContent('Play');
+      fireEvent.press(screen.getByTestId(TID.Button.SessionPlay));
+      expect(mockOpenPaywall).not.toHaveBeenCalled();
+      expect(mockPush).toHaveBeenCalledWith('/player/stress-storm?worldId=tide');
+    }
+  );
+
   it('shows remaining quota on a free session before play', () => {
     mockRemainingPlays = 2;
     render(<SessionDetail />);
@@ -402,6 +552,20 @@ describe('world continuity from journey into practice', () => {
     fireEvent.press(screen.getByTestId(TID.Button.SessionPlay));
     expect(mockOpenPaywall).toHaveBeenCalledWith('premium-session');
     expect(mockPush).not.toHaveBeenCalled();
+  });
+
+  it('removes every Plus cue from a premium session while subscriptions are disabled', () => {
+    mockRouteSessionId = 'dream-threshold';
+    mockSubscriptionsEnabled = false;
+    mockIsPlus = true;
+    mockSessionGate = { allowed: true };
+
+    render(<SessionDetail />);
+
+    expect(screen.getByTestId('session.access')).toHaveTextContent('Free');
+    expect(screen.getByTestId('session.access')).not.toHaveTextContent('Plus');
+    expect(screen.queryByText('Noctalia Plus')).toBeNull();
+    expect(screen.getByTestId(TID.Button.SessionPlay)).toHaveTextContent('Play');
   });
 
   it('does not keep a start action when the monthly quota is spent', () => {
