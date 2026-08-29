@@ -521,4 +521,17 @@ describe('Lucid Trainer data management', () => {
     expect(mockPush).toHaveBeenCalledWith('/lucid/morning-voice');
     expect(mockShareLucidTrainerExport).not.toHaveBeenCalled();
   });
+
+  it('exports JSON and CSV from trainer state without a userScope argument', async () => {
+    mockShareLucidTrainerExport.mockResolvedValue({ uri: 'file://export.json', shared: true });
+
+    render(<LucidDataScreen />);
+    fireEvent.click(screen.getByRole('button', { name: 'Export JSON' }));
+    await waitFor(() => expect(mockShareLucidTrainerExport).toHaveBeenCalledTimes(1));
+    expect(mockShareLucidTrainerExport).toHaveBeenCalledWith(mockState, 'json');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Export CSV' }));
+    await waitFor(() => expect(mockShareLucidTrainerExport).toHaveBeenCalledTimes(2));
+    expect(mockShareLucidTrainerExport).toHaveBeenNthCalledWith(2, mockState, 'csv');
+  });
 });

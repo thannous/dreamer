@@ -3,10 +3,12 @@ import Storage from 'expo-sqlite/kv-store';
 import {
   LUCID_DREAM_ATLAS_VERSION,
   createEmptyLucidDreamAtlasPreferences,
+  hasLucidDreamAtlasOverlayData,
   isStrictLucidDreamAtlasPreferences,
   normalizeLucidDreamAtlasPreferences,
   serializeLucidDreamAtlasPreferences,
   type LucidDreamAtlasExport,
+  type LucidDreamAtlasOverlay,
   type LucidDreamAtlasPreferences,
 } from '@/lib/lucid/dreamAtlas';
 import {
@@ -180,14 +182,18 @@ export function countLucidDreamAtlasScopeLocksForTests(): number {
   return scopeLocks.size;
 }
 
+export type LucidDreamAtlasCompanionSnapshot =
+  | { status: 'absent' }
+  | { status: 'present'; preferences: LucidDreamAtlasPreferences };
+
 async function loadEnvelope(
   userScope: string,
   storage: AsyncKeyValueStorage
-): Promise<LucidDreamAtlasStoredEnvelope> {
+): Promise<LucidDreamAtlasStoredEnvelope | null> {
   const key = getLucidDreamAtlasStorageKey(userScope);
   const plaintext = await readPlaintext(key, storage);
   if (!plaintext) {
-    return { version: LUCID_DREAM_ATLAS_STORE_VERSION, userScope, preferences: emptyPreferences() };
+    return null;
   }
   try {
     const parsed = parseEnvelope(JSON.parse(plaintext) as unknown, userScope);
@@ -200,7 +206,7 @@ async function loadEnvelope(
   } catch (error) {
     throw persistenceError(error);
   }
-  return { version: LUCID_DREAM_ATLAS_STORE_VERSION, userScope, preferences: emptyPreferences() };
+  return null;
 }
 
 async function saveEnvelope(
@@ -224,8 +230,34 @@ export async function loadLucidDreamAtlasPreferences(
 ): Promise<LucidDreamAtlasPreferences> {
   return withScopeLock(assertScope(userScope), async () => {
     const envelope = await loadEnvelope(userScope, storage);
-    return clonePreferences(envelope.preferences);
+    return clonePreferences(envelope?.preferences ?? emptyPreferences());
   });
+}
+
+export async function inspectLucidDreamAtlasCompanion(
+  userScope: string,
+  storage: AsyncKeyValueStorage = Storage
+): Promise<LucidDreamAtlasCompanionSnapshot> {
+  return withScopeLock(assertScope(userScope), async () => {
+    const envelope = await loadEnvelope(userScope, storage);
+    if (!envelope) return { status: 'absent' };
+    return { status: 'present', preferences: clonePreferences(envelope.preferences) };
+  });
+}
+
+export function overlayFromLucidDreamAtlasCompanion(
+  preferences: LucidDreamAtlasPreferences,
+  updatedAt: number
+): LucidDreamAtlasOverlay {
+  const normalized = clonePreferences(normalizeLucidDreamAtlasPreferences(preferences));
+  return {
+    ...normalized,
+    updatedAt,
+  };
+}
+
+export function companionHasLucidDreamAtlasData(preferences: LucidDreamAtlasPreferences): boolean {
+  return hasLucidDreamAtlasOverlayData({ ...preferences, updatedAt: 0 });
 }
 
 export async function saveLucidDreamAtlasPreferences(
@@ -249,7 +281,7 @@ export async function updateLucidDreamAtlasPreferences(
   storage: AsyncKeyValueStorage = Storage
 ): Promise<LucidDreamAtlasPreferences> {
   return withScopeLock(assertScope(userScope), async () => {
-    const current = clonePreferences((await loadEnvelope(userScope, storage)).preferences);
+    const current = clonePreferences((await loadEnvelope(userScope, storage))?.preferences ?? emptyPreferences());
     const next = clonePreferences(normalizeLucidDreamAtlasPreferences(await updater(current)));
     await saveEnvelope(
       { version: LUCID_DREAM_ATLAS_STORE_VERSION, userScope, preferences: next },
