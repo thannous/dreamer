@@ -219,6 +219,164 @@ describe('revenuecat utils', () => {
 
       expect(result.expiryDate).toBeNull();
     });
+
+    it('preserves recognized Plus expiry history from entitlements.all without unlocking access', () => {
+      const expiredAt = '2026-08-28T12:00:00.000Z';
+      const info: CustomerInfoLike = {
+        entitlements: {
+          active: {},
+          all: {
+            plus: {
+              productIdentifier: 'rc_promo_plus_yearly',
+              expirationDate: expiredAt,
+              willRenew: false,
+            },
+          },
+        },
+      };
+
+      expect(mapStatus(info)).toEqual({
+        tier: 'free',
+        isActive: false,
+        expiryDate: expiredAt,
+        productId: 'rc_promo_plus_yearly',
+        willRenew: false,
+      });
+    });
+
+    it('ignores unknown or companion entitlements.all entries', () => {
+      const info: CustomerInfoLike = {
+        entitlements: {
+          active: {},
+          all: {
+            lucid_trainer_plus: {
+              productIdentifier: 'lucid_trainer_annual',
+              expirationDate: '2026-08-28T12:00:00.000Z',
+              willRenew: false,
+            },
+            custom_entitlement: {
+              productIdentifier: 'custom_product',
+              expirationDate: '2027-01-01T00:00:00.000Z',
+            },
+          },
+        },
+      };
+
+      expect(mapStatus(info)).toEqual({
+        tier: 'free',
+        isActive: false,
+        expiryDate: null,
+        productId: null,
+        willRenew: undefined,
+      });
+    });
+
+    it('keeps an active recognized Plus entitlement over historical Plus entries', () => {
+      const activeExpiry = '2027-08-28T12:00:00.000Z';
+      const info: CustomerInfoLike = {
+        entitlements: {
+          active: {
+            noctalia_plus: {
+              productIdentifier: 'noctalia_plus_annual',
+              expirationDate: activeExpiry,
+              willRenew: true,
+            },
+          },
+          all: {
+            premium: {
+              productIdentifier: 'noctalia_premium_monthly',
+              expirationDate: '2026-01-15T00:00:00.000Z',
+              willRenew: false,
+            },
+            noctalia_plus: {
+              productIdentifier: 'noctalia_plus_annual',
+              expirationDate: activeExpiry,
+              willRenew: true,
+            },
+          },
+        },
+      };
+
+      expect(mapStatus(info)).toEqual({
+        tier: 'plus',
+        isActive: true,
+        expiryDate: activeExpiry,
+        productId: 'noctalia_plus_annual',
+        willRenew: true,
+      });
+    });
+
+    it('selects the latest valid historical Plus expiration and never treats it as active', () => {
+      const info: CustomerInfoLike = {
+        entitlements: {
+          active: {},
+          all: {
+            premium: {
+              productIdentifier: 'noctalia_premium_monthly',
+              expirationDate: '2026-01-15T00:00:00.000Z',
+              willRenew: false,
+            },
+            noctalia_plus: {
+              productIdentifier: 'noctalia_plus_annual',
+              expirationDate: '2026-08-28T12:00:00.000Z',
+              willRenew: false,
+            },
+            plus: {
+              productIdentifier: 'rc_promo_plus_yearly',
+              expirationDate: 'not-a-date',
+              willRenew: true,
+            },
+          },
+        },
+      };
+
+      expect(mapStatus(info)).toEqual({
+        tier: 'free',
+        isActive: false,
+        expiryDate: '2026-08-28T12:00:00.000Z',
+        productId: 'noctalia_plus_annual',
+        willRenew: false,
+      });
+    });
+
+    it('does not invent expiry history when entitlements.all is absent or empty', () => {
+      expect(mapStatus({ entitlements: { active: {} } })).toEqual({
+        tier: 'free',
+        isActive: false,
+        expiryDate: null,
+        productId: null,
+        willRenew: undefined,
+      });
+
+      expect(mapStatus({ entitlements: { active: {}, all: {} } })).toEqual({
+        tier: 'free',
+        isActive: false,
+        expiryDate: null,
+        productId: null,
+        willRenew: undefined,
+      });
+
+      expect(
+        mapStatus({
+          entitlements: {
+            active: {},
+            all: {
+              plus: {
+                productIdentifier: 'rc_promo_plus_yearly',
+                expirationDate: 'not-a-date',
+                willRenew: false,
+              },
+            },
+          },
+        })
+      ).toEqual({
+        tier: 'free',
+        isActive: false,
+        expiryDate: null,
+        productId: 'rc_promo_plus_yearly',
+        willRenew: false,
+      });
+    });
   });
 
   describe('mapIntervalFromId', () => {
