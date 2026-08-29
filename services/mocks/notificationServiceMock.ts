@@ -163,6 +163,27 @@ export async function scheduleInactivityReminders(
   console.log('[MOCK NOTIFICATIONS] scheduleInactivityReminders called with settings:', settings, 'plans:', plans);
 }
 
+export async function reconcileDreamerReminders(input: unknown = {}): Promise<{
+  scheduledIds: string[];
+  cancelledIds: string[];
+  unchangedOccurrenceIds: string[];
+  orphanIdentifiers: string[];
+  timeContextChanged: boolean;
+}> {
+  console.log('[MOCK NOTIFICATIONS] reconcileDreamerReminders called with input:', input);
+  return {
+    scheduledIds: [],
+    cancelledIds: [],
+    unchangedOccurrenceIds: [],
+    orphanIdentifiers: [],
+    timeContextChanged: false,
+  };
+}
+
+export async function presentAnalysisReadyNotification(dreamId: number): Promise<void> {
+  console.log('[MOCK NOTIFICATIONS] presentAnalysisReadyNotification called with dreamId:', dreamId);
+}
+
 export async function cancelAllNotifications(): Promise<void> {
   console.log('[MOCK NOTIFICATIONS] Cancelling all scheduled notifications');
   mockScheduledNotifications = [];

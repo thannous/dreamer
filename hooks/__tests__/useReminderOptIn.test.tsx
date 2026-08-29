@@ -117,8 +117,8 @@ describe('useReminderOptIn', () => {
       weekendEnabled: true,
       weekendTime: '08:30',
       weeklyRecapEnabled: true,
-      streakRiskEnabled: true,
-      inactivityNudgeEnabled: true,
+      streakRiskEnabled: false,
+      inactivityNudgeEnabled: false,
     };
     expect(mockSaveSettings).toHaveBeenCalledWith(expected);
     expect(mockScheduleDaily).toHaveBeenCalledWith(expected);

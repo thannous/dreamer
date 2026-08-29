@@ -58,8 +58,8 @@ export const ReminderOptInCard = memo(function ReminderOptInCard({ surface, styl
           ? t('reminders.opt_in.enabled_body', { time: optIn.selectedTime })
           : t('reminders.opt_in.body')}
       </Text>
-      {/* Accepting the card arms four families, not just the morning reminder:
-          the user reads the full list before tapping, and again after. */}
+      {/* Accepting the card arms the morning reminder and the Sunday recap.
+          Streak and inactivity stay off unless already enabled in Settings. */}
       <Text style={[styles.includes, { color: noctalia.text.tertiary }]}>
         {t('reminders.opt_in.includes')}
       </Text>

@@ -7,11 +7,27 @@ import type {
   InactivityReminderStage,
   StreakRiskReminderPlan,
 } from '@/lib/engagementReminders';
+import {
+  DREAMER_REMINDER_TYPE_KEY,
+  RECORDING_NOTIFICATION_URL,
+  WEEKLY_RECAP_NOTIFICATION_URL,
+  WEEKLY_RECAP_TIME,
+  WEEKLY_RECAP_WEEKDAY,
+  buildDreamerNotificationContentData,
+  buildDreamerNotificationPlan,
+  normalizeNotificationSettings,
+  reconcileDreamerNotificationPlan,
+  resolveDreamerTimeContext,
+  type DreamerReminderType,
+  type DreamerDesiredOccurrence,
+  type DreamerScheduledRequest,
+  type DreamerTimeContext,
+} from '@/lib/dreamerNotifications';
 import { getTranslator, loadTranslations } from '@/lib/i18n';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
 import type { RitualId } from '@/lib/inspirationRituals';
 import type { LanguagePreference, NotificationSettings } from '@/lib/types';
-import { getLanguagePreference } from '@/services/storageService';
+import { getLanguagePreference, getNotificationSettings } from '@/services/storageService';
 
 // Array of smart, motivational notification prompt keys
 const NOTIFICATION_PROMPT_KEYS = [
@@ -35,20 +51,9 @@ const NOTIFICATION_PROMPT_KEYS = [
 // Notification channel for Android
 const NOTIFICATION_CHANNEL_ID = 'dream-reminders';
 
-type ReminderType = 'daily' | 'ritual' | 'weekly_recap' | 'streak_risk' | 'inactivity';
-const REMINDER_TYPE_DATA_KEY = 'dreamerReminderType';
-const REMINDER_TYPES: readonly ReminderType[] = [
-  'daily',
-  'ritual',
-  'weekly_recap',
-  'streak_risk',
-  'inactivity',
-];
-
 /** Sunday, 10:00 local: late enough for a lie-in, early enough to plan the week. */
-export const WEEKLY_RECAP_WEEKDAY = 1; // 1 = Sunday
-export const WEEKLY_RECAP_TIME = '10:00';
-export const WEEKLY_RECAP_URL = '/weekly-recap';
+export const WEEKLY_RECAP_URL = WEEKLY_RECAP_NOTIFICATION_URL;
+export { WEEKLY_RECAP_TIME, WEEKLY_RECAP_WEEKDAY };
 
 type NotificationTranslator = ReturnType<typeof getTranslator>;
 
@@ -76,24 +81,33 @@ const getTimeParts = (time: string): { hours: number; minutes: number } => {
   return { hours, minutes };
 };
 
-const WEEKDAY_WEEKDAYS: number[] = [2, 3, 4, 5, 6]; // Mon-Fri (1 = Sun, 7 = Sat)
-const WEEKEND_WEEKDAYS: number[] = [1, 7]; // Sun, Sat
+function toDreamerScheduledRequest(
+  request: Notifications.NotificationRequest
+): DreamerScheduledRequest {
+  return {
+    identifier: request.identifier,
+    title: request.content.title ?? undefined,
+    data: request.content.data,
+  };
+}
+
+function currentTimeContext(now = Date.now()): DreamerTimeContext {
+  return resolveDreamerTimeContext({ now });
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
-function isReminderType(value: unknown): value is ReminderType {
-  return typeof value === 'string' && (REMINDER_TYPES as readonly string[]).includes(value);
-}
-
-function matchesReminderType(request: Notifications.NotificationRequest, reminderType: ReminderType): boolean {
+function matchesReminderType(
+  request: Notifications.NotificationRequest,
+  reminderType: DreamerReminderType | 'ritual'
+): boolean {
   const data = request.content.data;
-  if (isRecord(data) && isReminderType(data[REMINDER_TYPE_DATA_KEY])) {
-    return data[REMINDER_TYPE_DATA_KEY] === reminderType;
+  if (isRecord(data) && (data[DREAMER_REMINDER_TYPE_KEY] === reminderType)) {
+    return true;
   }
 
-  // Legacy fallback (before REMINDER_TYPE_DATA_KEY existed).
   const legacyUrl = isRecord(data) ? data.url : undefined;
   const legacyRitualId = isRecord(data) ? data.ritualId : undefined;
   const legacyIsTest = isRecord(data) ? data.test : undefined;
@@ -110,13 +124,15 @@ function matchesReminderType(request: Notifications.NotificationRequest, reminde
 
   return (
     request.content.title === 'Dream Journal Reminder' &&
-    legacyUrl === '/recording' &&
+    legacyUrl === RECORDING_NOTIFICATION_URL &&
     legacyRitualId == null &&
     legacyIsTest !== true
   );
 }
 
-async function cancelScheduledReminders(reminderType: ReminderType): Promise<void> {
+async function cancelScheduledReminders(
+  reminderType: DreamerReminderType | 'ritual'
+): Promise<void> {
   const scheduled = await Notifications.getAllScheduledNotificationsAsync();
   const identifiers = scheduled
     .filter((request) => matchesReminderType(request, reminderType))
@@ -127,31 +143,6 @@ async function cancelScheduledReminders(reminderType: ReminderType): Promise<voi
   if (__DEV__) {
     console.log(`Cancelled ${identifiers.length} scheduled ${reminderType} reminders`);
   }
-}
-
-async function scheduleWeeklyRemindersForDays(params: {
-  days: number[];
-  time: string;
-  content:
-    | Notifications.NotificationContentInput
-    | ((weekday: number) => Notifications.NotificationContentInput);
-}): Promise<void> {
-  const { hours, minutes } = getTimeParts(params.time);
-
-  await Promise.all(
-    params.days.map((weekday) =>
-      Notifications.scheduleNotificationAsync({
-        content: typeof params.content === 'function' ? params.content(weekday) : params.content,
-        trigger: {
-          type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
-          weekday,
-          hour: hours,
-          minute: minutes,
-          channelId: NOTIFICATION_CHANNEL_ID,
-        },
-      })
-    )
-  );
 }
 
 /**
@@ -281,16 +272,214 @@ export function buildWeeklyPromptRotation(
   return rotation;
 }
 
-function getRitualReminderBody(t: NotificationTranslator, ritualId: RitualId): string {
-  switch (ritualId) {
-    case 'starter':
-      return t('notifications.ritual.body.starter');
-    case 'memory':
-      return t('notifications.ritual.body.memory');
-    case 'lucid':
-      return t('notifications.ritual.body.lucid');
-    default:
-      return getRandomPrompt(t);
+function copyForOccurrence(
+  t: NotificationTranslator,
+  occurrence: DreamerDesiredOccurrence,
+  promptByWeekday: Record<number, string>
+): { title: string; body: string; priority: Notifications.AndroidNotificationPriority } {
+  switch (occurrence.reminderType) {
+    case 'daily':
+      return {
+        title: t('notifications.reminder.title'),
+        body: promptByWeekday[occurrence.weekday ?? 1] ?? getRandomPrompt(t),
+        priority: Notifications.AndroidNotificationPriority.HIGH,
+      };
+    case 'weekly_recap':
+      return {
+        title: t('notifications.weekly_recap.title'),
+        body: t('notifications.weekly_recap.body'),
+        priority: Notifications.AndroidNotificationPriority.DEFAULT,
+      };
+    case 'analysis_ready':
+      return {
+        title: t('notifications.analysis_ready.title'),
+        body: t('notifications.analysis_ready.body'),
+        priority: Notifications.AndroidNotificationPriority.HIGH,
+      };
+    case 'streak_risk':
+      return {
+        title: t('notifications.streak_risk.title', { count: occurrence.streakLength ?? 0 }),
+        body: t('notifications.streak_risk.body', { count: occurrence.streakLength ?? 0 }),
+        priority: Notifications.AndroidNotificationPriority.DEFAULT,
+      };
+    case 'inactivity':
+      return {
+        ...getInactivityCopy(t, occurrence.inactivityStage ?? 3),
+        priority: Notifications.AndroidNotificationPriority.DEFAULT,
+      };
+  }
+}
+
+function getInactivityCopy(
+  t: NotificationTranslator,
+  stage: InactivityReminderStage
+): { title: string; body: string } {
+  const prefix = stage === 3 ? 'notifications.inactivity.day3' : 'notifications.inactivity.day7';
+  return { title: t(`${prefix}.title`), body: t(`${prefix}.body`) };
+}
+
+async function scheduleOwnedOccurrence(params: {
+  occurrence: DreamerDesiredOccurrence;
+  timeContext: DreamerTimeContext;
+  title: string;
+  body: string;
+  priority?: Notifications.AndroidNotificationPriority;
+}): Promise<void> {
+  const { occurrence, timeContext, title, body } = params;
+  const content: Notifications.NotificationContentInput = {
+    title,
+    body,
+    data: buildDreamerNotificationContentData(occurrence, timeContext),
+    sound: true,
+    priority: params.priority ?? Notifications.AndroidNotificationPriority.DEFAULT,
+  };
+
+  if (occurrence.weekday != null && occurrence.time) {
+    const { hours, minutes } = getTimeParts(occurrence.time);
+    await Notifications.scheduleNotificationAsync({
+      content,
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
+        weekday: occurrence.weekday,
+        hour: hours,
+        minute: minutes,
+        channelId: NOTIFICATION_CHANNEL_ID,
+      },
+    });
+    return;
+  }
+
+  if (occurrence.triggerAt != null) {
+    await scheduleDatedReminder({ triggerAt: occurrence.triggerAt, content });
+  }
+}
+
+export type ReconcileDreamerRemindersInput = {
+  settings?: NotificationSettings;
+  now?: number;
+  timeContext?: DreamerTimeContext;
+  streakRisk?: StreakRiskReminderPlan | null;
+  inactivity?: readonly InactivityReminderPlan[];
+  analysisReady?: { dreamId: number; triggerAt?: number } | null;
+  preserveAnalysisReady?: boolean;
+};
+
+export type ReconcileDreamerRemindersResult = {
+  scheduledIds: string[];
+  cancelledIds: string[];
+  unchangedOccurrenceIds: string[];
+  orphanIdentifiers: string[];
+  timeContextChanged: boolean;
+};
+
+/**
+ * Rebuild Dreamer-owned reminders against the current settings, journal plan
+ * and device timezone/DST offset. Lucid Trainer requests are never touched.
+ */
+export async function reconcileDreamerReminders(
+  input: ReconcileDreamerRemindersInput = {}
+): Promise<ReconcileDreamerRemindersResult> {
+  if (Platform.OS === 'web') {
+    return {
+      scheduledIds: [],
+      cancelledIds: [],
+      unchangedOccurrenceIds: [],
+      orphanIdentifiers: [],
+      timeContextChanged: false,
+    };
+  }
+
+  const now = input.now ?? Date.now();
+  const timeContext = input.timeContext ?? currentTimeContext(now);
+  const settings = normalizeNotificationSettings(
+    input.settings ?? (await getNotificationSettings())
+  );
+  const desired = buildDreamerNotificationPlan({
+    settings,
+    timeContext,
+    now,
+    streakRisk: input.streakRisk,
+    inactivity: input.inactivity,
+    analysisReady: input.analysisReady,
+  });
+  const scheduled = (await Notifications.getAllScheduledNotificationsAsync()).map(
+    toDreamerScheduledRequest
+  );
+  const decision = reconcileDreamerNotificationPlan(scheduled, desired, timeContext, {
+    preserveReminderTypes: [
+      ...(input.preserveAnalysisReady === false ? [] : (['analysis_ready'] as DreamerReminderType[])),
+      ...(input.streakRisk === undefined && settings.streakRiskEnabled
+        ? (['streak_risk'] as DreamerReminderType[])
+        : []),
+      ...(input.inactivity === undefined && settings.inactivityNudgeEnabled
+        ? (['inactivity'] as DreamerReminderType[])
+        : []),
+    ],
+  });
+
+  await Promise.all(
+    decision.toCancel.map((identifier) => Notifications.cancelScheduledNotificationAsync(identifier))
+  );
+
+  const t = decision.toSchedule.length > 0 ? await getNotificationTranslator() : null;
+  const promptByWeekday = t ? buildWeeklyPromptRotation(t) : {};
+  const scheduledIds: string[] = [];
+  for (const occurrence of decision.toSchedule) {
+    if (!t) break;
+    const copy = copyForOccurrence(t, occurrence, promptByWeekday);
+    await scheduleOwnedOccurrence({
+      occurrence,
+      timeContext,
+      title: copy.title,
+      body: copy.body,
+      priority: copy.priority,
+    });
+    scheduledIds.push(occurrence.occurrenceId);
+  }
+
+  if (__DEV__) {
+    console.log(
+      `Reconciled Dreamer reminders: scheduled ${scheduledIds.length}, cancelled ${decision.toCancel.length}, tzChanged=${decision.timeContextChanged}`
+    );
+  }
+
+  return {
+    scheduledIds,
+    cancelledIds: decision.toCancel,
+    unchangedOccurrenceIds: decision.unchangedOccurrenceIds,
+    orphanIdentifiers: decision.orphanIdentifiers,
+    timeContextChanged: decision.timeContextChanged,
+  };
+}
+
+async function scheduleOwnedFamily(params: {
+  settings: NotificationSettings;
+  reminderType: DreamerReminderType;
+  streakRisk?: StreakRiskReminderPlan | null;
+  inactivity?: readonly InactivityReminderPlan[];
+}): Promise<void> {
+  await cancelScheduledReminders(params.reminderType);
+  const normalized = normalizeNotificationSettings(params.settings);
+  const timeContext = currentTimeContext();
+  const desired = buildDreamerNotificationPlan({
+    settings: normalized,
+    timeContext,
+    streakRisk: params.streakRisk,
+    inactivity: params.inactivity,
+  }).filter((occurrence) => occurrence.reminderType === params.reminderType);
+  if (desired.length === 0) return;
+
+  const t = await getNotificationTranslator();
+  const promptByWeekday = buildWeeklyPromptRotation(t);
+  for (const occurrence of desired) {
+    const copy = copyForOccurrence(t, occurrence, promptByWeekday);
+    await scheduleOwnedOccurrence({
+      occurrence,
+      timeContext,
+      title: copy.title,
+      body: copy.body,
+      priority: copy.priority,
+    });
   }
 }
 
@@ -303,58 +492,7 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
     // Web notifications not supported
     return;
   }
-
-  // Replace only the daily reminders, leaving ritual reminders intact.
-  await cancelScheduledReminders('daily');
-
-  // Check if either weekday or weekend notifications are enabled
-  if (!settings.weekdayEnabled && !settings.weekendEnabled) {
-    if (__DEV__) {
-      console.log('All notification types disabled');
-    }
-    return;
-  }
-
-  const t = await getNotificationTranslator();
-
-  const baseContent: Omit<Notifications.NotificationContentInput, 'body'> = {
-    title: t('notifications.reminder.title'),
-    data: { url: '/recording', [REMINDER_TYPE_DATA_KEY]: 'daily' },
-    sound: true,
-    priority: Notifications.AndroidNotificationPriority.HIGH,
-  };
-  const promptByWeekday = buildWeeklyPromptRotation(t);
-  const contentForWeekday = (weekday: number): Notifications.NotificationContentInput => ({
-    ...baseContent,
-    body: promptByWeekday[weekday] ?? getRandomPrompt(t),
-  });
-
-  if (settings.weekdayEnabled) {
-    await scheduleWeeklyRemindersForDays({
-      days: WEEKDAY_WEEKDAYS,
-      time: settings.weekdayTime,
-      content: contentForWeekday,
-    });
-  }
-
-  if (settings.weekendEnabled) {
-    await scheduleWeeklyRemindersForDays({
-      days: WEEKEND_WEEKDAYS,
-      time: settings.weekendTime,
-      content: contentForWeekday,
-    });
-  }
-
-  if (__DEV__) {
-    const scheduled: string[] = [];
-    if (settings.weekdayEnabled) {
-      scheduled.push(`weekdays @ ${settings.weekdayTime}`);
-    }
-    if (settings.weekendEnabled) {
-      scheduled.push(`weekends @ ${settings.weekendTime}`);
-    }
-    console.log(`Scheduled dream reminders: ${scheduled.join(', ')}`);
-  }
+  await scheduleOwnedFamily({ settings, reminderType: 'daily' });
 }
 
 export async function scheduleRitualReminder(settings: NotificationSettings, ritualId: RitualId): Promise<void> {
@@ -362,50 +500,11 @@ export async function scheduleRitualReminder(settings: NotificationSettings, rit
     return;
   }
 
-  // Replace only the ritual reminders, leaving daily reminders intact.
+  // VNext: ritual reminders are no longer a Dreamer family. Cancel leftovers
+  // only; the launch/foreground reconcile still sweeps orphans later.
+  void ritualId;
+  void settings;
   await cancelScheduledReminders('ritual');
-
-  // Use same logic as scheduleDailyNotification - check if either is enabled
-  if (!settings.weekdayEnabled && !settings.weekendEnabled) {
-    return;
-  }
-
-  const t = await getNotificationTranslator();
-
-  const baseContent: Notifications.NotificationContentInput = {
-    title: t('inspiration.ritual.title'),
-    body: getRitualReminderBody(t, ritualId),
-    data: { url: '/recording', ritualId, [REMINDER_TYPE_DATA_KEY]: 'ritual' },
-    sound: true,
-    priority: Notifications.AndroidNotificationPriority.HIGH,
-  };
-
-  if (settings.weekdayEnabled) {
-    await scheduleWeeklyRemindersForDays({
-      days: WEEKDAY_WEEKDAYS,
-      time: settings.weekdayTime,
-      content: baseContent,
-    });
-  }
-
-  if (settings.weekendEnabled) {
-    await scheduleWeeklyRemindersForDays({
-      days: WEEKEND_WEEKDAYS,
-      time: settings.weekendTime,
-      content: baseContent,
-    });
-  }
-
-  if (__DEV__) {
-    const scheduled: string[] = [];
-    if (settings.weekdayEnabled) {
-      scheduled.push(`weekdays @ ${settings.weekdayTime}`);
-    }
-    if (settings.weekendEnabled) {
-      scheduled.push(`weekends @ ${settings.weekendTime}`);
-    }
-    console.log(`Scheduled ritual reminder (${ritualId}): ${scheduled.join(', ')}`);
-  }
 }
 
 export async function sendTestNotification(): Promise<void> {
@@ -419,7 +518,7 @@ export async function sendTestNotification(): Promise<void> {
     content: {
       title: t('notifications.reminder.title'),
       body: getRandomPrompt(t),
-      data: { url: '/recording', test: true },
+      data: { url: RECORDING_NOTIFICATION_URL, test: true },
       sound: true,
       priority: Notifications.AndroidNotificationPriority.HIGH,
     },
@@ -446,24 +545,7 @@ export async function scheduleWeeklyRecapReminder(settings: NotificationSettings
   if (Platform.OS === 'web') {
     return;
   }
-
-  await cancelScheduledReminders('weekly_recap');
-  if (!settings.weeklyRecapEnabled) {
-    return;
-  }
-
-  const t = await getNotificationTranslator();
-  await scheduleWeeklyRemindersForDays({
-    days: [WEEKLY_RECAP_WEEKDAY],
-    time: WEEKLY_RECAP_TIME,
-    content: {
-      title: t('notifications.weekly_recap.title'),
-      body: t('notifications.weekly_recap.body'),
-      data: { url: WEEKLY_RECAP_URL, [REMINDER_TYPE_DATA_KEY]: 'weekly_recap' },
-      sound: true,
-      priority: Notifications.AndroidNotificationPriority.DEFAULT,
-    },
-  });
+  await scheduleOwnedFamily({ settings, reminderType: 'weekly_recap' });
 }
 
 /**
@@ -481,37 +563,7 @@ export async function scheduleStreakRiskReminder(
   if (Platform.OS === 'web') {
     return;
   }
-
-  await cancelScheduledReminders('streak_risk');
-  if (settings.streakRiskEnabled !== true || plan === null) {
-    return;
-  }
-
-  const t = await getNotificationTranslator();
-  await scheduleDatedReminder({
-    triggerAt: plan.triggerAt,
-    content: {
-      title: t('notifications.streak_risk.title', { count: plan.streakLength }),
-      body: t('notifications.streak_risk.body', { count: plan.streakLength }),
-      data: { url: '/recording', [REMINDER_TYPE_DATA_KEY]: 'streak_risk' },
-      sound: true,
-      priority: Notifications.AndroidNotificationPriority.DEFAULT,
-    },
-  });
-
-  if (__DEV__) {
-    console.log(
-      `Scheduled streak risk reminder for ${new Date(plan.triggerAt).toISOString()} (streak ${plan.streakLength})`
-    );
-  }
-}
-
-function getInactivityCopy(
-  t: NotificationTranslator,
-  stage: InactivityReminderStage
-): { title: string; body: string } {
-  const prefix = stage === 3 ? 'notifications.inactivity.day3' : 'notifications.inactivity.day7';
-  return { title: t(`${prefix}.title`), body: t(`${prefix}.body`) };
+  await scheduleOwnedFamily({ settings, reminderType: 'streak_risk', streakRisk: plan });
 }
 
 /**
@@ -526,36 +578,7 @@ export async function scheduleInactivityReminders(
   if (Platform.OS === 'web') {
     return;
   }
-
-  await cancelScheduledReminders('inactivity');
-  if (settings.inactivityNudgeEnabled !== true || plans.length === 0) {
-    return;
-  }
-
-  const t = await getNotificationTranslator();
-  for (const plan of plans) {
-    const copy = getInactivityCopy(t, plan.stage);
-    await scheduleDatedReminder({
-      triggerAt: plan.triggerAt,
-      content: {
-        title: copy.title,
-        body: copy.body,
-        data: {
-          url: '/recording',
-          [REMINDER_TYPE_DATA_KEY]: 'inactivity',
-          inactivityStage: plan.stage,
-        },
-        sound: true,
-        priority: Notifications.AndroidNotificationPriority.DEFAULT,
-      },
-    });
-  }
-
-  if (__DEV__) {
-    console.log(
-      `Scheduled inactivity reminders: ${plans.map((plan) => `J+${plan.stage}`).join(', ')}`
-    );
-  }
+  await scheduleOwnedFamily({ settings, reminderType: 'inactivity', inactivity: plans });
 }
 
 export async function cancelAllNotifications(): Promise<void> {
@@ -591,4 +614,45 @@ export async function hasNotificationPermissions(): Promise<boolean> {
 
   const permissions = await Notifications.getPermissionsAsync();
   return allowsNotifications(permissions);
+}
+
+/**
+ * Immediate local notice that an analysis finished while the user was away.
+ * Deep-links to the existing journal detail screen. No-op when the user is
+ * already looking at the app: the in-app progress UI owns that moment.
+ */
+export async function presentAnalysisReadyNotification(dreamId: number): Promise<void> {
+  if (Platform.OS === 'web' || !Number.isSafeInteger(dreamId) || dreamId <= 0) {
+    return;
+  }
+
+  const t = await getNotificationTranslator();
+  const timeContext = currentTimeContext();
+  const desired = buildDreamerNotificationPlan({
+    settings: normalizeNotificationSettings({
+      weekdayEnabled: false,
+      weekdayTime: '07:00',
+      weekendEnabled: false,
+      weekendTime: '10:00',
+    }),
+    timeContext,
+    now: Date.now(),
+    analysisReady: { dreamId, triggerAt: Date.now() + 1_000 },
+  }).find((occurrence) => occurrence.reminderType === 'analysis_ready');
+  if (!desired) return;
+
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: t('notifications.analysis_ready.title'),
+      body: t('notifications.analysis_ready.body'),
+      data: buildDreamerNotificationContentData(desired, timeContext),
+      sound: true,
+      priority: Notifications.AndroidNotificationPriority.HIGH,
+    },
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+      seconds: 1,
+      channelId: NOTIFICATION_CHANNEL_ID,
+    },
+  });
 }
