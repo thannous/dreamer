@@ -60,7 +60,7 @@ const COPY = {
     pause: 'Mindful pause',
     pauseHint: 'Open a reality check from this sign.',
     repeatScene: (title: string) => `Rehearse this scene: ${title}`,
-    privacy: 'This atlas stays on this device. It does not send dream text anywhere.',
+    privacy: 'This atlas stays on this device by default. Dream text remains local. Optional sync shares only atlas organization.',
     persistenceFailed: 'The atlas could not be saved on this device. Try again.',
     storageFull: 'This device is out of storage for the atlas.',
     invalidScope: 'This atlas is not available for the current account.',
@@ -100,7 +100,7 @@ const COPY = {
     pause: 'Pause attentive',
     pauseHint: 'Ouvre un test de réalité à partir de ce signe.',
     repeatScene: (title: string) => `Répéter cette scène : ${title}`,
-    privacy: 'Cet atlas reste sur cet appareil. Il n’envoie aucun texte de rêve.',
+    privacy: 'Cet atlas reste local par défaut. Le texte des rêves reste sur cet appareil. Avec la sync optionnelle, seule l’organisation de l’atlas est partagée.',
     persistenceFailed: 'L’atlas n’a pas pu être enregistré sur cet appareil. Réessaie.',
     storageFull: 'Cet appareil n’a plus assez d’espace pour l’atlas.',
     invalidScope: 'Cet atlas n’est pas disponible pour le compte actuel.',
@@ -140,7 +140,7 @@ const COPY = {
     pause: 'Pausa atenta',
     pauseHint: 'Abre una prueba de realidad desde esta señal.',
     repeatScene: (title: string) => `Repetir esta escena: ${title}`,
-    privacy: 'Este atlas permanece en este dispositivo. No envía texto de sueños.',
+    privacy: 'Este atlas permanece local de forma predeterminada. El texto de los sueños se queda en este dispositivo. Con la sincronización opcional, solo se comparte la organización del atlas.',
     persistenceFailed: 'No se pudo guardar el atlas en este dispositivo. Inténtalo de nuevo.',
     storageFull: 'Este dispositivo no tiene espacio para el atlas.',
     invalidScope: 'Este atlas no está disponible para la cuenta actual.',
@@ -180,7 +180,7 @@ const COPY = {
     pause: 'Achtsame Pause',
     pauseHint: 'Öffne einen Reality Check von diesem Zeichen.',
     repeatScene: (title: string) => `Diese Szene wiederholen: ${title}`,
-    privacy: 'Dieser Atlas bleibt auf diesem Gerät. Es wird kein Traumtext gesendet.',
+    privacy: 'Dieser Atlas bleibt standardmäßig lokal. Traumtext bleibt auf diesem Gerät. Bei optionaler Synchronisierung wird nur die Atlas-Organisation geteilt.',
     persistenceFailed: 'Der Atlas konnte auf diesem Gerät nicht gespeichert werden. Versuche es erneut.',
     storageFull: 'Auf diesem Gerät ist kein Speicher mehr für den Atlas frei.',
     invalidScope: 'Dieser Atlas ist für das aktuelle Konto nicht verfügbar.',
@@ -220,7 +220,7 @@ const COPY = {
     pause: 'Pausa consapevole',
     pauseHint: 'Apri un reality check da questo segnale.',
     repeatScene: (title: string) => `Ripeti questa scena: ${title}`,
-    privacy: 'Questo atlante resta su questo dispositivo. Non invia testo dei sogni.',
+    privacy: 'Questo atlante resta locale per impostazione predefinita. Il testo dei sogni resta su questo dispositivo. Con la sync opzionale si condivide solo l’organizzazione dell’atlante.',
     persistenceFailed: 'L’atlante non è stato salvato su questo dispositivo. Riprova.',
     storageFull: 'Questo dispositivo non ha spazio per l’atlante.',
     invalidScope: 'Questo atlante non è disponibile per l’account attuale.',
@@ -282,7 +282,7 @@ function buildVisibleGraph<T extends { id: string; label: string; sourceDreamIds
 
 export default function LucidDreamAtlasScreen() {
   const { dreams, loaded } = useDreamsData();
-  const { content, state, userScope, dreamSignCandidates } = useLucidTrainer();
+  const { content, state, dreamSignCandidates } = useLucidTrainer();
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const reduceMotion = useLucidReducedMotion();
@@ -299,7 +299,6 @@ export default function LucidDreamAtlasScreen() {
   }, [dreamSignCandidates, dreams, state?.dreamSignDecisions]);
 
   const atlas = useLucidDreamAtlas({
-    userScope,
     signs,
     dreams,
   });

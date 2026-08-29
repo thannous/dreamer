@@ -7,11 +7,14 @@ import {
   LUCID_DREAM_ATLAS_STORE_VERSION,
   LucidDreamAtlasStorageError,
   clearLucidDreamAtlasPreferences,
+  companionHasLucidDreamAtlasData,
   countLucidDreamAtlasScopeLocksForTests,
   exportLucidDreamAtlasPreferences,
   getLucidDreamAtlasStorageKey,
   importLucidDreamAtlasPreferences,
+  inspectLucidDreamAtlasCompanion,
   loadLucidDreamAtlasPreferences,
+  overlayFromLucidDreamAtlasCompanion,
   saveLucidDreamAtlasPreferences,
   updateLucidDreamAtlasPreferences,
 } from '@/services/lucidDreamAtlasStorage';
@@ -66,6 +69,30 @@ describe('Lucid dream atlas local preference storage', () => {
       prefs({ deleted: ['sign:marie'] })
     );
     expect(memory.size).toBe(2);
+  });
+
+  it('distinguishes an absent companion from a valid empty or populated envelope', async () => {
+    const { memory, storage } = memoryKv();
+    await expect(inspectLucidDreamAtlasCompanion('guest', storage)).resolves.toEqual({ status: 'absent' });
+    expect(companionHasLucidDreamAtlasData(prefs())).toBe(false);
+
+    await saveLucidDreamAtlasPreferences('guest', prefs(), storage);
+    await expect(inspectLucidDreamAtlasCompanion('guest', storage)).resolves.toEqual({
+      status: 'present',
+      preferences: prefs(),
+    });
+    expect(companionHasLucidDreamAtlasData(prefs())).toBe(false);
+
+    const populated = prefs({ hidden: ['sign:marie'] });
+    await saveLucidDreamAtlasPreferences('guest', populated, storage);
+    const snapshot = await inspectLucidDreamAtlasCompanion('guest', storage);
+    expect(snapshot).toEqual({ status: 'present', preferences: populated });
+    expect(companionHasLucidDreamAtlasData(populated)).toBe(true);
+    expect(overlayFromLucidDreamAtlasCompanion(populated, 1_700_000_000_000)).toEqual({
+      ...populated,
+      updatedAt: 1_700_000_000_000,
+    });
+    expect(memory.has(getLucidDreamAtlasStorageKey('guest'))).toBe(true);
   });
 
   it('quarantines corrupt JSON, wrong envelope keys, versions and scopes', async () => {

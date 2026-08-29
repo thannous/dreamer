@@ -23,6 +23,7 @@ const mockDreams = [
 ];
 
 let mockReduceMotion = false;
+let mockLocale: 'en' | 'fr' | 'es' | 'de' | 'it' = 'fr';
 let mockDreamSignCandidates = [
   {
     id: 'sign:miroir',
@@ -124,9 +125,8 @@ jest.mock('@/context/DreamsContext', () => ({
 
 jest.mock('@/context/LucidTrainerContext', () => ({
   useLucidTrainer: () => ({
-    content: { locale: 'fr', chrome: { common: { loading: 'Chargement…' } } },
+    content: { locale: mockLocale, chrome: { common: { loading: 'Chargement…' } } },
     state: { dreamSignDecisions: [{ id: 'sign:miroir', decision: 'confirmed' }, { id: 'sign:marie', decision: 'confirmed' }] },
-    userScope: 'guest',
     dreamSignCandidates: mockDreamSignCandidates,
   }),
 }));
@@ -152,17 +152,19 @@ jest.mock('@/hooks/useLucidReducedMotion', () => ({
   useLucidReducedMotion: () => mockReduceMotion,
 }));
 
+const mockUseLucidDreamAtlas = jest.fn((_options: { signs: unknown; dreams?: unknown }) => ({
+  ...mockAtlasState,
+  refresh: mockRefresh,
+  renameNode: mockRename,
+  hideNode: mockHide,
+  unhideNode: mockUnhide,
+  mergeNodes: mockMerge,
+  deleteNode: mockDelete,
+  clearPreferences: jest.fn(),
+}));
+
 jest.mock('@/hooks/useLucidDreamAtlas', () => ({
-  useLucidDreamAtlas: () => ({
-    ...mockAtlasState,
-    refresh: mockRefresh,
-    renameNode: mockRename,
-    hideNode: mockHide,
-    unhideNode: mockUnhide,
-    mergeNodes: mockMerge,
-    deleteNode: mockDelete,
-    clearPreferences: jest.fn(),
-  }),
+  useLucidDreamAtlas: (options: { signs: unknown; dreams?: unknown }) => mockUseLucidDreamAtlas(options),
 }));
 
 jest.mock('@/components/lucid/LucidUI', () => ({
@@ -184,6 +186,7 @@ describe('Lucid dream atlas screen', () => {
   beforeEach(() => {
     mockCanGoBack = false;
     mockReduceMotion = false;
+    mockLocale = 'fr';
     mockDreamSignCandidates = [
       {
         id: 'sign:miroir',
@@ -216,6 +219,34 @@ describe('Lucid dream atlas screen', () => {
     cleanup();
     jest.clearAllMocks();
     jest.restoreAllMocks();
+  });
+
+  it('keeps the atlas local by default and shares only organization with optional sync', () => {
+    const privacyCopy = {
+      fr: 'Cet atlas reste local par défaut. Le texte des rêves reste sur cet appareil. Avec la sync optionnelle, seule l’organisation de l’atlas est partagée.',
+      en: 'This atlas stays on this device by default. Dream text remains local. Optional sync shares only atlas organization.',
+      es: 'Este atlas permanece local de forma predeterminada. El texto de los sueños se queda en este dispositivo. Con la sincronización opcional, solo se comparte la organización del atlas.',
+      de: 'Dieser Atlas bleibt standardmäßig lokal. Traumtext bleibt auf diesem Gerät. Bei optionaler Synchronisierung wird nur die Atlas-Organisation geteilt.',
+      it: 'Questo atlante resta locale per impostazione predefinita. Il testo dei sogni resta su questo dispositivo. Con la sync opzionale si condivide solo l’organizzazione dell’atlante.',
+    } as const;
+
+    render(<LucidDreamAtlasScreen />);
+    expect(mockUseLucidDreamAtlas).toHaveBeenCalledWith({
+      signs: expect.any(Array),
+      dreams: mockDreams,
+    });
+    expect(mockUseLucidDreamAtlas.mock.calls[0][0]).not.toHaveProperty('userScope');
+    expect(screen.getByText(privacyCopy.fr)).not.toBeNull();
+    expect(screen.getByTestId('lucid-dream-atlas-map')).not.toBeNull();
+
+    for (const locale of ['en', 'es', 'de', 'it'] as const) {
+      cleanup();
+      mockLocale = locale;
+      render(<LucidDreamAtlasScreen />);
+      expect(screen.getByText(privacyCopy[locale])).not.toBeNull();
+      expect(screen.queryByText(/premium/i)).toBeNull();
+      expect(screen.getByTestId('lucid-dream-atlas-map')).not.toBeNull();
+    }
   });
 
   it('lists visible and hidden signs with sources and opens the journal', () => {
