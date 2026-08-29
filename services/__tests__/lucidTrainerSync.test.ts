@@ -2,6 +2,7 @@ import {
   createInitialLucidTrainerState,
   createLucidProgramProgress,
 } from '@/lib/lucid/domain';
+import { createEmptyLucidDreamAtlasOverlay } from '@/lib/lucid/dreamAtlas';
 import type {
   LucidSyncEntity,
   LucidSyncMutation,
@@ -38,6 +39,24 @@ describe('lucidTrainerSync', () => {
       entityType: 'preferences',
       entityKey: 'preferences',
       value: current.preferences,
+    };
+  }
+
+  function dreamAtlasEntity(
+    overlay: Partial<NonNullable<LucidTrainerState['dreamAtlas']>> = {}
+  ): Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> {
+    return {
+      entityType: 'dream_atlas',
+      entityKey: 'dream_atlas',
+      value: {
+        version: 1,
+        updatedAt: NOW + 20,
+        renamed: { 'sign:mirror': 'Miroir' },
+        hidden: ['sign:school'],
+        merges: { 'sign:ghost': 'sign:mirror' },
+        deleted: ['sign:gone'],
+        ...overlay,
+      },
     };
   }
 
@@ -134,6 +153,21 @@ describe('lucidTrainerSync', () => {
     expect(created).toMatchObject({
       entityType: 'dream_sign',
       entityKey: 'sign:mirror',
+      payload: { entity },
+    });
+  });
+
+  it('serializes the dream atlas overlay as a singleton sync entity', () => {
+    const entity = dreamAtlasEntity();
+    const ids = ['atlas-mutation', 'atlas-request'];
+    const created = createLucidTrainerMutation(
+      { userScope: SCOPE, operation: 'upsert', entity },
+      { now: () => NOW, idFactory: () => ids.shift()! }
+    );
+
+    expect(created).toMatchObject({
+      entityType: 'dream_atlas',
+      entityKey: 'dream_atlas',
       payload: { entity },
     });
   });
@@ -426,6 +460,52 @@ describe('lucidTrainerSync', () => {
     );
   });
 
+  it('rejects a dream atlas payload that is not the singleton overlay', () => {
+    const entity = dreamAtlasEntity();
+    expect(
+      parseLucidRemoteEntityRecords([
+        {
+          entity_type: 'dream_atlas',
+          entity_key: 'dream_atlas',
+          revision: '3',
+          client_updated_at: new Date(NOW).toISOString(),
+          entity,
+        },
+      ])
+    ).toEqual([
+      expect.objectContaining({
+        entityType: 'dream_atlas',
+        entityKey: 'dream_atlas',
+        entity,
+      }),
+    ]);
+    expect(() =>
+      parseLucidRemoteEntityRecords([
+        {
+          entity_type: 'dream_atlas',
+          entity_key: 'atlas',
+          revision: '3',
+          client_updated_at: new Date(NOW).toISOString(),
+          deleted_at: new Date(NOW).toISOString(),
+        },
+      ])
+    ).toThrow('Invalid Lucid Trainer pull entity');
+    expect(() =>
+      parseLucidRemoteEntityRecords([
+        {
+          entity_type: 'dream_atlas',
+          entity_key: 'dream_atlas',
+          revision: '3',
+          client_updated_at: new Date(NOW).toISOString(),
+          entity: {
+            ...entity,
+            value: { ...entity.value, extra: true } as unknown as typeof entity.value,
+          },
+        },
+      ])
+    ).toThrow('Invalid Lucid Trainer pull entity');
+  });
+
   it('merges remote progress, preserves local work and rebases the upload', async () => {
     const current = state();
     const localProgress = {
@@ -543,6 +623,178 @@ describe('lucidTrainerSync', () => {
       now: () => NOW + 40,
     });
     expect(store.state.experiments).toHaveLength(0);
+  });
+
+  it('pulls a remote dream atlas overlay without resetting local trainer data', async () => {
+    const current = state();
+    current.experiments = [
+      {
+        id: 'keep-experiment',
+        occurredAt: NOW,
+        technique: 'mild',
+        preparationMinutes: 5,
+        result: 'none',
+        lucidityLevel: 0,
+        recallLevel: 2,
+        sleepQuality: 3,
+        factors: [],
+        updatedAt: NOW + 5,
+      },
+    ];
+    const store = memoryAdapter(current);
+    const remote = dreamAtlasEntity();
+
+    const result = await pullLucidTrainerRemoteState(SCOPE, {
+      storage: store.adapter,
+      transport: {
+        pull: async () => ({
+          entities: [
+            {
+              entity_type: 'dream_atlas',
+              entity_key: 'dream_atlas',
+              revision: '8',
+              client_updated_at: new Date(remote.value.updatedAt).toISOString(),
+              entity: remote,
+            },
+          ],
+        }),
+      },
+      isNetworkReachable: async () => true,
+      now: () => NOW + 30,
+    });
+
+    expect(result).toMatchObject({ received: 1, merged: 1, reset: false, deleted: 0 });
+    expect(store.state.dreamAtlas).toEqual(remote.value);
+    expect(store.state.experiments).toHaveLength(1);
+    expect(store.state.onboarding).toEqual(current.onboarding);
+    expect(store.state.preferences.cloudSyncEnabled).toBe(true);
+  });
+
+  it('applies a dream atlas tombstone as an empty overlay and never as a global reset', async () => {
+    const current = state();
+    current.dreamAtlas = dreamAtlasEntity().value;
+    current.experiments = [
+      {
+        id: 'keep-experiment',
+        occurredAt: NOW,
+        technique: 'ssild',
+        preparationMinutes: 8,
+        result: 'pre_lucid',
+        lucidityLevel: 2,
+        recallLevel: 3,
+        sleepQuality: 4,
+        factors: [],
+        updatedAt: NOW + 5,
+      },
+    ];
+    const store = memoryAdapter(current, [
+      mutation(dreamAtlasEntity(), { id: 'stale-atlas-upload' }),
+    ]);
+    const deletedAt = NOW + 40;
+
+    const result = await pullLucidTrainerRemoteState(SCOPE, {
+      storage: store.adapter,
+      transport: {
+        pull: async () => ({
+          entities: [
+            {
+              entity_type: 'dream_atlas',
+              entity_key: 'dream_atlas',
+              revision: '11',
+              client_updated_at: new Date(deletedAt).toISOString(),
+              deleted_at: new Date(deletedAt).toISOString(),
+            },
+          ],
+        }),
+      },
+      isNetworkReachable: async () => true,
+      now: () => deletedAt + 1,
+    });
+
+    expect(result).toMatchObject({ reset: false, merged: 0, deleted: 1, received: 1 });
+    expect(store.state.dreamAtlas).toEqual(createEmptyLucidDreamAtlasOverlay(deletedAt));
+    expect(store.state.experiments).toHaveLength(1);
+    expect(store.state.preferences.cloudSyncEnabled).toBe(true);
+    expect(store.queue).toEqual([]);
+  });
+
+  it('keeps a newer local dream atlas overlay against an older remote tombstone', async () => {
+    const current = state();
+    current.dreamAtlas = dreamAtlasEntity({
+      updatedAt: NOW + 50,
+      renamed: { 'sign:mirror': 'Local' },
+    }).value;
+    const store = memoryAdapter(current);
+    const ids = ['atlas-rebase', 'atlas-request'];
+
+    await pullLucidTrainerRemoteState(SCOPE, {
+      storage: store.adapter,
+      transport: {
+        pull: async () => ({
+          entities: [
+            {
+              entity_type: 'dream_atlas',
+              entity_key: 'dream_atlas',
+              revision: '6',
+              client_updated_at: new Date(NOW + 10).toISOString(),
+              deleted_at: new Date(NOW + 10).toISOString(),
+            },
+          ],
+        }),
+      },
+      isNetworkReachable: async () => true,
+      now: () => NOW + 60,
+      idFactory: () => ids.shift()!,
+    });
+
+    expect(store.state.dreamAtlas?.renamed).toEqual({ 'sign:mirror': 'Local' });
+    expect(store.queue[0]).toMatchObject({
+      operation: 'upsert',
+      entityType: 'dream_atlas',
+      baseRevision: '6',
+      id: 'atlas-rebase',
+    });
+  });
+
+  it('resolves dream atlas conflicts with last-write-wins during replay', async () => {
+    const current = state();
+    const local = dreamAtlasEntity({
+      updatedAt: NOW + 20,
+      renamed: { 'sign:mirror': 'Local' },
+      hidden: [],
+      merges: {},
+      deleted: [],
+    });
+    const remote = dreamAtlasEntity({
+      updatedAt: NOW + 30,
+      renamed: { 'sign:school': 'Remote' },
+      hidden: ['sign:mirror'],
+      merges: {},
+      deleted: ['sign:gone'],
+    });
+    current.dreamAtlas = local.value;
+    const queued = mutation(local);
+    const store = memoryAdapter(current, [queued]);
+
+    const result = await replayLucidTrainerQueue(SCOPE, {
+      storage: store.adapter,
+      transport: {
+        push: async () => [
+          {
+            mutationId: queued.id,
+            status: 'conflict',
+            remoteEntity: remote,
+            remoteRevision: 'revision-atlas',
+          },
+        ],
+      },
+      isNetworkReachable: async () => true,
+      now: () => NOW + 40,
+    });
+
+    expect(result.conflicts).toBe(1);
+    expect(store.state.dreamAtlas).toEqual(remote.value);
+    expect(store.queue).toEqual([]);
   });
 
   it('treats singleton tombstones as a durable full reset and clears stale uploads', async () => {

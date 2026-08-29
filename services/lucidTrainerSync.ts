@@ -293,6 +293,7 @@ const LUCID_REMOTE_ENTITY_TYPES = [
   'reality_check',
   'weekly_review',
   'dream_sign',
+  'dream_atlas',
 ] as const satisfies readonly LucidSyncEntity['entityType'][];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -327,6 +328,11 @@ function parseRemoteRecord(value: unknown): LucidRemoteEntityRecord | null {
     !/^[1-9]\d*$/.test(revision) ||
     clientUpdatedAt === null
   ) {
+    return null;
+  }
+  // Dream atlas is a durable singleton. A mismatched key is not a collection
+  // row and must never be interpreted as a full-account reset.
+  if (entityType === 'dream_atlas' && entityKey !== 'dream_atlas') {
     return null;
   }
 
