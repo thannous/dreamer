@@ -93,6 +93,17 @@ describe('Journal filters - analyzedOnly / exploredOnly', () => {
     expect(result.map((d) => d.id)).toEqual([1]);
   });
 
+  it('returns only analyzed and unexplored dreams when needsExplorationOnly is true', () => {
+    const result = applyFilters(dreams, { needsExplorationOnly: true });
+    expect(result.map((d) => d.id)).toEqual([2]);
+  });
+
+  it('applies analysisStatus unanalyzed/analyzed/explored strictly', () => {
+    expect(applyFilters(dreams, { analysisStatus: 'unanalyzed' }).map((d) => d.id)).toEqual([3]);
+    expect(applyFilters(dreams, { analysisStatus: 'analyzed' }).map((d) => d.id)).toEqual([1, 2]);
+    expect(applyFilters(dreams, { analysisStatus: 'explored' }).map((d) => d.id)).toEqual([1]);
+  });
+
   it('searches remembered dream metadata through localized labels', () => {
     const result = applyFilters([
       makeDream({

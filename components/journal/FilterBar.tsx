@@ -9,13 +9,14 @@ import { ScrollView, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
-type FilterItemId = 'theme' | 'date' | 'favorites' | 'analyzed' | 'explored' | 'more';
+type FilterItemId = 'all' | 'favorites' | 'to_deepen' | 'theme' | 'date' | 'analyzed' | 'explored' | 'more';
 
 export type FilterBarItem = {
   id: FilterItemId;
   active: boolean;
   onPress: () => void;
   label?: string;
+  accessibilityLabel?: string;
   testID?: string;
 };
 
@@ -40,6 +41,14 @@ function CategoryIcon({ size = 16, color = '#FFFFFF' }) {
       />
     </Svg>
   );
+}
+
+function AllIcon({ size = 16, color = '#FFFFFF' }) {
+  return <IconSymbol name="rectangle.stack.fill" size={size} color={color} />;
+}
+
+function ToDeepenIcon({ size = 16, color = '#FFFFFF' }) {
+  return <IconSymbol name="sparkles" size={size} color={color} />;
 }
 
 function AnalyzedIcon({ size = 16, color = '#FFFFFF' }) {
@@ -116,12 +125,16 @@ function getDateRangeBadge(
 
 const renderIcon = (id: FilterItemId, color: string) => {
   switch (id) {
+    case 'all':
+      return <AllIcon size={16} color={color} />;
     case 'theme':
       return <CategoryIcon size={16} color={color} />;
     case 'date':
       return <CalendarIcon size={16} color={color} />;
     case 'favorites':
       return <FavoriteIcon size={16} color={color} />;
+    case 'to_deepen':
+      return <ToDeepenIcon size={16} color={color} />;
     case 'analyzed':
       return <AnalyzedIcon size={16} color={color} />;
     case 'explored':
@@ -131,14 +144,19 @@ const renderIcon = (id: FilterItemId, color: string) => {
   }
 };
 
-const getAccessibilityLabel = (id: FilterItemId, t: (key: string) => string) => {
+const getAccessibilityLabel = (id: FilterItemId, t: (key: string) => string, explicitLabel?: string) => {
+  if (explicitLabel) return explicitLabel;
   switch (id) {
+    case 'all':
+      return t('journal.filter.accessibility.all');
     case 'theme':
       return t('journal.filter.accessibility.theme');
     case 'date':
       return t('journal.filter.accessibility.date');
     case 'favorites':
       return t('journal.filter.accessibility.favorites');
+    case 'to_deepen':
+      return t('journal.filter.accessibility.to_deepen');
     case 'analyzed':
       return t('journal.filter.accessibility.analyzed');
     case 'explored':
@@ -198,7 +216,7 @@ export const FilterBar = memo(function FilterBar({
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
-  const hasActiveFilters = items.some((item) => item.active);
+  const hasActiveFilters = items.some((item) => item.id !== 'all' && item.active);
   const dateRangeBadge = getDateRangeBadge(dateRange, t);
   const iconColor = noctalia.text.primary;
   const activeIconColor = noctalia.action.primaryText;
@@ -230,7 +248,7 @@ export const FilterBar = memo(function FilterBar({
               key={item.id}
               isActive={isActive}
               onPress={item.onPress}
-              accessibilityLabel={getAccessibilityLabel(item.id, t)}
+              accessibilityLabel={getAccessibilityLabel(item.id, t, item.accessibilityLabel)}
               testID={item.testID}
             >
               {renderIcon(item.id, color)}

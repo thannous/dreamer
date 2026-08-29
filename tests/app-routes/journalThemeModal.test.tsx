@@ -92,14 +92,16 @@ jest.doMock('@/components/journal/FilterBar', () => ({
   FilterBar: function MockFilterBar({
     items,
   }: {
-    items: { id: string; onPress: () => void }[];
+    items: { id: string; onPress: () => void; testID?: string }[];
   }) {
-    const themeItem = items.find((item) => item.id === 'theme');
-    const advancedItem = items.find((item) => item.id === 'more') ?? themeItem;
     return (
-      <button data-testid="open-theme-modal" onClick={advancedItem?.onPress}>
-        Open filters
-      </button>
+      <div>
+        {items.map((item) => (
+          <button key={item.id} data-testid={item.testID} onClick={item.onPress}>
+            {item.id}
+          </button>
+        ))}
+      </div>
     );
   },
 }));
@@ -325,7 +327,7 @@ describe('Journal advanced filter sheet', () => {
 
     fireEvent.click(screen.getByTestId('btn.filterMore'));
 
-    expect(screen.getAllByTestId('icon-checkmark')).toHaveLength(1);
+    expect(screen.getAllByTestId('icon-checkmark').length).toBeGreaterThan(0);
   });
 
   it('[E] Given a theme is selected When selecting it again Then it clears the selection', () => {
@@ -340,6 +342,30 @@ describe('Journal advanced filter sheet', () => {
     fireEvent.click(screen.getByText('Mystique'));
 
     // Then
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
+    expect(screen.queryAllByTestId('icon-checkmark')).toHaveLength(0);
+  });
+
+  it('keeps exactly three quick filters and a separate advanced action', () => {
+    render(<JournalListScreen />);
+
+    expect(screen.getByTestId('btn.filterAll')).toBeTruthy();
+    expect(screen.getByTestId('btn.filterFavorites')).toBeTruthy();
+    expect(screen.getByTestId('btn.filterToDeepen')).toBeTruthy();
+    expect(screen.getByTestId('btn.filterMore')).toBeTruthy();
+    expect(screen.queryByTestId('btn.filterAnalyzed')).toBeNull();
+    expect(screen.queryByTestId('btn.filterExplored')).toBeNull();
+  });
+
+  it('resets advanced filters when Tous is pressed', () => {
+    render(<JournalListScreen />);
+
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
+    fireEvent.click(screen.getByText('Mystique'));
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
+    expect(screen.getAllByTestId('icon-checkmark').length).toBeGreaterThan(0);
+
+    fireEvent.click(screen.getByTestId('btn.filterAll'));
     fireEvent.click(screen.getByTestId('btn.filterMore'));
     expect(screen.queryAllByTestId('icon-checkmark')).toHaveLength(0);
   });

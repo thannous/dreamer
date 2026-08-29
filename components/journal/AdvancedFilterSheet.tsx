@@ -4,6 +4,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import type { JournalAnalysisStatusFilter } from '@/lib/dreamFilters';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { TID } from '@/lib/testIDs';
 import type { DreamTheme, DreamType } from '@/lib/types';
@@ -31,15 +32,27 @@ type AdvancedFilterSheetProps = {
   selectedTheme: DreamTheme | null;
   selectedDreamType: DreamType | null;
   dateRange: { start: Date | null; end: Date | null };
+  rememberedOnly: boolean;
+  recurringOnly: boolean;
+  analysisStatus: JournalAnalysisStatusFilter | null;
   onThemeSelect: (theme: DreamTheme) => void;
   onDreamTypeSelect: (dreamType: DreamType) => void;
   onDateRangeChange: (start: Date | null, end: Date | null) => void;
+  onRememberedToggle: () => void;
+  onRecurringToggle: () => void;
+  onAnalysisStatusChange: (status: JournalAnalysisStatusFilter | null) => void;
   sortOrder?: JournalSortOrder;
   onSortOrderChange?: (order: JournalSortOrder) => void;
 };
 
 export type JournalSortOrder = 'newest' | 'oldest';
 const SORT_ORDERS: JournalSortOrder[] = ['newest', 'oldest'];
+const ANALYSIS_STATUS_OPTIONS: (JournalAnalysisStatusFilter | 'all')[] = [
+  'all',
+  'unanalyzed',
+  'analyzed',
+  'explored',
+];
 
 export function AdvancedFilterSheet({
   visible,
@@ -51,17 +64,24 @@ export function AdvancedFilterSheet({
   selectedTheme,
   selectedDreamType,
   dateRange,
+  rememberedOnly,
+  recurringOnly,
+  analysisStatus,
   onThemeSelect,
   onDreamTypeSelect,
   onDateRangeChange,
+  onRememberedToggle,
+  onRecurringToggle,
+  onAnalysisStatusChange,
   sortOrder = 'newest',
   onSortOrderChange,
 }: AdvancedFilterSheetProps) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
+  const selectableDreamTypes = availableDreamTypes.filter((dreamType) => dreamType !== 'Recurring Dream');
 
-  const renderOption = <T extends DreamTheme | DreamType | JournalSortOrder>({
+  const renderOption = <T extends string>({
     id,
     label,
     selected,
@@ -154,9 +174,9 @@ export function AdvancedFilterSheet({
           <Text className="font-sans-bold text-[15px] text-ivory">
             {t('journal.filter_sheet.type_section')}
           </Text>
-          {availableDreamTypes.length > 0 ? (
+          {selectableDreamTypes.length > 0 ? (
             <View className="flex-row flex-wrap gap-2">
-              {availableDreamTypes.map((dreamType) =>
+              {selectableDreamTypes.map((dreamType) =>
                 renderOption({
                   id: dreamType,
                   label: getDreamTypeLabel(dreamType, t) ?? dreamType,
@@ -170,6 +190,60 @@ export function AdvancedFilterSheet({
               {t('journal.filter_sheet.empty_types')}
             </Text>
           )}
+        </View>
+
+        <View className="gap-2">
+          <Text className="font-sans-bold text-[15px] text-ivory">
+            {t('journal.filter_sheet.memory_section')}
+          </Text>
+          <View className="flex-row flex-wrap gap-2">
+            {renderOption({
+              id: 'remembered',
+              label: t('journal.filter.remembered'),
+              selected: rememberedOnly,
+              onPress: () => onRememberedToggle(),
+            })}
+            {renderOption({
+              id: 'recurring',
+              label: t('journal.filter.recurring'),
+              selected: recurringOnly,
+              onPress: () => onRecurringToggle(),
+            })}
+          </View>
+        </View>
+
+        <View className="gap-2">
+          <Text className="font-sans-bold text-[15px] text-ivory">
+            {t('journal.filter_sheet.status_section')}
+          </Text>
+          <View className="flex-row flex-wrap gap-2">
+            {ANALYSIS_STATUS_OPTIONS.map((status) => {
+              const selected = status === 'all' ? analysisStatus == null : analysisStatus === status;
+              const testID = status === 'all'
+                ? TID.Button.FilterStatusAll
+                : status === 'unanalyzed'
+                  ? TID.Button.FilterStatusUnanalyzed
+                  : status === 'analyzed'
+                    ? TID.Button.FilterStatusAnalyzed
+                    : TID.Button.FilterStatusExplored;
+              return (
+                <PressableScale
+                  key={status}
+                  className={`${OPTION_CLASS} ${selected ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'}`}
+                  onPress={() => onAnalysisStatusChange(status === 'all' ? null : status)}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected }}
+                  testID={testID}
+                >
+                  <Text
+                    className={`font-sans-medium text-[14px] ${selected ? 'text-on-champagne' : 'text-ivory'}`}
+                  >
+                    {t(`journal.filter_sheet.status.${status}`)}
+                  </Text>
+                </PressableScale>
+              );
+            })}
+          </View>
         </View>
 
         {onSortOrderChange ? (

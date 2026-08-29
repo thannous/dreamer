@@ -27,7 +27,14 @@ jest.mock('@/components/ui/BottomSheet', () => {
 });
 jest.mock('@/components/journal/DateRangePicker', () => {
   const React = require('react');
-  return { DateRangePicker: () => React.createElement('div', { 'data-testid': 'date-range' }) };
+  return {
+    DateRangePicker: ({ onClose }: { onClose: () => void }) =>
+      React.createElement(
+        'button',
+        { type: 'button', onClick: onClose, 'data-testid': 'date-range-cancel' },
+        'common.cancel',
+      ),
+  };
 });
 jest.mock('@/components/ui/icon-symbol', () => {
   const React = require('react');
@@ -53,9 +60,15 @@ const baseProps = {
   selectedTheme: null,
   selectedDreamType: null,
   dateRange: { start: null, end: null },
+  rememberedOnly: false,
+  recurringOnly: false,
+  analysisStatus: null,
   onThemeSelect: jest.fn(),
   onDreamTypeSelect: jest.fn(),
   onDateRangeChange: jest.fn(),
+  onRememberedToggle: jest.fn(),
+  onRecurringToggle: jest.fn(),
+  onAnalysisStatusChange: jest.fn(),
 };
 
 describe('AdvancedFilterSheet sort order', () => {
@@ -76,5 +89,47 @@ describe('AdvancedFilterSheet sort order', () => {
     expect(screen.getByTestId(TID.Component.JournalSortOptions)).toBeTruthy();
     fireEvent.click(screen.getByText('journal.filter_sheet.sort.oldest'));
     expect(onSortOrderChange).toHaveBeenCalledWith('oldest');
+  });
+
+  it('keeps Recurring Dream out of the type section and still offers a dedicated recurrence toggle', () => {
+    render(
+      <AdvancedFilterSheet
+        {...baseProps}
+        availableDreamTypes={['Symbolic Dream', 'Recurring Dream']}
+      />
+    );
+
+    expect(screen.getByText('journal.filter.recurring')).toBeTruthy();
+    expect(screen.queryByText('Recurring Dream')).toBeNull();
+    expect(screen.getByText('dream.type.symbolic')).toBeTruthy();
+  });
+
+  it('forwards DateRangePicker cancel to onClose', () => {
+    const onClose = jest.fn();
+    render(<AdvancedFilterSheet {...baseProps} onClose={onClose} />);
+    fireEvent.click(screen.getByText('common.cancel'));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('exposes memory, recurrence and status filters', () => {
+    const onRememberedToggle = jest.fn();
+    const onRecurringToggle = jest.fn();
+    const onAnalysisStatusChange = jest.fn();
+    render(
+      <AdvancedFilterSheet
+        {...baseProps}
+        onRememberedToggle={onRememberedToggle}
+        onRecurringToggle={onRecurringToggle}
+        onAnalysisStatusChange={onAnalysisStatusChange}
+      />
+    );
+
+    fireEvent.click(screen.getByText('journal.filter.remembered'));
+    fireEvent.click(screen.getByText('journal.filter.recurring'));
+    fireEvent.click(screen.getByTestId(TID.Button.FilterStatusUnanalyzed));
+
+    expect(onRememberedToggle).toHaveBeenCalledTimes(1);
+    expect(onRecurringToggle).toHaveBeenCalledTimes(1);
+    expect(onAnalysisStatusChange).toHaveBeenCalledWith('unanalyzed');
   });
 });

@@ -18,10 +18,18 @@ const emptyStateKeys = [
 ] as const;
 
 const filterAccessibilityKeys = [
+  'journal.filter.all',
+  'journal.filter.favorites',
+  'journal.filter.to_deepen',
+  'journal.filter.remembered',
+  'journal.filter.recurring',
   'journal.filter.analyzed',
   'journal.filter.explored',
   'journal.filter.more',
   'journal.filter.more_count',
+  'journal.filter.accessibility.all',
+  'journal.filter.accessibility.favorites',
+  'journal.filter.accessibility.to_deepen',
   'journal.filter.accessibility.analyzed',
   'journal.filter.accessibility.explored',
   'journal.filter.accessibility.more',
@@ -32,6 +40,12 @@ const advancedFilterSheetKeys = [
   'journal.filter_sheet.title',
   'journal.filter_sheet.theme_section',
   'journal.filter_sheet.type_section',
+  'journal.filter_sheet.memory_section',
+  'journal.filter_sheet.status_section',
+  'journal.filter_sheet.status.all',
+  'journal.filter_sheet.status.unanalyzed',
+  'journal.filter_sheet.status.analyzed',
+  'journal.filter_sheet.status.explored',
   'journal.filter_sheet.empty_themes',
   'journal.filter_sheet.empty_types',
 ] as const;

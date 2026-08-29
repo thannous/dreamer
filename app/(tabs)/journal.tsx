@@ -4,14 +4,12 @@ import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal/AdvancedFilterSheet';
 import { AtlasDreamRow } from '@/components/journal/AtlasDreamRow';
-import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
 import { FilterBar } from '@/components/journal/FilterBar';
 import { PressableScale } from '@/components/motion';
 import { NoctaliaScreenHeader, type NoctaliaHeaderChip } from '@/components/NoctaliaScreenHeader';
 import { SearchBar } from '@/components/ui/SearchBar';
-import { BottomSheet } from '@/components/ui/BottomSheet';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -29,9 +27,9 @@ import { useJournalLayoutPreference } from '@/hooks/useJournalLayoutPreference';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
-import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
-import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
-import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
+import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate, type JournalAnalysisStatusFilter, type JournalQuickFilter } from '@/lib/dreamFilters';
+import { getDreamTypeLabel } from '@/lib/dreamLabels';
+import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import { getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
 import { trackProductEvent } from '@/lib/analytics';
 import { TID } from '@/lib/testIDs';
@@ -41,7 +39,6 @@ import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Platform,
-  Pressable,
   Text,
   type TextInput,
   View,
@@ -61,11 +58,6 @@ const PREFETCH_MAX_PER_FLUSH = 8;
 const DESKTOP_MAX_WIDTH_STYLE = { alignSelf: 'center', width: '100%', maxWidth: LAYOUT_MAX_WIDTH } as const;
 const LIST_CONTENT_STYLE = { paddingHorizontal: ThemeLayout.spacing.md } as const;
 const LIST_CONTENT_ATLAS_STYLE = { paddingHorizontal: ThemeLayout.spacing.lg } as const;
-
-const MODAL_OPTION_CLASS = 'mb-2 rounded-sm border px-4 py-3';
-const MODAL_OPTION_TEXT_CLASS = 'text-center font-sans-medium text-[16px] capitalize';
-const MODAL_CHECK_BADGE_CLASS =
-  'absolute right-4 top-1/2 h-[22px] w-[22px] -translate-y-[11px] items-center justify-center rounded-full bg-ink-raised';
 
 const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
   // Supabase thumbnails use a `-thumb` filename suffix (see `services/supabaseDreamService.ts`).
@@ -97,7 +89,6 @@ export default function JournalListScreen() {
   const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
   const useAtlasHeader = !isDesktopLayout && !isTabletLayout;
   const isAtlasLayout = journalLayoutPreference === 'compact' && !isDesktopLayout && !isTabletLayout;
-  const isCompactJournalFilters = !isDesktopLayout && !isTabletLayout;
   const desktopColumns = width >= 1440 ? 4 : 3;
   const navigationLayout = getBottomNavigationLayout(width, height);
 
@@ -119,11 +110,9 @@ export default function JournalListScreen() {
     start: null,
     end: null,
   });
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [showAnalyzedOnly, setShowAnalyzedOnly] = useState(false);
-  const [showExploredOnly, setShowExploredOnly] = useState(false);
+  const [quickFilter, setQuickFilter] = useState<JournalQuickFilter>('all');
   const [showRememberedOnly, setShowRememberedOnly] = useState(false);
-  const [showNeedsExplorationOnly, setShowNeedsExplorationOnly] = useState(false);
+  const [analysisStatus, setAnalysisStatus] = useState<JournalAnalysisStatusFilter | null>(null);
   const [sortOrder, setSortOrder] = useState<JournalSortOrder>('newest');
   const [showAtlasSearch, setShowAtlasSearch] = useState(false);
 
@@ -149,14 +138,12 @@ export default function JournalListScreen() {
   }, [focusSearchInput, searchQuery.length, showAtlasSearch]);
 
   // Modal states
-  const [showThemeModal, setShowThemeModal] = useState(false);
-  const [showDateModal, setShowDateModal] = useState(false);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   useEffect(() => {
-    if (showThemeModal || showDateModal || showAdvancedFilters) {
+    if (showAdvancedFilters) {
       blurActiveElement();
     }
-  }, [showAdvancedFilters, showDateModal, showThemeModal]);
+  }, [showAdvancedFilters]);
 
   const prefetchedImageUrisRef = useRef(new Set<string>());
   const isNavigatingRef = useRef(false);
@@ -222,10 +209,10 @@ export default function JournalListScreen() {
       dreamType: selectedDreamType,
       startDate: dateRange.start,
       endDate: dateRange.end,
-      favoritesOnly: showFavoritesOnly,
-      analyzedOnly: showAnalyzedOnly,
-      exploredOnly: showExploredOnly,
+      favoritesOnly: quickFilter === 'favorites',
       rememberedOnly: showRememberedOnly,
+      needsExplorationOnly: quickFilter === 'to_deepen',
+      analysisStatus,
     }, {
       searchOptions: {
         dreamTypeLabelResolver: (dreamType) => getDreamTypeLabel(dreamType, t),
@@ -233,9 +220,7 @@ export default function JournalListScreen() {
       },
     });
 
-    const orderedDreams = showNeedsExplorationOnly
-      ? baseDreams.filter((dream) => isDreamAnalyzed(dream) && !isDreamExplored(dream))
-      : baseDreams;
+    const orderedDreams = baseDreams;
 
     // Stored order is newest-first; only the opposite order needs a sort.
     return sortOrder === 'oldest' ? sortDreamsByDate(orderedDreams, true) : orderedDreams;
@@ -245,11 +230,9 @@ export default function JournalListScreen() {
     selectedTheme,
     selectedDreamType,
     dateRange,
-    showFavoritesOnly,
-    showAnalyzedOnly,
-    showExploredOnly,
+    quickFilter,
     showRememberedOnly,
-    showNeedsExplorationOnly,
+    analysisStatus,
     resolveDreamMemorySearchLabel,
     t,
     sortOrder,
@@ -297,11 +280,9 @@ export default function JournalListScreen() {
     selectedTheme,
     selectedDreamType,
     dateRange,
-    showFavoritesOnly,
-    showAnalyzedOnly,
-    showExploredOnly,
+    quickFilter,
     showRememberedOnly,
-    showNeedsExplorationOnly,
+    analysisStatus,
   ]);
 
   useFocusEffect(
@@ -315,62 +296,42 @@ export default function JournalListScreen() {
     setSelectedTheme(null);
     setSelectedDreamType(null);
     setDateRange({ start: null, end: null });
-    setShowFavoritesOnly(false);
-    setShowAnalyzedOnly(false);
-    setShowExploredOnly(false);
+    setQuickFilter('all');
     setShowRememberedOnly(false);
-    setShowNeedsExplorationOnly(false);
+    setAnalysisStatus(null);
     setSortOrder('newest');
   }, []);
 
+  const handleQuickFilterPress = useCallback((next: JournalQuickFilter) => {
+    if (next === 'all') {
+      handleClearFilters();
+      return;
+    }
+    setQuickFilter((current) => (current === next ? 'all' : next));
+  }, [handleClearFilters]);
+
   const toggleThemeFilter = useCallback((theme: DreamTheme) => {
-    setSelectedTheme(theme === selectedTheme ? null : theme);
-  }, [selectedTheme]);
+    setSelectedTheme((current) => (theme === current ? null : theme));
+  }, []);
 
   const toggleDreamTypeFilter = useCallback((dreamType: DreamType) => {
     setSelectedDreamType((current) => (dreamType === current ? null : dreamType));
   }, []);
 
-  const handleThemeSelect = useCallback((theme: DreamTheme) => {
-    toggleThemeFilter(theme);
-    setShowThemeModal(false);
-  }, [toggleThemeFilter]);
-
-  const handleDreamTypeSelect = useCallback((dreamType: DreamType) => {
-    toggleDreamTypeFilter(dreamType);
-    setShowThemeModal(false);
-  }, [toggleDreamTypeFilter]);
-
   const handleDateRangeChange = useCallback((start: Date | null, end: Date | null) => {
     setDateRange({ start, end });
-  }, []);
-
-  const handleFavoritesToggle = useCallback(() => {
-    setShowFavoritesOnly((prev) => !prev);
-  }, []);
-
-  const handleAnalyzedToggle = useCallback(() => {
-    setShowAnalyzedOnly((prev) => !prev);
-  }, []);
-
-  const handleExploredToggle = useCallback(() => {
-    setShowExploredOnly((prev) => !prev);
   }, []);
 
   const handleRememberedToggle = useCallback(() => {
     setShowRememberedOnly((prev) => !prev);
   }, []);
 
-  const handleNeedsExplorationToggle = useCallback(() => {
-    setShowNeedsExplorationOnly((prev) => !prev);
-  }, []);
-
   const handleRecurringToggle = useCallback(() => {
     setSelectedDreamType((current) => (current === 'Recurring Dream' ? null : 'Recurring Dream'));
   }, []);
 
-  const handleNightmareToggle = useCallback(() => {
-    setSelectedDreamType((current) => (current === 'Nightmare' ? null : 'Nightmare'));
+  const handleAnalysisStatusChange = useCallback((status: JournalAnalysisStatusFilter | null) => {
+    setAnalysisStatus(status);
   }, []);
 
   const handleDreamPress = useCallback((dreamId: number) => {
@@ -561,27 +522,18 @@ export default function JournalListScreen() {
     selectedDreamType ||
     dateRange.start ||
     dateRange.end ||
-    showFavoritesOnly ||
-    showAnalyzedOnly ||
-    showExploredOnly ||
+    quickFilter !== 'all' ||
     showRememberedOnly ||
-    showNeedsExplorationOnly
+    analysisStatus
   );
-  const hasActiveNonSearchFilter = !!(
+  const hasActiveAdvancedFilter = !!(
     selectedTheme ||
     selectedDreamType ||
     dateRange.start ||
     dateRange.end ||
-    showFavoritesOnly ||
-    showAnalyzedOnly ||
-    showExploredOnly ||
     showRememberedOnly ||
-    showNeedsExplorationOnly
+    analysisStatus
   );
-  const advancedFilterCount = Number(Boolean(selectedTheme)) + Number(Boolean(selectedDreamType)) + Number(Boolean(dateRange.start || dateRange.end));
-  const advancedFilterLabel = advancedFilterCount > 0
-    ? t('journal.filter.more_count', { count: advancedFilterCount })
-    : t('journal.filter.more');
   const canStartRememberedDreamFromEmpty = dreams.length === 0 && !hasActiveFilter;
   const handleStartRememberedDreamFromEmpty = useCallback(() => {
     void trackProductEvent('empty_journal_remembered_cta_clicked', {
@@ -593,158 +545,61 @@ export default function JournalListScreen() {
     });
   }, []);
   const advancedFiltersMaxHeight = Math.min(760, Math.max(420, Math.round(height * 0.86)));
-  const journalFilterItems = useMemo(() => {
-    if (isCompactJournalFilters) {
-      return [
-        {
-          id: 'favorites' as const,
-          label: t('journal.filter.favorites'),
-          active: showFavoritesOnly,
-          onPress: handleFavoritesToggle,
-          testID: TID.Button.FilterFavorites,
-        },
-        {
-          id: 'analyzed' as const,
-          label: t('journal.filter.analyzed'),
-          active: showAnalyzedOnly,
-          onPress: handleAnalyzedToggle,
-          testID: TID.Button.FilterAnalyzed,
-        },
-        {
-          id: 'explored' as const,
-          label: t('journal.filter.explored'),
-          active: showExploredOnly,
-          onPress: handleExploredToggle,
-          testID: TID.Button.FilterExplored,
-        },
-        {
-          id: 'more' as const,
-          label: advancedFilterLabel,
-          active: advancedFilterCount > 0,
-          onPress: () => setShowAdvancedFilters(true),
-          testID: TID.Button.FilterMore,
-        },
-      ];
-    }
-
-    return [
-      {
-        id: 'theme' as const,
-        label: t('journal.filter.theme'),
-        active: selectedTheme !== null || selectedDreamType !== null,
-        onPress: () => setShowThemeModal(true),
-        testID: TID.Button.FilterTheme,
-      },
-      {
-        id: 'date' as const,
-        label: t('journal.filter.date'),
-        active: dateRange.start !== null || dateRange.end !== null,
-        onPress: () => setShowDateModal(true),
-        testID: TID.Button.FilterDate,
-      },
-      {
-        id: 'favorites' as const,
-        label: t('journal.filter.favorites'),
-        active: showFavoritesOnly,
-        onPress: handleFavoritesToggle,
-        testID: TID.Button.FilterFavorites,
-      },
-      {
-        id: 'analyzed' as const,
-        label: t('journal.filter.analyzed'),
-        active: showAnalyzedOnly,
-        onPress: handleAnalyzedToggle,
-        testID: TID.Button.FilterAnalyzed,
-      },
-      {
-        id: 'explored' as const,
-        label: t('journal.filter.explored'),
-        active: showExploredOnly,
-        onPress: handleExploredToggle,
-        testID: TID.Button.FilterExplored,
-      },
-    ];
-  }, [
-    advancedFilterCount,
-    advancedFilterLabel,
-    dateRange.end,
-    dateRange.start,
-    handleAnalyzedToggle,
-    handleExploredToggle,
-    handleFavoritesToggle,
-    isCompactJournalFilters,
-    selectedDreamType,
-    selectedTheme,
-    showAnalyzedOnly,
-    showExploredOnly,
-    showFavoritesOnly,
-    t,
-  ]);
-  const atlasQuickFilters = useMemo<NoctaliaHeaderChip[]>(() => [
+  const journalFilterItems = useMemo(() => [
     {
-      id: 'favorites',
+      id: 'all' as const,
+      label: t('journal.filter.all'),
+      active: quickFilter === 'all' && !hasActiveAdvancedFilter && !searchQuery,
+      onPress: () => handleQuickFilterPress('all'),
+      accessibilityLabel: t('journal.filter.accessibility.all'),
+      testID: TID.Button.FilterAll,
+    },
+    {
+      id: 'favorites' as const,
       label: t('journal.filter.favorites'),
-      icon: 'heart',
-      active: showFavoritesOnly,
-      onPress: handleFavoritesToggle,
+      active: quickFilter === 'favorites',
+      onPress: () => handleQuickFilterPress('favorites'),
       accessibilityLabel: t('journal.filter.accessibility.favorites'),
       testID: TID.Button.FilterFavorites,
     },
     {
-      id: 'remembered',
-      label: t('recording.activation_insight.signal.memory'),
-      icon: 'moon.stars.fill',
-      active: showRememberedOnly,
-      onPress: handleRememberedToggle,
-      accessibilityLabel: t('recording.activation_insight.signal.memory'),
+      id: 'to_deepen' as const,
+      label: t('journal.filter.to_deepen'),
+      active: quickFilter === 'to_deepen',
+      onPress: () => handleQuickFilterPress('to_deepen'),
+      accessibilityLabel: t('journal.filter.accessibility.to_deepen'),
+      testID: TID.Button.FilterToDeepen,
+    },
+  ], [handleQuickFilterPress, hasActiveAdvancedFilter, quickFilter, searchQuery, t]);
+  const atlasQuickFilters = useMemo<NoctaliaHeaderChip[]>(() => [
+    {
+      id: 'all',
+      label: t('journal.filter.all'),
+      icon: 'rectangle.stack.fill',
+      active: quickFilter === 'all' && !hasActiveAdvancedFilter && !searchQuery,
+      onPress: () => handleQuickFilterPress('all'),
+      accessibilityLabel: t('journal.filter.accessibility.all'),
+      testID: TID.Button.FilterAll,
     },
     {
-      id: 'to-explore',
-      label: t('journal.atlas.filter.to_explore'),
+      id: 'favorites',
+      label: t('journal.filter.favorites'),
+      icon: 'heart',
+      active: quickFilter === 'favorites',
+      onPress: () => handleQuickFilterPress('favorites'),
+      accessibilityLabel: t('journal.filter.accessibility.favorites'),
+      testID: TID.Button.FilterFavorites,
+    },
+    {
+      id: 'to_deepen',
+      label: t('journal.filter.to_deepen'),
       icon: 'sparkles',
-      active: showNeedsExplorationOnly,
-      onPress: handleNeedsExplorationToggle,
-      accessibilityLabel: t('journal.atlas.filter.to_explore'),
+      active: quickFilter === 'to_deepen',
+      onPress: () => handleQuickFilterPress('to_deepen'),
+      accessibilityLabel: t('journal.filter.accessibility.to_deepen'),
+      testID: TID.Button.FilterToDeepen,
     },
-    {
-      id: 'analyzed',
-      label: t('journal.filter.analyzed'),
-      icon: 'brain',
-      active: showAnalyzedOnly,
-      onPress: handleAnalyzedToggle,
-      accessibilityLabel: t('journal.filter.accessibility.analyzed'),
-      testID: TID.Button.FilterAnalyzed,
-    },
-    {
-      id: 'recurring',
-      label: t('journal.atlas.filter.recurring'),
-      icon: 'arrow.triangle.2.circlepath',
-      active: selectedDreamType === 'Recurring Dream',
-      onPress: handleRecurringToggle,
-      accessibilityLabel: t('journal.atlas.filter.recurring'),
-    },
-    {
-      id: 'nightmares',
-      label: t('journal.atlas.filter.nightmares'),
-      icon: 'moon.stars.fill',
-      active: selectedDreamType === 'Nightmare',
-      onPress: handleNightmareToggle,
-      accessibilityLabel: t('journal.atlas.filter.nightmares'),
-    },
-  ], [
-    handleAnalyzedToggle,
-    handleFavoritesToggle,
-    handleRememberedToggle,
-    handleNeedsExplorationToggle,
-    handleNightmareToggle,
-    handleRecurringToggle,
-    selectedDreamType,
-    showAnalyzedOnly,
-    showFavoritesOnly,
-    showRememberedOnly,
-    showNeedsExplorationOnly,
-    t,
-  ]);
+  ], [handleQuickFilterPress, hasActiveAdvancedFilter, quickFilter, searchQuery, t]);
   const renderEmptyState = useCallback(() => (
     <EmptyState
       hasActiveFilter={hasActiveFilter}
@@ -799,7 +654,7 @@ export default function JournalListScreen() {
                 icon: 'slider.horizontal.3',
                 onPress: () => setShowAdvancedFilters(true),
                 accessibilityLabel: t('journal.filter.accessibility.more'),
-                active: hasActiveNonSearchFilter,
+                active: hasActiveAdvancedFilter,
                 testID: TID.Button.FilterMore,
               },
             ]}
@@ -840,40 +695,35 @@ export default function JournalListScreen() {
                 onChangeText={setSearchQuery}
                 placeholder={t('journal.search_placeholder')}
               />
-              <FilterBar
-                items={journalFilterItems}
-                onClear={handleClearFilters}
-                dateRange={dateRange}
-                selectedTheme={selectedTheme}
-                selectedDreamType={selectedDreamType}
-                clearTestID={TID.Button.ClearFilters}
-              />
-              <PressableScale
-                onPress={handleRememberedToggle}
-                haptic="selection"
-                accessibilityRole="button"
-                accessibilityState={{ selected: showRememberedOnly }}
-                accessibilityLabel={t('recording.activation_insight.signal.memory')}
-                className={`flex-row items-center gap-1.5 self-start rounded-full border border-continuous px-3 py-2 ${
-                  showRememberedOnly ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
-                }`}
-              >
-                <IconSymbol
-                  name="moon.stars.fill"
-                  size={16}
-                  color={showRememberedOnly ? noctalia.action.primaryText : noctalia.text.primary}
-                />
-                <Text
-                  className={`font-sans-medium text-[14px] ${
-                    showRememberedOnly ? 'text-on-champagne' : 'text-ivory'
+              <View className="flex-row items-center gap-2">
+                <View className="min-w-0 flex-1">
+                  <FilterBar
+                    items={journalFilterItems}
+                    onClear={handleClearFilters}
+                    dateRange={dateRange}
+                    selectedTheme={selectedTheme}
+                    selectedDreamType={selectedDreamType}
+                    clearTestID={TID.Button.ClearFilters}
+                  />
+                </View>
+                <PressableScale
+                  onPress={() => setShowAdvancedFilters(true)}
+                  haptic="selection"
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: hasActiveAdvancedFilter }}
+                  accessibilityLabel={t('journal.filter.accessibility.more')}
+                  testID={TID.Button.FilterMore}
+                  className={`h-10 w-10 items-center justify-center rounded-full border border-continuous ${
+                    hasActiveAdvancedFilter ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
                   }`}
                 >
-                  {t('recording.activation_insight.signal.memory')}
-                </Text>
-                {showRememberedOnly ? (
-                  <IconSymbol name="checkmark" size={12} color={noctalia.action.primaryText} />
-                ) : null}
-              </PressableScale>
+                  <IconSymbol
+                    name="slider.horizontal.3"
+                    size={18}
+                    color={hasActiveAdvancedFilter ? noctalia.action.primaryText : noctalia.text.primary}
+                  />
+                </PressableScale>
+              </View>
             </View>
           </>
         )}
@@ -944,102 +794,18 @@ export default function JournalListScreen() {
         selectedTheme={selectedTheme}
         selectedDreamType={selectedDreamType}
         dateRange={dateRange}
+        rememberedOnly={showRememberedOnly}
+        recurringOnly={selectedDreamType === 'Recurring Dream'}
+        analysisStatus={analysisStatus}
         onThemeSelect={toggleThemeFilter}
         onDreamTypeSelect={toggleDreamTypeFilter}
         onDateRangeChange={handleDateRangeChange}
+        onRememberedToggle={handleRememberedToggle}
+        onRecurringToggle={handleRecurringToggle}
+        onAnalysisStatusChange={handleAnalysisStatusChange}
         sortOrder={sortOrder}
         onSortOrderChange={setSortOrder}
       />
-
-      {/* Theme Selection BottomSheet */}
-      <BottomSheet
-        visible={showThemeModal}
-        onClose={() => setShowThemeModal(false)}
-        style={{ backgroundColor: noctalia.surface.raised }}
-        testID={TID.Modal.Theme}
-      >
-        <Text className="mb-4 text-center font-sans-bold text-[20px] text-ivory">
-          {t('journal.theme_modal.title')}
-        </Text>
-        <Text className="mb-4 text-center font-sans text-[14px] text-ivory-muted">
-          {t('journal.detail.theme_label')}
-        </Text>
-        {availableThemes.map((theme) => (
-          <PressableScale
-            key={theme}
-            className={`${MODAL_OPTION_CLASS} ${
-              selectedTheme === theme ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
-            }`}
-            onPress={() => handleThemeSelect(theme)}
-          >
-            <Text
-              className={`${MODAL_OPTION_TEXT_CLASS} ${
-                selectedTheme === theme ? 'text-on-champagne' : 'text-ivory'
-              }`}
-            >
-              {getDreamThemeLabel(theme, t) ?? theme}
-            </Text>
-            {selectedTheme === theme && (
-              <View className="absolute inset-0">
-                <View className={MODAL_CHECK_BADGE_CLASS}>
-                  <IconSymbol name="checkmark" size={14} color={noctalia.accent.text} />
-                </View>
-              </View>
-            )}
-          </PressableScale>
-        ))}
-        <View style={{ height: 16 }} />
-        <Text className="mb-4 text-center font-sans text-[14px] text-ivory-muted">
-          {t('journal.detail.dream_type_label')}
-        </Text>
-        {availableDreamTypes.map((dreamType) => (
-          <PressableScale
-            key={dreamType}
-            className={`${MODAL_OPTION_CLASS} ${
-              selectedDreamType === dreamType ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
-            }`}
-            onPress={() => handleDreamTypeSelect(dreamType)}
-          >
-            <Text
-              className={`${MODAL_OPTION_TEXT_CLASS} ${
-                selectedDreamType === dreamType ? 'text-on-champagne' : 'text-ivory'
-              }`}
-            >
-              {getDreamTypeLabel(dreamType, t) ?? dreamType}
-            </Text>
-            {selectedDreamType === dreamType && (
-              <View className="absolute inset-0">
-                <View className={MODAL_CHECK_BADGE_CLASS}>
-                  <IconSymbol name="checkmark" size={14} color={noctalia.accent.text} />
-                </View>
-              </View>
-            )}
-          </PressableScale>
-        ))}
-        <Pressable
-          className="mt-4 py-3"
-          onPress={() => setShowThemeModal(false)}
-        >
-          <Text className="text-center font-sans-medium text-[16px] text-ivory-muted">
-            {t('common.cancel')}
-          </Text>
-        </Pressable>
-      </BottomSheet>
-
-      {/* Date Range BottomSheet */}
-      <BottomSheet
-        visible={showDateModal}
-        onClose={() => setShowDateModal(false)}
-        style={{ backgroundColor: noctalia.surface.raised }}
-        testID={TID.Modal.DateRange}
-      >
-        <DateRangePicker
-          startDate={dateRange.start}
-          endDate={dateRange.end}
-          onRangeChange={handleDateRangeChange}
-          onClose={() => setShowDateModal(false)}
-        />
-      </BottomSheet>
       </View>
     </ScrollPerfProvider>
   );
