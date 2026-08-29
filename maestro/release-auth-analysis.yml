@@ -64,26 +64,13 @@ onFlowComplete:
     id: btn.saveDream
 - extendedWaitUntil:
     visible:
-      id: "text.firstDream.title|text.analyzePromptTitle"
+      id: text.dreamDetail.actionTitle
     timeout: 90000
-- runFlow:
-    when:
-      visible:
-        id: text.firstDream.title
-    commands:
-      - tapOn:
-          id: btn.firstDream.analyze
-          retryTapIfNoChange: true
-- runFlow:
-    when:
-      visible:
-        id: text.analyzePromptTitle
-    commands:
-      - tapOn:
-          id: btn.analyzePrompt.analyze
-          retryTapIfNoChange: true
+- tapOn:
+    id: btn.dream.primaryCta
+    retryTapIfNoChange: true
 
-# Recording remains mounted during analysis; navigation away proves completion.
+# Save now lands on the dream detail; analysis is started from the primary CTA.
 - extendedWaitUntil:
     notVisible:
       id: screen.recording

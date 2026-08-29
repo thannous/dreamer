@@ -74,10 +74,10 @@ onFlowComplete:
     id: btn.saveDream
 - extendedWaitUntil:
     visible:
-      id: text.firstDream.title
+      id: text.dreamDetail.actionTitle
     timeout: 90000
 - tapOn:
-    id: btn.firstDream.analyze
+    id: btn.dream.primaryCta
 
 # The interpretation section exists only after the real analysis response has
 # populated the saved dream. Waiting on that content avoids transient CTA races.

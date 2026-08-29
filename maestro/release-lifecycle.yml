@@ -81,22 +81,10 @@ onFlowComplete:
     id: btn.saveDream
 - extendedWaitUntil:
     visible:
-      id: "text.firstDream.title|text.analyzePromptTitle"
+      id: text.dreamDetail.actionTitle
     timeout: 30000
-- runFlow:
-    when:
-      visible:
-        id: text.firstDream.title
-    commands:
-      - tapOn:
-          id: btn.firstDream.journal
-- runFlow:
-    when:
-      visible:
-        id: text.analyzePromptTitle
-    commands:
-      - tapOn:
-          id: btn.analyzePrompt.journal
+- tapOn:
+    id: btn.navigateJournal
 - extendedWaitUntil:
     visible: "Release lifecycle sentinel"
     timeout: 20000
