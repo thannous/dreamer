@@ -1193,4 +1193,220 @@ describe('LucidTrainerContext account boundary', () => {
     );
   });
 
+  it('updates dream atlas preferences and queues a cloud upsert', async () => {
+    const now = 1_720_000_000_000;
+    const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(now);
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      preferences: { ...initial.preferences, cloudSyncEnabled: true },
+    };
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    try {
+      const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+      await waitFor(() => expect(result.current.loading).toBe(false));
+
+      let saved: unknown;
+      await act(async () => {
+        saved = await result.current.updateDreamAtlasPreferences((current: {
+          hidden: string[];
+        }) => ({
+          ...current,
+          hidden: ['sign:marie'],
+        }));
+      });
+
+      expect(saved).toEqual({
+        version: 1,
+        renamed: {},
+        hidden: ['sign:marie'],
+        merges: {},
+        deleted: [],
+      });
+      expect(persistedState.dreamAtlas).toEqual({
+        version: 1,
+        renamed: {},
+        hidden: ['sign:marie'],
+        merges: {},
+        deleted: [],
+        updatedAt: now,
+      });
+      expect(result.current.state?.dreamAtlas).toEqual(persistedState.dreamAtlas);
+      expect(mockCreateMutation).toHaveBeenCalledWith(
+        expect.objectContaining({
+          operation: 'upsert',
+          entity: expect.objectContaining({
+            entityType: 'dream_atlas',
+            entityKey: 'dream_atlas',
+            value: persistedState.dreamAtlas,
+          }),
+        })
+      );
+      expect(mockQueueMutation).toHaveBeenCalled();
+    } finally {
+      nowSpy.mockRestore();
+    }
+  });
+
+  it('does not queue a dream atlas mutation when the updater is a no-op', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      preferences: { ...initial.preferences, cloudSyncEnabled: true },
+      dreamAtlas: {
+        version: 1,
+        renamed: {},
+        hidden: ['sign:marie'],
+        merges: {},
+        deleted: [],
+        updatedAt: 1_710_000_000_000,
+      },
+    };
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    const before = persistedState;
+    mockCreateMutation.mockClear();
+    mockQueueMutation.mockClear();
+
+    let saved: unknown;
+    await act(async () => {
+      saved = await result.current.updateDreamAtlasPreferences((current: unknown) => current);
+    });
+
+    expect(saved).toEqual({
+      version: 1,
+      renamed: {},
+      hidden: ['sign:marie'],
+      merges: {},
+      deleted: [],
+    });
+    expect(persistedState).toBe(before);
+    expect(persistedState.dreamAtlas?.updatedAt).toBe(1_710_000_000_000);
+    expect(mockCreateMutation).not.toHaveBeenCalled();
+    expect(mockQueueMutation).not.toHaveBeenCalled();
+  });
+
+  it('clears dream atlas preferences with an empty overlay upsert and leaves onboarding and preferences intact', async () => {
+    const now = 1_730_000_000_000;
+    const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(now);
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      onboarding: {
+        ...initial.onboarding,
+        status: 'completed',
+        goal: 'improve_recall',
+        experience: 'beginner',
+        wakeSensitivity: 'not_sensitive',
+        sleepScheduleConfirmed: true,
+        completedAt: initial.createdAt,
+      },
+      preferences: { ...initial.preferences, cloudSyncEnabled: true, noctaliaLinkEnabled: true },
+      dreamAtlas: {
+        version: 1,
+        renamed: { 'sign:marie': 'Marie' },
+        hidden: ['sign:marie'],
+        merges: {},
+        deleted: ['sign:old'],
+        updatedAt: 1_710_000_000_000,
+      },
+    };
+    const onboardingBefore = persistedState.onboarding;
+    const preferencesBefore = persistedState.preferences;
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    try {
+      const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+      await waitFor(() => expect(result.current.loading).toBe(false));
+      mockCreateMutation.mockClear();
+      mockQueueMutation.mockClear();
+
+      await act(async () => {
+        await result.current.clearDreamAtlasPreferences();
+        await result.current.clearDreamAtlasPreferences();
+      });
+
+      const emptyOverlay = {
+        version: 1,
+        renamed: {},
+        hidden: [],
+        merges: {},
+        deleted: [],
+        updatedAt: now,
+      };
+      expect(persistedState.dreamAtlas).toEqual(emptyOverlay);
+      expect(result.current.state?.dreamAtlas).toEqual(emptyOverlay);
+      expect(persistedState.onboarding).toBe(onboardingBefore);
+      expect(persistedState.preferences).toBe(preferencesBefore);
+      expect(mockCreateMutation).toHaveBeenCalledTimes(2);
+      expect(mockCreateMutation).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          operation: 'upsert',
+          entity: expect.objectContaining({
+            entityType: 'dream_atlas',
+            entityKey: 'dream_atlas',
+            value: emptyOverlay,
+          }),
+        })
+      );
+      expect(mockCreateMutation).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          operation: 'upsert',
+          entity: expect.objectContaining({
+            entityType: 'dream_atlas',
+            entityKey: 'dream_atlas',
+            value: emptyOverlay,
+          }),
+        })
+      );
+      expect(mockQueueMutation).toHaveBeenCalledTimes(2);
+    } finally {
+      nowSpy.mockRestore();
+    }
+  });
+
 });

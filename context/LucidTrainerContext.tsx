@@ -38,6 +38,14 @@ import {
   type LucidDreamSignCandidate,
 } from '@/lib/lucid/dreamSigns';
 import {
+  LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT,
+  areLucidDreamAtlasPreferencesSemanticallyEqual,
+  createEmptyLucidDreamAtlasOverlay,
+  lucidDreamAtlasOverlayPreferences,
+  normalizeLucidDreamAtlasPreferences,
+  type LucidDreamAtlasPreferences,
+} from '@/lib/lucid/dreamAtlas';
+import {
   abandonLucidGuidedRitualProgress,
   advanceLucidGuidedRitualProgress,
   completeLucidGuidedRitualProgress,
@@ -193,6 +201,10 @@ export type LucidTrainerContextValue = {
   updateAnalyticsConsent: (enabled: boolean) => Promise<void>;
   updateAudioSafetyConsent: (enabled: boolean) => Promise<void>;
   updatePreferences: (patch: Partial<LucidTrainerPreferences>) => Promise<void>;
+  updateDreamAtlasPreferences: (
+    updater: (current: LucidDreamAtlasPreferences) => LucidDreamAtlasPreferences
+  ) => Promise<LucidDreamAtlasPreferences>;
+  clearDreamAtlasPreferences: () => Promise<void>;
   startProgram: (technique: LucidTechnique) => Promise<void>;
   completeProgramSession: (technique: LucidTechnique, exerciseId: string, sessionNumber: number, sessionCount: number) => Promise<void>;
   updateGuidedRitual: (
@@ -238,6 +250,26 @@ function getTimeZone(): string {
 
 function entityForProgress(value: LucidProgramProgress): LucidSyncEntity {
   return { entityType: 'progress', entityKey: value.technique, value };
+}
+
+function currentDreamAtlasPreferences(state: LucidTrainerState): LucidDreamAtlasPreferences {
+  return normalizeLucidDreamAtlasPreferences(
+    lucidDreamAtlasOverlayPreferences(
+      state.dreamAtlas ?? createEmptyLucidDreamAtlasOverlay(LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT)
+    )
+  );
+}
+
+function cloneDreamAtlasPreferences(
+  preferences: LucidDreamAtlasPreferences
+): LucidDreamAtlasPreferences {
+  return {
+    version: preferences.version,
+    renamed: { ...preferences.renamed },
+    hidden: [...preferences.hidden],
+    merges: { ...preferences.merges },
+    deleted: [...preferences.deleted],
+  };
 }
 
 function guidedRitualSessionId(
@@ -654,6 +686,43 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     },
     [commit, reconcileLoadedState, runSync, userId, userScope]
   );
+
+  const updateDreamAtlasPreferences = useCallback(
+    async (updater: (current: LucidDreamAtlasPreferences) => LucidDreamAtlasPreferences) => {
+      let saved: LucidDreamAtlasPreferences | null = null;
+      await commit((current, now) => {
+        const currentPreferences = currentDreamAtlasPreferences(current);
+        const nextPreferences = normalizeLucidDreamAtlasPreferences(
+          updater(cloneDreamAtlasPreferences(currentPreferences))
+        );
+        if (areLucidDreamAtlasPreferencesSemanticallyEqual(currentPreferences, nextPreferences)) {
+          saved = currentPreferences;
+          return { next: current, changed: [] };
+        }
+        const entity: LucidSyncEntity = {
+          entityType: 'dream_atlas',
+          entityKey: 'dream_atlas',
+          value: { ...nextPreferences, updatedAt: now },
+        };
+        saved = nextPreferences;
+        return { next: applyLucidSyncEntity(current, entity), changed: [entity] };
+      });
+      if (!saved) throw new Error('Dream atlas preferences were not saved');
+      return saved;
+    },
+    [commit]
+  );
+
+  const clearDreamAtlasPreferences = useCallback(async () => {
+    await commit((current, now) => {
+      const entity: LucidSyncEntity = {
+        entityType: 'dream_atlas',
+        entityKey: 'dream_atlas',
+        value: createEmptyLucidDreamAtlasOverlay(now),
+      };
+      return { next: applyLucidSyncEntity(current, entity), changed: [entity] };
+    });
+  }, [commit]);
 
   const updateAnalyticsConsent = useCallback(
     async (enabled: boolean) => {
@@ -1188,6 +1257,8 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       updateAnalyticsConsent,
       updateAudioSafetyConsent,
       updatePreferences,
+      updateDreamAtlasPreferences,
+      clearDreamAtlasPreferences,
       startProgram,
       completeProgramSession,
       updateGuidedRitual,
@@ -1219,6 +1290,8 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       updateAnalyticsConsent,
       updateAudioSafetyConsent,
       updatePreferences,
+      updateDreamAtlasPreferences,
+      clearDreamAtlasPreferences,
       startProgram,
       completeProgramSession,
       updateGuidedRitual,
