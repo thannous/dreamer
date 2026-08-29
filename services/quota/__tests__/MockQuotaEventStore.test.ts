@@ -64,7 +64,15 @@ describe('MockQuotaEventStore', () => {
   it('migrates counts from stored dreams on first access', async () => {
     mockGetSavedDreams.mockResolvedValue([
       buildDream({ id: 1, isAnalyzed: true, analyzedAt: 100, explorationStartedAt: 200 }),
-      buildDream({ id: 2, isAnalyzed: true, analyzedAt: 101, chatHistory: [{ role: 'model' }] }),
+      buildDream({
+        id: 2,
+        isAnalyzed: true,
+        analyzedAt: 101,
+        chatHistory: [
+          { id: 'u1', role: 'user', text: 'What does the quiet city mean?' },
+          { id: 'm1', role: 'model', text: 'The city may represent memory.' },
+        ],
+      }),
       buildDream({ id: 3, isAnalyzed: false }),
     ]);
 

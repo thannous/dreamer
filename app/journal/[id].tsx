@@ -36,10 +36,14 @@ import {
   isRecoverablePendingAnalysis,
   isResumableAnalysisRequest,
 } from '@/lib/analysisRequest';
-import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamSyncState, normalizeDreamMemoryMetadata } from '@/lib/dreamUtils';
-import { getDreamAnalysisState, getDreamDetailAction } from '@/lib/dreamUsage';
+import {
+  buildReflectionResumeHref,
+  getDreamAnalysisState,
+  getJournalDetailPrimaryFamily,
+  getReflectionJourney,
+} from '@/lib/dreamUsage';
 import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
 import { isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
@@ -56,7 +60,7 @@ import { isJournalSavedConfirmationParam } from '@/lib/journalSavedConfirmation'
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis, DreamChatCategory, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
+import type { DreamAnalysis, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
 import { categorizeDream, generateImageWithReference } from '@/services/geminiService';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
@@ -103,7 +107,6 @@ const getShareNavigator = (): ShareNavigator | undefined => {
 
 const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
 const DREAM_THEMES: DreamTheme[] = ['surreal', 'mystical', 'calm', 'noir'];
-const THEME_CATEGORIES: Exclude<DreamChatCategory, 'general'>[] = ['symbols', 'emotions', 'growth'];
 const isMockMode = isMockModeEnabled();
 const DREAM_IMAGE_ASPECT = 9 / 16;
 const DREAM_IMAGE_CROP_EPSILON = 0.01;
@@ -557,16 +560,17 @@ export default function JournalDetailScreen() {
       });
     }
   }, [analysisState.isAnalyzed, dream, onboardingState, transitionOnboarding]);
-  const primaryAction = useMemo(() => getDreamDetailAction(dream), [dream]);
+  const reflectionJourney = useMemo(
+    () => getReflectionJourney(dream, analysisRecoveryClock, { tier }),
+    [analysisRecoveryClock, dream, tier]
+  );
+  const primaryKind = reflectionJourney.primary.kind;
+  const primaryAction = getJournalDetailPrimaryFamily(primaryKind);
   const canRecoverPendingAnalysis = useMemo(
     () => !isAnalyzing && isRecoverablePendingAnalysis(dream, analysisRecoveryClock),
     [analysisRecoveryClock, dream, isAnalyzing]
   );
-  const isAnalysisPending = dream?.analysisStatus === 'pending' && !canRecoverPendingAnalysis;
-  const allThemesExplored = useMemo(() => {
-    if (!dream) return false;
-    return THEME_CATEGORIES.every((category) => isCategoryExplored(dream.chatHistory, category));
-  }, [dream]);
+  const isAnalysisPending = reflectionJourney.isPendingFresh && !isAnalyzing;
   const isPrimaryActionBusy = primaryAction === 'analyze' && (isAnalyzing || isAnalysisPending);
   const detailActionCard = useMemo(() => {
     if (!dream) {
@@ -1017,14 +1021,14 @@ export default function JournalDetailScreen() {
     router.replace('/(tabs)/journal');
   }, []);
 
-  const handleExplorePress = useCallback(() => {
+  const handleJourneyPress = useCallback(() => {
     if (!dream) return;
-    if (allThemesExplored) {
-      router.push(`/dream-chat/${dream.id}`);
+    const href = buildReflectionResumeHref(dream.id, reflectionJourney.primary.resume);
+    if (!href) {
       return;
     }
-    router.push(`/dream-categories/${dream.id}`);
-  }, [allThemesExplored, dream]);
+    router.push(href);
+  }, [dream, reflectionJourney.primary.resume]);
 
   const showAnalysisNotice = useCallback(
     (title: string, message: string, tone: AnalysisNotice['tone'] = 'info') => {
@@ -1591,7 +1595,7 @@ export default function JournalDetailScreen() {
     }
 
     const disabled = detailActionCard.disabled || isPrimaryActionBusy || isAnalysisLocked;
-    const onPress = primaryAction === 'analyze' ? handleAnalyze : handleExplorePress;
+    const onPress = primaryAction === 'analyze' ? handleAnalyze : handleJourneyPress;
     const isCompactExplorationAction = primaryAction === 'continue' || primaryAction === 'explore';
 
     if (isCompactExplorationAction) {

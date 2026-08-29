@@ -199,6 +199,84 @@ export type ReflectionJourneyOptions = {
   tier?: string | null;
 };
 
+export type JournalDetailPrimaryFamily = 'analyze' | 'explore' | 'continue';
+
+/**
+ * Collapse the 9 journey kinds onto the existing Journal detail CTA families.
+ * Labels stay on the current analyze / explore / continue copy.
+ */
+export function getJournalDetailPrimaryFamily(
+  kind: ReflectionPrimaryKind
+): JournalDetailPrimaryFamily {
+  if (kind === 'analyze' || kind === 'wait' || kind === 'retry_analysis') {
+    return 'analyze';
+  }
+  if (kind === 'start_approfondir') {
+    return 'explore';
+  }
+  return 'continue';
+}
+
+export type ReflectionResumeHref =
+  | {
+      pathname: '/dream-categories/[id]';
+      params: { id: string };
+    }
+  | {
+      pathname: '/dream-chat/[id]';
+      params: {
+        id: string;
+        category?: Exploration360AxisId;
+        mode?: 'synthesis';
+        messageId?: string;
+      };
+    };
+
+/**
+ * Map a resume target to the Expo Router href used by the Journal detail CTA.
+ *
+ * `retry_chat` carries `messageId` as a chat param so the failed turn can be
+ * identified later. Dream chat currently reads only `id`, `category`, and
+ * `mode`, so this does not auto-retry from the Journal CTA.
+ */
+export function buildReflectionResumeHref(
+  dreamId: number,
+  resume: ReflectionResumeTarget
+): ReflectionResumeHref | null {
+  if (resume.kind === 'detail') {
+    return null;
+  }
+
+  if (resume.kind === 'categories') {
+    return {
+      pathname: '/dream-categories/[id]',
+      params: { id: String(dreamId) },
+    };
+  }
+
+  const params: {
+    id: string;
+    category?: Exploration360AxisId;
+    mode?: 'synthesis';
+    messageId?: string;
+  } = { id: String(dreamId) };
+
+  if (resume.category) {
+    params.category = resume.category;
+  }
+  if (resume.mode) {
+    params.mode = resume.mode;
+  }
+  if (resume.messageId) {
+    params.messageId = resume.messageId;
+  }
+
+  return {
+    pathname: '/dream-chat/[id]',
+    params,
+  };
+}
+
 const DETAIL_RESUME: ReflectionResumeTarget = { kind: 'detail' };
 
 function getLecturePrimary(
@@ -348,17 +426,7 @@ export function getDreamDetailAction(
   dream?: DreamAnalysis | null,
   now = Date.now()
 ): DreamDetailAction {
-  const kind = getReflectionJourney(dream, now).primary.kind;
-
-  if (kind === 'analyze' || kind === 'wait' || kind === 'retry_analysis') {
-    return 'analyze';
-  }
-
-  if (kind === 'start_approfondir') {
-    return 'explore';
-  }
-
-  return 'continue';
+  return getJournalDetailPrimaryFamily(getReflectionJourney(dream, now).primary.kind);
 }
 
 export function getAnalyzedDreamCount(dreams: DreamAnalysis[]): number {
