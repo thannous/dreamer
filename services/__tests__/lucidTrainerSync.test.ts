@@ -2,7 +2,10 @@ import {
   createInitialLucidTrainerState,
   createLucidProgramProgress,
 } from '@/lib/lucid/domain';
-import { createEmptyLucidDreamAtlasOverlay } from '@/lib/lucid/dreamAtlas';
+import {
+  LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT,
+  createEmptyLucidDreamAtlasOverlay,
+} from '@/lib/lucid/dreamAtlas';
 import type {
   LucidSyncEntity,
   LucidSyncMutation,
@@ -23,6 +26,8 @@ import {
   type LucidSyncTransport,
   type LucidSyncTransportResult,
 } from '@/services/lucidTrainerSync';
+
+type ResetAwareLucidSyncMutation = LucidSyncMutation & { resetRevision?: string };
 
 describe('lucidTrainerSync', () => {
   const NOW = 1_700_000_000_000;
@@ -1048,5 +1053,364 @@ describe('lucidTrainerSync', () => {
     expect(states.get('guest')?.experiments.map((item) => item.id)).toEqual(['guest-experiment']);
     expect(states.get(SCOPE)?.experiments).toEqual([]);
     expect(queues.get(SCOPE)).toEqual([]);
+  });
+
+  function guestClaimStore(
+    guest: LucidTrainerState,
+    account: LucidTrainerState,
+    accountQueue: LucidSyncMutation[] = []
+  ) {
+    const states = new Map<string, LucidTrainerState>([
+      ['guest', guest],
+      [SCOPE, account],
+    ]);
+    const queues = new Map<string, LucidSyncMutation[]>([
+      ['guest', []],
+      [SCOPE, [...accountQueue]],
+    ]);
+    const cleared: string[] = [];
+    const adapter: LucidScopeMigrationStorageAdapter = {
+      loadState: async (scope) => states.get(scope)!,
+      updateState: async (scope, updater) => {
+        const next = updater(states.get(scope)!);
+        states.set(scope, next);
+        return next;
+      },
+      loadQueue: async (scope) => queues.get(scope) ?? [],
+      updateQueue: async (scope, updater) => {
+        const next = [...updater(queues.get(scope) ?? [])];
+        queues.set(scope, next);
+        return next;
+      },
+      clearScope: async (scope) => {
+        cleared.push(scope);
+        states.set(scope, createInitialLucidTrainerState({ now: NOW + 20, timeZone: 'UTC' }));
+        queues.set(scope, []);
+      },
+    };
+    return { states, queues, cleared, adapter };
+  }
+
+  function atlasOverlay(
+    updatedAt: number,
+    overlay: Partial<NonNullable<LucidTrainerState['dreamAtlas']>> = {}
+  ): NonNullable<LucidTrainerState['dreamAtlas']> {
+    return {
+      version: 1,
+      updatedAt,
+      renamed: {},
+      hidden: [],
+      merges: {},
+      deleted: [],
+      ...overlay,
+    };
+  }
+
+  function queuedAtlasKeys(queue: LucidSyncMutation[] | undefined): string[] {
+    return (queue ?? [])
+      .filter((item) => item.entityType === 'dream_atlas')
+      .map((item) => `${item.entityType}:${item.entityKey}`);
+  }
+
+  it('claims a newer guest dream atlas overlay and queues a single cloud upsert', async () => {
+    const guest = state(false);
+    guest.dreamAtlas = atlasOverlay(NOW + 40, { renamed: { 'sign:mirror': 'Guest' } });
+    const account = state(true);
+    account.dreamAtlas = atlasOverlay(NOW + 10, { renamed: { 'sign:school': 'Account' } });
+    const store = guestClaimStore(guest, account);
+    let id = 0;
+
+    const result = await claimLucidTrainerGuestScope(SCOPE, {
+      storage: store.adapter,
+      now: () => NOW + 50,
+      idFactory: () => `00000000-0000-4000-8000-${String(++id).padStart(12, '0')}`,
+    });
+
+    expect(result).toEqual({ claimed: true, queued: 1 });
+    expect(store.states.get(SCOPE)?.dreamAtlas).toEqual(guest.dreamAtlas);
+    expect(queuedAtlasKeys(store.queues.get(SCOPE))).toEqual(['dream_atlas:dream_atlas']);
+    expect(store.queues.get(SCOPE)?.some((item) => item.entityType === 'dream_sign')).toBe(false);
+    expect(store.cleared).toEqual(['guest']);
+    expect(store.states.get('guest')?.dreamAtlas).toEqual(
+      createEmptyLucidDreamAtlasOverlay(LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT)
+    );
+  });
+
+  it('keeps a newer account dream atlas overlay without queueing a duplicate', async () => {
+    const guest = state(false);
+    guest.dreamAtlas = atlasOverlay(NOW + 10, { renamed: { 'sign:mirror': 'Guest' } });
+    guest.updatedAt = guest.createdAt;
+    const account = state(true);
+    account.dreamAtlas = atlasOverlay(NOW + 40, { renamed: { 'sign:school': 'Account' } });
+    const store = guestClaimStore(guest, account);
+    let id = 0;
+
+    const result = await claimLucidTrainerGuestScope(SCOPE, {
+      storage: store.adapter,
+      now: () => NOW + 50,
+      idFactory: () => `00000000-0000-4000-8000-${String(++id).padStart(12, '0')}`,
+    });
+
+    expect(result).toEqual({ claimed: true, queued: 0 });
+    expect(store.states.get(SCOPE)?.dreamAtlas).toEqual(account.dreamAtlas);
+    expect(queuedAtlasKeys(store.queues.get(SCOPE))).toEqual([]);
+    expect(store.queues.get(SCOPE)?.some((item) => item.entityType === 'dream_sign')).toBe(false);
+    expect(store.cleared).toEqual(['guest']);
+  });
+
+  it('resolves a tied dream atlas overlay with the existing canonical winner and queues it once', async () => {
+    const guest = state(false);
+    guest.dreamAtlas = atlasOverlay(NOW + 30, { renamed: { 'sign:omega': 'Omega' } });
+    const account = state(true);
+    account.dreamAtlas = atlasOverlay(NOW + 30, { renamed: { 'sign:alpha': 'Alpha' } });
+    const store = guestClaimStore(guest, account);
+    let id = 0;
+
+    const result = await claimLucidTrainerGuestScope(SCOPE, {
+      storage: store.adapter,
+      now: () => NOW + 50,
+      idFactory: () => `00000000-0000-4000-8000-${String(++id).padStart(12, '0')}`,
+    });
+
+    expect(result).toEqual({ claimed: true, queued: 1 });
+    expect(store.states.get(SCOPE)?.dreamAtlas).toEqual(guest.dreamAtlas);
+    expect(queuedAtlasKeys(store.queues.get(SCOPE))).toEqual(['dream_atlas:dream_atlas']);
+    expect(store.queues.get(SCOPE)?.filter((item) => item.entityType === 'dream_atlas')).toHaveLength(1);
+    expect(store.cleared).toEqual(['guest']);
+  });
+
+  it('treats an explicit empty atlas clear with updatedAt>0 as guest data and queues it', async () => {
+    const guest = state(false);
+    guest.dreamAtlas = createEmptyLucidDreamAtlasOverlay(NOW + 12);
+    guest.updatedAt = guest.createdAt;
+    const account = state(true);
+    account.dreamAtlas = atlasOverlay(NOW + 4, { renamed: { 'sign:mirror': 'Account' } });
+    const store = guestClaimStore(guest, account);
+    let id = 0;
+
+    expect(guest.updatedAt).toBe(guest.createdAt);
+    await expect(hasLucidTrainerGuestData(store.adapter)).resolves.toBe(true);
+    const result = await claimLucidTrainerGuestScope(SCOPE, {
+      storage: store.adapter,
+      now: () => NOW + 50,
+      idFactory: () => `00000000-0000-4000-8000-${String(++id).padStart(12, '0')}`,
+    });
+
+    expect(result).toEqual({ claimed: true, queued: 1 });
+    expect(store.states.get(SCOPE)?.dreamAtlas).toEqual(createEmptyLucidDreamAtlasOverlay(NOW + 12));
+    expect(queuedAtlasKeys(store.queues.get(SCOPE))).toEqual(['dream_atlas:dream_atlas']);
+    expect(store.queues.get(SCOPE)?.some((item) => item.entityType === 'dream_sign')).toBe(false);
+    expect(store.cleared).toEqual(['guest']);
+  });
+
+  it('does not queue a pristine atlas overlay or invent dream_sign mutations', async () => {
+    const guest = state(false);
+    guest.experiments = [{
+      id: 'guest-experiment',
+      occurredAt: NOW,
+      technique: 'mild',
+      preparationMinutes: 5,
+      result: 'none',
+      lucidityLevel: 0,
+      recallLevel: 2,
+      sleepQuality: 3,
+      factors: [],
+      updatedAt: NOW,
+    }];
+    guest.dreamAtlas = createEmptyLucidDreamAtlasOverlay(LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT);
+    const account = state(true);
+    delete (account as { dreamAtlas?: unknown }).dreamAtlas;
+    const store = guestClaimStore(guest, account);
+    let id = 0;
+
+    const result = await claimLucidTrainerGuestScope(SCOPE, {
+      storage: store.adapter,
+      now: () => NOW + 50,
+      idFactory: () => `00000000-0000-4000-8000-${String(++id).padStart(12, '0')}`,
+    });
+
+    expect(result.claimed).toBe(true);
+    expect(queuedAtlasKeys(store.queues.get(SCOPE))).toEqual([]);
+    expect(store.queues.get(SCOPE)?.some((item) => item.entityType === 'dream_sign')).toBe(false);
+    expect(store.queues.get(SCOPE)?.some((item) => item.entityKey === 'guest-experiment')).toBe(true);
+    expect(store.cleared).toEqual(['guest']);
+  });
+
+  it('does not enqueue a second dream_atlas mutation when one is already pending', async () => {
+    const guest = state(false);
+    const guestAtlas = atlasOverlay(NOW + 40, { renamed: { 'sign:mirror': 'Guest' } });
+    guest.dreamAtlas = guestAtlas;
+    const account = state(true);
+    const accountAtlas = atlasOverlay(NOW + 10, { renamed: { 'sign:school': 'Account' } });
+    account.dreamAtlas = accountAtlas;
+    const pendingAtlas: ResetAwareLucidSyncMutation = {
+      ...mutation(dreamAtlasEntity(accountAtlas), {
+        id: 'pending-atlas',
+        clientRequestId: 'pending-atlas-request',
+      }),
+      resetRevision: '12',
+    };
+    const pendingExperiment = mutation(
+      {
+        entityType: 'experiment',
+        entityKey: 'account-experiment',
+        value: {
+          id: 'account-experiment',
+          occurredAt: NOW,
+          technique: 'mild',
+          preparationMinutes: 5,
+          result: 'none',
+          lucidityLevel: 0,
+          recallLevel: 2,
+          sleepQuality: 3,
+          factors: [],
+          updatedAt: NOW,
+        },
+      },
+      {
+        id: 'pending-experiment',
+        clientRequestId: 'pending-experiment-request',
+        clientUpdatedAt: NOW,
+      }
+    );
+    const store = guestClaimStore(guest, account, [pendingAtlas, pendingExperiment]);
+    let id = 0;
+
+    const result = await claimLucidTrainerGuestScope(SCOPE, {
+      storage: store.adapter,
+      now: () => NOW + 50,
+      idFactory: () => `00000000-0000-4000-8000-${String(++id).padStart(12, '0')}`,
+    });
+
+    expect(result).toEqual({ claimed: true, queued: 0 });
+    expect(store.states.get(SCOPE)?.dreamAtlas).toEqual(guestAtlas);
+    expect(queuedAtlasKeys(store.queues.get(SCOPE))).toEqual(['dream_atlas:dream_atlas']);
+    const atlasMutations = store.queues.get(SCOPE)?.filter((item) => item.entityType === 'dream_atlas') ?? [];
+    expect(atlasMutations).toHaveLength(1);
+    expect(atlasMutations[0]).toMatchObject({
+      id: '00000000-0000-4000-8000-000000000001',
+      clientRequestId: '00000000-0000-4000-8000-000000000002',
+      operation: 'upsert',
+      entityType: 'dream_atlas',
+      entityKey: 'dream_atlas',
+      clientUpdatedAt: guestAtlas.updatedAt,
+      createdAt: NOW + 50,
+      resetRevision: '12',
+    });
+    expect(atlasMutations[0]?.id).not.toBe('pending-atlas');
+    expect(atlasMutations[0]?.clientRequestId).not.toBe('pending-atlas-request');
+    expect(atlasMutations[0]?.payload.entity).toEqual({
+      entityType: 'dream_atlas',
+      entityKey: 'dream_atlas',
+      value: guestAtlas,
+    });
+    expect(store.queues.get(SCOPE)?.find((item) => item.id === 'pending-experiment')).toEqual(pendingExperiment);
+    expect(store.cleared).toEqual(['guest']);
+  });
+
+  it('leaves an existing pending atlas mutation untouched when the account overlay wins', async () => {
+    const guest = state(false);
+    guest.dreamAtlas = atlasOverlay(NOW + 10, { renamed: { 'sign:mirror': 'Guest' } });
+    guest.updatedAt = guest.createdAt;
+    const account = state(true);
+    const accountAtlas = atlasOverlay(NOW + 40, { renamed: { 'sign:school': 'Account' } });
+    account.dreamAtlas = accountAtlas;
+    const pendingAtlas = mutation(dreamAtlasEntity(accountAtlas), {
+      id: 'pending-atlas',
+      clientRequestId: 'pending-atlas-request',
+    });
+    const store = guestClaimStore(guest, account, [pendingAtlas]);
+    let id = 0;
+
+    const result = await claimLucidTrainerGuestScope(SCOPE, {
+      storage: store.adapter,
+      now: () => NOW + 50,
+      idFactory: () => `00000000-0000-4000-8000-${String(++id).padStart(12, '0')}`,
+    });
+
+    expect(result).toEqual({ claimed: true, queued: 0 });
+    expect(store.states.get(SCOPE)?.dreamAtlas).toEqual(accountAtlas);
+    expect(store.queues.get(SCOPE)).toEqual([pendingAtlas]);
+    expect(store.cleared).toEqual(['guest']);
+  });
+
+  it('coalesces duplicate pending dream_atlas upserts into one guest winner', async () => {
+    const guest = state(false);
+    const guestAtlas = atlasOverlay(NOW + 40, { renamed: { 'sign:mirror': 'Guest' } });
+    guest.dreamAtlas = guestAtlas;
+    const account = state(true);
+    const accountAtlas = atlasOverlay(NOW + 10, { renamed: { 'sign:school': 'Account' } });
+    account.dreamAtlas = accountAtlas;
+    const pendingAtlasOlder = mutation(dreamAtlasEntity(accountAtlas), {
+      id: 'pending-atlas-1',
+      clientRequestId: 'pending-atlas-request-1',
+    });
+    const pendingAtlasStale = mutation(
+      dreamAtlasEntity({ ...accountAtlas, renamed: { 'sign:ghost': 'Ghost' } }),
+      {
+        id: 'pending-atlas-2',
+        clientRequestId: 'pending-atlas-request-2',
+      }
+    );
+    const pendingExperiment = mutation(
+      {
+        entityType: 'experiment',
+        entityKey: 'account-experiment',
+        value: {
+          id: 'account-experiment',
+          occurredAt: NOW,
+          technique: 'mild',
+          preparationMinutes: 5,
+          result: 'none',
+          lucidityLevel: 0,
+          recallLevel: 2,
+          sleepQuality: 3,
+          factors: [],
+          updatedAt: NOW,
+        },
+      },
+      {
+        id: 'pending-experiment',
+        clientRequestId: 'pending-experiment-request',
+        clientUpdatedAt: NOW,
+      }
+    );
+    const store = guestClaimStore(guest, account, [
+      pendingAtlasOlder,
+      pendingExperiment,
+      pendingAtlasStale,
+    ]);
+    let id = 0;
+
+    const result = await claimLucidTrainerGuestScope(SCOPE, {
+      storage: store.adapter,
+      now: () => NOW + 50,
+      idFactory: () => `00000000-0000-4000-8000-${String(++id).padStart(12, '0')}`,
+    });
+
+    expect(result).toEqual({ claimed: true, queued: 0 });
+    expect(store.states.get(SCOPE)?.dreamAtlas).toEqual(guestAtlas);
+    const queue = store.queues.get(SCOPE) ?? [];
+    const atlasMutations = queue.filter((item) => item.entityType === 'dream_atlas');
+    expect(atlasMutations).toHaveLength(1);
+    expect(atlasMutations[0]).toMatchObject({
+      id: '00000000-0000-4000-8000-000000000001',
+      clientRequestId: '00000000-0000-4000-8000-000000000002',
+      operation: 'upsert',
+      entityType: 'dream_atlas',
+      entityKey: 'dream_atlas',
+      clientUpdatedAt: guestAtlas.updatedAt,
+    });
+    expect(atlasMutations[0]?.payload.entity).toEqual({
+      entityType: 'dream_atlas',
+      entityKey: 'dream_atlas',
+      value: guestAtlas,
+    });
+    expect(queue.map((item) => item.id)).not.toEqual(
+      expect.arrayContaining(['pending-atlas-1', 'pending-atlas-2'])
+    );
+    expect(queue.filter((item) => item.operation === 'upsert' && item.entityType === 'dream_atlas')).toHaveLength(1);
+    expect(queue.find((item) => item.id === 'pending-experiment')).toEqual(pendingExperiment);
+    expect(store.cleared).toEqual(['guest']);
   });
 });

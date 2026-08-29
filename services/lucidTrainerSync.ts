@@ -11,6 +11,10 @@ import {
   resolveLucidEntityConflict,
 } from '@/lib/lucid/domain';
 import {
+  LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT,
+  hasLucidDreamAtlasOverlayData,
+} from '@/lib/lucid/dreamAtlas';
+import {
   LUCID_TRAINER_MUTATION_VERSION,
   isLucidSyncEntity,
   type LucidSyncEntity,
@@ -149,8 +153,110 @@ function hasLucidTrainerStateData(state: LucidTrainerState): boolean {
     state.realityChecks.length > 0 ||
     state.weeklyReviews.length > 0 ||
     (state.dreamSignDecisions?.length ?? 0) > 0 ||
+    isNonPristineDreamAtlasOverlay(state.dreamAtlas) ||
     state.updatedAt > state.createdAt
   );
+}
+
+type ResetAwareLucidSyncMutation = LucidSyncMutation & { resetRevision?: string };
+
+function isNonPristineDreamAtlasOverlay(
+  overlay: LucidTrainerState['dreamAtlas']
+): boolean {
+  if (overlay == null) return false;
+  // An explicit empty overlay with updatedAt > 0 is a durable clear, not a
+  // missing pristine companion. Guest claim must treat it as local data.
+  return (
+    overlay.updatedAt > LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT ||
+    hasLucidDreamAtlasOverlayData(overlay)
+  );
+}
+
+function shouldQueueMergedDreamAtlas(
+  mergedAtlas: Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> | undefined,
+  account: LucidTrainerState
+): mergedAtlas is Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> {
+  if (!mergedAtlas || !isNonPristineDreamAtlasOverlay(mergedAtlas.value)) return false;
+  const accountAtlas = findSyncEntity(account, 'dream_atlas', 'dream_atlas');
+  return !(
+    accountAtlas != null &&
+    canonicalLucidJson(accountAtlas) === canonicalLucidJson(mergedAtlas)
+  );
+}
+
+function replaceStalePendingDreamAtlasUpsert(params: {
+  mutation: ResetAwareLucidSyncMutation;
+  mergedAtlas: Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> | undefined;
+  account: LucidTrainerState;
+  userScope: string;
+  now: () => number;
+  idFactory: () => string;
+}): ResetAwareLucidSyncMutation {
+  const { mutation, mergedAtlas, account, userScope, now, idFactory } = params;
+  if (
+    mutation.operation !== 'upsert' ||
+    mutation.entityType !== 'dream_atlas' ||
+    mutation.entityKey !== 'dream_atlas' ||
+    !shouldQueueMergedDreamAtlas(mergedAtlas, account)
+  ) {
+    return mutation;
+  }
+  if (
+    mutation.payload.entity &&
+    canonicalLucidJson(mutation.payload.entity) === canonicalLucidJson(mergedAtlas)
+  ) {
+    return mutation;
+  }
+  const replacement: ResetAwareLucidSyncMutation = createLucidTrainerMutation(
+    {
+      userScope,
+      operation: 'upsert',
+      entity: mergedAtlas,
+      baseRevision: mutation.baseRevision,
+    },
+    { now, idFactory }
+  );
+  const resetRevision = mutation.resetRevision;
+  if (typeof resetRevision !== 'string') return replacement;
+  const next: ResetAwareLucidSyncMutation = {
+    ...replacement,
+    resetRevision,
+  };
+  return next;
+}
+
+function coalesceDreamAtlasQueueEntries(params: {
+  current: readonly ResetAwareLucidSyncMutation[];
+  mergedAtlas: Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> | undefined;
+  account: LucidTrainerState;
+  userScope: string;
+  now: () => number;
+  idFactory: () => string;
+}): ResetAwareLucidSyncMutation[] {
+  const { current, mergedAtlas, account, userScope, now, idFactory } = params;
+  if (!shouldQueueMergedDreamAtlas(mergedAtlas, account)) return [...current];
+  let seenDreamAtlasUpsert = false;
+  return current.flatMap((mutation) => {
+    if (
+      mutation.operation !== 'upsert' ||
+      mutation.entityType !== 'dream_atlas' ||
+      mutation.entityKey !== 'dream_atlas'
+    ) {
+      return [mutation];
+    }
+    if (seenDreamAtlasUpsert) return [];
+    seenDreamAtlasUpsert = true;
+    return [
+      replaceStalePendingDreamAtlasUpsert({
+        mutation,
+        mergedAtlas,
+        account,
+        userScope,
+        now,
+        idFactory,
+      }),
+    ];
+  });
 }
 
 type CreateLucidMutationInput =
@@ -167,8 +273,6 @@ type CreateLucidMutationInput =
       entityKey: string;
       baseRevision?: string;
     };
-
-type ResetAwareLucidSyncMutation = LucidSyncMutation & { resetRevision?: string };
 
 function defaultIdFactory(): string {
   return Crypto.randomUUID();
@@ -699,18 +803,37 @@ export async function claimLucidTrainerGuestScope(
     let queued = 0;
     if (mergedForAccount.preferences.cloudSyncEnabled) {
       const entities = getLucidSyncEntities(mergedForAccount);
+      const mergedAtlas = entities.find(
+        (entity): entity is Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> =>
+          entity.entityType === 'dream_atlas'
+      );
       await options.storage.updateQueue(targetUserScope, (current) => {
+        const pending: readonly ResetAwareLucidSyncMutation[] = current;
         const existingKeys = new Set(
-          current
+          pending
             .filter((mutation) => mutation.operation === 'upsert')
             .map((mutation) => syncEntityKey(mutation.entityType, mutation.entityKey))
         );
+        const coalesced = coalesceDreamAtlasQueueEntries({
+          current: pending,
+          mergedAtlas,
+          account,
+          userScope: targetUserScope,
+          now,
+          idFactory,
+        });
         const additions = entities.flatMap((entity) => {
           if (existingKeys.has(syncEntityKey(entity.entityType, entity.entityKey))) return [];
           const existing = findSyncEntity(account, entity.entityType, entity.entityKey);
           if (
             existing &&
             canonicalLucidJson(existing) === canonicalLucidJson(entity)
+          ) {
+            return [];
+          }
+          if (
+            entity.entityType === 'dream_atlas' &&
+            !isNonPristineDreamAtlasOverlay(entity.value)
           ) {
             return [];
           }
@@ -722,7 +845,7 @@ export async function claimLucidTrainerGuestScope(
           ];
         });
         queued = additions.length;
-        return [...current, ...additions].sort(
+        return [...coalesced, ...additions].sort(
           (left, right) => left.createdAt - right.createdAt || left.id.localeCompare(right.id)
         );
       });

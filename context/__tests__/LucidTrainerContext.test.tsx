@@ -5,6 +5,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { trackProductEvent } from '@/lib/analytics';
 import { getLucidDateKeyInTimeZone } from '@/lib/lucid/morningCapture';
+import type { LucidDreamAtlasOverlay } from '@/lib/lucid/dreamAtlas';
 import type { LucidTrainerState } from '@/lib/lucid/model';
 import type { LucidReminderReconciliationResult } from '@/services/lucidTrainerNotifications';
 
@@ -1453,7 +1454,7 @@ describe('LucidTrainerContext account boundary', () => {
       now: 1_700_000_000_000,
       timeZone: 'UTC',
     }) as LucidTrainerState;
-    const overlay = {
+    const overlay: LucidDreamAtlasOverlay = {
       version: 1,
       renamed: { 'sign:ghost': 'Ghost' },
       hidden: ['sign:ghost'],
@@ -1578,7 +1579,7 @@ describe('LucidTrainerContext account boundary', () => {
       now: 1_700_000_000_000,
       timeZone: 'UTC',
     }) as LucidTrainerState;
-    const overlay = {
+    const overlay: LucidDreamAtlasOverlay = {
       version: 1,
       renamed: { 'sign:mirror': 'My mirror' },
       hidden: ['sign:mirror'],
