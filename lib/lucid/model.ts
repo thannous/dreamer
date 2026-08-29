@@ -1,3 +1,9 @@
+import { isLucidDreamAtlasOverlay, type LucidDreamAtlasOverlay } from '@/lib/lucid/dreamAtlas';
+import type { LucidDreamSignDecision, LucidDreamSignDecisionRecord } from '@/lib/lucid/dreamSignModel';
+
+export { LUCID_DREAM_SIGN_DECISIONS } from '@/lib/lucid/dreamSignModel';
+export type { LucidDreamSignDecision, LucidDreamSignDecisionRecord } from '@/lib/lucid/dreamSignModel';
+
 export const LUCID_TRAINER_SCHEMA_VERSION = 1 as const;
 export const LUCID_TRAINER_MUTATION_VERSION = 1 as const;
 
@@ -248,15 +254,6 @@ export interface LucidWeeklyReview {
   updatedAt: number;
 }
 
-export const LUCID_DREAM_SIGN_DECISIONS = ['pending', 'confirmed', 'rejected'] as const;
-export type LucidDreamSignDecision = (typeof LUCID_DREAM_SIGN_DECISIONS)[number];
-
-export interface LucidDreamSignDecisionRecord {
-  id: string;
-  decision: LucidDreamSignDecision;
-  customLabel?: string | null;
-}
-
 export interface LucidPersistedDreamSignDecision extends LucidDreamSignDecisionRecord {
   decision: Exclude<LucidDreamSignDecision, 'pending'>;
   sourceDreamIds: string[];
@@ -275,6 +272,8 @@ export interface LucidTrainerState {
   weeklyReviews: LucidWeeklyReview[];
   /** Absent on historical v1 states; candidates remain derived from the dream journal. */
   dreamSignDecisions?: LucidPersistedDreamSignDecision[];
+  /** Absent on historical v1 states. Overlay only; the atlas graph stays derived. */
+  dreamAtlas?: LucidDreamAtlasOverlay;
 }
 
 export type LucidSyncEntity =
@@ -284,7 +283,8 @@ export type LucidSyncEntity =
   | { entityType: 'experiment'; entityKey: string; value: LucidExperiment }
   | { entityType: 'reality_check'; entityKey: string; value: LucidRealityCheck }
   | { entityType: 'weekly_review'; entityKey: string; value: LucidWeeklyReview }
-  | { entityType: 'dream_sign'; entityKey: string; value: LucidPersistedDreamSignDecision };
+  | { entityType: 'dream_sign'; entityKey: string; value: LucidPersistedDreamSignDecision }
+  | { entityType: 'dream_atlas'; entityKey: 'dream_atlas'; value: LucidDreamAtlasOverlay };
 
 export type LucidSyncOperation = 'upsert' | 'delete';
 export type LucidSyncMutationStatus = 'pending' | 'sending' | 'failed' | 'blocked';
@@ -356,6 +356,7 @@ const ENTITY_TYPES: readonly LucidSyncEntity['entityType'][] = [
   'reality_check',
   'weekly_review',
   'dream_sign',
+  'dream_atlas',
 ];
 const MAX_COLLECTION_LENGTH = 10_000;
 
@@ -790,7 +791,8 @@ export function isLucidTrainerState(value: unknown): value is LucidTrainerState 
       (Array.isArray(value.dreamSignDecisions) &&
         value.dreamSignDecisions.length <= MAX_COLLECTION_LENGTH &&
         value.dreamSignDecisions.every(isLucidPersistedDreamSignDecision) &&
-        hasUniqueStrings(value.dreamSignDecisions.map((item) => item.id))))
+        hasUniqueStrings(value.dreamSignDecisions.map((item) => item.id)))) &&
+    (value.dreamAtlas === undefined || isLucidDreamAtlasOverlay(value.dreamAtlas))
   );
 }
 
@@ -828,6 +830,8 @@ export function isLucidSyncEntity(value: unknown): value is LucidSyncEntity {
       return isLucidWeeklyReview(value.value) && value.entityKey === value.value.id;
     case 'dream_sign':
       return isLucidPersistedDreamSignDecision(value.value) && value.entityKey === value.value.id;
+    case 'dream_atlas':
+      return value.entityKey === 'dream_atlas' && isLucidDreamAtlasOverlay(value.value);
   }
 }
 

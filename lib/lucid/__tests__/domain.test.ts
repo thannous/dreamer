@@ -4,11 +4,14 @@ import {
   createInitialLucidTrainerState,
   createLucidProgramProgress,
   enforceLucidSingleActiveProgram,
+  getLucidSyncEntities,
+  hasLucidDreamAtlasSyncData,
   mergeLucidProgramProgress,
   mergeLucidTrainerStates,
   removeLucidSyncEntity,
   resolveLucidEntityConflict,
 } from '@/lib/lucid/domain';
+import { createEmptyLucidDreamAtlasOverlay } from '@/lib/lucid/dreamAtlas';
 import type { LucidExperiment, LucidSyncEntity } from '@/lib/lucid/model';
 
 describe('Lucid Trainer domain', () => {
@@ -190,6 +193,104 @@ describe('Lucid Trainer domain', () => {
       removeLucidSyncEntity(applied, 'dream_sign', 'sign:mirror', NOW + 40)
         .dreamSignDecisions
     ).toEqual([expect.objectContaining({ id: 'sign:school' })]);
+  });
+
+  it('syncs the dream atlas overlay as a LWW singleton and clears it to an empty timestamped overlay', () => {
+    const left = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    const right = createInitialLucidTrainerState({ now: NOW + 1, timeZone: 'UTC' });
+    expect(left.dreamAtlas).toEqual(createEmptyLucidDreamAtlasOverlay(0));
+    expect(hasLucidDreamAtlasSyncData(left)).toBe(false);
+    expect(getLucidSyncEntities(left).some((entity) => entity.entityType === 'dream_atlas')).toBe(true);
+
+    const legacy = { ...right };
+    delete (legacy as { dreamAtlas?: unknown }).dreamAtlas;
+    expect(getLucidSyncEntities(legacy).some((entity) => entity.entityType === 'dream_atlas')).toBe(false);
+
+    const older = {
+      version: 1 as const,
+      updatedAt: NOW + 10,
+      renamed: { 'sign:mirror': 'Miroir' },
+      hidden: [],
+      merges: {},
+      deleted: ['sign:gone'],
+    };
+    const newer = {
+      version: 1 as const,
+      updatedAt: NOW + 20,
+      renamed: { 'sign:school': 'Ecole' },
+      hidden: ['sign:mirror'],
+      merges: { 'sign:ghost': 'sign:school' },
+      deleted: ['sign:gone', 'sign:old'],
+    };
+    left.dreamAtlas = older;
+    right.dreamAtlas = newer;
+
+    const merged = mergeLucidTrainerStates(left, right);
+    expect(merged.dreamAtlas).toEqual(newer);
+    expect(mergeLucidTrainerStates(right, left).dreamAtlas).toEqual(newer);
+    expect(hasLucidDreamAtlasSyncData(merged)).toBe(true);
+
+    const tiedLeft = {
+      entityType: 'dream_atlas' as const,
+      entityKey: 'dream_atlas' as const,
+      value: { ...older, updatedAt: NOW + 30, renamed: { 'sign:alpha': 'Alpha' } },
+    };
+    const tiedRight = {
+      entityType: 'dream_atlas' as const,
+      entityKey: 'dream_atlas' as const,
+      value: { ...older, updatedAt: NOW + 30, renamed: { 'sign:omega': 'Omega' } },
+    };
+    expect(resolveLucidEntityConflict(tiedLeft, tiedRight)).toEqual(
+      resolveLucidEntityConflict(tiedRight, tiedLeft)
+    );
+
+    const applied = applyLucidSyncEntity(legacy, {
+      entityType: 'dream_atlas',
+      entityKey: 'dream_atlas',
+      value: newer,
+    });
+    expect(applied.dreamAtlas).toEqual(newer);
+    expect(applied.updatedAt).toBe(NOW + 20);
+
+    const cleared = removeLucidSyncEntity(applied, 'dream_atlas', 'dream_atlas', NOW + 40);
+    expect(cleared.dreamAtlas).toEqual(createEmptyLucidDreamAtlasOverlay(NOW + 40));
+    expect(cleared.dreamAtlas?.deleted).toEqual([]);
+    expect(hasLucidDreamAtlasSyncData(cleared)).toBe(false);
+    expect(cleared.onboarding).toEqual(applied.onboarding);
+    expect(cleared.preferences).toEqual(applied.preferences);
+
+    const olderWithoutTombstones = {
+      ...applied,
+      dreamAtlas: {
+        version: 1 as const,
+        updatedAt: NOW + 15,
+        renamed: { 'sign:school': 'Ecole' },
+        hidden: [],
+        merges: {},
+        deleted: [],
+      },
+      updatedAt: NOW + 15,
+    };
+    const keptTombstones = mergeLucidTrainerStates(olderWithoutTombstones, applied);
+    expect(keptTombstones.dreamAtlas?.deleted).toEqual(['sign:gone', 'sign:old']);
+    expect(mergeLucidTrainerStates(applied, olderWithoutTombstones).dreamAtlas).toEqual(applied.dreamAtlas);
+
+    const fresh = createInitialLucidTrainerState({ now: NOW + 50_000, timeZone: 'UTC' });
+    const remote = {
+      ...createInitialLucidTrainerState({ now: NOW - 50_000, timeZone: 'UTC' }),
+      dreamAtlas: {
+        version: 1 as const,
+        updatedAt: NOW - 40_000,
+        renamed: { 'sign:mirror': 'Miroir distant' },
+        hidden: [],
+        merges: {},
+        deleted: ['sign:gone'],
+      },
+    };
+    expect(fresh.dreamAtlas?.updatedAt).toBe(0);
+    expect(fresh.updatedAt).toBeGreaterThan(remote.dreamAtlas.updatedAt);
+    expect(mergeLucidTrainerStates(fresh, remote).dreamAtlas).toEqual(remote.dreamAtlas);
+    expect(mergeLucidTrainerStates(remote, fresh).dreamAtlas).toEqual(remote.dreamAtlas);
   });
 
   it('pauses extra active programs without losing their sequential progress', () => {

@@ -6,9 +6,12 @@ import {
   canAccessLucidDreamAtlasSources,
   canDeleteLucidDreamAtlasSign,
   compareLucidDreamAtlasIds,
+  createEmptyLucidDreamAtlasOverlay,
   deleteLucidDreamAtlasNode,
+  hasLucidDreamAtlasOverlayData,
   hideLucidDreamAtlasNode,
   isLucidDreamAtlasId,
+  isLucidDreamAtlasOverlay,
   isLucidDreamAtlasSourceId,
   listLucidDreamAtlasNodes,
   mergeLucidDreamAtlasNodes,
@@ -17,6 +20,7 @@ import {
   parseLucidDreamAtlasExport,
   rebuildLucidDreamAtlasAfterDreamDeleted,
   renameLucidDreamAtlasNode,
+  serializeLucidDreamAtlasOverlay,
   serializeLucidDreamAtlasPreferences,
   type LucidDreamAtlasSnapshot,
 } from '@/lib/lucid/dreamAtlas';
@@ -579,5 +583,85 @@ describe('lucid dream atlas domain', () => {
     expect(renamed.preferences).toEqual(frozen);
     expect(hidden.preferences).toEqual(frozen);
     expect(deleted.preferences).toEqual(frozen);
+  });
+
+  it('validates a strict timestamped overlay and rejects extra or invalid fields', () => {
+    const empty = createEmptyLucidDreamAtlasOverlay(NOW);
+    expect(empty).toEqual({
+      version: LUCID_DREAM_ATLAS_VERSION,
+      updatedAt: NOW,
+      renamed: {},
+      hidden: [],
+      merges: {},
+      deleted: [],
+    });
+    expect(isLucidDreamAtlasOverlay(empty)).toBe(true);
+    expect(hasLucidDreamAtlasOverlayData(empty)).toBe(false);
+    expect(serializeLucidDreamAtlasOverlay(empty)).toEqual({
+      version: LUCID_DREAM_ATLAS_VERSION,
+      preferences: {
+        version: LUCID_DREAM_ATLAS_VERSION,
+        renamed: {},
+        hidden: [],
+        merges: {},
+        deleted: [],
+      },
+    });
+
+    const populated = {
+      version: LUCID_DREAM_ATLAS_VERSION,
+      updatedAt: NOW + 10,
+      renamed: { 'sign:marie': 'Marie au miroir' },
+      hidden: ['sign:miroir'],
+      merges: { 'sign:ghost': 'sign:marie' },
+      deleted: ['sign:gone'],
+    };
+    expect(isLucidDreamAtlasOverlay(populated)).toBe(true);
+    expect(hasLucidDreamAtlasOverlayData(populated)).toBe(true);
+    expect(serializeLucidDreamAtlasOverlay(populated).preferences.deleted).toEqual(['sign:gone']);
+
+    expect(isLucidDreamAtlasOverlay({ ...empty, extra: true })).toBe(false);
+    expect(isLucidDreamAtlasOverlay({ ...empty, updatedAt: -1 })).toBe(false);
+    expect(isLucidDreamAtlasOverlay({ ...empty, version: 99 })).toBe(false);
+    expect(isLucidDreamAtlasOverlay({
+      version: LUCID_DREAM_ATLAS_VERSION,
+      renamed: {},
+      hidden: [],
+      merges: {},
+      deleted: [],
+    })).toBe(false);
+    expect(isLucidDreamAtlasOverlay({
+      ...empty,
+      hidden: ['constructor'],
+    })).toBe(false);
+    expect(isLucidDreamAtlasOverlay({
+      ...empty,
+      merges: { 'sign:marie': 'sign:marie' },
+    })).toBe(false);
+
+    for (const invalid of [null, 1, 'x', true]) {
+      expect(() => isLucidDreamAtlasOverlay({ ...empty, renamed: invalid })).not.toThrow();
+      expect(isLucidDreamAtlasOverlay({ ...empty, renamed: invalid })).toBe(false);
+      expect(() => isLucidDreamAtlasOverlay({ ...empty, hidden: invalid })).not.toThrow();
+      expect(isLucidDreamAtlasOverlay({ ...empty, hidden: invalid })).toBe(false);
+      expect(() => isLucidDreamAtlasOverlay({ ...empty, merges: invalid })).not.toThrow();
+      expect(isLucidDreamAtlasOverlay({ ...empty, merges: invalid })).toBe(false);
+      expect(() => isLucidDreamAtlasOverlay({ ...empty, deleted: invalid })).not.toThrow();
+      expect(isLucidDreamAtlasOverlay({ ...empty, deleted: invalid })).toBe(false);
+    }
+
+    const overflowIds = Array.from({ length: LUCID_DREAM_ATLAS_MAX_NODES + 1 }, (_, index) =>
+      `sign:node_${String(index).padStart(3, '0')}`
+    );
+    const overflowRenames = Object.fromEntries(overflowIds.map((id) => [id, 'Label']));
+    const overflowMerges = Object.fromEntries(overflowIds.map((id) => [id, 'sign:keep']));
+    expect(isLucidDreamAtlasOverlay({ ...empty, renamed: overflowRenames })).toBe(false);
+    expect(isLucidDreamAtlasOverlay({ ...empty, hidden: overflowIds })).toBe(false);
+    expect(isLucidDreamAtlasOverlay({ ...empty, merges: overflowMerges })).toBe(false);
+    expect(isLucidDreamAtlasOverlay({ ...empty, deleted: overflowIds })).toBe(false);
+    expect(isLucidDreamAtlasOverlay({
+      ...empty,
+      hidden: overflowIds.slice(0, LUCID_DREAM_ATLAS_MAX_NODES),
+    })).toBe(true);
   });
 });

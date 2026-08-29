@@ -113,6 +113,77 @@ describe('Lucid Trainer model', () => {
     expect(isLucidPersistedDreamSignDecision({ ...decision, customLabel: 'x'.repeat(81) })).toBe(false);
   });
 
+  it('keeps dreamAtlas optional on historical v1 state and validates the singleton overlay', () => {
+    const state = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    expect(state.dreamAtlas).toEqual({
+      version: 1,
+      updatedAt: 0,
+      renamed: {},
+      hidden: [],
+      merges: {},
+      deleted: [],
+    });
+    expect(isLucidTrainerState(state)).toBe(true);
+    expect(parseLucidTrainerState(JSON.stringify(state))).toEqual(state);
+
+    const historical = { ...state };
+    delete (historical as { dreamAtlas?: unknown }).dreamAtlas;
+    expect(isLucidTrainerState(historical)).toBe(true);
+    expect(parseLucidTrainerState(JSON.stringify(historical))).toEqual(historical);
+
+    const overlay = {
+      version: 1 as const,
+      updatedAt: NOW + 5,
+      renamed: { 'sign:mirror': 'Miroir' },
+      hidden: ['sign:school'],
+      merges: { 'sign:ghost': 'sign:mirror' },
+      deleted: ['sign:gone'],
+    };
+    expect(isLucidTrainerState({ ...historical, dreamAtlas: overlay })).toBe(true);
+    expect(isLucidSyncEntity({
+      entityType: 'dream_atlas',
+      entityKey: 'dream_atlas',
+      value: overlay,
+    })).toBe(true);
+    expect(isLucidSyncEntity({
+      entityType: 'dream_atlas',
+      entityKey: 'atlas',
+      value: overlay,
+    })).toBe(false);
+    expect(isLucidTrainerState({
+      ...state,
+      dreamAtlas: { ...overlay, extra: true },
+    })).toBe(false);
+    expect(isLucidTrainerState({
+      ...state,
+      dreamAtlas: { ...overlay, updatedAt: Number.NaN },
+    })).toBe(false);
+
+    const overflowIds = Array.from({ length: 201 }, (_, index) => `sign:node_${String(index).padStart(3, '0')}`);
+    expect(isLucidTrainerState({
+      ...state,
+      dreamAtlas: { ...state.dreamAtlas!, hidden: overflowIds },
+    })).toBe(false);
+    expect(isLucidTrainerState({
+      ...state,
+      dreamAtlas: { ...state.dreamAtlas!, deleted: overflowIds },
+    })).toBe(false);
+    expect(isLucidTrainerState({
+      ...state,
+      dreamAtlas: {
+        ...state.dreamAtlas!,
+        renamed: Object.fromEntries(overflowIds.map((id) => [id, 'Label'])),
+      },
+    })).toBe(false);
+    expect(isLucidTrainerState({
+      ...state,
+      dreamAtlas: {
+        ...state.dreamAtlas!,
+        merges: Object.fromEntries(overflowIds.map((id) => [id, 'sign:keep'])),
+      },
+    })).toBe(false);
+  });
+
   it('links reality checks only to a complete confirmed-sign identity', () => {
     const check = {
       id: 'check-1',

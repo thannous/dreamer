@@ -3,11 +3,11 @@ import {
   LUCID_DREAM_SIGN_DECISIONS,
   type LucidDreamSignDecision,
   type LucidDreamSignDecisionRecord,
-  type LucidLocale,
-} from '@/lib/lucid/model';
+} from '@/lib/lucid/dreamSignModel';
+import type { LucidLocale } from '@/lib/lucid/model';
 
-export { LUCID_DREAM_SIGN_DECISIONS } from '@/lib/lucid/model';
-export type { LucidDreamSignDecision, LucidDreamSignDecisionRecord } from '@/lib/lucid/model';
+export { LUCID_DREAM_SIGN_DECISIONS } from '@/lib/lucid/dreamSignModel';
+export type { LucidDreamSignDecision, LucidDreamSignDecisionRecord } from '@/lib/lucid/dreamSignModel';
 
 export const LUCID_DREAM_SIGN_MIN_DISTINCT_DREAMS = 2 as const;
 export const LUCID_DREAM_SIGN_MAX_EVIDENCE_SNIPPETS = 3 as const;

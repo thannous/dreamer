@@ -9,6 +9,7 @@ import {
 
 export const LUCID_DREAM_ATLAS_VERSION = 1 as const;
 export const LUCID_DREAM_ATLAS_MAX_NODES = 200 as const;
+export const LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT = 0 as const;
 export const LUCID_DREAM_ATLAS_MAX_SOURCES_PER_NODE = 500 as const;
 export const LUCID_DREAM_ATLAS_MAX_LABEL_CHARS = LUCID_DREAM_SIGN_MAX_LABEL_CHARS;
 export const LUCID_DREAM_ATLAS_MAX_NODE_ID_CHARS = 128 as const;
@@ -54,6 +55,10 @@ export type LucidDreamAtlasPreferences = {
   deleted: string[];
 };
 
+export type LucidDreamAtlasOverlay = LucidDreamAtlasPreferences & {
+  updatedAt: number;
+};
+
 export type LucidDreamAtlasSnapshot = {
   version: typeof LUCID_DREAM_ATLAS_VERSION;
   nodes: LucidDreamAtlasNode[];
@@ -66,6 +71,7 @@ export type LucidDreamAtlasExport = {
 };
 
 const ALLOWED_PREFERENCE_KEYS = ['version', 'renamed', 'hidden', 'merges', 'deleted'] as const;
+const ALLOWED_OVERLAY_KEYS = ['version', 'updatedAt', 'renamed', 'hidden', 'merges', 'deleted'] as const;
 const ALLOWED_EXPORT_KEYS = ['version', 'preferences'] as const;
 const CONTROL_CHARS = /[\u0000-\u001F\u007F]/;
 const NODE_ID_PATTERN = /^sign:[A-Za-z0-9][A-Za-z0-9_-]{0,121}$/;
@@ -152,6 +158,58 @@ export function createEmptyLucidDreamAtlasPreferences(): LucidDreamAtlasPreferen
     merges: {},
     deleted: [],
   };
+}
+
+export function createEmptyLucidDreamAtlasOverlay(updatedAt: number): LucidDreamAtlasOverlay {
+  return {
+    ...createEmptyLucidDreamAtlasPreferences(),
+    updatedAt,
+  };
+}
+
+export function lucidDreamAtlasOverlayPreferences(
+  overlay: LucidDreamAtlasOverlay
+): LucidDreamAtlasPreferences {
+  return {
+    version: overlay.version,
+    renamed: overlay.renamed,
+    hidden: overlay.hidden,
+    merges: overlay.merges,
+    deleted: overlay.deleted,
+  };
+}
+
+function isFiniteOverlayTimestamp(value: unknown): value is number {
+  return (
+    typeof value === 'number' &&
+    Number.isFinite(value) &&
+    value >= 0 &&
+    value <= 8_640_000_000_000_000
+  );
+}
+
+export function isLucidDreamAtlasOverlay(value: unknown): value is LucidDreamAtlasOverlay {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  if (!hasExactKeys(value, ALLOWED_OVERLAY_KEYS)) return false;
+  const overlay = value as LucidDreamAtlasOverlay;
+  if (!isFiniteOverlayTimestamp(overlay.updatedAt)) return false;
+  const preferences = lucidDreamAtlasOverlayPreferences(overlay);
+  if (!isStrictLucidDreamAtlasPreferences(preferences)) return false;
+  return (
+    Object.keys(preferences.renamed).length <= LUCID_DREAM_ATLAS_MAX_NODES &&
+    preferences.hidden.length <= LUCID_DREAM_ATLAS_MAX_NODES &&
+    Object.keys(preferences.merges).length <= LUCID_DREAM_ATLAS_MAX_NODES &&
+    preferences.deleted.length <= LUCID_DREAM_ATLAS_MAX_NODES
+  );
+}
+
+export function hasLucidDreamAtlasOverlayData(overlay: LucidDreamAtlasOverlay): boolean {
+  return (
+    Object.keys(overlay.renamed).length > 0 ||
+    overlay.hidden.length > 0 ||
+    Object.keys(overlay.merges).length > 0 ||
+    overlay.deleted.length > 0
+  );
 }
 
 function canonicalSourceTime(sourceId: string): number | null {
@@ -323,6 +381,12 @@ export function serializeLucidDreamAtlasPreferences(
     version: LUCID_DREAM_ATLAS_VERSION,
     preferences: normalizeLucidDreamAtlasPreferences(preferences),
   };
+}
+
+export function serializeLucidDreamAtlasOverlay(
+  overlay: LucidDreamAtlasOverlay
+): LucidDreamAtlasExport {
+  return serializeLucidDreamAtlasPreferences(lucidDreamAtlasOverlayPreferences(overlay));
 }
 
 function confirmedSigns(signs: readonly LucidReconciledDreamSign[]): LucidReconciledDreamSign[] {

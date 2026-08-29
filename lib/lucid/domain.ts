@@ -1,4 +1,9 @@
 import {
+  LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT,
+  createEmptyLucidDreamAtlasOverlay,
+  hasLucidDreamAtlasOverlayData,
+} from '@/lib/lucid/dreamAtlas';
+import {
   DEFAULT_LUCID_MINDFUL_PAUSE_REMINDER_ANCHORS,
   LUCID_TRAINER_SCHEMA_VERSION,
   LUCID_TECHNIQUES,
@@ -198,6 +203,7 @@ export function createInitialLucidTrainerState(params: {
     realityChecks: [],
     weeklyReviews: [],
     dreamSignDecisions: [],
+    dreamAtlas: createEmptyLucidDreamAtlasOverlay(LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT),
   };
 }
 
@@ -298,6 +304,9 @@ export function getLucidSyncEntities(state: LucidTrainerState): LucidSyncEntity[
         value,
       })
     ),
+    ...(state.dreamAtlas
+      ? [{ entityType: 'dream_atlas' as const, entityKey: 'dream_atlas' as const, value: state.dreamAtlas }]
+      : []),
   ];
 }
 
@@ -351,6 +360,8 @@ export function applyLucidSyncEntity(
           entity.value,
         ].sort((a, b) => a.id.localeCompare(b.id)),
       };
+    case 'dream_atlas':
+      return { ...state, dreamAtlas: entity.value, updatedAt };
   }
 }
 
@@ -457,6 +468,14 @@ export function removeLucidSyncEntity(
           (item) => item.id !== entityKey
         ),
       };
+    case 'dream_atlas':
+      // Remote clear keeps the singleton. An empty timestamped overlay is the
+      // durable deletion, never a missing field or a global wipe.
+      return {
+        ...state,
+        updatedAt: nextUpdatedAt,
+        dreamAtlas: createEmptyLucidDreamAtlasOverlay(nextUpdatedAt),
+      };
   }
 }
 
@@ -476,6 +495,10 @@ export function mergeLucidTrainerStates(
   if (!onboarding || !preferences) {
     throw new Error('Lucid Trainer state is missing required singleton entities');
   }
+  const dreamAtlas = mergedEntities.find(
+    (entity): entity is Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> =>
+      entity.entityType === 'dream_atlas'
+  );
 
   return {
     schemaVersion: LUCID_TRAINER_SCHEMA_VERSION,
@@ -519,7 +542,12 @@ export function mergeLucidTrainerStates(
       )
       .map((entity) => entity.value)
       .sort((a, b) => a.id.localeCompare(b.id)),
+    ...(dreamAtlas ? { dreamAtlas: dreamAtlas.value } : {}),
   };
+}
+
+export function hasLucidDreamAtlasSyncData(state: LucidTrainerState): boolean {
+  return state.dreamAtlas != null && hasLucidDreamAtlasOverlayData(state.dreamAtlas);
 }
 
 export function updateLucidOnboarding(
