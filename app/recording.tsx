@@ -37,6 +37,7 @@ import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AnalysisStep, useAnalysisProgress } from '@/hooks/useAnalysisProgress';
 import { useQuota } from '@/hooks/useQuota';
+import { useRecordingDraftPersistence } from '@/hooks/useRecordingDraftPersistence';
 import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
@@ -209,6 +210,14 @@ export default function RecordingScreen() {
   const [pendingGuestLimitDream, setPendingGuestLimitDream] = useState<DreamAnalysis | null>(null);
   const recordingTransitionRef = useRef(false);
   const baseTranscriptRef = useRef('');
+  const handleRestoreDraft = useCallback((savedTranscript: string) => {
+    setTranscript(savedTranscript);
+    baseTranscriptRef.current = savedTranscript;
+  }, []);
+  const { noteInput, clearAfterSuccessfulSave } = useRecordingDraftPersistence({
+    transcript,
+    onRestore: handleRestoreDraft,
+  });
   const [lengthWarning, setLengthWarning] = useState('');
   const analysisProgress = useAnalysisProgress();
   const hasAutoStoppedRecordingRef = useRef(false);
@@ -514,10 +523,11 @@ export default function RecordingScreen() {
           capture_context: captureIntent,
         });
       }
+      noteInput(text);
       setTranscript(text);
       baseTranscriptRef.current = text;
     },
-    [captureIntent]
+    [captureIntent, noteInput]
   );
 
   const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
@@ -530,6 +540,7 @@ export default function RecordingScreen() {
     },
     onPartialTranscript: (text) => {
       const { text: combined } = combineTranscript(baseTranscriptRef.current, text);
+      noteInput(combined);
       setTranscript(combined);
       baseTranscriptRef.current = combined;
     },
@@ -646,12 +657,13 @@ export default function RecordingScreen() {
   }, [analysisProgress]);
 
   const handleClearTranscript = useCallback(() => {
+    noteInput('');
     setTranscript('');
     setLengthWarning('');
     setVoiceFallbackReason(null);
     baseTranscriptRef.current = '';
     activationInsightTrackedSurfacesRef.current.clear();
-  }, []);
+  }, [noteInput]);
 
   const navigateToJournalDetail = useCallback((dreamId: string | number) => {
     router.replace('/(tabs)/journal');
@@ -725,6 +737,7 @@ export default function RecordingScreen() {
         setIsPersisting(true);
         const preCount = dreams.length;
         const savedDream = await addDream(pendingGuestLimitDream);
+        clearAfterSuccessfulSave();
         if (cancelled) {
           return;
         }
@@ -781,6 +794,7 @@ export default function RecordingScreen() {
     user,
     pendingGuestLimitDream,
     addDream,
+    clearAfterSuccessfulSave,
     dreams.length,
     navigateAfterSave,
     resetComposer,
@@ -849,11 +863,13 @@ export default function RecordingScreen() {
             similarity: similarity.toFixed(2),
           });
           // Use final as-is (it might have corrections from the STT engine)
+          noteInput(transcriptText);
           baseTranscriptRef.current = transcriptText;
           setTranscript(transcriptText);
         } else {
           // Final is significantly different - combine with base
           const { text: combined } = combineTranscript(baseTranscriptRef.current, transcriptText);
+          noteInput(combined);
           baseTranscriptRef.current = combined;
           setTranscript((prev) => (prev.trim() === combined.trim() ? prev : combined));
         }
@@ -898,6 +914,7 @@ export default function RecordingScreen() {
     combineTranscript,
     normalizeForComparison,
     handleVoiceCaptureFailure,
+    noteInput,
     showQuotaSheet,
     stopSessionRecording,
   ]);
@@ -1042,6 +1059,7 @@ export default function RecordingScreen() {
         : buildDraftDream(latestTranscript);
 
       const savedDream = await addDream(dreamToSave);
+      clearAfterSuccessfulSave();
       setDraftDream(savedDream);
       void categorizeDream(latestTranscript, language)
         .then((categorization) => applyDreamCategorization(savedDream.id, categorization))
@@ -1106,6 +1124,7 @@ export default function RecordingScreen() {
     applyDreamCategorization,
     buildDraftDream,
     captureIntent,
+    clearAfterSuccessfulSave,
     dreams.length,
     draftDream,
     isRecordingRef,

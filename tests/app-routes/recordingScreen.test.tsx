@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { DreamAnalysis } from '@/lib/types';
@@ -12,6 +12,8 @@ const mockCategorizeDream = jest.fn();
 const mockForceStopRecording = jest.fn();
 const mockGetGuestRecordedDreamCount = jest.fn();
 const mockGetInputModePreference = jest.fn();
+const mockGetSavedTranscript = jest.fn(async (): Promise<string> => '');
+const mockSaveTranscript = jest.fn(async (_value: string): Promise<void> => undefined);
 const mockBack = jest.fn();
 const mockCanGoBack = jest.fn(() => false);
 const mockPush = jest.fn();
@@ -26,6 +28,7 @@ let mockPlatformOS: 'android' | 'web' = 'web';
 let mockRecordingPermissionState: 'unknown' | 'granted' | 'denied' = 'unknown';
 let mockReferenceImagesEnabled = false;
 let mockViewportWidth = 390;
+let mockOnPartialTranscript: ((text: string) => void) | undefined;
 
 const buildDream = (transcript: string, id = 42): DreamAnalysis => ({
   id,
@@ -438,14 +441,21 @@ jest.doMock('@/hooks/useQuota', () => ({
 }));
 
 jest.doMock('@/hooks/useRecordingSession', () => ({
-  useRecordingSession: () => ({
-    forceStopRecording: mockForceStopRecording,
-    isRecording: false,
-    isRecordingRef: { current: false },
-    recordingPermissionState: mockRecordingPermissionState,
-    startRecording: mockStartRecording,
-    stopRecording: mockStopRecording,
-  }),
+  useRecordingSession: ({
+    onPartialTranscript,
+  }: {
+    onPartialTranscript?: (text: string) => void;
+  }) => {
+    mockOnPartialTranscript = onPartialTranscript;
+    return {
+      forceStopRecording: mockForceStopRecording,
+      isRecording: false,
+      isRecordingRef: { current: false },
+      recordingPermissionState: mockRecordingPermissionState,
+      startRecording: mockStartRecording,
+      stopRecording: mockStopRecording,
+    };
+  },
 }));
 
 jest.doMock('@/hooks/useTranslation', () => ({
@@ -564,8 +574,10 @@ jest.doMock('@/services/quota/GuestDreamCounter', () => ({
 jest.doMock('@/services/storageService', () => ({
   getRecordingInputModePreference: mockGetInputModePreference,
   getRecordingVoiceHintCompleted: jest.fn().mockResolvedValue(true),
+  getSavedTranscript: mockGetSavedTranscript,
   saveRecordingInputModePreference: mockSaveInputModePreference,
   saveRecordingVoiceHintCompleted: jest.fn().mockResolvedValue(undefined),
+  saveTranscript: mockSaveTranscript,
 }));
 
 const { default: RecordingScreen } = require('@/app/recording');
@@ -577,6 +589,11 @@ describe('Recording screen', () => {
     mockRecordingPermissionState = 'unknown';
     mockReferenceImagesEnabled = false;
     mockViewportWidth = 390;
+    mockOnPartialTranscript = undefined;
+    mockGetSavedTranscript.mockReset();
+    mockSaveTranscript.mockReset();
+    mockGetSavedTranscript.mockResolvedValue('');
+    mockSaveTranscript.mockResolvedValue(undefined);
     mockAddDream.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream, id: 42 }));
     mockApplyDreamCategorization.mockResolvedValue(null);
     mockCategorizeDream.mockResolvedValue({
@@ -782,5 +799,185 @@ describe('Recording screen', () => {
 
     const proposition = await screen.findByTestId('subject-proposition');
     expect(proposition.getAttribute('data-subject-type')).toBe('animal');
+  });
+
+  it('restores a saved draft into the editor after remount', async () => {
+    let stored = 'a remembered dream';
+    mockGetSavedTranscript.mockImplementation(async () => stored);
+    mockSaveTranscript.mockImplementation(async (value: string) => {
+      stored = value;
+    });
+
+    const { unmount } = render(<RecordingScreen />);
+    await waitFor(() => {
+      expect(
+        (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+      ).toBe('a remembered dream');
+    });
+    unmount();
+
+    render(<RecordingScreen />);
+    await waitFor(() => {
+      expect(
+        (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+      ).toBe('a remembered dream');
+    });
+    expect(mockSaveTranscript).not.toHaveBeenCalledWith('');
+  });
+
+  it.each([601, 10_000] as const)(
+    'autosaves a typed transcript of %s characters intact',
+    async (length: 601 | 10_000) => {
+      const longTranscript = 'a'.repeat(length);
+      render(<RecordingScreen />);
+
+      fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+        target: { value: longTranscript },
+      });
+
+      await waitFor(() => {
+        expect(mockSaveTranscript).toHaveBeenCalledWith(longTranscript);
+        expect(mockSaveTranscript.mock.calls.at(-1)?.[0]).toHaveLength(length);
+      });
+    }
+  );
+
+  it('autosaves a voice-updated transcript', async () => {
+    render(<RecordingScreen />);
+
+    await waitFor(() => {
+      expect(mockOnPartialTranscript).toEqual(expect.any(Function));
+    });
+
+    act(() => {
+      mockOnPartialTranscript?.('dictated scene beside the lake');
+    });
+
+    await waitFor(() => {
+      expect(mockSaveTranscript).toHaveBeenCalledWith('dictated scene beside the lake');
+      expect(
+        (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+      ).toBe('dictated scene beside the lake');
+    });
+  });
+
+  it('keeps the durable draft when addDream fails', async () => {
+    mockAddDream.mockRejectedValue(new Error('journal write failed'));
+    render(<RecordingScreen />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'keep this draft' },
+    });
+
+    await waitFor(() => {
+      expect(mockSaveTranscript).toHaveBeenCalledWith('keep this draft');
+    });
+
+    fireEvent.click(await screen.findByTestId('recording-save'));
+
+    await waitFor(() => {
+      expect(mockAddDream).toHaveBeenCalled();
+    });
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 400));
+    });
+
+    expect(mockSaveTranscript).not.toHaveBeenCalledWith('');
+    expect(
+      (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+    ).toBe('keep this draft');
+  });
+
+  it('clears the durable draft exactly once after addDream succeeds', async () => {
+    render(<RecordingScreen />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'persist then clear' },
+    });
+
+    await waitFor(() => {
+      expect(mockSaveTranscript).toHaveBeenCalledWith('persist then clear');
+    });
+
+    fireEvent.click(await screen.findByTestId('recording-save'));
+
+    await waitFor(() => {
+      expect(mockAddDream).toHaveBeenCalledWith(
+        expect.objectContaining({ transcript: 'persist then clear' })
+      );
+      expect(mockSaveTranscript).toHaveBeenCalledWith('');
+    });
+
+    const callsAfterClear = mockSaveTranscript.mock.calls.length;
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 400));
+    });
+
+    expect(mockSaveTranscript.mock.calls.length).toBe(callsAfterClear);
+    expect(mockSaveTranscript.mock.calls.filter((call: [string]) => call[0] === '').length).toBe(1);
+    expect(mockSaveTranscript.mock.calls.at(-1)?.[0]).toBe('');
+  });
+
+  it('lets typing win over a late restored draft', async () => {
+    let resolveGet: ((value: string) => void) | undefined;
+    mockGetSavedTranscript.mockImplementation(
+      () =>
+        new Promise<string>((resolve) => {
+          resolveGet = resolve;
+        })
+    );
+
+    render(<RecordingScreen />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'typed while loading' },
+    });
+
+    await act(async () => {
+      resolveGet?.('saved draft from disk');
+      await Promise.resolve();
+    });
+
+    expect(
+      (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+    ).toBe('typed while loading');
+
+    await waitFor(() => {
+      expect(mockSaveTranscript).toHaveBeenCalledWith('typed while loading');
+    });
+    expect(mockSaveTranscript).not.toHaveBeenCalledWith('saved draft from disk');
+  });
+
+  it('does not erase stored content during the initial empty render', async () => {
+    let resolveGet: ((value: string) => void) | undefined;
+    mockGetSavedTranscript.mockImplementation(
+      () =>
+        new Promise<string>((resolve) => {
+          resolveGet = resolve;
+        })
+    );
+
+    render(<RecordingScreen />);
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 400));
+    });
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+    expect(
+      (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+    ).toBe('');
+
+    await act(async () => {
+      resolveGet?.('stored dream');
+      await Promise.resolve();
+    });
+
+    await waitFor(() => {
+      expect(
+        (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+      ).toBe('stored dream');
+    });
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
   });
 });
