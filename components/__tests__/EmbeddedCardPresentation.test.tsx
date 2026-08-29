@@ -171,10 +171,6 @@ jest.mock('@/lib/env', () => ({
   isMockModeEnabled: () => mockIsMockModeEnabled(),
 }));
 
-jest.mock('@/lib/guestLimits', () => ({
-  getGuestDreamRecordingLimit: () => 3,
-}));
-
 jest.mock('@/lib/navigationIntents', () => ({
   requestStayOnSettingsIntent: jest.fn(),
 }));

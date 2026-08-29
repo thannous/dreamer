@@ -30,8 +30,12 @@ jest.mock('react-native', () => {
       </button>
     ),
     StyleSheet: { create: (styles: Record<string, unknown>) => styles },
-    Text: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
-    View: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+    Text: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
+      <span data-testid={testID}>{children}</span>
+    ),
+    View: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
+      <div data-testid={testID}>{children}</div>
+    ),
   };
 });
 
@@ -66,14 +70,8 @@ jest.mock('@/hooks/useTranslation', () => ({
     t: (key: string) => {
       const values: Record<string, string> = {
         'recording.preference.label': 'Mode',
-        'recording.preference.view_title': 'Vue de capture',
-        'recording.preference.text': 'Écrit',
-        'recording.preference.voice': 'Vocal',
-        'recording.preference.selected': 'Vue actuelle',
-        'recording.preference.text_hint': 'Si tu préfères écrire ton rêve.',
-        'recording.preference.voice_hint': 'Si tu préfères le dicter à voix haute.',
-        'recording.preference.accessibility': 'Ouvrir les réglages de capture',
-        'recording.preference.dismiss_accessibility': 'Fermer les réglages de capture',
+        'recording.preference.text': 'Écrire',
+        'recording.preference.voice': 'Raconter',
       };
       return values[key] ?? key;
     },
@@ -81,54 +79,41 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 describe('RecordingInputModeSelect', () => {
-  it('opens the preference menu and selects voice mode', () => {
+  it('shows both capture paths without opening a menu', () => {
     const onChange = jest.fn();
-    const onOpenChange = jest.fn();
-    const onOptionSelected = jest.fn();
 
-    render(
-      <RecordingInputModeSelect
-        value="text"
-        onOpenChange={onOpenChange}
-        onOptionSelected={onOptionSelected}
-        onChange={onChange}
-      />
-    );
+    render(<RecordingInputModeSelect value="text" onChange={onChange} />);
 
-    expect(screen.queryByText('Vue de capture')).toBeNull();
-    expect(screen.queryByText('Mode')).toBeNull();
-    expect(screen.queryByText('Écrit')).toBeNull();
-    expect(screen.getByTestId('icon.line.3.horizontal')).toBeTruthy();
-
-    fireEvent.click(screen.getByTestId(TID.Button.InputModeSelect));
-    expect(onOpenChange).toHaveBeenCalledWith(true);
-    expect(screen.getByText('Vue de capture')).toBeTruthy();
-    expect(screen.getByText('Écrit')).toBeTruthy();
-    expect(screen.getByText('Si tu préfères écrire ton rêve.')).toBeTruthy();
-    expect(screen.getByText('Si tu préfères le dicter à voix haute.')).toBeTruthy();
-    fireEvent.click(screen.getByTestId(TID.Button.InputModeVoice));
-
-    expect(onOpenChange).toHaveBeenLastCalledWith(false);
-    expect(onOptionSelected).toHaveBeenCalledWith('voice');
-    expect(onChange).toHaveBeenCalledWith('voice');
+    expect(screen.getByTestId(TID.Button.InputModeSelect)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.InputModeText)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.InputModeVoice)).toBeTruthy();
+    expect(screen.getByText('Écrire')).toBeTruthy();
+    expect(screen.getByText('Raconter')).toBeTruthy();
+    expect(screen.getByTestId(TID.Text.RecordingInputMode('text'))).toBeTruthy();
+    expect(screen.getByTestId(TID.Text.RecordingInputMode('voice'))).toBeTruthy();
+    expect(screen.queryByTestId('icon.line.3.horizontal')).toBeNull();
+    expect(screen.queryByTestId(TID.Button.InputModeDismiss)).toBeNull();
+    expect(onChange).not.toHaveBeenCalled();
   });
 
-  it('closes the preference menu when pressing outside of it', () => {
+  it('switches from write to tell without a hidden menu', () => {
     const onChange = jest.fn();
 
-    render(
-      <RecordingInputModeSelect
-        value="text"
-        onChange={onChange}
-      />
-    );
+    render(<RecordingInputModeSelect value="text" onChange={onChange} />);
 
-    fireEvent.click(screen.getByTestId(TID.Button.InputModeSelect));
-    expect(screen.getByText('Vue de capture')).toBeTruthy();
+    fireEvent.click(screen.getByTestId(TID.Button.InputModeVoice));
 
-    fireEvent.click(screen.getByTestId(TID.Button.InputModeDismiss));
+    expect(onChange).toHaveBeenCalledWith('voice');
+    expect(onChange).toHaveBeenCalledTimes(1);
+  });
 
-    expect(screen.queryByText('Vue de capture')).toBeNull();
+  it('does not emit a change when the current path is selected again', () => {
+    const onChange = jest.fn();
+
+    render(<RecordingInputModeSelect value="voice" onChange={onChange} />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.InputModeVoice));
+
     expect(onChange).not.toHaveBeenCalled();
   });
 });

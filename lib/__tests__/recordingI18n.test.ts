@@ -25,12 +25,9 @@ const frenchRecordingTutoiementKeys = [
   'recording.alert.offline_model.message',
   'recording.alert.limit.title',
   'recording.analysis_limit.assurance_guest',
-  'guest.limit.banner.hint',
-  'guest.limit.banner.reached',
   'guest.upsell.title',
   'guest.upsell.subtitle',
   'guest.upsell.benefit.unlimited',
-  'guest.upsell.after1.message',
   'guest.first_dream.sheet.subtitle',
 ] as const;
 
@@ -67,15 +64,6 @@ const analyzePromptSheetKeys = [
   'recording.memory_offer.view',
   'recording.memory_offer.analyze',
   'recording.memory_offer.later',
-] as const;
-
-const guestLimitSheetKeys = [
-  'recording.guest_limit_sheet.title',
-  'recording.guest_limit_sheet.message',
-  'recording.guest_limit_sheet.draft_title',
-  'recording.guest_limit_sheet.draft_message',
-  'recording.guest_limit_sheet.cta',
-  'recording.guest_limit_sheet.back_to_text',
 ] as const;
 
 const analysisLimitSheetKeys = [
@@ -339,21 +327,6 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
-  it('has translations for guest-limit sheet in all supported languages', async () => {
-    await Promise.all(languages.map((lang) => loadTranslations(lang)));
-
-    for (const lang of languages) {
-      const t = getTranslator(lang);
-
-      for (const key of guestLimitSheetKeys) {
-        const value = t(key, { limit: 2 });
-        expect(value).not.toBe(key);
-        expect(typeof value).toBe('string');
-        expect(value.length).toBeGreaterThan(0);
-      }
-    }
-  });
-
   it('has translations for analysis-limit upsell sheet in all supported languages', async () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
@@ -482,6 +455,27 @@ describe('Recording i18n - bottom sheets', () => {
         expect(typeof value).toBe('string');
         expect(value.length).toBeGreaterThan(0);
       }
+    }
+  });
+
+  it('uses verbal Write/Tell labels instead of a hidden capture menu', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    const labels: Record<(typeof languages)[number], { text: string; voice: string }> = {
+      fr: { text: 'Écrire', voice: 'Raconter' },
+      en: { text: 'Write', voice: 'Tell' },
+      es: { text: 'Escribir', voice: 'Contar' },
+      de: { text: 'Schreiben', voice: 'Erzählen' },
+      it: { text: 'Scrivere', voice: 'Raccontare' },
+      pt: { text: 'Escrever', voice: 'Contar' },
+    };
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+      expect(t('recording.preference.text')).toBe(labels[lang].text);
+      expect(t('recording.preference.voice')).toBe(labels[lang].voice);
+      expect(t('recording.preference.accessibility')).not.toMatch(/hamburger|menu cach|hidden menu|réglages de capture|capture settings/i);
+      expect(t('recording.guide.step_mode')).not.toMatch(/haut à droite|top-right|superior derecho|oben rechts|alto a destra|canto superior direito/i);
     }
   });
 

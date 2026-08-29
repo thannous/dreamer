@@ -43,7 +43,6 @@ import {
   upsertDream,
 } from '@/lib/dreamUtils';
 import { coerceQuotaError, QuotaError, QuotaErrorCode } from '@/lib/errors';
-import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import { getImageJobPollDelay } from '@/lib/imageJobPolling';
 import { logger } from '@/lib/logger';
@@ -66,7 +65,6 @@ import {
   syncWithServerCount,
 } from '@/services/quota/GuestAnalysisCounter';
 import {
-  getGuestRecordedDreamCount,
   incrementLocalDreamRecordingCount,
   withGuestDreamRecordingLock,
 } from '@/services/quota/GuestDreamCounter';
@@ -489,10 +487,6 @@ export const useDreamJournal = () => {
           return withGuestDreamRecordingLock(async () => {
             const currentDreams = dreamsRef.current;
             const alreadyExists = currentDreams.some((existing) => existing.id === normalizedDream.id);
-            const used = await getGuestRecordedDreamCount(currentDreams.length);
-            if (!alreadyExists && isGuestDreamLimitReached(used)) {
-              throw new QuotaError(QuotaErrorCode.GUEST_LIMIT_REACHED, 'guest');
-            }
             await persistLocalDreams([normalizedDream, ...currentDreams]);
             if (!alreadyExists) {
               try {

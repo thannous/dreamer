@@ -147,7 +147,7 @@ onFlowComplete:
       - tapOn: "Cancel|Annuler|Cancelar|Annulla|Abbrechen"
       - runFlow: subflows/ensure-recording-text.yml
       - assertVisible:
-          id: btn.recording.switchToVoice
+          id: btn.recording.inputMode.voice
       - evalScript: ${output.microphoneOutcome = 2}
 - assertTrue: ${output.microphoneOutcome > 0}
 

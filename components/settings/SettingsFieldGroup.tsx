@@ -341,7 +341,7 @@ export function SettingsFieldGroup({
   const { t } = useTranslation();
   const { width: viewportWidth } = useWindowDimensions();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
-  const { theme, language, journalLayout, recording } = useSettingsPreferences();
+  const { theme, language, journalLayout } = useSettingsPreferences();
   const notifications = useNotificationSettingsController();
   const [themeSheetVisible, setThemeSheetVisible] = useState(false);
   const [languageSheetVisible, setLanguageSheetVisible] = useState(false);
@@ -449,21 +449,12 @@ export function SettingsFieldGroup({
               <>
                 <PreferenceRow
                   icon="book.closed.fill"
+                  isLast
                   label={journalLayout.title}
                   noctalia={noctalia}
                   onPress={() => setJournalLayoutSheetVisible(true)}
                   testID="settings-journal-layout-choice"
                   value={journalLayout.currentLabel}
-                />
-                <PreferenceRow
-                  icon="arrow.clockwise"
-                  isLast
-                  label={recording.title}
-                  noctalia={noctalia}
-                  onPress={() => void recording.restart()}
-                  testID={recording.testID}
-                  value={recording.actionLabel}
-                  wideValue
                 />
               </>
             ) : null}

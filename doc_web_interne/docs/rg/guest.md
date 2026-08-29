@@ -13,9 +13,10 @@ Ce document décrit les **règles de gestion** appliquées quand l’utilisateur
 La source de vérité des quotas “guest” est dans `constants/limits.ts` :
 
 - Analyses (IA) : `QUOTAS.guest.analysis = 2`
-- Explorations (début de chat sur un rêve) : `QUOTAS.guest.exploration = 2`
+- Explorations (début de chat sur un rêve) : `QUOTAS.guest.exploration` n’est plus une entitlement produit (voir `limits.ts`)
 - Messages par rêve : `QUOTAS.guest.messagesPerDream = 10`
-- Rêves enregistrés : `GUEST_DREAM_LIMIT = 2` (utilisé pour l’UI + le gating)
+- Images : `QUOTAS.guest.image = 2`
+- Rêves enregistrés : illimités en local. Le compte sert au backup / sync / multi-appareils, pas à enregistrer plus de rêves.
 
 ## Où sont enregistrés les rêves guest
 
@@ -34,42 +35,32 @@ Impacts produit :
 
 ### Limite
 
-- Un utilisateur guest peut **enregistrer 2 rêves au total**.
+- Un utilisateur guest peut **enregistrer un nombre illimité de rêves localement**.
+- Aucun compte, paywall ou quota Journal n’est exigé avant confirmation de la sauvegarde.
+- Les quotas analyses / images / chat restent inchangés.
 
-### Anti-bypass
+### Compteur local (télémétrie, non bloquant)
 
-Le quota n’est **pas basé sur `dreams.length` uniquement** (sinon supprimer un rêve redonne du quota).
-
-On maintient un compteur cumulatif local :
+Un compteur cumulatif local peut encore exister :
 
 - Module : `services/quota/GuestDreamCounter.ts`
 - Clé AsyncStorage : `guest_total_dream_recording_count_v1`
-- Usage effectif : `max(compteur_local, dreams.length)`
+- Il ne décide plus si un rêve est enregistrable.
 
 ### Gating (contrôle)
 
-Le blocage est appliqué à deux niveaux :
-
-1) **Avant tentative d’enregistrement** (UX)
-- `app/recording.tsx` et `hooks/useDreamSaving.ts`
-- Si quota atteint, ouverture de la sheet “limite atteinte”.
-
-2) **Au point unique d’écriture** (sécurité)
-- `hooks/useDreamJournal.ts` (dans `addDream()` quand `user == null`)
-- Vérifie et refuse l’opération en lançant `QuotaErrorCode.GUEST_LIMIT_REACHED`.
+- Il n’y a plus de helper `lib/guestLimits.ts` ni de sheet/banner de limite Journal.
+- `app/recording.tsx` enregistre directement via `addDream`, sans pré-check ni catch `GUEST_LIMIT_REACHED`.
+- `hooks/useDreamJournal.ts` (`addDream()` guest) persiste sous lock et n’émet plus `GUEST_LIMIT_REACHED`.
+- `hooks/useDreamSaving.ts` n’applique plus de pré-check ni de catch de limite d’enregistrement.
 
 ### Concurrence (double tap / double submit)
 
-Pour éviter deux enregistrements quasi simultanés qui passeraient le check :
-
-- `withGuestDreamRecordingLock()` sérialise le “check + save + increment” (`services/quota/GuestDreamCounter.ts`).
+- `withGuestDreamRecordingLock()` sérialise encore la persistance locale guest pour éviter deux écritures simultanées.
 
 ### Migration (compat)
 
-Au démarrage, on initialise une seule fois le compteur depuis l’existant :
-
-- `migrateExistingGuestDreamRecording()` est appelé dans `app/_layout.tsx`.
-- La valeur seed est `dreams.length` pour éviter de redonner du quota après mise à jour.
+Au démarrage, `migrateExistingGuestDreamRecording()` peut encore initialiser le compteur historique depuis `dreams.length`. Cela n’a plus d’effet d’admission.
 
 ## Règle “analyses” (guest)
 
@@ -112,25 +103,26 @@ Comme pour les analyses :
 ## Affichage UI (Settings)
 
 - Carte quotas : `components/quota/QuotaStatusCard.tsx`
-- Pour le guest, la ligne “Rêves enregistrés” affiche **le total** (cumulatif) et non seulement `dreams.length`.
-- Libellé explicite : “Rêves enregistrés (total)” pour réduire la frustration (supprimer un rêve ne redonne pas de quota).
+- Les quotas affichés pour le guest restent analyses / images / chat.
+- Une éventuelle ligne “Rêves enregistrés” héritée de l’UI ne doit plus être lue comme un quota d’admission Journal.
 
 ## Limites connues / risques
 
 - Comme c’est du local, un utilisateur peut “reset” en réinstallant l’app ou en effaçant les données.
   - Mitigation possible : enforcement serveur par fingerprint (déjà en place côté endpoint quota pour certaines métriques), au prix d’une dépendance réseau.
-- Si le stockage des rêves est purgé (ex: récupération automatique “Row too big”), le compteur cumulatif peut rester à 2 et bloquer.
-  - Mitigation possible : message explicite (“données locales réinitialisées”) + CTA création de compte.
+- Si le stockage des rêves est purgé (ex: récupération automatique “Row too big”), le journal local est perdu. Le compteur historique, s’il existe encore, ne doit plus bloquer un nouvel enregistrement.
+  - Mitigation : proposer un compte pour le backup, sans quota Journal avant sauvegarde.
 
 ## Passage guest → compte (création / connexion)
 
 ### Données (rêves)
 
-Quand l’utilisateur se connecte (ou crée un compte), les rêves guest sont migrés vers Supabase :
+Quand l’utilisateur se connecte (ou crée un compte), **tous** les rêves guest locaux sont migrés vers Supabase :
 
 - Logique : `hooks/useDreamPersistence.ts` (`migrateGuestDreamsToSupabase()`)
-- Stratégie : `createDreamInSupabase()` fait un `upsert` sur `(user_id, client_request_id)` pour éviter les doublons.
-- Après migration : les rêves locaux guest sont vidés (`saveDreams([])`), puis l’app charge la liste remote.
+- Stratégie : `createDreamInSupabase()` fait un `upsert` sur `(user_id, client_request_id)` pour éviter les doublons (idempotent).
+- Après une migration **complète** : les rêves locaux guest sont vidés (`saveDreams([])`), puis l’app charge la liste remote.
+- En cas d’échec partiel : le stockage local n’est pas vidé, afin de ne perdre aucun récit. Un nouvel essai reprend les mêmes `client_request_id`.
 
 ### Quotas
 

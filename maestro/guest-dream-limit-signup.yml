@@ -1,10 +1,10 @@
 appId: com.tanuki75.noctalia
 ---
-# Guest dream limit with signup - third dream saved to account on signup
+# Guest journal is unlimited locally; signup migrates every saved dream.
 - runFlow: subflows/open-mock-app.yml
 - runFlow: subflows/reset-mock-state.yml
 
-# Guest dream 1 - save successfully as guest
+# Guest dream 1
 - runFlow: subflows/ensure-recording-text.yml
 - tapOn:
     id: input.dreamTranscript
@@ -15,7 +15,11 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.firstDream.dismiss
 
-# Guest dream 2 - save successfully as guest and use analyze prompt to reach detail
+# Guest dream 2
+- tapOn:
+    id: btn.navigateJournal
+- tapOn:
+    id: btn.addDream
 - runFlow: subflows/ensure-recording-text.yml
 - tapOn:
     id: input.dreamTranscript
@@ -26,33 +30,33 @@ appId: com.tanuki75.noctalia
 - assertVisible:
     id: text.analyzePromptTitle
 - tapOn:
-    id: btn.analyzePrompt.analyze
+    id: btn.analyzePrompt.journal
 - waitForAnimationToEnd
-- scrollUntilVisible:
-    element:
-      id: btn.exploreDream
-    direction: DOWN
-- assertVisible:
-    id: btn.exploreDream
 
-# Return to the recording screen for the third dream
-- tapOn:
-    id: btn.navigateJournal
+# Guest dream 3 - still saved as guest
 - tapOn:
     id: btn.addDream
-
-# Guest dream 3 - should be blocked by guest limit bottom sheet
 - runFlow: subflows/ensure-recording-text.yml
 - tapOn:
     id: input.dreamTranscript
 - inputText: "Guest Limit Dream 3"
 - tapOn:
     id: btn.saveDream
-- assertVisible: "Limit reached|Limite atteinte|Límite alcanzado"
+- waitForAnimationToEnd
+- assertVisible:
+    id: text.analyzePromptTitle
 - tapOn:
-    id: btn.guestLimit.cta
+    id: btn.analyzePrompt.journal
+- waitForAnimationToEnd
+- assertVisible:
+    id: screen.journal
+- assertVisible: "Guest Limit Dream 1"
+- assertVisible: "Guest Limit Dream 2"
+- assertVisible: "Guest Limit Dream 3"
 
-# Create account via email/password
+# Create account via settings; all local dreams must remain after signup
+- tapOn:
+    id: btn.mockNav.settings
 - scrollUntilVisible:
     element:
       id: input.auth.password
@@ -77,4 +81,5 @@ appId: com.tanuki75.noctalia
 - assertVisible:
     id: screen.journal
 - assertVisible: "Guest Limit Dream 1"
+- assertVisible: "Guest Limit Dream 2"
 - assertVisible: "Guest Limit Dream 3"

@@ -64,9 +64,3 @@ export const QUOTA_CONFIG: Record<UserTier, TierQuotaConfig> = {
     monthly: QUOTAS.plus,
   },
 };
-
-/**
- * @deprecated Guest dream recording limit (UI only).
- * Kept for backward compatibility with older components.
- */
-export const GUEST_DREAM_LIMIT = 2;

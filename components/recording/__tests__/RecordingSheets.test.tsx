@@ -7,7 +7,6 @@ import { RecordingActivationInsightCard } from '@/components/recording/Recording
 import {
   AnalyzePromptSheet,
   FirstDreamSheet,
-  GuestLimitSheet,
   PostSaveOfferSheet,
   QuotaLimitSheet,
 } from '@/components/recording/RecordingSheets';
@@ -171,12 +170,6 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.memory_offer.later': 'Later',
         'recording.analysis_limit.cta_login': 'Sign in',
         'recording.analysis_limit.cta_free': 'Upgrade',
-        'recording.guest_limit_sheet.title': 'Limit reached',
-        'recording.guest_limit_sheet.message': 'Your dream is still here.',
-        'recording.guest_limit_sheet.draft_title': 'Your text is not lost',
-        'recording.guest_limit_sheet.draft_message': 'Keep this sheet open: the draft stays on this screen while you create the free account.',
-        'recording.guest_limit_sheet.cta': 'Go to account',
-        'recording.guest_limit_sheet.back_to_text': 'Back to text',
         'recording.analysis_limit.title_guest': 'Analysis limit reached',
         'recording.analysis_limit.message_guest': 'You have used your {limit} guest analyses.',
         'recording.analysis_limit.assurance_guest': 'The {limit} guest analyses are free. Your text stays here; the free account simply saves it and lets you continue.',
@@ -431,22 +424,6 @@ describe('RecordingSheets', () => {
     expect(screen.getByTestId(TID.Text.RecordingActivationInsightSummary).textContent).toBe(
       'This memory can already become a marker for your profile.'
     );
-  });
-
-  it('reassures guests that a draft is not lost at the recording limit', () => {
-    render(
-      <GuestLimitSheet
-        visible
-        onClose={noop}
-        onCta={noop}
-      />
-    );
-
-    expect(screen.getByText('Your text is not lost')).toBeTruthy();
-    expect(screen.getByText(
-      'Keep this sheet open: the draft stays on this screen while you create the free account.'
-    )).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.GuestLimitBackToText).textContent).toBe('Back to text');
   });
 
   it('makes guest analysis quota continuation feel free and recoverable', () => {

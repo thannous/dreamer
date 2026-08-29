@@ -12,7 +12,6 @@ const mockAnalysisSetStep = jest.fn();
 const mockApplyDreamCategorization = jest.fn();
 const mockCategorizeDream = jest.fn();
 const mockForceStopRecording = jest.fn();
-const mockGetGuestRecordedDreamCount = jest.fn();
 const mockGetInputModePreference = jest.fn();
 const mockGetSavedTranscript = jest.fn(async (): Promise<string> => '');
 const mockSaveTranscript = jest.fn(async (_value: string): Promise<void> => undefined);
@@ -25,6 +24,7 @@ const mockStartRecording = jest.fn();
 const mockStopRecording = jest.fn();
 const mockTrackProductEvent = jest.fn().mockResolvedValue(undefined);
 
+let mockCurrentUser: { id: string } | null = { id: 'user-1' };
 let mockDreams: DreamAnalysis[] = [];
 let mockPlatformOS: 'android' | 'web' = 'web';
 let mockRecordingPermissionState: 'unknown' | 'granted' | 'denied' = 'unknown';
@@ -316,7 +316,6 @@ jest.doMock('@/components/recording/RecordingSheets', () => ({
         </button>
       </div>
     ) : null,
-  GuestLimitSheet: () => null,
   MicPermissionRationaleSheet: ({
     onAllow,
     onUseText,
@@ -360,7 +359,7 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
 }));
 
 jest.doMock('@/context/AuthContext', () => ({
-  useAuth: () => ({ user: { id: 'user-1' } }),
+  useAuth: () => ({ user: mockCurrentUser }),
 }));
 
 jest.doMock('@/context/DreamsContext', () => ({
@@ -506,10 +505,6 @@ jest.doMock('@/lib/env', () => ({
   isReferenceImagesEnabled: () => mockReferenceImagesEnabled,
 }));
 
-jest.doMock('@/lib/guestLimits', () => ({
-  isGuestDreamLimitReached: () => false,
-}));
-
 jest.doMock('@/lib/locale', () => ({
   getTranscriptionLocale: () => 'fr-FR',
 }));
@@ -576,10 +571,6 @@ jest.doMock('@/services/nativeSpeechRecognition', () => ({
   }),
 }));
 
-jest.doMock('@/services/quota/GuestDreamCounter', () => ({
-  getGuestRecordedDreamCount: mockGetGuestRecordedDreamCount,
-}));
-
 jest.doMock('@/services/storageService', () => ({
   getRecordingInputModePreference: mockGetInputModePreference,
   getRecordingVoiceHintCompleted: jest.fn().mockResolvedValue(true),
@@ -593,6 +584,7 @@ const { default: RecordingScreen } = require('@/app/recording');
 
 describe('Recording screen', () => {
   beforeEach(() => {
+    mockCurrentUser = { id: 'user-1' };
     mockDreams = [];
     mockPlatformOS = 'web';
     mockRecordingPermissionState = 'unknown';
@@ -616,7 +608,6 @@ describe('Recording screen', () => {
       title: 'Dream',
     });
     mockForceStopRecording.mockResolvedValue(undefined);
-    mockGetGuestRecordedDreamCount.mockResolvedValue(0);
     mockGetInputModePreference.mockResolvedValue('text');
     mockSaveInputModePreference.mockResolvedValue(undefined);
     mockStartRecording.mockResolvedValue({ success: true });
@@ -972,6 +963,32 @@ describe('Recording screen', () => {
     expect(mockSaveTranscript.mock.calls.at(-1)?.[0]).toBe('');
   });
 
+  it('saves guest dreams without a journal recording limit or GuestLimitSheet', async () => {
+    mockCurrentUser = null;
+    mockDreams = [
+      buildDream('already saved 1', 1),
+      buildDream('already saved 2', 2),
+      buildDream('already saved 3', 3),
+    ];
+    render(<RecordingScreen />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'fourth guest dream' },
+    });
+
+    fireEvent.click(await screen.findByTestId('recording-save'));
+
+    await waitFor(() => {
+      expect(mockAddDream).toHaveBeenCalledWith(
+        expect.objectContaining({ transcript: 'fourth guest dream' })
+      );
+    });
+
+    expect(screen.queryByTestId('btn.guestLimit.cta')).toBeNull();
+    expect(screen.queryByTestId('btn.guestLimit.backToText')).toBeNull();
+    expect(screen.queryByText(/limit reached|limite atteinte|límite alcanzado/i)).toBeNull();
+  });
+
   it('lets typing win over a late restored draft', async () => {
     let resolveGet: ((value: string) => void) | undefined;
     mockGetSavedTranscript.mockImplementation(
@@ -1032,5 +1049,36 @@ describe('Recording screen', () => {
       ).toBe('stored dream');
     });
     expect(mockSaveTranscript).not.toHaveBeenCalled();
+  });
+
+  it('keeps a single shared draft when switching Write -> Tell -> Write', async () => {
+    render(<RecordingScreen />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'A blue room under the rain' },
+    });
+
+    fireEvent.click(screen.getByTestId('recording-mode-voice'));
+    await waitFor(() => {
+      expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('voiceFirst');
+    });
+    expect(
+      (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+    ).toBe('A blue room under the rain');
+
+    fireEvent.click(screen.getByTestId('recording-mode-text'));
+    await waitFor(() => {
+      expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('textFirst');
+    });
+    expect(
+      (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+    ).toBe('A blue room under the rain');
+    expect(screen.getAllByTestId(TID.Input.DreamTranscript)).toHaveLength(1);
+  });
+
+  it('does not render the retired hamburger capture tour', () => {
+    render(<RecordingScreen />);
+
+    expect(screen.queryByTestId(TID.Component.RecordingOnboardingTour)).toBeNull();
   });
 });

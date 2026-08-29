@@ -6,16 +6,10 @@ import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
-import {
-  RecordingOnboardingSpotlightOverlay,
-  type RecordingSpotlightRect,
-} from '@/components/recording/RecordingOnboardingSpotlightOverlay';
-import { RecordingOnboardingTour } from '@/components/recording/RecordingOnboardingTour';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import {
   AnalyzePromptSheet,
   FirstDreamSheet,
-  GuestLimitSheet,
   MicPermissionRationaleSheet,
   PostSaveOfferSheet,
   QuotaLimitSheet,
@@ -57,7 +51,6 @@ import {
 } from '@/lib/dreamUtils';
 import { isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
-import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { createScopedLogger } from '@/lib/logger';
 import {
@@ -100,7 +93,6 @@ import {
   registerOfflineModelPromptHandler,
   type OfflineModelPromptHandler,
 } from '@/services/nativeSpeechRecognition';
-import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
 import {
   getRecordingInputModePreference,
   getRecordingVoiceHintCompleted,
@@ -206,8 +198,6 @@ export default function RecordingScreen() {
   const [analysisOfferError, setAnalysisOfferError] = useState(false);
   const [isPersisting, setIsPersisting] = useState(false);
   const [isPreparingRecording, setIsPreparingRecording] = useState(false);
-  const [showGuestLimitSheet, setShowGuestLimitSheet] = useState(false);
-  const [pendingGuestLimitDream, setPendingGuestLimitDream] = useState<DreamAnalysis | null>(null);
   const recordingTransitionRef = useRef(false);
   const baseTranscriptRef = useRef('');
   const handleRestoreDraft = useCallback((savedTranscript: string) => {
@@ -244,16 +234,10 @@ export default function RecordingScreen() {
   const [recordingDurationSeconds, setRecordingDurationSeconds] = useState(0);
   const [voiceFallbackReason, setVoiceFallbackReason] = useState<VoiceFallbackReason>(null);
   const [isVoiceFallbackToastVisible, setIsVoiceFallbackToastVisible] = useState(false);
-  const [recordingGuideVisible, setRecordingGuideVisible] = useState(false);
-  const [recordingGuideStep, setRecordingGuideStep] = useState<0 | 1 | 2>(0);
   const [recordingVoiceHintLoadedScope, setRecordingVoiceHintLoadedScope] =
     useState<string | null>(null);
   const [recordingVoiceHintDismissed, setRecordingVoiceHintDismissed] = useState(false);
   const recordingVoiceHintCompletedRef = useRef(false);
-  const [recordingGuideTargetRect, setRecordingGuideTargetRect] =
-    useState<RecordingSpotlightRect | null>(null);
-  const [recordingGuidePanelRect, setRecordingGuidePanelRect] =
-    useState<RecordingSpotlightRect | null>(null);
   const [captureIntent, setCaptureIntent] = useState<CaptureIntent>('fresh');
   const [rememberedCaptureSource, setRememberedCaptureSource] =
     useState<RememberedCaptureSource>('journal');
@@ -265,7 +249,6 @@ export default function RecordingScreen() {
   const [showRememberedDetailsSheet, setShowRememberedDetailsSheet] = useState(false);
   const [inputMode, setInputMode] = useState<RecordingInputModePreference>('text');
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [footerHeight, setFooterHeight] = useState(0);
   const [bottomNavHeight, setBottomNavHeight] = useState(0);
   const appliedRouteEntriesRef = useRef<Set<string>>(new Set());
@@ -405,13 +388,11 @@ export default function RecordingScreen() {
   }, [onboardingScope]);
 
   useEffect(() => {
-    const show = Keyboard.addListener('keyboardDidShow', (event) => {
+    const show = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardVisible(true);
-      setKeyboardHeight(event.endCoordinates.height);
     });
     const hide = Keyboard.addListener('keyboardDidHide', () => {
       setKeyboardVisible(false);
-      setKeyboardHeight(0);
     });
     return () => {
       show.remove();
@@ -725,83 +706,6 @@ export default function RecordingScreen() {
     setAnalysisOfferError(restartAction === 'offer_retry');
   }, [dreams, navigateToJournalDetail, onboardingState.pendingRecordingIntent, transitionOnboarding]);
 
-  useEffect(() => {
-    if (!user || !pendingGuestLimitDream) {
-      return;
-    }
-
-    let cancelled = false;
-
-    const persistPendingGuestDream = async () => {
-      try {
-        setIsPersisting(true);
-        const preCount = dreams.length;
-        const savedDream = await addDream(pendingGuestLimitDream);
-        clearAfterSuccessfulSave();
-        if (cancelled) {
-          return;
-        }
-        resetComposer();
-        setPendingGuestLimitDream(null);
-        const onboardingPostSave = activePostSaveRef.current;
-        if (onboardingPostSave) {
-          activePostSaveRef.current = null;
-          setOnboardingOfferKind(
-            onboardingPostSave === 'confirm_analysis' ? 'analysis' : 'memory'
-          );
-          setOnboardingOfferDream(savedDream);
-          setAnalysisOfferError(false);
-          const pendingEvent = onboardingPostSave === 'confirm_analysis'
-            ? {
-                type: 'SET_PENDING_PHASE' as const,
-                phase: 'analysis_confirmation' as const,
-                savedDreamId: savedDream.id,
-              }
-            : { type: 'CLEAR_PENDING_INTENT' as const };
-          try {
-            await transitionOnboarding(pendingEvent);
-          } catch (error) {
-            if (onboardingPostSave === 'confirm_analysis') {
-              setAnalysisOfferError(true);
-            }
-            if (__DEV__) {
-              console.warn('[Recording] Failed to persist post-save onboarding phase', error);
-            }
-          }
-          return;
-        }
-        navigateAfterSave(savedDream, preCount, { skipFirstDreamSheet: true });
-      } catch (error) {
-        if (cancelled) {
-          return;
-        }
-        const message =
-          error instanceof Error ? error.message : 'Unexpected error occurred. Please try again.';
-        Alert.alert(t('common.error_title'), message);
-      } finally {
-        if (!cancelled) {
-          setIsPersisting(false);
-        }
-      }
-    };
-
-    void persistPendingGuestDream();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    user,
-    pendingGuestLimitDream,
-    addDream,
-    clearAfterSuccessfulSave,
-    dreams.length,
-    navigateAfterSave,
-    resetComposer,
-    t,
-    transitionOnboarding,
-  ]);
-
   // Show quota limit sheet (reusable for both guard and catch paths)
   const showQuotaSheet = useCallback((options?: { mode?: 'limit' | 'error' | 'login'; message?: string }) => {
     const modeToUse = options?.mode ?? 'limit';
@@ -1036,19 +940,6 @@ export default function RecordingScreen() {
     }
     const latestTranscript = latestSource.trim();
 
-    if (!user) {
-      const used = await getGuestRecordedDreamCount(dreams.length);
-      if (isGuestDreamLimitReached(used)) {
-        const draft =
-          draftDream && draftDream.transcript === latestTranscript
-            ? draftDream
-            : buildDraftDream(latestTranscript);
-        setPendingGuestLimitDream(draft);
-        setShowGuestLimitSheet(true);
-        return;
-      }
-    }
-
     setIsPersisting(true);
     try {
       const preCount = dreams.length;
@@ -1105,15 +996,6 @@ export default function RecordingScreen() {
       }
       navigateAfterSave(savedDream, preCount);
     } catch (error) {
-      if (error instanceof QuotaError && error.code === QuotaErrorCode.GUEST_LIMIT_REACHED) {
-        const draft =
-          draftDream && draftDream.transcript === latestTranscript
-            ? draftDream
-            : buildDraftDream(latestTranscript);
-        setPendingGuestLimitDream(draft);
-        setShowGuestLimitSheet(true);
-        return;
-      }
       const message = error instanceof Error ? error.message : 'Unexpected error occurred. Please try again.';
       Alert.alert(t('common.error_title'), message);
     } finally {
@@ -1135,7 +1017,6 @@ export default function RecordingScreen() {
     t,
     transitionOnboarding,
     transcript,
-    user,
   ]);
 
 
@@ -1534,9 +1415,6 @@ export default function RecordingScreen() {
     : isDesktopWeb
       ? insets.bottom
       : Math.max(bottomNavHeight, insets.bottom);
-  const recordingGuideBottomOffset = keyboardVisible
-    ? Math.max(keyboardHeight, insets.bottom)
-    : fixedFooterBottomOffset;
   const mainContentStyle = useMemo(
     () => [
       styles.mainContent,
@@ -1567,9 +1445,6 @@ export default function RecordingScreen() {
   const subjectPropositionMarginBottom = useMemo(
     () => fixedFooterBottomOffset + footerHeight,
     [fixedFooterBottomOffset, footerHeight]
-  );
-  const recordingGuideMeasureKey = Math.round(
-    viewportWidth * 10000 + viewportHeight * 100 + fixedFooterBottomOffset + recordingGuideStep
   );
   const handleFooterLayout = useCallback((event: LayoutChangeEvent) => {
     const nextHeight = Math.ceil(event.nativeEvent.layout.height);
@@ -1611,22 +1486,6 @@ export default function RecordingScreen() {
   }, []);
 
   useEffect(() => {
-    if (parsedRecordingParams.replayGuide) {
-      // Route params are external navigation state and are consumed exactly once.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setRecordingGuideStep(0);
-      setRecordingGuideVisible(true);
-      recordingVoiceHintCompletedRef.current = false;
-      setRecordingVoiceHintDismissed(false);
-      setRecordingVoiceHintLoadedScope(onboardingScope);
-      saveRecordingVoiceHintCompleted(false, onboardingScope).catch((error) => {
-        if (__DEV__) {
-          console.warn('[Recording] Failed to reset voice hint preference', error);
-        }
-      });
-      router.setParams({ replayGuide: undefined });
-    }
-
     if (!resolvedRecordingEntryIntent) return;
     const routeEntryKey = resolvedRecordingEntryIntent.entryId;
     if (appliedRouteEntriesRef.current.has(routeEntryKey) || trimmedTranscript || draftDream) return;
@@ -1681,7 +1540,6 @@ export default function RecordingScreen() {
         postSave: undefined,
         next: undefined,
         mode: undefined,
-        replayGuide: undefined,
       });
     }
   }, [
@@ -1690,7 +1548,6 @@ export default function RecordingScreen() {
     onboardingScope,
     parsedRecordingParams.entryId,
     parsedRecordingParams.mode,
-    parsedRecordingParams.replayGuide,
     resolvedRecordingEntryIntent,
     trimmedTranscript,
   ]);
@@ -1721,7 +1578,6 @@ export default function RecordingScreen() {
     && inputMode === 'voice'
     && !isPreparingRecording
     && !isRecording
-    && !recordingGuideVisible
     && !onboardingOfferDream;
   const textFallbackNotice = useMemo(() => {
     if (!voiceFallbackReason) {
@@ -1775,10 +1631,6 @@ export default function RecordingScreen() {
 
   const handleInputModePreferenceChange = useCallback(
     async (preference: RecordingInputModePreference) => {
-      if (recordingGuideVisible && recordingGuideStep === 2) {
-        return;
-      }
-
       if (preference === inputMode) {
         return;
       }
@@ -1806,8 +1658,6 @@ export default function RecordingScreen() {
       inputMode,
       isRecordingRef,
       persistInputModePreference,
-      recordingGuideStep,
-      recordingGuideVisible,
       stopRecording,
       transcript,
     ]
@@ -1892,26 +1742,6 @@ export default function RecordingScreen() {
     trackActivationInsightShown,
   ]);
 
-  const handleRecordingGuideNext = useCallback(() => {
-    setRecordingGuideVisible(false);
-  }, []);
-
-  const handleRecordingModeOpenChange = useCallback((open: boolean) => {
-    if (open && recordingGuideVisible && recordingGuideStep === 0) {
-      setRecordingGuideStep(1);
-    }
-  }, [recordingGuideStep, recordingGuideVisible]);
-
-  const handleRecordingModeOptionSelected = useCallback(() => {
-    if (recordingGuideVisible && recordingGuideStep === 1) {
-      setRecordingGuideStep(2);
-    }
-  }, [recordingGuideStep, recordingGuideVisible]);
-
-  const handleRecordingGuideDismiss = useCallback(() => {
-    setRecordingGuideVisible(false);
-  }, []);
-
   const analysisOfferQuotaState = useMemo<AnalysisOfferQuotaState>(() => {
     if (tier === 'plus') return 'unlimited';
     if (quotaLoading || quotaError || !usage) return 'unknown';
@@ -1984,16 +1814,6 @@ export default function RecordingScreen() {
       focusTranscriptEnd(baseTranscriptRef.current || transcript);
     }
   }, [focusTranscriptEnd, inputMode, transcript]);
-
-  const handleGuestLimitDismiss = useCallback(() => {
-    setShowGuestLimitSheet(false);
-    setPendingGuestLimitDream(null);
-  }, []);
-
-  const handleGuestLimitCta = useCallback(() => {
-    setShowGuestLimitSheet(false);
-    router.push('/(tabs)/settings');
-  }, []);
 
   const handleMicRationaleClose = useCallback(() => {
     hasSeenMicRationaleRef.current = true;
@@ -2074,17 +1894,7 @@ export default function RecordingScreen() {
               <View style={[styles.bodySection, isCompactLandscape && styles.bodySectionCompact]}>
                 <RecordingInputModeSelect
                   value={inputMode}
-                  disabled={
-                    interactionDisabled
-                    || isPreparingRecording
-                    || (recordingGuideVisible && recordingGuideStep === 2)
-                  }
-                  highlighted={recordingGuideVisible && recordingGuideStep !== 2}
-                  highlightBadge={recordingGuideStep + 1}
-                  highlightMeasureKey={recordingGuideMeasureKey}
-                  onHighlightLayout={setRecordingGuideTargetRect}
-                  onOpenChange={handleRecordingModeOpenChange}
-                  onOptionSelected={handleRecordingModeOptionSelected}
+                  disabled={interactionDisabled || isPreparingRecording}
                   onChange={handleInputModePreferenceChange}
                 />
 
@@ -2107,11 +1917,6 @@ export default function RecordingScreen() {
                   voiceSupported={isVoiceSupported}
                   voiceStatus={voiceControlStatus}
                   recordingDurationLabel={recordingDurationLabel}
-                  spotlightTarget={
-                    recordingGuideVisible && recordingGuideStep === 2 ? inputMode : undefined
-                  }
-                  spotlightMeasureKey={recordingGuideMeasureKey}
-                  onSpotlightLayout={setRecordingGuideTargetRect}
                   showVoiceHint={showRecordingVoiceHint}
                   onVoiceHintDismiss={completeRecordingVoiceHint}
                   placeholder={
@@ -2174,25 +1979,6 @@ export default function RecordingScreen() {
             onHide={() => setIsVoiceFallbackToastVisible(false)}
             style={styles.voiceFallbackToast}
             testID={TID.Text.RecordingFallbackNotice}
-          />
-        ) : null}
-        {recordingGuideVisible ? (
-          <RecordingOnboardingSpotlightOverlay
-            width={viewportWidth}
-            height={viewportHeight}
-            targetRect={recordingGuideTargetRect}
-            panelRect={recordingGuidePanelRect}
-          />
-        ) : null}
-        {recordingGuideVisible ? (
-          <RecordingOnboardingTour
-            bottomOffset={recordingGuideBottomOffset}
-            measureKey={recordingGuideMeasureKey}
-            step={recordingGuideStep}
-            inputMode={inputMode}
-            onLayoutMeasured={setRecordingGuidePanelRect}
-            onDone={handleRecordingGuideNext}
-            onDismiss={handleRecordingGuideDismiss}
           />
         ) : null}
       </View>
@@ -2259,9 +2045,6 @@ export default function RecordingScreen() {
         onAnalyzePromptAnalyze={handleFirstDreamAnalyze}
         onAnalyzePromptJournal={handleAnalyzePromptJournal}
         analyzePromptTranscript={analyzePromptTranscript}
-        guestLimitVisible={showGuestLimitSheet}
-        onGuestLimitClose={handleGuestLimitDismiss}
-        onGuestLimitCta={handleGuestLimitCta}
         micRationaleVisible={showMicRationaleSheet}
         onMicRationaleClose={handleMicRationaleClose}
         onMicRationaleAllow={handleMicRationaleAllow}
@@ -2312,9 +2095,6 @@ function RecordingOverlays({
   onAnalyzePromptAnalyze,
   onAnalyzePromptJournal,
   analyzePromptTranscript,
-  guestLimitVisible,
-  onGuestLimitClose,
-  onGuestLimitCta,
   micRationaleVisible,
   onMicRationaleClose,
   onMicRationaleAllow,
@@ -2359,9 +2139,6 @@ function RecordingOverlays({
   onAnalyzePromptAnalyze: () => void;
   onAnalyzePromptJournal: () => void;
   analyzePromptTranscript?: string | null;
-  guestLimitVisible: boolean;
-  onGuestLimitClose: () => void;
-  onGuestLimitCta: () => void;
   micRationaleVisible: boolean;
   onMicRationaleClose: () => void;
   onMicRationaleAllow: () => void;
@@ -2417,12 +2194,6 @@ function RecordingOverlays({
         onJournal={onAnalyzePromptJournal}
         transcript={analyzePromptTranscript}
         isPersisting={isPersisting}
-      />
-
-      <GuestLimitSheet
-        visible={guestLimitVisible}
-        onClose={onGuestLimitClose}
-        onCta={onGuestLimitCta}
       />
 
       <MicPermissionRationaleSheet

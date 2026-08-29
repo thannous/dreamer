@@ -10,10 +10,10 @@ url: "http://localhost:8081"
 - runFlow:
     when:
       visible:
-        id: "btn.recording.switchToText"
+        id: "btn.recording.inputMode.text"
     commands:
       - tapOn:
-          id: "btn.recording.switchToText"
+          id: "btn.recording.inputMode.text"
       - waitForAnimationToEnd
 - tapOn:
     id: "input.dreamTranscript"

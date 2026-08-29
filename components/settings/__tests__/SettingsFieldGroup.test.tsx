@@ -136,18 +136,6 @@ jest.doMock('@/components/settings/useSettingsPreferences', () => ({
     theme: preference('theme', 'auto', selectTheme as never),
     language: preference('language', 'fr', selectLanguage as never),
     journalLayout: preference('layout', 'cards', selectJournalLayout as never),
-    recording: {
-      title: 'settings.onboarding.title',
-      description: 'settings.onboarding.description',
-      actionLabel: 'settings.onboarding.restart',
-      actionHint: 'settings.onboarding.restart_hint',
-      testID: 'btn.recording.onboarding.restart',
-      loading: false,
-      saving: false,
-      error: false,
-      restart: restartRecordingGuide,
-      replay: restartRecordingGuide,
-    },
   }),
 }));
 
@@ -345,14 +333,11 @@ describe('SettingsFieldGroup', () => {
     expect(openSubscription).toHaveBeenCalledTimes(1);
   });
 
-  it('replays the recording onboarding from the experience card', () => {
+  it('does not offer the retired hamburger capture tour from Settings', () => {
     render(<SettingsFieldGroup {...baseProps} />);
 
-    // Uniwind resolves `className` in the Metro transformer, which Jest never runs, so
-    // the wide-value column is asserted on the class rather than on a resolved style.
-    expect(screen.getByText('settings.onboarding.restart').className).toContain('max-w-[48%]');
-    fireEvent.click(screen.getByTestId('btn.recording.onboarding.restart'));
-
-    expect(restartRecordingGuide).toHaveBeenCalledTimes(1);
+    expect(screen.queryByTestId('btn.recording.onboarding.restart')).toBeNull();
+    expect(screen.queryByText('settings.onboarding.restart')).toBeNull();
+    expect(restartRecordingGuide).not.toHaveBeenCalled();
   });
 });

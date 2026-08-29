@@ -260,54 +260,6 @@ export function AnalyzePromptSheet({
   );
 }
 
-export function GuestLimitSheet({
-  visible,
-  onClose,
-  onCta,
-}: {
-  visible: boolean;
-  onClose: () => void;
-  onCta: () => void;
-}) {
-  const { t } = useTranslation();
-  const { colors, mode: themeMode } = useTheme();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, themeMode), [colors, themeMode]);
-
-  return (
-    <StandardBottomSheet
-      visible={visible}
-      onClose={onClose}
-      title={t('recording.guest_limit_sheet.title')}
-      subtitle={t('recording.guest_limit_sheet.message')}
-      actions={{
-        primaryLabel: t('recording.guest_limit_sheet.cta'),
-        onPrimary: onCta,
-        primaryTestID: TID.Button.GuestLimitCta,
-        secondaryLabel: t('recording.guest_limit_sheet.back_to_text'),
-        onSecondary: onClose,
-        secondaryTestID: TID.Button.GuestLimitBackToText,
-      }}
-    >
-      <View
-        style={[
-          styles.guestLimitAssurance,
-          {
-            backgroundColor: noctalia.surface.soft,
-            borderColor: noctalia.surface.border,
-          },
-        ]}
-      >
-        <Text style={[styles.guestLimitAssuranceTitle, { color: noctalia.text.primary }]}>
-          {t('recording.guest_limit_sheet.draft_title')}
-        </Text>
-        <Text style={[styles.guestLimitAssuranceText, { color: noctalia.text.secondary }]}>
-          {t('recording.guest_limit_sheet.draft_message')}
-        </Text>
-      </View>
-    </StandardBottomSheet>
-  );
-}
-
 export function MicPermissionRationaleSheet({
   visible,
   onClose,
@@ -558,25 +510,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.lora.regular,
     fontSize: 15,
     lineHeight: 22,
-    textAlign: 'center',
-  },
-  guestLimitAssurance: {
-    width: '100%',
-    borderRadius: ThemeLayout.borderRadius.lg,
-    borderWidth: 1,
-    padding: ThemeLayout.spacing.md,
-    gap: 6,
-    marginBottom: ThemeLayout.spacing.md,
-  },
-  guestLimitAssuranceTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  guestLimitAssuranceText: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 19,
     textAlign: 'center',
   },
   quotaAssurance: {

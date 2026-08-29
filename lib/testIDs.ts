@@ -127,8 +127,6 @@ export const TID = {
     StatsMostDiscussedDream: 'btn.stats.mostDiscussedDream',
     AnalyzePromptAnalyze: 'btn.analyzePrompt.analyze',
     AnalyzePromptJournal: 'btn.analyzePrompt.journal',
-    GuestLimitCta: 'btn.guestLimit.cta',
-    GuestLimitBackToText: 'btn.guestLimit.backToText',
     FirstValueBackupCta: 'btn.firstValueBackup.cta',
     QuotaLimitCtaGuest: 'btn.quotaLimit.ctaGuest',
     QuotaLimitCtaFree: 'btn.quotaLimit.ctaFree',

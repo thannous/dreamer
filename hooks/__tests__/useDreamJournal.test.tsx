@@ -195,7 +195,6 @@ jest.mock('../../services/quota/MockQuotaEventStore', () => ({
 
 // Mock GuestDreamCounter (avoid persisting between tests)
 jest.mock('../../services/quota/GuestDreamCounter', () => ({
-  getGuestRecordedDreamCount: async (currentDreamCount: number) => Math.max(mockGuestDreamCounterState.count, currentDreamCount),
   incrementLocalDreamRecordingCount: async () => {
     mockGuestDreamCounterState.count += 1;
     return mockGuestDreamCounterState.count;
@@ -433,11 +432,37 @@ describe('useDreamJournal', () => {
         await result.current.addDream(buildDream({ id: 3 }));
       });
 
-      await expect(result.current.addDream(buildDream({ id: 2 }))).rejects.toBeInstanceOf(QuotaError);
-      await expect(result.current.addDream(buildDream({ id: 2 }))).rejects.toMatchObject({
-        code: QuotaErrorCode.GUEST_LIMIT_REACHED,
+      await act(async () => {
+        await result.current.addDream(buildDream({ id: 2 }));
       });
-      expect(result.current.dreams.map((d: DreamAnalysis) => d.id)).toEqual([3, 1]);
+
+      expect(result.current.dreams.map((d: DreamAnalysis) => d.id)).toEqual([3, 2, 1]);
+    });
+
+    it('saves at least 3 guest dreams even when the historical counter exceeds 2', async () => {
+      mockGuestDreamCounterState.count = 9;
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.addDream(buildDream({ id: 1 }));
+      });
+      await act(async () => {
+        await result.current.addDream(buildDream({ id: 2 }));
+      });
+      await act(async () => {
+        await result.current.addDream(buildDream({ id: 3 }));
+      });
+
+      expect(result.current.dreams).toHaveLength(3);
+      expect(result.current.dreams.map((d: DreamAnalysis) => d.id)).toEqual([3, 2, 1]);
+      expect(mockSaveDreams).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({ id: 1 }),
+          expect.objectContaining({ id: 2 }),
+          expect.objectContaining({ id: 3 }),
+        ])
+      );
+      expect(mockGuestDreamCounterState.count).toBe(12);
     });
   });
 

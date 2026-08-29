@@ -89,10 +89,12 @@ env:
     id: component.recording.remembered.metadata
 - assertNotVisible:
     id: component.recording.rememberedProfileChips
+- assertVisible:
+    id: btn.recording.inputMode.text
+- assertVisible:
+    id: btn.recording.inputMode.voice
 - tapOn:
-    id: btn.recording.inputMode.select
-- tapOn:
-    text: "Voice"
+    id: btn.recording.inputMode.voice
 - assertVisible:
     id: text.recording.inputMode.voice
 - stopApp
@@ -111,12 +113,10 @@ env:
     id: component.recording.remembered.metadata
 - assertVisible:
     id: text.recording.inputMode.voice
-- assertNotVisible:
+- assertVisible:
     id: input.dreamTranscript
 - tapOn:
-    id: btn.recording.inputMode.select
-- tapOn:
-    text: "Writing"
+    id: btn.recording.inputMode.text
 - assertVisible:
     id: input.dreamTranscript
 - tapOn:
@@ -190,23 +190,10 @@ env:
     id: component.recording.unforgettableDreamPrompt
 - assertNotVisible:
     id: component.recording.onboardingTour
-
-# The guide can be replayed explicitly from Settings, independently of the journal.
 - openLink: noctalia://settings
-- scrollUntilVisible:
-    element:
-      id: btn.recording.onboarding.restart
-    direction: DOWN
-    timeout: 30000
-- tapOn:
-    id: btn.recording.onboarding.restart
 - extendedWaitUntil:
     visible:
-      id: component.recording.onboardingTour
+      id: settings-section-preferences
     timeout: 30000
-- tapOn:
-    id: btn.recording.onboarding.next
-- tapOn:
-    id: btn.recording.onboarding.next
 - assertNotVisible:
-    id: component.recording.onboardingTour
+    id: btn.recording.onboarding.restart

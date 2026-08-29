@@ -220,7 +220,7 @@ describe('RecordingTextInput', () => {
     mockFontScale = 1;
   });
 
-  it('prioritizes the editable transcript while keeping voice available in text mode', () => {
+  it('keeps write mode calm without an inline microphone', () => {
     const onSwitchToVoice = jest.fn();
 
     render(
@@ -238,11 +238,8 @@ describe('RecordingTextInput', () => {
     expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
     expect(screen.getByTestId('icon.pencil')).toBeTruthy();
     expect(screen.queryByText('Dictate the dream')).toBeNull();
-    expect(screen.getByTestId('compact-mic').getAttribute('data-size')).toBe('inline');
-
-    fireEvent.click(screen.getByTestId('compact-mic'));
-
-    expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
+    expect(screen.queryByTestId('compact-mic')).toBeNull();
+    expect(onSwitchToVoice).not.toHaveBeenCalled();
   });
 
   it('keeps typed text editable and surfaces clear when there is content', () => {
@@ -393,7 +390,7 @@ describe('RecordingTextInput', () => {
     expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
   });
 
-  it('keeps the microphone in text layout when the device supports speech', () => {
+  it('hides the microphone in write mode even when speech is supported', () => {
     render(
       <RecordingTextInput
         layout="textFirst"
@@ -408,10 +405,11 @@ describe('RecordingTextInput', () => {
       />
     );
 
-    expect(screen.getByTestId('compact-mic')).toBeTruthy();
+    expect(screen.queryByTestId('compact-mic')).toBeNull();
+    expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
   });
 
-  it('hides the microphone in text layout when speech is unsupported', () => {
+  it('keeps write mode usable when speech is unsupported', () => {
     render(
       <RecordingTextInput
         layout="textFirst"
@@ -427,6 +425,7 @@ describe('RecordingTextInput', () => {
     );
 
     expect(screen.queryByTestId('compact-mic')).toBeNull();
+    expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
   });
 
   it('points first-time voice users to the microphone and can be dismissed', () => {

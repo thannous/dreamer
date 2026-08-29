@@ -1,6 +1,4 @@
 import { useCallback, useMemo, useState } from 'react';
-import { router } from 'expo-router';
-
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useJournalLayoutPreference } from '@/hooks/useJournalLayoutPreference';
@@ -206,22 +204,10 @@ export function useJournalLayoutSettingsPreference(): SettingsPreferenceControll
 
 export function useRecordingGuideAction(): RecordingGuideActionController {
   const { t } = useTranslation();
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState(false);
 
   const replay = useCallback(async () => {
-    setSaving(true);
-    setError(false);
-    try {
-      router.push({ pathname: '/recording', params: { replayGuide: '1' } });
-    } catch (cause) {
-      setError(true);
-      if (__DEV__) {
-        console.error('Failed to restart recording onboarding:', cause);
-      }
-    } finally {
-      setSaving(false);
-    }
+    // The hamburger capture tour is retired. Keep the controller for callers
+    // that still import it, but never reopen a hidden-menu tutorial.
   }, []);
 
   return {
@@ -231,8 +217,8 @@ export function useRecordingGuideAction(): RecordingGuideActionController {
     actionHint: t('settings.onboarding.restart_hint'),
     testID: TID.Button.RecordingOnboardingRestart,
     loading: false,
-    saving,
-    error,
+    saving: false,
+    error: false,
     restart: replay,
     replay,
   };
@@ -242,9 +228,8 @@ export function useSettingsPreferences() {
   const theme = useThemeSettingsPreference();
   const language = useLanguageSettingsPreference();
   const journalLayout = useJournalLayoutSettingsPreference();
-  const recording = useRecordingGuideAction();
 
-  return { theme, language, journalLayout, recording };
+  return { theme, language, journalLayout };
 }
 
 export default useSettingsPreferences;
