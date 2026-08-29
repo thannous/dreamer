@@ -1257,11 +1257,13 @@ export default function RecordingScreen() {
       });
 
       const analyzedDream = await analyzeDream(dream.id, dream.transcript, {
-        replaceExistingImage: true,
+        replaceExistingImage: false,
         lang: language,
         analyticsSource: 'recording_flow',
         onProgress: (step) => {
-          // Update progress as each phase completes
+          if (step === AnalysisStep.GENERATING_IMAGE) {
+            return;
+          }
           analysisProgress.setStep(step);
         },
       });

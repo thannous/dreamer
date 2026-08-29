@@ -79,6 +79,24 @@ describe('MockQuotaEventStore', () => {
     expect(storage.get(STORAGE_KEY)).toContain('analysisCount');
   });
 
+  it('counts illustrations separately from analyses', async () => {
+    mockGetSavedDreams.mockResolvedValue([
+      buildDream({ id: 1, isAnalyzed: true, analyzedAt: 100 }),
+      buildDream({
+        id: 2,
+        isAnalyzed: true,
+        analyzedAt: 101,
+        imageUrl: 'https://example.test/dream.png',
+        imageSource: 'ai',
+      }),
+    ]);
+
+    const store = require('../MockQuotaEventStore');
+
+    expect(await store.getMockAnalysisCount()).toBe(2);
+    expect(await store.getMockImageCount()).toBe(1);
+  });
+
   it('uses cached migration state on subsequent calls', async () => {
     mockGetSavedDreams.mockResolvedValue([buildDream({ id: 10, isAnalyzed: true, analyzedAt: 1 })]);
 

@@ -3,6 +3,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ErrorType } from '@/lib/errors';
+import { TID } from '@/lib/testIDs';
 import React, { useMemo } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -67,6 +68,8 @@ export function ImageRetry({ onRetry, isRetrying = false, errorType }: ImageRetr
           style={shadows.lg}
           onPress={onRetry}
           disabled={isRetrying}
+          testID={TID.Button.JournalImageRetry}
+          accessibilityRole="button"
         >
           <View className="flex-row items-center gap-2">
             {isRetrying ? (

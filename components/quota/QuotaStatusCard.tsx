@@ -24,6 +24,9 @@ type UsageEntry = {
   remaining: number | null;
 };
 
+const isMeaningfulImageQuota = (usage?: UsageEntry): usage is UsageEntry =>
+  Boolean(usage && (usage.limit === null || usage.limit > 0));
+
 type Props = {
   onUpgradePress?: () => void;
   presentation?: 'card' | 'embedded';
@@ -76,14 +79,31 @@ export const QuotaStatusCard: React.FC<Props> = ({
   const { formatDate } = useLocaleFormatting();
   const isDegradedGuest = !user && quotaStatus?.guestBootstrapStatus === 'degraded';
 
-  const rows = useMemo(() => ([
-    {
-      key: 'analysis',
-      label: t('settings.quota.analysis_label'),
-      usage: quotaStatus?.usage.analysis,
-      testID: TID.Quota.AnalysisValue,
-    },
-  ]), [quotaStatus?.usage.analysis, t]);
+  const rows = useMemo(() => {
+    const next: {
+      key: string;
+      label: string;
+      usage: UsageEntry | undefined;
+      testID: string;
+    }[] = [
+      {
+        key: 'analysis',
+        label: t('settings.quota.analysis_label'),
+        usage: quotaStatus?.usage.analysis,
+        testID: TID.Quota.AnalysisValue,
+      },
+    ];
+    const imageUsage = quotaStatus?.usage.image;
+    if (isMeaningfulImageQuota(imageUsage)) {
+      next.push({
+        key: 'image',
+        label: t('settings.quota.image_label'),
+        usage: imageUsage,
+        testID: TID.Quota.ImageValue,
+      });
+    }
+    return next;
+  }, [quotaStatus?.usage.analysis, quotaStatus?.usage.image, t]);
 
   const isPaidTier = tier === 'plus';
   const showCta = Boolean(quotaStatus) && !isPaidTier;
@@ -188,6 +208,7 @@ export const QuotaStatusCard: React.FC<Props> = ({
               ? localizedQuotaReason
               : t('settings.quota.guest_message', {
                 analysisLimit: QUOTAS.guest.analysis ?? 0,
+                imageLimit: QUOTAS.guest.image ?? 0,
               })}
           </Text>
         </View>

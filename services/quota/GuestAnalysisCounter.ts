@@ -12,10 +12,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSavedDreams } from '@/services/storageServiceReal';
 import { getAnalyzedDreamCount, getExploredDreamCount } from '@/lib/dreamUsage';
+import { countAiGeneratedImages } from './imageUsage';
 
 const ANALYSIS_KEY = 'guest_total_analysis_count_v1';
 const EXPLORATION_KEY = 'guest_total_exploration_count_v1';
+const IMAGE_KEY = 'guest_total_image_count_v1';
 const MIGRATION_KEY = 'guest_quota_migrated_v1';
+
+type GuestQuotaCountType = 'analysis' | 'exploration' | 'image';
+
+const COUNT_KEYS: Record<GuestQuotaCountType, string> = {
+  analysis: ANALYSIS_KEY,
+  exploration: EXPLORATION_KEY,
+  image: IMAGE_KEY,
+};
 
 /**
  * Safely parse an integer from storage, returning 0 for invalid/corrupted values
@@ -53,6 +63,19 @@ export async function getLocalExplorationCount(): Promise<number> {
 }
 
 /**
+ * Get the local illustration count (separate from analysis)
+ */
+export async function getLocalImageCount(): Promise<number> {
+  try {
+    const val = await AsyncStorage.getItem(IMAGE_KEY);
+    return safeParseInt(val);
+  } catch (error) {
+    console.warn('[GuestAnalysisCounter] Failed to get image count:', error);
+    return 0;
+  }
+}
+
+/**
  * Increment the local analysis count
  * @returns The new count after incrementing
  */
@@ -85,6 +108,22 @@ export async function incrementLocalExplorationCount(): Promise<number> {
 }
 
 /**
+ * Increment the local illustration count
+ * @returns The new count after incrementing
+ */
+export async function incrementLocalImageCount(): Promise<number> {
+  try {
+    const current = await getLocalImageCount();
+    const newCount = current + 1;
+    await AsyncStorage.setItem(IMAGE_KEY, String(newCount));
+    return newCount;
+  } catch (error) {
+    console.warn('[GuestAnalysisCounter] Failed to increment image count:', error);
+    throw error;
+  }
+}
+
+/**
  * Sync local count with server count, taking the maximum to prevent discrepancies
  * This is called when we receive the server's count and want to ensure our local
  * count is at least as high.
@@ -95,12 +134,16 @@ export async function incrementLocalExplorationCount(): Promise<number> {
  */
 export async function syncWithServerCount(
   serverCount: number,
-  type: 'analysis' | 'exploration'
+  type: GuestQuotaCountType
 ): Promise<number> {
   try {
-    const key = type === 'analysis' ? ANALYSIS_KEY : EXPLORATION_KEY;
+    const key = COUNT_KEYS[type];
     const local =
-      type === 'analysis' ? await getLocalAnalysisCount() : await getLocalExplorationCount();
+      type === 'analysis'
+        ? await getLocalAnalysisCount()
+        : type === 'exploration'
+          ? await getLocalExplorationCount()
+          : await getLocalImageCount();
 
     const maxCount = Math.max(local, serverCount);
     await AsyncStorage.setItem(key, String(maxCount));
@@ -134,6 +177,7 @@ export async function migrateExistingGuestQuota(): Promise<void> {
     const dreams = await getSavedDreams();
     const analysisCount = getAnalyzedDreamCount(dreams);
     const explorationCount = getExploredDreamCount(dreams);
+    const imageCount = countAiGeneratedImages(dreams);
 
     // Initialize counters if there's existing usage
     if (analysisCount > 0) {
@@ -144,6 +188,11 @@ export async function migrateExistingGuestQuota(): Promise<void> {
     if (explorationCount > 0) {
       await AsyncStorage.setItem(EXPLORATION_KEY, String(explorationCount));
       console.log(`[GuestAnalysisCounter] Migrated exploration count: ${explorationCount}`);
+    }
+
+    if (imageCount > 0) {
+      await AsyncStorage.setItem(IMAGE_KEY, String(imageCount));
+      console.log(`[GuestAnalysisCounter] Migrated image count: ${imageCount}`);
     }
 
     // Mark migration as complete
@@ -157,5 +206,5 @@ export async function migrateExistingGuestQuota(): Promise<void> {
 
 /** Clears local compatibility counters before a server-authorized QA guest run. */
 export async function resetGuestAnalysisQuotaForQa(): Promise<void> {
-  await AsyncStorage.multiRemove([ANALYSIS_KEY, EXPLORATION_KEY, MIGRATION_KEY]);
+  await AsyncStorage.multiRemove([ANALYSIS_KEY, EXPLORATION_KEY, IMAGE_KEY, MIGRATION_KEY]);
 }

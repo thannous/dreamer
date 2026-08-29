@@ -146,6 +146,8 @@ export const TID = {
     PersonalReadingNext: 'btn.inspiration.personalReadingNext',
     PersonalReadingRecap: 'btn.inspiration.personalReadingRecap',
     ImageUpgrade: 'btn.journal.imageUpgrade',
+    JournalIllustrate: 'btn.journal.illustrate',
+    JournalImageRetry: 'btn.journal.imageRetry',
     PaywallTermsOfUse: 'btn.paywall.termsOfUse',
     PaywallPrivacyPolicy: 'btn.paywall.privacyPolicy',
     PaywallClose: 'btn.paywall.close',
@@ -296,6 +298,7 @@ export const TID = {
   },
   Quota: {
     AnalysisValue: 'quota.analysisValue',
+    ImageValue: 'quota.imageValue',
     ExplorationValue: 'quota.explorationValue',
     RecordingsValue: 'quota.recordingsValue',
   },

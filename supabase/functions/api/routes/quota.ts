@@ -4,12 +4,120 @@ import { requireGuestSession } from '../lib/guards.ts';
 import { verifyGuestToken } from '../lib/guestToken.ts';
 import type { ApiContext } from '../types.ts';
 
+type AdminClient = {
+  rpc: (
+    name: string,
+    args?: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: { code?: string } | null }>;
+};
+
+export type QuotaStatusDependencies = {
+  createAdminClient?: (
+    url: string,
+    key: string,
+    options?: Record<string, unknown>,
+  ) => AdminClient;
+};
+
 const toCount = (value: unknown): number => {
   if (typeof value !== 'number' || !Number.isFinite(value)) return 0;
   return Math.max(0, Math.floor(value));
 };
 
-export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
+const toOptionalLimit = (value: unknown, fallback: number): number => {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return fallback;
+  return Math.max(0, Math.floor(value));
+};
+
+const metric = (used: number, limit: number | null) => ({
+  used,
+  limit,
+  remaining: limit === null ? null : Math.max(limit - used, 0),
+});
+
+type GuestQuotaRpc = {
+  analysis_count?: unknown;
+  exploration_count?: unknown;
+  image_count?: unknown;
+  effective_analysis_limit?: unknown;
+  effective_message_limit?: unknown;
+  effective_image_limit?: unknown;
+  risk_score?: unknown;
+  risk_level?: unknown;
+};
+
+export function buildGuestQuotaStatus(
+  quotaData: GuestQuotaRpc | null | undefined,
+  messagesUsed: number,
+): Record<string, unknown> {
+  const analysisUsed = toCount(quotaData?.analysis_count);
+  const explorationUsed = toCount(quotaData?.exploration_count);
+  const imageUsed = toCount(quotaData?.image_count);
+  const analysisLimit = toOptionalLimit(quotaData?.effective_analysis_limit, GUEST_LIMITS.analysis);
+  const messageLimit = toOptionalLimit(quotaData?.effective_message_limit, GUEST_LIMITS.messagesPerDream);
+  const imageLimit = toOptionalLimit(quotaData?.effective_image_limit, GUEST_LIMITS.image);
+
+  const canAnalyze = analysisUsed < analysisLimit;
+  const canExplore = true;
+  const canGenerateImage = imageUsed < imageLimit;
+
+  const reasons: string[] = [];
+  if (!canAnalyze) {
+    reasons.push(`Guest analysis limit reached (${analysisUsed}/${GUEST_LIMITS.analysis}). Create a free account to get more!`);
+  }
+  if (!canGenerateImage) {
+    reasons.push(`Guest illustration limit reached (${imageUsed}/${imageLimit}).`);
+  }
+
+  return {
+    tier: 'guest',
+    usage: {
+      analysis: metric(analysisUsed, analysisLimit),
+      exploration: metric(explorationUsed, null),
+      messages: metric(messagesUsed, messageLimit),
+      image: metric(imageUsed, imageLimit),
+    },
+    canAnalyze,
+    canExplore,
+    canGenerateImage,
+    isUpgraded: false,
+    riskScore: quotaData?.risk_score ?? 0,
+    riskLevel: quotaData?.risk_level ?? 'low',
+    reasons,
+  };
+}
+
+/**
+ * Authenticated /quota/status must not invent a monthly illustration credit.
+ * Plus is unlimited. Free generic status is bundled-with-analysis, so
+ * canGenerateImage is false and usage.image is not a paid pool.
+ */
+export function enrichAuthenticatedQuotaStatus(data: Record<string, unknown>): Record<string, unknown> {
+  const usageIn = data.usage && typeof data.usage === 'object' && !Array.isArray(data.usage)
+    ? { ...(data.usage as Record<string, unknown>) }
+    : {};
+  if (data.tier === 'plus') {
+    if (usageIn.image == null) {
+      usageIn.image = metric(0, null);
+    }
+    return {
+      ...data,
+      usage: usageIn,
+      canGenerateImage: typeof data.canGenerateImage === 'boolean' ? data.canGenerateImage : true,
+    };
+  }
+  usageIn.image = metric(0, 0);
+  return {
+    ...data,
+    usage: usageIn,
+    canGenerateImage: false,
+  };
+}
+
+export async function handleQuotaStatus(
+  ctx: ApiContext,
+  deps: QuotaStatusDependencies = {},
+): Promise<Response> {
   const { req, user, supabase, supabaseUrl, supabaseServiceRoleKey } = ctx;
 
   try {
@@ -45,7 +153,12 @@ export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
       }
-      return new Response(JSON.stringify(data), {
+      const payload = enrichAuthenticatedQuotaStatus(
+        data && typeof data === 'object' && !Array.isArray(data)
+          ? data as Record<string, unknown>
+          : {},
+      );
+      return new Response(JSON.stringify(payload), {
         status: 200,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
@@ -70,7 +183,10 @@ export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
     }
 
     // Query actual usage from database
-    const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+    const createAdmin = deps.createAdminClient
+      ?? ((url: string, key: string, options?: Record<string, unknown>) =>
+        createClient(url, key, options) as unknown as AdminClient);
+    const adminClient = createAdmin(supabaseUrl, supabaseServiceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
@@ -88,10 +204,6 @@ export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
       );
     }
 
-    const analysisUsed = quotaData?.analysis_count ?? 0;
-    const explorationUsed = quotaData?.exploration_count ?? 0;
-    const analysisLimit = quotaData?.effective_analysis_limit ?? GUEST_LIMITS.analysis;
-    const messageLimit = quotaData?.effective_message_limit ?? GUEST_LIMITS.messagesPerDream;
     let messagesUsed = 0;
     if (targetDreamId !== null) {
       const { data: messageCount, error: messageCountError } = await adminClient.rpc(
@@ -113,29 +225,8 @@ export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
       messagesUsed = toCount(messageCount);
     }
 
-    const canAnalyze = analysisUsed < analysisLimit;
-    const canExplore = true;
-
-    const reasons: string[] = [];
-    if (!canAnalyze) {
-      reasons.push(`Guest analysis limit reached (${analysisUsed}/${GUEST_LIMITS.analysis}). Create a free account to get more!`);
-    }
-
     return new Response(
-      JSON.stringify({
-        tier: 'guest',
-        usage: {
-          analysis: { used: analysisUsed, limit: analysisLimit },
-          exploration: { used: explorationUsed, limit: null },
-          messages: { used: messagesUsed, limit: messageLimit },
-        },
-        canAnalyze,
-        canExplore,
-        isUpgraded: false,
-        riskScore: quotaData?.risk_score ?? 0,
-        riskLevel: quotaData?.risk_level ?? 'low',
-        reasons,
-      }),
+      JSON.stringify(buildGuestQuotaStatus((quotaData ?? {}) as GuestQuotaRpc, messagesUsed)),
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   } catch {

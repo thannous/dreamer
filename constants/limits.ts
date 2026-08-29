@@ -11,6 +11,14 @@ export interface TierQuotas {
   analysis: number | null; // Number of interpreted dreams included
   exploration: number | null; // Compatibility metric; no longer a product entitlement
   messagesPerDream: number | null; // Safety ceiling for chat within one interpreted dream
+  /**
+   * Illustration allowance.
+   * guest: existing device image_count pool (2).
+   * free: 0 — no standalone monthly credits; server still bundles one image
+   *   with a valid analysis request.
+   * plus: null (unlimited).
+   */
+  image: number | null;
 }
 
 export interface TierQuotaConfig {
@@ -26,16 +34,19 @@ export const QUOTAS: Record<UserTier, TierQuotas> = {
     analysis: 2,
     exploration: null,
     messagesPerDream: 10,
+    image: 2,
   },
   free: {
     analysis: 3,
     exploration: null,
     messagesPerDream: 10,
+    image: 0,
   },
   plus: {
     analysis: null,
     exploration: null,
     messagesPerDream: 20,
+    image: null,
   },
 };
 

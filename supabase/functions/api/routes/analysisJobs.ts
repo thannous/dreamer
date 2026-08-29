@@ -52,6 +52,10 @@ export const resolveAnalysisJobAdmissionPolicy = (tier: 'free' | 'plus') => ({
 const normalizeTier = (value: unknown): 'free' | 'plus' =>
   value === 'plus' || value === 'premium' ? 'plus' : 'free';
 
+/** Image jobs are opt-in. Omitted, null, or false means do not generate/replace. */
+export const resolveReplaceExistingImageFlag = (value: unknown): boolean =>
+  value === true;
+
 export const blockedAdmissionResponse = (admission: AnalysisJobAdmission): Response => {
   if (admission.code === 'QUOTA_EXCEEDED') {
     const used = typeof admission.new_count === 'number' ? Math.max(0, admission.new_count) : 0;
@@ -175,7 +179,7 @@ export async function handleCreateAnalysisJob(ctx: ApiContext): Promise<Response
       p_dream_id: dreamId,
       p_analysis_request_id: requestIdInput.value,
       p_lang: normalizeAiLanguage(langInput.value || 'en'),
-      p_replace_existing_image: body.replaceExistingImage !== false,
+      p_replace_existing_image: resolveReplaceExistingImageFlag(body.replaceExistingImage),
       p_max_attempts: policy.maxAttempts,
       p_max_active_per_actor: policy.maxActive,
       p_window_seconds: policy.windowSeconds,

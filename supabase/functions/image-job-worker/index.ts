@@ -273,16 +273,27 @@ const updateJob = async (
   }
 };
 
-const redactedRequestPayload = (job: ImageJobRow) => ({
-  redacted: true,
-  hadPrompt: typeof job.request_payload?.prompt === 'string' && job.request_payload.prompt.length > 0,
-  hadTranscript:
-    typeof job.request_payload?.transcript === 'string'
-    && job.request_payload.transcript.length > 0,
-  hadPreviousImage: Boolean(job.request_payload?.previousImageUrl),
-});
+export const IMAGE_RETRY_PAYLOAD_HASH_KEY = '_retryPayloadHash';
 
-const persistDreamImageResult = async (
+const readRetryPayloadHash = (payload: ImageJobRow['request_payload'] | null | undefined): string | null => {
+  const value = (payload as { _retryPayloadHash?: unknown } | null | undefined)?._retryPayloadHash;
+  return typeof value === 'string' && value.length > 0 ? value : null;
+};
+
+export const redactedRequestPayload = (job: ImageJobRow) => {
+  const retryPayloadHash = readRetryPayloadHash(job.request_payload);
+  return {
+    redacted: true as const,
+    hadPrompt: typeof job.request_payload?.prompt === 'string' && job.request_payload.prompt.length > 0,
+    hadTranscript:
+      typeof job.request_payload?.transcript === 'string'
+      && job.request_payload.transcript.length > 0,
+    hadPreviousImage: Boolean(job.request_payload?.previousImageUrl),
+    ...(retryPayloadHash ? { [IMAGE_RETRY_PAYLOAD_HASH_KEY]: retryPayloadHash } : {}),
+  };
+};
+
+export const persistDreamImageResult = async (
   adminClient: ReturnType<typeof createAdminClient>,
   job: ImageJobRow,
   imageUrl: string
@@ -304,7 +315,27 @@ const persistDreamImageResult = async (
   }
 };
 
-const markTerminalFailure = async (
+export const persistDreamImageFailure = async (
+  adminClient: ReturnType<typeof createAdminClient>,
+  job: ImageJobRow
+) => {
+  if (job.dream_id == null) {
+    return;
+  }
+
+  const { error } = await adminClient
+    .from('dreams')
+    .update({
+      image_generation_failed: true,
+    })
+    .eq('id', job.dream_id);
+
+  if (error) {
+    throw error;
+  }
+};
+
+export const markTerminalFailure = async (
   adminClient: ReturnType<typeof createAdminClient>,
   job: ImageJobRow,
   errorCode: string,
@@ -317,6 +348,7 @@ const markTerminalFailure = async (
     error_message: errorMessage,
     finished_at: new Date().toISOString(),
   });
+  await persistDreamImageFailure(adminClient, job);
 };
 
 const requeueJob = async (
@@ -549,7 +581,7 @@ const runInBackground = (task: Promise<void>): boolean => {
   return true;
 };
 
-serve(async (req: Request) => {
+const handleImageJobWorkerRequest = async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
@@ -584,4 +616,12 @@ serve(async (req: Request) => {
     console.error('[image-job-worker] Unhandled request failure');
     return json({ error: 'Internal server error' }, 500);
   }
-});
+};
+
+const shouldListenForWorkerRequests = (): boolean =>
+  import.meta.main
+  || typeof (globalThis as { EdgeRuntime?: unknown }).EdgeRuntime !== 'undefined';
+
+if (shouldListenForWorkerRequests()) {
+  serve(handleImageJobWorkerRequest);
+}

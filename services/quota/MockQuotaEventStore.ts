@@ -3,12 +3,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAnalyzedDreamCount, getExploredDreamCount, isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import type { DreamAnalysis } from '@/lib/types';
 import { getSavedDreams } from '@/services/storageService';
+import { countAiGeneratedImages, isAiGeneratedImage } from './imageUsage';
 
 type MockQuotaState = {
   analysisCount: number;
   explorationCount: number;
+  imageCount: number;
   analyzedDreamIds: number[];
   exploredDreamIds: number[];
+  imagedDreamIds: number[];
 };
 
 const STORAGE_KEY = 'mock_quota_events_v1';
@@ -16,8 +19,10 @@ const MIGRATION_KEY = 'mock_quota_events_migrated_v1';
 const DEFAULT_STATE: MockQuotaState = {
   analysisCount: 0,
   explorationCount: 0,
+  imageCount: 0,
   analyzedDreamIds: [],
   exploredDreamIds: [],
+  imagedDreamIds: [],
 };
 
 let cache: { state: MockQuotaState; expiresAt: number } | null = null;
@@ -30,8 +35,10 @@ const safeParseState = (raw: string | null): MockQuotaState => {
     return {
       analysisCount: typeof parsed.analysisCount === 'number' ? parsed.analysisCount : 0,
       explorationCount: typeof parsed.explorationCount === 'number' ? parsed.explorationCount : 0,
+      imageCount: typeof parsed.imageCount === 'number' ? parsed.imageCount : 0,
       analyzedDreamIds: Array.isArray(parsed.analyzedDreamIds) ? parsed.analyzedDreamIds : [],
       exploredDreamIds: Array.isArray(parsed.exploredDreamIds) ? parsed.exploredDreamIds : [],
+      imagedDreamIds: Array.isArray(parsed.imagedDreamIds) ? parsed.imagedDreamIds : [],
     };
   } catch {
     return DEFAULT_STATE;
@@ -55,19 +62,27 @@ async function syncWithDreams(state: MockQuotaState): Promise<MockQuotaState> {
   const exploredIds = dreams
     .filter((dream) => isDreamExplored(dream))
     .map((dream) => dream.id);
+  const imagedIds = dreams
+    .filter((dream) => isAiGeneratedImage(dream))
+    .map((dream) => dream.id);
+  const imageFromDreams = countAiGeneratedImages(dreams);
 
   const next: MockQuotaState = {
     analysisCount: Math.max(state.analysisCount, analysisFromDreams),
     explorationCount: Math.max(state.explorationCount, explorationFromDreams),
+    imageCount: Math.max(state.imageCount, imageFromDreams),
     analyzedDreamIds: mergeIds(state.analyzedDreamIds, analyzedIds),
     exploredDreamIds: mergeIds(state.exploredDreamIds, exploredIds),
+    imagedDreamIds: mergeIds(state.imagedDreamIds, imagedIds),
   };
 
   const changed =
     next.analysisCount !== state.analysisCount ||
     next.explorationCount !== state.explorationCount ||
+    next.imageCount !== state.imageCount ||
     next.analyzedDreamIds.length !== state.analyzedDreamIds.length ||
-    next.exploredDreamIds.length !== state.exploredDreamIds.length;
+    next.exploredDreamIds.length !== state.exploredDreamIds.length ||
+    next.imagedDreamIds.length !== state.imagedDreamIds.length;
 
   if (changed) {
     await saveState(next);
@@ -136,12 +151,18 @@ async function migrateFromDreamsIfNeeded(): Promise<void> {
   const exploredDreamIds = dreams
     .filter((dream) => isDreamExplored(dream))
     .map((dream) => dream.id);
+  const imagedDreamIds = dreams
+    .filter((dream) => isAiGeneratedImage(dream))
+    .map((dream) => dream.id);
+  const imageCount = countAiGeneratedImages(dreams);
 
   const next: MockQuotaState = {
     analysisCount,
     explorationCount,
+    imageCount,
     analyzedDreamIds,
     exploredDreamIds,
+    imagedDreamIds,
   };
 
   await saveState(next);
@@ -164,6 +185,12 @@ export async function getMockExplorationCount(): Promise<number> {
   await migrateFromDreamsIfNeeded();
   const state = await loadState();
   return state.explorationCount;
+}
+
+export async function getMockImageCount(): Promise<number> {
+  await migrateFromDreamsIfNeeded();
+  const state = await loadState();
+  return state.imageCount;
 }
 
 export async function isDreamAnalyzedMock(dreamId?: number): Promise<boolean> {
@@ -220,6 +247,27 @@ export async function markMockExploration(dream?: Pick<DreamAnalysis, 'id'>): Pr
 
   await saveState(updated);
   return updated.explorationCount;
+}
+
+export async function markMockImage(dream?: Pick<DreamAnalysis, 'id'>): Promise<number> {
+  await migrateFromDreamsIfNeeded();
+  const state = await loadState();
+  const dreamId = dream?.id;
+
+  if (dreamId && state.imagedDreamIds.includes(dreamId)) {
+    return state.imageCount;
+  }
+
+  const updated: MockQuotaState = {
+    ...state,
+    imageCount: state.imageCount + 1,
+    imagedDreamIds: dreamId
+      ? [...state.imagedDreamIds, dreamId]
+      : state.imagedDreamIds,
+  };
+
+  await saveState(updated);
+  return updated.imageCount;
 }
 
 export function invalidateMockQuotaCache(): void {

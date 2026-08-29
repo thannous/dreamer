@@ -39,6 +39,7 @@ const {
   mockUseAuth,
   mockGetAccessToken,
   mockMarkMockAnalysis,
+  mockMarkMockImage,
 } = ((factory: any) => factory())(() => ({
   mockGetSavedDreams: typedJestFn<() => Promise<DreamAnalysis[]>>(),
   mockSaveDreams: typedJestFn<(dreams: DreamAnalysis[]) => Promise<void>>(),
@@ -70,10 +71,11 @@ const {
   >(),
   mockGetAccessToken: typedJestFn<() => Promise<string | null>>(),
   mockMarkMockAnalysis: typedJestFn<() => Promise<number>>(),
+  mockMarkMockImage: typedJestFn<(dream?: { id: number }) => Promise<number>>(),
 }));
 
 let mockSubscriptionStatus: any = { tier: 'free' };
-const mockEnvState = { analysisJobsEnabled: false };
+const mockEnvState = { analysisJobsEnabled: false, mockMode: false };
 
 // Mock dependencies
 jest.mock('expo-network', () => ({
@@ -104,7 +106,7 @@ jest.mock('expo-localization', () => ({
 
 jest.mock('../../lib/env', () => ({
   ...(jest.requireActual('../../lib/env') as Record<string, unknown>),
-  isMockModeEnabled: () => false,
+  isMockModeEnabled: () => mockEnvState.mockMode,
   isAnalysisJobsEnabled: () => mockEnvState.analysisJobsEnabled,
 }));
 
@@ -188,6 +190,7 @@ jest.mock('../../services/quota/GuestAnalysisCounter', () => ({
 
 jest.mock('../../services/quota/MockQuotaEventStore', () => ({
   markMockAnalysis: mockMarkMockAnalysis,
+  markMockImage: mockMarkMockImage,
 }));
 
 // Mock GuestDreamCounter (avoid persisting between tests)
@@ -282,6 +285,7 @@ describe('useDreamJournal', () => {
     jest.clearAllMocks();
     mockSubscriptionStatus = { tier: 'free' };
     mockEnvState.analysisJobsEnabled = false;
+    mockEnvState.mockMode = false;
     setMockUser(null);
     mockGuestDreamCounterState.count = 0;
     process.env.EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED = '';
@@ -300,6 +304,7 @@ describe('useDreamJournal', () => {
     mockSyncWithServerCount.mockResolvedValue(1);
     mockGetAccessToken.mockResolvedValue('test-token');
     mockMarkMockAnalysis.mockResolvedValue(1);
+    mockMarkMockImage.mockResolvedValue(1);
     mockSubmitImageGenerationJob.mockResolvedValue({
       jobId: 'job-1',
       status: 'queued',
@@ -1013,6 +1018,314 @@ describe('useDreamJournal', () => {
       expect(mockUpdateDreamInSupabase).not.toHaveBeenCalled();
     });
 
+    it('invalidates quota after a terminal image success is reconciled from the server', async () => {
+      setMockUser({ id: 'user-1' });
+      const pendingDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        imageUrl: '',
+        imageJobId: 'job-succeeded',
+        imageJobStatus: 'running',
+        imageJobRequestId: 'image-request-1',
+      });
+      mockFetchDreamsFromSupabase.mockResolvedValueOnce([pendingDream]);
+      mockFetchDreamFromSupabase.mockResolvedValue({
+        ...pendingDream,
+        imageUrl: 'https://example.com/generated-image.jpg',
+      });
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          remoteDreamId: 101,
+          jobId: 'job-succeeded',
+          clientRequestId: 'image-request-1',
+          status: 'running',
+          requestedAt: Date.now(),
+        },
+      ]);
+      mockGetImageGenerationJobStatus.mockResolvedValue({
+        jobId: 'job-succeeded',
+        status: 'succeeded',
+        clientRequestId: 'image-request-1',
+        resultPayload: { imageUrl: 'https://example.com/generated-image.jpg' },
+      });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await waitFor(() => {
+        expect(result.current.dreams[0].imageUrl).toBe('https://example.com/generated-image.jpg');
+      }, FAST_WAIT_OPTIONS);
+
+      expect(mockInvalidateQuota).toHaveBeenCalledWith(expect.objectContaining({ id: 'user-1' }));
+    });
+
+    it('invalidates quota after a terminal image success is persisted when server refresh fails', async () => {
+      setMockUser({ id: 'user-1' });
+      const pendingDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        imageUrl: '',
+        imageJobId: 'job-succeeded',
+        imageJobStatus: 'running',
+        imageJobRequestId: 'image-request-1',
+      });
+      mockFetchDreamsFromSupabase.mockResolvedValueOnce([pendingDream]);
+      mockFetchDreamFromSupabase.mockRejectedValue(new Error('refresh failed'));
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          remoteDreamId: 101,
+          jobId: 'job-succeeded',
+          clientRequestId: 'image-request-1',
+          status: 'running',
+          requestedAt: Date.now(),
+        },
+      ]);
+      mockGetImageGenerationJobStatus.mockResolvedValue({
+        jobId: 'job-succeeded',
+        status: 'succeeded',
+        clientRequestId: 'image-request-1',
+        resultPayload: { imageUrl: 'https://example.com/local-persist.jpg' },
+      });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await waitFor(() => {
+        expect(result.current.dreams[0].imageUrl).toBe('https://example.com/local-persist.jpg');
+      }, FAST_WAIT_OPTIONS);
+
+      expect(mockSavePendingImageJobs).toHaveBeenCalledWith([]);
+      expect(result.current.dreams[0].imageJobId).toBeUndefined();
+      expect(mockInvalidateQuota).toHaveBeenCalledWith(expect.objectContaining({ id: 'user-1' }));
+    });
+
+    it('invalidates quota after a terminal image success is persisted locally', async () => {
+      const pendingDream = buildDream({
+        id: 1,
+        imageUrl: '',
+        imageJobId: 'job-local-success',
+        imageJobStatus: 'queued',
+        imageJobRequestId: 'image-request-local',
+      });
+      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          jobId: 'job-local-success',
+          clientRequestId: 'image-request-local',
+          status: 'queued',
+          requestedAt: Date.now(),
+        },
+      ]);
+      mockGetImageGenerationJobStatus.mockResolvedValue({
+        jobId: 'job-local-success',
+        status: 'succeeded',
+        clientRequestId: 'image-request-local',
+        resultPayload: { imageUrl: 'https://example.com/guest-image.jpg' },
+      });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await waitFor(() => {
+        expect(result.current.dreams[0].imageUrl).toBe('https://example.com/guest-image.jpg');
+      }, FAST_WAIT_OPTIONS);
+
+      expect(mockInvalidateQuota).toHaveBeenCalledWith(null);
+    });
+
+    it('records mock image quota before invalidating on terminal success', async () => {
+      mockEnvState.mockMode = true;
+      const pendingDream = buildDream({
+        id: 1,
+        imageUrl: '',
+        imageJobId: 'job-mock-success',
+        imageJobStatus: 'queued',
+        imageJobRequestId: 'image-request-mock',
+      });
+      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          jobId: 'job-mock-success',
+          clientRequestId: 'image-request-mock',
+          status: 'queued',
+          requestedAt: Date.now(),
+        },
+      ]);
+      mockGetImageGenerationJobStatus.mockResolvedValue({
+        jobId: 'job-mock-success',
+        status: 'succeeded',
+        clientRequestId: 'image-request-mock',
+        resultPayload: { imageUrl: 'https://example.com/mock-image.jpg' },
+      });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await waitFor(() => {
+        expect(result.current.dreams[0].imageUrl).toBe('https://example.com/mock-image.jpg');
+      }, FAST_WAIT_OPTIONS);
+
+      expect(mockMarkMockImage).toHaveBeenCalledTimes(1);
+      expect(mockMarkMockImage).toHaveBeenCalledWith({ id: 1 });
+      expect(mockInvalidateQuota).toHaveBeenCalledWith(null);
+      expect(mockMarkMockImage.mock.invocationCallOrder[0]).toBeLessThan(
+        mockInvalidateQuota.mock.invocationCallOrder[0]
+      );
+    });
+
+    it('invalidates quota after terminal image success even if markMockImage fails', async () => {
+      mockEnvState.mockMode = true;
+      mockMarkMockImage.mockRejectedValueOnce(new Error('mock image counter failed'));
+      const pendingDream = buildDream({
+        id: 1,
+        imageUrl: '',
+        imageJobId: 'job-mock-counter-fail',
+        imageJobStatus: 'queued',
+        imageJobRequestId: 'image-request-mock-fail',
+      });
+      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          jobId: 'job-mock-counter-fail',
+          clientRequestId: 'image-request-mock-fail',
+          status: 'queued',
+          requestedAt: Date.now(),
+        },
+      ]);
+      mockGetImageGenerationJobStatus.mockResolvedValue({
+        jobId: 'job-mock-counter-fail',
+        status: 'succeeded',
+        clientRequestId: 'image-request-mock-fail',
+        resultPayload: { imageUrl: 'https://example.com/mock-counter-fail.jpg' },
+      });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await waitFor(() => {
+        expect(result.current.dreams[0].imageUrl).toBe('https://example.com/mock-counter-fail.jpg');
+      }, FAST_WAIT_OPTIONS);
+
+      expect(mockMarkMockImage).toHaveBeenCalledWith({ id: 1 });
+      expect(mockInvalidateQuota).toHaveBeenCalledWith(null);
+    });
+
+    it('invalidates quota after terminal image success even if pending-job cleanup fails', async () => {
+      const pendingDream = buildDream({
+        id: 1,
+        imageUrl: '',
+        imageJobId: 'job-cleanup-fail',
+        imageJobStatus: 'queued',
+        imageJobRequestId: 'image-request-cleanup',
+      });
+      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          jobId: 'job-cleanup-fail',
+          clientRequestId: 'image-request-cleanup',
+          status: 'queued',
+          requestedAt: Date.now(),
+        },
+      ]);
+      mockGetImageGenerationJobStatus.mockResolvedValue({
+        jobId: 'job-cleanup-fail',
+        status: 'succeeded',
+        clientRequestId: 'image-request-cleanup',
+        resultPayload: { imageUrl: 'https://example.com/cleanup-fail.jpg' },
+      });
+      mockSavePendingImageJobs.mockRejectedValueOnce(new Error('cleanup failed'));
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await waitFor(() => {
+        expect(result.current.dreams[0].imageUrl).toBe('https://example.com/cleanup-fail.jpg');
+      }, FAST_WAIT_OPTIONS);
+
+      expect(mockInvalidateQuota).toHaveBeenCalledWith(null);
+    });
+
+    it('invalidates quota after a terminal image failure is persisted', async () => {
+      const pendingDream = buildDream({
+        id: 1,
+        imageUrl: '',
+        imageJobId: 'job-failed',
+        imageJobStatus: 'running',
+        imageJobRequestId: 'image-request-failed',
+      });
+      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          jobId: 'job-failed',
+          clientRequestId: 'image-request-failed',
+          status: 'running',
+          requestedAt: Date.now(),
+        },
+      ]);
+      mockGetImageGenerationJobStatus.mockResolvedValue({
+        jobId: 'job-failed',
+        status: 'failed',
+        clientRequestId: 'image-request-failed',
+        errorCode: 'IMAGE_PROVIDER_FAILED',
+        errorMessage: 'illustration failed',
+      });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await waitFor(() => {
+        expect(result.current.dreams[0]).toEqual(
+          expect.objectContaining({
+            imageGenerationFailed: true,
+            imageJobErrorCode: 'IMAGE_PROVIDER_FAILED',
+            imageJobId: undefined,
+          })
+        );
+      }, FAST_WAIT_OPTIONS);
+
+      expect(mockInvalidateQuota).toHaveBeenCalledWith(null);
+    });
+
+    it.each(['queued', 'running'] as const)(
+      'does not invalidate quota while an image job is %s',
+      async (status: 'queued' | 'running') => {
+        const pendingDream = buildDream({
+          id: 1,
+          imageUrl: '',
+          imageJobId: 'job-active',
+          imageJobStatus: status,
+          imageJobRequestId: 'image-request-active',
+        });
+        mockGetSavedDreams.mockResolvedValue([pendingDream]);
+        mockGetPendingImageJobs.mockResolvedValue([
+          {
+            dreamId: 1,
+            jobId: 'job-active',
+            clientRequestId: 'image-request-active',
+            status,
+            requestedAt: Date.now(),
+          },
+        ]);
+        mockGetImageGenerationJobStatus.mockResolvedValue({
+          jobId: 'job-active',
+          status,
+          clientRequestId: 'image-request-active',
+        });
+
+        await renderLoadedDreamJournal();
+
+        await waitFor(() => {
+          expect(mockGetImageGenerationJobStatus).toHaveBeenCalledWith('job-active');
+        }, FAST_WAIT_OPTIONS);
+
+        await act(async () => {
+          await Promise.resolve();
+        });
+
+        expect(mockInvalidateQuota).not.toHaveBeenCalled();
+      }
+    );
+
     it('merges a fast image response into the latest analyzed dream state', async () => {
       let resolveImageStatus!: (value: {
         jobId: string;
@@ -1161,10 +1474,78 @@ describe('useDreamJournal', () => {
         dreamId: 101,
         analysisRequestId: requestId,
         lang: 'fr',
-        replaceExistingImage: true,
+        replaceExistingImage: false,
       });
       expect(mockGetDreamAnalysisJobStatus).toHaveBeenCalledWith('analysis-job-1');
       expect(mockFetchDreamFromSupabase).toHaveBeenCalledWith(101);
+      expect(mockSavePendingImageJobs).not.toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({ jobId: 'image-job-from-analysis' }),
+        ])
+      );
+      expect(analyzed).toEqual(expect.objectContaining({
+        title: 'Server-owned title',
+        interpretation: 'Server-owned interpretation',
+        analysisStatus: 'done',
+        isAnalyzed: true,
+        imageJobId: undefined,
+        imageJobStatus: undefined,
+      }));
+    });
+
+    it('registers a server image job only when replaceExistingImage is true', async () => {
+      mockEnvState.analysisJobsEnabled = true;
+      setMockUser({ id: 'user-1' });
+      const requestId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
+      const existingDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        isAnalyzed: false,
+        analysisStatus: 'failed',
+        analysisRequestId: requestId,
+        imageUrl: '',
+      });
+      const analyzedRemote = buildDream({
+        ...existingDream,
+        title: 'Server-owned title',
+        interpretation: 'Server-owned interpretation',
+        isAnalyzed: true,
+        analysisStatus: 'done',
+      });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream }));
+      mockFetchDreamFromSupabase.mockResolvedValue(analyzedRemote);
+      mockGetDreamAnalysisJobStatus.mockResolvedValue({
+        jobId: 'analysis-job-1',
+        status: 'succeeded',
+        clientRequestId: requestId,
+        resultPayload: {
+          dreamId: 101,
+          imageJob: {
+            id: 'image-job-from-analysis',
+            status: 'queued',
+            client_request_id: requestId,
+            dream_id: 101,
+          },
+        },
+      });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      let analyzed: DreamAnalysis | undefined;
+      await act(async () => {
+        analyzed = await result.current.analyzeDream(1, existingDream.transcript, {
+          lang: 'fr',
+          replaceExistingImage: true,
+        });
+      });
+
+      expect(mockSubmitDreamAnalysisJob).toHaveBeenCalledWith({
+        dreamId: 101,
+        analysisRequestId: requestId,
+        lang: 'fr',
+        replaceExistingImage: true,
+      });
       expect(analyzed).toEqual(expect.objectContaining({
         title: 'Server-owned title',
         analysisStatus: 'done',
@@ -1204,7 +1585,10 @@ describe('useDreamJournal', () => {
       const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
-        await result.current.analyzeDream(1, existingDream.transcript, { lang: 'fr' });
+        await result.current.analyzeDream(1, existingDream.transcript, {
+          lang: 'fr',
+          replaceExistingImage: true,
+        });
       });
 
       expect(mockUpdateDreamInSupabase).toHaveBeenCalledTimes(3);
@@ -1400,7 +1784,7 @@ describe('useDreamJournal', () => {
       const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
-        await result.current.analyzeDream(1, 'My dream transcript');
+        await result.current.analyzeDream(1, 'My dream transcript', { replaceExistingImage: true });
       });
 
       expect(mockAnalyzeDreamText).toHaveBeenCalledWith('My dream transcript', undefined, 'mock-hash-fingerprint', {
@@ -1461,7 +1845,9 @@ describe('useDreamJournal', () => {
       let analysisPromise!: Promise<DreamAnalysis>;
 
       act(() => {
-        analysisPromise = result.current.analyzeDream(1, existingDream.transcript);
+        analysisPromise = result.current.analyzeDream(1, existingDream.transcript, {
+          replaceExistingImage: true,
+        });
       });
 
       await waitFor(() => {
@@ -1516,9 +1902,7 @@ describe('useDreamJournal', () => {
           analysisRequestId: persistedRequestId,
         }
       );
-      expect(mockSubmitImageGenerationJob).toHaveBeenCalledWith(
-        expect.objectContaining({ clientRequestId: persistedRequestId })
-      );
+      expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
       expect(result.current.dreams[0]).toEqual(
         expect.objectContaining({
           analysisRequestId: persistedRequestId,
@@ -1593,7 +1977,7 @@ describe('useDreamJournal', () => {
       const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
-        await result.current.analyzeDream(1, 'My dream transcript');
+        await result.current.analyzeDream(1, 'My dream transcript', { replaceExistingImage: true });
       });
 
       expect(mockAnalyzeDreamText).toHaveBeenCalledWith('My dream transcript', undefined, undefined, {
@@ -1630,7 +2014,7 @@ describe('useDreamJournal', () => {
       const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
-        await result.current.analyzeDream(1, 'My dream transcript');
+        await result.current.analyzeDream(1, 'My dream transcript', { replaceExistingImage: true });
       });
 
       const analyzedDream = result.current.dreams[0];
@@ -1689,6 +2073,239 @@ describe('useDreamJournal', () => {
         remoteDreamId: undefined,
         analysisRequestId: expect.any(String),
       });
+      expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
+    });
+
+    it.each([undefined, false] as const)(
+      'completes text analysis without submitting an image job when replaceExistingImage is %s',
+      async (replaceExistingImage: undefined | false) => {
+        const existingDream = buildDream({
+          id: 1,
+          interpretation: '',
+          shareableQuote: '',
+          isAnalyzed: false,
+          analysisStatus: 'none',
+          imageUrl: '',
+        });
+        mockGetSavedDreams.mockResolvedValue([existingDream]);
+        const onProgress = jest.fn();
+
+        const { result } = await renderLoadedDreamJournal();
+
+        let analyzed: DreamAnalysis | undefined;
+        await act(async () => {
+          analyzed = await result.current.analyzeDream(
+            1,
+            existingDream.transcript,
+            replaceExistingImage === undefined
+              ? { onProgress }
+              : { replaceExistingImage, onProgress }
+          );
+        });
+
+        expect(mockAnalyzeDreamText).toHaveBeenCalled();
+        expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
+        expect(onProgress).not.toHaveBeenCalledWith('generating_image');
+        expect(onProgress).toHaveBeenCalledWith('finalizing');
+        expect(onProgress).toHaveBeenCalledWith('complete');
+        expect(analyzed).toEqual(
+          expect.objectContaining({
+            title: 'Analyzed Title',
+            interpretation: 'Deep meaning',
+            isAnalyzed: true,
+            analysisStatus: 'done',
+          })
+        );
+        expect(analyzed?.imageJobId).toBeUndefined();
+        expect(analyzed?.imageJobStatus).toBeUndefined();
+        expect(result.current.dreams[0]).toEqual(
+          expect.objectContaining({
+            title: 'Analyzed Title',
+            interpretation: 'Deep meaning',
+            isAnalyzed: true,
+            analysisStatus: 'done',
+          })
+        );
+        expect(result.current.dreams[0].imageJobId).toBeUndefined();
+      }
+    );
+
+    it('preserves a pending image job while text analysis completes', async () => {
+      const existingDream = buildDream({
+        id: 1,
+        interpretation: '',
+        shareableQuote: '',
+        isAnalyzed: false,
+        analysisStatus: 'none',
+        imageUrl: 'https://example.com/pending.jpg',
+        thumbnailUrl: 'https://example.com/pending-thumb.jpg',
+        imageSource: 'ai',
+        imageUpdatedAt: 1_700_000_123_000,
+        imageGenerationFailed: false,
+        imageJobId: 'job-inflight',
+        imageJobStatus: 'running',
+        imageJobRequestId: 'image-request-inflight',
+        imageJobErrorCode: undefined,
+        imageJobErrorMessage: undefined,
+      });
+      mockGetSavedDreams.mockResolvedValue([existingDream]);
+
+      const { result } = await renderLoadedDreamJournal();
+      const imageSidecar = {
+        imageUrl: result.current.dreams[0].imageUrl,
+        thumbnailUrl: result.current.dreams[0].thumbnailUrl,
+        imageSource: result.current.dreams[0].imageSource,
+        imageUpdatedAt: result.current.dreams[0].imageUpdatedAt,
+        imageGenerationFailed: result.current.dreams[0].imageGenerationFailed,
+        imageJobId: result.current.dreams[0].imageJobId,
+        imageJobStatus: result.current.dreams[0].imageJobStatus,
+        imageJobRequestId: result.current.dreams[0].imageJobRequestId,
+        imageJobErrorCode: result.current.dreams[0].imageJobErrorCode,
+        imageJobErrorMessage: result.current.dreams[0].imageJobErrorMessage,
+      };
+
+      let analyzed: DreamAnalysis | undefined;
+      await act(async () => {
+        analyzed = await result.current.analyzeDream(1, existingDream.transcript);
+      });
+
+      expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
+      expect(analyzed).toEqual(
+        expect.objectContaining({
+          title: 'Analyzed Title',
+          interpretation: 'Deep meaning',
+          isAnalyzed: true,
+          analysisStatus: 'done',
+          ...imageSidecar,
+        })
+      );
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({
+          interpretation: 'Deep meaning',
+          isAnalyzed: true,
+          analysisStatus: 'done',
+          ...imageSidecar,
+        })
+      );
+      expect(imageSidecar).toEqual({
+        imageUrl: 'https://example.com/pending.jpg',
+        thumbnailUrl: 'https://example.com/pending-thumb.jpg',
+        imageSource: 'ai',
+        imageUpdatedAt: 1_700_000_123_000,
+        imageGenerationFailed: false,
+        imageJobId: 'job-inflight',
+        imageJobStatus: 'running',
+        imageJobRequestId: 'image-request-inflight',
+        imageJobErrorCode: undefined,
+        imageJobErrorMessage: undefined,
+      });
+    });
+
+    it('preserves a failed image sidecar while text analysis completes', async () => {
+      const existingDream = buildDream({
+        id: 1,
+        interpretation: '',
+        shareableQuote: '',
+        isAnalyzed: false,
+        analysisStatus: 'none',
+        imageUrl: '',
+        thumbnailUrl: undefined,
+        imageSource: 'ai',
+        imageUpdatedAt: 1_700_000_456_000,
+        imageGenerationFailed: true,
+        imageJobId: undefined,
+        imageJobStatus: undefined,
+        imageJobRequestId: undefined,
+        imageJobErrorCode: 'IMAGE_PROVIDER_FAILED',
+        imageJobErrorMessage: 'previous illustration failed',
+      });
+      mockGetSavedDreams.mockResolvedValue([existingDream]);
+
+      const { result } = await renderLoadedDreamJournal();
+      const imageSidecar = {
+        imageUrl: result.current.dreams[0].imageUrl,
+        thumbnailUrl: result.current.dreams[0].thumbnailUrl,
+        imageSource: result.current.dreams[0].imageSource,
+        imageUpdatedAt: result.current.dreams[0].imageUpdatedAt,
+        imageGenerationFailed: result.current.dreams[0].imageGenerationFailed,
+        imageJobId: result.current.dreams[0].imageJobId,
+        imageJobStatus: result.current.dreams[0].imageJobStatus,
+        imageJobRequestId: result.current.dreams[0].imageJobRequestId,
+        imageJobErrorCode: result.current.dreams[0].imageJobErrorCode,
+        imageJobErrorMessage: result.current.dreams[0].imageJobErrorMessage,
+      };
+
+      let analyzed: DreamAnalysis | undefined;
+      await act(async () => {
+        analyzed = await result.current.analyzeDream(1, existingDream.transcript, {
+          replaceExistingImage: false,
+        });
+      });
+
+      expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
+      expect(analyzed).toEqual(
+        expect.objectContaining({
+          title: 'Analyzed Title',
+          interpretation: 'Deep meaning',
+          isAnalyzed: true,
+          analysisStatus: 'done',
+          ...imageSidecar,
+        })
+      );
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({
+          interpretation: 'Deep meaning',
+          isAnalyzed: true,
+          analysisStatus: 'done',
+          ...imageSidecar,
+        })
+      );
+      expect(imageSidecar).toEqual(
+        expect.objectContaining({
+          imageUrl: '',
+          imageSource: 'ai',
+          imageUpdatedAt: 1_700_000_456_000,
+          imageGenerationFailed: true,
+          imageJobId: undefined,
+          imageJobStatus: undefined,
+          imageJobRequestId: undefined,
+          imageJobErrorCode: 'IMAGE_PROVIDER_FAILED',
+          imageJobErrorMessage: 'previous illustration failed',
+        })
+      );
+    });
+
+    it('queues illustration when replaceExistingImage is explicitly true', async () => {
+      const existingDream = buildDream({
+        id: 1,
+        isAnalyzed: false,
+        analysisStatus: 'none',
+        imageUrl: '',
+      });
+      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      const onProgress = jest.fn();
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.analyzeDream(1, existingDream.transcript, {
+          replaceExistingImage: true,
+          onProgress,
+        });
+      });
+
+      expect(mockSubmitImageGenerationJob).toHaveBeenCalledWith(
+        expect.objectContaining({ prompt: 'A surreal landscape' })
+      );
+      expect(onProgress).toHaveBeenCalledWith('generating_image');
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({
+          isAnalyzed: true,
+          analysisStatus: 'done',
+          imageJobId: 'job-queued',
+          imageJobStatus: 'queued',
+        })
+      );
     });
 
     it('throws error when dream not found', async () => {

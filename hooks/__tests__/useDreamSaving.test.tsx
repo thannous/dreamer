@@ -255,7 +255,32 @@ describe('useDreamSaving', () => {
       await result.current.analyzeAndSaveDream(draft);
     });
 
-    expect(mockAnalyzeDream).toHaveBeenCalledWith(draft.id, draft.transcript, { lang: 'fr' });
+    expect(mockAnalyzeDream).toHaveBeenCalledWith(draft.id, draft.transcript, {
+      lang: 'fr',
+      replaceExistingImage: false,
+    });
+  });
+
+  it('analyzes without requesting illustration', async () => {
+    const onProgress = {
+      setStep: jest.fn(),
+      setError: jest.fn(),
+      reset: jest.fn(),
+    };
+    const { result } = renderHook(() => useDreamSaving());
+    const draft = result.current.buildDraftDream('Un rêve');
+
+    await act(async () => {
+      await result.current.analyzeAndSaveDream(draft, onProgress);
+    });
+
+    expect(mockAnalyzeDream).toHaveBeenCalledWith(draft.id, draft.transcript, {
+      lang: 'fr',
+      replaceExistingImage: false,
+    });
+    expect(onProgress.setStep).toHaveBeenCalledWith(1);
+    expect(onProgress.setStep).toHaveBeenCalledWith(3);
+    expect(onProgress.setStep).not.toHaveBeenCalledWith(2);
   });
 
   it('still saves dreams when quick categorization fails', async () => {

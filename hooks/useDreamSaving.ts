@@ -135,7 +135,10 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
         onProgress?.reset();
         onProgress?.setStep(1); // ANALYZING
 
-        const analyzedDream = await analyzeDream(dream.id, dream.transcript, { lang: currentLang });
+        const analyzedDream = await analyzeDream(dream.id, dream.transcript, {
+          lang: currentLang,
+          replaceExistingImage: false,
+        });
 
         onProgress?.setStep(3); // COMPLETE
         options.onAnalysisComplete?.(analyzedDream);

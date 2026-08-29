@@ -7,6 +7,8 @@ import type { DreamAnalysis } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
 
 const mockAddDream = jest.fn();
+const mockAnalyzeDream = jest.fn();
+const mockAnalysisSetStep = jest.fn();
 const mockApplyDreamCategorization = jest.fn();
 const mockCategorizeDream = jest.fn();
 const mockForceStopRecording = jest.fn();
@@ -192,7 +194,7 @@ jest.doMock('@/components/analysis/AnalysisProgress', () => ({
 }));
 
 jest.doMock('@/components/analysis/AnalysisRevealOverlay', () => ({
-  ANALYSIS_REVEAL_HOLD_MS: 950,
+  ANALYSIS_REVEAL_HOLD_MS: 0,
   AnalysisRevealOverlay: ({ visible }: { visible: boolean }) =>
     visible ? <div data-testid="analysis-reveal-overlay" /> : null,
 }));
@@ -364,7 +366,7 @@ jest.doMock('@/context/AuthContext', () => ({
 jest.doMock('@/context/DreamsContext', () => ({
   useDreams: () => ({
     addDream: mockAddDream,
-    analyzeDream: jest.fn(),
+    analyzeDream: mockAnalyzeDream,
     applyDreamCategorization: mockApplyDreamCategorization,
     dreams: mockDreams,
     reloadDreams: jest.fn(),
@@ -417,15 +419,22 @@ jest.doMock('@/context/ThemeContext', () => ({
 }));
 
 jest.doMock('@/hooks/useAnalysisProgress', () => ({
-  AnalysisStep: { IDLE: 0, ANALYZING: 1, GENERATING_IMAGE: 2, COMPLETE: 3 },
+  AnalysisStep: {
+    IDLE: 'idle',
+    ANALYZING: 'analyzing',
+    GENERATING_IMAGE: 'generating_image',
+    FINALIZING: 'finalizing',
+    COMPLETE: 'complete',
+    ERROR: 'error',
+  },
   useAnalysisProgress: () => ({
     error: null,
     message: '',
     progress: 0,
     reset: jest.fn(),
     setError: jest.fn(),
-    setStep: jest.fn(),
-    step: 0,
+    setStep: mockAnalysisSetStep,
+    step: 'idle',
   }),
 }));
 
@@ -595,6 +604,11 @@ describe('Recording screen', () => {
     mockGetSavedTranscript.mockResolvedValue('');
     mockSaveTranscript.mockResolvedValue(undefined);
     mockAddDream.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream, id: 42 }));
+    mockAnalyzeDream.mockImplementation(async (id: number, transcript: string) => ({
+      ...buildDream(transcript, id),
+      isAnalyzed: true,
+      analysisStatus: 'done',
+    }));
     mockApplyDreamCategorization.mockResolvedValue(null);
     mockCategorizeDream.mockResolvedValue({
       dreamType: 'Symbolic Dream',
@@ -757,6 +771,45 @@ describe('Recording screen', () => {
       });
     }
   );
+
+  it('analyzes a saved dream without waiting for illustration', async () => {
+    mockAnalyzeDream.mockImplementation(async (id: number, transcript: string, options?: {
+      onProgress?: (step: string) => void;
+    }) => {
+      options?.onProgress?.('generating_image');
+      options?.onProgress?.('finalizing');
+      options?.onProgress?.('complete');
+      return {
+        ...buildDream(transcript, id),
+        isAnalyzed: true,
+        analysisStatus: 'done',
+      };
+    });
+    render(<RecordingScreen />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'A blue room under the rain' },
+    });
+    fireEvent.click(await screen.findByTestId('recording-save'));
+    fireEvent.click(await screen.findByTestId('first-dream-analyze'));
+
+    await waitFor(() => {
+      expect(mockAnalyzeDream).toHaveBeenCalledWith(
+        42,
+        'A blue room under the rain',
+        expect.objectContaining({
+          replaceExistingImage: false,
+          lang: 'fr',
+          analyticsSource: 'recording_flow',
+        })
+      );
+    });
+
+    expect(mockAnalysisSetStep).toHaveBeenCalledWith('analyzing');
+    expect(mockAnalysisSetStep).toHaveBeenCalledWith('finalizing');
+    expect(mockAnalysisSetStep).toHaveBeenCalledWith('complete');
+    expect(mockAnalysisSetStep).not.toHaveBeenCalledWith('generating_image');
+  });
 
   it('saves typed content before offering navigation to the first dream', async () => {
     render(<RecordingScreen />);

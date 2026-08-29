@@ -43,6 +43,13 @@ import { getDreamAnalysisState, getDreamDetailAction } from '@/lib/dreamUsage';
 import { isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
+import {
+  resolveJournalIllustrationAccess,
+  resolveJournalIllustrationCta,
+  resolveJournalIllustrationSidecar,
+  shouldReplaceExistingImage,
+  shouldShowCompletedJournalReading,
+} from '@/lib/journalIllustrationPolicy';
 import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
@@ -257,32 +264,21 @@ export default function JournalDetailScreen() {
     }
   }, [isShareModalVisible]);
   const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
-  const { canAnalyzeNow, canAnalyze, tier, usage, loading: quotaLoading, quotaStatus } = useQuota();
+  const {
+    canAnalyzeNow,
+    canAnalyze,
+    canGenerateImageNow,
+    tier,
+    usage,
+    loading: quotaLoading,
+    quotaStatus,
+  } = useQuota();
   const { t } = useTranslation();
   const referenceImagesEnabled = isReferenceImagesEnabled();
   const isPlus = tier === 'plus';
   const canUseReference = referenceImagesEnabled && Boolean(user);
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
-  const bundledImageRequestId = useMemo(
-    () =>
-      tier === 'free' &&
-      Boolean(user) &&
-      dream?.isAnalyzed === true &&
-      !dream.imageUrl?.trim() &&
-      dream.analysisRequestId
-        ? dream.analysisRequestId
-        : undefined,
-    [dream, tier, user]
-  );
-  const canGenerateImage =
-    !quotaLoading &&
-    (
-      (canAnalyzeNow && (isPlus || tier === 'guest')) ||
-      Boolean(bundledImageRequestId)
-    );
-  // Free accounts cannot generate images: offer Plus instead of a dead end.
-  const canOfferImageUpgrade = !quotaLoading && !canGenerateImage && tier === 'free';
   const handleImageUpgrade = useCallback(() => {
     router.push(buildPaywallHref('image_generation'));
   }, []);
@@ -460,6 +456,65 @@ export default function JournalDetailScreen() {
   const { shareImageRef, shareComposite } = useDreamShareComposite();
 
   const analysisState = useMemo(() => getDreamAnalysisState(dream), [dream]);
+  const guestImageAvailable = useMemo(() => {
+    if (quotaLoading) return false;
+    const image = usage?.image;
+    if (image) {
+      return image.limit === null || image.used < image.limit;
+    }
+    return canGenerateImageNow;
+  }, [canGenerateImageNow, quotaLoading, usage?.image]);
+  const illustrationAccess = useMemo(
+    () =>
+      resolveJournalIllustrationAccess({
+        tier,
+        canGenerateImageNow: tier === 'guest' ? guestImageAvailable : canGenerateImageNow,
+        isAnalyzed: analysisState.isAnalyzed,
+        imageUrl: dream?.imageUrl,
+        analysisRequestId: dream?.analysisRequestId,
+      }),
+    [
+      analysisState.isAnalyzed,
+      canGenerateImageNow,
+      dream?.analysisRequestId,
+      dream?.imageUrl,
+      guestImageAvailable,
+      tier,
+    ]
+  );
+  const illustrationSidecar = useMemo(
+    () =>
+      resolveJournalIllustrationSidecar({
+        imageUrl: dream?.imageUrl,
+        imageGenerationFailed: dream?.imageGenerationFailed,
+        imageJobStatus: dream?.imageJobStatus,
+      }),
+    [dream?.imageGenerationFailed, dream?.imageJobStatus, dream?.imageUrl]
+  );
+  const illustrationCta = useMemo(
+    () =>
+      resolveJournalIllustrationCta({
+        sidecar: illustrationSidecar,
+        isAnalyzed: analysisState.isAnalyzed,
+        allowed: illustrationAccess.allowed,
+        reason: illustrationAccess.reason,
+        tier,
+      }),
+    [
+      analysisState.isAnalyzed,
+      illustrationAccess.allowed,
+      illustrationAccess.reason,
+      illustrationSidecar,
+      tier,
+    ]
+  );
+  const showCompletedReading = shouldShowCompletedJournalReading(
+    dream?.analysisStatus,
+    analysisState.isAnalyzed
+  );
+  const visibleIllustrationCta =
+    quotaLoading && illustrationCta === 'quota' ? 'none' : illustrationCta;
+  const canOfferImageUpgrade = visibleIllustrationCta === 'upgrade';
 
   useEffect(() => {
     if (
@@ -558,7 +613,7 @@ export default function JournalDetailScreen() {
     };
   }, [canRecoverPendingAnalysis, dream, isAnalysisPending, primaryAction, t]);
   const isAnalysisLocked = !!dream && (isAnalysisPending || isAnalyzing);
-  const isImageJobPending = dream?.imageJobStatus === 'queued' || dream?.imageJobStatus === 'running';
+  const isImageJobPending = illustrationSidecar === 'pending';
   const isSyncPending = dreamSyncState === 'pending';
   const isSyncFailed = dreamSyncState === 'failed';
   const isSyncConflict = dreamSyncState === 'conflict';
@@ -919,10 +974,9 @@ export default function JournalDetailScreen() {
   }, [deleteAndNavigate, dream, isAnalysisLocked, isDeleting]);
 
   const onRetryImage = useCallback(async () => {
-    if (!dream || isAnalysisLocked) return;
-
-    // Defensive check: verify quota before attempting generation
-    if (!canAnalyzeNow && !bundledImageRequestId) {
+    if (!dream) return;
+    if (!illustrationAccess.allowed) {
+      setImageErrorMessage(t('journal.detail.image.quota_exceeded_message'));
       return;
     }
 
@@ -936,15 +990,26 @@ export default function JournalDetailScreen() {
       await generateDreamImage(dream.id, {
         transcript: sourceText,
         previousImageUrl: dream.imageUrl || undefined,
-        clientRequestId: bundledImageRequestId,
+        clientRequestId: illustrationAccess.bundledRequestId,
       });
     } catch (error) {
-      const msg = error instanceof Error ? error.message : t('common.unknown_error');
-      setImageErrorMessage(msg);
+      if (error instanceof QuotaError) {
+        setImageErrorMessage(t('journal.detail.image.quota_exceeded_message'));
+        return;
+      }
+      const classified = classifyError(
+        error instanceof Error ? error : new Error(t('common.unknown_error')),
+        t
+      );
+      setImageErrorMessage(
+        classified.userMessage === t('error.interpretation_limit')
+          ? t('journal.detail.image.quota_exceeded_message')
+          : classified.userMessage
+      );
     } finally {
       setIsRetryingImage(false);
     }
-  }, [bundledImageRequestId, canAnalyzeNow, dream, generateDreamImage, isAnalysisLocked, t]);
+  }, [dream, generateDreamImage, illustrationAccess.allowed, illustrationAccess.bundledRequestId, t]);
 
   const handleBackPress = useCallback(() => {
     router.replace('/(tabs)/journal');
@@ -1090,15 +1155,15 @@ export default function JournalDetailScreen() {
       return;
     }
 
-    void runAnalyze(true, true);
+    void runAnalyze(shouldReplaceExistingImage('first'), true);
   }, [dream, ensureAnalyzeAllowed, hasExistingImage, runAnalyze]);
 
   const handleReplaceImage = useCallback(() => {
-    void runAnalyze(true);
+    void runAnalyze(shouldReplaceExistingImage('replace'));
   }, [runAnalyze]);
 
   const handleKeepImage = useCallback(() => {
-    void runAnalyze(false);
+    void runAnalyze(shouldReplaceExistingImage('keep'));
   }, [runAnalyze]);
 
   const handleDismissReanalyzeSheet = useCallback(() => {
@@ -1112,7 +1177,9 @@ export default function JournalDetailScreen() {
 
   const handleConfirmReanalyze = useCallback(() => {
     setShowReanalyzeSheet(false);
-    void runAnalyze(reanalyzeImagePolicy === 'regenerate');
+    void runAnalyze(
+      shouldReplaceExistingImage(reanalyzeImagePolicy === 'regenerate' ? 'regenerate' : 'keep')
+    );
   }, [reanalyzeImagePolicy, runAnalyze]);
 
   const handleTranscriptSave = useCallback(async () => {
@@ -1130,10 +1197,10 @@ export default function JournalDetailScreen() {
     setIsEditingTranscript(false);
 
     if (transcriptChanged) {
-      setReanalyzeImagePolicy(hasExistingImage ? 'keep' : 'regenerate');
+      setReanalyzeImagePolicy('keep');
       setShowReanalyzeSheet(true);
     }
-  }, [dream, editableTranscript, hasExistingImage, updateDream]);
+  }, [dream, editableTranscript, updateDream]);
 
   const handleDismissReplaceSheet = useCallback(() => {
     setShowReplaceImageSheet(false);
@@ -1721,8 +1788,8 @@ export default function JournalDetailScreen() {
                     />
                     <View className="absolute inset-0 rounded-lg bg-horizon" />
                   </Reveal>
-                ) : dream.imageGenerationFailed ? (
-                  canGenerateImage ? (
+                ) : illustrationSidecar === 'failed' ? (
+                  visibleIllustrationCta === 'retry' ? (
                     <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
                   ) : (
                     <View className="h-full w-full flex-col items-center justify-center gap-2.5 rounded-lg border border-line bg-ink-soft px-5 py-6">
@@ -1749,23 +1816,19 @@ export default function JournalDetailScreen() {
                       ) : null}
                     </View>
                   )
-                ) : isAnalysisPending || isImageJobPending ? (
+                ) : illustrationSidecar === 'pending' ? (
                   <View className="h-full w-full flex-col items-center justify-center gap-3 rounded-lg border border-line-strong bg-ink-active px-6 py-7">
                     <View className="h-16 w-16 items-center justify-center rounded-full bg-champagne">
                       <IconSymbol name="sparkles" size={28} color={noctalia.action.primaryText} />
                     </View>
                     <ActivityIndicator size="large" color={noctalia.accent.soft} />
                     <Text className="text-center font-sans-bold text-[18px] text-ivory">
-                      {isImageJobPending
-                        ? t('journal.detail.image.generating_title')
-                        : t('journal.detail.image.preparing_title')}
+                      {t('journal.detail.image.generating_title')}
                     </Text>
                     <Text className="px-2 text-center font-sans text-[14px] leading-5 text-ivory-muted">
                       {dream.imageJobStatus === 'queued'
                         ? t('journal.detail.image.queued_subtitle')
-                        : dream.imageJobStatus === 'running'
-                          ? t('journal.detail.image.running_subtitle')
-                          : t('journal.detail.image.preparing_subtitle')}
+                        : t('journal.detail.image.running_subtitle')}
                     </Text>
                   </View>
                 ) : (
@@ -1775,11 +1838,13 @@ export default function JournalDetailScreen() {
                       {t('journal.detail.image.no_image_title')}
                     </Text>
                     <Text className="px-2 text-center font-sans text-[14px] leading-5 text-ivory-muted">
-                      {t('journal.detail.image.no_image_subtitle')}
+                      {visibleIllustrationCta === 'quota'
+                        ? t('journal.detail.image.quota_exceeded_message')
+                        : t('journal.detail.image.no_image_subtitle')}
                     </Text>
-                    {!isRetryingImage && !isImageJobPending && !isAnalysisLocked && (
+                    {!isRetryingImage && !isImageJobPending && (
                       <View className="w-full items-center gap-3">
-                        {canOfferImageUpgrade && (
+                        {visibleIllustrationCta === 'upgrade' && (
                           <>
                             <PressableScale
                               onPress={handleImageUpgrade}
@@ -1799,17 +1864,19 @@ export default function JournalDetailScreen() {
                             </Text>
                           </>
                         )}
-                        {canGenerateImage && (
+                        {visibleIllustrationCta === 'illustrate' && (
                           <>
                             <PressableScale
                               onPress={onRetryImage}
-                              disabled={isRetryingImage || isImageJobPending || isAnalysisLocked}
+                              disabled={isRetryingImage || isImageJobPending}
+                              testID={TID.Button.JournalIllustrate}
+                              accessibilityRole="button"
                               className={`min-w-[150px] flex-row items-center justify-center gap-2 rounded-md bg-champagne px-4 py-3 ${
-                                (isRetryingImage || isAnalysisLocked) ? 'opacity-70' : ''
+                                isRetryingImage ? 'opacity-70' : ''
                               }`}
                               style={shadows.md}
                             >
-                              <IconSymbol name="arrow.clockwise" size={18} color={noctalia.action.primaryText} />
+                              <IconSymbol name="sparkles" size={18} color={noctalia.action.primaryText} />
                               <Text className="font-sans-bold text-[15px] text-on-champagne">
                                 {t('journal.detail.image.generate_action')}
                               </Text>
@@ -1843,7 +1910,7 @@ export default function JournalDetailScreen() {
                     )}
                   </View>
                 )}
-                {(isRetryingImage || isAnalysisLocked) && (
+                {isRetryingImage && (
                   <View className="absolute inset-0 items-center justify-center rounded-lg bg-ink-overlay">
                     <ActivityIndicator color={noctalia.text.primary} />
                   </View>
@@ -1875,7 +1942,7 @@ export default function JournalDetailScreen() {
             <Reveal index={1}>{renderSyncStatusCard()}</Reveal>
 
             <Reveal index={2}>
-            {(analysisState.isAnalyzed || isAnalysisPending) && (
+            {(showCompletedReading || isAnalysisPending) && (
               <>
                 {/* Quote */}
                 {isAnalysisPending ? (

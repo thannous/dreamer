@@ -236,24 +236,27 @@ export interface DreamMutation {
 }
 
 /**
+ * One quota metric. `limit`/`remaining` are null when unlimited.
+ */
+export interface QuotaMetric {
+  used: number;
+  limit: number | null;
+  remaining: number | null;
+}
+
+/**
  * Quota usage information
  */
 export interface QuotaUsage {
-  analysis: {
-    used: number;
-    limit: number | null; // null = unlimited
-    remaining: number | null; // null = unlimited
-  };
-  exploration: {
-    used: number;
-    limit: number | null;
-    remaining: number | null;
-  };
-  messages: {
-    used: number; // For a specific dream
-    limit: number | null;
-    remaining: number | null;
-  };
+  analysis: QuotaMetric;
+  exploration: QuotaMetric;
+  messages: QuotaMetric; // For a specific dream
+  /**
+   * Illustration usage. Optional on older payloads.
+   * Guest: existing device image pool. Plus: unlimited (`limit` null).
+   * Authenticated free generic status is not a monthly illustration credit.
+   */
+  image?: QuotaMetric;
 }
 
 export type SubscriptionTier = 'guest' | 'free' | 'plus';
@@ -288,6 +291,14 @@ export interface QuotaStatus {
   usage: QuotaUsage;
   canAnalyze: boolean;
   canExplore: boolean;
+  /**
+   * Whether a standalone illustration request is currently allowed.
+   * Guest: follows image remaining, not analysis remaining.
+   * Plus: always true. Authenticated free generic status is false — images stay
+   * bundled with a dream analysis request, not a monthly credit pool.
+   * Optional on older payloads.
+   */
+  canGenerateImage?: boolean;
   reasons?: string[]; // Reasons why an action is blocked
   /** @deprecated Kept only for compatibility with old quota payloads. */
   isUpgraded?: boolean;

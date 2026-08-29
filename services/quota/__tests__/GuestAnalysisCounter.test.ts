@@ -9,6 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 let getLocalAnalysisCount: typeof import('../GuestAnalysisCounter').getLocalAnalysisCount;
 let getLocalExplorationCount: typeof import('../GuestAnalysisCounter').getLocalExplorationCount;
+let getLocalImageCount: typeof import('../GuestAnalysisCounter').getLocalImageCount;
 let incrementLocalAnalysisCount: typeof import('../GuestAnalysisCounter').incrementLocalAnalysisCount;
 let incrementLocalExplorationCount: typeof import('../GuestAnalysisCounter').incrementLocalExplorationCount;
 let syncWithServerCount: typeof import('../GuestAnalysisCounter').syncWithServerCount;
@@ -76,6 +77,7 @@ describe('GuestAnalysisCounter', () => {
     ({
       getLocalAnalysisCount,
       getLocalExplorationCount,
+      getLocalImageCount,
       incrementLocalAnalysisCount,
       incrementLocalExplorationCount,
       syncWithServerCount,
@@ -130,6 +132,12 @@ describe('GuestAnalysisCounter', () => {
 
       // Then
       expect(count).toBe(0);
+    });
+  });
+
+  describe('getLocalImageCount', () => {
+    it('given empty storage when getting count then returns 0', async () => {
+      await expect(getLocalImageCount()).resolves.toBe(0);
     });
   });
 
@@ -290,6 +298,15 @@ describe('GuestAnalysisCounter', () => {
       // Then
       expect(result).toBe(5);
       expect(mockStorage.get(EXPLORATION_KEY)).toBe('5');
+    });
+
+    it('given server count higher than local when syncing image then uses server count', async () => {
+      mockStorage.set('guest_total_image_count_v1', '1');
+
+      const result = await syncWithServerCount(2, 'image');
+
+      expect(result).toBe(2);
+      expect(mockStorage.get('guest_total_image_count_v1')).toBe('2');
     });
 
     it('given empty local storage when syncing then uses server count', async () => {

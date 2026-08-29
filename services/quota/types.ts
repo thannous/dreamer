@@ -53,6 +53,13 @@ export interface QuotaProvider {
   canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier): Promise<boolean>;
 
   /**
+   * Check if a standalone illustration request is currently allowed.
+   * Guest uses the image pool, not analysis remaining. Authenticated free
+   * generic status is false; plus is unlimited.
+   */
+  canGenerateImage(user: User | null, tier: UserTier): Promise<boolean>;
+
+  /**
    * Get complete quota status for user
    * @param user - Supabase user (null for guests)
    * @param tier - User's subscription tier from RevenueCat (source of truth)
