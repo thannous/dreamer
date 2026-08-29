@@ -68,9 +68,11 @@ app-example
 
 # iOS - managed workflow (not tracked)
 /ios
+/apps/meditation/ios
 
 # Android - managed workflow (not tracked)
 /android
+/apps/meditation/android
 .eas/keys/*.json
 eas-sumit.json
 gen-lang-client-0336445544-fc3b036c6e41.json

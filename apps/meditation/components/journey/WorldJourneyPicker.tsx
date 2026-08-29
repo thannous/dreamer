@@ -1,7 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { Image, type ImageProps } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -39,6 +39,7 @@ export const WORLD_JOURNEY_TEST_ID: Record<WorldId, string> = {
 export const ACTIVE_JOURNEY_WIDTH_RATIO = 0.78;
 export const INACTIVE_JOURNEY_MIN_HEIGHT = 172;
 export const COMPACT_INACTIVE_JOURNEY_MIN_HEIGHT = 132;
+const JOURNEY_GAP = 12;
 
 type Props = {
   worlds: readonly MeditationWorld[];
@@ -47,6 +48,7 @@ type Props = {
   onSelect: (worldId: WorldId) => void;
   isWorldOwned: (worldId: WorldId) => boolean;
   priceForWorld: (worldId: WorldId) => string | undefined;
+  initialSelectionReady?: boolean;
   accessibilityLabel?: string;
   testID?: string;
 };
@@ -202,19 +204,40 @@ export function WorldJourneyPicker({
   onSelect,
   isWorldOwned,
   priceForWorld,
+  initialSelectionReady = false,
   accessibilityLabel,
   testID,
 }: Props) {
   const { width: viewportWidth } = useWindowDimensions();
+  const scrollRef = useRef<ScrollView>(null);
+  const revealedInitialSelectionRef = useRef(false);
   const compact = useCompactLayout();
   const availableWidth = Math.max(280, viewportWidth - 32);
   const activeWidth = compact
     ? Math.min(244, Math.max(208, availableWidth * 0.7))
     : Math.min(316, Math.max(248, availableWidth * ACTIVE_JOURNEY_WIDTH_RATIO));
 
+  // Hydration can replace the default world with one several cards away. Show
+  // that real initial choice once, then leave every later rail position under
+  // the listener's direct control.
+  useEffect(() => {
+    if (!initialSelectionReady || revealedInitialSelectionRef.current) return;
+
+    revealedInitialSelectionRef.current = true;
+    const selectedIndex = worlds.findIndex((world) => world.id === selectedWorldId);
+    if (selectedIndex <= 0) return;
+
+    scrollRef.current?.scrollTo({
+      x: selectedIndex * (activeWidth + JOURNEY_GAP),
+      y: 0,
+      animated: false,
+    });
+  }, [activeWidth, initialSelectionReady, selectedWorldId, worlds]);
+
   return (
     <View accessibilityRole="radiogroup" accessibilityLabel={accessibilityLabel} testID={testID}>
       <ScrollView
+        ref={scrollRef}
         horizontal
         nestedScrollEnabled
         alwaysBounceHorizontal={false}

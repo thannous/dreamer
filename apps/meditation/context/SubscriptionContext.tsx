@@ -20,11 +20,13 @@ import {
   type GateReason,
   type SubscriptionTier,
 } from '@/lib/entitlements';
+import { areSubscriptionsEnabled } from '@/lib/env';
 import { toLocalDay } from '@/lib/streak';
 import type { MeditationSession } from '@/lib/types';
 import * as subscriptions from '@/services/subscriptionService';
 
 type SubscriptionContextValue = {
+  subscriptionsEnabled: boolean;
   tier: SubscriptionTier;
   loaded: boolean;
   monthlyPlays: number;
@@ -47,10 +49,13 @@ const SubscriptionContext = createContext<SubscriptionContextValue | null>(null)
 export const SubscriptionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const router = useRouter();
   const { practiceLog } = useLibrary();
+  const subscriptionsEnabled = areSubscriptionsEnabled();
   const [tier, setTier] = useState<SubscriptionTier>('free');
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(!subscriptionsEnabled);
 
   useEffect(() => {
+    if (!subscriptionsEnabled) return;
+
     let mounted = true;
 
     subscriptions
@@ -70,32 +75,39 @@ export const SubscriptionProvider: React.FC<React.PropsWithChildren> = ({ childr
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [subscriptionsEnabled]);
 
   const today = toLocalDay(new Date());
   const monthlyPlays = playsThisMonth(practiceLog, today);
   const quotaResetDay = freeQuotaResetDay(today);
+  const accessTier: SubscriptionTier = subscriptionsEnabled ? tier : 'plus';
 
   const refresh = useCallback(async () => {
+    if (!subscriptionsEnabled) return;
     setTier(await subscriptions.currentTier());
-  }, []);
+  }, [subscriptionsEnabled]);
 
   const value = useMemo<SubscriptionContextValue>(
     () => ({
-      tier,
+      subscriptionsEnabled,
+      tier: accessTier,
       loaded,
       monthlyPlays,
-      remainingPlays: remainingFreePlays(tier, monthlyPlays),
+      remainingPlays: remainingFreePlays(accessTier, monthlyPlays),
       quotaResetDay,
-      isPlus: tier === 'plus',
-      gateForSession: (session) => canPlaySession(session, tier, monthlyPlays),
-      gateForPattern: (patternId) => canUseBreathingPattern(patternId, tier),
-      gateForTimer: (minutes) => canUseFadeTimer(minutes, tier),
-      openPaywall: (reason) => router.push(`/paywall?reason=${reason}`),
+      isPlus: accessTier === 'plus',
+      gateForSession: (session) => canPlaySession(session, accessTier, monthlyPlays),
+      gateForPattern: (patternId) => canUseBreathingPattern(patternId, accessTier),
+      gateForTimer: (minutes) => canUseFadeTimer(minutes, accessTier),
+      openPaywall: (reason) => {
+        if (subscriptionsEnabled) router.push(`/paywall?reason=${reason}`);
+      },
       refresh,
-      applyTier: setTier,
+      applyTier: (nextTier) => {
+        if (subscriptionsEnabled) setTier(nextTier);
+      },
     }),
-    [tier, loaded, monthlyPlays, quotaResetDay, refresh, router]
+    [subscriptionsEnabled, accessTier, loaded, monthlyPlays, quotaResetDay, refresh, router]
   );
 
   return <SubscriptionContext.Provider value={value}>{children}</SubscriptionContext.Provider>;
@@ -106,12 +118,13 @@ export const useSubscription = (): SubscriptionContextValue => {
 
   return (
     ctx ?? {
-      tier: 'free',
-      loaded: false,
+      subscriptionsEnabled: false,
+      tier: 'plus',
+      loaded: true,
       monthlyPlays: 0,
-      remainingPlays: 3,
+      remainingPlays: Number.POSITIVE_INFINITY,
       quotaResetDay: freeQuotaResetDay(toLocalDay(new Date())),
-      isPlus: false,
+      isPlus: true,
       gateForSession: () => ({ allowed: true }),
       gateForPattern: () => ({ allowed: true }),
       gateForTimer: () => ({ allowed: true }),

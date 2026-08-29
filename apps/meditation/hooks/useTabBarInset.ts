@@ -16,12 +16,11 @@ export const DrawerButtonClearance = 56;
  * cannot cover the last tab-screen row.
  *
  * `bodySm` uses a 20 pt line box. On a 320 dp compact strip the title column
- * is about 156 px after artwork, gutters and the 48 dp play control, so the
- * longest session titles can take three lines at 200%. Padding plus that
- * third line is about 136 px, which is why the compact 57 pt constant is not
- * enough on its own.
+ * is about 88 px after artwork, gutters and the two 48 dp controls, so the
+ * longest translated titles can take four lines at 200%. The 176 dp budget
+ * includes those controls and keeps the last screen row above the strip.
  */
-const MiniPlayerScaleAllowance = 80;
+const MiniPlayerScaleAllowance = 119;
 
 /**
  * Reserve a second label line as Android accessibility text grows.
@@ -36,10 +35,10 @@ export function accessibleTabBarHeight(baseHeight: number, fontScale: number): n
 }
 
 /**
- * Reserve the worst-case three-line mini-player title as Android text grows.
+ * Reserve the worst-case four-line mini-player title as Android text grows.
  *
  * The compact 57 pt strip is artwork plus one `bodySm` line. At 200% that
- * title can wrap three times, so the tab inset has to grow with the same
+ * title can wrap four times beside two controls, so the tab inset grows with the same
  * curve rather than keep using the compact constant.
  */
 export function accessibleMiniPlayerHeight(baseHeight: number, fontScale: number): number {

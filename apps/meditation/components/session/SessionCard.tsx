@@ -31,7 +31,7 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
   const router = useRouter();
   const { t } = useTranslation();
   const { favorites } = useLibrary();
-  const { isPlus } = useSubscription();
+  const { subscriptionsEnabled = true, isPlus } = useSubscription();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
 
   const title = t(`session.${session.id}.title` as TranslationKey);
@@ -46,11 +46,12 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
     t(`session.${session.id}.benefit.${index + 1}` as TranslationKey)
   );
   const unlockedPremium = session.isPremium && isPlus;
-  const accessLabel = session.isPremium
-    ? unlockedPremium
-      ? t('paywall.active.title')
-      : t('common.plus')
-    : t('common.free');
+  const accessLabel =
+    session.isPremium && subscriptionsEnabled
+      ? unlockedPremium
+        ? t('paywall.active.title')
+        : t('common.plus')
+      : t('common.free');
   const saved = favorites.includes(session.id);
   const savedLabel = saved
     ? session.isPremium && !unlockedPremium

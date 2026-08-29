@@ -132,6 +132,7 @@ export function createSessionPlayer(
   let sessionOffset = 0;
   let playStartedAt: number | null = null;
   let lockScreenActive = false;
+  let lastNativePlaying = player.playing;
   const loopEdgeWindowSec = Math.max(2, (updateIntervalMs / 1_000) * 4);
 
   const metadata: AudioMetadata = {
@@ -152,10 +153,15 @@ export function createSessionPlayer(
 
   const deactivateLockScreen = () => {
     if (!lockScreenActive) return;
+    // Android expo-audio 57.0.4: clearLockScreenControls() unregisters the
+    // service player but leaves isActiveForLockScreen true when the binder is
+    // missing, so the paused media session and NO_CLEAR notification survive
+    // close. setActiveForLockScreen(false) always drops that native flag.
+    if (typeof player.setActiveForLockScreen === 'function') {
+      player.setActiveForLockScreen(false);
+    }
     if (typeof player.clearLockScreenControls === 'function') {
       player.clearLockScreenControls();
-    } else if (typeof player.setActiveForLockScreen === 'function') {
-      player.setActiveForLockScreen(false);
     }
     lockScreenActive = false;
   };
@@ -249,11 +255,13 @@ export function createSessionPlayer(
       startClock();
       player.loop = true;
       player.play();
+      lastNativePlaying = true;
       activateLockScreen();
     },
     pause: () => {
       freezeClock();
       player.pause();
+      lastNativePlaying = false;
     },
     async seekTo(seconds: number) {
       const target = Math.min(Math.max(seconds, 0), safeDuration);
@@ -290,8 +298,11 @@ export function createSessionPlayer(
         const currentTime = nowSessionTime(status.currentTime);
         const reachedSessionEnd = currentTime >= safeDuration;
         const didFinishNow = reachedSessionEnd && !finished;
+        const wasNativePlaying = lastNativePlaying;
+        lastNativePlaying = status.playing && !reachedSessionEnd;
         if (didFinishNow) {
           finished = true;
+          lastNativePlaying = false;
           playStartedAt = null;
           sessionOffset = safeDuration;
           player.loop = false;
@@ -300,6 +311,14 @@ export function createSessionPlayer(
         } else if (status.playing) {
           sessionOffset = currentTime;
           playStartedAt = Date.now();
+          // Android can auto-resume ExoPlayer after a transient audio-focus
+          // loss while Media3 keeps exposing the stale PAUSED session. Expo's
+          // activation call rebuilds that service session from ref.isPlaying.
+          // Refresh only on the native paused -> playing edge: doing this on
+          // every 500 ms status tick would churn the notification and binder.
+          if (!wasNativePlaying && lockScreenActive) {
+            activateLockScreen();
+          }
         } else {
           sessionOffset = currentTime;
           playStartedAt = null;

@@ -8,6 +8,14 @@ import { SilenceDelayMs } from '@/constants/motion';
 import { SilenceProvider } from '@/context/SilenceContext';
 import { TID } from '@/lib/testIDs';
 
+jest.mock('@/hooks/useReducedMotion', () => ({
+  useReducedMotion: () => false,
+}));
+
+jest.mock('@/hooks/useScreenReader', () => ({
+  useScreenReader: () => false,
+}));
+
 /**
  * Progressive silence is the interaction signature, and its failure mode is the
  * worst one the app has: chrome that withdraws and never comes back leaves the

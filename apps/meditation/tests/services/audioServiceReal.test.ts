@@ -104,7 +104,29 @@ describe('audioServiceReal session timeline', () => {
     );
     expect(nativePlayer.pause).toHaveBeenCalledTimes(1);
     expect(nativePlayer.loop).toBe(false);
+    expect(nativePlayer.setActiveForLockScreen).toHaveBeenCalledWith(false);
     expect(nativePlayer.clearLockScreenControls).toHaveBeenCalled();
+    expect(
+      nativePlayer.setActiveForLockScreen.mock.invocationCallOrder.at(-1)!
+    ).toBeLessThan(nativePlayer.clearLockScreenControls.mock.invocationCallOrder[0]!);
+  });
+
+  it('deactivates lock-screen controls before native remove when seeking to the session end', async () => {
+    const player = createSessionPlayer(1, 180, 300, 500, {
+      title: 'Traverser l\'orage',
+      artist: 'Noctalia Meditation',
+    });
+
+    await player.seekTo(180);
+
+    expect(nativePlayer.pause).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.loop).toBe(false);
+    expect(nativePlayer.setActiveForLockScreen).toHaveBeenCalledWith(false);
+    expect(nativePlayer.clearLockScreenControls).toHaveBeenCalled();
+    expect(nativePlayer.remove).not.toHaveBeenCalled();
+    expect(
+      nativePlayer.setActiveForLockScreen.mock.invocationCallOrder.at(-1)!
+    ).toBeLessThan(nativePlayer.clearLockScreenControls.mock.invocationCallOrder[0]!);
   });
 
   it('maps seeking across repeated five-minute tracks', async () => {
@@ -236,6 +258,49 @@ describe('audioServiceReal session timeline', () => {
     expect(player.currentTime).toBe(37.367);
   });
 
+  it('refreshes lock-screen state once when Android auto-resumes after audio-focus loss', () => {
+    const player = createSessionPlayer(1, 600, 300, 500, {
+      title: 'Traverser l\'orage',
+      artist: 'Noctalia Meditation',
+      albumTitle: 'Marée profonde',
+    });
+    player.addListener('playbackStatusUpdate', jest.fn());
+    player.play();
+
+    const activationCount = nativePlayer.setActiveForLockScreen.mock.calls.length;
+
+    nativePlayer.playing = false;
+    nativeListener?.(
+      statusAt(48.279, {
+        playing: false,
+        playbackState: 'paused',
+        timeControlStatus: 'paused',
+      })
+    );
+    expect(nativePlayer.setActiveForLockScreen).toHaveBeenCalledTimes(activationCount);
+
+    nativePlayer.playing = true;
+    nativeListener?.(statusAt(48.3));
+
+    expect(nativePlayer.setActiveForLockScreen).toHaveBeenCalledTimes(activationCount + 1);
+    expect(nativePlayer.setActiveForLockScreen).toHaveBeenLastCalledWith(
+      true,
+      {
+        title: 'Traverser l\'orage',
+        artist: 'Noctalia Meditation',
+        albumTitle: 'Marée profonde',
+      },
+      {
+        showSeekForward: false,
+        showSeekBackward: false,
+        isLiveStream: true,
+      }
+    );
+
+    nativeListener?.(statusAt(49));
+    expect(nativePlayer.setActiveForLockScreen).toHaveBeenCalledTimes(activationCount + 1);
+  });
+
   it('activates live lock-screen controls and clears them on release', () => {
     const player = createSessionPlayer(1, 600, 300, 500, {
       title: 'Bringing the breath down',
@@ -259,8 +324,15 @@ describe('audioServiceReal session timeline', () => {
     );
 
     player.remove();
+    expect(nativePlayer.setActiveForLockScreen).toHaveBeenCalledWith(false);
     expect(nativePlayer.clearLockScreenControls).toHaveBeenCalled();
     expect(nativePlayer.remove).toHaveBeenCalled();
+    expect(
+      nativePlayer.setActiveForLockScreen.mock.invocationCallOrder.at(-1)!
+    ).toBeLessThan(nativePlayer.clearLockScreenControls.mock.invocationCallOrder[0]!);
+    expect(nativePlayer.clearLockScreenControls.mock.invocationCallOrder[0]!).toBeLessThan(
+      nativePlayer.remove.mock.invocationCallOrder[0]!
+    );
   });
 });
 

@@ -186,6 +186,7 @@ export const en = {
   "home.journey.next": "Next",
   "home.journey.later": "Later",
   "home.journey.openUpcoming": "Open upcoming practice",
+  "home.journey.quotaUsed": "Quota used",
   "home.journey.milestone.tomorrow": "Tomorrow",
   "home.journey.milestone.next": "Next",
   "home.journey.milestone.later": "Later",

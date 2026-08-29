@@ -25,7 +25,7 @@ export function MiniPlayer() {
   const router = useRouter();
   const segments = useSegments();
   const { t } = useTranslation();
-  const { session, worldId, status, toggle } = usePlayer();
+  const { session, worldId, status, toggle, close } = usePlayer();
   const { colors } = useTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
   const { fontScale } = useWindowDimensions();
@@ -103,6 +103,21 @@ export function MiniPlayer() {
           className="h-12 w-12 shrink-0 items-center justify-center rounded-full border border-hairline active:opacity-70">
           <IconSymbol
             name={playing ? 'pause.fill' : 'play.fill'}
+            color={colors.accentText}
+            size={18}
+          />
+        </Pressable>
+
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('player.close')}
+          testID="btn.mini.close"
+          onPress={close}
+          hitSlop={8}
+          style={{ minHeight: 48, minWidth: 48 }}
+          className="h-12 w-12 shrink-0 items-center justify-center rounded-full border border-hairline active:opacity-70">
+          <IconSymbol
+            name="xmark"
             color={colors.accentText}
             size={18}
           />

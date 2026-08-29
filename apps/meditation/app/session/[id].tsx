@@ -34,9 +34,16 @@ export default function SessionDetail() {
   const router = useRouter();
   const { t, language } = useTranslation();
   const { isFavorite, toggleFavorite, progress } = useLibrary();
-  const { gateForSession, openPaywall, remainingPlays, quotaResetDay, isPlus } = useSubscription();
+  const {
+    gateForSession,
+    openPaywall,
+    remainingPlays,
+    quotaResetDay,
+    isPlus,
+    subscriptionsEnabled = true,
+  } = useSubscription();
   const { world: selectedWorld } = useWorld();
-  const { isWorldOwned } = useWorldPurchases();
+  const { loaded: worldPurchasesLoaded, isWorldOwned } = useWorldPurchases();
   const fallbackWorld = canAccessWorld(selectedWorld.id, isWorldOwned)
     ? selectedWorld
     : WORLD_BY_ID[DEFAULT_WORLD_ID];
@@ -68,6 +75,7 @@ export default function SessionDetail() {
 
   const included = isSessionIncludedInOwnedWorld(world.id, session.id, isWorldOwned);
   const gate = included ? { allowed: true as const } : gateForSession(session);
+  const awaitingWorldPurchases = !worldPurchasesLoaded;
   const remainingCopy =
     remainingPlays === 0
       ? t('paywall.remaining.none')
@@ -77,7 +85,9 @@ export default function SessionDetail() {
   const resetLabel = t('paywall.reset', {
     date: formatQuotaResetDate(quotaResetDay, language),
   });
-  const showsQuota = !isPlus && !session.isPremium;
+  // Quota/Plus copy only when they still decide access. An owned-world
+  // inclusion already grants play, so those cues would be dishonest.
+  const showsQuota = !included && !isPlus && !session.isPremium;
   const ctaLabel = !gate.allowed
     ? t('paywall.options')
     : canResume
@@ -85,7 +95,10 @@ export default function SessionDetail() {
       : (entry?.completedCount ?? 0) > 0
         ? t('session.replay')
         : t('session.play');
-  const accessLabel = session.isPremium ? t('common.plus') : t('common.free');
+  const accessLabel =
+    included || !subscriptionsEnabled || !session.isPremium
+      ? t('common.free')
+      : t('common.plus');
 
   return (
     <WorldScene world={world} artwork="trainer" edges={['top', 'bottom']}>
@@ -142,7 +155,7 @@ export default function SessionDetail() {
               </Text>
             ) : null}
 
-            {session.isPremium ? (
+            {session.isPremium && subscriptionsEnabled ? (
               <View className="gap-2 border-t border-hairline pt-5">
                 <Text variant="h3">{t('session.premium.title')}</Text>
                 <Rule className="mt-3 self-start" />
@@ -153,7 +166,7 @@ export default function SessionDetail() {
       </ScrollView>
 
       <View className="gap-3 border-t border-hairline bg-ink-raised px-gutter pb-3 pt-3">
-        {!gate.allowed && gate.reason === 'monthly-quota' ? (
+        {!awaitingWorldPurchases && !gate.allowed && gate.reason === 'monthly-quota' ? (
           <Button
             variant="secondary"
             testID="session.quota-alternative"
@@ -164,7 +177,12 @@ export default function SessionDetail() {
         <Button
           testID={TID.Button.SessionPlay}
           label={ctaLabel}
+          loading={awaitingWorldPurchases}
+          disabled={awaitingWorldPurchases}
           onPress={() => {
+            // World purchases must hydrate before a deep-linked owned world
+            // is treated as unowned and sent to the paywall.
+            if (awaitingWorldPurchases) return;
             // The gate is checked here rather than inside the player: a listener
             // should meet the paywall before the artwork, not after it.
             if (!gate.allowed) {

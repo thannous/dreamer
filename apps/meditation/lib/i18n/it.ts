@@ -191,6 +191,7 @@ export const it: Record<keyof typeof en, string> = {
   'home.journey.next': 'Dopo',
   'home.journey.later': 'Più tardi',
   'home.journey.openUpcoming': 'Apri la pratica in arrivo',
+  'home.journey.quotaUsed': 'Quota esaurita',
   'home.journey.milestone.tomorrow': 'Domani',
   'home.journey.milestone.next': 'Dopo',
   'home.journey.milestone.later': 'Più tardi',

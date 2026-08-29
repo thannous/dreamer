@@ -64,15 +64,20 @@ export function DailyRitualShelf({
   const title = t(`session.${session.id}.title` as TranslationKey);
   const included = isSessionIncluded?.(session.id) ?? false;
   const gate: Gate = included ? { allowed: true } : accessGate;
+  const blockedReason = gate.allowed ? null : gate.reason;
   const showsPlus = session.isPremium && !included;
-  const accessLabel = showsPlus ? t('common.plus') : t('common.free');
-  const quotaRelevant = !isPlus && !showsPlus && Number.isFinite(remainingPlays);
+  const accessLabel = showsPlus
+    ? t('common.plus')
+    : blockedReason === 'monthly-quota'
+      ? t('home.journey.quotaUsed')
+      : t('common.free');
+  const quotaRelevant =
+    !isPlus && !included && !showsPlus && Number.isFinite(remainingPlays);
   const quotaCopy = quotaRelevant ? remainingQuotaCopy(remainingPlays, t) : null;
   const meta = `${t('home.journey.minutes', { count: toMinutes(session.durationSec) })} · ${t(
     `category.${session.categorySlug}.name` as TranslationKey
   )}`;
 
-  const blockedReason = gate.allowed ? null : gate.reason;
   const resetLabel = t('paywall.reset', {
     date: formatQuotaResetDate(quotaResetDay, language),
   });

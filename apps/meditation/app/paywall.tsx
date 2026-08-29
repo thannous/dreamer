@@ -103,7 +103,12 @@ export default function PaywallScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const { width, height, fontScale } = useWindowDimensions();
-  const { isPlus, applyTier, remainingPlays } = useSubscription();
+  const {
+    subscriptionsEnabled = true,
+    isPlus,
+    applyTier,
+    remainingPlays,
+  } = useSubscription();
   const reasonKey = paywallReasonKey(reason);
   const largeText = fontScale >= 1.5;
   const compact = width < 375 || height < 700 || fontScale > 1.15;
@@ -114,6 +119,8 @@ export default function PaywallScreen() {
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
+    if (!subscriptionsEnabled) return;
+
     let mounted = true;
 
     subscriptions
@@ -131,7 +138,11 @@ export default function PaywallScreen() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [subscriptionsEnabled]);
+
+  useEffect(() => {
+    if (!subscriptionsEnabled) router.replace('/');
+  }, [router, subscriptionsEnabled]);
 
   const buy = async () => {
     if (!offer) return;
@@ -211,6 +222,8 @@ export default function PaywallScreen() {
       </View>
     </View>
   );
+
+  if (!subscriptionsEnabled) return null;
 
   if (isPlus) {
     return (

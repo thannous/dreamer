@@ -180,6 +180,22 @@ describe('PlayerContext world continuity', () => {
     );
   });
 
+  it('falls back to the native position when the initial resume seek fails', async () => {
+    jest.mocked(audio.seekTo).mockRejectedValueOnce(new Error('seek unavailable'));
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <PlayerProvider>{children}</PlayerProvider>
+    );
+    const { result } = renderHook(() => usePlayer(), { wrapper });
+
+    act(() => {
+      result.current.open('sleep-descent', 120, 'constellation');
+    });
+
+    await waitFor(() => expect(audio.seekTo).toHaveBeenCalled());
+    await waitFor(() => expect(result.current.positionSec).toBe(0));
+    expect(mockRecordProgress.mock.calls.at(-1)).toEqual(['sleep-descent', 0, false]);
+  });
+
   it('persists an explicit backward seek as the resume base even after a stale native tick', async () => {
     const wrapper = ({ children }: React.PropsWithChildren) => (
       <PlayerProvider>{children}</PlayerProvider>
@@ -248,6 +264,39 @@ describe('PlayerContext world continuity', () => {
     );
     expect(result.current.positionSec).toBe(37);
     expect(mockRecordPractice).not.toHaveBeenCalled();
+  });
+
+  it('clears a failed explicit seek and restores the native position', async () => {
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <PlayerProvider>{children}</PlayerProvider>
+    );
+    const { result } = renderHook(() => usePlayer(), { wrapper });
+
+    act(() => {
+      result.current.open('anxiety-ground', 0, 'forest');
+    });
+
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    await waitFor(() => expect(playbackListener).not.toBeNull());
+    const primaryPlayer = jest.mocked(audio.createSessionPlayer).mock.results[0].value as {
+      currentTime: number;
+    };
+    primaryPlayer.currentTime = 83;
+
+    act(() => {
+      playbackListener?.({
+        currentTime: 83,
+        duration: 600,
+        playing: false,
+        didJustFinish: false,
+      });
+    });
+    jest.mocked(audio.seekTo).mockRejectedValueOnce(new Error('seek unavailable'));
+
+    act(() => result.current.seekTo(37));
+    expect(result.current.positionSec).toBe(37);
+    await waitFor(() => expect(result.current.positionSec).toBe(83));
+    expect(mockRecordProgress.mock.calls.at(-1)).toEqual(['anxiety-ground', 83, false]);
   });
 
   it('layers the forest texture and lets the user silence and restore it', async () => {

@@ -81,6 +81,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   const subscriptionRef = useRef<{ remove: () => void } | null>(null);
   const lastPersistedRef = useRef(0);
   const pendingSeekRef = useRef<number | null>(null);
+  const seekRequestRef = useRef(0);
   const completedRef = useRef(false);
   const practisedLoggedRef = useRef(false);
   const openGenerationRef = useRef(0);
@@ -124,6 +125,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   const persistRef = useRef(persist);
 
   const resetIdleState = useCallback(() => {
+    seekRequestRef.current += 1;
     statusRef.current = 'idle';
     sessionRef.current = null;
     setSession(null);
@@ -135,6 +137,34 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     setFadeMinutes(null);
     setFadeRemaining(null);
   }, []);
+
+  const recoverFailedSeek = useCallback(
+    (
+      player: audio.PlayerHandle,
+      sessionId: SessionId,
+      target: number,
+      requestId: number
+    ) => {
+      if (
+        requestId !== seekRequestRef.current ||
+        playerRef.current !== player ||
+        pendingSeekRef.current !== target
+      ) {
+        return;
+      }
+
+      pendingSeekRef.current = null;
+      const reportedPosition = player.currentTime;
+      const nativePosition = Number.isFinite(reportedPosition)
+        ? Math.max(0, reportedPosition)
+        : positionSecRef.current;
+      lastPersistedRef.current = nativePosition;
+      positionSecRef.current = nativePosition;
+      setPositionSec(nativePosition);
+      persist(sessionId, nativePosition);
+    },
+    [persist]
+  );
 
   const open = useCallback(
     (sessionId: SessionId, startAtSec = 0, openedWorldId?: WorldId) => {
@@ -150,6 +180,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
           : requestedStart;
 
       const generation = ++openGenerationRef.current;
+      seekRequestRef.current += 1;
       teardown();
       completedRef.current = false;
       practisedLoggedRef.current = false;
@@ -288,7 +319,13 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
             }
           });
 
-          if (startAt > 0) audio.seekTo(player, startAt).catch(() => {});
+          if (startAt > 0) {
+            const requestId = ++seekRequestRef.current;
+            pendingSeekRef.current = startAt;
+            audio
+              .seekTo(player, startAt)
+              .catch(() => recoverFailedSeek(player, next.id, startAt, requestId));
+          }
           audio.play(player);
           if (soundEnabled && textureRef.current) audio.play(textureRef.current);
         } catch {
@@ -299,7 +336,16 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
         }
       })();
     },
-    [persist, recordPractice, resetIdleState, router, soundEnabled, t, teardown]
+    [
+      persist,
+      recordPractice,
+      recoverFailedSeek,
+      resetIdleState,
+      router,
+      soundEnabled,
+      t,
+      teardown,
+    ]
   );
 
   const toggle = useCallback(() => {
@@ -327,14 +373,17 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       const currentSession = sessionRef.current;
       if (!player || !currentSession) return;
       const target = clampSeek(seconds, durationSec);
+      const requestId = ++seekRequestRef.current;
       pendingSeekRef.current = target;
       lastPersistedRef.current = target;
       positionSecRef.current = target;
       setPositionSec(target);
       persist(currentSession.id, target);
-      audio.seekTo(player, target).catch(() => {});
+      audio
+        .seekTo(player, target)
+        .catch(() => recoverFailedSeek(player, currentSession.id, target, requestId));
     },
-    [durationSec, persist]
+    [durationSec, persist, recoverFailedSeek]
   );
 
   const skip = useCallback(

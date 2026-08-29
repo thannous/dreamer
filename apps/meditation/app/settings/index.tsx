@@ -8,6 +8,7 @@ import { Screen } from '@/components/atmosphere/Screen';
 import { SettingsGroup, SettingsRow } from '@/components/settings/SettingsRow';
 import { BackLink, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
+import { useSubscription } from '@/context/SubscriptionContext';
 import { TID } from '@/lib/testIDs';
 import { useSettings } from '@/context/SettingsContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -19,6 +20,7 @@ export default function SettingsScreen() {
   const { t, language } = useTranslation();
   const { preference, setPreference } = useTheme();
   const { reminders, videoBackgrounds, setVideoBackgrounds } = useSettings();
+  const { subscriptionsEnabled = true } = useSubscription();
   const insets = useSafeAreaInsets();
 
   const version = Constants.expoConfig?.version ?? '—';
@@ -58,12 +60,14 @@ export default function SettingsScreen() {
             label={t('settings.account')}
             onPress={() => router.push('/settings/account')}
           />
-          <SettingsRow
-            testID="btn.settings.restore"
-            label={t('paywall.restore')}
-            value={t('paywall.title')}
-            onPress={() => router.push('/paywall')}
-          />
+          {subscriptionsEnabled ? (
+            <SettingsRow
+              testID="btn.settings.restore"
+              label={t('paywall.restore')}
+              value={t('paywall.title')}
+              onPress={() => router.push('/paywall')}
+            />
+          ) : null}
         </SettingsGroup>
 
         <SettingsGroup title={t('settings.group.app')}>

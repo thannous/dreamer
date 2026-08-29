@@ -48,19 +48,22 @@ export function tabLabelMaxWidth(screenWidth: number, tabCount: number, compact:
 }
 
 /**
- * Keep every tab name intact. Mid-word breaks such as "Resp/irer" are
- * unreadable at 200%. Labels that already contain a space may wrap there;
- * single words stay complete and the Text node scales them to one line.
+ * Keep every tab name at the user's requested font scale. Labels wrap at a
+ * space when possible; a long single word is balanced over two visual lines.
+ * TalkBack still reads the complete, unsplit title from the parent tab.
  */
 export function reflowTabLabel(label: string, fontScale: number, maxWidth: number): string {
   if (fontScale < 1.5) return label;
 
-  const space = label.search(/\s/);
-  if (space < 1) return label;
-
   const characters = Array.from(label);
   const estimatedWidth = Math.ceil(characters.length * 11 * fontScale * 0.62);
   if (estimatedWidth <= maxWidth) return label;
+
+  const space = label.search(/\s/);
+  if (space < 1) {
+    const splitAt = Math.ceil(characters.length / 2);
+    return `${characters.slice(0, splitAt).join('')}\n${characters.slice(splitAt).join('')}`;
+  }
 
   return `${label.slice(0, space)}\n${label.slice(space + 1).trimStart()}`;
 }
@@ -76,8 +79,6 @@ export function TabLabel({ children, color, compact, fontScale, maxWidth, testID
       testID={testID}
       allowFontScaling
       numberOfLines={multiline ? 2 : 1}
-      adjustsFontSizeToFit
-      minimumFontScale={0.5}
       importantForAccessibility="no"
       accessibilityElementsHidden
       style={{

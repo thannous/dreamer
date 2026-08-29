@@ -3,7 +3,12 @@ import { isMockModeEnabled } from '@/lib/env';
 import * as mock from './mocks/worldPurchaseServiceMock';
 import * as real from './worldPurchaseServiceReal';
 
-const implementation = isMockModeEnabled() || !real.isConfigured() ? mock : real;
+/**
+ * Mock is an explicit opt-in (`EXPO_PUBLIC_MOCK_MODE`). A missing RevenueCat
+ * key never unlocks worlds: the real client stays selected and returns no
+ * ownership / no offers, so the UI cannot simulate a purchase.
+ */
+const implementation = isMockModeEnabled() ? mock : real;
 
 export type WorldOffer = real.WorldOffer | mock.WorldOffer;
 

@@ -191,6 +191,7 @@ export const de: Record<keyof typeof en, string> = {
   'home.journey.next': 'Danach',
   'home.journey.later': 'Später',
   'home.journey.openUpcoming': 'Nächste Übung öffnen',
+  'home.journey.quotaUsed': 'Kontingent leer',
   'home.journey.milestone.tomorrow': 'Morgen',
   'home.journey.milestone.next': 'Danach',
   'home.journey.milestone.later': 'Später',

@@ -1,0 +1,32 @@
+# Dependencies and local caches
+node_modules/
+.expo/
+dist/
+web-build/
+coverage/
+*.tsbuildinfo
+
+# Native projects are local development artifacts. EAS must generate them from
+# app.json so the managed versionCode and plugins remain the source of truth.
+/android
+/ios
+# EAS archives from the Git root in this monorepo, so the same exclusions also
+# need their repository-relative form.
+/apps/meditation/android
+/apps/meditation/ios
+
+# Local and sensitive files
+.env*.local
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.pem
+
+# Logs and OS metadata
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+.DS_Store
