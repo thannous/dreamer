@@ -1203,7 +1203,19 @@ describe('LucidTrainerContext account boundary', () => {
     let persistedState: LucidTrainerState = {
       ...initial,
       preferences: { ...initial.preferences, cloudSyncEnabled: true },
+      dreamSignDecisions: [
+        {
+          id: 'sign:mirror',
+          decision: 'confirmed',
+          sourceDreamIds: ['101', '102'],
+          updatedAt: 1_705_000_000_000,
+        },
+      ],
     };
+    mockDreams = [
+      { id: 101, title: 'Mirror hallway', transcript: 'A mirror stood in the hallway.' },
+      { id: 102, title: 'Mirror room', transcript: 'The same mirror appeared again.' },
+    ];
     mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
     mockGetState.mockImplementation(async () => persistedState);
     mockUpdateState.mockImplementation(
@@ -1219,6 +1231,11 @@ describe('LucidTrainerContext account boundary', () => {
     try {
       const { result } = renderHook(() => useLucidTrainer(), { wrapper });
       await waitFor(() => expect(result.current.loading).toBe(false));
+      await act(async () => {
+        await Promise.resolve();
+      });
+      mockCreateMutation.mockClear();
+      mockQueueMutation.mockClear();
 
       let saved: unknown;
       await act(async () => {
@@ -1226,21 +1243,21 @@ describe('LucidTrainerContext account boundary', () => {
           hidden: string[];
         }) => ({
           ...current,
-          hidden: ['sign:marie'],
+          hidden: ['sign:mirror'],
         }));
       });
 
       expect(saved).toEqual({
         version: 1,
         renamed: {},
-        hidden: ['sign:marie'],
+        hidden: ['sign:mirror'],
         merges: {},
         deleted: [],
       });
       expect(persistedState.dreamAtlas).toEqual({
         version: 1,
         renamed: {},
-        hidden: ['sign:marie'],
+        hidden: ['sign:mirror'],
         merges: {},
         deleted: [],
         updatedAt: now,
@@ -1270,15 +1287,27 @@ describe('LucidTrainerContext account boundary', () => {
     let persistedState: LucidTrainerState = {
       ...initial,
       preferences: { ...initial.preferences, cloudSyncEnabled: true },
+      dreamSignDecisions: [
+        {
+          id: 'sign:mirror',
+          decision: 'confirmed',
+          sourceDreamIds: ['101', '102'],
+          updatedAt: 1_705_000_000_000,
+        },
+      ],
       dreamAtlas: {
         version: 1,
         renamed: {},
-        hidden: ['sign:marie'],
+        hidden: ['sign:mirror'],
         merges: {},
         deleted: [],
         updatedAt: 1_710_000_000_000,
       },
     };
+    mockDreams = [
+      { id: 101, title: 'Mirror hallway', transcript: 'A mirror stood in the hallway.' },
+      { id: 102, title: 'Mirror room', transcript: 'The same mirror appeared again.' },
+    ];
     mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
     mockGetState.mockImplementation(async () => persistedState);
     mockUpdateState.mockImplementation(
@@ -1305,7 +1334,7 @@ describe('LucidTrainerContext account boundary', () => {
     expect(saved).toEqual({
       version: 1,
       renamed: {},
-      hidden: ['sign:marie'],
+      hidden: ['sign:mirror'],
       merges: {},
       deleted: [],
     });
@@ -1360,6 +1389,16 @@ describe('LucidTrainerContext account boundary', () => {
     try {
       const { result } = renderHook(() => useLucidTrainer(), { wrapper });
       await waitFor(() => expect(result.current.loading).toBe(false));
+      await waitFor(() =>
+        expect(persistedState.dreamAtlas).toEqual({
+          version: 1,
+          renamed: {},
+          hidden: [],
+          merges: {},
+          deleted: ['sign:old'],
+          updatedAt: now,
+        })
+      );
       mockCreateMutation.mockClear();
       mockQueueMutation.mockClear();
 
@@ -1407,6 +1446,222 @@ describe('LucidTrainerContext account boundary', () => {
     } finally {
       nowSpy.mockRestore();
     }
+  });
+
+  it('does not purge dream atlas orphans while dreams are still loading', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    const overlay = {
+      version: 1,
+      renamed: { 'sign:ghost': 'Ghost' },
+      hidden: ['sign:ghost'],
+      merges: { 'sign:ghost': 'sign:mirror' },
+      deleted: ['sign:old'],
+      updatedAt: 1_710_000_000_000,
+    };
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      dreamAtlas: overlay,
+    };
+    mockDreamsLoaded = false;
+    mockDreams = [];
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(persistedState.dreamAtlas).toEqual(overlay);
+    expect(result.current.state?.dreamAtlas).toEqual(overlay);
+    expect(mockCreateMutation).not.toHaveBeenCalled();
+    expect(mockQueueMutation).not.toHaveBeenCalled();
+  });
+
+  it('purges orphan atlas overlays after dreams load and keeps deleted tombstones', async () => {
+    const now = 1_740_000_000_000;
+    const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(now);
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      preferences: { ...initial.preferences, cloudSyncEnabled: true },
+      dreamSignDecisions: [
+        {
+          id: 'sign:mirror',
+          decision: 'confirmed',
+          sourceDreamIds: ['101', '102'],
+          updatedAt: 1_705_000_000_000,
+        },
+      ],
+      dreamAtlas: {
+        version: 1,
+        renamed: { 'sign:mirror': 'My mirror', 'sign:ghost': 'Ghost' },
+        hidden: ['sign:ghost', 'sign:mirror'],
+        merges: { 'sign:ghost': 'sign:mirror' },
+        deleted: ['sign:old'],
+        updatedAt: 1_710_000_000_000,
+      },
+    };
+    mockDreams = [
+      { id: 101, title: 'Mirror hallway', transcript: 'A mirror stood in the hallway.' },
+      { id: 102, title: 'Mirror room', transcript: 'The same mirror appeared again.' },
+    ];
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    try {
+      const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+      await waitFor(() => expect(result.current.loading).toBe(false));
+      await waitFor(() =>
+        expect(persistedState.dreamAtlas).toEqual({
+          version: 1,
+          renamed: { 'sign:mirror': 'My mirror' },
+          hidden: ['sign:mirror'],
+          merges: {},
+          deleted: ['sign:old'],
+          updatedAt: now,
+        })
+      );
+
+      expect(result.current.state?.dreamAtlas).toEqual(persistedState.dreamAtlas);
+      expect(persistedState.dreamSignDecisions).toEqual([
+        expect.objectContaining({
+          id: 'sign:mirror',
+          decision: 'confirmed',
+          sourceDreamIds: ['101', '102'],
+        }),
+      ]);
+      expect(mockCreateMutation).toHaveBeenCalledTimes(1);
+      expect(mockCreateMutation).toHaveBeenCalledWith(
+        expect.objectContaining({
+          operation: 'upsert',
+          entity: expect.objectContaining({
+            entityType: 'dream_atlas',
+            entityKey: 'dream_atlas',
+            value: persistedState.dreamAtlas,
+          }),
+        })
+      );
+      expect(mockQueueMutation).toHaveBeenCalledTimes(1);
+    } finally {
+      nowSpy.mockRestore();
+    }
+  });
+
+  it('does not commit a dream atlas upsert when preferences are already equivalent', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    const overlay = {
+      version: 1,
+      renamed: { 'sign:mirror': 'My mirror' },
+      hidden: ['sign:mirror'],
+      merges: {},
+      deleted: ['sign:old'],
+      updatedAt: 1_710_000_000_000,
+    };
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      preferences: { ...initial.preferences, cloudSyncEnabled: true },
+      dreamSignDecisions: [
+        {
+          id: 'sign:mirror',
+          decision: 'confirmed',
+          sourceDreamIds: ['101', '102'],
+          updatedAt: 1_705_000_000_000,
+        },
+      ],
+      dreamAtlas: overlay,
+    };
+    mockDreams = [
+      { id: 101, title: 'Mirror hallway', transcript: 'A mirror stood in the hallway.' },
+      { id: 102, title: 'Mirror room', transcript: 'The same mirror appeared again.' },
+    ];
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(persistedState.dreamAtlas).toEqual(overlay);
+    expect(result.current.state?.dreamAtlas).toEqual(overlay);
+    expect(mockCreateMutation).not.toHaveBeenCalled();
+    expect(mockQueueMutation).not.toHaveBeenCalled();
+  });
+
+  it('tolerates a missing dream atlas overlay without writing an empty equivalent', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState = { ...initial } as LucidTrainerState;
+    delete persistedState.dreamAtlas;
+    mockDreams = [
+      { id: 101, title: 'Mirror hallway', transcript: 'A mirror stood in the hallway.' },
+      { id: 102, title: 'Mirror room', transcript: 'The same mirror appeared again.' },
+    ];
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(persistedState.dreamAtlas).toBeUndefined();
+    expect(result.current.state?.dreamAtlas).toBeUndefined();
+    expect(mockCreateMutation).not.toHaveBeenCalled();
+    expect(mockQueueMutation).not.toHaveBeenCalled();
   });
 
 });

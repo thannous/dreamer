@@ -34,12 +34,14 @@ import {
 import {
   extractLucidDreamSignCandidates,
   getActiveLucidDreamSigns,
+  reconcileLucidDreamSignDecisions,
   type LucidActiveDreamSign,
   type LucidDreamSignCandidate,
 } from '@/lib/lucid/dreamSigns';
 import {
   LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT,
   areLucidDreamAtlasPreferencesSemanticallyEqual,
+  buildLucidDreamAtlas,
   createEmptyLucidDreamAtlasOverlay,
   lucidDreamAtlasOverlayPreferences,
   normalizeLucidDreamAtlasPreferences,
@@ -1211,6 +1213,38 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       if (__DEV__) console.warn('[LucidTrainer] Dream-sign reconciliation failed', cause);
     });
   }, [commit, dreamSignCandidates, dreamsLoaded, state?.dreamSignDecisions, user?.id, userScope]);
+
+  useEffect(() => {
+    if (!dreamsLoaded || state == null) return;
+    const reconciledSigns = reconcileLucidDreamSignDecisions(
+      dreamSignCandidates,
+      state.dreamSignDecisions ?? []
+    );
+    const reconciledPreferences = buildLucidDreamAtlas({
+      signs: reconciledSigns,
+      dreams,
+      preferences: state.dreamAtlas,
+    }).preferences;
+    if (
+      areLucidDreamAtlasPreferencesSemanticallyEqual(
+        currentDreamAtlasPreferences(state),
+        reconciledPreferences
+      )
+    ) {
+      return;
+    }
+    void (async () => {
+      await updateDreamAtlasPreferences(() => reconciledPreferences);
+    })().catch((cause) => {
+      if (__DEV__) console.warn('[LucidTrainer] Dream atlas reconciliation failed', cause);
+    });
+  }, [
+    dreamSignCandidates,
+    dreams,
+    dreamsLoaded,
+    state,
+    updateDreamAtlasPreferences,
+  ]);
 
   const reconcileReminders = useCallback(async () => {
     if (!state) return;
