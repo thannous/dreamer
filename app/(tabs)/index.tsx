@@ -10,15 +10,13 @@ import {
 } from "react-native";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { AtmosphericBackground } from "@/components/inspiration/AtmosphericBackground";
-import { DreamPulseCard } from "@/components/inspiration/DreamPulseCard";
+import { TodayCard } from "@/components/home/TodayCard";
 import { ReminderOptInCard } from "@/components/reminders/ReminderOptInCard";
 import { PersonalReadingCard } from "@/components/inspiration/PersonalReadingCard";
 import { useNotificationSettingsController } from "@/components/settings/useNotificationSettingsController";
 import { buildPersonalReading } from "@/lib/personalReading";
 import { FlatGlassCard } from "@/components/inspiration/GlassCard";
 import { PageHeader } from "@/components/inspiration/PageHeader";
-import { SectionHeading } from "@/components/inspiration/SectionHeading";
-import { DreamCard } from "@/components/journal/DreamCard";
 import { NoctaliaScreenHeader } from "@/components/NoctaliaScreenHeader";
 import { PressableScale, Reveal } from "@/components/motion";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -33,13 +31,12 @@ import { useTheme } from "@/context/ThemeContext";
 import { ScrollPerfProvider } from "@/context/ScrollPerfContext";
 import { useAppState } from "@/hooks/useAppState";
 import { useClearWebFocus } from "@/hooks/useClearWebFocus";
-import { useLocaleFormatting } from "@/hooks/useLocaleFormatting";
 import { useScrollIdle } from "@/hooks/useScrollIdle";
 import { useTranslation } from "@/hooks/useTranslation";
+import { trackProductEvent } from "@/lib/analytics";
 import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
 import type { DreamGuideLanguage } from "@/lib/dreamGuideTypes";
-import { getDreamPulse, type DreamPulseState } from "@/lib/dreamPulse";
-import { isDreamAnalyzed } from "@/lib/dreamUsage";
+import { isDreamAnalyzed, isDreamExplored } from "@/lib/dreamUsage";
 import { getSleepSoundCopy } from "@/lib/sleepSoundCopy";
 import { isSleepSoundsAvailable } from "@/lib/sleepSoundsFeature";
 import {
@@ -52,7 +49,8 @@ import {
   shouldResetDailyProgress,
 } from "@/lib/ritualProgressUtils";
 import { TID } from "@/lib/testIDs";
-import { getRitualPreference, getRitualStepProgress, saveRitualStepProgress } from "@/services/storageService";
+import { resolveTodayState, type TodayState } from "@/lib/todayState";
+import { getRitualPreference, getRitualStepProgress, getSavedTranscript, saveRitualStepProgress } from "@/services/storageService";
 
 type IconName = Parameters<typeof IconSymbol>[0]["name"];
 type TranslateFn = ReturnType<typeof useTranslation>["t"];
@@ -101,13 +99,14 @@ export default function InspirationScreen() {
   const { width, height } = useWindowDimensions();
   const scrollPerf = useScrollIdle();
   const { dreams, loaded: dreamsLoaded } = useDreamsData();
-  const { formatShortDate } = useLocaleFormatting();
   useClearWebFocus();
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
   const [selectedRitualId, setSelectedRitualId] = useState<RitualId>("starter");
   const [ritualProgress, setRitualProgress] = useState<RitualProgressState>({});
   const [progressDate, setProgressDate] = useState<string>(getLocalDateKey());
   const [showAnimations, setShowAnimations] = useState(false);
+  const [hasDraft, setHasDraft] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
 
   const isDesktopLayout = Platform.OS === "web" && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height);
@@ -129,11 +128,6 @@ export default function InspirationScreen() {
     router.push("/dream-guides" as any);
   }, []);
 
-  // Personal pulse + latest dream hero
-  const pulse = useMemo(
-    () => (dreamsLoaded ? getDreamPulse(dreams) : null),
-    [dreams, dreamsLoaded],
-  );
   const personalReading = useMemo(
     () => (dreamsLoaded && dreams.length > 0 ? buildPersonalReading(dreams) : null),
     [dreams, dreamsLoaded]
@@ -143,34 +137,55 @@ export default function InspirationScreen() {
     !notificationSettings.unsupported && notificationSettings.notificationsEnabled
       ? notificationSettings.nextReminderText
       : null;
-  const lastDream = useMemo(() => {
-    if (!pulse || pulse.lastDreamAt === null) return null;
-    return dreams.find((dream) => dream.id === pulse.lastDreamAt) ?? null;
-  }, [dreams, pulse]);
+  const todayState = useMemo<TodayState | null>(() => {
+    if (!dreamsLoaded) return null;
+    return resolveTodayState({
+      now,
+      localDateKey: (timestamp) => getLocalDateKey(new Date(timestamp)),
+      hasDraft,
+      dreams: dreams.map((dream) => ({
+        id: dream.id,
+        createdAt: dream.id,
+        date: dream.id,
+        isAnalyzed: isDreamAnalyzed(dream),
+        isExplored: isDreamExplored(dream),
+      })),
+    });
+  }, [dreams, dreamsLoaded, hasDraft, now]);
+  useEffect(() => {
+    if (!todayState) return;
+    void trackProductEvent("home_today_viewed", {
+      state: todayState.id,
+      reason: todayState.reason,
+    });
+  }, [todayState]);
+
   const sleepSoundsAvailable = isSleepSoundsAvailable(Platform.OS);
   const sleepCopy = useMemo(
     () => getSleepSoundCopy(currentLang ?? "en"),
     [currentLang],
   );
 
-  const handlePulseCta = useCallback(
-    (state: DreamPulseState) => {
-      if ((state === "today" || state === "analyze") && lastDream) {
-        router.push(`/journal/${lastDream.id}` as any);
+  const handleTodayCta = useCallback(() => {
+    if (!todayState) return;
+    void trackProductEvent("home_today_cta_clicked", {
+      state: todayState.id,
+      reason: todayState.reason,
+      action: todayState.action.kind,
+    });
+    switch (todayState.action.kind) {
+      case "resume_recording":
+      case "start_capture":
+        router.push("/recording" as any);
         return;
-      }
-      router.push("/recording" as any);
-    },
-    [lastDream],
-  );
-  const handleOpenLastDream = useCallback((dreamId: number) => {
-    router.push(`/journal/${dreamId}` as any);
-  }, []);
-  const handleOpenLastDreamChat = useCallback(() => {
-    if (lastDream) {
-      router.push(`/dream-chat/${lastDream.id}` as any);
+      case "open_dream":
+        router.push(`/journal/${todayState.action.dreamId}` as any);
+        return;
+      case "open_journal":
+        router.push("/journal" as any);
+        return;
     }
-  }, [lastDream]);
+  }, [todayState]);
   const handleOpenSleepSounds = useCallback(() => {
     router.push("/sleep-sounds" as any);
   }, []);
@@ -193,10 +208,18 @@ export default function InspirationScreen() {
   );
   const tips = useMemo(() => TIP_KEYS.map((key) => t(key)), [t]);
 
+  const syncTodayClock = useCallback((nextNow = Date.now()) => {
+    setNow((current) => {
+      const currentKey = getLocalDateKey(new Date(current));
+      const nextKey = getLocalDateKey(new Date(nextNow));
+      return currentKey === nextKey ? current : nextNow;
+    });
+  }, []);
+
   const refreshProgressOnDateChange = useCallback(() => {
-    const now = new Date();
-    if (shouldResetDailyProgress(progressDate, now)) {
-      const todayKey = getLocalDateKey(now);
+    const nextDate = new Date(Date.now());
+    if (shouldResetDailyProgress(progressDate, nextDate)) {
+      const todayKey = getLocalDateKey(nextDate);
       if (__DEV__) {
         console.log(
           "[InspirationScreen] Date changed, resetting ritual progress",
@@ -221,8 +244,33 @@ export default function InspirationScreen() {
     }
   }, [progressDate]);
 
+  const refreshTodayDraft = useCallback(async (isActive?: () => boolean) => {
+    try {
+      const savedTranscript = await getSavedTranscript();
+      if (isActive && !isActive()) return;
+      setHasDraft(savedTranscript.trim().length > 0);
+    } catch (error) {
+      if (__DEV__) {
+        console.error(
+          "[InspirationScreen] Failed to read saved transcript",
+          error,
+        );
+      }
+    }
+  }, []);
+
+  const refreshTodayForOpenScreen = useCallback(() => {
+    syncTodayClock();
+    refreshProgressOnDateChange();
+  }, [refreshProgressOnDateChange, syncTodayClock]);
+
+  const refreshTodayOnWake = useCallback(() => {
+    refreshTodayForOpenScreen();
+    void refreshTodayDraft();
+  }, [refreshTodayDraft, refreshTodayForOpenScreen]);
+
   const loadRitualState = useCallback(async () => {
-    const todayKey = getLocalDateKey();
+    const todayKey = getLocalDateKey(new Date(Date.now()));
     const [storedProgress, preferredRitualId] = await Promise.all([
       getRitualStepProgress(),
       getRitualPreference(),
@@ -263,8 +311,10 @@ export default function InspirationScreen() {
   useFocusEffect(
     useCallback(() => {
       let isActive = true;
+      const stillActive = () => isActive;
 
-      refreshProgressOnDateChange();
+      refreshTodayForOpenScreen();
+      void refreshTodayDraft(stillActive);
       void (async () => {
         try {
           const state = await loadRitualState();
@@ -285,20 +335,20 @@ export default function InspirationScreen() {
       return () => {
         isActive = false;
       };
-    }, [loadRitualState, refreshProgressOnDateChange]),
+    }, [loadRitualState, refreshTodayDraft, refreshTodayForOpenScreen]),
   );
 
   // Check when returning to foreground
-  useAppState(refreshProgressOnDateChange);
+  useAppState(refreshTodayOnWake);
 
   // Periodic check to reset progress if the date changes while the screen stays open
   useEffect(() => {
     const timer = setInterval(
-      refreshProgressOnDateChange,
+      refreshTodayForOpenScreen,
       DATE_CHECK_INTERVAL_MS,
     );
     return () => clearInterval(timer);
-  }, [refreshProgressOnDateChange]);
+  }, [refreshTodayForOpenScreen]);
 
   useFocusEffect(
     useCallback(() => {
@@ -337,11 +387,10 @@ export default function InspirationScreen() {
         >
           <ScreenContainer className={`pt-4 ${isDesktopLayout ? "px-5" : "px-0"}`}>
             <View className={isDesktopLayout ? "-mx-3 flex-row flex-wrap" : undefined}>
-              {/* Personal journal pulse */}
               <Reveal index={0} className={`mb-[34px] ${mobilePadding} ${desktopFullSection}`}>
-                <DreamPulseCard
-                  pulse={pulse}
-                  onPressCta={handlePulseCta}
+                <TodayCard
+                  state={todayState}
+                  onPressCta={handleTodayCta}
                   animateOnMount={false}
                 />
               </Reveal>
@@ -362,44 +411,17 @@ export default function InspirationScreen() {
                 </Reveal>
               ) : null}
 
-              {/* Latest dream hero */}
-              {lastDream ? (
-                <Reveal index={3} className={`mb-[34px] ${mobilePadding} ${desktopFullSection}`}>
-                  <SectionHeading
-                    title={t("inspiration.lastDream.title")}
-                    subtitle={t("inspiration.lastDream.subtitle")}
-                    icon="moon.stars.fill"
-                  />
-                  <DreamCard
-                    dream={lastDream}
-                    onPress={handleOpenLastDream}
-                    dateLabel={formatShortDate(lastDream.id)}
-                    variant="featured"
-                    testID={TID.List.DreamItem(`home-${lastDream.id}`)}
-                  />
-                  {isDreamAnalyzed(lastDream) ? (
-                    <PressableScale
-                      onPress={handleOpenLastDreamChat}
-                      accessibilityRole="button"
-                      accessibilityLabel={t("inspiration.lastDream.chat_cta")}
-                      testID={TID.Button.InspirationLastDreamChat}
-                      className="mt-3.5 flex-row items-center justify-center gap-2 rounded-full border border-line bg-ink-soft px-5 py-3"
-                    >
-                      <IconSymbol
-                        name="bubble.left.and.bubble.right.fill"
-                        size={16}
-                        color={noctalia.accent.text}
-                      />
-                      <Text
-                        className="font-sans-bold text-[14px] text-champagne-on"
-                        numberOfLines={1}
-                      >
-                        {t("inspiration.lastDream.chat_cta")}
-                      </Text>
-                    </PressableScale>
-                  ) : null}
-                </Reveal>
-              ) : null}
+              <View
+                testID={TID.Component.HomeResources}
+                className={isDesktopLayout ? "w-full flex-row flex-wrap" : undefined}
+                accessibilityRole="summary"
+                accessibilityLabel={t("home.today.resources")}
+              >
+                <View className={`mb-4 ${mobilePadding} ${desktopFullSection}`}>
+                  <Text className="font-display-semibold text-[20px] text-ivory">
+                    {t("home.today.resources")}
+                  </Text>
+                </View>
 
               <Reveal index={4} className={`mb-[34px] ${desktopFullSection}`}>
                 <HomeStudioSection
@@ -457,6 +479,8 @@ export default function InspirationScreen() {
                   nextLabel={t("inspiration.tip.next")}
                 />
               </Reveal>
+
+              </View>
 
             </View>
           </ScreenContainer>
@@ -619,8 +643,6 @@ const DreamGuidesHomeCard = memo(function DreamGuidesHomeCard({
     </View>
   );
 });
-
-// SectionHeading is now imported from @/components/inspiration/SectionHeading
 
 // ─── Ritual Cards with Progress Ring ─────────────────────────────────────────
 

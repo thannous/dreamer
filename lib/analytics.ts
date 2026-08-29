@@ -185,6 +185,39 @@ export type AnalyticsEventMap = {
     action: 'enabled' | 'dismissed' | 'denied';
     time_bucket: ReminderTimeBucket;
   };
+  home_today_viewed: {
+    state:
+      | 'draft_resume'
+      | 'empty'
+      | 'capture_due'
+      | 'continue_today'
+      | 'optional_deepen'
+      | 'rest';
+    reason:
+      | 'saved_draft'
+      | 'first_use'
+      | 'no_dream_today'
+      | 'today_dream_unanalyzed'
+      | 'today_dream_unexplored'
+      | 'today_complete';
+  };
+  home_today_cta_clicked: {
+    state:
+      | 'draft_resume'
+      | 'empty'
+      | 'capture_due'
+      | 'continue_today'
+      | 'optional_deepen'
+      | 'rest';
+    reason:
+      | 'saved_draft'
+      | 'first_use'
+      | 'no_dream_today'
+      | 'today_dream_unanalyzed'
+      | 'today_dream_unexplored'
+      | 'today_complete';
+    action: 'resume_recording' | 'start_capture' | 'open_dream' | 'open_journal';
+  };
 };
 
 export type ReminderTimeBucket = 'before_6' | '6_7' | '7_8' | '8_9' | 'after_9' | 'unknown';

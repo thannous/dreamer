@@ -71,6 +71,8 @@ const PRODUCT_ANALYTICS_EVENT_NAMES = new Set<AnalyticsEventName>([
   'restore_completed',
   'paywall_dismissed',
   'reminder_prompt_action',
+  'home_today_viewed',
+  'home_today_cta_clicked',
 ]);
 
 const FORBIDDEN_PROPERTY_KEYS = new Set([
@@ -278,6 +280,29 @@ const PRODUCT_ANALYTICS_PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySch
     surface: oneOf('journal_detail', 'home'),
     action: oneOf('enabled', 'dismissed', 'denied'),
     time_bucket: oneOf('before_6', '6_7', '7_8', '8_9', 'after_9', 'unknown'),
+  },
+  home_today_viewed: {
+    state: oneOf('draft_resume', 'empty', 'capture_due', 'continue_today', 'optional_deepen', 'rest'),
+    reason: oneOf(
+      'saved_draft',
+      'first_use',
+      'no_dream_today',
+      'today_dream_unanalyzed',
+      'today_dream_unexplored',
+      'today_complete',
+    ),
+  },
+  home_today_cta_clicked: {
+    state: oneOf('draft_resume', 'empty', 'capture_due', 'continue_today', 'optional_deepen', 'rest'),
+    reason: oneOf(
+      'saved_draft',
+      'first_use',
+      'no_dream_today',
+      'today_dream_unanalyzed',
+      'today_dream_unexplored',
+      'today_complete',
+    ),
+    action: oneOf('resume_recording', 'start_capture', 'open_dream', 'open_journal'),
   },
 };
 
