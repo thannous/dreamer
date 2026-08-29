@@ -1,1527 +1,61 @@
-import { router, useFocusEffect, type Href } from 'expo-router';
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { router } from 'expo-router';
+import React, { useCallback, useMemo } from 'react';
 import {
-  InteractionManager,
   Platform,
-  Share,
+  Pressable,
   ScrollView,
-  StyleSheet,
   Text,
   View,
   useWindowDimensions,
-  type TextStyle,
-  type ViewStyle,
 } from 'react-native';
 
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
-import { DURATION, EASING, PressableScale, Reveal } from '@/components/motion';
-import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
-import { PageHeader } from '@/components/inspiration/PageHeader';
-import { SectionHeading } from '@/components/inspiration/SectionHeading';
-import { NoctaliaScreenHeader, type NoctaliaHeaderAction } from '@/components/NoctaliaScreenHeader';
-import { ScreenContainer } from '@/components/ScreenContainer';
-import { StatsLockedSection, StatsNotEnoughData } from '@/components/stats/StatsLockedSection';
-import { StatsRankedList, type StatsRankedRow } from '@/components/stats/StatsRankedList';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
-import { BottomSheet } from '@/components/ui/BottomSheet';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
+import { ScreenContainer } from '@/components/ScreenContainer';
 import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
-import type { DataSet, LabelLineConfig, barDataItem, pieDataItem } from 'react-native-gifted-charts';
-import { BarChart, LineChart, PieChart } from 'react-native-gifted-charts';
-import { Line, Rect, Svg, Text as SvgText } from 'react-native-svg';
-import Animated, {
-  useAnimatedStyle,
-  useReducedMotion,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
-
 import { ThemeLayout } from '@/constants/journalTheme';
-import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
-import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
-import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
-import { useTheme } from '@/context/ThemeContext';
-import { useDreamStatistics } from '@/hooks/useDreamStatistics';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
-import { useScrollIdle } from '@/hooks/useScrollIdle';
-import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
-import { getStatsDreamCountBucket, trackProductEvent } from '@/lib/analytics';
-import { buildEmotionProfile, type EmotionProfile } from '@/lib/dreamEmotions';
-import { compareDreamFacets } from '@/lib/dreamFacets';
-import { buildDreamProfile, type DreamProfile } from '@/lib/dreamProfile';
+import { buildDreamTrends, type DreamTrendsNextAction } from '@/lib/dreamTrends';
 import { getDreamThemeLabel, getDreamTypeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
-import { getDreamStatsInsight, type DreamStatsInsightKind } from '@/lib/dreamStatsInsight';
-import { isDreamAnalyzed } from '@/lib/dreamUsage';
-import { buildPaywallHref } from '@/lib/paywallRoute';
-import { splitLabelText } from '@/lib/pieLabelUtils';
-import { deriveUserTier } from '@/lib/quotaTier';
-import { startOfDay } from '@/lib/streakUtils';
-import type { DreamAnalysis, DreamTheme, DreamType, SubscriptionTier } from '@/lib/types';
-import { TID } from '@/lib/testIDs';
 
-const CHART_HORIZONTAL_INSET = ThemeLayout.spacing.lg * 3;
-const PIE_LABEL_MARGIN = ThemeLayout.spacing.sm;
-const PIE_LABEL_VERTICAL_MARGIN = ThemeLayout.spacing.md;
-const LABEL_TEXT_MARGIN = ThemeLayout.spacing.sm;
-const LABEL_VERTICAL_PADDING = ThemeLayout.spacing.xs;
-const LABEL_TEXT_LINE_HEIGHT = 14;
-const LABEL_DETAIL_LINE_HEIGHT = 13;
-const MAX_LABEL_LINES = 3;
-const MAX_LABEL_CHARS_PER_LINE = 10;
-const MIN_PIE_RADIUS = 62;
-const MAX_PIE_RADIUS = 90;
-const MIN_LABEL_WIDTH = 84;
-const MAX_LABEL_WIDTH = 196;
-const MIN_LABEL_LINE = 14;
-const MAX_LABEL_LINE = 28;
+const WEEKDAY_KEYS = [
+  'trends.week.weekday.mon',
+  'trends.week.weekday.tue',
+  'trends.week.weekday.wed',
+  'trends.week.weekday.thu',
+  'trends.week.weekday.fri',
+  'trends.week.weekday.sat',
+  'trends.week.weekday.sun',
+] as const;
 
-// `getPieMetrics` subtracts CHART_HORIZONTAL_INSET (= 72) from the window width, but the real
-// horizontal chrome around a chart is scrollContent padding (md x2) + sectionInner padding
-// (22 x2) + chartContainer paddingHorizontal (md x2) = 108. That under-count is why the pie
-// callouts touch the donut at 390 px (audit §6.5, excluded item #20). The two new charts
-// measure it honestly rather than inheriting the bug.
-const SECTION_INNER_PADDING = 22;
-const CHART_CONTENT_INSET =
-  ThemeLayout.spacing.md * 2 + SECTION_INNER_PADDING * 2 + ThemeLayout.spacing.md * 2;
-// Desktop web lays the sections out in a wrapped row, so useWindowDimensions() reports the
-// window, not the column the chart lives in. The pie survives that only because
-// MAX_PIE_RADIUS caps it; a bar or line chart sized from the raw window width would spill out
-// of its card at 1440 px. Capping avoids an onLayout pass and a second render.
-// Checked against the narrowest desktop column the grid can produce: at DESKTOP_BREAKPOINT
-// (1024) a 60% chart column yields (1024 - 32) * 0.6 - 44 - 32 ~= 519 usable px.
-const MAX_CHART_CONTENT_WIDTH = 460;
-const MIN_CHART_CONTENT_WIDTH = 200;
-
-const RHYTHM_CHART_HEIGHT = 132;
-const RHYTHM_Y_AXIS_LABEL_WIDTH = 26;
-const RHYTHM_MIN_BAR_WIDTH = 10;
-const RHYTHM_MAX_BAR_WIDTH = 26;
-const RHYTHM_MIN_SPACING = 4;
-const RHYTHM_MAX_SPACING = 22;
-
-const THEME_TREND_CHART_HEIGHT = 148;
-const THEME_TREND_Y_AXIS_LABEL_WIDTH = 26;
-const THEME_TREND_MAX_POINTS = 30;
-const THEME_TREND_MIN_SPAN_DAYS = 14;
-const THEME_TREND_MIN_ANALYZED_DREAMS = 5;
-const THEME_TREND_MAX_X_LABELS = 5;
-const THEME_TREND_HIDE_POINTS_ABOVE = 12;
-const DAY_IN_MS = 24 * 60 * 60 * 1000;
-
-const WEEKDAY_LABEL_OPTIONS: Intl.DateTimeFormatOptions = { weekday: 'short' };
-const TREND_LABEL_OPTIONS: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' };
-
-// Indexed BY WEEKDAY NUMBER, not by position in `stats.dreamsByDay`: 2023-12-31 was a Sunday,
-// so WEEKDAY_REFERENCE_BY_DAY[d].getDay() === d for d in 0..6. Reading the label off
-// `entry.weekday` instead of the array index keeps the row correct even if ORDERED_WEEKDAYS
-// in useDreamStatistics is ever reordered. Local-time constructor, so no timezone shift.
-const WEEKDAY_REFERENCE_BY_DAY = Array.from({ length: 7 }, (_, day) =>
-  new Date(2023, 11, 31 + day).getTime(),
-);
-
-type IconName = Parameters<typeof IconSymbol>[0]['name'];
-type StatsPeriod = 'all' | 'week' | 'month' | 'year';
-
-const STATS_PERIOD_OPTIONS: { id: StatsPeriod; labelKey: string }[] = [
-  { id: 'all', labelKey: 'stats.period.all' },
-  { id: 'week', labelKey: 'stats.period.week' },
-  { id: 'month', labelKey: 'stats.period.month' },
-  { id: 'year', labelKey: 'stats.period.year' },
-];
-
-const STATS_PERIOD_DAYS: Record<Exclude<StatsPeriod, 'all'>, number> = {
-  week: 7,
-  month: 30,
-  year: 365,
+const NEXT_ACTION_KEYS: Record<
+  DreamTrendsNextAction,
+  { label: string; href: '/recording' | '/(tabs)/journal' }
+> = {
+  capture_first: { label: 'trends.cta.capture_first', href: '/recording' },
+  capture_this_week: { label: 'trends.cta.capture_this_week', href: '/recording' },
+  keep_rhythm: { label: 'trends.cta.keep_rhythm', href: '/recording' },
+  wait_for_patterns: { label: 'trends.cta.wait_for_patterns', href: '/(tabs)/journal' },
+  review_patterns: { label: 'trends.cta.review_patterns', href: '/(tabs)/journal' },
 };
 
-function filterDreamsByStatsPeriod(dreams: DreamAnalysis[], period: StatsPeriod, now = Date.now()) {
-  if (period === 'all') {
-    return dreams;
-  }
-
-  const cutoff = now - STATS_PERIOD_DAYS[period] * 24 * 60 * 60 * 1000;
-  return dreams.filter((dream) => dream.id >= cutoff);
+function weekdayLabelKey(weekday: number): (typeof WEEKDAY_KEYS)[number] {
+  if (weekday === 0) return WEEKDAY_KEYS[6];
+  if (weekday >= 1 && weekday <= 6) return WEEKDAY_KEYS[weekday - 1];
+  return WEEKDAY_KEYS[0];
 }
-
-const STATS_INSIGHT_ICON: Record<DreamStatsInsightKind, IconName> = {
-  record: 'moon.stars.fill',
-  analyze: 'sparkles',
-  explore: 'bubble.left.and.bubble.right.fill',
-  favorite: 'heart.fill',
-  streak: 'flame.fill',
-  steady: 'checkmark.circle.fill',
-};
-
-const DREAM_PROFILE_NEXT_ROUTE: Record<DreamProfile['nextAction'], Href> = {
-  add_anchor: '/recording?intent=remembered&source=profile',
-  capture_more: '/recording',
-  analyze_unanalyzed: '/(tabs)/journal',
-  explore_more: '/(tabs)/journal',
-  review_patterns: '/(tabs)/journal',
-};
-
-// Entry stagger. StaticFlatGlassCard fades each card in over 650 ms (GlassCard.tsx), so the
-// delays stay short: every section starts fading within 120 ms of its own mount instead of 750 ms.
-// The three deferred sections mount later (InteractionManager), so their ramp restarts at 0.
-const SECTION_ANIMATION_DELAY = {
-  overview: 0,
-  profile: 40,
-  insight: 80,
-  streaks: 120,
-  // Deferred group: these mount together, later, so the ramp restarts at 0.
-  rhythm: 0,
-  dreamTypes: 40,
-  topThemes: 80,
-  // Second restart. The two content sections sit a full viewport below Top themes, and the
-  // property this ramp exists to hold — every section starts fading within 120 ms of its own
-  // mount (audit P2-19) — must survive adding three sections. Extending linearly to 200 ms
-  // would have broken it. The same discontinuity already exists at streaks(120) ->
-  // dreamTypes.
-  emotions: 0,
-  themeTrend: 40,
-  engagement: 80,
-} as const;
-
-const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
-
-// Bars in the S2 locked preview. Decorative and capped on purpose: the honest number is the
-// count line above them, so the bar count never has to equal `distinctFamilies`.
-const EMOTION_LOCKED_PREVIEW_ROWS = 5;
-const LOCKED_PREVIEW_RATIO_STEP = 0.18;
-
-// __DEV__-only lexicon-rot alarm. Ratio only — never `unmatched.samples`, which is raw
-// dream-derived free text (lib/dreamEmotions.ts privacy note).
-const EMOTION_COVERAGE_ALERT_MENTIONS = 20;
-const EMOTION_COVERAGE_ALERT_RATIO = 0.8;
-
-function getLabelHeight(lineCount: number) {
-  const safeCount = Math.max(1, lineCount);
-  return LABEL_VERTICAL_PADDING * 2 + safeCount * LABEL_TEXT_LINE_HEIGHT + LABEL_DETAIL_LINE_HEIGHT;
-}
-
-const PIE_LABEL_HEIGHT = getLabelHeight(MAX_LABEL_LINES);
-
-const getChartContentWidth = (screenWidth: number) =>
-  clamp(
-    Math.min(screenWidth, MAX_CHART_CONTENT_WIDTH + CHART_CONTENT_INSET) - CHART_CONTENT_INSET,
-    MIN_CHART_CONTENT_WIDTH,
-    MAX_CHART_CONTENT_WIDTH,
-  );
-
-// gifted-charts labels the y axis with `showFractionalValues: false`, so a maxValue that is
-// not a multiple of noOfSections silently prints repeated integers. Derive an integer step.
-const getIntegerAxis = (maxCount: number, maxSections = 4) => {
-  const safeMax = Math.max(1, maxCount);
-  const noOfSections = Math.min(maxSections, safeMax);
-  const stepValue = Math.ceil(safeMax / noOfSections);
-  return { noOfSections, maxValue: stepValue * noOfSections };
-};
-
-type RhythmMetrics = {
-  plotWidth: number;
-  barWidth: number;
-  spacing: number;
-  initialSpacing: number;
-  endSpacing: number;
-};
-
-// Same discipline as getPieMetrics: derive every dimension from the window width once, in a
-// pure function, and memoise the call. The wrapper lays a bar chart out as
-// initialSpacing + n x (barWidth + spacing) + endSpacing, which is where the +0.5 comes from
-// (it mirrors the library's own adjustToWidth formula, gifted-charts-core BarChart/index.js).
-function getRhythmMetrics(screenWidth: number, barCount: number): RhythmMetrics {
-  const plotWidth = Math.max(getChartContentWidth(screenWidth) - RHYTHM_Y_AXIS_LABEL_WIDTH, 120);
-  const slot = plotWidth / (Math.max(1, barCount) + 0.5);
-  const barWidth = Math.round(clamp(slot * 0.6, RHYTHM_MIN_BAR_WIDTH, RHYTHM_MAX_BAR_WIDTH));
-  const spacing = Math.round(clamp(slot - barWidth, RHYTHM_MIN_SPACING, RHYTHM_MAX_SPACING));
-  const leftover = plotWidth - barCount * (barWidth + spacing);
-  const initialSpacing = Math.round(Math.max(spacing, leftover / 2 + spacing / 2));
-
-  return { plotWidth, barWidth, spacing, initialSpacing, endSpacing: spacing };
-}
-
-type ThemeTrendMetrics = {
-  plotWidth: number;
-  spacing: number;
-  initialSpacing: number;
-  endSpacing: number;
-};
-
-function getThemeTrendMetrics(screenWidth: number, pointCount: number): ThemeTrendMetrics {
-  const plotWidth = Math.max(
-    getChartContentWidth(screenWidth) - THEME_TREND_Y_AXIS_LABEL_WIDTH,
-    120,
-  );
-  const initialSpacing = 10;
-  const endSpacing = 10;
-  const spacing = (plotWidth - initialSpacing - endSpacing) / Math.max(1, pointCount - 1);
-
-  return { plotWidth, spacing, initialSpacing, endSpacing };
-}
-
-type PieMetrics = {
-  chartWidth: number;
-  pieLabelWidth: number;
-  pieLabelLineLength: number;
-  pieExtraRadius: number;
-  pieRadius: number;
-  pieInnerRadius: number;
-  pieLabelTailLength: number;
-  pieChartDimension: number;
-  pieChartCenter: number;
-};
-
-function getPieMetrics(screenWidth: number): PieMetrics {
-  const chartWidth = screenWidth - CHART_HORIZONTAL_INSET;
-
-  // Balance the donut radius and external label width so callouts stay visible on all breakpoints.
-  const baseLabelWidth = clamp(chartWidth * 0.38, MIN_LABEL_WIDTH, MAX_LABEL_WIDTH);
-  const baseLabelLineLength = clamp(chartWidth * 0.05, MIN_LABEL_LINE, MAX_LABEL_LINE);
-  const maxPaddingPerSide = Math.max(
-    (chartWidth - MIN_PIE_RADIUS * 2) / 2,
-    PIE_LABEL_MARGIN + MIN_LABEL_LINE + 24,
-  );
-
-  let pieLabelWidth = baseLabelWidth;
-  let pieLabelLineLength = baseLabelLineLength;
-  let piePaddingPerSide = pieLabelWidth + pieLabelLineLength + PIE_LABEL_MARGIN;
-
-  if (piePaddingPerSide > maxPaddingPerSide) {
-    const availableForElements = Math.max(maxPaddingPerSide - PIE_LABEL_MARGIN, MIN_LABEL_LINE);
-    const totalDesired = (pieLabelWidth + pieLabelLineLength) || 1;
-    const lineWeight = pieLabelLineLength / totalDesired;
-    pieLabelLineLength = clamp(availableForElements * lineWeight, MIN_LABEL_LINE, MAX_LABEL_LINE);
-    pieLabelWidth = clamp(availableForElements - pieLabelLineLength, 48, MAX_LABEL_WIDTH);
-    const overflow = pieLabelWidth + pieLabelLineLength - availableForElements;
-    if (overflow > 0) {
-      pieLabelWidth = Math.max(40, pieLabelWidth - overflow);
-    }
-    piePaddingPerSide = pieLabelWidth + pieLabelLineLength + PIE_LABEL_MARGIN;
-  }
-
-  const pieExtraRadius = piePaddingPerSide;
-  const pieRadius = clamp(chartWidth / 2 - pieExtraRadius, MIN_PIE_RADIUS, MAX_PIE_RADIUS);
-
-  return {
-    chartWidth,
-    pieLabelWidth,
-    pieLabelLineLength,
-    pieExtraRadius,
-    pieRadius,
-    pieInnerRadius: pieRadius * 0.62,
-    pieLabelTailLength: Math.max(
-      10,
-      Math.min(pieLabelLineLength * 0.45, pieLabelLineLength - 4)
-    ),
-    pieChartDimension: pieRadius * 2 + pieExtraRadius * 2,
-    pieChartCenter: pieRadius + pieExtraRadius,
-  };
-}
-
-export type ThemeTrendSeries = {
-  theme: DreamTheme;
-  /** One bucket count per entry in `ThemeTrend.points`. */
-  counts: number[];
-  total: number;
-};
-
-export type ThemeTrend = {
-  /** Bucket start timestamps, ascending. Empty when there is nothing to plot. */
-  points: number[];
-  /** One entry per theme actually present, ranked with compareDreamFacets. At most 4. */
-  series: ThemeTrendSeries[];
-  /** Observed span between the first and last plotted dream, inclusive. */
-  spanDays: number;
-  /** Analysed, themed dreams that landed inside the window. */
-  analyzedDreams: number;
-  /** Days per bucket. 1 until the window needs more than THEME_TREND_MAX_POINTS points. */
-  bucketDays: number;
-  /**
-   * Hard ceiling the selected period puts on `spanDays`, or null for 'all' (unbounded).
-   * The span threshold is capped to it: under the 7-day period a 14-day span is unreachable
-   * by construction, so an uncapped threshold would make this section permanently
-   * unsatisfiable rather than merely empty. Deliberately NOT the resolved window length —
-   * for 'all' that is derived from the journal itself, and capping to it would dissolve the
-   * threshold entirely.
-   */
-  maxSpanDays: number | null;
-  /** Highest single bucket value across all series. Drives the y axis. */
-  maxCount: number;
-};
-
-const EMPTY_THEME_TREND: ThemeTrend = {
-  points: [],
-  series: [],
-  spanDays: 0,
-  analyzedDreams: 0,
-  bucketDays: 1,
-  maxCount: 0,
-  maxSpanDays: 0,
-};
-
-// Math.round, not Math.floor: startOfDay() returns local midnight, and across a DST boundary
-// a one-day gap is 23 or 25 hours, which floor() would count as zero days.
-const dayDiff = (fromDayStart: number, toDayStart: number) =>
-  Math.round((toDayStart - fromDayStart) / DAY_IN_MS);
-
-/**
- * Theme x day aggregation for "Themes over time" (S3).
- *
- * Lives here, not on useDreamStatistics, on purpose. The hook now takes the window as an
- * argument (`statsWindowDays` below), so the old objection — a filtered array carries no
- * trace of the filter that produced it — no longer applies to the window itself. What keeps
- * this builder on the screen is the rest of its input: theme colours, the Plus gate and the
- * span thresholds are screen concerns, and the hook describes a journal, not a section.
- * Re-render cost is identical either way (both recompute on the same `periodDreams` identity
- * change), so the decision rests on coupling alone.
- *
- * Exported so a unit test can drive it without rendering the screen. Expo Router only reads
- * `default`, `ErrorBoundary` and `unstable_settings` from a route module; other named exports
- * are ignored.
- *
- * `now` is a defaulted parameter rather than an argument the memo passes, mirroring
- * `filterDreamsByStatsPeriod` above: it keeps the clock read out of the hook body (which
- * react-hooks/purity flags) while staying injectable from a test.
- */
-export function buildThemeTrend(
-  dreams: DreamAnalysis[],
-  period: StatsPeriod,
-  now: number = Date.now(),
-): ThemeTrend {
-  const themed = dreams.filter((dream) => Boolean(dream.theme) && isDreamAnalyzed(dream));
-  if (themed.length === 0) return EMPTY_THEME_TREND;
-
-  const todayStart = startOfDay(now).getTime();
-  let earliestDay = todayStart;
-  themed.forEach((dream) => {
-    const day = startOfDay(dream.id).getTime();
-    if (day < earliestDay) earliestDay = day;
-  });
-
-  // 'all' is anchored on today so the right edge always means "now", like dreamsOverTime.
-  const windowDays =
-    period === 'all'
-      ? Math.max(1, dayDiff(earliestDay, todayStart) + 1)
-      : STATS_PERIOD_DAYS[period];
-  const windowStart = todayStart - (windowDays - 1) * DAY_IN_MS;
-
-  // Bucketing keeps the point count bounded: 'all' on a two-year journal would otherwise be
-  // 730 x-positions x 4 series inside a nested ScrollView.
-  const bucketDays = Math.max(1, Math.ceil(windowDays / THEME_TREND_MAX_POINTS));
-  const pointCount = Math.max(1, Math.ceil(windowDays / bucketDays));
-
-  const counts = new Map<DreamTheme, number[]>();
-  let analyzedDreams = 0;
-  let firstDay = todayStart;
-  let lastDay = windowStart;
-
-  themed.forEach((dream) => {
-    const day = startOfDay(dream.id).getTime();
-    const offset = dayDiff(windowStart, day);
-    if (offset < 0 || offset >= windowDays) return;
-
-    const theme = dream.theme as DreamTheme;
-    const bucket = Math.min(Math.floor(offset / bucketDays), pointCount - 1);
-    const series = counts.get(theme) ?? new Array<number>(pointCount).fill(0);
-    series[bucket] += 1;
-    counts.set(theme, series);
-
-    analyzedDreams += 1;
-    if (day < firstDay) firstDay = day;
-    if (day > lastDay) lastDay = day;
-  });
-
-  if (analyzedDreams === 0) return EMPTY_THEME_TREND;
-
-  const series = Array.from(counts.entries())
-    .map(([theme, values]) => ({
-      theme,
-      counts: values,
-      total: values.reduce((sum, value) => sum + value, 0),
-    }))
-    // Same comparator as the pie and Top themes. Audit §7.2: two rankings of the same facet
-    // on one screen must never disagree on a tie.
-    .sort((a, b) => compareDreamFacets(a.total, a.theme, b.total, b.theme));
-
-  const maxCount = series.reduce(
-    (max, item) => item.counts.reduce((inner, value) => Math.max(inner, value), max),
-    0,
-  );
-
-  return {
-    points: Array.from(
-      { length: pointCount },
-      (_, index) => windowStart + index * bucketDays * DAY_IN_MS,
-    ),
-    series,
-    // Observed span, not the requested window: five dreams inside one week must not clear a
-    // 14-day threshold merely because '12 months' happens to be selected.
-    spanDays: dayDiff(firstDay, lastDay) + 1,
-    analyzedDreams,
-    bucketDays,
-    maxCount,
-    maxSpanDays: period === 'all' ? null : STATS_PERIOD_DAYS[period],
-  };
-}
-
-/**
- * Span the timeline needs before it will draw, capped to the requested window.
- * Uncapped, the 7-day period could never reach the 14-day minimum — the section would tell
- * the user to "keep going for 7 more days" forever, whatever their journal contained.
- */
-function getThemeTrendRequiredSpan(trend: ThemeTrend): number {
-  if (trend.maxSpanDays === null) return THEME_TREND_MIN_SPAN_DAYS;
-  return Math.min(THEME_TREND_MIN_SPAN_DAYS, Math.max(1, trend.maxSpanDays));
-}
-
-type DreamPieDataItem = pieDataItem & {
-  typeLabel: string;
-  count: number;
-  percentage: number;
-  typeLines: string[];
-  labelHeight: number;
-};
-
-type PieLabelLayout = {
-  anchorX: number;
-  anchorY: number;
-  isRightHalf: boolean;
-  labelCenterY: number;
-  midAngle: number;
-  item: DreamPieDataItem;
-};
-
-const distributeLabelsOnSide = (labels: PieLabelLayout[], chartHeight: number) => {
-  if (labels.length === 0) return [];
-
-  const sorted = labels
-    .map((label) => ({ ...label }))
-    .sort((a, b) => a.anchorY - b.anchorY);
-
-  sorted.forEach((label, index) => {
-    const previous = sorted[index - 1];
-    const minCenterY =
-      previous && previous.item
-        ? previous.labelCenterY + previous.item.labelHeight / 2 + label.item.labelHeight / 2 + PIE_LABEL_VERTICAL_MARGIN
-        : label.anchorY;
-
-    const topBound = PIE_LABEL_VERTICAL_MARGIN + label.item.labelHeight / 2;
-    label.labelCenterY = Math.max(label.anchorY, minCenterY, topBound);
-  });
-
-  const bottomLimit = chartHeight - PIE_LABEL_VERTICAL_MARGIN;
-  const last = sorted[sorted.length - 1];
-  const overflow = last.labelCenterY + last.item.labelHeight / 2 - bottomLimit;
-
-  if (overflow > 0) {
-    last.labelCenterY -= overflow;
-    for (let i = sorted.length - 2; i >= 0; i -= 1) {
-      const next = sorted[i + 1];
-      const maxCenterY =
-        next.labelCenterY - next.item.labelHeight / 2 - sorted[i].item.labelHeight / 2 - PIE_LABEL_VERTICAL_MARGIN;
-      sorted[i].labelCenterY = Math.min(sorted[i].labelCenterY, maxCenterY);
-    }
-  }
-
-  const first = sorted[0];
-  const topOverflow = first.labelCenterY - first.item.labelHeight / 2 - PIE_LABEL_VERTICAL_MARGIN;
-  if (topOverflow < 0) {
-    sorted.forEach((label) => {
-      label.labelCenterY -= topOverflow;
-    });
-  }
-
-  return sorted;
-};
-
-const buildPieLabelLayouts = (data: DreamPieDataItem[], metrics: PieMetrics): PieLabelLayout[] => {
-  const total = data.reduce((sum, item) => sum + item.value, 0);
-  if (!total) return [];
-
-  let accumulated = 0;
-  const rawLayouts: PieLabelLayout[] = data.map((item) => {
-    const sliceAngle = (item.value / total) * Math.PI * 2;
-    const midAngle = accumulated + sliceAngle / 2;
-    accumulated += sliceAngle;
-
-    const anchorX = metrics.pieChartCenter + metrics.pieRadius * Math.sin(midAngle);
-    const anchorY = metrics.pieChartCenter - metrics.pieRadius * Math.cos(midAngle);
-    const isRightHalf = anchorX >= metrics.pieChartCenter;
-
-    return {
-      anchorX,
-      anchorY,
-      isRightHalf,
-      labelCenterY: anchorY,
-      midAngle,
-      item,
-    };
-  });
-
-  const left = distributeLabelsOnSide(
-    rawLayouts.filter((layout) => !layout.isRightHalf),
-    metrics.pieChartDimension,
-  );
-  const right = distributeLabelsOnSide(
-    rawLayouts.filter((layout) => layout.isRightHalf),
-    metrics.pieChartDimension,
-  );
-
-  return [...left, ...right];
-};
-
-// ─── Styles Uniwind cannot carry ──────────────────────────────────────────────
-// Three cases, all permanent rather than debt:
-//   1. `borderCurve` and `fontVariant` have no token in global.css.
-//   2. GlassCard / BottomSheet / ScrollView.contentContainerStyle take a `style` object,
-//      not a `className`.
-//   3. gifted-charts axis label styles are style objects handed to the library.
-
-const CONTINUOUS_CORNERS: ViewStyle = { borderCurve: 'continuous' };
-
-/** StaticFlatGlassCard draws its own ground; this only shapes and clips it. */
-const SECTION_GLASS_CARD: ViewStyle = { borderRadius: 24, overflow: 'hidden', padding: 0 };
-/** The two hero cards (insight, dream profile) sit one step rounder than a section. */
-const HERO_GLASS_CARD: ViewStyle = { borderRadius: 26, overflow: 'hidden', padding: 0 };
-const PERIOD_SHEET: ViewStyle = {
-  gap: ThemeLayout.spacing.md,
-  paddingBottom: ThemeLayout.spacing.xl,
-};
-const EMPTY_SCROLL_CONTENT: ViewStyle = { flexGrow: 1, justifyContent: 'center' };
-const CHART_AXIS_LABEL: TextStyle = { fontSize: 11, fontFamily: Fonts.spaceGrotesk.regular };
-const CHART_X_AXIS_LABEL: TextStyle = {
-  fontSize: 11,
-  fontFamily: Fonts.spaceGrotesk.medium,
-  textAlign: 'center',
-};
-
-// ─── Stat Card ────────────────────────────────────────────────────────────────
-
-interface StatCardProps {
-  title: string;
-  value: string | number;
-  subtitle?: string;
-  /** Kept so every call site stays untouched; colours now come from `global.css`. */
-  noctalia: NoctaliaDesignTokens;
-  valueTestID?: string;
-  /** Position inside its grid, for the staggered entrance. */
-  index?: number;
-}
-
-function StatCard({ title, value, subtitle, valueTestID, index = 0 }: StatCardProps) {
-  const valueText = typeof value === 'number' ? String(value) : value;
-  const accessibilityLabel = `${title}: ${valueText}`;
-
-  // The card carries the flex sizing so the grid keeps its shape: `Reveal` is the flex
-  // child now, and the entrance is opacity + translate only.
-  return (
-    <Reveal index={index} className="flex-1 min-w-[48%] rounded-md p-4">
-      <Text className="text-[13px] font-sans-medium uppercase mb-1 text-ivory-muted">{title}</Text>
-      <Text
-        className="text-[36px] font-display-bold text-champagne-on"
-        testID={valueTestID}
-        accessibilityLabel={accessibilityLabel}
-      >
-        {value}
-      </Text>
-      <View className="w-6 h-0.5 rounded-[1px] mt-1.5 bg-champagne" />
-      {subtitle && <Text className="text-[12px] font-sans mt-1 text-ivory-faint">{subtitle}</Text>}
-    </Reveal>
-  );
-}
-
-// ─── Section Glass Wrapper ────────────────────────────────────────────────────
-
-const SectionGlass = memo(function SectionGlass({
-  children,
-  animationDelay = 0,
-}: {
-  children: React.ReactNode;
-  /** Kept so every call site stays untouched; the stripe now reads `global.css`. */
-  noctalia: NoctaliaDesignTokens;
-  animationDelay?: number;
-}) {
-  return (
-    <StaticFlatGlassCard
-      intensity="subtle"
-      animationDelay={animationDelay}
-      style={SECTION_GLASS_CARD}
-    >
-      <View className="w-full h-[3px] opacity-[0.85] bg-champagne" />
-      <View className="p-[22px]">
-        {children}
-      </View>
-    </StaticFlatGlassCard>
-  );
-});
-
-type StatsRhythmSectionProps = {
-  noctalia: NoctaliaDesignTokens;
-  colors: ReturnType<typeof useTheme>['colors'];
-  dreamsByDay: { weekday: number; count: number }[];
-  weekdayLabels: string[];
-  metrics: RhythmMetrics;
-  t: ReturnType<typeof useTranslation>['t'];
-  formatNumber: ReturnType<typeof useLocaleFormatting>['formatNumber'];
-};
-
-/**
- * "Rythme" (S1, free). Renders stats.dreamsByDay, which has been computed since day one and
- * shown nowhere (audit §3.3).
- *
- * Every colour prop below has a hard-coded library default of black, gray or lightgray
- * (gifted-charts-core/dist/utils/constants.js: BarDefaults.frontColor = 'black',
- * AxesAndRulesDefaults.xAxisColor / yAxisColor = 'black', rulesColor = 'lightgray'), and both
- * axis label styles fall through to React Native's own black Text default. This is the exact
- * trap that made the donut hole unreadable in dark mode (audit §6.1) — every one of them is
- * bound to a noctalia token, explicitly.
- */
-const StatsRhythmSection = memo(function StatsRhythmSection({
-  noctalia,
-  colors,
-  dreamsByDay,
-  weekdayLabels,
-  metrics,
-  t,
-  formatNumber,
-}: StatsRhythmSectionProps) {
-  const countLabel = (count: number) =>
-    t(count === 1 ? 'stats.legend.count_one' : 'stats.legend.count', {
-      count: formatNumber(count),
-    });
-
-  const axis = getIntegerAxis(
-    dreamsByDay.reduce((max, entry) => Math.max(max, entry.count), 0),
-  );
-
-  const barData: barDataItem[] = dreamsByDay.map((entry) => ({
-    value: entry.count,
-    label: weekdayLabels[entry.weekday],
-    frontColor: noctalia.accent.base,
-  }));
-
-  // Same contract as the pie: one accessible element carrying every number a sighted user
-  // reads off the bars.
-  const accessibilityLabel = [
-    t('stats.section.dreams_by_day'),
-    ...dreamsByDay.map(
-      (entry) => `${weekdayLabels[entry.weekday]}: ${countLabel(entry.count)}`,
-    ),
-  ].join(', ');
-
-  return (
-    <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.rhythm}>
-      <SectionHeading
-        title={t('stats.section.dreams_by_day')}
-        icon="waveform"
-        colors={colors}
-      />
-      <View className="rounded-md px-4 py-1 items-center">
-        <View
-          accessible
-          accessibilityRole="image"
-          accessibilityLabel={accessibilityLabel}
-          testID={TID.Component.StatsRhythmChart}
-          className="self-center mb-2"
-        >
-          <BarChart
-            data={barData}
-            width={metrics.plotWidth}
-            height={RHYTHM_CHART_HEIGHT}
-            barWidth={metrics.barWidth}
-            spacing={metrics.spacing}
-            initialSpacing={metrics.initialSpacing}
-            endSpacing={metrics.endSpacing}
-            barBorderTopLeftRadius={4}
-            barBorderTopRightRadius={4}
-            maxValue={axis.maxValue}
-            noOfSections={axis.noOfSections}
-            yAxisLabelWidth={RHYTHM_Y_AXIS_LABEL_WIDTH}
-            // The wrapper always mounts a horizontal ScrollView; disabling it keeps 7 bars
-            // from becoming draggable and stops it competing with the page scroll.
-            disableScroll
-            showScrollIndicator={false}
-            // Defaults to false today; pinned so a library bump cannot start animating
-            // inside the ScrollView.
-            isAnimated={false}
-            frontColor={noctalia.accent.base}
-            backgroundColor="transparent"
-            xAxisColor={noctalia.surface.border}
-            yAxisColor={noctalia.surface.border}
-            rulesColor={noctalia.surface.border}
-            yAxisTextStyle={[CHART_AXIS_LABEL, { color: noctalia.text.tertiary }]}
-            xAxisLabelTextStyle={[CHART_X_AXIS_LABEL, { color: noctalia.text.secondary }]}
-          />
-        </View>
-      </View>
-    </SectionGlass>
-  );
-});
-
-type StatsHeaderActionsRowProps = {
-  actions: NoctaliaHeaderAction[];
-  noctalia: NoctaliaDesignTokens;
-};
-
-/**
- * Desktop web keeps the centered PageHeader, which accepts no actions.
- * This row restores the period filter and the share action just below it.
- */
-const StatsHeaderActionsRow = memo(function StatsHeaderActionsRow({
-  actions,
-  noctalia,
-}: StatsHeaderActionsRowProps) {
-  return (
-    <View className="flex-row items-center justify-end gap-2 px-4 pb-2">
-      {actions.map((action) => (
-        <PressableScale
-          key={action.testID ?? action.accessibilityLabel}
-          accessibilityRole="button"
-          accessibilityLabel={action.accessibilityLabel}
-          testID={action.testID}
-          onPress={action.onPress}
-          className={`w-11 h-11 rounded-full border items-center justify-center ${
-            action.active ? 'bg-champagne border-champagne-soft' : 'bg-ink-soft border-line'
-          }`}
-        >
-          <IconSymbol
-            name={action.icon}
-            size={20}
-            color={action.active ? noctalia.action.primaryText : noctalia.text.secondary}
-          />
-        </PressableScale>
-      ))}
-    </View>
-  );
-});
-
-/**
- * The three insight meters fill from zero ONCE, when the card first mounts — the moment the
- * length of the bar is information the reader has not seen. `width`, not `scaleX`: the fill
- * is childless inside a fixed-height clipped track, so nothing else re-lays-out and the pill
- * radius survives. Later changes (a new period) are written straight to the shared value:
- * a ratio that moved did not arrive, and re-running the growth would say it did.
- */
-function InsightProgressFill({ percent }: { percent: number }) {
-  const reduced = useReducedMotion();
-  const width = useSharedValue(reduced ? percent : 0);
-  const hasGrown = useRef(false);
-
-  useEffect(() => {
-    if (hasGrown.current || reduced) {
-      width.set(percent);
-      return;
-    }
-    hasGrown.current = true;
-    width.set(withTiming(percent, { duration: DURATION.normal, easing: EASING.out }));
-  }, [percent, reduced, width]);
-
-  const animatedStyle = useAnimatedStyle(() => ({ width: `${width.get()}%` }));
-
-  return <Animated.View className="h-full rounded-full bg-champagne" style={animatedStyle} />;
-}
-
-type StatsInsightCardProps = {
-  noctalia: NoctaliaDesignTokens;
-  insight: ReturnType<typeof getDreamStatsInsight>;
-  t: ReturnType<typeof useTranslation>['t'];
-  formatPercent: ReturnType<typeof useLocaleFormatting>['formatPercent'];
-  onPress: () => void;
-};
-
-const StatsInsightCard = memo(function StatsInsightCard({
-  noctalia,
-  insight,
-  t,
-  formatPercent,
-  onPress,
-}: StatsInsightCardProps) {
-  const progressItems = [
-    {
-      id: 'analysis',
-      label: t('stats.insight.metric.analysis'),
-      value: formatPercent(insight.analysisRatio),
-      ratio: insight.analysisRatio,
-    },
-    {
-      id: 'exploration',
-      label: t('stats.insight.metric.exploration'),
-      value: formatPercent(insight.explorationRatio),
-      ratio: insight.explorationRatio,
-    },
-    {
-      id: 'streak',
-      label: t('stats.insight.metric.streak'),
-      value: formatPercent(insight.streakGoalRatio),
-      ratio: insight.streakGoalRatio,
-    },
-  ];
-
-  return (
-    <StaticFlatGlassCard
-      intensity="moderate"
-      animationDelay={SECTION_ANIMATION_DELAY.insight}
-      style={HERO_GLASS_CARD}
-      testID={TID.Component.StatsInsight}
-    >
-      <View className="h-[3px] opacity-90 bg-champagne" />
-      <View className="p-[22px] gap-[18px]">
-        <View className="flex-row gap-[14px] items-start">
-          <View
-            className="w-[46px] h-[46px] rounded-[15px] items-center justify-center bg-ink-soft"
-            style={CONTINUOUS_CORNERS}
-          >
-            <IconSymbol
-              name={STATS_INSIGHT_ICON[insight.kind]}
-              size={22}
-              color={noctalia.accent.text}
-            />
-          </View>
-          <View className="flex-1 gap-[5px]">
-            <Text className="text-[12px] font-sans-medium uppercase text-champagne-on">
-              {t('stats.insight.eyebrow')}
-            </Text>
-            <Text className="text-[24px] leading-[30px] font-display-semibold text-ivory">
-              {t(insight.titleKey)}
-            </Text>
-            <Text className="text-body-sm font-sans text-ivory-muted">
-              {t(insight.bodyKey)}
-            </Text>
-          </View>
-        </View>
-
-        <View className="flex-row flex-wrap gap-2.5">
-          {progressItems.map((item) => (
-            <View
-              key={item.id}
-              className="flex-1 min-w-[138px] border rounded-lg p-3 gap-[9px] border-line bg-ink-soft"
-              style={CONTINUOUS_CORNERS}
-            >
-              <View className="flex-row items-center justify-between gap-2.5">
-                <Text className="flex-1 text-[11px] leading-[14px] font-sans-medium uppercase text-ivory-muted">
-                  {item.label}
-                </Text>
-                <Text className="text-[13px] font-sans-bold text-ivory tabular-nums">
-                  {item.value}
-                </Text>
-              </View>
-              <View
-                accessibilityRole="progressbar"
-                accessibilityLabel={item.label}
-                accessibilityValue={{
-                  min: 0,
-                  max: 100,
-                  now: Math.round(clamp(item.ratio, 0, 1) * 100),
-                  text: item.value,
-                }}
-                className="h-[5px] rounded-full overflow-hidden bg-line"
-              >
-                <InsightProgressFill percent={Math.max(5, item.ratio * 100)} />
-              </View>
-            </View>
-          ))}
-        </View>
-
-        <PressableScale
-          accessibilityRole="button"
-          accessibilityLabel={t(insight.ctaKey)}
-          testID={TID.Button.StatsInsightCta}
-          onPress={onPress}
-          className="min-h-12 rounded-[18px] px-[18px] flex-row items-center justify-center gap-2 self-start bg-champagne"
-          style={CONTINUOUS_CORNERS}
-        >
-          <Text className="text-[15px] font-sans-bold text-on-champagne">
-            {t(insight.ctaKey)}
-          </Text>
-          <IconSymbol name="arrow.right" size={16} color={noctalia.action.primaryText} />
-        </PressableScale>
-      </View>
-    </StaticFlatGlassCard>
-  );
-});
-
-type DreamProfileCardProps = {
-  noctalia: NoctaliaDesignTokens;
-  profile: DreamProfile;
-  t: ReturnType<typeof useTranslation>['t'];
-  formatNumber: ReturnType<typeof useLocaleFormatting>['formatNumber'];
-  canShowPremiumSignals: boolean;
-  onPress: () => void;
-  onUpgradePress: () => void;
-};
-
-const DreamProfileCard = memo(function DreamProfileCard({
-  noctalia,
-  profile,
-  t,
-  formatNumber,
-  canShowPremiumSignals,
-  onPress,
-  onUpgradePress,
-}: DreamProfileCardProps) {
-  const topType = profile.topTypes[0];
-  const topTheme = profile.topThemes[0];
-  const topFragment = profile.topFragments[0];
-  const topPeriod = profile.topPeriods[0];
-  const topTypeLabel = topType
-    ? getDreamTypeLabel(topType.value, t) ?? topType.value
-    : t('stats.profile.signal.none');
-  const topThemeLabel = topTheme
-    ? (() => {
-        const key = `stats.theme.${topTheme.value}`;
-        const label = t(key);
-        return label === key ? topTheme.value : label;
-      })()
-    : t('stats.profile.signal.none');
-  const topFragmentLabel = topFragment
-    ? t(`stats.profile.fragment.${topFragment.value}`)
-    : t('stats.profile.signal.none');
-  const topPeriodLabel = topPeriod
-    ? t(`stats.profile.period.${topPeriod.value}`)
-    : t('stats.profile.signal.none');
-  const profileMetrics = [
-    {
-      id: 'anchor',
-      label: t('stats.profile.metric.anchor'),
-      value: formatNumber(profile.anchorDreams),
-    },
-    {
-      id: 'remembered',
-      label: t('stats.profile.metric.remembered'),
-      value: formatNumber(profile.rememberedDreams),
-    },
-    {
-      id: 'recurring',
-      label: t('stats.profile.metric.recurring'),
-      value: formatNumber(profile.recurringDreams),
-    },
-    {
-      id: 'explored',
-      label: t('stats.profile.metric.explored'),
-      value: formatNumber(profile.exploredDreams),
-    },
-  ];
-  const signalItems = [
-    {
-      id: 'type',
-      label: t('stats.profile.signal.type'),
-      value: topTypeLabel,
-    },
-    {
-      id: 'theme',
-      label: t('stats.profile.signal.theme'),
-      value: topThemeLabel,
-    },
-    {
-      id: 'fragment',
-      label: t('stats.profile.signal.fragment'),
-      value: topFragmentLabel,
-    },
-    {
-      id: 'period',
-      label: t('stats.profile.signal.period'),
-      value: topPeriodLabel,
-    },
-  ];
-
-  return (
-    <StaticFlatGlassCard
-      intensity="moderate"
-      animationDelay={SECTION_ANIMATION_DELAY.profile}
-      style={HERO_GLASS_CARD}
-      testID={TID.Component.DreamProfileCard}
-    >
-      <View className="h-[3px] opacity-90 bg-champagne" />
-      <View className="p-[22px] gap-4">
-        <View className="flex-row gap-[14px] items-start">
-          <View
-            className="w-[46px] h-[46px] rounded-[15px] items-center justify-center bg-ink-soft"
-            style={CONTINUOUS_CORNERS}
-          >
-            <IconSymbol name="brain" size={23} color={noctalia.accent.text} />
-          </View>
-          <View className="flex-1 gap-[5px]">
-            <Text className="text-[12px] font-sans-medium uppercase text-champagne-on">
-              {t('stats.profile.eyebrow')}
-            </Text>
-            <Text className="text-[24px] leading-[30px] font-display-semibold text-ivory">
-              {t('stats.profile.title')}
-            </Text>
-            <Text className="text-body-sm font-sans text-ivory-muted">
-              {t(`stats.profile.readiness.${profile.readiness}.body`)}
-            </Text>
-          </View>
-        </View>
-
-        <View className="self-start border rounded-full flex-row items-center gap-2 min-h-[34px] px-3 bg-ink-soft border-line-strong">
-          <IconSymbol
-            name={profile.hasEnoughForPatterns ? 'checkmark.circle.fill' : 'hourglass'}
-            size={16}
-            color={noctalia.accent.text}
-          />
-          <Text className="text-[13px] leading-[17px] font-sans-bold text-ivory">
-            {t(`stats.profile.readiness.${profile.readiness}.label`)}
-          </Text>
-        </View>
-
-        <PressableScale
-          accessibilityRole="button"
-          accessibilityLabel={t(`stats.profile.next_action.${profile.nextAction}.cta`)}
-          testID={TID.Button.DreamProfileCta}
-          onPress={onPress}
-          className="min-h-12 rounded-[18px] px-[18px] flex-row items-center justify-center gap-2 self-start bg-champagne"
-          style={CONTINUOUS_CORNERS}
-        >
-          <Text className="text-[15px] font-sans-bold text-center text-on-champagne">
-            {t(`stats.profile.next_action.${profile.nextAction}.cta`)}
-          </Text>
-          <IconSymbol name="arrow.right" size={16} color={noctalia.action.primaryText} />
-        </PressableScale>
-
-        <View className="flex-row flex-wrap gap-2.5">
-          {profileMetrics.map((metric) => (
-            <View
-              key={metric.id}
-              className="flex-1 min-w-[132px] border rounded-lg p-3 gap-1 bg-ink-soft border-line"
-              style={CONTINUOUS_CORNERS}
-            >
-              <Text className="text-[24px] font-display-bold text-ivory tabular-nums">
-                {metric.value}
-              </Text>
-              <Text className="text-[11px] leading-[14px] font-sans-medium uppercase text-ivory-muted">
-                {metric.label}
-              </Text>
-            </View>
-          ))}
-        </View>
-
-        {canShowPremiumSignals ? (
-          <View className="gap-[9px]">
-            {signalItems.map((item) => (
-              <View
-                key={item.id}
-                className="border rounded-[14px] px-3 py-2.5 gap-[3px] border-line bg-ink-soft"
-                style={CONTINUOUS_CORNERS}
-              >
-                <Text className="text-[11px] font-sans-medium uppercase text-ivory-muted">
-                  {item.label}
-                </Text>
-                <Text className="text-[15px] leading-[19px] font-sans-bold text-ivory" numberOfLines={2}>
-                  {item.value}
-                </Text>
-              </View>
-            ))}
-          </View>
-        ) : (
-          <View
-            className="border rounded-[18px] p-3.5 gap-3 border-line-strong bg-ink-soft"
-            style={CONTINUOUS_CORNERS}
-            testID={TID.Component.DreamProfilePlusPreview}
-          >
-            <View className="flex-row items-center gap-2">
-              <IconSymbol name="lock.fill" size={16} color={noctalia.accent.text} />
-              <Text className="flex-1 text-[15px] leading-5 font-sans-bold text-ivory">
-                {t('stats.profile.plus_preview.title')}
-              </Text>
-            </View>
-            <Text className="text-[13px] leading-[18px] font-sans text-ivory-muted">
-              {t('stats.profile.plus_preview.body')}
-            </Text>
-            <View className="gap-[9px]">
-              {signalItems.map((item) => (
-                <View
-                  key={item.id}
-                  className="border rounded-[14px] px-3 py-2.5 gap-[3px] border-line bg-ink-raised"
-                  style={CONTINUOUS_CORNERS}
-                >
-                  <Text className="text-[11px] font-sans-medium uppercase text-ivory-muted">
-                    {item.label}
-                  </Text>
-                  <Text className="text-[14px] leading-[18px] font-sans-bold text-champagne-on" numberOfLines={1}>
-                    {t('stats.profile.plus_preview.locked_value')}
-                  </Text>
-                </View>
-              ))}
-            </View>
-            <PressableScale
-              accessibilityRole="button"
-              accessibilityLabel={t('stats.profile.plus_preview.cta')}
-              testID={TID.Button.DreamProfileUpgradeCta}
-              onPress={onUpgradePress}
-              className="min-h-[42px] rounded-[15px] border px-3.5 flex-row items-center justify-center gap-2 self-start border-line-strong"
-              style={CONTINUOUS_CORNERS}
-            >
-              <Text className="text-[14px] font-sans-bold text-center text-champagne-on">
-                {t('stats.profile.plus_preview.cta')}
-              </Text>
-              <IconSymbol name="arrow.right" size={15} color={noctalia.accent.text} />
-            </PressableScale>
-          </View>
-        )}
-      </View>
-    </StaticFlatGlassCard>
-  );
-});
-
-type StatsEmotionsSectionProps = {
-  noctalia: NoctaliaDesignTokens;
-  colors: ReturnType<typeof useTheme>['colors'];
-  profile: EmotionProfile;
-  rows: StatsRankedRow[];
-  maxCount: number;
-  canShowFamilies: boolean;
-  t: ReturnType<typeof useTranslation>['t'];
-  formatNumber: ReturnType<typeof useLocaleFormatting>['formatNumber'];
-  onUpgradePress: () => void;
-};
-
-/**
- * "Émotions dominantes" (S2, Plus). The section this phase exists for: it replaces one of the
- * four identical "Insight Plus" cartouches the audit §7.1 condemned — zero information scent,
- * hiding values that were free two sections below — with a gate that states a real, computed
- * number and locks only the detail.
- *
- * Three states behind one heading, in THIS order. Threshold first, tier second:
- *   below threshold -> StatsNotEnoughData, naming how many more dreams are needed
- *   free            -> StatsLockedSection: "N emotions keep coming back", detail locked
- *   Plus            -> StatsRankedList, the SAME component Top themes renders
- * Reversing the two checks would show a subscriber a locked card, and would show a free user
- * "0 emotions keep coming back" — strictly worse than the cartouche this replaces.
- *
- * The list is unsliced. `stats.emotions.locked.count` promises `profile.distinctFamilies`;
- * the unlocked state must deliver exactly that many rows or the gate is a lie.
- */
-const StatsEmotionsSection = memo(function StatsEmotionsSection({
-  noctalia,
-  colors,
-  profile,
-  rows,
-  maxCount,
-  canShowFamilies,
-  t,
-  formatNumber,
-  onUpgradePress,
-}: StatsEmotionsSectionProps) {
-  const heading = (
-    <SectionHeading
-      title={t('stats.section.emotion_families')}
-      subtitle={t('stats.section.emotion_families.subtitle')}
-      icon="heart.fill"
-      colors={colors}
-    />
-  );
-
-  if (!profile.hasEnoughDreams) {
-    return (
-      <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.emotions}>
-        {heading}
-        <StatsNotEnoughData
-          noctalia={noctalia}
-          title={t('stats.not_enough.title')}
-          body={t(
-            profile.dreamsUntilReady === 1
-              ? 'stats.emotions.not_enough.body_one'
-              : 'stats.emotions.not_enough.body',
-            { count: formatNumber(profile.dreamsUntilReady) },
-          )}
-          testID={TID.Component.StatsEmotionsNotEnough}
-        />
-      </SectionGlass>
-    );
-  }
-
-  if (!canShowFamilies) {
-    return (
-      <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.emotions}>
-        {heading}
-        <StatsLockedSection
-          noctalia={noctalia}
-          countLabel={t(
-            profile.distinctFamilies === 1
-              ? 'stats.emotions.locked.count_one'
-              : 'stats.emotions.locked.count',
-            { count: formatNumber(profile.distinctFamilies) },
-          )}
-          bodyLabel={t('stats.emotions.locked.body')}
-          ctaLabel={t('stats.locked.cta')}
-          // Decorative ramp, capped at 5. The bars carry no count semantics — the line above
-          // them does — so this cap never contradicts `distinctFamilies`.
-          previewRows={profile.families
-            .slice(0, EMOTION_LOCKED_PREVIEW_ROWS)
-            .map((item, index) => ({
-              id: item.family,
-              ratio: 1 - index * LOCKED_PREVIEW_RATIO_STEP,
-            }))}
-          onPress={onUpgradePress}
-          testID={TID.Component.StatsEmotionsLocked}
-          ctaTestID={TID.Button.StatsEmotionsUpgradeCta}
-        />
-      </SectionGlass>
-    );
-  }
-
-  return (
-    <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.emotions}>
-      {heading}
-      <StatsRankedList
-        noctalia={noctalia}
-        rows={rows}
-        maxCount={maxCount}
-        testID={TID.Component.StatsEmotions}
-      />
-    </SectionGlass>
-  );
-});
-
-type StatsThemeTrendSectionProps = {
-  noctalia: NoctaliaDesignTokens;
-  colors: ReturnType<typeof useTheme>['colors'];
-  trend: ThemeTrend;
-  metrics: ThemeTrendMetrics;
-  canShowChart: boolean;
-  t: ReturnType<typeof useTranslation>['t'];
-  formatNumber: ReturnType<typeof useLocaleFormatting>['formatNumber'];
-  formatDate: ReturnType<typeof useLocaleFormatting>['formatDate'];
-  onUpgradePress: () => void;
-};
-
-/**
- * "Themes over time" (S3, Plus). Three states inside one section, so the heading always has a
- * place on the page:
- *   - below threshold  -> StatsNotEnoughData, naming what is still missing
- *   - free             -> StatsLockedSection: the real count, a locked shape
- *   - Plus             -> the curve
- *
- * Colour defaults handled the same way as S1. LineChart adds one more trap worth naming:
- * LineDefaults.endFillColor is literally 'white' — the same defect as the donut's
- * innerCircleColor. It is inert only because areaChart stays off. Do not enable areaChart
- * without setting startFillColor AND endFillColor.
- *
- * The legend and the accessible label read `dream.theme.*` ("Calme"), not the glossed
- * `stats.theme.*` ("Calme (doux, rassurant)") that Top themes uses: the gloss is sized for a
- * list row, not a chart chip.
- */
-const StatsThemeTrendSection = memo(function StatsThemeTrendSection({
-  noctalia,
-  colors,
-  trend,
-  metrics,
-  canShowChart,
-  t,
-  formatNumber,
-  formatDate,
-  onUpgradePress,
-}: StatsThemeTrendSectionProps) {
-  const countLabel = (count: number) =>
-    t(count === 1 ? 'stats.legend.count_one' : 'stats.legend.count', {
-      count: formatNumber(count),
-    });
-  const themeColor = (theme: DreamTheme) => colors.tags[theme];
-
-  const requiredSpan = getThemeTrendRequiredSpan(trend);
-  const hasEnoughData =
-    trend.spanDays >= requiredSpan &&
-    trend.analyzedDreams >= THEME_TREND_MIN_ANALYZED_DREAMS;
-
-  const heading = (
-    <SectionHeading
-      title={t('stats.section.theme_timeline')}
-      subtitle={t('stats.section.theme_timeline.subtitle')}
-      icon="chart.line.uptrend.xyaxis"
-      colors={colors}
-    />
-  );
-
-  if (!hasEnoughData) {
-    // Dreams before days: it is the actionable one.
-    const missingDreams = THEME_TREND_MIN_ANALYZED_DREAMS - trend.analyzedDreams;
-    const missingDays = requiredSpan - trend.spanDays;
-    const body =
-      missingDreams > 0
-        ? t(
-            missingDreams === 1
-              ? 'stats.theme_timeline.not_enough.dreams_one'
-              : 'stats.theme_timeline.not_enough.dreams',
-            { count: formatNumber(missingDreams) },
-          )
-        : t(
-            missingDays === 1
-              ? 'stats.theme_timeline.not_enough.days_one'
-              : 'stats.theme_timeline.not_enough.days',
-            { count: formatNumber(missingDays) },
-          );
-
-    return (
-      <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.themeTrend}>
-        {heading}
-        <StatsNotEnoughData
-          noctalia={noctalia}
-          title={t('stats.not_enough.title')}
-          body={body}
-          testID={TID.Component.StatsThemeTrendNotEnough}
-        />
-      </SectionGlass>
-    );
-  }
-
-  if (!canShowChart) {
-    return (
-      <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.themeTrend}>
-        {heading}
-        <StatsLockedSection
-          noctalia={noctalia}
-          countLabel={t(
-            trend.series.length === 1
-              ? 'stats.theme_timeline.locked.count_one'
-              : 'stats.theme_timeline.locked.count',
-            {
-              count: formatNumber(trend.series.length),
-              days: formatNumber(trend.spanDays),
-            },
-          )}
-          bodyLabel={t('stats.theme_timeline.locked.body')}
-          ctaLabel={t('stats.locked.cta')}
-          // Decorative ramp, never the real proportions: the count is the honest part, the
-          // shape is not the answer. Same step as S2 so the two locked cards cannot drift.
-          previewRows={trend.series.map((item, index) => ({
-            id: item.theme,
-            ratio: 1 - index * LOCKED_PREVIEW_RATIO_STEP,
-          }))}
-          onPress={onUpgradePress}
-          testID={TID.Component.StatsThemeTrendLocked}
-          ctaTestID={TID.Button.StatsThemeTrendUpgradeCta}
-        />
-      </SectionGlass>
-    );
-  }
-
-  const axis = getIntegerAxis(trend.maxCount);
-  const hideDataPoints = trend.points.length > THEME_TREND_HIDE_POINTS_ABOVE;
-  const labelStride = Math.max(1, Math.ceil(trend.points.length / THEME_TREND_MAX_X_LABELS));
-  // With `dataSet`, the wrapper reads x labels from dataSet[0].data (LineChart/index.js:1121,
-  // `(data0 ?? data).map`). Chart-level xAxisLabelTexts is consulted per index for those same
-  // items, which is the only way to label a multi-series chart without coupling the labels to
-  // whichever theme happens to rank first.
-  const xAxisLabelTexts = trend.points.map((timestamp, index) =>
-    index % labelStride === 0 ? formatDate(timestamp, TREND_LABEL_OPTIONS) : '',
-  );
-
-  const dataSet: DataSet[] = trend.series.map((item) => ({
-    data: item.counts.map((value) => ({ value })),
-    color: themeColor(item.theme),
-    dataPointsColor: themeColor(item.theme),
-    hideDataPoints,
-  }));
-
-  const rangeLabel = t('stats.theme_timeline.a11y_range', {
-    from: formatDate(trend.points[0], TREND_LABEL_OPTIONS),
-    to: formatDate(trend.points[trend.points.length - 1], TREND_LABEL_OPTIONS),
-  });
-  const accessibilityLabel = [
-    t('stats.section.theme_timeline'),
-    ...trend.series.map(
-      (item) =>
-        `${getDreamThemeLabel(item.theme, t) ?? item.theme}: ${countLabel(item.total)}, ${rangeLabel}`,
-    ),
-  ].join(', ');
-
-  return (
-    <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.themeTrend}>
-      {heading}
-      <View className="rounded-md px-4 py-1 items-center">
-        <View
-          accessible
-          accessibilityRole="image"
-          accessibilityLabel={accessibilityLabel}
-          testID={TID.Component.StatsThemeTrendChart}
-          className="self-center mb-2"
-        >
-          <LineChart
-            dataSet={dataSet}
-            width={metrics.plotWidth}
-            height={THEME_TREND_CHART_HEIGHT}
-            spacing={metrics.spacing}
-            initialSpacing={metrics.initialSpacing}
-            endSpacing={metrics.endSpacing}
-            thickness={2}
-            dataPointsRadius={2.5}
-            maxValue={axis.maxValue}
-            noOfSections={axis.noOfSections}
-            yAxisLabelWidth={THEME_TREND_Y_AXIS_LABEL_WIDTH}
-            xAxisLabelTexts={xAxisLabelTexts}
-            disableScroll
-            showScrollIndicator={false}
-            isAnimated={false}
-            // Per-series colours are on the dataSet; these are the fallbacks the library
-            // would otherwise resolve to 'black' / 'black' / 'gray'.
-            color={noctalia.accent.text}
-            dataPointsColor={noctalia.accent.base}
-            textColor={noctalia.text.tertiary}
-            backgroundColor="transparent"
-            xAxisColor={noctalia.surface.border}
-            yAxisColor={noctalia.surface.border}
-            rulesColor={noctalia.surface.border}
-            yAxisTextStyle={[CHART_AXIS_LABEL, { color: noctalia.text.tertiary }]}
-            xAxisLabelTextStyle={[CHART_X_AXIS_LABEL, { color: noctalia.text.secondary }]}
-          />
-        </View>
-        <View className="w-full gap-2" testID={TID.Component.StatsThemeTrendLegend}>
-          {trend.series.map((item) => (
-            <View
-              key={item.theme}
-              className="flex-row items-center gap-2 rounded-[12px] p-2.5 bg-ink-soft"
-            >
-              <View
-                className="w-4 h-4 rounded-[4px]"
-                style={{ backgroundColor: themeColor(item.theme) }}
-              />
-              <Text className="text-[14px] font-sans text-ivory">
-                {getDreamThemeLabel(item.theme, t) ?? item.theme} ({countLabel(item.total)})
-              </Text>
-            </View>
-          ))}
-        </View>
-      </View>
-    </SectionGlass>
-  );
-});
-
-// ─── Main Screen ──────────────────────────────────────────────────────────────
 
 export default function StatisticsScreen() {
   const { dreams, loaded } = useDreams();
   const { t } = useTranslation();
-  const { colors, mode } = useTheme();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const { formatDate, formatNumber } = useLocaleFormatting();
   const { width, height } = useWindowDimensions();
-  const scrollPerf = useScrollIdle();
-  const { user, loading: authLoading } = useAuth();
-  const {
-    isActive: isPlusActive,
-    status: subscriptionStatus,
-    loading: subscriptionLoading,
-  } = useSubscription();
   useClearWebFocus();
-  const { formatDate, formatNumber, formatPercent } = useLocaleFormatting();
-  const [selectedStatsPeriod, setSelectedStatsPeriod] = useState<StatsPeriod>('all');
-  const [showStatsPeriodSheet, setShowStatsPeriodSheet] = useState(false);
-  const periodDreams = useMemo(
-    () => filterDreamsByStatsPeriod(dreams, selectedStatsPeriod),
-    [dreams, selectedStatsPeriod],
-  );
-  const isPeriodFiltered = selectedStatsPeriod !== 'all';
-  // The window has to be handed to the hook, not inferred: `periodDreams` is already
-  // filtered, and a filtered array carries no trace of the filter that produced it. Without
-  // this argument `stats.dreamsOverTime` keeps answering "last 30 days" while every other
-  // number on the page answers the selected period. `null` = all time -> the observed span.
-  const statsWindowDays =
-    selectedStatsPeriod === 'all' ? null : STATS_PERIOD_DAYS[selectedStatsPeriod];
-  const stats = useDreamStatistics(periodDreams, statsWindowDays);
+
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height);
   const scrollBottomPadding = isDesktopLayout
@@ -1529,1038 +63,261 @@ export default function StatisticsScreen() {
     : navigationLayout.barHeight
       + navigationLayout.minimumBottomInset
       + ThemeLayout.spacing.lg;
-  // Hoisted above the memos that read it: `themeTrend` and `emotionProfile` are both gated on
-  // it, and a `useState` declared further down would be a use-before-declaration.
-  const [showDeferredSections, setShowDeferredSections] = useState(false);
-  const pieMetrics = useMemo(() => getPieMetrics(width), [width]);
-  const rhythmMetrics = useMemo(
-    () => getRhythmMetrics(width, stats.dreamsByDay.length),
-    [stats.dreamsByDay.length, width],
-  );
-  // Deferred on purpose: the section is behind `showDeferredSections`, and gating the memo
-  // keeps the aggregation off the first frame the way the three existing deferred sections
-  // keep their render off it (audit §5.7).
-  const themeTrend = useMemo(
-    () =>
-      showDeferredSections
-        ? buildThemeTrend(periodDreams, selectedStatsPeriod)
-        : EMPTY_THEME_TREND,
-    [periodDreams, selectedStatsPeriod, showDeferredSections],
-  );
-  const themeTrendMetrics = useMemo(
-    () => getThemeTrendMetrics(width, themeTrend.points.length),
-    [themeTrend.points.length, width],
-  );
-  // Period-scoped, like every other number on the page (audit P1-7): the profile describes
-  // the active window, not the whole journal — the same rule `dreamProfile` follows. Deferred
-  // for the same reason the theme trend is: it keeps the ~975-fragment lexicon index off the
-  // first frame. Built by calling the real builder with `[]` while gated, so the neutral
-  // profile cannot drift from the type.
-  const emotionProfile = useMemo(
-    () => buildEmotionProfile(showDeferredSections ? periodDreams : []),
-    [periodDreams, showDeferredSections],
-  );
-  const maxEmotionCount = useMemo(
-    () => Math.max(...emotionProfile.families.map((item) => item.count), 1),
-    [emotionProfile.families],
-  );
-  // UNSLICED on purpose. The locked state sells `distinctFamilies`; if the unlocked list
-  // showed fewer rows than the number the free user was shown, the gate would be a lie.
-  // The ceiling is 12 by construction — the fixed family set.
-  const emotionRows = useMemo<StatsRankedRow[]>(
-    () =>
-      emotionProfile.families.map((item) => ({
-        id: item.family,
-        label: getEmotionFamilyLabel(item.family, t) ?? item.family,
-        countLabel: t(item.count === 1 ? 'stats.legend.count_one' : 'stats.legend.count', {
-          count: formatNumber(item.count),
-        }),
-        count: item.count,
-      })),
-    [emotionProfile.families, formatNumber, t],
-  );
-  // The only consumer of `coverage`. The lexicon is data and it rots when the analysis prompt
-  // or the model's vocabulary drifts; coverage falling is the only symptom, and it is silent.
-  // __DEV__ only, RATIO only — never `unmatched.samples`, and never to analytics.
-  useEffect(() => {
-    if (!__DEV__) return;
-    if (emotionProfile.totalMentions < EMOTION_COVERAGE_ALERT_MENTIONS) return;
-    if (emotionProfile.coverage >= EMOTION_COVERAGE_ALERT_RATIO) return;
-    console.warn(
-      `[StatisticsScreen] Emotion lexicon coverage ${Math.round(
-        emotionProfile.coverage * 100,
-      )}% over ${emotionProfile.totalMentions} mentions`,
-    );
-  }, [emotionProfile.coverage, emotionProfile.totalMentions]);
-  // Journal-wide profile. Only the analytics payload reads it: `stats_screen_viewed`
-  // pairs `profile_readiness` with an unfiltered `dream_count_bucket`, so both
-  // properties must describe the whole journal or the event mixes two scales.
-  const journalDreamProfile = useMemo(() => buildDreamProfile(dreams), [dreams]);
-  // Visible profile follows the active period (audit P1-7): the card, its signals and
-  // its next action must describe the same window as every other number on the page.
-  // Unfiltered, it reuses the journal-wide object, so the default period still costs
-  // exactly one pass over the dreams.
-  const dreamProfile = useMemo(
-    () => (isPeriodFiltered ? buildDreamProfile(periodDreams) : journalDreamProfile),
-    [isPeriodFiltered, journalDreamProfile, periodDreams],
-  );
-  const statsInsight = useMemo(() => getDreamStatsInsight(stats), [stats]);
-  // Visibility is journal-wide on purpose; only the numbers inside the cards follow the
-  // period. Scoping the gates to the window too (first pass at P1-7) hid the Dream Profile
-  // and the next-best-action together as soon as the selected period held nothing but
-  // unanalysed, non-remembered dreams — i.e. exactly when "analyse your pending dreams" is
-  // the most actionable advice, and, for a free account, the screen's only paywall entry.
-  const journalHasAnalysis = useMemo(() => dreams.some(isDreamAnalyzed), [dreams]);
-  const journalHasDreamProfileSeed =
-    journalDreamProfile.hasAnchorDream || journalDreamProfile.rememberedDreams > 0;
-  const showDreamProfileSection = journalHasAnalysis || journalHasDreamProfileSeed;
-  const canShowDreamProfileSignals = isPlusActive;
-  const supabaseTier = useMemo(() => deriveUserTier(user), [user]);
-  // Same ladder as `analysis_started` (hooks/useDreamJournal.ts): a signed-out visitor is a
-  // 'guest', never a 'free' account. `subscriptionStatus` stays null for the whole guest
-  // session, so `status?.tier ?? 'free'` silently merged both cohorts into one.
-  const analyticsTier = useMemo<SubscriptionTier>(() => {
-    if (!user) return 'guest';
-    // Supabase already flags paid users; RevenueCat still overrides once it resolves.
-    const optimisticPaidTier = supabaseTier === 'plus' ? supabaseTier : null;
-    return subscriptionStatus?.tier ?? optimisticPaidTier ?? 'free';
-  }, [subscriptionStatus?.tier, supabaseTier, user]);
-  const handleAddDreamPress = useCallback(() => {
-    router.push(DREAM_PROFILE_NEXT_ROUTE.add_anchor);
-  }, []);
-  const handleDreamProfilePress = useCallback(() => {
-    void trackProductEvent('stats_cta_clicked', {
-      cta: 'dream_profile',
-      action: dreamProfile.nextAction,
-    });
-    router.push(DREAM_PROFILE_NEXT_ROUTE[dreamProfile.nextAction]);
-  }, [dreamProfile.nextAction]);
-  const handleDreamProfileUpgradePress = useCallback(() => {
-    void trackProductEvent('stats_cta_clicked', {
-      cta: 'plus_upgrade',
-      action: 'unlock_signals',
-    });
-    router.push(buildPaywallHref('stats_profile'));
-  }, []);
-  const handleStatsInsightPress = useCallback(() => {
-    void trackProductEvent('stats_cta_clicked', {
-      cta: 'next_best_action',
-      action: statsInsight.kind,
-    });
-    router.push(statsInsight.route);
-  }, [statsInsight.kind, statsInsight.route]);
-  const handleOpenStatsPeriodSheet = useCallback(() => {
-    setShowStatsPeriodSheet(true);
-  }, []);
-  const handleResetStatsPeriod = useCallback(() => {
-    setSelectedStatsPeriod('all');
-    setShowStatsPeriodSheet(false);
-  }, []);
-  // Hoisted so the null check narrows inside the callback: TypeScript does not keep a
-  // property-access narrowing (`stats.mostDiscussedDream`) across a function boundary.
-  const mostDiscussedDreamId = stats.mostDiscussedDream?.id ?? null;
-  const handleMostDiscussedDreamPress = useCallback(() => {
-    if (mostDiscussedDreamId == null) {
-      return;
-    }
-    router.push(`/journal/${mostDiscussedDreamId}`);
-  }, [mostDiscussedDreamId]);
-  const selectedPeriodLabel = useMemo(() => {
-    const option = STATS_PERIOD_OPTIONS.find((item) => item.id === selectedStatsPeriod);
-    return t(option?.labelKey ?? 'stats.period.all');
-  }, [selectedStatsPeriod, t]);
-  const handleShareStats = useCallback(async () => {
-    const streakLabel = `${formatNumber(stats.currentStreak)} ${
-      stats.currentStreak === 1 ? t('stats.card.day') : t('stats.card.days')
-    }`;
-    const message = t('stats.share.message', {
-      period: selectedPeriodLabel,
-      total: formatNumber(stats.totalDreams),
-      favorites: formatNumber(stats.favoriteDreams),
-      analyzed: formatNumber(stats.analyzedDreams),
-      explored: formatNumber(stats.dreamsWithChat),
-      streak: streakLabel,
-    });
 
-    try {
-      const result = await Share.share({
-        title: t('stats.share.title'),
-        message,
-      });
-      void trackProductEvent('stats_shared', {
-        period: selectedStatsPeriod,
-        outcome: result?.action === 'dismissedAction' ? 'dismissed' : 'shared',
-      });
-    } catch (error) {
-      void trackProductEvent('stats_shared', { period: selectedStatsPeriod, outcome: 'failed' });
-      if (__DEV__) {
-        console.error('[StatisticsScreen] Failed to share stats', error);
-      }
-    }
-  }, [formatNumber, selectedPeriodLabel, selectedStatsPeriod, stats, t]);
+  const trends = useMemo(() => buildDreamTrends(dreams), [dreams]);
+  const cta = NEXT_ACTION_KEYS[trends.evolution.nextAction];
 
-  const [showAnimations, setShowAnimations] = useState(false);
-  const [statsFocusEpoch, setStatsFocusEpoch] = useState(0);
-  const statsViewTrackedEpochRef = useRef(0);
-  const hasStatisticsContent = loaded && periodDreams.length > 0;
-  // Unfiltered on purpose: with no dream at all there is nothing to filter, but as soon
-  // as the journal holds one the period control must stay reachable — including from
-  // inside an empty period, where it is the only way back. Share is gated separately on
-  // `hasStatisticsContent` inside `statsHeaderActions`.
-  const showHeaderActions = loaded && dreams.length > 0;
+  const handlePrimaryCta = useCallback(() => {
+    router.push(cta.href);
+  }, [cta.href]);
 
-  useFocusEffect(
-    useCallback(() => {
-      setShowAnimations(true);
-      setStatsFocusEpoch((value) => value + 1);
-      return () => setShowAnimations(false);
-    }, []),
+  const header = (
+    <NoctaliaScreenHeader titleKey="trends.title" />
   );
 
-  useEffect(() => {
-    if (!loaded || statsFocusEpoch === 0) return;
-    // Hold the emit until both sources of `analyticsTier` have settled, otherwise a Plus
-    // user whose entitlement has not resolved yet is stamped 'free' and the epoch guard
-    // below suppresses the corrected re-run. The guard is only armed once we really emit,
-    // so waiting here costs nothing and keeps the once-per-focus semantics intact.
-    if (authLoading || subscriptionLoading) return;
-    if (statsViewTrackedEpochRef.current === statsFocusEpoch) return;
-    statsViewTrackedEpochRef.current = statsFocusEpoch;
-    void trackProductEvent('stats_screen_viewed', {
-      tier: analyticsTier,
-      dream_count_bucket: getStatsDreamCountBucket(dreams.length),
-      profile_readiness: journalDreamProfile.readiness,
-    });
-  }, [
-    analyticsTier,
-    authLoading,
-    dreams.length,
-    journalDreamProfile.readiness,
-    loaded,
-    statsFocusEpoch,
-    subscriptionLoading,
-  ]);
-
-  useEffect(() => {
-    if (!hasStatisticsContent) {
-      setShowDeferredSections(false);
-      return;
-    }
-
-    setShowDeferredSections(false);
-    const task = InteractionManager.runAfterInteractions(() => {
-      setShowDeferredSections(true);
-    });
-
-    return () => {
-      task.cancel?.();
-    };
-  }, [hasStatisticsContent]);
-
-  // Memoize color arrays to avoid re-allocation churn
-  const dreamTypeColors = useMemo(() =>
-    [
-      noctalia.accent.base,
-      colors.tags.calm,
-      colors.tags.mystical,
-      colors.tags.noir,
-      colors.tags.surreal,
-    ],
-    [colors.tags.calm, colors.tags.mystical, colors.tags.noir, colors.tags.surreal, noctalia.accent.base]
-  );
-
-  // Memoize label config - depends on chart sizing + text token
-  const pieLabelLineConfig: LabelLineConfig = useMemo(() => ({
-    length: pieMetrics.pieLabelLineLength,
-    tailLength: pieMetrics.pieLabelTailLength,
-    color: noctalia.text.secondary,
-    thickness: 1,
-    labelComponentWidth: pieMetrics.pieLabelWidth,
-    labelComponentHeight: PIE_LABEL_HEIGHT,
-    labelComponentMargin: PIE_LABEL_VERTICAL_MARGIN,
-    avoidOverlappingOfLabels: true,
-  }), [
-    noctalia.text.secondary,
-    pieMetrics.pieLabelLineLength,
-    pieMetrics.pieLabelTailLength,
-    pieMetrics.pieLabelWidth,
-  ]);
-
-  // Locale-aware weekday abbreviations, no new i18n keys. Indexed by weekday number so the
-  // labels cannot drift out of step with ORDERED_WEEKDAYS in useDreamStatistics.
-  const weekdayLabels = useMemo(
-    () =>
-      WEEKDAY_REFERENCE_BY_DAY.map((timestamp) =>
-        formatDate(timestamp, WEEKDAY_LABEL_OPTIONS),
-      ),
-    [formatDate],
-  );
-
-  const topDreamTypes = useMemo(() => stats.dreamTypeDistribution.slice(0, 5), [stats.dreamTypeDistribution]);
-
-  // Memoize heavy pie chart data computation
-  const pieChartData: DreamPieDataItem[] = useMemo(() =>
-    topDreamTypes.map((item, index) => {
-      const typeLabel = getDreamTypeLabel(item.type as DreamType, t) ?? item.type;
-      const typeLines = splitLabelText(typeLabel, {
-        maxCharsPerLine: MAX_LABEL_CHARS_PER_LINE,
-        maxLines: MAX_LABEL_LINES,
-      });
-      const labelHeight = getLabelHeight(typeLines.length);
-
-      return {
-        value: item.count,
-        color: dreamTypeColors[index % dreamTypeColors.length],
-        count: item.count,
-        percentage: item.percentage,
-        typeLabel,
-        typeLines,
-        labelHeight,
-        labelLineConfig: {
-          ...pieLabelLineConfig,
-          labelComponentHeight: labelHeight,
-        },
-      };
-    }),
-    [topDreamTypes, dreamTypeColors, pieLabelLineConfig, t]
-  );
-
-  const pieLabelLayouts = useMemo(
-    () => buildPieLabelLayouts(pieChartData, pieMetrics),
-    [pieChartData, pieMetrics],
-  );
-
-  // Screen readers get the same summary a sighted user reads off the callouts.
-  const pieAccessibilityLabel = useMemo(
-    () =>
-      [
-        t('stats.section.dream_types'),
-        ...pieChartData.map(
-          (item) =>
-            `${item.typeLabel} ${formatNumber(item.count)} · ${formatPercent(item.percentage / 100)}`,
-        ),
-      ].join(', '),
-    [formatNumber, formatPercent, pieChartData, t],
-  );
-
-  // Compute max theme count for proportional bars
-  const maxThemeCount = useMemo(
-    () => Math.max(...stats.topThemes.map((theme) => theme.count), 1),
-    [stats.topThemes],
-  );
-
-  // Rows for the shared ranked-list visual. The `stats.theme.<value>` lookup and its
-  // raw-enum fallback are carried over verbatim from the previous inline block — the
-  // fallback is exactly what the tied-themes test reads back under the echo translator.
-  const topThemeRows = useMemo<StatsRankedRow[]>(
-    () =>
-      stats.topThemes.map((theme) => {
-        const themeKey = `stats.theme.${theme.theme}`;
-        const themeTranslation = t(themeKey);
-        return {
-          id: theme.theme,
-          label: themeTranslation === themeKey ? theme.theme : themeTranslation,
-          countLabel: t(theme.count === 1 ? 'stats.legend.count_one' : 'stats.legend.count', {
-            count: formatNumber(theme.count),
-          }),
-          count: theme.count,
-        };
-      }),
-    [formatNumber, stats.topThemes, t],
-  );
-
-  const statsHeaderActions = useMemo<NoctaliaHeaderAction[]>(
-    () => [
-      // Always available while the journal has dreams — it is the only way out of the
-      // empty-period state below.
-      {
-        icon: 'calendar' as IconName,
-        onPress: handleOpenStatsPeriodSheet,
-        accessibilityLabel: t('stats.header.period'),
-        active: isPeriodFiltered,
-        testID: TID.Button.HeaderStatsPeriod,
-      },
-      // Nothing to share while the active period holds no dream: the message would
-      // read "Dreams: 0, Favorites: 0" to a user whose journal is full.
-      ...(hasStatisticsContent
-        ? [
-            {
-              icon: 'square.and.arrow.up' as IconName,
-              onPress: () => {
-                void handleShareStats();
-              },
-              accessibilityLabel: t('stats.header.share'),
-              testID: TID.Button.HeaderStatsShare,
-            },
-          ]
-        : []),
-    ],
-    [handleOpenStatsPeriodSheet, handleShareStats, hasStatisticsContent, isPeriodFiltered, t],
-  );
-
-  const header = isDesktopLayout ? (
-    <>
-      <PageHeader titleKey="stats.title" animationSeed={showAnimations ? 1 : 0} />
-      {showHeaderActions ? (
-        <ScreenContainer>
-          <StatsHeaderActionsRow actions={statsHeaderActions} noctalia={noctalia} />
-        </ScreenContainer>
-      ) : null}
-    </>
-  ) : (
-    <NoctaliaScreenHeader
-      titleKey="stats.title"
-      actions={showHeaderActions ? statsHeaderActions : undefined}
-    />
-  );
-
-  const periodSheet = (
-    <BottomSheet
-      visible={showStatsPeriodSheet}
-      onClose={() => setShowStatsPeriodSheet(false)}
-      testID={TID.Modal.StatsPeriod}
-      style={[PERIOD_SHEET, { backgroundColor: noctalia.surface.raised }]}
+  const primaryCta = (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={t(cta.label)}
+      testID="trends.cta.primary"
+      onPress={handlePrimaryCta}
+      className="min-h-[50px] rounded-[18px] border border-champagne-soft bg-champagne px-[18px] items-center justify-center"
     >
-      <Text className="text-[24px] leading-[30px] font-display-semibold text-ivory">
-        {t('stats.period.title')}
+      <Text className="text-[15px] font-sans-bold text-on-champagne">
+        {t(cta.label)}
       </Text>
-      <View className="gap-2">
-        {STATS_PERIOD_OPTIONS.map((option) => {
-          const active = selectedStatsPeriod === option.id;
-
-          return (
-            <PressableScale
-              key={option.id}
-              accessibilityRole="button"
-              accessibilityLabel={t(option.labelKey)}
-              testID={TID.Button.StatsPeriodOption(option.id)}
-              // The one haptic on this screen: picking a period is a discrete choice, and
-              // it is the only control here that commits something.
-              haptic="selection"
-              onPress={() => {
-                void trackProductEvent('stats_period_selected', {
-                  period: option.id,
-                  has_results: filterDreamsByStatsPeriod(dreams, option.id).length > 0,
-                });
-                setSelectedStatsPeriod(option.id);
-                setShowStatsPeriodSheet(false);
-              }}
-              className={`min-h-[54px] border rounded-[18px] px-4 flex-row items-center justify-between gap-4 ${
-                active ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
-              }`}
-              style={CONTINUOUS_CORNERS}
-            >
-              <Text
-                className={`flex-1 text-[16px] font-sans-bold ${
-                  active ? 'text-on-champagne' : 'text-ivory'
-                }`}
-              >
-                {t(option.labelKey)}
-              </Text>
-              {active ? (
-                <IconSymbol
-                  name="checkmark"
-                  size={18}
-                  color={noctalia.action.primaryText}
-                />
-              ) : null}
-            </PressableScale>
-          );
-        })}
-      </View>
-    </BottomSheet>
+    </Pressable>
   );
-
-  // Audit P1-8: nothing on the page said which window the numbers described. The pill
-  // names the active period and doubles as the way back into the period sheet.
-  const periodChip = isPeriodFiltered ? (
-    <View className="w-full flex-row mb-4">
-      <PressableScale
-        accessibilityRole="button"
-        accessibilityLabel={t('stats.period.indicator', { period: selectedPeriodLabel })}
-        testID={TID.Button.StatsPeriodChip}
-        onPress={handleOpenStatsPeriodSheet}
-        className="border rounded-full flex-row items-center gap-1.5 min-h-[30px] px-2.5 bg-ink-soft border-line-strong"
-      >
-        <IconSymbol name="calendar" size={14} color={noctalia.accent.text} />
-        <Text className="text-[12px] leading-4 font-sans-medium text-ivory">
-          {t('stats.period.indicator', { period: selectedPeriodLabel })}
-        </Text>
-      </PressableScale>
-    </View>
-  ) : null;
 
   if (!loaded) {
     return (
-      <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-        <View className="flex-1 bg-ink">
-          <AtmosphericBackground variant="subtle" />
-          {header}
-          {periodSheet}
-          <View className="flex-1 items-center justify-center">
-            <Text className="text-[16px] font-sans text-ivory-muted">{t('stats.loading')}</Text>
-          </View>
-        </View>
-      </ScrollPerfProvider>
-    );
-  }
-
-  if (dreams.length === 0) {
-    return (
-      <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-        <View className="flex-1 bg-ink">
-          <AtmosphericBackground variant="subtle" />
-          {header}
-          {periodSheet}
-          <ScrollView
-            className="flex-1"
-            contentInsetAdjustmentBehavior="automatic"
-            contentContainerStyle={[
-              EMPTY_SCROLL_CONTENT,
-              { paddingBottom: scrollBottomPadding },
-            ]}
-            showsVerticalScrollIndicator={false}
-          >
-            <ScreenContainer>
-              <MockNavigationRail />
-              <View className="gap-6 p-6">
-                <View className="items-center gap-2">
-                  <IconSymbol name="chart.bar.fill" size={40} color={noctalia.text.tertiary} />
-                  <Text className="text-[20px] leading-[26px] font-display-semibold text-center text-ivory">
-                    {t('stats.empty.title')}
-                  </Text>
-                  <Text className="text-body-sm font-sans text-center max-w-[320px] self-center text-ivory-muted">
-                    {t('stats.empty.body')}
-                  </Text>
-                </View>
-                <PressableScale
-                  accessibilityRole="button"
-                  accessibilityLabel={t('stats.profile.next_action.add_anchor.cta')}
-                  testID={TID.Button.EmptyStartRememberedDream}
-                  onPress={handleAddDreamPress}
-                  className="min-h-[50px] rounded-[18px] border px-[18px] flex-row items-center justify-center gap-2 self-center bg-champagne border-champagne-soft"
-                  style={CONTINUOUS_CORNERS}
-                >
-                  <IconSymbol name="pencil" size={18} color={noctalia.action.primaryText} />
-                  <Text className="text-[15px] font-sans-bold text-on-champagne">
-                    {t('stats.profile.next_action.add_anchor.cta')}
-                  </Text>
-                </PressableScale>
-              </View>
-            </ScreenContainer>
-          </ScrollView>
-        </View>
-      </ScrollPerfProvider>
-    );
-  }
-
-  // Audit P1-9. The journal is not empty, the selected window is. Previously the page
-  // rendered an all-zero Overview plus a profile built from every dream — two numbers
-  // that contradicted each other. Now the whole page speaks about the same window.
-  if (periodDreams.length === 0) {
-    return (
-      <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-        <View className="flex-1 bg-ink">
-          <AtmosphericBackground variant="subtle" />
-          {header}
-          {periodSheet}
-          <ScrollView
-            className="flex-1"
-            contentInsetAdjustmentBehavior="automatic"
-            contentContainerStyle={[
-              EMPTY_SCROLL_CONTENT,
-              { paddingBottom: scrollBottomPadding },
-            ]}
-            showsVerticalScrollIndicator={false}
-          >
-            <ScreenContainer>
-              <MockNavigationRail />
-              <View className="gap-6 p-6">
-                <View
-                  className="border rounded-[20px] p-6 gap-2 items-center bg-ink-soft border-line-strong"
-                  style={CONTINUOUS_CORNERS}
-                  testID={TID.Component.StatsPeriodEmpty}
-                >
-                  <IconSymbol name="calendar" size={22} color={noctalia.accent.text} />
-                  <Text className="text-[20px] leading-[26px] font-display-semibold text-center text-ivory">
-                    {t('stats.period.empty.title')}
-                  </Text>
-                  <Text className="text-body-sm font-sans text-center mb-1 text-ivory-muted">
-                    {t('stats.period.empty.body')}
-                  </Text>
-                  <PressableScale
-                    accessibilityRole="button"
-                    accessibilityLabel={t('stats.period.reset')}
-                    testID={TID.Button.StatsPeriodReset}
-                    onPress={handleResetStatsPeriod}
-                    className="min-h-[50px] rounded-[18px] border px-[18px] flex-row items-center justify-center gap-2 self-center bg-champagne border-champagne-soft"
-                    style={CONTINUOUS_CORNERS}
-                  >
-                    <Text className="text-[15px] font-sans-bold text-on-champagne">
-                      {t('stats.period.reset')}
-                    </Text>
-                  </PressableScale>
-                </View>
-              </View>
-            </ScreenContainer>
-          </ScrollView>
-        </View>
-      </ScrollPerfProvider>
-    );
-  }
-
-  return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-      <View className="flex-1 bg-ink">
+      <View className="flex-1 bg-ink" accessible accessibilityRole="progressbar" accessibilityLabel={t('trends.loading')}>
         <AtmosphericBackground variant="subtle" />
         {header}
-        {periodSheet}
+        <View className="flex-1 items-center justify-center px-6" accessibilityLiveRegion="polite">
+          <Text className="text-[16px] font-sans text-ivory-muted text-center">
+            {t('trends.loading')}
+          </Text>
+        </View>
+      </View>
+    );
+  }
 
-        <ScrollView
-          className="flex-1"
-          contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={{ paddingBottom: scrollBottomPadding }}
-          showsVerticalScrollIndicator={false}
-          onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
-          onScrollEndDrag={scrollPerf.onScrollEndDrag}
-          onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
-          onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
-        >
-          <ScreenContainer>
-            <MockNavigationRail />
-            <View className={`p-4${isDesktopLayout ? ' flex-row flex-wrap gap-4' : ''}`}>
-            {periodChip}
-            {/* Overview Cards */}
-            <View className={`mb-9${isDesktopLayout ? ' w-full' : ''}`}>
-              <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.overview}>
-                <SectionHeading
-                  title={t('stats.section.overview')}
-                  icon="chart.bar.fill"
-                  colors={colors}
-                />
-                <View className="flex-row flex-wrap gap-2">
-                  <StatCard
-                    title={t('stats.card.total_dreams')}
-                    index={0}
-                    value={formatNumber(stats.totalDreams)}
-                    noctalia={noctalia}
-                  />
-                  <StatCard
-                    title={t('stats.card.favorites')}
-                    index={1}
-                    value={formatNumber(stats.favoriteDreams)}
-                    noctalia={noctalia}
-                  />
-                  {/*
-                    Audit 22a: both counts are recomputed inside the already-filtered
-                    set, so under "7 days" they simply restate the total. A Fragment,
-                    not a View, so the two cards stay direct children of statsGrid.
-                  */}
-                  {isPeriodFiltered ? null : (
-                    <>
-                      <StatCard
-                        title={t('stats.card.this_week')}
-                        index={2}
-                        value={formatNumber(stats.dreamsThisWeek)}
-                        noctalia={noctalia}
-                      />
-                      <StatCard
-                        title={t('stats.card.this_month')}
-                        index={3}
-                        value={formatNumber(stats.dreamsThisMonth)}
-                        noctalia={noctalia}
-                      />
-                    </>
-                  )}
+  const week = trends.week;
+  const patterns = trends.patterns;
+  const evolution = trends.evolution;
+  const showAverage = week.averagePerWeek != null;
+  const lastActivityLabel = week.lastActivityAt == null
+    ? t('trends.week.last_activity.empty')
+    : t('trends.week.last_activity.value', {
+        date: formatDate(week.lastActivityAt, { dateStyle: 'medium' }),
+      });
+
+  return (
+    <View className="flex-1 bg-ink">
+      <AtmosphericBackground variant="subtle" />
+      {header}
+      <ScrollView
+        className="flex-1"
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{ paddingBottom: scrollBottomPadding }}
+        showsVerticalScrollIndicator={false}
+      >
+        <ScreenContainer>
+          <MockNavigationRail />
+          <View className="gap-6 p-4">
+            <View
+              className="gap-4 rounded-[20px] border border-line-strong bg-ink-soft p-5"
+              testID="trends.section.week"
+              accessibilityRole="summary"
+              accessibilityLabel={t('trends.section.week')}
+            >
+              <Text className="text-[20px] leading-[26px] font-display-semibold text-ivory">
+                {t('trends.section.week')}
+              </Text>
+              <View className="flex-row flex-wrap gap-3">
+                <View className="min-w-[140px] flex-1 gap-1">
+                  <Text className="text-[12px] font-sans-medium text-ivory-muted">
+                    {t('trends.week.count')}
+                  </Text>
+                  <Text className="text-[22px] font-display-semibold text-ivory">
+                    {formatNumber(week.count)}
+                  </Text>
                 </View>
-              </SectionGlass>
-            </View>
-
-            {/*
-              Rythme (S1, free). Directly after Overview, as the contract binds, and deferred
-              like the other charts. `stats.dreamsByDay` has been computed since day one and
-              rendered nowhere (audit §3.3). No `stats.totalDreams > 0` half on the gate: the
-              screen already early-returns to StatsPeriodEmpty when `periodDreams` is empty,
-              and `stats` is computed from `periodDreams`, so the check is dead code.
-            */}
-            {showDeferredSections ? (
-              <View
-                className={`mb-9${isDesktopLayout ? ' w-full' : ''}`}
-                testID={TID.Component.StatsRhythm}
-              >
-                <StatsRhythmSection
-                  noctalia={noctalia}
-                  colors={colors}
-                  dreamsByDay={stats.dreamsByDay}
-                  weekdayLabels={weekdayLabels}
-                  metrics={rhythmMetrics}
-                  t={t}
-                  formatNumber={formatNumber}
-                />
-              </View>
-            ) : null}
-
-            {showDreamProfileSection ? (
-              <>
-                <View className={`mb-9${isDesktopLayout ? ' w-full' : ''}`}>
-                  <DreamProfileCard
-                    noctalia={noctalia}
-                    profile={dreamProfile}
-                    t={t}
-                    formatNumber={formatNumber}
-                    canShowPremiumSignals={canShowDreamProfileSignals}
-                    onPress={handleDreamProfilePress}
-                    onUpgradePress={handleDreamProfileUpgradePress}
-                  />
+                <View className="min-w-[140px] flex-1 gap-1">
+                  <Text className="text-[12px] font-sans-medium text-ivory-muted">
+                    {t('trends.week.active_days')}
+                  </Text>
+                  <Text className="text-[22px] font-display-semibold text-ivory">
+                    {t('trends.week.active_days.value', {
+                      count: formatNumber(week.activeDays),
+                    })}
+                  </Text>
                 </View>
-
-                {journalHasAnalysis ? (
-                  <View className={`mb-9${isDesktopLayout ? ' w-full' : ''}`}>
-                    <StatsInsightCard
-                      noctalia={noctalia}
-                      insight={statsInsight}
-                      t={t}
-                      formatPercent={formatPercent}
-                      onPress={handleStatsInsightPress}
-                    />
+                <View className="min-w-[140px] flex-1 gap-1">
+                  <Text className="text-[12px] font-sans-medium text-ivory-muted">
+                    {t('trends.week.streak.current')}
+                  </Text>
+                  <Text className="text-[22px] font-display-semibold text-ivory">
+                    {formatNumber(week.streak.current)}
+                  </Text>
+                </View>
+                <View className="min-w-[140px] flex-1 gap-1">
+                  <Text className="text-[12px] font-sans-medium text-ivory-muted">
+                    {t('trends.week.streak.longest')}
+                  </Text>
+                  <Text className="text-[22px] font-display-semibold text-ivory">
+                    {formatNumber(week.streak.longest)}
+                  </Text>
+                </View>
+                {showAverage ? (
+                  <View className="min-w-[140px] flex-1 gap-1">
+                    <Text className="text-[12px] font-sans-medium text-ivory-muted">
+                      {t('trends.week.average')}
+                    </Text>
+                    <Text className="text-[22px] font-display-semibold text-ivory">
+                      {formatNumber(week.averagePerWeek as number, {
+                        maximumFractionDigits: 1,
+                      })}
+                    </Text>
                   </View>
                 ) : null}
-              </>
-            ) : null}
-
-            {/* Streaks */}
-            <View className={`mb-9${isDesktopLayout ? ' w-full' : ''}`}>
-              <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.streaks}>
-                <SectionHeading
-                  title={t('stats.section.streaks')}
-                  icon="flame.fill"
-                  colors={colors}
-                />
-                <View className="flex-row gap-2">
-                  <StatCard
-                    title={t('stats.card.current_streak')}
-                    index={0}
-                    value={formatNumber(stats.currentStreak)}
-                    subtitle={stats.currentStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
-                    noctalia={noctalia}
-                  />
-                  <StatCard
-                    title={t('stats.card.longest_streak')}
-                    index={1}
-                    value={formatNumber(stats.longestStreak)}
-                    subtitle={stats.longestStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
-                    noctalia={noctalia}
-                  />
-                </View>
-                <View className="mt-2">
-                  <StatCard
-                    title={t('stats.card.average_per_week')}
-                    index={2}
-                    value={formatNumber(stats.averageDreamsPerWeek, {
-                      minimumFractionDigits: 1,
-                      maximumFractionDigits: 1,
-                    })}
-                    noctalia={noctalia}
-                  />
-                </View>
-              </SectionGlass>
+              </View>
+              <Text className="text-[14px] font-sans text-ivory-muted">
+                {lastActivityLabel}
+              </Text>
+              <View className="flex-row flex-wrap gap-2" accessibilityLabel={t('trends.week.rhythm')}>
+                {week.rhythm.map((day) => (
+                  <View
+                    key={day.weekday}
+                    className="min-w-[72px] flex-1 items-center gap-1 rounded-[14px] border border-line bg-ink px-2 py-2"
+                  >
+                    <Text className="text-[11px] font-sans-medium text-ivory-muted">
+                      {t(weekdayLabelKey(day.weekday))}
+                    </Text>
+                    <Text className="text-[16px] font-display-semibold text-ivory">
+                      {formatNumber(day.count)}
+                    </Text>
+                  </View>
+                ))}
+              </View>
             </View>
 
-            {/* Dream Type Distribution */}
-            {showDeferredSections && stats.dreamTypeDistribution.length > 0 && (
-              <View className={`mb-9${isDesktopLayout ? ' w-[60%] min-w-[420px]' : ''}`}>
-                <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.dreamTypes}>
-                    <SectionHeading
-                      title={t('stats.section.dream_types')}
-                      icon="chart.pie.fill"
-                      colors={colors}
-                    />
-                  <View className="rounded-md px-4 py-1 items-center">
-                    <View className="items-center mb-2">
-                      <View
-                        accessible
-                        accessibilityRole="image"
-                        accessibilityLabel={pieAccessibilityLabel}
-                        style={{ width: pieMetrics.pieChartDimension, height: pieMetrics.pieChartDimension }}
-                      >
-                        <PieChart
-                          data={pieChartData}
-                          donut
-                          radius={pieMetrics.pieRadius}
-                          innerRadius={pieMetrics.pieInnerRadius}
-                          extraRadius={pieMetrics.pieExtraRadius}
-                          strokeWidth={1.5}
-                          strokeColor={noctalia.screen.background}
-                          innerCircleColor={noctalia.screen.background}
-                          showExternalLabels={false}
-                          centerLabelComponent={() => (
-                            <View>
-                              <Text className="text-[24px] font-display-bold text-center text-ivory">
-                                {formatNumber(stats.totalDreams)}
-                              </Text>
-                              <Text className="text-[12px] font-sans text-center text-ivory-muted">
-                                {t('stats.chart.pie_center')}
-                              </Text>
-                            </View>
-                          )}
-                        />
-                        <Svg
-                          width={pieMetrics.pieChartDimension}
-                          height={pieMetrics.pieChartDimension}
-                          style={StyleSheet.absoluteFill}
-                        >
-                          {pieLabelLayouts.map((layout) => {
-                            const labelWidth = pieMetrics.pieLabelWidth;
-                            const labelHeight = layout.item.labelHeight || PIE_LABEL_HEIGHT;
-                            const labelX = layout.isRightHalf
-                              ? pieMetrics.pieChartCenter + pieMetrics.pieRadius + PIE_LABEL_MARGIN
-                              : pieMetrics.pieChartCenter - pieMetrics.pieRadius - PIE_LABEL_MARGIN - labelWidth;
-                            const labelY = layout.labelCenterY - labelHeight / 2;
-                            const textX = labelX + LABEL_TEXT_MARGIN;
-                            const typeLines = layout.item.typeLines?.length
-                              ? layout.item.typeLines
-                              : [layout.item.typeLabel];
-                            const detailText = `${formatNumber(layout.item.count)} · ${formatPercent(layout.item.percentage / 100)}`;
-                            const typeStartY = labelY + LABEL_VERTICAL_PADDING + 12;
-                            const detailY =
-                              labelY +
-                              LABEL_VERTICAL_PADDING +
-                              typeLines.length * LABEL_TEXT_LINE_HEIGHT +
-                              LABEL_DETAIL_LINE_HEIGHT -
-                              2;
-                            const connectorBendX =
-                              pieMetrics.pieChartCenter +
-                              (layout.isRightHalf ? 1 : -1) * (pieMetrics.pieRadius + pieMetrics.pieLabelTailLength);
-                            const connectorEndX = layout.isRightHalf ? labelX : labelX + labelWidth;
-
-                            return (
-                              <React.Fragment key={`${layout.item.typeLabel}-${layout.item.count}`}>
-                                <Line
-                                  x1={layout.anchorX}
-                                  y1={layout.anchorY}
-                                  x2={connectorBendX}
-                                  y2={layout.labelCenterY}
-                                  stroke={noctalia.text.secondary}
-                                  strokeWidth={1}
-                                />
-                                <Line
-                                  x1={connectorBendX}
-                                  y1={layout.labelCenterY}
-                                  x2={connectorEndX}
-                                  y2={layout.labelCenterY}
-                                  stroke={noctalia.text.secondary}
-                                  strokeWidth={1}
-                                />
-                                <Rect
-                                  x={labelX}
-                                  y={labelY}
-                                  width={labelWidth}
-                                  height={labelHeight}
-                                  rx={ThemeLayout.borderRadius.sm}
-                                  ry={ThemeLayout.borderRadius.sm}
-                                  fill={noctalia.surface.raised}
-                                  stroke={noctalia.surface.border}
-                                  strokeWidth={1}
-                                  opacity={0.95}
-                                />
-                                {typeLines.map((line, lineIndex) => (
-                                  <SvgText
-                                    key={`${layout.item.typeLabel}-${line}-${lineIndex}`}
-                                    fill={noctalia.text.primary}
-                                    fontSize={12}
-                                    fontFamily="SpaceGrotesk_500Medium"
-                                    x={textX}
-                                    y={typeStartY + lineIndex * LABEL_TEXT_LINE_HEIGHT}
-                                  >
-                                    {line}
-                                  </SvgText>
-                                ))}
-                                <SvgText
-                                  fill={noctalia.text.secondary}
-                                  fontSize={11}
-                                  fontFamily="SpaceGrotesk_400Regular"
-                                  x={textX}
-                                  y={detailY}
-                                >
-                                  {detailText}
-                                </SvgText>
-                              </React.Fragment>
-                            );
+            <View
+              className="gap-4 rounded-[20px] border border-line-strong bg-ink-soft p-5"
+              testID="trends.section.patterns"
+              accessibilityRole="summary"
+              accessibilityLabel={t('trends.section.patterns')}
+            >
+              <Text className="text-[20px] leading-[26px] font-display-semibold text-ivory">
+                {t('trends.section.patterns')}
+              </Text>
+              {patterns.empty ? (
+                <View
+                  accessible
+                  accessibilityRole="text"
+                  accessibilityLabel={t('trends.patterns.empty')}
+                >
+                  <Text className="text-[15px] font-sans text-ivory-muted">
+                    {t('trends.patterns.empty')}
+                  </Text>
+                </View>
+              ) : (
+                <View className="gap-4">
+                  {patterns.themes.length > 0 ? (
+                    <View className="gap-2">
+                      <Text className="text-[13px] font-sans-medium text-ivory-muted">
+                        {t('trends.patterns.themes')}
+                      </Text>
+                      {patterns.themes.map((facet) => (
+                        <Text key={facet.value} className="text-[15px] font-sans text-ivory">
+                          {t('trends.patterns.item', {
+                            label: getDreamThemeLabel(facet.value, t) ?? facet.value,
+                            count: formatNumber(facet.count),
                           })}
-                        </Svg>
-                      </View>
-                    </View>
-                    <View className="w-full gap-2" testID={TID.Component.StatsTypeLegend}>
-                      {pieChartData.map((item, index) => (
-                        <View
-                          key={item.typeLabel}
-                          className="flex-row items-center gap-2 rounded-[12px] p-2.5 bg-ink-soft"
-                        >
-                          <View
-                            className="w-4 h-4 rounded-[4px]"
-                            style={{
-                              backgroundColor: dreamTypeColors[index % dreamTypeColors.length],
-                            }}
-                          />
-                          <Text className="text-[14px] font-sans text-ivory">
-                            {item.typeLabel} ({t(item.count === 1 ? 'stats.legend.count_one' : 'stats.legend.count', { count: formatNumber(item.count) })})
-                          </Text>
-                        </View>
+                        </Text>
                       ))}
                     </View>
-                  </View>
-                </SectionGlass>
-              </View>
-            )}
+                  ) : null}
+                  {patterns.emotions.length > 0 ? (
+                    <View className="gap-2">
+                      <Text className="text-[13px] font-sans-medium text-ivory-muted">
+                        {t('trends.patterns.emotions')}
+                      </Text>
+                      {patterns.emotions.map((facet) => (
+                        <Text key={facet.value} className="text-[15px] font-sans text-ivory">
+                          {t('trends.patterns.item', {
+                            label: getEmotionFamilyLabel(facet.value, t) ?? facet.value,
+                            count: formatNumber(facet.count),
+                          })}
+                        </Text>
+                      ))}
+                    </View>
+                  ) : null}
+                  {patterns.types.length > 0 ? (
+                    <View className="gap-2">
+                      <Text className="text-[13px] font-sans-medium text-ivory-muted">
+                        {t('trends.patterns.types')}
+                      </Text>
+                      {patterns.types.map((facet) => (
+                        <Text key={facet.value} className="text-[15px] font-sans text-ivory">
+                          {t('trends.patterns.item', {
+                            label: getDreamTypeLabel(facet.value, t) ?? facet.value,
+                            count: formatNumber(facet.count),
+                          })}
+                        </Text>
+                      ))}
+                    </View>
+                  ) : null}
+                  {patterns.recurrence.hasRecurrence ? (
+                    <Text className="text-[15px] font-sans text-ivory">
+                      {t('trends.patterns.recurrence', {
+                        count: formatNumber(patterns.recurrence.count),
+                      })}
+                    </Text>
+                  ) : null}
+                </View>
+              )}
+            </View>
 
-            {/* Top Themes */}
-            {showDeferredSections && stats.topThemes.length > 0 && (
-              <View className={`mb-9${isDesktopLayout ? ' w-[40%] min-w-[320px]' : ''}`}>
-                <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.topThemes}>
-                  <SectionHeading
-                    title={t('stats.section.top_themes')}
-                    icon="star.fill"
-                    colors={colors}
-                  />
-                  <StatsRankedList
-                    noctalia={noctalia}
-                    rows={topThemeRows}
-                    maxCount={maxThemeCount}
-                    testID={TID.Component.StatsTopThemes}
-                  />
-                </SectionGlass>
-              </View>
-            )}
-
-            {/*
-              Émotions dominantes (S2, Plus). Between Top themes and Themes over time: the
-              contract's thesis is "Plus describes your dreams", so the depth sections sit with
-              the content, never below an activity counter.
-
-              Hidden entirely when the active period holds no dream carrying emotions — the
-              same rule the pie, Top themes and S3 follow. The "not enough yet" state is for a
-              near miss (1-2 dreams); telling a user with zero analysed dreams to analyse three
-              more only repeats the next-best-action card three sections above.
-            */}
-            {showDeferredSections &&
-            emotionProfile.dreamsWithEmotions > 0 &&
-            // Above the threshold the section only has something to say once at least one
-            // family matched. The lexicon is not expected to cover everything, so a journal
-            // can carry plenty of emotions and still rank none — and "0 emotions keep coming
-            // back" is precisely the empty promise this phase exists to remove.
-            (!emotionProfile.hasEnoughDreams || emotionProfile.distinctFamilies > 0) ? (
-              <View className={`mb-9${isDesktopLayout ? ' w-[40%] min-w-[320px]' : ''}`}>
-                <StatsEmotionsSection
-                  noctalia={noctalia}
-                  colors={colors}
-                  profile={emotionProfile}
-                  rows={emotionRows}
-                  maxCount={maxEmotionCount}
-                  canShowFamilies={isPlusActive}
-                  t={t}
-                  formatNumber={formatNumber}
-                  onUpgradePress={handleDreamProfileUpgradePress}
-                />
-              </View>
-            ) : null}
-
-            {/*
-              Themes over time (S3, Plus). Sits with the content sections and above
-              Engagement: the contract's thesis is "Plus describes your dreams", so the two
-              depth sections must not sit below an activity counter. S2 (Émotions) goes
-              immediately above this block.
-            */}
-            {showDeferredSections && themeTrend.series.length > 0 ? (
-              <View
-                className={`mb-9${isDesktopLayout ? ' w-[60%] min-w-[420px]' : ''}`}
-                testID={TID.Component.StatsThemeTrend}
-              >
-                <StatsThemeTrendSection
-                  noctalia={noctalia}
-                  colors={colors}
-                  trend={themeTrend}
-                  metrics={themeTrendMetrics}
-                  canShowChart={isPlusActive}
-                  t={t}
-                  formatNumber={formatNumber}
-                  formatDate={formatDate}
-                  onUpgradePress={handleDreamProfileUpgradePress}
-                />
-              </View>
-            ) : null}
-
-            {/* Engagement */}
-            {showDeferredSections && (
-              <View className={`mb-9${isDesktopLayout ? ' w-full' : ''}`}>
-                <SectionGlass noctalia={noctalia} animationDelay={SECTION_ANIMATION_DELAY.engagement}>
-                  <SectionHeading
-                    title={t('stats.section.engagement')}
-                    icon="bubble.left.and.bubble.right.fill"
-                    colors={colors}
-                  />
-                  <View className="flex-row gap-2">
-                    <StatCard
-                      title={t('stats.engagement.total_chats')}
-                      index={0}
-                      value={formatNumber(stats.totalChatMessages)}
-                      noctalia={noctalia}
-                      valueTestID={TID.Stats.TotalChatsValue}
-                    />
-                    <StatCard
-                      title={t('stats.engagement.dreams_with_chat')}
-                      index={1}
-                      value={formatNumber(stats.dreamsWithChat)}
-                      noctalia={noctalia}
-                      valueTestID={TID.Stats.DreamsWithChatValue}
-                    />
-                  </View>
-                  <View className="mt-2">
-                    <StatCard
-                      title={t('stats.engagement.analyzed_dreams')}
-                      index={2}
-                      value={formatNumber(stats.analyzedDreams)}
-                      noctalia={noctalia}
-                      valueTestID={TID.Stats.AnalyzedDreamsValue}
-                    />
-                  </View>
-                  {stats.mostDiscussedDream && (
-                    <PressableScale
-                      accessibilityRole="button"
-                      accessibilityLabel={`${stats.mostDiscussedDream.title}, ${t('stats.engagement.most_discussed.open')}`}
-                      testID={TID.Button.StatsMostDiscussedDream}
-                      onPress={handleMostDiscussedDreamPress}
-                      className="mt-4 rounded-lg overflow-hidden"
+            <View
+              className="gap-4 rounded-[20px] border border-line-strong bg-ink-soft p-5"
+              testID="trends.section.evolution"
+              accessibilityRole="summary"
+              accessibilityLabel={t('trends.section.evolution')}
+            >
+              <Text className="text-[20px] leading-[26px] font-display-semibold text-ivory">
+                {t('trends.section.evolution')}
+              </Text>
+              {evolution.themePoints.length === 0 ? (
+                <Text className="text-[15px] font-sans text-ivory-muted">
+                  {t('trends.evolution.empty')}
+                </Text>
+              ) : (
+                <View className="gap-2">
+                  {evolution.themePoints.map((point) => (
+                    <Text
+                      key={`${point.dateKey}-${point.theme}`}
+                      className="text-[15px] font-sans text-ivory"
                     >
-                      <View className="h-0.5 w-full bg-champagne" />
-                      <View className="p-4 gap-1.5">
-                        <IconSymbol name="quote.opening" size={18} color={noctalia.accent.text} />
-                        <Text className="text-[12px] font-sans text-ivory-muted">
-                          {t('stats.engagement.most_discussed')}
-                        </Text>
-                        <Text className="text-[17px] font-display italic text-ivory" numberOfLines={1}>
-                          {stats.mostDiscussedDream.title}
-                        </Text>
-                        <View className="flex-row items-center gap-1">
-                          <Text className="text-[14px] font-sans-medium text-champagne-on">
-                            {t(
-                              stats.mostDiscussedDreamUserMessages === 1
-                                ? 'stats.engagement.messages_one'
-                                : 'stats.engagement.messages',
-                              { count: formatNumber(stats.mostDiscussedDreamUserMessages) },
-                            )}
-                          </Text>
-                          <IconSymbol name="chevron.right" size={14} color={noctalia.accent.text} />
-                        </View>
-                      </View>
-                    </PressableScale>
-                  )}
-                </SectionGlass>
-              </View>
-            )}
+                      {t('trends.evolution.point', {
+                        date: point.dateKey,
+                        theme: getDreamThemeLabel(point.theme, t) ?? point.theme,
+                        count: formatNumber(point.count),
+                      })}
+                    </Text>
+                  ))}
+                </View>
+              )}
+              <Text className="text-[14px] font-sans text-ivory-muted">
+                {t(`trends.evolution.next.${evolution.nextAction}`)}
+              </Text>
+            </View>
+
+            {primaryCta}
           </View>
-          </ScreenContainer>
-        </ScrollView>
-      </View>
-    </ScrollPerfProvider>
+        </ScreenContainer>
+      </ScrollView>
+    </View>
   );
 }
