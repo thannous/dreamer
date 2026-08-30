@@ -478,13 +478,20 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       setState(result.state);
       setSyncStatus('local');
       setGuestImportAvailable(guestDataAvailable);
+      setLoading(false);
       if (isLucidTrainer) {
         void setProductAnalyticsEnabled(result.state.onboarding.analyticsConsent === true);
       }
-      const reconciled = await reconcileLoadedState(result.state, requestedScope);
-      if (reconciled.preferences.cloudSyncEnabled && userId) {
-        await runSync(reconciled, requestedScope);
-      }
+      // Local state is enough to leave the Lucid loader. Reminder
+      // reconciliation and cloud sync are best-effort and must not hold
+      // `/lucid/*` on the blocking spinner.
+      void (async () => {
+        const reconciled = await reconcileLoadedState(result.state, requestedScope);
+        if (activeScopeRef.current !== requestedScope) return;
+        if (reconciled.preferences.cloudSyncEnabled && userId) {
+          await runSync(reconciled, requestedScope);
+        }
+      })();
     } catch (cause) {
       if (activeScopeRef.current === requestedScope) {
         setError(cause instanceof Error ? cause.message : 'Unable to load Lucid Trainer');

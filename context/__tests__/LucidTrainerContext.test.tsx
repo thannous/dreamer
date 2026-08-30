@@ -113,6 +113,38 @@ describe('LucidTrainerContext account boundary', () => {
     expect(result.current.guestImportAvailable).toBe(false);
   });
 
+  it('renders locally loaded completed state without waiting for reminder reconciliation', async () => {
+    const neverSettles = new Promise<LucidReminderReconciliationResult>(() => {});
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    const persistedState: LucidTrainerState = {
+      ...initial,
+      onboarding: {
+        ...initial.onboarding,
+        status: 'completed',
+        goal: 'improve_recall',
+        experience: 'beginner',
+        wakeSensitivity: 'not_sensitive',
+        sleepScheduleConfirmed: true,
+        completedAt: initial.createdAt,
+      },
+    };
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockReconcileReminders.mockReturnValue(neverSettles);
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+      expect(result.current.state).toEqual(persistedState);
+    });
+    expect(result.current.error).toBeNull();
+    expect(mockReconcileReminders).toHaveBeenCalled();
+  });
+
   it('completes onboarding without waiting for native reminder reconciliation', async () => {
     const neverSettles = new Promise<LucidReminderReconciliationResult>(() => {});
     const { result } = renderHook(() => useLucidTrainer(), { wrapper });
