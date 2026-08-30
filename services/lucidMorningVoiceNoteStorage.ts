@@ -289,6 +289,20 @@ async function withScopeLock<T>(userScope: string, work: () => Promise<T>): Prom
   }
 }
 
+async function withOrderedScopeLocks<T>(
+  scopes: readonly string[],
+  work: () => Promise<T>
+): Promise<T> {
+  const unique = [...new Set(scopes.map(assertScope))].sort((left, right) =>
+    left.localeCompare(right)
+  );
+  const acquire = (index: number): Promise<T> => {
+    if (index >= unique.length) return work();
+    return withScopeLock(unique[index], () => acquire(index + 1));
+  };
+  return acquire(0);
+}
+
 export function countLucidMorningVoiceNoteScopeLocksForTests(): number {
   return scopeLocks.size;
 }
@@ -705,5 +719,312 @@ export async function clearLucidMorningVoiceNotes(
     } catch (error) {
       throw persistenceError(error);
     }
+  });
+}
+
+
+export const LUCID_MORNING_VOICE_GUEST_SCOPE = 'guest' as const;
+
+export type LucidMorningVoiceGuestClaimResult = {
+  claimed: boolean;
+  transferred: number;
+  skipped: number;
+  retainedGuest: number;
+};
+
+function collisionSuffix(note: LucidMorningVoiceNote, targetUserScope: string): string {
+  const seed = `${note.id}:${note.createdAt}:${targetUserScope}`;
+  let hash = 2166136261;
+  for (let index = 0; index < seed.length; index += 1) {
+    hash ^= seed.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(36);
+}
+
+function remappedClaimedNoteId(
+  note: LucidMorningVoiceNote,
+  targetUserScope: string
+): string {
+  const suffix = collisionSuffix(note, targetUserScope);
+  const prefix = note.id.slice(0, Math.max(8, 64 - 1 - suffix.length));
+  const candidate = `${prefix}_${suffix}`.slice(0, 64);
+  if (!isLucidMorningVoiceNoteId(candidate) || candidate === note.id) {
+    throw new LucidMorningVoiceNoteError(
+      'invalid_id',
+      'Voice note id collision could not be resolved without overwrite'
+    );
+  }
+  return candidate;
+}
+
+function claimedNoteIdFor(
+  note: LucidMorningVoiceNote,
+  occupied: ReadonlySet<string>,
+  targetUserScope: string
+): string {
+  if (!occupied.has(note.id)) return note.id;
+  return remappedClaimedNoteId(note, targetUserScope);
+}
+
+function notesMatchForIdempotentClaim(
+  existing: LucidMorningVoiceNote,
+  guest: LucidMorningVoiceNote
+): boolean {
+  return (
+    existing.createdAt === guest.createdAt &&
+    existing.durationMs === guest.durationMs &&
+    existing.extension === guest.extension &&
+    existing.mimeType === guest.mimeType &&
+    existing.status === guest.status &&
+    existing.title === guest.title &&
+    existing.transcript === guest.transcript &&
+    existing.experimentId === guest.experimentId &&
+    existing.recoverable === guest.recoverable
+  );
+}
+
+function expectedClaimUri(
+  userScope: string,
+  note: Pick<LucidMorningVoiceNote, 'id' | 'extension'>,
+  files: LucidMorningVoiceFileAdapter
+): string {
+  return getLucidMorningVoiceNoteFileUri(userScope, note.id, note.extension, files);
+}
+
+async function discardOrphanDestinationFile(
+  files: LucidMorningVoiceFileAdapter,
+  destinationUri: string,
+  referencedUris: ReadonlySet<string>
+): Promise<void> {
+  if (!(await fileExists(files, destinationUri))) return;
+  if (referencedUris.has(destinationUri)) {
+    throw new LucidMorningVoiceNoteError(
+      'persistence_failed',
+      'Local voice-note persistence failed'
+    );
+  }
+  await discardUnpublishedDestination(files, destinationUri);
+}
+
+async function copyNoteFileOrRollback(
+  files: LucidMorningVoiceFileAdapter,
+  sourceUri: string,
+  destinationUri: string,
+  directoryUri: string,
+  referencedUris: ReadonlySet<string>
+): Promise<boolean> {
+  await discardOrphanDestinationFile(files, destinationUri, referencedUris);
+  if (!(await fileExists(files, sourceUri))) {
+    throw new LucidMorningVoiceNoteError('invalid_uri', 'Voice note URI must stay local');
+  }
+  await fileEnsureDirectory(files, directoryUri);
+  try {
+    await fileCopy(files, sourceUri, destinationUri);
+    if (!(await fileExists(files, destinationUri))) {
+      throw new LucidMorningVoiceNoteError(
+        'persistence_failed',
+        'Local voice-note persistence failed'
+      );
+    }
+    return true;
+  } catch (error) {
+    await discardUnpublishedDestination(files, destinationUri);
+    throw persistenceError(error);
+  }
+}
+
+async function rollbackCopiedClaimFiles(
+  files: LucidMorningVoiceFileAdapter,
+  uris: readonly string[]
+): Promise<void> {
+  for (const uri of [...uris].reverse()) {
+    await discardUnpublishedDestination(files, uri);
+  }
+}
+
+async function deleteCommittedGuestNote(
+  envelope: Envelope,
+  note: LucidMorningVoiceNote,
+  storage: AsyncKeyValueStorage,
+  files: LucidMorningVoiceFileAdapter
+): Promise<Envelope> {
+  try {
+    return await deleteNoteFromEnvelope(envelope, note, storage, files);
+  } catch (error) {
+    const current = await loadEnvelope(envelope.userScope, storage);
+    if (!findNote(current, note.id) && !(await fileExists(files, note.uri))) {
+      return current;
+    }
+    throw persistenceError(error);
+  }
+}
+
+/**
+ * Transfers local morning-voice notes from one device scope to another.
+ *
+ * Trainer claim and voice files cannot share one atomic transaction. Copy the
+ * files, commit the destination envelope, then purge the source. Call this
+ * before `claimLucidTrainerGuestScope` so a later trainer failure still leaves
+ * the audio on the account. Media never leaves the device.
+ */
+export async function claimLucidMorningVoiceNoteScope(
+  sourceScope: string,
+  targetScope: string,
+  options?: {
+    storage?: AsyncKeyValueStorage;
+    files?: LucidMorningVoiceFileAdapter;
+  }
+): Promise<LucidMorningVoiceGuestClaimResult> {
+  const guestScope = assertScope(sourceScope);
+  const destinationScope = assertScope(targetScope);
+  if (destinationScope === guestScope) {
+    throw new LucidMorningVoiceNoteError(
+      'invalid_scope',
+      'Voice note user scope is invalid'
+    );
+  }
+  const storage = options?.storage ?? getLucidKeyValueStorage();
+  const files = options?.files ?? createNativeFileAdapter();
+
+  return withOrderedScopeLocks([guestScope, destinationScope], async () => {
+    const guestEnvelope = await loadEnvelope(guestScope, storage);
+    const destinationEnvelope = await loadEnvelope(destinationScope, storage);
+    if (guestEnvelope.notes.length === 0) {
+      try {
+        await storage.removeItem(getLucidMorningVoiceNoteStorageKey(guestScope));
+      } catch {
+        // An empty source envelope may already be absent.
+      }
+      return { claimed: false, transferred: 0, skipped: 0, retainedGuest: 0 };
+    }
+
+    const occupied = new Set(destinationEnvelope.notes.map((note) => note.id));
+    const destinationById = new Map(destinationEnvelope.notes.map((note) => [note.id, note]));
+    const planned: {
+      guest: LucidMorningVoiceNote;
+      intended: LucidMorningVoiceNote;
+    }[] = [];
+    const copiedUris: string[] = [];
+    let skipped = 0;
+
+    try {
+      for (const guest of guestEnvelope.notes) {
+        const original = destinationById.get(guest.id);
+        const originalUri = expectedClaimUri(destinationScope, guest, files);
+        if (
+          original &&
+          notesMatchForIdempotentClaim(original, guest) &&
+          original.uri === originalUri
+        ) {
+          if (!(await fileExists(files, original.uri))) {
+            throw new LucidMorningVoiceNoteError(
+              'persistence_failed',
+              'Local voice-note persistence failed'
+            );
+          }
+          skipped += 1;
+          planned.push({ guest, intended: original });
+          continue;
+        }
+
+        const claimedId = claimedNoteIdFor(guest, occupied, destinationScope);
+        const destinationUri = expectedClaimUri(
+          destinationScope,
+          { id: claimedId, extension: guest.extension },
+          files
+        );
+        const existing = destinationById.get(claimedId);
+        if (existing) {
+          if (
+            !notesMatchForIdempotentClaim(existing, guest) ||
+            existing.uri !== destinationUri
+          ) {
+            throw new LucidMorningVoiceNoteError(
+              'invalid_id',
+              'Voice note id collision could not be resolved without overwrite'
+            );
+          }
+          if (!(await fileExists(files, existing.uri))) {
+            throw new LucidMorningVoiceNoteError(
+              'persistence_failed',
+              'Local voice-note persistence failed'
+            );
+          }
+          skipped += 1;
+          planned.push({ guest, intended: existing });
+          continue;
+        }
+
+        const intended = createLucidMorningVoiceNote({
+          id: claimedId,
+          userScope: destinationScope,
+          experimentId: guest.experimentId,
+          status: guest.status,
+          title: guest.title,
+          transcript: guest.transcript,
+          durationMs: guest.durationMs,
+          mimeType: guest.mimeType,
+          extension: guest.extension,
+          uri: destinationUri,
+          createdAt: guest.createdAt,
+          updatedAt: guest.updatedAt,
+          recoverable: guest.recoverable,
+          now: guest.updatedAt,
+        });
+        const referencedUris = new Set([
+          ...destinationEnvelope.notes.map((note) => note.uri),
+          ...planned.map((item) => item.intended.uri),
+        ]);
+        const copied = await copyNoteFileOrRollback(
+          files,
+          guest.uri,
+          destinationUri,
+          getLucidMorningVoiceNoteDirectoryUri(destinationScope, files),
+          referencedUris
+        );
+        if (copied) copiedUris.push(destinationUri);
+        planned.push({ guest, intended });
+        occupied.add(claimedId);
+        destinationById.set(claimedId, intended);
+      }
+
+      const committedNotes = planned.map((item) => item.intended);
+      const nextDestination: Envelope = {
+        ...destinationEnvelope,
+        notes: sortNotes([
+          ...destinationEnvelope.notes.filter(
+            (note) => !committedNotes.some((item) => item.id === note.id)
+          ),
+          ...committedNotes,
+        ]),
+      };
+      await saveEnvelope(nextDestination, storage);
+    } catch (error) {
+      await rollbackCopiedClaimFiles(files, copiedUris);
+      throw persistenceError(error);
+    }
+
+    let remainingGuest = guestEnvelope;
+    for (const item of planned) {
+      remainingGuest = await deleteCommittedGuestNote(
+        remainingGuest,
+        item.guest,
+        storage,
+        files
+      );
+    }
+    try {
+      await storage.removeItem(getLucidMorningVoiceNoteStorageKey(guestScope));
+    } catch (error) {
+      if (remainingGuest.notes.length > 0) throw persistenceError(error);
+    }
+
+    return {
+      claimed: planned.length > 0,
+      transferred: planned.length - skipped,
+      skipped,
+      retainedGuest: 0,
+    };
   });
 }

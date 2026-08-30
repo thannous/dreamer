@@ -10,6 +10,7 @@ import type { LucidExperiment, LucidTrainerState } from '@/lib/lucid/model';
 import type { LucidReminderReconciliationResult } from '@/services/lucidTrainerNotifications';
 
 const mockClaimGuestScope = jest.fn();
+const mockClaimGuestVoiceNotes = jest.fn();
 const mockHasGuestData = jest.fn();
 const mockLoadState = jest.fn();
 const mockGetState = jest.fn();
@@ -40,6 +41,11 @@ jest.mock('@/lib/analytics', () => ({ trackProductEvent: jest.fn() }));
 jest.mock('@/lib/productAnalytics', () => ({ setProductAnalyticsEnabled: jest.fn() }));
 jest.mock('@/services/lucidTrainerNotifications', () => ({
   reconcileLucidTrainerReminders: (...args: unknown[]) => mockReconcileReminders(...args),
+}));
+
+
+jest.mock('@/services/lucidMorningVoiceNoteStorage', () => ({
+  claimLucidMorningVoiceNoteScope: (...args: unknown[]) => mockClaimGuestVoiceNotes(...args),
 }));
 
 jest.mock('@/services/lucidTrainerSync', () => ({
@@ -74,6 +80,12 @@ describe('LucidTrainerContext account boundary', () => {
     mockGetState.mockResolvedValue(state);
     mockHasGuestData.mockResolvedValue(true);
     mockClaimGuestScope.mockResolvedValue({ claimed: true, queued: 0 });
+    mockClaimGuestVoiceNotes.mockResolvedValue({
+      claimed: true,
+      transferred: 1,
+      skipped: 0,
+      retainedGuest: 0,
+    });
     mockLoadQueue.mockResolvedValue([]);
     mockUpdateQueue.mockImplementation(async (_scope, updater) => updater([]));
     mockUpdateState.mockImplementation(async (_scope, updater) => updater(state));
@@ -98,19 +110,57 @@ describe('LucidTrainerContext account boundary', () => {
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.guestImportAvailable).toBe(true);
     expect(mockClaimGuestScope).not.toHaveBeenCalled();
+    expect(mockClaimGuestVoiceNotes).not.toHaveBeenCalled();
   });
 
   it('claims guest data only after the explicit context action', async () => {
     const { result } = renderHook(() => useLucidTrainer(), { wrapper });
     await waitFor(() => expect(result.current.guestImportAvailable).toBe(true));
+    expect(mockClaimGuestVoiceNotes).not.toHaveBeenCalled();
 
     await act(async () => result.current.importGuestData());
 
+    expect(mockClaimGuestVoiceNotes).toHaveBeenCalledTimes(1);
+    expect(mockClaimGuestVoiceNotes).toHaveBeenCalledWith('guest', 'user:user-1');
+    expect(mockClaimGuestVoiceNotes.mock.invocationCallOrder[0]).toBeLessThan(
+      mockClaimGuestScope.mock.invocationCallOrder[0]
+    );
     expect(mockClaimGuestScope).toHaveBeenCalledWith(
       'user:user-1',
       expect.objectContaining({ storage: expect.any(Object) })
     );
     expect(result.current.guestImportAvailable).toBe(false);
+  });
+
+  it('does not claim trainer guest data if local voice transfer fails', async () => {
+    mockClaimGuestVoiceNotes.mockRejectedValueOnce(new Error('voice transfer failed'));
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.guestImportAvailable).toBe(true));
+
+    await expect(act(async () => result.current.importGuestData())).rejects.toThrow(
+      'voice transfer failed'
+    );
+    expect(mockClaimGuestVoiceNotes).toHaveBeenCalledTimes(1);
+    expect(mockClaimGuestScope).not.toHaveBeenCalled();
+    expect(result.current.guestImportAvailable).toBe(true);
+  });
+
+  it('does not claim trainer guest data while leftover guest voice notes remain', async () => {
+    mockClaimGuestVoiceNotes.mockResolvedValueOnce({
+      claimed: true,
+      transferred: 1,
+      skipped: 0,
+      retainedGuest: 1,
+    });
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.guestImportAvailable).toBe(true));
+
+    await expect(act(async () => result.current.importGuestData())).rejects.toThrow(
+      'Guest voice notes remain after account copy'
+    );
+    expect(mockClaimGuestVoiceNotes).toHaveBeenCalledWith('guest', 'user:user-1');
+    expect(mockClaimGuestScope).not.toHaveBeenCalled();
+    expect(result.current.guestImportAvailable).toBe(true);
   });
 
   it('renders locally loaded completed state without waiting for reminder reconciliation', async () => {

@@ -99,6 +99,9 @@ import {
   type LucidSyncReplayResult,
 } from '@/services/lucidTrainerSync';
 import {
+  claimLucidMorningVoiceNoteScope,
+} from '@/services/lucidMorningVoiceNoteStorage';
+import {
   clearLucidTrainerLocalData,
   getLucidTrainerState,
   loadLucidTrainerState,
@@ -503,6 +506,14 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
 
   const importGuestData = useCallback(async () => {
     if (!userId) throw new Error('Authentication required');
+    // Voice media is out of band from trainer state. Migrate guest notes to
+    // the signed-in scope first. Only then claim trainer guest data, so a
+    // voice failure leaves the guest trainer scope intact and a later trainer
+    // failure still leaves the audio on the account.
+    const voiceClaim = await claimLucidMorningVoiceNoteScope('guest', userScope);
+    if (voiceClaim.retainedGuest !== 0) {
+      throw new Error('Guest voice notes remain after account copy');
+    }
     const result = await claimLucidTrainerGuestScope(userScope, {
       storage: {
         loadQueue: loadLucidTrainerSyncQueue,

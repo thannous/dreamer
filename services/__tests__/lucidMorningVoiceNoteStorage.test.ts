@@ -3,6 +3,7 @@ import {
   LucidMorningVoiceNoteError,
 } from '@/lib/lucid/morningVoiceNote';
 import {
+  claimLucidMorningVoiceNoteScope,
   clearLucidMorningVoiceNotes,
   countLucidMorningVoiceNoteScopeLocksForTests,
   deleteLucidMorningVoiceNote,
@@ -271,7 +272,6 @@ describe('Lucid morning voice-note local storage', () => {
       durationMs: 900,
       status: 'ready',
       noteId: 'mvn_recording_draft02',
-      now: NOW + 1,
       storage,
       files,
     });
@@ -781,7 +781,6 @@ describe('Lucid morning voice-note local storage', () => {
       extension: '.m4a',
       durationMs: 200,
       noteId: 'mvn_recording_part02',
-      now: NOW + 1,
       storage,
       files,
     });
@@ -799,6 +798,357 @@ describe('Lucid morning voice-note local storage', () => {
     files.delete = originalDelete;
     await clearLucidMorningVoiceNotes('guest', { storage, files });
     await expect(loadLucidMorningVoiceNotes('guest', storage)).resolves.toEqual([]);
+  });
+});
+
+describe('Lucid morning voice-note guest claim', () => {
+  const ACCOUNT = 'user:user-1';
+  const GUEST_A = 'mvn_recording_claimA1';
+  const GUEST_B = 'mvn_recording_claimB1';
+  const ACCOUNT_A = 'mvn_recording_acctA1';
+
+  async function persistNote(params: {
+    userScope: string;
+    noteId: string;
+    sourceUri: string;
+    storage: ReturnType<typeof memoryKv>['storage'];
+    files: ReturnType<typeof memoryFiles>;
+    title?: string;
+    durationMs?: number;
+    now?: number;
+  }) {
+    return persistLucidMorningVoiceNoteFromRecorder({
+      userScope: params.userScope,
+      sourceUri: params.sourceUri,
+      mimeType: 'audio/mp4',
+      extension: '.m4a',
+      durationMs: params.durationMs ?? 900,
+      status: 'ready',
+      title: params.title ?? 'Guest recall',
+      noteId: params.noteId,
+      now: params.now ?? NOW,
+      storage: params.storage,
+      files: params.files,
+    });
+  }
+
+  it('copies guest audio and metadata into the account then purges guest without orphans', async () => {
+    const { storage } = memoryKv();
+    const sourceA = 'file:///tmp/recorder/claim-a.m4a';
+    const sourceB = 'file:///tmp/recorder/claim-b.m4a';
+    const files = memoryFiles([sourceA, sourceB]);
+    const guestA = await persistNote({
+      userScope: 'guest',
+      noteId: GUEST_A,
+      sourceUri: sourceA,
+      storage,
+      files,
+      title: 'First recall',
+    });
+    const guestB = await persistNote({
+      userScope: 'guest',
+      noteId: GUEST_B,
+      sourceUri: sourceB,
+      storage,
+      files,
+      title: 'Second recall',
+      now: NOW + 1,
+    });
+
+    const result = await claimLucidMorningVoiceNoteScope('guest', ACCOUNT, {
+      storage,
+      files,
+    });
+    expect(result).toEqual({ claimed: true, transferred: 2, skipped: 0, retainedGuest: 0 });
+    const accountNotes = await loadLucidMorningVoiceNotes(ACCOUNT, storage);
+    expect(accountNotes.map((note) => note.id).sort()).toEqual([GUEST_A, GUEST_B].sort());
+    expect(accountNotes.every((note) => note.userScope === ACCOUNT)).toBe(true);
+    expect(accountNotes.every((note) => note.uri.startsWith(getLucidMorningVoiceNoteFileUri(ACCOUNT, note.id, '.m4a', files).slice(0, -4)))).toBe(true);
+    for (const note of accountNotes) {
+      expect(files.files.has(note.uri)).toBe(true);
+      expect(note.uri).toBe(getLucidMorningVoiceNoteFileUri(ACCOUNT, note.id, '.m4a', files));
+    }
+    await expect(loadLucidMorningVoiceNotes('guest', storage)).resolves.toEqual([]);
+    expect(files.files.has(guestA.uri)).toBe(false);
+    expect(files.files.has(guestB.uri)).toBe(false);
+    expect(JSON.stringify(storage.setItem.mock.calls)).not.toMatch(/upload|cloud|sync|http/i);
+    expect(countLucidMorningVoiceNoteScopeLocksForTests()).toBe(0);
+  });
+
+  it('keeps an existing account note and assigns a deterministic id on collision', async () => {
+    const { storage } = memoryKv();
+    const sourceGuest = 'file:///tmp/recorder/claim-collision-guest.m4a';
+    const sourceAccount = 'file:///tmp/recorder/claim-collision-account.m4a';
+    const files = memoryFiles([sourceGuest, sourceAccount]);
+    const accountNote = await persistNote({
+      userScope: ACCOUNT,
+      noteId: GUEST_A,
+      sourceUri: sourceAccount,
+      storage,
+      files,
+      title: 'Account original',
+      durationMs: 400,
+    });
+    const guestNote = await persistNote({
+      userScope: 'guest',
+      noteId: GUEST_A,
+      sourceUri: sourceGuest,
+      storage,
+      files,
+      title: 'Guest original',
+      durationMs: 1200,
+    });
+
+    const result = await claimLucidMorningVoiceNoteScope('guest', ACCOUNT, {
+      storage,
+      files,
+    });
+    expect(result.transferred).toBe(1);
+    expect(result.skipped).toBe(0);
+    expect(result.retainedGuest).toBe(0);
+    const accountNotes = await loadLucidMorningVoiceNotes(ACCOUNT, storage);
+    const kept = accountNotes.find((note) => note.id === GUEST_A);
+    const moved = accountNotes.find((note) => note.id !== GUEST_A);
+    expect(kept).toEqual(accountNote);
+    expect(moved).toMatchObject({
+      userScope: ACCOUNT,
+      title: 'Guest original',
+      durationMs: 1200,
+    });
+    expect(moved?.id).not.toBe(GUEST_A);
+    expect(files.files.has(accountNote.uri)).toBe(true);
+    expect(files.files.has(guestNote.uri)).toBe(false);
+    expect(files.files.has(moved?.uri ?? '')).toBe(true);
+
+    const retry = await claimLucidMorningVoiceNoteScope('guest', ACCOUNT, {
+      storage,
+      files,
+    });
+    expect(retry).toEqual({ claimed: false, transferred: 0, skipped: 0, retainedGuest: 0 });
+    await expect(loadLucidMorningVoiceNotes(ACCOUNT, storage)).resolves.toEqual(accountNotes);
+  });
+
+  it('rolls back destination copies when a file copy fails and keeps guest intact', async () => {
+    const { storage } = memoryKv();
+    const sourceA = 'file:///tmp/recorder/claim-fail-a.m4a';
+    const sourceB = 'file:///tmp/recorder/claim-fail-b.m4a';
+    const files = memoryFiles([sourceA, sourceB]);
+    const guestA = await persistNote({
+      userScope: 'guest',
+      noteId: GUEST_A,
+      sourceUri: sourceA,
+      storage,
+      files,
+    });
+    const guestB = await persistNote({
+      userScope: 'guest',
+      noteId: GUEST_B,
+      sourceUri: sourceB,
+      storage,
+      files,
+      now: NOW + 2,
+    });
+    const originalCopy = files.copy.bind(files);
+    files.copy = jest.fn(async (fromUri: string, toUri: string) => {
+      if (fromUri === guestB.uri) throw new Error('copy interrupted');
+      return originalCopy(fromUri, toUri);
+    });
+
+    await expect(
+      claimLucidMorningVoiceNoteScope('guest', ACCOUNT, { storage, files })
+    ).rejects.toMatchObject({ reason: 'persistence_failed' });
+
+    await expect(loadLucidMorningVoiceNotes('guest', storage)).resolves.toEqual([guestA, guestB]);
+    await expect(loadLucidMorningVoiceNotes(ACCOUNT, storage)).resolves.toEqual([]);
+    expect(files.files.has(guestA.uri)).toBe(true);
+    expect(files.files.has(guestB.uri)).toBe(true);
+    expect(
+      [...files.files].some((uri) => uri.includes('/noctalia-lucid-morning-voice/user%3Auser-1/'))
+    ).toBe(false);
+  });
+
+  it('rolls back destination files when destination metadata cannot be written', async () => {
+    const { storage } = memoryKv();
+    const sourceA = 'file:///tmp/recorder/claim-meta-a.m4a';
+    const files = memoryFiles([sourceA]);
+    const guestA = await persistNote({
+      userScope: 'guest',
+      noteId: GUEST_A,
+      sourceUri: sourceA,
+      storage,
+      files,
+    });
+    const accountKey = getLucidMorningVoiceNoteStorageKey(ACCOUNT);
+    const originalSetItem = storage.setItem.getMockImplementation();
+    storage.setItem.mockImplementation(async (key: string, value: string) => {
+      if (key === accountKey) throw new Error('metadata write failed');
+      return originalSetItem?.(key, value);
+    });
+
+    await expect(
+      claimLucidMorningVoiceNoteScope('guest', ACCOUNT, { storage, files })
+    ).rejects.toMatchObject({ reason: 'persistence_failed' });
+
+    await expect(loadLucidMorningVoiceNotes('guest', storage)).resolves.toEqual([guestA]);
+    await expect(loadLucidMorningVoiceNotes(ACCOUNT, storage)).resolves.toEqual([]);
+    expect(files.files.has(guestA.uri)).toBe(true);
+    expect(
+      files.files.has(getLucidMorningVoiceNoteFileUri(ACCOUNT, GUEST_A, '.m4a', files))
+    ).toBe(false);
+  });
+
+  it('throws after destination commit if guest purge fails, then retry finishes the purge', async () => {
+    const { storage } = memoryKv();
+    const sourceA = 'file:///tmp/recorder/claim-retry-a.m4a';
+    const files = memoryFiles([sourceA]);
+    const guestA = await persistNote({
+      userScope: 'guest',
+      noteId: GUEST_A,
+      sourceUri: sourceA,
+      storage,
+      files,
+    });
+    const originalDelete = files.delete.bind(files);
+    let blockedOnce = false;
+    files.delete = jest.fn(async (uri: string) => {
+      if (!blockedOnce && (uri === guestA.uri || uri === `${guestA.uri}.deleting`)) {
+        blockedOnce = true;
+        throw new Error('guest purge blocked');
+      }
+      return originalDelete(uri);
+    });
+
+    await expect(
+      claimLucidMorningVoiceNoteScope('guest', ACCOUNT, { storage, files })
+    ).rejects.toMatchObject({ reason: 'persistence_failed' });
+    const copied = await loadLucidMorningVoiceNotes(ACCOUNT, storage);
+    expect(copied).toHaveLength(1);
+    expect(copied[0]?.userScope).toBe(ACCOUNT);
+    expect(files.files.has(copied[0]?.uri ?? '')).toBe(true);
+    await expect(loadLucidMorningVoiceNotes('guest', storage)).resolves.toEqual([guestA]);
+
+    const retry = await claimLucidMorningVoiceNoteScope('guest', ACCOUNT, {
+      storage,
+      files,
+    });
+    expect(retry).toEqual({ claimed: true, transferred: 0, skipped: 1, retainedGuest: 0 });
+    await expect(loadLucidMorningVoiceNotes(ACCOUNT, storage)).resolves.toEqual(copied);
+    await expect(loadLucidMorningVoiceNotes('guest', storage)).resolves.toEqual([]);
+    expect(files.files.has(guestA.uri)).toBe(false);
+    expect(countLucidMorningVoiceNoteScopeLocksForTests()).toBe(0);
+  });
+
+  it('retries a remapped collision id without overwriting the original account note', async () => {
+    const { storage } = memoryKv();
+    const sourceGuest = 'file:///tmp/recorder/claim-collision-retry-guest.m4a';
+    const sourceAccount = 'file:///tmp/recorder/claim-collision-retry-account.m4a';
+    const files = memoryFiles([sourceGuest, sourceAccount]);
+    const accountNote = await persistNote({
+      userScope: ACCOUNT,
+      noteId: GUEST_A,
+      sourceUri: sourceAccount,
+      storage,
+      files,
+      title: 'Account original',
+      durationMs: 400,
+    });
+    const guestNote = await persistNote({
+      userScope: 'guest',
+      noteId: GUEST_A,
+      sourceUri: sourceGuest,
+      storage,
+      files,
+      title: 'Guest original',
+      durationMs: 1200,
+    });
+    const originalDelete = files.delete.bind(files);
+    let blockedOnce = false;
+    files.delete = jest.fn(async (uri: string) => {
+      if (!blockedOnce && (uri === guestNote.uri || uri === `${guestNote.uri}.deleting`)) {
+        blockedOnce = true;
+        throw new Error('guest purge blocked');
+      }
+      return originalDelete(uri);
+    });
+
+    await expect(
+      claimLucidMorningVoiceNoteScope('guest', ACCOUNT, { storage, files })
+    ).rejects.toMatchObject({ reason: 'persistence_failed' });
+    const afterFirst = await loadLucidMorningVoiceNotes(ACCOUNT, storage);
+    const remapped = afterFirst.find((note) => note.id !== GUEST_A);
+    expect(afterFirst.find((note) => note.id === GUEST_A)).toEqual(accountNote);
+    expect(remapped).toMatchObject({
+      userScope: ACCOUNT,
+      title: 'Guest original',
+      durationMs: 1200,
+      createdAt: guestNote.createdAt,
+      experimentId: guestNote.experimentId,
+    });
+    await expect(loadLucidMorningVoiceNotes('guest', storage)).resolves.toEqual([guestNote]);
+
+    const retry = await claimLucidMorningVoiceNoteScope('guest', ACCOUNT, {
+      storage,
+      files,
+    });
+    expect(retry).toEqual({ claimed: true, transferred: 0, skipped: 1, retainedGuest: 0 });
+    await expect(loadLucidMorningVoiceNotes(ACCOUNT, storage)).resolves.toEqual(afterFirst);
+    await expect(loadLucidMorningVoiceNotes('guest', storage)).resolves.toEqual([]);
+    expect(files.files.has(accountNote.uri)).toBe(true);
+    expect(files.files.has(remapped?.uri ?? '')).toBe(true);
+    expect(files.files.has(guestNote.uri)).toBe(false);
+  });
+
+  it('reclaims an unreferenced destination file left by a crashed copy then purges guest', async () => {
+    const { storage } = memoryKv();
+    const sourceA = 'file:///tmp/recorder/claim-orphan-a.m4a';
+    const files = memoryFiles([sourceA]);
+    const guestA = await persistNote({
+      userScope: 'guest',
+      noteId: GUEST_A,
+      sourceUri: sourceA,
+      storage,
+      files,
+      title: 'Recovered after crash',
+    });
+    const orphanUri = getLucidMorningVoiceNoteFileUri(ACCOUNT, GUEST_A, '.m4a', files);
+    files.files.add(orphanUri);
+    await expect(loadLucidMorningVoiceNotes(ACCOUNT, storage)).resolves.toEqual([]);
+
+    const result = await claimLucidMorningVoiceNoteScope('guest', ACCOUNT, { storage, files });
+    expect(result).toEqual({ claimed: true, transferred: 1, skipped: 0, retainedGuest: 0 });
+    const accountNotes = await loadLucidMorningVoiceNotes(ACCOUNT, storage);
+    expect(accountNotes).toHaveLength(1);
+    expect(accountNotes[0]).toMatchObject({
+      id: GUEST_A,
+      userScope: ACCOUNT,
+      title: 'Recovered after crash',
+      uri: orphanUri,
+      createdAt: guestA.createdAt,
+      experimentId: guestA.experimentId,
+    });
+    expect(files.files.has(orphanUri)).toBe(true);
+    await expect(loadLucidMorningVoiceNotes('guest', storage)).resolves.toEqual([]);
+    expect(files.files.has(guestA.uri)).toBe(false);
+  });
+
+  it('leaves an unrelated account note untouched when guest is empty', async () => {
+    const { storage } = memoryKv();
+    const sourceAccount = 'file:///tmp/recorder/claim-empty-account.m4a';
+    const files = memoryFiles([sourceAccount]);
+    const accountNote = await persistNote({
+      userScope: ACCOUNT,
+      noteId: ACCOUNT_A,
+      sourceUri: sourceAccount,
+      storage,
+      files,
+      title: 'Already on account',
+    });
+    const result = await claimLucidMorningVoiceNoteScope('guest', ACCOUNT, {
+      storage,
+      files,
+    });
+    expect(result).toEqual({ claimed: false, transferred: 0, skipped: 0, retainedGuest: 0 });
+    await expect(loadLucidMorningVoiceNotes(ACCOUNT, storage)).resolves.toEqual([accountNote]);
   });
 });
 
