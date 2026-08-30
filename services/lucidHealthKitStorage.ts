@@ -1,4 +1,8 @@
-import Storage from 'expo-sqlite/kv-store';
+import {
+  getLucidKeyValueStorage,
+  isLucidNativeKeyValueStorage,
+  type LucidKeyValueStorage,
+} from '@/services/lucidKeyValueStorage';
 
 import {
   protectLucidTrainerStoredValue,
@@ -17,7 +21,7 @@ const STORAGE_NAMESPACE = 'noctalia_lucid_healthkit';
 const SNAPSHOT_KEY_VERSION = 'sleep_snapshot_v1';
 export const LUCID_HEALTHKIT_SNAPSHOT_VERSION = 1 as const;
 
-type AsyncKeyValueStorage = Pick<typeof Storage, 'getItem' | 'setItem' | 'removeItem'>;
+type AsyncKeyValueStorage = LucidKeyValueStorage;
 
 export type LucidHealthKitSnapshotStatus = 'imported' | 'disabled' | 'empty';
 
@@ -43,7 +47,7 @@ export function getLucidHealthKitStorageKey(userScope: string): string {
 }
 
 function usesNativeStorage(storage: AsyncKeyValueStorage): boolean {
-  return storage === Storage;
+  return isLucidNativeKeyValueStorage(storage);
 }
 
 async function readPlaintext(key: string, storage: AsyncKeyValueStorage): Promise<string | null> {
@@ -198,7 +202,7 @@ function isSnapshot(value: unknown): value is LucidHealthKitSnapshot {
 
 export async function loadLucidHealthKitSnapshot(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidHealthKitSnapshot> {
   const key = getLucidHealthKitStorageKey(userScope);
   const plaintext = await readPlaintext(key, storage);
@@ -216,7 +220,7 @@ export async function loadLucidHealthKitSnapshot(
 export async function saveLucidHealthKitSnapshot(
   userScope: string,
   snapshot: LucidHealthKitSnapshot,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<void> {
   if (!isSnapshot(snapshot)) {
     throw new Error('Invalid Lucid HealthKit snapshot');
@@ -232,7 +236,7 @@ export async function importLucidHealthKitSnapshot(
     rangeEndMs: number;
     normalization: LucidHkSleepNormalization;
   },
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidHealthKitSnapshot> {
   const snapshot: LucidHealthKitSnapshot = {
     version: LUCID_HEALTHKIT_SNAPSHOT_VERSION,
@@ -255,7 +259,7 @@ export async function recordLucidHealthKitEmptySnapshot(
     rangeEndMs: number;
     emptyReason: 'ambiguous_empty';
   },
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidHealthKitSnapshot> {
   const snapshot: LucidHealthKitSnapshot = {
     version: LUCID_HEALTHKIT_SNAPSHOT_VERSION,
@@ -272,7 +276,7 @@ export async function recordLucidHealthKitEmptySnapshot(
 
 export async function disableLucidHealthKitSnapshot(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidHealthKitSnapshot> {
   const current = await loadLucidHealthKitSnapshot(userScope, storage);
   const snapshot: LucidHealthKitSnapshot = {
@@ -285,7 +289,7 @@ export async function disableLucidHealthKitSnapshot(
 
 export async function deleteLucidHealthKitSnapshot(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidHealthKitSnapshot> {
   await storage.removeItem(getLucidHealthKitStorageKey(userScope));
   return emptySnapshot();

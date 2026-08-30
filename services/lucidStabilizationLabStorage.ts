@@ -1,4 +1,8 @@
-import Storage from 'expo-sqlite/kv-store';
+import {
+  getLucidKeyValueStorage,
+  isLucidNativeKeyValueStorage,
+  type LucidKeyValueStorage,
+} from '@/services/lucidKeyValueStorage';
 
 import {
   LUCID_STABILIZATION_LAB_VERSION,
@@ -22,7 +26,7 @@ const EXPORT_KEYS = ['version', 'userScope', 'sessions'] as const;
 const MAX_SCOPE_LENGTH = 256;
 const CONTROL_CHARS = /[\u0000-\u001F\u007F]/;
 
-type AsyncKeyValueStorage = Pick<typeof Storage, 'getItem' | 'setItem' | 'removeItem'>;
+type AsyncKeyValueStorage = LucidKeyValueStorage;
 
 export type LucidStabilizationLabStoredEnvelope = {
   version: typeof LUCID_STABILIZATION_LAB_STORE_VERSION;
@@ -58,7 +62,7 @@ export class LucidStabilizationLabStorageError extends Error {
 const scopeLocks = new Map<string, Promise<void>>();
 
 function usesNativeStorage(storage: AsyncKeyValueStorage): boolean {
-  return storage === Storage;
+  return isLucidNativeKeyValueStorage(storage);
 }
 
 function isUserScope(value: unknown): value is string {
@@ -312,7 +316,7 @@ function upsertIntoSessions(
 
 export async function loadLucidStabilizationLabSessions(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidStabilizationLabSession[]> {
   return withScopeLock(assertScope(userScope), async () => {
     const envelope = await loadEnvelope(userScope, storage);
@@ -323,7 +327,7 @@ export async function loadLucidStabilizationLabSessions(
 export async function upsertLucidStabilizationLabSession(
   userScope: string,
   session: LucidStabilizationLabSession,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidStabilizationLabSession[]> {
   return withScopeLock(assertScope(userScope), async () => {
     if (!isLucidStabilizationLabSession(session)) {
@@ -349,7 +353,7 @@ export async function updateLucidStabilizationLabSessions(
   ) =>
     | readonly LucidStabilizationLabSession[]
     | Promise<readonly LucidStabilizationLabSession[]>,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidStabilizationLabSession[]> {
   return withScopeLock(assertScope(userScope), async () => {
     const current = (await loadEnvelope(userScope, storage)).sessions.map(cloneSession);
@@ -371,7 +375,7 @@ export async function updateLucidStabilizationLabSessions(
 
 export async function clearLucidStabilizationLabSessions(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<void> {
   return withScopeLock(assertScope(userScope), async () => {
     try {
@@ -384,7 +388,7 @@ export async function clearLucidStabilizationLabSessions(
 
 export async function exportLucidStabilizationLabSessions(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidStabilizationLabExport> {
   const sessions = await loadLucidStabilizationLabSessions(userScope, storage);
   return {
@@ -397,7 +401,7 @@ export async function exportLucidStabilizationLabSessions(
 export async function importLucidStabilizationLabSessions(
   userScope: string,
   payload: unknown,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidStabilizationLabSession[]> {
   return withScopeLock(assertScope(userScope), async () => {
     if (!isPlainObject(payload)) {

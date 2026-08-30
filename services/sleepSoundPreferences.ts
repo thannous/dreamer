@@ -1,4 +1,4 @@
-import Storage from 'expo-sqlite/kv-store';
+import { getLucidKeyValueStorage } from '@/services/lucidKeyValueStorage';
 
 import {
   DEFAULT_SLEEP_SOUND_ID,
@@ -23,7 +23,7 @@ export const DEFAULT_SLEEP_SOUND_PREFERENCES: SleepSoundPreferences = {
 
 export async function getSleepSoundPreferences(): Promise<SleepSoundPreferences> {
   try {
-    const raw = await Storage.getItem(SLEEP_SOUND_PREFERENCES_KEY);
+    const raw = await getLucidKeyValueStorage().getItem(SLEEP_SOUND_PREFERENCES_KEY);
     if (!raw) return DEFAULT_SLEEP_SOUND_PREFERENCES;
 
     const value = JSON.parse(raw) as Partial<SleepSoundPreferences>;
@@ -47,7 +47,10 @@ export async function saveSleepSoundPreferences(
   preferences: SleepSoundPreferences,
 ): Promise<void> {
   try {
-    await Storage.setItem(SLEEP_SOUND_PREFERENCES_KEY, JSON.stringify(preferences));
+    await getLucidKeyValueStorage().setItem(
+      SLEEP_SOUND_PREFERENCES_KEY,
+      JSON.stringify(preferences)
+    );
   } catch (error) {
     if (__DEV__) {
       console.warn('[SleepSounds] Failed to save preferences', error);

@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { createInitialLucidTrainerState } from '@/lib/lucid/domain';
 import type { LucidSyncMutation } from '@/lib/lucid/model';
 import {
@@ -45,6 +46,17 @@ jest.mock('expo-sqlite/kv-store', () => ({
     removeItem: jest.fn(async (key: string) => {
       mockNativeValues.delete(key);
     }),
+  },
+}));
+
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  __esModule: true,
+  default: {
+    getItem: jest.fn(async () => {
+      throw new Error('web AsyncStorage should not be used by native trainer tests');
+    }),
+    setItem: jest.fn(async () => undefined),
+    removeItem: jest.fn(async () => undefined),
   },
 }));
 
@@ -111,6 +123,7 @@ describe('lucidTrainerStorage', () => {
   const SCOPE = 'user:user-1';
 
   beforeEach(() => {
+    Platform.OS = 'ios';
     mockNativeValues.clear();
     mockSecureStorageUnavailable = false;
     mockEncryptionUnavailable = false;

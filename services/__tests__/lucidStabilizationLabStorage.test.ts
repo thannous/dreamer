@@ -19,6 +19,10 @@ import {
 
 const NOW = 1_700_000_000_000;
 
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);
+
 function memoryKv() {
   const memory = new Map<string, string>();
   return {
@@ -350,7 +354,19 @@ describe('Lucid stabilization lab native storage encryption contract', () => {
     const encryptedError = Object.assign(new Error('Invalid encrypted Lucid Trainer value'), {
       code: 'invalid_encrypted_value',
     });
+    const { Platform } = require('react-native') as typeof import('react-native');
+    Platform.OS = 'ios';
     jest.doMock('expo-sqlite/kv-store', () => ({ __esModule: true, default: sqlite }));
+    jest.doMock('@react-native-async-storage/async-storage', () => ({
+      __esModule: true,
+      default: {
+        getItem: jest.fn(async () => {
+          throw new Error('web AsyncStorage must not back native encryption tests');
+        }),
+        setItem: jest.fn(async () => undefined),
+        removeItem: jest.fn(async () => undefined),
+      },
+    }));
     jest.doMock('@/services/lucidTrainerSecureStorage', () => ({
       isLucidTrainerEncryptedValueError: (value: unknown) =>
         (value as { code?: string } | null)?.code === 'invalid_encrypted_value',

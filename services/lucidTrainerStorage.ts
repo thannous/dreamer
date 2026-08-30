@@ -1,4 +1,8 @@
-import Storage from 'expo-sqlite/kv-store';
+import {
+  getLucidKeyValueStorage,
+  isLucidNativeKeyValueStorage,
+  type LucidKeyValueStorage,
+} from '@/services/lucidKeyValueStorage';
 
 import { canonicalLucidJson, createInitialLucidTrainerState } from '@/lib/lucid/domain';
 import {
@@ -37,10 +41,10 @@ const QUEUE_KEY_VERSION = 'sync_queue_v1';
 const LEGACY_EXPORT_VERSION = 1 as const;
 const EXPORT_VERSION = 2 as const;
 
-type AsyncKeyValueStorage = Pick<typeof Storage, 'getItem' | 'setItem' | 'removeItem'>;
+type AsyncKeyValueStorage = LucidKeyValueStorage;
 
 function usesNativeStorage(storage: AsyncKeyValueStorage): boolean {
-  return storage === Storage;
+  return isLucidNativeKeyValueStorage(storage);
 }
 
 async function readValue(
@@ -253,7 +257,7 @@ async function migrateCompanionDreamAtlas(
 export async function loadLucidTrainerState(
   userScope: string,
   defaults: LucidTrainerStorageDefaults = {},
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidTrainerLoadResult> {
   const key = getLucidTrainerStorageKeys(userScope).state;
   let stored: Awaited<ReturnType<typeof readValue>>;
@@ -306,7 +310,7 @@ export async function loadLucidTrainerState(
 export async function getLucidTrainerState(
   userScope: string,
   defaults: LucidTrainerStorageDefaults = {},
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidTrainerState> {
   return (await loadLucidTrainerState(userScope, defaults, storage)).state;
 }
@@ -314,7 +318,7 @@ export async function getLucidTrainerState(
 export async function saveLucidTrainerState(
   userScope: string,
   state: LucidTrainerState,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<void> {
   assertLucidTrainerState(state);
   const key = getLucidTrainerStorageKeys(userScope).state;
@@ -325,7 +329,7 @@ export async function updateLucidTrainerState(
   userScope: string,
   updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>,
   defaults: LucidTrainerStorageDefaults = {},
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidTrainerState> {
   const key = getLucidTrainerStorageKeys(userScope).state;
   return runSerialized(key, async () => {
@@ -339,7 +343,7 @@ export async function updateLucidTrainerState(
 
 export async function loadLucidTrainerSyncQueue(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSyncMutation[]> {
   const key = getLucidTrainerStorageKeys(userScope).syncQueue;
   let stored: Awaited<ReturnType<typeof readValue>>;
@@ -371,7 +375,7 @@ export async function loadLucidTrainerSyncQueue(
 export async function saveLucidTrainerSyncQueue(
   userScope: string,
   queue: readonly LucidSyncMutation[],
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<void> {
   if (
     queue.some(
@@ -389,7 +393,7 @@ export async function updateLucidTrainerSyncQueue(
   updater: (
     current: LucidSyncMutation[]
   ) => readonly LucidSyncMutation[] | Promise<readonly LucidSyncMutation[]>,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSyncMutation[]> {
   const key = getLucidTrainerStorageKeys(userScope).syncQueue;
   return runSerialized(key, async () => {
@@ -410,7 +414,7 @@ export async function updateLucidTrainerSyncQueue(
 export async function appendLucidTrainerSyncMutation(
   userScope: string,
   mutation: LucidSyncMutation,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSyncMutation[]> {
   if (!isLucidSyncMutation(mutation) || mutation.userScope !== userScope) {
     throw new Error('Invalid Lucid Trainer sync mutation');
@@ -427,7 +431,7 @@ export async function appendLucidTrainerSyncMutation(
 
 export async function clearLucidTrainerLocalData(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage,
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage(),
   cancelReminders: () => Promise<unknown> = async () => {
     const { cancelAllLucidTrainerNotifications } = await import(
       '@/services/lucidTrainerNotifications'

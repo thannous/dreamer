@@ -10,6 +10,11 @@ import {
 } from '@/services/lucidHealthKitStorage';
 
 const memory = new Map<string, string>();
+
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);
+
 const storage = {
   getItem: jest.fn(async (key: string) => memory.get(key) ?? null),
   setItem: jest.fn(async (key: string, value: string) => {
@@ -250,7 +255,19 @@ describe('Lucid HealthKit native storage encryption contract', () => {
       if (payload.key !== key) throw new Error('aad mismatch');
       return payload.plaintext as string;
     });
+    const { Platform } = require('react-native') as typeof import('react-native');
+    Platform.OS = 'ios';
     jest.doMock('expo-sqlite/kv-store', () => ({ __esModule: true, default: sqlite }));
+    jest.doMock('@react-native-async-storage/async-storage', () => ({
+      __esModule: true,
+      default: {
+        getItem: jest.fn(async () => {
+          throw new Error('web AsyncStorage must not back native encryption tests');
+        }),
+        setItem: jest.fn(async () => undefined),
+        removeItem: jest.fn(async () => undefined),
+      },
+    }));
     jest.doMock('@/services/lucidTrainerSecureStorage', () => ({
       isLucidTrainerEncryptedValueError: (value: unknown) =>
         (value as { code?: string } | null)?.code === 'invalid_encrypted_value',

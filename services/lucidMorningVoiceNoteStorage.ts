@@ -1,5 +1,9 @@
 import { Directory, File, Paths } from 'expo-file-system';
-import Storage from 'expo-sqlite/kv-store';
+import {
+  getLucidKeyValueStorage,
+  isLucidNativeKeyValueStorage,
+  type LucidKeyValueStorage,
+} from '@/services/lucidKeyValueStorage';
 
 import {
   LucidMorningVoiceNoteError,
@@ -31,7 +35,7 @@ export const LUCID_MORNING_VOICE_NOTE_STORE_VERSION = 1 as const;
 const DIRECTORY_SEGMENT = 'noctalia-lucid-morning-voice';
 const ENVELOPE_KEYS = ['version', 'userScope', 'notes'] as const;
 
-type AsyncKeyValueStorage = Pick<typeof Storage, 'getItem' | 'setItem' | 'removeItem'>;
+type AsyncKeyValueStorage = LucidKeyValueStorage;
 
 export type LucidMorningVoiceFileAdapter = {
   exists(uri: string): Promise<boolean>;
@@ -51,7 +55,7 @@ type Envelope = {
 const scopeLocks = new Map<string, Promise<void>>();
 
 function usesNativeStorage(storage: AsyncKeyValueStorage): boolean {
-  return storage === Storage;
+  return isLucidNativeKeyValueStorage(storage);
 }
 
 function persistenceError(error: unknown): LucidMorningVoiceNoteError {
@@ -337,7 +341,7 @@ function upsertNote(envelope: Envelope, note: LucidMorningVoiceNote): Envelope {
 
 export async function loadLucidMorningVoiceNotes(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidMorningVoiceNote[]> {
   return withScopeLock(assertScope(userScope), async () => {
     const envelope = await loadEnvelope(userScope, storage);
@@ -348,7 +352,7 @@ export async function loadLucidMorningVoiceNotes(
 export async function getLucidMorningVoiceNote(
   userScope: string,
   noteId: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidMorningVoiceNote | null> {
   const notes = await loadLucidMorningVoiceNotes(userScope, storage);
   return notes.find((note) => note.id === assertNoteId(noteId)) ?? null;
@@ -357,7 +361,7 @@ export async function getLucidMorningVoiceNote(
 export async function getLucidMorningVoiceNoteByExperimentId(
   userScope: string,
   experimentId: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidMorningVoiceNote | null> {
   const notes = await loadLucidMorningVoiceNotes(userScope, storage);
   return notes.find((note) => note.experimentId === assertNoteId(experimentId)) ?? null;
@@ -493,7 +497,7 @@ export async function persistLucidMorningVoiceNoteFromRecorder(input: {
   files?: LucidMorningVoiceFileAdapter;
 }): Promise<LucidMorningVoiceNote> {
   const userScope = assertScope(input.userScope);
-  const storage = input.storage ?? Storage;
+  const storage = input.storage ?? getLucidKeyValueStorage();
   const files = input.files ?? createNativeFileAdapter();
   const now = input.now ?? Date.now();
   const noteId = input.noteId ?? createLucidMorningVoiceNoteId(now);
@@ -611,7 +615,7 @@ export async function renameStoredLucidMorningVoiceNote(
   title: string,
   options?: { now?: number; storage?: AsyncKeyValueStorage }
 ): Promise<LucidMorningVoiceNote> {
-  const storage = options?.storage ?? Storage;
+  const storage = options?.storage ?? getLucidKeyValueStorage();
   return withScopeLock(assertScope(userScope), async () => {
     const envelope = await loadEnvelope(userScope, storage);
     const current = findNote(envelope, assertNoteId(noteId));
@@ -630,7 +634,7 @@ export async function updateStoredLucidMorningVoiceNoteTranscript(
   transcript: string | null,
   options?: { now?: number; storage?: AsyncKeyValueStorage }
 ): Promise<LucidMorningVoiceNote> {
-  const storage = options?.storage ?? Storage;
+  const storage = options?.storage ?? getLucidKeyValueStorage();
   return withScopeLock(assertScope(userScope), async () => {
     const envelope = await loadEnvelope(userScope, storage);
     const current = findNote(envelope, assertNoteId(noteId));
@@ -653,7 +657,7 @@ export async function linkStoredLucidMorningVoiceNoteToExperiment(
   experimentId: string,
   options?: { now?: number; storage?: AsyncKeyValueStorage }
 ): Promise<LucidMorningVoiceNote> {
-  const storage = options?.storage ?? Storage;
+  const storage = options?.storage ?? getLucidKeyValueStorage();
   return withScopeLock(assertScope(userScope), async () => {
     const envelope = await loadEnvelope(userScope, storage);
     const current = findNote(envelope, assertNoteId(noteId));
@@ -675,7 +679,7 @@ export async function deleteLucidMorningVoiceNote(
   noteId: string,
   options?: { storage?: AsyncKeyValueStorage; files?: LucidMorningVoiceFileAdapter }
 ): Promise<void> {
-  const storage = options?.storage ?? Storage;
+  const storage = options?.storage ?? getLucidKeyValueStorage();
   const files = options?.files ?? createNativeFileAdapter();
   await withScopeLock(assertScope(userScope), async () => {
     const envelope = await loadEnvelope(userScope, storage);
@@ -689,7 +693,7 @@ export async function clearLucidMorningVoiceNotes(
   userScope: string,
   options?: { storage?: AsyncKeyValueStorage; files?: LucidMorningVoiceFileAdapter }
 ): Promise<void> {
-  const storage = options?.storage ?? Storage;
+  const storage = options?.storage ?? getLucidKeyValueStorage();
   const files = options?.files ?? createNativeFileAdapter();
   await withScopeLock(assertScope(userScope), async () => {
     let envelope = await loadEnvelope(userScope, storage);

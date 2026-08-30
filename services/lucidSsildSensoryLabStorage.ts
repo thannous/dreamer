@@ -1,4 +1,8 @@
-import Storage from 'expo-sqlite/kv-store';
+import {
+  getLucidKeyValueStorage,
+  isLucidNativeKeyValueStorage,
+  type LucidKeyValueStorage,
+} from '@/services/lucidKeyValueStorage';
 
 import {
   LUCID_SSILD_SENSORY_LAB_VERSION,
@@ -21,7 +25,7 @@ const EXPORT_KEYS = ['version', 'userScope', 'currentSession'] as const;
 const MAX_SCOPE_LENGTH = 256;
 const CONTROL_CHARS = /[\u0000-\u001F\u007F]/;
 
-type AsyncKeyValueStorage = Pick<typeof Storage, 'getItem' | 'setItem' | 'removeItem'>;
+type AsyncKeyValueStorage = LucidKeyValueStorage;
 
 export type LucidSsildSensoryLabStoredEnvelope = {
   version: typeof LUCID_SSILD_SENSORY_LAB_STORE_VERSION;
@@ -57,7 +61,7 @@ export class LucidSsildSensoryLabStorageError extends Error {
 const scopeLocks = new Map<string, Promise<void>>();
 
 function usesNativeStorage(storage: AsyncKeyValueStorage): boolean {
-  return storage === Storage;
+  return isLucidNativeKeyValueStorage(storage);
 }
 
 function isUserScope(value: unknown): value is string {
@@ -260,7 +264,7 @@ async function saveEnvelope(
 
 export async function loadLucidSsildSensoryLabState(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSsildSensoryLabStoredEnvelope> {
   return withScopeLock(assertScope(userScope), async () => {
     return cloneEnvelope(await loadEnvelope(userScope, storage));
@@ -269,7 +273,7 @@ export async function loadLucidSsildSensoryLabState(
 
 export async function loadLucidSsildSensoryLabCurrentSession(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSsildSensoryLabSession | null> {
   const state = await loadLucidSsildSensoryLabState(userScope, storage);
   return state.currentSession;
@@ -278,7 +282,7 @@ export async function loadLucidSsildSensoryLabCurrentSession(
 export async function saveLucidSsildSensoryLabCurrentSession(
   userScope: string,
   session: LucidSsildSensoryLabSession,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSsildSensoryLabSession> {
   return withScopeLock(assertScope(userScope), async () => {
     if (!isLucidSsildSensoryLabSession(session)) {
@@ -305,7 +309,7 @@ export async function updateLucidSsildSensoryLabCurrentSession(
   updater: (
     current: LucidSsildSensoryLabSession | null
   ) => LucidSsildSensoryLabSession | null | Promise<LucidSsildSensoryLabSession | null>,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSsildSensoryLabSession | null> {
   return withScopeLock(assertScope(userScope), async () => {
     const current = (await loadEnvelope(userScope, storage)).currentSession;
@@ -335,7 +339,7 @@ export async function updateLucidSsildSensoryLabCurrentSession(
 
 export async function clearLucidSsildSensoryLabCurrentSession(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<void> {
   return withScopeLock(assertScope(userScope), async () => {
     try {
@@ -348,7 +352,7 @@ export async function clearLucidSsildSensoryLabCurrentSession(
 
 export async function exportLucidSsildSensoryLabState(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSsildSensoryLabExport> {
   const state = await loadLucidSsildSensoryLabState(userScope, storage);
   return {
@@ -361,7 +365,7 @@ export async function exportLucidSsildSensoryLabState(
 export async function importLucidSsildSensoryLabState(
   userScope: string,
   payload: unknown,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSsildSensoryLabSession | null> {
   return withScopeLock(assertScope(userScope), async () => {
     if (!isPlainObject(payload) || !hasExactKeys(payload, EXPORT_KEYS)) {

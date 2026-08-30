@@ -1,4 +1,8 @@
-import Storage from 'expo-sqlite/kv-store';
+import {
+  getLucidKeyValueStorage,
+  isLucidNativeKeyValueStorage,
+  type LucidKeyValueStorage,
+} from '@/services/lucidKeyValueStorage';
 
 import {
   LUCID_DREAM_ATLAS_VERSION,
@@ -25,7 +29,7 @@ const ENVELOPE_KEYS = ['version', 'userScope', 'preferences'] as const;
 const MAX_SCOPE_LENGTH = 256;
 const CONTROL_CHARS = /[\u0000-\u001F\u007F]/;
 
-type AsyncKeyValueStorage = Pick<typeof Storage, 'getItem' | 'setItem' | 'removeItem'>;
+type AsyncKeyValueStorage = LucidKeyValueStorage;
 
 export type LucidDreamAtlasStoredEnvelope = {
   version: typeof LUCID_DREAM_ATLAS_STORE_VERSION;
@@ -55,7 +59,7 @@ export class LucidDreamAtlasStorageError extends Error {
 const scopeLocks = new Map<string, Promise<void>>();
 
 function usesNativeStorage(storage: AsyncKeyValueStorage): boolean {
-  return storage === Storage;
+  return isLucidNativeKeyValueStorage(storage);
 }
 
 function isUserScope(value: unknown): value is string {
@@ -226,7 +230,7 @@ async function saveEnvelope(
 
 export async function loadLucidDreamAtlasPreferences(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamAtlasPreferences> {
   return withScopeLock(assertScope(userScope), async () => {
     const envelope = await loadEnvelope(userScope, storage);
@@ -236,7 +240,7 @@ export async function loadLucidDreamAtlasPreferences(
 
 export async function inspectLucidDreamAtlasCompanion(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamAtlasCompanionSnapshot> {
   return withScopeLock(assertScope(userScope), async () => {
     const envelope = await loadEnvelope(userScope, storage);
@@ -263,7 +267,7 @@ export function companionHasLucidDreamAtlasData(preferences: LucidDreamAtlasPref
 export async function saveLucidDreamAtlasPreferences(
   userScope: string,
   preferences: LucidDreamAtlasPreferences,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamAtlasPreferences> {
   return withScopeLock(assertScope(userScope), async () => {
     const next = clonePreferences(normalizeLucidDreamAtlasPreferences(preferences));
@@ -278,7 +282,7 @@ export async function saveLucidDreamAtlasPreferences(
 export async function updateLucidDreamAtlasPreferences(
   userScope: string,
   updater: (current: LucidDreamAtlasPreferences) => LucidDreamAtlasPreferences | Promise<LucidDreamAtlasPreferences>,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamAtlasPreferences> {
   return withScopeLock(assertScope(userScope), async () => {
     const current = clonePreferences((await loadEnvelope(userScope, storage))?.preferences ?? emptyPreferences());
@@ -293,7 +297,7 @@ export async function updateLucidDreamAtlasPreferences(
 
 export async function clearLucidDreamAtlasPreferences(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<void> {
   return withScopeLock(assertScope(userScope), async () => {
     try {
@@ -306,7 +310,7 @@ export async function clearLucidDreamAtlasPreferences(
 
 export async function exportLucidDreamAtlasPreferences(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamAtlasExport> {
   const preferences = await loadLucidDreamAtlasPreferences(userScope, storage);
   return serializeLucidDreamAtlasPreferences(preferences);
@@ -315,7 +319,7 @@ export async function exportLucidDreamAtlasPreferences(
 export async function importLucidDreamAtlasPreferences(
   userScope: string,
   payload: unknown,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamAtlasPreferences> {
   return withScopeLock(assertScope(userScope), async () => {
     if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {

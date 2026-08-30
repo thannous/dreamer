@@ -1,4 +1,8 @@
-import Storage from 'expo-sqlite/kv-store';
+import {
+  getLucidKeyValueStorage,
+  isLucidNativeKeyValueStorage,
+  type LucidKeyValueStorage,
+} from '@/services/lucidKeyValueStorage';
 
 import {
   LUCID_DREAM_REHEARSAL_VERSION,
@@ -26,7 +30,7 @@ const EXPORT_KEYS = ['version', 'userScope', 'currentSession', 'completions'] as
 const MAX_SCOPE_LENGTH = 256;
 const CONTROL_CHARS = /[\u0000-\u001F\u007F]/;
 
-type AsyncKeyValueStorage = Pick<typeof Storage, 'getItem' | 'setItem' | 'removeItem'>;
+type AsyncKeyValueStorage = LucidKeyValueStorage;
 
 export type LucidDreamRehearsalStoredEnvelope = {
   version: typeof LUCID_DREAM_REHEARSAL_STORE_VERSION;
@@ -64,7 +68,7 @@ export class LucidDreamRehearsalStorageError extends Error {
 const scopeLocks = new Map<string, Promise<void>>();
 
 function usesNativeStorage(storage: AsyncKeyValueStorage): boolean {
-  return storage === Storage;
+  return isLucidNativeKeyValueStorage(storage);
 }
 
 function isUserScope(value: unknown): value is string {
@@ -368,7 +372,7 @@ function completionFromSession(
 
 export async function loadLucidDreamRehearsalState(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalStoredEnvelope> {
   return withScopeLock(assertScope(userScope), async () => {
     return cloneEnvelope(await loadEnvelope(userScope, storage));
@@ -377,7 +381,7 @@ export async function loadLucidDreamRehearsalState(
 
 export async function loadLucidDreamRehearsalCurrentSession(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalSession | null> {
   const state = await loadLucidDreamRehearsalState(userScope, storage);
   return state.currentSession;
@@ -385,7 +389,7 @@ export async function loadLucidDreamRehearsalCurrentSession(
 
 export async function loadLucidDreamRehearsalCompletions(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalCompletion[]> {
   const state = await loadLucidDreamRehearsalState(userScope, storage);
   return state.completions;
@@ -394,7 +398,7 @@ export async function loadLucidDreamRehearsalCompletions(
 export async function saveLucidDreamRehearsalCurrentSession(
   userScope: string,
   session: LucidDreamRehearsalSession,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalStoredEnvelope> {
   return withScopeLock(assertScope(userScope), async () => {
     if (!isLucidDreamRehearsalSession(session)) {
@@ -422,7 +426,7 @@ export async function saveLucidDreamRehearsalCurrentSession(
 
 export async function clearLucidDreamRehearsalCurrentSession(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalStoredEnvelope> {
   return withScopeLock(assertScope(userScope), async () => {
     const current = await loadEnvelope(userScope, storage);
@@ -440,7 +444,7 @@ export async function clearLucidDreamRehearsalCurrentSession(
 export async function upsertLucidDreamRehearsalCompletion(
   userScope: string,
   completion: LucidDreamRehearsalCompletion,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalCompletion[]> {
   return withScopeLock(assertScope(userScope), async () => {
     if (!isLucidDreamRehearsalCompletion(completion)) {
@@ -471,7 +475,7 @@ export async function updateLucidDreamRehearsalState(
   ) =>
     | LucidDreamRehearsalStoredEnvelope
     | Promise<LucidDreamRehearsalStoredEnvelope>,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalStoredEnvelope> {
   return withScopeLock(assertScope(userScope), async () => {
     const current = cloneEnvelope(await loadEnvelope(userScope, storage));
@@ -490,7 +494,7 @@ export async function updateLucidDreamRehearsalState(
 
 export async function clearLucidDreamRehearsalState(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<void> {
   return withScopeLock(assertScope(userScope), async () => {
     try {
@@ -503,7 +507,7 @@ export async function clearLucidDreamRehearsalState(
 
 export async function exportLucidDreamRehearsalState(
   userScope: string,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalExport> {
   const state = await loadLucidDreamRehearsalState(userScope, storage);
   return cloneEnvelope(state);
@@ -512,7 +516,7 @@ export async function exportLucidDreamRehearsalState(
 export async function importLucidDreamRehearsalState(
   userScope: string,
   payload: unknown,
-  storage: AsyncKeyValueStorage = Storage
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalStoredEnvelope> {
   return withScopeLock(assertScope(userScope), async () => {
     if (!isPlainObject(payload) || !hasExactKeys(payload, EXPORT_KEYS)) {
