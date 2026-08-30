@@ -321,3 +321,48 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
 - Aucun crédit Ahrefs général, aucune demande d'indexation et aucune mutation
   des expériences ou des 50 suivis. Détails et plan de mesure :
   `j42-flying-dreams-evidence-refresh-2026-08-26.md`.
+
+## Actualisation J43 au 27 août 2026 — propriétaire IT « mare / oceano »
+
+- GSC complet du 29 juillet au 25 août attribue à `/it/simboli/oceano`
+  `11` clics, `5 371` impressions, un CTR de `0,2 %` et une position moyenne
+  de `8,0`.
+- Les requêtes visibles utilisent surtout `mare` : `sognare il mare
+  significato` affiche `289` impressions à la position `7,3` sans clic,
+  `sognare il mare` `186` impressions à la position `8,7` avec un clic et
+  `sognare mare agitato` `98` impressions à la position `8,2` sans clic.
+- Le propriétaire existant est conservé sans nouvelle route : le nom devient
+  `Mare / Oceano`, le title commence par `Sognare il mare` et le contenu
+  italien donne la priorité lexicale à `mare` sans promettre de signification
+  certaine.
+- `docs:build`, `docs:check`, les contrats d'URL, liens, profondeur, images et
+  surface de déploiement sont verts. Les `1 256` routes canoniques restent
+  inchangées.
+- Aucun crédit Ahrefs général, changement Rank Tracker, crawl ou demande
+  d'indexation n'a été effectué.
+- Le lot a été publié sur `master` le 28 août via `f9a7e6ec6` ; la route
+  publique répond `200` avec le nouveau title et le sitemap porte un `lastmod`
+  au 28 août.
+- Détails et protocole de mesure :
+  `j43-ocean-owner-alignment-2026-08-27.md`.
+
+## Actualisation J44 au 28 août 2026 — propriétaire IT « incendio / fuoco »
+
+- GSC complet du 30 juillet au 26 août attribue à `/it/simboli/fuoco`
+  `145` clics, `18 696` impressions, un CTR de `0,78 %` et une position moyenne
+  de `4,6`.
+- Les requêtes `sognare incendio` et `sognare un incendio` restent à seulement
+  `0,56 %` et `0,22 %` de CTR malgré des positions moyennes de `3,5` et `2,8`.
+- Le propriétaire existant est conservé sans nouvelle route : son title devient
+  `Sognare un incendio o il fuoco: significato | Noctalia`, et la première
+  réponse italienne donne la priorité à `incendio` sans promettre de sens fixe.
+- `docs:build`, `docs:check`, les contrats d'URL, liens, profondeur, images et
+  surface de déploiement sont verts. Les `1 256` routes canoniques restent
+  inchangées.
+- Aucun crédit Ahrefs général, changement Rank Tracker, crawl ou demande
+  d'indexation n'a été effectué.
+- Le lot a été publié sur `master` le 28 août via `f9a7e6ec6` ; la route
+  publique répond `200` avec le nouveau title et le sitemap porte un `lastmod`
+  au 28 août.
+- Détails et protocole de mesure :
+  `j44-fire-owner-alignment-2026-08-28.md`.
