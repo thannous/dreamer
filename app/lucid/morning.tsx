@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
-import { type Href, router } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import { type Href, router, useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, Platform, Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
 
 import { LucidButton, LucidCard, LucidChoiceCard, LucidIconAction, LucidIconTile, LucidPill, LucidScreen } from '@/components/lucid/LucidUI';
@@ -8,7 +8,12 @@ import { getLucidPalette, LucidPress, LucidRadius, LucidSpace, LucidType } from 
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidNow } from '@/hooks/useLucidNow';
-import { resolvePreviousNightTechniqueLink } from '@/lib/lucid/morningCapture';
+import {
+  LUCID_MORNING_VOICE_AUTOSTART_HREF,
+  parseLucidMorningVoiceNoteIdParam,
+  resolveLucidMorningVoiceRecallText,
+  resolvePreviousNightTechniqueLink,
+} from '@/lib/lucid/morningCapture';
 import type {
   LucidDreamCaptureMode,
   LucidExperimentResult,
@@ -17,6 +22,7 @@ import type {
   LucidTechnique,
 } from '@/lib/lucid/model';
 import { closeLucidRoute, LUCID_HOME_HREF } from '@/lib/lucid/routes';
+import { getLucidMorningVoiceNote, linkStoredLucidMorningVoiceNoteToExperiment } from '@/services/lucidMorningVoiceNoteStorage';
 
 const FACTORS: LucidPersonalFactor[] = ['stress', 'alcohol', 'caffeine_late', 'exercise', 'screen_late', 'sleep_debt', 'unusual_schedule'];
 const CUE_OUTCOMES: readonly LucidNightCueOutcome[] = [
@@ -32,6 +38,8 @@ const COPY = {
     screenTitle: 'Morning check-in',
     speak: 'Speak',
     speakHint: 'The first tap asks for the microphone. Recording starts only if you allow it. Audio stays on this device and is not synced.',
+    linkedVoice: 'Voice note attached',
+    linkedVoiceHint: 'This local recording will be attached when you save the morning capture. Nothing is uploaded.',
     write: 'Write',
     writeHint: 'Type a few words while they are still close.',
     nothing: 'Nothing for now',
@@ -91,6 +99,8 @@ const COPY = {
     screenTitle: 'Point du matin',
     speak: 'Parler',
     speakHint: 'Le premier tap demande le micro. L’enregistrement commence seulement si tu l’autorises. L’audio reste sur cet appareil et n’est pas synchronisé.',
+    linkedVoice: 'Note vocale rattachée',
+    linkedVoiceHint: 'Cet enregistrement local sera rattaché quand tu enregistreras la capture du matin. Rien n’est envoyé.',
     write: 'Écrire',
     writeHint: 'Notez quelques mots tant qu’ils sont encore proches.',
     nothing: 'Rien pour l’instant',
@@ -150,6 +160,8 @@ const COPY = {
     screenTitle: 'Revisión de la mañana',
     speak: 'Hablar',
     speakHint: 'El primer toque pide el micrófono. La grabación empieza solo si lo permites. El audio permanece en este dispositivo y no se sincroniza.',
+    linkedVoice: 'Nota de voz vinculada',
+    linkedVoiceHint: 'Esta grabación local se vinculará al guardar la captura de la mañana. Nada se sube.',
     write: 'Escribir',
     writeHint: 'Anota unas palabras mientras siguen cerca.',
     nothing: 'Nada por ahora',
@@ -209,6 +221,8 @@ const COPY = {
     screenTitle: 'Morgen-Check-in',
     speak: 'Sprechen',
     speakHint: 'Der erste Tipp fragt nach dem Mikrofon. Die Aufnahme startet nur, wenn du zustimmst. Das Audio bleibt auf diesem Gerät und wird nicht synchronisiert.',
+    linkedVoice: 'Sprachnotiz verknüpft',
+    linkedVoiceHint: 'Diese lokale Aufnahme wird verknüpft, wenn du die Morgennotiz speicherst. Es wird nichts hochgeladen.',
     write: 'Schreiben',
     writeHint: 'Schreib ein paar Worte, solange sie nah sind.',
     nothing: 'Jetzt nichts',
@@ -268,6 +282,8 @@ const COPY = {
     screenTitle: 'Check-in del mattino',
     speak: 'Parlare',
     speakHint: 'Il primo tap chiede il microfono. La registrazione inizia solo se lo consenti. L’audio resta su questo dispositivo e non viene sincronizzato.',
+    linkedVoice: 'Nota vocale collegata',
+    linkedVoiceHint: 'Questa registrazione locale verrà collegata quando salvi la cattura del mattino. Niente viene inviato.',
     write: 'Scrivere',
     writeHint: 'Annota poche parole mentre sono ancora vicine.',
     nothing: 'Niente per ora',
@@ -334,10 +350,13 @@ function formatLinkedDate(dateKey: string, locale: string): string {
 }
 
 export default function LucidMorningScreen() {
-  const { content, addExperiment, state } = useLucidTrainer();
+  const { content, addExperiment, state, userScope } = useLucidTrainer();
   const now = useLucidNow();
   const copy = COPY[content.locale];
+  const params = useLocalSearchParams<{ voiceNoteId?: string | string[] }>();
+  const returnedVoiceNoteId = parseLucidMorningVoiceNoteIdParam(params.voiceNoteId);
   const [captureMode, setCaptureMode] = useState<LucidDreamCaptureMode | null>(null);
+  const [linkedVoiceNoteId, setLinkedVoiceNoteId] = useState<string | null>(null);
   const [recallText, setRecallText] = useState('');
   const [cueOutcome, setCueOutcome] = useState<LucidNightCueOutcome | null>(null);
   const [technique, setTechnique] = useState<LucidTechnique | null>(null);
@@ -357,19 +376,21 @@ export default function LucidMorningScreen() {
         : null,
     [now, state]
   );
+  const skippedTextStep =
+    captureMode === 'nothing_for_now' || (captureMode === 'speak' && Boolean(linkedVoiceNoteId));
   const stepNumber =
     step === 'capture'
       ? 1
       : step === 'text'
         ? 2
         : step === 'cue'
-          ? captureMode === 'nothing_for_now'
+          ? skippedTextStep
             ? 2
             : 3
-          : captureMode === 'nothing_for_now'
+          : skippedTextStep
             ? 3
             : 4;
-  const stepCount = captureMode === 'nothing_for_now' ? 3 : captureMode ? 4 : 3;
+  const stepCount = skippedTextStep ? 3 : captureMode ? 4 : 3;
   const trimmedRecall = recallText.trim();
   const answerReady =
     step === 'capture'
@@ -383,7 +404,7 @@ export default function LucidMorningScreen() {
   const goBack = () => {
     if (step === 'capture') close();
     else if (step === 'text') setStep('capture');
-    else if (step === 'cue') setStep(captureMode === 'nothing_for_now' ? 'capture' : 'text');
+    else if (step === 'cue') setStep(skippedTextStep ? 'capture' : 'text');
     else if (step === 'summary') setStep('cue');
     else setStep('summary');
   };
@@ -397,11 +418,31 @@ export default function LucidMorningScreen() {
     if (step === 'text') setStep('cue');
     if (step === 'cue') setStep('summary');
   };
+  useEffect(() => {
+    if (!returnedVoiceNoteId) return;
+    let cancelled = false;
+    void (async () => {
+      const note = await getLucidMorningVoiceNote(userScope, returnedVoiceNoteId).catch(() => null);
+      if (cancelled || !note) return;
+      const nextRecall = resolveLucidMorningVoiceRecallText(note);
+      setLinkedVoiceNoteId(note.id);
+      setCaptureMode('speak');
+      if (nextRecall) {
+        setRecallText((current) => current.trim() || nextRecall);
+      }
+      setStep((current) => (current === 'capture' ? 'cue' : current));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [returnedVoiceNoteId, userScope]);
+
   const chooseCapture = (mode: LucidDreamCaptureMode) => {
     if (mode === 'speak') {
-      router.push('/lucid/morning-voice?autoStart=1' as Href);
+      router.push(LUCID_MORNING_VOICE_AUTOSTART_HREF as Href);
       return;
     }
+    setLinkedVoiceNoteId(null);
     setCaptureMode(mode);
     if (mode === 'write') {
       setStep('text');
@@ -418,10 +459,12 @@ export default function LucidMorningScreen() {
   };
   const save = async () => {
     if (captureMode === null || cueOutcome === null) return;
-    if (captureMode !== 'nothing_for_now' && trimmedRecall.length === 0) return;
+    const linkedLocalNote = captureMode === 'speak' && Boolean(linkedVoiceNoteId);
+    if (captureMode === 'write' && trimmedRecall.length === 0) return;
+    if (captureMode === 'speak' && !linkedLocalNote && trimmedRecall.length === 0) return;
     setSaving(true);
     try {
-      await addExperiment({
+      const created = await addExperiment({
         technique,
         preparationMinutes,
         result,
@@ -431,9 +474,13 @@ export default function LucidMorningScreen() {
         factors,
         notes: notes.trim() || undefined,
         captureMode,
-        ...(captureMode === 'nothing_for_now' ? {} : { recallText: trimmedRecall }),
+        ...(trimmedRecall && captureMode !== 'nothing_for_now' ? { recallText: trimmedRecall } : {}),
         cueOutcome,
+        ...(linkedLocalNote ? { voiceCapture: 'local_note' as const } : {}),
       });
+      if (captureMode === 'speak' && linkedVoiceNoteId) {
+        await linkStoredLucidMorningVoiceNoteToExperiment(userScope, linkedVoiceNoteId, created.id);
+      }
       if (Platform.OS !== 'web') void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       Alert.alert(copy.saved, content.morningReview.saveOfflineNote, [{ text: content.chrome.common.done, onPress: close }]);
     } finally {
@@ -455,6 +502,9 @@ export default function LucidMorningScreen() {
           techniqueTitle={content.programs[autoLink.technique].title}
           practiceDate={autoLink.practiceDate}
         />
+      ) : null}
+      {linkedVoiceNoteId && captureMode === 'speak' && step !== 'capture' ? (
+        <LinkedVoiceBanner copy={copy} />
       ) : null}
       {step === 'capture' ? (
         <ChoiceStep
@@ -553,6 +603,17 @@ export default function LucidMorningScreen() {
         />
       )}
     </LucidScreen>
+  );
+}
+
+function LinkedVoiceBanner({ copy }: { copy: LocalCopy }) {
+  const { colors, mode } = useTheme();
+  const palette = getLucidPalette(colors, mode);
+  return (
+    <LucidCard accent="amber" accessibilityLabel={`${copy.linkedVoice}. ${copy.linkedVoiceHint}`} testID="lucid-morning-voice-link">
+      <Text style={[styles.bannerTitle, { color: palette.text }]}>{copy.linkedVoice}</Text>
+      <Text style={[styles.bannerHint, { color: palette.textSecondary }]}>{copy.linkedVoiceHint}</Text>
+    </LucidCard>
   );
 }
 

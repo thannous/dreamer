@@ -443,6 +443,63 @@ describe('Lucid Trainer model', () => {
       ).toBe(false);
     });
 
+    it('lets a local morning voice note omit recall text without inventing one', () => {
+      expect(
+        isLucidExperiment({
+          ...writeCapture,
+          captureMode: 'speak',
+          recallText: undefined,
+          voiceCapture: 'local_note',
+        })
+      ).toBe(true);
+      expect(
+        isLucidExperiment({
+          ...writeCapture,
+          captureMode: 'speak',
+          recallText: 'the hallway again',
+          voiceCapture: 'local_note',
+        })
+      ).toBe(true);
+      expect(
+        isLucidExperiment({
+          ...writeCapture,
+          captureMode: 'speak',
+          recallText: '   ',
+          voiceCapture: 'local_note',
+        })
+      ).toBe(false);
+      expect(
+        isLucidExperiment({
+          ...writeCapture,
+          captureMode: 'speak',
+          recallText: undefined,
+          voiceCapture: 'stub',
+        })
+      ).toBe(false);
+      expect(isLucidExperiment({ ...writeCapture, voiceCapture: 'local_note' })).toBe(false);
+      const { recallText: _omittedRecall, ...writeCaptureWithoutRecall } = writeCapture;
+      expect(
+        parseLucidTrainerState(
+          JSON.stringify({
+            ...createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' }),
+            experiments: [
+              {
+                ...writeCaptureWithoutRecall,
+                captureMode: 'speak',
+                voiceCapture: 'local_note',
+              },
+            ],
+          })
+        )?.experiments
+      ).toEqual([
+        {
+          ...writeCaptureWithoutRecall,
+          captureMode: 'speak',
+          voiceCapture: 'local_note',
+        },
+      ]);
+    });
+
     it('rejects every new-only morning-capture field when captureMode is absent', () => {
       expect(isLucidExperiment(legacy)).toBe(true);
       expect(isLucidExperiment({ ...legacy, recallText: 'the hallway' })).toBe(false);

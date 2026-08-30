@@ -56,6 +56,7 @@ export const LUCID_VOICE_CAPTURE_STATES = [
   'stub',
   'permission_denied',
   'unavailable',
+  'local_note',
 ] as const;
 export type LucidVoiceCaptureState = (typeof LUCID_VOICE_CAPTURE_STATES)[number];
 
@@ -659,13 +660,15 @@ function isNewExperiment(value: Record<string, unknown>): boolean {
     return value.recallText === undefined && value.voiceCapture === undefined;
   }
 
-  if (!isNonEmptyBoundedText(value.recallText)) return false;
-
   if (captureMode === 'write') {
-    return value.voiceCapture === undefined;
+    return isNonEmptyBoundedText(value.recallText) && value.voiceCapture === undefined;
   }
 
-  return isEnumValue(LUCID_VOICE_CAPTURE_STATES, value.voiceCapture);
+  if (!isEnumValue(LUCID_VOICE_CAPTURE_STATES, value.voiceCapture)) return false;
+  if (value.voiceCapture === 'local_note') {
+    return value.recallText === undefined || isNonEmptyBoundedText(value.recallText);
+  }
+  return isNonEmptyBoundedText(value.recallText);
 }
 
 export function isLucidExperiment(value: unknown): value is LucidExperiment {

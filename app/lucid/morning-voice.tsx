@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from 'expo-router';
+import { type Href, router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
 
@@ -23,6 +23,11 @@ import { useTheme } from '@/context/ThemeContext';
 import { useLucidMorningVoiceNotes } from '@/hooks/useLucidMorningVoiceNotes';
 import { useLucidMorningVoicePlayer } from '@/hooks/useLucidMorningVoicePlayer';
 import { useLucidMorningVoiceRecorder } from '@/hooks/useLucidMorningVoiceRecorder';
+import {
+  buildLucidMorningReturnHref,
+  parseLucidMorningVoiceNoteIdParam,
+  shouldAutoStartLucidMorningVoice,
+} from '@/lib/lucid/morningCapture';
 import { closeLucidRoute } from '@/lib/lucid/routes';
 import {
   MAX_LUCID_MORNING_VOICE_TITLE_LENGTH,
@@ -722,13 +727,14 @@ export default function LucidMorningVoiceScreen() {
   const palette = getLucidPalette(colors, mode);
   const copy = COPY[content.locale];
   const params = useLocalSearchParams<{ autoStart?: string | string[] }>();
-  const autoStartParam = Array.isArray(params.autoStart) ? params.autoStart[0] : params.autoStart;
-  const shouldAutoStart = autoStartParam === '1';
+  const shouldAutoStart = shouldAutoStartLucidMorningVoice(params.autoStart);
+  const pendingReturnNoteIdRef = useRef<string | null>(null);
   const notesApi = useLucidMorningVoiceNotes({ userScope });
   const recorder = useLucidMorningVoiceRecorder({
     userScope,
     title: copy.untitled,
-    onPersisted: () => {
+    onPersisted: (note) => {
+      if (shouldAutoStart) pendingReturnNoteIdRef.current = note.id;
       void notesApi.refresh();
     },
   });
@@ -770,6 +776,17 @@ export default function LucidMorningVoiceScreen() {
     autoStartAttemptedRef.current = true;
     runQuiet(start);
   }, [phase, shouldAutoStart, start]);
+
+  useEffect(() => {
+    if (!shouldAutoStart) return;
+    if (phase !== 'stopped' && phase !== 'recoverable') return;
+    const noteId = parseLucidMorningVoiceNoteIdParam(
+      pendingReturnNoteIdRef.current ?? recorder.note?.id ?? recorder.capture.noteId
+    );
+    if (!noteId) return;
+    pendingReturnNoteIdRef.current = null;
+    router.dismissTo(buildLucidMorningReturnHref(noteId) as Href);
+  }, [phase, recorder.capture.noteId, recorder.note?.id, shouldAutoStart]);
 
   const confirmDelete = (noteId: string) => {
     Alert.alert(copy.deleteTitle, copy.deleteBody, [

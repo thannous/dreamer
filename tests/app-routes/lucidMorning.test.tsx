@@ -9,6 +9,10 @@ const mockReplace = jest.fn();
 const mockBack = jest.fn();
 const mockCanGoBack = jest.fn().mockReturnValue(false);
 const mockPush = jest.fn();
+const mockGetVoiceNote = jest.fn();
+const mockLinkVoiceNote = jest.fn();
+
+let mockVoiceNoteId: string | string[] | undefined;
 
 const mockState = {
   progress: [] as {
@@ -85,6 +89,12 @@ jest.mock('expo-router', () => ({
     replace: mockReplace,
     push: (...args: unknown[]) => mockPush(...args),
   },
+  useLocalSearchParams: () => ({ voiceNoteId: mockVoiceNoteId }),
+}));
+
+jest.mock('@/services/lucidMorningVoiceNoteStorage', () => ({
+  getLucidMorningVoiceNote: (...args: unknown[]) => mockGetVoiceNote(...args),
+  linkStoredLucidMorningVoiceNoteToExperiment: (...args: unknown[]) => mockLinkVoiceNote(...args),
 }));
 
 jest.mock('@/constants/lucidTheme', () => ({
@@ -124,6 +134,7 @@ jest.mock('@/context/LucidTrainerContext', () => {
       content: { ...getLucidContent(mockLocale), locale: mockLocale },
       addExperiment: mockAddExperiment,
       state: mockState,
+      userScope: 'guest',
     }),
   };
 });
@@ -214,7 +225,11 @@ describe('Lucid morning review form', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocale = 'en';
+    mockVoiceNoteId = undefined;
     mockState.progress = [];
+    mockGetVoiceNote.mockReset().mockResolvedValue(null);
+    mockLinkVoiceNote.mockReset().mockResolvedValue(undefined);
+    mockAddExperiment.mockReset().mockResolvedValue({ id: 'exp_morning_save01' });
   });
 
   afterEach(cleanup);
@@ -322,6 +337,96 @@ describe('Lucid morning review form', () => {
     expect(mockPush).toHaveBeenCalledWith('/lucid/morning-voice?autoStart=1');
     expect(screen.queryByTestId('lucid-morning-recall-text')).toBeNull();
     expect(mockAddExperiment).not.toHaveBeenCalled();
+    expect(mockGetVoiceNote).not.toHaveBeenCalled();
+    expect(mockLinkVoiceNote).not.toHaveBeenCalled();
+  });
+
+  it('resumes the morning capture from a persisted voice note id and links only after save', async () => {
+    mockVoiceNoteId = 'mvn_morning_note01';
+    mockGetVoiceNote.mockResolvedValue({
+      id: 'mvn_morning_note01',
+      title: 'Couloir du matin',
+      transcript: '  Le même couloir  ',
+    });
+    render(<LucidMorningScreen />);
+
+    await waitFor(() => expect(mockGetVoiceNote).toHaveBeenCalledWith('guest', 'mvn_morning_note01'));
+    expect(mockAddExperiment).not.toHaveBeenCalled();
+    expect(mockLinkVoiceNote).not.toHaveBeenCalled();
+    await waitFor(() => expect(screen.getByTestId('lucid-morning-voice-link').textContent).toMatch(/Voice note attached/));
+    fireEvent.click(screen.getByTestId('lucid-morning-cue-indeterminate'));
+    fireEvent.click(screen.getByTestId('lucid-morning-next'));
+    fireEvent.click(screen.getByTestId('lucid-morning-save'));
+
+    await waitFor(() => expect(mockAddExperiment).toHaveBeenCalledTimes(1));
+    expect(mockAddExperiment).toHaveBeenCalledWith({
+      technique: null,
+      preparationMinutes: null,
+      result: null,
+      lucidityLevel: null,
+      recallLevel: null,
+      sleepQuality: null,
+      factors: [],
+      notes: undefined,
+      captureMode: 'speak',
+      recallText: 'Le même couloir',
+      cueOutcome: 'indeterminate',
+      voiceCapture: 'local_note',
+    });
+    await waitFor(() =>
+      expect(mockLinkVoiceNote).toHaveBeenCalledWith('guest', 'mvn_morning_note01', 'exp_morning_save01')
+    );
+    expect(mockLinkVoiceNote.mock.invocationCallOrder[0]).toBeGreaterThan(
+      mockAddExperiment.mock.invocationCallOrder[0]
+    );
+  });
+
+  it('saves a linked local voice note without inventing recall text from a generic title', async () => {
+    mockVoiceNoteId = 'mvn_morning_note01';
+    mockGetVoiceNote.mockResolvedValue({
+      id: 'mvn_morning_note01',
+      title: 'Untitled recording',
+      transcript: null,
+    });
+    render(<LucidMorningScreen />);
+
+    await waitFor(() => expect(mockGetVoiceNote).toHaveBeenCalledWith('guest', 'mvn_morning_note01'));
+    expect(mockAddExperiment).not.toHaveBeenCalled();
+    await waitFor(() => expect(screen.getByTestId('lucid-morning-voice-link')).toBeTruthy());
+    expect(screen.queryByTestId('lucid-morning-recall-text')).toBeNull();
+    fireEvent.click(screen.getByTestId('lucid-morning-cue-indeterminate'));
+    fireEvent.click(screen.getByTestId('lucid-morning-next'));
+    fireEvent.click(screen.getByTestId('lucid-morning-save'));
+
+    await waitFor(() => expect(mockAddExperiment).toHaveBeenCalledTimes(1));
+    expect(mockAddExperiment).toHaveBeenCalledWith({
+      technique: null,
+      preparationMinutes: null,
+      result: null,
+      lucidityLevel: null,
+      recallLevel: null,
+      sleepQuality: null,
+      factors: [],
+      notes: undefined,
+      captureMode: 'speak',
+      cueOutcome: 'indeterminate',
+      voiceCapture: 'local_note',
+    });
+    expect(mockAddExperiment.mock.calls[0][0].recallText).toBeUndefined();
+    await waitFor(() =>
+      expect(mockLinkVoiceNote).toHaveBeenCalledWith('guest', 'mvn_morning_note01', 'exp_morning_save01')
+    );
+  });
+
+  it('ignores an unknown returned voice note id and does not invent a morning review', async () => {
+    mockVoiceNoteId = 'mvn_morning_missing01';
+    mockGetVoiceNote.mockResolvedValue(null);
+    render(<LucidMorningScreen />);
+    await waitFor(() => expect(mockGetVoiceNote).toHaveBeenCalledWith('guest', 'mvn_morning_missing01'));
+    expect(screen.queryByTestId('lucid-morning-voice-link')).toBeNull();
+    expect(screen.getByTestId('lucid-morning-speak')).toBeTruthy();
+    expect(mockAddExperiment).not.toHaveBeenCalled();
+    expect(mockLinkVoiceNote).not.toHaveBeenCalled();
   });
 
   it('keeps honest Speak copy in every locale before the tap', () => {

@@ -5,6 +5,9 @@ import {
   type LucidProgramProgress,
   type LucidTechniqueAutoLink,
 } from '@/lib/lucid/model';
+import { isLucidMorningVoiceNoteId } from '@/lib/lucid/morningVoiceNote';
+
+export const LUCID_MORNING_VOICE_AUTOSTART_HREF = '/lucid/morning-voice?autoStart=1' as const;
 
 export function getLucidDateKeyInTimeZone(
   timestamp: number,
@@ -97,4 +100,41 @@ export function resolvePreviousNightTechniqueLink(
     source: 'program_practice',
     practiceDate: winner.practiceDate,
   };
+}
+
+function firstSearchParam(
+  value: string | string[] | null | undefined
+): string | null {
+  if (Array.isArray(value)) return typeof value[0] === 'string' ? value[0] : null;
+  return typeof value === 'string' ? value : null;
+}
+
+export function parseLucidMorningVoiceNoteIdParam(
+  value: string | string[] | null | undefined
+): string | null {
+  const candidate = firstSearchParam(value)?.trim() ?? '';
+  return isLucidMorningVoiceNoteId(candidate) && candidate.startsWith('mvn_')
+    ? candidate
+    : null;
+}
+
+export function shouldAutoStartLucidMorningVoice(
+  value: string | string[] | null | undefined
+): boolean {
+  return firstSearchParam(value) === '1';
+}
+
+export function buildLucidMorningReturnHref(noteId: string): string {
+  if (!isLucidMorningVoiceNoteId(noteId) || !noteId.startsWith('mvn_')) {
+    throw new Error('Invalid Lucid morning voice note id');
+  }
+  return `/lucid/morning?voiceNoteId=${encodeURIComponent(noteId)}`;
+}
+
+export function resolveLucidMorningVoiceRecallText(input: {
+  title?: string | null;
+  transcript?: string | null;
+}): string | null {
+  const transcript = input.transcript?.trim() ?? '';
+  return transcript || null;
 }

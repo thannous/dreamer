@@ -1,7 +1,12 @@
 import { createLucidProgramProgress } from '@/lib/lucid/domain';
 import {
+  buildLucidMorningReturnHref,
   getLucidDateKeyInTimeZone,
+  LUCID_MORNING_VOICE_AUTOSTART_HREF,
+  parseLucidMorningVoiceNoteIdParam,
+  resolveLucidMorningVoiceRecallText,
   resolvePreviousNightTechniqueLink,
+  shouldAutoStartLucidMorningVoice,
 } from '@/lib/lucid/morningCapture';
 import type { LucidProgramProgress, LucidTechnique } from '@/lib/lucid/model';
 
@@ -164,4 +169,40 @@ describe('previous-night technique auto-link', () => {
       practiceDate: '2026-08-27',
     });
   });
+});
+
+describe('lucid morning voice return params', () => {
+  it('keeps autoStart as a local capture route and never invents an experiment id', () => {
+    expect(LUCID_MORNING_VOICE_AUTOSTART_HREF).toBe('/lucid/morning-voice?autoStart=1');
+    expect(shouldAutoStartLucidMorningVoice('1')).toBe(true);
+    expect(shouldAutoStartLucidMorningVoice(['1'])).toBe(true);
+    expect(shouldAutoStartLucidMorningVoice('0')).toBe(false);
+    expect(shouldAutoStartLucidMorningVoice(undefined)).toBe(false);
+    expect(parseLucidMorningVoiceNoteIdParam('bad')).toBeNull();
+    expect(parseLucidMorningVoiceNoteIdParam('exp_morning_link01')).toBeNull();
+    expect(parseLucidMorningVoiceNoteIdParam('mvn_morning_note01')).toBe('mvn_morning_note01');
+    expect(parseLucidMorningVoiceNoteIdParam(['mvn_morning_note01'])).toBe('mvn_morning_note01');
+    expect(buildLucidMorningReturnHref('mvn_morning_note01')).toBe(
+      '/lucid/morning?voiceNoteId=mvn_morning_note01'
+    );
+    expect(() => buildLucidMorningReturnHref('exp_morning_link01')).toThrow(
+      'Invalid Lucid morning voice note id'
+    );
+  });
+
+  it('uses only a trimmed transcript and never invents recall text from a title', () => {
+    expect(
+      resolveLucidMorningVoiceRecallText({
+        title: 'Untitled recording',
+        transcript: '  Le même couloir  ',
+      })
+    ).toBe('Le même couloir');
+    expect(
+      resolveLucidMorningVoiceRecallText({ title: 'Untitled recording', transcript: '   ' })
+    ).toBeNull();
+    expect(
+      resolveLucidMorningVoiceRecallText({ title: 'Untitled recording', transcript: null })
+    ).toBeNull();
+  });
+
 });

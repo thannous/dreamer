@@ -14,6 +14,7 @@ import {
 const NOW = Date.UTC(2026, 7, 28, 8, 30, 0);
 const mockBack = jest.fn();
 const mockReplace = jest.fn();
+const mockDismissTo = jest.fn();
 const mockStart = jest.fn();
 const mockPause = jest.fn();
 const mockResume = jest.fn();
@@ -83,6 +84,7 @@ jest.mock('expo-router', () => ({
   router: {
     back: mockBack,
     replace: (...args: unknown[]) => mockReplace(...args),
+    dismissTo: (...args: unknown[]) => mockDismissTo(...args),
     canGoBack: () => true,
   },
   useLocalSearchParams: () => ({ autoStart: mockAutoStart }),
@@ -217,6 +219,9 @@ describe('Lucid morning voice notes screen', () => {
       durationSeconds: 1.8,
       error: null,
     };
+    mockDismissTo.mockReset();
+    mockBack.mockReset();
+    mockReplace.mockReset();
     mockStart.mockReset().mockResolvedValue(undefined);
     mockPause.mockReset().mockResolvedValue(undefined);
     mockResume.mockReset().mockResolvedValue(undefined);
@@ -266,6 +271,32 @@ describe('Lucid morning voice notes screen', () => {
     expect(mockStart).toHaveBeenCalledTimes(1);
     rerender(<LucidMorningVoiceScreen />);
     expect(mockStart).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns to morning with the persisted note id after an auto-started capture, without creating a review', () => {
+    mockAutoStart = '1';
+    mockRecorder = {
+      ...mockRecorder,
+      capture: { phase: 'stopped', noteId: 'mvn_morning_note01', errorReason: null },
+      note: note(),
+    };
+    render(<LucidMorningVoiceScreen />);
+    expect(mockDismissTo).toHaveBeenCalledTimes(1);
+    expect(mockDismissTo).toHaveBeenCalledWith('/lucid/morning?voiceNoteId=mvn_morning_note01');
+    expect(mockBack).not.toHaveBeenCalled();
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(mockLink).not.toHaveBeenCalled();
+  });
+
+  it('does not return to morning after a direct capture that was not auto-started', () => {
+    mockRecorder = {
+      ...mockRecorder,
+      capture: { phase: 'stopped', noteId: 'mvn_morning_note01', errorReason: null },
+      note: note(),
+    };
+    render(<LucidMorningVoiceScreen />);
+    expect(mockDismissTo).not.toHaveBeenCalled();
+    expect(mockReplace).not.toHaveBeenCalled();
   });
 
   it('shows duration, pause, resume, stop and a recoverable interrupted draft without inventing completion', () => {

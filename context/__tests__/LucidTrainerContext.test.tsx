@@ -6,7 +6,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { trackProductEvent } from '@/lib/analytics';
 import { getLucidDateKeyInTimeZone } from '@/lib/lucid/morningCapture';
 import type { LucidDreamAtlasOverlay } from '@/lib/lucid/dreamAtlas';
-import type { LucidTrainerState } from '@/lib/lucid/model';
+import type { LucidExperiment, LucidTrainerState } from '@/lib/lucid/model';
 import type { LucidReminderReconciliationResult } from '@/services/lucidTrainerNotifications';
 
 const mockClaimGuestScope = jest.fn();
@@ -1096,6 +1096,28 @@ describe('LucidTrainerContext account boundary', () => {
         outcome: 'completed',
         duration: 'under_5m',
       });
+
+      let localNote: LucidExperiment | undefined;
+      await act(async () => {
+        localNote = await result.current.addExperiment({
+          technique: null,
+          preparationMinutes: null,
+          result: null,
+          lucidityLevel: null,
+          recallLevel: null,
+          sleepQuality: null,
+          factors: [],
+          captureMode: 'speak',
+          cueOutcome: 'indeterminate',
+          voiceCapture: 'local_note',
+        });
+      });
+      expect(localNote).toMatchObject({
+        captureMode: 'speak',
+        voiceCapture: 'local_note',
+      });
+      expect(localNote?.recallText).toBeUndefined();
+      expect(JSON.stringify(localNote)).not.toMatch(/mvn_|file:|audio\//);
 
       await act(async () => {
         await expect(
