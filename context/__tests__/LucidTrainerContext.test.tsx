@@ -11,6 +11,7 @@ import type { LucidReminderReconciliationResult } from '@/services/lucidTrainerN
 
 const mockClaimGuestScope = jest.fn();
 const mockClaimGuestVoiceNotes = jest.fn();
+const mockUnlinkVoiceNotesFromExperiment = jest.fn();
 const mockHasGuestData = jest.fn();
 const mockLoadState = jest.fn();
 const mockGetState = jest.fn();
@@ -46,6 +47,8 @@ jest.mock('@/services/lucidTrainerNotifications', () => ({
 
 jest.mock('@/services/lucidMorningVoiceNoteStorage', () => ({
   claimLucidMorningVoiceNoteScope: (...args: unknown[]) => mockClaimGuestVoiceNotes(...args),
+  unlinkLucidMorningVoiceNotesFromExperiment: (...args: unknown[]) =>
+    mockUnlinkVoiceNotesFromExperiment(...args),
 }));
 
 jest.mock('@/services/lucidTrainerSync', () => ({
@@ -86,6 +89,7 @@ describe('LucidTrainerContext account boundary', () => {
       skipped: 0,
       retainedGuest: 0,
     });
+    mockUnlinkVoiceNotesFromExperiment.mockResolvedValue([]);
     mockLoadQueue.mockResolvedValue([]);
     mockUpdateQueue.mockImplementation(async (_scope, updater) => updater([]));
     mockUpdateState.mockImplementation(async (_scope, updater) => updater(state));
@@ -1767,6 +1771,117 @@ describe('LucidTrainerContext account boundary', () => {
     expect(result.current.state?.dreamAtlas).toBeUndefined();
     expect(mockCreateMutation).not.toHaveBeenCalled();
     expect(mockQueueMutation).not.toHaveBeenCalled();
+  });
+
+  it('unlinks local voice notes before deleting their experiment and aborts if unlinking fails', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    const experiment: LucidExperiment = {
+      id: 'exp_morning_delete01',
+      occurredAt: initial.createdAt,
+      updatedAt: initial.createdAt,
+      technique: null,
+      preparationMinutes: null,
+      result: null,
+      lucidityLevel: null,
+      recallLevel: null,
+      sleepQuality: null,
+      factors: [],
+      captureMode: 'speak',
+      cueOutcome: 'indeterminate',
+      voiceCapture: 'local_note',
+    };
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      experiments: [experiment],
+    };
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+    mockUnlinkVoiceNotesFromExperiment.mockRejectedValueOnce(new Error('voice metadata unavailable'));
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    let deleteError: unknown;
+    await act(async () => {
+      try {
+        await result.current.deleteExperiment(experiment.id);
+      } catch (error) {
+        deleteError = error;
+      }
+    });
+    expect(deleteError).toEqual(new Error('voice metadata unavailable'));
+    expect(persistedState.experiments).toEqual([experiment]);
+
+    await act(async () => {
+      await result.current.deleteExperiment(experiment.id);
+    });
+    expect(mockUnlinkVoiceNotesFromExperiment).toHaveBeenLastCalledWith(
+      'user:user-1',
+      experiment.id
+    );
+    expect(persistedState.experiments).toEqual([]);
+  });
+
+  it('turns a deleted local voice capture into an honest empty morning entry', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    const experiment: LucidExperiment = {
+      id: 'exp_morning_unlink01',
+      occurredAt: initial.createdAt,
+      updatedAt: initial.createdAt,
+      technique: null,
+      preparationMinutes: null,
+      result: null,
+      lucidityLevel: null,
+      recallLevel: null,
+      sleepQuality: null,
+      factors: [],
+      captureMode: 'speak',
+      cueOutcome: 'indeterminate',
+      voiceCapture: 'local_note',
+    };
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      experiments: [experiment],
+    };
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await act(async () => {
+      await result.current.clearExperimentVoiceCapture(experiment.id);
+    });
+
+    expect(persistedState.experiments[0]).toMatchObject({
+      id: experiment.id,
+      captureMode: 'nothing_for_now',
+    });
+    expect(persistedState.experiments[0]).not.toHaveProperty('voiceCapture');
+    expect(persistedState.experiments[0]).not.toHaveProperty('recallText');
   });
 
 });

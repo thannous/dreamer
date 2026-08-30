@@ -65,8 +65,14 @@ function note(overrides: Partial<LucidMorningVoiceNote> & { userScope?: string }
   });
 }
 
-function renderNotes(userScope = 'guest') {
-  return renderHook(({ userScope: scope }) => useLucidMorningVoiceNotes({ userScope: scope }), {
+function renderNotes(
+  userScope = 'guest',
+  onLinkedNoteDeleted?: (experimentId: string) => Promise<void>
+) {
+  return renderHook(({ userScope: scope }) => useLucidMorningVoiceNotes({
+    userScope: scope,
+    onLinkedNoteDeleted,
+  }), {
     initialProps: { userScope },
   });
 }
@@ -285,7 +291,7 @@ describe('useLucidMorningVoiceNotes', () => {
     const current = note({ id: 'mvn_morning_note01' });
     const other = note({ id: 'mvn_morning_note02', createdAt: NOW + 2 });
     loadNotes.mockResolvedValueOnce([current, other]);
-    deleteNote.mockResolvedValueOnce(undefined);
+    deleteNote.mockResolvedValueOnce(current);
 
     const { result } = renderNotes('guest');
     await act(async () => undefined);
@@ -297,6 +303,28 @@ describe('useLucidMorningVoiceNotes', () => {
     expect(deleteNote).toHaveBeenCalledWith('guest', 'mvn_morning_note01');
     expect(result.current.notes).toEqual([other]);
     expect(result.current.isMutating).toBe(false);
+  });
+
+  it('clears the linked experiment marker after deleting its local note', async () => {
+    const current = note({
+      id: 'mvn_morning_note01',
+      experimentId: 'exp_morning_link01',
+    });
+    const clearExperiment = jest.fn(async () => undefined);
+    loadNotes.mockResolvedValueOnce([current]);
+    deleteNote.mockResolvedValueOnce(current);
+
+    const { result } = renderNotes('guest', clearExperiment);
+    await act(async () => undefined);
+
+    await act(async () => {
+      await result.current.deleteNote(current.id);
+    });
+
+    expect(deleteNote).toHaveBeenCalledWith('guest', current.id);
+    expect(clearExperiment).toHaveBeenCalledWith('exp_morning_link01');
+    expect(result.current.notes).toEqual([]);
+    expect(result.current.error).toBeNull();
   });
 
   it('keeps only the latest same-note update when older work resolves last and stays mutating until both finish', async () => {
@@ -394,7 +422,7 @@ describe('useLucidMorningVoiceNotes', () => {
     const sibling = note({ id: 'mvn_morning_note02', createdAt: NOW + 2 });
     const renamed = note({ id: 'mvn_morning_note01', title: 'Masked title', updatedAt: NOW + 7 });
     const renameWork = deferred<LucidMorningVoiceNote>();
-    const deleteWork = deferred<void>();
+    const deleteWork = deferred<LucidMorningVoiceNote | null>();
     const reconcile = deferred<LucidMorningVoiceNote[]>();
     loadNotes.mockResolvedValueOnce([current, sibling]).mockReturnValueOnce(reconcile.promise);
     renameNote.mockReturnValueOnce(renameWork.promise);

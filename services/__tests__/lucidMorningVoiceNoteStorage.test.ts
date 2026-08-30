@@ -15,6 +15,7 @@ import {
   loadLucidMorningVoiceNotes,
   persistLucidMorningVoiceNoteFromRecorder,
   renameStoredLucidMorningVoiceNote,
+  unlinkLucidMorningVoiceNotesFromExperiment,
   updateStoredLucidMorningVoiceNoteTranscript,
   type LucidMorningVoiceFileAdapter,
 } from '@/services/lucidMorningVoiceNoteStorage';
@@ -602,6 +603,20 @@ describe('Lucid morning voice-note local storage', () => {
       getLucidMorningVoiceNoteByExperimentId('guest', 'exp_morning_link01', storage)
     ).resolves.toEqual(linked);
     await expect(getLucidMorningVoiceNote('guest', note.id, storage)).resolves.toEqual(linked);
+
+    const [unlinked] = await unlinkLucidMorningVoiceNotesFromExperiment(
+      'guest',
+      'exp_morning_link01',
+      { now: NOW + 4, storage }
+    );
+    expect(unlinked).toMatchObject({ id: note.id, experimentId: null, updatedAt: NOW + 4 });
+    await expect(
+      getLucidMorningVoiceNoteByExperimentId('guest', 'exp_morning_link01', storage)
+    ).resolves.toBeNull();
+    await expect(getLucidMorningVoiceNote('guest', note.id, storage)).resolves.toEqual(unlinked);
+    await expect(
+      unlinkLucidMorningVoiceNotesFromExperiment('guest', 'exp_morning_link01', { storage })
+    ).resolves.toEqual([]);
   });
 
   it('quarantines the file before metadata delete and rolls back if metadata fails', async () => {
@@ -627,10 +642,14 @@ describe('Lucid morning voice-note local storage', () => {
       id: note.id,
     });
 
-    await deleteLucidMorningVoiceNote('guest', note.id, { storage, files });
+    await expect(
+      deleteLucidMorningVoiceNote('guest', note.id, { storage, files })
+    ).resolves.toEqual(note);
     await expect(getLucidMorningVoiceNote('guest', note.id, storage)).resolves.toBeNull();
     expect(files.files.has(note.uri)).toBe(false);
-    await expect(deleteLucidMorningVoiceNote('guest', note.id, { storage, files })).resolves.toBeUndefined();
+    await expect(
+      deleteLucidMorningVoiceNote('guest', note.id, { storage, files })
+    ).resolves.toBeNull();
   });
 
   it('restores metadata and audio if quarantine purge fails', async () => {

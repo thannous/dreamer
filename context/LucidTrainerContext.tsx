@@ -100,6 +100,7 @@ import {
 } from '@/services/lucidTrainerSync';
 import {
   claimLucidMorningVoiceNoteScope,
+  unlinkLucidMorningVoiceNotesFromExperiment,
 } from '@/services/lucidMorningVoiceNoteStorage';
 import {
   clearLucidTrainerLocalData,
@@ -226,6 +227,7 @@ export type LucidTrainerContextValue = {
   addRealityCheck: (input: RealityCheckInput) => Promise<LucidRealityCheck>;
   saveDreamSignDecision: (input: LucidDreamSignDecisionInput) => Promise<void>;
   saveWeeklyReview: (input: Omit<LucidWeeklyReview, 'id' | 'completedAt' | 'updatedAt'>) => Promise<void>;
+  clearExperimentVoiceCapture: (id: string) => Promise<void>;
   deleteExperiment: (id: string) => Promise<void>;
   syncNow: () => Promise<LucidSyncReplayResult | null>;
   resetLocalData: () => Promise<void>;
@@ -1129,6 +1131,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
 
   const deleteExperiment = useCallback(
     async (id: string) => {
+      await unlinkLucidMorningVoiceNotesFromExperiment(userScope, id);
       await commit((current, now) => ({
         next: { ...current, updatedAt: now, experiments: current.experiments.filter((item) => item.id !== id) },
         changed: [],
@@ -1140,6 +1143,42 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       }
     },
     [commit, state?.preferences.cloudSyncEnabled, user?.id, userScope]
+  );
+
+  const clearExperimentVoiceCapture = useCallback(
+    async (id: string) => {
+      await commit((current, now) => {
+        const existing = current.experiments.find((item) => item.id === id);
+        if (!existing || existing.voiceCapture !== 'local_note') {
+          return { next: current, changed: [] };
+        }
+
+        const { voiceCapture: _voiceCapture, recallText, ...base } = existing;
+        const normalizedRecall = recallText?.trim();
+        const experiment: LucidExperiment = normalizedRecall
+          ? {
+              ...base,
+              captureMode: 'write',
+              recallText: normalizedRecall,
+              updatedAt: Math.max(now, existing.updatedAt),
+            }
+          : {
+              ...base,
+              captureMode: 'nothing_for_now',
+              updatedAt: Math.max(now, existing.updatedAt),
+            };
+        if (!isLucidExperiment(experiment)) {
+          throw new Error('Invalid Lucid experiment');
+        }
+        const entity: LucidSyncEntity = {
+          entityType: 'experiment',
+          entityKey: experiment.id,
+          value: experiment,
+        };
+        return { next: applyLucidSyncEntity(current, entity), changed: [entity] };
+      });
+    },
+    [commit]
   );
 
   const syncNow = useCallback(async () => {
@@ -1320,6 +1359,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       addRealityCheck,
       saveDreamSignDecision,
       saveWeeklyReview,
+      clearExperimentVoiceCapture,
       deleteExperiment,
       syncNow,
       resetLocalData,
@@ -1353,6 +1393,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       addRealityCheck,
       saveDreamSignDecision,
       saveWeeklyReview,
+      clearExperimentVoiceCapture,
       deleteExperiment,
       syncNow,
       resetLocalData,

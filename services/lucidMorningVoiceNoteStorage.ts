@@ -688,18 +688,55 @@ export async function linkStoredLucidMorningVoiceNoteToExperiment(
   });
 }
 
+export async function unlinkLucidMorningVoiceNotesFromExperiment(
+  userScope: string,
+  experimentId: string,
+  options?: { now?: number; storage?: AsyncKeyValueStorage }
+): Promise<LucidMorningVoiceNote[]> {
+  const storage = options?.storage ?? getLucidKeyValueStorage();
+  return withScopeLock(assertScope(userScope), async () => {
+    if (!isLucidMorningVoiceNoteId(experimentId)) {
+      throw new LucidMorningVoiceNoteError('invalid_id', 'Experiment id is invalid');
+    }
+    const envelope = await loadEnvelope(userScope, storage);
+    const linked = envelope.notes.filter((note) => note.experimentId === experimentId);
+    if (linked.length === 0) return [];
+
+    const now = options?.now ?? Date.now();
+    const unlinked = linked.map((note) => {
+      const next: LucidMorningVoiceNote = {
+        ...note,
+        experimentId: null,
+        updatedAt: Math.max(now, note.updatedAt, note.createdAt),
+      };
+      assertLucidMorningVoiceNote(next);
+      return next;
+    });
+    const replacements = new Map(unlinked.map((note) => [note.id, note]));
+    await saveEnvelope(
+      {
+        ...envelope,
+        notes: envelope.notes.map((note) => replacements.get(note.id) ?? note),
+      },
+      storage
+    );
+    return unlinked;
+  });
+}
+
 export async function deleteLucidMorningVoiceNote(
   userScope: string,
   noteId: string,
   options?: { storage?: AsyncKeyValueStorage; files?: LucidMorningVoiceFileAdapter }
-): Promise<void> {
+): Promise<LucidMorningVoiceNote | null> {
   const storage = options?.storage ?? getLucidKeyValueStorage();
   const files = options?.files ?? createNativeFileAdapter();
-  await withScopeLock(assertScope(userScope), async () => {
+  return withScopeLock(assertScope(userScope), async () => {
     const envelope = await loadEnvelope(userScope, storage);
     const current = findNote(envelope, assertNoteId(noteId));
-    if (!current) return;
+    if (!current) return null;
     await deleteNoteFromEnvelope(envelope, current, storage, files);
+    return current;
   });
 }
 

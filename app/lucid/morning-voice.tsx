@@ -722,14 +722,17 @@ function MorningVoiceNoteRow({
 }
 
 export default function LucidMorningVoiceScreen() {
-  const { content, state, userScope } = useLucidTrainer();
+  const { clearExperimentVoiceCapture, content, state, userScope } = useLucidTrainer();
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const copy = COPY[content.locale];
   const params = useLocalSearchParams<{ autoStart?: string | string[] }>();
   const shouldAutoStart = shouldAutoStartLucidMorningVoice(params.autoStart);
   const pendingReturnNoteIdRef = useRef<string | null>(null);
-  const notesApi = useLucidMorningVoiceNotes({ userScope });
+  const notesApi = useLucidMorningVoiceNotes({
+    userScope,
+    onLinkedNoteDeleted: clearExperimentVoiceCapture,
+  });
   const recorder = useLucidMorningVoiceRecorder({
     userScope,
     title: copy.untitled,

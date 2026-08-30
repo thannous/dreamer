@@ -25,6 +25,7 @@ const mockRename = jest.fn();
 const mockTranscript = jest.fn();
 const mockLink = jest.fn();
 const mockDelete = jest.fn();
+const mockClearExperimentVoiceCapture = jest.fn();
 const mockPlay = jest.fn();
 const mockPausePlayback = jest.fn();
 const mockReplay = jest.fn();
@@ -51,6 +52,7 @@ let mockRecorder = {
 let mockNotes: LucidMorningVoiceNote[] = [];
 let mockNotesError: LucidMorningVoiceErrorReason | null = null;
 let mockNotesLoading = false;
+let mockNotesOptions: { onLinkedNoteDeleted?: (experimentId: string) => Promise<void> } | null = null;
 let mockPlayer = {
   isLoaded: true,
   isPlaying: false,
@@ -95,6 +97,7 @@ jest.mock('react-native', () => jest.requireActual('../react-native-stub'));
 jest.mock('@/context/LucidTrainerContext', () => ({
   useLucidTrainer: () => ({
     content: { locale: mockLocale, chrome: { common: { loading: 'Chargement…', retry: 'Réessayer' } } },
+    clearExperimentVoiceCapture: mockClearExperimentVoiceCapture,
     state: { experiments: mockExperiments },
     userScope: 'guest',
   }),
@@ -129,18 +132,21 @@ jest.mock('@/hooks/useLucidMorningVoiceRecorder', () => ({
 }));
 
 jest.mock('@/hooks/useLucidMorningVoiceNotes', () => ({
-  useLucidMorningVoiceNotes: () => ({
-    notes: mockNotes,
-    isLoading: mockNotesLoading,
-    isMutating: false,
-    error: mockNotesError,
-    refresh: mockRefresh,
-    renameNote: mockRename,
-    updateTranscript: mockTranscript,
-    linkToExperiment: mockLink,
-    deleteNote: mockDelete,
-    getByExperimentId: jest.fn(),
-  }),
+  useLucidMorningVoiceNotes: (options: typeof mockNotesOptions) => {
+    mockNotesOptions = options;
+    return {
+      notes: mockNotes,
+      isLoading: mockNotesLoading,
+      isMutating: false,
+      error: mockNotesError,
+      refresh: mockRefresh,
+      renameNote: mockRename,
+      updateTranscript: mockTranscript,
+      linkToExperiment: mockLink,
+      deleteNote: mockDelete,
+      getByExperimentId: jest.fn(),
+    };
+  },
 }));
 
 jest.mock('@/services/lucidMorningVoiceNoteExport', () => ({
@@ -211,6 +217,7 @@ describe('Lucid morning voice notes screen', () => {
     mockNotes = [];
     mockNotesError = null;
     mockNotesLoading = false;
+    mockNotesOptions = null;
     mockPlayer = {
       isLoaded: true,
       isPlaying: false,
@@ -232,6 +239,7 @@ describe('Lucid morning voice notes screen', () => {
     mockTranscript.mockReset().mockResolvedValue(undefined);
     mockLink.mockReset().mockResolvedValue(undefined);
     mockDelete.mockReset().mockResolvedValue(undefined);
+    mockClearExperimentVoiceCapture.mockReset().mockResolvedValue(undefined);
     mockPlay.mockReset().mockResolvedValue(undefined);
     mockPausePlayback.mockReset().mockResolvedValue(undefined);
     mockReplay.mockReset().mockResolvedValue(undefined);
@@ -249,6 +257,7 @@ describe('Lucid morning voice notes screen', () => {
 
   it('explains the microphone before Speak and starts recording on the first tap', () => {
     render(<LucidMorningVoiceScreen />);
+    expect(mockNotesOptions?.onLinkedNoteDeleted).toBe(mockClearExperimentVoiceCapture);
     expect(screen.getByTestId('lucid-morning-voice')).not.toBeNull();
     expect(screen.getByText(/premier tap sur Parler/i)).not.toBeNull();
     expect(screen.getByText(/restent sur cet appareil/i)).not.toBeNull();

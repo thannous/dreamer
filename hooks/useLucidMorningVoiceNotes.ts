@@ -16,6 +16,7 @@ import {
 
 export type UseLucidMorningVoiceNotesOptions = {
   userScope: string;
+  onLinkedNoteDeleted?: (experimentId: string) => Promise<void>;
 };
 
 export type UseLucidMorningVoiceNotesResult = {
@@ -57,6 +58,7 @@ function sortNotes(notes: LucidMorningVoiceNote[]): LucidMorningVoiceNote[] {
 
 export function useLucidMorningVoiceNotes({
   userScope,
+  onLinkedNoteDeleted,
 }: UseLucidMorningVoiceNotesOptions): UseLucidMorningVoiceNotesResult {
   const [stateScope, setStateScope] = useState(userScope);
   const [notes, setNotes] = useState<LucidMorningVoiceNote[]>([]);
@@ -330,7 +332,10 @@ export function useLucidMorningVoiceNotes({
       const { scope, seq } = beginMutation(noteId, 'delete');
       let finished = false;
       try {
-        await deleteLucidMorningVoiceNote(scope, noteId);
+        const deleted = await deleteLucidMorningVoiceNote(scope, noteId);
+        if (deleted?.experimentId) {
+          await onLinkedNoteDeleted?.(deleted.experimentId);
+        }
         if (canApplyMutation(noteId, seq, 'delete', scope)) {
           const current =
             notesScopeRef.current === scope
@@ -371,7 +376,16 @@ export function useLucidMorningVoiceNotes({
         }
       }
     },
-    [beginMutation, canApplyMutation, canApplyToScope, finishMutation, noteKey, requestDeferredReload, setNotesSafe]
+    [
+      beginMutation,
+      canApplyMutation,
+      canApplyToScope,
+      finishMutation,
+      noteKey,
+      onLinkedNoteDeleted,
+      requestDeferredReload,
+      setNotesSafe,
+    ]
   );
 
   const getByExperimentId = useCallback(
