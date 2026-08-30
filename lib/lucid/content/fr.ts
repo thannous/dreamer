@@ -7,10 +7,11 @@ const content = {
     tagline: 'Entraîne ton attention tout en protégeant ton sommeil.',
     tabs: {
       today: 'Aujourd’hui',
-      programs: 'Programmes',
+      journal: 'Journal',
+      programs: 'Parcours',
       night: 'Nuit',
-      progress: 'Progression',
-      settings: 'Réglages',
+      progress: 'Insights',
+      settings: 'Profil',
     },
     common: {
       continue: 'Continuer',

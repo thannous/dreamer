@@ -5,11 +5,13 @@ import { cleanup, render } from '@testing-library/react';
 
 const mockScreenOptions = new Map<string, unknown>();
 let mockNavigatorOptions: unknown;
+let mockDimensions = { width: 390, height: 844, scale: 1, fontScale: 1 };
 
 afterEach(() => {
   cleanup();
   mockScreenOptions.clear();
   mockNavigatorOptions = undefined;
+  mockDimensions = { width: 390, height: 844, scale: 1, fontScale: 1 };
 });
 
 jest.mock('expo-router', () => {
@@ -41,7 +43,7 @@ jest.mock('react-native', () => ({
   StyleSheet: { create: <T,>(styles: T) => styles },
   Text: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
   View: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
-  useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
+  useWindowDimensions: () => mockDimensions,
 }));
 
 jest.mock('react-native-safe-area-context', () => ({
@@ -76,10 +78,11 @@ jest.mock('@/context/LucidTrainerContext', () => ({
       chrome: {
         tabs: {
           today: 'Today',
-          programs: 'Programs',
+          journal: 'Journal',
+          programs: 'Journeys',
           night: 'Night',
-          progress: 'Progress',
-          settings: 'Settings',
+          progress: 'Insights',
+          settings: 'Profile',
         },
       },
     },
@@ -99,6 +102,7 @@ describe('Lucid tabs layout', () => {
     expect(mockNavigatorOptions).toBe(firstNavigatorOptions);
     expect([...mockScreenOptions.keys()]).toEqual([
       'index',
+      'journal',
       'programs',
       'night',
       'progress',
@@ -109,11 +113,37 @@ describe('Lucid tabs layout', () => {
     }
 
     expect(mockScreenOptions.get('night')).toMatchObject({ href: null, title: 'Night' });
-    expect(mockScreenOptions.get('settings')).toMatchObject({ href: null, title: 'Settings' });
+    expect(mockScreenOptions.get('settings')).toMatchObject({ href: null, title: 'Profile' });
     expect(
       [...mockScreenOptions.values()].filter(
         (options) => (options as { href?: unknown }).href !== null
       )
-    ).toHaveLength(3);
+    ).toHaveLength(4);
+  });
+
+  it('keeps four localized labels readable at 360 dp with enlarged text', () => {
+    mockDimensions = { width: 360, height: 800, scale: 1, fontScale: 2 };
+    render(<LucidTabsLayout />);
+
+    const visible = [...mockScreenOptions.entries()].filter(
+      ([, options]) => (options as { href?: unknown }).href !== null
+    );
+    expect(visible.map(([name]) => name)).toEqual(['index', 'journal', 'programs', 'progress']);
+    for (const [, options] of visible) {
+      const label = (options as {
+        tabBarLabel: (input: { color: string }) => React.ReactElement;
+      }).tabBarLabel({ color: '#111' });
+      const props = label.props as {
+        numberOfLines: number;
+        maxFontSizeMultiplier: number;
+        adjustsFontSizeToFit: boolean;
+        minimumFontScale: number;
+      };
+      expect(props.numberOfLines).toBe(1);
+      expect(props.maxFontSizeMultiplier).toBe(1.2);
+      expect(props.adjustsFontSizeToFit).toBe(true);
+      expect(props.minimumFontScale).toBe(0.85);
+    }
+    expect((mockNavigatorOptions as { tabBarStyle: { height: number } }).tabBarStyle.height).toBe(72);
   });
 });

@@ -7,10 +7,11 @@ const content = {
     tagline: 'Train awareness while protecting your sleep.',
     tabs: {
       today: 'Today',
-      programs: 'Programs',
+      journal: 'Journal',
+      programs: 'Journeys',
       night: 'Night',
-      progress: 'Progress',
-      settings: 'Settings',
+      progress: 'Insights',
+      settings: 'Profile',
     },
     common: {
       continue: 'Continue',

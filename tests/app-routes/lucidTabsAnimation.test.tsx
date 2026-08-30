@@ -90,10 +90,11 @@ jest.mock('@/context/LucidTrainerContext', () => ({
       chrome: {
         tabs: {
           today: 'Today',
-          programs: 'Programs',
+          journal: 'Journal',
+          programs: 'Journeys',
           night: 'Night',
-          progress: 'Progress',
-          settings: 'Settings',
+          progress: 'Insights',
+          settings: 'Profile',
         },
       },
     },
@@ -120,7 +121,7 @@ describe('Lucid tabs motion', () => {
     const visibleOptions = [...mockScreenOptions.values()].filter(
       (options) => typeof options.tabBarIcon === 'function'
     );
-    expect(visibleOptions).toHaveLength(3);
+    expect(visibleOptions).toHaveLength(4);
     for (const options of visibleOptions) {
       render(<>{options.tabBarIcon?.({ color: '#111', focused: true })}</>);
       render(<>{options.tabBarIcon?.({ color: '#777', focused: false })}</>);

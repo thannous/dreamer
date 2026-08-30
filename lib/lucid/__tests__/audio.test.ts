@@ -1,14 +1,24 @@
 import {
   createLucidNightSignalPlan,
   createLucidPreviewPlan,
+  getLucidNightSoundFile,
   getLucidNightVolumeBand,
+  LUCID_DEFAULT_NIGHT_CUE_OFFSETS_MINUTES,
+  LUCID_REDUCED_NIGHT_CUE_OFFSETS_MINUTES,
+  LUCID_TLR_CUE_DURATION_MS,
   MAX_LUCID_CUE_DURATION_MS,
   MAX_LUCID_NIGHT_VOLUME,
   MAX_LUCID_PREVIEW_DURATION_MS,
   MAX_LUCID_PREVIEW_VOLUME,
+  MAX_LUCID_REDUCED_NIGHT_VOLUME,
+  resolveLucidNightCueCalibration,
   resolveLucidNightSignalState,
+  shouldRestoreLucidNightSignalPlan,
   type LucidAudioSafety,
+  type LucidNightSignalRequest,
+  type LucidPreviewRequest,
 } from '@/lib/lucid/audio';
+import { evaluateLucidSafetyPolicy, type LucidSafetyFacts } from '@/lib/lucid/safety';
 
 const MINUTE = 60 * 1000;
 const START = 1_700_000_000_000;
@@ -19,6 +29,30 @@ const safeAudio: LucidAudioSafety = {
   hearingConcern: false,
 };
 
+function policyFrom(overrides: Partial<LucidSafetyFacts> = {}) {
+  return evaluateLucidSafetyPolicy({
+    recoveryRequested: false,
+    recentSleepDegraded: false,
+    sleepIsFragile: false,
+    hearingConcern: false,
+    audioConsented: true,
+    ...overrides,
+  });
+}
+
+function reducedAllowingPolicy() {
+  return {
+    ...policyFrom(),
+    mode: 'reducedIntensity' as const,
+    allowWbtb: false,
+    allowNightSignals: true,
+    nightSignalIntensity: 'reduced' as const,
+    reasons: ['repeated_signal_wakeups'] as const,
+  };
+}
+
+const normalPolicy = policyFrom();
+
 describe('lucid audio safety plans', () => {
   it('maps every bounded volume to a native amplitude band', () => {
     expect(getLucidNightVolumeBand(0.1)).toBe('very_low');
@@ -28,24 +62,46 @@ describe('lucid audio safety plans', () => {
     expect(getLucidNightVolumeBand(0.3)).toBe('gentle');
   });
 
-  it('caps preview volume and duration and emits an absolute stop deadline', () => {
+  it('uses the real 1200ms cue for preview and rejects every other duration', () => {
+    expect(MAX_LUCID_PREVIEW_DURATION_MS).toBe(LUCID_TLR_CUE_DURATION_MS);
+    expect(MAX_LUCID_CUE_DURATION_MS).toBe(LUCID_TLR_CUE_DURATION_MS);
     expect(
       createLucidPreviewPlan({
         nowAt: START,
         requestedVolume: 1,
-        requestedDurationMs: 60_000,
+        requestedDurationMs: 7_000,
         soundId: 'rain',
         safety: safeAudio,
+        policy: normalPolicy,
       })
-    ).toEqual({
+    ).toEqual({ status: 'blocked', reason: 'invalid_duration' });
+    expect(
+      createLucidPreviewPlan({
+        nowAt: START,
+        requestedVolume: 1,
+        requestedDurationMs: 600,
+        soundId: 'rain',
+        safety: safeAudio,
+        policy: normalPolicy,
+      })
+    ).toEqual({ status: 'blocked', reason: 'invalid_duration' });
+
+    const preview = createLucidPreviewPlan({
+      nowAt: START,
+      requestedVolume: 1,
+      soundId: 'rain',
+      safety: safeAudio,
+      policy: normalPolicy,
+    });
+    expect(preview).toEqual({
       status: 'ready',
       plan: {
         startsAt: START,
-        stopAt: START + MAX_LUCID_PREVIEW_DURATION_MS,
+        stopAt: START + LUCID_TLR_CUE_DURATION_MS,
         volume: MAX_LUCID_PREVIEW_VOLUME,
-        volumeBand: 'low',
+        volumeBand: 'gentle',
         soundId: 'rain',
-        soundFile: 'lucid_cue_rain_low.wav',
+        soundFile: 'lucid_cue_rain.wav',
         safetyRules: [
           'low_volume',
           'speaker_only',
@@ -67,9 +123,10 @@ describe('lucid audio safety plans', () => {
       createLucidPreviewPlan({
         nowAt: START,
         requestedVolume: 0.1,
-        requestedDurationMs: 2_000,
+        requestedDurationMs: LUCID_TLR_CUE_DURATION_MS,
         soundId: 'rain',
         safety,
+        policy: normalPolicy,
       })
     ).toEqual({ status: 'blocked', reason });
   });
@@ -81,9 +138,10 @@ describe('lucid audio safety plans', () => {
       timerMinutes: 360,
       cueOffsetsMinutes: [45, 90, 120, 130, 180, 225, 270, 315, 330],
       requestedVolume: 0.9,
-      requestedCueDurationMs: 20_000,
+      requestedCueDurationMs: LUCID_TLR_CUE_DURATION_MS,
       soundId: 'ocean',
       safety: safeAudio,
+      policy: normalPolicy,
     });
 
     expect(result.status).toBe('ready');
@@ -124,6 +182,7 @@ describe('lucid audio safety plans', () => {
       requestedVolume: 0.1,
       soundId: 'rain' as const,
       safety: safeAudio,
+      policy: normalPolicy,
     };
 
     expect(createLucidNightSignalPlan({ ...request, enabled: false })).toEqual({
@@ -148,6 +207,7 @@ describe('lucid audio safety plans', () => {
       requestedVolume: 0.1,
       soundId: 'brown-noise',
       safety: safeAudio,
+      policy: normalPolicy,
     });
     if (result.status !== 'ready') throw new Error('Expected a safe plan.');
     const [firstCue, secondCue] = result.plan.cues;
@@ -178,5 +238,356 @@ describe('lucid audio safety plans', () => {
       reason: 'timer_elapsed',
       expiredCueIds: [firstCue.id, secondCue.id],
     });
+  });
+});
+
+describe('lucid audio safety policy', () => {
+  const previewRequest = {
+    nowAt: START,
+    requestedVolume: 1,
+    requestedDurationMs: LUCID_TLR_CUE_DURATION_MS,
+    soundId: 'rain' as const,
+    safety: safeAudio,
+    policy: normalPolicy,
+  };
+
+  const nightRequest = {
+    enabled: true,
+    sessionStartAt: START,
+    timerMinutes: 360,
+    cueOffsetsMinutes: [90, 180],
+    requestedVolume: 0.9,
+    requestedCueDurationMs: LUCID_TLR_CUE_DURATION_MS,
+    soundId: 'ocean' as const,
+    safety: safeAudio,
+    policy: normalPolicy,
+  };
+
+  it('lowers preview and night volume to the lowest prudent band when intensity is reduced', () => {
+    const reduced = reducedAllowingPolicy();
+    expect(reduced.nightSignalIntensity).toBe('reduced');
+
+    const preview = createLucidPreviewPlan({ ...previewRequest, policy: reduced });
+    expect(preview.status).toBe('ready');
+    if (preview.status !== 'ready') throw new Error('Expected a reduced preview.');
+    expect(preview.plan.volume).toBe(MAX_LUCID_REDUCED_NIGHT_VOLUME);
+    expect(preview.plan.volumeBand).toBe('very_low');
+    expect(preview.plan.soundFile).toBe('lucid_cue_rain_very_low.wav');
+
+    const night = createLucidNightSignalPlan({ ...nightRequest, policy: reduced });
+    expect(night.status).toBe('ready');
+    if (night.status !== 'ready') throw new Error('Expected a reduced night plan.');
+    expect(night.plan.volume).toBe(MAX_LUCID_REDUCED_NIGHT_VOLUME);
+    expect(night.plan.volumeBand).toBe('very_low');
+    expect(night.plan.soundFile).toBe('lucid_cue_ocean_very_low.wav');
+    expect(night.plan.cues).toHaveLength(2);
+  });
+
+  it('keeps a requested volume already inside the reduced band', () => {
+    const reduced = reducedAllowingPolicy();
+    const preview = createLucidPreviewPlan({
+      ...previewRequest,
+      requestedVolume: 0.1,
+      policy: reduced,
+    });
+    expect(preview.status).toBe('ready');
+    if (preview.status !== 'ready') throw new Error('Expected a reduced preview.');
+    expect(preview.plan.volume).toBe(0.1);
+    expect(preview.plan.volumeBand).toBe('very_low');
+  });
+
+  it('blocks preview and night plans after two derived signal wakes', () => {
+    const blocked = policyFrom({ repeatedSignalWakeups: true });
+    expect(blocked.mode).toBe('reducedIntensity');
+    expect(blocked.allowNightSignals).toBe(false);
+    expect(blocked.nightSignalIntensity).toBe('blocked');
+    expect(
+      createLucidPreviewPlan({
+        ...previewRequest,
+        policy: blocked,
+      })
+    ).toEqual({ status: 'blocked', reason: 'night_signals_blocked' });
+    expect(
+      createLucidNightSignalPlan({
+        ...nightRequest,
+        policy: blocked,
+      })
+    ).toEqual({ status: 'blocked', reason: 'night_signals_blocked' });
+  });
+
+  it('blocks preview and night plans when the policy forbids night signals', () => {
+    expect(
+      createLucidPreviewPlan({
+        ...previewRequest,
+        policy: policyFrom({ recoveryRequested: true }),
+      })
+    ).toEqual({ status: 'blocked', reason: 'recovery_requested' });
+
+    expect(
+      createLucidNightSignalPlan({
+        ...nightRequest,
+        policy: policyFrom({ recoveryRequested: true }),
+      })
+    ).toEqual({ status: 'blocked', reason: 'recovery_requested' });
+
+    expect(
+      createLucidNightSignalPlan({
+        ...nightRequest,
+        policy: policyFrom({ sleepIsFragile: true }),
+      })
+    ).toEqual({ status: 'blocked', reason: 'fragile_sleep' });
+
+    const degradedSleep = policyFrom({ recentSleepDegraded: true });
+    expect(degradedSleep.mode).toBe('recovery');
+    expect(degradedSleep.allowNightSignals).toBe(false);
+    expect(degradedSleep.nightSignalIntensity).toBe('blocked');
+    expect(degradedSleep.reasons).toEqual(['recent_sleep_degraded']);
+    expect(
+      createLucidPreviewPlan({
+        ...previewRequest,
+        policy: degradedSleep,
+      })
+    ).toEqual({ status: 'blocked', reason: 'night_signals_blocked' });
+
+    expect(
+      createLucidNightSignalPlan({
+        ...nightRequest,
+        policy: degradedSleep,
+      })
+    ).toEqual({ status: 'blocked', reason: 'night_signals_blocked' });
+  });
+
+  it('still applies speaker, timer, and volume guards ahead of a permissive policy', () => {
+    const normal = policyFrom();
+    expect(
+      createLucidPreviewPlan({
+        ...previewRequest,
+        safety: { ...safeAudio, playbackRoute: 'headphones' },
+        policy: normal,
+      })
+    ).toEqual({ status: 'blocked', reason: 'unsafe_route' });
+    expect(
+      createLucidNightSignalPlan({
+        ...nightRequest,
+        timerMinutes: 60,
+        policy: normal,
+      })
+    ).toEqual({ status: 'blocked', reason: 'invalid_timer' });
+  });
+
+  it('restores a plan only when the current policy still allows those cues', () => {
+    const ready = createLucidNightSignalPlan(nightRequest);
+    if (ready.status !== 'ready') throw new Error('Expected a safe plan.');
+
+    expect(shouldRestoreLucidNightSignalPlan(ready.plan, policyFrom())).toBe(true);
+    expect(
+      shouldRestoreLucidNightSignalPlan(ready.plan, policyFrom({ recoveryRequested: true }))
+    ).toBe(false);
+    expect(
+      shouldRestoreLucidNightSignalPlan(
+        ready.plan,
+        policyFrom({ recentSleepDegraded: true })
+      )
+    ).toBe(false);
+    expect(
+      shouldRestoreLucidNightSignalPlan(
+        { ...ready.plan, volume: MAX_LUCID_REDUCED_NIGHT_VOLUME, volumeBand: 'very_low' },
+        policyFrom({ repeatedSignalWakeups: true })
+      )
+    ).toBe(false);
+    expect(
+      shouldRestoreLucidNightSignalPlan(
+        { ...ready.plan, volume: MAX_LUCID_REDUCED_NIGHT_VOLUME, volumeBand: 'very_low' },
+        reducedAllowingPolicy()
+      )
+    ).toBe(true);
+    expect(ready.plan.volume).toBe(MAX_LUCID_NIGHT_VOLUME);
+  });
+
+  it('fail-closes preview and night plans when the policy is omitted', () => {
+    const { policy: _policy, ...previewWithoutPolicy } = previewRequest;
+    const { policy: _nightPolicy, ...nightWithoutPolicy } = nightRequest;
+
+    expect(
+      createLucidPreviewPlan(previewWithoutPolicy as unknown as LucidPreviewRequest)
+    ).toEqual({
+      status: 'blocked',
+      reason: 'night_signals_blocked',
+    });
+    expect(
+      createLucidNightSignalPlan(nightWithoutPolicy as unknown as LucidNightSignalRequest)
+    ).toEqual({
+      status: 'blocked',
+      reason: 'night_signals_blocked',
+    });
+  });
+});
+
+describe('lucid night cue calibration', () => {
+  const experiments = (outcomes: readonly (string | undefined)[]) =>
+    outcomes.map((cueOutcome) => ({ cueOutcome }));
+
+  it('keeps a normal four-cue 1200ms plan when no heard_woke observation exists', () => {
+    const calibration = resolveLucidNightCueCalibration({
+      requestedVolume: 0.3,
+      policy: normalPolicy,
+      experiments: experiments(['heard_in_dream', undefined]),
+    });
+    expect(calibration).toMatchObject({
+      status: 'normal',
+      heardWokeCount: 0,
+      volume: MAX_LUCID_NIGHT_VOLUME,
+      maxCues: 4,
+      cueOffsetsMinutes: [...LUCID_DEFAULT_NIGHT_CUE_OFFSETS_MINUTES],
+      cueDurationMs: LUCID_TLR_CUE_DURATION_MS,
+    });
+
+    const night = createLucidNightSignalPlan({
+      enabled: true,
+      sessionStartAt: START,
+      timerMinutes: 360,
+      requestedVolume: 0.3,
+      soundId: 'rain',
+      safety: safeAudio,
+      policy: normalPolicy,
+      experiments: experiments(['not_heard']),
+    });
+    expect(night.status).toBe('ready');
+    if (night.status !== 'ready') throw new Error('Expected a normal night plan.');
+    const preview = createLucidPreviewPlan({
+      nowAt: START,
+      requestedVolume: 0.3,
+      soundId: 'rain',
+      safety: safeAudio,
+      policy: normalPolicy,
+      experiments: experiments(['not_heard']),
+    });
+    expect(preview.status).toBe('ready');
+    if (preview.status !== 'ready') throw new Error('Expected a matching preview.');
+    expect(preview.plan.soundFile).toBe(night.plan.soundFile);
+    expect(preview.plan.volume).toBe(night.plan.volume);
+    expect(preview.plan.volumeBand).toBe(night.plan.volumeBand);
+    expect(preview.plan.stopAt - preview.plan.startsAt).toBe(LUCID_TLR_CUE_DURATION_MS);
+    expect(night.plan.cues).toHaveLength(4);
+    expect(night.plan.cues.map((cue) => (cue.startsAt - START) / MINUTE)).toEqual([
+      ...LUCID_DEFAULT_NIGHT_CUE_OFFSETS_MINUTES,
+    ]);
+    expect(night.plan.cues.every((cue) => cue.stopAt - cue.startsAt === LUCID_TLR_CUE_DURATION_MS)).toBe(
+      true
+    );
+    expect(night.plan.soundFile).toBe(getLucidNightSoundFile('rain', night.plan.volume));
+  });
+
+  it('reduces volume and cue count after one heard_woke observation', () => {
+    const night = createLucidNightSignalPlan({
+      enabled: true,
+      sessionStartAt: START,
+      timerMinutes: 360,
+      requestedVolume: 0.3,
+      soundId: 'ocean',
+      safety: safeAudio,
+      policy: normalPolicy,
+      experiments: experiments(['heard_woke']),
+    });
+    expect(night.status).toBe('ready');
+    if (night.status !== 'ready') throw new Error('Expected a reduced night plan.');
+    expect(night.plan.volume).toBe(MAX_LUCID_REDUCED_NIGHT_VOLUME);
+    expect(night.plan.volumeBand).toBe('very_low');
+    expect(night.plan.soundFile).toBe('lucid_cue_ocean_very_low.wav');
+    expect(night.plan.cues).toHaveLength(2);
+    expect(night.plan.cues.map((cue) => (cue.startsAt - START) / MINUTE)).toEqual([
+      ...LUCID_REDUCED_NIGHT_CUE_OFFSETS_MINUTES,
+    ]);
+
+    const preview = createLucidPreviewPlan({
+      nowAt: START,
+      requestedVolume: 0.3,
+      soundId: 'ocean',
+      safety: safeAudio,
+      policy: normalPolicy,
+      experiments: experiments(['heard_woke']),
+    });
+    expect(preview.status).toBe('ready');
+    if (preview.status !== 'ready') throw new Error('Expected a reduced preview.');
+    expect(preview.plan.volume).toBe(night.plan.volume);
+    expect(preview.plan.soundFile).toBe(night.plan.soundFile);
+    expect(preview.plan.stopAt - preview.plan.startsAt).toBe(LUCID_TLR_CUE_DURATION_MS);
+  });
+
+  it('suspends preview and night cues after two heard_woke observations', () => {
+    const experimentsTwo = experiments(['heard_woke', 'heard_in_dream', 'heard_woke']);
+    expect(
+      resolveLucidNightCueCalibration({
+        requestedVolume: 0.3,
+        policy: normalPolicy,
+        experiments: experimentsTwo,
+      }).status
+    ).toBe('suspended');
+    expect(
+      createLucidNightSignalPlan({
+        enabled: true,
+        sessionStartAt: START,
+        timerMinutes: 360,
+        requestedVolume: 0.3,
+        soundId: 'rain',
+        safety: safeAudio,
+        policy: normalPolicy,
+        experiments: experimentsTwo,
+      })
+    ).toEqual({ status: 'blocked', reason: 'no_safe_signals' });
+    expect(
+      createLucidPreviewPlan({
+        nowAt: START,
+        requestedVolume: 0.3,
+        soundId: 'rain',
+        safety: safeAudio,
+        policy: normalPolicy,
+        experiments: experimentsTwo,
+      })
+    ).toEqual({ status: 'blocked', reason: 'no_safe_signals' });
+  });
+
+  it('keeps a persisted night plan shape compatible when restoring a reduced-volume cue', () => {
+    const ready = createLucidNightSignalPlan({
+      enabled: true,
+      sessionStartAt: START,
+      timerMinutes: 360,
+      requestedVolume: 0.3,
+      soundId: 'rain',
+      safety: safeAudio,
+      policy: normalPolicy,
+    });
+    if (ready.status !== 'ready') throw new Error('Expected a persisted-compatible plan.');
+    expect(ready.plan).toEqual(
+      expect.objectContaining({
+        sessionId: `lucid-night-${START}`,
+        sessionStartAt: START,
+        timerEndsAt: START + 360 * MINUTE,
+        volume: MAX_LUCID_NIGHT_VOLUME,
+        volumeBand: 'gentle',
+        soundId: 'rain',
+        soundFile: 'lucid_cue_rain.wav',
+        safetyRules: [
+          'low_volume',
+          'speaker_only',
+          'stop_if_sleep_disrupted',
+          'no_medical_claim',
+        ],
+      })
+    );
+    expect(ready.plan.cues[0]).toEqual(
+      expect.objectContaining({
+        id: `lucid-night-${START}:cue:1`,
+        requestedIndex: 0,
+        startsAt: START + 120 * MINUTE,
+        stopAt: START + 120 * MINUTE + LUCID_TLR_CUE_DURATION_MS,
+      })
+    );
+    expect(
+      shouldRestoreLucidNightSignalPlan(
+        { ...ready.plan, volume: MAX_LUCID_REDUCED_NIGHT_VOLUME, volumeBand: 'very_low' },
+        policyFrom({ repeatedSignalWakeups: true })
+      )
+    ).toBe(false);
   });
 });

@@ -1,13 +1,26 @@
+import { countLucidHeardWokeCues } from '@/lib/lucid/personalization';
+import {
+  canUseLucidNightSignals,
+  isLucidNightSignalIntensityReduced,
+  type LucidSafetyPolicy,
+} from '@/lib/lucid/safety';
+
 export const MAX_LUCID_NIGHT_VOLUME = 0.3;
-export const MAX_LUCID_PREVIEW_VOLUME = 0.2;
-export const MAX_LUCID_PREVIEW_DURATION_MS = 10_000;
-export const MAX_LUCID_CUE_DURATION_MS = 8_000;
+export const MAX_LUCID_PREVIEW_VOLUME = 0.3;
+/** Top of the `very_low` band — reduced-intensity night signals stay here. */
+export const MAX_LUCID_REDUCED_NIGHT_VOLUME = 0.15;
+/** Real WAV length. Preview and night use this exact short cue; never a 7s promise. */
+export const LUCID_TLR_CUE_DURATION_MS = 1_200;
+export const MAX_LUCID_PREVIEW_DURATION_MS = LUCID_TLR_CUE_DURATION_MS;
+export const MAX_LUCID_CUE_DURATION_MS = LUCID_TLR_CUE_DURATION_MS;
 export const MIN_LUCID_FIRST_CUE_DELAY_MS = 90 * 60 * 1000;
 export const MIN_LUCID_CUE_GAP_MS = 45 * 60 * 1000;
 export const LUCID_QUIET_BEFORE_TIMER_END_MS = 30 * 60 * 1000;
 export const MAX_LUCID_NIGHT_CUES = 4;
 export const MIN_LUCID_TIMER_MINUTES = 120;
 export const MAX_LUCID_TIMER_MINUTES = 600;
+export const LUCID_DEFAULT_NIGHT_CUE_OFFSETS_MINUTES = [120, 180, 240, 300] as const;
+export const LUCID_REDUCED_NIGHT_CUE_OFFSETS_MINUTES = [120, 240] as const;
 
 export const LUCID_NIGHT_SOUND_IDS = ['rain', 'ocean', 'brown-noise'] as const;
 export type LucidNightSoundId = (typeof LUCID_NIGHT_SOUND_IDS)[number];
@@ -58,6 +71,8 @@ export type LucidAudioBlockReason =
   | 'unsafe_route'
   | 'fragile_sleep'
   | 'hearing_concern'
+  | 'recovery_requested'
+  | 'night_signals_blocked'
   | 'invalid_deadline'
   | 'invalid_timer'
   | 'invalid_volume'
@@ -119,23 +134,42 @@ export type LucidNightSignalPlanResult =
   | LucidAudioBlocked
   | { status: 'ready'; plan: LucidNightSignalPlan };
 
+export type LucidHeardWokeObservation = {
+  cueOutcome?: string | null;
+};
+
 export type LucidPreviewRequest = {
   nowAt: number;
   requestedVolume: number;
-  requestedDurationMs: number;
+  requestedDurationMs?: number;
   soundId: LucidNightSoundId;
   safety: LucidAudioSafety;
+  policy: LucidSafetyPolicy;
+  heardWokeCount?: number;
+  experiments?: readonly LucidHeardWokeObservation[] | null;
 };
 
 export type LucidNightSignalRequest = {
   enabled: boolean;
   sessionStartAt: number;
   timerMinutes: number;
-  cueOffsetsMinutes: readonly number[];
+  cueOffsetsMinutes?: readonly number[];
   requestedVolume: number;
   requestedCueDurationMs?: number;
   soundId: LucidNightSoundId;
   safety: LucidAudioSafety;
+  policy: LucidSafetyPolicy;
+  heardWokeCount?: number;
+  experiments?: readonly LucidHeardWokeObservation[] | null;
+};
+
+export type LucidNightCueCalibration = {
+  status: 'normal' | 'reduced' | 'suspended';
+  heardWokeCount: number;
+  volume: number;
+  maxCues: number;
+  cueOffsetsMinutes: readonly number[];
+  cueDurationMs: number;
 };
 
 export type LucidNightSignalState =
@@ -165,6 +199,18 @@ function getSafetyBlockReason(
   return null;
 }
 
+function getPolicyNightSignalBlockReason(
+  policy: LucidSafetyPolicy | null | undefined
+): LucidAudioBlockReason | null {
+  if (policy == null || typeof policy !== 'object') return 'night_signals_blocked';
+  if (policy.allowNightSignals) return null;
+  if (policy.reasons.includes('audio_not_consented')) return 'safety_not_acknowledged';
+  if (policy.reasons.includes('hearing_concern')) return 'hearing_concern';
+  if (policy.reasons.includes('fragile_sleep')) return 'fragile_sleep';
+  if (policy.reasons.includes('recovery_requested')) return 'recovery_requested';
+  return 'night_signals_blocked';
+}
+
 function isFiniteDeadline(value: number): boolean {
   return Number.isFinite(value) && Number.isSafeInteger(value) && value >= 0;
 }
@@ -172,6 +218,92 @@ function isFiniteDeadline(value: number): boolean {
 function clampPositive(value: number, maximum: number): number | null {
   if (!Number.isFinite(value) || value <= 0) return null;
   return Math.min(value, maximum);
+}
+
+function exactPositiveDuration(value: number, expected: number): number | null {
+  if (!Number.isFinite(value) || value !== expected) return null;
+  return expected;
+}
+
+function resolvePlanVolume(
+  requestedVolume: number,
+  absoluteMax: number,
+  policy: LucidSafetyPolicy
+): number | null {
+  const cap = isLucidNightSignalIntensityReduced(policy)
+    ? Math.min(absoluteMax, MAX_LUCID_REDUCED_NIGHT_VOLUME)
+    : absoluteMax;
+  return clampPositive(requestedVolume, cap);
+}
+
+export function shouldRestoreLucidNightSignalPlan(
+  plan: LucidNightSignalPlan,
+  policy: LucidSafetyPolicy
+): boolean {
+  if (!canUseLucidNightSignals(policy)) return false;
+  if (isLucidNightSignalIntensityReduced(policy) && plan.volume > MAX_LUCID_REDUCED_NIGHT_VOLUME) {
+    return false;
+  }
+  return true;
+}
+
+function countHeardWoke(value: unknown): number {
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.floor(Number(value)));
+}
+
+export function countLucidHeardWokeExperiments(
+  experiments: readonly { cueOutcome?: string | null; occurredAt?: number; id?: string }[] | null | undefined
+): number {
+  return countLucidHeardWokeCues(
+    (experiments ?? []).map((experiment, index) => ({
+      id: experiment.id ?? `heard-woke-${index}`,
+      occurredAt:
+        typeof experiment.occurredAt === 'number' && Number.isFinite(experiment.occurredAt)
+          ? experiment.occurredAt
+          : index + 1,
+      cueOutcome: experiment?.cueOutcome === 'heard_woke' ? 'heard_woke' : undefined,
+    }))
+  );
+}
+
+export function resolveLucidNightCueCalibration(input: {
+  requestedVolume: number;
+  policy: LucidSafetyPolicy;
+  heardWokeCount?: number;
+  experiments?: readonly { cueOutcome?: string | null }[] | null;
+}): LucidNightCueCalibration {
+  const heardWokeCount = countHeardWoke(
+    input.heardWokeCount ?? countLucidHeardWokeExperiments(input.experiments)
+  );
+  if (heardWokeCount >= 2) {
+    return {
+      status: 'suspended',
+      heardWokeCount,
+      volume: 0,
+      maxCues: 0,
+      cueOffsetsMinutes: [],
+      cueDurationMs: LUCID_TLR_CUE_DURATION_MS,
+    };
+  }
+
+  const reducedByWake = heardWokeCount === 1;
+  const reducedByPolicy = isLucidNightSignalIntensityReduced(input.policy);
+  const reduced = reducedByWake || reducedByPolicy;
+  const volumeCap = reduced
+    ? Math.min(MAX_LUCID_NIGHT_VOLUME, MAX_LUCID_REDUCED_NIGHT_VOLUME)
+    : MAX_LUCID_NIGHT_VOLUME;
+  const volume = clampPositive(input.requestedVolume, volumeCap) ?? 0;
+  return {
+    status: reduced ? 'reduced' : 'normal',
+    heardWokeCount,
+    volume,
+    maxCues: reduced ? 2 : MAX_LUCID_NIGHT_CUES,
+    cueOffsetsMinutes: reduced
+      ? LUCID_REDUCED_NIGHT_CUE_OFFSETS_MINUTES
+      : LUCID_DEFAULT_NIGHT_CUE_OFFSETS_MINUTES,
+    cueDurationMs: LUCID_TLR_CUE_DURATION_MS,
+  };
 }
 
 export function isLucidNightSoundId(value: unknown): value is LucidNightSoundId {
@@ -196,14 +328,33 @@ export function createLucidPreviewPlan(
 ): LucidPreviewPlanResult {
   const safetyBlock = getSafetyBlockReason(request.safety);
   if (safetyBlock) return { status: 'blocked', reason: safetyBlock };
+  const policyBlock = getPolicyNightSignalBlockReason(request.policy);
+  if (policyBlock) return { status: 'blocked', reason: policyBlock };
   if (!isFiniteDeadline(request.nowAt)) {
     return { status: 'blocked', reason: 'invalid_deadline' };
   }
-  const volume = clampPositive(request.requestedVolume, MAX_LUCID_PREVIEW_VOLUME);
+  const heardWokeCount = countHeardWoke(
+    request.heardWokeCount ?? countLucidHeardWokeExperiments(request.experiments)
+  );
+  if (heardWokeCount >= 2) {
+    return { status: 'blocked', reason: 'no_safe_signals' };
+  }
+  const calibration = resolveLucidNightCueCalibration({
+    requestedVolume: request.requestedVolume,
+    policy: request.policy,
+    heardWokeCount,
+  });
+  const volume = resolvePlanVolume(
+    request.requestedVolume,
+    heardWokeCount === 1 || calibration.status === 'reduced'
+      ? Math.min(MAX_LUCID_PREVIEW_VOLUME, MAX_LUCID_REDUCED_NIGHT_VOLUME)
+      : MAX_LUCID_PREVIEW_VOLUME,
+    request.policy
+  );
   if (volume === null) return { status: 'blocked', reason: 'invalid_volume' };
-  const duration = clampPositive(
-    request.requestedDurationMs,
-    MAX_LUCID_PREVIEW_DURATION_MS
+  const duration = exactPositiveDuration(
+    request.requestedDurationMs ?? LUCID_TLR_CUE_DURATION_MS,
+    LUCID_TLR_CUE_DURATION_MS
   );
   if (duration === null) return { status: 'blocked', reason: 'invalid_duration' };
   if (!isLucidNightSoundId(request.soundId)) {
@@ -243,6 +394,8 @@ export function createLucidNightSignalPlan(
   if (!request.enabled) return { status: 'blocked', reason: 'disabled' };
   const safetyBlock = getSafetyBlockReason(request.safety);
   if (safetyBlock) return { status: 'blocked', reason: safetyBlock };
+  const policyBlock = getPolicyNightSignalBlockReason(request.policy);
+  if (policyBlock) return { status: 'blocked', reason: policyBlock };
   if (!isFiniteDeadline(request.sessionStartAt)) {
     return { status: 'blocked', reason: 'invalid_deadline' };
   }
@@ -254,11 +407,20 @@ export function createLucidNightSignalPlan(
     return { status: 'blocked', reason: 'invalid_timer' };
   }
 
-  const volume = clampPositive(request.requestedVolume, MAX_LUCID_NIGHT_VOLUME);
+  const calibration = resolveLucidNightCueCalibration({
+    requestedVolume: request.requestedVolume,
+    policy: request.policy,
+    heardWokeCount: request.heardWokeCount,
+    experiments: request.experiments,
+  });
+  if (calibration.status === 'suspended') {
+    return { status: 'blocked', reason: 'no_safe_signals' };
+  }
+  const volume = clampPositive(calibration.volume, MAX_LUCID_NIGHT_VOLUME);
   if (volume === null) return { status: 'blocked', reason: 'invalid_volume' };
-  const cueDuration = clampPositive(
-    request.requestedCueDurationMs ?? MAX_LUCID_CUE_DURATION_MS,
-    MAX_LUCID_CUE_DURATION_MS
+  const cueDuration = exactPositiveDuration(
+    request.requestedCueDurationMs ?? calibration.cueDurationMs,
+    LUCID_TLR_CUE_DURATION_MS
   );
   if (cueDuration === null) return { status: 'blocked', reason: 'invalid_duration' };
   if (!isLucidNightSoundId(request.soundId)) {
@@ -271,7 +433,9 @@ export function createLucidNightSignalPlan(
     return { status: 'blocked', reason: 'invalid_deadline' };
   }
 
-  const requestedCues = request.cueOffsetsMinutes
+  const requestedOffsets =
+    request.cueOffsetsMinutes ?? calibration.cueOffsetsMinutes;
+  const requestedCues = requestedOffsets
     .map((offsetMinutes, requestedIndex) => ({ offsetMinutes, requestedIndex }))
     .sort((left, right) => {
       if (!Number.isFinite(left.offsetMinutes)) return 1;
@@ -310,7 +474,7 @@ export function createLucidNightSignalPlan(
       rejectCue(rejectedCues, requestedCue.requestedIndex, 'too_close');
       continue;
     }
-    if (cues.length >= MAX_LUCID_NIGHT_CUES) {
+    if (cues.length >= calibration.maxCues) {
       rejectCue(rejectedCues, requestedCue.requestedIndex, 'limit_reached');
       continue;
     }

@@ -3,7 +3,7 @@
 import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 
-import type { LucidExperienceLevel, LucidGoal } from '@/lib/lucid/model';
+import type { LucidExperienceLevel, LucidExperiment, LucidGoal } from '@/lib/lucid/model';
 
 const NOW = 1_700_000_000_000;
 
@@ -36,7 +36,8 @@ const mockStaleExperiment = {
   updatedAt: NOW - 8 * 86_400_000,
 };
 
-jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
+const mockPush = jest.fn();
+jest.mock('expo-router', () => ({ router: { push: (...args: unknown[]) => mockPush(...args) } }));
 jest.mock('@expo/vector-icons', () => ({ Ionicons: () => <span aria-hidden="true" /> }));
 
 jest.mock('expo-image', () => ({
@@ -143,7 +144,7 @@ const mockTrainerState = {
     goal: 'first_lucid_dream' as LucidGoal,
     experience: 'beginner' as LucidExperienceLevel,
   },
-  experiments: [...mockCurrentExperiments, mockStaleExperiment],
+  experiments: [...mockCurrentExperiments, mockStaleExperiment] as LucidExperiment[],
   weeklyReviews: [] as {
     id: string;
     weekStart: string;
@@ -156,6 +157,14 @@ const mockTrainerState = {
     updatedAt: number;
   }[],
 };
+let mockActiveDreamSigns: { id: string; label: string; distinctDreamCount: number }[] = [];
+const mockUseLucidStabilizationLab = jest.fn();
+let mockLabState = {
+  currentSession: null as { sessionId: string } | null,
+  insights: { practiceCount: 3, completionCount: 2, repeatCount: 4 },
+  isLoading: false,
+  error: null as string | null,
+};
 
 jest.mock('@/context/LucidTrainerContext', () => {
   const { getLucidContent } = jest.requireActual('@/lib/lucid/content');
@@ -163,25 +172,64 @@ jest.mock('@/context/LucidTrainerContext', () => {
     useLucidTrainer: () => ({
       state: mockTrainerState,
       content: getLucidContent('en'),
+      activeDreamSigns: mockActiveDreamSigns,
       deleteExperiment: jest.fn(),
+      userScope: 'guest',
     }),
   };
 });
 
+jest.mock('@/hooks/useLucidStabilizationLab', () => ({
+  useLucidStabilizationLab: (options: { userScope: string }) => mockUseLucidStabilizationLab(options),
+}));
+
 jest.mock('@/components/lucid/LucidUI', () => ({
   LUCID_TAB_BAR_INSET: 92,
   LucidScreen: ({ children }: { children: React.ReactNode }) => <main>{children}</main>,
-  LucidButton: ({ label }: { label: string }) => <button>{label}</button>,
-  LucidIconAction: () => null,
+  LucidButton: ({ label, onPress, testID }: { label: string; onPress?: () => void; testID?: string }) => (
+    <button data-testid={testID} onClick={onPress}>{label}</button>
+  ),
+  LucidCard: ({
+    accessibilityLabel,
+    children,
+    testID,
+  }: {
+    accessibilityLabel?: string;
+    children: React.ReactNode;
+    testID?: string;
+  }) => (
+    <section aria-label={accessibilityLabel} data-testid={testID}>{children}</section>
+  ),
+  LucidIconAction: ({ label }: { label: string }) => (
+    <button aria-label={label}>{label}</button>
+  ),
 }));
 
 const { default: LucidProgressScreen } = require('@/app/lucid/(tabs)/progress');
 
+const originalExperiments = [...mockTrainerState.experiments];
+
 describe('Lucid Trainer progress screen', () => {
+  beforeEach(() => {
+    mockPush.mockClear();
+    mockLabState = {
+      currentSession: null,
+      insights: { practiceCount: 3, completionCount: 2, repeatCount: 4 },
+      isLoading: false,
+      error: null,
+    };
+    mockUseLucidStabilizationLab.mockImplementation((options: { userScope: string }) => {
+      expect(options.userScope).toBe('guest');
+      return mockLabState;
+    });
+  });
+
   afterEach(() => {
     mockTrainerState.onboarding.goal = 'first_lucid_dream';
     mockTrainerState.onboarding.experience = 'beginner';
     mockTrainerState.weeklyReviews = [];
+    mockTrainerState.experiments = [...originalExperiments];
+    mockActiveDreamSigns = [];
     cleanup();
   });
 
@@ -218,7 +266,7 @@ describe('Lucid Trainer progress screen', () => {
     mockTrainerState.onboarding.experience = 'occasional';
     render(<LucidProgressScreen />);
 
-    expect(screen.getByText('Remember more')).not.toBeNull();
+    expect(screen.getAllByText('Remember more')).toHaveLength(1);
     const metricIds = screen
       .getAllByTestId(/metric-/)
       .map((node) => node.getAttribute('data-testid'));
@@ -298,5 +346,108 @@ describe('Lucid Trainer progress screen', () => {
     expect(
       screen.getByText('Saved weekly reviews will appear here after you complete one.'),
     ).not.toBeNull();
+  });
+
+  it('shows only confirmed dream signs in Insights', () => {
+    mockActiveDreamSigns = [{ id: 'sign:mirror', label: 'My mirror', distinctDreamCount: 3 }];
+    render(<LucidProgressScreen />);
+
+    expect(screen.getByTestId('lucid-progress-dream-sign-sign:mirror')).not.toBeNull();
+    expect(screen.getByText('My mirror')).not.toBeNull();
+    expect(screen.getByText('3 source dreams')).not.toBeNull();
+  });
+
+  it('shows local stabilization Insights separately and opens the lab', () => {
+    render(<LucidProgressScreen />);
+
+    expect(mockUseLucidStabilizationLab).toHaveBeenCalledWith({ userScope: 'guest' });
+    expect(screen.getByTestId('lucid-progress-stabilization')).not.toBeNull();
+    expect(screen.getByText('Stabilization practice')).not.toBeNull();
+    expect(screen.getByText('Local practice counts only. They do not prove an effect.')).not.toBeNull();
+    expect(screen.getByTestId('lucid-progress-stabilization-practices').textContent).toContain('3');
+    expect(screen.getByTestId('lucid-progress-stabilization-completions').textContent).toContain('2');
+    expect(screen.getByTestId('lucid-progress-stabilization-repeats').textContent).toContain('4');
+    expect(screen.getByTestId('lucid-progress-stabilization-open').textContent).toBe('Open lab');
+    fireEvent.click(screen.getByTestId('lucid-progress-stabilization-open'));
+    expect(mockPush).toHaveBeenCalledWith('/lucid/stabilization-lab');
+    expect(screen.getByTestId('metric-attempts').textContent).toContain('6');
+  });
+
+  it('uses Resume when a current lab session exists', () => {
+    mockLabState.currentSession = { sessionId: 'stab_live' };
+    render(<LucidProgressScreen />);
+    expect(screen.getByTestId('lucid-progress-stabilization-open').textContent).toBe('Resume');
+  });
+
+  it('keeps other Insights visible when the lab fails to load', () => {
+    mockLabState.error = 'persistence_failed';
+    mockActiveDreamSigns = [{ id: 'sign:mirror', label: 'My mirror', distinctDreamCount: 3 }];
+    render(<LucidProgressScreen />);
+    expect(screen.getByText('Lab stats unavailable. Other Insights stay visible.')).not.toBeNull();
+    expect(screen.getByTestId('lucid-progress-dream-sign-sign:mirror')).not.toBeNull();
+    expect(screen.getByTestId('metric-attempts')).not.toBeNull();
+    expect(screen.getByTestId('lucid-progress-methods-toggle')).not.toBeNull();
+  });
+
+  it('renders a write capture with linked practice without treating it as a reported method or null scores', () => {
+    mockTrainerState.experiments = [
+      {
+        id: 'write-1',
+        occurredAt: NOW,
+        technique: null,
+        preparationMinutes: null,
+        result: null,
+        lucidityLevel: null,
+        recallLevel: null,
+        sleepQuality: null,
+        factors: [],
+        updatedAt: NOW,
+        captureMode: 'write',
+        recallText: 'a staircase that kept rearranging',
+        cueOutcome: 'heard_in_dream',
+        techniqueAutoLink: {
+          technique: 'ssild',
+          source: 'program_practice',
+          practiceDate: '2026-08-26',
+        },
+      },
+    ];
+
+    render(<LucidProgressScreen />);
+
+    expect(screen.getByText('Linked practice: SSILD')).not.toBeNull();
+    expect(screen.getByText(/Cue heard in the dream/)).not.toBeNull();
+    expect(screen.getByText('a staircase that kept rearranging')).not.toBeNull();
+    expect(screen.queryByText('null/5')).toBeNull();
+    expect(screen.getByLabelText(/Delete: Linked practice: SSILD/)).not.toBeNull();
+    const body = document.body.textContent ?? '';
+    expect(body).not.toMatch(/No lucidity/);
+  });
+
+  it('renders nothing-for-now as open-ended capture rather than no dream or no recall', () => {
+    mockTrainerState.experiments = [
+      {
+        id: 'deferred-1',
+        occurredAt: NOW,
+        technique: null,
+        preparationMinutes: null,
+        result: null,
+        lucidityLevel: null,
+        recallLevel: null,
+        sleepQuality: null,
+        factors: [],
+        updatedAt: NOW,
+        captureMode: 'nothing_for_now',
+        cueOutcome: 'not_heard',
+      },
+    ];
+
+    render(<LucidProgressScreen />);
+
+    expect(screen.getByText('Nothing for now')).not.toBeNull();
+    expect(screen.getByText(/Cue not heard/)).not.toBeNull();
+    expect(screen.queryByText('null/5')).toBeNull();
+    const body = (document.body.textContent ?? '').toLowerCase();
+    expect(body).not.toMatch(/did not dream|no dream|no recall/);
   });
 });

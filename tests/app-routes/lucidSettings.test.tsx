@@ -53,6 +53,7 @@ const state = {
     noctaliaLinkEnabled: false,
     notificationsEnabled: true,
     realityCheckRemindersPerDay: 3,
+    mindfulPauseReminderAnchors: ['transition'],
     audioCuesEnabled: false,
     audioVolume: 0.25,
     timeZone: 'Europe/Paris',
@@ -179,6 +180,7 @@ describe('Lucid Trainer settings', () => {
     state.onboarding.experience = 'beginner';
     state.preferences.notificationsEnabled = true;
     state.preferences.realityCheckRemindersPerDay = 3;
+    state.preferences.mindfulPauseReminderAnchors = ['transition'];
   });
 
   afterEach(cleanup);
@@ -190,6 +192,13 @@ describe('Lucid Trainer settings', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Open account controls' }));
 
     expect(mockPush).toHaveBeenCalledWith('/lucid/account');
+  });
+
+  it('opens the isolated Apple Health sleep import prototype from resources', () => {
+    render(<LucidSettingsScreen />);
+    fireEvent.click(screen.getByTestId('lucid-settings-resources'));
+    fireEvent.click(screen.getByRole('button', { name: 'Apple Health sleep import' }));
+    expect(mockPush).toHaveBeenCalledWith('/lucid/sleep-integration');
   });
 
   it('applies and persists an explicit appearance choice', async () => {
@@ -213,6 +222,21 @@ describe('Lucid Trainer settings', () => {
         realityCheckRemindersPerDay: 4,
       });
     });
+  });
+
+  it('persists configurable pause anchors without changing reminder windows', async () => {
+    render(<LucidSettingsScreen />);
+
+    fireEvent.click(screen.getByTestId('lucid-reminder-anchor-emotion'));
+
+    await waitFor(() => {
+      expect(mockUpdatePreferences).toHaveBeenCalledWith({
+        mindfulPauseReminderAnchors: ['transition', 'emotion'],
+      });
+    });
+    expect(mockUpdatePreferences).not.toHaveBeenCalledWith(
+      expect.objectContaining({ realityCheckRemindersPerDay: expect.anything() })
+    );
   });
 
   it('disables notifications immediately without changing reminder count', async () => {

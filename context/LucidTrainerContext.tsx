@@ -13,31 +13,79 @@ import React, {
 import { AppState } from 'react-native';
 
 import { useAuth } from '@/context/AuthContext';
+import { useDreamsData } from '@/context/DreamsContext';
 import { trackProductEvent } from '@/lib/analytics';
 import { isLucidTrainer } from '@/lib/appVariant';
 import {
   activateExclusiveLucidProgram,
   applyLucidProgramProgress,
   applyLucidSyncEntity,
+  canonicalLucidJson,
   createLucidProgramProgress,
   diffLucidProgramProgress,
   getLucidSyncEntities,
   type LucidTrainerState,
 } from '@/lib/lucid/domain';
 import { getLucidContent, normalizeLucidLocale, type LucidTrainerContent } from '@/lib/lucid/content';
-import type {
-  LucidExperiment,
-  LucidOnboardingState,
-  LucidPersonalFactor,
-  LucidProgramProgress,
-  LucidRealityCheck,
-  LucidSyncEntity,
-  LucidTechnique,
-  LucidTrainerPreferences,
-  LucidWeeklyReview,
+import {
+  getLucidDateKeyInTimeZone,
+  resolvePreviousNightTechniqueLink,
+} from '@/lib/lucid/morningCapture';
+import {
+  extractLucidDreamSignCandidates,
+  getActiveLucidDreamSigns,
+  reconcileLucidDreamSignDecisions,
+  type LucidActiveDreamSign,
+  type LucidDreamSignCandidate,
+} from '@/lib/lucid/dreamSigns';
+import {
+  LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT,
+  areLucidDreamAtlasPreferencesSemanticallyEqual,
+  buildLucidDreamAtlas,
+  createEmptyLucidDreamAtlasOverlay,
+  lucidDreamAtlasOverlayPreferences,
+  normalizeLucidDreamAtlasPreferences,
+  type LucidDreamAtlasPreferences,
+} from '@/lib/lucid/dreamAtlas';
+import {
+  abandonLucidGuidedRitualProgress,
+  advanceLucidGuidedRitualProgress,
+  completeLucidGuidedRitualProgress,
+  createLucidGuidedRitualPlan,
+  createLucidGuidedRitualProgress,
+  resumeLucidGuidedRitualProgress,
+} from '@/lib/lucid/guidedRitual';
+import {
+  isLucidExperiment,
+  isLucidPersistedDreamSignDecision,
+  isLucidRealityCheck,
+  type LucidDreamCaptureMode,
+  type LucidDreamSignDecision,
+  type LucidExperiment,
+  type LucidExperimentResult,
+  type LucidGuidedRitualProgress,
+  type LucidGuidedRitualTechnique,
+  type LucidNightCueOutcome,
+  type LucidOnboardingDraftStep,
+  type LucidOnboardingState,
+  type LucidPersonalFactor,
+  type LucidPersistedDreamSignDecision,
+  type LucidProgramProgress,
+  type LucidRealityCheck,
+  type LucidSleepSchedule,
+  type LucidSyncEntity,
+  type LucidTechnique,
+  type LucidTrainerPreferences,
+  type LucidVoiceCaptureState,
+  type LucidWakeSensitivity,
+  type LucidWeeklyReview,
 } from '@/lib/lucid/model';
 import { buildLucidReminderPlan } from '@/lib/lucid/reminders';
-import { evaluateLucidSessionAccess } from '@/lib/lucid/safety';
+import {
+  evaluateLucidSafetyPolicyFromState,
+  evaluateLucidSessionAccess,
+  getLucidWbtbDenialReason,
+} from '@/lib/lucid/safety';
 import { resetLucidOnboardingCompletionNavigationClaim } from '@/lib/lucid/routes';
 import { setProductAnalyticsEnabled } from '@/lib/productAnalytics';
 import { reconcileLucidTrainerReminders } from '@/services/lucidTrainerNotifications';
@@ -63,8 +111,6 @@ export type LucidSyncStatus = 'local' | 'syncing' | 'synced' | 'offline' | 'erro
 
 type CompleteOnboardingInput = Pick<
   LucidOnboardingState,
-  | 'goal'
-  | 'experience'
   | 'weeklyTarget'
   | 'sleepSchedule'
   | 'notificationsPermission'
@@ -72,20 +118,73 @@ type CompleteOnboardingInput = Pick<
   | 'audioSafetyAccepted'
   | 'analyticsConsent'
   | 'accessibility'
-> & Pick<LucidTrainerPreferences, 'cloudSyncEnabled' | 'noctaliaLinkEnabled'>;
+> &
+  Pick<LucidTrainerPreferences, 'cloudSyncEnabled' | 'noctaliaLinkEnabled'> & {
+    goal: NonNullable<LucidOnboardingState['goal']>;
+    experience: NonNullable<LucidOnboardingState['experience']>;
+    wakeSensitivity: LucidWakeSensitivity;
+    sleepScheduleConfirmed: true;
+  };
 
-type ExperimentInput = {
-  technique: LucidTechnique;
-  preparationMinutes: number;
-  result: LucidExperiment['result'];
-  lucidityLevel: number;
-  recallLevel: number;
-  sleepQuality: number;
+export type LucidOnboardingDraftPatch = {
+  goal?: LucidOnboardingState['goal'];
+  experience?: LucidOnboardingState['experience'];
+  wakeSensitivity?: LucidWakeSensitivity | null;
+  sleepSchedule?: LucidSleepSchedule;
+  sleepScheduleDraft?: LucidOnboardingState['sleepScheduleDraft'];
+  sleepScheduleConfirmed?: boolean;
+  draftStep?: LucidOnboardingDraftStep;
+};
+
+function requireCompleteOnboardingAnswers(
+  onboarding: LucidOnboardingState
+): asserts onboarding is LucidOnboardingState & {
+  goal: NonNullable<LucidOnboardingState['goal']>;
+  experience: NonNullable<LucidOnboardingState['experience']>;
+  wakeSensitivity: LucidWakeSensitivity;
+  sleepScheduleConfirmed: true;
+} {
+  const missing: string[] = [];
+  if (!onboarding.goal) missing.push('goal');
+  if (!onboarding.experience) missing.push('experience');
+  if (!onboarding.wakeSensitivity) missing.push('wakeSensitivity');
+  if (onboarding.sleepScheduleConfirmed !== true) missing.push('sleepScheduleConfirmed');
+  if (missing.length > 0) {
+    throw new Error(`Lucid onboarding is incomplete: ${missing.join(', ')}`);
+  }
+}
+
+export type LucidExperimentInput = {
+  technique: LucidTechnique | null;
+  preparationMinutes: number | null;
+  result: LucidExperimentResult | null;
+  lucidityLevel: number | null;
+  recallLevel: number | null;
+  sleepQuality: number | null;
   factors: LucidPersonalFactor[];
   notes?: string;
+  captureMode: LucidDreamCaptureMode;
+  recallText?: string;
+  cueOutcome: LucidNightCueOutcome;
+  voiceCapture?: LucidVoiceCaptureState;
+};
+
+export type LucidDreamSignDecisionInput = {
+  id: string;
+  decision: LucidDreamSignDecision;
+  customLabel?: string | null;
+  sourceDreamIds: string[];
 };
 
 type RealityCheckInput = Omit<LucidRealityCheck, 'id' | 'occurredAt' | 'updatedAt'>;
+
+export type LucidGuidedRitualMutationInput = {
+  technique: LucidGuidedRitualTechnique;
+  exerciseId: string;
+  sessionNumber: number;
+  sessionCount: number;
+  action: 'start' | 'advance' | 'abandon' | 'resume';
+};
 
 export type LucidTrainerContextValue = {
   state: LucidTrainerState | null;
@@ -96,16 +195,33 @@ export type LucidTrainerContextValue = {
   syncStatus: LucidSyncStatus;
   lastSyncResult: LucidSyncReplayResult | null;
   guestImportAvailable: boolean;
+  dreamSignCandidates: LucidDreamSignCandidate[];
+  activeDreamSigns: LucidActiveDreamSign[];
   importGuestData: () => Promise<void>;
+  saveOnboardingDraft: (patch: LucidOnboardingDraftPatch) => Promise<void>;
   completeOnboarding: (input: CompleteOnboardingInput) => Promise<void>;
   updateAnalyticsConsent: (enabled: boolean) => Promise<void>;
   updateAudioSafetyConsent: (enabled: boolean) => Promise<void>;
   updatePreferences: (patch: Partial<LucidTrainerPreferences>) => Promise<void>;
+  updateDreamAtlasPreferences: (
+    updater: (current: LucidDreamAtlasPreferences) => LucidDreamAtlasPreferences
+  ) => Promise<LucidDreamAtlasPreferences>;
+  clearDreamAtlasPreferences: () => Promise<void>;
   startProgram: (technique: LucidTechnique) => Promise<void>;
   completeProgramSession: (technique: LucidTechnique, exerciseId: string, sessionNumber: number, sessionCount: number) => Promise<void>;
+  updateGuidedRitual: (
+    input: LucidGuidedRitualMutationInput
+  ) => Promise<LucidGuidedRitualProgress>;
+  completeGuidedRitualSession: (
+    technique: LucidGuidedRitualTechnique,
+    exerciseId: string,
+    sessionNumber: number,
+    sessionCount: number
+  ) => Promise<void>;
   pauseProgram: (technique: LucidTechnique) => Promise<void>;
-  addExperiment: (input: ExperimentInput) => Promise<LucidExperiment>;
+  addExperiment: (input: LucidExperimentInput) => Promise<LucidExperiment>;
   addRealityCheck: (input: RealityCheckInput) => Promise<LucidRealityCheck>;
+  saveDreamSignDecision: (input: LucidDreamSignDecisionInput) => Promise<void>;
   saveWeeklyReview: (input: Omit<LucidWeeklyReview, 'id' | 'completedAt' | 'updatedAt'>) => Promise<void>;
   deleteExperiment: (id: string) => Promise<void>;
   syncNow: () => Promise<LucidSyncReplayResult | null>;
@@ -134,17 +250,108 @@ function getTimeZone(): string {
   }
 }
 
-function localDateKey(now: number): string {
-  const date = new Date(now);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
-
 function entityForProgress(value: LucidProgramProgress): LucidSyncEntity {
   return { entityType: 'progress', entityKey: value.technique, value };
 }
 
+function currentDreamAtlasPreferences(state: LucidTrainerState): LucidDreamAtlasPreferences {
+  return normalizeLucidDreamAtlasPreferences(
+    lucidDreamAtlasOverlayPreferences(
+      state.dreamAtlas ?? createEmptyLucidDreamAtlasOverlay(LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT)
+    )
+  );
+}
+
+function cloneDreamAtlasPreferences(
+  preferences: LucidDreamAtlasPreferences
+): LucidDreamAtlasPreferences {
+  return {
+    version: preferences.version,
+    renamed: { ...preferences.renamed },
+    hidden: [...preferences.hidden],
+    merges: { ...preferences.merges },
+    deleted: [...preferences.deleted],
+  };
+}
+
+function guidedRitualSessionId(
+  technique: LucidGuidedRitualTechnique,
+  exerciseId: string
+): string {
+  return `${technique}:${exerciseId}`;
+}
+
+function completeProgramSessionMutation(params: {
+  current: LucidTrainerState;
+  technique: LucidTechnique;
+  exerciseId: string;
+  sessionNumber: number;
+  sessionCount: number;
+  now: number;
+  guidedRitual?: LucidGuidedRitualProgress;
+}): { next: LucidTrainerState; changed: LucidSyncEntity[] } {
+  const {
+    current,
+    technique,
+    exerciseId,
+    sessionNumber,
+    sessionCount,
+    now,
+    guidedRitual,
+  } = params;
+  const existing =
+    current.progress.find((item) => item.technique === technique) ??
+    createLucidProgramProgress(technique, now);
+  const access = evaluateLucidSessionAccess({
+    sessionNumber,
+    sessionCount,
+    exerciseId,
+    progress: existing,
+  });
+  if (!access.allowed) throw new Error('Lucid session is locked');
+  if (technique === 'wbtb') {
+    const reason = getLucidWbtbDenialReason(evaluateLucidSafetyPolicyFromState(current));
+    if (reason) {
+      if (access.reason === 'completed') return { next: current, changed: [] };
+      throw new Error(reason);
+    }
+  }
+  const mutationUpdatedAt =
+    Math.max(
+      now,
+      current.updatedAt,
+      guidedRitual?.updatedAt ?? 0,
+      ...current.progress.map((item) => item.updatedAt)
+    ) + 1;
+  const completedExerciseIds = [...new Set([...existing.completedExerciseIds, exerciseId])];
+  const completed = completedExerciseIds.length >= sessionCount;
+  const practiceDate = getLucidDateKeyInTimeZone(now, current.preferences.timeZone);
+  if (practiceDate === null) throw new Error('Invalid Lucid timezone');
+  const progress: LucidProgramProgress = {
+    ...existing,
+    ...(guidedRitual ? { guidedRitual } : {}),
+    status: completed ? 'completed' : 'active',
+    currentDay: Math.min(sessionCount, completedExerciseIds.length + 1),
+    completedExerciseIds,
+    practiceDates: [...new Set([...existing.practiceDates, practiceDate])],
+    startedAt: existing.startedAt ?? now,
+    completedAt: completed ? now : null,
+    updatedAt: mutationUpdatedAt,
+  };
+  const next = applyLucidProgramProgress(
+    current,
+    progress,
+    progress.status === 'active' ? technique : undefined
+  );
+  return {
+    next,
+    changed: diffLucidProgramProgress(current.progress, next.progress).map(entityForProgress),
+  };
+}
+
 export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const { dreams, loaded: dreamsLoaded } = useDreamsData();
   const userId = user?.id;
   const userScope = userId ? `user:${userId}` : 'guest';
   const deviceLocale = normalizeLucidLocale(getLocales()[0]?.languageTag);
@@ -156,6 +363,14 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const [guestImportAvailable, setGuestImportAvailable] = useState(false);
   const [activeScope, setActiveScope] = useState(userScope);
   const activeScopeRef = useRef(userScope);
+  const dreamSignCandidates = useMemo(
+    () => extractLucidDreamSignCandidates(dreams),
+    [dreams]
+  );
+  const activeDreamSigns = useMemo(
+    () => getActiveLucidDreamSigns(dreamSignCandidates, state?.dreamSignDecisions ?? []),
+    [dreamSignCandidates, state?.dreamSignDecisions]
+  );
 
   if (activeScope !== userScope) {
     resetLucidOnboardingCompletionNavigationClaim();
@@ -358,6 +573,27 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     [deviceLocale, queueEntities, userScope]
   );
 
+  const saveOnboardingDraft = useCallback(
+    async (patch: LucidOnboardingDraftPatch) => {
+      await commit((current, now) => {
+        if (current.onboarding.status === 'completed') {
+          return { next: current, changed: [] };
+        }
+        const onboarding: LucidOnboardingState = {
+          ...current.onboarding,
+          ...patch,
+          status: 'in_progress',
+          updatedAt: now,
+        };
+        return {
+          next: { ...current, onboarding, updatedAt: now },
+          changed: [{ entityType: 'onboarding', entityKey: 'onboarding', value: onboarding }],
+        };
+      });
+    },
+    [commit]
+  );
+
   const completeOnboarding = useCallback(
     async (input: CompleteOnboardingInput) => {
       const {
@@ -366,9 +602,20 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         ...onboardingInput
       } = input;
       const next = await commit((current, now) => {
-        const onboarding: LucidOnboardingState = {
+        const completionCandidate: LucidOnboardingState = {
           ...current.onboarding,
           ...onboardingInput,
+          wakeSensitivity: input.wakeSensitivity,
+        };
+        requireCompleteOnboardingAnswers(completionCandidate);
+        const onboarding: LucidOnboardingState = {
+          ...completionCandidate,
+          sleepScheduleConfirmed: true,
+          sleepScheduleDraft: {
+            bedtime: input.sleepSchedule.bedtime,
+            wakeTime: input.sleepSchedule.wakeTime,
+          },
+          draftStep: 3,
           status: 'completed',
           completedAt: now,
           updatedAt: now,
@@ -442,6 +689,43 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     [commit, reconcileLoadedState, runSync, userId, userScope]
   );
 
+  const updateDreamAtlasPreferences = useCallback(
+    async (updater: (current: LucidDreamAtlasPreferences) => LucidDreamAtlasPreferences) => {
+      let saved: LucidDreamAtlasPreferences | null = null;
+      await commit((current, now) => {
+        const currentPreferences = currentDreamAtlasPreferences(current);
+        const nextPreferences = normalizeLucidDreamAtlasPreferences(
+          updater(cloneDreamAtlasPreferences(currentPreferences))
+        );
+        if (areLucidDreamAtlasPreferencesSemanticallyEqual(currentPreferences, nextPreferences)) {
+          saved = currentPreferences;
+          return { next: current, changed: [] };
+        }
+        const entity: LucidSyncEntity = {
+          entityType: 'dream_atlas',
+          entityKey: 'dream_atlas',
+          value: { ...nextPreferences, updatedAt: now },
+        };
+        saved = nextPreferences;
+        return { next: applyLucidSyncEntity(current, entity), changed: [entity] };
+      });
+      if (!saved) throw new Error('Dream atlas preferences were not saved');
+      return saved;
+    },
+    [commit]
+  );
+
+  const clearDreamAtlasPreferences = useCallback(async () => {
+    await commit((current, now) => {
+      const entity: LucidSyncEntity = {
+        entityType: 'dream_atlas',
+        entityKey: 'dream_atlas',
+        value: createEmptyLucidDreamAtlasOverlay(now),
+      };
+      return { next: applyLucidSyncEntity(current, entity), changed: [entity] };
+    });
+  }, [commit]);
+
   const updateAnalyticsConsent = useCallback(
     async (enabled: boolean) => {
       await commit((current, now) => {
@@ -487,6 +771,10 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         if (existing?.status === 'completed') {
           return { next: current, changed: [] };
         }
+        if (technique === 'wbtb') {
+          const reason = getLucidWbtbDenialReason(evaluateLucidSafetyPolicyFromState(current));
+          if (reason) throw new Error(reason);
+        }
         const { next, changed } = activateExclusiveLucidProgram(current, technique, now);
         return { next, changed: changed.map(entityForProgress) };
       });
@@ -496,45 +784,136 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
 
   const completeProgramSession = useCallback(
     async (technique: LucidTechnique, exerciseId: string, sessionNumber: number, sessionCount: number) => {
-      const next = await commit((current, now) => {
-        const existing = current.progress.find((item) => item.technique === technique) ?? createLucidProgramProgress(technique, now);
-        const access = evaluateLucidSessionAccess({
+      const next = await commit((current, now) =>
+        completeProgramSessionMutation({
+          current,
+          technique,
+          exerciseId,
           sessionNumber,
           sessionCount,
-          exerciseId,
-          progress: existing,
-        });
-        if (!access.allowed) throw new Error('Lucid session is locked');
-        const mutationUpdatedAt =
-          Math.max(now, current.updatedAt, ...current.progress.map((item) => item.updatedAt)) + 1;
-        const completedExerciseIds = [...new Set([...existing.completedExerciseIds, exerciseId])];
-        const completed = completedExerciseIds.length >= sessionCount;
-        const progress: LucidProgramProgress = {
-          ...existing,
-          status: completed ? 'completed' : 'active',
-          currentDay: Math.min(sessionCount, completedExerciseIds.length + 1),
-          completedExerciseIds,
-          practiceDates: [...new Set([...existing.practiceDates, localDateKey(now)])],
-          startedAt: existing.startedAt ?? now,
-          completedAt: completed ? now : null,
-          updatedAt: mutationUpdatedAt,
-        };
-        const next = applyLucidProgramProgress(
-          current,
-          progress,
-          progress.status === 'active' ? technique : undefined
-        );
-        return {
-          next,
-          changed: diffLucidProgramProgress(current.progress, next.progress).map(entityForProgress),
-        };
-      });
+          now,
+        })
+      );
       if (next.onboarding.analyticsConsent === true) {
         await trackProductEvent('lucid_training_completed', {
           technique,
           phase: technique === 'wbtb' ? 'night' : 'bedtime',
           outcome: 'completed',
           duration: technique === 'wbtb' ? '15m_plus' : '5_15m',
+        });
+      }
+    },
+    [commit]
+  );
+
+  const updateGuidedRitual = useCallback(
+    async (input: LucidGuidedRitualMutationInput) => {
+      let saved: LucidGuidedRitualProgress | null = null;
+      await commit((current, now) => {
+        const existing =
+          current.progress.find((item) => item.technique === input.technique) ??
+          createLucidProgramProgress(input.technique, now);
+        const access = evaluateLucidSessionAccess({
+          sessionNumber: input.sessionNumber,
+          sessionCount: input.sessionCount,
+          exerciseId: input.exerciseId,
+          progress: existing,
+        });
+        if (!access.allowed || access.reason === 'completed') {
+          throw new Error('Lucid session is locked');
+        }
+        const plan = createLucidGuidedRitualPlan(
+          input.technique,
+          evaluateLucidSafetyPolicyFromState(current)
+        );
+        if (plan.status !== 'ready') throw new Error(plan.reason);
+        const sessionId = guidedRitualSessionId(input.technique, input.exerciseId);
+        const currentRitual = existing.guidedRitual;
+        const sameRitual = currentRitual?.sessionId === sessionId;
+        let guidedRitual: LucidGuidedRitualProgress;
+
+        if (input.action === 'start') {
+          guidedRitual = sameRitual && currentRitual
+            ? currentRitual
+            : createLucidGuidedRitualProgress({ plan, sessionId, now });
+        } else {
+          if (!sameRitual || !currentRitual) {
+            throw new Error('Guided ritual has not started');
+          }
+          if (
+            (input.action === 'resume' || input.action === 'advance') &&
+            (currentRitual.mode !== plan.mode || currentRitual.stepCount !== plan.phases.length)
+          ) {
+            guidedRitual = createLucidGuidedRitualProgress({ plan, sessionId, now });
+          } else if (input.action === 'advance') {
+            guidedRitual = advanceLucidGuidedRitualProgress(currentRitual, now);
+          } else if (input.action === 'abandon') {
+            guidedRitual = abandonLucidGuidedRitualProgress(currentRitual, now);
+          } else {
+            guidedRitual = resumeLucidGuidedRitualProgress(currentRitual, now);
+          }
+        }
+
+        saved = guidedRitual;
+        const mutationUpdatedAt =
+          Math.max(
+            now,
+            current.updatedAt,
+            guidedRitual.updatedAt,
+            ...current.progress.map((item) => item.updatedAt)
+          ) + 1;
+        const progress: LucidProgramProgress = {
+          ...existing,
+          status: 'active',
+          startedAt: existing.startedAt ?? now,
+          guidedRitual,
+          updatedAt: mutationUpdatedAt,
+        };
+        const next = applyLucidProgramProgress(current, progress, input.technique);
+        return {
+          next,
+          changed: diffLucidProgramProgress(current.progress, next.progress).map(entityForProgress),
+        };
+      });
+      if (!saved) throw new Error('Guided ritual was not saved');
+      return saved;
+    },
+    [commit]
+  );
+
+  const completeGuidedRitualSession = useCallback(
+    async (
+      technique: LucidGuidedRitualTechnique,
+      exerciseId: string,
+      sessionNumber: number,
+      sessionCount: number
+    ) => {
+      const next = await commit((current, now) => {
+        const existing = current.progress.find((item) => item.technique === technique);
+        const sessionId = guidedRitualSessionId(technique, exerciseId);
+        if (!existing?.guidedRitual || existing.guidedRitual.sessionId !== sessionId) {
+          throw new Error('Guided ritual has not started');
+        }
+        const guidedRitual = completeLucidGuidedRitualProgress(
+          existing.guidedRitual,
+          now
+        );
+        return completeProgramSessionMutation({
+          current,
+          technique,
+          exerciseId,
+          sessionNumber,
+          sessionCount,
+          now,
+          guidedRitual,
+        });
+      });
+      if (next.onboarding.analyticsConsent === true) {
+        await trackProductEvent('lucid_training_completed', {
+          technique,
+          phase: 'bedtime',
+          outcome: 'completed',
+          duration: '5_15m',
         });
       }
     },
@@ -555,14 +934,49 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   );
 
   const addExperiment = useCallback(
-    async (input: ExperimentInput) => {
+    async (input: LucidExperimentInput) => {
       let created: LucidExperiment | null = null;
       const next = await commit((current, now) => {
-        created = { id: Crypto.randomUUID(), occurredAt: now, updatedAt: now, ...input };
-        const entity: LucidSyncEntity = { entityType: 'experiment', entityKey: created.id, value: created };
+        const recallText = input.recallText?.trim();
+        const techniqueAutoLink = resolvePreviousNightTechniqueLink(
+          current.progress,
+          now,
+          current.preferences.timeZone
+        );
+        const experiment: LucidExperiment = {
+          id: Crypto.randomUUID(),
+          occurredAt: now,
+          updatedAt: now,
+          technique: input.technique,
+          preparationMinutes: input.preparationMinutes,
+          result: input.result,
+          lucidityLevel: input.lucidityLevel,
+          recallLevel: input.recallLevel,
+          sleepQuality: input.sleepQuality,
+          factors: input.factors,
+          captureMode: input.captureMode,
+          cueOutcome: input.cueOutcome,
+        };
+        if (input.notes) experiment.notes = input.notes;
+        if (input.captureMode === 'write' || input.captureMode === 'speak') {
+          if (recallText) experiment.recallText = recallText;
+        }
+        if (input.captureMode === 'speak' && input.voiceCapture) {
+          experiment.voiceCapture = input.voiceCapture;
+        }
+        if (techniqueAutoLink) experiment.techniqueAutoLink = techniqueAutoLink;
+        if (!isLucidExperiment(experiment)) {
+          throw new Error('Invalid Lucid experiment');
+        }
+        created = experiment;
+        const entity: LucidSyncEntity = {
+          entityType: 'experiment',
+          entityKey: experiment.id,
+          value: experiment,
+        };
         return { next: applyLucidSyncEntity(current, entity), changed: [entity] };
       });
-      if (next.onboarding.analyticsConsent === true) {
+      if (next.onboarding.analyticsConsent === true && input.technique) {
         await trackProductEvent('lucid_training_completed', {
           technique: input.technique,
           phase: 'morning',
@@ -580,7 +994,24 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     async (input: RealityCheckInput) => {
       let created: LucidRealityCheck | null = null;
       await commit((current, now) => {
-        created = { id: Crypto.randomUUID(), occurredAt: now, updatedAt: now, ...input };
+        created = {
+          id: Crypto.randomUUID(),
+          occurredAt: now,
+          updatedAt: now,
+          ...input,
+          ...(input.observedDetail !== undefined
+            ? { observedDetail: input.observedDetail.trim() }
+            : {}),
+          ...(input.arrivalPath !== undefined
+            ? { arrivalPath: input.arrivalPath.trim() }
+            : {}),
+          ...(input.nextDreamIntention !== undefined
+            ? { nextDreamIntention: input.nextDreamIntention.trim() }
+            : {}),
+        };
+        if (!isLucidRealityCheck(created)) {
+          throw new Error('Invalid Lucid reality check');
+        }
         const entity: LucidSyncEntity = { entityType: 'reality_check', entityKey: created.id, value: created };
         return { next: applyLucidSyncEntity(current, entity), changed: [entity] };
       });
@@ -588,6 +1019,70 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       return created;
     },
     [commit]
+  );
+
+  const saveDreamSignDecision = useCallback(
+    async (input: LucidDreamSignDecisionInput) => {
+      const candidate = dreamSignCandidates.find((item) => item.id === input.id);
+      if (
+        input.decision !== 'pending' &&
+        (!candidate ||
+          canonicalLucidJson(candidate.sourceDreamIds) !==
+            canonicalLucidJson([...new Set(input.sourceDreamIds)].sort()))
+      ) {
+        throw new Error('Dream sign must match current local journal evidence');
+      }
+      let deleted = false;
+      const next = await commit((current, now) => {
+        const existing = (current.dreamSignDecisions ?? []).find(
+          (item) => item.id === input.id
+        );
+        if (input.decision === 'pending') {
+          if (!existing) return { next: current, changed: [] };
+          deleted = true;
+          return {
+            next: {
+              ...current,
+              updatedAt: now,
+              dreamSignDecisions: (current.dreamSignDecisions ?? []).filter(
+                (item) => item.id !== input.id
+              ),
+            },
+            changed: [],
+          };
+        }
+
+        const customLabel = input.customLabel?.replace(/\s+/g, ' ').trim() || undefined;
+        const record: LucidPersistedDreamSignDecision = {
+          id: input.id,
+          decision: input.decision,
+          sourceDreamIds: [...candidate!.sourceDreamIds],
+          updatedAt: now,
+          ...(customLabel ? { customLabel } : {}),
+        };
+        if (!isLucidPersistedDreamSignDecision(record)) {
+          throw new Error('Invalid Lucid dream-sign decision');
+        }
+        const entity: LucidSyncEntity = {
+          entityType: 'dream_sign',
+          entityKey: record.id,
+          value: record,
+        };
+        return { next: applyLucidSyncEntity(current, entity), changed: [entity] };
+      });
+
+      if (deleted && user?.id && next.preferences.cloudSyncEnabled) {
+        await queueLucidTrainerMutation(
+          createLucidTrainerMutation({
+            userScope,
+            operation: 'delete',
+            entityType: 'dream_sign',
+            entityKey: input.id,
+          })
+        );
+      }
+    },
+    [commit, dreamSignCandidates, user?.id, userScope]
   );
 
   const saveWeeklyReview = useCallback(
@@ -642,6 +1137,115 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     [deviceLocale, state?.preferences.locale]
   );
 
+  useEffect(() => {
+    const decisions = state?.dreamSignDecisions ?? [];
+    if (!dreamsLoaded || decisions.length === 0) return;
+    const candidatesById = new Map(
+      dreamSignCandidates.map((candidate) => [candidate.id, candidate] as const)
+    );
+    const needsReconciliation = decisions.some((decision) => {
+      const candidate = candidatesById.get(decision.id);
+      return (
+        !candidate ||
+        canonicalLucidJson(decision.sourceDreamIds) !==
+          canonicalLucidJson(candidate.sourceDreamIds)
+      );
+    });
+    if (!needsReconciliation) return;
+
+    void (async () => {
+      const deletedIds: string[] = [];
+      const next = await commit((current, now) => {
+        deletedIds.length = 0;
+        const changed: LucidSyncEntity[] = [];
+        const reconciled: LucidPersistedDreamSignDecision[] = [];
+        for (const decision of current.dreamSignDecisions ?? []) {
+          const candidate = candidatesById.get(decision.id);
+          if (!candidate) {
+            deletedIds.push(decision.id);
+            continue;
+          }
+          if (
+            canonicalLucidJson(decision.sourceDreamIds) ===
+            canonicalLucidJson(candidate.sourceDreamIds)
+          ) {
+            reconciled.push(decision);
+            continue;
+          }
+          const updated: LucidPersistedDreamSignDecision = {
+            ...decision,
+            sourceDreamIds: [...candidate.sourceDreamIds],
+            updatedAt: now,
+          };
+          reconciled.push(updated);
+          changed.push({
+            entityType: 'dream_sign',
+            entityKey: updated.id,
+            value: updated,
+          });
+        }
+        if (changed.length === 0 && deletedIds.length === 0) {
+          return { next: current, changed: [] };
+        }
+        return {
+          next: {
+            ...current,
+            updatedAt: now,
+            dreamSignDecisions: reconciled.sort((a, b) => a.id.localeCompare(b.id)),
+          },
+          changed,
+        };
+      });
+      if (user?.id && next.preferences.cloudSyncEnabled) {
+        for (const id of [...new Set(deletedIds)]) {
+          await queueLucidTrainerMutation(
+            createLucidTrainerMutation({
+              userScope,
+              operation: 'delete',
+              entityType: 'dream_sign',
+              entityKey: id,
+            })
+          );
+        }
+        if (deletedIds.length > 0) setSyncStatus('local');
+      }
+    })().catch((cause) => {
+      if (__DEV__) console.warn('[LucidTrainer] Dream-sign reconciliation failed', cause);
+    });
+  }, [commit, dreamSignCandidates, dreamsLoaded, state?.dreamSignDecisions, user?.id, userScope]);
+
+  useEffect(() => {
+    if (!dreamsLoaded || state == null) return;
+    const reconciledSigns = reconcileLucidDreamSignDecisions(
+      dreamSignCandidates,
+      state.dreamSignDecisions ?? []
+    );
+    const reconciledPreferences = buildLucidDreamAtlas({
+      signs: reconciledSigns,
+      dreams,
+      preferences: state.dreamAtlas,
+    }).preferences;
+    if (
+      areLucidDreamAtlasPreferencesSemanticallyEqual(
+        currentDreamAtlasPreferences(state),
+        reconciledPreferences
+      )
+    ) {
+      return;
+    }
+    void (async () => {
+      await updateDreamAtlasPreferences(() => reconciledPreferences);
+    })().catch((cause) => {
+      if (__DEV__) console.warn('[LucidTrainer] Dream atlas reconciliation failed', cause);
+    });
+  }, [
+    dreamSignCandidates,
+    dreams,
+    dreamsLoaded,
+    state,
+    updateDreamAtlasPreferences,
+  ]);
+
   const reconcileReminders = useCallback(async () => {
     if (!state) return;
     await reconcileLoadedState(state, userScope);
@@ -679,16 +1283,24 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       syncStatus,
       lastSyncResult,
       guestImportAvailable,
+      dreamSignCandidates,
+      activeDreamSigns,
       importGuestData,
+      saveOnboardingDraft,
       completeOnboarding,
       updateAnalyticsConsent,
       updateAudioSafetyConsent,
       updatePreferences,
+      updateDreamAtlasPreferences,
+      clearDreamAtlasPreferences,
       startProgram,
       completeProgramSession,
+      updateGuidedRitual,
+      completeGuidedRitualSession,
       pauseProgram,
       addExperiment,
       addRealityCheck,
+      saveDreamSignDecision,
       saveWeeklyReview,
       deleteExperiment,
       syncNow,
@@ -704,16 +1316,24 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       syncStatus,
       lastSyncResult,
       guestImportAvailable,
+      dreamSignCandidates,
+      activeDreamSigns,
       importGuestData,
+      saveOnboardingDraft,
       completeOnboarding,
       updateAnalyticsConsent,
       updateAudioSafetyConsent,
       updatePreferences,
+      updateDreamAtlasPreferences,
+      clearDreamAtlasPreferences,
       startProgram,
       completeProgramSession,
+      updateGuidedRitual,
+      completeGuidedRitualSession,
       pauseProgram,
       addExperiment,
       addRealityCheck,
+      saveDreamSignDecision,
       saveWeeklyReview,
       deleteExperiment,
       syncNow,

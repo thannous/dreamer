@@ -9,6 +9,7 @@ import {
 import {
   LUCID_TAB_BAR_INSET,
   LucidButton,
+  LucidCard,
   LucidIconAction,
   LucidScreen,
 } from '@/components/lucid/LucidUI';
@@ -22,10 +23,11 @@ import {
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidNow } from '@/hooks/useLucidNow';
+import { useLucidStabilizationLab } from '@/hooks/useLucidStabilizationLab';
 import { getLucidGuidanceProfile } from '@/lib/lucid/personalization';
 import type { LucidGuidanceFocus } from '@/lib/lucid/personalization';
 import { buildLucidWeeklyReview } from '@/lib/lucid/progress';
-import type { LucidTechnique } from '@/lib/lucid/model';
+import type { LucidExperiment, LucidTechnique } from '@/lib/lucid/model';
 
 const PROGRESS_CONSTELLATION = require('../../../assets/images/lucid/progress-constellation.png');
 
@@ -79,6 +81,17 @@ const COPY = {
     methodDetail: 'Method details',
     showMethodDetail: 'Show method bars and evidence',
     hideMethodDetail: 'Hide method bars and evidence',
+    captureNeutral: 'Morning capture',
+    nothingForNow: 'Nothing for now',
+    writeCapture: 'Written capture',
+    speakCapture: 'Typed after speaking',
+    linkedPractice: 'Linked practice',
+    cue_not_heard: 'Cue not heard',
+    cue_heard_in_dream: 'Cue heard in the dream',
+    cue_heard_woke: 'Cue heard and woke me',
+    cue_indeterminate: 'Cue unsure',
+    signs: 'Confirmed dream signs', noSigns: 'No confirmed sign yet. Review suggestions in your Journal.', signFrequency: (count: number) => `${count} source dreams`,
+    labTitle: 'Stabilization practice', labHint: 'Local practice counts only. They do not prove an effect.', labPractices: 'Practices', labCompletions: 'Completions', labRepeats: 'Repeats', labOpen: 'Open lab', labResume: 'Resume', labLoading: 'Loading lab…', labError: 'Lab stats unavailable. Other Insights stay visible.',
   },
   fr: {
     eyebrow: 'Progression',
@@ -123,6 +136,17 @@ const COPY = {
     methodDetail: 'Détail des méthodes',
     showMethodDetail: 'Afficher les barres et le niveau de preuve',
     hideMethodDetail: 'Masquer les barres et le niveau de preuve',
+    captureNeutral: 'Capture du matin',
+    nothingForNow: 'Rien pour l’instant',
+    writeCapture: 'Capture écrite',
+    speakCapture: 'Texte après avoir parlé',
+    linkedPractice: 'Pratique liée',
+    cue_not_heard: 'Signal non entendu',
+    cue_heard_in_dream: 'Signal entendu dans le rêve',
+    cue_heard_woke: 'Signal entendu, réveil',
+    cue_indeterminate: 'Signal incertain',
+    signs: 'Signes oniriques confirmés', noSigns: 'Aucun signe confirmé. Examine les suggestions dans ton Journal.', signFrequency: (count: number) => `${count} rêves sources`,
+    labTitle: 'Pratique de stabilisation', labHint: 'Compteurs locaux de pratique seulement. Ils ne prouvent aucun effet.', labPractices: 'Pratiques', labCompletions: 'Complétions', labRepeats: 'Répétitions', labOpen: 'Ouvrir le labo', labResume: 'Reprendre', labLoading: 'Chargement du labo…', labError: 'Stats du labo indisponibles. Les autres Insights restent visibles.',
   },
   es: {
     eyebrow: 'Progreso',
@@ -167,6 +191,17 @@ const COPY = {
     methodDetail: 'Detalle de métodos',
     showMethodDetail: 'Mostrar barras y evidencia',
     hideMethodDetail: 'Ocultar barras y evidencia',
+    captureNeutral: 'Captura de la mañana',
+    nothingForNow: 'Nada por ahora',
+    writeCapture: 'Captura escrita',
+    speakCapture: 'Texto después de hablar',
+    linkedPractice: 'Práctica vinculada',
+    cue_not_heard: 'Señal no oída',
+    cue_heard_in_dream: 'Señal oída en el sueño',
+    cue_heard_woke: 'Señal oída y despertó',
+    cue_indeterminate: 'Señal incierta',
+    signs: 'Señales oníricas confirmadas', noSigns: 'Aún no hay señales confirmadas. Revisa las sugerencias en tu Diario.', signFrequency: (count: number) => `${count} sueños de origen`,
+    labTitle: 'Práctica de estabilización', labHint: 'Solo conteos locales de práctica. No prueban un efecto.', labPractices: 'Prácticas', labCompletions: 'Completadas', labRepeats: 'Repeticiones', labOpen: 'Abrir el laboratorio', labResume: 'Reanudar', labLoading: 'Cargando el laboratorio…', labError: 'Estadísticas del laboratorio no disponibles. El resto de Insights sigue visible.',
   },
   de: {
     eyebrow: 'Fortschritt',
@@ -211,6 +246,17 @@ const COPY = {
     methodDetail: 'Methodendetails',
     showMethodDetail: 'Balken und Evidenz anzeigen',
     hideMethodDetail: 'Balken und Evidenz ausblenden',
+    captureNeutral: 'Morgennotiz',
+    nothingForNow: 'Jetzt nichts',
+    writeCapture: 'Geschriebene Notiz',
+    speakCapture: 'Getippt nach dem Sprechen',
+    linkedPractice: 'Verknüpfte Übung',
+    cue_not_heard: 'Signal nicht gehört',
+    cue_heard_in_dream: 'Signal im Traum gehört',
+    cue_heard_woke: 'Signal gehört, aufgewacht',
+    cue_indeterminate: 'Signal unsicher',
+    signs: 'Bestätigte Traumzeichen', noSigns: 'Noch kein bestätigtes Zeichen. Prüfe die Vorschläge im Journal.', signFrequency: (count: number) => `${count} Quellträume`,
+    labTitle: 'Stabilisierungsübung', labHint: 'Nur lokale Übungszahlen. Sie beweisen keine Wirkung.', labPractices: 'Übungen', labCompletions: 'Abschlüsse', labRepeats: 'Wiederholungen', labOpen: 'Labor öffnen', labResume: 'Fortsetzen', labLoading: 'Labor wird geladen…', labError: 'Laborwerte nicht verfügbar. Die übrigen Insights bleiben sichtbar.',
   },
   it: {
     eyebrow: 'Progressi',
@@ -255,8 +301,44 @@ const COPY = {
     methodDetail: 'Dettaglio metodi',
     showMethodDetail: 'Mostra barre e evidenza',
     hideMethodDetail: 'Nascondi barre e evidenza',
+    captureNeutral: 'Cattura del mattino',
+    nothingForNow: 'Niente per ora',
+    writeCapture: 'Cattura scritta',
+    speakCapture: 'Testo dopo aver parlato',
+    linkedPractice: 'Pratica collegata',
+    cue_not_heard: 'Segnale non udito',
+    cue_heard_in_dream: 'Segnale udito nel sogno',
+    cue_heard_woke: 'Segnale udito, risveglio',
+    cue_indeterminate: 'Segnale incerto',
+    signs: 'Segnali onirici confermati', noSigns: 'Nessun segnale confermato. Rivedi i suggerimenti nel Diario.', signFrequency: (count: number) => `${count} sogni di origine`,
+    labTitle: 'Pratica di stabilizzazione', labHint: 'Solo conteggi locali di pratica. Non dimostrano un effetto.', labPractices: 'Pratiche', labCompletions: 'Completamenti', labRepeats: 'Ripetizioni', labOpen: 'Apri il laboratorio', labResume: 'Riprendi', labLoading: 'Caricamento del laboratorio…', labError: 'Statistiche del laboratorio non disponibili. Gli altri Insights restano visibili.',
   },
 } as const;
+
+type ProgressCopy = (typeof COPY)[keyof typeof COPY];
+
+function historyTitle(
+  item: LucidExperiment,
+  copy: ProgressCopy,
+  programs: ReturnType<typeof useLucidTrainer>['content']['programs']
+): string {
+  if (item.technique) return programs[item.technique].title;
+  if (item.captureMode === 'nothing_for_now') return copy.nothingForNow;
+  if (item.techniqueAutoLink) {
+    return `${copy.linkedPractice}: ${programs[item.techniqueAutoLink.technique].title}`;
+  }
+  if (item.captureMode === 'write') return copy.writeCapture;
+  if (item.captureMode === 'speak') return copy.speakCapture;
+  return copy.captureNeutral;
+}
+
+function historyMeta(item: LucidExperiment, copy: ProgressCopy, date: string): string {
+  const parts = [date];
+  if (item.result === 'lucid') parts.push(copy.resultLucid);
+  else if (item.result) parts.push(copy[item.result]);
+  if (item.cueOutcome) parts.push(copy[`cue_${item.cueOutcome}`]);
+  return parts.join(' · ');
+}
 
 function formatPercent(value: number | null) {
   return value == null ? '—' : `${Math.round(value * 100)}%`;
@@ -276,8 +358,9 @@ export default function LucidProgressScreen() {
   const reflow = shouldUseLucidProgressReflow(width, fontScale);
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const { state, content, deleteExperiment } = useLucidTrainer();
+  const { state, content, activeDreamSigns = [], deleteExperiment, userScope } = useLucidTrainer();
   const copy = COPY[content.locale];
+  const lab = useLucidStabilizationLab({ userScope });
   const profile = getLucidGuidanceProfile({
     goal: state!.onboarding.goal,
     experience: state!.onboarding.experience,
@@ -539,6 +622,66 @@ export default function LucidProgressScreen() {
           </View>
         ) : null}
 
+        <LucidCard
+          accessibilityLabel={`${copy.labTitle}. ${copy.labHint}`}
+          style={styles.labCard}
+          testID="lucid-progress-stabilization"
+        >
+          <Text accessibilityRole="header" style={[styles.sectionTitle, { color: palette.text }]}>
+            {copy.labTitle}
+          </Text>
+          <Text style={[styles.small, { color: palette.textSecondary }]}>{copy.labHint}</Text>
+          {lab.isLoading ? (
+            <Text accessibilityLiveRegion="polite" style={[styles.small, { color: palette.textSecondary }]}>
+              {copy.labLoading}
+            </Text>
+          ) : null}
+          {lab.error ? (
+            <Text style={[styles.small, { color: palette.textSecondary }]}>{copy.labError}</Text>
+          ) : null}
+          <View style={styles.labMetrics}>
+            <View style={styles.metric} testID="lucid-progress-stabilization-practices">
+              <Text style={[styles.metricValue, { color: palette.text }]}>{String(lab.insights.practiceCount)}</Text>
+              <Text style={[styles.metricLabel, { color: palette.textSecondary }]}>{copy.labPractices}</Text>
+            </View>
+            <View style={styles.metric} testID="lucid-progress-stabilization-completions">
+              <Text style={[styles.metricValue, { color: palette.text }]}>{String(lab.insights.completionCount)}</Text>
+              <Text style={[styles.metricLabel, { color: palette.textSecondary }]}>{copy.labCompletions}</Text>
+            </View>
+            <View style={styles.metric} testID="lucid-progress-stabilization-repeats">
+              <Text style={[styles.metricValue, { color: palette.text }]}>{String(lab.insights.repeatCount)}</Text>
+              <Text style={[styles.metricLabel, { color: palette.textSecondary }]}>{copy.labRepeats}</Text>
+            </View>
+          </View>
+          <LucidButton
+            label={lab.currentSession ? copy.labResume : copy.labOpen}
+            onPress={() => router.push('/lucid/stabilization-lab' as never)}
+            testID="lucid-progress-stabilization-open"
+            variant="secondary"
+          />
+        </LucidCard>
+
+        <View
+          style={[styles.signsCard, { backgroundColor: palette.surface, borderColor: palette.border }]}
+          testID="lucid-progress-dream-signs"
+        >
+          <Text accessibilityRole="header" style={[styles.sectionTitle, { color: palette.text }]}>
+            {copy.signs}
+          </Text>
+          {activeDreamSigns.length === 0 ? (
+            <Text style={[styles.small, { color: palette.textSecondary }]}>{copy.noSigns}</Text>
+          ) : (
+            activeDreamSigns.map((sign) => (
+              <View key={sign.id} style={styles.signRow} testID={`lucid-progress-dream-sign-${sign.id}`}>
+                <Text style={[styles.methodName, styles.signName, { color: palette.text }]}>{sign.label}</Text>
+                <Text style={[styles.methodMeta, { color: palette.textSecondary }]}>
+                  {copy.signFrequency(sign.distinctDreamCount)}
+                </Text>
+              </View>
+            ))
+          )}
+        </View>
+
         <LucidButton
           label={copy.weekly}
           variant="secondary"
@@ -620,6 +763,7 @@ export default function LucidProgressScreen() {
         ) : (
           state!.experiments.slice(0, 12).map((item) => {
             const date = new Intl.DateTimeFormat(content.locale, { dateStyle: 'medium' }).format(item.occurredAt);
+            const title = historyTitle(item, copy, content.programs);
             return (
               <View
                 key={item.id}
@@ -627,29 +771,38 @@ export default function LucidProgressScreen() {
               >
                 <View style={styles.historyTop}>
                   <View style={styles.historyCopy}>
-                    <Text style={[styles.methodName, { color: palette.text }]}>
-                      {content.programs[item.technique].title}
-                    </Text>
+                    <Text style={[styles.methodName, { color: palette.text }]}>{title}</Text>
                     <Text style={[styles.methodMeta, { color: palette.textSecondary }]}>
-                      {date} · {item.result === 'lucid' ? copy.resultLucid : copy[item.result]}
+                      {historyMeta(item, copy, date)}
                     </Text>
                   </View>
                   {/* Une icône de 19pt sans rôle, portant le même libellé sur les douze cartes : douze boutons « Supprimer » indiscernables. La cible fait 44 et nomme le bilan qu'elle détruit. */}
                   <LucidIconAction
-                    label={`${copy.confirm}: ${content.programs[item.technique].title}, ${date}`}
+                    label={`${copy.confirm}: ${title}, ${date}`}
                     icon="trash-outline"
                     tone="danger"
                     onPress={() => confirmDelete(item.id)}
                   />
                 </View>
-                <View style={styles.historyScores}>
-                  <Text style={[styles.score, { color: palette.textSecondary, backgroundColor: palette.surfaceRaised }]}>
-                    {`${copy.recall}: ${item.recallLevel}/5`}
+                {item.recallLevel != null || item.sleepQuality != null ? (
+                  <View style={styles.historyScores}>
+                    {item.recallLevel != null ? (
+                      <Text style={[styles.score, { color: palette.textSecondary, backgroundColor: palette.surfaceRaised }]}>
+                        {`${copy.recall}: ${item.recallLevel}/5`}
+                      </Text>
+                    ) : null}
+                    {item.sleepQuality != null ? (
+                      <Text style={[styles.score, { color: palette.textSecondary, backgroundColor: palette.surfaceRaised }]}>
+                        {`${copy.sleep}: ${item.sleepQuality}/5`}
+                      </Text>
+                    ) : null}
+                  </View>
+                ) : null}
+                {item.recallText ? (
+                  <Text numberOfLines={2} style={[styles.small, { color: palette.textSecondary }]}>
+                    {item.recallText}
                   </Text>
-                  <Text style={[styles.score, { color: palette.textSecondary, backgroundColor: palette.surfaceRaised }]}>
-                    {`${copy.sleep}: ${item.sleepQuality}/5`}
-                  </Text>
-                </View>
+                ) : null}
                 {item.notes ? (
                   <Text numberOfLines={2} style={[styles.small, { color: palette.textSecondary }]}>
                     {item.notes}
@@ -826,6 +979,24 @@ const styles = StyleSheet.create({
     padding: LucidSpace.lg,
     gap: LucidSpace.md,
   },
+  labCard: {
+    marginHorizontal: LucidSpace.gutter,
+    marginTop: LucidSpace.md,
+    gap: LucidSpace.sm,
+  },
+  labMetrics: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: LucidSpace.sm,
+  },
+  signsCard: {
+    borderRadius: LucidRadius.xl,
+    borderWidth: 1,
+    padding: LucidSpace.lg,
+    gap: LucidSpace.md,
+  },
+  signRow: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  signName: { flex: 1, minWidth: 0 },
   method: { gap: LucidSpace.sm },
   methodTop: { flexDirection: 'row', justifyContent: 'space-between', gap: LucidSpace.md },
   methodName: {

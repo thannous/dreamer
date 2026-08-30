@@ -1,7 +1,14 @@
 import {
+  LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT,
+  createEmptyLucidDreamAtlasOverlay,
+  hasLucidDreamAtlasOverlayData,
+} from '@/lib/lucid/dreamAtlas';
+import {
+  DEFAULT_LUCID_MINDFUL_PAUSE_REMINDER_ANCHORS,
   LUCID_TRAINER_SCHEMA_VERSION,
   LUCID_TECHNIQUES,
   type LucidOnboardingState,
+  type LucidGuidedRitualProgress,
   type LucidProgramProgress,
   type LucidSyncEntity,
   type LucidTechnique,
@@ -50,6 +57,15 @@ function maxNullable(left: number | null, right: number | null): number | null {
   return Math.max(left, right);
 }
 
+function mergeLucidGuidedRitualProgress(
+  left: LucidGuidedRitualProgress | undefined,
+  right: LucidGuidedRitualProgress | undefined
+): LucidGuidedRitualProgress | undefined {
+  if (!left) return right;
+  if (!right) return left;
+  return chooseNewest(left, right);
+}
+
 export function mergeLucidProgramProgress(
   left: LucidProgramProgress,
   right: LucidProgramProgress
@@ -61,6 +77,10 @@ export function mergeLucidProgramProgress(
   const newest = chooseNewest(left, right);
   const status =
     left.status === 'completed' || right.status === 'completed' ? 'completed' : newest.status;
+  const guidedRitual = mergeLucidGuidedRitualProgress(
+    left.guidedRitual,
+    right.guidedRitual
+  );
 
   return {
     technique: left.technique,
@@ -75,6 +95,7 @@ export function mergeLucidProgramProgress(
     startedAt: minNullable(left.startedAt, right.startedAt),
     completedAt: status === 'completed' ? maxNullable(left.completedAt, right.completedAt) : null,
     updatedAt: Math.max(left.updatedAt, right.updatedAt),
+    ...(guidedRitual ? { guidedRitual } : {}),
   };
 }
 
@@ -159,6 +180,10 @@ export function createInitialLucidTrainerState(params: {
       },
       completedAt: null,
       updatedAt: now,
+      wakeSensitivity: null,
+      draftStep: 0,
+      sleepScheduleConfirmed: false,
+      sleepScheduleDraft: { bedtime: null, wakeTime: null },
     },
     preferences: {
       locale,
@@ -167,6 +192,7 @@ export function createInitialLucidTrainerState(params: {
       noctaliaLinkEnabled: false,
       notificationsEnabled: false,
       realityCheckRemindersPerDay: 3,
+      mindfulPauseReminderAnchors: [...DEFAULT_LUCID_MINDFUL_PAUSE_REMINDER_ANCHORS],
       audioCuesEnabled: false,
       audioVolume: 0.25,
       timeZone,
@@ -176,6 +202,8 @@ export function createInitialLucidTrainerState(params: {
     experiments: [],
     realityChecks: [],
     weeklyReviews: [],
+    dreamSignDecisions: [],
+    dreamAtlas: createEmptyLucidDreamAtlasOverlay(LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT),
   };
 }
 
@@ -269,6 +297,16 @@ export function getLucidSyncEntities(state: LucidTrainerState): LucidSyncEntity[
         value,
       })
     ),
+    ...(state.dreamSignDecisions ?? []).map(
+      (value): LucidSyncEntity => ({
+        entityType: 'dream_sign',
+        entityKey: value.id,
+        value,
+      })
+    ),
+    ...(state.dreamAtlas
+      ? [{ entityType: 'dream_atlas' as const, entityKey: 'dream_atlas' as const, value: state.dreamAtlas }]
+      : []),
   ];
 }
 
@@ -313,6 +351,17 @@ export function applyLucidSyncEntity(
           entity.value,
         ].sort((a, b) => b.weekStart.localeCompare(a.weekStart) || a.id.localeCompare(b.id)),
       };
+    case 'dream_sign':
+      return {
+        ...state,
+        updatedAt,
+        dreamSignDecisions: [
+          ...(state.dreamSignDecisions ?? []).filter((item) => item.id !== entity.entityKey),
+          entity.value,
+        ].sort((a, b) => a.id.localeCompare(b.id)),
+      };
+    case 'dream_atlas':
+      return { ...state, dreamAtlas: entity.value, updatedAt };
   }
 }
 
@@ -411,6 +460,22 @@ export function removeLucidSyncEntity(
         updatedAt: nextUpdatedAt,
         weeklyReviews: state.weeklyReviews.filter((item) => item.id !== entityKey),
       };
+    case 'dream_sign':
+      return {
+        ...state,
+        updatedAt: nextUpdatedAt,
+        dreamSignDecisions: (state.dreamSignDecisions ?? []).filter(
+          (item) => item.id !== entityKey
+        ),
+      };
+    case 'dream_atlas':
+      // Remote clear keeps the singleton. An empty timestamped overlay is the
+      // durable deletion, never a missing field or a global wipe.
+      return {
+        ...state,
+        updatedAt: nextUpdatedAt,
+        dreamAtlas: createEmptyLucidDreamAtlasOverlay(nextUpdatedAt),
+      };
   }
 }
 
@@ -430,6 +495,10 @@ export function mergeLucidTrainerStates(
   if (!onboarding || !preferences) {
     throw new Error('Lucid Trainer state is missing required singleton entities');
   }
+  const dreamAtlas = mergedEntities.find(
+    (entity): entity is Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> =>
+      entity.entityType === 'dream_atlas'
+  );
 
   return {
     schemaVersion: LUCID_TRAINER_SCHEMA_VERSION,
@@ -466,7 +535,19 @@ export function mergeLucidTrainerStates(
       )
       .map((entity) => entity.value)
       .sort((a, b) => b.weekStart.localeCompare(a.weekStart) || a.id.localeCompare(b.id)),
+    dreamSignDecisions: mergedEntities
+      .filter(
+        (entity): entity is Extract<LucidSyncEntity, { entityType: 'dream_sign' }> =>
+          entity.entityType === 'dream_sign'
+      )
+      .map((entity) => entity.value)
+      .sort((a, b) => a.id.localeCompare(b.id)),
+    ...(dreamAtlas ? { dreamAtlas: dreamAtlas.value } : {}),
   };
+}
+
+export function hasLucidDreamAtlasSyncData(state: LucidTrainerState): boolean {
+  return state.dreamAtlas != null && hasLucidDreamAtlasOverlayData(state.dreamAtlas);
 }
 
 export function updateLucidOnboarding(

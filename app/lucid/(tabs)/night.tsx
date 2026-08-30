@@ -17,8 +17,16 @@ import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidT
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidNightAudio, type LucidNightRemaining } from '@/hooks/useLucidNightAudio';
-import { MAX_LUCID_NIGHT_VOLUME } from '@/lib/lucid/audio';
-import { SLEEP_SOUNDS, type SleepSoundId } from '@/lib/sleepSounds';
+import { useSleepSoundPlayer } from '@/hooks/useSleepSoundPlayer';
+import {
+  MAX_LUCID_NIGHT_VOLUME,
+  resolveLucidNightCueCalibration,
+} from '@/lib/lucid/audio';
+import {
+  canUseLucidNightSignals,
+  evaluateLucidSafetyPolicyFromState,
+} from '@/lib/lucid/safety';
+import { DEFAULT_SLEEP_SOUND_ID, SLEEP_SOUNDS, type SleepSoundId } from '@/lib/sleepSounds';
 
 const NIGHT_SANCTUARY = require('../../../assets/images/lucid/night-ritual-sanctuary.png');
 
@@ -39,20 +47,27 @@ const COPY = {
     sleepWindow: 'Sleep window',
     bedtime: 'Bedtime',
     wakeTime: 'Wake time',
-    library: 'Signal library',
+    library: 'Falling-asleep ambience',
     rain: 'Soft rain',
     ocean: 'Ocean pulse',
     'brown-noise': 'Brown noise',
-    volume: 'Prudent volume',
+    ambiencePlay: 'Play ambience',
+    ambiencePause: 'Pause ambience',
+    ambienceStop: 'Stop ambience',
+    ambienceHint: 'Local rain, ocean or brown noise for 30 minutes. It does not need night-signal permission.',
+    volume: 'Prudent TLR volume',
     timer: 'Night window',
     hours: 'hours',
-    preview: 'Preview 7 seconds',
+    cueSection: 'Experimental TLR cue',
+    preview: 'Preview 1.2-second cue',
     start: 'Start night signals',
     stop: 'Stop signals',
     active: 'Signals active',
-    next: 'Up to four dated local cues are scheduled. Missed cues are never replayed.',
+    next: 'TLR is experimental. A short local rain cue may play later; it cannot detect REM in real time or guarantee a REM phase.',
+    reduced: 'After one signal wake, tonight stays at two very-low cues.',
+    suspended: 'After two signal wakes in the last seven check-ins, TLR stays paused.',
     speaker: 'Use the phone speaker at a low volume. Do not sleep with headphones.',
-    systemVolume: 'The preview is capped at 30%. Night notifications also follow the device notification volume.',
+    systemVolume: 'The cue is a fixed 1.2-second rain signal, capped at 30%. Night notifications also follow the device notification volume.',
     cueTitle: 'Lucid Trainer',
     cueBody: 'A gentle reality cue. Notice your surroundings.',
     fragile: 'My sleep feels fragile tonight',
@@ -70,9 +85,9 @@ const COPY = {
     needHearing: 'uncheck “hearing concern”',
     failed: 'Night notifications or audio are unavailable on this device.',
     remaining: 'remaining',
-    signals: 'Optional signals',
-    hideSignals: 'Hide sound, volume and duration',
-    showSignals: 'Choose sound, volume and duration',
+    signals: 'Optional settings',
+    hideSignals: 'Hide ambience and experimental cue',
+    showSignals: 'Show ambience and experimental cue',
   },
   fr: {
     eyebrow: 'Avant le sommeil',
@@ -81,20 +96,27 @@ const COPY = {
     sleepWindow: 'Fenêtre de sommeil',
     bedtime: 'Coucher',
     wakeTime: 'Réveil',
-    library: 'Bibliothèque de signaux',
+    library: 'Ambiance d’endormissement',
     rain: 'Pluie douce',
     ocean: 'Pulsation océan',
     'brown-noise': 'Bruit brun',
-    volume: 'Volume prudent',
+    ambiencePlay: 'Lancer l’ambiance',
+    ambiencePause: 'Mettre l’ambiance en pause',
+    ambienceStop: 'Arrêter l’ambiance',
+    ambienceHint: 'Pluie, océan ou bruit brun en local pendant 30 minutes. Aucune permission de signal nocturne n’est requise.',
+    volume: 'Volume TLR prudent',
     timer: 'Fenêtre nocturne',
     hours: 'heures',
-    preview: 'Aperçu de 7 secondes',
+    cueSection: 'Signal TLR expérimental',
+    preview: 'Aperçu du signal de 1,2 s',
     start: 'Démarrer les signaux',
     stop: 'Arrêter les signaux',
     active: 'Signaux actifs',
-    next: 'Jusqu’à quatre signaux locaux datés sont planifiés. Aucun signal manqué n’est rejoué.',
+    next: 'Le TLR est expérimental. Un court signal de pluie local peut retentir plus tard ; il ne détecte pas le REM en temps réel et ne garantit aucune phase REM.',
+    reduced: 'Après un réveil lié au signal, la nuit reste à deux signaux très faibles.',
+    suspended: 'Après deux réveils liés au signal dans les sept derniers bilans, le TLR reste en pause.',
     speaker: 'Utilisez le haut-parleur du téléphone à faible volume. Ne dormez pas avec un casque.',
-    systemVolume: 'L’aperçu est plafonné à 30 %. Les notifications nocturnes suivent aussi le volume système.',
+    systemVolume: 'Le signal est une pluie fixe de 1,2 s, plafonnée à 30 %. Les notifications nocturnes suivent aussi le volume système.',
     cueTitle: 'Lucid Trainer',
     cueBody: 'Signal de réalité doux. Observez votre environnement.',
     fragile: 'Mon sommeil semble fragile ce soir',
@@ -112,9 +134,9 @@ const COPY = {
     needHearing: 'décocher « fragilité auditive »',
     failed: 'Les notifications nocturnes ou l’audio sont indisponibles sur cet appareil.',
     remaining: 'restantes',
-    signals: 'Signaux facultatifs',
-    hideSignals: 'Masquer son, volume et durée',
-    showSignals: 'Choisir son, volume et durée',
+    signals: 'Réglages facultatifs',
+    hideSignals: 'Masquer ambiance et signal expérimental',
+    showSignals: 'Afficher ambiance et signal expérimental',
   },
   es: {
     eyebrow: 'Antes de dormir',
@@ -123,20 +145,27 @@ const COPY = {
     sleepWindow: 'Horario de sueño',
     bedtime: 'Dormir',
     wakeTime: 'Despertar',
-    library: 'Biblioteca de señales',
+    library: 'Ambiente para conciliar el sueño',
     rain: 'Lluvia suave',
     ocean: 'Pulso oceánico',
     'brown-noise': 'Ruido marrón',
-    volume: 'Volumen prudente',
+    ambiencePlay: 'Reproducir ambiente',
+    ambiencePause: 'Pausar ambiente',
+    ambienceStop: 'Detener ambiente',
+    ambienceHint: 'Lluvia, océano o ruido marrón local durante 30 minutos. No requiere permiso de señales nocturnas.',
+    volume: 'Volumen TLR prudente',
     timer: 'Ventana nocturna',
     hours: 'horas',
-    preview: 'Vista previa 7 segundos',
+    cueSection: 'Señal TLR experimental',
+    preview: 'Vista previa de 1,2 s',
     start: 'Iniciar señales',
     stop: 'Detener señales',
     active: 'Señales activas',
-    next: 'Se programan hasta cuatro señales locales fechadas. Las perdidas nunca se repiten.',
+    next: 'El TLR es experimental. Puede sonar más tarde una lluvia local breve; no detecta el REM en tiempo real ni garantiza una fase REM.',
+    reduced: 'Tras un despertar por la señal, esta noche se queda en dos señales muy bajas.',
+    suspended: 'Tras dos despertares por la señal en las últimas siete revisiones, el TLR permanece en pausa.',
     speaker: 'Usa el altavoz del teléfono a bajo volumen. No duermas con auriculares.',
-    systemVolume: 'La vista previa está limitada al 30 %. Las notificaciones también siguen el volumen del sistema.',
+    systemVolume: 'La señal es una lluvia fija de 1,2 s, limitada al 30 %. Las notificaciones también siguen el volumen del sistema.',
     cueTitle: 'Lucid Trainer',
     cueBody: 'Señal de realidad suave. Observa tu entorno.',
     fragile: 'Mi sueño está frágil esta noche',
@@ -154,9 +183,9 @@ const COPY = {
     needHearing: 'desmarcar «fragilidad auditiva»',
     failed: 'Las notificaciones nocturnas o el audio no están disponibles.',
     remaining: 'restantes',
-    signals: 'Señales opcionales',
-    hideSignals: 'Ocultar sonido, volumen y duración',
-    showSignals: 'Elegir sonido, volumen y duración',
+    signals: 'Ajustes opcionales',
+    hideSignals: 'Ocultar ambiente y señal experimental',
+    showSignals: 'Mostrar ambiente y señal experimental',
   },
   de: {
     eyebrow: 'Vor dem Schlaf',
@@ -165,20 +194,27 @@ const COPY = {
     sleepWindow: 'Schlaffenster',
     bedtime: 'Schlafen',
     wakeTime: 'Aufwachen',
-    library: 'Signalbibliothek',
+    library: 'Einschlafatmosphäre',
     rain: 'Sanfter Regen',
     ocean: 'Meeresimpuls',
     'brown-noise': 'Braunes Rauschen',
-    volume: 'Vorsichtige Lautstärke',
+    ambiencePlay: 'Atmosphäre starten',
+    ambiencePause: 'Atmosphäre pausieren',
+    ambienceStop: 'Atmosphäre stoppen',
+    ambienceHint: 'Lokaler Regen, Ozean oder braunes Rauschen für 30 Minuten. Keine Nachtsignal-Erlaubnis nötig.',
+    volume: 'Vorsichtige TLR-Lautstärke',
     timer: 'Nachtfenster',
     hours: 'Stunden',
-    preview: '7 Sekunden anhören',
+    cueSection: 'Experimentelles TLR-Signal',
+    preview: '1,2-Sekunden-Signal anhören',
     start: 'Nachtsignale starten',
     stop: 'Signale stoppen',
     active: 'Signale aktiv',
-    next: 'Bis zu vier lokale Signale werden terminiert. Verpasste Signale werden nie nachgeholt.',
+    next: 'TLR ist experimentell. Ein kurzes lokales Regensignal kann später ertönen; es erkennt REM nicht in Echtzeit und garantiert keine REM-Phase.',
+    reduced: 'Nach einem Signalweck bleibt die Nacht bei zwei sehr leisen Signalen.',
+    suspended: 'Nach zwei Signalwecks in den letzten sieben Check-ins bleibt TLR pausiert.',
     speaker: 'Nutze den Telefonlautsprecher leise. Schlafe nicht mit Kopfhörern.',
-    systemVolume: 'Die Vorschau ist auf 30 % begrenzt. Nachtsignale folgen auch der Systemlautstärke.',
+    systemVolume: 'Das Signal ist ein festes 1,2-Sekunden-Regenstück, begrenzt auf 30 %. Nachtsignale folgen auch der Systemlautstärke.',
     cueTitle: 'Lucid Trainer',
     cueBody: 'Sanftes Realitätssignal. Nimm deine Umgebung wahr.',
     fragile: 'Mein Schlaf ist heute fragil',
@@ -196,9 +232,9 @@ const COPY = {
     needHearing: '„Hörempfindlichkeit“ abwählen',
     failed: 'Nachtsignale oder Audio sind auf diesem Gerät nicht verfügbar.',
     remaining: 'verbleibend',
-    signals: 'Optionale Signale',
-    hideSignals: 'Klang, Lautstärke und Dauer ausblenden',
-    showSignals: 'Klang, Lautstärke und Dauer wählen',
+    signals: 'Optionale Einstellungen',
+    hideSignals: 'Atmosphäre und experimentelles Signal ausblenden',
+    showSignals: 'Atmosphäre und experimentelles Signal anzeigen',
   },
   it: {
     eyebrow: 'Prima di dormire',
@@ -207,20 +243,27 @@ const COPY = {
     sleepWindow: 'Finestra di sonno',
     bedtime: 'Dormire',
     wakeTime: 'Risveglio',
-    library: 'Libreria segnali',
+    library: 'Ambiente per addormentarsi',
     rain: 'Pioggia lieve',
     ocean: 'Impulso oceanico',
     'brown-noise': 'Rumore marrone',
-    volume: 'Volume prudente',
+    ambiencePlay: 'Avvia ambiente',
+    ambiencePause: 'Metti in pausa l’ambiente',
+    ambienceStop: 'Ferma ambiente',
+    ambienceHint: 'Pioggia, oceano o rumore marrone in locale per 30 minuti. Non serve il permesso dei segnali notturni.',
+    volume: 'Volume TLR prudente',
     timer: 'Finestra notturna',
     hours: 'ore',
-    preview: 'Anteprima 7 secondi',
+    cueSection: 'Segnale TLR sperimentale',
+    preview: 'Anteprima del segnale da 1,2 s',
     start: 'Avvia segnali',
     stop: 'Ferma segnali',
     active: 'Segnali attivi',
-    next: 'Vengono programmati fino a quattro segnali locali. Quelli persi non vengono mai ripetuti.',
+    next: 'Il TLR è sperimentale. Più tardi può suonare una breve pioggia locale; non rileva il REM in tempo reale e non garantisce una fase REM.',
+    reduced: 'Dopo un risveglio da segnale, la notte resta a due segnali molto deboli.',
+    suspended: 'Dopo due risvegli da segnale negli ultimi sette bilanci, il TLR resta in pausa.',
     speaker: 'Usa l’altoparlante del telefono a volume basso. Non dormire con cuffie.',
-    systemVolume: 'L’anteprima è limitata al 30 %. Le notifiche seguono anche il volume di sistema.',
+    systemVolume: 'Il segnale è una pioggia fissa di 1,2 s, limitata al 30 %. Le notifiche seguono anche il volume di sistema.',
     cueTitle: 'Lucid Trainer',
     cueBody: 'Segnale di realtà delicato. Osserva l’ambiente.',
     fragile: 'Il mio sonno è fragile stasera',
@@ -238,9 +281,9 @@ const COPY = {
     needHearing: 'deselezionare «fragilità uditiva»',
     failed: 'Le notifiche notturne o l’audio non sono disponibili.',
     remaining: 'rimanenti',
-    signals: 'Segnali facoltativi',
-    hideSignals: 'Nascondi suono, volume e durata',
-    showSignals: 'Scegli suono, volume e durata',
+    signals: 'Impostazioni facoltative',
+    hideSignals: 'Nascondi ambiente e segnale sperimentale',
+    showSignals: 'Mostra ambiente e segnale sperimentale',
   },
 } as const;
 
@@ -341,13 +384,29 @@ export default function LucidNightScreen() {
   const palette = getLucidPalette(colors, mode);
   const { state, content, updateAudioSafetyConsent, updatePreferences } = useLucidTrainer();
   const copy = COPY[content.locale];
-  const [soundId, setSoundId] = useState<SleepSoundId>('rain');
+  const [soundId, setSoundId] = useState<SleepSoundId>(DEFAULT_SLEEP_SOUND_ID);
   const [timerMinutes, setTimerMinutes] = useState(360);
   const [speaker, setSpeaker] = useState(false);
   const [fragile, setFragile] = useState(false);
   const [hearing, setHearing] = useState(false);
   const [signalsOpen, setSignalsOpen] = useState(false);
   const volume = Math.min(MAX_LUCID_NIGHT_VOLUME, state!.preferences.audioVolume);
+  const experiments = state!.experiments;
+  const selectedAmbience = SLEEP_SOUNDS.find((sound) => sound.id === soundId) ?? SLEEP_SOUNDS[0];
+  const ambience = useSleepSoundPlayer({
+    sound: selectedAmbience,
+    durationMinutes: 30,
+    title: copy[selectedAmbience.id],
+    albumTitle: copy.library,
+  });
+  const policy = useMemo(
+    () =>
+      evaluateLucidSafetyPolicyFromState(state, {
+        sleepIsFragile: fragile,
+        hearingConcern: hearing,
+      }),
+    [fragile, hearing, state],
+  );
   const safety = useMemo(
     () => ({
       acknowledged: state!.onboarding.audioSafetyAccepted,
@@ -358,28 +417,52 @@ export default function LucidNightScreen() {
     [fragile, hearing, speaker, state],
   );
   const audio = useLucidNightAudio({
-    soundId,
     volume,
     timerMinutes,
     safety,
+    policy,
     notificationTitle: copy.cueTitle,
     notificationBody: copy.cueBody,
+    experiments,
   });
-  const safe = safety.acknowledged && speaker && !fragile && !hearing;
+  const calibration = useMemo(
+    () =>
+      resolveLucidNightCueCalibration({
+        requestedVolume: volume,
+        policy,
+        experiments,
+      }),
+    [experiments, policy, volume],
+  );
+  const signalsSuspended = calibration.status === 'suspended';
+  const signalsAllowed = speaker && canUseLucidNightSignals(policy) && !signalsSuspended;
   const missing = (
     [
       safety.acknowledged ? null : copy.needAck,
       speaker ? null : copy.needSpeaker,
       fragile ? copy.needRested : null,
       hearing ? copy.needHearing : null,
+      signalsSuspended ? copy.suspended : null,
     ] as (string | null)[]
   ).filter((label): label is string => label !== null);
   const showSignals = signalsOpen || !!audio.plan;
+  const calibrationStatusCopy =
+    calibration.status === 'suspended'
+      ? copy.suspended
+      : calibration.status === 'reduced'
+        ? copy.reduced
+        : null;
 
   const start = async () => {
-    if (!safe) return;
+    if (!signalsAllowed) return;
     if (!state!.preferences.audioCuesEnabled) await updatePreferences({ audioCuesEnabled: true });
     if (!(await audio.startNight())) Alert.alert(copy.safety, copy.blocked);
+  };
+
+  const selectAmbience = (nextSoundId: SleepSoundId) => {
+    if (ambience.isPlaying || nextSoundId === soundId) return;
+    void ambience.stop();
+    setSoundId(nextSoundId);
   };
 
   return (
@@ -449,14 +532,29 @@ export default function LucidNightScreen() {
             </View>
           </View>
           <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.next}</Text>
+          {calibrationStatusCopy ? (
+            <Text style={[styles.body, { color: palette.textSecondary }]}>{calibrationStatusCopy}</Text>
+          ) : null}
           {audio.plan ? (
-            <LucidButton label={copy.stop} variant="danger" icon="stop" onPress={() => void audio.stopNight()} />
+            <LucidButton
+              label={copy.stop}
+              variant="danger"
+              icon="stop"
+              onPress={() => void audio.stopNight()}
+              testID="lucid-night-stop"
+            />
           ) : (
             <LucidButton
               label={copy.start}
               icon="moon"
-              disabled={!safe || audio.isScheduling}
-              disabledReason={missing.length ? `${copy.needs} ${missing.join(', ')}` : undefined}
+              disabled={!signalsAllowed || audio.isScheduling || signalsSuspended}
+              disabledReason={
+                !signalsAllowed || signalsSuspended
+                  ? missing.length
+                    ? `${copy.needs} ${missing.join(', ')}`
+                    : copy.blocked
+                  : undefined
+              }
               onPress={() => void start()}
               testID="lucid-night-start"
             />
@@ -468,7 +566,7 @@ export default function LucidNightScreen() {
           ) : null}
         </View>
 
-        {/* Read the safeguards before accepting them; every row below gates audio. */}
+        {/* Read the safeguards before accepting them; every row below gates only the experimental night cue. */}
         <Text accessibilityRole="header" style={[styles.sectionTitle, { color: palette.text }]}>
           {copy.safety}
         </Text>
@@ -549,21 +647,26 @@ export default function LucidNightScreen() {
 
         {showSignals ? (
           <View style={styles.signals}>
+            <Text accessibilityRole="header" style={[styles.sectionTitle, { color: palette.text }]}>
+              {copy.library}
+            </Text>
+            <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.ambienceHint}</Text>
             <View
               accessibilityRole="radiogroup"
               accessibilityLabel={copy.library}
               style={[styles.soundRow, reflow && styles.soundRowReflow]}
             >
               {SLEEP_SOUNDS.map((sound) => {
-                const selected = sound.id === (audio.plan?.soundId ?? soundId);
+                const selected = sound.id === soundId;
                 return (
                   <Pressable
                     key={sound.id}
-                    disabled={!!audio.plan}
+                    disabled={ambience.isPlaying}
                     accessibilityRole="radio"
                     accessibilityLabel={copy[sound.id]}
-                    accessibilityState={{ checked: selected, selected, disabled: !!audio.plan }}
-                    onPress={() => setSoundId(sound.id)}
+                    accessibilityState={{ checked: selected, selected, disabled: ambience.isPlaying }}
+                    onPress={() => selectAmbience(sound.id)}
+                    testID={`lucid-night-ambience-${sound.id}`}
                     style={({ pressed }) => [
                       styles.sound,
                       reflow && styles.soundReflow,
@@ -586,13 +689,34 @@ export default function LucidNightScreen() {
                 );
               })}
             </View>
+            <View style={[styles.ambienceControls, reflow && styles.ambienceControlsReflow]}>
+              <LucidButton
+                label={ambience.isPlaying ? copy.ambiencePause : copy.ambiencePlay}
+                variant="secondary"
+                icon={ambience.isPlaying ? 'pause' : 'play'}
+                disabled={!ambience.isLoaded || ambience.isBuffering}
+                onPress={() => void (ambience.isPlaying ? ambience.pause() : ambience.play())}
+                testID="lucid-night-ambience-play"
+              />
+              <LucidButton
+                label={copy.ambienceStop}
+                variant="ghost"
+                icon="stop"
+                onPress={() => void ambience.stop()}
+                testID="lucid-night-ambience-stop"
+              />
+            </View>
 
+            <Text accessibilityRole="header" style={[styles.sectionTitle, { color: palette.text }]}>
+              {copy.cueSection}
+            </Text>
             <LucidButton
               label={copy.preview}
               variant="secondary"
               icon={audio.isPlaying ? 'volume-high' : 'play'}
-              disabled={!safe || !audio.isLoaded || audio.isScheduling || !!audio.plan}
+              disabled={!signalsAllowed || !audio.isLoaded || audio.isScheduling || !!audio.plan || signalsSuspended}
               onPress={() => void audio.preview()}
+              testID="lucid-night-preview"
             />
 
             <Text accessibilityRole="header" style={[styles.sectionTitle, { color: palette.text }]}>
@@ -841,6 +965,8 @@ const styles = StyleSheet.create({
   },
   disclosureCopy: { flex: 1, gap: LucidSpace.xs },
   signals: { gap: LucidSpace.md },
+  ambienceControls: { flexDirection: 'row', gap: LucidSpace.sm },
+  ambienceControlsReflow: { flexDirection: 'column' },
   soundRow: { flexDirection: 'row', gap: LucidSpace.sm },
   soundRowReflow: { flexDirection: 'column' },
   sound: {

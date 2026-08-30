@@ -1,57 +1,65 @@
 appId: com.tanuki75.noctalia.lucid
 ---
-# Walks the five setup steps. Optional permissions and data choices now stay
-# out of activation and are requested only where their feature is used.
-# The flow still proves that a disabled step names its condition.
+# Four-screen local-first onboarding. No account, permission, consent, audio or
+# microphone prompt is allowed to interrupt this activation path.
 - assertVisible:
     id: lucid-onboarding-continue
 
-# Step 1 / 5 — concrete daily rhythm. Nothing to answer.
-- tapOn:
-    id: lucid-onboarding-continue
-
-# Step 2 / 5 — one goal. The primary action refuses until a card is picked and
-# says so under itself instead of leaving the user guessing.
-- extendedWaitUntil:
-    visible:
-      id: lucid-goal-improve_recall
-    timeout: 20000
-- assertVisible: ".*Pick one option to continue.*|.*Choisissez une option pour continuer.*|.*Elige una opción para continuar.*|.*Wähle eine Option, um fortzufahren.*|.*Scegli un’opzione per continuare.*"
+# 1 / 4 — intention and starting level. Neither answer is preselected.
 - tapOn:
     id: lucid-goal-improve_recall
-- assertNotVisible: ".*Pick one option to continue.*|.*Choisissez une option pour continuer.*|.*Elige una opción para continuar.*|.*Wähle eine Option, um fortzufahren.*|.*Scegli un’opzione per continuare.*"
-- tapOn:
-    id: lucid-onboarding-continue
-
-# Step 3 / 5 — experience level.
-- extendedWaitUntil:
-    visible:
+- scrollUntilVisible:
+    element:
       id: lucid-experience-beginner
+    direction: DOWN
     timeout: 20000
 - tapOn:
     id: lucid-experience-beginner
 - tapOn:
     id: lucid-onboarding-continue
 
-# Step 4 / 5 — practice rhythm.
+# 2 / 4 — sleep window and wake sensitivity. The controls initially say that
+# no real time is set; opening and confirming each native picker is explicit.
 - extendedWaitUntil:
     visible:
-      id: lucid-weekly-target-3
+      id: lucid-sleep-bedtime
     timeout: 20000
 - tapOn:
-    id: lucid-weekly-target-3
+    id: lucid-sleep-bedtime
+- tapOn: "Done|Terminé|Listo|Fertig|Fatto"
+- tapOn:
+    id: lucid-sleep-wake-time
+- tapOn: "Done|Terminé|Listo|Fertig|Fatto"
+- scrollUntilVisible:
+    element:
+      id: lucid-wake-sensitivity-not_sensitive
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    id: lucid-wake-sensitivity-not_sensitive
 - tapOn:
     id: lucid-onboarding-continue
 
-# Step 5 / 5 — sleep window plus compact setup summary. The seeded 22:30
-# default is valid, so the final CTA can complete without opening the keyboard.
+# 3 / 4 — the generated first week comes from the production personalization
+# engine and exposes its current night restrictions.
 - extendedWaitUntil:
-    visible: "22:30"
+    visible:
+      id: lucid-onboarding-plan
     timeout: 20000
+- assertVisible:
+    id: lucid-onboarding-plan
 - tapOn:
     id: lucid-onboarding-continue
 
-# Completing onboarding is what releases the shell gate onto Today.
+# 4 / 4 — local-first contract, then the shell gate releases Today.
+- extendedWaitUntil:
+    visible:
+      id: lucid-onboarding-local-first
+    timeout: 20000
+- assertVisible:
+    id: lucid-onboarding-local-first
+- tapOn:
+    id: lucid-onboarding-continue
 - extendedWaitUntil:
     visible:
       id: lucid-today

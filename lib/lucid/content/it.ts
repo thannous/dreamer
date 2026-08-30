@@ -5,7 +5,7 @@ const content = {
   chrome: {
     appName: 'Noctalia Lucid Trainer',
     tagline: 'Allena la consapevolezza proteggendo il sonno.',
-    tabs: { today: 'Oggi', programs: 'Programmi', night: 'Notte', progress: 'Progressi', settings: 'Impostazioni' },
+    tabs: { today: 'Oggi', journal: 'Diario', programs: 'Percorsi', night: 'Notte', progress: 'Insight', settings: 'Profilo' },
     common: {
       continue: 'Continua', back: 'Indietro', save: 'Salva', cancel: 'Annulla', done: 'Fatto', retry: 'Riprova', skipTonight: 'Salta questa notte', optional: 'Facoltativo', offlineReady: 'Disponibile offline', loading: 'Caricamento del tuo allenamento…', error: 'Impossibile caricare questo contenuto. L’allenamento salvato resta su questo dispositivo.',
     },

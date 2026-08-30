@@ -2,12 +2,28 @@ import Storage from 'expo-sqlite/kv-store';
 
 import { canonicalLucidJson, createInitialLucidTrainerState } from '@/lib/lucid/domain';
 import {
+  LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT,
+  compareLucidDreamAtlasIds,
+  createEmptyLucidDreamAtlasOverlay,
+  type LucidDreamAtlasOverlay,
+} from '@/lib/lucid/dreamAtlas';
+import {
   assertLucidTrainerState,
   isLucidSyncMutation,
   type LucidLocale,
   type LucidSyncMutation,
   type LucidTrainerState,
 } from '@/lib/lucid/model';
+import {
+  clearLucidDreamAtlasPreferences,
+  companionHasLucidDreamAtlasData,
+  inspectLucidDreamAtlasCompanion,
+  overlayFromLucidDreamAtlasCompanion,
+} from '@/services/lucidDreamAtlasStorage';
+import { clearLucidDreamRehearsalState } from '@/services/lucidDreamRehearsalStorage';
+import { deleteLucidHealthKitSnapshot } from '@/services/lucidHealthKitStorage';
+import { clearLucidSsildSensoryLabCurrentSession } from '@/services/lucidSsildSensoryLabStorage';
+import { clearLucidStabilizationLabSessions } from '@/services/lucidStabilizationLabStorage';
 import {
   isLucidTrainerEncryptedValue,
   isLucidTrainerEncryptedValueError,
@@ -18,7 +34,8 @@ import {
 const STORAGE_NAMESPACE = 'noctalia_lucid_trainer';
 const STATE_KEY_VERSION = 'state_v1';
 const QUEUE_KEY_VERSION = 'sync_queue_v1';
-const EXPORT_VERSION = 1 as const;
+const LEGACY_EXPORT_VERSION = 1 as const;
+const EXPORT_VERSION = 2 as const;
 
 type AsyncKeyValueStorage = Pick<typeof Storage, 'getItem' | 'setItem' | 'removeItem'>;
 
@@ -93,6 +110,8 @@ export interface LucidTrainerExportEnvelope {
   state: LucidTrainerState;
 }
 
+export { EXPORT_VERSION, LEGACY_EXPORT_VERSION };
+
 const locks = new Map<string, Promise<void>>();
 
 function assertUserScope(userScope: string): void {
@@ -149,6 +168,88 @@ async function runSerialized<T>(key: string, task: () => Promise<T>): Promise<T>
   }
 }
 
+function isPristineDreamAtlas(overlay: LucidDreamAtlasOverlay | undefined): boolean {
+  return (
+    overlay == null ||
+    (overlay.updatedAt === LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT &&
+      !companionHasLucidDreamAtlasData(overlay))
+  );
+}
+
+function withPristineDreamAtlas(state: LucidTrainerState): LucidTrainerState {
+  if (state.dreamAtlas != null) return state;
+  return {
+    ...state,
+    dreamAtlas: createEmptyLucidDreamAtlasOverlay(LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT),
+  };
+}
+
+async function persistTrainerState(
+  userScope: string,
+  state: LucidTrainerState,
+  storage: AsyncKeyValueStorage
+): Promise<void> {
+  assertLucidTrainerState(state);
+  await writeValue(getLucidTrainerStorageKeys(userScope).state, JSON.stringify(state), storage);
+}
+
+async function dropCompanionAfterMainWrite(
+  userScope: string,
+  storage: AsyncKeyValueStorage
+): Promise<void> {
+  try {
+    await clearLucidDreamAtlasPreferences(userScope, storage);
+  } catch {
+    // Main SoT already won; a later load retries this drop only.
+  }
+}
+
+async function migrateCompanionDreamAtlas(
+  userScope: string,
+  state: LucidTrainerState,
+  source: LucidTrainerLoadResult['source'],
+  defaults: LucidTrainerStorageDefaults,
+  storage: AsyncKeyValueStorage
+): Promise<LucidTrainerLoadResult> {
+  const companion = await inspectLucidDreamAtlasCompanion(userScope, storage);
+  const nextState = withPristineDreamAtlas(state);
+  const needsPristineUpgrade = state.dreamAtlas == null;
+
+  if (companion.status === 'absent') {
+    if (!needsPristineUpgrade || source !== 'stored') {
+      return { state: nextState, source };
+    }
+    await persistTrainerState(userScope, nextState, storage);
+    return { state: nextState, source };
+  }
+
+  if (!isPristineDreamAtlas(nextState.dreamAtlas)) {
+    await dropCompanionAfterMainWrite(userScope, storage);
+    return { state: nextState, source };
+  }
+
+  if (!companionHasLucidDreamAtlasData(companion.preferences)) {
+    if (needsPristineUpgrade && source === 'stored') {
+      await persistTrainerState(userScope, nextState, storage);
+    }
+    await dropCompanionAfterMainWrite(userScope, storage);
+    return { state: nextState, source };
+  }
+
+  const stamped = overlayFromLucidDreamAtlasCompanion(
+    companion.preferences,
+    defaults.now ?? Date.now()
+  );
+  const migrated: LucidTrainerState = {
+    ...nextState,
+    dreamAtlas: stamped,
+    updatedAt: Math.max(nextState.updatedAt, stamped.updatedAt),
+  };
+  await persistTrainerState(userScope, migrated, storage);
+  await dropCompanionAfterMainWrite(userScope, storage);
+  return { state: migrated, source };
+}
+
 export async function loadLucidTrainerState(
   userScope: string,
   defaults: LucidTrainerStorageDefaults = {},
@@ -160,25 +261,46 @@ export async function loadLucidTrainerState(
     stored = await readValue(key, storage);
   } catch (error) {
     if (isLucidTrainerEncryptedValueError(error)) {
-      return { state: createDefaults(defaults), source: 'recovered' };
+      const recovered = await migrateCompanionDreamAtlas(
+        userScope,
+        createDefaults(defaults),
+        'recovered',
+        defaults,
+        storage
+      );
+      return recovered;
     }
     throw error;
   }
   if (!stored) {
-    return { state: createDefaults(defaults), source: 'empty' };
+    return migrateCompanionDreamAtlas(
+      userScope,
+      createDefaults(defaults),
+      'empty',
+      defaults,
+      storage
+    );
   }
 
+  let value: LucidTrainerState;
   try {
-    const value: unknown = JSON.parse(stored.plaintext);
-    assertLucidTrainerState(value);
-    if (stored.needsMigration) {
-      await migratePlaintextValue(key, stored.plaintext, storage);
-    }
-    return { state: value, source: 'stored' };
+    const parsed: unknown = JSON.parse(stored.plaintext);
+    assertLucidTrainerState(parsed);
+    value = parsed;
   } catch {
     await storage.removeItem(key).catch(() => undefined);
-    return { state: createDefaults(defaults), source: 'recovered' };
+    return migrateCompanionDreamAtlas(
+      userScope,
+      createDefaults(defaults),
+      'recovered',
+      defaults,
+      storage
+    );
   }
+  if (stored.needsMigration) {
+    await migratePlaintextValue(key, stored.plaintext, storage);
+  }
+  return migrateCompanionDreamAtlas(userScope, value, 'stored', defaults, storage);
 }
 
 export async function getLucidTrainerState(
@@ -323,9 +445,71 @@ export async function clearLucidTrainerLocalData(
         cancellationError = error;
       }
       await Promise.all([storage.removeItem(keys.state), storage.removeItem(keys.syncQueue)]);
+      const companionResults = await Promise.allSettled([
+        deleteLucidHealthKitSnapshot(userScope, storage),
+        clearLucidDreamRehearsalState(userScope, storage),
+        clearLucidDreamAtlasPreferences(userScope, storage),
+        clearLucidStabilizationLabSessions(userScope, storage),
+        clearLucidSsildSensoryLabCurrentSession(userScope, storage),
+      ]);
       if (cancellationError) throw cancellationError;
+      const companionFailure = companionResults.find((result) => result.status === 'rejected');
+      if (companionFailure?.status === 'rejected') throw companionFailure.reason;
     })
   );
+}
+
+function sortedAtlasEntries(record: Record<string, string>): [string, string][] {
+  return Object.entries(record).sort(([left], [right]) => compareLucidDreamAtlasIds(left, right));
+}
+
+function atlasCsvDetails(payload: Record<string, string>): string {
+  return canonicalLucidJson(payload);
+}
+
+function appendAtlasPreferenceRows(
+  rows: (string | number | boolean | null | undefined)[][],
+  overlay: LucidDreamAtlasOverlay
+): void {
+  const preferences = overlay;
+  for (const [nodeId, label] of sortedAtlasEntries(preferences.renamed)) {
+    rows.push([
+      'atlas_rename',
+      nodeId,
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      atlasCsvDetails({ label }),
+    ]);
+  }
+  for (const nodeId of [...preferences.hidden].sort(compareLucidDreamAtlasIds)) {
+    rows.push(['atlas_hide', nodeId, '', '', '', '', '', '', '', '', '', '']);
+  }
+  for (const [fromId, intoId] of sortedAtlasEntries(preferences.merges)) {
+    rows.push([
+      'atlas_merge',
+      fromId,
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      atlasCsvDetails({ intoId }),
+    ]);
+  }
+  for (const nodeId of [...preferences.deleted].sort(compareLucidDreamAtlasIds)) {
+    rows.push(['atlas_delete', nodeId, '', '', '', '', '', '', '', '', '', '']);
+  }
 }
 
 export function exportLucidTrainerJson(state: LucidTrainerState, now = Date.now()): string {
@@ -403,6 +587,13 @@ export function exportLucidTrainerCsv(state: LucidTrainerState): string {
         preparationMinutes: experiment.preparationMinutes,
         factors: experiment.factors,
         notes: experiment.notes ?? '',
+        ...(experiment.captureMode !== undefined ? { captureMode: experiment.captureMode } : {}),
+        ...(experiment.recallText !== undefined ? { recallText: experiment.recallText } : {}),
+        ...(experiment.cueOutcome !== undefined ? { cueOutcome: experiment.cueOutcome } : {}),
+        ...(experiment.voiceCapture !== undefined ? { voiceCapture: experiment.voiceCapture } : {}),
+        ...(experiment.techniqueAutoLink !== undefined
+          ? { techniqueAutoLink: experiment.techniqueAutoLink }
+          : {}),
       }),
     ]);
   });
@@ -419,7 +610,19 @@ export function exportLucidTrainerCsv(state: LucidTrainerState): string {
       check.context,
       check.method,
       check.outcome,
-      canonicalLucidJson({ mindful: check.mindful }),
+      canonicalLucidJson({
+        mindful: check.mindful,
+        ...(check.observedDetail ? { observedDetail: check.observedDetail } : {}),
+        ...(check.arrivalPath ? { arrivalPath: check.arrivalPath } : {}),
+        ...(check.nextDreamIntention
+          ? { nextDreamIntention: check.nextDreamIntention }
+          : {}),
+        ...(check.mindfulPauseAnchor
+          ? { mindfulPauseAnchor: check.mindfulPauseAnchor }
+          : {}),
+        ...(check.dreamSignId ? { dreamSignId: check.dreamSignId } : {}),
+        ...(check.dreamSignLabel ? { dreamSignLabel: check.dreamSignLabel } : {}),
+      }),
     ]);
   });
   state.weeklyReviews.forEach((review) => {
@@ -443,6 +646,29 @@ export function exportLucidTrainerCsv(state: LucidTrainerState): string {
       }),
     ]);
   });
+  (state.dreamSignDecisions ?? []).forEach((sign) => {
+    rows.push([
+      'dream_sign',
+      sign.id,
+      new Date(sign.updatedAt).toISOString(),
+      '',
+      sign.decision,
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      canonicalLucidJson({
+        customLabel: sign.customLabel ?? '',
+        sourceDreamIds: sign.sourceDreamIds,
+      }),
+    ]);
+  });
+
+  if (state.dreamAtlas) {
+    appendAtlasPreferenceRows(rows, state.dreamAtlas);
+  }
 
   return `${rows.map((row) => row.map(csvCell).join(',')).join('\r\n')}\r\n`;
 }

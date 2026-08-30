@@ -142,10 +142,18 @@ describe('Lucid stack onboarding protection', () => {
     render(<LucidLayout />);
     expect(screen.getByTestId('screen-onboarding')).toBeTruthy();
     expect(screen.queryByTestId('screen-(tabs)')).toBeNull();
+    expect(screen.queryByTestId('screen-dream-atlas')).toBeNull();
+    expect(screen.queryByTestId('screen-sleep-integration')).toBeNull();
+    expect(screen.queryByTestId('screen-stabilization-lab')).toBeNull();
+    expect(screen.queryByTestId('screen-ssild-lab')).toBeNull();
+    expect(screen.queryByTestId('screen-morning-voice')).toBeNull();
     expect(capturedGuards).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ guard: true, names: ['onboarding'] }),
-        expect.objectContaining({ guard: false, names: expect.arrayContaining(['(tabs)']) }),
+        expect.objectContaining({
+          guard: false,
+          names: expect.arrayContaining(['(tabs)', 'dream-atlas', 'sleep-integration', 'dream-rehearsal', 'stabilization-lab', 'ssild-lab', 'morning-voice']),
+        }),
       ])
     );
   });
@@ -156,10 +164,20 @@ describe('Lucid stack onboarding protection', () => {
     expect(screen.queryByTestId('screen-onboarding')).toBeNull();
     expect(screen.getByTestId('screen-(tabs)')).toBeTruthy();
     expect(screen.getByTestId('screen-program/[id]')).toBeTruthy();
+    expect(screen.getByTestId('screen-dream-signs')).toBeTruthy();
+    expect(screen.getByTestId('screen-dream-atlas')).toBeTruthy();
+    expect(screen.getByTestId('screen-dream-rehearsal')).toBeTruthy();
+    expect(screen.getByTestId('screen-sleep-integration')).toBeTruthy();
+    expect(screen.getByTestId('screen-stabilization-lab')).toBeTruthy();
+    expect(screen.getByTestId('screen-ssild-lab')).toBeTruthy();
+    expect(screen.getByTestId('screen-morning-voice')).toBeTruthy();
     expect(capturedGuards).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ guard: false, names: ['onboarding'] }),
-        expect.objectContaining({ guard: true, names: expect.arrayContaining(['(tabs)']) }),
+        expect.objectContaining({
+          guard: true,
+          names: expect.arrayContaining(['(tabs)', 'dream-atlas', 'sleep-integration', 'dream-rehearsal', 'stabilization-lab', 'ssild-lab', 'morning-voice']),
+        }),
       ])
     );
   });

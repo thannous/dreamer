@@ -15,6 +15,29 @@ appId: com.tanuki75.noctalia.lucid
     id: lucid-today-primary
 
 - tapOn:
+    id: lucid-tab-journal
+- extendedWaitUntil:
+    visible:
+      id: lucid-journal
+    timeout: 20000
+- assertVisible:
+    id: lucid-journal-capture
+- assertVisible:
+    id: lucid-journal-signs
+- tapOn:
+    id: lucid-journal-signs
+- extendedWaitUntil:
+    visible:
+      id: lucid-dream-signs
+    timeout: 20000
+- assertVisible: "Dream signs|Signes oniriques|Señales oníricas|Traumzeichen|Segnali onirici"
+- pressKey: back
+- extendedWaitUntil:
+    visible:
+      id: lucid-journal
+    timeout: 20000
+
+- tapOn:
     id: lucid-tab-programs
 - extendedWaitUntil:
     visible:
@@ -45,8 +68,8 @@ appId: com.tanuki75.noctalia.lucid
     timeout: 20000
 - assertVisible: "Remember more|Mieux se souvenir|Recordar más|Mehr erinnern|Ricordare di più"
 
-# Settings is contextual as well and keeps its historical automation ID on
-# Today's discreet gear action.
+# Profile is contextual as well and keeps the historical settings automation ID
+# on Today's discreet header action for backward-compatible flows.
 - tapOn:
     id: lucid-tab-today
 - extendedWaitUntil:

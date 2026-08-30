@@ -138,6 +138,7 @@ const SUITES = {
   // Companion application (com.tanuki75.noctalia.lucid): run with
   // --env-file .env.lucid.mock so Metro serves the Lucid Trainer variant.
   lucid: [
+    'maestro/lucid-onboarding-plan.yml',
     'maestro/lucid-smoke.yml',
     'maestro/lucid-program-journey.yml',
     'maestro/lucid-morning-review.yml',

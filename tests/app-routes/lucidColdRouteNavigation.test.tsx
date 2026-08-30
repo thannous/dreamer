@@ -28,6 +28,7 @@ const state = {
     completedExerciseIds: string[];
   }[],
   preferences: {
+    audioCuesEnabled: false,
     noctaliaLinkEnabled: false,
     timeZone: 'UTC',
   },
@@ -44,6 +45,10 @@ jest.mock('@expo/vector-icons', () => ({
 
 jest.mock('expo-image', () => ({
   Image: ({ testID }: { testID?: string }) => <img alt="" data-testid={testID} />,
+}));
+
+jest.mock('expo-audio', () => ({
+  requestRecordingPermissionsAsync: jest.fn().mockResolvedValue({ granted: true }),
 }));
 
 jest.mock('expo-router', () => ({
@@ -85,18 +90,40 @@ jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({ colors: {}, mode: 'light' }),
 }));
 
+jest.mock('@/context/DreamsContext', () => ({
+  useDreamsData: () => ({ dreams: [], loaded: true }),
+}));
+
+jest.mock('@/hooks/useLucidReducedMotion', () => ({
+  useLucidReducedMotion: () => false,
+}));
+
+jest.mock('@/hooks/useLucidGuidedRitualSound', () => ({
+  useLucidGuidedRitualSound: () => ({
+    playTransition: jest.fn().mockResolvedValue(false),
+    stop: jest.fn().mockResolvedValue(undefined),
+  }),
+}));
+
+jest.mock('@/components/lucid/LucidGuideOrb', () => ({
+  LucidGuideOrb: () => null,
+}));
+
 jest.mock('@/context/LucidTrainerContext', () => {
   const { getLucidContent } = jest.requireActual('@/lib/lucid/content');
   return {
     useLucidTrainer: () => ({
       state,
       content: getLucidContent('en'),
+      activeDreamSigns: [],
       addExperiment: mockAddExperiment,
       addRealityCheck: mockAddRealityCheck,
       saveWeeklyReview: mockSaveWeeklyReview,
       startProgram: mockStartProgram,
       pauseProgram: mockPauseProgram,
       completeProgramSession: jest.fn(),
+      updateGuidedRitual: jest.fn(),
+      completeGuidedRitualSession: jest.fn(),
       resetLocalData: jest.fn(),
     }),
   };
@@ -247,7 +274,7 @@ const coldRoutes = [
   {
     name: 'session',
     screen: <LucidSessionScreen />,
-    closeLabel: 'Back',
+    closeLabel: 'Cancel',
     fallback: '/lucid/program/mild',
   },
 ] as const;
@@ -290,18 +317,8 @@ describe('Lucid cold-route navigation', () => {
   it('uses the same cold-launch fallback after saving a morning review', async () => {
     render(<LucidMorningScreen />);
 
-    // Nothing is pre-answered. The short flow must still write exactly the
-    // answers the person reported before its final recap is saveable.
-    fireEvent.click(screen.getByRole('button', { name: 'MILD' }));
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
-    fireEvent.click(screen.getByRole('button', { name: '10 minutes' }));
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
-    fireEvent.click(screen.getByRole('button', { name: 'No lucidity' }));
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
-    fireEvent.click(screen.getByRole('button', { name: '3' }));
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
-    fireEvent.click(screen.getByRole('button', { name: '3' }));
-    fireEvent.click(screen.getByTestId('lucid-morning-next'));
+    fireEvent.click(screen.getByRole('button', { name: 'Nothing for now' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Unsure' }));
     fireEvent.click(screen.getByTestId('lucid-morning-next'));
 
     fireEvent.click(screen.getByTestId('lucid-morning-save'));

@@ -3,8 +3,8 @@
 import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 
-type MildProgress = {
-  technique: 'mild';
+type JourneyProgress = {
+  technique: 'mild' | 'ssild' | 'wbtb';
   status: 'active' | 'paused' | 'completed';
   currentDay: number;
   completedExerciseIds: string[];
@@ -15,9 +15,10 @@ const mockPush = jest.fn();
 const mockStartProgram = jest.fn().mockResolvedValue(undefined);
 const mockPauseProgram = jest.fn().mockResolvedValue(undefined);
 const DEFAULT_WINDOW_DIMENSIONS = { width: 390, height: 844, scale: 3, fontScale: 1 };
-let mockProgress: MildProgress | undefined;
+let mockProgress: JourneyProgress | undefined;
 let mockProgramId = 'mild';
 let mockWindowDimensions = DEFAULT_WINDOW_DIMENSIONS;
+let mockAudioSafetyAccepted = false;
 
 jest.mock('expo-router', () => ({
   router: {
@@ -169,6 +170,7 @@ jest.mock('@/context/LucidTrainerContext', () => {
         onboarding: {
           weeklyTarget: 3,
           accessibility: { reduceMotion: true },
+          audioSafetyAccepted: mockAudioSafetyAccepted,
         },
         progress: mockProgress ? [mockProgress] : [],
       },
@@ -254,6 +256,7 @@ describe('Lucid MILD journey behavior', () => {
     mockProgress = undefined;
     mockProgramId = 'mild';
     mockWindowDimensions = DEFAULT_WINDOW_DIMENSIONS;
+    mockAudioSafetyAccepted = false;
   });
 
   it('keeps 0/7 honest and distinguishes discovery from a started first session', async () => {
@@ -554,6 +557,52 @@ describe('Lucid MILD journey behavior', () => {
     expectBefore(currentCard, safety);
     expectBefore(safety, scene);
     expect(screen.getAllByTestId('lucid-journey-continue')).toHaveLength(1);
+  });
+
+  it('blocks starting WBTB from the program route when the safety policy forbids it', async () => {
+    mockProgramId = 'wbtb';
+    render(<LucidProgramDetailScreen />);
+
+    fireEvent.click(screen.getByTestId('lucid-journey-continue'));
+    fireEvent.click(screen.getByTestId('lucid-journey-session-1'));
+
+    expect(mockStartProgram).not.toHaveBeenCalled();
+    expect(mockPush).not.toHaveBeenCalled();
+  });
+
+  it('still opens completed WBTB history when the policy forbids new progression', () => {
+    mockProgramId = 'wbtb';
+    mockProgress = {
+      technique: 'wbtb',
+      status: 'active',
+      currentDay: 2,
+      completedExerciseIds: ['wbtb-01'],
+      startedAt: Date.UTC(2026, 7, 18, 8),
+    };
+
+    render(<LucidProgramDetailScreen />);
+
+    fireEvent.click(screen.getByTestId('lucid-journey-session-1'));
+    fireEvent.click(screen.getByTestId('lucid-journey-session-2'));
+    fireEvent.click(screen.getByTestId('lucid-journey-continue'));
+
+    expect(mockPush).toHaveBeenCalledTimes(1);
+    expect(mockPush).toHaveBeenCalledWith('/lucid/session/wbtb/1');
+    expect(mockStartProgram).not.toHaveBeenCalled();
+  });
+
+  it('starts WBTB when audio safety is consented and the policy allows it', async () => {
+    mockProgramId = 'wbtb';
+    mockAudioSafetyAccepted = true;
+    render(<LucidProgramDetailScreen />);
+
+    fireEvent.click(screen.getByTestId('lucid-journey-continue'));
+
+    await waitFor(() => {
+      expect(mockStartProgram).toHaveBeenCalledTimes(1);
+      expect(mockStartProgram).toHaveBeenCalledWith('wbtb');
+      expect(mockPush).toHaveBeenCalledWith('/lucid/session/wbtb/1');
+    });
   });
 
   it('keeps method evidence and guardrails behind one accessible disclosure', () => {

@@ -23,6 +23,7 @@ import type {
   LucidExperienceLevel,
   LucidGoal,
   LucidLocale,
+  LucidMindfulPauseAnchor,
   LucidSleepSchedule,
   LucidSyncEntity,
   LucidTrainerPreferences,
@@ -64,6 +65,12 @@ const COPY = {
     nightsPerWeek: 'nights per week',
     reminders: 'Reality-check reminders',
     perDay: 'per day',
+    reminderAnchors: 'Pause anchors',
+    reminderAnchorsBody: 'Choose what should remind you to pause. These prompts do not detect your context.',
+    transition: 'Transition',
+    emotion: 'Strong emotion',
+    unusual_event: 'Unusual event',
+    dream_sign: 'Confirmed dream sign',
     notifications: 'Training notifications',
     notificationsBody: 'Master switch for Lucid training reminders. Turning it off cancels scheduled reminders without changing how many reality checks you want.',
     decrease: 'Decrease',
@@ -99,6 +106,7 @@ const COPY = {
     science: 'Science and limits',
     privacy: 'Privacy',
     data: 'Data management',
+    sleepImport: 'Apple Health sleep import',
     help: 'Help',
     about: 'About',
   },
@@ -132,6 +140,12 @@ const COPY = {
     nightsPerWeek: 'nuits par semaine',
     reminders: 'Rappels de tests de réalité',
     perDay: 'par jour',
+    reminderAnchors: 'Ancrages de pause',
+    reminderAnchorsBody: 'Choisissez ce qui doit vous rappeler de faire une pause. Ces rappels ne détectent pas votre contexte.',
+    transition: 'Transition',
+    emotion: 'Émotion forte',
+    unusual_event: 'Événement inhabituel',
+    dream_sign: 'Signe onirique confirmé',
     notifications: 'Notifications d’entraînement',
     notificationsBody: 'Interrupteur maître des rappels d’entraînement Lucid. Le désactiver annule les rappels programmés, sans changer le nombre de tests de réalité souhaités.',
     decrease: 'Diminuer',
@@ -167,6 +181,7 @@ const COPY = {
     science: 'Science et limites',
     privacy: 'Confidentialité',
     data: 'Gestion des données',
+    sleepImport: 'Import sommeil Apple Health',
     help: 'Aide',
     about: 'À propos',
   },
@@ -200,6 +215,12 @@ const COPY = {
     nightsPerWeek: 'noches por semana',
     reminders: 'Recordatorios de realidad',
     perDay: 'al día',
+    reminderAnchors: 'Anclajes de pausa',
+    reminderAnchorsBody: 'Elige qué debe recordarte hacer una pausa. Estos avisos no detectan tu contexto.',
+    transition: 'Transición',
+    emotion: 'Emoción fuerte',
+    unusual_event: 'Suceso inusual',
+    dream_sign: 'Señal onírica confirmada',
     notifications: 'Notificaciones de entrenamiento',
     notificationsBody: 'Interruptor maestro de los recordatorios de entrenamiento Lucid. Al desactivarlo se cancelan los recordatorios programados, sin cambiar cuántas pruebas de realidad quieres.',
     decrease: 'Reducir',
@@ -235,6 +256,7 @@ const COPY = {
     science: 'Ciencia y límites',
     privacy: 'Privacidad',
     data: 'Gestión de datos',
+    sleepImport: 'Importación de sueño de Apple Health',
     help: 'Ayuda',
     about: 'Acerca de',
   },
@@ -268,6 +290,12 @@ const COPY = {
     nightsPerWeek: 'Nächte pro Woche',
     reminders: 'Realitätscheck-Erinnerungen',
     perDay: 'pro Tag',
+    reminderAnchors: 'Pausenanker',
+    reminderAnchorsBody: 'Wähle, was dich an eine Pause erinnern soll. Diese Hinweise erkennen deinen Kontext nicht.',
+    transition: 'Übergang',
+    emotion: 'Starkes Gefühl',
+    unusual_event: 'Ungewöhnliches Ereignis',
+    dream_sign: 'Bestätigtes Traumzeichen',
     notifications: 'Trainingsbenachrichtigungen',
     notificationsBody: 'Hauptschalter für Lucid-Trainingserinnerungen. Aus löscht geplante Erinnerungen, ohne die gewünschte Zahl der Realitätschecks zu ändern.',
     decrease: 'Verringern',
@@ -303,6 +331,7 @@ const COPY = {
     science: 'Wissenschaft und Grenzen',
     privacy: 'Datenschutz',
     data: 'Datenverwaltung',
+    sleepImport: 'Apple-Health-Schlafimport',
     help: 'Hilfe',
     about: 'Über',
   },
@@ -336,6 +365,12 @@ const COPY = {
     nightsPerWeek: 'notti a settimana',
     reminders: 'Promemoria test di realtà',
     perDay: 'al giorno',
+    reminderAnchors: 'Ancore della pausa',
+    reminderAnchorsBody: 'Scegli cosa deve ricordarti di fermarti. Questi avvisi non rilevano il tuo contesto.',
+    transition: 'Transizione',
+    emotion: 'Emozione forte',
+    unusual_event: 'Evento insolito',
+    dream_sign: 'Segnale onirico confermato',
     notifications: 'Notifiche di training',
     notificationsBody: 'Interruttore principale dei promemoria di training Lucid. Disattivarlo annulla i promemoria programmati, senza cambiare quanti test di realtà vuoi.',
     decrease: 'Riduci',
@@ -371,6 +406,7 @@ const COPY = {
     science: 'Scienza e limiti',
     privacy: 'Privacy',
     data: 'Gestione dati',
+    sleepImport: 'Importazione sonno Apple Health',
     help: 'Aiuto',
     about: 'Informazioni',
   },
@@ -385,6 +421,12 @@ type OnboardingSettingsPatch = {
 };
 
 const WEEKLY_TARGET_OPTIONS = [2, 3, 5, 7] as const;
+const REMINDER_ANCHORS = [
+  'transition',
+  'emotion',
+  'unusual_event',
+  'dream_sign',
+] as const satisfies readonly LucidMindfulPauseAnchor[];
 
 const THEME_ICONS: Record<LucidTrainerPreferences['theme'], keyof typeof Ionicons.glyphMap> = {
   dynamic: 'time-outline',
@@ -549,6 +591,7 @@ export default function LucidSettingsScreen() {
     { label: copy.science, icon: 'flask', route: '/lucid/science' },
     { label: copy.privacy, icon: 'shield-checkmark', route: '/lucid/privacy' },
     { label: copy.data, icon: 'folder-open', route: '/lucid/data' },
+    { label: copy.sleepImport, icon: 'moon', route: '/lucid/sleep-integration' },
     { label: copy.help, icon: 'help-circle', route: '/lucid/help' },
     { label: copy.about, icon: 'information-circle', route: '/lucid/about' },
   ];
@@ -625,6 +668,16 @@ export default function LucidSettingsScreen() {
       return;
     }
     void runSettingChange(() => updatePreferences({ notificationsEnabled: false }));
+  };
+
+  const toggleReminderAnchor = (anchor: LucidMindfulPauseAnchor) => {
+    const current = state.preferences.mindfulPauseReminderAnchors ?? [];
+    const next = current.includes(anchor)
+      ? current.filter((item) => item !== anchor)
+      : [...current, anchor];
+    void runSettingChange(() =>
+      updatePreferences({ mindfulPauseReminderAnchors: next }),
+    );
   };
 
   const saveSchedule = () => {
@@ -845,6 +898,45 @@ export default function LucidSettingsScreen() {
               onPress={() => changeReminderCount(1)}
               testID="lucid-reminders-increase"
             />
+          </View>
+        </View>
+        <View style={[styles.anchorSection, { borderTopColor: palette.border }]}>
+          <View style={styles.counterCopy}>
+            <Text style={[styles.accountTitle, { color: palette.text }]}>{copy.reminderAnchors}</Text>
+            <Text style={[styles.accountSub, { color: palette.textSecondary }]}>{copy.reminderAnchorsBody}</Text>
+          </View>
+          <View style={styles.anchorChoices}>
+            {REMINDER_ANCHORS.map((anchor) => {
+              const selected = (state.preferences.mindfulPauseReminderAnchors ?? []).includes(anchor);
+              return (
+                <Pressable
+                  key={anchor}
+                  accessibilityLabel={copy[anchor]}
+                  accessibilityRole="checkbox"
+                  accessibilityState={{ checked: selected, disabled: savingSetting }}
+                  disabled={savingSetting}
+                  onPress={() => toggleReminderAnchor(anchor)}
+                  testID={`lucid-reminder-anchor-${anchor}`}
+                  style={({ pressed }) => [
+                    styles.anchorChoice,
+                    {
+                      backgroundColor: selected ? palette.accentSoft : palette.surfaceRaised,
+                      borderColor: selected ? palette.accent : palette.borderInteractive,
+                      opacity: pressed ? LucidPress.opacity : 1,
+                    },
+                  ]}
+                >
+                  <Ionicons
+                    name={selected ? 'checkbox' : 'square-outline'}
+                    size={LucidIcon.sm}
+                    color={selected ? palette.accent : palette.textMuted}
+                  />
+                  <Text style={[styles.anchorChoiceLabel, { color: selected ? palette.accent : palette.textSecondary }]}>
+                    {copy[anchor]}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
         </View>
         <LucidToggleRow
@@ -1325,6 +1417,10 @@ const styles = StyleSheet.create({
   counterCopy: { flex: 1, gap: LucidSpace.xs },
   counterButtons: { flexDirection: 'row', gap: LucidSpace.xs },
   counterButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
+  anchorSection: { gap: LucidSpace.md, borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: LucidSpace.md },
+  anchorChoices: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
+  anchorChoice: { minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.xs, borderRadius: LucidRadius.md, borderWidth: 1, paddingHorizontal: LucidSpace.md, paddingVertical: LucidSpace.sm },
+  anchorChoiceLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   timeRow: { flexDirection: 'row', gap: LucidSpace.md },
   timeRowCompact: { flexDirection: 'column' },
   timeField: { flex: 1, gap: LucidSpace.sm },
