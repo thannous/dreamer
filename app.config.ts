@@ -179,6 +179,9 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
       ],
       './plugins/withLucidNoctaliaQueries',
       ...lucidGooglePlugins,
+      // google-signin still autolinks from package.json without OAuth IDs, so
+      // CocoaPods needs these targeted modular headers on every Lucid iOS build.
+      './plugins/withLucidGoogleSignInModularHeaders',
     ],
     extra: {
       ...baseExpo.extra,
