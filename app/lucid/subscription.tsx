@@ -90,6 +90,9 @@ export const COPY = {
     signIn: 'Open account',
     loadingTitle: 'Loading store offers',
     loadingBody: 'This can take a moment. Your free training remains available.',
+    offlineTitle: 'You are offline',
+    offlineBody:
+      'The store cannot be reached right now. No charge is assumed, and free training remains available on this device.',
     errorTitle: 'Store temporarily unavailable',
     errorBody:
       'The store could not load or complete this action. No charge is assumed, and free training remains available.',
@@ -177,6 +180,9 @@ export const COPY = {
     signIn: 'Ouvrir le compte',
     loadingTitle: 'Chargement des offres',
     loadingBody: 'Cela peut prendre un instant. Votre entraînement gratuit reste disponible.',
+    offlineTitle: 'Vous êtes hors ligne',
+    offlineBody:
+      'La boutique n’est pas joignable pour le moment. Aucun débit n’est supposé et l’entraînement gratuit reste disponible sur cet appareil.',
     errorTitle: 'Boutique temporairement indisponible',
     errorBody:
       'La boutique n’a pas pu charger ou terminer cette action. Aucun débit n’est supposé et l’entraînement gratuit reste disponible.',
@@ -264,6 +270,9 @@ export const COPY = {
     signIn: 'Abrir cuenta',
     loadingTitle: 'Cargando ofertas',
     loadingBody: 'Puede tardar un momento. Tu entrenamiento gratuito sigue disponible.',
+    offlineTitle: 'Estás sin conexión',
+    offlineBody:
+      'No se puede contactar con la tienda ahora. No se presupone ningún cobro y el entrenamiento gratuito sigue disponible en este dispositivo.',
     errorTitle: 'Tienda temporalmente no disponible',
     errorBody:
       'La tienda no pudo cargar o completar esta acción. No se presupone ningún cobro y el entrenamiento gratuito sigue disponible.',
@@ -351,6 +360,9 @@ export const COPY = {
     signIn: 'Konto öffnen',
     loadingTitle: 'Store-Angebote werden geladen',
     loadingBody: 'Das kann einen Moment dauern. Dein kostenloses Training bleibt verfügbar.',
+    offlineTitle: 'Du bist offline',
+    offlineBody:
+      'Der Store ist gerade nicht erreichbar. Es wird keine Abbuchung angenommen; das kostenlose Training bleibt auf diesem Gerät verfügbar.',
     errorTitle: 'Store vorübergehend nicht verfügbar',
     errorBody:
       'Der Store konnte diese Aktion nicht laden oder abschließen. Es wird keine Abbuchung angenommen; das kostenlose Training bleibt verfügbar.',
@@ -438,6 +450,9 @@ export const COPY = {
     signIn: 'Apri account',
     loadingTitle: 'Caricamento delle offerte',
     loadingBody: 'Potrebbe richiedere un momento. L’allenamento gratuito resta disponibile.',
+    offlineTitle: 'Sei offline',
+    offlineBody:
+      'Lo store non è raggiungibile ora. Non si presume alcun addebito e l’allenamento gratuito resta disponibile su questo dispositivo.',
     errorTitle: 'Store temporaneamente non disponibile',
     errorBody:
       'Lo store non ha potuto caricare o completare questa azione. Non si presume alcun addebito e l’allenamento gratuito resta disponibile.',
@@ -476,6 +491,15 @@ type Feedback = {
 
 function replaceToken(template: string, token: string, value: string): string {
   return template.replace(`{${token}}`, value);
+}
+
+const SUBSCRIPTION_NETWORK_ERROR_CODE = 'subscription.error.network';
+
+function isSubscriptionNetworkError(error: unknown): boolean {
+  if (typeof error === 'string') return error === SUBSCRIPTION_NETWORK_ERROR_CODE;
+  if (!error || typeof error !== 'object') return false;
+  const message = 'message' in error && typeof error.message === 'string' ? error.message : '';
+  return message === SUBSCRIPTION_NETWORK_ERROR_CODE;
 }
 
 function getTier(status: { tier: SubscriptionTier; isActive: boolean } | null): 'free' | 'plus' | 'unknown' {
@@ -533,6 +557,7 @@ export default function LucidSubscriptionScreen() {
   const fromRehearsal = source === 'dream_rehearsal';
   const subscription = useSubscription({ loadPackages: true });
   const copy = COPY[content.locale];
+  const isOfflineError = isSubscriptionNetworkError(subscription.error);
   const plusBenefits = listLucidPlusPaywallItems(LUCID_PLUS_CURRENT_BENEFIT_IDS, copy.benefits);
   const remainingFree = listLucidPlusPaywallItems(
     LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS,
@@ -810,13 +835,26 @@ export default function LucidSubscriptionScreen() {
       ) : null}
 
       {subscription.error ? (
-        <LucidCard accent="amber">
+        <LucidCard
+          accent="amber"
+          testID={
+            isOfflineError
+              ? 'lucid-subscription-offline'
+              : 'lucid-subscription-store-error'
+          }
+        >
           <View accessibilityLiveRegion="assertive" accessibilityRole="alert" style={styles.stateRow}>
-            <Ionicons name="cloud-offline" size={LucidIcon.lg} color={palette.amber} />
+            <Ionicons
+              name={isOfflineError ? 'cloud-offline' : 'warning'}
+              size={LucidIcon.lg}
+              color={palette.amber}
+            />
             <View style={styles.stateCopy}>
-              <Text style={[styles.cardTitle, { color: palette.text }]}>{copy.errorTitle}</Text>
+              <Text style={[styles.cardTitle, { color: palette.text }]}>
+                {isOfflineError ? copy.offlineTitle : copy.errorTitle}
+              </Text>
               <Text style={[styles.cardBody, { color: palette.textSecondary }]}>
-                {copy.errorBody}
+                {isOfflineError ? copy.offlineBody : copy.errorBody}
               </Text>
             </View>
           </View>

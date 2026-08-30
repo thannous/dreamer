@@ -73,7 +73,9 @@ jest.mock('@/components/lucid/LucidUI', () => ({
       {children}
     </main>
   ),
-  LucidCard: ({ children }: { children: React.ReactNode }) => <section>{children}</section>,
+  LucidCard: ({ children, testID }: { children: React.ReactNode; testID?: string }) => (
+    <section data-testid={testID}>{children}</section>
+  ),
   LucidIconAction: ({ label, onPress }: { label: string; onPress: () => void }) => (
     <button aria-label={label} onClick={onPress} />
   ),
@@ -235,17 +237,29 @@ describe('Lucid Trainer subscription', () => {
       packages: [],
       status: null,
     });
-    const { rerender } = render(<LucidSubscriptionScreen />);
+    render(<LucidSubscriptionScreen />);
     expect(screen.getByText('Loading store offers')).toBeTruthy();
+    expect(screen.queryByText('No offer available')).toBeNull();
+  });
 
+  it('names an offline state from a normalized network error without assuming a charge', () => {
     mockSubscription = createSubscription({
       error: new Error('subscription.error.network'),
       packages: [],
       status: null,
     });
-    rerender(<LucidSubscriptionScreen />);
+    render(<LucidSubscriptionScreen />);
 
-    expect(screen.getByText('Store temporarily unavailable')).toBeTruthy();
+    expect(screen.getByTestId('lucid-subscription-offline')).toBeTruthy();
+    expect(screen.getByText('You are offline')).toBeTruthy();
+    expect(
+      screen.getByText(
+        'The store cannot be reached right now. No charge is assumed, and free training remains available on this device.'
+      )
+    ).toBeTruthy();
+    expect(screen.getByText('Complete safety controls')).toBeTruthy();
+    expect(screen.queryByText('Store temporarily unavailable')).toBeNull();
+    expect(screen.queryByTestId('lucid-subscription-store-error')).toBeNull();
     expect(screen.queryByText('No offer available')).toBeNull();
   });
 
@@ -281,6 +295,16 @@ describe('Lucid Trainer subscription', () => {
       packages: [],
     });
     render(<LucidSubscriptionScreen />);
+
+    expect(screen.getByTestId('lucid-subscription-store-error')).toBeTruthy();
+    expect(screen.getByText('Store temporarily unavailable')).toBeTruthy();
+    expect(
+      screen.getByText(
+        'The store could not load or complete this action. No charge is assumed, and free training remains available.'
+      )
+    ).toBeTruthy();
+    expect(screen.queryByText('You are offline')).toBeNull();
+    expect(screen.queryByTestId('lucid-subscription-offline')).toBeNull();
 
     fireEvent.click(screen.getByTestId('lucid-check-subscription'));
 
@@ -389,13 +413,28 @@ describe('Lucid Trainer subscription', () => {
       expect(freeIds).toEqual([...LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS]);
       expect(Object.keys(COPY[locale].benefits)).toEqual([...LUCID_PLUS_CURRENT_BENEFIT_IDS]);
       expect(Object.keys(COPY[locale].remainingFree)).toEqual([...LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS]);
+      expect(COPY[locale].offlineTitle).toBeTruthy();
+      expect(COPY[locale].offlineBody).toBeTruthy();
+      expect(COPY[locale].errorTitle).toBeTruthy();
+      expect(COPY[locale].errorBody).toBeTruthy();
+      expect(COPY[locale].offlineTitle).not.toBe(COPY[locale].errorTitle);
     }
 
+    mockSubscription = createSubscription({
+      error: new Error('subscription.error.network'),
+      packages: [],
+      status: null,
+    });
     const { rerender } = render(<LucidSubscriptionScreen />);
     for (const locale of locales) {
       mockLocale = locale;
       rerender(<LucidSubscriptionScreen />);
       expect(screen.queryByText(/multi-week|atlas grouping|advanced transcription|multi-device/i)).toBeNull();
+      expect(screen.getByTestId('lucid-subscription-offline')).toBeTruthy();
+      expect(screen.getByText(COPY[locale].offlineTitle)).toBeTruthy();
+      expect(screen.getByText(COPY[locale].offlineBody)).toBeTruthy();
+      expect(screen.queryByText(COPY[locale].errorTitle)).toBeNull();
+      expect(screen.queryByTestId('lucid-subscription-store-error')).toBeNull();
       for (const label of Object.values(COPY[locale].benefits) as string[]) {
         expect(screen.getByText(label)).toBeTruthy();
       }
