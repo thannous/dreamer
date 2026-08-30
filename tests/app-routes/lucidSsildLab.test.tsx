@@ -25,11 +25,13 @@ const mockComplete = jest.fn();
 const mockRefresh = jest.fn();
 const mockPlayTransition = jest.fn().mockResolvedValue(true);
 const mockStopSound = jest.fn().mockResolvedValue(undefined);
+const mockInterruptAudio = jest.fn();
 const mockSelectionAsync = jest.fn().mockResolvedValue(undefined);
-const mockUseGuidedRitualSound = jest.fn((enabled: boolean) => ({
+const mockUseGuidedRitualSound = jest.fn((enabled: boolean, onUnexpectedInterruption?: () => void) => ({
   playTransition: mockPlayTransition,
   stop: mockStopSound,
   enabled,
+  onUnexpectedInterruption,
 }));
 
 let mockLocale: 'en' | 'fr' | 'es' | 'de' | 'it' = 'fr';
@@ -190,7 +192,7 @@ jest.mock('@/hooks/useLucidSsildSensoryLab', () => ({
     tick: mockTick,
     pause: mockPause,
     resume: mockResume,
-    interruptAudio: jest.fn(),
+    interruptAudio: (...args: unknown[]) => mockInterruptAudio(...args),
     exit: mockExit,
     complete: mockComplete,
     refresh: mockRefresh,
@@ -199,7 +201,8 @@ jest.mock('@/hooks/useLucidSsildSensoryLab', () => ({
 }));
 
 jest.mock('@/hooks/useLucidGuidedRitualSound', () => ({
-  useLucidGuidedRitualSound: (enabled: boolean) => mockUseGuidedRitualSound(enabled),
+  useLucidGuidedRitualSound: (enabled: boolean, onUnexpectedInterruption?: () => void) =>
+    mockUseGuidedRitualSound(enabled, onUnexpectedInterruption),
 }));
 
 jest.mock('@/components/lucid/LucidUI', () => ({
@@ -248,6 +251,7 @@ describe('Lucid SSILD sensory lab screen', () => {
     mockRefresh.mockReset().mockResolvedValue(undefined);
     mockPlayTransition.mockClear();
     mockStopSound.mockClear();
+    mockInterruptAudio.mockReset().mockResolvedValue(undefined);
     mockSelectionAsync.mockClear();
     mockCanGoBack = false;
     mockBack.mockClear();
@@ -302,7 +306,7 @@ describe('Lucid SSILD sensory lab screen', () => {
     expect(screen.getByTestId('lucid-ssild-lab-object-state').textContent).toBe('Ouïe');
     expect(screen.getByText(/objet visuel est atténué/)).not.toBeNull();
     expect(screen.getByText(/Silencieux/)).not.toBeNull();
-    expect(mockUseGuidedRitualSound).toHaveBeenCalledWith(false);
+    expect(mockUseGuidedRitualSound).toHaveBeenCalledWith(false, expect.any(Function));
     expect(mockPlayTransition).not.toHaveBeenCalled();
   });
 
@@ -310,7 +314,7 @@ describe('Lucid SSILD sensory lab screen', () => {
     mockAudioEnabled = true;
     syncLab(running(readyPlan('normal'), 160_000));
     render(<LucidSsildSensoryLabScreen />);
-    expect(mockUseGuidedRitualSound).toHaveBeenCalledWith(true);
+    expect(mockUseGuidedRitualSound).toHaveBeenCalledWith(true, expect.any(Function));
     await waitFor(() => expect(mockPlayTransition).toHaveBeenCalled());
     await waitFor(() => expect(mockSelectionAsync).toHaveBeenCalled());
     expect(screen.getByTestId('lucid-ssild-lab-object-state').textContent).toBe('Corps');
@@ -454,9 +458,66 @@ describe('Lucid SSILD sensory lab screen', () => {
     syncLab(running());
     const { container } = render(<LucidSsildSensoryLabScreen />);
     expect(screen.getByTestId('lucid-ssild-lab-static')).not.toBeNull();
+    expect(screen.queryByTestId('lucid-ssild-lab-static')).not.toBeNull();
     expect(container.innerHTML).not.toMatch(/Animated|Reanimated/);
     expect(screen.getByTestId('lucid-ssild-lab-object-state').textContent).toBe('S’apaiser');
     expect(screen.getByText('Ne cherchez à produire aucune expérience.')).not.toBeNull();
+  });
+
+  it('uses a static object variant under Reduce Motion and the morphing one otherwise', () => {
+    syncLab(running(readyPlan('normal'), 50_000));
+    render(<LucidSsildSensoryLabScreen />);
+    expect(screen.queryByTestId('lucid-ssild-lab-static')).toBeNull();
+    expect(screen.getByTestId('lucid-ssild-lab-object-state').textContent).toBe('Vue');
+    cleanup();
+
+    mockReduceMotion = true;
+    syncLab(running(readyPlan('normal'), 50_000));
+    render(<LucidSsildSensoryLabScreen />);
+    expect(screen.getByTestId('lucid-ssild-lab-static').textContent).toBe('Vue');
+    expect(screen.getByTestId('lucid-ssild-lab-object-state').textContent).toBe('Vue');
+    expect(screen.getByText('Remarquez l’obscurité derrière vos paupières.')).not.toBeNull();
+  });
+
+  it('interrupts a running SSILD session once from a real audio interruption and never invents completion', async () => {
+    mockAudioEnabled = true;
+    const active = running(readyPlan('normal'), 20_000);
+    syncLab(active);
+    const { rerender } = render(<LucidSsildSensoryLabScreen />);
+    const onUnexpectedInterruption = mockUseGuidedRitualSound.mock.calls.at(-1)?.[1];
+    expect(typeof onUnexpectedInterruption).toBe('function');
+
+    onUnexpectedInterruption?.();
+    onUnexpectedInterruption?.();
+    await waitFor(() => expect(mockInterruptAudio).toHaveBeenCalledTimes(1));
+    expect(mockComplete).not.toHaveBeenCalled();
+
+    const paused = {
+      ...active,
+      status: 'paused' as const,
+      lastResumedAt: null,
+      pausedAt: NOW + 20,
+      updatedAt: NOW + 20,
+    };
+    syncLab(paused);
+    rerender(<LucidSsildSensoryLabScreen />);
+    mockUseGuidedRitualSound.mock.calls.at(-1)?.[1]?.();
+    expect(mockInterruptAudio).toHaveBeenCalledTimes(1);
+    expect(mockComplete).not.toHaveBeenCalled();
+
+    const resumed = {
+      ...active,
+      status: 'running' as const,
+      lastResumedAt: NOW + 30,
+      pausedAt: null,
+      updatedAt: NOW + 30,
+    };
+    syncLab(resumed);
+    rerender(<LucidSsildSensoryLabScreen />);
+    mockUseGuidedRitualSound.mock.calls.at(-1)?.[1]?.();
+    mockUseGuidedRitualSound.mock.calls.at(-1)?.[1]?.();
+    await waitFor(() => expect(mockInterruptAudio).toHaveBeenCalledTimes(2));
+    expect(mockComplete).not.toHaveBeenCalled();
   });
 
   it('stacks compactly at 320 px and high fontScale while keeping live-region a11y', () => {

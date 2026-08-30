@@ -388,7 +388,26 @@ export default function LucidSsildSensoryLabScreen() {
     guidedPlan.status === 'ready' &&
     guidedPlan.soundAllowed &&
     state?.preferences.audioCuesEnabled === true;
-  const { playTransition, stop } = useLucidGuidedRitualSound(soundAllowed);
+  const labRef = useRef(lab);
+  const audioInterruptInFlightRef = useRef(false);
+  const audioInterruptSessionIdRef = useRef<string | null>(null);
+  const handleUnexpectedAudioInterruption = useCallback(() => {
+    const current = labRef.current.currentSession;
+    if (current?.status !== 'running') return;
+    if (audioInterruptInFlightRef.current) return;
+    audioInterruptInFlightRef.current = true;
+    audioInterruptSessionIdRef.current = current.sessionId;
+    void labRef.current.interruptAudio().catch(() => {
+      if (audioInterruptSessionIdRef.current === current.sessionId) {
+        audioInterruptInFlightRef.current = false;
+      }
+      // Persistence errors stay on the lab hook. Never invent completion.
+    });
+  }, []);
+  const { playTransition, stop } = useLucidGuidedRitualSound(
+    soundAllowed,
+    handleUnexpectedAudioInterruption
+  );
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState('');
   const busyLockRef = useRef(false);
@@ -403,7 +422,6 @@ export default function LucidSsildSensoryLabScreen() {
   const phase = recoveryBlocked ? null : lab.phase;
   const plan = recoveryBlocked ? null : lab.plan;
   const controlsBusy = busyAction !== null || lab.isMutating;
-  const labRef = useRef(lab);
 
   const runAction = useCallback(
     async (key: string, work: () => Promise<unknown>) => {
@@ -425,6 +443,23 @@ export default function LucidSsildSensoryLabScreen() {
   useEffect(() => {
     labRef.current = lab;
   }, [lab]);
+
+  useEffect(() => {
+    const sessionId = session?.sessionId ?? null;
+    if (sessionId !== audioInterruptSessionIdRef.current) {
+      audioInterruptSessionIdRef.current = sessionId;
+      audioInterruptInFlightRef.current = false;
+      return;
+    }
+    if (
+      audioInterruptInFlightRef.current &&
+      sessionId &&
+      session?.status &&
+      session.status !== 'running'
+    ) {
+      audioInterruptInFlightRef.current = false;
+    }
+  }, [session?.sessionId, session?.status]);
 
   const announcePhase = useCallback(
     (nextPhase: LucidSsildSensoryPhase | null) => {
@@ -698,19 +733,29 @@ export default function LucidSsildSensoryLabScreen() {
                   borderColor: palette.borderInteractive,
                   opacity: objectOpacity,
                 },
-                objectFocus === 'sight' ? styles.objectSight : null,
-                objectFocus === 'sound' ? styles.objectSound : null,
-                objectFocus === 'body' ? styles.objectBody : null,
+                reduceMotion
+                  ? styles.objectStatic
+                  : objectFocus === 'sight'
+                    ? styles.objectSight
+                    : objectFocus === 'sound'
+                      ? styles.objectSound
+                      : objectFocus === 'body'
+                        ? styles.objectBody
+                        : null,
               ]}
             />
             <Text
               style={[styles.meta, { color: palette.textMuted }]}
-              testID="lucid-ssild-lab-object-state"
+              testID={reduceMotion ? 'lucid-ssild-lab-static' : undefined}
             >
               {copy.focuses[phase.focus].title}
             </Text>
           </View>
-          <Text accessibilityRole="header" style={[styles.stepTitle, { color: palette.text }]}>
+          <Text
+            accessibilityRole="header"
+            style={[styles.stepTitle, { color: palette.text }]}
+            testID="lucid-ssild-lab-object-state"
+          >
             {copy.focuses[phase.focus].title}
           </Text>
           <Text style={[styles.body, { color: palette.textSecondary }]}>
@@ -774,11 +819,6 @@ export default function LucidSsildSensoryLabScreen() {
         </Text>
       ) : null}
 
-      {reduceMotion ? (
-        <Text accessibilityElementsHidden testID="lucid-ssild-lab-static">
-          {copy.focuses.sight.title}
-        </Text>
-      ) : null}
     </LucidScreen>
   );
 }
@@ -799,6 +839,11 @@ const styles = StyleSheet.create({
     height: 88,
     borderRadius: LucidRadius.xl,
     borderWidth: 1,
+  },
+  objectStatic: {
+    width: 88,
+    height: 88,
+    borderRadius: LucidRadius.xl,
   },
   objectSight: {
     width: 104,
