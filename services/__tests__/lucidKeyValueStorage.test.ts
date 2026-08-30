@@ -1,5 +1,3 @@
-import { Platform } from 'react-native';
-
 const mockAsyncStorage = {
   getItem: jest.fn(async () => null),
   setItem: jest.fn(async () => undefined),
@@ -12,55 +10,62 @@ const mockSqlite = {
   removeItem: jest.fn(async () => new Promise<void>(() => {})),
 };
 
-jest.mock('@react-native-async-storage/async-storage', () => ({
-  __esModule: true,
-  default: mockAsyncStorage,
-}));
-
-jest.mock('expo-sqlite/kv-store', () => ({
-  __esModule: true,
-  default: mockSqlite,
-}));
+function loadStorage(os: 'web' | 'ios' | 'android') {
+  jest.resetModules();
+  if (os === 'web') {
+    jest.doMock('@react-native-async-storage/async-storage', () => ({
+      __esModule: true,
+      default: mockAsyncStorage,
+    }));
+    jest.doMock('expo-sqlite/kv-store', () => {
+      throw new Error('expo-sqlite/kv-store should not load on web');
+    });
+  } else {
+    jest.doMock('@react-native-async-storage/async-storage', () => {
+      throw new Error('AsyncStorage should not load on native');
+    });
+    jest.doMock('expo-sqlite/kv-store', () => ({
+      __esModule: true,
+      default: mockSqlite,
+    }));
+  }
+  const { Platform } = require('react-native') as typeof import('react-native');
+  Platform.OS = os;
+  return require('@/services/lucidKeyValueStorage') as typeof import('@/services/lucidKeyValueStorage');
+}
 
 describe('lucidKeyValueStorage', () => {
   afterEach(() => {
-    Platform.OS = 'web';
+    jest.resetModules();
     jest.clearAllMocks();
   });
 
-  it('selects AsyncStorage on web and never calls the hung SQLite backend', () => {
-    Platform.OS = 'web';
+  it('selects AsyncStorage on web without evaluating expo-sqlite/kv-store', () => {
     const {
       getLucidKeyValueStorage,
       isLucidNativeKeyValueStorage,
-    } = require('@/services/lucidKeyValueStorage') as typeof import('@/services/lucidKeyValueStorage');
+    } = loadStorage('web');
 
     const storage = getLucidKeyValueStorage();
     expect(storage).toBe(mockAsyncStorage);
     expect(isLucidNativeKeyValueStorage(storage)).toBe(false);
     expect(isLucidNativeKeyValueStorage(mockSqlite)).toBe(false);
-    expect(mockSqlite.getItem).not.toHaveBeenCalled();
   });
 
-  it('keeps expo-sqlite/kv-store on native and treats only that identity as encrypted storage', () => {
-    Platform.OS = 'ios';
+  it('keeps expo-sqlite/kv-store on native without evaluating AsyncStorage', () => {
     const {
       getLucidKeyValueStorage,
       isLucidNativeKeyValueStorage,
-    } = require('@/services/lucidKeyValueStorage') as typeof import('@/services/lucidKeyValueStorage');
+    } = loadStorage('ios');
 
     const storage = getLucidKeyValueStorage();
     expect(storage).toBe(mockSqlite);
     expect(isLucidNativeKeyValueStorage(storage)).toBe(true);
     expect(isLucidNativeKeyValueStorage(mockAsyncStorage)).toBe(false);
-    expect(mockAsyncStorage.getItem).not.toHaveBeenCalled();
   });
 
   it('never treats an injected memory store as native SQLite storage', () => {
-    Platform.OS = 'android';
-    const {
-      isLucidNativeKeyValueStorage,
-    } = require('@/services/lucidKeyValueStorage') as typeof import('@/services/lucidKeyValueStorage');
+    const { isLucidNativeKeyValueStorage } = loadStorage('android');
 
     expect(
       isLucidNativeKeyValueStorage({
