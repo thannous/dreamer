@@ -10,6 +10,7 @@ import {
   LucidProgressBar,
   LucidScreen,
 } from '@/components/lucid/LucidUI';
+import { Reveal } from '@/components/motion';
 import { getLucidPalette, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useDreamsData } from '@/context/DreamsContext';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
@@ -280,6 +281,12 @@ function errorCopy(
 
 function matchesScene(session: LucidDreamRehearsalSession, scene: LucidDreamRehearsalScene): boolean {
   return session.dreamId === scene.dreamId && session.signId === scene.signId;
+}
+
+function rehearsalStepKey(session: LucidDreamRehearsalSession): string {
+  if (session.recognizedAt == null) return 'recognize';
+  if (session.intentionConfirmedAt == null) return 'intend';
+  return session.status === 'completed' ? 'completed' : 'ready';
 }
 
 async function playRecognitionHaptic(): Promise<void> {
@@ -590,27 +597,37 @@ export default function LucidDreamRehearsalScreen() {
       ) : null}
 
       {currentForScene && progress ? (
-        <LucidCard style={styles.stepCard} testID="lucid-dream-rehearsal-step">
-          <LucidProgressBar
-            accessibilityLabel={copy.progress(progressStep ?? progress.totalActionCount, progress.totalActionCount)}
-            value={progress.completedActionCount / progress.totalActionCount}
-          />
-          <Text style={[styles.meta, { color: palette.textMuted }]}>
-            {copy.progress(progressStep ?? progress.totalActionCount, progress.totalActionCount)}
-          </Text>
-          {currentForScene.recognizedAt == null ? (
-            <Text style={[styles.body, { color: palette.text }]}>{copy.recognizeHint}</Text>
-          ) : currentForScene.intentionConfirmedAt == null ? (
-            <Text style={[styles.body, { color: palette.text }]}>{copy.intendHint}</Text>
-          ) : currentForScene.status === 'completed' ? (
-            <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.statusCompleted}</Text>
-          ) : (
-            <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.done}</Text>
-          )}
-          {currentForScene.status === 'interrupted' ? (
-            <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.statusInterrupted}</Text>
-          ) : null}
-        </LucidCard>
+        <Reveal
+          key={presentation === 'motion' ? rehearsalStepKey(currentForScene) : 'static'}
+          distance={presentation === 'motion' ? LucidSpace.sm : 0}
+          testID={
+            presentation === 'static'
+              ? 'lucid-dream-rehearsal-step-static'
+              : 'lucid-dream-rehearsal-step-motion'
+          }
+        >
+          <LucidCard style={styles.stepCard} testID="lucid-dream-rehearsal-step">
+            <LucidProgressBar
+              accessibilityLabel={copy.progress(progressStep ?? progress.totalActionCount, progress.totalActionCount)}
+              value={progress.completedActionCount / progress.totalActionCount}
+            />
+            <Text style={[styles.meta, { color: palette.textMuted }]}>
+              {copy.progress(progressStep ?? progress.totalActionCount, progress.totalActionCount)}
+            </Text>
+            {currentForScene.recognizedAt == null ? (
+              <Text style={[styles.body, { color: palette.text }]}>{copy.recognizeHint}</Text>
+            ) : currentForScene.intentionConfirmedAt == null ? (
+              <Text style={[styles.body, { color: palette.text }]}>{copy.intendHint}</Text>
+            ) : currentForScene.status === 'completed' ? (
+              <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.statusCompleted}</Text>
+            ) : (
+              <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.done}</Text>
+            )}
+            {currentForScene.status === 'interrupted' ? (
+              <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.statusInterrupted}</Text>
+            ) : null}
+          </LucidCard>
+        </Reveal>
       ) : null}
 
       <Text accessibilityLiveRegion="polite" style={styles.srOnly}>

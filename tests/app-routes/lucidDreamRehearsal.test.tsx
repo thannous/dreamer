@@ -170,10 +170,19 @@ jest.mock('@/hooks/useLucidGuidedRitualSound', () => ({
   useLucidGuidedRitualSound: (enabled: boolean) => mockUseGuidedRitualSound(enabled),
 }));
 
+jest.mock('@/components/motion', () => ({
+  Reveal: ({ children, distance, testID }: any) => (
+    <div data-distance={String(distance)} data-testid={testID}>
+      {children}
+    </div>
+  ),
+}));
+
 jest.mock('@/components/lucid/LucidUI', () => ({
-  LucidScreen: ({ children, footer, testID, title, trailing }: any) => (
+  LucidScreen: ({ children, footer, testID, subtitle, title, trailing }: any) => (
     <main data-testid={testID}>
       <h1>{title}</h1>
+      {subtitle ? <p>{subtitle}</p> : null}
       {trailing}
       {children}
       <footer>{footer}</footer>
@@ -324,6 +333,8 @@ describe('Lucid dream rehearsal screen', () => {
     mockRehearsal = { ...mockRehearsal, currentSession: started() };
     render(<LucidDreamRehearsalScreen />);
     expect(mockUseGuidedRitualSound).toHaveBeenCalledWith(true);
+    expect(screen.getByTestId('lucid-dream-rehearsal-step-static')).not.toBeNull();
+    expect(screen.queryByTestId('lucid-dream-rehearsal-step-motion')).toBeNull();
     expect(screen.getByText(/Cherche exactement ce signe/)).not.toBeNull();
     fireEvent.click(screen.getByTestId('lucid-dream-rehearsal-primary'));
     await waitFor(() => expect(mockRecognize).toHaveBeenCalledWith(SIGN_ID));
@@ -334,6 +345,66 @@ describe('Lucid dream rehearsal screen', () => {
     render(<LucidDreamRehearsalScreen />);
     fireEvent.click(screen.getByTestId('lucid-dream-rehearsal-primary'));
     await waitFor(() => expect(mockStart).toHaveBeenCalledWith(scene(), { kind: 'atlas' }, 'static'));
+  });
+
+  it('renders a travelling step transition in motion and a still variant under Reduce Motion', () => {
+    mockRehearsal = { ...mockRehearsal, currentSession: started() };
+    const motion = render(<LucidDreamRehearsalScreen />);
+    expect(screen.getByTestId('lucid-dream-rehearsal-step-motion').getAttribute('data-distance')).toBe('8');
+    expect(screen.queryByTestId('lucid-dream-rehearsal-step-static')).toBeNull();
+    expect(screen.getByText(/Cherche exactement ce signe/)).not.toBeNull();
+    expect(screen.getByTestId('lucid-dream-rehearsal-primary').textContent).toBe('J’ai reconnu ce signe');
+    motion.unmount();
+
+    mockReduceMotion = true;
+    render(<LucidDreamRehearsalScreen />);
+    expect(screen.getByTestId('lucid-dream-rehearsal-step-static').getAttribute('data-distance')).toBe('0');
+    expect(screen.queryByTestId('lucid-dream-rehearsal-step-motion')).toBeNull();
+    expect(screen.getByText(/Cherche exactement ce signe/)).not.toBeNull();
+    expect(screen.getByTestId('lucid-dream-rehearsal-primary').textContent).toBe('J’ai reconnu ce signe');
+  });
+
+  it('renders title and instructions in every locale without raw keys', () => {
+    const expected = {
+      en: {
+        title: 'Rehearse this scene',
+        subtitle: 'One chosen dream. One confirmed sign. One next action.',
+        hint: 'Look for this exact sign in the scene. Do not invent another one.',
+      },
+      fr: {
+        title: 'Répéter cette scène',
+        subtitle: 'Un rêve choisi. Un signe confirmé. Une seule prochaine action.',
+        hint: 'Cherche exactement ce signe dans la scène. N’en invente pas un autre.',
+      },
+      es: {
+        title: 'Repetir esta escena',
+        subtitle: 'Un sueño elegido. Una señal confirmada. Una sola siguiente acción.',
+        hint: 'Busca exactamente esta señal en la escena. No inventes otra.',
+      },
+      de: {
+        title: 'Diese Szene wiederholen',
+        subtitle: 'Ein gewählter Traum. Ein bestätigtes Zeichen. Eine nächste Handlung.',
+        hint: 'Suche genau dieses Zeichen in der Szene. Erfinde kein anderes.',
+      },
+      it: {
+        title: 'Ripeti questa scena',
+        subtitle: 'Un sogno scelto. Un segno confermato. Una sola prossima azione.',
+        hint: 'Cerca esattamente questo segno nella scena. Non inventarne un altro.',
+      },
+    } as const;
+
+    mockRehearsal = { ...mockRehearsal, currentSession: started() };
+    for (const locale of ['en', 'fr', 'es', 'de', 'it'] as const) {
+      cleanup();
+      mockLocale = locale;
+      render(<LucidDreamRehearsalScreen />);
+      const body = screen.getByTestId('lucid-dream-rehearsal').textContent ?? '';
+      expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(expected[locale].title);
+      expect(screen.getByText(expected[locale].subtitle)).not.toBeNull();
+      expect(screen.getByText(expected[locale].hint)).not.toBeNull();
+      expect(screen.getByTestId('lucid-dream-rehearsal-primary')).not.toBeNull();
+      expect(body).not.toMatch(/eyebrow|recognizeHint|intendHint|statusCompleted|copy\./);
+    }
   });
 
   it('compacts the scene card on a narrow Android width or large fontScale', () => {
