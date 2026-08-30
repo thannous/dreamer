@@ -34,8 +34,11 @@ jest.mock('expo-haptics', () => ({
   notificationAsync: mockNotification,
 }));
 
+let mockParams: { signId?: string } = {};
+
 jest.mock('expo-router', () => ({
   router: { back: jest.fn(), canGoBack: () => false, replace: jest.fn() },
+  useLocalSearchParams: () => mockParams,
 }));
 
 jest.mock('@/constants/lucidTheme', () => ({
@@ -137,6 +140,7 @@ describe('Lucid mindful-pause guide', () => {
     jest.useFakeTimers();
     mockAddRealityCheck.mockResolvedValue(undefined);
     mockActiveDreamSigns = [];
+    mockParams = {};
   });
 
   afterEach(() => {
@@ -241,5 +245,79 @@ describe('Lucid mindful-pause guide', () => {
       arrivalPath: 'I left the kitchen and entered this room.',
       nextDreamIntention: 'If the clock shifts, I will know I am dreaming.',
     }));
+  });
+
+  it('keeps a targeted Atlas sign without preselecting the test conclusion', async () => {
+    mockActiveDreamSigns = [
+      { id: 'sign:mirror', label: 'My mirror' },
+      { id: 'sign:stairs', label: 'The stairs' },
+    ];
+    mockParams = { signId: 'sign:mirror' };
+    render(<LucidRealityCheckScreen />);
+    useAccessibleAlternative();
+
+    expect((screen.getByTestId('lucid-reality-context-dream_sign') as HTMLButtonElement).getAttribute('aria-checked')).toBe('true');
+    expect((screen.getByTestId('lucid-reality-sign-sign:mirror') as HTMLButtonElement).getAttribute('aria-checked')).toBe('true');
+    expect((screen.getByTestId('lucid-reality-sign-sign:stairs') as HTMLButtonElement).getAttribute('aria-checked')).not.toBe('true');
+    expect(screen.queryByTestId('lucid-reality-method-nose_breathing')).toBeNull();
+    expect(screen.queryByTestId('lucid-reality-outcome-awake')).toBeNull();
+    expect(screen.queryByTestId('lucid-reality-outcome-dreaming')).toBeNull();
+    expect(screen.queryByTestId('lucid-reality-outcome-uncertain')).toBeNull();
+
+    fireEvent.change(screen.getByTestId('lucid-reality-observed-detail'), { target: { value: 'The clock changed twice.' } });
+    advanceThroughTextAndTest();
+    fireEvent.click(screen.getByRole('button', { name: 'Save mindful pause' }));
+
+    await waitFor(() => expect(mockAddRealityCheck).toHaveBeenCalledWith(expect.objectContaining({
+      context: 'dream_sign',
+      mindfulPauseAnchor: 'dream_sign',
+      dreamSignId: 'sign:mirror',
+      dreamSignLabel: 'My mirror',
+      outcome: 'awake',
+    })));
+  });
+
+  it('ignores an unknown targeted sign instead of guessing an answer', () => {
+    mockActiveDreamSigns = [{ id: 'sign:mirror', label: 'My mirror' }];
+    mockParams = { signId: 'sign:unknown' };
+    render(<LucidRealityCheckScreen />);
+    useAccessibleAlternative();
+
+    expect((screen.getByTestId('lucid-reality-context-dream_sign') as HTMLButtonElement).getAttribute('aria-checked')).not.toBe('true');
+    expect(screen.queryByTestId('lucid-reality-sign-sign:mirror')).toBeNull();
+    expect(screen.queryByTestId('lucid-reality-outcome-awake')).toBeNull();
+  });
+
+  it('hydrates a targeted Atlas sign after a cold load without clobbering a later choice', async () => {
+    mockActiveDreamSigns = [];
+    mockParams = { signId: 'sign:mirror' };
+    const { rerender } = render(<LucidRealityCheckScreen />);
+    useAccessibleAlternative();
+
+    expect((screen.getByTestId('lucid-reality-context-dream_sign') as HTMLButtonElement).getAttribute('aria-checked')).not.toBe('true');
+    expect(screen.queryByTestId('lucid-reality-sign-sign:mirror')).toBeNull();
+
+    mockActiveDreamSigns = [
+      { id: 'sign:mirror', label: 'My mirror' },
+      { id: 'sign:stairs', label: 'The stairs' },
+    ];
+    rerender(<LucidRealityCheckScreen />);
+
+    expect((screen.getByTestId('lucid-reality-context-dream_sign') as HTMLButtonElement).getAttribute('aria-checked')).toBe('true');
+    expect((screen.getByTestId('lucid-reality-sign-sign:mirror') as HTMLButtonElement).getAttribute('aria-checked')).toBe('true');
+    expect((screen.getByTestId('lucid-reality-sign-sign:stairs') as HTMLButtonElement).getAttribute('aria-checked')).not.toBe('true');
+    expect(screen.queryByTestId('lucid-reality-outcome-awake')).toBeNull();
+
+    fireEvent.click(screen.getByTestId('lucid-reality-sign-sign:stairs'));
+    mockActiveDreamSigns = [
+      { id: 'sign:mirror', label: 'My mirror' },
+      { id: 'sign:stairs', label: 'The stairs' },
+      { id: 'sign:clock', label: 'The clock' },
+    ];
+    rerender(<LucidRealityCheckScreen />);
+
+    expect((screen.getByTestId('lucid-reality-sign-sign:stairs') as HTMLButtonElement).getAttribute('aria-checked')).toBe('true');
+    expect((screen.getByTestId('lucid-reality-sign-sign:mirror') as HTMLButtonElement).getAttribute('aria-checked')).not.toBe('true');
+    expect((screen.getByTestId('lucid-reality-sign-sign:clock') as HTMLButtonElement).getAttribute('aria-checked')).not.toBe('true');
   });
 });

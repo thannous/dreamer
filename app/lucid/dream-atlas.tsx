@@ -617,7 +617,11 @@ export default function LucidDreamAtlasScreen() {
 
           <LucidButton
             label={copy.pause}
-            onPress={() => router.push('/lucid/reality-check' as Href)}
+            onPress={() =>
+              router.push(
+                `/lucid/reality-check?signId=${encodeURIComponent(selected.id)}` as Href
+              )
+            }
             variant="secondary"
           />
           <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.pauseHint}</Text>

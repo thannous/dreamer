@@ -353,7 +353,9 @@ describe('Lucid dream atlas screen', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Enregistrer le nom' }));
     await waitFor(() => expect(mockRename).toHaveBeenCalledWith('sign:miroir', 'Mon miroir'));
     fireEvent.click(screen.getByRole('button', { name: 'Pause attentive' }));
-    expect(mockPush).toHaveBeenCalledWith('/lucid/reality-check');
+    expect(mockPush).toHaveBeenCalledWith(
+      `/lucid/reality-check?signId=${encodeURIComponent('sign:miroir')}`
+    );
     expect(screen.queryByRole('button', { name: 'Répétition ciblée' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Répéter cette scène : Le couloir aux miroirs' }));
     expect(mockPush).toHaveBeenCalledWith(

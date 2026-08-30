@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
@@ -153,7 +153,15 @@ const COPY = {
 
 type StepIndex = 0 | 1 | 2 | 3 | 4;
 
+function firstParam(value: string | string[] | undefined): string {
+  if (Array.isArray(value)) return value[0] ?? '';
+  return value ?? '';
+}
+
 export default function LucidRealityCheckScreen() {
+  const params = useLocalSearchParams<{ signId?: string | string[] }>();
+  const targetedSignId = firstParam(params.signId);
+
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const systemReduceMotion = useReducedMotion();
@@ -168,8 +176,20 @@ export default function LucidRealityCheckScreen() {
   const [arrivalPath, setArrivalPath] = useState('');
   const [nextDreamIntention, setNextDreamIntention] = useState('');
   const [method, setMethod] = useState<LucidRealityCheckMethod | null>(null);
-  const [trigger, setTrigger] = useState<LucidMindfulPauseTrigger | null>(null);
-  const [selectedDreamSignId, setSelectedDreamSignId] = useState<string | null>(null);
+  const targetedDreamSignId = activeDreamSigns.some((sign) => sign.id === targetedSignId)
+    ? targetedSignId
+    : null;
+  const [userChoseAnchor, setUserChoseAnchor] = useState(false);
+  const [userTrigger, setUserTrigger] = useState<LucidMindfulPauseTrigger | null>(null);
+  const [userSelectedDreamSignId, setUserSelectedDreamSignId] = useState<string | null>(null);
+  const trigger = userChoseAnchor
+    ? userTrigger
+    : targetedDreamSignId
+      ? 'dream_sign'
+      : null;
+  const selectedDreamSignId = userChoseAnchor
+    ? userSelectedDreamSignId
+    : targetedDreamSignId;
   const [outcome, setOutcome] = useState<LucidRealityCheckOutcome | null>(null);
   const [saving, setSaving] = useState(false);
   const steps = useMemo(() => [copy.stop, copy.observe, copy.retrace, copy.test, copy.intend] as const, [copy]);
@@ -286,8 +306,8 @@ export default function LucidRealityCheckScreen() {
         {step === 1 ? <View style={styles.group}>
           <ShortResponseField label={copy.observedDetail} placeholder={copy.observedPlaceholder} value={observedDetail} onChangeText={setObservedDetail} testID="lucid-reality-observed-detail" />
           <View accessibilityRole="radiogroup" accessibilityLabel={copy.context} style={styles.wrap}>
-            {TRIGGERS.map((item) => <LucidPillButton key={item} label={copy[item]} groupLabel={copy.context} selected={trigger === item} onPress={() => { setTrigger(item); if (item !== 'dream_sign') setSelectedDreamSignId(null); }} testID={`lucid-reality-context-${item}`} />)}
-            {trigger === 'dream_sign' ? activeDreamSigns.length > 0 ? <View accessibilityRole="radiogroup" accessibilityLabel={copy.chooseSign} style={styles.signChoices}>{activeDreamSigns.map((sign) => <LucidPillButton key={sign.id} label={sign.label} groupLabel={copy.chooseSign} selected={selectedDreamSignId === sign.id} onPress={() => setSelectedDreamSignId(sign.id)} testID={`lucid-reality-sign-${sign.id}`} />)}</View> : <Text style={[styles.body, styles.signHint, { color: palette.textSecondary }]}>{copy.noConfirmedSign}</Text> : null}
+            {TRIGGERS.map((item) => <LucidPillButton key={item} label={copy[item]} groupLabel={copy.context} selected={trigger === item} onPress={() => { const alreadyChose = userChoseAnchor; setUserChoseAnchor(true); setUserTrigger(item); setUserSelectedDreamSignId(item === 'dream_sign' ? alreadyChose ? userSelectedDreamSignId : targetedDreamSignId : null); }} testID={`lucid-reality-context-${item}`} />)}
+            {trigger === 'dream_sign' ? activeDreamSigns.length > 0 ? <View accessibilityRole="radiogroup" accessibilityLabel={copy.chooseSign} style={styles.signChoices}>{activeDreamSigns.map((sign) => <LucidPillButton key={sign.id} label={sign.label} groupLabel={copy.chooseSign} selected={selectedDreamSignId === sign.id} onPress={() => { setUserChoseAnchor(true); setUserTrigger('dream_sign'); setUserSelectedDreamSignId(sign.id); }} testID={`lucid-reality-sign-${sign.id}`} />)}</View> : <Text style={[styles.body, styles.signHint, { color: palette.textSecondary }]}>{copy.noConfirmedSign}</Text> : null}
           </View>
         </View> : null}
         {step === 2 ? <ShortResponseField label={copy.arrivalPath} placeholder={copy.arrivalPlaceholder} value={arrivalPath} onChangeText={setArrivalPath} testID="lucid-reality-arrival-path" /> : null}
