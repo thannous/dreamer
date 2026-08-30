@@ -49,7 +49,10 @@ import { trackProductEvent } from '@/lib/analytics';
 import { isLucidTrainer } from '@/lib/appVariant';
 import { isPasswordResetPath } from '@/lib/authRoutes';
 import { loadTranslations } from '@/lib/i18n';
-import { isSafeLucidNotificationRoute } from '@/lib/lucid/routes';
+import {
+  isSafeLucidNotificationRoute,
+  resolveObservedLucidWebStartupDestination,
+} from '@/lib/lucid/routes';
 import { isSafeAppNotificationRoute } from '@/lib/notificationRoutes';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
 import { createNotificationResponseTracker } from '@/lib/notificationResponse';
@@ -213,6 +216,11 @@ function RootLayoutNav({
   } = useOnboarding();
   const pathname = usePathname();
   const pathnameRef = useRef(pathname);
+  const initialWebHrefRef = useRef<string | null>(
+    Platform.OS === 'web' && typeof window !== 'undefined'
+      ? `${window.location.pathname}${window.location.search}${window.location.hash}`
+      : null
+  );
   const hasInitialNavigated = useRef(false);
   const hasTrackedColdStart = useRef(false);
   const previousOnboardingScope = useRef(onboardingScope);
@@ -628,7 +636,13 @@ function RootLayoutNav({
     const explicitDestination = resolveExplicitStartupDestination(
       initialLaunchUrl,
       pathnameRef.current
-    );
+    ) ??
+      (Platform.OS === 'web'
+        ? resolveObservedLucidWebStartupDestination(
+            initialWebHrefRef.current ?? pathnameRef.current ?? pathname
+          )
+        : undefined);
+    initialWebHrefRef.current = null;
     const decision = pendingLucidNotificationUrl
       ? { destination: pendingLucidNotificationUrl, reason: 'notification' as const }
       : resolveAppStartupDecision({

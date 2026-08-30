@@ -99,6 +99,30 @@ export function isLucidHomePath(pathname: string | null | undefined): boolean {
 }
 
 /**
+ * True for `/lucid` and nested Lucid routes such as `/lucid/subscription`.
+ * `/lucidity` is rejected because it only shares a prefix, not a path boundary.
+ */
+export function isLucidAppPath(pathname: string | null | undefined): boolean {
+  const path = normalizeLucidPathname(pathname?.split('?')[0]?.split('#')[0]);
+  return path === LUCID_HOME_HREF || path.startsWith(`${LUCID_HOME_HREF}/`);
+}
+
+/**
+ * Preserve a Lucid URL already mounted by the web router on cold start.
+ */
+export function resolveObservedLucidWebStartupDestination(
+  href: string | null | undefined
+): Href | undefined {
+  const rawHref = href?.trim();
+  if (!rawHref) return undefined;
+  const path = normalizeLucidPathname(rawHref.split('?')[0]?.split('#')[0]);
+  if (!isLucidAppPath(path)) return undefined;
+  const suffixIndex = rawHref.search(/[?#]/);
+  const suffix = suffixIndex >= 0 ? rawHref.slice(suffixIndex) : '';
+  return `${path}${suffix}` as Href;
+}
+
+/**
  * Decide whether the Lucid shell must return to onboarding.
  * Returns null when the current path is already the right place, so callers
  * can avoid replace loops on web where `/lucid/(tabs)` and `/lucid` collide.
