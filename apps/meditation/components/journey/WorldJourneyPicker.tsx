@@ -19,6 +19,7 @@ import type { MeditationWorld, WorldId } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import { useCompactLayout } from '@/hooks/useCompactLayout';
+import { useScreenReader } from '@/hooks/useScreenReader';
 import type { TranslationKey } from '@/lib/i18n';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -196,6 +197,8 @@ function WorldJourneyCard({
  * Home-only world carousel. Worlds never advance by themselves: the listener
  * swipes, then selects. Every radio keeps the same geometry; the ritual CTA is
  * a sibling shelf below, so selection never recentres the rail or nests controls.
+ * A running screen reader replaces the nested horizontal rail with a stacked
+ * list so TalkBack can reach every world, then leave for the tab bar.
  */
 export function WorldJourneyPicker({
   worlds,
@@ -212,6 +215,7 @@ export function WorldJourneyPicker({
   const scrollRef = useRef<ScrollView>(null);
   const revealedInitialSelectionRef = useRef(false);
   const compact = useCompactLayout();
+  const screenReader = useScreenReader();
   const availableWidth = Math.max(280, viewportWidth - 32);
   const activeWidth = compact
     ? Math.min(244, Math.max(208, availableWidth * 0.7))
@@ -221,7 +225,7 @@ export function WorldJourneyPicker({
   // that real initial choice once, then leave every later rail position under
   // the listener's direct control.
   useEffect(() => {
-    if (!initialSelectionReady || revealedInitialSelectionRef.current) return;
+    if (screenReader || !initialSelectionReady || revealedInitialSelectionRef.current) return;
 
     revealedInitialSelectionRef.current = true;
     const selectedIndex = worlds.findIndex((world) => world.id === selectedWorldId);
@@ -232,38 +236,44 @@ export function WorldJourneyPicker({
       y: 0,
       animated: false,
     });
-  }, [activeWidth, initialSelectionReady, selectedWorldId, worlds]);
+  }, [activeWidth, initialSelectionReady, screenReader, selectedWorldId, worlds]);
+
+  const cards = worlds.map((world) => {
+    const selected = world.id === selectedWorldId;
+    const previewed = world.id === previewedWorldId;
+
+    return (
+      <WorldJourneyCard
+        key={world.id}
+        world={world}
+        selected={selected}
+        previewed={previewed}
+        isWorldOwned={isWorldOwned}
+        priceForWorld={priceForWorld}
+        width={screenReader ? availableWidth : activeWidth}
+        onSelect={onSelect}
+        testID={testID ? WORLD_JOURNEY_TEST_ID[world.id] : undefined}
+        compact={compact}
+      />
+    );
+  });
 
   return (
     <View accessibilityRole="radiogroup" accessibilityLabel={accessibilityLabel} testID={testID}>
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        nestedScrollEnabled
-        alwaysBounceHorizontal={false}
-        decelerationRate="fast"
-        showsHorizontalScrollIndicator={false}
-        contentContainerClassName="items-start gap-3 pr-gutter">
-        {worlds.map((world) => {
-          const selected = world.id === selectedWorldId;
-          const previewed = world.id === previewedWorldId;
-
-          return (
-            <WorldJourneyCard
-              key={world.id}
-              world={world}
-              selected={selected}
-              previewed={previewed}
-              isWorldOwned={isWorldOwned}
-              priceForWorld={priceForWorld}
-              width={activeWidth}
-              onSelect={onSelect}
-              testID={testID ? WORLD_JOURNEY_TEST_ID[world.id] : undefined}
-              compact={compact}
-            />
-          );
-        })}
-      </ScrollView>
+      {screenReader ? (
+        <View className="gap-3">{cards}</View>
+      ) : (
+        <ScrollView
+          ref={scrollRef}
+          horizontal
+          nestedScrollEnabled
+          alwaysBounceHorizontal={false}
+          decelerationRate="fast"
+          showsHorizontalScrollIndicator={false}
+          contentContainerClassName="items-start gap-3 pr-gutter">
+          {cards}
+        </ScrollView>
+      )}
     </View>
   );
 }

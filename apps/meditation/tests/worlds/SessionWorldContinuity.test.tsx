@@ -568,6 +568,43 @@ describe('world continuity from journey into practice', () => {
     expect(screen.getByTestId(TID.Button.SessionPlay)).toHaveTextContent('Play');
   });
 
+  it('keeps a contradictory blocked Plus gate playable while subscriptions are disabled', () => {
+    mockRouteSessionId = 'dream-threshold';
+    mockSubscriptionsEnabled = false;
+    mockIsPlus = false;
+    mockRemainingPlays = 0;
+    mockSessionGate = { allowed: false, reason: 'premium-session' };
+
+    render(<SessionDetail />);
+
+    expect(screen.getByTestId('session.access')).toHaveTextContent('Free');
+    expect(screen.queryByText('Plus')).toBeNull();
+    expect(screen.queryByText('Noctalia Plus')).toBeNull();
+    expect(screen.queryByTestId('session.quota')).toBeNull();
+    expect(screen.queryByTestId('session.quota-alternative')).toBeNull();
+    expect(screen.getByTestId(TID.Button.SessionPlay)).toHaveTextContent('Play');
+    fireEvent.press(screen.getByTestId(TID.Button.SessionPlay));
+    expect(mockOpenPaywall).not.toHaveBeenCalled();
+    expect(mockPush).toHaveBeenCalledWith('/player/dream-threshold?worldId=constellation');
+  });
+
+  it('hides exhausted-quota copy on a free session while subscriptions are disabled', () => {
+    mockSubscriptionsEnabled = false;
+    mockIsPlus = false;
+    mockRemainingPlays = 0;
+    mockSessionGate = { allowed: false, reason: 'monthly-quota' };
+
+    render(<SessionDetail />);
+
+    expect(screen.getByTestId('session.access')).toHaveTextContent('Free');
+    expect(screen.queryByTestId('session.quota')).toBeNull();
+    expect(screen.queryByTestId('session.quota-alternative')).toBeNull();
+    expect(screen.getByTestId(TID.Button.SessionPlay)).toHaveTextContent('Play');
+    fireEvent.press(screen.getByTestId(TID.Button.SessionPlay));
+    expect(mockOpenPaywall).not.toHaveBeenCalled();
+    expect(mockPush).toHaveBeenCalledWith('/player/sleep-descent?worldId=constellation');
+  });
+
   it('does not keep a start action when the monthly quota is spent', () => {
     mockRemainingPlays = 0;
     mockSessionGate = { allowed: false, reason: 'monthly-quota' };

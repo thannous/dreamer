@@ -46,6 +46,7 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
     t(`session.${session.id}.benefit.${index + 1}` as TranslationKey)
   );
   const unlockedPremium = session.isPremium && isPlus;
+  const premiumLocked = session.isPremium && subscriptionsEnabled && !unlockedPremium;
   const accessLabel =
     session.isPremium && subscriptionsEnabled
       ? unlockedPremium
@@ -54,7 +55,7 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
       : t('common.free');
   const saved = favorites.includes(session.id);
   const savedLabel = saved
-    ? session.isPremium && !unlockedPremium
+    ? premiumLocked
       ? t('session.saved.locked')
       : t('favorites.title')
     : null;

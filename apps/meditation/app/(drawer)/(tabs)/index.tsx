@@ -41,7 +41,14 @@ export default function HomeTab() {
   const narrowViewport = width < 375;
   const { progress, practiceLog } = useLibrary();
   const { state: onboarding } = useOnboarding();
-  const { gateForSession, openPaywall, remainingPlays, quotaResetDay, isPlus } = useSubscription();
+  const {
+    gateForSession,
+    openPaywall,
+    remainingPlays,
+    quotaResetDay,
+    isPlus,
+    subscriptionsEnabled = true,
+  } = useSubscription();
   const {
     loaded: worldLoaded,
     worldId,
@@ -77,12 +84,15 @@ export default function HomeTab() {
 
   const isPlayable = useCallback(
     (session: MeditationSession) => {
+      if (!subscriptionsEnabled) {
+        return true;
+      }
       if (isSessionIncludedInOwnedWorld(activeWorldId, session.id, isWorldOwned)) {
         return true;
       }
       return gateForSession(session).allowed;
     },
-    [activeWorldId, gateForSession, isWorldOwned]
+    [activeWorldId, gateForSession, isWorldOwned, subscriptionsEnabled]
   );
   const recommendationPreference = useMemo(
     () => ({
@@ -117,7 +127,10 @@ export default function HomeTab() {
 
   const openActive = useCallback(
     (shouldResume: boolean) => {
-      if (!isSessionIncludedInOwnedWorld(activeWorldId, activeSession.id, isWorldOwned)) {
+      if (
+        subscriptionsEnabled &&
+        !isSessionIncludedInOwnedWorld(activeWorldId, activeSession.id, isWorldOwned)
+      ) {
         const gate = gateForSession(activeSession);
         if (!gate.allowed) {
           openPaywall(gate.reason);
@@ -131,7 +144,15 @@ export default function HomeTab() {
           : `/session/${activeSession.id}?worldId=${activeWorldId}`
       );
     },
-    [activeSession, activeWorldId, gateForSession, isWorldOwned, openPaywall, router]
+    [
+      activeSession,
+      activeWorldId,
+      gateForSession,
+      isWorldOwned,
+      openPaywall,
+      router,
+      subscriptionsEnabled,
+    ]
   );
 
   const handleSelectWorld = useCallback(
@@ -232,10 +253,13 @@ export default function HomeTab() {
               isSessionIncluded={(sessionId) =>
                 isSessionIncludedInOwnedWorld(activeWorldId, sessionId, isWorldOwned)
               }
-              accessGate={gateForSession(activeSession)}
+              accessGate={
+                subscriptionsEnabled ? gateForSession(activeSession) : { allowed: true }
+              }
               remainingPlays={remainingPlays}
               quotaResetDay={quotaResetDay}
               isPlus={isPlus}
+              subscriptionsEnabled={subscriptionsEnabled}
               onOpen={openActive}
               onOpenPaywall={openPaywall}
               onOpenAlternative={() => router.push('/breathe')}
@@ -256,10 +280,12 @@ export default function HomeTab() {
                 isSessionIncludedInOwnedWorld(activeWorldId, sessionId, isWorldOwned)
               }
               accessForSession={(session) =>
+                !subscriptionsEnabled ||
                 isSessionIncludedInOwnedWorld(activeWorldId, session.id, isWorldOwned)
                   ? { allowed: true }
                   : gateForSession(session)
               }
+              subscriptionsEnabled={subscriptionsEnabled}
               onOpen={(sessionId) =>
                 router.push(`/session/${sessionId}?worldId=${activeWorldId}`)
               }

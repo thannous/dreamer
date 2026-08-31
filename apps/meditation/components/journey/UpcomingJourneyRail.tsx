@@ -7,6 +7,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Themes, type ThemeMode } from '@/constants/theme';
 import { useTranslation } from '@/context/LanguageContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
+import { useScreenReader } from '@/hooks/useScreenReader';
 import type { TranslationKey } from '@/lib/i18n';
 import type { Gate } from '@/lib/entitlements';
 import { toMinutes } from '@/lib/library';
@@ -27,6 +28,7 @@ type Props = {
   accessForSession?: (session: MeditationSession) => Gate;
   onOpen: (sessionId: SessionId) => void;
   testID?: string;
+  subscriptionsEnabled?: boolean;
 };
 
 function UpcomingCard({
@@ -38,15 +40,17 @@ function UpcomingCard({
   accessGate,
   onOpen,
   testID,
+  subscriptionsEnabled = true,
 }: {
   session: MeditationSession;
   appearance: ThemeMode;
   milestoneKey: TranslationKey;
-  width: number;
+  width?: number;
   isSessionIncluded?: (sessionId: SessionId) => boolean;
   accessGate?: Gate;
   onOpen: (sessionId: SessionId) => void;
   testID?: string;
+  subscriptionsEnabled?: boolean;
 }) {
   const { t } = useTranslation();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
@@ -54,9 +58,13 @@ function UpcomingCard({
   const minutes = t('home.journey.minutes', { count: toMinutes(session.durationSec) });
   const category = t(`category.${session.categorySlug}.name` as TranslationKey);
   const milestone = t(milestoneKey);
-  const showsPlus = session.isPremium && !isSessionIncluded?.(session.id);
+  const showsPlus =
+    (subscriptionsEnabled ?? true) && session.isPremium && !isSessionIncluded?.(session.id);
   const accessLabel = showsPlus ? t('common.plus') : t('common.free');
-  const quotaBlocked = accessGate?.allowed === false && accessGate.reason === 'monthly-quota';
+  const quotaBlocked =
+    (subscriptionsEnabled ?? true) &&
+    accessGate?.allowed === false &&
+    accessGate.reason === 'monthly-quota';
   const meta = quotaBlocked
     ? `${minutes} · ${category} · ${accessLabel} · ${t('paywall.remaining.none')}`
     : `${minutes} · ${category} · ${accessLabel}`;
@@ -69,7 +77,7 @@ function UpcomingCard({
       onPress={() => onOpen(session.id)}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      style={[style, { width }]}
+      style={[style, width ? { width } : { alignSelf: 'stretch' }]}
       className="rounded-xl"
       testID={testID}>
         <ArtworkGlassPanel
@@ -111,7 +119,8 @@ const styles = StyleSheet.create({
 
 /**
  * Manual peek-carousel of later daily recommendations. Native horizontal
- * scroll is the motion; nothing auto-advances, and a swipe never haptics.
+ * scroll is the motion unless a screen reader is running; then the same
+ * cards stack so TalkBack can leave the home scene for the tab bar.
  */
 export function UpcomingJourneyRail({
   sessions,
@@ -120,36 +129,46 @@ export function UpcomingJourneyRail({
   accessForSession,
   onOpen,
   testID = 'home.journey.up-next',
+  subscriptionsEnabled = true,
 }: Props) {
   const { t } = useTranslation();
+  const screenReader = useScreenReader();
   const [trackWidth, setTrackWidth] = useState(0);
   const cardWidth = trackWidth > 0 ? Math.round(trackWidth * 0.78) : 248;
+  const visibleSessions = sessions.slice(0, 3);
 
-  if (sessions.length === 0) return null;
+  if (visibleSessions.length === 0) return null;
+
+  const cards = visibleSessions.map((session, index) => (
+    <UpcomingCard
+      key={session.id}
+      session={session}
+      appearance={appearance}
+      milestoneKey={MILESTONE_KEYS[Math.min(index, MILESTONE_KEYS.length - 1)]}
+      width={screenReader ? undefined : cardWidth}
+      isSessionIncluded={isSessionIncluded}
+      accessGate={accessForSession?.(session)}
+      onOpen={onOpen}
+      testID={`home.journey.upcoming.${session.id}`}
+      subscriptionsEnabled={subscriptionsEnabled}
+    />
+  ));
 
   return (
     <View className="gap-3" testID={testID} onLayout={(event) => setTrackWidth(event.nativeEvent.layout.width)}>
       <Text variant="overline">{t('home.journey.upNext')}</Text>
-      <ScrollView
-        horizontal
-        nestedScrollEnabled
-        showsHorizontalScrollIndicator={false}
-        decelerationRate="fast"
-        contentContainerClassName="gap-3 pr-8">
-        {sessions.slice(0, 3).map((session, index) => (
-          <UpcomingCard
-            key={session.id}
-            session={session}
-            appearance={appearance}
-            milestoneKey={MILESTONE_KEYS[Math.min(index, MILESTONE_KEYS.length - 1)]}
-            width={cardWidth}
-            isSessionIncluded={isSessionIncluded}
-            accessGate={accessForSession?.(session)}
-            onOpen={onOpen}
-            testID={`home.journey.upcoming.${session.id}`}
-          />
-        ))}
-      </ScrollView>
+      {screenReader ? (
+        <View className="gap-3">{cards}</View>
+      ) : (
+        <ScrollView
+          horizontal
+          nestedScrollEnabled
+          showsHorizontalScrollIndicator={false}
+          decelerationRate="fast"
+          contentContainerClassName="gap-3 pr-8">
+          {cards}
+        </ScrollView>
+      )}
     </View>
   );
 }

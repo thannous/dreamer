@@ -276,6 +276,7 @@ export const fr: Record<keyof typeof en, string> = {
   "breathe.phase.exhale": "Expirez",
   "breathe.phase.rest": "Repos",
   "breathe.ready": "Prêt",
+  "breathe.paused": "En pause",
   "breathe.start": "Commencer",
   "breathe.pause": "Pause",
   "breathe.resume": "Reprendre",

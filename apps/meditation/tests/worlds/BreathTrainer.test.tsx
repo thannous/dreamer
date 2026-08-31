@@ -325,10 +325,43 @@ describe('immersive breathing trainer', () => {
     });
     render(<BreatheExercise />);
 
-    expect(screen.getByTestId(TID.Text.BreathePhase)).toHaveTextContent('Breathe out');
+    const phase = screen.getByTestId(TID.Text.BreathePhase);
+    expect(phase).toHaveTextContent('Paused');
+    expect(phase).not.toHaveTextContent('Breathe out');
+    expect(phase).not.toHaveTextContent('Ready');
+    expect(screen.queryByText('4')).toBeNull();
+    expect(screen.queryByText('Next: inhale')).toBeNull();
+    expect(screen.queryByLabelText('Cycle 1 of 18')).toBeNull();
+    expect(screen.getByText('2:30')).toBeTruthy();
     expect(screen.getByTestId(TID.Button.BreatheStart)).toHaveTextContent('Resume');
     fireEvent.press(screen.getByTestId(TID.Button.BreatheStart));
     expect(mockStart).toHaveBeenCalledTimes(1);
+  });
+
+  it('freezes phase semantics while paused instead of looking still active', () => {
+    mockEngine = engineState({
+      running: false,
+      started: true,
+      status: 'paused',
+      remainingSec: 176,
+      state: {
+        phase: 'inhale',
+        phaseIndex: 0,
+        phaseProgress: 0.25,
+        phaseRemainingSec: 4,
+        cycleIndex: 0,
+      },
+    });
+    render(<BreatheExercise />);
+
+    const phase = screen.getByTestId(TID.Text.BreathePhase);
+    expect(phase).toHaveTextContent('Paused');
+    expect(phase).not.toHaveTextContent('Breathe in');
+    expect(screen.queryByText('4')).toBeNull();
+    expect(screen.queryByText('Next: exhale')).toBeNull();
+    expect(screen.queryByLabelText('Cycle 1 of 18')).toBeNull();
+    expect(screen.getByText('2:56')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.BreatheStart)).toHaveTextContent('Resume');
   });
 
   it('resets a finished exercise instead of pausing it', () => {

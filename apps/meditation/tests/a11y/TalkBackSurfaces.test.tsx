@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- Jest hoists module factories above imports. */
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import React from 'react';
-import { Linking, StyleSheet } from 'react-native';
+import { Linking, ScrollView, StyleSheet } from 'react-native';
 
 import { AccessibleTabBar, DrawerButton } from '@/app/(drawer)/(tabs)/_layout';
 import SearchTab from '@/app/(drawer)/(tabs)/search';
@@ -10,8 +10,10 @@ import SettingsScreen from '@/app/settings';
 import SessionDetail from '@/app/session/[id]';
 import WorldPurchaseScreen from '@/app/world/[id]';
 import { WorldJourneyPicker } from '@/components/journey/WorldJourneyPicker';
+import { UpcomingJourneyRail } from '@/components/journey/UpcomingJourneyRail';
 import { MiniPlayer } from '@/components/player/MiniPlayer';
 import { StreakCalendar } from '@/components/profile/StreakCalendar';
+import { SESSION_BY_ID } from '@/content/sessions';
 import { WORLD_BY_ID, WORLD_IDS } from '@/constants/worlds';
 import { translate } from '@/lib/i18n';
 import { calendarDays } from '@/lib/streak';
@@ -219,6 +221,12 @@ jest.mock('@/services/subscriptionService', () => ({
   restore: async () => 'free',
 }));
 
+let mockScreenReader = false;
+
+jest.mock('@/hooks/useScreenReader', () => ({
+  useScreenReader: () => mockScreenReader,
+}));
+
 jest.mock('uniwind', () => ({
   ScopedTheme: ({ children }: React.PropsWithChildren<{ theme: string }>) => children,
   Uniwind: { setTheme: jest.fn() },
@@ -250,6 +258,7 @@ describe('TI-394 TalkBack surfaces', () => {
     mockWorldOwned = false;
     mockSetWorld.mockClear();
     mockToggleSoundscape.mockClear();
+    mockScreenReader = false;
   });
 
   it('gives the drawer a 48dp target and an explicit Open the menu label', () => {
@@ -420,10 +429,88 @@ describe('TI-394 TalkBack surfaces', () => {
     });
     expect(radios[3].props.accessibilityHint).toEqual(expect.stringContaining('0,99'));
 
-    fireEvent.press(radios[2]);
-    expect(onSelect).toHaveBeenCalledWith('forest');
+    fireEvent.press(radios[1]);
+    expect(onSelect).toHaveBeenCalledWith('dawn');
     fireEvent.press(radios[0]);
     expect(onSelect).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps world and upcoming rails horizontal when no screen reader is running', () => {
+    const worlds = WORLD_IDS.slice(0, 3).map((id) => WORLD_BY_ID[id]);
+    const worldView = render(
+      <WorldJourneyPicker
+        worlds={worlds}
+        selectedWorldId="constellation"
+        onSelect={jest.fn()}
+        isWorldOwned={() => true}
+        priceForWorld={() => undefined}
+        testID="home.world-switcher"
+      />
+    );
+    const upcomingView = render(
+      <UpcomingJourneyRail
+        sessions={[SESSION_BY_ID['sleep-descent'], SESSION_BY_ID['dream-lucid']]}
+        appearance="dark"
+        onOpen={jest.fn()}
+      />
+    );
+
+    expect(worldView.UNSAFE_getAllByType(ScrollView).some((node) => node.props.horizontal)).toBe(true);
+    expect(upcomingView.UNSAFE_getAllByType(ScrollView).some((node) => node.props.horizontal)).toBe(
+      true
+    );
+    expect(worldView.getByTestId('home.world-switcher.dawn')).toBeTruthy();
+    expect(worldView.getByTestId('home.world-switcher.forest')).toBeTruthy();
+    expect(upcomingView.getByTestId('home.journey.upcoming.sleep-descent')).toBeTruthy();
+    expect(upcomingView.getByTestId('home.journey.upcoming.dream-lucid')).toBeTruthy();
+  });
+
+  it('stacks world and upcoming cards so a screen reader can reach every item', () => {
+    mockScreenReader = true;
+    const onSelect = jest.fn();
+    const onOpen = jest.fn();
+    const worlds = WORLD_IDS.slice(0, 3).map((id) => WORLD_BY_ID[id]);
+    const worldView = render(
+      <WorldJourneyPicker
+        worlds={worlds}
+        selectedWorldId="constellation"
+        onSelect={onSelect}
+        isWorldOwned={() => true}
+        priceForWorld={() => undefined}
+        accessibilityLabel={translate('en', 'home.journey.worldLabel')}
+        testID="home.world-switcher"
+      />
+    );
+    expect(worldView.UNSAFE_queryAllByType(ScrollView)).toHaveLength(0);
+    const radios = worldView.getAllByRole('radio');
+    expect(radios.map((radio) => radio.props.accessibilityLabel)).toEqual([
+      translate('en', 'world.constellation.name'),
+      translate('en', 'world.dawn.name'),
+      translate('en', 'world.forest.name'),
+    ]);
+    expect(worldView.getByTestId('home.world-switcher.dawn')).toBeTruthy();
+    expect(worldView.getByTestId('home.world-switcher.forest')).toBeTruthy();
+    fireEvent.press(worldView.getByTestId('home.world-switcher.dawn'));
+    expect(onSelect).toHaveBeenCalledWith('dawn');
+
+    worldView.unmount();
+    const upcomingView = render(
+      <UpcomingJourneyRail
+        sessions={[SESSION_BY_ID['sleep-descent'], SESSION_BY_ID['dream-lucid']]}
+        appearance="dark"
+        onOpen={onOpen}
+      />
+    );
+    expect(upcomingView.UNSAFE_queryAllByType(ScrollView)).toHaveLength(0);
+
+    const upcomingCards = [
+      upcomingView.getByTestId('home.journey.upcoming.sleep-descent'),
+      upcomingView.getByTestId('home.journey.upcoming.dream-lucid'),
+    ];
+    expect(upcomingCards[0].props.nextFocusForward).toBeUndefined();
+    expect(upcomingCards[1].props.nextFocusForward).toBeUndefined();
+    fireEvent.press(upcomingCards[1]);
+    expect(onOpen).toHaveBeenCalledWith('dream-lucid');
   });
 
   it('names world-purchase back, preview, buy and restore with explicit roles', () => {

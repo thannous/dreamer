@@ -2,7 +2,13 @@ import { BlurView } from 'expo-blur';
 import { Tabs, useNavigation } from 'expo-router';
 import type { DrawerNavigationProp } from 'expo-router/drawer';
 import React from 'react';
-import { Pressable, Text, useWindowDimensions, View, type ColorValue } from 'react-native';
+import {
+  Pressable,
+  Text,
+  useWindowDimensions,
+  View,
+  type ColorValue,
+} from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -95,7 +101,7 @@ export function TabLabel({ children, color, compact, fontScale, maxWidth, testID
   );
 }
 
-type AccessibleTabBarProps = Parameters<
+type RouterTabBarProps = Parameters<
   NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>
 >[0];
 
@@ -113,7 +119,7 @@ function tabIconName(routeName: string) {
 }
 
 /** A wrapping tab bar; React Navigation's stock label is hard-coded to one line. */
-export function AccessibleTabBar({ state, descriptors, navigation, insets }: AccessibleTabBarProps) {
+export function AccessibleTabBar({ state, descriptors, navigation, insets }: RouterTabBarProps) {
   const { colors, mode } = useChromeTheme();
   const { width, fontScale } = useWindowDimensions();
   const compact = useCompactLayout();
@@ -251,66 +257,66 @@ export default function TabsLayout() {
     <View className="flex-1">
       <Tabs
         tabBar={(props) => <AccessibleTabBar {...props} />}
-        screenOptions={{
-        headerShown: false,
-        sceneStyle: { backgroundColor: 'transparent' },
-      }}>
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: t('tabs.home'),
-            tabBarAccessibilityLabel: t('tabs.home'),
-            tabBarButtonTestID: TID.Tab.Home,
-          }}
-        />
-        <Tabs.Screen
-          name="breathe"
-          options={{
-            title: t('tabs.breathe'),
-            tabBarAccessibilityLabel: t('tabs.breathe'),
-            tabBarButtonTestID: TID.Tab.Breathe,
-            tabBarIcon: ({ color }) => <IconSymbol name="wind" color={color} size={iconSize} />,
-          }}
-        />
-        <Tabs.Screen
-          name="search"
-          options={{
-            title: t('tabs.search'),
-            tabBarAccessibilityLabel: t('tabs.search'),
-            tabBarButtonTestID: TID.Tab.Search,
-            tabBarIcon: ({ color }) => (
-              <IconSymbol name="magnifyingglass" color={color} size={iconSize} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            title: t('tabs.profile'),
-            tabBarAccessibilityLabel: t('tabs.profile'),
-            tabBarButtonTestID: TID.Tab.Profile,
-            tabBarIcon: ({ color }) => <IconSymbol name="person" color={color} size={iconSize} />,
-          }}
-        />
-      </Tabs>
+          screenOptions={{
+            headerShown: false,
+            sceneStyle: { backgroundColor: 'transparent' },
+          }}>
+          <Tabs.Screen
+            name="index"
+            options={{
+              title: t('tabs.home'),
+              tabBarAccessibilityLabel: t('tabs.home'),
+              tabBarButtonTestID: TID.Tab.Home,
+            }}
+          />
+          <Tabs.Screen
+            name="breathe"
+            options={{
+              title: t('tabs.breathe'),
+              tabBarAccessibilityLabel: t('tabs.breathe'),
+              tabBarButtonTestID: TID.Tab.Breathe,
+              tabBarIcon: ({ color }) => <IconSymbol name="wind" color={color} size={iconSize} />,
+            }}
+          />
+          <Tabs.Screen
+            name="search"
+            options={{
+              title: t('tabs.search'),
+              tabBarAccessibilityLabel: t('tabs.search'),
+              tabBarButtonTestID: TID.Tab.Search,
+              tabBarIcon: ({ color }) => (
+                <IconSymbol name="magnifyingglass" color={color} size={iconSize} />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="profile"
+            options={{
+              title: t('tabs.profile'),
+              tabBarAccessibilityLabel: t('tabs.profile'),
+              tabBarButtonTestID: TID.Tab.Profile,
+              tabBarIcon: ({ color }) => <IconSymbol name="person" color={color} size={iconSize} />,
+            }}
+          />
+        </Tabs>
 
-      {/* Pinned directly above the bar rather than inside it: expo-router owns
-          the bar, and reimplementing it to host one strip is not worth it. */}
-      <View
-        pointerEvents="box-none"
-        // zIndex is required: an absolutely-positioned sibling still paints
-        // below the scene's own stacking context without it.
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          bottom: tabBarHeight + insets.bottom + tabBar.margin,
-          zIndex: 10,
-        }}>
-        <MiniPlayer />
+        {/* Pinned directly above the bar rather than inside it: expo-router owns
+            the bar, and reimplementing it to host one strip is not worth it. */}
+        <View
+          pointerEvents="box-none"
+          // zIndex is required: an absolutely-positioned sibling still paints
+          // below the scene's own stacking context without it.
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: tabBarHeight + insets.bottom + tabBar.margin,
+            zIndex: 10,
+          }}>
+          <MiniPlayer />
+        </View>
+
+        <DrawerButton />
       </View>
-
-      <DrawerButton />
-    </View>
   );
 }

@@ -24,6 +24,7 @@ type Props = {
   remainingPlays: number;
   quotaResetDay: string;
   isPlus: boolean;
+  subscriptionsEnabled?: boolean;
   onOpen: (resume: boolean) => void;
   onOpenPaywall: (reason: GateReason) => void;
   onOpenAlternative?: () => void;
@@ -53,6 +54,7 @@ export function DailyRitualShelf({
   remainingPlays,
   quotaResetDay,
   isPlus,
+  subscriptionsEnabled = true,
   onOpen,
   onOpenPaywall,
   onOpenAlternative,
@@ -63,16 +65,21 @@ export function DailyRitualShelf({
   const progressPercent = Math.round(Math.min(Math.max(ratio, 0), 1) * 100);
   const title = t(`session.${session.id}.title` as TranslationKey);
   const included = isSessionIncluded?.(session.id) ?? false;
-  const gate: Gate = included ? { allowed: true } : accessGate;
+  const gate: Gate =
+    included || !subscriptionsEnabled ? { allowed: true } : accessGate;
   const blockedReason = gate.allowed ? null : gate.reason;
-  const showsPlus = session.isPremium && !included;
+  const showsPlus = subscriptionsEnabled && session.isPremium && !included;
   const accessLabel = showsPlus
     ? t('common.plus')
     : blockedReason === 'monthly-quota'
       ? t('home.journey.quotaUsed')
       : t('common.free');
   const quotaRelevant =
-    !isPlus && !included && !showsPlus && Number.isFinite(remainingPlays);
+    subscriptionsEnabled &&
+    !isPlus &&
+    !included &&
+    !showsPlus &&
+    Number.isFinite(remainingPlays);
   const quotaCopy = quotaRelevant ? remainingQuotaCopy(remainingPlays, t) : null;
   const meta = `${t('home.journey.minutes', { count: toMinutes(session.durationSec) })} · ${t(
     `category.${session.categorySlug}.name` as TranslationKey

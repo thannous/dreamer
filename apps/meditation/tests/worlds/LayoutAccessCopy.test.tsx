@@ -2,6 +2,7 @@
 import { render, screen } from '@testing-library/react-native';
 import React from 'react';
 
+import ProfileTab from '@/app/(drawer)/(tabs)/profile';
 import { DailyRitualShelf } from '@/components/journey/DailyRitualShelf';
 import { UpcomingJourneyRail } from '@/components/journey/UpcomingJourneyRail';
 import { WorldJourneyPicker } from '@/components/journey/WorldJourneyPicker';
@@ -38,23 +39,57 @@ jest.mock('@/components/session/SessionArtwork', () => {
 });
 
 let mockIsPlus = false;
+let mockSubscriptionsEnabled = true;
+let mockFavorites = ['sleep-body-scan'];
+let mockPracticeLog: { dateISO: string; sessionId: string; seconds: number }[] = [];
 
 jest.mock('@/context/LibraryContext', () => ({
   useLibrary: () => ({
-    favorites: ['sleep-body-scan'],
-    isFavorite: (id: string) => id === 'sleep-body-scan',
+    favorites: mockFavorites,
+    isFavorite: (id: string) => mockFavorites.includes(id),
     progress: {},
-    practiceLog: [],
+    practiceLog: mockPracticeLog,
   }),
 }));
 
 jest.mock('@/context/SubscriptionContext', () => ({
-  useSubscription: () => ({ isPlus: mockIsPlus }),
+  useSubscription: () => ({
+    isPlus: mockIsPlus,
+    subscriptionsEnabled: mockSubscriptionsEnabled,
+  }),
+}));
+
+jest.mock('@/components/worlds/WorldScene', () => ({
+  WorldScene: ({ children }: React.PropsWithChildren) => {
+    const React = require('react');
+    const { View } = require('react-native');
+    return React.createElement(View, null, children);
+  },
+}));
+
+jest.mock('@/components/atmosphere/EmptyIllustration', () => ({
+  EmptyIllustration: () => {
+    const React = require('react');
+    const { View } = require('react-native');
+    return React.createElement(View, { testID: 'empty-illustration' });
+  },
+}));
+
+jest.mock('@/hooks/useCompactLayout', () => ({
+  useCompactLayout: () => false,
+}));
+
+jest.mock('@/hooks/useTabBarInset', () => ({
+  useTabBarInset: () => 96,
+  DrawerButtonClearance: 56,
 }));
 
 describe('TI-391 access, sound and settings copy', () => {
   beforeEach(() => {
     mockIsPlus = false;
+    mockSubscriptionsEnabled = true;
+    mockFavorites = ['sleep-body-scan'];
+    mockPracticeLog = [];
   });
 
   it('keeps Free/Plus wording aligned across the six catalogues', () => {
@@ -235,6 +270,54 @@ describe('TI-391 access, sound and settings copy', () => {
     expect(bodyLabel).toContain('Method: Body awareness');
     expect(bodyLabel).toContain('Guidance: Step by step');
     expect(bodyLabel).toContain('Saved, but Plus is still required');
+  });
+
+  it('still names a saved Plus session as locked when subscriptions remain enabled', () => {
+    mockPracticeLog = [
+      { dateISO: '2026-08-24', sessionId: 'sleep-body-scan', seconds: 600 },
+    ];
+
+    render(<ProfileTab />);
+
+    expect(screen.getByTestId('profile.return.locked')).toHaveTextContent(
+      'Saved, but Plus is still required'
+    );
+    expect(screen.getByTestId('profile.favorites.locked')).toHaveTextContent(
+      'Saved sessions stay bookmarks. Plus is still required to play the locked ones.'
+    );
+  });
+
+  it('does not announce a saved Plus session as locked when subscriptions are disabled', () => {
+    mockSubscriptionsEnabled = false;
+    mockIsPlus = false;
+
+    render(
+      <SessionCard session={SESSION_BY_ID['sleep-body-scan']} testID="layout.sleep.body" />
+    );
+
+    const bodyLabel = screen.getByRole('button').props.accessibilityLabel as string;
+    expect(bodyLabel).toContain('Free');
+    expect(bodyLabel).toContain('Saved');
+    expect(bodyLabel).not.toContain('Plus is still required');
+  });
+
+  it('does not announce Plus as required on Profile while subscriptions are disabled', () => {
+    mockSubscriptionsEnabled = false;
+    mockIsPlus = false;
+    mockPracticeLog = [
+      { dateISO: '2026-08-24', sessionId: 'sleep-body-scan', seconds: 600 },
+    ];
+
+    render(<ProfileTab />);
+
+    expect(screen.queryByTestId('profile.return.locked')).toBeNull();
+    expect(screen.queryByTestId('profile.favorites.locked')).toBeNull();
+    expect(screen.queryByText('Saved, but Plus is still required')).toBeNull();
+    expect(
+      screen.queryByText(
+        'Saved sessions stay bookmarks. Plus is still required to play the locked ones.'
+      )
+    ).toBeNull();
   });
 
 });

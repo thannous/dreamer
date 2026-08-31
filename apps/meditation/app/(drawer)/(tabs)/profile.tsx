@@ -31,7 +31,7 @@ export default function ProfileTab() {
   const { t } = useTranslation();
   const tabBarInset = useTabBarInset();
   const { practiceLog, favorites } = useLibrary();
-  const { isPlus } = useSubscription();
+  const { isPlus, subscriptionsEnabled = true } = useSubscription();
   const compact = useCompactLayout();
   const { world } = useWorld();
   const worldColors = Themes[world.appearance];
@@ -50,8 +50,11 @@ export default function ProfileTab() {
   );
 
   const empty = practiceLog.length === 0;
-  const lockedOffer = Boolean(offer?.session.isPremium && !isPlus);
-  const lockedSavedCount = favorites.filter((id) => SESSION_BY_ID[id]?.isPremium && !isPlus).length;
+  const plusRequired = subscriptionsEnabled && !isPlus;
+  const lockedOffer = Boolean(offer?.session.isPremium && plusRequired);
+  const lockedSavedCount = favorites.filter(
+    (id) => SESSION_BY_ID[id]?.isPremium && plusRequired
+  ).length;
 
   const openOffer = () => {
     if (offer) {

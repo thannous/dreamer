@@ -148,6 +148,8 @@ export default function BreatheExercise() {
   }
 
   const started = engine.started;
+  const paused = engine.status === 'paused';
+  const live = engine.status === 'active';
   // Compact reflow only. Never clamp the user's type size: 160% and 200% must
   // still render the full labels, countdown and CTA.
   const compact = fontScale >= 1.5 || height < 720;
@@ -160,7 +162,7 @@ export default function BreatheExercise() {
     1,
     Math.ceil((durationMin * 60 * 1000) / cycleDurationMs(pattern))
   );
-  const cycleCurrent = engine.status === 'ready'
+  const cycleCurrent = engine.status === 'ready' || paused
     ? 0
     : engine.finished
       ? cycleTotal
@@ -174,9 +176,11 @@ export default function BreatheExercise() {
     ? t('breathe.ready')
     : engine.finished
       ? t('breathe.complete.title')
-      : t(`breathe.phase.${engine.state.phase}` as TranslationKey);
+      : paused
+        ? t('breathe.paused')
+        : t(`breathe.phase.${engine.state.phase}` as TranslationKey);
   const translatedCue =
-    started && !engine.finished && hasTrainerCopy(engine.state.phase)
+    live && hasTrainerCopy(engine.state.phase)
       ? t(`trainer.cue.${engine.state.phase}` as TranslationKey)
       : null;
   // Several locales intentionally use the same terse word for the instruction
@@ -189,7 +193,7 @@ export default function BreatheExercise() {
       ? null
       : translatedCue;
   const nextLabel =
-    started && !engine.finished && hasTrainerCopy(nextPhase)
+    live && hasTrainerCopy(nextPhase)
       ? t(`trainer.next.${nextPhase}` as TranslationKey)
       : null;
   const durationOptions = BREATH_DURATIONS.map((minutes) => ({
@@ -230,10 +234,10 @@ export default function BreatheExercise() {
       nextLabel={nextLabel}
       phaseCue={phaseCue}
       phaseLabel={phaseLabel}
-      phaseProgress={engine.status === 'ready' ? 0 : engine.state.phaseProgress}
-      phaseRemainingSec={engine.status === 'ready' ? 0 : engine.state.phaseRemainingSec}
+      phaseProgress={live ? engine.state.phaseProgress : 0}
+      phaseRemainingSec={live ? engine.state.phaseRemainingSec : 0}
       phaseTestID={TID.Text.BreathePhase}
-      ready={engine.status === 'ready'}
+      ready={!live && !engine.finished}
       reducedMotion={reducedMotion}
       remainingLabel={formatTime(engine.remainingSec)}
       ringSize={ringSize}

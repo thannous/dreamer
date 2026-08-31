@@ -74,7 +74,10 @@ export default function SessionDetail() {
   const saved = isFavorite(session.id);
 
   const included = isSessionIncludedInOwnedWorld(world.id, session.id, isWorldOwned);
-  const gate = included ? { allowed: true as const } : gateForSession(session);
+  const gate =
+    included || !subscriptionsEnabled
+      ? { allowed: true as const }
+      : gateForSession(session);
   const awaitingWorldPurchases = !worldPurchasesLoaded;
   const remainingCopy =
     remainingPlays === 0
@@ -87,7 +90,8 @@ export default function SessionDetail() {
   });
   // Quota/Plus copy only when they still decide access. An owned-world
   // inclusion already grants play, so those cues would be dishonest.
-  const showsQuota = !included && !isPlus && !session.isPremium;
+  const showsQuota =
+    subscriptionsEnabled && !included && !isPlus && !session.isPremium;
   const ctaLabel = !gate.allowed
     ? t('paywall.options')
     : canResume
@@ -185,7 +189,7 @@ export default function SessionDetail() {
             if (awaitingWorldPurchases) return;
             // The gate is checked here rather than inside the player: a listener
             // should meet the paywall before the artwork, not after it.
-            if (!gate.allowed) {
+            if (subscriptionsEnabled && !gate.allowed) {
               openPaywall(gate.reason);
               return;
             }

@@ -28,6 +28,7 @@ let mockSessionGate:
 let mockRemainingPlays = 3;
 let mockQuotaResetDay = '2026-09-01';
 let mockIsPlus = false;
+let mockSubscriptionsEnabled = true;
 let mockOwnedWorldIds = new Set(['constellation', 'dawn', 'forest']);
 
 let mockIsFocused = true;
@@ -57,6 +58,7 @@ jest.mock('@/context/SubscriptionContext', () => ({
     remainingPlays: mockRemainingPlays,
     quotaResetDay: mockQuotaResetDay,
     isPlus: mockIsPlus,
+    subscriptionsEnabled: mockSubscriptionsEnabled,
   }),
 }));
 
@@ -107,6 +109,7 @@ describe('immersive home journey', () => {
     mockRemainingPlays = 3;
     mockQuotaResetDay = '2026-09-01';
     mockIsPlus = false;
+    mockSubscriptionsEnabled = true;
     mockOwnedWorldIds = new Set(['constellation', 'dawn', 'forest']);
   });
 
@@ -785,6 +788,62 @@ describe('immersive home journey', () => {
     expect(screen.getByTestId('home.journey.quota')).toHaveTextContent(/1 free session left this month/);
     fireEvent.press(cta);
     expect(mockPush).toHaveBeenCalledWith('/session/sleep-descent?worldId=constellation');
+    expect(mockOpenPaywall).not.toHaveBeenCalled();
+  });
+
+  it('presents a premium ritual as freely playable while subscriptions are disabled', async () => {
+    await AsyncStorage.setItem(
+      StorageKey.onboarding,
+      JSON.stringify({
+        ...INITIAL_ONBOARDING,
+        completed: true,
+        goals: ['dream-prep'],
+        dailyIntentionMin: 20,
+      })
+    );
+    mockSubscriptionsEnabled = false;
+    mockIsPlus = true;
+    mockRemainingPlays = 0;
+    mockSessionGate = { allowed: false, reason: 'premium-session' };
+
+    renderHome();
+
+    const cta = await screen.findByTestId(ACTIVE_JOURNEY_CTA_TEST_ID);
+    expect(cta).toHaveTextContent(/^Begin$/);
+    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
+    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Plus');
+    expect(screen.queryByText('Plus')).toBeNull();
+    expect(screen.queryByTestId('home.journey.quota')).toBeNull();
+    expect(screen.queryByTestId('home.journey.quota-alternative')).toBeNull();
+
+    fireEvent.press(cta);
+    expect(mockOpenPaywall).not.toHaveBeenCalled();
+    expect(mockPush).toHaveBeenCalledWith(expect.stringMatching(/^\/session\/.+\?worldId=constellation$/));
+  });
+
+  it('shows upcoming premium practices as free while subscriptions are disabled', async () => {
+    mockSubscriptionsEnabled = false;
+    mockIsPlus = true;
+    mockRemainingPlays = 0;
+    mockSessionGate = { allowed: false, reason: 'monthly-quota' };
+
+    renderHome();
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
+    expect(screen.getByTestId('home.journey.upcoming.dream-threshold.access')).toHaveTextContent('Free');
+    expect(screen.getByTestId('home.journey.upcoming.dream-lucid.access')).toHaveTextContent('Free');
+    expect(screen.getByTestId('home.journey.upcoming.dream-threshold.access')).not.toHaveTextContent('Plus');
+    expect(screen.getByTestId('home.journey.upcoming.dream-lucid.access')).not.toHaveTextContent('Plus');
+    expect(screen.queryByText('Plus')).toBeNull();
+    expect(screen.queryByText('No free sessions left this month')).toBeNull();
+    expect(screen.queryByTestId('home.journey.quota')).toBeNull();
+
+    fireEvent.press(screen.getByTestId('home.journey.upcoming.dream-threshold'));
+    expect(mockPush).toHaveBeenCalledWith('/session/dream-threshold?worldId=constellation');
     expect(mockOpenPaywall).not.toHaveBeenCalled();
   });
 

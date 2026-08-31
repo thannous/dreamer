@@ -273,6 +273,7 @@ export const en = {
   "breathe.phase.exhale": "Breathe out",
   "breathe.phase.rest": "Rest",
   "breathe.ready": "Ready",
+  "breathe.paused": "Paused",
   "breathe.start": "Begin",
   "breathe.pause": "Pause",
   "breathe.resume": "Resume",
