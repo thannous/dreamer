@@ -65,8 +65,16 @@ const COPY = {
     storageFull: 'This device is out of storage for the atlas.',
     invalidScope: 'This atlas is not available for the current account.',
     invalidMetadata: 'This atlas entry could not be updated.',
-    nodeSummary: (label: string, visibility: string, frequency: string, lastSeen: string) =>
-      `${label}. ${visibility}. ${frequency}. ${lastSeen}.`,
+    category: {
+      person: 'Person',
+      place: 'Place',
+      object: 'Object',
+      emotion: 'Emotion',
+      anomaly: 'Anomaly',
+      action: 'Action',
+    },
+    nodeSummary: (label: string, category: string, visibility: string, frequency: string, lastSeen: string) =>
+      `${label}. ${category}. ${visibility}. ${frequency}. ${lastSeen}.`,
   },
   fr: {
     eyebrow: 'Ta mémoire onirique',
@@ -105,8 +113,16 @@ const COPY = {
     storageFull: 'Cet appareil n’a plus assez d’espace pour l’atlas.',
     invalidScope: 'Cet atlas n’est pas disponible pour le compte actuel.',
     invalidMetadata: 'Cette entrée d’atlas n’a pas pu être mise à jour.',
-    nodeSummary: (label: string, visibility: string, frequency: string, lastSeen: string) =>
-      `${label}. ${visibility}. ${frequency}. ${lastSeen}.`,
+    category: {
+      person: 'Personne',
+      place: 'Lieu',
+      object: 'Objet',
+      emotion: 'Émotion',
+      anomaly: 'Anomalie',
+      action: 'Action',
+    },
+    nodeSummary: (label: string, category: string, visibility: string, frequency: string, lastSeen: string) =>
+      `${label}. ${category}. ${visibility}. ${frequency}. ${lastSeen}.`,
   },
   es: {
     eyebrow: 'Tu memoria onírica',
@@ -145,8 +161,16 @@ const COPY = {
     storageFull: 'Este dispositivo no tiene espacio para el atlas.',
     invalidScope: 'Este atlas no está disponible para la cuenta actual.',
     invalidMetadata: 'No se pudo actualizar esta entrada del atlas.',
-    nodeSummary: (label: string, visibility: string, frequency: string, lastSeen: string) =>
-      `${label}. ${visibility}. ${frequency}. ${lastSeen}.`,
+    category: {
+      person: 'Persona',
+      place: 'Lugar',
+      object: 'Objeto',
+      emotion: 'Emoción',
+      anomaly: 'Anomalía',
+      action: 'Acción',
+    },
+    nodeSummary: (label: string, category: string, visibility: string, frequency: string, lastSeen: string) =>
+      `${label}. ${category}. ${visibility}. ${frequency}. ${lastSeen}.`,
   },
   de: {
     eyebrow: 'Deine Traumerinnerung',
@@ -185,8 +209,16 @@ const COPY = {
     storageFull: 'Auf diesem Gerät ist kein Speicher mehr für den Atlas frei.',
     invalidScope: 'Dieser Atlas ist für das aktuelle Konto nicht verfügbar.',
     invalidMetadata: 'Dieser Atlas-Eintrag konnte nicht aktualisiert werden.',
-    nodeSummary: (label: string, visibility: string, frequency: string, lastSeen: string) =>
-      `${label}. ${visibility}. ${frequency}. ${lastSeen}.`,
+    category: {
+      person: 'Person',
+      place: 'Ort',
+      object: 'Objekt',
+      emotion: 'Emotion',
+      anomaly: 'Anomalie',
+      action: 'Handlung',
+    },
+    nodeSummary: (label: string, category: string, visibility: string, frequency: string, lastSeen: string) =>
+      `${label}. ${category}. ${visibility}. ${frequency}. ${lastSeen}.`,
   },
   it: {
     eyebrow: 'La tua memoria onirica',
@@ -225,8 +257,16 @@ const COPY = {
     storageFull: 'Questo dispositivo non ha spazio per l’atlante.',
     invalidScope: 'Questo atlante non è disponibile per l’account attuale.',
     invalidMetadata: 'Questa voce dell’atlante non è stata aggiornata.',
-    nodeSummary: (label: string, visibility: string, frequency: string, lastSeen: string) =>
-      `${label}. ${visibility}. ${frequency}. ${lastSeen}.`,
+    category: {
+      person: 'Persona',
+      place: 'Luogo',
+      object: 'Oggetto',
+      emotion: 'Emozione',
+      anomaly: 'Anomalia',
+      action: 'Azione',
+    },
+    nodeSummary: (label: string, category: string, visibility: string, frequency: string, lastSeen: string) =>
+      `${label}. ${category}. ${visibility}. ${frequency}. ${lastSeen}.`,
   },
 } as const;
 
@@ -247,6 +287,13 @@ function formatDate(value: number, locale: string) {
   } catch {
     return new Date(value).toDateString();
   }
+}
+
+function formatCategory(
+  copy: (typeof COPY)[keyof typeof COPY],
+  category: keyof (typeof COPY)['en']['category'] | null | undefined
+) {
+  return category ? copy.category[category] : '—';
 }
 
 const MAX_VISIBLE_GRAPH_NODES = 12;
@@ -410,8 +457,10 @@ export default function LucidDreamAtlasScreen() {
           <View style={styles.mapRow}>
             {graph.graphNodes.map((node) => {
               const active = selected?.id === node.id;
+              const category = formatCategory(copy, node.category);
               const summary = copy.nodeSummary(
                 node.label,
+                category,
                 copy.visible,
                 copy.frequency(node.distinctDreamCount),
                 `${copy.lastSeen}: ${formatDate(node.lastAppearanceAt, content.locale)}`
@@ -465,11 +514,14 @@ export default function LucidDreamAtlasScreen() {
 
       {nodes.map((node) => {
         const active = selected?.id === node.id;
+        const category = formatCategory(copy, node.category);
+        const lastSeen = `${copy.lastSeen}: ${formatDate(node.lastAppearanceAt, content.locale)}`;
         const summary = copy.nodeSummary(
           node.label,
+          category,
           node.hidden ? copy.hidden : copy.visible,
           copy.frequency(node.distinctDreamCount),
-          `${copy.lastSeen}: ${formatDate(node.lastAppearanceAt, content.locale)}`
+          lastSeen
         );
         return (
           <Pressable
@@ -493,8 +545,11 @@ export default function LucidDreamAtlasScreen() {
                   <Text style={[styles.body, { color: palette.textSecondary }]}>
                     {copy.frequency(node.distinctDreamCount)}
                   </Text>
-                  <Text style={[styles.meta, { color: palette.textMuted }]}>
-                    {node.category ?? '—'} · {copy.lastSeen}: {formatDate(node.lastAppearanceAt, content.locale)}
+                  <Text
+                    testID={`lucid-dream-atlas-node-meta-${node.id}`}
+                    style={[styles.meta, { color: palette.textMuted }]}
+                  >
+                    {category} · {lastSeen}
                   </Text>
                 </View>
                 <LucidPill label={node.hidden ? copy.hidden : copy.visible} tone={node.hidden ? 'neutral' : 'accent'} />

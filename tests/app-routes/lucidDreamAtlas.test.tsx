@@ -4,6 +4,10 @@ import React from 'react';
 import { Alert } from 'react-native';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
+import type { LucidDreamSignCategory } from '@/lib/lucid/dreamSigns';
+
+type LucidAtlasTestCategory = LucidDreamSignCategory | null;
+
 const mockBack = jest.fn();
 const mockReplace = jest.fn();
 const mockPush = jest.fn();
@@ -24,7 +28,14 @@ const mockDreams = [
 
 let mockReduceMotion = false;
 let mockLocale: 'en' | 'fr' | 'es' | 'de' | 'it' = 'fr';
-let mockDreamSignCandidates = [
+let mockDreamSignCandidates: {
+  id: string;
+  label: string;
+  category: LucidAtlasTestCategory;
+  distinctDreamCount: number;
+  sourceDreamIds: string[];
+  evidence: [];
+}[] = [
   {
     id: 'sign:miroir',
     label: 'Miroir',
@@ -49,7 +60,7 @@ const defaultAtlasState = {
       {
         id: 'sign:miroir',
         label: 'Miroir',
-        category: 'object',
+        category: 'object' as LucidAtlasTestCategory,
         distinctDreamCount: 2,
         sourceDreamIds: [String(mockNow), String(mockNow + 1_000)],
         lastAppearanceAt: mockNow + 1_000,
@@ -58,13 +69,21 @@ const defaultAtlasState = {
       {
         id: 'sign:marie',
         label: 'Marie',
-        category: 'person',
+        category: 'person' as LucidAtlasTestCategory,
         distinctDreamCount: 2,
         sourceDreamIds: [String(mockNow), String(mockNow + 1_000)],
         lastAppearanceAt: mockNow,
         hidden: true,
       },
-    ],
+    ] as {
+      id: string;
+      label: string;
+      category: LucidAtlasTestCategory;
+      distinctDreamCount: number;
+      sourceDreamIds: string[];
+      lastAppearanceAt: number;
+      hidden: boolean;
+    }[],
     preferences: { version: 1, renamed: {}, hidden: ['sign:marie'], merges: {}, deleted: [] },
   },
   list: [],
@@ -259,10 +278,109 @@ describe('Lucid dream atlas screen', () => {
     expect(screen.getByTestId('lucid-dream-atlas-map-node-sign:miroir')).not.toBeNull();
     expect(screen.queryByTestId('lucid-dream-atlas-map-node-sign:marie')).toBeNull();
     expect(screen.getByTestId('lucid-dream-atlas-node-summary-sign:miroir').textContent).toMatch(
-      /Miroir\. Visible\. Vu dans 2 rêves/
+      /Miroir\. Objet\. Visible\. Vu dans 2 rêves/
+    );
+    expect(screen.getByTestId('lucid-dream-atlas-node-meta-sign:miroir').textContent).toMatch(
+      /^Objet · Dernière apparition:/
     );
     fireEvent.click(screen.getByTestId(`lucid-dream-atlas-source-${mockNow}`));
     expect(mockPush).toHaveBeenCalledWith(`/journal/${mockNow}`);
+  });
+
+  it('localizes every atlas category in meta and summaries without leaking English keys', () => {
+    const lastSeen = {
+      en: 'Last appearance',
+      fr: 'Dernière apparition',
+      es: 'Última aparición',
+      de: 'Letztes Erscheinen',
+      it: 'Ultima comparsa',
+    } as const;
+    const visibility = {
+      en: { visible: 'Visible', hidden: 'Hidden' },
+      fr: { visible: 'Visible', hidden: 'Masqué' },
+      es: { visible: 'Visible', hidden: 'Oculta' },
+      de: { visible: 'Sichtbar', hidden: 'Ausgeblendet' },
+      it: { visible: 'Visibile', hidden: 'Nascosto' },
+    } as const;
+    const frequency = {
+      en: 'Seen in 1 dream',
+      fr: 'Vu dans 1 rêve',
+      es: 'Aparece en 1 sueño',
+      de: 'In 1 Traum gesehen',
+      it: 'Presente in 1 sogno',
+    } as const;
+    const categories = {
+      en: { person: 'Person', place: 'Place', object: 'Object', emotion: 'Emotion', anomaly: 'Anomaly', action: 'Action' },
+      fr: { person: 'Personne', place: 'Lieu', object: 'Objet', emotion: 'Émotion', anomaly: 'Anomalie', action: 'Action' },
+      es: { person: 'Persona', place: 'Lugar', object: 'Objeto', emotion: 'Emoción', anomaly: 'Anomalía', action: 'Acción' },
+      de: { person: 'Person', place: 'Ort', object: 'Objekt', emotion: 'Emotion', anomaly: 'Anomalie', action: 'Handlung' },
+      it: { person: 'Persona', place: 'Luogo', object: 'Oggetto', emotion: 'Emozione', anomaly: 'Anomalia', action: 'Azione' },
+    } as const;
+    const nodes = [
+      { id: 'sign:marie', label: 'Marie', category: 'person' as const, hidden: true, offset: 0 },
+      { id: 'sign:gare', label: 'Gare', category: 'place' as const, hidden: false, offset: 1 },
+      { id: 'sign:miroir', label: 'Miroir', category: 'object' as const, hidden: false, offset: 2 },
+      { id: 'sign:peur', label: 'Peur', category: 'emotion' as const, hidden: false, offset: 3 },
+      { id: 'sign:dents', label: 'Dents', category: 'anomaly' as const, hidden: false, offset: 4 },
+      { id: 'sign:courir', label: 'Courir', category: 'action' as const, hidden: false, offset: 5 },
+      { id: 'sign:inconnu', label: 'Inconnu', category: null, hidden: false, offset: 6 },
+    ];
+    const rawKeys = ['person', 'place', 'object', 'emotion', 'anomaly', 'action'] as const;
+    const formatLastSeen = (locale: keyof typeof lastSeen, offset: number) =>
+      `${lastSeen[locale]}: ${new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(mockNow + offset))}`;
+
+    mockDreamSignCandidates = nodes.map((node) => ({
+      id: node.id,
+      label: node.label,
+      category: node.category,
+      distinctDreamCount: 1,
+      sourceDreamIds: [String(mockNow + node.offset)],
+      evidence: [],
+    }));
+    mockAtlasState = {
+      ...mockAtlasState,
+      snapshot: {
+        version: 1,
+        nodes: nodes.map((node) => ({
+          id: node.id,
+          label: node.label,
+          category: node.category,
+          distinctDreamCount: 1,
+          sourceDreamIds: [String(mockNow + node.offset)],
+          lastAppearanceAt: mockNow + node.offset,
+          hidden: node.hidden,
+        })),
+        preferences: { version: 1, renamed: {}, hidden: ['sign:marie'], merges: {}, deleted: [] },
+      },
+    };
+
+    for (const locale of ['en', 'fr', 'es', 'de', 'it'] as const) {
+      cleanup();
+      mockLocale = locale;
+      render(<LucidDreamAtlasScreen />);
+
+      for (const node of nodes) {
+        const localizedCategory = node.category ? categories[locale][node.category] : '—';
+        const last = formatLastSeen(locale, node.offset);
+        const vis = node.hidden ? visibility[locale].hidden : visibility[locale].visible;
+        expect(screen.getByTestId(`lucid-dream-atlas-node-meta-${node.id}`).textContent).toBe(
+          `${localizedCategory} · ${last}`
+        );
+        expect(screen.getByTestId(`lucid-dream-atlas-node-summary-${node.id}`).textContent).toBe(
+          `${node.label}. ${localizedCategory}. ${vis}. ${frequency[locale]}. ${last}.`
+        );
+        if (!node.hidden) {
+          expect(screen.getByTestId(`lucid-dream-atlas-map-node-${node.id}`).getAttribute('aria-label')).toBe(
+            `${node.label}. ${localizedCategory}. ${visibility[locale].visible}. ${frequency[locale]}. ${last}.`
+          );
+        }
+      }
+
+      const body = document.body.textContent ?? '';
+      for (const key of rawKeys) {
+        expect(body).not.toMatch(new RegExp(`(^|[^A-Za-z])${key}([^A-Za-z]|$)`));
+      }
+    }
   });
 
   it('hides the map when Reduce Motion is on and keeps the full sign list', () => {
@@ -273,7 +391,10 @@ describe('Lucid dream atlas screen', () => {
     expect(screen.getByTestId('lucid-dream-atlas-node-sign:miroir')).not.toBeNull();
     expect(screen.getByTestId('lucid-dream-atlas-node-sign:marie')).not.toBeNull();
     expect(screen.getByTestId('lucid-dream-atlas-node-summary-sign:marie').textContent).toMatch(
-      /Marie\. Masqué\. Vu dans 2 rêves/
+      /Marie\. Personne\. Masqué\. Vu dans 2 rêves/
+    );
+    expect(screen.getByTestId('lucid-dream-atlas-node-meta-sign:marie').textContent).toMatch(
+      /^Personne · Dernière apparition:/
     );
   });
 
@@ -310,7 +431,7 @@ describe('Lucid dream atlas screen', () => {
     const marieNode = screen.getByTestId('lucid-dream-atlas-map-node-sign:marie');
     expect(miroirNode.getAttribute('aria-selected')).toBe('true');
     expect(marieNode.getAttribute('aria-selected')).toBe('false');
-    expect(miroirNode.getAttribute('aria-label') ?? '').toMatch(/Miroir\. Visible\. Vu dans 2 rêves/);
+    expect(miroirNode.getAttribute('aria-label') ?? '').toMatch(/Miroir\. Objet\. Visible\. Vu dans 2 rêves/);
     expect(miroirNode.getAttribute('aria-label') ?? '').toMatch(/Dernière apparition/);
     expect(screen.getByTestId('lucid-dream-atlas-detail-sign:miroir')).not.toBeNull();
     expect(screen.getByText('Miroir · Marie : 2 rêves en commun')).not.toBeNull();
