@@ -126,6 +126,7 @@
     "test:e2e:chat-limit": "node ./scripts/run-maestro-android.js --flow maestro/guest-chat-limit.yml",
     "test:e2e:guest-limit": "node ./scripts/run-maestro-android.js --flow maestro/guest-dream-limit-signup.yml",
     "test:e2e:recording": "node ./scripts/run-maestro-android.js --flow maestro/recording-bottom-sheet.yml",
+    "test:e2e:recall": "node ./scripts/run-maestro-android.js --flow maestro/dream-recall-assistant.yml",
     "test:e2e:android:all": "node ./scripts/run-maestro-android.js --suite all",
     "build:apk:mock": "node ./scripts/build-android-apk.js mock",
     "build:apk:prod": "node ./scripts/build-android-apk.js prod",

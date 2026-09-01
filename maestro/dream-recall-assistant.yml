@@ -1,0 +1,160 @@
+# TI-427 mock text E2E: persist a dream first, then optional recall.
+# No analysis, quota, network, microphone, or purchase.
+appId: com.tanuki75.noctalia
+---
+- runFlow: subflows/open-mock-app.yml
+- runFlow: subflows/reset-mock-state.yml
+
+- runFlow: subflows/ensure-recording-text.yml
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "TI427 Recall Sentinel Garden"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible:
+        id: btn.firstDream.journal
+    commands:
+      - tapOn:
+          id: btn.firstDream.journal
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: btn.recording.analysisOffer.later
+    commands:
+      - tapOn:
+          id: btn.recording.analysisOffer.later
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: btn.analyzePrompt.journal
+    commands:
+      - tapOn:
+          id: btn.analyzePrompt.journal
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: btn.recording.unforgettableDream.skip
+    commands:
+      - tapOn:
+          id: btn.recording.unforgettableDream.skip
+      - waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: component.transcriptCard
+    timeout: 30000
+- assertVisible: "TI427 Recall Sentinel Garden"
+- scrollUntilVisible:
+    element:
+      id: component.dreamRecall.offer
+    direction: DOWN
+- assertVisible:
+    id: component.dreamRecall.offer
+- scrollUntilVisible:
+    element:
+      id: btn.dreamRecall.start
+    direction: DOWN
+- tapOn:
+    id: btn.dreamRecall.start
+- waitForAnimationToEnd
+
+- scrollUntilVisible:
+    element:
+      id: component.dreamRecall.card
+    direction: DOWN
+- assertVisible:
+    id: component.dreamRecall.card
+- scrollUntilVisible:
+    element:
+      id: input.dreamRecall.answer
+    direction: DOWN
+- tapOn:
+    id: input.dreamRecall.answer
+- inputText: "TI427 Recall Answer One"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.dreamRecall.submit
+    direction: DOWN
+- tapOn:
+    id: btn.dreamRecall.submit
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: component.dreamRecall.card
+- scrollUntilVisible:
+    element:
+      id: input.dreamRecall.answer
+    direction: DOWN
+- assertVisible:
+    id: input.dreamRecall.answer
+- scrollUntilVisible:
+    element:
+      id: component.transcriptCard
+    direction: UP
+- assertVisible: "TI427 Recall Sentinel Garden"
+
+- scrollUntilVisible:
+    element:
+      id: btn.dreamRecall.pause
+    direction: DOWN
+- tapOn:
+    id: btn.dreamRecall.pause
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: btn.dreamRecall.resume
+    direction: DOWN
+- assertVisible:
+    id: component.dreamRecall.card
+- tapOn:
+    id: btn.dreamRecall.resume
+- waitForAnimationToEnd
+
+- scrollUntilVisible:
+    element:
+      id: input.dreamRecall.answer
+    direction: DOWN
+- tapOn:
+    id: input.dreamRecall.answer
+- inputText: "TI427 Recall Answer Two"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.dreamRecall.submit
+    direction: DOWN
+- tapOn:
+    id: btn.dreamRecall.submit
+- waitForAnimationToEnd
+- assertVisible:
+    id: component.dreamRecall.card
+
+- scrollUntilVisible:
+    element:
+      id: btn.dreamRecall.complete
+    direction: DOWN
+- tapOn:
+    id: btn.dreamRecall.complete
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: component.dreamRecall.card
+- assertNotVisible:
+    id: input.dreamRecall.answer
+- assertNotVisible:
+    id: btn.dreamRecall.submit
+- assertNotVisible:
+    id: component.dreamRecall.offer
+- assertVisible: "TI427 Recall Sentinel Garden"
