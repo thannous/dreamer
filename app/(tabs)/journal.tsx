@@ -657,6 +657,12 @@ export default function JournalListScreen() {
                 active: hasActiveAdvancedFilter,
                 testID: TID.Button.FilterMore,
               },
+              {
+                icon: 'gear',
+                onPress: () => router.push('/(tabs)/settings'),
+                accessibilityLabel: t('nav.settings'),
+                testID: TID.Button.HeaderJournalSettings,
+              },
             ]}
             slot={
               showAtlasSearch || searchQuery.length > 0 ? (
@@ -706,6 +712,20 @@ export default function JournalListScreen() {
                     clearTestID={TID.Button.ClearFilters}
                   />
                 </View>
+                <PressableScale
+                  onPress={() => router.push('/(tabs)/settings')}
+                  haptic="selection"
+                  accessibilityRole="button"
+                  accessibilityLabel={t('nav.settings')}
+                  testID={TID.Button.HeaderJournalSettings}
+                  className="h-10 w-10 items-center justify-center rounded-full border border-continuous border-line bg-ink-soft"
+                >
+                  <IconSymbol
+                    name="gear"
+                    size={18}
+                    color={noctalia.text.primary}
+                  />
+                </PressableScale>
                 <PressableScale
                   onPress={() => setShowAdvancedFilters(true)}
                   haptic="selection"

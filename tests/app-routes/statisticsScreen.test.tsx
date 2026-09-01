@@ -105,7 +105,26 @@ jest.mock('@/components/inspiration/AtmosphericBackground', () => ({
   AtmosphericBackground: () => null,
 }));
 jest.mock('@/components/NoctaliaScreenHeader', () => ({
-  NoctaliaScreenHeader: ({ titleKey }: { titleKey: string }) => <header>{titleKey}</header>,
+  NoctaliaScreenHeader: ({
+    titleKey,
+    actions = [],
+  }: {
+    titleKey: string;
+    actions?: { testID?: string; accessibilityLabel?: string; onPress?: () => void }[];
+  }) => (
+    <header>
+      <span>{titleKey}</span>
+      {actions.map((action) => (
+        <button
+          key={action.testID ?? action.accessibilityLabel}
+          aria-label={action.accessibilityLabel}
+          data-testid={action.testID}
+          onClick={action.onPress}
+          type="button"
+        />
+      ))}
+    </header>
+  ),
 }));
 jest.mock('@/components/ScreenContainer', () => ({
   ScreenContainer: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
@@ -206,6 +225,17 @@ describe('Statistics screen VNext trends', () => {
     fireEvent.click(screen.getByTestId('trends.cta.primary'));
 
     expect(mockPush).toHaveBeenCalledWith('/recording');
+  });
+
+  it('exposes settings from the trends header without a fifth tab', () => {
+    mockUseDreams.mockReturnValue({ dreams: [], loaded: true });
+
+    render(<StatisticsScreen />);
+    const settings = screen.getByTestId(TID.Button.HeaderTrendsSettings);
+    expect(settings.getAttribute('aria-label')).toBe('nav.settings');
+    fireEvent.click(settings);
+    expect(mockPush).toHaveBeenCalledWith('/(tabs)/settings');
+    expect(screen.queryByTestId(TID.Tab.Settings)).toBeNull();
   });
 
   it('hides the weekly average when the model returns null', () => {

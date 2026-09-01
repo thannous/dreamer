@@ -146,8 +146,10 @@ jest.doMock('@shopify/flash-list', () => ({
   FlashList: () => null,
 }));
 
+const mockPush = jest.fn();
+
 jest.doMock('expo-router', () => ({
-  router: { push: jest.fn() },
+  router: { push: mockPush },
   useFocusEffect: () => {},
   useNavigation: () => ({ setOptions: jest.fn() }),
 }));
@@ -355,6 +357,17 @@ describe('Journal advanced filter sheet', () => {
     expect(screen.getByTestId('btn.filterMore')).toBeTruthy();
     expect(screen.queryByTestId('btn.filterAnalyzed')).toBeNull();
     expect(screen.queryByTestId('btn.filterExplored')).toBeNull();
+  });
+
+  it('exposes settings from the journal header without a fifth tab', () => {
+    mockPush.mockReset();
+    render(<JournalListScreen />);
+
+    const settings = screen.getByTestId('btn.header.journal.settings');
+    expect(settings.getAttribute('aria-label')).toBe('nav.settings');
+    fireEvent.click(settings);
+    expect(mockPush).toHaveBeenCalledWith('/(tabs)/settings');
+    expect(screen.queryByTestId('tab.settings')).toBeNull();
   });
 
   it('resets advanced filters when Tous is pressed', () => {

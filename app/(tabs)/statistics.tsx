@@ -21,6 +21,7 @@ import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { buildDreamTrends, type DreamTrendsNextAction } from '@/lib/dreamTrends';
 import { getDreamThemeLabel, getDreamTypeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
+import { TID } from '@/lib/testIDs';
 
 const WEEKDAY_KEYS = [
   'trends.week.weekday.mon',
@@ -72,7 +73,17 @@ export default function StatisticsScreen() {
   }, [cta.href]);
 
   const header = (
-    <NoctaliaScreenHeader titleKey="trends.title" />
+    <NoctaliaScreenHeader
+      titleKey="trends.title"
+      actions={[
+        {
+          icon: 'gear',
+          onPress: () => router.push('/(tabs)/settings'),
+          accessibilityLabel: t('nav.settings'),
+          testID: TID.Button.HeaderTrendsSettings,
+        },
+      ]}
+    />
   );
 
   const primaryCta = (
