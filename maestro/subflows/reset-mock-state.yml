@@ -18,7 +18,7 @@ appId: com.tanuki75.noctalia
           end: 50%, 38%
       - waitForAnimationToEnd
       - tapOn:
-          id: btn.navigateJournal
+          id: tab.journal
       - waitForAnimationToEnd
 - runFlow:
     when:
