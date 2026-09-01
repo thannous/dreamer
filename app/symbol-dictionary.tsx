@@ -333,6 +333,14 @@ export default function SymbolDictionaryScreen() {
     }
   }, []);
 
+  const handleBack = useCallback(() => {
+    if (source === "onboarding" || !router.canGoBack()) {
+      router.replace("/(tabs)");
+      return;
+    }
+    router.back();
+  }, [source]);
+
   return (
     <LinearGradient colors={gradientColors} style={styles.container}>
       <AtmosphericBackground variant="subtle" />
@@ -365,7 +373,7 @@ export default function SymbolDictionaryScreen() {
           >
             <View style={styles.headerTopRow}>
               <Pressable
-                onPress={() => router.back()}
+                onPress={handleBack}
                 style={[
                   styles.headerBackButton,
                   shadows.sm,

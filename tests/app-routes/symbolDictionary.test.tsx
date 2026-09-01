@@ -1,7 +1,7 @@
 /* @jest-environment jsdom */
 import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterAll, afterEach, beforeAll, describe, expect, it, jest } from '@jest/globals';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 afterEach(() => {
   cleanup();
@@ -21,10 +21,18 @@ afterAll(() => {
 // ── Router ──────────────────────────────────────────────────────────────────
 const mockPush = jest.fn();
 const mockBack = jest.fn();
+const mockReplace = jest.fn();
+let mockCanGoBack = true;
+let mockSource: string | undefined;
 
 jest.mock('expo-router', () => ({
-  router: { push: mockPush, back: mockBack, replace: jest.fn() },
-  useLocalSearchParams: () => ({}),
+  router: {
+    push: mockPush,
+    back: mockBack,
+    replace: mockReplace,
+    canGoBack: () => mockCanGoBack,
+  },
+  useLocalSearchParams: () => ({ source: mockSource }),
   Stack: {
     Screen: () => null,
   },
@@ -197,6 +205,11 @@ const { default: SymbolDictionaryScreen } = require('@/app/symbol-dictionary');
 // ═════════════════════════════════════════════════════════════════════════════
 
 describe('SymbolDictionaryScreen', () => {
+  beforeEach(() => {
+    mockCanGoBack = true;
+    mockSource = undefined;
+  });
+
   // ── Rendering ───────────────────────────────────────────────────────────
   describe('initial rendering', () => {
     it('renders the header with icon and title', () => {
@@ -414,6 +427,27 @@ describe('SymbolDictionaryScreen', () => {
       fireEvent.click(screen.getByTestId('icon-chevron.left'));
 
       expect(mockBack).toHaveBeenCalled();
+      expect(mockReplace).not.toHaveBeenCalled();
+    });
+
+    it('opens the main app when returning from the completed onboarding path', () => {
+      mockSource = 'onboarding';
+      render(<SymbolDictionaryScreen />);
+
+      fireEvent.click(screen.getByTestId('icon-chevron.left'));
+
+      expect(mockBack).not.toHaveBeenCalled();
+      expect(mockReplace).toHaveBeenCalledWith('/(tabs)');
+    });
+
+    it('opens the main app when a cold dictionary link has no history', () => {
+      mockCanGoBack = false;
+      render(<SymbolDictionaryScreen />);
+
+      fireEvent.click(screen.getByTestId('icon-chevron.left'));
+
+      expect(mockBack).not.toHaveBeenCalled();
+      expect(mockReplace).toHaveBeenCalledWith('/(tabs)');
     });
   });
 
