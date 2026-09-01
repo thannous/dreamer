@@ -545,10 +545,27 @@ type AnalysisDetailFields = Pick<DreamAnalysis, 'symbols' | 'emotions' | 'reflec
 
 type KnownAnalysisDetailFields = AnalysisDetailFields & Pick<DreamAnalysis, 'analysisTranscriptHash'>;
 
+const ANALYSIS_DETAILS_ALLOWLIST = [
+  'symbols',
+  'emotions',
+  'reflectionQuestions',
+  'promptVersion',
+  ANALYSIS_TRANSCRIPT_HASH_KEY,
+] as const satisfies readonly (keyof KnownAnalysisDetailFields)[];
+
 const asAnalysisDetailsRecord = (value: unknown): Record<string, unknown> =>
   value && typeof value === 'object' && !Array.isArray(value)
     ? { ...(value as Record<string, unknown>) }
     : {};
+
+const pickAllowlistedAnalysisDetails = (source: Record<string, unknown>): Record<string, unknown> => {
+  const next: Record<string, unknown> = {};
+  for (const key of ANALYSIS_DETAILS_ALLOWLIST) {
+    if (!Object.prototype.hasOwnProperty.call(source, key)) continue;
+    next[key] = source[key];
+  }
+  return next;
+};
 
 const sanitizeKnownAnalysisDetails = (source: Record<string, unknown>): KnownAnalysisDetailFields => {
   const symbols = Array.isArray(source.symbols)
@@ -583,7 +600,7 @@ const sanitizeKnownAnalysisDetails = (source: Record<string, unknown>): KnownAna
 
 const toAnalysisDetailsColumn = (dream: DreamAnalysis): Record<string, unknown> | null => {
   const merged = {
-    ...asAnalysisDetailsRecord(dream.analysisDetails),
+    ...pickAllowlistedAnalysisDetails(asAnalysisDetailsRecord(dream.analysisDetails)),
     ...(dream.symbols !== undefined ? { symbols: dream.symbols } : {}),
     ...(dream.emotions !== undefined ? { emotions: dream.emotions } : {}),
     ...(dream.reflectionQuestions !== undefined ? { reflectionQuestions: dream.reflectionQuestions } : {}),
@@ -593,15 +610,7 @@ const toAnalysisDetailsColumn = (dream: DreamAnalysis): Record<string, unknown> 
       : {}),
   };
   const known = sanitizeKnownAnalysisDetails(merged);
-  const details: Record<string, unknown> = { ...merged };
-  delete details.symbols;
-  delete details.emotions;
-  delete details.reflectionQuestions;
-  delete details.promptVersion;
-  delete details[ANALYSIS_TRANSCRIPT_HASH_KEY];
-  Object.assign(details, known);
-
-  return Object.keys(details).length > 0 ? details : null;
+  return Object.keys(known).length > 0 ? { ...known } : null;
 };
 
 const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
@@ -611,6 +620,11 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
   const imageGenerationFailed = hasImage ? false : row.image_generation_failed ?? false;
   const analysisDetails = asAnalysisDetailsRecord(row.analysis_details);
   const knownAnalysisDetails = sanitizeKnownAnalysisDetails(analysisDetails);
+  const allowlistedAnalysisDetails = {
+    ...pickAllowlistedAnalysisDetails(analysisDetails),
+    ...knownAnalysisDetails,
+  };
+  const persistedAnalysisDetails = sanitizeKnownAnalysisDetails(allowlistedAnalysisDetails);
   return {
     id: createdAt,
     remoteId: row.id,
@@ -638,7 +652,7 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
     hasPerson: row.has_person === null ? undefined : row.has_person,
     hasAnimal: row.has_animal === null ? undefined : row.has_animal,
     memory: normalizeDreamMemoryMetadata(row.memory),
-    ...(Object.keys(analysisDetails).length > 0 ? { analysisDetails } : {}),
+    ...(Object.keys(persistedAnalysisDetails).length > 0 ? { analysisDetails: persistedAnalysisDetails } : {}),
     ...knownAnalysisDetails,
   };
 };
