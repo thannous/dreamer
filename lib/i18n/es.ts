@@ -1458,6 +1458,33 @@ const translations: Record<string, string> = {
     'trends.cta.wait_for_patterns': 'Capturar otro sueño',
     'trends.cta.review_patterns': 'Revisar patrones',
 
+    // Dream recall assistant (TI-427)
+    'dream_recall.question.what_else': '¿Qué más recuerdas?',
+    'dream_recall.question.where': '¿Dónde ocurría esto?',
+    'dream_recall.question.who_else': '¿Quién más estaba ahí?',
+    'dream_recall.question.what_seen': '¿Qué viste?',
+    'dream_recall.question.what_next': '¿Qué pasó después?',
+    'dream_recall.offer.eyebrow': 'Opcional',
+    'dream_recall.offer.title': '¿Recordar un poco más?',
+    'dream_recall.offer.body': 'Tu sueño ya está guardado. Algunos detalles más son opcionales.',
+    'dream_recall.offer.start': 'Continuar',
+    'dream_recall.offer.later': 'Más tarde',
+    'dream_recall.session.title': 'Recordar un poco más',
+    'dream_recall.session.progress': '{current}/{total}',
+    'dream_recall.session.input_label': 'Tu respuesta',
+    'dream_recall.session.input_placeholder': 'Añade lo que vuelve',
+    'dream_recall.session.submit': 'Guardar',
+    'dream_recall.session.pause': 'Pausa',
+    'dream_recall.session.resume': 'Reanudar',
+    'dream_recall.session.skip': 'Omitir',
+    'dream_recall.session.complete': 'Terminar',
+    'dream_recall.session.completed_title': 'Es suficiente por ahora',
+    'dream_recall.session.completed_body': 'Tu sueño y estos detalles se quedan en tu diario.',
+    'dream_recall.session.saving': 'Guardando…',
+    'dream_recall.session.error': 'No se pudo guardar esta respuesta. Tu sueño sigue en el diario.',
+    'dream_recall.session.voice_start': 'Hablar',
+    'dream_recall.session.voice_stop': 'Detener',
+    'dream_recall.session.voice_error': 'No se pudo usar la voz. Puedes escribir en su lugar.',
   };
 
 export default translations;
