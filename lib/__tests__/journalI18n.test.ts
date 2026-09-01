@@ -228,6 +228,85 @@ describe('Journal i18n - badges & filter accessibility', () => {
       expect(t('journal.detail.explore_button.continue').toLowerCase()).not.toMatch(/explor|analiz|analys/);
     }
   });
+
+  it('keeps analysis as the first action and names post-analysis status as reflection, not exploration', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    const expected = {
+      en: {
+        analyze: 'Analyze this dream',
+        reading: 'Noctalia analysis',
+        badge: 'Deepened',
+        filter: 'Deepened',
+        atlas: 'Deepen',
+        toDeepen: 'To deepen',
+      },
+      fr: {
+        analyze: 'Analyser ce rêve',
+        reading: 'Analyse Noctalia',
+        badge: 'Approfondi',
+        filter: 'Approfondis',
+        atlas: 'Approfondir',
+        toDeepen: 'À approfondir',
+      },
+      es: {
+        analyze: 'Analizar este sueño',
+        reading: 'Análisis Noctalia',
+        badge: 'Profundizado',
+        filter: 'Profundizados',
+        atlas: 'Profundizar',
+        toDeepen: 'Por profundizar',
+      },
+      de: {
+        analyze: 'Diesen Traum analysieren',
+        reading: 'Noctalia-Analyse',
+        badge: 'Vertieft',
+        filter: 'Vertieft',
+        atlas: 'Vertiefen',
+        toDeepen: 'Vertiefen',
+      },
+      it: {
+        analyze: 'Analizza questo sogno',
+        reading: 'Analisi Noctalia',
+        badge: 'Approfondito',
+        filter: 'Approfonditi',
+        atlas: 'Approfondisci',
+        toDeepen: 'Da approfondire',
+      },
+      pt: {
+        analyze: 'Analisar este sonho',
+        reading: 'Análise Noctalia',
+        badge: 'Aprofundado',
+        filter: 'Aprofundados',
+        atlas: 'Aprofundar',
+        toDeepen: 'A aprofundar',
+      },
+    } as const;
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+      const copy = expected[lang];
+      expect(t('journal.detail.analyze_button.default')).toBe(copy.analyze);
+      expect(t('journal.detail.zone.reading')).toBe(copy.reading);
+      expect(t('journal.badge.explored')).toBe(copy.badge);
+      expect(t('journal.filter.explored')).toBe(copy.filter);
+      expect(t('journal.filter_sheet.status.explored')).toBe(copy.filter);
+      expect(t('journal.atlas.action.explore')).toBe(copy.atlas);
+      expect(t('journal.atlas.filter.to_explore')).toBe(copy.toDeepen);
+      expect(t('journal.filter.to_deepen')).toBe(copy.toDeepen);
+
+      for (const key of [
+        'journal.badge.explored',
+        'journal.filter.explored',
+        'journal.filter.accessibility.explored',
+        'journal.filter_sheet.status.explored',
+        'journal.atlas.filter.to_explore',
+        'journal.atlas.action.explore',
+      ] as const) {
+        expect(t(key).toLowerCase()).not.toMatch(/explor|erkund|erforsch|esplor/);
+      }
+    }
+  });
 });
 
 describe('getTranslator replacement functionality', () => {

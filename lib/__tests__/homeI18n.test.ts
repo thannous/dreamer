@@ -52,7 +52,7 @@ describe('home today i18n', () => {
     expect(fr['home.today.empty.cta']).toMatch(/Capturer/);
     expect(fr['home.today.rest.title']).toBe('Tu as terminé pour aujourd’hui');
     expect(fr['home.today.rest.body']).toBe(
-      'Ton rêve est enregistré et exploré. Tu peux revenir au journal quand tu veux.'
+      'Ton rêve est enregistré et approfondi. Tu peux revenir au journal quand tu veux.'
     );
     expect(fr['nav.home']).toBe('Aujourd’hui');
     expect(fr['nav.stats']).toBe('Tendances');

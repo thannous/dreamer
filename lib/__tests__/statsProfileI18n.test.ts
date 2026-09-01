@@ -61,4 +61,25 @@ describe('stats profile i18n', () => {
       }
     }
   });
+
+  it('names explored metrics as deepened reflection, not exploration', async () => {
+    await Promise.all(languages.map((language) => loadTranslations(language)));
+
+    const expected = {
+      en: { metric: 'Deepened', cta: 'Deepen further' },
+      fr: { metric: 'Approfondis', cta: 'Approfondir plus loin' },
+      es: { metric: 'Profundizados', cta: 'Profundizar más' },
+      de: { metric: 'Vertieft', cta: 'Weiter vertiefen' },
+      it: { metric: 'Approfonditi', cta: 'Approfondisci di più' },
+      pt: { metric: 'Aprofundados', cta: 'Aprofundar mais' },
+    } as const;
+
+    for (const language of languages) {
+      const t = getTranslator(language);
+      expect(t('stats.profile.metric.explored')).toBe(expected[language].metric);
+      expect(t('stats.profile.next_action.explore_more.cta')).toBe(expected[language].cta);
+      expect(t('stats.profile.metric.explored').toLowerCase()).not.toMatch(/explor|erkund|erforsch|esplor/);
+      expect(t('stats.insight.metric.exploration').toLowerCase()).not.toMatch(/explor|erkund|esplor/);
+    }
+  });
 });

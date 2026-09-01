@@ -212,7 +212,8 @@ export type JournalDetailPrimaryFamily = 'analyze' | 'explore' | 'continue';
 
 /**
  * Collapse the 9 journey kinds onto the existing Journal detail CTA families.
- * Labels stay on the current analyze / explore / continue copy.
+ * Internal family ids stay analyze / explore / continue for compatibility.
+ * Visible copy uses Analyze, then Reflection: Approfondir then Conversation.
  */
 export function getJournalDetailPrimaryFamily(
   kind: ReflectionPrimaryKind
@@ -425,9 +426,10 @@ export type DreamDetailAction = 'analyze' | 'explore' | 'continue';
 
 /**
  * Primary CTA state for the dream detail screen.
- * - analyze: the dream is not tagged as analyzed yet
- * - explore: analyzed but no exploration started
- * - continue: an exploration/chat already exists
+ * Internal ids stay analyze / explore / continue for compatibility.
+ * - analyze: first action, the dream is not tagged as analyzed yet
+ * - explore: analyzed, ready to start reflection (Approfondir)
+ * - continue: reflection already started (Approfondir or Conversation)
  *
  * Kept as a compatibility wrapper over `getReflectionJourney`.
  */
