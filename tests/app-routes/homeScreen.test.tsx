@@ -322,6 +322,11 @@ describe('Home Accueil Aujourd’hui', () => {
     expect(screen.queryByTestId(TID.Button.AuthSignIn)).toBeNull();
     expect(screen.getByTestId(TID.Component.HomeResources)).toBeTruthy();
     expect(screen.getByText('home.today.resources')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.HomeResourcesSymbols)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.HomeResourcesGuides)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.HomeResourcesRitual)).toBeTruthy();
+    expect(screen.queryByTestId(TID.Component.InspirationTip)).toBeNull();
+    expect(screen.queryByTestId(TID.Button.InspirationRitualVariant('starter'))).toBeNull();
 
     fireEvent.click(screen.getByTestId(TID.Button.HomeTodayCta));
     expect(mockPush).toHaveBeenCalledWith('/recording');
@@ -450,6 +455,22 @@ describe('Home Accueil Aujourd’hui', () => {
     expect(mockPush).toHaveBeenCalledWith('/(tabs)/settings');
     expect(mockPush).not.toHaveBeenCalledWith('/symbol-dictionary');
     expect(mockPush).not.toHaveBeenCalledWith(expect.stringMatching(/^\/ritual\//));
+  });
+
+  it('keeps compact resources below the today CTA and routes without competing CTAs', async () => {
+    mockPlatformOS = 'ios';
+    mockWidth = 390;
+    await renderHome([]);
+
+    expect(screen.getAllByTestId(TID.Button.HomeTodayCta)).toHaveLength(1);
+    expect(screen.getByTestId(TID.Component.HomeResources)).toBeTruthy();
+    fireEvent.click(screen.getByTestId(TID.Button.HomeResourcesSymbols));
+    expect(mockPush).toHaveBeenCalledWith('/symbol-dictionary');
+    fireEvent.click(screen.getByTestId(TID.Button.HomeResourcesGuides));
+    expect(mockPush).toHaveBeenCalledWith('/dream-guides');
+    fireEvent.click(screen.getByTestId(TID.Button.HomeResourcesRitual));
+    expect(mockPush).toHaveBeenCalledWith('/ritual/starter');
+    expect(screen.queryByTestId(TID.Component.InspirationTip)).toBeNull();
   });
 
   it('rebranche continue_today then capture_due when the local date changes while Home stays open', async () => {
