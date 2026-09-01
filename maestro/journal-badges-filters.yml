@@ -61,9 +61,28 @@ appId: com.tanuki75.noctalia
       visible:
           id: modal.advancedFilters
       timeout: 10000
+- scrollUntilVisible:
+      element:
+          id: btn.filterStatus.explored
+      direction: DOWN
+      timeout: 10000
+      centerElement: true
 - tapOn:
       id: btn.filterStatus.explored
-- tapOn: "Done"
+- scrollUntilVisible:
+      element:
+          text: "Done"
+      direction: DOWN
+      timeout: 30000
+      speed: 80
+      visibilityPercentage: 40
+      centerElement: true
+- tapOn:
+      text: "Done"
+- extendedWaitUntil:
+      notVisible:
+          id: modal.advancedFilters
+      timeout: 10000
 - extendedWaitUntil:
       visible: "Ocean of Stars"
       timeout: 10000
