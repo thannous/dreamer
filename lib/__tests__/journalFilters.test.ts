@@ -136,3 +136,50 @@ describe('Journal filters - analyzedOnly / exploredOnly', () => {
     expect(result.map((d) => d.id)).toEqual([1]);
   });
 });
+
+describe('Journal filters - combinable advanced + quick access', () => {
+  it('intersects favorites, theme, remembered, analysis status and search', () => {
+    const matching = makeDream({
+      id: 10,
+      title: 'Harbor lantern',
+      isFavorite: true,
+      theme: 'noir',
+      isAnalyzed: true,
+      analysisStatus: 'done',
+      analyzedAt: 1000,
+      interpretation: 'A complete reading.',
+      memory: { origin: 'remembered', rememberedKind: 'recurring' },
+    });
+    const dreams: DreamAnalysis[] = [
+      matching,
+      makeDream({
+        id: 11,
+        title: 'Harbor lantern',
+        isFavorite: false,
+        theme: 'noir',
+        memory: { origin: 'remembered' },
+      }),
+      makeDream({
+        id: 12,
+        title: 'Harbor lantern',
+        isFavorite: true,
+        theme: 'calm',
+        isAnalyzed: true,
+        analysisStatus: 'done',
+        analyzedAt: 1000,
+        interpretation: 'A complete reading.',
+        memory: { origin: 'remembered' },
+      }),
+    ];
+
+    const result = applyFilters(dreams, {
+      searchQuery: 'Harbor',
+      theme: 'noir',
+      favoritesOnly: true,
+      rememberedOnly: true,
+      analysisStatus: 'analyzed',
+    });
+
+    expect(result.map((dream) => dream.id)).toEqual([10]);
+  });
+});

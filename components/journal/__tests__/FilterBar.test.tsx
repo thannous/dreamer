@@ -98,4 +98,79 @@ describe('FilterBar', () => {
     fireEvent.click(screen.getByTestId(TID.Button.ClearFilters));
     expect(onClear).toHaveBeenCalledTimes(1);
   });
+
+  it('wraps the three quick filters at 320dp instead of overflowing horizontally', () => {
+    render(
+      <div style={{ width: 320 }}>
+        <FilterBar
+          items={[
+            { id: 'all', active: true, onPress: jest.fn(), label: 'All', testID: TID.Button.FilterAll },
+            { id: 'favorites', active: false, onPress: jest.fn(), label: 'Favorites', testID: TID.Button.FilterFavorites },
+            { id: 'to_deepen', active: false, onPress: jest.fn(), label: 'To deepen', testID: TID.Button.FilterToDeepen },
+          ]}
+          onClear={jest.fn()}
+          clearTestID={TID.Button.ClearFilters}
+        />
+      </div>
+    );
+
+    const bar = screen.getByTestId('journal-filter-bar');
+    expect(bar.className).toContain('flex-wrap');
+    expect(bar.className).not.toContain('flex-nowrap');
+    expect(bar.className).not.toContain('overflow-x');
+    expect(screen.getByTestId(TID.Button.FilterAll)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.FilterFavorites)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.FilterToDeepen)).toBeTruthy();
+  });
+
+  it('keeps active advanced filters visible next to the three quick access chips', () => {
+    const onClear = jest.fn();
+    render(
+      <FilterBar
+        items={[
+          { id: 'all', active: false, onPress: jest.fn(), label: 'All', testID: TID.Button.FilterAll },
+          { id: 'favorites', active: true, onPress: jest.fn(), label: 'Favorites', testID: TID.Button.FilterFavorites },
+          { id: 'to_deepen', active: false, onPress: jest.fn(), label: 'To deepen', testID: TID.Button.FilterToDeepen },
+          { id: 'theme', active: true, onPress: jest.fn(), label: 'Theme', testID: TID.Button.FilterTheme },
+          { id: 'remembered', active: true, onPress: jest.fn(), label: 'Remembered', testID: TID.Button.FilterRemembered },
+        ]}
+        onClear={onClear}
+        selectedTheme={'mystical' as never}
+        clearTestID={TID.Button.ClearFilters}
+      />
+    );
+
+    expect(screen.getByTestId(TID.Button.FilterAll)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.FilterFavorites)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.FilterToDeepen)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.FilterTheme)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.FilterRemembered)).toBeTruthy();
+    fireEvent.click(screen.getByTestId(TID.Button.ClearFilters));
+    expect(onClear).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows theme and type as separate chips without duplicating the type on the theme chip', () => {
+    render(
+      <FilterBar
+        items={[
+          { id: 'all', active: false, onPress: jest.fn(), label: 'All', testID: TID.Button.FilterAll },
+          { id: 'favorites', active: false, onPress: jest.fn(), label: 'Favorites', testID: TID.Button.FilterFavorites },
+          { id: 'to_deepen', active: false, onPress: jest.fn(), label: 'To deepen', testID: TID.Button.FilterToDeepen },
+          { id: 'theme', active: true, onPress: jest.fn(), label: 'Theme', testID: TID.Button.FilterTheme },
+          { id: 'type', active: true, onPress: jest.fn(), label: 'dream.type.symbolic' },
+        ]}
+        onClear={jest.fn()}
+        selectedTheme={'mystical' as never}
+        selectedDreamType={'Symbolic Dream' as never}
+        clearTestID={TID.Button.ClearFilters}
+      />
+    );
+
+    const themeChip = screen.getByTestId(TID.Button.FilterTheme);
+    expect(themeChip.textContent).toContain('Theme');
+    expect(themeChip.textContent).toContain('dream.theme.mystical');
+    expect(themeChip.textContent).not.toContain('dream.type.symbolic');
+    expect(themeChip.textContent).not.toContain('Symbolic Dream');
+    expect(screen.getByText('dream.type.symbolic')).toBeTruthy();
+  });
 });

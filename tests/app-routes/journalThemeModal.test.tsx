@@ -5,7 +5,10 @@ import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
 afterEach(() => {
   cleanup();
+  mockWindowWidth = 390;
 });
+
+let mockWindowWidth = 390;
 
 jest.doMock('@/context/DreamsContext', () => ({
   useDreams: () => ({ dreams: [] }),
@@ -107,7 +110,7 @@ jest.doMock('@/components/journal/FilterBar', () => ({
 }));
 
 jest.doMock('@/components/ui/SearchBar', () => ({
-  SearchBar: () => <div data-testid="search-bar" />,
+  SearchBar: ({ testID }: { testID?: string }) => <div data-testid={testID ?? 'search-bar'} />,
 }));
 
 jest.doMock('@/components/inspiration/AtmosphericBackground', () => ({
@@ -124,10 +127,6 @@ jest.doMock('@/components/journal/DateRangePicker', () => ({
 
 jest.doMock('@/components/journal/DreamCard', () => ({
   DreamCard: () => <div />,
-}));
-
-jest.doMock('@/components/journal/AtlasDreamRow', () => ({
-  AtlasDreamRow: () => <div />,
 }));
 
 jest.doMock('@/components/journal/TimelineIndicator', () => ({
@@ -152,6 +151,7 @@ jest.doMock('expo-router', () => ({
   router: { push: mockPush },
   useFocusEffect: () => {},
   useNavigation: () => ({ setOptions: jest.fn() }),
+  usePathname: () => '/journal',
 }));
 
 jest.doMock('react-native', () => {
@@ -214,7 +214,7 @@ jest.doMock('react-native', () => {
       absoluteFillObject: {},
       hairlineWidth: 1,
     },
-    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
+    useWindowDimensions: () => ({ width: mockWindowWidth, height: 844, scale: 1, fontScale: 1 }),
   };
 });
 
@@ -381,5 +381,29 @@ describe('Journal advanced filter sheet', () => {
     fireEvent.click(screen.getByTestId('btn.filterAll'));
     fireEvent.click(screen.getByTestId('btn.filterMore'));
     expect(screen.queryAllByTestId('icon-checkmark')).toHaveLength(0);
+  });
+
+  it('keeps search and three quick filters visible at 320dp without Atlas chrome', () => {
+    mockWindowWidth = 320;
+    render(<JournalListScreen />);
+
+    expect(screen.getByTestId('btn.filterAll')).toBeTruthy();
+    expect(screen.getByTestId('btn.filterFavorites')).toBeTruthy();
+    expect(screen.getByTestId('btn.filterToDeepen')).toBeTruthy();
+    expect(screen.getByTestId('component.searchBar')).toBeTruthy();
+    expect(screen.getByTestId('btn.filterMore')).toBeTruthy();
+    expect(screen.queryByTestId('btn.filterSearch')).toBeNull();
+    expect(screen.queryByText('journal.atlas.search')).toBeNull();
+  });
+
+  it('surfaces an active advanced filter chip that Tous can reset', () => {
+    render(<JournalListScreen />);
+
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
+    fireEvent.click(screen.getByText('Mystique'));
+
+    expect(screen.getByTestId('btn.filterTheme')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('btn.filterAll'));
+    expect(screen.queryByTestId('btn.filterTheme')).toBeNull();
   });
 });

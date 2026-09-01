@@ -2,14 +2,25 @@ import { PressableScale } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
+import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import type { DreamTheme, DreamType } from '@/lib/types';
 import React, { memo, useMemo } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
-type FilterItemId = 'all' | 'favorites' | 'to_deepen' | 'theme' | 'date' | 'analyzed' | 'explored' | 'more';
+type FilterItemId =
+  | 'all'
+  | 'favorites'
+  | 'to_deepen'
+  | 'theme'
+  | 'type'
+  | 'date'
+  | 'remembered'
+  | 'unanalyzed'
+  | 'analyzed'
+  | 'explored'
+  | 'more';
 
 export type FilterBarItem = {
   id: FilterItemId;
@@ -129,12 +140,18 @@ const renderIcon = (id: FilterItemId, color: string) => {
       return <AllIcon size={16} color={color} />;
     case 'theme':
       return <CategoryIcon size={16} color={color} />;
+    case 'type':
+      return <CategoryIcon size={16} color={color} />;
     case 'date':
       return <CalendarIcon size={16} color={color} />;
     case 'favorites':
       return <FavoriteIcon size={16} color={color} />;
     case 'to_deepen':
       return <ToDeepenIcon size={16} color={color} />;
+    case 'remembered':
+      return <CalendarIcon size={16} color={color} />;
+    case 'unanalyzed':
+      return <AnalyzedIcon size={16} color={color} />;
     case 'analyzed':
       return <AnalyzedIcon size={16} color={color} />;
     case 'explored':
@@ -151,12 +168,18 @@ const getAccessibilityLabel = (id: FilterItemId, t: (key: string) => string, exp
       return t('journal.filter.accessibility.all');
     case 'theme':
       return t('journal.filter.accessibility.theme');
+    case 'type':
+      return t('journal.filter.accessibility.theme');
     case 'date':
       return t('journal.filter.accessibility.date');
     case 'favorites':
       return t('journal.filter.accessibility.favorites');
     case 'to_deepen':
       return t('journal.filter.accessibility.to_deepen');
+    case 'remembered':
+      return t('journal.filter.accessibility.remembered');
+    case 'unanalyzed':
+      return t('journal.filter_sheet.status.unanalyzed');
     case 'analyzed':
       return t('journal.filter.accessibility.analyzed');
     case 'explored':
@@ -211,7 +234,6 @@ export const FilterBar = memo(function FilterBar({
   clearTestID,
   dateRange,
   selectedTheme,
-  selectedDreamType,
 }: FilterBarProps) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -220,19 +242,12 @@ export const FilterBar = memo(function FilterBar({
   const dateRangeBadge = getDateRangeBadge(dateRange, t);
   const iconColor = noctalia.text.primary;
   const activeIconColor = noctalia.action.primaryText;
-
-  const themeLabelParts: string[] = [];
-  if (selectedTheme) themeLabelParts.push(getDreamThemeLabel(selectedTheme, t) ?? selectedTheme);
-  if (selectedDreamType) themeLabelParts.push(getDreamTypeLabel(selectedDreamType, t) ?? selectedDreamType);
-  const themeFilterSuffix = themeLabelParts.length ? ` • ${themeLabelParts.join(' • ')}` : '';
+  const themeFilterSuffix = selectedTheme
+    ? ` • ${getDreamThemeLabel(selectedTheme, t) ?? selectedTheme}`
+    : '';
 
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerClassName="grow-0 pr-4"
-    >
-      <View className="web:w-max flex-row flex-nowrap items-center gap-2">
+    <View className="w-full flex-row flex-wrap items-center gap-2" testID="journal-filter-bar">
         {items.map((item) => {
           const isActive = item.active;
           const color = isActive ? activeIconColor : iconColor;
@@ -280,7 +295,6 @@ export const FilterBar = memo(function FilterBar({
             </Text>
           </PressableScale>
         )}
-      </View>
-    </ScrollView>
+    </View>
   );
 });

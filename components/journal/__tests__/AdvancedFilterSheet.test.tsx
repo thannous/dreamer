@@ -132,4 +132,36 @@ describe('AdvancedFilterSheet sort order', () => {
     expect(onRecurringToggle).toHaveBeenCalledTimes(1);
     expect(onAnalysisStatusChange).toHaveBeenCalledWith('unanalyzed');
   });
+
+  it('keeps combinable advanced filters independent and exposes a single reset action', () => {
+    const onClear = jest.fn();
+    const onThemeSelect = jest.fn();
+    const onRememberedToggle = jest.fn();
+    const onAnalysisStatusChange = jest.fn();
+    render(
+      <AdvancedFilterSheet
+        {...baseProps}
+        availableThemes={['mystical']}
+        selectedTheme="mystical"
+        rememberedOnly
+        analysisStatus="analyzed"
+        onClear={onClear}
+        onThemeSelect={onThemeSelect}
+        onRememberedToggle={onRememberedToggle}
+        onAnalysisStatusChange={onAnalysisStatusChange}
+      />
+    );
+
+    expect(screen.getByText('journal.filter.remembered')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.FilterStatusAnalyzed)).toBeTruthy();
+    fireEvent.click(screen.getByText('dream.theme.mystical'));
+    fireEvent.click(screen.getByText('journal.filter.remembered'));
+    fireEvent.click(screen.getByTestId(TID.Button.FilterStatusUnanalyzed));
+    expect(onThemeSelect).toHaveBeenCalledWith('mystical');
+    expect(onRememberedToggle).toHaveBeenCalledTimes(1);
+    expect(onAnalysisStatusChange).toHaveBeenCalledWith('unanalyzed');
+
+    fireEvent.click(screen.getByTestId(TID.Button.AdvancedFiltersClear));
+    expect(onClear).toHaveBeenCalledTimes(1);
+  });
 });

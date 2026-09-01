@@ -3,12 +3,10 @@ import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackg
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal/AdvancedFilterSheet';
-import { AtlasDreamRow } from '@/components/journal/AtlasDreamRow';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
 import { FilterBar } from '@/components/journal/FilterBar';
 import { PressableScale } from '@/components/motion';
-import { NoctaliaScreenHeader, type NoctaliaHeaderChip } from '@/components/NoctaliaScreenHeader';
 import { SearchBar } from '@/components/ui/SearchBar';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -23,7 +21,6 @@ import { useDreams } from '@/context/DreamsContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
-import { useJournalLayoutPreference } from '@/hooks/useJournalLayoutPreference';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
@@ -57,7 +54,6 @@ const PREFETCH_MAX_PER_FLUSH = 8;
  */
 const DESKTOP_MAX_WIDTH_STYLE = { alignSelf: 'center', width: '100%', maxWidth: LAYOUT_MAX_WIDTH } as const;
 const LIST_CONTENT_STYLE = { paddingHorizontal: ThemeLayout.spacing.md } as const;
-const LIST_CONTENT_ATLAS_STYLE = { paddingHorizontal: ThemeLayout.spacing.lg } as const;
 
 const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
   // Supabase thumbnails use a `-thumb` filename suffix (see `services/supabaseDreamService.ts`).
@@ -77,18 +73,14 @@ export default function JournalListScreen() {
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   useClearWebFocus();
-  const { formatDate, formatShortDate: formatDreamListDate } = useLocaleFormatting();
+  const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
   const searchInputRef = useRef<TextInput>(null);
-  const pendingSearchFocusRef = useRef(false);
   const { width, height } = useWindowDimensions();
-  const { preference: journalLayoutPreference } = useJournalLayoutPreference();
 
   const isWeb = Platform.OS === 'web';
   const isDesktopLayout = isWeb && width >= DESKTOP_BREAKPOINT;
   const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
-  const useAtlasHeader = !isDesktopLayout && !isTabletLayout;
-  const isAtlasLayout = journalLayoutPreference === 'compact' && !isDesktopLayout && !isTabletLayout;
   const desktopColumns = width >= 1440 ? 4 : 3;
   const navigationLayout = getBottomNavigationLayout(width, height);
 
@@ -114,28 +106,6 @@ export default function JournalListScreen() {
   const [showRememberedOnly, setShowRememberedOnly] = useState(false);
   const [analysisStatus, setAnalysisStatus] = useState<JournalAnalysisStatusFilter | null>(null);
   const [sortOrder, setSortOrder] = useState<JournalSortOrder>('newest');
-  const [showAtlasSearch, setShowAtlasSearch] = useState(false);
-
-  const focusSearchInput = useCallback(() => {
-    requestAnimationFrame(() => {
-      searchInputRef.current?.focus();
-      setTimeout(() => searchInputRef.current?.focus(), 80);
-    });
-  }, []);
-
-  const handleAtlasSearchPress = useCallback(() => {
-    pendingSearchFocusRef.current = true;
-    setShowAtlasSearch(true);
-    focusSearchInput();
-  }, [focusSearchInput]);
-
-  useEffect(() => {
-    if (!pendingSearchFocusRef.current || !(showAtlasSearch || searchQuery.length > 0)) {
-      return;
-    }
-    pendingSearchFocusRef.current = false;
-    focusSearchInput();
-  }, [focusSearchInput, searchQuery.length, showAtlasSearch]);
 
   // Modal states
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -172,17 +142,13 @@ export default function JournalListScreen() {
     () => [LIST_CONTENT_STYLE, { paddingBottom: listBottomPadding }],
     [listBottomPadding]
   );
-  const listContentAtlasStyle = useMemo(
-    () => [LIST_CONTENT_ATLAS_STYLE, { paddingBottom: listBottomPadding }],
-    [listBottomPadding]
-  );
   const listContentDesktopStyle = useMemo(
     () => [LIST_CONTENT_STYLE, DESKTOP_MAX_WIDTH_STYLE, { paddingBottom: listBottomPadding }],
     [listBottomPadding]
   );
   const listExtraData = useMemo(
-    () => ({ isAtlasLayout, isScrolling }),
-    [isAtlasLayout, isScrolling],
+    () => ({ isScrolling }),
+    [isScrolling],
   );
 
   // Get available themes
@@ -428,26 +394,6 @@ export default function JournalListScreen() {
     const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
     const isFirstItem = index === 0;
 
-    if (isAtlasLayout) {
-      const monthLabel = formatDate(item.id, { month: 'short', year: 'numeric' }).replace('.', '').toUpperCase();
-      const previousDream = filteredDreams[index - 1];
-      const previousMonthLabel = previousDream
-        ? formatDate(previousDream.id, { month: 'short', year: 'numeric' }).replace('.', '').toUpperCase()
-        : null;
-      const sectionLabel = index === 0 || monthLabel !== previousMonthLabel ? monthLabel : null;
-
-      return (
-        <AtlasDreamRow
-          dream={item}
-          onPress={handleDreamPress}
-          scrollState={isScrolling ? 'scrolling' : 'idle'}
-          testID={TID.List.DreamItem(item.id)}
-          dateLabel={formatDreamListDate(item.id)}
-          sectionLabel={sectionLabel}
-        />
-      );
-    }
-
     return (
       <View className="mb-6">
         <DreamCard
@@ -460,7 +406,7 @@ export default function JournalListScreen() {
         />
       </View>
     );
-  }, [filteredDreams, formatDate, formatDreamListDate, t, handleDreamPress, isAtlasLayout, isScrolling]);
+  }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
 
   const renderDreamItemTablet = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
     const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
@@ -570,36 +516,87 @@ export default function JournalListScreen() {
       accessibilityLabel: t('journal.filter.accessibility.to_deepen'),
       testID: TID.Button.FilterToDeepen,
     },
-  ], [handleQuickFilterPress, hasActiveAdvancedFilter, quickFilter, searchQuery, t]);
-  const atlasQuickFilters = useMemo<NoctaliaHeaderChip[]>(() => [
-    {
-      id: 'all',
-      label: t('journal.filter.all'),
-      icon: 'rectangle.stack.fill',
-      active: quickFilter === 'all' && !hasActiveAdvancedFilter && !searchQuery,
-      onPress: () => handleQuickFilterPress('all'),
-      accessibilityLabel: t('journal.filter.accessibility.all'),
-      testID: TID.Button.FilterAll,
-    },
-    {
-      id: 'favorites',
-      label: t('journal.filter.favorites'),
-      icon: 'heart',
-      active: quickFilter === 'favorites',
-      onPress: () => handleQuickFilterPress('favorites'),
-      accessibilityLabel: t('journal.filter.accessibility.favorites'),
-      testID: TID.Button.FilterFavorites,
-    },
-    {
-      id: 'to_deepen',
-      label: t('journal.filter.to_deepen'),
-      icon: 'sparkles',
-      active: quickFilter === 'to_deepen',
-      onPress: () => handleQuickFilterPress('to_deepen'),
-      accessibilityLabel: t('journal.filter.accessibility.to_deepen'),
-      testID: TID.Button.FilterToDeepen,
-    },
-  ], [handleQuickFilterPress, hasActiveAdvancedFilter, quickFilter, searchQuery, t]);
+    ...(selectedTheme ? [{
+      id: 'theme' as const,
+      label: t('journal.filter.theme'),
+      active: true,
+      onPress: () => toggleThemeFilter(selectedTheme),
+      accessibilityLabel: t('journal.filter.accessibility.theme'),
+      testID: TID.Button.FilterTheme,
+    }] : []),
+    ...(selectedDreamType && selectedDreamType !== 'Recurring Dream' ? [{
+      id: 'type' as const,
+      label: getDreamTypeLabel(selectedDreamType, t) ?? selectedDreamType,
+      active: true,
+      onPress: () => toggleDreamTypeFilter(selectedDreamType),
+      accessibilityLabel: t('journal.filter.accessibility.theme'),
+    }] : []),
+    ...(dateRange.start || dateRange.end ? [{
+      id: 'date' as const,
+      label: t('journal.filter.date'),
+      active: true,
+      onPress: () => handleDateRangeChange(null, null),
+      accessibilityLabel: t('journal.filter.accessibility.date'),
+      testID: TID.Button.FilterDate,
+    }] : []),
+    ...(showRememberedOnly ? [{
+      id: 'remembered' as const,
+      label: t('journal.filter.remembered'),
+      active: true,
+      onPress: handleRememberedToggle,
+      accessibilityLabel: t('journal.filter.accessibility.remembered'),
+      testID: TID.Button.FilterRemembered,
+    }] : []),
+    ...(selectedDreamType === 'Recurring Dream' ? [{
+      id: 'type' as const,
+      label: t('journal.filter.recurring'),
+      active: true,
+      onPress: handleRecurringToggle,
+      accessibilityLabel: t('journal.filter.accessibility.recurring'),
+    }] : []),
+    ...(analysisStatus === 'unanalyzed' ? [{
+      id: 'unanalyzed' as const,
+      label: t('journal.filter_sheet.status.unanalyzed'),
+      active: true,
+      onPress: () => handleAnalysisStatusChange(null),
+      accessibilityLabel: t('journal.filter_sheet.status.unanalyzed'),
+      testID: TID.Button.FilterAnalyzed,
+    }] : []),
+    ...(analysisStatus === 'analyzed' ? [{
+      id: 'analyzed' as const,
+      label: t('journal.filter.analyzed'),
+      active: true,
+      onPress: () => handleAnalysisStatusChange(null),
+      accessibilityLabel: t('journal.filter.accessibility.analyzed'),
+      testID: TID.Button.FilterAnalyzed,
+    }] : []),
+    ...(analysisStatus === 'explored' ? [{
+      id: 'explored' as const,
+      label: t('journal.filter.explored'),
+      active: true,
+      onPress: () => handleAnalysisStatusChange(null),
+      accessibilityLabel: t('journal.filter.accessibility.explored'),
+      testID: TID.Button.FilterExplored,
+    }] : []),
+  ], [
+    analysisStatus,
+    dateRange.end,
+    dateRange.start,
+    handleAnalysisStatusChange,
+    handleDateRangeChange,
+    handleQuickFilterPress,
+    handleRememberedToggle,
+    handleRecurringToggle,
+    hasActiveAdvancedFilter,
+    quickFilter,
+    searchQuery,
+    selectedDreamType,
+    selectedTheme,
+    showRememberedOnly,
+    t,
+    toggleDreamTypeFilter,
+    toggleThemeFilter,
+  ]);
   const renderEmptyState = useCallback(() => (
     <EmptyState
       hasActiveFilter={hasActiveFilter}
@@ -617,9 +614,6 @@ export default function JournalListScreen() {
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
   const getDreamItemType = useCallback((item: DreamAnalysis | undefined, index: number) => {
-    if (isAtlasLayout) {
-      return 'atlas-row';
-    }
     if (!item) {
       // FlashList can query item types during layout passes where data isn't resolved yet.
       return 'text-only';
@@ -630,7 +624,7 @@ export default function JournalListScreen() {
     return !item.imageGenerationFailed && (item.thumbnailUrl || item.imageUrl)
       ? 'with-image'
       : 'text-only';
-  }, [isAtlasLayout]);
+  }, []);
 
   return (
     <ScrollPerfProvider isScrolling={isScrolling}>
@@ -638,115 +632,71 @@ export default function JournalListScreen() {
         {/* Atmospheric dreamlike background */}
         <AtmosphericBackground variant="subtle" />
 
-        {useAtlasHeader ? (
-          <NoctaliaScreenHeader
-            titleKey="nav.journal"
-            chips={atlasQuickFilters}
-            actions={[
-              {
-                icon: 'magnifyingglass',
-                onPress: handleAtlasSearchPress,
-                accessibilityLabel: t('journal.atlas.search'),
-                active: showAtlasSearch || searchQuery.length > 0,
-                testID: TID.Button.FilterSearch,
-              },
-              {
-                icon: 'slider.horizontal.3',
-                onPress: () => setShowAdvancedFilters(true),
-                accessibilityLabel: t('journal.filter.accessibility.more'),
-                active: hasActiveAdvancedFilter,
-                testID: TID.Button.FilterMore,
-              },
-              {
-                icon: 'gear',
-                onPress: () => router.push('/(tabs)/settings'),
-                accessibilityLabel: t('nav.settings'),
-                testID: TID.Button.HeaderJournalSettings,
-              },
-            ]}
-            slot={
-              showAtlasSearch || searchQuery.length > 0 ? (
-                <SearchBar
-                  autoFocus
-                  ref={searchInputRef}
-                  testID={TID.Component.SearchBar}
-                  inputTestID={TID.Input.SearchDreams}
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                  placeholder={t('journal.search_placeholder')}
-                />
-              ) : null
-            }
-          />
-        ) : (
-          <>
-            {/* Header */}
-            <PageHeaderContent
-              titleKey="journal.title"
-              animationSeed={showHeaderAnimations ? 1 : 0}
-              style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
-            />
+        <PageHeaderContent
+          titleKey="journal.title"
+          animationSeed={showHeaderAnimations ? 1 : 0}
+          style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
+        />
 
-            {/* Search and Filters */}
-            <View
-              className="gap-4 p-4"
-              style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
-            >
-              <MockNavigationRail />
-              {/* SearchBar */}
-              <SearchBar
-                testID={TID.Component.SearchBar}
-                inputTestID={TID.Input.SearchDreams}
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                placeholder={t('journal.search_placeholder')}
+        <View
+          className="gap-4 p-4"
+          style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
+        >
+          <MockNavigationRail />
+          <SearchBar
+            ref={searchInputRef}
+            testID={TID.Component.SearchBar}
+            inputTestID={TID.Input.SearchDreams}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder={t('journal.search_placeholder')}
+          />
+          <View className="flex-row flex-wrap items-start gap-2">
+            <View className="min-w-0 flex-1 basis-[220px]">
+              <FilterBar
+                items={journalFilterItems}
+                onClear={handleClearFilters}
+                dateRange={dateRange}
+                selectedTheme={selectedTheme}
+                selectedDreamType={selectedDreamType}
+                clearTestID={TID.Button.ClearFilters}
               />
-              <View className="flex-row items-center gap-2">
-                <View className="min-w-0 flex-1">
-                  <FilterBar
-                    items={journalFilterItems}
-                    onClear={handleClearFilters}
-                    dateRange={dateRange}
-                    selectedTheme={selectedTheme}
-                    selectedDreamType={selectedDreamType}
-                    clearTestID={TID.Button.ClearFilters}
-                  />
-                </View>
-                <PressableScale
-                  onPress={() => router.push('/(tabs)/settings')}
-                  haptic="selection"
-                  accessibilityRole="button"
-                  accessibilityLabel={t('nav.settings')}
-                  testID={TID.Button.HeaderJournalSettings}
-                  className="h-10 w-10 items-center justify-center rounded-full border border-continuous border-line bg-ink-soft"
-                >
-                  <IconSymbol
-                    name="gear"
-                    size={18}
-                    color={noctalia.text.primary}
-                  />
-                </PressableScale>
-                <PressableScale
-                  onPress={() => setShowAdvancedFilters(true)}
-                  haptic="selection"
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: hasActiveAdvancedFilter }}
-                  accessibilityLabel={t('journal.filter.accessibility.more')}
-                  testID={TID.Button.FilterMore}
-                  className={`h-10 w-10 items-center justify-center rounded-full border border-continuous ${
-                    hasActiveAdvancedFilter ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
-                  }`}
-                >
-                  <IconSymbol
-                    name="slider.horizontal.3"
-                    size={18}
-                    color={hasActiveAdvancedFilter ? noctalia.action.primaryText : noctalia.text.primary}
-                  />
-                </PressableScale>
-              </View>
             </View>
-          </>
-        )}
+            <View className="ml-auto flex-row items-center gap-2">
+              <PressableScale
+                onPress={() => router.push('/(tabs)/settings')}
+                haptic="selection"
+                accessibilityRole="button"
+                accessibilityLabel={t('nav.settings')}
+                testID={TID.Button.HeaderJournalSettings}
+                className="h-10 w-10 items-center justify-center rounded-full border border-continuous border-line bg-ink-soft"
+              >
+                <IconSymbol
+                  name="gear"
+                  size={18}
+                  color={noctalia.text.primary}
+                />
+              </PressableScale>
+              <PressableScale
+                onPress={() => setShowAdvancedFilters(true)}
+                haptic="selection"
+                accessibilityRole="button"
+                accessibilityState={{ selected: hasActiveAdvancedFilter }}
+                accessibilityLabel={t('journal.filter.accessibility.more')}
+                testID={TID.Button.FilterMore}
+                className={`h-10 w-10 items-center justify-center rounded-full border border-continuous ${
+                  hasActiveAdvancedFilter ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
+                }`}
+              >
+                <IconSymbol
+                  name="slider.horizontal.3"
+                  size={18}
+                  color={hasActiveAdvancedFilter ? noctalia.action.primaryText : noctalia.text.primary}
+                />
+              </PressableScale>
+            </View>
+          </View>
+        </View>
 
       {/* Guest Upsell */}
       <View
@@ -783,7 +733,7 @@ export default function JournalListScreen() {
         <FlashList
           testID={TID.List.Dreams}
           ref={flatListRef}
-          key={isTabletLayout ? 'tablet-2col' : isAtlasLayout ? 'mobile-compact-1col' : 'mobile-cards-1col'}
+          key={isTabletLayout ? 'tablet-2col' : 'mobile-cards-1col'}
           data={filteredDreams}
           extraData={listExtraData}
           keyExtractor={keyExtractor}
@@ -791,7 +741,7 @@ export default function JournalListScreen() {
           numColumns={isTabletLayout ? 2 : 1}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
-          contentContainerStyle={isAtlasLayout ? listContentAtlasStyle : listContentStyle}
+          contentContainerStyle={listContentStyle}
           contentInsetAdjustmentBehavior="automatic"
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
