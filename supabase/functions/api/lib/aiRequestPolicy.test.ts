@@ -7,9 +7,11 @@ import {
   isValidUuid,
   normalizeAiLanguage,
   parseDreamTextInput,
+  parseLegacyImageTranscriptInput,
   validateBoundedText,
 } from './aiRequestPolicy.ts';
-import { boundTranscriptForPrompt } from './prompts.ts';
+import { boundTranscriptForPrompt, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS } from './prompts.ts';
+
 
 Deno.test('bounded AI text rejects oversized input with a stable 413 payload', async () => {
   const validation = validateBoundedText('x'.repeat(AI_REQUEST_LIMITS.transcriptChars + 1), {
@@ -105,4 +107,38 @@ Deno.test('AI languages normalize supported locale tags and fail safely to Engli
   assertEquals(normalizeAiLanguage('fr-FR'), 'fr');
   assertEquals(normalizeAiLanguage('IT_it'), 'it');
   assertEquals(normalizeAiLanguage('unknown'), 'en');
+});
+
+Deno.test('legacy generateImage routes accept a 601-character transcript and keep the original request', async () => {
+  const stored = 'x'.repeat(601);
+  const parsed = parseLegacyImageTranscriptInput(stored);
+
+  assertEquals(parsed instanceof Response, false);
+  if (parsed instanceof Response) return;
+  assertEquals(parsed.storedTranscript, stored);
+  assertEquals(parsed.storedTranscript.length, 601);
+  assertEquals(parsed.promptTranscript, stored);
+});
+
+Deno.test('legacy generateImage routes keep a long stored transcript and bound only the model copy', async () => {
+  const stored = 'y'.repeat(10_000);
+  const parsed = parseLegacyImageTranscriptInput(stored);
+
+  assertEquals(parsed instanceof Response, false);
+  if (parsed instanceof Response) return;
+  assertEquals(parsed.storedTranscript, stored);
+  assertEquals(parsed.storedTranscript.length, 10_000);
+  assertEquals(parsed.promptTranscript.length, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS);
+  assertEquals(parsed.promptTranscript, stored.slice(0, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS));
+});
+
+Deno.test('legacy generateImage routes still reject request-abuse transcripts', async () => {
+  const parsed = parseLegacyImageTranscriptInput(
+    'z'.repeat(AI_REQUEST_LIMITS.transcriptRequestChars + 1)
+  );
+
+  assertEquals(parsed instanceof Response, true);
+  if (!(parsed instanceof Response)) return;
+  assertEquals(parsed.status, 413);
+  assertEquals((await parsed.json()).maxChars, AI_REQUEST_LIMITS.transcriptRequestChars);
 });

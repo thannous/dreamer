@@ -1,5 +1,6 @@
 import { isAiLanguage } from './aiLanguage.ts';
 import { corsHeaders } from './constants.ts';
+import { boundTranscriptForPrompt } from './prompts.ts';
 
 export const AI_REQUEST_LIMITS = {
   /** Request-abuse bound for optional image-generation transcript fields. */
@@ -67,6 +68,22 @@ export const isValidUuid = (value: string): boolean => UUID_PATTERN.test(value);
 export const normalizeAiLanguage = (value: string): string => {
   const base = value.toLowerCase().split(/[-_]/)[0];
   return isAiLanguage(base) ? base : 'en';
+};
+
+
+export const parseLegacyImageTranscriptInput = (
+  value: unknown
+): { storedTranscript: string; promptTranscript: string } | Response => {
+  const transcriptInput = validateBoundedText(value, {
+    field: 'transcript',
+    maxChars: AI_REQUEST_LIMITS.transcriptRequestChars,
+    required: false,
+  });
+  if (!transcriptInput.ok) return aiInputErrorResponse(transcriptInput);
+  return {
+    storedTranscript: transcriptInput.value,
+    promptTranscript: boundTranscriptForPrompt(transcriptInput.value).text,
+  };
 };
 
 export const parseDreamTextInput = (
