@@ -742,6 +742,7 @@ function RootLayoutNav({
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
             <Stack.Screen name="auth/reset-password" options={{ headerShown: false }} />
             <Stack.Screen name="weekly-recap" options={{ headerShown: false }} />
+            <Stack.Screen name="dev/voice-live-spike" options={{ headerShown: false }} />
           </Stack>
           <OfflineModelPromptHost />
           <EngagementRemindersHost />

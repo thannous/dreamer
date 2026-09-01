@@ -3,8 +3,8 @@
 Internal prototype kernel for an optional live voice loop after a persisted
 original dream. This ticket is local and read-only of TI-427: it reuses persist
 ids, hashes, closed recall intents, and the add -> persist -> request contract.
-It does not modify `lib/dreamRecallAssistant.ts`, UI, backend, Linear, or device
-proof. Device evidence stays on TI-429.
+It does not modify `lib/dreamRecallAssistant.ts`, product Home/Journal/Trends
+screens, backend, Linear, or device proof. Device evidence stays on TI-429.
 
 ## Goal
 
@@ -13,11 +13,11 @@ thinking before the last user segment is confirmed persisted.
 
 ## Non-goals
 
-- UI host, Expo speech session, or native STT wiring
 - Backend, quota RPCs, chat routes, or Gemini calls
 - Linear issue mutation
 - Device or Motorola proof (TI-429)
 - Shipping Option B
+- Production settings toggle or product-surface mount
 
 ## Prototype A (only candidate now)
 
@@ -61,6 +61,35 @@ Commands are host instructions, never I/O:
 `originalTranscript`. Recall uses `recall_question`. Analysis and chat use
 `analysis_turn` / `chat_turn`.
 
+## Isolated host and storage
+
+Prototype A host, off by default, `__DEV__` plus explicit debug enablement plus
+the existing `dreamer.voiceLiveSpike.v3` local flag:
+
+| Boundary | Location |
+|---|---|
+| Gate / persist-first loop / stub AI | [`lib/voiceLiveSpikeHost.ts`](../../../lib/voiceLiveSpikeHost.ts) |
+| Session lane | `voice_live_spike_v3:{dreamId}` via [`services/voiceLiveSpikeStorage.ts`](../../../services/voiceLiveSpikeStorage.ts) |
+| Debug enablement | `dreamer.voiceLiveSpike.v3.debug` |
+| Local flag | `dreamer.voiceLiveSpike.v3.flag` |
+| TTS after persist | [`services/voiceLiveSpikeTts.ts`](../../../services/voiceLiveSpikeTts.ts) (`expo-speech`) |
+| Native STT reuse | `useRecordingSession` inside [`components/dev/VoiceLiveSpikeHost.tsx`](../../../components/dev/VoiceLiveSpikeHost.tsx) |
+| Route | [`app/dev/voice-live-spike.tsx`](../../../app/dev/voice-live-spike.tsx) returns `null` outside `__DEV__` |
+| Settings entry | [`components/dev/VoiceLiveSpikeDebugEntry.tsx`](../../../components/dev/VoiceLiveSpikeDebugEntry.tsx) returns `null` outside `__DEV__` |
+
+The host hydrates that spike lane before `start`. A valid stored session is
+resumed; a missing/idle snapshot starts a new Prototype A chat loop. `remove`
+clears only `voice_live_spike_v3:{dreamId}`. AI is a local deterministic stub.
+If the stored command is `await_persist`, the loaded snapshot is already durable:
+the host marks the segment persisted, then continues online or queues offline.
+It never requests AI or TTS before that persist.
+No Gemini, backend, quota RPC, or purchase path. The original transcript stays
+off the stub request and spoken turns.
+
+Production cannot mount or start the host: `canMountVoiceLiveSpikeHost` requires
+`__DEV__`, debug enablement, and the local flag, while the feature default stays
+`false`.
+
 ## Invariants
 
 1. Never emit `request_ai` or `speak` before the latest user segment is
@@ -97,7 +126,7 @@ Commands are host instructions, never I/O:
 | Ticket / work | Status |
 |---|---|
 | TI-429 | Device proofs: barge-in, persist-before-AI, offline queue, audio retention off, Motorola / TalkBack |
-| UI host over this kernel, still no Option B | Not created. Do not invent a Linear id. |
+| Isolated `/dev/voice-live-spike` host | Local TI-428 prototype. Not a product surface. |
 | Option B only if TI-428/429 record a latency-only A no-go | Not created. Do not invent a Linear id. |
 
 ## Proof split
@@ -105,6 +134,7 @@ Commands are host instructions, never I/O:
 | Layer | This ticket |
 |---|---|
 | Local kernel / Jest / typecheck / lint | TI-428 |
+| Isolated host / storage / stub AI | TI-428 |
 | Public HTTP, Play, EAS, backend | out of scope |
 | Human / device | TI-429, currently unproven |
 
@@ -112,7 +142,8 @@ Commands are host instructions, never I/O:
 
 ```bash
 npm run test:file -- lib/__tests__/voiceLiveSpike.test.ts
+npm run test:file -- lib/__tests__/voiceLiveSpikeHost.test.ts services/__tests__/voiceLiveSpikeStorage.test.ts hooks/__tests__/useVoiceLiveSpikeHost.test.tsx components/dev/__tests__/VoiceLiveSpikeHost.test.tsx components/dev/__tests__/VoiceLiveSpikeDebugEntry.test.tsx
 npm run typecheck:app
-npx expo lint lib/voiceLiveSpike.ts lib/__tests__/voiceLiveSpike.test.ts
-git diff --check -- lib/voiceLiveSpike.ts lib/__tests__/voiceLiveSpike.test.ts doc_web_interne/docs/architecture/DREAMER-VOICE-LIVE-SPIKE-V3.md
+npx expo lint lib/voiceLiveSpike.ts lib/voiceLiveSpikeHost.ts lib/__tests__/voiceLiveSpike.test.ts lib/__tests__/voiceLiveSpikeHost.test.ts services/voiceLiveSpikeStorage.ts services/voiceLiveSpikeTts.ts services/__tests__/voiceLiveSpikeStorage.test.ts hooks/useVoiceLiveSpikeHost.ts hooks/__tests__/useVoiceLiveSpikeHost.test.tsx components/dev/VoiceLiveSpikeHost.tsx components/dev/VoiceLiveSpikeDebugEntry.tsx components/dev/__tests__/VoiceLiveSpikeHost.test.tsx components/dev/__tests__/VoiceLiveSpikeDebugEntry.test.tsx app/dev/voice-live-spike.tsx
+git diff --check -- lib/voiceLiveSpike.ts lib/voiceLiveSpikeHost.ts lib/__tests__/voiceLiveSpike.test.ts lib/__tests__/voiceLiveSpikeHost.test.ts services/voiceLiveSpikeStorage.ts services/voiceLiveSpikeTts.ts services/__tests__/voiceLiveSpikeStorage.test.ts hooks/useVoiceLiveSpikeHost.ts hooks/__tests__/useVoiceLiveSpikeHost.test.tsx components/dev/VoiceLiveSpikeHost.tsx components/dev/VoiceLiveSpikeDebugEntry.tsx components/dev/__tests__/VoiceLiveSpikeHost.test.tsx components/dev/__tests__/VoiceLiveSpikeDebugEntry.test.tsx app/dev/voice-live-spike.tsx app/_layout.tsx app/(tabs)/settings.tsx doc_web_interne/docs/architecture/DREAMER-VOICE-LIVE-SPIKE-V3.md
 ```

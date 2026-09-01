@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
+import { VoiceLiveSpikeDebugEntry } from '@/components/dev/VoiceLiveSpikeDebugEntry';
 import { GuestProdQALab } from '@/components/guest/GuestProdQALab';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
@@ -148,6 +149,7 @@ export default function SettingsScreen() {
       ) : null}
       <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" />
       <GuestProdQALab />
+      <VoiceLiveSpikeDebugEntry />
     </View>
   );
 
