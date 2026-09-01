@@ -57,9 +57,13 @@ export function isOriginalTranscriptMessage(
   const transcript = normalizeComparableText(dream?.transcript ?? '');
   if (transcript && text === transcript) return true;
 
-  return LEGACY_TRANSCRIPT_PREFIXES.some((prefix) =>
-    text.startsWith(normalizeComparableText(prefix))
-  );
+  return LEGACY_TRANSCRIPT_PREFIXES.some((prefix) => {
+    const normalizedPrefix = normalizeComparableText(prefix);
+    if (!text.startsWith(normalizedPrefix)) return false;
+    const suffix = normalizeComparableText(text.slice(normalizedPrefix.length));
+    if (!transcript || !suffix) return true;
+    return suffix === transcript;
+  });
 }
 
 const hasNonErrorModelResponse = (dream?: DreamAnalysis | null): boolean =>

@@ -209,6 +209,76 @@ describe('dreamUsage helpers', () => {
     expect(isOriginalTranscriptMessage(dream.chatHistory[1], dream)).toBe(true);
     expect(getUserChatMessageCount(dream)).toBe(1);
   });
+
+  it('counts a legacy-prefixed message when its suffix is not the dream transcript', () => {
+    const transcript = 'I was flying over a quiet city.';
+    const dream = buildDream({
+      id: 23,
+      transcript,
+      chatHistory: [
+        { id: 'm1', role: 'user', text: 'Voici mon rêve… et une autre question' },
+        { id: 'm2', role: 'user', text: `Voici mon rêve : ${transcript} What does the city mean?` },
+        { id: 'm3', role: 'user', text: `Voici mon rêve : ${transcript}` },
+        { id: 'm4', role: 'user', text: 'What does the city mean?' },
+      ],
+    });
+
+    expect(isOriginalTranscriptMessage(dream.chatHistory[0], dream)).toBe(false);
+    expect(isOriginalTranscriptMessage(dream.chatHistory[1], dream)).toBe(false);
+    expect(isOriginalTranscriptMessage(dream.chatHistory[2], dream)).toBe(true);
+    expect(getUserChatMessageCount(dream)).toBe(3);
+  });
+
+  it('treats whitespace-normalized legacy prefixes as the bootstrap transcript only', () => {
+    const transcript = 'A quiet city at night.';
+    const dream = buildDream({
+      id: 24,
+      transcript: `  ${transcript}  `,
+      chatHistory: [
+        { id: 'm1', role: 'user', text: `Here is my dream:   ${transcript}` },
+        { id: 'm2', role: 'user', text: `Voici mon rêve :\n${transcript}` },
+        { id: 'm3', role: 'user', text: `Here is my dream: ${transcript}!` },
+        { id: 'm4', role: 'user', text: `HERE IS MY DREAM: ${transcript}` },
+      ],
+    });
+
+    expect(isOriginalTranscriptMessage(dream.chatHistory[0], dream)).toBe(true);
+    expect(isOriginalTranscriptMessage(dream.chatHistory[1], dream)).toBe(true);
+    expect(isOriginalTranscriptMessage(dream.chatHistory[2], dream)).toBe(false);
+    expect(isOriginalTranscriptMessage(dream.chatHistory[3], dream)).toBe(false);
+    expect(getUserChatMessageCount(dream)).toBe(2);
+  });
+
+  it('keeps a legacy-prefixed bootstrap excluded when the dream has no transcript', () => {
+    const dream = buildDream({
+      id: 25,
+      transcript: '   ',
+      chatHistory: [
+        { id: 'm1', role: 'user', text: 'Voici mon rêve : A quiet city at night.' },
+        { id: 'm2', role: 'user', text: 'What does the city mean?' },
+      ],
+    });
+
+    expect(isOriginalTranscriptMessage(dream.chatHistory[0], dream)).toBe(true);
+    expect(isOriginalTranscriptMessage(dream.chatHistory[1], dream)).toBe(false);
+    expect(getUserChatMessageCount(dream)).toBe(1);
+  });
+
+  it('still counts ordinary chat that does not copy the transcript', () => {
+    const transcript = 'A quiet city at night.';
+    const dream = buildDream({
+      id: 26,
+      transcript,
+      chatHistory: [
+        { id: 'm1', role: 'user', text: 'hello' },
+        { id: 'm2', role: 'model', text: 'hi there' },
+        { id: 'm3', role: 'user', text: 'thanks' },
+      ],
+    });
+
+    expect(isOriginalTranscriptMessage(dream.chatHistory[0], dream)).toBe(false);
+    expect(getUserChatMessageCount(dream)).toBe(2);
+  });
 });
 
 describe('getReflectionJourney', () => {
