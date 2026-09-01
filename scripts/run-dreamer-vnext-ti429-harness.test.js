@@ -41,7 +41,7 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(inspection.ok).toBe(true);
     expect(inspection.counts.automated).toBeGreaterThanOrEqual(12);
     expect(inspection.counts.manual).toBeGreaterThanOrEqual(8);
-    expect(inspection.counts.blocked).toBe(0);
+    expect(inspection.counts.blocked).toBe(1);
 
     const ids = inspection.manifest.checks.map((check) => check.id);
     expect(ids).toEqual(expect.arrayContaining([
@@ -58,6 +58,7 @@ describe('Dreamer VNext TI-429 harness', () => {
       'analysis-quota',
       'image-independent',
       'journal-detail-trends-deeplinks',
+      'analysis-ready-detail-deeplink',
       'guest-free-plus-no-purchase',
       'notifications-permission',
       'talkback',
@@ -79,6 +80,11 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(byId['analysis-quota'].runtime).toBe('mock-native');
     expect(byId['guest-free-plus-no-purchase'].runtime).toBe('mock-native');
     expect(byId['write-tell-shared-draft'].runtime).toBe('release-native');
+    expect(byId['analysis-ready-detail-deeplink'].mode).toBe('blocked');
+    expect(byId['analysis-ready-detail-deeplink'].runtime).toBe('release-native');
+    expect(byId['analysis-ready-detail-deeplink'].flow).toBeUndefined();
+    expect(byId['analysis-ready-detail-deeplink'].command).toBeUndefined();
+    expect(byId['journal-detail-trends-deeplinks'].notes).toMatch(/Does not cover analysis-ready/);
   });
 
   it('requires the long-fragment flow to keep a >600 character story and the end sentinel', () => {
@@ -135,6 +141,8 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(plan.checks.every((check) => check.status === 'blocked' || check.status === 'manual')).toBe(true);
     expect(plan.checks.some((check) => check.status === 'pass')).toBe(false);
     expect(plan.checks.filter((check) => check.mode === 'automated').every((check) => check.status === 'blocked')).toBe(true);
+    const analysisReady = plan.checks.find((check) => check.id === 'analysis-ready-detail-deeplink');
+    expect(analysisReady).toMatchObject({ mode: 'blocked', runtime: 'release-native', status: 'blocked', flow: null, command: null });
     expect(plan.limits.some((limit) => limit.includes('never launches Maestro'))).toBe(true);
     expect(plan.limits.some((limit) => limit.includes('release-ti429 suite'))).toBe(true);
   });

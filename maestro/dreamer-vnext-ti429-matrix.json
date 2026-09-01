@@ -196,11 +196,14 @@
     },
     {
       "id": "journal-detail-trends-deeplinks",
-      "title": "Journal, detail, Trends and notification deep links",
-      "criterion": "Journal, fiche, Tendances et liens profonds de notification",
+      "title": "Journal list, Trends, weekly recap and recording deep links",
+      "criterion": "Journal liste, Tendances, recap hebdo et capture via liens profonds",
       "mode": "automated",
       "flow": "maestro/release-journal-trends-deeplinks.yml",
       "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-journal-trends-deeplinks.yml",
+      "evidence": "screenshots of journal list, Trends, weekly recap, recording. Unexecuted = blocked.",
+      "runtime": "release-native",
+      "notes": "Release-native. Covers noctalia://journal (list), noctalia://statistics / Trends, noctalia://weekly-recap and noctalia://recording. Does not cover analysis-ready noctalia://journal/{id}.",
       "requiredTokens": [
         "noctalia://journal",
         "noctalia://statistics",
@@ -208,9 +211,16 @@
         "noctalia://weekly-recap",
         "id: screen.weeklyRecap",
         "noctalia://recording"
-      ],
-      "evidence": "screenshots of journal, detail, Trends, weekly recap, recording",
-      "runtime": "release-native"
+      ]
+    },
+    {
+      "id": "analysis-ready-detail-deeplink",
+      "title": "analysis-ready notification opens journal detail",
+      "criterion": "lien profond analysis-ready vers noctalia://journal/{id}",
+      "mode": "blocked",
+      "runtime": "release-native",
+      "notes": "No stable fixture id: mock local dream ids are timestamps at preload, remoteId is not the journal/[id] route key, and a Release dream id cannot be captured without a device. Exact analysis-ready URL noctalia://journal/{id} requires physical-device proof. Unexecuted = blocked. Not a pass.",
+      "evidence": "physical-device screenshot of journal/{id} opened from an analysis-ready notification. Missing until a real id is available."
     },
     {
       "id": "guest-free-plus-no-purchase",

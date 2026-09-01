@@ -38,7 +38,8 @@ Machine-readable source: [`maestro/dreamer-vnext-ti429-matrix.json`](../../../ma
 | Analysis interrupted | release-native | automated | `release-ti429` / `maestro/release-analysis-interrupt.yml` |
 | Analysis quota | mock-native | automated | `npm run test:e2e:quotas` |
 | Independent image CTA after save | release-native | automated | `release-ti429` / `maestro/release-image-independent.yml` |
-| Journal / detail / Trends / notification links | release-native | automated | `release-ti429` / `maestro/release-journal-trends-deeplinks.yml` |
+| Journal list / Trends / weekly-recap / recording links | release-native | automated | `release-ti429` / `maestro/release-journal-trends-deeplinks.yml` |
+| analysis-ready `noctalia://journal/{id}` | release-native | blocked | no flow: no stable fixture id; needs a real device id |
 | Guest / free / Plus without purchase | mock-native | automated | `npm run test:e2e:subscription-qa` |
 | Notifications | release-native | automated | matrix command / `maestro/release-notification-permission.yml` |
 | TalkBack, contrast, large text, reduce motion | manual | manual | human device checks |
