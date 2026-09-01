@@ -37,6 +37,7 @@ let mockRecordingPermissionState: 'unknown' | 'granted' | 'denied' = 'unknown';
 let mockReferenceImagesEnabled = false;
 let mockViewportWidth = 390;
 let mockOnPartialTranscript: ((text: string) => void) | undefined;
+const mockResolveDeviceSpeechCapability = jest.fn();
 
 const buildDream = (transcript: string, id = 42): DreamAnalysis => ({
   id,
@@ -549,12 +550,7 @@ jest.doMock('@/services/geminiService', () => ({
 
 jest.doMock('@/services/nativeSpeechRecognition', () => ({
   registerOfflineModelPromptHandler: () => jest.fn(),
-  resolveDeviceSpeechCapability: jest.fn().mockResolvedValue({
-    tier: 'on_device',
-    reason: 'locale_installed',
-    requiresOnDeviceRecognition: true,
-    localAlternatives: [],
-  }),
+  resolveDeviceSpeechCapability: mockResolveDeviceSpeechCapability,
 }));
 
 jest.doMock('@/services/storageService', () => ({
@@ -601,6 +597,13 @@ describe('Recording screen', () => {
     mockStartRecording.mockResolvedValue({ success: true });
     mockStopRecording.mockResolvedValue({ transcript: '' });
     mockCanGoBack.mockReturnValue(false);
+    mockResolveDeviceSpeechCapability.mockReset();
+    mockResolveDeviceSpeechCapability.mockResolvedValue({
+      tier: 'on_device',
+      reason: 'locale_installed',
+      requiresOnDeviceRecognition: true,
+      localAlternatives: [],
+    });
   });
 
   afterEach(() => {
@@ -1148,5 +1151,67 @@ describe('Recording screen', () => {
     expect(screen.getByTestId(TID.Component.RecordingDraftProgress).textContent).not.toContain(
       'recording.draft_progress.saved_locally'
     );
+  });
+
+  it('concatenates later voice partials onto the kept draft instead of replacing it', async () => {
+    render(<RecordingScreen />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'typed prefix' },
+    });
+
+    await waitFor(() => {
+      expect(mockOnPartialTranscript).toEqual(expect.any(Function));
+    });
+
+    act(() => {
+      mockOnPartialTranscript?.('a lake at dusk');
+    });
+    act(() => {
+      mockOnPartialTranscript?.('and a red bicycle');
+    });
+
+    await waitFor(() => {
+      expect(
+        (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+      ).toBe('typed prefix a lake at dusk and a red bicycle');
+    });
+    await waitFor(() => {
+      expect(mockSaveTranscript).toHaveBeenCalledWith(
+        'typed prefix a lake at dusk and a red bicycle'
+      );
+    });
+  });
+
+  it('keeps Tell available on Android when a local speech model is installed', async () => {
+    mockPlatformOS = 'android';
+    mockGetInputModePreference.mockResolvedValue('voice');
+
+    render(<RecordingScreen />);
+
+    await waitFor(() => {
+      expect(mockResolveDeviceSpeechCapability).toHaveBeenCalled();
+      expect(screen.getByTestId('recording-mode').getAttribute('data-value')).toBe('voice');
+      expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('voiceFirst');
+    });
+  });
+
+  it('falls back to Write on Android only when speech capture is unavailable', async () => {
+    mockPlatformOS = 'android';
+    mockGetInputModePreference.mockResolvedValue('voice');
+    mockResolveDeviceSpeechCapability.mockResolvedValue({
+      tier: 'unavailable',
+      reason: 'no_microphone',
+      requiresOnDeviceRecognition: false,
+      localAlternatives: [],
+    });
+
+    render(<RecordingScreen />);
+
+    await waitFor(() => {
+      expect(mockResolveDeviceSpeechCapability).toHaveBeenCalled();
+      expect(screen.getByTestId('recording-mode').getAttribute('data-value')).toBe('text');
+      expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('textFirst');
+    });
   });
 });

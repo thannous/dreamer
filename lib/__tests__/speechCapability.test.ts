@@ -163,6 +163,31 @@ describe('resolveSpeechCapability — non-Android platforms', () => {
   });
 });
 
+describe('resolveSpeechCapability — Tell capture contract', () => {
+  it('keeps Raconter usable when a local model is installed', () => {
+    const capability = resolveSpeechCapability(baseInput());
+
+    expect(capability.tier).toBe('on_device');
+    expect(canDictate(capability)).toBe(true);
+    expect(isFullyOffline(capability)).toBe(true);
+    expect(mayLeaveDevice(capability)).toBe(false);
+  });
+
+  it('keeps Raconter usable offline-unproven devices via network instead of hiding the mic', () => {
+    const capability = resolveSpeechCapability(
+      baseInput({
+        androidApiLevel: 28,
+        onDeviceRecognitionSupported: false,
+        installedLocales: [],
+      })
+    );
+
+    expect(canDictate(capability)).toBe(true);
+    expect(isFullyOffline(capability)).toBe(false);
+    expect(mayLeaveDevice(capability)).toBe(true);
+  });
+});
+
 describe('normalizeSpeechLocale', () => {
   it('normalizes separator and case', () => {
     expect(normalizeSpeechLocale('fr_FR')).toBe('fr-fr');

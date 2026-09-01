@@ -71,6 +71,11 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     const isVoiceFirst = layout === 'voiceFirst';
     const voiceLabel = switchToVoiceLabel || t('recording.mode.switch_to_voice') || 'Dicter mon r\u00eave';
     const voiceControlDisabled = disabled || isVoicePreparing;
+    const voiceStatusTitle = isVoicePreparing
+      ? t('recording.status.preparing.title')
+      : voiceStatus === 'recording'
+        ? t('recording.status.recording.title')
+        : null;
     const showInlineActions =
       Boolean(onOpenDetails && hasValue) || Boolean(onClear && hasValue);
 
@@ -232,13 +237,29 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
             </Pressable>
           </View>
         ) : null}
-        {recordingDurationLabel ? (
-          <Text
-            style={[styles.voiceCaptureDuration, { color: noctalia.accent.text }]}
-            testID={TID.Text.RecordingVoiceStatusDuration}
+        {voiceStatusTitle || recordingDurationLabel ? (
+          <View
+            accessibilityLiveRegion="polite"
+            style={styles.voiceLiveStatus}
+            testID={TID.Component.RecordingVoiceStatus}
           >
-            {recordingDurationLabel}
-          </Text>
+            {voiceStatusTitle ? (
+              <Text
+                style={[styles.voiceCaptureStatus, { color: noctalia.text.secondary }]}
+                testID={TID.Text.RecordingVoiceStatusTitle}
+              >
+                {voiceStatusTitle}
+              </Text>
+            ) : null}
+            {recordingDurationLabel ? (
+              <Text
+                style={[styles.voiceCaptureDuration, { color: noctalia.accent.text }]}
+                testID={TID.Text.RecordingVoiceStatusDuration}
+              >
+                {recordingDurationLabel}
+              </Text>
+            ) : null}
+          </View>
         ) : null}
       </View>
     );
@@ -264,7 +285,11 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           </Text>
         </View>
 
-        <View style={styles.textInputSection}>
+        <View
+          nativeID={layout}
+          style={styles.textInputSection}
+          testID="recording-composer"
+        >
           {isVoiceFirst && voiceSupported ? expressiveVoiceControl : textEditor}
           {isVoiceFirst && voiceSupported ? textEditor : null}
 
@@ -446,6 +471,17 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 13,
     lineHeight: 17,
+  },
+  voiceLiveStatus: {
+    alignItems: 'center',
+    gap: 2,
+    minHeight: 20,
+  },
+  voiceCaptureStatus: {
+    fontSize: 13,
+    lineHeight: 18,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    textAlign: 'center',
   },
   voiceCaptureDuration: {
     fontSize: 13,

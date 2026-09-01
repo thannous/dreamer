@@ -95,12 +95,25 @@ jest.mock('react-native', () => {
       children,
       style,
       testID,
+      nativeID,
+      accessibilityLiveRegion,
     }: {
       children?: React.ReactNode;
       style?: unknown;
       testID?: string;
+      nativeID?: string;
+      accessibilityLiveRegion?: 'none' | 'polite' | 'assertive';
     }) => (
-      <div data-native-style={JSON.stringify(flattenStyle(style))} data-testid={testID}>
+      <div
+        data-native-style={JSON.stringify(flattenStyle(style))}
+        data-testid={testID}
+        data-layout={nativeID}
+        aria-live={
+          accessibilityLiveRegion === 'polite' || accessibilityLiveRegion === 'assertive'
+            ? accessibilityLiveRegion
+            : 'off'
+        }
+      >
         {children}
       </div>
     ),
@@ -119,15 +132,17 @@ jest.mock('@/components/recording/MicButton', () => ({
     onPress,
     size,
     status,
+    testID,
   }: {
     accessibilityLabel?: string;
     onPress?: () => void;
     size?: string;
     status?: string;
+    testID?: string;
   }) => (
     <button
       aria-label={accessibilityLabel}
-      data-testid="compact-mic"
+      data-testid={testID ?? 'compact-mic'}
       data-size={size}
       data-status={status}
       onClick={onPress}
@@ -191,6 +206,8 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.guide.dismiss': 'Close guide',
         'recording.mic.pause': 'Pause dictation',
         'recording.mic.pause_hint': 'Double tap to pause dictation',
+        'recording.status.preparing.title': 'Preparing microphone',
+        'recording.status.recording.title': 'Recording',
         'recording.activation_insight.eyebrow': 'First read',
         'recording.activation_insight.summary.memory': 'This memory is saved as a remembered dream.',
         'recording.activation_insight.summary.signals': 'Noctalia already notices: {signals}.',
@@ -238,7 +255,7 @@ describe('RecordingTextInput', () => {
     expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
     expect(screen.getByTestId('icon.pencil')).toBeTruthy();
     expect(screen.queryByText('Dictate the dream')).toBeNull();
-    expect(screen.queryByTestId('compact-mic')).toBeNull();
+    expect(screen.queryByTestId(TID.Button.RecordToggle)).toBeNull();
     expect(onSwitchToVoice).not.toHaveBeenCalled();
   });
 
@@ -331,14 +348,16 @@ describe('RecordingTextInput', () => {
     expect(screen.getByDisplayValue('A blue room')).toBeTruthy();
     expect(screen.queryByText('Pause dictation')).toBeNull();
     expect(screen.getByTestId(TID.Text.RecordingVoiceStatusDuration).textContent).toBe('0:38');
-    expect(screen.getByTestId('compact-mic').getAttribute('data-size')).toBe('expressive');
-    expect(screen.getByTestId('compact-mic').getAttribute('data-status')).toBe('recording');
+    expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-size')).toBe('expressive');
+    expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-status')).toBe('recording');
+    expect(screen.getByTestId(TID.Text.RecordingVoiceStatusTitle).textContent).toBe('Recording');
+    expect(screen.getByTestId(TID.Component.RecordingVoiceStatus).getAttribute('aria-live')).toBe('polite');
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'A blue room with rain' },
     });
 
-    fireEvent.click(screen.getByTestId('compact-mic'));
+    fireEvent.click(screen.getByTestId(TID.Button.RecordToggle));
 
     expect(onChange).toHaveBeenCalledWith('A blue room with rain');
     expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
@@ -361,11 +380,11 @@ describe('RecordingTextInput', () => {
     );
 
     expect(screen.getByText('Dictate your dream')).toBeTruthy();
-    expect(screen.getByTestId('compact-mic').getAttribute('data-size')).toBe('expressive');
+    expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-size')).toBe('expressive');
     expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
     expect(screen.queryByText('Dictate the dream')).toBeNull();
 
-    fireEvent.click(screen.getByTestId('compact-mic'));
+    fireEvent.click(screen.getByTestId(TID.Button.RecordToggle));
 
     expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
   });
@@ -386,7 +405,7 @@ describe('RecordingTextInput', () => {
     );
 
     // The text editor must remain fully usable — blocking voice never blocks capture.
-    expect(screen.queryByTestId('compact-mic')).toBeNull();
+    expect(screen.queryByTestId(TID.Button.RecordToggle)).toBeNull();
     expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
   });
 
@@ -405,7 +424,7 @@ describe('RecordingTextInput', () => {
       />
     );
 
-    expect(screen.queryByTestId('compact-mic')).toBeNull();
+    expect(screen.queryByTestId(TID.Button.RecordToggle)).toBeNull();
     expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
   });
 
@@ -424,7 +443,7 @@ describe('RecordingTextInput', () => {
       />
     );
 
-    expect(screen.queryByTestId('compact-mic')).toBeNull();
+    expect(screen.queryByTestId(TID.Button.RecordToggle)).toBeNull();
     expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
   });
 
@@ -472,9 +491,102 @@ describe('RecordingTextInput', () => {
 
     expect(screen.queryByText('Retry voice')).toBeNull();
 
-    fireEvent.click(screen.getByTestId('compact-mic'));
+    fireEvent.click(screen.getByTestId(TID.Button.RecordToggle));
 
     expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
+  });
+
+  it('places the expressive microphone above the editable transcript in tell mode', () => {
+    render(
+      <RecordingTextInput
+        layout="voiceFirst"
+        value="A blue room"
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Dictate your dream"
+        voiceStatus="recording"
+        recordingDurationLabel="0:12"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    const composer = screen.getByTestId('recording-composer');
+    expect(composer.getAttribute('data-layout')).toBe('voiceFirst');
+
+    const html = composer.innerHTML;
+    expect(html.indexOf(TID.Button.RecordToggle)).toBeGreaterThanOrEqual(0);
+    expect(html.indexOf(TID.Input.DreamTranscript)).toBeGreaterThan(
+      html.indexOf(TID.Button.RecordToggle)
+    );
+    expect(html.indexOf(TID.Component.RecordingVoiceStatus)).toBeGreaterThan(
+      html.indexOf(TID.Button.RecordToggle)
+    );
+    expect(html.indexOf(TID.Input.DreamTranscript)).toBeGreaterThan(
+      html.indexOf(TID.Component.RecordingVoiceStatus)
+    );
+  });
+
+  it('announces the preparing state without hiding the transcript', () => {
+    render(
+      <RecordingTextInput
+        layout="voiceFirst"
+        value="A remembered corridor"
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Dictate your dream"
+        voiceStatus="preparing"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    expect(screen.getByTestId(TID.Text.RecordingVoiceStatusTitle).textContent).toBe(
+      'Preparing microphone'
+    );
+    expect(screen.getByDisplayValue('A remembered corridor')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-status')).toBe('preparing');
+  });
+
+  it('keeps the same editable draft when switching Write and Tell layouts', () => {
+    const onChange = jest.fn();
+    const { rerender } = render(
+      <RecordingTextInput
+        layout="textFirst"
+        value="A blue room under the rain"
+        onChange={onChange}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Write what you remember"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('textFirst');
+    expect(screen.getByDisplayValue('A blue room under the rain')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Button.RecordToggle)).toBeNull();
+
+    rerender(
+      <RecordingTextInput
+        layout="voiceFirst"
+        value="A blue room under the rain"
+        onChange={onChange}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Dictate your dream"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('voiceFirst');
+    expect(screen.getByDisplayValue('A blue room under the rain')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.RecordToggle)).toBeTruthy();
+    expect(screen.getAllByTestId(TID.Input.DreamTranscript)).toHaveLength(1);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'A blue room under the rain and a red bicycle' },
+    });
+    expect(onChange).toHaveBeenCalledWith('A blue room under the rain and a red bicycle');
   });
 
   it.each([

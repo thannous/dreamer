@@ -45,6 +45,7 @@ export function RecordingInputModeSelect({
     <View
       accessibilityRole="tablist"
       accessibilityLabel={t('recording.preference.label')}
+      accessibilityHint={t('recording.onboarding.preference.settings_hint')}
       style={[
         styles.wrap,
         {
