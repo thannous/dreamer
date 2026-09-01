@@ -1,0 +1,182 @@
+'use strict';
+/* global describe, expect, it */
+
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+
+const {
+  MANIFEST_PATH,
+  LOCAL_RECEIPT_RELATIVE,
+  MIN_LONG_FRAGMENT_CHARS,
+  buildPlan,
+  extractQuotedInputTexts,
+  inspectHarness,
+  inspectImageIndependentFlow,
+  inspectLongFragmentFlow,
+  parseArgs,
+  recordEvidence,
+  validateHarness,
+} = require('./run-dreamer-vnext-ti429-harness');
+
+const ROOT = path.resolve(__dirname, '..');
+
+function read(filePath) {
+  return fs.readFileSync(filePath, 'utf8');
+}
+
+describe('Dreamer VNext TI-429 harness', () => {
+  it('parses plan/validate/record commands without Maestro flags', () => {
+    expect(parseArgs([])).toMatchObject({ command: 'plan' });
+    expect(parseArgs(['validate'])).toMatchObject({ command: 'validate' });
+    expect(parseArgs(['record'])).toMatchObject({ command: 'record' });
+    expect(parseArgs(['record'])).toEqual({ command: 'record' });
+    expect(() => parseArgs(['--device', 'adb-serial'])).toThrow('Unknown argument');
+    expect(() => parseArgs(['--evidence-dir', 'tmp'])).toThrow('Unknown argument');
+    expect(() => parseArgs(['--receipt', 'tmp.json'])).toThrow('Unknown argument');
+  });
+
+  it('covers the TI-429 criteria with automated, manual and blocked modes', () => {
+    const inspection = inspectHarness(ROOT);
+    expect(inspection.ok).toBe(true);
+    expect(inspection.counts.automated).toBeGreaterThanOrEqual(12);
+    expect(inspection.counts.manual).toBeGreaterThanOrEqual(8);
+    expect(inspection.counts.blocked).toBe(0);
+
+    const ids = inspection.manifest.checks.map((check) => check.id);
+    expect(ids).toEqual(expect.arrayContaining([
+      'write-tell-shared-draft',
+      'draft-kill-relaunch',
+      'short-fragment',
+      'long-fragment',
+      'long-10k-human',
+      'offline-local',
+      'offline-auth-sync',
+      'analysis-success',
+      'analysis-failed',
+      'analysis-interrupt',
+      'analysis-quota',
+      'image-independent',
+      'journal-detail-trends-deeplinks',
+      'guest-free-plus-no-purchase',
+      'notifications-permission',
+      'talkback',
+      'contrast',
+      'large-text',
+      'reduce-motion',
+      'localization',
+      'format-mobile',
+      'format-tablet',
+      'format-web',
+    ]));
+
+    const byId = Object.fromEntries(inspection.manifest.checks.map((check) => [check.id, check]));
+    expect(byId.talkback.mode).toBe('manual');
+    expect(byId.localization.mode).toBe('manual');
+    expect(byId['format-tablet'].mode).toBe('manual');
+    expect(byId['format-web'].runtime).toBe('web');
+    expect(byId['analysis-failed'].runtime).toBe('mock-native');
+    expect(byId['analysis-quota'].runtime).toBe('mock-native');
+    expect(byId['guest-free-plus-no-purchase'].runtime).toBe('mock-native');
+    expect(byId['write-tell-shared-draft'].runtime).toBe('release-native');
+  });
+
+  it('requires the long-fragment flow to keep a >600 character story and the end sentinel', () => {
+    const flowText = read(path.join(ROOT, 'maestro/release-long-fragment.yml'));
+    const longest = extractQuotedInputTexts(flowText).reduce(
+      (max, value) => (value.length > max.length ? value : max),
+      ''
+    );
+    expect(longest.length).toBeGreaterThan(MIN_LONG_FRAGMENT_CHARS);
+    expect(longest.startsWith('LONG-START')).toBe(true);
+    expect(longest.endsWith('LONG-END')).toBe(true);
+    expect(flowText.indexOf('assertVisible: "LONG-START"')).toBeLessThan(flowText.indexOf('text: "LONG-END"'));
+    expect(flowText.indexOf('text: "LONG-END"')).toBeLessThan(flowText.lastIndexOf('assertVisible: "LONG-END"'));
+    expect(inspectLongFragmentFlow(flowText, {
+      minInputLength: MIN_LONG_FRAGMENT_CHARS,
+      startSentinel: 'LONG-START',
+      endSentinel: 'LONG-END',
+    })).toEqual([]);
+  });
+
+  it('requires the image flow to assert both CTAs without starting analysis or generating an image', () => {
+    const flowText = read(path.join(ROOT, 'maestro/release-image-independent.yml'));
+    expect(flowText).toContain('id: btn.dream.primaryCta');
+    expect(flowText).toContain('id: btn.journal.illustrate');
+    expect(flowText).not.toMatch(/-\s*tapOn:\s*\n\s*id:\s*btn.dream.primaryCta/);
+    expect(flowText).not.toContain('Interpretation|Interprétation');
+    const illustrateAt = flowText.indexOf('id: btn.journal.illustrate');
+    expect(flowText.lastIndexOf('id: btn.dream.primaryCta')).toBeLessThan(illustrateAt);
+    expect(flowText.lastIndexOf('id: component.transcriptCard')).toBeLessThan(illustrateAt);
+    expect(inspectImageIndependentFlow(flowText)).toEqual([]);
+  });
+
+  it('wires the new Release flows into the Maestro suite and package scripts without launching them', () => {
+    const packageJson = JSON.parse(read(path.join(ROOT, 'package.json')));
+    const runner = read(path.join(ROOT, 'scripts/run-maestro-android.js'));
+
+    expect(packageJson.scripts['test:e2e:release:ti429:plan']).toContain('run-dreamer-vnext-ti429-harness.js plan');
+    expect(packageJson.scripts['test:e2e:release:ti429:validate']).toContain('run-dreamer-vnext-ti429-harness.js validate');
+    expect(packageJson.scripts['test:e2e:release:ti429:record']).toContain('run-dreamer-vnext-ti429-harness.js record');
+    expect(packageJson.scripts['test:e2e:release:ti429:local']).toContain('--suite release-ti429');
+    expect(packageJson.scripts['test:e2e:release:ti429:local']).toContain('--no-start-metro');
+    expect(packageJson.scripts['test:e2e:release:ti429:local']).not.toContain('journal-dream-cta-labels.yml');
+    expect(runner).toContain("'release-ti429':");
+    expect(runner).toContain("'maestro/release-write-tell.yml'");
+    expect(runner).toContain("'maestro/release-draft-kill-relaunch.yml'");
+    expect(runner).toContain("'maestro/release-journal-trends-deeplinks.yml'");
+  });
+
+  it('plans a dated evidence tree without executing Maestro or claiming a pass', () => {
+    const plan = buildPlan(ROOT, new Date('2026-09-01T12:00:00.000Z'));
+    expect(plan.ticket).toBe('TI-429');
+    expect(plan.ok).toBe(true);
+    expect(plan.evidenceDir).toContain('maestro-results/android/ti429/');
+    expect(plan.checks.every((check) => check.status === 'blocked' || check.status === 'manual')).toBe(true);
+    expect(plan.checks.some((check) => check.status === 'pass')).toBe(false);
+    expect(plan.checks.filter((check) => check.mode === 'automated').every((check) => check.status === 'blocked')).toBe(true);
+    expect(plan.limits.some((limit) => limit.includes('never launches Maestro'))).toBe(true);
+    expect(plan.limits.some((limit) => limit.includes('release-ti429 suite'))).toBe(true);
+  });
+
+  it('records a local receipt and dated folders without ADB or Maestro', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'ti429-harness-'));
+    const copyNames = [
+      MANIFEST_PATH,
+      'package.json',
+      'scripts/run-maestro-android.js',
+      'scripts/run-dreamer-vnext-ti429-harness.js',
+      'maestro/release-write-tell.yml',
+      'maestro/release-draft-kill-relaunch.yml',
+      'maestro/release-long-fragment.yml',
+      'maestro/release-analysis-interrupt.yml',
+      'maestro/release-image-independent.yml',
+      'maestro/release-journal-trends-deeplinks.yml',
+      'maestro/release-lifecycle.yml',
+      'maestro/release-offline-local.yml',
+      'maestro/release-auth-offline-sync.yml',
+      'maestro/release-analysis.yml',
+      'maestro/journal-dream-cta-labels.yml',
+      'maestro/free-analysis-limit.yml',
+      'maestro/subscription-qa-lab.yml',
+      'maestro/release-notification-permission.yml',
+    ];
+    for (const relative of copyNames) {
+      const source = path.join(ROOT, relative);
+      const destination = path.join(tmp, relative);
+      fs.mkdirSync(path.dirname(destination), { recursive: true });
+      fs.copyFileSync(source, destination);
+    }
+
+    const receipt = recordEvidence(tmp, new Date('2026-09-01T12:00:00.000Z'));
+    expect(receipt.maestroExecuted).toBe(false);
+    expect(receipt.adbUsed).toBe(false);
+    expect(receipt.checks.some((check) => check.status === 'pass')).toBe(false);
+    expect(fs.existsSync(path.join(tmp, receipt.evidenceDir, 'matrix.json'))).toBe(true);
+    expect(fs.existsSync(path.join(tmp, receipt.evidenceDir, 'automated'))).toBe(true);
+    expect(fs.existsSync(path.join(tmp, receipt.evidenceDir, 'manual'))).toBe(true);
+    expect(fs.existsSync(path.join(tmp, receipt.evidenceDir, 'blocked'))).toBe(true);
+    expect(fs.existsSync(path.join(tmp, LOCAL_RECEIPT_RELATIVE))).toBe(true);
+    expect(validateHarness(tmp).ok).toBe(true);
+  });
+});

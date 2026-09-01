@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 1,
+  "ticket": "TI-429",
+  "title": "Dreamer VNext TI-429 executable matrix",
+  "binary": "mixed: release-native, mock-native, manual, web/tablet. Nothing in this file is device proof.",
+  "limits": [
+    "This harness never launches Maestro, ADB, prebuild, install, commit, push or Linear.",
+    "npm run test:e2e:release:ti429:local executes only the release-ti429 suite. Other automated checks keep the command listed on the row.",
+    "release-native rows target an installed Release binary. mock-native rows use mock fixtures and are not Release-binary proof.",
+    "Failed analysis, quota and Plus/guest switching are mock-native. No real purchase.",
+    "TalkBack, contrast, large text, reduce motion, localization and mobile/tablet/web formats stay human checks and are unproven until recorded.",
+    "A 10_000-character paste is a documented human check because Maestro inputText is not a reliable 10k injector.",
+    "Unexecuted automated rows stay blocked in the plan. Manual rows stay manual. Neither is a pass.",
+    "Local Jest/typecheck proof is separate from device proof. Device proof stays in a dated maestro-results/android/ti429 directory."
+  ],
+  "checks": [
+    {
+      "id": "write-tell-shared-draft",
+      "title": "Write <-> Tell shared draft",
+      "criterion": "Ecrire et Raconter, passage entre les deux",
+      "mode": "automated",
+      "flow": "maestro/release-write-tell.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-write-tell.yml",
+      "requiredTokens": [
+        "id: btn.recording.inputMode.text",
+        "id: btn.recording.inputMode.voice",
+        "Write tell shared sentinel",
+        "id: btn.saveDream"
+      ],
+      "evidence": "screenshot of Write, Tell, and saved detail",
+      "runtime": "release-native"
+    },
+    {
+      "id": "draft-kill-relaunch",
+      "title": "Unsaved draft survives kill/relaunch",
+      "criterion": "kill et reprise",
+      "mode": "automated",
+      "flow": "maestro/release-draft-kill-relaunch.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-draft-kill-relaunch.yml",
+      "requiredTokens": [
+        "killApp",
+        "Draft kill relaunch sentinel",
+        "id: input.dreamTranscript"
+      ],
+      "evidence": "screenshot of restored draft after process death",
+      "runtime": "release-native"
+    },
+    {
+      "id": "short-fragment",
+      "title": "Short fragment save",
+      "criterion": "Fragment court",
+      "mode": "automated",
+      "flow": "maestro/release-lifecycle.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-lifecycle.yml",
+      "requiredTokens": [
+        "Release lifecycle sentinel",
+        "id: btn.saveDream",
+        "id: text.dreamDetail.actionTitle"
+      ],
+      "evidence": "existing Release lifecycle save",
+      "runtime": "release-native"
+    },
+    {
+      "id": "long-fragment",
+      "title": "Long story remains intact after save",
+      "criterion": "recit long",
+      "mode": "automated",
+      "flow": "maestro/release-long-fragment.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-long-fragment.yml",
+      "requiredTokens": [
+        "LONG-START",
+        "LONG-END",
+        "id: component.transcriptCard",
+        "scrollUntilVisible:"
+      ],
+      "evidence": "separate screenshots: transcript+LONG-START, then LONG-END after scroll. Unexecuted = blocked.",
+      "runtime": "release-native",
+      "minInputLength": 600,
+      "startSentinel": "LONG-START",
+      "endSentinel": "LONG-END",
+      "notes": "Automated Release flow. Requires a typed story longer than 600 characters. 10k remains manual."
+    },
+    {
+      "id": "long-10k-human",
+      "title": "10k character paste",
+      "criterion": "recit long 10k",
+      "mode": "manual",
+      "notes": "Paste a 10_000-character story in Write mode, save, and confirm no truncation. Maestro inputText is not a reliable 10k injector.",
+      "evidence": "human recording plus character count",
+      "runtime": "manual"
+    },
+    {
+      "id": "offline-local",
+      "title": "Offline local save",
+      "criterion": "Enregistrement hors ligne",
+      "mode": "automated",
+      "flow": "maestro/release-offline-local.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-offline-local.yml",
+      "requiredTokens": [
+        "setAirplaneMode: enabled",
+        "Release offline local sentinel"
+      ],
+      "evidence": "existing Release offline local flow",
+      "runtime": "release-native"
+    },
+    {
+      "id": "offline-auth-sync",
+      "title": "Authenticated offline then sync",
+      "criterion": "synchronisation",
+      "mode": "automated",
+      "flow": "maestro/release-auth-offline-sync.yml",
+      "command": "node ./scripts/run-maestro-android.js --flow maestro/release-auth-offline-sync.yml --retries 0 --no-start-metro",
+      "requiredTokens": [
+        "QA_SYNC_SENTINEL",
+        "setAirplaneMode: enabled",
+        "noctalia://journal"
+      ],
+      "evidence": "existing authenticated offline sync flow",
+      "runtime": "release-native"
+    },
+    {
+      "id": "analysis-success",
+      "title": "Analysis success",
+      "criterion": "Analyse reussie",
+      "mode": "automated",
+      "flow": "maestro/release-analysis.yml",
+      "command": "npm run test:e2e:release:analysis:local",
+      "requiredTokens": [
+        "id: btn.dream.primaryCta",
+        "Interpretation|Interpr\u00e9tation",
+        "id: component.transcriptCard"
+      ],
+      "evidence": "existing Release guest analysis flow",
+      "runtime": "release-native"
+    },
+    {
+      "id": "analysis-failed",
+      "title": "Failed analysis retry CTA",
+      "criterion": "Analyse echouee",
+      "mode": "automated",
+      "flow": "maestro/journal-dream-cta-labels.yml",
+      "command": "node ./scripts/run-maestro-android.js --flow maestro/journal-dream-cta-labels.yml",
+      "requiredTokens": [
+        "Retry analysis",
+        "id: btn.dream.primaryCta"
+      ],
+      "notes": "Mock existing-user fixture. Not a Release-binary analysis failure injector. mock-native only; not proof on the current installed Release binary.",
+      "evidence": "mock failed-analysis CTA",
+      "runtime": "mock-native"
+    },
+    {
+      "id": "analysis-interrupt",
+      "title": "Analysis interruption keeps the story",
+      "criterion": "Analyse interrompue",
+      "mode": "automated",
+      "flow": "maestro/release-analysis-interrupt.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-analysis-interrupt.yml",
+      "requiredTokens": [
+        "killApp",
+        "Analysis interrupt sentinel",
+        "id: component.transcriptCard"
+      ],
+      "evidence": "screenshot of recovered transcript and CTA",
+      "runtime": "release-native"
+    },
+    {
+      "id": "analysis-quota",
+      "title": "Analysis quota reached",
+      "criterion": "quota atteint",
+      "mode": "automated",
+      "flow": "maestro/free-analysis-limit.yml",
+      "command": "npm run test:e2e:quotas",
+      "requiredTokens": [
+        "id: sheet.quotaLimit",
+        "id: text.quotaLimit.title"
+      ],
+      "notes": "Mock quota fixture. No real purchase. mock-native only; not proof on the current installed Release binary.",
+      "evidence": "quota sheet screenshot",
+      "runtime": "mock-native"
+    },
+    {
+      "id": "image-independent",
+      "title": "Illustration independent from analysis",
+      "criterion": "Image independante de l'analyse",
+      "mode": "automated",
+      "flow": "maestro/release-image-independent.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-image-independent.yml",
+      "requiredTokens": [
+        "id: btn.dream.primaryCta",
+        "id: btn.journal.illustrate",
+        "id: component.transcriptCard"
+      ],
+      "evidence": "separate screenshots: analysis CTA + transcript after save, then illustration CTA after scroll. No taps, no quota. Unexecuted = blocked.",
+      "runtime": "release-native",
+      "notes": "Must not tap analysis, must not generate an image, must not consume quota."
+    },
+    {
+      "id": "journal-detail-trends-deeplinks",
+      "title": "Journal, detail, Trends and notification deep links",
+      "criterion": "Journal, fiche, Tendances et liens profonds de notification",
+      "mode": "automated",
+      "flow": "maestro/release-journal-trends-deeplinks.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-journal-trends-deeplinks.yml",
+      "requiredTokens": [
+        "noctalia://journal",
+        "noctalia://statistics",
+        "id: trends.section.week",
+        "noctalia://weekly-recap",
+        "id: screen.weeklyRecap",
+        "noctalia://recording"
+      ],
+      "evidence": "screenshots of journal, detail, Trends, weekly recap, recording",
+      "runtime": "release-native"
+    },
+    {
+      "id": "guest-free-plus-no-purchase",
+      "title": "Guest, free and Plus without a real purchase",
+      "criterion": "Invite, compte gratuit et Plus",
+      "mode": "automated",
+      "flow": "maestro/subscription-qa-lab.yml",
+      "command": "npm run test:e2e:subscription-qa",
+      "requiredTokens": [
+        "id: btn.subscription.qa.profile.guest",
+        "id: btn.subscription.qa.scenario.monthly",
+        "id: screen.paywall"
+      ],
+      "notes": "Mock QA lab only. Never complete a Store purchase. mock-native only; not proof on the current installed Release binary.",
+      "evidence": "guest/free/Plus mock states",
+      "runtime": "mock-native"
+    },
+    {
+      "id": "notifications-permission",
+      "title": "Notification permission contract",
+      "criterion": "notifications",
+      "mode": "automated",
+      "flow": "maestro/release-notification-permission.yml",
+      "command": "node ./scripts/run-maestro-android.js --retries 0 --no-start-metro --flow maestro/release-notification-permission.yml",
+      "requiredTokens": [
+        "notifications: deny",
+        "id: text.settings.notificationsPermissionWarning"
+      ],
+      "evidence": "settings warning denied then allowed",
+      "runtime": "release-native"
+    },
+    {
+      "id": "talkback",
+      "title": "TalkBack capture, journal, detail, Trends",
+      "criterion": "TalkBack",
+      "mode": "manual",
+      "notes": "Enable TalkBack on the physical device. Confirm names, states and focus order for Write/Tell, save, journal item, detail CTA and Trends sections. Do not invent Maestro TalkBack automation.",
+      "evidence": "human notes plus optional recording",
+      "runtime": "manual"
+    },
+    {
+      "id": "contrast",
+      "title": "Contrast on capture, journal, Trends",
+      "criterion": "contraste",
+      "mode": "manual",
+      "notes": "Human visual check of ivory text on ink and champagne-on accents. No automated contrast crawler on device.",
+      "evidence": "screenshots in light and dark if available",
+      "runtime": "manual"
+    },
+    {
+      "id": "large-text",
+      "title": "Largest system font",
+      "criterion": "texte agrandi",
+      "mode": "manual",
+      "notes": "Set Android font size/display size to the largest available and confirm Write/Tell, save, journal and Trends still usable.",
+      "evidence": "screenshots at largest text",
+      "runtime": "manual"
+    },
+    {
+      "id": "reduce-motion",
+      "title": "Reduce motion",
+      "criterion": "reduction des animations",
+      "mode": "manual",
+      "notes": "Enable system reduce motion and confirm capture/journal/Trends remain usable without relying on motion.",
+      "evidence": "human note",
+      "runtime": "manual"
+    },
+    {
+      "id": "localization",
+      "title": "App localization",
+      "criterion": "Localisation",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "On a physical device, switch at least French and English. Confirm Write/Tell, save, Journal, detail and Trends match the selected locale. Not proven.",
+      "evidence": "FR and EN screenshots of capture, journal and Trends"
+    },
+    {
+      "id": "format-mobile",
+      "title": "Mobile format",
+      "criterion": "formats mobile",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "Phone viewport: capture, journal, detail and Trends remain usable. Not proven by this harness.",
+      "evidence": "phone screenshots of capture, journal, detail, Trends"
+    },
+    {
+      "id": "format-tablet",
+      "title": "Tablet format",
+      "criterion": "formats tablette",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "If a tablet is available, capture the same surfaces. If none is available, leave the row blocked with that reason. Not proven.",
+      "evidence": "tablet screenshots or a blocked note naming the missing device"
+    },
+    {
+      "id": "format-web",
+      "title": "Web format",
+      "criterion": "formats web",
+      "mode": "manual",
+      "runtime": "web",
+      "notes": "Web is applicable but outside npm run test:e2e:release:ti429:local. Record a separate web proof. Existing web Maestro flows are hints only. Not proven.",
+      "evidence": "web screenshots of capture, journal and Trends"
+    }
+  ]
+}

@@ -114,6 +114,14 @@ const SUITES = {
   'release-voice-analysis': [
     'maestro/release-auth-voice-analysis.yml',
   ],
+  'release-ti429': [
+    'maestro/release-write-tell.yml',
+    'maestro/release-draft-kill-relaunch.yml',
+    'maestro/release-long-fragment.yml',
+    'maestro/release-analysis-interrupt.yml',
+    'maestro/release-image-independent.yml',
+    'maestro/release-journal-trends-deeplinks.yml',
+  ],
   'release-teststore': [
     'maestro/subscription-teststore-release-readiness.yml',
   ],

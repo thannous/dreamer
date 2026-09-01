@@ -1,0 +1,97 @@
+# Release navigation gate: journal, dream detail, Trends, and notification
+# deep links open the expected surfaces on the installed binary.
+appId: com.tanuki75.noctalia
+name: Release journal trends notification deeplinks
+tags:
+  - release
+  - journal
+  - trends
+  - notifications
+onFlowComplete:
+  - setAirplaneMode: disabled
+---
+- setAirplaneMode: disabled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
+
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Trends deeplink sentinel quiet harbour"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+- tapOn:
+    id: btn.navigateJournal
+- extendedWaitUntil:
+    visible: "Trends deeplink sentinel quiet harbour"
+    timeout: 20000
+
+- openLink: noctalia://journal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- runFlow: subflows/ensure-journal-search-visible.yml
+- tapOn:
+    id: input.searchDreams
+- inputText: "Trends deeplink sentinel"
+- extendedWaitUntil:
+    visible:
+      id: "dream.item.*"
+    timeout: 20000
+- tapOn:
+    id: "dream.item.*"
+    index: 0
+- extendedWaitUntil:
+    visible: "Trends deeplink sentinel quiet harbour"
+    timeout: 20000
+- assertVisible:
+    id: component.transcriptCard
+
+- openLink: noctalia://statistics
+- runFlow:
+    when:
+      notVisible:
+        id: trends.section.week
+    commands:
+      - tapOn:
+          id: tab.stats
+- extendedWaitUntil:
+    visible:
+      id: trends.section.week
+    timeout: 20000
+- assertVisible:
+    id: trends.section.week
+
+- openLink: noctalia://weekly-recap
+- extendedWaitUntil:
+    visible:
+      id: screen.weeklyRecap
+    timeout: 20000
+- assertVisible:
+    id: screen.weeklyRecap
+
+- openLink: noctalia://recording
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- assertVisible:
+    id: screen.recording

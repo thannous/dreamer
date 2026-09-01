@@ -1,0 +1,49 @@
+# Release image gate: after save, analysis and illustration remain separate
+# actions. This flow never starts analysis and never generates an image.
+appId: com.tanuki75.noctalia
+name: Release independent illustration CTA
+tags:
+  - release
+  - image
+onFlowComplete:
+  - setAirplaneMode: disabled
+---
+- setAirplaneMode: disabled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
+
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Independent image sentinel lantern garden"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 90000
+- assertVisible:
+    id: btn.dream.primaryCta
+- assertVisible:
+    id: component.transcriptCard
+- scrollUntilVisible:
+    element:
+      id: btn.journal.illustrate
+    direction: DOWN
+    timeout: 30000
+    visibilityPercentage: 40
+- assertVisible:
+    id: btn.journal.illustrate

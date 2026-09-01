@@ -1,0 +1,51 @@
+# Release draft gate: an unsaved fragment survives Android process death.
+appId: com.tanuki75.noctalia
+name: Release draft kill relaunch
+tags:
+  - release
+  - draft
+  - lifecycle
+onFlowComplete:
+  - setAirplaneMode: disabled
+---
+- setAirplaneMode: disabled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
+
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Draft kill relaunch sentinel"
+- hideKeyboard
+- extendedWaitUntil:
+    visible: "Draft saved on this device|Brouillon enregistré sur cet appareil|Borrador guardado en este dispositivo|Bozza salvata su questo dispositivo|Entwurf auf diesem Gerät gespeichert"
+    timeout: 15000
+
+- pressKey: Home
+- killApp
+- launchApp:
+    stopApp: false
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- runFlow:
+    when:
+      notVisible:
+        id: input.dreamTranscript
+    commands:
+      - runFlow: subflows/open-release-recording.yml
+      - runFlow: subflows/ensure-recording-text.yml
+- extendedWaitUntil:
+    visible: "Draft kill relaunch sentinel"
+    timeout: 15000
+- assertVisible:
+    id: input.dreamTranscript
