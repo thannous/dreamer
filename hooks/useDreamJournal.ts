@@ -1330,10 +1330,15 @@ export const useDreamJournal = () => {
         // an independent image job so a fast poll, app backgrounding, or an
         // image admission failure cannot leave a successful analysis pending.
         // Text-only analysis must not touch in-flight or failed image state.
+        // Never let an analysis payload overwrite the original transcript.
         const latestBeforeAnalysis = resolveCurrentDream(syncedDream);
+        const { transcript: _ignoredTranscript, ...safeAnalysisFields } = analysisFields as typeof analysisFields & {
+          transcript?: string;
+        };
         let next: DreamAnalysis = {
           ...latestBeforeAnalysis,
-          ...analysisFields,
+          ...safeAnalysisFields,
+          transcript: latestBeforeAnalysis.transcript,
           analysisStatus: 'done',
           analyzedAt: Date.now(),
           isAnalyzed: true,

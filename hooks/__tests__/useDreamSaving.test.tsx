@@ -299,6 +299,26 @@ describe('useDreamSaving', () => {
     expect(savedDream).not.toBeNull();
   });
 
+  it('keeps the original transcript when analysis fails after save', async () => {
+    mockAnalyzeDream.mockRejectedValueOnce(new Error('Analysis failed'));
+    const { result } = renderHook(() => useDreamSaving());
+    const original = 'Original remembered dream ' + 'y'.repeat(80);
+    const draft = result.current.buildDraftDream(original);
+
+    let analyzed;
+    await act(async () => {
+      analyzed = await result.current.analyzeAndSaveDream(draft);
+    });
+
+    expect(analyzed).toBeNull();
+    expect(mockAnalyzeDream).toHaveBeenCalledWith(draft.id, original, {
+      lang: 'fr',
+      replaceExistingImage: false,
+    });
+    expect(draft.transcript).toBe(original);
+    expect(mockAddDream).not.toHaveBeenCalled();
+  });
+
   it('shows analysis limit alert when quota prevents analysis', async () => {
     mockCanAnalyzeNow = false;
     mockTier = 'guest';

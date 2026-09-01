@@ -640,6 +640,32 @@ describe('supabaseDreamService', () => {
     expect(result).toEqual(expect.objectContaining({ mutationId: 'mut-create', status: 'ack', remoteId: 42 }));
   });
 
+  it('fetchDreamsFromSupabase returns a 10000-character transcript unchanged', async () => {
+    const longTranscript = 'a'.repeat(10_000);
+    const orderMock = jest.fn().mockResolvedValue({
+      data: [
+        buildRow({
+          id: 777,
+          transcript: longTranscript,
+          client_request_id: 'offline-10k-create',
+        }),
+      ],
+      error: null,
+    });
+
+    mocks.from.mockReturnValue({
+      select: jest.fn(() => ({ order: orderMock })),
+    });
+
+    const { fetchDreamsFromSupabase } = require('../supabaseDreamService');
+    const dreams = await fetchDreamsFromSupabase();
+
+    expect(dreams).toHaveLength(1);
+    expect(dreams[0]?.transcript).toBe(longTranscript);
+    expect(dreams[0]?.transcript).toHaveLength(10_000);
+    expect(dreams[0]?.clientRequestId).toBe('offline-10k-create');
+  });
+
   it('syncDreamMutationsInSupabase splits dependent create and update mutations', async () => {
     mocks.rpc = jest
       .fn()

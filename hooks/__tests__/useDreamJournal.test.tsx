@@ -79,13 +79,14 @@ const {
 
 let mockSubscriptionStatus: any = { tier: 'free' };
 const mockEnvState = { analysisJobsEnabled: false, mockMode: false };
+const mockNetworkState = {
+  isInternetReachable: true as boolean | null,
+  isConnected: true as boolean | null,
+};
 
 // Mock dependencies
 jest.mock('expo-network', () => ({
-  useNetworkState: () => ({
-    isInternetReachable: true,
-    isConnected: true,
-  }),
+  useNetworkState: () => mockNetworkState,
 }));
 
 jest.mock('expo-localization', () => ({
@@ -198,11 +199,14 @@ jest.mock('../../services/quota/MockQuotaEventStore', () => ({
 }));
 
 // Mock GuestDreamCounter (avoid persisting between tests)
+const mockGetGuestRecordedDreamCount = typedJestFn<(currentDreamCount: number) => Promise<number>>();
+
 jest.mock('../../services/quota/GuestDreamCounter', () => ({
   incrementLocalDreamRecordingCount: async () => {
     mockGuestDreamCounterState.count += 1;
     return mockGuestDreamCounterState.count;
   },
+  getGuestRecordedDreamCount: mockGetGuestRecordedDreamCount,
   withGuestDreamRecordingLock: async (fn: () => Promise<unknown>) => fn(),
 }));
 
@@ -291,6 +295,9 @@ describe('useDreamJournal', () => {
     mockEnvState.mockMode = false;
     setMockUser(null);
     mockGuestDreamCounterState.count = 0;
+    mockNetworkState.isInternetReachable = true;
+    mockNetworkState.isConnected = true;
+    mockGetGuestRecordedDreamCount.mockResolvedValue(0);
     process.env.EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED = '';
     mockGetSavedDreams.mockResolvedValue([]);
     mockSaveDreams.mockResolvedValue(undefined);
@@ -469,6 +476,28 @@ describe('useDreamJournal', () => {
       );
       expect(mockGuestDreamCounterState.count).toBe(12);
     });
+
+    it('saves guest dreams without consulting a recording ceiling', async () => {
+      mockGuestDreamCounterState.count = 99;
+      mockGetGuestRecordedDreamCount.mockResolvedValue(99);
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.addDream(buildDream({ id: 41 }));
+      });
+      await act(async () => {
+        await result.current.addDream(buildDream({ id: 42 }));
+      });
+
+      expect(result.current.dreams.map((d: DreamAnalysis) => d.id)).toEqual([42, 41]);
+      expect(mockGetGuestRecordedDreamCount).not.toHaveBeenCalled();
+      expect(mockSaveDreams).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({ id: 41 }),
+          expect.objectContaining({ id: 42 }),
+        ])
+      );
+    });
   });
 
   describe('addDream - remote mode', () => {
@@ -605,6 +634,99 @@ describe('useDreamJournal', () => {
         ]),
         'user:user-1'
       );
+    });
+
+    it('replays a 10000-character offline create and keeps it after server reopen', async () => {
+      const longTranscript = 'a'.repeat(10_000);
+      const localDream = buildDream({
+        id: 77,
+        clientRequestId: 'offline-10k-create',
+        transcript: longTranscript,
+      });
+      mockNetworkState.isInternetReachable = false;
+      mockNetworkState.isConnected = false;
+      mockCreateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({
+        ...dream,
+        remoteId: 777,
+        transcript: dream.transcript,
+      }));
+
+      const { result, rerender, unmount } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        const saved = await result.current.addDream(localDream);
+        expect(saved.transcript).toHaveLength(10_000);
+        expect(saved.pendingSync).toBe(true);
+      });
+
+      expect(mockCreateDreamInSupabase).not.toHaveBeenCalled();
+      const queuedMutations = mockSavePendingDreamMutations.mock.calls.at(-1)?.[0] as DreamMutation[];
+      expect(queuedMutations).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            operation: 'create',
+            clientRequestId: 'offline-10k-create',
+            payload: expect.objectContaining({
+              dream: expect.objectContaining({
+                id: 77,
+                clientRequestId: 'offline-10k-create',
+                transcript: longTranscript,
+              }),
+            }),
+          }),
+        ])
+      );
+
+      mockGetPendingDreamMutations.mockResolvedValue(queuedMutations);
+      mockGetCachedRemoteDreams.mockResolvedValue(result.current.dreams);
+      mockNetworkState.isInternetReachable = true;
+      mockNetworkState.isConnected = true;
+      rerender();
+
+      await waitFor(() => {
+        expect(mockCreateDreamInSupabase).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: 77,
+            clientRequestId: 'offline-10k-create',
+            transcript: longTranscript,
+          }),
+          'user-1'
+        );
+      }, FAST_WAIT_OPTIONS);
+
+      await waitFor(() => {
+        expect(result.current.dreams[0]).toEqual(
+          expect.objectContaining({
+            id: 77,
+            remoteId: 777,
+            transcript: longTranscript,
+          })
+        );
+      }, FAST_WAIT_OPTIONS);
+
+      unmount();
+      mockFetchDreamsFromSupabase.mockResolvedValue([
+        buildDream({
+          id: 1_590_000_000_000,
+          remoteId: 777,
+          clientRequestId: 'offline-10k-create',
+          transcript: longTranscript,
+        }),
+      ]);
+      mockGetPendingDreamMutations.mockResolvedValue([]);
+      mockGetCachedRemoteDreams.mockResolvedValue([]);
+
+      const reopened = await renderLoadedDreamJournal();
+      expect(reopened.result.current.dreams).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            remoteId: 777,
+            clientRequestId: 'offline-10k-create',
+            transcript: longTranscript,
+          }),
+        ])
+      );
+      expect(reopened.result.current.dreams[0].transcript).toHaveLength(10_000);
     });
   });
 
@@ -2294,6 +2416,51 @@ describe('useDreamJournal', () => {
       expect(failedDream.analysisStatus).toBe('failed');
       expect(failedDream.isAnalyzed).toBe(false);
       expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
+    });
+
+    it('never lets a failed or retried analysis rewrite the original transcript', async () => {
+      const originalTranscript = 'Original remembered dream ' + 'x'.repeat(120);
+      const existingDream = buildDream({
+        id: 9,
+        transcript: originalTranscript,
+        interpretation: '',
+        shareableQuote: '',
+        isAnalyzed: false,
+        analysisStatus: 'none',
+        imageUrl: '',
+      });
+      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      mockAnalyzeDreamText
+        .mockRejectedValueOnce(new Error('Analysis failed'))
+        .mockResolvedValueOnce({
+          title: 'AI title',
+          interpretation: 'AI interpretation',
+          shareableQuote: 'AI quote',
+          theme: 'surreal',
+          dreamType: 'Symbolic Dream',
+          imagePrompt: 'prompt',
+          transcript: 'AI rewritten transcript',
+        });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await expect(result.current.analyzeDream(9, originalTranscript)).rejects.toThrow('Analysis failed');
+      });
+
+      expect(result.current.dreams[0].transcript).toBe(originalTranscript);
+      expect(result.current.dreams[0].analysisStatus).toBe('failed');
+      expect(result.current.dreams[0].isAnalyzed).toBe(false);
+
+      await act(async () => {
+        await result.current.analyzeDream(9, originalTranscript);
+      });
+
+      expect(result.current.dreams[0].transcript).toBe(originalTranscript);
+      expect(result.current.dreams[0].transcript).not.toBe('AI rewritten transcript');
+      expect(result.current.dreams[0].interpretation).toBe('AI interpretation');
+      expect(result.current.dreams[0].analysisStatus).toBe('done');
+      expect(result.current.dreams[0].isAnalyzed).toBe(true);
     });
 
     it('passes language option to analysis', async () => {
