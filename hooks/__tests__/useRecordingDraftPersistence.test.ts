@@ -1,6 +1,7 @@
 /* @jest-environment jsdom */
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { AppState, type AppStateStatus } from 'react-native';
 
 import {
   RECORDING_DRAFT_AUTOSAVE_DELAY_MS,
@@ -32,6 +33,9 @@ async function flushPromises() {
   });
 }
 
+let appStateListener: ((state: AppStateStatus) => void) | undefined;
+let removeSubscription: jest.Mock;
+
 describe('useRecordingDraftPersistence', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -39,11 +43,21 @@ describe('useRecordingDraftPersistence', () => {
     mockSaveTranscript.mockReset();
     mockGetSavedTranscript.mockResolvedValue('');
     mockSaveTranscript.mockResolvedValue(undefined);
+    appStateListener = undefined;
+    removeSubscription = jest.fn();
+    jest.spyOn(AppState, 'addEventListener').mockImplementation((
+      _type: 'change',
+      listener: (state: AppStateStatus) => void
+    ) => {
+      appStateListener = listener;
+      return { remove: removeSubscription };
+    });
   });
 
   afterEach(() => {
     jest.runOnlyPendingTimers();
     jest.useRealTimers();
+    jest.restoreAllMocks();
   });
 
   it('restores a saved draft after remount', async () => {
@@ -312,5 +326,125 @@ describe('useRecordingDraftPersistence', () => {
     });
     await flushPromises();
     expect(mockSaveTranscript).toHaveBeenCalledWith('');
+  });
+
+  it('flushes a pending typed draft on AppState background without waiting for debounce', async () => {
+    const onRestore = jest.fn();
+    const { result } = renderHook(() =>
+      useRecordingDraftPersistence({ transcript: '', onRestore })
+    );
+    await flushPromises();
+    expect(appStateListener).toEqual(expect.any(Function));
+
+    act(() => {
+      result.current.noteInput('keep this across background');
+    });
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+
+    act(() => {
+      appStateListener?.('background');
+    });
+    await flushPromises();
+
+    expect(mockSaveTranscript).toHaveBeenCalledTimes(1);
+    expect(mockSaveTranscript).toHaveBeenCalledWith('keep this across background');
+  });
+
+  it('flushes a pending draft on AppState inactive', async () => {
+    const onRestore = jest.fn();
+    const { result } = renderHook(() =>
+      useRecordingDraftPersistence({ transcript: '', onRestore })
+    );
+    await flushPromises();
+
+    act(() => {
+      result.current.noteInput('inactive fragment');
+    });
+    act(() => {
+      appStateListener?.('inactive');
+    });
+    await flushPromises();
+
+    expect(mockSaveTranscript).toHaveBeenCalledTimes(1);
+    expect(mockSaveTranscript).toHaveBeenCalledWith('inactive fragment');
+  });
+
+  it('flushes a pending draft on unmount without waiting for debounce', async () => {
+    const onRestore = jest.fn();
+    const { result, unmount } = renderHook(() =>
+      useRecordingDraftPersistence({ transcript: '', onRestore })
+    );
+    await flushPromises();
+
+    act(() => {
+      result.current.noteInput('survive unmount');
+    });
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+
+    act(() => {
+      unmount();
+    });
+    await flushPromises();
+
+    expect(mockSaveTranscript).toHaveBeenCalledTimes(1);
+    expect(mockSaveTranscript).toHaveBeenCalledWith('survive unmount');
+    expect(removeSubscription).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not resurrect a cleared draft on background or unmount', async () => {
+    const onRestore = jest.fn();
+    const { result, unmount } = renderHook(() =>
+      useRecordingDraftPersistence({ transcript: '', onRestore })
+    );
+    await flushPromises();
+
+    act(() => {
+      result.current.noteInput('should never land after save');
+    });
+    act(() => {
+      result.current.clearAfterSuccessfulSave();
+    });
+    await flushPromises();
+
+    expect(mockSaveTranscript).toHaveBeenCalledTimes(1);
+    expect(mockSaveTranscript).toHaveBeenCalledWith('');
+
+    act(() => {
+      appStateListener?.('background');
+    });
+    act(() => {
+      jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS * 2);
+    });
+    await flushPromises();
+
+    act(() => {
+      unmount();
+    });
+    await flushPromises();
+
+    expect(mockSaveTranscript).toHaveBeenCalledTimes(1);
+    expect(mockSaveTranscript).not.toHaveBeenCalledWith('should never land after save');
+  });
+
+  it('does not write an empty draft on unmount before hydration', async () => {
+    const getDeferred = deferred<string>();
+    mockGetSavedTranscript.mockReturnValue(getDeferred.promise);
+    const onRestore = jest.fn();
+
+    const { unmount } = renderHook(() =>
+      useRecordingDraftPersistence({ transcript: '', onRestore })
+    );
+
+    act(() => {
+      unmount();
+    });
+    await act(async () => {
+      getDeferred.resolve('stored dream');
+      await getDeferred.promise;
+    });
+    await flushPromises();
+
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+    expect(onRestore).not.toHaveBeenCalled();
   });
 });

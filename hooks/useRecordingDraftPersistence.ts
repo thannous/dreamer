@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { AppState } from 'react-native';
 
 import { getSavedTranscript, saveTranscript } from '@/services/storageService';
 
@@ -22,6 +23,8 @@ export type UseRecordingDraftPersistenceResult = {
  * synchronously so a late restore cannot overwrite typing or dictation.
  * Writes are serialized on a generation-tagged queue so a stale autosave
  * cannot finish after a successful journal save and resurrect text.
+ * A pending debounce is flushed immediately on AppState background/inactive
+ * and on unmount so a kill during the 300ms window cannot drop the draft.
  */
 export function useRecordingDraftPersistence({
   transcript,
@@ -75,6 +78,22 @@ export function useRecordingDraftPersistence({
       lastScheduledRef.current = value;
       enqueueWrite(value, generationRef.current);
     }, RECORDING_DRAFT_AUTOSAVE_DELAY_MS);
+  }, [enqueueWrite]);
+
+  const flushPending = useCallback(() => {
+    if (!hydratedRef.current) {
+      return;
+    }
+    if (debounceTimerRef.current !== null) {
+      clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = null;
+    }
+    const value = latestValueRef.current;
+    if (value === lastScheduledRef.current) {
+      return;
+    }
+    lastScheduledRef.current = value;
+    enqueueWrite(value, generationRef.current);
   }, [enqueueWrite]);
 
   const noteInput = useCallback((value: string) => {
@@ -153,13 +172,17 @@ export function useRecordingDraftPersistence({
   }, [hydrated, scheduleAutosave, transcript]);
 
   useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current !== null) {
-        clearTimeout(debounceTimerRef.current);
-        debounceTimerRef.current = null;
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'background' || nextAppState === 'inactive') {
+        flushPending();
       }
+    });
+
+    return () => {
+      subscription.remove();
+      flushPending();
     };
-  }, []);
+  }, [flushPending]);
 
   return {
     noteInput,
