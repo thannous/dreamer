@@ -1,6 +1,8 @@
 import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import type { ApiContext } from '../types.ts';
+import { AI_REQUEST_LIMITS } from '../lib/aiRequestPolicy.ts';
+import { DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS } from '../lib/prompts.ts';
 import {
   canCreateImageJobForTier,
   handleCreateImageJob,
@@ -90,7 +92,7 @@ Deno.test('image job creation rejects unlinked free generation', () => {
   );
 });
 
-Deno.test('image job creation rejects oversized input before database admission', async () => {
+Deno.test('image job creation rejects request-abuse transcripts before database admission', async () => {
   let rpcCalls = 0;
   const context = {
     req: new Request('https://example.test/functions/v1/api/image-jobs', {
@@ -98,7 +100,7 @@ Deno.test('image job creation rejects oversized input before database admission'
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         clientRequestId: '3f73ab45-9a14-4db9-94a3-d24724457d9e',
-        transcript: 'x'.repeat(601),
+        transcript: 'x'.repeat(AI_REQUEST_LIMITS.transcriptRequestChars + 1),
       }),
     }),
     user: { id: 'user-1' },
@@ -117,7 +119,93 @@ Deno.test('image job creation rejects oversized input before database admission'
 
   assertEquals(response.status, 413);
   assertEquals(rpcCalls, 0);
-  assertEquals((await response.json()).code, 'INPUT_TOO_LARGE');
+  const body = await response.json();
+  assertEquals(body.code, 'INPUT_TOO_LARGE');
+  assertEquals(body.maxChars, AI_REQUEST_LIMITS.transcriptRequestChars);
+});
+
+Deno.test('standalone image jobs accept a 601-character transcript and bound the image context', async () => {
+  const payloads: Record<string, unknown>[] = [];
+  const transcript = 'x'.repeat(601);
+  const response = await handleCreateImageJob(
+    createAuthenticatedImageContext({
+      clientRequestId: BUNDLED_REQUEST_ID,
+      dreamId: 42,
+      transcript,
+    }),
+    {
+      createAdminClient: (() => ({
+        rpc: async (name: string, args: Record<string, unknown>) => {
+          if (name === 'admit_ai_job') {
+            payloads.push(args.p_request_payload as Record<string, unknown>);
+            return {
+              data: {
+                allowed: true,
+                duplicate: false,
+                requeued: false,
+                job: {
+                  id: EXISTING_IMAGE_JOB_ID,
+                  status: 'queued',
+                  client_request_id: BUNDLED_REQUEST_ID,
+                },
+              },
+              error: null,
+            };
+          }
+          return { data: null, error: null };
+        },
+      })) as any,
+      triggerImageJobWorker: async () => true,
+    }
+  );
+
+  assertEquals(response.status, 202);
+  assertEquals(payloads.length, 1);
+  assertEquals(payloads[0].transcript, transcript);
+  assertEquals(String(payloads[0].transcript).length, 601);
+  assertEquals(String(payloads[0].transcript).length > 600, true);
+});
+
+Deno.test('standalone image jobs keep the long stored request and bound the model transcript copy', async () => {
+  const payloads: Record<string, unknown>[] = [];
+  const stored = 'y'.repeat(10_000);
+  const response = await handleCreateImageJob(
+    createAuthenticatedImageContext({
+      clientRequestId: BUNDLED_REQUEST_ID,
+      dreamId: 42,
+      transcript: stored,
+    }),
+    {
+      createAdminClient: (() => ({
+        rpc: async (name: string, args: Record<string, unknown>) => {
+          if (name === 'admit_ai_job') {
+            payloads.push(args.p_request_payload as Record<string, unknown>);
+            return {
+              data: {
+                allowed: true,
+                duplicate: false,
+                requeued: false,
+                job: {
+                  id: EXISTING_IMAGE_JOB_ID,
+                  status: 'queued',
+                  client_request_id: BUNDLED_REQUEST_ID,
+                },
+              },
+              error: null,
+            };
+          }
+          return { data: null, error: null };
+        },
+      })) as any,
+      triggerImageJobWorker: async () => true,
+    }
+  );
+
+  assertEquals(response.status, 202);
+  assertEquals(payloads.length, 1);
+  assertEquals(String(payloads[0].transcript).length, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS);
+  assertEquals(payloads[0].transcript, stored.slice(0, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS));
+  assertEquals(stored.length, 10_000);
 });
 
 Deno.test('image job creation rejects unsafe idempotency keys before database admission', async () => {
@@ -359,6 +447,21 @@ Deno.test('failed-image retry migration fingerprints payloads and defaults repla
   );
   assertEquals(
     migration.includes("'replaceExistingImage', coalesce(p_replace_existing_image, true)"),
+    false
+  );
+  assertEquals(migration.includes('create or replace function public.complete_authenticated_analysis_job('), true);
+  assertEquals(migration.includes('replace_existing_image boolean := false;'), true);
+  assertEquals(migration.includes('replace_existing_image boolean := true;'), false);
+  assertEquals(
+    migration.includes(
+      "(analysis_job.request_payload ->> 'replaceExistingImage')::boolean,\n    false"
+    ),
+    true
+  );
+  assertEquals(
+    migration.includes(
+      "(analysis_job.request_payload ->> 'replaceExistingImage')::boolean,\n    true"
+    ),
     false
   );
   const hashedRedactedBranch = migration.indexOf(

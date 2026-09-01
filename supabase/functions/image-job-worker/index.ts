@@ -293,46 +293,50 @@ export const redactedRequestPayload = (job: ImageJobRow) => {
   };
 };
 
-export const persistDreamImageResult = async (
+const persistDreamImageFields = async (
   adminClient: ReturnType<typeof createAdminClient>,
   job: ImageJobRow,
-  imageUrl: string
+  values: Record<string, unknown>
 ) => {
   if (job.dream_id == null) {
     return;
   }
 
-  const { error } = await adminClient
+  let query = adminClient
     .from('dreams')
-    .update({
-      image_url: imageUrl,
-      image_generation_failed: false,
-    })
+    .update(values)
     .eq('id', job.dream_id);
 
+  // Service-role writes bypass RLS. Authenticated jobs must stay bound to the
+  // owning user; guest rows have no user_id and may omit dream_id entirely.
+  if (job.user_id) {
+    query = query.eq('user_id', job.user_id);
+  }
+
+  const { error } = await query;
   if (error) {
     throw error;
   }
+};
+
+export const persistDreamImageResult = async (
+  adminClient: ReturnType<typeof createAdminClient>,
+  job: ImageJobRow,
+  imageUrl: string
+) => {
+  await persistDreamImageFields(adminClient, job, {
+    image_url: imageUrl,
+    image_generation_failed: false,
+  });
 };
 
 export const persistDreamImageFailure = async (
   adminClient: ReturnType<typeof createAdminClient>,
   job: ImageJobRow
 ) => {
-  if (job.dream_id == null) {
-    return;
-  }
-
-  const { error } = await adminClient
-    .from('dreams')
-    .update({
-      image_generation_failed: true,
-    })
-    .eq('id', job.dream_id);
-
-  if (error) {
-    throw error;
-  }
+  await persistDreamImageFields(adminClient, job, {
+    image_generation_failed: true,
+  });
 };
 
 export const markTerminalFailure = async (

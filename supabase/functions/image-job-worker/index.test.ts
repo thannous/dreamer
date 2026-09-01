@@ -12,7 +12,7 @@ import {
 type DreamUpdate = {
   table: string;
   values: Record<string, unknown>;
-  id: unknown;
+  filters: Record<string, unknown>;
 };
 
 const createUpdateTracker = () => {
@@ -20,18 +20,26 @@ const createUpdateTracker = () => {
   const client = {
     from(table: string) {
       let values: Record<string, unknown> = {};
-      return {
+      const filters: Record<string, unknown> = {};
+      let recorded = false;
+      const query = {
         update(next: Record<string, unknown>) {
           values = next;
-          return this;
+          return query;
         },
         eq(column: string, value: unknown) {
-          if (column === 'id') {
-            updates.push({ table, values, id: value });
+          filters[column] = value;
+          if (!recorded) {
+            updates.push({ table, values, filters });
+            recorded = true;
           }
-          return { error: null };
+          return query;
+        },
+        then(resolve: (value: { error: null }) => void) {
+          resolve({ error: null });
         },
       };
+      return query;
     },
   };
   return { client, updates };
@@ -71,12 +79,12 @@ Deno.test('terminal image failure flags only image_generation_failed on the drea
   const jobUpdate = updates.find((update) => update.table === 'ai_jobs');
   const dreamUpdate = updates.find((update) => update.table === 'dreams');
 
-  assertEquals(jobUpdate?.id, imageJob.id);
+  assertEquals(jobUpdate?.filters.id, imageJob.id);
   assertEquals(jobUpdate?.values.status, 'failed');
   assertEquals(dreamUpdate, {
     table: 'dreams',
-    id: 42,
     values: { image_generation_failed: true },
+    filters: { id: 42, user_id: 'user-1' },
   });
   assertEquals('interpretation' in (dreamUpdate?.values ?? {}), false);
   assertEquals('is_analyzed' in (dreamUpdate?.values ?? {}), false);
@@ -97,11 +105,11 @@ Deno.test('image success clears image_generation_failed without touching text an
   assertEquals(updates, [
     {
       table: 'dreams',
-      id: 42,
       values: {
         image_url: 'https://example.test/dream.webp',
         image_generation_failed: false,
       },
+      filters: { id: 42, user_id: 'user-1' },
     },
   ]);
   assertEquals('interpretation' in updates[0].values, false);
@@ -179,4 +187,67 @@ Deno.test('terminal image failure persists the redacted fingerprint without user
     [IMAGE_RETRY_PAYLOAD_HASH_KEY]: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
   });
   assertEquals(JSON.stringify(storedPayload).includes('secret prompt text'), false);
+});
+
+Deno.test('authenticated image persistence filters dreams by owner', async () => {
+  const { client, updates } = createUpdateTracker();
+
+  await persistDreamImageResult(
+    client as any,
+    imageJob,
+    'https://example.test/owned.webp'
+  );
+  await persistDreamImageFailure(client as any, {
+    ...imageJob,
+    id: '22222222-2222-4222-8222-222222222222',
+  });
+
+  assertEquals(updates.map((update) => update.filters), [
+    { id: 42, user_id: 'user-1' },
+    { id: 42, user_id: 'user-1' },
+  ]);
+  assertEquals(updates[0].table, 'dreams');
+  assertEquals(updates[1].table, 'dreams');
+});
+
+Deno.test('guest image persistence keeps dream_id without inventing a user_id filter', async () => {
+  const { client, updates } = createUpdateTracker();
+  const guestJob: ImageJobRow = {
+    ...imageJob,
+    user_id: null,
+    guest_fingerprint: 'guest-fingerprint',
+  };
+
+  await persistDreamImageResult(
+    client as any,
+    guestJob,
+    'https://example.test/guest.webp'
+  );
+  await persistDreamImageFailure(client as any, guestJob);
+
+  assertEquals(updates.map((update) => update.filters), [
+    { id: 42 },
+    { id: 42 },
+  ]);
+  assertEquals('user_id' in updates[0].filters, false);
+  assertEquals('user_id' in updates[1].filters, false);
+});
+
+Deno.test('guest image persistence without dream_id does not write dreams', async () => {
+  const { client, updates } = createUpdateTracker();
+  const guestJob: ImageJobRow = {
+    ...imageJob,
+    user_id: null,
+    guest_fingerprint: 'guest-fingerprint',
+    dream_id: null,
+  };
+
+  await persistDreamImageResult(
+    client as any,
+    guestJob,
+    'https://example.test/guest.webp'
+  );
+  await persistDreamImageFailure(client as any, guestJob);
+
+  assertEquals(updates, []);
 });

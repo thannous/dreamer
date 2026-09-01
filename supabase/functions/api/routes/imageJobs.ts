@@ -7,6 +7,7 @@ import {
   isValidClientRequestId,
   validateBoundedText,
 } from '../lib/aiRequestPolicy.ts';
+import { boundTranscriptForPrompt } from '../lib/prompts.ts';
 import type { ApiContext } from '../types.ts';
 import {
   buildImageJobActorFilter,
@@ -242,7 +243,7 @@ export async function handleCreateImageJob(
     if (!promptInput.ok) return aiInputErrorResponse(promptInput);
     const transcriptInput = validateBoundedText(body?.transcript, {
       field: 'transcript',
-      maxChars: AI_REQUEST_LIMITS.transcriptChars,
+      maxChars: AI_REQUEST_LIMITS.transcriptRequestChars,
       required: false,
     });
     if (!transcriptInput.ok) return aiInputErrorResponse(transcriptInput);
@@ -259,7 +260,7 @@ export async function handleCreateImageJob(
     if (!clientRequestInput.ok) return aiInputErrorResponse(clientRequestInput);
 
     const prompt = promptInput.value;
-    const transcript = transcriptInput.value;
+    const transcript = boundTranscriptForPrompt(transcriptInput.value).text;
     const previousImageUrl = previousImageInput.value;
     const clientRequestId = clientRequestInput.value;
     const requestedDreamId =
