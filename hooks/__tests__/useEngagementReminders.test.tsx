@@ -1,5 +1,5 @@
 /** @jest-environment jsdom */
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { NotificationSettings } from '@/lib/types';
@@ -216,15 +216,150 @@ describe('useEngagementReminders', () => {
     expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(1);
   });
 
-  it('swallows a rejected analysis-ready presentation without retrying', async () => {
+  it('does not present analysis-ready again after a successful schedule', async () => {
+    mockAppState = 'background';
+    mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
+    const { rerender } = renderHook(() => useEngagementReminders());
+
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(1));
+
+    mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
+    rerender();
+
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(1));
+  });
+
+  it('retries analysis-ready after a rejected schedule', async () => {
     mockAppState = 'background';
     mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
     mockPresentAnalysisReady.mockRejectedValueOnce(new Error('native schedule failed'));
 
-    renderHook(() => useEngagementReminders());
+    const { rerender } = renderHook(() => useEngagementReminders());
 
     await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(mockLogWarn).toHaveBeenCalled());
+
+    mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
+    rerender();
+
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(2));
+    expect(mockPresentAnalysisReady).toHaveBeenNthCalledWith(2, 12);
+  });
+
+  it('dedupes concurrent analysis-ready scheduling for the same outcome', async () => {
+    mockAppState = 'background';
+    mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
+
+    let release: (() => void) | undefined;
+    mockPresentAnalysisReady.mockImplementation(
+      () => new Promise<void>((resolve) => {
+        release = resolve;
+      })
+    );
+
+    const { rerender } = renderHook(() => useEngagementReminders());
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(1));
+
+    mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
+    rerender();
+    mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
+    rerender();
+
     expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(1);
+    await act(async () => {
+      release?.();
+    });
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(1));
+
+    mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
+    rerender();
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(1));
+  });
+
+  it('schedules analysis-ready for a later dream while an earlier presentation is in flight', async () => {
+    mockAppState = 'background';
+    mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
+
+    const releases: (() => void)[] = [];
+    mockPresentAnalysisReady.mockImplementation(
+      () => new Promise<void>((resolve) => {
+        releases.push(resolve);
+      })
+    );
+
+    const { rerender } = renderHook(() => useEngagementReminders());
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledWith(12));
+
+    mockLastAnalysisOutcome = { dreamId: 44, status: 'done', completedAt: NOW + 1 };
+    rerender();
+
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledWith(44));
+    expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      releases.forEach((release) => release());
+    });
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(2));
+  });
+
+  it('keeps the later analysis-ready when the earlier schedule settles last', async () => {
+    mockAppState = 'background';
+    mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
+
+    const pending = new Map<number, () => void>();
+    mockPresentAnalysisReady.mockImplementation((dreamId: unknown) => {
+      const id = dreamId as number;
+      return new Promise<void>((resolve) => {
+        pending.set(id, resolve);
+      });
+    });
+
+    const { rerender } = renderHook(() => useEngagementReminders());
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledWith(12));
+
+    mockLastAnalysisOutcome = { dreamId: 44, status: 'done', completedAt: NOW + 1 };
+    rerender();
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledWith(44));
+    expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      pending.get(44)?.();
+    });
+    await act(async () => {
+      pending.get(12)?.();
+    });
+
+    mockLastAnalysisOutcome = { dreamId: 44, status: 'done', completedAt: NOW + 1 };
+    rerender();
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(2));
+  });
+
+  it('does not record a successful presentation after unmount', async () => {
+    mockAppState = 'background';
+    mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
+
+    const releases: (() => void)[] = [];
+    mockPresentAnalysisReady.mockImplementation(
+      () => new Promise<void>((resolve) => {
+        releases.push(resolve);
+      })
+    );
+
+    const { unmount } = renderHook(() => useEngagementReminders());
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(1));
+    unmount();
+    await act(async () => {
+      releases[0]?.();
+    });
+
+    const { rerender } = renderHook(() => useEngagementReminders());
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(2));
+    await act(async () => {
+      releases[1]?.();
+    });
+
+    mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
+    rerender();
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(2));
   });
 });

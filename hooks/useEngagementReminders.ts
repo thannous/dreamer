@@ -20,6 +20,9 @@ import { getNotificationSettings } from '@/services/storageService';
 
 const log = createScopedLogger('[EngagementReminders]');
 
+const analysisReadyOutcomeKey = (dreamId: number, completedAt: number): string =>
+  `${dreamId}:${completedAt}`;
+
 /**
  * Keeps the two one-shot engagement families in sync with the journal.
  *
@@ -46,6 +49,9 @@ export function useEngagementReminders(): void {
   // Snapshot for the AppState callback, which fires outside the render cycle.
   const dreamsRef = useRef(dreams);
   const lastNotifiedAnalysisRef = useRef<{ dreamId: number; completedAt: number } | null>(null);
+  const analysisReadyInFlightRef = useRef<Set<string>>(new Set());
+  const latestAnalysisReadyRef = useRef<{ key: string; generation: number } | null>(null);
+  const mountedRef = useRef(true);
 
   const sync = useCallback(async (journal: readonly DreamAnalysis[]) => {
     if (unsupported) {
@@ -111,20 +117,61 @@ export function useEngagementReminders(): void {
   );
 
   useEffect(() => {
-    if (unsupported) return;
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (unsupported || !lastAnalysisOutcome) return;
+
+    const outcomeKey = analysisReadyOutcomeKey(
+      lastAnalysisOutcome.dreamId,
+      lastAnalysisOutcome.completedAt
+    );
+    let observedLatest = latestAnalysisReadyRef.current;
+    if (observedLatest?.key !== outcomeKey) {
+      observedLatest = {
+        key: outcomeKey,
+        generation: (observedLatest?.generation ?? 0) + 1,
+      };
+      latestAnalysisReadyRef.current = observedLatest;
+    }
+    const observedGeneration = observedLatest.generation;
+
     const decision = shouldPresentAnalysisReadyNotification({
       appState: AppState.currentState,
       outcome: lastAnalysisOutcome,
       lastNotified: lastNotifiedAnalysisRef.current,
     });
-    if (!decision || !lastAnalysisOutcome) return;
-    lastNotifiedAnalysisRef.current = {
+    if (!decision) return;
+    if (analysisReadyInFlightRef.current.has(outcomeKey)) return;
+
+    analysisReadyInFlightRef.current.add(outcomeKey);
+    const presentedOutcome = {
       dreamId: lastAnalysisOutcome.dreamId,
       completedAt: lastAnalysisOutcome.completedAt,
     };
-    void presentAnalysisReadyNotification(decision.dreamId).catch((error) => {
-      log.warn('Failed to present analysis-ready notification', error);
-    });
+
+    void presentAnalysisReadyNotification(decision.dreamId)
+      .then(() => {
+        if (!mountedRef.current) return;
+        const currentLatest = latestAnalysisReadyRef.current;
+        if (
+          currentLatest?.key !== outcomeKey
+          || currentLatest.generation !== observedGeneration
+        ) {
+          return;
+        }
+        lastNotifiedAnalysisRef.current = presentedOutcome;
+      })
+      .catch((error) => {
+        log.warn('Failed to present analysis-ready notification', error);
+      })
+      .finally(() => {
+        analysisReadyInFlightRef.current.delete(outcomeKey);
+      });
   }, [lastAnalysisOutcome, unsupported]);
 }
 
