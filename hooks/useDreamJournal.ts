@@ -63,6 +63,7 @@ import {
 } from '@/services/geminiService';
 import {
   incrementLocalAnalysisCount,
+  incrementLocalImageCount,
   syncWithServerCount,
 } from '@/services/quota/GuestAnalysisCounter';
 import {
@@ -834,13 +835,22 @@ export const useDreamJournal = () => {
         return;
       }
 
-      const finalizeTerminalImageJob = async (recordMockImage: boolean) => {
+      const finalizeTerminalImageJob = async (recordSuccessfulImage: boolean) => {
+        if (recordSuccessfulImage && !user) {
+          try {
+            await incrementLocalImageCount({ jobId: job.jobId });
+          } catch (error) {
+            logger.warn('[useDreamJournal] Failed to increment guest image quota', error);
+            quotaService.invalidate(user);
+            return;
+          }
+        }
         try {
           await removePendingImageJob(job.jobId);
         } catch (error) {
           logger.warn('[useDreamJournal] Failed to clear pending image job', error);
         }
-        if (recordMockImage && isMockMode) {
+        if (recordSuccessfulImage && isMockMode) {
           try {
             await markMockImage({ id: job.dreamId });
           } catch (error) {

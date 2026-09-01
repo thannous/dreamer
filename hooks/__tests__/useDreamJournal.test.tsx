@@ -35,6 +35,7 @@ const {
   mockInvalidateQuota,
   mockGetThumbnailUrl,
   mockIncrementLocalAnalysisCount,
+  mockIncrementLocalImageCount,
   mockSyncWithServerCount,
   mockGuestDreamCounterState,
   mockUseAuth,
@@ -65,7 +66,8 @@ const {
   mockInvalidateQuota: typedJestFn<(user: unknown) => void>(),
   mockGetThumbnailUrl: typedJestFn<(url: string | undefined) => string | undefined>(),
   mockIncrementLocalAnalysisCount: typedJestFn<() => Promise<number>>(),
-  mockSyncWithServerCount: typedJestFn<(count: number, quotaType: 'analysis' | 'exploration') => Promise<number>>(),
+  mockIncrementLocalImageCount: typedJestFn<(claim?: { jobId?: string | null }) => Promise<number>>(),
+  mockSyncWithServerCount: typedJestFn<(count: number, quotaType: 'analysis' | 'exploration' | 'image') => Promise<number>>(),
   mockGuestDreamCounterState: { count: 0 },
   mockUseAuth: typedJestFn<
     () => { user: { id: string; app_metadata?: Record<string, unknown> } | null; sessionReady: boolean }
@@ -186,6 +188,7 @@ jest.mock('../../lib/auth', () => ({
 // Mock GuestAnalysisCounter
 jest.mock('../../services/quota/GuestAnalysisCounter', () => ({
   incrementLocalAnalysisCount: mockIncrementLocalAnalysisCount,
+  incrementLocalImageCount: mockIncrementLocalImageCount,
   syncWithServerCount: mockSyncWithServerCount,
 }));
 
@@ -301,6 +304,7 @@ describe('useDreamJournal', () => {
     mockFetchDreamFromSupabase.mockResolvedValue(buildDream({ remoteId: 101 }));
     mockGetThumbnailUrl.mockImplementation((url: string | undefined) => url ? `${url}-thumb` : undefined);
     mockIncrementLocalAnalysisCount.mockResolvedValue(1);
+    mockIncrementLocalImageCount.mockResolvedValue(1);
     mockSyncWithServerCount.mockResolvedValue(1);
     mockGetAccessToken.mockResolvedValue('test-token');
     mockMarkMockAnalysis.mockResolvedValue(1);
@@ -1188,6 +1192,182 @@ describe('useDreamJournal', () => {
       }, FAST_WAIT_OPTIONS);
 
       expect(mockInvalidateQuota).toHaveBeenCalledWith(null);
+    });
+
+    it('increments guest image quota after a terminal image success', async () => {
+      const pendingDream = buildDream({
+        id: 1,
+        imageUrl: '',
+        imageJobId: 'job-guest-image',
+        imageJobStatus: 'queued',
+        imageJobRequestId: 'image-request-guest',
+      });
+      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          jobId: 'job-guest-image',
+          clientRequestId: 'image-request-guest',
+          status: 'queued',
+          requestedAt: Date.now(),
+        },
+      ]);
+      mockGetImageGenerationJobStatus.mockResolvedValue({
+        jobId: 'job-guest-image',
+        status: 'succeeded',
+        clientRequestId: 'image-request-guest',
+        resultPayload: { imageUrl: 'https://example.com/guest-image-count.jpg' },
+      });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await waitFor(() => {
+        expect(result.current.dreams[0].imageUrl).toBe('https://example.com/guest-image-count.jpg');
+      }, FAST_WAIT_OPTIONS);
+
+      expect(mockIncrementLocalImageCount).toHaveBeenCalledTimes(1);
+      expect(mockIncrementLocalImageCount).toHaveBeenCalledWith({ jobId: 'job-guest-image' });
+      expect(mockInvalidateQuota).toHaveBeenCalledWith(null);
+      expect(mockIncrementLocalImageCount.mock.invocationCallOrder[0]).toBeLessThan(
+        mockInvalidateQuota.mock.invocationCallOrder[0]
+      );
+    });
+
+    it('does not increment guest image quota for authenticated users', async () => {
+      setMockUser({ id: 'user-1' });
+      const pendingDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        imageUrl: '',
+        imageJobId: 'job-auth-image',
+        imageJobStatus: 'queued',
+        imageJobRequestId: 'image-request-auth',
+      });
+      mockFetchDreamsFromSupabase.mockResolvedValue([pendingDream]);
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          jobId: 'job-auth-image',
+          clientRequestId: 'image-request-auth',
+          status: 'queued',
+          requestedAt: Date.now(),
+        },
+      ]);
+      mockGetImageGenerationJobStatus.mockResolvedValue({
+        jobId: 'job-auth-image',
+        status: 'succeeded',
+        clientRequestId: 'image-request-auth',
+        resultPayload: { imageUrl: 'https://example.com/auth-image.jpg' },
+      });
+      mockFetchDreamFromSupabase.mockResolvedValue({
+        ...pendingDream,
+        imageUrl: 'https://example.com/auth-image.jpg',
+      });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await waitFor(() => {
+        expect(result.current.dreams[0].imageUrl).toBe('https://example.com/auth-image.jpg');
+      }, FAST_WAIT_OPTIONS);
+
+      expect(mockIncrementLocalImageCount).not.toHaveBeenCalled();
+      expect(mockInvalidateQuota).toHaveBeenCalledWith(expect.objectContaining({ id: 'user-1' }));
+    });
+
+    it('keeps the pending image job when guest quota claim fails then counts once on retry', async () => {
+      jest.useFakeTimers();
+      mockIncrementLocalImageCount
+        .mockRejectedValueOnce(new Error('image ledger unavailable'))
+        .mockResolvedValueOnce(1);
+      const pendingDream = buildDream({
+        id: 1,
+        imageUrl: '',
+        imageJobId: 'job-guest-claim-retry',
+        imageJobStatus: 'queued',
+        imageJobRequestId: 'image-request-guest-retry',
+      });
+      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          jobId: 'job-guest-claim-retry',
+          clientRequestId: 'image-request-guest-retry',
+          status: 'queued',
+          requestedAt: Date.now(),
+        },
+      ]);
+      mockGetImageGenerationJobStatus.mockResolvedValue({
+        jobId: 'job-guest-claim-retry',
+        status: 'succeeded',
+        clientRequestId: 'image-request-guest-retry',
+        resultPayload: { imageUrl: 'https://example.com/guest-claim-retry.jpg' },
+      });
+
+      try {
+        const { result } = await renderLoadedDreamJournal();
+
+        await waitFor(() => {
+          expect(result.current.dreams[0].imageUrl).toBe('https://example.com/guest-claim-retry.jpg');
+        }, FAST_WAIT_OPTIONS);
+
+        await waitFor(() => {
+          expect(mockIncrementLocalImageCount).toHaveBeenCalledTimes(1);
+        }, FAST_WAIT_OPTIONS);
+        expect(mockSavePendingImageJobs).not.toHaveBeenCalledWith([]);
+
+        await act(async () => {
+          jest.advanceTimersByTime(2000);
+        });
+
+        await waitFor(() => {
+          expect(mockIncrementLocalImageCount).toHaveBeenCalledTimes(2);
+        }, FAST_WAIT_OPTIONS);
+        await waitFor(() => {
+          expect(mockSavePendingImageJobs).toHaveBeenCalledWith([]);
+        }, FAST_WAIT_OPTIONS);
+
+        expect(mockIncrementLocalImageCount.mock.calls).toEqual([
+          [{ jobId: 'job-guest-claim-retry' }],
+          [{ jobId: 'job-guest-claim-retry' }],
+        ]);
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('does not increment guest image quota after a terminal image failure', async () => {
+      const pendingDream = buildDream({
+        id: 1,
+        imageUrl: '',
+        imageJobId: 'job-guest-fail',
+        imageJobStatus: 'running',
+        imageJobRequestId: 'image-request-guest-fail',
+      });
+      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          jobId: 'job-guest-fail',
+          clientRequestId: 'image-request-guest-fail',
+          status: 'running',
+          requestedAt: Date.now(),
+        },
+      ]);
+      mockGetImageGenerationJobStatus.mockResolvedValue({
+        jobId: 'job-guest-fail',
+        status: 'failed',
+        clientRequestId: 'image-request-guest-fail',
+        errorCode: 'IMAGE_PROVIDER_FAILED',
+        errorMessage: 'provider failed',
+      });
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await waitFor(() => {
+        expect(result.current.dreams[0].imageJobId).toBeUndefined();
+      }, FAST_WAIT_OPTIONS);
+
+      expect(mockIncrementLocalImageCount).not.toHaveBeenCalled();
     });
 
     it('records mock image quota before invalidating on terminal success', async () => {
