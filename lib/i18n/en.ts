@@ -528,6 +528,7 @@ const translations: Record<string, string> = {
     'recording.draft_progress.short': 'This fragment is enough to save. Add a place, person, or emotion if you remember one.',
     'recording.draft_progress.ready': 'Ready to save. One final detail can make the analysis richer.',
     'recording.draft_progress.count': '{count} characters',
+    'recording.draft_progress.saved_locally': 'Draft saved on this device',
     'recording.activation_insight.eyebrow': 'First cues',
     'recording.activation_insight.summary.memory': 'This memory is saved as a remembered dream.',
     'recording.activation_insight.summary.memory_draft': 'This memory can already become a marker for your profile.',

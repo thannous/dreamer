@@ -13,6 +13,7 @@ export type UseRecordingDraftPersistenceOptions = {
 export type UseRecordingDraftPersistenceResult = {
   noteInput: (value: string) => void;
   clearAfterSuccessfulSave: () => void;
+  lastPersistedValue: string | null;
 };
 
 /**
@@ -35,6 +36,7 @@ export function useRecordingDraftPersistence({
   const userEditedRef = useRef(false);
   const latestValueRef = useRef(transcript);
   const lastScheduledRef = useRef<string | null>(null);
+  const [lastPersistedValue, setLastPersistedValue] = useState<string | null>(null);
   const generationRef = useRef(0);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const writeChainRef = useRef(Promise.resolve());
@@ -47,6 +49,10 @@ export function useRecordingDraftPersistence({
       }
       try {
         await saveTranscript(value);
+        if (generation !== generationRef.current) {
+          return;
+        }
+        setLastPersistedValue(value);
       } catch {
         // Storage write errors must not block capture or journal success.
       }
@@ -142,9 +148,11 @@ export function useRecordingDraftPersistence({
       if (saved) {
         latestValueRef.current = saved;
         lastScheduledRef.current = saved;
+        setLastPersistedValue(saved);
         onRestoreRef.current(saved);
       } else {
         lastScheduledRef.current = '';
+        setLastPersistedValue('');
       }
 
       hydratedRef.current = true;
@@ -187,5 +195,6 @@ export function useRecordingDraftPersistence({
   return {
     noteInput,
     clearAfterSuccessfulSave,
+    lastPersistedValue,
   };
 }

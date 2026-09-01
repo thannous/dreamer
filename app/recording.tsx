@@ -7,6 +7,7 @@ import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { MicPermissionRationaleSheet } from '@/components/recording/RecordingSheets';
 import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
+import { RecordingDraftProgress } from '@/components/recording/RecordingDraftProgress';
 import { RememberedDreamProfileChips } from '@/components/recording/RememberedDreamProfileChips';
 import { Toast } from '@/components/Toast';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
@@ -141,7 +142,7 @@ export default function RecordingScreen() {
     setTranscript(savedTranscript);
     baseTranscriptRef.current = savedTranscript;
   }, []);
-  const { noteInput, clearAfterSuccessfulSave } = useRecordingDraftPersistence({
+  const { noteInput, clearAfterSuccessfulSave, lastPersistedValue } = useRecordingDraftPersistence({
     transcript,
     onRestore: handleRestoreDraft,
   });
@@ -1234,6 +1235,11 @@ export default function RecordingScreen() {
                       : undefined
                   }
                   onClear={handleClearTranscript}
+                />
+
+                <RecordingDraftProgress
+                  value={transcript}
+                  persisted={transcript.length > 0 && lastPersistedValue === transcript}
                 />
 
               </View>

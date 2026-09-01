@@ -575,4 +575,23 @@ describe('Recording i18n - bottom sheets', () => {
       }
     }
   });
+
+  it('tells every locale that a confirmed draft is saved on this device', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    const savedByLocale: Record<(typeof languages)[number], RegExp> = {
+      en: /draft saved on this device/i,
+      fr: /brouillon enregistré sur cet appareil/i,
+      es: /borrador guardado en este dispositivo/i,
+      de: /entwurf auf diesem gerät gespeichert/i,
+      it: /bozza salvata su questo dispositivo/i,
+      pt: /rascunho salvo neste dispositivo/i,
+    };
+
+    for (const lang of languages) {
+      const value = getTranslator(lang)('recording.draft_progress.saved_locally');
+      expect(value).not.toBe('recording.draft_progress.saved_locally');
+      expect(value).toMatch(savedByLocale[lang]);
+    }
+  });
 });

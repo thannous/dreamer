@@ -528,6 +528,7 @@ const translations: Record<string, string> = {
     'recording.draft_progress.short': 'Dieses Fragment reicht zum Speichern. Ergänze einen Ort, eine Person oder ein Gefühl, falls du dich erinnerst.',
     'recording.draft_progress.ready': 'Bereit zum Speichern. Ein letztes Detail kann die Analyse vertiefen.',
     'recording.draft_progress.count': '{count} Zeichen',
+    'recording.draft_progress.saved_locally': 'Entwurf auf diesem Gerät gespeichert',
     'recording.activation_insight.eyebrow': 'Erste Hinweise',
     'recording.activation_insight.summary.memory': 'Diese Erinnerung wird als bereits erlebter Traum gespeichert.',
     'recording.activation_insight.summary.memory_draft': 'Diese Erinnerung kann bereits ein Anker für dein Profil werden.',

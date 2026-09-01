@@ -447,4 +447,27 @@ describe('useRecordingDraftPersistence', () => {
     expect(mockSaveTranscript).not.toHaveBeenCalled();
     expect(onRestore).not.toHaveBeenCalled();
   });
+
+  it('exposes lastPersistedValue only after a successful write', async () => {
+    const onRestore = jest.fn();
+    const { result } = renderHook(() =>
+      useRecordingDraftPersistence({ transcript: '', onRestore })
+    );
+    await flushPromises();
+    expect(result.current.lastPersistedValue).toBe('');
+
+    act(() => {
+      result.current.noteInput('Rain on the glass');
+    });
+    expect(result.current.lastPersistedValue).toBe('');
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS);
+    });
+    await flushPromises();
+
+    expect(mockSaveTranscript).toHaveBeenCalledWith('Rain on the glass');
+    expect(result.current.lastPersistedValue).toBe('Rain on the glass');
+  });
 });

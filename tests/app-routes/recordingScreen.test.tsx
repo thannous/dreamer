@@ -176,6 +176,7 @@ jest.doMock('react-native', () => {
       create: <T extends Record<string, any>>(styles: T) => styles,
       hairlineWidth: 1,
     },
+    Text: createElement('span'),
     TextInput: createElement('textarea'),
     View: createElement('div'),
     useWindowDimensions: () => ({
@@ -1126,5 +1127,47 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
 
     expect(screen.queryByTestId(TID.Component.RecordingOnboardingTour)).toBeNull();
+  });
+
+  it('shows the saved-locally copy only after the draft is persisted, including across Write/Tell', async () => {
+    render(<RecordingScreen />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'A blue room under the rain' },
+    });
+
+    const progress = screen.getByTestId(TID.Component.RecordingDraftProgress);
+    expect(progress.textContent).not.toContain('recording.draft_progress.saved_locally');
+
+    await waitFor(() => {
+      expect(mockSaveTranscript).toHaveBeenCalledWith('A blue room under the rain');
+      expect(progress.textContent).toContain('recording.draft_progress.saved_locally');
+    });
+
+    fireEvent.click(screen.getByTestId('recording-mode-voice'));
+    await waitFor(() => {
+      expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('voiceFirst');
+    });
+    expect(screen.getByTestId(TID.Component.RecordingDraftProgress).textContent).toContain(
+      'recording.draft_progress.saved_locally'
+    );
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'A blue room under the rain and a red bicycle' },
+    });
+    expect(screen.getByTestId(TID.Component.RecordingDraftProgress).textContent).not.toContain(
+      'recording.draft_progress.saved_locally'
+    );
+
+    fireEvent.click(screen.getByTestId('recording-mode-text'));
+    await waitFor(() => {
+      expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('textFirst');
+    });
+    expect(
+      (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+    ).toBe('A blue room under the rain and a red bicycle');
+    expect(screen.getByTestId(TID.Component.RecordingDraftProgress).textContent).not.toContain(
+      'recording.draft_progress.saved_locally'
+    );
   });
 });

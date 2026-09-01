@@ -528,6 +528,7 @@ const translations: Record<string, string> = {
     'recording.draft_progress.short': 'Este fragmento já é suficiente para salvar. Adicione um lugar, pessoa ou emoção, se lembrar de algum.',
     'recording.draft_progress.ready': 'Pronto para salvar. Um último detalhe pode deixar a análise mais rica.',
     'recording.draft_progress.count': '{count} caracteres',
+    'recording.draft_progress.saved_locally': 'Rascunho salvo neste dispositivo',
     'recording.activation_insight.eyebrow': 'Primeiras pistas',
     'recording.activation_insight.summary.memory': 'Esta lembrança está salva como um sonho recordado.',
     'recording.activation_insight.summary.memory_draft': 'Esta lembrança já pode virar um marco do seu perfil.',

@@ -528,6 +528,7 @@ const translations: Record<string, string> = {
     'recording.draft_progress.short': 'Questo frammento basta per salvare. Aggiungi un luogo, una persona o un’emozione se la ricordi.',
     'recording.draft_progress.ready': 'Pronto da salvare. Un ultimo dettaglio può arricchire l’analisi.',
     'recording.draft_progress.count': '{count} caratteri',
+    'recording.draft_progress.saved_locally': 'Bozza salvata su questo dispositivo',
     'recording.activation_insight.eyebrow': 'Primi indizi',
     'recording.activation_insight.summary.memory': 'Questo ricordo viene salvato come sogno già vissuto.',
     'recording.activation_insight.summary.memory_draft': 'Questo ricordo può già diventare un riferimento per il tuo profilo.',

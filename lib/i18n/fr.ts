@@ -529,6 +529,7 @@ const translations: Record<string, string> = {
     'recording.draft_progress.short': 'Ce fragment suffit pour enregistrer. Ajoute un lieu, une personne ou une émotion si tu t’en souviens.',
     'recording.draft_progress.ready': 'Prêt à enregistrer. Un dernier détail peut enrichir l’analyse.',
     'recording.draft_progress.count': '{count} caractères',
+    'recording.draft_progress.saved_locally': 'Brouillon enregistré sur cet appareil',
     'recording.activation_insight.eyebrow': 'Premiers repères',
     'recording.activation_insight.summary.memory': 'Ce souvenir est enregistré comme rêve déjà vécu.',
     'recording.activation_insight.summary.memory_draft': 'Ce souvenir peut déjà servir de repère à ton profil.',
