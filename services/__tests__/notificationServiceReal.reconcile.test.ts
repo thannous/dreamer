@@ -138,6 +138,7 @@ describe('reconcileDreamerReminders', () => {
 describe('presentAnalysisReadyNotification', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockNotifications.getAllScheduledNotificationsAsync.mockResolvedValue([]);
   });
 
   it('deep-links to the existing journal detail screen', async () => {
@@ -160,5 +161,126 @@ describe('presentAnalysisReadyNotification', () => {
     );
     expect(call.trigger.type).toBe('timeInterval');
     expect(mockNotifications.requestPermissionsAsync).not.toHaveBeenCalled();
+  });
+
+  it('replaces the previous occurrence for the same dream and never duplicates it', async () => {
+    const existing = buildDreamerNotificationPlan({
+      settings,
+      timeContext: PARIS_CEST,
+      now: NOW,
+      analysisReady: { dreamId: 42, triggerAt: IN_TWO_HOURS },
+    }).find((item) => item.reminderType === 'analysis_ready');
+    if (!existing) throw new Error('expected analysis-ready occurrence');
+    const later = buildDreamerNotificationPlan({
+      settings,
+      timeContext: PARIS_CEST,
+      now: NOW,
+      analysisReady: { dreamId: 91, triggerAt: IN_TWO_HOURS },
+    }).find((item) => item.reminderType === 'analysis_ready');
+    if (!later) throw new Error('expected later analysis-ready occurrence');
+
+    mockNotifications.getAllScheduledNotificationsAsync.mockResolvedValue([
+      scheduled('ready-42', buildDreamerNotificationContentData(existing, PARIS_CEST)),
+      scheduled('ready-42-dup', buildDreamerNotificationContentData(existing, PARIS_CEST)),
+      scheduled('ready-91', buildDreamerNotificationContentData(later, PARIS_CEST)),
+      scheduled('lucid-night', {
+        [DREAMER_OWNER_KEY]: LUCID_TRAINER_NOTIFICATION_OWNER,
+        url: '/lucid/(tabs)/night',
+      }),
+    ]);
+
+    const { presentAnalysisReadyNotification } = require('../notificationServiceReal') as typeof import('../notificationServiceReal');
+    await presentAnalysisReadyNotification(42);
+
+    expect(mockNotifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('ready-42');
+    expect(mockNotifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('ready-42-dup');
+    expect(mockNotifications.cancelScheduledNotificationAsync).not.toHaveBeenCalledWith('ready-91');
+    expect(mockNotifications.cancelScheduledNotificationAsync).not.toHaveBeenCalledWith('lucid-night');
+    expect(mockNotifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('reconcileDreamerReminders analysis_ready obsolescence', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockNotifications.getAllScheduledNotificationsAsync.mockResolvedValue([]);
+    jest.spyOn(Date, 'now').mockReturnValue(NOW);
+  });
+
+  it('cancels a ready notice for a deleted or no-longer-ready dream without touching Lucid or morning families', async () => {
+    const ready = buildDreamerNotificationPlan({
+      settings,
+      timeContext: PARIS_CEST,
+      now: NOW,
+      analysisReady: { dreamId: 42, triggerAt: IN_TWO_HOURS },
+    }).find((item) => item.reminderType === 'analysis_ready');
+    const later = buildDreamerNotificationPlan({
+      settings,
+      timeContext: PARIS_CEST,
+      now: NOW,
+      analysisReady: { dreamId: 91, triggerAt: IN_TWO_HOURS },
+    }).find((item) => item.reminderType === 'analysis_ready');
+    const monday = buildDreamerNotificationPlan({
+      settings,
+      timeContext: PARIS_CEST,
+      now: NOW,
+    }).find((item) => item.occurrenceId === 'daily:weekday:2');
+    if (!ready || !later || !monday) throw new Error('expected occurrences');
+
+    mockNotifications.getAllScheduledNotificationsAsync.mockResolvedValue([
+      scheduled('ready-42', buildDreamerNotificationContentData(ready, PARIS_CEST)),
+      scheduled('ready-91', buildDreamerNotificationContentData(later, PARIS_CEST)),
+      scheduled('dreamer-mon', buildDreamerNotificationContentData(monday, PARIS_CEST)),
+      scheduled('lucid-night', {
+        [DREAMER_OWNER_KEY]: LUCID_TRAINER_NOTIFICATION_OWNER,
+        url: '/lucid/(tabs)/night',
+      }),
+    ]);
+
+    const { reconcileDreamerReminders } = require('../notificationServiceReal') as typeof import('../notificationServiceReal');
+    const result = await reconcileDreamerReminders({
+      settings,
+      now: NOW,
+      timeContext: PARIS_CEST,
+      analysisReadyJournal: [
+        { id: 91, analysisStatus: 'done' },
+        { id: 7, analysisStatus: 'pending' },
+      ],
+    });
+
+    expect(result.cancelledIds).toEqual(expect.arrayContaining(['ready-42']));
+    expect(result.cancelledIds).not.toContain('ready-91');
+    expect(result.cancelledIds).not.toContain('dreamer-mon');
+    expect(result.cancelledIds).not.toContain('lucid-night');
+    expect(mockNotifications.cancelScheduledNotificationAsync).not.toHaveBeenCalledWith('lucid-night');
+  });
+
+  it('cancels every ready notice when preserveAnalysisReady is false', async () => {
+    const ready = buildDreamerNotificationPlan({
+      settings,
+      timeContext: PARIS_CEST,
+      now: NOW,
+      analysisReady: { dreamId: 42, triggerAt: IN_TWO_HOURS },
+    }).find((item) => item.reminderType === 'analysis_ready');
+    if (!ready) throw new Error('expected analysis-ready occurrence');
+
+    mockNotifications.getAllScheduledNotificationsAsync.mockResolvedValue([
+      scheduled('ready-42', buildDreamerNotificationContentData(ready, PARIS_CEST)),
+      scheduled('lucid-night', {
+        [DREAMER_OWNER_KEY]: LUCID_TRAINER_NOTIFICATION_OWNER,
+        url: '/lucid/(tabs)/night',
+      }),
+    ]);
+
+    const { reconcileDreamerReminders } = require('../notificationServiceReal') as typeof import('../notificationServiceReal');
+    const result = await reconcileDreamerReminders({
+      settings,
+      now: NOW,
+      timeContext: PARIS_CEST,
+      preserveAnalysisReady: false,
+    });
+
+    expect(result.cancelledIds).toEqual(expect.arrayContaining(['ready-42']));
+    expect(result.cancelledIds).not.toContain('lucid-night');
   });
 });

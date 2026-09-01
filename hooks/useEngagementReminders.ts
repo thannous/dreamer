@@ -5,7 +5,12 @@ import { useDreamsData } from '@/context/DreamsContext';
 import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
 import { useAppState } from '@/hooks/useAppState';
 import { isLucidTrainer } from '@/lib/appVariant';
-import { resolveDreamerTimeContext, shouldPresentAnalysisReadyNotification } from '@/lib/dreamerNotifications';
+import {
+  analysisReadyJournalSignature,
+  isAnalysisReadyApplicable,
+  resolveDreamerTimeContext,
+  shouldPresentAnalysisReadyNotification,
+} from '@/lib/dreamerNotifications';
 import {
   buildEngagementReminderPlan,
   getEngagementReminderPlanSignature,
@@ -41,6 +46,7 @@ export function useEngagementReminders(): void {
   const unsupported = Platform.OS === 'web' || isLucidTrainer;
   const lastSignatureRef = useRef<string | null>(null);
   const lastTimeContextRef = useRef<string | null>(null);
+  const lastAnalysisReadyJournalRef = useRef<string | null>(null);
   const runningRef = useRef(false);
   // Freshest journal that arrived while a run was in flight, replayed at the end
   // of that run. Dropping it would leave a stale plan armed (and a signature
@@ -77,15 +83,27 @@ export function useEngagementReminders(): void {
           const signature = getEngagementReminderPlanSignature(plan, settings);
           const timeContext = resolveDreamerTimeContext();
           const timeContextKey = `${timeContext.timeZone}|${timeContext.offsetMinutes}`;
-          if (signature !== lastSignatureRef.current || timeContextKey !== lastTimeContextRef.current) {
+          const analysisReadyJournal = current.map((dream) => ({
+            id: dream.id,
+            analysisStatus: dream.analysisStatus,
+            isAnalyzed: dream.isAnalyzed,
+          }));
+          const analysisReadyKey = analysisReadyJournalSignature(analysisReadyJournal);
+          if (
+            signature !== lastSignatureRef.current
+            || timeContextKey !== lastTimeContextRef.current
+            || analysisReadyKey !== lastAnalysisReadyJournalRef.current
+          ) {
             await reconcileDreamerReminders({
               settings,
               timeContext,
               streakRisk: plan.streakRisk,
               inactivity: plan.inactivity,
+              analysisReadyJournal,
             });
             lastSignatureRef.current = signature;
             lastTimeContextRef.current = timeContextKey;
+            lastAnalysisReadyJournalRef.current = analysisReadyKey;
           }
         } catch (error) {
           // A failed run must not swallow the journal that arrived meanwhile.
@@ -146,6 +164,8 @@ export function useEngagementReminders(): void {
       lastNotified: lastNotifiedAnalysisRef.current,
     });
     if (!decision) return;
+    const journalDream = dreamsRef.current.find((dream) => dream.id === decision.dreamId);
+    if (!isAnalysisReadyApplicable(journalDream)) return;
     if (analysisReadyInFlightRef.current.has(outcomeKey)) return;
 
     analysisReadyInFlightRef.current.add(outcomeKey);

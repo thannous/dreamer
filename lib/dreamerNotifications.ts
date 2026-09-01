@@ -13,6 +13,12 @@
  * Ritual reminders and unmarked leftovers are treated as orphans and cancelled.
  * Lucid Trainer notifications are never touched.
  *
+ * analysis_ready obsolescence:
+ * a ready notice is cancelled when the dream is gone, the analysis is no longer
+ * done/ready, a newer occurrence replaces it, or reconcile is called with
+ * preserveAnalysisReady=false. Morning, weekly, optional and Lucid families
+ * stay independent. Concurrent duplicates of the same ready notice are not kept.
+ *
  * Timezone / DST model:
  * every owned request is stamped with the device IANA zone and the numeric
  * UTC offset at schedule time. A later reconcile compares that stamp to the
@@ -25,7 +31,7 @@
  */
 
 import type { InactivityReminderPlan, StreakRiskReminderPlan } from './engagementReminders';
-import type { NotificationSettings } from './types';
+import type { AnalysisStatus, NotificationSettings } from './types';
 
 export const DREAMER_NOTIFICATION_OWNER = 'dreamer';
 export const DREAMER_REMINDER_TYPE_KEY = 'dreamerReminderType';
@@ -114,6 +120,22 @@ export type DreamerNotificationPlanInput = {
   analysisReady?: { dreamId: number; triggerAt?: number } | null;
 };
 
+export type AnalysisReadyJournalDream = {
+  id: number;
+  analysisStatus?: AnalysisStatus;
+  isAnalyzed?: boolean;
+};
+
+export type AnalysisReadyApplicability = {
+  applicable: boolean;
+  reason:
+    | 'ready'
+    | 'missing_dream'
+    | 'invalid_dream'
+    | 'analysis_not_ready'
+    | 'replaced';
+};
+
 export type DreamerReconciliationDecision = {
   toCancel: string[];
   toSchedule: DreamerDesiredOccurrence[];
@@ -152,6 +174,18 @@ export function isDreamerReminderType(value: unknown): value is DreamerReminderT
 
 export function analysisReadyNotificationUrl(dreamId: number): `/journal/${number}` {
   return `/journal/${dreamId}`;
+}
+
+export function analysisReadyOccurrenceId(dreamId: number): string {
+  return `analysis_ready:${dreamId}`;
+}
+
+export function parseAnalysisReadyOccurrenceDreamId(occurrenceId: unknown): number | null {
+  if (typeof occurrenceId !== 'string') return null;
+  const match = /^analysis_ready:(\d+)$/.exec(occurrenceId);
+  if (!match) return null;
+  const dreamId = Number(match[1]);
+  return Number.isSafeInteger(dreamId) && dreamId > 0 ? dreamId : null;
 }
 
 export function isJournalNotificationUrl(value: unknown): value is `/journal/${number}` {
@@ -391,7 +425,7 @@ export function buildDreamerNotificationPlan(
       desired.push(
         withSignature(
           {
-            occurrenceId: `analysis_ready:${analysisReady.dreamId}`,
+            occurrenceId: analysisReadyOccurrenceId(analysisReady.dreamId),
             reminderType: 'analysis_ready',
             url: analysisReadyNotificationUrl(analysisReady.dreamId),
             triggerAt,
@@ -463,10 +497,22 @@ export function reconcileDreamerNotificationPlan(
   scheduled: readonly DreamerScheduledRequest[],
   desired: readonly DreamerDesiredOccurrence[],
   timeContext: DreamerTimeContext,
-  options: { preserveReminderTypes?: readonly DreamerReminderType[] } = {}
+  options: {
+    preserveReminderTypes?: readonly DreamerReminderType[];
+    journalById?: ReadonlyMap<number, AnalysisReadyJournalDream>;
+    preserveAnalysisReady?: boolean;
+    replaceAnalysisReadyDreamId?: number | null;
+  } = {}
 ): DreamerReconciliationDecision {
   const desiredById = new Map(desired.map((occurrence) => [occurrence.occurrenceId, occurrence]));
   const preserve = new Set(options.preserveReminderTypes ?? []);
+  const obsoleteAnalysisReadyIds = new Set(
+    collectObsoleteAnalysisReadyIdentifiers(scheduled, {
+      journalById: options.journalById,
+      preserveAnalysisReady: options.preserveAnalysisReady,
+      replaceDreamId: options.replaceAnalysisReadyDreamId,
+    })
+  );
   const toCancel: string[] = [];
   const orphanIdentifiers: string[] = [];
   const retainedOccurrenceIds = new Set<string>();
@@ -474,6 +520,10 @@ export function reconcileDreamerNotificationPlan(
 
   for (const request of scheduled) {
     if (isLucidOwnedRequest(request)) continue;
+    if (obsoleteAnalysisReadyIds.has(request.identifier)) {
+      toCancel.push(request.identifier);
+      continue;
+    }
 
     const data = getScheduledRequestData(request);
     const occurrenceId =
@@ -527,6 +577,133 @@ export function reconcileDreamerNotificationPlan(
     orphanIdentifiers,
     timeContextChanged,
   };
+}
+
+
+export function isAnalysisReadyRequest(request: DreamerScheduledRequest): boolean {
+  const data = getScheduledRequestData(request);
+  if (data?.[DREAMER_REMINDER_TYPE_KEY] === 'analysis_ready') return true;
+  const occurrenceId =
+    typeof data?.[DREAMER_OCCURRENCE_ID_KEY] === 'string' ? data[DREAMER_OCCURRENCE_ID_KEY] : undefined;
+  return parseAnalysisReadyOccurrenceDreamId(occurrenceId) != null;
+}
+
+export function analysisReadyDreamIdFromRequest(request: DreamerScheduledRequest): number | null {
+  const data = getScheduledRequestData(request);
+  const fromOccurrence = parseAnalysisReadyOccurrenceDreamId(data?.[DREAMER_OCCURRENCE_ID_KEY]);
+  if (fromOccurrence != null) return fromOccurrence;
+  if (typeof data?.dreamId === 'number' && Number.isSafeInteger(data.dreamId) && data.dreamId > 0) {
+    return data.dreamId;
+  }
+  if (typeof data?.url === 'string') {
+    const fromUrl = parseJournalNotificationDreamId(data.url);
+    if (fromUrl != null && fromUrl > 0) return fromUrl;
+  }
+  return null;
+}
+
+export function isAnalysisReadyApplicable(dream: AnalysisReadyJournalDream | null | undefined): boolean {
+  if (!dream || !Number.isSafeInteger(dream.id) || dream.id <= 0) return false;
+  if (dream.analysisStatus === 'done') return true;
+  if (dream.analysisStatus === 'pending' || dream.analysisStatus === 'failed' || dream.analysisStatus === 'none') {
+    return false;
+  }
+  return dream.isAnalyzed === true;
+}
+
+export function resolveAnalysisReadyApplicability(params: {
+  dream?: AnalysisReadyJournalDream | null;
+  replaceDreamId?: number | null;
+}): AnalysisReadyApplicability {
+  const dream = params.dream;
+  if (!dream || !Number.isSafeInteger(dream.id) || dream.id <= 0) {
+    return { applicable: false, reason: dream == null ? 'missing_dream' : 'invalid_dream' };
+  }
+  if (
+    params.replaceDreamId != null &&
+    Number.isSafeInteger(params.replaceDreamId) &&
+    params.replaceDreamId > 0 &&
+    params.replaceDreamId === dream.id
+  ) {
+    return { applicable: false, reason: 'replaced' };
+  }
+  if (!isAnalysisReadyApplicable(dream)) {
+    return { applicable: false, reason: 'analysis_not_ready' };
+  }
+  return { applicable: true, reason: 'ready' };
+}
+
+export function indexAnalysisReadyJournal(
+  dreams: readonly AnalysisReadyJournalDream[] | undefined
+): Map<number, AnalysisReadyJournalDream> | undefined {
+  if (!dreams) return undefined;
+  return new Map(dreams.map((dream) => [dream.id, dream]));
+}
+
+export function analysisReadyJournalSignature(
+  dreams: readonly AnalysisReadyJournalDream[]
+): string {
+  return dreams
+    .filter((dream) => isAnalysisReadyApplicable(dream))
+    .map((dream) => String(dream.id))
+    .sort((left, right) => left.localeCompare(right))
+    .join(',');
+}
+
+export function collectObsoleteAnalysisReadyIdentifiers(
+  scheduled: readonly DreamerScheduledRequest[],
+  options: {
+    replaceDreamId?: number | null;
+    journalById?: ReadonlyMap<number, AnalysisReadyJournalDream>;
+    preserveAnalysisReady?: boolean;
+  } = {}
+): string[] {
+  const replaceDreamId =
+    options.replaceDreamId != null && Number.isSafeInteger(options.replaceDreamId) && options.replaceDreamId > 0
+      ? options.replaceDreamId
+      : null;
+  const preserve = options.preserveAnalysisReady !== false;
+  const seenOccurrenceIds = new Set<string>();
+  const obsolete: string[] = [];
+
+  for (const request of scheduled) {
+    if (isLucidOwnedRequest(request)) continue;
+    if (!isAnalysisReadyRequest(request)) continue;
+
+    if (!preserve) {
+      obsolete.push(request.identifier);
+      continue;
+    }
+
+    const data = getScheduledRequestData(request);
+    const occurrenceId =
+      typeof data?.[DREAMER_OCCURRENCE_ID_KEY] === 'string' ? data[DREAMER_OCCURRENCE_ID_KEY] : undefined;
+    const dreamId = analysisReadyDreamIdFromRequest(request);
+    const journalDream = dreamId != null ? options.journalById?.get(dreamId) : undefined;
+    const applicability = resolveAnalysisReadyApplicability({
+      dream: options.journalById
+        ? (journalDream ?? null)
+        : (dreamId != null ? { id: dreamId } : null),
+      replaceDreamId,
+    });
+
+    if (replaceDreamId != null && dreamId === replaceDreamId) {
+      obsolete.push(request.identifier);
+      continue;
+    }
+
+    if (occurrenceId && seenOccurrenceIds.has(occurrenceId)) {
+      obsolete.push(request.identifier);
+      continue;
+    }
+    if (occurrenceId) seenOccurrenceIds.add(occurrenceId);
+
+    if (options.journalById && !applicability.applicable) {
+      obsolete.push(request.identifier);
+    }
+  }
+
+  return obsolete;
 }
 
 export function shouldPresentAnalysisReadyNotification(params: {

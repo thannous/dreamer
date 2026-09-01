@@ -10,7 +10,7 @@ const mockPresentAnalysisReady = jest.fn();
 
 let mockLastAnalysisOutcome: { dreamId: number; status: 'done' | 'failed'; completedAt: number } | null = null;
 
-let mockDreams: { id: number }[] = [];
+let mockDreams: { id: number; analysisStatus?: 'none' | 'pending' | 'done' | 'failed'; isAnalyzed?: boolean }[] = [];
 let mockLoaded = true;
 let mockPlatformOS = 'ios';
 let mockForeground: (() => void) | undefined;
@@ -209,6 +209,7 @@ describe('useEngagementReminders', () => {
 
   it('presents analysis-ready only while the app is in the background', async () => {
     mockAppState = 'background';
+    mockDreams = [{ id: 12, analysisStatus: 'done' }, ...mockDreams];
     mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
     renderHook(() => useEngagementReminders());
 
@@ -218,6 +219,7 @@ describe('useEngagementReminders', () => {
 
   it('does not present analysis-ready again after a successful schedule', async () => {
     mockAppState = 'background';
+    mockDreams = [{ id: 12, analysisStatus: 'done' }, ...mockDreams];
     mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
     const { rerender } = renderHook(() => useEngagementReminders());
 
@@ -231,6 +233,7 @@ describe('useEngagementReminders', () => {
 
   it('retries analysis-ready after a rejected schedule', async () => {
     mockAppState = 'background';
+    mockDreams = [{ id: 12, analysisStatus: 'done' }, ...mockDreams];
     mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
     mockPresentAnalysisReady.mockRejectedValueOnce(new Error('native schedule failed'));
 
@@ -248,6 +251,7 @@ describe('useEngagementReminders', () => {
 
   it('dedupes concurrent analysis-ready scheduling for the same outcome', async () => {
     mockAppState = 'background';
+    mockDreams = [{ id: 12, analysisStatus: 'done' }, ...mockDreams];
     mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
 
     let release: (() => void) | undefined;
@@ -278,6 +282,11 @@ describe('useEngagementReminders', () => {
 
   it('schedules analysis-ready for a later dream while an earlier presentation is in flight', async () => {
     mockAppState = 'background';
+    mockDreams = [
+      { id: 12, analysisStatus: 'done' },
+      { id: 44, analysisStatus: 'done' },
+      ...mockDreams,
+    ];
     mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
 
     const releases: (() => void)[] = [];
@@ -304,6 +313,11 @@ describe('useEngagementReminders', () => {
 
   it('keeps the later analysis-ready when the earlier schedule settles last', async () => {
     mockAppState = 'background';
+    mockDreams = [
+      { id: 12, analysisStatus: 'done' },
+      { id: 44, analysisStatus: 'done' },
+      ...mockDreams,
+    ];
     mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
 
     const pending = new Map<number, () => void>();
@@ -336,6 +350,7 @@ describe('useEngagementReminders', () => {
 
   it('does not record a successful presentation after unmount', async () => {
     mockAppState = 'background';
+    mockDreams = [{ id: 12, analysisStatus: 'done' }, ...mockDreams];
     mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
 
     const releases: (() => void)[] = [];
@@ -361,5 +376,52 @@ describe('useEngagementReminders', () => {
     mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
     rerender();
     await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(2));
+  });
+
+  it('reconciles when an analysis-ready dream is deleted even if engagement deadlines did not move', async () => {
+    mockDreams = [
+      { id: daysAgo(1), analysisStatus: 'done' },
+      { id: daysAgo(2), analysisStatus: 'done' },
+    ];
+    const { rerender } = renderHook(() => useEngagementReminders());
+    await waitFor(() => expect(mockReconcile).toHaveBeenCalledTimes(1));
+    expect(mockReconcile).toHaveBeenCalledWith(
+      expect.objectContaining({
+        analysisReadyJournal: [
+          { id: daysAgo(1), analysisStatus: 'done', isAnalyzed: undefined },
+          { id: daysAgo(2), analysisStatus: 'done', isAnalyzed: undefined },
+        ],
+      })
+    );
+
+    mockDreams = [
+      { id: daysAgo(1), analysisStatus: 'done' },
+      { id: daysAgo(2), analysisStatus: 'pending' },
+    ];
+    rerender();
+
+    await waitFor(() => expect(mockReconcile).toHaveBeenCalledTimes(2));
+    expect(mockReconcile.mock.calls[1][0]).toEqual(
+      expect.objectContaining({
+        analysisReadyJournal: [
+          { id: daysAgo(1), analysisStatus: 'done', isAnalyzed: undefined },
+          { id: daysAgo(2), analysisStatus: 'pending', isAnalyzed: undefined },
+        ],
+      })
+    );
+  });
+
+  it('does not present analysis-ready after the dream is deleted', async () => {
+    mockAppState = 'background';
+    mockDreams = [{ id: 12, analysisStatus: 'done' }];
+    mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW };
+    const { rerender } = renderHook(() => useEngagementReminders());
+    await waitFor(() => expect(mockPresentAnalysisReady).toHaveBeenCalledWith(12));
+
+    mockDreams = [];
+    mockLastAnalysisOutcome = { dreamId: 12, status: 'done', completedAt: NOW + 1 };
+    rerender();
+    await waitFor(() => expect(mockReconcile).toHaveBeenCalled());
+    expect(mockPresentAnalysisReady).toHaveBeenCalledTimes(1);
   });
 });

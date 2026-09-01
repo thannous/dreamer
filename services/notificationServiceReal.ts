@@ -15,9 +15,12 @@ import {
   WEEKLY_RECAP_WEEKDAY,
   buildDreamerNotificationContentData,
   buildDreamerNotificationPlan,
+  collectObsoleteAnalysisReadyIdentifiers,
+  indexAnalysisReadyJournal,
   normalizeNotificationSettings,
   reconcileDreamerNotificationPlan,
   resolveDreamerTimeContext,
+  type AnalysisReadyJournalDream,
   type DreamerReminderType,
   type DreamerDesiredOccurrence,
   type DreamerScheduledRequest,
@@ -362,6 +365,8 @@ export type ReconcileDreamerRemindersInput = {
   inactivity?: readonly InactivityReminderPlan[];
   analysisReady?: { dreamId: number; triggerAt?: number } | null;
   preserveAnalysisReady?: boolean;
+  analysisReadyJournal?: readonly AnalysisReadyJournalDream[];
+  replaceAnalysisReadyDreamId?: number | null;
 };
 
 export type ReconcileDreamerRemindersResult = {
@@ -405,9 +410,10 @@ export async function reconcileDreamerReminders(
   const scheduled = (await Notifications.getAllScheduledNotificationsAsync()).map(
     toDreamerScheduledRequest
   );
+  const preserveAnalysisReady = input.preserveAnalysisReady !== false;
   const decision = reconcileDreamerNotificationPlan(scheduled, desired, timeContext, {
     preserveReminderTypes: [
-      ...(input.preserveAnalysisReady === false ? [] : (['analysis_ready'] as DreamerReminderType[])),
+      ...(preserveAnalysisReady ? (['analysis_ready'] as DreamerReminderType[]) : []),
       ...(input.streakRisk === undefined && settings.streakRiskEnabled
         ? (['streak_risk'] as DreamerReminderType[])
         : []),
@@ -415,6 +421,9 @@ export async function reconcileDreamerReminders(
         ? (['inactivity'] as DreamerReminderType[])
         : []),
     ],
+    journalById: indexAnalysisReadyJournal(input.analysisReadyJournal),
+    preserveAnalysisReady,
+    replaceAnalysisReadyDreamId: input.replaceAnalysisReadyDreamId,
   });
 
   await Promise.all(
@@ -640,6 +649,17 @@ export async function presentAnalysisReadyNotification(dreamId: number): Promise
     analysisReady: { dreamId, triggerAt: Date.now() + 1_000 },
   }).find((occurrence) => occurrence.reminderType === 'analysis_ready');
   if (!desired) return;
+
+  const scheduled = (await Notifications.getAllScheduledNotificationsAsync()).map(
+    toDreamerScheduledRequest
+  );
+  const obsolete = collectObsoleteAnalysisReadyIdentifiers(scheduled, {
+    preserveAnalysisReady: true,
+    replaceDreamId: dreamId,
+  });
+  await Promise.all(
+    obsolete.map((identifier) => Notifications.cancelScheduledNotificationAsync(identifier))
+  );
 
   await Notifications.scheduleNotificationAsync({
     content: {

@@ -12,9 +12,12 @@ import {
   WEEKEND_WEEKDAYS,
   WEEKLY_RECAP_TIME,
   WEEKLY_RECAP_WEEKDAY,
+  analysisReadyJournalSignature,
   analysisReadyNotificationUrl,
   buildDreamerNotificationContentData,
   buildDreamerNotificationPlan,
+  collectObsoleteAnalysisReadyIdentifiers,
+  indexAnalysisReadyJournal,
   isSafeDreamerNotificationRoute,
   normalizeNotificationSettings,
   parseJournalNotificationDreamId,
@@ -290,6 +293,117 @@ describe('deep-link routing', () => {
       [DREAMER_SIGNATURE_KEY]: ready.signature,
       dreamId: 7,
     });
+  });
+});
+
+describe('analysis_ready obsolescence', () => {
+  const readyPlan = buildDreamerNotificationPlan({
+    settings: essentialSettings,
+    timeContext: PARIS_CEST,
+    now: NOW,
+    analysisReady: { dreamId: 42, triggerAt: IN_TWO_HOURS },
+  });
+  const ready = readyPlan.find((item) => item.reminderType === 'analysis_ready');
+  if (!ready) throw new Error('expected analysis-ready occurrence');
+  const daily = buildDreamerNotificationPlan({
+    settings: { ...essentialSettings, weekendEnabled: false, weeklyRecapEnabled: false },
+    timeContext: PARIS_CEST,
+    now: NOW,
+  }).find((item) => item.occurrenceId === 'daily:weekday:2');
+  if (!daily) throw new Error('expected weekday occurrence');
+
+  const readyRequest = scheduled('ready-42', buildDreamerNotificationContentData(ready, PARIS_CEST));
+  const readyDuplicate = scheduled('ready-42-dup', buildDreamerNotificationContentData(ready, PARIS_CEST));
+  const laterReady = buildDreamerNotificationPlan({
+    settings: essentialSettings,
+    timeContext: PARIS_CEST,
+    now: NOW,
+    analysisReady: { dreamId: 91, triggerAt: IN_TWO_HOURS },
+  }).find((item) => item.reminderType === 'analysis_ready');
+  if (!laterReady) throw new Error('expected later analysis-ready occurrence');
+  const laterRequest = scheduled('ready-91', buildDreamerNotificationContentData(laterReady, PARIS_CEST));
+  const dailyRequest = scheduled('daily-mon', buildDreamerNotificationContentData(daily, PARIS_CEST));
+  const lucidRequest = scheduled('lucid-night', {
+    [DREAMER_OWNER_KEY]: LUCID_TRAINER_NOTIFICATION_OWNER,
+    url: '/lucid/(tabs)/night',
+  });
+
+  it('cancels a ready notice when the dream is gone or the analysis is no longer applicable', () => {
+    const scheduledRequests = [readyRequest, laterRequest, dailyRequest, lucidRequest];
+    const journal = indexAnalysisReadyJournal([
+      { id: 91, analysisStatus: 'done' },
+    ]);
+
+    expect(
+      collectObsoleteAnalysisReadyIdentifiers(scheduledRequests, { journalById: journal })
+    ).toEqual(['ready-42']);
+
+    const pendingJournal = indexAnalysisReadyJournal([
+      { id: 42, analysisStatus: 'pending' },
+      { id: 91, analysisStatus: 'done' },
+    ]);
+    expect(
+      collectObsoleteAnalysisReadyIdentifiers(scheduledRequests, { journalById: pendingJournal })
+    ).toEqual(['ready-42']);
+  });
+
+  it('replaces the same-dream occurrence and drops concurrent duplicates without touching other families', () => {
+    const scheduledRequests = [readyRequest, readyDuplicate, laterRequest, dailyRequest, lucidRequest];
+    expect(
+      collectObsoleteAnalysisReadyIdentifiers(scheduledRequests, { replaceDreamId: 42 })
+    ).toEqual(['ready-42', 'ready-42-dup']);
+    expect(
+      collectObsoleteAnalysisReadyIdentifiers(scheduledRequests)
+    ).toEqual(['ready-42-dup']);
+  });
+
+  it('cancels every ready notice when preserveAnalysisReady is false, leaving Lucid and morning families', () => {
+    const scheduledRequests = [readyRequest, laterRequest, dailyRequest, lucidRequest];
+    const result = reconcileDreamerNotificationPlan(
+      scheduledRequests,
+      buildDreamerNotificationPlan({
+        settings: { ...essentialSettings, weekendEnabled: false, weeklyRecapEnabled: false },
+        timeContext: PARIS_CEST,
+        now: NOW,
+      }),
+      PARIS_CEST,
+      {
+        preserveReminderTypes: ['daily', 'weekly_recap'],
+        preserveAnalysisReady: false,
+      }
+    );
+
+    expect(result.toCancel).toEqual(expect.arrayContaining(['ready-42', 'ready-91']));
+    expect(result.toCancel).not.toContain('lucid-night');
+    expect(result.toCancel).not.toContain('daily-mon');
+    expect(result.unchangedOccurrenceIds).toEqual(['daily:weekday:2']);
+  });
+
+  it('keeps a still-applicable ready notice across a journal reconcile', () => {
+    const scheduledRequests = [readyRequest, laterRequest, dailyRequest, lucidRequest];
+    const result = reconcileDreamerNotificationPlan(
+      scheduledRequests,
+      buildDreamerNotificationPlan({
+        settings: { ...essentialSettings, weekendEnabled: false, weeklyRecapEnabled: false },
+        timeContext: PARIS_CEST,
+        now: NOW,
+      }),
+      PARIS_CEST,
+      {
+        preserveReminderTypes: ['analysis_ready', 'daily'],
+        journalById: indexAnalysisReadyJournal([
+          { id: 42, analysisStatus: 'done' },
+          { id: 91, isAnalyzed: true },
+        ]),
+      }
+    );
+
+    expect(result.toCancel).not.toEqual(expect.arrayContaining(['ready-42', 'ready-91']));
+    expect(result.toCancel).not.toContain('lucid-night');
+    expect(analysisReadyJournalSignature([
+      { id: 42, analysisStatus: 'done' },
+      { id: 91, analysisStatus: 'pending' },
+    ])).toBe('42');
   });
 });
 
