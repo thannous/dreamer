@@ -110,16 +110,17 @@ describe('journal detail zone presentation', () => {
     const interpretationRender = source.indexOf(') : dream.interpretation ? (');
     const analyzeCta = source.indexOf("renderDetailActionCard(['analyze'])");
     const reflectionCta = source.indexOf("renderDetailActionCard(['explore', 'continue'])");
+    const symbols = source.indexOf("t('journal.detail.symbols_header')");
 
     expect(dreamZone).toBeGreaterThan(-1);
     expect(readingZone).toBeGreaterThan(dreamZone);
-    expect(illustration).toBeGreaterThan(dreamZone);
-    expect(interpretationRender).toBeGreaterThan(illustration);
-    expect(readingZone).toBeGreaterThan(illustration);
-    expect(reflectionZone).toBeGreaterThan(readingZone);
     expect(analyzeCta).toBeGreaterThan(dreamZone);
-    expect(analyzeCta).toBeLessThan(illustration);
-    expect(reflectionCta).toBeGreaterThan(readingZone);
+    expect(analyzeCta).toBeLessThan(readingZone);
+    expect(interpretationRender).toBeGreaterThan(readingZone);
+    expect(illustration).toBeGreaterThan(interpretationRender);
+    expect(symbols).toBeGreaterThan(illustration);
+    expect(reflectionZone).toBeGreaterThan(symbols);
+    expect(reflectionCta).toBeGreaterThan(reflectionZone);
     expect(source.split("renderDetailActionCard(['analyze'])")).toHaveLength(2);
     expect(source.split("renderDetailActionCard(['explore', 'continue'])")).toHaveLength(2);
     expect(source).not.toContain('{renderDetailActionCard()}');

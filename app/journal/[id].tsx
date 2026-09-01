@@ -2030,9 +2030,7 @@ export default function JournalDetailScreen() {
               {renderDetailActionCard(['analyze'])}
             </Reveal>
 
-            <Reveal index={4}>{renderIllustrationSection()}</Reveal>
-
-            <Reveal index={5}>
+            <Reveal index={4}>
               {(showCompletedReading || isAnalysisPending) ? (
                 <View testID={TID.Component.DreamDetailReadingZone}>
                   {renderDetailZoneHeader(t('journal.detail.zone.reading'), TID.Text.DreamDetailReadingZone)}
@@ -2068,49 +2066,53 @@ export default function JournalDetailScreen() {
                       />
                     </>
                   ) : null}
-
-                  {!isAnalysisPending && showCompletedReading && dream.symbols && dream.symbols.length > 0 ? (
-                    <>
-                      <View className="mt-2 mb-3 items-center">
-                        <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
-                          {t('journal.detail.symbols_header')}
-                        </Text>
-                        <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
-                      </View>
-                      {dream.symbols.map((symbol, index) => (
-                        <View key={`symbol-${index}`} className="mb-3">
-                          <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
-                            {symbol.name}
-                          </Text>
-                          <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
-                            {symbol.meaning}
-                          </Text>
-                        </View>
-                      ))}
-                    </>
-                  ) : null}
-
-                  {!isAnalysisPending && showCompletedReading && dream.emotions && dream.emotions.length > 0 ? (
-                    <>
-                      <View className="mt-2 mb-3 items-center">
-                        <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
-                          {t('journal.detail.emotions_header')}
-                        </Text>
-                        <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
-                      </View>
-                      {dream.emotions.map((emotion, index) => (
-                        <View key={`emotion-${index}`} className="mb-3">
-                          <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
-                            {emotion.name}
-                          </Text>
-                          <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
-                            {emotion.insight}
-                          </Text>
-                        </View>
-                      ))}
-                    </>
-                  ) : null}
                 </View>
+              ) : null}
+            </Reveal>
+
+            <Reveal index={5}>{renderIllustrationSection()}</Reveal>
+
+            <Reveal index={6}>
+              {!isAnalysisPending && showCompletedReading && dream.symbols && dream.symbols.length > 0 ? (
+                <>
+                  <View className="mt-2 mb-3 items-center">
+                    <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
+                      {t('journal.detail.symbols_header')}
+                    </Text>
+                    <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
+                  </View>
+                  {dream.symbols.map((symbol, index) => (
+                    <View key={`symbol-${index}`} className="mb-3">
+                      <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
+                        {symbol.name}
+                      </Text>
+                      <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
+                        {symbol.meaning}
+                      </Text>
+                    </View>
+                  ))}
+                </>
+              ) : null}
+
+              {!isAnalysisPending && showCompletedReading && dream.emotions && dream.emotions.length > 0 ? (
+                <>
+                  <View className="mt-2 mb-3 items-center">
+                    <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
+                      {t('journal.detail.emotions_header')}
+                    </Text>
+                    <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
+                  </View>
+                  {dream.emotions.map((emotion, index) => (
+                    <View key={`emotion-${index}`} className="mb-3">
+                      <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
+                        {emotion.name}
+                      </Text>
+                      <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
+                        {emotion.insight}
+                      </Text>
+                    </View>
+                  ))}
+                </>
               ) : null}
 
               {(showCompletedReading || primaryAction === 'explore' || primaryAction === 'continue') ? (
@@ -2138,7 +2140,7 @@ export default function JournalDetailScreen() {
               ) : null}
             </Reveal>
 
-            <Reveal index={6}>
+            <Reveal index={7}>
               {renderFirstValueBackupCard()}
 
               {!isEditing && !isEditingTranscript ? (
@@ -2146,7 +2148,7 @@ export default function JournalDetailScreen() {
               ) : null}
             </Reveal>
 
-            <Reveal index={7}>
+            <Reveal index={8}>
               {renderDetailZoneHeader(t('journal.detail.zone.actions'))}
 
               <View className="mb-6 flex-row justify-around gap-3">
