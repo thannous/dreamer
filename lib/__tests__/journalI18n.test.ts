@@ -70,8 +70,13 @@ const detailActionKeys = [
   'journal.detail.backup_prompt.message',
   'journal.detail.backup_prompt.cta',
   'journal.detail.zone.memory',
+  'journal.detail.zone.dream',
   'journal.detail.zone.reading',
+  'journal.detail.zone.reflection',
   'journal.detail.zone.actions',
+  'journal.detail.explore_button.new',
+  'journal.detail.explore_button.continue',
+  'journal.detail.reflection_header',
   'journal.detail.stale.label',
   'journal.detail.stale.banner',
   'journal.detail.stale.cta',
@@ -159,6 +164,69 @@ describe('Journal i18n - badges & filter accessibility', () => {
     expect(getTranslator('fr')('journal.detail.backup_prompt.message')).toBe(
       'Créez un compte gratuit après votre première analyse pour sauvegarder votre journal et y accéder à vie.',
     );
+  });
+
+  it('labels the three dream-detail zones and the reflection journey in every language', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    const expected = {
+      en: {
+        dream: 'My dream',
+        reading: 'Noctalia analysis',
+        reflection: 'My reflection',
+        start: 'Start my reflection',
+        continue: 'Continue my reflection',
+      },
+      fr: {
+        dream: 'Mon rêve',
+        reading: 'Analyse Noctalia',
+        reflection: 'Ma réflexion',
+        start: 'Commencer ma réflexion',
+        continue: 'Continuer ma réflexion',
+      },
+      es: {
+        dream: 'Mi sueño',
+        reading: 'Análisis Noctalia',
+        reflection: 'Mi reflexión',
+        start: 'Empezar mi reflexión',
+        continue: 'Continuar mi reflexión',
+      },
+      de: {
+        dream: 'Mein Traum',
+        reading: 'Noctalia-Analyse',
+        reflection: 'Meine Reflexion',
+        start: 'Meine Reflexion beginnen',
+        continue: 'Meine Reflexion fortsetzen',
+      },
+      it: {
+        dream: 'Il mio sogno',
+        reading: 'Analisi Noctalia',
+        reflection: 'La mia riflessione',
+        start: 'Inizia la mia riflessione',
+        continue: 'Continua la mia riflessione',
+      },
+      pt: {
+        dream: 'Meu sonho',
+        reading: 'Análise Noctalia',
+        reflection: 'Minha reflexão',
+        start: 'Começar a minha reflexão',
+        continue: 'Continuar a minha reflexão',
+      },
+    } as const;
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+      const copy = expected[lang];
+      expect(t('journal.detail.zone.dream')).toBe(copy.dream);
+      expect(t('journal.detail.zone.reading')).toBe(copy.reading);
+      expect(t('journal.detail.zone.reflection')).toBe(copy.reflection);
+      expect(t('journal.detail.explore_button.new')).toBe(copy.start);
+      expect(t('journal.detail.explore_button.continue')).toBe(copy.continue);
+      expect(t('journal.detail.action.explore.title').toLowerCase()).not.toMatch(/explor/);
+      expect(t('journal.detail.action.continue.title').toLowerCase()).not.toMatch(/explor/);
+      expect(t('journal.detail.explore_button.new').toLowerCase()).not.toMatch(/explor|analiz|analys/);
+      expect(t('journal.detail.explore_button.continue').toLowerCase()).not.toMatch(/explor|analiz|analys/);
+    }
   });
 });
 

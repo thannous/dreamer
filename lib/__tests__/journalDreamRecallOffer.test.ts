@@ -92,13 +92,39 @@ describe('journal detail recall offer wiring', () => {
   it('places the card before analysis, interpretation, and the detail CTA', () => {
     expect(reveal3.indexOf('<DreamRecallAssistantCard')).toBeGreaterThan(-1);
     expect(reveal3.indexOf('<DreamRecallAssistantCard')).toBeLessThan(
-      reveal3.indexOf('{renderDetailActionCard()}')
+      reveal3.indexOf("renderDetailActionCard(['analyze'])")
     );
-    expect(reveal3.indexOf('<DreamRecallAssistantCard')).toBeLessThan(
-      reveal3.indexOf('dream.interpretation')
-    );
-    expect(reveal3.indexOf('<DreamRecallAssistantCard')).toBeLessThan(
-      reveal3.indexOf('showCompletedReading')
-    );
+    expect(reveal3).not.toContain('dream.interpretation');
+    expect(reveal3).not.toContain('showCompletedReading');
+  });
+});
+
+describe('journal detail zone presentation', () => {
+  const source = readFileSync(join(__dirname, '../../app/journal/[id].tsx'), 'utf8');
+
+  it('keeps the original narrative in an explicit dream zone before generated image and analysis', () => {
+    const dreamZone = source.indexOf("t('journal.detail.zone.dream')");
+    const readingZone = source.indexOf("t('journal.detail.zone.reading')");
+    const reflectionZone = source.indexOf("t('journal.detail.zone.reflection')");
+    const illustration = source.indexOf('{renderIllustrationSection()}');
+    const interpretationRender = source.indexOf(') : dream.interpretation ? (');
+    const analyzeCta = source.indexOf("renderDetailActionCard(['analyze'])");
+    const reflectionCta = source.indexOf("renderDetailActionCard(['explore', 'continue'])");
+
+    expect(dreamZone).toBeGreaterThan(-1);
+    expect(readingZone).toBeGreaterThan(dreamZone);
+    expect(illustration).toBeGreaterThan(dreamZone);
+    expect(interpretationRender).toBeGreaterThan(illustration);
+    expect(readingZone).toBeGreaterThan(illustration);
+    expect(reflectionZone).toBeGreaterThan(readingZone);
+    expect(analyzeCta).toBeGreaterThan(dreamZone);
+    expect(analyzeCta).toBeLessThan(illustration);
+    expect(reflectionCta).toBeGreaterThan(readingZone);
+    expect(source.split("renderDetailActionCard(['analyze'])")).toHaveLength(2);
+    expect(source.split("renderDetailActionCard(['explore', 'continue'])")).toHaveLength(2);
+    expect(source).not.toContain('{renderDetailActionCard()}');
+    expect(source).toContain('formatDreamDate(dream.id)');
+    expect(source).toContain('formatDreamTime(dream.id)');
+    expect(source).not.toContain('createdAt ?? dream.clientUpdatedAt ?? dream.id');
   });
 });

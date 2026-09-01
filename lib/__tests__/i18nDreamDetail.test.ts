@@ -47,4 +47,22 @@ describe('dream detail i18n', () => {
       );
     }
   });
+
+  it('exposes the three explicit detail zones in every language', () => {
+    const expected = {
+      de: { dream: 'Mein Traum', reading: 'Noctalia-Analyse', reflection: 'Meine Reflexion' },
+      en: { dream: 'My dream', reading: 'Noctalia analysis', reflection: 'My reflection' },
+      es: { dream: 'Mi sueño', reading: 'Análisis Noctalia', reflection: 'Mi reflexión' },
+      fr: { dream: 'Mon rêve', reading: 'Analyse Noctalia', reflection: 'Ma réflexion' },
+      it: { dream: 'Il mio sogno', reading: 'Analisi Noctalia', reflection: 'La mia riflessione' },
+      pt: { dream: 'Meu sonho', reading: 'Análise Noctalia', reflection: 'Minha reflexão' },
+    } as const;
+
+    for (const [lang, translations] of Object.entries(packs)) {
+      const copy = expected[lang as keyof typeof expected];
+      expect(translations['journal.detail.zone.dream']).toBe(copy.dream);
+      expect(translations['journal.detail.zone.reading']).toBe(copy.reading);
+      expect(translations['journal.detail.zone.reflection']).toBe(copy.reflection);
+    }
+  });
 });
