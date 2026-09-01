@@ -303,26 +303,6 @@ jest.doMock('@/components/recording/RecordingFooter', () => ({
 }));
 
 jest.doMock('@/components/recording/RecordingSheets', () => ({
-  AnalyzePromptSheet: () => null,
-  FirstDreamSheet: ({
-    onAnalyze,
-    onJournal,
-    visible,
-  }: {
-    onAnalyze: () => void;
-    onJournal: () => void;
-    visible: boolean;
-  }) =>
-    visible ? (
-      <div data-testid="first-dream-sheet">
-        <button data-testid="first-dream-analyze" onClick={onAnalyze}>
-          Analyze
-        </button>
-        <button data-testid="first-dream-journal" onClick={onJournal}>
-          Journal
-        </button>
-      </div>
-    ) : null,
   MicPermissionRationaleSheet: ({
     onAllow,
     onUseText,
@@ -342,7 +322,6 @@ jest.doMock('@/components/recording/RecordingSheets', () => ({
         </button>
       </div>
     ) : null,
-  PostSaveOfferSheet: () => null,
   QuotaLimitSheet: () => null,
   ReferenceImageSheet: () => null,
 }));

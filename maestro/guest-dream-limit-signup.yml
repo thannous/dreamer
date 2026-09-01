@@ -12,8 +12,12 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
 - tapOn:
-    id: btn.firstDream.dismiss
+    id: btn.navigateJournal
 
 # Guest dream 2
 - tapOn:
@@ -27,10 +31,12 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
-- assertVisible:
-    id: text.analyzePromptTitle
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
 - tapOn:
-    id: btn.analyzePrompt.journal
+    id: btn.navigateJournal
 - waitForAnimationToEnd
 
 # Guest dream 3 - still saved as guest
@@ -43,10 +49,12 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
-- assertVisible:
-    id: text.analyzePromptTitle
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
 - tapOn:
-    id: btn.analyzePrompt.journal
+    id: btn.navigateJournal
 - waitForAnimationToEnd
 - assertVisible:
     id: screen.journal

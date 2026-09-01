@@ -12,10 +12,16 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
-- assertVisible:
-    id: text.firstDream.title
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: btn.dream.primaryCta
+    direction: DOWN
 - tapOn:
-    id: btn.firstDream.analyze
+    id: btn.dream.primaryCta
 - waitForAnimationToEnd
 - scrollUntilVisible:
     element:
@@ -46,10 +52,16 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
-- assertVisible:
-    id: text.analyzePromptTitle
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: btn.dream.primaryCta
+    direction: DOWN
 - tapOn:
-    id: btn.analyzePrompt.analyze
+    id: btn.dream.primaryCta
 - waitForAnimationToEnd
 - scrollUntilVisible:
     element:
@@ -83,10 +95,14 @@ appId: com.tanuki75.noctalia
 - runFlow:
     when:
       visible:
-        id: btn.analyzePrompt.analyze
+        id: btn.dream.primaryCta
     commands:
+      - scrollUntilVisible:
+          element:
+            id: btn.dream.primaryCta
+          direction: DOWN
       - tapOn:
-          id: btn.analyzePrompt.analyze
+          id: btn.dream.primaryCta
       - waitForAnimationToEnd
 - runFlow:
     when:
