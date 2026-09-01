@@ -57,8 +57,16 @@ export type DreamTrendsPatterns = {
   recurrence: { count: number; hasRecurrence: boolean };
 };
 
+export type DreamTrendsEvolutionDay = {
+  dateKey: string;
+  total: number;
+  dominantTheme: DreamTheme;
+  themes: DreamTrendsFacet<DreamTheme>[];
+};
+
 export type DreamTrendsEvolution = {
   themePoints: DreamTrendsThemePoint[];
+  days: DreamTrendsEvolutionDay[];
   nextAction: DreamTrendsNextAction;
 };
 
@@ -271,6 +279,34 @@ function buildThemePoints(
   return recent;
 }
 
+export function groupDreamTrendEvolutionDays(
+  points: DreamTrendsThemePoint[],
+): DreamTrendsEvolutionDay[] {
+  const byDate = new Map<string, Map<DreamTheme, number>>();
+
+  for (const point of points) {
+    if (!point?.dateKey || !DREAM_THEMES.has(point.theme)) continue;
+    if (!Number.isFinite(point.count) || point.count <= 0) continue;
+    const themes = byDate.get(point.dateKey) ?? new Map<DreamTheme, number>();
+    themes.set(point.theme, (themes.get(point.theme) ?? 0) + point.count);
+    byDate.set(point.dateKey, themes);
+  }
+
+  return Array.from(byDate.entries())
+    .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
+    .map(([dateKey, themeCounts]) => {
+      const themes = toFacets(themeCounts, themeCounts.size);
+      const total = themes.reduce((sum, facet) => sum + facet.count, 0);
+      return {
+        dateKey,
+        total,
+        dominantTheme: themes[0]?.value ?? 'calm',
+        themes,
+      };
+    })
+    .filter((day) => day.themes.length > 0 && Number.isFinite(day.total));
+}
+
 /**
  * Pure Tendances model (TI-426).
  *
@@ -362,6 +398,7 @@ export function buildDreamTrends(
     calendar,
   );
   const averagePerWeek = usefulAveragePerWeek(validDreams.length, firstAt, now, calendar);
+  const themePoints = buildThemePoints(themedByDay);
 
   return {
     week: {
@@ -383,7 +420,8 @@ export function buildDreamTrends(
       recurrence: { count: recurrenceCount, hasRecurrence },
     },
     evolution: {
-      themePoints: buildThemePoints(themedByDay),
+      themePoints,
+      days: groupDreamTrendEvolutionDays(themePoints),
       nextAction: resolveNextAction({
         validCount: validDreams.length,
         weekCount,

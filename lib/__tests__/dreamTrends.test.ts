@@ -65,6 +65,7 @@ describe('buildDreamTrends', () => {
     expect(trends.patterns.types).toEqual([]);
     expect(trends.patterns.recurrence).toEqual({ count: 0, hasRecurrence: false });
     expect(trends.evolution.themePoints).toEqual([]);
+    expect(trends.evolution.days).toEqual([]);
     expect(trends.evolution.nextAction).toBe('capture_first');
     expect(JSON.stringify(trends)).not.toMatch(/chat|message|mostDiscussed|analyzedCount|engagement/i);
   });
@@ -368,6 +369,11 @@ describe('buildDreamTrends', () => {
       { dateKey: '2026-08-24', theme: 'calm', count: 1 },
       { dateKey: '2026-08-25', theme: 'calm', count: 1 },
     ]);
+    expect(trends.evolution.days.map((day) => ({ dateKey: day.dateKey, total: day.total, dominantTheme: day.dominantTheme }))).toEqual([
+      { dateKey: '2026-08-23', total: 1, dominantTheme: 'noir' },
+      { dateKey: '2026-08-24', total: 1, dominantTheme: 'calm' },
+      { dateKey: '2026-08-25', total: 1, dominantTheme: 'calm' },
+    ]);
     expect(trends.evolution.nextAction).toBe('review_patterns');
   });
 
@@ -428,7 +434,44 @@ describe('buildDreamTrends', () => {
     expect(trends.evolution.themePoints.map((point) => point.dateKey)).toEqual(
       [...trends.evolution.themePoints.map((point) => point.dateKey)].sort(),
     );
+    expect(trends.evolution.days.map((day) => day.dateKey)).toEqual(
+      [...trends.evolution.days.map((day) => day.dateKey)].sort(),
+    );
+    expect(trends.evolution.days.every((day) => day.total > 0 && Number.isFinite(day.total))).toBe(true);
     expect(serialized).not.toMatch(/NaN|Infinity/);
     expect(localDateKey(NOW)).toBe('2026-08-29');
+  });
+
+  it('groups chronological theme points into labelled evolution days', () => {
+    const trends = buildDreamTrends(
+      [
+        analyzed(localDay(2026, 7, 27), { theme: 'noir' }),
+        analyzed(localDay(2026, 7, 28, 8), { theme: 'calm' }),
+        analyzed(localDay(2026, 7, 28, 21), { theme: 'calm' }),
+        analyzed(localDay(2026, 7, 29), { theme: 'mystical' }),
+      ],
+      { now: NOW },
+    );
+
+    expect(trends.evolution.days).toEqual([
+      {
+        dateKey: '2026-08-27',
+        total: 1,
+        dominantTheme: 'noir',
+        themes: [{ value: 'noir', count: 1 }],
+      },
+      {
+        dateKey: '2026-08-28',
+        total: 2,
+        dominantTheme: 'calm',
+        themes: [{ value: 'calm', count: 2 }],
+      },
+      {
+        dateKey: '2026-08-29',
+        total: 1,
+        dominantTheme: 'mystical',
+        themes: [{ value: 'mystical', count: 1 }],
+      },
+    ]);
   });
 });

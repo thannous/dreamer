@@ -13,15 +13,26 @@ import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { StatsEvolutionBars } from '@/components/stats/StatsEvolutionBars';
+import { StatsRankedList, type StatsRankedRow } from '@/components/stats/StatsRankedList';
+import { StatsRhythmChart } from '@/components/stats/StatsRhythmChart';
 import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useDreams } from '@/context/DreamsContext';
+import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
-import { buildDreamTrends, type DreamTrendsNextAction } from '@/lib/dreamTrends';
+import {
+  buildDreamTrends,
+  type DreamTrendsFacet,
+  type DreamTrendsNextAction,
+} from '@/lib/dreamTrends';
 import { getDreamThemeLabel, getDreamTypeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
 import { TID } from '@/lib/testIDs';
+
+const COMPACT_BREAKPOINT = 360;
 
 const WEEKDAY_KEYS = [
   'trends.week.weekday.mon',
@@ -50,13 +61,45 @@ function weekdayLabelKey(weekday: number): (typeof WEEKDAY_KEYS)[number] {
   return WEEKDAY_KEYS[0];
 }
 
+function dateFromLocalKey(dateKey: string): Date {
+  const [year, month, day] = dateKey.split('-').map((part) => Number(part));
+  return new Date(year || 0, (month || 1) - 1, day || 1);
+}
+
+function dreamCountLabel(
+  count: number,
+  t: (key: string, params?: Record<string, string | number>) => string,
+  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string,
+): string {
+  return t(count === 1 ? 'stats.legend.count_one' : 'stats.legend.count', {
+    count: formatNumber(count),
+  });
+}
+
+function toRankedRows<T extends string>(
+  facets: DreamTrendsFacet<T>[],
+  labelOf: (value: T) => string,
+  t: (key: string, params?: Record<string, string | number>) => string,
+  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string,
+): StatsRankedRow[] {
+  return facets.map((facet) => ({
+    id: facet.value,
+    label: labelOf(facet.value),
+    count: facet.count,
+    countLabel: dreamCountLabel(facet.count, t, formatNumber),
+  }));
+}
+
 export default function StatisticsScreen() {
   const { dreams, loaded } = useDreams();
   const { t } = useTranslation();
   const { formatDate, formatNumber } = useLocaleFormatting();
   const { width, height } = useWindowDimensions();
+  const { colors, mode } = useTheme();
   useClearWebFocus();
 
+  const compact = width < COMPACT_BREAKPOINT;
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height);
   const scrollBottomPadding = isDesktopLayout
@@ -123,6 +166,26 @@ export default function StatisticsScreen() {
     : t('trends.week.last_activity.value', {
         date: formatDate(week.lastActivityAt, { dateStyle: 'medium' }),
       });
+  const metricClassName = compact ? 'w-full min-w-0 gap-1' : 'min-w-[140px] min-w-0 flex-1 gap-1';
+  const sectionPad = compact ? 'p-4' : 'p-5';
+  const themeRows = toRankedRows(
+    patterns.themes,
+    (value) => getDreamThemeLabel(value, t) ?? value,
+    t,
+    formatNumber,
+  );
+  const emotionRows = toRankedRows(
+    patterns.emotions,
+    (value) => getEmotionFamilyLabel(value, t) ?? value,
+    t,
+    formatNumber,
+  );
+  const typeRows = toRankedRows(
+    patterns.types,
+    (value) => getDreamTypeLabel(value, t) ?? value,
+    t,
+    formatNumber,
+  );
 
   return (
     <View className="flex-1 bg-ink">
@@ -138,7 +201,7 @@ export default function StatisticsScreen() {
           <MockNavigationRail />
           <View className="gap-6 p-4">
             <View
-              className="gap-4 rounded-[20px] border border-line-strong bg-ink-soft p-5"
+              className={`gap-4 rounded-[20px] border border-line-strong bg-ink-soft ${sectionPad}`}
               testID="trends.section.week"
               accessibilityRole="summary"
               accessibilityLabel={t('trends.section.week')}
@@ -147,7 +210,7 @@ export default function StatisticsScreen() {
                 {t('trends.section.week')}
               </Text>
               <View className="flex-row flex-wrap gap-3">
-                <View className="min-w-[140px] flex-1 gap-1">
+                <View className={metricClassName}>
                   <Text className="text-[12px] font-sans-medium text-ivory-muted">
                     {t('trends.week.count')}
                   </Text>
@@ -155,7 +218,7 @@ export default function StatisticsScreen() {
                     {formatNumber(week.count)}
                   </Text>
                 </View>
-                <View className="min-w-[140px] flex-1 gap-1">
+                <View className={metricClassName}>
                   <Text className="text-[12px] font-sans-medium text-ivory-muted">
                     {t('trends.week.active_days')}
                   </Text>
@@ -165,7 +228,7 @@ export default function StatisticsScreen() {
                     })}
                   </Text>
                 </View>
-                <View className="min-w-[140px] flex-1 gap-1">
+                <View className={metricClassName}>
                   <Text className="text-[12px] font-sans-medium text-ivory-muted">
                     {t('trends.week.streak.current')}
                   </Text>
@@ -173,7 +236,7 @@ export default function StatisticsScreen() {
                     {formatNumber(week.streak.current)}
                   </Text>
                 </View>
-                <View className="min-w-[140px] flex-1 gap-1">
+                <View className={metricClassName}>
                   <Text className="text-[12px] font-sans-medium text-ivory-muted">
                     {t('trends.week.streak.longest')}
                   </Text>
@@ -182,7 +245,7 @@ export default function StatisticsScreen() {
                   </Text>
                 </View>
                 {showAverage ? (
-                  <View className="min-w-[140px] flex-1 gap-1">
+                  <View className={metricClassName}>
                     <Text className="text-[12px] font-sans-medium text-ivory-muted">
                       {t('trends.week.average')}
                     </Text>
@@ -197,25 +260,21 @@ export default function StatisticsScreen() {
               <Text className="text-[14px] font-sans text-ivory-muted">
                 {lastActivityLabel}
               </Text>
-              <View className="flex-row flex-wrap gap-2" accessibilityLabel={t('trends.week.rhythm')}>
-                {week.rhythm.map((day) => (
-                  <View
-                    key={day.weekday}
-                    className="min-w-[72px] flex-1 items-center gap-1 rounded-[14px] border border-line bg-ink px-2 py-2"
-                  >
-                    <Text className="text-[11px] font-sans-medium text-ivory-muted">
-                      {t(weekdayLabelKey(day.weekday))}
-                    </Text>
-                    <Text className="text-[16px] font-display-semibold text-ivory">
-                      {formatNumber(day.count)}
-                    </Text>
-                  </View>
-                ))}
-              </View>
+              <StatsRhythmChart
+                compact={compact}
+                accessibilityLabel={t('trends.week.rhythm')}
+                testID="trends.week.rhythm"
+                days={week.rhythm.map((day) => ({
+                  weekday: day.weekday,
+                  count: day.count,
+                  label: t(weekdayLabelKey(day.weekday)),
+                  countLabel: dreamCountLabel(day.count, t, formatNumber),
+                }))}
+              />
             </View>
 
             <View
-              className="gap-4 rounded-[20px] border border-line-strong bg-ink-soft p-5"
+              className={`gap-4 rounded-[20px] border border-line-strong bg-ink-soft ${sectionPad}`}
               testID="trends.section.patterns"
               accessibilityRole="summary"
               accessibilityLabel={t('trends.section.patterns')}
@@ -235,49 +294,43 @@ export default function StatisticsScreen() {
                 </View>
               ) : (
                 <View className="gap-4">
-                  {patterns.themes.length > 0 ? (
+                  {themeRows.length > 0 ? (
                     <View className="gap-2">
                       <Text className="text-[13px] font-sans-medium text-ivory-muted">
                         {t('trends.patterns.themes')}
                       </Text>
-                      {patterns.themes.map((facet) => (
-                        <Text key={facet.value} className="text-[15px] font-sans text-ivory">
-                          {t('trends.patterns.item', {
-                            label: getDreamThemeLabel(facet.value, t) ?? facet.value,
-                            count: formatNumber(facet.count),
-                          })}
-                        </Text>
-                      ))}
+                      <StatsRankedList
+                        noctalia={noctalia}
+                        rows={themeRows}
+                        maxCount={Math.max(...themeRows.map((row) => row.count), 1)}
+                        testID="trends.patterns.themes.list"
+                      />
                     </View>
                   ) : null}
-                  {patterns.emotions.length > 0 ? (
+                  {emotionRows.length > 0 ? (
                     <View className="gap-2">
                       <Text className="text-[13px] font-sans-medium text-ivory-muted">
                         {t('trends.patterns.emotions')}
                       </Text>
-                      {patterns.emotions.map((facet) => (
-                        <Text key={facet.value} className="text-[15px] font-sans text-ivory">
-                          {t('trends.patterns.item', {
-                            label: getEmotionFamilyLabel(facet.value, t) ?? facet.value,
-                            count: formatNumber(facet.count),
-                          })}
-                        </Text>
-                      ))}
+                      <StatsRankedList
+                        noctalia={noctalia}
+                        rows={emotionRows}
+                        maxCount={Math.max(...emotionRows.map((row) => row.count), 1)}
+                        testID="trends.patterns.emotions.list"
+                      />
                     </View>
                   ) : null}
-                  {patterns.types.length > 0 ? (
+                  {typeRows.length > 0 ? (
                     <View className="gap-2">
                       <Text className="text-[13px] font-sans-medium text-ivory-muted">
                         {t('trends.patterns.types')}
                       </Text>
-                      {patterns.types.map((facet) => (
-                        <Text key={facet.value} className="text-[15px] font-sans text-ivory">
-                          {t('trends.patterns.item', {
-                            label: getDreamTypeLabel(facet.value, t) ?? facet.value,
-                            count: formatNumber(facet.count),
-                          })}
-                        </Text>
-                      ))}
+                      <StatsRankedList
+                        noctalia={noctalia}
+                        rows={typeRows}
+                        maxCount={Math.max(...typeRows.map((row) => row.count), 1)}
+                        testID="trends.patterns.types.list"
+                      />
                     </View>
                   ) : null}
                   {patterns.recurrence.hasRecurrence ? (
@@ -292,7 +345,7 @@ export default function StatisticsScreen() {
             </View>
 
             <View
-              className="gap-4 rounded-[20px] border border-line-strong bg-ink-soft p-5"
+              className={`gap-4 rounded-[20px] border border-line-strong bg-ink-soft ${sectionPad}`}
               testID="trends.section.evolution"
               accessibilityRole="summary"
               accessibilityLabel={t('trends.section.evolution')}
@@ -300,25 +353,34 @@ export default function StatisticsScreen() {
               <Text className="text-[20px] leading-[26px] font-display-semibold text-ivory">
                 {t('trends.section.evolution')}
               </Text>
-              {evolution.themePoints.length === 0 ? (
+              {evolution.days.length === 0 ? (
                 <Text className="text-[15px] font-sans text-ivory-muted">
                   {t('trends.evolution.empty')}
                 </Text>
               ) : (
-                <View className="gap-2">
-                  {evolution.themePoints.map((point) => (
-                    <Text
-                      key={`${point.dateKey}-${point.theme}`}
-                      className="text-[15px] font-sans text-ivory"
-                    >
-                      {t('trends.evolution.point', {
-                        date: point.dateKey,
-                        theme: getDreamThemeLabel(point.theme, t) ?? point.theme,
-                        count: formatNumber(point.count),
-                      })}
-                    </Text>
-                  ))}
-                </View>
+                <StatsEvolutionBars
+                  compact={compact}
+                  testID="trends.evolution.chart"
+                  days={evolution.days.map((day) => {
+                    const themeLabel = getDreamThemeLabel(day.dominantTheme, t) ?? day.dominantTheme;
+                    const dateLabel = formatDate(dateFromLocalKey(day.dateKey), {
+                      day: 'numeric',
+                      month: 'short',
+                    });
+                    return {
+                      dateKey: day.dateKey,
+                      dateLabel,
+                      themeLabel,
+                      count: day.total,
+                      countLabel: dreamCountLabel(day.total, t, formatNumber),
+                      accessibilityLabel: t('trends.evolution.point', {
+                        date: dateLabel,
+                        theme: themeLabel,
+                        count: formatNumber(day.total),
+                      }),
+                    };
+                  })}
+                />
               )}
               <Text className="text-[14px] font-sans text-ivory-muted">
                 {t(`trends.evolution.next.${evolution.nextAction}`)}
@@ -326,6 +388,7 @@ export default function StatisticsScreen() {
             </View>
 
             {primaryCta}
+            {compact ? <View testID="trends.layout.compact" /> : null}
           </View>
         </ScreenContainer>
       </ScrollView>

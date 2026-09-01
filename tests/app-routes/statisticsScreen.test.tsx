@@ -8,6 +8,7 @@ import type { DreamAnalysis } from '@/lib/types';
 
 const mockPush = jest.fn();
 const mockUseDreams = jest.fn();
+const mockWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
 
 const NOW = new Date(2026, 7, 29, 18, 0, 0).getTime();
 const localDay = (year: number, monthIndex: number, day: number, hour = 9): number =>
@@ -19,6 +20,9 @@ jest.setSystemTime(NOW);
 afterEach(() => {
   cleanup();
   jest.clearAllMocks();
+  mockWindow.width = 390;
+  mockWindow.height = 844;
+  mockWindow.fontScale = 1;
 });
 
 const analyzed = (
@@ -53,11 +57,13 @@ jest.mock('react-native', () => {
       accessibilityRole,
       accessibilityLabel,
       accessibilityLiveRegion,
+      accessibilityValue,
       contentContainerStyle,
       contentInsetAdjustmentBehavior,
       showsVerticalScrollIndicator,
       className,
       style,
+      numberOfLines,
       ...rest
     } = props;
     return {
@@ -68,6 +74,10 @@ jest.mock('react-native', () => {
       ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
       ...(accessibilityLiveRegion ? { 'aria-live': accessibilityLiveRegion } : {}),
       ...(accessible ? { 'aria-hidden': 'false' } : {}),
+      ...(accessibilityValue?.min !== undefined ? { 'aria-valuemin': String(accessibilityValue.min) } : {}),
+      ...(accessibilityValue?.max !== undefined ? { 'aria-valuemax': String(accessibilityValue.max) } : {}),
+      ...(accessibilityValue?.now !== undefined ? { 'aria-valuenow': String(accessibilityValue.now) } : {}),
+      ...(accessibilityValue?.text !== undefined ? { 'aria-valuetext': String(accessibilityValue.text) } : {}),
     };
   };
   const createElement = (tag: string) => {
@@ -92,7 +102,7 @@ jest.mock('react-native', () => {
     ScrollView: createElement('div'),
     Text: createElement('span'),
     View: createElement('div'),
-    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
+    useWindowDimensions: () => mockWindow,
     StyleSheet: {
       create: <T extends Record<string, any>>(styles: T) => styles,
       flatten: (style: any) => style,
@@ -158,6 +168,12 @@ jest.mock('@/hooks/useLocaleFormatting', () => ({
 jest.mock('@/context/DreamsContext', () => ({
   useDreams: () => mockUseDreams(),
 }));
+jest.mock('@/context/ThemeContext', () => {
+  const { DarkTheme } = require('@/constants/journalTheme');
+  return {
+    useTheme: () => ({ colors: DarkTheme, mode: 'dark' }),
+  };
+});
 
 const { default: StatisticsScreen } = require('@/app/(tabs)/statistics') as {
   default: React.ComponentType;
@@ -278,22 +294,30 @@ describe('Statistics screen VNext trends', () => {
     expectVNextShell();
     const patterns = within(screen.getByTestId('trends.section.patterns'));
     expect(patterns.queryByText('trends.patterns.empty')).toBeNull();
-    expect(patterns.getByText('trends.patterns.item:label=dream.theme.calm|count=2')).toBeTruthy();
-    expect(patterns.getByText('trends.patterns.item:label=dream.theme.noir|count=1')).toBeTruthy();
-    expect(patterns.getByText('trends.patterns.item:label=stats.emotion.family.fear|count=2')).toBeTruthy();
-    expect(patterns.getByText('trends.patterns.item:label=dream.type.recurring|count=1')).toBeTruthy();
+    expect(patterns.getByText('dream.theme.calm')).toBeTruthy();
+    expect(patterns.getByText('dream.theme.noir')).toBeTruthy();
+    expect(patterns.getAllByText('stats.legend.count:count=2').length).toBeGreaterThan(0);
+    expect(patterns.getAllByText('stats.legend.count_one:count=1').length).toBeGreaterThan(0);
+    expect(patterns.getByText('stats.emotion.family.fear')).toBeTruthy();
+    expect(patterns.getByText('dream.type.recurring')).toBeTruthy();
     expect(patterns.getByText('trends.patterns.recurrence:count=3')).toBeTruthy();
+
+    const calmBar = patterns.getByRole('progressbar', { name: 'dream.theme.calm' });
+    expect(calmBar.getAttribute('aria-valuenow')).toBe('2');
+    expect(calmBar.getAttribute('aria-valuemax')).toBe('2');
+    expect(calmBar.getAttribute('aria-valuetext')).toBe('stats.legend.count:count=2');
 
     const evolution = within(screen.getByTestId('trends.section.evolution'));
     expect(evolution.queryByText('trends.evolution.empty')).toBeNull();
+    expect(screen.getByTestId('trends.evolution.chart')).toBeTruthy();
     expect(
-      evolution.getByText('trends.evolution.point:date=2026-08-27|theme=dream.theme.noir|count=1'),
+      evolution.getByLabelText('trends.evolution.point:date=2026-08-27|theme=dream.theme.noir|count=1'),
     ).toBeTruthy();
     expect(
-      evolution.getByText('trends.evolution.point:date=2026-08-28|theme=dream.theme.calm|count=1'),
+      evolution.getByLabelText('trends.evolution.point:date=2026-08-28|theme=dream.theme.calm|count=1'),
     ).toBeTruthy();
     expect(
-      evolution.getByText('trends.evolution.point:date=2026-08-29|theme=dream.theme.calm|count=1'),
+      evolution.getByLabelText('trends.evolution.point:date=2026-08-29|theme=dream.theme.calm|count=1'),
     ).toBeTruthy();
     expect(screen.queryByText('trends.week.average')).toBeNull();
   });
@@ -324,5 +348,53 @@ describe('Statistics screen VNext trends', () => {
     expect(screen.queryByText(/stats\.(share|period|profile|empty|insight)/)).toBeNull();
     expect(screen.queryByText(/paywall/i)).toBeNull();
     expect(screen.queryByText(/chat/i)).toBeNull();
+  });
+
+  it('exposes labelled rhythm bars whose values are readable without colour', () => {
+    mockUseDreams.mockReturnValue({
+      dreams: [
+        analyzed(localDay(2026, 7, 24), { theme: 'calm' }),
+        analyzed(localDay(2026, 7, 29), { theme: 'noir' }),
+        analyzed(localDay(2026, 7, 29, 12), { theme: 'calm' }),
+      ],
+      loaded: true,
+    });
+
+    render(<StatisticsScreen />);
+
+    const monday = screen.getByRole('progressbar', { name: 'trends.week.weekday.mon' });
+    const saturday = screen.getByRole('progressbar', { name: 'trends.week.weekday.sat' });
+    expect(monday.getAttribute('aria-valuenow')).toBe('1');
+    expect(monday.getAttribute('aria-valuetext')).toBe('stats.legend.count_one:count=1');
+    expect(saturday.getAttribute('aria-valuenow')).toBe('2');
+    expect(saturday.getAttribute('aria-valuetext')).toBe('stats.legend.count:count=2');
+    expect(screen.getByTestId('trends.week.rhythm.day.1')).toBeTruthy();
+    expect(screen.getByTestId('trends.week.rhythm.day.0')).toBeTruthy();
+    expect(screen.queryByTestId('trends.layout.compact')).toBeNull();
+  });
+
+  it('keeps the three sections and labelled charts usable at 320 dp', () => {
+    mockWindow.width = 320;
+    mockUseDreams.mockReturnValue({
+      dreams: [
+        analyzed(localDay(2026, 7, 27), { theme: 'noir', dreamType: 'Recurring Dream' }),
+        analyzed(localDay(2026, 7, 28), { theme: 'calm' }),
+        analyzed(localDay(2026, 7, 29), { theme: 'calm' }),
+      ],
+      loaded: true,
+    });
+
+    render(<StatisticsScreen />);
+
+    expectVNextShell();
+    expect(screen.getByTestId('trends.layout.compact')).toBeTruthy();
+    expect(screen.getByTestId('trends.week.rhythm')).toBeTruthy();
+    for (const weekday of [1, 2, 3, 4, 5, 6, 0]) {
+      expect(screen.getByTestId(`trends.week.rhythm.day.${weekday}`)).toBeTruthy();
+    }
+    expect(screen.getByTestId('trends.patterns.themes.list')).toBeTruthy();
+    expect(screen.getByTestId('trends.evolution.chart')).toBeTruthy();
+    expect(screen.getByTestId('trends.evolution.chart.day.2026-08-27')).toBeTruthy();
+    expect(screen.getByRole('progressbar', { name: 'dream.theme.calm' }).getAttribute('aria-valuenow')).toBe('2');
   });
 });
