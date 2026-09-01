@@ -1,7 +1,7 @@
 /* @jest-environment jsdom */
 import React from 'react';
 import { cleanup, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 afterEach(() => {
   cleanup();
@@ -251,6 +251,13 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
   IconSymbol: () => <span data-testid="icon-symbol" />,
 }));
 
+jest.doMock('@/services/voiceLiveSpikeStorage', () => ({
+  loadDebugEnabled: jest.fn(async () => false),
+  loadFeatureEnabled: jest.fn(async () => false),
+  saveDebugEnabled: jest.fn(async () => undefined),
+  saveFeatureEnabled: jest.fn(async () => undefined),
+}));
+
 jest.doMock('react-native-reanimated', () => {
   const View = ({ children, ...props }: { children?: React.ReactNode; [key: string]: any }) => (
     <div {...props}>{children}</div>
@@ -281,9 +288,18 @@ jest.doMock('react-native-reanimated', () => {
 });
 
 const { default: SettingsScreen } = require('@/app/(tabs)/settings');
+const { VOICE_LIVE_SPIKE_TEST_IDS } = require('@/lib/voiceLiveSpikeHost');
+const { withDevFlag } = require('@/tests/setDevFlag');
 
 describe('Settings screen', () => {
+  let restoreDevFlag: (() => void) | undefined;
+
+  beforeEach(() => {
+    restoreDevFlag = withDevFlag(false);
+  });
+
   afterEach(() => {
+    restoreDevFlag?.();
     mockWindowWidth = 390;
     mockPlatformOS = 'web';
   });
@@ -306,6 +322,7 @@ describe('Settings screen', () => {
       subscriptionTitle: 'subscription.settings.title.plus',
       subscriptionSubtitle: 'settings.plus.subtitle',
     });
+    expect(screen.queryByTestId(VOICE_LIVE_SPIKE_TEST_IDS.debugEntry)).toBeNull();
   });
 
   it('[B] caps hosted React Native content to the centered desktop field group', () => {
