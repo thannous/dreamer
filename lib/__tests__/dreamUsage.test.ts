@@ -108,12 +108,26 @@ describe('dreamUsage helpers', () => {
   });
 
   it('does not treat dreams with only the transcript message as explored', () => {
+    const transcript = 'A quiet city at night.';
     const transcriptOnly = buildDream({
       id: 14,
-      chatHistory: [{ id: 'm1', role: 'user', text: 'Here is my dream: ...' }],
+      transcript,
+      chatHistory: [{ id: 'm1', role: 'user', text: `Here is my dream: ${transcript}` }],
     });
 
     expect(isDreamExplored(transcriptOnly)).toBe(false);
+  });
+
+  it('treats a prefixed message with a non-matching suffix as real chat', () => {
+    const exploredByPrefixBypass = buildDream({
+      id: 14.1,
+      transcript: 'A quiet city at night.',
+      chatHistory: [{ id: 'm1', role: 'user', text: 'Here is my dream: ...and a separate question' }],
+    });
+
+    expect(isOriginalTranscriptMessage(exploredByPrefixBypass.chatHistory[0], exploredByPrefixBypass)).toBe(false);
+    expect(isDreamExplored(exploredByPrefixBypass)).toBe(true);
+    expect(getUserChatMessageCount(exploredByPrefixBypass)).toBe(1);
   });
 
   it('does not treat a model greeting alone as explored', () => {
@@ -249,18 +263,37 @@ describe('dreamUsage helpers', () => {
     expect(getUserChatMessageCount(dream)).toBe(2);
   });
 
-  it('keeps a legacy-prefixed bootstrap excluded when the dream has no transcript', () => {
+  it('does not exempt a prefixed message unless its suffix equals the transcript', () => {
     const dream = buildDream({
       id: 25,
       transcript: '   ',
       chatHistory: [
         { id: 'm1', role: 'user', text: 'Voici mon rêve : A quiet city at night.' },
-        { id: 'm2', role: 'user', text: 'What does the city mean?' },
+        { id: 'm2', role: 'user', text: 'Here is my dream: anything at all' },
+        { id: 'm3', role: 'user', text: 'What does the city mean?' },
+      ],
+    });
+
+    expect(isOriginalTranscriptMessage(dream.chatHistory[0], dream)).toBe(false);
+    expect(isOriginalTranscriptMessage(dream.chatHistory[1], dream)).toBe(false);
+    expect(isOriginalTranscriptMessage(dream.chatHistory[2], dream)).toBe(false);
+    expect(getUserChatMessageCount(dream)).toBe(3);
+  });
+
+  it('keeps an empty-suffix legacy prefix as bootstrap when there is no transcript', () => {
+    const dream = buildDream({
+      id: 27,
+      transcript: '   ',
+      chatHistory: [
+        { id: 'm1', role: 'user', text: 'Here is my dream:' },
+        { id: 'm2', role: 'user', text: 'Voici mon rêve :' },
+        { id: 'm3', role: 'user', text: 'What does the city mean?' },
       ],
     });
 
     expect(isOriginalTranscriptMessage(dream.chatHistory[0], dream)).toBe(true);
-    expect(isOriginalTranscriptMessage(dream.chatHistory[1], dream)).toBe(false);
+    expect(isOriginalTranscriptMessage(dream.chatHistory[1], dream)).toBe(true);
+    expect(isOriginalTranscriptMessage(dream.chatHistory[2], dream)).toBe(false);
     expect(getUserChatMessageCount(dream)).toBe(1);
   });
 

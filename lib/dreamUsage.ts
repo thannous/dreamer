@@ -46,6 +46,11 @@ const LEGACY_TRANSCRIPT_PREFIXES = [
 
 const normalizeComparableText = (value: string): string => value.trim().replace(/\s+/g, ' ');
 
+/**
+ * A user message is the original dream only when it equals the transcript,
+ * optionally wrapped in a known capture prefix. The prefix never exempts
+ * chat by itself: without a transcript, only an empty suffix is bootstrap.
+ */
 export function isOriginalTranscriptMessage(
   message: Pick<ChatMessage, 'role' | 'text'> | null | undefined,
   dream?: Pick<DreamAnalysis, 'transcript'> | null
@@ -61,8 +66,8 @@ export function isOriginalTranscriptMessage(
     const normalizedPrefix = normalizeComparableText(prefix);
     if (!text.startsWith(normalizedPrefix)) return false;
     const suffix = normalizeComparableText(text.slice(normalizedPrefix.length));
-    if (!transcript || !suffix) return true;
-    return suffix === transcript;
+    if (transcript) return suffix === transcript;
+    return suffix.length === 0;
   });
 }
 
