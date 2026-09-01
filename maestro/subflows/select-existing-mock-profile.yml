@@ -1,30 +1,76 @@
 appId: com.tanuki75.noctalia
 ---
-- openLink: noctalia://settings
 - runFlow:
     when:
-      notVisible: "Settings|Paramètres|Configuración|Ajustes"
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: screen.recording
+    commands:
+      - swipe:
+          start: 50%, 88%
+          end: 50%, 38%
+      - waitForAnimationToEnd
+      - tapOn:
+          id: tab.journal
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: btn.mockNav.settings
     commands:
       - tapOn:
           id: btn.mockNav.settings
-- extendedWaitUntil:
-    visible: "Settings|Paramètres|Configuración|Ajustes"
-    timeout: 30000
+      - waitForAnimationToEnd
 - runFlow:
     when:
-      visible: "Reload"
+      visible:
+        id: btn.navigateSettings
     commands:
-      - pressKey: back
-      - openLink: noctalia://settings
-      - runFlow:
-          when:
-            notVisible: "Settings|Paramètres|Configuración|Ajustes"
-          commands:
-            - tapOn:
-                id: btn.mockNav.settings
-      - extendedWaitUntil:
-          visible: "Settings|Paramètres|Configuración|Ajustes"
-          timeout: 30000
+      - tapOn:
+          id: btn.navigateSettings
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: btn.header.home.settings
+    commands:
+      - tapOn:
+          id: btn.header.home.settings
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: screen.journal
+      notVisible:
+        id: btn.header.home.settings
+    commands:
+      - tapOn:
+          id: tab.home
+      - waitForAnimationToEnd
+      - tapOn:
+          id: btn.header.home.settings
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: settings-account-open-signup
+      notVisible:
+        id: settings-account-sheet
+    commands:
+      - tapOn:
+          id: settings-account-open-signup
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: settings-account-sheet
+    timeout: 10000
 - runFlow:
     when:
       visible:
@@ -32,6 +78,7 @@ appId: com.tanuki75.noctalia
     commands:
       - tapOn:
           id: btn.auth.signOut
+      - waitForAnimationToEnd
 - scrollUntilVisible:
     element:
       id: btn.mockProfile.existing
@@ -39,7 +86,11 @@ appId: com.tanuki75.noctalia
     visibilityPercentage: 60
 - tapOn:
     id: btn.mockProfile.existing
+- waitForAnimationToEnd
+- runFlow: dismiss-first-launch-onboarding.yml
 - extendedWaitUntil:
-    visible: "mock.existing@dreamer.app"
+    visible:
+      id: screen.recording
     timeout: 30000
-- assertVisible: "mock.existing@dreamer.app"
+- assertVisible:
+    id: screen.recording
