@@ -473,3 +473,35 @@ Deno.test('failed-image retry migration fingerprints payloads and defaults repla
   assertEquals(hashedRedactedBranch > 0, true);
   assertEquals(legacyPresenceBranch > hashedRedactedBranch, true);
 });
+
+Deno.test('later image-retry migration keeps attempt_count and quota_claimed on requeue', async () => {
+  const previous = await Deno.readTextFile(
+    new URL(
+      '../../../migrations/20260829120000_requeue_failed_generate_image_jobs.sql',
+      import.meta.url
+    )
+  );
+  const migration = await Deno.readTextFile(
+    new URL(
+      '../../../migrations/20260829160000_preserve_image_job_retry_budget.sql',
+      import.meta.url
+    )
+  );
+
+  assertEquals(previous.includes('attempt_count = 0'), true);
+  assertEquals(migration.includes('attempt_count = 0'), false);
+  assertEquals(migration.includes('Keep attempt_count and quota_claimed as-is'), true);
+  assertEquals(
+    migration.includes('without resetting attempt_count or quota_claimed'),
+    true
+  );
+
+  const requeueUpdates = [...migration.matchAll(/update public\.ai_jobs\s+set([\s\S]*?)where id = existing_job.id/g)];
+  assertEquals(requeueUpdates.length, 2);
+  for (const match of requeueUpdates) {
+    const assignment = match[1] ?? '';
+    assertEquals(assignment.includes('attempt_count'), false);
+    assertEquals(assignment.includes('quota_claimed'), false);
+    assertEquals(assignment.includes("status = 'queued'"), true);
+  }
+});
