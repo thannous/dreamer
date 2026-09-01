@@ -16,7 +16,26 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.navigateJournal
 - waitForAnimationToEnd
-
+- runFlow:
+    when:
+      visible:
+        id: btn.addDream
+    commands:
+      - tapOn:
+          id: btn.addDream
+- runFlow:
+    when:
+      visible:
+        id: tab.addDream
+    commands:
+      - tapOn:
+          id: tab.addDream
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- assertVisible:
+    id: screen.recording
 - runFlow: subflows/ensure-recording-text.yml
 - tapOn:
     id: input.dreamTranscript
