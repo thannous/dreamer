@@ -168,7 +168,7 @@
 </aside>
 <h2 id="reality-checks">Realitätschecks für luzides Träumen</h2>
 <p>
-                    Bei einem Realitätscheck prüfen Sie aufmerksam, ob Sie gerade wach sind. Der Test soll kein stündliches Ritual werden. Sinnvoller ist es, ihn mit einer ungewöhnlichen Beobachtung zu verbinden, etwa einer fehlerhaften Anzeige oder einem Ort, der nicht zur Situation passt.
+                    Bei einem Realitätscheck prüfen Sie aufmerksam, ob Sie gerade wach sind. Der Test soll kein stündliches Ritual werden. Sinnvoller ist es, ihn mit einer ungewöhnlichen Beobachtung zu verbinden, etwa einer fehlerhaften Anzeige oder einem Ort, der nicht zur Situation passt. Wenn Sie dagegen träumen, bereits aufgewacht zu sein, erklärt der eigene Artikel das <a class="text-dream-salmon hover:underline" href="falsches-erwachen-traum">falsche Erwachen</a> als getrennte Erfahrung.
                 </p>
 </div>
 <!-- Reality Check Cards -->

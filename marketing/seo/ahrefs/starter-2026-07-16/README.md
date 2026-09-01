@@ -64,6 +64,10 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j38-plan-2026-08-22.md`](./j38-plan-2026-08-22.md) : plan J38 avec triage du mail Rank Tracker 10 up / 16 down, checkpoint GSC J+14 de `casa`–`ragno`–`perro`, décision de publication séparée pour `escaleras`, micro-lot Starter `snail` plafonné à 8 crédits et contrôle DreamWell sans envoi.
 - [`j38-execution-2026-08-22.md`](./j38-execution-2026-08-22.md) : exécution P0/P1 J38, publication publique de `escaleras`, checkpoint GSC partiel au 20 août, micro-lot `snail` avec verdict `HOLD_EVIDENCE`, arrêt coût 12 → 21 et dossier Marika Pech prêt pour confirmation au moment de l'envoi.
 - [`j39-p0-p1-execution-2026-08-23.md`](./j39-p0-p1-execution-2026-08-23.md) : fenêtre GSC complète du cluster eau IT, optimisation bornée de la fiche propriétaire et garde-fou maintenant l’article EN `flying-dreams-meaning` gelé jusqu’au checkpoint du 25 août.
+- [`j46-plan-2026-08-30.md`](./j46-plan-2026-08-30.md) : plan J46 fondé sur GSC complet au 28 août, progression semaine contre semaine, leviers rêve lucide/indexation rentrée et micro-gate Ahrefs à deux crédits pour deux nouveaux sujets.
+- [`j46-two-seo-article-briefs-2026-08-30.md`](./j46-two-seo-article-briefs-2026-08-30.md) : briefs multilingues `jet lag, sommeil et rêves` et `faux réveil`, contrats d'intention, routes prospectives, maillage et gate avant rédaction.
+- [`j46-implementation-review-2026-08-30.md`](./j46-implementation-review-2026-08-30.md) : implémentation locale revue, split post-gate entre les cinq routes faux réveil candidates et les brouillons jet lag archivés hors build.
+- [`j46-ahrefs-micro-gate-2026-09-01.md`](./j46-ahrefs-micro-gate-2026-09-01.md) : deux crédits Ahrefs exactement, compteur 23 → 25, métriques US/ES et verdict `GO_PUBLISH_CANDIDATE` faux réveil contre `HOLD_RESEARCH` jet lag.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
 - [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27, Misabueso GSC et preuves brutes, périmètres synchronisés et règles de conservation.
@@ -366,3 +370,43 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
   au 28 août.
 - Détails et protocole de mesure :
   `j44-fire-owner-alignment-2026-08-28.md`.
+
+## Actualisation J46 au 1er septembre 2026 — gate Ahrefs et candidat publication
+
+- GSC complet du 1er au 28 août affiche `5 544` clics, `697 106`
+  impressions, un CTR de `0,795 %` et une position moyenne de `7,29`.
+- La semaine du 22 au 28 août progresse par rapport au 15–21 août :
+  `1 995` contre `1 549` clics, `220 690` contre `195 851` impressions,
+  CTR `0,904 %` contre `0,791 %` et position `6,78` contre `7,14`.
+- Le levier existant le plus net est le cluster rêve lucide : guide EN à
+  `0` clic, `1 171` impressions et position `26,56`, guide ES à `3` clics,
+  `266` impressions et position `21,38`. Le travail doit rester sur les URL
+  existantes ; aucune nouvelle page « comment faire un rêve lucide ».
+- Le lot evergreen EN suivant doit rester séquentiel : historique de
+  l'interprétation (`4 280` impressions, position `15,1`), grossesse (`2 952`,
+  `14,5`), stress au travail (`1 992`, `13,9`) et rêves récurrents (`1 979`,
+  `21,0`). Une seule URL sera retenue après contrôle de son historique.
+- Les dix URL rentrée J34 restent sans ligne dans l'export pages au 28 août.
+  La prochaine action est l'inspection d'indexation sans demande manuelle, pas
+  un nouveau maillage à l'aveugle.
+- Le micro-gate Ahrefs autorisé a consommé exactement deux crédits : compteur
+  live `23 → 25`, Rank Tracker inchangé à `50/50`, remise à zéro affichée le
+  16 septembre 2026 UTC.
+- `false awakening` passe le gate : intention informationnelle, KD `2`, volume
+  US `2 200` et TP `1 900`; `falso despertar` confirme le marché ES avec KD
+  `0` et volume `40`.
+- `jet lag dreams` et `jet lag vivid dreams` ne montrent que `10` recherches
+  US chacune, sans KD ni TP ; les requêtes ES ne sont pas indexées dans Ahrefs.
+  Les cinq localisations jet lag sont donc archivées hors build en
+  `HOLD_RESEARCH`.
+- Le candidat de publication J46 est limité au faux réveil en cinq langues,
+  avec le refresh rêve lucide EN/ES et le maillage associé.
+- Le guide rêve lucide EN/ES, les hubs, les maillages et les manifests sont
+  modifiés localement. `docs:build` et `docs:check` sont verts : 1 261 URLs de
+  sitemap, 0 lien cassé, 0 erreur et 0 avertissement.
+- Aucun suivi Rank Tracker, crawl, abonnement, indexation, commit, push ou
+  publication n'est modifié à J46.
+- Détails : `j46-plan-2026-08-30.md`,
+  `j46-two-seo-article-briefs-2026-08-30.md`,
+  `j46-implementation-review-2026-08-30.md` et
+  `j46-ahrefs-micro-gate-2026-09-01.md`.

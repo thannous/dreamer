@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "60580f34ed5aa7b5626a8a1506ed0a6b9b7a94ca",
+  "sourceRevision": "3876b56fc7ea622105adc9f0f109f0f1c19dbb7c",
   "counts": {
-    "logicalPages": 251,
-    "manifestPaths": 1256,
-    "uniqueManifestPaths": 1256,
-    "canonicalPages": 1256,
-    "sitemapEntries": 1256,
-    "allHtmlOutputPaths": 1261
+    "logicalPages": 252,
+    "manifestPaths": 1261,
+    "uniqueManifestPaths": 1261,
+    "canonicalPages": 1261,
+    "sitemapEntries": 1261,
+    "allHtmlOutputPaths": 1266
   },
   "manifestRoutes": [
     {
@@ -1259,6 +1259,56 @@
       "lang": "it",
       "slug": "significato-dei-sogni-che-cadono-perche-sogni-di-cadere",
       "path": "/it/blog/significato-dei-sogni-che-cadono-perche-sogni-di-cadere"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "false-awakening-dreams",
+      "lang": "de",
+      "slug": "falsches-erwachen-traum",
+      "path": "/de/blog/falsches-erwachen-traum"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "false-awakening-dreams",
+      "lang": "en",
+      "slug": "false-awakening-dreams",
+      "path": "/en/blog/false-awakening-dreams"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "false-awakening-dreams",
+      "lang": "es",
+      "slug": "falso-despertar-sueno",
+      "path": "/es/blog/falso-despertar-sueno"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "false-awakening-dreams",
+      "lang": "fr",
+      "slug": "faux-reveil-reve",
+      "path": "/fr/blog/faux-reveil-reve"
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "type": "blogArticle",
+      "canonicalLanguage": "en",
+      "canonicalSlug": "false-awakening-dreams",
+      "lang": "it",
+      "slug": "falso-risveglio-sogno",
+      "path": "/it/blog/falso-risveglio-sogno"
     },
     {
       "collection": "blog",
@@ -12586,6 +12636,7 @@
     "docs/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen.html",
     "docs/de/blog/die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft.html",
     "docs/de/blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer.html",
+    "docs/de/blog/falsches-erwachen-traum.html",
     "docs/de/blog/fruehling-schlaf-stoerung-traeume.html",
     "docs/de/blog/hitzewelle-schlaf-traeume.html",
     "docs/de/blog/index.html",
@@ -12854,6 +12905,7 @@
     "docs/en/blog/dreams-not-random-ai-study.html",
     "docs/en/blog/exam-dreams-meaning.html",
     "docs/en/blog/falling-dreams-meaning.html",
+    "docs/en/blog/false-awakening-dreams.html",
     "docs/en/blog/flying-dreams-meaning.html",
     "docs/en/blog/heat-stress-nightmares.html",
     "docs/en/blog/heatwave-sleep-dreams.html",
@@ -13089,6 +13141,7 @@
     "docs/es/blog/deuda-sueno-salud-suenos.html",
     "docs/es/blog/dia-sueno-medio-ambiente-suenos.html",
     "docs/es/blog/diario-de-suenos.html",
+    "docs/es/blog/falso-despertar-sueno.html",
     "docs/es/blog/guia-diario-suenos.html",
     "docs/es/blog/guia-incubacion-suenos.html",
     "docs/es/blog/guia-paralisis-sueno.html",
@@ -13339,6 +13392,7 @@
     "docs/fr/blog/confidentialite-ia-journal-reves.html",
     "docs/fr/blog/controler-reves-resolution-problemes.html",
     "docs/fr/blog/dette-sommeil-sante-reves.html",
+    "docs/fr/blog/faux-reveil-reve.html",
     "docs/fr/blog/guide-cauchemars.html",
     "docs/fr/blog/guide-incubation-reves.html",
     "docs/fr/blog/guide-journal-reves.html",
@@ -13586,6 +13640,7 @@
     "docs/it/blog/disturbo-sonno-primavera-sogni.html",
     "docs/it/blog/dream-journal-richiamo-metodi-e-routine.html",
     "docs/it/blog/dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne.html",
+    "docs/it/blog/falso-risveglio-sogno.html",
     "docs/it/blog/giornata-sonno-ambiente-sogni.html",
     "docs/it/blog/guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti.html",
     "docs/it/blog/guida-sogni-bambini.html",
@@ -22505,6 +22560,346 @@
     },
     {
       "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "lang": "de",
+      "outputPath": "docs/de/blog/falsches-erwachen-traum.html",
+      "canonical": "https://noctalia.app/de/blog/falsches-erwachen-traum",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/falsches-erwachen-traum"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/falso-despertar-sueno"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/faux-reveil-reve"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/falso-risveglio-sogno"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/de/blog/falsches-erwachen-traum",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/de/blog/falsches-erwachen-traum",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/de/blog/falsches-erwachen-traum",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/de/blog/falsches-erwachen-traum"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/de/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/de/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/de/blog/falsches-erwachen-traum"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/de/",
+        "https://noctalia.app/de/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "lang": "en",
+      "outputPath": "docs/en/blog/false-awakening-dreams.html",
+      "canonical": "https://noctalia.app/en/blog/false-awakening-dreams",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/falsches-erwachen-traum"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/falso-despertar-sueno"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/faux-reveil-reve"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/falso-risveglio-sogno"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/en/blog/false-awakening-dreams",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/en/blog/false-awakening-dreams",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/en/blog/false-awakening-dreams",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/en/blog/false-awakening-dreams"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/en/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/en/blog/false-awakening-dreams"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/",
+        "https://noctalia.app/en/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "lang": "es",
+      "outputPath": "docs/es/blog/falso-despertar-sueno.html",
+      "canonical": "https://noctalia.app/es/blog/falso-despertar-sueno",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/falsches-erwachen-traum"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/falso-despertar-sueno"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/faux-reveil-reve"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/falso-risveglio-sogno"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/es/blog/falso-despertar-sueno",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/es/blog/falso-despertar-sueno",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/es/blog/falso-despertar-sueno",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/es/blog/falso-despertar-sueno"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/es/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/es/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/es/blog/falso-despertar-sueno"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/es/",
+        "https://noctalia.app/es/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "lang": "fr",
+      "outputPath": "docs/fr/blog/faux-reveil-reve.html",
+      "canonical": "https://noctalia.app/fr/blog/faux-reveil-reve",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/falsches-erwachen-traum"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/falso-despertar-sueno"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/faux-reveil-reve"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/falso-risveglio-sogno"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/fr/blog/faux-reveil-reve",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/fr/blog/faux-reveil-reve",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/fr/blog/faux-reveil-reve",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/fr/blog/faux-reveil-reve"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/fr/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/fr/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/fr/blog/faux-reveil-reve"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/fr/",
+        "https://noctalia.app/fr/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "lang": "it",
+      "outputPath": "docs/it/blog/falso-risveglio-sogno.html",
+      "canonical": "https://noctalia.app/it/blog/falso-risveglio-sogno",
+      "hreflangs": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/falsches-erwachen-traum"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/falso-despertar-sueno"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/faux-reveil-reve"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/falso-risveglio-sogno"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        }
+      ],
+      "ogUrl": "https://noctalia.app/it/blog/falso-risveglio-sogno",
+      "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": null,
+          "id": "https://noctalia.app/it/blog/falso-risveglio-sogno",
+          "mainEntityOfPageId": null
+        },
+        {
+          "type": "BlogPosting",
+          "url": "https://noctalia.app/it/blog/falso-risveglio-sogno",
+          "id": null,
+          "mainEntityOfPageId": "https://noctalia.app/it/blog/falso-risveglio-sogno"
+        }
+      ],
+      "jsonLdBreadcrumbs": [
+        [
+          {
+            "position": "1",
+            "item": "https://noctalia.app/it/"
+          },
+          {
+            "position": "2",
+            "item": "https://noctalia.app/it/blog/"
+          },
+          {
+            "position": "3",
+            "item": "https://noctalia.app/it/blog/falso-risveglio-sogno"
+          }
+        ]
+      ],
+      "visibleBreadcrumbs": [
+        "https://noctalia.app/it/",
+        "https://noctalia.app/it/blog/"
+      ]
+    },
+    {
+      "collection": "blog",
       "pageId": "blog.flying-dreams-meaning",
       "lang": "de",
       "outputPath": "docs/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen.html",
@@ -22605,6 +23000,12 @@
       ],
       "ogUrl": "https://noctalia.app/en/blog/flying-dreams-meaning",
       "jsonLdIdentities": [
+        {
+          "type": "WebPage",
+          "url": "https://noctalia.app/en/blog/flying-dreams-meaning",
+          "id": "https://noctalia.app/en/blog/flying-dreams-meaning",
+          "mainEntityOfPageId": null
+        },
         {
           "type": "WebPage",
           "url": null,
@@ -94222,6 +94623,166 @@
         {
           "hreflang": "x-default",
           "href": "https://noctalia.app/en/blog/falling-dreams-meaning"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "lang": "de",
+      "loc": "https://noctalia.app/de/blog/falsches-erwachen-traum",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/falsches-erwachen-traum"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/falso-despertar-sueno"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/faux-reveil-reve"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/falso-risveglio-sogno"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "lang": "en",
+      "loc": "https://noctalia.app/en/blog/false-awakening-dreams",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/falsches-erwachen-traum"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/falso-despertar-sueno"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/faux-reveil-reve"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/falso-risveglio-sogno"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "lang": "es",
+      "loc": "https://noctalia.app/es/blog/falso-despertar-sueno",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/falsches-erwachen-traum"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/falso-despertar-sueno"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/faux-reveil-reve"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/falso-risveglio-sogno"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "lang": "fr",
+      "loc": "https://noctalia.app/fr/blog/faux-reveil-reve",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/falsches-erwachen-traum"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/falso-despertar-sueno"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/faux-reveil-reve"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/falso-risveglio-sogno"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        }
+      ]
+    },
+    {
+      "collection": "blog",
+      "pageId": "blog.false-awakening-dreams",
+      "lang": "it",
+      "loc": "https://noctalia.app/it/blog/falso-risveglio-sogno",
+      "alternates": [
+        {
+          "hreflang": "de",
+          "href": "https://noctalia.app/de/blog/falsches-erwachen-traum"
+        },
+        {
+          "hreflang": "en",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
+        },
+        {
+          "hreflang": "es",
+          "href": "https://noctalia.app/es/blog/falso-despertar-sueno"
+        },
+        {
+          "hreflang": "fr",
+          "href": "https://noctalia.app/fr/blog/faux-reveil-reve"
+        },
+        {
+          "hreflang": "it",
+          "href": "https://noctalia.app/it/blog/falso-risveglio-sogno"
+        },
+        {
+          "hreflang": "x-default",
+          "href": "https://noctalia.app/en/blog/false-awakening-dreams"
         }
       ]
     },

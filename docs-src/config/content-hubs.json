@@ -189,6 +189,7 @@
       "hubPageId": "blog.lucid-dreaming",
       "spokePageIds": [
         "blog.dream-incubation-guide",
+        "blog.false-awakening-dreams",
         "blog.lucid-dreaming-beginners-guide",
         "blog.sleep-paralysis-guide"
       ],
@@ -196,11 +197,17 @@
         "blog.dream-incubation-guide": [
           "blog.lucid-dreaming-beginners-guide"
         ],
+        "blog.false-awakening-dreams": [
+          "blog.lucid-dreaming-beginners-guide",
+          "blog.sleep-paralysis-guide"
+        ],
         "blog.lucid-dreaming-beginners-guide": [
           "blog.dream-incubation-guide",
+          "blog.false-awakening-dreams",
           "blog.sleep-paralysis-guide"
         ],
         "blog.sleep-paralysis-guide": [
+          "blog.false-awakening-dreams",
           "blog.lucid-dreaming-beginners-guide"
         ]
       },

@@ -315,7 +315,7 @@
 <h3>Erreurs qui font perdre la lucidité</h3>
 <ul>
 <li>S'exciter excessivement (réveille)</li>
-<li>Fermer les yeux longtemps (risque de faux réveil ou réveil)</li>
+<li>Fermer les yeux longtemps (risque de <a class="text-dream-salmon hover:underline" href="faux-reveil-reve">faux réveil</a> ou de vrai réveil)</li>
 <li>Se concentrer trop sur le fait qu'on rêve</li>
 </ul>
 <h2 id="erreurs">Erreurs de débutant en rêve lucide à éviter</h2>
