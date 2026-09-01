@@ -1,5 +1,6 @@
 import { ReminderOptInCard } from '@/components/reminders/ReminderOptInCard';
 import { Toast } from '@/components/Toast';
+import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import {
@@ -56,6 +57,7 @@ import {
   shouldShowCompletedJournalReading,
 } from '@/lib/journalIllustrationPolicy';
 import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
+import { resolveJournalDreamRecallOfferEligible } from '@/lib/journalDreamRecallOffer';
 import { isJournalSavedConfirmationParam } from '@/lib/journalSavedConfirmation';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
@@ -220,6 +222,23 @@ export default function JournalDetailScreen() {
   const [savedConfirmationVisible, setSavedConfirmationVisible] = useState(
     () => isJournalSavedConfirmationParam(savedParam)
   );
+  const recallEligibleDreamIdRef = useRef<string | null>(
+    resolveJournalDreamRecallOfferEligible({
+      dreamId: id,
+      savedParam,
+      previouslyEligibleDreamId: null,
+    }).eligibleDreamId
+  );
+  /* eslint-disable react-hooks/refs -- remember saved=1 after param clear without mutating the ref during render */
+  const recallOffer = resolveJournalDreamRecallOfferEligible({
+    dreamId: id,
+    savedParam,
+    previouslyEligibleDreamId: recallEligibleDreamIdRef.current,
+  });
+  /* eslint-enable react-hooks/refs */
+  useEffect(() => {
+    recallEligibleDreamIdRef.current = recallOffer.eligibleDreamId;
+  }, [recallOffer.eligibleDreamId]);
   const {
     dreams,
     toggleFavorite,
@@ -1990,6 +2009,12 @@ export default function JournalDetailScreen() {
             )}
 
             <Reveal index={3}>
+              <DreamRecallAssistantCard
+                dreamId={String(dream.id)}
+                originalTranscript={dream.transcript}
+                originalPersistedSegmentId={dream.clientRequestId ?? String(dream.id)}
+                offerEligible={recallOffer.offerEligible}
+              />
               {renderStaleBanner()}
               {(showCompletedReading || isAnalysisPending) && (
                 <>

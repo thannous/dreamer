@@ -355,7 +355,7 @@ export function DreamRecallAssistantCard({
     });
   }, [complete, runAfterVoice]);
 
-  const cardClass = 'gap-3 rounded-md border border-continuous border-line bg-ink-raised p-4';
+  const cardClass = 'mb-5 gap-3 rounded-md border border-continuous border-line bg-ink-raised p-4';
   const sessionTitle = useMemo(() => String(t('dream_recall.session.title')), [t]);
   const voiceStatus = isPreparingRecording ? 'preparing' : isRecording ? 'recording' : 'idle';
   const showMic = Boolean(currentQuestion) && state?.status === 'active' && voiceSupportedForLocale;
