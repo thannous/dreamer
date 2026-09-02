@@ -1,5 +1,5 @@
 # Release offline gate: a guest dream is durable while offline and after network restoration.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release offline local persistence
 tags:
   - release

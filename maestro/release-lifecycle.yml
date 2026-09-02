@@ -1,5 +1,5 @@
 # Release lifecycle gate: foreground resume and Android process death keep user data intact.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release lifecycle persistence
 tags:
   - release

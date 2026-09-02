@@ -8,11 +8,13 @@ const path = require('node:path');
 const {
   assertInstalledReleaseBinary,
   assertReleaseSuiteDoesNotStartMetro,
+  assertAndroidIdentity,
   buildMetroLaunchSpec,
   assertVoiceFlowAuthorization,
   assertSensitiveFlowAuthorization,
   buildMaestroEnv,
   buildMaestroFlowEnvArgs,
+  buildMaestroIdentityEnvArgs,
   buildMaestroFlowRedactions,
   buildMaestroFlowSourceEnv,
   createRedactingWriter,
@@ -24,12 +26,17 @@ const {
   parseInstalledAndroidBuild,
   readExpectedAndroidBuild,
   redactSensitiveText,
+  resolveAndroidIdentity,
   runCommand,
   sanitizeMaestroArtifacts,
   SENSITIVE_FLOW_GUARD_ENV,
   shouldBlockNextSensitiveFlow,
   TESTSTORE_READINESS_FLOW,
   verifyInstalledReleaseBinary,
+  PRODUCTION_ANDROID_APP_ID,
+  QA_ANDROID_APP_ID,
+  PRODUCTION_DEEP_LINK_SCHEME,
+  QA_DEEP_LINK_SCHEME,
 } = require('./run-maestro-android');
 
 const EXPECTED = {
@@ -614,5 +621,154 @@ describe('run-maestro-android Release preflight', () => {
       ],
       expect.objectContaining({ encoding: 'utf8' })
     );
+  });
+
+  it('keeps production identity unless a Release suite opts into side-by-side QA', () => {
+    expect(parseArgs(['--suite', 'release', '--no-start-metro'])).toMatchObject({
+      suite: 'release',
+      sideBySideQa: false,
+      appId: PRODUCTION_ANDROID_APP_ID,
+      deepLinkScheme: PRODUCTION_DEEP_LINK_SCHEME,
+    });
+    expect(parseArgs([
+      '--suite',
+      'release-ti429',
+      '--no-start-metro',
+      '--side-by-side-qa',
+    ])).toMatchObject({
+      suite: 'release-ti429',
+      sideBySideQa: true,
+      appId: QA_ANDROID_APP_ID,
+      deepLinkScheme: QA_DEEP_LINK_SCHEME,
+    });
+    expect(parseArgs([
+      '--suite',
+      'release',
+      '--no-start-metro',
+      '--app-id',
+      QA_ANDROID_APP_ID,
+      '--deep-link-scheme',
+      QA_DEEP_LINK_SCHEME,
+    ])).toMatchObject({
+      appId: QA_ANDROID_APP_ID,
+      deepLinkScheme: QA_DEEP_LINK_SCHEME,
+      sideBySideQa: true,
+    });
+
+    expect(() => parseArgs(['--suite', 'core', '--side-by-side-qa']))
+      .toThrow('limited to production Release suites');
+    expect(() => parseArgs(['--suite', 'release-teststore', '--no-start-metro', '--side-by-side-qa']))
+      .toThrow('limited to production Release suites');
+    expect(() => parseArgs(['--suite', 'release', '--app-id', QA_ANDROID_APP_ID]))
+      .toThrow('together with the exact QA identity');
+    expect(() => parseArgs([
+      '--suite',
+      'release',
+      '--app-id',
+      PRODUCTION_ANDROID_APP_ID,
+      '--deep-link-scheme',
+      PRODUCTION_DEEP_LINK_SCHEME,
+    ])).toThrow('Only com.tanuki75.noctalia.qa + noctalia-qa is allowed');
+    expect(() => parseArgs(['--app-id'])).toThrow('Missing --app-id value');
+    expect(() => parseArgs(['--deep-link-scheme'])).toThrow('Missing --deep-link-scheme value');
+    expect(() => assertAndroidIdentity({
+      appId: 'com.other.app',
+      deepLinkScheme: 'other',
+    })).toThrow('Unsupported Android identity');
+    expect(resolveAndroidIdentity({ suite: 'release' })).toEqual({
+      appId: PRODUCTION_ANDROID_APP_ID,
+      deepLinkScheme: PRODUCTION_DEEP_LINK_SCHEME,
+      sideBySideQa: false,
+    });
+  });
+
+  it('overrides only the inspected package for QA while keeping versions and non-debug checks', () => {
+    const readFileSync = jest.fn(() => JSON.stringify({
+      expo: {
+        version: '3.0.2',
+        android: {
+          package: 'com.tanuki75.noctalia',
+          versionCode: 38,
+        },
+      },
+    }));
+    const qaExpected = readExpectedAndroidBuild(
+      '/repo',
+      readFileSync,
+      {},
+      { appId: QA_ANDROID_APP_ID, deepLinkScheme: QA_DEEP_LINK_SCHEME }
+    );
+    expect(qaExpected).toEqual({
+      packageName: QA_ANDROID_APP_ID,
+      versionName: '3.0.2',
+      versionCode: '38',
+    });
+
+    const qaDumpsys = RELEASE_DUMPSYS.replace(
+      /com\.tanuki75\.noctalia/g,
+      QA_ANDROID_APP_ID
+    );
+    const spawn = jest.fn(() => ({
+      status: 0,
+      stdout: qaDumpsys,
+      stderr: '',
+    }));
+    expect(verifyInstalledReleaseBinary('ZY22H9V4KV', qaExpected, {
+      adbBin: '/sdk/adb',
+      spawn,
+    })).toMatchObject(qaExpected);
+    expect(spawn).toHaveBeenCalledWith(
+      '/sdk/adb',
+      [
+        '-s',
+        'ZY22H9V4KV',
+        'shell',
+        'dumpsys',
+        'package',
+        QA_ANDROID_APP_ID,
+      ],
+      expect.objectContaining({ encoding: 'utf8' })
+    );
+
+    const debuggableQa = parseInstalledAndroidBuild(
+      qaDumpsys.replace(
+        'pkgFlags=[ HAS_CODE ALLOW_CLEAR_USER_DATA ]',
+        'pkgFlags=[ HAS_CODE DEBUGGABLE ALLOW_CLEAR_USER_DATA ]'
+      )
+    );
+    expect(() => assertInstalledReleaseBinary('ZY22H9V4KV', qaExpected, debuggableQa))
+      .toThrow('installed package is DEBUGGABLE and may depend on Metro');
+  });
+
+  it('injects APP_ID and DEEP_LINK_SCHEME without changing production defaults or redaction', () => {
+    expect(buildMaestroIdentityEnvArgs()).toEqual([
+      '-e',
+      `APP_ID=${PRODUCTION_ANDROID_APP_ID}`,
+      '-e',
+      `DEEP_LINK_SCHEME=${PRODUCTION_DEEP_LINK_SCHEME}`,
+    ]);
+    expect(buildMaestroIdentityEnvArgs({
+      appId: QA_ANDROID_APP_ID,
+      deepLinkScheme: QA_DEEP_LINK_SCHEME,
+    })).toEqual([
+      '-e',
+      `APP_ID=${QA_ANDROID_APP_ID}`,
+      '-e',
+      `DEEP_LINK_SCHEME=${QA_DEEP_LINK_SCHEME}`,
+    ]);
+    expect(buildMaestroFlowEnvArgs('maestro/release-smoke.yml')).toEqual([]);
+    expect(buildMaestroFlowEnvArgs('maestro/release-auth-analysis.yml', {
+      REVENUECAT_QA_SWITCH_FREE_EMAIL: 'release-auth@example.com',
+      REVENUECAT_QA_SWITCH_FREE_PASSWORD: 'release-auth-secret',
+    })).toEqual([
+      '-e',
+      'REVENUECAT_QA_SWITCH_FREE_EMAIL=release-auth@example.com',
+      '-e',
+      'REVENUECAT_QA_SWITCH_FREE_PASSWORD=release-auth-secret',
+    ]);
+    expect(() => buildMaestroIdentityEnvArgs({
+      appId: 'com.tanuki75.noctalia.other',
+      deepLinkScheme: 'noctalia-other',
+    })).toThrow('Unsupported Android identity');
   });
 });

@@ -1,6 +1,6 @@
 # Release analysis interruption gate: starting analysis then killing the app
 # must keep the original transcript and surface a recoverable reflection CTA.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release analysis interrupt recovery
 tags:
   - release

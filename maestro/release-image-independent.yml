@@ -1,6 +1,6 @@
 # Release image gate: after save, analysis and illustration remain separate
 # actions. This flow never starts analysis and never generates an image.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release independent illustration CTA
 tags:
   - release

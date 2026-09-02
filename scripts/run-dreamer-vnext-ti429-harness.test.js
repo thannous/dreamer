@@ -14,9 +14,11 @@ const {
   inspectHarness,
   inspectImageIndependentFlow,
   inspectLongFragmentFlow,
+  inspectReleaseIdentityAnchors,
   parseArgs,
   recordEvidence,
   validateHarness,
+  yamlLooksParseable,
 } = require('./run-dreamer-vnext-ti429-harness');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -186,5 +188,56 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(fs.existsSync(path.join(tmp, receipt.evidenceDir, 'blocked'))).toBe(true);
     expect(fs.existsSync(path.join(tmp, LOCAL_RECEIPT_RELATIVE))).toBe(true);
     expect(validateHarness(tmp).ok).toBe(true);
+  });
+
+  it('requires dynamic appId/scheme anchors and side-by-side QA commands for release-native proof', () => {
+    const inspection = inspectHarness(ROOT);
+    expect(inspection.ok).toBe(true);
+
+    const releaseNative = inspection.manifest.checks.filter((check) => (
+      check.runtime === 'release-native' && check.mode === 'automated'
+    ));
+    expect(releaseNative.length).toBeGreaterThan(0);
+    for (const check of releaseNative) {
+      expect(check.command).toContain('--side-by-side-qa');
+      const flowText = read(path.join(ROOT, check.flow));
+      expect(inspectReleaseIdentityAnchors(flowText, check)).toEqual([]);
+      expect(yamlLooksParseable(path.join(ROOT, check.flow), check)).toBe(true);
+      expect(flowText).toContain('appId: ${APP_ID || "com.tanuki75.noctalia"}');
+      expect(flowText).not.toMatch(/^\s*appId:\s*com\.tanuki75\.noctalia\s*$/m);
+      expect(flowText).not.toMatch(/^\s*appId:\s*\$\{APP_ID\}\s*$/m);
+    }
+
+    const trends = inspection.manifest.checks.find((check) => check.id === 'journal-detail-trends-deeplinks');
+    expect(trends.requiredTokens).toEqual(expect.arrayContaining([
+      '${DEEP_LINK_SCHEME || "noctalia"}://journal',
+      '${DEEP_LINK_SCHEME || "noctalia"}://statistics',
+      '${DEEP_LINK_SCHEME || "noctalia"}://weekly-recap',
+      '${DEEP_LINK_SCHEME || "noctalia"}://recording',
+    ]));
+    expect(inspection.manifest.limits.some((limit) => (
+      limit.includes('com.tanuki75.noctalia.qa') && limit.includes('not Store')
+    ))).toBe(true);
+
+    expect(inspectReleaseIdentityAnchors('appId: com.tanuki75.noctalia\n---\n', {
+      runtime: 'release-native',
+      flow: 'maestro/release-smoke.yml',
+      mode: 'automated',
+      command: 'node ./scripts/run-maestro-android.js --suite release --no-start-metro',
+    })).toEqual(expect.arrayContaining([
+      'release-native flow must use appId: ${APP_ID || "com.tanuki75.noctalia"}',
+      'release-native flow still hardcodes the production appId',
+      'canonical command is missing --side-by-side-qa for physical QA proof',
+    ]));
+    expect(inspectReleaseIdentityAnchors('appId: ${APP_ID}\n---\n- openLink: ${DEEP_LINK_SCHEME}://journal\n', {
+      runtime: 'release-native',
+      flow: 'maestro/release-journal-trends-deeplinks.yml',
+      mode: 'automated',
+      command: 'node ./scripts/run-maestro-android.js --suite release-ti429 --no-start-metro --side-by-side-qa',
+    })).toEqual(expect.arrayContaining([
+      'release-native flow must use appId: ${APP_ID || "com.tanuki75.noctalia"}',
+      'release-native flow still hardcodes the production appId',
+      'release-native flow still hardcodes noctalia:// instead of ${DEEP_LINK_SCHEME || "noctalia"}://',
+    ]));
   });
 });

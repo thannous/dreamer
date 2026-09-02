@@ -11,7 +11,9 @@
     "TalkBack, contrast, large text, reduce motion, localization and mobile/tablet/web formats stay human checks and are unproven until recorded.",
     "A 10_000-character paste is a documented human check because Maestro inputText is not a reliable 10k injector.",
     "Unexecuted automated rows stay blocked in the plan. Manual rows stay manual. Neither is a pass.",
-    "Local Jest/typecheck proof is separate from device proof. Device proof stays in a dated maestro-results/android/ti429 directory."
+    "Local Jest/typecheck proof is separate from device proof. Device proof stays in a dated maestro-results/android/ti429 directory.",
+    "Physical QA proof uses --side-by-side-qa against com.tanuki75.noctalia.qa / noctalia-qa on the local device. That is not Store, Play, production install-source or purchase proof.",
+    "Never uninstall or overwrite the Play app. Do not run purchase flows against the QA package. Auth-credential rows stay separately blocked when credentials are missing."
   ],
   "checks": [
     {
@@ -20,7 +22,7 @@
       "criterion": "Ecrire et Raconter, passage entre les deux",
       "mode": "automated",
       "flow": "maestro/release-write-tell.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-write-tell.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-write-tell.yml --side-by-side-qa",
       "requiredTokens": [
         "id: btn.recording.inputMode.text",
         "id: btn.recording.inputMode.voice",
@@ -36,7 +38,7 @@
       "criterion": "kill et reprise",
       "mode": "automated",
       "flow": "maestro/release-draft-kill-relaunch.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-draft-kill-relaunch.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-draft-kill-relaunch.yml --side-by-side-qa",
       "requiredTokens": [
         "killApp",
         "Draft kill relaunch sentinel",
@@ -51,7 +53,7 @@
       "criterion": "Fragment court",
       "mode": "automated",
       "flow": "maestro/release-lifecycle.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-lifecycle.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-lifecycle.yml --side-by-side-qa",
       "requiredTokens": [
         "Release lifecycle sentinel",
         "id: btn.saveDream",
@@ -66,7 +68,7 @@
       "criterion": "recit long",
       "mode": "automated",
       "flow": "maestro/release-long-fragment.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-long-fragment.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-long-fragment.yml --side-by-side-qa",
       "requiredTokens": [
         "LONG-START",
         "LONG-END",
@@ -95,7 +97,7 @@
       "criterion": "Enregistrement hors ligne",
       "mode": "automated",
       "flow": "maestro/release-offline-local.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-offline-local.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-offline-local.yml --side-by-side-qa",
       "requiredTokens": [
         "setAirplaneMode: enabled",
         "Release offline local sentinel"
@@ -109,11 +111,11 @@
       "criterion": "synchronisation",
       "mode": "automated",
       "flow": "maestro/release-auth-offline-sync.yml",
-      "command": "node ./scripts/run-maestro-android.js --flow maestro/release-auth-offline-sync.yml --retries 0 --no-start-metro",
+      "command": "node ./scripts/run-maestro-android.js --suite release --flow maestro/release-auth-offline-sync.yml --retries 0 --no-start-metro --side-by-side-qa",
       "requiredTokens": [
         "QA_SYNC_SENTINEL",
         "setAirplaneMode: enabled",
-        "noctalia://journal"
+        "${DEEP_LINK_SCHEME || \"noctalia\"}://journal"
       ],
       "evidence": "existing authenticated offline sync flow",
       "runtime": "release-native"
@@ -124,10 +126,10 @@
       "criterion": "Analyse reussie",
       "mode": "automated",
       "flow": "maestro/release-analysis.yml",
-      "command": "npm run test:e2e:release:analysis:local",
+      "command": "npm run test:e2e:release:analysis:local -- --side-by-side-qa",
       "requiredTokens": [
         "id: btn.dream.primaryCta",
-        "Interpretation|Interpr\u00e9tation",
+        "Interpretation|Interprétation",
         "id: component.transcriptCard"
       ],
       "evidence": "existing Release guest analysis flow",
@@ -154,7 +156,7 @@
       "criterion": "Analyse interrompue",
       "mode": "automated",
       "flow": "maestro/release-analysis-interrupt.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-analysis-interrupt.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-analysis-interrupt.yml --side-by-side-qa",
       "requiredTokens": [
         "killApp",
         "Analysis interrupt sentinel",
@@ -184,7 +186,7 @@
       "criterion": "Image independante de l'analyse",
       "mode": "automated",
       "flow": "maestro/release-image-independent.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-image-independent.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-image-independent.yml --side-by-side-qa",
       "requiredTokens": [
         "id: btn.dream.primaryCta",
         "id: btn.journal.illustrate",
@@ -200,26 +202,26 @@
       "criterion": "Journal liste, Tendances, recap hebdo et capture via liens profonds",
       "mode": "automated",
       "flow": "maestro/release-journal-trends-deeplinks.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-journal-trends-deeplinks.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-journal-trends-deeplinks.yml --side-by-side-qa",
       "evidence": "screenshots of journal list, Trends, weekly recap, recording. Unexecuted = blocked.",
       "runtime": "release-native",
-      "notes": "Release-native. Covers noctalia://journal (list), noctalia://statistics / Trends, noctalia://weekly-recap and noctalia://recording. Does not cover analysis-ready noctalia://journal/{id}.",
+      "notes": "Release-native. Covers ${DEEP_LINK_SCHEME || \"noctalia\"}://journal (list), ${DEEP_LINK_SCHEME || \"noctalia\"}://statistics / Trends, ${DEEP_LINK_SCHEME || \"noctalia\"}://weekly-recap and ${DEEP_LINK_SCHEME || \"noctalia\"}://recording. Does not cover analysis-ready ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id}. QA scheme/package is local device proof, not Store/production install-source proof.",
       "requiredTokens": [
-        "noctalia://journal",
-        "noctalia://statistics",
+        "${DEEP_LINK_SCHEME || \"noctalia\"}://journal",
+        "${DEEP_LINK_SCHEME || \"noctalia\"}://statistics",
         "id: trends.section.week",
-        "noctalia://weekly-recap",
+        "${DEEP_LINK_SCHEME || \"noctalia\"}://weekly-recap",
         "id: screen.weeklyRecap",
-        "noctalia://recording"
+        "${DEEP_LINK_SCHEME || \"noctalia\"}://recording"
       ]
     },
     {
       "id": "analysis-ready-detail-deeplink",
       "title": "analysis-ready notification opens journal detail",
-      "criterion": "lien profond analysis-ready vers noctalia://journal/{id}",
+      "criterion": "lien profond analysis-ready vers ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id}",
       "mode": "blocked",
       "runtime": "release-native",
-      "notes": "No stable fixture id: mock local dream ids are timestamps at preload, remoteId is not the journal/[id] route key, and a Release dream id cannot be captured without a device. Exact analysis-ready URL noctalia://journal/{id} requires physical-device proof. Unexecuted = blocked. Not a pass.",
+      "notes": "No stable fixture id: mock local dream ids are timestamps at preload, remoteId is not the journal/[id] route key, and a Release dream id cannot be captured without a device. Exact analysis-ready URL ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id} requires physical-device proof. QA package/scheme proof is local device proof, not Store/production install-source proof. Unexecuted = blocked. Not a pass.",
       "evidence": "physical-device screenshot of journal/{id} opened from an analysis-ready notification. Missing until a real id is available."
     },
     {
@@ -244,7 +246,7 @@
       "criterion": "notifications",
       "mode": "automated",
       "flow": "maestro/release-notification-permission.yml",
-      "command": "node ./scripts/run-maestro-android.js --retries 0 --no-start-metro --flow maestro/release-notification-permission.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-notification-permission.yml --side-by-side-qa",
       "requiredTokens": [
         "notifications: deny",
         "id: text.settings.notificationsPermissionWarning"

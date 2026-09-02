@@ -1,6 +1,6 @@
 # Reach the recording screen from a freshly launched Release app,
 # regardless of the responsive startup route after onboarding.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 ---
 - runFlow:
     when:

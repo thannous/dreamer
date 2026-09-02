@@ -1,6 +1,6 @@
 # Release Write/Tell gate: the two capture modes share one draft and remain
 # switchable without losing the typed fragment.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release Write Tell shared draft
 tags:
   - release

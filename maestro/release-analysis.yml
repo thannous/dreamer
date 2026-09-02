@@ -1,7 +1,7 @@
 # Manual Release integration probe: save a guest dream and complete a real
 # backend analysis. Kept outside the repeatable smoke workflow because guest
 # analysis quota is intentionally persistent for a device fingerprint.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release guest analysis
 tags:
   - release

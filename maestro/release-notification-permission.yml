@@ -1,5 +1,5 @@
 # Focused Release gate for the notification-permission status contract.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release notification permission status
 tags:
   - release
@@ -26,7 +26,7 @@ onFlowComplete:
     visible:
       id: screen.recording
     timeout: 20000
-- openLink: noctalia://settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible:
       id: screen.settings
@@ -60,7 +60,7 @@ onFlowComplete:
     permissions:
       all: allow
       notifications: deny
-- openLink: noctalia://settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible:
       id: screen.settings

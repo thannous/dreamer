@@ -1,7 +1,7 @@
 # Release long-fragment gate: a story longer than 600 characters remains
 # fully visible after save. Start and end sentinels must both survive.
 # The 10_000-character paste stays a separate human check.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release long fragment persistence
 tags:
   - release

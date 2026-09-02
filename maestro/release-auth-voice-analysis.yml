@@ -1,7 +1,7 @@
 # Production Release integration: real email login, microphone-driven transcript,
 # authenticated save and analysis, then logout. A QA tester or a validated audio
 # input route must speak the documented French sentinel once dictation starts.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release authenticated voice transcription and analysis
 tags:
   - release
@@ -34,7 +34,7 @@ onFlowComplete:
 - runFlow: subflows/dismiss-first-launch-onboarding.yml
 
 # Prove the flow starts as a guest, then authenticate with the local QA account.
-- openLink: noctalia://settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000
@@ -136,7 +136,7 @@ onFlowComplete:
 - assertVisible: "(?i).*(for[eê]t|lune).*(renard|porte).*"
 
 # End in a clean guest state.
-- openLink: noctalia://settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000
@@ -152,7 +152,7 @@ onFlowComplete:
     visible:
       id: screen.recording
     timeout: 60000
-- openLink: noctalia://settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000

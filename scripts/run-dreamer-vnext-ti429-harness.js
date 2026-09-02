@@ -18,6 +18,8 @@ const IMAGE_INDEPENDENT_FLOW = 'maestro/release-image-independent.yml';
 const LONG_START_SENTINEL = 'LONG-START';
 const LONG_END_SENTINEL = 'LONG-END';
 const MIN_LONG_FRAGMENT_CHARS = 600;
+const RELEASE_APP_ID_FALLBACK = 'appId: ${APP_ID || "com.tanuki75.noctalia"}';
+const RELEASE_DEEP_LINK_FALLBACK = '${DEEP_LINK_SCHEME || "noctalia"}://';
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -178,11 +180,14 @@ function inspectCheck(rootDir, check) {
   if (!VALID_RUNTIMES.has(check.runtime)) {
     issues.push(`invalid runtime ${check.runtime}`);
   }
-  if (Array.isArray(check.requiredTokens) && check.flow && fs.existsSync(path.join(rootDir, check.flow))) {
+  if (check.flow && fs.existsSync(path.join(rootDir, check.flow))) {
     const flowText = fs.readFileSync(path.join(rootDir, check.flow), 'utf8');
-    const missing = check.requiredTokens.filter((token) => !flowText.includes(token));
-    if (missing.length) {
-      issues.push(`flow semantic anchors missing: ${missing.join(', ')}`);
+    issues.push(...inspectReleaseIdentityAnchors(flowText, check));
+    if (Array.isArray(check.requiredTokens)) {
+      const missing = check.requiredTokens.filter((token) => !flowText.includes(token));
+      if (missing.length) {
+        issues.push(`flow semantic anchors missing: ${missing.join(', ')}`);
+      }
     }
     if (check.flow === LONG_FRAGMENT_FLOW || check.id === 'long-fragment') {
       issues.push(...inspectLongFragmentFlow(flowText, check));
@@ -190,6 +195,40 @@ function inspectCheck(rootDir, check) {
     if (check.flow === IMAGE_INDEPENDENT_FLOW || check.id === 'image-independent') {
       issues.push(...inspectImageIndependentFlow(flowText));
     }
+  }
+  return issues;
+}
+
+function inspectReleaseIdentityAnchors(flowText, check) {
+  const issues = [];
+  if (check.runtime !== 'release-native' || !check.flow) {
+    return issues;
+  }
+  if (!flowText.includes(RELEASE_APP_ID_FALLBACK)) {
+    issues.push('release-native flow must use appId: ${APP_ID || "com.tanuki75.noctalia"}');
+  }
+  if (/^\s*appId:\s*com\.tanuki75\.noctalia\s*$/m.test(flowText) || /^\s*appId:\s*\$\{APP_ID\}\s*$/m.test(flowText)) {
+    issues.push('release-native flow still hardcodes the production appId');
+  }
+  if (check.mode === 'automated' && check.command && !check.command.includes('--side-by-side-qa')) {
+    issues.push('canonical command is missing --side-by-side-qa for physical QA proof');
+  }
+  if (
+    check.mode === 'automated'
+    && check.command
+    && check.command.includes('run-maestro-android.js')
+    && !/--suite\s+release(?:-[\w]+)?(?:\s|$)/.test(check.command)
+  ) {
+    issues.push('canonical command must select a production Release suite before --side-by-side-qa');
+  }
+  if (
+    /openLink:\s*noctalia:\/\//.test(flowText)
+    || /openLink:\s*\$\{DEEP_LINK_SCHEME\}:\/\//.test(flowText)
+  ) {
+    issues.push('release-native flow still hardcodes noctalia:// instead of ${DEEP_LINK_SCHEME || "noctalia"}://');
+  }
+  if (/openLink:\s*.*:\/\//.test(flowText) && !flowText.includes(RELEASE_DEEP_LINK_FALLBACK)) {
+    issues.push('release-native deep links must use ${DEEP_LINK_SCHEME || "noctalia"}://');
   }
   return issues;
 }
@@ -220,6 +259,9 @@ function inspectPackageWiring(rootDir, manifest) {
   }
   if (!runnerText.includes("'release-ti429':")) {
     issues.push('Release TI-429 suite is not registered in the Maestro runner');
+  }
+  if (!runnerText.includes('--side-by-side-qa') || !runnerText.includes('com.tanuki75.noctalia.qa')) {
+    issues.push('Maestro runner is missing the side-by-side QA identity');
   }
 
   const suiteFlows = manifest.checks
@@ -363,10 +405,18 @@ function recordEvidence(rootDir = ROOT, now = new Date()) {
   return { ...receipt, localReceipt };
 }
 
-function yamlLooksParseable(filePath) {
+function yamlLooksParseable(filePath, check = {}) {
   const text = fs.readFileSync(filePath, 'utf8');
-  if (!text.includes('appId: com.tanuki75.noctalia')) {
+  const hasDynamicAppId = text.includes(RELEASE_APP_ID_FALLBACK);
+  const hasProductionAppId = /^\s*appId:\s*com\.tanuki75\.noctalia\s*$/m.test(text);
+  if (!hasDynamicAppId && !hasProductionAppId) {
     throw new Error(`${path.basename(filePath)} is missing appId`);
+  }
+  if (check.runtime === 'release-native' && !hasDynamicAppId) {
+    throw new Error(`${path.basename(filePath)} is missing dynamic appId`);
+  }
+  if (check.runtime === 'release-native' && /openLink:\s*noctalia:\/\//.test(text) && !text.includes(RELEASE_DEEP_LINK_FALLBACK)) {
+    throw new Error(`${path.basename(filePath)} still hardcodes noctalia://`);
   }
   if (!text.includes('\n---\n')) {
     throw new Error(`${path.basename(filePath)} is missing a Maestro document separator`);
@@ -381,7 +431,7 @@ function validateHarness(rootDir = ROOT) {
   }
   for (const check of inspection.manifest.checks) {
     if (check.flow) {
-      yamlLooksParseable(path.join(rootDir, check.flow));
+      yamlLooksParseable(path.join(rootDir, check.flow), check);
     }
   }
   return inspection;
@@ -437,6 +487,7 @@ module.exports = {
   inspectHarness,
   inspectImageIndependentFlow,
   inspectLongFragmentFlow,
+  inspectReleaseIdentityAnchors,
   parseArgs,
   recordEvidence,
   validateHarness,

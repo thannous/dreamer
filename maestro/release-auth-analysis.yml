@@ -1,6 +1,6 @@
 # Production Release integration: explicit guest state, real email login,
 # authenticated analysis, logout, and return to the guest auth surface.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release authenticated analysis and logout
 tags:
   - release
@@ -26,7 +26,7 @@ onFlowComplete:
 - runFlow: subflows/dismiss-first-launch-onboarding.yml
 
 # A clean install starts as a guest and exposes the sign-in controls.
-- openLink: noctalia://settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000
@@ -92,7 +92,7 @@ onFlowComplete:
     id: component.transcriptCard
 
 # Logout must return to the guest authentication surface without leaking session state.
-- openLink: noctalia://settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000

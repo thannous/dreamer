@@ -1,5 +1,5 @@
 # Release permissions gate: exercise deterministic denied/allowed states without OS-dialog races.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release microphone and notification permissions
 tags:
   - release
@@ -81,7 +81,7 @@ onFlowComplete:
     timeout: 10000
 
 # The settings surface must reflect denied notifications.
-- openLink: noctalia://settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 20000
@@ -160,7 +160,7 @@ onFlowComplete:
       all: allow
       microphone: allow
       notifications: deny
-- openLink: noctalia://settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 20000

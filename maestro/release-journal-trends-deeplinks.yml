@@ -1,6 +1,6 @@
 # Release navigation gate: journal, dream detail, Trends, and notification
 # deep links open the expected surfaces on the installed binary.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release journal trends notification deeplinks
 tags:
   - release
@@ -43,7 +43,7 @@ onFlowComplete:
     visible: "Trends deeplink sentinel quiet harbour"
     timeout: 20000
 
-- openLink: noctalia://journal
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://journal
 - extendedWaitUntil:
     visible:
       id: screen.journal
@@ -65,7 +65,7 @@ onFlowComplete:
 - assertVisible:
     id: component.transcriptCard
 
-- openLink: noctalia://statistics
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://statistics
 - runFlow:
     when:
       notVisible:
@@ -80,7 +80,7 @@ onFlowComplete:
 - assertVisible:
     id: trends.section.week
 
-- openLink: noctalia://weekly-recap
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://weekly-recap
 - extendedWaitUntil:
     visible:
       id: screen.weeklyRecap
@@ -88,7 +88,7 @@ onFlowComplete:
 - assertVisible:
     id: screen.weeklyRecap
 
-- openLink: noctalia://recording
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://recording
 - extendedWaitUntil:
     visible:
       id: screen.recording
