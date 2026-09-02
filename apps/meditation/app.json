@@ -21,7 +21,7 @@
     },
     "android": {
       "package": "com.noctalia.meditation",
-      "versionCode": 2,
+      "versionCode": 3,
       "predictiveBackGestureEnabled": false,
       "adaptiveIcon": {
         "backgroundColor": "#03040D",
