@@ -55,6 +55,9 @@ export function MiniPlayer() {
 
   return (
     <Animated.View
+      accessible={false}
+      importantForAccessibility="no"
+      testID="mini.player"
       className={`mx-2.5 overflow-hidden border border-hairline bg-ink-raised ${
         largeText ? 'rounded-3xl' : 'rounded-full'
       }`}>

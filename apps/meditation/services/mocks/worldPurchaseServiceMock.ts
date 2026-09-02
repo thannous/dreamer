@@ -26,7 +26,9 @@ export async function listOffers(): Promise<WorldOffer[]> {
   return PURCHASABLE_WORLD_IDS.map((worldId) => ({ worldId, priceLabel: PRICE, raw: null }));
 }
 
-export async function purchase(offer: WorldOffer): Promise<WorldId[]> {
+export async function purchase(offer: {
+  worldId: (typeof PURCHASABLE_WORLD_IDS)[number];
+}): Promise<WorldId[]> {
   const owned = new Set(await currentOwnership());
   owned.add(offer.worldId);
   const next = [...owned];

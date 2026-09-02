@@ -259,7 +259,12 @@ export function WorldJourneyPicker({
   });
 
   return (
-    <View accessibilityRole="radiogroup" accessibilityLabel={accessibilityLabel} testID={testID}>
+    <View
+      accessible={false}
+      accessibilityRole="radiogroup"
+      accessibilityLabel={accessibilityLabel}
+      importantForAccessibility="no"
+      testID={testID}>
       {screenReader ? (
         <View className="gap-3">{cards}</View>
       ) : (

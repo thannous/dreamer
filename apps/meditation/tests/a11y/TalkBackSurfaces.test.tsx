@@ -280,6 +280,10 @@ describe('TI-394 TalkBack surfaces', () => {
     expect(open.props.accessibilityLabel).toBe(`${translate('en', 'mini.playing')}. ${title}`);
     expect(screen.getByText(title)).toBeTruthy();
 
+    const strip = screen.getByTestId('mini.player');
+    expect(strip.props.accessible).toBe(false);
+    expect(strip.props.importantForAccessibility).toBe('no');
+
     const toggle = screen.getByTestId('btn.mini.toggle');
     expect(toggle.props.accessibilityLabel).toBe(translate('en', 'player.play'));
     expect(toggle.props.accessibilityState).toMatchObject({ selected: false });
@@ -368,6 +372,11 @@ describe('TI-394 TalkBack surfaces', () => {
     expect(tabs[0].props.accessibilityState).toMatchObject({ selected: true });
     expect(tabs[1].props.accessibilityState).toMatchObject({ selected: false });
     expect(meetsMinTarget(tabs[0].props.style)).toBe(true);
+
+    const tablist = screen.getByTestId('tabs.bar');
+    expect(tablist.props.accessible).toBe(false);
+    expect(tablist.props.accessibilityRole).toBe('tablist');
+    expect(tablist.props.importantForAccessibility).toBe('no');
   });
 
   it('summarises the streak calendar as one TalkBack element in weekday order', () => {
@@ -414,6 +423,8 @@ describe('TI-394 TalkBack surfaces', () => {
     const group = screen.getByTestId('home.world-switcher');
     expect(group.props.accessibilityRole).toBe('radiogroup');
     expect(group.props.accessibilityLabel).toBe(translate('en', 'home.journey.worldLabel'));
+    expect(group.props.accessible).toBe(false);
+    expect(group.props.importantForAccessibility).toBe('no');
 
     const radios = screen.getAllByRole('radio');
     expect(radios.map((radio) => radio.props.accessibilityLabel)).toEqual(
@@ -482,6 +493,9 @@ describe('TI-394 TalkBack surfaces', () => {
       />
     );
     expect(worldView.UNSAFE_queryAllByType(ScrollView)).toHaveLength(0);
+    const worldGroup = worldView.getByTestId('home.world-switcher');
+    expect(worldGroup.props.accessible).toBe(false);
+    expect(worldGroup.props.importantForAccessibility).toBe('no');
     const radios = worldView.getAllByRole('radio');
     expect(radios.map((radio) => radio.props.accessibilityLabel)).toEqual([
       translate('en', 'world.constellation.name'),
@@ -502,11 +516,16 @@ describe('TI-394 TalkBack surfaces', () => {
       />
     );
     expect(upcomingView.UNSAFE_queryAllByType(ScrollView)).toHaveLength(0);
+    expect(upcomingView.getByTestId('home.journey.up-next').props.accessible).not.toBe(true);
 
     const upcomingCards = [
       upcomingView.getByTestId('home.journey.upcoming.sleep-descent'),
       upcomingView.getByTestId('home.journey.upcoming.dream-lucid'),
     ];
+    expect(upcomingCards.map((card) => card.props.accessibilityLabel)).toEqual([
+      expect.stringContaining(translate('en', 'session.sleep-descent.title')),
+      expect.stringContaining(translate('en', 'session.dream-lucid.title')),
+    ]);
     expect(upcomingCards[0].props.nextFocusForward).toBeUndefined();
     expect(upcomingCards[1].props.nextFocusForward).toBeUndefined();
     fireEvent.press(upcomingCards[1]);
