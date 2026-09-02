@@ -52,6 +52,7 @@ onFlowComplete:
 - tapOn:
     id: input.searchDreams
 - inputText: "Trends deeplink sentinel"
+- hideKeyboard
 - extendedWaitUntil:
     visible:
       id: "dream.item.*"
@@ -60,10 +61,11 @@ onFlowComplete:
     id: "dream.item.*"
     index: 0
 - extendedWaitUntil:
-    visible: "Trends deeplink sentinel quiet harbour"
+    visible:
+      id: component.transcriptCard
     timeout: 20000
-- assertVisible:
-    id: component.transcriptCard
+- assertVisible: "Trends deeplink sentinel quiet harbour"
+- takeScreenshot: ti429-journal-detail
 
 - openLink: ${DEEP_LINK_SCHEME || "noctalia"}://statistics
 - runFlow:

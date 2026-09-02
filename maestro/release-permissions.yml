@@ -63,6 +63,12 @@ onFlowComplete:
     timeout: 20000
 
 # A denied microphone must offer the explicit text fallback, never block capture.
+- extendedWaitUntil:
+    visible:
+      id: btn.recording.inputMode.voice
+    timeout: 10000
+- tapOn:
+    id: btn.recording.inputMode.voice
 - scrollUntilVisible:
     element:
       id: btn.recordToggle
@@ -114,6 +120,12 @@ onFlowComplete:
     visible:
       id: screen.recording
     timeout: 20000
+- extendedWaitUntil:
+    visible:
+      id: btn.recording.inputMode.voice
+    timeout: 10000
+- tapOn:
+    id: btn.recording.inputMode.voice
 - scrollUntilVisible:
     element:
       id: btn.recordToggle
@@ -122,6 +134,7 @@ onFlowComplete:
     id: btn.recordToggle
 - assertNotVisible:
     id: sheet.recording.micRationale
+- takeScreenshot: ti429-permissions-voice-granted
 
 # A clean CI image may not have its offline speech pack yet. Require an explicit,
 # observable outcome: active dictation, or the product's safe text fallback.

@@ -56,3 +56,4 @@ onFlowComplete:
       id: text.dreamDetail.actionTitle
     timeout: 30000
 - assertVisible: "Write tell shared sentinel"
+- takeScreenshot: ti429-write-tell-saved

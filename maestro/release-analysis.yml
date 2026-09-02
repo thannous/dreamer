@@ -95,3 +95,12 @@ onFlowComplete:
     visibilityPercentage: 60
 - assertVisible:
     id: component.transcriptCard
+- scrollUntilVisible:
+    element:
+      id: btn.journal.illustrate
+    direction: DOWN
+    timeout: 30000
+    visibilityPercentage: 40
+- assertVisible:
+    id: btn.journal.illustrate
+- takeScreenshot: ti429-analysis-illustrate-cta

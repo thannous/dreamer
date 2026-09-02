@@ -68,6 +68,7 @@ onFlowComplete:
       - tapOn:
           id: input.searchDreams
       - inputText: "Analysis interrupt sentinel"
+      - hideKeyboard
       - extendedWaitUntil:
           visible:
             id: "dream.item.*"
@@ -76,10 +77,11 @@ onFlowComplete:
           id: "dream.item.*"
           index: 0
 - extendedWaitUntil:
-    visible: "Analysis interrupt sentinel silver orchard"
+    visible:
+      id: component.transcriptCard
     timeout: 20000
-- assertVisible:
-    id: component.transcriptCard
+- assertVisible: "Analysis interrupt sentinel silver orchard"
+- takeScreenshot: ti429-analysis-interrupt-transcript
 - scrollUntilVisible:
     element:
       id: btn.dream.primaryCta

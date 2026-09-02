@@ -13,7 +13,11 @@ const {
   extractQuotedInputTexts,
   inspectHarness,
   inspectImageIndependentFlow,
+  inspectAnalysisSuccessFlow,
   inspectLongFragmentFlow,
+  inspectNamedScreenshots,
+  inspectSearchRecovery,
+  inspectPermissionsVoiceMode,
   inspectReleaseIdentityAnchors,
   parseArgs,
   recordEvidence,
@@ -117,6 +121,184 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(flowText.lastIndexOf('id: btn.dream.primaryCta')).toBeLessThan(illustrateAt);
     expect(flowText.lastIndexOf('id: component.transcriptCard')).toBeLessThan(illustrateAt);
     expect(inspectImageIndependentFlow(flowText)).toEqual([]);
+  });
+
+  it('inspects the image flow as primary+transcript, delete anchor, then assertNotVisible illustrate', () => {
+    const valid = [
+      'id: btn.dream.primaryCta',
+      'id: component.transcriptCard',
+      'id: btn.dream.delete',
+      'assertNotVisible:',
+      '  id: btn.journal.illustrate',
+      '',
+    ].join('\n');
+    expect(inspectImageIndependentFlow(valid)).toEqual([]);
+
+    expect(inspectImageIndependentFlow([
+      '- tapOn:',
+      '    id: btn.dream.primaryCta',
+      'id: component.transcriptCard',
+      'id: btn.dream.delete',
+      'assertNotVisible:',
+      '  id: btn.journal.illustrate',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'image flow starts analysis; it must only assert the analysis CTA',
+    ]));
+    expect(inspectImageIndependentFlow([
+      'id: btn.dream.primaryCta',
+      'id: component.transcriptCard',
+      'id: btn.dream.delete',
+      '- tapOn:',
+      '    id: btn.journal.illustrate',
+      'assertNotVisible:',
+      '  id: btn.journal.illustrate',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'image flow generates an illustration; it must only assert the illustration CTA is absent',
+    ]));
+    expect(inspectImageIndependentFlow([
+      'id: btn.dream.primaryCta',
+      'id: component.transcriptCard',
+      '- tapOn:',
+      '    id: btn.dream.delete',
+      'assertNotVisible:',
+      '  id: btn.journal.illustrate',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'image flow must not tap delete; delete is only a lower-viewport anchor',
+    ]));
+    expect(inspectImageIndependentFlow([
+      'id: btn.dream.delete',
+      'assertNotVisible:',
+      '  id: btn.journal.illustrate',
+      'id: btn.dream.primaryCta',
+      'id: component.transcriptCard',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'image flow must assert primaryCta+transcript, then scroll to delete, then assertNotVisible illustrate',
+    ]));
+  });
+
+  it('inspects analysis-success as interpretation before illustrate, without tapping illustrate', () => {
+    const valid = [
+      '- assertVisible: "Interpretation|Interprétation"',
+      '- assertVisible:',
+      '    id: btn.journal.illustrate',
+      '',
+    ].join('\n');
+    expect(inspectAnalysisSuccessFlow(valid)).toEqual([]);
+
+    expect(inspectAnalysisSuccessFlow([
+      '- assertVisible: "Interpretation|Interprétation"',
+      '- tapOn:',
+      '    id: btn.journal.illustrate',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'analysis flow must assert the illustration CTA without tapping it',
+    ]));
+    expect(inspectAnalysisSuccessFlow([
+      '- assertVisible:',
+      '    id: btn.journal.illustrate',
+      '- assertVisible: "Interpretation|Interprétation"',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'analysis flow must wait for interpretation before asserting the illustration CTA',
+    ]));
+    expect(inspectAnalysisSuccessFlow('- assertVisible: "Interpretation|Interprétation"\n')).toEqual(
+      expect.arrayContaining(['analysis flow must assert btn.journal.illustrate after a successful analysis'])
+    );
+  });
+
+  it('keeps at most one named TI-429 screenshot per flow', () => {
+    const check = { id: 'short-fragment' };
+    expect(inspectNamedScreenshots('takeScreenshot: journal-list\n', check)).toEqual([]);
+    expect(inspectNamedScreenshots('takeScreenshot: ti429-short-fragment\n', check)).toEqual([]);
+    expect(inspectNamedScreenshots([
+      'takeScreenshot: ti429-short-fragment',
+      'takeScreenshot: ti429-short-fragment-again',
+      '',
+    ].join('\n'), check)).toEqual([
+      'short-fragment has 2 TI-429 screenshots; keep at most one',
+    ]);
+  });
+
+  it('applies search recovery only to the allowlisted checks', () => {
+    const missingHide = [
+      '- tapOn:',
+      '    id: input.searchDreams',
+      '- tapOn:',
+      '    id: "dream.item.*"',
+      '- assertVisible:',
+      '    id: component.transcriptCard',
+      '',
+    ].join('\n');
+    const hideAfterItem = [
+      '- tapOn:',
+      '    id: input.searchDreams',
+      '- tapOn:',
+      '    id: "dream.item.*"',
+      '- hideKeyboard',
+      '- assertVisible:',
+      '    id: component.transcriptCard',
+      '',
+    ].join('\n');
+    const valid = [
+      '- tapOn:',
+      '    id: input.searchDreams',
+      '- hideKeyboard',
+      '- tapOn:',
+      '    id: "dream.item.*"',
+      '- assertVisible:',
+      '    id: component.transcriptCard',
+      '',
+    ].join('\n');
+
+    expect(inspectSearchRecovery(missingHide, { id: 'short-fragment' })).toEqual(expect.arrayContaining([
+      'short-fragment must hideKeyboard after journal search before tapping a dream item',
+    ]));
+    expect(inspectSearchRecovery(hideAfterItem, { id: 'offline-local' })).toEqual(expect.arrayContaining([
+      'offline-local hides the keyboard after tapping a dream item',
+    ]));
+    expect(inspectSearchRecovery(valid, { id: 'analysis-interrupt' })).toEqual([]);
+    expect(inspectSearchRecovery(missingHide, { id: 'offline-auth-sync' })).toEqual([]);
+    expect(inspectSearchRecovery(hideAfterItem, { id: 'analysis-failed' })).toEqual([]);
+  });
+
+  it('requires two voice-mode switches before the two recordToggle taps', () => {
+    const valid = [
+      '- tapOn:',
+      '    id: btn.recording.inputMode.voice',
+      '- tapOn:',
+      '    id: btn.recordToggle',
+      '- tapOn:',
+      '    id: btn.recording.inputMode.voice',
+      '- tapOn:',
+      '    id: btn.recordToggle',
+      '',
+    ].join('\n');
+    expect(inspectPermissionsVoiceMode(valid)).toEqual([]);
+
+    expect(inspectPermissionsVoiceMode([
+      '- tapOn:',
+      '    id: btn.recording.inputMode.voice',
+      '- tapOn:',
+      '    id: btn.recordToggle',
+      '- tapOn:',
+      '    id: btn.recordToggle',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'permissions flow must enter voice mode before both recordToggle taps',
+    ]));
+    expect(inspectPermissionsVoiceMode([
+      '- tapOn:',
+      '    id: btn.recordToggle',
+      '- tapOn:',
+      '    id: btn.recording.inputMode.voice',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'permissions flow must tap voice input mode before looking for recordToggle',
+    ]));
   });
 
   it('wires the new Release flows into the Maestro suite and package scripts without launching them', () => {

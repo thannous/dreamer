@@ -27,9 +27,10 @@
         "id: btn.recording.inputMode.text",
         "id: btn.recording.inputMode.voice",
         "Write tell shared sentinel",
-        "id: btn.saveDream"
+        "id: btn.saveDream",
+        "takeScreenshot: ti429-write-tell-saved"
       ],
-      "evidence": "screenshot of Write, Tell, and saved detail",
+      "evidence": "one screenshot of saved Write/Tell detail. Unexecuted = blocked.",
       "runtime": "release-native"
     },
     {
@@ -42,9 +43,10 @@
       "requiredTokens": [
         "killApp",
         "Draft kill relaunch sentinel",
-        "id: input.dreamTranscript"
+        "id: input.dreamTranscript",
+        "takeScreenshot: ti429-draft-kill-restored"
       ],
-      "evidence": "screenshot of restored draft after process death",
+      "evidence": "one screenshot of restored draft after process death. Unexecuted = blocked.",
       "runtime": "release-native"
     },
     {
@@ -57,9 +59,11 @@
       "requiredTokens": [
         "Release lifecycle sentinel",
         "id: btn.saveDream",
-        "id: text.dreamDetail.actionTitle"
+        "hideKeyboard",
+        "id: component.transcriptCard",
+        "takeScreenshot: ti429-lifecycle-transcript"
       ],
-      "evidence": "existing Release lifecycle save",
+      "evidence": "one screenshot of recovered transcript after process death. Unexecuted = blocked.",
       "runtime": "release-native"
     },
     {
@@ -73,9 +77,10 @@
         "LONG-START",
         "LONG-END",
         "id: component.transcriptCard",
-        "scrollUntilVisible:"
+        "scrollUntilVisible:",
+        "takeScreenshot: ti429-long-fragment"
       ],
-      "evidence": "separate screenshots: transcript+LONG-START, then LONG-END after scroll. Unexecuted = blocked.",
+      "evidence": "one screenshot after LONG-END on the transcript card. Unexecuted = blocked.",
       "runtime": "release-native",
       "minInputLength": 600,
       "startSentinel": "LONG-START",
@@ -100,9 +105,12 @@
       "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-offline-local.yml --side-by-side-qa",
       "requiredTokens": [
         "setAirplaneMode: enabled",
-        "Release offline local sentinel"
+        "Release offline local sentinel",
+        "hideKeyboard",
+        "id: component.transcriptCard",
+        "takeScreenshot: ti429-offline-transcript"
       ],
-      "evidence": "existing Release offline local flow",
+      "evidence": "one screenshot of recovered offline transcript. Unexecuted = blocked.",
       "runtime": "release-native"
     },
     {
@@ -130,10 +138,13 @@
       "requiredTokens": [
         "id: btn.dream.primaryCta",
         "Interpretation|Interprétation",
-        "id: component.transcriptCard"
+        "id: component.transcriptCard",
+        "id: btn.journal.illustrate",
+        "takeScreenshot: ti429-analysis-illustrate-cta"
       ],
-      "evidence": "existing Release guest analysis flow",
-      "runtime": "release-native"
+      "evidence": "one screenshot of illustration CTA after a successful analysis. Never tap illustrate. Unexecuted = blocked.",
+      "runtime": "release-native",
+      "notes": "After a real successful analysis, assert btn.journal.illustrate separately and do not tap it. Image independence before analysis stays in image-independent."
     },
     {
       "id": "analysis-failed",
@@ -160,9 +171,11 @@
       "requiredTokens": [
         "killApp",
         "Analysis interrupt sentinel",
-        "id: component.transcriptCard"
+        "hideKeyboard",
+        "id: component.transcriptCard",
+        "takeScreenshot: ti429-analysis-interrupt-transcript"
       ],
-      "evidence": "screenshot of recovered transcript and CTA",
+      "evidence": "one screenshot of recovered transcript after interrupt. Unexecuted = blocked.",
       "runtime": "release-native"
     },
     {
@@ -189,12 +202,15 @@
       "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-image-independent.yml --side-by-side-qa",
       "requiredTokens": [
         "id: btn.dream.primaryCta",
+        "id: component.transcriptCard",
+        "id: btn.dream.delete",
         "id: btn.journal.illustrate",
-        "id: component.transcriptCard"
+        "assertNotVisible",
+        "takeScreenshot: ti429-image-pre-analysis"
       ],
-      "evidence": "separate screenshots: analysis CTA + transcript after save, then illustration CTA after scroll. No taps, no quota. Unexecuted = blocked.",
+      "evidence": "one screenshot after scrolling to btn.dream.delete and asserting illustration CTA is absent. No taps, no quota. Unexecuted = blocked.",
       "runtime": "release-native",
-      "notes": "Must not tap analysis, must not generate an image, must not consume quota."
+      "notes": "Must not tap analysis, must not generate an image, must not consume quota. Before analysis, verify primaryCta+transcript then scroll to delete and assertNotVisible illustrate. Illustration CTA after successful analysis is proven in analysis-success."
     },
     {
       "id": "journal-detail-trends-deeplinks",
@@ -203,7 +219,7 @@
       "mode": "automated",
       "flow": "maestro/release-journal-trends-deeplinks.yml",
       "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-journal-trends-deeplinks.yml --side-by-side-qa",
-      "evidence": "screenshots of journal list, Trends, weekly recap, recording. Unexecuted = blocked.",
+      "evidence": "one screenshot of recovered journal detail after search. Trends and weekly recap remain asserted. Unexecuted = blocked.",
       "runtime": "release-native",
       "notes": "Release-native. Covers ${DEEP_LINK_SCHEME || \"noctalia\"}://journal (list), ${DEEP_LINK_SCHEME || \"noctalia\"}://statistics / Trends, ${DEEP_LINK_SCHEME || \"noctalia\"}://weekly-recap and ${DEEP_LINK_SCHEME || \"noctalia\"}://recording. Does not cover analysis-ready ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id}. QA scheme/package is local device proof, not Store/production install-source proof.",
       "requiredTokens": [
@@ -212,7 +228,10 @@
         "id: trends.section.week",
         "${DEEP_LINK_SCHEME || \"noctalia\"}://weekly-recap",
         "id: screen.weeklyRecap",
-        "${DEEP_LINK_SCHEME || \"noctalia\"}://recording"
+        "${DEEP_LINK_SCHEME || \"noctalia\"}://recording",
+        "hideKeyboard",
+        "id: component.transcriptCard",
+        "takeScreenshot: ti429-journal-detail"
       ]
     },
     {

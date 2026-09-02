@@ -20,6 +20,12 @@ const LONG_END_SENTINEL = 'LONG-END';
 const MIN_LONG_FRAGMENT_CHARS = 600;
 const RELEASE_APP_ID_FALLBACK = 'appId: ${APP_ID || "com.tanuki75.noctalia"}';
 const RELEASE_DEEP_LINK_FALLBACK = '${DEEP_LINK_SCHEME || "noctalia"}://';
+const SEARCH_RECOVERY_CHECK_IDS = new Set([
+  'short-fragment',
+  'offline-local',
+  'analysis-interrupt',
+  'journal-detail-trends-deeplinks',
+]);
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -139,18 +145,94 @@ function inspectImageIndependentFlow(flowText) {
     issues.push('image flow starts analysis; it must only assert the analysis CTA');
   }
   if (flowTapsId(flowText, 'btn.journal.illustrate')) {
-    issues.push('image flow generates an illustration; it must only assert the illustration CTA');
+    issues.push('image flow generates an illustration; it must only assert the illustration CTA is absent');
+  }
+  if (flowTapsId(flowText, 'btn.dream.delete')) {
+    issues.push('image flow must not tap delete; delete is only a lower-viewport anchor');
   }
   if (/Interpretation\|Interprétation/.test(flowText) || flowText.includes('Interpretation|Interprétation')) {
     issues.push('image flow waits for analysis output');
   }
-  if (!flowText.includes('id: btn.dream.primaryCta') || !flowText.includes('id: btn.journal.illustrate')) {
-    issues.push('image flow must assert analysis and illustration CTAs separately');
+  if (!flowText.includes('id: btn.dream.primaryCta') || !flowText.includes('id: component.transcriptCard')) {
+    issues.push('image flow must assert the analysis CTA and transcript before looking for illustration');
   }
-  const illustrateScroll = flowText.indexOf('id: btn.journal.illustrate');
-  const afterIllustrate = illustrateScroll === -1 ? '' : flowText.slice(illustrateScroll);
-  if (afterIllustrate.includes('id: btn.dream.primaryCta') || afterIllustrate.includes('id: component.transcriptCard')) {
-    issues.push('image flow re-asserts analysis or transcript after scrolling to illustration');
+  if (!flowText.includes('id: btn.dream.delete')) {
+    issues.push('image flow must scroll to btn.dream.delete before asserting illustration absence');
+  }
+  if (!flowText.includes('assertNotVisible') || !flowText.includes('id: btn.journal.illustrate')) {
+    issues.push('image flow must assertNotVisible the illustration CTA after scrolling past the first viewport');
+  }
+  const primaryAt = flowText.indexOf('id: btn.dream.primaryCta');
+  const transcriptAt = flowText.indexOf('id: component.transcriptCard');
+  const deleteAt = flowText.indexOf('id: btn.dream.delete');
+  const illustrateAt = flowText.indexOf('id: btn.journal.illustrate');
+  if (!(primaryAt !== -1 && transcriptAt !== -1 && deleteAt !== -1 && illustrateAt !== -1
+    && primaryAt < transcriptAt && transcriptAt < deleteAt && deleteAt < illustrateAt)) {
+    issues.push('image flow must assert primaryCta+transcript, then scroll to delete, then assertNotVisible illustrate');
+  }
+  return issues;
+}
+
+function inspectAnalysisSuccessFlow(flowText) {
+  const issues = [];
+  if (flowTapsId(flowText, 'btn.journal.illustrate')) {
+    issues.push('analysis flow must assert the illustration CTA without tapping it');
+  }
+  if (!flowText.includes('id: btn.journal.illustrate')) {
+    issues.push('analysis flow must assert btn.journal.illustrate after a successful analysis');
+  }
+  const interpretationAt = flowText.search(/Interpretation\|Interprétation|Interpretation\|Interprétation/);
+  const illustrateAt = flowText.indexOf('id: btn.journal.illustrate');
+  if (interpretationAt === -1 || illustrateAt === -1 || !(interpretationAt < illustrateAt)) {
+    issues.push('analysis flow must wait for interpretation before asserting the illustration CTA');
+  }
+  return issues;
+}
+
+function inspectNamedScreenshots(flowText, check) {
+  const issues = [];
+  const names = Array.from(flowText.matchAll(/takeScreenshot:\s*([^\n]+)/g)).map((match) => match[1].trim());
+  const scoped = names.filter((name) => name.startsWith('ti429-'));
+  if (scoped.length > 1) {
+    issues.push(`${check.id} has ${scoped.length} TI-429 screenshots; keep at most one`);
+  }
+  return issues;
+}
+
+function inspectSearchRecovery(flowText, check) {
+  const issues = [];
+  if (!SEARCH_RECOVERY_CHECK_IDS.has(check.id)) {
+    return issues;
+  }
+  if (!flowText.includes('input.searchDreams')) {
+    return issues;
+  }
+  const searchAt = flowText.lastIndexOf('id: input.searchDreams');
+  const hideAt = flowText.lastIndexOf('hideKeyboard');
+  const itemAt = flowText.lastIndexOf('id: "dream.item.*"');
+  if (hideAt === -1 || hideAt < searchAt) {
+    issues.push(`${check.id} must hideKeyboard after journal search before tapping a dream item`);
+  }
+  if (itemAt !== -1 && hideAt !== -1 && hideAt > itemAt) {
+    issues.push(`${check.id} hides the keyboard after tapping a dream item`);
+  }
+  if (!flowText.includes('id: component.transcriptCard')) {
+    issues.push(`${check.id} must wait for the transcript card before asserting the recovered sentinel`);
+  }
+  return issues;
+}
+
+function inspectPermissionsVoiceMode(flowText) {
+  const issues = [];
+  const voiceAt = flowText.indexOf('id: btn.recording.inputMode.voice');
+  const toggleAt = flowText.indexOf('id: btn.recordToggle');
+  if (voiceAt === -1 || toggleAt === -1 || !(voiceAt < toggleAt)) {
+    issues.push('permissions flow must tap voice input mode before looking for recordToggle');
+  }
+  const secondVoice = flowText.lastIndexOf('id: btn.recording.inputMode.voice');
+  const secondToggle = flowText.lastIndexOf('id: btn.recordToggle');
+  if (!(secondVoice > voiceAt && secondToggle > toggleAt && secondVoice < secondToggle)) {
+    issues.push('permissions flow must enter voice mode before both recordToggle taps');
   }
   return issues;
 }
@@ -194,6 +276,16 @@ function inspectCheck(rootDir, check) {
     }
     if (check.flow === IMAGE_INDEPENDENT_FLOW || check.id === 'image-independent') {
       issues.push(...inspectImageIndependentFlow(flowText));
+    }
+    if (check.flow === 'maestro/release-analysis.yml' || check.id === 'analysis-success') {
+      issues.push(...inspectAnalysisSuccessFlow(flowText));
+    }
+    if (check.flow === 'maestro/release-permissions.yml') {
+      issues.push(...inspectPermissionsVoiceMode(flowText));
+    }
+    issues.push(...inspectNamedScreenshots(flowText, check));
+    if (SEARCH_RECOVERY_CHECK_IDS.has(check.id)) {
+      issues.push(...inspectSearchRecovery(flowText, check));
     }
   }
   return issues;
@@ -486,8 +578,13 @@ module.exports = {
   extractQuotedInputTexts,
   inspectHarness,
   inspectImageIndependentFlow,
+  inspectAnalysisSuccessFlow,
   inspectLongFragmentFlow,
+  inspectNamedScreenshots,
+  inspectSearchRecovery,
+  inspectPermissionsVoiceMode,
   inspectReleaseIdentityAnchors,
+  SEARCH_RECOVERY_CHECK_IDS,
   parseArgs,
   recordEvidence,
   validateHarness,

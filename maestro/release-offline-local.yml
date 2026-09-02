@@ -113,6 +113,7 @@ onFlowComplete:
       - tapOn:
           id: input.searchDreams
       - inputText: "Release offline local sentinel"
+      - hideKeyboard
       - extendedWaitUntil:
           visible:
             id: "dream.item.*"
@@ -121,8 +122,11 @@ onFlowComplete:
           id: "dream.item.*"
           index: 0
 - extendedWaitUntil:
-    visible: "Release offline local sentinel"
+    visible:
+      id: component.transcriptCard
     timeout: 20000
+- assertVisible: "Release offline local sentinel"
+- takeScreenshot: ti429-offline-transcript
 
 # Restore connectivity explicitly, resume the app, and verify the local record remains.
 - setAirplaneMode: disabled

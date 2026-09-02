@@ -49,3 +49,4 @@ onFlowComplete:
     timeout: 15000
 - assertVisible:
     id: input.dreamTranscript
+- takeScreenshot: ti429-draft-kill-restored

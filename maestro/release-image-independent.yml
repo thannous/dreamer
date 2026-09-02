@@ -41,9 +41,12 @@ onFlowComplete:
     id: component.transcriptCard
 - scrollUntilVisible:
     element:
-      id: btn.journal.illustrate
+      id: btn.dream.delete
     direction: DOWN
-    timeout: 30000
+    timeout: 20000
     visibilityPercentage: 40
 - assertVisible:
+    id: btn.dream.delete
+- assertNotVisible:
     id: btn.journal.illustrate
+- takeScreenshot: ti429-image-pre-analysis
