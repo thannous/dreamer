@@ -704,13 +704,17 @@ const PARAMETERIZED_NATIVE_ROUTES = new Set([
   'ritual',
   'symbol-detail',
 ]);
+const TRUSTED_NATIVE_PROTOCOLS = new Set([
+  'noctalia:',
+  'noctalia-lucid:',
+  'noctalia-qa:',
+]);
 
 const parseTrustedNativeLaunchUrl = (initialUrl: string): URL | null => {
   try {
     const parsed = new URL(initialUrl);
     return (
-      parsed.protocol === 'noctalia:' ||
-      parsed.protocol === 'noctalia-lucid:' ||
+      TRUSTED_NATIVE_PROTOCOLS.has(parsed.protocol) ||
       (parsed.protocol === 'https:' &&
         (parsed.hostname === 'dream.noctalia.app' || parsed.hostname === 'lucid.noctalia.app'))
     )
@@ -723,7 +727,7 @@ const parseTrustedNativeLaunchUrl = (initialUrl: string): URL | null => {
 
 const nativeRoutePath = (parsed: URL): string => {
   if (
-    (parsed.protocol !== 'noctalia:' && parsed.protocol !== 'noctalia-lucid:') ||
+    !TRUSTED_NATIVE_PROTOCOLS.has(parsed.protocol) ||
     !parsed.hostname
   ) {
     return parsed.pathname || '/';

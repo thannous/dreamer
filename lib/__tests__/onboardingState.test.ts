@@ -598,6 +598,18 @@ describe('onboardingState', () => {
     ).toBe('/journal');
     expect(
       resolveExplicitStartupDestination(
+        'noctalia-qa://journal/1788445127800',
+        '/recording'
+      )
+    ).toBe('/journal/1788445127800');
+    expect(
+      resolveExplicitStartupDestination(
+        'noctalia-qa-evil://journal/1788445127800',
+        '/recording'
+      )
+    ).toBeUndefined();
+    expect(
+      resolveExplicitStartupDestination(
         'https://dream.noctalia.app.evil.example/settings',
         '/settings'
       )
