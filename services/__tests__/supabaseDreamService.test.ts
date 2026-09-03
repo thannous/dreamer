@@ -747,6 +747,98 @@ describe('supabaseDreamService', () => {
     ]);
   });
 
+  it('rebases sequential offline updates for the same dream onto each acknowledged revision', async () => {
+    mocks.rpc = jest
+      .fn()
+      .mockResolvedValueOnce({
+        data: [
+          {
+            mutation_id: 'mut-title',
+            client_request_id: 'mutation-title',
+            operation: 'update',
+            status: 'ack',
+            remote_id: 42,
+            dream: buildRow({ title: 'updated title', revision_id: 'revision-2' }),
+          },
+        ],
+        error: null,
+      })
+      .mockResolvedValueOnce({
+        data: [
+          {
+            mutation_id: 'mut-favorite',
+            client_request_id: 'mutation-favorite',
+            operation: 'update',
+            status: 'ack',
+            remote_id: 42,
+            dream: buildRow({
+              title: 'updated title',
+              is_favorite: true,
+              revision_id: 'revision-3',
+            }),
+          },
+        ],
+        error: null,
+      });
+
+    const { syncDreamMutationsInSupabase } = require('../supabaseDreamService');
+    const baseMutation = {
+      version: 1,
+      userScope: 'user:user-1',
+      entityType: 'dream',
+      entityKey: 'remote:42',
+      operation: 'update',
+      baseRevision: 'revision-1',
+      status: 'pending',
+      retryCount: 0,
+    };
+    const titleMutation = {
+      ...baseMutation,
+      id: 'mut-title',
+      clientRequestId: 'mutation-title',
+      clientUpdatedAt: 1,
+      createdAt: 1,
+      payload: {
+        dream: buildDream({
+          remoteId: 42,
+          revisionId: 'revision-1',
+          title: 'updated title',
+        }),
+      },
+    };
+    const favoriteMutation = {
+      ...baseMutation,
+      id: 'mut-favorite',
+      clientRequestId: 'mutation-favorite',
+      clientUpdatedAt: 2,
+      createdAt: 2,
+      payload: {
+        dream: buildDream({
+          remoteId: 42,
+          revisionId: 'revision-1',
+          title: 'updated title',
+          isFavorite: true,
+        }),
+      },
+    };
+
+    await syncDreamMutationsInSupabase([titleMutation, favoriteMutation], 'user-1');
+
+    expect(mocks.rpc).toHaveBeenCalledTimes(2);
+    expect(mocks.rpc?.mock.calls[0]?.[1]?.mutations[0]?.base_revision).toBe('revision-1');
+    expect(mocks.rpc?.mock.calls[1]?.[1]?.mutations[0]).toEqual(
+      expect.objectContaining({
+        base_revision: 'revision-2',
+        payload: expect.objectContaining({
+          remote_id: 42,
+          revision_id: 'revision-2',
+          title: 'updated title',
+          is_favorite: true,
+        }),
+      })
+    );
+  });
+
   it('syncDreamMutationsInSupabase falls back to direct writes when the RPC is missing', async () => {
     mocks.rpc = jest.fn().mockResolvedValue({
       data: null,

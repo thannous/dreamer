@@ -952,6 +952,63 @@ const hydrateKnownRemoteId = (
   return resolvedRemoteId != null ? applyResolvedRemoteId(mutation, resolvedRemoteId) : mutation;
 };
 
+type AcknowledgedDreamState = {
+  remoteId?: number;
+  revisionId?: string;
+};
+
+const getMutationEntityAliases = (mutation: DreamMutation): string[] => {
+  const aliases = [`entity:${mutation.entityKey}`];
+  const dreamId = getMutationDreamId(mutation);
+  const remoteId = getMutationRemoteId(mutation);
+  const dreamClientRequestId = getDreamClientRequestId(mutation);
+
+  if (dreamId != null) aliases.push(`local:${dreamId}`);
+  if (remoteId != null) aliases.push(`remote:${remoteId}`);
+  if (dreamClientRequestId) aliases.push(`client:${dreamClientRequestId}`);
+  return aliases;
+};
+
+const hydrateAcknowledgedDreamState = (
+  mutation: DreamMutation,
+  statesByAlias: Map<string, AcknowledgedDreamState>
+): DreamMutation => {
+  const state = getMutationEntityAliases(mutation)
+    .map((alias) => statesByAlias.get(alias))
+    .find((candidate): candidate is AcknowledgedDreamState => candidate != null);
+
+  if (!state || mutation.operation === 'create') {
+    return mutation;
+  }
+
+  const withRemoteId =
+    state.remoteId != null ? applyResolvedRemoteId(mutation, state.remoteId) : mutation;
+  const dream = withRemoteId.payload.dream
+    ? {
+        ...withRemoteId.payload.dream,
+        ...(state.remoteId != null ? { remoteId: state.remoteId } : {}),
+        ...(state.revisionId ? { revisionId: state.revisionId } : {}),
+      }
+    : undefined;
+  const tombstone = withRemoteId.payload.tombstone
+    ? {
+        ...withRemoteId.payload.tombstone,
+        ...(state.remoteId != null ? { remoteId: state.remoteId } : {}),
+        ...(state.revisionId ? { revisionId: state.revisionId } : {}),
+      }
+    : undefined;
+
+  return {
+    ...withRemoteId,
+    ...(state.revisionId ? { baseRevision: state.revisionId } : {}),
+    payload: {
+      ...withRemoteId.payload,
+      ...(dream ? { dream } : {}),
+      ...(tombstone ? { tombstone } : {}),
+    },
+  };
+};
+
 const createMissingRemoteIdResult = (mutation: DreamMutation): SyncMutationResult => ({
   mutationId: mutation.id,
   clientRequestId: mutation.clientRequestId,
@@ -1209,6 +1266,8 @@ const syncDreamMutationsWithResolvedRemoteIds = async (
   const results: SyncMutationResult[] = [];
   const idsByDreamId = new Map<number, number>();
   const idsByClientRequestId = new Map<string, number>();
+  const acknowledgedStatesByAlias = new Map<string, AcknowledgedDreamState>();
+  const aliasesInBatch = new Set<string>();
   let batch: DreamMutation[] = [];
 
   const flushBatch = async () => {
@@ -1218,6 +1277,7 @@ const syncDreamMutationsWithResolvedRemoteIds = async (
 
     const currentBatch = batch;
     batch = [];
+    aliasesInBatch.clear();
 
     const mutationsById = new Map(currentBatch.map((mutation) => [mutation.id, mutation]));
     const batchResults = (await executeBatch(currentBatch)).map((result) =>
@@ -1240,17 +1300,42 @@ const syncDreamMutationsWithResolvedRemoteIds = async (
       if (remoteId != null) {
         rememberRemoteId(sourceMutation, remoteId, idsByDreamId, idsByClientRequestId);
       }
+
+      const acknowledgedState: AcknowledgedDreamState = {
+        remoteId,
+        revisionId: result.dream?.revisionId,
+      };
+      const aliases = new Set([
+        ...getMutationEntityAliases(sourceMutation),
+        ...(result.dream
+          ? getMutationEntityAliases({
+              ...sourceMutation,
+              entityKey: buildDreamMutationEntityKey(result.dream),
+              payload: { ...sourceMutation.payload, dream: result.dream },
+            })
+          : []),
+      ]);
+      aliases.forEach((alias) => acknowledgedStatesByAlias.set(alias, acknowledgedState));
     });
   };
 
   for (const mutation of mutations) {
-    let hydratedMutation = hydrateKnownRemoteId(mutation, idsByDreamId, idsByClientRequestId);
+    let hydratedMutation = hydrateAcknowledgedDreamState(
+      hydrateKnownRemoteId(mutation, idsByDreamId, idsByClientRequestId),
+      acknowledgedStatesByAlias
+    );
+    let mutationAliases = getMutationEntityAliases(hydratedMutation);
+    const repeatsEntityInBatch = mutationAliases.some((alias) => aliasesInBatch.has(alias));
     const missingRemoteId =
       hydratedMutation.operation !== 'create' && getMutationRemoteId(hydratedMutation) == null;
 
-    if (missingRemoteId && batch.length) {
+    if ((missingRemoteId || repeatsEntityInBatch) && batch.length) {
       await flushBatch();
-      hydratedMutation = hydrateKnownRemoteId(mutation, idsByDreamId, idsByClientRequestId);
+      hydratedMutation = hydrateAcknowledgedDreamState(
+        hydrateKnownRemoteId(mutation, idsByDreamId, idsByClientRequestId),
+        acknowledgedStatesByAlias
+      );
+      mutationAliases = getMutationEntityAliases(hydratedMutation);
     }
 
     if (hydratedMutation.operation !== 'create' && getMutationRemoteId(hydratedMutation) == null) {
@@ -1259,6 +1344,7 @@ const syncDreamMutationsWithResolvedRemoteIds = async (
     }
 
     batch.push(hydratedMutation);
+    mutationAliases.forEach((alias) => aliasesInBatch.add(alias));
   }
 
   await flushBatch();

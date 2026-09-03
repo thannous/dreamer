@@ -147,7 +147,7 @@ function expectInvalid({ config = makeConfig(), manifest = makeManifest(), sourc
 }
 
 describe('content hub registry', () => {
-  it('loads the real topology with exactly the 29 approved blog spokes', () => {
+  it('loads the real topology with exactly the 30 approved blog spokes', () => {
     const registry = loadContentHubRegistry({ rootDir: ROOT_DIR });
     const blogHubs = registry.hubs.filter((hub) => hub.kind === 'hubAndSpoke');
     const actualSpokes = blogHubs.flatMap((hub) => hub.spokePageIds).sort();
@@ -166,6 +166,7 @@ describe('content hub registry', () => {
       'blog.dreams-mental-health',
       'blog.exam-dreams-meaning',
       'blog.falling-dreams-meaning',
+      'blog.false-awakening-dreams',
       'blog.flying-dreams-meaning',
       'blog.how-to-remember-dreams',
       'blog.lucid-dreaming-beginners-guide',
@@ -185,7 +186,7 @@ describe('content hub registry', () => {
 
     expect(registry.hubs).toHaveLength(4);
     expect(actualSpokes).toEqual(expectedSpokes);
-    expect(new Set(actualSpokes).size).toBe(29);
+    expect(new Set(actualSpokes).size).toBe(30);
     expect(Object.isFrozen(registry.hubs)).toBe(true);
     expect(Object.isFrozen(registry.getHubByPageId('blog.dream-meanings'))).toBe(true);
   });
