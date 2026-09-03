@@ -29,6 +29,8 @@ jest.mock('react-native', () => {
       textAlignVertical,
       underlineColorAndroid,
       autoFocus,
+      returnKeyType,
+      multiline,
       ...rest
     } = props;
     const flattened = flattenStyle(style);
@@ -42,6 +44,8 @@ jest.mock('react-native', () => {
       ...(allowFontScaling === false ? { 'data-allow-font-scaling': 'false' } : {}),
       ...(textAlignVertical ? { 'data-text-align-vertical': textAlignVertical } : {}),
       ...(underlineColorAndroid ? { 'data-underline-color-android': underlineColorAndroid } : {}),
+      ...(returnKeyType ? { 'data-return-key-type': returnKeyType } : {}),
+      ...(multiline ? { 'data-multiline': 'true' } : {}),
       ...(testID ? { 'data-testid': testID } : {}),
       ...(onPress ? { onClick: onPress } : {}),
       ...(onChangeText ? { onChange: (event: { target: { value: string } }) => onChangeText(event.target.value) } : {}),
@@ -126,7 +130,7 @@ jest.mock('@/constants/noctaliaDesign', () => ({
   }),
 }));
 
-const { SearchBar } = require('@/components/ui/SearchBar') as {
+const { SearchBar, sanitizeSearchQuery } = require('@/components/ui/SearchBar') as {
   SearchBar: React.ComponentType<{
     autoFocus?: boolean;
     value: string;
@@ -135,6 +139,7 @@ const { SearchBar } = require('@/components/ui/SearchBar') as {
     testID?: string;
     inputTestID?: string;
   }>;
+  sanitizeSearchQuery: (text: string) => string;
 };
 
 afterEach(() => {
@@ -186,8 +191,11 @@ describe('SearchBar', () => {
       expect.objectContaining({
         minHeight: 20,
         paddingVertical: 0,
+        includeFontPadding: false,
       }),
     );
+    expect(input.getAttribute('data-return-key-type')).toBe('search');
+    expect(input.getAttribute('data-multiline')).toBeNull();
   });
 
   it('grows vertically at fontScale 2 so the placeholder is not clipped', () => {
@@ -213,13 +221,36 @@ describe('SearchBar', () => {
       minHeight: number;
     };
 
-    expect(rowStyle.minHeight).toBe(72);
+    expect(inputStyle.minHeight).toBe(80);
     expect(rowStyle.paddingVertical).toBe(16);
-    expect(inputStyle.minHeight).toBe(40);
-    expect(rowStyle.minHeight).toBeGreaterThan(inputStyle.minHeight);
+    expect(rowStyle.minHeight).toBe(112);
+    expect(rowStyle.minHeight).toBe(inputStyle.minHeight + 2 * rowStyle.paddingVertical);
     expect(input.getAttribute('data-allow-font-scaling')).toBeNull();
+    expect(input.getAttribute('data-text-align-vertical')).toBe('top');
+    expect(input.getAttribute('data-return-key-type')).toBe('search');
+    expect(input.getAttribute('data-multiline')).toBeNull();
     expect(input.getAttribute('class')).toContain('min-w-0');
     expect(input.getAttribute('class')).toContain('flex-1');
     expect(row.getAttribute('class')).toContain('overflow-visible');
   });
+
+  it('keeps search submission single-line at fontScale 2', () => {
+    mockWindow.fontScale = 2;
+
+    render(
+      <SearchBar
+        inputTestID="journal-search-input"
+        onChangeText={jest.fn()}
+        placeholder="Recherchez votre voyage intérieur"
+        value=""
+      />,
+    );
+
+    const input = screen.getByTestId('journal-search-input');
+    expect(input.getAttribute('data-multiline')).toBeNull();
+    expect(input.getAttribute('data-return-key-type')).toBe('search');
+    expect(input.tagName.toLowerCase()).toBe('input');
+    expect(sanitizeSearchQuery('ligne une\nligne deux\rfin')).toBe('ligne une ligne deux fin');
+  });
+
 });

@@ -33,13 +33,19 @@ const webInputFocusResetStyle: WebTextInputStyle | null = Platform.OS === 'web'
     }
   : null;
 
+export function sanitizeSearchQuery(text: string) {
+  return text.replace(/[\n\r]+/g, ' ');
+}
+
 function searchBarLayout(fontScale: number) {
   const scale = Number.isFinite(fontScale) ? Math.max(1, fontScale) : 1;
-  const inputMinHeight = Math.round(20 * scale);
+  const lineCount = scale >= 2 ? 2 : 1;
+  const inputMinHeight = Math.round(20 * scale) * lineCount;
   const verticalPadding = Math.max(8, Math.round(8 * scale));
   return {
     inputMinHeight,
     verticalPadding,
+    lineCount,
     minHeight: Math.max(44, inputMinHeight + 2 * verticalPadding),
   };
 }
@@ -57,10 +63,13 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
   const inputRef = useRef<TextInput>(null);
   const [isFocused, setIsFocused] = useState(false);
   const { fontScale } = useWindowDimensions();
-  const { minHeight, inputMinHeight, verticalPadding } = useMemo(
+  const { minHeight, inputMinHeight, verticalPadding, lineCount } = useMemo(
     () => searchBarLayout(fontScale),
     [fontScale],
   );
+  const handleChangeText = useCallback((text: string) => {
+    onChangeText(sanitizeSearchQuery(text));
+  }, [onChangeText]);
   const setInputRef = useCallback((node: TextInput | null) => {
     inputRef.current = node;
     if (typeof forwardedRef === 'function') {
@@ -90,15 +99,22 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
       <TextInput
         ref={setInputRef}
         value={value}
-        onChangeText={onChangeText}
+        onChangeText={handleChangeText}
         placeholder={placeholder}
         placeholderTextColor={noctalia.text.tertiary}
-        className="min-h-0 min-w-0 flex-1 py-0 font-sans text-[15px] leading-5 text-ivory"
-        style={[webInputFocusResetStyle, { minHeight: inputMinHeight, paddingVertical: 0 }]}
+        className="min-w-0 flex-1 py-0 font-sans text-[15px] leading-5 text-ivory"
+        style={[
+          webInputFocusResetStyle,
+          {
+            minHeight: inputMinHeight,
+            paddingVertical: 0,
+            includeFontPadding: false,
+          },
+        ]}
         testID={inputTestID}
         accessibilityLabel={placeholder}
         allowFontScaling
-        textAlignVertical="center"
+        textAlignVertical={lineCount > 1 ? 'top' : 'center'}
         underlineColorAndroid="transparent"
         autoFocus={autoFocus}
         returnKeyType="search"
