@@ -12,21 +12,29 @@ function readReleaseIdentity(rootDir = ROOT, readFileSync = fs.readFileSync) {
   const packageConfig = JSON.parse(readFileSync(path.join(rootDir, 'package.json'), 'utf8'));
   const version = String(appConfig?.expo?.version || '').trim();
   const packageVersion = String(packageConfig?.version || '').trim();
-  const runtimeVersion = String(appConfig?.expo?.runtimeVersion || '').trim();
+  const runtimeVersion = appConfig?.expo?.runtimeVersion;
+  const runtimePolicy = typeof runtimeVersion === 'object' && runtimeVersion
+    ? String(runtimeVersion.policy || '').trim()
+    : '';
   const versionCode = Number(appConfig?.expo?.android?.versionCode);
 
   if (!version) throw new Error('app.json must define expo.version.');
   if (packageVersion !== version) {
     throw new Error(`package.json version ${packageVersion || 'missing'} does not match app.json ${version}.`);
   }
-  if (runtimeVersion !== version) {
-    throw new Error(`runtimeVersion ${runtimeVersion || 'missing'} does not match app version ${version}.`);
+  if (runtimePolicy !== 'fingerprint') {
+    const actual = runtimePolicy
+      ? `policy ${runtimePolicy}`
+      : typeof runtimeVersion === 'string' && runtimeVersion.trim()
+        ? `string ${runtimeVersion.trim()}`
+        : 'missing';
+    throw new Error(`runtimeVersion must use policy fingerprint, received ${actual}.`);
   }
   if (!Number.isInteger(versionCode) || versionCode < 1) {
     throw new Error('app.json must define a positive expo.android.versionCode.');
   }
 
-  return { version, versionCode };
+  return { version, versionCode, runtimeVersionPolicy: runtimePolicy };
 }
 
 function validateReleaseRef({

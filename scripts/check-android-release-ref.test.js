@@ -7,30 +7,45 @@ describe('Android release ref guard', () => {
   it('reads a consistent release identity', () => {
     const readFileSync = jest.fn((filePath) => JSON.stringify(
       String(filePath).endsWith('app.json')
-        ? { expo: { version: '2.0.2', runtimeVersion: '2.0.2', android: { versionCode: 33 } } }
+        ? { expo: { version: '2.0.2', runtimeVersion: { policy: 'fingerprint' }, android: { versionCode: 33 } } }
         : { version: '2.0.2' }
     ));
 
     expect(readReleaseIdentity('/repo', readFileSync)).toEqual({
       version: '2.0.2',
       versionCode: 33,
+      runtimeVersionPolicy: 'fingerprint',
     });
   });
 
-  it('rejects version drift between app, runtime, and package metadata', () => {
+  it('rejects version drift between app and package metadata', () => {
     const packageDrift = (filePath) => JSON.stringify(
       String(filePath).endsWith('app.json')
-        ? { expo: { version: '2.0.2', runtimeVersion: '2.0.2', android: { versionCode: 33 } } }
+        ? { expo: { version: '2.0.2', runtimeVersion: { policy: 'fingerprint' }, android: { versionCode: 33 } } }
         : { version: '2.0.1' }
-    );
-    const runtimeDrift = (filePath) => JSON.stringify(
-      String(filePath).endsWith('app.json')
-        ? { expo: { version: '2.0.2', runtimeVersion: '2.0.1', android: { versionCode: 33 } } }
-        : { version: '2.0.2' }
     );
 
     expect(() => readReleaseIdentity('/repo', packageDrift)).toThrow('package.json version');
-    expect(() => readReleaseIdentity('/repo', runtimeDrift)).toThrow('runtimeVersion');
+  });
+
+  it('rejects a static runtimeVersion string', () => {
+    const runtimeString = (filePath) => JSON.stringify(
+      String(filePath).endsWith('app.json')
+        ? { expo: { version: '2.0.2', runtimeVersion: '2.0.2', android: { versionCode: 33 } } }
+        : { version: '2.0.2' }
+    );
+
+    expect(() => readReleaseIdentity('/repo', runtimeString)).toThrow('runtimeVersion must use policy fingerprint, received string 2.0.2');
+  });
+
+  it('rejects a non-fingerprint runtimeVersion policy', () => {
+    const runtimePolicy = (filePath) => JSON.stringify(
+      String(filePath).endsWith('app.json')
+        ? { expo: { version: '2.0.2', runtimeVersion: { policy: 'appVersion' }, android: { versionCode: 33 } } }
+        : { version: '2.0.2' }
+    );
+
+    expect(() => readReleaseIdentity('/repo', runtimePolicy)).toThrow('runtimeVersion must use policy fingerprint, received policy appVersion');
   });
 
   it('accepts the exact release tag and rejects a mismatched tag', () => {

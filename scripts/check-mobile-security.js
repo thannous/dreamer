@@ -203,14 +203,18 @@ function auditExpoConfig(checks, expo) {
   );
 
   const hasUpdatesUrl = Boolean(expo.updates?.url);
-  const hasRuntimeVersion = Boolean(expo.runtimeVersion);
+  const runtimeVersionPolicy =
+    expo.runtimeVersion && typeof expo.runtimeVersion === 'object'
+      ? String(expo.runtimeVersion.policy || '').trim()
+      : '';
+  const hasCompatibleRuntimeBoundary = runtimeVersionPolicy === 'fingerprint';
   add(
     checks,
-    hasUpdatesUrl && hasRuntimeVersion ? 'pass' : 'warn',
+    hasUpdatesUrl && hasCompatibleRuntimeBoundary ? 'pass' : 'warn',
     'release',
     'EAS Update has a runtime boundary',
-    `updates.url=${hasUpdatesUrl}, runtimeVersion=${expo.runtimeVersion || 'missing'}`,
-    'Keep runtimeVersion tied to native compatibility and verify update channel before release.'
+    `updates.url=${hasUpdatesUrl}, runtimeVersion.policy=${runtimeVersionPolicy || 'missing'}`,
+    'Use the fingerprint runtime policy so native dependency changes cannot share an OTA runtime, and verify the update channel before release.'
   );
 }
 
