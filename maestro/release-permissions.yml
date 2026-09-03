@@ -89,7 +89,8 @@ onFlowComplete:
 # The settings surface must reflect denied notifications.
 - openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
-    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    visible:
+      id: screen.settings
     timeout: 20000
 - scrollUntilVisible:
     element:
@@ -173,9 +174,14 @@ onFlowComplete:
       all: allow
       microphone: allow
       notifications: deny
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
 - openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
-    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    visible:
+      id: screen.settings
     timeout: 20000
 - scrollUntilVisible:
     element:

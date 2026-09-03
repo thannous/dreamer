@@ -124,17 +124,20 @@ function inspectLongFragmentFlow(flowText, check) {
   if (!flowText.includes('id: component.transcriptCard')) {
     issues.push('long fragment flow does not assert the transcript card after save');
   }
-  if (!flowText.includes(`assertVisible: "${startSentinel}"`)) {
-    issues.push('long fragment flow does not assert the start sentinel after save');
+  const startAssertNeedle = `assertVisible: ".*${startSentinel}.*"`;
+  const endScrollNeedle = `text: ".*${endSentinel}.*"`;
+  const endAssertNeedle = `assertVisible: ".*${endSentinel}.*"`;
+  if (!flowText.includes(startAssertNeedle)) {
+    issues.push('long fragment flow does not assert the start sentinel as a substring after save');
   }
-  if (!flowText.includes(`text: "${endSentinel}"`) || !flowText.includes('scrollUntilVisible:')) {
-    issues.push('long fragment flow does not scroll to the end sentinel before asserting it');
+  if (!flowText.includes(endScrollNeedle) || !flowText.includes('scrollUntilVisible:')) {
+    issues.push('long fragment flow does not scroll to the end sentinel as a substring before asserting it');
   }
-  const startAssert = flowText.indexOf(`assertVisible: "${startSentinel}"`);
-  const scrollEnd = flowText.indexOf(`text: "${endSentinel}"`);
-  const endAssert = flowText.indexOf(`assertVisible: "${endSentinel}"`);
+  const startAssert = flowText.indexOf(startAssertNeedle);
+  const scrollEnd = flowText.indexOf(endScrollNeedle);
+  const endAssert = flowText.indexOf(endAssertNeedle);
   if (startAssert === -1 || scrollEnd === -1 || endAssert === -1 || !(startAssert < scrollEnd && scrollEnd < endAssert)) {
-    issues.push('long fragment flow must assert LONG-START, then scroll to LONG-END, then assert LONG-END');
+    issues.push('long fragment flow must assert .*LONG-START.*, then scroll to .*LONG-END.*, then assert .*LONG-END.*');
   }
   return issues;
 }
@@ -237,6 +240,27 @@ function inspectPermissionsVoiceMode(flowText) {
   return issues;
 }
 
+function inspectNotificationSettingsResume(flowText) {
+  const issues = [];
+  const lastLaunch = flowText.lastIndexOf('- launchApp:');
+  const lastOpenSettings = flowText.lastIndexOf('://settings');
+  if (lastLaunch === -1 || lastOpenSettings === -1 || !(lastLaunch < lastOpenSettings)) {
+    issues.push('final notification revocation must relaunch then open settings');
+    return issues;
+  }
+  const resumeSlice = flowText.slice(lastLaunch, lastOpenSettings);
+  if (!resumeSlice.includes('id: screen.recording')) {
+    issues.push('after the final launchApp, wait for screen.recording before opening settings');
+  }
+  const afterOpen = flowText.slice(lastOpenSettings);
+  const settingsAt = afterOpen.indexOf('id: screen.settings');
+  const warningAt = afterOpen.indexOf('id: text.settings.notificationsPermissionWarning');
+  if (settingsAt === -1 || warningAt === -1 || !(settingsAt < warningAt)) {
+    issues.push('after the settings deep link, wait for screen.settings before asserting the notification warning');
+  }
+  return issues;
+}
+
 function inspectCheck(rootDir, check) {
   const issues = [];
   if (!check.id || !check.title || !check.criterion) {
@@ -282,6 +306,10 @@ function inspectCheck(rootDir, check) {
     }
     if (check.flow === 'maestro/release-permissions.yml') {
       issues.push(...inspectPermissionsVoiceMode(flowText));
+      issues.push(...inspectNotificationSettingsResume(flowText));
+    }
+    if (check.flow === 'maestro/release-notification-permission.yml') {
+      issues.push(...inspectNotificationSettingsResume(flowText));
     }
     issues.push(...inspectNamedScreenshots(flowText, check));
     if (SEARCH_RECOVERY_CHECK_IDS.has(check.id)) {
@@ -583,6 +611,7 @@ module.exports = {
   inspectNamedScreenshots,
   inspectSearchRecovery,
   inspectPermissionsVoiceMode,
+  inspectNotificationSettingsResume,
   inspectReleaseIdentityAnchors,
   SEARCH_RECOVERY_CHECK_IDS,
   parseArgs,

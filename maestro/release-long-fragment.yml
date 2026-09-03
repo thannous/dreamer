@@ -43,12 +43,12 @@ onFlowComplete:
     visible:
       id: component.transcriptCard
     timeout: 30000
-- assertVisible: "LONG-START"
+- assertVisible: ".*LONG-START.*"
 - scrollUntilVisible:
     element:
-      text: "LONG-END"
+      text: ".*LONG-END.*"
     direction: DOWN
     timeout: 20000
     visibilityPercentage: 40
-- assertVisible: "LONG-END"
+- assertVisible: ".*LONG-END.*"
 - takeScreenshot: ti429-long-fragment

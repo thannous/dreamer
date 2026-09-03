@@ -18,6 +18,7 @@ const {
   inspectNamedScreenshots,
   inspectSearchRecovery,
   inspectPermissionsVoiceMode,
+  inspectNotificationSettingsResume,
   inspectReleaseIdentityAnchors,
   parseArgs,
   recordEvidence,
@@ -102,8 +103,8 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(longest.length).toBeGreaterThan(MIN_LONG_FRAGMENT_CHARS);
     expect(longest.startsWith('LONG-START')).toBe(true);
     expect(longest.endsWith('LONG-END')).toBe(true);
-    expect(flowText.indexOf('assertVisible: "LONG-START"')).toBeLessThan(flowText.indexOf('text: "LONG-END"'));
-    expect(flowText.indexOf('text: "LONG-END"')).toBeLessThan(flowText.lastIndexOf('assertVisible: "LONG-END"'));
+    expect(flowText.indexOf('assertVisible: ".*LONG-START.*"')).toBeLessThan(flowText.indexOf('text: ".*LONG-END.*"'));
+    expect(flowText.indexOf('text: ".*LONG-END.*"')).toBeLessThan(flowText.lastIndexOf('assertVisible: ".*LONG-END.*"'));
     expect(inspectLongFragmentFlow(flowText, {
       minInputLength: MIN_LONG_FRAGMENT_CHARS,
       startSentinel: 'LONG-START',
@@ -298,6 +299,53 @@ describe('Dreamer VNext TI-429 harness', () => {
       '',
     ].join('\n'))).toEqual(expect.arrayContaining([
       'permissions flow must tap voice input mode before looking for recordToggle',
+    ]));
+  });
+
+  it('requires a settled recording screen before the final settings deep link', () => {
+    const valid = [
+      '- launchApp:',
+      '    stopApp: false',
+      '- extendedWaitUntil:',
+      '    visible:',
+      '      id: screen.recording',
+      '- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings',
+      '- extendedWaitUntil:',
+      '    visible:',
+      '      id: screen.settings',
+      '- assertVisible:',
+      '    id: text.settings.notificationsPermissionWarning',
+      '',
+    ].join('\n');
+    expect(inspectNotificationSettingsResume(valid)).toEqual([]);
+    expect(inspectNotificationSettingsResume(read(path.join(ROOT, 'maestro/release-notification-permission.yml')))).toEqual([]);
+    expect(inspectNotificationSettingsResume(read(path.join(ROOT, 'maestro/release-permissions.yml')))).toEqual([]);
+
+    expect(inspectNotificationSettingsResume([
+      '- launchApp:',
+      '    stopApp: false',
+      '- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings',
+      '- extendedWaitUntil:',
+      '    visible:',
+      '      id: screen.settings',
+      '- assertVisible:',
+      '    id: text.settings.notificationsPermissionWarning',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'after the final launchApp, wait for screen.recording before opening settings',
+    ]));
+    expect(inspectNotificationSettingsResume([
+      '- launchApp:',
+      '    stopApp: false',
+      '- extendedWaitUntil:',
+      '    visible:',
+      '      id: screen.recording',
+      '- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings',
+      '- assertVisible:',
+      '    id: text.settings.notificationsPermissionWarning',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'after the settings deep link, wait for screen.settings before asserting the notification warning',
     ]));
   });
 

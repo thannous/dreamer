@@ -60,6 +60,10 @@ onFlowComplete:
     permissions:
       all: allow
       notifications: deny
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
 - openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible:

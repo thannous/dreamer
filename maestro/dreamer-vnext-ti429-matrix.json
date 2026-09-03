@@ -268,10 +268,13 @@
       "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-notification-permission.yml --side-by-side-qa",
       "requiredTokens": [
         "notifications: deny",
-        "id: text.settings.notificationsPermissionWarning"
+        "id: text.settings.notificationsPermissionWarning",
+        "id: screen.recording",
+        "id: screen.settings"
       ],
       "evidence": "settings warning denied then allowed",
-      "runtime": "release-native"
+      "runtime": "release-native",
+      "notes": "After the final Home+launchApp, wait for screen.recording before opening settings. Then wait for screen.settings before asserting the notification warning."
     },
     {
       "id": "talkback",
