@@ -50,8 +50,8 @@ describe('Dreamer VNext TI-429 harness', () => {
     const inspection = inspectHarness(ROOT);
     expect(inspection.ok).toBe(true);
     expect(inspection.counts.automated).toBeGreaterThanOrEqual(12);
-    expect(inspection.counts.manual).toBeGreaterThanOrEqual(8);
-    expect(inspection.counts.blocked).toBe(2);
+    expect(inspection.counts.manual).toBeGreaterThanOrEqual(16);
+    expect(inspection.counts.blocked).toBeGreaterThanOrEqual(4);
 
     const ids = inspection.manifest.checks.map((check) => check.id);
     expect(ids).toEqual(expect.arrayContaining([
@@ -80,6 +80,16 @@ describe('Dreamer VNext TI-429 harness', () => {
       'format-mobile',
       'format-tablet',
       'format-web',
+      'voice-live-p95-persist',
+      'voice-live-p95-ai',
+      'voice-live-p95-tts',
+      'voice-live-p95-barge-in',
+      'voice-live-wer-fr',
+      'voice-live-wer-en',
+      'voice-live-cost-five-turns',
+      'voice-live-offline',
+      'voice-live-interrupt',
+      'voice-live-privacy',
     ]));
 
     const byId = Object.fromEntries(inspection.manifest.checks.map((check) => [check.id, check]));
@@ -133,6 +143,25 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(byId['analysis-ready-detail-deeplink'].flow).toBeUndefined();
     expect(byId['analysis-ready-detail-deeplink'].command).toBeUndefined();
     expect(byId['journal-detail-trends-deeplinks'].notes).toMatch(/Does not cover analysis-ready/);
+    expect(byId['voice-live-p95-persist'].mode).toBe('manual');
+    expect(byId['voice-live-p95-tts'].mode).toBe('manual');
+    expect(byId['voice-live-p95-barge-in'].mode).toBe('manual');
+    expect(byId['voice-live-wer-fr'].mode).toBe('manual');
+    expect(byId['voice-live-wer-en'].mode).toBe('manual');
+    expect(byId['voice-live-offline'].mode).toBe('manual');
+    expect(byId['voice-live-interrupt'].mode).toBe('manual');
+    expect(byId['voice-live-privacy'].mode).toBe('manual');
+    expect(byId['voice-live-p95-ai'].mode).toBe('blocked');
+    expect(byId['voice-live-cost-five-turns'].mode).toBe('blocked');
+    expect(byId['voice-live-p95-ai'].command).toBeUndefined();
+    expect(byId['voice-live-cost-five-turns'].command).toBeUndefined();
+    expect(byId['voice-live-p95-ai'].notes).toMatch(/USD 0 stub is not proof|stub first-token time is not model latency/i);
+    expect(byId['voice-live-cost-five-turns'].notes).toMatch(/USD 0 is not model-cost proof/);
+    expect(byId['voice-live-cost-five-turns'].notes).toMatch(/Do not feed placeholder zeros/);
+    expect(inspection.manifest.limits.some((limit) => (
+      limit.includes('USD 0 is not 5-turn model-cost proof')
+      && limit.includes('INDÉTERMINÉ')
+    ))).toBe(true);
   });
 
   it('requires short-fragment to save Porte rouge, maman and loup blanc on dedicated fiches', () => {

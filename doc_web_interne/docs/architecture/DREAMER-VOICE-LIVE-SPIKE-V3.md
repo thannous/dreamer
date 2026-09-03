@@ -125,7 +125,7 @@ Production cannot mount or start the host: `canMountVoiceLiveSpikeHost` requires
 
 | Ticket / work | Status |
 |---|---|
-| TI-429 | Device proofs: barge-in, persist-before-AI, offline queue, audio retention off, Motorola / TalkBack |
+| TI-429 | Device proofs remain required. The 2026-09-03 matrix now names the live-voice rows; they are still unproven. |
 | Isolated `/dev/voice-live-spike` host | Local TI-428 prototype. Not a product surface. |
 | Option B only if TI-428/429 record a latency-only A no-go | Not created. Do not invent a Linear id. |
 
@@ -136,7 +136,100 @@ Production cannot mount or start the host: `canMountVoiceLiveSpikeHost` requires
 | Local kernel / Jest / typecheck / lint | TI-428 |
 | Isolated host / storage / stub AI | TI-428 |
 | Public HTTP, Play, EAS, backend | out of scope |
-| Human / device | TI-429, currently unproven |
+| Human / device | TI-429, currently unproven. See the 2026-09-03 decision. |
+
+## Decision — 2026-09-03
+
+**NO-GO for complete implementation now.** This is not a technical failure of
+Prototype A, and it is not a go.
+
+`evaluateVoiceLiveGoNoGo` already encodes the split: missing TI-429 proof returns
+`blocked_ti_429`, not `go_a` and not `no_go_a`. Option B stays ineligible until a
+recorded Prototype A no-go is **latency-only**. Unmeasured p95 is not a latency
+miss.
+
+```mermaid
+flowchart TD
+  local[Local Prototype A invariants] --> metrics{Dated device metrics?}
+  metrics -->|no / INDÉTERMINÉ| nogo[NO-GO complete implementation]
+  metrics -->|yes| gates{p95 / cost / WER / privacy}
+  gates -->|all pass| goa[GO Prototype A]
+  gates -->|latency only| optb[Consider Option B]
+  gates -->|invariant / cost / privacy miss| hard[Hard no-go A]
+  nogo --> reopen[Reopen only with TI-429 evidence]
+```
+
+### Proven locally
+
+- Persist-before-AI/TTS: `request_ai` and `speak` stay blocked on `await_persist`.
+- Original transcript isolation: recall / analysis / chat point at ids and hashes only.
+- Audio retention defaults to `off`.
+- Offline capture may persist and queue; it must not think or speak.
+- Barge-in from `thinking` or `speaking` stops speech, keeps the last persisted
+  segment, and lands on `interrupted`.
+- Quota and max AI turns emit `ineligible`, never a silent AI/TTS command.
+- Isolated host remains `__DEV__` + debug enablement + `dreamer.voiceLiveSpike.v3`,
+  off by default. AI is a local deterministic stub. No Gemini, backend, quota RPC,
+  or purchase path.
+
+Those proofs are Jest / typecheck / lint on the kernel and isolated host. They are
+not device proof, not Release-binary proof, and not model-cost proof.
+
+### INDÉTERMINÉ — not measured, not failed
+
+| Gate | Budget | Evidence 2026-09-03 |
+|---|---|---|
+| p95 end of speech → persist ack | 1_200 ms | INDÉTERMINÉ — no dated device timing |
+| p95 persist ack → first AI token | 2_500 ms | INDÉTERMINÉ — stub first token is not model latency |
+| p95 first token → audible TTS | 700 ms | INDÉTERMINÉ — no dated audible TTS timing |
+| p95 barge-in → speech stop | 250 ms | INDÉTERMINÉ — no dated barge-in timing |
+| WER French | record substitutions / deletions / insertions | INDÉTERMINÉ — no FR spoken corpus |
+| WER English | same | INDÉTERMINÉ — no EN spoken corpus |
+| Cost / 5 persisted AI turns | USD 0.05 | INDÉTERMINÉ — local stub is USD 0.00 and is not model-cost proof |
+| Offline persist + queue, no answer | invariant 4 | Local kernel only; device unproven |
+| Interruption / reprise | invariant 5 | Local kernel only; device unproven |
+| Privacy | retention off; original transcript never in AI turns; no audio upload | Local kernel only; device unproven |
+
+Do not relabel an absent measurement as `no_go_a`. Do not feed placeholder zeros
+into `evaluateVoiceLiveGoNoGo`. A `$0` stub is not a 5-turn session under budget.
+
+### Reopen only when
+
+1. A dated TI-429 evidence directory records every live-voice row below. Unexecuted
+   rows stay `blocked` or `manual`, never `pass`.
+2. Device p95 values exist for persist, first model token, audible TTS, and
+   barge-in stop. Report p95, not a single happy-path sample.
+3. WER is scored on scripted French and English prompts against native STT.
+4. Cost is a billed 5-turn text-AI session, not the local stub.
+5. Offline, interruption, and privacy are observed on the isolated debug host,
+   with the original transcript absent from AI/TTS payloads and audio retention
+   still `off` unless the tester opted in.
+6. Only then set `deviceProofComplete: true` and evaluate Prototype A. Option B
+   remains uncreated unless that evaluation is a latency-only no-go.
+
+This slice does not run Motorola, Linear, commit, push, EAS, Play, or a production
+settings toggle.
+
+### Local / device protocol
+
+| Check | Where | How | Pass only if |
+|---|---|---|---|
+| Persist-before-AI | Local Jest already; device on `/dev/voice-live-spike` | Capture a chat segment, confirm persist, then watch `request_ai` / TTS. Kill or interrupt before persist. | No AI/TTS command before `persistedAt`. Device row stays unproven until recorded. |
+| p95 persist | Device debug host | ≥ 20 end-of-speech → persist-ack timestamps. | p95 ≤ 1_200 ms |
+| p95 AI | Device + real text model | ≥ 20 persist-ack → first model token timestamps. | p95 ≤ 2_500 ms. Stub tokens do not count. |
+| p95 TTS | Device `expo-speech` | ≥ 20 first-token → first audible-speech timestamps. | p95 ≤ 700 ms |
+| p95 barge-in | Device while `thinking` or `speaking` | ≥ 20 barge-in → speech-stop timestamps. | p95 ≤ 250 ms; last persisted segment unchanged |
+| WER FR | Device native STT | Read a fixed French script, save the transcript, score WER. | Dated FR WER; no silent skip |
+| WER EN | Device native STT | Same with a fixed English script. | Dated EN WER; no silent skip |
+| Cost / 5 turns | Real text AI, 5 persisted turns | Sum billed USD for that session. | ≤ USD 0.05. A `$0` stub is not model-cost proof. |
+| Offline | Airplane mode on the debug host | Capture, persist, queue. | Status `offline` / `queue_offline`; no `request_ai` or `speak` |
+| Interruption | Barge-in during TTS, then reprise | Stop speech, keep last persisted segment, return to listen/offline. | No invented extra AI turn |
+| Privacy | Debug host + payload inspection | Start without opt-in; inspect `request_ai` / spoken turns / storage. | `audioRetention=off`; original transcript absent; no audio upload |
+
+TI-429 matrix ids: `voice-live-p95-persist`, `voice-live-p95-ai`,
+`voice-live-p95-tts`, `voice-live-p95-barge-in`, `voice-live-wer-fr`,
+`voice-live-wer-en`, `voice-live-cost-five-turns`, `voice-live-offline`,
+`voice-live-interrupt`, `voice-live-privacy`.
 
 ## Verification
 
