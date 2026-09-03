@@ -14,6 +14,7 @@ const {
   inspectHarness,
   inspectImageIndependentFlow,
   inspectAnalysisSuccessFlow,
+  inspectGuestRealAnalysisSideloadBan,
   inspectLongFragmentFlow,
   inspectNamedScreenshots,
   inspectSearchRecovery,
@@ -48,7 +49,7 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(inspection.ok).toBe(true);
     expect(inspection.counts.automated).toBeGreaterThanOrEqual(12);
     expect(inspection.counts.manual).toBeGreaterThanOrEqual(8);
-    expect(inspection.counts.blocked).toBe(1);
+    expect(inspection.counts.blocked).toBe(2);
 
     const ids = inspection.manifest.checks.map((check) => check.id);
     expect(ids).toEqual(expect.arrayContaining([
@@ -87,6 +88,14 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(byId['analysis-quota'].runtime).toBe('mock-native');
     expect(byId['guest-free-plus-no-purchase'].runtime).toBe('mock-native');
     expect(byId['write-tell-shared-draft'].runtime).toBe('release-native');
+    expect(byId['analysis-success'].mode).toBe('blocked');
+    expect(byId['analysis-success'].runtime).toBe('release-native');
+    expect(byId['analysis-success'].flow).toBe('maestro/release-analysis.yml');
+    expect(byId['analysis-success'].command).toBeUndefined();
+    expect(byId['analysis-success'].notes).toMatch(/PLAY_INTEGRITY_PACKAGE_NAME=com\.tanuki75\.noctalia/);
+    expect(byId['analysis-success'].notes).toMatch(/POST \/api\/guest\/session returned 401/);
+    expect(byId['analysis-success'].notes).toMatch(/Play and recognized\/allowlisted/);
+    expect(byId['analysis-success'].notes).toMatch(/authenticated test account/);
     expect(byId['analysis-ready-detail-deeplink'].mode).toBe('blocked');
     expect(byId['analysis-ready-detail-deeplink'].runtime).toBe('release-native');
     expect(byId['analysis-ready-detail-deeplink'].flow).toBeUndefined();
@@ -179,6 +188,42 @@ describe('Dreamer VNext TI-429 harness', () => {
     ].join('\n'))).toEqual(expect.arrayContaining([
       'image flow must assert primaryCta+transcript, then scroll to delete, then assertNotVisible illustrate',
     ]));
+  });
+
+  it('blocks guest real-analysis on sideload QA and forbids an automated --side-by-side-qa command', () => {
+    expect(inspectGuestRealAnalysisSideloadBan({
+      id: 'analysis-success',
+      mode: 'blocked',
+      runtime: 'release-native',
+      flow: 'maestro/release-analysis.yml',
+    })).toEqual([]);
+
+    expect(inspectGuestRealAnalysisSideloadBan({
+      id: 'analysis-success',
+      mode: 'automated',
+      runtime: 'release-native',
+      flow: 'maestro/release-analysis.yml',
+      command: 'npm run test:e2e:release:analysis:local -- --side-by-side-qa',
+    })).toEqual(expect.arrayContaining([
+      'guest real-analysis cannot run automated with --side-by-side-qa: sideloaded com.tanuki75.noctalia.qa is not PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia',
+      'analysis-success must stay blocked on sideload QA until a Play-distributed QA identity is recognized/allowlisted, or an authorized authenticated test account is used',
+      'analysis-success must not keep an executable command while blocked on sideload QA',
+    ]));
+
+    expect(inspectGuestRealAnalysisSideloadBan({
+      id: 'other-guest-analysis',
+      mode: 'automated',
+      flow: 'maestro/release-analysis.yml',
+      command: 'node ./scripts/run-maestro-android.js --suite release --flow maestro/release-analysis.yml --side-by-side-qa',
+    })).toEqual(expect.arrayContaining([
+      'guest real-analysis cannot run automated with --side-by-side-qa: sideloaded com.tanuki75.noctalia.qa is not PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia',
+    ]));
+
+    expect(inspectGuestRealAnalysisSideloadBan({
+      id: 'image-independent',
+      mode: 'automated',
+      command: 'node ./scripts/run-maestro-android.js --suite release-ti429 --side-by-side-qa',
+    })).toEqual([]);
   });
 
   it('inspects analysis-success as interpretation before illustrate, without tapping illustrate', () => {
@@ -375,8 +420,21 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(plan.checks.filter((check) => check.mode === 'automated').every((check) => check.status === 'blocked')).toBe(true);
     const analysisReady = plan.checks.find((check) => check.id === 'analysis-ready-detail-deeplink');
     expect(analysisReady).toMatchObject({ mode: 'blocked', runtime: 'release-native', status: 'blocked', flow: null, command: null });
+    const analysisSuccess = plan.checks.find((check) => check.id === 'analysis-success');
+    expect(analysisSuccess).toMatchObject({
+      mode: 'blocked',
+      runtime: 'release-native',
+      status: 'blocked',
+      flow: 'maestro/release-analysis.yml',
+      command: null,
+    });
     expect(plan.limits.some((limit) => limit.includes('never launches Maestro'))).toBe(true);
     expect(plan.limits.some((limit) => limit.includes('release-ti429 suite'))).toBe(true);
+    expect(plan.limits.some((limit) => (
+      limit.includes('Guest real analysis is blocked')
+      && limit.includes('--side-by-side-qa')
+      && limit.includes('PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia')
+    ))).toBe(true);
   });
 
   it('records a local receipt and dated folders without ADB or Maestro', () => {

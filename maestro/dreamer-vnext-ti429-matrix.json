@@ -13,7 +13,8 @@
     "Unexecuted automated rows stay blocked in the plan. Manual rows stay manual. Neither is a pass.",
     "Local Jest/typecheck proof is separate from device proof. Device proof stays in a dated maestro-results/android/ti429 directory.",
     "Physical QA proof uses --side-by-side-qa against com.tanuki75.noctalia.qa / noctalia-qa on the local device. That is not Store, Play, production install-source or purchase proof.",
-    "Never uninstall or overwrite the Play app. Do not run purchase flows against the QA package. Auth-credential rows stay separately blocked when credentials are missing."
+    "Never uninstall or overwrite the Play app. Do not run purchase flows against the QA package. Auth-credential rows stay separately blocked when credentials are missing.",
+    "Guest real analysis is blocked on sideloaded com.tanuki75.noctalia.qa: PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia, so POST /api/guest/session returns 401 and /analyzeDream never runs. Do not keep an automated guest real-analysis command with --side-by-side-qa. Unblock only with a Play-distributed QA identity that is recognized/allowlisted, or an explicitly authorized authenticated test account."
   ],
   "checks": [
     {
@@ -132,9 +133,8 @@
       "id": "analysis-success",
       "title": "Analysis success",
       "criterion": "Analyse reussie",
-      "mode": "automated",
+      "mode": "blocked",
       "flow": "maestro/release-analysis.yml",
-      "command": "npm run test:e2e:release:analysis:local -- --side-by-side-qa",
       "requiredTokens": [
         "id: btn.dream.primaryCta",
         "Interpretation|Interprétation",
@@ -144,7 +144,7 @@
       ],
       "evidence": "one screenshot of illustration CTA after a successful analysis. Never tap illustrate. Unexecuted = blocked.",
       "runtime": "release-native",
-      "notes": "After a real successful analysis, assert btn.journal.illustrate separately and do not tap it. Image independence before analysis stays in image-independent."
+      "notes": "Not executable on sideloaded com.tanuki75.noctalia.qa. Observed 2026-09-03 06:46:10Z: POST /api/guest/session returned 401 with an integrityToken, no decode error, and no /analyzeDream. PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia does not recognize the QA package. Keep the flow as the intended proof, but do not attach an automated --side-by-side-qa command. Unblock only when the QA identity is distributed via Play and recognized/allowlisted, or when an explicitly authorized authenticated test account is used. Unexecuted = blocked. Not a pass."
     },
     {
       "id": "analysis-failed",
@@ -210,7 +210,7 @@
       ],
       "evidence": "one screenshot after scrolling to btn.dream.delete and asserting illustration CTA is absent. No taps, no quota. Unexecuted = blocked.",
       "runtime": "release-native",
-      "notes": "Must not tap analysis, must not generate an image, must not consume quota. Before analysis, verify primaryCta+transcript then scroll to delete and assertNotVisible illustrate. Illustration CTA after successful analysis is proven in analysis-success."
+      "notes": "Must not tap analysis, must not generate an image, must not consume quota. Before analysis, verify primaryCta+transcript then scroll to delete and assertNotVisible illustrate. Illustration CTA after successful analysis stays in analysis-success, which is blocked on sideload QA until a Play-distributed QA identity or an authorized authenticated test account."
     },
     {
       "id": "journal-detail-trends-deeplinks",

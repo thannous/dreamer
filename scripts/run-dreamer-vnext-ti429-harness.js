@@ -15,6 +15,8 @@ const VALID_MODES = new Set(['automated', 'manual', 'blocked']);
 const VALID_RUNTIMES = new Set(['release-native', 'mock-native', 'manual', 'web']);
 const LONG_FRAGMENT_FLOW = 'maestro/release-long-fragment.yml';
 const IMAGE_INDEPENDENT_FLOW = 'maestro/release-image-independent.yml';
+const GUEST_REAL_ANALYSIS_FLOW = 'maestro/release-analysis.yml';
+const GUEST_REAL_ANALYSIS_CHECK_ID = 'analysis-success';
 const LONG_START_SENTINEL = 'LONG-START';
 const LONG_END_SENTINEL = 'LONG-END';
 const MIN_LONG_FRAGMENT_CHARS = 600;
@@ -176,6 +178,40 @@ function inspectImageIndependentFlow(flowText) {
   return issues;
 }
 
+function isGuestRealAnalysisCheck(check) {
+  return (
+    check.id === GUEST_REAL_ANALYSIS_CHECK_ID
+    || check.flow === GUEST_REAL_ANALYSIS_FLOW
+    || (typeof check.command === 'string' && check.command.includes('test:e2e:release:analysis'))
+  );
+}
+
+function inspectGuestRealAnalysisSideloadBan(check) {
+  const issues = [];
+  if (!isGuestRealAnalysisCheck(check)) {
+    return issues;
+  }
+
+  const command = typeof check.command === 'string' ? check.command : '';
+  if (check.mode === 'automated' && command.includes('--side-by-side-qa')) {
+    issues.push(
+      'guest real-analysis cannot run automated with --side-by-side-qa: sideloaded com.tanuki75.noctalia.qa is not PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia'
+    );
+  }
+  if (check.id !== GUEST_REAL_ANALYSIS_CHECK_ID) {
+    return issues;
+  }
+  if (check.mode !== 'blocked') {
+    issues.push(
+      'analysis-success must stay blocked on sideload QA until a Play-distributed QA identity is recognized/allowlisted, or an authorized authenticated test account is used'
+    );
+  }
+  if (command) {
+    issues.push('analysis-success must not keep an executable command while blocked on sideload QA');
+  }
+  return issues;
+}
+
 function inspectAnalysisSuccessFlow(flowText) {
   const issues = [];
   if (flowTapsId(flowText, 'btn.journal.illustrate')) {
@@ -286,6 +322,7 @@ function inspectCheck(rootDir, check) {
   if (!VALID_RUNTIMES.has(check.runtime)) {
     issues.push(`invalid runtime ${check.runtime}`);
   }
+  issues.push(...inspectGuestRealAnalysisSideloadBan(check));
   if (check.flow && fs.existsSync(path.join(rootDir, check.flow))) {
     const flowText = fs.readFileSync(path.join(rootDir, check.flow), 'utf8');
     issues.push(...inspectReleaseIdentityAnchors(flowText, check));
@@ -607,6 +644,7 @@ module.exports = {
   inspectHarness,
   inspectImageIndependentFlow,
   inspectAnalysisSuccessFlow,
+  inspectGuestRealAnalysisSideloadBan,
   inspectLongFragmentFlow,
   inspectNamedScreenshots,
   inspectSearchRecovery,
@@ -614,6 +652,9 @@ module.exports = {
   inspectNotificationSettingsResume,
   inspectReleaseIdentityAnchors,
   SEARCH_RECOVERY_CHECK_IDS,
+  GUEST_REAL_ANALYSIS_FLOW,
+  GUEST_REAL_ANALYSIS_CHECK_ID,
+  isGuestRealAnalysisCheck,
   parseArgs,
   recordEvidence,
   validateHarness,
