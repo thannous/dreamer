@@ -16,7 +16,10 @@ import {
   resolveDreamListUpdater,
   areDreamMemoryMetadataEqual,
   areDreamsEqualForLocalState,
+  applyDreamUpdateIntent,
   buildRememberedDream,
+  createDreamUpdateIntent,
+  hasDreamUpdateIntentConflict,
 } from '../dreamUtils';
 
 // Mock imageUtils
@@ -46,6 +49,58 @@ const legacyMutation = (mutation: {
 }): DreamMutation => mutation as unknown as DreamMutation;
 
 describe('dreamUtils', () => {
+  describe('dream update intents', () => {
+    it('rebases only fields changed by the caller onto the latest server state', () => {
+      const base = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'revision-1',
+        title: 'Original title',
+        analysisStatus: 'none',
+        interpretation: '',
+      });
+      const requested = {
+        ...base,
+        title: 'Categorized title',
+      };
+      const latest = {
+        ...base,
+        revisionId: 'revision-2',
+        analysisStatus: 'done' as const,
+        interpretation: 'Worker-owned interpretation',
+      };
+
+      const intent = createDreamUpdateIntent(base, requested);
+      const rebased = applyDreamUpdateIntent(latest, intent);
+
+      expect(rebased).toEqual(
+        expect.objectContaining({
+          title: 'Categorized title',
+          revisionId: 'revision-2',
+          analysisStatus: 'done',
+          interpretation: 'Worker-owned interpretation',
+        })
+      );
+      expect(hasDreamUpdateIntentConflict(base, latest, intent)).toBe(false);
+    });
+
+    it('detects a real conflict when server and caller changed the same field', () => {
+      const base = buildDream({ id: 1, title: 'Original title' });
+      const intent = createDreamUpdateIntent(base, {
+        ...base,
+        title: 'Local title',
+      });
+
+      expect(
+        hasDreamUpdateIntentConflict(
+          base,
+          { ...base, title: 'Title from another device' },
+          intent
+        )
+      ).toBe(true);
+    });
+  });
+
   describe('sortDreams', () => {
     it('given unsorted dreams when sorting then returns descending by id', () => {
       const dreams = [

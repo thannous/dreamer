@@ -606,6 +606,170 @@ describe('useDreamJournal', () => {
         'user:user-1'
       );
     });
+
+    it('serializes categorization and analysis updates on the same dream revision', async () => {
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'revision-1',
+        title: 'Original title',
+        interpretation: '',
+        isAnalyzed: false,
+        analysisStatus: 'none',
+      });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+
+      let resolveCategorization!: (dream: DreamAnalysis) => void;
+      const categorizationWrite = new Promise<DreamAnalysis>((resolve) => {
+        resolveCategorization = resolve;
+      });
+      mockUpdateDreamInSupabase
+        .mockReturnValueOnce(categorizationWrite)
+        .mockImplementationOnce(async (dream: DreamAnalysis) => ({ ...dream, revisionId: 'revision-3' }));
+
+      const { result } = await renderLoadedDreamJournal();
+      let categorizationPromise!: Promise<DreamAnalysis | null>;
+      let analysisPromise!: Promise<void>;
+
+      act(() => {
+        categorizationPromise = result.current.applyDreamCategorization(1, {
+          title: 'Categorized title',
+          theme: 'mystical',
+          dreamType: 'Lucid Dream',
+          hasPerson: true,
+          hasAnimal: false,
+        });
+        analysisPromise = result.current.updateDream({
+          ...result.current.dreams[0],
+          analysisStatus: 'pending',
+          analysisRequestId: 'analysis-request-1',
+        });
+      });
+
+      await waitFor(() => {
+        expect(mockUpdateDreamInSupabase).toHaveBeenCalledTimes(1);
+      }, FAST_WAIT_OPTIONS);
+
+      await act(async () => {
+        resolveCategorization({
+          ...existingDream,
+          title: 'Categorized title',
+          theme: 'mystical',
+          dreamType: 'Lucid Dream',
+          hasPerson: true,
+          hasAnimal: false,
+          revisionId: 'revision-2',
+        });
+        await Promise.all([categorizationPromise, analysisPromise]);
+      });
+
+      expect(mockUpdateDreamInSupabase).toHaveBeenCalledTimes(2);
+      expect(mockUpdateDreamInSupabase.mock.calls[1]?.[0]).toEqual(
+        expect.objectContaining({
+          revisionId: 'revision-2',
+          title: 'Categorized title',
+          analysisStatus: 'pending',
+          analysisRequestId: 'analysis-request-1',
+        })
+      );
+    });
+
+    it('rebases a non-overlapping local edit after a worker advances the revision', async () => {
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'revision-1',
+        title: 'Original title',
+        interpretation: '',
+        isAnalyzed: false,
+        analysisStatus: 'pending',
+      });
+      const workerDream = {
+        ...existingDream,
+        revisionId: 'revision-2',
+        interpretation: 'Worker-owned interpretation',
+        shareableQuote: 'Worker-owned quote',
+        isAnalyzed: true,
+        analysisStatus: 'done' as const,
+      };
+      const conflict = Object.assign(new Error('Dream revision conflict'), {
+        code: 'CONFLICT',
+        remoteDream: workerDream,
+      });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockUpdateDreamInSupabase
+        .mockRejectedValueOnce(conflict)
+        .mockImplementationOnce(async (dream: DreamAnalysis) => ({ ...dream, revisionId: 'revision-3' }));
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.updateDream({ ...existingDream, title: 'Local title' });
+      });
+
+      expect(mockUpdateDreamInSupabase).toHaveBeenCalledTimes(2);
+      expect(mockUpdateDreamInSupabase.mock.calls[1]?.[0]).toEqual(
+        expect.objectContaining({
+          revisionId: 'revision-2',
+          title: 'Local title',
+          interpretation: 'Worker-owned interpretation',
+          shareableQuote: 'Worker-owned quote',
+          isAnalyzed: true,
+          analysisStatus: 'done',
+        })
+      );
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({
+          revisionId: 'revision-3',
+          title: 'Local title',
+          interpretation: 'Worker-owned interpretation',
+          analysisStatus: 'done',
+          syncState: 'clean',
+        })
+      );
+    });
+
+    it('keeps a real conflict when the server changed the same field', async () => {
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'revision-1',
+        title: 'Original title',
+      });
+      const remoteDream = {
+        ...existingDream,
+        revisionId: 'revision-2',
+        title: 'Title from another device',
+      };
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockUpdateDreamInSupabase.mockRejectedValue(
+        Object.assign(new Error('Dream revision conflict'), {
+          code: 'CONFLICT',
+          remoteDream,
+        })
+      );
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.updateDream({ ...existingDream, title: 'Local title' });
+      });
+
+      expect(mockUpdateDreamInSupabase).toHaveBeenCalledTimes(1);
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({
+          title: 'Local title',
+          syncState: 'conflict',
+          conflictRemoteDream: expect.objectContaining({
+            revisionId: 'revision-2',
+            title: 'Title from another device',
+          }),
+        })
+      );
+    });
   });
 
   describe('applyDreamCategorization', () => {
