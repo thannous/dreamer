@@ -418,7 +418,8 @@ export const hasDreamUpdateIntentConflict = (
   DREAM_REMOTE_UPDATE_FIELDS.some(
     (field) =>
       Object.prototype.hasOwnProperty.call(intent, field) &&
-      !areDreamUpdateFieldValuesEqual(base[field], latest[field])
+      !areDreamUpdateFieldValuesEqual(base[field], latest[field]) &&
+      !areDreamUpdateFieldValuesEqual(intent[field], latest[field])
   );
 
 type DreamRemoteComparable = {

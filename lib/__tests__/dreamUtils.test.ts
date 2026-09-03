@@ -99,6 +99,20 @@ describe('dreamUtils', () => {
         )
       ).toBe(true);
     });
+
+    it('accepts a newer revision when it already satisfies the caller intent', () => {
+      const base = buildDream({ id: 1, isFavorite: false });
+      const requested = { ...base, isFavorite: true };
+      const intent = createDreamUpdateIntent(base, requested);
+
+      expect(
+        hasDreamUpdateIntentConflict(
+          base,
+          { ...base, revisionId: 'revision-2', isFavorite: true },
+          intent
+        )
+      ).toBe(false);
+    });
   });
 
   describe('sortDreams', () => {

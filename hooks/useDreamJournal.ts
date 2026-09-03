@@ -582,23 +582,52 @@ export const useDreamJournal = () => {
       }
 
       const intent = createDreamUpdateIntent(baseDream, normalizedRequestedDream);
-      const hasRemoteChanges = !areDreamsEqualForRemoteSync(baseDream, normalizedRequestedDream);
+      const adoptsServerIdentity =
+        baseDream.remoteId == null && normalizedRequestedDream.remoteId != null;
+      const hasRemoteChanges = !areDreamsEqualForRemoteSync(
+        baseDream,
+        normalizedRequestedDream
+      );
       const entityKey = buildDreamMutationEntityKey(baseDream);
 
       await runSerializedDreamWrite(entityKey, async () => {
-        const buildCandidate = (latestDream: DreamAnalysis) =>
-          normalizeDreamImages({
-            ...applyDreamUpdateIntent(
-              getDreamSyncState(latestDream) === 'conflict'
-                ? clearDreamConflict(latestDream)
-                : latestDream,
-              intent
-            ),
+        const buildCandidate = (latestDream: DreamAnalysis) => {
+          const rebasedDream = applyDreamUpdateIntent(
+            getDreamSyncState(latestDream) === 'conflict'
+              ? clearDreamConflict(latestDream)
+              : latestDream,
+            intent
+          );
+          const candidate = adoptsServerIdentity
+            ? setDreamSyncState(
+                {
+                  ...rebasedDream,
+                  // `id` remains the stable local route key. Supabase identity
+                  // is carried by remoteId and the acknowledged revision.
+                  remoteId: normalizedRequestedDream.remoteId,
+                  revisionId:
+                    normalizedRequestedDream.revisionId ?? rebasedDream.revisionId,
+                  updatedAt: normalizedRequestedDream.updatedAt ?? rebasedDream.updatedAt,
+                  clientRequestId:
+                    normalizedRequestedDream.clientRequestId ?? rebasedDream.clientRequestId,
+                },
+                'clean',
+                {
+                  lastSyncedAt: normalizedRequestedDream.lastSyncedAt ?? Date.now(),
+                  lastSyncError: undefined,
+                  conflictRemoteDream: undefined,
+                }
+              )
+            : rebasedDream;
+
+          return normalizeDreamImages({
+            ...candidate,
             clientUpdatedAt: Math.max(
               latestDream.clientUpdatedAt ?? 0,
               normalizedRequestedDream.clientUpdatedAt ?? 0
             ),
           });
+        };
 
         let candidate = buildCandidate(resolveCurrentDream(baseDream));
 
@@ -650,6 +679,10 @@ export const useDreamJournal = () => {
                 resolveCurrentDream(candidate)
               );
               candidate = buildCandidate(latestRemote);
+              if (areDreamsEqualForRemoteSync(error.remoteDream, candidate)) {
+                await persistRemoteDreams((prev) => upsertDream(prev, candidate));
+                return;
+              }
               continue;
             }
 

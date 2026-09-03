@@ -570,6 +570,49 @@ describe('useDreamJournal', () => {
       );
     });
 
+    it('adopts server identity when an unsynced dream is created before updateDream', async () => {
+      setMockUser({ id: 'user-1' });
+      const localDream = buildDream({
+        id: 1,
+        clientRequestId: 'offline-create-1',
+        remoteId: undefined,
+        revisionId: undefined,
+        updatedAt: undefined,
+        syncState: 'pending',
+        pendingSync: true,
+      });
+      const syncedDream = {
+        ...localDream,
+        id: 1000,
+        remoteId: 101,
+        revisionId: 'revision-1',
+        updatedAt: 2000,
+        syncState: 'clean' as const,
+        pendingSync: undefined,
+      };
+      mockFetchDreamsFromSupabase.mockResolvedValue([localDream]);
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.updateDream(syncedDream);
+      });
+
+      expect(mockUpdateDreamInSupabase).not.toHaveBeenCalled();
+      expect(result.current.dreams).toHaveLength(1);
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({
+          id: 1,
+          clientRequestId: 'offline-create-1',
+          remoteId: 101,
+          revisionId: 'revision-1',
+          updatedAt: 2000,
+          syncState: 'clean',
+          pendingSync: undefined,
+        })
+      );
+    });
+
     it('skips Supabase update when dream is unchanged', async () => {
       setMockUser({ id: 'user-1' });
       const existingDream = buildDream({ id: 1, remoteId: 101 });
@@ -767,6 +810,43 @@ describe('useDreamJournal', () => {
             revisionId: 'revision-2',
             title: 'Title from another device',
           }),
+        })
+      );
+    });
+
+    it('accepts a conflicting revision that already contains the requested value', async () => {
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'revision-1',
+        isFavorite: false,
+      });
+      const remoteDream = {
+        ...existingDream,
+        revisionId: 'revision-2',
+        isFavorite: true,
+      };
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockUpdateDreamInSupabase.mockRejectedValue(
+        Object.assign(new Error('Dream revision conflict'), {
+          code: 'CONFLICT',
+          remoteDream,
+        })
+      );
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.updateDream({ ...existingDream, isFavorite: true });
+      });
+
+      expect(mockUpdateDreamInSupabase).toHaveBeenCalledTimes(1);
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({
+          revisionId: 'revision-2',
+          isFavorite: true,
+          syncState: 'clean',
         })
       );
     });
