@@ -64,10 +64,15 @@ jest.mock('react-native', () => {
       className,
       style,
       numberOfLines,
+      allowFontScaling,
       ...rest
     } = props;
     return {
       ...rest,
+      ...(className ? { className } : {}),
+      ...(style ? { 'data-style': JSON.stringify(style) } : {}),
+      ...(numberOfLines != null ? { 'data-number-of-lines': String(numberOfLines) } : {}),
+      ...(allowFontScaling === false ? { 'data-allow-font-scaling': 'false' } : {}),
       ...(testID ? { 'data-testid': testID } : {}),
       ...(onPress ? { onClick: onPress } : {}),
       ...(accessibilityRole ? { role: accessibilityRole } : {}),
@@ -396,5 +401,47 @@ describe('Statistics screen VNext trends', () => {
     expect(screen.getByTestId('trends.evolution.chart')).toBeTruthy();
     expect(screen.getByTestId('trends.evolution.chart.day.2026-08-27')).toBeTruthy();
     expect(screen.getByRole('progressbar', { name: 'dream.theme.calm' }).getAttribute('aria-valuenow')).toBe('2');
+  });
+
+  it('keeps weekly metrics inline at default text scale', () => {
+    mockUseDreams.mockReturnValue({ dreams: [], loaded: true });
+
+    render(<StatisticsScreen />);
+
+    const metrics = screen.getByTestId('trends.week.metrics.inline');
+    expect(metrics.getAttribute('class')).toContain('flex-row');
+    expect(metrics.getAttribute('class')).toContain('flex-wrap');
+    expect(metrics.getAttribute('class')).not.toContain('flex-col');
+    expect(screen.queryByTestId('trends.week.metrics.stacked')).toBeNull();
+    expect(screen.getByText('trends.week.count').getAttribute('class')).toContain('shrink');
+    expect(screen.getByText('trends.week.active_days').getAttribute('data-number-of-lines')).toBeNull();
+    expect(screen.getByText('trends.week.streak.current').getAttribute('data-allow-font-scaling')).toBeNull();
+    expect(screen.getByText('trends.week.streak.longest')).toBeTruthy();
+  });
+
+  it('stacks weekly metrics at fontScale 2 without clipping labels', () => {
+    mockWindow.fontScale = 2;
+    mockUseDreams.mockReturnValue({ dreams: [], loaded: true });
+
+    render(<StatisticsScreen />);
+
+    const metrics = screen.getByTestId('trends.week.metrics.stacked');
+    expect(metrics.getAttribute('class')).toContain('flex-col');
+    expect(metrics.getAttribute('class')).not.toContain('flex-row');
+    expect(screen.queryByTestId('trends.week.metrics.inline')).toBeNull();
+    expect(screen.queryByTestId('trends.layout.compact')).toBeNull();
+
+    for (const label of [
+      'trends.week.count',
+      'trends.week.active_days',
+      'trends.week.streak.current',
+      'trends.week.streak.longest',
+    ]) {
+      const node = screen.getByText(label);
+      expect(node.getAttribute('data-number-of-lines')).toBeNull();
+      expect(node.getAttribute('data-allow-font-scaling')).toBeNull();
+      expect(node.getAttribute('class')).toContain('shrink');
+      expect(node.parentElement?.getAttribute('class')).toContain('w-full');
+    }
   });
 });

@@ -535,6 +535,17 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
+  it('does not present guest recording as a two-dream cap', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const value = getTranslator(lang)('recording.alert.limit.message');
+      expect(value).toMatch(/unlimited|illimit|ilimit|unbegrenzt/i);
+      expect(value).not.toMatch(/up to \{limit\}|hasta \{limit\}|fino a \{limit\}|bis zu \{limit\}|at[eé] \{limit\}|jusqu.à \{limit\}/i);
+      expect(value).not.toMatch(/\{limit\}/);
+    }
+  });
+
   it('keeps the cited French recording journey in tutoiement', async () => {
     const translations = await loadTranslations('fr');
 

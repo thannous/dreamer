@@ -1,5 +1,5 @@
-import React, { forwardRef, memo, useCallback, useRef, useState } from 'react';
-import { Platform, TextInput, View, type TextStyle } from 'react-native';
+import React, { forwardRef, memo, useCallback, useMemo, useRef, useState } from 'react';
+import { Platform, TextInput, View, useWindowDimensions, type TextStyle } from 'react-native';
 
 import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -33,6 +33,17 @@ const webInputFocusResetStyle: WebTextInputStyle | null = Platform.OS === 'web'
     }
   : null;
 
+function searchBarLayout(fontScale: number) {
+  const scale = Number.isFinite(fontScale) ? Math.max(1, fontScale) : 1;
+  const inputMinHeight = Math.round(20 * scale);
+  const verticalPadding = Math.max(8, Math.round(8 * scale));
+  return {
+    inputMinHeight,
+    verticalPadding,
+    minHeight: Math.max(44, inputMinHeight + 2 * verticalPadding),
+  };
+}
+
 export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function SearchBar({
   autoFocus = false,
   value,
@@ -45,6 +56,11 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const inputRef = useRef<TextInput>(null);
   const [isFocused, setIsFocused] = useState(false);
+  const { fontScale } = useWindowDimensions();
+  const { minHeight, inputMinHeight, verticalPadding } = useMemo(
+    () => searchBarLayout(fontScale),
+    [fontScale],
+  );
   const setInputRef = useCallback((node: TextInput | null) => {
     inputRef.current = node;
     if (typeof forwardedRef === 'function') {
@@ -58,12 +74,12 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
 
   return (
     <View
-      className={`h-11 flex-row items-center gap-2 rounded-md px-4 ${
+      className={`min-h-11 flex-row items-center gap-2 overflow-visible rounded-md px-4 ${
         isFocused
           ? 'border-[1.5px] border-champagne bg-ink-active'
           : 'border border-line bg-ink-raised'
       }`}
-      style={CONTINUOUS_CORNERS}
+      style={[CONTINUOUS_CORNERS, { minHeight, paddingVertical: verticalPadding }]}
       testID={testID}
     >
       <IconSymbol
@@ -77,10 +93,13 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={noctalia.text.tertiary}
-        className="flex-1 py-0 font-sans text-[15px] text-ivory"
-        style={webInputFocusResetStyle}
+        className="min-h-0 min-w-0 flex-1 py-0 font-sans text-[15px] leading-5 text-ivory"
+        style={[webInputFocusResetStyle, { minHeight: inputMinHeight, paddingVertical: 0 }]}
         testID={inputTestID}
         accessibilityLabel={placeholder}
+        allowFontScaling
+        textAlignVertical="center"
+        underlineColorAndroid="transparent"
         autoFocus={autoFocus}
         returnKeyType="search"
         showSoftInputOnFocus

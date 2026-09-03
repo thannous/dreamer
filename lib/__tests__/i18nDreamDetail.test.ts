@@ -48,6 +48,15 @@ describe('dream detail i18n', () => {
     }
   });
 
+  it('does not promise an image from analysis or reflection actions', () => {
+    const analysisImagePromise = /imagen|illustration|image|imagery|visual idea|ideia visual|erstes bild|traumbild|onirique/i;
+    for (const translations of Object.values(packs)) {
+      expect(translations['journal.detail.action.analyze.message']).not.toMatch(analysisImagePromise);
+      expect(translations['journal.detail.action.explore.message']).not.toMatch(analysisImagePromise);
+      expect(translations['journal.detail.image_replace.subtitle']).toMatch(/optional|optionnelle|opcional|separat/i);
+    }
+  });
+
   it('exposes the three explicit detail zones in every language', () => {
     const expected = {
       de: { dream: 'Mein Traum', reading: 'Noctalia-Analyse', reflection: 'Meine Reflexion' },

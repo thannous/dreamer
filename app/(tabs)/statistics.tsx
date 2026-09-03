@@ -94,11 +94,13 @@ export default function StatisticsScreen() {
   const { dreams, loaded } = useDreams();
   const { t } = useTranslation();
   const { formatDate, formatNumber } = useLocaleFormatting();
-  const { width, height } = useWindowDimensions();
+  const { width, height, fontScale } = useWindowDimensions();
   const { colors, mode } = useTheme();
   useClearWebFocus();
 
   const compact = width < COMPACT_BREAKPOINT;
+  const largeText = Number.isFinite(fontScale) && fontScale >= 1.3;
+  const stackWeekMetrics = compact || largeText;
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height);
@@ -166,7 +168,9 @@ export default function StatisticsScreen() {
     : t('trends.week.last_activity.value', {
         date: formatDate(week.lastActivityAt, { dateStyle: 'medium' }),
       });
-  const metricClassName = compact ? 'w-full min-w-0 gap-1' : 'min-w-[140px] min-w-0 flex-1 gap-1';
+  const metricClassName = stackWeekMetrics
+    ? 'w-full min-w-0 gap-1'
+    : 'min-w-[140px] min-w-0 flex-1 gap-1';
   const sectionPad = compact ? 'p-4' : 'p-5';
   const themeRows = toRankedRows(
     patterns.themes,
@@ -209,47 +213,50 @@ export default function StatisticsScreen() {
               <Text className="text-[20px] leading-[26px] font-display-semibold text-ivory">
                 {t('trends.section.week')}
               </Text>
-              <View className="flex-row flex-wrap gap-3">
+              <View
+                className={stackWeekMetrics ? 'flex-col gap-3' : 'flex-row flex-wrap gap-3'}
+                testID={stackWeekMetrics ? 'trends.week.metrics.stacked' : 'trends.week.metrics.inline'}
+              >
                 <View className={metricClassName}>
-                  <Text className="text-[12px] font-sans-medium text-ivory-muted">
+                  <Text className="shrink text-[12px] leading-[16px] font-sans-medium text-ivory-muted">
                     {t('trends.week.count')}
                   </Text>
-                  <Text className="text-[22px] font-display-semibold text-ivory">
+                  <Text className="shrink text-[22px] leading-[28px] font-display-semibold text-ivory">
                     {formatNumber(week.count)}
                   </Text>
                 </View>
                 <View className={metricClassName}>
-                  <Text className="text-[12px] font-sans-medium text-ivory-muted">
+                  <Text className="shrink text-[12px] leading-[16px] font-sans-medium text-ivory-muted">
                     {t('trends.week.active_days')}
                   </Text>
-                  <Text className="text-[22px] font-display-semibold text-ivory">
+                  <Text className="shrink text-[22px] leading-[28px] font-display-semibold text-ivory">
                     {t('trends.week.active_days.value', {
                       count: formatNumber(week.activeDays),
                     })}
                   </Text>
                 </View>
                 <View className={metricClassName}>
-                  <Text className="text-[12px] font-sans-medium text-ivory-muted">
+                  <Text className="shrink text-[12px] leading-[16px] font-sans-medium text-ivory-muted">
                     {t('trends.week.streak.current')}
                   </Text>
-                  <Text className="text-[22px] font-display-semibold text-ivory">
+                  <Text className="shrink text-[22px] leading-[28px] font-display-semibold text-ivory">
                     {formatNumber(week.streak.current)}
                   </Text>
                 </View>
                 <View className={metricClassName}>
-                  <Text className="text-[12px] font-sans-medium text-ivory-muted">
+                  <Text className="shrink text-[12px] leading-[16px] font-sans-medium text-ivory-muted">
                     {t('trends.week.streak.longest')}
                   </Text>
-                  <Text className="text-[22px] font-display-semibold text-ivory">
+                  <Text className="shrink text-[22px] leading-[28px] font-display-semibold text-ivory">
                     {formatNumber(week.streak.longest)}
                   </Text>
                 </View>
                 {showAverage ? (
                   <View className={metricClassName}>
-                    <Text className="text-[12px] font-sans-medium text-ivory-muted">
+                    <Text className="shrink text-[12px] leading-[16px] font-sans-medium text-ivory-muted">
                       {t('trends.week.average')}
                     </Text>
-                    <Text className="text-[22px] font-display-semibold text-ivory">
+                    <Text className="shrink text-[22px] leading-[28px] font-display-semibold text-ivory">
                       {formatNumber(week.averagePerWeek as number, {
                         maximumFractionDigits: 1,
                       })}
