@@ -230,9 +230,12 @@ export default function StatisticsScreen() {
                     {t('trends.week.active_days')}
                   </Text>
                   <Text className="shrink text-[22px] leading-[28px] font-display-semibold text-ivory">
-                    {t('trends.week.active_days.value', {
-                      count: formatNumber(week.activeDays),
-                    })}
+                    {t(
+                      week.activeDays === 1
+                        ? 'trends.week.active_days.value_one'
+                        : 'trends.week.active_days.value',
+                      { count: formatNumber(week.activeDays) },
+                    )}
                   </Text>
                 </View>
                 <View className={metricClassName}>
@@ -342,9 +345,12 @@ export default function StatisticsScreen() {
                   ) : null}
                   {patterns.recurrence.hasRecurrence ? (
                     <Text className="text-[15px] font-sans text-ivory">
-                      {t('trends.patterns.recurrence', {
-                        count: formatNumber(patterns.recurrence.count),
-                      })}
+                      {t(
+                        patterns.recurrence.count === 1
+                          ? 'trends.patterns.recurrence_one'
+                          : 'trends.patterns.recurrence',
+                        { count: formatNumber(patterns.recurrence.count) },
+                      )}
                     </Text>
                   ) : null}
                 </View>
