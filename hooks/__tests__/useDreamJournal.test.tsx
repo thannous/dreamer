@@ -611,6 +611,30 @@ describe('useDreamJournal', () => {
           pendingSync: undefined,
         })
       );
+
+      const persisted = result.current.dreams[0];
+      mockUpdateDreamInSupabase.mockResolvedValue({
+        ...persisted,
+        title: 'Edited after sync',
+        revisionId: 'revision-2',
+      });
+      mockSavePendingDreamMutations.mockClear();
+
+      await act(async () => {
+        await result.current.updateDream({
+          ...persisted,
+          title: 'Edited after sync',
+        });
+      });
+
+      expect(mockUpdateDreamInSupabase).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: 'Edited after sync',
+          remoteId: 101,
+          revisionId: 'revision-1',
+        })
+      );
+      expect(mockSavePendingDreamMutations).not.toHaveBeenCalled();
     });
 
     it('skips Supabase update when dream is unchanged', async () => {

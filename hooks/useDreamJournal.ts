@@ -40,6 +40,7 @@ import {
   getDreamSyncState,
   hasDreamUpdateIntentConflict,
   isConflictError,
+  mergeAuthoritativeDreamIdentity,
   normalizeDreamImages,
   removeDream,
   setDreamSyncState,
@@ -582,8 +583,6 @@ export const useDreamJournal = () => {
       }
 
       const intent = createDreamUpdateIntent(baseDream, normalizedRequestedDream);
-      const adoptsServerIdentity =
-        baseDream.remoteId == null && normalizedRequestedDream.remoteId != null;
       const hasRemoteChanges = !areDreamsEqualForRemoteSync(
         baseDream,
         normalizedRequestedDream
@@ -598,27 +597,19 @@ export const useDreamJournal = () => {
               : latestDream,
             intent
           );
-          const candidate = adoptsServerIdentity
-            ? setDreamSyncState(
-                {
-                  ...rebasedDream,
-                  // `id` remains the stable local route key. Supabase identity
-                  // is carried by remoteId and the acknowledged revision.
-                  remoteId: normalizedRequestedDream.remoteId,
-                  revisionId:
-                    normalizedRequestedDream.revisionId ?? rebasedDream.revisionId,
-                  updatedAt: normalizedRequestedDream.updatedAt ?? rebasedDream.updatedAt,
-                  clientRequestId:
-                    normalizedRequestedDream.clientRequestId ?? rebasedDream.clientRequestId,
-                },
-                'clean',
-                {
-                  lastSyncedAt: normalizedRequestedDream.lastSyncedAt ?? Date.now(),
-                  lastSyncError: undefined,
-                  conflictRemoteDream: undefined,
-                }
-              )
-            : rebasedDream;
+          const withIdentity = mergeAuthoritativeDreamIdentity(
+            rebasedDream,
+            normalizedRequestedDream
+          );
+          const adoptedServerIdentity =
+            rebasedDream.remoteId == null && withIdentity.remoteId != null;
+          const candidate = adoptedServerIdentity
+            ? setDreamSyncState(withIdentity, 'clean', {
+                lastSyncedAt: normalizedRequestedDream.lastSyncedAt ?? Date.now(),
+                lastSyncError: undefined,
+                conflictRemoteDream: undefined,
+              })
+            : withIdentity;
 
           return normalizeDreamImages({
             ...candidate,

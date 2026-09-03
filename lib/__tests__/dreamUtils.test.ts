@@ -20,6 +20,7 @@ import {
   buildRememberedDream,
   createDreamUpdateIntent,
   hasDreamUpdateIntentConflict,
+  mergeAuthoritativeDreamIdentity,
 } from '../dreamUtils';
 
 // Mock imageUtils
@@ -112,6 +113,45 @@ describe('dreamUtils', () => {
           intent
         )
       ).toBe(false);
+    });
+
+    it('merges newly resolved server identity without rewinding a later revision', () => {
+      const unsynced = buildDream({
+        id: 1,
+        clientRequestId: 'offline-create-1',
+      });
+      const synced = {
+        ...unsynced,
+        id: 1000,
+        remoteId: 101,
+        revisionId: 'revision-1',
+        updatedAt: 2000,
+      };
+
+      expect(mergeAuthoritativeDreamIdentity(unsynced, synced)).toEqual(
+        expect.objectContaining({
+          id: 1,
+          clientRequestId: 'offline-create-1',
+          remoteId: 101,
+          revisionId: 'revision-1',
+          updatedAt: 2000,
+        })
+      );
+
+      const laterRevision = {
+        ...unsynced,
+        remoteId: 101,
+        revisionId: 'revision-2',
+        updatedAt: 3000,
+      };
+      expect(mergeAuthoritativeDreamIdentity(laterRevision, synced)).toEqual(
+        expect.objectContaining({
+          id: 1,
+          remoteId: 101,
+          revisionId: 'revision-2',
+          updatedAt: 3000,
+        })
+      );
     });
   });
 
@@ -482,6 +522,31 @@ describe('dreamUtils', () => {
 
       expect(result).toHaveLength(2);
       expect(result[0].title).toBe('Updated');
+    });
+
+    it('given matching clientRequestId when upserting then updates in place', () => {
+      const existing = [
+        buildDream({ id: 1, clientRequestId: 'offline-create-1', title: 'Original' }),
+        buildDream({ id: 2 }),
+      ];
+      const updated = buildDream({
+        id: 1000,
+        clientRequestId: 'offline-create-1',
+        remoteId: 101,
+        title: 'Updated',
+      });
+
+      const result = upsertDream(existing, updated);
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toEqual(
+        expect.objectContaining({
+          id: 1000,
+          clientRequestId: 'offline-create-1',
+          remoteId: 101,
+          title: 'Updated',
+        })
+      );
     });
 
     it('given empty list when upserting then returns single item', () => {

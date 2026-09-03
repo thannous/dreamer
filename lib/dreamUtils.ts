@@ -407,8 +407,27 @@ export const applyDreamUpdateIntent = (
 });
 
 /**
- * A rebase is safe only when the server did not also change a remotely persisted
- * field that this caller intends to modify.
+ * Merge newly resolved server identity onto the latest local dream.
+ * User-edit intent never includes these fields, so they must be applied
+ * separately. Existing identity on latest wins so a stale caller snapshot
+ * cannot rewind a rebase. Local `id` stays put: it is the route/list key,
+ * while Supabase identity is `remoteId` plus the acknowledged revision.
+ */
+export const mergeAuthoritativeDreamIdentity = (
+  latest: DreamAnalysis,
+  requested: DreamAnalysis
+): DreamAnalysis => ({
+  ...latest,
+  remoteId: latest.remoteId ?? requested.remoteId,
+  revisionId: latest.revisionId ?? requested.revisionId,
+  updatedAt: latest.updatedAt ?? requested.updatedAt,
+  clientRequestId: latest.clientRequestId ?? requested.clientRequestId,
+});
+
+/**
+ * A rebase is a conflict only when the latest value differs from both the
+ * base value and the intended value. If latest already equals the intended
+ * value, the intent is satisfied.
  */
 export const hasDreamUpdateIntentConflict = (
   base: DreamAnalysis,
@@ -591,7 +610,10 @@ export const normalizeDreamList = (list: DreamAnalysis[]): DreamAnalysis[] => {
  */
 export const upsertDream = (list: DreamAnalysis[], dream: DreamAnalysis): DreamAnalysis[] => {
   const index = list.findIndex(
-    (d) => d.id === dream.id || (dream.remoteId && d.remoteId === dream.remoteId)
+    (d) =>
+      d.id === dream.id ||
+      (dream.remoteId != null && d.remoteId === dream.remoteId) ||
+      (dream.clientRequestId != null && d.clientRequestId === dream.clientRequestId)
   );
   if (index === -1) {
     return [dream, ...list];
