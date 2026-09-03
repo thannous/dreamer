@@ -55,17 +55,20 @@
       "title": "Short fragment save",
       "criterion": "Fragment court",
       "mode": "automated",
-      "flow": "maestro/release-lifecycle.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-lifecycle.yml --side-by-side-qa",
+      "flow": "maestro/release-short-fragments.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-short-fragments.yml --side-by-side-qa",
       "requiredTokens": [
-        "Release lifecycle sentinel",
+        "Porte rouge",
+        "maman",
+        "loup blanc",
         "id: btn.saveDream",
-        "hideKeyboard",
         "id: component.transcriptCard",
-        "takeScreenshot: ti429-lifecycle-transcript"
+        "id: screen.journal",
+        "takeScreenshot: ti429-short-fragments"
       ],
-      "evidence": "one screenshot of recovered transcript after process death. Unexecuted = blocked.",
-      "runtime": "release-native"
+      "evidence": "one screenshot of Journal after successive Porte rouge, maman and loup blanc fiches. Unexecuted = blocked.",
+      "runtime": "release-native",
+      "notes": "Release-native. Saves the exact short fragments in one install, verifies each fiche, then asserts all three on Journal. No analysis, image or purchase. Unexecuted = blocked. Not a pass."
     },
     {
       "id": "long-fragment",
@@ -242,6 +245,28 @@
       "runtime": "release-native",
       "notes": "No stable fixture id: mock local dream ids are timestamps at preload, remoteId is not the journal/[id] route key, and a Release dream id cannot be captured without a device. Exact analysis-ready URL ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id} requires physical-device proof. QA package/scheme proof is local device proof, not Store/production install-source proof. Unexecuted = blocked. Not a pass.",
       "evidence": "physical-device screenshot of journal/{id} opened from an analysis-ready notification. Missing until a real id is available."
+    },
+    {
+      "id": "guest-unlimited",
+      "title": "Guest unlimited local saves",
+      "criterion": "Invite illimite local",
+      "mode": "automated",
+      "flow": "maestro/release-guest-unlimited.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-guest-unlimited.yml --side-by-side-qa",
+      "requiredTokens": [
+        "id: btn.auth.google",
+        "id: btn.auth.signOut",
+        "id: screen.paywall",
+        "Guest unlimited sentinel one",
+        "Guest unlimited sentinel two",
+        "Guest unlimited sentinel three",
+        "id: btn.saveDream",
+        "id: screen.journal",
+        "takeScreenshot: ti429-guest-unlimited"
+      ],
+      "notes": "Release-native. One install/state saves at least three guest dreams with no account or paywall blocking before each save, then asserts the three Journal entries. No analysis, image or purchase. Distinct from the mock guest/free/Plus lab. Unexecuted = blocked. Not a pass.",
+      "evidence": "one screenshot of Journal with three guest dreams. Unexecuted = blocked.",
+      "runtime": "release-native"
     },
     {
       "id": "guest-free-plus-no-purchase",

@@ -16,6 +16,8 @@ const {
   inspectAnalysisSuccessFlow,
   inspectGuestRealAnalysisSideloadBan,
   inspectLongFragmentFlow,
+  inspectShortFragmentFlow,
+  inspectGuestUnlimitedFlow,
   inspectNamedScreenshots,
   inspectSearchRecovery,
   inspectPermissionsVoiceMode,
@@ -57,6 +59,7 @@ describe('Dreamer VNext TI-429 harness', () => {
       'draft-kill-relaunch',
       'short-fragment',
       'long-fragment',
+      'guest-unlimited',
       'long-10k-human',
       'offline-local',
       'offline-auth-sync',
@@ -88,6 +91,29 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(byId['analysis-quota'].runtime).toBe('mock-native');
     expect(byId['guest-free-plus-no-purchase'].runtime).toBe('mock-native');
     expect(byId['write-tell-shared-draft'].runtime).toBe('release-native');
+    expect(byId['short-fragment'].runtime).toBe('release-native');
+    expect(byId['short-fragment'].flow).toBe('maestro/release-short-fragments.yml');
+    expect(byId['short-fragment'].command).toContain('maestro/release-short-fragments.yml');
+    expect(byId['short-fragment'].command).toContain('--suite release-ti429');
+    expect(byId['short-fragment'].requiredTokens).toEqual(expect.arrayContaining([
+      'Porte rouge',
+      'maman',
+      'loup blanc',
+    ]));
+    expect(byId['short-fragment'].requiredTokens).not.toEqual(expect.arrayContaining([
+      'Release lifecycle sentinel',
+    ]));
+    expect(byId['guest-unlimited'].runtime).toBe('release-native');
+    expect(byId['guest-unlimited'].mode).toBe('automated');
+    expect(byId['guest-unlimited'].flow).toBe('maestro/release-guest-unlimited.yml');
+    expect(byId['guest-unlimited'].command).toContain('maestro/release-guest-unlimited.yml');
+    expect(byId['guest-unlimited'].command).toContain('--suite release-ti429');
+    expect(byId['guest-unlimited'].requiredTokens).toEqual(expect.arrayContaining([
+      'Guest unlimited sentinel one',
+      'Guest unlimited sentinel two',
+      'Guest unlimited sentinel three',
+      'id: screen.paywall',
+    ]));
     expect(byId['analysis-success'].mode).toBe('blocked');
     expect(byId['analysis-success'].runtime).toBe('release-native');
     expect(byId['analysis-success'].flow).toBe('maestro/release-analysis.yml');
@@ -101,6 +127,153 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(byId['analysis-ready-detail-deeplink'].flow).toBeUndefined();
     expect(byId['analysis-ready-detail-deeplink'].command).toBeUndefined();
     expect(byId['journal-detail-trends-deeplinks'].notes).toMatch(/Does not cover analysis-ready/);
+  });
+
+  it('requires short-fragment to save Porte rouge, maman and loup blanc on dedicated fiches', () => {
+    const flowText = read(path.join(ROOT, 'maestro/release-short-fragments.yml'));
+    expect(flowText).toContain('inputText: "Porte rouge"');
+    expect(flowText).toContain('inputText: "maman"');
+    expect(flowText).toContain('inputText: "loup blanc"');
+    expect(flowText).toContain('id: component.transcriptCard');
+    expect(flowText).toContain('takeScreenshot: ti429-short-fragments');
+    expect(flowText).not.toContain('Release lifecycle sentinel');
+    expect(flowText).not.toContain('LONG-START');
+    expect(inspectShortFragmentFlow(flowText)).toEqual([]);
+
+    expect(inspectShortFragmentFlow([
+      'inputText: "Release lifecycle sentinel"',
+      'assertVisible: "Release lifecycle sentinel"',
+      'id: component.transcriptCard',
+      'id: screen.journal',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'short fragment flow must type the exact fragment "Porte rouge"',
+      'short fragment flow still uses a generic long/lifecycle sentinel',
+    ]));
+
+    const typedWithoutFiche = [
+      'clearState: true',
+      'inputText: "Porte rouge"',
+      'inputText: "maman"',
+      'inputText: "loup blanc"',
+      'id: component.transcriptCard',
+      'id: screen.journal',
+      'assertVisible: "Porte rouge"',
+      'assertVisible: "maman"',
+      'assertVisible: "loup blanc"',
+      '',
+    ].join('\n');
+    expect(inspectShortFragmentFlow(typedWithoutFiche)).toEqual(expect.arrayContaining([
+      'short fragment flow must verify each fiche before typing the next fragment',
+    ]));
+
+    expect(inspectShortFragmentFlow([
+      'clearState: true',
+      'inputText: "Porte rouge"',
+      'id: component.transcriptCard',
+      'assertVisible: "Porte rouge"',
+      '- tapOn:',
+      '    id: btn.dream.primaryCta',
+      'inputText: "maman"',
+      'id: component.transcriptCard',
+      'assertVisible: "maman"',
+      'inputText: "loup blanc"',
+      'id: component.transcriptCard',
+      'assertVisible: "loup blanc"',
+      'id: screen.journal',
+      'assertVisible: "Porte rouge"',
+      'assertVisible: "maman"',
+      'assertVisible: "loup blanc"',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'short fragment flow must not start analysis, generate an image or purchase',
+    ]));
+  });
+
+  it('requires guest-unlimited to save three guest dreams without account or paywall blockers', () => {
+    const flowText = read(path.join(ROOT, 'maestro/release-guest-unlimited.yml'));
+    expect(flowText).toContain('id: btn.auth.google');
+    expect(flowText).toContain('id: btn.auth.signOut');
+    expect(flowText).toContain('Guest unlimited sentinel one');
+    expect(flowText).toContain('Guest unlimited sentinel two');
+    expect(flowText).toContain('Guest unlimited sentinel three');
+    expect(flowText).toContain('assertNotVisible:');
+    expect(flowText).toContain('id: screen.paywall');
+    expect(flowText).toContain('takeScreenshot: ti429-guest-unlimited');
+    expect(inspectGuestUnlimitedFlow(flowText)).toEqual([]);
+
+    expect(inspectGuestUnlimitedFlow([
+      'inputText: "Guest unlimited sentinel one"',
+      'inputText: "Guest unlimited sentinel two"',
+      'id: screen.journal',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'guest-unlimited flow must type "Guest unlimited sentinel three"',
+      'guest-unlimited flow must prove a guest session before the first save',
+    ]));
+
+    const missingSecondBlocker = [
+      'clearState: true',
+      'id: btn.auth.google',
+      'id: btn.auth.signOut',
+      'id: screen.recording',
+      'assertNotVisible:',
+      '  id: screen.paywall',
+      'assertNotVisible:',
+      '  id: btn.auth.signIn',
+      'inputText: "Guest unlimited sentinel one"',
+      'id: btn.saveDream',
+      'id: screen.recording',
+      'inputText: "Guest unlimited sentinel two"',
+      'id: btn.saveDream',
+      'id: screen.recording',
+      'assertNotVisible:',
+      '  id: screen.paywall',
+      'assertNotVisible:',
+      '  id: btn.auth.signIn',
+      'inputText: "Guest unlimited sentinel three"',
+      'id: screen.journal',
+      'assertVisible: "Guest unlimited sentinel one"',
+      'assertVisible: "Guest unlimited sentinel two"',
+      'assertVisible: "Guest unlimited sentinel three"',
+      '',
+    ].join('\n');
+    expect(inspectGuestUnlimitedFlow(missingSecondBlocker)).toEqual(expect.arrayContaining([
+      'guest-unlimited flow must assert no account/paywall before saving "Guest unlimited sentinel two"',
+    ]));
+
+    expect(inspectGuestUnlimitedFlow([
+      'clearState: true',
+      'id: btn.auth.google',
+      'id: btn.auth.signOut',
+      'id: screen.recording',
+      'assertNotVisible:',
+      '  id: screen.paywall',
+      'assertNotVisible:',
+      '  id: btn.auth.signIn',
+      'inputText: "Guest unlimited sentinel one"',
+      'id: screen.recording',
+      'assertNotVisible:',
+      '  id: screen.paywall',
+      'assertNotVisible:',
+      '  id: btn.auth.signIn',
+      'inputText: "Guest unlimited sentinel two"',
+      'id: screen.recording',
+      'assertNotVisible:',
+      '  id: screen.paywall',
+      'assertNotVisible:',
+      '  id: btn.auth.signIn',
+      'inputText: "Guest unlimited sentinel three"',
+      '- tapOn:',
+      '    id: btn.dream.primaryCta',
+      'id: screen.journal',
+      'assertVisible: "Guest unlimited sentinel one"',
+      'assertVisible: "Guest unlimited sentinel two"',
+      'assertVisible: "Guest unlimited sentinel three"',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'guest-unlimited flow must not start analysis, generate an image, sign in or purchase',
+    ]));
   });
 
   it('requires the long-fragment flow to keep a >600 character story and the end sentinel', () => {
@@ -300,8 +473,9 @@ describe('Dreamer VNext TI-429 harness', () => {
       '',
     ].join('\n');
 
-    expect(inspectSearchRecovery(missingHide, { id: 'short-fragment' })).toEqual(expect.arrayContaining([
-      'short-fragment must hideKeyboard after journal search before tapping a dream item',
+    expect(inspectSearchRecovery(missingHide, { id: 'short-fragment' })).toEqual([]);
+    expect(inspectSearchRecovery(missingHide, { id: 'journal-detail-trends-deeplinks' })).toEqual(expect.arrayContaining([
+      'journal-detail-trends-deeplinks must hideKeyboard after journal search before tapping a dream item',
     ]));
     expect(inspectSearchRecovery(hideAfterItem, { id: 'offline-local' })).toEqual(expect.arrayContaining([
       'offline-local hides the keyboard after tapping a dream item',
@@ -407,6 +581,8 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(runner).toContain("'release-ti429':");
     expect(runner).toContain("'maestro/release-write-tell.yml'");
     expect(runner).toContain("'maestro/release-draft-kill-relaunch.yml'");
+    expect(runner).toContain("'maestro/release-short-fragments.yml'");
+    expect(runner).toContain("'maestro/release-guest-unlimited.yml'");
     expect(runner).toContain("'maestro/release-journal-trends-deeplinks.yml'");
   });
 
@@ -447,6 +623,8 @@ describe('Dreamer VNext TI-429 harness', () => {
       'maestro/release-write-tell.yml',
       'maestro/release-draft-kill-relaunch.yml',
       'maestro/release-long-fragment.yml',
+      'maestro/release-short-fragments.yml',
+      'maestro/release-guest-unlimited.yml',
       'maestro/release-analysis-interrupt.yml',
       'maestro/release-image-independent.yml',
       'maestro/release-journal-trends-deeplinks.yml',

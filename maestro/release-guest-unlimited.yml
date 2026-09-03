@@ -1,0 +1,169 @@
+# Release guest-unlimited gate (TI-418): save at least three guest dreams
+# in one install/state. Before each save, no account or paywall may block.
+# After the third save, all three entries must exist in Journal.
+# No analysis, image, purchase or later clearState.
+appId: ${APP_ID || "com.tanuki75.noctalia"}
+name: Release guest unlimited local saves
+tags:
+  - release
+  - guest
+  - journal
+onFlowComplete:
+  - setAirplaneMode: disabled
+---
+- setAirplaneMode: disabled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+
+# A clean install starts as a guest: sign-in is available, sign-out is not.
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: btn.auth.google
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- assertVisible:
+    id: btn.auth.google
+- assertNotVisible:
+    id: btn.auth.signOut
+- assertNotVisible:
+    id: screen.paywall
+
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://recording
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- runFlow: subflows/ensure-recording-text.yml
+
+- assertNotVisible:
+    id: screen.paywall
+- assertNotVisible:
+    id: btn.auth.signIn
+- assertNotVisible:
+    id: btn.quotaLimit.ctaGuest
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Guest unlimited sentinel one"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: component.transcriptCard
+    timeout: 20000
+- assertVisible: "Guest unlimited sentinel one"
+- assertNotVisible:
+    id: screen.paywall
+- assertNotVisible:
+    id: sheet.quotaLimit
+
+- tapOn:
+    id: btn.navigateJournal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- assertVisible: "Guest unlimited sentinel one"
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
+
+- assertNotVisible:
+    id: screen.paywall
+- assertNotVisible:
+    id: btn.auth.signIn
+- assertNotVisible:
+    id: btn.quotaLimit.ctaGuest
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Guest unlimited sentinel two"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: component.transcriptCard
+    timeout: 20000
+- assertVisible: "Guest unlimited sentinel two"
+- assertNotVisible:
+    id: screen.paywall
+- assertNotVisible:
+    id: sheet.quotaLimit
+
+- tapOn:
+    id: btn.navigateJournal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- assertVisible: "Guest unlimited sentinel two"
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
+
+- assertNotVisible:
+    id: screen.paywall
+- assertNotVisible:
+    id: btn.auth.signIn
+- assertNotVisible:
+    id: btn.quotaLimit.ctaGuest
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Guest unlimited sentinel three"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: component.transcriptCard
+    timeout: 20000
+- assertVisible: "Guest unlimited sentinel three"
+- assertNotVisible:
+    id: screen.paywall
+- assertNotVisible:
+    id: sheet.quotaLimit
+
+- tapOn:
+    id: btn.navigateJournal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- assertVisible: "Guest unlimited sentinel one"
+- assertVisible: "Guest unlimited sentinel two"
+- assertVisible: "Guest unlimited sentinel three"
+- takeScreenshot: ti429-guest-unlimited

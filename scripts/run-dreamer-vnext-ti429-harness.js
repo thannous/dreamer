@@ -14,6 +14,8 @@ const SCHEMA_VERSION = 1;
 const VALID_MODES = new Set(['automated', 'manual', 'blocked']);
 const VALID_RUNTIMES = new Set(['release-native', 'mock-native', 'manual', 'web']);
 const LONG_FRAGMENT_FLOW = 'maestro/release-long-fragment.yml';
+const SHORT_FRAGMENT_FLOW = 'maestro/release-short-fragments.yml';
+const GUEST_UNLIMITED_FLOW = 'maestro/release-guest-unlimited.yml';
 const IMAGE_INDEPENDENT_FLOW = 'maestro/release-image-independent.yml';
 const GUEST_REAL_ANALYSIS_FLOW = 'maestro/release-analysis.yml';
 const GUEST_REAL_ANALYSIS_CHECK_ID = 'analysis-success';
@@ -23,11 +25,16 @@ const MIN_LONG_FRAGMENT_CHARS = 600;
 const RELEASE_APP_ID_FALLBACK = 'appId: ${APP_ID || "com.tanuki75.noctalia"}';
 const RELEASE_DEEP_LINK_FALLBACK = '${DEEP_LINK_SCHEME || "noctalia"}://';
 const SEARCH_RECOVERY_CHECK_IDS = new Set([
-  'short-fragment',
   'offline-local',
   'analysis-interrupt',
   'journal-detail-trends-deeplinks',
 ]);
+const SHORT_FRAGMENT_TOKENS = ['Porte rouge', 'maman', 'loup blanc'];
+const GUEST_UNLIMITED_SENTINELS = [
+  'Guest unlimited sentinel one',
+  'Guest unlimited sentinel two',
+  'Guest unlimited sentinel three',
+];
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -140,6 +147,129 @@ function inspectLongFragmentFlow(flowText, check) {
   const endAssert = flowText.indexOf(endAssertNeedle);
   if (startAssert === -1 || scrollEnd === -1 || endAssert === -1 || !(startAssert < scrollEnd && scrollEnd < endAssert)) {
     issues.push('long fragment flow must assert .*LONG-START.*, then scroll to .*LONG-END.*, then assert .*LONG-END.*');
+  }
+  return issues;
+}
+
+function countOccurrences(haystack, needle) {
+  if (!needle) return 0;
+  let count = 0;
+  let from = 0;
+  while (from <= haystack.length) {
+    const at = haystack.indexOf(needle, from);
+    if (at === -1) break;
+    count += 1;
+    from = at + needle.length;
+  }
+  return count;
+}
+
+function inspectShortFragmentFlow(flowText) {
+  const issues = [];
+  const texts = extractQuotedInputTexts(flowText);
+  for (const token of SHORT_FRAGMENT_TOKENS) {
+    if (!texts.includes(token)) {
+      issues.push(`short fragment flow must type the exact fragment "${token}"`);
+    }
+    if (countOccurrences(flowText, `assertVisible: "${token}"`) < 1) {
+      issues.push(`short fragment flow must assert the saved fiche for "${token}"`);
+    }
+  }
+  const firstSave = flowText.indexOf('inputText: "Porte rouge"');
+  const secondSave = flowText.indexOf('inputText: "maman"');
+  const thirdSave = flowText.indexOf('inputText: "loup blanc"');
+  if (!(firstSave !== -1 && secondSave !== -1 && thirdSave !== -1 && firstSave < secondSave && secondSave < thirdSave)) {
+    issues.push('short fragment flow must save Porte rouge, then maman, then loup blanc');
+  }
+  const firstAssert = flowText.indexOf('assertVisible: "Porte rouge"');
+  const secondAssert = flowText.indexOf('assertVisible: "maman"');
+  const thirdAssert = flowText.indexOf('assertVisible: "loup blanc"');
+  if (!(firstAssert !== -1 && secondAssert !== -1 && thirdAssert !== -1
+    && firstSave < firstAssert && firstAssert < secondSave
+    && secondSave < secondAssert && secondAssert < thirdSave
+    && thirdSave < thirdAssert)) {
+    issues.push('short fragment flow must verify each fiche before typing the next fragment');
+  }
+  if (countOccurrences(flowText, 'id: component.transcriptCard') < 3) {
+    issues.push('short fragment flow must wait for the transcript card after each save');
+  }
+  const journalAt = flowText.lastIndexOf('id: screen.journal');
+  if (journalAt === -1) {
+    issues.push('short fragment flow must finish on the Journal list');
+  } else {
+    const journalSlice = flowText.slice(journalAt);
+    for (const token of SHORT_FRAGMENT_TOKENS) {
+      if (!journalSlice.includes(`assertVisible: "${token}"`)) {
+        issues.push(`short fragment flow must assert "${token}" on the final Journal list`);
+      }
+    }
+  }
+  if (flowText.includes('LONG-START') || flowText.includes('Release lifecycle sentinel')) {
+    issues.push('short fragment flow still uses a generic long/lifecycle sentinel');
+  }
+  if ((flowText.match(/clearState:\s*true/g) || []).length !== 1) {
+    issues.push('short fragment flow must clearState only at the beginning');
+  }
+  if (flowTapsId(flowText, 'btn.dream.primaryCta') || flowTapsId(flowText, 'btn.journal.illustrate') || flowTapsId(flowText, 'btn.paywall.purchase')) {
+    issues.push('short fragment flow must not start analysis, generate an image or purchase');
+  }
+  return issues;
+}
+
+function inspectGuestUnlimitedFlow(flowText) {
+  const issues = [];
+  const texts = extractQuotedInputTexts(flowText);
+  for (const sentinel of GUEST_UNLIMITED_SENTINELS) {
+    if (!texts.includes(sentinel)) {
+      issues.push(`guest-unlimited flow must type "${sentinel}"`);
+    }
+  }
+  if (texts.filter((value) => GUEST_UNLIMITED_SENTINELS.includes(value)).length < 3) {
+    issues.push('guest-unlimited flow must save at least three distinct guest dreams');
+  }
+  if (!flowText.includes('id: btn.auth.google') || !flowText.includes('id: btn.auth.signOut')) {
+    issues.push('guest-unlimited flow must prove a guest session before the first save');
+  }
+  const guestProofAt = flowText.indexOf('id: btn.auth.google');
+  const firstSaveAt = flowText.indexOf('inputText: "Guest unlimited sentinel one"');
+  if (guestProofAt === -1 || firstSaveAt === -1 || !(guestProofAt < firstSaveAt)) {
+    issues.push('guest-unlimited flow must assert guest identity before typing the first dream');
+  }
+  let previousTypedAt = 0;
+  for (const sentinel of GUEST_UNLIMITED_SENTINELS) {
+    const typedAt = flowText.indexOf(`inputText: "${sentinel}"`);
+    if (typedAt === -1) continue;
+    const window = flowText.slice(previousTypedAt, typedAt);
+    const reentryAt = Math.max(
+      window.lastIndexOf('id: screen.recording'),
+      window.lastIndexOf('open-release-recording.yml'),
+      window.lastIndexOf('ensure-recording-text.yml'),
+    );
+    const afterReentry = reentryAt === -1 ? window : window.slice(reentryAt);
+    if (afterReentry.includes('id: btn.saveDream')) {
+      issues.push(`guest-unlimited flow checks blockers after a previous save instead of before "${sentinel}"`);
+    }
+    if (!afterReentry.includes('id: screen.paywall') || !afterReentry.includes('id: btn.auth.signIn') || !afterReentry.includes('assertNotVisible')) {
+      issues.push(`guest-unlimited flow must assert no account/paywall before saving "${sentinel}"`);
+    }
+    previousTypedAt = typedAt;
+  }
+  const journalAt = flowText.lastIndexOf('id: screen.journal');
+  if (journalAt === -1) {
+    issues.push('guest-unlimited flow must finish on the Journal list');
+  } else {
+    const journalSlice = flowText.slice(journalAt);
+    for (const sentinel of GUEST_UNLIMITED_SENTINELS) {
+      if (!journalSlice.includes(`assertVisible: "${sentinel}"`)) {
+        issues.push(`guest-unlimited flow must assert "${sentinel}" on the final Journal list`);
+      }
+    }
+  }
+  if ((flowText.match(/clearState:\s*true/g) || []).length !== 1) {
+    issues.push('guest-unlimited flow must clearState only at the beginning');
+  }
+  if (flowTapsId(flowText, 'btn.dream.primaryCta') || flowTapsId(flowText, 'btn.journal.illustrate') || flowTapsId(flowText, 'btn.paywall.purchase') || flowTapsId(flowText, 'btn.auth.signIn') || flowTapsId(flowText, 'btn.auth.signUp')) {
+    issues.push('guest-unlimited flow must not start analysis, generate an image, sign in or purchase');
   }
   return issues;
 }
@@ -334,6 +464,18 @@ function inspectCheck(rootDir, check) {
     }
     if (check.flow === LONG_FRAGMENT_FLOW || check.id === 'long-fragment') {
       issues.push(...inspectLongFragmentFlow(flowText, check));
+    }
+    if (check.id === 'short-fragment' && check.flow !== SHORT_FRAGMENT_FLOW) {
+      issues.push('short-fragment must use maestro/release-short-fragments.yml, not a generic long/lifecycle flow');
+    }
+    if (check.flow === SHORT_FRAGMENT_FLOW || check.id === 'short-fragment') {
+      issues.push(...inspectShortFragmentFlow(flowText));
+    }
+    if (check.id === 'guest-unlimited' && check.flow !== GUEST_UNLIMITED_FLOW) {
+      issues.push('guest-unlimited must use maestro/release-guest-unlimited.yml');
+    }
+    if (check.flow === GUEST_UNLIMITED_FLOW || check.id === 'guest-unlimited') {
+      issues.push(...inspectGuestUnlimitedFlow(flowText));
     }
     if (check.flow === IMAGE_INDEPENDENT_FLOW || check.id === 'image-independent') {
       issues.push(...inspectImageIndependentFlow(flowText));
@@ -646,7 +788,13 @@ module.exports = {
   inspectAnalysisSuccessFlow,
   inspectGuestRealAnalysisSideloadBan,
   inspectLongFragmentFlow,
+  inspectShortFragmentFlow,
+  inspectGuestUnlimitedFlow,
   inspectNamedScreenshots,
+  SHORT_FRAGMENT_FLOW,
+  GUEST_UNLIMITED_FLOW,
+  SHORT_FRAGMENT_TOKENS,
+  GUEST_UNLIMITED_SENTINELS,
   inspectSearchRecovery,
   inspectPermissionsVoiceMode,
   inspectNotificationSettingsResume,

@@ -1,0 +1,115 @@
+# Release short-fragment gate (TI-413): save the exact fragments
+# "Porte rouge", "maman" and "loup blanc" in one install, and verify
+# each saved fiche. No analysis, image, purchase or later clearState.
+appId: ${APP_ID || "com.tanuki75.noctalia"}
+name: Release short fragment successive saves
+tags:
+  - release
+  - capture
+  - short-form
+onFlowComplete:
+  - setAirplaneMode: disabled
+---
+- setAirplaneMode: disabled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
+
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Porte rouge"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: component.transcriptCard
+    timeout: 20000
+- assertVisible: "Porte rouge"
+
+- tapOn:
+    id: btn.navigateJournal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- assertVisible: "Porte rouge"
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
+
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "maman"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: component.transcriptCard
+    timeout: 20000
+- assertVisible: "maman"
+
+- tapOn:
+    id: btn.navigateJournal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- assertVisible: "maman"
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
+
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "loup blanc"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: component.transcriptCard
+    timeout: 20000
+- assertVisible: "loup blanc"
+
+- tapOn:
+    id: btn.navigateJournal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- assertVisible: "Porte rouge"
+- assertVisible: "maman"
+- assertVisible: "loup blanc"
+- takeScreenshot: ti429-short-fragments
