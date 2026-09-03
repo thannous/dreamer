@@ -10,6 +10,11 @@ const { parseEnv: parseExpoEnv } = require('@expo/env');
 
 const { resolveCommand } = require('./android-tooling');
 const { parseAdbDevices } = require('./check-android-adb-device');
+const {
+  parseLockOwner,
+  prepareAndroidDeviceLocks,
+  attachDeviceLockSignals,
+} = require('./android-device-lock');
 
 const ROOT = path.resolve(__dirname, '..');
 const RELEASE_BUILD_PROFILE = 'production-apk';
@@ -57,6 +62,8 @@ function parseArgs(argv) {
     profile: RELEASE_BUILD_PROFILE,
     reuseNativeProject: false,
     sideBySideQa: false,
+    lockOwner: 'dreamer',
+    stealLock: false,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -114,6 +121,17 @@ function parseArgs(argv) {
 
     if (arg === '--side-by-side-qa') {
       options.sideBySideQa = true;
+      continue;
+    }
+
+    if (arg === '--lock-owner') {
+      options.lockOwner = parseLockOwner(argv[index + 1], '--lock-owner');
+      index += 1;
+      continue;
+    }
+
+    if (arg === '--steal-lock') {
+      options.stealLock = true;
       continue;
     }
 
@@ -568,6 +586,20 @@ function shouldInspectApkIdentity({ install = false, sideBySideQa = false } = {}
   return Boolean(install || sideBySideQa);
 }
 
+function prepareInstallDeviceLocks(options, device, extras = {}) {
+  if (!options.install || !device) {
+    return { locks: [], skipped: 'no-install' };
+  }
+  return prepareAndroidDeviceLocks({
+    devices: [device],
+    owner: options.lockOwner || 'dreamer',
+    stealLock: Boolean(options.stealLock),
+    explicitDevices: Boolean(options.device),
+    command: extras.command || `android:release:local --install --device ${device}`,
+    ...extras,
+  });
+}
+
 function guardReleaseApkIdentity(
   applicationId,
   {
@@ -620,12 +652,14 @@ function printHelp() {
       '',
       'Usage:',
       '  npm run android:release:local -- [--profile <profile>] [--abi <abi> | --device <serial>] [--install] [--profileable] [--reuse-native-project] [--side-by-side-qa]',
+      '    [--lock-owner dreamer|lucid|meditation] [--steal-lock]',
       '',
       `Profiles: ${[...SUPPORTED_BUILD_PROFILES].join(', ')} (default: ${RELEASE_BUILD_PROFILE}).`,
       `The ${TESTSTORE_BUILD_PROFILE} profile explicitly loads .env.teststore.`,
       '--profileable enables low-overhead local profiling only for production-apk.',
       '--reuse-native-project skips Expo prebuild and requires an already-generated compatible Android project.',
       '--side-by-side-qa builds a distinct Dreamer QA package that can sit beside Play.',
+      '--lock-owner and --steal-lock apply only to --install on a physical phone.',
       'Automatic dotenv loading remains disabled for every profile.',
       'This is a debug-signed emulator/device validation build. Distribution builds remain multi-ABI.',
       '',
@@ -719,12 +753,21 @@ function main() {
   }
 
   if (options.install) {
-    const installOutput = runAdb(
+    const deviceLocks = prepareInstallDeviceLocks(options, device, {
       adbCommand,
-      ['-s', device, 'install', '-r', outputApkPath],
-      env
-    ).trim();
-    process.stdout.write(`Installed on ${device}: ${installOutput || 'success'}\n`);
+      env,
+    });
+    const releaseOnce = attachDeviceLockSignals(deviceLocks.locks);
+    try {
+      const installOutput = runAdb(
+        adbCommand,
+        ['-s', device, 'install', '-r', outputApkPath],
+        env
+      ).trim();
+      process.stdout.write(`Installed on ${device}: ${installOutput || 'success'}\n`);
+    } finally {
+      releaseOnce();
+    }
   }
 
   process.stdout.write(
@@ -774,6 +817,7 @@ module.exports = {
   parseApkApplicationId,
   parseArgs,
   removeStaleApk,
+  prepareInstallDeviceLocks,
   runChecked,
   shouldInspectApkIdentity,
 };

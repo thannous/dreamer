@@ -14,6 +14,13 @@ const {
   writeVoiceAnalysisEvidence,
 } = require('./android-voice-analysis-evidence');
 const { readAppVersionCode } = require('./update-google-play-track-state');
+const {
+  defaultMetroPortForOwner,
+  inferLockOwnerFromSuite,
+  parseLockOwner,
+  prepareAndroidDeviceLocks,
+  attachDeviceLockSignals,
+} = require('./android-device-lock');
 
 const PRODUCTION_ANDROID_APP_ID = 'com.tanuki75.noctalia';
 const QA_ANDROID_APP_ID = 'com.tanuki75.noctalia.qa';
@@ -216,6 +223,9 @@ function parseArgs(argv) {
     sideBySideQa: false,
     appIdOverride: null,
     deepLinkSchemeOverride: null,
+    lockOwner: null,
+    stealLock: false,
+    metroPortSpecified: false,
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -273,6 +283,7 @@ function parseArgs(argv) {
 
     if (arg === '--metro-port') {
       options.metroPort = Number.parseInt(argv[i + 1] ?? String(options.metroPort), 10);
+      options.metroPortSpecified = true;
       i += 1;
       continue;
     }
@@ -285,6 +296,17 @@ function parseArgs(argv) {
 
     if (arg === '--side-by-side-qa') {
       options.sideBySideQa = true;
+      continue;
+    }
+
+    if (arg === '--lock-owner') {
+      options.lockOwner = parseLockOwner(argv[i + 1], '--lock-owner');
+      i += 1;
+      continue;
+    }
+
+    if (arg === '--steal-lock') {
+      options.stealLock = true;
       continue;
     }
 
@@ -321,9 +343,15 @@ function parseArgs(argv) {
     throw new Error(`Invalid --metro-port value: ${options.metroPort}`);
   }
 
+  options.lockOwner = options.lockOwner || inferLockOwnerFromSuite(options.suite);
+  if (!options.metroPortSpecified) {
+    options.metroPort = defaultMetroPortForOwner(options.lockOwner);
+  }
+
   const identity = resolveAndroidIdentity(options);
   delete options.appIdOverride;
   delete options.deepLinkSchemeOverride;
+  delete options.metroPortSpecified;
   return { ...options, ...identity };
 }
 
@@ -334,7 +362,7 @@ function printHelp() {
 
   console.log(`
 Usage:
-  node ./scripts/run-maestro-android.js [--suite <name>] [--parallel auto|<n>] [--retries <n>] [--device <id1,id2>] [--flow <path>]... [--metro-port <port>] [--no-restart-metro] [--no-start-metro] [--side-by-side-qa]
+  node ./scripts/run-maestro-android.js [--suite <name>] [--parallel auto|<n>] [--retries <n>] [--device <id1,id2>] [--flow <path>]... [--metro-port <port>] [--no-restart-metro] [--no-start-metro] [--side-by-side-qa] [--lock-owner dreamer|lucid|meditation] [--steal-lock]
 
 Suites:
 ${suites}
@@ -349,6 +377,8 @@ Fast debug:
   ${QA_ANDROID_APP_ID} / ${QA_DEEP_LINK_SCHEME} only. Prefer it over
   --app-id/--deep-link-scheme, which must be that exact QA pair.
   QA identity is local device proof, never Play, Test Store or purchase.
+  Physical Android QA requires --device <serial>. The lock key is sha256(android_id),
+  not the Wi-Fi host:port. --steal-lock is only for a stale lock after a diagnostic.
 
 Examples:
   npm run test:e2e
@@ -359,6 +389,40 @@ Examples:
   node ./scripts/run-maestro-android.js --flow maestro/smoke.yml --flow maestro/recording-bottom-sheet.yml --retries 2
   node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --side-by-side-qa
 `.trim());
+}
+
+function resolveMaestroLockOwner(options) {
+  return options.lockOwner || inferLockOwnerFromSuite(options.suite);
+}
+
+function prepareMaestroDeviceLocks(options, devices, extras = {}) {
+  return prepareAndroidDeviceLocks({
+    devices,
+    owner: resolveMaestroLockOwner(options),
+    stealLock: Boolean(options.stealLock),
+    explicitDevices: Array.isArray(options.devices) && options.devices.length > 0,
+    command: extras.command || `run-maestro-android --suite ${options.suite}`,
+    metroPort: options.metroPort,
+    ...extras,
+  });
+}
+
+async function withMaestroDeviceLock(options, work, {
+  listDevices = listAndroidDevices,
+  prepareLocks = prepareMaestroDeviceLocks,
+  attachSignals = attachDeviceLockSignals,
+} = {}) {
+  const devices = selectDevices(listDevices(), options.devices);
+  if (!devices.length) {
+    throw new Error('No Android device detected. Start an emulator or connect a device.');
+  }
+  const deviceLocks = prepareLocks(options, devices);
+  const releaseOnce = attachSignals(deviceLocks.locks);
+  try {
+    return await work({ devices, deviceLocks });
+  } finally {
+    releaseOnce();
+  }
 }
 
 function isReleaseSuite(suite) {
@@ -1333,92 +1397,93 @@ async function main() {
     invalidateVoiceAnalysisEvidence(ROOT);
   }
 
-  if (options.startMetro) {
-    ensureMockEnv(options.envFile);
-    const portReady = await isPortOpen(options.metroPort);
-    if (portReady && options.restartMetro) {
-      console.log(`Restarting Metro on port ${options.metroPort}...`);
-      stopMetro(options.metroPort);
-      await sleep(2000);
-      startMetroDetached(options.metroPort);
-    } else if (!portReady) {
-      console.log(`Starting Metro on port ${options.metroPort}...`);
-      startMetroDetached(options.metroPort);
-    } else {
-      console.log(`Metro already listening on port ${options.metroPort}`);
+  await withMaestroDeviceLock(options, async ({ devices, deviceLocks }) => {
+    if (options.startMetro) {
+      ensureMockEnv(options.envFile);
+      const portReady = await isPortOpen(options.metroPort);
+      if (portReady && options.restartMetro) {
+        console.log(`Restarting Metro on port ${options.metroPort}...`);
+        stopMetro(options.metroPort);
+        await sleep(2000);
+        startMetroDetached(options.metroPort);
+      } else if (!portReady) {
+        console.log(`Starting Metro on port ${options.metroPort}...`);
+        startMetroDetached(options.metroPort);
+      } else {
+        console.log(`Metro already listening on port ${options.metroPort}`);
+      }
+
+      const ready = await waitForPort(options.metroPort, options.metroTimeoutMs);
+      if (!ready) {
+        throw new Error(`Metro did not start on port ${options.metroPort} within ${options.metroTimeoutMs}ms`);
+      }
     }
 
-    const ready = await waitForPort(options.metroPort, options.metroTimeoutMs);
-    if (!ready) {
-      throw new Error(`Metro did not start on port ${options.metroPort} within ${options.metroTimeoutMs}ms`);
+    const workerCount = resolveWorkerCount(options.parallel, devices.length, flows.length);
+    const workerQueues = assignFlowsToWorkers(flows, workerCount);
+    const selectedDevices = devices.slice(0, workerCount);
+    let expectedReleaseBuild = null;
+    if (options.suite?.startsWith('release')) {
+      expectedReleaseBuild = readExpectedAndroidBuild(
+        ROOT,
+        fs.readFileSync,
+        process.env,
+        options
+      );
+      const expectedDebuggable = options.suite === 'release-teststore';
+      selectedDevices.forEach((deviceId) =>
+        verifyInstalledReleaseBinary(deviceId, expectedReleaseBuild, { expectedDebuggable })
+      );
     }
-  }
+    selectedDevices.forEach((deviceId) => configureAndroidInput(deviceId));
+    if (!options.suite?.startsWith('release')) {
+      selectedDevices.forEach((deviceId) => configureMetroReverse(deviceId, options.metroPort));
+    }
 
-  const devices = selectDevices(listAndroidDevices(), options.devices);
-  if (!devices.length) {
-    throw new Error('No Android device detected. Start an emulator or connect a device.');
-  }
-
-  const workerCount = resolveWorkerCount(options.parallel, devices.length, flows.length);
-  const workerQueues = assignFlowsToWorkers(flows, workerCount);
-  const selectedDevices = devices.slice(0, workerCount);
-  let expectedReleaseBuild = null;
-  if (options.suite?.startsWith('release')) {
-    expectedReleaseBuild = readExpectedAndroidBuild(
-      ROOT,
-      fs.readFileSync,
-      process.env,
-      options
+    console.log(`Running suite "${options.suite}" on ${workerCount} Android worker(s)`);
+    console.log(
+      `  app identity: ${options.appId} / ${options.deepLinkScheme}` +
+        `${options.sideBySideQa ? ' (side-by-side QA; local device proof only)' : ''}`
     );
-    const expectedDebuggable = options.suite === 'release-teststore';
-    selectedDevices.forEach((deviceId) =>
-      verifyInstalledReleaseBinary(deviceId, expectedReleaseBuild, { expectedDebuggable })
-    );
-  }
-  selectedDevices.forEach((deviceId) => configureAndroidInput(deviceId));
-  if (!options.suite?.startsWith('release')) {
-    selectedDevices.forEach((deviceId) => configureMetroReverse(deviceId, options.metroPort));
-  }
-
-  console.log(`Running suite "${options.suite}" on ${workerCount} Android worker(s)`);
-  console.log(
-    `  app identity: ${options.appId} / ${options.deepLinkScheme}` +
-      `${options.sideBySideQa ? ' (side-by-side QA; local device proof only)' : ''}`
-  );
-  selectedDevices.forEach((deviceId, index) => {
-    console.log(`  worker ${index + 1}: ${deviceId} -> ${workerQueues[index].join(', ')}`);
-  });
-
-  const results = await Promise.all(
-    selectedDevices.map((deviceId, index) =>
-      runWorker(deviceId, workerQueues[index], options.retries, options.suite, options)
-    )
-  );
-
-  const flatResults = results.flat();
-  const failed = flatResults.filter((result) => !result.ok);
-
-  console.log('');
-  flatResults.forEach((result) => {
-    const status = result.ok ? 'PASS' : 'FAIL';
-    console.log(`${status} ${result.flow} (${result.attempts} attempt${result.attempts > 1 ? 's' : ''})`);
-  });
-
-  if (failed.length) {
-    process.exitCode = 1;
-    return;
-  }
-
-  if (voiceFlowSelected) {
-    writeVoiceAnalysisEvidence({
-      rootDir: ROOT,
-      buildIdentity: expectedReleaseBuild,
-      targetKind: /^emulator-\d+$/.test(selectedDevices[0]) ? 'emulator' : 'physical',
+    if (deviceLocks.locks.length > 0) {
+      console.log(
+        `  device lock: ${resolveMaestroLockOwner(options)} fingerprint=${deviceLocks.locks.map((lock) => lock.fingerprint).join(',')}`
+      );
+    }
+    selectedDevices.forEach((deviceId, index) => {
+      console.log(`  worker ${index + 1}: ${deviceId} -> ${workerQueues[index].join(', ')}`);
     });
-    console.log('[voice-evidence] Qualifying runtime receipt written for the current Release candidate.');
-  }
 
-  console.log(`All ${flatResults.length} Maestro flow(s) passed.`);
+    const results = await Promise.all(
+      selectedDevices.map((deviceId, index) =>
+        runWorker(deviceId, workerQueues[index], options.retries, options.suite, options)
+      )
+    );
+
+    const flatResults = results.flat();
+    const failed = flatResults.filter((result) => !result.ok);
+
+    console.log('');
+    flatResults.forEach((result) => {
+      const status = result.ok ? 'PASS' : 'FAIL';
+      console.log(`${status} ${result.flow} (${result.attempts} attempt${result.attempts > 1 ? 's' : ''})`);
+    });
+
+    if (failed.length) {
+      process.exitCode = 1;
+    } else {
+      if (voiceFlowSelected) {
+        writeVoiceAnalysisEvidence({
+          rootDir: ROOT,
+          buildIdentity: expectedReleaseBuild,
+          targetKind: /^emulator-\d+$/.test(selectedDevices[0]) ? 'emulator' : 'physical',
+        });
+        console.log('[voice-evidence] Qualifying runtime receipt written for the current Release candidate.');
+      }
+
+      console.log(`All ${flatResults.length} Maestro flow(s) passed.`);
+    }
+  });
 }
 
 function sleep(ms) {
@@ -1455,6 +1520,9 @@ module.exports = {
   readExpectedAndroidBuild,
   redactSensitiveText,
   resolveAndroidIdentity,
+  resolveMaestroLockOwner,
+  prepareMaestroDeviceLocks,
+  withMaestroDeviceLock,
   runCommand,
   sanitizeMaestroArtifacts,
   SENSITIVE_FLOW_GUARD_ENV,

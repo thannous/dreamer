@@ -8,6 +8,14 @@ const { parseEnv } = require('node:util');
 const {
   syncAndroidNativeVersion,
 } = require('./sync-android-native-version');
+const {
+  attachDeviceLockSignals,
+  defaultMetroPortForOwner,
+  findDeviceArg,
+  listReadyAdbSerials,
+  parseLockOwner,
+  prepareAndroidDeviceLocks,
+} = require('./android-device-lock');
 
 function parseRunnerArgs(args) {
   const expoArgs = [];
@@ -115,16 +123,157 @@ function isAndroidRun(expoArgs) {
   return expoArgs.includes('run:android') || expoArgs.includes('--android');
 }
 
+function inferExpoLockOwner(envFile, env = process.env) {
+  const native = String(env.NOCTALIA_APP_VARIANT || '');
+  const pub = String(env.EXPO_PUBLIC_APP_VARIANT || '');
+  const profile = path.basename(String(envFile || ''));
+  if (
+    native === 'lucid' ||
+    pub === 'lucid' ||
+    pub === 'lucid-trainer' ||
+    /lucid/i.test(profile)
+  ) {
+    return 'lucid';
+  }
+  return 'dreamer';
+}
+
+function extractAndroidLockFlags(expoArgs = []) {
+  const next = [];
+  let stealLock = false;
+  let lockOwner = null;
+  for (let index = 0; index < expoArgs.length; index += 1) {
+    const arg = expoArgs[index];
+    if (arg === '--steal-lock') {
+      stealLock = true;
+      continue;
+    }
+    if (arg === '--lock-owner') {
+      lockOwner = parseLockOwner(expoArgs[index + 1], '--lock-owner');
+      index += 1;
+      continue;
+    }
+    next.push(arg);
+  }
+  return { expoArgs: next, stealLock, lockOwner };
+}
+
+function readExpoMetroPort(expoArgs = []) {
+  for (let index = 0; index < expoArgs.length; index += 1) {
+    const arg = expoArgs[index];
+    if (arg === '--port') {
+      const value = Number.parseInt(String(expoArgs[index + 1] || ''), 10);
+      return Number.isInteger(value) && value > 0 ? value : null;
+    }
+    if (arg.startsWith('--port=')) {
+      const value = Number.parseInt(arg.slice('--port='.length), 10);
+      return Number.isInteger(value) && value > 0 ? value : null;
+    }
+  }
+  return null;
+}
+
+function applyStableExpoMetroPort(expoArgs = [], owner, env = process.env) {
+  const resolvedOwner = owner || 'dreamer';
+  const existing = readExpoMetroPort(expoArgs);
+  const metroPort = existing || defaultMetroPortForOwner(resolvedOwner);
+  const nextArgs = existing
+    ? [...expoArgs]
+    : [...expoArgs, '--port', String(metroPort)];
+  env.RCT_METRO_PORT = String(metroPort);
+  env.EXPO_METRO_PORT = String(metroPort);
+  return { expoArgs: nextArgs, metroPort, owner: resolvedOwner };
+}
+
+function holdExpoAndroidDeviceLockUntilProcessExit(releaseOnce, {
+  processRef = process,
+} = {}) {
+  let released = false;
+  const release = () => {
+    if (released) {
+      return { released: false, reason: 'already' };
+    }
+    released = true;
+    if (typeof releaseOnce === 'function') {
+      releaseOnce();
+    }
+    return { released: true };
+  };
+  processRef.once('beforeExit', release);
+  processRef.once('exit', release);
+  return release;
+}
+
+function reserveExpoAndroidDeviceLock({
+  expoArgs,
+  envFile,
+  env = process.env,
+  stealLock = false,
+  lockOwner = null,
+  spawn,
+  attachSignals = attachDeviceLockSignals,
+} = {}) {
+  if (!isAndroidRun(expoArgs)) {
+    return { locks: [], skipped: 'not-android', owner: null, metroPort: null, releaseOnce() {} };
+  }
+  const owner = lockOwner || inferExpoLockOwner(envFile, env);
+  const ported = applyStableExpoMetroPort(expoArgs, owner, env);
+  const requested = findDeviceArg(expoArgs) || env.ANDROID_SERIAL || null;
+  const devices = requested
+    ? [requested]
+    : listReadyAdbSerials({ spawn, adbCommand: env.ADB_BIN || 'adb' });
+  const prepared = prepareAndroidDeviceLocks({
+    devices,
+    owner,
+    stealLock,
+    explicitDevices: Boolean(requested),
+    command: `expo ${ported.expoArgs.join(' ')}`,
+    metroPort: ported.metroPort,
+    env,
+    spawn,
+  });
+  return {
+    ...prepared,
+    owner,
+    metroPort: ported.metroPort,
+    expoArgs: ported.expoArgs,
+    releaseOnce: prepared.locks.length > 0
+      ? attachSignals(prepared.locks)
+      : () => {},
+  };
+}
+
 function main(args = process.argv.slice(2)) {
   let parsedArgs;
+  let releaseOnce = () => {};
 
   try {
     parsedArgs = parseRunnerArgs(args);
+    const lockFlags = extractAndroidLockFlags(parsedArgs.expoArgs);
+    parsedArgs.expoArgs = lockFlags.expoArgs;
     if (isAndroidRun(parsedArgs.expoArgs)) {
       const result = syncAndroidNativeVersion();
       if (result.status === 'updated') {
         console.error(
           `[android] Synced native version ${result.versionName} (${result.versionCode})`,
+        );
+      }
+      const reserved = reserveExpoAndroidDeviceLock({
+        expoArgs: parsedArgs.expoArgs,
+        envFile: parsedArgs.envFile,
+        stealLock: lockFlags.stealLock,
+        lockOwner: lockFlags.lockOwner,
+      });
+      releaseOnce = reserved.releaseOnce;
+      if (reserved.expoArgs) {
+        parsedArgs.expoArgs = reserved.expoArgs;
+      }
+      if (reserved.locks.length > 0) {
+        holdExpoAndroidDeviceLockUntilProcessExit(releaseOnce);
+      }
+      if (reserved.owner) {
+        console.error(
+          `[android] Device lock owner: ${reserved.owner} metro=${reserved.metroPort}`
         );
       }
     }
@@ -135,6 +284,7 @@ function main(args = process.argv.slice(2)) {
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;
+    releaseOnce();
     return;
   }
 
@@ -158,4 +308,10 @@ module.exports = {
   loadEnvProfile,
   main,
   parseRunnerArgs,
+  inferExpoLockOwner,
+  extractAndroidLockFlags,
+  reserveExpoAndroidDeviceLock,
+  applyStableExpoMetroPort,
+  holdExpoAndroidDeviceLockUntilProcessExit,
+  readExpoMetroPort,
 };

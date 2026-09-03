@@ -31,6 +31,7 @@ const {
   parseApkApplicationId,
   parseArgs,
   removeStaleApk,
+  prepareInstallDeviceLocks,
   shouldInspectApkIdentity,
 } = require('./build-android-release-local');
 
@@ -62,6 +63,8 @@ describe('build-android-release-local', () => {
       profile: RELEASE_BUILD_PROFILE,
       reuseNativeProject: false,
       sideBySideQa: false,
+      lockOwner: 'dreamer',
+      stealLock: false,
     });
   });
 
@@ -74,6 +77,8 @@ describe('build-android-release-local', () => {
       profile: RELEASE_BUILD_PROFILE,
       reuseNativeProject: false,
       sideBySideQa: false,
+      lockOwner: 'dreamer',
+      stealLock: false,
     });
   });
 
@@ -86,6 +91,8 @@ describe('build-android-release-local', () => {
       profile: RELEASE_BUILD_PROFILE,
       reuseNativeProject: false,
       sideBySideQa: false,
+      lockOwner: 'dreamer',
+      stealLock: false,
     });
   });
 
@@ -98,6 +105,8 @@ describe('build-android-release-local', () => {
       profile: TESTSTORE_BUILD_PROFILE,
       reuseNativeProject: false,
       sideBySideQa: false,
+      lockOwner: 'dreamer',
+      stealLock: false,
     });
     expect(normalizeBuildProfile(RELEASE_BUILD_PROFILE)).toBe(
       RELEASE_BUILD_PROFILE
@@ -116,6 +125,8 @@ describe('build-android-release-local', () => {
       profile: RELEASE_BUILD_PROFILE,
       reuseNativeProject: true,
       sideBySideQa: false,
+      lockOwner: 'dreamer',
+      stealLock: false,
     });
     expect(() =>
       assertProfileableBuildProfile(RELEASE_BUILD_PROFILE, true)
@@ -448,6 +459,8 @@ describe('build-android-release-local', () => {
       profile: RELEASE_BUILD_PROFILE,
       reuseNativeProject: false,
       sideBySideQa: true,
+      lockOwner: 'dreamer',
+      stealLock: false,
     });
     expect(parseArgs(['--side-by-side-qa', '--profileable', '--install'])).toEqual({
       abi: null,
@@ -457,6 +470,8 @@ describe('build-android-release-local', () => {
       profile: RELEASE_BUILD_PROFILE,
       reuseNativeProject: false,
       sideBySideQa: true,
+      lockOwner: 'dreamer',
+      stealLock: false,
     });
   });
 
@@ -657,5 +672,25 @@ describe('build-android-release-local', () => {
     expect(() =>
       assertTestStoreInstallTarget(TESTSTORE_BUILD_PROFILE, true, '57275d36')
     ).toThrow('emulator-only');
+  });
+
+  it('locks a physical install and skips emulator or build-only runs', () => {
+    expect(prepareInstallDeviceLocks(parseArgs(['--abi', 'arm64-v8a']), null))
+      .toEqual({ locks: [], skipped: 'no-install' });
+    expect(prepareInstallDeviceLocks(
+      parseArgs(['--install', '--device', 'emulator-5554']),
+      'emulator-5554'
+    )).toEqual({ locks: [], skipped: 'emulator-only' });
+
+    expect(() => prepareInstallDeviceLocks(
+      parseArgs(['--install']),
+      '192.168.1.176:40537'
+    )).toThrow('explicit --device');
+
+    expect(parseArgs(['--install', '--lock-owner', 'meditation', '--steal-lock'])).toMatchObject({
+      install: true,
+      lockOwner: 'meditation',
+      stealLock: true,
+    });
   });
 });

@@ -15,13 +15,13 @@
     "test": "jest",
     "lint": "expo lint app components constants context hooks lib services tests",
     "typecheck": "tsc --noEmit",
-    "test:e2e": "maestro test maestro/smoke.yml",
-    "test:e2e:all": "maestro test maestro/",
-    "test:e2e:onboarding": "maestro test maestro/onboarding.yml",
-    "test:e2e:playback": "maestro test maestro/session-playback.yml",
-    "test:e2e:breathing": "maestro test maestro/breathing.yml",
-    "test:e2e:paywall": "maestro test maestro/paywall.yml",
-    "test:e2e:settings": "maestro test maestro/settings.yml"
+    "test:e2e": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/smoke.yml",
+    "test:e2e:all": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/",
+    "test:e2e:onboarding": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/onboarding.yml",
+    "test:e2e:playback": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/session-playback.yml",
+    "test:e2e:breathing": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/breathing.yml",
+    "test:e2e:paywall": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/paywall.yml",
+    "test:e2e:settings": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/settings.yml"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",

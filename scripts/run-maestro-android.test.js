@@ -27,6 +27,9 @@ const {
   readExpectedAndroidBuild,
   redactSensitiveText,
   resolveAndroidIdentity,
+  resolveMaestroLockOwner,
+  prepareMaestroDeviceLocks,
+  withMaestroDeviceLock,
   runCommand,
   sanitizeMaestroArtifacts,
   SENSITIVE_FLOW_GUARD_ENV,
@@ -74,6 +77,78 @@ describe('run-maestro-android Release preflight', () => {
     expect(windows.args[0]).toBe('/c');
     expect(windows.args[1]).toMatch(/start-metro-background\.cmd$/);
     expect(windows.args[2]).toBe('8082');
+  });
+
+  it('defaults Lucid to Metro 8082 and requires an explicit physical serial', () => {
+    expect(parseArgs(['--suite', 'lucid', '--no-restart-metro'])).toMatchObject({
+      suite: 'lucid',
+      lockOwner: 'lucid',
+      metroPort: 8082,
+      stealLock: false,
+    });
+    expect(parseArgs(['--suite', 'core'])).toMatchObject({
+      lockOwner: 'dreamer',
+      metroPort: 8081,
+    });
+    expect(resolveMaestroLockOwner({ suite: 'release-ti429' })).toBe('dreamer');
+    expect(prepareMaestroDeviceLocks(
+      { suite: 'core', stealLock: false, devices: null, metroPort: 8081 },
+      ['emulator-5554']
+    )).toEqual({ locks: [], skipped: 'emulator-only' });
+    expect(() => prepareMaestroDeviceLocks(
+      { suite: 'lucid', stealLock: false, devices: null, metroPort: 8082 },
+      ['192.168.1.176:40537']
+    )).toThrow('explicit --device');
+  });
+
+  it('acquires the device lock before Metro start/restart and releases after a Metro timeout', async () => {
+    const order = [];
+    const options = parseArgs(['--suite', 'core', '--device', 'emulator-5554']);
+    await withMaestroDeviceLock(
+      options,
+      async () => {
+        order.push('metro');
+      },
+      {
+        listDevices: () => {
+          order.push('list');
+          return ['emulator-5554'];
+        },
+        prepareLocks: () => {
+          order.push('lock');
+          return { locks: [{ lockPath: '/tmp/lock', token: 't' }] };
+        },
+        attachSignals: () => {
+          order.push('attach');
+          return () => order.push('release');
+        },
+      }
+    );
+    expect(order).toEqual(['list', 'lock', 'attach', 'metro', 'release']);
+
+    const released = [];
+    await expect(withMaestroDeviceLock(
+      options,
+      async () => {
+        released.push('metro');
+        throw new Error('Metro did not start on port 8081 within 120000ms');
+      },
+      {
+        listDevices: () => ['emulator-5554'],
+        prepareLocks: () => ({ locks: [{ lockPath: '/tmp/lock', token: 't' }] }),
+        attachSignals: () => () => released.push('release'),
+      }
+    )).rejects.toThrow('Metro did not start');
+    expect(released).toEqual(['metro', 'release']);
+
+    const source = fs.readFileSync(path.join(__dirname, 'run-maestro-android.js'), 'utf8');
+    const main = source.slice(source.indexOf('async function main()'));
+    const lockAt = main.indexOf('withMaestroDeviceLock');
+    expect(lockAt).toBeGreaterThan(0);
+    expect(main.indexOf('stopMetro')).toBeGreaterThan(lockAt);
+    expect(main.indexOf('startMetroDetached')).toBeGreaterThan(lockAt);
+    expect(main.indexOf('configureMetroReverse')).toBeGreaterThan(lockAt);
+    expect(main.indexOf('configureAndroidInput')).toBeGreaterThan(lockAt);
   });
 
   it('reads the expected Android package and versions from app.json', () => {
