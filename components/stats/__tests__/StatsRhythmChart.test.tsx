@@ -16,6 +16,8 @@ jest.mock('react-native', () => {
       accessibilityRole,
       accessibilityLabel,
       accessibilityValue,
+      accessibilityElementsHidden,
+      importantForAccessibility,
       className,
       style,
       numberOfLines,
@@ -26,7 +28,10 @@ jest.mock('react-native', () => {
       ...(testID ? { 'data-testid': testID } : {}),
       ...(accessibilityRole ? { role: accessibilityRole } : {}),
       ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
-      ...(accessible ? { 'aria-hidden': 'false' } : {}),
+      ...(accessible === true ? { 'data-accessible': 'true' } : {}),
+      ...(accessible === false ? { 'data-accessible': 'false' } : {}),
+      ...(accessibilityElementsHidden ? { 'aria-hidden': 'true' } : {}),
+      ...(importantForAccessibility ? { 'data-important-for-accessibility': importantForAccessibility } : {}),
       ...(accessibilityValue?.min !== undefined ? { 'aria-valuemin': String(accessibilityValue.min) } : {}),
       ...(accessibilityValue?.max !== undefined ? { 'aria-valuemax': String(accessibilityValue.max) } : {}),
       ...(accessibilityValue?.now !== undefined ? { 'aria-valuenow': String(accessibilityValue.now) } : {}),
@@ -76,8 +81,14 @@ describe('StatsRhythmChart', () => {
       />,
     );
 
-    expect(screen.getByTestId('trends.week.rhythm').getAttribute('aria-label')).toBe('Weekly rhythm');
+    const chart = screen.getByTestId('trends.week.rhythm');
+    expect(chart.getAttribute('aria-label')).toBe('Weekly rhythm');
+    expect(chart.getAttribute('data-accessible')).toBe('false');
+    expect(chart.getAttribute('role')).toBe('none');
+
     const monday = screen.getByRole('progressbar', { name: 'Mon' });
+    expect(monday.getAttribute('data-testid')).toBe('trends.week.rhythm.day.1');
+    expect(monday.getAttribute('data-accessible')).toBe('true');
     expect(monday.getAttribute('aria-valuemin')).toBe('0');
     expect(monday.getAttribute('aria-valuemax')).toBe('2');
     expect(monday.getAttribute('aria-valuenow')).toBe('2');
@@ -85,6 +96,7 @@ describe('StatsRhythmChart', () => {
     expect(screen.getByText('2')).toBeTruthy();
     expect(screen.getByText('Mon')).toBeTruthy();
     expect(screen.getByRole('progressbar', { name: 'Tue' }).getAttribute('aria-valuenow')).toBe('0');
+    expect(monday.querySelector('[aria-hidden="true"]')).toBeTruthy();
   });
 
   it('shortens the track at 320 dp without dropping a day', () => {
@@ -102,6 +114,9 @@ describe('StatsRhythmChart', () => {
     expect(screen.getByTestId('trends.week.rhythm.day.3')).toBeTruthy();
     const tracks = screen.getAllByRole('progressbar');
     expect(tracks).toHaveLength(3);
-    expect(tracks[0]?.getAttribute('data-height')).toBe('56');
+    const heights = Array.from(screen.getByTestId('trends.week.rhythm').querySelectorAll('[data-height]')).map(
+      (node) => node.getAttribute('data-height'),
+    );
+    expect(heights).toEqual(['56', '56', '56']);
   });
 });

@@ -58,6 +58,8 @@ jest.mock('react-native', () => {
       accessibilityLabel,
       accessibilityLiveRegion,
       accessibilityValue,
+      accessibilityElementsHidden,
+      importantForAccessibility,
       contentContainerStyle,
       contentInsetAdjustmentBehavior,
       showsVerticalScrollIndicator,
@@ -78,7 +80,10 @@ jest.mock('react-native', () => {
       ...(accessibilityRole ? { role: accessibilityRole } : {}),
       ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
       ...(accessibilityLiveRegion ? { 'aria-live': accessibilityLiveRegion } : {}),
-      ...(accessible ? { 'aria-hidden': 'false' } : {}),
+      ...(accessible === true ? { 'data-accessible': 'true' } : {}),
+      ...(accessible === false ? { 'data-accessible': 'false' } : {}),
+      ...(accessibilityElementsHidden ? { 'aria-hidden': 'true' } : {}),
+      ...(importantForAccessibility ? { 'data-important-for-accessibility': importantForAccessibility } : {}),
       ...(accessibilityValue?.min !== undefined ? { 'aria-valuemin': String(accessibilityValue.min) } : {}),
       ...(accessibilityValue?.max !== undefined ? { 'aria-valuemax': String(accessibilityValue.max) } : {}),
       ...(accessibilityValue?.now !== undefined ? { 'aria-valuenow': String(accessibilityValue.now) } : {}),
@@ -214,6 +219,14 @@ function expectVNextShell() {
   }
 }
 
+function expectUngroupedSection(testID: string, heading: string) {
+  const section = screen.getByTestId(testID);
+  expect(section.getAttribute('data-accessible')).toBe('false');
+  expect(section.getAttribute('role')).toBe('none');
+  expect(section.getAttribute('aria-label')).toBeNull();
+  expect(section.querySelector('[role="header"]')?.textContent).toBe(heading);
+}
+
 describe('Statistics screen VNext trends', () => {
   it('keeps loading accessible until dreams are ready', () => {
     mockUseDreams.mockReturnValue({ dreams: [], loaded: false });
@@ -232,6 +245,9 @@ describe('Statistics screen VNext trends', () => {
     render(<StatisticsScreen />);
 
     expectVNextShell();
+    expectUngroupedSection('trends.section.week', 'trends.section.week');
+    expectUngroupedSection('trends.section.patterns', 'trends.section.patterns');
+    expectUngroupedSection('trends.section.evolution', 'trends.section.evolution');
     expect(screen.getByLabelText('trends.cta.capture_first')).toBeTruthy();
     expect(screen.getByText('trends.week.last_activity.empty')).toBeTruthy();
     expect(screen.getByText('trends.patterns.empty')).toBeTruthy();
@@ -314,7 +330,13 @@ describe('Statistics screen VNext trends', () => {
 
     const evolution = within(screen.getByTestId('trends.section.evolution'));
     expect(evolution.queryByText('trends.evolution.empty')).toBeNull();
-    expect(screen.getByTestId('trends.evolution.chart')).toBeTruthy();
+    expect(screen.getByTestId('trends.evolution.chart').getAttribute('data-accessible')).toBe('false');
+    const firstPoint = screen.getByRole('progressbar', {
+      name: 'trends.evolution.point:date=2026-08-27|theme=dream.theme.noir|count=1',
+    });
+    expect(firstPoint.getAttribute('data-testid')).toBe('trends.evolution.chart.day.2026-08-27');
+    expect(firstPoint.getAttribute('data-accessible')).toBe('true');
+    expect(firstPoint.getAttribute('aria-valuetext')).toBe('stats.legend.count_one:count=1');
     expect(
       evolution.getByLabelText('trends.evolution.point:date=2026-08-27|theme=dream.theme.noir|count=1'),
     ).toBeTruthy();
@@ -367,8 +389,15 @@ describe('Statistics screen VNext trends', () => {
 
     render(<StatisticsScreen />);
 
+    const chart = screen.getByTestId('trends.week.rhythm');
+    expect(chart.getAttribute('aria-label')).toBe('trends.week.rhythm');
+    expect(chart.getAttribute('data-accessible')).toBe('false');
+    expect(chart.getAttribute('role')).toBe('none');
+
     const monday = screen.getByRole('progressbar', { name: 'trends.week.weekday.mon' });
     const saturday = screen.getByRole('progressbar', { name: 'trends.week.weekday.sat' });
+    expect(monday.getAttribute('data-testid')).toBe('trends.week.rhythm.day.1');
+    expect(monday.getAttribute('data-accessible')).toBe('true');
     expect(monday.getAttribute('aria-valuenow')).toBe('1');
     expect(monday.getAttribute('aria-valuetext')).toBe('stats.legend.count_one:count=1');
     expect(saturday.getAttribute('aria-valuenow')).toBe('2');

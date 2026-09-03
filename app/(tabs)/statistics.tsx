@@ -207,10 +207,13 @@ export default function StatisticsScreen() {
             <View
               className={`gap-4 rounded-[20px] border border-line-strong bg-ink-soft ${sectionPad}`}
               testID="trends.section.week"
-              accessibilityRole="summary"
-              accessibilityLabel={t('trends.section.week')}
+              accessible={false}
+              accessibilityRole="none"
             >
-              <Text className="text-[20px] leading-[26px] font-display-semibold text-ivory">
+              <Text
+                accessibilityRole="header"
+                className="text-[20px] leading-[26px] font-display-semibold text-ivory"
+              >
                 {t('trends.section.week')}
               </Text>
               <View
@@ -286,10 +289,13 @@ export default function StatisticsScreen() {
             <View
               className={`gap-4 rounded-[20px] border border-line-strong bg-ink-soft ${sectionPad}`}
               testID="trends.section.patterns"
-              accessibilityRole="summary"
-              accessibilityLabel={t('trends.section.patterns')}
+              accessible={false}
+              accessibilityRole="none"
             >
-              <Text className="text-[20px] leading-[26px] font-display-semibold text-ivory">
+              <Text
+                accessibilityRole="header"
+                className="text-[20px] leading-[26px] font-display-semibold text-ivory"
+              >
                 {t('trends.section.patterns')}
               </Text>
               {patterns.empty ? (
@@ -360,10 +366,13 @@ export default function StatisticsScreen() {
             <View
               className={`gap-4 rounded-[20px] border border-line-strong bg-ink-soft ${sectionPad}`}
               testID="trends.section.evolution"
-              accessibilityRole="summary"
-              accessibilityLabel={t('trends.section.evolution')}
+              accessible={false}
+              accessibilityRole="none"
             >
-              <Text className="text-[20px] leading-[26px] font-display-semibold text-ivory">
+              <Text
+                accessibilityRole="header"
+                className="text-[20px] leading-[26px] font-display-semibold text-ivory"
+              >
                 {t('trends.section.evolution')}
               </Text>
               {evolution.days.length === 0 ? (

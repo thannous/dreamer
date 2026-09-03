@@ -16,6 +16,8 @@ jest.mock('react-native', () => {
       accessibilityRole,
       accessibilityLabel,
       accessibilityValue,
+      accessibilityElementsHidden,
+      importantForAccessibility,
       className,
       style,
       numberOfLines,
@@ -26,7 +28,10 @@ jest.mock('react-native', () => {
       ...(testID ? { 'data-testid': testID } : {}),
       ...(accessibilityRole ? { role: accessibilityRole } : {}),
       ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
-      ...(accessible ? { 'aria-hidden': 'false' } : {}),
+      ...(accessible === true ? { 'data-accessible': 'true' } : {}),
+      ...(accessible === false ? { 'data-accessible': 'false' } : {}),
+      ...(accessibilityElementsHidden ? { 'aria-hidden': 'true' } : {}),
+      ...(importantForAccessibility ? { 'data-important-for-accessibility': importantForAccessibility } : {}),
       ...(accessibilityValue?.min !== undefined ? { 'aria-valuemin': String(accessibilityValue.min) } : {}),
       ...(accessibilityValue?.max !== undefined ? { 'aria-valuemax': String(accessibilityValue.max) } : {}),
       ...(accessibilityValue?.now !== undefined ? { 'aria-valuenow': String(accessibilityValue.now) } : {}),
@@ -82,10 +87,18 @@ describe('StatsEvolutionBars', () => {
   it('exposes chronological labelled bars with values independent of colour', () => {
     render(<StatsEvolutionBars days={DAYS} testID="trends.evolution.chart" />);
 
+    const chart = screen.getByTestId('trends.evolution.chart');
+    expect(chart.getAttribute('data-accessible')).toBe('false');
+    expect(chart.getAttribute('role')).toBe('none');
+
     const calm = screen.getByRole('progressbar', { name: '28 Aug: Calm (3)' });
+    expect(calm.getAttribute('data-testid')).toBe('trends.evolution.chart.day.2026-08-28');
+    expect(calm.getAttribute('data-accessible')).toBe('true');
+    expect(calm.getAttribute('aria-valuemin')).toBe('0');
     expect(calm.getAttribute('aria-valuenow')).toBe('3');
     expect(calm.getAttribute('aria-valuemax')).toBe('3');
     expect(calm.getAttribute('aria-valuetext')).toBe('3 dreams');
+    expect(calm.querySelector('[aria-hidden="true"]')).toBeTruthy();
     expect(screen.getByText('28 Aug · Calm')).toBeTruthy();
     expect(screen.getByText('3 dreams')).toBeTruthy();
   });

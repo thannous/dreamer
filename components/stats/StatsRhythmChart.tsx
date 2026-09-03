@@ -64,33 +64,40 @@ export const StatsRhythmChart = memo(function StatsRhythmChart({
 
   return (
     <View
-      className="flex-row items-end gap-1"
+      accessible={false}
+      accessibilityRole="none"
       accessibilityLabel={accessibilityLabel}
       testID={testID}
+      className="flex-row items-end gap-1"
     >
       {days.map((day) => {
         const percent = maxCount === 0 ? 0 : Math.round((day.count / maxCount) * 100);
         return (
           <View
             key={day.weekday}
+            accessible
+            accessibilityRole="progressbar"
+            accessibilityLabel={day.label}
+            accessibilityValue={{
+              min: 0,
+              max: Math.max(maxCount, 1),
+              now: day.count,
+              text: day.countLabel,
+            }}
             className="min-w-0 flex-1 items-center gap-1"
             testID={`${testID}.day.${day.weekday}`}
           >
             <View
+              accessibilityElementsHidden
+              importantForAccessibility="no-hide-descendants"
               className="w-full justify-end overflow-hidden rounded-[6px] bg-line"
               style={{ height: trackHeight }}
-              accessibilityRole="progressbar"
-              accessibilityLabel={day.label}
-              accessibilityValue={{
-                min: 0,
-                max: Math.max(maxCount, 1),
-                now: day.count,
-                text: day.countLabel,
-              }}
             >
               <VerticalFill percent={percent} />
             </View>
             <Text
+              accessibilityElementsHidden
+              importantForAccessibility="no-hide-descendants"
               className={`w-full text-center font-sans-medium text-ivory-muted ${
                 compact ? 'text-[10px]' : 'text-[11px]'
               }`}
@@ -99,6 +106,8 @@ export const StatsRhythmChart = memo(function StatsRhythmChart({
               {day.label}
             </Text>
             <Text
+              accessibilityElementsHidden
+              importantForAccessibility="no-hide-descendants"
               className={`w-full text-center font-display-semibold text-ivory ${
                 compact ? 'text-[12px]' : 'text-[14px]'
               }`}
