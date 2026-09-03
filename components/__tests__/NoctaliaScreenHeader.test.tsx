@@ -25,7 +25,11 @@ jest.mock('react-native', () => {
       ...(accessibilityRole ? { role: accessibilityRole } : {}),
       ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
       ...(typeof numberOfLines === 'number' ? { 'data-number-of-lines': String(numberOfLines) } : {}),
-      ...(style ? { 'data-flex-shrink': JSON.stringify(style) } : {}),
+      ...(style ? {
+        'data-flex-shrink': JSON.stringify(
+          typeof style === 'function' ? style({ pressed: false }) : style
+        ),
+      } : {}),
     };
   };
   const createElement = (tag: string) => {
@@ -127,5 +131,25 @@ describe('NoctaliaScreenHeader chips', () => {
     expect(toExplore.getAttribute('data-number-of-lines')).toBeNull();
     expect(nightmares.getAttribute('data-number-of-lines')).toBeNull();
     expect(toExplore.getAttribute('data-flex-shrink')).toContain('"flexShrink":0');
+  });
+
+  it('keeps filter chips at least 44 dp tall', () => {
+    render(
+      <NoctaliaScreenHeader
+        titleKey="nav.journal"
+        chips={[
+          {
+            id: 'to-explore',
+            label: 'To explore',
+            icon: 'sparkles',
+            active: false,
+            onPress: jest.fn(),
+          },
+        ]}
+      />
+    );
+
+    const chip = screen.getByRole('button', { name: 'To explore' });
+    expect(chip.getAttribute('data-flex-shrink') ?? '').toContain('"minHeight":44');
   });
 });

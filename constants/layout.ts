@@ -13,17 +13,42 @@ export const TAB_BAR_MARGIN = Platform.OS === 'android' ? TAB_BAR_MARGIN_ANDROID
 export const TAB_BAR_CONTENT_BOTTOM_PADDING = 12;
 export const NARROW_TAB_BAR_BREAKPOINT = 360;
 export const NARROW_TAB_BAR_HORIZONTAL_MARGIN = 8;
+export const LARGE_TEXT_FONT_SCALE = 1.3;
+export const TAB_BAR_MAX_FONT_SCALE = 2;
 
 export const isNarrowBottomNavigation = (viewportWidth: number) =>
   viewportWidth <= NARROW_TAB_BAR_BREAKPOINT;
 
-export function getBottomNavigationLayout(width: number, height: number) {
+function normalizeFontScale(fontScale = 1) {
+  return Number.isFinite(fontScale) ? Math.max(1, fontScale) : 1;
+}
+
+export function getBottomNavigationLayout(
+  width: number,
+  height: number,
+  fontScale = 1
+) {
   const compact = width > height && height < 600;
   const narrow = !compact && isNarrowBottomNavigation(width);
+  const safeFontScale = normalizeFontScale(fontScale);
+  const appliedFontScale = Math.min(safeFontScale, TAB_BAR_MAX_FONT_SCALE);
+  const stackedLabels = appliedFontScale >= LARGE_TEXT_FONT_SCALE;
+  const extraHeight = stackedLabels
+    ? Math.round((appliedFontScale - 1) * (compact ? 18 : narrow ? 28 : 24))
+    : 0;
+  const centerActionWidth = compact ? 60 : narrow ? 64 : 72;
+  const centerActionHeight = compact
+    ? 56 + extraHeight
+    : (narrow ? 68 : 76) + extraHeight;
+
   return {
     compact,
     narrow,
-    barHeight: compact ? COMPACT_TAB_BAR_HEIGHT : TAB_BAR_HEIGHT,
+    stackedLabels,
+    fontScale: appliedFontScale,
+    barHeight: (compact ? COMPACT_TAB_BAR_HEIGHT : TAB_BAR_HEIGHT) + extraHeight,
+    centerActionWidth,
+    centerActionHeight,
     minimumBottomInset: compact ? COMPACT_TAB_BAR_BOTTOM_INSET : 14,
   };
 }

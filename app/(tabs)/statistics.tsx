@@ -103,7 +103,7 @@ export default function StatisticsScreen() {
   const stackWeekMetrics = compact || largeText;
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
-  const navigationLayout = getBottomNavigationLayout(width, height);
+  const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
   const scrollBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
     : navigationLayout.barHeight

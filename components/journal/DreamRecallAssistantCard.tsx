@@ -388,7 +388,7 @@ export function DreamRecallAssistantCard({
               void start();
             }}
             disabled={actionsDisabled}
-            variant="primary"
+            variant="secondary"
           />
           <RecallAction
             testID={TID.Button.DreamRecallLater}

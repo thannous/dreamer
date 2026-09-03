@@ -138,6 +138,60 @@ describe('Journal filters - analyzedOnly / exploredOnly', () => {
 });
 
 describe('Journal filters - combinable advanced + quick access', () => {
+  it('intersects favorites, theme, remembered, recurrence, type, analysis status and search', () => {
+    const matching = makeDream({
+      id: 20,
+      title: 'Harbor lantern',
+      isFavorite: true,
+      theme: 'noir',
+      dreamType: 'Nightmare',
+      isAnalyzed: true,
+      analysisStatus: 'done',
+      analyzedAt: 1000,
+      interpretation: 'A complete reading.',
+      memory: { origin: 'remembered', rememberedKind: 'recurring', recurring: true },
+    });
+    const dreams: DreamAnalysis[] = [
+      matching,
+      makeDream({
+        id: 21,
+        title: 'Harbor lantern',
+        isFavorite: true,
+        theme: 'noir',
+        dreamType: 'Nightmare',
+        isAnalyzed: true,
+        analysisStatus: 'done',
+        analyzedAt: 1000,
+        interpretation: 'A complete reading.',
+        memory: { origin: 'remembered' },
+      }),
+      makeDream({
+        id: 22,
+        title: 'Harbor lantern',
+        isFavorite: true,
+        theme: 'noir',
+        dreamType: 'Symbolic Dream',
+        isAnalyzed: true,
+        analysisStatus: 'done',
+        analyzedAt: 1000,
+        interpretation: 'A complete reading.',
+        memory: { origin: 'remembered', rememberedKind: 'recurring', recurring: true },
+      }),
+    ];
+
+    const result = applyFilters(dreams, {
+      searchQuery: 'Harbor',
+      theme: 'noir',
+      dreamType: 'Nightmare',
+      favoritesOnly: true,
+      rememberedOnly: true,
+      recurringOnly: true,
+      analysisStatus: 'analyzed',
+    });
+
+    expect(result.map((dream) => dream.id)).toEqual([20]);
+  });
+
   it('intersects favorites, theme, remembered, analysis status and search', () => {
     const matching = makeDream({
       id: 10,

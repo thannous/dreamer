@@ -72,8 +72,8 @@ jest.doMock('@/lib/accessibility', () => ({
 
 jest.doMock('@/lib/dreamFilters', () => ({
   applyFilters: (dreams: any[]) => dreams,
-  getUniqueThemes: () => ['mystical'],
-  getUniqueDreamTypes: () => [],
+  getUniqueThemes: jest.fn(() => ['mystical']),
+  getUniqueDreamTypes: jest.fn(() => []),
   sortDreamsByDate: (dreams: any[]) => dreams,
 }));
 
@@ -94,9 +94,14 @@ jest.doMock('@/lib/imageUtils', () => ({
 jest.doMock('@/components/journal/FilterBar', () => ({
   FilterBar: function MockFilterBar({
     items,
+    onClear,
+    clearTestID,
   }: {
-    items: { id: string; onPress: () => void; testID?: string }[];
+    items: { id: string; active?: boolean; onPress: () => void; testID?: string }[];
+    onClear: () => void;
+    clearTestID?: string;
   }) {
+    const hasActive = items.some((item) => item.id !== 'all' && item.active);
     return (
       <div>
         {items.map((item) => (
@@ -104,13 +109,36 @@ jest.doMock('@/components/journal/FilterBar', () => ({
             {item.id}
           </button>
         ))}
+        {hasActive ? (
+          <button data-testid={clearTestID} onClick={onClear}>
+            clear
+          </button>
+        ) : null}
       </div>
     );
   },
 }));
 
 jest.doMock('@/components/ui/SearchBar', () => ({
-  SearchBar: ({ testID }: { testID?: string }) => <div data-testid={testID ?? 'search-bar'} />,
+  SearchBar: ({
+    testID,
+    inputTestID,
+    value,
+    onChangeText,
+  }: {
+    testID?: string;
+    inputTestID?: string;
+    value: string;
+    onChangeText: (text: string) => void;
+  }) => (
+    <div data-testid={testID ?? 'search-bar'}>
+      <input
+        data-testid={inputTestID ?? 'input.searchDreams'}
+        value={value}
+        onChange={(event) => onChangeText(event.target.value)}
+      />
+    </div>
+  ),
 }));
 
 jest.doMock('@/components/inspiration/AtmosphericBackground', () => ({
@@ -176,10 +204,12 @@ jest.doMock('react-native', () => {
       minimumFontScale,
       hitSlop,
       style,
+      className,
       ...rest
     } = props;
     return {
       ...rest,
+      ...(className ? { className } : {}),
       ...(testID ? { 'data-testid': testID } : {}),
       ...(onPress ? { onClick: onPress } : {}),
       ...(accessibilityRole ? { role: accessibilityRole } : {}),
@@ -369,6 +399,14 @@ describe('Journal advanced filter sheet', () => {
     expect(mockPush).toHaveBeenCalledWith('/(tabs)/settings');
     expect(screen.queryByTestId('tab.settings')).toBeNull();
   });
+  it('keeps journal settings and more actions at least 44 dp', () => {
+    render(<JournalListScreen />);
+    expect(screen.getByTestId('btn.header.journal.settings').className).toContain('min-h-[44px]');
+    expect(screen.getByTestId('btn.header.journal.settings').className).toContain('min-w-[44px]');
+    expect(screen.getByTestId('btn.filterMore').className).toContain('min-h-[44px]');
+    expect(screen.getByTestId('btn.filterMore').className).toContain('min-w-[44px]');
+  });
+
 
   it('resets advanced filters when Tous is pressed', () => {
     render(<JournalListScreen />);
@@ -405,5 +443,33 @@ describe('Journal advanced filter sheet', () => {
     expect(screen.getByTestId('btn.filterTheme')).toBeTruthy();
     fireEvent.click(screen.getByTestId('btn.filterAll'));
     expect(screen.queryByTestId('btn.filterTheme')).toBeNull();
+  });
+
+  it('keeps recurrence combinable with a dream type and resets both in one action', () => {
+    const { getUniqueDreamTypes } = require('@/lib/dreamFilters');
+    getUniqueDreamTypes.mockReturnValue(['Symbolic Dream', 'Recurring Dream']);
+    render(<JournalListScreen />);
+
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
+    fireEvent.click(screen.getByText('Symbolic Dream'));
+    fireEvent.click(screen.getByText('journal.filter.recurring'));
+    fireEvent.click(screen.getByText('journal.filter_sheet.sort.oldest'));
+
+    expect(screen.getByTestId('btn.filterRecurring')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('btn.clearFilters'));
+    expect(screen.queryByTestId('btn.filterRecurring')).toBeNull();
+    expect(screen.queryByTestId('btn.filterSearch')).toBeNull();
+
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
+    expect(screen.queryAllByTestId('icon-checkmark')).toHaveLength(0);
+  });
+
+  it('surfaces an active search as a visible chip that Tous can reset', () => {
+    render(<JournalListScreen />);
+
+    fireEvent.change(screen.getByTestId('input.searchDreams'), { target: { value: 'harbor' } });
+    expect(screen.getByTestId('btn.filterSearch')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('btn.filterAll'));
+    expect(screen.queryByTestId('btn.filterSearch')).toBeNull();
   });
 });

@@ -44,6 +44,8 @@ import {
   getDreamAnalysisState,
   getJournalDetailPrimaryFamily,
   getReflectionJourney,
+  getReflectionQuotaHint,
+  type ReflectionQuotaHint,
 } from '@/lib/dreamUsage';
 import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
 import { isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
@@ -585,12 +587,40 @@ export default function JournalDetailScreen() {
   );
   const primaryKind = reflectionJourney.primary.kind;
   const primaryAction = getJournalDetailPrimaryFamily(primaryKind);
+  const isStalePrimaryAction = isAnalysisStale && !isEditing && !isEditingTranscript;
+  const visiblePrimaryAction = isStalePrimaryAction ? 'analyze' : primaryAction;
+  const quotaHint = useMemo(
+    () =>
+      getReflectionQuotaHint(
+        isStalePrimaryAction ? 'analysis' : reflectionJourney.primary.consumesQuota,
+        usage
+      ),
+    [isStalePrimaryAction, reflectionJourney.primary.consumesQuota, usage]
+  );
+  const formatQuotaHint = useCallback(
+    (hint: ReflectionQuotaHint) => {
+      if (hint.kind === 'none') return null;
+      if (hint.kind === 'unlimited') {
+        return t('journal.detail.quota_hint.unlimited');
+      }
+      const quotaKey = `journal.detail.quota_hint.quota.${hint.quota}` as const;
+      if (hint.kind === 'remaining') {
+        return t('journal.detail.quota_hint.remaining', {
+          quota: t(quotaKey),
+          remaining: hint.remaining,
+        });
+      }
+      return t('journal.detail.quota_hint.unknown', { quota: t(quotaKey) });
+    },
+    [t]
+  );
+  const quotaHintLabel = formatQuotaHint(quotaHint);
   const canRecoverPendingAnalysis = useMemo(
     () => !isAnalyzing && isRecoverablePendingAnalysis(dream, analysisRecoveryClock),
     [analysisRecoveryClock, dream, isAnalyzing]
   );
   const isAnalysisPending = reflectionJourney.isPendingFresh && !isAnalyzing;
-  const isPrimaryActionBusy = primaryAction === 'analyze' && (isAnalyzing || isAnalysisPending);
+  const isPrimaryActionBusy = visiblePrimaryAction === 'analyze' && (isAnalyzing || isAnalysisPending);
   const detailActionCard = useMemo(() => {
     if (!dream) {
       return null;
@@ -604,6 +634,17 @@ export default function JournalDetailScreen() {
         step: t('journal.detail.action.pending.step'),
         cta: t('journal.detail.action.pending.cta'),
         disabled: true,
+      };
+    }
+
+    if (isStalePrimaryAction) {
+      return {
+        icon: 'arrow.clockwise' as const,
+        title: t('journal.detail.stale.label'),
+        message: t('journal.detail.stale.banner'),
+        step: t('journal.detail.action.analyze.step'),
+        cta: t('journal.detail.stale.cta'),
+        disabled: false,
       };
     }
 
@@ -621,6 +662,17 @@ export default function JournalDetailScreen() {
         cta: failed
           ? t('journal.detail.analyze_button.retry')
           : t('journal.detail.analyze_button.default'),
+        disabled: false,
+      };
+    }
+
+    if (primaryKind === 'retry_chat') {
+      return {
+        icon: 'arrow.clockwise' as const,
+        title: t('journal.detail.action.retry_chat.title'),
+        message: t('journal.detail.action.retry_chat.message'),
+        step: t('journal.detail.action.continue.step'),
+        cta: t('journal.detail.action.retry_chat.cta'),
         disabled: false,
       };
     }
@@ -644,7 +696,7 @@ export default function JournalDetailScreen() {
       cta: t('journal.detail.explore_button.new'),
       disabled: false,
     };
-  }, [canRecoverPendingAnalysis, dream, isAnalysisPending, primaryAction, t]);
+  }, [canRecoverPendingAnalysis, dream, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, t]);
   const isAnalysisLocked = !!dream && (isAnalysisPending || isAnalyzing);
   const isImageJobPending = illustrationSidecar === 'pending';
   const isSyncPending = dreamSyncState === 'pending';
@@ -1273,6 +1325,14 @@ export default function JournalDetailScreen() {
                 </Text>
               </PressableScale>
             </View>
+            {savedConfirmationVisible ? (
+              <Toast
+                message={t('recording.save.confirmation')}
+                mode="success"
+                onHide={() => setSavedConfirmationVisible(false)}
+                testID={TID.Text.RecordingSaveConfirmation}
+              />
+            ) : null}
           </KeyboardAvoidingView>
         </View>
       </ScrollPerfProvider>
@@ -1611,19 +1671,43 @@ export default function JournalDetailScreen() {
     );
   };
 
+  const renderQuotaHint = () => {
+    if (!quotaHintLabel) {
+      return null;
+    }
+    return (
+      <Text
+        className="font-sans text-[12px] leading-[16px] text-ivory-muted"
+        testID={TID.Text.DreamDetailQuotaHint}
+        accessibilityLiveRegion="polite"
+      >
+        {quotaHintLabel}
+      </Text>
+    );
+  };
+
   const renderDetailActionCard = (
     visibleFamilies?: ('analyze' | 'explore' | 'continue')[]
   ) => {
     if (!detailActionCard || isEditing || isEditingTranscript) {
       return null;
     }
-    if (visibleFamilies && !visibleFamilies.includes(primaryAction)) {
+    if (visibleFamilies && !visibleFamilies.includes(visiblePrimaryAction)) {
       return null;
     }
 
     const disabled = detailActionCard.disabled || isPrimaryActionBusy || isAnalysisLocked;
-    const onPress = primaryAction === 'analyze' ? handleAnalyze : handleJourneyPress;
-    const isCompactExplorationAction = primaryAction === 'continue' || primaryAction === 'explore';
+    const onPress = isStalePrimaryAction
+      ? handleStaleReanalyze
+      : visiblePrimaryAction === 'analyze'
+        ? handleAnalyze
+        : handleJourneyPress;
+    const isCompactExplorationAction =
+      !isStalePrimaryAction &&
+      (visiblePrimaryAction === 'continue' || visiblePrimaryAction === 'explore');
+    const primaryButtonTestID = isStalePrimaryAction
+      ? TID.Button.AnalysisStaleCta
+      : TID.Button.DreamDetailPrimaryCta;
 
     if (isCompactExplorationAction) {
       return (
@@ -1633,6 +1717,7 @@ export default function JournalDetailScreen() {
           disabled={disabled}
           accessibilityRole="button"
           accessibilityState={{ disabled }}
+          accessibilityHint={quotaHintLabel ?? undefined}
           className={`mb-[18px] min-h-[58px] flex-row items-center gap-3 rounded-lg border border-line-strong bg-ink-active px-4 py-3 ${
             disabled ? 'opacity-75' : ''
           }`}
@@ -1640,12 +1725,15 @@ export default function JournalDetailScreen() {
           <View className="h-[34px] w-[34px] items-center justify-center rounded-full bg-champagne">
             <IconSymbol name={detailActionCard.icon} size={18} color={noctalia.action.primaryText} />
           </View>
-          <Text
-            className="flex-1 font-sans-bold text-[16px] text-ivory"
-            testID={TID.Text.DreamDetailActionTitle}
-          >
-            {detailActionCard.cta}
-          </Text>
+          <View className="flex-1 gap-1">
+            <Text
+              className="font-sans-bold text-[16px] text-ivory"
+              testID={TID.Text.DreamDetailActionTitle}
+            >
+              {detailActionCard.cta}
+            </Text>
+            {renderQuotaHint()}
+          </View>
           {isPrimaryActionBusy ? (
             <ActivityIndicator size="small" color={noctalia.text.primary} />
           ) : (
@@ -1683,10 +1771,11 @@ export default function JournalDetailScreen() {
             >
               {detailActionCard.message}
             </Text>
+            {renderQuotaHint()}
           </View>
         </View>
         <PressableScale
-          testID={TID.Button.DreamDetailPrimaryCta}
+          testID={primaryButtonTestID}
           onPress={onPress}
           disabled={disabled}
           className={`flex-row items-center justify-center gap-2 rounded-md bg-champagne px-4 py-[13px] ${
@@ -1694,12 +1783,13 @@ export default function JournalDetailScreen() {
           }`}
           accessibilityRole="button"
           accessibilityState={{ disabled }}
+          accessibilityHint={quotaHintLabel ?? undefined}
         >
           {isPrimaryActionBusy ? (
             <ActivityIndicator size="small" color={noctalia.action.primaryText} />
           ) : (
             <IconSymbol
-              name={primaryAction === 'analyze' ? 'sparkles' : 'arrow.right'}
+              name={visiblePrimaryAction === 'analyze' ? (isStalePrimaryAction ? 'arrow.clockwise' : 'sparkles') : 'arrow.right'}
               size={18}
               color={noctalia.action.primaryText}
             />
@@ -1785,21 +1875,6 @@ export default function JournalDetailScreen() {
             </Text>
           </View>
         </View>
-        <PressableScale
-          testID={TID.Button.AnalysisStaleCta}
-          onPress={handleStaleReanalyze}
-          disabled={isAnalysisLocked}
-          className={`flex-row items-center justify-center gap-2 self-start rounded-md bg-champagne px-4 py-[11px] ${
-            isAnalysisLocked ? 'opacity-75' : ''
-          }`}
-          accessibilityRole="button"
-          accessibilityState={{ disabled: isAnalysisLocked }}
-        >
-          <IconSymbol name="arrow.clockwise" size={16} color={noctalia.action.primaryText} />
-          <Text className="font-sans-bold text-[14px] text-on-champagne">
-            {t('journal.detail.stale.cta')}
-          </Text>
-        </PressableScale>
       </View>
     );
   };
@@ -2020,14 +2095,14 @@ export default function JournalDetailScreen() {
             )}
 
             <Reveal index={3}>
+              {renderStaleBanner()}
+              {renderDetailActionCard(['analyze'])}
               <DreamRecallAssistantCard
                 dreamId={String(dream.id)}
                 originalTranscript={dream.transcript}
                 originalPersistedSegmentId={dream.clientRequestId ?? String(dream.id)}
                 offerEligible={recallOffer.offerEligible}
               />
-              {renderStaleBanner()}
-              {renderDetailActionCard(['analyze'])}
             </Reveal>
 
             <Reveal index={4}>
@@ -2115,10 +2190,10 @@ export default function JournalDetailScreen() {
                 </>
               ) : null}
 
-              {(showCompletedReading || primaryAction === 'explore' || primaryAction === 'continue') ? (
+              {(showCompletedReading || (!isStalePrimaryAction && (visiblePrimaryAction === 'explore' || visiblePrimaryAction === 'continue'))) ? (
                 <View testID={TID.Component.DreamDetailReflectionZone} className="mt-2">
                   {renderDetailZoneHeader(t('journal.detail.zone.reflection'), TID.Text.DreamDetailReflectionZone)}
-                  {renderDetailActionCard(['explore', 'continue'])}
+                  {isStalePrimaryAction ? null : renderDetailActionCard(['explore', 'continue'])}
                   {!isAnalysisPending && showCompletedReading && dream.reflectionQuestions && dream.reflectionQuestions.length > 0 ? (
                     <>
                       <View className="mt-2 mb-3 items-center">
@@ -2200,9 +2275,9 @@ export default function JournalDetailScreen() {
 
               <PressableScale
                 onPress={onDelete}
-                className="mt-2 flex-row items-center gap-1.5 self-center"
+                className="mt-2 min-h-[44px] min-w-[44px] flex-row items-center justify-center gap-1.5 self-center px-3"
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                accessibilityRole="link"
+                accessibilityRole="button"
                 testID={TID.Button.DreamDelete}
                 accessibilityLabel={t('journalDetail.a11y.deleteDream')}
               >

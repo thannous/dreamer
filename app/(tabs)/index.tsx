@@ -74,7 +74,7 @@ export default function InspirationScreen() {
     () => getDreamGuideCopy((currentLang ?? "en") as DreamGuideLanguage),
     [currentLang],
   );
-  const { width, height } = useWindowDimensions();
+  const { width, height, fontScale } = useWindowDimensions();
   const scrollPerf = useScrollIdle();
   const { dreams, loaded: dreamsLoaded } = useDreamsData();
   useClearWebFocus();
@@ -86,7 +86,7 @@ export default function InspirationScreen() {
   const [now, setNow] = useState(() => Date.now());
 
   const isDesktopLayout = Platform.OS === "web" && width >= DESKTOP_BREAKPOINT;
-  const navigationLayout = getBottomNavigationLayout(width, height);
+  const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
 
   // Section geometry, kept in one place so a section can't drift from its neighbours.
   const mobilePadding = isDesktopLayout ? "" : "px-5";

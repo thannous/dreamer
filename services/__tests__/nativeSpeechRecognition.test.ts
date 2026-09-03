@@ -5,11 +5,54 @@ import {
   buildPreview,
   ensureOfflineSttModel,
   getSpeechLocaleAvailability,
+  HANDS_FREE_EMPTY_RESTART_LIMIT,
   mergeFinalChunk,
   registerOfflineModelPromptHandler,
   resolveDeviceSpeechCapability,
+  shouldRestartHandsFreeSpeech,
   startNativeSpeechSession,
 } from '../nativeSpeechRecognition';
+
+
+describe('shouldRestartHandsFreeSpeech', () => {
+  const listening = {
+    platform: 'android' as const,
+    dictationIntent: 'listening' as const,
+    stopRequested: false,
+    restartInFlight: false,
+  };
+
+  it('restarts after an unsolicited Android native end while listening', () => {
+    expect(shouldRestartHandsFreeSpeech(listening)).toBe(true);
+  });
+
+  it('does not restart while paused, stopped, or already restarting', () => {
+    expect(shouldRestartHandsFreeSpeech({ ...listening, dictationIntent: 'paused' })).toBe(false);
+    expect(shouldRestartHandsFreeSpeech({ ...listening, dictationIntent: 'idle' })).toBe(false);
+    expect(shouldRestartHandsFreeSpeech({ ...listening, stopRequested: true })).toBe(false);
+    expect(shouldRestartHandsFreeSpeech({ ...listening, restartInFlight: true })).toBe(false);
+  });
+
+  it('does not restart on iOS or web, where native end is not a hands-free seam', () => {
+    expect(shouldRestartHandsFreeSpeech({ ...listening, platform: 'ios' })).toBe(false);
+    expect(shouldRestartHandsFreeSpeech({ ...listening, platform: 'web' })).toBe(false);
+  });
+
+  it('stops empty-end restart loops without blocking a later user resume', () => {
+    expect(
+      shouldRestartHandsFreeSpeech({
+        ...listening,
+        consecutiveEmptyRestarts: HANDS_FREE_EMPTY_RESTART_LIMIT,
+      })
+    ).toBe(false);
+    expect(
+      shouldRestartHandsFreeSpeech({
+        ...listening,
+        consecutiveEmptyRestarts: HANDS_FREE_EMPTY_RESTART_LIMIT - 1,
+      })
+    ).toBe(true);
+  });
+});
 
 describe('mergeFinalChunk', () => {
   it('replaces the last chunk when the new chunk extends it', () => {

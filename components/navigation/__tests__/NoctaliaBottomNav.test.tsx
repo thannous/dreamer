@@ -28,16 +28,27 @@ jest.mock('react-native', () => {
     },
     Pressable: ({
       accessibilityLabel,
+      accessibilityRole,
+      accessibilityState,
       children,
       className,
       testID,
     }: {
       accessibilityLabel?: string;
+      accessibilityRole?: string;
+      accessibilityState?: { selected?: boolean; busy?: boolean };
       children?: React.ReactNode | ((state: { pressed: boolean }) => React.ReactNode);
       className?: string;
       testID?: string;
     }) => (
-      <button aria-label={accessibilityLabel} data-native-class={className} data-testid={testID}>
+      <button
+        aria-label={accessibilityLabel}
+        aria-selected={accessibilityState?.selected ? 'true' : 'false'}
+        aria-busy={accessibilityState?.busy ? 'true' : undefined}
+        data-native-class={className}
+        data-testid={testID}
+        role={accessibilityRole}
+      >
         {typeof children === 'function' ? children({ pressed: false }) : children}
       </button>
     ),
@@ -49,15 +60,21 @@ jest.mock('react-native', () => {
       children,
       className,
       maxFontSizeMultiplier,
+      numberOfLines,
+      accessible,
       style,
     }: {
       children?: React.ReactNode;
       className?: string;
       maxFontSizeMultiplier?: number;
+      numberOfLines?: number;
+      accessible?: boolean;
       style?: unknown;
     }) => (
       <span
         data-max-font-size-multiplier={maxFontSizeMultiplier}
+        data-number-of-lines={numberOfLines}
+        data-accessible={accessible === false ? 'false' : undefined}
         data-native-class={className}
         data-native-style={JSON.stringify(flattenStyle(style))}
       >
@@ -68,15 +85,22 @@ jest.mock('react-native', () => {
       children,
       className,
       style,
+      accessible,
     }: {
       children?: React.ReactNode;
       className?: string;
       style?: unknown;
+      accessible?: boolean;
     }) => (
-      <div data-native-class={className} data-native-style={JSON.stringify(flattenStyle(style))}>
+      <div
+        data-native-class={className}
+        data-native-style={JSON.stringify(flattenStyle(style))}
+        data-accessible={accessible === false ? 'false' : undefined}
+      >
         {children}
       </div>
     ),
+    ActivityIndicator: () => <span data-testid="nav-analysis-busy" />,
     useWindowDimensions: () => ({
       width: mockWindowWidth,
       height: mockWindowHeight,
@@ -190,41 +214,90 @@ describe('NoctaliaBottomNav', () => {
     expect(screen.queryByText('nav.settings')).toBeNull();
   });
 
-  it.each([1, 1.3, 2])(
-    'constrains every label and reduces the center action at 320 dp with font scale %s',
-    (fontScale) => {
-      mockPlatformOS = 'android';
-      mockWindowWidth = 320;
-      mockWindowHeight = 640;
-      mockFontScale = fontScale;
+  it('keeps a 64 by 68 dp center action at 320 dp with default text scale', () => {
+    mockPlatformOS = 'android';
+    mockWindowWidth = 320;
+    mockWindowHeight = 640;
+    mockFontScale = 1;
 
-      render(<NoctaliaBottomNav activeKey="addDream" />);
+    render(<NoctaliaBottomNav activeKey="addDream" />);
 
-      const captureTab = screen.getByTestId(TID.Tab.AddDream);
-      const barStyle = captureTab.parentElement?.getAttribute('data-native-style');
-      const barClass = captureTab.parentElement?.getAttribute('data-native-class');
-      const centerClass = captureTab.querySelector('div')?.getAttribute('data-native-class');
-      const labels = captureTab.parentElement?.querySelectorAll(
-        '[data-max-font-size-multiplier="1.3"]'
-      );
+    const captureTab = screen.getByTestId(TID.Tab.AddDream);
+    const barStyle = captureTab.parentElement?.getAttribute('data-native-style');
+    const barClass = captureTab.parentElement?.getAttribute('data-native-class');
+    const centerStyle = captureTab.querySelector('div')?.getAttribute('data-native-style');
+    const labels = Array.from(captureTab.parentElement?.querySelectorAll('span') ?? []).filter(
+      (node) => node.textContent
+    );
 
-      // Bar insets stay measured values on the style prop; padding is a token class.
-      expect(barStyle).toContain('"start":8');
-      expect(barStyle).toContain('"end":8');
-      expect(barClass).toContain('px-1');
-      expect(centerClass).toContain('w-[64px]');
-      expect(centerClass).toContain('h-[68px]');
-      expect(labels).toHaveLength(4);
-      expect(screen.queryByTestId(TID.Tab.Settings)).toBeNull();
-      expect(screen.queryByText('nav.settings')).toBeNull();
-      labels?.forEach((label) => {
-        const labelClass = label.getAttribute('data-native-class');
-        expect(labelClass).toContain('text-[11px]');
-        expect(labelClass).toContain('w-full');
-        expect(labelClass).toContain('shrink');
-      });
-    }
-  );
+    expect(barStyle).toContain('"start":8');
+    expect(barStyle).toContain('"end":8');
+    expect(barStyle).toContain('"height":86');
+    expect(barClass).toContain('px-1');
+    expect(centerStyle).toContain('"width":64');
+    expect(centerStyle).toContain('"height":68');
+    expect(screen.queryByTestId(TID.Tab.Settings)).toBeNull();
+    expect(labels).toHaveLength(4);
+    labels.forEach((label) => {
+      expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
+      expect(label.getAttribute('data-number-of-lines')).toBe('1');
+      expect(label.getAttribute('data-accessible')).toBe('false');
+      expect(label.getAttribute('data-native-class')).toContain('text-[11px]');
+    });
+  });
+
+  it('grows the overlay bar at fontScale 2 and lets labels wrap instead of capping them', () => {
+    mockPlatformOS = 'android';
+    mockWindowWidth = 320;
+    mockWindowHeight = 640;
+    mockFontScale = 2;
+
+    render(<NoctaliaBottomNav activeKey="addDream" />);
+
+    const captureTab = screen.getByTestId(TID.Tab.AddDream);
+    const barStyle = captureTab.parentElement?.getAttribute('data-native-style');
+    const centerStyle = captureTab.querySelector('div')?.getAttribute('data-native-style');
+    const labels = Array.from(captureTab.parentElement?.querySelectorAll('span') ?? []).filter(
+      (node) => node.textContent
+    );
+
+    expect(barStyle).toContain('"height":114');
+    expect(centerStyle).toContain('"width":64');
+    expect(centerStyle).toContain('"height":96');
+    expect(labels).toHaveLength(4);
+    labels.forEach((label) => {
+      expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
+      expect(label.getAttribute('data-number-of-lines')).toBe('2');
+      expect(label.getAttribute('data-accessible')).toBe('false');
+    });
+    expect(captureTab.getAttribute('role')).toBe('tab');
+    expect(captureTab.getAttribute('aria-label')).toBe('nav.capture_dream_accessibility');
+    expect(captureTab.getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('keeps compact landscape labels readable at fontScale 2', () => {
+    mockPlatformOS = 'android';
+    mockWindowWidth = 915;
+    mockWindowHeight = 412;
+    mockFontScale = 2;
+
+    render(<NoctaliaBottomNav activeKey="addDream" />);
+
+    const captureTab = screen.getByTestId(TID.Tab.AddDream);
+    const barStyle = captureTab.parentElement?.getAttribute('data-native-style');
+    const centerStyle = captureTab.querySelector('div')?.getAttribute('data-native-style');
+    const labels = Array.from(captureTab.parentElement?.querySelectorAll('span') ?? []).filter(
+      (node) => node.textContent
+    );
+
+    expect(barStyle).toContain('"height":82');
+    expect(centerStyle).toContain('"width":60');
+    expect(centerStyle).toContain('"height":74');
+    labels.forEach((label) => {
+      expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
+      expect(label.getAttribute('data-number-of-lines')).toBe('2');
+    });
+  });
 
   it('preserves the current center action and margins above the narrow breakpoint', () => {
     mockPlatformOS = 'android';
@@ -235,7 +308,6 @@ describe('NoctaliaBottomNav', () => {
     const captureTab = screen.getByTestId(TID.Tab.AddDream);
     const barStyle = captureTab.parentElement?.getAttribute('data-native-style');
     const barClass = captureTab.parentElement?.getAttribute('data-native-class');
-    const centerClass = captureTab.querySelector('div')?.getAttribute('data-native-class');
     const centerLabel = Array.from(captureTab.querySelectorAll('span')).find(
       (element) => element.textContent === 'nav.capture_dream'
     );
@@ -243,9 +315,12 @@ describe('NoctaliaBottomNav', () => {
     expect(barStyle).toContain('"start":22');
     expect(barStyle).toContain('"end":22');
     expect(barClass).toContain('px-2');
-    expect(centerClass).toContain('w-[72px]');
-    expect(centerClass).toContain('h-[76px]');
+    const centerStyle = captureTab.querySelector('div')?.getAttribute('data-native-style');
+    expect(centerStyle).toContain('"width":72');
+    expect(centerStyle).toContain('"height":76');
     expect(centerLabel?.getAttribute('data-native-class')).toContain('text-[12px]');
     expect(centerLabel?.getAttribute('data-max-font-size-multiplier')).toBeNull();
+    expect(centerLabel?.getAttribute('data-accessible')).toBe('false');
+    expect(barStyle).toContain('"height":86');
   });
 });

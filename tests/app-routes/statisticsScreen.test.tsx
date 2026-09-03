@@ -73,6 +73,7 @@ jest.mock('react-native', () => {
       ...rest,
       ...(className ? { className } : {}),
       ...(style ? { 'data-style': JSON.stringify(style) } : {}),
+      ...(contentContainerStyle ? { 'data-content-container-style': JSON.stringify(contentContainerStyle) } : {}),
       ...(numberOfLines != null ? { 'data-number-of-lines': String(numberOfLines) } : {}),
       ...(allowFontScaling === false ? { 'data-allow-font-scaling': 'false' } : {}),
       ...(testID ? { 'data-testid': testID } : {}),
@@ -446,6 +447,16 @@ describe('Statistics screen VNext trends', () => {
     expect(screen.getByText('trends.week.active_days').getAttribute('data-number-of-lines')).toBeNull();
     expect(screen.getByText('trends.week.streak.current').getAttribute('data-allow-font-scaling')).toBeNull();
     expect(screen.getByText('trends.week.streak.longest')).toBeTruthy();
+  });
+
+  it('reserves taller trends scroll padding at fontScale 2 so content stays above the tab bar', () => {
+    mockWindow.fontScale = 2;
+    mockUseDreams.mockReturnValue({ dreams: [], loaded: true });
+
+    render(<StatisticsScreen />);
+
+    const scroller = screen.getByTestId('trends.section.week').closest('[data-content-container-style]');
+    expect(scroller?.getAttribute('data-content-container-style')).toContain('"paddingBottom":148');
   });
 
   it('stacks weekly metrics at fontScale 2 without clipping labels', () => {

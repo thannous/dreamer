@@ -8,9 +8,10 @@ import { TID } from '@/lib/testIDs';
 jest.mock('react-native', () => {
   const React = require('react');
   const toDomProps = (props: Record<string, unknown>) => {
-    const { testID, onPress, accessibilityRole, accessibilityLabel, accessibilityState, children, ...rest } = props;
+    const { testID, onPress, accessibilityRole, accessibilityLabel, accessibilityState, className, children, ...rest } = props;
     return {
       ...rest,
+      ...(className ? { className } : {}),
       ...(testID ? { 'data-testid': testID } : {}),
       ...(onPress ? { onClick: onPress } : {}),
       ...(accessibilityRole ? { role: accessibilityRole } : {}),
@@ -121,6 +122,8 @@ describe('FilterBar', () => {
     expect(screen.getByTestId(TID.Button.FilterAll)).toBeTruthy();
     expect(screen.getByTestId(TID.Button.FilterFavorites)).toBeTruthy();
     expect(screen.getByTestId(TID.Button.FilterToDeepen)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.FilterAll).className).toContain('min-h-[44px]');
+    expect(screen.getByTestId(TID.Button.FilterAll).className).toContain('min-w-[44px]');
   });
 
   it('keeps active advanced filters visible next to the three quick access chips', () => {
@@ -172,5 +175,54 @@ describe('FilterBar', () => {
     expect(themeChip.textContent).not.toContain('dream.type.symbolic');
     expect(themeChip.textContent).not.toContain('Symbolic Dream');
     expect(screen.getByText('dream.type.symbolic')).toBeTruthy();
+  });
+
+  it('shows search and non-default sort as clearable chips', () => {
+    const onClear = jest.fn();
+    const onSearchPress = jest.fn();
+    const onSortPress = jest.fn();
+    render(
+      <FilterBar
+        items={[
+          { id: 'all', active: false, onPress: jest.fn(), label: 'All', testID: TID.Button.FilterAll },
+          { id: 'favorites', active: false, onPress: jest.fn(), label: 'Favorites', testID: TID.Button.FilterFavorites },
+          { id: 'to_deepen', active: false, onPress: jest.fn(), label: 'To deepen', testID: TID.Button.FilterToDeepen },
+          { id: 'search', active: true, onPress: onSearchPress, label: 'Search query', testID: TID.Button.FilterSearch },
+          { id: 'sort', active: true, onPress: onSortPress, label: 'Oldest first' },
+        ]}
+        onClear={onClear}
+        clearTestID={TID.Button.ClearFilters}
+      />
+    );
+
+    expect(screen.getByTestId(TID.Button.FilterSearch).textContent).toContain('Search query');
+    expect(screen.getByText('Oldest first')).toBeTruthy();
+    fireEvent.click(screen.getByTestId(TID.Button.FilterSearch));
+    fireEvent.click(screen.getByText('Oldest first'));
+    fireEvent.click(screen.getByTestId(TID.Button.ClearFilters));
+    expect(onSearchPress).toHaveBeenCalledTimes(1);
+    expect(onSortPress).toHaveBeenCalledTimes(1);
+    expect(onClear).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps recurrence visible next to a selected type without collapsing them', () => {
+    render(
+      <FilterBar
+        items={[
+          { id: 'all', active: false, onPress: jest.fn(), label: 'All', testID: TID.Button.FilterAll },
+          { id: 'favorites', active: false, onPress: jest.fn(), label: 'Favorites', testID: TID.Button.FilterFavorites },
+          { id: 'to_deepen', active: false, onPress: jest.fn(), label: 'To deepen', testID: TID.Button.FilterToDeepen },
+          { id: 'type', active: true, onPress: jest.fn(), label: 'dream.type.symbolic' },
+          { id: 'recurring', active: true, onPress: jest.fn(), label: 'journal.filter.recurring', testID: TID.Button.FilterRecurring },
+        ]}
+        onClear={jest.fn()}
+        selectedDreamType={'Symbolic Dream' as never}
+        clearTestID={TID.Button.ClearFilters}
+      />
+    );
+
+    expect(screen.getByText('dream.type.symbolic')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.FilterRecurring).textContent).toContain('journal.filter.recurring');
+    expect(screen.getByTestId(TID.Button.ClearFilters)).toBeTruthy();
   });
 });

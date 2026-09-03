@@ -26,9 +26,9 @@ describe('journal dream detail visible order', () => {
     const secondaryActions = markerIndex(mainReturn, "t('journal.detail.zone.actions')");
 
     expect(titleAndDate).toBeLessThan(originalTranscript);
-    expect(originalTranscript).toBeLessThan(recallOffer);
-    expect(recallOffer).toBeLessThan(analysisState);
-    expect(analysisState).toBeLessThan(analysisResult);
+    expect(originalTranscript).toBeLessThan(analysisState);
+    expect(analysisState).toBeLessThan(recallOffer);
+    expect(recallOffer).toBeLessThan(analysisResult);
     expect(analysisResult).toBeLessThan(interpretation);
     expect(interpretation).toBeLessThan(illustration);
     expect(illustration).toBeLessThan(symbols);
@@ -52,5 +52,27 @@ describe('journal dream detail visible order', () => {
     expect(source).toContain('TID.Component.JournalIllustration');
     expect(source).toContain('TID.Modal.JournalIllustrationFullscreen');
     expect(source).toContain('TID.Component.AnalysisStaleBanner');
+  });
+
+  it('hides concurrent reflection CTAs when analysis is stale and shows quota before AI actions', () => {
+    expect(source).toContain('isStalePrimaryAction');
+    expect(source).toContain("isStalePrimaryAction ? null : renderDetailActionCard(['explore', 'continue'])");
+    expect(source).toContain('getReflectionQuotaHint');
+    expect(source).toContain('reflectionJourney.primary.consumesQuota');
+    expect(source).toContain('TID.Text.DreamDetailQuotaHint');
+    expect(source).toContain('TID.Button.AnalysisStaleCta');
+    expect(mainReturn).not.toContain('onPress={handleStaleReanalyze}');
+  });
+
+  it('keeps delete as a 44 dp button rather than a link', () => {
+    expect(source).toContain('testID={TID.Button.DreamDelete}');
+    const deleteBlock = source.slice(
+      source.indexOf('testID={TID.Button.DreamDelete}') - 280,
+      source.indexOf('testID={TID.Button.DreamDelete}') + 220
+    );
+    expect(deleteBlock).toContain('accessibilityRole="button"');
+    expect(deleteBlock).toContain('min-h-[44px]');
+    expect(deleteBlock).toContain('min-w-[44px]');
+    expect(deleteBlock).not.toContain('accessibilityRole="link"');
   });
 });

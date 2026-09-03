@@ -76,13 +76,13 @@ export default function JournalListScreen() {
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
   const searchInputRef = useRef<TextInput>(null);
-  const { width, height } = useWindowDimensions();
+  const { width, height, fontScale } = useWindowDimensions();
 
   const isWeb = Platform.OS === 'web';
   const isDesktopLayout = isWeb && width >= DESKTOP_BREAKPOINT;
   const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
   const desktopColumns = width >= 1440 ? 4 : 3;
-  const navigationLayout = getBottomNavigationLayout(width, height);
+  const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
 
   const [showHeaderAnimations, setShowHeaderAnimations] = useState(false);
 
@@ -104,6 +104,7 @@ export default function JournalListScreen() {
   });
   const [quickFilter, setQuickFilter] = useState<JournalQuickFilter>('all');
   const [showRememberedOnly, setShowRememberedOnly] = useState(false);
+  const [showRecurringOnly, setShowRecurringOnly] = useState(false);
   const [analysisStatus, setAnalysisStatus] = useState<JournalAnalysisStatusFilter | null>(null);
   const [sortOrder, setSortOrder] = useState<JournalSortOrder>('newest');
 
@@ -177,6 +178,7 @@ export default function JournalListScreen() {
       endDate: dateRange.end,
       favoritesOnly: quickFilter === 'favorites',
       rememberedOnly: showRememberedOnly,
+      recurringOnly: showRecurringOnly,
       needsExplorationOnly: quickFilter === 'to_deepen',
       analysisStatus,
     }, {
@@ -198,6 +200,7 @@ export default function JournalListScreen() {
     dateRange,
     quickFilter,
     showRememberedOnly,
+    showRecurringOnly,
     analysisStatus,
     resolveDreamMemorySearchLabel,
     t,
@@ -248,7 +251,9 @@ export default function JournalListScreen() {
     dateRange,
     quickFilter,
     showRememberedOnly,
+    showRecurringOnly,
     analysisStatus,
+    sortOrder,
   ]);
 
   useFocusEffect(
@@ -264,6 +269,7 @@ export default function JournalListScreen() {
     setDateRange({ start: null, end: null });
     setQuickFilter('all');
     setShowRememberedOnly(false);
+    setShowRecurringOnly(false);
     setAnalysisStatus(null);
     setSortOrder('newest');
   }, []);
@@ -293,7 +299,7 @@ export default function JournalListScreen() {
   }, []);
 
   const handleRecurringToggle = useCallback(() => {
-    setSelectedDreamType((current) => (current === 'Recurring Dream' ? null : 'Recurring Dream'));
+    setShowRecurringOnly((prev) => !prev);
   }, []);
 
   const handleAnalysisStatusChange = useCallback((status: JournalAnalysisStatusFilter | null) => {
@@ -462,6 +468,7 @@ export default function JournalListScreen() {
     );
   }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
 
+  const hasNonDefaultSort = sortOrder !== 'newest';
   const hasActiveFilter = !!(
     searchQuery ||
     selectedTheme ||
@@ -470,7 +477,9 @@ export default function JournalListScreen() {
     dateRange.end ||
     quickFilter !== 'all' ||
     showRememberedOnly ||
-    analysisStatus
+    showRecurringOnly ||
+    analysisStatus ||
+    hasNonDefaultSort
   );
   const hasActiveAdvancedFilter = !!(
     selectedTheme ||
@@ -478,7 +487,9 @@ export default function JournalListScreen() {
     dateRange.start ||
     dateRange.end ||
     showRememberedOnly ||
-    analysisStatus
+    showRecurringOnly ||
+    analysisStatus ||
+    hasNonDefaultSort
   );
   const canStartRememberedDreamFromEmpty = dreams.length === 0 && !hasActiveFilter;
   const handleStartRememberedDreamFromEmpty = useCallback(() => {
@@ -495,7 +506,7 @@ export default function JournalListScreen() {
     {
       id: 'all' as const,
       label: t('journal.filter.all'),
-      active: quickFilter === 'all' && !hasActiveAdvancedFilter && !searchQuery,
+      active: quickFilter === 'all' && !hasActiveAdvancedFilter && !searchQuery.trim(),
       onPress: () => handleQuickFilterPress('all'),
       accessibilityLabel: t('journal.filter.accessibility.all'),
       testID: TID.Button.FilterAll,
@@ -524,7 +535,7 @@ export default function JournalListScreen() {
       accessibilityLabel: t('journal.filter.accessibility.theme'),
       testID: TID.Button.FilterTheme,
     }] : []),
-    ...(selectedDreamType && selectedDreamType !== 'Recurring Dream' ? [{
+    ...(selectedDreamType ? [{
       id: 'type' as const,
       label: getDreamTypeLabel(selectedDreamType, t) ?? selectedDreamType,
       active: true,
@@ -547,12 +558,28 @@ export default function JournalListScreen() {
       accessibilityLabel: t('journal.filter.accessibility.remembered'),
       testID: TID.Button.FilterRemembered,
     }] : []),
-    ...(selectedDreamType === 'Recurring Dream' ? [{
-      id: 'type' as const,
+    ...(showRecurringOnly ? [{
+      id: 'recurring' as const,
       label: t('journal.filter.recurring'),
       active: true,
       onPress: handleRecurringToggle,
       accessibilityLabel: t('journal.filter.accessibility.recurring'),
+      testID: TID.Button.FilterRecurring,
+    }] : []),
+    ...(searchQuery.trim() ? [{
+      id: 'search' as const,
+      label: searchQuery.trim(),
+      active: true,
+      onPress: () => setSearchQuery(''),
+      accessibilityLabel: t('journal.search_placeholder'),
+      testID: TID.Button.FilterSearch,
+    }] : []),
+    ...(hasNonDefaultSort ? [{
+      id: 'sort' as const,
+      label: t(`journal.filter_sheet.sort.${sortOrder}`),
+      active: true,
+      onPress: () => setSortOrder('newest'),
+      accessibilityLabel: t(`journal.filter_sheet.sort.${sortOrder}`),
     }] : []),
     ...(analysisStatus === 'unanalyzed' ? [{
       id: 'unanalyzed' as const,
@@ -588,11 +615,14 @@ export default function JournalListScreen() {
     handleRememberedToggle,
     handleRecurringToggle,
     hasActiveAdvancedFilter,
+    hasNonDefaultSort,
     quickFilter,
     searchQuery,
     selectedDreamType,
     selectedTheme,
     showRememberedOnly,
+    showRecurringOnly,
+    sortOrder,
     t,
     toggleDreamTypeFilter,
     toggleThemeFilter,
@@ -669,7 +699,7 @@ export default function JournalListScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={t('nav.settings')}
                 testID={TID.Button.HeaderJournalSettings}
-                className="h-10 w-10 items-center justify-center rounded-full border border-continuous border-line bg-ink-soft"
+                className="h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-continuous border-line bg-ink-soft"
               >
                 <IconSymbol
                   name="gear"
@@ -684,7 +714,7 @@ export default function JournalListScreen() {
                 accessibilityState={{ selected: hasActiveAdvancedFilter }}
                 accessibilityLabel={t('journal.filter.accessibility.more')}
                 testID={TID.Button.FilterMore}
-                className={`h-10 w-10 items-center justify-center rounded-full border border-continuous ${
+                className={`h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-continuous ${
                   hasActiveAdvancedFilter ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
                 }`}
               >
@@ -765,7 +795,7 @@ export default function JournalListScreen() {
         selectedDreamType={selectedDreamType}
         dateRange={dateRange}
         rememberedOnly={showRememberedOnly}
-        recurringOnly={selectedDreamType === 'Recurring Dream'}
+        recurringOnly={showRecurringOnly}
         analysisStatus={analysisStatus}
         onThemeSelect={toggleThemeFilter}
         onDreamTypeSelect={toggleDreamTypeFilter}

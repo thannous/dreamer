@@ -18,4 +18,11 @@ describe('notificationRoutes', () => {
     expect(isSafeAppNotificationRoute('/journal/42/analysis')).toBe(false);
     expect(isSafeAppNotificationRoute('/lucid/(tabs)/night')).toBe(false);
   });
+
+  it('keeps the weekly recap on the same static /weekly-recap URL used for cold native launches', () => {
+    expect(isSafeAppNotificationRoute('/weekly-recap')).toBe(true);
+    expect(isSafeAppNotificationRoute('/weekly-recap/')).toBe(false);
+    expect(isSafeAppNotificationRoute('/weekly')).toBe(false);
+    expect(isSafeAppNotificationRoute('weekly-recap')).toBe(false);
+  });
 });

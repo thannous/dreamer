@@ -91,6 +91,12 @@ export function isRememberedDream(dream: Pick<DreamAnalysis, 'memory'>): boolean
   return Boolean(memory);
 }
 
+export function isRecurringDream(dream: Pick<DreamAnalysis, 'dreamType' | 'memory'>): boolean {
+  if (dream.dreamType === 'Recurring Dream') return true;
+  const memory = normalizeDreamMemoryMetadata(dream.memory);
+  return memory?.recurring === true || memory?.rememberedKind === 'recurring';
+}
+
 export function isDreamToDeepen(dream: DreamAnalysis): boolean {
   return isDreamAnalyzed(dream) && !isDreamExplored(dream);
 }
@@ -214,6 +220,7 @@ export interface DreamFilters {
   rememberedOnly?: boolean;
   needsExplorationOnly?: boolean;
   analysisStatus?: JournalAnalysisStatusFilter | null;
+  recurringOnly?: boolean;
 }
 
 export interface ApplyFiltersOptions {
@@ -237,6 +244,7 @@ export function applyFilters(
     rememberedOnly,
     needsExplorationOnly,
     analysisStatus,
+    recurringOnly,
     theme,
     dreamType,
     startDate,
@@ -253,6 +261,7 @@ export function applyFilters(
     !rememberedOnly &&
     !needsExplorationOnly &&
     !analysisStatus &&
+    !recurringOnly &&
     !theme &&
     !dreamType &&
     !startDate &&
@@ -284,6 +293,10 @@ export function applyFilters(
     }
 
     if (rememberedOnly && !isRememberedDream(dream)) {
+      return false;
+    }
+
+    if (recurringOnly && !isRecurringDream(dream)) {
       return false;
     }
 

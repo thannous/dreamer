@@ -679,6 +679,8 @@ const hrefPathname = (href: Href): string =>
 const normalizeObservedPath = (pathname: string): string =>
   pathname.replace(/^\/\(tabs\)(?=\/|$)/, '') || '/';
 
+// `/weekly-recap` is a static native route. Omitting it made a cold
+// `noctalia://weekly-recap` launch fall through to `/recording`.
 const STATIC_NATIVE_ROUTES = new Set([
   'add-dream',
   'dream-guides',
@@ -692,6 +694,7 @@ const STATIC_NATIVE_ROUTES = new Set([
   'sleep-sounds',
   'statistics',
   'symbol-dictionary',
+  'weekly-recap',
 ]);
 const PARAMETERIZED_NATIVE_ROUTES = new Set([
   'dream-categories',

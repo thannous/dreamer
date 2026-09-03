@@ -7,6 +7,7 @@ import {
   getDreamDetailAction,
   getExploredDreamCount,
   getReflectionJourney,
+  getReflectionQuotaHint,
   getUserChatMessageCount,
   isDreamAnalyzed,
   isDreamExplored,
@@ -615,5 +616,41 @@ describe('getReflectionJourney', () => {
       resume: { kind: 'chat', messageId: 's-err' },
     });
     expect(getDreamDetailAction(dream, now)).toBe('continue');
+  });
+});
+
+describe('getReflectionQuotaHint', () => {
+  const usage = {
+    analysis: { used: 1, limit: 3, remaining: 2 },
+    exploration: { used: 0, limit: null, remaining: null },
+    messages: { used: 1, limit: 10, remaining: 9 },
+  };
+
+  it('never invents a cost for start_approfondir, open_conversation, or retry_chat', () => {
+    expect(getReflectionQuotaHint('none', usage)).toEqual({ kind: 'none' });
+    expect(getReflectionQuotaHint('none')).toEqual({ kind: 'none' });
+  });
+
+  it('surfaces remaining analysis, chat, and synthesis credits from consumesQuota', () => {
+    expect(getReflectionQuotaHint('analysis', usage)).toEqual({
+      kind: 'remaining',
+      quota: 'analysis',
+      remaining: 2,
+    });
+    expect(getReflectionQuotaHint('message', usage)).toEqual({
+      kind: 'remaining',
+      quota: 'message',
+      remaining: 9,
+    });
+    expect(getReflectionQuotaHint('synthesis360', usage)).toEqual({ kind: 'unlimited' });
+  });
+
+  it('keeps remaining unknown instead of inventing a count', () => {
+    expect(getReflectionQuotaHint('analysis')).toEqual({ kind: 'unknown', quota: 'analysis' });
+    expect(getReflectionQuotaHint('message', {
+      analysis: { used: 0, limit: 3, remaining: 3 },
+      exploration: { used: 0, limit: null, remaining: null },
+      messages: { used: 0, limit: 10, remaining: Number.NaN },
+    })).toEqual({ kind: 'unknown', quota: 'message' });
   });
 });

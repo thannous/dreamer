@@ -6,6 +6,7 @@ import { APP_TRANSCRIPTION_LOCALES } from '@/lib/locale';
 import {
   LOCALE_INTROSPECTION_MIN_API,
   resolveSpeechCapability,
+  supportsHandsFreeSpeechRestart,
   type SpeechCapability,
 } from '@/lib/speechCapability';
 
@@ -30,6 +31,37 @@ export type NativeSpeechSession = {
 };
 
 export const END_TIMEOUT_MS = 4000;
+export const HANDS_FREE_EMPTY_RESTART_LIMIT = 6;
+
+export type HandsFreeDictationIntent = 'idle' | 'listening' | 'paused';
+
+export type HandsFreeRestartDecisionInput = {
+  platform: 'android' | 'ios' | 'web';
+  dictationIntent: HandsFreeDictationIntent;
+  stopRequested: boolean;
+  restartInFlight: boolean;
+  consecutiveEmptyRestarts?: number;
+};
+
+/**
+ * Android silence-end is not a user pause. Restart only while the user still
+ * wants hands-free listening, never after an explicit stop/pause/background
+ * harvest, and never while another restart is already in flight.
+ */
+export function shouldRestartHandsFreeSpeech(
+  input: HandsFreeRestartDecisionInput
+): boolean {
+  if (!supportsHandsFreeSpeechRestart(input.platform)) return false;
+  if (input.stopRequested || input.restartInFlight) return false;
+  if (input.dictationIntent !== 'listening') return false;
+  if (
+    typeof input.consecutiveEmptyRestarts === 'number' &&
+    input.consecutiveEmptyRestarts >= HANDS_FREE_EMPTY_RESTART_LIMIT
+  ) {
+    return false;
+  }
+  return true;
+}
 
 const normalizeLocale = (locale: string) => locale.replace('_', '-').toLowerCase();
 const CHATGPT_RECOGNITION_SERVICE = 'com.openai.chatgpt';

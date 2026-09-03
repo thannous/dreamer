@@ -31,16 +31,26 @@ type TabPalette = {
   textActive: string;
 };
 
-function TabBarItem({ label, icon, focused, palette, compact, narrow }: {
+type TabGeometry = {
+  compact: boolean;
+  narrow: boolean;
+  stackedLabels: boolean;
+  centerActionWidth: number;
+  centerActionHeight: number;
+};
+
+function TabBarItem({ label, icon, focused, palette, geometry }: {
   label: string;
   icon: IconName;
   focused: boolean;
   palette: TabPalette;
-  compact: boolean;
-  narrow: boolean;
+  geometry: TabGeometry;
 }) {
+  const { compact, narrow, stackedLabels } = geometry;
   return (
     <View
+      accessible={false}
+      importantForAccessibility="no-hide-descendants"
       className={`flex-1 min-w-0 items-center justify-center ${
         compact ? 'gap-[1px]' : narrow ? 'gap-[4px]' : 'gap-[5px]'
       }`}
@@ -51,39 +61,41 @@ function TabBarItem({ label, icon, focused, palette, compact, narrow }: {
         color={focused ? palette.textActive : palette.text}
       />
       <Text
+        accessible={false}
         className={`w-full min-w-0 shrink text-center font-sans-medium ${
           compact ? 'text-[11px]' : narrow ? 'text-[11px] px-[1px]' : 'text-[12px]'
         }`}
         style={{ color: focused ? palette.textActive : palette.text }}
-        numberOfLines={1}
+        numberOfLines={stackedLabels ? 2 : 1}
         ellipsizeMode="tail"
-        adjustsFontSizeToFit
+        adjustsFontSizeToFit={!stackedLabels}
         minimumFontScale={narrow ? 0.75 : 0.8}
-        maxFontSizeMultiplier={narrow ? 1.3 : undefined}>
+      >
         {label}
       </Text>
     </View>
   );
 }
 
-function AddDreamTabItem({ label, palette, compact, narrow }: {
+function AddDreamTabItem({ label, palette, geometry }: {
   label: string;
   palette: TabPalette;
-  compact: boolean;
-  narrow: boolean;
+  geometry: TabGeometry;
 }) {
   // While a dream analysis runs in the background, the Capture button carries
   // the in-progress state so no overlay has to cover the screen content.
   const { activeAnalysis } = useAnalysisActivity();
+  const { compact, narrow, stackedLabels, centerActionWidth, centerActionHeight } = geometry;
   return (
     <View
-      accessibilityState={activeAnalysis ? { busy: true } : undefined}
+      accessible={false}
+      importantForAccessibility="no-hide-descendants"
       className={`items-center justify-center border-2 ${
         compact
-          ? 'w-[60px] h-[56px] rounded-[22px] gap-[1px]'
+          ? 'rounded-[22px] gap-[1px]'
           : narrow
-            ? 'w-[64px] h-[68px] rounded-[24px] gap-[3px]'
-            : 'w-[72px] h-[76px] rounded-[27px] gap-[4px]'
+            ? 'rounded-[24px] gap-[3px]'
+            : 'rounded-[27px] gap-[4px]'
       }`}
       style={[
         // The lift stays a real transform: Tailwind v4 emits `translate` through CSS
@@ -94,6 +106,8 @@ function AddDreamTabItem({ label, palette, compact, narrow }: {
         ADD_TAB_LIFT[compact ? 'compact' : narrow ? 'narrow' : 'default'],
         ADD_TAB_SHADOW,
         {
+          width: centerActionWidth,
+          height: centerActionHeight,
           backgroundColor: palette.accent,
           borderColor: palette.accentLight,
           shadowColor: palette.accent,
@@ -116,19 +130,42 @@ function AddDreamTabItem({ label, palette, compact, narrow }: {
         )}
       </View>
       <Text
+        accessible={false}
         className={`w-full min-w-0 shrink text-center font-sans-bold ${
           compact ? 'text-[11px]' : narrow ? 'text-[11px]' : 'text-[12px]'
         }`}
         style={{ color: palette.textOnAccentSurface }}
-        numberOfLines={1}
+        numberOfLines={stackedLabels ? 2 : 1}
         ellipsizeMode="tail"
-        adjustsFontSizeToFit
+        adjustsFontSizeToFit={!stackedLabels}
         minimumFontScale={narrow ? 0.75 : 0.85}
-        maxFontSizeMultiplier={narrow ? 1.3 : undefined}>
+      >
         {label}
       </Text>
     </View>
   );
+}
+
+function createTabButton({
+  testID,
+  accessibilityLabel,
+  busy = false,
+}: {
+  testID: string;
+  accessibilityLabel: string;
+  busy?: boolean;
+}) {
+  return function TabButton(props: React.ComponentProps<typeof HapticTab>) {
+    return (
+      <HapticTab
+        {...props}
+        testID={testID}
+        accessibilityRole="tab"
+        accessibilityLabel={accessibilityLabel}
+        accessibilityBusy={busy}
+      />
+    );
+  };
 }
 
 export default function TabLayout() {
@@ -137,14 +174,15 @@ export default function TabLayout() {
   const { returningGuestBlocked } = useAuth();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width, height } = useWindowDimensions();
+  const { width, height, fontScale } = useWindowDimensions();
   const segments = useSegments();
   const { routeCommitted } = useStartupRoute();
+  const { activeAnalysis } = useAnalysisActivity();
+  const isTabsDestination = segments[0] === '(tabs)';
 
   // Expo Router anchors the root stack on `(tabs)`. During a cold-start guard,
   // keep that transient route free of Moti/Reanimated work; otherwise its home
   // card animations can target Fabric views after the redirect detaches them.
-  const isTabsDestination = segments[0] === '(tabs)';
   if (!routeCommitted || !isTabsDestination) {
     return (
       <View
@@ -155,7 +193,14 @@ export default function TabLayout() {
     );
   }
 
-  const navigationLayout = getBottomNavigationLayout(width, height);
+  const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
+  const geometry: TabGeometry = {
+    compact: navigationLayout.compact,
+    narrow: navigationLayout.narrow,
+    stackedLabels: navigationLayout.stackedLabels,
+    centerActionWidth: navigationLayout.centerActionWidth,
+    centerActionHeight: navigationLayout.centerActionHeight,
+  };
   const floatingBottomInset = Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   const isDesktopWeb = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
@@ -233,11 +278,12 @@ export default function TabLayout() {
           title: t('nav.home'),
         } : {
           title: t('nav.home'),
-          tabBarButton: (props) => (
-            <HapticTab {...props} testID={TID.Tab.Home} accessibilityLabel={t('nav.home')} />
-          ),
+          tabBarButton: createTabButton({
+            testID: TID.Tab.Home,
+            accessibilityLabel: t('nav.home'),
+          }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="house" label={t('nav.home')} focused={focused} palette={palette} compact={navigationLayout.compact} narrow={navigationLayout.narrow} />
+            <TabBarItem icon="house" label={t('nav.home')} focused={focused} palette={palette} geometry={geometry} />
           ),
         }}
       />
@@ -248,11 +294,12 @@ export default function TabLayout() {
           title: t('nav.journal'),
         } : {
           title: t('nav.journal'),
-          tabBarButton: (props) => (
-            <HapticTab {...props} testID={TID.Tab.Journal} accessibilityLabel={t('nav.journal')} />
-          ),
+          tabBarButton: createTabButton({
+            testID: TID.Tab.Journal,
+            accessibilityLabel: t('nav.journal'),
+          }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="book" label={t('nav.journal')} focused={focused} palette={palette} compact={navigationLayout.compact} narrow={navigationLayout.narrow} />
+            <TabBarItem icon="book" label={t('nav.journal')} focused={focused} palette={palette} geometry={geometry} />
           ),
         }}
       />
@@ -268,11 +315,13 @@ export default function TabLayout() {
               {...props}
               onPress={handleAddDreamPress}
               testID={TID.Tab.AddDream}
+              accessibilityRole="tab"
               accessibilityLabel={t('nav.capture_dream_accessibility')}
+              accessibilityBusy={Boolean(activeAnalysis)}
             />
           ),
           tabBarIcon: () => (
-            <AddDreamTabItem label={t('nav.capture_dream')} palette={palette} compact={navigationLayout.compact} narrow={navigationLayout.narrow} />
+            <AddDreamTabItem label={t('nav.capture_dream')} palette={palette} geometry={geometry} />
           ),
         }}
       />
@@ -283,11 +332,12 @@ export default function TabLayout() {
           title: t('nav.stats'),
         } : {
           title: t('nav.stats'),
-          tabBarButton: (props) => (
-            <HapticTab {...props} testID={TID.Tab.Stats} accessibilityLabel={t('nav.stats')} />
-          ),
+          tabBarButton: createTabButton({
+            testID: TID.Tab.Stats,
+            accessibilityLabel: t('nav.stats'),
+          }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="chart.bar" label={t('nav.stats')} focused={focused} palette={palette} compact={navigationLayout.compact} narrow={navigationLayout.narrow} />
+            <TabBarItem icon="chart.bar" label={t('nav.stats')} focused={focused} palette={palette} geometry={geometry} />
           ),
         }}
       />
@@ -295,11 +345,12 @@ export default function TabLayout() {
         name="settings"
         options={returningGuestBlocked ? {
           title: t('nav.settings'),
-          tabBarButton: (props) => (
-            <HapticTab {...props} testID={TID.Tab.Settings} accessibilityLabel={t('nav.settings')} />
-          ),
+          tabBarButton: createTabButton({
+            testID: TID.Tab.Settings,
+            accessibilityLabel: t('nav.settings'),
+          }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="gear" label={t('nav.settings')} focused={focused} palette={palette} compact={navigationLayout.compact} narrow={navigationLayout.narrow} />
+            <TabBarItem icon="gear" label={t('nav.settings')} focused={focused} palette={palette} geometry={geometry} />
           ),
         } : {
           href: null,

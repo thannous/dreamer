@@ -303,6 +303,7 @@ export const TID = {
     OnboardingProgress: 'text.onboarding.progress',
     DreamDetailActionTitle: 'text.dreamDetail.actionTitle',
     DreamDetailActionMessage: 'text.dreamDetail.actionMessage',
+    DreamDetailQuotaHint: 'text.dreamDetail.quotaHint',
     DreamDetailActionStep: 'text.dreamDetail.actionStep',
     DreamDetailDreamZone: 'text.dreamDetail.dreamZone',
     DreamDetailReadingZone: 'text.dreamDetail.readingZone',
@@ -336,6 +337,7 @@ export const TID = {
     Mic: 'chat.button.mic',
     Loading: 'chat.loading',
     ScreenBlocked: 'chat.screen.blocked',
+    RetryTarget: 'chat.retryTarget',
   },
   Quota: {
     AnalysisValue: 'quota.analysisValue',

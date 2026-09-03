@@ -10,7 +10,7 @@ type CapturedTabScreen = {
   options?: {
     href?: unknown;
     title?: string;
-    tabBarButton?: unknown;
+    tabBarButton?: (props: Record<string, unknown>) => React.ReactNode;
     tabBarIcon?: (state: { focused: boolean }) => React.ReactNode;
   };
 };
@@ -21,6 +21,7 @@ let mockWindowHeight = 844;
 let mockFontScale = 1;
 let mockRouteCommitted = true;
 let mockSegments: string[] = ['(tabs)', 'index'];
+let mockActiveAnalysis: { dreamId: number } | null = null;
 
 afterEach(cleanup);
 
@@ -80,16 +81,22 @@ jest.doMock('react-native', () => {
     Text: ({
       children,
       maxFontSizeMultiplier,
+      numberOfLines,
       style,
       className,
+      accessible,
     }: {
       children?: React.ReactNode;
       maxFontSizeMultiplier?: number;
+      numberOfLines?: number;
       style?: unknown;
       className?: string;
+      accessible?: boolean;
     }) => (
       <span
         data-max-font-size-multiplier={maxFontSizeMultiplier}
+        data-number-of-lines={numberOfLines}
+        data-accessible={accessible === false ? 'false' : undefined}
         data-native-style={JSON.stringify(flattenStyle(style))}
         data-native-class={className}
       >
@@ -100,12 +107,21 @@ jest.doMock('react-native', () => {
       children,
       style,
       className,
+      accessible,
+      importantForAccessibility,
     }: {
       children?: React.ReactNode;
       style?: unknown;
       className?: string;
+      accessible?: boolean;
+      importantForAccessibility?: string;
     }) => (
-      <div data-native-style={JSON.stringify(flattenStyle(style))} data-native-class={className}>
+      <div
+        data-native-style={JSON.stringify(flattenStyle(style))}
+        data-native-class={className}
+        data-accessible={accessible === false ? 'false' : undefined}
+        data-important-for-accessibility={importantForAccessibility}
+      >
         {children}
       </div>
     ),
@@ -115,6 +131,7 @@ jest.doMock('react-native', () => {
       scale: 1,
       fontScale: mockFontScale,
     }),
+    ActivityIndicator: () => <span data-testid="tab-analysis-busy" />,
   };
 });
 
@@ -123,7 +140,31 @@ jest.doMock('react-native-safe-area-context', () => ({
 }));
 
 jest.doMock('@/components/haptic-tab', () => ({
-  HapticTab: ({ children }: { children?: React.ReactNode }) => <button>{children}</button>,
+  HapticTab: ({
+    children,
+    testID,
+    accessibilityLabel,
+    accessibilityRole,
+    accessibilityBusy,
+    accessibilityState,
+  }: {
+    children?: React.ReactNode;
+    testID?: string;
+    accessibilityLabel?: string;
+    accessibilityRole?: string;
+    accessibilityBusy?: boolean;
+    accessibilityState?: { selected?: boolean; busy?: boolean };
+  }) => (
+    <button
+      data-testid={testID}
+      aria-label={accessibilityLabel}
+      role={accessibilityRole}
+      aria-selected={accessibilityState?.selected ? 'true' : 'false'}
+      aria-busy={accessibilityBusy || accessibilityState?.busy ? 'true' : undefined}
+    >
+      {children}
+    </button>
+  ),
 }));
 
 jest.doMock('@/components/navigation/DesktopSidebar', () => ({
@@ -169,6 +210,13 @@ jest.doMock('@/context/ThemeContext', () => ({
   useTheme: () => ({ colors: {}, mode: 'light' }),
 }));
 
+jest.doMock('@/context/AnalysisActivityContext', () => ({
+  useAnalysisActivity: () => ({
+    activeAnalysis: mockActiveAnalysis,
+    lastAnalysisOutcome: null,
+  }),
+}));
+
 jest.doMock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
@@ -185,6 +233,7 @@ describe('TabLayout returning guest navigation', () => {
     mockFontScale = 1;
     mockRouteCommitted = true;
     mockSegments = ['(tabs)', 'index'];
+    mockActiveAnalysis = null;
   });
 
   it('does not mount the animated tab navigator during the startup redirect', () => {
@@ -284,46 +333,149 @@ describe('TabLayout returning guest navigation', () => {
     }));
   });
 
-  it.each([1, 1.3, 2])(
-    'uses constrained 11 sp labels and a 64 by 68 dp center action at 320 dp with font scale %s',
-    (fontScale: number) => {
-      mockPlatformOS = 'android';
-      mockWindowWidth = 320;
-      mockWindowHeight = 640;
-      mockFontScale = fontScale;
-      mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+  it('keeps a 64 by 68 dp center action at 320 dp with default text scale', () => {
+    mockPlatformOS = 'android';
+    mockWindowWidth = 320;
+    mockWindowHeight = 640;
+    mockFontScale = 1;
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
 
-      render(<TabLayout />);
+    render(<TabLayout />);
 
-      expect(capturedTabBarStyle).toEqual(expect.objectContaining({
-        end: 8,
-        height: 86,
-        paddingHorizontal: 4,
-        start: 8,
-      }));
+    expect(capturedTabBarStyle).toEqual(expect.objectContaining({
+      end: 8,
+      height: 86,
+      paddingHorizontal: 4,
+      start: 8,
+    }));
 
-      const labels = [
-        'nav.home',
-        'nav.journal',
-        'nav.capture_dream',
-        'nav.stats',
-      ].map((label) => screen.getByText(label));
-      const centerClass = screen.getByText('nav.capture_dream').parentElement?.getAttribute(
-        'data-native-class'
-      );
+    const labels = [
+      'nav.home',
+      'nav.journal',
+      'nav.capture_dream',
+      'nav.stats',
+    ].map((label) => screen.getByText(label));
+    const centerStyle = screen.getByText('nav.capture_dream').parentElement?.getAttribute(
+      'data-native-style'
+    );
 
-      expect(labels).toHaveLength(4);
-      expect(screen.queryByText('nav.settings')).toBeNull();
-      expect(centerClass).toContain('w-[64px]');
-      expect(centerClass).toContain('h-[68px]');
-      labels.forEach((label) => {
-        expect(label.getAttribute('data-max-font-size-multiplier')).toBe('1.3');
-        expect(label.getAttribute('data-native-class')).toContain('text-[11px]');
-        expect(label.getAttribute('data-native-class')).toContain('w-full');
-        expect(label.getAttribute('data-native-class')).toContain('shrink');
+    expect(labels).toHaveLength(4);
+    expect(screen.queryByText('nav.settings')).toBeNull();
+    expect(centerStyle).toContain('"width":64');
+    expect(centerStyle).toContain('"height":68');
+    labels.forEach((label) => {
+      expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
+      expect(label.getAttribute('data-number-of-lines')).toBe('1');
+      expect(label.getAttribute('data-accessible')).toBe('false');
+      expect(label.getAttribute('data-native-class')).toContain('text-[11px]');
+      expect(label.getAttribute('data-native-class')).toContain('w-full');
+      expect(label.getAttribute('data-native-class')).toContain('shrink');
+    });
+  });
+
+  it('grows the narrow bar at fontScale 2 and lets labels wrap instead of capping them', () => {
+    mockPlatformOS = 'android';
+    mockWindowWidth = 320;
+    mockWindowHeight = 640;
+    mockFontScale = 2;
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+
+    render(<TabLayout />);
+
+    expect(capturedTabBarStyle).toEqual(expect.objectContaining({
+      end: 8,
+      height: 114,
+      paddingHorizontal: 4,
+      start: 8,
+    }));
+
+    const labels = [
+      'nav.home',
+      'nav.journal',
+      'nav.capture_dream',
+      'nav.stats',
+    ].map((label) => screen.getByText(label));
+    const centerStyle = screen.getByText('nav.capture_dream').parentElement?.getAttribute(
+      'data-native-style'
+    );
+
+    expect(labels).toHaveLength(4);
+    expect(screen.queryByText('nav.settings')).toBeNull();
+    expect(centerStyle).toContain('"width":64');
+    expect(centerStyle).toContain('"height":96');
+    labels.forEach((label) => {
+      expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
+      expect(label.getAttribute('data-number-of-lines')).toBe('2');
+      expect(label.getAttribute('data-accessible')).toBe('false');
+    });
+  });
+
+  it('keeps compact landscape labels readable at fontScale 2', () => {
+    mockPlatformOS = 'android';
+    mockWindowWidth = 915;
+    mockWindowHeight = 412;
+    mockFontScale = 2;
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+
+    render(<TabLayout />);
+
+    expect(capturedTabBarStyle).toEqual(expect.objectContaining({
+      height: 82,
+    }));
+    const labels = [
+      'nav.home',
+      'nav.journal',
+      'nav.capture_dream',
+      'nav.stats',
+    ].map((label) => screen.getByText(label));
+    const centerStyle = screen.getByText('nav.capture_dream').parentElement?.getAttribute(
+      'data-native-style'
+    );
+    expect(centerStyle).toContain('"width":60');
+    expect(centerStyle).toContain('"height":74');
+    labels.forEach((label) => {
+      expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
+      expect(label.getAttribute('data-number-of-lines')).toBe('2');
+    });
+  });
+
+  it('exposes a single TalkBack name, tab role and selected state on Expo tabs', () => {
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+
+    render(<TabLayout />);
+
+    const captureButton = capturedScreens
+      .find((tabScreen) => tabScreen.name === 'add-dream')
+      ?.options?.tabBarButton?.({
+        accessibilityState: { selected: true },
+        'aria-selected': true,
       });
-    }
-  );
+
+    const view = render(<>{captureButton}</>);
+    const tab = view.getByTestId('tab.addDream');
+    expect(tab.getAttribute('role')).toBe('tab');
+    expect(tab.getAttribute('aria-label')).toBe('nav.capture_dream_accessibility');
+    expect(tab.getAttribute('aria-selected')).toBe('true');
+    expect(tab.getAttribute('aria-busy')).toBeNull();
+    view.unmount();
+  });
+
+  it('attaches analysis busy state to the Capture tab button', () => {
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+    mockActiveAnalysis = { dreamId: 42 };
+
+    render(<TabLayout />);
+
+    const captureButton = capturedScreens
+      .find((tabScreen) => tabScreen.name === 'add-dream')
+      ?.options?.tabBarButton?.({
+        accessibilityState: { selected: false },
+      });
+
+    const view = render(<>{captureButton}</>);
+    expect(view.getByTestId('tab.addDream').getAttribute('aria-busy')).toBe('true');
+    view.unmount();
+  });
 
   it('preserves the existing tab geometry at 390 dp', () => {
     mockPlatformOS = 'android';
@@ -340,9 +492,11 @@ describe('TabLayout returning guest navigation', () => {
       paddingHorizontal: 8,
       start: 22,
     }));
-    expect(centerClass).toContain('w-[72px]');
-    expect(centerClass).toContain('h-[76px]');
+    const centerStyle = centerLabel.parentElement?.getAttribute('data-native-style');
+    expect(centerStyle).toContain('"width":72');
+    expect(centerStyle).toContain('"height":76');
     expect(centerLabel.getAttribute('data-native-class')).toContain('text-[12px]');
     expect(centerLabel.getAttribute('data-max-font-size-multiplier')).toBeNull();
+    expect(centerLabel.getAttribute('data-accessible')).toBe('false');
   });
 });

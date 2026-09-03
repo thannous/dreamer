@@ -15,7 +15,11 @@ describe('getBottomNavigationLayout', () => {
     expect(getBottomNavigationLayout(412, 915)).toEqual({
       compact: false,
       narrow: false,
+      stackedLabels: false,
+      fontScale: 1,
       barHeight: TAB_BAR_HEIGHT,
+      centerActionWidth: 72,
+      centerActionHeight: 76,
       minimumBottomInset: 14,
     });
   });
@@ -24,7 +28,11 @@ describe('getBottomNavigationLayout', () => {
     expect(getBottomNavigationLayout(915, 412)).toEqual({
       compact: true,
       narrow: false,
+      stackedLabels: false,
+      fontScale: 1,
       barHeight: COMPACT_TAB_BAR_HEIGHT,
+      centerActionWidth: 60,
+      centerActionHeight: 56,
       minimumBottomInset: COMPACT_TAB_BAR_BOTTOM_INSET,
     });
   });
@@ -37,8 +45,51 @@ describe('getBottomNavigationLayout', () => {
     expect(getBottomNavigationLayout(320, 640)).toEqual({
       compact: false,
       narrow: true,
+      stackedLabels: false,
+      fontScale: 1,
       barHeight: TAB_BAR_HEIGHT,
+      centerActionWidth: 64,
+      centerActionHeight: 68,
       minimumBottomInset: 14,
+    });
+  });
+
+  it('grows the narrow bar at fontScale 2 instead of capping labels', () => {
+    expect(getBottomNavigationLayout(320, 640, 2)).toEqual({
+      compact: false,
+      narrow: true,
+      stackedLabels: true,
+      fontScale: 2,
+      barHeight: TAB_BAR_HEIGHT + 28,
+      centerActionWidth: 64,
+      centerActionHeight: 96,
+      minimumBottomInset: 14,
+    });
+  });
+
+  it('stacks regular portrait labels at fontScale 2', () => {
+    expect(getBottomNavigationLayout(412, 915, 2)).toEqual({
+      compact: false,
+      narrow: false,
+      stackedLabels: true,
+      fontScale: 2,
+      barHeight: TAB_BAR_HEIGHT + 24,
+      centerActionWidth: 72,
+      centerActionHeight: 100,
+      minimumBottomInset: 14,
+    });
+  });
+
+  it('keeps compact landscape labels readable at fontScale 2 without capping them', () => {
+    expect(getBottomNavigationLayout(915, 412, 2)).toEqual({
+      compact: true,
+      narrow: false,
+      stackedLabels: true,
+      fontScale: 2,
+      barHeight: COMPACT_TAB_BAR_HEIGHT + 18,
+      centerActionWidth: 60,
+      centerActionHeight: 74,
+      minimumBottomInset: COMPACT_TAB_BAR_BOTTOM_INSET,
     });
   });
 });

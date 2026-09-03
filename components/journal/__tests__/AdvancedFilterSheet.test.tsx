@@ -136,30 +136,49 @@ describe('AdvancedFilterSheet sort order', () => {
   it('keeps combinable advanced filters independent and exposes a single reset action', () => {
     const onClear = jest.fn();
     const onThemeSelect = jest.fn();
+    const onDreamTypeSelect = jest.fn();
     const onRememberedToggle = jest.fn();
+    const onRecurringToggle = jest.fn();
     const onAnalysisStatusChange = jest.fn();
+    const onSortOrderChange = jest.fn();
     render(
       <AdvancedFilterSheet
         {...baseProps}
         availableThemes={['mystical']}
+        availableDreamTypes={['Symbolic Dream', 'Recurring Dream']}
         selectedTheme="mystical"
+        selectedDreamType="Symbolic Dream"
         rememberedOnly
+        recurringOnly
         analysisStatus="analyzed"
+        sortOrder="oldest"
         onClear={onClear}
         onThemeSelect={onThemeSelect}
+        onDreamTypeSelect={onDreamTypeSelect}
         onRememberedToggle={onRememberedToggle}
+        onRecurringToggle={onRecurringToggle}
         onAnalysisStatusChange={onAnalysisStatusChange}
+        onSortOrderChange={onSortOrderChange}
       />
     );
 
     expect(screen.getByText('journal.filter.remembered')).toBeTruthy();
+    expect(screen.getByText('journal.filter.recurring')).toBeTruthy();
+    expect(screen.getByText('dream.type.symbolic')).toBeTruthy();
+    expect(screen.queryByText('Recurring Dream')).toBeNull();
     expect(screen.getByTestId(TID.Button.FilterStatusAnalyzed)).toBeTruthy();
     fireEvent.click(screen.getByText('dream.theme.mystical'));
+    fireEvent.click(screen.getByText('dream.type.symbolic'));
     fireEvent.click(screen.getByText('journal.filter.remembered'));
+    fireEvent.click(screen.getByText('journal.filter.recurring'));
     fireEvent.click(screen.getByTestId(TID.Button.FilterStatusUnanalyzed));
+    fireEvent.click(screen.getByText('journal.filter_sheet.sort.newest'));
     expect(onThemeSelect).toHaveBeenCalledWith('mystical');
+    expect(onDreamTypeSelect).toHaveBeenCalledWith('Symbolic Dream');
     expect(onRememberedToggle).toHaveBeenCalledTimes(1);
+    expect(onRecurringToggle).toHaveBeenCalledTimes(1);
     expect(onAnalysisStatusChange).toHaveBeenCalledWith('unanalyzed');
+    expect(onSortOrderChange).toHaveBeenCalledWith('newest');
 
     fireEvent.click(screen.getByTestId(TID.Button.AdvancedFiltersClear));
     expect(onClear).toHaveBeenCalledTimes(1);

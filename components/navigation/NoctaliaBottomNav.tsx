@@ -82,7 +82,7 @@ export function NoctaliaBottomNav({
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width, height } = useWindowDimensions();
+  const { width, height, fontScale } = useWindowDimensions();
   // The Capture button doubles as the in-progress indicator for a background
   // dream analysis, so no overlay has to cover the screen content.
   const { activeAnalysis } = useAnalysisActivity();
@@ -91,7 +91,7 @@ export function NoctaliaBottomNav({
     return null;
   }
 
-  const navigationLayout = getBottomNavigationLayout(width, height);
+  const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
   const floatingBottomInset = Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   // Icon and indicator colours are values on native props, so they stay on the tokens.
   const navActiveColor = noctalia.nav.active;
@@ -108,11 +108,12 @@ export function NoctaliaBottomNav({
   const addItemClassName = [
     'items-center justify-center border-2 border-champagne-soft bg-champagne',
     navigationLayout.compact
-      ? 'h-[56px] w-[60px] gap-px rounded-[22px]'
+      ? 'gap-px rounded-[22px]'
       : navigationLayout.narrow
-        ? 'h-[68px] w-[64px] gap-[3px] rounded-[24px]'
-        : 'h-[76px] w-[72px] gap-1 rounded-[27px]',
+        ? 'gap-[3px] rounded-[24px]'
+        : 'gap-1 rounded-[27px]',
   ].join(' ');
+  const labelLines = navigationLayout.stackedLabels ? 2 : 1;
 
   const addLift = navigationLayout.compact
     ? ADD_LIFT.compact
@@ -184,13 +185,28 @@ export function NoctaliaBottomNav({
               key={item.key}
               onPress={isActive ? undefined : () => router.push(item.href as any)}
               accessibilityRole="tab"
-              accessibilityState={{ selected: isActive }}
+              accessibilityState={{
+                selected: isActive,
+                busy: isCenter ? Boolean(activeAnalysis) : undefined,
+              }}
               accessibilityLabel={item.accessibilityLabel}
               testID={item.testID}
               className="h-full min-w-0 flex-1 items-center justify-center active:opacity-[0.72]"
             >
               {isCenter ? (
-                <View className={addItemClassName} style={[ADD_SHADOW, addLift]}>
+                <View
+                  accessible={false}
+                  importantForAccessibility="no-hide-descendants"
+                  className={addItemClassName}
+                  style={[
+                    ADD_SHADOW,
+                    addLift,
+                    {
+                      width: navigationLayout.centerActionWidth,
+                      height: navigationLayout.centerActionHeight,
+                    },
+                  ]}
+                >
                   {activeAnalysis ? (
                     <ActivityIndicator size="small" color={addTextColor} />
                   ) : (
@@ -201,20 +217,22 @@ export function NoctaliaBottomNav({
                     />
                   )}
                   <Text
+                    accessible={false}
                     className={`font-sans-bold w-full min-w-0 shrink text-center text-on-champagne ${
                       navigationLayout.narrow ? 'text-[11px] px-px' : 'text-[12px]'
                     }`}
-                    numberOfLines={1}
+                    numberOfLines={labelLines}
                     ellipsizeMode="tail"
-                    adjustsFontSizeToFit
+                    adjustsFontSizeToFit={!navigationLayout.stackedLabels}
                     minimumFontScale={navigationLayout.narrow ? 0.75 : 0.85}
-                    maxFontSizeMultiplier={navigationLayout.narrow ? 1.3 : undefined}
                   >
                     {item.label}
                   </Text>
                 </View>
               ) : (
                 <View
+                  accessible={false}
+                  importantForAccessibility="no-hide-descendants"
                   className={`w-full min-w-0 flex-1 items-center justify-center ${
                     navigationLayout.compact ? 'gap-px' : 'gap-[5px]'
                   }`}
@@ -225,14 +243,14 @@ export function NoctaliaBottomNav({
                     color={isActive ? navActiveColor : navInactiveColor}
                   />
                   <Text
+                    accessible={false}
                     className={`font-sans-medium w-full min-w-0 shrink text-center ${labelSizeClassName} ${
                       isActive ? 'text-nav-active' : 'text-nav-inactive'
                     }`}
-                    numberOfLines={1}
+                    numberOfLines={labelLines}
                     ellipsizeMode="tail"
-                    adjustsFontSizeToFit
+                    adjustsFontSizeToFit={!navigationLayout.stackedLabels}
                     minimumFontScale={navigationLayout.narrow ? 0.75 : 0.8}
-                    maxFontSizeMultiplier={navigationLayout.narrow ? 1.3 : undefined}
                   >
                     {item.label}
                   </Text>

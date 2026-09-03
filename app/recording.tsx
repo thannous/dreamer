@@ -64,6 +64,7 @@ import { categorizeDream } from '@/services/geminiService';
 import {
   registerOfflineModelPromptHandler,
   resolveDeviceSpeechCapability,
+  shouldRestartHandsFreeSpeech,
   type OfflineModelPromptHandler,
 } from '@/services/nativeSpeechRecognition';
 import {
@@ -138,6 +139,12 @@ export default function RecordingScreen() {
   const [isPreparingRecording, setIsPreparingRecording] = useState(false);
   const recordingTransitionRef = useRef(false);
   const baseTranscriptRef = useRef('');
+  const dictationIntentRef = useRef<'idle' | 'listening' | 'paused'>('idle');
+  const [dictationIntent, setDictationIntent] = useState<'idle' | 'listening' | 'paused'>('idle');
+  const [isHandsFreeRestarting, setIsHandsFreeRestarting] = useState(false);
+  const handsFreeRestartGenerationRef = useRef(0);
+  const handsFreeRestartInFlightRef = useRef(false);
+  const consecutiveEmptyHandsFreeRestartsRef = useRef(0);
   const handleRestoreDraft = useCallback((savedTranscript: string) => {
     setTranscript(savedTranscript);
     baseTranscriptRef.current = savedTranscript;
@@ -424,6 +431,7 @@ export default function RecordingScreen() {
       stopRecordingFromNativeEndRef.current?.();
     },
     onPartialTranscript: (text) => {
+      consecutiveEmptyHandsFreeRestartsRef.current = 0;
       const { text: combined } = combineTranscript(baseTranscriptRef.current, text);
       noteInput(combined);
       setTranscript(combined);
@@ -441,7 +449,8 @@ export default function RecordingScreen() {
   } = recordingSession;
 
   useEffect(() => {
-    if (!isRecording) {
+    const keepAlive = isRecording || dictationIntent === 'listening' || isHandsFreeRestarting;
+    if (!keepAlive) {
       setRecordingDurationSeconds(0);
       return;
     }
@@ -454,7 +463,7 @@ export default function RecordingScreen() {
     updateDuration();
     const interval = setInterval(updateDuration, 1000);
     return () => clearInterval(interval);
-  }, [isRecording]);
+  }, [dictationIntent, isHandsFreeRestarting, isRecording]);
 
   useEffect(() => {
     offlineModelSheetVisibleRef.current = showOfflineModelSheet;
@@ -479,6 +488,9 @@ export default function RecordingScreen() {
 
   useEffect(() => {
     return () => {
+      dictationIntentRef.current = 'idle';
+      handsFreeRestartGenerationRef.current += 1;
+      handsFreeRestartInFlightRef.current = false;
       baseTranscriptRef.current = '';
       void forceStopRecording('unmount');
       blurActiveElement();
@@ -488,6 +500,9 @@ export default function RecordingScreen() {
   useFocusEffect(
     useCallback(() => {
       return () => {
+        dictationIntentRef.current = 'idle';
+        handsFreeRestartGenerationRef.current += 1;
+        handsFreeRestartInFlightRef.current = false;
         void forceStopRecording('blur');
         blurActiveElement();
       };
@@ -579,78 +594,106 @@ export default function RecordingScreen() {
     persistInputModePreference(outcome.preferenceToPersist);
   }, [inputMode, persistInputModePreference]);
 
-  const stopRecording = useCallback(async (options?: { silent?: boolean }) => {
+  const setDictationIntentState = useCallback((next: 'idle' | 'listening' | 'paused') => {
+    dictationIntentRef.current = next;
+    setDictationIntent(next);
+  }, []);
+
+  const cancelHandsFreeRestart = useCallback(() => {
+    handsFreeRestartGenerationRef.current += 1;
+    handsFreeRestartInFlightRef.current = false;
+    setIsHandsFreeRestarting(false);
+  }, []);
+
+  const speechPlatform = (
+    Platform.OS === 'android' ? 'android' : Platform.OS === 'ios' ? 'ios' : 'web'
+  ) as 'android' | 'ios' | 'web';
+
+  const applyStoppedTranscript = useCallback((transcriptText: string): boolean => {
+    const trimmed = transcriptText.trim();
+    if (!trimmed) {
+      return false;
+    }
+
+    const normalizedBase = normalizeForComparison(baseTranscriptRef.current);
+    const normalizedFinal = normalizeForComparison(trimmed);
+
+    log.debug('stopRecording', {
+      baseLength: normalizedBase.length,
+      finalLength: normalizedFinal.length,
+      baseSample: normalizedBase.substring(0, 30) + '...',
+      finalSample: normalizedFinal.substring(0, 30) + '...',
+    });
+
+    const baseLen = normalizedBase.length;
+    const finalLen = normalizedFinal.length;
+    const similarity = baseLen > 0 && finalLen > 0
+      ? Math.min(baseLen, finalLen) / Math.max(baseLen, finalLen)
+      : 0;
+
+    if (similarity > 0.9 && normalizedFinal.startsWith(normalizedBase.substring(0, Math.min(20, normalizedBase.length)))) {
+      log.debug('final very similar to base, using final (may have corrections)', {
+        similarity: similarity.toFixed(2),
+      });
+      noteInput(trimmed);
+      baseTranscriptRef.current = trimmed;
+      setTranscript(trimmed);
+      return true;
+    }
+
+    const { text: combined } = combineTranscript(baseTranscriptRef.current, trimmed);
+    noteInput(combined);
+    baseTranscriptRef.current = combined;
+    setTranscript((prev) => (prev.trim() === combined.trim() ? prev : combined));
+    return true;
+  }, [combineTranscript, normalizeForComparison, noteInput]);
+
+  const stopRecording = useCallback(async (options?: {
+    silent?: boolean;
+    reason?: 'pause' | 'stop' | 'background';
+  }) => {
     const silent = options?.silent ?? false;
+    const reason = options?.reason ?? 'stop';
+    cancelHandsFreeRestart();
+    setDictationIntentState(reason === 'pause' ? 'paused' : 'idle');
     try {
       setIsPreparingRecording(false);
       const result = await stopSessionRecording();
       const transcriptText = result.transcript?.trim() ?? '';
 
-      if (transcriptText) {
-        const normalizedBase = normalizeForComparison(baseTranscriptRef.current);
-        const normalizedFinal = normalizeForComparison(transcriptText);
-
-        log.debug('stopRecording', {
-          baseLength: normalizedBase.length,
-          finalLength: normalizedFinal.length,
-          baseSample: normalizedBase.substring(0, 30) + '...',
-          finalSample: normalizedFinal.substring(0, 30) + '...',
-        });
-
-        // Calculate similarity: if base and final are very similar (>90%), assume partials gave us the full text
-        const baseLen = normalizedBase.length;
-        const finalLen = normalizedFinal.length;
-        const similarity = baseLen > 0 && finalLen > 0
-          ? Math.min(baseLen, finalLen) / Math.max(baseLen, finalLen)
-          : 0;
-
-        // If final is essentially same as base with 90%+ similarity and starts similarly
-        // it means partials already gave us the transcript
-        if (similarity > 0.9 && normalizedFinal.startsWith(normalizedBase.substring(0, Math.min(20, normalizedBase.length)))) {
-          log.debug('final very similar to base, using final (may have corrections)', {
-            similarity: similarity.toFixed(2),
-          });
-          // Use final as-is (it might have corrections from the STT engine)
-          noteInput(transcriptText);
-          baseTranscriptRef.current = transcriptText;
-          setTranscript(transcriptText);
-        } else {
-          // Final is significantly different - combine with base
-          const { text: combined } = combineTranscript(baseTranscriptRef.current, transcriptText);
-          noteInput(combined);
-          baseTranscriptRef.current = combined;
-          setTranscript((prev) => (prev.trim() === combined.trim() ? prev : combined));
-        }
-      } else {
-        recordingStartedAtRef.current = null;
-        if (silent) {
-          return;
-        }
-        if (result.error === 'rate_limited') {
-          Alert.alert(t('common.error_title'), t('error.rate_limit'));
-          return;
-        }
-        if (result.error === 'stt_unavailable') {
-          handleVoiceCaptureFailure('stt_unavailable');
-          return;
-        }
-        if (result.error === 'language_pack_missing') {
-          handleVoiceCaptureFailure('language_pack_missing');
-          return;
-        }
-        if (result.error === 'no_recording') {
-          Alert.alert(
-            t('recording.alert.recording_invalid.title'),
-            t('recording.alert.recording_invalid.message')
-          );
-          return;
-        }
-        if (result.error && result.error !== 'no_speech') {
-          Alert.alert(t('recording.alert.transcription_failed.title'), result.error);
-          return;
-        }
-        handleVoiceCaptureFailure('no_speech');
+      if (applyStoppedTranscript(transcriptText)) {
+        consecutiveEmptyHandsFreeRestartsRef.current = 0;
+        return;
       }
+
+      recordingStartedAtRef.current = null;
+      if (silent || reason === 'pause' || reason === 'background') {
+        return;
+      }
+      if (result.error === 'rate_limited') {
+        Alert.alert(t('common.error_title'), t('error.rate_limit'));
+        return;
+      }
+      if (result.error === 'stt_unavailable') {
+        handleVoiceCaptureFailure('stt_unavailable');
+        return;
+      }
+      if (result.error === 'language_pack_missing') {
+        handleVoiceCaptureFailure('language_pack_missing');
+        return;
+      }
+      if (result.error === 'no_recording') {
+        Alert.alert(
+          t('recording.alert.recording_invalid.title'),
+          t('recording.alert.recording_invalid.message')
+        );
+        return;
+      }
+      if (result.error && result.error !== 'no_speech') {
+        Alert.alert(t('recording.alert.transcription_failed.title'), result.error);
+        return;
+      }
+      handleVoiceCaptureFailure('no_speech');
     } catch (err) {
       log.error('Failed to stop recording:', err);
       Alert.alert(t('common.error_title'), t('recording.alert.stop_failed'));
@@ -658,30 +701,27 @@ export default function RecordingScreen() {
       hasAutoStoppedRecordingRef.current = false;
     }
   }, [
-    t,
-    combineTranscript,
-    normalizeForComparison,
+    applyStoppedTranscript,
+    cancelHandsFreeRestart,
     handleVoiceCaptureFailure,
-    noteInput,
+    setDictationIntentState,
     stopSessionRecording,
+    t,
   ]);
 
-  useEffect(() => {
-    stopRecordingFromNativeEndRef.current = () => {
-      void stopRecording();
-    };
-    return () => {
-      stopRecordingFromNativeEndRef.current = null;
-    };
-  }, [stopRecording]);
-
-  const startRecording = useCallback(async () => {
+  const startRecording = useCallback(async (options?: { preserveDraft?: boolean }) => {
+    const previousIntent = dictationIntentRef.current;
+    setDictationIntentState('listening');
     try {
       setIsPreparingRecording(true);
       setVoiceFallbackReason(null);
-      baseTranscriptRef.current = transcript;
+      if (!options?.preserveDraft) {
+        baseTranscriptRef.current = transcript || baseTranscriptRef.current;
+        consecutiveEmptyHandsFreeRestartsRef.current = 0;
+      }
 
-      const response = await startSessionRecording(transcript);
+      const sourceTranscript = baseTranscriptRef.current || transcript;
+      const response = await startSessionRecording(sourceTranscript);
       if (response.success) {
         lastInputSourceRef.current = 'voice';
         if (!captureStartedTrackedRef.current) {
@@ -691,18 +731,21 @@ export default function RecordingScreen() {
             capture_context: captureIntent,
           });
         }
-        recordingStartedAtRef.current = Date.now();
+        if (!recordingStartedAtRef.current) {
+          recordingStartedAtRef.current = Date.now();
+        }
         void trackProductEvent('recording_started', {
           input_mode: 'voice',
           language,
           speech_available: true,
           offline_model_state: 'unknown',
         });
-        return;
+        return true;
       }
       recordingStartedAtRef.current = null;
+      setDictationIntentState(previousIntent === 'paused' ? 'paused' : 'idle');
       if (response.error === 'offline_model_not_ready') {
-        return;
+        return false;
       }
       if (
         response.error === 'permission_denied' ||
@@ -716,14 +759,97 @@ export default function RecordingScreen() {
             t('recording.alert.stt_unavailable.message')
           );
         }
-        return;
+        return false;
       }
       handleVoiceCaptureFailure('start_failed');
       Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
+      return false;
     } finally {
       setIsPreparingRecording(false);
     }
-  }, [captureIntent, handleVoiceCaptureFailure, language, startSessionRecording, t, transcript]);
+  }, [captureIntent, handleVoiceCaptureFailure, language, setDictationIntentState, startSessionRecording, t, transcript]);
+
+  const handleUnexpectedNativeEnd = useCallback(async () => {
+    const canRestart = shouldRestartHandsFreeSpeech({
+      platform: speechPlatform,
+      dictationIntent: dictationIntentRef.current,
+      stopRequested: false,
+      restartInFlight: handsFreeRestartInFlightRef.current,
+      consecutiveEmptyRestarts: consecutiveEmptyHandsFreeRestartsRef.current,
+    });
+    if (!canRestart) {
+      if (handsFreeRestartInFlightRef.current || dictationIntentRef.current !== 'listening') {
+        return;
+      }
+      await stopRecording({ silent: true, reason: 'pause' });
+      return;
+    }
+
+    const generation = ++handsFreeRestartGenerationRef.current;
+    handsFreeRestartInFlightRef.current = true;
+    setIsHandsFreeRestarting(true);
+    try {
+      setIsPreparingRecording(false);
+      const result = await stopSessionRecording();
+      const applied = applyStoppedTranscript(result.transcript ?? '');
+      if (generation !== handsFreeRestartGenerationRef.current) {
+        return;
+      }
+      if (dictationIntentRef.current !== 'listening') {
+        return;
+      }
+      if (applied) {
+        consecutiveEmptyHandsFreeRestartsRef.current = 0;
+      } else {
+        consecutiveEmptyHandsFreeRestartsRef.current += 1;
+      }
+      if (
+        !shouldRestartHandsFreeSpeech({
+          platform: speechPlatform,
+          dictationIntent: dictationIntentRef.current,
+          stopRequested: false,
+          restartInFlight: false,
+          consecutiveEmptyRestarts: consecutiveEmptyHandsFreeRestartsRef.current,
+        })
+      ) {
+        setDictationIntentState('paused');
+        return;
+      }
+      const started = await startRecording({ preserveDraft: true });
+      if (generation !== handsFreeRestartGenerationRef.current) {
+        return;
+      }
+      if (!started) {
+        setDictationIntentState('paused');
+      }
+    } catch (error) {
+      log.warn('Hands-free speech restart failed', error);
+      if (generation === handsFreeRestartGenerationRef.current) {
+        setDictationIntentState('paused');
+      }
+    } finally {
+      if (generation === handsFreeRestartGenerationRef.current) {
+        handsFreeRestartInFlightRef.current = false;
+        setIsHandsFreeRestarting(false);
+      }
+    }
+  }, [
+    applyStoppedTranscript,
+    setDictationIntentState,
+    speechPlatform,
+    startRecording,
+    stopRecording,
+    stopSessionRecording,
+  ]);
+
+  useEffect(() => {
+    stopRecordingFromNativeEndRef.current = () => {
+      void handleUnexpectedNativeEnd();
+    };
+    return () => {
+      stopRecordingFromNativeEndRef.current = null;
+    };
+  }, [handleUnexpectedNativeEnd]);
 
   const toggleRecording = useCallback(async () => {
     if (recordingTransitionRef.current) {
@@ -731,8 +857,12 @@ export default function RecordingScreen() {
     }
     recordingTransitionRef.current = true;
     try {
-      if (isRecordingRef.current) {
-        await stopRecording();
+      if (
+        isRecordingRef.current
+        || dictationIntentRef.current === 'listening'
+        || handsFreeRestartInFlightRef.current
+      ) {
+        await stopRecording({ silent: true, reason: 'pause' });
       } else {
         if (recordingPermissionState !== 'granted' && !hasSeenMicRationaleRef.current) {
           setShowMicRationaleSheet(true);
@@ -746,7 +876,8 @@ export default function RecordingScreen() {
   }, [isRecordingRef, recordingPermissionState, startRecording, stopRecording]);
 
   useEffect(() => {
-    if (!isRecording) {
+    const keepAlive = isRecording || dictationIntent === 'listening' || isHandsFreeRestarting;
+    if (!keepAlive) {
       return;
     }
 
@@ -758,22 +889,18 @@ export default function RecordingScreen() {
         !hasAutoStoppedRecordingRef.current
       ) {
         hasAutoStoppedRecordingRef.current = true;
-        void stopRecording({ silent: true });
+        void stopRecording({ silent: true, reason: 'background' });
       }
     });
 
     return () => {
       subscription.remove();
-      if (!hasAutoStoppedRecordingRef.current) {
-        hasAutoStoppedRecordingRef.current = true;
-        void stopRecording({ silent: true });
-      }
     };
-  }, [isRecording, stopRecording]);
+  }, [dictationIntent, isHandsFreeRestarting, isRecording, stopRecording]);
 
   const handleSaveDream = useCallback(async () => {
-    if (isRecordingRef.current) {
-      await stopRecording();
+    if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
+      await stopRecording({ silent: true, reason: 'stop' });
     }
 
     const latestSource = baseTranscriptRef.current || transcript;
@@ -998,12 +1125,17 @@ export default function RecordingScreen() {
     trimmedTranscript,
   ]);
 
-  const recordingDurationLabel = isRecording
+  const isVoiceListening = isRecording || dictationIntent === 'listening' || isHandsFreeRestarting;
+  const recordingDurationLabel = isVoiceListening
     ? t('recording.status.duration', { duration: formatRecordingDuration(recordingDurationSeconds) })
     : undefined;
-  const voiceControlStatus = isPreparingRecording ? 'preparing' : isRecording ? 'recording' : 'idle';
+  const voiceControlStatus = isPreparingRecording && !isVoiceListening
+    ? 'preparing'
+    : isVoiceListening
+      ? 'recording'
+      : 'idle';
   const voiceControlLabel = useMemo(() => {
-    if (isRecording) {
+    if (isVoiceListening) {
       return t('recording.mic.pause');
     }
     if (isPreparingRecording) {
@@ -1012,17 +1144,17 @@ export default function RecordingScreen() {
     if (voiceFallbackReason) {
       return t('recording.status.retry_voice');
     }
-    if (trimmedTranscript) {
+    if (dictationIntent === 'paused' || trimmedTranscript) {
       return t('recording.mic.resume');
     }
     return t('recording.mode.switch_to_voice');
-  }, [isPreparingRecording, isRecording, t, trimmedTranscript, voiceFallbackReason]);
+  }, [dictationIntent, isPreparingRecording, isVoiceListening, t, trimmedTranscript, voiceFallbackReason]);
   const showRecordingVoiceHint = recordingVoiceHintLoadedScope === onboardingScope
     && !recordingVoiceHintDismissed
     && captureIntent === 'fresh'
     && inputMode === 'voice'
     && !isPreparingRecording
-    && !isRecording;
+    && !isVoiceListening;
   const textFallbackNotice = useMemo(() => {
     if (!voiceFallbackReason) {
       return '';
@@ -1049,10 +1181,10 @@ export default function RecordingScreen() {
   }, [textFallbackNotice]);
 
   const switchToTextMode = useCallback(async () => {
-    if (isRecordingRef.current) {
+    if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
       recordingTransitionRef.current = true;
       try {
-        await stopRecording({ silent: true });
+        await stopRecording({ silent: true, reason: 'stop' });
       } finally {
         recordingTransitionRef.current = false;
       }
@@ -1071,10 +1203,10 @@ export default function RecordingScreen() {
 
       setVoiceFallbackReason(null);
 
-      if (preference === 'text' && isRecordingRef.current) {
+      if (preference === 'text' && (isRecordingRef.current || dictationIntentRef.current === 'listening')) {
         recordingTransitionRef.current = true;
         try {
-          await stopRecording({ silent: true });
+          await stopRecording({ silent: true, reason: 'stop' });
         } finally {
           recordingTransitionRef.current = false;
         }

@@ -20,7 +20,12 @@ const dreams: DreamAnalysis[] = Array.from({ length: DREAM_COUNT }, (_, index) =
   analyzedAt: index % 3 === 0 ? now - index * 60_000 : undefined,
   interpretation: index % 3 === 0 ? 'A complete reading.' : '',
   explorationStartedAt: index % 11 === 0 ? now - index * 60_000 : undefined,
-  memory: index % 7 === 0 ? { origin: 'remembered' as const } : undefined,
+  memory: index % 7 === 0
+    ? {
+        origin: 'remembered' as const,
+        ...(index % 14 === 0 ? { rememberedKind: 'recurring' as const, recurring: true } : {}),
+      }
+    : undefined,
 }));
 
 const getNow = () => (globalThis.performance?.now ? globalThis.performance.now() : Date.now());
@@ -33,8 +38,10 @@ function runCombined() {
   return applyFilters(dreams, {
     searchQuery: 'ocean',
     theme: 'calm',
+    dreamType: 'Nightmare',
     favoritesOnly: true,
     rememberedOnly: true,
+    recurringOnly: true,
     needsExplorationOnly: true,
     startDate: new Date(now - 14 * 24 * 60 * 60 * 1000),
     endDate: new Date(now),

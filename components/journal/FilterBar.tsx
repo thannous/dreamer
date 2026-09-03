@@ -17,6 +17,9 @@ type FilterItemId =
   | 'type'
   | 'date'
   | 'remembered'
+  | 'recurring'
+  | 'search'
+  | 'sort'
   | 'unanalyzed'
   | 'analyzed'
   | 'explored'
@@ -72,6 +75,18 @@ function ExploredIcon({ size = 16, color = '#FFFFFF' }) {
 
 function MoreIcon({ size = 16, color = '#FFFFFF' }) {
   return <IconSymbol name="slider.horizontal.3" size={size} color={color} />;
+}
+
+function RecurringIcon({ size = 16, color = '#FFFFFF' }) {
+  return <IconSymbol name="arrow.triangle.2.circlepath" size={size} color={color} />;
+}
+
+function SearchFilterIcon({ size = 16, color = '#FFFFFF' }) {
+  return <IconSymbol name="magnifyingglass" size={size} color={color} />;
+}
+
+function SortIcon({ size = 16, color = '#FFFFFF' }) {
+  return <IconSymbol name="arrow.up.circle" size={size} color={color} />;
 }
 
 function FavoriteIcon({ size = 16, color = '#FFFFFF' }) {
@@ -150,6 +165,12 @@ const renderIcon = (id: FilterItemId, color: string) => {
       return <ToDeepenIcon size={16} color={color} />;
     case 'remembered':
       return <CalendarIcon size={16} color={color} />;
+    case 'recurring':
+      return <RecurringIcon size={16} color={color} />;
+    case 'search':
+      return <SearchFilterIcon size={16} color={color} />;
+    case 'sort':
+      return <SortIcon size={16} color={color} />;
     case 'unanalyzed':
       return <AnalyzedIcon size={16} color={color} />;
     case 'analyzed':
@@ -178,6 +199,12 @@ const getAccessibilityLabel = (id: FilterItemId, t: (key: string) => string, exp
       return t('journal.filter.accessibility.to_deepen');
     case 'remembered':
       return t('journal.filter.accessibility.remembered');
+    case 'recurring':
+      return t('journal.filter.accessibility.recurring');
+    case 'search':
+      return t('journal.search_placeholder');
+    case 'sort':
+      return t('journal.filter_sheet.sort_section');
     case 'unanalyzed':
       return t('journal.filter_sheet.status.unanalyzed');
     case 'analyzed':
@@ -190,7 +217,7 @@ const getAccessibilityLabel = (id: FilterItemId, t: (key: string) => string, exp
 };
 
 const PILL_CLASSNAME =
-  'flex-row shrink-0 grow-0 items-center gap-1.5 self-start rounded-full border-continuous px-3 py-1.5';
+  'min-h-[44px] min-w-[44px] flex-row shrink-0 grow-0 items-center gap-1.5 self-start rounded-full border-continuous px-3 py-2';
 
 /**
  * Filter pill.

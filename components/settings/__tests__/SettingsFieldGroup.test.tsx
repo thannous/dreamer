@@ -231,6 +231,7 @@ describe('SettingsFieldGroup', () => {
     expect(screen.getByText('settings.section.rituals')).toBeTruthy();
     expect(screen.getByText('Noctalia Plus')).toBeTruthy();
     expect(screen.getByTestId('settings-app-version').textContent).toBe('Version 3.0.1 (42)');
+    expect(screen.queryByTestId('settings-journal-layout-choice')).toBeNull();
   });
 
   it('keeps the returning guest barrier to account and language', () => {
@@ -339,5 +340,15 @@ describe('SettingsFieldGroup', () => {
     expect(screen.queryByTestId('btn.recording.onboarding.restart')).toBeNull();
     expect(screen.queryByText('settings.onboarding.restart')).toBeNull();
     expect(restartRecordingGuide).not.toHaveBeenCalled();
+  });
+
+  it('hides the orphan journal layout preference because it no longer drives Journal', () => {
+    render(<SettingsFieldGroup {...baseProps} />);
+
+    expect(screen.getByTestId('settings-theme-choice')).toBeTruthy();
+    expect(screen.getByTestId('settings-language-choice')).toBeTruthy();
+    expect(screen.queryByTestId('settings-journal-layout-choice')).toBeNull();
+    expect(screen.queryByTestId('btn.settings.journalLayout.cards')).toBeNull();
+    expect(screen.queryByTestId('btn.settings.journalLayout.compact')).toBeNull();
   });
 });

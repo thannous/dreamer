@@ -74,4 +74,71 @@ describe('dream detail i18n', () => {
       expect(translations['journal.detail.zone.reflection']).toBe(copy.reflection);
     }
   });
+
+  it('exposes quota-before-action and retry-chat copy in every language', () => {
+    const keys = [
+      'journal.detail.quota_hint.remaining',
+      'journal.detail.quota_hint.unknown',
+      'journal.detail.quota_hint.unlimited',
+      'journal.detail.quota_hint.quota.analysis',
+      'journal.detail.quota_hint.quota.message',
+      'journal.detail.quota_hint.quota.synthesis360',
+      'journal.detail.action.retry_chat.title',
+      'journal.detail.action.retry_chat.message',
+      'journal.detail.action.retry_chat.cta',
+      'dream_chat.retry_target.label',
+      'dream_chat.retry_target.cta',
+    ] as const;
+
+    for (const translations of Object.values(packs)) {
+      for (const key of keys) {
+        expect(translations[key]).toEqual(expect.any(String));
+        expect(translations[key]).not.toBe(key);
+        expect(translations[key].trim()).not.toBe('');
+      }
+      expect(translations['journal.detail.quota_hint.remaining']).toMatch(/\{quota\}/);
+      expect(translations['journal.detail.quota_hint.remaining']).toMatch(/\{remaining\}/);
+      expect(translations['journal.detail.quota_hint.unknown']).toMatch(/\{quota\}/);
+    }
+
+    expect(fr['journal.detail.quota_hint.remaining']).toBe('Utilise 1 {quota} · il en reste {remaining}');
+    expect(de['journal.detail.quota_hint.remaining']).toBe('Verbraucht 1 {quota} · noch {remaining} übrig');
+    expect(italian['journal.detail.quota_hint.remaining']).toBe('Usa 1 {quota} · ne restano {remaining}');
+    expect(en['journal.detail.quota_hint.unknown']).toBe(
+      'Uses 1 {quota}. Remaining credits will be checked before starting.'
+    );
+    expect(fr['journal.detail.quota_hint.unknown']).toBe(
+      'Utilise 1 {quota}. Les crédits restants seront vérifiés avant de lancer.'
+    );
+    expect(de['journal.detail.quota_hint.unknown']).toBe(
+      'Verbraucht 1 {quota}. Das restliche Kontingent wird vor dem Start geprüft.'
+    );
+    expect(es['journal.detail.quota_hint.unknown']).toBe(
+      'Usa 1 {quota}. El saldo restante se comprobará antes de empezar.'
+    );
+    expect(italian['journal.detail.quota_hint.unknown']).toBe(
+      'Usa 1 {quota}. Il credito rimanente verrà verificato prima di iniziare.'
+    );
+    expect(pt['journal.detail.quota_hint.unknown']).toBe(
+      'Usa 1 {quota}. O saldo restante será verificado antes de começar.'
+    );
+  });
+
+  it('promises a lossless local-to-account copy in every language, without claiming live sync', () => {
+    const futureCopy = /will be copied|seront copiés|werden .* kopiert|se copiarán|verranno copiati|serão copiados/i;
+    const noLoss = /without loss|sans perte|ohne Verlust|sin pérdidas|senza perdite|sem perdas/i;
+    const noDuplicate = /duplicate|doublon|Duplikate|duplicados|duplicati/i;
+    const liveSyncClaim = /already sync|déjà synchron|bereits synchron|ya se sincron|già sincron|já sincron|You're signed in and syncing|Vous êtes connecté et vos données se synchronisent/i;
+
+    for (const translations of Object.values(packs)) {
+      const copy = translations['settings.account.description_signed_out'];
+      expect(copy).toEqual(expect.any(String));
+      expect(copy).not.toBe('settings.account.description_signed_out');
+      expect(copy).toMatch(futureCopy);
+      expect(copy).toMatch(noLoss);
+      expect(copy).toMatch(noDuplicate);
+      expect(copy).not.toMatch(liveSyncClaim);
+      expect(copy.toLowerCase()).toMatch(/device|appareil|gerät|dispositivo/);
+    }
+  });
 });

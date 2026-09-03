@@ -14,6 +14,7 @@ import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
+import { QUOTAS } from '@/constants/limits';
 import { getDreamAnalysisState } from '@/lib/dreamUsage';
 import { generateUUID } from '@/lib/dreamUtils';
 import { isChatDebugEnabled, isMockModeEnabled } from '@/lib/env';
@@ -40,7 +41,17 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNetworkState } from 'expo-network';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  ActivityIndicator,
+  Alert,
+  findNodeHandle,
+  InteractionManager,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { Pressable as GesturePressable } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
@@ -124,7 +135,13 @@ const chatHistoryMigrationCompletedByDreamId = new Map<number, number>();
 
 export default function DreamChatScreen() {
   const { t } = useTranslation();
-  const { id, category, mode: routeMode } = useLocalSearchParams<{ id: string; category?: string; mode?: string }>();
+  const { id, category, mode: routeMode, messageId: routeMessageId } = useLocalSearchParams<{
+    id: string;
+    category?: string;
+    mode?: string;
+    messageId?: string | string[];
+  }>();
+  const targetMessageId = Array.isArray(routeMessageId) ? routeMessageId[0] : routeMessageId;
   const { dreams, updateDream, applyServerDreamState } = useDreams();
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -232,11 +249,13 @@ export default function DreamChatScreen() {
 
   const quotaMessages = quotaStatus?.usage.messages;
   const rawMessageLimit = quotaMessages?.limit;
+  const fallbackMessageLimit =
+    QUOTAS[tier === 'plus' ? 'plus' : tier === 'free' ? 'free' : 'guest'].messagesPerDream;
   const messageLimit = typeof rawMessageLimit === 'number'
     ? rawMessageLimit
     : rawMessageLimit === null
       ? null
-      : 20;
+      : fallbackMessageLimit;
 
   const quotaRemaining = typeof quotaMessages?.remaining === 'number' ? quotaMessages.remaining : null;
   const localRemaining = messageLimit === null
@@ -415,7 +434,7 @@ export default function DreamChatScreen() {
       return;
     }
 
-    if (!dream || !category || category === 'general') {
+    if (!dream || !category || category === 'general' || targetMessageId) {
       return;
     }
 
@@ -448,7 +467,7 @@ export default function DreamChatScreen() {
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, dream, messages.length, t, hasQuotaCheckClearance, isQuotaGateBlocked]); // sendMessage has stable dependencies via useCallback
+  }, [category, dream, messages.length, t, hasQuotaCheckClearance, isQuotaGateBlocked, targetMessageId]); // sendMessage has stable dependencies via useCallback
 
   const sendMessage = useCallback(
     async (
@@ -848,6 +867,22 @@ export default function DreamChatScreen() {
     },
     [isInteractionLocked, messages, sendMessage]
   );
+  const targetFailedMessage = useMemo(() => {
+    if (!targetMessageId) return null;
+    return messages.find((message) => message.id === targetMessageId) ?? null;
+  }, [messages, targetMessageId]);
+  const targetRetryRef = useRef<View>(null);
+
+  useEffect(() => {
+    if (!targetFailedMessage) return undefined;
+    const handle = InteractionManager.runAfterInteractions(() => {
+      const node = findNodeHandle(targetRetryRef.current);
+      if (node) {
+        AccessibilityInfo.setAccessibilityFocus(node);
+      }
+    });
+    return () => handle.cancel();
+  }, [targetFailedMessage]);
 
   const sendSynthesisRequest = useCallback(
     (baseMessages?: ChatMessage[]) => {
@@ -877,7 +912,7 @@ export default function DreamChatScreen() {
   }, [sendSynthesisRequest]);
 
   useEffect(() => {
-    if (routeMode !== 'synthesis' || !dream || !exploration360Status.canGenerateSynthesis) {
+    if (routeMode !== 'synthesis' || !dream || !exploration360Status.canGenerateSynthesis || targetMessageId) {
       return;
     }
     if (!hasQuotaCheckClearance || isQuotaGateBlocked || isInteractionLocked) {
@@ -913,6 +948,7 @@ export default function DreamChatScreen() {
     messages,
     routeMode,
     sendSynthesisRequest,
+    targetMessageId,
   ]);
 
   const handleQuickCategory = (categoryId: string) => {
@@ -1107,6 +1143,46 @@ export default function DreamChatScreen() {
         animationDelay={160}
         style={styles.exploration360Panel}
       />
+      {targetFailedMessage ? (
+        <View
+          ref={targetRetryRef}
+          testID={TID.Chat.RetryTarget}
+          accessible
+          accessibilityRole="summary"
+          accessibilityLiveRegion="polite"
+          accessibilityLabel={t('dream_chat.retry_target.label')}
+          style={[
+            styles.retryTargetCard,
+            {
+              backgroundColor: noctalia.status.warning.background,
+              borderColor: noctalia.status.warning.border,
+            },
+          ]}
+        >
+          <Text style={[styles.retryTargetTitle, { color: noctalia.status.warning.text }]}>
+            {t('dream_chat.retry_target.label')}
+          </Text>
+          <Text style={[styles.retryTargetBody, { color: noctalia.text.secondary }]} numberOfLines={3}>
+            {targetFailedMessage.text}
+          </Text>
+          {targetFailedMessage.meta?.retry ? (
+            <Pressable
+              onPress={() => handleRetryMessage(targetFailedMessage)}
+              disabled={isInteractionLocked}
+              accessibilityRole="button"
+              accessibilityLabel={t('dream_chat.retry_target.cta')}
+              style={[
+                styles.retryTargetButton,
+                { backgroundColor: noctalia.action.primary, opacity: isInteractionLocked ? 0.75 : 1 },
+              ]}
+            >
+              <Text style={[styles.retryTargetButtonText, { color: noctalia.action.primaryText }]}>
+                {t('dream_chat.retry_target.cta')}
+              </Text>
+            </Pressable>
+          ) : null}
+        </View>
+      ) : null}
       {messages.length <= 2 && (
         <View style={styles.quickCategoriesContainer}>
           <Text
@@ -1162,9 +1238,7 @@ export default function DreamChatScreen() {
     ? t('dream_chat.input.limit_placeholder')
     : t('dream_chat.input.placeholder');
 
-  // Show counter only when approaching the limit (≥15 messages) or limit reached
-  const shouldShowCounter = typeof messageLimit === 'number' &&
-    (userMessageCount >= 15 || messageLimitReached);
+  const shouldShowCounter = typeof messageLimit === 'number';
 
   // IMPORTANT: Always render these components to prevent Android NullPointerException
   // when animated views are removed mid-animation. Use visible prop instead.
@@ -1445,6 +1519,38 @@ const styles = StyleSheet.create({
   exploration360Panel: {
     marginTop: 16,
     marginHorizontal: 16,
+  },
+  retryTargetCard: {
+    marginTop: 16,
+    marginHorizontal: 16,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 8,
+  },
+  retryTargetTitle: {
+    fontSize: 13,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    textTransform: 'uppercase',
+  },
+  retryTargetBody: {
+    fontSize: 14,
+    fontFamily: Fonts.lora.regularItalic,
+    lineHeight: 20,
+  },
+  retryTargetButton: {
+    alignSelf: 'flex-start',
+    marginTop: 4,
+    minHeight: 44,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  retryTargetButtonText: {
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   quickCategoriesLabel: {
     fontSize: 12,

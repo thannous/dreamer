@@ -871,6 +871,7 @@ export const EmailAuthCard: React.FC<Props> = ({
           isEmbedded && styles.embeddedDescription,
           { color: noctalia.text.secondary },
         ]}
+        testID={isEmbedded ? undefined : 'settings-account-migration-hint'}
       >
         {t('settings.account.description_signed_out')}
       </Text>
@@ -1068,7 +1069,14 @@ export const EmailAuthCard: React.FC<Props> = ({
             <Text style={[styles.summaryDescription, { color: noctalia.text.secondary }]}>
               {t('settings.account.description_signed_in')}
             </Text>
-          ) : null}
+          ) : (
+            <Text
+              style={[styles.summaryDescription, { color: noctalia.text.secondary }]}
+              testID="settings-account-migration-hint"
+            >
+              {t('settings.account.description_signed_out')}
+            </Text>
+          )}
           {user?.email ? (
             <Text
               numberOfLines={1}

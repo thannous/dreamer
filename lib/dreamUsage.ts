@@ -10,7 +10,7 @@ import {
   hasExploration360Synthesis,
 } from './exploration360';
 import type { Exploration360AxisId } from './exploration360';
-import type { ChatMessage, DreamAnalysis } from './types';
+import type { ChatMessage, DreamAnalysis, QuotaMetric, QuotaUsage } from './types';
 
 /**
  * Helpers to derive quota-related info from dreams.
@@ -209,6 +209,49 @@ export type ReflectionJourneyOptions = {
 };
 
 export type JournalDetailPrimaryFamily = 'analyze' | 'explore' | 'continue';
+
+export type ReflectionQuotaHint =
+  | { kind: 'none' }
+  | { kind: 'unlimited' }
+  | { kind: 'unknown'; quota: Exclude<ReflectionQuotaKind, 'none'> }
+  | { kind: 'remaining'; quota: Exclude<ReflectionQuotaKind, 'none'>; remaining: number };
+
+function readQuotaMetric(
+  usage: QuotaUsage | null | undefined,
+  quota: Exclude<ReflectionQuotaKind, 'none'>
+): QuotaMetric | undefined {
+  if (!usage) return undefined;
+  if (quota === 'analysis') return usage.analysis;
+  if (quota === 'message') return usage.messages;
+  return usage.exploration;
+}
+
+/**
+ * Visible pre-action quota copy for a reflection CTA.
+ * Never invents a remaining count: unknown stays unknown, free resume stays none.
+ */
+export function getReflectionQuotaHint(
+  consumesQuota: ReflectionQuotaKind,
+  usage?: QuotaUsage | null,
+  options?: { unlimited?: boolean }
+): ReflectionQuotaHint {
+  if (consumesQuota === 'none') {
+    return { kind: 'none' };
+  }
+  if (options?.unlimited) {
+    return { kind: 'unlimited' };
+  }
+
+  const metric = readQuotaMetric(usage, consumesQuota);
+  if (metric?.limit === null) {
+    return { kind: 'unlimited' };
+  }
+  if (typeof metric?.remaining === 'number' && Number.isFinite(metric.remaining)) {
+    return { kind: 'remaining', quota: consumesQuota, remaining: metric.remaining };
+  }
+  return { kind: 'unknown', quota: consumesQuota };
+}
+
 
 /**
  * Collapse the 9 journey kinds onto the existing Journal detail CTA families.

@@ -37,6 +37,10 @@ let mockRecordingPermissionState: 'unknown' | 'granted' | 'denied' = 'unknown';
 let mockReferenceImagesEnabled = false;
 let mockViewportWidth = 390;
 let mockOnPartialTranscript: ((text: string) => void) | undefined;
+let mockOnNativeEnd: (() => void) | undefined;
+let mockAppStateHandler: ((state: string) => void) | undefined;
+let mockIsRecording = false;
+const mockIsRecordingRef = { current: false };
 const mockResolveDeviceSpeechCapability = jest.fn();
 
 const buildDream = (transcript: string, id = 42): DreamAnalysis => ({
@@ -156,7 +160,10 @@ jest.doMock('react-native', () => {
     __esModule: true,
     Alert: { alert: jest.fn() },
     AppState: {
-      addEventListener: () => ({ remove: jest.fn() }),
+      addEventListener: (_type: string, handler: (state: string) => void) => {
+        mockAppStateHandler = handler;
+        return { remove: jest.fn() };
+      },
     },
     Keyboard: {
       addListener: () => ({ remove: jest.fn() }),
@@ -437,15 +444,18 @@ jest.doMock('@/hooks/useQuota', () => ({
 
 jest.doMock('@/hooks/useRecordingSession', () => ({
   useRecordingSession: ({
+    onNativeEnd,
     onPartialTranscript,
   }: {
+    onNativeEnd?: () => void;
     onPartialTranscript?: (text: string) => void;
   }) => {
+    mockOnNativeEnd = onNativeEnd;
     mockOnPartialTranscript = onPartialTranscript;
     return {
       forceStopRecording: mockForceStopRecording,
-      isRecording: false,
-      isRecordingRef: { current: false },
+      isRecording: mockIsRecording,
+      isRecordingRef: mockIsRecordingRef,
       recordingPermissionState: mockRecordingPermissionState,
       startRecording: mockStartRecording,
       stopRecording: mockStopRecording,
@@ -548,10 +558,14 @@ jest.doMock('@/services/geminiService', () => ({
   generateImageWithReference: jest.fn(),
 }));
 
-jest.doMock('@/services/nativeSpeechRecognition', () => ({
-  registerOfflineModelPromptHandler: () => jest.fn(),
-  resolveDeviceSpeechCapability: mockResolveDeviceSpeechCapability,
-}));
+jest.doMock('@/services/nativeSpeechRecognition', () => {
+  const actual = jest.requireActual('@/services/nativeSpeechRecognition') as typeof import('@/services/nativeSpeechRecognition');
+  return {
+    registerOfflineModelPromptHandler: () => jest.fn(),
+    resolveDeviceSpeechCapability: mockResolveDeviceSpeechCapability,
+    shouldRestartHandsFreeSpeech: actual.shouldRestartHandsFreeSpeech,
+  };
+});
 
 jest.doMock('@/services/storageService', () => ({
   getRecordingInputModePreference: mockGetInputModePreference,
@@ -575,6 +589,10 @@ describe('Recording screen', () => {
     mockReferenceImagesEnabled = false;
     mockViewportWidth = 390;
     mockOnPartialTranscript = undefined;
+    mockOnNativeEnd = undefined;
+    mockAppStateHandler = undefined;
+    mockIsRecording = false;
+    mockIsRecordingRef.current = false;
     mockGetSavedTranscript.mockReset();
     mockSaveTranscript.mockReset();
     mockGetSavedTranscript.mockResolvedValue('');
@@ -594,8 +612,14 @@ describe('Recording screen', () => {
     mockForceStopRecording.mockResolvedValue(undefined);
     mockGetInputModePreference.mockResolvedValue('text');
     mockSaveInputModePreference.mockResolvedValue(undefined);
-    mockStartRecording.mockResolvedValue({ success: true });
-    mockStopRecording.mockResolvedValue({ transcript: '' });
+    mockStartRecording.mockImplementation(async () => {
+      mockIsRecordingRef.current = true;
+      return { success: true };
+    });
+    mockStopRecording.mockImplementation(async () => {
+      mockIsRecordingRef.current = false;
+      return { transcript: '' };
+    });
     mockCanGoBack.mockReturnValue(false);
     mockResolveDeviceSpeechCapability.mockReset();
     mockResolveDeviceSpeechCapability.mockResolvedValue({
@@ -1213,5 +1237,166 @@ describe('Recording screen', () => {
       expect(screen.getByTestId('recording-mode').getAttribute('data-value')).toBe('text');
       expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('textFirst');
     });
+  });
+
+  async function startAndroidHandsFree() {
+    mockPlatformOS = 'android';
+    mockRecordingPermissionState = 'granted';
+    mockGetInputModePreference.mockResolvedValue('voice');
+    const view = render(<RecordingScreen />);
+    await waitFor(() => {
+      expect(screen.getByTestId('recording-voice-control')).toBeTruthy();
+    });
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => {
+      expect(mockStartRecording).toHaveBeenCalledTimes(1);
+    });
+    return view;
+  }
+
+  it('does not restart dictation after a native end on web', async () => {
+    mockPlatformOS = 'web';
+    mockRecordingPermissionState = 'granted';
+    render(<RecordingScreen />);
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => {
+      expect(mockStartRecording).toHaveBeenCalledTimes(1);
+    });
+
+    await act(async () => {
+      mockOnNativeEnd?.();
+    });
+
+    await waitFor(() => {
+      expect(mockStopRecording).toHaveBeenCalledTimes(1);
+    });
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
+  });
+
+  it('restarts Android dictation after an unsolicited native end while listening', async () => {
+    await startAndroidHandsFree();
+
+    await act(async () => {
+      mockOnNativeEnd?.();
+    });
+
+    await waitFor(() => {
+      expect(mockStopRecording).toHaveBeenCalledTimes(1);
+      expect(mockStartRecording).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it('does not restart Android dictation from a concurrent native-end while a restart is in flight', async () => {
+    let releaseStop: ((value: { transcript: string }) => void) | undefined;
+    mockStopRecording.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          releaseStop = resolve;
+        })
+    );
+    await startAndroidHandsFree();
+
+    act(() => {
+      mockOnNativeEnd?.();
+      mockOnNativeEnd?.();
+    });
+
+    expect(mockStopRecording).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      mockIsRecordingRef.current = false;
+      releaseStop?.({ transcript: '' });
+    });
+
+    await waitFor(() => {
+      expect(mockStartRecording).toHaveBeenCalledTimes(2);
+    });
+    expect(mockStopRecording).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not restart after pause, then resumes only from an explicit tap', async () => {
+    await startAndroidHandsFree();
+
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => {
+      expect(mockStopRecording).toHaveBeenCalledTimes(1);
+    });
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      mockOnNativeEnd?.();
+    });
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => {
+      expect(mockStartRecording).toHaveBeenCalledTimes(2);
+    });
+    expect(mockStopRecording).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not auto-restart after background, cleanup, or an unsolicited end once idle', async () => {
+    const view = await startAndroidHandsFree();
+
+    await waitFor(() => {
+      expect(mockAppStateHandler).toEqual(expect.any(Function));
+    });
+
+    await act(async () => {
+      mockAppStateHandler?.('background');
+    });
+    await waitFor(() => {
+      expect(mockStopRecording).toHaveBeenCalledTimes(1);
+    });
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      mockOnNativeEnd?.();
+    });
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
+
+    view.unmount();
+    await act(async () => {
+      mockOnNativeEnd?.();
+    });
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
+    expect(mockForceStopRecording).toHaveBeenCalled();
+  });
+
+  it('keeps the shared draft across pause/resume and does not duplicate a native-end final', async () => {
+    mockStopRecording.mockImplementation(async () => {
+      mockIsRecordingRef.current = false;
+      return { transcript: 'typed prefix a lake at dusk' };
+    });
+    await startAndroidHandsFree();
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'typed prefix' },
+    });
+    act(() => {
+      mockOnPartialTranscript?.('a lake at dusk');
+    });
+    await waitFor(() => {
+      expect(
+        (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+      ).toBe('typed prefix a lake at dusk');
+    });
+
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => {
+      expect(mockStopRecording).toHaveBeenCalledTimes(1);
+    });
+    expect(
+      (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+    ).toBe('typed prefix a lake at dusk');
+
+    fireEvent.click(screen.getByTestId('recording-mode-text'));
+    await waitFor(() => {
+      expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('textFirst');
+    });
+    expect(
+      (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
+    ).toBe('typed prefix a lake at dusk');
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
   });
 });

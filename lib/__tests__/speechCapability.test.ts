@@ -7,6 +7,7 @@ import {
   mayLeaveDevice,
   normalizeSpeechLocale,
   resolveSpeechCapability,
+  supportsHandsFreeSpeechRestart,
   type SpeechCapabilityInput,
 } from '@/lib/speechCapability';
 
@@ -192,5 +193,17 @@ describe('normalizeSpeechLocale', () => {
   it('normalizes separator and case', () => {
     expect(normalizeSpeechLocale('fr_FR')).toBe('fr-fr');
     expect(normalizeSpeechLocale('en-US')).toBe('en-us');
+  });
+});
+
+describe('supportsHandsFreeSpeechRestart', () => {
+  it('restarts only on Android so an on-device recognizer can resume after silence', () => {
+    const onDevice = resolveSpeechCapability(baseInput());
+    expect(onDevice.tier).toBe('on_device');
+    expect(onDevice.requiresOnDeviceRecognition).toBe(true);
+    expect(isFullyOffline(onDevice)).toBe(true);
+    expect(supportsHandsFreeSpeechRestart('android')).toBe(true);
+    expect(supportsHandsFreeSpeechRestart('ios')).toBe(false);
+    expect(supportsHandsFreeSpeechRestart('web')).toBe(false);
   });
 });

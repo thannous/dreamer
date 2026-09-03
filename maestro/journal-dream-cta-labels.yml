@@ -37,7 +37,7 @@ appId: com.tanuki75.noctalia
           id: screen.journal
       timeout: 30000
 
-# Analyzed but not explored -> Explore dream further
+# Analyzed but not explored -> Start my reflection
 - runFlow: subflows/ensure-journal-search-visible.yml
 - tapOn:
       id: input.searchDreams
@@ -55,7 +55,7 @@ appId: com.tanuki75.noctalia
       element:
           id: component.dreamDetail.actionCard
       direction: DOWN
-- assertVisible: "Explore dream further"
+- assertVisible: "Start my reflection"
 - tapOn:
       id: btn.navigateJournal
 - extendedWaitUntil:
@@ -63,7 +63,7 @@ appId: com.tanuki75.noctalia
           id: screen.journal
       timeout: 30000
 
-# Explored -> Continue analyzing
+# Explored -> Continue my reflection
 - runFlow: subflows/ensure-journal-search-visible.yml
 - tapOn:
       id: input.searchDreams
@@ -81,4 +81,4 @@ appId: com.tanuki75.noctalia
       element:
           id: component.dreamDetail.actionCard
       direction: DOWN
-- assertVisible: "Continue analyzing"
+- assertVisible: "Continue my reflection"

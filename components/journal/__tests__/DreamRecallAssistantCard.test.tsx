@@ -78,18 +78,21 @@ jest.mock('@/components/motion', () => ({
   PressableScale: ({
     accessibilityLabel,
     children,
+    className,
     disabled,
     onPress,
     testID,
   }: {
     accessibilityLabel?: string;
     children?: React.ReactNode;
+    className?: string;
     disabled?: boolean;
     onPress?: () => void;
     testID?: string;
   }) => (
     <button
       aria-label={accessibilityLabel}
+      className={className}
       data-testid={testID}
       disabled={disabled}
       onClick={onPress}
@@ -362,7 +365,10 @@ describe('DreamRecallAssistantCard', () => {
     renderCard({ offerEligible: true });
 
     expect(screen.getByTestId(TID.Component.DreamRecallOffer)).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.DreamRecallStart)).toBeTruthy();
+    const start = screen.getByTestId(TID.Button.DreamRecallStart);
+    expect(start).toBeTruthy();
+    expect(start.className).toContain('bg-transparent');
+    expect(start.className).not.toContain('bg-champagne');
     expect(screen.getByTestId(TID.Button.DreamRecallLater)).toBeTruthy();
     expect(screen.queryByTestId(TID.Component.DreamRecallAssistantCard)).toBeNull();
     expect(screen.queryByText(ORIGINAL)).toBeNull();

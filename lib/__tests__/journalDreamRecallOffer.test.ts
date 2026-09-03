@@ -89,10 +89,10 @@ describe('journal detail recall offer wiring', () => {
     expect(reveal3).toContain('offerEligible={recallOffer.offerEligible}');
   });
 
-  it('places the card before analysis, interpretation, and the detail CTA', () => {
+  it('places the optional recall card after analysis CTA and before interpretation', () => {
     expect(reveal3.indexOf('<DreamRecallAssistantCard')).toBeGreaterThan(-1);
-    expect(reveal3.indexOf('<DreamRecallAssistantCard')).toBeLessThan(
-      reveal3.indexOf("renderDetailActionCard(['analyze'])")
+    expect(reveal3.indexOf("renderDetailActionCard(['analyze'])")).toBeLessThan(
+      reveal3.indexOf('<DreamRecallAssistantCard')
     );
     expect(reveal3).not.toContain('dream.interpretation');
     expect(reveal3).not.toContain('showCompletedReading');
@@ -127,5 +127,19 @@ describe('journal detail zone presentation', () => {
     expect(source).toContain('formatDreamDate(dream.id)');
     expect(source).toContain('formatDreamTime(dream.id)');
     expect(source).not.toContain('createdAt ?? dream.clientUpdatedAt ?? dream.id');
+  });
+});
+
+describe('journal detail recall offer hierarchy', () => {
+  const source = readFileSync(join(__dirname, '../../components/journal/DreamRecallAssistantCard.tsx'), 'utf8');
+
+  it('keeps the optional recall start as an outline action', () => {
+    const offer = source.slice(
+      source.indexOf('TID.Component.DreamRecallOffer'),
+      source.indexOf("state.status === 'completed'")
+    );
+    expect(offer).toContain('testID={TID.Button.DreamRecallStart}');
+    expect(offer).toContain('variant="secondary"');
+    expect(offer).not.toContain('variant="primary"');
   });
 });

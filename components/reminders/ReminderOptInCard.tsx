@@ -29,8 +29,14 @@ export const ReminderOptInCard = memo(function ReminderOptInCard({ surface, styl
     return null;
   }
 
-  const primaryBackground = mode === 'dark' ? noctalia.surface.active : noctalia.action.primary;
-  const primaryForeground = mode === 'dark' ? noctalia.accent.base : noctalia.action.primaryText;
+  const isHomeSurface = surface === 'home';
+  const filledBackground = mode === 'dark' ? noctalia.surface.active : noctalia.action.primary;
+  const filledForeground = mode === 'dark' ? noctalia.accent.base : noctalia.action.primaryText;
+  // Home already has the filled Today CTA. Keep this action tappable, but recede
+  // it to an outline so the two champagne pills no longer compete in one viewport.
+  const enableBackground = isHomeSurface ? noctalia.surface.raised : filledBackground;
+  const enableForeground = isHomeSurface ? noctalia.accent.text : filledForeground;
+  const enableBorder = isHomeSurface ? noctalia.surface.borderStrong : noctalia.action.primaryBorder;
 
   return (
     <View
@@ -105,19 +111,19 @@ export const ReminderOptInCard = memo(function ReminderOptInCard({ surface, styl
               onPress={() => void optIn.enable()}
               testID="btn.reminderOptIn.enable"
               style={({ pressed }) => [
-                styles.primary,
+                styles.enable,
                 {
-                  backgroundColor: primaryBackground,
-                  borderColor: noctalia.action.primaryBorder,
+                  backgroundColor: enableBackground,
+                  borderColor: enableBorder,
                   opacity: optIn.busy ? 0.7 : 1,
                 },
                 pressed && styles.pressed,
               ]}
             >
               {optIn.busy ? (
-                <ActivityIndicator size="small" color={primaryForeground} />
+                <ActivityIndicator size="small" color={enableForeground} />
               ) : (
-                <Text style={[styles.primaryLabel, { color: primaryForeground }]}>
+                <Text style={[styles.enableLabel, { color: enableForeground }]}>
                   {t('reminders.opt_in.cta', { time: optIn.selectedTime })}
                 </Text>
               )}
@@ -196,7 +202,7 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 4,
   },
-  primary: {
+  enable: {
     minHeight: 46,
     borderRadius: 999,
     borderWidth: 1,
@@ -204,7 +210,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 16,
   },
-  primaryLabel: {
+  enableLabel: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 15,
   },

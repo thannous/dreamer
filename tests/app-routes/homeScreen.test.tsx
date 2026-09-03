@@ -21,6 +21,8 @@ const mockSaveRitualStepProgress = jest.fn(async () => undefined);
 const mockUseDreamsData = jest.fn();
 
 let mockWidth = 390;
+let mockHeight = 844;
+let mockFontScale = 1;
 let mockPlatformOS: 'web' | 'ios' | 'android' = 'web';
 let mockSleepSoundsAvailable = false;
 let mockForeground: (() => void) | undefined;
@@ -49,9 +51,9 @@ jest.mock('react-native', () => {
     },
     useWindowDimensions: () => ({
       width: mockWidth,
-      height: 844,
+      height: mockHeight,
       scale: 2,
-      fontScale: 1,
+      fontScale: mockFontScale,
     }),
     View: ({
       accessibilityLabel,
@@ -71,7 +73,17 @@ jest.mock('react-native', () => {
     Text: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
       <span data-testid={testID}>{children}</span>
     ),
-    ScrollView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+    ScrollView: ({
+      children,
+      contentContainerStyle,
+    }: {
+      children?: React.ReactNode;
+      contentContainerStyle?: { paddingBottom?: number };
+    }) => (
+      <div data-testid="home-scroll" data-padding-bottom={contentContainerStyle?.paddingBottom}>
+        {children}
+      </div>
+    ),
     Pressable: ({
       accessibilityLabel,
       children,
@@ -289,6 +301,8 @@ async function renderHome(dreams: DreamAnalysis[], loaded = true) {
 describe('Home Accueil Aujourd’hui', () => {
   beforeEach(() => {
     mockWidth = 390;
+    mockHeight = 844;
+    mockFontScale = 1;
     mockPlatformOS = 'web';
     mockSleepSoundsAvailable = false;
     mockForeground = undefined;
@@ -438,6 +452,15 @@ describe('Home Accueil Aujourd’hui', () => {
     expect(screen.getByTestId(TID.Text.HomeTodayState).textContent).toBe('empty');
     fireEvent.click(screen.getByTestId(TID.Button.HeaderHomeInspiration));
     expect(mockPush).toHaveBeenCalledWith('/ritual/lucid');
+  });
+
+  it('reserves taller home scroll padding at fontScale 2 so content stays above the tab bar', async () => {
+    mockPlatformOS = 'android';
+    mockWidth = 390;
+    mockFontScale = 2;
+    await renderHome([]);
+
+    expect(screen.getByTestId('home-scroll').getAttribute('data-padding-bottom')).toBe('148');
   });
 
   it('exposes a mobile settings header action without dropping dictionary or inspiration', async () => {
