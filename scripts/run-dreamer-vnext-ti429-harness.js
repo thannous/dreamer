@@ -35,6 +35,7 @@ const GUEST_UNLIMITED_SENTINELS = [
   'Guest unlimited sentinel two',
   'Guest unlimited sentinel three',
 ];
+const GUEST_TIER_REGEX = 'Guest|Invité|Gast|Invitado|Ospite|Visitante';
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -227,10 +228,13 @@ function inspectGuestUnlimitedFlow(flowText) {
   if (texts.filter((value) => GUEST_UNLIMITED_SENTINELS.includes(value)).length < 3) {
     issues.push('guest-unlimited flow must save at least three distinct guest dreams');
   }
-  if (!flowText.includes('id: btn.auth.google') || !flowText.includes('id: btn.auth.signOut')) {
+  if (flowText.includes('id: btn.auth.google')) {
+    issues.push('guest-unlimited flow must not use btn.auth.google as guest proof');
+  }
+  if (!flowText.includes(GUEST_TIER_REGEX) || !flowText.includes('id: btn.auth.signOut')) {
     issues.push('guest-unlimited flow must prove a guest session before the first save');
   }
-  const guestProofAt = flowText.indexOf('id: btn.auth.google');
+  const guestProofAt = flowText.indexOf(GUEST_TIER_REGEX);
   const firstSaveAt = flowText.indexOf('inputText: "Guest unlimited sentinel one"');
   if (guestProofAt === -1 || firstSaveAt === -1 || !(guestProofAt < firstSaveAt)) {
     issues.push('guest-unlimited flow must assert guest identity before typing the first dream');
@@ -795,6 +799,7 @@ module.exports = {
   GUEST_UNLIMITED_FLOW,
   SHORT_FRAGMENT_TOKENS,
   GUEST_UNLIMITED_SENTINELS,
+  GUEST_TIER_REGEX,
   inspectSearchRecovery,
   inspectPermissionsVoiceMode,
   inspectNotificationSettingsResume,

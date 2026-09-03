@@ -109,11 +109,17 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(byId['guest-unlimited'].command).toContain('maestro/release-guest-unlimited.yml');
     expect(byId['guest-unlimited'].command).toContain('--suite release-ti429');
     expect(byId['guest-unlimited'].requiredTokens).toEqual(expect.arrayContaining([
+      'Guest|Invité|Gast|Invitado|Ospite|Visitante',
       'Guest unlimited sentinel one',
       'Guest unlimited sentinel two',
       'Guest unlimited sentinel three',
       'id: screen.paywall',
     ]));
+    expect(byId['guest-unlimited'].requiredTokens).not.toEqual(expect.arrayContaining([
+      'id: btn.auth.google',
+    ]));
+    expect(byId['guest-unlimited'].notes).toMatch(/Guest\|Invité\|Gast\|Invitado\|Ospite\|Visitante/);
+    expect(byId['guest-unlimited'].notes).toMatch(/Do not use btn\.auth\.google/);
     expect(byId['analysis-success'].mode).toBe('blocked');
     expect(byId['analysis-success'].runtime).toBe('release-native');
     expect(byId['analysis-success'].flow).toBe('maestro/release-analysis.yml');
@@ -192,8 +198,10 @@ describe('Dreamer VNext TI-429 harness', () => {
 
   it('requires guest-unlimited to save three guest dreams without account or paywall blockers', () => {
     const flowText = read(path.join(ROOT, 'maestro/release-guest-unlimited.yml'));
-    expect(flowText).toContain('id: btn.auth.google');
+    expect(flowText).toContain('Guest|Invité|Gast|Invitado|Ospite|Visitante');
+    expect(flowText).not.toContain('id: btn.auth.google');
     expect(flowText).toContain('id: btn.auth.signOut');
+    expect(flowText).toContain('direction: UP');
     expect(flowText).toContain('Guest unlimited sentinel one');
     expect(flowText).toContain('Guest unlimited sentinel two');
     expect(flowText).toContain('Guest unlimited sentinel three');
@@ -212,9 +220,41 @@ describe('Dreamer VNext TI-429 harness', () => {
       'guest-unlimited flow must prove a guest session before the first save',
     ]));
 
-    const missingSecondBlocker = [
+    expect(inspectGuestUnlimitedFlow([
       'clearState: true',
       'id: btn.auth.google',
+      'id: btn.auth.signOut',
+      'id: screen.recording',
+      'assertNotVisible:',
+      '  id: screen.paywall',
+      'assertNotVisible:',
+      '  id: btn.auth.signIn',
+      'inputText: "Guest unlimited sentinel one"',
+      'id: screen.recording',
+      'assertNotVisible:',
+      '  id: screen.paywall',
+      'assertNotVisible:',
+      '  id: btn.auth.signIn',
+      'inputText: "Guest unlimited sentinel two"',
+      'id: screen.recording',
+      'assertNotVisible:',
+      '  id: screen.paywall',
+      'assertNotVisible:',
+      '  id: btn.auth.signIn',
+      'inputText: "Guest unlimited sentinel three"',
+      'id: screen.journal',
+      'assertVisible: "Guest unlimited sentinel one"',
+      'assertVisible: "Guest unlimited sentinel two"',
+      'assertVisible: "Guest unlimited sentinel three"',
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      'guest-unlimited flow must not use btn.auth.google as guest proof',
+      'guest-unlimited flow must prove a guest session before the first save',
+    ]));
+
+    const missingSecondBlocker = [
+      'clearState: true',
+      'Guest|Invité|Gast|Invitado|Ospite|Visitante',
       'id: btn.auth.signOut',
       'id: screen.recording',
       'assertNotVisible:',
@@ -244,7 +284,7 @@ describe('Dreamer VNext TI-429 harness', () => {
 
     expect(inspectGuestUnlimitedFlow([
       'clearState: true',
-      'id: btn.auth.google',
+      'Guest|Invité|Gast|Invitado|Ospite|Visitante',
       'id: btn.auth.signOut',
       'id: screen.recording',
       'assertNotVisible:',

@@ -254,7 +254,7 @@
       "flow": "maestro/release-guest-unlimited.yml",
       "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-guest-unlimited.yml --side-by-side-qa",
       "requiredTokens": [
-        "id: btn.auth.google",
+        "Guest|Invité|Gast|Invitado|Ospite|Visitante",
         "id: btn.auth.signOut",
         "id: screen.paywall",
         "Guest unlimited sentinel one",
@@ -264,7 +264,7 @@
         "id: screen.journal",
         "takeScreenshot: ti429-guest-unlimited"
       ],
-      "notes": "Release-native. One install/state saves at least three guest dreams with no account or paywall blocking before each save, then asserts the three Journal entries. No analysis, image or purchase. Distinct from the mock guest/free/Plus lab. Unexecuted = blocked. Not a pass.",
+      "notes": "Release-native. Guest proof is the QuotaStatusCard tier regex Guest|Invité|Gast|Invitado|Ospite|Visitante plus absent sign-out/paywall. Do not use btn.auth.google. One install/state saves at least three guest dreams with no account or paywall blocking before each save, then asserts the three Journal entries. No analysis, image or purchase. Distinct from the mock guest/free/Plus lab. Unexecuted = blocked. Not a pass.",
       "evidence": "one screenshot of Journal with three guest dreams. Unexecuted = blocked.",
       "runtime": "release-native"
     },

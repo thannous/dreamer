@@ -22,19 +22,19 @@ onFlowComplete:
     timeout: 20000
 - runFlow: subflows/dismiss-first-launch-onboarding.yml
 
-# A clean install starts as a guest: sign-in is available, sign-out is not.
+# A clean install starts as a guest. QuotaStatusCard exposes the localised
+# guest tier near the top of Settings; do not hunt Google/auth-google.
 - openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000
 - scrollUntilVisible:
     element:
-      id: btn.auth.google
-    direction: DOWN
-    visibilityPercentage: 60
-    timeout: 30000
-- assertVisible:
-    id: btn.auth.google
+      text: "Guest|Invité|Gast|Invitado|Ospite|Visitante"
+    direction: UP
+    timeout: 20000
+    visibilityPercentage: 40
+- assertVisible: "Guest|Invité|Gast|Invitado|Ospite|Visitante"
 - assertNotVisible:
     id: btn.auth.signOut
 - assertNotVisible:
