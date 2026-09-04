@@ -70,6 +70,7 @@ describe('useRecordingDraftPersistence', () => {
     await flushPromises();
     expect(onRestore).toHaveBeenCalledTimes(1);
     expect(onRestore).toHaveBeenCalledWith('a remembered dream');
+    expect(first.result.current.isHydrated).toBe(true);
     first.unmount();
 
     onRestore.mockClear();
@@ -90,7 +91,7 @@ describe('useRecordingDraftPersistence', () => {
 
     const long601 = 'a'.repeat(601);
     act(() => {
-      result.current.noteInput(long601);
+      expect(result.current.noteInput(long601)).toBe(true);
     });
     act(() => {
       jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS);
@@ -123,7 +124,7 @@ describe('useRecordingDraftPersistence', () => {
 
     const voiced = '  a fox waits beside a frozen lake  ';
     act(() => {
-      result.current.noteInput(voiced);
+      expect(result.current.noteInput(voiced)).toBe(true);
     });
     act(() => {
       jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS);
@@ -142,7 +143,7 @@ describe('useRecordingDraftPersistence', () => {
     await flushPromises();
 
     act(() => {
-      result.current.noteInput('keep me after a failed save');
+      expect(result.current.noteInput('keep me after a failed save')).toBe(true);
     });
     act(() => {
       jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS);
@@ -173,7 +174,7 @@ describe('useRecordingDraftPersistence', () => {
     await flushPromises();
 
     act(() => {
-      result.current.noteInput('hello from the editor');
+      expect(result.current.noteInput('hello from the editor')).toBe(true);
     });
     rerender({ transcript: 'hello from the editor' });
     act(() => {
@@ -223,7 +224,7 @@ describe('useRecordingDraftPersistence', () => {
     await flushPromises();
 
     act(() => {
-      result.current.noteInput('should never land');
+      expect(result.current.noteInput('should never land')).toBe(true);
     });
     act(() => {
       result.current.clearAfterSuccessfulSave();
@@ -239,7 +240,7 @@ describe('useRecordingDraftPersistence', () => {
     expect(mockSaveTranscript).not.toHaveBeenCalledWith('should never land');
   });
 
-  it('lets user input win over a late restore', async () => {
+  it('refuses input before restore and still restores the stored draft', async () => {
     const getDeferred = deferred<string>();
     mockGetSavedTranscript.mockReturnValue(getDeferred.promise);
     const onRestore = jest.fn();
@@ -248,25 +249,39 @@ describe('useRecordingDraftPersistence', () => {
       { initialProps: { transcript: '' } }
     );
 
+    expect(result.current.isHydrated).toBe(false);
     act(() => {
-      result.current.noteInput('typed while loading');
+      expect(result.current.noteInput('typed while loading')).toBe(false);
     });
-    rerender({ transcript: 'typed while loading' });
+    act(() => {
+      result.current.clearAfterSuccessfulSave();
+    });
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
 
     await act(async () => {
       getDeferred.resolve('saved draft from disk');
       await getDeferred.promise;
     });
 
-    expect(onRestore).not.toHaveBeenCalled();
+    expect(onRestore).toHaveBeenCalledTimes(1);
+    expect(onRestore).toHaveBeenCalledWith('saved draft from disk');
+    expect(result.current.isHydrated).toBe(true);
+    rerender({ transcript: 'saved draft from disk' });
 
     act(() => {
       jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS);
     });
     await flushPromises();
 
-    expect(mockSaveTranscript).toHaveBeenCalledWith('typed while loading');
-    expect(mockSaveTranscript).not.toHaveBeenCalledWith('saved draft from disk');
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+    act(() => {
+      expect(result.current.noteInput('typed after restore')).toBe(true);
+    });
+    act(() => {
+      jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS);
+    });
+    await flushPromises();
+    expect(mockSaveTranscript).toHaveBeenCalledWith('typed after restore');
   });
 
   it('does not erase stored content during the initial empty render', async () => {
@@ -312,7 +327,7 @@ describe('useRecordingDraftPersistence', () => {
     expect(onRestore).not.toHaveBeenCalled();
 
     act(() => {
-      result.current.noteInput('still capturable');
+      expect(result.current.noteInput('still capturable')).toBe(true);
     });
     act(() => {
       jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS);
@@ -337,7 +352,7 @@ describe('useRecordingDraftPersistence', () => {
     expect(appStateListener).toEqual(expect.any(Function));
 
     act(() => {
-      result.current.noteInput('keep this across background');
+      expect(result.current.noteInput('keep this across background')).toBe(true);
     });
     expect(mockSaveTranscript).not.toHaveBeenCalled();
 
@@ -358,7 +373,7 @@ describe('useRecordingDraftPersistence', () => {
     await flushPromises();
 
     act(() => {
-      result.current.noteInput('inactive fragment');
+      expect(result.current.noteInput('inactive fragment')).toBe(true);
     });
     act(() => {
       appStateListener?.('inactive');
@@ -377,7 +392,7 @@ describe('useRecordingDraftPersistence', () => {
     await flushPromises();
 
     act(() => {
-      result.current.noteInput('survive unmount');
+      expect(result.current.noteInput('survive unmount')).toBe(true);
     });
     expect(mockSaveTranscript).not.toHaveBeenCalled();
 
@@ -399,7 +414,7 @@ describe('useRecordingDraftPersistence', () => {
     await flushPromises();
 
     act(() => {
-      result.current.noteInput('should never land after save');
+      expect(result.current.noteInput('should never land after save')).toBe(true);
     });
     act(() => {
       result.current.clearAfterSuccessfulSave();
@@ -435,6 +450,7 @@ describe('useRecordingDraftPersistence', () => {
       useRecordingDraftPersistence({ transcript: '', onRestore })
     );
 
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
     act(() => {
       unmount();
     });
@@ -457,7 +473,7 @@ describe('useRecordingDraftPersistence', () => {
     expect(result.current.lastPersistedValue).toBe('');
 
     act(() => {
-      result.current.noteInput('Rain on the glass');
+      expect(result.current.noteInput('Rain on the glass')).toBe(true);
     });
     expect(result.current.lastPersistedValue).toBe('');
     expect(mockSaveTranscript).not.toHaveBeenCalled();

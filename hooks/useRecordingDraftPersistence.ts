@@ -11,7 +11,8 @@ export type UseRecordingDraftPersistenceOptions = {
 };
 
 export type UseRecordingDraftPersistenceResult = {
-  noteInput: (value: string) => void;
+  isHydrated: boolean;
+  noteInput: (value: string) => boolean;
   clearAfterSuccessfulSave: () => void;
   lastPersistedValue: string | null;
 };
@@ -20,8 +21,9 @@ export type UseRecordingDraftPersistenceResult = {
  * Durable recording-draft persistence.
  *
  * Hydration must finish before any write so the initial empty editor cannot
- * erase a stored draft. `noteInput` updates the latest/user-edited refs
- * synchronously so a late restore cannot overwrite typing or dictation.
+ * erase a stored draft. `noteInput` refuses input until the restore callback
+ * has run, then accepts edits and schedules autosave. A stored draft is always
+ * restored; early calls must not mark the editor as user-edited.
  * Writes are serialized on a generation-tagged queue so a stale autosave
  * cannot finish after a successful journal save and resurrect text.
  * A pending debounce is flushed immediately on AppState background/inactive
@@ -103,12 +105,19 @@ export function useRecordingDraftPersistence({
   }, [enqueueWrite]);
 
   const noteInput = useCallback((value: string) => {
+    if (!hydratedRef.current) {
+      return false;
+    }
     userEditedRef.current = true;
     latestValueRef.current = value;
     scheduleAutosave();
+    return true;
   }, [scheduleAutosave]);
 
   const clearAfterSuccessfulSave = useCallback(() => {
+    if (!hydratedRef.current) {
+      return;
+    }
     if (debounceTimerRef.current !== null) {
       clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = null;
@@ -135,13 +144,6 @@ export function useRecordingDraftPersistence({
         saved = '';
       }
       if (cancelled) {
-        return;
-      }
-
-      if (userEditedRef.current) {
-        hydratedRef.current = true;
-        setHydrated(true);
-        scheduleAutosave();
         return;
       }
 
@@ -193,6 +195,7 @@ export function useRecordingDraftPersistence({
   }, [flushPending]);
 
   return {
+    isHydrated: hydrated,
     noteInput,
     clearAfterSuccessfulSave,
     lastPersistedValue,
