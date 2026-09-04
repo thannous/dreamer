@@ -23,6 +23,8 @@ const {
   inspectPermissionsVoiceMode,
   inspectNotificationSettingsResume,
   inspectReleaseIdentityAnchors,
+  inspectRunnerBaseIdentity,
+  inspectBaseCommandIdentity,
   parseArgs,
   recordEvidence,
   validateHarness,
@@ -432,7 +434,7 @@ describe('Dreamer VNext TI-429 harness', () => {
     ]));
   });
 
-  it('blocks guest real-analysis on sideload QA and forbids an automated --side-by-side-qa command', () => {
+  it('blocks guest real-analysis on sideload base and forbids --side-by-side-qa', () => {
     expect(inspectGuestRealAnalysisSideloadBan({
       id: 'analysis-success',
       mode: 'blocked',
@@ -447,9 +449,9 @@ describe('Dreamer VNext TI-429 harness', () => {
       flow: 'maestro/release-analysis.yml',
       command: 'npm run test:e2e:release:analysis:local -- --side-by-side-qa',
     })).toEqual(expect.arrayContaining([
-      'guest real-analysis cannot run automated with --side-by-side-qa: sideloaded com.tanuki75.noctalia.qa is not PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia',
-      'analysis-success must stay blocked on sideload QA until a Play-distributed QA identity is recognized/allowlisted, or an authorized authenticated test account is used',
-      'analysis-success must not keep an executable command while blocked on sideload QA',
+      'guest real-analysis must not use --side-by-side-qa: base-only validation targets com.tanuki75.noctalia / noctalia; a sideloaded base build is not assumed integrity-recognized for PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia',
+      'analysis-success must stay blocked until Play Integrity status is verified on a Play-distributed recognized/allowlisted identity, or an authorized authenticated test account is used',
+      'analysis-success must not keep an executable command while blocked',
     ]));
 
     expect(inspectGuestRealAnalysisSideloadBan({
@@ -458,13 +460,13 @@ describe('Dreamer VNext TI-429 harness', () => {
       flow: 'maestro/release-analysis.yml',
       command: 'node ./scripts/run-maestro-android.js --suite release --flow maestro/release-analysis.yml --side-by-side-qa',
     })).toEqual(expect.arrayContaining([
-      'guest real-analysis cannot run automated with --side-by-side-qa: sideloaded com.tanuki75.noctalia.qa is not PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia',
+      'guest real-analysis must not use --side-by-side-qa: base-only validation targets com.tanuki75.noctalia / noctalia; a sideloaded base build is not assumed integrity-recognized for PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia',
     ]));
 
     expect(inspectGuestRealAnalysisSideloadBan({
       id: 'image-independent',
       mode: 'automated',
-      command: 'node ./scripts/run-maestro-android.js --suite release-ti429 --side-by-side-qa',
+      command: 'node ./scripts/run-maestro-android.js --suite release-ti429 --no-start-metro --flow maestro/release-image-independent.yml',
     })).toEqual([]);
   });
 
@@ -676,9 +678,16 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(plan.limits.some((limit) => limit.includes('never launches Maestro'))).toBe(true);
     expect(plan.limits.some((limit) => limit.includes('release-ti429 suite'))).toBe(true);
     expect(plan.limits.some((limit) => (
-      limit.includes('Guest real analysis is blocked')
-      && limit.includes('--side-by-side-qa')
+      limit.includes('Guest real analysis stays blocked')
+      && limit.includes('INDÉTERMINÉ')
       && limit.includes('PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia')
+    ))).toBe(true);
+    expect(plan.limits.some((limit) => (
+      limit.includes('returned 401')
+      && limit.includes('.qa (anterieur)')
+    ))).toBe(true);
+    expect(plan.limits.some((limit) => (
+      limit.includes('base app com.tanuki75.noctalia / noctalia with no side-by-side flag')
     ))).toBe(true);
   });
 
@@ -725,7 +734,7 @@ describe('Dreamer VNext TI-429 harness', () => {
     expect(validateHarness(tmp).ok).toBe(true);
   });
 
-  it('requires dynamic appId/scheme anchors and side-by-side QA commands for release-native proof', () => {
+  it('requires dynamic appId/scheme anchors and base-only commands for release-native proof', () => {
     const inspection = inspectHarness(ROOT);
     expect(inspection.ok).toBe(true);
 
@@ -734,7 +743,7 @@ describe('Dreamer VNext TI-429 harness', () => {
     ));
     expect(releaseNative.length).toBeGreaterThan(0);
     for (const check of releaseNative) {
-      expect(check.command).toContain('--side-by-side-qa');
+      expect(check.command).not.toContain('--side-by-side-qa');
       const flowText = read(path.join(ROOT, check.flow));
       expect(inspectReleaseIdentityAnchors(flowText, check)).toEqual([]);
       expect(yamlLooksParseable(path.join(ROOT, check.flow), check)).toBe(true);
@@ -751,7 +760,7 @@ describe('Dreamer VNext TI-429 harness', () => {
       '${DEEP_LINK_SCHEME || "noctalia"}://recording',
     ]));
     expect(inspection.manifest.limits.some((limit) => (
-      limit.includes('com.tanuki75.noctalia.qa') && limit.includes('not Store')
+      limit.includes('Base device proof is local proof') && limit.includes('not Store')
     ))).toBe(true);
 
     expect(inspectReleaseIdentityAnchors('appId: com.tanuki75.noctalia\n---\n', {
@@ -762,7 +771,6 @@ describe('Dreamer VNext TI-429 harness', () => {
     })).toEqual(expect.arrayContaining([
       'release-native flow must use appId: ${APP_ID || "com.tanuki75.noctalia"}',
       'release-native flow still hardcodes the production appId',
-      'canonical command is missing --side-by-side-qa for physical QA proof',
     ]));
     expect(inspectReleaseIdentityAnchors('appId: ${APP_ID}\n---\n- openLink: ${DEEP_LINK_SCHEME}://journal\n', {
       runtime: 'release-native',
@@ -773,6 +781,37 @@ describe('Dreamer VNext TI-429 harness', () => {
       'release-native flow must use appId: ${APP_ID || "com.tanuki75.noctalia"}',
       'release-native flow still hardcodes the production appId',
       'release-native flow still hardcodes noctalia:// instead of ${DEEP_LINK_SCHEME || "noctalia"}://',
+     'canonical command must not use --side-by-side-qa: base-only validation targets com.tanuki75.noctalia / noctalia',
     ]));
+  });
+
+  it('requires exact base runner declarations and rejects a QA-only identity', () => {
+    const runner = read(path.join(ROOT, 'scripts/run-maestro-android.js'));
+    expect(inspectRunnerBaseIdentity(runner)).toEqual([]);
+    expect(inspectRunnerBaseIdentity([
+      "const PRODUCTION_ANDROID_APP_ID = 'com.tanuki75.noctalia.qa';",
+      "const PRODUCTION_DEEP_LINK_SCHEME = 'noctalia-qa';",
+      '',
+    ].join('\n'))).toEqual(expect.arrayContaining([
+      "Maestro runner is missing the exact base declaration const PRODUCTION_ANDROID_APP_ID = 'com.tanuki75.noctalia'",
+      "Maestro runner is missing the exact base declaration const PRODUCTION_DEEP_LINK_SCHEME = 'noctalia'",
+    ]));
+  });
+
+  it('rejects non-base identity retargeting even without --side-by-side-qa', () => {
+    const qaOverride = 'node ./scripts/run-maestro-android.js --suite release-ti429 --no-start-metro --flow maestro/release-short-fragments.yml --app-id com.tanuki75.noctalia.qa --deep-link-scheme noctalia-qa';
+    expect(inspectBaseCommandIdentity(qaOverride)).toEqual(expect.arrayContaining([
+      'canonical command must not retarget the Android identity with --app-id/--deep-link-scheme: base-only validation runs without identity overrides',
+      'canonical command must not reference the QA identity com.tanuki75.noctalia.qa / noctalia-qa: base-only validation targets com.tanuki75.noctalia / noctalia',
+    ]));
+    expect(inspectReleaseIdentityAnchors('appId: ${APP_ID || "com.tanuki75.noctalia"}\n---\n', {
+      runtime: 'release-native',
+      flow: 'maestro/release-short-fragments.yml',
+      mode: 'automated',
+      command: qaOverride,
+    })).toEqual(expect.arrayContaining([
+      'canonical command must not retarget the Android identity with --app-id/--deep-link-scheme: base-only validation runs without identity overrides',
+    ]));
+    expect(inspectBaseCommandIdentity('node ./scripts/run-maestro-android.js --suite release-ti429 --no-start-metro --flow maestro/release-short-fragments.yml')).toEqual([]);
   });
 });

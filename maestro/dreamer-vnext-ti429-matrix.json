@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "ticket": "TI-429",
   "title": "Dreamer VNext TI-429 executable matrix",
-  "binary": "mixed: release-native, mock-native, manual, web/tablet. Nothing in this file is device proof.",
+  "binary": "mixed: release-native, mock-native, manual, web/tablet. Nothing in this file is device proof. Target: base com.tanuki75.noctalia / noctalia, no side-by-side flag. (Anterieur au 2026-09-04 : .qa retire.)",
   "limits": [
     "This harness never launches Maestro, ADB, prebuild, install, commit, push or Linear.",
     "npm run test:e2e:release:ti429:local executes only the release-ti429 suite. Other automated checks keep the command listed on the row.",
@@ -12,9 +12,9 @@
     "A 10_000-character paste is a documented human check because Maestro inputText is not a reliable 10k injector.",
     "Unexecuted automated rows stay blocked in the plan. Manual rows stay manual. Neither is a pass.",
     "Local Jest/typecheck proof is separate from device proof. Device proof stays in a dated maestro-results/android/ti429 directory.",
-    "Physical QA proof uses --side-by-side-qa against com.tanuki75.noctalia.qa / noctalia-qa on the local device. That is not Store, Play, production install-source or purchase proof.",
-    "Never uninstall or overwrite the Play app. Do not run purchase flows against the QA package. Auth-credential rows stay separately blocked when credentials are missing.",
-    "Guest real analysis is blocked on sideloaded com.tanuki75.noctalia.qa: PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia, so POST /api/guest/session returns 401 and /analyzeDream never runs. Do not keep an automated guest real-analysis command with --side-by-side-qa. Unblock only with a Play-distributed QA identity that is recognized/allowlisted, or an explicitly authorized authenticated test account.",
+    "Device proof runs against the base app com.tanuki75.noctalia / noctalia with no side-by-side flag. Record binary_source (local build vs Play), version and signature in each proof. Base device proof is local proof, not Store, Play install-source or purchase proof. (Anterieur au 2026-09-04 : side-by-side .qa retire.)",
+    "A compatible local base build may be installed when the user authorized native local testing, after verifying package/signature/version. Never uninstall or clear app data to force an incompatible install. Do not run purchase flows against a local binary. Auth-credential rows stay separately blocked when credentials are missing.",
+    "Guest real analysis stays blocked: Play Integrity eligibility of a sideloaded build is INDÉTERMINÉ until verified on device for PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia. Precedent historique 2026-09-03 06:46:10Z observe sur sideload .qa (anterieur) : POST /api/guest/session returned 401 avec integrityToken, sans /analyzeDream. Do not attach an automated guest real-analysis command to any sideload. A package name alone never counts as integrity proof. Unblock only with a Play-distributed recognized/allowlisted identity, or an explicitly authorized authenticated test account.",
     "TI-428 live-voice rows are manual or blocked, never a pass from this harness. Local stub AI at USD 0 is not 5-turn model-cost proof. Unmeasured p95/WER/cost stays INDÉTERMINÉ, not a latency-only no-go."
   ],
   "checks": [
@@ -24,7 +24,7 @@
       "criterion": "Ecrire et Raconter, passage entre les deux",
       "mode": "automated",
       "flow": "maestro/release-write-tell.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-write-tell.yml --side-by-side-qa",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-write-tell.yml",
       "requiredTokens": [
         "id: btn.recording.inputMode.text",
         "id: btn.recording.inputMode.voice",
@@ -41,7 +41,7 @@
       "criterion": "kill et reprise",
       "mode": "automated",
       "flow": "maestro/release-draft-kill-relaunch.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-draft-kill-relaunch.yml --side-by-side-qa",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-draft-kill-relaunch.yml",
       "requiredTokens": [
         "killApp",
         "Draft kill relaunch sentinel",
@@ -57,7 +57,7 @@
       "criterion": "Fragment court",
       "mode": "automated",
       "flow": "maestro/release-short-fragments.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-short-fragments.yml --side-by-side-qa",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-short-fragments.yml",
       "requiredTokens": [
         "Porte rouge",
         "maman",
@@ -77,7 +77,7 @@
       "criterion": "recit long",
       "mode": "automated",
       "flow": "maestro/release-long-fragment.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-long-fragment.yml --side-by-side-qa",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-long-fragment.yml",
       "requiredTokens": [
         "LONG-START",
         "LONG-END",
@@ -107,7 +107,7 @@
       "criterion": "Enregistrement hors ligne",
       "mode": "automated",
       "flow": "maestro/release-offline-local.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-offline-local.yml --side-by-side-qa",
+      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-offline-local.yml",
       "requiredTokens": [
         "setAirplaneMode: enabled",
         "Release offline local sentinel",
@@ -124,7 +124,7 @@
       "criterion": "synchronisation",
       "mode": "automated",
       "flow": "maestro/release-auth-offline-sync.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release --flow maestro/release-auth-offline-sync.yml --retries 0 --no-start-metro --side-by-side-qa",
+      "command": "node ./scripts/run-maestro-android.js --suite release --flow maestro/release-auth-offline-sync.yml --retries 0 --no-start-metro",
       "requiredTokens": [
         "QA_SYNC_SENTINEL",
         "setAirplaneMode: enabled",
@@ -148,7 +148,7 @@
       ],
       "evidence": "one screenshot of illustration CTA after a successful analysis. Never tap illustrate. Unexecuted = blocked.",
       "runtime": "release-native",
-      "notes": "Not executable on sideloaded com.tanuki75.noctalia.qa. Observed 2026-09-03 06:46:10Z: POST /api/guest/session returned 401 with an integrityToken, no decode error, and no /analyzeDream. PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia does not recognize the QA package. Keep the flow as the intended proof, but do not attach an automated --side-by-side-qa command. Unblock only when the QA identity is distributed via Play and recognized/allowlisted, or when an explicitly authorized authenticated test account is used. Unexecuted = blocked. Not a pass."
+      "notes": "Blocked: real analysis needs an integrity-recognized identity for PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia. Historique 2026-09-03 06:46:10Z sur sideload .qa (anterieur) : POST /api/guest/session returned 401 avec integrityToken, sans /analyzeDream. A sideloaded base build is not assumed valid by its package name alone. Keep the flow as the intended proof with no automated command. Unblock only with a Play and recognized/allowlisted Play-distributed identity or an explicitly authorized authenticated test account. Unexecuted = blocked. Not a pass."
     },
     {
       "id": "analysis-failed",
@@ -171,7 +171,7 @@
       "criterion": "Analyse interrompue",
       "mode": "automated",
       "flow": "maestro/release-analysis-interrupt.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-analysis-interrupt.yml --side-by-side-qa",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-analysis-interrupt.yml",
       "requiredTokens": [
         "killApp",
         "Analysis interrupt sentinel",
@@ -203,7 +203,7 @@
       "criterion": "Image independante de l'analyse",
       "mode": "automated",
       "flow": "maestro/release-image-independent.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-image-independent.yml --side-by-side-qa",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-image-independent.yml",
       "requiredTokens": [
         "id: btn.dream.primaryCta",
         "id: component.transcriptCard",
@@ -214,7 +214,7 @@
       ],
       "evidence": "one screenshot after scrolling to btn.dream.delete and asserting illustration CTA is absent. No taps, no quota. Unexecuted = blocked.",
       "runtime": "release-native",
-      "notes": "Must not tap analysis, must not generate an image, must not consume quota. Before analysis, verify primaryCta+transcript then scroll to delete and assertNotVisible illustrate. Illustration CTA after successful analysis stays in analysis-success, which is blocked on sideload QA until a Play-distributed QA identity or an authorized authenticated test account."
+      "notes": "Must not tap analysis, must not generate an image, must not consume quota. Before analysis, verify primaryCta+transcript then scroll to delete and assertNotVisible illustrate. Illustration CTA after successful analysis stays in analysis-success, which stays blocked until an integrity-recognized Play-distributed identity or an authorized authenticated test account."
     },
     {
       "id": "journal-detail-trends-deeplinks",
@@ -222,10 +222,10 @@
       "criterion": "Journal liste, Tendances, recap hebdo et capture via liens profonds",
       "mode": "automated",
       "flow": "maestro/release-journal-trends-deeplinks.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-journal-trends-deeplinks.yml --side-by-side-qa",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-journal-trends-deeplinks.yml",
       "evidence": "one screenshot of recovered journal detail after search. Trends and weekly recap remain asserted. Unexecuted = blocked.",
       "runtime": "release-native",
-      "notes": "Release-native. Covers ${DEEP_LINK_SCHEME || \"noctalia\"}://journal (list), ${DEEP_LINK_SCHEME || \"noctalia\"}://statistics / Trends, ${DEEP_LINK_SCHEME || \"noctalia\"}://weekly-recap and ${DEEP_LINK_SCHEME || \"noctalia\"}://recording. Does not cover analysis-ready ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id}. QA scheme/package is local device proof, not Store/production install-source proof.",
+      "notes": "Release-native. Covers ${DEEP_LINK_SCHEME || \"noctalia\"}://journal (list), ${DEEP_LINK_SCHEME || \"noctalia\"}://statistics / Trends, ${DEEP_LINK_SCHEME || \"noctalia\"}://weekly-recap and ${DEEP_LINK_SCHEME || \"noctalia\"}://recording. Does not cover analysis-ready ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id}. Base scheme/package proof is local device proof, not Store/production install-source proof.",
       "requiredTokens": [
         "${DEEP_LINK_SCHEME || \"noctalia\"}://journal",
         "${DEEP_LINK_SCHEME || \"noctalia\"}://statistics",
@@ -244,7 +244,7 @@
       "criterion": "lien profond analysis-ready vers ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id}",
       "mode": "blocked",
       "runtime": "release-native",
-      "notes": "No stable fixture id: mock local dream ids are timestamps at preload, remoteId is not the journal/[id] route key, and a Release dream id cannot be captured without a device. Exact analysis-ready URL ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id} requires physical-device proof. QA package/scheme proof is local device proof, not Store/production install-source proof. Unexecuted = blocked. Not a pass.",
+      "notes": "No stable fixture id: mock local dream ids are timestamps at preload, remoteId is not the journal/[id] route key, and a Release dream id cannot be captured without a device. Exact analysis-ready URL ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id} requires physical-device proof. Base package/scheme proof is local device proof, not Store/production install-source proof. Unexecuted = blocked. Not a pass.",
       "evidence": "physical-device screenshot of journal/{id} opened from an analysis-ready notification. Missing until a real id is available."
     },
     {
@@ -253,7 +253,7 @@
       "criterion": "Invite illimite local",
       "mode": "automated",
       "flow": "maestro/release-guest-unlimited.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-guest-unlimited.yml --side-by-side-qa",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-guest-unlimited.yml",
       "requiredTokens": [
         "Guest|Invité|Gast|Invitado|Ospite|Visitante",
         "id: btn.auth.signOut",
@@ -291,7 +291,7 @@
       "criterion": "notifications",
       "mode": "automated",
       "flow": "maestro/release-notification-permission.yml",
-      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-notification-permission.yml --side-by-side-qa",
+      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-notification-permission.yml",
       "requiredTokens": [
         "notifications: deny",
         "id: text.settings.notificationsPermissionWarning",

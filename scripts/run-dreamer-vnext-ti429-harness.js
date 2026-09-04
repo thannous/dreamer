@@ -36,6 +36,38 @@ const GUEST_UNLIMITED_SENTINELS = [
   'Guest unlimited sentinel three',
 ];
 const GUEST_TIER_REGEX = 'Guest|Invité|Gast|Invitado|Ospite|Visitante';
+const BASE_ANDROID_APP_ID = 'com.tanuki75.noctalia';
+const BASE_DEEP_LINK_SCHEME = 'noctalia';
+const QA_ANDROID_APP_ID_TOKEN = 'com.tanuki75.noctalia.qa';
+const QA_DEEP_LINK_SCHEME_TOKEN = 'noctalia-qa';
+
+function inspectRunnerBaseIdentity(runnerText) {
+  const issues = [];
+  const text = typeof runnerText === 'string' ? runnerText : '';
+  if (!text.includes(`const PRODUCTION_ANDROID_APP_ID = '${BASE_ANDROID_APP_ID}'`)) {
+    issues.push(`Maestro runner is missing the exact base declaration const PRODUCTION_ANDROID_APP_ID = '${BASE_ANDROID_APP_ID}'`);
+  }
+  if (!text.includes(`const PRODUCTION_DEEP_LINK_SCHEME = '${BASE_DEEP_LINK_SCHEME}'`)) {
+    issues.push(`Maestro runner is missing the exact base declaration const PRODUCTION_DEEP_LINK_SCHEME = '${BASE_DEEP_LINK_SCHEME}'`);
+  }
+  return issues;
+}
+
+function inspectBaseCommandIdentity(command) {
+  const issues = [];
+  const value = typeof command === 'string' ? command : '';
+  if (!value) return issues;
+  if (value.includes('--side-by-side-qa')) {
+    issues.push('canonical command must not use --side-by-side-qa: base-only validation targets com.tanuki75.noctalia / noctalia');
+  }
+  if (value.includes('--app-id') || value.includes('--deep-link-scheme')) {
+    issues.push('canonical command must not retarget the Android identity with --app-id/--deep-link-scheme: base-only validation runs without identity overrides');
+  }
+  if (value.includes(QA_ANDROID_APP_ID_TOKEN) || value.includes(QA_DEEP_LINK_SCHEME_TOKEN)) {
+    issues.push('canonical command must not reference the QA identity com.tanuki75.noctalia.qa / noctalia-qa: base-only validation targets com.tanuki75.noctalia / noctalia');
+  }
+  return issues;
+}
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -327,9 +359,9 @@ function inspectGuestRealAnalysisSideloadBan(check) {
   }
 
   const command = typeof check.command === 'string' ? check.command : '';
-  if (check.mode === 'automated' && command.includes('--side-by-side-qa')) {
+  if (command.includes('--side-by-side-qa')) {
     issues.push(
-      'guest real-analysis cannot run automated with --side-by-side-qa: sideloaded com.tanuki75.noctalia.qa is not PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia'
+      'guest real-analysis must not use --side-by-side-qa: base-only validation targets com.tanuki75.noctalia / noctalia; a sideloaded base build is not assumed integrity-recognized for PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia'
     );
   }
   if (check.id !== GUEST_REAL_ANALYSIS_CHECK_ID) {
@@ -337,11 +369,11 @@ function inspectGuestRealAnalysisSideloadBan(check) {
   }
   if (check.mode !== 'blocked') {
     issues.push(
-      'analysis-success must stay blocked on sideload QA until a Play-distributed QA identity is recognized/allowlisted, or an authorized authenticated test account is used'
+      'analysis-success must stay blocked until Play Integrity status is verified on a Play-distributed recognized/allowlisted identity, or an authorized authenticated test account is used'
     );
   }
   if (command) {
-    issues.push('analysis-success must not keep an executable command while blocked on sideload QA');
+    issues.push('analysis-success must not keep an executable command while blocked');
   }
   return issues;
 }
@@ -513,8 +545,8 @@ function inspectReleaseIdentityAnchors(flowText, check) {
   if (/^\s*appId:\s*com\.tanuki75\.noctalia\s*$/m.test(flowText) || /^\s*appId:\s*\$\{APP_ID\}\s*$/m.test(flowText)) {
     issues.push('release-native flow still hardcodes the production appId');
   }
-  if (check.mode === 'automated' && check.command && !check.command.includes('--side-by-side-qa')) {
-    issues.push('canonical command is missing --side-by-side-qa for physical QA proof');
+  if (check.mode === 'automated' && check.command) {
+    issues.push(...inspectBaseCommandIdentity(check.command));
   }
   if (
     check.mode === 'automated'
@@ -522,7 +554,7 @@ function inspectReleaseIdentityAnchors(flowText, check) {
     && check.command.includes('run-maestro-android.js')
     && !/--suite\s+release(?:-[\w]+)?(?:\s|$)/.test(check.command)
   ) {
-    issues.push('canonical command must select a production Release suite before --side-by-side-qa');
+    issues.push('canonical command must select a production Release suite for base proof');
   }
   if (
     /openLink:\s*noctalia:\/\//.test(flowText)
@@ -563,8 +595,12 @@ function inspectPackageWiring(rootDir, manifest) {
   if (!runnerText.includes("'release-ti429':")) {
     issues.push('Release TI-429 suite is not registered in the Maestro runner');
   }
-  if (!runnerText.includes('--side-by-side-qa') || !runnerText.includes('com.tanuki75.noctalia.qa')) {
-    issues.push('Maestro runner is missing the side-by-side QA identity');
+  issues.push(...inspectRunnerBaseIdentity(runnerText));
+  if (executeScript.includes('--app-id') || executeScript.includes('--deep-link-scheme') || executeScript.includes('com.tanuki75.noctalia.qa') || executeScript.includes('noctalia-qa')) {
+    issues.push('package script test:e2e:release:ti429:local must not retarget the Android identity: base-only validation targets com.tanuki75.noctalia / noctalia without --app-id/--deep-link-scheme or QA identity');
+  }
+  if (executeScript.includes('--side-by-side-qa')) {
+    issues.push('package script test:e2e:release:ti429:local must not use --side-by-side-qa: base-only validation targets com.tanuki75.noctalia / noctalia');
   }
 
   const suiteFlows = manifest.checks
@@ -804,6 +840,8 @@ module.exports = {
   inspectPermissionsVoiceMode,
   inspectNotificationSettingsResume,
   inspectReleaseIdentityAnchors,
+  inspectRunnerBaseIdentity,
+  inspectBaseCommandIdentity,
   SEARCH_RECOVERY_CHECK_IDS,
   GUEST_REAL_ANALYSIS_FLOW,
   GUEST_REAL_ANALYSIS_CHECK_ID,
