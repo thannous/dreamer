@@ -89,6 +89,7 @@ docs-src/img-tmp/*
 maestro-results/
 tmp-stage/
 tmp-stage-index/
+/output/
 
 # Exclude web-only docs from mobile EAS uploads, except the curated guide data
 # consumed by services/dreamGuideService.ts.

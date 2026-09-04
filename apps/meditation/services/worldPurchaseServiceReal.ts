@@ -7,7 +7,7 @@ import Purchases, {
 } from 'react-native-purchases';
 
 import type { WorldId } from '@/constants/worlds';
-import { getExpoPublicEnvValue } from '@/lib/env';
+import { getExpoPublicEnvValue, isMockModeEnabled } from '@/lib/env';
 
 export const PURCHASABLE_WORLD_IDS = ['tide', 'sanctuary', 'cloud'] as const satisfies readonly WorldId[];
 
@@ -31,6 +31,9 @@ const apiKey = (): string | undefined =>
 export const isConfigured = (): boolean => !!apiKey();
 
 export async function configure(): Promise<void> {
+  // Mock mode must never reach the native SDK, even if this module is loaded.
+  if (isMockModeEnabled()) return;
+
   const key = apiKey();
   if (!key || (await Purchases.isConfigured())) return;
 

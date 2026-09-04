@@ -130,7 +130,10 @@ export function AccessibleTabBar({ state, descriptors, navigation, insets }: Rou
 
   return (
     <View
-      role="tablist"
+      accessible={false}
+      accessibilityRole="tablist"
+      importantForAccessibility="no"
+      testID="tabs.bar"
       style={{
         position: 'absolute',
         left: 0,
