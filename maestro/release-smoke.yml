@@ -1,5 +1,5 @@
 # Smoke-test an installed Release APK without opening the Expo development client.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 ---
 - launchApp:
     clearState: true

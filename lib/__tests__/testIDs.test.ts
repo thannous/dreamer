@@ -42,6 +42,8 @@ describe('TID', () => {
     expect(TID.Text.RecordingActivationInsightSummary).toBe('text.recording.activationInsight.summary');
     expect(TID.Component.OnboardingIntro).toBe('component.onboarding.intro');
     expect(TID.Component.OnboardingIntroSignals).toBe('component.onboarding.introSignals');
+    expect(TID.Text.DreamDetailQuotaHint).toBe('text.dreamDetail.quotaHint');
+    expect(TID.Chat.RetryTarget).toBe('chat.retryTarget');
   });
 
   it('builds dynamic IDs', () => {

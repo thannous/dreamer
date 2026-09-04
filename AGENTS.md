@@ -51,21 +51,46 @@ Cloudflare Pages builds `docs/` from tracked sources on `master`; verify the bra
 
 ## Multi-Agent Implementation
 
-- When implementation is delegated, the coordinating Codex agent inventories existing WIP,
-  defines independent non-overlapping file scopes, and remains responsible for integration,
-  review, conflict resolution, and the final completion claim.
-- Use `grok-oauth/grok-4.6` for Grok implementation agents. Implementation work always runs
-  at `high` reasoning for bounded local changes or `xhigh` for cross-cutting state, navigation,
-  architecture, concurrency, or other complex changes; never use a lower reasoning level.
-- Do not let implementation agents write the same file concurrently. Sequence dependent work
-  explicitly and preserve every unrelated or pre-existing modification.
-- Do not replace an implementation agent merely because it is taking time. Request a concise
-  checkpoint, evaluate the approach, and resume the same agent when the method is sound so its
-  reasoning and partial work are preserved. Restart from scratch only when the approach is
-  invalid, unsafe, or has no recoverable progress.
-- Subagents do not commit, push, deploy, publish, or perform destructive actions unless the user
-  explicitly authorizes that exact step. The coordinating agent reviews the combined diff and
-  validates observable behavior, including the real Android interface when applicable.
+- The parent Codex agent is the orchestrator, reviewer, and architecture decision owner: it
+  inventories WIP, decomposes work, defines exclusive file scopes and dependencies, decides
+  architecture trade-offs/interfaces/state/navigation, reviews diffs and evidence, assigns
+  conflict resolution and reviews the result, and decides acceptance. The parent does not write
+  product code or operate a device.
+- Delegate research, code/tests, integration/corrections, build/device QA, documentation, and
+  delivery whenever those tasks are delegable. Delivery agents may perform Git or Linear
+  mutations only when the corresponding user authorization already exists and the parent has
+  accepted the review; this composition does not authorize commit, push, deploy, publication, or
+  destructive actions.
+- The approved model assignments are `grok-oauth/grok-4.6` for implementing the architecture the
+  parent decided, complex logic, and researching/proposing options; Grok may not independently
+  decide an architecture change. Use `gpt-6-astra` at `medium` reasoning for UI/UX design and
+  implementation within assigned scopes. Use
+  `opencode-free-responses/muse-spark-1.3-contributor-free` for translations/i18n, tests,
+  documentation, and delivery, plus an independent QA agent (not the
+  code author) for Motorola builds/tests. Preserve the existing Grok reasoning levels: `high` for
+  bounded work and `xhigh` for cross-cutting state, navigation, architecture, concurrency, or
+  other complex changes; never use a lower level for implementation work.
+- Verify the actual model before dispatch. A configured model name does not prove availability.
+  Do not replace Grok, Muse, or Astra without user agreement, and do not restart an agent solely
+  because it is slow; request a checkpoint and resume it when its approach remains sound.
+- Dispatch Muse according to task complexity. For every code-implementation or research task,
+  including tests it writes, use `xhigh`; for documentation, translations, and delivery, choose
+  an effort suited to the task complexity from the levels actually supported. Verify support
+  before dispatch, and do not interrupt or recreate in-progress Muse tasks solely to change effort.
+- Keep worktrees persistent and file scopes exclusive. Never let implementation agents write the
+  same file concurrently; sequence dependent work explicitly and preserve all unrelated or
+  pre-existing changes.
+- Only one agent may own the device at a time, protected by a shared lock across Dreamer, Lucid,
+  and Meditation.
+- The approved team composition is parent Codex; Grok Core; Astra UI/UX (`gpt-6-astra`, `medium`);
+  Muse translations/i18n/tests/docs; Grok QA (a separate independent instance); and Muse Delivery
+  (activated after gates). User validation has been obtained; do not treat this as a pending
+  proposal or request validation again.
+- For the Dreamer VNext goal, Motorola validations run only against the base app
+  `com.tanuki75.noctalia` / scheme `noctalia`, never a `.qa` app; distinguish local-build vs Play
+  install source and verify signature/version before any install; never uninstall or clear app
+  data to force an install. An older goal text mentioning a QA device does not override this
+  user decision.
 
 ## Project Rules
 

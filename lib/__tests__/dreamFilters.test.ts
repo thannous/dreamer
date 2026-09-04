@@ -13,6 +13,7 @@ import {
     getUniqueDreamTypes,
     getUniqueThemes,
     isRememberedDream,
+    isRecurringDream,
     sortDreamsByDate,
     type DreamFilters,
 } from '../dreamFilters';
@@ -556,6 +557,50 @@ describe('dreamFilters', () => {
       // Then
       expect(result).toHaveLength(1);
       expect(result[0].title).toBe('Falling Dream');
+    });
+
+    it('given needsExplorationOnly when applying then returns analyzed unexplored dreams', () => {
+      const filters: DreamFilters = { needsExplorationOnly: true };
+      const result = applyFilters(mockDreams, filters);
+      expect(result).toHaveLength(1);
+      expect(result[0].title).toBe('Flying Dream');
+    });
+
+    it('given analysisStatus unanalyzed when applying then returns unanalyzed dreams', () => {
+      const unanalyzed = buildDream({
+        title: 'Raw fragment',
+        isAnalyzed: false,
+        analysisStatus: 'none',
+        interpretation: '',
+      });
+      const result = applyFilters([...mockDreams, unanalyzed], { analysisStatus: 'unanalyzed' });
+      expect(result.map((dream) => dream.title)).toEqual(['Water Dream', 'Raw fragment']);
+    });
+
+    it('given recurringOnly when applying then keeps type and memory recurrence independently', () => {
+      const recurringByType = buildDream({
+        title: 'Type recurrence',
+        dreamType: 'Recurring Dream',
+      });
+      const recurringByMemory = buildDream({
+        title: 'Memory recurrence',
+        dreamType: 'Nightmare',
+        memory: { origin: 'remembered', rememberedKind: 'recurring', recurring: true },
+      });
+      const ordinary = buildDream({
+        title: 'Ordinary night',
+        dreamType: 'Symbolic Dream',
+      });
+
+      const result = applyFilters(
+        [recurringByType, recurringByMemory, ordinary],
+        { recurringOnly: true, dreamType: 'Nightmare' },
+      );
+
+      expect(result.map((dream) => dream.title)).toEqual(['Memory recurrence']);
+      expect(isRecurringDream(recurringByType)).toBe(true);
+      expect(isRecurringDream(recurringByMemory)).toBe(true);
+      expect(isRecurringDream(ordinary)).toBe(false);
     });
 
     it('given multiple filters when applying then returns dreams matching all criteria', () => {

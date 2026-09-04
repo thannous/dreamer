@@ -5,12 +5,18 @@ const path = require('node:path');
 
 const {
   DEFAULT_GRADLE_JVM_ARGS,
+  DREAMER_QA_ANDROID_PACKAGE,
+  DREAMER_QA_BUILD_ENV,
+  PRODUCTION_ANDROID_PACKAGE,
   RELEASE_BUILD_PROFILE,
   TESTSTORE_BUILD_PROFILE,
+  assertInstallableApkIdentity,
   assertProfileableBuildProfile,
   assertReusableNativeProject,
+  assertSideBySideQaProfile,
   assertTestStoreInstallTarget,
   copyReleaseApk,
+  guardReleaseApkIdentity,
   getApkPath,
   getBuildEnv,
   getGradleArgs,
@@ -18,11 +24,15 @@ const {
   getOutputApkPath,
   getPrebuildArgs,
   getReleaseBuildEnv,
+  inspectApkApplicationId,
   loadReleaseBuildEnv,
   normalizeBuildProfile,
   normalizeAbi,
+  parseApkApplicationId,
   parseArgs,
   removeStaleApk,
+  prepareInstallDeviceLocks,
+  shouldInspectApkIdentity,
 } = require('./build-android-release-local');
 
 describe('build-android-release-local', () => {
@@ -52,6 +62,9 @@ describe('build-android-release-local', () => {
       profileable: false,
       profile: RELEASE_BUILD_PROFILE,
       reuseNativeProject: false,
+      sideBySideQa: false,
+      lockOwner: 'dreamer',
+      stealLock: false,
     });
   });
 
@@ -63,6 +76,9 @@ describe('build-android-release-local', () => {
       profileable: false,
       profile: RELEASE_BUILD_PROFILE,
       reuseNativeProject: false,
+      sideBySideQa: false,
+      lockOwner: 'dreamer',
+      stealLock: false,
     });
   });
 
@@ -74,6 +90,9 @@ describe('build-android-release-local', () => {
       profileable: false,
       profile: RELEASE_BUILD_PROFILE,
       reuseNativeProject: false,
+      sideBySideQa: false,
+      lockOwner: 'dreamer',
+      stealLock: false,
     });
   });
 
@@ -85,6 +104,9 @@ describe('build-android-release-local', () => {
       profileable: false,
       profile: TESTSTORE_BUILD_PROFILE,
       reuseNativeProject: false,
+      sideBySideQa: false,
+      lockOwner: 'dreamer',
+      stealLock: false,
     });
     expect(normalizeBuildProfile(RELEASE_BUILD_PROFILE)).toBe(
       RELEASE_BUILD_PROFILE
@@ -102,6 +124,9 @@ describe('build-android-release-local', () => {
       profileable: true,
       profile: RELEASE_BUILD_PROFILE,
       reuseNativeProject: true,
+      sideBySideQa: false,
+      lockOwner: 'dreamer',
+      stealLock: false,
     });
     expect(() =>
       assertProfileableBuildProfile(RELEASE_BUILD_PROFILE, true)
@@ -423,5 +448,249 @@ describe('build-android-release-local', () => {
       '/repo/android/app-release.apk',
       outputPath
     );
+  });
+
+  it('parses an explicit side-by-side QA flag', () => {
+    expect(parseArgs(['--side-by-side-qa'])).toEqual({
+      abi: null,
+      device: null,
+      install: false,
+      profileable: false,
+      profile: RELEASE_BUILD_PROFILE,
+      reuseNativeProject: false,
+      sideBySideQa: true,
+      lockOwner: 'dreamer',
+      stealLock: false,
+    });
+    expect(parseArgs(['--side-by-side-qa', '--profileable', '--install'])).toEqual({
+      abi: null,
+      device: null,
+      install: true,
+      profileable: true,
+      profile: RELEASE_BUILD_PROFILE,
+      reuseNativeProject: false,
+      sideBySideQa: true,
+      lockOwner: 'dreamer',
+      stealLock: false,
+    });
+  });
+
+  it('keeps side-by-side QA on the production-apk profile only', () => {
+    expect(() =>
+      assertSideBySideQaProfile(RELEASE_BUILD_PROFILE, true)
+    ).not.toThrow();
+    expect(() =>
+      assertSideBySideQaProfile(TESTSTORE_BUILD_PROFILE, true)
+    ).toThrow('only with the production-apk profile');
+  });
+
+  it('sets the native QA marker only for side-by-side builds', () => {
+    expect(
+      getBuildEnv({}, '/tmp', {}, RELEASE_BUILD_PROFILE, false, true)
+    ).toMatchObject({
+      [DREAMER_QA_BUILD_ENV]: '1',
+      EXPO_PUBLIC_MOCK_MODE: 'false',
+      EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'false',
+    });
+    expect(
+      getBuildEnv(
+        { [DREAMER_QA_BUILD_ENV]: '1' },
+        '/tmp',
+        {},
+        RELEASE_BUILD_PROFILE
+      )
+    ).not.toHaveProperty(DREAMER_QA_BUILD_ENV);
+    expect(() =>
+      getBuildEnv(
+        { NOCTALIA_APP_VARIANT: 'lucid', EXPO_PUBLIC_APP_VARIANT: 'lucid' },
+        '/tmp',
+        {},
+        RELEASE_BUILD_PROFILE,
+        false,
+        true
+      )
+    ).toThrow('cannot be combined with Lucid Trainer');
+  });
+
+  it('emits a distinct QA APK path, including profileable builds', () => {
+    expect(getOutputApkPath('/repo', RELEASE_BUILD_PROFILE, false, true)).toBe(
+      path.join('/repo', 'dist', 'android', 'production-apk-qa-release.apk')
+    );
+    expect(getOutputApkPath('/repo', RELEASE_BUILD_PROFILE, true, true)).toBe(
+      path.join(
+        '/repo',
+        'dist',
+        'android',
+        'production-apk-qa-profileable-release.apk'
+      )
+    );
+    expect(getOutputApkPath('/repo', RELEASE_BUILD_PROFILE)).toBe(
+      path.join('/repo', 'dist', 'android', 'production-apk-release.apk')
+    );
+    expect(getOutputApkPath('/repo', TESTSTORE_BUILD_PROFILE)).toBe(
+      path.join(
+        '/repo',
+        'dist',
+        'android',
+        'revenuecat-teststore-release.apk'
+      )
+    );
+  });
+
+  it('parses APK application ids from aapt and apkanalyzer output', () => {
+    expect(
+      parseApkApplicationId("package: name='com.tanuki75.noctalia.qa' versionCode='54'")
+    ).toBe(DREAMER_QA_ANDROID_PACKAGE);
+    expect(parseApkApplicationId('com.tanuki75.noctalia.qa\n')).toBe(
+      DREAMER_QA_ANDROID_PACKAGE
+    );
+    expect(() => parseApkApplicationId('not-an-id')).toThrow(
+      'Unable to parse APK applicationId'
+    );
+  });
+
+  it('inspects APK identity through mocked Android tooling', () => {
+    const spawn = jest.fn(() => ({
+      status: 0,
+      stdout: "package: name='com.tanuki75.noctalia.qa' versionCode='54'\n",
+      stderr: '',
+    }));
+    const resolveCommandFn = jest.fn((command) =>
+      command === 'aapt' ? '/sdk/build-tools/aapt' : null
+    );
+
+    expect(
+      inspectApkApplicationId('/repo/dist/android/production-apk-qa-release.apk', {
+        spawn,
+        resolveCommandFn,
+        existsSync: () => false,
+      })
+    ).toBe(DREAMER_QA_ANDROID_PACKAGE);
+    expect(spawn).toHaveBeenCalledWith(
+      '/sdk/build-tools/aapt',
+      ['dump', 'badging', '/repo/dist/android/production-apk-qa-release.apk'],
+      expect.objectContaining({ encoding: 'utf8' })
+    );
+
+    spawn.mockImplementation(() => ({
+      status: 0,
+      stdout: 'com.tanuki75.noctalia.qa\n',
+      stderr: '',
+    }));
+    resolveCommandFn.mockImplementation((command) =>
+      command === 'apkanalyzer' ? 'apkanalyzer' : null
+    );
+    expect(
+      inspectApkApplicationId('/repo/app.apk', {
+        spawn,
+        resolveCommandFn,
+        existsSync: () => false,
+      })
+    ).toBe(DREAMER_QA_ANDROID_PACKAGE);
+    expect(spawn).toHaveBeenLastCalledWith(
+      'apkanalyzer',
+      ['manifest', 'application-id', '/repo/app.apk'],
+      expect.objectContaining({ encoding: 'utf8' })
+    );
+  });
+
+  it('refuses install when the QA flag and APK package disagree', () => {
+    expect(
+      assertInstallableApkIdentity(DREAMER_QA_ANDROID_PACKAGE, true)
+    ).toBe(DREAMER_QA_ANDROID_PACKAGE);
+    expect(() =>
+      assertInstallableApkIdentity(PRODUCTION_ANDROID_PACKAGE, true)
+    ).toThrow('side-by-side QA requires com.tanuki75.noctalia.qa');
+    expect(() =>
+      assertInstallableApkIdentity(DREAMER_QA_ANDROID_PACKAGE, false)
+    ).toThrow('without --side-by-side-qa');
+    expect(
+      assertInstallableApkIdentity(PRODUCTION_ANDROID_PACKAGE, false, {
+        install: true,
+        device: 'emulator-5554',
+        profile: RELEASE_BUILD_PROFILE,
+      })
+    ).toBe(PRODUCTION_ANDROID_PACKAGE);
+  });
+
+  it('inspects APK identity before every install and for QA builds', () => {
+    expect(shouldInspectApkIdentity(parseArgs(['--install']))).toBe(true);
+    expect(shouldInspectApkIdentity(parseArgs(['--side-by-side-qa']))).toBe(true);
+    expect(
+      shouldInspectApkIdentity(parseArgs(['--reuse-native-project', '--install']))
+    ).toBe(true);
+    expect(shouldInspectApkIdentity(parseArgs(['--abi', 'arm64-v8a']))).toBe(false);
+
+    expect(
+      guardReleaseApkIdentity(PRODUCTION_ANDROID_PACKAGE, {
+        ...parseArgs(['--install', '--device', 'emulator-5554']),
+      })
+    ).toBe(PRODUCTION_ANDROID_PACKAGE);
+    expect(
+      guardReleaseApkIdentity(
+        DREAMER_QA_ANDROID_PACKAGE,
+        parseArgs(['--side-by-side-qa'])
+      )
+    ).toBe(DREAMER_QA_ANDROID_PACKAGE);
+    expect(guardReleaseApkIdentity(DREAMER_QA_ANDROID_PACKAGE, parseArgs([]))).toBe(
+      null
+    );
+  });
+
+  it('refuses a stale QA APK on --reuse-native-project --install before ADB', () => {
+    const adbInstall = jest.fn();
+    const options = parseArgs(['--reuse-native-project', '--install']);
+
+    expect(shouldInspectApkIdentity(options)).toBe(true);
+    expect(() =>
+      guardReleaseApkIdentity(DREAMER_QA_ANDROID_PACKAGE, options)
+    ).toThrow('without --side-by-side-qa');
+    expect(adbInstall).not.toHaveBeenCalled();
+  });
+
+  it('refuses the production Store package on a physical device without the QA flag', () => {
+    const adbInstall = jest.fn();
+    const physicalInstall = parseArgs(['--install', '--device', '57275d36']);
+
+    expect(() =>
+      guardReleaseApkIdentity(PRODUCTION_ANDROID_PACKAGE, physicalInstall)
+    ).toThrow('on a physical device');
+    expect(adbInstall).not.toHaveBeenCalled();
+
+    expect(
+      guardReleaseApkIdentity(PRODUCTION_ANDROID_PACKAGE, {
+        ...parseArgs(['--install', '--device', 'emulator-5554']),
+      })
+    ).toBe(PRODUCTION_ANDROID_PACKAGE);
+
+    expect(
+      guardReleaseApkIdentity(DREAMER_QA_ANDROID_PACKAGE, {
+        ...parseArgs(['--side-by-side-qa', '--install', '--device', '57275d36']),
+      })
+    ).toBe(DREAMER_QA_ANDROID_PACKAGE);
+
+    expect(() =>
+      assertTestStoreInstallTarget(TESTSTORE_BUILD_PROFILE, true, '57275d36')
+    ).toThrow('emulator-only');
+  });
+
+  it('locks a physical install and skips emulator or build-only runs', () => {
+    expect(prepareInstallDeviceLocks(parseArgs(['--abi', 'arm64-v8a']), null))
+      .toEqual({ locks: [], skipped: 'no-install' });
+    expect(prepareInstallDeviceLocks(
+      parseArgs(['--install', '--device', 'emulator-5554']),
+      'emulator-5554'
+    )).toEqual({ locks: [], skipped: 'emulator-only' });
+
+    expect(() => prepareInstallDeviceLocks(
+      parseArgs(['--install']),
+      '192.168.1.176:40537'
+    )).toThrow('explicit --device');
+
+    expect(parseArgs(['--install', '--lock-owner', 'meditation', '--steal-lock'])).toMatchObject({
+      install: true,
+      lockOwner: 'meditation',
+      stealLock: true,
+    });
   });
 });

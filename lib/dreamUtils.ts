@@ -338,6 +338,7 @@ const DREAM_REMOTE_UPDATE_FIELDS = [
   'emotions',
   'reflectionQuestions',
   'promptVersion',
+  'analysisTranscriptHash',
   'imageUrl',
   'chatHistory',
   'theme',
@@ -461,6 +462,7 @@ type DreamRemoteComparable = {
   explorationStartedAt: number | null;
   clientRequestId: string | null;
   memory: DreamMemoryMetadata | undefined;
+  analysisTranscriptHash: string | null;
   symbols: DreamAnalysis['symbols'];
   emotions: DreamAnalysis['emotions'];
   reflectionQuestions: DreamAnalysis['reflectionQuestions'];
@@ -489,6 +491,7 @@ const toRemoteComparable = (dream: DreamAnalysis): DreamRemoteComparable => {
     explorationStartedAt: dream.explorationStartedAt ?? null,
     clientRequestId: dream.clientRequestId ?? null,
     memory: normalizeDreamMemoryMetadata(dream.memory),
+    analysisTranscriptHash: dream.analysisTranscriptHash ?? null,
     symbols: dream.symbols,
     emotions: dream.emotions,
     reflectionQuestions: dream.reflectionQuestions,
@@ -524,6 +527,7 @@ export const areDreamsEqualForRemoteSync = (a: DreamAnalysis, b: DreamAnalysis):
     left.explorationStartedAt !== right.explorationStartedAt ||
     left.clientRequestId !== right.clientRequestId ||
     !areDreamMemoryMetadataEqual(left.memory, right.memory) ||
+    left.analysisTranscriptHash !== right.analysisTranscriptHash ||
     !areDreamUpdateFieldValuesEqual(left.symbols, right.symbols) ||
     !areDreamUpdateFieldValuesEqual(left.emotions, right.emotions) ||
     !areDreamUpdateFieldValuesEqual(left.reflectionQuestions, right.reflectionQuestions) ||
@@ -583,6 +587,7 @@ export const areDreamsEqualForLocalState = (a: DreamAnalysis, b: DreamAnalysis):
   if ((left.imageJobErrorCode ?? null) !== (right.imageJobErrorCode ?? null)) return false;
   if ((left.imageJobErrorMessage ?? null) !== (right.imageJobErrorMessage ?? null)) return false;
   if (!areDreamMemoryMetadataEqual(left.memory, right.memory)) return false;
+  if ((left.analysisTranscriptHash ?? null) !== (right.analysisTranscriptHash ?? null)) return false;
 
   const leftChat = Array.isArray(left.chatHistory) ? left.chatHistory : [];
   const rightChat = Array.isArray(right.chatHistory) ? right.chatHistory : [];

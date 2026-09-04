@@ -1,0 +1,468 @@
+{
+  "schemaVersion": 1,
+  "ticket": "TI-429",
+  "title": "Dreamer VNext TI-429 executable matrix",
+  "binary": "mixed: release-native, mock-native, manual, web/tablet. Nothing in this file is device proof. Target: base com.tanuki75.noctalia / noctalia, no side-by-side flag. (Anterieur au 2026-09-04 : .qa retire.)",
+  "limits": [
+    "This harness never launches Maestro, ADB, prebuild, install, commit, push or Linear.",
+    "npm run test:e2e:release:ti429:local executes only the release-ti429 suite. Other automated checks keep the command listed on the row.",
+    "release-native rows target an installed Release binary. mock-native rows use mock fixtures and are not Release-binary proof.",
+    "Failed analysis, quota and Plus/guest switching are mock-native. No real purchase.",
+    "TalkBack, contrast, large text, reduce motion, localization and mobile/tablet/web formats stay human checks and are unproven until recorded.",
+    "A 10_000-character paste is a documented human check because Maestro inputText is not a reliable 10k injector.",
+    "Unexecuted automated rows stay blocked in the plan. Manual rows stay manual. Neither is a pass.",
+    "Local Jest/typecheck proof is separate from device proof. Device proof stays in a dated maestro-results/android/ti429 directory.",
+    "Device proof runs against the base app com.tanuki75.noctalia / noctalia with no side-by-side flag. Record binary_source (local build vs Play), version and signature in each proof. Base device proof is local proof, not Store, Play install-source or purchase proof. (Anterieur au 2026-09-04 : side-by-side .qa retire.)",
+    "A compatible local base build may be installed when the user authorized native local testing, after verifying package/signature/version. Never uninstall or clear app data to force an incompatible install. Do not run purchase flows against a local binary. Auth-credential rows stay separately blocked when credentials are missing.",
+    "Guest real analysis stays blocked: Play Integrity eligibility of a sideloaded build is INDÉTERMINÉ until verified on device for PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia. Precedent historique 2026-09-03 06:46:10Z observe sur sideload .qa (anterieur) : POST /api/guest/session returned 401 avec integrityToken, sans /analyzeDream. Do not attach an automated guest real-analysis command to any sideload. A package name alone never counts as integrity proof. Unblock only with a Play-distributed recognized/allowlisted identity, or an explicitly authorized authenticated test account.",
+    "TI-428 live-voice rows are manual or blocked, never a pass from this harness. Local stub AI at USD 0 is not 5-turn model-cost proof. Unmeasured p95/WER/cost stays INDÉTERMINÉ, not a latency-only no-go."
+  ],
+  "checks": [
+    {
+      "id": "write-tell-shared-draft",
+      "title": "Write <-> Tell shared draft",
+      "criterion": "Ecrire et Raconter, passage entre les deux",
+      "mode": "automated",
+      "flow": "maestro/release-write-tell.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-write-tell.yml",
+      "requiredTokens": [
+        "id: btn.recording.inputMode.text",
+        "id: btn.recording.inputMode.voice",
+        "Write tell shared sentinel",
+        "id: btn.saveDream",
+        "takeScreenshot: ti429-write-tell-saved"
+      ],
+      "evidence": "one screenshot of saved Write/Tell detail. Unexecuted = blocked.",
+      "runtime": "release-native"
+    },
+    {
+      "id": "draft-kill-relaunch",
+      "title": "Unsaved draft survives kill/relaunch",
+      "criterion": "kill et reprise",
+      "mode": "automated",
+      "flow": "maestro/release-draft-kill-relaunch.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-draft-kill-relaunch.yml",
+      "requiredTokens": [
+        "killApp",
+        "Draft kill relaunch sentinel",
+        "id: input.dreamTranscript",
+        "takeScreenshot: ti429-draft-kill-restored"
+      ],
+      "evidence": "one screenshot of restored draft after process death. Unexecuted = blocked.",
+      "runtime": "release-native"
+    },
+    {
+      "id": "short-fragment",
+      "title": "Short fragment save",
+      "criterion": "Fragment court",
+      "mode": "automated",
+      "flow": "maestro/release-short-fragments.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-short-fragments.yml",
+      "requiredTokens": [
+        "Porte rouge",
+        "maman",
+        "loup blanc",
+        "id: btn.saveDream",
+        "id: component.transcriptCard",
+        "id: screen.journal",
+        "takeScreenshot: ti429-short-fragments"
+      ],
+      "evidence": "one screenshot of Journal after successive Porte rouge, maman and loup blanc fiches. Unexecuted = blocked.",
+      "runtime": "release-native",
+      "notes": "Release-native. Saves the exact short fragments in one install, verifies each fiche, then asserts all three on Journal. No analysis, image or purchase. Unexecuted = blocked. Not a pass."
+    },
+    {
+      "id": "long-fragment",
+      "title": "Long story remains intact after save",
+      "criterion": "recit long",
+      "mode": "automated",
+      "flow": "maestro/release-long-fragment.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-long-fragment.yml",
+      "requiredTokens": [
+        "LONG-START",
+        "LONG-END",
+        "id: component.transcriptCard",
+        "scrollUntilVisible:",
+        "takeScreenshot: ti429-long-fragment"
+      ],
+      "evidence": "one screenshot after LONG-END on the transcript card. Unexecuted = blocked.",
+      "runtime": "release-native",
+      "minInputLength": 600,
+      "startSentinel": "LONG-START",
+      "endSentinel": "LONG-END",
+      "notes": "Automated Release flow. Requires a typed story longer than 600 characters. 10k remains manual."
+    },
+    {
+      "id": "long-10k-human",
+      "title": "10k character paste",
+      "criterion": "recit long 10k",
+      "mode": "manual",
+      "notes": "Paste a 10_000-character story in Write mode, save, and confirm no truncation. Maestro inputText is not a reliable 10k injector.",
+      "evidence": "human recording plus character count",
+      "runtime": "manual"
+    },
+    {
+      "id": "offline-local",
+      "title": "Offline local save",
+      "criterion": "Enregistrement hors ligne",
+      "mode": "automated",
+      "flow": "maestro/release-offline-local.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-offline-local.yml",
+      "requiredTokens": [
+        "setAirplaneMode: enabled",
+        "Release offline local sentinel",
+        "hideKeyboard",
+        "id: component.transcriptCard",
+        "takeScreenshot: ti429-offline-transcript"
+      ],
+      "evidence": "one screenshot of recovered offline transcript. Unexecuted = blocked.",
+      "runtime": "release-native"
+    },
+    {
+      "id": "offline-auth-sync",
+      "title": "Authenticated offline then sync",
+      "criterion": "synchronisation",
+      "mode": "automated",
+      "flow": "maestro/release-auth-offline-sync.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release --flow maestro/release-auth-offline-sync.yml --retries 0 --no-start-metro",
+      "requiredTokens": [
+        "QA_SYNC_SENTINEL",
+        "setAirplaneMode: enabled",
+        "${DEEP_LINK_SCHEME || \"noctalia\"}://journal"
+      ],
+      "evidence": "existing authenticated offline sync flow",
+      "runtime": "release-native"
+    },
+    {
+      "id": "analysis-success",
+      "title": "Analysis success",
+      "criterion": "Analyse reussie",
+      "mode": "blocked",
+      "flow": "maestro/release-analysis.yml",
+      "requiredTokens": [
+        "id: btn.dream.primaryCta",
+        "Interpretation|Interprétation",
+        "id: component.transcriptCard",
+        "id: btn.journal.illustrate",
+        "takeScreenshot: ti429-analysis-illustrate-cta"
+      ],
+      "evidence": "one screenshot of illustration CTA after a successful analysis. Never tap illustrate. Unexecuted = blocked.",
+      "runtime": "release-native",
+      "notes": "Blocked: real analysis needs an integrity-recognized identity for PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia. Historique 2026-09-03 06:46:10Z sur sideload .qa (anterieur) : POST /api/guest/session returned 401 avec integrityToken, sans /analyzeDream. A sideloaded base build is not assumed valid by its package name alone. Keep the flow as the intended proof with no automated command. Unblock only with a Play and recognized/allowlisted Play-distributed identity or an explicitly authorized authenticated test account. Unexecuted = blocked. Not a pass."
+    },
+    {
+      "id": "analysis-failed",
+      "title": "Failed analysis retry CTA",
+      "criterion": "Analyse echouee",
+      "mode": "automated",
+      "flow": "maestro/journal-dream-cta-labels.yml",
+      "command": "node ./scripts/run-maestro-android.js --flow maestro/journal-dream-cta-labels.yml",
+      "requiredTokens": [
+        "Retry analysis",
+        "id: btn.dream.primaryCta"
+      ],
+      "notes": "Mock existing-user fixture. Not a Release-binary analysis failure injector. mock-native only; not proof on the current installed Release binary.",
+      "evidence": "mock failed-analysis CTA",
+      "runtime": "mock-native"
+    },
+    {
+      "id": "analysis-interrupt",
+      "title": "Analysis interruption keeps the story",
+      "criterion": "Analyse interrompue",
+      "mode": "automated",
+      "flow": "maestro/release-analysis-interrupt.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-analysis-interrupt.yml",
+      "requiredTokens": [
+        "killApp",
+        "Analysis interrupt sentinel",
+        "hideKeyboard",
+        "id: component.transcriptCard",
+        "takeScreenshot: ti429-analysis-interrupt-transcript"
+      ],
+      "evidence": "one screenshot of recovered transcript after interrupt. Unexecuted = blocked.",
+      "runtime": "release-native"
+    },
+    {
+      "id": "analysis-quota",
+      "title": "Analysis quota reached",
+      "criterion": "quota atteint",
+      "mode": "automated",
+      "flow": "maestro/free-analysis-limit.yml",
+      "command": "npm run test:e2e:quotas",
+      "requiredTokens": [
+        "id: sheet.quotaLimit",
+        "id: text.quotaLimit.title"
+      ],
+      "notes": "Mock quota fixture. No real purchase. mock-native only; not proof on the current installed Release binary.",
+      "evidence": "quota sheet screenshot",
+      "runtime": "mock-native"
+    },
+    {
+      "id": "image-independent",
+      "title": "Illustration independent from analysis",
+      "criterion": "Image independante de l'analyse",
+      "mode": "automated",
+      "flow": "maestro/release-image-independent.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-image-independent.yml",
+      "requiredTokens": [
+        "id: btn.dream.primaryCta",
+        "id: component.transcriptCard",
+        "id: btn.dream.delete",
+        "id: btn.journal.illustrate",
+        "assertNotVisible",
+        "takeScreenshot: ti429-image-pre-analysis"
+      ],
+      "evidence": "one screenshot after scrolling to btn.dream.delete and asserting illustration CTA is absent. No taps, no quota. Unexecuted = blocked.",
+      "runtime": "release-native",
+      "notes": "Must not tap analysis, must not generate an image, must not consume quota. Before analysis, verify primaryCta+transcript then scroll to delete and assertNotVisible illustrate. Illustration CTA after successful analysis stays in analysis-success, which stays blocked until an integrity-recognized Play-distributed identity or an authorized authenticated test account."
+    },
+    {
+      "id": "journal-detail-trends-deeplinks",
+      "title": "Journal list, Trends, weekly recap and recording deep links",
+      "criterion": "Journal liste, Tendances, recap hebdo et capture via liens profonds",
+      "mode": "automated",
+      "flow": "maestro/release-journal-trends-deeplinks.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-journal-trends-deeplinks.yml",
+      "evidence": "one screenshot of recovered journal detail after search. Trends and weekly recap remain asserted. Unexecuted = blocked.",
+      "runtime": "release-native",
+      "notes": "Release-native. Covers ${DEEP_LINK_SCHEME || \"noctalia\"}://journal (list), ${DEEP_LINK_SCHEME || \"noctalia\"}://statistics / Trends, ${DEEP_LINK_SCHEME || \"noctalia\"}://weekly-recap and ${DEEP_LINK_SCHEME || \"noctalia\"}://recording. Does not cover analysis-ready ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id}. Base scheme/package proof is local device proof, not Store/production install-source proof.",
+      "requiredTokens": [
+        "${DEEP_LINK_SCHEME || \"noctalia\"}://journal",
+        "${DEEP_LINK_SCHEME || \"noctalia\"}://statistics",
+        "id: trends.section.week",
+        "${DEEP_LINK_SCHEME || \"noctalia\"}://weekly-recap",
+        "id: screen.weeklyRecap",
+        "${DEEP_LINK_SCHEME || \"noctalia\"}://recording",
+        "hideKeyboard",
+        "id: component.transcriptCard",
+        "takeScreenshot: ti429-journal-detail"
+      ]
+    },
+    {
+      "id": "analysis-ready-detail-deeplink",
+      "title": "analysis-ready notification opens journal detail",
+      "criterion": "lien profond analysis-ready vers ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id}",
+      "mode": "blocked",
+      "runtime": "release-native",
+      "notes": "No stable fixture id: mock local dream ids are timestamps at preload, remoteId is not the journal/[id] route key, and a Release dream id cannot be captured without a device. Exact analysis-ready URL ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id} requires physical-device proof. Base package/scheme proof is local device proof, not Store/production install-source proof. Unexecuted = blocked. Not a pass.",
+      "evidence": "physical-device screenshot of journal/{id} opened from an analysis-ready notification. Missing until a real id is available."
+    },
+    {
+      "id": "guest-unlimited",
+      "title": "Guest unlimited local saves",
+      "criterion": "Invite illimite local",
+      "mode": "automated",
+      "flow": "maestro/release-guest-unlimited.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-guest-unlimited.yml",
+      "requiredTokens": [
+        "Guest|Invité|Gast|Invitado|Ospite|Visitante",
+        "id: btn.auth.signOut",
+        "id: screen.paywall",
+        "Guest unlimited sentinel one",
+        "Guest unlimited sentinel two",
+        "Guest unlimited sentinel three",
+        "id: btn.saveDream",
+        "id: screen.journal",
+        "takeScreenshot: ti429-guest-unlimited"
+      ],
+      "notes": "Release-native. Guest proof is the QuotaStatusCard tier regex Guest|Invité|Gast|Invitado|Ospite|Visitante plus absent sign-out/paywall. Do not use btn.auth.google. One install/state saves at least three guest dreams with no account or paywall blocking before each save, then asserts the three Journal entries. No analysis, image or purchase. Distinct from the mock guest/free/Plus lab. Unexecuted = blocked. Not a pass.",
+      "evidence": "one screenshot of Journal with three guest dreams. Unexecuted = blocked.",
+      "runtime": "release-native"
+    },
+    {
+      "id": "guest-free-plus-no-purchase",
+      "title": "Guest, free and Plus without a real purchase",
+      "criterion": "Invite, compte gratuit et Plus",
+      "mode": "automated",
+      "flow": "maestro/subscription-qa-lab.yml",
+      "command": "npm run test:e2e:subscription-qa",
+      "requiredTokens": [
+        "id: btn.subscription.qa.profile.guest",
+        "id: btn.subscription.qa.scenario.monthly",
+        "id: screen.paywall"
+      ],
+      "notes": "Mock QA lab only. Never complete a Store purchase. mock-native only; not proof on the current installed Release binary.",
+      "evidence": "guest/free/Plus mock states",
+      "runtime": "mock-native"
+    },
+    {
+      "id": "notifications-permission",
+      "title": "Notification permission contract",
+      "criterion": "notifications",
+      "mode": "automated",
+      "flow": "maestro/release-notification-permission.yml",
+      "command": "node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --flow maestro/release-notification-permission.yml",
+      "requiredTokens": [
+        "notifications: deny",
+        "id: text.settings.notificationsPermissionWarning",
+        "id: screen.recording",
+        "id: screen.settings"
+      ],
+      "evidence": "settings warning denied then allowed",
+      "runtime": "release-native",
+      "notes": "After the final Home+launchApp, wait for screen.recording before opening settings. Then wait for screen.settings before asserting the notification warning."
+    },
+    {
+      "id": "talkback",
+      "title": "TalkBack capture, journal, detail, Trends",
+      "criterion": "TalkBack",
+      "mode": "manual",
+      "notes": "Enable TalkBack on the physical device. Confirm names, states and focus order for Write/Tell, save, journal item, detail CTA and Trends sections. Do not invent Maestro TalkBack automation.",
+      "evidence": "human notes plus optional recording",
+      "runtime": "manual"
+    },
+    {
+      "id": "contrast",
+      "title": "Contrast on capture, journal, Trends",
+      "criterion": "contraste",
+      "mode": "manual",
+      "notes": "Human visual check of ivory text on ink and champagne-on accents. No automated contrast crawler on device.",
+      "evidence": "screenshots in light and dark if available",
+      "runtime": "manual"
+    },
+    {
+      "id": "large-text",
+      "title": "Largest system font",
+      "criterion": "texte agrandi",
+      "mode": "manual",
+      "notes": "Set Android font size/display size to the largest available and confirm Write/Tell, save, journal and Trends still usable.",
+      "evidence": "screenshots at largest text",
+      "runtime": "manual"
+    },
+    {
+      "id": "reduce-motion",
+      "title": "Reduce motion",
+      "criterion": "reduction des animations",
+      "mode": "manual",
+      "notes": "Enable system reduce motion and confirm capture/journal/Trends remain usable without relying on motion.",
+      "evidence": "human note",
+      "runtime": "manual"
+    },
+    {
+      "id": "localization",
+      "title": "App localization",
+      "criterion": "Localisation",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "On a physical device, switch at least French and English. Confirm Write/Tell, save, Journal, detail and Trends match the selected locale. Not proven.",
+      "evidence": "FR and EN screenshots of capture, journal and Trends"
+    },
+    {
+      "id": "format-mobile",
+      "title": "Mobile format",
+      "criterion": "formats mobile",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "Phone viewport: capture, journal, detail and Trends remain usable. Not proven by this harness.",
+      "evidence": "phone screenshots of capture, journal, detail, Trends"
+    },
+    {
+      "id": "format-tablet",
+      "title": "Tablet format",
+      "criterion": "formats tablette",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "If a tablet is available, capture the same surfaces. If none is available, leave the row blocked with that reason. Not proven.",
+      "evidence": "tablet screenshots or a blocked note naming the missing device"
+    },
+    {
+      "id": "format-web",
+      "title": "Web format",
+      "criterion": "formats web",
+      "mode": "manual",
+      "runtime": "web",
+      "notes": "Web is applicable but outside npm run test:e2e:release:ti429:local. Record a separate web proof. Existing web Maestro flows are hints only. Not proven.",
+      "evidence": "web screenshots of capture, journal and Trends"
+    },
+    {
+      "id": "voice-live-p95-persist",
+      "title": "Voice live p95 persist ack",
+      "criterion": "p95 fin de parole vers persist <= 1200 ms",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "TI-428 Prototype A. Time >= 20 end-of-speech to persist-ack samples on /dev/voice-live-spike. Local Jest persist-before-AI is not a device p95. Unmeasured = INDÉTERMINÉ, not a pass. This harness does not use the Motorola.",
+      "evidence": "dated p95 table plus timestamps. Missing until recorded."
+    },
+    {
+      "id": "voice-live-p95-ai",
+      "title": "Voice live p95 persist to first model token",
+      "criterion": "p95 persist ack vers premier token modele <= 2500 ms",
+      "mode": "blocked",
+      "runtime": "manual",
+      "notes": "TI-428 Prototype A uses a local deterministic stub. Stub first-token time is not model latency. Blocked until an authorized billed text-AI session is measured. A USD 0 stub is not proof. Unmeasured = INDÉTERMINÉ, not no_go_a.",
+      "evidence": "dated p95 of persist-ack to first billed model token. Missing; stub timing does not count."
+    },
+    {
+      "id": "voice-live-p95-tts",
+      "title": "Voice live p95 audible TTS",
+      "criterion": "p95 premier token vers TTS audible <= 700 ms",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "TI-428 Prototype A expo-speech. Time >= 20 first-token to first audible-speech samples on the isolated debug host. Unmeasured = INDÉTERMINÉ. Not Release-binary proof.",
+      "evidence": "dated p95 table plus audible-start timestamps. Missing until recorded."
+    },
+    {
+      "id": "voice-live-p95-barge-in",
+      "title": "Voice live p95 barge-in stop",
+      "criterion": "p95 barge-in vers arret de parole <= 250 ms",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "TI-428. Interrupt thinking/speaking >= 20 times. Speech must stop, last persisted segment stays, status interrupted. Unmeasured = INDÉTERMINÉ. This harness does not use the Motorola.",
+      "evidence": "dated p95 table plus barge-in recordings. Missing until recorded."
+    },
+    {
+      "id": "voice-live-wer-fr",
+      "title": "Voice live WER French",
+      "criterion": "WER FR native STT sur script fixe",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "Read a fixed French script into native STT on the isolated debug host. Score substitutions/deletions/insertions. No silent skip. Local kernel tests do not prove WER.",
+      "evidence": "script, transcript, dated FR WER. Missing until recorded."
+    },
+    {
+      "id": "voice-live-wer-en",
+      "title": "Voice live WER English",
+      "criterion": "WER EN native STT sur script fixe",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "Read a fixed English script into native STT on the isolated debug host. Score substitutions/deletions/insertions. No silent skip. Local kernel tests do not prove WER.",
+      "evidence": "script, transcript, dated EN WER. Missing until recorded."
+    },
+    {
+      "id": "voice-live-cost-five-turns",
+      "title": "Voice live cost for five persisted AI turns",
+      "criterion": "cout 5 tours AI persistes <= USD 0.05",
+      "mode": "blocked",
+      "runtime": "manual",
+      "notes": "TI-428 host AI is a local deterministic stub. A stub at USD 0 is not model-cost proof. Blocked until a billed 5-turn text-AI session is authorized and summed. Do not feed placeholder zeros into evaluateVoiceLiveGoNoGo.",
+      "evidence": "billed USD for 5 persisted model turns. Missing; USD 0 stub does not count."
+    },
+    {
+      "id": "voice-live-offline",
+      "title": "Voice live offline persist and queue",
+      "criterion": "hors ligne: persist et file, jamais de reponse",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "Airplane mode on /dev/voice-live-spike. Capture may persist and queue_offline. No request_ai or speak. Local kernel offline tests are not device proof. Unexecuted = manual, not a pass.",
+      "evidence": "device recording of offline capture with no AI/TTS. Missing until recorded."
+    },
+    {
+      "id": "voice-live-interrupt",
+      "title": "Voice live interruption and reprise",
+      "criterion": "interruption TTS puis reprise sans tour AI invente",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "Barge-in during TTS, then reprise. Stop speech, keep last persisted segment, return to listen or offline. Do not invent an extra AI turn. Local kernel barge-in tests are not device proof.",
+      "evidence": "device recording of barge-in then reprise. Missing until recorded."
+    },
+    {
+      "id": "voice-live-privacy",
+      "title": "Voice live privacy retention and transcript isolation",
+      "criterion": "retention audio off; transcript original hors tours AI",
+      "mode": "manual",
+      "runtime": "manual",
+      "notes": "Start without opt-in. Inspect request_ai, spoken turns and voice_live_spike_v3 storage: audioRetention=off, original transcript absent, no audio upload. Local isolation tests are not device proof.",
+      "evidence": "payload/storage inspection notes. Missing until recorded."
+    }
+  ]
+}

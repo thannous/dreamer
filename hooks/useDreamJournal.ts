@@ -46,8 +46,8 @@ import {
   setDreamSyncState,
   upsertDream,
 } from '@/lib/dreamUtils';
+import { stampDreamAnalysisTranscript } from '@/lib/dreamAnalysisFreshness';
 import { coerceQuotaError, QuotaError, QuotaErrorCode } from '@/lib/errors';
-import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import { getImageJobPollDelay } from '@/lib/imageJobPolling';
 import { logger } from '@/lib/logger';
@@ -67,14 +67,14 @@ import {
 } from '@/services/geminiService';
 import {
   incrementLocalAnalysisCount,
+  incrementLocalImageCount,
   syncWithServerCount,
 } from '@/services/quota/GuestAnalysisCounter';
 import {
-  getGuestRecordedDreamCount,
   incrementLocalDreamRecordingCount,
   withGuestDreamRecordingLock,
 } from '@/services/quota/GuestDreamCounter';
-import { markMockAnalysis } from '@/services/quota/MockQuotaEventStore';
+import { markMockAnalysis, markMockImage } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
 import {
   getPendingImageJobs,
@@ -515,10 +515,6 @@ export const useDreamJournal = () => {
           return withGuestDreamRecordingLock(async () => {
             const currentDreams = dreamsRef.current;
             const alreadyExists = currentDreams.some((existing) => existing.id === normalizedDream.id);
-            const used = await getGuestRecordedDreamCount(currentDreams.length);
-            if (!alreadyExists && isGuestDreamLimitReached(used)) {
-              throw new QuotaError(QuotaErrorCode.GUEST_LIMIT_REACHED, 'guest');
-            }
             await persistLocalDreams([normalizedDream, ...currentDreams]);
             if (!alreadyExists) {
               try {
@@ -884,6 +880,31 @@ export const useDreamJournal = () => {
         return;
       }
 
+      const finalizeTerminalImageJob = async (recordSuccessfulImage: boolean) => {
+        if (recordSuccessfulImage && !user) {
+          try {
+            await incrementLocalImageCount({ jobId: job.jobId });
+          } catch (error) {
+            logger.warn('[useDreamJournal] Failed to increment guest image quota', error);
+            quotaService.invalidate(user);
+            return;
+          }
+        }
+        try {
+          await removePendingImageJob(job.jobId);
+        } catch (error) {
+          logger.warn('[useDreamJournal] Failed to clear pending image job', error);
+        }
+        if (recordSuccessfulImage && isMockMode) {
+          try {
+            await markMockImage({ id: job.dreamId });
+          } catch (error) {
+            logger.warn('[useDreamJournal] Failed to record mock image quota', error);
+          }
+        }
+        quotaService.invalidate(user);
+      };
+
       if (status.status === 'succeeded' && status.resultPayload?.imageUrl) {
         const nextDream: DreamAnalysis = {
           ...currentDream,
@@ -907,11 +928,12 @@ export const useDreamJournal = () => {
             const remoteDream = await fetchDreamFromSupabase(currentDream.remoteId);
             const refreshedDream = mergeRemoteDreamWithClientState(remoteDream, nextDream);
             await persistRemoteDreams((prev) => upsertDream(prev, refreshedDream));
-            await removePendingImageJob(job.jobId);
+            await finalizeTerminalImageJob(true);
             return;
           } catch (error) {
             logger.warn('[useDreamJournal] Failed to refresh the completed image job from the server', error);
             await persistDreamClientState(nextDream);
+            await finalizeTerminalImageJob(true);
             return;
           }
 
@@ -924,7 +946,7 @@ export const useDreamJournal = () => {
           await persistDreamClientState(nextDream);
         }
 
-        await removePendingImageJob(job.jobId);
+        await finalizeTerminalImageJob(true);
         return;
       }
 
@@ -949,16 +971,18 @@ export const useDreamJournal = () => {
         await persistDreamClientState(failedDream);
       }
 
-      await removePendingImageJob(job.jobId);
+      await finalizeTerminalImageJob(false);
     },
     [
       canUseRemoteSync,
       dreamsRef,
+      isMockMode,
       persistDreamClientState,
       persistPendingImageJobState,
       persistRemoteDreams,
       removePendingImageJob,
       updateDream,
+      user,
     ]
   );
 
@@ -1179,7 +1203,7 @@ export const useDreamJournal = () => {
         analyticsSource?: AnalysisSource;
       }
     ): Promise<DreamAnalysis> => {
-      const shouldReplaceImage = options?.replaceExistingImage ?? true;
+      const shouldReplaceImage = options?.replaceExistingImage === true;
 
       // Find the dream to update
       const dream = dreamsRef.current.find((d) => d.id === dreamId);
@@ -1247,15 +1271,20 @@ export const useDreamJournal = () => {
       // Get fingerprint for guest users to enable server-side quota tracking
       const fingerprint = !user ? await getDeviceFingerprint() : undefined;
 
-      // Analysis owns the initial image prompt. Submit the image only after the
-      // structured analysis succeeds so the worker does not pay for a second
-      // prompt-generation model call from the raw transcript.
-      const progressOrder: AnalysisStep[] = [
-        AnalysisStep.ANALYZING,
-        AnalysisStep.GENERATING_IMAGE,
-        AnalysisStep.FINALIZING,
-        AnalysisStep.COMPLETE,
-      ];
+      // Text analysis completes independently. Image jobs are opt-in: only an
+      // explicit replaceExistingImage:true submits or registers illustration.
+      const progressOrder: AnalysisStep[] = shouldReplaceImage
+        ? [
+            AnalysisStep.ANALYZING,
+            AnalysisStep.GENERATING_IMAGE,
+            AnalysisStep.FINALIZING,
+            AnalysisStep.COMPLETE,
+          ]
+        : [
+            AnalysisStep.ANALYZING,
+            AnalysisStep.FINALIZING,
+            AnalysisStep.COMPLETE,
+          ];
       let progressIndex = progressOrder.indexOf(AnalysisStep.ANALYZING);
       const emitProgress = (step: AnalysisStep) => {
         if (!options?.onProgress) return;
@@ -1315,8 +1344,11 @@ export const useDreamJournal = () => {
 
           emitProgress(AnalysisStep.FINALIZING);
           const remoteDream = await fetchDreamFromSupabase(syncedDream.remoteId!);
-          const refreshedDream = mergeRemoteDreamWithClientState(remoteDream, latestDream);
-          await persistRemoteDreams((prev) => upsertDream(prev, refreshedDream));
+          const mergedDream = mergeRemoteDreamWithClientState(remoteDream, latestDream);
+          const stampedDream = stampDreamAnalysisTranscript(mergedDream, mergedDream.transcript);
+          await updateDream(stampedDream);
+          await syncPendingMutations();
+          const refreshedDream = resolveCurrentDream(stampedDream);
 
           void trackProductEvent('analysis_completed', {
             duration_ms_bucket: getDurationMsBucket(Date.now() - analysisStartedAt),
@@ -1340,21 +1372,34 @@ export const useDreamJournal = () => {
         analysisStatusOverridesRef.current.set(dreamId, 'done');
 
         // The interpretation is the primary result. Persist it before starting
-        // the independent image job so a fast poll, app backgrounding, or an
+        // an independent image job so a fast poll, app backgrounding, or an
         // image admission failure cannot leave a successful analysis pending.
+        // Text-only analysis must not touch in-flight or failed image state.
+        // Never let an analysis payload overwrite the original transcript.
+        const latestBeforeAnalysis = resolveCurrentDream(syncedDream);
+        const { transcript: _ignoredTranscript, ...safeAnalysisFields } = analysisFields as typeof analysisFields & {
+          transcript?: string;
+        };
         let next: DreamAnalysis = {
-          ...resolveCurrentDream(syncedDream),
-          ...analysisFields,
-          imageGenerationFailed: false,
+          ...latestBeforeAnalysis,
+          ...safeAnalysisFields,
+          transcript: latestBeforeAnalysis.transcript,
           analysisStatus: 'done',
           analyzedAt: Date.now(),
           isAnalyzed: true,
-          imageJobId: undefined,
-          imageJobStatus: undefined,
-          imageJobRequestId: undefined,
-          imageJobErrorCode: undefined,
-          imageJobErrorMessage: undefined,
         };
+        next = stampDreamAnalysisTranscript(next, next.transcript);
+        if (shouldReplaceImage) {
+          next = {
+            ...next,
+            imageGenerationFailed: false,
+            imageJobId: undefined,
+            imageJobStatus: undefined,
+            imageJobRequestId: undefined,
+            imageJobErrorCode: undefined,
+            imageJobErrorMessage: undefined,
+          };
+        }
         await updateDream(next);
         await syncPendingMutations();
         next = resolveCurrentDream(next);

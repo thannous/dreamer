@@ -351,6 +351,156 @@ describe('useDreamPersistence', () => {
 
       expect(mockSaveDreams).toHaveBeenCalledWith([]);
     });
+
+    it('migrates N local guest dreams without dropping any', async () => {
+      const localDreams = [
+        buildDream({ id: 11, clientRequestId: 'guest-dream-11' }),
+        buildDream({ id: 12, clientRequestId: 'guest-dream-12' }),
+        buildDream({ id: 13, clientRequestId: 'guest-dream-13' }),
+      ];
+      mockGetDreamsMigrationSynced.mockResolvedValue(true);
+      mockGetSavedDreams.mockResolvedValue(localDreams);
+      mockFetchFromSupabase.mockResolvedValue([]);
+      mockCreateInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({
+        ...dream,
+        remoteId: Number(dream.id) + 100,
+      }));
+
+      renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+
+      await waitFor(() => {
+        expect(mockCreateInSupabase).toHaveBeenCalledTimes(3);
+      });
+
+      expect(mockCreateInSupabase).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ id: 11, clientRequestId: 'guest-dream-11' }),
+        'user-123'
+      );
+      expect(mockCreateInSupabase).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ id: 12, clientRequestId: 'guest-dream-12' }),
+        'user-123'
+      );
+      expect(mockCreateInSupabase).toHaveBeenNthCalledWith(
+        3,
+        expect.objectContaining({ id: 13, clientRequestId: 'guest-dream-13' }),
+        'user-123'
+      );
+      expect(mockSaveDreams).toHaveBeenCalledWith([]);
+    });
+
+    it('retries the same guest dreams idempotently and keeps them locally on failure', async () => {
+      const localDreams = [
+        buildDream({ id: 21, clientRequestId: 'guest-dream-21' }),
+        buildDream({ id: 22, clientRequestId: 'guest-dream-22' }),
+        buildDream({ id: 23, clientRequestId: 'guest-dream-23' }),
+      ];
+      mockGetDreamsMigrationSynced.mockResolvedValue(true);
+      mockGetSavedDreams.mockResolvedValue(localDreams);
+      mockFetchFromSupabase.mockResolvedValue([]);
+      mockCreateInSupabase
+        .mockResolvedValueOnce({ ...localDreams[0], remoteId: 121 })
+        .mockRejectedValueOnce(new Error('upload failed'))
+        .mockResolvedValue({ ...localDreams[0], remoteId: 121 });
+
+      const { result } = renderHook(() =>
+        useDreamPersistence({ canUseRemoteSync: true })
+      );
+
+      await waitFor(() => {
+        expect(mockCreateInSupabase).toHaveBeenCalledTimes(3);
+      });
+      expect(mockSaveDreams).not.toHaveBeenCalledWith([]);
+      expect(mockSaveDreams).toHaveBeenCalledWith([
+        expect.objectContaining({ id: 22, clientRequestId: 'guest-dream-22' }),
+      ]);
+
+      mockCreateInSupabase.mockClear();
+      mockGetSavedDreams.mockResolvedValue([
+        buildDream({ id: 22, clientRequestId: 'guest-dream-22' }),
+      ]);
+      mockFetchFromSupabase.mockResolvedValue([
+        { ...localDreams[0], remoteId: 121, clientRequestId: 'guest-dream-21' },
+        { ...localDreams[2], remoteId: 123, clientRequestId: 'guest-dream-23' },
+      ]);
+      mockCreateInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({
+        ...dream,
+        remoteId: Number(dream.id) + 100,
+      }));
+
+      await act(async () => {
+        await result.current.reloadDreams();
+      });
+
+      await waitFor(() => {
+        expect(mockCreateInSupabase).toHaveBeenCalledTimes(1);
+      });
+      expect(mockCreateInSupabase).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 22, clientRequestId: 'guest-dream-22' }),
+        'user-123'
+      );
+      expect(mockSaveDreams).toHaveBeenCalledWith([]);
+    });
+
+    it('migrates remaining guest dreams after a partial failure without duplicating successes', async () => {
+      const localDreams = [
+        buildDream({ id: 31, clientRequestId: 'guest-dream-31', transcript: 'first guest dream' }),
+        buildDream({ id: 32, clientRequestId: 'guest-dream-32', transcript: 'second guest dream' }),
+        buildDream({ id: 33, clientRequestId: 'guest-dream-33', transcript: 'third guest dream' }),
+      ];
+      mockGetDreamsMigrationSynced.mockResolvedValue(true);
+      mockGetSavedDreams.mockResolvedValue(localDreams);
+      mockFetchFromSupabase.mockResolvedValue([]);
+      mockCreateInSupabase
+        .mockResolvedValueOnce({ ...localDreams[0], remoteId: 131 })
+        .mockRejectedValueOnce(new Error('partial failure'))
+        .mockResolvedValueOnce({ ...localDreams[2], remoteId: 133 });
+
+      const { result } = renderHook(() =>
+        useDreamPersistence({ canUseRemoteSync: true })
+      );
+
+      await waitFor(() => {
+        expect(mockCreateInSupabase).toHaveBeenCalledTimes(3);
+      });
+      expect(mockCreateInSupabase.mock.calls.map((call: unknown[]) => (call[0] as DreamAnalysis).clientRequestId)).toEqual([
+        'guest-dream-31',
+        'guest-dream-32',
+        'guest-dream-33',
+      ]);
+      expect(mockSaveDreams).not.toHaveBeenCalledWith([]);
+      expect(mockSaveDreams).toHaveBeenCalledWith([
+        expect.objectContaining({ id: 32, clientRequestId: 'guest-dream-32', transcript: 'second guest dream' }),
+      ]);
+      expect(mockSetDreamsMigrationSynced).not.toHaveBeenCalledWith('user-123', true);
+
+      mockCreateInSupabase.mockClear();
+      mockGetSavedDreams.mockResolvedValue([
+        buildDream({ id: 32, clientRequestId: 'guest-dream-32', transcript: 'second guest dream' }),
+      ]);
+      mockFetchFromSupabase.mockResolvedValue([
+        { ...localDreams[0], remoteId: 131, clientRequestId: 'guest-dream-31' },
+        { ...localDreams[2], remoteId: 133, clientRequestId: 'guest-dream-33' },
+      ]);
+      mockCreateInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({
+        ...dream,
+        remoteId: Number(dream.id) + 100,
+      }));
+
+      await act(async () => {
+        await result.current.reloadDreams();
+      });
+
+      await waitFor(() => {
+        expect(mockCreateInSupabase).toHaveBeenCalledTimes(1);
+      });
+      expect(mockCreateInSupabase).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 32, clientRequestId: 'guest-dream-32', transcript: 'second guest dream' }),
+        'user-123'
+      );
+      expect(mockSaveDreams).toHaveBeenCalledWith([]);
+    });
   });
 
   describe('reload', () => {

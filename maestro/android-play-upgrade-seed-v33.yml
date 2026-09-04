@@ -57,22 +57,8 @@ onFlowComplete:
     id: btn.saveDream
 - extendedWaitUntil:
     visible:
-      id: "text.firstDream.title|text.analyzePromptTitle"
+      id: text.dreamDetail.actionTitle
     timeout: 90000
-- runFlow:
-    when:
-      visible:
-        id: text.firstDream.title
-    commands:
-      - tapOn:
-          id: btn.firstDream.journal
-- runFlow:
-    when:
-      visible:
-        id: text.analyzePromptTitle
-    commands:
-      - tapOn:
-          id: btn.analyzePrompt.journal
 - extendedWaitUntil:
     visible: "${UPGRADE_SENTINEL}"
     timeout: 20000
@@ -90,7 +76,13 @@ onFlowComplete:
       id: screen.journal
     timeout: 20000
 - tapOn:
-    id: tab.settings
+    id: tab.home
+- extendedWaitUntil:
+    visible:
+      id: btn.header.home.settings
+    timeout: 20000
+- tapOn:
+    id: btn.header.home.settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 20000
@@ -143,7 +135,13 @@ onFlowComplete:
       id: screen.journal
     timeout: 20000
 - tapOn:
-    id: tab.settings
+    id: tab.home
+- extendedWaitUntil:
+    visible:
+      id: btn.header.home.settings
+    timeout: 20000
+- tapOn:
+    id: btn.header.home.settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 20000

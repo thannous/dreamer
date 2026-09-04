@@ -9,8 +9,10 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 let getLocalAnalysisCount: typeof import('../GuestAnalysisCounter').getLocalAnalysisCount;
 let getLocalExplorationCount: typeof import('../GuestAnalysisCounter').getLocalExplorationCount;
+let getLocalImageCount: typeof import('../GuestAnalysisCounter').getLocalImageCount;
 let incrementLocalAnalysisCount: typeof import('../GuestAnalysisCounter').incrementLocalAnalysisCount;
 let incrementLocalExplorationCount: typeof import('../GuestAnalysisCounter').incrementLocalExplorationCount;
+let incrementLocalImageCount: typeof import('../GuestAnalysisCounter').incrementLocalImageCount;
 let syncWithServerCount: typeof import('../GuestAnalysisCounter').syncWithServerCount;
 let migrateExistingGuestQuota: typeof import('../GuestAnalysisCounter').migrateExistingGuestQuota;
 
@@ -62,6 +64,8 @@ jest.mock('@/lib/dreamUsage', () => ({
 
 const ANALYSIS_KEY = 'guest_total_analysis_count_v1';
 const EXPLORATION_KEY = 'guest_total_exploration_count_v1';
+const IMAGE_KEY = 'guest_total_image_count_v1';
+const IMAGE_LEDGER_KEY = 'guest_total_image_ledger_v1';
 const MIGRATION_KEY = 'guest_quota_migrated_v1';
 
 describe('GuestAnalysisCounter', () => {
@@ -76,8 +80,10 @@ describe('GuestAnalysisCounter', () => {
     ({
       getLocalAnalysisCount,
       getLocalExplorationCount,
+      getLocalImageCount,
       incrementLocalAnalysisCount,
       incrementLocalExplorationCount,
+      incrementLocalImageCount,
       syncWithServerCount,
       migrateExistingGuestQuota,
     } = require('../GuestAnalysisCounter'));
@@ -130,6 +136,12 @@ describe('GuestAnalysisCounter', () => {
 
       // Then
       expect(count).toBe(0);
+    });
+  });
+
+  describe('getLocalImageCount', () => {
+    it('given empty storage when getting count then returns 0', async () => {
+      await expect(getLocalImageCount()).resolves.toBe(0);
     });
   });
 
@@ -203,6 +215,77 @@ describe('GuestAnalysisCounter', () => {
       // Then
       expect(newCount).toBe(1);
       expect(mockStorage.get(ANALYSIS_KEY)).toBe('1');
+    });
+  });
+
+  describe('incrementLocalImageCount', () => {
+    it('given empty storage when incrementing then returns 1', async () => {
+      const newCount = await incrementLocalImageCount();
+
+      expect(newCount).toBe(1);
+      expect(mockStorage.get(IMAGE_KEY)).toBe('1');
+      expect(JSON.parse(mockStorage.get(IMAGE_LEDGER_KEY) ?? '{}')).toEqual({
+        count: 1,
+        claimedJobIds: [],
+      });
+    });
+
+    it('given the same image job when incrementing twice then stays at 1', async () => {
+      const first = await incrementLocalImageCount({ jobId: 'job-image-1' });
+      const second = await incrementLocalImageCount({ jobId: 'job-image-1' });
+
+      expect(first).toBe(1);
+      expect(second).toBe(1);
+      expect(mockStorage.get(IMAGE_KEY)).toBe('1');
+      expect(JSON.parse(mockStorage.get(IMAGE_LEDGER_KEY) ?? '{}')).toEqual({
+        count: 1,
+        claimedJobIds: ['job-image-1'],
+      });
+    });
+
+    it('given distinct image jobs when incrementing then counts each success once', async () => {
+      await incrementLocalImageCount({ jobId: 'job-image-1' });
+      const second = await incrementLocalImageCount({ jobId: 'job-image-2' });
+
+      expect(second).toBe(2);
+      expect(mockStorage.get(IMAGE_KEY)).toBe('2');
+      expect(JSON.parse(mockStorage.get(IMAGE_LEDGER_KEY) ?? '{}').claimedJobIds).toEqual([
+        'job-image-1',
+        'job-image-2',
+      ]);
+    });
+
+    it('given concurrent claims for the same job then counts once', async () => {
+      const [first, second] = await Promise.all([
+        incrementLocalImageCount({ jobId: 'job-image-1' }),
+        incrementLocalImageCount({ jobId: 'job-image-1' }),
+      ]);
+
+      expect([first, second].sort()).toEqual([1, 1]);
+      expect(await getLocalImageCount()).toBe(1);
+      expect(JSON.parse(mockStorage.get(IMAGE_LEDGER_KEY) ?? '{}')).toEqual({
+        count: 1,
+        claimedJobIds: ['job-image-1'],
+      });
+    });
+
+    it('given a crash after ledger write then still counts the claimed job once', async () => {
+      await incrementLocalImageCount({ jobId: 'job-image-1' });
+      mockStorage.delete(IMAGE_KEY);
+
+      expect(await getLocalImageCount()).toBe(1);
+      const retried = await incrementLocalImageCount({ jobId: 'job-image-1' });
+      expect(retried).toBe(1);
+      expect(mockStorage.get(IMAGE_KEY)).toBe('1');
+    });
+
+    it('given a higher legacy count than the ledger then uses the maximum', async () => {
+      mockStorage.set(IMAGE_KEY, '3');
+      mockStorage.set(IMAGE_LEDGER_KEY, JSON.stringify({ count: 1, claimedJobIds: ['job-image-1'] }));
+
+      expect(await getLocalImageCount()).toBe(3);
+      const next = await incrementLocalImageCount({ jobId: 'job-image-2' });
+      expect(next).toBe(4);
     });
   });
 
@@ -290,6 +373,15 @@ describe('GuestAnalysisCounter', () => {
       // Then
       expect(result).toBe(5);
       expect(mockStorage.get(EXPLORATION_KEY)).toBe('5');
+    });
+
+    it('given server count higher than local when syncing image then uses server count', async () => {
+      mockStorage.set('guest_total_image_count_v1', '1');
+
+      const result = await syncWithServerCount(2, 'image');
+
+      expect(result).toBe(2);
+      expect(mockStorage.get('guest_total_image_count_v1')).toBe('2');
     });
 
     it('given empty local storage when syncing then uses server count', async () => {

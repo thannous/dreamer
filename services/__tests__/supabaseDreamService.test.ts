@@ -314,6 +314,173 @@ describe('supabaseDreamService', () => {
     expect(dream.promptVersion).toBe('analysis-2026-08-19.1');
   });
 
+  it('createDreamInSupabase preserves unknown analysis_details and the transcript hash', async () => {
+    const analysisDetails = {
+      symbols: [{ name: 'Water', meaning: 'Flow' }],
+      promptVersion: 'analysis-2026-08-19.1',
+      analysisTranscriptHash: 'v1:abcd1234',
+    };
+    const singleMock = jest.fn().mockResolvedValueOnce({
+      data: buildRow({ analysis_details: analysisDetails }),
+      error: null,
+    });
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({ single: singleMock })),
+    }));
+    mocks.from.mockReturnValue({ upsert: upsertMock });
+
+    const { createDreamInSupabase } = require('../supabaseDreamService');
+
+    const dream = await createDreamInSupabase(
+      buildDream({
+        symbols: [{ name: 'Water', meaning: 'Flow' }],
+        promptVersion: 'analysis-2026-08-19.1',
+        analysisTranscriptHash: 'v1:abcd1234',
+        analysisDetails: {
+          customSignal: 'drop-me',
+          analysisTranscriptHash: 'v1:oldhash',
+        },
+      }) as any,
+      'user-1',
+    );
+
+    const row = (((upsertMock as any).mock.calls[0]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+    expect(row.analysis_details).toEqual(analysisDetails);
+    expect(dream.promptVersion).toBe('analysis-2026-08-19.1');
+    expect(dream.analysisTranscriptHash).toBe('v1:abcd1234');
+    expect(dream.analysisDetails).toEqual(analysisDetails);
+    expect(dream.analysisDetails).not.toHaveProperty('customSignal');
+  });
+
+  it('createDreamInSupabase drops invalid known analysis_details and unknown keys', async () => {
+    const singleMock = jest.fn().mockResolvedValueOnce({
+      data: buildRow({
+        analysis_details: {
+          analysisTranscriptHash: 'v1:abcd1234',
+          reflectionQuestions: ['What remains?'],
+        },
+      }),
+      error: null,
+    });
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({ single: singleMock })),
+    }));
+    mocks.from.mockReturnValue({ upsert: upsertMock });
+
+    const { createDreamInSupabase } = require('../supabaseDreamService');
+
+    await createDreamInSupabase(
+      buildDream({
+        analysisDetails: {
+          symbols: [{ bad: true }],
+          emotions: [{ name: 'Fear' }],
+          reflectionQuestions: [42, 'What remains?'],
+          promptVersion: '',
+          analysisTranscriptHash: 'not-a-hash',
+          customSignal: 'keep-me',
+        },
+        analysisTranscriptHash: 'v1:abcd1234',
+      }) as any,
+      'user-1',
+    );
+
+    const row = (((upsertMock as any).mock.calls[0]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+    expect(row.analysis_details).toEqual({
+      reflectionQuestions: ['What remains?'],
+      analysisTranscriptHash: 'v1:abcd1234',
+    });
+    expect(row.analysis_details).not.toHaveProperty('customSignal');
+  });
+
+  it('createDreamInSupabase rejects unknown analysis_details keys and keeps expected fields', async () => {
+    const expectedDetails = {
+      symbols: [{ name: 'Door', meaning: 'Passage' }],
+      emotions: [{ name: 'Calm', insight: 'Still water' }],
+      reflectionQuestions: ['What stayed?'],
+      promptVersion: 'analysis-2026-08-19.1',
+      analysisTranscriptHash: 'v1:abcd1234',
+    };
+    const singleMock = jest.fn().mockResolvedValueOnce({
+      data: buildRow({ analysis_details: expectedDetails }),
+      error: null,
+    });
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({ single: singleMock })),
+    }));
+    mocks.from.mockReturnValue({ upsert: upsertMock });
+
+    const { createDreamInSupabase } = require('../supabaseDreamService');
+
+    const dream = await createDreamInSupabase(
+      buildDream({
+        ...expectedDetails,
+        analysisDetails: {
+          ...expectedDetails,
+          customSignal: 'drop-me',
+          serverOwnerField: { injected: true },
+        },
+      }) as any,
+      'user-1',
+    );
+
+    const row = (((upsertMock as any).mock.calls[0]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+    expect(row.analysis_details).toEqual(expectedDetails);
+    expect(row.analysis_details).not.toHaveProperty('customSignal');
+    expect(row.analysis_details).not.toHaveProperty('serverOwnerField');
+    expect(dream.analysisDetails).toEqual(expectedDetails);
+    expect(dream.symbols).toEqual(expectedDetails.symbols);
+    expect(dream.emotions).toEqual(expectedDetails.emotions);
+    expect(dream.reflectionQuestions).toEqual(expectedDetails.reflectionQuestions);
+    expect(dream.promptVersion).toBe(expectedDetails.promptVersion);
+    expect(dream.analysisTranscriptHash).toBe(expectedDetails.analysisTranscriptHash);
+  });
+
+  it('updateDreamInSupabase keeps allowlisted analysis_details and drops unknown keys', async () => {
+    const expectedDetails = {
+      symbols: [{ name: 'Moon', meaning: 'Night' }],
+      promptVersion: 'analysis-2026-08-19.1',
+      analysisTranscriptHash: 'v1:abcd1234',
+    };
+    const singleMock = jest.fn().mockResolvedValueOnce({
+      data: buildRow({
+        id: 123,
+        analysis_details: expectedDetails,
+      }),
+      error: null,
+    });
+    const updateMock = jest.fn((_row: any) => ({
+      eq: jest.fn(() => ({
+        select: jest.fn(() => ({
+          single: singleMock,
+        })),
+      })),
+    }));
+    mocks.from.mockReturnValue({ update: updateMock });
+
+    const { updateDreamInSupabase } = require('../supabaseDreamService');
+
+    const dream = await updateDreamInSupabase({
+      ...buildDream({
+        remoteId: 123,
+        symbols: expectedDetails.symbols,
+        promptVersion: expectedDetails.promptVersion,
+        analysisTranscriptHash: expectedDetails.analysisTranscriptHash,
+        analysisDetails: {
+          customSignal: 'drop-me',
+          promptVersion: expectedDetails.promptVersion,
+        },
+      }),
+    } as any);
+
+    const row = (((updateMock as any).mock.calls[0]?.[0] ?? {}) as unknown) as Record<string, unknown>;
+    expect(row.analysis_details).toEqual(expectedDetails);
+    expect(row.analysis_details).not.toHaveProperty('customSignal');
+    expect(dream.analysisDetails).toEqual(expectedDetails);
+    expect(dream.symbols).toEqual(expectedDetails.symbols);
+    expect(dream.promptVersion).toBe(expectedDetails.promptVersion);
+    expect(dream.analysisTranscriptHash).toBe(expectedDetails.analysisTranscriptHash);
+  });
+
   it('createDreamInSupabase preserves remembered memory when retrying without the memory column', async () => {
     const memory = {
       version: 1,
@@ -424,6 +591,79 @@ describe('supabaseDreamService', () => {
 
     expect(dream.thumbnailUrl).toBe('https://example.com/dream.webp');
     expect(dream.imageGenerationFailed).toBe(false);
+  });
+
+  it('syncDreamMutationsInSupabase sends a 10000-character transcript in the create RPC payload', async () => {
+    const longTranscript = 'a'.repeat(10_000);
+    mocks.rpc = jest.fn().mockResolvedValue({
+      data: [
+        {
+          mutation_id: 'mut-create',
+          client_request_id: 'mutation-create',
+          operation: 'create',
+          status: 'ack',
+          remote_id: 42,
+          dream: buildRow({ transcript: longTranscript }),
+        },
+      ],
+      error: null,
+    });
+
+    const { syncDreamMutationsInSupabase } = require('../supabaseDreamService');
+
+    const [result] = await syncDreamMutationsInSupabase(
+      [
+        {
+          version: 1,
+          id: 'mut-create',
+          userScope: 'user:user-1',
+          entityType: 'dream',
+          entityKey: 'client:dream-req-1',
+          operation: 'create',
+          clientRequestId: 'mutation-create',
+          clientUpdatedAt: 1,
+          payload: {
+            dream: buildDream({ transcript: longTranscript }),
+          },
+          status: 'pending',
+          retryCount: 0,
+          createdAt: 1,
+        },
+      ],
+      'user-1',
+    );
+
+    expect(mocks.rpc).toHaveBeenCalledTimes(1);
+    const rpcPayload = mocks.rpc?.mock.calls[0]?.[1]?.mutations?.[0]?.payload as Record<string, unknown>;
+    expect(rpcPayload?.transcript).toBe(longTranscript);
+    expect(String(rpcPayload?.transcript)).toHaveLength(10_000);
+    expect(result).toEqual(expect.objectContaining({ mutationId: 'mut-create', status: 'ack', remoteId: 42 }));
+  });
+
+  it('fetchDreamsFromSupabase returns a 10000-character transcript unchanged', async () => {
+    const longTranscript = 'a'.repeat(10_000);
+    const orderMock = jest.fn().mockResolvedValue({
+      data: [
+        buildRow({
+          id: 777,
+          transcript: longTranscript,
+          client_request_id: 'offline-10k-create',
+        }),
+      ],
+      error: null,
+    });
+
+    mocks.from.mockReturnValue({
+      select: jest.fn(() => ({ order: orderMock })),
+    });
+
+    const { fetchDreamsFromSupabase } = require('../supabaseDreamService');
+    const dreams = await fetchDreamsFromSupabase();
+
+    expect(dreams).toHaveLength(1);
+    expect(dreams[0]?.transcript).toBe(longTranscript);
+    expect(dreams[0]?.transcript).toHaveLength(10_000);
+    expect(dreams[0]?.clientRequestId).toBe('offline-10k-create');
   });
 
   it('syncDreamMutationsInSupabase splits dependent create and update mutations', async () => {

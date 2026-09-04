@@ -149,7 +149,9 @@
       }
     },
     "owner": "tanuki75",
-    "runtimeVersion": "3.1.0",
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
     "updates": {
       "url": "https://u.expo.dev/cfd1b275-9dad-40d7-9d9a-147c7bb38415"
     }

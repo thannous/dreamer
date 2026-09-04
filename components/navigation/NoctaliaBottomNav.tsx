@@ -24,7 +24,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
-type BottomNavKey = 'home' | 'journal' | 'addDream' | 'stats' | 'settings';
+type BottomNavKey = 'home' | 'journal' | 'addDream' | 'stats' | 'explore';
 
 type BottomNavItem = {
   key: BottomNavKey;
@@ -82,7 +82,7 @@ export function NoctaliaBottomNav({
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width, height } = useWindowDimensions();
+  const { width, height, fontScale } = useWindowDimensions();
   // The Capture button doubles as the in-progress indicator for a background
   // dream analysis, so no overlay has to cover the screen content.
   const { activeAnalysis } = useAnalysisActivity();
@@ -91,7 +91,7 @@ export function NoctaliaBottomNav({
     return null;
   }
 
-  const navigationLayout = getBottomNavigationLayout(width, height);
+  const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
   const floatingBottomInset = Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   // Icon and indicator colours are values on native props, so they stay on the tokens.
   const navActiveColor = noctalia.nav.active;
@@ -108,11 +108,16 @@ export function NoctaliaBottomNav({
   const addItemClassName = [
     'items-center justify-center border-2 border-champagne-soft bg-champagne',
     navigationLayout.compact
-      ? 'h-[56px] w-[60px] gap-px rounded-[22px]'
+      ? 'gap-px rounded-[22px]'
       : navigationLayout.narrow
-        ? 'h-[68px] w-[64px] gap-[3px] rounded-[24px]'
-        : 'h-[76px] w-[72px] gap-1 rounded-[27px]',
+        ? 'gap-[3px] rounded-[24px]'
+        : 'gap-1 rounded-[27px]',
   ].join(' ');
+  const labelStyle = {
+    fontSize: navigationLayout.labelFontSize,
+    lineHeight: navigationLayout.labelLineHeight,
+    height: navigationLayout.stackedLabels ? navigationLayout.labelHeight : undefined,
+  };
 
   const addLift = navigationLayout.compact
     ? ADD_LIFT.compact
@@ -160,12 +165,14 @@ export function NoctaliaBottomNav({
       testID: TID.Tab.Stats,
     },
     {
-      key: 'settings',
-      label: t('nav.settings'),
-      accessibilityLabel: t('nav.settings'),
-      icon: 'gear',
-      href: '/settings',
-      testID: TID.Tab.Settings,
+      key: 'explore',
+      label: t('nav.explore'),
+      accessibilityLabel: t('nav.explore'),
+      icon: 'sparkles',
+      // Keep the nested tab state explicit. When this bar is used from Capture,
+      // a resource route can now return to Explorer instead of the default Today tab.
+      href: '/(tabs)/explore',
+      testID: TID.Tab.Explore,
     },
   ];
 
@@ -192,13 +199,30 @@ export function NoctaliaBottomNav({
               key={item.key}
               onPress={isActive ? undefined : () => router.push(item.href as any)}
               accessibilityRole="tab"
-              accessibilityState={{ selected: isActive }}
+              aria-selected={isActive}
+              aria-busy={isCenter ? Boolean(activeAnalysis) : undefined}
+              accessibilityState={{
+                selected: isActive,
+                busy: isCenter ? Boolean(activeAnalysis) : undefined,
+              }}
               accessibilityLabel={item.accessibilityLabel}
               testID={item.testID}
               className="h-full min-w-0 flex-1 items-center justify-center active:opacity-[0.72]"
             >
               {isCenter ? (
-                <View className={addItemClassName} style={[ADD_SHADOW, addLift]}>
+                <View
+                  accessible={false}
+                  importantForAccessibility="no-hide-descendants"
+                  className={addItemClassName}
+                  style={[
+                    ADD_SHADOW,
+                    addLift,
+                    {
+                      width: navigationLayout.centerActionWidth,
+                      height: navigationLayout.centerActionHeight,
+                    },
+                  ]}
+                >
                   {activeAnalysis ? (
                     <ActivityIndicator size="small" color={addTextColor} />
                   ) : (
@@ -208,42 +232,54 @@ export function NoctaliaBottomNav({
                       color={addTextColor}
                     />
                   )}
-                  <Text
-                    className={`font-sans-bold w-full min-w-0 shrink text-center text-on-champagne ${
-                      navigationLayout.narrow ? 'text-[11px] px-px' : 'text-[12px]'
-                    }`}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    adjustsFontSizeToFit
-                    minimumFontScale={navigationLayout.narrow ? 0.75 : 0.85}
-                    maxFontSizeMultiplier={navigationLayout.narrow ? 1.3 : undefined}
-                  >
-                    {item.label}
-                  </Text>
+                    <Text
+                      accessible={false}
+                      className={`font-sans-bold w-full min-w-0 shrink text-center text-on-champagne ${
+                        navigationLayout.narrow ? 'text-[11px] px-px' : 'text-[12px]'
+                      }`}
+                      style={labelStyle}
+                      numberOfLines={navigationLayout.labelLines}
+                      textBreakStrategy="simple"
+                      ellipsizeMode="tail"
+                      adjustsFontSizeToFit={!navigationLayout.stackedLabels}
+                      minimumFontScale={navigationLayout.narrow ? 0.75 : 0.85}
+                    >
+                      {item.label}
+                    </Text>
+                  {isActive ? (
+                    <View style={{ width: 16, height: 3, borderRadius: 2, backgroundColor: addTextColor }} />
+                  ) : null}
                 </View>
               ) : (
                 <View
-                  className={`w-full min-w-0 flex-1 items-center justify-center ${
+                  accessible={false}
+                  importantForAccessibility="no-hide-descendants"
+                  className={`min-w-0 items-center justify-center ${
                     navigationLayout.compact ? 'gap-px' : 'gap-[5px]'
-                  }`}
+                  } w-full flex-1`}
                 >
                   <IconSymbol
                     size={24}
                     name={item.icon}
                     color={isActive ? navActiveColor : navInactiveColor}
                   />
-                  <Text
-                    className={`font-sans-medium w-full min-w-0 shrink text-center ${labelSizeClassName} ${
-                      isActive ? 'text-nav-active' : 'text-nav-inactive'
-                    }`}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    adjustsFontSizeToFit
-                    minimumFontScale={navigationLayout.narrow ? 0.75 : 0.8}
-                    maxFontSizeMultiplier={navigationLayout.narrow ? 1.3 : undefined}
-                  >
-                    {item.label}
-                  </Text>
+                    <Text
+                      accessible={false}
+                      className={`font-sans-medium w-full min-w-0 shrink text-center ${labelSizeClassName} ${
+                        isActive ? 'text-nav-active' : 'text-nav-inactive'
+                      }`}
+                      style={labelStyle}
+                      numberOfLines={navigationLayout.labelLines}
+                      textBreakStrategy="simple"
+                      ellipsizeMode="tail"
+                      adjustsFontSizeToFit={!navigationLayout.stackedLabels}
+                      minimumFontScale={navigationLayout.narrow ? 0.75 : 0.8}
+                    >
+                      {item.label}
+                    </Text>
+                  <View
+                    style={{ width: 16, height: 3, borderRadius: 2, backgroundColor: isActive ? navActiveColor : 'transparent' }}
+                  />
                 </View>
               )}
             </Pressable>

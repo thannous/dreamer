@@ -1,0 +1,54 @@
+# Release long-fragment gate: a story longer than 600 characters remains
+# fully visible after save. Start and end sentinels must both survive.
+# The 10_000-character paste stays a separate human check.
+appId: ${APP_ID || "com.tanuki75.noctalia"}
+name: Release long fragment persistence
+tags:
+  - release
+  - capture
+  - long-form
+onFlowComplete:
+  - setAirplaneMode: disabled
+---
+- setAirplaneMode: disabled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
+
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "LONG-START A moonlit corridor of repeating doors opens onto a quiet river, and the same lantern garden returns with every step. A moonlit corridor of repeating doors opens onto a quiet river, and the same lantern garden returns with every step. A moonlit corridor of repeating doors opens onto a quiet river, and the same lantern garden returns with every step. A moonlit corridor of repeating doors opens onto a quiet river, and the same lantern garden returns with every step. A moonlit corridor of repeating doors opens onto a quiet river, and the same lantern garden returns with every step. A moonlit corridor of repeating doors opens onto a quiet river, and the same lantern garden returns with every step. LONG-END"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: component.recording.draftProgress
+    direction: DOWN
+- assertVisible:
+    id: component.recording.draftProgress
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: component.transcriptCard
+    timeout: 30000
+- assertVisible: ".*LONG-START.*"
+- scrollUntilVisible:
+    element:
+      text: ".*LONG-END.*"
+    direction: DOWN
+    timeout: 20000
+    visibilityPercentage: 40
+- assertVisible: ".*LONG-END.*"
+- takeScreenshot: ti429-long-fragment

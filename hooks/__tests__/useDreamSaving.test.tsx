@@ -5,7 +5,6 @@ import { act, renderHook } from '@testing-library/react';
 import { Alert } from 'react-native';
 import { beforeEach, describe, expect, it } from '@jest/globals';
 
-import { QuotaError, QuotaErrorCode } from '../../lib/errors';
 // Use jest.hoisted to ensure mock functions are available during module loading
 const {
   mockCategorizeDream,
@@ -26,8 +25,6 @@ const {
 let mockCurrentUser: any = { id: 'test-user' };
 let mockCanAnalyzeNow = true;
 let mockTier = 'free';
-const mockGetGuestRecordedDreamCount = jest.fn();
-const mockIsGuestDreamLimitReached = jest.fn();
 
 // Mock all dependencies
 jest.mock('react-native', () => ({
@@ -81,14 +78,6 @@ jest.mock('../../services/geminiService', () => ({
   categorizeDream: mockCategorizeDream,
 }));
 
-jest.mock('../../services/quota/GuestDreamCounter', () => ({
-  getGuestRecordedDreamCount: mockGetGuestRecordedDreamCount,
-}));
-
-jest.mock('../../lib/guestLimits', () => ({
-  isGuestDreamLimitReached: mockIsGuestDreamLimitReached,
-}));
-
 // Import after mocks are set up
 const { useDreamSaving } = require('../useDreamSaving');
 
@@ -98,8 +87,6 @@ describe('useDreamSaving', () => {
     mockCurrentUser = { id: 'test-user' };
     mockCanAnalyzeNow = true;
     mockTier = 'free';
-    mockGetGuestRecordedDreamCount.mockResolvedValue(0);
-    mockIsGuestDreamLimitReached.mockReturnValue(false);
   });
 
   it('should initialize with isPersisting false', () => {
@@ -255,7 +242,32 @@ describe('useDreamSaving', () => {
       await result.current.analyzeAndSaveDream(draft);
     });
 
-    expect(mockAnalyzeDream).toHaveBeenCalledWith(draft.id, draft.transcript, { lang: 'fr' });
+    expect(mockAnalyzeDream).toHaveBeenCalledWith(draft.id, draft.transcript, {
+      lang: 'fr',
+      replaceExistingImage: false,
+    });
+  });
+
+  it('analyzes without requesting illustration', async () => {
+    const onProgress = {
+      setStep: jest.fn(),
+      setError: jest.fn(),
+      reset: jest.fn(),
+    };
+    const { result } = renderHook(() => useDreamSaving());
+    const draft = result.current.buildDraftDream('Un rêve');
+
+    await act(async () => {
+      await result.current.analyzeAndSaveDream(draft, onProgress);
+    });
+
+    expect(mockAnalyzeDream).toHaveBeenCalledWith(draft.id, draft.transcript, {
+      lang: 'fr',
+      replaceExistingImage: false,
+    });
+    expect(onProgress.setStep).toHaveBeenCalledWith(1);
+    expect(onProgress.setStep).toHaveBeenCalledWith(3);
+    expect(onProgress.setStep).not.toHaveBeenCalledWith(2);
   });
 
   it('still saves dreams when quick categorization fails', async () => {
@@ -271,36 +283,40 @@ describe('useDreamSaving', () => {
     expect(savedDream).not.toBeNull();
   });
 
-  it('halts save and notifies when guest limit is reached', async () => {
+  it('saves guest dreams without consulting a recording limit', async () => {
     mockCurrentUser = null;
-    mockGetGuestRecordedDreamCount.mockResolvedValueOnce(10);
-    mockIsGuestDreamLimitReached.mockReturnValueOnce(true);
-    const onGuestLimitReached = jest.fn();
-
-    const { result } = renderHook(() => useDreamSaving({ onGuestLimitReached }));
+    const { result } = renderHook(() => useDreamSaving());
 
     let savedDream;
     await act(async () => {
       savedDream = await result.current.saveDream('Guest dream');
     });
 
-    expect(savedDream).toBeNull();
-    expect(onGuestLimitReached).toHaveBeenCalled();
-    expect(mockAddDream).not.toHaveBeenCalled();
+    expect(mockAddDream).toHaveBeenCalledTimes(1);
+    expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({
+      transcript: 'Guest dream',
+    }));
+    expect(savedDream).not.toBeNull();
   });
 
-  it('handles guest quota errors from storage', async () => {
-    mockAddDream.mockRejectedValueOnce(new QuotaError(QuotaErrorCode.GUEST_LIMIT_REACHED, 'guest'));
-    const onGuestLimitReached = jest.fn();
-    const { result } = renderHook(() => useDreamSaving({ onGuestLimitReached }));
+  it('keeps the original transcript when analysis fails after save', async () => {
+    mockAnalyzeDream.mockRejectedValueOnce(new Error('Analysis failed'));
+    const { result } = renderHook(() => useDreamSaving());
+    const original = 'Original remembered dream ' + 'y'.repeat(80);
+    const draft = result.current.buildDraftDream(original);
 
-    let saved;
+    let analyzed;
     await act(async () => {
-      saved = await result.current.saveDream('Quota dream');
+      analyzed = await result.current.analyzeAndSaveDream(draft);
     });
 
-    expect(saved).toBeNull();
-    expect(onGuestLimitReached).toHaveBeenCalled();
+    expect(analyzed).toBeNull();
+    expect(mockAnalyzeDream).toHaveBeenCalledWith(draft.id, original, {
+      lang: 'fr',
+      replaceExistingImage: false,
+    });
+    expect(draft.transcript).toBe(original);
+    expect(mockAddDream).not.toHaveBeenCalled();
   });
 
   it('shows analysis limit alert when quota prevents analysis', async () => {

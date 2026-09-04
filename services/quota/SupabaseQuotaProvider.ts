@@ -6,6 +6,10 @@ import type { QuotaStatus } from '@/lib/types';
 import { getCachedRemoteDreams } from '@/services/storageService';
 import type { User } from '@supabase/supabase-js';
 import type { CacheEntry, QuotaDreamTarget, QuotaProvider } from './types';
+import {
+  authenticatedGenericImageUsage,
+  resolveCanGenerateImage,
+} from './quotaMetrics';
 
 type TierMonthlyLimits = {
   analysis: number | null;
@@ -18,6 +22,7 @@ type QuotaSnapshotPayload = {
   usage?: unknown;
   canAnalyze?: unknown;
   canExplore?: unknown;
+  canGenerateImage?: unknown;
 };
 
 /**
@@ -75,11 +80,15 @@ export class SupabaseQuotaProvider implements QuotaProvider {
       reasons.push('You have reached your free monthly exploration limit. Upgrade to Noctalia Plus for unlimited exploration!');
     }
 
+    const image = authenticatedGenericImageUsage(tier);
+    const canGenerateImage = resolveCanGenerateImage({ tier, image });
+
     return {
       tier,
-      usage: { analysis, exploration, messages },
+      usage: { analysis, exploration, messages, image },
       canAnalyze: payload.canAnalyze,
       canExplore: payload.canExplore,
+      canGenerateImage,
       reasons: reasons.length > 0 ? reasons : undefined,
     };
   }
@@ -443,6 +452,11 @@ export class SupabaseQuotaProvider implements QuotaProvider {
     return used < limit;
   }
 
+  async canGenerateImage(user: User | null, tier: UserTier = 'free'): Promise<boolean> {
+    if (!user) return false;
+    return resolveCanGenerateImage({ tier });
+  }
+
   async getQuotaStatus(user: User | null, tier: UserTier, target?: QuotaDreamTarget): Promise<QuotaStatus> {
     if (!user) {
       // Guest, not handled here - return placeholder
@@ -452,9 +466,11 @@ export class SupabaseQuotaProvider implements QuotaProvider {
           analysis: { used: 0, limit: null, remaining: null },
           exploration: { used: 0, limit: null, remaining: null },
           messages: { used: 0, limit: null, remaining: null },
+          image: { used: 0, limit: null, remaining: null },
         },
         canAnalyze: false,
         canExplore: false,
+        canGenerateImage: false,
       };
     }
 
@@ -490,6 +506,9 @@ export class SupabaseQuotaProvider implements QuotaProvider {
       }
     }
 
+    const image = authenticatedGenericImageUsage(tier);
+    const canGenerateImage = resolveCanGenerateImage({ tier, image });
+
     return {
       tier,
       usage: {
@@ -508,9 +527,11 @@ export class SupabaseQuotaProvider implements QuotaProvider {
           limit: messagesLimit,
           remaining: messagesLimit !== null ? messagesLimit - messagesUsed : null,
         },
+        image,
       },
       canAnalyze,
       canExplore,
+      canGenerateImage,
       reasons: reasons.length > 0 ? reasons : undefined,
     };
   }

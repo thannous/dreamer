@@ -1,4 +1,4 @@
-# Verify journal badges and analyzed/explored filters with mock existing user
+# Verify journal quick filters, advanced sheet, and coherent reset with mock existing user
 appId: com.tanuki75.noctalia
 ---
 - runFlow: subflows/open-mock-app.yml
@@ -18,18 +18,73 @@ appId: com.tanuki75.noctalia
           id: screen.journal
       timeout: 30000
 - runFlow: subflows/clear-journal-filters.yml
-# Apply explored-only filter (chat bubble icon)
+- assertVisible:
+      id: btn.filterAll
+- assertVisible:
+      id: btn.filterFavorites
+- assertVisible:
+      id: btn.filterToDeepen
+- assertVisible:
+      id: btn.filterMore
+# Apply deepen-only filter (analyzed, not yet explored)
 - tapOn:
-      id: btn.filterExplored
+      id: btn.filterToDeepen
+- extendedWaitUntil:
+      visible: "The Infinite Library"
+      timeout: 10000
+- assertVisible: "The Infinite Library"
+- assertNotVisible: "Ocean of Stars"
+# Reset from Tous must restore the full list
+- tapOn:
+      id: btn.filterAll
+- extendedWaitUntil:
+      visible: "Ocean of Stars"
+      timeout: 10000
+- assertVisible: "Ocean of Stars"
+- assertVisible: "The Infinite Library"
+# Favorites remain available as a mutually exclusive quick filter
+- tapOn:
+      id: btn.filterFavorites
+- extendedWaitUntil:
+      visible: "Ocean of Stars"
+      timeout: 10000
+- assertVisible: "Ocean of Stars"
+- tapOn:
+      id: btn.filterAll
+- extendedWaitUntil:
+      visible: "The Infinite Library"
+      timeout: 10000
+# Advanced sheet still exposes status filters
+- tapOn:
+      id: btn.filterMore
+- extendedWaitUntil:
+      visible:
+          id: modal.advancedFilters
+      timeout: 10000
+- scrollUntilVisible:
+      element:
+          id: btn.filterStatus.explored
+      direction: DOWN
+      timeout: 10000
+      centerElement: true
+- tapOn:
+      id: btn.filterStatus.explored
+- scrollUntilVisible:
+      element:
+          text: "Done"
+      direction: DOWN
+      timeout: 30000
+      speed: 80
+      visibilityPercentage: 40
+      centerElement: true
+- tapOn:
+      text: "Done"
+- extendedWaitUntil:
+      notVisible:
+          id: modal.advancedFilters
+      timeout: 10000
 - extendedWaitUntil:
       visible: "Ocean of Stars"
       timeout: 10000
 - assertVisible: "Ocean of Stars"
 - assertNotVisible: "The Infinite Library"
-# Combine with analyzed filter (sparkles icon) – should still show the explored dream
-- tapOn:
-      id: btn.filterAnalyzed
-- extendedWaitUntil:
-      visible: "Ocean of Stars"
-      timeout: 10000
-- assertVisible: "Ocean of Stars"

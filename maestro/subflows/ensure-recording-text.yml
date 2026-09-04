@@ -1,14 +1,14 @@
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 ---
 - assertVisible:
     id: screen.recording
 - runFlow:
     when:
       visible:
-        id: btn.recording.switchToText
+        id: btn.recording.inputMode.text
     commands:
       - tapOn:
-          id: btn.recording.switchToText
+          id: btn.recording.inputMode.text
       - extendedWaitUntil:
           visible:
             id: input.dreamTranscript

@@ -13,17 +13,52 @@ export const TAB_BAR_MARGIN = Platform.OS === 'android' ? TAB_BAR_MARGIN_ANDROID
 export const TAB_BAR_CONTENT_BOTTOM_PADDING = 12;
 export const NARROW_TAB_BAR_BREAKPOINT = 360;
 export const NARROW_TAB_BAR_HORIZONTAL_MARGIN = 8;
+export const LARGE_TEXT_FONT_SCALE = 1.3;
 
 export const isNarrowBottomNavigation = (viewportWidth: number) =>
   viewportWidth <= NARROW_TAB_BAR_BREAKPOINT;
 
-export function getBottomNavigationLayout(width: number, height: number) {
+function normalizeFontScale(fontScale = 1) {
+  return Number.isFinite(fontScale) ? Math.max(1, fontScale) : 1;
+}
+
+export function getBottomNavigationLayout(
+  width: number,
+  height: number,
+  fontScale = 1
+) {
   const compact = width > height && height < 600;
   const narrow = !compact && isNarrowBottomNavigation(width);
+  const safeFontScale = normalizeFontScale(fontScale);
+  const stackedLabels = narrow || safeFontScale >= LARGE_TEXT_FONT_SCALE;
+  const horizontalLayout = getTabBarHorizontalLayout(width);
+  const itemWidth = (width - horizontalLayout.start * 2 - (narrow ? 8 : 16) - 2) / 5;
+  const labelFontSize = compact || narrow ? 11 : 12;
+  const labelLineHeight = 16;
+  // Keep visible words on narrow screens and for people using large text.
+  // The longest translated label has eleven characters. Reserve conservative
+  // wrapping space rather than shrinking the user's requested text size.
+  const labelLines = stackedLabels
+    ? Math.max(2, Math.ceil((11 * labelFontSize * safeFontScale * 0.65) / Math.max(1, itemWidth - 8)))
+    : 1;
+  const labelHeight = Math.ceil(labelLines * labelLineHeight * safeFontScale + 4);
+  const centerActionWidth = Math.min(compact ? 60 : narrow ? 64 : 72, itemWidth - 4);
+  const centerActionHeight = stackedLabels
+    ? 32 + 8 + labelHeight + 16
+    : compact ? 56 : narrow ? 68 : 76;
+
   return {
     compact,
     narrow,
-    barHeight: compact ? COMPACT_TAB_BAR_HEIGHT : TAB_BAR_HEIGHT,
+    stackedLabels,
+    fontScale: safeFontScale,
+    labelFontSize,
+    labelLineHeight,
+    labelLines,
+    labelHeight,
+    barHeight: Math.max(compact ? COMPACT_TAB_BAR_HEIGHT : TAB_BAR_HEIGHT, centerActionHeight + 10),
+    centerActionWidth,
+    centerActionHeight,
     minimumBottomInset: compact ? COMPACT_TAB_BAR_BOTTOM_INSET : 14,
   };
 }

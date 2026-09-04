@@ -313,6 +313,74 @@ describe('MockQuotaProvider', () => {
       expect(canAnalyze).toBe(true); // Free user within 3 analysis limit
     });
 
+    it('keeps illustration usage separate from analysis usage', async () => {
+      mockGetSavedDreams.mockResolvedValue([
+        buildDream({
+          id: 1,
+          isAnalyzed: true,
+          analyzedAt: Date.now(),
+        }),
+        buildDream({
+          id: 2,
+          isAnalyzed: true,
+          analyzedAt: Date.now(),
+          imageUrl: 'https://example.test/dream.png',
+          imageSource: 'ai',
+        }),
+      ]);
+
+      const provider = new MockQuotaProvider();
+      const status = await provider.getQuotaStatus(null, 'guest');
+
+      expect(status.usage.analysis.used).toBe(2);
+      expect(status.usage.image?.used).toBe(1);
+      expect(status.canAnalyze).toBe(false);
+      expect(status.canGenerateImage).toBe(true);
+    });
+
+    it('denies guest illustrations once the image pool is exhausted', async () => {
+      mockGetSavedDreams.mockResolvedValue([
+        buildDream({ id: 1, imageUrl: 'https://example.test/one.png', imageSource: 'ai' }),
+        buildDream({ id: 2, imageUrl: 'https://example.test/two.png', imageSource: 'ai' }),
+        buildDream({ id: 3, isAnalyzed: true, analyzedAt: Date.now() }),
+      ]);
+
+      const provider = new MockQuotaProvider();
+      const status = await provider.getQuotaStatus(null, 'guest');
+
+      expect(status.canAnalyze).toBe(true);
+      expect(status.canGenerateImage).toBe(false);
+      expect(status.usage.image).toEqual({ used: 2, limit: 2, remaining: 0 });
+    });
+
+    it('does not expose a monthly illustration credit for authenticated free', async () => {
+      mockGetSavedDreams.mockResolvedValue([
+        buildDream({ id: 1, imageUrl: 'https://example.test/one.png', imageSource: 'ai' }),
+      ]);
+
+      const provider = new MockQuotaProvider();
+      const status = await provider.getQuotaStatus({ id: 'free-user' } as any, 'free');
+
+      expect(status.canGenerateImage).toBe(false);
+      expect(status.usage.image).toEqual({ used: 0, limit: 0, remaining: 0 });
+      expect(await provider.canGenerateImage({ id: 'free-user' } as any, 'free')).toBe(false);
+    });
+
+    it('treats plus illustrations as unlimited', async () => {
+      mockGetSavedDreams.mockResolvedValue(
+        Array.from({ length: 8 }, (_, i) =>
+          buildDream({ id: i + 1, imageUrl: `https://example.test/${i}.png`, imageSource: 'ai' })
+        )
+      );
+
+      const provider = new MockQuotaProvider();
+      const status = await provider.getQuotaStatus({ id: 'plus-user' } as any, 'plus');
+
+      expect(status.canGenerateImage).toBe(true);
+      expect(status.usage.image?.limit).toBeNull();
+      expect(await provider.canGenerateImage({ id: 'plus-user' } as any, 'plus')).toBe(true);
+    });
+
     it('given free user beyond limits when checking analysis then denies', async () => {
       // Given
       const dreams = Array(4).fill(null).map((_, i) =>

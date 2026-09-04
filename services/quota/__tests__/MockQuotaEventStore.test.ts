@@ -64,7 +64,15 @@ describe('MockQuotaEventStore', () => {
   it('migrates counts from stored dreams on first access', async () => {
     mockGetSavedDreams.mockResolvedValue([
       buildDream({ id: 1, isAnalyzed: true, analyzedAt: 100, explorationStartedAt: 200 }),
-      buildDream({ id: 2, isAnalyzed: true, analyzedAt: 101, chatHistory: [{ role: 'model' }] }),
+      buildDream({
+        id: 2,
+        isAnalyzed: true,
+        analyzedAt: 101,
+        chatHistory: [
+          { id: 'u1', role: 'user', text: 'What does the quiet city mean?' },
+          { id: 'm1', role: 'model', text: 'The city may represent memory.' },
+        ],
+      }),
       buildDream({ id: 3, isAnalyzed: false }),
     ]);
 
@@ -77,6 +85,24 @@ describe('MockQuotaEventStore', () => {
     expect(explorationCount).toBe(2);
     expect(mockAsyncStorage.setItem).toHaveBeenCalledWith(MIGRATION_KEY, 'true');
     expect(storage.get(STORAGE_KEY)).toContain('analysisCount');
+  });
+
+  it('counts illustrations separately from analyses', async () => {
+    mockGetSavedDreams.mockResolvedValue([
+      buildDream({ id: 1, isAnalyzed: true, analyzedAt: 100 }),
+      buildDream({
+        id: 2,
+        isAnalyzed: true,
+        analyzedAt: 101,
+        imageUrl: 'https://example.test/dream.png',
+        imageSource: 'ai',
+      }),
+    ]);
+
+    const store = require('../MockQuotaEventStore');
+
+    expect(await store.getMockAnalysisCount()).toBe(2);
+    expect(await store.getMockImageCount()).toBe(1);
   });
 
   it('uses cached migration state on subsequent calls', async () => {

@@ -89,6 +89,16 @@ export const isFullyOffline = (capability: SpeechCapability): boolean =>
 export const mayLeaveDevice = (capability: SpeechCapability): boolean =>
   capability.tier === 'network' || capability.tier === 'server_only';
 
+/**
+ * Android SpeechRecognizer ends after silence. Hands-free dictation restarts
+ * the same recognizer, including on-device when that tier is already proven.
+ * iOS and web must not auto-restart: web already uses `continuous`, and iOS
+ * treats an unsolicited end as a completed utterance.
+ */
+export const supportsHandsFreeSpeechRestart = (
+  platform: SpeechCapabilityInput['platform']
+): boolean => platform === 'android';
+
 export function resolveSpeechCapability(input: SpeechCapabilityInput): SpeechCapability {
   const requested = normalizeSpeechLocale(input.requestedLocale);
   const installed = input.installedLocales.map(normalizeSpeechLocale);

@@ -602,6 +602,38 @@ describe('EmailAuthCard', () => {
     expect(screen.getByTestId('settings-account-open-signin')).toBeDefined();
   });
 
+  it('assures guests that local dreams will copy without loss or duplicates', () => {
+    render(<EmailAuthCard />);
+
+    expect(screen.getByTestId('settings-account-migration-hint').textContent).toBe(
+      'settings.account.description_signed_out'
+    );
+    expect(screen.queryByText('settings.account.description_signed_in')).toBeNull();
+  });
+
+  it('shows the same local-copy assurance on the embedded guest summary', () => {
+    render(<EmailAuthCard presentation="embedded" />);
+
+    expect(screen.getByTestId('settings-account-migration-hint').textContent).toBe(
+      'settings.account.description_signed_out'
+    );
+    expect(screen.queryByText('settings.account.local_hint')).toBeNull();
+    expect(screen.queryByText('settings.account.description_signed_in')).toBeNull();
+  });
+
+  it('hides the migration assurance once the user is signed in', () => {
+    mockCurrentUser = { email: 'user@example.com' };
+
+    const { rerender } = render(<EmailAuthCard />);
+    expect(screen.queryByTestId('settings-account-migration-hint')).toBeNull();
+    expect(screen.getByText('settings.account.description_signed_in')).toBeDefined();
+
+    rerender(<EmailAuthCard presentation="embedded" />);
+    expect(screen.queryByTestId('settings-account-migration-hint')).toBeNull();
+    expect(screen.queryByText('settings.account.description_signed_out')).toBeNull();
+    expect(screen.getByText('settings.account.description_signed_in')).toBeDefined();
+  });
+
   it('opens the account form in a full-height keyboard-scrollable sheet', () => {
     render(<EmailAuthCard presentation="embedded" />);
 

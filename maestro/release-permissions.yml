@@ -1,5 +1,5 @@
 # Release permissions gate: exercise deterministic denied/allowed states without OS-dialog races.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release microphone and notification permissions
 tags:
   - release
@@ -63,6 +63,12 @@ onFlowComplete:
     timeout: 20000
 
 # A denied microphone must offer the explicit text fallback, never block capture.
+- extendedWaitUntil:
+    visible:
+      id: btn.recording.inputMode.voice
+    timeout: 10000
+- tapOn:
+    id: btn.recording.inputMode.voice
 - scrollUntilVisible:
     element:
       id: btn.recordToggle
@@ -81,10 +87,10 @@ onFlowComplete:
     timeout: 10000
 
 # The settings surface must reflect denied notifications.
-- tapOn:
-    id: tab.settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
-    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    visible:
+      id: screen.settings
     timeout: 20000
 - scrollUntilVisible:
     element:
@@ -115,6 +121,12 @@ onFlowComplete:
     visible:
       id: screen.recording
     timeout: 20000
+- extendedWaitUntil:
+    visible:
+      id: btn.recording.inputMode.voice
+    timeout: 10000
+- tapOn:
+    id: btn.recording.inputMode.voice
 - scrollUntilVisible:
     element:
       id: btn.recordToggle
@@ -123,6 +135,7 @@ onFlowComplete:
     id: btn.recordToggle
 - assertNotVisible:
     id: sheet.recording.micRationale
+- takeScreenshot: ti429-permissions-voice-granted
 
 # A clean CI image may not have its offline speech pack yet. Require an explicit,
 # observable outcome: active dictation, or the product's safe text fallback.
@@ -147,7 +160,7 @@ onFlowComplete:
       - tapOn: "Cancel|Annuler|Cancelar|Annulla|Abbrechen"
       - runFlow: subflows/ensure-recording-text.yml
       - assertVisible:
-          id: btn.recording.switchToVoice
+          id: btn.recording.inputMode.voice
       - evalScript: ${output.microphoneOutcome = 2}
 - assertTrue: ${output.microphoneOutcome > 0}
 
@@ -163,12 +176,12 @@ onFlowComplete:
       notifications: deny
 - extendedWaitUntil:
     visible:
-      id: tab.settings
+      id: screen.recording
     timeout: 20000
-- tapOn:
-    id: tab.settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
-    visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
+    visible:
+      id: screen.settings
     timeout: 20000
 - scrollUntilVisible:
     element:

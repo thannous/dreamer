@@ -63,6 +63,63 @@ Deno.test('activation insight allowlist excludes dream-derived semantic properti
   }), now), false);
 });
 
+Deno.test('journal layout preference events accept categorical from/to only', () => {
+  const safeProperties = {
+    from: 'cards',
+    to: 'compact',
+  };
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'journal_layout_preference_changed',
+    properties: safeProperties,
+  }), now), true);
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'journal_layout_preference_changed',
+    properties: { from: 'cards', to: 'list' },
+  }), now), false);
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'journal_layout_preference_changed',
+    properties: { from: 'cards', to: 'compact', note: 'switched after reading more' },
+  }), now), false);
+});
+
+Deno.test('home today events accept categorical state/reason/action only', () => {
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'home_today_viewed',
+    properties: { state: 'empty', reason: 'first_use' },
+  }), now), true);
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'home_today_cta_clicked',
+    properties: { state: 'draft_resume', reason: 'saved_draft', action: 'resume_recording' },
+  }), now), true);
+
+  // Extra fields, identifiers, and free-form values are never accepted.
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'home_today_viewed',
+    properties: { state: 'empty', reason: 'first_use', dream_id: '00000000-0000-4000-8000-000000000099' },
+  }), now), false);
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'home_today_viewed',
+    properties: { state: 'empty', reason: 'first_use', transcript: 'private dream' },
+  }), now), false);
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'home_today_cta_clicked',
+    properties: { state: 'empty', reason: 'first_use' },
+  }), now), false);
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'home_today_cta_clicked',
+    properties: { state: 'draft_resume', reason: 'saved_draft', action: 'resume_later' },
+  }), now), false);
+  assertEquals(validateProductAnalyticsEvent(validEvent({
+    event_name: 'home_today_cta_clicked',
+    properties: {
+      state: 'continue_today',
+      reason: 'today_dream_unanalyzed',
+      action: 'open_dream',
+      title: 'private dream',
+    },
+  }), now), false);
+});
+
 Deno.test('purchase funnel events accept categorical properties only', () => {
   const accepted: [string, Record<string, unknown>][] = [
     ['paywall_plan_selected', { trigger: 'analysis_limit', plan: 'annual', tier: 'free' }],

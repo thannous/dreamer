@@ -24,7 +24,7 @@ appId: com.tanuki75.noctalia
       timeout: 10000
 - assertVisible: "The Infinite Library"
 - tapOn:
-      point: "50%,56%"
+      id: "dream.item.*"
 
 # Verify initial state (Read Mode)
 - assertVisible: "Symbolic Dream"
@@ -54,6 +54,33 @@ appId: com.tanuki75.noctalia
           id: chip.type.Symbolic Dream
       direction: LEFT
       duration: 500
+- runFlow:
+      when:
+          notVisible:
+              id: chip.type.Nightmare
+      commands:
+          - swipe:
+                from:
+                    id: chip.type.Lucid Dream
+                direction: LEFT
+                duration: 500
+- runFlow:
+      when:
+          notVisible:
+              id: chip.type.Nightmare
+      commands:
+          - swipe:
+                from:
+                    id: chip.type.Recurring Dream
+                direction: LEFT
+                duration: 500
+- scrollUntilVisible:
+      element:
+          id: chip.type.Nightmare
+      direction: RIGHT
+      visibilityPercentage: 40
+      timeout: 10000
+      centerElement: true
 - tapOn:
       id: chip.type.Nightmare
 

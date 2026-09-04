@@ -679,6 +679,8 @@ const hrefPathname = (href: Href): string =>
 const normalizeObservedPath = (pathname: string): string =>
   pathname.replace(/^\/\(tabs\)(?=\/|$)/, '') || '/';
 
+// `/weekly-recap` is a static native route. Omitting it made a cold
+// `noctalia://weekly-recap` launch fall through to `/recording`.
 const STATIC_NATIVE_ROUTES = new Set([
   'add-dream',
   'dream-guides',
@@ -692,6 +694,7 @@ const STATIC_NATIVE_ROUTES = new Set([
   'sleep-sounds',
   'statistics',
   'symbol-dictionary',
+  'weekly-recap',
 ]);
 const PARAMETERIZED_NATIVE_ROUTES = new Set([
   'dream-categories',
@@ -701,13 +704,17 @@ const PARAMETERIZED_NATIVE_ROUTES = new Set([
   'ritual',
   'symbol-detail',
 ]);
+const TRUSTED_NATIVE_PROTOCOLS = new Set([
+  'noctalia:',
+  'noctalia-lucid:',
+  'noctalia-qa:',
+]);
 
 const parseTrustedNativeLaunchUrl = (initialUrl: string): URL | null => {
   try {
     const parsed = new URL(initialUrl);
     return (
-      parsed.protocol === 'noctalia:' ||
-      parsed.protocol === 'noctalia-lucid:' ||
+      TRUSTED_NATIVE_PROTOCOLS.has(parsed.protocol) ||
       (parsed.protocol === 'https:' &&
         (parsed.hostname === 'dream.noctalia.app' || parsed.hostname === 'lucid.noctalia.app'))
     )
@@ -720,7 +727,7 @@ const parseTrustedNativeLaunchUrl = (initialUrl: string): URL | null => {
 
 const nativeRoutePath = (parsed: URL): string => {
   if (
-    (parsed.protocol !== 'noctalia:' && parsed.protocol !== 'noctalia-lucid:') ||
+    !TRUSTED_NATIVE_PROTOCOLS.has(parsed.protocol) ||
     !parsed.hostname
   ) {
     return parsed.pathname || '/';

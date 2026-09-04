@@ -13,8 +13,10 @@ const { mockGetSavedDreams, mockQuotaEventStore } = ((factory: any) => factory()
   mockQuotaEventStore: {
     analysisCount: 0,
     explorationCount: 0,
+    imageCount: 0,
     analyzedDreamIds: [] as number[],
     exploredDreamIds: [] as number[],
+    imagedDreamIds: [] as number[],
   },
 }));
 
@@ -27,6 +29,7 @@ jest.mock('../../storageService', () => ({
 jest.mock('../MockQuotaEventStore', () => ({
   getMockAnalysisCount: jest.fn().mockImplementation(async () => mockQuotaEventStore.analysisCount),
   getMockExplorationCount: jest.fn().mockImplementation(async () => mockQuotaEventStore.explorationCount),
+  getMockImageCount: jest.fn().mockImplementation(async () => mockQuotaEventStore.imageCount),
   isDreamAnalyzedMock: jest.fn().mockImplementation(async (dreamId?: number) => {
     return dreamId ? mockQuotaEventStore.analyzedDreamIds.includes(dreamId) : false;
   }),
@@ -69,8 +72,10 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     // Reset mock quota state
     mockQuotaEventStore.analysisCount = 0;
     mockQuotaEventStore.explorationCount = 0;
+    mockQuotaEventStore.imageCount = 0;
     mockQuotaEventStore.analyzedDreamIds = [];
     mockQuotaEventStore.exploredDreamIds = [];
+    mockQuotaEventStore.imagedDreamIds = [];
   });
 
   it('Guest: 2 analyses, 2 explorations, 10 messages per dream', async () => {
@@ -176,5 +181,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     expect(status.usage.analysis.limit).toBeNull();
     expect(status.usage.exploration.limit).toBeNull();
     expect(status.usage.messages.limit).toBe(20);
+    expect(status.usage.image?.limit).toBeNull();
+    expect(status.canGenerateImage).toBe(true);
   });
 });

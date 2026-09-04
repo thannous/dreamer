@@ -1,4 +1,4 @@
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 ---
 - runFlow:
     when:

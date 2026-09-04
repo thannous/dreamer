@@ -1,5 +1,6 @@
 import { ReminderOptInCard } from '@/components/reminders/ReminderOptInCard';
 import { Toast } from '@/components/Toast';
+import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import {
@@ -36,21 +37,37 @@ import {
   isRecoverablePendingAnalysis,
   isResumableAnalysisRequest,
 } from '@/lib/analysisRequest';
-import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamSyncState, normalizeDreamMemoryMetadata } from '@/lib/dreamUtils';
-import { getDreamAnalysisState, getDreamDetailAction } from '@/lib/dreamUsage';
+import {
+  buildReflectionResumeHref,
+  getDreamAnalysisState,
+  getJournalDetailPrimaryFamily,
+  getReflectionJourney,
+  getReflectionQuotaHint,
+  type ReflectionQuotaHint,
+} from '@/lib/dreamUsage';
+import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
 import { isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
+import {
+  resolveJournalIllustrationAccess,
+  resolveJournalIllustrationCta,
+  resolveJournalIllustrationSidecar,
+  shouldReplaceExistingImage,
+  shouldShowCompletedJournalReading,
+} from '@/lib/journalIllustrationPolicy';
 import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
+import { resolveJournalDreamRecallOfferEligible } from '@/lib/journalDreamRecallOffer';
+import { isJournalSavedConfirmationParam } from '@/lib/journalSavedConfirmation';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis, DreamChatCategory, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
+import type { DreamAnalysis, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
 import { categorizeDream, generateImageWithReference } from '@/services/geminiService';
 import * as Haptics from 'expo-haptics';
-import { Image, type ImageLoadEventData } from 'expo-image';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -94,9 +111,7 @@ const getShareNavigator = (): ShareNavigator | undefined => {
 
 const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
 const DREAM_THEMES: DreamTheme[] = ['surreal', 'mystical', 'calm', 'noir'];
-const THEME_CATEGORIES: Exclude<DreamChatCategory, 'general'>[] = ['symbols', 'emotions', 'growth'];
 const isMockMode = isMockModeEnabled();
-const IMAGE_FALLBACK_RATIO = 2 / 3;
 const DREAM_IMAGE_ASPECT = 9 / 16;
 const DREAM_IMAGE_CROP_EPSILON = 0.01;
 
@@ -204,8 +219,28 @@ const TypewriterText = ({ text, className, shouldAnimate }: { text: string; clas
 };
 
 export default function JournalDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, saved: savedParam } = useLocalSearchParams<{ id: string; saved?: string | string[] }>();
   const dreamId = useMemo(() => Number(id), [id]);
+  const [savedConfirmationVisible, setSavedConfirmationVisible] = useState(
+    () => isJournalSavedConfirmationParam(savedParam)
+  );
+  const recallEligibleDreamIdRef = useRef<string | null>(
+    resolveJournalDreamRecallOfferEligible({
+      dreamId: id,
+      savedParam,
+      previouslyEligibleDreamId: null,
+    }).eligibleDreamId
+  );
+  /* eslint-disable react-hooks/refs -- remember saved=1 after param clear without mutating the ref during render */
+  const recallOffer = resolveJournalDreamRecallOfferEligible({
+    dreamId: id,
+    savedParam,
+    previouslyEligibleDreamId: recallEligibleDreamIdRef.current,
+  });
+  /* eslint-enable react-hooks/refs */
+  useEffect(() => {
+    recallEligibleDreamIdRef.current = recallOffer.eligibleDreamId;
+  }, [recallOffer.eligibleDreamId]);
   const {
     dreams,
     toggleFavorite,
@@ -224,6 +259,13 @@ export default function JournalDetailScreen() {
   const { language } = useLanguage();
   const scrollPerf = useScrollIdle();
   useClearWebFocus();
+
+  useEffect(() => {
+    if (!isJournalSavedConfirmationParam(savedParam)) {
+      return;
+    }
+    router.setParams({ saved: undefined });
+  }, [savedParam]);
   const [isRetryingImage, setIsRetryingImage] = useState(false);
   const [isRetryingSync, setIsRetryingSync] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -232,6 +274,7 @@ export default function JournalDetailScreen() {
   const [showReanalyzeSheet, setShowReanalyzeSheet] = useState(false);
   const [showDeleteSheet, setShowDeleteSheet] = useState(false);
   const [reanalyzeImagePolicy, setReanalyzeImagePolicy] = useState<'keep' | 'regenerate'>('keep');
+  const [isIllustrationFullscreen, setIsIllustrationFullscreen] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [isShareModalVisible, setShareModalVisible] = useState(false);
   const [shareCopyStatus, setShareCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -241,7 +284,6 @@ export default function JournalDetailScreen() {
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
   const [quotaSheetMode, setQuotaSheetMode] = useState<'quota' | 'login'>('quota');
   const [imageErrorMessage, setImageErrorMessage] = useState<string | null>(null);
-  const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
 
   // Reference image generation state
   const [showReferenceSheet, setShowReferenceSheet] = useState(false);
@@ -257,32 +299,21 @@ export default function JournalDetailScreen() {
     }
   }, [isShareModalVisible]);
   const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
-  const { canAnalyzeNow, canAnalyze, tier, usage, loading: quotaLoading, quotaStatus } = useQuota();
+  const {
+    canAnalyzeNow,
+    canAnalyze,
+    canGenerateImageNow,
+    tier,
+    usage,
+    loading: quotaLoading,
+    quotaStatus,
+  } = useQuota();
   const { t } = useTranslation();
   const referenceImagesEnabled = isReferenceImagesEnabled();
   const isPlus = tier === 'plus';
   const canUseReference = referenceImagesEnabled && Boolean(user);
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
-  const bundledImageRequestId = useMemo(
-    () =>
-      tier === 'free' &&
-      Boolean(user) &&
-      dream?.isAnalyzed === true &&
-      !dream.imageUrl?.trim() &&
-      dream.analysisRequestId
-        ? dream.analysisRequestId
-        : undefined,
-    [dream, tier, user]
-  );
-  const canGenerateImage =
-    !quotaLoading &&
-    (
-      (canAnalyzeNow && (isPlus || tier === 'guest')) ||
-      Boolean(bundledImageRequestId)
-    );
-  // Free accounts cannot generate images: offer Plus instead of a dead end.
-  const canOfferImageUpgrade = !quotaLoading && !canGenerateImage && tier === 'free';
   const handleImageUpgrade = useCallback(() => {
     router.push(buildPaywallHref('image_generation'));
   }, []);
@@ -297,9 +328,6 @@ export default function JournalDetailScreen() {
     [dream]
   );
   const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
-  useEffect(() => {
-    setImageAspectRatio(null);
-  }, [dream?.imageUrl]);
   const dreamTypeLabel = useMemo(
     () => (dream ? getDreamTypeLabel(dream.dreamType, t) ?? dream.dreamType : undefined),
     [dream, t]
@@ -460,6 +488,67 @@ export default function JournalDetailScreen() {
   const { shareImageRef, shareComposite } = useDreamShareComposite();
 
   const analysisState = useMemo(() => getDreamAnalysisState(dream), [dream]);
+  const guestImageAvailable = useMemo(() => {
+    if (quotaLoading) return false;
+    const image = usage?.image;
+    if (image) {
+      return image.limit === null || image.used < image.limit;
+    }
+    return canGenerateImageNow;
+  }, [canGenerateImageNow, quotaLoading, usage?.image]);
+  const illustrationAccess = useMemo(
+    () =>
+      resolveJournalIllustrationAccess({
+        tier,
+        canGenerateImageNow: tier === 'guest' ? guestImageAvailable : canGenerateImageNow,
+        isAnalyzed: analysisState.isAnalyzed,
+        imageUrl: dream?.imageUrl,
+        analysisRequestId: dream?.analysisRequestId,
+      }),
+    [
+      analysisState.isAnalyzed,
+      canGenerateImageNow,
+      dream?.analysisRequestId,
+      dream?.imageUrl,
+      guestImageAvailable,
+      tier,
+    ]
+  );
+  const illustrationSidecar = useMemo(
+    () =>
+      resolveJournalIllustrationSidecar({
+        imageUrl: dream?.imageUrl,
+        imageGenerationFailed: dream?.imageGenerationFailed,
+        imageJobStatus: dream?.imageJobStatus,
+      }),
+    [dream?.imageGenerationFailed, dream?.imageJobStatus, dream?.imageUrl]
+  );
+  const illustrationCta = useMemo(
+    () =>
+      resolveJournalIllustrationCta({
+        sidecar: illustrationSidecar,
+        isAnalyzed: analysisState.isAnalyzed,
+        allowed: illustrationAccess.allowed,
+        reason: illustrationAccess.reason,
+        tier,
+      }),
+    [
+      analysisState.isAnalyzed,
+      illustrationAccess.allowed,
+      illustrationAccess.reason,
+      illustrationSidecar,
+      tier,
+    ]
+  );
+  const showCompletedReading = shouldShowCompletedJournalReading(
+    dream?.analysisStatus,
+    analysisState.isAnalyzed
+  );
+  const analysisFreshness = useMemo(() => getDreamAnalysisFreshness(dream), [dream]);
+  const isAnalysisStale = analysisFreshness === 'stale';
+  const visibleIllustrationCta =
+    quotaLoading && illustrationCta === 'quota' ? 'none' : illustrationCta;
+  const canOfferImageUpgrade = visibleIllustrationCta === 'upgrade';
 
   useEffect(() => {
     if (
@@ -492,17 +581,46 @@ export default function JournalDetailScreen() {
       });
     }
   }, [analysisState.isAnalyzed, dream, onboardingState, transitionOnboarding]);
-  const primaryAction = useMemo(() => getDreamDetailAction(dream), [dream]);
+  const reflectionJourney = useMemo(
+    () => getReflectionJourney(dream, analysisRecoveryClock, { tier }),
+    [analysisRecoveryClock, dream, tier]
+  );
+  const primaryKind = reflectionJourney.primary.kind;
+  const primaryAction = getJournalDetailPrimaryFamily(primaryKind);
+  const isStalePrimaryAction = isAnalysisStale && !isEditing && !isEditingTranscript;
+  const visiblePrimaryAction = isStalePrimaryAction ? 'analyze' : primaryAction;
+  const quotaHint = useMemo(
+    () =>
+      getReflectionQuotaHint(
+        isStalePrimaryAction ? 'analysis' : reflectionJourney.primary.consumesQuota,
+        usage
+      ),
+    [isStalePrimaryAction, reflectionJourney.primary.consumesQuota, usage]
+  );
+  const formatQuotaHint = useCallback(
+    (hint: ReflectionQuotaHint) => {
+      if (hint.kind === 'none') return null;
+      if (hint.kind === 'unlimited') {
+        return t('journal.detail.quota_hint.unlimited');
+      }
+      const quotaKey = `journal.detail.quota_hint.quota.${hint.quota}` as const;
+      if (hint.kind === 'remaining') {
+        return t('journal.detail.quota_hint.remaining', {
+          quota: t(quotaKey),
+          remaining: hint.remaining,
+        });
+      }
+      return t('journal.detail.quota_hint.unknown', { quota: t(quotaKey) });
+    },
+    [t]
+  );
+  const quotaHintLabel = formatQuotaHint(quotaHint);
   const canRecoverPendingAnalysis = useMemo(
     () => !isAnalyzing && isRecoverablePendingAnalysis(dream, analysisRecoveryClock),
     [analysisRecoveryClock, dream, isAnalyzing]
   );
-  const isAnalysisPending = dream?.analysisStatus === 'pending' && !canRecoverPendingAnalysis;
-  const allThemesExplored = useMemo(() => {
-    if (!dream) return false;
-    return THEME_CATEGORIES.every((category) => isCategoryExplored(dream.chatHistory, category));
-  }, [dream]);
-  const isPrimaryActionBusy = primaryAction === 'analyze' && (isAnalyzing || isAnalysisPending);
+  const isAnalysisPending = reflectionJourney.isPendingFresh && !isAnalyzing;
+  const isPrimaryActionBusy = visiblePrimaryAction === 'analyze' && (isAnalyzing || isAnalysisPending);
   const detailActionCard = useMemo(() => {
     if (!dream) {
       return null;
@@ -516,6 +634,17 @@ export default function JournalDetailScreen() {
         step: t('journal.detail.action.pending.step'),
         cta: t('journal.detail.action.pending.cta'),
         disabled: true,
+      };
+    }
+
+    if (isStalePrimaryAction) {
+      return {
+        icon: 'arrow.clockwise' as const,
+        title: t('journal.detail.stale.label'),
+        message: t('journal.detail.stale.banner'),
+        step: t('journal.detail.action.analyze.step'),
+        cta: t('journal.detail.stale.cta'),
+        disabled: false,
       };
     }
 
@@ -533,6 +662,17 @@ export default function JournalDetailScreen() {
         cta: failed
           ? t('journal.detail.analyze_button.retry')
           : t('journal.detail.analyze_button.default'),
+        disabled: false,
+      };
+    }
+
+    if (primaryKind === 'retry_chat') {
+      return {
+        icon: 'arrow.clockwise' as const,
+        title: t('journal.detail.action.retry_chat.title'),
+        message: t('journal.detail.action.retry_chat.message'),
+        step: t('journal.detail.action.continue.step'),
+        cta: t('journal.detail.action.retry_chat.cta'),
         disabled: false,
       };
     }
@@ -556,9 +696,9 @@ export default function JournalDetailScreen() {
       cta: t('journal.detail.explore_button.new'),
       disabled: false,
     };
-  }, [canRecoverPendingAnalysis, dream, isAnalysisPending, primaryAction, t]);
+  }, [canRecoverPendingAnalysis, dream, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, t]);
   const isAnalysisLocked = !!dream && (isAnalysisPending || isAnalyzing);
-  const isImageJobPending = dream?.imageJobStatus === 'queued' || dream?.imageJobStatus === 'running';
+  const isImageJobPending = illustrationSidecar === 'pending';
   const isSyncPending = dreamSyncState === 'pending';
   const isSyncFailed = dreamSyncState === 'failed';
   const isSyncConflict = dreamSyncState === 'conflict';
@@ -777,14 +917,6 @@ export default function JournalDetailScreen() {
       setShareCopyStatus('error');
     }
   }, [shareMessage]);
-  const handleImageLoad = useCallback((event: ImageLoadEventData) => {
-    const { width, height } = event.source ?? {};
-    if (!width || !height) return;
-    const ratio = width / height;
-    if (!Number.isFinite(ratio) || ratio <= 0) return;
-    setImageAspectRatio(ratio);
-  }, []);
-
   // Use full-resolution image config for detail view
   const imageConfig = useMemo(() => getImageConfig('full'), []);
   const imageVersion = useMemo(() => {
@@ -919,10 +1051,9 @@ export default function JournalDetailScreen() {
   }, [deleteAndNavigate, dream, isAnalysisLocked, isDeleting]);
 
   const onRetryImage = useCallback(async () => {
-    if (!dream || isAnalysisLocked) return;
-
-    // Defensive check: verify quota before attempting generation
-    if (!canAnalyzeNow && !bundledImageRequestId) {
+    if (!dream) return;
+    if (!illustrationAccess.allowed) {
+      setImageErrorMessage(t('journal.detail.image.quota_exceeded_message'));
       return;
     }
 
@@ -936,28 +1067,39 @@ export default function JournalDetailScreen() {
       await generateDreamImage(dream.id, {
         transcript: sourceText,
         previousImageUrl: dream.imageUrl || undefined,
-        clientRequestId: bundledImageRequestId,
+        clientRequestId: illustrationAccess.bundledRequestId,
       });
     } catch (error) {
-      const msg = error instanceof Error ? error.message : t('common.unknown_error');
-      setImageErrorMessage(msg);
+      if (error instanceof QuotaError) {
+        setImageErrorMessage(t('journal.detail.image.quota_exceeded_message'));
+        return;
+      }
+      const classified = classifyError(
+        error instanceof Error ? error : new Error(t('common.unknown_error')),
+        t
+      );
+      setImageErrorMessage(
+        classified.userMessage === t('error.interpretation_limit')
+          ? t('journal.detail.image.quota_exceeded_message')
+          : classified.userMessage
+      );
     } finally {
       setIsRetryingImage(false);
     }
-  }, [bundledImageRequestId, canAnalyzeNow, dream, generateDreamImage, isAnalysisLocked, t]);
+  }, [dream, generateDreamImage, illustrationAccess.allowed, illustrationAccess.bundledRequestId, t]);
 
   const handleBackPress = useCallback(() => {
     router.replace('/(tabs)/journal');
   }, []);
 
-  const handleExplorePress = useCallback(() => {
+  const handleJourneyPress = useCallback(() => {
     if (!dream) return;
-    if (allThemesExplored) {
-      router.push(`/dream-chat/${dream.id}`);
+    const href = buildReflectionResumeHref(dream.id, reflectionJourney.primary.resume);
+    if (!href) {
       return;
     }
-    router.push(`/dream-categories/${dream.id}`);
-  }, [allThemesExplored, dream]);
+    router.push(href);
+  }, [dream, reflectionJourney.primary.resume]);
 
   const showAnalysisNotice = useCallback(
     (title: string, message: string, tone: AnalysisNotice['tone'] = 'info') => {
@@ -1090,15 +1232,15 @@ export default function JournalDetailScreen() {
       return;
     }
 
-    void runAnalyze(true, true);
+    void runAnalyze(shouldReplaceExistingImage('first'), true);
   }, [dream, ensureAnalyzeAllowed, hasExistingImage, runAnalyze]);
 
   const handleReplaceImage = useCallback(() => {
-    void runAnalyze(true);
+    void runAnalyze(shouldReplaceExistingImage('replace'));
   }, [runAnalyze]);
 
   const handleKeepImage = useCallback(() => {
-    void runAnalyze(false);
+    void runAnalyze(shouldReplaceExistingImage('keep'));
   }, [runAnalyze]);
 
   const handleDismissReanalyzeSheet = useCallback(() => {
@@ -1112,7 +1254,9 @@ export default function JournalDetailScreen() {
 
   const handleConfirmReanalyze = useCallback(() => {
     setShowReanalyzeSheet(false);
-    void runAnalyze(reanalyzeImagePolicy === 'regenerate');
+    void runAnalyze(
+      shouldReplaceExistingImage(reanalyzeImagePolicy === 'regenerate' ? 'regenerate' : 'keep')
+    );
   }, [reanalyzeImagePolicy, runAnalyze]);
 
   const handleTranscriptSave = useCallback(async () => {
@@ -1120,7 +1264,6 @@ export default function JournalDetailScreen() {
     const normalizedTranscript = editableTranscript.trim().length === 0
       ? dream.transcript
       : editableTranscript;
-    const transcriptChanged = normalizedTranscript !== dream.transcript;
 
     const updatedDream: DreamAnalysis = {
       ...dream,
@@ -1128,12 +1271,13 @@ export default function JournalDetailScreen() {
     };
     await updateDream(updatedDream);
     setIsEditingTranscript(false);
+  }, [dream, editableTranscript, updateDream]);
 
-    if (transcriptChanged) {
-      setReanalyzeImagePolicy(hasExistingImage ? 'keep' : 'regenerate');
-      setShowReanalyzeSheet(true);
-    }
-  }, [dream, editableTranscript, hasExistingImage, updateDream]);
+  const handleStaleReanalyze = useCallback(() => {
+    if (isAnalysisLocked) return;
+    setReanalyzeImagePolicy('keep');
+    setShowReanalyzeSheet(true);
+  }, [isAnalysisLocked]);
 
   const handleDismissReplaceSheet = useCallback(() => {
     setShowReplaceImageSheet(false);
@@ -1181,6 +1325,14 @@ export default function JournalDetailScreen() {
                 </Text>
               </PressableScale>
             </View>
+            {savedConfirmationVisible ? (
+              <Toast
+                message={t('recording.save.confirmation')}
+                mode="success"
+                onHide={() => setSavedConfirmationVisible(false)}
+                testID={TID.Text.RecordingSaveConfirmation}
+              />
+            ) : null}
           </KeyboardAvoidingView>
         </View>
       </ScrollPerfProvider>
@@ -1195,9 +1347,12 @@ export default function JournalDetailScreen() {
       }`}
     >
       <View className="mb-3 flex-row items-center justify-between">
-        <Text className="font-sans-bold text-[18px] text-ivory">
-          {t('journal.original_transcript')}
-        </Text>
+        <View className="flex-1 pr-3">
+          {renderDetailZoneHeader(t('journal.detail.zone.dream'), TID.Text.DreamDetailDreamZone)}
+          <Text className="font-sans-bold text-[18px] text-ivory">
+            {t('journal.original_transcript')}
+          </Text>
+        </View>
         <PressableScale
           onPress={isEditingTranscript ? handleTranscriptSave : () => {
             setEditableTranscript(dream.transcript || '');
@@ -1516,14 +1671,43 @@ export default function JournalDetailScreen() {
     );
   };
 
-  const renderDetailActionCard = () => {
+  const renderQuotaHint = () => {
+    if (!quotaHintLabel) {
+      return null;
+    }
+    return (
+      <Text
+        className="font-sans text-[12px] leading-[16px] text-ivory-muted"
+        testID={TID.Text.DreamDetailQuotaHint}
+        accessibilityLiveRegion="polite"
+      >
+        {quotaHintLabel}
+      </Text>
+    );
+  };
+
+  const renderDetailActionCard = (
+    visibleFamilies?: ('analyze' | 'explore' | 'continue')[]
+  ) => {
     if (!detailActionCard || isEditing || isEditingTranscript) {
+      return null;
+    }
+    if (visibleFamilies && !visibleFamilies.includes(visiblePrimaryAction)) {
       return null;
     }
 
     const disabled = detailActionCard.disabled || isPrimaryActionBusy || isAnalysisLocked;
-    const onPress = primaryAction === 'analyze' ? handleAnalyze : handleExplorePress;
-    const isCompactExplorationAction = primaryAction === 'continue' || primaryAction === 'explore';
+    const onPress = isStalePrimaryAction
+      ? handleStaleReanalyze
+      : visiblePrimaryAction === 'analyze'
+        ? handleAnalyze
+        : handleJourneyPress;
+    const isCompactExplorationAction =
+      !isStalePrimaryAction &&
+      (visiblePrimaryAction === 'continue' || visiblePrimaryAction === 'explore');
+    const primaryButtonTestID = isStalePrimaryAction
+      ? TID.Button.AnalysisStaleCta
+      : TID.Button.DreamDetailPrimaryCta;
 
     if (isCompactExplorationAction) {
       return (
@@ -1533,6 +1717,7 @@ export default function JournalDetailScreen() {
           disabled={disabled}
           accessibilityRole="button"
           accessibilityState={{ disabled }}
+          accessibilityHint={quotaHintLabel ?? undefined}
           className={`mb-[18px] min-h-[58px] flex-row items-center gap-3 rounded-lg border border-line-strong bg-ink-active px-4 py-3 ${
             disabled ? 'opacity-75' : ''
           }`}
@@ -1540,12 +1725,15 @@ export default function JournalDetailScreen() {
           <View className="h-[34px] w-[34px] items-center justify-center rounded-full bg-champagne">
             <IconSymbol name={detailActionCard.icon} size={18} color={noctalia.action.primaryText} />
           </View>
-          <Text
-            className="flex-1 font-sans-bold text-[16px] text-ivory"
-            testID={TID.Text.DreamDetailActionTitle}
-          >
-            {detailActionCard.cta}
-          </Text>
+          <View className="flex-1 gap-1">
+            <Text
+              className="font-sans-bold text-[16px] text-ivory"
+              testID={TID.Text.DreamDetailActionTitle}
+            >
+              {detailActionCard.cta}
+            </Text>
+            {renderQuotaHint()}
+          </View>
           {isPrimaryActionBusy ? (
             <ActivityIndicator size="small" color={noctalia.text.primary} />
           ) : (
@@ -1583,10 +1771,11 @@ export default function JournalDetailScreen() {
             >
               {detailActionCard.message}
             </Text>
+            {renderQuotaHint()}
           </View>
         </View>
         <PressableScale
-          testID={TID.Button.DreamDetailPrimaryCta}
+          testID={primaryButtonTestID}
           onPress={onPress}
           disabled={disabled}
           className={`flex-row items-center justify-center gap-2 rounded-md bg-champagne px-4 py-[13px] ${
@@ -1594,12 +1783,13 @@ export default function JournalDetailScreen() {
           }`}
           accessibilityRole="button"
           accessibilityState={{ disabled }}
+          accessibilityHint={quotaHintLabel ?? undefined}
         >
           {isPrimaryActionBusy ? (
             <ActivityIndicator size="small" color={noctalia.action.primaryText} />
           ) : (
             <IconSymbol
-              name={primaryAction === 'analyze' ? 'sparkles' : 'arrow.right'}
+              name={visiblePrimaryAction === 'analyze' ? (isStalePrimaryAction ? 'arrow.clockwise' : 'sparkles') : 'arrow.right'}
               size={18}
               color={noctalia.action.primaryText}
             />
@@ -1649,14 +1839,193 @@ export default function JournalDetailScreen() {
     );
   };
 
-  const renderDetailZoneHeader = (label: string) => (
+  const renderDetailZoneHeader = (label: string, testID?: string) => (
     <View className="mb-3 flex-row items-center gap-2.5">
-      <Text className="font-sans-bold text-[12px] uppercase text-champagne-on">
+      <Text
+        className="font-sans-bold text-[12px] uppercase text-champagne-on"
+        testID={testID}
+      >
         {label}
       </Text>
       <View className="flex-1 bg-champagne opacity-45" style={{ height: StyleSheet.hairlineWidth }} />
     </View>
   );
+
+  const renderStaleBanner = () => {
+    if (!isAnalysisStale || isEditing || isEditingTranscript) {
+      return null;
+    }
+
+    return (
+      <View
+        testID={TID.Component.AnalysisStaleBanner}
+        className="mb-[18px] gap-3 rounded-lg border border-warning-line bg-warning p-4"
+      >
+        <View className="flex-row items-start gap-3">
+          <IconSymbol name="exclamationmark.triangle.fill" size={20} color={noctalia.status.warning.icon} />
+          <View className="flex-1 gap-1">
+            <Text className="font-sans-bold text-[11px] uppercase text-warning-on">
+              {t('journal.detail.stale.label')}
+            </Text>
+            <Text
+              className="font-sans text-[13px] leading-[18px] text-warning-on"
+              testID={TID.Text.AnalysisStaleBanner}
+            >
+              {t('journal.detail.stale.banner')}
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const shouldShowIllustrationSection =
+    Boolean(dream.imageUrl?.trim()) ||
+    illustrationSidecar === 'pending' ||
+    illustrationSidecar === 'failed' ||
+    (analysisState.isAnalyzed && visibleIllustrationCta !== 'none');
+
+  const renderIllustrationSection = () => {
+    if (shouldHideHeroMedia || !shouldShowIllustrationSection) {
+      return null;
+    }
+
+    return (
+      <View testID={TID.Component.JournalIllustration} className="mb-5 overflow-hidden rounded-lg">
+        {dream.imageUrl ? (
+          <PressableScale
+            testID={TID.Button.JournalIllustrationExpand}
+            onPress={() => setIsIllustrationFullscreen(true)}
+            accessibilityRole="button"
+            accessibilityLabel={t('journal.detail.image.expand_accessibility')}
+            className="overflow-hidden rounded-lg bg-ink-soft"
+            style={{ height: 220 }}
+          >
+            <Image
+              key={displayImageUrl ?? dream.imageUrl}
+              source={{ uri: displayImageUrl ?? dream.imageUrl, cacheKey: imageCacheKey }}
+              style={{ width: '100%', height: '100%' }}
+              contentFit="cover"
+              transition={imageConfig.transition}
+              cachePolicy={imageConfig.cachePolicy}
+              priority={imageConfig.priority}
+              placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+            />
+          </PressableScale>
+        ) : illustrationSidecar === 'failed' ? (
+          visibleIllustrationCta === 'retry' ? (
+            <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
+          ) : (
+            <View className="min-h-[180px] flex-col items-center justify-center gap-2.5 rounded-lg border border-line bg-ink-soft px-5 py-6">
+              <IconSymbol name="photo" size={40} color={noctalia.text.secondary} />
+              <Text className="text-center font-sans-bold text-[16px] text-ivory">
+                {t('journal.detail.image.generation_failed')}
+              </Text>
+              <Text className="px-2 text-center font-sans text-[13px] leading-5 text-ivory-muted">
+                {t('journal.detail.image.quota_exceeded_message')}
+              </Text>
+              {canOfferImageUpgrade ? (
+                <PressableScale
+                  onPress={handleImageUpgrade}
+                  accessibilityRole="button"
+                  testID={TID.Button.ImageUpgrade}
+                  className="min-w-[150px] flex-row items-center justify-center gap-2 rounded-md bg-champagne px-4 py-3"
+                  style={shadows.md}
+                >
+                  <IconSymbol name="sparkles" size={18} color={noctalia.action.primaryText} />
+                  <Text className="font-sans-bold text-[15px] text-on-champagne">
+                    {t('journal.detail.image.upgrade_action')}
+                  </Text>
+                </PressableScale>
+              ) : null}
+            </View>
+          )
+        ) : illustrationSidecar === 'pending' ? (
+          <View className="min-h-[180px] flex-col items-center justify-center gap-3 rounded-lg border border-line-strong bg-ink-active px-6 py-6">
+            <ActivityIndicator size="large" color={noctalia.accent.soft} />
+            <Text className="text-center font-sans-bold text-[16px] text-ivory">
+              {t('journal.detail.image.generating_title')}
+            </Text>
+            <Text className="px-2 text-center font-sans text-[13px] leading-5 text-ivory-muted">
+              {dream.imageJobStatus === 'queued'
+                ? t('journal.detail.image.queued_subtitle')
+                : t('journal.detail.image.running_subtitle')}
+            </Text>
+          </View>
+        ) : (
+          <View className="min-h-[180px] flex-col items-center justify-center gap-2.5 rounded-lg border border-line bg-ink-soft px-5 py-6">
+            <IconSymbol name="photo" size={28} color={noctalia.text.secondary} />
+            <Text className="text-center font-sans-bold text-[16px] text-ivory">
+              {t('journal.detail.image.no_image_title')}
+            </Text>
+            <Text className="px-2 text-center font-sans text-[13px] leading-5 text-ivory-muted">
+              {visibleIllustrationCta === 'quota'
+                ? t('journal.detail.image.quota_exceeded_message')
+                : t('journal.detail.image.no_image_subtitle')}
+            </Text>
+            {!isRetryingImage && !isImageJobPending && (
+              <View className="w-full items-center gap-3">
+                {visibleIllustrationCta === 'upgrade' && (
+                  <PressableScale
+                    onPress={handleImageUpgrade}
+                    accessibilityRole="button"
+                    testID={TID.Button.ImageUpgrade}
+                    className="min-w-[150px] flex-row items-center justify-center gap-2 rounded-md bg-champagne px-4 py-3"
+                    style={shadows.md}
+                  >
+                    <IconSymbol name="sparkles" size={18} color={noctalia.action.primaryText} />
+                    <Text className="font-sans-bold text-[15px] text-on-champagne">
+                      {t('journal.detail.image.upgrade_action')}
+                    </Text>
+                  </PressableScale>
+                )}
+                {visibleIllustrationCta === 'illustrate' && (
+                  <PressableScale
+                    onPress={onRetryImage}
+                    disabled={isRetryingImage || isImageJobPending}
+                    testID={TID.Button.JournalIllustrate}
+                    accessibilityRole="button"
+                    className={`min-w-[150px] flex-row items-center justify-center gap-2 rounded-md bg-champagne px-4 py-3 ${
+                      isRetryingImage ? 'opacity-70' : ''
+                    }`}
+                    style={shadows.md}
+                  >
+                    <IconSymbol name="sparkles" size={18} color={noctalia.action.primaryText} />
+                    <Text className="font-sans-bold text-[15px] text-on-champagne">
+                      {t('journal.detail.image.generate_action')}
+                    </Text>
+                  </PressableScale>
+                )}
+                <PressableScale
+                  onPress={handlePickImage}
+                  disabled={isPickingImage || isAnalysisLocked}
+                  className={`min-w-[150px] flex-row items-center justify-center gap-2 rounded-md border border-line bg-transparent px-4 py-3 ${
+                    (isPickingImage || isAnalysisLocked) ? 'opacity-70' : ''
+                  }`}
+                >
+                  {isPickingImage ? (
+                    <ActivityIndicator color={noctalia.text.primary} />
+                  ) : (
+                    <IconSymbol name="photo" size={18} color={noctalia.text.primary} />
+                  )}
+                  <Text className="font-sans-bold text-[15px] text-ivory">
+                    {isPickingImage
+                      ? t('journal.detail.image.adding_from_library')
+                      : t('journal.detail.image.add_from_library')}
+                  </Text>
+                </PressableScale>
+              </View>
+            )}
+          </View>
+        )}
+        {isRetryingImage && (
+          <View className="absolute inset-0 items-center justify-center rounded-lg bg-ink-overlay">
+            <ActivityIndicator color={noctalia.text.primary} />
+          </View>
+        )}
+      </View>
+    );
+  };
 
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
@@ -1689,6 +2058,7 @@ export default function JournalDetailScreen() {
           className="flex-1"
           style={{ marginTop: insets.top }}
           contentContainerStyle={{
+            paddingTop: 64,
             paddingBottom:
               ((isEditing || isEditingTranscript) ? 220 : 100) + insets.bottom,
           }}
@@ -1699,170 +2069,7 @@ export default function JournalDetailScreen() {
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-
-          {/* Dream Image */}
-          {!shouldHideHeroMedia && (
-            <View className="w-full">
-              <View className="relative w-full max-w-[480px] self-center overflow-hidden" style={{ aspectRatio: imageAspectRatio ?? IMAGE_FALLBACK_RATIO }}>
-                {dream.imageUrl ? (
-                  // The generated image replaces the "generating" card: cross-fade the
-                  // whole frame in rather than snapping it, opacity only.
-                  <Reveal distance={0} className="h-full w-full">
-                    <Image
-                      key={displayImageUrl ?? dream.imageUrl}
-                      source={{ uri: displayImageUrl ?? dream.imageUrl, cacheKey: imageCacheKey }}
-                      style={{ width: '100%', height: '100%' }}
-                      contentFit="contain"
-                      transition={imageConfig.transition}
-                      cachePolicy={imageConfig.cachePolicy}
-                      priority={imageConfig.priority}
-                      onLoad={handleImageLoad}
-                      placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
-                    />
-                    <View className="absolute inset-0 rounded-lg bg-horizon" />
-                  </Reveal>
-                ) : dream.imageGenerationFailed ? (
-                  canGenerateImage ? (
-                    <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
-                  ) : (
-                    <View className="h-full w-full flex-col items-center justify-center gap-2.5 rounded-lg border border-line bg-ink-soft px-5 py-6">
-                      <IconSymbol name="photo" size={64} color={noctalia.text.secondary} />
-                      <Text className="text-center font-sans-bold text-[18px] text-ivory">
-                        {t('journal.detail.image.generation_failed')}
-                      </Text>
-                      <Text className="px-2 text-center font-sans text-[14px] leading-5 text-ivory-muted">
-                        {t('journal.detail.image.quota_exceeded_message')}
-                      </Text>
-                      {canOfferImageUpgrade ? (
-                        <PressableScale
-                          onPress={handleImageUpgrade}
-                          accessibilityRole="button"
-                          testID={TID.Button.ImageUpgrade}
-                          className="min-w-[150px] flex-row items-center justify-center gap-2 rounded-md bg-champagne px-4 py-3"
-                          style={shadows.md}
-                        >
-                          <IconSymbol name="sparkles" size={18} color={noctalia.action.primaryText} />
-                          <Text className="font-sans-bold text-[15px] text-on-champagne">
-                            {t('journal.detail.image.upgrade_action')}
-                          </Text>
-                        </PressableScale>
-                      ) : null}
-                    </View>
-                  )
-                ) : isAnalysisPending || isImageJobPending ? (
-                  <View className="h-full w-full flex-col items-center justify-center gap-3 rounded-lg border border-line-strong bg-ink-active px-6 py-7">
-                    <View className="h-16 w-16 items-center justify-center rounded-full bg-champagne">
-                      <IconSymbol name="sparkles" size={28} color={noctalia.action.primaryText} />
-                    </View>
-                    <ActivityIndicator size="large" color={noctalia.accent.soft} />
-                    <Text className="text-center font-sans-bold text-[18px] text-ivory">
-                      {isImageJobPending
-                        ? t('journal.detail.image.generating_title')
-                        : t('journal.detail.image.preparing_title')}
-                    </Text>
-                    <Text className="px-2 text-center font-sans text-[14px] leading-5 text-ivory-muted">
-                      {dream.imageJobStatus === 'queued'
-                        ? t('journal.detail.image.queued_subtitle')
-                        : dream.imageJobStatus === 'running'
-                          ? t('journal.detail.image.running_subtitle')
-                          : t('journal.detail.image.preparing_subtitle')}
-                    </Text>
-                  </View>
-                ) : (
-                  <View className="h-full w-full flex-col items-center justify-center gap-2.5 rounded-lg border border-line bg-ink-soft px-5 py-6">
-                    <IconSymbol name="photo" size={32} color={noctalia.text.secondary} />
-                    <Text className="text-center font-sans-bold text-[18px] text-ivory">
-                      {t('journal.detail.image.no_image_title')}
-                    </Text>
-                    <Text className="px-2 text-center font-sans text-[14px] leading-5 text-ivory-muted">
-                      {t('journal.detail.image.no_image_subtitle')}
-                    </Text>
-                    {!isRetryingImage && !isImageJobPending && !isAnalysisLocked && (
-                      <View className="w-full items-center gap-3">
-                        {canOfferImageUpgrade && (
-                          <>
-                            <PressableScale
-                              onPress={handleImageUpgrade}
-                              accessibilityRole="button"
-                              testID={TID.Button.ImageUpgrade}
-                              className="min-w-[150px] flex-row items-center justify-center gap-2 rounded-md bg-champagne px-4 py-3"
-                              style={shadows.md}
-                            >
-                              <IconSymbol name="sparkles" size={18} color={noctalia.action.primaryText} />
-                              <Text className="font-sans-bold text-[15px] text-on-champagne">
-                                {t('journal.detail.image.upgrade_action')}
-                              </Text>
-                            </PressableScale>
-
-                            <Text className="font-sans-medium text-[13px] text-ivory-muted">
-                              {t('journal.detail.image.or')}
-                            </Text>
-                          </>
-                        )}
-                        {canGenerateImage && (
-                          <>
-                            <PressableScale
-                              onPress={onRetryImage}
-                              disabled={isRetryingImage || isImageJobPending || isAnalysisLocked}
-                              className={`min-w-[150px] flex-row items-center justify-center gap-2 rounded-md bg-champagne px-4 py-3 ${
-                                (isRetryingImage || isAnalysisLocked) ? 'opacity-70' : ''
-                              }`}
-                              style={shadows.md}
-                            >
-                              <IconSymbol name="arrow.clockwise" size={18} color={noctalia.action.primaryText} />
-                              <Text className="font-sans-bold text-[15px] text-on-champagne">
-                                {t('journal.detail.image.generate_action')}
-                              </Text>
-                            </PressableScale>
-
-                            <Text className="font-sans-medium text-[13px] text-ivory-muted">
-                              {t('journal.detail.image.or')}
-                            </Text>
-                          </>
-                        )}
-
-                        <PressableScale
-                          onPress={handlePickImage}
-                          disabled={isPickingImage || isAnalysisLocked}
-                          className={`min-w-[150px] flex-row items-center justify-center gap-2 rounded-md border border-line bg-transparent px-4 py-3 ${
-                            (isPickingImage || isAnalysisLocked) ? 'opacity-70' : ''
-                          }`}
-                        >
-                          {isPickingImage ? (
-                            <ActivityIndicator color={noctalia.text.primary} />
-                          ) : (
-                            <IconSymbol name="photo" size={18} color={noctalia.text.primary} />
-                          )}
-                          <Text className="font-sans-bold text-[15px] text-ivory">
-                            {isPickingImage
-                              ? t('journal.detail.image.adding_from_library')
-                              : t('journal.detail.image.add_from_library')}
-                          </Text>
-                        </PressableScale>
-                      </View>
-                    )}
-                  </View>
-                )}
-                {(isRetryingImage || isAnalysisLocked) && (
-                  <View className="absolute inset-0 items-center justify-center rounded-lg bg-ink-overlay">
-                    <ActivityIndicator color={noctalia.text.primary} />
-                  </View>
-                )}
-              </View>
-            </View>
-          )}
-
-          {/* Image Top Vignette */}
-          {!shouldHideHeroMedia && (
-            <LinearGradient
-              colors={[noctalia.surface.base, 'transparent']}
-              style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 100, zIndex: 1 }}
-              pointerEvents="none"
-            />
-          )}
-
-          {/* Content Card - Overlaps image */}
-          <View className="-mt-6 rounded-t-xl bg-ink-card px-4 pt-0 pb-6" style={shadows.xl}>
+          <View className="px-4 pb-6">
             {/* The sections enter once, staggered, as the dream loads in. The `Reveal`
                 wrappers sit OUTSIDE the conditionals on purpose: they mount with the
                 screen and stay mounted, so toggling edit mode never replays the
@@ -1874,116 +2081,12 @@ export default function JournalDetailScreen() {
             </Reveal>
             <Reveal index={1}>{renderSyncStatusCard()}</Reveal>
 
-            <Reveal index={2}>
-            {(analysisState.isAnalyzed || isAnalysisPending) && (
-              <>
-                {/* Quote */}
-                {isAnalysisPending ? (
-                  <Skeleton className="h-[60px] w-full rounded-sm" />
-                  ) : dream.shareableQuote ? (
-                  <FlatGlassCard style={{ padding: 20, marginVertical: 16, position: 'relative' }} animationDelay={450}>
-                    <IconSymbol name="quote.opening" size={28} color={noctalia.accent.text} style={{ position: 'absolute', top: 12, left: 12, opacity: 0.25 }} />
-                    {/* `Lora_700Bold_Italic` has no font token in global.css — see report. */}
-                    <Text className="pl-2 text-[20px] leading-[30px] text-ivory" style={{ fontFamily: Fonts.lora.boldItalic }}>
-                      &quot;{dream.shareableQuote}&quot;
-                    </Text>
-                  </FlatGlassCard>
-                ) : null}
-
-                {isAnalysisPending ? (
-                  <View className="mb-4 gap-2">
-                    <Skeleton className="h-4 w-full rounded-[4px]" />
-                    <Skeleton className="h-4 w-[90%] rounded-[4px]" />
-                    <Skeleton className="h-4 w-[95%] rounded-[4px]" />
-                  </View>
-                ) : dream.interpretation ? (
-                  <>
-                    <View className="mt-2 mb-3 items-center">
-                      <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
-                        {t('journal.detail.interpretation_header')}
-                      </Text>
-                      <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
-                    </View>
-                    <TypewriterText
-                      text={dream.interpretation}
-                      className="mb-4 font-sans text-body text-ivory-muted"
-                      shouldAnimate={false}
-                    />
-                  </>
-                ) : null}
-
-                {!isAnalysisPending && dream.symbols && dream.symbols.length > 0 ? (
-                  <>
-                    <View className="mt-2 mb-3 items-center">
-                      <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
-                        {t('journal.detail.symbols_header')}
-                      </Text>
-                      <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
-                    </View>
-                    {dream.symbols.map((symbol, index) => (
-                      <View key={`symbol-${index}`} className="mb-3">
-                        <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
-                          {symbol.name}
-                        </Text>
-                        <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
-                          {symbol.meaning}
-                        </Text>
-                      </View>
-                    ))}
-                  </>
-                ) : null}
-
-                {!isAnalysisPending && dream.emotions && dream.emotions.length > 0 ? (
-                  <>
-                    <View className="mt-2 mb-3 items-center">
-                      <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
-                        {t('journal.detail.emotions_header')}
-                      </Text>
-                      <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
-                    </View>
-                    {dream.emotions.map((emotion, index) => (
-                      <View key={`emotion-${index}`} className="mb-3">
-                        <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
-                          {emotion.name}
-                        </Text>
-                        <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
-                          {emotion.insight}
-                        </Text>
-                      </View>
-                    ))}
-                  </>
-                ) : null}
-
-                {!isAnalysisPending && dream.reflectionQuestions && dream.reflectionQuestions.length > 0 ? (
-                  <>
-                    <View className="mt-2 mb-3 items-center">
-                      <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
-                        {t('journal.detail.reflection_header')}
-                      </Text>
-                      <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
-                    </View>
-                    {dream.reflectionQuestions.map((question, index) => (
-                      <View key={`reflection-${index}`} className="mb-3">
-                        <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
-                          {question}
-                        </Text>
-                      </View>
-                    ))}
-                  </>
-                ) : null}
-              </>
-            )}
-            </Reveal>
-
-            {/* Transcript Section. The margins live on the measuring wrapper so
-                `layout.y` keeps meaning exactly what it meant before the `Reveal`
-                was introduced — it drives scroll-into-view when editing starts. */}
             {!isEditingTranscript && (
               <View
-                className="mt-6 mb-7"
+                className="mt-2 mb-5"
                 onLayout={(event) => setTranscriptSectionOffset(event.nativeEvent.layout.y)}
               >
-                <Reveal index={3}>
+                <Reveal index={2}>
                   <View className="rounded-md border-t border-t-line bg-ink-soft px-4 pt-6 pb-4 dark:bg-ink-card">
                     {renderTranscriptBody()}
                   </View>
@@ -1991,7 +2094,128 @@ export default function JournalDetailScreen() {
               </View>
             )}
 
+            <Reveal index={3}>
+              {renderStaleBanner()}
+              {renderDetailActionCard(['analyze'])}
+              <DreamRecallAssistantCard
+                dreamId={String(dream.id)}
+                originalTranscript={dream.transcript}
+                originalPersistedSegmentId={dream.clientRequestId ?? String(dream.id)}
+                offerEligible={recallOffer.offerEligible}
+              />
+            </Reveal>
+
             <Reveal index={4}>
+              {(showCompletedReading || isAnalysisPending) ? (
+                <View testID={TID.Component.DreamDetailReadingZone}>
+                  {renderDetailZoneHeader(t('journal.detail.zone.reading'), TID.Text.DreamDetailReadingZone)}
+                  {isAnalysisPending ? (
+                    <Skeleton className="h-[60px] w-full rounded-sm" />
+                  ) : dream.shareableQuote ? (
+                    <FlatGlassCard style={{ padding: 20, marginVertical: 16, position: 'relative' }} animationDelay={450}>
+                      <IconSymbol name="quote.opening" size={28} color={noctalia.accent.text} style={{ position: 'absolute', top: 12, left: 12, opacity: 0.25 }} />
+                      <Text className="pl-2 text-[20px] leading-[30px] text-ivory" style={{ fontFamily: Fonts.lora.boldItalic }}>
+                        &quot;{dream.shareableQuote}&quot;
+                      </Text>
+                    </FlatGlassCard>
+                  ) : null}
+
+                  {isAnalysisPending ? (
+                    <View className="mb-4 gap-2">
+                      <Skeleton className="h-4 w-full rounded-[4px]" />
+                      <Skeleton className="h-4 w-[90%] rounded-[4px]" />
+                      <Skeleton className="h-4 w-[95%] rounded-[4px]" />
+                    </View>
+                  ) : dream.interpretation ? (
+                    <>
+                      <View className="mt-2 mb-3 items-center">
+                        <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
+                          {t('journal.detail.interpretation_header')}
+                        </Text>
+                        <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
+                      </View>
+                      <TypewriterText
+                        text={dream.interpretation}
+                        className="mb-4 font-sans text-body text-ivory-muted"
+                        shouldAnimate={false}
+                      />
+                    </>
+                  ) : null}
+                </View>
+              ) : null}
+            </Reveal>
+
+            <Reveal index={5}>{renderIllustrationSection()}</Reveal>
+
+            <Reveal index={6}>
+              {!isAnalysisPending && showCompletedReading && dream.symbols && dream.symbols.length > 0 ? (
+                <>
+                  <View className="mt-2 mb-3 items-center">
+                    <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
+                      {t('journal.detail.symbols_header')}
+                    </Text>
+                    <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
+                  </View>
+                  {dream.symbols.map((symbol, index) => (
+                    <View key={`symbol-${index}`} className="mb-3">
+                      <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
+                        {symbol.name}
+                      </Text>
+                      <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
+                        {symbol.meaning}
+                      </Text>
+                    </View>
+                  ))}
+                </>
+              ) : null}
+
+              {!isAnalysisPending && showCompletedReading && dream.emotions && dream.emotions.length > 0 ? (
+                <>
+                  <View className="mt-2 mb-3 items-center">
+                    <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
+                      {t('journal.detail.emotions_header')}
+                    </Text>
+                    <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
+                  </View>
+                  {dream.emotions.map((emotion, index) => (
+                    <View key={`emotion-${index}`} className="mb-3">
+                      <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
+                        {emotion.name}
+                      </Text>
+                      <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
+                        {emotion.insight}
+                      </Text>
+                    </View>
+                  ))}
+                </>
+              ) : null}
+
+              {(showCompletedReading || (!isStalePrimaryAction && (visiblePrimaryAction === 'explore' || visiblePrimaryAction === 'continue'))) ? (
+                <View testID={TID.Component.DreamDetailReflectionZone} className="mt-2">
+                  {renderDetailZoneHeader(t('journal.detail.zone.reflection'), TID.Text.DreamDetailReflectionZone)}
+                  {isStalePrimaryAction ? null : renderDetailActionCard(['explore', 'continue'])}
+                  {!isAnalysisPending && showCompletedReading && dream.reflectionQuestions && dream.reflectionQuestions.length > 0 ? (
+                    <>
+                      <View className="mt-2 mb-3 items-center">
+                        <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
+                          {t('journal.detail.reflection_header')}
+                        </Text>
+                        <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
+                      </View>
+                      {dream.reflectionQuestions.map((question, index) => (
+                        <View key={`reflection-${index}`} className="mb-3">
+                          <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
+                            {question}
+                          </Text>
+                        </View>
+                      ))}
+                    </>
+                  ) : null}
+                </View>
+              ) : null}
+            </Reveal>
+
+            <Reveal index={7}>
               {renderFirstValueBackupCard()}
 
               {!isEditing && !isEditingTranscript ? (
@@ -1999,79 +2223,69 @@ export default function JournalDetailScreen() {
               ) : null}
             </Reveal>
 
-            <Reveal index={5}>
-            {renderDetailZoneHeader(t('journal.detail.zone.actions'))}
+            <Reveal index={8}>
+              {renderDetailZoneHeader(t('journal.detail.zone.actions'))}
 
-            <View className="mb-6 flex-row justify-around gap-3">
-              {/* The two sit side by side with a 12pt gap, so the press target only
-                  grows vertically — a horizontal hitSlop would overlap its neighbour. */}
-              <PressableScale
-                onPress={handleToggleFavorite}
-                disabled={isAnalysisLocked}
-                testID={TID.Button.DreamFavorite}
-                accessibilityLabel={t('journalDetail.a11y.toggleFavorite')}
-                hitSlop={{ top: 8, bottom: 8, left: 0, right: 0 }}
-                // Matches the main card surface so the padding around the button
-                // doesn't look like a darker band on Android.
-                className={`flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5 ${
-                  isAnalysisLocked ? 'opacity-60' : ''
-                }`}
-                style={shadows.sm}
-              >
-                <IconSymbol
-                  name={dream.isFavorite ? 'heart.fill' : 'heart'}
-                  size={24}
-                  color={dream.isFavorite ? noctalia.status.warning.icon : noctalia.text.primary}
-                />
-                <Text className="font-sans-medium text-[14px] text-ivory"
+              <View className="mb-6 flex-row justify-around gap-3">
+                <PressableScale
+                  onPress={handleToggleFavorite}
+                  disabled={isAnalysisLocked}
+                  testID={TID.Button.DreamFavorite}
+                  accessibilityLabel={t('journalDetail.a11y.toggleFavorite')}
+                  hitSlop={{ top: 8, bottom: 8, left: 0, right: 0 }}
+                  className={`flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5 ${
+                    isAnalysisLocked ? 'opacity-60' : ''
+                  }`}
+                  style={shadows.sm}
                 >
-                  {dream.isFavorite
-                    ? t('journal.detail.favorite.on')
-                    : t('journal.detail.favorite.off')}
+                  <IconSymbol
+                    name={dream.isFavorite ? 'heart.fill' : 'heart'}
+                    size={24}
+                    color={dream.isFavorite ? noctalia.status.warning.icon : noctalia.text.primary}
+                  />
+                  <Text className="font-sans-medium text-[14px] text-ivory">
+                    {dream.isFavorite
+                      ? t('journal.detail.favorite.on')
+                      : t('journal.detail.favorite.off')}
+                  </Text>
+                </PressableScale>
+                <PressableScale
+                  onPress={onShare}
+                  disabled={isSharing || isAnalysisLocked}
+                  testID={TID.Button.DreamShare}
+                  accessibilityLabel={t('journalDetail.a11y.shareDream')}
+                  hitSlop={{ top: 8, bottom: 8, left: 0, right: 0 }}
+                  className={`flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5 ${
+                    isSharing || isAnalysisLocked ? 'opacity-70' : ''
+                  }`}
+                  style={shadows.sm}
+                >
+                  {isSharing ? (
+                    <ActivityIndicator size="small" color={noctalia.text.primary} />
+                  ) : (
+                    <IconSymbol name="square.and.arrow.up" size={24} color={noctalia.text.primary} />
+                  )}
+                  <Text className="font-sans-medium text-[14px] text-ivory">
+                    {isSharing
+                      ? t('journal.detail.share.button_loading')
+                      : t('journal.detail.share.button_default')}
+                  </Text>
+                </PressableScale>
+              </View>
+
+              <PressableScale
+                onPress={onDelete}
+                className="mt-2 min-h-[44px] min-w-[44px] flex-row items-center justify-center gap-1.5 self-center px-3"
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                accessibilityRole="button"
+                testID={TID.Button.DreamDelete}
+                accessibilityLabel={t('journalDetail.a11y.deleteDream')}
+              >
+                <IconSymbol name="trash" size={18} color={noctalia.status.danger.icon} />
+                <Text className="font-sans-bold text-[15px] text-danger-on">
+                  {t('journal.menu.delete')}
                 </Text>
               </PressableScale>
-              <PressableScale
-                onPress={onShare}
-                disabled={isSharing || isAnalysisLocked}
-                testID={TID.Button.DreamShare}
-                accessibilityLabel={t('journalDetail.a11y.shareDream')}
-                hitSlop={{ top: 8, bottom: 8, left: 0, right: 0 }}
-                className={`flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5 ${
-                  isSharing || isAnalysisLocked ? 'opacity-70' : ''
-                }`}
-                style={shadows.sm}
-              >
-                {isSharing ? (
-                  <ActivityIndicator size="small" color={noctalia.text.primary} />
-                ) : (
-                  <IconSymbol name="square.and.arrow.up" size={24} color={noctalia.text.primary} />
-                )}
-                <Text className="font-sans-medium text-[14px] text-ivory"
-                >
-                  {isSharing
-                    ? t('journal.detail.share.button_loading')
-                    : t('journal.detail.share.button_default')}
-                </Text>
-              </PressableScale>
-            </View>
-            </Reveal>
-
-            <Reveal index={6}>
-            {renderDetailActionCard()}
-
-            <PressableScale
-              onPress={onDelete}
-              className="mt-6 flex-row items-center gap-1.5 self-center"
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              accessibilityRole="link"
-              testID={TID.Button.DreamDelete}
-              accessibilityLabel={t('journalDetail.a11y.deleteDream')}
-            >
-              <IconSymbol name="trash" size={18} color={noctalia.status.danger.icon} />
-              <Text className="font-sans-bold text-[15px] text-danger-on">
-                {t('journal.menu.delete')}
-              </Text>
-            </PressableScale>
             </Reveal>
             </View>
         </ScrollView>
@@ -2147,6 +2361,43 @@ export default function JournalDetailScreen() {
           imagePolicy={reanalyzeImagePolicy}
           onImagePolicyChange={handleReanalyzeImagePolicyChange}
         />
+        <Modal
+          visible={isIllustrationFullscreen}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setIsIllustrationFullscreen(false)}
+        >
+          <View
+            testID={TID.Modal.JournalIllustrationFullscreen}
+            className="flex-1 bg-ink-overlay"
+          >
+            <Pressable
+              className="absolute inset-0"
+              onPress={() => setIsIllustrationFullscreen(false)}
+              accessibilityRole="button"
+              accessibilityLabel={t('journal.detail.image.close_fullscreen')}
+            />
+            <View className="flex-1 items-center justify-center px-4">
+              {dream.imageUrl ? (
+                <Image
+                  source={{ uri: displayImageUrl ?? dream.imageUrl, cacheKey: imageCacheKey }}
+                  style={{ width: '100%', height: '80%' }}
+                  contentFit="contain"
+                />
+              ) : null}
+            </View>
+            <PressableScale
+              onPress={() => setIsIllustrationFullscreen(false)}
+              testID={TID.Button.JournalIllustrationClose}
+              accessibilityRole="button"
+              accessibilityLabel={t('journal.detail.image.close_fullscreen')}
+              className="absolute right-5 items-center justify-center rounded-full border border-line bg-ink-raised"
+              style={{ top: insets.top + 12, height: 44, width: 44 }}
+            >
+              <IconSymbol name="xmark" size={18} color={noctalia.text.primary} />
+            </PressableScale>
+          </View>
+        </Modal>
         <DeleteConfirmSheet
           visible={showDeleteSheet}
           onClose={handleCloseDeleteSheet}
@@ -2246,6 +2497,15 @@ export default function JournalDetailScreen() {
           onSecondary={handleReferenceSheetClose}
           onImagesSelected={handleReferenceImagesSelected}
         />
+
+        {savedConfirmationVisible ? (
+          <Toast
+            message={t('recording.save.confirmation')}
+            mode="success"
+            onHide={() => setSavedConfirmationVisible(false)}
+            testID={TID.Text.RecordingSaveConfirmation}
+          />
+        ) : null}
 
         {favoriteError ? (
           <Toast

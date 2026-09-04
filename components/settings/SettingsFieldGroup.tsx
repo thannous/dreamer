@@ -341,11 +341,10 @@ export function SettingsFieldGroup({
   const { t } = useTranslation();
   const { width: viewportWidth } = useWindowDimensions();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
-  const { theme, language, journalLayout, recording } = useSettingsPreferences();
+  const { theme, language } = useSettingsPreferences();
   const notifications = useNotificationSettingsController();
   const [themeSheetVisible, setThemeSheetVisible] = useState(false);
   const [languageSheetVisible, setLanguageSheetVisible] = useState(false);
-  const [journalLayoutSheetVisible, setJournalLayoutSheetVisible] = useState(false);
   const [activeTimePicker, setActiveTimePicker] = useState<'weekday' | 'weekend' | null>(null);
   const weekdayPickerVisible = activeTimePicker !== null;
   const setWeekdayPickerVisible = (visible: boolean) => setActiveTimePicker(visible ? 'weekday' : null);
@@ -353,20 +352,19 @@ export function SettingsFieldGroup({
   useEffect(() => {
     if (
       Platform.OS !== 'android' ||
-      (!themeSheetVisible && !languageSheetVisible && !journalLayoutSheetVisible)
+      (!themeSheetVisible && !languageSheetVisible)
     ) {
       return;
     }
 
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (journalLayoutSheetVisible) setJournalLayoutSheetVisible(false);
-      else if (languageSheetVisible) setLanguageSheetVisible(false);
+      if (languageSheetVisible) setLanguageSheetVisible(false);
       else setThemeSheetVisible(false);
       return true;
     });
 
     return () => subscription.remove();
-  }, [journalLayoutSheetVisible, languageSheetVisible, themeSheetVisible]);
+  }, [languageSheetVisible, themeSheetVisible]);
 
   const reminderEnabled = notifications.notificationsEnabled;
   const reminderTime = notifications.settings.weekdayTime;
@@ -438,35 +436,13 @@ export function SettingsFieldGroup({
             ) : null}
             <PreferenceRow
               icon="globe"
-              isLast={returningGuestBlocked}
+              isLast
               label={language.title}
               noctalia={noctalia}
               onPress={() => setLanguageSheetVisible(true)}
               testID="settings-language-choice"
               value={language.currentLabel}
             />
-            {!returningGuestBlocked ? (
-              <>
-                <PreferenceRow
-                  icon="book.closed.fill"
-                  label={journalLayout.title}
-                  noctalia={noctalia}
-                  onPress={() => setJournalLayoutSheetVisible(true)}
-                  testID="settings-journal-layout-choice"
-                  value={journalLayout.currentLabel}
-                />
-                <PreferenceRow
-                  icon="arrow.clockwise"
-                  isLast
-                  label={recording.title}
-                  noctalia={noctalia}
-                  onPress={() => void recording.restart()}
-                  testID={recording.testID}
-                  value={recording.actionLabel}
-                  wideValue
-                />
-              </>
-            ) : null}
           </EditorialCard>
 
           {!returningGuestBlocked ? (
@@ -737,13 +713,6 @@ export function SettingsFieldGroup({
         kind="language"
         onDismiss={() => setLanguageSheetVisible(false)}
         testID="settings-language-choice"
-      />
-      <PreferenceSheet
-        controller={journalLayout}
-        isPresented={journalLayoutSheetVisible}
-        kind="journal"
-        onDismiss={() => setJournalLayoutSheetVisible(false)}
-        testID="settings-journal-layout-choice"
       />
 
       {Platform.OS === 'ios' ? (

@@ -1,0 +1,90 @@
+# Release analysis interruption gate: starting analysis then killing the app
+# must keep the original transcript and surface a recoverable reflection CTA.
+appId: ${APP_ID || "com.tanuki75.noctalia"}
+name: Release analysis interrupt recovery
+tags:
+  - release
+  - analysis
+  - interrupt
+onFlowComplete:
+  - setAirplaneMode: disabled
+---
+- setAirplaneMode: disabled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
+
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Analysis interrupt sentinel silver orchard"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 90000
+- tapOn:
+    id: btn.dream.primaryCta
+- pressKey: Home
+- killApp
+- launchApp:
+    stopApp: false
+- runFlow:
+    when:
+      notVisible: "Analysis interrupt sentinel silver orchard"
+    commands:
+      - runFlow:
+          when:
+            visible:
+              id: btn.navigateJournal
+          commands:
+            - tapOn:
+                id: btn.navigateJournal
+      - runFlow:
+          when:
+            visible:
+              id: tab.journal
+          commands:
+            - tapOn:
+                id: tab.journal
+      - extendedWaitUntil:
+          visible:
+            id: screen.journal
+          timeout: 20000
+      - runFlow: subflows/ensure-journal-search-visible.yml
+      - tapOn:
+          id: input.searchDreams
+      - inputText: "Analysis interrupt sentinel"
+      - hideKeyboard
+      - extendedWaitUntil:
+          visible:
+            id: "dream.item.*"
+          timeout: 20000
+      - tapOn:
+          id: "dream.item.*"
+          index: 0
+- extendedWaitUntil:
+    visible:
+      id: component.transcriptCard
+    timeout: 20000
+- assertVisible: "Analysis interrupt sentinel silver orchard"
+- takeScreenshot: ti429-analysis-interrupt-transcript
+- scrollUntilVisible:
+    element:
+      id: btn.dream.primaryCta
+    direction: DOWN
+- assertVisible:
+    id: btn.dream.primaryCta

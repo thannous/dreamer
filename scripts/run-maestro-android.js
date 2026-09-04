@@ -14,6 +14,18 @@ const {
   writeVoiceAnalysisEvidence,
 } = require('./android-voice-analysis-evidence');
 const { readAppVersionCode } = require('./update-google-play-track-state');
+const {
+  defaultMetroPortForOwner,
+  inferLockOwnerFromSuite,
+  parseLockOwner,
+  prepareAndroidDeviceLocks,
+  attachDeviceLockSignals,
+} = require('./android-device-lock');
+
+const PRODUCTION_ANDROID_APP_ID = 'com.tanuki75.noctalia';
+const QA_ANDROID_APP_ID = 'com.tanuki75.noctalia.qa';
+const PRODUCTION_DEEP_LINK_SCHEME = 'noctalia';
+const QA_DEEP_LINK_SCHEME = 'noctalia-qa';
 
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_MAESTRO_BIN_WINDOWS = 'C:\\Users\\thann\\maestro\\maestro\\bin\\maestro.bat';
@@ -114,6 +126,16 @@ const SUITES = {
   'release-voice-analysis': [
     'maestro/release-auth-voice-analysis.yml',
   ],
+  'release-ti429': [
+    'maestro/release-write-tell.yml',
+    'maestro/release-draft-kill-relaunch.yml',
+    'maestro/release-short-fragments.yml',
+    'maestro/release-long-fragment.yml',
+    'maestro/release-analysis-interrupt.yml',
+    'maestro/release-image-independent.yml',
+    'maestro/release-journal-trends-deeplinks.yml',
+    'maestro/release-guest-unlimited.yml',
+  ],
   'release-teststore': [
     'maestro/subscription-teststore-release-readiness.yml',
   ],
@@ -198,6 +220,12 @@ function parseArgs(argv) {
     metroPort: DEFAULT_METRO_PORT,
     envFile: '.env.mock',
     flows: null,
+    sideBySideQa: false,
+    appIdOverride: null,
+    deepLinkSchemeOverride: null,
+    lockOwner: null,
+    stealLock: false,
+    metroPortSpecified: false,
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -255,12 +283,47 @@ function parseArgs(argv) {
 
     if (arg === '--metro-port') {
       options.metroPort = Number.parseInt(argv[i + 1] ?? String(options.metroPort), 10);
+      options.metroPortSpecified = true;
       i += 1;
       continue;
     }
 
     if (arg === '--env-file') {
       options.envFile = argv[i + 1] ?? options.envFile;
+      i += 1;
+      continue;
+    }
+
+    if (arg === '--side-by-side-qa') {
+      options.sideBySideQa = true;
+      continue;
+    }
+
+    if (arg === '--lock-owner') {
+      options.lockOwner = parseLockOwner(argv[i + 1], '--lock-owner');
+      i += 1;
+      continue;
+    }
+
+    if (arg === '--steal-lock') {
+      options.stealLock = true;
+      continue;
+    }
+
+    if (arg === '--app-id') {
+      options.appIdOverride = argv[i + 1];
+      if (!options.appIdOverride || options.appIdOverride.startsWith('--')) {
+        throw new Error('Missing --app-id value');
+      }
+      i += 1;
+      continue;
+    }
+
+    if (arg === '--deep-link-scheme') {
+      options.deepLinkSchemeOverride = argv[i + 1];
+      if (!options.deepLinkSchemeOverride || options.deepLinkSchemeOverride.startsWith('--')) {
+        throw new Error('Missing --deep-link-scheme value');
+      }
       i += 1;
       continue;
     }
@@ -280,7 +343,16 @@ function parseArgs(argv) {
     throw new Error(`Invalid --metro-port value: ${options.metroPort}`);
   }
 
-  return options;
+  options.lockOwner = options.lockOwner || inferLockOwnerFromSuite(options.suite);
+  if (!options.metroPortSpecified) {
+    options.metroPort = defaultMetroPortForOwner(options.lockOwner);
+  }
+
+  const identity = resolveAndroidIdentity(options);
+  delete options.appIdOverride;
+  delete options.deepLinkSchemeOverride;
+  delete options.metroPortSpecified;
+  return { ...options, ...identity };
 }
 
 function printHelp() {
@@ -290,7 +362,7 @@ function printHelp() {
 
   console.log(`
 Usage:
-  node ./scripts/run-maestro-android.js [--suite <name>] [--parallel auto|<n>] [--retries <n>] [--device <id1,id2>] [--flow <path>]... [--metro-port <port>] [--no-restart-metro] [--no-start-metro]
+  node ./scripts/run-maestro-android.js [--suite <name>] [--parallel auto|<n>] [--retries <n>] [--device <id1,id2>] [--flow <path>]... [--metro-port <port>] [--no-restart-metro] [--no-start-metro] [--side-by-side-qa] [--lock-owner dreamer|lucid|meditation] [--steal-lock]
 
 Suites:
 ${suites}
@@ -301,6 +373,12 @@ Fast debug:
   Release suites require --no-start-metro and an embedded standalone bundle.
   Production Release suites require a non-debuggable build; release-teststore
   requires the dedicated debuggable Test Store build enforced by RevenueCat.
+  --side-by-side-qa retargets production Release suites to
+  ${QA_ANDROID_APP_ID} / ${QA_DEEP_LINK_SCHEME} only. Prefer it over
+  --app-id/--deep-link-scheme, which must be that exact QA pair.
+  QA identity is local device proof, never Play, Test Store or purchase.
+  Physical Android QA requires --device <serial>. The lock key is sha256(android_id),
+  not the Wi-Fi host:port. --steal-lock is only for a stale lock after a diagnostic.
 
 Examples:
   npm run test:e2e
@@ -309,7 +387,114 @@ Examples:
   node ./scripts/run-maestro-android.js --suite quotas --parallel auto
   node ./scripts/run-maestro-android.js --suite canary --retries 0 --metro-port 8082 --no-restart-metro
   node ./scripts/run-maestro-android.js --flow maestro/smoke.yml --flow maestro/recording-bottom-sheet.yml --retries 2
+  node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --side-by-side-qa
 `.trim());
+}
+
+function resolveMaestroLockOwner(options) {
+  return options.lockOwner || inferLockOwnerFromSuite(options.suite);
+}
+
+function prepareMaestroDeviceLocks(options, devices, extras = {}) {
+  return prepareAndroidDeviceLocks({
+    devices,
+    owner: resolveMaestroLockOwner(options),
+    stealLock: Boolean(options.stealLock),
+    explicitDevices: Array.isArray(options.devices) && options.devices.length > 0,
+    command: extras.command || `run-maestro-android --suite ${options.suite}`,
+    metroPort: options.metroPort,
+    ...extras,
+  });
+}
+
+async function withMaestroDeviceLock(options, work, {
+  listDevices = listAndroidDevices,
+  prepareLocks = prepareMaestroDeviceLocks,
+  attachSignals = attachDeviceLockSignals,
+} = {}) {
+  const devices = selectDevices(listDevices(), options.devices);
+  if (!devices.length) {
+    throw new Error('No Android device detected. Start an emulator or connect a device.');
+  }
+  const deviceLocks = prepareLocks(options, devices);
+  const releaseOnce = attachSignals(deviceLocks.locks);
+  try {
+    return await work({ devices, deviceLocks });
+  } finally {
+    releaseOnce();
+  }
+}
+
+function isReleaseSuite(suite) {
+  return String(suite || '').startsWith('release');
+}
+
+function isQaEligibleReleaseSuite(suite) {
+  return isReleaseSuite(suite) && !String(suite).startsWith('release-teststore');
+}
+
+function productionAndroidIdentity() {
+  return {
+    appId: PRODUCTION_ANDROID_APP_ID,
+    deepLinkScheme: PRODUCTION_DEEP_LINK_SCHEME,
+    sideBySideQa: false,
+  };
+}
+
+function qaAndroidIdentity() {
+  return {
+    appId: QA_ANDROID_APP_ID,
+    deepLinkScheme: QA_DEEP_LINK_SCHEME,
+    sideBySideQa: true,
+  };
+}
+
+function assertAndroidIdentity(identity) {
+  const appId = String(identity?.appId || '').trim();
+  const deepLinkScheme = String(identity?.deepLinkScheme || '').trim();
+  const allowed = new Set([
+    `${PRODUCTION_ANDROID_APP_ID}|${PRODUCTION_DEEP_LINK_SCHEME}`,
+    `${QA_ANDROID_APP_ID}|${QA_DEEP_LINK_SCHEME}`,
+  ]);
+  if (!allowed.has(`${appId}|${deepLinkScheme}`)) {
+    throw new Error(
+      `Unsupported Android identity ${appId || 'missing'} / ${deepLinkScheme || 'missing'}.`
+    );
+  }
+  return { appId, deepLinkScheme, sideBySideQa: appId === QA_ANDROID_APP_ID };
+}
+
+function resolveAndroidIdentity(options = {}) {
+  const qa = qaAndroidIdentity();
+  const overrideAppId = options.appIdOverride ?? null;
+  const overrideScheme = options.deepLinkSchemeOverride ?? null;
+  const hasAppId = overrideAppId != null;
+  const hasScheme = overrideScheme != null;
+
+  if (hasAppId !== hasScheme) {
+    throw new Error(
+      'Use --app-id and --deep-link-scheme together with the exact QA identity, or pass --side-by-side-qa.'
+    );
+  }
+
+  if (hasAppId && (overrideAppId !== qa.appId || overrideScheme !== qa.deepLinkScheme)) {
+    throw new Error(
+      `Unsupported Android identity ${overrideAppId} / ${overrideScheme}. Only ${qa.appId} + ${qa.deepLinkScheme} is allowed.`
+    );
+  }
+
+  const useQa = Boolean(options.sideBySideQa) || hasAppId;
+  if (!useQa) {
+    return productionAndroidIdentity();
+  }
+
+  if (!isQaEligibleReleaseSuite(options.suite)) {
+    throw new Error(
+      'QA side-by-side identity is limited to production Release suites; it cannot retarget mock, Test Store or purchase flows.'
+    );
+  }
+
+  return qa;
 }
 
 function resolveFlows(options) {
@@ -541,23 +726,30 @@ function listAndroidDevices() {
 function readExpectedAndroidBuild(
   rootDir = ROOT,
   readFileSync = fs.readFileSync,
-  env = process.env
+  env = process.env,
+  identity = productionAndroidIdentity()
 ) {
   const appConfig = JSON.parse(
     readFileSync(path.join(rootDir, 'app.json'), 'utf8')
   );
-  const packageName = String(appConfig?.expo?.android?.package || '').trim();
+  const declaredPackage = String(appConfig?.expo?.android?.package || '').trim();
   const versionName = String(appConfig?.expo?.version || '').trim();
   const versionCode = readAppVersionCode(rootDir, readFileSync, env);
+  const resolvedIdentity = assertAndroidIdentity(identity);
 
-  if (!packageName) {
+  if (!declaredPackage) {
     throw new Error('app.json must define expo.android.package for Release E2E.');
+  }
+  if (declaredPackage !== PRODUCTION_ANDROID_APP_ID) {
+    throw new Error(
+      `app.json android package must remain ${PRODUCTION_ANDROID_APP_ID} for Release E2E.`
+    );
   }
   if (!versionName) {
     throw new Error('app.json must define expo.version for Release E2E.');
   }
   return {
-    packageName,
+    packageName: resolvedIdentity.appId,
     versionName,
     versionCode,
   };
@@ -1072,6 +1264,16 @@ function buildMaestroFlowEnvArgs(flow, env = process.env) {
     .flatMap((key) => ['-e', `${key}=${env[key]}`]);
 }
 
+function buildMaestroIdentityEnvArgs(identity = productionAndroidIdentity()) {
+  const resolved = assertAndroidIdentity(identity);
+  return [
+    '-e',
+    `APP_ID=${resolved.appId}`,
+    '-e',
+    `DEEP_LINK_SCHEME=${resolved.deepLinkScheme}`,
+  ];
+}
+
 function buildMaestroFlowSourceEnv(flow, env = process.env, now = Date.now) {
   const sourceEnv = { ...env };
   if (flow === 'maestro/release-auth-offline-sync.yml' && !sourceEnv.QA_SYNC_SENTINEL) {
@@ -1080,11 +1282,21 @@ function buildMaestroFlowSourceEnv(flow, env = process.env, now = Date.now) {
   return sourceEnv;
 }
 
-async function runFlowOnDevice({ deviceId, flow, retries, installDriverFirstRun, suiteName }) {
+async function runFlowOnDevice({
+  deviceId,
+  flow,
+  retries,
+  installDriverFirstRun,
+  suiteName,
+  identity = productionAndroidIdentity(),
+}) {
   const { command, baseArgs } = resolveMaestroInvocation();
   const outputRoot = path.resolve(ROOT, 'maestro-results', 'android', suiteName, deviceId, flowSlug(flow));
   const sourceEnv = buildMaestroFlowSourceEnv(flow);
-  const flowEnvArgs = buildMaestroFlowEnvArgs(flow, sourceEnv);
+  const flowEnvArgs = [
+    ...buildMaestroIdentityEnvArgs(identity),
+    ...buildMaestroFlowEnvArgs(flow, sourceEnv),
+  ];
   const redactions = buildMaestroFlowRedactions(flow, sourceEnv);
   const artifactPolicy = getMaestroArtifactPolicy(suiteName, redactions);
   fs.mkdirSync(outputRoot, { recursive: true });
@@ -1142,7 +1354,7 @@ async function runFlowOnDevice({ deviceId, flow, retries, installDriverFirstRun,
   return { flow, ok: false, attempts: retries + 1 };
 }
 
-async function runWorker(deviceId, flows, retries, suiteName) {
+async function runWorker(deviceId, flows, retries, suiteName, identity = productionAndroidIdentity()) {
   const results = [];
   let installDriverFirstRun = true;
 
@@ -1154,6 +1366,7 @@ async function runWorker(deviceId, flows, retries, suiteName) {
       retries,
       installDriverFirstRun,
       suiteName,
+      identity,
     });
     results.push(result);
     installDriverFirstRun = false;
@@ -1184,81 +1397,93 @@ async function main() {
     invalidateVoiceAnalysisEvidence(ROOT);
   }
 
-  if (options.startMetro) {
-    ensureMockEnv(options.envFile);
-    const portReady = await isPortOpen(options.metroPort);
-    if (portReady && options.restartMetro) {
-      console.log(`Restarting Metro on port ${options.metroPort}...`);
-      stopMetro(options.metroPort);
-      await sleep(2000);
-      startMetroDetached(options.metroPort);
-    } else if (!portReady) {
-      console.log(`Starting Metro on port ${options.metroPort}...`);
-      startMetroDetached(options.metroPort);
-    } else {
-      console.log(`Metro already listening on port ${options.metroPort}`);
+  await withMaestroDeviceLock(options, async ({ devices, deviceLocks }) => {
+    if (options.startMetro) {
+      ensureMockEnv(options.envFile);
+      const portReady = await isPortOpen(options.metroPort);
+      if (portReady && options.restartMetro) {
+        console.log(`Restarting Metro on port ${options.metroPort}...`);
+        stopMetro(options.metroPort);
+        await sleep(2000);
+        startMetroDetached(options.metroPort);
+      } else if (!portReady) {
+        console.log(`Starting Metro on port ${options.metroPort}...`);
+        startMetroDetached(options.metroPort);
+      } else {
+        console.log(`Metro already listening on port ${options.metroPort}`);
+      }
+
+      const ready = await waitForPort(options.metroPort, options.metroTimeoutMs);
+      if (!ready) {
+        throw new Error(`Metro did not start on port ${options.metroPort} within ${options.metroTimeoutMs}ms`);
+      }
     }
 
-    const ready = await waitForPort(options.metroPort, options.metroTimeoutMs);
-    if (!ready) {
-      throw new Error(`Metro did not start on port ${options.metroPort} within ${options.metroTimeoutMs}ms`);
+    const workerCount = resolveWorkerCount(options.parallel, devices.length, flows.length);
+    const workerQueues = assignFlowsToWorkers(flows, workerCount);
+    const selectedDevices = devices.slice(0, workerCount);
+    let expectedReleaseBuild = null;
+    if (options.suite?.startsWith('release')) {
+      expectedReleaseBuild = readExpectedAndroidBuild(
+        ROOT,
+        fs.readFileSync,
+        process.env,
+        options
+      );
+      const expectedDebuggable = options.suite === 'release-teststore';
+      selectedDevices.forEach((deviceId) =>
+        verifyInstalledReleaseBinary(deviceId, expectedReleaseBuild, { expectedDebuggable })
+      );
     }
-  }
+    selectedDevices.forEach((deviceId) => configureAndroidInput(deviceId));
+    if (!options.suite?.startsWith('release')) {
+      selectedDevices.forEach((deviceId) => configureMetroReverse(deviceId, options.metroPort));
+    }
 
-  const devices = selectDevices(listAndroidDevices(), options.devices);
-  if (!devices.length) {
-    throw new Error('No Android device detected. Start an emulator or connect a device.');
-  }
-
-  const workerCount = resolveWorkerCount(options.parallel, devices.length, flows.length);
-  const workerQueues = assignFlowsToWorkers(flows, workerCount);
-  const selectedDevices = devices.slice(0, workerCount);
-  let expectedReleaseBuild = null;
-  if (options.suite?.startsWith('release')) {
-    expectedReleaseBuild = readExpectedAndroidBuild();
-    const expectedDebuggable = options.suite === 'release-teststore';
-    selectedDevices.forEach((deviceId) =>
-      verifyInstalledReleaseBinary(deviceId, expectedReleaseBuild, { expectedDebuggable })
+    console.log(`Running suite "${options.suite}" on ${workerCount} Android worker(s)`);
+    console.log(
+      `  app identity: ${options.appId} / ${options.deepLinkScheme}` +
+        `${options.sideBySideQa ? ' (side-by-side QA; local device proof only)' : ''}`
     );
-  }
-  selectedDevices.forEach((deviceId) => configureAndroidInput(deviceId));
-  if (!options.suite?.startsWith('release')) {
-    selectedDevices.forEach((deviceId) => configureMetroReverse(deviceId, options.metroPort));
-  }
-
-  console.log(`Running suite "${options.suite}" on ${workerCount} Android worker(s)`);
-  selectedDevices.forEach((deviceId, index) => {
-    console.log(`  worker ${index + 1}: ${deviceId} -> ${workerQueues[index].join(', ')}`);
-  });
-
-  const results = await Promise.all(
-    selectedDevices.map((deviceId, index) => runWorker(deviceId, workerQueues[index], options.retries, options.suite))
-  );
-
-  const flatResults = results.flat();
-  const failed = flatResults.filter((result) => !result.ok);
-
-  console.log('');
-  flatResults.forEach((result) => {
-    const status = result.ok ? 'PASS' : 'FAIL';
-    console.log(`${status} ${result.flow} (${result.attempts} attempt${result.attempts > 1 ? 's' : ''})`);
-  });
-
-  if (failed.length) {
-    process.exitCode = 1;
-    return;
-  }
-
-  if (voiceFlowSelected) {
-    writeVoiceAnalysisEvidence({
-      rootDir: ROOT,
-      buildIdentity: expectedReleaseBuild,
-      targetKind: /^emulator-\d+$/.test(selectedDevices[0]) ? 'emulator' : 'physical',
+    if (deviceLocks.locks.length > 0) {
+      console.log(
+        `  device lock: ${resolveMaestroLockOwner(options)} fingerprint=${deviceLocks.locks.map((lock) => lock.fingerprint).join(',')}`
+      );
+    }
+    selectedDevices.forEach((deviceId, index) => {
+      console.log(`  worker ${index + 1}: ${deviceId} -> ${workerQueues[index].join(', ')}`);
     });
-    console.log('[voice-evidence] Qualifying runtime receipt written for the current Release candidate.');
-  }
 
-  console.log(`All ${flatResults.length} Maestro flow(s) passed.`);
+    const results = await Promise.all(
+      selectedDevices.map((deviceId, index) =>
+        runWorker(deviceId, workerQueues[index], options.retries, options.suite, options)
+      )
+    );
+
+    const flatResults = results.flat();
+    const failed = flatResults.filter((result) => !result.ok);
+
+    console.log('');
+    flatResults.forEach((result) => {
+      const status = result.ok ? 'PASS' : 'FAIL';
+      console.log(`${status} ${result.flow} (${result.attempts} attempt${result.attempts > 1 ? 's' : ''})`);
+    });
+
+    if (failed.length) {
+      process.exitCode = 1;
+    } else {
+      if (voiceFlowSelected) {
+        writeVoiceAnalysisEvidence({
+          rootDir: ROOT,
+          buildIdentity: expectedReleaseBuild,
+          targetKind: /^emulator-\d+$/.test(selectedDevices[0]) ? 'emulator' : 'physical',
+        });
+        console.log('[voice-evidence] Qualifying runtime receipt written for the current Release candidate.');
+      }
+
+      console.log(`All ${flatResults.length} Maestro flow(s) passed.`);
+    }
+  });
 }
 
 function sleep(ms) {
@@ -1275,11 +1500,13 @@ if (require.main === module) {
 module.exports = {
   assertInstalledReleaseBinary,
   assertReleaseSuiteDoesNotStartMetro,
+  assertAndroidIdentity,
   buildMetroLaunchSpec,
   assertVoiceFlowAuthorization,
   assertSensitiveFlowAuthorization,
   buildMaestroEnv,
   buildMaestroFlowEnvArgs,
+  buildMaestroIdentityEnvArgs,
   buildMaestroFlowRedactions,
   buildMaestroFlowSourceEnv,
   createRedactingWriter,
@@ -1292,10 +1519,18 @@ module.exports = {
   parseInstalledAndroidBuild,
   readExpectedAndroidBuild,
   redactSensitiveText,
+  resolveAndroidIdentity,
+  resolveMaestroLockOwner,
+  prepareMaestroDeviceLocks,
+  withMaestroDeviceLock,
   runCommand,
   sanitizeMaestroArtifacts,
   SENSITIVE_FLOW_GUARD_ENV,
   shouldBlockNextSensitiveFlow,
   TESTSTORE_READINESS_FLOW,
   verifyInstalledReleaseBinary,
+  PRODUCTION_ANDROID_APP_ID,
+  QA_ANDROID_APP_ID,
+  PRODUCTION_DEEP_LINK_SCHEME,
+  QA_DEEP_LINK_SCHEME,
 };

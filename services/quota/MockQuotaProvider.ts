@@ -7,9 +7,11 @@ import { getSavedDreams } from '@/services/storageService';
 import {
   getMockAnalysisCount,
   getMockExplorationCount,
+  getMockImageCount,
   isDreamExploredMock,
   invalidateMockQuotaCache,
 } from './MockQuotaEventStore';
+import { buildQuotaMetric, resolveCanGenerateImage } from './quotaMetrics';
 
 import type { CacheEntry, QuotaProvider, QuotaDreamTarget } from './types';
 
@@ -82,17 +84,32 @@ export class MockQuotaProvider implements QuotaProvider {
     return used < limit;
   }
 
+  async canGenerateImage(_user: User | null, tier: UserTier = 'free'): Promise<boolean> {
+    if (tier === 'plus') return true;
+    if (tier === 'free') return false;
+    const used = await getMockImageCount();
+    return resolveCanGenerateImage({
+      tier,
+      image: buildQuotaMetric(used, QUOTAS[tier].image),
+    });
+  }
+
   async getQuotaStatus(user: User | null, tier: UserTier, target?: QuotaDreamTarget): Promise<QuotaStatus> {
     const limits = QUOTAS[tier];
 
-    const [analysisUsed, explorationUsed, messagesUsed] = await Promise.all([
+    const [analysisUsed, explorationUsed, messagesUsed, imageUsed] = await Promise.all([
       this.getUsedAnalysisCount(user),
       this.getUsedExplorationCount(user),
       target ? this.getUsedMessagesCount(target, user) : Promise.resolve(0),
+      getMockImageCount(),
     ]);
 
     const canAnalyze = await this.canAnalyzeDream(user, tier);
     const canExplore = target ? await this.canExploreDream(target, user, tier) : limits.exploration === null || explorationUsed < (limits.exploration ?? 0);
+    const image = tier === 'free'
+      ? buildQuotaMetric(0, 0)
+      : buildQuotaMetric(imageUsed, limits.image);
+    const canGenerateImage = resolveCanGenerateImage({ tier, image });
 
     const reasons: string[] = [];
     if (!canAnalyze && limits.analysis !== null) {
@@ -100,6 +117,9 @@ export class MockQuotaProvider implements QuotaProvider {
     }
     if (!canExplore && target && limits.exploration !== null) {
       reasons.push(`Exploration limit reached (${explorationUsed}/${limits.exploration}).`);
+    }
+    if (!canGenerateImage && tier === 'guest' && limits.image !== null) {
+      reasons.push(`Illustration limit reached (${imageUsed}/${limits.image}).`);
     }
 
     return {
@@ -120,9 +140,11 @@ export class MockQuotaProvider implements QuotaProvider {
           limit: limits.messagesPerDream,
           remaining: limits.messagesPerDream === null ? null : Math.max(limits.messagesPerDream - messagesUsed, 0),
         },
+        image,
       },
       canAnalyze,
       canExplore,
+      canGenerateImage,
       reasons: reasons.length > 0 ? reasons : undefined,
     };
   }

@@ -10,10 +10,10 @@ url: "http://localhost:8081"
 - runFlow:
     when:
       visible:
-        id: "btn.recording.switchToText"
+        id: "btn.recording.inputMode.text"
     commands:
       - tapOn:
-          id: "btn.recording.switchToText"
+          id: "btn.recording.inputMode.text"
       - waitForAnimationToEnd
 - tapOn:
     id: "input.dreamTranscript"
@@ -22,8 +22,4 @@ url: "http://localhost:8081"
     id: "btn.saveDream"
 - waitForAnimationToEnd
 - assertVisible:
-    id: "text.analyzePromptTitle"
-- tapOn:
-    id: "btn.analyzePrompt.journal"
-- waitForAnimationToEnd
-- assertVisible: "(Dream Journey|Voyage onirique|Viaje on.rico)"
+    id: "text.dreamDetail.actionTitle"

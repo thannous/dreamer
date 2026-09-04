@@ -439,6 +439,66 @@ describe('useOfflineSyncQueue', () => {
       );
     });
 
+    it('replays a 10000-character create mutation with a stable clientRequestId', async () => {
+      const longTranscript = 'a'.repeat(10_000);
+      const dream = buildDream({
+        id: 88,
+        clientRequestId: 'offline-10k-queue',
+        transcript: longTranscript,
+      });
+      mockCreateDream.mockResolvedValue({ ...dream, remoteId: 888 });
+      const persistRemoteDreams = jest.fn().mockResolvedValue(undefined);
+      const { result, rerender } = renderHook(
+        ({ hasNetwork }: { hasNetwork: boolean }) =>
+          useOfflineSyncQueue({
+            ...defaultOptions,
+            hasNetwork,
+            persistRemoteDreams,
+          }),
+        { initialProps: { hasNetwork: false } }
+      );
+
+      await act(async () => {
+        await result.current.queueOfflineOperation(
+          legacyMutation({
+            id: 'mut-10k',
+            type: 'create',
+            dream,
+            createdAt: Date.now(),
+          }),
+          (prev) => [...prev, dream]
+        );
+      });
+
+      expect(mockCreateDream).not.toHaveBeenCalled();
+      expect(result.current.pendingMutationsRef.current[0]).toEqual(
+        expect.objectContaining({
+          operation: 'create',
+          clientRequestId: 'offline-10k-queue',
+          payload: expect.objectContaining({
+            dream: expect.objectContaining({
+              transcript: longTranscript,
+              clientRequestId: 'offline-10k-queue',
+            }),
+          }),
+        })
+      );
+
+      rerender({ hasNetwork: true });
+
+      await waitFor(() => {
+        expect(mockCreateDream).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: 88,
+            clientRequestId: 'offline-10k-queue',
+            transcript: longTranscript,
+          }),
+          'user-123'
+        );
+      });
+      expect(String((mockCreateDream.mock.calls[0][0] as DreamAnalysis).transcript)).toHaveLength(10_000);
+    });
+
     it('syncs update mutations to Supabase', async () => {
       const dream = buildDream({ id: 1, remoteId: 1001 });
       const updatedDream = { ...dream, title: 'Updated' };

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Noctalia is an AI-powered dream journal app: users record dreams by voice or text, a Supabase Edge Function backend (Gemini AI) produces interpretations, imagery, and categorization, and dreams are explored through a journal, statistics, chat, a symbol dictionary, and lucid-dreaming rituals. The app supports guest mode with quotas, Supabase auth (including Google Sign-In), RevenueCat subscriptions, and six languages (en, fr, es, de, it, pt). The repo also contains a generated multilingual marketing site.
+Noctalia is an AI-powered dream journal app: users record dreams by voice or text, a Supabase Edge Function backend (Gemini AI) produces interpretations and categorization, and dreams are explored through a journal, statistics, chat, a symbol dictionary, and lucid-dreaming rituals. Illustration is a separate optional request, not part of analysis or reflection. Guest mode keeps an unlimited local journal; only costly AI usage is quota-gated. The app supports Supabase auth (including Google Sign-In), RevenueCat subscriptions, and six languages (en, fr, es, de, it, pt). The repo also contains a generated multilingual marketing site.
 
 **Tech stack:** Expo SDK 57 (Expo Router), React Native 0.86, React 19, TypeScript strict, Supabase (auth, Postgres, Deno Edge Functions), RevenueCat, Jest (unit), Vitest (perf only), Maestro (Android E2E). Requires Node >= 24.19.0 and < 25.
 
@@ -103,14 +103,14 @@ Provider nesting in `app/_layout.tsx` (outermost first): `LanguageProvider` → 
 
 ### Dream Data Flow
 1. Recording screen captures voice (`expo-audio` + `expo-speech-recognition`, with text fallback) — see `useRecordingSession`.
-2. Transcript goes through `analyzeDreamWithImageResilient()` (`services/geminiService.ts`), which falls back to analysis-only if image generation fails (`imageGenerationFailed: true`). Both analysis and images can also complete asynchronously via server-side jobs (`submitDreamAnalysisJob`/`submitImageGenerationJob`, polled through `lib/analysisJobPolling.ts`; pending state in `PendingImageJob`).
+2. Transcript analysis uses `analyzeDreamText()` for the direct path or `submitDreamAnalysisJob()` for an authenticated server job. Illustration is separate and opt-in: only an explicit image request can call or register `submitImageGenerationJob()`. Server jobs are polled through `lib/analysisJobPolling.ts`; pending illustration state lives in `PendingImageJob`. The legacy `analyzeDreamWithImageResilient()` service remains covered independently but is not the active journal flow.
 3. `useAnalysisProgress` tracks multi-step progress for the `AnalysisProgress` component.
 4. The dream is saved through `DreamsContext`/`useDreamJournal` to local storage (AsyncStorage via `storageService.ts`), and synced to Supabase through `services/supabaseDreamService.ts` with an offline mutation queue (`useOfflineSyncQueue`, sync states in `lib/types.ts`: `DreamSyncState`, `SyncMutationStatus`).
 
 Core types are in `lib/types.ts` (`DreamAnalysis`, `ChatMessage`, `DreamType`, `DreamTheme`, `AppLanguage`, notification/ritual/preference types).
 
 ### Monetization & Quotas
-- **Guest mode:** server-issued guest sessions with device fingerprinting (`lib/guestSession.ts`, `lib/deviceFingerprint.ts`) and limits (`lib/guestLimits.ts`); quota tiers in `lib/quotaTier.ts`, checked via `useQuota` and `services/quotaService.ts`. The backend enforces quotas in `api/lib/analysisQuota.ts`.
+- **Guest mode:** server-issued guest sessions with device fingerprinting (`lib/guestSession.ts`, `lib/deviceFingerprint.ts`). The local guest journal is unlimited; costly AI (analysis, illustrations, chat) stays quota-gated. Quota tiers live in `lib/quotaTier.ts` and `constants/limits.ts`, checked via `useQuota` and `services/quotaService.ts`. The backend enforces AI quotas in `api/lib/analysisQuota.ts`. There is no `lib/guestLimits.ts` recording ceiling.
 - **Subscriptions:** RevenueCat SDK config in `lib/revenuecat.ts`, client service in `services/subscriptionService*.ts`, state in `SubscriptionContext` with `useSubscription*` hooks, server reconciliation via `services/subscriptionSyncService.ts` + `/subscription/*` routes + the webhook. Paywall screens/variants: `app/paywall.tsx`, `lib/paywallVariants.ts`. A subscription QA lab and extensive `subscription:qa:*` scripts exist for release verification.
 
 ### Styling (Uniwind) & Motion

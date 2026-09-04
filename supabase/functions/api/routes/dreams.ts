@@ -18,11 +18,10 @@ import {
 } from '../lib/analysisQuota.ts';
 import type { ApiContext } from '../types.ts';
 import {
-  AI_REQUEST_LIMITS,
   aiInputErrorResponse,
-  normalizeAiLanguage,
-  validateBoundedText,
+  parseDreamTextInput,
 } from '../lib/aiRequestPolicy.ts';
+import { boundTranscriptForPrompt } from '../lib/prompts.ts';
 import { admitSynchronousAiRequest } from '../services/aiAdmission.ts';
 import { runDreamAnalysis } from '../services/dreamAnalysis.ts';
 
@@ -60,28 +59,6 @@ type AnalyzeDreamBody = {
   dreamId?: number | string | null;
   analysisRequestId?: string | null;
   requestId?: string | null;
-};
-
-const parseDreamTextInput = (
-  body: AnalyzeDreamBody
-): { transcript: string; lang: string } | Response => {
-  const transcript = validateBoundedText(body?.transcript, {
-    field: 'transcript',
-    maxChars: AI_REQUEST_LIMITS.transcriptChars,
-  });
-  if (!transcript.ok) return aiInputErrorResponse(transcript);
-
-  const language = validateBoundedText(body?.lang, {
-    field: 'lang',
-    maxChars: AI_REQUEST_LIMITS.languageChars,
-    required: false,
-  });
-  if (!language.ok) return aiInputErrorResponse(language);
-
-  return {
-    transcript: transcript.value,
-    lang: normalizeAiLanguage(language.value || 'en'),
-  };
 };
 
 const validateAnalysisRequestId = (body: AnalyzeDreamBody): Response | null => {
@@ -311,6 +288,7 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
     const invalidRequestId = validateAnalysisRequestId(body);
     if (invalidRequestId) return invalidRequestId;
     const { transcript, lang } = parsedInput;
+    const promptTranscript = boundTranscriptForPrompt(transcript).text;
     const fingerprint = guestCheck.fingerprint;
 
     const admission = await admitSynchronousAiRequest({
@@ -392,7 +370,7 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       quotaUsed = { analysis: toCount((quotaResult as any)?.new_count) };
     }
 
-    const analysis = await runDreamAnalysis({ apiKey, transcript, lang, route: '/analyzeDream' });
+    const analysis = await runDreamAnalysis({ apiKey, transcript: promptTranscript, lang, route: '/analyzeDream' });
 
     console.log('[api] /analyzeDream success', {
       titleLength: analysis.title.length,
@@ -430,6 +408,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
     const invalidRequestId = validateAnalysisRequestId(body);
     if (invalidRequestId) return invalidRequestId;
     const { transcript, lang } = parsedInput;
+    const promptTranscript = boundTranscriptForPrompt(transcript).text;
 
     const admission = await admitSynchronousAiRequest({
       ctx,
@@ -462,7 +441,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
     const quotaUsed = quotaClaim.quotaUsed;
     const imageModel = resolveImageModel(quotaClaim.tier);
 
-    const analysis = await runDreamAnalysis({ apiKey, transcript, lang, route: '/analyzeDreamFull' });
+    const analysis = await runDreamAnalysis({ apiKey, transcript: promptTranscript, lang, route: '/analyzeDreamFull' });
     const imagePrompt = analysis.imagePrompt;
 
     const { imageBase64, mimeType } = await generateImageFromPrompt({
@@ -538,6 +517,7 @@ export async function handleCategorizeDream(ctx: ApiContext): Promise<Response> 
     const parsedInput = parseDreamTextInput(body);
     if (parsedInput instanceof Response) return parsedInput;
     const { transcript, lang } = parsedInput;
+    const promptTranscript = boundTranscriptForPrompt(transcript).text;
 
     const admission = await admitSynchronousAiRequest({
       ctx,
@@ -562,7 +542,7 @@ export async function handleCategorizeDream(ctx: ApiContext): Promise<Response> 
 "hasPerson": true if the dream mentions any person (self, friend, stranger, family member, character, figure, etc.), false otherwise
 "hasAnimal": true if the dream mentions any animal (pet, wild animal, creature, bird, mythical being, etc.), false otherwise
 
-Dream transcript:\n${transcript}`;
+Dream transcript:\n${promptTranscript}`;
 
     const liteModel = resolveTextModel('GEMINI_LITE_MODEL', GEMINI_FLASH_LITE_MODEL);
     const { text } = await callGeminiWithFallback(

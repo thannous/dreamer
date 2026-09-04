@@ -12,10 +12,22 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSavedDreams } from '@/services/storageServiceReal';
 import { getAnalyzedDreamCount, getExploredDreamCount } from '@/lib/dreamUsage';
+import { countAiGeneratedImages } from './imageUsage';
 
 const ANALYSIS_KEY = 'guest_total_analysis_count_v1';
 const EXPLORATION_KEY = 'guest_total_exploration_count_v1';
+const IMAGE_KEY = 'guest_total_image_count_v1';
+const IMAGE_LEDGER_KEY = 'guest_total_image_ledger_v1';
 const MIGRATION_KEY = 'guest_quota_migrated_v1';
+const MAX_CLAIMED_IMAGE_JOB_IDS = 64;
+
+type GuestQuotaCountType = 'analysis' | 'exploration' | 'image';
+
+const COUNT_KEYS: Record<GuestQuotaCountType, string> = {
+  analysis: ANALYSIS_KEY,
+  exploration: EXPLORATION_KEY,
+  image: IMAGE_KEY,
+};
 
 /**
  * Safely parse an integer from storage, returning 0 for invalid/corrupted values
@@ -24,6 +36,69 @@ function safeParseInt(val: string | null): number {
   if (!val) return 0;
   const parsed = parseInt(val, 10);
   return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+type GuestImageLedger = {
+  count: number;
+  claimedJobIds: string[];
+};
+
+let imageLedgerLock: Promise<void> = Promise.resolve();
+
+async function withImageLedgerLock<T>(fn: () => Promise<T>): Promise<T> {
+  const run = imageLedgerLock.then(fn, fn);
+  imageLedgerLock = run.then(
+    () => undefined,
+    () => undefined
+  );
+  return run;
+}
+
+function parseImageLedger(raw: string | null): GuestImageLedger | null {
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as { count?: unknown; claimedJobIds?: unknown };
+    const claimedJobIds = Array.isArray(parsed.claimedJobIds)
+      ? parsed.claimedJobIds.filter((value): value is string => typeof value === 'string' && value.length > 0)
+      : [];
+    return {
+      count: Math.max(0, safeParseInt(typeof parsed.count === 'number' ? String(parsed.count) : String(parsed.count ?? ''))),
+      claimedJobIds,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function boundClaimedImageJobIds(jobIds: string[]): string[] {
+  if (jobIds.length <= MAX_CLAIMED_IMAGE_JOB_IDS) return jobIds;
+  return jobIds.slice(jobIds.length - MAX_CLAIMED_IMAGE_JOB_IDS);
+}
+
+async function readImageLedgerState(): Promise<GuestImageLedger> {
+  const [ledgerRaw, legacyRaw] = await Promise.all([
+    AsyncStorage.getItem(IMAGE_LEDGER_KEY),
+    AsyncStorage.getItem(IMAGE_KEY),
+  ]);
+  const ledger = parseImageLedger(ledgerRaw);
+  const legacyCount = safeParseInt(legacyRaw);
+  return {
+    count: Math.max(ledger?.count ?? 0, legacyCount),
+    claimedJobIds: ledger?.claimedJobIds ?? [],
+  };
+}
+
+async function persistImageLedger(next: GuestImageLedger): Promise<void> {
+  const ledger: GuestImageLedger = {
+    count: next.count,
+    claimedJobIds: boundClaimedImageJobIds(next.claimedJobIds),
+  };
+  await AsyncStorage.setItem(IMAGE_LEDGER_KEY, JSON.stringify(ledger));
+  try {
+    await AsyncStorage.setItem(IMAGE_KEY, String(ledger.count));
+  } catch (error) {
+    console.warn('[GuestAnalysisCounter] Failed to mirror legacy image count:', error);
+  }
 }
 
 /**
@@ -48,6 +123,18 @@ export async function getLocalExplorationCount(): Promise<number> {
     return safeParseInt(val);
   } catch (error) {
     console.warn('[GuestAnalysisCounter] Failed to get exploration count:', error);
+    return 0;
+  }
+}
+
+/**
+ * Get the local illustration count (separate from analysis)
+ */
+export async function getLocalImageCount(): Promise<number> {
+  try {
+    return (await readImageLedgerState()).count;
+  } catch (error) {
+    console.warn('[GuestAnalysisCounter] Failed to get image count:', error);
     return 0;
   }
 }
@@ -85,6 +172,44 @@ export async function incrementLocalExplorationCount(): Promise<number> {
 }
 
 /**
+ * Increment the local illustration count.
+ * Idempotent per image job so guest reconciles/rerenders cannot reopen quota.
+ * @returns The new count after incrementing
+ */
+export async function incrementLocalImageCount(claim?: {
+  jobId?: string | null;
+}): Promise<number> {
+  return withImageLedgerLock(async () => {
+    try {
+      const jobId = claim?.jobId?.trim() || '';
+      const current = await readImageLedgerState();
+      if (jobId && current.claimedJobIds.includes(jobId)) {
+        const legacyRaw = await AsyncStorage.getItem(IMAGE_KEY);
+        const legacyCount = safeParseInt(legacyRaw);
+        if (legacyRaw == null || legacyCount < current.count) {
+          try {
+            await AsyncStorage.setItem(IMAGE_KEY, String(current.count));
+          } catch (error) {
+            console.warn('[GuestAnalysisCounter] Failed to repair legacy image count:', error);
+          }
+        }
+        return current.count;
+      }
+
+      const next: GuestImageLedger = {
+        count: current.count + 1,
+        claimedJobIds: jobId ? [...current.claimedJobIds, jobId] : current.claimedJobIds,
+      };
+      await persistImageLedger(next);
+      return next.count;
+    } catch (error) {
+      console.warn('[GuestAnalysisCounter] Failed to increment image count:', error);
+      throw error;
+    }
+  });
+}
+
+/**
  * Sync local count with server count, taking the maximum to prevent discrepancies
  * This is called when we receive the server's count and want to ensure our local
  * count is at least as high.
@@ -95,12 +220,26 @@ export async function incrementLocalExplorationCount(): Promise<number> {
  */
 export async function syncWithServerCount(
   serverCount: number,
-  type: 'analysis' | 'exploration'
+  type: GuestQuotaCountType
 ): Promise<number> {
   try {
-    const key = type === 'analysis' ? ANALYSIS_KEY : EXPLORATION_KEY;
+    if (type === 'image') {
+      return withImageLedgerLock(async () => {
+        const current = await readImageLedgerState();
+        const maxCount = Math.max(current.count, serverCount);
+        if (maxCount !== current.count) {
+          await persistImageLedger({ ...current, count: maxCount });
+          console.log(`[GuestAnalysisCounter] Synced image count: local=${current.count}, server=${serverCount}, result=${maxCount}`);
+        }
+        return maxCount;
+      });
+    }
+
+    const key = COUNT_KEYS[type];
     const local =
-      type === 'analysis' ? await getLocalAnalysisCount() : await getLocalExplorationCount();
+      type === 'analysis'
+        ? await getLocalAnalysisCount()
+        : await getLocalExplorationCount();
 
     const maxCount = Math.max(local, serverCount);
     await AsyncStorage.setItem(key, String(maxCount));
@@ -134,6 +273,7 @@ export async function migrateExistingGuestQuota(): Promise<void> {
     const dreams = await getSavedDreams();
     const analysisCount = getAnalyzedDreamCount(dreams);
     const explorationCount = getExploredDreamCount(dreams);
+    const imageCount = countAiGeneratedImages(dreams);
 
     // Initialize counters if there's existing usage
     if (analysisCount > 0) {
@@ -144,6 +284,11 @@ export async function migrateExistingGuestQuota(): Promise<void> {
     if (explorationCount > 0) {
       await AsyncStorage.setItem(EXPLORATION_KEY, String(explorationCount));
       console.log(`[GuestAnalysisCounter] Migrated exploration count: ${explorationCount}`);
+    }
+
+    if (imageCount > 0) {
+      await persistImageLedger({ count: imageCount, claimedJobIds: [] });
+      console.log(`[GuestAnalysisCounter] Migrated image count: ${imageCount}`);
     }
 
     // Mark migration as complete
@@ -157,5 +302,11 @@ export async function migrateExistingGuestQuota(): Promise<void> {
 
 /** Clears local compatibility counters before a server-authorized QA guest run. */
 export async function resetGuestAnalysisQuotaForQa(): Promise<void> {
-  await AsyncStorage.multiRemove([ANALYSIS_KEY, EXPLORATION_KEY, MIGRATION_KEY]);
+  await AsyncStorage.multiRemove([
+    ANALYSIS_KEY,
+    EXPLORATION_KEY,
+    IMAGE_KEY,
+    IMAGE_LEDGER_KEY,
+    MIGRATION_KEY,
+  ]);
 }

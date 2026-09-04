@@ -1,0 +1,59 @@
+# Release Write/Tell gate: the two capture modes share one draft and remain
+# switchable without losing the typed fragment.
+appId: ${APP_ID || "com.tanuki75.noctalia"}
+name: Release Write Tell shared draft
+tags:
+  - release
+  - capture
+  - write
+  - tell
+onFlowComplete:
+  - setAirplaneMode: disabled
+---
+- setAirplaneMode: disabled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 20000
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
+
+- assertVisible:
+    id: btn.recording.inputMode.text
+- assertVisible:
+    id: btn.recording.inputMode.voice
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Write tell shared sentinel"
+- hideKeyboard
+- tapOn:
+    id: btn.recording.inputMode.voice
+- extendedWaitUntil:
+    visible:
+      id: text.recording.inputMode.voice
+    timeout: 10000
+- assertVisible: "Write tell shared sentinel"
+- tapOn:
+    id: btn.recording.inputMode.text
+- extendedWaitUntil:
+    visible:
+      id: input.dreamTranscript
+    timeout: 10000
+- assertVisible: "Write tell shared sentinel"
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+- assertVisible: "Write tell shared sentinel"
+- takeScreenshot: ti429-write-tell-saved

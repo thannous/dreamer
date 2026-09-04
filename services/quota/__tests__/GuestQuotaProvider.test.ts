@@ -11,6 +11,7 @@ const { mockGetDreams, mockLocalCounterConfig } = ((factory: any) => factory())(
   mockLocalCounterConfig: {
     analysisCount: 0,
     explorationCount: 0,
+    imageCount: 0,
   },
 }));
 
@@ -23,6 +24,7 @@ jest.mock('../../storageServiceReal', () => ({
 jest.mock('../GuestAnalysisCounter', () => ({
   getLocalAnalysisCount: () => Promise.resolve(mockLocalCounterConfig.analysisCount),
   getLocalExplorationCount: () => Promise.resolve(mockLocalCounterConfig.explorationCount),
+  getLocalImageCount: () => Promise.resolve(mockLocalCounterConfig.imageCount),
 }));
 
 const buildDream = (overrides: Partial<DreamAnalysis>): DreamAnalysis => ({
@@ -48,6 +50,7 @@ describe('GuestQuotaProvider', () => {
     // Reset local counter config
     mockLocalCounterConfig.analysisCount = 0;
     mockLocalCounterConfig.explorationCount = 0;
+    mockLocalCounterConfig.imageCount = 0;
   });
 
   afterEach(() => {
@@ -336,6 +339,36 @@ describe('GuestQuotaProvider', () => {
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
       expect(status.reasons).toBeUndefined();
+    });
+
+    it('given analysis exhausted and illustration remaining when getting status then allows image only', async () => {
+      mockLocalCounterConfig.analysisCount = 2;
+      mockLocalCounterConfig.imageCount = 1;
+      mockGetDreams.mockResolvedValueOnce([]);
+
+      const provider = new GuestQuotaProvider();
+      const status = await provider.getQuotaStatus(null, 'guest');
+
+      expect(status.canAnalyze).toBe(false);
+      expect(status.canGenerateImage).toBe(true);
+      expect(status.usage.image).toEqual({ used: 1, limit: 2, remaining: 1 });
+      expect(await provider.canGenerateImage(null, 'guest')).toBe(true);
+    });
+
+    it('given illustration exhausted and analysis remaining when getting status then denies image only', async () => {
+      mockLocalCounterConfig.analysisCount = 1;
+      mockLocalCounterConfig.imageCount = 2;
+      mockGetDreams.mockResolvedValueOnce([]);
+
+      const provider = new GuestQuotaProvider();
+      const status = await provider.getQuotaStatus(null, 'guest');
+
+      expect(status.canAnalyze).toBe(true);
+      expect(status.canGenerateImage).toBe(false);
+      expect(status.usage.image).toEqual({ used: 2, limit: 2, remaining: 0 });
+      expect(status.reasons?.some((reason) => /illustration/i.test(reason))).toBe(true);
+      expect(status.reasons?.some((reason) => /interpretation/i.test(reason))).toBe(false);
+      expect(await provider.canGenerateImage(null, 'guest')).toBe(false);
     });
 
     it('given guest with legacy exploration usage when getting status then does not expose an exploration limit', async () => {

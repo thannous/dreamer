@@ -464,6 +464,8 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.usage.messages.used).toBe(2);
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
+      expect(status.canGenerateImage).toBe(false);
+      expect(status.usage.image).toEqual({ used: 0, limit: 0, remaining: 0 });
     });
 
     it('given plus tier when getting status then shows unlimited interpretations and the chat safety limit', async () => {
@@ -483,6 +485,8 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.usage.messages.limit).toBe(20);
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
+      expect(status.canGenerateImage).toBe(true);
+      expect(status.usage.image?.limit).toBeNull();
     });
 
     it('given limits exceeded when getting status then includes reasons', async () => {
@@ -836,6 +840,8 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.usage.messages.used).toBe(2);
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
+      expect(status.canGenerateImage).toBe(false);
+      expect(status.usage.image).toEqual({ used: 0, limit: 0, remaining: 0 });
     });
 
     it('given plus tier when getting status then shows unlimited interpretations and the chat safety limit', async () => {
@@ -855,6 +861,8 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.usage.messages.limit).toBe(20);
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
+      expect(status.canGenerateImage).toBe(true);
+      expect(status.usage.image?.limit).toBeNull();
     });
 
     it('given limits exceeded when getting status then includes reasons', async () => {
@@ -953,6 +961,32 @@ describe('SupabaseQuotaProvider', () => {
         p_target_dream_id: 77,
       });
       expect(from).not.toHaveBeenCalled();
+      expect(status.canGenerateImage).toBe(true);
+      expect(status.usage.image?.limit).toBeNull();
+    });
+
+    it('does not turn a missing image field into a free monthly illustration credit', async () => {
+      const rpc = jest.fn().mockResolvedValue({
+        data: {
+          tier: 'free',
+          usage: {
+            analysis: { used: 1, limit: 3, remaining: 2 },
+            exploration: { used: 0, limit: null, remaining: null },
+            messages: { used: 0, limit: 10, remaining: 10 },
+          },
+          canAnalyze: true,
+          canExplore: true,
+        },
+        error: null,
+      });
+      (supabase as any).rpc = rpc;
+
+      const status = await provider.getQuotaStatus(freeUser, 'free');
+
+      expect(status.canAnalyze).toBe(true);
+      expect(status.canGenerateImage).toBe(false);
+      expect(status.usage.image).toEqual({ used: 0, limit: 0, remaining: 0 });
+      expect(await provider.canGenerateImage(freeUser, 'free')).toBe(false);
     });
   });
 });

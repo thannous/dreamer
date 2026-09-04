@@ -18,10 +18,18 @@ const emptyStateKeys = [
 ] as const;
 
 const filterAccessibilityKeys = [
+  'journal.filter.all',
+  'journal.filter.favorites',
+  'journal.filter.to_deepen',
+  'journal.filter.remembered',
+  'journal.filter.recurring',
   'journal.filter.analyzed',
   'journal.filter.explored',
   'journal.filter.more',
   'journal.filter.more_count',
+  'journal.filter.accessibility.all',
+  'journal.filter.accessibility.favorites',
+  'journal.filter.accessibility.to_deepen',
   'journal.filter.accessibility.analyzed',
   'journal.filter.accessibility.explored',
   'journal.filter.accessibility.more',
@@ -32,6 +40,12 @@ const advancedFilterSheetKeys = [
   'journal.filter_sheet.title',
   'journal.filter_sheet.theme_section',
   'journal.filter_sheet.type_section',
+  'journal.filter_sheet.memory_section',
+  'journal.filter_sheet.status_section',
+  'journal.filter_sheet.status.all',
+  'journal.filter_sheet.status.unanalyzed',
+  'journal.filter_sheet.status.analyzed',
+  'journal.filter_sheet.status.explored',
   'journal.filter_sheet.empty_themes',
   'journal.filter_sheet.empty_types',
 ] as const;
@@ -56,8 +70,16 @@ const detailActionKeys = [
   'journal.detail.backup_prompt.message',
   'journal.detail.backup_prompt.cta',
   'journal.detail.zone.memory',
+  'journal.detail.zone.dream',
   'journal.detail.zone.reading',
+  'journal.detail.zone.reflection',
   'journal.detail.zone.actions',
+  'journal.detail.explore_button.new',
+  'journal.detail.explore_button.continue',
+  'journal.detail.reflection_header',
+  'journal.detail.stale.label',
+  'journal.detail.stale.banner',
+  'journal.detail.stale.cta',
 ] as const;
 
 describe('Journal i18n - badges & filter accessibility', () => {
@@ -142,6 +164,148 @@ describe('Journal i18n - badges & filter accessibility', () => {
     expect(getTranslator('fr')('journal.detail.backup_prompt.message')).toBe(
       'Créez un compte gratuit après votre première analyse pour sauvegarder votre journal et y accéder à vie.',
     );
+  });
+
+  it('labels the three dream-detail zones and the reflection journey in every language', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    const expected = {
+      en: {
+        dream: 'My dream',
+        reading: 'Noctalia analysis',
+        reflection: 'My reflection',
+        start: 'Start my reflection',
+        continue: 'Continue my reflection',
+      },
+      fr: {
+        dream: 'Mon rêve',
+        reading: 'Analyse Noctalia',
+        reflection: 'Ma réflexion',
+        start: 'Commencer ma réflexion',
+        continue: 'Continuer ma réflexion',
+      },
+      es: {
+        dream: 'Mi sueño',
+        reading: 'Análisis Noctalia',
+        reflection: 'Mi reflexión',
+        start: 'Empezar mi reflexión',
+        continue: 'Continuar mi reflexión',
+      },
+      de: {
+        dream: 'Mein Traum',
+        reading: 'Noctalia-Analyse',
+        reflection: 'Meine Reflexion',
+        start: 'Meine Reflexion beginnen',
+        continue: 'Meine Reflexion fortsetzen',
+      },
+      it: {
+        dream: 'Il mio sogno',
+        reading: 'Analisi Noctalia',
+        reflection: 'La mia riflessione',
+        start: 'Inizia la mia riflessione',
+        continue: 'Continua la mia riflessione',
+      },
+      pt: {
+        dream: 'Meu sonho',
+        reading: 'Análise Noctalia',
+        reflection: 'Minha reflexão',
+        start: 'Começar a minha reflexão',
+        continue: 'Continuar a minha reflexão',
+      },
+    } as const;
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+      const copy = expected[lang];
+      expect(t('journal.detail.zone.dream')).toBe(copy.dream);
+      expect(t('journal.detail.zone.reading')).toBe(copy.reading);
+      expect(t('journal.detail.zone.reflection')).toBe(copy.reflection);
+      expect(t('journal.detail.explore_button.new')).toBe(copy.start);
+      expect(t('journal.detail.explore_button.continue')).toBe(copy.continue);
+      expect(t('journal.detail.action.explore.title').toLowerCase()).not.toMatch(/explor/);
+      expect(t('journal.detail.action.continue.title').toLowerCase()).not.toMatch(/explor/);
+      expect(t('journal.detail.explore_button.new').toLowerCase()).not.toMatch(/explor|analiz|analys/);
+      expect(t('journal.detail.explore_button.continue').toLowerCase()).not.toMatch(/explor|analiz|analys/);
+    }
+  });
+
+  it('keeps analysis as the first action and names post-analysis status as reflection, not exploration', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    const expected = {
+      en: {
+        analyze: 'Analyze this dream',
+        reading: 'Noctalia analysis',
+        badge: 'Deepened',
+        filter: 'Deepened',
+        atlas: 'Deepen',
+        toDeepen: 'To deepen',
+      },
+      fr: {
+        analyze: 'Analyser ce rêve',
+        reading: 'Analyse Noctalia',
+        badge: 'Approfondi',
+        filter: 'Approfondis',
+        atlas: 'Approfondir',
+        toDeepen: 'À approfondir',
+      },
+      es: {
+        analyze: 'Analizar este sueño',
+        reading: 'Análisis Noctalia',
+        badge: 'Profundizado',
+        filter: 'Profundizados',
+        atlas: 'Profundizar',
+        toDeepen: 'Por profundizar',
+      },
+      de: {
+        analyze: 'Diesen Traum analysieren',
+        reading: 'Noctalia-Analyse',
+        badge: 'Vertieft',
+        filter: 'Vertieft',
+        atlas: 'Vertiefen',
+        toDeepen: 'Vertiefen',
+      },
+      it: {
+        analyze: 'Analizza questo sogno',
+        reading: 'Analisi Noctalia',
+        badge: 'Approfondito',
+        filter: 'Approfonditi',
+        atlas: 'Approfondisci',
+        toDeepen: 'Da approfondire',
+      },
+      pt: {
+        analyze: 'Analisar este sonho',
+        reading: 'Análise Noctalia',
+        badge: 'Aprofundado',
+        filter: 'Aprofundados',
+        atlas: 'Aprofundar',
+        toDeepen: 'A aprofundar',
+      },
+    } as const;
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+      const copy = expected[lang];
+      expect(t('journal.detail.analyze_button.default')).toBe(copy.analyze);
+      expect(t('journal.detail.zone.reading')).toBe(copy.reading);
+      expect(t('journal.badge.explored')).toBe(copy.badge);
+      expect(t('journal.filter.explored')).toBe(copy.filter);
+      expect(t('journal.filter_sheet.status.explored')).toBe(copy.filter);
+      expect(t('journal.atlas.action.explore')).toBe(copy.atlas);
+      expect(t('journal.atlas.filter.to_explore')).toBe(copy.toDeepen);
+      expect(t('journal.filter.to_deepen')).toBe(copy.toDeepen);
+
+      for (const key of [
+        'journal.badge.explored',
+        'journal.filter.explored',
+        'journal.filter.accessibility.explored',
+        'journal.filter_sheet.status.explored',
+        'journal.atlas.filter.to_explore',
+        'journal.atlas.action.explore',
+      ] as const) {
+        expect(t(key).toLowerCase()).not.toMatch(/explor|erkund|erforsch|esplor/);
+      }
+    }
   });
 });
 
@@ -242,7 +406,7 @@ describe('getTranslator replacement functionality', () => {
     const result = t('nav.home');
 
     // Then
-    expect(result).toBe('Home');
+    expect(result).toBe('Today');
   });
 
   it('given region-specific language when translating then normalizes to base language', async () => {
@@ -264,8 +428,8 @@ describe('getTranslator replacement functionality', () => {
     ];
 
     // Then
-    expect(resultFr).toBe('Accueil');
-    expect(resultEs).toBe('Inicio');
-    expect(resultPt).toEqual(['Início', 'Diário', 'Registrar', 'Dados', 'Ajustes']);
+    expect(resultFr).toBe('Aujourd’hui');
+    expect(resultEs).toBe('Hoy');
+    expect(resultPt).toEqual(['Hoje', 'Diário', 'Registrar', 'Tendências', 'Ajustes']);
   });
 });

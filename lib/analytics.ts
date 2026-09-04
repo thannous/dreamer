@@ -87,6 +87,10 @@ export type AnalyticsEventMap = {
   empty_journal_remembered_cta_clicked: {
     source: 'journal_empty_state';
   };
+  journal_layout_preference_changed: {
+    from: 'cards' | 'compact';
+    to: 'cards' | 'compact';
+  };
   onboarding_choice_selected: {
     surface: 'app_onboarding';
     step: 'intro' | 'path';
@@ -180,6 +184,39 @@ export type AnalyticsEventMap = {
     surface: 'journal_detail' | 'home';
     action: 'enabled' | 'dismissed' | 'denied';
     time_bucket: ReminderTimeBucket;
+  };
+  home_today_viewed: {
+    state:
+      | 'draft_resume'
+      | 'empty'
+      | 'capture_due'
+      | 'continue_today'
+      | 'optional_deepen'
+      | 'rest';
+    reason:
+      | 'saved_draft'
+      | 'first_use'
+      | 'no_dream_today'
+      | 'today_dream_unanalyzed'
+      | 'today_dream_unexplored'
+      | 'today_complete';
+  };
+  home_today_cta_clicked: {
+    state:
+      | 'draft_resume'
+      | 'empty'
+      | 'capture_due'
+      | 'continue_today'
+      | 'optional_deepen'
+      | 'rest';
+    reason:
+      | 'saved_draft'
+      | 'first_use'
+      | 'no_dream_today'
+      | 'today_dream_unanalyzed'
+      | 'today_dream_unexplored'
+      | 'today_complete';
+    action: 'resume_recording' | 'start_capture' | 'open_dream' | 'open_journal';
   };
 };
 

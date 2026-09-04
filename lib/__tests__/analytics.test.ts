@@ -96,6 +96,28 @@ describe('analytics', () => {
     ]);
   });
 
+  it('tracks journal layout preference changes with from/to only', async () => {
+    process.env.EXPO_PUBLIC_MOCK_MODE = 'false';
+    const events: { name: AnalyticsEventName; properties: unknown }[] = [];
+    setAnalyticsProvider({
+      track: async (name, properties) => {
+        events.push({ name, properties });
+      },
+    });
+
+    await trackProductEvent('journal_layout_preference_changed', {
+      from: 'cards',
+      to: 'compact',
+    });
+
+    expect(events).toEqual([
+      {
+        name: 'journal_layout_preference_changed',
+        properties: { from: 'cards', to: 'compact' },
+      },
+    ]);
+  });
+
   it('no-ops safely without a provider or in mock mode', async () => {
     process.env.EXPO_PUBLIC_MOCK_MODE = 'false';
     await expect(trackProductEvent('paywall_viewed', {
@@ -219,5 +241,33 @@ describe('analytics', () => {
         raw_payload: '[redacted]',
       })
     );
+  });
+
+  it('tracks Accueil Aujourd’hui view and CTA events without identifiers', async () => {
+    process.env.EXPO_PUBLIC_MOCK_MODE = 'false';
+    const events: { name: AnalyticsEventName; properties: unknown }[] = [];
+    setAnalyticsProvider({
+      track: async (name, properties) => {
+        events.push({ name, properties });
+      },
+    });
+
+    await trackProductEvent('home_today_viewed', {
+      state: 'empty',
+      reason: 'first_use',
+    });
+    await trackProductEvent('home_today_cta_clicked', {
+      state: 'draft_resume',
+      reason: 'saved_draft',
+      action: 'resume_recording',
+    });
+
+    expect(events).toEqual([
+      { name: 'home_today_viewed', properties: { state: 'empty', reason: 'first_use' } },
+      {
+        name: 'home_today_cta_clicked',
+        properties: { state: 'draft_resume', reason: 'saved_draft', action: 'resume_recording' },
+      },
+    ]);
   });
 });

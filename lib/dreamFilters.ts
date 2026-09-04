@@ -2,6 +2,9 @@ import { isDreamAnalyzed, isDreamExplored } from './dreamUsage';
 import { normalizeDreamMemoryMetadata } from './dreamUtils';
 import type { DreamAnalysis, DreamTheme, DreamType } from './types';
 
+export type JournalQuickFilter = 'all' | 'favorites' | 'to_deepen';
+export type JournalAnalysisStatusFilter = 'unanalyzed' | 'analyzed' | 'explored';
+
 export interface FilterBySearchOptions {
   dreamTypeLabelResolver?: (dreamType: DreamType | null | undefined) => string | undefined;
   dreamMemoryLabelResolver?: (
@@ -86,6 +89,26 @@ function matchesSearch(
 export function isRememberedDream(dream: Pick<DreamAnalysis, 'memory'>): boolean {
   const memory = normalizeDreamMemoryMetadata(dream.memory);
   return Boolean(memory);
+}
+
+export function isRecurringDream(dream: Pick<DreamAnalysis, 'dreamType' | 'memory'>): boolean {
+  if (dream.dreamType === 'Recurring Dream') return true;
+  const memory = normalizeDreamMemoryMetadata(dream.memory);
+  return memory?.recurring === true || memory?.rememberedKind === 'recurring';
+}
+
+export function isDreamToDeepen(dream: DreamAnalysis): boolean {
+  return isDreamAnalyzed(dream) && !isDreamExplored(dream);
+}
+
+export function matchesAnalysisStatusFilter(
+  dream: DreamAnalysis,
+  status: JournalAnalysisStatusFilter | null | undefined,
+): boolean {
+  if (!status) return true;
+  if (status === 'unanalyzed') return !isDreamAnalyzed(dream);
+  if (status === 'analyzed') return isDreamAnalyzed(dream);
+  return isDreamExplored(dream);
 }
 
 function getDreamMemorySearchFields(
@@ -195,6 +218,9 @@ export interface DreamFilters {
   analyzedOnly?: boolean;
   exploredOnly?: boolean;
   rememberedOnly?: boolean;
+  needsExplorationOnly?: boolean;
+  analysisStatus?: JournalAnalysisStatusFilter | null;
+  recurringOnly?: boolean;
 }
 
 export interface ApplyFiltersOptions {
@@ -216,6 +242,9 @@ export function applyFilters(
     analyzedOnly,
     exploredOnly,
     rememberedOnly,
+    needsExplorationOnly,
+    analysisStatus,
+    recurringOnly,
     theme,
     dreamType,
     startDate,
@@ -230,6 +259,9 @@ export function applyFilters(
     !analyzedOnly &&
     !exploredOnly &&
     !rememberedOnly &&
+    !needsExplorationOnly &&
+    !analysisStatus &&
+    !recurringOnly &&
     !theme &&
     !dreamType &&
     !startDate &&
@@ -261,6 +293,18 @@ export function applyFilters(
     }
 
     if (rememberedOnly && !isRememberedDream(dream)) {
+      return false;
+    }
+
+    if (recurringOnly && !isRecurringDream(dream)) {
+      return false;
+    }
+
+    if (needsExplorationOnly && !isDreamToDeepen(dream)) {
+      return false;
+    }
+
+    if (!matchesAnalysisStatusFilter(dream, analysisStatus)) {
       return false;
     }
 

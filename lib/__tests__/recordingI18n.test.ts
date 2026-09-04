@@ -25,12 +25,9 @@ const frenchRecordingTutoiementKeys = [
   'recording.alert.offline_model.message',
   'recording.alert.limit.title',
   'recording.analysis_limit.assurance_guest',
-  'guest.limit.banner.hint',
-  'guest.limit.banner.reached',
   'guest.upsell.title',
   'guest.upsell.subtitle',
   'guest.upsell.benefit.unlimited',
-  'guest.upsell.after1.message',
   'guest.first_dream.sheet.subtitle',
 ] as const;
 
@@ -67,15 +64,6 @@ const analyzePromptSheetKeys = [
   'recording.memory_offer.view',
   'recording.memory_offer.analyze',
   'recording.memory_offer.later',
-] as const;
-
-const guestLimitSheetKeys = [
-  'recording.guest_limit_sheet.title',
-  'recording.guest_limit_sheet.message',
-  'recording.guest_limit_sheet.draft_title',
-  'recording.guest_limit_sheet.draft_message',
-  'recording.guest_limit_sheet.cta',
-  'recording.guest_limit_sheet.back_to_text',
 ] as const;
 
 const analysisLimitSheetKeys = [
@@ -118,6 +106,7 @@ const recordingStatusKeys = [
   'recording.status.fallback.no_speech',
   'recording.status.fallback.start_failed',
   'recording.status.retry_voice',
+  'recording.save.confirmation',
 ] as const;
 
 const recordingModeKeys = [
@@ -339,21 +328,6 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
-  it('has translations for guest-limit sheet in all supported languages', async () => {
-    await Promise.all(languages.map((lang) => loadTranslations(lang)));
-
-    for (const lang of languages) {
-      const t = getTranslator(lang);
-
-      for (const key of guestLimitSheetKeys) {
-        const value = t(key, { limit: 2 });
-        expect(value).not.toBe(key);
-        expect(typeof value).toBe('string');
-        expect(value.length).toBeGreaterThan(0);
-      }
-    }
-  });
-
   it('has translations for analysis-limit upsell sheet in all supported languages', async () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
@@ -399,6 +373,47 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
+  it('tells every locale that a short fragment is already saveable', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    const saveabilityByLocale: Record<(typeof languages)[number], RegExp> = {
+      en: /enough to save/i,
+      fr: /suffit pour enregistrer/i,
+      es: /ya se puede guardar/i,
+      de: /reicht zum speichern/i,
+      it: /basta per salvare/i,
+      pt: /suficiente para salvar/i,
+    };
+
+    for (const lang of languages) {
+      const value = getTranslator(lang)('recording.draft_progress.short');
+      expect(value).not.toBe('recording.draft_progress.short');
+      expect(value).toMatch(saveabilityByLocale[lang]);
+    }
+  });
+
+  it('shows an actual character count in every locale without a 600 limit', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    const countByLocale: Record<(typeof languages)[number], RegExp> = {
+      en: /^601 characters$/,
+      fr: /^601 caractères$/,
+      es: /^601 caracteres$/,
+      de: /^601 Zeichen$/,
+      it: /^601 caratteri$/,
+      pt: /^601 caracteres$/,
+    };
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+      expect(t('recording.draft_progress.full')).toBe('recording.draft_progress.full');
+      const value = t('recording.draft_progress.count', { count: 601 });
+      expect(value).toMatch(countByLocale[lang]);
+      expect(value).not.toContain('601/600');
+      expect(value).not.toContain('/600');
+    }
+  });
+
   it('has translations for first activation insight in all supported languages', async () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
@@ -441,6 +456,27 @@ describe('Recording i18n - bottom sheets', () => {
         expect(typeof value).toBe('string');
         expect(value.length).toBeGreaterThan(0);
       }
+    }
+  });
+
+  it('uses verbal Write/Tell labels instead of a hidden capture menu', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    const labels: Record<(typeof languages)[number], { text: string; voice: string }> = {
+      fr: { text: 'Écrire', voice: 'Raconter' },
+      en: { text: 'Write', voice: 'Tell' },
+      es: { text: 'Escribir', voice: 'Contar' },
+      de: { text: 'Schreiben', voice: 'Erzählen' },
+      it: { text: 'Scrivere', voice: 'Raccontare' },
+      pt: { text: 'Escrever', voice: 'Contar' },
+    };
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+      expect(t('recording.preference.text')).toBe(labels[lang].text);
+      expect(t('recording.preference.voice')).toBe(labels[lang].voice);
+      expect(t('recording.preference.accessibility')).not.toMatch(/hamburger|menu cach|hidden menu|réglages de capture|capture settings/i);
+      expect(t('recording.guide.step_mode')).not.toMatch(/haut à droite|top-right|superior derecho|oben rechts|alto a destra|canto superior direito/i);
     }
   });
 
@@ -499,6 +535,17 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
+  it('does not present guest recording as a two-dream cap', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const value = getTranslator(lang)('recording.alert.limit.message');
+      expect(value).toMatch(/unlimited|illimit|ilimit|unbegrenzt/i);
+      expect(value).not.toMatch(/up to \{limit\}|hasta \{limit\}|fino a \{limit\}|bis zu \{limit\}|at[eé] \{limit\}|jusqu.à \{limit\}/i);
+      expect(value).not.toMatch(/\{limit\}/);
+    }
+  });
+
   it('keeps the cited French recording journey in tutoiement', async () => {
     const translations = await loadTranslations('fr');
 
@@ -537,6 +584,25 @@ describe('Recording i18n - bottom sheets', () => {
         expect(typeof value).toBe('string');
         expect(value.length).toBeGreaterThan(0);
       }
+    }
+  });
+
+  it('tells every locale that a confirmed draft is saved on this device', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    const savedByLocale: Record<(typeof languages)[number], RegExp> = {
+      en: /draft saved on this device/i,
+      fr: /brouillon enregistré sur cet appareil/i,
+      es: /borrador guardado en este dispositivo/i,
+      de: /entwurf auf diesem gerät gespeichert/i,
+      it: /bozza salvata su questo dispositivo/i,
+      pt: /rascunho salvo neste dispositivo/i,
+    };
+
+    for (const lang of languages) {
+      const value = getTranslator(lang)('recording.draft_progress.saved_locally');
+      expect(value).not.toBe('recording.draft_progress.saved_locally');
+      expect(value).toMatch(savedByLocale[lang]);
     }
   });
 });

@@ -33,3 +33,5 @@ export const cancelAllNotifications = service.cancelAllNotifications;
 export const getScheduledNotifications = service.getScheduledNotifications;
 export const hasNotificationPermissions = service.hasNotificationPermissions;
 export const sendTestNotification = service.sendTestNotification;
+export const reconcileDreamerReminders = service.reconcileDreamerReminders;
+export const presentAnalysisReadyNotification = service.presentAnalysisReadyNotification;

@@ -173,16 +173,28 @@ export function useDreamPersistence({
     const unsynced = localDreams.filter((dream) => !dream.remoteId);
     if (!unsynced.length) return;
 
+    const remaining: typeof unsynced = [];
     for (const dream of unsynced) {
       const clientRequestId =
         dream.clientRequestId ?? (typeof dream.id === 'number' ? `dream-${dream.id}` : undefined);
-      await createDreamInSupabase(
-        clientRequestId ? { ...dream, clientRequestId } : dream,
-        userId // ✅ FIX: Use userId directly instead of user object
-      );
+      const dreamToSync = clientRequestId ? { ...dream, clientRequestId } : dream;
+      try {
+        await createDreamInSupabase(
+          dreamToSync,
+          userId // ✅ FIX: Use userId directly instead of user object
+        );
+      } catch (error) {
+        logger.warn('Guest dream migration failed for dream', dream.id, error);
+        remaining.push(dreamToSync);
+      }
     }
 
-    await saveDreams([]);
+    if (remaining.length === 0) {
+      await saveDreams([]);
+      return;
+    }
+
+    await saveDreams(remaining);
   }, [canUseRemoteSync, ensureAccessToken, userId]); // ✅ FIX: Depend on userId instead of full user object
 
   /**

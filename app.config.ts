@@ -5,6 +5,12 @@ const LUCID_EAS_PROJECT_ID = 'd210576f-5dc4-4f7a-a5e1-a407c209c3a2';
 const LUCID_MICROPHONE_PERMISSION =
   'Noctalia Lucid Trainer records a morning dream note on this device after you tap Speak. Audio stays local and is never uploaded or transcribed automatically.';
 
+export const DREAMER_QA_BUILD_ENV = 'NOCTALIA_DREAMER_QA_BUILD';
+export const DREAMER_QA_ANDROID_PACKAGE = 'com.tanuki75.noctalia.qa';
+export const DREAMER_QA_IOS_BUNDLE_IDENTIFIER = 'com.tanuki75.noctalia.qa';
+export const DREAMER_QA_APP_NAME = 'Noctalia QA';
+export const DREAMER_QA_SCHEME = 'noctalia-qa';
+
 function isLucidNativeMarker(value: string | undefined): boolean {
   if (value === undefined || value === '' || value === 'noctalia') return false;
   if (value === 'lucid') return true;
@@ -32,6 +38,54 @@ function resolveLucidBuildEnabled(): boolean {
   }
 
   return nativeLucid;
+}
+
+export function parseDreamerQaBuildMarker(value: string | undefined): boolean {
+  if (value === undefined || value === '' || value === '0') return false;
+  if (value === '1') return true;
+  throw new Error(
+    `[app.config] Unsupported ${DREAMER_QA_BUILD_ENV}: ${value}. Expected unset, 0, or 1.`
+  );
+}
+
+export function resolveDreamerQaBuildEnabled(
+  env: NodeJS.ProcessEnv = process.env
+): boolean {
+  return parseDreamerQaBuildMarker(env[DREAMER_QA_BUILD_ENV]);
+}
+
+export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
+  return {
+    ...baseExpo,
+    name: DREAMER_QA_APP_NAME,
+    scheme: DREAMER_QA_SCHEME,
+    ios: {
+      ...baseExpo.ios,
+      bundleIdentifier: DREAMER_QA_IOS_BUNDLE_IDENTIFIER,
+      associatedDomains: [],
+    },
+    android: {
+      ...baseExpo.android,
+      package: DREAMER_QA_ANDROID_PACKAGE,
+      intentFilters: [],
+    },
+    extra: {
+      ...baseExpo.extra,
+      eas: undefined,
+    },
+    updates: undefined,
+  };
+}
+
+function assertDreamerQaLucidConflict(
+  qaEnabled: boolean,
+  lucidEnabled: boolean
+): void {
+  if (qaEnabled && lucidEnabled) {
+    throw new Error(
+      '[app.config] Dreamer QA build cannot be combined with Lucid Trainer.'
+    );
+  }
 }
 
 function resolveLucidGooglePlugin(): NonNullable<ExpoConfig['plugins']> {
@@ -200,9 +254,16 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
 
 export default function resolveExpoConfig({ config }: ConfigContext): ExpoConfig {
   const baseExpo = config as ExpoConfig;
+  const qaEnabled = resolveDreamerQaBuildEnabled();
+  const lucidEnabled = resolveLucidBuildEnabled();
+  assertDreamerQaLucidConflict(qaEnabled, lucidEnabled);
 
-  if (resolveLucidBuildEnabled()) {
+  if (lucidEnabled) {
     return createLucidExpoConfig(baseExpo);
+  }
+
+  if (qaEnabled) {
+    return createDreamerQaExpoConfig(baseExpo);
   }
 
   return baseExpo;

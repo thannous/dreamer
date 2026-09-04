@@ -10,18 +10,18 @@ import { getRecordingDraftProgress } from '@/lib/recordingDraftProgress';
 
 type RecordingDraftProgressProps = {
   value: string;
+  persisted?: boolean;
 };
 
-export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
+export function RecordingDraftProgress({ value, persisted = false }: RecordingDraftProgressProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const progress = useMemo(() => getRecordingDraftProgress(value), [value]);
-  const countLabel = t('recording.draft_progress.count')
-    .replace('{count}', String(progress.charCount))
-    .replace('{limit}', String(progress.limit));
+  const countLabel = t('recording.draft_progress.count', { count: progress.charCount });
   const hint = t(`recording.draft_progress.${progress.state}`);
   const shouldShowHint = progress.state !== 'empty';
+  const savedLabel = persisted ? String(t('recording.draft_progress.saved_locally')) : null;
 
   return (
     <View
@@ -38,6 +38,14 @@ export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
           {countLabel}
         </Text>
       </View>
+      {savedLabel ? (
+        <Text
+          accessibilityLiveRegion="polite"
+          style={[styles.saved, { color: noctalia.text.secondary }]}
+        >
+          {savedLabel}
+        </Text>
+      ) : null}
       <View
         style={[
           styles.track,
@@ -74,6 +82,11 @@ const styles = StyleSheet.create({
   },
   hint: {
     flex: 1,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  saved: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
     lineHeight: 16,

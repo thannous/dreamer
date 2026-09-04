@@ -518,6 +518,9 @@ function RootLayoutNav({
       const isInStatistics =
         currentPath === '/statistics' ||
         currentPath === '/(tabs)/statistics';
+      const isInExplore =
+        currentPath === '/explore' ||
+        currentPath === '/(tabs)/explore';
       const isInOnboarding = currentPath === '/onboarding';
       const isInLucid = currentPath?.startsWith('/lucid');
       const isInJournalDetail =
@@ -564,6 +567,13 @@ function RootLayoutNav({
       if (isInStatistics) {
         if (__DEV__) {
           console.log('[RootLayoutNav] stay on statistics, skip redirect');
+        }
+        return;
+      }
+
+      if (isInExplore) {
+        if (__DEV__) {
+          console.log('[RootLayoutNav] stay on explore, skip redirect');
         }
         return;
       }
@@ -742,6 +752,7 @@ function RootLayoutNav({
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
             <Stack.Screen name="auth/reset-password" options={{ headerShown: false }} />
             <Stack.Screen name="weekly-recap" options={{ headerShown: false }} />
+            <Stack.Screen name="dev/voice-live-spike" options={{ headerShown: false }} />
           </Stack>
           <OfflineModelPromptHost />
           <EngagementRemindersHost />

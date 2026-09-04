@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const mockSetThemePreference = jest.fn();
@@ -148,17 +148,14 @@ describe('settings preference controllers', () => {
     expect(mockSetJournalLayoutPreference).toHaveBeenCalledWith('compact');
   });
 
-  it('replays the recording guide on the same route and params as the existing card', async () => {
+  it('does not replay the retired hamburger capture tour', async () => {
     const { result } = renderHook(() => useRecordingGuideAction());
 
     await act(async () => {
       await result.current.restart();
     });
 
-    expect(mockRouterPush).toHaveBeenCalledWith({
-      pathname: '/recording',
-      params: { replayGuide: '1' },
-    });
-    await waitFor(() => expect(result.current.saving).toBe(false));
+    expect(mockRouterPush).not.toHaveBeenCalled();
+    expect(result.current.saving).toBe(false);
   });
 });

@@ -53,6 +53,7 @@ const PRODUCT_ANALYTICS_EVENT_NAMES = new Set<AnalyticsEventName>([
   'first_value_viewed',
   'paywall_viewed',
   'empty_journal_remembered_cta_clicked',
+  'journal_layout_preference_changed',
   'onboarding_choice_selected',
   'stats_screen_viewed',
   'stats_period_selected',
@@ -70,6 +71,8 @@ const PRODUCT_ANALYTICS_EVENT_NAMES = new Set<AnalyticsEventName>([
   'restore_completed',
   'paywall_dismissed',
   'reminder_prompt_action',
+  'home_today_viewed',
+  'home_today_cta_clicked',
 ]);
 
 const FORBIDDEN_PROPERTY_KEYS = new Set([
@@ -179,6 +182,10 @@ const PRODUCT_ANALYTICS_PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySch
     offering_id: nullableIdentifier,
   },
   empty_journal_remembered_cta_clicked: { source: oneOf('journal_empty_state') },
+  journal_layout_preference_changed: {
+    from: oneOf('cards', 'compact'),
+    to: oneOf('cards', 'compact'),
+  },
   onboarding_choice_selected: {
     surface: oneOf('app_onboarding'),
     step: oneOf('intro', 'path'),
@@ -273,6 +280,29 @@ const PRODUCT_ANALYTICS_PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySch
     surface: oneOf('journal_detail', 'home'),
     action: oneOf('enabled', 'dismissed', 'denied'),
     time_bucket: oneOf('before_6', '6_7', '7_8', '8_9', 'after_9', 'unknown'),
+  },
+  home_today_viewed: {
+    state: oneOf('draft_resume', 'empty', 'capture_due', 'continue_today', 'optional_deepen', 'rest'),
+    reason: oneOf(
+      'saved_draft',
+      'first_use',
+      'no_dream_today',
+      'today_dream_unanalyzed',
+      'today_dream_unexplored',
+      'today_complete',
+    ),
+  },
+  home_today_cta_clicked: {
+    state: oneOf('draft_resume', 'empty', 'capture_due', 'continue_today', 'optional_deepen', 'rest'),
+    reason: oneOf(
+      'saved_draft',
+      'first_use',
+      'no_dream_today',
+      'today_dream_unanalyzed',
+      'today_dream_unexplored',
+      'today_complete',
+    ),
+    action: oneOf('resume_recording', 'start_capture', 'open_dream', 'open_journal'),
   },
 };
 

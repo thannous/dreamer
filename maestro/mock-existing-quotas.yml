@@ -3,9 +3,66 @@ appId: com.tanuki75.noctalia
 ---
 - runFlow: subflows/open-mock-app.yml
 - runFlow: subflows/select-existing-mock-profile.yml
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: screen.recording
+    commands:
+      - swipe:
+          start: 50%, 88%
+          end: 50%, 38%
+      - waitForAnimationToEnd
+      - tapOn:
+          id: tab.journal
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: btn.mockNav.settings
+    commands:
+      - tapOn:
+          id: btn.mockNav.settings
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateSettings
+    commands:
+      - tapOn:
+          id: btn.navigateSettings
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: btn.header.home.settings
+    commands:
+      - tapOn:
+          id: btn.header.home.settings
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: screen.journal
+      notVisible:
+        id: btn.header.home.settings
+    commands:
+      - tapOn:
+          id: tab.home
+      - waitForAnimationToEnd
+      - tapOn:
+          id: btn.header.home.settings
+      - waitForAnimationToEnd
 - scrollUntilVisible:
     element:
-      id: quota.explorationValue
+      id: quota.analysisValue
     direction: DOWN
     speed: 30
     visibilityPercentage: 60
@@ -13,26 +70,29 @@ appId: com.tanuki75.noctalia
     timeout: 30000
 - assertVisible:
     id: quota.analysisValue
-- assertVisible: "2 / 3"
-- assertVisible:
+- assertVisible: "5 / 3"
+- assertNotVisible:
     id: quota.explorationValue
-- assertVisible: "2 / 2"
+- assertNotVisible:
+    id: quota.imageValue
 - tapOn:
     id: tab.stats
 - waitForAnimationToEnd
-- swipe:
-    start: 50%, 78%
-    end: 50%, 28%
-- swipe:
-    start: 50%, 78%
-    end: 50%, 28%
-- swipe:
-    start: 50%, 78%
-    end: 50%, 28%
+- extendedWaitUntil:
+    visible:
+      id: trends.section.week
+    timeout: 20000
 - assertVisible:
-    id: stats.dreamsWithChat
+    id: trends.section.week
+- scrollUntilVisible:
+    element:
+      id: trends.section.patterns
+    direction: DOWN
 - assertVisible:
-    id: stats.analyzedDreams
+    id: trends.section.patterns
+- scrollUntilVisible:
+    element:
+      id: trends.section.evolution
+    direction: DOWN
 - assertVisible:
-    id: stats.totalChats
-- assertVisible: "2"
+    id: trends.section.evolution
