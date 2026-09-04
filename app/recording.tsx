@@ -149,7 +149,7 @@ export default function RecordingScreen() {
     setTranscript(savedTranscript);
     baseTranscriptRef.current = savedTranscript;
   }, []);
-  const { noteInput, clearAfterSuccessfulSave, lastPersistedValue } = useRecordingDraftPersistence({
+  const { noteInput, clearAfterSuccessfulSave, lastPersistedValue, isHydrated } = useRecordingDraftPersistence({
     transcript,
     onRestore: handleRestoreDraft,
   });
@@ -334,7 +334,7 @@ export default function RecordingScreen() {
     [handleOfflineModelSheetClose]
   );
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
-  const interactionDisabled = isPersisting;
+  const interactionDisabled = isPersisting || !isHydrated;
   const isCompactLandscape = viewportWidth > viewportHeight && viewportHeight < 600;
   const hasSaveableContent = isTranscriptSaveable(transcript);
   const isSaveDisabled = !hasSaveableContent || interactionDisabled;
@@ -407,6 +407,7 @@ export default function RecordingScreen() {
 
   const handleTranscriptChange = useCallback(
     (text: string) => {
+      if (!isHydrated || noteInput(text) !== true) return;
       lastInputSourceRef.current = 'text';
       if (!captureStartedTrackedRef.current && text.trim().length > 0) {
         captureStartedTrackedRef.current = true;
@@ -415,11 +416,10 @@ export default function RecordingScreen() {
           capture_context: captureIntent,
         });
       }
-      noteInput(text);
       setTranscript(text);
       baseTranscriptRef.current = text;
     },
-    [captureIntent, noteInput]
+    [captureIntent, isHydrated, noteInput]
   );
 
   const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
@@ -431,9 +431,10 @@ export default function RecordingScreen() {
       stopRecordingFromNativeEndRef.current?.();
     },
     onPartialTranscript: (text) => {
-      consecutiveEmptyHandsFreeRestartsRef.current = 0;
+      if (!isHydrated) return;
       const { text: combined } = combineTranscript(baseTranscriptRef.current, text);
-      noteInput(combined);
+      if (noteInput(combined) !== true) return;
+      consecutiveEmptyHandsFreeRestartsRef.current = 0;
       setTranscript(combined);
       baseTranscriptRef.current = combined;
     },
@@ -553,12 +554,12 @@ export default function RecordingScreen() {
   }, []);
 
   const handleClearTranscript = useCallback(() => {
-    noteInput('');
+    if (!isHydrated || noteInput('') !== true) return;
     setTranscript('');
     setLengthWarning('');
     setVoiceFallbackReason(null);
     baseTranscriptRef.current = '';
-  }, [noteInput]);
+  }, [isHydrated, noteInput]);
 
   const navigateToJournalDetail = useCallback((
     dreamId: string | number,
@@ -610,6 +611,7 @@ export default function RecordingScreen() {
   ) as 'android' | 'ios' | 'web';
 
   const applyStoppedTranscript = useCallback((transcriptText: string): boolean => {
+    if (!isHydrated) return false;
     const trimmed = transcriptText.trim();
     if (!trimmed) {
       return false;
@@ -635,18 +637,18 @@ export default function RecordingScreen() {
       log.debug('final very similar to base, using final (may have corrections)', {
         similarity: similarity.toFixed(2),
       });
-      noteInput(trimmed);
+      if (noteInput(trimmed) !== true) return false;
       baseTranscriptRef.current = trimmed;
       setTranscript(trimmed);
       return true;
     }
 
     const { text: combined } = combineTranscript(baseTranscriptRef.current, trimmed);
-    noteInput(combined);
+    if (noteInput(combined) !== true) return false;
     baseTranscriptRef.current = combined;
     setTranscript((prev) => (prev.trim() === combined.trim() ? prev : combined));
     return true;
-  }, [combineTranscript, normalizeForComparison, noteInput]);
+  }, [combineTranscript, isHydrated, normalizeForComparison, noteInput]);
 
   const stopRecording = useCallback(async (options?: {
     silent?: boolean;
@@ -710,6 +712,7 @@ export default function RecordingScreen() {
   ]);
 
   const startRecording = useCallback(async (options?: { preserveDraft?: boolean }) => {
+    if (!isHydrated) return false;
     const previousIntent = dictationIntentRef.current;
     setDictationIntentState('listening');
     try {
@@ -767,7 +770,7 @@ export default function RecordingScreen() {
     } finally {
       setIsPreparingRecording(false);
     }
-  }, [captureIntent, handleVoiceCaptureFailure, language, setDictationIntentState, startSessionRecording, t, transcript]);
+  }, [captureIntent, handleVoiceCaptureFailure, isHydrated, language, setDictationIntentState, startSessionRecording, t, transcript]);
 
   const handleUnexpectedNativeEnd = useCallback(async () => {
     const canRestart = shouldRestartHandsFreeSpeech({
@@ -852,7 +855,7 @@ export default function RecordingScreen() {
   }, [handleUnexpectedNativeEnd]);
 
   const toggleRecording = useCallback(async () => {
-    if (recordingTransitionRef.current) {
+    if (!isHydrated || recordingTransitionRef.current) {
       return;
     }
     recordingTransitionRef.current = true;
@@ -873,7 +876,7 @@ export default function RecordingScreen() {
     } finally {
       recordingTransitionRef.current = false;
     }
-  }, [isRecordingRef, recordingPermissionState, startRecording, stopRecording]);
+  }, [isHydrated, isRecordingRef, recordingPermissionState, startRecording, stopRecording]);
 
   useEffect(() => {
     const keepAlive = isRecording || dictationIntent === 'listening' || isHandsFreeRestarting;
@@ -899,6 +902,7 @@ export default function RecordingScreen() {
   }, [dictationIntent, isHandsFreeRestarting, isRecording, stopRecording]);
 
   const handleSaveDream = useCallback(async () => {
+    if (!isHydrated || isPersisting) return;
     if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
       await stopRecording({ silent: true, reason: 'stop' });
     }
@@ -966,6 +970,8 @@ export default function RecordingScreen() {
     captureIntent,
     clearAfterSuccessfulSave,
     draftDream,
+    isHydrated,
+    isPersisting,
     isRecordingRef,
     language,
     navigateToJournalDetail,
@@ -1197,7 +1203,7 @@ export default function RecordingScreen() {
 
   const handleInputModePreferenceChange = useCallback(
     async (preference: RecordingInputModePreference) => {
-      if (preference === inputMode) {
+      if (!isHydrated || preference === inputMode) {
         return;
       }
 
@@ -1222,6 +1228,7 @@ export default function RecordingScreen() {
     [
       focusTranscriptEnd,
       inputMode,
+      isHydrated,
       isRecordingRef,
       persistInputModePreference,
       stopRecording,
@@ -1245,10 +1252,11 @@ export default function RecordingScreen() {
   }, [onboardingScope]);
 
   const handleVoiceCapturePress = useCallback(async () => {
+    if (!isHydrated) return;
     completeRecordingVoiceHint();
     setVoiceFallbackReason(null);
     await toggleRecording();
-  }, [completeRecordingVoiceHint, toggleRecording]);
+  }, [completeRecordingVoiceHint, isHydrated, toggleRecording]);
 
   const previousInputModeRef = useRef(inputMode);
   useEffect(() => {
@@ -1266,6 +1274,7 @@ export default function RecordingScreen() {
   }, []);
 
   const handleMicRationaleAllow = useCallback(async () => {
+    if (!isHydrated) return;
     hasSeenMicRationaleRef.current = true;
     setShowMicRationaleSheet(false);
     recordingTransitionRef.current = true;
@@ -1274,7 +1283,7 @@ export default function RecordingScreen() {
     } finally {
       recordingTransitionRef.current = false;
     }
-  }, [startRecording]);
+  }, [isHydrated, startRecording]);
 
   const handleMicRationaleUseText = useCallback(async () => {
     hasSeenMicRationaleRef.current = true;
@@ -1323,6 +1332,7 @@ export default function RecordingScreen() {
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
             testID={TID.Screen.Recording}
+            accessibilityState={{ busy: !isHydrated }}
           >
             <MockNavigationRail />
             <View style={mainContentStyle}>

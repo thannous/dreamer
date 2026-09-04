@@ -98,6 +98,7 @@ jest.doMock('react-native', () => {
   const MockScrollView = React.forwardRef(
     (
       {
+        accessibilityState,
         children,
         contentContainerStyle: _contentContainerStyle,
         keyboardShouldPersistTaps: _keyboardShouldPersistTaps,
@@ -105,6 +106,7 @@ jest.doMock('react-native', () => {
         testID,
         ...props
       }: {
+        accessibilityState?: { busy?: boolean };
         children?: React.ReactNode;
         contentContainerStyle?: unknown;
         keyboardShouldPersistTaps?: unknown;
@@ -116,7 +118,7 @@ jest.doMock('react-native', () => {
     ) => {
       React.useImperativeHandle(ref, () => ({ scrollToEnd: jest.fn() }));
       return (
-        <div {...props} data-testid={testID}>
+        <div {...props} aria-busy={accessibilityState?.busy} data-testid={testID}>
           {children}
         </div>
       );
@@ -268,11 +270,13 @@ jest.doMock('@/components/recording/RecordingTextInput', () => {
   const RecordingTextInput = React.forwardRef(
     (
       {
+        disabled,
         layout,
         onChange,
         onSwitchToVoice,
         value,
       }: {
+        disabled?: boolean;
         layout: string;
         onChange: (value: string) => void;
         onSwitchToVoice: () => void;
@@ -283,6 +287,7 @@ jest.doMock('@/components/recording/RecordingTextInput', () => {
       <div data-layout={layout} data-testid="recording-composer">
         <textarea
           data-testid={TID.Input.DreamTranscript}
+          disabled={disabled}
           onChange={(event) => onChange(event.currentTarget.value)}
           value={value}
         />
@@ -578,6 +583,15 @@ jest.doMock('@/services/storageService', () => ({
 
 const { default: RecordingScreen } = require('@/app/recording');
 
+async function awaitEditorReady() {
+  await waitFor(() => {
+    expect(
+      (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).disabled
+    ).toBe(false);
+    expect(screen.getByTestId(TID.Screen.Recording).getAttribute('aria-busy')).toBe('false');
+  });
+}
+
 describe('Recording screen', () => {
   beforeEach(() => {
     mockCurrentUser = { id: 'user-1' };
@@ -637,6 +651,7 @@ describe('Recording screen', () => {
 
   it('starts voice capture only after the first permission rationale is accepted', async () => {
     render(<RecordingScreen />);
+    await awaitEditorReady();
 
     fireEvent.click(screen.getByTestId('recording-voice-control'));
 
@@ -699,6 +714,7 @@ describe('Recording screen', () => {
     mockGetInputModePreference.mockResolvedValue('voice');
     mockStartRecording.mockResolvedValue({ success: false, error: 'permission_denied' });
     render(<RecordingScreen />);
+    await awaitEditorReady();
 
     await waitFor(() => {
       expect(screen.getByTestId('recording-mode').getAttribute('data-value')).toBe('voice');
@@ -718,8 +734,9 @@ describe('Recording screen', () => {
     });
   });
 
-  it('keeps the save button visible and disabled for empty or whitespace drafts', () => {
+  it('keeps the save button visible and disabled for empty or whitespace drafts', async () => {
     render(<RecordingScreen />);
+    await awaitEditorReady();
 
     const saveButton = screen.getByTestId('recording-save') as HTMLButtonElement;
     expect(saveButton.disabled).toBe(true);
@@ -738,6 +755,7 @@ describe('Recording screen', () => {
     async (length: 601 | 1200) => {
       const longTranscript = 'a'.repeat(length);
       render(<RecordingScreen />);
+      await awaitEditorReady();
 
       fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
         target: { value: longTranscript },
@@ -759,6 +777,7 @@ describe('Recording screen', () => {
     'keeps the save button visible and enabled for the short fragment %s',
     async (fragment: 'maman' | 'Porte rouge' | 'loup blanc') => {
       render(<RecordingScreen />);
+      await awaitEditorReady();
 
       expect(screen.getByTestId('recording-save')).toBeTruthy();
 
@@ -787,6 +806,7 @@ describe('Recording screen', () => {
         })
     );
     render(<RecordingScreen />);
+    await awaitEditorReady();
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'A blue room under the rain' },
@@ -813,6 +833,7 @@ describe('Recording screen', () => {
 
   it('opens the saved dream immediately after a successful save', async () => {
     render(<RecordingScreen />);
+    await awaitEditorReady();
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'A blue room under the rain' },
@@ -843,6 +864,7 @@ describe('Recording screen', () => {
       hasPerson: false,
     }));
     render(<RecordingScreen />);
+    await awaitEditorReady();
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'A fox waits beside a frozen lake' },
@@ -890,6 +912,7 @@ describe('Recording screen', () => {
     async (length: 601 | 10_000) => {
       const longTranscript = 'a'.repeat(length);
       render(<RecordingScreen />);
+      await awaitEditorReady();
 
       fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
         target: { value: longTranscript },
@@ -904,6 +927,7 @@ describe('Recording screen', () => {
 
   it('autosaves a voice-updated transcript', async () => {
     render(<RecordingScreen />);
+    await awaitEditorReady();
 
     await waitFor(() => {
       expect(mockOnPartialTranscript).toEqual(expect.any(Function));
@@ -924,6 +948,7 @@ describe('Recording screen', () => {
   it('keeps the durable draft when addDream fails', async () => {
     mockAddDream.mockRejectedValue(new Error('journal write failed'));
     render(<RecordingScreen />);
+    await awaitEditorReady();
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'keep this draft' },
@@ -951,6 +976,7 @@ describe('Recording screen', () => {
 
   it('clears the durable draft exactly once after addDream succeeds', async () => {
     render(<RecordingScreen />);
+    await awaitEditorReady();
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'persist then clear' },
@@ -987,6 +1013,7 @@ describe('Recording screen', () => {
       buildDream('already saved 3', 3),
     ];
     render(<RecordingScreen />);
+    await awaitEditorReady();
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'fourth guest dream' },
@@ -1042,7 +1069,7 @@ describe('Recording screen', () => {
     expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
   });
 
-  it('lets typing win over a late restored draft', async () => {
+  it('preserves the stored draft and rejects early input before hydration completes', async () => {
     let resolveGet: ((value: string) => void) | undefined;
     mockGetSavedTranscript.mockImplementation(
       () =>
@@ -1053,23 +1080,32 @@ describe('Recording screen', () => {
 
     render(<RecordingScreen />);
 
-    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+    const input = screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement;
+    expect(input.disabled).toBe(true);
+    fireEvent.change(input, {
       target: { value: 'typed while loading' },
     });
+    expect(input.value).toBe('');
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
 
     await act(async () => {
       resolveGet?.('saved draft from disk');
       await Promise.resolve();
     });
 
+    await awaitEditorReady();
     expect(
       (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
-    ).toBe('typed while loading');
+    ).toBe('saved draft from disk');
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'saved draft from disk plus more' },
+    });
 
     await waitFor(() => {
-      expect(mockSaveTranscript).toHaveBeenCalledWith('typed while loading');
+      expect(mockSaveTranscript).toHaveBeenCalledWith('saved draft from disk plus more');
     });
-    expect(mockSaveTranscript).not.toHaveBeenCalledWith('saved draft from disk');
+    expect(mockSaveTranscript).not.toHaveBeenCalledWith('typed while loading');
   });
 
   it('does not erase stored content during the initial empty render', async () => {
@@ -1106,6 +1142,7 @@ describe('Recording screen', () => {
 
   it('keeps a single shared draft when switching Write -> Tell -> Write', async () => {
     render(<RecordingScreen />);
+    await awaitEditorReady();
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'A blue room under the rain' },
@@ -1137,6 +1174,7 @@ describe('Recording screen', () => {
 
   it('shows the saved-locally copy only after the draft is persisted, including across Write/Tell', async () => {
     render(<RecordingScreen />);
+    await awaitEditorReady();
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'A blue room under the rain' },
@@ -1179,6 +1217,7 @@ describe('Recording screen', () => {
 
   it('concatenates later voice partials onto the kept draft instead of replacing it', async () => {
     render(<RecordingScreen />);
+    await awaitEditorReady();
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'typed prefix' },
@@ -1244,6 +1283,7 @@ describe('Recording screen', () => {
     mockRecordingPermissionState = 'granted';
     mockGetInputModePreference.mockResolvedValue('voice');
     const view = render(<RecordingScreen />);
+    await awaitEditorReady();
     await waitFor(() => {
       expect(screen.getByTestId('recording-voice-control')).toBeTruthy();
     });
@@ -1258,6 +1298,7 @@ describe('Recording screen', () => {
     mockPlatformOS = 'web';
     mockRecordingPermissionState = 'granted';
     render(<RecordingScreen />);
+    await awaitEditorReady();
     fireEvent.click(screen.getByTestId('recording-voice-control'));
     await waitFor(() => {
       expect(mockStartRecording).toHaveBeenCalledTimes(1);
