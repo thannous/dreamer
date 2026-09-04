@@ -46,6 +46,8 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
       }`}
       accessibilityRole="button"
       accessibilityLabel={label}
+      accessibilityState={{ selected: isActive }}
+      aria-current={isActive ? 'page' : undefined}
     >
       <IconSymbol
         name={icon}
@@ -53,7 +55,7 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
         color={isActive ? noctalia.accent.text : noctalia.text.secondary}
       />
       <Text
-        className={`font-sans-medium text-[15px] ${isActive ? 'text-ivory' : 'text-ivory-muted'}`}
+        className={`min-w-0 flex-1 text-[15px] ${isActive ? 'font-sans-bold text-ivory' : 'font-sans-medium text-ivory-muted'}`}
       >
         {label}
       </Text>
@@ -77,6 +79,7 @@ export function DesktopSidebar() {
       testID: TID.Tab.AddDream,
     },
     { icon: 'chart.bar.fill', label: t('nav.stats'), href: '/statistics', testID: TID.Tab.Stats },
+    { icon: 'sparkles', label: t('nav.explore'), href: '/explore' as Href, testID: TID.Tab.Explore },
   ];
 
   const settingsNavItem = {

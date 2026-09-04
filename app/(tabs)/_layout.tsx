@@ -1,5 +1,5 @@
 import { Tabs, router, useSegments } from 'expo-router';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Platform, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -35,6 +35,10 @@ type TabGeometry = {
   compact: boolean;
   narrow: boolean;
   stackedLabels: boolean;
+  labelFontSize: number;
+  labelLineHeight: number;
+  labelLines: number;
+  labelHeight: number;
   centerActionWidth: number;
   centerActionHeight: number;
 };
@@ -62,17 +66,24 @@ function TabBarItem({ label, icon, focused, palette, geometry }: {
       />
       <Text
         accessible={false}
-        className={`w-full min-w-0 shrink text-center font-sans-medium ${
-          compact ? 'text-[11px]' : narrow ? 'text-[11px] px-[1px]' : 'text-[12px]'
-        }`}
-        style={{ color: focused ? palette.textActive : palette.text }}
-        numberOfLines={stackedLabels ? 2 : 1}
+        className="w-full min-w-0 shrink text-center font-sans-medium"
+        style={{
+          color: focused ? palette.textActive : palette.text,
+          fontSize: geometry.labelFontSize,
+          lineHeight: geometry.labelLineHeight,
+          height: stackedLabels ? geometry.labelHeight : undefined,
+        }}
+        numberOfLines={geometry.labelLines}
+        textBreakStrategy="simple"
         ellipsizeMode="tail"
         adjustsFontSizeToFit={!stackedLabels}
         minimumFontScale={narrow ? 0.75 : 0.8}
       >
         {label}
       </Text>
+      <View
+        style={{ width: 16, height: 3, borderRadius: 2, backgroundColor: focused ? palette.textActive : 'transparent' }}
+      />
     </View>
   );
 }
@@ -85,7 +96,13 @@ function AddDreamTabItem({ label, palette, geometry }: {
   // While a dream analysis runs in the background, the Capture button carries
   // the in-progress state so no overlay has to cover the screen content.
   const { activeAnalysis } = useAnalysisActivity();
-  const { compact, narrow, stackedLabels, centerActionWidth, centerActionHeight } = geometry;
+  const {
+    compact,
+    narrow,
+    stackedLabels,
+    centerActionWidth,
+    centerActionHeight,
+  } = geometry;
   return (
     <View
       accessible={false}
@@ -131,11 +148,15 @@ function AddDreamTabItem({ label, palette, geometry }: {
       </View>
       <Text
         accessible={false}
-        className={`w-full min-w-0 shrink text-center font-sans-bold ${
-          compact ? 'text-[11px]' : narrow ? 'text-[11px]' : 'text-[12px]'
-        }`}
-        style={{ color: palette.textOnAccentSurface }}
-        numberOfLines={stackedLabels ? 2 : 1}
+        className="w-full min-w-0 shrink text-center font-sans-bold"
+        style={{
+          color: palette.textOnAccentSurface,
+          fontSize: geometry.labelFontSize,
+          lineHeight: geometry.labelLineHeight,
+          height: stackedLabels ? geometry.labelHeight : undefined,
+        }}
+        numberOfLines={geometry.labelLines}
+        textBreakStrategy="simple"
         ellipsizeMode="tail"
         adjustsFontSizeToFit={!stackedLabels}
         minimumFontScale={narrow ? 0.75 : 0.85}
@@ -179,11 +200,24 @@ export default function TabLayout() {
   const { routeCommitted } = useStartupRoute();
   const { activeAnalysis } = useAnalysisActivity();
   const isTabsDestination = segments[0] === '(tabs)';
+  const [hasEnteredTabs, setHasEnteredTabs] = useState(false);
+
+  useEffect(() => {
+    if (routeCommitted && isTabsDestination) {
+      // Navigation-lifetime latch: once tabs are actually entered, keep that
+      // navigator instance across later root-resource pushes. This is not derived
+      // render state, so an effect is required; never reset it on a resource push.
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- parent-approved latch
+      setHasEnteredTabs(true);
+    }
+  }, [routeCommitted, isTabsDestination]);
 
   // Expo Router anchors the root stack on `(tabs)`. During a cold-start guard,
-  // keep that transient route free of Moti/Reanimated work; otherwise its home
-  // card animations can target Fabric views after the redirect detaches them.
-  if (!routeCommitted || !isTabsDestination) {
+  // keep that transient route free of Moti/Reanimated work until tabs are
+  // actually entered; otherwise home card animations can target Fabric views
+  // after the redirect detaches them. After the first committed tabs visit,
+  // keep the navigator mounted so a root resource push cannot reset tab state.
+  if (!hasEnteredTabs && (!routeCommitted || !isTabsDestination)) {
     return (
       <View
         importantForAccessibility="no-hide-descendants"
@@ -198,6 +232,10 @@ export default function TabLayout() {
     compact: navigationLayout.compact,
     narrow: navigationLayout.narrow,
     stackedLabels: navigationLayout.stackedLabels,
+    labelFontSize: navigationLayout.labelFontSize,
+    labelLineHeight: navigationLayout.labelLineHeight,
+    labelLines: navigationLayout.labelLines,
+    labelHeight: navigationLayout.labelHeight,
     centerActionWidth: navigationLayout.centerActionWidth,
     centerActionHeight: navigationLayout.centerActionHeight,
   };
@@ -342,6 +380,22 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="explore"
+        options={returningGuestBlocked ? {
+          href: null,
+          title: t('nav.explore'),
+        } : {
+          title: t('nav.explore'),
+          tabBarButton: createTabButton({
+            testID: TID.Tab.Explore,
+            accessibilityLabel: t('nav.explore'),
+          }),
+          tabBarIcon: ({ focused }) => (
+            <TabBarItem icon="sparkles" label={t('nav.explore')} focused={focused} palette={palette} geometry={geometry} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={returningGuestBlocked ? {
           title: t('nav.settings'),
@@ -360,21 +414,18 @@ export default function TabLayout() {
     </Tabs>
   );
 
-  // Desktop web layout with sidebar
-  if (isDesktopWeb) {
-    return (
-      <View className="flex-1 flex-row">
-        <DesktopSidebar />
-        <View className="flex-1">
-          {tabs}
-        </View>
-      </View>
-    );
-  }
-
+  // Keep one wrapper tree across the desktop breakpoint. Switching between a
+  // sidebar layout and a direct Tabs parent remounts the navigator and resets
+  // the selected tab after a resource push or a web resize.
   return (
-    <View style={{ flex: 1, backgroundColor: noctalia.screen.background }}>
-      {tabs}
+    <View
+      className={isDesktopWeb ? 'flex-1 flex-row' : 'flex-1'}
+      style={{ flex: 1, backgroundColor: noctalia.screen.background }}
+    >
+      {isDesktopWeb ? <DesktopSidebar /> : null}
+      <View className="flex-1">
+        {tabs}
+      </View>
     </View>
   );
 }

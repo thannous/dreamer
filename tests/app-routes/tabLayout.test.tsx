@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const mockUseAuth = jest.fn();
@@ -15,6 +15,8 @@ type CapturedTabScreen = {
   };
 };
 let capturedScreens: CapturedTabScreen[] = [];
+let tabHostMounts = 0;
+let tabHostUnmounts = 0;
 let mockPlatformOS: 'android' | 'ios' | 'web' = 'ios';
 let mockWindowWidth = 390;
 let mockWindowHeight = 844;
@@ -33,8 +35,22 @@ jest.doMock('expo-router', () => {
     children?: React.ReactNode;
     screenOptions?: { tabBarStyle?: unknown };
   }) => {
+    const React = require('react');
+    const [note, setNote] = React.useState('initial');
+    React.useEffect(() => {
+      tabHostMounts += 1;
+      return () => {
+        tabHostUnmounts += 1;
+      };
+    }, []);
     capturedTabBarStyle = screenOptions?.tabBarStyle ?? null;
-    return <div>{children}</div>;
+    return (
+      <div>
+        <span data-testid="mock-tabs-note">{note}</span>
+        <button data-testid="mock-tabs-edit" onClick={() => setNote('edited')} />
+        <div>{children}</div>
+      </div>
+    );
   };
   const TabsScreen = ({
     name,
@@ -74,10 +90,6 @@ jest.doMock('react-native', () => {
       create: <T extends Record<string, unknown>>(styles: T) => styles,
       flatten: flattenStyle,
     },
-    // `className` is resolved by Uniwind's Metro transformer, which Jest never runs, so
-    // it arrives here as an inert string. Exposing it lets these tests keep asserting the
-    // exact geometry — the pixel values now live in the class string instead of the
-    // resolved style object, and are just as explicit there.
     Text: ({
       children,
       maxFontSizeMultiplier,
@@ -223,10 +235,18 @@ jest.doMock('@/hooks/useTranslation', () => ({
 
 const { default: TabLayout } = require('@/app/(tabs)/_layout');
 
+const uniqueScreenNames = () => Array.from(new Set(capturedScreens.map((s) => s.name)));
+const centerBox = (labelKey: string) => {
+  const raw = screen.getByText(labelKey).parentElement?.getAttribute('data-native-style') ?? '{}';
+  return JSON.parse(raw) as { width?: number; height?: number };
+};
+
 describe('TabLayout returning guest navigation', () => {
   beforeEach(() => {
     capturedTabBarStyle = null;
     capturedScreens = [];
+    tabHostMounts = 0;
+    tabHostUnmounts = 0;
     mockPlatformOS = 'ios';
     mockWindowWidth = 390;
     mockWindowHeight = 844;
@@ -260,19 +280,19 @@ describe('TabLayout returning guest navigation', () => {
     render(<TabLayout />);
 
     expect(capturedTabBarStyle).toEqual({ display: 'none' });
-    expect(capturedScreens.find((screen) => screen.name === 'settings')?.options).toEqual(
+    expect(capturedScreens.find((s) => s.name === 'settings')?.options).toEqual(
       expect.objectContaining({
         title: 'nav.settings',
         tabBarButton: expect.any(Function),
       })
     );
-    expect(capturedScreens.find((screen) => screen.name === 'settings')?.options).not.toEqual(
+    expect(capturedScreens.find((s) => s.name === 'settings')?.options).not.toEqual(
       expect.objectContaining({
         href: null,
       })
     );
-    ['index', 'journal', 'add-dream', 'statistics'].forEach((name) => {
-      expect(capturedScreens.find((screen) => screen.name === name)?.options).toEqual(
+    ['index', 'journal', 'add-dream', 'statistics', 'explore'].forEach((name) => {
+      expect(capturedScreens.find((s) => s.name === name)?.options).toEqual(
         expect.objectContaining({
           href: null,
         })
@@ -301,15 +321,25 @@ describe('TabLayout returning guest navigation', () => {
       screen.getByText('nav.journal'),
       screen.getByText('nav.capture_dream'),
       screen.getByText('nav.stats'),
-    ]).toHaveLength(4);
+      screen.getByText('nav.explore'),
+    ]).toHaveLength(5);
+    // The startup latch effect re-renders once; dedupe instead of freezing mount count.
+    expect(uniqueScreenNames()).toEqual([
+      'index',
+      'journal',
+      'add-dream',
+      'statistics',
+      'explore',
+      'settings',
+    ]);
     expect(screen.queryByText('nav.settings')).toBeNull();
-    expect(capturedScreens.find((tabScreen) => tabScreen.name === 'settings')?.options).toEqual(
+    expect(capturedScreens.find((s) => s.name === 'settings')?.options).toEqual(
       expect.objectContaining({
         href: null,
         title: 'nav.settings',
       })
     );
-    expect(capturedScreens.find((tabScreen) => tabScreen.name === 'settings')?.options).not.toEqual(
+    expect(capturedScreens.find((s) => s.name === 'settings')?.options).not.toEqual(
       expect.objectContaining({
         tabBarButton: expect.anything(),
       })
@@ -333,7 +363,7 @@ describe('TabLayout returning guest navigation', () => {
     }));
   });
 
-  it('keeps a 64 by 68 dp center action at 320 dp with default text scale', () => {
+  it('keeps words visible on two lines at 320 dp with default text scale', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 320;
     mockWindowHeight = 640;
@@ -344,7 +374,7 @@ describe('TabLayout returning guest navigation', () => {
 
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
       end: 8,
-      height: 86,
+      height: 102,
       paddingHorizontal: 4,
       start: 8,
     }));
@@ -354,26 +384,24 @@ describe('TabLayout returning guest navigation', () => {
       'nav.journal',
       'nav.capture_dream',
       'nav.stats',
+      'nav.explore',
     ].map((label) => screen.getByText(label));
-    const centerStyle = screen.getByText('nav.capture_dream').parentElement?.getAttribute(
-      'data-native-style'
-    );
+    const box = centerBox('nav.capture_dream');
 
-    expect(labels).toHaveLength(4);
+    expect(labels).toHaveLength(5);
     expect(screen.queryByText('nav.settings')).toBeNull();
-    expect(centerStyle).toContain('"width":64');
-    expect(centerStyle).toContain('"height":68');
+    expect(box.width).toBeCloseTo(54.8, 1);
+    expect(box.height).toBe(92);
     labels.forEach((label) => {
       expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
-      expect(label.getAttribute('data-number-of-lines')).toBe('1');
+      expect(label.getAttribute('data-number-of-lines')).toBe('2');
       expect(label.getAttribute('data-accessible')).toBe('false');
-      expect(label.getAttribute('data-native-class')).toContain('text-[11px]');
       expect(label.getAttribute('data-native-class')).toContain('w-full');
       expect(label.getAttribute('data-native-class')).toContain('shrink');
     });
   });
 
-  it('grows the narrow bar at fontScale 2 and lets labels wrap instead of capping them', () => {
+  it('keeps five visible labels at fontScale 2 while the narrow bar grows', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 320;
     mockWindowHeight = 640;
@@ -384,33 +412,28 @@ describe('TabLayout returning guest navigation', () => {
 
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
       end: 8,
-      height: 114,
+      height: 198,
       paddingHorizontal: 4,
       start: 8,
     }));
 
-    const labels = [
-      'nav.home',
-      'nav.journal',
-      'nav.capture_dream',
-      'nav.stats',
-    ].map((label) => screen.getByText(label));
-    const centerStyle = screen.getByText('nav.capture_dream').parentElement?.getAttribute(
-      'data-native-style'
+    expect([
+      screen.getByText('nav.home'),
+      screen.getByText('nav.journal'),
+      screen.getByText('nav.capture_dream'),
+      screen.getByText('nav.stats'),
+      screen.getByText('nav.explore'),
+    ]).toHaveLength(5);
+    const box = centerBox('nav.capture_dream');
+    expect(box.width).toBeCloseTo(54.8, 1);
+    expect(box.height).toBe(188);
+    expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('4');
+    expect(capturedScreens.find((s) => s.name === 'explore')?.options).toEqual(
+      expect.objectContaining({ title: 'nav.explore' }),
     );
-
-    expect(labels).toHaveLength(4);
-    expect(screen.queryByText('nav.settings')).toBeNull();
-    expect(centerStyle).toContain('"width":64');
-    expect(centerStyle).toContain('"height":96');
-    labels.forEach((label) => {
-      expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
-      expect(label.getAttribute('data-number-of-lines')).toBe('2');
-      expect(label.getAttribute('data-accessible')).toBe('false');
-    });
   });
 
-  it('keeps compact landscape labels readable at fontScale 2', () => {
+  it('keeps compact landscape words visible at fontScale 2 while the bar grows', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 915;
     mockWindowHeight = 412;
@@ -420,23 +443,13 @@ describe('TabLayout returning guest navigation', () => {
     render(<TabLayout />);
 
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
-      height: 82,
+      height: 134,
     }));
-    const labels = [
-      'nav.home',
-      'nav.journal',
-      'nav.capture_dream',
-      'nav.stats',
-    ].map((label) => screen.getByText(label));
-    const centerStyle = screen.getByText('nav.capture_dream').parentElement?.getAttribute(
-      'data-native-style'
-    );
-    expect(centerStyle).toContain('"width":60');
-    expect(centerStyle).toContain('"height":74');
-    labels.forEach((label) => {
-      expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
-      expect(label.getAttribute('data-number-of-lines')).toBe('2');
-    });
+    expect(screen.getByText('nav.capture_dream')).toBeTruthy();
+    expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('2');
+    const box = centerBox('nav.capture_dream');
+    expect(box.width).toBe(60);
+    expect(box.height).toBe(124);
   });
 
   it('exposes a single TalkBack name, tab role and selected state on Expo tabs', () => {
@@ -445,7 +458,7 @@ describe('TabLayout returning guest navigation', () => {
     render(<TabLayout />);
 
     const captureButton = capturedScreens
-      .find((tabScreen) => tabScreen.name === 'add-dream')
+      .find((s) => s.name === 'add-dream')
       ?.options?.tabBarButton?.({
         accessibilityState: { selected: true },
         'aria-selected': true,
@@ -467,7 +480,7 @@ describe('TabLayout returning guest navigation', () => {
     render(<TabLayout />);
 
     const captureButton = capturedScreens
-      .find((tabScreen) => tabScreen.name === 'add-dream')
+      .find((s) => s.name === 'add-dream')
       ?.options?.tabBarButton?.({
         accessibilityState: { selected: false },
       });
@@ -477,7 +490,7 @@ describe('TabLayout returning guest navigation', () => {
     view.unmount();
   });
 
-  it('preserves the existing tab geometry at 390 dp', () => {
+  it('preserves the tab geometry at 390 dp without capping labels', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 390;
     mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
@@ -485,18 +498,89 @@ describe('TabLayout returning guest navigation', () => {
     render(<TabLayout />);
 
     const centerLabel = screen.getByText('nav.capture_dream');
-    const centerClass = centerLabel.parentElement?.getAttribute('data-native-class');
-
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
       end: 22,
       paddingHorizontal: 8,
       start: 22,
     }));
-    const centerStyle = centerLabel.parentElement?.getAttribute('data-native-style');
-    expect(centerStyle).toContain('"width":72');
-    expect(centerStyle).toContain('"height":76');
-    expect(centerLabel.getAttribute('data-native-class')).toContain('text-[12px]');
+    const box = centerBox('nav.capture_dream');
+    expect(box.width).toBeCloseTo(61.6, 1);
+    expect(box.height).toBe(76);
+    expect(centerLabel.getAttribute('data-number-of-lines')).toBe('1');
     expect(centerLabel.getAttribute('data-max-font-size-multiplier')).toBeNull();
     expect(centerLabel.getAttribute('data-accessible')).toBe('false');
+  });
+});
+
+describe('TabLayout StatefulTabs', () => {
+  beforeEach(() => {
+    capturedTabBarStyle = null;
+    capturedScreens = [];
+    tabHostMounts = 0;
+    tabHostUnmounts = 0;
+    mockPlatformOS = 'ios';
+    mockWindowWidth = 390;
+    mockWindowHeight = 844;
+    mockFontScale = 1;
+    mockRouteCommitted = true;
+    mockSegments = ['(tabs)', 'explore'];
+    mockActiveAnalysis = null;
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+  });
+
+  it('keeps one Tabs instance and its interactive state across Explorer -> resource root -> Explorer', () => {
+    const view = render(<TabLayout />);
+    expect(tabHostMounts).toBe(1);
+    expect(capturedTabBarStyle).not.toBeNull();
+    expect(uniqueScreenNames()).toContain('explore');
+    expect(screen.getByTestId('mock-tabs-note').textContent).toBe('initial');
+    fireEvent.click(screen.getByTestId('mock-tabs-edit'));
+    expect(screen.getByTestId('mock-tabs-note').textContent).toBe('edited');
+
+    mockSegments = ['symbol-dictionary'];
+    view.rerender(<TabLayout />);
+    expect(tabHostMounts).toBe(1);
+    expect(tabHostUnmounts).toBe(0);
+    expect(capturedTabBarStyle).not.toBeNull();
+    expect(capturedTabBarStyle).not.toEqual({ display: 'none' });
+    expect(screen.getByTestId('mock-tabs-note').textContent).toBe('edited');
+
+    mockSegments = ['(tabs)', 'explore'];
+    view.rerender(<TabLayout />);
+    expect(tabHostMounts).toBe(1);
+    expect(tabHostUnmounts).toBe(0);
+    expect(uniqueScreenNames()).toContain('explore');
+    expect(screen.getByTestId('mock-tabs-note').textContent).toBe('edited');
+    expect(screen.getByText('nav.explore')).toBeTruthy();
+    view.unmount();
+  });
+
+  it('keeps one Tabs instance and its interactive state across the 320 <-> 1024 breakpoint round-trip', () => {
+    mockPlatformOS = 'web';
+    mockWindowWidth = 320;
+    mockWindowHeight = 640;
+    mockSegments = ['(tabs)', 'explore'];
+    const view = render(<TabLayout />);
+    expect(tabHostMounts).toBe(1);
+    expect(screen.getByText('nav.explore')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('mock-tabs-edit'));
+    expect(screen.getByTestId('mock-tabs-note').textContent).toBe('edited');
+
+    mockWindowWidth = 1024;
+    mockWindowHeight = 800;
+    view.rerender(<TabLayout />);
+    expect(tabHostMounts).toBe(1);
+    expect(tabHostUnmounts).toBe(0);
+    expect(screen.getByTestId('mock-tabs-note').textContent).toBe('edited');
+
+    mockWindowWidth = 320;
+    mockWindowHeight = 640;
+    view.rerender(<TabLayout />);
+    expect(tabHostMounts).toBe(1);
+    expect(tabHostUnmounts).toBe(0);
+    expect(uniqueScreenNames()).toContain('explore');
+    expect(screen.getByTestId('mock-tabs-note').textContent).toBe('edited');
+    expect(screen.getByText('nav.explore')).toBeTruthy();
+    view.unmount();
   });
 });

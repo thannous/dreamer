@@ -460,7 +460,16 @@ describe('Home Accueil Aujourd’hui', () => {
     mockFontScale = 2;
     await renderHome([]);
 
-    expect(screen.getByTestId('home-scroll').getAttribute('data-padding-bottom')).toBe('148');
+    const { getBottomNavigationLayout } = require('@/constants/layout');
+    const { ThemeLayout } = require('@/constants/journalTheme');
+    const layout = getBottomNavigationLayout(390, 844, 2);
+    const base = getBottomNavigationLayout(390, 844, 1);
+    const expected = layout.barHeight + layout.minimumBottomInset + ThemeLayout.spacing.lg;
+    expect(screen.getByTestId('home-scroll').getAttribute('data-padding-bottom')).toBe(String(expected));
+    // The padding grows with the tab bar instead of capping labels: content stays
+    // above the bar (bar height + inset floor) at both scales, taller at fontScale 2.
+    expect(expected).toBeGreaterThan(base.barHeight + base.minimumBottomInset + ThemeLayout.spacing.lg);
+    expect(expected).toBeGreaterThanOrEqual(layout.barHeight + layout.minimumBottomInset);
   });
 
   it('exposes a mobile settings header action without dropping dictionary or inspiration', async () => {

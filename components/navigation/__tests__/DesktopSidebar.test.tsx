@@ -12,19 +12,26 @@ let mockReturningGuestBlocked = false;
 
 jest.mock('react-native', () => {
   const React = require('react');
+  // Use the installed RNW mapper so accessibilityState alone cannot fake web state.
+  const createDOMProps = jest.requireActual('react-native-web/dist/cjs/modules/createDOMProps');
   return {
     Pressable: ({
+      'aria-current': ariaCurrent,
       accessibilityLabel,
       children,
       onPress,
       testID,
     }: {
+      'aria-current'?: React.AriaAttributes['aria-current'];
       accessibilityLabel?: string;
       children?: React.ReactNode;
       onPress?: () => void;
       testID?: string;
     }) => (
-      <button aria-label={accessibilityLabel} data-testid={testID} onClick={onPress}>
+      <button
+        {...createDOMProps('button', { 'aria-current': ariaCurrent, accessibilityLabel, testID })}
+        onClick={onPress}
+      >
         {children}
       </button>
     ),
@@ -84,17 +91,40 @@ afterEach(() => {
 });
 
 describe('DesktopSidebar', () => {
-  it('keeps Home, Journal, Capture and Stats as primary items with a single Settings footer', () => {
+  it('exposes only the current destination to web assistive technology, including Settings', () => {
+    mockPathname = '/explore';
+    const { rerender } = render(<DesktopSidebar />);
+
+    expect(screen.getByRole('button', { name: 'nav.explore' }).getAttribute('aria-current')).toBe('page');
+    expect(screen.getByRole('button', { name: 'nav.journal' }).hasAttribute('aria-current')).toBe(false);
+    expect(screen.getByRole('button', { name: 'nav.settings' }).hasAttribute('aria-current')).toBe(false);
+    expect(document.querySelectorAll('[aria-current="page"]')).toHaveLength(1);
+
+    mockPathname = '/settings';
+    rerender(<DesktopSidebar />);
+
+    expect(screen.getByRole('button', { name: 'nav.explore' }).hasAttribute('aria-current')).toBe(false);
+    expect(screen.getByRole('button', { name: 'nav.settings' }).getAttribute('aria-current')).toBe('page');
+    expect(document.querySelectorAll('[aria-current="page"]')).toHaveLength(1);
+    fireEvent.click(screen.getByRole('button', { name: 'nav.settings' }));
+    expect(mockPush).toHaveBeenCalledWith('/settings');
+  });
+
+  it('keeps Home, Journal, Capture, Stats and Explorer as primary items with a single Settings footer', () => {
     render(<DesktopSidebar />);
 
     expect(screen.getByTestId(TID.Tab.Home)).toBeTruthy();
     expect(screen.getByTestId(TID.Tab.Journal)).toBeTruthy();
     expect(screen.getByTestId(TID.Tab.AddDream)).toBeTruthy();
     expect(screen.getByTestId(TID.Tab.Stats)).toBeTruthy();
+    expect(screen.getByTestId(TID.Tab.Explore)).toBeTruthy();
     expect(screen.getAllByTestId(TID.Tab.Settings)).toHaveLength(1);
 
     fireEvent.click(screen.getByTestId(TID.Tab.AddDream));
     expect(mockPush).toHaveBeenCalledWith('/recording');
+
+    fireEvent.click(screen.getByTestId(TID.Tab.Explore));
+    expect(mockPush).toHaveBeenCalledWith('/explore');
 
     fireEvent.click(screen.getByTestId(TID.Tab.Settings));
     expect(mockPush).toHaveBeenCalledWith('/settings');
@@ -108,6 +138,7 @@ describe('DesktopSidebar', () => {
     expect(screen.queryByTestId(TID.Tab.Journal)).toBeNull();
     expect(screen.queryByTestId(TID.Tab.AddDream)).toBeNull();
     expect(screen.queryByTestId(TID.Tab.Stats)).toBeNull();
+    expect(screen.queryByTestId(TID.Tab.Explore)).toBeNull();
     expect(screen.getAllByTestId(TID.Tab.Settings)).toHaveLength(1);
 
     fireEvent.click(screen.getByTestId(TID.Tab.Settings));

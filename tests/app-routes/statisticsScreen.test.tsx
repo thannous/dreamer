@@ -455,8 +455,17 @@ describe('Statistics screen VNext trends', () => {
 
     render(<StatisticsScreen />);
 
+    const { getBottomNavigationLayout } = require('@/constants/layout');
+    const { ThemeLayout } = require('@/constants/journalTheme');
+    const layout = getBottomNavigationLayout(390, 844, 2);
+    const base = getBottomNavigationLayout(390, 844, 1);
+    const expected = layout.barHeight + layout.minimumBottomInset + ThemeLayout.spacing.lg;
     const scroller = screen.getByTestId('trends.section.week').closest('[data-content-container-style]');
-    expect(scroller?.getAttribute('data-content-container-style')).toContain('"paddingBottom":148');
+    expect(scroller?.getAttribute('data-content-container-style')).toContain(`"paddingBottom":${expected}`);
+    // Same contract as home: the padding tracks bar height + inset floor + spacing,
+    // growing at fontScale 2 instead of capping labels.
+    expect(expected).toBeGreaterThan(base.barHeight + base.minimumBottomInset + ThemeLayout.spacing.lg);
+    expect(expected).toBeGreaterThanOrEqual(layout.barHeight + layout.minimumBottomInset);
   });
 
   it('stacks weekly metrics at fontScale 2 without clipping labels', () => {

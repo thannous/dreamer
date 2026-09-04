@@ -24,7 +24,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
-type BottomNavKey = 'home' | 'journal' | 'addDream' | 'stats';
+type BottomNavKey = 'home' | 'journal' | 'addDream' | 'stats' | 'explore';
 
 type BottomNavItem = {
   key: BottomNavKey;
@@ -113,7 +113,11 @@ export function NoctaliaBottomNav({
         ? 'gap-[3px] rounded-[24px]'
         : 'gap-1 rounded-[27px]',
   ].join(' ');
-  const labelLines = navigationLayout.stackedLabels ? 2 : 1;
+  const labelStyle = {
+    fontSize: navigationLayout.labelFontSize,
+    lineHeight: navigationLayout.labelLineHeight,
+    height: navigationLayout.stackedLabels ? navigationLayout.labelHeight : undefined,
+  };
 
   const addLift = navigationLayout.compact
     ? ADD_LIFT.compact
@@ -160,6 +164,16 @@ export function NoctaliaBottomNav({
       href: '/statistics',
       testID: TID.Tab.Stats,
     },
+    {
+      key: 'explore',
+      label: t('nav.explore'),
+      accessibilityLabel: t('nav.explore'),
+      icon: 'sparkles',
+      // Keep the nested tab state explicit. When this bar is used from Capture,
+      // a resource route can now return to Explorer instead of the default Today tab.
+      href: '/(tabs)/explore',
+      testID: TID.Tab.Explore,
+    },
   ];
 
   return (
@@ -185,6 +199,8 @@ export function NoctaliaBottomNav({
               key={item.key}
               onPress={isActive ? undefined : () => router.push(item.href as any)}
               accessibilityRole="tab"
+              aria-selected={isActive}
+              aria-busy={isCenter ? Boolean(activeAnalysis) : undefined}
               accessibilityState={{
                 selected: isActive,
                 busy: isCenter ? Boolean(activeAnalysis) : undefined,
@@ -216,44 +232,54 @@ export function NoctaliaBottomNav({
                       color={addTextColor}
                     />
                   )}
-                  <Text
-                    accessible={false}
-                    className={`font-sans-bold w-full min-w-0 shrink text-center text-on-champagne ${
-                      navigationLayout.narrow ? 'text-[11px] px-px' : 'text-[12px]'
-                    }`}
-                    numberOfLines={labelLines}
-                    ellipsizeMode="tail"
-                    adjustsFontSizeToFit={!navigationLayout.stackedLabels}
-                    minimumFontScale={navigationLayout.narrow ? 0.75 : 0.85}
-                  >
-                    {item.label}
-                  </Text>
+                    <Text
+                      accessible={false}
+                      className={`font-sans-bold w-full min-w-0 shrink text-center text-on-champagne ${
+                        navigationLayout.narrow ? 'text-[11px] px-px' : 'text-[12px]'
+                      }`}
+                      style={labelStyle}
+                      numberOfLines={navigationLayout.labelLines}
+                      textBreakStrategy="simple"
+                      ellipsizeMode="tail"
+                      adjustsFontSizeToFit={!navigationLayout.stackedLabels}
+                      minimumFontScale={navigationLayout.narrow ? 0.75 : 0.85}
+                    >
+                      {item.label}
+                    </Text>
+                  {isActive ? (
+                    <View style={{ width: 16, height: 3, borderRadius: 2, backgroundColor: addTextColor }} />
+                  ) : null}
                 </View>
               ) : (
                 <View
                   accessible={false}
                   importantForAccessibility="no-hide-descendants"
-                  className={`w-full min-w-0 flex-1 items-center justify-center ${
+                  className={`min-w-0 items-center justify-center ${
                     navigationLayout.compact ? 'gap-px' : 'gap-[5px]'
-                  }`}
+                  } w-full flex-1`}
                 >
                   <IconSymbol
                     size={24}
                     name={item.icon}
                     color={isActive ? navActiveColor : navInactiveColor}
                   />
-                  <Text
-                    accessible={false}
-                    className={`font-sans-medium w-full min-w-0 shrink text-center ${labelSizeClassName} ${
-                      isActive ? 'text-nav-active' : 'text-nav-inactive'
-                    }`}
-                    numberOfLines={labelLines}
-                    ellipsizeMode="tail"
-                    adjustsFontSizeToFit={!navigationLayout.stackedLabels}
-                    minimumFontScale={navigationLayout.narrow ? 0.75 : 0.8}
-                  >
-                    {item.label}
-                  </Text>
+                    <Text
+                      accessible={false}
+                      className={`font-sans-medium w-full min-w-0 shrink text-center ${labelSizeClassName} ${
+                        isActive ? 'text-nav-active' : 'text-nav-inactive'
+                      }`}
+                      style={labelStyle}
+                      numberOfLines={navigationLayout.labelLines}
+                      textBreakStrategy="simple"
+                      ellipsizeMode="tail"
+                      adjustsFontSizeToFit={!navigationLayout.stackedLabels}
+                      minimumFontScale={navigationLayout.narrow ? 0.75 : 0.8}
+                    >
+                      {item.label}
+                    </Text>
+                  <View
+                    style={{ width: 16, height: 3, borderRadius: 2, backgroundColor: isActive ? navActiveColor : 'transparent' }}
+                  />
                 </View>
               )}
             </Pressable>

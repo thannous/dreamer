@@ -86,10 +86,11 @@ Cloudflare Pages builds `docs/` from tracked sources on `master`; verify the bra
   Muse translations/i18n/tests/docs; Grok QA (a separate independent instance); and Muse Delivery
   (activated after gates). User validation has been obtained; do not treat this as a pending
   proposal or request validation again.
-- Future Motorola validations run only against the base app `com.tanuki75.noctalia` /
-  scheme `noctalia`, never a `.qa` app; distinguish local-build vs Play install source and verify
-  signature/version before any install; never uninstall or clear app data to force an install.
-  An older goal text mentioning a QA device does not override this user decision.
+- For the Dreamer VNext goal, Motorola validations run only against the base app
+  `com.tanuki75.noctalia` / scheme `noctalia`, never a `.qa` app; distinguish local-build vs Play
+  install source and verify signature/version before any install; never uninstall or clear app
+  data to force an install. An older goal text mentioning a QA device does not override this
+  user decision.
 
 ## Project Rules
 
