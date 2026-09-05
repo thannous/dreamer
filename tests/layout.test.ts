@@ -11,6 +11,24 @@ import {
 } from '@/constants/layout';
 
 describe('getBottomNavigationLayout', () => {
+  it.each([320, 361, 375, 390, 399, 400, 430, 768])('sizes portrait labels at %i dp without changing narrow classification', (width: number) => {
+    const layout = getBottomNavigationLayout(width, 1024);
+    expect(layout.labelFontSize).toBe(width < 400 ? 11 : 12);
+    expect(layout.narrow).toBe(width <= 360);
+    expect(layout.labelLines).toBe(width <= 360 ? 2 : 1);
+    expect(layout.barHeight).toBe(width <= 360 ? 102 : TAB_BAR_HEIGHT);
+  });
+
+  it.each([1.3, 2])('keeps large text wrapping on a 390 dp phone at scale %s', (fontScale: number) => {
+    const layout = getBottomNavigationLayout(390, 844, fontScale);
+    expect(layout.fontScale).toBe(fontScale);
+    expect(layout.stackedLabels).toBe(true);
+    expect(layout.labelFontSize).toBe(11);
+    expect(layout.labelLines).toBeGreaterThanOrEqual(2);
+    expect(layout.labelHeight).toBeGreaterThanOrEqual(layout.labelLines * 16 * fontScale);
+    expect(layout.barHeight).toBeGreaterThan(TAB_BAR_HEIGHT);
+  });
+
   it('uses the regular navigation size in portrait', () => {
     expect(getBottomNavigationLayout(412, 915)).toEqual({
       compact: false,
@@ -178,9 +196,12 @@ describe('narrow bottom navigation', () => {
     expect(isNarrowBottomNavigation(width)).toBe(expected);
   });
 
-  it('widens the bar only on narrow phones', () => {
+  it('widens the bar below 400 dp while preserving the narrow label breakpoint', () => {
     expect(getTabBarHorizontalLayout(320)).toEqual({ start: 8, end: 8 });
-    expect(getTabBarHorizontalLayout(390)).toEqual({ start: 22, end: 22 });
+    expect(getTabBarHorizontalLayout(361)).toEqual({ start: 8, end: 8 });
+    expect(getTabBarHorizontalLayout(390)).toEqual({ start: 8, end: 8 });
+    expect(getTabBarHorizontalLayout(399)).toEqual({ start: 8, end: 8 });
+    expect(getTabBarHorizontalLayout(400)).toEqual({ start: 22, end: 22 });
     expect(getTabBarHorizontalLayout(1280)).toEqual({ start: 160, end: 160 });
   });
 });

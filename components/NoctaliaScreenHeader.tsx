@@ -54,35 +54,38 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
-  const isNarrow = width < 380;
+  const { width, fontScale } = useWindowDimensions();
+  const isNarrow = width < 480;
+  const stackActions = actions.length > 0 && (
+    (width < 380 && actions.length >= 3) || fontScale >= 1.3
+  );
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const iconButtonBg = noctalia.surface.soft;
   const quietIconColor = noctalia.text.secondary;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + ThemeLayout.spacing.md }]}>
-      <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow]}>
-        <View style={styles.titleBlock}>
+      <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow, stackActions && styles.titleRowStacked]}>
+        <View style={[styles.titleBlock, stackActions && styles.titleBlockStacked]}>
           <Text
             style={[styles.brand, { color: noctalia.text.primary }]}
-            numberOfLines={1}
-            adjustsFontSizeToFit
+            numberOfLines={stackActions ? undefined : 1}
+            adjustsFontSizeToFit={!stackActions}
             minimumFontScale={0.84}
           >
             Noctalia
           </Text>
           <Text
             style={[styles.subtitle, { color: noctalia.text.secondary }]}
-            numberOfLines={1}
-            adjustsFontSizeToFit
+            numberOfLines={stackActions ? undefined : 1}
+            adjustsFontSizeToFit={!stackActions}
             minimumFontScale={0.84}
           >
             {t(titleKey)}
           </Text>
         </View>
         {actions.length > 0 ? (
-          <View style={[styles.headerActions, isNarrow && styles.headerActionsNarrow]}>
+          <View style={[styles.headerActions, isNarrow && styles.headerActionsNarrow, stackActions && styles.headerActionsStacked]}>
             {actions.map((action) => (
               <Pressable
                 key={action.accessibilityLabel}
@@ -182,6 +185,14 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
   },
+  titleRowStacked: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  },
+  titleBlockStacked: {
+    flex: 0,
+    width: '100%',
+  },
   brand: {
     fontFamily: Fonts.fraunces.semiBold,
     fontSize: 36,
@@ -198,6 +209,9 @@ const styles = StyleSheet.create({
   },
   headerActionsNarrow: {
     gap: ThemeLayout.spacing.sm,
+  },
+  headerActionsStacked: {
+    flexWrap: 'wrap',
   },
   iconButton: {
     width: 60,

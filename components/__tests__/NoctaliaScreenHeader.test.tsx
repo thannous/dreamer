@@ -1,10 +1,13 @@
 /* @jest-environment jsdom */
 
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
 import React from 'react';
 
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
+
+let mockWidth = 375;
+let mockFontScale = 1;
 
 jest.mock('react-native', () => {
   const React = require('react');
@@ -56,7 +59,7 @@ jest.mock('react-native', () => {
     },
     Text: createElement('span'),
     View: createElement('div'),
-    useWindowDimensions: () => ({ width: 375, height: 812, scale: 1, fontScale: 1 }),
+    useWindowDimensions: () => ({ width: mockWidth, height: 812, scale: 1, fontScale: mockFontScale }),
   };
 });
 
@@ -99,6 +102,60 @@ jest.mock('@/constants/noctaliaDesign', () => ({
 
 afterEach(() => {
   cleanup();
+  mockWidth = 375;
+  mockFontScale = 1;
+});
+
+const nativeStyle = (element: Element | null) => {
+  const styles = JSON.parse(element?.getAttribute('data-flex-shrink') ?? '{}');
+  return Array.isArray(styles) ? Object.assign({}, ...styles.filter(Boolean)) : styles;
+};
+
+describe('NoctaliaScreenHeader responsive actions', () => {
+  it.each([
+    [320, 1, 3, true],
+    [375, 1, 3, true],
+    [375, 1, 2, false],
+    [390, 1, 3, false],
+    [430, 1, 3, false],
+    [480, 1, 3, false],
+    [1024, 1, 3, false],
+    [320, 1.3, 1, true],
+    [390, 1.3, 3, true],
+    [430, 2, 3, true],
+    [1024, 2, 3, true],
+    [390, 2, 0, false],
+  ])('adapts width %i, font scale %s and %i actions (stacked=%s)', (width: number, fontScale: number, actionCount: number, stacked: boolean) => {
+    mockWidth = width;
+    mockFontScale = fontScale;
+    const actions = Array.from({ length: actionCount }, (_, index) => ({
+      icon: 'sparkles' as const,
+      accessibilityLabel: `Action ${index + 1}`,
+      onPress: jest.fn(),
+    }));
+    render(<NoctaliaScreenHeader titleKey="nav.home" actions={actions} />);
+
+    const brand = screen.getByText('Noctalia');
+    const subtitle = screen.getByText('nav.home');
+    const titleBlock = brand.parentElement;
+    const titleRow = titleBlock?.parentElement ?? null;
+    expect(nativeStyle(titleRow).flexDirection).toBe(stacked ? 'column' : 'row');
+    expect(nativeStyle(titleRow).paddingHorizontal).toBe(width < 480 ? 16 : 24);
+    expect(nativeStyle(titleBlock).flex).toBe(stacked ? 0 : 1);
+    if (stacked) expect(nativeStyle(titleBlock).width).toBe('100%');
+    [brand, subtitle].forEach((text) => {
+      expect(text.getAttribute('data-number-of-lines')).toBe(stacked ? null : '1');
+    });
+    actions.forEach((action) => {
+      const button = screen.getByRole('button', { name: action.accessibilityLabel });
+      expect(nativeStyle(button).width).toBe(width < 480 ? 52 : 60);
+      expect(nativeStyle(button).height).toBe(width < 480 ? 52 : 60);
+      expect(nativeStyle(button.parentElement).gap).toBe(width < 480 ? 8 : 16);
+      expect(nativeStyle(button.parentElement).flexWrap).toBe(stacked ? 'wrap' : undefined);
+      fireEvent.click(button);
+      expect(action.onPress).toHaveBeenCalledTimes(1);
+    });
+  });
 });
 
 describe('NoctaliaScreenHeader chips', () => {

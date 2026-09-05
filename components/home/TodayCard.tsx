@@ -98,12 +98,11 @@ export const TodayCard = memo(function TodayCard({
             className="mt-[18px] min-h-[50px] flex-row items-center justify-center gap-2 rounded-full border border-champagne-soft bg-champagne px-5 py-[13px] dark:bg-ink-active"
           >
             <Text
-              className="font-sans-bold text-[15px] text-on-champagne dark:text-champagne-on"
-              numberOfLines={1}
+              className="min-w-0 flex-1 text-center font-sans-bold text-[15px] text-on-champagne dark:text-champagne-on"
             >
               {t(`home.today.${state.id}.cta`)}
             </Text>
-            <Text className="font-sans-bold text-[15px] text-on-champagne dark:text-champagne-on">
+            <Text className="shrink-0 font-sans-bold text-[15px] text-on-champagne dark:text-champagne-on">
               →
             </Text>
           </PressableScale>

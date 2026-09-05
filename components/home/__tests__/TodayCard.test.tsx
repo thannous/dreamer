@@ -23,8 +23,13 @@ jest.mock('react-native', () => {
     View: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
       <div data-testid={testID}>{children}</div>
     ),
-    Text: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
-      <span data-testid={testID}>{children}</span>
+    Text: ({ children, testID, className, numberOfLines }: {
+      children?: React.ReactNode;
+      testID?: string;
+      className?: string;
+      numberOfLines?: number;
+    }) => (
+      <span data-testid={testID} data-native-class={className} data-number-of-lines={numberOfLines}>{children}</span>
     ),
     Pressable: ({
       accessibilityLabel,
@@ -119,6 +124,12 @@ describe('TodayCard', () => {
     expect(screen.getByText(`home.today.${state.id}.body`)).toBeTruthy();
     expect(screen.getAllByTestId(TID.Button.HomeTodayCta)).toHaveLength(1);
     expect(screen.getByLabelText(`home.today.${state.id}.cta`)).toBeTruthy();
+    const ctaLabel = screen.getByText(`home.today.${state.id}.cta`);
+    expect(ctaLabel.getAttribute('data-number-of-lines')).toBeNull();
+    expect(ctaLabel.getAttribute('data-native-class')?.split(' ')).toEqual(
+      expect.arrayContaining(['flex-1', 'min-w-0', 'text-center'])
+    );
+    expect(screen.getByText('→').getAttribute('data-native-class')?.split(' ')).toContain('shrink-0');
     expect(screen.queryByTestId(TID.Button.InspirationLastDreamChat)).toBeNull();
     expect(screen.queryByTestId(TID.Button.InspirationPulseCta)).toBeNull();
 

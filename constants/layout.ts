@@ -33,7 +33,7 @@ export function getBottomNavigationLayout(
   const stackedLabels = narrow || safeFontScale >= LARGE_TEXT_FONT_SCALE;
   const horizontalLayout = getTabBarHorizontalLayout(width);
   const itemWidth = (width - horizontalLayout.start * 2 - (narrow ? 8 : 16) - 2) / 5;
-  const labelFontSize = compact || narrow ? 11 : 12;
+  const labelFontSize = compact || width < 400 ? 11 : 12;
   const labelLineHeight = 16;
   // Keep visible words on narrow screens and for people using large text.
   // The longest translated label has eleven characters. Reserve conservative
@@ -66,7 +66,7 @@ export function getBottomNavigationLayout(
 export const TAB_BAR_HORIZONTAL_MARGIN = 22;
 
 export const getTabBarHorizontalLayout = (viewportWidth: number) => {
-  const horizontalMargin = isNarrowBottomNavigation(viewportWidth)
+  const horizontalMargin = viewportWidth < 400
     ? NARROW_TAB_BAR_HORIZONTAL_MARGIN
     : TAB_BAR_HORIZONTAL_MARGIN;
   const availableWidth = Math.max(0, viewportWidth - horizontalMargin * 2);
