@@ -5,6 +5,7 @@
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
+const { inspectTi429DataPreservation } = require('./lib/maestro-ti429-flow-contract');
 
 const ROOT = path.resolve(__dirname, '..');
 const MANIFEST_PATH = 'maestro/dreamer-vnext-ti429-matrix.json';
@@ -240,8 +241,8 @@ function inspectShortFragmentFlow(flowText) {
   if (flowText.includes('LONG-START') || flowText.includes('Release lifecycle sentinel')) {
     issues.push('short fragment flow still uses a generic long/lifecycle sentinel');
   }
-  if ((flowText.match(/clearState:\s*true/g) || []).length !== 1) {
-    issues.push('short fragment flow must clearState only at the beginning');
+  if (/clearState:\s*true/.test(flowText)) {
+    issues.push('short fragment flow must never clearState on the base app');
   }
   if (flowTapsId(flowText, 'btn.dream.primaryCta') || flowTapsId(flowText, 'btn.journal.illustrate') || flowTapsId(flowText, 'btn.paywall.purchase')) {
     issues.push('short fragment flow must not start analysis, generate an image or purchase');
@@ -301,8 +302,8 @@ function inspectGuestUnlimitedFlow(flowText) {
       }
     }
   }
-  if ((flowText.match(/clearState:\s*true/g) || []).length !== 1) {
-    issues.push('guest-unlimited flow must clearState only at the beginning');
+  if (/clearState:\s*true/.test(flowText)) {
+    issues.push('guest-unlimited flow must never clearState on the base app');
   }
   if (flowTapsId(flowText, 'btn.dream.primaryCta') || flowTapsId(flowText, 'btn.journal.illustrate') || flowTapsId(flowText, 'btn.paywall.purchase') || flowTapsId(flowText, 'btn.auth.signIn') || flowTapsId(flowText, 'btn.auth.signUp')) {
     issues.push('guest-unlimited flow must not start analysis, generate an image, sign in or purchase');
@@ -491,6 +492,7 @@ function inspectCheck(rootDir, check) {
   issues.push(...inspectGuestRealAnalysisSideloadBan(check));
   if (check.flow && fs.existsSync(path.join(rootDir, check.flow))) {
     const flowText = fs.readFileSync(path.join(rootDir, check.flow), 'utf8');
+    issues.push(...inspectTi429DataPreservation(rootDir, check.flow));
     issues.push(...inspectReleaseIdentityAnchors(flowText, check));
     if (Array.isArray(check.requiredTokens)) {
       const missing = check.requiredTokens.filter((token) => !flowText.includes(token));

@@ -47,8 +47,9 @@ jest.mock('@/lib/syncObservability', () => ({
     mockReportSyncQueueClearedWithPending(...args),
 }));
 
-const createFakeIndexedDB = () => {
+const createFakeIndexedDB = (initialValues?: Record<string, string>) => {
   const stores = new Map<string, Map<string, string>>();
+  if (initialValues) stores.set('storage', new Map(Object.entries(initialValues)));
   const schedule = (cb: () => void) => Promise.resolve().then(cb);
 
   class FakeDB {
@@ -119,6 +120,224 @@ describe('storageServiceReal', () => {
     mockReportSyncQueueClearedWithPending.mockReset();
     const { Platform } = require('react-native');
     Platform.OS = 'web';
+  });
+
+  describe('strict recording draft reads', () => {
+    function nativeStore(initialValue: string | null) {
+      const { Platform } = require('react-native');
+      Platform.OS = 'android';
+      const values = new Map<string, string>();
+      if (initialValue != null) values.set(RECORDING_TRANSCRIPT_KEY, initialValue);
+      const kv = {
+        getItem: typedJestFn<(key: string) => Promise<string | null>>()
+          .mockImplementation(async (key) => values.get(key) ?? null),
+        setItem: typedJestFn<(key: string, value: string) => Promise<void>>()
+          .mockImplementation(async (key, value) => { values.set(key, value); }),
+        removeItem: typedJestFn<(key: string) => Promise<void>>()
+          .mockImplementation(async (key) => { values.delete(key); }),
+      };
+      jest.doMock('expo-sqlite/kv-store', () => ({ default: kv }));
+      jest.doMock('@react-native-async-storage/async-storage', () => ({ default: mockAsyncStorage }));
+      return { kv, values };
+    }
+
+    it.each([null, 'older legacy text'])('does not overwrite an unreadable native draft using legacy %s', async (legacy: string | null) => {
+      const { kv, values } = nativeStore('original dream');
+      mockAsyncStorage.getItem.mockResolvedValue(legacy);
+      kv.getItem.mockRejectedValueOnce(new Error('temporary read failure'));
+      const storage = require('../storageServiceReal');
+      expect(await storage.getRecordingDraft()).toEqual({ status: 'error' });
+      expect(kv.setItem).not.toHaveBeenCalled();
+      expect(mockAsyncStorage.getItem).not.toHaveBeenCalled();
+      expect(mockAsyncStorage.removeItem).not.toHaveBeenCalled();
+      expect(values.get(RECORDING_TRANSCRIPT_KEY)).toBe('original dream');
+      expect(await storage.getRecordingDraft()).toEqual({ status: 'loaded', value: 'original dream' });
+    });
+
+    it('returns error after SQLite busy retries and still allows a later retry', async () => {
+      jest.useFakeTimers();
+      try {
+        const { kv } = nativeStore('original dream');
+        kv.getItem.mockRejectedValueOnce(new Error('SQLITE_BUSY'))
+          .mockRejectedValueOnce(new Error('SQLITE_BUSY'))
+          .mockRejectedValueOnce(new Error('SQLITE_BUSY'));
+        const storage = require('../storageServiceReal');
+        const pending = storage.getRecordingDraft();
+        await jest.runAllTimersAsync();
+        expect(await pending).toEqual({ status: 'error' });
+        expect(kv.getItem).toHaveBeenCalledTimes(3);
+        expect(kv.setItem).not.toHaveBeenCalled();
+        expect(await storage.getRecordingDraft()).toEqual({ status: 'loaded', value: 'original dream' });
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('does not let the legacy transcript reader migrate stale text after a primary read error', async () => {
+      const { kv, values } = nativeStore('original dream');
+      mockAsyncStorage.getItem.mockResolvedValue('older legacy text');
+      kv.getItem.mockRejectedValueOnce(new Error('temporary primary read failure'));
+      const storage = require('../storageServiceReal');
+      expect(await storage.getSavedTranscript()).toBe('');
+      expect(values.get(RECORDING_TRANSCRIPT_KEY)).toBe('original dream');
+      expect(kv.setItem).not.toHaveBeenCalled();
+      expect(mockAsyncStorage.removeItem).not.toHaveBeenCalled();
+    });
+
+    it('reports absence only after primary and legacy reads succeed', async () => {
+      const { kv } = nativeStore(null);
+      const storage = require('../storageServiceReal');
+      expect(await storage.getRecordingDraft()).toEqual({ status: 'absent' });
+      expect(kv.getItem).toHaveBeenCalledTimes(1);
+      expect(mockAsyncStorage.getItem).toHaveBeenCalledTimes(1);
+      expect(kv.setItem).not.toHaveBeenCalled();
+      mockAsyncStorage.getItem.mockRejectedValueOnce(new Error('legacy unreadable'));
+      expect(await storage.getRecordingDraft()).toEqual({ status: 'error' });
+    });
+
+    it('migrates legacy text only after confirmed absence and successful persistence', async () => {
+      const { kv, values } = nativeStore(null);
+      mockAsyncStorage.getItem.mockResolvedValue('legacy dream');
+      kv.setItem.mockRejectedValueOnce(new Error('disk full'));
+      const storage = require('../storageServiceReal');
+      expect(await storage.getRecordingDraft()).toEqual({ status: 'error' });
+      expect(mockAsyncStorage.removeItem).not.toHaveBeenCalled();
+      expect(await storage.getRecordingDraft()).toEqual({ status: 'loaded', value: 'legacy dream' });
+      expect(values.get(RECORDING_TRANSCRIPT_KEY)).toBe('legacy dream');
+      expect(mockAsyncStorage.removeItem).toHaveBeenCalledTimes(1);
+    });
+
+    it('retries unavailable native module initialization without claiming legacy or memory is durable', async () => {
+      const { kv } = nativeStore('original dream');
+      let unavailable = true;
+      jest.doMock('expo-sqlite/kv-store', () => {
+        if (unavailable) throw new Error('native module not ready');
+        return { default: kv };
+      });
+      mockAsyncStorage.getItem.mockResolvedValue('stale legacy');
+      const storage = require('../storageServiceReal');
+      expect(await storage.getRecordingDraft()).toEqual({ status: 'error' });
+      expect(mockAsyncStorage.getItem).not.toHaveBeenCalled();
+      unavailable = false;
+      expect(await storage.getRecordingDraft()).toEqual({ status: 'loaded', value: 'original dream' });
+    });
+
+    it.each(['onblocked', 'onerror'])('does not fall back on IndexedDB %s and retries even after a permissive read', async (event: string) => {
+      const previous = globalThis.indexedDB;
+      let fail = true;
+      const healthy = createFakeIndexedDB({ [RECORDING_TRANSCRIPT_KEY]: 'primary dream' });
+      const open = jest.fn(() => {
+        if (!fail) return healthy.open();
+        const request: any = { error: new Error('open failed') };
+        Promise.resolve().then(() => request[event]?.());
+        return request;
+      });
+      try {
+        (globalThis as any).indexedDB = { open };
+        localStorage.setItem(RECORDING_TRANSCRIPT_KEY, 'stale legacy');
+        const storage = require('../storageServiceReal');
+        expect(await storage.getSavedTranscript()).toBe('');
+        expect(await storage.getRecordingDraft()).toEqual({ status: 'error' });
+        expect(localStorage.getItem(RECORDING_TRANSCRIPT_KEY)).toBe('stale legacy');
+        fail = false;
+        expect(await storage.getRecordingDraft()).toEqual({ status: 'loaded', value: 'primary dream' });
+        expect(open).toHaveBeenCalledTimes(3);
+      } finally {
+        (globalThis as any).indexedDB = previous;
+      }
+    });
+
+    it('does not migrate localStorage after an IndexedDB read failure', async () => {
+      const previous = globalThis.indexedDB;
+      const factory = createFakeIndexedDB({ [RECORDING_TRANSCRIPT_KEY]: 'original web dream' });
+      const open = factory.open;
+      let unreadable = true;
+      factory.open = () => {
+        const request = open();
+        const transaction = request.result.transaction.bind(request.result);
+        request.result.transaction = (...args: unknown[]) => {
+          if (unreadable) throw new Error('read blocked');
+          return transaction(...args);
+        };
+        return request;
+      };
+      try {
+        (globalThis as any).indexedDB = factory;
+        localStorage.setItem(RECORDING_TRANSCRIPT_KEY, 'stale legacy');
+        const storage = require('../storageServiceReal');
+        expect(await storage.getRecordingDraft()).toEqual({ status: 'error' });
+        unreadable = false;
+        expect(await storage.getRecordingDraft()).toEqual({ status: 'loaded', value: 'original web dream' });
+        expect(localStorage.getItem(RECORDING_TRANSCRIPT_KEY)).toBe('stale legacy');
+      } finally {
+        (globalThis as any).indexedDB = previous;
+      }
+    });
+
+    it.each([null, 42])('does not mistake malformed IndexedDB value %s for absence', async (value: unknown) => {
+      const previous = globalThis.indexedDB;
+      try {
+        (globalThis as any).indexedDB = createFakeIndexedDB({ [RECORDING_TRANSCRIPT_KEY]: value as string });
+        localStorage.setItem(RECORDING_TRANSCRIPT_KEY, 'stale legacy');
+        const storage = require('../storageServiceReal');
+        expect(await storage.getRecordingDraft()).toEqual({ status: 'error' });
+        expect(localStorage.getItem(RECORDING_TRANSCRIPT_KEY)).toBe('stale legacy');
+      } finally {
+        (globalThis as any).indexedDB = previous;
+      }
+    });
+
+    it('closes a late IndexedDB open after it was already rejected as blocked', async () => {
+      const previous = globalThis.indexedDB;
+      const close = jest.fn();
+      const request: any = { result: { close } };
+      try {
+        (globalThis as any).indexedDB = {
+          open: () => {
+            Promise.resolve().then(() => request.onblocked?.());
+            return request;
+          },
+        };
+        const storage = require('../storageServiceReal');
+        expect(await storage.getRecordingDraft()).toEqual({ status: 'error' });
+        request.onsuccess();
+        expect(close).toHaveBeenCalledTimes(1);
+      } finally {
+        (globalThis as any).indexedDB = previous;
+      }
+    });
+
+    it('does not downgrade a previously failed IndexedDB open to absence if the factory disappears', async () => {
+      const previous = globalThis.indexedDB;
+      try {
+        (globalThis as any).indexedDB = { open: () => { throw new Error('temporarily inaccessible'); } };
+        const storage = require('../storageServiceReal');
+        expect(await storage.getRecordingDraft()).toEqual({ status: 'error' });
+        delete (globalThis as any).indexedDB;
+        expect(await storage.getRecordingDraft()).toEqual({ status: 'error' });
+      } finally {
+        (globalThis as any).indexedDB = previous;
+      }
+    });
+
+    it('uses localStorage only when IndexedDB is genuinely unavailable', async () => {
+      const previous = globalThis.indexedDB;
+      try {
+        delete (globalThis as any).indexedDB;
+        const storage = require('../storageServiceReal');
+        expect(await storage.getRecordingDraft()).toEqual({ status: 'absent' });
+        localStorage.setItem(RECORDING_TRANSCRIPT_KEY, 'local dream');
+        expect(await storage.getRecordingDraft()).toEqual({ status: 'loaded', value: 'local dream' });
+        const spy = jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('denied'); });
+        try {
+          expect(await storage.getRecordingDraft()).toEqual({ status: 'error' });
+        } finally {
+          spy.mockRestore();
+        }
+      } finally {
+        (globalThis as any).indexedDB = previous;
+      }
+    });
   });
 
   it('persists and reads notification settings via localStorage when IndexedDB is unavailable', async () => {
@@ -801,7 +1020,7 @@ describe('storageServiceReal', () => {
     expect(await file.text()).toContain('Legacy file dream');
   });
 
-  it('uses memory storage when native stores are unavailable', async () => {
+  it('keeps memory fallback for preferences but never reports a durable transcript when native stores are unavailable', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
@@ -813,15 +1032,14 @@ describe('storageServiceReal', () => {
     });
 
     const storage = require('../storageServiceReal');
-    await storage.saveTranscript('draft transcript');
-
-    expect(await storage.getSavedTranscript()).toBe('draft transcript');
-
-    await storage.clearSavedTranscript();
+    await storage.saveThemePreference('dark');
+    expect(await storage.getThemePreference()).toBe('dark');
+    await storage.saveTranscript('non-durable transcript');
+    expect(await storage.getRecordingDraft()).toEqual({ status: 'error' });
     expect(await storage.getSavedTranscript()).toBe('');
   });
 
-  it('falls back to localStorage when IndexedDB is blocked', async () => {
+  it('keeps permissive preference fallback when IndexedDB is blocked without exposing a stale draft', async () => {
     const originalIndexedDB = (globalThis as any).indexedDB;
     const originalDev = (globalThis as any).__DEV__;
     (globalThis as any).__DEV__ = true;
@@ -836,11 +1054,15 @@ describe('storageServiceReal', () => {
 
     (globalThis as any).indexedDB = createBlockedIndexedDB();
     localStorage.setItem(RECORDING_TRANSCRIPT_KEY, 'blocked transcript');
+    localStorage.setItem(THEME_PREFERENCE_KEY, JSON.stringify('dark'));
 
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
     const storage = require('../storageServiceReal');
 
-    expect(await storage.getSavedTranscript()).toBe('blocked transcript');
+    expect(await storage.getThemePreference()).toBe('dark');
+    expect(await storage.getSavedTranscript()).toBe('');
+    expect(await storage.getRecordingDraft()).toEqual({ status: 'error' });
+    expect(localStorage.getItem(RECORDING_TRANSCRIPT_KEY)).toBe('blocked transcript');
     expect(warnSpy).toHaveBeenCalled();
 
     warnSpy.mockRestore();

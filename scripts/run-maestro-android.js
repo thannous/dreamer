@@ -21,6 +21,10 @@ const {
   prepareAndroidDeviceLocks,
   attachDeviceLockSignals,
 } = require('./android-device-lock');
+const {
+  assertBasePhysicalMaestroGuard,
+  assertReleaseTi429StaysOnBase,
+} = require('./lib/maestro-base-physical-guard');
 
 const PRODUCTION_ANDROID_APP_ID = 'com.tanuki75.noctalia';
 const QA_ANDROID_APP_ID = 'com.tanuki75.noctalia.qa';
@@ -352,7 +356,9 @@ function parseArgs(argv) {
   delete options.appIdOverride;
   delete options.deepLinkSchemeOverride;
   delete options.metroPortSpecified;
-  return { ...options, ...identity };
+  const resolved = { ...options, ...identity };
+  assertReleaseTi429StaysOnBase(resolved);
+  return resolved;
 }
 
 function printHelp() {
@@ -376,6 +382,7 @@ Fast debug:
   --side-by-side-qa retargets production Release suites to
   ${QA_ANDROID_APP_ID} / ${QA_DEEP_LINK_SCHEME} only. Prefer it over
   --app-id/--deep-link-scheme, which must be that exact QA pair.
+  release-ti429 is excluded: its expected proof is the real base package.
   QA identity is local device proof, never Play, Test Store or purchase.
   Physical Android QA requires --device <serial>. The lock key is sha256(android_id),
   not the Wi-Fi host:port. --steal-lock is only for a stale lock after a diagnostic.
@@ -387,7 +394,7 @@ Examples:
   node ./scripts/run-maestro-android.js --suite quotas --parallel auto
   node ./scripts/run-maestro-android.js --suite canary --retries 0 --metro-port 8082 --no-restart-metro
   node ./scripts/run-maestro-android.js --flow maestro/smoke.yml --flow maestro/recording-bottom-sheet.yml --retries 2
-  node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --side-by-side-qa
+  node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --device <serial>
 `.trim());
 }
 
@@ -1398,6 +1405,12 @@ async function main() {
   }
 
   await withMaestroDeviceLock(options, async ({ devices, deviceLocks }) => {
+    assertBasePhysicalMaestroGuard({
+      options,
+      devices,
+      flows,
+      rootDir: ROOT,
+    });
     if (options.startMetro) {
       ensureMockEnv(options.envFile);
       const portReady = await isPortOpen(options.metroPort);
@@ -1501,6 +1514,8 @@ module.exports = {
   assertInstalledReleaseBinary,
   assertReleaseSuiteDoesNotStartMetro,
   assertAndroidIdentity,
+  assertBasePhysicalMaestroGuard,
+  assertReleaseTi429StaysOnBase,
   buildMetroLaunchSpec,
   assertVoiceFlowAuthorization,
   assertSensitiveFlowAuthorization,

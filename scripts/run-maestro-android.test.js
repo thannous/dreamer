@@ -145,10 +145,16 @@ describe('run-maestro-android Release preflight', () => {
     const main = source.slice(source.indexOf('async function main()'));
     const lockAt = main.indexOf('withMaestroDeviceLock');
     expect(lockAt).toBeGreaterThan(0);
+    const guardAt = main.indexOf('assertBasePhysicalMaestroGuard');
+    expect(guardAt).toBeGreaterThan(lockAt);
     expect(main.indexOf('stopMetro')).toBeGreaterThan(lockAt);
     expect(main.indexOf('startMetroDetached')).toBeGreaterThan(lockAt);
     expect(main.indexOf('configureMetroReverse')).toBeGreaterThan(lockAt);
     expect(main.indexOf('configureAndroidInput')).toBeGreaterThan(lockAt);
+    expect(main.indexOf('startMetroDetached')).toBeGreaterThan(guardAt);
+    expect(main.indexOf('configureAndroidInput')).toBeGreaterThan(guardAt);
+    expect(main.indexOf('verifyInstalledReleaseBinary')).toBeGreaterThan(guardAt);
+    expect(source).not.toContain('--suite release-ti429 --retries 0 --no-start-metro --side-by-side-qa');
   });
 
   it('reads the expected Android package and versions from app.json', () => {
@@ -705,17 +711,12 @@ describe('run-maestro-android Release preflight', () => {
       appId: PRODUCTION_ANDROID_APP_ID,
       deepLinkScheme: PRODUCTION_DEEP_LINK_SCHEME,
     });
-    expect(parseArgs([
+    expect(() => parseArgs([
       '--suite',
       'release-ti429',
       '--no-start-metro',
       '--side-by-side-qa',
-    ])).toMatchObject({
-      suite: 'release-ti429',
-      sideBySideQa: true,
-      appId: QA_ANDROID_APP_ID,
-      deepLinkScheme: QA_DEEP_LINK_SCHEME,
-    });
+    ])).toThrow('must target the base app');
     expect(parseArgs([
       '--suite',
       'release',

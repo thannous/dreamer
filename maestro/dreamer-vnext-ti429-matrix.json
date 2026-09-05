@@ -4,6 +4,8 @@
   "title": "Dreamer VNext TI-429 executable matrix",
   "binary": "mixed: release-native, mock-native, manual, web/tablet. Nothing in this file is device proof. Target: base com.tanuki75.noctalia / noctalia, no side-by-side flag. (Anterieur au 2026-09-04 : .qa retire.)",
   "limits": [
+    "The eight release-ti429 flows preserve the installed state: no reset, permissions or network changes. Each synthetic editor input requires hydration ready and exactly zero raw characters; a pre-existing or unreadable draft blocks the run, never a pass/skip. Synthetic saved dreams remain in Journal.",
+    "Analysis-interrupt requires independent QA to verify real-analysis eligibility and existing paid-session authorization before selecting the flow. A CTA tap or saved-story recovery alone does not prove that a real analysis started or was interrupted.",
     "This harness never launches Maestro, ADB, prebuild, install, commit, push or Linear.",
     "npm run test:e2e:release:ti429:local executes only the release-ti429 suite. Other automated checks keep the command listed on the row.",
     "release-native rows target an installed Release binary. mock-native rows use mock fixtures and are not Release-binary proof.",
@@ -48,7 +50,7 @@
         "id: input.dreamTranscript",
         "takeScreenshot: ti429-draft-kill-restored"
       ],
-      "evidence": "one screenshot of restored draft after process death. Unexecuted = blocked.",
+      "evidence": "one screenshot of the restored synthetic draft after process death, then save and verify the story in Journal detail. No data reset. Unexecuted = blocked.",
       "runtime": "release-native"
     },
     {
@@ -223,7 +225,7 @@
       "mode": "automated",
       "flow": "maestro/release-journal-trends-deeplinks.yml",
       "command": "node ./scripts/run-maestro-android.js --suite release-ti429 --retries 0 --no-start-metro --flow maestro/release-journal-trends-deeplinks.yml",
-      "evidence": "one screenshot of recovered journal detail after search. Trends and weekly recap remain asserted. Unexecuted = blocked.",
+      "evidence": "one screenshot of recovered journal detail selected by its synthetic transcript, without modifying existing search/filter state. Trends and weekly recap remain asserted. Unexecuted = blocked.",
       "runtime": "release-native",
       "notes": "Release-native. Covers ${DEEP_LINK_SCHEME || \"noctalia\"}://journal (list), ${DEEP_LINK_SCHEME || \"noctalia\"}://statistics / Trends, ${DEEP_LINK_SCHEME || \"noctalia\"}://weekly-recap and ${DEEP_LINK_SCHEME || \"noctalia\"}://recording. Does not cover analysis-ready ${DEEP_LINK_SCHEME || \"noctalia\"}://journal/{id}. Base scheme/package proof is local device proof, not Store/production install-source proof.",
       "requiredTokens": [

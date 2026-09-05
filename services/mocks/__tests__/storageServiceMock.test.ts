@@ -12,6 +12,7 @@ import {
     getNotificationSettings,
     getPendingDreamMutations,
     getRecordingInputModePreference,
+    getRecordingDraft,
     getRitualPreference,
     getRitualStepProgress,
     getSavedDreams,
@@ -184,6 +185,14 @@ describe('storageServiceMock', () => {
   });
 
   describe('transcript management', () => {
+    it('distinguishes an absent draft from a saved draft through the strict API', async () => {
+      resetMockStorage();
+      expect(await getRecordingDraft()).toEqual({ status: 'absent' });
+      await saveTranscript('  remembered dream  ');
+      expect(await getRecordingDraft()).toEqual({ status: 'loaded', value: '  remembered dream  ' });
+      await clearSavedTranscript();
+      expect(await getRecordingDraft()).toEqual({ status: 'absent' });
+    });
     it('given saved transcript when retrieving transcript then returns saved transcript', async () => {
       // Given
       const testTranscript = 'This is a test transcript for audio recording';

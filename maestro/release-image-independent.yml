@@ -5,24 +5,13 @@ name: Release independent illustration CTA
 tags:
   - release
   - image
-onFlowComplete:
-  - setAirplaneMode: disabled
 ---
-- setAirplaneMode: disabled
 - launchApp:
-    clearState: true
-    permissions:
-      all: allow
-- extendedWaitUntil:
-    visible:
-      id: screen.onboarding
-    timeout: 20000
-- runFlow: subflows/dismiss-first-launch-onboarding.yml
+    stopApp: false
 - runFlow: subflows/open-release-recording.yml
 - runFlow: subflows/ensure-recording-text.yml
 
-- tapOn:
-    id: input.dreamTranscript
+- runFlow: subflows/ti429-ready-empty-editor.yml
 - inputText: "Independent image sentinel lantern garden"
 - hideKeyboard
 - scrollUntilVisible:

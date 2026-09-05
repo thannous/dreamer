@@ -14,6 +14,7 @@ const mockCategorizeDream = jest.fn();
 const mockForceStopRecording = jest.fn();
 const mockGetInputModePreference = jest.fn();
 const mockGetSavedTranscript = jest.fn(async (): Promise<string> => '');
+const mockGetRecordingVoiceHintCompleted = jest.fn(async () => true);
 const mockSaveTranscript = jest.fn(async (_value: string): Promise<void> => undefined);
 const mockBack = jest.fn();
 const mockCanGoBack = jest.fn(() => false);
@@ -133,6 +134,7 @@ jest.doMock('react-native', () => {
         onPress,
         testID,
         accessibilityLabel,
+        style: _style,
         ...props
       }: {
         children?: React.ReactNode;
@@ -274,17 +276,20 @@ jest.doMock('@/components/recording/RecordingTextInput', () => {
         layout,
         onChange,
         onSwitchToVoice,
+        showVoiceHint,
         value,
       }: {
         disabled?: boolean;
         layout: string;
         onChange: (value: string) => void;
         onSwitchToVoice: () => void;
+        showVoiceHint?: boolean;
         value: string;
       },
       _ref: React.ForwardedRef<unknown>
     ) => (
       <div data-layout={layout} data-testid="recording-composer">
+        {showVoiceHint ? <span data-testid="recording-voice-hint">Voice hint</span> : null}
         <textarea
           data-testid={TID.Input.DreamTranscript}
           disabled={disabled}
@@ -574,8 +579,12 @@ jest.doMock('@/services/nativeSpeechRecognition', () => {
 
 jest.doMock('@/services/storageService', () => ({
   getRecordingInputModePreference: mockGetInputModePreference,
-  getRecordingVoiceHintCompleted: jest.fn().mockResolvedValue(true),
+  getRecordingVoiceHintCompleted: mockGetRecordingVoiceHintCompleted,
   getSavedTranscript: mockGetSavedTranscript,
+  getRecordingDraft: async () => {
+    const value = await mockGetSavedTranscript();
+    return value ? { status: 'loaded', value } : { status: 'absent' };
+  },
   saveRecordingInputModePreference: mockSaveInputModePreference,
   saveRecordingVoiceHintCompleted: jest.fn().mockResolvedValue(undefined),
   saveTranscript: mockSaveTranscript,
@@ -610,6 +619,7 @@ describe('Recording screen', () => {
     mockGetSavedTranscript.mockReset();
     mockSaveTranscript.mockReset();
     mockGetSavedTranscript.mockResolvedValue('');
+    mockGetRecordingVoiceHintCompleted.mockResolvedValue(true);
     mockSaveTranscript.mockResolvedValue(undefined);
     mockAddDream.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream, id: 42 }));
     mockAnalyzeDream.mockImplementation(async (id: number, transcript: string) => ({
@@ -1138,6 +1148,69 @@ describe('Recording screen', () => {
       ).toBe('stored dream');
     });
     expect(mockSaveTranscript).not.toHaveBeenCalled();
+  });
+
+  it('offers retry after a failed restore and restores the original before accepting edits', async () => {
+    let resolveRetry: ((value: string) => void) | undefined;
+    mockGetSavedTranscript
+      .mockRejectedValueOnce(new Error('storage unavailable'))
+      .mockImplementationOnce(() => new Promise<string>((resolve) => { resolveRetry = resolve; }));
+    mockGetInputModePreference.mockResolvedValue('voice');
+    mockGetRecordingVoiceHintCompleted.mockResolvedValue(false);
+    mockViewportWidth = 1280;
+
+    render(<RecordingScreen />);
+    expect(screen.getByText('recording.draft_restore.loading')).toBeTruthy();
+    expect(screen.getByTestId(TID.Screen.Recording).getAttribute('aria-busy')).toBe('true');
+    expect(screen.queryByTestId(TID.Component.RecordingDraftProgress)).toBeNull();
+    expect(screen.queryByTestId('recording-voice-hint')).toBeNull();
+
+    expect(await screen.findByText('recording.draft_restore.error')).toBeTruthy();
+    expect(screen.getByTestId(TID.Screen.Recording).getAttribute('aria-busy')).toBe('false');
+    const input = screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement;
+    expect(input.disabled).toBe(true);
+    expect((screen.getByTestId('recording-save') as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.queryByTestId(TID.Component.RecordingDraftProgress)).toBeNull();
+    expect(screen.queryByTestId('recording-voice-hint')).toBeNull();
+    fireEvent.click(screen.getByTestId('recording-mode-text'));
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    fireEvent.change(input, { target: { value: 'unsafe early edit' } });
+    expect(input.value).toBe('');
+    expect(screen.getByTestId('recording-mode').getAttribute('data-value')).toBe('voice');
+    expect(mockStartRecording).not.toHaveBeenCalled();
+    expect(mockSaveInputModePreference).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByTestId(TID.Button.RecordingHome));
+    expect(mockReplace).toHaveBeenCalled();
+
+    const retry = screen.getByRole('button', { name: 'recording.draft_restore.retry' });
+    act(() => {
+      fireEvent.click(retry);
+      fireEvent.click(retry);
+    });
+    expect(mockGetSavedTranscript).toHaveBeenCalledTimes(2);
+    expect(screen.getByText('recording.draft_restore.loading')).toBeTruthy();
+    expect((retry as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByTestId(TID.Screen.Recording).getAttribute('aria-busy')).toBe('true');
+    expect(input.disabled).toBe(true);
+    expect(screen.queryByTestId(TID.Component.RecordingDraftProgress)).toBeNull();
+    expect(screen.queryByTestId('recording-voice-hint')).toBeNull();
+    fireEvent.change(input, { target: { value: 'unsafe retry edit' } });
+    act(() => mockAppStateHandler?.('background'));
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+
+    await act(async () => { resolveRetry?.('original durable dream'); });
+    await awaitEditorReady();
+    expect(input.value).toBe('original durable dream');
+    expect(screen.queryByText('recording.draft_restore.loading')).toBeNull();
+    expect(screen.queryByText('recording.draft_restore.error')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'recording.draft_restore.retry' })).toBeNull();
+    expect(screen.getByTestId(TID.Component.RecordingDraftProgress)).toBeTruthy();
+    expect(screen.getByTestId('recording-voice-hint')).toBeTruthy();
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+    fireEvent.change(input, { target: { value: 'original durable dream continued' } });
+    act(() => mockAppStateHandler?.('background'));
+    await waitFor(() => expect(mockSaveTranscript).toHaveBeenCalledTimes(1));
+    expect(mockSaveTranscript).toHaveBeenLastCalledWith('original durable dream continued');
   });
 
   it('keeps a single shared draft when switching Write -> Tell -> Write', async () => {

@@ -9,6 +9,7 @@ let mockRestore: (value: string) => void;
 let mockPartial: (value: string) => void;
 const mockNoteInput = jest.fn((_value: string) => mockHydrated);
 const mockClear = jest.fn();
+const mockRetryHydration = jest.fn();
 const mockStart = jest.fn(async () => ({ success: true }));
 const mockAddDream = jest.fn(async (dream: object) => ({ ...dream, id: 42 }));
 const mockBack = jest.fn();
@@ -56,7 +57,8 @@ jest.mock('react-native-safe-area-context', () => ({
 jest.mock('@/hooks/useRecordingDraftPersistence', () => ({
   useRecordingDraftPersistence: ({ onRestore }: { onRestore: (value: string) => void }) => {
     mockRestore = onRestore;
-    return { isHydrated: mockHydrated, noteInput: mockNoteInput,
+    return { isHydrated: mockHydrated, hydrationStatus: mockHydrated ? 'ready' : 'loading',
+      retryHydration: mockRetryHydration, noteInput: mockNoteInput,
       clearAfterSuccessfulSave: mockClear, lastPersistedValue: '' };
   },
 }));

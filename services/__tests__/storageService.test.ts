@@ -11,6 +11,7 @@ const {
     'getSavedDreams',
     'saveDreams',
     'getSavedTranscript',
+    'getRecordingDraft',
     'saveTranscript',
     'clearSavedTranscript',
     'getNotificationSettings',
@@ -78,6 +79,16 @@ describe('storageService', () => {
     jest.resetModules();
     jest.clearAllMocks();
     mockSetMockMode(false);
+  });
+
+  it.each([false, true])('routes strict draft reads to the selected mock mode %s', async (mockMode: boolean) => {
+    mockSetMockMode(mockMode);
+    const selected = mockMode ? mockService : mockRealService;
+    selected.getRecordingDraft.mockReturnValue(Promise.resolve({ status: 'error' }));
+    const service = require('../storageService');
+    expect(await service.getRecordingDraft()).toEqual({ status: 'error' });
+    expect(selected.getRecordingDraft).toHaveBeenCalledTimes(1);
+    expect((mockMode ? mockRealService : mockService).getRecordingDraft).not.toHaveBeenCalled();
   });
 
   it('given mock mode__when saving dreams__then uses mock implementation', async () => {

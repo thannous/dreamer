@@ -5,48 +5,45 @@ tags:
   - release
   - draft
   - lifecycle
-onFlowComplete:
-  - setAirplaneMode: disabled
 ---
-- setAirplaneMode: disabled
 - launchApp:
-    clearState: true
-    permissions:
-      all: allow
-- extendedWaitUntil:
-    visible:
-      id: screen.onboarding
-    timeout: 20000
-- runFlow: subflows/dismiss-first-launch-onboarding.yml
+    stopApp: false
 - runFlow: subflows/open-release-recording.yml
 - runFlow: subflows/ensure-recording-text.yml
 
-- tapOn:
-    id: input.dreamTranscript
+- runFlow: subflows/ti429-ready-empty-editor.yml
 - inputText: "Draft kill relaunch sentinel"
 - hideKeyboard
 - extendedWaitUntil:
-    visible: "Draft saved on this device|Brouillon enregistré sur cet appareil|Borrador guardado en este dispositivo|Bozza salvata su questo dispositivo|Entwurf auf diesem Gerät gespeichert"
+    visible: "Draft saved on this device|Brouillon enregistré sur cet appareil|Borrador guardado en este dispositivo|Bozza salvata su questo dispositivo|Entwurf auf diesem Gerät gespeichert|Rascunho salvo neste dispositivo"
     timeout: 15000
+- assertVisible:
+    id: input.dreamTranscript
+    text: "^Draft kill relaunch sentinel$"
 
 - pressKey: Home
 - killApp
 - launchApp:
     stopApp: false
-- extendedWaitUntil:
-    visible:
-      id: screen.recording
-    timeout: 20000
-- runFlow:
-    when:
-      notVisible:
-        id: input.dreamTranscript
-    commands:
-      - runFlow: subflows/open-release-recording.yml
-      - runFlow: subflows/ensure-recording-text.yml
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
 - extendedWaitUntil:
     visible: "Draft kill relaunch sentinel"
     timeout: 15000
 - assertVisible:
     id: input.dreamTranscript
+    text: "^Draft kill relaunch sentinel$"
 - takeScreenshot: ti429-draft-kill-restored
+
+# Additive cleanup: retain this synthetic story in Journal, never clear a draft.
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: component.transcriptCard
+    timeout: 30000
+- assertVisible: "Draft kill relaunch sentinel"

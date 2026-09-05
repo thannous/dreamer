@@ -22,19 +22,52 @@ Build-only réellement supporté sur la base, jamais de second package QA :
 npm run android:release:local -- --profile production-apk --abi arm64-v8a
 ```
 
-Installation compatible bloquée : le script refuse l'install du package de base sur physique et la signature du build local debug est incompatible avec la base Play v57 prouvée ; ne jamais désinstaller ni effacer les données pour forcer. Accord piste interne pour une voie d'installation compatible demandé, pas obtenu. Do not run purchase or Test Store flows against a local binary. Auth-credential evidence stays separately blocked when credentials are missing.
+Installation compatible à vérifier : le script de build local ne constitue pas une autorisation d'écraser la base Play ; la signature/version et la source doivent être contrôlées par la QA indépendante. La piste Google Play interne est autorisée par l'utilisateur, mais cette autorisation ne prouve ni upload ni installation. Ne jamais désinstaller ni effacer les données pour forcer. Do not run purchase or Test Store flows against a local binary. Auth-credential evidence stays separately blocked when credentials are missing.
 
 Historique anterieur (ne plus utiliser) : side-by-side `com.tanuki75.noctalia.qa` / `noctalia-qa` avec `--side-by-side-qa`.
 
-Exécutables après prérequis (binaire base compatible installé, verrou détenu, `--device <serial>`) :
+Validation statique, sans appareil :
 
 ```bash
 npm run test:e2e:release:ti429:validate
-npm run test:e2e:release:local -- --device <serial>
-npm run test:e2e:release:ti429:local -- --device <serial>
-node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --device <serial> --flow maestro/release-auth-offline-sync.yml
-node ./scripts/run-maestro-android.js --suite release --retries 0 --no-start-metro --device <serial> --flow maestro/release-notification-permission.yml
 ```
+
+Sélectionner ensuite **un scénario** après contrôle du binaire, du verrou et de
+ses prérequis. Ne pas lancer la suite complète par défaut : elle inclut l'analyse
+réelle et exige une session invitée pour le scénario guest-unlimited.
+Les autres suites Release (offline, auth, permissions notamment) contiennent
+encore des resets ; le garde physique les refuse. Leur présence dans la matrice
+ne les rend pas exécutables sur la base.
+
+## Préservation des données — huit scénarios TI-429
+
+- Le lancement utilise uniquement `stopApp: false`. Aucun reset, effacement de
+  brouillon, changement de permissions/réseau ni déconnexion.
+- Immédiatement avant chaque saisie synthétique, le sous-scénario
+  `ti429-ready-empty-editor.yml` exige un éditeur hydraté (contrôle de mode
+  activé) et **zéro caractère brut**, espaces compris, sur le même écran.
+  Brouillon présent, restauration en erreur ou preuve d'interface introuvable :
+  arrêt bloquant. Ne pas effacer le brouillon pour faire passer le test.
+- Le scénario kill/relaunch attend le statut de sauvegarde locale et vérifie
+  son propre texte avant l'arrêt du processus. Après reprise, il conserve ce
+  rêve synthétique en l'enregistrant dans le Journal.
+- Les recherches/filtres existants du Journal ne sont pas modifiés. Si l'entrée
+  synthétique n'est pas accessible, le scénario échoue ; ne pas ouvrir un rêve
+  arbitraire. Les deux scénarios qui rouvrent une fiche depuis le Journal
+  génèrent un identifiant unique dans leur en-tête, réutilisé dans toutes les
+  saisies et preuves : une ancienne entrée ne peut pas valider l'exécution
+  courante. Les fragments exacts de TI-413 restent inchangés.
+- Guest-unlimited exige une session déjà invitée : aucune déconnexion forcée.
+  L'analyse interrompue exige une identité éligible vérifiée et l'autorisation
+  de session IA payante avant exécution. Le clic CTA ne prouve pas à lui seul
+  le démarrage d'une analyse ; la QA doit documenter cet état.
+- Les rêves synthétiques enregistrés restent présents. Ce n'est pas une QA
+  sans mutation. Les captures et rapports d'échec Maestro peuvent contenir des
+  données personnelles : inspection locale, pas de publication brute.
+
+Le validateur analyse les YAML et leurs dépendances pour empêcher la régression
+de ce contrat. Ce contrôle statique ne remplace pas le garde d'exécution physique,
+ni une validation de l'accessibilité réelle sur le binaire installé.
 
 Gated (restent bloquées malgré le retrait du flag, ne pas exécuter sans déblocage explicite) :
 

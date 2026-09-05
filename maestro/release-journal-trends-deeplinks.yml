@@ -1,31 +1,22 @@
 # Release navigation gate: journal, dream detail, Trends, and notification
 # deep links open the expected surfaces on the installed binary.
 appId: ${APP_ID || "com.tanuki75.noctalia"}
+env:
+  TI429_RUN_ID: ${Date.now() + "-" + Math.floor(Math.random() * 1000000000)}
 name: Release journal trends notification deeplinks
 tags:
   - release
   - journal
   - trends
   - notifications
-onFlowComplete:
-  - setAirplaneMode: disabled
 ---
-- setAirplaneMode: disabled
 - launchApp:
-    clearState: true
-    permissions:
-      all: allow
-- extendedWaitUntil:
-    visible:
-      id: screen.onboarding
-    timeout: 20000
-- runFlow: subflows/dismiss-first-launch-onboarding.yml
+    stopApp: false
 - runFlow: subflows/open-release-recording.yml
 - runFlow: subflows/ensure-recording-text.yml
 
-- tapOn:
-    id: input.dreamTranscript
-- inputText: "Trends deeplink sentinel quiet harbour"
+- runFlow: subflows/ti429-ready-empty-editor.yml
+- inputText: "Trends deeplink sentinel ${TI429_RUN_ID} quiet harbour"
 - hideKeyboard
 - scrollUntilVisible:
     element:
@@ -40,7 +31,7 @@ onFlowComplete:
 - tapOn:
     id: btn.navigateJournal
 - extendedWaitUntil:
-    visible: "Trends deeplink sentinel quiet harbour"
+    visible: "Trends deeplink sentinel ${TI429_RUN_ID} quiet harbour"
     timeout: 20000
 
 - openLink: ${DEEP_LINK_SCHEME || "noctalia"}://journal
@@ -48,23 +39,22 @@ onFlowComplete:
     visible:
       id: screen.journal
     timeout: 20000
-- runFlow: subflows/ensure-journal-search-visible.yml
-- tapOn:
-    id: input.searchDreams
-- inputText: "Trends deeplink sentinel"
-- hideKeyboard
+# Do not alter an existing search/filter or open an arbitrary first dream.
 - extendedWaitUntil:
     visible:
       id: "dream.item.*"
+      containsDescendants:
+        - text: "Trends deeplink sentinel ${TI429_RUN_ID} quiet harbour"
     timeout: 20000
 - tapOn:
     id: "dream.item.*"
-    index: 0
+    containsDescendants:
+      - text: "Trends deeplink sentinel ${TI429_RUN_ID} quiet harbour"
 - extendedWaitUntil:
     visible:
       id: component.transcriptCard
     timeout: 20000
-- assertVisible: "Trends deeplink sentinel quiet harbour"
+- assertVisible: "Trends deeplink sentinel ${TI429_RUN_ID} quiet harbour"
 - takeScreenshot: ti429-journal-detail
 
 - openLink: ${DEEP_LINK_SCHEME || "noctalia"}://statistics

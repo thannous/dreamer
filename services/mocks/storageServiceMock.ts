@@ -10,6 +10,7 @@ import type {
   LanguagePreference,
   NotificationSettings,
   PendingImageJob,
+  RecordingDraftReadResult,
   RecordingInputModePreference,
   RitualStepProgress,
   ThemePreference,
@@ -140,6 +141,11 @@ export async function getSavedTranscript(): Promise<string> {
     console.error('[MOCK STORAGE] Failed to retrieve transcript:', error);
     return '';
   }
+}
+
+export async function getRecordingDraft(): Promise<RecordingDraftReadResult> {
+  const value = mockStorage['gemini_dream_journal_recording_transcript'];
+  return value == null ? { status: 'absent' } : { status: 'loaded', value };
 }
 
 /**
