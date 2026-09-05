@@ -307,10 +307,10 @@ describe('TabLayout returning guest navigation', () => {
 
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
       bottom: 34,
-      end: 22,
+      end: 8,
       height: 86,
       position: 'absolute',
-      start: 22,
+      start: 8,
     }));
     expect(capturedTabBarStyle).not.toEqual(expect.objectContaining({
       left: expect.anything(),
@@ -490,7 +490,7 @@ describe('TabLayout returning guest navigation', () => {
     view.unmount();
   });
 
-  it('preserves the tab geometry at 390 dp without capping labels', () => {
+  it('widens the tab geometry at 390 dp without capping labels', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 390;
     mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
@@ -499,12 +499,12 @@ describe('TabLayout returning guest navigation', () => {
 
     const centerLabel = screen.getByText('nav.capture_dream');
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
-      end: 22,
+      end: 8,
       paddingHorizontal: 8,
-      start: 22,
+      start: 8,
     }));
     const box = centerBox('nav.capture_dream');
-    expect(box.width).toBeCloseTo(61.6, 1);
+    expect(box.width).toBeCloseTo(67.2, 1);
     expect(box.height).toBe(76);
     expect(centerLabel.getAttribute('data-number-of-lines')).toBe('1');
     expect(centerLabel.getAttribute('data-max-font-size-multiplier')).toBeNull();

@@ -215,6 +215,22 @@ describe('NoctaliaBottomNav', () => {
     expect(screen.getByTestId(TID.Tab.AddDream)).toBeTruthy();
   });
 
+  it.each([361, 375, 390, 399, 400, 430])('applies shared label sizing to all five destinations at %i dp', (width) => {
+    mockWindowWidth = width;
+    render(<NoctaliaBottomNav activeKey="addDream" />);
+
+    const labels = barLabels();
+    expect(labels).toHaveLength(5);
+    labels.forEach((label) => {
+      const style = JSON.parse(label.getAttribute('data-native-style') ?? '{}');
+      expect(style.fontSize).toBe(width < 400 ? 11 : 12);
+      expect(label.getAttribute('data-number-of-lines')).toBe('1');
+      expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
+    });
+    const margin = width < 400 ? 8 : 22;
+    expect(barBox(TID.Tab.AddDream)).toMatchObject({ start: margin, end: margin, height: 86 });
+  });
+
   it('keeps the capture label stable when another tab is active', () => {
     render(<NoctaliaBottomNav activeKey="home" />);
 
@@ -322,7 +338,7 @@ describe('NoctaliaBottomNav', () => {
     expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('2');
   });
 
-  it('preserves the center action and margins above the narrow breakpoint', () => {
+  it('widens the center action and margins on a 390 dp phone without growing the bar', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 390;
 
@@ -335,10 +351,10 @@ describe('NoctaliaBottomNav', () => {
       (element) => element.textContent === 'nav.capture_dream'
     );
 
-    expect(box.start).toBe(22);
-    expect(box.end).toBe(22);
+    expect(box.start).toBe(8);
+    expect(box.end).toBe(8);
     expect(barClass).toContain('px-2');
-    expect(center.width).toBeCloseTo(61.6, 1);
+    expect(center.width).toBeCloseTo(67.2, 1);
     expect(center.height).toBe(76);
     expect(centerLabel?.getAttribute('data-native-class')).toContain('text-[12px]');
     expect(centerLabel?.getAttribute('data-max-font-size-multiplier')).toBeNull();
