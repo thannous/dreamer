@@ -34,7 +34,10 @@ export function RecordingDraftProgress({ value, persisted = false }: RecordingDr
             {hint}
           </Text>
         ) : null}
-        <Text style={[styles.count, { color: noctalia.text.secondary }]}>
+        <Text
+          testID={TID.Component.RecordingDraftProgressCount}
+          style={[styles.count, { color: noctalia.text.secondary }]}
+        >
           {countLabel}
         </Text>
       </View>

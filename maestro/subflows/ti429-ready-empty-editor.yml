@@ -1,6 +1,7 @@
 # Fail closed before synthetic input: never erase or append to an existing draft.
 # The enabled mode control proves hydration completed; the raw count includes
-# whitespace. Match both within this recording screen, not an unrelated label.
+# whitespace. Match the counter's own ID and exact text within this screen:
+# Android can expose the progress wrapper and counter as accessible siblings.
 appId: ${APP_ID || "com.tanuki75.noctalia"}
 ---
 - extendedWaitUntil:
@@ -19,8 +20,8 @@ appId: ${APP_ID || "com.tanuki75.noctalia"}
         - id: btn.recording.inputMode.text
           enabled: true
         - id: component.recording.draftProgress
-          containsDescendants:
-            - text: "^0 (caractères|characters|caracteres|Zeichen|caratteri)$"
+        - id: component.recording.draftProgress.count
+          text: "^0 (caractères|characters|caracteres|Zeichen|caratteri)$"
         - id: input.dreamTranscript
           enabled: true
     timeout: 15000

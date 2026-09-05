@@ -9,6 +9,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import {
   DESKTOP_BREAKPOINT,
   getBottomNavigationLayout,
+  getBottomNavigationItemStyle,
   getTabBarHorizontalLayout,
 } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -35,10 +36,15 @@ type TabGeometry = {
   compact: boolean;
   narrow: boolean;
   stackedLabels: boolean;
+  largeText: boolean;
+  horizontalCenter: boolean;
   labelFontSize: number;
   labelLineHeight: number;
   labelLines: number;
   labelHeight: number;
+  centerLabelLines: number;
+  centerLabelHeight: number;
+  itemWidth: number;
   centerActionWidth: number;
   centerActionHeight: number;
 };
@@ -55,6 +61,9 @@ function TabBarItem({ label, icon, focused, palette, geometry }: {
     <View
       accessible={false}
       importantForAccessibility="no-hide-descendants"
+      // React Navigation centers this custom icon in an absolute wrapper.
+      // A percentage on the Text alone cannot bound its intrinsic parent width.
+      style={{ width: geometry.itemWidth - 10, maxWidth: '100%' }}
       className={`flex-1 min-w-0 items-center justify-center ${
         compact ? 'gap-[1px]' : narrow ? 'gap-[4px]' : 'gap-[5px]'
       }`}
@@ -72,6 +81,8 @@ function TabBarItem({ label, icon, focused, palette, geometry }: {
           fontSize: geometry.labelFontSize,
           lineHeight: geometry.labelLineHeight,
           height: stackedLabels ? geometry.labelHeight : undefined,
+          width: geometry.itemWidth - 10,
+          maxWidth: '100%',
         }}
         numberOfLines={geometry.labelLines}
         textBreakStrategy="simple"
@@ -107,7 +118,7 @@ function AddDreamTabItem({ label, palette, geometry }: {
     <View
       accessible={false}
       importantForAccessibility="no-hide-descendants"
-      className={`items-center justify-center border-2 ${
+      className={`items-center justify-center border-2 ${geometry.horizontalCenter ? 'flex-row' : ''} ${
         compact
           ? 'rounded-[22px] gap-[1px]'
           : narrow
@@ -120,7 +131,7 @@ function AddDreamTabItem({ label, palette, geometry }: {
         // `-translate-y-2` is not safe here. Shadows stay too — RN spreads them over
         // shadow*/elevation, which has no single Tailwind equivalent, and the colour
         // is derived from the palette.
-        ADD_TAB_LIFT[compact ? 'compact' : narrow ? 'narrow' : 'default'],
+        !geometry.largeText && ADD_TAB_LIFT[compact ? 'compact' : narrow ? 'narrow' : 'default'],
         ADD_TAB_SHADOW,
         {
           width: centerActionWidth,
@@ -153,9 +164,11 @@ function AddDreamTabItem({ label, palette, geometry }: {
           color: palette.textOnAccentSurface,
           fontSize: geometry.labelFontSize,
           lineHeight: geometry.labelLineHeight,
-          height: stackedLabels ? geometry.labelHeight : undefined,
+          height: stackedLabels ? geometry.centerLabelHeight : undefined,
+          width: centerActionWidth - (geometry.horizontalCenter ? 40 : 4),
+          maxWidth: '100%',
         }}
-        numberOfLines={geometry.labelLines}
+        numberOfLines={geometry.centerLabelLines}
         textBreakStrategy="simple"
         ellipsizeMode="tail"
         adjustsFontSizeToFit={!stackedLabels}
@@ -232,10 +245,15 @@ export default function TabLayout() {
     compact: navigationLayout.compact,
     narrow: navigationLayout.narrow,
     stackedLabels: navigationLayout.stackedLabels,
+    largeText: navigationLayout.largeText,
+    horizontalCenter: navigationLayout.horizontalCenter,
     labelFontSize: navigationLayout.labelFontSize,
     labelLineHeight: navigationLayout.labelLineHeight,
     labelLines: navigationLayout.labelLines,
     labelHeight: navigationLayout.labelHeight,
+    centerLabelLines: navigationLayout.centerLabelLines,
+    centerLabelHeight: navigationLayout.centerLabelHeight,
+    itemWidth: navigationLayout.itemWidth,
     centerActionWidth: navigationLayout.centerActionWidth,
     centerActionHeight: navigationLayout.centerActionHeight,
   };
@@ -323,6 +341,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <TabBarItem icon="house" label={t('nav.home')} focused={focused} palette={palette} geometry={geometry} />
           ),
+          tabBarItemStyle: getBottomNavigationItemStyle(0, navigationLayout),
         }}
       />
       <Tabs.Screen
@@ -339,6 +358,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <TabBarItem icon="book" label={t('nav.journal')} focused={focused} palette={palette} geometry={geometry} />
           ),
+          tabBarItemStyle: getBottomNavigationItemStyle(1, navigationLayout),
         }}
       />
       <Tabs.Screen
@@ -361,6 +381,7 @@ export default function TabLayout() {
           tabBarIcon: () => (
             <AddDreamTabItem label={t('nav.capture_dream')} palette={palette} geometry={geometry} />
           ),
+          tabBarItemStyle: getBottomNavigationItemStyle(2, navigationLayout),
         }}
       />
       <Tabs.Screen
@@ -377,6 +398,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <TabBarItem icon="chart.bar" label={t('nav.stats')} focused={focused} palette={palette} geometry={geometry} />
           ),
+          tabBarItemStyle: getBottomNavigationItemStyle(3, navigationLayout),
         }}
       />
       <Tabs.Screen
@@ -393,6 +415,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <TabBarItem icon="sparkles" label={t('nav.explore')} focused={focused} palette={palette} geometry={geometry} />
           ),
+          tabBarItemStyle: getBottomNavigationItemStyle(4, navigationLayout),
         }}
       />
       <Tabs.Screen

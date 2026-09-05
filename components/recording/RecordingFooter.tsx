@@ -72,12 +72,14 @@ const styles = StyleSheet.create({
   },
   actionButtons: {
     gap: 12,
+    maxWidth: '100%',
   },
   submitButtonWrapperDisabled: {
     opacity: 1,
   },
   submitButton: {
     minWidth: 260,
+    maxWidth: '100%',
     paddingVertical: 17,
     paddingHorizontal: 34,
     borderRadius: 22,
@@ -95,6 +97,8 @@ const styles = StyleSheet.create({
       : { shadowOpacity: 0, elevation: 0 }),
   } as ViewStyle,
   submitButtonText: {
+    textAlign: 'center',
+    flexShrink: 1,
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
   },

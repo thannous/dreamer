@@ -233,6 +233,7 @@ export const TID = {
     PersonalReading: 'component.inspiration.personalReading',
     InspirationTip: 'component.inspiration.tip',
     RecordingDraftProgress: 'component.recording.draftProgress',
+    RecordingDraftProgressCount: 'component.recording.draftProgress.count',
     RecordingActivationInsight: 'component.recording.activationInsight',
     RecordingOnboardingTour: 'component.recording.onboardingTour',
     RecordingVoiceHint: 'component.recording.voiceHint',

@@ -447,7 +447,8 @@ describe('RecordingTextInput', () => {
     expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
   });
 
-  it('points first-time voice users to the microphone and can be dismissed', () => {
+  it.each([1, 1.5, 2])('keeps the voice hint and dismissal available at text scale %s', (fontScale: number) => {
+    mockFontScale = fontScale;
     const onVoiceHintDismiss = jest.fn();
 
     render(
@@ -467,6 +468,8 @@ describe('RecordingTextInput', () => {
     expect(screen.getByTestId(TID.Component.RecordingVoiceHint)).toBeTruthy();
     expect(screen.getByText('Tap the mic to dictate your dream.')).toBeTruthy();
     expect(screen.getByText('Got it')).toBeTruthy();
+    const hintStyle = JSON.parse(screen.getByTestId(TID.Component.RecordingVoiceHint).getAttribute('data-native-style') ?? '{}');
+    expect(hintStyle.flexDirection).toBe(fontScale >= 1.3 ? 'column' : 'row');
 
     fireEvent.click(screen.getByTestId(TID.Button.RecordingVoiceHintDismiss));
 

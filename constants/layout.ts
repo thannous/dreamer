@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Platform, type ViewStyle } from 'react-native';
 
 export const LAYOUT_MAX_WIDTH = 1200;
 export const TAB_BAR_MAX_WIDTH = 960;
@@ -30,36 +30,85 @@ export function getBottomNavigationLayout(
   const compact = width > height && height < 600;
   const narrow = !compact && isNarrowBottomNavigation(width);
   const safeFontScale = normalizeFontScale(fontScale);
-  const stackedLabels = narrow || safeFontScale >= LARGE_TEXT_FONT_SCALE;
+  const largeText = safeFontScale >= LARGE_TEXT_FONT_SCALE;
+  const stackedLabels = narrow || largeText;
   const horizontalLayout = getTabBarHorizontalLayout(width);
-  const itemWidth = (width - horizontalLayout.start * 2 - (narrow ? 8 : 16) - 2) / 5;
+  const contentWidth = Math.max(0, width - horizontalLayout.start * 2 - (narrow ? 8 : 16) - 2);
+  const itemWidth = contentWidth / (largeText ? compact ? 3 : 2 : 5);
   const labelFontSize = compact || width < 400 ? 11 : 12;
   const labelLineHeight = 16;
   // Keep visible words on narrow screens and for people using large text.
   // The longest translated label has eleven characters. Reserve conservative
   // wrapping space rather than shrinking the user's requested text size.
-  const labelLines = stackedLabels
+  const labelLines = largeText
+    ? Math.max(1, Math.ceil((11 * labelFontSize * safeFontScale * 0.65) / Math.max(1, itemWidth - 10)))
+    : stackedLabels
     ? Math.max(2, Math.ceil((11 * labelFontSize * safeFontScale * 0.65) / Math.max(1, itemWidth - 8)))
     : 1;
   const labelHeight = Math.ceil(labelLines * labelLineHeight * safeFontScale + 4);
-  const centerActionWidth = Math.min(compact ? 60 : narrow ? 64 : 72, itemWidth - 4);
+  const centerActionWidth = largeText
+    ? compact ? itemWidth - 8 : Math.min(420, contentWidth - 16)
+    : Math.min(compact ? 60 : narrow ? 64 : 72, itemWidth - 4);
+  const horizontalCenter = largeText && !compact;
+  const centerLabelLines = largeText
+    ? Math.max(1, Math.ceil((11 * labelFontSize * safeFontScale * 0.65) / Math.max(1, centerActionWidth - (horizontalCenter ? 40 : 4))))
+    : labelLines;
+  const centerLabelHeight = Math.ceil(centerLabelLines * labelLineHeight * safeFontScale + 4);
+  const rowHeight = 24 + 10 + labelHeight + 3 + 10;
   const centerActionHeight = stackedLabels
-    ? 32 + 8 + labelHeight + 16
+    ? horizontalCenter ? Math.max(48, centerLabelHeight + 16) : 32 + 8 + centerLabelHeight + 16
     : compact ? 56 : narrow ? 68 : 76;
+  const centerRowHeight = centerActionHeight + 8;
 
   return {
     compact,
     narrow,
     stackedLabels,
+    largeText,
     fontScale: safeFontScale,
+    itemWidth,
+    contentWidth,
+    rowHeight,
+    centerRowHeight,
+    centerLabelLines,
+    centerLabelHeight,
+    horizontalCenter,
     labelFontSize,
     labelLineHeight,
     labelLines,
     labelHeight,
-    barHeight: Math.max(compact ? COMPACT_TAB_BAR_HEIGHT : TAB_BAR_HEIGHT, centerActionHeight + 10),
+    barHeight: largeText
+      ? compact ? Math.max(rowHeight * 2, centerRowHeight) + 10 : rowHeight * 2 + centerRowHeight + 16
+      : Math.max(compact ? COMPACT_TAB_BAR_HEIGHT : TAB_BAR_HEIGHT, centerActionHeight + 10),
     centerActionWidth,
     centerActionHeight,
     minimumBottomInset: compact ? COMPACT_TAB_BAR_BOTTOM_INSET : 14,
+  };
+}
+
+/** Preserve reading order and centered Capture: portrait rows, landscape columns. */
+export function getBottomNavigationItemStyle(
+  index: number,
+  layout: ReturnType<typeof getBottomNavigationLayout>
+): ViewStyle {
+  if (!layout.largeText) return { flex: 1, height: '100%' };
+  if (layout.compact) {
+    return {
+      position: 'absolute',
+      start: index < 2 ? 0 : index === 2 ? layout.itemWidth : layout.itemWidth * 2,
+      top: index === 1 || index === 4 ? layout.rowHeight : 0,
+      width: layout.itemWidth,
+      height: index === 2 ? layout.barHeight - 10 : layout.rowHeight,
+      flex: 1,
+    };
+  }
+  return {
+    position: 'absolute',
+    start: index === 1 || index === 4 ? layout.itemWidth : 0,
+    top: index < 2 ? 0 : index === 2 ? layout.rowHeight : layout.rowHeight + layout.centerRowHeight,
+    width: index === 2 ? layout.contentWidth : layout.itemWidth,
+    height: index === 2 ? layout.centerRowHeight : layout.rowHeight,
+    flex: 1,
   };
 }
 
