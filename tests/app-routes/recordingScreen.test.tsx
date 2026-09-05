@@ -37,6 +37,12 @@ let mockPlatformOS: 'android' | 'web' = 'web';
 let mockRecordingPermissionState: 'unknown' | 'granted' | 'denied' = 'unknown';
 let mockReferenceImagesEnabled = false;
 let mockViewportWidth = 390;
+let mockViewportHeight = 844;
+let mockBottomInset = 0;
+let mockFontScale = 1;
+let mockFooterLayout: ((event: any) => void) | undefined;
+let mockBottomNavLayout: ((event: any) => void) | undefined;
+let mockKeyboardListeners: Record<string, () => void> = {};
 let mockOnPartialTranscript: ((text: string) => void) | undefined;
 let mockOnNativeEnd: (() => void) | undefined;
 let mockAppStateHandler: ((state: string) => void) | undefined;
@@ -77,7 +83,7 @@ jest.doMock('react-native', () => {
       (
         {
           children,
-          onLayout: _onLayout,
+          onLayout,
           pointerEvents: _pointerEvents,
           style: _style,
           testID,
@@ -91,7 +97,10 @@ jest.doMock('react-native', () => {
           [key: string]: any;
         },
         ref: React.ForwardedRef<HTMLElement>
-      ) => React.createElement(tag, { ...props, 'data-testid': testID, ref }, children)
+      ) => {
+        if (typeof onLayout === 'function') mockFooterLayout = onLayout as (event: any) => void;
+        return React.createElement(tag, { ...props, 'data-testid': testID, ref }, children);
+      }
     );
     MockNativeElement.displayName = `MockNative${tag}`;
     return MockNativeElement;
@@ -103,7 +112,7 @@ jest.doMock('react-native', () => {
         children,
         contentContainerStyle: _contentContainerStyle,
         keyboardShouldPersistTaps: _keyboardShouldPersistTaps,
-        style: _style,
+        style,
         testID,
         ...props
       }: {
@@ -119,7 +128,7 @@ jest.doMock('react-native', () => {
     ) => {
       React.useImperativeHandle(ref, () => ({ scrollToEnd: jest.fn() }));
       return (
-        <div {...props} aria-busy={accessibilityState?.busy} data-testid={testID}>
+        <div {...props} aria-busy={accessibilityState?.busy} data-testid={testID} data-native-style={JSON.stringify(style)}>
           {children}
         </div>
       );
@@ -170,7 +179,10 @@ jest.doMock('react-native', () => {
       },
     },
     Keyboard: {
-      addListener: () => ({ remove: jest.fn() }),
+      addListener: (event: string, listener: () => void) => {
+        mockKeyboardListeners[event] = listener;
+        return { remove: () => { delete mockKeyboardListeners[event]; } };
+      },
       dismiss: jest.fn(),
     },
     KeyboardAvoidingView: createElement('div'),
@@ -193,15 +205,15 @@ jest.doMock('react-native', () => {
     View: createElement('div'),
     useWindowDimensions: () => ({
       width: mockViewportWidth,
-      height: 844,
+      height: mockViewportHeight,
       scale: 1,
-      fontScale: 1,
+      fontScale: mockFontScale,
     }),
   };
 });
 
 jest.doMock('react-native-safe-area-context', () => ({
-  useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
+  useSafeAreaInsets: () => ({ top: 0, bottom: mockBottomInset, left: 0, right: 0 }),
 }));
 
 jest.doMock('expo-linear-gradient', () => ({
@@ -229,7 +241,10 @@ jest.doMock('@/components/journal/SubjectProposition', () => ({
 }));
 
 jest.doMock('@/components/navigation/NoctaliaBottomNav', () => ({
-  NoctaliaBottomNav: () => <div data-testid="recording-bottom-nav" />,
+  NoctaliaBottomNav: ({ onBarLayout }: { onBarLayout?: (event: any) => void }) => {
+    mockBottomNavLayout = onBarLayout;
+    return <div data-testid="recording-bottom-nav" />;
+  },
 }));
 
 jest.doMock('@/components/recording/AtmosphereBackground', () => ({
@@ -591,6 +606,7 @@ jest.doMock('@/services/storageService', () => ({
 }));
 
 const { default: RecordingScreen } = require('@/app/recording');
+const { getBottomNavigationLayout } = require('@/constants/layout');
 
 async function awaitEditorReady() {
   await waitFor(() => {
@@ -602,6 +618,91 @@ async function awaitEditorReady() {
 }
 
 describe('Recording screen', () => {
+  it.each([[640, 320], [915, 412]])('keeps one Save action and the draft when rotating through compact %i by %i dp', async (width: number, height: number) => {
+    mockPlatformOS = 'android';
+    mockBottomInset = 24;
+    for (const scale of [1, 1.5, 2]) {
+      for (const footerHeight of [86, 128]) {
+        mockFontScale = scale;
+        mockViewportWidth = height;
+        mockViewportHeight = width;
+        const view = render(<RecordingScreen />);
+        await awaitEditorReady();
+        act(() => mockFooterLayout?.({ nativeEvent: { layout: { height: footerHeight } } }));
+        const draft = 'A blue room with rain at the window.';
+        fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: draft } });
+
+        mockViewportWidth = width;
+        mockViewportHeight = height;
+        view.rerender(<RecordingScreen />);
+        const navHeight = getBottomNavigationLayout(width, height, scale).barHeight;
+        act(() => mockBottomNavLayout?.({ nativeEvent: { layout: { y: height - navHeight - 24 } } }));
+        const scroll = screen.getByTestId(TID.Screen.Recording);
+        const save = screen.getByTestId('recording-save') as HTMLButtonElement;
+        expect(screen.getAllByTestId('recording-save')).toHaveLength(1);
+        expect(scroll.contains(save)).toBe(scale >= 1.3);
+        expect(save.disabled).toBe(false);
+        const styles = JSON.parse(scroll.getAttribute('data-native-style') ?? '[]');
+        const style = Object.assign({}, ...styles.filter(Boolean));
+        expect(style.marginBottom).toBe(scale >= 1.3 ? navHeight + 24 : undefined);
+        expect(height - (style.marginBottom ?? 0)).toBeGreaterThanOrEqual(120);
+
+        for (const event of ['keyboardDidShow', 'keyboardDidHide']) {
+          act(() => mockKeyboardListeners[event]?.());
+          expect(screen.getAllByTestId('recording-save')).toHaveLength(1);
+          expect(screen.getByTestId(TID.Screen.Recording).contains(screen.getByTestId('recording-save'))).toBe(scale >= 1.3);
+          expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(draft);
+        }
+
+        mockViewportWidth = height;
+        mockViewportHeight = width;
+        view.rerender(<RecordingScreen />);
+        expect(screen.getAllByTestId('recording-save')).toHaveLength(1);
+        expect(screen.getByTestId(TID.Screen.Recording).contains(screen.getByTestId('recording-save'))).toBe(false);
+        expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(draft);
+        view.unmount();
+      }
+    }
+  });
+
+  it.each([568, 640])('preserves a positive scroll viewport on a 320 by %i dp phone at 200%% text', async (height: number) => {
+    mockPlatformOS = 'android';
+    mockFontScale = 2;
+    mockViewportWidth = 320;
+    mockViewportHeight = height;
+    mockBottomInset = 24;
+    const navHeight = getBottomNavigationLayout(320, height, 2).barHeight;
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    act(() => {
+      mockFooterLayout?.({ nativeEvent: { layout: { height: 128 } } });
+      mockBottomNavLayout?.({ nativeEvent: { layout: { y: height - navHeight - 24 } } });
+    });
+    const styles = JSON.parse(screen.getByTestId(TID.Screen.Recording).getAttribute('data-native-style') ?? '[]');
+    const style = Object.assign({}, ...styles.filter(Boolean));
+    expect(style.marginBottom).toBe(navHeight + 24 + 128);
+    expect(height - style.marginBottom).toBeGreaterThanOrEqual(100);
+    expect(screen.getByTestId(TID.Input.DreamTranscript)).toBeTruthy();
+  });
+
+  it.each([1, 1.5, 2])('keeps large-text scrolling above the measured footer and navigation at scale %s', async (fontScale: number) => {
+    mockPlatformOS = 'android';
+    mockFontScale = fontScale;
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+
+    act(() => {
+      mockFooterLayout?.({ nativeEvent: { layout: { height: 96 } } });
+      mockBottomNavLayout?.({ nativeEvent: { layout: { y: 500 } } });
+    });
+
+    const styles = JSON.parse(screen.getByTestId(TID.Screen.Recording).getAttribute('data-native-style') ?? '[]');
+    const style = Object.assign({}, ...styles.filter(Boolean));
+    expect(style.marginBottom).toBe(fontScale >= 1.3 ? 440 : undefined);
+    expect(screen.getByTestId('recording-save')).toBeTruthy();
+    expect(screen.getByTestId('recording-bottom-nav')).toBeTruthy();
+  });
+
   beforeEach(() => {
     mockCurrentUser = { id: 'user-1' };
     mockDreams = [];
@@ -611,6 +712,12 @@ describe('Recording screen', () => {
     mockRecordingPermissionState = 'unknown';
     mockReferenceImagesEnabled = false;
     mockViewportWidth = 390;
+    mockViewportHeight = 844;
+    mockBottomInset = 0;
+    mockFontScale = 1;
+    mockFooterLayout = undefined;
+    mockBottomNavLayout = undefined;
+    mockKeyboardListeners = {};
     mockOnPartialTranscript = undefined;
     mockOnNativeEnd = undefined;
     mockAppStateHandler = undefined;

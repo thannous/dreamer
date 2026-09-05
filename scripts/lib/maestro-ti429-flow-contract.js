@@ -24,9 +24,10 @@ const EMPTY_EDITOR_SELECTOR = {
   id: 'screen.recording',
   containsDescendants: [
     MODE_READY,
+    { id: 'component.recording.draftProgress' },
     {
-      id: 'component.recording.draftProgress',
-      containsDescendants: [{ text: '^0 (caractères|characters|caracteres|Zeichen|caratteri)$' }],
+      id: 'component.recording.draftProgress.count',
+      text: '^0 (caractères|characters|caracteres|Zeichen|caratteri)$',
     },
     { id: 'input.dreamTranscript', enabled: true },
   ],

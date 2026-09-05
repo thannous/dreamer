@@ -12,7 +12,7 @@ import { RecordingDraftHydrationNotice } from '@/components/recording/RecordingD
 import { RememberedDreamProfileChips } from '@/components/recording/RememberedDreamProfileChips';
 import { Toast } from '@/components/Toast';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
-import { DESKTOP_BREAKPOINT } from '@/constants/layout';
+import { DESKTOP_BREAKPOINT, LARGE_TEXT_FONT_SCALE } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -120,7 +120,7 @@ export default function RecordingScreen() {
     transition: transitionOnboarding,
   } = useOnboarding();
   const insets = useSafeAreaInsets();
-  const { width: viewportWidth, height: viewportHeight } = useWindowDimensions();
+  const { width: viewportWidth, height: viewportHeight, fontScale } = useWindowDimensions();
   const recordingParams = useLocalSearchParams<RecordingRouteParams>();
   const parsedRecordingParams = useMemo(
     () => parseRecordingRouteParams(recordingParams),
@@ -999,13 +999,26 @@ export default function RecordingScreen() {
     : isDesktopWeb
       ? insets.bottom
       : Math.max(bottomNavHeight, insets.bottom);
+  // A padded scroll document can still paint behind fixed controls. At large
+  // text sizes give it a smaller viewport, so every instruction can be scrolled
+  // fully above Save and navigation instead of being covered by them.
+  const separateFooterViewport = fontScale >= LARGE_TEXT_FONT_SCALE && !keyboardVisible;
+  // In short landscape windows, a fixed scaled Save button and navigation can
+  // consume the entire height. Keep the same action in the scroll document.
+  const inlineFooter = isCompactLandscape && fontScale >= LARGE_TEXT_FONT_SCALE;
+  const scrollBottomReservation = separateFooterViewport
+    ? fixedFooterBottomOffset + (inlineFooter ? 0 : footerHeight)
+    : 0;
   const mainContentStyle = useMemo(
     () => [
       styles.mainContent,
+      inlineFooter && styles.inlineFooterContent,
       isCompactLandscape && styles.mainContentCompact,
       {
         paddingTop: 16 + insets.top,
-        paddingBottom: fixedFooterBottomOffset + footerHeight,
+        paddingBottom: inlineFooter
+          ? 16 + (keyboardVisible ? insets.bottom : 0)
+          : separateFooterViewport ? 16 : fixedFooterBottomOffset + footerHeight,
       },
     ],
     [
@@ -1013,6 +1026,10 @@ export default function RecordingScreen() {
       footerHeight,
       insets.top,
       isCompactLandscape,
+      separateFooterViewport,
+      inlineFooter,
+      keyboardVisible,
+      insets.bottom,
     ]
   );
   const fixedFooterStyle = useMemo(
@@ -1293,6 +1310,23 @@ export default function RecordingScreen() {
     await switchToTextMode();
   }, [switchToTextMode]);
 
+  const saveFooter = (
+    <RecordingFooter
+      onSave={handleSaveDream}
+      isSaveDisabled={isSaveDisabled}
+      saveButtonLabel={
+        captureIntent === 'remembered'
+          ? t('recording.remembered.save_button')
+          : t('recording.button.save_dream')
+      }
+      saveButtonAccessibilityLabel={
+        captureIntent === 'remembered'
+          ? t('recording.remembered.save_button_accessibility')
+          : t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })
+      }
+    />
+  );
+
   return (
     <>
       <View
@@ -1330,7 +1364,10 @@ export default function RecordingScreen() {
         >
           <ScrollView
             ref={scrollViewRef}
-            style={styles.scrollView}
+            style={[
+              styles.scrollView,
+              separateFooterViewport && { marginBottom: scrollBottomReservation },
+            ]}
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
             testID={TID.Screen.Recording}
@@ -1400,24 +1437,14 @@ export default function RecordingScreen() {
 
               </View>
 
+              {inlineFooter ? saveFooter : null}
             </View>
           </ScrollView>
-          <View pointerEvents="box-none" style={fixedFooterStyle} onLayout={handleFooterLayout}>
-            <RecordingFooter
-              onSave={handleSaveDream}
-              isSaveDisabled={isSaveDisabled}
-              saveButtonLabel={
-                captureIntent === 'remembered'
-                  ? t('recording.remembered.save_button')
-                  : t('recording.button.save_dream')
-              }
-              saveButtonAccessibilityLabel={
-                captureIntent === 'remembered'
-                  ? t('recording.remembered.save_button_accessibility')
-                  : t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })
-              }
-            />
-          </View>
+          {!inlineFooter ? (
+            <View pointerEvents="box-none" style={fixedFooterStyle} onLayout={handleFooterLayout}>
+              {saveFooter}
+            </View>
+          ) : null}
         </KeyboardAvoidingView>
         {!keyboardVisible && !isDesktopWeb ? (
           <NoctaliaBottomNav
@@ -1537,6 +1564,11 @@ const styles = StyleSheet.create({
   },
   mainContentCompact: {
     paddingVertical: 8,
+  },
+  inlineFooterContent: {
+    // Let the document grow with the editor and Save instead of shrinking it
+    // to the small landscape viewport.
+    flex: 0,
   },
   bodySection: {
     flex: 1,

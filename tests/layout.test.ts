@@ -5,6 +5,7 @@ import {
   COMPACT_TAB_BAR_HEIGHT,
   TAB_BAR_HEIGHT,
   getBottomNavigationLayout,
+  getBottomNavigationItemStyle,
   getRecordingComposerLayout,
   getTabBarHorizontalLayout,
   isNarrowBottomNavigation,
@@ -24,13 +25,29 @@ describe('getBottomNavigationLayout', () => {
     expect(layout.fontScale).toBe(fontScale);
     expect(layout.stackedLabels).toBe(true);
     expect(layout.labelFontSize).toBe(11);
-    expect(layout.labelLines).toBeGreaterThanOrEqual(2);
+    expect(layout.labelLines).toBeGreaterThanOrEqual(1);
     expect(layout.labelHeight).toBeGreaterThanOrEqual(layout.labelLines * 16 * fontScale);
     expect(layout.barHeight).toBeGreaterThan(TAB_BAR_HEIGHT);
   });
 
+  it.each([320, 360, 434, 1280])('bounds three rows and centers Capture at %i dp', (width: number) => {
+    for (const fontScale of [1.5, 2]) {
+      const layout = getBottomNavigationLayout(width, 900, fontScale);
+      const frames = [0, 1, 2, 3, 4].map((index) => getBottomNavigationItemStyle(index, layout)!);
+      expect(frames.map((frame) => frame.top)).toEqual([0, 0, layout.rowHeight, layout.rowHeight + layout.centerRowHeight, layout.rowHeight + layout.centerRowHeight]);
+      expect(frames[2].width).toBe(layout.contentWidth);
+      expect(layout.centerActionWidth).toBeGreaterThan(130);
+      frames.forEach((frame) => {
+        expect(Number(frame.start) + Number(frame.width)).toBeLessThanOrEqual(layout.contentWidth);
+        expect(Number(frame.top) + Number(frame.height)).toBeLessThan(layout.barHeight);
+      });
+      expect(layout.contentWidth).toBeLessThanOrEqual(960);
+    }
+    expect(getBottomNavigationItemStyle(2, getBottomNavigationLayout(width, 900, 1))?.position).toBeUndefined();
+  });
+
   it('uses the regular navigation size in portrait', () => {
-    expect(getBottomNavigationLayout(412, 915)).toEqual({
+    expect(getBottomNavigationLayout(412, 915)).toMatchObject({
       compact: false,
       narrow: false,
       stackedLabels: false,
@@ -48,7 +65,7 @@ describe('getBottomNavigationLayout', () => {
 
   it('uses a compact navigation size on short landscape screens', () => {
     // Compact base: center 56 + 10 = 66, above the 64 compact minimum.
-    expect(getBottomNavigationLayout(915, 412)).toEqual({
+    expect(getBottomNavigationLayout(915, 412)).toMatchObject({
       compact: true,
       narrow: false,
       stackedLabels: false,
@@ -71,7 +88,7 @@ describe('getBottomNavigationLayout', () => {
   it('stacks narrow labels on two lines at 100% text so words stay visible', () => {
     // Astra contract: narrow implies stacked. 320/100% = lines 2, height 36, bar 102.
     // This is the visual fix for truncated "Aujourd'hui / Tendances" — never icon-only.
-    expect(getBottomNavigationLayout(320, 640)).toEqual({
+    expect(getBottomNavigationLayout(320, 640)).toMatchObject({
       compact: false,
       narrow: true,
       stackedLabels: true,
@@ -89,63 +106,80 @@ describe('getBottomNavigationLayout', () => {
 
   it('grows the narrow bar at fontScale 2 instead of capping labels', () => {
     const layout = getBottomNavigationLayout(320, 640, 2);
-    expect(layout).toEqual({
+    expect(layout).toMatchObject({
       compact: false,
       narrow: true,
       stackedLabels: true,
       fontScale: 2,
       labelFontSize: 11,
       labelLineHeight: 16,
-      labelLines: 4,
-      labelHeight: 132,
-      barHeight: 198,
-      centerActionWidth: 54.8,
-      centerActionHeight: 188,
+      labelLines: 2,
+      labelHeight: 68,
+      barHeight: 306,
+      centerActionWidth: 278,
+      centerActionHeight: 52,
       minimumBottomInset: 14,
     });
     expect(layout.labelLines).toBeGreaterThanOrEqual(2);
-    expect(layout.barHeight).toBe(layout.centerActionHeight + 10);
+    expect(layout.barHeight).toBeGreaterThan(layout.centerActionHeight + 10);
     expect(layout.barHeight).toBeGreaterThan(TAB_BAR_HEIGHT);
   });
 
   it('stacks regular portrait labels at fontScale 2', () => {
     const layout = getBottomNavigationLayout(412, 915, 2);
-    expect(layout).toEqual({
+    expect(layout).toMatchObject({
       compact: false,
       narrow: false,
       stackedLabels: true,
       fontScale: 2,
       labelFontSize: 12,
       labelLineHeight: 16,
-      labelLines: 3,
-      labelHeight: 100,
-      barHeight: 166,
-      centerActionWidth: 66,
-      centerActionHeight: 156,
+      labelLines: 2,
+      labelHeight: 68,
+      barHeight: 306,
+      centerActionWidth: 334,
+      centerActionHeight: 52,
       minimumBottomInset: 14,
     });
     expect(layout.labelLines).toBeGreaterThanOrEqual(2);
-    expect(layout.barHeight).toBe(layout.centerActionHeight + 10);
+    expect(layout.barHeight).toBeGreaterThan(layout.centerActionHeight + 10);
   });
 
   it('keeps compact landscape labels readable at fontScale 2 without capping them', () => {
     const layout = getBottomNavigationLayout(915, 412, 2);
-    expect(layout).toEqual({
+    expect(layout).toMatchObject({
       compact: true,
       narrow: false,
       stackedLabels: true,
       fontScale: 2,
       labelFontSize: 11,
       labelLineHeight: 16,
-      labelLines: 2,
-      labelHeight: 68,
-      barHeight: 134,
-      centerActionWidth: 60,
-      centerActionHeight: 124,
+      labelLines: 1,
+      labelHeight: 36,
+      barHeight: 176,
+      centerActionHeight: 92,
       minimumBottomInset: COMPACT_TAB_BAR_BOTTOM_INSET,
     });
-    expect(layout.labelLines).toBeGreaterThanOrEqual(2);
+    expect(layout.labelLines).toBeGreaterThanOrEqual(1);
     expect(layout.barHeight).toBeGreaterThan(COMPACT_TAB_BAR_HEIGHT);
+    expect(layout.centerActionWidth).toBeCloseTo(276.33, 2);
+  });
+
+  it.each([[640, 320], [915, 412]])('keeps compact large text within two rows at %i by %i dp', (width: number, height: number) => {
+    for (const scale of [1, 1.5, 2]) {
+      const layout = getBottomNavigationLayout(width, height, scale);
+      const frames = [0, 1, 2, 3, 4].map((index) => getBottomNavigationItemStyle(index, layout));
+      if (scale === 1) {
+        expect(frames.every((frame) => frame.position === undefined)).toBe(true);
+      } else {
+        expect(frames.map((frame) => frame.start)).toEqual([0, 0, layout.itemWidth, layout.itemWidth * 2, layout.itemWidth * 2]);
+        expect(frames.map((frame) => frame.top)).toEqual([0, layout.rowHeight, 0, 0, layout.rowHeight]);
+        expect(frames[2].height).toBe(layout.rowHeight * 2);
+        expect(layout.labelLines).toBe(1);
+        expect(layout.centerLabelLines).toBe(1);
+        expect(height - layout.barHeight - 24).toBeGreaterThanOrEqual(120);
+      }
+    }
   });
 
   it('stacks labels on narrow screens even at 100% text, otherwise at the large-text threshold', () => {

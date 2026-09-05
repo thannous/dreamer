@@ -14,7 +14,9 @@ jest.mock('react-native', () => {
     StyleSheet: {
       create: (styles: Record<string, unknown>) => styles,
     },
-    Text: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
+    Text: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
+      <span data-testid={testID}>{children}</span>
+    ),
     View: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
       <div data-testid={testID}>{children}</div>
     ),
@@ -66,10 +68,39 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 describe('RecordingDraftProgress', () => {
+  it.each([
+    ['', '0 characters'],
+    [' ', '1 characters'],
+    [' \n\t ', '4 characters'],
+    [' A blue door ', '13 characters'],
+  ])('attaches the stable ID directly to the raw character counter for %j', (value: string, countLabel: string) => {
+    render(<RecordingDraftProgress value={value} />);
+
+    const counter = screen.getByTestId(TID.Component.RecordingDraftProgressCount);
+    expect(counter.tagName).toBe('SPAN');
+    expect(counter.children).toHaveLength(0);
+    expect(counter.textContent).toBe(countLabel);
+  });
+
+  it.each(['0 characters', '0 caractères'])('does not identify the nonempty draft %j as the zero counter', (draft: string) => {
+    render(
+      <>
+        <div data-testid={TID.Input.DreamTranscript}>{draft}</div>
+        <RecordingDraftProgress value={draft} />
+      </>
+    );
+
+    expect(screen.getByText(draft).getAttribute('data-testid')).toBe(TID.Input.DreamTranscript);
+    const counter = screen.getByTestId(TID.Component.RecordingDraftProgressCount);
+    expect(counter.textContent).toBe(`${draft.length} characters`);
+    expect(counter.textContent).not.toMatch(/^0 (caractères|characters|caracteres|Zeichen|caratteri)$/);
+  });
+
   it('renders the actual localized count for a 601-character draft without a 600 limit', () => {
     render(<RecordingDraftProgress value={'x'.repeat(601)} />);
 
     const progress = screen.getByTestId(TID.Component.RecordingDraftProgress);
+    expect(screen.getByTestId(TID.Component.RecordingDraftProgressCount).textContent).toBe('601 characters');
     expect(progress.textContent).toContain('601 characters');
     expect(progress.textContent).not.toContain('601/600');
     expect(progress.textContent).not.toContain('/600');

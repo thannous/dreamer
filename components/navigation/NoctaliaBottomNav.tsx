@@ -2,6 +2,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import {
   DESKTOP_BREAKPOINT,
   getBottomNavigationLayout,
+  getBottomNavigationItemStyle,
   getTabBarHorizontalLayout,
 } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -107,6 +108,7 @@ export function NoctaliaBottomNav({
 
   const addItemClassName = [
     'items-center justify-center border-2 border-champagne-soft bg-champagne',
+    navigationLayout.horizontalCenter ? 'flex-row' : '',
     navigationLayout.compact
       ? 'gap-px rounded-[22px]'
       : navigationLayout.narrow
@@ -190,101 +192,118 @@ export function NoctaliaBottomNav({
           },
         ]}
       >
-        {items.map((item) => {
-          const isCenter = item.key === 'addDream';
-          const isActive = item.key === activeKey;
+        <View className="relative flex-1 flex-row">
+          {items.map((item, index) => {
+            const isCenter = item.key === 'addDream';
+            const isActive = item.key === activeKey;
 
-          return (
-            <Pressable
-              key={item.key}
-              onPress={isActive ? undefined : () => router.push(item.href as any)}
-              accessibilityRole="tab"
-              aria-selected={isActive}
-              aria-busy={isCenter ? Boolean(activeAnalysis) : undefined}
-              accessibilityState={{
-                selected: isActive,
-                busy: isCenter ? Boolean(activeAnalysis) : undefined,
-              }}
-              accessibilityLabel={item.accessibilityLabel}
-              testID={item.testID}
-              className="h-full min-w-0 flex-1 items-center justify-center active:opacity-[0.72]"
-            >
-              {isCenter ? (
-                <View
-                  accessible={false}
-                  importantForAccessibility="no-hide-descendants"
-                  className={addItemClassName}
-                  style={[
-                    ADD_SHADOW,
-                    addLift,
-                    {
-                      width: navigationLayout.centerActionWidth,
-                      height: navigationLayout.centerActionHeight,
-                    },
-                  ]}
-                >
-                  {activeAnalysis ? (
-                    <ActivityIndicator size="small" color={addTextColor} />
-                  ) : (
+            return (
+              <Pressable
+                key={item.key}
+                onPress={isActive ? undefined : () => router.push(item.href as any)}
+                accessibilityRole="tab"
+                aria-selected={isActive}
+                aria-busy={isCenter ? Boolean(activeAnalysis) : undefined}
+                accessibilityState={{
+                  selected: isActive,
+                  busy: isCenter ? Boolean(activeAnalysis) : undefined,
+                }}
+                accessibilityLabel={item.accessibilityLabel}
+                testID={item.testID}
+                style={[
+                  { width: navigationLayout.itemWidth },
+                  getBottomNavigationItemStyle(index, navigationLayout),
+                ]}
+                className="h-full min-w-0 flex-1 items-center justify-center active:opacity-[0.72]"
+              >
+                {isCenter ? (
+                  <View
+                    accessible={false}
+                    importantForAccessibility="no-hide-descendants"
+                    className={addItemClassName}
+                    style={[
+                      ADD_SHADOW,
+                      !navigationLayout.largeText && addLift,
+                      {
+                        width: navigationLayout.centerActionWidth,
+                        height: navigationLayout.centerActionHeight,
+                      },
+                    ]}
+                  >
+                    {activeAnalysis ? (
+                      <ActivityIndicator size="small" color={addTextColor} />
+                    ) : (
+                      <IconSymbol
+                        size={24}
+                        name={item.icon}
+                        color={addTextColor}
+                      />
+                    )}
+                      <Text
+                        accessible={false}
+                        className={`font-sans-bold w-full min-w-0 shrink text-center text-on-champagne ${
+                          navigationLayout.narrow ? 'text-[11px] px-px' : 'text-[12px]'
+                        }`}
+                        style={[
+                          labelStyle,
+                          {
+                            height: navigationLayout.stackedLabels ? navigationLayout.centerLabelHeight : undefined,
+                            width: navigationLayout.centerActionWidth - (navigationLayout.horizontalCenter ? 40 : 4),
+                            maxWidth: '100%',
+                          },
+                        ]}
+                        numberOfLines={navigationLayout.centerLabelLines}
+                        textBreakStrategy="simple"
+                        ellipsizeMode="tail"
+                        adjustsFontSizeToFit={!navigationLayout.stackedLabels}
+                        minimumFontScale={navigationLayout.narrow ? 0.75 : 0.85}
+                      >
+                        {item.label}
+                      </Text>
+                    {isActive ? (
+                      <View style={[
+                        { width: 16, height: 3, borderRadius: 2, backgroundColor: addTextColor },
+                        navigationLayout.horizontalCenter && { position: 'absolute', bottom: 3 },
+                      ]} />
+                    ) : null}
+                  </View>
+                ) : (
+                  <View
+                    accessible={false}
+                    importantForAccessibility="no-hide-descendants"
+                    style={{ width: navigationLayout.itemWidth - 10, maxWidth: '100%' }}
+                    className={`min-w-0 items-center justify-center ${
+                      navigationLayout.compact ? 'gap-px' : 'gap-[5px]'
+                    } w-full flex-1`}
+                  >
                     <IconSymbol
                       size={24}
                       name={item.icon}
-                      color={addTextColor}
+                      color={isActive ? navActiveColor : navInactiveColor}
                     />
-                  )}
-                    <Text
-                      accessible={false}
-                      className={`font-sans-bold w-full min-w-0 shrink text-center text-on-champagne ${
-                        navigationLayout.narrow ? 'text-[11px] px-px' : 'text-[12px]'
-                      }`}
-                      style={labelStyle}
-                      numberOfLines={navigationLayout.labelLines}
-                      textBreakStrategy="simple"
-                      ellipsizeMode="tail"
-                      adjustsFontSizeToFit={!navigationLayout.stackedLabels}
-                      minimumFontScale={navigationLayout.narrow ? 0.75 : 0.85}
-                    >
-                      {item.label}
-                    </Text>
-                  {isActive ? (
-                    <View style={{ width: 16, height: 3, borderRadius: 2, backgroundColor: addTextColor }} />
-                  ) : null}
-                </View>
-              ) : (
-                <View
-                  accessible={false}
-                  importantForAccessibility="no-hide-descendants"
-                  className={`min-w-0 items-center justify-center ${
-                    navigationLayout.compact ? 'gap-px' : 'gap-[5px]'
-                  } w-full flex-1`}
-                >
-                  <IconSymbol
-                    size={24}
-                    name={item.icon}
-                    color={isActive ? navActiveColor : navInactiveColor}
-                  />
-                    <Text
-                      accessible={false}
-                      className={`font-sans-medium w-full min-w-0 shrink text-center ${labelSizeClassName} ${
-                        isActive ? 'text-nav-active' : 'text-nav-inactive'
-                      }`}
-                      style={labelStyle}
-                      numberOfLines={navigationLayout.labelLines}
-                      textBreakStrategy="simple"
-                      ellipsizeMode="tail"
-                      adjustsFontSizeToFit={!navigationLayout.stackedLabels}
-                      minimumFontScale={navigationLayout.narrow ? 0.75 : 0.8}
-                    >
-                      {item.label}
-                    </Text>
-                  <View
-                    style={{ width: 16, height: 3, borderRadius: 2, backgroundColor: isActive ? navActiveColor : 'transparent' }}
-                  />
-                </View>
-              )}
-            </Pressable>
-          );
-        })}
+                      <Text
+                        accessible={false}
+                        className={`font-sans-medium w-full min-w-0 shrink text-center ${labelSizeClassName} ${
+                          isActive ? 'text-nav-active' : 'text-nav-inactive'
+                        }`}
+                        style={[labelStyle, { width: navigationLayout.itemWidth - 10, maxWidth: '100%' }]}
+                        numberOfLines={navigationLayout.labelLines}
+                        textBreakStrategy="simple"
+                        ellipsizeMode="tail"
+                        adjustsFontSizeToFit={!navigationLayout.stackedLabels}
+                        minimumFontScale={navigationLayout.narrow ? 0.75 : 0.8}
+                      >
+                        {item.label}
+                      </Text>
+                    <View
+                      style={{ width: 16, height: 3, borderRadius: 2, backgroundColor: isActive ? navActiveColor : 'transparent' }}
+                    />
+                  </View>
+                )}
+              </Pressable>
+            );
+          })}
+        </View>
       </View>
     </View>
   );

@@ -12,6 +12,7 @@ type CapturedTabScreen = {
     title?: string;
     tabBarButton?: (props: Record<string, unknown>) => React.ReactNode;
     tabBarIcon?: (state: { focused: boolean }) => React.ReactNode;
+    tabBarItemStyle?: { top?: number; start?: number; height?: number; width?: number; position?: string };
   };
 };
 let capturedScreens: CapturedTabScreen[] = [];
@@ -412,7 +413,7 @@ describe('TabLayout returning guest navigation', () => {
 
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
       end: 8,
-      height: 198,
+      height: 306,
       paddingHorizontal: 4,
       start: 8,
     }));
@@ -425,12 +426,39 @@ describe('TabLayout returning guest navigation', () => {
       screen.getByText('nav.explore'),
     ]).toHaveLength(5);
     const box = centerBox('nav.capture_dream');
-    expect(box.width).toBeCloseTo(54.8, 1);
-    expect(box.height).toBe(188);
-    expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('4');
+    expect(box.width).toBe(278);
+    expect(box.height).toBe(52);
+    expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('1');
     expect(capturedScreens.find((s) => s.name === 'explore')?.options).toEqual(
       expect.objectContaining({ title: 'nav.explore' }),
     );
+  });
+
+  it.each([320, 360, 434])('uses bounded native tab frames at %i dp for default and large text', (width: number) => {
+    mockPlatformOS = 'android';
+    mockWindowWidth = width;
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+    for (const scale of [1, 1.5, 2]) {
+      mockFontScale = scale;
+      capturedScreens = [];
+      const view = render(<TabLayout />);
+      const frames = ['index', 'journal', 'add-dream', 'statistics', 'explore'].map(
+        (name) => capturedScreens.find((screen) => screen.name === name)?.options?.tabBarItemStyle,
+      );
+      if (scale === 1) {
+        expect(frames.every((frame) => frame?.position === undefined)).toBe(true);
+      } else {
+        expect(frames[0]?.top).toBe(frames[1]?.top);
+        expect(frames[3]?.top).toBe(frames[4]?.top);
+        expect(frames[2]?.top).toBeGreaterThan(frames[0]?.top ?? -1);
+        expect(frames[2]?.top).toBeLessThan(frames[3]?.top ?? -1);
+        expect(frames[2]?.width).toBe((frames[0]?.width ?? 0) * 2);
+        expect(centerBox('nav.capture_dream').width).toBeGreaterThan(130);
+      }
+      const label = screen.getByText('nav.home');
+      expect(JSON.parse(label.parentElement?.getAttribute('data-native-style') ?? '{}').width).toBeGreaterThan(0);
+      view.unmount();
+    }
   });
 
   it('keeps compact landscape words visible at fontScale 2 while the bar grows', () => {
@@ -443,13 +471,40 @@ describe('TabLayout returning guest navigation', () => {
     render(<TabLayout />);
 
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
-      height: 134,
+      height: 176,
     }));
     expect(screen.getByText('nav.capture_dream')).toBeTruthy();
-    expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('2');
+    expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('1');
     const box = centerBox('nav.capture_dream');
-    expect(box.width).toBe(60);
-    expect(box.height).toBe(124);
+    expect(box.width).toBeCloseTo(276.33, 2);
+    expect(box.height).toBe(92);
+  });
+
+  it.each([[640, 320], [915, 412]])('centers Capture between two side columns at %i by %i dp', (width: number, height: number) => {
+    mockPlatformOS = 'android';
+    mockWindowWidth = width;
+    mockWindowHeight = height;
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+    for (const scale of [1, 1.5, 2]) {
+      mockFontScale = scale;
+      capturedScreens = [];
+      const view = render(<TabLayout />);
+      const names = ['index', 'journal', 'add-dream', 'statistics', 'explore'];
+      const frames = names.map((name) => capturedScreens.find((screen) => screen.name === name)?.options?.tabBarItemStyle);
+      if (scale === 1) {
+        expect(frames.every((frame) => frame?.position === undefined)).toBe(true);
+      } else {
+        expect(frames[0]?.start).toBe(frames[1]?.start);
+        expect(frames[3]?.start).toBe(frames[4]?.start);
+        expect(frames[2]?.start).toBe(frames[0]?.width);
+        expect(frames[2]?.height).toBe((frames[0]?.height ?? 0) * 2);
+        expect(frames[1]?.top).toBe(frames[0]?.height);
+        expect(frames[4]?.top).toBe(frames[3]?.height);
+        expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('1');
+      }
+      expect(capturedScreens.filter((screen) => names.includes(screen.name ?? '')).slice(0, 5).map((screen) => screen.name)).toEqual(names);
+      view.unmount();
+    }
   });
 
   it('exposes a single TalkBack name, tab role and selected state on Expo tabs', () => {

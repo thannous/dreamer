@@ -82,13 +82,58 @@ describe('TI-429 non-destructive base-app flow contract (static, no device)', ()
     ]));
   });
 
-  it.each(['enabled', 'count', 'screen', 'optional'])('rejects weakening the helper %s condition', (change) => {
+  it.each([
+    ['mode enabled', (selector) => { delete selector.containsDescendants[0].enabled; }],
+    ['mode disabled', (selector) => { selector.containsDescendants[0].enabled = false; }],
+    ['progress ID', (selector) => { selector.containsDescendants.splice(1, 1); }],
+    ['counter ID missing', (selector) => { delete selector.containsDescendants[2].id; }],
+    ['counter ID wrong', (selector) => { selector.containsDescendants[2].id = 'input.dreamTranscript'; }],
+    ['counter text missing', (selector) => { delete selector.containsDescendants[2].text; }],
+    ['counter wildcard', (selector) => { selector.containsDescendants[2].text = '.*'; }],
+    ['counter broad zero', (selector) => { selector.containsDescendants[2].text = '.*0.*'; }],
+    ['counter unanchored zero', (selector) => { selector.containsDescendants[2].text = '0 (caractères|characters|caracteres|Zeichen|caratteri)'; }],
+    ['input enabled', (selector) => { delete selector.containsDescendants[3].enabled; }],
+    ['input disabled', (selector) => { selector.containsDescendants[3].enabled = false; }],
+    ['screen ID missing', (selector) => { delete selector.id; }],
+    ['foreign screen', (selector) => { selector.id = 'screen.journal'; }],
+    ['optional', (selector) => { selector.optional = true; }],
+    ['counter nested in flattened wrapper', (selector) => {
+      selector.containsDescendants[1].containsDescendants = [selector.containsDescendants.splice(2, 1)[0]];
+    }],
+  ])('rejects weakening or changing the helper %s condition', (_, change) => {
     edit(HELPER, (commands) => {
-      const selector = commands[2].extendedWaitUntil.visible;
-      if (change === 'enabled') delete selector.containsDescendants[0].enabled;
-      if (change === 'count') selector.containsDescendants[1].containsDescendants[0].text = '.*';
-      if (change === 'screen') delete selector.id;
-      if (change === 'optional') selector.optional = true;
+      change(commands[2].extendedWaitUntil.visible);
+    });
+    expect(inspectTi429DataPreservation(fixture, WRITE_FLOW)).toEqual(expect.arrayContaining([
+      expect.stringContaining('ready/zero-raw-character editor precondition was changed'),
+    ]));
+  });
+
+  it.each([
+    { text: '^0 (caractères|characters|caracteres|Zeichen|caratteri)$' },
+    { id: 'component.recording.draftProgress.count', text: '^0 (caractères|characters|caracteres|Zeichen|caratteri)$' },
+  ])('rejects an unscoped counter precondition %j', (selector) => {
+    edit(HELPER, (commands) => { commands[2].extendedWaitUntil.visible = selector; });
+    expect(inspectTi429DataPreservation(fixture, WRITE_FLOW)).toEqual(expect.arrayContaining([
+      expect.stringContaining('ready/zero-raw-character editor precondition was changed'),
+    ]));
+  });
+
+  it.each([
+    { id: 'screen.recording', containsDescendants: [{ id: 'btn.recording.inputMode.text' }] },
+    { id: 'screen.recording', containsDescendants: [{ id: 'btn.recording.inputMode.text', enabled: false }] },
+    { id: 'btn.recording.inputMode.text', enabled: true },
+    { id: 'screen.journal', containsDescendants: [{ id: 'btn.recording.inputMode.text', enabled: true }] },
+  ])('rejects bypassing the initial scoped hydration check %j', (selector) => {
+    edit(HELPER, (commands) => { commands[0].extendedWaitUntil.visible = selector; });
+    expect(inspectTi429DataPreservation(fixture, WRITE_FLOW)).toEqual(expect.arrayContaining([
+      expect.stringContaining('ready/zero-raw-character editor precondition was changed'),
+    ]));
+  });
+
+  it.each(['btn.recording.inputMode.text', 'input.dreamTranscript'])('rejects replacing the %s tap with a coordinate fallback', (id) => {
+    edit(HELPER, (commands) => {
+      commands.find((command) => command.tapOn?.id === id).tapOn = { point: '50%,50%' };
     });
     expect(inspectTi429DataPreservation(fixture, WRITE_FLOW)).toEqual(expect.arrayContaining([
       expect.stringContaining('ready/zero-raw-character editor precondition was changed'),
@@ -103,10 +148,21 @@ describe('TI-429 non-destructive base-app flow contract (static, no device)', ()
   });
 
   it('counts exact zero characters in all six locales, never an existing whitespace-only draft', () => {
-    const pattern = new RegExp(EMPTY_EDITOR_SELECTOR.containsDescendants[1].containsDescendants[0].text);
+    expect(EMPTY_EDITOR_SELECTOR).toEqual({
+      id: 'screen.recording',
+      containsDescendants: [
+        { id: 'btn.recording.inputMode.text', enabled: true },
+        { id: 'component.recording.draftProgress' },
+        { id: 'component.recording.draftProgress.count', text: '^0 (caractères|characters|caracteres|Zeichen|caratteri)$' },
+        { id: 'input.dreamTranscript', enabled: true },
+      ],
+    });
+    const pattern = new RegExp(EMPTY_EDITOR_SELECTOR.containsDescendants[2].text);
     for (const label of ['caractères', 'characters', 'caracteres', 'Zeichen', 'caratteri']) {
       expect(pattern.test(`0 ${label}`)).toBe(true);
       for (const count of [1, 10, 100]) expect(pattern.test(`${count} ${label}`)).toBe(false);
+      expect(pattern.test(`dream text: 0 ${label}`)).toBe(false);
+      expect(pattern.test(`0 ${label} in my dream`)).toBe(false);
     }
     expect(read(HELPER)[1][2].extendedWaitUntil.visible).toEqual(EMPTY_EDITOR_SELECTOR);
   });

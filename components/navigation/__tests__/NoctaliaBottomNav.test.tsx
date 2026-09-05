@@ -35,6 +35,7 @@ jest.mock('react-native', () => {
       children,
       className,
       onPress,
+      style,
       testID,
       ...rest
     }: {
@@ -44,6 +45,7 @@ jest.mock('react-native', () => {
       children?: React.ReactNode | ((state: { pressed: boolean }) => React.ReactNode);
       className?: string;
       onPress?: () => void;
+      style?: unknown;
       testID?: string;
     }) => (
       <button
@@ -51,6 +53,7 @@ jest.mock('react-native', () => {
         aria-selected={accessibilityState?.selected ? 'true' : 'false'}
         aria-busy={accessibilityState?.busy ? 'true' : undefined}
         data-native-class={className}
+        data-native-style={JSON.stringify(flattenStyle(style))}
         data-testid={testID}
         onClick={onPress}
         role={accessibilityRole}
@@ -173,7 +176,7 @@ afterEach(() => {
 
 const barBox = (testID: string) =>
   JSON.parse(
-    screen.getByTestId(testID).parentElement?.getAttribute('data-native-style') ?? '{}'
+    screen.getByTestId(testID).parentElement?.parentElement?.getAttribute('data-native-style') ?? '{}'
   ) as { height?: number; start?: number; end?: number };
 const centerBox = (testID: string) =>
   JSON.parse(
@@ -193,8 +196,8 @@ describe('NoctaliaBottomNav', () => {
 
     const addDreamTab = screen.getByTestId(TID.Tab.AddDream);
     expect(addDreamTab).toBeTruthy();
-    expect(addDreamTab.parentElement?.getAttribute('data-native-style')).toContain('"start":160');
-    expect(addDreamTab.parentElement?.getAttribute('data-native-style')).toContain('"end":160');
+    expect(addDreamTab.parentElement?.parentElement?.getAttribute('data-native-style')).toContain('"start":160');
+    expect(addDreamTab.parentElement?.parentElement?.getAttribute('data-native-style')).toContain('"end":160');
   });
 
   it('remains hidden on desktop Web', () => {
@@ -277,7 +280,7 @@ describe('NoctaliaBottomNav', () => {
     const box = barBox(TID.Tab.AddDream);
     const center = centerBox(TID.Tab.AddDream);
     const labels = barLabels();
-    const barClass = screen.getByTestId(TID.Tab.AddDream).parentElement?.getAttribute('data-native-class');
+    const barClass = screen.getByTestId(TID.Tab.AddDream).parentElement?.parentElement?.getAttribute('data-native-class');
 
     expect(box.start).toBe(8);
     expect(box.end).toBe(8);
@@ -307,16 +310,43 @@ describe('NoctaliaBottomNav', () => {
     const center = centerBox(TID.Tab.AddDream);
     const labels = barLabels();
 
-    expect(box.height).toBe(198);
-    expect(center.width).toBeCloseTo(54.8, 1);
-    expect(center.height).toBe(188);
+    expect(box.height).toBe(306);
+    expect(center.width).toBe(278);
+    expect(center.height).toBe(52);
     expect(labels).toHaveLength(5);
-    expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('4');
+    expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('1');
     [TID.Tab.Home, TID.Tab.Journal, TID.Tab.AddDream, TID.Tab.Stats, TID.Tab.Explore]
       .forEach((testID) => expect(screen.getByTestId(testID).getAttribute('role')).toBe('tab'));
     expect(screen.getByTestId(TID.Tab.Explore).getAttribute('aria-label')).toBe('nav.explore');
     expect(screen.getByTestId(TID.Tab.AddDream).getAttribute('aria-label')).toBe('nav.capture_dream_accessibility');
     expect(screen.getByTestId(TID.Tab.AddDream).getAttribute('aria-selected')).toBe('true');
+  });
+
+  it.each([320, 360, 434])('keeps all five actions in reading order with Capture centered at %i dp', (width) => {
+    mockPlatformOS = 'android';
+    mockWindowWidth = width;
+    for (const scale of [1, 1.5, 2]) {
+      mockFontScale = scale;
+      const view = render(<NoctaliaBottomNav activeKey="addDream" />);
+      const tabs = screen.getAllByRole('tab');
+      expect(tabs.map((tab) => tab.getAttribute('data-testid'))).toEqual([
+        TID.Tab.Home, TID.Tab.Journal, TID.Tab.AddDream, TID.Tab.Stats, TID.Tab.Explore,
+      ]);
+      const frames = tabs.map((tab) => JSON.parse(tab.getAttribute('data-native-style') ?? '{}'));
+      if (scale === 1) {
+        expect(frames.every((frame) => frame.position === undefined)).toBe(true);
+      } else {
+        expect(frames[0].top).toBe(frames[1].top);
+        expect(frames[3].top).toBe(frames[4].top);
+        expect(frames[2].top).toBeGreaterThan(frames[0].top);
+        expect(frames[2].top).toBeLessThan(frames[3].top);
+        expect(frames[2].width).toBe(frames[0].width * 2);
+        expect(centerBox(TID.Tab.AddDream).width).toBeGreaterThan(130);
+      }
+      fireEvent.click(tabs[4]);
+      expect(mockPush).toHaveBeenLastCalledWith('/(tabs)/explore');
+      view.unmount();
+    }
   });
 
   it('keeps compact landscape words visible at fontScale 2 while the bar grows', () => {
@@ -331,11 +361,38 @@ describe('NoctaliaBottomNav', () => {
     const center = centerBox(TID.Tab.AddDream);
     const labels = barLabels();
 
-    expect(box.height).toBe(134);
-    expect(center.width).toBe(60);
-    expect(center.height).toBe(124);
+    expect(box.height).toBe(176);
+    expect(center.width).toBeCloseTo(276.33, 2);
+    expect(center.height).toBe(92);
     expect(labels).toHaveLength(5);
-    expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('2');
+    expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('1');
+  });
+
+  it.each([[640, 320], [915, 412]])('preserves five logical actions around centered Capture at %i by %i dp', (width, height) => {
+    mockPlatformOS = 'android';
+    mockWindowWidth = width;
+    mockWindowHeight = height;
+    for (const scale of [1, 1.5, 2]) {
+      mockFontScale = scale;
+      const view = render(<NoctaliaBottomNav activeKey="addDream" />);
+      const tabs = screen.getAllByRole('tab');
+      expect(tabs.map((tab) => tab.getAttribute('data-testid'))).toEqual([
+        TID.Tab.Home, TID.Tab.Journal, TID.Tab.AddDream, TID.Tab.Stats, TID.Tab.Explore,
+      ]);
+      const frames = tabs.map((tab) => JSON.parse(tab.getAttribute('data-native-style') ?? '{}'));
+      if (scale === 1) {
+        expect(frames.every((frame) => frame.position === undefined)).toBe(true);
+      } else {
+        expect(frames[0].start).toBe(frames[1].start);
+        expect(frames[3].start).toBe(frames[4].start);
+        expect(frames[2].start).toBe(frames[0].width);
+        expect(frames[2].height).toBe(frames[0].height * 2);
+        expect(frames[1].top).toBe(frames[0].height);
+        expect(frames[4].top).toBe(frames[3].height);
+      }
+      expect(tabs[2].getAttribute('aria-selected')).toBe('true');
+      view.unmount();
+    }
   });
 
   it('widens the center action and margins on a 390 dp phone without growing the bar', () => {
@@ -346,7 +403,7 @@ describe('NoctaliaBottomNav', () => {
 
     const box = barBox(TID.Tab.AddDream);
     const center = centerBox(TID.Tab.AddDream);
-    const barClass = screen.getByTestId(TID.Tab.AddDream).parentElement?.getAttribute('data-native-class');
+    const barClass = screen.getByTestId(TID.Tab.AddDream).parentElement?.parentElement?.getAttribute('data-native-class');
     const centerLabel = Array.from(screen.getByTestId(TID.Tab.AddDream).querySelectorAll('span')).find(
       (element) => element.textContent === 'nav.capture_dream'
     );

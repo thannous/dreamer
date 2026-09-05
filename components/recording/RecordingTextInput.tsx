@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions } fro
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { MicButton, type MicButtonStatus } from '@/components/recording/MicButton';
-import { getRecordingComposerLayout } from '@/constants/layout';
+import { getRecordingComposerLayout, LARGE_TEXT_FONT_SCALE } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
@@ -196,6 +196,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
             accessibilityLiveRegion="polite"
             style={[
               styles.voiceHint,
+              fontScale >= LARGE_TEXT_FONT_SCALE && styles.voiceHintStacked,
               {
                 backgroundColor: noctalia.surface.raised,
                 borderColor: noctalia.surface.borderStrong,
@@ -213,7 +214,11 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
                 },
               ]}
             />
-            <Text style={[styles.voiceHintText, { color: noctalia.text.primary }]}>
+            <Text style={[
+              styles.voiceHintText,
+              fontScale >= LARGE_TEXT_FONT_SCALE && styles.voiceHintTextStacked,
+              { color: noctalia.text.primary },
+            ]}>
               {t('recording.onboarding.voice.body')}
             </Text>
             <Pressable
@@ -452,6 +457,14 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     borderTopWidth: 1,
     transform: [{ rotate: '45deg' }],
+  },
+  voiceHintStacked: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    paddingHorizontal: 14,
+  },
+  voiceHintTextStacked: {
+    flex: 0,
   },
   voiceHintText: {
     flex: 1,
