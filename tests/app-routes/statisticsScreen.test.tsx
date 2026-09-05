@@ -9,6 +9,10 @@ import type { DreamAnalysis } from '@/lib/types';
 const mockPush = jest.fn();
 const mockUseDreams = jest.fn();
 const mockWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
+let mockBottomInset = 0;
+jest.mock('react-native-safe-area-context', () => ({
+  useSafeAreaInsets: () => ({ top: 24, bottom: mockBottomInset, left: 0, right: 0 }),
+}));
 
 const NOW = new Date(2026, 7, 29, 18, 0, 0).getTime();
 const localDay = (year: number, monthIndex: number, day: number, hour = 9): number =>
@@ -23,6 +27,7 @@ afterEach(() => {
   mockWindow.width = 390;
   mockWindow.height = 844;
   mockWindow.fontScale = 1;
+  mockBottomInset = 0;
 });
 
 const analyzed = (
@@ -110,7 +115,7 @@ jest.mock('react-native', () => {
       select: (values: Record<string, any>) => values?.web ?? values?.default,
     },
     Pressable: createElement('button'),
-    ScrollView: createElement('div'),
+    ScrollView: ({ children, ...props }: any) => React.createElement('div', { 'data-testid': 'trends-scroll', ...toDomProps(props) }, children),
     Text: createElement('span'),
     View: createElement('div'),
     useWindowDimensions: () => mockWindow,
@@ -229,6 +234,38 @@ function expectUngroupedSection(testID: string, heading: string) {
 }
 
 describe('Statistics screen VNext trends', () => {
+  it.each([false, true])('keeps loading=%s and the settings header in a usable compact scroll viewport', (loaded: boolean) => {
+    mockUseDreams.mockReturnValue({ dreams: [], loaded });
+    mockBottomInset = 24;
+    const view = render(<StatisticsScreen />);
+    for (const [width, height] of [[640, 320], [915, 412]]) {
+      for (const scale of [1, 1.5, 2]) {
+        Object.assign(mockWindow, { width, height, fontScale: scale });
+        view.rerender(<StatisticsScreen />);
+        const scroll = screen.queryByTestId('trends-scroll');
+        const settings = screen.getByTestId(TID.Button.HeaderTrendsSettings);
+        expect(screen.getAllByTestId(TID.Button.HeaderTrendsSettings)).toHaveLength(1);
+        expect(Boolean(scroll?.contains(settings))).toBe(scale >= 1.3);
+        if (scale >= 1.3) {
+          const style = JSON.parse(scroll!.getAttribute('data-style') ?? '{}');
+          const content = JSON.parse(scroll!.getAttribute('data-content-container-style') ?? '{}');
+          expect(height - style.marginBottom).toBeGreaterThanOrEqual(120);
+          expect(content.paddingBottom).toBeLessThan(50);
+          expect(scroll!.textContent).toContain(loaded ? 'trends.section.week' : 'trends.loading');
+          if (!loaded) {
+            const message = screen.getByText('trends.loading').parentElement!;
+            expect(message.className).toContain('shrink-0');
+            expect(message.className).not.toContain('flex-1');
+            expect(message.getAttribute('aria-live')).toBe('polite');
+          }
+        }
+        Object.assign(mockWindow, { width: height, height: width });
+        view.rerender(<StatisticsScreen />);
+        expect(screen.queryByTestId('trends-scroll')?.contains(screen.getByTestId(TID.Button.HeaderTrendsSettings)) ?? false).toBe(false);
+      }
+    }
+  });
+
   it('keeps loading accessible until dreams are ready', () => {
     mockUseDreams.mockReturnValue({ dreams: [], loaded: false });
 
