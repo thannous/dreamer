@@ -21,19 +21,14 @@ export function getKey(dreamId: string): string {
 
 export async function load(dreamId: string): Promise<DreamRecallAssistantState | null> {
   const key = getKey(dreamId);
-  let raw: string | null;
-  try {
-    raw = await AsyncStorage.getItem(key);
-  } catch {
-    return null;
-  }
-  if (raw == null) return null;
+  const raw = await AsyncStorage.getItem(key);
+  if (raw === null) return null;
 
   const hydrated = hydrateDreamRecallAssistantState(raw);
   if (!hydrated.ok) {
-    await AsyncStorage.removeItem(key).catch(() => undefined);
-    return null;
+    throw new Error(`Cannot restore dream recall assistant: ${hydrated.reason}.`);
   }
+  if (hydrated.state.dreamId !== dreamId) throw new Error('Dream recall assistant identity mismatch.');
   return hydrated.state;
 }
 

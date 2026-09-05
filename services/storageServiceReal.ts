@@ -895,11 +895,34 @@ export async function getRecordingDraft(): Promise<RecordingDraftReadResult> {
 
 export async function saveTranscript(transcript: string): Promise<void> {
   try {
-    if (transcript) {
-      await setItem(RECORDING_TRANSCRIPT_KEY, transcript);
-    } else {
-      await removeItem(RECORDING_TRANSCRIPT_KEY);
+    // Match getRecordingDraft's authority. An empty primary value is a durable
+    // tombstone: failed legacy cleanup cannot resurrect a journal-saved draft.
+    if (Platform.OS !== 'web') {
+      if (SQLiteKvStoreRef === null) SQLiteKvStoreRef = undefined;
+      const kv = await getSQLiteKvStore();
+      if (!kv) throw new Error('Recording draft primary storage unavailable');
+      await withKvRetry(() => kv.setItem(RECORDING_TRANSCRIPT_KEY, transcript));
+      try {
+        const legacy = await getLegacyAsyncStorage();
+        await legacy?.removeItem(RECORDING_TRANSCRIPT_KEY);
+      } catch {
+        // The primary write is durable; legacy cleanup is optional.
+      }
+      return;
     }
+
+    const primary = await getIndexedDBStorage(true);
+    if (primary) {
+      await primary.setItem(RECORDING_TRANSCRIPT_KEY, transcript);
+      try {
+        webStorage?.removeItem(RECORDING_TRANSCRIPT_KEY);
+      } catch {
+        // Keep the confirmed primary value even if legacy cleanup fails.
+      }
+      return;
+    }
+    if (!webStorage) throw new Error('Recording draft durable storage unavailable');
+    webStorage.setItem(RECORDING_TRANSCRIPT_KEY, transcript);
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save transcript:', error);

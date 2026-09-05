@@ -91,30 +91,31 @@ describe('dreamRecallAssistantStorage', () => {
     expect(mockAsyncStorage.removeItem).not.toHaveBeenCalled();
   });
 
-  it('removes invalid payloads on load and returns null without throwing', async () => {
+  it('preserves invalid payloads and rejects load so a new session cannot overwrite them', async () => {
     mockStorage.set(`dream_recall_assistant:${DREAM_ID}`, '{');
-    await expect(load(DREAM_ID)).resolves.toBeNull();
-    expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith(`dream_recall_assistant:${DREAM_ID}`);
-    expect(mockStorage.has(`dream_recall_assistant:${DREAM_ID}`)).toBe(false);
+    await expect(load(DREAM_ID)).rejects.toThrow();
+    expect(mockAsyncStorage.removeItem).not.toHaveBeenCalled();
+    expect(mockStorage.get(`dream_recall_assistant:${DREAM_ID}`)).toBe('{');
 
     mockStorage.set(
       `dream_recall_assistant:${DREAM_ID}`,
       JSON.stringify({ schemaVersion: 0, status: 'active' })
     );
-    await expect(load(DREAM_ID)).resolves.toBeNull();
-    expect(mockStorage.has(`dream_recall_assistant:${DREAM_ID}`)).toBe(false);
+    await expect(load(DREAM_ID)).rejects.toThrow();
+    expect(mockStorage.has(`dream_recall_assistant:${DREAM_ID}`)).toBe(true);
   });
 
-  it('returns null without throwing when AsyncStorage getItem fails', async () => {
+  it('propagates read failure instead of claiming no sidecar exists', async () => {
     mockAsyncStorage.getItem.mockRejectedValueOnce(new Error('Row too big'));
-    await expect(load(DREAM_ID)).resolves.toBeNull();
+    await expect(load(DREAM_ID)).rejects.toThrow('Row too big');
     expect(mockAsyncStorage.removeItem).not.toHaveBeenCalled();
   });
 
-  it('does not throw when invalid payload removal fails', async () => {
-    mockStorage.set(`dream_recall_assistant:${DREAM_ID}`, '{');
-    mockAsyncStorage.removeItem.mockRejectedValueOnce(new Error('locked'));
-    await expect(load(DREAM_ID)).resolves.toBeNull();
+  it('rejects a sidecar whose dream identity does not match its key', async () => {
+    const raw = serializeDreamRecallAssistantState({ ...startedState(), dreamId: 'other' });
+    mockStorage.set(getKey(DREAM_ID), raw);
+    await expect(load(DREAM_ID)).rejects.toThrow();
+    expect(mockStorage.get(getKey(DREAM_ID))).toBe(raw);
   });
 
   it('removes only the sidecar for the given dreamId', async () => {

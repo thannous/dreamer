@@ -608,6 +608,15 @@ jest.doMock('@/services/storageService', () => ({
 const { default: RecordingScreen } = require('@/app/recording');
 const { getBottomNavigationLayout } = require('@/constants/layout');
 
+const pendingDraftReads = new Set<(value: string) => void>();
+
+function deferredDraftRead() {
+  let resolve!: (value: string) => void;
+  const promise = new Promise<string>((complete) => { resolve = complete; });
+  pendingDraftReads.add(resolve);
+  return { promise, resolve };
+}
+
 async function awaitEditorReady() {
   await waitFor(() => {
     expect(
@@ -761,9 +770,17 @@ describe('Recording screen', () => {
     });
   });
 
-  afterEach(() => {
-    cleanup();
-    jest.clearAllMocks();
+  afterEach(async () => {
+    try {
+      cleanup();
+    } finally {
+      // A failed assertion must not strand a read on the shared storage queue.
+      await act(async () => {
+        pendingDraftReads.forEach((resolve) => resolve(''));
+        pendingDraftReads.clear();
+      });
+      jest.clearAllMocks();
+    }
   });
 
   it('starts voice capture only after the first permission rationale is accepted', async () => {
@@ -1187,13 +1204,8 @@ describe('Recording screen', () => {
   });
 
   it('preserves the stored draft and rejects early input before hydration completes', async () => {
-    let resolveGet: ((value: string) => void) | undefined;
-    mockGetSavedTranscript.mockImplementation(
-      () =>
-        new Promise<string>((resolve) => {
-          resolveGet = resolve;
-        })
-    );
+    const read = deferredDraftRead();
+    mockGetSavedTranscript.mockReturnValueOnce(read.promise);
 
     render(<RecordingScreen />);
 
@@ -1205,9 +1217,9 @@ describe('Recording screen', () => {
     expect(input.value).toBe('');
     expect(mockSaveTranscript).not.toHaveBeenCalled();
 
+    await waitFor(() => expect(mockGetSavedTranscript).toHaveBeenCalledTimes(1));
     await act(async () => {
-      resolveGet?.('saved draft from disk');
-      await Promise.resolve();
+      read.resolve('saved draft from disk');
     });
 
     await awaitEditorReady();
@@ -1226,16 +1238,12 @@ describe('Recording screen', () => {
   });
 
   it('does not erase stored content during the initial empty render', async () => {
-    let resolveGet: ((value: string) => void) | undefined;
-    mockGetSavedTranscript.mockImplementation(
-      () =>
-        new Promise<string>((resolve) => {
-          resolveGet = resolve;
-        })
-    );
+    const read = deferredDraftRead();
+    mockGetSavedTranscript.mockReturnValueOnce(read.promise);
 
     render(<RecordingScreen />);
 
+    await waitFor(() => expect(mockGetSavedTranscript).toHaveBeenCalledTimes(1));
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 400));
     });
@@ -1245,8 +1253,7 @@ describe('Recording screen', () => {
     ).toBe('');
 
     await act(async () => {
-      resolveGet?.('stored dream');
-      await Promise.resolve();
+      read.resolve('stored dream');
     });
 
     await waitFor(() => {
@@ -1258,10 +1265,10 @@ describe('Recording screen', () => {
   });
 
   it('offers retry after a failed restore and restores the original before accepting edits', async () => {
-    let resolveRetry: ((value: string) => void) | undefined;
+    const read = deferredDraftRead();
     mockGetSavedTranscript
       .mockRejectedValueOnce(new Error('storage unavailable'))
-      .mockImplementationOnce(() => new Promise<string>((resolve) => { resolveRetry = resolve; }));
+      .mockReturnValueOnce(read.promise);
     mockGetInputModePreference.mockResolvedValue('voice');
     mockGetRecordingVoiceHintCompleted.mockResolvedValue(false);
     mockViewportWidth = 1280;
@@ -1294,7 +1301,7 @@ describe('Recording screen', () => {
       fireEvent.click(retry);
       fireEvent.click(retry);
     });
-    expect(mockGetSavedTranscript).toHaveBeenCalledTimes(2);
+    await waitFor(() => expect(mockGetSavedTranscript).toHaveBeenCalledTimes(2));
     expect(screen.getByText('recording.draft_restore.loading')).toBeTruthy();
     expect((retry as HTMLButtonElement).disabled).toBe(true);
     expect(screen.getByTestId(TID.Screen.Recording).getAttribute('aria-busy')).toBe('true');
@@ -1305,7 +1312,7 @@ describe('Recording screen', () => {
     act(() => mockAppStateHandler?.('background'));
     expect(mockSaveTranscript).not.toHaveBeenCalled();
 
-    await act(async () => { resolveRetry?.('original durable dream'); });
+    await act(async () => { read.resolve('original durable dream'); });
     await awaitEditorReady();
     expect(input.value).toBe('original durable dream');
     expect(screen.queryByText('recording.draft_restore.loading')).toBeNull();
