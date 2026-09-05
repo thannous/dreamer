@@ -5,6 +5,16 @@ import { getRecordingDraft, saveTranscript } from '@/services/storageService';
 
 export const RECORDING_DRAFT_AUTOSAVE_DELAY_MS = 300;
 
+// Keep replacement hydration behind every pending write, including the real
+// storage service's backoff and this hook's retry after the old screen unmounts.
+let draftStorageQueue: Promise<void> = Promise.resolve();
+
+function queueDraftStorage<T>(operation: () => Promise<T>): Promise<T> {
+  const result = draftStorageQueue.then(operation, operation);
+  draftStorageQueue = result.then(() => undefined, () => undefined);
+  return result;
+}
+
 export type UseRecordingDraftPersistenceOptions = {
   transcript: string;
   onRestore: (savedTranscript: string) => void;
@@ -30,6 +40,7 @@ export type UseRecordingDraftPersistenceResult = {
  * cannot finish after a successful journal save and resurrect text.
  * A pending debounce is flushed immediately on AppState background/inactive
  * and on unmount so a kill during the 300ms window cannot drop the draft.
+ * Failed writes stay dirty: retry once automatically, then on a lifecycle flush.
  */
 export function useRecordingDraftPersistence({
   transcript,
@@ -43,29 +54,62 @@ export function useRecordingDraftPersistence({
   const userEditedRef = useRef(false);
   const awaitingRestoredValueRef = useRef<string | null>(null);
   const latestValueRef = useRef(transcript);
-  const lastScheduledRef = useRef<string | null>(null);
+  const persistedRef = useRef<{ value: string; generation: number } | null>(null);
+  const pendingWriteRef = useRef<{
+    value: string;
+    generation: number;
+    retryRequested: boolean;
+  } | null>(null);
+  const automaticRetryRef = useRef<{ value: string; generation: number } | null>(null);
   const [lastPersistedValue, setLastPersistedValue] = useState<string | null>(null);
   const generationRef = useRef(0);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const writeChainRef = useRef(Promise.resolve());
   const onRestoreRef = useRef(onRestore);
 
-  const enqueueWrite = useCallback((value: string, generation: number) => {
+  const enqueueWrite = useCallback((value: string, generation: number, reason?: 'flush' | 'clear') => {
+    const pending = pendingWriteRef.current;
+    if (pending?.value === value && pending.generation === generation) {
+      // Remember a flush even when storage has not reported its failure yet.
+      pending.retryRequested ||= reason === 'flush';
+      return;
+    }
+    if (!pending && persistedRef.current?.value === value && persistedRef.current.generation === generation) {
+      return;
+    }
+    const write = { value, generation, retryRequested: false };
+    pendingWriteRef.current = write;
     const run = async () => {
-      if (generation !== generationRef.current) {
-        return;
-      }
+      let retrying = false;
       try {
-        await saveTranscript(value);
-        if (generation !== generationRef.current) {
-          return;
+        while (
+          generation === generationRef.current &&
+          // A journal-success clear remains a barrier before the next draft.
+          (reason === 'clear' || (value === latestValueRef.current && pendingWriteRef.current === write))
+        ) {
+          if (retrying) automaticRetryRef.current = { value, generation };
+          try {
+            await saveTranscript(value);
+            if (generation === generationRef.current) {
+              persistedRef.current = { value, generation };
+              if (mountedRef.current) setLastPersistedValue(value);
+            }
+            return;
+          } catch {
+            // A failed attempt is never persisted. Only one automatic retry is
+            // allowed for this value/generation; later flushes can request one more.
+            const retried = automaticRetryRef.current;
+            if (retried?.value === value && retried.generation === generation && !write.retryRequested) {
+              return;
+            }
+            retrying = true;
+            write.retryRequested = false;
+          }
         }
-        setLastPersistedValue(value);
-      } catch {
-        // Storage write errors must not block capture or journal success.
+      } finally {
+        if (pendingWriteRef.current === write) pendingWriteRef.current = null;
       }
     };
-    writeChainRef.current = writeChainRef.current.then(run, run);
+    void queueDraftStorage(run);
   }, []);
 
   const scheduleAutosave = useCallback(() => {
@@ -76,21 +120,12 @@ export function useRecordingDraftPersistence({
       clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = null;
     }
-    const pending = latestValueRef.current;
-    if (pending === lastScheduledRef.current) {
-      return;
-    }
     debounceTimerRef.current = setTimeout(() => {
       debounceTimerRef.current = null;
       if (!hydratedRef.current) {
         return;
       }
-      const value = latestValueRef.current;
-      if (value === lastScheduledRef.current) {
-        return;
-      }
-      lastScheduledRef.current = value;
-      enqueueWrite(value, generationRef.current);
+      enqueueWrite(latestValueRef.current, generationRef.current);
     }, RECORDING_DRAFT_AUTOSAVE_DELAY_MS);
   }, [enqueueWrite]);
 
@@ -102,16 +137,11 @@ export function useRecordingDraftPersistence({
       clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = null;
     }
-    const value = latestValueRef.current;
-    if (value === lastScheduledRef.current) {
-      return;
-    }
-    lastScheduledRef.current = value;
-    enqueueWrite(value, generationRef.current);
+    enqueueWrite(latestValueRef.current, generationRef.current, 'flush');
   }, [enqueueWrite]);
 
   const noteInput = useCallback((value: string) => {
-    if (!hydratedRef.current) {
+    if (!mountedRef.current || !hydratedRef.current) {
       return false;
     }
     userEditedRef.current = true;
@@ -122,7 +152,7 @@ export function useRecordingDraftPersistence({
   }, [scheduleAutosave]);
 
   const clearAfterSuccessfulSave = useCallback(() => {
-    if (!hydratedRef.current) {
+    if (!mountedRef.current || !hydratedRef.current) {
       return;
     }
     if (debounceTimerRef.current !== null) {
@@ -132,8 +162,7 @@ export function useRecordingDraftPersistence({
     generationRef.current += 1;
     const generation = generationRef.current;
     latestValueRef.current = '';
-    lastScheduledRef.current = '';
-    enqueueWrite('', generation);
+    enqueueWrite('', generation, 'clear');
   }, [enqueueWrite]);
 
   useEffect(() => {
@@ -147,8 +176,11 @@ export function useRecordingDraftPersistence({
     setHydrationStatus('loading');
     void (async () => {
       try {
-        const result = await getRecordingDraft();
-        if (!mountedRef.current || hydrationAttemptRef.current !== attempt) return;
+        const result = await queueDraftStorage(async () => {
+          if (!mountedRef.current || hydrationAttemptRef.current !== attempt) return null;
+          return getRecordingDraft();
+        });
+        if (!result || !mountedRef.current || hydrationAttemptRef.current !== attempt) return;
         if (result.status === 'error') {
           setHydrationStatus('error');
           return;
@@ -156,7 +188,7 @@ export function useRecordingDraftPersistence({
         const saved = result.status === 'loaded' ? result.value : '';
         awaitingRestoredValueRef.current = saved;
         latestValueRef.current = saved;
-        lastScheduledRef.current = saved;
+        persistedRef.current = { value: saved, generation: generationRef.current };
         if (saved) onRestoreRef.current(saved);
         setLastPersistedValue(saved);
         hydratedRef.current = true;
@@ -191,11 +223,11 @@ export function useRecordingDraftPersistence({
       if (transcript !== awaitingRestoredValueRef.current) return;
       awaitingRestoredValueRef.current = null;
     }
-    if (transcript === lastScheduledRef.current) {
+    if (transcript === latestValueRef.current) {
       return;
     }
     // Parent has not applied onRestore yet: keep the stored draft.
-    if (!userEditedRef.current && transcript === '' && lastScheduledRef.current) {
+    if (!userEditedRef.current && transcript === '' && persistedRef.current?.value) {
       return;
     }
     latestValueRef.current = transcript;

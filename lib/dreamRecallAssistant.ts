@@ -93,6 +93,8 @@ export type DreamRecallAssistantState = {
   status: DreamRecallAssistantStatus;
   turns: DreamRecallTurn[];
   pendingUserSegment: DreamRecallUserSegment | null;
+  /** Optional in v1 sidecars created before draft persistence. Text is kept verbatim. */
+  answerDraft?: { questionId: string; text: string } | null;
   maxQuestions: number;
   startedAt: number | null;
   updatedAt: number;
@@ -157,6 +159,7 @@ const clone = (state: DreamRecallAssistantState): DreamRecallAssistantState => (
   ...state,
   turns: state.turns.map((turn) => ({ ...turn })),
   pendingUserSegment: state.pendingUserSegment ? { ...state.pendingUserSegment } : null,
+  ...(state.answerDraft ? { answerDraft: { ...state.answerDraft } } : {}),
 });
 
 const questionCount = (state: Pick<DreamRecallAssistantState, 'turns'>): number =>
@@ -210,10 +213,10 @@ const boundSegment = (text: string): string => {
   if (typeof text !== 'string') fail('invalid_input', 'User segment text must be a string.');
   const normalized = lines(text);
   if (!normalized) fail('invalid_input', 'User segment text cannot be empty.');
-  if (normalized.length > MAX_DREAM_RECALL_SEGMENT_LENGTH) {
+  if (text.length > MAX_DREAM_RECALL_SEGMENT_LENGTH) {
     fail('invalid_input', 'User segment text exceeds the persistable length.');
   }
-  return normalized;
+  return text;
 };
 
 const hashTranscript = (transcript: string): string => {
@@ -341,6 +344,26 @@ export function addDreamRecallUserSegment(
   return { state: next, command: { kind: 'await_persist' } };
 }
 
+export function updateDreamRecallAnswerDraft(
+  state: DreamRecallAssistantState,
+  questionId: string,
+  text: string,
+  now: number
+): DreamRecallAssistantState {
+  assertNow(now);
+  if (
+    (state.status !== 'active' && state.status !== 'paused') ||
+    !hasOpenQuestion(state) || lastTurn(state)?.id !== questionId || typeof text !== 'string'
+  ) {
+    fail('invalid_input', 'An answer draft requires its current open question.');
+  }
+  const pending = state.pendingUserSegment;
+  return patch(state, {
+    answerDraft: { questionId, text },
+    pendingUserSegment: pending?.persisted === false && pending.text === text ? pending : null,
+  }, now);
+}
+
 export function markDreamRecallSegmentPersisted(
   state: DreamRecallAssistantState,
   now: number
@@ -370,7 +393,7 @@ export function markDreamRecallSegmentPersisted(
       },
     ];
   }
-  const next = patch(state, { turns, pendingUserSegment: persisted }, now);
+  const next = patch(state, { turns, pendingUserSegment: persisted, answerDraft: null }, now);
   return { state: next, command: commandFor(next) };
 }
 
@@ -443,6 +466,7 @@ export function appendNeutralRecallQuestion(
         },
       ],
       pendingUserSegment: null,
+      answerDraft: null,
     },
     now
   );
@@ -469,8 +493,9 @@ export function skipDreamRecallAssistant(state: DreamRecallAssistantState, now: 
   if (state.status === 'idle') fail('idle', 'Cannot skip an idle recall assistant.');
   if (state.status === 'completed') fail('terminal', 'Cannot skip a completed recall assistant.');
   if (state.status === 'skipped') return { state: clone(state), command: { kind: 'skipped' } };
+  assertNoUnsavedAnswer(state);
   return {
-    state: patch(state, { status: 'skipped', pendingUserSegment: null, completedAt: now }, now),
+    state: patch(state, { status: 'skipped', pendingUserSegment: null, answerDraft: null, completedAt: now }, now),
     command: { kind: 'skipped' },
   };
 }
@@ -480,10 +505,17 @@ export function completeDreamRecallAssistant(state: DreamRecallAssistantState, n
   if (state.status !== 'active' && state.status !== 'paused') {
     fail(isTerminal(state.status) ? 'terminal' : 'not_active', `Cannot complete a ${state.status} recall assistant.`);
   }
+  assertNoUnsavedAnswer(state);
   return {
-    state: patch(state, { status: 'completed', pendingUserSegment: null, completedAt: now }, now),
+    state: patch(state, { status: 'completed', pendingUserSegment: null, answerDraft: null, completedAt: now }, now),
     command: { kind: 'completed' },
   };
+}
+
+function assertNoUnsavedAnswer(state: DreamRecallAssistantState): void {
+  if (state.answerDraft?.text.trim() || state.pendingUserSegment?.persisted === false) {
+    fail('segment_not_persisted', 'Persist the current answer before ending recall.');
+  }
 }
 
 const isSegment = (value: unknown): value is DreamRecallUserSegment =>
@@ -544,6 +576,15 @@ export function isDreamRecallAssistantState(value: unknown): value is DreamRecal
   if (turns.filter((turn) => turn.role === 'question').length > maxQuestions) return false;
   if (turns.some((turn) => squeeze(turn.text) === squeeze(originalTranscript))) return false;
   if (value.pendingUserSegment !== null && !isSegment(value.pendingUserSegment)) return false;
+  if (value.answerDraft != null) {
+    const draft = value.answerDraft;
+    const question = turns[turns.length - 1];
+    if (
+      !isRecord(draft) || !isText(draft.questionId) || typeof draft.text !== 'string' ||
+      question?.role !== 'question' || question.id !== draft.questionId ||
+      (value.status !== 'active' && value.status !== 'paused')
+    ) return false;
+  }
   if (value.startedAt !== null && !isTime(value.startedAt)) return false;
   if (!isTime(value.updatedAt)) return false;
   if (value.completedAt !== null && !isTime(value.completedAt)) return false;

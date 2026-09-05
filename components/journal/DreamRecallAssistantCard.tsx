@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AppState, Platform, Text, TextInput, View } from 'react-native';
 
 import { PressableScale } from '@/components/motion';
@@ -68,14 +68,13 @@ export function DreamRecallAssistantCard({
   const { t, currentLang } = useTranslation();
   const { colors } = useTheme();
   const [dismissedOffer, setDismissedOffer] = useState(false);
-  const [answer, setAnswer] = useState('');
   const [isVoiceSupported, setIsVoiceSupported] = useState(true);
   const [voiceSupportLocale, setVoiceSupportLocale] = useState<string | null>(null);
   const [isPreparingRecording, setIsPreparingRecording] = useState(false);
   const [isVoiceTransitioning, setIsVoiceTransitioning] = useState(false);
   const [voiceError, setVoiceError] = useState(false);
 
-  const answerRef = useRef(answer);
+  const answerRef = useRef('');
   const recordingTransitionRef = useRef(false);
   const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
   const previousQuestionKeyRef = useRef<string | null | undefined>(undefined);
@@ -84,8 +83,12 @@ export function DreamRecallAssistantCard({
 
   const {
     loading,
+    hydrationStatus,
+    retryHydration,
     state,
     currentQuestion,
+    draftAnswer: answer,
+    updateDraftAnswer,
     isBusy,
     error,
     start,
@@ -100,6 +103,21 @@ export function DreamRecallAssistantCard({
     originalPersistedSegmentId,
     t,
   });
+
+  const lastTurn = state?.turns[state.turns.length - 1];
+  const openQuestionKey = lastTurn?.role === 'question' ? `${dreamId}:${lastTurn.id}` : null;
+  const questionKeyRef = useRef(openQuestionKey);
+  const voiceQuestionKeyRef = useRef<string | null>(null);
+
+  const updateAnswer = useCallback((text: string) => {
+    answerRef.current = text;
+    updateDraftAnswer(text);
+  }, [updateDraftAnswer]);
+
+  useLayoutEffect(() => {
+    answerRef.current = answer;
+    questionKeyRef.current = openQuestionKey;
+  }, [answer, openQuestionKey]);
 
   const transcriptionLocale = useMemo(
     () => getTranscriptionLocale(currentLang),
@@ -141,13 +159,12 @@ export function DreamRecallAssistantCard({
       stopRecordingFromNativeEndRef.current?.();
     },
     onPartialTranscript: (text, { baseTranscript }) => {
-      if (ignoreVoiceUpdatesRef.current) return;
+      if (ignoreVoiceUpdatesRef.current || voiceQuestionKeyRef.current !== questionKeyRef.current) return;
       const { text: combined } = combineTranscript({
         base: baseTranscript,
         addition: text,
       });
-      setAnswer(combined);
-      answerRef.current = combined;
+      updateAnswer(combined);
     },
   });
 
@@ -168,18 +185,19 @@ export function DreamRecallAssistantCard({
       base: current,
       addition,
     });
-    setAnswer(combined);
-    answerRef.current = combined;
+    updateAnswer(combined);
     baseTranscriptRef.current = combined;
     return combined;
-  }, [baseTranscriptRef]);
+  }, [baseTranscriptRef, updateAnswer]);
 
   const stopAndMerge = useCallback(async (): Promise<string> => {
     if (!isRecordingRef.current && !isPreparingRecording) {
       return answerRef.current;
     }
     setIsPreparingRecording(false);
+    const questionKey = questionKeyRef.current;
     const result = await stopSessionRecording();
+    if (questionKeyRef.current !== questionKey) return answerRef.current;
     const merged = mergeStoppedTranscript(result.transcript ?? '');
     if (result.error) {
       setVoiceError(true);
@@ -210,10 +228,6 @@ export function DreamRecallAssistantCard({
     };
   }, [forceStopRecording]);
 
-  const openQuestionKey = currentQuestion
-    ? `${currentQuestion.kind}:${currentQuestion.text}`
-    : null;
-
   useEffect(() => {
     if (previousQuestionKeyRef.current === undefined) {
       previousQuestionKeyRef.current = openQuestionKey;
@@ -225,19 +239,18 @@ export function DreamRecallAssistantCard({
     ignoreVoiceUpdatesRef.current = true;
     setVoiceError(false);
     setIsPreparingRecording(false);
-    setIsVoiceTransitioning(false);
+    setIsVoiceTransitioning(true);
 
     let cancelled = false;
     void (async () => {
       try {
         await forceStopRecording('blur');
         if (cancelled) return;
-        setAnswer('');
-        answerRef.current = '';
-        baseTranscriptRef.current = '';
+        baseTranscriptRef.current = answerRef.current;
       } finally {
         if (!cancelled) {
           ignoreVoiceUpdatesRef.current = false;
+          setIsVoiceTransitioning(false);
         }
       }
     })();
@@ -270,6 +283,7 @@ export function DreamRecallAssistantCard({
     setVoiceError(false);
     setIsPreparingRecording(true);
     const typed = answerRef.current;
+    voiceQuestionKeyRef.current = questionKeyRef.current;
     baseTranscriptRef.current = typed;
     try {
       const response = await startSessionRecording(typed);
@@ -333,27 +347,30 @@ export function DreamRecallAssistantCard({
     void runAfterVoice(async (finalText) => {
       const trimmed = finalText.trim();
       if (!trimmed) return;
-      await submitAnswer(trimmed);
+      await submitAnswer(finalText);
     });
   }, [runAfterVoice, submitAnswer]);
 
   const handlePause = useCallback(() => {
-    void runAfterVoice(async () => {
+    void runAfterVoice(async (finalText) => {
+      updateDraftAnswer(finalText);
       await pause();
     });
-  }, [pause, runAfterVoice]);
+  }, [pause, runAfterVoice, updateDraftAnswer]);
 
   const handleSkip = useCallback(() => {
-    void runAfterVoice(async () => {
+    void runAfterVoice(async (finalText) => {
+      updateDraftAnswer(finalText);
       await skip();
     });
-  }, [runAfterVoice, skip]);
+  }, [runAfterVoice, skip, updateDraftAnswer]);
 
   const handleComplete = useCallback(() => {
-    void runAfterVoice(async () => {
+    void runAfterVoice(async (finalText) => {
+      updateDraftAnswer(finalText);
       await complete();
     });
-  }, [complete, runAfterVoice]);
+  }, [complete, runAfterVoice, updateDraftAnswer]);
 
   const cardClass = 'mb-5 gap-3 rounded-md border border-continuous border-line bg-ink-raised p-4';
   const sessionTitle = useMemo(() => String(t('dream_recall.session.title')), [t]);
@@ -364,6 +381,21 @@ export function DreamRecallAssistantCard({
   const sessionActionsDisabled = isBusy || voiceLocked;
 
   if (loading) return null;
+  if (hydrationStatus === 'error') {
+    return (
+      <View className={cardClass} testID={TID.Component.DreamRecallAssistantCard}>
+        <Text accessibilityLiveRegion="polite" className="font-sans text-body-sm text-danger-on">
+          {String(t('recording.draft_restore.error'))}
+        </Text>
+        <RecallAction
+          testID="btn-dream-recall-restore-retry"
+          label={String(t('recording.draft_restore.retry'))}
+          onPress={() => { void retryHydration(); }}
+          disabled={actionsDisabled}
+        />
+      </View>
+    );
+  }
   if (state?.status === 'skipped') return null;
 
   if (!state) {
@@ -422,6 +454,11 @@ export function DreamRecallAssistantCard({
         {currentQuestion ? (
           <Text className="font-sans text-body text-ivory">{currentQuestion.text}</Text>
         ) : null}
+        {error ? (
+          <Text accessibilityLiveRegion="polite" className="font-sans text-body-sm text-danger-on">
+            {String(t('dream_recall.session.error'))}
+          </Text>
+        ) : null}
         <View className="mt-1 flex-row flex-wrap gap-2">
           <RecallAction
             testID={TID.Button.DreamRecallResume}
@@ -436,6 +473,13 @@ export function DreamRecallAssistantCard({
             testID={TID.Button.DreamRecallSkip}
             label={String(t('dream_recall.session.skip'))}
             onPress={handleSkip}
+            disabled={actionsDisabled}
+            variant="ghost"
+          />
+          <RecallAction
+            testID={TID.Button.DreamRecallComplete}
+            label={String(t('dream_recall.session.complete'))}
+            onPress={handleComplete}
             disabled={actionsDisabled}
             variant="ghost"
           />
@@ -473,8 +517,7 @@ export function DreamRecallAssistantCard({
                 testID={TID.Input.DreamRecallAnswer}
                 value={answer}
                 onChangeText={(text) => {
-                  setAnswer(text);
-                  answerRef.current = text;
+                  updateAnswer(text);
                   if (!isRecordingRef.current) {
                     baseTranscriptRef.current = text;
                   }

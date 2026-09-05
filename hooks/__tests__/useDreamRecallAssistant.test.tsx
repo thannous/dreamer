@@ -4,6 +4,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react-native';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { AppState, type AppStateStatus } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   addDreamRecallUserSegment,
@@ -12,6 +13,7 @@ import {
   markDreamRecallSegmentPersisted,
   pauseDreamRecallAssistant,
   skipDreamRecallAssistant,
+  serializeDreamRecallAssistantState,
   startDreamRecallAssistant,
   type DreamRecallAssistantState,
 } from '@/lib/dreamRecallAssistant';
@@ -41,6 +43,10 @@ const mockLoad = jest.fn(
   async (_dreamId: string): Promise<DreamRecallAssistantState | null> => null
 );
 const mockSave = jest.fn(async (_state: DreamRecallAssistantState): Promise<void> => undefined);
+
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);
 
 jest.mock('@/services/dreamRecallAssistantStorage', () => ({
   load: (dreamId: string) => mockLoad(dreamId),
@@ -200,6 +206,297 @@ describe('useDreamRecallAssistant', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+  });
+
+  describe('durable recall drafts with real storage', () => {
+    const storage = jest.requireActual(
+      '@/services/dreamRecallAssistantStorage'
+    ) as typeof import('@/services/dreamRecallAssistantStorage');
+
+    beforeEach(async () => {
+      await AsyncStorage.clear();
+      mockLoad.mockImplementation(storage.load);
+      mockSave.mockImplementation(storage.save);
+    });
+
+    it('restores raw pending text from valid legacy v1 bytes without an answerDraft', async () => {
+      const text = '  Legacy durable detail\r\nkept raw  ';
+      const pending = addDreamRecallUserSegment(activeOpenQuestion(), text, NOW + 2).state;
+      const { answerDraft: _draft, ...legacy } = pauseDreamRecallAssistant(pending, NOW + 3).state;
+      await AsyncStorage.setItem(storage.getKey(DREAM_ID), serializeDreamRecallAssistantState(legacy));
+      const { result } = await renderAssistant();
+      expect(result.current.draftAnswer).toBe(text);
+      expect(result.current.state?.pendingUserSegment?.text).toBe(text);
+      expect(result.current.state?.originalTranscript).toBe(ORIGINAL);
+      expect(mockSave).not.toHaveBeenCalled();
+    });
+
+    it('prefers an explicitly empty draft to legacy recovery text and never borrows a committed answer', async () => {
+      const paused = pauseDreamRecallAssistant(pendingUnpersisted(), NOW + 3).state;
+      const explicitEmpty = { ...paused, answerDraft: { questionId: paused.turns[0]!.id, text: '' } };
+      await storage.save(explicitEmpty);
+      const view = await renderAssistant();
+      expect(view.result.current.draftAnswer).toBe('');
+      view.unmount();
+      const answered = pauseDreamRecallAssistant(pendingPersistedNoOpenQuestion(), NOW + 4).state;
+      await storage.save(answered);
+      const restored = await renderAssistant();
+      expect(restored.result.current.currentQuestion).toBeNull();
+      expect(restored.result.current.draftAnswer).toBe('');
+      expect(restored.result.current.state?.originalTranscript).toBe(ORIGINAL);
+    });
+
+    it.each(['  Newer raw detail\r\nkept  ', ''])('keeps the coherent draft/pending pair when a paused write races edit %j', async (text: string) => {
+      const oldText = 'Old durable detail';
+      const pending = addDreamRecallUserSegment(activeOpenQuestion(), oldText, NOW + 2).state;
+      const { answerDraft: _draft, ...legacy } = pending;
+      await storage.save(legacy);
+      mockSave.mockRejectedValueOnce(new Error('mark blocked'));
+      const view = await renderAssistant();
+      expect(view.result.current.draftAnswer).toBe(oldText);
+      expect(view.result.current.error?.message).toBe('mark blocked');
+      const gate = deferred<void>();
+      mockSave.mockClear();
+      mockSave.mockImplementationOnce(async (state: DreamRecallAssistantState) => {
+        await gate.promise;
+        await storage.save(state);
+      });
+      let paused!: Promise<void>;
+      act(() => { paused = view.result.current.pause(); });
+      await waitFor(() => { expect(mockSave).toHaveBeenCalledTimes(1); });
+      act(() => { view.result.current.updateDraftAnswer(text); });
+      expect(view.result.current.state?.pendingUserSegment).toBeNull();
+      await act(async () => { gate.resolve(); await paused; });
+      await act(async () => { await view.result.current.resume(); });
+      expect(view.result.current.draftAnswer).toBe(text);
+      expect(view.result.current.state?.pendingUserSegment).toBeNull();
+      expect(view.result.current.currentQuestion?.kind).toBe('what_else');
+      expect(answerTurns(view.result.current.state)).toHaveLength(0);
+      const saved = await storage.load(DREAM_ID);
+      expect(saved?.answerDraft?.text).toBe(text);
+      expect(saved?.pendingUserSegment).toBeNull();
+      expect(questionTurns(saved)).toHaveLength(1);
+      expect(saved?.originalTranscript).toBe(ORIGINAL);
+      await act(async () => { await view.result.current.complete(); });
+      expect(answerTurns(await storage.load(DREAM_ID)).map((turn) => turn.text)).toEqual(text ? [text] : []);
+    });
+
+    it.each(['switch', 'unmount'])('does not auto-advance after a delayed hydration mark write and %s', async (leave: string) => {
+      const { answerDraft: _draft, ...legacy } = pendingUnpersisted();
+      await AsyncStorage.setItem(storage.getKey(DREAM_ID), serializeDreamRecallAssistantState(legacy));
+      const gate = deferred<void>();
+      mockSave.mockImplementationOnce(async (state: DreamRecallAssistantState) => {
+        await gate.promise;
+        await storage.save(state);
+      });
+      const view = renderHook(({ dreamId }: { dreamId: string }) => useDreamRecallAssistant({ ...defaultParams(), dreamId }),
+        { initialProps: { dreamId: DREAM_ID } });
+      await waitFor(() => { expect(mockSave).toHaveBeenCalledTimes(1); });
+      if (leave === 'switch') {
+        view.rerender({ dreamId: 'dream-B' });
+        await waitFor(() => { expect(view.result.current.loading).toBe(false); });
+      } else {
+        view.unmount();
+      }
+      await act(async () => { gate.resolve(); });
+      const saved = await storage.load(DREAM_ID);
+      expect(answerTurns(saved).map((turn) => turn.text)).toEqual(['Rain on the glass.']);
+      expect(questionTurns(saved)).toHaveLength(1);
+      expect(mockSave).toHaveBeenCalledTimes(1);
+      if (leave === 'switch') expect(view.result.current.state).toBeNull();
+    });
+
+    it('blocks every mutation after a read failure and retries the existing answer without overwrite', async () => {
+      const existing = appendQuestion(pendingPersistedNoOpenQuestion(), 1, NOW + 10);
+      await storage.save(existing);
+      const raw = await AsyncStorage.getItem(storage.getKey(DREAM_ID));
+      jest.spyOn(AsyncStorage, 'getItem').mockRejectedValueOnce(new Error('read locked'));
+      const { result } = await renderAssistant();
+      expect(result.current.error?.message).toBe('read locked');
+      await act(async () => {
+        result.current.updateDraftAnswer('Must not create a draft after read failure');
+        await result.current.start();
+        await result.current.submitAnswer('Must not replace existing details');
+        await result.current.pause();
+        await result.current.resume();
+        await result.current.skip();
+        await result.current.complete();
+      });
+      expect(mockSave).not.toHaveBeenCalled();
+      expect(await AsyncStorage.getItem(storage.getKey(DREAM_ID))).toBe(raw);
+      await act(async () => { await result.current.retryHydration(); });
+      expect(result.current.hydrationStatus).toBe('ready');
+      expect(answerTurns(result.current.state)).toHaveLength(1);
+      expect(result.current.currentQuestion?.kind).toBe('where');
+    });
+
+    it('preserves a raw draft through pause, unmount, reload and resume without advancing', async () => {
+      const view = await renderAssistant();
+      await act(async () => { await view.result.current.start(); });
+      const questionId = view.result.current.state?.turns[0]?.id;
+      const text = '  A blue door\nthen a partial voice fragment  ';
+      act(() => { view.result.current.updateDraftAnswer(text); });
+      expect(view.result.current.isBusy).toBe(false);
+      await act(async () => { await view.result.current.pause(); });
+      view.unmount();
+      const restored = await renderAssistant();
+      expect(restored.result.current.state?.status).toBe('paused');
+      expect(restored.result.current.draftAnswer).toBe(text);
+      await act(async () => { await restored.result.current.resume(); });
+      expect(restored.result.current.state?.turns[0]?.id).toBe(questionId);
+      expect(restored.result.current.draftAnswer).toBe(text);
+      expect(answerTurns(restored.result.current.state)).toHaveLength(0);
+      expect(questionTurns(restored.result.current.state)).toHaveLength(1);
+      expect(restored.result.current.state?.originalTranscript).toBe(ORIGINAL);
+    });
+
+    it.each(['complete', 'skip'] as const)('%s persists and marks a final draft before terminal state without another question', async (action: 'complete' | 'skip') => {
+      const view = await renderAssistant();
+      await act(async () => { await view.result.current.start(); });
+      const text = '  Final details\nkept verbatim  ';
+      act(() => { view.result.current.updateDraftAnswer(text); });
+      await act(async () => { await view.result.current[action](); });
+      const saved = await storage.load(DREAM_ID);
+      expect(saved?.status).toBe(action === 'complete' ? 'completed' : 'skipped');
+      expect(answerTurns(saved).map((turn) => turn.text)).toEqual([text]);
+      expect(questionTurns(saved)).toHaveLength(1);
+      const terminalIndex = savedStates().findIndex((state) => state.status === saved?.status);
+      expect(savedStates()[terminalIndex - 1]?.pendingUserSegment?.persisted).toBe(true);
+      expect(savedStates()[terminalIndex - 1]?.status).toBe('paused');
+      expect(saved?.originalTranscript).toBe(ORIGINAL);
+    });
+
+    it('keeps the newest draft while an older write is pending, including immediate remount', async () => {
+      const view = await renderAssistant();
+      await act(async () => { await view.result.current.start(); });
+      const gate = deferred<void>();
+      mockSave.mockImplementationOnce(async (state: DreamRecallAssistantState) => { await gate.promise; await storage.save(state); });
+      act(() => { view.result.current.updateDraftAnswer('older partial'); });
+      await waitFor(() => { expect(savedStates().at(-1)?.answerDraft?.text).toBe('older partial'); });
+      act(() => { view.result.current.updateDraftAnswer('newest partial\nwith all details'); });
+      view.unmount();
+      const restored = renderHook(() => useDreamRecallAssistant(defaultParams()));
+      expect(restored.result.current.loading).toBe(true);
+      await act(async () => { gate.resolve(); });
+      await waitFor(() => { expect(restored.result.current.loading).toBe(false); });
+      expect(restored.result.current.draftAnswer).toBe('newest partial\nwith all details');
+      expect(questionTurns(restored.result.current.state)).toHaveLength(1);
+      expect((await storage.load(DREAM_ID))?.answerDraft?.text).toBe('newest partial\nwith all details');
+    });
+
+    it('isolates A to B to A reads and writes while A is saving', async () => {
+      const view = renderHook(({ dreamId }: { dreamId: string }) => useDreamRecallAssistant({ ...defaultParams(), dreamId }),
+        { initialProps: { dreamId: DREAM_ID } });
+      await waitFor(() => { expect(view.result.current.loading).toBe(false); });
+      await act(async () => { await view.result.current.start(); });
+      const gate = deferred<void>();
+      mockSave.mockImplementationOnce(async (state: DreamRecallAssistantState) => { await gate.promise; await storage.save(state); });
+      act(() => { view.result.current.updateDraftAnswer('A remains here'); });
+      await waitFor(() => { expect(savedStates().at(-1)?.answerDraft?.text).toBe('A remains here'); });
+      view.rerender({ dreamId: 'dream-B' });
+      await waitFor(() => { expect(view.result.current.loading).toBe(false); });
+      expect(view.result.current.state).toBeNull();
+      await act(async () => { await view.result.current.start(); });
+      act(() => { view.result.current.updateDraftAnswer('B remains separate'); });
+      await act(async () => { await view.result.current.pause(); });
+      await act(async () => { gate.resolve(); });
+      expect(view.result.current.state?.dreamId).toBe('dream-B');
+      expect(view.result.current.draftAnswer).toBe('B remains separate');
+      view.rerender({ dreamId: DREAM_ID });
+      await waitFor(() => { expect(view.result.current.loading).toBe(false); });
+      expect(view.result.current.draftAnswer).toBe('A remains here');
+      expect((await storage.load('dream-B'))?.answerDraft?.text).toBe('B remains separate');
+    });
+
+    it('ignores a late A read after B has restored', async () => {
+      const gate = deferred<DreamRecallAssistantState | null>();
+      mockLoad.mockImplementationOnce(() => gate.promise);
+      const view = renderHook(({ dreamId }: { dreamId: string }) => useDreamRecallAssistant({ ...defaultParams(), dreamId }),
+        { initialProps: { dreamId: DREAM_ID } });
+      await waitFor(() => { expect(mockLoad).toHaveBeenCalledWith(DREAM_ID); });
+      await act(async () => {
+        view.result.current.updateDraftAnswer('Must not create a draft before restore');
+        await view.result.current.start();
+      });
+      expect(mockSave).not.toHaveBeenCalled();
+      view.rerender({ dreamId: 'dream-B' });
+      await waitFor(() => { expect(view.result.current.loading).toBe(false); });
+      await act(async () => { gate.resolve(activeEmpty()); });
+      expect(view.result.current.state).toBeNull();
+      expect(view.result.current.hydrationStatus).toBe('ready');
+      expect(mockSave).not.toHaveBeenCalled();
+    });
+
+    it.each(['complete', 'skip'] as const)('%s keeps failed-save input recoverable and retries exactly once', async (action: 'complete' | 'skip') => {
+      const view = await renderAssistant();
+      await act(async () => { await view.result.current.start(); });
+      act(() => { view.result.current.updateDraftAnswer('final recoverable text'); });
+      await act(async () => { await view.result.current.pause(); });
+      mockSave.mockRejectedValueOnce(new Error('full disk'));
+      await act(async () => { await view.result.current[action](); });
+      expect(view.result.current.state?.status).toBe('paused');
+      expect(view.result.current.error?.message).toBe('full disk');
+      expect(view.result.current.draftAnswer).toBe('final recoverable text');
+      view.unmount();
+      const restored = await renderAssistant();
+      expect(restored.result.current.draftAnswer).toBe('final recoverable text');
+      await act(async () => { await restored.result.current[action](); });
+      expect(answerTurns(await storage.load(DREAM_ID)).map((turn) => turn.text)).toEqual(['final recoverable text']);
+      expect(questionTurns(restored.result.current.state)).toHaveLength(1);
+    });
+
+    it('keeps a terminal-write failure paused after the final answer is durable', async () => {
+      const view = await renderAssistant();
+      await act(async () => { await view.result.current.start(); });
+      act(() => { view.result.current.updateDraftAnswer('details before terminal failure'); });
+      await act(async () => { await view.result.current.pause(); });
+      mockSave.mockImplementationOnce(storage.save).mockImplementationOnce(storage.save)
+        .mockRejectedValueOnce(new Error('terminal write failed'));
+      await act(async () => { await view.result.current.complete(); });
+      expect(view.result.current.state?.status).toBe('paused');
+      expect(answerTurns(view.result.current.state)).toHaveLength(1);
+      view.unmount();
+      const restored = await renderAssistant();
+      expect(restored.result.current.state?.status).toBe('paused');
+      expect(questionTurns(restored.result.current.state)).toHaveLength(1);
+      await act(async () => { await restored.result.current.complete(); });
+      expect(restored.result.current.state?.status).toBe('completed');
+      expect(answerTurns(restored.result.current.state)).toHaveLength(1);
+    });
+
+    it('never revives a submitted question from a late draft update or loses input on a failed submission', async () => {
+      const view = await renderAssistant();
+      await act(async () => { await view.result.current.start(); });
+      mockSave.mockRejectedValueOnce(new Error('write failed'));
+      await act(async () => { await view.result.current.submitAnswer('recover this answer'); });
+      expect(view.result.current.draftAnswer).toBe('recover this answer');
+      expect(questionTurns(view.result.current.state)).toHaveLength(1);
+      const gate = deferred<void>();
+      mockSave.mockImplementationOnce(async (state: DreamRecallAssistantState) => { await gate.promise; await storage.save(state); });
+      let submit!: Promise<void>;
+      act(() => {
+        submit = view.result.current.submitAnswer('recover this answer');
+        view.result.current.updateDraftAnswer('stale Q1 partial');
+      });
+      await act(async () => { gate.resolve(); await submit; });
+      act(() => { view.result.current.updateDraftAnswer('Q2 only'); });
+      await act(async () => { await view.result.current.pause(); });
+      const saved = await storage.load(DREAM_ID);
+      expect(answerTurns(saved).map((turn) => turn.text)).toEqual(['recover this answer']);
+      expect(saved?.answerDraft?.text).toBe('Q2 only');
+      expect(saved?.answerDraft?.questionId).toBe(saved?.turns[2]?.id);
+      expect(JSON.stringify(saved)).not.toContain('stale Q1 partial');
+    });
+
+    it.each(['complete', 'skip'] as const)('%s accepts a blank current draft without adding an answer', async (action: 'complete' | 'skip') => {
+      const view = await renderAssistant();
+      await act(async () => { await view.result.current.start(); });
+      act(() => { view.result.current.updateDraftAnswer('  \n '); });
+      await act(async () => { await view.result.current[action](); });
+      expect(view.result.current.error).toBeNull();
+      expect(answerTurns(await storage.load(DREAM_ID))).toHaveLength(0);
+      expect(view.result.current.state?.status).toBe(action === 'complete' ? 'completed' : 'skipped');
+    });
   });
 
   it('start persists the empty start state before Q1, then Q1', async () => {

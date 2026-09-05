@@ -18,6 +18,7 @@ import {
   skipDreamRecallAssistant,
   startDreamRecallAssistant,
   validateDreamRecallAssistantState,
+  updateDreamRecallAnswerDraft,
   type DreamRecallAssistantState,
 } from '../dreamRecallAssistant';
 
@@ -232,6 +233,39 @@ describe('locale-safe neutrality', () => {
 });
 
 describe('hydrate and validate', () => {
+  it('preserves pending identity for unchanged recovery text and invalidates it on an explicit empty edit', () => {
+    const question = appendNeutralRecallQuestion(start().state,
+      { kind: 'what_else', text: 'What else do you remember?', questionId: 'legacy-q' }, NOW + 1).state;
+    const pending = addDreamRecallUserSegment(question, '  Legacy pending\r\nraw text  ', NOW + 2, 'legacy-segment').state;
+    const restored = updateDreamRecallAnswerDraft(pending, 'legacy-q', pending.pendingUserSegment!.text, NOW + 3);
+    expect(restored.pendingUserSegment).toEqual(pending.pendingUserSegment);
+    expect(restored.answerDraft?.text).toBe(pending.pendingUserSegment?.text);
+    const cleared = updateDreamRecallAnswerDraft(restored, 'legacy-q', '', NOW + 4);
+    expect(cleared.answerDraft?.text).toBe('');
+    expect(cleared.pendingUserSegment).toBeNull();
+    expect(cleared.originalTranscript).toBe(ORIGINAL);
+  });
+
+  it('round-trips legacy v1 without a draft and new raw drafts tied to an open question', () => {
+    const state = appendNeutralRecallQuestion(start().state,
+      { kind: 'what_else', text: 'What else do you remember?', questionId: 'stable-q1' }, NOW + 1).state;
+    const { answerDraft: _draft, ...legacy } = state;
+    expect(hydrateDreamRecallAssistantState(JSON.stringify(legacy))).toEqual({ ok: true, state: legacy });
+    const text = `  raw\r\nanswer ${'x'.repeat(8_001)}  `;
+    const drafted = updateDreamRecallAnswerDraft(state, 'stable-q1', text, NOW + 2);
+    expect(hydrateDreamRecallAssistantState(serializeDreamRecallAssistantState(drafted))).toEqual({
+      ok: true, state: drafted,
+    });
+    expect(drafted.answerDraft?.text).toBe(text);
+    expect(drafted.originalTranscript).toBe(state.originalTranscript);
+    expect(drafted.turns).toEqual(state.turns);
+    for (const invalid of [{ questionId: 'wrong', text: 'keep' }, { questionId: 'stable-q1', text: 42 }]) {
+      expect(hydrateDreamRecallAssistantState({ ...state, answerDraft: invalid }).ok).toBe(false);
+    }
+    expectCode('segment_not_persisted', () => completeDreamRecallAssistant(drafted, NOW + 3));
+    expectCode('segment_not_persisted', () => skipDreamRecallAssistant(drafted, NOW + 3));
+  });
+
   it('round-trips a valid snapshot and rejects corrupted or legacy payloads', () => {
     const started = start();
     const json = serializeDreamRecallAssistantState(started.state);

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
 
 import {
@@ -10,6 +10,7 @@ import {
   resumeDreamRecallAssistant,
   skipDreamRecallAssistant,
   startDreamRecallAssistant,
+  updateDreamRecallAnswerDraft,
   type DreamRecallAssistantState,
 } from '@/lib/dreamRecallAssistant';
 import {
@@ -33,9 +34,13 @@ export type UseDreamRecallAssistantParams = {
 
 export type UseDreamRecallAssistantResult = {
   loading: boolean;
+  hydrationStatus: 'loading' | 'error' | 'ready';
+  retryHydration: () => Promise<void>;
   state: DreamRecallAssistantState | null;
   hasSession: boolean;
   currentQuestion: DreamRecallQuestion | null;
+  draftAnswer: string;
+  updateDraftAnswer: (text: string) => void;
   isBusy: boolean;
   error: Error | null;
   start: () => Promise<void>;
@@ -46,325 +51,312 @@ export type UseDreamRecallAssistantResult = {
   complete: () => Promise<void>;
 };
 
-const hasOpenQuestion = (state: DreamRecallAssistantState): boolean =>
-  state.turns[state.turns.length - 1]?.role === 'question';
-
-const openQuestionId = (state: DreamRecallAssistantState | null): string | null => {
-  if (!state) return null;
-  const last = state.turns[state.turns.length - 1];
-  return last?.role === 'question' ? last.id : null;
+type SessionContext = {
+  dreamId: string;
+  state: DreamRecallAssistantState | null;
+  hydration: UseDreamRecallAssistantResult['hydrationStatus'];
+  readGeneration: number;
+  busy: number;
+  settlingQuestion: string | null;
+  error: Error | null;
 };
 
-const questionCount = (state: DreamRecallAssistantState): number =>
-  state.turns.filter((turn) => turn.role === 'question').length;
+// A remount reads after the previous instance's queued writes. Other dreams
+// remain independent, and rejections never poison a dream's queue.
+const dreamQueues = new Map<string, Promise<void>>();
+function queueForDream(dreamId: string, task: () => Promise<void>): Promise<void> {
+  const run = (dreamQueues.get(dreamId) ?? Promise.resolve()).then(task);
+  const settled = run.catch(() => undefined);
+  dreamQueues.set(dreamId, settled);
+  void settled.then(() => {
+    if (dreamQueues.get(dreamId) === settled) dreamQueues.delete(dreamId);
+  });
+  return run;
+}
 
-const currentQuestionFrom = (state: DreamRecallAssistantState | null): DreamRecallQuestion | null => {
-  if (!state || (state.status !== 'active' && state.status !== 'paused')) return null;
-  const last = state.turns[state.turns.length - 1];
-  if (!last || last.role !== 'question') return null;
-  return { kind: last.kind as DreamRecallSequenceKind, text: last.text };
+const newContext = (dreamId: string): SessionContext => ({
+  dreamId, state: null, hydration: 'loading', readGeneration: 0,
+  busy: 0, settlingQuestion: null, error: null,
+});
+
+// Queue ownership outlives a mounted view; React renders immutable snapshots.
+function createSession(dreamId: string) {
+  const context = newContext(dreamId);
+  return { getCurrent: () => context };
+}
+
+const openQuestion = (state: DreamRecallAssistantState | null) => {
+  const last = state?.turns[state.turns.length - 1];
+  return last?.role === 'question' ? last : null;
+};
+
+const draftAnswerFrom = (state: DreamRecallAssistantState | null): string => {
+  if (!state || !openQuestion(state) || (state.status !== 'active' && state.status !== 'paused')) return '';
+  // Legacy v1 snapshots stored submitted-but-unmarked text only in pending.
+  // An explicitly edited empty draft takes precedence over that recovery text.
+  return state.answerDraft?.text ??
+    (state.pendingUserSegment?.persisted === false ? state.pendingUserSegment.text : '');
 };
 
 const toError = (error: unknown): Error =>
   error instanceof Error ? error : new Error('Dream recall assistant failed.');
 
 export function useDreamRecallAssistant({
-  dreamId,
-  originalTranscript,
-  originalPersistedSegmentId,
-  t,
+  dreamId, originalTranscript, originalPersistedSegmentId, t,
 }: UseDreamRecallAssistantParams): UseDreamRecallAssistantResult {
-  const [loading, setLoading] = useState(true);
-  const [isBusy, setIsBusy] = useState(false);
-  const [state, setState] = useState<DreamRecallAssistantState | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-
-  const stateRef = useRef<DreamRecallAssistantState | null>(null);
-  const lastSavedRef = useRef<DreamRecallAssistantState | null>(null);
-  const tRef = useRef(t);
-  const inputRef = useRef({ dreamId, originalTranscript, originalPersistedSegmentId });
+  const session = useMemo(() => createSession(dreamId), [dreamId]);
+  const activeSessionRef = useRef(session);
+  const [snapshot, setSnapshot] = useState(() => ({ owner: session, ...newContext(dreamId) }));
   const mountedRef = useRef(true);
+  const tRef = useRef(t);
   const appStateRef = useRef<AppStateStatus>(AppState.currentState);
-  const opChainRef = useRef(Promise.resolve());
-  const busyCountRef = useRef(0);
-  const hydrateGenerationRef = useRef(0);
 
-  const publish = useCallback((next: DreamRecallAssistantState | null) => {
-    stateRef.current = next;
-    if (mountedRef.current) setState(next);
+  const publish = useCallback((owner: SessionContext) => {
+    if (mountedRef.current && activeSessionRef.current.getCurrent() === owner) {
+      setSnapshot({ owner: activeSessionRef.current, ...owner });
+    }
   }, []);
 
-  const persist = useCallback(async (next: DreamRecallAssistantState): Promise<DreamRecallAssistantState> => {
+  const enqueue = useCallback((
+    owner: SessionContext, task: () => Promise<void>, busy = true
+  ): Promise<void> => {
+    if (busy) owner.busy += 1;
+    publish(owner);
+    return queueForDream(owner.dreamId, async () => {
+      try {
+        await task();
+        owner.error = null;
+      } catch (caught) {
+        // Keep optimistic input and the last durable progress on failure.
+        owner.error = toError(caught);
+      } finally {
+        if (busy) owner.busy -= 1;
+        publish(owner);
+      }
+    });
+  }, [publish]);
+
+  const persist = useCallback(async (
+    owner: SessionContext, next: DreamRecallAssistantState
+  ): Promise<DreamRecallAssistantState> => {
+    const before = owner.state;
     await saveDreamRecallAssistantState(next);
-    lastSavedRef.current = next;
-    stateRef.current = next;
-    return next;
-  }, []);
-
-  const handleError = useCallback(
-    (caught: unknown) => {
-      if (!mountedRef.current) return;
-      setError(toError(caught));
-      publish(lastSavedRef.current);
-    },
-    [publish]
-  );
-
-  const setBusyCount = useCallback((delta: number) => {
-    busyCountRef.current += delta;
-    const nextBusy = busyCountRef.current > 0;
-    if (mountedRef.current) setIsBusy(nextBusy);
-  }, []);
-
-  const enqueue = useCallback(
-    (task: () => Promise<void>): Promise<void> => {
-      const run = opChainRef.current.then(async () => {
-        setBusyCount(1);
-        try {
-          await task();
-        } catch (caught) {
-          handleError(caught);
-        } finally {
-          setBusyCount(-1);
+    const latest = owner.state;
+    const question = openQuestion(next);
+    // A partial transcript may arrive while a background pause is saving.
+    // Preserve the edited draft and its matching pending segment together.
+    // Marking an answer or ending the session owns the durable progression.
+    const hasNewerEdit = latest !== before && latest?.answerDraft != null &&
+      latest.answerDraft !== before?.answerDraft && question != null &&
+      (next.status === 'active' || next.status === 'paused') &&
+      latest.dreamId === next.dreamId && latest.startedAt === next.startedAt &&
+      openQuestion(latest)?.id === question.id && latest.answerDraft.questionId === question.id;
+    owner.state = hasNewerEdit
+      ? {
+          ...next,
+          answerDraft: latest.answerDraft,
+          pendingUserSegment: latest.pendingUserSegment,
+          updatedAt: Math.max(next.updatedAt, latest.updatedAt),
         }
-      });
-      opChainRef.current = run.then(
-        () => undefined,
-        () => undefined
-      );
-      return run;
-    },
-    [handleError, setBusyCount]
-  );
+      : next;
+    return owner.state;
+  }, []);
 
-  const advanceAfterPersisted = useCallback(
-    async (
-      current: DreamRecallAssistantState,
-      translator: DreamRecallQuestionTranslator
-    ): Promise<DreamRecallAssistantState> => {
-      const asked = questionCount(current);
-      if (asked >= DREAM_RECALL_MAX_QUESTIONS) {
-        return persist(completeDreamRecallAssistant(current, Date.now()).state);
+  const advance = useCallback(async (owner: SessionContext): Promise<void> => {
+    const current = owner.state!;
+    const asked = current.turns.filter((turn) => turn.role === 'question').length;
+    if (asked >= DREAM_RECALL_MAX_QUESTIONS) {
+      await persist(owner, completeDreamRecallAssistant(current, Date.now()).state);
+      return;
+    }
+    const question = getDreamRecallQuestion(asked, tRef.current);
+    await persist(owner, appendNeutralRecallQuestion(current, question, Date.now()).state);
+  }, [persist]);
+
+  const recover = useCallback(async (
+    owner: SessionContext, isCurrent: () => boolean = () => true
+  ): Promise<void> => {
+    if (!isCurrent()) return;
+    let current = owner.state;
+    if (current?.status !== 'active') return;
+    if (current.pendingUserSegment?.persisted === false) {
+      current = await persist(owner, markDreamRecallSegmentPersisted(current, Date.now()).state);
+    }
+    if (isCurrent() && !openQuestion(current)) await advance(owner);
+  }, [advance, persist]);
+
+  const hydrate = useCallback((): Promise<void> => {
+    const context = session.getCurrent();
+    const generation = ++context.readGeneration;
+    context.hydration = 'loading';
+    context.error = null;
+    const isCurrentRead = () => generation === context.readGeneration &&
+      activeSessionRef.current === session && mountedRef.current;
+    return enqueue(context, async () => {
+      if (!isCurrentRead()) return;
+      try {
+        const loaded = await loadDreamRecallAssistantState(context.dreamId);
+        if (!isCurrentRead()) return;
+        context.state = loaded;
+        context.hydration = 'ready';
+      } catch (caught) {
+        if (generation === context.readGeneration) context.hydration = 'error';
+        throw caught;
       }
-      const question = getDreamRecallQuestion(asked, translator);
-      return persist(
-        appendNeutralRecallQuestion(
-          current,
-          { kind: question.kind, text: question.text },
-          Date.now()
-        ).state
-      );
-    },
-    [persist]
-  );
+      // Recovery write errors retain the successfully restored state.
+      await recover(context, isCurrentRead);
+    }, false);
+  }, [session, enqueue, recover]);
 
-  const recoverActive = useCallback(
-    async (
-      current: DreamRecallAssistantState,
-      translator: DreamRecallQuestionTranslator
-    ): Promise<DreamRecallAssistantState> => {
-      if (current.status !== 'active') return current;
+  const retryHydration = useCallback(() => {
+    const context = session.getCurrent();
+    if (context.hydration !== 'error') return Promise.resolve();
+    return hydrate();
+  }, [session, hydrate]);
 
-      let next = current;
-      if (next.pendingUserSegment && next.pendingUserSegment.persisted !== true) {
-        next = await persist(markDreamRecallSegmentPersisted(next, Date.now()).state);
+  const ready = useCallback(() =>
+    session.getCurrent().hydration === 'ready' && activeSessionRef.current === session && mountedRef.current,
+  [session]);
+
+  const updateDraftAnswer = useCallback((text: string) => {
+    if (!ready()) return;
+    const context = session.getCurrent();
+    const current = context.state;
+    const question = openQuestion(current);
+    if (!current || !question || context.settlingQuestion === question.id ||
+      (current.status !== 'active' && current.status !== 'paused')) return;
+    context.state = updateDreamRecallAnswerDraft(current, question.id, text, Date.now());
+    publish(context);
+    const sessionStartedAt = current.startedAt;
+    void enqueue(context, async () => {
+      const latest = context.state;
+      if (!latest || latest.startedAt !== sessionStartedAt || openQuestion(latest)?.id !== question.id ||
+        (latest.status !== 'active' && latest.status !== 'paused')) return;
+      await persist(context, latest);
+    }, false);
+  }, [session, enqueue, persist, publish, ready]);
+
+  const start = useCallback((): Promise<void> => {
+    if (!ready()) return Promise.resolve();
+    const context = session.getCurrent();
+    return enqueue(context, async () => {
+      if (context.state?.status === 'paused') return;
+      if (context.state?.status !== 'active') {
+        await persist(context, startDreamRecallAssistant({
+          dreamId, originalTranscript, originalPersistedSegmentId,
+          now: Date.now(), maxQuestions: DREAM_RECALL_MAX_QUESTIONS,
+        }).state);
       }
-      if (next.status !== 'active' || hasOpenQuestion(next)) return next;
-      return advanceAfterPersisted(next, translator);
-    },
-    [advanceAfterPersisted, persist]
-  );
+      await recover(context);
+    });
+  }, [session, dreamId, enqueue, originalPersistedSegmentId, originalTranscript, persist, ready, recover]);
 
-  const runUserAction = useCallback(
-    (task: () => Promise<void>): Promise<void> => {
-      return enqueue(task);
-    },
-    [enqueue]
-  );
+  const persistAnswer = useCallback(async (owner: SessionContext, text: string, terminal: boolean) => {
+    let current = owner.state!;
+    if (current.status === 'paused') current = resumeDreamRecallAssistant(current, Date.now()).state;
+    const added = addDreamRecallUserSegment(current, text, Date.now()).state;
+    // A crash between terminal writes restores a paused answer, without Q+1.
+    const pending = terminal ? pauseDreamRecallAssistant(added, Date.now()).state : added;
+    await persist(owner, pending);
+    const marked = markDreamRecallSegmentPersisted(added, Date.now()).state;
+    await persist(owner, terminal ? pauseDreamRecallAssistant(marked, Date.now()).state : marked);
+  }, [persist]);
+
+  const submitAnswer = useCallback((text: string): Promise<void> => {
+    const context = session.getCurrent();
+    if (!ready() || context.state?.status !== 'active') return Promise.resolve();
+    const question = openQuestion(context.state);
+    if (!question || context.settlingQuestion) return Promise.resolve();
+    // Direct callers also retain recoverable input if the first write fails.
+    context.state = updateDreamRecallAnswerDraft(context.state, question.id, text, Date.now());
+    context.settlingQuestion = question.id;
+    return enqueue(context, async () => {
+      try {
+        if (openQuestion(context.state)?.id !== question.id) return;
+        await persistAnswer(context, text, false);
+        await advance(context);
+      } finally {
+        context.settlingQuestion = null;
+      }
+    });
+  }, [advance, session, enqueue, persistAnswer, ready]);
+
+  const pause = useCallback((): Promise<void> => {
+    if (!ready()) return Promise.resolve();
+    const context = session.getCurrent();
+    return enqueue(context, async () => {
+      if (context.state?.status !== 'active') return;
+      await persist(context, pauseDreamRecallAssistant(context.state, Date.now()).state);
+    });
+  }, [session, enqueue, persist, ready]);
+
+  const resume = useCallback((): Promise<void> => {
+    if (!ready()) return Promise.resolve();
+    const context = session.getCurrent();
+    return enqueue(context, async () => {
+      if (context.state?.status !== 'paused') return;
+      await persist(context, resumeDreamRecallAssistant(context.state, Date.now()).state);
+      await recover(context);
+    });
+  }, [session, enqueue, persist, ready, recover]);
+
+  const finish = useCallback((action: 'skip' | 'complete'): Promise<void> => {
+    const context = session.getCurrent();
+    if (!ready() || !context.state || context.settlingQuestion ||
+      (context.state.status !== 'active' && context.state.status !== 'paused')) return Promise.resolve();
+    context.settlingQuestion = openQuestion(context.state)?.id ?? null;
+    return enqueue(context, async () => {
+      try {
+        const current = context.state!;
+        const text = draftAnswerFrom(current);
+        if (openQuestion(current) && text.trim()) await persistAnswer(context, text, true);
+        const terminal = action === 'skip' ? skipDreamRecallAssistant : completeDreamRecallAssistant;
+        await persist(context, terminal(context.state!, Date.now()).state);
+      } finally {
+        context.settlingQuestion = null;
+      }
+    });
+  }, [session, enqueue, persist, persistAnswer, ready]);
+
+  const skip = useCallback(() => finish('skip'), [finish]);
+  const complete = useCallback(() => finish('complete'), [finish]);
 
   useEffect(() => {
     mountedRef.current = true;
-    return () => {
-      mountedRef.current = false;
-    };
+    return () => { mountedRef.current = false; };
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    activeSessionRef.current = session;
     tRef.current = t;
-  }, [t]);
+  }, [session, t]);
+
+  useEffect(() => { void hydrate(); }, [hydrate]);
 
   useEffect(() => {
-    inputRef.current = { dreamId, originalTranscript, originalPersistedSegmentId };
-  }, [dreamId, originalTranscript, originalPersistedSegmentId]);
-
-  useEffect(() => {
-    const generation = ++hydrateGenerationRef.current;
-    let cancelled = false;
-    if (mountedRef.current) {
-      setLoading(true);
-      setError(null);
-    }
-    lastSavedRef.current = null;
-    publish(null);
-
-    void enqueue(async () => {
-      if (cancelled || hydrateGenerationRef.current !== generation) return;
-      const loaded = await loadDreamRecallAssistantState(dreamId);
-      if (cancelled || hydrateGenerationRef.current !== generation) return;
-      lastSavedRef.current = loaded;
-      stateRef.current = loaded;
-      if (!loaded) {
-        publish(null);
-        return;
-      }
-      const recovered = await recoverActive(loaded, tRef.current);
-      if (cancelled || hydrateGenerationRef.current !== generation) return;
-      publish(recovered);
-    }).finally(() => {
-      if (!cancelled && mountedRef.current && hydrateGenerationRef.current === generation) {
-        setLoading(false);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [dreamId, enqueue, publish, recoverActive]);
-
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+    const subscription = AppState.addEventListener('change', (next: AppStateStatus) => {
       const previous = appStateRef.current;
-      appStateRef.current = nextAppState;
-      if (previous !== 'active' || !nextAppState.match(/inactive|background/)) return;
-
-      void enqueue(async () => {
-        const current = stateRef.current;
-        if (!current || current.status !== 'active') return;
-        const paused = pauseDreamRecallAssistant(current, Date.now());
-        await persist(paused.state);
-        publish(paused.state);
-        if (mountedRef.current) setError(null);
-      });
+      appStateRef.current = next;
+      if (previous === 'active' && /inactive|background/.test(next)) void pause();
     });
+    return () => subscription.remove();
+  }, [pause]);
 
-    return () => {
-      subscription.remove();
-    };
-  }, [enqueue, persist, publish]);
-
-  const start = useCallback((): Promise<void> => {
-    return runUserAction(async () => {
-      const existing = stateRef.current;
-      if (existing?.status === 'active') {
-        const recovered = await recoverActive(existing, tRef.current);
-        publish(recovered);
-        if (mountedRef.current) setError(null);
-        return;
-      }
-      if (existing?.status === 'paused') return;
-
-      const input = inputRef.current;
-      const started = startDreamRecallAssistant({
-        dreamId: input.dreamId,
-        originalTranscript: input.originalTranscript,
-        originalPersistedSegmentId: input.originalPersistedSegmentId,
-        now: Date.now(),
-        maxQuestions: DREAM_RECALL_MAX_QUESTIONS,
-      });
-      await persist(started.state);
-      const withQuestion = await recoverActive(started.state, tRef.current);
-      publish(withQuestion);
-      if (mountedRef.current) setError(null);
-    });
-  }, [persist, publish, recoverActive, runUserAction]);
-
-  const submitAnswer = useCallback(
-    (text: string): Promise<void> => {
-      const questionId = openQuestionId(stateRef.current);
-      return runUserAction(async () => {
-        const current = stateRef.current;
-        if (
-          !current ||
-          current.status !== 'active' ||
-          questionId == null ||
-          openQuestionId(current) !== questionId
-        ) {
-          return;
-        }
-
-        const added = addDreamRecallUserSegment(current, text, Date.now());
-        await persist(added.state);
-
-        const persisted = markDreamRecallSegmentPersisted(added.state, Date.now());
-        await persist(persisted.state);
-
-        const advanced = await advanceAfterPersisted(persisted.state, tRef.current);
-        publish(advanced);
-        if (mountedRef.current) setError(null);
-      });
-    },
-    [advanceAfterPersisted, persist, publish, runUserAction]
-  );
-
-  const pause = useCallback((): Promise<void> => {
-    return runUserAction(async () => {
-      const current = stateRef.current;
-      if (!current || current.status !== 'active') return;
-      const paused = pauseDreamRecallAssistant(current, Date.now());
-      await persist(paused.state);
-      publish(paused.state);
-      if (mountedRef.current) setError(null);
-    });
-  }, [persist, publish, runUserAction]);
-
-  const resume = useCallback((): Promise<void> => {
-    return runUserAction(async () => {
-      const current = stateRef.current;
-      if (!current || current.status !== 'paused') return;
-      const resumed = resumeDreamRecallAssistant(current, Date.now());
-      await persist(resumed.state);
-      const recovered = await recoverActive(resumed.state, tRef.current);
-      publish(recovered);
-      if (mountedRef.current) setError(null);
-    });
-  }, [persist, publish, recoverActive, runUserAction]);
-
-  const skip = useCallback((): Promise<void> => {
-    return runUserAction(async () => {
-      const current = stateRef.current;
-      if (!current) return;
-      const skipped = skipDreamRecallAssistant(current, Date.now());
-      await persist(skipped.state);
-      publish(skipped.state);
-      if (mountedRef.current) setError(null);
-    });
-  }, [persist, publish, runUserAction]);
-
-  const complete = useCallback((): Promise<void> => {
-    return runUserAction(async () => {
-      const current = stateRef.current;
-      if (!current) return;
-      const completed = completeDreamRecallAssistant(current, Date.now());
-      await persist(completed.state);
-      publish(completed.state);
-      if (mountedRef.current) setError(null);
-    });
-  }, [persist, publish, runUserAction]);
-
-  const currentQuestion = useMemo(() => currentQuestionFrom(state), [state]);
-
+  const visible = snapshot.owner === session ? snapshot : newContext(dreamId);
+  const state = visible.state;
+  const question = openQuestion(state);
   return {
-    loading,
+    loading: visible.hydration === 'loading',
+    hydrationStatus: visible.hydration,
+    retryHydration,
     state,
     hasSession: state != null,
-    currentQuestion,
-    isBusy,
-    error,
-    start,
-    submitAnswer,
-    pause,
-    resume,
-    skip,
-    complete,
+    currentQuestion: question && (state?.status === 'active' || state?.status === 'paused')
+      ? { kind: question.kind as DreamRecallSequenceKind, text: question.text } : null,
+    draftAnswer: draftAnswerFrom(state),
+    updateDraftAnswer,
+    isBusy: visible.busy > 0,
+    error: visible.error,
+    start, submitAnswer, pause, resume, skip, complete,
   };
 }
