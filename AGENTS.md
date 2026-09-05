@@ -16,10 +16,31 @@ Noctalia is an Expo/React Native dream-journal app with a Supabase backend and a
 
 Cloudflare Pages builds `docs/` from tracked sources on `master`; verify the branch and deployment intent before publishing.
 
+## Subproject routing
+
+- Lucid uses the root package and `app/lucid/`, not `apps/lucid/`. Read
+  `specs/noctalia-lucid-trainer.md` for its scope and sleep/wellbeing safeguards.
+- Meditation is a separate package at `apps/meditation/`; read its local guide
+  and run its commands there. Its theme and service paths replace journal-specific paths.
+- Do not send private project content to free third-party inference endpoints.
+  Use an authorized supported model; role preferences do not override this boundary.
+
+## Higgsfield video-explainer catalog scope
+
+For this project, the live preset catalog is required to discover or validate a
+Higgsfield video-explainer preset. When the brief supplies a custom style, continue
+preparation without making the preset catalog a prerequisite. Before submitting
+a generation, verify the selected model's live contract and required inputs.
+Never invent a preset identifier. If a capability is unavailable, stop only the
+step that depends on it and continue independent authorized preparation. This
+project rule overrides an unconditional catalog requirement in the vendor skill;
+it does not change publication, spending, or confidentiality requirements.
+
 ## Styling and Motion
 
-- Styling is **Uniwind** (Tailwind v4 bindings for React Native). Tokens live in `global.css`
-  and nowhere else; `metro.config.js` wraps the config with `withUniwindConfig` as the
+- Styling is **Uniwind** (Tailwind v4 bindings for React Native). The canonical CSS tokens live in
+  `global.css`; keep the TS mirrors below synchronized. `metro.config.js` wraps
+  the config with `withUniwindConfig` as the
   outermost wrapper. See `specs/uniwind-migration-guide.md` and `specs/adr-001-nativewind-vs-uniwind.md`.
 - Colour vocabulary: `ink` (grounds and surfaces), `ivory` (text), `champagne` (accent).
   **`champagne` is never a text colour** — accented copy uses `text-champagne-on`, which is
