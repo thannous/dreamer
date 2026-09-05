@@ -937,6 +937,36 @@ export function evaluateVoiceLiveGoNoGo(input: VoiceLiveGoNoGoInput): VoiceLiveG
   const reasons: string[] = [];
   const thresholds = VOICE_LIVE_GO_NO_GO_THRESHOLDS;
 
+  // Missing evidence is indeterminate, not a measured success/failure. In
+  // particular NaN comparisons and zero-cost stubs must never unlock A or B.
+  const measuredFields = [
+    'p95EndOfSpeechToPersistMs',
+    'p95PersistToFirstTokenMs',
+    'p95TtsAudibleMs',
+    'p95BargeInStopMs',
+    'estimatedCostPerFiveTurnSessionUsd',
+  ] as const;
+  for (const field of measuredFields) {
+    if (!Number.isFinite(input[field]) || input[field] <= 0) {
+      reasons.push(`${field} requires a finite, positive measurement on TI-429.`);
+    }
+  }
+  if (!Number.isSafeInteger(input.persistBeforeAiViolations) || input.persistBeforeAiViolations < 0) {
+    reasons.push('persistBeforeAiViolations requires a measured non-negative integer on TI-429.');
+  }
+  const observedFlags = [
+    'bargeInHonored', 'offlineQueuedWithoutResponse', 'originalTranscriptLeakedToAiTurns',
+    'audioRetentionDefaultOff', 'quotaHonored', 'deviceProofComplete',
+  ] as const;
+  for (const field of observedFlags) {
+    if (typeof input[field] !== 'boolean') {
+      reasons.push(`${field} requires an explicit boolean observation on TI-429.`);
+    }
+  }
+  if (reasons.length > 0) {
+    return { decision: 'blocked_ti_429', prototype: null, optionBEligible: false, reasons };
+  }
+
   if (input.deviceProofTicket !== VOICE_LIVE_DEVICE_PROOF_TICKET || !input.deviceProofComplete) {
     reasons.push('Device proofs remain on TI-429.');
   }

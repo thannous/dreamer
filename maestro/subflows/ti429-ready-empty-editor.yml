@@ -1,0 +1,28 @@
+# Fail closed before synthetic input: never erase or append to an existing draft.
+# The enabled mode control proves hydration completed; the raw count includes
+# whitespace. Match both within this recording screen, not an unrelated label.
+appId: ${APP_ID || "com.tanuki75.noctalia"}
+---
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+      containsDescendants:
+        - id: btn.recording.inputMode.text
+          enabled: true
+    timeout: 15000
+- tapOn:
+    id: btn.recording.inputMode.text
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+      containsDescendants:
+        - id: btn.recording.inputMode.text
+          enabled: true
+        - id: component.recording.draftProgress
+          containsDescendants:
+            - text: "^0 (caractères|characters|caracteres|Zeichen|caratteri)$"
+        - id: input.dreamTranscript
+          enabled: true
+    timeout: 15000
+- tapOn:
+    id: input.dreamTranscript

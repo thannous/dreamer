@@ -12,6 +12,7 @@ import type {
   JournalLayoutPreference,
   NotificationSettings,
   PendingImageJob,
+  RecordingDraftReadResult,
   RecordingInputModePreference,
   RitualStepProgress,
   ThemePreference,
@@ -83,6 +84,8 @@ const memoryStore: Record<string, string> = {};
 let AsyncStorageRef: AsyncStorageModule | null | undefined;
 let SQLiteKvStoreRef: AsyncStorageModule | null | undefined;
 let indexedDBStorage: IndexedDBStorage | null | undefined;
+let indexedDBInitPromise: Promise<IndexedDBStorage> | undefined;
+let indexedDBInitializationFailed = false;
 // Serialize kv-store access to avoid SQLite "database is locked" errors.
 let kvLock: Promise<void> = Promise.resolve();
 
@@ -183,6 +186,7 @@ async function createIndexedDBStorage(): Promise<IndexedDBStorage> {
 
   const db = await new Promise<IDBDatabase>((resolve, reject) => {
     const request = factory.open(IDB_DB_NAME, IDB_VERSION);
+    let failed = false;
 
     request.onupgradeneeded = () => {
       const database = request.result;
@@ -192,14 +196,20 @@ async function createIndexedDBStorage(): Promise<IndexedDBStorage> {
     };
 
     request.onerror = () => {
+      failed = true;
       reject(request.error ?? new Error('Failed to open IndexedDB'));
     };
 
     request.onblocked = () => {
+      failed = true;
       reject(new Error('IndexedDB upgrade blocked by another connection'));
     };
 
     request.onsuccess = () => {
+      if (failed) {
+        request.result.close();
+        return;
+      }
       resolve(request.result);
     };
   });
@@ -231,6 +241,9 @@ async function createIndexedDBStorage(): Promise<IndexedDBStorage> {
   return {
     async getItem(key: string): Promise<string | null> {
       const result = await run<string | undefined>('readonly', (store) => store.get(key));
+      if (result !== undefined && typeof result !== 'string') {
+        throw new Error('Invalid IndexedDB storage value');
+      }
       return typeof result === 'string' ? result : null;
     },
 
@@ -244,8 +257,8 @@ async function createIndexedDBStorage(): Promise<IndexedDBStorage> {
   };
 }
 
-async function getIndexedDBStorage(): Promise<IndexedDBStorage | null> {
-  if (indexedDBStorage !== undefined) {
+async function getIndexedDBStorage(strict = false): Promise<IndexedDBStorage | null> {
+  if (indexedDBStorage || (indexedDBStorage === null && !strict)) {
     return indexedDBStorage;
   }
 
@@ -254,13 +267,28 @@ async function getIndexedDBStorage(): Promise<IndexedDBStorage | null> {
     return indexedDBStorage;
   }
 
+  if (!globalThis.indexedDB) {
+    if (strict && indexedDBInitializationFailed) {
+      throw new Error('Previously inaccessible IndexedDB cannot be treated as absent');
+    }
+    return null;
+  }
+
+  // Strict draft reads retry failed initialization and share an in-flight open.
+  // Other callers retain their permissive localStorage fallback on failure.
+  const pending = indexedDBInitPromise ?? (indexedDBInitPromise = createIndexedDBStorage());
   try {
-    indexedDBStorage = await createIndexedDBStorage();
+    indexedDBStorage = await pending;
+    indexedDBInitializationFailed = false;
   } catch (error) {
+    indexedDBInitializationFailed = true;
+    if (strict) throw error;
     if (__DEV__) {
       console.warn('IndexedDB unavailable, falling back to localStorage:', error);
     }
     indexedDBStorage = null;
+  } finally {
+    if (indexedDBInitPromise === pending) indexedDBInitPromise = undefined;
   }
 
   return indexedDBStorage;
@@ -797,13 +825,71 @@ export async function saveDreams(dreams: DreamAnalysis[]): Promise<void> {
 }
 
 export async function getSavedTranscript(): Promise<string> {
+  // Preserve the legacy string-returning interface (e.g. the Home badge), but
+  // not its unsafe fallback migration after a primary read error.
+  const result = await getRecordingDraft();
+  return result.status === 'loaded' ? result.value : '';
+}
+
+/**
+ * Capture must not confuse an unreadable primary store with an empty draft.
+ * Legacy data is consulted/migrated only after a successful primary read.
+ * This API distinguishes unreadable from absent. Neither transcript reader
+ * reports an in-memory fallback as durable or exposes a legacy value after a
+ * primary read failure.
+ */
+export async function getRecordingDraft(): Promise<RecordingDraftReadResult> {
+  const loaded = (value: string | null): RecordingDraftReadResult =>
+    value == null ? { status: 'absent' } : { status: 'loaded', value };
+
   try {
-    return (await getItem(RECORDING_TRANSCRIPT_KEY)) || '';
-  } catch (error) {
-    if (__DEV__) {
-      console.error('Failed to retrieve transcript:', error);
+    if (Platform.OS !== 'web') {
+      // A failed module initialization is retryable, not proof of no draft.
+      if (SQLiteKvStoreRef === null) SQLiteKvStoreRef = undefined;
+      const kv = await getSQLiteKvStore();
+      if (!kv) return { status: 'error' };
+      return await withKvRetry(async () => {
+        const value = await kv.getItem(RECORDING_TRANSCRIPT_KEY);
+        if (value != null) return loaded(value);
+
+        if (AsyncStorageRef === null) AsyncStorageRef = undefined;
+        const legacy = await getLegacyAsyncStorage();
+        if (!legacy) return { status: 'error' };
+        const legacyValue = await legacy.getItem(RECORDING_TRANSCRIPT_KEY);
+        if (legacyValue != null) {
+          await kv.setItem(RECORDING_TRANSCRIPT_KEY, legacyValue);
+          try {
+            await legacy.removeItem(RECORDING_TRANSCRIPT_KEY);
+          } catch {
+            // The primary copy is durable; cleanup can be retried later.
+          }
+        }
+        return loaded(legacyValue);
+      });
     }
-    return '';
+
+    const primary = await getIndexedDBStorage(true);
+    if (primary) {
+      const value = await primary.getItem(RECORDING_TRANSCRIPT_KEY);
+      if (value != null) return loaded(value);
+      if (!webStorage) return loaded(null);
+      const legacyValue = webStorage.getItem(RECORDING_TRANSCRIPT_KEY);
+      if (legacyValue != null) {
+        await primary.setItem(RECORDING_TRANSCRIPT_KEY, legacyValue);
+        try {
+          webStorage.removeItem(RECORDING_TRANSCRIPT_KEY);
+        } catch {
+          // Keep the confirmed primary copy even if legacy cleanup fails.
+        }
+      }
+      return loaded(legacyValue);
+    }
+
+    // localStorage is authoritative only when IndexedDB is truly unavailable,
+    // not when opening or reading an existing IndexedDB database failed.
+    return webStorage ? loaded(webStorage.getItem(RECORDING_TRANSCRIPT_KEY)) : { status: 'error' };
+  } catch {
+    return { status: 'error' };
   }
 }
 

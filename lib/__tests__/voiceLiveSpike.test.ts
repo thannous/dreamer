@@ -358,6 +358,66 @@ describe('pause, resume, flag, budgets', () => {
 });
 
 describe('go / no-go', () => {
+  const measuredFields = [
+    'p95EndOfSpeechToPersistMs',
+    'p95PersistToFirstTokenMs',
+    'p95TtsAudibleMs',
+    'p95BargeInStopMs',
+    'estimatedCostPerFiveTurnSessionUsd',
+  ] as const;
+
+  it.each(measuredFields)('blocks absent or invalid %s instead of granting a go/no-go', (field: (typeof measuredFields)[number]) => {
+    for (const invalid of [undefined, null, NaN, Infinity, -Infinity, -1, 0, '100']) {
+      const input = { ...goNoGo(), [field]: invalid } as unknown as VoiceLiveGoNoGoInput;
+      expect(evaluateVoiceLiveGoNoGo(input)).toMatchObject({
+        decision: 'blocked_ti_429',
+        prototype: null,
+        optionBEligible: false,
+        reasons: expect.arrayContaining([expect.stringContaining(field)]),
+      });
+    }
+  });
+
+  it('requires a measured non-negative integer violation count, including a valid zero', () => {
+    for (const invalid of [undefined, null, NaN, Infinity, -1, 0.5, '0']) {
+      const input = { ...goNoGo(), persistBeforeAiViolations: invalid } as unknown as VoiceLiveGoNoGoInput;
+      expect(evaluateVoiceLiveGoNoGo(input)).toMatchObject({
+        decision: 'blocked_ti_429', prototype: null, optionBEligible: false,
+      });
+    }
+    expect(evaluateVoiceLiveGoNoGo(goNoGo({ persistBeforeAiViolations: 0 })).decision).toBe('go_a');
+  });
+
+  it.each([
+    'bargeInHonored', 'offlineQueuedWithoutResponse', 'originalTranscriptLeakedToAiTurns',
+    'audioRetentionDefaultOff', 'quotaHonored', 'deviceProofComplete',
+  ] as const)('requires an explicit boolean observation for %s', (field: keyof VoiceLiveGoNoGoInput) => {
+    for (const invalid of [undefined, null, 'true', 'false', 0, 1]) {
+      const input = { ...goNoGo(), [field]: invalid } as unknown as VoiceLiveGoNoGoInput;
+      expect(evaluateVoiceLiveGoNoGo(input)).toMatchObject({
+        decision: 'blocked_ti_429', prototype: null, optionBEligible: false,
+      });
+    }
+  });
+
+  it('does not infer a latency-only no-go when cost evidence is missing', () => {
+    expect(evaluateVoiceLiveGoNoGo(goNoGo({
+      p95TtsAudibleMs: VOICE_LIVE_GO_NO_GO_THRESHOLDS.p95TtsAudibleMs + 1,
+      estimatedCostPerFiveTurnSessionUsd: NaN,
+    }))).toMatchObject({ decision: 'blocked_ti_429', optionBEligible: false });
+  });
+
+  it('accepts measured threshold boundaries and keeps genuine cost failures as no-go', () => {
+    expect(evaluateVoiceLiveGoNoGo(goNoGo({
+      p95EndOfSpeechToPersistMs: VOICE_LIVE_GO_NO_GO_THRESHOLDS.p95EndOfSpeechToPersistMs,
+      p95PersistToFirstTokenMs: VOICE_LIVE_GO_NO_GO_THRESHOLDS.p95PersistToFirstTokenMs,
+      p95TtsAudibleMs: VOICE_LIVE_GO_NO_GO_THRESHOLDS.p95TtsAudibleMs,
+      p95BargeInStopMs: VOICE_LIVE_GO_NO_GO_THRESHOLDS.p95BargeInStopMs,
+      estimatedCostPerFiveTurnSessionUsd: VOICE_LIVE_GO_NO_GO_THRESHOLDS.maxCostPerFiveTurnSessionUsd,
+    })).decision).toBe('go_a');
+    expect(evaluateVoiceLiveGoNoGo(goNoGo({ estimatedCostPerFiveTurnSessionUsd: 0.051 })).decision).toBe('no_go_a');
+  });
+
   it('goes on Prototype A only after TI-429 proofs and invariant gates', () => {
     expect(evaluateVoiceLiveGoNoGo(goNoGo())).toEqual({
       decision: 'go_a',

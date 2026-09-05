@@ -256,7 +256,8 @@
     "vite-tsconfig-paths": "^5.1.1",
     "vitest": "^4.0.13",
     "workbox-cli": "^7.0.0",
-    "wrangler": "4.110.0"
+    "wrangler": "4.110.0",
+    "yaml": "2.9.0"
   },
   "overrides": {
     "markdown-it": "14.3.0",

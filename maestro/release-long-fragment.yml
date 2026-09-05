@@ -7,24 +7,13 @@ tags:
   - release
   - capture
   - long-form
-onFlowComplete:
-  - setAirplaneMode: disabled
 ---
-- setAirplaneMode: disabled
 - launchApp:
-    clearState: true
-    permissions:
-      all: allow
-- extendedWaitUntil:
-    visible:
-      id: screen.onboarding
-    timeout: 20000
-- runFlow: subflows/dismiss-first-launch-onboarding.yml
+    stopApp: false
 - runFlow: subflows/open-release-recording.yml
 - runFlow: subflows/ensure-recording-text.yml
 
-- tapOn:
-    id: input.dreamTranscript
+- runFlow: subflows/ti429-ready-empty-editor.yml
 - inputText: "LONG-START A moonlit corridor of repeating doors opens onto a quiet river, and the same lantern garden returns with every step. A moonlit corridor of repeating doors opens onto a quiet river, and the same lantern garden returns with every step. A moonlit corridor of repeating doors opens onto a quiet river, and the same lantern garden returns with every step. A moonlit corridor of repeating doors opens onto a quiet river, and the same lantern garden returns with every step. A moonlit corridor of repeating doors opens onto a quiet river, and the same lantern garden returns with every step. A moonlit corridor of repeating doors opens onto a quiet river, and the same lantern garden returns with every step. LONG-END"
 - hideKeyboard
 - scrollUntilVisible:

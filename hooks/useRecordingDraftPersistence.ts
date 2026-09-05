@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 
-import { getSavedTranscript, saveTranscript } from '@/services/storageService';
+import { getRecordingDraft, saveTranscript } from '@/services/storageService';
 
 export const RECORDING_DRAFT_AUTOSAVE_DELAY_MS = 300;
 
@@ -12,6 +12,8 @@ export type UseRecordingDraftPersistenceOptions = {
 
 export type UseRecordingDraftPersistenceResult = {
   isHydrated: boolean;
+  hydrationStatus: 'loading' | 'ready' | 'error';
+  retryHydration: () => void;
   noteInput: (value: string) => boolean;
   clearAfterSuccessfulSave: () => void;
   lastPersistedValue: string | null;
@@ -33,9 +35,13 @@ export function useRecordingDraftPersistence({
   transcript,
   onRestore,
 }: UseRecordingDraftPersistenceOptions): UseRecordingDraftPersistenceResult {
-  const [hydrated, setHydrated] = useState(false);
+  const [hydrationStatus, setHydrationStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const hydrated = hydrationStatus === 'ready';
   const hydratedRef = useRef(false);
+  const mountedRef = useRef(false);
+  const hydrationAttemptRef = useRef<symbol | null>(null);
   const userEditedRef = useRef(false);
+  const awaitingRestoredValueRef = useRef<string | null>(null);
   const latestValueRef = useRef(transcript);
   const lastScheduledRef = useRef<string | null>(null);
   const [lastPersistedValue, setLastPersistedValue] = useState<string | null>(null);
@@ -109,6 +115,7 @@ export function useRecordingDraftPersistence({
       return false;
     }
     userEditedRef.current = true;
+    awaitingRestoredValueRef.current = null;
     latestValueRef.current = value;
     scheduleAutosave();
     return true;
@@ -133,42 +140,56 @@ export function useRecordingDraftPersistence({
     onRestoreRef.current = onRestore;
   }, [onRestore]);
 
-  useEffect(() => {
-    let cancelled = false;
-
+  const retryHydration = useCallback(() => {
+    if (!mountedRef.current || hydratedRef.current || hydrationAttemptRef.current !== null) return;
+    const attempt = Symbol('draft hydration');
+    hydrationAttemptRef.current = attempt;
+    setHydrationStatus('loading');
     void (async () => {
-      let saved = '';
       try {
-        saved = await getSavedTranscript();
-      } catch {
-        saved = '';
-      }
-      if (cancelled) {
-        return;
-      }
-
-      if (saved) {
+        const result = await getRecordingDraft();
+        if (!mountedRef.current || hydrationAttemptRef.current !== attempt) return;
+        if (result.status === 'error') {
+          setHydrationStatus('error');
+          return;
+        }
+        const saved = result.status === 'loaded' ? result.value : '';
+        awaitingRestoredValueRef.current = saved;
         latestValueRef.current = saved;
         lastScheduledRef.current = saved;
+        if (saved) onRestoreRef.current(saved);
         setLastPersistedValue(saved);
-        onRestoreRef.current(saved);
-      } else {
-        lastScheduledRef.current = '';
-        setLastPersistedValue('');
+        hydratedRef.current = true;
+        setHydrationStatus('ready');
+      } catch {
+        if (mountedRef.current && hydrationAttemptRef.current === attempt) {
+          setHydrationStatus('error');
+        }
+      } finally {
+        if (hydrationAttemptRef.current === attempt) hydrationAttemptRef.current = null;
       }
-
-      hydratedRef.current = true;
-      setHydrated(true);
     })();
+  }, []);
 
+  useEffect(() => {
+    mountedRef.current = true;
+    retryHydration();
     return () => {
-      cancelled = true;
+      mountedRef.current = false;
+      hydrationAttemptRef.current = null;
     };
-  }, [scheduleAutosave]);
+  }, [retryHydration]);
 
   useEffect(() => {
     if (!hydrated) {
       return;
+    }
+    // Props can still contain a voice/input update that arrived while reads
+    // were blocked. Wait for onRestore to reach the parent before observing
+    // prop-driven changes; a new accepted noteInput explicitly ends this wait.
+    if (awaitingRestoredValueRef.current !== null && !userEditedRef.current) {
+      if (transcript !== awaitingRestoredValueRef.current) return;
+      awaitingRestoredValueRef.current = null;
     }
     if (transcript === lastScheduledRef.current) {
       return;
@@ -196,6 +217,8 @@ export function useRecordingDraftPersistence({
 
   return {
     isHydrated: hydrated,
+    hydrationStatus,
+    retryHydration,
     noteInput,
     clearAfterSuccessfulSave,
     lastPersistedValue,

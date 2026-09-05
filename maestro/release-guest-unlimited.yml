@@ -1,29 +1,19 @@
 # Release guest-unlimited gate (TI-418): save at least three guest dreams
 # in one install/state. Before each save, no account or paywall may block.
 # After the third save, all three entries must exist in Journal.
-# No analysis, image, purchase or later clearState.
+# No analysis, image, purchase or data reset.
 appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release guest unlimited local saves
 tags:
   - release
   - guest
   - journal
-onFlowComplete:
-  - setAirplaneMode: disabled
 ---
-- setAirplaneMode: disabled
 - launchApp:
-    clearState: true
-    permissions:
-      all: allow
-- extendedWaitUntil:
-    visible:
-      id: screen.onboarding
-    timeout: 20000
-- runFlow: subflows/dismiss-first-launch-onboarding.yml
+    stopApp: false
 
-# A clean install starts as a guest. QuotaStatusCard exposes the localised
-# guest tier near the top of Settings; do not hunt Google/auth-google.
+# Require an existing guest session. Never sign out or reset an authenticated
+# user's app. QuotaStatusCard exposes the localised guest tier in Settings.
 - openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
@@ -53,8 +43,7 @@ onFlowComplete:
     id: btn.auth.signIn
 - assertNotVisible:
     id: btn.quotaLimit.ctaGuest
-- tapOn:
-    id: input.dreamTranscript
+- runFlow: subflows/ti429-ready-empty-editor.yml
 - inputText: "Guest unlimited sentinel one"
 - hideKeyboard
 - scrollUntilVisible:
@@ -93,8 +82,7 @@ onFlowComplete:
     id: btn.auth.signIn
 - assertNotVisible:
     id: btn.quotaLimit.ctaGuest
-- tapOn:
-    id: input.dreamTranscript
+- runFlow: subflows/ti429-ready-empty-editor.yml
 - inputText: "Guest unlimited sentinel two"
 - hideKeyboard
 - scrollUntilVisible:
@@ -133,8 +121,7 @@ onFlowComplete:
     id: btn.auth.signIn
 - assertNotVisible:
     id: btn.quotaLimit.ctaGuest
-- tapOn:
-    id: input.dreamTranscript
+- runFlow: subflows/ti429-ready-empty-editor.yml
 - inputText: "Guest unlimited sentinel three"
 - hideKeyboard
 - scrollUntilVisible:

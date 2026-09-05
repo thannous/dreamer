@@ -1,30 +1,23 @@
 # Release analysis interruption gate: starting analysis then killing the app
 # must keep the original transcript and surface a recoverable reflection CTA.
+# Independent QA must verify real-analysis eligibility and paid-session
+# authorization first; a CTA tap alone never proves that analysis started.
 appId: ${APP_ID || "com.tanuki75.noctalia"}
+env:
+  TI429_RUN_ID: ${Date.now() + "-" + Math.floor(Math.random() * 1000000000)}
 name: Release analysis interrupt recovery
 tags:
   - release
   - analysis
   - interrupt
-onFlowComplete:
-  - setAirplaneMode: disabled
 ---
-- setAirplaneMode: disabled
 - launchApp:
-    clearState: true
-    permissions:
-      all: allow
-- extendedWaitUntil:
-    visible:
-      id: screen.onboarding
-    timeout: 20000
-- runFlow: subflows/dismiss-first-launch-onboarding.yml
+    stopApp: false
 - runFlow: subflows/open-release-recording.yml
 - runFlow: subflows/ensure-recording-text.yml
 
-- tapOn:
-    id: input.dreamTranscript
-- inputText: "Analysis interrupt sentinel silver orchard"
+- runFlow: subflows/ti429-ready-empty-editor.yml
+- inputText: "Analysis interrupt sentinel ${TI429_RUN_ID} silver orchard"
 - hideKeyboard
 - scrollUntilVisible:
     element:
@@ -36,6 +29,11 @@ onFlowComplete:
     visible:
       id: text.dreamDetail.actionTitle
     timeout: 90000
+- extendedWaitUntil:
+    visible:
+      id: component.transcriptCard
+    timeout: 20000
+- assertVisible: "Analysis interrupt sentinel ${TI429_RUN_ID} silver orchard"
 - tapOn:
     id: btn.dream.primaryCta
 - pressKey: Home
@@ -44,7 +42,7 @@ onFlowComplete:
     stopApp: false
 - runFlow:
     when:
-      notVisible: "Analysis interrupt sentinel silver orchard"
+      notVisible: "Analysis interrupt sentinel ${TI429_RUN_ID} silver orchard"
     commands:
       - runFlow:
           when:
@@ -64,23 +62,21 @@ onFlowComplete:
           visible:
             id: screen.journal
           timeout: 20000
-      - runFlow: subflows/ensure-journal-search-visible.yml
-      - tapOn:
-          id: input.searchDreams
-      - inputText: "Analysis interrupt sentinel"
-      - hideKeyboard
       - extendedWaitUntil:
           visible:
             id: "dream.item.*"
+            containsDescendants:
+              - text: "Analysis interrupt sentinel ${TI429_RUN_ID} silver orchard"
           timeout: 20000
       - tapOn:
           id: "dream.item.*"
-          index: 0
+          containsDescendants:
+            - text: "Analysis interrupt sentinel ${TI429_RUN_ID} silver orchard"
 - extendedWaitUntil:
     visible:
       id: component.transcriptCard
     timeout: 20000
-- assertVisible: "Analysis interrupt sentinel silver orchard"
+- assertVisible: "Analysis interrupt sentinel ${TI429_RUN_ID} silver orchard"
 - takeScreenshot: ti429-analysis-interrupt-transcript
 - scrollUntilVisible:
     element:

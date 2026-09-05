@@ -1,7 +1,8 @@
 /* @jest-environment jsdom */
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { AppState, type AppStateStatus } from 'react-native';
+import { AppState, Platform, type AppStateStatus } from 'react-native';
+import type { RecordingDraftReadResult } from '@/lib/types';
 
 import {
   RECORDING_DRAFT_AUTOSAVE_DELAY_MS,
@@ -9,10 +10,11 @@ import {
 } from '../useRecordingDraftPersistence';
 
 const mockGetSavedTranscript = jest.fn(async (): Promise<string> => '');
+const mockGetRecordingDraft = jest.fn(async (): Promise<RecordingDraftReadResult> => ({ status: 'absent' }));
 const mockSaveTranscript = jest.fn(async (_value: string): Promise<void> => undefined);
 
 jest.mock('@/services/storageService', () => ({
-  getSavedTranscript: (...args: unknown[]) => mockGetSavedTranscript(...(args as [])),
+  getRecordingDraft: () => mockGetRecordingDraft(),
   saveTranscript: (value: string) => mockSaveTranscript(value),
 }));
 
@@ -42,6 +44,10 @@ describe('useRecordingDraftPersistence', () => {
     mockGetSavedTranscript.mockReset();
     mockSaveTranscript.mockReset();
     mockGetSavedTranscript.mockResolvedValue('');
+    mockGetRecordingDraft.mockReset().mockImplementation(async () => {
+      const value = await mockGetSavedTranscript();
+      return value ? { status: 'loaded', value } : { status: 'absent' };
+    });
     mockSaveTranscript.mockResolvedValue(undefined);
     appStateListener = undefined;
     removeSubscription = jest.fn();
@@ -315,8 +321,7 @@ describe('useRecordingDraftPersistence', () => {
     expect(mockSaveTranscript).not.toHaveBeenCalled();
   });
 
-  it('swallows storage read and write errors without blocking later capture', async () => {
-    mockGetSavedTranscript.mockRejectedValue(new Error('read failed'));
+  it('does not block edits after a write failure once the draft read has succeeded', async () => {
     mockSaveTranscript.mockRejectedValue(new Error('write failed'));
     const onRestore = jest.fn();
 
@@ -335,6 +340,7 @@ describe('useRecordingDraftPersistence', () => {
     await flushPromises();
 
     expect(mockSaveTranscript).toHaveBeenCalledWith('still capturable');
+    expect(result.current.lastPersistedValue).toBe('');
 
     act(() => {
       result.current.clearAfterSuccessfulSave();
@@ -485,5 +491,182 @@ describe('useRecordingDraftPersistence', () => {
 
     expect(mockSaveTranscript).toHaveBeenCalledWith('Rain on the glass');
     expect(result.current.lastPersistedValue).toBe('Rain on the glass');
+  });
+
+  it.each(['result', 'rejection'])('keeps all writes blocked after a read %s failure', async (failure: string) => {
+    if (failure === 'result') mockGetRecordingDraft.mockResolvedValue({ status: 'error' });
+    else mockGetRecordingDraft.mockRejectedValue(new Error('unreadable'));
+    const onRestore = jest.fn();
+    const { result, rerender, unmount } = renderHook(
+      ({ transcript }) => useRecordingDraftPersistence({ transcript, onRestore }),
+      { initialProps: { transcript: '' } }
+    );
+    await flushPromises();
+    expect(result.current.hydrationStatus).toBe('error');
+    expect(result.current.isHydrated).toBe(false);
+    expect(result.current.lastPersistedValue).toBeNull();
+    act(() => {
+      expect(result.current.noteInput('must not overwrite stored dream')).toBe(false);
+      result.current.clearAfterSuccessfulSave();
+      appStateListener?.('background');
+      jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS * 2);
+    });
+    rerender({ transcript: 'late voice update' });
+    unmount();
+    await flushPromises();
+    expect(onRestore).not.toHaveBeenCalled();
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+  });
+
+  it('retries exclusively and restores the original before enabling any input', async () => {
+    mockGetRecordingDraft.mockResolvedValueOnce({ status: 'error' });
+    const pending = deferred<RecordingDraftReadResult>();
+    mockGetRecordingDraft.mockReturnValueOnce(pending.promise);
+    const onRestore = jest.fn();
+    const { result } = renderHook(() => useRecordingDraftPersistence({ transcript: '', onRestore }));
+    await flushPromises();
+    act(() => {
+      result.current.retryHydration();
+      result.current.retryHydration();
+      expect(result.current.noteInput('early')).toBe(false);
+      result.current.clearAfterSuccessfulSave();
+    });
+    expect(result.current.hydrationStatus).toBe('loading');
+    expect(mockGetRecordingDraft).toHaveBeenCalledTimes(2);
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+    await act(async () => { pending.resolve({ status: 'loaded', value: 'original dream' }); });
+    expect(onRestore).toHaveBeenCalledWith('original dream');
+    expect(result.current.hydrationStatus).toBe('ready');
+    expect(result.current.isHydrated).toBe(true);
+    expect(result.current.lastPersistedValue).toBe('original dream');
+    act(() => { result.current.retryHydration(); });
+    expect(mockGetRecordingDraft).toHaveBeenCalledTimes(2);
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+  });
+
+  it('keeps an unsuccessful retry blocked and permits another attempt', async () => {
+    mockGetRecordingDraft.mockResolvedValue({ status: 'error' });
+    const { result } = renderHook(() => useRecordingDraftPersistence({ transcript: '', onRestore: jest.fn() }));
+    await flushPromises();
+    act(() => { result.current.retryHydration(); });
+    await flushPromises();
+    expect(result.current.hydrationStatus).toBe('error');
+    expect(result.current.isHydrated).toBe(false);
+    mockGetRecordingDraft.mockResolvedValueOnce({ status: 'absent' });
+    act(() => { result.current.retryHydration(); });
+    await flushPromises();
+    expect(result.current.hydrationStatus).toBe('ready');
+    expect(result.current.lastPersistedValue).toBe('');
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+  });
+
+  it('ignores a late retry result after unmount and cannot start another read', async () => {
+    mockGetRecordingDraft.mockResolvedValueOnce({ status: 'error' });
+    const pending = deferred<RecordingDraftReadResult>();
+    mockGetRecordingDraft.mockReturnValueOnce(pending.promise);
+    const onRestore = jest.fn();
+    const { result, unmount } = renderHook(() => useRecordingDraftPersistence({ transcript: '', onRestore }));
+    await flushPromises();
+    const retry = result.current.retryHydration;
+    act(() => { retry(); });
+    unmount();
+    await act(async () => { pending.resolve({ status: 'loaded', value: 'original dream' }); });
+    retry();
+    expect(mockGetRecordingDraft).toHaveBeenCalledTimes(2);
+    expect(onRestore).not.toHaveBeenCalled();
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+  });
+
+  it('ignores the first effect attempt after StrictMode restarts hydration', async () => {
+    const first = deferred<RecordingDraftReadResult>();
+    const second = deferred<RecordingDraftReadResult>();
+    mockGetRecordingDraft.mockReturnValueOnce(first.promise).mockReturnValueOnce(second.promise);
+    const onRestore = jest.fn();
+    const { result } = renderHook(() => useRecordingDraftPersistence({ transcript: '', onRestore }), {
+      reactStrictMode: true,
+    });
+    expect(mockGetRecordingDraft).toHaveBeenCalledTimes(2);
+    await act(async () => { second.resolve({ status: 'loaded', value: 'current dream' }); });
+    await act(async () => { first.resolve({ status: 'loaded', value: 'stale dream' }); });
+    expect(onRestore).toHaveBeenCalledTimes(1);
+    expect(onRestore).toHaveBeenCalledWith('current dream');
+    expect(result.current.lastPersistedValue).toBe('current dream');
+    expect(result.current.hydrationStatus).toBe('ready');
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+  });
+
+  it('does not persist a transcript prop received while reads were blocked after retry succeeds', async () => {
+    mockGetRecordingDraft.mockResolvedValueOnce({ status: 'error' })
+      .mockResolvedValueOnce({ status: 'loaded', value: 'original dream' });
+    const onRestore = jest.fn();
+    const { result, rerender } = renderHook(
+      ({ transcript }) => useRecordingDraftPersistence({ transcript, onRestore }),
+      { initialProps: { transcript: '' } }
+    );
+    await flushPromises();
+    rerender({ transcript: 'late voice result while blocked' });
+    act(() => { result.current.retryHydration(); });
+    await flushPromises();
+    act(() => { jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS * 2); });
+    await flushPromises();
+    expect(onRestore).toHaveBeenCalledWith('original dream');
+    expect(mockSaveTranscript).not.toHaveBeenCalled();
+    expect(result.current.lastPersistedValue).toBe('original dream');
+    rerender({ transcript: 'original dream' });
+    act(() => { expect(result.current.noteInput('original dream with details')).toBe(true); });
+    rerender({ transcript: 'original dream with details' });
+    act(() => { jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS); });
+    await flushPromises();
+    expect(mockSaveTranscript).toHaveBeenCalledWith('original dream with details');
+  });
+
+  it('preserves the actual native draft when reads fail but writes would succeed', async () => {
+    const previousPlatform = Platform.OS;
+    Platform.OS = 'android';
+    const key = 'gemini_dream_journal_recording_transcript';
+    const values = new Map([[key, 'original native dream']]);
+    let readFailed = true;
+    const kv = {
+      getItem: jest.fn(async (storageKey: string) => {
+        if (readFailed) throw new Error('temporary native read failure');
+        return values.get(storageKey) ?? null;
+      }),
+      setItem: jest.fn(async (storageKey: string, value: string) => { values.set(storageKey, value); }),
+      removeItem: jest.fn(async (storageKey: string) => { values.delete(storageKey); }),
+    };
+    jest.doMock('expo-sqlite/kv-store', () => ({ default: kv }));
+    try {
+      const storage = jest.requireActual('../../services/storageServiceReal') as typeof import('../../services/storageServiceReal');
+      mockGetRecordingDraft.mockImplementation(storage.getRecordingDraft);
+      mockSaveTranscript.mockImplementation(storage.saveTranscript);
+      const onRestore = jest.fn();
+      const { result, rerender, unmount } = renderHook(
+        ({ transcript }) => useRecordingDraftPersistence({ transcript, onRestore }),
+        { initialProps: { transcript: '' } }
+      );
+      await waitFor(() => expect(result.current.hydrationStatus).toBe('error'));
+      act(() => {
+        expect(result.current.noteInput('overwrite attempt')).toBe(false);
+        result.current.clearAfterSuccessfulSave();
+        appStateListener?.('background');
+        jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS * 2);
+      });
+      await flushPromises();
+      expect(values.get(key)).toBe('original native dream');
+      expect(kv.setItem).not.toHaveBeenCalled();
+      expect(kv.removeItem).not.toHaveBeenCalled();
+      readFailed = false;
+      act(() => { result.current.retryHydration(); });
+      await waitFor(() => expect(result.current.hydrationStatus).toBe('ready'));
+      expect(onRestore).toHaveBeenCalledWith('original native dream');
+      rerender({ transcript: 'original native dream' });
+      act(() => { expect(result.current.noteInput('original native dream with details')).toBe(true); });
+      rerender({ transcript: 'original native dream with details' });
+      act(() => { jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS); });
+      await waitFor(() => expect(values.get(key)).toBe('original native dream with details'));
+      unmount();
+    } finally {
+      Platform.OS = previousPlatform;
+    }
   });
 });

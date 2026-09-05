@@ -8,6 +8,7 @@ import { MicPermissionRationaleSheet } from '@/components/recording/RecordingShe
 import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RecordingDraftProgress } from '@/components/recording/RecordingDraftProgress';
+import { RecordingDraftHydrationNotice } from '@/components/recording/RecordingDraftHydrationNotice';
 import { RememberedDreamProfileChips } from '@/components/recording/RememberedDreamProfileChips';
 import { Toast } from '@/components/Toast';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
@@ -149,7 +150,7 @@ export default function RecordingScreen() {
     setTranscript(savedTranscript);
     baseTranscriptRef.current = savedTranscript;
   }, []);
-  const { noteInput, clearAfterSuccessfulSave, lastPersistedValue, isHydrated } = useRecordingDraftPersistence({
+  const { noteInput, clearAfterSuccessfulSave, lastPersistedValue, isHydrated, hydrationStatus, retryHydration } = useRecordingDraftPersistence({
     transcript,
     onRestore: handleRestoreDraft,
   });
@@ -1155,7 +1156,8 @@ export default function RecordingScreen() {
     }
     return t('recording.mode.switch_to_voice');
   }, [dictationIntent, isPreparingRecording, isVoiceListening, t, trimmedTranscript, voiceFallbackReason]);
-  const showRecordingVoiceHint = recordingVoiceHintLoadedScope === onboardingScope
+  const showRecordingVoiceHint = hydrationStatus === 'ready'
+    && recordingVoiceHintLoadedScope === onboardingScope
     && !recordingVoiceHintDismissed
     && captureIntent === 'fresh'
     && inputMode === 'voice'
@@ -1332,7 +1334,7 @@ export default function RecordingScreen() {
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
             testID={TID.Screen.Recording}
-            accessibilityState={{ busy: !isHydrated }}
+            accessibilityState={{ busy: hydrationStatus === 'loading' }}
           >
             <MockNavigationRail />
             <View style={mainContentStyle}>
@@ -1341,6 +1343,16 @@ export default function RecordingScreen() {
                   value={inputMode}
                   disabled={interactionDisabled || isPreparingRecording}
                   onChange={handleInputModePreferenceChange}
+                />
+
+                <RecordingDraftHydrationNotice
+                  hydrationStatus={hydrationStatus}
+                  onRetry={retryHydration}
+                  messages={{
+                    loading: String(t('recording.draft_restore.loading')),
+                    error: String(t('recording.draft_restore.error')),
+                    retry: String(t('recording.draft_restore.retry')),
+                  }}
                 />
 
                 <RecordingTextInput
@@ -1379,10 +1391,12 @@ export default function RecordingScreen() {
                   onClear={handleClearTranscript}
                 />
 
-                <RecordingDraftProgress
-                  value={transcript}
-                  persisted={transcript.length > 0 && lastPersistedValue === transcript}
-                />
+                {hydrationStatus === 'ready' ? (
+                  <RecordingDraftProgress
+                    value={transcript}
+                    persisted={transcript.length > 0 && lastPersistedValue === transcript}
+                  />
+                ) : null}
 
               </View>
 

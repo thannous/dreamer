@@ -28,6 +28,7 @@ if (__DEV__) {
 export const getSavedDreams = service.getSavedDreams;
 export const saveDreams = service.saveDreams;
 export const getSavedTranscript = service.getSavedTranscript;
+export const getRecordingDraft = service.getRecordingDraft;
 export const saveTranscript = service.saveTranscript;
 export const clearSavedTranscript = service.clearSavedTranscript;
 export const getNotificationSettings = service.getNotificationSettings;
