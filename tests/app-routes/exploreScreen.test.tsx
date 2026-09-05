@@ -9,6 +9,7 @@ let mockPlatformOS: 'android' | 'ios' | 'web' = 'android';
 let mockWindowWidth = 390;
 let mockWindowHeight = 844;
 let mockFontScale = 1;
+let mockBottomInset = 0;
 let mockSleepSoundsAvailable = false;
 const mockPush = jest.fn();
 const mockGetRitualPreference = jest.fn(async (): Promise<unknown> => 'starter');
@@ -35,7 +36,12 @@ jest.mock('react-native', () => {
         {typeof children === 'function' ? children({ pressed: false }) : children}
       </button>
     ),
-    ScrollView: ({ children }: any) => <div>{children}</div>,
+    ScrollView: ({ children, style, contentContainerStyle, contentInsetAdjustmentBehavior }: any) => (
+      <div data-testid="explorer-scroll" data-native-style={JSON.stringify(style ?? {})}
+        data-content-style={JSON.stringify(contentContainerStyle)} data-inset-behavior={contentInsetAdjustmentBehavior}>
+        {children}
+      </div>
+    ),
     Text: ({ children }: any) => <span>{children}</span>,
     View: ({ children, testID }: any) => <div data-testid={testID}>{children}</div>,
     useWindowDimensions: () => ({
@@ -63,12 +69,13 @@ jest.mock('expo-router', () => ({
 }));
 
 jest.mock('react-native-safe-area-context', () => ({
-  useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 0, left: 0 }),
+  useSafeAreaInsets: () => ({ top: 24, right: 0, bottom: mockBottomInset, left: 0 }),
 }));
 
 jest.mock('@/components/NoctaliaScreenHeader', () => ({
-  NoctaliaScreenHeader: ({ actions }: any) => (
-    <div>
+  NoctaliaScreenHeader: ({ actions, titleKey }: any) => (
+    <div data-testid="explorer-header">
+      <span>{titleKey}</span>
       {actions?.map((action: any) => (
         <button
           aria-label={action.accessibilityLabel}
@@ -122,6 +129,7 @@ jest.mock('@/services/storageService', () => ({
 }));
 
 const { default: ExploreScreen } = require('@/app/(tabs)/explore');
+const { getBottomNavigationLayout } = require('@/constants/layout');
 
 afterEach(() => {
   cleanup();
@@ -130,6 +138,7 @@ afterEach(() => {
   mockWindowWidth = 390;
   mockWindowHeight = 844;
   mockFontScale = 1;
+  mockBottomInset = 0;
   mockSleepSoundsAvailable = false;
   capturedFocusCallback = undefined;
   mockFocusCleanups = [];
@@ -138,6 +147,50 @@ afterEach(() => {
 });
 
 describe('ExploreScreen', () => {
+  it.each([[640, 320], [915, 412]])('scrolls the header with resources only in compact large text at %i by %i dp', async (width: number, height: number) => {
+    mockGetRitualPreference.mockResolvedValue('memory');
+    mockBottomInset = 24;
+    const view = render(<ExploreScreen />);
+    await screen.findByText('explore.ritual.body:inspiration.ritual.variant.memory');
+    for (const fontScale of [1, 1.5, 2]) {
+      mockWindowWidth = width;
+      mockWindowHeight = height;
+      mockFontScale = fontScale;
+      view.rerender(<ExploreScreen />);
+      const scroll = screen.getByTestId('explorer-scroll');
+      const header = screen.getByTestId('explorer-header');
+      const settings = screen.getByTestId(TID.Button.HeaderExploreSettings);
+      expect(screen.getAllByTestId('explorer-header')).toHaveLength(1);
+      expect(screen.getAllByTestId(TID.Button.HeaderExploreSettings)).toHaveLength(1);
+      expect(scroll.contains(header)).toBe(fontScale >= 1.3);
+      expect(scroll.contains(screen.getByTestId(TID.Button.ExplorerSymbols))).toBe(true);
+      const style = JSON.parse(scroll.getAttribute('data-native-style') ?? '{}');
+      const content = JSON.parse(scroll.getAttribute('data-content-style') ?? '{}');
+      const clearance = getBottomNavigationLayout(width, height, fontScale).barHeight + 24;
+      if (fontScale >= 1.3) {
+        expect(style.marginBottom).toBe(clearance);
+        expect(height - style.marginBottom).toBeGreaterThanOrEqual(120);
+        expect(content.paddingBottom).toBeLessThan(clearance);
+        expect(scroll.getAttribute('data-inset-behavior')).toBe('never');
+      } else {
+        expect(style.marginBottom).toBeUndefined();
+        expect(content.paddingBottom).toBeGreaterThan(clearance);
+      }
+      fireEvent.click(settings);
+      expect(mockPush).toHaveBeenLastCalledWith('/(tabs)/settings');
+      fireEvent.click(screen.getByTestId(TID.Button.ExplorerRitual));
+      expect(mockPush).toHaveBeenLastCalledWith('/ritual/memory');
+
+      mockWindowWidth = height;
+      mockWindowHeight = width;
+      view.rerender(<ExploreScreen />);
+      expect(screen.getByTestId('explorer-scroll').contains(screen.getByTestId('explorer-header'))).toBe(false);
+      expect(screen.getAllByTestId(TID.Button.HeaderExploreSettings)).toHaveLength(1);
+      expect(screen.getByText('explore.ritual.body:inspiration.ritual.variant.memory')).toBeTruthy();
+      expect(mockGetRitualPreference).toHaveBeenCalledTimes(1);
+    }
+  });
+
   it('renders the intro and the three core cards with their routes', async () => {
     render(<ExploreScreen />);
     expect(await screen.findByText('explore.intro')).toBeTruthy();

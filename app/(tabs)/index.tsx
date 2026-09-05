@@ -1,4 +1,5 @@
 import { router, useFocusEffect } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Platform,
@@ -75,6 +76,7 @@ export default function InspirationScreen() {
     [currentLang],
   );
   const { width, height, fontScale } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const scrollPerf = useScrollIdle();
   const { dreams, loaded: dreamsLoaded } = useDreamsData();
   useClearWebFocus();
@@ -87,6 +89,8 @@ export default function InspirationScreen() {
 
   const isDesktopLayout = Platform.OS === "web" && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
+  const scrollHeader = !isDesktopLayout && navigationLayout.compact && navigationLayout.largeText;
+  const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
 
   // Section geometry, kept in one place so a section can't drift from its neighbours.
   const mobilePadding = isDesktopLayout ? "" : "px-5";
@@ -94,7 +98,7 @@ export default function InspirationScreen() {
 
   const scrollContentBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
-    : navigationLayout.barHeight
+    : scrollHeader ? ThemeLayout.spacing.lg : navigationLayout.barHeight
       + navigationLayout.minimumBottomInset
       + ThemeLayout.spacing.lg;
   const handleOpenSymbols = useCallback(() => {
@@ -332,35 +336,35 @@ export default function InspirationScreen() {
     }, []),
   );
 
+  const header = isDesktopLayout ? (
+    <PageHeader
+      titleKey="inspiration.title"
+      animationSeed={showAnimations ? 1 : 0}
+      topSpacing={ThemeLayout.spacing.md}
+      style={{ paddingBottom: ThemeLayout.spacing.md }}
+    />
+  ) : <NoctaliaScreenHeader titleKey="nav.home" actions={homeHeaderActions} />;
+
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <View className="flex-1 bg-ink">
         {/* Atmospheric dreamlike background */}
         <AtmosphericBackground />
 
-        {isDesktopLayout ? (
-          <PageHeader
-            titleKey="inspiration.title"
-            animationSeed={showAnimations ? 1 : 0}
-            topSpacing={ThemeLayout.spacing.md}
-            style={{ paddingBottom: ThemeLayout.spacing.md }}
-          />
-        ) : (
-          <NoctaliaScreenHeader
-            titleKey="nav.home"
-            actions={homeHeaderActions}
-          />
-        )}
+        {!scrollHeader ? header : null}
 
         <ScrollView
           className="flex-1"
+          style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
+          contentInsetAdjustmentBehavior={scrollHeader ? 'never' : undefined}
           contentContainerStyle={{ paddingBottom: scrollContentBottomPadding }}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-          <ScreenContainer className={`pt-4 ${isDesktopLayout ? "px-5" : "px-0"}`}>
+          {scrollHeader ? header : null}
+          <ScreenContainer key="resources" className={`pt-4 ${isDesktopLayout ? "px-5" : "px-0"}`}>
             <View className={isDesktopLayout ? "-mx-3 flex-row flex-wrap" : undefined}>
               <Reveal index={0} className={`mb-[34px] ${mobilePadding} ${desktopFullSection}`}>
                 <TodayCard

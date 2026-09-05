@@ -23,6 +23,10 @@ const mockUseDreamsData = jest.fn();
 let mockWidth = 390;
 let mockHeight = 844;
 let mockFontScale = 1;
+let mockBottomInset = 0;
+jest.mock('react-native-safe-area-context', () => ({
+  useSafeAreaInsets: () => ({ top: 24, bottom: mockBottomInset, left: 0, right: 0 }),
+}));
 let mockPlatformOS: 'web' | 'ios' | 'android' = 'web';
 let mockSleepSoundsAvailable = false;
 let mockForeground: (() => void) | undefined;
@@ -76,11 +80,13 @@ jest.mock('react-native', () => {
     ScrollView: ({
       children,
       contentContainerStyle,
+      style,
     }: {
       children?: React.ReactNode;
       contentContainerStyle?: { paddingBottom?: number };
+      style?: { marginBottom?: number };
     }) => (
-      <div data-testid="home-scroll" data-padding-bottom={contentContainerStyle?.paddingBottom}>
+      <div data-testid="home-scroll" data-padding-bottom={contentContainerStyle?.paddingBottom} data-margin-bottom={style?.marginBottom}>
         {children}
       </div>
     ),
@@ -299,7 +305,32 @@ async function renderHome(dreams: DreamAnalysis[], loaded = true) {
 }
 
 describe('Home Accueil Aujourd’hui', () => {
+  it.each([[640, 320], [915, 412]])('keeps one header in the content viewport at %i by %i dp with large text', async (width: number, height: number) => {
+    mockPlatformOS = 'android';
+    mockBottomInset = 24;
+    const view = await renderHome([]);
+    for (const scale of [1, 1.5, 2]) {
+      mockWidth = width;
+      mockHeight = height;
+      mockFontScale = scale;
+      view.rerender(<HomeScreen />);
+      const scroll = screen.getByTestId('home-scroll');
+      const settings = screen.getByTestId(TID.Button.HeaderHomeSettings);
+      expect(scroll.contains(settings)).toBe(scale >= 1.3);
+      expect(screen.getAllByTestId(TID.Button.HeaderHomeSettings)).toHaveLength(1);
+      if (scale >= 1.3) {
+        expect(height - Number(scroll.getAttribute('data-margin-bottom'))).toBeGreaterThanOrEqual(120);
+        expect(Number(scroll.getAttribute('data-padding-bottom'))).toBeLessThan(50);
+      }
+      mockWidth = height;
+      mockHeight = width;
+      view.rerender(<HomeScreen />);
+      expect(screen.getByTestId('home-scroll').contains(screen.getByTestId(TID.Button.HeaderHomeSettings))).toBe(false);
+    }
+  });
+
   beforeEach(() => {
+    mockBottomInset = 0;
     mockWidth = 390;
     mockHeight = 844;
     mockFontScale = 1;

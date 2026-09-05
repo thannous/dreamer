@@ -67,9 +67,11 @@ export default function ExploreScreen() {
   const [selectedRitualId, setSelectedRitualId] = useState<RitualId>('starter');
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
+  const scrollHeader = navigationLayout.compact && navigationLayout.largeText && !isDesktopLayout;
+  const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   const scrollBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
-    : navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset) + ThemeLayout.spacing.lg;
+    : (scrollHeader ? 0 : navigationClearance) + ThemeLayout.spacing.lg;
   const sleepSoundsAvailable = isSleepSoundsAvailable(Platform.OS);
 
   useFocusEffect(
@@ -93,28 +95,36 @@ export default function ExploreScreen() {
   );
 
   const ritual = RITUALS.find((entry) => entry.id === selectedRitualId) ?? RITUALS[0];
+  const header = (
+    <NoctaliaScreenHeader
+      titleKey="explore.title"
+      actions={[
+        {
+          icon: 'gear',
+          onPress: () => router.push('/(tabs)/settings'),
+          accessibilityLabel: t('nav.settings'),
+          testID: TID.Button.HeaderExploreSettings,
+        },
+      ]}
+    />
+  );
 
   return (
     <View className="flex-1 bg-ink" testID={TID.Screen.Explore}>
       <AtmosphericBackground variant="subtle" />
-      <NoctaliaScreenHeader
-        titleKey="explore.title"
-        actions={[
-          {
-            icon: 'gear',
-            onPress: () => router.push('/(tabs)/settings'),
-            accessibilityLabel: t('nav.settings'),
-            testID: TID.Button.HeaderExploreSettings,
-          },
-        ]}
-      />
+      {!scrollHeader ? header : null}
       <ScrollView
         className="flex-1"
-        contentInsetAdjustmentBehavior="automatic"
+        // In short windows the header must scroll with the resources, and the
+        // viewport must end above navigation. The header already owns top safe
+        // area padding; avoid automatically adding that inset a second time.
+        style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
+        contentInsetAdjustmentBehavior={scrollHeader ? 'never' : 'automatic'}
         contentContainerStyle={{ paddingBottom: scrollBottomPadding }}
         showsVerticalScrollIndicator={false}
       >
-        <ScreenContainer>
+        {scrollHeader ? header : null}
+        <ScreenContainer key="resources">
           <View className="gap-4 px-4 pt-4">
             <Text className="text-[15px] leading-[22px] font-sans text-ivory-muted">
               {t('explore.intro')}

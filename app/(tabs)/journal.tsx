@@ -33,6 +33,7 @@ import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
 import { router, useFocusEffect } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Platform,
@@ -77,12 +78,15 @@ export default function JournalListScreen() {
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
   const searchInputRef = useRef<TextInput>(null);
   const { width, height, fontScale } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   const isWeb = Platform.OS === 'web';
   const isDesktopLayout = isWeb && width >= DESKTOP_BREAKPOINT;
   const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
   const desktopColumns = width >= 1440 ? 4 : 3;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
+  const scrollHeader = !isDesktopLayout && navigationLayout.compact && navigationLayout.largeText;
+  const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
 
   const [showHeaderAnimations, setShowHeaderAnimations] = useState(false);
 
@@ -136,7 +140,7 @@ export default function JournalListScreen() {
 
   const listBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
-    : navigationLayout.barHeight
+    : scrollHeader ? ThemeLayout.spacing.lg : navigationLayout.barHeight
       + navigationLayout.minimumBottomInset
       + ThemeLayout.spacing.lg;
   const listContentStyle = useMemo(
@@ -656,77 +660,75 @@ export default function JournalListScreen() {
       : 'text-only';
   }, []);
 
-  return (
-    <ScrollPerfProvider isScrolling={isScrolling}>
-      <View className="flex-1 bg-ink" testID={TID.Screen.Journal}>
-        {/* Atmospheric dreamlike background */}
-        <AtmosphericBackground variant="subtle" />
+  // An element, not a component factory: typing must not create a new header
+  // component type and remount the search input inside FlashList.
+  const listHeader = (
+    <View style={scrollHeader ? { marginHorizontal: -ThemeLayout.spacing.md } : undefined}>
+      <PageHeaderContent
+        titleKey="journal.title"
+        animationSeed={showHeaderAnimations ? 1 : 0}
+        style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
+      />
 
-        <PageHeaderContent
-          titleKey="journal.title"
-          animationSeed={showHeaderAnimations ? 1 : 0}
-          style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
+      <View
+        className="gap-4 p-4"
+        style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
+      >
+        <MockNavigationRail />
+        <SearchBar
+          ref={searchInputRef}
+          testID={TID.Component.SearchBar}
+          inputTestID={TID.Input.SearchDreams}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholder={t('journal.search_placeholder')}
         />
-
-        <View
-          className="gap-4 p-4"
-          style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
-        >
-          <MockNavigationRail />
-          <SearchBar
-            ref={searchInputRef}
-            testID={TID.Component.SearchBar}
-            inputTestID={TID.Input.SearchDreams}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholder={t('journal.search_placeholder')}
-          />
-          <View className="flex-row flex-wrap items-start gap-2">
-            <View className="min-w-0 flex-1 basis-[220px]">
-              <FilterBar
-                items={journalFilterItems}
-                onClear={handleClearFilters}
-                dateRange={dateRange}
-                selectedTheme={selectedTheme}
-                selectedDreamType={selectedDreamType}
-                clearTestID={TID.Button.ClearFilters}
+        <View className="flex-row flex-wrap items-start gap-2">
+          <View className="min-w-0 flex-1 basis-[220px]">
+            <FilterBar
+              items={journalFilterItems}
+              onClear={handleClearFilters}
+              dateRange={dateRange}
+              selectedTheme={selectedTheme}
+              selectedDreamType={selectedDreamType}
+              clearTestID={TID.Button.ClearFilters}
+            />
+          </View>
+          <View className="ml-auto flex-row items-center gap-2">
+            <PressableScale
+              onPress={() => router.push('/(tabs)/settings')}
+              haptic="selection"
+              accessibilityRole="button"
+              accessibilityLabel={t('nav.settings')}
+              testID={TID.Button.HeaderJournalSettings}
+              className="h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-continuous border-line bg-ink-soft"
+            >
+              <IconSymbol
+                name="gear"
+                size={18}
+                color={noctalia.text.primary}
               />
-            </View>
-            <View className="ml-auto flex-row items-center gap-2">
-              <PressableScale
-                onPress={() => router.push('/(tabs)/settings')}
-                haptic="selection"
-                accessibilityRole="button"
-                accessibilityLabel={t('nav.settings')}
-                testID={TID.Button.HeaderJournalSettings}
-                className="h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-continuous border-line bg-ink-soft"
-              >
-                <IconSymbol
-                  name="gear"
-                  size={18}
-                  color={noctalia.text.primary}
-                />
-              </PressableScale>
-              <PressableScale
-                onPress={() => setShowAdvancedFilters(true)}
-                haptic="selection"
-                accessibilityRole="button"
-                accessibilityState={{ selected: hasActiveAdvancedFilter }}
-                accessibilityLabel={t('journal.filter.accessibility.more')}
-                testID={TID.Button.FilterMore}
-                className={`h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-continuous ${
-                  hasActiveAdvancedFilter ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
-                }`}
-              >
-                <IconSymbol
-                  name="slider.horizontal.3"
-                  size={18}
-                  color={hasActiveAdvancedFilter ? noctalia.action.primaryText : noctalia.text.primary}
-                />
-              </PressableScale>
-            </View>
+            </PressableScale>
+            <PressableScale
+              onPress={() => setShowAdvancedFilters(true)}
+              haptic="selection"
+              accessibilityRole="button"
+              accessibilityState={{ selected: hasActiveAdvancedFilter }}
+              accessibilityLabel={t('journal.filter.accessibility.more')}
+              testID={TID.Button.FilterMore}
+              className={`h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-continuous ${
+                hasActiveAdvancedFilter ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
+              }`}
+            >
+              <IconSymbol
+                name="slider.horizontal.3"
+                size={18}
+                color={hasActiveAdvancedFilter ? noctalia.action.primaryText : noctalia.text.primary}
+              />
+            </PressableScale>
           </View>
         </View>
+      </View>
 
       {/* Guest Upsell */}
       <View
@@ -735,6 +737,17 @@ export default function JournalListScreen() {
       >
         <UpsellCard />
       </View>
+
+    </View>
+  );
+
+  return (
+    <ScrollPerfProvider isScrolling={isScrolling}>
+      <View className="flex-1 bg-ink" testID={TID.Screen.Journal}>
+        {/* Atmospheric dreamlike background */}
+        <AtmosphericBackground variant="subtle" />
+
+        {!scrollHeader ? listHeader : null}
 
       {/* List */}
       {isDesktopLayout ? (
@@ -772,7 +785,10 @@ export default function JournalListScreen() {
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
           contentContainerStyle={listContentStyle}
-          contentInsetAdjustmentBehavior="automatic"
+          style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
+          ListHeaderComponent={scrollHeader ? listHeader : undefined}
+          keyboardShouldPersistTaps={scrollHeader ? 'handled' : undefined}
+          contentInsetAdjustmentBehavior={scrollHeader ? 'never' : 'automatic'}
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
           viewabilityConfig={viewabilityConfigRef.current}

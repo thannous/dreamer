@@ -1,4 +1,5 @@
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useCallback, useMemo } from 'react';
 import {
   Platform,
@@ -95,6 +96,7 @@ export default function StatisticsScreen() {
   const { t } = useTranslation();
   const { formatDate, formatNumber } = useLocaleFormatting();
   const { width, height, fontScale } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
   useClearWebFocus();
 
@@ -104,9 +106,11 @@ export default function StatisticsScreen() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
+  const scrollHeader = !isDesktopLayout && navigationLayout.compact && navigationLayout.largeText;
+  const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   const scrollBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
-    : navigationLayout.barHeight
+    : scrollHeader ? ThemeLayout.spacing.lg : navigationLayout.barHeight
       + navigationLayout.minimumBottomInset
       + ThemeLayout.spacing.lg;
 
@@ -146,15 +150,32 @@ export default function StatisticsScreen() {
   );
 
   if (!loaded) {
+    const loadingMessage = (
+      <View className={`${scrollHeader ? 'shrink-0' : 'flex-1'} items-center justify-center px-6`} accessibilityLiveRegion="polite">
+        <Text className="text-[16px] font-sans text-ivory-muted text-center">
+          {t('trends.loading')}
+        </Text>
+      </View>
+    );
     return (
       <View className="flex-1 bg-ink" accessible accessibilityRole="progressbar" accessibilityLabel={t('trends.loading')}>
         <AtmosphericBackground variant="subtle" />
-        {header}
-        <View className="flex-1 items-center justify-center px-6" accessibilityLiveRegion="polite">
-          <Text className="text-[16px] font-sans text-ivory-muted text-center">
-            {t('trends.loading')}
-          </Text>
-        </View>
+        {scrollHeader ? (
+          <ScrollView
+            className="flex-1"
+            style={{ marginBottom: navigationClearance }}
+            contentInsetAdjustmentBehavior="never"
+            contentContainerStyle={{ paddingBottom: scrollBottomPadding }}
+          >
+            {header}
+            {loadingMessage}
+          </ScrollView>
+        ) : (
+          <>
+            {header}
+            {loadingMessage}
+          </>
+        )}
       </View>
     );
   }
@@ -194,14 +215,16 @@ export default function StatisticsScreen() {
   return (
     <View className="flex-1 bg-ink">
       <AtmosphericBackground variant="subtle" />
-      {header}
+      {!scrollHeader ? header : null}
       <ScrollView
         className="flex-1"
-        contentInsetAdjustmentBehavior="automatic"
+        style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
+        contentInsetAdjustmentBehavior={scrollHeader ? 'never' : 'automatic'}
         contentContainerStyle={{ paddingBottom: scrollBottomPadding }}
         showsVerticalScrollIndicator={false}
       >
-        <ScreenContainer>
+        {scrollHeader ? header : null}
+        <ScreenContainer key="resources">
           <MockNavigationRail />
           <View className="gap-6 p-4">
             <View
