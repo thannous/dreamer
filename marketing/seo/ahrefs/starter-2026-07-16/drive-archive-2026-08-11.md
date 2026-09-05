@@ -2,6 +2,8 @@
 
 Synchronisation vérifiée le 13 août 2026.
 
+Actualisation du 4 septembre : pour les fichiers du [manifeste de migration](../../drive-migration-manifest-2026-09-04.csv), l'[archive privée](../../archive-index.md) devient l'emplacement principal des rapports retirés du dépôt. Les documents décisionnels marqués `keep_local=true` restent aussi dans Git. Les emplacements et règles ci-dessous décrivent la synchronisation historique du 13 août, pas les permissions du nouveau dossier privé.
+
 ## Emplacement
 
 ```text

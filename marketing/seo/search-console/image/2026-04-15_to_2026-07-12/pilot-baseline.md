@@ -1,5 +1,7 @@
 # Pilote Image SEO — référence avant publication
 
+Archive du 4 septembre 2026 : les exports CSV/JSON de cette fenêtre sont disponibles dans [le dossier Drive privé](https://drive.google.com/drive/folders/1tbvYSBCCB4M4_eANjgA1XbJL_OXpRBN0). Pour les restaurer et vérifier leurs empreintes, voir le [manifeste de migration](../../../drive-migration-manifest-2026-09-04.csv). Le rapport ci-dessous conserve ses observations et dates d’origine.
+
 Date de capture : 14 juillet 2026
 Propriété : `sc-domain:noctalia.app`
 Type Search Console : `image`

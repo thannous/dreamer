@@ -6,7 +6,7 @@ Propriété GSC : `sc-domain:noctalia.app`
 Relevé : 10 août 2026, 01:09–01:12 UTC
 Mode : lecture seule des comptes et documentation locale ; zéro crédit général Ahrefs, zéro nouveau crawl, zéro demande d'indexation et zéro mutation de compte
 
-> **Actualisation du même jour.** Ce document conserve le snapshot initial de 01:09–01:12 UTC. À 16:12 CEST, le crawl planifié s'est achevé ; GSC a ensuite finalisé le 8 août et les Lots Ahrefs A à D ont été exécutés avec autorisation. Les valeurs courantes et décisions qui remplacent ce snapshot pour la suite sont dans [`j26-starter-execution-2026-08-10.md`](./j26-starter-execution-2026-08-10.md).
+> **Actualisation du même jour.** Ce document conserve le snapshot initial de 01:09–01:12 UTC. À 16:12 CEST, le crawl planifié s'est achevé ; GSC a ensuite finalisé le 8 août et les Lots Ahrefs A à D ont été exécutés avec autorisation. Les valeurs courantes et décisions qui remplacent ce snapshot pour la suite sont dans [`j26-starter-execution-2026-08-10.md`](https://drive.google.com/file/d/1A3IpQ7m2dQ6z5Yg9KugR3FNFHZp8wgfk/view?usp=drivesdk).
 
 ## Résumé exécutif
 

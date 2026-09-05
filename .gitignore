@@ -96,6 +96,9 @@ test-results/
 upload_cert.der
 docs-src/img-tmp/*
 marketing/seo/search-console/*_to_*/
+# Raw dated GSC exports live in the private Drive archive; keep Markdown plans.
+marketing/seo/search-console/**/*_to_*/*.csv
+marketing/seo/search-console/**/*_to_*/*.json
 
 # Maestro generated outputs
 .maestro-home/

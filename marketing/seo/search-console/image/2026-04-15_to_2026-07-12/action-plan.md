@@ -1,5 +1,7 @@
 # Search Console Noctalia - plan SEO hebdomadaire
 
+Archive du 4 septembre 2026 : les exports CSV/JSON de cette fenêtre sont disponibles dans [le dossier Drive privé](https://drive.google.com/drive/folders/1tbvYSBCCB4M4_eANjgA1XbJL_OXpRBN0). Pour les restaurer et vérifier leurs empreintes, voir le [manifeste de migration](../../../drive-migration-manifest-2026-09-04.csv). Le rapport ci-dessous conserve ses observations et dates d’origine.
+
 Generation: 2026-07-14T18:09:23.436Z
 Propriete: `sc-domain:noctalia.app`
 Periode: 2026-04-15 -> 2026-07-12
