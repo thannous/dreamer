@@ -24,10 +24,27 @@ Instagram `15:45`, `19:45` et `22:45` ; X `16:15`, `20:15` et `23:15`, heure de
 Paris. Le créneau historique de 19:30/19:45/20:15 devient le créneau 2 ; une
 ligne existante ne doit pas être supprimée sans son remplacement exact confirmé.
 
+Décision enregistrée le 2026-09-03 : la cadence principale passera à **deux
+vidéos par jour à compter du 11/09/2026**. Les horaires retenus sont TikTok
+`15:30` et `19:30`, Instagram `19:45` et `22:45`, puis X `16:15` et `20:15`,
+heure de Paris. La conclusion TikTok repose sur un signal modéré. Le relevé
+Instagram consolidé le 04/09 couvre **45 des 46 Reels publiés** de l'agenda
+principal : `16` mesures C1, `15` C2 et `14` C3 ; le lien C1 restant est
+indisponible et aucune métrique n'est inventée. `22:45` est nettement premier
+(`473,5` vues moyennes, médiane `212,5`) et `19:45` reste le second horaire du
+test (`374,7`, médiane `184`). Après retrait du maximum de chaque créneau, C1
+et C2 sont toutefois presque à égalité (`224,3` contre `224,7`) : le choix de
+`19:45` est donc conservé comme hypothèse à revalider, pas comme effet causal
+prouvé. Le choix X reste provisoire faute d'un échantillon suffisant. Le
+programme et les files déjà constituées jusqu'au 10 septembre restent intacts :
+aucune ligne C3 existante n'est supprimée implicitement. Les résultats, limites
+et seuils de revalidation sont consignés dans
+[`77-OPTIMAL-POSTING-TIMES-ANALYSIS-2026-09-03.md`](./organic-expansion-2026-08-12-2026-09-10/77-OPTIMAL-POSTING-TIMES-ANALYSIS-2026-09-03.md).
+
 Règle active de synchronisation : une même vidéo doit sortir le même jour
 calendaire sur TikTok, Instagram et X. Les horaires restent décalés pour le
-contrôle opérationnel (`19:30` TikTok, `19:45` Instagram, `20:15` X, heure de
-Paris), mais l'asset et la date du calendrier sont communs aux trois réseaux.
+contrôle opérationnel, mais l'asset, son ordre quotidien et la date du calendrier
+sont communs aux trois réseaux.
 
 Décision confirmée le 2026-07-31 : le planning est translaté sur la date du jour.
 Le 31 juillet reste donc le jour 1 avec `01-escalier.mp4` ; aucun jour vide n'est

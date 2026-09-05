@@ -12,10 +12,10 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | C1 | X `@NoctaliaDreams` | 16:15 | `HIGGS_2026-08-05_171605_CITY_POV_C_cecd94a1.mp4` | **PUBLIÉ** | [X public](https://x.com/NoctaliaDreams/status/2089717703925735534) vérifié à 17:27 |
 | C2 | TikTok `@noctaliadreams` | 19:30 | `HIGGS_2026-08-05_174658_CITY_POV_D_749127f1.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672909895074630934) vérifié en soirée |
 | C2 | Instagram `@noctaliadreams` | 19:45 | `HIGGS_2026-08-05_174658_CITY_POV_D_749127f1.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcMTUkBJ8YY/) vérifié en soirée ; capturé `https://www.instagram.com/reel/DcMTUkBJ8YY/` |
-| C2 | X `@NoctaliaDreams` | 20:15 | `HIGGS_2026-08-05_174658_CITY_POV_D_749127f1.mp4` | **PROGRAMMÉ** | Vu public vers 20:30 Paris — URL à collecter |
+| C2 | X `@NoctaliaDreams` | 20:15 | `HIGGS_2026-08-05_174658_CITY_POV_D_749127f1.mp4` | **ÉCHEC — NON PUBLIÉ** — PROGRAMMÉ NATIVEMENT, PREUVE PUBLIQUE MANQUANTE | Réconciliation du 04/09 : observation historique et ligne native conservées, sans URL publique exacte exploitable |
 | C3 | TikTok `@noctaliadreams` | 22:30 | `HIGGS_2026-08-05_162633_TSUNAMI_NEWS_14edcce9.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672909972921011459) ouvert après 22:30 |
 | C3 | Instagram `@noctaliadreams` | 22:45 | `HIGGS_2026-08-05_162633_TSUNAMI_NEWS_14edcce9.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcMg5Kfp1jg/) vérifié après 22:45 ; capturé `https://www.instagram.com/reel/DcMg5Kfp1jg/` |
-| C3 | X `@NoctaliaDreams` | 23:15 | `HIGGS_2026-08-05_162633_TSUNAMI_NEWS_14edcce9.mp4` | **PROGRAMMÉ** | URL à collecter |
+| C3 | X `@NoctaliaDreams` | 23:15 | `HIGGS_2026-08-05_162633_TSUNAMI_NEWS_14edcce9.mp4` | **ÉCHEC — NON PUBLIÉ** — PROGRAMMÉ NATIVEMENT, PREUVE PUBLIQUE MANQUANTE | Réconciliation du 04/09 : la ligne native historique est conservée, sans URL publique exacte retrouvée ; aucune valeur inventée |
 
 ## Hero secondaire — 3 preuves
 

@@ -16,6 +16,8 @@
     "start:teststore": "node ./scripts/expo-safe-runner.js --profile .env.teststore start",
     "start:playstore": "node ./scripts/expo-safe-runner.js --profile .env.playstore start",
     "start:supabase": "node ./scripts/expo-safe-runner.js --profile .env.supabase start",
+    "supabase:health:logs": "node ./scripts/query-noctalia-supabase-logs.js",
+    "supabase:health:logs:credential": "node ./scripts/query-noctalia-supabase-logs.js --credential-status",
     "start:android": "node ./scripts/expo-safe-runner.js start --android",
     "start:ios": "node ./scripts/expo-safe-runner.js start --ios",
     "android": "node ./scripts/expo-safe-runner.js run:android",

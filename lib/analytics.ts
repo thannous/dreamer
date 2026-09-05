@@ -84,8 +84,13 @@ export type AnalyticsEventMap = {
     usage_count: number | null;
     offering_id: string | null;
   };
-  empty_journal_remembered_cta_clicked: {
-    source: 'journal_empty_state';
+ empty_journal_remembered_cta_clicked: {
+   source: 'journal_empty_state';
+ };
+  journal_layout_preference_changed: {
+    from: 'cards' | 'compact';
+    to: 'cards' | 'compact';
+    source: 'settings';
   };
   onboarding_choice_selected: {
     surface: 'app_onboarding';

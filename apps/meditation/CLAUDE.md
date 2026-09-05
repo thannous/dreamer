@@ -1,7 +1,7 @@
 # AGENTS.md — Noctalia Meditation
 
 Guide de contribution pour agents et développeurs. La spécification complète du
-produit vit dans `../dreamer/specs/noctalia-meditation.md` — elle fait foi sur le
+produit vit dans `../../specs/noctalia-meditation.md` — elle fait foi sur le
 périmètre, les écrans et les décisions d'architecture.
 
 ## Ce qu'est ce projet
@@ -85,4 +85,11 @@ npm run lint       # eslint
 
 ## Avant de proposer un changement
 
-`npm run typecheck && npm run lint` doivent passer sans erreur.
+Exécuter les commandes depuis `apps/meditation`. Pour les changements de code,
+faire les vérifications pertinentes, normalement `npm run typecheck` et `npm run lint`.
+Pour une modification documentaire, vérifier le contenu et les liens sans lancer
+les suites applicatives. Les règles parentes de confidentialité, autorisation,
+préservation du travail et verrou partagé de l'appareil restent applicables.
+Les chemins de thème et de services de ce guide sont propres à Meditation.
+Conserver le contournement des animations de layout tant qu'un cas reproductible
+n'a pas été revérifié sur les versions installées.

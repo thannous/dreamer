@@ -1,0 +1,127 @@
+{
+  "$schema": "https://raw.githubusercontent.com/thannous/astra-advisor/main/plugins/astra-advisor/schema/project.schema.json",
+  "version": 1,
+  "parent": {
+    "model": "gpt-6-astra",
+    "effort": "inherit",
+    "allow_product_code": true,
+    "allow_device": false
+  },
+  "roles": {
+    "core": {
+      "purpose": "Implement the parent-approved architecture, complex logic, integration, corrections and research proposals.",
+      "model": "grok-oauth/grok-4.6",
+      "effort": "high",
+      "permissions": [
+        "read",
+        "write"
+      ],
+      "effort_rules": [
+        {
+          "when": "Cross-cutting state, navigation, architecture proposals, concurrency or other complex work.",
+          "effort": "xhigh"
+        }
+      ],
+      "instructions": [
+        "The parent decides architecture; propose options and wait for its decision when interfaces must change."
+      ]
+    },
+    "ui": {
+      "purpose": "Design and implement UI/UX within parent-approved interfaces and exclusive files.",
+      "model": "gpt-6-astra",
+      "effort": "medium",
+      "permissions": [
+        "read",
+        "write"
+      ]
+    },
+    "muse": {
+      "purpose": "Translations, i18n, tests and documentation.",
+      "model": "opencode-free-responses/muse-spark-1.3-contributor-free",
+      "effort": "medium",
+      "permissions": [
+        "read",
+        "write"
+      ],
+      "effort_rules": [
+        {
+          "when": "Any code implementation, tests written or research task.",
+          "effort": "xhigh"
+        }
+      ]
+    },
+    "qa": {
+      "purpose": "Independent review and Motorola build/device QA, separate from code authors.",
+      "model": "grok-oauth/grok-4.6",
+      "effort": "high",
+      "permissions": [
+        "read",
+        "device"
+      ],
+      "effort_rules": [
+        {
+          "when": "Cross-cutting state, navigation, architecture proposals, concurrency or other complex work.",
+          "effort": "xhigh"
+        }
+      ],
+      "instructions": [
+        "Never implement fixes from your own review. Use a fresh read-only instance for final code review."
+      ]
+    },
+    "delivery": {
+      "purpose": "Git or Linear delivery after parent acceptance and applicable user authorization.",
+      "model": "opencode-free-responses/muse-spark-1.3-contributor-free",
+      "effort": "medium",
+      "permissions": [
+        "read",
+        "delivery"
+      ],
+      "instructions": [
+        "Activate only after gates; code corrections belong to the relevant implementation owner."
+      ]
+    }
+  },
+  "review": {
+    "enabled": true,
+    "role": "qa"
+  },
+  "delivery": {
+    "role": "delivery"
+  },
+  "device": {
+    "enabled": true,
+    "independent_qa": true,
+    "shared_lock_required": true,
+    "allowed_packages": [
+      "com.tanuki75.noctalia"
+    ],
+    "verify_signature_version": true,
+    "record_install_source": true,
+    "allow_uninstall": false,
+    "allow_clear_data": false,
+    "instructions": [
+      "Use the existing shared lock across Dreamer, Lucid and Meditation; resolve its current owner and protocol before device work.",
+      "For Dreamer VNext use scheme noctalia and the base application only; never use a .qa package.",
+      "Distinguish a Play install from a local build and verify signature/version before any install. Never uninstall or clear app data to force an install."
+    ]
+  },
+  "constraints": [
+    "Do not send private project content to free third-party inference endpoints; use an authorized supported model.",
+    "This device profile is for Dreamer VNext only. Resolve an app-specific profile and the shared lock protocol before Lucid or Meditation device work; never widen this allowlist implicitly.",
+    "Preserve all unrelated work and follow the active project instructions.",
+    "Do not infer delivery or production authorization from this profile.",
+    "The user's latest explicit task instructions take precedence over project and skill defaults, subject to system/developer instructions and actual tool permissions. Reuse existing authorization and delegated decisions.",
+    "The parent owns architecture and acceptance and may implement, integrate, document and run local checks; it does not operate a device. Substantial parent-authored changes require fresh independent review.",
+    "Grok/Astra/Muse are preferred assignments. If the live tool lacks a preferred model or effort, the parent may execute permitted work or disclose a capable supported fallback without another approval request. Preserve role permissions, appropriate effort and review independence. This user-approved policy overrides skill-level substitution bans; an exact model explicitly required for the current task remains mandatory.",
+    "Independent review is required for substantial implementation, but is not tied to Grok availability. Resolve the qa role to a capable supported reviewer when needed, distinct from authors. If none is available, continue independent authorized work and report acceptance as pending.",
+    "Do not create separate app tasks without an explicit user request or use external inference CLIs/APIs to bypass tool restrictions. Preserve the selected parent model and effort.",
+    "Skill questionnaires and approval checkpoints apply only to unresolved decisions the user has not delegated. Do not claim agent-selected drafts were personally reviewed or approved by the user.",
+    "Show cost receipts only when requested or supported by useful observed usage and applicable prices; missing telemetry never blocks progress or requires a placeholder receipt.",
+    "Keep worktrees persistent and file ownership exclusive. Request a checkpoint from slow agents instead of restarting.",
+    "Follow AGENTS.md for Uniwind, synchronized theme tokens, text-champagne-on and animation frequency gates. Tabs never slide.",
+    "Edit marketing sources in docs-src only; never edit or commit generated docs.",
+    "Use canonical package scripts. Expo prebuild, EAS builds, store submission, production deploys and destructive database actions require explicit authorization.",
+    "Report local, Motorola, Git, CI, deployment, Play and public HTTP evidence separately. Use INDÉTERMINÉ where evidence is missing."
+  ],
+  "cost_receipt": "when_available"
+}
