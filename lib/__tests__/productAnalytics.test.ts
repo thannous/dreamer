@@ -164,16 +164,19 @@ describe('first-party product analytics', () => {
     const safeProperties = {
       from: 'cards',
       to: 'compact',
+      source: 'settings',
     } as const;
 
     await provider.track('journal_layout_preference_changed', safeProperties);
     await provider.track('journal_layout_preference_changed', {
       from: 'cards',
       to: 'list',
+      source: 'settings',
     } as never);
     await provider.track('journal_layout_preference_changed', {
       from: 'cards',
       to: 'compact',
+      source: 'settings',
       note: 'switched after reading more',
     } as never);
 

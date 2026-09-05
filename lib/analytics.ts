@@ -90,6 +90,7 @@ export type AnalyticsEventMap = {
   journal_layout_preference_changed: {
     from: 'cards' | 'compact';
     to: 'cards' | 'compact';
+    source: 'settings';
   };
   onboarding_choice_selected: {
     surface: 'app_onboarding';

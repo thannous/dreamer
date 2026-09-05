@@ -15,7 +15,7 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | C2 | X `@NoctaliaDreams` | 20:15 | `NOC_REVEIL_S09_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [https://x.com/NoctaliaDreams/status/2091952428983722350](https://x.com/NoctaliaDreams/status/2091952428983722350) — compte et hook exacts, vidéo 15 s, `datePublished=2026-08-24T18:15:00.000Z` soit 20:15 Europe/Paris et label `Made with AI` vérifiés sur l'URL directe |
 | C3 | TikTok `@noctaliadreams` | 22:30 | `NOC_REVEIL_S10_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [https://www.tiktok.com/@noctaliadreams/video/7672916867375287574](https://www.tiktok.com/@noctaliadreams/video/7672916867375287574) — compte exact `Noctalia`, hook exact, `statusCode=0`, `createTime=2026-08-24 22:30:00 Europe/Paris` et `aigcLabelType=1` vérifiés après 22:30 |
 | C3 | Instagram `@noctaliadreams` | 22:45 | `NOC_REVEIL_S10_VIDEO_1080p_v01.mp4` | **ÉCHEC — NON PUBLIÉ** | Aucun Reel public avec le hook exact n'est exposé sur le compte `@noctaliadreams` après 22:45 ; aucune session Instagram authentifiée exacte ni bouton **Partager** n'est disponible dans ce run, donc aucun partage, import ou rejeu n'est effectué et aucune URL n'est comptée |
-| C3 | X `@NoctaliaDreams` | 23:15 | `NOC_REVEIL_S10_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | À vérifier après 23:15 |
+| C3 | X `@NoctaliaDreams` | 23:15 | `NOC_REVEIL_S10_VIDEO_1080p_v01.mp4` | **ÉCHEC — NON PUBLIÉ** — PROGRAMMÉ NATIVEMENT, PREUVE PUBLIQUE MANQUANTE | Réconciliation du 04/09 : la ligne native historique est conservée, sans URL publique exacte retrouvée |
 
 ## Hero secondaire — 3 preuves
 
@@ -25,7 +25,7 @@ Le hero reprend `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4`.
 |---|---:|---|---|---|
 | Pinterest `@noctaliadreams` | 17:30 | Hero exact du 24/08 | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique : le Pin n'était pas programmé et aucune capacité native réelle ni identité exploitable n'a été prouvée au checkpoint 17:55 ; aucun upload ou rejeu |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `What Would You Wish for in This Dream? #Shorts` | **PUBLIÉ** | [https://www.youtube.com/shorts/YRzwfWRHj10](https://www.youtube.com/shorts/YRzwfWRHj10) — chaîne `Noctalia` / `@noctaliadreams`, titre exact, `publishDate=2026-08-24T09:00:28-07:00` soit 18:00:28 Europe/Paris vérifiés |
-| Facebook page `1266183263247451` | 18:15 | Hero exact du 24/08 | **PROGRAMMÉ — ÉCHEC — NON PUBLIÉ** | Aucune URL publique : les surfaces `NoctaliaDreams/reels`, `NoctaliaDreams/videos` et la recherche publique retournent `Ce contenu n’est pas disponible` au checkpoint 18:45 ; la ligne native reste conservée, sans rejeu ni republication |
+| Facebook page `1266183263247451` | 18:15 | Hero exact du 24/08 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Aucune URL publique : les surfaces `NoctaliaDreams/reels`, `NoctaliaDreams/videos` et la recherche publique retournent `Ce contenu n’est pas disponible` au checkpoint 18:45 ; sans rejeu ni republication |
 
 ## Gate de clôture
 

@@ -22,6 +22,9 @@ Cloudflare Pages builds `docs/` from tracked sources on `master`; verify the bra
   `specs/noctalia-lucid-trainer.md` for its scope and sleep/wellbeing safeguards.
 - Meditation is a separate package at `apps/meditation/`; read its local guide
   and run its commands there. Its theme and service paths replace journal-specific paths.
+- The advisor device profile targets Dreamer VNext only. Do not widen its package
+  allowlist for Lucid or Meditation; resolve an app-specific profile and the shared
+  lock's current owner/protocol before device work. Missing device access does not block local work.
 - Do not send private project content to free third-party inference endpoints.
   Use an authorized supported model; role preferences do not override this boundary.
 
@@ -59,7 +62,7 @@ it does not change publication, spending, or confidentiality requirements.
 
 ## Operating Principles
 
-1. When explaining something to the user, use the Visualize skill
+1. Use the Visualize skill only when a visual materially improves the explanation; concise prose or a Markdown table is sufficient otherwise
 2. Be concise, direct, and candid. Challenge weak assumptions and distinguish verified facts from uncertainty
 3. Ground research in authoritative, current sources and link important evidence
 4. Preserve the original goal and constraints; finish authorized work end to end and verify the actual result before claiming completion
@@ -70,19 +73,58 @@ it does not change publication, spending, or confidentiality requirements.
 9. Preserve unrelated work and never take destructive, production, or external actions beyond what the user authorized
 10. Report meaningful blockers, outcomes, and evidence without noisy progress
 
+## Instruction Priority and Progress
+
+- Follow the user's latest explicit task instructions over conflicting defaults in this
+  guide, project configuration, skills, and their references, subject to system/developer
+  instructions and actual tool permissions. Skills guide execution; they do not add authority.
+- Reuse authorization and decisions already supplied in the conversation. Do not ask again
+  solely because a skill prescribes a confirmation, selection, questionnaire, or separate turn.
+- When the user delegates choices or requests no-question execution, make reasonable decisions
+  within that scope and continue. Identify agent-selected drafts honestly; never claim the
+  user reviewed or approved an asset when they only delegated its selection.
+- Complete independent authorized work when a capability or decision blocks one step. Report
+  the exact remaining blocker without treating missing evidence as a passed check.
+- Finish preparation and reversible checks before requesting any still-missing authorization
+  for a concrete external action. Existing release, secret, WIP and device safeguards apply.
+
+## Astra Advisor
+
+- For substantial Noctalia research, implementation, QA or delivery, use the installed
+  `$astra-advisor:orchestration` skill with this project's `.astra-advisor.json`.
+  The existing rules below and the user's authorization remain authoritative.
+- The configuration preserves Grok/Astra/Muse as preferred roles. Check the actual dispatch
+  tool for model/effort support. If a preference is unavailable, the parent may execute the
+  authorized work or select a capable supported agent without another approval request;
+  disclose the fallback and preserve role permissions and review independence. This project
+  policy overrides a skill's blanket ban on substitution. If the user explicitly requires an
+  exact model for the current task, block only that assignment. Never create separate app
+  tasks without an explicit user request or bypass tool restrictions with inference CLIs/APIs.
+- Use bounded ownership, final-tree verification evidence and fresh independent review
+  for substantial implementation. The parent retains architecture and acceptance;
+  product corrections may be handled by the parent or an assigned implementer. Device work
+  remains with an independent QA owner under the shared device rules.
+- If the plugin is not loaded, report that limitation and follow this guide; do not
+  invent successful orchestration. New skills are picked up in a fresh task after install.
+- Installation and review acceptance do not authorize delivery, EAS/store/production
+  or database actions. API cost estimates do not establish Codex quota savings.
+- Cost receipts are optional: show them when requested or when observed usage and applicable
+  prices make them useful. Missing telemetry never blocks work or requires a placeholder receipt.
+
 ## Multi-Agent Implementation
 
 - The parent Codex agent is the orchestrator, reviewer, and architecture decision owner: it
   inventories WIP, decomposes work, defines exclusive file scopes and dependencies, decides
   architecture trade-offs/interfaces/state/navigation, reviews diffs and evidence, assigns
-  conflict resolution and reviews the result, and decides acceptance. The parent does not write
-  product code or operate a device.
-- Delegate research, code/tests, integration/corrections, build/device QA, documentation, and
-  delivery whenever those tasks are delegable. Delivery agents may perform Git or Linear
+  conflict resolution and reviews the result, and decides acceptance. The parent may write
+  product code, tests and documentation, integrate fixes and run local checks; it does not
+  operate a device. Parent-authored substantial changes still require independent review.
+- Delegate bounded independent work when it improves execution alongside useful parent work.
+  Do not force delegation for routine or sequential tasks. Delivery agents may perform Git or Linear
   mutations only when the corresponding user authorization already exists and the parent has
   accepted the review; this composition does not authorize commit, push, deploy, publication, or
   destructive actions.
-- The approved model assignments are `grok-oauth/grok-4.6` for implementing the architecture the
+- The preferred model assignments are `grok-oauth/grok-4.6` for implementing the architecture the
   parent decided, complex logic, and researching/proposing options; Grok may not independently
   decide an architecture change. Use `gpt-6-astra` at `medium` reasoning for UI/UX design and
   implementation within assigned scopes. Use
@@ -92,8 +134,9 @@ it does not change publication, spending, or confidentiality requirements.
   bounded work and `xhigh` for cross-cutting state, navigation, architecture, concurrency, or
   other complex changes; never use a lower level for implementation work.
 - Verify the actual model before dispatch. A configured model name does not prove availability.
-  Do not replace Grok, Muse, or Astra without user agreement, and do not restart an agent solely
-  because it is slow; request a checkpoint and resume it when its approach remains sound.
+  Apply the supported fallback policy above when a preferred assignment is unavailable. Do
+  not restart an agent solely because it is slow; request a checkpoint and resume it when
+  its approach remains sound. Preserve the user's selected parent model and effort.
 - Dispatch Muse according to task complexity. For every code-implementation or research task,
   including tests it writes, use `xhigh`; for documentation, translations, and delivery, choose
   an effort suited to the task complexity from the levels actually supported. Verify support
@@ -103,7 +146,12 @@ it does not change publication, spending, or confidentiality requirements.
   pre-existing changes.
 - Only one agent may own the device at a time, protected by a shared lock across Dreamer, Lucid,
   and Meditation.
-- The approved team composition is parent Codex; Grok Core; Astra UI/UX (`gpt-6-astra`, `medium`);
+- For substantial implementation, use a fresh read-only reviewer distinct from the authors
+  against the final change set and verification evidence. Grok is preferred, but a capable
+  supported reviewer may clear this gate. If no independent reviewer is available, continue
+  implementation and verification while reporting acceptance as pending; never self-certify
+  an independent review or claim unavailable device validation passed.
+- The preferred team composition is parent Codex; Grok Core; Astra UI/UX (`gpt-6-astra`, `medium`);
   Muse translations/i18n/tests/docs; Grok QA (a separate independent instance); and Muse Delivery
   (activated after gates). User validation has been obtained; do not treat this as a pending
   proposal or request validation again.

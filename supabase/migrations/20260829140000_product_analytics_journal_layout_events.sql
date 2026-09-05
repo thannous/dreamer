@@ -1,6 +1,6 @@
 -- Add one strictly allowlisted event for Journal layout preference changes
 -- so a later Cards vs Atlas deletion decision can be evidence-based.
--- Properties stay categorical: from, to. No user content, identifiers
+-- Properties stay categorical: from, to, source. No user content, identifiers
 -- or free-form values are accepted by the API.
 
 alter table public.product_analytics_events

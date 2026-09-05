@@ -108,12 +108,13 @@ describe('analytics', () => {
     await trackProductEvent('journal_layout_preference_changed', {
       from: 'cards',
       to: 'compact',
+      source: 'settings',
     });
 
     expect(events).toEqual([
       {
         name: 'journal_layout_preference_changed',
-        properties: { from: 'cards', to: 'compact' },
+        properties: { from: 'cards', to: 'compact', source: 'settings' },
       },
     ]);
   });

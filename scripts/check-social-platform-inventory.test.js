@@ -226,6 +226,17 @@ Recontrôler qu'une seule occurrence publique future exacte reste à 18:00.
       card.replace('Seulement ensuite, ', ''),
       proof,
     )).toThrow('ordre transactionnel vers Privée absent');
+
+    const nativeOldHero = oldHero.replace('**PROGRAMMÉ — À REMPLACER**', '**PUBLIÉE — À REMPLACER**');
+    const nativeProof = proof.replace(
+      '**À REMPLACER — NON CONFIRMÉ**',
+      '**ÉCHEC — NON PUBLIÉ** — À REMPLACER — BROUILLON PRIVÉ',
+    );
+    expect(() => validateYouTubeReplacementProtocol(
+      inventory([nativeOldHero, newHero]),
+      card,
+      nativeProof,
+    )).not.toThrow();
   });
 
   it('reconciles exact HERO dates instead of trusting only coverage totals', () => {

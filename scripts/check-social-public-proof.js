@@ -70,6 +70,10 @@ function isTerminalFailureStatus(cell) {
   return /^\s*\*\*ÉCHEC\s+—\s+NON\s+PUBLIÉ\*\*(?:\s+—\s+.*)?$/iu.test(cell);
 }
 
+function isAcknowledgedFailureStatus(cell) {
+  return /ÉCHEC\s+—\s+NON\s+PUBLIÉ/iu.test(cell);
+}
+
 function assetFromCell(cell) {
   const match = cell.match(/`([^`]+\.mp4)`/u);
   return match ? path.basename(match[1]) : '';
@@ -245,6 +249,7 @@ module.exports = {
   assetFromCell,
   declaredHeroAsset,
   hostMatchesPlatform,
+  isAcknowledgedFailureStatus,
   isPublishedStatus,
   isTerminalFailureStatus,
   parseArguments,

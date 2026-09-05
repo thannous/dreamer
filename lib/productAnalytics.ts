@@ -185,6 +185,7 @@ const PRODUCT_ANALYTICS_PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySch
   journal_layout_preference_changed: {
     from: oneOf('cards', 'compact'),
     to: oneOf('cards', 'compact'),
+    source: oneOf('settings'),
   },
   onboarding_choice_selected: {
     surface: oneOf('app_onboarding'),

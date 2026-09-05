@@ -54,6 +54,7 @@ export function useJournalLayoutPreference() {
     void trackProductEvent('journal_layout_preference_changed', {
       from: previousPreference,
       to: nextPreference,
+      source: 'settings',
     });
   }, []);
 

@@ -63,10 +63,11 @@ Deno.test('activation insight allowlist excludes dream-derived semantic properti
   }), now), false);
 });
 
-Deno.test('journal layout preference events accept categorical from/to only', () => {
+Deno.test('journal layout preference events accept categorical from/to/source only', () => {
   const safeProperties = {
     from: 'cards',
     to: 'compact',
+    source: 'settings',
   };
   assertEquals(validateProductAnalyticsEvent(validEvent({
     event_name: 'journal_layout_preference_changed',
@@ -74,11 +75,11 @@ Deno.test('journal layout preference events accept categorical from/to only', ()
   }), now), true);
   assertEquals(validateProductAnalyticsEvent(validEvent({
     event_name: 'journal_layout_preference_changed',
-    properties: { from: 'cards', to: 'list' },
+    properties: { from: 'cards', to: 'list', source: 'settings' },
   }), now), false);
   assertEquals(validateProductAnalyticsEvent(validEvent({
     event_name: 'journal_layout_preference_changed',
-    properties: { from: 'cards', to: 'compact', note: 'switched after reading more' },
+    properties: { from: 'cards', to: 'compact', source: 'settings', note: 'switched after reading more' },
   }), now), false);
 });
 
