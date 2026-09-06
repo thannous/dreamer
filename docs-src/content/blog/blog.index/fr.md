@@ -909,7 +909,7 @@
 </a>
 </article>
 <!-- Article 23 - Rêves de stress au travail : pourquoi votre emploi vous suit dans le sommeil -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="5" data-title="Rêves de stress au travail : pourquoi votre emploi vous suit dans le sommeil">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="3" data-title="Rêves de stress au travail : pourquoi votre emploi vous suit dans le sommeil">
 <a class="block" href="reves-stress-travail">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Rêves de stress au travail" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stress-dreams-work.webp" srcset="../../img/blog/stress-dreams-work-480w.webp 480w, ../../img/blog/stress-dreams-work-800w.webp 800w, ../../img/blog/stress-dreams-work-1200w.webp 1200w" width="800">
@@ -918,13 +918,13 @@
 <div class="flex items-center gap-3 mb-3">
 <span class="text-xs font-mono bg-dream-salmon/20 text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Nouveau</span>
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guide</span>
-<span class="text-xs text-purple-300/60">5 min de lecture</span>
+<span class="text-xs text-purple-300/60">3 min de lecture</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
                                 Rêves de stress au travail : pourquoi votre emploi vous suit dans le sommeil
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Comprenez pourquoi vous rêvez du travail, la science derrière les rêves de stress professionnel, et des stratégies éprouvées pour retrouver un sommeil paisible.
+                                Rêver du travail : retard, réunion, licenciement ou surcharge. Des pistes de réflexion, des repères pour le sommeil et les limites de l’interprétation.
                             </p>
 </div>
 </a>

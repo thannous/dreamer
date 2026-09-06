@@ -933,7 +933,7 @@
 </a>
 </article>
 <!-- Article 23 - Stress Dreams About Work -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="5" data-title="Stressträume über die Arbeit: Auslöser und Umgang">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="2" data-title="Stressträume über die Arbeit: Auslöser und Umgang">
 <a class="block" href="stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Büroarbeitsplatz verschmilzt mit einer nächtlichen Traumszene" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stress-dreams-work.webp" srcset="../../img/blog/stress-dreams-work-480w.webp 480w, ../../img/blog/stress-dreams-work-800w.webp 800w, ../../img/blog/stress-dreams-work-1200w.webp 1200w" width="800">
@@ -942,13 +942,13 @@
 <div class="flex items-center gap-3 mb-3">
 <span class="text-xs font-mono bg-dream-salmon/20 text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Neu</span>
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Ratgeber</span>
-<span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
+<span class="text-xs text-purple-300/60">2 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
                                 Stresstr&auml;ume &uuml;ber die Arbeit: Ausl&ouml;ser und Umgang
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Wie Arbeitsstress in Tr&auml;umen auftauchen kann und welche Schritte vor dem Schlafengehen entlasten k&ouml;nnen.
+                                Von der Arbeit träumen: Verspätung, Besprechung, Kündigung oder Überlastung. Fragen zur Einordnung, Schlaf und Grenzen der Traumdeutung.
                             </p>
 </div>
 </a>
