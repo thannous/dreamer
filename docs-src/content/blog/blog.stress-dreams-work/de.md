@@ -64,7 +64,7 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="traumbedeutungen-interpretation-symbole">Thema: Traumbedeutungen</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Veröffentlicht am 5. März 2026</span>
-<span class="text-sm text-purple-300/60">5 Min. Lesezeit</span>
+<span class="text-sm text-purple-300/60">2 Min. Lesezeit</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Stressträume über die Arbeit: Warum Ihr Job Sie in den Schlaf verfolgt

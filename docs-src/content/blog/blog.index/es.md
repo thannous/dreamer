@@ -941,7 +941,7 @@
 </a>
 </article>
 <!-- Article - Sueños de estrés laboral (NUEVO) -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guia" data-reading-time="5" data-title="Sueños de estrés laboral: por qué tu trabajo te sigue al dormir">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guia" data-reading-time="3" data-title="Sueños de estrés laboral: por qué tu trabajo te sigue al dormir">
 <a class="block" href="suenos-estres-trabajo">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Sueños de estrés laboral" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stress-dreams-work.webp" srcset="../../img/blog/stress-dreams-work-480w.webp 480w, ../../img/blog/stress-dreams-work-800w.webp 800w, ../../img/blog/stress-dreams-work-1200w.webp 1200w" width="800">
@@ -950,13 +950,13 @@
 <div class="flex items-center gap-3 mb-3">
 <span class="text-xs font-mono bg-dream-salmon/20 text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Nuevo</span>
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guía</span>
-<span class="text-xs text-purple-300/60">5 min de lectura</span>
+<span class="text-xs text-purple-300/60">3 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
                                 Sueños de estrés laboral: por qué tu trabajo te sigue al dormir
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Comprende por qué sueñas con el trabajo, la ciencia detrás de los sueños de estrés laboral y estrategias probadas para recuperar tus noches.
+                                Soñar con el trabajo: llegar tarde, reuniones, despido o sobrecarga. Preguntas para explorar el contexto y límites de la interpretación.
                             </p>
 </div>
 </a>

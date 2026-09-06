@@ -64,7 +64,7 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significado-de-suenos">Tema: Significado de sueños</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 5 de marzo de 2026</span>
-<span class="text-sm text-purple-300/60">5 min de lectura</span>
+<span class="text-sm text-purple-300/60">3 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Sueños de estrés laboral: por qué tu trabajo te sigue al dormir

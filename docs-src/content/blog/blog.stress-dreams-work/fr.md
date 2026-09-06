@@ -64,7 +64,7 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="signification-des-reves">Thématique : Signification des rêves</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publié le 5 mars 2026</span>
-<span class="text-sm text-purple-300/60">5 min de lecture</span>
+<span class="text-sm text-purple-300/60">3 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Rêves de stress au travail : pourquoi votre emploi vous suit dans le sommeil
