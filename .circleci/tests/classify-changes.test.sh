@@ -73,7 +73,7 @@ assert_change() {
 
 full="$(parameters_json full "" true true true true true false true true true false false)"
 release="$(parameters_json full "" true true true true true false true true false false false)"
-fallback="$(parameters_json affected "" true true true true true false false false false false false)"
+fallback="$(parameters_json affected "" true true true true true false true false false false false)"
 none="$(parameters_json affected "$base_revision" false false false false false false false false false false false)"
 all_surfaces="$(parameters_json affected "$base_revision" true true true true true true false false false false false)"
 
@@ -81,6 +81,48 @@ assert_parameters "full mode" "$full" full "" "$base_revision"
 assert_parameters "release mode" "$release" release "" "$base_revision"
 assert_parameters "invalid PR base fail-safe" "$fallback" pr deadbeef "$base_revision"
 assert_parameters "invalid main base fail-safe" "$fallback" main deadbeef "$base_revision"
+assert_parameters "invalid head ref fail-safe" "$fallback" pr "$base_revision" deadbeef
+
+unrelated_revision="$(git -C "$test_root" commit-tree "$(git -C "$test_root" mktree </dev/null)" -m unrelated)"
+assert_parameters "non-ancestor diff base fail-safe" "$fallback" pr "$unrelated_revision" "$base_revision"
+
+fake_git_bin="$test_root/fake-bin"
+mkdir -p "$fake_git_bin"
+real_git="$(command -v git)"
+cat > "$fake_git_bin/git" <<EOF
+#!/usr/bin/env bash
+if [[ "\${1:-}" == "diff" ]]; then
+  echo "simulated git diff failure" >&2
+  exit 23
+fi
+exec "$real_git" "\$@"
+EOF
+chmod +x "$fake_git_bin/git"
+
+assert_parameters_with_path() {
+  local label="$1"
+  local expected="$2"
+  local mode="$3"
+  local base="$4"
+  local head="$5"
+  local output="$test_root/parameters.json"
+  local actual
+
+  (
+    cd "$test_root"
+    PATH="$fake_git_bin:$PATH" "$classifier" "$mode" "$base" "$head" "$output" >/dev/null
+  )
+
+  actual="$(cat "$output")"
+  if [[ "$actual" != "$expected" ]]; then
+    echo "$label failed" >&2
+    echo "expected: $expected" >&2
+    echo "actual:   $actual" >&2
+    exit 1
+  fi
+}
+
+assert_parameters_with_path "git diff failure fail-safe" "$fallback" pr "$base_revision" "$base_revision"
 assert_parameters "no changes" "$none" pr "$base_revision" "$base_revision"
 
 git -C "$test_root" reset -q --hard "$base_revision"

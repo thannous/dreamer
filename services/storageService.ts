@@ -75,3 +75,5 @@ export const savePendingRecordingNotification = service.savePendingRecordingNoti
 export const clearPendingRecordingNotification = service.clearPendingRecordingNotification;
 export const getDreamsMigrationSynced = service.getDreamsMigrationSynced;
 export const setDreamsMigrationSynced = service.setDreamsMigrationSynced;
+export const getGuestDreamMigrationOwner = service.getGuestDreamMigrationOwner;
+export const setGuestDreamMigrationOwner = service.setGuestDreamMigrationOwner;

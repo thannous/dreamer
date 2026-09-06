@@ -7,6 +7,14 @@ import type { DreamAnalysis } from '../../lib/types';
 type AnyFunction = (...args: any[]) => any;
 const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
 
+const requireLoadedDreams = (result: {
+  status: string;
+  value?: DreamAnalysis[];
+}): DreamAnalysis[] => {
+  expect(result.status).toBe('loaded');
+  return result.value ?? [];
+};
+
 const DREAMS_STORAGE_KEY = 'gemini_dream_journal_dreams';
 const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
 const DREAM_MUTATIONS_KEY = 'gemini_dream_journal_pending_mutations';
@@ -589,23 +597,26 @@ describe('storageServiceReal', () => {
     expect(getInfoSpy).not.toHaveBeenCalled();
 
     mockAsyncStorage.getItem.mockClear();
-    const loaded = await storage.getSavedDreams();
+    const loaded = requireLoadedDreams(await storage.getSavedDreams());
     expect(loaded).toHaveLength(1);
     expect(loaded[0]?.title).toBe('A dream');
     expect(mockAsyncStorage.getItem).not.toHaveBeenCalled();
     expect(kvStore.getItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
   });
 
-  it('cleans up native AsyncStorage keys that fail with "Row too big"', async () => {
+  it('preserves native AsyncStorage keys that fail with "Row too big"', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
     const { getInfoAsync } = require('expo-file-system/legacy');
     jest.mocked(getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false } as any);
 
-    jest.doMock('expo-sqlite/kv-store', () => {
-      throw new Error('kv-store unavailable');
-    });
+    const kvStore = {
+      getItem: jest.fn(async () => null),
+      setItem: jest.fn(async () => undefined),
+      removeItem: jest.fn(async () => undefined),
+    };
+    jest.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
 
     mockAsyncStorage.getItem.mockRejectedValueOnce(new Error('Row too big'));
     mockAsyncStorage.removeItem.mockResolvedValue(undefined);
@@ -613,21 +624,50 @@ describe('storageServiceReal', () => {
     const storage = require('../storageServiceReal');
     const loaded = await storage.getSavedDreams();
 
-    expect(loaded).toEqual([]);
-    expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
+    expect(loaded).toEqual({ status: 'error' });
+    expect(mockAsyncStorage.removeItem).not.toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
   });
 
-  it('migrates file-backed dreams into kv-store when available', async () => {
+  it('distinguishes an absent journal from a valid empty journal', async () => {
+    const originalIndexedDB = (globalThis as any).indexedDB;
+    try {
+      delete (globalThis as any).indexedDB;
+      const storage = require('../storageServiceReal');
+      expect(await storage.getSavedDreams()).toEqual({ status: 'absent' });
+
+      localStorage.setItem(DREAMS_STORAGE_KEY, '[]');
+      expect(await storage.getSavedDreams()).toEqual({ status: 'loaded', value: [] });
+    } finally {
+      (globalThis as any).indexedDB = originalIndexedDB;
+    }
+  });
+
+  it('recovers on a second native primary read without deleting the original key', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'ios';
+    const payload = JSON.stringify([{ id: 73, transcript: 'recovered intact' }]);
+    const kvStore = {
+      getItem: jest.fn()
+        .mockRejectedValueOnce(new Error('temporary read failure'))
+        .mockResolvedValue(payload),
+      setItem: jest.fn(async () => undefined),
+      removeItem: jest.fn(async () => undefined),
+    };
+    jest.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
+    const storage = require('../storageServiceReal');
 
-    // First run: kv-store unavailable -> saveDreams writes to file.
-    jest.doMock('expo-sqlite/kv-store', () => {
-      throw new Error('kv-store unavailable');
+    expect(await storage.getSavedDreams()).toEqual({ status: 'error' });
+    expect(await storage.getSavedDreams()).toEqual({
+      status: 'loaded',
+      value: [expect.objectContaining({ id: 73, transcript: 'recovered intact' })],
     });
+    expect(kvStore.removeItem).not.toHaveBeenCalled();
+    expect(mockAsyncStorage.removeItem).not.toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
+  });
 
-    const storageLegacy = require('../storageServiceReal');
-
+  it('reads a legacy file-backed journal without deleting it before validation', async () => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'ios';
     const dreams = [
       {
         id: 123,
@@ -641,16 +681,7 @@ describe('storageServiceReal', () => {
         isFavorite: false,
       },
     ] as any;
-
-    await storageLegacy.saveDreams(dreams);
-
-    const { File } = require('expo-file-system');
-    const file = new File('/tmp/storage/gemini_dream_journal_dreams.json');
-    const persistedDreamsPayload = await file.text();
-    expect(persistedDreamsPayload).toContain('"title":"A dream"');
-
-    // Second run: kv-store available -> getSavedDreams migrates file -> kv-store.
-    jest.resetModules();
+    const persistedDreamsPayload = JSON.stringify(dreams);
     const kvStoreData: Record<string, string> = {};
     const kvStore = {
       getItem: jest.fn(async (key: string) => kvStoreData[key] ?? null),
@@ -663,8 +694,6 @@ describe('storageServiceReal', () => {
     };
     jest.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
 
-    const { Platform: Platform2 } = require('react-native');
-    Platform2.OS = 'ios';
     const { File: FileAfterReset } = require('expo-file-system');
     const fileAfterReset = new FileAfterReset('/tmp/storage/gemini_dream_journal_dreams.json');
     fileAfterReset.write(persistedDreamsPayload);
@@ -674,12 +703,12 @@ describe('storageServiceReal', () => {
     const deleteSpy = jest.mocked(deleteAsync);
 
     const storage = require('../storageServiceReal');
-    const loaded = await storage.getSavedDreams();
+    const loaded = requireLoadedDreams(await storage.getSavedDreams());
 
     expect(loaded).toHaveLength(1);
     expect(loaded[0]?.title).toBe('A dream');
-    expect(kvStore.setItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY, expect.any(String));
-    expect(deleteSpy).toHaveBeenCalled();
+    expect(kvStore.setItem).not.toHaveBeenCalledWith(DREAMS_STORAGE_KEY, expect.any(String));
+    expect(deleteSpy).not.toHaveBeenCalled();
   });
 
   it('persists transcript data in localStorage on web', async () => {
@@ -721,7 +750,7 @@ describe('storageServiceReal', () => {
       } as DreamAnalysis;
 
       await storage.saveDreams([dream]);
-      const loaded = await storage.getSavedDreams();
+      const loaded = requireLoadedDreams(await storage.getSavedDreams());
       expect(loaded).toHaveLength(1);
       expect(loaded[0]?.transcript).toBe(longTranscript);
       expect(loaded[0]?.transcript).toHaveLength(10_000);
@@ -926,19 +955,20 @@ describe('storageServiceReal', () => {
       );
 
       const storage = require('../storageServiceReal');
-      const sorted = await storage.getSavedDreams();
+      const sorted = requireLoadedDreams(await storage.getSavedDreams());
 
       expect(sorted.map((dream: DreamAnalysis) => dream.id)).toEqual([5, 3, 2]);
 
       localStorage.setItem(DREAMS_STORAGE_KEY, '{invalid json');
       const fallback = await storage.getSavedDreams();
-      expect(fallback).toEqual([]);
+      expect(fallback).toEqual({ status: 'error' });
+      expect(localStorage.getItem(DREAMS_STORAGE_KEY)).toBe('{invalid json');
     } finally {
       (globalThis as any).indexedDB = originalIndexedDB;
     }
   });
 
-  it('returns empty arrays when cached data is malformed', async () => {
+  it('reports errors when cached or mutation data is malformed', async () => {
     const originalIndexedDB = (globalThis as any).indexedDB;
     try {
       delete (globalThis as any).indexedDB;
@@ -947,14 +977,16 @@ describe('storageServiceReal', () => {
       localStorage.setItem(DREAM_MUTATIONS_KEY, 'not-json');
 
       const storage = require('../storageServiceReal');
-      expect(await storage.getCachedRemoteDreams()).toEqual([]);
-      expect(await storage.getPendingDreamMutations()).toEqual([]);
+      expect(await storage.getCachedRemoteDreams()).toEqual({ status: 'error' });
+      await expect(storage.getPendingDreamMutations()).rejects.toThrow(
+        'Failed to read pending dream mutations'
+      );
     } finally {
       (globalThis as any).indexedDB = originalIndexedDB;
     }
   });
 
-  it('logs and falls back when file-backed reads fail in dev', async () => {
+  it('reports an error without consulting file fallback when native primary storage is unavailable', async () => {
     const originalDev = (globalThis as any).__DEV__;
     (globalThis as any).__DEV__ = true;
     const { Platform } = require('react-native');
@@ -964,13 +996,9 @@ describe('storageServiceReal', () => {
       throw new Error('kv-store unavailable');
     });
 
-    const { getInfoAsync } = require('expo-file-system/legacy');
-    jest.mocked(getInfoAsync).mockRejectedValueOnce(new Error('read failure'));
-
-    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
     const storage = require('../storageServiceReal');
-    await storage.getSavedDreams();
-    expect(warnSpy).toHaveBeenCalled();
+    expect(await storage.getSavedDreams()).toEqual({ status: 'error' });
+    expect(mockAsyncStorage.getItem).not.toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
     (globalThis as any).__DEV__ = originalDev;
   });
 
@@ -1089,11 +1117,11 @@ describe('storageServiceReal', () => {
     jest.mocked(getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false } as any);
 
     const storage = require('../storageServiceReal');
-    const loaded = await storage.getSavedDreams();
+    const loaded = requireLoadedDreams(await storage.getSavedDreams());
 
     expect(loaded[0]?.title).toBe('Legacy dream');
-    expect(kvStore.setItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY, legacyValue);
-    expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
+    expect(kvStore.setItem).not.toHaveBeenCalledWith(DREAMS_STORAGE_KEY, legacyValue);
+    expect(mockAsyncStorage.removeItem).not.toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
 
     (globalThis as any).__DEV__ = originalDev;
     logSpy.mockRestore();
@@ -1127,7 +1155,7 @@ describe('storageServiceReal', () => {
     expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith(RECORDING_TRANSCRIPT_KEY);
   });
 
-  it('moves legacy AsyncStorage data to file storage when kv-store is unavailable', async () => {
+  it('does not treat legacy AsyncStorage as authoritative when native primary storage is unavailable', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
@@ -1159,14 +1187,13 @@ describe('storageServiceReal', () => {
     await deleteAsync(filePath, { idempotent: true });
 
     const storage = require('../storageServiceReal');
-    const loaded = await storage.getSavedDreams();
-
-    expect(loaded[0]?.title).toBe('Legacy file dream');
-    expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
+    expect(await storage.getSavedDreams()).toEqual({ status: 'error' });
+    expect(mockAsyncStorage.removeItem).not.toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
 
     const { File } = require('expo-file-system');
     const file = new File(filePath);
-    expect(await file.text()).toContain('Legacy file dream');
+    expect(await file.text()).toBe('');
+    expect(mockAsyncStorage.getItem).not.toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
   });
 
   it('keeps memory fallback for preferences but never reports a durable transcript when native stores are unavailable', async () => {
@@ -1249,7 +1276,7 @@ describe('storageServiceReal', () => {
     jest.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
 
     const storage = require('../storageServiceReal');
-    const loaded = await storage.getSavedDreams();
+    const loaded = requireLoadedDreams(await storage.getSavedDreams());
 
     expect(loaded[0]?.title).toBe('KV dream');
     expect(logSpy).toHaveBeenCalled();
@@ -1279,7 +1306,7 @@ describe('storageServiceReal', () => {
     jest.mocked(getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false } as any);
 
     const storage = require('../storageServiceReal');
-    expect(await storage.getSavedDreams()).toEqual([]);
+    expect(await storage.getSavedDreams()).toEqual({ status: 'error' });
     expect(warnSpy).toHaveBeenCalled();
 
     (globalThis as any).__DEV__ = originalDev;
@@ -1345,7 +1372,7 @@ describe('storageServiceReal', () => {
 
       const storage = require('../storageServiceReal');
 
-      expect(await storage.getCachedRemoteDreams('user:user-b')).toEqual([]);
+      expect(await storage.getCachedRemoteDreams('user:user-b')).toEqual({ status: 'absent' });
       expect(await storage.getPendingDreamMutations('user:user-b')).toEqual([]);
       expect(localStorage.getItem(`${REMOTE_DREAMS_CACHE_KEY}:user:user-b`)).toBeNull();
       expect(localStorage.getItem(`${DREAM_MUTATIONS_KEY}:user:user-b`)).toBeNull();

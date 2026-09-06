@@ -15,7 +15,6 @@ import { useWorldSoundscape } from '@/hooks/useWorldSoundscape';
 import type { TranslationKey } from '@/lib/i18n';
 import { TID } from '@/lib/testIDs';
 
-const FALLBACK_PRICE = '0,99 €';
 const WORLD_BENEFITS = [1, 2, 3, 4, 5] as const;
 
 export default function WorldPurchaseScreen() {
@@ -25,13 +24,29 @@ export default function WorldPurchaseScreen() {
   const compact = useCompactLayout();
   const { fontScale } = useWindowDimensions();
   const { setWorld } = useWorld();
-  const { loaded, isWorldOwned, offerForWorld, purchaseWorld, restoreWorlds } =
-    useWorldPurchases();
+  const {
+    ownershipStatus,
+    offersStatus,
+    isWorldOwned,
+    worldAccess,
+    offerForWorld,
+    retryOwnership,
+    retryOffers,
+    purchaseWorld,
+    restoreWorlds,
+  } = useWorldPurchases();
   const worldId = isWorldId(id) ? id : DEFAULT_WORLD_ID;
   const world = WORLD_BY_ID[worldId];
   const colors = Themes[world.appearance];
   const offer = offerForWorld(worldId);
-  const owned = isWorldOwned(worldId);
+  const access =
+    typeof worldAccess === 'function'
+      ? worldAccess(worldId)
+      : isWorldOwned(worldId)
+        ? 'owned'
+        : 'not-owned';
+  const owned = access === 'free' || access === 'owned';
+  const ownershipUnknown = access === 'unknown';
   const largeText = fontScale >= 1.5;
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<TranslationKey | null>(null);
@@ -49,13 +64,24 @@ export default function WorldPurchaseScreen() {
     soundscape.toggleSound();
   };
 
-  const priceLabel = offer?.priceLabel ?? FALLBACK_PRICE;
   const ctaLabel = useMemo(
     () =>
       owned
         ? t('world.purchase.continue')
-        : t('world.purchase.buy', { price: priceLabel }),
-    [owned, priceLabel, t]
+        : ownershipUnknown
+          ? t(
+              ownershipStatus === 'loading'
+                ? 'world.purchase.access.checking'
+                : 'world.purchase.access.retry'
+            )
+          : offer
+            ? t('world.purchase.buy', { price: offer.priceLabel })
+            : t(
+                offersStatus === 'loading'
+                  ? 'world.purchase.offer.checking'
+                  : 'world.purchase.offer.retry'
+              ),
+    [offer, offersStatus, owned, ownershipStatus, ownershipUnknown, t]
   );
 
   const enterWorld = async (withSuccessFeedback: boolean) => {
@@ -92,6 +118,28 @@ export default function WorldPurchaseScreen() {
     }
   };
 
+  const handlePrimaryAction = async () => {
+    if (owned) {
+      await handleBuy();
+      return;
+    }
+
+    setBusy(true);
+    setMessage(null);
+    try {
+      if (ownershipUnknown) {
+        await retryOwnership();
+      } else if (!offer) {
+        await retryOffers();
+      } else {
+        setBusy(false);
+        await handleBuy();
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const handleRestore = async () => {
     setBusy(true);
     setMessage(null);
@@ -116,7 +164,17 @@ export default function WorldPurchaseScreen() {
       testID="world.purchase.actions-backing"
       className={compact || largeText ? 'mt-6 items-stretch gap-3' : 'mt-8 items-stretch gap-2'}>
       <Text variant="bodySm" tone="accent" className="text-center">
-        {owned ? t('world.purchase.owned') : t('world.purchase.oneTime')}
+        {owned
+          ? t('world.purchase.owned')
+          : ownershipUnknown
+            ? t(
+                ownershipStatus === 'loading'
+                  ? 'world.purchase.access.checking'
+                  : 'world.purchase.access.unavailable'
+              )
+            : offersStatus === 'error' && !offer
+              ? t('world.purchase.offer.unavailable')
+              : t('world.purchase.oneTime')}
       </Text>
 
       <Button
@@ -124,8 +182,12 @@ export default function WorldPurchaseScreen() {
         labelVariant="cta"
         luminous
         loading={busy}
-        disabled={!owned && (!loaded || !offer)}
-        onPress={() => void handleBuy()}
+        disabled={
+          busy ||
+          (ownershipUnknown && ownershipStatus === 'loading') ||
+          (!owned && !ownershipUnknown && !offer && offersStatus === 'loading')
+        }
+        onPress={() => void handlePrimaryAction()}
         className="w-full"
         testID={TID.Button.WorldPurchaseBuy}
       />

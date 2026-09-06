@@ -1,5 +1,6 @@
 import { AnalysisActivityProvider } from '@/context/AnalysisActivityContext';
 import { useDreamJournal } from '@/hooks/useDreamJournal';
+import type { DreamPersistenceState } from '@/hooks/useDreamPersistence';
 import type { AnalysisSource } from '@/lib/analytics';
 import type { DreamAnalysis, DreamCategorization } from '@/lib/types';
 import { AnalysisStep } from '@/hooks/useAnalysisProgress';
@@ -9,6 +10,7 @@ import React, { createContext, useContext, useMemo } from 'react';
 export type DreamsDataContextValue = {
   dreams: DreamAnalysis[];
   loaded: boolean;
+  persistenceState: DreamPersistenceState;
 };
 
 // Actions context - stable references, never triggers re-renders
@@ -25,6 +27,7 @@ export type DreamsActionsContextValue = {
   retryDreamSync: (id: number) => Promise<void>;
   resolveDreamConflict: (id: number, resolution: 'keep_local' | 'use_server') => Promise<void>;
   reloadDreams: () => Promise<void>;
+  retryPersistence: () => Promise<void>;
   generateDreamImage: (
     dreamId: number,
     options?: {
@@ -61,8 +64,9 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     () => ({
       dreams: journal.dreams,
       loaded: journal.loaded,
+      persistenceState: journal.persistenceState,
     }),
-    [journal.dreams, journal.loaded]
+    [journal.dreams, journal.loaded, journal.persistenceState]
   );
 
   const analysisActivityValue = useMemo(
@@ -85,6 +89,7 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       retryDreamSync: journal.retryDreamSync,
       resolveDreamConflict: journal.resolveDreamConflict,
       reloadDreams: journal.reloadDreams,
+      retryPersistence: journal.retryPersistence,
       generateDreamImage: journal.generateDreamImage,
       analyzeDream: journal.analyzeDream,
     }),
@@ -98,6 +103,7 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       journal.retryDreamSync,
       journal.resolveDreamConflict,
       journal.reloadDreams,
+      journal.retryPersistence,
       journal.generateDreamImage,
       journal.analyzeDream,
     ]

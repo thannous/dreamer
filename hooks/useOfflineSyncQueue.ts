@@ -2,9 +2,10 @@
  * useOfflineSyncQueue - Handles durable offline mutation logging and replay
  */
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 
 import { useAuth } from '../context/AuthContext';
+import { DreamPersistenceError } from '../lib/dreamStorageRead';
 import { logger } from '../lib/logger';
 import { recordSyncReplayMetrics, reportSyncQueueMetrics } from '../lib/syncObservability';
 import type { DreamAnalysis, DreamMutation } from '../lib/types';
@@ -35,6 +36,8 @@ export type UseOfflineSyncQueueOptions = {
   persistRemoteDreams: (updater: DreamListUpdater) => Promise<void>;
   resolveRemoteId: (dreamId: number) => number | undefined;
   initialMutations?: DreamMutation[];
+  initialMutationsLoaded?: boolean;
+  initialMutationsScope?: string | null;
 };
 
 export type UseOfflineSyncQueueResult = {
@@ -199,15 +202,40 @@ export function useOfflineSyncQueue({
   persistRemoteDreams,
   resolveRemoteId,
   initialMutations = [],
+  initialMutationsLoaded = true,
+  initialMutationsScope = userScope,
 }: UseOfflineSyncQueueOptions): UseOfflineSyncQueueResult {
   const { user } = useAuth();
+  const initialSnapshotMatchesScope =
+    initialMutationsLoaded &&
+    initialMutationsScope === userScope &&
+    initialMutations.every(
+      (mutation) => !userScope || !mutation.userScope || mutation.userScope === userScope
+    );
   const pendingMutationsRef = useRef<DreamMutation[]>(
-    initialMutations.map((mutation) => normalizeMutation(mutation, userScope))
+    initialSnapshotMatchesScope
+      ? initialMutations.map((mutation) => normalizeMutation(mutation, userScope))
+      : []
   );
   const syncingRef = useRef(false);
   const syncTokenRef = useRef(0);
   const inFlightSyncRef = useRef<Promise<void> | null>(null);
   const mountedRef = useRef(true);
+  const mutationsLoadedRef = useRef(initialSnapshotMatchesScope);
+  const mutationScopeRef = useRef(userScope);
+  const activeUserScopeRef = useRef(userScope);
+  const mutationWriteTailsRef = useRef<Map<string, Promise<void>>>(new Map());
+
+  useLayoutEffect(() => {
+    activeUserScopeRef.current = userScope;
+    if (mutationScopeRef.current !== userScope) {
+      mutationScopeRef.current = userScope;
+      pendingMutationsRef.current = [];
+      syncTokenRef.current += 1;
+      syncingRef.current = false;
+    }
+    mutationsLoadedRef.current = initialSnapshotMatchesScope;
+  }, [initialSnapshotMatchesScope, userScope]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -218,6 +246,18 @@ export function useOfflineSyncQueue({
 
   const persistPendingMutations = useCallback(
     async (mutations: DreamMutation[]) => {
+      if (activeUserScopeRef.current !== userScope) {
+        throw new DreamPersistenceError('read', 'remote-cache');
+      }
+      if (!mutationsLoadedRef.current) {
+        throw new DreamPersistenceError('read', 'remote-cache');
+      }
+      if (
+        userScope &&
+        mutations.some((mutation) => mutation.userScope && mutation.userScope !== userScope)
+      ) {
+        throw new DreamPersistenceError('read', 'remote-cache');
+      }
       const normalized = mutations.map((mutation) => normalizeMutation(mutation, userScope));
       pendingMutationsRef.current = normalized;
       reportSyncQueueMetrics({
@@ -227,12 +267,35 @@ export function useOfflineSyncQueue({
         userScope,
       });
       if (!canUseRemoteSync) return;
-      await savePendingDreamMutations(normalized, userScope);
+      const scopeKey = userScope ?? 'anonymous';
+      const previous = mutationWriteTailsRef.current.get(scopeKey) ?? Promise.resolve();
+      const run = previous
+        .catch(() => undefined)
+        .then(() => savePendingDreamMutations(normalized, userScope));
+      mutationWriteTailsRef.current.set(
+        scopeKey,
+        run.then(
+          () => undefined,
+          () => undefined
+        )
+      );
+      try {
+        await run;
+      } catch {
+        throw new DreamPersistenceError('write', 'remote-cache');
+      }
     },
     [canUseRemoteSync, userScope]
   );
 
   const setPendingMutations = useCallback((mutations: DreamMutation[]) => {
+    if (activeUserScopeRef.current !== userScope) return;
+    if (
+      userScope &&
+      mutations.some((mutation) => mutation.userScope && mutation.userScope !== userScope)
+    ) {
+      throw new DreamPersistenceError('read', 'remote-cache');
+    }
     const normalized = mutations.map((mutation) => normalizeMutation(mutation, userScope));
     pendingMutationsRef.current = normalized;
     reportSyncQueueMetrics({
@@ -244,6 +307,7 @@ export function useOfflineSyncQueue({
   }, [canUseRemoteSync, userScope]);
 
   useEffect(() => {
+    if (!initialSnapshotMatchesScope || activeUserScopeRef.current !== userScope) return;
     const current = pendingMutationsRef.current.map((mutation) => normalizeMutation(mutation, userScope));
     const mergedById = new Map<string, DreamMutation>();
     [...initialMutations.map((mutation) => normalizeMutation(mutation, userScope)), ...current].forEach((mutation) => {
@@ -260,21 +324,51 @@ export function useOfflineSyncQueue({
 
     if (changed) {
       setPendingMutations(merged);
-      void persistPendingMutations(merged);
+      void persistPendingMutations(merged).catch(() => {
+        logger.warn('Pending dream changes could not be persisted');
+      });
     }
-  }, [initialMutations, persistPendingMutations, setPendingMutations, userScope]);
+  }, [
+    initialMutations,
+    initialSnapshotMatchesScope,
+    persistPendingMutations,
+    setPendingMutations,
+    userScope,
+  ]);
 
   const appendPendingMutation = useCallback(
     async (mutation: DreamMutation) => {
-      await persistPendingMutations([...pendingMutationsRef.current, mutation]);
+      const current = pendingMutationsRef.current;
+      const existingIndex = mutation.operation === 'create'
+        ? current.findIndex((entry) =>
+            entry.operation === 'create' &&
+            entry.userScope === mutation.userScope &&
+            entry.clientRequestId === mutation.clientRequestId
+          )
+        : -1;
+      if (existingIndex >= 0) {
+        const existing = current[existingIndex];
+        const retried = {
+          ...mutation,
+          // A server receipt refers to the original mutation ID even after retry.
+          id: existing.id,
+          createdAt: existing.createdAt,
+          retryCount: existing.retryCount,
+        };
+        await persistPendingMutations(current.map((entry, index) =>
+          index === existingIndex ? retried : entry
+        ));
+        return;
+      }
+      await persistPendingMutations([...current, mutation]);
     },
     [persistPendingMutations]
   );
 
   const queueOfflineOperation = useCallback(
     async (mutation: DreamMutation, updater: DreamListUpdater) => {
-      await persistRemoteDreams(updater);
       await appendPendingMutation(normalizeMutation(mutation, userScope));
+      await persistRemoteDreams(updater);
     },
     [appendPendingMutation, persistRemoteDreams, userScope]
   );
@@ -321,14 +415,14 @@ export function useOfflineSyncQueue({
   );
 
   const syncPendingMutations = useCallback(async () => {
-    if (!canUseRemoteSync || !user || !hasNetwork) return;
+    if (!canUseRemoteSync || !user || !hasNetwork || activeUserScopeRef.current !== userScope) return;
     if (!pendingMutationsRef.current.length) return;
 
     if (inFlightSyncRef.current) {
       await inFlightSyncRef.current;
     }
 
-    if (!mountedRef.current || syncingRef.current) return;
+    if (!mountedRef.current || syncingRef.current || activeUserScopeRef.current !== userScope) return;
 
     const eligibleMutations = pendingMutationsRef.current.filter(isRetryableMutation);
     if (!eligibleMutations.length) return;
@@ -354,9 +448,8 @@ export function useOfflineSyncQueue({
       const sendingQueue = pendingMutationsRef.current.map((mutation) =>
         sendingIds.has(mutation.id) ? markMutationState(mutation, 'sending') : mutation
       );
-      await persistPendingMutations(sendingQueue);
-
       try {
+        await persistPendingMutations(sendingQueue);
         const canUseBatchSync = userScope && typeof syncDreamMutationsInSupabase === 'function';
         const results = canUseBatchSync
           ? await syncDreamMutationsInSupabase(eligibleMutations, user.id)
@@ -540,6 +633,9 @@ export function useOfflineSyncQueue({
           userScope,
         });
       } catch (error) {
+        if (!mountedRef.current || syncTokenRef.current !== currentToken) {
+          return;
+        }
         logger.warn('Failed to sync offline mutations', error);
         const message = error instanceof Error ? error.message : 'Failed to sync mutation batch';
         const nextQueue = pendingMutationsRef.current.map((mutation) => {
@@ -574,8 +670,8 @@ export function useOfflineSyncQueue({
       } finally {
         if (syncTokenRef.current === currentToken) {
           syncingRef.current = false;
+          inFlightSyncRef.current = null;
         }
-        inFlightSyncRef.current = null;
       }
     })();
 
@@ -584,7 +680,9 @@ export function useOfflineSyncQueue({
   }, [canUseRemoteSync, hasNetwork, persistPendingMutations, persistRemoteDreams, user, userScope]);
 
   useEffect(() => {
-    void syncPendingMutations();
+    void syncPendingMutations().catch(() => {
+      logger.warn('Offline dream sync could not complete');
+    });
   }, [syncPendingMutations]);
 
   return {

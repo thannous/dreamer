@@ -30,6 +30,12 @@ const apiKey = (): string | undefined =>
 
 export const isConfigured = (): boolean => !!apiKey();
 
+function requireConfigured(): void {
+  if (!isConfigured()) {
+    throw new Error('World purchase service is not configured');
+  }
+}
+
 export async function configure(): Promise<void> {
   // Mock mode must never reach the native SDK, even if this module is loaded.
   if (isMockModeEnabled()) return;
@@ -47,12 +53,12 @@ function ownedWorlds(info: CustomerInfo): WorldId[] {
 }
 
 export async function currentOwnership(): Promise<WorldId[]> {
-  if (!isConfigured()) return [];
+  requireConfigured();
   return ownedWorlds(await Purchases.getCustomerInfo());
 }
 
 export async function listOffers(): Promise<WorldOffer[]> {
-  if (!isConfigured()) return [];
+  requireConfigured();
 
   const products = await Purchases.getProducts(
     Object.values(PRODUCT_ID_BY_WORLD),
@@ -73,6 +79,6 @@ export async function purchase(offer: WorldOffer): Promise<WorldId[]> {
 }
 
 export async function restore(): Promise<WorldId[]> {
-  if (!isConfigured()) return [];
+  requireConfigured();
   return ownedWorlds(await Purchases.restorePurchases());
 }

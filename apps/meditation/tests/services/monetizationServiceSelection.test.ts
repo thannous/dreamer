@@ -122,7 +122,7 @@ describe('monetization service selection', () => {
     });
   });
 
-  it('keeps the real store fail-closed when mock mode is off and no RevenueCat key is set', async () => {
+  it('keeps the real store fail-closed and reports unknown rights without a RevenueCat key', async () => {
     setEnv('EXPO_PUBLIC_MOCK_MODE', 'false');
     setEnv('EXPO_PUBLIC_REVENUECAT_IOS_KEY', undefined);
     setEnv('EXPO_PUBLIC_REVENUECAT_ANDROID_KEY', undefined);
@@ -132,9 +132,9 @@ describe('monetization service selection', () => {
 
     await expect(subscriptions.currentTier()).resolves.toBe('free');
     await expect(subscriptions.listOffers()).resolves.toEqual([]);
-    await expect(worlds.currentOwnership()).resolves.toEqual([]);
-    await expect(worlds.listOffers()).resolves.toEqual([]);
-    await expect(worlds.restore()).resolves.toEqual([]);
+    await expect(worlds.currentOwnership()).rejects.toThrow('not configured');
+    await expect(worlds.listOffers()).rejects.toThrow('not configured');
+    await expect(worlds.restore()).rejects.toThrow('not configured');
     expect(purchases.getCustomerInfo).not.toHaveBeenCalled();
     expect(purchases.getOfferings).not.toHaveBeenCalled();
     expect(purchases.getProducts).not.toHaveBeenCalled();

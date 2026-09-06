@@ -32,6 +32,7 @@ import {
   buildRememberedDream,
 } from '@/lib/dreamUtils';
 import { isMockModeEnabled } from '@/lib/env';
+import { DreamPersistenceError } from '@/lib/dreamStorageRead';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { createScopedLogger } from '@/lib/logger';
 import {
@@ -922,6 +923,8 @@ export default function RecordingScreen() {
         ? draftDream
         : buildDraftDream(latestTranscript);
 
+      // Keep the same capture identity if durable persistence fails and the user retries.
+      setDraftDream(dreamToSave);
       const savedDream = await addDream(dreamToSave);
       clearAfterSuccessfulSave();
       setDraftDream(savedDream);
@@ -959,7 +962,19 @@ export default function RecordingScreen() {
       }
       navigateToJournalDetail(savedDream.id, { saved: true });
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unexpected error occurred. Please try again.';
+      const message = error instanceof DreamPersistenceError
+        ? t(
+            error.operation === 'read'
+              ? error.target === 'device'
+                ? 'journal.persistence.read_device'
+                : 'journal.persistence.read_cache'
+              : error.target === 'device'
+                ? 'journal.persistence.write_device'
+                : 'journal.persistence.write_cache'
+          )
+        : error instanceof Error
+          ? error.message
+          : 'Unexpected error occurred. Please try again.';
       Alert.alert(t('common.error_title'), message);
     } finally {
       setIsPersisting(false);

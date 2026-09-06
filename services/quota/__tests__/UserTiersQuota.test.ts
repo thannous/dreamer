@@ -1,15 +1,16 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import type { DreamAnalysis } from '@/lib/types';
+import type { DreamAnalysis, DreamListReadResult } from '@/lib/types';
 import type { User } from '@supabase/supabase-js';
 import { MockQuotaProvider } from '../MockQuotaProvider';
 
 type AnyFunction = (...args: any[]) => any;
 const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
+const loadedDreams = (value: DreamAnalysis[]): DreamListReadResult => ({ status: 'loaded', value });
 
 // Use jest.hoisted to ensure mock is available during module loading
 const { mockGetSavedDreams, mockQuotaEventStore } = ((factory: any) => factory())(() => ({
-  mockGetSavedDreams: typedJestFn<() => Promise<DreamAnalysis[]>>(),
+  mockGetSavedDreams: typedJestFn<() => Promise<DreamListReadResult>>(),
   mockQuotaEventStore: {
     analysisCount: 0,
     explorationCount: 0,
@@ -19,6 +20,9 @@ const { mockGetSavedDreams, mockQuotaEventStore } = ((factory: any) => factory()
     imagedDreamIds: [] as number[],
   },
 }));
+
+const setSavedDreams = (value: DreamAnalysis[]) => mockGetSavedDreams.mockResolvedValue(loadedDreams(value));
+const setSavedDreamsOnce = (value: DreamAnalysis[]) => mockGetSavedDreams.mockResolvedValueOnce(loadedDreams(value));
 
 // Mock using the relative path from this test file to storageService
 jest.mock('../../storageService', () => ({
@@ -87,7 +91,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
       buildDream({ id: 2, isAnalyzed: true, analyzedAt: Date.now() }),
       buildDream({ id: 3 }),
     ];
-    mockGetSavedDreams.mockResolvedValueOnce(dreams);
+    setSavedDreamsOnce(dreams);
 
     // Set up mock state to reflect 2 analyses already done
     mockQuotaEventStore.analysisCount = 2;
@@ -99,7 +103,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     // Exploration: allow for already explored dream
     mockQuotaEventStore.exploredDreamIds = [10];
     const explored = buildDream({ id: 10, explorationStartedAt: Date.now() });
-    mockGetSavedDreams.mockResolvedValueOnce([explored, ...dreams]);
+    setSavedDreamsOnce([explored, ...dreams]);
     mockQuotaEventStore.exploredDreamIds = [10];
     await expect(provider.canExploreDream({ dreamId: explored.id }, null, 'guest')).resolves.toBe(true);
 
@@ -119,7 +123,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     mockQuotaEventStore.analysisCount = 2;
     mockQuotaEventStore.analyzedDreamIds = [100, 101];
 
-    mockGetSavedDreams.mockResolvedValueOnce(base);
+    setSavedDreamsOnce(base);
     const provider = new MockQuotaProvider();
     await expect(provider.canAnalyzeDream(userFree, 'free')).resolves.toBe(true);
 
@@ -135,7 +139,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     mockQuotaEventStore.analyzedDreamIds = [100, 101, 102];
 
     const provider2 = new MockQuotaProvider();
-    mockGetSavedDreams.mockResolvedValueOnce(five);
+    setSavedDreamsOnce(five);
     await expect(provider2.canAnalyzeDream(userFree, 'free')).resolves.toBe(false);
 
     // Exploration telemetry does not create another commercial gate.
@@ -147,12 +151,12 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
       buildDream({ id: 201, explorationStartedAt: now2, chatHistory: [{ id: 'm1', role: 'user', text: 'hi2' }] }),
     ];
     const provider3 = new MockQuotaProvider();
-    mockGetSavedDreams.mockResolvedValueOnce(threeExplored);
+    setSavedDreamsOnce(threeExplored);
     await expect(provider3.canExploreDream({ dreamId: 999 }, userFree, 'free')).resolves.toBe(true);
 
     // But for those same explored dreams, allow continuing the chat
     const provider4 = new MockQuotaProvider();
-    mockGetSavedDreams.mockResolvedValueOnce(threeExplored);
+    setSavedDreamsOnce(threeExplored);
     await expect(provider4.getUsedExplorationCount(userFree)).resolves.toBe(2);
     await expect(provider4.canExploreDream({ dreamId: 200 }, userFree, 'free')).resolves.toBe(true);
   });
@@ -171,7 +175,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
         })),
       })
     );
-    mockGetSavedDreams.mockResolvedValue(heavy);
+    setSavedDreams(heavy);
 
     const provider = new MockQuotaProvider();
     await expect(provider.canAnalyzeDream(userPlus, 'plus')).resolves.toBe(true);

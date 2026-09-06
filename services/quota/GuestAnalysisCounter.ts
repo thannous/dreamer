@@ -11,6 +11,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSavedDreams } from '@/services/storageServiceReal';
+import { requireReadableDreams } from '@/lib/dreamStorageRead';
 import { getAnalyzedDreamCount, getExploredDreamCount } from '@/lib/dreamUsage';
 import { countAiGeneratedImages } from './imageUsage';
 
@@ -270,7 +271,7 @@ export async function migrateExistingGuestQuota(): Promise<void> {
     }
 
     // Get current dream counts
-    const dreams = await getSavedDreams();
+    const dreams = requireReadableDreams(await getSavedDreams());
     const analysisCount = getAnalyzedDreamCount(dreams);
     const explorationCount = getExploredDreamCount(dreams);
     const imageCount = countAiGeneratedImages(dreams);

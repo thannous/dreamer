@@ -185,7 +185,11 @@ export const useDreamJournal = () => {
     persistLocalDreams,
     persistRemoteDreams,
     pendingMutations,
+    pendingMutationsLoaded,
+    pendingMutationsScope,
+    persistenceState,
     reloadDreams,
+    retryPersistence,
   } = useDreamPersistence({ canUseRemoteSync });
 
   /**
@@ -209,6 +213,8 @@ export const useDreamJournal = () => {
     persistRemoteDreams,
     resolveRemoteId,
     initialMutations: pendingMutations,
+    initialMutationsLoaded: pendingMutationsLoaded,
+    initialMutationsScope: pendingMutationsScope,
   });
 
   const pendingImageJobsRef = useRef<PendingImageJob[]>([]);
@@ -515,7 +521,7 @@ export const useDreamJournal = () => {
           return withGuestDreamRecordingLock(async () => {
             const currentDreams = dreamsRef.current;
             const alreadyExists = currentDreams.some((existing) => existing.id === normalizedDream.id);
-            await persistLocalDreams([normalizedDream, ...currentDreams]);
+            await persistLocalDreams(upsertDream(currentDreams, normalizedDream));
             if (!alreadyExists) {
               try {
                 await incrementLocalDreamRecordingCount();
@@ -528,7 +534,7 @@ export const useDreamJournal = () => {
         }
 
         const currentDreams = dreamsRef.current;
-        await persistLocalDreams([normalizedDream, ...currentDreams]);
+        await persistLocalDreams(upsertDream(currentDreams, normalizedDream));
         return normalizedDream;
       }
 
@@ -1526,6 +1532,7 @@ export const useDreamJournal = () => {
   return {
     dreams,
     loaded,
+    persistenceState,
     activeAnalysis,
     lastAnalysisOutcome,
     addDream,
@@ -1539,5 +1546,6 @@ export const useDreamJournal = () => {
     generateDreamImage,
     analyzeDream,
     reloadDreams,
+    retryPersistence,
   };
 };

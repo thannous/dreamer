@@ -8,6 +8,8 @@ const mockWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
 const mockPush = jest.fn();
 const mockDreams: unknown[] = [];
 const mockKeyboardListeners = new Map<string, () => void>();
+const mockRetryPersistence = jest.fn(async () => undefined);
+const mockPersistenceState = { status: 'ready' as const, target: 'device' as const };
 let mockPlatform = 'android';
 let mockListProps: Record<string, any> = {};
 
@@ -32,7 +34,13 @@ jest.mock('react-native', () => {
     StyleSheet: { create: (styles: unknown) => styles, flatten: (styles: unknown) => styles },
   };
 });
-jest.mock('@/context/DreamsContext', () => ({ useDreams: () => ({ dreams: mockDreams }) }));
+jest.mock('@/context/DreamsContext', () => ({
+  useDreams: () => ({
+    dreams: mockDreams,
+    persistenceState: mockPersistenceState,
+    retryPersistence: mockRetryPersistence,
+  }),
+}));
 jest.mock('@/context/ThemeContext', () => ({ useTheme: () => ({ colors: {}, mode: 'dark' }) }));
 jest.mock('@/constants/noctaliaDesign', () => ({ getNoctaliaDesignTokens: () => ({ text: { primary: '#fff' }, action: { primaryText: '#111' } }) }));
 jest.mock('@/hooks/useTranslation', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
@@ -83,6 +91,7 @@ afterEach(() => {
   mockPush.mockClear();
   mockPlatform = 'android';
   mockKeyboardListeners.clear();
+  mockRetryPersistence.mockClear();
 });
 
 describe('Journal compact large-text layout', () => {

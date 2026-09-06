@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import type { DreamAnalysis, DreamListReadResult } from '@/lib/types';
 
 const storage = new Map<string, string>();
 
@@ -18,7 +19,9 @@ const mockAsyncStorage = {
   }),
 };
 
-const mockGetSavedDreams = jest.fn();
+const mockGetSavedDreams = jest.fn() as jest.MockedFunction<() => Promise<DreamListReadResult>>;
+const loadedDreams = (value: unknown[]): DreamListReadResult => ({ status: 'loaded', value: value as DreamAnalysis[] });
+const setSavedDreams = (value: unknown[]) => mockGetSavedDreams.mockResolvedValue(loadedDreams(value));
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
   __esModule: true,
@@ -58,11 +61,11 @@ describe('MockQuotaEventStore', () => {
     jest.resetModules();
     jest.clearAllMocks();
     storage.clear();
-    mockGetSavedDreams.mockResolvedValue([]);
+    setSavedDreams([]);
   });
 
   it('migrates counts from stored dreams on first access', async () => {
-    mockGetSavedDreams.mockResolvedValue([
+    setSavedDreams([
       buildDream({ id: 1, isAnalyzed: true, analyzedAt: 100, explorationStartedAt: 200 }),
       buildDream({
         id: 2,
@@ -88,7 +91,7 @@ describe('MockQuotaEventStore', () => {
   });
 
   it('counts illustrations separately from analyses', async () => {
-    mockGetSavedDreams.mockResolvedValue([
+    setSavedDreams([
       buildDream({ id: 1, isAnalyzed: true, analyzedAt: 100 }),
       buildDream({
         id: 2,
@@ -106,7 +109,7 @@ describe('MockQuotaEventStore', () => {
   });
 
   it('uses cached migration state on subsequent calls', async () => {
-    mockGetSavedDreams.mockResolvedValue([buildDream({ id: 10, isAnalyzed: true, analyzedAt: 1 })]);
+    setSavedDreams([buildDream({ id: 10, isAnalyzed: true, analyzedAt: 1 })]);
 
     const store = require('../MockQuotaEventStore');
 

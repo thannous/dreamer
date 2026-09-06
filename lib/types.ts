@@ -216,6 +216,11 @@ export type RecordingDraftReadResult =
   | { status: 'absent' }
   | { status: 'error' };
 
+export type DreamListReadResult =
+  | { status: 'loaded'; value: DreamAnalysis[] }
+  | { status: 'absent' }
+  | { status: 'error' };
+
 export type AppLanguage = 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt';
 
 export type LanguagePreference = 'auto' | 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt';
@@ -368,3 +373,8 @@ export interface ReferenceImageGenerationRequest {
   previousImageUrl?: string;
   lang?: string;
 }
+
+export type GuestDreamMigrationOwner = {
+  userId: string;
+  dreamIds: number[];
+};

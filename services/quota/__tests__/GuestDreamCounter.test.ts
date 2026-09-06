@@ -3,6 +3,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import type { DreamAnalysis, DreamListReadResult } from '@/lib/types';
 
 let getGuestRecordedDreamCount: typeof import('../GuestDreamCounter').getGuestRecordedDreamCount;
 let getLocalDreamRecordingCount: typeof import('../GuestDreamCounter').getLocalDreamRecordingCount;
@@ -15,9 +16,12 @@ const { mockStorage, mockGetSavedDreams } = ((factory: any) => factory())(() => 
   const storage = new Map<string, string>();
   return {
     mockStorage: storage,
-    mockGetSavedDreams: jest.fn(),
+    mockGetSavedDreams: jest.fn() as jest.MockedFunction<() => Promise<DreamListReadResult>>,
   };
 });
+
+const loadedDreams = (value: DreamAnalysis[]): DreamListReadResult => ({ status: 'loaded', value });
+const setSavedDreams = (value: DreamAnalysis[]) => mockGetSavedDreams.mockResolvedValue(loadedDreams(value));
 
 const mockAsyncStorage = {
   getItem: jest.fn((key: string) => Promise.resolve(mockStorage.get(key) ?? null)),
@@ -112,12 +116,12 @@ describe('GuestDreamCounter', () => {
   });
 
   it('migrateExistingGuestDreamRecording is idempotent and seeds from dreams length', async () => {
-    mockGetSavedDreams.mockResolvedValue([{ id: 1 }, { id: 2 }] as any);
+    setSavedDreams([{ id: 1 }, { id: 2 }] as any);
     await migrateExistingGuestDreamRecording();
     expect(mockStorage.get(DREAM_RECORDING_KEY)).toBe('2');
     expect(mockStorage.get(MIGRATION_KEY)).toBe('true');
 
-    mockGetSavedDreams.mockResolvedValue([{ id: 1 }, { id: 2 }, { id: 3 }] as any);
+    setSavedDreams([{ id: 1 }, { id: 2 }, { id: 3 }] as any);
     await migrateExistingGuestDreamRecording();
     expect(mockStorage.get(DREAM_RECORDING_KEY)).toBe('2');
   });

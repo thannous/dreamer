@@ -4,6 +4,7 @@ import { QUOTAS, type UserTier } from '@/constants/limits';
 import { getUserChatMessageCount, isDreamExplored } from '@/lib/dreamUsage';
 import type { DreamAnalysis, QuotaStatus } from '@/lib/types';
 import { getSavedDreams } from '@/services/storageService';
+import { requireReadableDreams } from '@/lib/dreamStorageRead';
 import {
   getMockAnalysisCount,
   getMockExplorationCount,
@@ -27,7 +28,7 @@ export class MockQuotaProvider implements QuotaProvider {
       return cached.value as DreamAnalysis[];
     }
 
-    const dreams = await getSavedDreams();
+    const dreams = requireReadableDreams(await getSavedDreams());
     this.cache.set(CACHE_KEY, {
       value: dreams,
       expiresAt: Date.now() + this.CACHE_TTL,

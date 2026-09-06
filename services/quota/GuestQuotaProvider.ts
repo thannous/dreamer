@@ -9,6 +9,7 @@ import {
   getUserChatMessageCount,
 } from '@/lib/dreamUsage';
 import { getSavedDreams } from '@/services/storageServiceReal';
+import { requireReadableDreams } from '@/lib/dreamStorageRead';
 import { getLocalAnalysisCount, getLocalExplorationCount, getLocalImageCount } from './GuestAnalysisCounter';
 import { countAiGeneratedImages } from './imageUsage';
 import { buildQuotaMetric, resolveCanGenerateImage } from './quotaMetrics';
@@ -32,7 +33,7 @@ export class GuestQuotaProvider implements QuotaProvider {
       return cached.value;
     }
 
-    const dreams = await getSavedDreams();
+    const dreams = requireReadableDreams(await getSavedDreams());
     this.cache.set(cacheKey, {
       value: dreams,
       expiresAt: Date.now() + this.CACHE_TTL,

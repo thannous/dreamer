@@ -6,6 +6,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import type { DreamAnalysis, DreamListReadResult } from '@/lib/types';
 
 let getLocalAnalysisCount: typeof import('../GuestAnalysisCounter').getLocalAnalysisCount;
 let getLocalExplorationCount: typeof import('../GuestAnalysisCounter').getLocalExplorationCount;
@@ -21,7 +22,7 @@ const { mockStorage, mockGetSavedDreams, mockDreamUsageConfig } = ((factory: any
   const storage = new Map<string, string>();
   return {
     mockStorage: storage,
-    mockGetSavedDreams: jest.fn(),
+    mockGetSavedDreams: jest.fn() as jest.MockedFunction<() => Promise<DreamListReadResult>>,
     // Config for dreamUsage mock return values (set per test)
     mockDreamUsageConfig: {
       analysisCount: 0,
@@ -29,6 +30,9 @@ const { mockStorage, mockGetSavedDreams, mockDreamUsageConfig } = ((factory: any
     },
   };
 });
+
+const loadedDreams = (value: DreamAnalysis[]): DreamListReadResult => ({ status: 'loaded', value });
+const setSavedDreams = (value: DreamAnalysis[]) => mockGetSavedDreams.mockResolvedValue(loadedDreams(value));
 
 const mockAsyncStorage = {
   getItem: jest.fn((key: string) => Promise.resolve(mockStorage.get(key) ?? null)),
@@ -413,7 +417,7 @@ describe('GuestAnalysisCounter', () => {
 
     it('given migration already done when calling again then is idempotent', async () => {
       // Given - First migration (with no dreams)
-      mockGetSavedDreams.mockResolvedValue([]);
+      setSavedDreams([]);
       await migrateExistingGuestQuota();
 
       // Verify migration flag is set

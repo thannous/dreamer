@@ -4,6 +4,7 @@ import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
 import { supabase } from '@/lib/supabase';
 import type { QuotaStatus } from '@/lib/types';
 import { getCachedRemoteDreams } from '@/services/storageService';
+import { requireReadableDreams } from '@/lib/dreamStorageRead';
 import type { User } from '@supabase/supabase-js';
 import type { CacheEntry, QuotaDreamTarget, QuotaProvider } from './types';
 import {
@@ -33,11 +34,11 @@ export class SupabaseQuotaProvider implements QuotaProvider {
   private cache: Map<string, CacheEntry<any>> = new Map();
   private readonly CACHE_TTL = 30000; // 30 seconds
 
-  private async resolveDream(target: QuotaDreamTarget | undefined) {
+  private async resolveDream(target: QuotaDreamTarget | undefined, user: User) {
     if (!target) return undefined;
     if (target.dream) return target.dream;
     if (!target.dreamId) return undefined;
-    const cached = await getCachedRemoteDreams();
+    const cached = requireReadableDreams(await getCachedRemoteDreams(`user:${user.id}`));
     return cached.find((dream) => dream.id === target.dreamId);
   }
 
@@ -99,7 +100,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
   ): Promise<QuotaStatus | null> {
     if (typeof (supabase as any).rpc !== 'function') return null;
 
-    const dream = await this.resolveDream(target);
+    const dream = await this.resolveDream(target, user);
     const remoteDreamId = dream?.remoteId ?? null;
     const cacheKey = this.getMonthlyCacheKey(
       `quota_snapshot_${remoteDreamId ?? 'none'}`,
@@ -364,7 +365,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
   async getUsedMessagesCount(target: QuotaDreamTarget | undefined, user: User | null): Promise<number> {
     if (!user || !target) return 0;
 
-    const dream = await this.resolveDream(target);
+    const dream = await this.resolveDream(target, user);
     const cacheKey = `messages_count_${user.id}_${dream?.remoteId ?? dream?.id ?? target.dreamId}`;
 
     return this.getOrCache(cacheKey, async () => {
@@ -408,7 +409,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
 
     if (limits.exploration === null) return true;
 
-    const dream = await this.resolveDream(target);
+    const dream = await this.resolveDream(target, user);
 
     if (getDreamAnalysisState(dream).isExplored) {
       return true;

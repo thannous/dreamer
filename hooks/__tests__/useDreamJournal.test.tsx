@@ -4,12 +4,13 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import type { DreamAnalysis, DreamMutation, PendingImageJob, QuotaStatus } from '../../lib/types';
+import type { GuestDreamMigrationOwner, DreamAnalysis, DreamListReadResult, DreamMutation, PendingImageJob, QuotaStatus } from '../../lib/types';
 import { QuotaError, QuotaErrorCode } from '../../lib/errors';
 import { getDreamAnalysisFreshness, hashDreamTranscript } from '../../lib/dreamAnalysisFreshness';
 
 type AnyFunction = (...args: any[]) => any;
 const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
+const loadedDreams = (value: DreamAnalysis[]): DreamListReadResult => ({ status: 'loaded', value });
 
 // Hoist mock functions
 const {
@@ -42,13 +43,15 @@ const {
   mockGetAccessToken,
   mockMarkMockAnalysis,
   mockMarkMockImage,
+  mockGetGuestDreamMigrationOwner,
+  mockSetGuestDreamMigrationOwner,
 } = ((factory: any) => factory())(() => ({
-  mockGetSavedDreams: typedJestFn<() => Promise<DreamAnalysis[]>>(),
+  mockGetSavedDreams: typedJestFn<() => Promise<DreamListReadResult>>(),
   mockSaveDreams: typedJestFn<(dreams: DreamAnalysis[]) => Promise<void>>(),
-  mockGetCachedRemoteDreams: typedJestFn<() => Promise<DreamAnalysis[]>>(),
-  mockSaveCachedRemoteDreams: typedJestFn<(dreams: DreamAnalysis[]) => Promise<void>>(),
-  mockGetPendingDreamMutations: typedJestFn<() => Promise<DreamMutation[]>>(),
-  mockSavePendingDreamMutations: typedJestFn<(mutations: DreamMutation[]) => Promise<void>>(),
+  mockGetCachedRemoteDreams: typedJestFn<(scope?: string | null) => Promise<DreamListReadResult>>(),
+  mockSaveCachedRemoteDreams: typedJestFn<(dreams: DreamAnalysis[], scope?: string | null) => Promise<void>>(),
+  mockGetPendingDreamMutations: typedJestFn<(scope?: string | null) => Promise<DreamMutation[]>>(),
+  mockSavePendingDreamMutations: typedJestFn<(mutations: DreamMutation[], scope?: string | null) => Promise<void>>(),
   mockGetPendingImageJobs: typedJestFn<() => Promise<PendingImageJob[]>>(),
   mockSavePendingImageJobs: typedJestFn<(jobs: PendingImageJob[]) => Promise<void>>(),
   mockCreateDreamInSupabase: typedJestFn<(dream: DreamAnalysis, userId: string) => Promise<DreamAnalysis>>(),
@@ -75,7 +78,12 @@ const {
   mockGetAccessToken: typedJestFn<() => Promise<string | null>>(),
   mockMarkMockAnalysis: typedJestFn<() => Promise<number>>(),
   mockMarkMockImage: typedJestFn<(dream?: { id: number }) => Promise<number>>(),
+  mockGetGuestDreamMigrationOwner: typedJestFn<() => Promise<GuestDreamMigrationOwner | null>>(),
+  mockSetGuestDreamMigrationOwner: typedJestFn<(ownerUserId: GuestDreamMigrationOwner | null) => Promise<void>>(),
 }));
+
+const setSavedDreams = (value: DreamAnalysis[]) => mockGetSavedDreams.mockResolvedValue(loadedDreams(value));
+const setCachedRemoteDreams = (value: DreamAnalysis[]) => mockGetCachedRemoteDreams.mockResolvedValue(loadedDreams(value));
 
 let mockSubscriptionStatus: any = { tier: 'free' };
 const mockEnvState = { analysisJobsEnabled: false, mockMode: false };
@@ -149,6 +157,8 @@ jest.mock('../../services/storageService', () => ({
   savePendingDreamMutations: mockSavePendingDreamMutations,
   getPendingImageJobs: mockGetPendingImageJobs,
   savePendingImageJobs: mockSavePendingImageJobs,
+  getGuestDreamMigrationOwner: mockGetGuestDreamMigrationOwner,
+  setGuestDreamMigrationOwner: mockSetGuestDreamMigrationOwner,
 }));
 
 // Mock supabaseDreamService
@@ -299,9 +309,9 @@ describe('useDreamJournal', () => {
     mockNetworkState.isConnected = true;
     mockGetGuestRecordedDreamCount.mockResolvedValue(0);
     process.env.EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED = '';
-    mockGetSavedDreams.mockResolvedValue([]);
+    setSavedDreams([]);
     mockSaveDreams.mockResolvedValue(undefined);
-    mockGetCachedRemoteDreams.mockResolvedValue([]);
+    setCachedRemoteDreams([]);
     mockSaveCachedRemoteDreams.mockResolvedValue(undefined);
     mockGetPendingDreamMutations.mockResolvedValue([]);
     mockSavePendingDreamMutations.mockResolvedValue(undefined);
@@ -316,6 +326,8 @@ describe('useDreamJournal', () => {
     mockGetAccessToken.mockResolvedValue('test-token');
     mockMarkMockAnalysis.mockResolvedValue(1);
     mockMarkMockImage.mockResolvedValue(1);
+    mockGetGuestDreamMigrationOwner.mockResolvedValue(null);
+    mockSetGuestDreamMigrationOwner.mockResolvedValue(undefined);
     mockSubmitImageGenerationJob.mockResolvedValue({
       jobId: 'job-1',
       status: 'queued',
@@ -343,7 +355,7 @@ describe('useDreamJournal', () => {
   describe('initialization and loading', () => {
     it('loads local dreams when not authenticated', async () => {
       const localDreams = [buildDream({ id: 1 }), buildDream({ id: 2 })];
-      mockGetSavedDreams.mockResolvedValue(localDreams);
+      setSavedDreams(localDreams);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -371,7 +383,7 @@ describe('useDreamJournal', () => {
       setMockUser({ id: 'user-1' });
       const cachedDreams = [buildDream({ id: 1 })];
       mockFetchDreamsFromSupabase.mockRejectedValue(new Error('Network error'));
-      mockGetCachedRemoteDreams.mockResolvedValue(cachedDreams);
+      setCachedRemoteDreams(cachedDreams);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -400,13 +412,77 @@ describe('useDreamJournal', () => {
       expect(result.current.dreams.some((d: DreamAnalysis) => d.id === 2)).toBe(true);
     });
 
+    it('does not carry account A queue data into account B while B storage is still loading', async () => {
+      setMockUser({ id: 'user-a' });
+      mockNetworkState.isInternetReachable = false;
+      mockNetworkState.isConnected = false;
+      const hook = await renderLoadedDreamJournal();
+      const dreamA = buildDream({ id: 301, clientRequestId: 'account-a-301' });
+
+      await act(async () => {
+        await hook.result.current.addDream(dreamA);
+      });
+      expect(mockSavePendingDreamMutations).toHaveBeenCalledWith(
+        expect.arrayContaining([expect.objectContaining({ userScope: 'user:user-a' })]),
+        'user:user-a'
+      );
+      mockSavePendingDreamMutations.mockClear();
+
+      let resolveBMutations!: (mutations: DreamMutation[]) => void;
+      let resolveBCache!: (result: DreamListReadResult) => void;
+      mockGetPendingDreamMutations.mockImplementation((scope: string | null | undefined) =>
+        scope === 'user:user-b'
+          ? new Promise((resolve) => {
+              resolveBMutations = resolve;
+            })
+          : Promise.resolve([])
+      );
+      mockGetCachedRemoteDreams.mockImplementation((scope: string | null | undefined) =>
+        scope === 'user:user-b'
+          ? new Promise((resolve) => {
+              resolveBCache = resolve;
+            })
+          : Promise.resolve(loadedDreams([]))
+      );
+      setMockUser({ id: 'user-b' });
+      hook.rerender();
+
+      expect(hook.result.current.dreams).toEqual([]);
+      expect(hook.result.current.loaded).toBe(false);
+      expect(mockSavePendingDreamMutations).not.toHaveBeenCalled();
+
+      const dreamB = buildDream({ id: 302, clientRequestId: 'account-b-302' });
+      resolveBMutations([
+        legacyMutation({
+          id: 'mutation-b-302',
+          type: 'create',
+          dream: dreamB,
+          createdAt: 302,
+        }),
+      ]);
+      resolveBCache(loadedDreams([]));
+
+      await waitFor(() => {
+        expect(hook.result.current.loaded).toBe(true);
+      }, FAST_WAIT_OPTIONS);
+      await waitFor(() => {
+        expect(hook.result.current.dreams).toEqual([
+          expect.objectContaining({ id: 302, clientRequestId: 'account-b-302' }),
+        ]);
+      }, FAST_WAIT_OPTIONS);
+      expect(mockSavePendingDreamMutations).not.toHaveBeenCalledWith(
+        expect.arrayContaining([expect.objectContaining({ userScope: 'user:user-a' })]),
+        'user:user-b'
+      );
+    });
+
     it('normalizes dream images with thumbnails', async () => {
       const dreamWithImage = buildDream({
         id: 1,
         imageUrl: 'https://example.com/image.jpg',
         thumbnailUrl: undefined,
       });
-      mockGetSavedDreams.mockResolvedValue([dreamWithImage]);
+      setSavedDreams([dreamWithImage]);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -678,7 +754,7 @@ describe('useDreamJournal', () => {
       );
 
       mockGetPendingDreamMutations.mockResolvedValue(queuedMutations);
-      mockGetCachedRemoteDreams.mockResolvedValue(result.current.dreams);
+      setCachedRemoteDreams(result.current.dreams);
       mockNetworkState.isInternetReachable = true;
       mockNetworkState.isConnected = true;
       rerender();
@@ -714,7 +790,7 @@ describe('useDreamJournal', () => {
         }),
       ]);
       mockGetPendingDreamMutations.mockResolvedValue([]);
-      mockGetCachedRemoteDreams.mockResolvedValue([]);
+      setCachedRemoteDreams([]);
 
       const reopened = await renderLoadedDreamJournal();
       expect(reopened.result.current.dreams).toEqual(
@@ -733,7 +809,7 @@ describe('useDreamJournal', () => {
   describe('updateDream', () => {
     it('updates dream locally when not authenticated', async () => {
       const existingDream = buildDream({ id: 1, title: 'Original' });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -882,7 +958,7 @@ describe('useDreamJournal', () => {
         analysisStatus: 'done',
         analysisTranscriptHash: hashDreamTranscript('Original transcript'),
       });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -1113,7 +1189,7 @@ describe('useDreamJournal', () => {
         analysisStatus: 'none',
         isAnalyzed: false,
       });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -1145,7 +1221,7 @@ describe('useDreamJournal', () => {
         analysisStatus: 'pending',
         isAnalyzed: false,
       });
-      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      setSavedDreams([pendingDream]);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -1169,7 +1245,7 @@ describe('useDreamJournal', () => {
         analysisStatus: 'none',
         isAnalyzed: false,
       });
-      mockGetSavedDreams.mockResolvedValue([rememberedDream]);
+      setSavedDreams([rememberedDream]);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -1189,7 +1265,7 @@ describe('useDreamJournal', () => {
   describe('deleteDream', () => {
     it('deletes dream locally when not authenticated', async () => {
       const existingDream = buildDream({ id: 1 });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -1246,7 +1322,7 @@ describe('useDreamJournal', () => {
   describe('toggleFavorite', () => {
     it('toggles favorite locally when not authenticated', async () => {
       const existingDream = buildDream({ id: 1, isFavorite: false });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -1558,7 +1634,7 @@ describe('useDreamJournal', () => {
         imageJobStatus: 'queued',
         imageJobRequestId: 'image-request-local',
       });
-      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      setSavedDreams([pendingDream]);
       mockGetPendingImageJobs.mockResolvedValue([
         {
           dreamId: 1,
@@ -1592,7 +1668,7 @@ describe('useDreamJournal', () => {
         imageJobStatus: 'queued',
         imageJobRequestId: 'image-request-guest',
       });
-      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      setSavedDreams([pendingDream]);
       mockGetPendingImageJobs.mockResolvedValue([
         {
           dreamId: 1,
@@ -1676,7 +1752,7 @@ describe('useDreamJournal', () => {
         imageJobStatus: 'queued',
         imageJobRequestId: 'image-request-guest-retry',
       });
-      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      setSavedDreams([pendingDream]);
       mockGetPendingImageJobs.mockResolvedValue([
         {
           dreamId: 1,
@@ -1733,7 +1809,7 @@ describe('useDreamJournal', () => {
         imageJobStatus: 'running',
         imageJobRequestId: 'image-request-guest-fail',
       });
-      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      setSavedDreams([pendingDream]);
       mockGetPendingImageJobs.mockResolvedValue([
         {
           dreamId: 1,
@@ -1769,7 +1845,7 @@ describe('useDreamJournal', () => {
         imageJobStatus: 'queued',
         imageJobRequestId: 'image-request-mock',
       });
-      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      setSavedDreams([pendingDream]);
       mockGetPendingImageJobs.mockResolvedValue([
         {
           dreamId: 1,
@@ -1810,7 +1886,7 @@ describe('useDreamJournal', () => {
         imageJobStatus: 'queued',
         imageJobRequestId: 'image-request-mock-fail',
       });
-      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      setSavedDreams([pendingDream]);
       mockGetPendingImageJobs.mockResolvedValue([
         {
           dreamId: 1,
@@ -1845,7 +1921,7 @@ describe('useDreamJournal', () => {
         imageJobStatus: 'queued',
         imageJobRequestId: 'image-request-cleanup',
       });
-      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      setSavedDreams([pendingDream]);
       mockGetPendingImageJobs.mockResolvedValue([
         {
           dreamId: 1,
@@ -1880,7 +1956,7 @@ describe('useDreamJournal', () => {
         imageJobStatus: 'running',
         imageJobRequestId: 'image-request-failed',
       });
-      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      setSavedDreams([pendingDream]);
       mockGetPendingImageJobs.mockResolvedValue([
         {
           dreamId: 1,
@@ -1923,7 +1999,7 @@ describe('useDreamJournal', () => {
           imageJobStatus: status,
           imageJobRequestId: 'image-request-active',
         });
-        mockGetSavedDreams.mockResolvedValue([pendingDream]);
+        setSavedDreams([pendingDream]);
         mockGetPendingImageJobs.mockResolvedValue([
           {
             dreamId: 1,
@@ -1979,7 +2055,7 @@ describe('useDreamJournal', () => {
         imageJobStatus: 'running',
         imageJobRequestId: 'image-request-fast',
       });
-      mockGetSavedDreams.mockResolvedValue([pendingDream]);
+      setSavedDreams([pendingDream]);
       mockGetPendingImageJobs.mockResolvedValue([
         {
           dreamId: 1,
@@ -2366,7 +2442,7 @@ describe('useDreamJournal', () => {
     it('checks quota before analyzing', async () => {
       mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ canAnalyze: false }));
       const existingDream = buildDream({ id: 1, isAnalyzed: false, analysisStatus: 'none' });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -2385,7 +2461,7 @@ describe('useDreamJournal', () => {
       mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ tier: 'plus', canAnalyze: false }));
 
       const existingDream = buildDream({ id: 1, isAnalyzed: false, analysisStatus: 'none' });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -2408,7 +2484,7 @@ describe('useDreamJournal', () => {
         analysisStatus: 'none',
         imageUrl: '',
       });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -2469,7 +2545,7 @@ describe('useDreamJournal', () => {
         analysisStatus: 'none',
         imageUrl: '',
       });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
       mockSubmitImageGenerationJob.mockReturnValue(imageAdmissionPromise);
 
       const { result } = await renderLoadedDreamJournal();
@@ -2512,7 +2588,7 @@ describe('useDreamJournal', () => {
         analysisRequestId: persistedRequestId,
         imageUrl: '',
       });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
       // A previous server claim may make the optimistic quota look exhausted.
       // Retrying the same request must still reach the idempotent server claim.
       mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ canAnalyze: false }));
@@ -2552,7 +2628,7 @@ describe('useDreamJournal', () => {
         analysisRequestId: persistedRequestId,
         imageUrl: '',
       });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
       mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ canAnalyze: false }));
 
       const { result } = await renderLoadedDreamJournal();
@@ -2639,7 +2715,7 @@ describe('useDreamJournal', () => {
         analysisStatus: 'none',
         imageUrl: '',
       });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
       mockSubmitImageGenerationJob.mockRejectedValue(new Error('Image generation failed'));
 
       const { result } = await renderLoadedDreamJournal();
@@ -2660,7 +2736,7 @@ describe('useDreamJournal', () => {
         isAnalyzed: false,
         analysisStatus: 'none',
       });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
       mockAnalyzeDreamText.mockRejectedValue(new Error('Analysis failed'));
 
       const { result } = await renderLoadedDreamJournal();
@@ -2697,7 +2773,7 @@ describe('useDreamJournal', () => {
         analysisStatus: 'none',
         imageUrl: '',
       });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
       mockAnalyzeDreamText
         .mockRejectedValueOnce(new Error('Analysis failed'))
         .mockResolvedValueOnce({
@@ -2737,7 +2813,7 @@ describe('useDreamJournal', () => {
         isAnalyzed: false,
         analysisStatus: 'none',
       });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -2763,7 +2839,7 @@ describe('useDreamJournal', () => {
           analysisStatus: 'none',
           imageUrl: '',
         });
-        mockGetSavedDreams.mockResolvedValue([existingDream]);
+        setSavedDreams([existingDream]);
         const onProgress = jest.fn();
 
         const { result } = await renderLoadedDreamJournal();
@@ -2824,7 +2900,7 @@ describe('useDreamJournal', () => {
         imageJobErrorCode: undefined,
         imageJobErrorMessage: undefined,
       });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
 
       const { result } = await renderLoadedDreamJournal();
       const imageSidecar = {
@@ -2895,7 +2971,7 @@ describe('useDreamJournal', () => {
         imageJobErrorCode: 'IMAGE_PROVIDER_FAILED',
         imageJobErrorMessage: 'previous illustration failed',
       });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
 
       const { result } = await renderLoadedDreamJournal();
       const imageSidecar = {
@@ -2958,7 +3034,7 @@ describe('useDreamJournal', () => {
         analysisStatus: 'none',
         imageUrl: '',
       });
-      mockGetSavedDreams.mockResolvedValue([existingDream]);
+      setSavedDreams([existingDream]);
       const onProgress = jest.fn();
 
       const { result } = await renderLoadedDreamJournal();

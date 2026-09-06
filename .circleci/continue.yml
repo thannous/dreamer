@@ -116,6 +116,12 @@ jobs:
     steps:
       - install-root-dependencies
       - run:
+          name: Verify CI classification and Jest fallback
+          command: |
+            set -euo pipefail
+            bash .circleci/tests/classify-changes.test.sh
+            bash .circleci/tests/fallback-jest.test.sh
+      - run:
           name: Typecheck Noctalia application
           command: npm run typecheck:app
       - run:

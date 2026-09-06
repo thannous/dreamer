@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAnalyzedDreamCount, getExploredDreamCount, isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import type { DreamAnalysis } from '@/lib/types';
 import { getSavedDreams } from '@/services/storageService';
+import { requireReadableDreams } from '@/lib/dreamStorageRead';
 import { countAiGeneratedImages, isAiGeneratedImage } from './imageUsage';
 
 type MockQuotaState = {
@@ -52,7 +53,7 @@ function mergeIds(existing: number[], incoming: number[]): number[] {
 }
 
 async function syncWithDreams(state: MockQuotaState): Promise<MockQuotaState> {
-  const dreams = (await getSavedDreams()) ?? [];
+  const dreams = requireReadableDreams(await getSavedDreams());
   const analysisFromDreams = getAnalyzedDreamCount(dreams);
   const explorationFromDreams = getExploredDreamCount(dreams);
 
@@ -141,7 +142,7 @@ async function migrateFromDreamsIfNeeded(): Promise<void> {
     }
   }
 
-  const dreams = (await getSavedDreams()) ?? [];
+  const dreams = requireReadableDreams(await getSavedDreams());
   const analysisCount = getAnalyzedDreamCount(dreams);
   const explorationCount = getExploredDreamCount(dreams);
 
