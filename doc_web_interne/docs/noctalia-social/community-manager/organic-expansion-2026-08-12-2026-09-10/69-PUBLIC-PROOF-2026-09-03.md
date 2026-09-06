@@ -23,7 +23,7 @@ Le hero reprend `SUNSET_VOLCANOPUNK_BASALT_LAVA_02.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 03/09 | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique — profil exact relu |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 03/09 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER | Aucune URL publique — profil exact relu |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `Would You Cross This Volcanic Dream City? #Shorts` | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique — titre absent de la chaîne |
 | Facebook page `1266183263247451` | 18:15 | Hero exact du 03/09 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Les surfaces publiques `/NoctaliaDreams/reels` et `/NoctaliaDreams/videos` affichent « Ce contenu n’est pas disponible pour le moment » ; aucune URL publique |
 

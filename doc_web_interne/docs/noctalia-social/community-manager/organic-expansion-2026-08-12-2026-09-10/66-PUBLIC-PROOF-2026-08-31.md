@@ -23,7 +23,7 @@ Le hero reprend `NIGHT_LUNARPUNK_SILVER_LUNAR_02.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 31/08 | **ÉCHEC — NON PUBLIÉ** | Profil public ouvert, onglet `Créées` sans Pin du hero ; session déconnectée et capacité native non vérifiable, aucune URL |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 31/08 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER | Profil public ouvert, onglet `Créées` sans Pin du hero ; session déconnectée et capacité native non vérifiable, aucune URL |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `Give This Lunar Dream a Five-Word Title #Shorts` | **PUBLIÉ** | [dK0vOKr7PzY](https://www.youtube.com/shorts/dK0vOKr7PzY) ouvert sur `@noctaliadreams`, titre exact et badge IA ; aucun horodatage natif exposé |
 | Facebook page `1266183263247451` | 18:15 | Hero exact du 31/08 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | L'URL native candidate `4662153027439937` mène à une surface de connexion sans contenu public vérifiable ; les surfaces `/NoctaliaDreams/reels` et `/NoctaliaDreams/videos` restent indisponibles, donc aucune preuve publique exacte |
 

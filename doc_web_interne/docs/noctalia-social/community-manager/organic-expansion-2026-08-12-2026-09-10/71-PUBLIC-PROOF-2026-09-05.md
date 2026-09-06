@@ -13,9 +13,9 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | C2 | TikTok `@noctaliadreams` | 19:30 | `SUNSET_DREAMSCAPE_WARPED_OLD_TOWN_FLIGHT_01.mp4` | **ÉCHEC — NON PUBLIÉ** — PREUVE PUBLIQUE NON VÉRIFIABLE | Aucune URL — le hook exact n'est pas exposé par la surface publique accessible et la capacité native est invérifiable sur Mac verrouillé |
 | C2 | Instagram `@noctaliadreams` | 19:45 | `SUNSET_DREAMSCAPE_WARPED_OLD_TOWN_FLIGHT_01.mp4` | **ÉCHEC — NON PUBLIÉ** — SESSION NATIVE INACCESSIBLE | Aucune URL — publication directe impossible sur Mac verrouillé ; le hook exact n'est pas exposé par la surface publique accessible |
 | C2 | X `@NoctaliaDreams` | 20:15 | `SUNSET_DREAMSCAPE_WARPED_OLD_TOWN_FLIGHT_01.mp4` | **PUBLIÉ** | [2096301082913968323](https://x.com/NoctaliaDreams/status/2096301082913968323) — compte, hook, vidéo, heure et label `Made with AI` vérifiés ; 1 vue, 0 réponse, 0 repost, 0 J'aime et 0 favori visibles |
-| C3 | TikTok `@noctaliadreams` | 22:30 | `DAY_AETHERPUNK_CLOUD_ARCHITECTURE_RUN_01.mp4` | **PRÊT — NON PROGRAMMÉ** | À vérifier après 22:30 |
-| C3 | Instagram `@noctaliadreams` | 22:45 | `DAY_AETHERPUNK_CLOUD_ARCHITECTURE_RUN_01.mp4` | **PRÊT — DIRECT** | À publier puis vérifier après 22:45 |
-| C3 | X `@NoctaliaDreams` | 23:15 | `DAY_AETHERPUNK_CLOUD_ARCHITECTURE_RUN_01.mp4` | **PROGRAMMÉ** | À vérifier après 23:15 |
+| C3 | TikTok `@noctaliadreams` | 22:30 | `DAY_AETHERPUNK_CLOUD_ARCHITECTURE_RUN_01.mp4` | **ÉCHEC — NON PUBLIÉ** — PREUVE PUBLIQUE NON VÉRIFIABLE | Aucune URL — le profil public exact n'expose pas le hook attendu après l'échéance ; aucune capacité native n'est supposée |
+| C3 | Instagram `@noctaliadreams` | 22:45 | `DAY_AETHERPUNK_CLOUD_ARCHITECTURE_RUN_01.mp4` | **ÉCHEC — NON PUBLIÉ** — PUBLICATION DIRECTE NON EXÉCUTÉE | Aucune URL — le profil authentifié exact affiche 77 publications sans le hook attendu ; aucune publication tardive |
+| C3 | X `@NoctaliaDreams` | 23:15 | `DAY_AETHERPUNK_CLOUD_ARCHITECTURE_RUN_01.mp4` | **PUBLIÉ** | [2096346381371805983](https://x.com/NoctaliaDreams/status/2096346381371805983) — compte, hook, vidéo 10 s, heure et label `Made with AI` vérifiés ; 1 vue, 0 réponse, 0 repost, 0 J'aime et 0 favori visibles |
 
 ## Hero secondaire — 3 preuves
 
@@ -23,7 +23,7 @@ Le hero reprend `AFTERGLOW_DREAMSCAPE_INFINITE_STAIRCASE_01.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 05/09 | **ÉCHEC — NON PUBLIÉ** — PREUVE PUBLIQUE NON VÉRIFIABLE | Aucune URL — le titre exact est absent des résultats publics accessibles et la session native est inaccessible sur Mac verrouillé |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 05/09 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER — PREUVE PUBLIQUE NON VÉRIFIABLE | Aucune URL — le titre exact est absent des résultats publics accessibles et la session native est inaccessible sur Mac verrouillé |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `Would You Climb This Infinite Dream Staircase? #Shorts` | **ÉCHEC — NON PUBLIÉ** — PREUVE PUBLIQUE NON VÉRIFIABLE | Aucune URL — la page publique confirme la chaîne exacte, mais le titre attendu n'est pas exposé et la session native est inaccessible sur Mac verrouillé |
 | Facebook page `1266183263247451` | 18:15 | Hero exact du 05/09 | **ÉCHEC — NON PUBLIÉ** — PREUVE PUBLIQUE NON VÉRIFIABLE | Aucune URL — programmation native historique conservée ; aucune occurrence publique exacte n'est accessible et la session native est inaccessible sur Mac verrouillé |
 
@@ -33,9 +33,9 @@ Pour chaque ligne : attendre l'heure, vérifier le compte, le master exact, le
 hook et l'absence de doublon, puis ouvrir l'URL publique. En l'absence d'URL,
 conserver le statut préparatoire et ne jamais republier par supposition.
 
-- Principal : `1/9` URL publique, avec cinq échecs C1/C2 explicitement consignés ; X C2 est publié et vérifié.
+- Principal : `2/9` URL publiques, avec sept échecs explicitement consignés ; X C2 et X C3 sont publiés et vérifiés.
 - Hero secondaire : `0/3` URL publique, avec trois échecs explicitement consignés.
-- Total : `1/12` URL publique à 20:46 Europe/Paris, avec huit échecs explicitement consignés.
+- Total : `2/12` URL publiques à 00:49 Europe/Paris le 06/09, avec dix échecs explicitement consignés.
 
 ## Contrôle C1 et préflight Pinterest du 5 septembre à 17:29 Europe/Paris
 
@@ -88,3 +88,21 @@ would you explore first?`, la vidéo, l'heure `18:15 UTC` correspondant à `20:1
 Europe/Paris` et le label `Made with AI`. Le relevé public expose 1 vue ; aucun
 compteur positif de réponse, repost, J'aime ou favori n'est affiché. La ligne passe
 à `PUBLIÉ` sans modifier la couverture native X `84/84`.
+
+## Clôture C3 du 5 septembre à 00:49 Europe/Paris le 6 septembre
+
+Le master `DAY_AETHERPUNK_CLOUD_ARCHITECTURE_RUN_01.mp4`, son SHA-256
+`2db9d9dda3258a4b36f66754640e9c33dc3f60880bb9adedaf55a8c5a807f8a7`, les
+comptes, les horaires 22:30/22:45/23:15 et la copie concordent avec la fiche 40.
+Le profil TikTok exact `Noctalia` / `@noctaliadreams` expose ses publications
+récentes sans occurrence du hook C3. Le profil Instagram authentifié exact
+`@noctaliadreams` affiche 77 publications, dont les douze plus récentes ont été
+relues sans occurrence du hook. Les deux lignes sont donc closes en échec, sans
+upload, publication tardive, suppression, remplacement ni URL inventée.
+
+Le post X [2096346381371805983](https://x.com/NoctaliaDreams/status/2096346381371805983)
+a été ouvert directement. La page confirme le compte `@NoctaliaDreams`, le hook
+exact, une vidéo de 10 secondes, `11:15 PM · Sep 5, 2026` soit 23:15
+Europe/Paris, et le label `Made with AI`. Le relevé public expose 1 vue et aucun
+compteur positif de réponse, repost, J'aime ou favori. Le registre est clos à
+`2/12`, avec dix échecs explicites.

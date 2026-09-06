@@ -23,7 +23,7 @@ Le hero reprend `AFTERGLOW_NEON_NOIR_HOLOGRAPHIC_THRILLER_02_V2.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 01/09 | **ÉCHEC — NON PUBLIÉ** | Profil public `Noctalia` ouvert sur l’onglet `Créées` : aucune épingle du hero exposée ; session déconnectée et capacité native non vérifiable, aucune URL |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 01/09 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER | Profil public `Noctalia` ouvert sur l’onglet `Créées` : aucune épingle du hero exposée ; session déconnectée et capacité native non vérifiable, aucune URL |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `Would You Follow the Neon Deeper Into This Dream? #Shorts` | **PUBLIÉ** | [gMMaTH_-hog](https://www.youtube.com/shorts/gMMaTH_-hog) ouvert sur `@noctaliadreams`, titre exact et badge natif `IA : le contenu a été créé avec l'IA` |
 | Facebook page `1266183263247451` | 18:15 | Hero exact du 01/09 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Les surfaces publiques `/NoctaliaDreams/reels` et `/NoctaliaDreams/videos` affichent « Ce contenu n’est pas disponible pour le moment » ; aucune URL publique ni capacité de preuve |
 

@@ -23,7 +23,7 @@ Le hero reprend `NIGHT_AFROFUTURISM_SOLAR_CULTURAL_02.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 27/08 | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique exacte après 17:30 : le package est resté `PRÊT — NON PROGRAMMÉ` faute de capacité native vérifiable, sans upload ni rejeu |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 27/08 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER | Aucune URL publique exacte après 17:30 : le package est resté `PRÊT — NON PROGRAMMÉ` faute de capacité native vérifiable, sans upload ni rejeu |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `A Solar City Becomes a Garden of Stars #Shorts` | **PUBLIÉ** | [https://youtube.com/shorts/0brszpmrs58](https://youtube.com/shorts/0brszpmrs58) — chaîne exacte `Noctalia`, titre exact, `publishDate=2026-08-27T09:00:36-07:00` soit `18:00:36 Europe/Paris`, `isPrivate=false` et `isUnlisted=false` vérifiés |
 | Facebook page `1266183263247451` | 18:15 | Hero exact du 27/08 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Aucune URL publique exacte après 18:15 : les surfaces publiques de la page `Noctalia` retournent `Ce contenu n’est pas disponible pour le moment`; sans rejeu ni remplacement |
 

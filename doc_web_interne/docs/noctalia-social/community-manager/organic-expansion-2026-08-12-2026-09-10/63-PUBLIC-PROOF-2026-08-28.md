@@ -23,7 +23,7 @@ Le hero reprend `AFTERGLOW_ARCANEPUNK_LUMINOUS_RUNE_02.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 28/08 | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique : le profil et le tableau exacts ne montrent pas le hero du 28/08 après 17:55, et aucune capacité native exploitable n'est vérifiable |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 28/08 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER | Aucune URL publique : le profil et le tableau exacts ne montrent pas le hero du 28/08 après 17:55, et aucune capacité native exploitable n'est vérifiable |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `Would You Enter This City of Runes? #Shorts` | **PUBLIÉ** | [lXr3e6_4Vzg](https://youtube.com/shorts/lXr3e6_4Vzg) — titre exact, `ownerChannelName=Noctalia`, `publishDate=2026-08-28T09:00:35-07:00` soit 18:00:35 Europe/Paris, `isPrivate=false`, `isUnlisted=false` |
 | Facebook page `1266183263247451` | 18:15 | Hero exact du 28/08 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Aucune URL publique : les surfaces publiques de la page et l'occurrence native `1808499846845426` ne montrent pas le Reel floral au checkpoint de 18:45 |
 

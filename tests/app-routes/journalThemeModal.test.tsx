@@ -170,7 +170,7 @@ jest.doMock('@/components/icons/DreamIcons', () => ({
 }));
 
 jest.doMock('@shopify/flash-list', () => ({
-  FlashList: () => null,
+  FlashList: ({ ListHeaderComponent }: { ListHeaderComponent?: React.ReactNode }) => <>{ListHeaderComponent}</>,
 }));
 
 const mockPush = jest.fn();
@@ -234,6 +234,10 @@ jest.doMock('react-native', () => {
     Pressable: createElement('button'),
     Text: createElement('span'),
     View: createElement('div'),
+    Keyboard: {
+      isVisible: () => false,
+      addListener: () => ({ remove: () => {} }),
+    },
     Platform: {
       OS: 'web',
       select: (values: Record<string, any>) => values?.web ?? values?.default,

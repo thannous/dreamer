@@ -22,12 +22,13 @@ Dossier durable : `output/video/noctalia-social-approved-2026-09-04-10/`.
 
 | Créneau | Master durable | SHA-256 | TikTok | Instagram | X | Légende exacte |
 |---|---|---|---|---|---|---|
-| 1 | `output/video/noctalia-social-approved-2026-09-04-10/NIGHT_COSMIC_STAR_OCEAN_01.mp4` | `1751df4ccee45adccf3fce04050ac6e77f3317da4b04c64d1cbd9053ca0a24c1` | **AFFECTÉ — PRÊT, NON PROGRAMMÉ** | **AFFECTÉ — publication directe à 15:45 seulement** | **PROGRAMMÉ — 06/09 à 16:15, file native vérifiée**, compte `@NoctaliaDreams`, copie X exacte, label `Made with AI` | `The bedroom dissolves into an ocean of stars. Would you step outside? #Noctalia #Dreamscape #DreamJournal` |
+| 1 | `output/video/noctalia-social-approved-2026-09-04-10/NIGHT_COSMIC_STAR_OCEAN_01.mp4` | `1751df4ccee45adccf3fce04050ac6e77f3317da4b04c64d1cbd9053ca0a24c1` | **ÉCHEC — NON PUBLIÉ**, hook absent du profil exact après 15:30 | **ÉCHEC — NON PUBLIÉ**, hook absent du profil authentifié exact après 15:45 | **PUBLIÉ — [2096603072898478203](https://x.com/NoctaliaDreams/status/2096603072898478203)**, 06/09 à 16:15, compte et copie exacts, vidéo 10 s, label `Made with AI`, 1 vue | `The bedroom dissolves into an ocean of stars. Would you step outside? #Noctalia #Dreamscape #DreamJournal` |
 | 2 | `output/video/noctalia-social-approved-2026-09-04-10/NIGHT_CLOCKPUNK_TIME_PORTAL_01.mp4` | `7600e0f948df42450006360ab3a955fd2b19387a194fcd33bd911b5e8354dc8c` | **AFFECTÉ — PRÊT, NON PROGRAMMÉ** | **AFFECTÉ — publication directe à 19:45 seulement** | **PROGRAMMÉ — 06/09 à 20:15, file native vérifiée**, compte `@NoctaliaDreams`, copie X exacte, label `Made with AI` | `A clock breaks open and reveals a spiral of time. Would you enter? #Noctalia #Dreamscape #SurrealDreams` |
 | 3 | `output/video/noctalia-social-approved-2026-09-04-10/NIGHT_OCEANPUNK_BIOLUMINESCENT_CITY_FPV_01.mp4` | `782507efa76faa1f12e4b21fd298fcca86ee5ae9aca57a9e14fd970840a05ce2` | **AFFECTÉ — PRÊT, NON PROGRAMMÉ** | **AFFECTÉ — publication directe à 22:45 seulement** | **PROGRAMMÉ — 06/09 à 23:15, file native vérifiée**, compte `@NoctaliaDreams`, copie X exacte, label `Made with AI` | `A bioluminescent city glows beneath the ocean. Would you follow the lights? #Noctalia #Dreamscape #SurrealDreams` |
 
-Le créneau 1 utilise aussi le hero secondaire du jour : YouTube et Pinterest
-restent `PRÊTS`; Facebook est `PROGRAMMÉ` à 18:15 avec preuve native. Aucun
+Le créneau 1 utilise aussi le hero secondaire du jour : Pinterest est
+**PUBLIÉ** à 17:30 sur [1127940669219704199](https://www.pinterest.com/pin/1127940669219704199/),
+YouTube est **ÉCHEC — NON PUBLIÉ** après contrôle de la chaîne publique exacte et de Studio à 18:26 ; Facebook est **PROGRAMMÉ — ÉCHEC — NON PUBLIÉ** après le checkpoint de 18:45, car les surfaces publiques exactes `Reels` et `Vidéos` restent indisponibles et aucune URL publique ne peut être ouverte. Aucun
 statut secondaire ne s'applique automatiquement aux réseaux principaux.
 
 Copies X exactes et labels IA natifs : voir

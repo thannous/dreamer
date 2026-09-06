@@ -22,7 +22,7 @@ Cloudflare Pages builds `docs/` from tracked sources on `master`; verify the bra
   `specs/noctalia-lucid-trainer.md` for its scope and sleep/wellbeing safeguards.
 - Meditation is a separate package at `apps/meditation/`; read its local guide
   and run its commands there. Its theme and service paths replace journal-specific paths.
-- The advisor device profile targets Dreamer VNext only. Do not widen its package
+- The Dreamer device scope targets Dreamer VNext only. Do not widen its package
   allowlist for Lucid or Meditation; resolve an app-specific profile and the shared
   lock's current owner/protocol before device work. Missing device access does not block local work.
 - Do not send private project content to free third-party inference endpoints.
@@ -88,12 +88,10 @@ it does not change publication, spending, or confidentiality requirements.
 - Finish preparation and reversible checks before requesting any still-missing authorization
   for a concrete external action. Existing release, secret, WIP and device safeguards apply.
 
-## Astra Advisor
+## Agent Coordination
 
-- For substantial Noctalia research, implementation, QA or delivery, use the installed
-  `$astra-advisor:orchestration` skill with this project's `.astra-advisor.json`.
-  The existing rules below and the user's authorization remain authoritative.
-- The configuration preserves Grok/Astra/Muse as preferred roles. Check the actual dispatch
+- Use the native delegation tools and the role rules below; no orchestration plugin is required.
+- Grok/Astra/Muse remain preferred roles. Check the actual dispatch
   tool for model/effort support. If a preference is unavailable, the parent may execute the
   authorized work or select a capable supported agent without another approval request;
   disclose the fallback and preserve role permissions and review independence. This project
@@ -104,9 +102,7 @@ it does not change publication, spending, or confidentiality requirements.
   for substantial implementation. The parent retains architecture and acceptance;
   product corrections may be handled by the parent or an assigned implementer. Device work
   remains with an independent QA owner under the shared device rules.
-- If the plugin is not loaded, report that limitation and follow this guide; do not
-  invent successful orchestration. New skills are picked up in a fresh task after install.
-- Installation and review acceptance do not authorize delivery, EAS/store/production
+- Review acceptance does not authorize delivery, EAS/store/production
   or database actions. API cost estimates do not establish Codex quota savings.
 - Cost receipts are optional: show them when requested or when observed usage and applicable
   prices make them useful. Missing telemetry never blocks work or requires a placeholder receipt.

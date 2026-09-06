@@ -23,7 +23,7 @@ Le hero reprend `AFTERGLOW_OCEANPUNK_ABYSSAL_BIOLUMINESCENT_02.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 02/09 | **ÉCHEC — NON PUBLIÉ** | Profil public `Noctalia`/`noctaliadreams` ouvert après 17:30, onglet `Créées` sans hero exposé, session déconnectée et capacité native non vérifiable ; aucune URL |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 02/09 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER | Profil public `Noctalia`/`noctaliadreams` ouvert après 17:30, onglet `Créées` sans hero exposé, session déconnectée et capacité native non vérifiable ; aucune URL |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `Remember This Underwater Dream in 60 Seconds #Shorts` | **ÉCHEC — NON PUBLIÉ** | Chaîne publique `@noctaliadreams` contrôlée après 18:00 : les Shorts exposés restent antérieurs au 02/09, aucun hero exact du jour n'est visible ; aucune URL nouvelle |
 | Facebook page `1266183263247451` | 18:15 | Hero exact du 02/09 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Surfaces publiques `/NoctaliaDreams/reels` et `/NoctaliaDreams/videos` rouvertes après 18:15 : « Ce contenu n’est pas disponible pour le moment », aucune URL de Reel/vidéo ni capacité de preuve contrôlable |
 

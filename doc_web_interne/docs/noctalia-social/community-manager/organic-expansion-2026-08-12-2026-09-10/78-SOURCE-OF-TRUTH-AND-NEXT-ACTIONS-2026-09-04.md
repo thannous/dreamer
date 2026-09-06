@@ -1,6 +1,6 @@
 # Noctalia — Sources de vérité et prochaines actions
 
-- Dernière consolidation : **2026-09-05**.
+- Dernière consolidation : **2026-09-06**.
 - [Classeur Drive partagé — onglet Pilotage agents](https://docs.google.com/spreadsheets/d/1acoGpbZCg89Wy3SR4JioJg0_exyNyVqp3R5QagdQTTs/edit?gid=904202609#gid=904202609)
 - Dossier Drive : `ChatGPT`.
 
@@ -68,9 +68,26 @@ YouTube `18:00`, Facebook `18:15`.
    lignes en dette. Le C2 du 05/09 ne peut pas être exécuté sur le Mac toujours
    verrouillé : TikTok et Instagram passent en échec explicite. X C2 est public
    à l'URL `2096301082913968323`, avec compte, hook, vidéo, heure `20:15` et label
-   `Made with AI` exacts ; le premier relevé expose 1 vue. La couverture
-   Instagram courante devient `56/84`, avec `28/84` lignes en dette. Les métriques
-   absentes restent vides.
+   `Made with AI` exacts ; le premier relevé expose 1 vue. À la clôture C3,
+   TikTok et Instagram n'exposent pas le hook attendu après leurs échéances et
+   passent en échec explicite sans publication tardive. X C3 est public à l'URL
+   `2096346381371805983`, avec compte, hook, vidéo 10 s, heure `23:15`, label
+   `Made with AI` et 1 vue vérifiés. Le registre du 05/09 est clos à `2/12`,
+   avec dix échecs explicites. Au C1 du 06/09, TikTok et Instagram n'exposent
+   pas le hook attendu et passent en échec sans publication tardive ; X est
+   public à l'URL `2096603072898478203`, avec compte, copie, heure `16:15`,
+   vidéo 10 s, label `Made with AI` et 1 vue vérifiés. Le HERO Pinterest est
+   publié à 17:30 à l'URL `1127940669219704199`, avec titre, description,
+   tableau, UTM et label IA conformes. Après 18:00, la chaîne YouTube exacte
+   expose 21 vidéos, la plus récente au 01/09, et aucun titre correspondant au
+   HERO du 06/09 ; Studio expose 22 lignes, dont le brouillon floral privé,
+   sans ligne du HERO attendu. YouTube passe donc en `ÉCHEC — NON PUBLIÉ`, sans
+   upload tardif ni URL inventée. Après le checkpoint Facebook de 18:45, les
+   surfaces publiques exactes `/NoctaliaDreams/reels` et
+   `/NoctaliaDreams/videos` restent indisponibles : la ligne native est
+   conservée, mais la preuve devient `PROGRAMMÉ — ÉCHEC — NON PUBLIÉ`, sans URL
+   publique ni métrique inventée. La couverture Instagram courante devient
+   `54/84`, avec `30/84` lignes en dette. Les métriques absentes restent vides.
 2. **STRUCTURE TERMINÉE, ASSETS BLOQUÉS** : le calendrier du 11 au 24 septembre
    contient exactement 28 lignes et le même ordre A/B sur TikTok, Instagram et
    X. Il reste interdit de programmer tant que les masters, SHA-256, copies et
