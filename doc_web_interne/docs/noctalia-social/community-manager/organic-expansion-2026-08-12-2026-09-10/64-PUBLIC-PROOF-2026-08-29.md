@@ -23,7 +23,7 @@ Le hero reprend `SUNSET_FROSTPUNK_CRYOPUNK_ICE_AURORA_02.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 29/08 | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique : l'onglet `Créées` du profil exact ne montre aucun Pin du hero après 17:30 ; la session est déconnectée et aucune capacité native libre n'est vérifiable |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 29/08 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER | Aucune URL publique : l'onglet `Créées` du profil exact ne montre aucun Pin du hero après 17:30 ; la session est déconnectée et aucune capacité native libre n'est vérifiable |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `Name Three Details from This Frozen Dream #Shorts` | **PUBLIÉ** | [20tx3V8Roto](https://www.youtube.com/shorts/20tx3V8Roto) — Short ouvert sur `@noctaliadreams`, titre exact, durée `PT0M16S`, `datePublished=2026-08-29T09:00:34-07:00` soit `18:00:34 Europe/Paris`, label IA visible |
 | Facebook page `1266183263247451` | 18:15 | Hero exact du 29/08 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Aucune URL publique : les surfaces `/NoctaliaDreams/reels` et `/NoctaliaDreams/videos` affichent « Ce contenu n’est pas disponible pour le moment » après 18:15 |
 

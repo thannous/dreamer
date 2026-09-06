@@ -23,7 +23,7 @@ Le hero reprend `AFTERGLOW_SURREAL_FLOWER_WORLD_FLIGHT_01.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 30/08 | **ÉCHEC — NON PUBLIÉ** | Profil public exact ouvert après 17:30, onglet `Créées` sans Pin du hero ; session déconnectée et aucune capacité native vérifiable, sans URL inventée |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 30/08 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER | Profil public exact ouvert après 17:30, onglet `Créées` sans Pin du hero ; session déconnectée et aucune capacité native vérifiable, sans URL inventée |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `Would You Fly Through This Flower World? #Shorts` | **ÉCHEC — NON PUBLIÉ** — À REMPLACER — BROUILLON PRIVÉ | Aucune URL publique — YouTube Studio confirme le 05/09 que l'ID `WZk8x9CN_fA` est un brouillon enregistré en vidéo privée |
 | Facebook page `1266183263247451` | 18:15 | Hero exact du 30/08 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Surfaces publiques `/NoctaliaDreams/reels` et `/NoctaliaDreams/videos` affichant « Ce contenu n’est pas disponible pour le moment » après 18:15 ; aucune URL inventée |
 

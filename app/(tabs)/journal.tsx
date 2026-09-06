@@ -36,6 +36,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Keyboard,
   Platform,
   Text,
   type TextInput,
@@ -85,8 +86,20 @@ export default function JournalListScreen() {
   const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
   const desktopColumns = width >= 1440 ? 4 : 3;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
-  const scrollHeader = !isDesktopLayout && navigationLayout.compact && navigationLayout.largeText;
+  // Keep the header in one scrollable tree at every mobile size, including
+  // keyboard resizes. Moving it in/out of the list would remount the input.
+  const scrollHeader = !isDesktopLayout;
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(() => Keyboard.isVisible());
   const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
+
+  useEffect(() => {
+    const show = Keyboard.addListener(Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow', () => setIsKeyboardVisible(true));
+    const hide = Keyboard.addListener(Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide', () => setIsKeyboardVisible(false));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
 
   const [showHeaderAnimations, setShowHeaderAnimations] = useState(false);
 
@@ -140,9 +153,7 @@ export default function JournalListScreen() {
 
   const listBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
-    : scrollHeader ? ThemeLayout.spacing.lg : navigationLayout.barHeight
-      + navigationLayout.minimumBottomInset
-      + ThemeLayout.spacing.lg;
+    : ThemeLayout.spacing.lg;
   const listContentStyle = useMemo(
     () => [LIST_CONTENT_STYLE, { paddingBottom: listBottomPadding }],
     [listBottomPadding]
@@ -785,10 +796,12 @@ export default function JournalListScreen() {
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
           contentContainerStyle={listContentStyle}
-          style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
-          ListHeaderComponent={scrollHeader ? listHeader : undefined}
-          keyboardShouldPersistTaps={scrollHeader ? 'handled' : undefined}
-          contentInsetAdjustmentBehavior={scrollHeader ? 'never' : 'automatic'}
+          // The navigator hides its tab bar while the keyboard is shown.
+          style={{ marginBottom: isKeyboardVisible ? 0 : navigationClearance }}
+          ListHeaderComponent={listHeader}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          contentInsetAdjustmentBehavior="never"
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
           viewabilityConfig={viewabilityConfigRef.current}

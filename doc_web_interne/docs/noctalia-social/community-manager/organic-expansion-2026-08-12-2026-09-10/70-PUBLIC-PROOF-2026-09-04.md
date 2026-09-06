@@ -23,7 +23,7 @@ Le hero reprend `NIGHT_ARCANEPUNK_LIVING_LIBRARY_01.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 04/09 | **ÉCHEC — NON PUBLIÉ** | Aucune URL — profil public `Créées` vide et session déconnectée à 18:27 |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 04/09 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER | Aucune URL — profil public `Créées` vide et session déconnectée à 18:27 |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `Capture One Impossible Detail From This Living Library #Shorts` | **ÉCHEC — NON PUBLIÉ** | Aucune URL — titre exact absent des 21 Shorts publics à 18:27 |
 | Facebook page `1266183263247451` | 18:15 | Hero exact du 04/09 | **ÉCHEC — NON PUBLIÉ** | Aucune URL — programmation native historique conservée ; surfaces `Reels` et `Vidéos` indisponibles à 19:05 |
 

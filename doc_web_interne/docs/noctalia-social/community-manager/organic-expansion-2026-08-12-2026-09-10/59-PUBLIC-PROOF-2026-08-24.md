@@ -23,7 +23,7 @@ Le hero reprend `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 24/08 | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique : le Pin n'était pas programmé et aucune capacité native réelle ni identité exploitable n'a été prouvée au checkpoint 17:55 ; aucun upload ou rejeu |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 24/08 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER | Aucune URL publique : le Pin n'était pas programmé et aucune capacité native réelle ni identité exploitable n'a été prouvée au checkpoint 17:55 ; aucun upload ou rejeu |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `What Would You Wish for in This Dream? #Shorts` | **PUBLIÉ** | [https://www.youtube.com/shorts/YRzwfWRHj10](https://www.youtube.com/shorts/YRzwfWRHj10) — chaîne `Noctalia` / `@noctaliadreams`, titre exact, `publishDate=2026-08-24T09:00:28-07:00` soit 18:00:28 Europe/Paris vérifiés |
 | Facebook page `1266183263247451` | 18:15 | Hero exact du 24/08 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Aucune URL publique : les surfaces `NoctaliaDreams/reels`, `NoctaliaDreams/videos` et la recherche publique retournent `Ce contenu n’est pas disponible` au checkpoint 18:45 ; sans rejeu ni republication |
 

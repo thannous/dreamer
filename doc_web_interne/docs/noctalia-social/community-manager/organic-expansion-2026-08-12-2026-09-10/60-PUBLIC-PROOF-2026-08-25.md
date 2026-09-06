@@ -23,7 +23,7 @@ Le hero reprend `SUNSET_AETHERPUNK_CELESTIAL_FLOATING_02.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 25/08 | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique : le Pin n'était pas programmé et aucune capacité native réelle ni identité exploitable n'a été prouvée au checkpoint 17:55 ; aucun upload ou rejeu |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 25/08 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER | Aucune URL publique : le Pin n'était pas programmé et aucune capacité native réelle ni identité exploitable n'a été prouvée au checkpoint 17:55 ; aucun upload ou rejeu |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `Would You Cross This City Above the Clouds? #Shorts` | **PUBLIÉ** | [https://www.youtube.com/shorts/VhFZSNeOxgg](https://www.youtube.com/shorts/VhFZSNeOxgg) — chaîne `Noctalia` / `@noctaliadreams`, titre exact, `publishDate=2026-08-25 18:00:25 Europe/Paris` vérifiés |
 | Facebook page `1266183263247451` | 18:15 | Hero exact du 25/08 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Aucune URL publique : les surfaces `NoctaliaDreams/reels` et `NoctaliaDreams/videos` retournent `Ce contenu n’est pas disponible` au checkpoint 18:45 ; sans rejeu ni republication |
 

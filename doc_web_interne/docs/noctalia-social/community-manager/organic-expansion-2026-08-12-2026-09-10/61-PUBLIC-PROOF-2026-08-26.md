@@ -23,7 +23,7 @@ Le hero reprend `DAY_AFROFUTURISM_SOLAR_CULTURAL_02.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 26/08 | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique exacte après 17:30 et aucune capacité native prouvée ; aucun upload ni republication |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 26/08 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER | Aucune URL publique exacte après 17:30 et aucune capacité native prouvée ; aucun upload ni republication |
 | YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `Which Path Would You Take Through This Solar City? #Shorts` | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Aucune URL publique : destination préparée `DT2H6OhZ2Bk` toujours `private`/`unavailable` après 18:00 ; aucune visibilité modifiée |
 | Facebook page `1266183263247451` | 18:15 | Hero exact du 26/08 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Aucune URL publique exacte exposée après 18:15 ; sans rejeu ni remplacement |
 
