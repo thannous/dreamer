@@ -125,6 +125,7 @@ function parseArguments(argv) {
 
 function validatePublicProof(content, options = {}) {
   const requirePublished = Boolean(options.requirePublished);
+  const allowAcknowledgedFailures = Boolean(options.allowAcknowledgedFailures);
   const rows = parseTableRows(content);
   if (rows.length !== 12) {
     throw new Error(`12 lignes de preuve attendues, ${rows.length} trouvées.`);
@@ -132,6 +133,7 @@ function validatePublicProof(content, options = {}) {
 
   const urls = [];
   let terminalFailures = 0;
+  let acknowledgedFailures = 0;
   const primaryAssets = new Map();
   const heroAsset = declaredHeroAsset(content);
   if (!heroAsset) throw new Error('Asset MP4 du hero secondaire non déclaré.');
@@ -170,6 +172,7 @@ function validatePublicProof(content, options = {}) {
     const url = urlFromCell(proofCell);
     const published = isPublishedStatus(statusCell);
     const terminalFailure = isTerminalFailureStatus(statusCell);
+    const acceptedFailure = allowAcknowledgedFailures && terminalFailure;
     if (/\bPUBLIC\b/iu.test(statusCell) && !published) {
       throw new Error(
         `Ligne ${index + 1}: statut PUBLIC ambigu sans preuve PUBLIÉ pour ${expectedPlatform}.`,
@@ -184,10 +187,10 @@ function validatePublicProof(content, options = {}) {
     if (published && !url) {
       throw new Error(`Ligne ${index + 1}: statut PUBLIÉ sans URL publique HTTPS pour ${expectedPlatform}.`);
     }
-    if (requirePublished && !published && !terminalFailure) {
+    if (requirePublished && !published && !acceptedFailure) {
       throw new Error(`Ligne ${index + 1}: statut PUBLIÉ manquant (sauf ÉCHEC — NON PUBLIÉ terminal) pour ${expectedPlatform}.`);
     }
-    if (requirePublished && !url && !terminalFailure) {
+    if (requirePublished && !url && !acceptedFailure) {
       throw new Error(`Ligne ${index + 1}: URL publique HTTPS manquante pour ${expectedPlatform}.`);
     }
     if (url && !hostMatchesPlatform(url, expectedPlatform)) {
@@ -199,7 +202,10 @@ function validatePublicProof(content, options = {}) {
       );
     }
     if (url) urls.push(url);
-    if (terminalFailure) terminalFailures += 1;
+    if (acceptedFailure) {
+      terminalFailures += 1;
+      acknowledgedFailures += 1;
+    }
   }
 
   if (new Set(urls).size !== urls.length) {
@@ -212,7 +218,9 @@ function validatePublicProof(content, options = {}) {
     throw new Error(`12 états terminaux attendus, ${urls.length + terminalFailures} trouvés.`);
   }
 
-  return { rows: rows.length, urls: urls.length };
+  const result = { rows: rows.length, urls: urls.length };
+  if (acknowledgedFailures > 0) result.acknowledgedFailures = acknowledgedFailures;
+  return result;
 }
 
 function main(argv = process.argv.slice(2)) {
@@ -226,7 +234,11 @@ function main(argv = process.argv.slice(2)) {
   let rows = 0;
   let urls = 0;
   for (const file of files) {
-    const result = validatePublicProof(fs.readFileSync(path.resolve(file), 'utf8'), { requirePublished });
+    const result = validatePublicProof(fs.readFileSync(path.resolve(file), 'utf8'), {
+      requirePublished,
+      // Closure may count an explicit ÉCHEC — NON PUBLIÉ as a terminal row.
+      allowAcknowledgedFailures: requirePublished,
+    });
     rows += result.rows;
     urls += result.urls;
   }

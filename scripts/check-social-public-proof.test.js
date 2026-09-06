@@ -106,7 +106,10 @@ describe('social public proof guard', () => {
       .replace('**PUBLIÉ**', '**ÉCHEC — NON PUBLIÉ**')
       .replace(`[URL](${proofUrl('TikTok', 0, 'main')})`, 'Aucune URL publique');
 
-    expect(validatePublicProof(failed, { requirePublished: true })).toEqual({ rows: 12, urls: 11 });
+    expect(validatePublicProof(failed, {
+      requirePublished: true,
+      allowAcknowledgedFailures: true,
+    })).toEqual({ rows: 12, urls: 11, acknowledgedFailures: 1 });
   });
 
   it('rejects a terminal ÉCHEC — NON PUBLIÉ paired with a public URL', () => {
