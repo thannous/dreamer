@@ -144,19 +144,52 @@ describe('WorldPurchaseProvider reliability', () => {
 
     const { result } = mountPurchases();
 
+    let restorePromise!: Promise<readonly string[]>;
     await act(async () => {
-      await expect(result.current.restoreWorlds()).resolves.toEqual(['tide']);
+      restorePromise = result.current.restoreWorlds();
+      await Promise.resolve();
+    });
+    expect(mockRestore).not.toHaveBeenCalled();
+
+    await act(async () => {
+      configuration.resolve();
+      await expect(restorePromise).resolves.toEqual(['tide']);
     });
     expect(result.current.isWorldOwned('tide')).toBe(true);
 
     await act(async () => {
-      configuration.resolve();
-      await configuration.promise;
       await Promise.resolve();
     });
 
     expect(mockCurrentOwnership).not.toHaveBeenCalled();
+    expect(mockRestore).toHaveBeenCalledTimes(1);
     expect(result.current.isWorldOwned('tide')).toBe(true);
+  });
+
+  it('configures RevenueCat before starting a restore', async () => {
+    const configuration = deferred<void>();
+    mockConfigure.mockReturnValue(configuration.promise);
+    mockRestore.mockResolvedValue(['tide']);
+
+    const { result } = mountPurchases();
+
+    let restorePromise!: Promise<readonly string[]>;
+    await act(async () => {
+      restorePromise = result.current.restoreWorlds();
+      await Promise.resolve();
+    });
+
+    expect(mockConfigure).toHaveBeenCalled();
+    expect(mockRestore).not.toHaveBeenCalled();
+    expect(result.current.ownershipStatus).toBe('loading');
+
+    await act(async () => {
+      configuration.resolve();
+      await expect(restorePromise).resolves.toEqual(['tide']);
+    });
+
+    expect(mockRestore).toHaveBeenCalledTimes(1);
+    expect(result.current.worldAccess('tide')).toBe('owned');
   });
 
   it('leaves a failed restore recoverable when it supersedes initialization', async () => {

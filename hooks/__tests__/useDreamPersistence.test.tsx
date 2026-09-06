@@ -1064,11 +1064,67 @@ describe('useDreamPersistence', () => {
 
     it('does not mark migration complete when the guest journal cannot be read', async () => {
       mockGetSavedDreams.mockResolvedValue({ status: 'error' });
-      renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
 
       await flushEffects();
+      expect(result.current.loaded).toBe(true);
+      expect(result.current.persistenceState).toEqual({
+        status: 'error',
+        operation: 'read',
+        target: 'device',
+      });
       expect(mockSetDreamsMigrationSynced).not.toHaveBeenCalledWith('user-123', true);
       expect(mockSaveDreams).not.toHaveBeenCalledWith([]);
+      expect(mockFetchFromSupabase).not.toHaveBeenCalled();
+    });
+
+    it('keeps the migration owner when a newer local edit survives a successful upload', async () => {
+      const original = buildDream({
+        id: 42,
+        transcript: 'original captured dream',
+        clientRequestId: 'guest-owner-42',
+      });
+      const edited = { ...original, transcript: 'newer local edit after logout' };
+      let stored = [original];
+      const upload = deferred<DreamAnalysis>();
+      mockGetDreamsMigrationSynced.mockResolvedValue(true);
+      mockGetSavedDreams.mockImplementation(async () => ({ status: 'loaded', value: stored }));
+      mockSaveDreams.mockImplementation(async (value) => {
+        stored = value;
+      });
+      mockCreateInSupabase.mockImplementation(() => upload.promise);
+      let remoteSyncEnabled = true;
+      const hook = renderHook(() =>
+        useDreamPersistence({ canUseRemoteSync: remoteSyncEnabled })
+      );
+      await waitFor(() => expect(mockCreateInSupabase).toHaveBeenCalledTimes(1));
+
+      mockUser.current = null;
+      remoteSyncEnabled = false;
+      hook.rerender();
+      await flushEffects();
+      await act(async () => {
+        await hook.result.current.persistLocalDreams([edited]);
+      });
+
+      await act(async () => {
+        upload.resolve({ ...original, remoteId: 142 });
+      });
+      await flushEffects();
+
+      expect(stored).toEqual([
+        expect.objectContaining({ id: 42, transcript: 'newer local edit after logout' }),
+      ]);
+      expect(mockGuestMigrationOwner.current).toEqual({ userId: 'user-123', dreamIds: [42] });
+
+      mockUser.current = { id: 'user-456' };
+      remoteSyncEnabled = true;
+      hook.rerender();
+      await flushEffects();
+
+      expect(mockCreateInSupabase).toHaveBeenCalledTimes(1);
+      expect(mockCreateInSupabase).not.toHaveBeenCalledWith(expect.anything(), 'user-456');
+      expect(mockGuestMigrationOwner.current).toEqual({ userId: 'user-123', dreamIds: [42] });
     });
 
     it('migrates unsynced local dreams to Supabase', async () => {

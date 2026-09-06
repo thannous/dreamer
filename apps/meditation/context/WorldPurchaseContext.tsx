@@ -197,6 +197,7 @@ export const WorldPurchaseProvider: React.FC<React.PropsWithChildren> = ({ child
     const requestId = ++ownershipRequestRef.current;
     setOwnershipStatus('loading');
     try {
+      await purchases.configure();
       const nextOwned = await purchases.restore();
       if (mountedRef.current && requestId === ownershipRequestRef.current) {
         setOwnedWorldIds(nextOwned);

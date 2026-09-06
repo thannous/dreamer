@@ -7,7 +7,7 @@ import { UpcomingJourneyRail } from '@/components/journey/UpcomingJourneyRail';
 import { WeeklyJourney } from '@/components/journey/WeeklyJourney';
 import { WorldJourneyPicker } from '@/components/journey/WorldJourneyPicker';
 import { WorldPreviewShelf } from '@/components/journey/WorldPreviewShelf';
-import { Button, GlassCard, Text } from '@/components/ui';
+import { Button, Card, Text } from '@/components/ui';
 import { WorldScene } from '@/components/worlds/WorldScene';
 import { DEFAULT_WORLD_ID, WORLD_BY_ID, WORLD_IDS, type WorldId } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
@@ -302,25 +302,58 @@ export default function HomeTab() {
             testID="home.world-switcher"
           />
           {worldAccessUnknown ? (
-            <GlassCard
-              className="gap-3 p-4"
+            <Card
               accessibilityLiveRegion="polite"
               testID="home.world-access-recovery">
-              <Text variant="h3">{t('world.purchase.access.title')}</Text>
-              <Text variant="bodySm" tone="muted">
-                {t(
-                  ownershipStatus === 'loading'
-                    ? 'world.purchase.access.checking'
-                    : 'world.purchase.access.unavailable'
-                )}
-              </Text>
-              <View className="gap-2">
+              <View className="gap-3">
+                <Text variant="h3">{t('world.purchase.access.title')}</Text>
+                <Text variant="bodySm" tone="muted">
+                  {t(
+                    ownershipStatus === 'loading'
+                      ? 'world.purchase.access.checking'
+                      : 'world.purchase.access.unavailable'
+                  )}
+                </Text>
+                <View className="gap-2">
+                  <Button
+                    label={t('world.purchase.access.retry')}
+                    variant="secondary"
+                    loading={worldRecoveryBusy && ownershipStatus === 'loading'}
+                    disabled={worldRecoveryBusy}
+                    onPress={() => void handleRetryWorldAccess()}
+                  />
+                  <Button
+                    label={t('world.purchase.restore')}
+                    variant="ghost"
+                    disabled={worldRecoveryBusy}
+                    onPress={() => void handleRestoreWorldAccess()}
+                  />
+                </View>
+                {worldRecoveryMessage ? (
+                  <Text variant="caption" tone="muted">
+                    {t(worldRecoveryMessage)}
+                  </Text>
+                ) : null}
+              </View>
+            </Card>
+          ) : worldLocked && !worldOffer ? (
+            <Card
+              accessibilityLiveRegion="polite"
+              testID="home.world-offer-recovery">
+              <View className="gap-3">
+                <Text variant="h3">
+                  {t(
+                    offersStatus === 'loading'
+                      ? 'world.purchase.offer.checking'
+                      : 'world.purchase.offer.unavailable'
+                  )}
+                </Text>
                 <Button
-                  label={t('world.purchase.access.retry')}
+                  label={t('world.purchase.offer.retry')}
                   variant="secondary"
-                  loading={worldRecoveryBusy && ownershipStatus === 'loading'}
-                  disabled={worldRecoveryBusy}
-                  onPress={() => void handleRetryWorldAccess()}
+                  loading={worldRecoveryBusy && offersStatus === 'loading'}
+                  disabled={worldRecoveryBusy || offersStatus === 'loading'}
+                  onPress={() => void handleRetryWorldOffer()}
                 />
                 <Button
                   label={t('world.purchase.restore')}
@@ -328,44 +361,13 @@ export default function HomeTab() {
                   disabled={worldRecoveryBusy}
                   onPress={() => void handleRestoreWorldAccess()}
                 />
+                {worldRecoveryMessage ? (
+                  <Text variant="caption" tone="muted">
+                    {t(worldRecoveryMessage)}
+                  </Text>
+                ) : null}
               </View>
-              {worldRecoveryMessage ? (
-                <Text variant="caption" tone="muted">
-                  {t(worldRecoveryMessage)}
-                </Text>
-              ) : null}
-            </GlassCard>
-          ) : worldLocked && !worldOffer ? (
-            <GlassCard
-              className="gap-3 p-4"
-              accessibilityLiveRegion="polite"
-              testID="home.world-offer-recovery">
-              <Text variant="h3">
-                {t(
-                  offersStatus === 'loading'
-                    ? 'world.purchase.offer.checking'
-                    : 'world.purchase.offer.unavailable'
-                )}
-              </Text>
-              <Button
-                label={t('world.purchase.offer.retry')}
-                variant="secondary"
-                loading={worldRecoveryBusy && offersStatus === 'loading'}
-                disabled={worldRecoveryBusy || offersStatus === 'loading'}
-                onPress={() => void handleRetryWorldOffer()}
-              />
-              <Button
-                label={t('world.purchase.restore')}
-                variant="ghost"
-                disabled={worldRecoveryBusy}
-                onPress={() => void handleRestoreWorldAccess()}
-              />
-              {worldRecoveryMessage ? (
-                <Text variant="caption" tone="muted">
-                  {t(worldRecoveryMessage)}
-                </Text>
-              ) : null}
-            </GlassCard>
+            </Card>
           ) : worldLocked && worldOffer ? (
             <WorldPreviewShelf
               world={world}

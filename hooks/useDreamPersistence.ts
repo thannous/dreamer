@@ -148,6 +148,11 @@ const areDreamListsEqual = (left: DreamAnalysis[], right: DreamAnalysis[]): bool
 const getMigrationDreamKey = (dream: DreamAnalysis): string =>
   dream.clientRequestId ?? `id-${dream.id}`;
 
+const hasClaimedMigrationRemainder = (
+  retained: DreamAnalysis[],
+  claimedIds: ReadonlySet<DreamAnalysis['id']>
+): boolean => retained.some((dream) => claimedIds.has(dream.id));
+
 const EMPTY_DREAMS_REF: React.RefObject<DreamAnalysis[]> = { current: [] };
 
 /**
@@ -469,7 +474,7 @@ export function useDreamPersistence({
       await ensureRetainedLocalWriteIsDurable(ownerScopeKey);
       const localResult = await getSavedDreams();
       const localDreams = hydrateWriteScope('local', localResult);
-      if (!localDreams) throw new Error('Guest journal could not be read');
+      if (!localDreams) throw new DreamPersistenceError('read', 'device');
 
       const durableOwner = await getGuestDreamMigrationOwner();
       if (localResult.status === 'absent' || localDreams.length === 0) {
@@ -498,10 +503,20 @@ export function useDreamPersistence({
       if (!hasSession) return { value: undefined, release: false };
 
       const unsynced = claimedDreams.filter((dream) => !dream.remoteId);
+      const settleClaimedMigration = async (
+        remainingSnapshotDreams: DreamAnalysis[]
+      ): Promise<GuestMigrationClaimOutcome<void>> => {
+        const retained = await persistLocalMigrationResult(
+          ownerScopeKey,
+          claimedDreams,
+          remainingSnapshotDreams
+        );
+        const hasClaimedRemainder = hasClaimedMigrationRemainder(retained, claimedIds);
+        if (!hasClaimedRemainder) await setGuestDreamMigrationOwner(null);
+        return { value: undefined, release: !hasClaimedRemainder };
+      };
       if (!unsynced.length) {
-        await persistLocalMigrationResult(ownerScopeKey, claimedDreams, []);
-        await setGuestDreamMigrationOwner(null);
-        return { value: undefined, release: true };
+        return settleClaimedMigration([]);
       }
 
       const remaining: typeof unsynced = [];
@@ -519,15 +534,10 @@ export function useDreamPersistence({
       }
 
       if (remaining.length === 0) {
-        await persistLocalMigrationResult(ownerScopeKey, claimedDreams, []);
-        await setGuestDreamMigrationOwner(null);
-        return { value: undefined, release: true };
+        return settleClaimedMigration([]);
       }
 
-      const retained = await persistLocalMigrationResult(ownerScopeKey, claimedDreams, remaining);
-      const hasClaimedRemainder = retained.some((dream) => claimedIds.has(dream.id));
-      if (!hasClaimedRemainder) await setGuestDreamMigrationOwner(null);
-      return { value: undefined, release: !hasClaimedRemainder };
+      return settleClaimedMigration(remaining);
     });
   }, [
     canUseRemoteSync,
@@ -552,7 +562,7 @@ export function useDreamPersistence({
       await ensureRetainedLocalWriteIsDurable(ownerScopeKey);
       const localResult = await getSavedDreams();
       const localDreams = hydrateWriteScope('local', localResult);
-      if (!localDreams) throw new Error('Dream migration storage could not be read');
+      if (!localDreams) throw new DreamPersistenceError('read', 'device');
       const durableOwner = await getGuestDreamMigrationOwner();
       if (localResult.status === 'absent' || localDreams.length === 0) {
         if (durableOwner) await setGuestDreamMigrationOwner(null);
@@ -615,8 +625,11 @@ export function useDreamPersistence({
 
       if (unsynced.length === 0) {
         if (claimedDreams.length > 0) {
-          await persistLocalMigrationResult(ownerScopeKey, claimedDreams, []);
-          await setGuestDreamMigrationOwner(null);
+          const retained = await persistLocalMigrationResult(ownerScopeKey, claimedDreams, []);
+          const hasClaimedRemainder = hasClaimedMigrationRemainder(retained, claimedIds);
+          if (!hasClaimedRemainder) await setGuestDreamMigrationOwner(null);
+          await setDreamsMigrationSynced(userId, true);
+          return { value: undefined, release: !hasClaimedRemainder };
         }
         await setDreamsMigrationSynced(userId, true);
         return { value: undefined, release: true };
@@ -651,8 +664,11 @@ export function useDreamPersistence({
 
       if (!hadFailures) {
         if (claimedDreams.length > 0) {
-          await persistLocalMigrationResult(ownerScopeKey, claimedDreams, []);
-          await setGuestDreamMigrationOwner(null);
+          const retained = await persistLocalMigrationResult(ownerScopeKey, claimedDreams, []);
+          const hasClaimedRemainder = hasClaimedMigrationRemainder(retained, claimedIds);
+          if (!hasClaimedRemainder) await setGuestDreamMigrationOwner(null);
+          await setDreamsMigrationSynced(userId, true);
+          return { value: undefined, release: !hasClaimedRemainder };
         }
         await setDreamsMigrationSynced(userId, true);
         return { value: undefined, release: true };
@@ -800,7 +816,7 @@ export function useDreamPersistence({
             if (isCurrent()) {
               setStateForScope(scopeKey, {
                 status: 'error',
-                operation: 'write',
+                operation: migrationError.operation,
                 target: 'device',
               });
             }
