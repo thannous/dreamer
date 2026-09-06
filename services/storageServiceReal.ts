@@ -7,7 +7,9 @@ import { logger } from '@/lib/logger';
 import { reportSyncQueueClearedWithPending } from '@/lib/syncObservability';
 import type {
   DreamAnalysis,
+  DreamListReadResult,
   DreamMutation,
+  GuestDreamMigrationOwner,
   LanguagePreference,
   JournalLayoutPreference,
   NotificationSettings,
@@ -41,6 +43,7 @@ const ONBOARDING_STATE_KEY = 'gemini_dream_journal_onboarding_state_v2';
 const ONBOARDING_GUEST_CLAIMED_BY_KEY = 'gemini_dream_journal_onboarding_guest_claimed_by_v2';
 const PENDING_RECORDING_NOTIFICATION_KEY = 'gemini_dream_journal_pending_recording_notification_v1';
 const DREAMS_MIGRATION_SYNCED_PREFIX = 'gemini_dream_journal_dreams_migration_synced_';
+const GUEST_DREAM_MIGRATION_OWNER_KEY = 'gemini_dream_journal_guest_migration_owner_v1';
 const MAX_CHAT_HISTORY_FOR_STORAGE = 50;
 const IMAGE_CACHE_DIR = FileSystemLegacy.cacheDirectory ?? FileSystemLegacy.documentDirectory ?? null;
 // Store large payloads on the filesystem to avoid Android CursorWindow limits in AsyncStorage
@@ -132,7 +135,10 @@ const getFileBackedPath = (key: string): string | null =>
 const shouldUseFileStorage = (key: string): boolean =>
   Platform.OS !== 'web' && FILE_BACKED_KEYS.has(key) && Boolean(FILE_STORAGE_PREFIX);
 
-async function readFileBackedItem(key: string): Promise<string | null> {
+async function readFileBackedItem(
+  key: string,
+  options?: { strict?: boolean }
+): Promise<string | null> {
   const path = getFileBackedPath(key);
   if (!path) return null;
   try {
@@ -142,8 +148,11 @@ async function readFileBackedItem(key: string): Promise<string | null> {
     return await file.text();
   } catch (error) {
     if (__DEV__) {
-      console.warn(`Failed to read file-backed key ${key}`, error);
+      console.warn(
+        `Failed to read file-backed key ${key}${options?.strict ? '' : `: ${extractErrorText(error)}`}`
+      );
     }
+    if (options?.strict) throw error;
     return null;
   }
 }
@@ -382,9 +391,19 @@ async function withKvRetry<T>(operation: () => Promise<T>): Promise<T> {
   throw new Error('KV retry exhausted');
 }
 
-async function getItem(key: string): Promise<string | null> {
+async function getItem(
+  key: string,
+  options?: { strict?: boolean }
+): Promise<string | null> {
+  const strict = options?.strict === true;
+  if (strict && Platform.OS !== 'web' && SQLiteKvStoreRef === null) {
+    SQLiteKvStoreRef = undefined;
+  }
   const kv = await getSQLiteKvStore();
   const legacyAS = await getLegacyAsyncStorage();
+  if (strict && Platform.OS !== 'web' && !kv) {
+    throw new Error('Native journal primary storage unavailable');
+  }
 
   if (Platform.OS !== 'web' && FILE_BACKED_KEYS.has(key) && kv) {
     const start = Date.now();
@@ -402,12 +421,14 @@ async function getItem(key: string): Promise<string | null> {
       }
     } catch (error) {
       if (__DEV__) {
-        console.warn(`Failed to read kv-store key ${key}`, error);
+        console.warn(`Failed to read kv-store key ${key}${strict ? '' : `: ${extractErrorText(error)}`}`);
       }
+      if (strict) throw error;
     }
 
-    const fileValue = await readFileBackedItem(key);
+    const fileValue = await readFileBackedItem(key, { strict });
     if (fileValue != null) {
+      if (strict) return fileValue;
       await withKvRetry(() => kv.setItem(key, fileValue));
       await deleteFileBackedItem(key);
       if (legacyAS) {
@@ -430,6 +451,7 @@ async function getItem(key: string): Promise<string | null> {
       try {
         const legacyValue = await legacyAS.getItem(key);
         if (legacyValue != null) {
+          if (strict) return legacyValue;
           await withKvRetry(() => kv.setItem(key, legacyValue));
           try {
             await legacyAS.removeItem(key);
@@ -446,17 +468,11 @@ async function getItem(key: string): Promise<string | null> {
         }
       } catch (error) {
         if (__DEV__) {
-          console.warn(`Failed to read legacy AsyncStorage key ${key}`, error);
+          console.warn(
+            `Failed to read legacy AsyncStorage key ${key}${strict ? '' : `: ${extractErrorText(error)}`}`
+          );
         }
-        if (error instanceof Error && error.message.includes('Row too big')) {
-          try {
-            await legacyAS.removeItem(key);
-          } catch {
-            // Best-effort cleanup
-          }
-        } else {
-          throw error;
-        }
+        throw error;
       }
     }
 
@@ -464,7 +480,7 @@ async function getItem(key: string): Promise<string | null> {
   }
 
   if (shouldUseFileStorage(key)) {
-    const fileValue = await readFileBackedItem(key);
+    const fileValue = await readFileBackedItem(key, { strict });
     if (fileValue != null) {
       return fileValue;
     }
@@ -476,14 +492,16 @@ async function getItem(key: string): Promise<string | null> {
       if (value != null) return value;
     } catch (error) {
       if (__DEV__) {
-        console.warn(`Failed to read kv-store key ${key}`, error);
+        console.warn(`Failed to read kv-store key ${key}${strict ? '' : `: ${extractErrorText(error)}`}`);
       }
+      if (strict) throw error;
     }
 
     if (legacyAS) {
       try {
         const legacyValue = await legacyAS.getItem(key);
         if (legacyValue != null) {
+          if (strict) return legacyValue;
           await withKvRetry(() => kv.setItem(key, legacyValue));
           try {
             await legacyAS.removeItem(key);
@@ -492,7 +510,8 @@ async function getItem(key: string): Promise<string | null> {
           }
           return legacyValue;
         }
-      } catch {
+      } catch (error) {
+        if (strict) throw error;
         // Ignore legacy read failures; caller can fall back to other stores.
       }
     }
@@ -501,27 +520,21 @@ async function getItem(key: string): Promise<string | null> {
   if (legacyAS) {
     try {
       const value = await legacyAS.getItem(key);
-      if (value != null && shouldUseFileStorage(key)) {
+      if (!strict && value != null && shouldUseFileStorage(key)) {
         await writeFileBackedItem(key, value);
         await legacyAS.removeItem(key);
       }
       return value;
     } catch (error) {
       if (__DEV__) {
-        console.warn(`Failed to read AsyncStorage key ${key}`, error);
+        console.warn(
+          `Failed to read AsyncStorage key ${key}${strict ? '' : `: ${extractErrorText(error)}`}`
+        );
       }
-      if (error instanceof Error && error.message.includes('Row too big')) {
-        try {
-          await legacyAS.removeItem(key);
-        } catch {
-          // Best-effort cleanup
-        }
-      } else {
-        throw error;
-      }
+      throw error;
     }
   }
-  const idb = await getIndexedDBStorage();
+  const idb = await getIndexedDBStorage(strict);
   if (idb) {
     const value = await idb.getItem(key);
     if (value != null) {
@@ -531,6 +544,7 @@ async function getItem(key: string): Promise<string | null> {
     if (webStorage) {
       const legacyValue = webStorage.getItem(key);
       if (legacyValue != null) {
+        if (strict) return legacyValue;
         try {
           await idb.setItem(key, legacyValue);
           webStorage.removeItem(key);
@@ -548,9 +562,44 @@ async function getItem(key: string): Promise<string | null> {
   return memoryStore[key] ?? null;
 }
 
-async function setItem(key: string, value: string): Promise<void> {
+async function setItem(
+  key: string,
+  value: string,
+  options?: { strict?: boolean }
+): Promise<void> {
+  const strict = options?.strict === true;
+  if (strict && Platform.OS !== 'web' && SQLiteKvStoreRef === null) {
+    SQLiteKvStoreRef = undefined;
+  }
   const kv = await getSQLiteKvStore();
   const legacyAS = await getLegacyAsyncStorage();
+
+  if (strict) {
+    if (Platform.OS !== 'web') {
+      if (!kv) throw new Error('Native journal primary storage unavailable');
+      await withKvRetry(() => kv.setItem(key, value));
+      await deleteFileBackedItem(key);
+      if (legacyAS) {
+        try {
+          await legacyAS.removeItem(key);
+        } catch {
+          // The primary copy is durable; cleanup can be retried later.
+        }
+      }
+      return;
+    }
+
+    const primary = await getIndexedDBStorage(true);
+    if (primary) {
+      await primary.setItem(key, value);
+      return;
+    }
+    if (webStorage) {
+      webStorage.setItem(key, value);
+      return;
+    }
+    throw new Error('Web journal primary storage unavailable');
+  }
 
   if (Platform.OS !== 'web' && FILE_BACKED_KEYS.has(key) && kv) {
     const start = Date.now();
@@ -792,33 +841,31 @@ function isJournalLayoutPreference(value: unknown): value is JournalLayoutPrefer
   return value === 'cards' || value === 'compact';
 }
 
-export async function getSavedDreams(): Promise<DreamAnalysis[]> {
+export async function getSavedDreams(): Promise<DreamListReadResult> {
   try {
-    const savedDreams = await getItem(DREAMS_STORAGE_KEY);
-    if (savedDreams) {
-      const dreams = JSON.parse(savedDreams) as DreamAnalysis[];
-      return dreams.sort((a, b) => b.id - a.id);
-    }
-    return [];
-  } catch (error) {
+    const savedDreams = await getItem(DREAMS_STORAGE_KEY, { strict: true });
+    if (savedDreams == null) return { status: 'absent' };
+    const dreams = JSON.parse(savedDreams) as unknown;
+    if (!Array.isArray(dreams)) return { status: 'error' };
+    return {
+      status: 'loaded',
+      value: (dreams as DreamAnalysis[]).sort((a, b) => b.id - a.id),
+    };
+  } catch {
     if (__DEV__) {
-      console.error('Failed to retrieve dreams:', error);
+      console.error('Failed to retrieve dreams');
     }
-    const message = error instanceof Error ? error.message : '';
-    if (message.includes('Row too big')) {
-      await removeItem(DREAMS_STORAGE_KEY);
-    }
-    return [];
+    return { status: 'error' };
   }
 }
 
 export async function saveDreams(dreams: DreamAnalysis[]): Promise<void> {
   try {
     const normalized = await normalizeDreamsForStorage(dreams);
-    await setItem(DREAMS_STORAGE_KEY, JSON.stringify(normalized));
-  } catch (error) {
+    await setItem(DREAMS_STORAGE_KEY, JSON.stringify(normalized), { strict: true });
+  } catch {
     if (__DEV__) {
-      console.error('Failed to save dreams:', error);
+      console.error('Failed to save dreams');
     }
     throw new Error('Failed to persist dreams to storage');
   }
@@ -1419,12 +1466,40 @@ export async function setDreamsMigrationSynced(userId: string, synced: boolean):
   await setItem(`${DREAMS_MIGRATION_SYNCED_PREFIX}${userId}`, synced ? 'true' : 'false');
 }
 
+export async function getGuestDreamMigrationOwner(): Promise<GuestDreamMigrationOwner | null> {
+  try {
+    const raw = await getItem(GUEST_DREAM_MIGRATION_OWNER_KEY, { strict: true });
+    if (raw == null || raw === '') return null;
+    const owner: unknown = JSON.parse(raw);
+    if (!owner || typeof owner !== 'object' || !('userId' in owner) ||
+        typeof owner.userId !== 'string' || !owner.userId.trim() ||
+        !('dreamIds' in owner) || !Array.isArray(owner.dreamIds) ||
+        !owner.dreamIds.every((id: unknown) => typeof id === 'number' && Number.isFinite(id))) {
+      throw new Error('Invalid guest migration attribution');
+    }
+    return { userId: owner.userId, dreamIds: owner.dreamIds };
+  } catch {
+    if (__DEV__) console.error('Failed to read guest dream migration owner');
+    throw new Error('Failed to read guest dream migration owner');
+  }
+}
+
+export async function setGuestDreamMigrationOwner(owner: GuestDreamMigrationOwner | null): Promise<void> {
+  try {
+    await setItem(GUEST_DREAM_MIGRATION_OWNER_KEY, owner ? JSON.stringify(owner) : '', { strict: true });
+  } catch {
+    if (__DEV__) console.error('Failed to save guest dream migration owner');
+    throw new Error('Failed to save guest dream migration owner');
+  }
+}
+
 async function readScopedJson(
   baseKey: string,
-  userScope?: string | null
+  userScope?: string | null,
+  options?: { strict?: boolean }
 ): Promise<string | null> {
   const scopedKey = scopedStorageKey(baseKey, userScope);
-  const scopedValue = await getItem(scopedKey);
+  const scopedValue = await getItem(scopedKey, options);
   if (scopedValue != null) {
     return scopedValue;
   }
@@ -1443,24 +1518,35 @@ async function writeScopedJson(
   payload: string,
   userScope?: string | null
 ): Promise<void> {
-  await setItem(scopedStorageKey(baseKey, userScope), payload);
+  await setItem(scopedStorageKey(baseKey, userScope), payload, { strict: true });
   if (userScope) {
-    await removeItem(baseKey);
+    try {
+      await removeItem(baseKey);
+    } catch {
+      // The scoped primary copy is durable; legacy cleanup cannot invalidate it.
+    }
   }
 }
 
-export async function getCachedRemoteDreams(userScope?: string | null): Promise<DreamAnalysis[]> {
+export async function getCachedRemoteDreams(
+  userScope?: string | null
+): Promise<DreamListReadResult> {
   try {
-    const cachedDreams = await readScopedJson(REMOTE_DREAMS_CACHE_KEY, userScope);
-    if (cachedDreams) {
-      return JSON.parse(cachedDreams) as DreamAnalysis[];
-    }
-  } catch (error) {
+    const cachedDreams = await readScopedJson(
+      REMOTE_DREAMS_CACHE_KEY,
+      userScope,
+      { strict: true }
+    );
+    if (cachedDreams == null) return { status: 'absent' };
+    const parsed = JSON.parse(cachedDreams) as unknown;
+    if (!Array.isArray(parsed)) return { status: 'error' };
+    return { status: 'loaded', value: parsed as DreamAnalysis[] };
+  } catch {
     if (__DEV__) {
-      console.error('Failed to read cached remote dreams:', error);
+      console.error('Failed to read cached remote dreams');
     }
+    return { status: 'error' };
   }
-  return [];
 }
 
 export async function saveCachedRemoteDreams(
@@ -1475,9 +1561,10 @@ export async function saveCachedRemoteDreams(
       if (isSQLiteBusyError(error)) {
         logger.debug('[storageServiceReal] cache write skipped while SQLite busy');
       } else {
-        console.error('Failed to cache remote dreams:', error);
+        console.error('Failed to cache remote dreams');
       }
     }
+    throw new Error('Failed to cache remote dreams');
   }
 }
 
@@ -1491,27 +1578,53 @@ function parsePendingDreamMutationsPayload(
 
   const parsed = JSON.parse(payload) as unknown;
   if (!Array.isArray(parsed)) {
-    return [];
+    throw new Error('Pending dream mutation payload must be an array');
   }
 
-  return parsed
-    .map((entry) => {
+  return parsed.map((entry) => {
       if (
         typeof entry === 'object' &&
         entry !== null &&
         'version' in entry &&
         (entry as { version?: unknown }).version === 1
       ) {
-        return entry as DreamMutation;
+        const mutation = entry as Partial<DreamMutation>;
+        const valid =
+          typeof mutation.id === 'string' &&
+          typeof mutation.userScope === 'string' &&
+          (!userScope || mutation.userScope === userScope) &&
+          mutation.entityType === 'dream' &&
+          typeof mutation.entityKey === 'string' &&
+          (mutation.operation === 'create' ||
+            mutation.operation === 'update' ||
+            mutation.operation === 'delete') &&
+          typeof mutation.clientRequestId === 'string' &&
+          typeof mutation.clientUpdatedAt === 'number' &&
+          typeof mutation.payload === 'object' &&
+          mutation.payload !== null &&
+          (mutation.status === 'pending' ||
+            mutation.status === 'sending' ||
+            mutation.status === 'failed' ||
+            mutation.status === 'acked' ||
+            mutation.status === 'blocked') &&
+          typeof mutation.retryCount === 'number' &&
+          typeof mutation.createdAt === 'number';
+        if (!valid) {
+          throw new Error('Invalid pending dream mutation');
+        }
+        return mutation as DreamMutation;
       }
 
       if (!userScope) {
-        return null;
+        throw new Error('Legacy pending dream mutation requires an account scope');
       }
 
-      return migrateLegacyDreamMutation(entry as Record<string, unknown>, userScope);
-    })
-    .filter((entry): entry is DreamMutation => Boolean(entry));
+      const migrated = migrateLegacyDreamMutation(entry as Record<string, unknown>, userScope);
+      if (!migrated) {
+        throw new Error('Invalid legacy pending dream mutation');
+      }
+      return migrated;
+    });
 }
 
 async function getPendingDreamMutationsBeforeClear(userScope?: string | null): Promise<DreamMutation[]> {
@@ -1535,9 +1648,9 @@ async function getPendingDreamMutationsBeforeClear(userScope?: string | null): P
       deduped.set(mutation.id, mutation);
     }
     return Array.from(deduped.values());
-  } catch (error) {
+  } catch {
     if (__DEV__) {
-      console.error('Failed to inspect legacy pending dream mutations before clearing:', error);
+      console.error('Failed to inspect legacy pending dream mutations before clearing');
     }
     return scopedMutations;
   }
@@ -1562,14 +1675,14 @@ export async function clearRemoteDreamStorage(userScope?: string | null): Promis
 
 export async function getPendingDreamMutations(userScope?: string | null): Promise<DreamMutation[]> {
   try {
-    const pending = await readScopedJson(DREAM_MUTATIONS_KEY, userScope);
+    const pending = await readScopedJson(DREAM_MUTATIONS_KEY, userScope, { strict: true });
     return parsePendingDreamMutationsPayload(pending, userScope);
-  } catch (error) {
+  } catch {
     if (__DEV__) {
-      console.error('Failed to read pending dream mutations:', error);
+      console.error('Failed to read pending dream mutations');
     }
+    throw new Error('Failed to read pending dream mutations');
   }
-  return [];
 }
 
 export async function savePendingDreamMutations(
@@ -1579,9 +1692,9 @@ export async function savePendingDreamMutations(
   try {
     const normalized = await normalizeMutationsForStorage(mutations);
     await writeScopedJson(DREAM_MUTATIONS_KEY, JSON.stringify(normalized), userScope);
-  } catch (error) {
+  } catch {
     if (__DEV__) {
-      console.error('Failed to save pending dream mutations:', error);
+      console.error('Failed to save pending dream mutations');
     }
     throw new Error('Failed to save pending dream mutations');
   }

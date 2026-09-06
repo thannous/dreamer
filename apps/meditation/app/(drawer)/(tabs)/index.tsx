@@ -7,7 +7,7 @@ import { UpcomingJourneyRail } from '@/components/journey/UpcomingJourneyRail';
 import { WeeklyJourney } from '@/components/journey/WeeklyJourney';
 import { WorldJourneyPicker } from '@/components/journey/WorldJourneyPicker';
 import { WorldPreviewShelf } from '@/components/journey/WorldPreviewShelf';
-import { Text } from '@/components/ui';
+import { Button, Card, Text } from '@/components/ui';
 import { WorldScene } from '@/components/worlds/WorldScene';
 import { DEFAULT_WORLD_ID, WORLD_BY_ID, WORLD_IDS, type WorldId } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
@@ -58,17 +58,41 @@ export default function HomeTab() {
     setWorld,
     setPreviewWorld,
   } = useWorld();
-  const { loaded: worldPurchasesLoaded, isWorldOwned, offerForWorld } = useWorldPurchases();
+  const {
+    ownershipStatus,
+    offersStatus,
+    isWorldOwned,
+    worldAccess,
+    offerForWorld,
+    retryOwnership,
+    retryOffers,
+    restoreWorlds,
+  } = useWorldPurchases();
+  const resolveWorldAccess = useMemo(
+    () =>
+      typeof worldAccess === 'function'
+        ? worldAccess
+        : (nextWorldId: WorldId) => (isWorldOwned(nextWorldId) ? 'owned' : 'not-owned'),
+    [isWorldOwned, worldAccess]
+  );
   const focused = useIsFocused();
-  const selectedWorldId = isWorldOwned(worldId) ? worldId : DEFAULT_WORLD_ID;
+  const selectedWorldAccess = resolveWorldAccess(worldId);
+  const selectedWorldId = selectedWorldAccess === 'not-owned' ? DEFAULT_WORLD_ID : worldId;
   const activeWorldId = presentationWorldId;
   const world = presentationWorld;
+  const [worldRecoveryBusy, setWorldRecoveryBusy] = useState(false);
+  const [worldRecoveryMessage, setWorldRecoveryMessage] = useState<TranslationKey | null>(null);
 
   useEffect(() => {
-    if (worldPurchasesLoaded && !previewWorldId && worldId !== selectedWorldId) {
+    if (
+      ownershipStatus === 'ready' &&
+      selectedWorldAccess === 'not-owned' &&
+      !previewWorldId &&
+      worldId !== selectedWorldId
+    ) {
       void setWorld(selectedWorldId);
     }
-  }, [previewWorldId, selectedWorldId, setWorld, worldId, worldPurchasesLoaded]);
+  }, [ownershipStatus, previewWorldId, selectedWorldAccess, selectedWorldId, setWorld, worldId]);
 
   useEffect(() => {
     if (!focused && previewWorldId) {
@@ -157,14 +181,15 @@ export default function HomeTab() {
 
   const handleSelectWorld = useCallback(
     (nextWorldId: WorldId) => {
-      if (!isWorldOwned(nextWorldId)) {
+      const nextAccess = resolveWorldAccess(nextWorldId);
+      if (nextAccess !== 'free' && nextAccess !== 'owned') {
         setPreviewWorld(nextWorldId);
         return;
       }
 
       void setWorld(nextWorldId);
     },
-    [isWorldOwned, setPreviewWorld, setWorld]
+    [resolveWorldAccess, setPreviewWorld, setWorld]
   );
 
   const handlePreviewWorld = useCallback(
@@ -173,8 +198,45 @@ export default function HomeTab() {
     },
     [router]
   );
-  const worldLocked = world.access === 'purchase' && !isWorldOwned(activeWorldId);
-  const worldPrice = offerForWorld(activeWorldId)?.priceLabel ?? '0,99 €';
+  const activeWorldAccess = resolveWorldAccess(activeWorldId);
+  const worldLocked = world.access === 'purchase' && activeWorldAccess === 'not-owned';
+  const worldAccessUnknown = world.access === 'purchase' && activeWorldAccess === 'unknown';
+  const worldOffer = offerForWorld(activeWorldId);
+
+  const handleRetryWorldAccess = useCallback(async () => {
+    setWorldRecoveryBusy(true);
+    setWorldRecoveryMessage(null);
+    try {
+      await retryOwnership();
+    } finally {
+      setWorldRecoveryBusy(false);
+    }
+  }, [retryOwnership]);
+
+  const handleRestoreWorldAccess = useCallback(async () => {
+    setWorldRecoveryBusy(true);
+    setWorldRecoveryMessage(null);
+    try {
+      const restored = await restoreWorlds();
+      if (!restored.includes(activeWorldId)) {
+        setWorldRecoveryMessage('world.purchase.restore.empty');
+      }
+    } catch {
+      setWorldRecoveryMessage('world.purchase.error');
+    } finally {
+      setWorldRecoveryBusy(false);
+    }
+  }, [activeWorldId, restoreWorlds]);
+
+  const handleRetryWorldOffer = useCallback(async () => {
+    setWorldRecoveryBusy(true);
+    setWorldRecoveryMessage(null);
+    try {
+      await retryOffers();
+    } finally {
+      setWorldRecoveryBusy(false);
+    }
+  }, [retryOffers]);
 
   return (
     <WorldScene
@@ -232,15 +294,84 @@ export default function HomeTab() {
             previewedWorldId={previewWorldId}
             onSelect={handleSelectWorld}
             isWorldOwned={isWorldOwned}
+            worldAccess={resolveWorldAccess}
+            offersStatus={offersStatus}
             priceForWorld={(nextWorldId) => offerForWorld(nextWorldId)?.priceLabel}
-            initialSelectionReady={worldLoaded && worldPurchasesLoaded}
+            initialSelectionReady={worldLoaded && ownershipStatus !== 'loading'}
             accessibilityLabel={t('home.journey.worldLabel')}
             testID="home.world-switcher"
           />
-          {worldLocked ? (
+          {worldAccessUnknown ? (
+            <Card
+              accessibilityLiveRegion="polite"
+              testID="home.world-access-recovery">
+              <View className="gap-3">
+                <Text variant="h3">{t('world.purchase.access.title')}</Text>
+                <Text variant="bodySm" tone="muted">
+                  {t(
+                    ownershipStatus === 'loading'
+                      ? 'world.purchase.access.checking'
+                      : 'world.purchase.access.unavailable'
+                  )}
+                </Text>
+                <View className="gap-2">
+                  <Button
+                    label={t('world.purchase.access.retry')}
+                    variant="secondary"
+                    loading={worldRecoveryBusy && ownershipStatus === 'loading'}
+                    disabled={worldRecoveryBusy}
+                    onPress={() => void handleRetryWorldAccess()}
+                  />
+                  <Button
+                    label={t('world.purchase.restore')}
+                    variant="ghost"
+                    disabled={worldRecoveryBusy}
+                    onPress={() => void handleRestoreWorldAccess()}
+                  />
+                </View>
+                {worldRecoveryMessage ? (
+                  <Text variant="caption" tone="muted">
+                    {t(worldRecoveryMessage)}
+                  </Text>
+                ) : null}
+              </View>
+            </Card>
+          ) : worldLocked && !worldOffer ? (
+            <Card
+              accessibilityLiveRegion="polite"
+              testID="home.world-offer-recovery">
+              <View className="gap-3">
+                <Text variant="h3">
+                  {t(
+                    offersStatus === 'loading'
+                      ? 'world.purchase.offer.checking'
+                      : 'world.purchase.offer.unavailable'
+                  )}
+                </Text>
+                <Button
+                  label={t('world.purchase.offer.retry')}
+                  variant="secondary"
+                  loading={worldRecoveryBusy && offersStatus === 'loading'}
+                  disabled={worldRecoveryBusy || offersStatus === 'loading'}
+                  onPress={() => void handleRetryWorldOffer()}
+                />
+                <Button
+                  label={t('world.purchase.restore')}
+                  variant="ghost"
+                  disabled={worldRecoveryBusy}
+                  onPress={() => void handleRestoreWorldAccess()}
+                />
+                {worldRecoveryMessage ? (
+                  <Text variant="caption" tone="muted">
+                    {t(worldRecoveryMessage)}
+                  </Text>
+                ) : null}
+              </View>
+            </Card>
+          ) : worldLocked && worldOffer ? (
             <WorldPreviewShelf
               world={world}
-              priceLabel={worldPrice}
+              priceLabel={worldOffer.priceLabel}
               onPreview={() => handlePreviewWorld(activeWorldId)}
             />
           ) : (
@@ -271,7 +402,7 @@ export default function HomeTab() {
           <WeeklyJourney practiceLog={practiceLog} today={today} />
         </View>
 
-        {!worldLocked ? (
+        {!worldLocked && !worldAccessUnknown ? (
           <View className={compactViewport ? 'mt-4' : 'mt-5'}>
             <UpcomingJourneyRail
               sessions={upcoming}

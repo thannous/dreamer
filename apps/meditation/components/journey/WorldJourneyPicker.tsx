@@ -17,6 +17,7 @@ import { IconSymbol, Text } from '@/components/ui';
 import { ArtworkScrim, NightTheme, Radius } from '@/constants/theme';
 import type { MeditationWorld, WorldId } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
+import type { WorldAccess, WorldPurchaseResourceStatus } from '@/context/WorldPurchaseContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import { useCompactLayout } from '@/hooks/useCompactLayout';
 import { useScreenReader } from '@/hooks/useScreenReader';
@@ -48,6 +49,8 @@ type Props = {
   previewedWorldId?: WorldId | null;
   onSelect: (worldId: WorldId) => void;
   isWorldOwned: (worldId: WorldId) => boolean;
+  worldAccess?: (worldId: WorldId) => WorldAccess;
+  offersStatus?: WorldPurchaseResourceStatus;
   priceForWorld: (worldId: WorldId) => string | undefined;
   initialSelectionReady?: boolean;
   accessibilityLabel?: string;
@@ -59,6 +62,8 @@ function WorldJourneyCard({
   selected,
   previewed,
   isWorldOwned,
+  worldAccess,
+  offersStatus,
   priceForWorld,
   width,
   onSelect,
@@ -69,6 +74,8 @@ function WorldJourneyCard({
   selected: boolean;
   previewed: boolean;
   isWorldOwned: (worldId: WorldId) => boolean;
+  worldAccess?: (worldId: WorldId) => WorldAccess;
+  offersStatus?: WorldPurchaseResourceStatus;
   priceForWorld: (worldId: WorldId) => string | undefined;
   width: number;
   onSelect: (worldId: WorldId) => void;
@@ -82,12 +89,19 @@ function WorldJourneyCard({
   const ritual = t(`world.${world.id}.ritual` as TranslationKey);
   const purchasable = world.access === 'purchase';
   const owned = purchasable && isWorldOwned(world.id);
-  const locked = purchasable && !owned;
-  const priceLabel = priceForWorld(world.id) ?? '0,99 €';
+  const access = worldAccess?.(world.id) ?? (owned ? 'owned' : purchasable ? 'not-owned' : 'free');
+  const locked = purchasable && access === 'not-owned';
+  const priceLabel = priceForWorld(world.id);
+  const offerLabel =
+    priceLabel ??
+    t(offersStatus === 'loading' ? 'world.purchase.offer.checking' : 'world.purchase.offer.unavailable');
+  const commercialHint = priceLabel
+    ? `${t('world.purchase.oneTime')}. ${priceLabel}`
+    : offerLabel;
   const ownedLabel = t('world.purchase.owned');
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
   const accessibilityHint = locked
-    ? `${role}. ${ritual} ${t('world.purchase.oneTime')}. ${priceLabel}.`
+    ? `${role}. ${ritual} ${commercialHint}.`
     : owned
       ? `${role}. ${ritual} ${ownedLabel}.`
       : `${role}. ${ritual}`;
@@ -147,7 +161,7 @@ function WorldJourneyCard({
                 testID={testID ? `${testID}.locked` : undefined}>
                 <IconSymbol name="lock.fill" size={12} color={NightTheme.textPrimary} />
                 <Text variant="overline">
-                  {priceLabel}
+                  {offerLabel}
                 </Text>
               </View>
             ) : owned ? (
@@ -206,6 +220,8 @@ export function WorldJourneyPicker({
   previewedWorldId,
   onSelect,
   isWorldOwned,
+  worldAccess,
+  offersStatus,
   priceForWorld,
   initialSelectionReady = false,
   accessibilityLabel,
@@ -249,6 +265,8 @@ export function WorldJourneyPicker({
         selected={selected}
         previewed={previewed}
         isWorldOwned={isWorldOwned}
+        worldAccess={worldAccess}
+        offersStatus={offersStatus}
         priceForWorld={priceForWorld}
         width={screenReader ? availableWidth : activeWidth}
         onSelect={onSelect}

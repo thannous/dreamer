@@ -490,7 +490,9 @@ jest.doMock('@/hooks/useRecordingSession', () => ({
 
 jest.doMock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
-    t: (key: string) => key,
+    t: (key: string) => key.startsWith('journal.persistence.')
+      ? require('@/lib/i18n/fr').default[key]
+      : key,
   }),
 }));
 
@@ -606,6 +608,9 @@ jest.doMock('@/services/storageService', () => ({
 }));
 
 const { default: RecordingScreen } = require('@/app/recording');
+const { DreamPersistenceError } = require('@/lib/dreamStorageRead');
+const { Alert } = require('react-native');
+const { default: frenchTranslations } = require('@/lib/i18n/fr');
 const { getBottomNavigationLayout } = require('@/constants/layout');
 
 const pendingDraftReads = new Set<(value: string) => void>();
@@ -928,6 +933,39 @@ describe('Recording screen', () => {
           expect.objectContaining({ transcript: fragment })
         );
       });
+    }
+  );
+
+  it.each(['read', 'write'] as const)(
+    'keeps the draft and capture identity after a queue %s failure with French recovery copy',
+    async (operation: 'read' | 'write') => {
+      mockAddDream.mockRejectedValueOnce(new DreamPersistenceError(operation, 'remote-cache'));
+      render(<RecordingScreen />);
+      await awaitEditorReady();
+      const input = screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement;
+      fireEvent.change(input, { target: { value: 'Un lac et une porte rouge' } });
+      fireEvent.click(screen.getByTestId('recording-save'));
+
+      await waitFor(() => {
+        expect(Alert.alert).toHaveBeenCalledWith(
+          'common.error_title',
+          frenchTranslations[`journal.persistence.${operation}_cache`]
+        );
+        expect((screen.getByTestId('recording-save') as HTMLButtonElement).disabled).toBe(false);
+      });
+      expect(input.value).toBe('Un lac et une porte rouge');
+      expect(mockSaveTranscript).not.toHaveBeenCalledWith('');
+      expect(mockReplace).not.toHaveBeenCalled();
+      expect(mockCategorizeDream).not.toHaveBeenCalled();
+      const firstCapture = mockAddDream.mock.calls[0][0];
+
+      fireEvent.click(screen.getByTestId('recording-save'));
+      await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
+        pathname: '/journal/[id]',
+        params: { id: '42', saved: '1' },
+      }));
+      expect(mockAddDream).toHaveBeenCalledTimes(2);
+      expect(mockAddDream.mock.calls[1][0]).toBe(firstCapture);
     }
   );
 

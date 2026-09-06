@@ -30,7 +30,7 @@ import { SettingsProvider } from '@/context/SettingsContext';
 import { SubscriptionProvider } from '@/context/SubscriptionContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { WorldProvider, useWorld } from '@/context/WorldContext';
-import { WorldPurchaseProvider, useWorldPurchases } from '@/context/WorldPurchaseContext';
+import { WorldPurchaseProvider } from '@/context/WorldPurchaseContext';
 
 SplashScreen.preventAutoHideAsync().catch(() => {
   // Splash may already be hidden on fast refresh — not an error worth surfacing.
@@ -52,7 +52,6 @@ const rootStackMotion =
 function RootNavigator() {
   const { mode, colors, loaded: themeLoaded } = useTheme();
   const { loaded: worldLoaded } = useWorld();
-  const { loaded: worldPurchasesLoaded } = useWorldPurchases();
 
   const [fontsLoaded, fontError] = useFonts({
     Fraunces_400Regular,
@@ -68,8 +67,7 @@ function RootNavigator() {
   });
 
   // A missing font must not strand the user on the splash screen.
-  const ready =
-    (fontsLoaded || !!fontError) && themeLoaded && worldLoaded && worldPurchasesLoaded;
+  const ready = (fontsLoaded || !!fontError) && themeLoaded && worldLoaded;
 
   // The native surface can briefly expose the root view while routes mount.
   // Following the resolved theme keeps that hand-off invisible in both themes.

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { getDreamAnalysisState, getDreamDetailAction } from '../../../lib/dreamUsage';
-import type { DreamAnalysis, DreamMutation, RitualStepProgress } from '../../../lib/types';
+import type { DreamAnalysis, DreamListReadResult, DreamMutation, RitualStepProgress } from '../../../lib/types';
 import { PREDEFINED_DREAMS } from '../../../mock-data/predefinedDreams';
 import {
     clearSavedTranscript,
@@ -59,6 +59,13 @@ const legacyMutation = (mutation: {
   createdAt: number;
 }): DreamMutation => mutation as unknown as DreamMutation;
 
+const readLoadedDreams = async (resultPromise: Promise<DreamListReadResult>): Promise<DreamAnalysis[]> => {
+  const result = await resultPromise;
+  expect(result.status).toBe('loaded');
+  if (result.status !== 'loaded') throw new Error(`Expected loaded dreams, got ${result.status}`);
+  return result.value;
+};
+
 describe('storageServiceMock', () => {
   beforeEach(() => {
     resetMockStorage();
@@ -71,10 +78,10 @@ describe('storageServiceMock', () => {
       // Preloading is disabled by default in beforeEach
 
       // When
-      const dreams = await getSavedDreams();
+      const result = await getSavedDreams();
 
       // Then
-      expect(dreams).toHaveLength(0);
+      expect(result).toEqual({ status: 'absent' });
     });
 
     it('given enabled preloading when preloading dreams then loads predefined dreams', async () => {
@@ -83,7 +90,7 @@ describe('storageServiceMock', () => {
 
       // When
       preloadDreamsNow();
-      const dreams = await getSavedDreams();
+      const dreams = await readLoadedDreams(getSavedDreams());
 
       // Then
       expect(dreams).toHaveLength(PREDEFINED_DREAMS.length);
@@ -95,7 +102,7 @@ describe('storageServiceMock', () => {
 
       // When
       preloadDreamsNow();
-      const dreams = await getSavedDreams();
+      const dreams = await readLoadedDreams(getSavedDreams());
 
       // Then
       const states = dreams.map((dream) => getDreamAnalysisState(dream));
@@ -138,10 +145,10 @@ describe('storageServiceMock', () => {
 
       // When
       setPreloadDreamsEnabled(false);
-      const dreams = await getSavedDreams();
+      const result = await getSavedDreams();
 
       // Then
-      expect(dreams).toEqual([]);
+      expect(result).toEqual({ status: 'absent' });
     });
   });
 
@@ -152,7 +159,7 @@ describe('storageServiceMock', () => {
       await saveDreams(testDreams);
 
       // When
-      const dreams = await getSavedDreams();
+      const dreams = await readLoadedDreams(getSavedDreams());
 
       // Then
       expect(dreams).toHaveLength(2);
@@ -168,7 +175,7 @@ describe('storageServiceMock', () => {
       await saveDreams(emptyDreams);
 
       // Then
-      const dreams = await getSavedDreams();
+      const dreams = await readLoadedDreams(getSavedDreams());
       expect(dreams).toEqual([]);
     });
 
@@ -177,10 +184,10 @@ describe('storageServiceMock', () => {
       resetMockStorage();
 
       // When
-      const dreams = await getSavedDreams();
+      const result = await getSavedDreams();
 
       // Then
-      expect(dreams).toEqual([]);
+      expect(result).toEqual({ status: 'absent' });
     });
   });
 
@@ -420,7 +427,7 @@ describe('storageServiceMock', () => {
       const dreams = [buildDream({ id: 1 }), buildDream({ id: 2 })];
       await saveCachedRemoteDreams(dreams);
 
-      const cached = await getCachedRemoteDreams();
+      const cached = await readLoadedDreams(getCachedRemoteDreams());
 
       expect(cached).toHaveLength(2);
     });
@@ -428,9 +435,9 @@ describe('storageServiceMock', () => {
     it('given no cached dreams when retrieving then returns empty array', async () => {
       resetMockStorage();
 
-      const cached = await getCachedRemoteDreams();
+      const result = await getCachedRemoteDreams();
 
-      expect(cached).toEqual([]);
+      expect(result).toEqual({ status: 'absent' });
     });
   });
 
@@ -456,6 +463,14 @@ describe('storageServiceMock', () => {
       const mutations = await getPendingDreamMutations();
 
       expect(mutations).toEqual([]);
+    });
+
+    it('reports an unreadable queue when a persisted entry is invalid', async () => {
+      await savePendingDreamMutations([{} as DreamMutation], 'user:test');
+
+      await expect(getPendingDreamMutations('user:test')).rejects.toThrow(
+        'Failed to read pending dream mutations'
+      );
     });
   });
 });

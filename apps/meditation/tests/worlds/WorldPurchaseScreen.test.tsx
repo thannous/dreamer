@@ -14,6 +14,8 @@ const mockBack = jest.fn();
 const mockDismissTo = jest.fn();
 const mockPurchaseWorld = jest.fn();
 const mockRestoreWorlds = jest.fn();
+const mockRetryOwnership = jest.fn();
+const mockRetryOffers = jest.fn();
 const mockSetWorld = jest.fn();
 const mockToggleSound = jest.fn();
 const mockUseWorldSoundscape = jest.fn();
@@ -21,6 +23,9 @@ let mockSoundEnabled = true;
 let mockOwned = false;
 let mockFontScale = 1;
 let mockWorldId = 'tide';
+let mockOwnershipStatus: 'loading' | 'ready' | 'error' = 'ready';
+let mockOffersStatus: 'loading' | 'ready' | 'error' = 'ready';
+let mockOfferAvailable = true;
 
 jest.mock('expo-router', () => ({
   useIsFocused: () => true,
@@ -44,8 +49,15 @@ jest.mock('@/context/WorldContext', () => ({
 jest.mock('@/context/WorldPurchaseContext', () => ({
   useWorldPurchases: () => ({
     loaded: true,
+    ownershipStatus: mockOwnershipStatus,
+    offersStatus: mockOffersStatus,
     isWorldOwned: () => mockOwned,
-    offerForWorld: () => ({ worldId: mockWorldId, priceLabel: '0,99 €', raw: null }),
+    worldAccess: () =>
+      mockOwnershipStatus === 'ready' ? (mockOwned ? 'owned' : 'not-owned') : 'unknown',
+    offerForWorld: () =>
+      mockOfferAvailable ? { worldId: mockWorldId, priceLabel: '0,99 €', raw: null } : undefined,
+    retryOwnership: mockRetryOwnership,
+    retryOffers: mockRetryOffers,
     purchaseWorld: mockPurchaseWorld,
     restoreWorlds: mockRestoreWorlds,
   }),
@@ -113,6 +125,8 @@ describe('world purchase handoff', () => {
     mockDismissTo.mockClear();
     mockPurchaseWorld.mockReset();
     mockRestoreWorlds.mockReset();
+    mockRetryOwnership.mockReset();
+    mockRetryOffers.mockReset();
     mockSetWorld.mockReset();
     mockToggleSound.mockReset();
     mockUseWorldSoundscape.mockReset();
@@ -120,6 +134,11 @@ describe('world purchase handoff', () => {
     mockOwned = false;
     mockFontScale = 1;
     mockWorldId = 'tide';
+    mockOwnershipStatus = 'ready';
+    mockOffersStatus = 'ready';
+    mockOfferAvailable = true;
+    mockRetryOwnership.mockResolvedValue(undefined);
+    mockRetryOffers.mockResolvedValue(undefined);
     mockToggleSound.mockImplementation(() => {
       mockSoundEnabled = !mockSoundEnabled;
     });
@@ -164,6 +183,38 @@ describe('world purchase handoff', () => {
     await waitFor(() => expect(mockSetWorld).toHaveBeenCalledWith('tide'));
     expect(mockDismissTo).toHaveBeenCalledWith('/(drawer)/(tabs)');
     expect(mockBack).not.toHaveBeenCalled();
+  });
+
+  it('checks unknown ownership without offering to buy the world again', async () => {
+    mockOwnershipStatus = 'error';
+
+    render(<WorldPurchaseScreen />);
+
+    const primary = screen.getByTestId(TID.Button.WorldPurchaseBuy);
+    expect(primary).toHaveTextContent(mockEn['world.purchase.access.retry']);
+    expect(primary).not.toHaveTextContent(/Get|0,99/);
+
+    fireEvent.press(primary);
+
+    await waitFor(() => expect(mockRetryOwnership).toHaveBeenCalledTimes(1));
+    expect(mockPurchaseWorld).not.toHaveBeenCalled();
+  });
+
+  it('does not invent a price when the store offer is unavailable', async () => {
+    mockOfferAvailable = false;
+    mockOffersStatus = 'error';
+
+    render(<WorldPurchaseScreen />);
+
+    const primary = screen.getByTestId(TID.Button.WorldPurchaseBuy);
+    expect(primary).toHaveTextContent(mockEn['world.purchase.offer.retry']);
+    expect(screen.queryByText(/0,99/)).toBeNull();
+
+    fireEvent.press(primary);
+
+    await waitFor(() => expect(mockRetryOffers).toHaveBeenCalledTimes(1));
+    expect(mockPurchaseWorld).not.toHaveBeenCalled();
+    expect(screen.getByTestId(TID.Button.WorldPurchaseRestore)).toBeTruthy();
   });
 
   it('makes the tide preview readable, concrete, and distinct from Plus', () => {

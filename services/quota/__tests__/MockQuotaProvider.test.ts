@@ -1,17 +1,21 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import type { DreamAnalysis } from '@/lib/types';
+import type { DreamAnalysis, DreamListReadResult } from '@/lib/types';
 
 let MockQuotaProvider: typeof import('../MockQuotaProvider').MockQuotaProvider;
 
 type AnyFunction = (...args: any[]) => any;
 const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
+const loadedDreams = (value: DreamAnalysis[]): DreamListReadResult => ({ status: 'loaded', value });
 
 // Use jest.hoisted to ensure mock is available during module loading
 const { mockGetSavedDreams, mockStorage } = ((factory: any) => factory())(() => ({
-  mockGetSavedDreams: typedJestFn<() => Promise<DreamAnalysis[]>>(),
+  mockGetSavedDreams: typedJestFn<() => Promise<DreamListReadResult>>(),
   mockStorage: new Map<string, string>(),
 }));
+
+const setSavedDreams = (value: DreamAnalysis[]) => mockGetSavedDreams.mockResolvedValue(loadedDreams(value));
+const setSavedDreamsOnce = (value: DreamAnalysis[]) => mockGetSavedDreams.mockResolvedValueOnce(loadedDreams(value));
 
 const mockAsyncStorage = {
   getItem: jest.fn((key: string) => Promise.resolve(mockStorage.get(key) ?? null)),
@@ -79,7 +83,7 @@ describe('MockQuotaProvider', () => {
         buildDream({ id: 2, isAnalyzed: true, analyzedAt: Date.now() }),
         buildDream({ id: 3 }),
       ];
-      mockGetSavedDreams.mockResolvedValueOnce(dreams);
+      setSavedDreamsOnce(dreams);
 
       // When
       const provider = new MockQuotaProvider();
@@ -89,13 +93,13 @@ describe('MockQuotaProvider', () => {
     it('persists analysis usage after dream deletion in mock mode', async () => {
       // Given
       const analyzedDream = buildDream({ id: 4, isAnalyzed: true, analyzedAt: Date.now() });
-      mockGetSavedDreams.mockResolvedValueOnce([analyzedDream]);
+      setSavedDreamsOnce([analyzedDream]);
 
       const provider = new MockQuotaProvider();
       await provider.getUsedAnalysisCount(null);
 
       // Simulate deletion of the analyzed dream
-      mockGetSavedDreams.mockResolvedValueOnce([]);
+      setSavedDreamsOnce([]);
       provider.invalidate();
 
       // When
@@ -108,12 +112,12 @@ describe('MockQuotaProvider', () => {
     it('given cache invalidation when counting analysis then keeps persisted usage', async () => {
       // Given
       const analyzedDream = buildDream({ id: 4, isAnalyzed: true, analyzedAt: Date.now() });
-      mockGetSavedDreams.mockResolvedValueOnce([analyzedDream]);
+      setSavedDreamsOnce([analyzedDream]);
 
       const provider = new MockQuotaProvider();
       await provider.getUsedAnalysisCount(null);
 
-      mockGetSavedDreams.mockResolvedValueOnce([]);
+      setSavedDreamsOnce([]);
       provider.invalidate();
 
       // When
@@ -137,7 +141,7 @@ describe('MockQuotaProvider', () => {
         id: 456,
         chatHistory: Array.from({ length: 10 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
-      mockGetSavedDreams.mockResolvedValueOnce([targetDream, otherDream]);
+      setSavedDreamsOnce([targetDream, otherDream]);
 
       const provider = new MockQuotaProvider();
 
@@ -154,7 +158,7 @@ describe('MockQuotaProvider', () => {
         id: 123,
         chatHistory: Array.from({ length: 8 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
-      mockGetSavedDreams.mockResolvedValueOnce([targetDream]);
+      setSavedDreamsOnce([targetDream]);
 
       const provider = new MockQuotaProvider();
 
@@ -168,7 +172,7 @@ describe('MockQuotaProvider', () => {
     it('given no target when counting messages then returns 0', async () => {
       // Given
       const dreams = [buildDream({ id: 123 })];
-      mockGetSavedDreams.mockResolvedValueOnce(dreams);
+      setSavedDreamsOnce(dreams);
 
       const provider = new MockQuotaProvider();
 
@@ -182,7 +186,7 @@ describe('MockQuotaProvider', () => {
     it('given non-existent dream when counting messages then returns 0', async () => {
       // Given
       const dreams = [buildDream({ id: 456 })];
-      mockGetSavedDreams.mockResolvedValueOnce(dreams);
+      setSavedDreamsOnce(dreams);
 
       const provider = new MockQuotaProvider();
 
@@ -198,7 +202,7 @@ describe('MockQuotaProvider', () => {
     it('given unexplored dream when checking exploration then validates against limits', async () => {
       // Given
       const unexploredDream = buildDream({ id: 123, explorationStartedAt: undefined });
-      mockGetSavedDreams.mockResolvedValueOnce([unexploredDream]);
+      setSavedDreamsOnce([unexploredDream]);
 
       const provider = new MockQuotaProvider();
 
@@ -216,7 +220,7 @@ describe('MockQuotaProvider', () => {
         explorationStartedAt: Date.now(),
         chatHistory: Array.from({ length: 20 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
-      mockGetSavedDreams.mockResolvedValueOnce([exploredDream]);
+      setSavedDreamsOnce([exploredDream]);
 
       const provider = new MockQuotaProvider();
 
@@ -233,13 +237,13 @@ describe('MockQuotaProvider', () => {
         buildDream({ id: 1, explorationStartedAt: Date.now() }),
         buildDream({ id: 2, explorationStartedAt: Date.now() }),
       ];
-      mockGetSavedDreams.mockResolvedValueOnce(exploredDreams);
+      setSavedDreamsOnce(exploredDreams);
 
       const provider = new MockQuotaProvider();
       await provider.getUsedExplorationCount(null);
 
       // Simulate dream deletion after usage was recorded
-      mockGetSavedDreams.mockResolvedValueOnce([]);
+      setSavedDreamsOnce([]);
       provider.invalidate();
 
       // When
@@ -252,7 +256,7 @@ describe('MockQuotaProvider', () => {
     it('given plus user when checking exploration then always allows', async () => {
       // Given
       const dreams = [buildDream({ id: 123 })];
-      mockGetSavedDreams.mockResolvedValueOnce(dreams);
+      setSavedDreamsOnce(dreams);
 
       const provider = new MockQuotaProvider();
 
@@ -268,7 +272,7 @@ describe('MockQuotaProvider', () => {
       const exploredDreams = Array(3).fill(null).map((_, i) =>
         buildDream({ id: i + 1, explorationStartedAt: Date.now() })
       );
-      mockGetSavedDreams.mockResolvedValue(exploredDreams);
+      setSavedDreams(exploredDreams);
 
       const provider = new MockQuotaProvider();
 
@@ -286,7 +290,7 @@ describe('MockQuotaProvider', () => {
       const dreams = Array(100).fill(null).map((_, i) =>
         buildDream({ id: i + 1, isAnalyzed: true, analyzedAt: Date.now() })
       );
-      mockGetSavedDreams.mockResolvedValueOnce(dreams);
+      setSavedDreamsOnce(dreams);
 
       const provider = new MockQuotaProvider();
 
@@ -302,7 +306,7 @@ describe('MockQuotaProvider', () => {
       const dreams = Array(2).fill(null).map((_, i) =>
         buildDream({ id: i + 1, isAnalyzed: true, analyzedAt: Date.now() })
       );
-      mockGetSavedDreams.mockResolvedValueOnce(dreams);
+      setSavedDreamsOnce(dreams);
 
       const provider = new MockQuotaProvider();
 
@@ -314,7 +318,7 @@ describe('MockQuotaProvider', () => {
     });
 
     it('keeps illustration usage separate from analysis usage', async () => {
-      mockGetSavedDreams.mockResolvedValue([
+      setSavedDreams([
         buildDream({
           id: 1,
           isAnalyzed: true,
@@ -339,7 +343,7 @@ describe('MockQuotaProvider', () => {
     });
 
     it('denies guest illustrations once the image pool is exhausted', async () => {
-      mockGetSavedDreams.mockResolvedValue([
+      setSavedDreams([
         buildDream({ id: 1, imageUrl: 'https://example.test/one.png', imageSource: 'ai' }),
         buildDream({ id: 2, imageUrl: 'https://example.test/two.png', imageSource: 'ai' }),
         buildDream({ id: 3, isAnalyzed: true, analyzedAt: Date.now() }),
@@ -354,7 +358,7 @@ describe('MockQuotaProvider', () => {
     });
 
     it('does not expose a monthly illustration credit for authenticated free', async () => {
-      mockGetSavedDreams.mockResolvedValue([
+      setSavedDreams([
         buildDream({ id: 1, imageUrl: 'https://example.test/one.png', imageSource: 'ai' }),
       ]);
 
@@ -367,7 +371,7 @@ describe('MockQuotaProvider', () => {
     });
 
     it('treats plus illustrations as unlimited', async () => {
-      mockGetSavedDreams.mockResolvedValue(
+      setSavedDreams(
         Array.from({ length: 8 }, (_, i) =>
           buildDream({ id: i + 1, imageUrl: `https://example.test/${i}.png`, imageSource: 'ai' })
         )
@@ -386,7 +390,7 @@ describe('MockQuotaProvider', () => {
       const dreams = Array(4).fill(null).map((_, i) =>
         buildDream({ id: i + 1, isAnalyzed: true, analyzedAt: Date.now() })
       );
-      mockGetSavedDreams.mockResolvedValueOnce(dreams);
+      setSavedDreamsOnce(dreams);
 
       const provider = new MockQuotaProvider();
 
@@ -405,7 +409,7 @@ describe('MockQuotaProvider', () => {
         id: 123,
         chatHistory: Array.from({ length: 9 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
-      mockGetSavedDreams.mockResolvedValueOnce([targetDream]);
+      setSavedDreamsOnce([targetDream]);
 
       const provider = new MockQuotaProvider();
 
@@ -422,7 +426,7 @@ describe('MockQuotaProvider', () => {
         id: 123,
         chatHistory: Array.from({ length: 25 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
-      mockGetSavedDreams.mockResolvedValueOnce([targetDream]);
+      setSavedDreamsOnce([targetDream]);
 
       const provider = new MockQuotaProvider();
 

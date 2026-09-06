@@ -8,6 +8,7 @@ import {
   getSavedDreams,
   saveOnboardingStateSnapshot,
 } from '@/services/storageService';
+import { requireReadableDreams } from '@/lib/dreamStorageRead';
 
 export class GuestQaLocalStateError extends Error {
   readonly code = 'QA_LOCAL_DREAMS_PENDING';
@@ -19,7 +20,7 @@ export class GuestQaLocalStateError extends Error {
 }
 
 export async function assertGuestQaLocalStateReady(): Promise<void> {
-  const localDreams = await getSavedDreams();
+  const localDreams = requireReadableDreams(await getSavedDreams());
   if (localDreams.length > 0) {
     throw new GuestQaLocalStateError(localDreams.length);
   }

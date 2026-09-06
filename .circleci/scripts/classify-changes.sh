@@ -45,6 +45,10 @@ write_parameters() {
     > "$parameters_file"
 }
 
+write_unusable_diff_base_parameters() {
+  write_parameters affected "" true true true true true false true false false false false
+}
+
 if [[ "$mode" == "full" ]]; then
   echo "Manual full validation requested on master; publishing a reusable Jest baseline."
   write_parameters full "" true true true true true false true true true false false
@@ -66,16 +70,20 @@ if [[ -z "$base_revision" ]] || \
   ! git cat-file -e "${base_revision}^{commit}" 2>/dev/null || \
   ! git cat-file -e "${head_revision}^{commit}" 2>/dev/null || \
   ! git merge-base --is-ancestor "$base_revision" "$head_revision"; then
-  echo "No usable diff base; running every affected gate without the exhaustive portfolio."
-  write_parameters affected "" true true true true true false false false false false false
+  echo "No usable diff base; running every affected gate and the exhaustive Jest portfolio."
+  write_unusable_diff_base_parameters
   exit 0
 fi
 
 changed_files="$(mktemp)"
 changed_entries="$(mktemp)"
 trap 'rm -f "$changed_files" "$changed_entries"' EXIT
-git diff --name-status -z -M -C --find-copies-harder \
-  "$base_revision" "$head_revision" > "$changed_entries"
+if ! git diff --name-status -z -M -C --find-copies-harder \
+  "$base_revision" "$head_revision" > "$changed_entries"; then
+  echo "Unable to compute the diff; running every affected gate and the exhaustive Jest portfolio."
+  write_unusable_diff_base_parameters
+  exit 0
+fi
 
 if [[ ! -s "$changed_entries" ]]; then
   echo "No changed files; continuing with an explicit no-op workflow."

@@ -2,11 +2,12 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { QUOTA_CONFIG } from '../../../constants/limits';
 import { supabase } from '../../../lib/supabase';
-import type { DreamAnalysis } from '../../../lib/types';
+import type { DreamAnalysis, DreamListReadResult } from '../../../lib/types';
 import { SupabaseQuotaProvider } from '../SupabaseQuotaProvider';
 
 type AnyFunction = (...args: any[]) => any;
 const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
+const loadedDreams = (value: unknown[]): DreamListReadResult => ({ status: 'loaded', value: value as DreamAnalysis[] });
 
 // Use jest.hoisted for mocks that need to be accessed
 const { mockBuilder, mockGetCachedRemoteDreams } = ((factory: any) => factory())(() => {
@@ -29,8 +30,8 @@ const { mockBuilder, mockGetCachedRemoteDreams } = ((factory: any) => factory())
   mockBuilder.lt.mockReturnValue(mockBuilder);
   mockBuilder.single.mockReturnValue(mockBuilder);
 
-  const mockGetCachedRemoteDreams = typedJestFn<() => Promise<unknown[]>>();
-  mockGetCachedRemoteDreams.mockResolvedValue([]);
+  const mockGetCachedRemoteDreams = typedJestFn<() => Promise<DreamListReadResult>>();
+  mockGetCachedRemoteDreams.mockResolvedValue(loadedDreams([]));
 
   return { mockBuilder, mockGetCachedRemoteDreams };
 });
@@ -66,7 +67,7 @@ describe('SupabaseQuotaProvider', () => {
     mockBuilder.count = 0;
     mockBuilder.error = null;
     mockBuilder.data = null;
-    mockGetCachedRemoteDreams.mockResolvedValue([]);
+    mockGetCachedRemoteDreams.mockResolvedValue(loadedDreams([]));
     // Reset supabase.from mock in case a previous test overwrote it
     (supabase as any).from = () => mockBuilder;
     // Re-setup chainable methods
@@ -145,7 +146,7 @@ describe('SupabaseQuotaProvider', () => {
         chatHistory: Array.from({ length: 10 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'x' })),
       };
       const mockStorage = jest.requireMock('../../storageService') as any;
-      mockStorage.getCachedRemoteDreams = jest.fn().mockResolvedValue([dream]);
+      mockStorage.getCachedRemoteDreams = jest.fn().mockResolvedValue(loadedDreams([dream]));
 
       // When
       const count = await provider.getUsedMessagesCount({ dreamId: 123 }, user);
@@ -343,10 +344,10 @@ describe('SupabaseQuotaProvider', () => {
       const dreamId = 123;
       const mockDream = { id: 123, title: 'Test Dream' };
       const mockStorage = jest.requireMock('../../storageService') as any;
-      mockStorage.getCachedRemoteDreams = jest.fn().mockResolvedValue([mockDream]);
+      mockStorage.getCachedRemoteDreams = jest.fn().mockResolvedValue(loadedDreams([mockDream]));
 
       // When
-      const dream = await (provider as any).resolveDream({ dreamId });
+      const dream = await (provider as any).resolveDream({ dreamId }, freeUser);
 
       // Then
       expect(dream).toEqual(mockDream);
@@ -357,10 +358,10 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const dreamId = 999;
       const mockStorage = jest.requireMock('../../storageService') as any;
-      mockStorage.getCachedRemoteDreams = jest.fn().mockResolvedValue([{ id: 123 }]);
+      mockStorage.getCachedRemoteDreams = jest.fn().mockResolvedValue(loadedDreams([{ id: 123 }]));
 
       // When
-      const dream = await (provider as any).resolveDream({ dreamId });
+      const dream = await (provider as any).resolveDream({ dreamId }, freeUser);
 
       // Then
       expect(dream).toBeUndefined();
@@ -567,7 +568,7 @@ describe('SupabaseQuotaProvider', () => {
       const p = provider as any;
 
       // When
-      const result = await p.resolveDream(target);
+      const result = await p.resolveDream(target, freeUser);
 
       // Then
       expect(result).toBe(dream);
@@ -577,11 +578,11 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const target = { dreamId: 123 };
       const mockStorage = jest.requireMock('../../storageService') as any;
-      mockStorage.getCachedRemoteDreams = jest.fn().mockResolvedValue([]);
+      mockStorage.getCachedRemoteDreams = jest.fn().mockResolvedValue(loadedDreams([]));
       const p = provider as any;
 
       // When
-      const result = await p.resolveDream(target);
+      const result = await p.resolveDream(target, freeUser);
 
       // Then
       expect(result).toBeUndefined();

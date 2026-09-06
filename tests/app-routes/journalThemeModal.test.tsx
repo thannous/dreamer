@@ -6,12 +6,23 @@ import { afterEach, describe, expect, it, jest } from '@jest/globals';
 afterEach(() => {
   cleanup();
   mockWindowWidth = 390;
+  mockPersistenceState = { status: 'ready', target: 'device' };
+  mockRetryPersistence.mockClear();
 });
 
 let mockWindowWidth = 390;
+let mockPersistenceState: { status: 'ready' | 'loading'; target: 'device' } | { status: 'error'; operation: 'read'; target: 'device' } = {
+  status: 'ready',
+  target: 'device',
+};
+const mockRetryPersistence = jest.fn(async () => undefined);
 
 jest.doMock('@/context/DreamsContext', () => ({
-  useDreams: () => ({ dreams: [] }),
+  useDreams: () => ({
+    dreams: [],
+    persistenceState: mockPersistenceState,
+    retryPersistence: mockRetryPersistence,
+  }),
 }));
 
 jest.doMock('@/context/ThemeContext', () => ({
@@ -170,7 +181,15 @@ jest.doMock('@/components/icons/DreamIcons', () => ({
 }));
 
 jest.doMock('@shopify/flash-list', () => ({
-  FlashList: ({ ListHeaderComponent }: { ListHeaderComponent?: React.ReactNode }) => <>{ListHeaderComponent}</>,
+  FlashList: ({
+    ListHeaderComponent,
+    ListEmptyComponent,
+    data,
+  }: {
+    ListHeaderComponent?: React.ReactNode;
+    ListEmptyComponent?: React.ComponentType;
+    data?: unknown[];
+  }) => <>{ListHeaderComponent}{data?.length === 0 && ListEmptyComponent ? <ListEmptyComponent /> : null}</>,
 }));
 
 const mockPush = jest.fn();
@@ -355,6 +374,28 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
 const { default: JournalListScreen } = require('@/app/(tabs)/journal');
 
 describe('Journal advanced filter sheet', () => {
+  it('waits for a successful read before presenting a first-use empty journal', () => {
+    mockPersistenceState = { status: 'loading', target: 'device' };
+    const view = render(<JournalListScreen />);
+    expect(screen.queryByTestId('empty-state')).toBeNull();
+    expect(screen.queryByRole('alert')).toBeNull();
+
+    mockPersistenceState = { status: 'ready', target: 'device' };
+    view.rerender(<JournalListScreen />);
+    expect(screen.getByTestId('empty-state')).toBeTruthy();
+  });
+
+  it('hides first-use empty state after a failed read and wires retry', () => {
+    mockPersistenceState = { status: 'error', operation: 'read', target: 'device' };
+
+    render(<JournalListScreen />);
+
+    expect(screen.queryByTestId('empty-state')).toBeNull();
+    expect(screen.getByRole('alert')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'journal.persistence.retry' }));
+    expect(mockRetryPersistence).toHaveBeenCalledTimes(1);
+  });
+
   it('shows a checkmark for the selected theme', () => {
     render(<JournalListScreen />);
 

@@ -13,6 +13,7 @@ import {
 import { LibraryProvider } from '@/context/LibraryContext';
 import { OnboardingProvider } from '@/context/OnboardingContext';
 import { WorldProvider } from '@/context/WorldContext';
+import { en as mockEn } from '@/lib/i18n/en';
 import { TID } from '@/lib/testIDs';
 import { INITIAL_LIBRARY, INITIAL_ONBOARDING } from '@/lib/types';
 import { StorageKey } from '@/services/storageService';
@@ -30,6 +31,9 @@ let mockQuotaResetDay = '2026-09-01';
 let mockIsPlus = false;
 let mockSubscriptionsEnabled = true;
 let mockOwnedWorldIds = new Set(['constellation', 'dawn', 'forest']);
+let mockOwnershipStatus: 'loading' | 'ready' | 'error' = 'ready';
+let mockOffersStatus: 'loading' | 'ready' | 'error' = 'ready';
+let mockOffersAvailable = true;
 
 let mockIsFocused = true;
 
@@ -41,11 +45,23 @@ jest.mock('expo-router', () => ({
 jest.mock('@/context/WorldPurchaseContext', () => ({
   useWorldPurchases: () => ({
     loaded: true,
+    ownershipStatus: mockOwnershipStatus,
+    offersStatus: mockOffersStatus,
+    worldAccess: (worldId: string) =>
+      ['constellation', 'dawn', 'forest'].includes(worldId)
+        ? 'free'
+        : mockOwnershipStatus === 'ready'
+          ? mockOwnedWorldIds.has(worldId)
+            ? 'owned'
+            : 'not-owned'
+          : 'unknown',
     isWorldOwned: (worldId: string) => mockOwnedWorldIds.has(worldId),
     offerForWorld: (worldId: string) =>
-      ['tide', 'sanctuary', 'cloud'].includes(worldId)
+      mockOffersAvailable && ['tide', 'sanctuary', 'cloud'].includes(worldId)
         ? { worldId, priceLabel: '0,99 €', raw: null }
         : undefined,
+    retryOwnership: async () => {},
+    retryOffers: async () => {},
     purchaseWorld: async () => false,
     restoreWorlds: async () => [],
   }),
@@ -111,6 +127,26 @@ describe('immersive home journey', () => {
     mockIsPlus = false;
     mockSubscriptionsEnabled = true;
     mockOwnedWorldIds = new Set(['constellation', 'dawn', 'forest']);
+    mockOwnershipStatus = 'ready';
+    mockOffersStatus = 'ready';
+    mockOffersAvailable = true;
+  });
+
+  it('preserves a selected purchased world while ownership is unknown', async () => {
+    mockOwnershipStatus = 'error';
+    await AsyncStorage.setItem(StorageKey.world, JSON.stringify('tide'));
+
+    renderHome();
+
+    await waitFor(() =>
+      expect(screen.getByRole('radio', { name: 'Deep tide' }).props.accessibilityState).toMatchObject({
+        checked: true,
+      })
+    );
+    expect(await AsyncStorage.getItem(StorageKey.world)).toBe(JSON.stringify('tide'));
+    expect(screen.queryByText(/One-time purchase/)).toBeNull();
+    expect(screen.queryByTestId('home.journey.up-next')).toBeNull();
+    expect(screen.queryByTestId(ACTIVE_JOURNEY_CTA_TEST_ID)).toBeNull();
   });
 
   it('preserves the Maestro screen anchor and opens the single recommended ritual', async () => {
@@ -474,6 +510,22 @@ describe('immersive home journey', () => {
 
     expect(mockPush).toHaveBeenCalledTimes(1);
     expect(mockPush).toHaveBeenCalledWith('/world/tide');
+  });
+
+  it('shows catalog recovery without inventing a price', async () => {
+    mockOffersAvailable = false;
+    mockOffersStatus = 'error';
+    renderHome();
+
+    const tide = await screen.findByRole('radio', { name: 'Deep tide' });
+    expect(tide.props.accessibilityHint).toContain(mockEn['world.purchase.offer.unavailable']);
+    expect(within(screen.getByTestId('home.world-switcher.tide')).queryByText(/0,99/)).toBeNull();
+
+    fireEvent.press(tide);
+
+    const recovery = await screen.findByTestId('home.world-offer-recovery');
+    expect(within(recovery).getByText(mockEn['world.purchase.offer.unavailable'])).toBeTruthy();
+    expect(recovery).not.toHaveTextContent(/0,99/);
   });
 
   it('clears a locked preview when leaving home without persisting it', async () => {

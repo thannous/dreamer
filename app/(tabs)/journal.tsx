@@ -5,6 +5,7 @@ import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal/AdvancedFilterSheet';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
+import { JournalPersistenceNotice } from '@/components/journal/JournalPersistenceNotice';
 import { FilterBar } from '@/components/journal/FilterBar';
 import { PressableScale } from '@/components/motion';
 import { SearchBar } from '@/components/ui/SearchBar';
@@ -70,7 +71,7 @@ const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
 };
 
 export default function JournalListScreen() {
-  const { dreams } = useDreams();
+  const { dreams, persistenceState, retryPersistence } = useDreams();
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -643,7 +644,8 @@ export default function JournalListScreen() {
     toggleThemeFilter,
   ]);
   const renderEmptyState = useCallback(() => (
-    <EmptyState
+    persistenceState.status === 'loading' ||
+    (persistenceState.status === 'error' && persistenceState.operation === 'read') ? null : <EmptyState
       hasActiveFilter={hasActiveFilter}
       onClearFilters={handleClearFilters}
       onStartRememberedDream={
@@ -655,6 +657,7 @@ export default function JournalListScreen() {
     handleClearFilters,
     handleStartRememberedDreamFromEmpty,
     hasActiveFilter,
+    persistenceState,
   ]);
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
@@ -686,6 +689,10 @@ export default function JournalListScreen() {
         style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
       >
         <MockNavigationRail />
+        <JournalPersistenceNotice
+          state={persistenceState}
+          onRetry={() => void retryPersistence().catch(() => undefined)}
+        />
         <SearchBar
           ref={searchInputRef}
           testID={TID.Component.SearchBar}
