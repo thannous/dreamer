@@ -1,4 +1,4 @@
-import type { DreamAnalysis } from '@/lib/types';
+import { isLucidObservationSourceId, lucidSourceTimestamp, type LucidTrainingSource } from './observations';
 import {
   LUCID_DREAM_SIGN_CATEGORIES,
   LUCID_DREAM_SIGN_MAX_LABEL_CHARS,
@@ -74,7 +74,7 @@ const ALLOWED_PREFERENCE_KEYS = ['version', 'renamed', 'hidden', 'merges', 'dele
 const ALLOWED_OVERLAY_KEYS = ['version', 'updatedAt', 'renamed', 'hidden', 'merges', 'deleted'] as const;
 const ALLOWED_EXPORT_KEYS = ['version', 'preferences'] as const;
 const CONTROL_CHARS = /[\u0000-\u001F\u007F]/;
-const NODE_ID_PATTERN = /^sign:[A-Za-z0-9][A-Za-z0-9_-]{0,121}$/;
+const NODE_ID_PATTERN = /^sign:(?:lucid:)?[A-Za-z0-9][A-Za-z0-9_-]{0,121}$/;
 
 function createEmptyRecord<V>(): Record<string, V> {
   return Object.create(null) as Record<string, V>;
@@ -115,7 +115,8 @@ export function isLucidDreamAtlasId(value: unknown): value is LucidDreamAtlasNod
 }
 
 export function isLucidDreamAtlasSourceId(value: unknown): value is LucidDreamAtlasSourceId {
-  if (typeof value !== 'string' || value.trim() !== value || !/^[1-9]\d*$/.test(value)) return false;
+  if (isLucidObservationSourceId(value)) return true;
+  if (typeof value !== 'string' || !/^[1-9]\d*$/.test(value)) return false;
   const timestamp = Number(value);
   return Number.isSafeInteger(timestamp) && timestamp > 0;
 }
@@ -213,7 +214,7 @@ export function hasLucidDreamAtlasOverlayData(overlay: LucidDreamAtlasOverlay): 
 }
 
 function canonicalSourceTime(sourceId: string): number | null {
-  return isLucidDreamAtlasSourceId(sourceId) ? Number(sourceId) : null;
+  return isLucidDreamAtlasSourceId(sourceId) ? lucidSourceTimestamp(sourceId) : null;
 }
 
 function lastAppearanceAt(sourceDreamIds: readonly string[]): number {
@@ -418,7 +419,7 @@ function sourceIdsForSign(
 }
 
 function availableSourceSet(
-  dreams: readonly Pick<DreamAnalysis, 'id'>[] | undefined
+  dreams: readonly Pick<LucidTrainingSource, 'id'>[] | undefined
 ): ReadonlySet<string> | undefined {
   if (!dreams) return undefined;
   return new Set(
@@ -512,7 +513,7 @@ function reconcilePreferencesWithSigns(
 
 export function buildLucidDreamAtlas(input: {
   signs: readonly LucidReconciledDreamSign[];
-  dreams?: readonly Pick<DreamAnalysis, 'id'>[];
+  dreams?: readonly Pick<LucidTrainingSource, 'id'>[];
   preferences?: unknown;
 }): LucidDreamAtlasSnapshot {
   const preferences = reconcilePreferencesWithSigns(
@@ -571,7 +572,7 @@ function withPreferences(
   snapshot: LucidDreamAtlasSnapshot,
   updater: (preferences: LucidDreamAtlasPreferences) => LucidDreamAtlasPreferences,
   signs: readonly LucidReconciledDreamSign[],
-  dreams?: readonly Pick<DreamAnalysis, 'id'>[]
+  dreams?: readonly Pick<LucidTrainingSource, 'id'>[]
 ): LucidDreamAtlasSnapshot {
   return buildLucidDreamAtlas({
     signs,
@@ -592,7 +593,7 @@ export function renameLucidDreamAtlasNode(
   nodeId: string,
   label: string,
   signs: readonly LucidReconciledDreamSign[],
-  dreams?: readonly Pick<DreamAnalysis, 'id'>[]
+  dreams?: readonly Pick<LucidTrainingSource, 'id'>[]
 ): LucidDreamAtlasSnapshot {
   const nextLabel = normalizeLabel(label);
   const targetId = requireLiveNode(snapshot, nodeId);
@@ -615,7 +616,7 @@ export function hideLucidDreamAtlasNode(
   nodeId: string,
   hidden: boolean,
   signs: readonly LucidReconciledDreamSign[],
-  dreams?: readonly Pick<DreamAnalysis, 'id'>[]
+  dreams?: readonly Pick<LucidTrainingSource, 'id'>[]
 ): LucidDreamAtlasSnapshot {
   const targetId = requireLiveNode(snapshot, nodeId);
   if (!targetId) {
@@ -640,7 +641,7 @@ export function mergeLucidDreamAtlasNodes(
   fromId: string,
   intoId: string,
   signs: readonly LucidReconciledDreamSign[],
-  dreams?: readonly Pick<DreamAnalysis, 'id'>[]
+  dreams?: readonly Pick<LucidTrainingSource, 'id'>[]
 ): LucidDreamAtlasSnapshot {
   const fromTarget = requireLiveNode(snapshot, fromId);
   const intoTarget = requireLiveNode(snapshot, intoId);
@@ -673,7 +674,7 @@ export function deleteLucidDreamAtlasNode(
   snapshot: LucidDreamAtlasSnapshot,
   nodeId: string,
   signs: readonly LucidReconciledDreamSign[],
-  dreams?: readonly Pick<DreamAnalysis, 'id'>[]
+  dreams?: readonly Pick<LucidTrainingSource, 'id'>[]
 ): LucidDreamAtlasSnapshot {
   const targetId = requireLiveNode(snapshot, nodeId);
   if (!targetId) {
@@ -702,7 +703,7 @@ export function deleteLucidDreamAtlasNode(
 export function rebuildLucidDreamAtlasAfterDreamDeleted(
   snapshot: LucidDreamAtlasSnapshot,
   signs: readonly LucidReconciledDreamSign[],
-  dreams: readonly Pick<DreamAnalysis, 'id'>[]
+  dreams: readonly Pick<LucidTrainingSource, 'id'>[]
 ): LucidDreamAtlasSnapshot {
   return buildLucidDreamAtlas({
     signs,

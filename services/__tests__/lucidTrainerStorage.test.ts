@@ -1,3 +1,4 @@
+import { projectLucidObservations, lucidObservationSourceId } from '@/lib/lucid/observations';
 import { Platform } from 'react-native';
 import { createInitialLucidTrainerState } from '@/lib/lucid/domain';
 import type { LucidSyncMutation } from '@/lib/lucid/model';
@@ -133,6 +134,26 @@ describe('lucidTrainerStorage', () => {
   function state() {
     return createInitialLucidTrainerState({ now: NOW, timeZone: 'Europe/Paris', locale: 'fr' });
   }
+
+  it('reopens complete local observations in their original guest or account scope', async () => {
+    const original = state();
+    original.experiments = [{
+      id: 'observation-a', occurredAt: NOW, updatedAt: NOW, technique: null,
+      preparationMinutes: null, result: null, lucidityLevel: null, recallLevel: null,
+      sleepQuality: null, factors: [], captureMode: 'write', recallText: 'A mirror at the station',
+      notes: 'My association', cueOutcome: 'indeterminate',
+    }];
+    await saveLucidTrainerState('guest', original);
+    const guest = await loadLucidTrainerState('guest');
+    expect(projectLucidObservations(guest.state.experiments)[0]).toMatchObject({
+      id: lucidObservationSourceId('observation-a', NOW), transcript: 'A mirror at the station\n\nMy association',
+    });
+    const account = await loadLucidTrainerState(SCOPE);
+    expect(projectLucidObservations(account.state.experiments)).toEqual([]);
+    await saveLucidTrainerState(SCOPE, original);
+    expect(projectLucidObservations((await loadLucidTrainerState('user:other')).state.experiments)).toEqual([]);
+    expect(projectLucidObservations((await loadLucidTrainerState(SCOPE)).state.experiments)).toEqual(projectLucidObservations(original.experiments));
+  });
 
   function mutation(overrides: Partial<LucidSyncMutation> = {}): LucidSyncMutation {
     const current = state();

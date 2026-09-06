@@ -25,11 +25,10 @@ jest.mock('expo-router', () => ({
 jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
 jest.mock('react-native', () => jest.requireActual('../react-native-stub'));
 
-jest.mock('@/context/DreamsContext', () => ({
-  useDreamsData: () => ({ dreams: mockDreams, loaded: true }),
-}));
+
 
 jest.mock('@/context/LucidTrainerContext', () => ({
+  useLucidObservations: () => ({ dreams: mockDreams.map(dream => ({ ...dream, id: String(dream.id), occurredAt: dream.id })), loaded: true }),
   useLucidTrainer: () => ({
     content: { locale: 'fr', chrome: { common: { loading: 'Chargement…' } } },
     state: { dreamSignDecisions: [] },
@@ -118,7 +117,7 @@ describe('Lucid dream signs', () => {
     ));
 
     fireEvent.click(screen.getByTestId('lucid-dream-sign-source-101'));
-    expect(mockPush).toHaveBeenCalledWith('/journal/101');
+    expect(mockPush).toHaveBeenCalledWith('/lucid/observation?id=101');
   });
 
   it('replaces to journal when Close has no history', () => {

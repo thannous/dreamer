@@ -18,7 +18,7 @@ import {
   LucidSpace,
   LucidType,
 } from '@/constants/lucidTheme';
-import { useDreamsData } from '@/context/DreamsContext';
+import { useLucidObservations } from '@/context/LucidTrainerContext';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { reconcileLucidDreamSignDecisions } from '@/lib/lucid/dreamSigns';
@@ -33,7 +33,7 @@ const COPY = {
     sources: 'Source dreams', rename: 'Personal name (optional)', confirm: 'Confirm sign', reject: 'Not a sign', reconsider: 'Review again',
     empty: 'Record at least two dreams with a recurring detail to see a suggestion here.',
     privacy: 'Suggestions are calculated on this device. Nothing is sent for analysis.',
-    sourceFallback: 'Recorded dream', saved: 'Saved',
+    sourceFallback: 'Historical source unavailable', saved: 'Saved',
   },
   fr: {
     eyebrow: 'Ta mémoire onirique', title: 'Signes oniriques', subtitle: 'Examine les motifs récurrents avant qu’ils influencent ton entraînement.',
@@ -42,7 +42,7 @@ const COPY = {
     sources: 'Rêves sources', rename: 'Nom personnel (facultatif)', confirm: 'Confirmer le signe', reject: 'Ce n’est pas un signe', reconsider: 'Réexaminer',
     empty: 'Enregistre au moins deux rêves avec un détail récurrent pour voir une suggestion ici.',
     privacy: 'Les suggestions sont calculées sur cet appareil. Rien n’est envoyé pour analyse.',
-    sourceFallback: 'Rêve enregistré', saved: 'Enregistré',
+    sourceFallback: 'Source historique indisponible', saved: 'Enregistré',
   },
   es: {
     eyebrow: 'Tu memoria onírica', title: 'Señales oníricas', subtitle: 'Revisa los patrones recurrentes antes de que influyan en tu entrenamiento.',
@@ -51,7 +51,7 @@ const COPY = {
     sources: 'Sueños de origen', rename: 'Nombre personal (opcional)', confirm: 'Confirmar señal', reject: 'No es una señal', reconsider: 'Revisar de nuevo',
     empty: 'Registra al menos dos sueños con un detalle recurrente para ver una sugerencia aquí.',
     privacy: 'Las sugerencias se calculan en este dispositivo. No se envía nada para análisis.',
-    sourceFallback: 'Sueño registrado', saved: 'Guardado',
+    sourceFallback: 'Fuente histórica no disponible', saved: 'Guardado',
   },
   de: {
     eyebrow: 'Deine Traumerinnerung', title: 'Traumzeichen', subtitle: 'Prüfe wiederkehrende Muster, bevor sie dein Training beeinflussen.',
@@ -60,7 +60,7 @@ const COPY = {
     sources: 'Quellträume', rename: 'Persönlicher Name (optional)', confirm: 'Zeichen bestätigen', reject: 'Kein Zeichen', reconsider: 'Erneut prüfen',
     empty: 'Erfasse mindestens zwei Träume mit einem wiederkehrenden Detail, um hier einen Vorschlag zu sehen.',
     privacy: 'Vorschläge werden auf diesem Gerät berechnet. Nichts wird zur Analyse gesendet.',
-    sourceFallback: 'Gespeicherter Traum', saved: 'Gespeichert',
+    sourceFallback: 'Historische Quelle nicht verfügbar', saved: 'Gespeichert',
   },
   it: {
     eyebrow: 'La tua memoria onirica', title: 'Segnali onirici', subtitle: 'Rivedi gli schemi ricorrenti prima che influenzino l’allenamento.',
@@ -69,7 +69,7 @@ const COPY = {
     sources: 'Sogni di origine', rename: 'Nome personale (facoltativo)', confirm: 'Conferma segnale', reject: 'Non è un segnale', reconsider: 'Rivedi',
     empty: 'Registra almeno due sogni con un dettaglio ricorrente per vedere un suggerimento qui.',
     privacy: 'I suggerimenti vengono calcolati su questo dispositivo. Nulla viene inviato per l’analisi.',
-    sourceFallback: 'Sogno registrato', saved: 'Salvato',
+    sourceFallback: 'Fonte storica non disponibile', saved: 'Salvato',
   },
 } as const;
 
@@ -78,7 +78,7 @@ function decisionTone(decision: LucidDreamSignDecision) {
 }
 
 export default function LucidDreamSignsScreen() {
-  const { dreams, loaded } = useDreamsData();
+  const { dreams, loaded } = useLucidObservations();
   const { content, state, dreamSignCandidates, saveDreamSignDecision } = useLucidTrainer();
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
@@ -171,7 +171,8 @@ export default function LucidDreamSignsScreen() {
                   <Pressable
                     accessibilityRole="link"
                     key={sourceId}
-                    onPress={() => router.push(`/journal/${sourceId}`)}
+                    disabled={!dream}
+                    onPress={() => router.push(`/lucid/observation?id=${encodeURIComponent(sourceId)}`)}
                     style={({ pressed }) => [
                       styles.source,
                       { backgroundColor: palette.surfaceRaised, borderColor: palette.borderInteractive },

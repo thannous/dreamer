@@ -1,8 +1,8 @@
 # Noctalia Meditation — Spécification produit & technique
 
 **Version :** 1.0 · **Date :** 2026-08-19 · **Statut :** prêt à implémenter
-**Source de référence :** template « Zen — React Native Meditation App » (https://www.native-templates.com/templates/meditation)
-**Objectif :** livrer une application identique en périmètre fonctionnel au template Zen, entièrement rhabillée avec la patte graphique Noctalia.
+**Source de vérité :** code de `apps/meditation/` ; revue de cadrage au commit `795878a76`, le 7 septembre 2026. Le template Zen est une origine historique, pas un contrat de parité.
+**Objectif :** préparer le repos par une pratique simple et une écoute fiable, dans une application autonome. Voir le [contrat de marque](noctalia-brand-contract.md) (TI-558) pour la matrice des capacités et niveaux de preuve. Les inventaires historiques ci-dessous ne prouvent pas une publication native.
 
 ---
 
@@ -14,9 +14,9 @@ Positionnement : Noctalia (rêve, nuit, interprétation) → Noctalia Meditation
 
 ### 1.1 Principe directeur
 
-> **Périmètre = Zen, à l'identique. Habillage = Noctalia, à 100 %.**
+> **Choisir une intention, écouter ou reprendre une séance disponible, terminer calmement.**
 
-Aucun écran de Zen n'est retiré, aucun n'est ajouté en v1. Toute la couche visuelle (couleurs, typographies, fonds, illustrations, wording) est remplacée par les tokens Noctalia. Les « aurora gradients » de Zen deviennent l'**atmosphère nocturne Noctalia** (dégradé encre + orbites + poussière d'étoiles or).
+L'accueil personnalisé, les univers et la progression existants répondent à ce parcours. Ils se découvrent progressivement, sans obligation de reproduire les écrans d'un template. Les tokens et le ton Noctalia établissent la parenté de marque sans imposer les écrans ou la tarification du Journal.
 
 ---
 
@@ -149,7 +149,9 @@ apps/meditation/
 
 ---
 
-## 4. Inventaire des écrans
+## 4. Inventaire historique des écrans
+
+Cette correspondance décrit le découpage initial. Les routes actuelles de `apps/meditation/app/` et les gardes de `lib/env.ts` font foi : les comptes et abonnements sont désactivés par défaut, les univers achetables suivent leur parcours propre. Le tableau ne constitue pas une exigence de parité ni une offre commerciale active.
 
 La galerie de Zen compte 23 captures, dont 4 variantes en thème sombre : **19 écrans uniques documentés**, complétés par les écrans de support (légal, fin de session, rappels) qui portent le total aux « 20+ screens » annoncés. Correspondance 1:1 ci-dessous — **24 routes** au total.
 
@@ -476,14 +478,13 @@ Le jour venu, la marche est courte : Supabase est déjà en place pour Noctalia,
 
 ---
 
-## 11. Monétisation
+## 11. Accès commercial actuel
 
-- **Noctalia Plus** (nom du plan repris de l'app existante), RevenueCat.
-- Offres : **annuel** (mis en avant, badge « −xx % ») et **mensuel**, essai gratuit 7 jours sur l'annuel.
-- Entitlement : `meditation_plus`, propre à cette app. Sans compte, RevenueCat fonctionne en `appUserID` anonyme : « Restaurer les achats » rétablit l'abonnement via le compte App Store / Play sur la même plateforme — ce qui couvre la réinstallation et le changement d'appareil du même écosystème. Le partage d'abonnement avec l'app Noctalia suppose une identité commune : reporté avec les comptes (cf. §10.2 et §20 Q2).
-- Points de déclenchement du paywall : monde Plus, session premium, 3ᵉ session gratuite du mois épuisée, pattern de respiration avancé, minuteur > 15 min, téléchargement hors-ligne.
-- Écran paywall = écran 17 ; « Restaurer les achats » et liens légaux obligatoires.
-- Mode `teststore` pour la QA, comme dans Noctalia.
+- `areSubscriptionsEnabled()` (`apps/meditation/lib/env.ts`) est faux par défaut. `SubscriptionContext` accorde alors gratuitement les anciennes capacités Plus et n'initialise pas le flux d'abonnement ; `/paywall` revient à l'accueil.
+- Les achats uniques d'univers utilisent `WorldPurchaseContext` et leur propre service RevenueCat. Ils restent distincts d'un abonnement et des droits Journal/Lucid. Ne pas promettre un prix, un essai ou une restauration réussie sans preuve du store concerné.
+- TI-516 sépare offres et droits : une offre indisponible n'efface pas un droit connu, et un droit encore inconnu n'est pas un refus. Le démarrage général ne doit pas attendre le catalogue commercial.
+- Les anciennes offres mensuelles/annuelles, quotas et chaînes « Plus » sont des branches historiques désactivées, pas une décision de relance. Réactiver les abonnements ou partager un accès entre produits exige une décision commerciale et une qualification distinctes.
+- Les modes de test établissent une preuve locale ; ils n'attestent ni achat réel ni disponibilité en magasin.
 
 ---
 

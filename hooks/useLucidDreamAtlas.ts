@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
-import type { DreamAnalysis } from '@/lib/types';
+import type { LucidTrainingSource } from '@/lib/lucid/observations';
 import {
   buildLucidDreamAtlas,
   deleteLucidDreamAtlasNode,
@@ -18,7 +18,7 @@ import type { LucidReconciledDreamSign } from '@/lib/lucid/dreamSigns';
 
 export type UseLucidDreamAtlasOptions = {
   signs: readonly LucidReconciledDreamSign[];
-  dreams?: readonly Pick<DreamAnalysis, 'id'>[];
+  dreams?: readonly Pick<LucidTrainingSource, 'id'>[];
 };
 
 export type UseLucidDreamAtlasResult = {
@@ -122,7 +122,7 @@ export function useLucidDreamAtlas({
       apply: (
         current: LucidDreamAtlasSnapshot,
         currentSigns: readonly LucidReconciledDreamSign[],
-        currentDreams: readonly Pick<DreamAnalysis, 'id'>[] | undefined
+        currentDreams: readonly Pick<LucidTrainingSource, 'id'>[] | undefined
       ) => LucidDreamAtlasSnapshot,
       skipWriteIf?: (current: LucidDreamAtlasSnapshot) => boolean
     ) => {
@@ -148,7 +148,15 @@ export function useLucidDreamAtlas({
             preferences: current,
           });
           if (skipWriteIf?.(currentSnapshot)) return current;
-          return apply(currentSnapshot, mutationSigns, mutationDreams).preferences;
+          const updated = apply(currentSnapshot, mutationSigns, mutationDreams).preferences;
+          // Unknown legacy signs are unavailable here, not deleted by this action.
+          const known = new Set(mutationSigns.map(sign => sign.id));
+          return {
+            ...updated,
+            renamed: { ...Object.fromEntries(Object.entries(current.renamed).filter(([id]) => !known.has(id))), ...updated.renamed },
+            hidden: [...new Set([...current.hidden.filter(id => !known.has(id)), ...updated.hidden])],
+            merges: { ...Object.fromEntries(Object.entries(current.merges).filter(([id, target]) => !known.has(id) || !known.has(target))), ...updated.merges },
+          };
         });
         assignScopeError(operationScope, null);
       } catch (caught) {

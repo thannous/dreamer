@@ -1,4 +1,5 @@
 /* @jest-environment jsdom */
+import { lucidObservationSourceId } from '@/lib/lucid/observations';
 
 import React from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
@@ -24,7 +25,6 @@ const mockReconcileReminders = jest.fn();
 const mockQueueMutation = jest.fn();
 const mockCreateMutation = jest.fn((input: unknown) => input);
 let mockDreams: { id: number; title: string; transcript: string }[] = [];
-let mockDreamsLoaded = true;
 
 jest.mock('react-native', () => jest.requireActual('../../tests/react-native-stub'));
 jest.mock('expo-localization', () => ({ getLocales: () => [{ languageTag: 'en-US' }] }));
@@ -34,7 +34,7 @@ jest.mock('@/context/AuthContext', () => ({
   useAuth: () => ({ user: { id: 'user-1' } }),
 }));
 jest.mock('@/context/DreamsContext', () => ({
-  useDreamsData: () => ({ dreams: mockDreams, loaded: mockDreamsLoaded }),
+  useDreamsData: () => { throw new Error('Lucid must not access Journal context'); },
 }));
 
 jest.mock('@/lib/appVariant', () => ({ isLucidTrainer: true }));
@@ -77,7 +77,6 @@ describe('LucidTrainerContext account boundary', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockDreams = [];
-    mockDreamsLoaded = true;
     const state = createInitialLucidTrainerState({ now: 1_700_000_000_000, timeZone: 'UTC' });
     mockLoadState.mockResolvedValue({ state, recovered: false });
     mockGetState.mockResolvedValue(state);
@@ -1239,6 +1238,7 @@ describe('LucidTrainerContext account boundary', () => {
       { id: 101, title: 'Mirror hallway', transcript: 'A mirror stood in the hallway.' },
       { id: 102, title: 'Mirror room', transcript: 'The same mirror appeared again.' },
     ];
+    persistedState.experiments = mockDreams.map(dream => ({ id: String(dream.id), occurredAt: dream.id, updatedAt: dream.id, technique: null, preparationMinutes: null, result: null, lucidityLevel: null, recallLevel: null, sleepQuality: null, factors: [], recallText: dream.transcript, captureMode: 'write', cueOutcome: 'indeterminate' }));
     mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
     mockGetState.mockImplementation(async () => persistedState);
     mockUpdateState.mockImplementation(
@@ -1251,13 +1251,13 @@ describe('LucidTrainerContext account boundary', () => {
       }
     );
 
-    const { result, rerender } = renderHook(() => useLucidTrainer(), { wrapper });
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.activeDreamSigns).toEqual([]);
     const mirror = result.current.dreamSignCandidates.find(
-      (item: { id: string; sourceDreamIds: string[] }) => item.id === 'sign:mirror'
+      (item: { id: string; sourceDreamIds: string[] }) => item.id === 'sign:lucid:mirror'
     );
-    expect(mirror?.sourceDreamIds).toEqual(['101', '102']);
+    expect(mirror?.sourceDreamIds).toEqual([lucidObservationSourceId('101', 101), lucidObservationSourceId('102', 102)]);
 
     await act(async () => {
       await result.current.saveDreamSignDecision({
@@ -1270,26 +1270,25 @@ describe('LucidTrainerContext account boundary', () => {
 
     expect(persistedState.dreamSignDecisions).toEqual([
       expect.objectContaining({
-        id: 'sign:mirror',
+        id: 'sign:lucid:mirror',
         decision: 'confirmed',
         customLabel: 'My mirror',
-        sourceDreamIds: ['101', '102'],
+        sourceDreamIds: [lucidObservationSourceId('101', 101), lucidObservationSourceId('102', 102)],
       }),
     ]);
     expect(result.current.activeDreamSigns).toEqual([
-      expect.objectContaining({ id: 'sign:mirror', label: 'My mirror' }),
+      expect.objectContaining({ id: 'sign:lucid:mirror', label: 'My mirror' }),
     ]);
     expect(mockCreateMutation).toHaveBeenCalledWith(
       expect.objectContaining({
         operation: 'upsert',
-        entity: expect.objectContaining({ entityType: 'dream_sign', entityKey: 'sign:mirror' }),
+        entity: expect.objectContaining({ entityType: 'dream_sign', entityKey: 'sign:lucid:mirror' }),
       })
     );
 
     mockCreateMutation.mockClear();
     mockQueueMutation.mockClear();
-    mockDreams = [mockDreams[0]];
-    rerender();
+    await act(async () => { await result.current.deleteExperiment('102'); });
 
     await waitFor(() => expect(persistedState.dreamSignDecisions).toEqual([]));
     expect(result.current.activeDreamSigns).toEqual([]);
@@ -1297,7 +1296,7 @@ describe('LucidTrainerContext account boundary', () => {
       expect.objectContaining({
         operation: 'delete',
         entityType: 'dream_sign',
-        entityKey: 'sign:mirror',
+        entityKey: 'sign:lucid:mirror',
       })
     );
   });
@@ -1498,16 +1497,6 @@ describe('LucidTrainerContext account boundary', () => {
     try {
       const { result } = renderHook(() => useLucidTrainer(), { wrapper });
       await waitFor(() => expect(result.current.loading).toBe(false));
-      await waitFor(() =>
-        expect(persistedState.dreamAtlas).toEqual({
-          version: 1,
-          renamed: {},
-          hidden: [],
-          merges: {},
-          deleted: ['sign:old'],
-          updatedAt: now,
-        })
-      );
       mockCreateMutation.mockClear();
       mockQueueMutation.mockClear();
 
@@ -1557,7 +1546,7 @@ describe('LucidTrainerContext account boundary', () => {
     }
   });
 
-  it('does not purge dream atlas orphans while dreams are still loading', async () => {
+  it('does not purge unavailable legacy atlas sources at startup', async () => {
     const initial = createInitialLucidTrainerState({
       now: 1_700_000_000_000,
       timeZone: 'UTC',
@@ -1574,7 +1563,6 @@ describe('LucidTrainerContext account boundary', () => {
       ...initial,
       dreamAtlas: overlay,
     };
-    mockDreamsLoaded = false;
     mockDreams = [];
     mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
     mockGetState.mockImplementation(async () => persistedState);
@@ -1600,7 +1588,7 @@ describe('LucidTrainerContext account boundary', () => {
     expect(mockQueueMutation).not.toHaveBeenCalled();
   });
 
-  it('purges orphan atlas overlays after dreams load and keeps deleted tombstones', async () => {
+  it('preserves legacy atlas overlays when Journal sources are unavailable', async () => {
     const now = 1_740_000_000_000;
     const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(now);
     const initial = createInitialLucidTrainerState({
@@ -1646,37 +1634,10 @@ describe('LucidTrainerContext account boundary', () => {
     try {
       const { result } = renderHook(() => useLucidTrainer(), { wrapper });
       await waitFor(() => expect(result.current.loading).toBe(false));
-      await waitFor(() =>
-        expect(persistedState.dreamAtlas).toEqual({
-          version: 1,
-          renamed: { 'sign:mirror': 'My mirror' },
-          hidden: ['sign:mirror'],
-          merges: {},
-          deleted: ['sign:old'],
-          updatedAt: now,
-        })
-      );
-
-      expect(result.current.state?.dreamAtlas).toEqual(persistedState.dreamAtlas);
-      expect(persistedState.dreamSignDecisions).toEqual([
-        expect.objectContaining({
-          id: 'sign:mirror',
-          decision: 'confirmed',
-          sourceDreamIds: ['101', '102'],
-        }),
-      ]);
-      expect(mockCreateMutation).toHaveBeenCalledTimes(1);
-      expect(mockCreateMutation).toHaveBeenCalledWith(
-        expect.objectContaining({
-          operation: 'upsert',
-          entity: expect.objectContaining({
-            entityType: 'dream_atlas',
-            entityKey: 'dream_atlas',
-            value: persistedState.dreamAtlas,
-          }),
-        })
-      );
-      expect(mockQueueMutation).toHaveBeenCalledTimes(1);
+      expect(persistedState.dreamAtlas?.renamed).toEqual({ 'sign:mirror': 'My mirror', 'sign:ghost': 'Ghost' });
+      expect(persistedState.dreamSignDecisions?.[0].sourceDreamIds).toEqual(['101', '102']);
+      expect(mockCreateMutation).not.toHaveBeenCalled();
+      expect(mockQueueMutation).not.toHaveBeenCalled();
     } finally {
       nowSpy.mockRestore();
     }

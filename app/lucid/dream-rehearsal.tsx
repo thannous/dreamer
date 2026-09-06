@@ -12,7 +12,7 @@ import {
 } from '@/components/lucid/LucidUI';
 import { Reveal } from '@/components/motion';
 import { getLucidPalette, LucidSpace, LucidType } from '@/constants/lucidTheme';
-import { useDreamsData } from '@/context/DreamsContext';
+import { useLucidObservations } from '@/context/LucidTrainerContext';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidDreamRehearsal } from '@/hooks/useLucidDreamRehearsal';
@@ -20,7 +20,6 @@ import { useLucidGuidedRitualSound } from '@/hooks/useLucidGuidedRitualSound';
 import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
 import { useSubscription } from '@/hooks/useSubscription';
 import {
-  extractLucidDreamSignCandidates,
   getActiveLucidDreamSigns,
 } from '@/lib/lucid/dreamSigns';
 import {
@@ -302,7 +301,7 @@ export default function LucidDreamRehearsalScreen() {
   const params = useLocalSearchParams<{ dreamId?: string | string[]; signId?: string | string[] }>();
   const dreamId = firstParam(params.dreamId);
   const signId = firstParam(params.signId);
-  const { dreams, loaded } = useDreamsData();
+  const { dreams, loaded } = useLucidObservations();
   const { content, state, userScope, dreamSignCandidates } = useLucidTrainer();
   const { fontScale, width } = useWindowDimensions();
   const compact = width < 380 || fontScale >= 1.3;
@@ -319,11 +318,9 @@ export default function LucidDreamRehearsalScreen() {
   const busyLockRef = useRef(false);
 
   const confirmedSigns = useMemo(() => {
-    const candidates = dreamSignCandidates.length
-      ? dreamSignCandidates
-      : extractLucidDreamSignCandidates(dreams);
+    const candidates = dreamSignCandidates;
     return getActiveLucidDreamSigns(candidates, state?.dreamSignDecisions ?? []);
-  }, [dreamSignCandidates, dreams, state?.dreamSignDecisions]);
+  }, [dreamSignCandidates, state?.dreamSignDecisions]);
 
   const selection = useMemo(() => {
     if (!dreamId || !signId) return { status: 'missing' as const };

@@ -90,9 +90,7 @@ jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({ colors: {}, mode: 'light' }),
 }));
 
-jest.mock('@/context/DreamsContext', () => ({
-  useDreamsData: () => ({ dreams: [], loaded: true }),
-}));
+
 
 jest.mock('@/hooks/useLucidReducedMotion', () => ({
   useLucidReducedMotion: () => false,
@@ -112,6 +110,7 @@ jest.mock('@/components/lucid/LucidGuideOrb', () => ({
 jest.mock('@/context/LucidTrainerContext', () => {
   const { getLucidContent } = jest.requireActual('@/lib/lucid/content');
   return {
+    useLucidObservations: () => ({ dreams: [], loaded: true }),
     useLucidTrainer: () => ({
       state,
       content: getLucidContent('en'),

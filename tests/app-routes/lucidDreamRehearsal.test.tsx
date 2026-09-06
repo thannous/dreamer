@@ -113,11 +113,10 @@ jest.mock('expo-haptics', () => ({
   selectionAsync: (...args: unknown[]) => mockSelectionAsync(...args),
 }));
 
-jest.mock('@/context/DreamsContext', () => ({
-  useDreamsData: () => ({ dreams: mockDreams, loaded: true }),
-}));
+
 
 jest.mock('@/context/LucidTrainerContext', () => ({
+  useLucidObservations: () => ({ dreams: mockDreams.map(dream => ({ ...dream, id: String(dream.id), occurredAt: dream.id })), loaded: true }),
   useLucidTrainer: () => ({
     content: { locale: mockLocale, chrome: { common: { loading: 'Chargement…', retry: 'Réessayer' } } },
     state: {

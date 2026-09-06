@@ -1,4 +1,4 @@
-import type { DreamAnalysis } from '@/lib/types';
+import type { LucidTrainingSource } from './observations';
 import {
   LUCID_DREAM_SIGN_DECISIONS,
   type LucidDreamSignDecision,
@@ -212,7 +212,7 @@ function isStableDreamId(value: unknown): value is number | string {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
-export function toLucidDreamSignSourceId(dream: Pick<DreamAnalysis, 'id'> | number | string): string {
+export function toLucidDreamSignSourceId(dream: Pick<LucidTrainingSource, 'id'> | number | string): string {
   if (typeof dream === 'number' || typeof dream === 'string') {
     return String(dream).trim();
   }
@@ -324,7 +324,7 @@ type RawMention = {
 };
 
 function collectMentions(
-  dream: Pick<DreamAnalysis, 'title' | 'transcript' | 'symbols' | 'emotions'>
+  dream: Pick<LucidTrainingSource, 'title' | 'transcript' | 'symbols' | 'emotions'>
 ): RawMention[] {
   const sourceText = `${dream.title ?? ''}\n${dream.transcript ?? ''}`;
   const tokens = tokenize(sourceText);
@@ -393,7 +393,7 @@ function collectMentions(
   return [...mentions.values()];
 }
 
-function sourceTextForDream(dream: Pick<DreamAnalysis, 'title' | 'transcript'>): string {
+function sourceTextForDream(dream: Pick<LucidTrainingSource, 'title' | 'transcript'>): string {
   const title = String(dream.title ?? '').trim();
   const transcript = String(dream.transcript ?? '').trim();
   return [title, transcript].filter(Boolean).join('. ');
@@ -401,7 +401,7 @@ function sourceTextForDream(dream: Pick<DreamAnalysis, 'title' | 'transcript'>):
 
 export function extractLucidDreamSignCandidates(
   dreams: readonly Pick<
-    DreamAnalysis,
+    LucidTrainingSource,
     'id' | 'title' | 'transcript' | 'symbols' | 'emotions'
   >[],
   options?: { minDistinctDreams?: number }

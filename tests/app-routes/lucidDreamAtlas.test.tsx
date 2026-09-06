@@ -138,11 +138,10 @@ jest.mock('react-native', () => {
   };
 });
 
-jest.mock('@/context/DreamsContext', () => ({
-  useDreamsData: () => ({ dreams: mockDreams, loaded: true }),
-}));
+
 
 jest.mock('@/context/LucidTrainerContext', () => ({
+  useLucidObservations: () => ({ dreams: mockDreams.map(dream => ({ ...dream, id: String(dream.id), occurredAt: dream.id })), loaded: true }),
   useLucidTrainer: () => ({
     content: { locale: mockLocale, chrome: { common: { loading: 'Chargement…' } } },
     state: { dreamSignDecisions: [{ id: 'sign:miroir', decision: 'confirmed' }, { id: 'sign:marie', decision: 'confirmed' }] },
@@ -252,7 +251,6 @@ describe('Lucid dream atlas screen', () => {
     render(<LucidDreamAtlasScreen />);
     expect(mockUseLucidDreamAtlas).toHaveBeenCalledWith({
       signs: expect.any(Array),
-      dreams: mockDreams,
     });
     expect(mockUseLucidDreamAtlas.mock.calls[0][0]).not.toHaveProperty('userScope');
     expect(screen.getByText(privacyCopy.fr)).not.toBeNull();
@@ -284,7 +282,7 @@ describe('Lucid dream atlas screen', () => {
       /^Objet · Dernière apparition:/
     );
     fireEvent.click(screen.getByTestId(`lucid-dream-atlas-source-${mockNow}`));
-    expect(mockPush).toHaveBeenCalledWith(`/journal/${mockNow}`);
+    expect(mockPush).toHaveBeenCalledWith(`/lucid/observation?id=${mockNow}`);
   });
 
   it('localizes every atlas category in meta and summaries without leaking English keys', () => {

@@ -6,6 +6,7 @@
     "node": ">=24.19.0 <25"
   },
   "scripts": {
+    "boundaries:check": "node scripts/check-monorepo-boundaries.js",
     "start": "node ./scripts/expo-safe-runner.js start",
     "start:mock": "node ./scripts/expo-safe-runner.js --profile .env.mock start",
     "start:lucid": "node ./scripts/expo-safe-runner.js --profile .env.lucid start",

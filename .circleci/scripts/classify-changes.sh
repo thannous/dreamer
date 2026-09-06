@@ -130,37 +130,29 @@ if [[ "$unsafe_change_status" == true ]]; then
   mark_all_surfaces
 else
   while IFS= read -r path; do
+    # Exact shared dependencies live in one executable map, also exercised by fixtures.
+    shared_consumers="$(awk -F '\t' -v changed="$path" '$1 == changed { print $3 }' "$(dirname "${BASH_SOURCE[0]}")/../dependency-consumers.tsv")"
+    if [[ -n "$shared_consumers" ]]; then
+      for consumer in $shared_consumers; do
+        case "$consumer" in
+          noctalia) run_noctalia=true ;;
+          meditation) run_meditation=true ;;
+          site) run_site=true ;;
+          edge_functions) run_edge_functions=true ;;
+          edge_contracts) run_edge_contracts=true ;;
+          *) echo "Invalid shared consumer: $consumer" >&2; exit 1 ;;
+        esac
+      done
+      continue
+    fi
     case "$path" in
     .circleci/*|.github/workflows/quality.yml)
       # CI control-plane changes are deliberately fail-closed.
       mark_all_surfaces
       ;;
-    .nvmrc)
-      # Shared Node toolchain; Deno does not consume it.
-      run_noctalia=true
-      run_meditation=true
-      run_site=true
-      run_edge_contracts=true
-      ;;
     apps/meditation/*)
       # Meditation has its own package, lockfile, TypeScript, lint and Jest setup.
       run_meditation=true
-      ;;
-    package.json|package-lock.json)
-      # The root package is consumed by Noctalia, the generated site and Node DB contracts.
-      run_noctalia=true
-      run_site=true
-      run_edge_contracts=true
-      ;;
-    docs-src/static/data/curation-pages.json)
-      # Imported by services/dreamGuideService.ts and copied into the site.
-      run_noctalia=true
-      run_site=true
-      ;;
-    data/dream-symbols.json|data/dream-symbols-extended.json|data/dream-symbols-extended-tier3.json|data/practicalDreamGuides.ts)
-      # Verified shared inputs for the root mobile app and site generators.
-      run_noctalia=true
-      run_site=true
       ;;
     docs-src/static/scripts/*|docs-src/experience/*)
       # Site generators that live under docs-src still need docs:build/docs:check.
@@ -174,8 +166,11 @@ else
     docs/*)
       # Generated output is not a source of truth and is not a CI product surface.
       ;;
-    data/*)
+    data/seo-*.json)
       run_site=true
+      ;;
+    data/*)
+      mark_all_surfaces
       ;;
     supabase/functions/api/routes/analytics.ts|supabase/functions/api/routes/chat.ts|supabase/functions/api/routes/quota.ts)
       # Deno routes with explicit source-reading Node contract tests.
@@ -196,11 +191,6 @@ else
     scripts/analysis-idempotency-migration.test.js|scripts/check-db-contract.js|scripts/check-db-contract.test.js|scripts/dream-images-auth-user-policy-migration.test.js|scripts/guest-chat-route-contract.test.js|scripts/guest-qa-passport-migration.test.js|scripts/interpretation-entitlement-migration.test.js|scripts/product-analytics-migration.test.js|scripts/product-analytics-schema-parity.test.js)
       run_edge_contracts=true
       ;;
-    lib/productAnalytics.ts)
-      # Compared directly with the Edge analytics route by the parity contract.
-      run_noctalia=true
-      run_edge_contracts=true
-      ;;
     scripts/lib/*|scripts/docs-*|scripts/build-content-manifest.js|scripts/build-site-manifest.js|scripts/build-experience.js|scripts/build-guides-pages.js|scripts/check-article-date-contract.js|scripts/check-blog-crosslinking-plan.js|scripts/check-content-hub-contract.js|scripts/check-content-release-gates.js|scripts/check-docs-*|scripts/check-image-seo-contract.js|scripts/check-intent-ownership.js|scripts/check-public-url-stability.js|scripts/check-symbol-*|scripts/check-web-performance-contract.js|scripts/generate-image-seo-assets.js|scripts/generate-sitemap*.js|scripts/generate-symbol-*.js|scripts/validate-i18n-seo.js|scripts/audit-blog-i18n-parity.js|scripts/audit-content-parity.js|scripts/serve-docs.js|scripts/site-shell-*.test.js)
       run_site=true
       ;;
@@ -210,9 +200,12 @@ else
     app.config.ts|app.json|eas.json|global.css|babel.config.js|eslint.config.js|jest.config.js|jest.config.*.js|jest.setup.ts|metro.config.js|tsconfig.json|tsconfig.test.json|uniwind-env.d.ts|uniwind-types.d.ts|vitest.config.mts|vitest.setup.ts|workbox-config.js)
       run_noctalia=true
       ;;
-    scripts/*)
-      # Unclassified root scripts are Noctalia tooling, never implicit site inputs.
+    scripts/check-jest-*.js)
       run_noctalia=true
+      ;;
+    scripts/*)
+      # Unknown execution tools may have consumers outside the root app.
+      mark_all_surfaces
       ;;
     doc_web_interne/*|marketing/*|specs/*|*.md|*.mdx)
       # Internal documentation and planning do not exercise a product surface.

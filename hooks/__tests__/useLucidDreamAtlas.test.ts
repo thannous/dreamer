@@ -151,6 +151,18 @@ describe('useLucidDreamAtlas', () => {
     mockTrainer.reload.mockResolvedValue(undefined);
   });
 
+  it('preserves unknown legacy organization while editing an available sign', async () => {
+    mockTrainer.state = { dreamAtlas: overlay({
+      renamed: { 'sign:unavailable': 'Old name' }, hidden: ['sign:unavailable'],
+      merges: { 'sign:unavailable': 'sign:older' },
+    }) };
+    const { result } = renderAtlas();
+    await act(async () => { await result.current.renameNode('sign:marie', 'New name'); });
+    expect(mockTrainer.state?.dreamAtlas?.renamed).toMatchObject({ 'sign:unavailable': 'Old name', 'sign:marie': 'New name' });
+    expect(mockTrainer.state?.dreamAtlas?.hidden).toContain('sign:unavailable');
+    expect(mockTrainer.state?.dreamAtlas?.merges).toEqual({ 'sign:unavailable': 'sign:older' });
+  });
+
   it('builds a confirmed-only snapshot from trainer state', () => {
     mockTrainer.state = {
       dreamAtlas: overlay({ renamed: { 'sign:marie': 'Marie au salon' } }),

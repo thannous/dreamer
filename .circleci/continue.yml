@@ -116,6 +116,9 @@ jobs:
     steps:
       - install-root-dependencies
       - run:
+          name: Verify product import boundaries
+          command: npm run boundaries:check
+      - run:
           name: Verify CI classification and Jest fallback
           command: |
             set -euo pipefail
@@ -216,6 +219,9 @@ jobs:
     executor: node
     steps:
       - install-meditation-dependencies
+      - run:
+          name: Verify Meditation import boundaries
+          command: node scripts/check-monorepo-boundaries.js --meditation
       - run:
           name: Typecheck Meditation application
           working_directory: apps/meditation
