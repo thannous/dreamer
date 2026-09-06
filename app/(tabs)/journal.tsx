@@ -95,8 +95,11 @@ export default function JournalListScreen() {
   const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
   const desktopColumns = width >= 1440 ? 4 : 3;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
-  // Keep the header outside the column-keyed FlashList so rotation across the
-  // tablet breakpoint does not remount the search input.
+  // Keep only the search input outside the column-keyed FlashList so rotation
+  // across the tablet breakpoint does not remount it. The remaining header,
+  // including the guest upsell, stays ListHeaderComponent so it can scroll away
+  // on short landscape viewports.
+  const scrollHeader = !isDesktopLayout;
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
   const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
 
@@ -682,13 +685,28 @@ export default function JournalListScreen() {
   }, []);
 
   // An element, not a component factory: typing must not create a new header
-  // component type and remount the search input.
+  // component type and remount the search input when it lives outside FlashList.
+  const searchBar = (
+    <SearchBar
+      ref={searchInputRef}
+      testID={TID.Component.SearchBar}
+      inputTestID={TID.Input.SearchDreams}
+      value={searchQuery}
+      onChangeText={setSearchQuery}
+      placeholder={t('journal.search_placeholder')}
+    />
+  );
+
   const listHeader = (
-    <View>
+    <View style={scrollHeader ? { marginHorizontal: -ThemeLayout.spacing.md } : undefined}>
       <PageHeaderContent
         titleKey="journal.title"
         animationSeed={showHeaderAnimations ? 1 : 0}
-        style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
+        style={
+          isDesktopLayout
+            ? DESKTOP_MAX_WIDTH_STYLE
+            : { paddingTop: ThemeLayout.spacing.sm }
+        }
       />
 
       <View
@@ -700,14 +718,7 @@ export default function JournalListScreen() {
           state={persistenceState}
           onRetry={() => void retryPersistence().catch(() => undefined)}
         />
-        <SearchBar
-          ref={searchInputRef}
-          testID={TID.Component.SearchBar}
-          inputTestID={TID.Input.SearchDreams}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          placeholder={t('journal.search_placeholder')}
-        />
+        {isDesktopLayout ? searchBar : null}
         <View className="flex-row flex-wrap items-start gap-2">
           <View className="min-w-0 flex-1 basis-[220px]">
             <FilterBar
@@ -772,7 +783,14 @@ export default function JournalListScreen() {
         {/* Atmospheric dreamlike background */}
         <AtmosphericBackground variant="subtle" />
 
-        {listHeader}
+        {isDesktopLayout ? listHeader : (
+          <View
+            className="px-4 pb-2"
+            style={{ paddingTop: insets.top + ThemeLayout.spacing.sm }}
+          >
+            {searchBar}
+          </View>
+        )}
 
       {/* List */}
       {isDesktopLayout ? (
@@ -812,6 +830,7 @@ export default function JournalListScreen() {
           contentContainerStyle={listContentStyle}
           // The navigator hides its tab bar while the keyboard is shown.
           style={{ marginBottom: isKeyboardVisible ? 0 : navigationClearance }}
+          ListHeaderComponent={listHeader}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
           contentInsetAdjustmentBehavior="never"

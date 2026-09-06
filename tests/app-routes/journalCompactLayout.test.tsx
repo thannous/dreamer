@@ -6,7 +6,29 @@ import { TID } from '@/lib/testIDs';
 
 const mockWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
 const mockPush = jest.fn();
-const mockDreams: unknown[] = [];
+type GuestDream = {
+  id: number;
+  transcript: string;
+  title: string;
+  interpretation: string;
+  shareableQuote: string;
+  imageUrl: string;
+  chatHistory: unknown[];
+  dreamType: string;
+  isAnalyzed: boolean;
+};
+const mockDreams: GuestDream[] = [];
+const guestDream = {
+  id: 1_700_000_000_000,
+  transcript: 'A blue room',
+  title: 'Blue room',
+  interpretation: '',
+  shareableQuote: '',
+  imageUrl: '',
+  chatHistory: [],
+  dreamType: 'Symbolic Dream',
+  isAnalyzed: false,
+};
 const mockKeyboardListeners = new Map<string, () => void>();
 const mockRetryPersistence = jest.fn(async () => undefined);
 const mockPersistenceState = { status: 'ready' as const, target: 'device' as const };
@@ -59,7 +81,7 @@ jest.mock('@/components/inspiration/PageHeader', () => ({ PageHeaderContent: () 
 jest.mock('@/components/dev/MockNavigationRail', () => ({ MockNavigationRail: () => null }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
 jest.mock('@/components/guest/UpsellCard', () => ({ UpsellCard: () => <div data-testid="journal-upsell" /> }));
-jest.mock('@/components/journal/DreamCard', () => ({ DreamCard: () => null }));
+jest.mock('@/components/journal/DreamCard', () => ({ DreamCard: ({ testID }: { testID?: string }) => <div data-testid={testID} /> }));
 jest.mock('@/components/journal/EmptyState', () => ({ EmptyState: () => <div data-testid="journal-empty" /> }));
 jest.mock('@/components/motion', () => ({ PressableScale: ({ children, onPress, testID }: any) => <button data-testid={testID} onClick={onPress}>{children}</button> }));
 jest.mock('@/components/journal/AdvancedFilterSheet', () => ({
@@ -82,7 +104,13 @@ jest.mock('@shopify/flash-list', () => {
     const Empty = props.ListEmptyComponent;
     return <div data-testid={props.testID} data-native-style={JSON.stringify(props.style ?? {})}>
       {props.ListHeaderComponent}
-      {props.data.length === 0 ? <Empty /> : null}
+      {props.data.length === 0
+        ? (typeof Empty === 'function' ? <Empty /> : Empty)
+        : props.data.map((item: { id: number }, index: number) => (
+          <React.Fragment key={props.keyExtractor?.(item, index) ?? item.id}>
+            {props.renderItem({ item, index })}
+          </React.Fragment>
+        ))}
     </div>;
   }) };
 });
@@ -91,6 +119,7 @@ const { default: JournalScreen } = require('@/app/(tabs)/journal');
 
 afterEach(() => {
   cleanup();
+  mockDreams.length = 0;
   Object.assign(mockWindow, { width: 390, height: 844, fontScale: 1 });
   mockPush.mockClear();
   mockPlatform = 'android';
@@ -111,8 +140,8 @@ describe('Journal compact large-text layout', () => {
       expect(screen.getAllByTestId(TID.Button.HeaderJournalSettings)).toHaveLength(1);
       expect(list.contains(input)).toBe(false);
       expect(mockListProps.keyboardShouldPersistTaps).toBe('handled');
-      expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(false);
-      expect(mockListProps.ListHeaderComponent).toBeUndefined();
+      expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
+      expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
       expect(height - mockListProps.style.marginBottom).toBeGreaterThanOrEqual(120);
       expect(mockListProps.contentInsetAdjustmentBehavior).toBe('never');
       expect(typeof mockListProps.renderItem).toBe('function');
@@ -142,6 +171,8 @@ describe('Journal compact large-text layout', () => {
       expect(screen.getByTestId('filter-favorites').getAttribute('aria-pressed')).toBe('true');
       expect(screen.getByTestId('advanced-filters')).toBeTruthy();
       expect(screen.getByTestId(TID.List.Dreams).contains(inputAfterRotation)).toBe(false);
+      expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-upsell'))).toBe(true);
+      expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
       expect(mockListProps.keyboardShouldPersistTaps).toBe('handled');
       fireEvent.click(screen.getByTestId('advanced-filters'));
       fireEvent.click(screen.getByTestId(TID.Button.HeaderJournalSettings));
@@ -155,10 +186,10 @@ describe('Journal compact large-text layout', () => {
     const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
     const list = screen.getByTestId(TID.List.Dreams);
     const navigationClearance = mockListProps.style.marginBottom;
-    expect(list.contains(screen.getByTestId('journal-header'))).toBe(false);
-    expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(false);
-    expect(screen.getByTestId('journal-header')).toBeTruthy();
-    expect(screen.getByTestId('journal-upsell')).toBeTruthy();
+    expect(list.contains(input)).toBe(false);
+    expect(list.contains(screen.getByTestId('journal-header'))).toBe(true);
+    expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
+    expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
     expect(navigationClearance).toBeGreaterThan(0);
     input.focus();
     fireEvent.change(input, { target: { value: 'blue room' } });
@@ -180,6 +211,35 @@ describe('Journal compact large-text layout', () => {
     expect(mockListProps.style.marginBottom).toBe(navigationClearance);
     view.unmount();
     expect(mockKeyboardListeners.size).toBe(0);
+  });
+
+  it.each([[640, 320], [915, 412]])('keeps the header upsell scrollable at %i by %i dp when a guest has a dream', (width: number, height: number) => {
+    mockDreams.push(guestDream);
+    Object.assign(mockWindow, { width, height, fontScale: 2 });
+    const view = render(<JournalScreen />);
+    const list = screen.getByTestId(TID.List.Dreams);
+    const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
+    const upsell = screen.getByTestId('journal-upsell');
+    const dreamCard = screen.getByTestId(TID.List.DreamItem(guestDream.id));
+
+    expect(list.contains(input)).toBe(false);
+    expect(list.contains(upsell)).toBe(true);
+    expect(list.contains(dreamCard)).toBe(true);
+    expect(screen.queryByTestId('journal-empty')).toBeNull();
+    expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
+    expect(height - mockListProps.style.marginBottom).toBeGreaterThanOrEqual(120);
+
+    input.focus();
+    fireEvent.change(input, { target: { value: 'blue room' } });
+    expect(document.activeElement).toBe(input);
+    Object.assign(mockWindow, { width: height, height: width });
+    view.rerender(<JournalScreen />);
+    const inputAfterRotation = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
+    expect(inputAfterRotation).toBe(input);
+    expect(document.activeElement).toBe(input);
+    expect(screen.getByTestId(TID.List.Dreams).contains(inputAfterRotation)).toBe(false);
+    expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-upsell'))).toBe(true);
+    expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId(TID.List.DreamItem(guestDream.id)))).toBe(true);
   });
 
   it('preserves the fixed desktop header and grid', () => {
