@@ -313,7 +313,7 @@ jobs:
             deno test \
               --frozen \
               --allow-env \
-              --allow-read \
+              --allow-read=../migrations \
               --junit-path=../../artifacts/test-results/deno.xml \
               api \
               revenuecat-webhook
