@@ -70,6 +70,14 @@ const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
   return false;
 };
 
+function getInitialKeyboardVisibility(): boolean {
+  // RN Web 0.21's Keyboard shim does not implement isVisible.
+  if (Platform.OS === 'web') {
+    return false;
+  }
+  return typeof Keyboard.isVisible === 'function' ? Keyboard.isVisible() : false;
+}
+
 export default function JournalListScreen() {
   const { dreams, persistenceState, retryPersistence } = useDreams();
   const { colors, mode } = useTheme();
@@ -87,10 +95,9 @@ export default function JournalListScreen() {
   const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
   const desktopColumns = width >= 1440 ? 4 : 3;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
-  // Keep the header in one scrollable tree at every mobile size, including
-  // keyboard resizes. Moving it in/out of the list would remount the input.
-  const scrollHeader = !isDesktopLayout;
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(() => Keyboard.isVisible());
+  // Keep the header outside the column-keyed FlashList so rotation across the
+  // tablet breakpoint does not remount the search input.
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
   const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
 
   useEffect(() => {
@@ -675,9 +682,9 @@ export default function JournalListScreen() {
   }, []);
 
   // An element, not a component factory: typing must not create a new header
-  // component type and remount the search input inside FlashList.
+  // component type and remount the search input.
   const listHeader = (
-    <View style={scrollHeader ? { marginHorizontal: -ThemeLayout.spacing.md } : undefined}>
+    <View>
       <PageHeaderContent
         titleKey="journal.title"
         animationSeed={showHeaderAnimations ? 1 : 0}
@@ -765,7 +772,7 @@ export default function JournalListScreen() {
         {/* Atmospheric dreamlike background */}
         <AtmosphericBackground variant="subtle" />
 
-        {!scrollHeader ? listHeader : null}
+        {listHeader}
 
       {/* List */}
       {isDesktopLayout ? (
@@ -805,7 +812,6 @@ export default function JournalListScreen() {
           contentContainerStyle={listContentStyle}
           // The navigator hides its tab bar while the keyboard is shown.
           style={{ marginBottom: isKeyboardVisible ? 0 : navigationClearance }}
-          ListHeaderComponent={listHeader}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
           contentInsetAdjustmentBehavior="never"

@@ -23,7 +23,11 @@ jest.mock('react-native', () => {
   return {
     Platform: { get OS() { return mockPlatform; }, select: (values: any) => values[mockPlatform] ?? values.default },
     Keyboard: {
-      isVisible: () => false,
+      // RN Web 0.21 does not implement isVisible. Leave it unset on web so a
+      // missing production guard fails this suite instead of being masked.
+      get isVisible() {
+        return mockPlatform === 'web' ? undefined : () => false;
+      },
       addListener: (event: string, callback: () => void) => {
         mockKeyboardListeners.set(event, callback);
         return { remove: () => mockKeyboardListeners.delete(event) };
@@ -105,19 +109,21 @@ describe('Journal compact large-text layout', () => {
       expect(screen.getAllByTestId(TID.Component.SearchBar)).toHaveLength(1);
       expect(screen.getAllByTestId('journal-filters')).toHaveLength(1);
       expect(screen.getAllByTestId(TID.Button.HeaderJournalSettings)).toHaveLength(1);
-      expect(list.contains(input)).toBe(true);
+      expect(list.contains(input)).toBe(false);
       expect(mockListProps.keyboardShouldPersistTaps).toBe('handled');
-      expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
-      expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
+      expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(false);
+      expect(mockListProps.ListHeaderComponent).toBeUndefined();
       expect(height - mockListProps.style.marginBottom).toBeGreaterThanOrEqual(120);
       expect(mockListProps.contentInsetAdjustmentBehavior).toBe('never');
       expect(typeof mockListProps.renderItem).toBe('function');
       expect(typeof mockListProps.keyExtractor).toBe('function');
       expect(typeof mockListProps.getItemType).toBe('function');
+      input.focus();
       fireEvent.change(input, { target: { value: 'blue' } });
       expect(screen.getByTestId(TID.Input.SearchDreams)).toBe(input);
       fireEvent.change(input, { target: { value: 'blue room' } });
       expect(screen.getByTestId(TID.Input.SearchDreams)).toBe(input);
+      expect(document.activeElement).toBe(input);
       if (screen.getByTestId('filter-favorites').getAttribute('aria-pressed') !== 'true') {
         fireEvent.click(screen.getByTestId('filter-favorites'));
       }
@@ -125,12 +131,17 @@ describe('Journal compact large-text layout', () => {
       fireEvent.click(screen.getByTestId(TID.Button.FilterMore));
       expect(screen.getByTestId('advanced-filters')).toBeTruthy();
 
+      input.focus();
+      expect(document.activeElement).toBe(input);
       Object.assign(mockWindow, { width: height, height: width });
       view.rerender(<JournalScreen />);
-      expect((screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement).value).toBe('blue room');
+      const inputAfterRotation = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
+      expect(inputAfterRotation).toBe(input);
+      expect(document.activeElement).toBe(input);
+      expect(inputAfterRotation.value).toBe('blue room');
       expect(screen.getByTestId('filter-favorites').getAttribute('aria-pressed')).toBe('true');
       expect(screen.getByTestId('advanced-filters')).toBeTruthy();
-      expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId(TID.Input.SearchDreams))).toBe(true);
+      expect(screen.getByTestId(TID.List.Dreams).contains(inputAfterRotation)).toBe(false);
       expect(mockListProps.keyboardShouldPersistTaps).toBe('handled');
       fireEvent.click(screen.getByTestId('advanced-filters'));
       fireEvent.click(screen.getByTestId(TID.Button.HeaderJournalSettings));
@@ -144,8 +155,10 @@ describe('Journal compact large-text layout', () => {
     const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
     const list = screen.getByTestId(TID.List.Dreams);
     const navigationClearance = mockListProps.style.marginBottom;
-    expect(list.contains(screen.getByTestId('journal-header'))).toBe(true);
-    expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
+    expect(list.contains(screen.getByTestId('journal-header'))).toBe(false);
+    expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(false);
+    expect(screen.getByTestId('journal-header')).toBeTruthy();
+    expect(screen.getByTestId('journal-upsell')).toBeTruthy();
     expect(navigationClearance).toBeGreaterThan(0);
     input.focus();
     fireEvent.change(input, { target: { value: 'blue room' } });

@@ -254,7 +254,7 @@ jest.doMock('react-native', () => {
     Text: createElement('span'),
     View: createElement('div'),
     Keyboard: {
-      isVisible: () => false,
+      // Intentionally omit isVisible: RN Web 0.21 does not implement it.
       addListener: () => ({ remove: () => {} }),
     },
     Platform: {
