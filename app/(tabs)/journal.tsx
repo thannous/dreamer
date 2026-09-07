@@ -488,6 +488,14 @@ export default function JournalListScreen() {
     return Math.abs(dy) > OVERLAY_SEARCH_DRAG_SLOP && Math.abs(dy) >= Math.abs(dx);
   }, [searchConsumesLayout]);
 
+  const handleOverlaySearchDragGrant = useCallback(() => {
+    // Forwarded overlay drags use scrollToOffset, so FlashList
+    // keyboardDismissMode on-drag never runs.
+    if (typeof Keyboard.dismiss === 'function') {
+      Keyboard.dismiss();
+    }
+  }, []);
+
   const handleOverlaySearchDragMove = useCallback((event: GestureResponderEvent) => {
     if (searchConsumesLayout) return;
     const dy = event.nativeEvent.pageY - overlaySearchDragOriginRef.current.pageY;
@@ -496,7 +504,7 @@ export default function JournalListScreen() {
     flatListRef.current?.scrollToOffset({ offset: next, animated: false });
   }, [handleScrollBegin, searchConsumesLayout]);
 
-  const handleOverlaySearchDragRelease = useCallback(() => {
+  const handleOverlaySearchDragEnd = useCallback(() => {
     scheduleIdle();
   }, [scheduleIdle]);
 
@@ -906,8 +914,10 @@ export default function JournalListScreen() {
               onStartShouldSetResponderCapture={searchConsumesLayout ? undefined : () => false}
               onMoveShouldSetResponderCapture={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
               onMoveShouldSetResponder={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
+              onResponderGrant={searchConsumesLayout ? undefined : handleOverlaySearchDragGrant}
               onResponderMove={searchConsumesLayout ? undefined : handleOverlaySearchDragMove}
-              onResponderRelease={searchConsumesLayout ? undefined : handleOverlaySearchDragRelease}
+              onResponderRelease={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
+              onResponderTerminate={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
             >
               {searchBar}
             </View>

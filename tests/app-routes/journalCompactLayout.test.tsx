@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getBottomNavigationLayout } from '@/constants/layout';
@@ -36,6 +36,7 @@ const mockKeyboardListeners = new Map<string, (e?: { endCoordinates?: { height?:
 const mockRetryPersistence = jest.fn(async () => undefined);
 const mockPersistenceState = { status: 'ready' as const, target: 'device' as const };
 const mockListScrollToOffset = jest.fn();
+const mockKeyboardDismiss = jest.fn();
 let mockPlatform = 'android';
 let mockListProps: Record<string, any> = {};
 
@@ -58,6 +59,7 @@ jest.mock('react-native', () => {
         mockKeyboardListeners.set(event, callback);
         return { remove: () => mockKeyboardListeners.delete(event) };
       },
+      dismiss: () => mockKeyboardDismiss(),
     },
     View: function MockView({
       children,
@@ -69,8 +71,10 @@ jest.mock('react-native', () => {
       onTouchStart,
       onMoveShouldSetResponderCapture,
       onMoveShouldSetResponder,
+      onResponderGrant,
       onResponderMove,
       onResponderRelease,
+      onResponderTerminate,
     }: any) {
       const capturingRef = React.useRef(false);
       const toResponderEvent = (event: any) => {
@@ -91,7 +95,10 @@ jest.mock('react-native', () => {
         if (!capturingRef.current) {
           const shouldCapture = onMoveShouldSetResponderCapture?.(responderEvent)
             || onMoveShouldSetResponder?.(responderEvent);
-          if (shouldCapture) capturingRef.current = true;
+          if (shouldCapture) {
+            capturingRef.current = true;
+            onResponderGrant?.(responderEvent);
+          }
         }
         if (capturingRef.current) {
           onResponderMove?.(responderEvent);
@@ -103,11 +110,18 @@ jest.mock('react-native', () => {
         }
         capturingRef.current = false;
       };
+      const handleCancel = (event: any) => {
+        if (capturingRef.current) {
+          onResponderTerminate?.(toResponderEvent(event));
+        }
+        capturingRef.current = false;
+      };
       const pointerProps = onTouchStart || onMoveShouldSetResponderCapture || onResponderMove
         ? {
             onPointerDown: handleDown,
             onPointerMove: handleMove,
             onPointerUp: handleUp,
+            onPointerCancel: handleCancel,
             onMouseDown: handleDown,
             onMouseMove: handleMove,
             onMouseUp: handleUp,
@@ -149,7 +163,11 @@ jest.mock('@/components/inspiration/PageHeader', () => ({ PageHeaderContent: () 
 jest.mock('@/components/dev/MockNavigationRail', () => ({ MockNavigationRail: () => null }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
 jest.mock('@/components/guest/UpsellCard', () => ({ UpsellCard: () => <div data-testid="journal-upsell" /> }));
-jest.mock('@/components/journal/DreamCard', () => ({ DreamCard: ({ testID }: { testID?: string }) => <div data-testid={testID} /> }));
+jest.mock('@/components/journal/DreamCard', () => ({
+  DreamCard: ({ testID, scrollState }: { testID?: string; scrollState?: string }) => (
+    <div data-testid={testID} data-scroll-state={scrollState} />
+  ),
+}));
 jest.mock('@/components/journal/EmptyState', () => ({ EmptyState: () => <div data-testid="journal-empty" /> }));
 jest.mock('@/components/motion', () => ({ PressableScale: ({ children, onPress, testID }: any) => <button data-testid={testID} onClick={onPress}>{children}</button> }));
 jest.mock('@/components/journal/AdvancedFilterSheet', () => ({
@@ -318,7 +336,7 @@ function expectReachableListViewport(
   }
 }
 
-function dragFromSearchControls(distance: number, from: HTMLElement) {
+function startOverlaySearchDrag(distance: number, from: HTMLElement) {
   const controls = screen.getByTestId('journal-search-controls');
   expect(controls.contains(from) || controls === from).toBe(true);
   const startX = 120;
@@ -326,7 +344,17 @@ function dragFromSearchControls(distance: number, from: HTMLElement) {
   fireEvent.mouseDown(controls, { clientX: startX, clientY: startY, buttons: 1 });
   fireEvent.mouseMove(controls, { clientX: startX, clientY: startY - 9, buttons: 1 });
   fireEvent.mouseMove(controls, { clientX: startX, clientY: startY - distance, buttons: 1 });
+  return { controls, startX, startY };
+}
+
+function dragFromSearchControls(distance: number, from: HTMLElement) {
+  const { controls, startX, startY } = startOverlaySearchDrag(distance, from);
   fireEvent.mouseUp(controls, { clientX: startX, clientY: startY - distance, buttons: 0 });
+}
+
+function terminateOverlaySearchDrag(distance: number, from: HTMLElement) {
+  const { controls, startX, startY } = startOverlaySearchDrag(distance, from);
+  fireEvent.pointerCancel(controls, { clientX: startX, clientY: startY - distance });
 }
 
 function collapseSearchByOverlayGesture(offset: number) {
@@ -348,11 +376,13 @@ function collapseSearchByOverlayGesture(offset: number) {
   // The overlay SearchBar covers the uncovered list box at 640x320 fontScale 2.
   // A vertical drag that begins on those controls must still reach FlashList.
   mockListScrollToOffset.mockClear();
+  mockKeyboardDismiss.mockClear();
   act(() => {
     dragFromSearchControls(offset, input);
   });
   expect(mockListScrollToOffset).toHaveBeenCalled();
   expect(mockListScrollToOffset).toHaveBeenLastCalledWith({ offset, animated: false });
+  expect(mockKeyboardDismiss).toHaveBeenCalled();
 }
 
 afterEach(() => {
@@ -364,6 +394,7 @@ afterEach(() => {
   mockKeyboardListeners.clear();
   mockRetryPersistence.mockClear();
   mockListScrollToOffset.mockClear();
+  mockKeyboardDismiss.mockClear();
 });
 
 describe('Journal compact large-text layout', () => {
@@ -561,9 +592,11 @@ describe('Journal compact large-text layout', () => {
     expect(document.activeElement).toBe(input);
 
     mockListScrollToOffset.mockClear();
+    mockKeyboardDismiss.mockClear();
     pressSearchControl(input);
     expect(document.activeElement).toBe(input);
     expect(mockListScrollToOffset).not.toHaveBeenCalled();
+    expect(mockKeyboardDismiss).not.toHaveBeenCalled();
 
     collapseSearchByOverlayGesture(searchHeaderHeight);
     const chrome = JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}') as {
@@ -572,6 +605,38 @@ describe('Journal compact large-text layout', () => {
     expect(chrome.transform).toEqual([{ translateY: -searchHeaderHeight }]);
     expect(list.contains(screen.getByTestId(TID.List.DreamItem(guestDream.id)))).toBe(true);
     expectReachableListViewport(640, 320, 2);
+  });
+
+  it('idles scrolling when a forwarded overlay search drag is terminated', async () => {
+    mockDreams.push(guestDream);
+    Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
+    render(<JournalScreen />);
+
+    const searchHeaderHeight = mobileSearchHeaderHeight(2);
+    const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
+    const dreamCard = screen.getByTestId(TID.List.DreamItem(guestDream.id));
+
+    expectReachableListViewport(640, 320, 2);
+    pressSearchControl(input);
+    expect(document.activeElement).toBe(input);
+    expect(dreamCard.getAttribute('data-scroll-state')).toBe('idle');
+    expect(mockListProps.extraData.isScrolling).toBe(false);
+
+    mockListScrollToOffset.mockClear();
+    mockKeyboardDismiss.mockClear();
+    act(() => {
+      terminateOverlaySearchDrag(searchHeaderHeight, input);
+    });
+
+    expect(mockListScrollToOffset).toHaveBeenCalled();
+    expect(mockKeyboardDismiss).toHaveBeenCalled();
+    expect(dreamCard.getAttribute('data-scroll-state')).toBe('scrolling');
+    expect(mockListProps.extraData.isScrolling).toBe(true);
+
+    await waitFor(() => {
+      expect(screen.getByTestId(TID.List.DreamItem(guestDream.id)).getAttribute('data-scroll-state')).toBe('idle');
+      expect(mockListProps.extraData.isScrolling).toBe(false);
+    });
   });
 
   it('resets collapsed search when the overlay layout key changes', () => {
