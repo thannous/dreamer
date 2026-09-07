@@ -1301,6 +1301,71 @@ describe('LucidTrainerContext account boundary', () => {
     );
   });
 
+  it('keeps unprefixed legacy rejected signs when reconsideration requests pending', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      preferences: { ...initial.preferences, cloudSyncEnabled: true },
+      dreamSignDecisions: [
+        {
+          id: 'sign:mirror',
+          decision: 'rejected',
+          customLabel: 'Hallway mirror',
+          sourceDreamIds: ['101', '102'],
+          updatedAt: 1_705_000_000_000,
+        },
+      ],
+    };
+    mockDreams = [];
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.dreamSignCandidates).toEqual([
+      expect.objectContaining({
+        id: 'sign:mirror',
+        sourceDreamIds: ['101', '102'],
+      }),
+    ]);
+
+    mockCreateMutation.mockClear();
+    mockQueueMutation.mockClear();
+    await act(async () => {
+      await result.current.saveDreamSignDecision({
+        id: 'sign:mirror',
+        decision: 'pending',
+        customLabel: 'Hallway mirror',
+        sourceDreamIds: ['101', '102'],
+      });
+    });
+
+    expect(persistedState.dreamSignDecisions).toEqual([
+      expect.objectContaining({
+        id: 'sign:mirror',
+        decision: 'rejected',
+        sourceDreamIds: ['101', '102'],
+      }),
+    ]);
+    expect(result.current.dreamSignCandidates).toEqual([
+      expect.objectContaining({ id: 'sign:mirror' }),
+    ]);
+    expect(mockCreateMutation).not.toHaveBeenCalled();
+    expect(mockQueueMutation).not.toHaveBeenCalled();
+  });
+
   it('updates dream atlas preferences and queues a cloud upsert', async () => {
     const now = 1_720_000_000_000;
     const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(now);

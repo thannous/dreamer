@@ -1066,6 +1066,11 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         );
         if (input.decision === 'pending') {
           if (!existing) return { next: current, changed: [] };
+          // Unprefixed records exist only as historical Journal references.
+          // Deleting them on "pending" would drop the synthetic candidate.
+          if (!existing.id.startsWith(LUCID_LOCAL_SIGN_PREFIX)) {
+            return { next: current, changed: [] };
+          }
           deleted = true;
           return {
             next: {

@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 import { useAuth } from '@/context/AuthContext';
-import { useDreamsActions } from '@/context/DreamsContext';
+import { useOptionalDreamsActions } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -98,7 +98,7 @@ export const EmailAuthCard: React.FC<Props> = ({
   const cardBg = noctalia.surface.raised;
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
-  const { reloadDreams } = useDreamsActions();
+  const dreamsActions = useOptionalDreamsActions();
   const { language } = useLanguage();
 
   const [email, setEmail] = useState('');
@@ -309,7 +309,7 @@ export const EmailAuthCard: React.FC<Props> = ({
     setSubmitting('signout');
     try {
       await signOut();
-      await reloadDreams();
+      await dreamsActions?.reloadDreams();
       clearPendingVerification();
       clearStayOnSettingsIntent();
     } catch (error) {

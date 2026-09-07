@@ -138,12 +138,16 @@ export const useDreamsData = (): DreamsDataContextValue => {
  * Prefer this hook for components that only need to perform actions (e.g., buttons)
  */
 export const useDreamsActions = (): DreamsActionsContextValue => {
-  const ctx = useContext(DreamsActionsContext);
+  const ctx = useOptionalDreamsActions();
   if (!ctx) {
     throw new Error('useDreamsActions must be used within DreamsProvider');
   }
   return ctx;
 };
+
+/** Returns null outside DreamsProvider so Lucid surfaces can reuse Journal auth UI. */
+export const useOptionalDreamsActions = (): DreamsActionsContextValue | null =>
+  useContext(DreamsActionsContext);
 
 /**
  * Combined hook for backward compatibility
