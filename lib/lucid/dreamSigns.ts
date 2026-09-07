@@ -404,7 +404,11 @@ export function extractLucidDreamSignCandidates(
     LucidTrainingSource,
     'id' | 'title' | 'transcript' | 'symbols' | 'emotions'
   >[],
-  options?: { minDistinctDreams?: number }
+  options?: {
+    minDistinctDreams?: number;
+    /** Null disables the display cap for durable-state reconciliation. */
+    maxCandidates?: number | null;
+  }
 ): LucidDreamSignCandidate[] {
   const minDistinctDreams = options?.minDistinctDreams ?? LUCID_DREAM_SIGN_MIN_DISTINCT_DREAMS;
   const grouped = new Map<
@@ -471,7 +475,7 @@ export function extractLucidDreamSignCandidates(
       }
       return compareIds(left.id, right.id);
     })
-    .slice(0, LUCID_DREAM_SIGN_MAX_CANDIDATES);
+    .slice(0, options?.maxCandidates === null ? undefined : options?.maxCandidates ?? LUCID_DREAM_SIGN_MAX_CANDIDATES);
 }
 
 function sanitizeCustomLabel(value: unknown): string | null {

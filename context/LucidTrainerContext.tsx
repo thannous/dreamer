@@ -268,6 +268,37 @@ function currentDreamAtlasPreferences(state: LucidTrainerState): LucidDreamAtlas
   );
 }
 
+// Derive liveness from the complete persisted observation set, never from a
+// loading UI projection. Historical Journal IDs remain unavailable, not deleted.
+function pruneOrphanedLocalAtlas(state: LucidTrainerState, now: number): LucidSyncEntity | null {
+  if (!state.dreamAtlas) return null;
+  const live = new Set(extractLucidDreamSignCandidates(projectLucidObservations(state.experiments), { maxCandidates: null })
+    .map(candidate => localLucidSignId(candidate.id)));
+  const keep = (id: string) => !id.startsWith(LUCID_LOCAL_SIGN_PREFIX) || live.has(id);
+  const current = currentDreamAtlasPreferences(state);
+  const preferences = {
+    ...current,
+    renamed: Object.fromEntries(Object.entries(current.renamed).filter(([id]) => keep(id))),
+    hidden: current.hidden.filter(keep),
+    merges: Object.fromEntries(Object.entries(current.merges).filter(([id, target]) => keep(id) && keep(target))),
+  };
+  if (areLucidDreamAtlasPreferencesSemanticallyEqual(current, preferences)) return null;
+  return { entityType: 'dream_atlas', entityKey: 'dream_atlas', value: { ...preferences, updatedAt: now } };
+}
+
+async function reconcilePersistedLocalAtlas(state: LucidTrainerState, scope: string): Promise<LucidTrainerState> {
+  if (!pruneOrphanedLocalAtlas(state, Date.now())) return state;
+  let entity: LucidSyncEntity | null = null;
+  const next = await updateLucidTrainerState(scope, current => {
+    entity = pruneOrphanedLocalAtlas(current, Date.now());
+    return entity ? applyLucidSyncEntity(current, entity) : current;
+  });
+  if (entity && scope !== 'guest' && next.preferences.cloudSyncEnabled) {
+    await queueLucidTrainerMutation(createLucidTrainerMutation({ userScope: scope, operation: 'upsert', entity }));
+  }
+  return next;
+}
+
 function cloneDreamAtlasPreferences(
   preferences: LucidDreamAtlasPreferences
 ): LucidDreamAtlasPreferences {
@@ -461,6 +492,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
           result.conflicts > 0
         ) {
           const refreshed = await loadLucidTrainerState(requestedScope);
+          refreshed.state = await reconcilePersistedLocalAtlas(refreshed.state, requestedScope);
           if (activeScopeRef.current === requestedScope) {
             setState(refreshed.state);
             void reconcileLoadedState(refreshed.state, requestedScope);
@@ -485,6 +517,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         locale: deviceLocale,
         timeZone: getTimeZone(),
       });
+      result.state = await reconcilePersistedLocalAtlas(result.state, requestedScope);
       const guestDataAvailable = Boolean(userId) && await hasLucidTrainerGuestData({
         loadState: getLucidTrainerState,
       });
@@ -537,7 +570,8 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       },
     });
     if (result.claimed) {
-      const imported = await getLucidTrainerState(userScope);
+      const stored = await getLucidTrainerState(userScope);
+      const imported = stored ? await reconcilePersistedLocalAtlas(stored, userScope) : null;
       if (activeScopeRef.current === userScope) setState(imported);
       if (imported) {
         await reconcileLoadedState(imported, userScope);
@@ -584,9 +618,13 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         const next = await updateLucidTrainerState(
           userScope,
           (current) => {
-            const result = updater(current, Date.now());
-            changed = result.changed;
-            return result.next;
+            const now = Date.now();
+            const result = updater(current, now);
+            const atlas = pruneOrphanedLocalAtlas(result.next, now);
+            changed = atlas
+              ? [...result.changed.filter(entity => entity.entityType !== 'dream_atlas'), atlas]
+              : result.changed;
+            return atlas ? applyLucidSyncEntity(result.next, atlas) : result.next;
           },
           { locale: deviceLocale, timeZone: getTimeZone() }
         );
@@ -1210,9 +1248,10 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const decisions = state?.dreamSignDecisions ?? [];
-    if (!dreamsLoaded || decisions.length === 0) return;
+    if (!dreamsLoaded || !state || decisions.length === 0) return;
     const candidatesById = new Map(
-      dreamSignCandidates.map((candidate) => [candidate.id, candidate] as const)
+      extractLucidDreamSignCandidates(projectLucidObservations(state.experiments), { maxCandidates: null })
+        .map(candidate => [localLucidSignId(candidate.id), candidate] as const)
     );
     const needsReconciliation = decisions.some((decision) => {
       if (!decision.id.startsWith(LUCID_LOCAL_SIGN_PREFIX)) return false;
@@ -1285,7 +1324,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     })().catch((cause) => {
       if (__DEV__) console.warn('[LucidTrainer] Dream-sign reconciliation failed', cause);
     });
-  }, [commit, dreamSignCandidates, dreamsLoaded, state?.dreamSignDecisions, user?.id, userScope]);
+  }, [commit, dreamSignCandidates, dreamsLoaded, state?.dreamSignDecisions, state, user?.id, userScope]);
 
   const reconcileReminders = useCallback(async () => {
     if (!state) return;

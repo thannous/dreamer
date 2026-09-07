@@ -29,6 +29,20 @@ import {
   updateLucidTrainerSyncQueue,
 } from '@/services/lucidTrainerStorage';
 
+// Older sync-v1 clients delete autonomous sign IDs they cannot derive.
+// Preserve these records locally until a versioned server contract is available.
+export const LUCID_SYNC_LOCAL_ONLY_REASON = 'local-only: requires autonomous Lucid sync v2';
+function isLocalOnly(entity: { entityType: string; entityKey: string }): boolean {
+  return entity.entityType === 'dream_atlas' ||
+    (entity.entityType === 'dream_sign' && entity.entityKey.startsWith('sign:lucid:'));
+}
+function quarantine(mutation: LucidSyncMutation): LucidSyncMutation {
+  return isLocalOnly(mutation) ? {
+    ...mutation, status: 'blocked', nextAttemptAt: undefined,
+    lastError: LUCID_SYNC_LOCAL_ONLY_REASON,
+  } : mutation;
+}
+
 export const LUCID_SYNC_BATCH_SIZE = 25;
 export const LUCID_SYNC_BASE_DELAY_MS = 5_000;
 export const LUCID_SYNC_MAX_DELAY_MS = 6 * 60 * 60 * 1_000;
@@ -328,6 +342,8 @@ export async function queueLucidTrainerMutation(
   mutation: LucidSyncMutation
 ): Promise<LucidSyncMutation[]> {
   return updateLucidTrainerSyncQueue(mutation.userScope, (current) => {
+    // The state is already durable; do not accumulate unsendable new mutations.
+    if (isLocalOnly(mutation)) return current.map(quarantine);
     if (current.some((entry) => entry.clientRequestId === mutation.clientRequestId)) {
       return current;
     }
@@ -340,7 +356,7 @@ export async function queueLucidTrainerMutation(
           resetRevision: (resetRevision as ResetAwareLucidSyncMutation).resetRevision,
         }
       : mutation;
-    return [...current, next].sort(
+    return [...current, next].map(quarantine).sort(
       (left, right) => left.createdAt - right.createdAt || left.id.localeCompare(right.id)
     );
   });
@@ -674,6 +690,7 @@ export async function pullLucidTrainerRemoteState(
   await storage.updateState(userScope, (current) => {
     let next = current;
     records.forEach((record) => {
+      if (isLocalOnly(record)) return;
       const key = syncEntityKey(record.entityType, record.entityKey);
       const local = findSyncEntity(next, record.entityType, record.entityKey);
       if (record.entity) {
@@ -754,7 +771,7 @@ export async function pullLucidTrainerRemoteState(
         return { ...mutation, resetRevision };
       });
     }
-    return next.sort(
+    return next.map(quarantine).sort(
       (left, right) => left.createdAt - right.createdAt || left.id.localeCompare(right.id)
     );
   });
@@ -823,6 +840,7 @@ export async function claimLucidTrainerGuestScope(
           idFactory,
         });
         const additions = entities.flatMap((entity) => {
+          if (isLocalOnly(entity)) return [];
           if (existingKeys.has(syncEntityKey(entity.entityType, entity.entityKey))) return [];
           const existing = findSyncEntity(account, entity.entityType, entity.entityKey);
           if (
@@ -845,7 +863,7 @@ export async function claimLucidTrainerGuestScope(
           ];
         });
         queued = additions.length;
-        return [...coalesced, ...additions].sort(
+        return [...coalesced, ...additions].map(quarantine).sort(
           (left, right) => left.createdAt - right.createdAt || left.id.localeCompare(right.id)
         );
       });
@@ -946,8 +964,8 @@ function replaySummary(
   return {
     outcome,
     ...counts,
-    blocked: queue.filter((mutation) => mutation.status === 'blocked').length,
-    pending: queue.length,
+    blocked: queue.filter((mutation) => !isLocalOnly(mutation) && mutation.status === 'blocked').length,
+    pending: queue.filter((mutation) => !isLocalOnly(mutation)).length,
   };
 }
 
@@ -963,7 +981,7 @@ export async function replayLucidTrainerQueue(
   const idFactory = options.idFactory ?? defaultIdFactory;
   const maxRetries = Math.max(1, options.maxRetries ?? LUCID_SYNC_MAX_RETRIES);
   const batchSize = Math.max(1, Math.min(100, options.batchSize ?? LUCID_SYNC_BATCH_SIZE));
-  const queue = await storage.loadQueue(userScope);
+  const queue = await storage.updateQueue(userScope, (current) => current.map(quarantine));
   const emptyCounts = { attempted: 0, acknowledged: 0, failed: 0, conflicts: 0 };
   const state = await storage.loadState(userScope);
 
@@ -976,7 +994,7 @@ export async function replayLucidTrainerQueue(
   }
 
   const now = nowFactory();
-  const eligible = queue.filter((mutation) => canAttempt(mutation, now)).slice(0, batchSize);
+  const eligible = queue.filter((mutation) => !isLocalOnly(mutation) && canAttempt(mutation, now)).slice(0, batchSize);
   if (!eligible.length) {
     return replaySummary('idle', queue, emptyCounts);
   }
@@ -1054,6 +1072,12 @@ export async function replayLucidTrainerQueue(
           maxRetries,
         })
       );
+      continue;
+    }
+
+    if (result.remoteEntity && isLocalOnly(result.remoteEntity)) {
+      failed += 1;
+      replacements.set(mutation.id, { ...mutation, status: 'blocked', lastError: 'Unexpected local-only entity in sync response' });
       continue;
     }
 
