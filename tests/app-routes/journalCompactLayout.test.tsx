@@ -704,10 +704,51 @@ describe('Journal compact large-text layout', () => {
       dragFromSearchControls(9, input);
     });
     expect(mockListScrollToOffset).toHaveBeenCalled();
-    expect(mockListScrollToOffset.mock.calls.every(([args]) => args.offset <= 9)).toBe(true);
+    expect(mockListScrollToOffset.mock.calls.every(([args]: [{ offset: number }]) => args.offset <= 9)).toBe(true);
     expect(mockListScrollToOffset).toHaveBeenLastCalledWith({ offset: 9, animated: false });
     expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
       expect.objectContaining({ transform: [{ translateY: -9 }] }),
+    );
+  });
+
+  it('preserves overlay drag origin when the keyed list does not remount', () => {
+    mockDreams.push(guestDream);
+    Object.assign(mockWindow, { width: 640, height: 800, fontScale: 2 });
+    const view = render(<JournalScreen />);
+
+    expect(mockListProps.numColumns).toBe(2);
+    expectReachableListViewport(640, 800, 2);
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}').position).toBeUndefined();
+
+    const retainedOffset = 240;
+    act(() => {
+      mockListProps.onScroll({
+        nativeEvent: { contentOffset: { y: retainedOffset } },
+      });
+    });
+
+    Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(2);
+    expectReachableListViewport(640, 320, 2);
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
+      expect.objectContaining({
+        position: 'absolute',
+        transform: [{ translateY: 0 }],
+      }),
+    );
+
+    const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
+    const searchHeaderHeight = mobileSearchHeaderHeight(2);
+    mockListScrollToOffset.mockClear();
+    act(() => {
+      dragFromSearchControls(9, input);
+    });
+    expect(mockListScrollToOffset).toHaveBeenCalled();
+    expect(mockListScrollToOffset.mock.calls.every(([args]: [{ offset: number }]) => args.offset >= retainedOffset)).toBe(true);
+    expect(mockListScrollToOffset).toHaveBeenLastCalledWith({ offset: retainedOffset + 9, animated: false });
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
+      expect.objectContaining({ transform: [{ translateY: -searchHeaderHeight }] }),
     );
   });
 

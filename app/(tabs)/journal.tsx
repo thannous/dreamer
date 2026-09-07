@@ -131,6 +131,9 @@ export default function JournalListScreen() {
   const searchConsumesLayout = isDesktopLayout
     || keyboardAvoidedViewport - mobileSearchHeaderHeight >= MIN_MOBILE_JOURNAL_LIST_VIEWPORT;
   const searchLayoutKey = `${searchConsumesLayout ? 'flow' : 'overlay'}:${isTabletLayout ? 'tablet' : 'mobile'}`;
+  // Column count, not overlay vs flow. Keyboard and viewport-height changes can
+  // flip searchConsumesLayout without remounting FlashList or clearing its offset.
+  const mobileListKey = isTabletLayout ? 'tablet-2col' : 'mobile-cards-1col';
   const [searchCollapse, setSearchCollapse] = useState({ key: searchLayoutKey, offset: 0 });
   if (searchCollapse.key !== searchLayoutKey) {
     // Comparing keys only hid a stale offset. Reinitialize so a rotation back
@@ -207,11 +210,11 @@ export default function JournalListScreen() {
   const overlaySearchDragOriginRef = useRef({ pageX: 0, pageY: 0, offset: 0 });
 
   useLayoutEffect(() => {
-    // The keyed FlashList remounts at offset 0 when this layout key changes.
-    // Drop the previous list's origin so a later overlay drag cannot jump the
-    // new list past the header.
+    // The column-keyed FlashList remounts at offset 0 when this key changes.
+    // Keep the origin when only searchConsumesLayout flips so a later overlay
+    // drag continues from the retained list offset instead of jumping to the top.
     listScrollOffsetRef.current = 0;
-  }, [searchLayoutKey]);
+  }, [mobileListKey]);
 
   const setScrolling = useCallback((next: boolean) => {
     if (isScrollingRef.current === next) return;
@@ -958,7 +961,7 @@ export default function JournalListScreen() {
         <FlashList
           testID={TID.List.Dreams}
           ref={flatListRef}
-          key={isTabletLayout ? 'tablet-2col' : 'mobile-cards-1col'}
+          key={mobileListKey}
           data={filteredDreams}
           extraData={listExtraData}
           keyExtractor={keyExtractor}
