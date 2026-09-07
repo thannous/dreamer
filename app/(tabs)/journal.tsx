@@ -40,6 +40,7 @@ import {
   Keyboard,
   Platform,
   Text,
+  type GestureResponderEvent,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
   type TextInput,
@@ -53,6 +54,7 @@ const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
 const PREFETCH_MAX_PER_FLUSH = 8;
 const MIN_MOBILE_JOURNAL_LIST_VIEWPORT = 120;
+const OVERLAY_SEARCH_DRAG_SLOP = 8;
 
 /**
  * FlashList owns these through props that take a style object, and the desktop max
@@ -104,6 +106,7 @@ export default function JournalListScreen() {
   // on short landscape viewports.
   const scrollHeader = !isDesktopLayout;
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   // The tab bar in app/(tabs)/_layout.tsx is position:absolute, so FlashList must
   // reserve the full overlay from the viewport. Capping marginBottom would leave
@@ -117,8 +120,16 @@ export default function JournalListScreen() {
     : insets.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
   const overlayNavClearance = isDesktopLayout || isKeyboardVisible ? 0 : navigationClearance;
   const viewportAboveNav = Math.max(0, height - overlayNavClearance);
+  // iOS software keyboards overlay the window and do not shrink
+  // useWindowDimensions(). Subtract that occlusion, and if iOS reports no
+  // height keep search out of flow so results can still scroll.
+  const keyboardAvoidedViewport = !isKeyboardVisible || Platform.OS !== 'ios'
+    ? viewportAboveNav
+    : keyboardHeight > 0
+      ? Math.max(0, viewportAboveNav - keyboardHeight)
+      : 0;
   const searchConsumesLayout = isDesktopLayout
-    || viewportAboveNav - mobileSearchHeaderHeight >= MIN_MOBILE_JOURNAL_LIST_VIEWPORT;
+    || keyboardAvoidedViewport - mobileSearchHeaderHeight >= MIN_MOBILE_JOURNAL_LIST_VIEWPORT;
   const searchLayoutKey = `${searchConsumesLayout ? 'flow' : 'overlay'}:${isTabletLayout ? 'tablet' : 'mobile'}`;
   const [searchCollapse, setSearchCollapse] = useState({ key: searchLayoutKey, offset: 0 });
   if (searchCollapse.key !== searchLayoutKey) {
@@ -129,8 +140,20 @@ export default function JournalListScreen() {
   const searchCollapseOffset = searchCollapse.key === searchLayoutKey ? searchCollapse.offset : 0;
 
   useEffect(() => {
-    const show = Keyboard.addListener(Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow', () => setIsKeyboardVisible(true));
-    const hide = Keyboard.addListener(Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide', () => setIsKeyboardVisible(false));
+    const show = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      (e: { endCoordinates?: { height?: number } }) => {
+        setIsKeyboardVisible(true);
+        setKeyboardHeight(e?.endCoordinates?.height ?? 0);
+      },
+    );
+    const hide = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        setIsKeyboardVisible(false);
+        setKeyboardHeight(0);
+      },
+    );
     return () => {
       show.remove();
       hide.remove();
@@ -180,6 +203,8 @@ export default function JournalListScreen() {
   const isScrollingRef = useRef(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollIdleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const listScrollOffsetRef = useRef(0);
+  const overlaySearchDragOriginRef = useRef({ pageX: 0, pageY: 0, offset: 0 });
 
   const setScrolling = useCallback((next: boolean) => {
     if (isScrollingRef.current === next) return;
@@ -437,13 +462,43 @@ export default function JournalListScreen() {
   }, [setScrolling]);
 
   const handleListScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const y = event.nativeEvent.contentOffset.y;
+    listScrollOffsetRef.current = y;
     if (searchConsumesLayout) return;
-    const next = Math.max(0, Math.min(event.nativeEvent.contentOffset.y, mobileSearchHeaderHeight));
+    const next = Math.max(0, Math.min(y, mobileSearchHeaderHeight));
     setSearchCollapse((current) => {
       if (current.key === searchLayoutKey && Math.abs(current.offset - next) < 0.5) return current;
       return { key: searchLayoutKey, offset: next };
     });
   }, [mobileSearchHeaderHeight, searchConsumesLayout, searchLayoutKey]);
+
+  const handleOverlaySearchTouchStart = useCallback((event: GestureResponderEvent) => {
+    overlaySearchDragOriginRef.current = {
+      pageX: event.nativeEvent.pageX,
+      pageY: event.nativeEvent.pageY,
+      offset: listScrollOffsetRef.current,
+    };
+  }, []);
+
+  const shouldForwardOverlaySearchDrag = useCallback((event: GestureResponderEvent) => {
+    if (searchConsumesLayout) return false;
+    const origin = overlaySearchDragOriginRef.current;
+    const dx = event.nativeEvent.pageX - origin.pageX;
+    const dy = event.nativeEvent.pageY - origin.pageY;
+    return Math.abs(dy) > OVERLAY_SEARCH_DRAG_SLOP && Math.abs(dy) >= Math.abs(dx);
+  }, [searchConsumesLayout]);
+
+  const handleOverlaySearchDragMove = useCallback((event: GestureResponderEvent) => {
+    if (searchConsumesLayout) return;
+    const dy = event.nativeEvent.pageY - overlaySearchDragOriginRef.current.pageY;
+    const next = Math.max(0, overlaySearchDragOriginRef.current.offset - dy);
+    handleScrollBegin();
+    flatListRef.current?.scrollToOffset({ offset: next, animated: false });
+  }, [handleScrollBegin, searchConsumesLayout]);
+
+  const handleOverlaySearchDragRelease = useCallback(() => {
+    scheduleIdle();
+  }, [scheduleIdle]);
 
   useEffect(() => {
     return () => {
@@ -826,8 +881,9 @@ export default function JournalListScreen() {
             className="px-4 pb-2"
             // Overlay chrome is taller than the uncovered list box on short
             // landscape. box-none lets FlashList receive drags that miss the
-            // SearchBar, while auto on the controls keeps the input and clear
-            // button tappable.
+            // SearchBar. Vertical drags that start on the controls are forwarded
+            // to the list so the bar can collapse, while taps still reach the
+            // input and clear button.
             pointerEvents={searchConsumesLayout ? 'auto' : 'box-none'}
             style={{
               paddingTop: insets.top + ThemeLayout.spacing.sm,
@@ -843,7 +899,16 @@ export default function JournalListScreen() {
                   }),
             }}
           >
-            <View pointerEvents="auto" testID="journal-search-controls">
+            <View
+              pointerEvents="auto"
+              testID="journal-search-controls"
+              onTouchStart={searchConsumesLayout ? undefined : handleOverlaySearchTouchStart}
+              onStartShouldSetResponderCapture={searchConsumesLayout ? undefined : () => false}
+              onMoveShouldSetResponderCapture={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
+              onMoveShouldSetResponder={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
+              onResponderMove={searchConsumesLayout ? undefined : handleOverlaySearchDragMove}
+              onResponderRelease={searchConsumesLayout ? undefined : handleOverlaySearchDragRelease}
+            >
               {searchBar}
             </View>
           </View>

@@ -32,9 +32,10 @@ const guestDream = {
   dreamType: 'Symbolic Dream',
   isAnalyzed: false,
 };
-const mockKeyboardListeners = new Map<string, () => void>();
+const mockKeyboardListeners = new Map<string, (e?: { endCoordinates?: { height?: number; screenY?: number } }) => void>();
 const mockRetryPersistence = jest.fn(async () => undefined);
 const mockPersistenceState = { status: 'ready' as const, target: 'device' as const };
+const mockListScrollToOffset = jest.fn();
 let mockPlatform = 'android';
 let mockListProps: Record<string, any> = {};
 
@@ -53,12 +54,65 @@ jest.mock('react-native', () => {
       get isVisible() {
         return mockPlatform === 'web' ? undefined : () => false;
       },
-      addListener: (event: string, callback: () => void) => {
+      addListener: (event: string, callback: (e?: { endCoordinates?: { height?: number; screenY?: number } }) => void) => {
         mockKeyboardListeners.set(event, callback);
         return { remove: () => mockKeyboardListeners.delete(event) };
       },
     },
-    View: function MockView({ children, testID, onPress, accessibilityLabel, style, pointerEvents }: any) {
+    View: function MockView({
+      children,
+      testID,
+      onPress,
+      accessibilityLabel,
+      style,
+      pointerEvents,
+      onTouchStart,
+      onMoveShouldSetResponderCapture,
+      onMoveShouldSetResponder,
+      onResponderMove,
+      onResponderRelease,
+    }: any) {
+      const capturingRef = React.useRef(false);
+      const toResponderEvent = (event: any) => {
+        const native = event?.nativeEvent ?? event;
+        return {
+          nativeEvent: {
+            pageX: event?.clientX ?? native?.clientX ?? native?.pageX ?? 0,
+            pageY: event?.clientY ?? native?.clientY ?? native?.pageY ?? 0,
+          },
+        };
+      };
+      const handleDown = (event: any) => {
+        capturingRef.current = false;
+        onTouchStart?.(toResponderEvent(event));
+      };
+      const handleMove = (event: any) => {
+        const responderEvent = toResponderEvent(event);
+        if (!capturingRef.current) {
+          const shouldCapture = onMoveShouldSetResponderCapture?.(responderEvent)
+            || onMoveShouldSetResponder?.(responderEvent);
+          if (shouldCapture) capturingRef.current = true;
+        }
+        if (capturingRef.current) {
+          onResponderMove?.(responderEvent);
+        }
+      };
+      const handleUp = (event: any) => {
+        if (capturingRef.current) {
+          onResponderRelease?.(toResponderEvent(event));
+        }
+        capturingRef.current = false;
+      };
+      const pointerProps = onTouchStart || onMoveShouldSetResponderCapture || onResponderMove
+        ? {
+            onPointerDown: handleDown,
+            onPointerMove: handleMove,
+            onPointerUp: handleUp,
+            onMouseDown: handleDown,
+            onMouseMove: handleMove,
+            onMouseUp: handleUp,
+          }
+        : {};
       return React.createElement('div', {
         'data-testid': testID,
         'aria-label': accessibilityLabel,
@@ -66,6 +120,7 @@ jest.mock('react-native', () => {
         'data-style': JSON.stringify(style ?? {}),
         'data-pointer-events': pointerEvents,
         style: pointerEvents ? { pointerEvents } : undefined,
+        ...pointerProps,
       }, children);
     },
     Text: element('span'), Pressable: element('button'),
@@ -136,7 +191,14 @@ jest.mock('@shopify/flash-list', () => {
   const React = require('react');
   return { FlashList: React.forwardRef(function MockFlashList(props: any, ref: any) {
     mockListProps = props;
-    React.useImperativeHandle(ref, () => ({ scrollToOffset: () => {} }));
+    React.useImperativeHandle(ref, () => ({
+      scrollToOffset: (args: { offset: number; animated?: boolean }) => {
+        mockListScrollToOffset(args);
+        props.onScroll?.({
+          nativeEvent: { contentOffset: { y: Math.max(0, args?.offset ?? 0) } },
+        });
+      },
+    }));
     const Empty = props.ListEmptyComponent;
     return <div
       data-testid={props.testID}
@@ -204,7 +266,13 @@ function overlayClearance(width: number, height: number, fontScale: number) {
   );
 }
 
-function expectReachableListViewport(width: number, height: number, fontScale: number, keyboardVisible = false) {
+function expectReachableListViewport(
+  width: number,
+  height: number,
+  fontScale: number,
+  keyboardVisible = false,
+  keyboardHeight = 0,
+) {
   const searchMinHeight = searchBarLayout(fontScale).minHeight;
   const searchHeaderHeight = mobileSearchHeaderHeight(fontScale);
   const reservedOverlay = keyboardVisible ? 0 : overlayClearance(width, height, fontScale);
@@ -213,7 +281,12 @@ function expectReachableListViewport(width: number, height: number, fontScale: n
   const marginBottom = listStyle.marginBottom ?? 0;
   const extraNavPadding = (contentStyle.paddingBottom ?? 0) - ThemeLayout.spacing.lg;
   const viewportAboveNav = height - reservedOverlay;
-  const searchInFlow = viewportAboveNav - searchHeaderHeight >= 120;
+  const keyboardAvoidedViewport = !keyboardVisible || mockPlatform !== 'ios'
+    ? viewportAboveNav
+    : keyboardHeight > 0
+      ? Math.max(0, viewportAboveNav - keyboardHeight)
+      : 0;
+  const searchInFlow = keyboardAvoidedViewport - searchHeaderHeight >= 120;
   const listViewport = viewportAboveNav - (searchInFlow ? searchHeaderHeight : 0);
 
   expect(Number(screen.getByTestId(TID.Component.SearchBar).getAttribute('data-min-height'))).toBe(searchMinHeight);
@@ -245,36 +318,41 @@ function expectReachableListViewport(width: number, height: number, fontScale: n
   }
 }
 
+function dragFromSearchControls(distance: number, from: HTMLElement) {
+  const controls = screen.getByTestId('journal-search-controls');
+  expect(controls.contains(from) || controls === from).toBe(true);
+  const startX = 120;
+  const startY = 96;
+  fireEvent.mouseDown(controls, { clientX: startX, clientY: startY, buttons: 1 });
+  fireEvent.mouseMove(controls, { clientX: startX, clientY: startY - 9, buttons: 1 });
+  fireEvent.mouseMove(controls, { clientX: startX, clientY: startY - distance, buttons: 1 });
+  fireEvent.mouseUp(controls, { clientX: startX, clientY: startY - distance, buttons: 0 });
+}
+
 function collapseSearchByOverlayGesture(offset: number) {
   const chrome = screen.getByTestId('journal-search-chrome');
   const controls = screen.getByTestId('journal-search-controls');
   const list = screen.getByTestId(TID.List.Dreams);
   const input = screen.getByTestId(TID.Input.SearchDreams);
-  const overlayPointerEvents = chrome.getAttribute('data-pointer-events');
 
   expect(chrome.contains(input)).toBe(true);
+  expect(controls.contains(input)).toBe(true);
   expect(list.contains(chrome)).toBe(false);
-  expect(overlayPointerEvents).toBe('box-none');
+  expect(list.contains(controls)).toBe(false);
+  expect(chrome.getAttribute('data-pointer-events')).toBe('box-none');
   expect(chrome.style.pointerEvents).toBe('box-none');
   expect(isRnTouchable(chrome)).toBe(false);
   expect(controls.getAttribute('data-pointer-events')).toBe('auto');
   expect(isRnTouchable(input)).toBe(true);
 
-  // box-none skips the chrome box so a drag that misses SearchBar lands on
-  // the sibling FlashList. SearchBar stays a target via pointerEvents auto.
-  const gestureTarget = overlayPointerEvents === 'box-none' || overlayPointerEvents === 'none'
-    ? list
-    : chrome;
-  expect(gestureTarget).toBe(list);
-
+  // The overlay SearchBar covers the uncovered list box at 640x320 fontScale 2.
+  // A vertical drag that begins on those controls must still reach FlashList.
+  mockListScrollToOffset.mockClear();
   act(() => {
-    Object.defineProperty(gestureTarget, 'scrollTop', {
-      configurable: true,
-      writable: true,
-      value: offset,
-    });
-    fireEvent.scroll(gestureTarget);
+    dragFromSearchControls(offset, input);
   });
+  expect(mockListScrollToOffset).toHaveBeenCalled();
+  expect(mockListScrollToOffset).toHaveBeenLastCalledWith({ offset, animated: false });
 }
 
 afterEach(() => {
@@ -285,6 +363,7 @@ afterEach(() => {
   mockPlatform = 'android';
   mockKeyboardListeners.clear();
   mockRetryPersistence.mockClear();
+  mockListScrollToOffset.mockClear();
 });
 
 describe('Journal compact large-text layout', () => {
@@ -376,6 +455,44 @@ describe('Journal compact large-text layout', () => {
     expect(mockKeyboardListeners.size).toBe(0);
   });
 
+  it('keeps search overlaid on iOS short landscape when the keyboard does not shrink the window', () => {
+    mockPlatform = 'ios';
+    mockDreams.push(guestDream);
+    Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
+    render(<JournalScreen />);
+
+    expectReachableListViewport(640, 320, 2);
+    const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
+    pressSearchControl(input);
+    fireEvent.change(input, { target: { value: 'blue room' } });
+    expect(document.activeElement).toBe(input);
+
+    const heightBeforeKeyboard = mockWindow.height;
+    act(() => {
+      mockKeyboardListeners.get('keyboardWillShow')?.({
+        endCoordinates: { height: 180, screenY: 140 },
+      });
+    });
+    expect(mockWindow.height).toBe(heightBeforeKeyboard);
+    expect(mockWindow.height).toBe(320);
+    expectReachableListViewport(640, 320, 2, true, 180);
+
+    const chrome = JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}') as {
+      position?: string;
+    };
+    expect(chrome.position).toBe('absolute');
+    expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-search-scroll-slot'))).toBe(true);
+    expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId(TID.List.DreamItem(guestDream.id)))).toBe(true);
+    expect(screen.getByTestId(TID.Input.SearchDreams)).toBe(input);
+    expect(isRnTouchable(input)).toBe(true);
+
+    const searchHeaderHeight = mobileSearchHeaderHeight(2);
+    collapseSearchByOverlayGesture(searchHeaderHeight);
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
+      expect.objectContaining({ transform: [{ translateY: -searchHeaderHeight }] }),
+    );
+  });
+
   it.each([[640, 320], [915, 412]])('keeps the header upsell scrollable at %i by %i dp when a guest has a dream', (width: number, height: number) => {
     mockDreams.push(guestDream);
     Object.assign(mockWindow, { width, height, fontScale: 2 });
@@ -442,6 +559,11 @@ describe('Journal compact large-text layout', () => {
     expect(input.value).toBe('');
     expect(screen.queryByTestId('journal-search-clear')).toBeNull();
     expect(document.activeElement).toBe(input);
+
+    mockListScrollToOffset.mockClear();
+    pressSearchControl(input);
+    expect(document.activeElement).toBe(input);
+    expect(mockListScrollToOffset).not.toHaveBeenCalled();
 
     collapseSearchByOverlayGesture(searchHeaderHeight);
     const chrome = JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}') as {
