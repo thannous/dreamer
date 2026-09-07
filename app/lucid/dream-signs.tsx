@@ -204,12 +204,14 @@ export default function LucidDreamSignsScreen() {
 
             <View style={styles.actions}>
               {sign.decision === 'rejected' ? (
-                <LucidButton
-                  label={copy.reconsider}
-                  loading={busy}
-                  onPress={() => void save(sign, 'pending')}
-                  variant="secondary"
-                />
+                sign.sourceDreamIds.some((sourceId) => dreamsById.has(sourceId)) ? (
+                  <LucidButton
+                    label={copy.reconsider}
+                    loading={busy}
+                    onPress={() => void save(sign, 'pending')}
+                    variant="secondary"
+                  />
+                ) : null
               ) : (
                 <>
                   <LucidButton

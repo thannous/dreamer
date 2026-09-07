@@ -130,8 +130,15 @@ jest.mock('@/context/AuthContext', () => ({
   useAuth: () => ({ user: mockCurrentUser, loading: mockAuthLoading }),
 }));
 
+let mockOptionalDreamsActions: { reloadDreams: typeof mockReloadDreams } | null = {
+  reloadDreams: mockReloadDreams,
+};
+
 jest.mock('@/context/DreamsContext', () => ({
-  useDreamsActions: () => ({ reloadDreams: mockReloadDreams }),
+  useDreamsActions: () => {
+    throw new Error('useDreamsActions must be used within DreamsProvider');
+  },
+  useOptionalDreamsActions: () => mockOptionalDreamsActions,
 }));
 
 jest.mock('@/context/ThemeContext', () => ({
@@ -286,6 +293,7 @@ describe('EmailAuthCard', () => {
     mockSignOut.mockResolvedValue(undefined);
     mockReloadDreams.mockResolvedValue(undefined);
     mockRequestPasswordReset.mockResolvedValue(undefined);
+    mockOptionalDreamsActions = { reloadDreams: mockReloadDreams };
   });
 
   it('opens the forgot-password panel pre-filled with the sign-in email and shows a neutral confirmation', async () => {
@@ -475,6 +483,13 @@ describe('EmailAuthCard', () => {
     await waitFor(() => {
       expect((screen.getByTestId(TID.Input.AuthPassword) as HTMLInputElement).value).toBe('');
     });
+  });
+
+  it('renders the Lucid return path without a Journal dreams provider', () => {
+    mockOptionalDreamsActions = null;
+    expect(() => render(<EmailAuthCard returnTo="/lucid/(tabs)/settings" />)).not.toThrow();
+    expect(screen.getByTestId(TID.Button.AuthSignIn)).toBeDefined();
+    expect(screen.getByTestId(TID.Input.AuthEmail)).toBeDefined();
   });
 
   it('requests the Lucid settings destination before authentication can emit a session', async () => {

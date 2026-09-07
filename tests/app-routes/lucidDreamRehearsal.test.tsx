@@ -26,6 +26,7 @@ const mockInterrupt = jest.fn();
 const mockResume = jest.fn();
 const mockComplete = jest.fn();
 const mockRefresh = jest.fn();
+const mockClearCurrent = jest.fn();
 const mockPlayTransition = jest.fn().mockResolvedValue(true);
 const mockSelectionAsync = jest.fn().mockResolvedValue(undefined);
 const mockUseGuidedRitualSound = jest.fn((enabled: boolean) => ({
@@ -59,19 +60,22 @@ let mockRehearsal = {
   error: null as string | null,
 };
 
-const mockDreams = [
+const defaultDreams = [
   { id: Number(DREAM_ID), title: 'The hallway', transcript: 'I saw a hallway mirror.' },
 ];
-const mockSigns = [
+const defaultSigns = [
   {
     id: SIGN_ID,
     label: 'Hallway mirror',
     category: 'object' as const,
     distinctDreamCount: 2,
     sourceDreamIds: [DREAM_ID],
-    evidence: [],
+    evidence: [] as { sourceDreamId: string; snippet: string }[],
   },
 ];
+let mockDreams = defaultDreams;
+let mockSigns = defaultSigns;
+let mockDecisions = [{ id: SIGN_ID, decision: 'confirmed' as const }];
 
 function scene() {
   const result = selectLucidDreamRehearsalScene(mockDreams, mockSigns, DREAM_ID, SIGN_ID);
@@ -121,7 +125,7 @@ jest.mock('@/context/LucidTrainerContext', () => ({
     content: { locale: mockLocale, chrome: { common: { loading: 'Chargement…', retry: 'Réessayer' } } },
     state: {
       preferences: { audioCuesEnabled: mockAudioEnabled },
-      dreamSignDecisions: [{ id: SIGN_ID, decision: 'confirmed' }],
+      dreamSignDecisions: mockDecisions,
     },
     userScope: 'guest',
     dreamSignCandidates: mockSigns,
@@ -160,7 +164,7 @@ jest.mock('@/hooks/useLucidDreamRehearsal', () => ({
     resume: mockResume,
     complete: mockComplete,
     refresh: mockRefresh,
-    clearCurrent: jest.fn(),
+    clearCurrent: mockClearCurrent,
     clearAll: jest.fn(),
   }),
 }));
@@ -211,6 +215,9 @@ describe('Lucid dream rehearsal screen', () => {
     mockReduceMotion = false;
     mockWindow.width = 390;
     mockWindow.fontScale = 1;
+    mockDreams = defaultDreams;
+    mockSigns = defaultSigns;
+    mockDecisions = [{ id: SIGN_ID, decision: 'confirmed' }];
     mockRehearsal = {
       currentSession: null,
       completions: [],
@@ -232,6 +239,7 @@ describe('Lucid dream rehearsal screen', () => {
     mockResume.mockReset().mockResolvedValue(undefined);
     mockComplete.mockReset().mockResolvedValue(undefined);
     mockRefresh.mockReset().mockResolvedValue(undefined);
+    mockClearCurrent.mockReset().mockResolvedValue(undefined);
     mockPlayTransition.mockClear();
     mockSelectionAsync.mockClear();
     mockCanGoBack = false;
@@ -421,11 +429,31 @@ describe('Lucid dream rehearsal screen', () => {
   });
 
   it('opens the exact in-progress session instead of starting over a different scene', () => {
+    const otherDreamId = '1700000001000';
+    mockDreams = [
+      ...defaultDreams,
+      { id: Number(otherDreamId), title: 'The stairs', transcript: 'I climbed the stairs.' },
+    ];
+    mockSigns = [
+      ...defaultSigns,
+      {
+        id: 'sign:stairs',
+        label: 'Stairs',
+        category: 'object',
+        distinctDreamCount: 2,
+        sourceDreamIds: [otherDreamId],
+        evidence: [],
+      },
+    ];
+    mockDecisions = [
+      { id: SIGN_ID, decision: 'confirmed' },
+      { id: 'sign:stairs', decision: 'confirmed' },
+    ];
     mockRehearsal = {
       ...mockRehearsal,
       currentSession: {
         ...started(),
-        dreamId: '1700000001000',
+        dreamId: otherDreamId,
         signId: 'sign:stairs',
         status: 'active',
       },
@@ -436,9 +464,27 @@ describe('Lucid dream rehearsal screen', () => {
     );
     fireEvent.click(screen.getByTestId('lucid-dream-rehearsal-primary'));
     expect(mockStart).not.toHaveBeenCalled();
+    expect(mockClearCurrent).not.toHaveBeenCalled();
     expect(mockReplace).toHaveBeenCalledWith(
-      `/lucid/dream-rehearsal?dreamId=${encodeURIComponent('1700000001000')}&signId=${encodeURIComponent('sign:stairs')}`
+      `/lucid/dream-rehearsal?dreamId=${encodeURIComponent(otherDreamId)}&signId=${encodeURIComponent('sign:stairs')}`
     );
+  });
+
+  it('clears an unavailable Journal rehearsal so a local scene can start', async () => {
+    mockRehearsal = {
+      ...mockRehearsal,
+      currentSession: {
+        ...started(),
+        dreamId: '101',
+        signId: 'sign:mirror',
+        status: 'interrupted',
+      },
+    };
+    render(<LucidDreamRehearsalScreen />);
+    await waitFor(() => expect(mockClearCurrent).toHaveBeenCalledTimes(1));
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(mockStart).not.toHaveBeenCalled();
+    expect(screen.queryByRole('button', { name: 'Ouvrir la répétition en cours' })).toBeNull();
   });
 
   it('surfaces a typed storage error without exposing raw reasons', () => {

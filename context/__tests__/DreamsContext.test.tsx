@@ -27,7 +27,7 @@ jest.mock('../../hooks/useDreamJournal', () => ({
   useDreamJournal: () => mockJournal,
 }));
 
-const { DreamsProvider, useDreams, useDreamsActions, useDreamsData } = require('../DreamsContext');
+const { DreamsProvider, useDreams, useDreamsActions, useDreamsData, useOptionalDreamsActions } = require('../DreamsContext');
 
 describe('DreamsContext', () => {
   beforeEach(() => {
@@ -76,5 +76,16 @@ describe('DreamsContext', () => {
     expect(() => renderHook(() => useDreamsData())).toThrow(
       'useDreamsData must be used within DreamsProvider'
     );
+  });
+
+  it('given missing provider__when using actions hook__then throws', () => {
+    expect(() => renderHook(() => useDreamsActions())).toThrow(
+      'useDreamsActions must be used within DreamsProvider'
+    );
+  });
+
+  it('given missing provider__when using optional actions hook__then returns null', () => {
+    const { result } = renderHook(() => useOptionalDreamsActions());
+    expect(result.current).toBeNull();
   });
 });

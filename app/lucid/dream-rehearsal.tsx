@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams, type Href } from 'expo-router';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import {
@@ -21,10 +21,12 @@ import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
 import { useSubscription } from '@/hooks/useSubscription';
 import {
   getActiveLucidDreamSigns,
+  type LucidActiveDreamSign,
 } from '@/lib/lucid/dreamSigns';
 import {
   getLucidDreamRehearsalProgress,
   selectLucidDreamRehearsalScene,
+  type LucidDreamRehearsalDream,
   type LucidDreamRehearsalScene,
   type LucidDreamRehearsalSession,
 } from '@/lib/lucid/dreamRehearsal';
@@ -282,6 +284,15 @@ function matchesScene(session: LucidDreamRehearsalSession, scene: LucidDreamRehe
   return session.dreamId === scene.dreamId && session.signId === scene.signId;
 }
 
+function isRehearsalSessionAvailable(
+  session: LucidDreamRehearsalSession,
+  dreams: readonly LucidDreamRehearsalDream[],
+  confirmedSigns: readonly LucidActiveDreamSign[]
+): boolean {
+  return selectLucidDreamRehearsalScene(dreams, confirmedSigns, session.dreamId, session.signId)
+    .status === 'ready';
+}
+
 function rehearsalStepKey(session: LucidDreamRehearsalSession): string {
   if (session.recognizedAt == null) return 'recognize';
   if (session.intentionConfirmedAt == null) return 'intend';
@@ -316,6 +327,7 @@ export default function LucidDreamRehearsalScreen() {
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState('');
   const busyLockRef = useRef(false);
+  const clearedUnavailableSessionIdRef = useRef<string | null>(null);
 
   const confirmedSigns = useMemo(() => {
     const candidates = dreamSignCandidates;
@@ -331,11 +343,39 @@ export default function LucidDreamRehearsalScreen() {
 
   const scene = selection.status === 'ready' ? selection.scene : null;
   const session = rehearsal.currentSession;
+  const sessionAvailable = Boolean(
+    session && isRehearsalSessionAvailable(session, dreams, confirmedSigns)
+  );
+  const blockingUnavailableSession = Boolean(
+    loaded &&
+      !rehearsal.isLoading &&
+      session &&
+      session.status !== 'completed' &&
+      !sessionAvailable
+  );
   const currentForScene = scene && session && matchesScene(session, scene) ? session : null;
   const conflictingSession =
-    scene && session && session.status !== 'completed' && !matchesScene(session, scene)
+    scene &&
+    session &&
+    session.status !== 'completed' &&
+    sessionAvailable &&
+    !matchesScene(session, scene)
       ? session
       : null;
+
+  const clearCurrent = rehearsal.clearCurrent;
+  const rehearsalMutating = rehearsal.isMutating;
+  useEffect(() => {
+    if (!blockingUnavailableSession || !session) return;
+    if (rehearsalMutating) return;
+    if (clearedUnavailableSessionIdRef.current === session.sessionId) return;
+    clearedUnavailableSessionIdRef.current = session.sessionId;
+    void clearCurrent().catch(() => {
+      if (clearedUnavailableSessionIdRef.current === session.sessionId) {
+        clearedUnavailableSessionIdRef.current = null;
+      }
+    });
+  }, [blockingUnavailableSession, clearCurrent, rehearsalMutating, session]);
   const progress = currentForScene ? getLucidDreamRehearsalProgress(currentForScene) : null;
   const progressStep = progress
     ? Math.min(progress.completedActionCount + 1, progress.totalActionCount)
@@ -381,6 +421,10 @@ export default function LucidDreamRehearsalScreen() {
 
   const primaryKey = loading
     ? null
+    : blockingUnavailableSession
+      ? rehearsal.error
+        ? 'retry'
+        : null
     : selection.status !== 'ready'
       ? rehearsal.error
         ? 'retry'
@@ -428,7 +472,9 @@ export default function LucidDreamRehearsalScreen() {
 
   const onPrimaryPress = () => {
     if (primaryKey === 'retry') {
-      void runAction('retry', () => rehearsal.refresh());
+      void runAction('retry', () =>
+        blockingUnavailableSession ? rehearsal.clearCurrent() : rehearsal.refresh()
+      );
       return;
     }
     if (primaryKey === 'open-current' && conflictingSession) {
