@@ -211,10 +211,12 @@ export default function JournalListScreen() {
 
   useLayoutEffect(() => {
     // The column-keyed FlashList remounts at offset 0 when this key changes.
-    // Keep the origin when only searchConsumesLayout flips so a later overlay
-    // drag continues from the retained list offset instead of jumping to the top.
+    // Desktop unmounts that list while mobileListKey stays mobile-cards-1col,
+    // so include the desktop switch. Keep the origin when only
+    // searchConsumesLayout flips so a later overlay drag continues from the
+    // retained list offset instead of jumping to the top.
     listScrollOffsetRef.current = 0;
-  }, [mobileListKey]);
+  }, [mobileListKey, isDesktopLayout]);
 
   const setScrolling = useCallback((next: boolean) => {
     if (isScrollingRef.current === next) return;

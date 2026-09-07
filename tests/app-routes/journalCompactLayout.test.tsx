@@ -711,6 +711,50 @@ describe('Journal compact large-text layout', () => {
     );
   });
 
+  it('resets overlay drag origin when returning from desktop', () => {
+    mockPlatform = 'web';
+    mockDreams.push(guestDream);
+    Object.assign(mockWindow, { width: 590, height: 320, fontScale: 2 });
+    const view = render(<JournalScreen />);
+
+    const searchHeaderHeight = mobileSearchHeaderHeight(2);
+    expect(mockListProps.numColumns).toBe(1);
+    expectReachableListViewport(590, 320, 2);
+
+    collapseSearchByOverlayGesture(searchHeaderHeight);
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
+      expect.objectContaining({ transform: [{ translateY: -searchHeaderHeight }] }),
+    );
+
+    Object.assign(mockWindow, { width: 1440, height: 900, fontScale: 2 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(4);
+    expect(mockListProps.ListHeaderComponent).toBeUndefined();
+
+    Object.assign(mockWindow, { width: 590, height: 320, fontScale: 2 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(1);
+    expectReachableListViewport(590, 320, 2);
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
+      expect.objectContaining({
+        position: 'absolute',
+        transform: [{ translateY: 0 }],
+      }),
+    );
+
+    const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
+    mockListScrollToOffset.mockClear();
+    act(() => {
+      dragFromSearchControls(9, input);
+    });
+    expect(mockListScrollToOffset).toHaveBeenCalled();
+    expect(mockListScrollToOffset.mock.calls.every(([args]: [{ offset: number }]) => args.offset <= 9)).toBe(true);
+    expect(mockListScrollToOffset).toHaveBeenLastCalledWith({ offset: 9, animated: false });
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
+      expect.objectContaining({ transform: [{ translateY: -9 }] }),
+    );
+  });
+
   it('preserves overlay drag origin when the keyed list does not remount', () => {
     mockDreams.push(guestDream);
     Object.assign(mockWindow, { width: 640, height: 800, fontScale: 2 });
