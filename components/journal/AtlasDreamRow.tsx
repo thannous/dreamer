@@ -1,3 +1,4 @@
+import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -44,6 +45,7 @@ export const AtlasDreamRow = memo(function AtlasDreamRow({
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
+  const media = useDreamMedia(dream);
   const { width } = useWindowDimensions();
   const isNarrow = width < 520;
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
@@ -51,8 +53,8 @@ export const AtlasDreamRow = memo(function AtlasDreamRow({
   const thumbnailUri = useMemo(
     () =>
       getDreamThumbnailUri({
-        thumbnailUrl: dream.thumbnailUrl,
-        imageUrl: dream.imageUrl,
+        thumbnailUrl: media.thumbnailUrl,
+        imageUrl: media.imageUrl,
         imageUpdatedAt: dream.imageUpdatedAt,
         analysisRequestId: dream.analysisRequestId,
         analyzedAt: dream.analyzedAt,
@@ -63,14 +65,14 @@ export const AtlasDreamRow = memo(function AtlasDreamRow({
       dream.analysisRequestId,
       dream.id,
       dream.imageUpdatedAt,
-      dream.imageUrl,
-      dream.thumbnailUrl,
+      media.imageUrl,
+      media.thumbnailUrl,
     ],
   );
   const fullImageUri = useMemo(() => {
-    const uri = dream.imageUrl?.trim() ?? '';
+    const uri = media.imageUrl?.trim() ?? '';
     return uri ? withCacheBuster(uri, imageVersion) : '';
-  }, [dream.imageUrl, imageVersion]);
+  }, [media.imageUrl, imageVersion]);
   const trimmedThumbnailUri = thumbnailUri.trim();
   const [useFullImage, setUseFullImage] = useState(() => {
     return Boolean(trimmedThumbnailUri && failedThumbnailUris.has(trimmedThumbnailUri));

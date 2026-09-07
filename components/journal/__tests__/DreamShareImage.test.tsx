@@ -6,6 +6,8 @@ import React from 'react';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import type { DreamAnalysis } from '@/lib/types';
 
+jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => ({ imageUrl: dream.imageUrl, thumbnailUrl: dream.thumbnailUrl, loading: false, error: false }) }));
+
 jest.mock('expo-image', () => ({
   Image: () => <img alt="Dream" />,
 }));

@@ -7,6 +7,9 @@ import { getBottomNavigationLayout } from '@/constants/layout';
 import { TID } from '@/lib/testIDs';
 import { searchBarLayout } from '@/components/ui/SearchBar';
 
+jest.mock('@/context/AuthContext', () => ({ AuthContext: require('react').createContext(null) }));
+jest.mock('@/services/dreamMediaService', () => ({ resolveDreamMedia: async (dream: any) => ({ imageUrl: dream.imageUrl ?? '', thumbnailUrl: dream.thumbnailUrl }) }));
+
 const mockWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
 const mockPush = jest.fn();
 type GuestDream = {

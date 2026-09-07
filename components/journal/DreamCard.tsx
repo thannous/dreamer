@@ -1,3 +1,4 @@
+import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { PressableScale } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
@@ -67,6 +68,7 @@ export const DreamCard = memo(function DreamCard({
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
+  const media = useDreamMedia(dream);
   const handlePress = useCallback(() => {
     onPress(dream.id);
   }, [onPress, dream.id]);
@@ -81,18 +83,18 @@ export const DreamCard = memo(function DreamCard({
   );
   const thumbnailUri = useMemo(() => (
     getDreamThumbnailUri({
-      thumbnailUrl: dream.thumbnailUrl,
-      imageUrl: dream.imageUrl,
+      thumbnailUrl: media.thumbnailUrl,
+      imageUrl: media.imageUrl,
       imageUpdatedAt: dream.imageUpdatedAt,
       analysisRequestId: dream.analysisRequestId,
       analyzedAt: dream.analyzedAt,
       id: dream.id,
     }) ?? ''
-  ), [dream.thumbnailUrl, dream.imageUrl, dream.imageUpdatedAt, dream.analysisRequestId, dream.analyzedAt, dream.id]);
+  ), [media.thumbnailUrl, media.imageUrl, dream.imageUpdatedAt, dream.analysisRequestId, dream.analyzedAt, dream.id]);
   const fullImageUri = useMemo(() => {
-    const uri = dream.imageUrl?.trim() ?? '';
+    const uri = media.imageUrl?.trim() ?? '';
     return uri ? withCacheBuster(uri, imageVersion) : '';
-  }, [dream.imageUrl, imageVersion]);
+  }, [media.imageUrl, imageVersion]);
   const trimmedThumbnailUri = thumbnailUri.trim();
 
   // OPTIMIZATION: Initialize state with known failed status to avoid double-render on mount
@@ -112,7 +114,7 @@ export const DreamCard = memo(function DreamCard({
   const imageUri = preferFullImage
     ? fullImageUri
     : (trimmedThumbnailUri || fullImageUri);
-  const hasImage = Boolean(imageUri);
+  const hasImage = Boolean(dream.imageUrl || dream.thumbnailUrl);
 
   const themeLabel = useMemo(() => getDreamThemeLabel(dream.theme, t) ?? dream.theme, [dream.theme, t]);
 
@@ -240,7 +242,7 @@ export const DreamCard = memo(function DreamCard({
       >
         <View className={`w-full overflow-hidden ${isFeatured ? 'h-[200px]' : 'h-[160px]'}`}>
           <Image
-            source={{ uri: imageUri }}
+            source={imageUri ? { uri: imageUri } : null}
             style={CARD_IMAGE_STYLE}
             contentFit={imageConfig.contentFit}
             transition={imageTransition}

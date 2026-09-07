@@ -19,6 +19,8 @@ import {
   getBottomNavigationLayout,
 } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
+import { AuthContext } from '@/context/AuthContext';
+import { resolveDreamMedia } from '@/services/dreamMediaService';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -35,7 +37,7 @@ import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
 import { router, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   Keyboard,
   Platform,
@@ -307,24 +309,33 @@ export default function JournalListScreen() {
     return true;
   }, []);
 
-  // Preload first items to warm expo-image cache (no setState during scroll)
-  useEffect(() => {
+  const mediaUserId = useContext(AuthContext)?.user?.id ?? null;
+  const mediaGeneration = useRef(0);
+  useLayoutEffect(() => {
+    mediaGeneration.current += 1;
     prefetchedImageUrisRef.current.clear();
-    const initial = filteredDreams.slice(0, JOURNAL_LIST.INITIAL_VISIBLE_COUNT + JOURNAL_LIST.PRELOAD_BUFFER);
-    initial.forEach((dream) => {
-      const thumbnailUri = getDreamThumbnailUri(dream);
-      if (!thumbnailUri) {
-        return;
+    return () => { mediaGeneration.current += 1; };
+  }, [mediaUserId, filteredDreams]);
+
+  const prefetchDreamMedia = useCallback(async (entries: DreamAnalysis[]) => {
+    const generation = mediaGeneration.current;
+    const resolved = await Promise.all(entries.slice(0, PREFETCH_MAX_PER_FLUSH).map(async (dream) => ({
+      ...dream,
+      ...await resolveDreamMedia(dream, mediaUserId),
+    })));
+    for (const dream of resolved) {
+      if (generation !== mediaGeneration.current) return;
+      const uri = getDreamThumbnailUri(dream);
+      if (uri && isLikelyOptimizedThumbnailUri(uri) && rememberPrefetchedUri(uri)) {
+        await preloadImage(uri);
       }
-      if (!isLikelyOptimizedThumbnailUri(thumbnailUri)) {
-        return;
-      }
-      if (!rememberPrefetchedUri(thumbnailUri)) {
-        return;
-      }
-      void preloadImage(thumbnailUri);
-    });
-  }, [filteredDreams, rememberPrefetchedUri]);
+    }
+  }, [mediaUserId, rememberPrefetchedUri]);
+
+  // Only warm a bounded window. Text rendering never waits for signatures.
+  useEffect(() => {
+    void prefetchDreamMedia(filteredDreams.slice(0, PREFETCH_MAX_PER_FLUSH));
+  }, [filteredDreams, prefetchDreamMedia]);
 
   // Scroll to top when filters change
   useEffect(() => {
@@ -422,21 +433,8 @@ export default function JournalListScreen() {
 
     const start = Math.max(0, range.min - JOURNAL_LIST.PRELOAD_BUFFER);
     const end = Math.min(currentFilteredDreams.length - 1, range.max + JOURNAL_LIST.PRELOAD_BUFFER);
-    const urisToPrefetch: string[] = [];
-
-    for (let idx = start; idx <= end && urisToPrefetch.length < PREFETCH_MAX_PER_FLUSH; idx++) {
-      const dream = currentFilteredDreams[idx];
-      const thumbnailUri = getDreamThumbnailUri(dream);
-      if (!thumbnailUri) continue;
-      if (!isLikelyOptimizedThumbnailUri(thumbnailUri)) continue;
-      if (!rememberPrefetchedUri(thumbnailUri)) continue;
-      urisToPrefetch.push(thumbnailUri);
-    }
-
-    for (const uri of urisToPrefetch) {
-      await preloadImage(uri);
-    }
-  }, [rememberPrefetchedUri]);
+    await prefetchDreamMedia(currentFilteredDreams.slice(start, end + 1));
+  }, [prefetchDreamMedia]);
 
   const onViewableItemsChanged = useRef(({ viewableItems }: ViewabilityInfo) => {
     let min = Number.POSITIVE_INFINITY;

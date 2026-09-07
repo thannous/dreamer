@@ -6,7 +6,10 @@ import { afterEach, describe, expect, it, jest } from '@jest/globals';
 import { getDreamImageVersion, withCacheBuster } from '@/lib/imageUtils';
 import type { DreamAnalysis } from '@/lib/types';
 
+let mockMediaPending = false;
 const mockIsMockModeEnabled = jest.fn(() => false);
+
+jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => ({ imageUrl: mockMediaPending ? undefined : dream.imageUrl, thumbnailUrl: mockMediaPending ? undefined : dream.thumbnailUrl, loading: mockMediaPending, error: false }) }));
 
 jest.mock('@/lib/env', () => ({
   isMockModeEnabled: () => mockIsMockModeEnabled(),
@@ -221,4 +224,21 @@ describe('DreamCard image fallback', () => {
 
     expect(screen.queryByText('journal.badge.sync_pending')).toBeNull();
   });
+});
+
+
+it('keeps its image frame, title and navigation available while signing is pending', () => {
+  const { DreamCard } = require('../DreamCard');
+  mockMediaPending = true;
+  const onPress = jest.fn();
+  const dream = { id: 73, title: 'Readable immediately', transcript: 'Saved text', imageUrl: 'supabase-storage://dream-images/A/image', chatHistory: [] } as unknown as DreamAnalysis;
+  const { rerender } = render(<DreamCard dream={dream} onPress={onPress} testID="pending-card" />);
+  const frame = screen.getByTestId('dream-image').parentElement;
+  expect(screen.getByText('Readable immediately')).toBeTruthy();
+  expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBeNull();
+  fireEvent.click(screen.getByTestId('pending-card'));
+  expect(onPress).toHaveBeenCalledWith(73);
+  mockMediaPending = false;
+  rerender(<DreamCard dream={{ ...dream, imageUrl: 'https://signed/image' }} onPress={onPress} testID="pending-card" />);
+  expect(screen.getByTestId('dream-image').parentElement).toBe(frame);
 });

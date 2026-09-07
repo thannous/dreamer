@@ -13,6 +13,7 @@ import type { SubscriptionTier } from '@/lib/types';
 import { isLucidTrainer } from '@/lib/appVariant';
 import { clearRemoteDreamStorage } from '@/services/storageService';
 import { supabase } from '@/lib/supabase';
+import { setDreamMediaScope } from '@/services/dreamMediaService';
 
 export type AuthContextValue = {
   user: User | null;
@@ -132,6 +133,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
                 tier: mockUser?.app_metadata?.tier ?? mockUser?.user_metadata?.tier,
               });
             }
+            setDreamMediaScope(mockUser?.id ?? null);
             setUser(mockUser);
             setSessionReady(Boolean(mockUser));
             previousUserIdRef.current = mockUser?.id ?? null;
@@ -154,6 +156,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
               tier: sessionUser?.app_metadata?.tier ?? sessionUser?.user_metadata?.tier,
             });
           }
+          setDreamMediaScope(sessionUser?.id ?? null);
           setUser(sessionUser);
           setSessionReady(Boolean(data.session?.access_token));
           previousUserIdRef.current = sessionUser?.id ?? null;
@@ -195,6 +198,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
           tier: nextUser?.app_metadata?.tier ?? nextUser?.user_metadata?.tier,
         });
       }
+      setDreamMediaScope(nextUser?.id ?? null);
       const previousUserId = previousUserIdRef.current;
       const nextUserId = nextUser?.id ?? null;
       if (!isLucidTrainer && previousUserId !== nextUserId) {
@@ -225,6 +229,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
 
     return () => {
       mounted = false;
+      setDreamMediaScope(null);
       unsubscribe();
     };
   }, []);

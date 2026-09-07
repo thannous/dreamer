@@ -106,6 +106,23 @@ describe('geminiServiceReal', () => {
     global.fetch = originalFetch;
   });
 
+  it.each(['prompt', 'transcript', 'job'])('keeps stable image cleanup compatible before media resolution: %s', async (mode: string) => {
+    const previousOrigin = process.env.EXPO_PUBLIC_SUPABASE_URL;
+    process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://storage.example.com';
+    (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(mockFetchResponse({ imageUrl: 'https://new.example/image', jobId: 'job', status: 'queued' }));
+    try {
+      const reference = 'supabase-storage://dream-images/user-1/old%20image.webp';
+      if (mode === 'prompt') await generateImageForDream('new', reference);
+      else if (mode === 'transcript') await generateImageFromTranscript('story', reference);
+      else await submitImageGenerationJob({ clientRequestId: 'request', previousImageUrl: reference });
+      const options = (global.fetch as ReturnType<typeof jest.fn>).mock.calls[0][1] as { body: string };
+      expect(JSON.parse(options.body).previousImageUrl).toBe('https://storage.example.com/storage/v1/object/authenticated/dream-images/user-1/old%20image.webp');
+    } finally {
+      if (previousOrigin === undefined) delete process.env.EXPO_PUBLIC_SUPABASE_URL;
+      else process.env.EXPO_PUBLIC_SUPABASE_URL = previousOrigin;
+    }
+  });
+
   describe('analyzeDream', () => {
     it('sends POST request to /analyzeDream with transcript and lang', async () => {
       const mockResult = buildAnalysisResult();

@@ -1,3 +1,4 @@
+import { invalidateDreamMedia } from './dreamMediaService';
 import type { PostgrestError } from '@supabase/supabase-js';
 
 import {
@@ -29,7 +30,6 @@ import type {
 const DREAMS_TABLE = 'dreams';
 const DREAM_IMAGE_BUCKET = 'dream-images';
 const DREAM_IMAGE_STORAGE_REF_PREFIX = `supabase-storage://${DREAM_IMAGE_BUCKET}/`;
-const DREAM_IMAGE_SIGNED_URL_TTL_SECONDS = 60 * 60 * 24;
 
 const isRemoteImageUrl = (url?: string | null): boolean =>
   Boolean(url && /^https?:\/\//.test(url));
@@ -284,9 +284,9 @@ const deleteFromBucketIfPossible = async (url?: string | null, ownerId?: string)
   if (ownerId && !path.startsWith(`${ownerId}/`)) return;
   try {
     await supabase.storage.from(DREAM_IMAGE_BUCKET).remove([path]);
-    if (__DEV__) console.log('[supabaseDreamService] deleted old image', path);
-  } catch (err) {
-    console.warn('[supabaseDreamService] failed to delete old image', path, err);
+    invalidateDreamMedia(url);
+  } catch {
+    console.warn('[supabaseDreamService] failed to delete old image');
   }
 };
 
@@ -295,47 +295,6 @@ const toStoredImageReference = (value?: string | null): string => {
   const path = extractStoragePathFromUrl(value);
   if (path) return buildStorageRef(path);
   return value;
-};
-
-const createSignedImageUrl = async (path: string): Promise<string> => {
-  const { data, error } = await supabase
-    .storage
-    .from(DREAM_IMAGE_BUCKET)
-    .createSignedUrl(path, DREAM_IMAGE_SIGNED_URL_TTL_SECONDS);
-
-  if (error || !data?.signedUrl) {
-    throw new Error(error?.message ?? 'Failed to create signed image URL');
-  }
-
-  return data.signedUrl;
-};
-
-const resolveDreamImageUrl = async (value?: string | null): Promise<string> => {
-  if (!value) return '';
-  const path = extractStoragePathFromUrl(value);
-  if (!path) return value;
-
-  try {
-    return await createSignedImageUrl(path);
-  } catch (error) {
-    if (__DEV__) {
-      console.warn('[supabaseDreamService] failed to sign private dream image URL', error);
-    }
-    return '';
-  }
-};
-
-const hydrateDreamImageUrls = async (dream: DreamAnalysis): Promise<DreamAnalysis> => {
-  const [imageUrl, thumbnailUrl] = await Promise.all([
-    resolveDreamImageUrl(dream.imageUrl),
-    dream.thumbnailUrl ? resolveDreamImageUrl(dream.thumbnailUrl) : Promise.resolve(''),
-  ]);
-  return {
-    ...dream,
-    imageUrl,
-    thumbnailUrl: thumbnailUrl || imageUrl || undefined,
-    imageGenerationFailed: imageUrl ? false : dream.imageGenerationFailed,
-  };
 };
 
 const deriveStoragePath = (params: {
@@ -387,7 +346,9 @@ const uploadImageToBucket = async (
     throw new Error(error?.message ?? 'Failed to upload image');
   }
 
-  return buildStorageRef(uploadData.path);
+  const reference = buildStorageRef(uploadData.path);
+  invalidateDreamMedia(reference);
+  return reference;
 };
 
 async function ensureRemoteImage(dream: DreamAnalysis, userId?: string): Promise<DreamAnalysis> {
@@ -1089,7 +1050,7 @@ const parseSyncResult = async (data: unknown): Promise<SyncMutationResult[]> => 
     data.map(async (entry) => {
       const row = entry as Record<string, unknown>;
       const dreamPayload = row.dream as SupabaseDreamRow | undefined;
-      const dream = dreamPayload ? await hydrateDreamImageUrls(mapRowToDream(dreamPayload)) : undefined;
+      const dream = dreamPayload ? mapRowToDream(dreamPayload) : undefined;
       return {
         mutationId: String(row.mutation_id ?? ''),
         clientRequestId: String(row.client_request_id ?? ''),
@@ -1153,7 +1114,7 @@ const syncDreamMutationsDirectly = async (
         throw formatError(error, 'Failed to create dream in Supabase');
       }
 
-      const dream = await hydrateDreamImageUrls(mapRowToDream(data));
+      const dream = mapRowToDream(data);
       results.push({
         mutationId: mutation.id,
         clientRequestId: mutation.clientRequestId,
@@ -1210,7 +1171,7 @@ const syncDreamMutationsDirectly = async (
         throw formatError(error, 'Failed to update dream in Supabase');
       }
 
-      const dream = await hydrateDreamImageUrls(mapRowToDream(data));
+      const dream = mapRowToDream(data);
       results.push({
         mutationId: mutation.id,
         clientRequestId: mutation.clientRequestId,
@@ -1400,7 +1361,8 @@ export async function fetchDreamsFromSupabase(expectedUserId?: string): Promise<
     throw formatError(error, 'Failed to load dreams from Supabase');
   }
 
-  return Promise.all((data ?? []).map((row) => hydrateDreamImageUrls(mapRowToDream(row))));
+  // Media references are resolved by visible consumers, never on the data path.
+  return (data ?? []).map(mapRowToDream);
 }
 
 export async function fetchDreamFromSupabase(remoteId: number): Promise<DreamAnalysis> {
@@ -1421,7 +1383,7 @@ export async function fetchDreamFromSupabase(remoteId: number): Promise<DreamAna
     throw new Error('Failed to load dream from Supabase: Dream not found');
   }
 
-  return hydrateDreamImageUrls(mapRowToDream(data));
+  return mapRowToDream(data);
 }
 
 export async function createDreamInSupabase(dream: DreamAnalysis, userId: string): Promise<DreamAnalysis> {

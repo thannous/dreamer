@@ -1,3 +1,4 @@
+import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { ReminderOptInCard } from '@/components/reminders/ReminderOptInCard';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
@@ -327,6 +328,7 @@ export default function JournalDetailScreen() {
     () => (dream && !isMockMode ? getDreamSyncState(dream) : 'clean'),
     [dream]
   );
+  const media = useDreamMedia(dream);
   const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
   const dreamTypeLabel = useMemo(
     () => (dream ? getDreamTypeLabel(dream.dreamType, t) ?? dream.dreamType : undefined),
@@ -740,7 +742,7 @@ export default function JournalDetailScreen() {
   );
   const shareImage = useMemo<ShareImageData | undefined>(() => {
     if (!dream) return undefined;
-    const source = dream.imageUrl || dream.thumbnailUrl;
+    const source = media.imageUrl || media.thumbnailUrl;
     if (!source) return undefined;
     const extension = getFileExtensionFromUrl(source);
     return {
@@ -748,7 +750,7 @@ export default function JournalDetailScreen() {
       extension,
       mimeType: getMimeTypeFromExtension(extension),
     };
-  }, [dream]);
+  }, [dream, media.imageUrl, media.thumbnailUrl]);
   const clipboardSupported = Platform.OS === 'web' && Boolean(getShareNavigator()?.clipboard?.writeText);
 
   const startMetadataEditing = useCallback(() => {
@@ -929,8 +931,8 @@ export default function JournalDetailScreen() {
   }, [dream?.imageUrl, imageVersion]);
   const displayImageUrl = useMemo(() => {
     if (!dream?.imageUrl) return undefined;
-    return withCacheBuster(dream.imageUrl, imageVersion);
-  }, [dream?.imageUrl, imageVersion]);
+    return media.imageUrl ? withCacheBuster(media.imageUrl, imageVersion) : undefined;
+  }, [dream?.imageUrl, media.imageUrl, imageVersion]);
 
 
   // Define callbacks before early return (hooks must be called unconditionally)
@@ -1903,7 +1905,7 @@ export default function JournalDetailScreen() {
           >
             <Image
               key={displayImageUrl ?? dream.imageUrl}
-              source={{ uri: displayImageUrl ?? dream.imageUrl, cacheKey: imageCacheKey }}
+              source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
               style={{ width: '100%', height: '100%' }}
               contentFit="cover"
               transition={imageConfig.transition}
@@ -2380,7 +2382,7 @@ export default function JournalDetailScreen() {
             <View className="flex-1 items-center justify-center px-4">
               {dream.imageUrl ? (
                 <Image
-                  source={{ uri: displayImageUrl ?? dream.imageUrl, cacheKey: imageCacheKey }}
+                  source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
                   style={{ width: '100%', height: '80%' }}
                   contentFit="contain"
                 />

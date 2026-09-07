@@ -7,6 +7,7 @@
 // - POST /tts { text } -> { audioBase64: string }
 
 import { fetch as streamingFetch } from 'expo/fetch';
+import Constants from 'expo-constants';
 
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSONWithSession, getSessionAuthHeaders } from '@/lib/apiSession';
@@ -25,6 +26,21 @@ import type {
   DreamType,
   ReferenceImageGenerationRequest,
 } from '@/lib/types';
+
+// The deployed cleanup contract accepts Storage object URLs. Convert stable
+// references without signing or waiting for the illustration to load.
+const cleanupImageUrl = (value?: string): string | undefined => {
+  if (!value?.startsWith('supabase-storage:')) return value;
+  const prefix = 'supabase-storage://dream-images/';
+  if (!value.startsWith(prefix)) return undefined;
+  try {
+    const path = decodeURIComponent(value.slice(prefix.length));
+    const parts = path.split('/');
+    if (parts.length < 2 || parts.some(part => !part || part === '.' || part === '..') || /[\\\u0000-\u001f]/.test(path)) return undefined;
+    const origin = new URL(process.env.EXPO_PUBLIC_SUPABASE_URL || Constants.expoConfig?.extra?.supabaseUrl).origin;
+    return `${origin}/storage/v1/object/authenticated/dream-images/${parts.map(encodeURIComponent).join('/')}`;
+  } catch { return undefined; }
+};
 
 export type AnalysisResult = {
   title: string;
@@ -230,7 +246,7 @@ export async function generateImageForDream(prompt: string, previousImageUrl?: s
   try {
     const res = await fetchWithSessionHeaders<{ imageUrl?: string; imageBytes?: string }>('/generateImage', {
       method: 'POST',
-      body: { prompt, previousImageUrl },
+      body: { prompt, previousImageUrl: cleanupImageUrl(previousImageUrl) },
       ...NETWORK_REQUEST_POLICIES.generateImage,
     });
     if (res.imageUrl) return res.imageUrl;
@@ -262,7 +278,7 @@ export async function submitImageGenerationJob(
 ): Promise<ImageJobCommandResponse> {
   return fetchWithSessionHeaders<ImageJobCommandResponse>('/image-jobs', {
     method: 'POST',
-    body: request,
+    body: { ...request, previousImageUrl: cleanupImageUrl(request.previousImageUrl) },
     ...NETWORK_REQUEST_POLICIES.imageJobCommand,
   });
 }
@@ -302,7 +318,7 @@ export async function generateImageFromTranscript(transcript: string, previousIm
       {
         method: 'POST',
         // Let the backend generate a short image prompt from the transcript.
-        body: { transcript, previousImageUrl },
+        body: { transcript, previousImageUrl: cleanupImageUrl(previousImageUrl) },
         ...NETWORK_REQUEST_POLICIES.generateImage,
       }
     );

@@ -6,6 +6,8 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 import type { DreamAnalysis } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
 
+jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => ({ imageUrl: dream?.imageUrl ?? '', thumbnailUrl: dream?.thumbnailUrl, loading: false, error: false }) }));
+
 const mockSetParams = jest.fn();
 let mockSearchParams: { id: string; saved?: string | string[] } = { id: '42', saved: '1' };
 let mockDreams: DreamAnalysis[] = [];

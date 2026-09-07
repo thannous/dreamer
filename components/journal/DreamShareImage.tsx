@@ -1,3 +1,4 @@
+import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { DarkTheme } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -22,12 +23,13 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
   { dream, t },
   ref
 ) {
-  const [imageError, setImageError] = useState(false);
+  const media = useDreamMedia(dream);
+  const [failedImage, setFailedImage] = useState<string>();
   const noctalia = getNoctaliaDesignTokens(DarkTheme, 'dark');
 
   // Use imageUrl first, fallback to thumbnailUrl
-  const imageSource = dream.imageUrl || dream.thumbnailUrl;
-  const hasImage = !!imageSource && !imageError;
+  const imageSource = media.imageUrl || media.thumbnailUrl;
+  const hasImage = !!imageSource && failedImage !== imageSource;
 
   const dreamTypeLabel = getDreamTypeLabel(dream.dreamType, t);
   const themeLabel = getDreamThemeLabel(dream.theme, t);
@@ -46,7 +48,7 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
           source={{ uri: imageSource }}
           style={styles.backgroundImage}
           contentFit="cover"
-          onError={() => setImageError(true)}
+          onError={() => setFailedImage(imageSource)}
         />
       ) : (
         <View style={[styles.fallbackBackground, { backgroundColor: noctalia.screen.background }]} />
