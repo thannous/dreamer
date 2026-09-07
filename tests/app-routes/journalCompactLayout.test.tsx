@@ -58,12 +58,14 @@ jest.mock('react-native', () => {
         return { remove: () => mockKeyboardListeners.delete(event) };
       },
     },
-    View: function MockView({ children, testID, onPress, accessibilityLabel, style }: any) {
+    View: function MockView({ children, testID, onPress, accessibilityLabel, style, pointerEvents }: any) {
       return React.createElement('div', {
         'data-testid': testID,
         'aria-label': accessibilityLabel,
         onClick: onPress,
         'data-style': JSON.stringify(style ?? {}),
+        'data-pointer-events': pointerEvents,
+        style: pointerEvents ? { pointerEvents } : undefined,
       }, children);
     },
     Text: element('span'), Pressable: element('button'),
@@ -125,7 +127,16 @@ jest.mock('@shopify/flash-list', () => {
     mockListProps = props;
     React.useImperativeHandle(ref, () => ({ scrollToOffset: () => {} }));
     const Empty = props.ListEmptyComponent;
-    return <div data-testid={props.testID} data-native-style={JSON.stringify(props.style ?? {})}>
+    return <div
+      data-testid={props.testID}
+      data-native-style={JSON.stringify(props.style ?? {})}
+      style={{ overflow: 'auto' }}
+      onScroll={(event: React.UIEvent<HTMLDivElement>) => {
+        props.onScroll?.({
+          nativeEvent: { contentOffset: { y: event.currentTarget.scrollTop } },
+        });
+      }}
+    >
       {props.ListHeaderComponent}
       {props.data.length === 0
         ? (typeof Empty === 'function' ? <Empty /> : Empty)
@@ -180,16 +191,46 @@ function expectReachableListViewport(width: number, height: number, fontScale: n
   expect(listStyle.flex).toBe(1);
   expect(listViewport).toBeGreaterThanOrEqual(120);
 
-  const chrome = JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}') as {
+  const chromeNode = screen.getByTestId('journal-search-chrome');
+  const chrome = JSON.parse(chromeNode.getAttribute('data-style') || '{}') as {
     position?: string;
   };
   if (searchInFlow) {
     expect(chrome.position).toBeUndefined();
+    expect(chromeNode.getAttribute('data-pointer-events')).toBe('auto');
     expect(screen.queryByTestId('journal-search-scroll-slot')).toBeNull();
   } else {
     expect(chrome.position).toBe('absolute');
+    expect(chromeNode.getAttribute('data-pointer-events')).toBe('none');
+    expect(chromeNode.style.pointerEvents).toBe('none');
     expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-search-scroll-slot'))).toBe(true);
   }
+}
+
+function collapseSearchByOverlayGesture(offset: number) {
+  const chrome = screen.getByTestId('journal-search-chrome');
+  const list = screen.getByTestId(TID.List.Dreams);
+  const input = screen.getByTestId(TID.Input.SearchDreams);
+  const overlayPointerEvents = chrome.getAttribute('data-pointer-events');
+
+  expect(chrome.contains(input)).toBe(true);
+  expect(list.contains(chrome)).toBe(false);
+  expect(overlayPointerEvents).toBe('none');
+  expect(chrome.style.pointerEvents).toBe('none');
+
+  // RN pointerEvents none skips the chrome and its TextInput, so the drag
+  // lands on the sibling FlashList rather than the overlay.
+  const gestureTarget = overlayPointerEvents === 'none' ? list : chrome;
+  expect(gestureTarget).toBe(list);
+
+  act(() => {
+    Object.defineProperty(gestureTarget, 'scrollTop', {
+      configurable: true,
+      writable: true,
+      value: offset,
+    });
+    fireEvent.scroll(gestureTarget);
+  });
 }
 
 afterEach(() => {
@@ -346,15 +387,42 @@ describe('Journal compact large-text layout', () => {
     expect(list.contains(dreamCard)).toBe(true);
     expect(list.contains(screen.getByTestId('journal-search-scroll-slot'))).toBe(true);
 
-    act(() => {
-      mockListProps.onScroll({ nativeEvent: { contentOffset: { y: searchHeaderHeight } } });
-    });
+    collapseSearchByOverlayGesture(searchHeaderHeight);
     const chrome = JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}') as {
       transform?: { translateY: number }[];
     };
     expect(chrome.transform).toEqual([{ translateY: -searchHeaderHeight }]);
     expect(list.contains(screen.getByTestId(TID.List.DreamItem(guestDream.id)))).toBe(true);
     expectReachableListViewport(640, 320, 2);
+  });
+
+  it('resets collapsed search when the overlay layout key changes', () => {
+    mockDreams.push(guestDream);
+    Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
+    const view = render(<JournalScreen />);
+
+    const searchHeaderHeight = mobileSearchHeaderHeight(2);
+    expectReachableListViewport(640, 320, 2);
+
+    collapseSearchByOverlayGesture(searchHeaderHeight);
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
+      expect.objectContaining({ transform: [{ translateY: -searchHeaderHeight }] }),
+    );
+
+    Object.assign(mockWindow, { width: 320, height: 640, fontScale: 2 });
+    view.rerender(<JournalScreen />);
+    expectReachableListViewport(320, 640, 2);
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}').position).toBeUndefined();
+
+    Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
+    view.rerender(<JournalScreen />);
+    expectReachableListViewport(640, 320, 2);
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
+      expect.objectContaining({
+        position: 'absolute',
+        transform: [{ translateY: 0 }],
+      }),
+    );
   });
 
   it('preserves the fixed desktop header and grid', () => {

@@ -121,6 +121,11 @@ export default function JournalListScreen() {
     || viewportAboveNav - mobileSearchHeaderHeight >= MIN_MOBILE_JOURNAL_LIST_VIEWPORT;
   const searchLayoutKey = `${searchConsumesLayout ? 'flow' : 'overlay'}:${isTabletLayout ? 'tablet' : 'mobile'}`;
   const [searchCollapse, setSearchCollapse] = useState({ key: searchLayoutKey, offset: 0 });
+  if (searchCollapse.key !== searchLayoutKey) {
+    // Comparing keys only hid a stale offset. Reinitialize so a rotation back
+    // to overlay:tablet cannot reuse the previous layout's collapse.
+    setSearchCollapse({ key: searchLayoutKey, offset: 0 });
+  }
   const searchCollapseOffset = searchCollapse.key === searchLayoutKey ? searchCollapse.offset : 0;
 
   useEffect(() => {
@@ -819,6 +824,10 @@ export default function JournalListScreen() {
           <View
             testID="journal-search-chrome"
             className="px-4 pb-2"
+            // Overlay chrome is taller than the uncovered list box on short
+            // landscape. pointerEvents none lets FlashList receive the drag so
+            // the bar can collapse and reveal dream cards.
+            pointerEvents={searchConsumesLayout ? 'auto' : 'none'}
             style={{
               paddingTop: insets.top + ThemeLayout.spacing.sm,
               ...(searchConsumesLayout
