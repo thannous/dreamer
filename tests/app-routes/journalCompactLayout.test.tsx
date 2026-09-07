@@ -2,7 +2,10 @@
 import React from 'react';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
+import { ThemeLayout } from '@/constants/journalTheme';
+import { getBottomNavigationLayout } from '@/constants/layout';
 import { TID } from '@/lib/testIDs';
+import { searchBarLayout } from '@/components/ui/SearchBar';
 
 const mockWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
 const mockPush = jest.fn();
@@ -89,9 +92,21 @@ jest.mock('@/components/journal/AdvancedFilterSheet', () => ({
 }));
 jest.mock('@/components/ui/SearchBar', () => {
   const React = require('react');
-  return { SearchBar: React.forwardRef(function MockSearchBar({ testID, inputTestID, value, onChangeText }: any, ref: any) { return (
-    <div data-testid={testID}><input ref={ref} data-testid={inputTestID} value={value} onChange={(event) => onChangeText(event.target.value)} /></div>
-  ); }) };
+  const { searchBarLayout: actualSearchBarLayout } = jest.requireActual('@/components/ui/SearchBar') as {
+    searchBarLayout: (fontScale: number) => { minHeight: number };
+  };
+  const { useWindowDimensions } = require('react-native') as { useWindowDimensions: () => { fontScale: number } };
+  return {
+    searchBarLayout: actualSearchBarLayout,
+    SearchBar: React.forwardRef(function MockSearchBar({ testID, inputTestID, value, onChangeText }: any, ref: any) {
+      const { minHeight } = actualSearchBarLayout(useWindowDimensions().fontScale);
+      return (
+        <div data-testid={testID} data-min-height={minHeight} style={{ minHeight }}>
+          <input ref={ref} data-testid={inputTestID} value={value} onChange={(event) => onChangeText(event.target.value)} />
+        </div>
+      );
+    }),
+  };
 });
 jest.mock('@/components/journal/FilterBar', () => ({ FilterBar: ({ items }: any) => (
   <div data-testid="journal-filters">{items.map((item: any) => <button key={item.id} data-testid={`filter-${item.id}`} aria-pressed={item.active} onClick={item.onPress}>{item.id}</button>)}</div>
@@ -116,6 +131,39 @@ jest.mock('@shopify/flash-list', () => {
 });
 
 const { default: JournalScreen } = require('@/app/(tabs)/journal');
+
+const MOCK_INSETS = { top: 24, bottom: 24 };
+
+function flattenStyle(style: unknown): Record<string, number> {
+  if (!style) return {};
+  if (Array.isArray(style)) {
+    return style.reduce<Record<string, number>>((acc, item) => ({ ...acc, ...flattenStyle(item) }), {});
+  }
+  return { ...(style as Record<string, number>) };
+}
+
+function mobileSearchHeaderHeight(fontScale: number) {
+  return MOCK_INSETS.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
+}
+
+function expectReachableListViewport(width: number, height: number, fontScale: number, keyboardVisible = false) {
+  const searchMinHeight = searchBarLayout(fontScale).minHeight;
+  const searchHeaderHeight = mobileSearchHeaderHeight(fontScale);
+  const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
+  const navigationClearance = navigationLayout.barHeight + Math.max(
+    MOCK_INSETS.bottom,
+    navigationLayout.minimumBottomInset,
+  );
+  const listStyle = flattenStyle(mockListProps.style);
+  const contentStyle = flattenStyle(mockListProps.contentContainerStyle);
+  const marginBottom = listStyle.marginBottom ?? 0;
+  const extraNavPadding = (contentStyle.paddingBottom ?? 0) - ThemeLayout.spacing.lg;
+  const listViewport = height - searchHeaderHeight - marginBottom;
+
+  expect(Number(screen.getByTestId(TID.Component.SearchBar).getAttribute('data-min-height'))).toBe(searchMinHeight);
+  expect(listViewport).toBeGreaterThanOrEqual(120);
+  expect(marginBottom + extraNavPadding).toBe(keyboardVisible ? 0 : navigationClearance);
+}
 
 afterEach(() => {
   cleanup();
@@ -142,7 +190,7 @@ describe('Journal compact large-text layout', () => {
       expect(mockListProps.keyboardShouldPersistTaps).toBe('handled');
       expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
       expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
-      expect(height - mockListProps.style.marginBottom).toBeGreaterThanOrEqual(120);
+      expectReachableListViewport(width, height, scale);
       expect(mockListProps.contentInsetAdjustmentBehavior).toBe('never');
       expect(typeof mockListProps.renderItem).toBe('function');
       expect(typeof mockListProps.keyExtractor).toBe('function');
@@ -190,6 +238,7 @@ describe('Journal compact large-text layout', () => {
     expect(list.contains(screen.getByTestId('journal-header'))).toBe(true);
     expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
     expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
+    expectReachableListViewport(437, 949, fontScale);
     expect(navigationClearance).toBeGreaterThan(0);
     input.focus();
     fireEvent.change(input, { target: { value: 'blue room' } });
@@ -201,6 +250,7 @@ describe('Journal compact large-text layout', () => {
     expect(document.activeElement).toBe(input);
     expect(input.value).toBe('blue room');
     expect(mockListProps.style.marginBottom).toBe(0);
+    expectReachableListViewport(437, 490, fontScale, true);
     expect(mockListProps.keyboardShouldPersistTaps).toBe('handled');
     expect(mockListProps.keyboardDismissMode).toBe('on-drag');
 
@@ -209,6 +259,7 @@ describe('Journal compact large-text layout', () => {
     view.rerender(<JournalScreen />);
     expect(screen.getByTestId(TID.Input.SearchDreams)).toBe(input);
     expect(mockListProps.style.marginBottom).toBe(navigationClearance);
+    expectReachableListViewport(437, 949, fontScale);
     view.unmount();
     expect(mockKeyboardListeners.size).toBe(0);
   });
@@ -227,7 +278,8 @@ describe('Journal compact large-text layout', () => {
     expect(list.contains(dreamCard)).toBe(true);
     expect(screen.queryByTestId('journal-empty')).toBeNull();
     expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
-    expect(height - mockListProps.style.marginBottom).toBeGreaterThanOrEqual(120);
+    expect(searchBarLayout(2).minHeight).toBe(112);
+    expectReachableListViewport(width, height, 2);
 
     input.focus();
     fireEvent.change(input, { target: { value: 'blue room' } });
@@ -240,6 +292,27 @@ describe('Journal compact large-text layout', () => {
     expect(screen.getByTestId(TID.List.Dreams).contains(inputAfterRotation)).toBe(false);
     expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-upsell'))).toBe(true);
     expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId(TID.List.DreamItem(guestDream.id)))).toBe(true);
+    expectReachableListViewport(height, width, 2);
+  });
+
+  it('keeps dream cards reachable under the production SearchBar at 640 by 320 dp and fontScale 2', () => {
+    mockDreams.push(guestDream);
+    Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
+    render(<JournalScreen />);
+
+    const searchMinHeight = searchBarLayout(2).minHeight;
+    const searchHeaderHeight = mobileSearchHeaderHeight(2);
+    const list = screen.getByTestId(TID.List.Dreams);
+    const dreamCard = screen.getByTestId(TID.List.DreamItem(guestDream.id));
+    const listViewport = 320 - searchHeaderHeight - (mockListProps.style.marginBottom ?? 0);
+
+    expect(searchMinHeight).toBe(112);
+    expect(searchHeaderHeight).toBe(152);
+    expect(Number(screen.getByTestId(TID.Component.SearchBar).getAttribute('data-min-height'))).toBe(112);
+    expect(list.contains(screen.getByTestId(TID.Input.SearchDreams))).toBe(false);
+    expect(list.contains(dreamCard)).toBe(true);
+    expect(listViewport).toBeGreaterThanOrEqual(120);
+    expectReachableListViewport(640, 320, 2);
   });
 
   it('preserves the fixed desktop header and grid', () => {

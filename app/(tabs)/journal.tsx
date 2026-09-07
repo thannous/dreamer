@@ -8,7 +8,7 @@ import { EmptyState } from '@/components/journal/EmptyState';
 import { JournalPersistenceNotice } from '@/components/journal/JournalPersistenceNotice';
 import { FilterBar } from '@/components/journal/FilterBar';
 import { PressableScale } from '@/components/motion';
-import { SearchBar } from '@/components/ui/SearchBar';
+import { SearchBar, searchBarLayout } from '@/components/ui/SearchBar';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -50,6 +50,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
 const PREFETCH_MAX_PER_FLUSH = 8;
+const MIN_MOBILE_JOURNAL_LIST_VIEWPORT = 120;
 
 /**
  * FlashList owns these through props that take a style object, and the desktop max
@@ -102,6 +103,21 @@ export default function JournalListScreen() {
   const scrollHeader = !isDesktopLayout;
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
   const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
+  // Production SearchBar is 112dp at fontScale 2, and this screen's chrome adds
+  // 16dp before the top safe-area. Compact large-text nav can reserve ~200dp as
+  // FlashList marginBottom, which would leave no list viewport on 640x320.
+  // Cap the overlay margin so dreams stay reachable; leftover clearance becomes
+  // content padding so the last row can still scroll above the tab bar.
+  const mobileSearchHeaderHeight = isDesktopLayout
+    ? 0
+    : insets.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
+  const overlayNavClearance = isDesktopLayout || isKeyboardVisible ? 0 : navigationClearance;
+  const availableBelowSearch = Math.max(0, height - mobileSearchHeaderHeight);
+  const listMarginBottom = Math.min(
+    overlayNavClearance,
+    Math.max(0, availableBelowSearch - MIN_MOBILE_JOURNAL_LIST_VIEWPORT),
+  );
+  const extraNavPaddingBottom = overlayNavClearance - listMarginBottom;
 
   useEffect(() => {
     const show = Keyboard.addListener(Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow', () => setIsKeyboardVisible(true));
@@ -162,9 +178,9 @@ export default function JournalListScreen() {
     setIsScrolling(next);
   }, []);
 
-  const listBottomPadding = isDesktopLayout
+  const listBottomPadding = (isDesktopLayout
     ? ThemeLayout.spacing.xl
-    : ThemeLayout.spacing.lg;
+    : ThemeLayout.spacing.lg) + extraNavPaddingBottom;
   const listContentStyle = useMemo(
     () => [LIST_CONTENT_STYLE, { paddingBottom: listBottomPadding }],
     [listBottomPadding]
@@ -829,7 +845,7 @@ export default function JournalListScreen() {
           getItemType={getDreamItemType}
           contentContainerStyle={listContentStyle}
           // The navigator hides its tab bar while the keyboard is shown.
-          style={{ marginBottom: isKeyboardVisible ? 0 : navigationClearance }}
+          style={{ marginBottom: listMarginBottom }}
           ListHeaderComponent={listHeader}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
