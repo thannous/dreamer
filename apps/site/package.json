@@ -1,0 +1,22 @@
+{
+  "name": "@noctalia/site-tooling",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Build dependencies for the Noctalia marketing site",
+  "engines": {
+    "node": ">=24.19.0 <25"
+  },
+  "scripts": {
+    "build": "node ../../scripts/docs-build.js",
+    "check": "node ../../scripts/docs-check.js",
+    "dev": "node ../../scripts/docs-dev.js",
+    "build:experience": "node ../../scripts/build-experience.js"
+  },
+  "dependencies": {
+    "esbuild": "0.28.1",
+    "image-size": "1.2.1",
+    "lenis": "1.3.25",
+    "motion": "12.42.2",
+    "sharp": "0.34.5"
+  }
+}

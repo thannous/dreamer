@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { imageSize } = require('image-size');
+const { imageSize } = require('../apps/site/dependencies')('image-size');
 const { renderAhrefsAnalyticsScript } = require('./lib/ahrefs-analytics');
 const { createRenderContext } = require('./lib/docs-components/context');
 const { renderFooter: renderSharedFooter } = require('./lib/docs-components/footer');

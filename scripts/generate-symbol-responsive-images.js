@@ -4,7 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const sharp = require('sharp');
+const sharp = require('../apps/site/dependencies')('sharp');
 const { createImageBuildCache } = require('./lib/image-build-cache');
 const { ROOT_DIR } = require('./lib/docs-site-config');
 const {
