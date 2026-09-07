@@ -46,6 +46,8 @@ jest.mock('@/services/lucidTrainerNotifications', () => ({
 
 
 jest.mock('@/services/lucidMorningVoiceNoteStorage', () => ({
+  loadLocalLucidVoiceExperimentIds: jest.fn(async () => new Set()),
+  subscribeLucidMorningVoiceNotes: jest.fn(() => jest.fn()),
   claimLucidMorningVoiceNoteScope: (...args: unknown[]) => mockClaimGuestVoiceNotes(...args),
   unlinkLucidMorningVoiceNotesFromExperiment: (...args: unknown[]) =>
     mockUnlinkVoiceNotesFromExperiment(...args),

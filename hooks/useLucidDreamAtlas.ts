@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
-import type { LucidTrainingSource } from '@/lib/lucid/observations';
+import { LUCID_LOCAL_SIGN_PREFIX, type LucidTrainingSource } from '@/lib/lucid/observations';
 import {
   buildLucidDreamAtlas,
   deleteLucidDreamAtlasNode,
@@ -151,11 +151,16 @@ export function useLucidDreamAtlas({
           const updated = apply(currentSnapshot, mutationSigns, mutationDreams).preferences;
           // Unknown legacy signs are unavailable here, not deleted by this action.
           const known = new Set(mutationSigns.map(sign => sign.id));
+          const isUnavailableLegacy = (id: string) =>
+            !id.startsWith(LUCID_LOCAL_SIGN_PREFIX) && !known.has(id);
           return {
             ...updated,
-            renamed: { ...Object.fromEntries(Object.entries(current.renamed).filter(([id]) => !known.has(id))), ...updated.renamed },
-            hidden: [...new Set([...current.hidden.filter(id => !known.has(id)), ...updated.hidden])],
-            merges: { ...Object.fromEntries(Object.entries(current.merges).filter(([id, target]) => !known.has(id) || !known.has(target))), ...updated.merges },
+            renamed: { ...Object.fromEntries(Object.entries(current.renamed).filter(([id]) => isUnavailableLegacy(id))), ...updated.renamed },
+            hidden: [...new Set([...current.hidden.filter(isUnavailableLegacy), ...updated.hidden])],
+            merges: { ...Object.fromEntries(Object.entries(current.merges).filter(([id, target]) =>
+              !id.startsWith(LUCID_LOCAL_SIGN_PREFIX) &&
+              !target.startsWith(LUCID_LOCAL_SIGN_PREFIX) &&
+              (isUnavailableLegacy(id) || isUnavailableLegacy(target)))), ...updated.merges },
           };
         });
         assignScopeError(operationScope, null);

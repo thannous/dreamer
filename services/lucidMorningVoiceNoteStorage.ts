@@ -52,6 +52,17 @@ type Envelope = {
   notes: LucidMorningVoiceNote[];
 };
 
+const listeners = new Set<(scope: string) => void>();
+export function subscribeLucidMorningVoiceNotes(listener: (scope: string) => void): () => void {
+  listeners.add(listener);
+  return () => { listeners.delete(listener); };
+}
+function notifyNotesChanged(scope: string): void {
+  for (const listener of listeners) {
+    try { listener(scope); } catch { /* Observers must not fail a committed write. */ }
+  }
+}
+
 const scopeLocks = new Map<string, Promise<void>>();
 
 function usesNativeStorage(storage: AsyncKeyValueStorage): boolean {
@@ -337,6 +348,7 @@ async function saveEnvelope(
     JSON.stringify(unique),
     storage
   );
+  notifyNotesChanged(envelope.userScope);
 }
 
 function findNote(envelope: Envelope, noteId: string): LucidMorningVoiceNote | null {
@@ -753,6 +765,7 @@ export async function clearLucidMorningVoiceNotes(
     }
     try {
       await storage.removeItem(getLucidMorningVoiceNoteStorageKey(userScope));
+      notifyNotesChanged(userScope);
     } catch (error) {
       throw persistenceError(error);
     }
@@ -930,6 +943,7 @@ export async function claimLucidMorningVoiceNoteScope(
     if (guestEnvelope.notes.length === 0) {
       try {
         await storage.removeItem(getLucidMorningVoiceNoteStorageKey(guestScope));
+        notifyNotesChanged(guestScope);
       } catch {
         // An empty source envelope may already be absent.
       }
@@ -1053,6 +1067,7 @@ export async function claimLucidMorningVoiceNoteScope(
     }
     try {
       await storage.removeItem(getLucidMorningVoiceNoteStorageKey(guestScope));
+      notifyNotesChanged(guestScope);
     } catch (error) {
       if (remainingGuest.notes.length > 0) throw persistenceError(error);
     }
@@ -1063,5 +1078,21 @@ export async function claimLucidMorningVoiceNoteScope(
       skipped,
       retainedGuest: 0,
     };
+  });
+}
+
+/** Local metadata and an existing local file are required; cloud markers are insufficient. */
+export async function loadLocalLucidVoiceExperimentIds(
+  userScope: string,
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage(),
+  files: LucidMorningVoiceFileAdapter = createNativeFileAdapter()
+): Promise<ReadonlySet<string>> {
+  return withScopeLock(assertScope(userScope), async () => {
+    const envelope = await loadEnvelope(userScope, storage);
+    const ids = new Set<string>();
+    for (const note of envelope.notes) {
+      if (note.experimentId && await fileExists(files, note.uri)) ids.add(note.experimentId);
+    }
+    return ids;
   });
 }

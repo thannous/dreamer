@@ -44,7 +44,7 @@ describe('autonomous Lucid observations', () => {
   });
   it('retains full text, notes, voice linkage and provenance across serialization without Journal fields', () => {
     const input = [{ ...observation('a', 100, 'Mirror '.repeat(300)), notes: 'My own note', voiceCapture: 'local_note' as const }];
-    const [source] = projectLucidObservations(JSON.parse(JSON.stringify(input)));
+    const [source] = projectLucidObservations(JSON.parse(JSON.stringify(input)), new Set(['a']));
     expect(source.transcript).toBe('Mirror '.repeat(300).trim() + '\n\nMy own note');
     expect(source.provenance).toEqual({ kind: 'lucid_observation', experimentId: 'a' });
     expect(source.id).toBe(lucidObservationSourceId('a', 100));
@@ -60,7 +60,13 @@ describe('autonomous Lucid observations', () => {
     expect(atlas.nodes[0].lastAppearanceAt).toBe(101);
     expect(selectLucidMildRehearsalSource(sources, [{ ...candidate, label: candidate.label }])?.dreamId).toBe(lucidObservationSourceId('b', 101));
   });
+  it('filters remote audio markers but preserves their text without a voice action', () => {
+    expect(projectLucidObservations([{ ...observation('voice', 100, ''), voiceCapture: 'local_note' }])).toEqual([]);
+    const [source] = projectLucidObservations([{ ...observation('voice', 100, 'My dream'), voiceCapture: 'local_note' }]);
+    expect(source.transcript).toBe('My dream');
+    expect(source.voiceCapture).toBeUndefined();
+  });
   it('keeps audio-only captures retrievable and omits genuinely empty check-ins', () => {
-    expect(projectLucidObservations([{ ...observation('voice', 100, ''), voiceCapture: 'local_note' }, observation('empty', 101, '')]).map(item => item.id)).toEqual([lucidObservationSourceId('voice', 100)]);
+    expect(projectLucidObservations([{ ...observation('voice', 100, ''), voiceCapture: 'local_note' }, observation('empty', 101, '')], new Set(['voice'])).map(item => item.id)).toEqual([lucidObservationSourceId('voice', 100)]);
   });
 });

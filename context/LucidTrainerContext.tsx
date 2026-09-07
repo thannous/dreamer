@@ -12,6 +12,7 @@ import React, {
 } from 'react';
 import { AppState } from 'react-native';
 
+import { useLocalLucidVoiceAvailability } from '@/hooks/useLocalLucidVoiceAvailability';
 import { useAuth } from '@/context/AuthContext';
 import { projectLucidObservations, localLucidSignId, LUCID_LOCAL_SIGN_PREFIX, type LucidObservation } from '@/lib/lucid/observations';
 import { trackProductEvent } from '@/lib/analytics';
@@ -358,6 +359,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const userId = user?.id;
   const userScope = userId ? `user:${userId}` : 'guest';
+  const localVoiceExperimentIds = useLocalLucidVoiceAvailability(userScope);
   const deviceLocale = normalizeLucidLocale(getLocales()[0]?.languageTag);
   const [state, setState] = useState<LucidTrainerState | null>(null);
   const [loading, setLoading] = useState(true);
@@ -367,7 +369,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const [guestImportAvailable, setGuestImportAvailable] = useState(false);
   const [activeScope, setActiveScope] = useState(userScope);
   const activeScopeRef = useRef(userScope);
-  const dreams = useMemo(() => projectLucidObservations(activeScope === userScope ? state?.experiments ?? [] : []), [activeScope, userScope, state?.experiments]);
+  const dreams = useMemo(() => projectLucidObservations(activeScope === userScope ? state?.experiments ?? [] : [], localVoiceExperimentIds), [activeScope, userScope, state?.experiments, localVoiceExperimentIds]);
   const dreamsLoaded = !loading && activeScope === userScope;
   const dreamSignCandidates = useMemo(
     () => [

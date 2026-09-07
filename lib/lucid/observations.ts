@@ -14,8 +14,8 @@ export interface LucidObservation extends LucidTrainingSource {
   provenance: { kind: 'lucid_observation'; experimentId: string };
   voiceCapture?: LucidExperiment['voiceCapture'];
 }
-export function projectLucidObservations(experiments: readonly LucidExperiment[]): LucidObservation[] {
-  return experiments.filter(item => Boolean(item.recallText?.trim() || item.notes?.trim() || item.voiceCapture === 'local_note'))
+export function projectLucidObservations(experiments: readonly LucidExperiment[], localVoiceExperimentIds: ReadonlySet<string> = new Set()): LucidObservation[] {
+  return experiments.filter(item => Boolean(item.recallText?.trim() || item.notes?.trim() || (item.voiceCapture === 'local_note' && localVoiceExperimentIds.has(item.id))))
     .map(item => {
       const transcript = [item.recallText?.trim(), item.notes?.trim()].filter(Boolean).join('\n\n');
       return {
@@ -24,7 +24,7 @@ export function projectLucidObservations(experiments: readonly LucidExperiment[]
         provenance: { kind: 'lucid_observation' as const, experimentId: item.id },
         title: transcript.split('\n')[0]?.slice(0, 80) ?? '',
         transcript,
-        voiceCapture: item.voiceCapture,
+        voiceCapture: item.voiceCapture === 'local_note' && localVoiceExperimentIds.has(item.id) ? 'local_note' as const : undefined,
       };
     }).sort((a, b) => b.occurredAt - a.occurredAt || a.id.localeCompare(b.id));
 }
