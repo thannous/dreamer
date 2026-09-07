@@ -278,6 +278,11 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
     });
   };
 
+  // The bundled night artwork stays dark even when the controls use a light palette.
+  const readingSurface = ambience === 'morning' || ambience === 'light'
+    ? [styles.readingSurface, { backgroundColor: palette.surface }]
+    : undefined;
+
   const titles = [copy.intentionTitle, copy.sleepTitle, copy.weekTitle, copy.localTitle];
   const reduceMotion = state!.onboarding.accessibility.reduceMotion;
   const reflow = width < 380 || fontScale >= 1.3;
@@ -289,11 +294,11 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
       background={<LucidOnboardingBackdrop ambience={ambience} reduceMotion={reduceMotion} step={step} />}
       bottomInset={112}
       contentStyle={styles.screenContent}
-      eyebrow={`${legacyCopy.step} ${step + 1} / ${STEP_COUNT}`}
+      eyebrow={readingSurface ? undefined : `${legacyCopy.step} ${step + 1} / ${STEP_COUNT}`}
       eyebrowTone="accent"
       scroll
       footer={
-        <View style={styles.primaryAction}>
+        <View style={[styles.primaryAction, readingSurface]}>
           <LucidButton
             label={step === STEP_COUNT - 1 ? copy.finish : content.chrome.common.continue}
             disabled={!canContinue}
@@ -306,17 +311,33 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
         </View>
       }
     >
-      <View style={styles.progressRow}>
-        <LucidSegmentedProgress current={step + 1} label={titles[step]} total={STEP_COUNT} />
-        {step > 0 ? (
-          <LucidIconAction
-            icon="arrow-back"
-            label={content.chrome.common.back}
-            onPress={() => void back()}
-            variant="immersive"
-          />
-        ) : null}
-      </View>
+      {readingSurface ? (
+        <View style={[styles.chromeReadingSurface, readingSurface]}>
+          <LucidOverline text={`${legacyCopy.step} ${step + 1} / ${STEP_COUNT}`} tone="accent" />
+          <View style={styles.progressRow}>
+            <LucidSegmentedProgress current={step + 1} label={titles[step]} total={STEP_COUNT} />
+            {step > 0 ? (
+              <LucidIconAction
+                icon="arrow-back"
+                label={content.chrome.common.back}
+                onPress={() => void back()}
+              />
+            ) : null}
+          </View>
+        </View>
+      ) : (
+        <View style={styles.progressRow}>
+          <LucidSegmentedProgress current={step + 1} label={titles[step]} total={STEP_COUNT} />
+          {step > 0 ? (
+            <LucidIconAction
+              icon="arrow-back"
+              label={content.chrome.common.back}
+              onPress={() => void back()}
+              variant="immersive"
+            />
+          ) : null}
+        </View>
+      )}
 
       <LucidOnboardingStage
         direction={stepDirection}
@@ -326,9 +347,9 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
       >
         {step === 0 ? (
           <View style={styles.stepStack}>
-            <OnboardingHeader title={copy.intentionTitle} subtitle={copy.intentionSubtitle} />
+            <OnboardingHeader surface={Boolean(readingSurface)} title={copy.intentionTitle} subtitle={copy.intentionSubtitle} />
             <View accessibilityRole="radiogroup" accessibilityLabel={copy.goalLabel} style={styles.choiceGroup}>
-              <LucidOverline text={copy.goalLabel} tone="accent" />
+              <View style={readingSurface}><LucidOverline text={copy.goalLabel} tone="accent" /></View>
               {content.onboarding.goals.map((choice) => (
                 <LucidChoiceCard
                   description={choice.description}
@@ -344,7 +365,7 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
               ))}
             </View>
             <View accessibilityRole="radiogroup" accessibilityLabel={copy.experienceLabel} style={styles.choiceGroup}>
-              <LucidOverline text={copy.experienceLabel} tone="accent" />
+              <View style={readingSurface}><LucidOverline text={copy.experienceLabel} tone="accent" /></View>
               {content.onboarding.experienceLevels.map((choice) => (
                 <LucidChoiceCard
                   description={choice.description}
@@ -364,23 +385,25 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
 
         {step === 1 ? (
           <View style={styles.stepStack}>
-            <OnboardingHeader title={copy.sleepTitle} subtitle={copy.sleepSubtitle} />
-            <SleepWindowPicker
-              bedtime={bedtime}
-              bedtimeLabel={legacyCopy.bed}
-              cancelLabel={content.chrome.common.cancel}
-              doneLabel={content.chrome.common.done}
-              locale={locale}
-              notSetLabel={copy.notSet}
-              onBedtimeChange={updateBedtime}
-              onWakeTimeChange={updateWakeTime}
-              pickerHint={legacyCopy.timePickerHint}
-              reflow={reflow}
-              wakeLabel={legacyCopy.wake}
-              wakeTime={wakeTime}
-            />
+            <OnboardingHeader surface={Boolean(readingSurface)} title={copy.sleepTitle} subtitle={copy.sleepSubtitle} />
+            <View style={readingSurface}>
+              <SleepWindowPicker
+                bedtime={bedtime}
+                bedtimeLabel={legacyCopy.bed}
+                cancelLabel={content.chrome.common.cancel}
+                doneLabel={content.chrome.common.done}
+                locale={locale}
+                notSetLabel={copy.notSet}
+                onBedtimeChange={updateBedtime}
+                onWakeTimeChange={updateWakeTime}
+                pickerHint={legacyCopy.timePickerHint}
+                reflow={reflow}
+                wakeLabel={legacyCopy.wake}
+                wakeTime={wakeTime}
+              />
+            </View>
             <View accessibilityRole="radiogroup" accessibilityLabel={copy.sensitivityLabel} style={styles.choiceGroup}>
-              <LucidOverline text={copy.sensitivityLabel} tone="accent" />
+              <View style={readingSurface}><LucidOverline text={copy.sensitivityLabel} tone="accent" /></View>
               <LucidChoiceCard
                 description={copy.sensitiveDescription}
                 onPress={() => {
@@ -407,7 +430,7 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
 
         {step === 2 ? (
           <View style={styles.stepStack}>
-            <OnboardingHeader title={copy.weekTitle} subtitle={copy.weekSubtitle} />
+            <OnboardingHeader surface={Boolean(readingSurface)} title={copy.weekTitle} subtitle={copy.weekSubtitle} />
             <LucidCard testID="lucid-onboarding-plan" style={styles.planCard}>
               <PlanRow icon="sunny-outline" title={copy.morningTitle} detail={copy.morningDetail} />
               <PlanRow icon="eye-outline" title={copy.trainingTitle} detail={copy.trainingDetail(initial.weeklyTarget)} />
@@ -427,7 +450,7 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
 
         {step === 3 ? (
           <View style={styles.stepStack} testID="lucid-onboarding-local-first">
-            <OnboardingHeader title={copy.localTitle} subtitle={copy.localSubtitle} />
+            <OnboardingHeader surface={Boolean(readingSurface)} title={copy.localTitle} subtitle={copy.localSubtitle} />
             <LucidCard accessibilityLabel={`${copy.localStorageTitle}. ${copy.localStorageDetail}`}>
               <PlanRow icon="phone-portrait-outline" title={copy.localStorageTitle} detail={copy.localStorageDetail} />
             </LucidCard>
@@ -441,7 +464,7 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
         ) : null}
       </LucidOnboardingStage>
       {saveError ? (
-        <Text accessibilityLiveRegion="assertive" style={[styles.errorText, { color: palette.danger }]}>
+        <Text accessibilityLiveRegion="assertive" style={[styles.errorText, readingSurface, { color: palette.danger }]}>
           {saveError}
         </Text>
       ) : null}
@@ -449,11 +472,11 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
   );
 }
 
-function OnboardingHeader({ title, subtitle }: { title: string; subtitle: string }) {
+function OnboardingHeader({ title, subtitle, surface }: { title: string; subtitle: string; surface: boolean }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   return (
-    <View style={styles.sectionHeader}>
+    <View style={[styles.sectionHeader, surface && [styles.readingSurface, { backgroundColor: palette.surface }]]}>
       <Text accessibilityRole="header" style={[styles.immersiveTitle, { color: palette.text }]}>{title}</Text>
       <Text style={[styles.introSubtitle, { color: palette.textSecondary }]}>{subtitle}</Text>
     </View>
@@ -734,6 +757,8 @@ const styles = StyleSheet.create({
   progressRow: { minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.lg },
   stage: { position: 'relative' },
   stepStack: { flex: 1, gap: LucidSpace.xl },
+  readingSurface: { borderRadius: LucidRadius.lg, padding: LucidSpace.lg },
+  chromeReadingSurface: { gap: LucidSpace.xs },
   sectionHeader: { gap: LucidSpace.sm },
   choiceGroup: { gap: LucidSpace.md },
   planCard: { gap: LucidSpace.lg },
