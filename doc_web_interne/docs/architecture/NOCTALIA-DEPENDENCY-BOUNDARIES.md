@@ -53,10 +53,22 @@ real network traffic. The static checker complements those tests.
 
 ## Local verification
 
+Mobile-only script changes in `package.json` and changes confined to the two
+mobile jobs in `.circleci/continue.yml` retain mobile checks without selecting
+site/backend jobs. Dependencies, installation hooks, shared executors, workflows,
+unknown configuration shapes and site jobs retain conservative shared validation.
+Routing scripts/map/tests run their regression checks through Noctalia quality.
+
+The root Vercel `ignoreCommand` skips preview builds of the legacy web app
+(`npm run build:web`, output `dist`). Production and unknown environments retain
+the build. The marketing site uses its separate Cloudflare pipeline. Existing
+deployments and checks are not cancelled retroactively.
+
 - `npm run boundaries:check`
 - `node scripts/check-monorepo-boundaries.js --meditation`
 - `npm run test:node -- --runInBand --watchman=false scripts/check-monorepo-boundaries.test.js`
 - `bash .circleci/tests/classify-changes.test.sh`
+- `python3 .circleci/tests/shared-build-impact.test.py`
 - `bash .circleci/tests/fallback-jest.test.sh`
 
 Native smoke, CI completion and deployment remain separate evidence layers.

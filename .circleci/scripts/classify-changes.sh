@@ -130,6 +130,15 @@ if [[ "$unsafe_change_status" == true ]]; then
   mark_all_surfaces
 else
   while IFS= read -r path; do
+    # Command-only mobile edits do not change the shared install or site build.
+    # Missing Python/unrecognized input retains the broad fallback below.
+    if [[ "$path" == package.json || "$path" == .circleci/continue.yml ]] &&
+      python3 "$(dirname "${BASH_SOURCE[0]}")/shared-build-impact.py" \
+        "$base_revision" "$head_revision" "$path" 2>/dev/null; then
+      run_noctalia=true
+      if [[ "$path" == .circleci/continue.yml ]]; then run_meditation=true; fi
+      continue
+    fi
     # Exact shared dependencies live in one executable map, also exercised by fixtures.
     shared_consumers="$(awk -F '\t' -v changed="$path" '$1 == changed { print $3 }' "$(dirname "${BASH_SOURCE[0]}")/../dependency-consumers.tsv")"
     if [[ -n "$shared_consumers" ]]; then
@@ -146,6 +155,14 @@ else
       continue
     fi
     case "$path" in
+    vercel.json)
+      # Validate preview filtering; this is not a Cloudflare/site source input.
+      run_noctalia=true
+      ;;
+    .circleci/scripts/classify-changes.sh|.circleci/scripts/shared-build-impact.py|.circleci/tests/*|.circleci/dependency-consumers.tsv)
+      # Routing contracts are exercised by classification tests, not site builds.
+      run_noctalia=true
+      ;;
     .circleci/*|.github/workflows/quality.yml)
       # CI control-plane changes are deliberately fail-closed.
       mark_all_surfaces
@@ -199,6 +216,10 @@ else
       ;;
     app.config.ts|app.json|eas.json|global.css|babel.config.js|eslint.config.js|jest.config.js|jest.config.*.js|jest.setup.ts|metro.config.js|tsconfig.json|tsconfig.test.json|uniwind-env.d.ts|uniwind-types.d.ts|vitest.config.mts|vitest.setup.ts|workbox-config.js)
       run_noctalia=true
+      ;;
+    scripts/check-monorepo-boundaries*.js)
+      run_noctalia=true
+      run_meditation=true
       ;;
     scripts/check-jest-*.js)
       run_noctalia=true

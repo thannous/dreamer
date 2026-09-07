@@ -123,6 +123,7 @@ jobs:
           command: |
             set -euo pipefail
             bash .circleci/tests/classify-changes.test.sh
+            python3 .circleci/tests/shared-build-impact.test.py
             bash .circleci/tests/fallback-jest.test.sh
       - run:
           name: Typecheck Noctalia application
