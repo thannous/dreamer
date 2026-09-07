@@ -84,7 +84,7 @@ function getInitialKeyboardVisibility(): boolean {
 }
 
 export default function JournalListScreen() {
-  const { dreams, persistenceState, retryPersistence } = useDreams();
+  const { dreams, persistenceState, refreshState, reloadDreams, retryPersistence } = useDreams();
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -763,6 +763,7 @@ export default function JournalListScreen() {
     toggleThemeFilter,
   ]);
   const renderEmptyState = useCallback(() => (
+    refreshState?.status === 'refreshing' || refreshState?.status === 'error' ||
     persistenceState.status === 'loading' ||
     (persistenceState.status === 'error' && persistenceState.operation === 'read') ? null : <EmptyState
       hasActiveFilter={hasActiveFilter}
@@ -777,6 +778,7 @@ export default function JournalListScreen() {
     handleStartRememberedDreamFromEmpty,
     hasActiveFilter,
     persistenceState,
+    refreshState,
   ]);
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
@@ -828,6 +830,8 @@ export default function JournalListScreen() {
         <MockNavigationRail />
         <JournalPersistenceNotice
           state={persistenceState}
+          refreshState={refreshState}
+          onRefresh={() => { void reloadDreams(); }}
           onRetry={() => void retryPersistence().catch(() => undefined)}
         />
         {isDesktopLayout ? searchBar : null}

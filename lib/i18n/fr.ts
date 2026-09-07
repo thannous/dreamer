@@ -319,6 +319,8 @@ const translations: Record<string, string> = {
     'journal.badge.sync_pending': 'Synchronisation',
     'journal.badge.sync_failed': 'Échec synchro',
     'journal.badge.sync_conflict': 'Conflit',
+    'journal.persistence.refresh_title': 'Actualisation du journal impossible',
+    'journal.persistence.refresh_message': 'Vos rêves enregistrés restent disponibles. Réessayez pour rechercher les mises à jour.',
     'journal.persistence.read_title': 'Journal temporairement indisponible',
     'journal.persistence.read_device': 'Le journal enregistré sur cet appareil n’a pas pu être lu. Rien n’a été effacé. Réessayez avant d’enregistrer un nouveau rêve.',
     'journal.persistence.read_cache': 'Les rêves de votre compte enregistrés sur cet appareil ne sont pas accessibles pour le moment. Rien n’a été effacé. Réessayez pour les retrouver.',

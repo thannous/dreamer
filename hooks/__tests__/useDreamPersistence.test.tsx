@@ -135,6 +135,136 @@ describe('useDreamPersistence', () => {
     mockGetAccessToken.mockResolvedValue('access-token');
   });
 
+  describe('cache-first scoped refresh', () => {
+    it('publishes cache before a blocked token lookup and fetch', async () => {
+      const token = deferred<string | null>();
+      mockSessionReady.current = false;
+      mockGetAccessToken.mockReturnValue(token.promise);
+      mockGetCachedRemoteDreams.mockResolvedValue({ status: 'loaded', value: [buildDream({ id: 701 })] });
+      const { result, unmount } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await flushEffects();
+      expect(result.current.loaded).toBe(true);
+      expect(result.current.dreams[0].id).toBe(701);
+      expect(result.current.persistenceState.status).toBe('ready');
+      expect(result.current.refreshState.status).toBe('refreshing');
+      expect(mockFetchFromSupabase).not.toHaveBeenCalled();
+      unmount();
+      await act(async () => { token.resolve('token'); });
+      expect(mockGetSavedDreams).not.toHaveBeenCalled();
+      expect(mockFetchFromSupabase).not.toHaveBeenCalled();
+    });
+
+    it('starts only one fetch when sessionReady changes', async () => {
+      const token = deferred<string | null>();
+      mockSessionReady.current = false;
+      mockGetAccessToken.mockReturnValue(token.promise);
+      const { rerender } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await flushEffects();
+      mockSessionReady.current = true;
+      mockGetAccessToken.mockResolvedValue('token');
+      rerender();
+      await flushEffects();
+      await act(async () => { token.resolve('old-token'); });
+      expect(mockFetchFromSupabase).toHaveBeenCalledTimes(1);
+    });
+
+    it.each(['edit', 'delete'] as const)('preserves a %s made while the fetch is pending', async (operation: 'edit' | 'delete') => {
+      const remote = deferred<DreamAnalysis[]>();
+      const original = buildDream({ id: 702, remoteId: 702 });
+      mockGetCachedRemoteDreams.mockResolvedValue({ status: 'loaded', value: [original] });
+      mockFetchFromSupabase.mockReturnValue(remote.promise);
+      mockGetDreamsMigrationSynced.mockResolvedValue(true);
+      const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await flushEffects();
+      const next = operation === 'delete' ? [] : [{ ...original, title: 'edited locally' }];
+      await act(async () => { await result.current.persistRemoteDreams(next); });
+      await act(async () => { remote.resolve([original]); });
+      expect(result.current.dreams).toEqual(next);
+      expect(mockSaveCachedRemoteDreams).toHaveBeenLastCalledWith(next, 'user:user-123');
+    });
+
+    it('runs an incomplete migration after the refresh itself changed the cache', async () => {
+      const pendingDream = buildDream({ id: 750 });
+      const remoteDream = buildDream({ id: 751, remoteId: 1751 });
+      const mutation: DreamMutation = {
+        id: 'pending-create', operation: 'create', clientRequestId: 'dream-750',
+        version: 1, userScope: 'user:user-123', entityType: 'dream', entityKey: '750',
+        clientUpdatedAt: 1, payload: { dream: pendingDream }, createdAt: 1,
+        retryCount: 0, status: 'pending',
+      };
+      mockGetPendingMutations.mockResolvedValue([mutation]);
+      mockGetCachedRemoteDreams.mockResolvedValue({ status: 'loaded', value: [] });
+      mockFetchFromSupabase.mockResolvedValue([remoteDream]);
+      mockCreateInSupabase.mockResolvedValue({ ...pendingDream, remoteId: 1750 });
+      const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await flushEffects();
+      expect(mockCreateInSupabase).toHaveBeenCalledWith(expect.objectContaining({ id: 750 }), 'user-123');
+      expect(result.current.dreams).toEqual(expect.arrayContaining([
+        expect.objectContaining({ id: 750, remoteId: 1750 }),
+        expect.objectContaining({ id: 751, remoteId: 1751 }),
+      ]));
+      expect(mockSetDreamsMigrationSynced).toHaveBeenCalledWith('user-123', true);
+    });
+
+    it.each(['edit', 'delete'] as const)('does not overwrite a %s during a deferred migration upload', async (operation: 'edit' | 'delete') => {
+      const original = buildDream({ id: 752 });
+      const upload = deferred<DreamAnalysis>();
+      mockGetCachedRemoteDreams.mockResolvedValue({ status: 'loaded', value: [original] });
+      mockFetchFromSupabase.mockResolvedValue([original]);
+      mockCreateInSupabase.mockReturnValue(upload.promise);
+      const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await flushEffects();
+      expect(mockCreateInSupabase).toHaveBeenCalledTimes(1);
+      const next = operation === 'delete' ? [] : [{ ...original, title: 'new local title' }];
+      await act(async () => { await result.current.persistRemoteDreams(next); });
+      await act(async () => { upload.resolve({ ...original, remoteId: 1752 }); });
+      expect(result.current.dreams).toEqual(next);
+      expect(mockSaveCachedRemoteDreams).toHaveBeenLastCalledWith(next, 'user:user-123');
+      expect(mockSetDreamsMigrationSynced).not.toHaveBeenCalled();
+    });
+
+    it('keeps cache visible and loaded during a failed refresh and retry', async () => {
+      const original = buildDream({ id: 703, remoteId: 703 });
+      mockGetCachedRemoteDreams.mockResolvedValue({ status: 'loaded', value: [original] });
+      mockFetchFromSupabase.mockRejectedValue(new Error('offline'));
+      const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await flushEffects();
+      expect(result.current.refreshState.status).toBe('error');
+      expect(result.current.persistenceState.status).toBe('ready');
+      expect(result.current.dreams).toEqual([original]);
+      const retry = deferred<DreamAnalysis[]>();
+      mockFetchFromSupabase.mockReturnValue(retry.promise);
+      let running!: Promise<void>;
+      await act(async () => { running = result.current.reloadDreams(); });
+      expect(result.current.loaded).toBe(true);
+      expect(result.current.dreams).toEqual([original]);
+      await act(async () => { retry.resolve([original]); await running; });
+      expect(result.current.refreshState.status).toBe('idle');
+    });
+
+    it('does not fetch for A after a blocked migration read resolves under B', async () => {
+      const guest = deferred<DreamListReadResult>();
+      mockGetSavedDreams.mockReturnValueOnce(guest.promise);
+      const { rerender } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await flushEffects();
+      mockUser.current = { id: 'account-b' };
+      rerender();
+      await act(async () => { guest.resolve({ status: 'loaded', value: [buildDream({ id: 704 })] }); });
+      await flushEffects();
+      expect(mockCreateInSupabase).not.toHaveBeenCalled();
+      expect(mockFetchFromSupabase).toHaveBeenCalledTimes(1);
+    });
+
+    it('reports a read failure rather than accepting an empty journal after cache and network errors', async () => {
+      mockGetCachedRemoteDreams.mockResolvedValue({ status: 'error' });
+      mockFetchFromSupabase.mockRejectedValue(new Error('offline'));
+      const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await flushEffects();
+      expect(result.current.persistenceState).toEqual({ status: 'error', operation: 'read', target: 'remote-cache' });
+      expect(result.current.refreshState.status).toBe('error');
+    });
+  });
+
   describe('guest mode (no remote sync)', () => {
     it('loads dreams from local storage', async () => {
       const localDreams = [buildDream({ id: 1 }), buildDream({ id: 2 })];
@@ -779,6 +909,8 @@ describe('useDreamPersistence', () => {
       mockFetchFromSupabase.mockResolvedValue([buildDream({ id: 81, title: 'Durable A' })]);
       hook.rerender();
       await flushEffects();
+      expect(hook.result.current.pendingMutationsLoaded).toBe(true);
+      expect(hook.result.current.pendingMutationsScope).toBe('user:user-123');
       expect(hook.result.current.dreams).toEqual([unsavedA]);
       expect(hook.result.current.persistenceState).toEqual({
         status: 'error',
@@ -873,6 +1005,33 @@ describe('useDreamPersistence', () => {
       expect(mockCreateInSupabase).not.toHaveBeenCalledWith(expect.anything(), 'user-456');
       expect(mockSetGuestDreamMigrationOwner).toHaveBeenNthCalledWith(1, { userId: 'user-123', dreamIds: [35] });
       expect(mockSetGuestDreamMigrationOwner).toHaveBeenLastCalledWith(null);
+    });
+
+    it('settles only the acknowledged guest upload and resumes the remainder for its owner', async () => {
+      const first = buildDream({ id: 803 });
+      const second = buildDream({ id: 802 });
+      let stored = [first, second];
+      const upload = deferred<DreamAnalysis>();
+      mockGetSavedDreams.mockImplementation(async () => ({ status: 'loaded', value: stored }));
+      mockSaveDreams.mockImplementation(async (value) => { stored = value; });
+      mockGetDreamsMigrationSynced.mockResolvedValue(true);
+      mockCreateInSupabase.mockReturnValueOnce(upload.promise);
+      const hook = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await flushEffects();
+      expect(mockCreateInSupabase).toHaveBeenCalledTimes(1);
+      mockUser.current = { id: 'other-account' };
+      hook.rerender();
+      await act(async () => { upload.resolve({ ...first, remoteId: 1801 }); });
+      expect(stored).toEqual([second]);
+      expect(mockCreateInSupabase).toHaveBeenCalledTimes(1);
+      expect(mockSetDreamsMigrationSynced).not.toHaveBeenCalled();
+      expect(mockGuestMigrationOwner.current?.userId).toBe('user-123');
+      mockUser.current = { id: 'user-123' };
+      hook.rerender();
+      await flushEffects();
+      expect(mockCreateInSupabase).toHaveBeenCalledTimes(2);
+      expect(mockCreateInSupabase).toHaveBeenLastCalledWith(expect.objectContaining({ id: 802 }), 'user-123');
+      expect(stored).toEqual([]);
     });
 
     it('preserves a new guest capture made while the previous account migration is in flight', async () => {

@@ -35,6 +35,7 @@ export type UseOfflineSyncQueueOptions = {
   userScope?: string | null;
   persistRemoteDreams: (updater: DreamListUpdater) => Promise<void>;
   resolveRemoteId: (dreamId: number) => number | undefined;
+  remoteSnapshot?: { userScope: string | null; dreams: DreamAnalysis[] } | null;
   initialMutations?: DreamMutation[];
   initialMutationsLoaded?: boolean;
   initialMutationsScope?: string | null;
@@ -201,6 +202,7 @@ export function useOfflineSyncQueue({
   userScope,
   persistRemoteDreams,
   resolveRemoteId,
+  remoteSnapshot,
   initialMutations = [],
   initialMutationsLoaded = true,
   initialMutationsScope = userScope,
@@ -310,7 +312,8 @@ export function useOfflineSyncQueue({
     if (!initialSnapshotMatchesScope || activeUserScopeRef.current !== userScope) return;
     const current = pendingMutationsRef.current.map((mutation) => normalizeMutation(mutation, userScope));
     const mergedById = new Map<string, DreamMutation>();
-    [...initialMutations.map((mutation) => normalizeMutation(mutation, userScope)), ...current].forEach((mutation) => {
+    const deletedIds = new Set(current.filter((entry) => entry.operation === 'delete').map(getMutationDreamId));
+    [...initialMutations.filter((entry) => entry.operation === 'delete' || !deletedIds.has(getMutationDreamId(entry))).map((mutation) => normalizeMutation(mutation, userScope)), ...current].forEach((mutation) => {
       mergedById.set(mutation.id, mutation);
     });
 
@@ -339,6 +342,13 @@ export function useOfflineSyncQueue({
   const appendPendingMutation = useCallback(
     async (mutation: DreamMutation) => {
       const current = pendingMutationsRef.current;
+      if (mutation.operation === 'delete') {
+        await persistPendingMutations([
+          ...current.filter((entry) => getMutationDreamId(entry) !== getMutationDreamId(mutation)),
+          mutation,
+        ]);
+        return;
+      }
       const existingIndex = mutation.operation === 'create'
         ? current.findIndex((entry) =>
             entry.operation === 'create' &&
@@ -424,7 +434,8 @@ export function useOfflineSyncQueue({
 
     if (!mountedRef.current || syncingRef.current || activeUserScopeRef.current !== userScope) return;
 
-    const eligibleMutations = pendingMutationsRef.current.filter(isRetryableMutation);
+    const eligibleMutations = pendingMutationsRef.current.filter((entry) => isRetryableMutation(entry) &&
+      (!['delete', 'update'].includes(entry.operation) || getMutationRemoteId(entry) != null));
     if (!eligibleMutations.length) return;
 
     const currentToken = ++syncTokenRef.current;
@@ -450,6 +461,7 @@ export function useOfflineSyncQueue({
       );
       try {
         await persistPendingMutations(sendingQueue);
+        if (!mountedRef.current || syncTokenRef.current !== currentToken || activeUserScopeRef.current !== userScope) return;
         const canUseBatchSync = userScope && typeof syncDreamMutationsInSupabase === 'function';
         const results = canUseBatchSync
           ? await syncDreamMutationsInSupabase(eligibleMutations, user.id)
@@ -458,6 +470,7 @@ export function useOfflineSyncQueue({
               const workingMutations = eligibleMutations.map((mutation) => normalizeMutation(mutation, userScope));
 
               for (let index = 0; index < workingMutations.length; index += 1) {
+                if (!mountedRef.current || syncTokenRef.current !== currentToken || activeUserScopeRef.current !== userScope) return legacyResults;
                 const mutation = workingMutations[index];
 
                 if (mutation.operation === 'create' && mutation.payload.dream) {
@@ -563,7 +576,7 @@ export function useOfflineSyncQueue({
         }
 
         const resultsById = new Map(results.map((result) => [result.mutationId, result]));
-        const nextQueue = pendingMutationsRef.current
+        const buildNextQueue = () => pendingMutationsRef.current
           .map((mutation) => {
             const result = resultsById.get(mutation.id);
             if (!result) {
@@ -591,7 +604,7 @@ export function useOfflineSyncQueue({
           let nextDreams = prev;
           results.forEach((result) => {
             const mutation = eligibleMutations.find((entry) => entry.id === result.mutationId);
-            if (!mutation) {
+            if (!mutation || !pendingMutationsRef.current.some((entry) => entry.id === mutation.id)) {
               return;
             }
 
@@ -621,6 +634,7 @@ export function useOfflineSyncQueue({
           return nextDreams;
         });
 
+        const nextQueue = buildNextQueue();
         await persistPendingMutations(nextQueue);
         recordSyncReplayMetrics({
           attemptedCount: eligibleMutations.length,
@@ -638,7 +652,7 @@ export function useOfflineSyncQueue({
         }
         logger.warn('Failed to sync offline mutations', error);
         const message = error instanceof Error ? error.message : 'Failed to sync mutation batch';
-        const nextQueue = pendingMutationsRef.current.map((mutation) => {
+        const buildNextQueue = () => pendingMutationsRef.current.map((mutation) => {
           if (!sendingIds.has(mutation.id)) {
             return mutation;
           }
@@ -651,11 +665,13 @@ export function useOfflineSyncQueue({
         await persistRemoteDreams((prev) => {
           let nextDreams = prev;
           eligibleMutations.forEach((mutation) => {
+            if (!pendingMutationsRef.current.some((entry) => entry.id === mutation.id)) return;
             nextDreams = applyFailedMutation(nextDreams, mutation, 'failed', message);
           });
           return nextDreams;
         });
 
+        const nextQueue = buildNextQueue();
         await persistPendingMutations(nextQueue);
         recordSyncReplayMetrics({
           attemptedCount: eligibleMutations.length,
@@ -678,6 +694,36 @@ export function useOfflineSyncQueue({
     inFlightSyncRef.current = syncPromise;
     return syncPromise;
   }, [canUseRemoteSync, hasNetwork, persistPendingMutations, persistRemoteDreams, user, userScope]);
+
+  useEffect(() => {
+    if (!remoteSnapshot || remoteSnapshot.userScope !== userScope || !initialSnapshotMatchesScope) return;
+    let changed = false;
+    const resolved = pendingMutationsRef.current.map((mutation) => {
+      if (!['delete', 'update'].includes(mutation.operation) || getMutationRemoteId(mutation) != null) return mutation;
+      const tombstone = mutation.payload.tombstone ?? mutation.payload.dream;
+      if (!tombstone) return mutation;
+      const clientId = tombstone.clientRequestId ?? `dream-${tombstone.id}`;
+      const remote = remoteSnapshot.dreams.find((dream) => dream.clientRequestId === clientId);
+      if (remote?.remoteId == null) return mutation;
+      changed = true;
+      return {
+        ...mutation,
+        status: 'pending' as const,
+        lastError: undefined,
+        baseRevision: remote.revisionId,
+        payload: {
+          ...mutation.payload,
+          remoteId: remote.remoteId,
+          ...(mutation.payload.dream ? { dream: { ...mutation.payload.dream, remoteId: remote.remoteId, revisionId: remote.revisionId } } : {}),
+        },
+      };
+    });
+    if (!changed) return;
+    // Make the resolved identity durable before allowing normal queue replay.
+    void persistPendingMutations(resolved).then(() => {
+      if (mountedRef.current && activeUserScopeRef.current === userScope) return syncPendingMutations();
+    }).catch(() => logger.warn('Pending deletion identity could not be persisted'));
+  }, [initialSnapshotMatchesScope, persistPendingMutations, remoteSnapshot, syncPendingMutations, userScope]);
 
   useEffect(() => {
     void syncPendingMutations().catch(() => {

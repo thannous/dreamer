@@ -318,6 +318,8 @@ const translations: Record<string, string> = {
     'journal.badge.sync_pending': 'Synchronisierung läuft',
     'journal.badge.sync_failed': 'Sync fehlgeschlagen',
     'journal.badge.sync_conflict': 'Konflikt',
+    'journal.persistence.refresh_title': 'Tagebuch konnte nicht aktualisiert werden',
+    'journal.persistence.refresh_message': 'Deine gespeicherten Träume bleiben verfügbar. Versuche es erneut, um nach Aktualisierungen zu suchen.',
     'journal.persistence.read_title': 'Tagebuch vorübergehend nicht verfügbar',
     'journal.persistence.read_device': 'Das auf diesem Gerät gespeicherte Tagebuch konnte nicht gelesen werden. Es wurde nichts gelöscht. Versuche es erneut, bevor du einen neuen Traum speicherst.',
     'journal.persistence.read_cache': 'Die auf diesem Gerät gespeicherten Träume deines Kontos konnten nicht geöffnet werden. Es wurde nichts gelöscht. Versuche es erneut, um darauf zuzugreifen.',

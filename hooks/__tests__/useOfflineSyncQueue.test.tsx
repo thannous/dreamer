@@ -531,6 +531,28 @@ describe('useOfflineSyncQueue', () => {
     });
   });
 
+  it('preserves a deletion added while an acknowledged create waits for cache persistence', async () => {
+    const original = buildDream({ id: 874 });
+    let finishCache!: () => void;
+    const cacheWrite = new Promise<void>((resolve) => { finishCache = resolve; });
+    const persist = jest.fn().mockReturnValueOnce(cacheWrite).mockResolvedValue(undefined);
+    mockCreateDream.mockResolvedValue({ ...original, remoteId: 1874 });
+    const { result } = renderHook(() => useOfflineSyncQueue({ ...defaultOptions, persistRemoteDreams: persist }));
+    act(() => result.current.setPendingMutations([legacyMutation({ id: 'create-874', type: 'create', dream: original, createdAt: 1 })]));
+    let sync!: Promise<void>;
+    await act(async () => { sync = result.current.syncPendingMutations(); });
+    expect(persist).toHaveBeenCalledTimes(1);
+    const deletion: DreamMutation = {
+      version: 1, id: 'delete-874', userScope: 'user:user-123', entityType: 'dream', entityKey: '874',
+      operation: 'delete', clientRequestId: 'delete-874', clientUpdatedAt: 2, createdAt: 2,
+      payload: { dreamId: 874, tombstone: original }, status: 'pending', retryCount: 0,
+    };
+    await act(async () => { await result.current.queueOfflineOperation(deletion, []); });
+    await act(async () => { finishCache(); await sync; });
+    expect(result.current.pendingMutationsRef.current).toEqual([expect.objectContaining({ id: 'delete-874' })]);
+    expect(mockSavePendingMutations).toHaveBeenLastCalledWith([expect.objectContaining({ id: 'delete-874' })], undefined);
+  });
+
   describe('syncPendingMutations', () => {
     it('retries after the initial sending-state write fails without remounting', async () => {
       const dream = buildDream({ id: 77 });

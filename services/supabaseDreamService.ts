@@ -1391,11 +1391,10 @@ export async function syncDreamMutationsInSupabase(
   });
 }
 
-export async function fetchDreamsFromSupabase(): Promise<DreamAnalysis[]> {
-  const { data, error } = await supabase
-    .from(DREAMS_TABLE)
-    .select('*')
-    .order('created_at', { ascending: false });
+export async function fetchDreamsFromSupabase(expectedUserId?: string): Promise<DreamAnalysis[]> {
+  let query = supabase.from(DREAMS_TABLE).select('*');
+  if (expectedUserId) query = query.eq('user_id', expectedUserId);
+  const { data, error } = await query.order('created_at', { ascending: false });
 
   if (error) {
     throw formatError(error, 'Failed to load dreams from Supabase');

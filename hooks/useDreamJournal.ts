@@ -188,6 +188,8 @@ export const useDreamJournal = () => {
     pendingMutationsLoaded,
     pendingMutationsScope,
     persistenceState,
+    refreshState,
+    remoteSnapshot,
     reloadDreams,
     retryPersistence,
   } = useDreamPersistence({ canUseRemoteSync });
@@ -212,6 +214,7 @@ export const useDreamJournal = () => {
     userScope,
     persistRemoteDreams,
     resolveRemoteId,
+    remoteSnapshot,
     initialMutations: pendingMutations,
     initialMutationsLoaded: pendingMutationsLoaded,
     initialMutationsScope: pendingMutationsScope,
@@ -777,11 +780,13 @@ export const useDreamJournal = () => {
 
       const remoteId = resolveRemoteId(dreamId);
       if (!remoteId) {
-        const removed = await clearQueuedMutationsForDream(dreamId);
-        if (!removed) {
-          throw new Error('Missing remote id for Supabase dream delete');
-        }
-        await persistRemoteDreams((prev) => removeDream(prev, dreamId));
+        if (!existing) return;
+        // An upload may already be in flight. Keep a durable identity-based
+        // deletion instead of forgetting the create and resurrecting on refresh.
+        await queueOfflineOperation(
+          buildQueuedMutation('delete', existing, { dreamId, tombstone: existing }),
+          (prev) => removeDream(prev, dreamId)
+        );
         await clearPendingImageJobsForDream(dreamId);
         return;
       }
@@ -1533,6 +1538,7 @@ export const useDreamJournal = () => {
     dreams,
     loaded,
     persistenceState,
+    refreshState,
     activeAnalysis,
     lastAnalysisOutcome,
     addDream,

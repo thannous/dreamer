@@ -318,6 +318,8 @@ const translations: Record<string, string> = {
     'journal.badge.sync_pending': 'Sincronizando',
     'journal.badge.sync_failed': 'Error de sincronización',
     'journal.badge.sync_conflict': 'Conflicto',
+    'journal.persistence.refresh_title': 'No se pudo actualizar el diario',
+    'journal.persistence.refresh_message': 'Tus sueños guardados siguen disponibles. Inténtalo de nuevo para buscar actualizaciones.',
     'journal.persistence.read_title': 'Diario temporalmente no disponible',
     'journal.persistence.read_device': 'No pudimos leer el diario guardado en este dispositivo. No se borró nada. Inténtalo de nuevo antes de guardar un sueño nuevo.',
     'journal.persistence.read_cache': 'No pudimos abrir los sueños de tu cuenta guardados en este dispositivo. No se borró nada. Inténtalo de nuevo para acceder a ellos.',
