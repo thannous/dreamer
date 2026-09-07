@@ -10,6 +10,8 @@ const mockJournal = jest.fn(() => ({ dreams: [], loaded: true, persistenceState:
 const mockMigration = jest.fn().mockResolvedValue(undefined);
 const mockDreamMigration = jest.fn().mockResolvedValue(undefined);
 const mockMark = jest.fn();
+let mockNotificationListener: ((response: any) => void) | undefined;
+const mockReplace = jest.fn();
 const mockGuestSession = jest.fn();
 const mockNavigation = { isReady: () => true, addListener: () => () => undefined };
 const mockChildren = ({ children }: React.PropsWithChildren) => <>{children}</>;
@@ -17,6 +19,7 @@ const mockChildren = ({ children }: React.PropsWithChildren) => <>{children}</>;
 jest.mock('@/global.css', () => ({}));
 jest.mock('react-native', () => ({
   ...jest.requireActual('../react-native-stub'),
+  Platform: { OS: 'ios' },
   LogBox: { ignoreLogs: jest.fn() },
   InteractionManager: { runAfterInteractions: (fn: () => void) => { fn(); return { cancel: jest.fn() }; } },
   Linking: { getInitialURL: jest.fn().mockResolvedValue(null), addEventListener: () => ({ remove: jest.fn() }) },
@@ -26,14 +29,14 @@ jest.mock('react-native-edge-to-edge', () => ({ SystemBars: () => null }));
 jest.mock('expo-font', () => ({ useFonts: () => [true, null] }));
 jest.mock('expo-localization', () => ({ useLocales: () => [{ languageCode: 'en' }] }));
 jest.mock('expo-splash-screen', () => ({ preventAutoHideAsync: jest.fn().mockResolvedValue(undefined), hideAsync: jest.fn().mockResolvedValue(undefined) }));
-jest.mock('expo-notifications', () => ({ getLastNotificationResponse: () => null, addNotificationResponseReceivedListener: () => ({ remove: jest.fn() }) }));
+jest.mock('expo-notifications', () => ({ getLastNotificationResponse: () => null, clearLastNotificationResponse: jest.fn(), addNotificationResponseReceivedListener: (listener: (response: any) => void) => { mockNotificationListener = listener; return { remove: jest.fn() }; } }));
 jest.mock('expo-router/react-navigation', () => ({ ThemeProvider: ({ children }: React.PropsWithChildren) => <>{children}</>, DarkTheme: {}, DefaultTheme: {} }));
 jest.mock('expo-router', () => {
   const Stack = Object.assign(({ children }: React.PropsWithChildren) => <>{children}</>, {
     Screen: ({ name }: { name: string }) => <div data-testid={`route:${name}`} />,
     Protected: ({ guard, children }: React.PropsWithChildren<{ guard: boolean }>) => guard ? <>{children}</> : null,
   });
-  return { Stack, router: { replace: jest.fn(), push: jest.fn() }, usePathname: () => mockLucid ? '/lucid' : '/recording', useNavigationContainerRef: () => mockNavigation, useRootNavigationState: () => ({ key: 'root' }) };
+  return { Stack, router: { replace: mockReplace, push: jest.fn() }, usePathname: () => mockLucid ? '/lucid' : '/recording', useNavigationContainerRef: () => mockNavigation, useRootNavigationState: () => ({ key: 'root' }) };
 });
 jest.mock('@/lib/appVariant', () => ({ get isLucidTrainer() { return mockLucid; } }));
 jest.mock('@/context/AuthContext', () => ({ AuthProvider: (props: React.PropsWithChildren) => mockChildren(props), useAuth: () => ({ user: mockUser, loading: false, returningGuestBlocked: false }) }));
@@ -101,6 +104,38 @@ describe('root product composition (real root and DreamsProvider)', () => {
     expect(mockMigration).not.toHaveBeenCalled();
     expect(mockDreamMigration).not.toHaveBeenCalled();
     expect(mockMark).toHaveBeenCalledWith('startup.route_committed');
+  });
+
+  it.each(['/weekly-recap', '/journal/42', '/recording'])('ignores legacy %s before accepting a Lucid notification', async (url) => {
+    mockLucid = true;
+    mockUser = null;
+    await mountStartup();
+    mockReplace.mockClear();
+    const notify = async (route: string) => {
+      await act(async () => {
+        mockNotificationListener?.({ notification: { request: { identifier: 'same-response', content: { data: { url: route } } } } });
+        await Promise.resolve();
+      });
+      await act(async () => { jest.advanceTimersByTime(100); await Promise.resolve(); });
+    };
+    await notify(url);
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(require('@/services/storageService').savePendingRecordingNotification).not.toHaveBeenCalled();
+    await notify('/lucid/morning');
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/morning');
+  });
+
+  it.each(['/weekly-recap', '/journal/42'])('retains Journal notification routing for %s', async (url) => {
+    mockLucid = false;
+    mockUser = null;
+    await mountStartup();
+    mockReplace.mockClear();
+    await act(async () => {
+      mockNotificationListener?.({ notification: { request: { identifier: 'journal-response', content: { data: { url } } } } });
+      await Promise.resolve();
+    });
+    await act(async () => { jest.advanceTimersByTime(100); await Promise.resolve(); });
+    expect(mockReplace).toHaveBeenCalledWith(url);
   });
 
   it.each([null, { id: 'journal-account' }])('retains Journal provider, routes and hosts for user %j', async (user) => {

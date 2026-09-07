@@ -259,11 +259,11 @@ assert_change \
 
 assert_change \
   "root lockfile consumers" package-lock.json pr \
-  true false true false true true false false false false false
+  true false true true true true false false false false false
 
 assert_change \
   "shared Node version" .nvmrc pr \
-  true true true false true true false false false false false
+  true true true true true true false false false false false
 
 assert_change \
   "site generator change" scripts/docs-check.js pr \

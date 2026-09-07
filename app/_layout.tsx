@@ -285,6 +285,8 @@ function RootLayoutNav({
 
   const enqueueNotification = useCallback(async (notification: Notifications.Notification) => {
     const notificationUrl = notification.request.content.data?.url;
+    // Reject legacy Journal payloads before claiming a response or recording intent.
+    if (isLucidTrainer && !isSafeLucidNotificationRoute(notificationUrl)) return;
     if (
       notificationUrl !== '/recording' &&
       !isSafeLucidNotificationRoute(notificationUrl) &&

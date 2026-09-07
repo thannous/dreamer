@@ -1,7 +1,7 @@
 # path	graph	CI consumers (noctalia includes Journal and Lucid)
-.nvmrc	build	noctalia meditation site edge_contracts
-package.json	build	noctalia site edge_contracts
-package-lock.json	build	noctalia site edge_contracts
+.nvmrc	build	noctalia meditation site edge_functions edge_contracts
+package.json	build	noctalia site edge_functions edge_contracts
+package-lock.json	build	noctalia site edge_functions edge_contracts
 scripts/android-device-lock.js	execution	noctalia meditation
 lib/productAnalytics.ts	contract	noctalia edge_contracts
 docs-src/static/data/curation-pages.json	content	noctalia site

@@ -19,9 +19,10 @@ def mobile_scripts_only(before, after):
     old_scripts, new_scripts = before.pop("scripts", {}), after.pop("scripts", {})
     if before != after or not isinstance(old_scripts, dict) or not isinstance(new_scripts, dict):
         return False
-    # Site uses test:changed/docs scripts. Install lifecycle scripts affect every
+    # Site uses test:changed/docs scripts; Edge contracts use test:file.
+    # Install lifecycle scripts affect every
     # consumer. Only explicitly mobile/local commands are exempt.
-    mobile = re.compile(r"^(?:boundaries:check|start(?::.*)?|android(?::.*)?|ios(?::.*)?|lucid:.*|typecheck:.*|lint(?::.*)?|test:(?:file|related|expo|node|perf|e2e.*))$")
+    mobile = re.compile(r"^(?:boundaries:check|start(?::.*)?|android(?::.*)?|ios(?::.*)?|lucid:.*|typecheck:.*|lint(?::.*)?|test:(?:related|expo|node|perf|e2e.*))$")
     changed = {key for key in old_scripts.keys() | new_scripts.keys()
                if old_scripts.get(key) != new_scripts.get(key)}
     return all(mobile.fullmatch(key) for key in changed)

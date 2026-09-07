@@ -132,22 +132,43 @@ describe('immersive home journey', () => {
     mockOffersAvailable = true;
   });
 
-  it('preserves a selected purchased world while ownership is unknown', async () => {
-    mockOwnershipStatus = 'error';
-    await AsyncStorage.setItem(StorageKey.world, JSON.stringify('tide'));
+  it.each(['loading', 'error'] as const)(
+    'preserves a stored purchased world after hydration while ownership is %s',
+    async (ownershipStatus) => {
+      mockOwnershipStatus = ownershipStatus;
+      await AsyncStorage.setItem(StorageKey.world, JSON.stringify('tide'));
+      const getItemMock = jest.mocked(AsyncStorage.getItem);
+      const getItem = getItemMock.getMockImplementation()!;
+      let finishWorldRead!: (value: string | null) => void;
+      const worldRead = new Promise<string | null>((resolve) => {
+        finishWorldRead = resolve;
+      });
+      getItemMock.mockImplementation((key) =>
+        key === StorageKey.world ? worldRead : getItem(key)
+      );
 
-    renderHome();
+      try {
+        renderHome();
+        expect(screen.getByRole('radio', { name: 'Constellation' }).props.accessibilityState)
+          .toMatchObject({ checked: true });
 
-    await waitFor(() =>
-      expect(screen.getByRole('radio', { name: 'Deep tide' }).props.accessibilityState).toMatchObject({
-        checked: true,
-      })
-    );
-    expect(await AsyncStorage.getItem(StorageKey.world)).toBe(JSON.stringify('tide'));
-    expect(screen.queryByText(/One-time purchase/)).toBeNull();
-    expect(screen.queryByTestId('home.journey.up-next')).toBeNull();
-    expect(screen.queryByTestId(ACTIVE_JOURNEY_CTA_TEST_ID)).toBeNull();
-  });
+        // Finish the real provider's storage hydration inside React's async act.
+        // A wall-clock polling deadline must not race the first render on busy CI.
+        await act(async () => {
+          finishWorldRead(await getItem(StorageKey.world));
+        });
+
+        expect(screen.getByRole('radio', { name: 'Deep tide' }).props.accessibilityState)
+          .toMatchObject({ checked: true });
+        expect(await getItem(StorageKey.world)).toBe(JSON.stringify('tide'));
+        expect(screen.queryByText(/One-time purchase/)).toBeNull();
+        expect(screen.queryByTestId('home.journey.up-next')).toBeNull();
+        expect(screen.queryByTestId(ACTIVE_JOURNEY_CTA_TEST_ID)).toBeNull();
+      } finally {
+        getItemMock.mockImplementation(getItem);
+      }
+    }
+  );
 
   it('preserves the Maestro screen anchor and opens the single recommended ritual', async () => {
     const view = renderHome();

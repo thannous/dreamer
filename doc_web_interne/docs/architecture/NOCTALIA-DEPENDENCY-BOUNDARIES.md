@@ -11,7 +11,7 @@ chain. This document explains the map; it does not duplicate its path list.
 | Graph | Current contract | Validation |
 | --- | --- | --- |
 | Business imports | Lucid owns observations and training state; Meditation owns its runtime. The explicitly pure primitives are `dateUtils`, `circuitBreaker`, `authValidation`. | `npm run boundaries:check`; root quality always runs it, Meditation quality runs its own subset using its installed TypeScript. |
-| Build | Journal and Lucid use the root installation, also consumed by site generators and Node database contracts. Meditation keeps its own package and lockfile. Shared Node version applies to all Node jobs, not Deno. | Mapped consumers; no workspace or dependency version changes. |
+| Build | Journal and Lucid use the root installation, also consumed by site generators, Node database contracts and Edge Functions lint. Meditation keeps its own package and lockfile. The Node version map covers all Node jobs, including the Node install/lint portion of Edge Functions; Deno itself stays separately pinned. The executor image pins the effective CI Node version, so changing `.nvmrc` selects compatibility checks but does not change that image. | Mapped consumers; no workspace or dependency version changes. |
 | Content/contracts | Verified common dream content reaches root mobile and generated site. Product analytics reaches root mobile and the Edge parity contract. | Map fixtures plus existing site/contract checks. Unknown data selects all surfaces. |
 | Execution | Root Expo runner imports the Android lock; six Meditation E2E commands invoke that same lock. | Both application quality gates selected for lock changes. These jobs do **not** constitute device execution or device validation. |
 
@@ -57,6 +57,7 @@ Mobile-only script changes in `package.json` and changes confined to the two
 mobile jobs in `.circleci/continue.yml` retain mobile checks without selecting
 site/backend jobs. Dependencies, installation hooks, shared executors, workflows,
 unknown configuration shapes and site jobs retain conservative shared validation.
+`test:file` is shared with Edge contracts and is not eligible for the mobile-only exemption.
 Routing scripts/map/tests run their regression checks through Noctalia quality.
 
 The root Vercel `ignoreCommand` skips preview builds of the legacy web app

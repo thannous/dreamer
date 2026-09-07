@@ -20,11 +20,11 @@ CONTINUATION = (ROOT / ".circleci/continue.yml").read_text()
 class BuildImpact(unittest.TestCase):
     def test_only_mobile_scripts_are_exempt(self):
         before = {"dependencies": {"expo": "57"}, "scripts": {"docs:build": "node scripts/docs-build.js"}}
-        for command in ["boundaries:check", "android", "start:lucid", "lint", "test:file"]:
+        for command in ["boundaries:check", "android", "start:lucid", "lint", "test:related"]:
             after = json.loads(json.dumps(before))
             after["scripts"][command] = "node mobile-tool.js"
             self.assertTrue(impact.mobile_scripts_only(json.dumps(before), json.dumps(after)))
-        for command in ["docs:build", "test:changed", "postinstall", "prepare", "unknown"]:
+        for command in ["docs:build", "test:changed", "test:file", "postinstall", "prepare", "unknown"]:
             after = json.loads(json.dumps(before))
             after["scripts"][command] = "changed"
             self.assertFalse(impact.mobile_scripts_only(json.dumps(before), json.dumps(after)))
@@ -93,10 +93,15 @@ class ClassificationIntegration(unittest.TestCase):
         (self.repo / ".circleci/continue.yml").write_text(CONTINUATION.replace("name: Typecheck Noctalia application", "name: Mobile contract"))
         self.classify({"run_noctalia": True, "run_meditation": True, "run_site": False, "run_edge_functions": False, "run_edge_contracts": False})
 
-    def test_shared_dependency_still_checks_site_and_contracts(self):
+    def test_shared_dependency_still_checks_site_and_both_edge_jobs(self):
         self.package["dependencies"]["expo"] = "58"
         (self.repo / "package.json").write_text(json.dumps(self.package))
-        self.classify({"run_noctalia": True, "run_site": True, "run_edge_contracts": True})
+        self.classify({"run_noctalia": True, "run_site": True, "run_edge_functions": True, "run_edge_contracts": True})
+
+    def test_test_file_changes_keep_edge_contracts(self):
+        self.package["scripts"]["test:file"] = "node changed-test-runner.js"
+        (self.repo / "package.json").write_text(json.dumps(self.package))
+        self.classify({"run_noctalia": True, "run_site": True, "run_edge_functions": True, "run_edge_contracts": True})
 
     def test_site_job_change_is_not_skipped(self):
         (self.repo / ".circleci/continue.yml").write_text(CONTINUATION.replace("npm run docs:build", "npm run docs:release-check"))

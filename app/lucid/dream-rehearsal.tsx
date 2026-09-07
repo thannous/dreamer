@@ -371,9 +371,8 @@ export default function LucidDreamRehearsalScreen() {
     if (clearedUnavailableSessionIdRef.current === session.sessionId) return;
     clearedUnavailableSessionIdRef.current = session.sessionId;
     void clearCurrent().catch(() => {
-      if (clearedUnavailableSessionIdRef.current === session.sessionId) {
-        clearedUnavailableSessionIdRef.current = null;
-      }
+      // Keep the attempt guard on failure: the hook exposes the error and the
+      // explicit retry action below. Resetting it would retry on every render.
     });
   }, [blockingUnavailableSession, clearCurrent, rehearsalMutating, session]);
   const progress = currentForScene ? getLucidDreamRehearsalProgress(currentForScene) : null;

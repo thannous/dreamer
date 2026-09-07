@@ -1,7 +1,7 @@
 /* @jest-environment jsdom */
 
 import React from 'react';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import {
   completeLucidDreamRehearsalSession,
@@ -485,6 +485,25 @@ describe('Lucid dream rehearsal screen', () => {
     expect(mockReplace).not.toHaveBeenCalled();
     expect(mockStart).not.toHaveBeenCalled();
     expect(screen.queryByRole('button', { name: 'Ouvrir la répétition en cours' })).toBeNull();
+  });
+
+  it('attempts unavailable-session cleanup once on failure and allows an explicit retry', async () => {
+    mockRehearsal.currentSession = { ...started(), dreamId: 'missing', status: 'interrupted' };
+    mockClearCurrent.mockRejectedValue(new Error('storage unavailable'));
+    const { rerender } = render(<LucidDreamRehearsalScreen />);
+    await act(async () => { await Promise.resolve(); });
+    mockRehearsal = { ...mockRehearsal, isMutating: true };
+    rerender(<LucidDreamRehearsalScreen />);
+    mockRehearsal = { ...mockRehearsal, isMutating: false, error: 'persistence_failed' };
+    rerender(<LucidDreamRehearsalScreen />);
+    await act(async () => { await Promise.resolve(); });
+    expect(mockClearCurrent).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole('button', { name: 'Réessayer' }));
+    await waitFor(() => expect(mockClearCurrent).toHaveBeenCalledTimes(2));
+    await act(async () => { await Promise.resolve(); });
+    rerender(<LucidDreamRehearsalScreen />);
+    expect(mockClearCurrent).toHaveBeenCalledTimes(2);
+    expect(mockRefresh).not.toHaveBeenCalled();
   });
 
   it('surfaces a typed storage error without exposing raw reasons', () => {
