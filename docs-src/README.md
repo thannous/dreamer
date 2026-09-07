@@ -132,6 +132,45 @@ commit that small manifest change too. Never force-add `docs/` or
 
 Deployment helper settings live in `docs-src/config/cloudflare-pages.json`.
 
+### Build inputs and image reuse
+
+The `buildWatchPaths` entry in that file describes the proposed Pages watch
+rules. It is not automatically applied to Cloudflare by a Git push. Compare
+and apply it separately when changing hosting settings is authorized; keep
+the provider's existing branch and deployment settings unchanged. The rules
+include all paths by default and exclude identified application-only and
+internal documentation trees. Shared `data/`, all `scripts/`, root manifests,
+Node configuration and unknown paths continue to trigger builds. A site
+generator acquiring an input from an excluded tree requires updating these
+rules in the same change.
+
+Preview the result for a Git diff without changing Pages or cancelling CI:
+
+```bash
+npm run docs:build-impact -- --base <previous-sha> --head <new-sha>
+```
+
+The diagnostic includes both sides of moves, preserves shared inputs in mixed
+changes and conservatively builds on an unusable diff or the provider's large
+push fallbacks. A mobile-only change to a script in `package.json` still counts
+as a build input; these rules do not attempt semantic manifest filtering.
+
+SEO and responsive symbol images use content fingerprints instead of file
+modification times. Their provenance files are
+`docs-src/config/image-build-cache/seo.json` and `symbols.json`. After editing
+sources, rendering recipes or generators, run `npm run docs:build` and
+`npm run docs:check`, and include the updated provenance files and tracked image
+derivatives in the change. Do not edit or seed fingerprints manually: an absent
+or incompatible record intentionally rebuilds the image. Each record includes
+the source/recipe/generator/toolchain fingerprint and the encoded output hash;
+changed or missing outputs are regenerated even if their dates appear fresh.
+The existing `--force` generator option bypasses reuse.
+
+An unchanged fresh checkout can reuse the tracked derivatives when its Sharp
+toolchain matches. An encoder version change intentionally invalidates them.
+These files are generator inputs under `config/`, not public assets copied to
+`docs/`. Keep them separate from the ignored generated HTML directory.
+
 ### Choose the right preview level
 
 Use the smallest preview level that answers the current question:

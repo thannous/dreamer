@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
+const { createImageBuildCache } = require('./lib/image-build-cache');
 const { ROOT_DIR } = require('./lib/docs-site-config');
 const {
   SYMBOL_RESPONSIVE_WIDTHS,
@@ -141,24 +142,27 @@ function assertCompleteSymbolCoverage(illustrations, catalog) {
   }
 }
 
-async function generateIllustrations(illustrations, { force = false } = {}) {
+async function generateIllustrations(illustrations, { force = false, manifestPath = path.join(
+  ROOT_DIR, 'docs-src/config/image-build-cache/symbols.json'
+) } = {}) {
+  const cache = createImageBuildCache({
+    manifestPath,
+    codePaths: [__filename, require.resolve('./lib/image-build-cache'),
+      require.resolve('./lib/symbol-image-assets')],
+    versions: sharp.versions,
+  });
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   let generated = 0;
   let total = 0;
   for (const illustration of illustrations) {
-    const sourceMtimeMs = fs.statSync(illustration.sourcePath).mtimeMs;
     for (const width of WIDTHS) {
       total += 1;
       const target = outputPath(illustration, width);
-      // Only re-encode when the source changed: repeated builds (docs:dev,
-      // CI reruns) must not pay for hundreds of sharp encodes for nothing.
-      if (
-        !force &&
-        fs.existsSync(target) &&
-        fs.statSync(target).mtimeMs >= sourceMtimeMs
-      ) {
-        continue;
-      }
+      const recipe = { width, withoutEnlargement: true, rotate: true,
+        quality: width === WIDTHS[0] ? 78 : 82, effort: 5, smartSubsample: true };
+      const key = path.basename(target);
+      const input = cache.fingerprint(illustration.sourcePath, recipe);
+      if (!force && cache.isFresh(key, input, target)) continue;
       await sharp(illustration.sourcePath)
         .rotate()
         .resize({ width, withoutEnlargement: true })
@@ -168,6 +172,7 @@ async function generateIllustrations(illustrations, { force = false } = {}) {
           smartSubsample: true,
         })
         .toFile(target);
+      cache.record(key, input, target);
       generated += 1;
       if (generated % GENERATION_PROGRESS_INTERVAL === 0) {
         emitProgress(
@@ -182,6 +187,7 @@ async function generateIllustrations(illustrations, { force = false } = {}) {
         `${total - generated} up to date.`
     );
   }
+  cache.commit();
 }
 
 async function validateIllustrations(illustrations) {
@@ -267,6 +273,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  generateIllustrations,
   assertCompleteSymbolCoverage,
   collectIllustrations,
   collectGeneratedIllustrations,

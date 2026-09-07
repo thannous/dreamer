@@ -1,0 +1,278 @@
+{
+  "base": "795878a76881732fd1f9c449b679839667bb2089",
+  "branch": "codex/monorepo-build-optimization",
+  "capturedUtc": "2026-09-07T01:32:02+00:00",
+  "status": "local-only; hosting rules not applied",
+  "tests": {
+    "suites": 4,
+    "tests": 48,
+    "passed": true
+  },
+  "build": {
+    "initial_seed_seconds": 230.1,
+    "reuse_seconds": 6.24,
+    "docs_check_seconds": 7.97,
+    "note": "Same modified code, first seed versus reuse; not production before/after."
+  },
+  "fresh_copy": {
+    "file_dates_changed": 3344,
+    "seo_variants": 630,
+    "symbols_variants": 640,
+    "regenerated": 0,
+    "seo_seconds": 0.369,
+    "symbols_seconds": 0.332,
+    "manifests_identical": true,
+    "note": "Independent source/output copy with changed mtimes, existing node_modules shared; not Linux runtime."
+  },
+  "cache_manifests": {
+    "seo": {
+      "entries": 610,
+      "all_outputs_already_tracked": true,
+      "outputs_not_tracked": []
+    },
+    "symbols": {
+      "entries": 640,
+      "all_outputs_already_tracked": true,
+      "outputs_not_tracked": []
+    }
+  },
+  "linux": {
+    "sharp": "0.34.5",
+    "libvips_package": "@img/sharp-libvips-linux-x64@1.2.4",
+    "versions_match_darwin_arm64": true,
+    "runtime_tested": false
+  },
+  "files_sha256": {
+    "scripts/lib/image-build-cache.js": "1812ccd21b9ed18aa266029cda009c82ad916be9b6bace659b63b7a6bc081b8d",
+    "scripts/generate-image-seo-assets.js": "8e809581c3f1be4ca5cfbef2c8b53a1639b98a10a0852432344de326a5a51e37",
+    "scripts/generate-symbol-responsive-images.js": "87dc147ae7f2c3cf7655666f485892d94b8dfb5669c51b80337f259549f1bb69",
+    "scripts/check-pages-build-impact.js": "ba9e6bb611755cce21f619c531ccb799e956130e1cef9f4459422401ef93f6ea",
+    "docs-src/config/cloudflare-pages.json": "f50aae0bba967d28ca5156e0a9ad12313d3d3511a8ba525e4f27cd1ada69b15d",
+    "docs-src/config/image-build-cache/seo.json": "feea14878ad129c921f818d4f98ea2590a77ce8992d14d896ad340d19208776f",
+    "docs-src/config/image-build-cache/symbols.json": "2f6493a57b984130e3245f8d200010d3cc7fb413b2c1eb18c61dd0a4bfea07b2"
+  },
+  "watch_paths_replay": {
+    "baseline": "795878a76881732fd1f9c449b679839667bb2089",
+    "sample": "20 first-parent transitions; not provider push events",
+    "total": 20,
+    "wouldBuild": 15,
+    "wouldSkip": 5,
+    "rows": [
+      {
+        "base": "42daad3a8d7390ce96ca8bfbc420a28de37d0c7d",
+        "head": "795878a76881732fd1f9c449b679839667bb2089",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          ".circleci/continue.yml",
+          ".circleci/scripts/classify-changes.sh",
+          ".circleci/tests/classify-changes.test.sh",
+          ".circleci/tests/fallback-jest.test.sh"
+        ]
+      },
+      {
+        "base": "8f7dd940595c6d3e5fc37dc49b0602345605e2dd",
+        "head": "42daad3a8d7390ce96ca8bfbc420a28de37d0c7d",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          ".astra-advisor.json"
+        ]
+      },
+      {
+        "base": "522f285587effdb3fa6f42df7aab8d4b61d2a266",
+        "head": "8f7dd940595c6d3e5fc37dc49b0602345605e2dd",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          "docs-src/content/blog/blog.index/de.md",
+          "docs-src/content/blog/blog.index/es.md",
+          "docs-src/content/blog/blog.index/fr.md",
+          "docs-src/content/blog/blog.index/it.md",
+          "docs-src/content/blog/blog.stress-dreams-work/de.md",
+          "docs-src/content/blog/blog.stress-dreams-work/es.md",
+          "docs-src/content/blog/blog.stress-dreams-work/fr.md",
+          "docs-src/content/blog/blog.stress-dreams-work/it.md",
+          "scripts/stress-dreams-editorial.test.js"
+        ]
+      },
+      {
+        "base": "a75fba8833e13deff786bd115a5c42860282d37c",
+        "head": "522f285587effdb3fa6f42df7aab8d4b61d2a266",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          "docs-src/content/blog/blog.stress-dreams-work/de.md",
+          "docs-src/content/blog/blog.stress-dreams-work/es.md",
+          "docs-src/content/blog/blog.stress-dreams-work/fr.md",
+          "docs-src/content/blog/blog.stress-dreams-work/it.md",
+          "scripts/stress-dreams-editorial.test.js"
+        ]
+      },
+      {
+        "base": "92a9c51e5716ec961be3d53aced83fa9fb93f071",
+        "head": "a75fba8833e13deff786bd115a5c42860282d37c",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          ".circleci/continue.yml",
+          "package.json"
+        ]
+      },
+      {
+        "base": "a6bb63b17558b667dc17ede8ffe05dd5fca3b673",
+        "head": "92a9c51e5716ec961be3d53aced83fa9fb93f071",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          ".circleci/continue.yml",
+          "package.json",
+          "scripts/check-social-public-proof.js",
+          "scripts/check-social-public-proof.test.js"
+        ]
+      },
+      {
+        "base": "66393df29bb97ec5c0243f369e28b00ad0a9a8e0",
+        "head": "a6bb63b17558b667dc17ede8ffe05dd5fca3b673",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          ".astra-advisor.json",
+          "outputs/019faebf-16c7-7d52-8c71-cdb4296c3b6a/build_noctalia_metrics.mjs",
+          "outputs/019faebf-16c7-7d52-8c71-cdb4296c3b6a/historique-performances-sociales-noctalia-2026-09-03.xlsx",
+          "outputs/019faebf-16c7-7d52-8c71-cdb4296c3b6a/preview-historique.png",
+          "outputs/019faebf-16c7-7d52-8c71-cdb4296c3b6a/preview-horaires.png",
+          "outputs/019faebf-16c7-7d52-8c71-cdb4296c3b6a/preview-sources.png",
+          "outputs/019faebf-16c7-7d52-8c71-cdb4296c3b6a/preview-synthese.png",
+          "package.json",
+          "scripts/check-social-automation-coverage.js",
+          "scripts/check-social-automation-coverage.test.js",
+          "scripts/check-social-platform-inventory.js",
+          "scripts/check-social-platform-inventory.test.js",
+          "scripts/check-social-public-proof.js",
+          "scripts/query-noctalia-supabase-logs.js",
+          "scripts/query-noctalia-supabase-logs.test.js",
+          "supabase/functions/api/routes/analytics.test.ts",
+          "supabase/functions/api/routes/analytics.ts",
+          "supabase/migrations/20260829140000_product_analytics_journal_layout_events.sql"
+        ]
+      },
+      {
+        "base": "7ebe6b314b07e3b2d1650ebcc691d4a9027e7e55",
+        "head": "66393df29bb97ec5c0243f369e28b00ad0a9a8e0",
+        "build": false,
+        "reason": "excluded-inputs-only",
+        "relevantPaths": []
+      },
+      {
+        "base": "719af886ea3d717f1798d129c0c8878c8f0a201e",
+        "head": "7ebe6b314b07e3b2d1650ebcc691d4a9027e7e55",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          ".agents/skills/app-release-readiness/SKILL.md",
+          ".agents/skills/app-release-readiness/references/release-gates.md"
+        ]
+      },
+      {
+        "base": "600341bc5d473c3bc16ef3bd249e72b32c8f5f0e",
+        "head": "719af886ea3d717f1798d129c0c8878c8f0a201e",
+        "build": false,
+        "reason": "excluded-inputs-only",
+        "relevantPaths": []
+      },
+      {
+        "base": "47a08500988f3812edc412a462973a50c16028a0",
+        "head": "600341bc5d473c3bc16ef3bd249e72b32c8f5f0e",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          "scripts/lib/maestro-ti429-flow-contract.js",
+          "scripts/lib/maestro-ti429-flow-contract.test.js"
+        ]
+      },
+      {
+        "base": "9f9fc771ee7c2097d3e3cc64602c18e7c3911811",
+        "head": "47a08500988f3812edc412a462973a50c16028a0",
+        "build": false,
+        "reason": "excluded-inputs-only",
+        "relevantPaths": []
+      },
+      {
+        "base": "70841bbf2e5185d20484a79a671c742586ebeceb",
+        "head": "9f9fc771ee7c2097d3e3cc64602c18e7c3911811",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          "package-lock.json",
+          "package.json",
+          "scripts/lib/maestro-base-physical-guard.js",
+          "scripts/lib/maestro-base-physical-guard.test.js",
+          "scripts/lib/maestro-ti429-flow-contract.js",
+          "scripts/lib/maestro-ti429-flow-contract.test.js",
+          "scripts/run-dreamer-vnext-ti429-harness.js",
+          "scripts/run-dreamer-vnext-ti429-harness.test.js",
+          "scripts/run-maestro-android.js",
+          "scripts/run-maestro-android.test.js"
+        ]
+      },
+      {
+        "base": "18acd747bbb488db62e08ddb36939491829bccf3",
+        "head": "70841bbf2e5185d20484a79a671c742586ebeceb",
+        "build": false,
+        "reason": "excluded-inputs-only",
+        "relevantPaths": []
+      },
+      {
+        "base": "8928af40dcd5cc471ad40a83e696ec8638595c7e",
+        "head": "18acd747bbb488db62e08ddb36939491829bccf3",
+        "build": true,
+        "reason": "provider-fallback",
+        "relevantPaths": []
+      },
+      {
+        "base": "b299d3a0ff2c8a206902d0bcc80097d7d227ffb9",
+        "head": "8928af40dcd5cc471ad40a83e696ec8638595c7e",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          ".easignore"
+        ]
+      },
+      {
+        "base": "965b3f74c9ce80800bb932984904f1056b3a1b6d",
+        "head": "b299d3a0ff2c8a206902d0bcc80097d7d227ffb9",
+        "build": false,
+        "reason": "excluded-inputs-only",
+        "relevantPaths": []
+      },
+      {
+        "base": "843e17ebc821a61262b806134847a136c2632eb4",
+        "head": "965b3f74c9ce80800bb932984904f1056b3a1b6d",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          "data/dream-symbols.json"
+        ]
+      },
+      {
+        "base": "227e489e438e3b9e0c96e47954cf090e4bc5888d",
+        "head": "843e17ebc821a61262b806134847a136c2632eb4",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          "data/dream-symbols.json"
+        ]
+      },
+      {
+        "base": "eecf7d55961b95abb742ca83f5dd694c1334e538",
+        "head": "227e489e438e3b9e0c96e47954cf090e4bc5888d",
+        "build": true,
+        "reason": "site-or-unknown-input",
+        "relevantPaths": [
+          "scripts/lib/content-hub-registry.test.js"
+        ]
+      }
+    ]
+  }
+}
