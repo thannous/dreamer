@@ -38,11 +38,10 @@ jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
 
 jest.mock('react-native', () => jest.requireActual('../react-native-stub'));
 
-jest.mock('@/context/DreamsContext', () => ({
-  useDreamsData: () => ({ dreams: mockDreams, loaded: true }),
-}));
+
 
 jest.mock('@/context/LucidTrainerContext', () => ({
+  useLucidObservations: () => ({ dreams: mockDreams.map(dream => ({ ...dream, id: String(dream.id), occurredAt: dream.id })), loaded: true }),
   useLucidTrainer: () => ({
     content: {
       locale: 'fr',
@@ -140,11 +139,11 @@ describe('Lucid Journal tab', () => {
     fireEvent.click(screen.getByTestId(`lucid-journal-dream-${mockDreams[0].id}`));
 
     expect(mockPush).toHaveBeenNthCalledWith(1, '/lucid/(tabs)/settings');
-    expect(mockPush).toHaveBeenNthCalledWith(2, '/recording');
+    expect(mockPush).toHaveBeenNthCalledWith(2, '/lucid/morning');
     expect(mockPush).toHaveBeenNthCalledWith(3, '/lucid/dream-signs');
     expect(mockPush).toHaveBeenNthCalledWith(4, '/lucid/dream-atlas');
     expect(mockPush).toHaveBeenNthCalledWith(5, '/lucid/morning-voice');
-    expect(mockPush).toHaveBeenNthCalledWith(6, `/journal/${mockDreams[0].id}`);
+    expect(mockPush).toHaveBeenNthCalledWith(6, `/lucid/observation?id=${mockDreams[0].id}`);
   });
 
   it('searches accent-insensitively without duplicating journal state', () => {

@@ -1,3 +1,4 @@
+import * as lucidStorage from '@/services/lucidTrainerStorage';
 import {
   createInitialLucidTrainerState,
   createLucidProgramProgress,
@@ -12,6 +13,7 @@ import type {
   LucidTrainerState,
 } from '@/lib/lucid/model';
 import {
+  LUCID_SYNC_LOCAL_ONLY_REASON,
   computeLucidSyncBackoffMs,
   claimLucidTrainerGuestScope,
   createLucidTrainerMutation,
@@ -20,6 +22,7 @@ import {
   parseLucidRemoteSnapshot,
   pullLucidTrainerRemoteState,
   replayLucidTrainerQueue,
+  queueLucidTrainerMutation,
   type LucidPullTransport,
   type LucidScopeMigrationStorageAdapter,
   type LucidSyncStorageAdapter,
@@ -162,6 +165,81 @@ describe('lucidTrainerSync', () => {
     });
   });
 
+  function localSign(): Extract<LucidSyncEntity, { entityType: 'dream_sign' }> {
+    return { entityType: 'dream_sign', entityKey: 'sign:lucid:mirror', value: {
+      id: 'sign:lucid:mirror', decision: 'confirmed', customLabel: 'My mirror',
+      sourceDreamIds: ['101'], updatedAt: NOW,
+    } };
+  }
+
+  it('does not grow the queue for repeated local-only changes', async () => {
+    const existing = mutation(localSign());
+    let queue = [existing];
+    const spy = jest.spyOn(lucidStorage, 'updateLucidTrainerSyncQueue').mockImplementation(async (_scope, update) => {
+      queue = [...await update(queue)];
+      return queue;
+    });
+    try {
+      for (let i = 0; i < 4; i++) {
+        await queueLucidTrainerMutation(mutation(localSign(), { id: `new-${i}`, clientRequestId: `new-${i}` }));
+        await queueLucidTrainerMutation(mutation(dreamAtlasEntity(), { id: `atlas-${i}` }));
+      }
+      expect(queue).toEqual([existing]);
+      expect(spy).not.toHaveBeenCalled();
+    } finally { spy.mockRestore(); }
+  });
+
+  it('skips failing queue persistence for local-only saves while compatible mutations still report the failure', async () => {
+    const failure = new Error('queue persistence unavailable');
+    const spy = jest.spyOn(lucidStorage, 'updateLucidTrainerSyncQueue').mockRejectedValue(failure);
+    try {
+      await expect(queueLucidTrainerMutation(mutation(localSign()))).resolves.toEqual([]);
+      await expect(queueLucidTrainerMutation(mutation(dreamAtlasEntity()))).resolves.toEqual([]);
+      expect(spy).not.toHaveBeenCalled();
+      await expect(queueLucidTrainerMutation(mutation(preferencesEntity()))).rejects.toBe(failure);
+      expect(spy).toHaveBeenCalledTimes(1);
+    } finally { spy.mockRestore(); }
+  });
+
+  it('ignores an old-client sign tombstone and still pulls compatible progress', async () => {
+    const current = state();
+    current.dreamSignDecisions = [localSign().value];
+    const store = memoryAdapter(current);
+    const progress: LucidSyncEntity = { entityType: 'progress', entityKey: 'mild', value: createLucidProgramProgress('mild', NOW + 50) };
+    await pullLucidTrainerRemoteState(SCOPE, {
+      storage: store.adapter, isNetworkReachable: async () => true,
+      transport: { pull: async () => ({ entities: [
+        { entity_type: 'dream_sign', entity_key: localSign().entityKey, revision: '1', client_updated_at: new Date(NOW + 100).toISOString(), deleted_at: new Date(NOW + 100).toISOString() },
+        { entity_type: 'progress', entity_key: 'mild', revision: '2', client_updated_at: new Date(NOW + 50).toISOString(), entity: progress },
+      ] }) },
+    });
+    expect(store.state.dreamSignDecisions).toEqual([localSign().value]);
+    expect(store.state.progress).toEqual([progress.value]);
+  });
+
+  it('quarantines old local-only uploads while compatible uploads finish without false pending errors', async () => {
+    const local = mutation(localSign(), { id: 'local' });
+    const compatible = mutation(preferencesEntity(), { id: 'compatible' });
+    const store = memoryAdapter(state(), [local, compatible]);
+    const push = jest.fn(async (items: readonly LucidSyncMutation[]): Promise<LucidSyncTransportResult[]> =>
+      items.map((item) => ({ mutationId: item.id, status: 'ack' })));
+    const result = await replayLucidTrainerQueue(SCOPE, { storage: store.adapter, transport: { push }, isNetworkReachable: async () => true });
+    expect(push).toHaveBeenCalledWith([compatible]);
+    expect(result).toMatchObject({ acknowledged: 1, pending: 0, blocked: 0 });
+    expect(store.queue).toEqual([{ ...local, status: 'blocked', nextAttemptAt: undefined, lastError: LUCID_SYNC_LOCAL_ONLY_REASON }]);
+  });
+
+  it.each(['ack', 'conflict'] as const)('rejects an unexpected autonomous entity in a compatible %s response', async (status) => {
+    const current = state();
+    current.dreamSignDecisions = [localSign().value];
+    const store = memoryAdapter(current, [mutation()]);
+    await replayLucidTrainerQueue(SCOPE, { storage: store.adapter, isNetworkReachable: async () => true,
+      transport: { push: async () => [{ mutationId: 'mutation-1', status, remoteEntity: { ...localSign(), value: { ...localSign().value, decision: 'rejected', updatedAt: NOW + 100 } } }] },
+    });
+    expect(store.state.dreamSignDecisions).toEqual([localSign().value]);
+    expect(store.queue[0].status).toBe('blocked');
+  });
+
   it('serializes the dream atlas overlay as a singleton sync entity', () => {
     const entity = dreamAtlasEntity();
     const ids = ['atlas-mutation', 'atlas-request'];
@@ -233,7 +311,7 @@ describe('lucidTrainerSync', () => {
 
     expect(result).toMatchObject({ outcome: 'completed', attempted: 1, acknowledged: 1 });
     expect(store.queue).toEqual([]);
-    expect(store.adapter.updateQueue).toHaveBeenCalledTimes(2);
+    expect(store.adapter.updateQueue).toHaveBeenCalledTimes(3);
   });
 
   it('merges progress conflicts and queues a fresh idempotent resolution', async () => {
@@ -630,7 +708,7 @@ describe('lucidTrainerSync', () => {
     expect(store.state.experiments).toHaveLength(0);
   });
 
-  it('pulls a remote dream atlas overlay without resetting local trainer data', async () => {
+  it('ignores a v1 Atlas overwrite and preserves local trainer data', async () => {
     const current = state();
     current.experiments = [
       {
@@ -668,14 +746,14 @@ describe('lucidTrainerSync', () => {
       now: () => NOW + 30,
     });
 
-    expect(result).toMatchObject({ received: 1, merged: 1, reset: false, deleted: 0 });
-    expect(store.state.dreamAtlas).toEqual(remote.value);
+    expect(result).toMatchObject({ received: 1, merged: 0, reset: false, deleted: 0 });
+    expect(store.state.dreamAtlas).toEqual(current.dreamAtlas);
     expect(store.state.experiments).toHaveLength(1);
     expect(store.state.onboarding).toEqual(current.onboarding);
     expect(store.state.preferences.cloudSyncEnabled).toBe(true);
   });
 
-  it('applies a dream atlas tombstone as an empty overlay and never as a global reset', async () => {
+  it('ignores a v1 Atlas tombstone without losing the overlay or its queued payload', async () => {
     const current = state();
     current.dreamAtlas = dreamAtlasEntity().value;
     current.experiments = [
@@ -716,11 +794,11 @@ describe('lucidTrainerSync', () => {
       now: () => deletedAt + 1,
     });
 
-    expect(result).toMatchObject({ reset: false, merged: 0, deleted: 1, received: 1 });
-    expect(store.state.dreamAtlas).toEqual(createEmptyLucidDreamAtlasOverlay(deletedAt));
+    expect(result).toMatchObject({ reset: false, merged: 0, deleted: 0, received: 1 });
+    expect(store.state.dreamAtlas).toEqual(current.dreamAtlas);
     expect(store.state.experiments).toHaveLength(1);
     expect(store.state.preferences.cloudSyncEnabled).toBe(true);
-    expect(store.queue).toEqual([]);
+    expect(store.queue).toEqual([expect.objectContaining({ status: 'blocked', lastError: LUCID_SYNC_LOCAL_ONLY_REASON, payload: { entity: dreamAtlasEntity() } })]);
   });
 
   it('keeps a newer local dream atlas overlay against an older remote tombstone', async () => {
@@ -753,15 +831,10 @@ describe('lucidTrainerSync', () => {
     });
 
     expect(store.state.dreamAtlas?.renamed).toEqual({ 'sign:mirror': 'Local' });
-    expect(store.queue[0]).toMatchObject({
-      operation: 'upsert',
-      entityType: 'dream_atlas',
-      baseRevision: '6',
-      id: 'atlas-rebase',
-    });
+    expect(store.queue).toEqual([]);
   });
 
-  it('resolves dream atlas conflicts with last-write-wins during replay', async () => {
+  it('quarantines Atlas uploads before a v1 conflict can overwrite local preferences', async () => {
     const current = state();
     const local = dreamAtlasEntity({
       updatedAt: NOW + 20,
@@ -797,9 +870,10 @@ describe('lucidTrainerSync', () => {
       now: () => NOW + 40,
     });
 
-    expect(result.conflicts).toBe(1);
-    expect(store.state.dreamAtlas).toEqual(remote.value);
-    expect(store.queue).toEqual([]);
+    expect(result.conflicts).toBe(0);
+    expect(result.attempted).toBe(0);
+    expect(store.state.dreamAtlas).toEqual(current.dreamAtlas);
+    expect(store.queue).toEqual([expect.objectContaining({ status: 'blocked', lastError: LUCID_SYNC_LOCAL_ONLY_REASON, payload: { entity: local } })]);
   });
 
   it('treats singleton tombstones as a durable full reset and clears stale uploads', async () => {
@@ -818,7 +892,10 @@ describe('lucidTrainerSync', () => {
         updatedAt: NOW + 10,
       },
     ];
+    current.dreamSignDecisions = [localSign().value];
+    current.dreamAtlas = dreamAtlasEntity().value;
     const store = memoryAdapter(current, [
+      mutation(localSign(), { id: 'local-quarantine', status: 'blocked', lastError: LUCID_SYNC_LOCAL_ONLY_REASON }),
       mutation(preferencesEntity(current), { id: 'offline-upload' }),
     ]);
     const deletedAt = NOW + 100;
@@ -844,6 +921,8 @@ describe('lucidTrainerSync', () => {
 
     expect(result).toMatchObject({ reset: true, deleted: 1 });
     expect(store.queue).toEqual([]);
+    expect(store.state.dreamSignDecisions ?? []).toEqual([]);
+    expect(store.state.dreamAtlas?.renamed ?? {}).toEqual({});
     expect(store.state).toMatchObject({
       createdAt: deletedAt + 1,
       preferences: { cloudSyncEnabled: false },
@@ -1112,7 +1191,7 @@ describe('lucidTrainerSync', () => {
       .map((item) => `${item.entityType}:${item.entityKey}`);
   }
 
-  it('claims a newer guest dream atlas overlay and queues a single cloud upsert', async () => {
+  it('claims a newer guest Atlas overlay without enqueueing a cloud upsert', async () => {
     const guest = state(false);
     guest.dreamAtlas = atlasOverlay(NOW + 40, { renamed: { 'sign:mirror': 'Guest' } });
     const account = state(true);
@@ -1126,9 +1205,9 @@ describe('lucidTrainerSync', () => {
       idFactory: () => `00000000-0000-4000-8000-${String(++id).padStart(12, '0')}`,
     });
 
-    expect(result).toEqual({ claimed: true, queued: 1 });
+    expect(result).toEqual({ claimed: true, queued: 0 });
     expect(store.states.get(SCOPE)?.dreamAtlas).toEqual(guest.dreamAtlas);
-    expect(queuedAtlasKeys(store.queues.get(SCOPE))).toEqual(['dream_atlas:dream_atlas']);
+    expect(queuedAtlasKeys(store.queues.get(SCOPE))).toEqual([]);
     expect(store.queues.get(SCOPE)?.some((item) => item.entityType === 'dream_sign')).toBe(false);
     expect(store.cleared).toEqual(['guest']);
     expect(store.states.get('guest')?.dreamAtlas).toEqual(
@@ -1158,7 +1237,7 @@ describe('lucidTrainerSync', () => {
     expect(store.cleared).toEqual(['guest']);
   });
 
-  it('resolves a tied dream atlas overlay with the existing canonical winner and queues it once', async () => {
+  it('resolves a tied dream atlas overlay with the existing canonical winner without a cloud upload', async () => {
     const guest = state(false);
     guest.dreamAtlas = atlasOverlay(NOW + 30, { renamed: { 'sign:omega': 'Omega' } });
     const account = state(true);
@@ -1172,14 +1251,14 @@ describe('lucidTrainerSync', () => {
       idFactory: () => `00000000-0000-4000-8000-${String(++id).padStart(12, '0')}`,
     });
 
-    expect(result).toEqual({ claimed: true, queued: 1 });
+    expect(result).toEqual({ claimed: true, queued: 0 });
     expect(store.states.get(SCOPE)?.dreamAtlas).toEqual(guest.dreamAtlas);
-    expect(queuedAtlasKeys(store.queues.get(SCOPE))).toEqual(['dream_atlas:dream_atlas']);
-    expect(store.queues.get(SCOPE)?.filter((item) => item.entityType === 'dream_atlas')).toHaveLength(1);
+    expect(queuedAtlasKeys(store.queues.get(SCOPE))).toEqual([]);
+    expect(store.queues.get(SCOPE)?.filter((item) => item.entityType === 'dream_atlas')).toHaveLength(0);
     expect(store.cleared).toEqual(['guest']);
   });
 
-  it('treats an explicit empty atlas clear with updatedAt>0 as guest data and queues it', async () => {
+  it('treats an explicit empty atlas clear with updatedAt>0 as local guest data', async () => {
     const guest = state(false);
     guest.dreamAtlas = createEmptyLucidDreamAtlasOverlay(NOW + 12);
     guest.updatedAt = guest.createdAt;
@@ -1196,9 +1275,9 @@ describe('lucidTrainerSync', () => {
       idFactory: () => `00000000-0000-4000-8000-${String(++id).padStart(12, '0')}`,
     });
 
-    expect(result).toEqual({ claimed: true, queued: 1 });
+    expect(result).toEqual({ claimed: true, queued: 0 });
     expect(store.states.get(SCOPE)?.dreamAtlas).toEqual(createEmptyLucidDreamAtlasOverlay(NOW + 12));
-    expect(queuedAtlasKeys(store.queues.get(SCOPE))).toEqual(['dream_atlas:dream_atlas']);
+    expect(queuedAtlasKeys(store.queues.get(SCOPE))).toEqual([]);
     expect(store.queues.get(SCOPE)?.some((item) => item.entityType === 'dream_sign')).toBe(false);
     expect(store.cleared).toEqual(['guest']);
   });
@@ -1308,7 +1387,7 @@ describe('lucidTrainerSync', () => {
     expect(store.cleared).toEqual(['guest']);
   });
 
-  it('leaves an existing pending atlas mutation untouched when the account overlay wins', async () => {
+  it('retains but quarantines an existing pending Atlas mutation when the account overlay wins', async () => {
     const guest = state(false);
     guest.dreamAtlas = atlasOverlay(NOW + 10, { renamed: { 'sign:mirror': 'Guest' } });
     guest.updatedAt = guest.createdAt;
@@ -1330,7 +1409,7 @@ describe('lucidTrainerSync', () => {
 
     expect(result).toEqual({ claimed: true, queued: 0 });
     expect(store.states.get(SCOPE)?.dreamAtlas).toEqual(accountAtlas);
-    expect(store.queues.get(SCOPE)).toEqual([pendingAtlas]);
+    expect(store.queues.get(SCOPE)).toEqual([{ ...pendingAtlas, status: 'blocked', nextAttemptAt: undefined, lastError: LUCID_SYNC_LOCAL_ONLY_REASON }]);
     expect(store.cleared).toEqual(['guest']);
   });
 

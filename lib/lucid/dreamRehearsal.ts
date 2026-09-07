@@ -1,4 +1,4 @@
-import type { DreamAnalysis } from '@/lib/types';
+import { isLucidObservationSourceId, type LucidTrainingSource } from './observations';
 import { LUCID_TECHNIQUES, type LucidTechnique } from '@/lib/lucid/model';
 import {
   LUCID_DREAM_SIGN_CATEGORIES,
@@ -47,7 +47,7 @@ export const LUCID_DREAM_REHEARSAL_TEXT_ALTERNATIVE_IDS = [
 ] as const;
 
 export type LucidDreamRehearsalDream = Pick<
-  DreamAnalysis,
+  LucidTrainingSource,
   'id' | 'title' | 'transcript'
 >;
 
@@ -158,7 +158,7 @@ const MAX_SAFE_TIMESTAMP = 8_640_000_000_000_000;
 const CONTROL_CHARS = /[\u0000-\u001F\u007F]/;
 const SESSION_ID_PATTERN = /^[A-Za-z0-9:_-]{1,64}$/;
 const DREAM_ID_PATTERN = /^[A-Za-z0-9:_-]{1,64}$/;
-const SIGN_ID_PATTERN = /^sign:[A-Za-z0-9][A-Za-z0-9_-]{0,121}$/;
+const SIGN_ID_PATTERN = /^sign:(?:lucid:)?[A-Za-z0-9][A-Za-z0-9_-]{0,121}$/;
 const FORBIDDEN_IDS = new Set(['__proto__', 'constructor', 'prototype']);
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -210,7 +210,7 @@ function isSessionId(value: unknown): value is string {
 }
 
 function isDreamId(value: unknown): value is string {
-  return isSafeId(value, DREAM_ID_PATTERN, LUCID_DREAM_REHEARSAL_MAX_DREAM_ID_CHARS);
+  return isLucidObservationSourceId(value) || isSafeId(value, DREAM_ID_PATTERN, LUCID_DREAM_REHEARSAL_MAX_DREAM_ID_CHARS);
 }
 
 function isSignId(value: unknown): value is string {

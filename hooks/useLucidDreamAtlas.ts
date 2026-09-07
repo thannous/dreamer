@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
-import type { DreamAnalysis } from '@/lib/types';
+import { LUCID_LOCAL_SIGN_PREFIX, type LucidTrainingSource } from '@/lib/lucid/observations';
 import {
   buildLucidDreamAtlas,
   deleteLucidDreamAtlasNode,
@@ -18,7 +18,7 @@ import type { LucidReconciledDreamSign } from '@/lib/lucid/dreamSigns';
 
 export type UseLucidDreamAtlasOptions = {
   signs: readonly LucidReconciledDreamSign[];
-  dreams?: readonly Pick<DreamAnalysis, 'id'>[];
+  dreams?: readonly Pick<LucidTrainingSource, 'id'>[];
 };
 
 export type UseLucidDreamAtlasResult = {
@@ -122,7 +122,7 @@ export function useLucidDreamAtlas({
       apply: (
         current: LucidDreamAtlasSnapshot,
         currentSigns: readonly LucidReconciledDreamSign[],
-        currentDreams: readonly Pick<DreamAnalysis, 'id'>[] | undefined
+        currentDreams: readonly Pick<LucidTrainingSource, 'id'>[] | undefined
       ) => LucidDreamAtlasSnapshot,
       skipWriteIf?: (current: LucidDreamAtlasSnapshot) => boolean
     ) => {
@@ -148,7 +148,20 @@ export function useLucidDreamAtlas({
             preferences: current,
           });
           if (skipWriteIf?.(currentSnapshot)) return current;
-          return apply(currentSnapshot, mutationSigns, mutationDreams).preferences;
+          const updated = apply(currentSnapshot, mutationSigns, mutationDreams).preferences;
+          // Unknown legacy signs are unavailable here, not deleted by this action.
+          const known = new Set(mutationSigns.map(sign => sign.id));
+          const isUnavailableLegacy = (id: string) =>
+            !id.startsWith(LUCID_LOCAL_SIGN_PREFIX) && !known.has(id);
+          return {
+            ...updated,
+            renamed: { ...Object.fromEntries(Object.entries(current.renamed).filter(([id]) => isUnavailableLegacy(id))), ...updated.renamed },
+            hidden: [...new Set([...current.hidden.filter(isUnavailableLegacy), ...updated.hidden])],
+            merges: { ...Object.fromEntries(Object.entries(current.merges).filter(([id, target]) =>
+              !id.startsWith(LUCID_LOCAL_SIGN_PREFIX) &&
+              !target.startsWith(LUCID_LOCAL_SIGN_PREFIX) &&
+              (isUnavailableLegacy(id) || isUnavailableLegacy(target)))), ...updated.merges },
+          };
         });
         assignScopeError(operationScope, null);
       } catch (caught) {

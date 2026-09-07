@@ -285,6 +285,8 @@ function RootLayoutNav({
 
   const enqueueNotification = useCallback(async (notification: Notifications.Notification) => {
     const notificationUrl = notification.request.content.data?.url;
+    // Reject legacy Journal payloads before claiming a response or recording intent.
+    if (isLucidTrainer && !isSafeLucidNotificationRoute(notificationUrl)) return;
     if (
       notificationUrl !== '/recording' &&
       !isSafeLucidNotificationRoute(notificationUrl) &&
@@ -726,7 +728,7 @@ function RootLayoutNav({
   return (
     <NavigationThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>
       <KeyboardProviderComponent>
-        <DreamsProvider>
+        <JournalRuntime>
           {/* Startup redirects happen behind the custom splash. Disabling that
               one native transition avoids scheduling transition work for a
               surface that is immediately detached; later navigation keeps the
@@ -736,6 +738,7 @@ function RootLayoutNav({
               animation: nonCriticalStartupEnabled ? 'default' : 'none',
             }}
           >
+            <Stack.Protected guard={!isLucidTrainer}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="onboarding" options={{ headerShown: false }} />
             <Stack.Screen name="recording" options={{ headerShown: false }} />
@@ -747,19 +750,18 @@ function RootLayoutNav({
             <Stack.Screen name="dream-guides" options={{ headerShown: false }} />
             <Stack.Screen name="dream-guide/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="ritual/[id]" options={{ headerShown: false }} />
-            <Stack.Screen name="lucid" options={{ headerShown: false }} />
             <Stack.Screen name="sleep-sounds" options={{ headerShown: false }} />
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
-            <Stack.Screen name="auth/reset-password" options={{ headerShown: false }} />
             <Stack.Screen name="weekly-recap" options={{ headerShown: false }} />
             <Stack.Screen name="dev/voice-live-spike" options={{ headerShown: false }} />
+            </Stack.Protected>
+            <Stack.Screen name="lucid" options={{ headerShown: false }} />
+            <Stack.Screen name="auth/reset-password" options={{ headerShown: false }} />
           </Stack>
-          <OfflineModelPromptHost />
-          <EngagementRemindersHost />
-          <AnalysisFlightIndicator />
+          {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><AnalysisFlightIndicator /></> : null}
           {!isLucidTrainer ? <VercelAnalytics /> : null}
           {!isLucidTrainer ? <VercelSpeedInsights /> : null}
-        </DreamsProvider>
+        </JournalRuntime>
         <SystemBars
           style={{
             statusBar: mode === 'dark' ? 'light' : 'dark',
@@ -769,6 +771,10 @@ function RootLayoutNav({
       </KeyboardProviderComponent>
     </NavigationThemeProvider>
   );
+}
+
+function JournalRuntime({ children }: React.PropsWithChildren) {
+  return isLucidTrainer ? <>{children}</> : <DreamsProvider>{children}</DreamsProvider>;
 }
 
 /**
@@ -921,7 +927,7 @@ export default function RootLayout() {
     if (!startupDestinationCommitted) return;
 
     const task = InteractionManager.runAfterInteractions(() => {
-      void import('@/lib/guestSession')
+      if (!isLucidTrainer) void import('@/lib/guestSession')
         .then(({ initGuestSession }) => initGuestSession())
         .catch((error) => {
           if (__DEV__) console.warn('[RootLayout] Guest session init failed:', error);
@@ -931,7 +937,7 @@ export default function RootLayout() {
         initializeGoogleSignIn();
       });
 
-      void Promise.all([
+      if (!isLucidTrainer) void Promise.all([
         import('@/services/quota/GuestAnalysisCounter').then(
           ({ migrateExistingGuestQuota }) => migrateExistingGuestQuota()
         ),

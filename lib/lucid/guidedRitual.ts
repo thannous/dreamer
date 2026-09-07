@@ -1,4 +1,4 @@
-import type { DreamAnalysis } from '@/lib/types';
+import { lucidSourceTimestamp, type LucidTrainingSource } from './observations';
 import type { LucidActiveDreamSign } from '@/lib/lucid/dreamSigns';
 import type {
   LucidGuidedRitualMode,
@@ -259,7 +259,7 @@ export type LucidMildRehearsalSource = Readonly<{
 }>;
 
 export function selectLucidMildRehearsalSource(
-  dreams: readonly Pick<DreamAnalysis, 'id' | 'title' | 'transcript'>[],
+  dreams: readonly Pick<LucidTrainingSource, 'id' | 'title' | 'transcript'>[],
   confirmedSigns: readonly LucidActiveDreamSign[]
 ): LucidMildRehearsalSource | null {
   const signs = confirmedSigns
@@ -268,11 +268,11 @@ export function selectLucidMildRehearsalSource(
   const recentDreams = dreams
     .filter(
       (dream) =>
-        Number.isSafeInteger(dream.id) &&
-        dream.id >= 0 &&
+        Number.isFinite(lucidSourceTimestamp(dream.id)) &&
+        lucidSourceTimestamp(dream.id) >= 0 &&
         `${dream.title ?? ''}${dream.transcript ?? ''}`.trim().length > 0
     )
-    .sort((left, right) => right.id - left.id);
+    .sort((left, right) => lucidSourceTimestamp(right.id) - lucidSourceTimestamp(left.id));
 
   for (const dream of recentDreams) {
     const dreamId = String(dream.id);

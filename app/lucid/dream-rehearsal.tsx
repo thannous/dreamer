@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams, type Href } from 'expo-router';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import {
@@ -12,7 +12,7 @@ import {
 } from '@/components/lucid/LucidUI';
 import { Reveal } from '@/components/motion';
 import { getLucidPalette, LucidSpace, LucidType } from '@/constants/lucidTheme';
-import { useDreamsData } from '@/context/DreamsContext';
+import { useLucidObservations } from '@/context/LucidTrainerContext';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidDreamRehearsal } from '@/hooks/useLucidDreamRehearsal';
@@ -20,12 +20,13 @@ import { useLucidGuidedRitualSound } from '@/hooks/useLucidGuidedRitualSound';
 import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
 import { useSubscription } from '@/hooks/useSubscription';
 import {
-  extractLucidDreamSignCandidates,
   getActiveLucidDreamSigns,
+  type LucidActiveDreamSign,
 } from '@/lib/lucid/dreamSigns';
 import {
   getLucidDreamRehearsalProgress,
   selectLucidDreamRehearsalScene,
+  type LucidDreamRehearsalDream,
   type LucidDreamRehearsalScene,
   type LucidDreamRehearsalSession,
 } from '@/lib/lucid/dreamRehearsal';
@@ -283,6 +284,15 @@ function matchesScene(session: LucidDreamRehearsalSession, scene: LucidDreamRehe
   return session.dreamId === scene.dreamId && session.signId === scene.signId;
 }
 
+function isRehearsalSessionAvailable(
+  session: LucidDreamRehearsalSession,
+  dreams: readonly LucidDreamRehearsalDream[],
+  confirmedSigns: readonly LucidActiveDreamSign[]
+): boolean {
+  return selectLucidDreamRehearsalScene(dreams, confirmedSigns, session.dreamId, session.signId)
+    .status === 'ready';
+}
+
 function rehearsalStepKey(session: LucidDreamRehearsalSession): string {
   if (session.recognizedAt == null) return 'recognize';
   if (session.intentionConfirmedAt == null) return 'intend';
@@ -302,7 +312,7 @@ export default function LucidDreamRehearsalScreen() {
   const params = useLocalSearchParams<{ dreamId?: string | string[]; signId?: string | string[] }>();
   const dreamId = firstParam(params.dreamId);
   const signId = firstParam(params.signId);
-  const { dreams, loaded } = useDreamsData();
+  const { dreams, loaded } = useLucidObservations();
   const { content, state, userScope, dreamSignCandidates } = useLucidTrainer();
   const { fontScale, width } = useWindowDimensions();
   const compact = width < 380 || fontScale >= 1.3;
@@ -317,13 +327,12 @@ export default function LucidDreamRehearsalScreen() {
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState('');
   const busyLockRef = useRef(false);
+  const clearedUnavailableSessionIdRef = useRef<string | null>(null);
 
   const confirmedSigns = useMemo(() => {
-    const candidates = dreamSignCandidates.length
-      ? dreamSignCandidates
-      : extractLucidDreamSignCandidates(dreams);
+    const candidates = dreamSignCandidates;
     return getActiveLucidDreamSigns(candidates, state?.dreamSignDecisions ?? []);
-  }, [dreamSignCandidates, dreams, state?.dreamSignDecisions]);
+  }, [dreamSignCandidates, state?.dreamSignDecisions]);
 
   const selection = useMemo(() => {
     if (!dreamId || !signId) return { status: 'missing' as const };
@@ -334,11 +343,38 @@ export default function LucidDreamRehearsalScreen() {
 
   const scene = selection.status === 'ready' ? selection.scene : null;
   const session = rehearsal.currentSession;
+  const sessionAvailable = Boolean(
+    session && isRehearsalSessionAvailable(session, dreams, confirmedSigns)
+  );
+  const blockingUnavailableSession = Boolean(
+    loaded &&
+      !rehearsal.isLoading &&
+      session &&
+      session.status !== 'completed' &&
+      !sessionAvailable
+  );
   const currentForScene = scene && session && matchesScene(session, scene) ? session : null;
   const conflictingSession =
-    scene && session && session.status !== 'completed' && !matchesScene(session, scene)
+    scene &&
+    session &&
+    session.status !== 'completed' &&
+    sessionAvailable &&
+    !matchesScene(session, scene)
       ? session
       : null;
+
+  const clearCurrent = rehearsal.clearCurrent;
+  const rehearsalMutating = rehearsal.isMutating;
+  useEffect(() => {
+    if (!blockingUnavailableSession || !session) return;
+    if (rehearsalMutating) return;
+    if (clearedUnavailableSessionIdRef.current === session.sessionId) return;
+    clearedUnavailableSessionIdRef.current = session.sessionId;
+    void clearCurrent().catch(() => {
+      // Keep the attempt guard on failure: the hook exposes the error and the
+      // explicit retry action below. Resetting it would retry on every render.
+    });
+  }, [blockingUnavailableSession, clearCurrent, rehearsalMutating, session]);
   const progress = currentForScene ? getLucidDreamRehearsalProgress(currentForScene) : null;
   const progressStep = progress
     ? Math.min(progress.completedActionCount + 1, progress.totalActionCount)
@@ -384,6 +420,10 @@ export default function LucidDreamRehearsalScreen() {
 
   const primaryKey = loading
     ? null
+    : blockingUnavailableSession
+      ? rehearsal.error
+        ? 'retry'
+        : null
     : selection.status !== 'ready'
       ? rehearsal.error
         ? 'retry'
@@ -431,7 +471,9 @@ export default function LucidDreamRehearsalScreen() {
 
   const onPrimaryPress = () => {
     if (primaryKey === 'retry') {
-      void runAction('retry', () => rehearsal.refresh());
+      void runAction('retry', () =>
+        blockingUnavailableSession ? rehearsal.clearCurrent() : rehearsal.refresh()
+      );
       return;
     }
     if (primaryKey === 'open-current' && conflictingSession) {

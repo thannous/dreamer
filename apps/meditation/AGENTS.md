@@ -6,9 +6,15 @@ périmètre, les écrans et les décisions d'architecture.
 
 ## Ce qu'est ce projet
 
-Seconde application de la marque Noctalia : méditation guidée, respiration,
-séries de pratique. Clone fonctionnel du template « Zen » (native-templates.com)
-rhabillé aux couleurs Noctalia.
+Application autonome de la marque Noctalia : méditation guidée, respiration,
+univers et progression douce. La boucle essentielle est choisir une intention,
+écouter ou reprendre une séance disponible, puis terminer calmement. Zen est une
+référence historique, sans obligation de parité. Voir
+`../../specs/noctalia-brand-contract.md` pour les responsabilités produit.
+
+Les abonnements sont désactivés par défaut (`lib/env.ts`). Les achats uniques
+d'univers restent distincts ; aucune modification ne doit réactiver implicitement
+un abonnement ou déduire un droit commercial du compte d'une autre app.
 
 **Pas de compte, pas de backend applicatif.** Tout l'état est local
 (AsyncStorage). Les pistes audio distantes viennent d'un bucket statique.

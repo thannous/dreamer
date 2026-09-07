@@ -151,6 +151,44 @@ describe('useLucidDreamAtlas', () => {
     mockTrainer.reload.mockResolvedValue(undefined);
   });
 
+  it('preserves unknown legacy organization while editing an available sign', async () => {
+    mockTrainer.state = { dreamAtlas: overlay({
+      renamed: { 'sign:unavailable': 'Old name' }, hidden: ['sign:unavailable'],
+      merges: { 'sign:unavailable': 'sign:older' },
+    }) };
+    const { result } = renderAtlas();
+    await act(async () => { await result.current.renameNode('sign:marie', 'New name'); });
+    expect(mockTrainer.state?.dreamAtlas?.renamed).toMatchObject({ 'sign:unavailable': 'Old name', 'sign:marie': 'New name' });
+    expect(mockTrainer.state?.dreamAtlas?.hidden).toContain('sign:unavailable');
+    expect(mockTrainer.state?.dreamAtlas?.merges).toEqual({ 'sign:unavailable': 'sign:older' });
+  });
+
+  it('prunes orphaned local organization while preserving unavailable historical signs', async () => {
+    const local = sign({ id: 'sign:lucid:mirror', sourceDreamIds: [String(NOW)] });
+    mockTrainer.state = { dreamAtlas: overlay({
+      renamed: { 'sign:lucid:mirror': 'Old local name', 'sign:legacy': 'Historical name' },
+      hidden: ['sign:lucid:mirror', 'sign:legacy'],
+      merges: {
+        'sign:lucid:mirror': 'sign:legacy',
+        'sign:older': 'sign:lucid:mirror',
+        'sign:legacy': 'sign:oldest',
+      },
+    }) };
+    const { result, rerender } = renderAtlas({ signs: [...defaultSigns, local] });
+    // Deleting the last supporting observation removes its local sign.
+    rerender({ signs: defaultSigns, dreams: defaultDreams });
+    await act(async () => { await result.current.renameNode('sign:marie', 'New name'); });
+    expect(mockTrainer.state?.dreamAtlas?.renamed).toEqual({
+      'sign:legacy': 'Historical name', 'sign:marie': 'New name',
+    });
+    expect(mockTrainer.state?.dreamAtlas?.hidden).toEqual(['sign:legacy']);
+    expect(mockTrainer.state?.dreamAtlas?.merges).toEqual({ 'sign:legacy': 'sign:oldest' });
+    rerender({ signs: [...defaultSigns, local], dreams: defaultDreams });
+    const recurring = result.current.list.find(node => node.id === local.id);
+    expect(recurring?.label).toBe(local.label);
+    expect(result.current.snapshot?.preferences.hidden).not.toContain(local.id);
+  });
+
   it('builds a confirmed-only snapshot from trainer state', () => {
     mockTrainer.state = {
       dreamAtlas: overlay({ renamed: { 'sign:marie': 'Marie au salon' } }),

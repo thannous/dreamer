@@ -20,7 +20,7 @@ import { DURATION, EASE, PressableScale } from '@/components/motion';
 import { LucidGuideOrb } from '@/components/lucid/LucidGuideOrb';
 import { LucidButton, LucidIconAction, LucidOverline, LucidPill, LucidProgressBar, LucidScreen } from '@/components/lucid/LucidUI';
 import { getLucidPalette, LucidIcon, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
-import { useDreamsData } from '@/context/DreamsContext';
+import { useLucidObservations } from '@/context/LucidTrainerContext';
 import {
   useLucidTrainer,
   type LucidGuidedRitualMutationInput,
@@ -161,7 +161,7 @@ export default function LucidSessionScreen() {
   const params = useLocalSearchParams<{ program: string; session: string }>();
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const { dreams } = useDreamsData();
+  const { dreams } = useLucidObservations();
   const reduceMotion = useLucidReducedMotion();
   const {
     state,

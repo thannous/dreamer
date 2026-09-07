@@ -76,6 +76,8 @@ const {
   };
 });
 
+let mockIsLucidTrainer = false;
+
 jest.mock('@/lib/env', () => ({
   isMockModeEnabled: () => mockGetMockMode(),
 }));
@@ -88,6 +90,12 @@ jest.mock('@/lib/auth', () => ({
 
 jest.mock('@/lib/circuitBreaker', () => ({
   createCircuitBreaker: mockCreateCircuitBreaker,
+}));
+
+jest.mock('@/lib/appVariant', () => ({
+  get isLucidTrainer() {
+    return mockIsLucidTrainer;
+  },
 }));
 
 const mockConsumeReturnToPaywallTrigger = jest.fn((): string | null => null);
@@ -125,6 +133,7 @@ describe('AuthContext', () => {
     mockSetCurrentUser(null);
     mockSetAccountCreated(false);
     mockSetStayOnSettings(false);
+    mockIsLucidTrainer = false;
   });
 
   it('given mock mode with user__when provider mounts__then exposes user and session ready', async () => {
@@ -260,6 +269,32 @@ describe('AuthContext', () => {
     expect(mockClearRemoteDreamStorage).toHaveBeenCalled();
     expect(result.current.user?.id).toBe('user-2');
     expect(result.current.sessionReady).toBe(true);
+  });
+
+  it('given Lucid auth change to signed out__when onAuthChange fires__then keeps Journal storage untouched', async () => {
+    mockIsLucidTrainer = true;
+    mockSetCurrentUser({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} });
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <AuthProvider>{children}</AuthProvider>
+    );
+
+    const { result } = renderHook(() => useAuth(), { wrapper });
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    const handler = mockGetAuthChangeHandler();
+    expect(typeof handler).toBe('function');
+
+    await act(async () => {
+      await handler?.(null);
+    });
+
+    expect(mockClearRemoteDreamStorage).not.toHaveBeenCalled();
+    expect(result.current.user).toBeNull();
+    expect(result.current.sessionReady).toBe(false);
   });
 
   it('given missing provider__when using hook__then throws', () => {

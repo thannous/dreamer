@@ -3,6 +3,8 @@ import {
   LucidMorningVoiceNoteError,
 } from '@/lib/lucid/morningVoiceNote';
 import {
+  loadLocalLucidVoiceExperimentIds,
+  subscribeLucidMorningVoiceNotes,
   claimLucidMorningVoiceNoteScope,
   clearLucidMorningVoiceNotes,
   countLucidMorningVoiceNoteScopeLocksForTests,
@@ -1250,4 +1252,34 @@ describe('Lucid morning voice-note native storage encryption contract', () => {
     await expect(loadLucidMorningVoiceNotes('native-user')).resolves.toHaveLength(1);
     expect(revealLucidTrainerStoredValue).toHaveBeenCalled();
   });
+});
+
+it('requires a linked local file and publishes link/delete refreshes only after persistence', async () => {
+  const { storage } = memoryKv();
+  const files = memoryFiles();
+  const listener = jest.fn();
+  const unsubscribe = subscribeLucidMorningVoiceNotes(listener);
+  const badObserver = subscribeLucidMorningVoiceNotes(() => { throw new Error('observer'); });
+  try {
+    const note = await persistLucidMorningVoiceNoteFromRecorder({
+      userScope: 'guest', sourceUri: SOURCE, mimeType: 'audio/mp4', extension: '.m4a',
+      durationMs: 0, noteId: 'mvn_local_available', now: NOW, storage, files,
+    });
+    expect(await loadLocalLucidVoiceExperimentIds('guest', storage, files)).toEqual(new Set());
+    listener.mockClear();
+    storage.setItem.mockRejectedValueOnce(new Error('full'));
+    await expect(linkStoredLucidMorningVoiceNoteToExperiment('guest', note.id, 'experiment_local', { storage })).rejects.toThrow();
+    expect(listener).not.toHaveBeenCalled();
+    await linkStoredLucidMorningVoiceNoteToExperiment('guest', note.id, 'experiment_local', { storage });
+    expect(listener).toHaveBeenCalledWith('guest');
+    expect(await loadLocalLucidVoiceExperimentIds('guest', storage, files)).toEqual(new Set(['experiment_local']));
+    expect(await loadLocalLucidVoiceExperimentIds('user:other', storage, files)).toEqual(new Set());
+    files.files.delete(note.uri);
+    expect(await loadLocalLucidVoiceExperimentIds('guest', storage, files)).toEqual(new Set());
+    files.files.add(note.uri);
+    listener.mockClear();
+    await deleteLucidMorningVoiceNote('guest', note.id, { storage, files });
+    expect(listener).toHaveBeenCalledWith('guest');
+    expect(await loadLocalLucidVoiceExperimentIds('guest', storage, files)).toEqual(new Set());
+  } finally { unsubscribe(); badObserver(); }
 });

@@ -259,11 +259,11 @@ assert_change \
 
 assert_change \
   "root lockfile consumers" package-lock.json pr \
-  true false true false true true false false false false false
+  true false true true true true false false false false false
 
 assert_change \
   "shared Node version" .nvmrc pr \
-  true true true false true true false false false false false
+  true true true true true true false false false false false
 
 assert_change \
   "site generator change" scripts/docs-check.js pr \
@@ -284,5 +284,30 @@ assert_change \
 assert_change \
   "unknown global file fails closed" .gitignore pr \
   true true true true true true false false false false false
+
+# Every row in the actual map is a classification fixture, not a second path list.
+while IFS=$'\t' read -r input graph consumers; do
+  [[ -z "$input" || "$input" == \#* ]] && continue
+  noctalia=false meditation=false site=false edge=false contracts=false
+  for consumer in $consumers; do
+    case "$consumer" in
+      noctalia) noctalia=true ;;
+      meditation) meditation=true ;;
+      site) site=true ;;
+      edge_functions) edge=true ;;
+      edge_contracts) contracts=true ;;
+      *) echo "Invalid mapped consumer $consumer" >&2; exit 1 ;;
+    esac
+  done
+  site_cache=false contract_cache=false
+  if [[ "$site" == true && "$noctalia" == false ]]; then site_cache=true
+  elif [[ "$contracts" == true && "$noctalia" == false ]]; then contract_cache=true; fi
+  assert_change "$graph map: $input" "$input" pr "$noctalia" "$meditation" "$site" "$edge" "$contracts" "$noctalia" false false false "$site_cache" "$contract_cache"
+done < "$repository_root/.circleci/dependency-consumers.tsv"
+
+# Regression expectation comes from the real consumers, independently of the map.
+assert_change "Android lock validates both application consumers only" scripts/android-device-lock.js pr true true false false false true false false false false false
+assert_change "unknown shared execution input fails closed" scripts/new-shared-tool.js pr true true true true true true false false false false false
+assert_change "unknown shared data fails closed" data/new-common-contract.json pr true true true true true true false false false false false
 
 echo "CircleCI path classification tests passed."

@@ -19,12 +19,12 @@ import {
   LucidSpace,
   LucidType,
 } from '@/constants/lucidTheme';
-import { useDreamsData } from '@/context/DreamsContext';
+import { useLucidObservations } from '@/context/LucidTrainerContext';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
-import type { DreamAnalysis } from '@/lib/types';
+import type { LucidObservation } from '@/lib/lucid/observations';
 
-const MAX_VISIBLE_DREAMS = 50;
+const PAGE_SIZE = 50;
 
 const COPY = {
   en: {
@@ -81,27 +81,27 @@ function normalizeSearchText(value: string): string {
     .toLowerCase();
 }
 
-function searchableDreamText(dream: DreamAnalysis): string {
+function searchableDreamText(dream: LucidObservation): string {
   return normalizeSearchText([
     dream.title,
     dream.transcript,
-    dream.interpretation,
     ...(dream.symbols?.map((symbol) => symbol.name) ?? []),
     ...(dream.emotions?.map((emotion) => emotion.name) ?? []),
   ].join(' '));
 }
 
-function dreamPreview(dream: DreamAnalysis): string {
-  return dream.transcript.trim() || dream.interpretation.trim();
+function dreamPreview(dream: LucidObservation): string {
+  return dream.transcript.trim();
 }
 
 export default function LucidJournalScreen() {
-  const { dreams, loaded } = useDreamsData();
+  const { dreams, loaded } = useLucidObservations();
   const { content } = useLucidTrainer();
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const copy = COPY[content.locale];
   const [query, setQuery] = useState('');
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const normalizedQuery = normalizeSearchText(query.trim());
   const filteredDreams = useMemo(
     () => normalizedQuery
@@ -109,7 +109,7 @@ export default function LucidJournalScreen() {
       : dreams,
     [dreams, normalizedQuery]
   );
-  const visibleDreams = filteredDreams.slice(0, MAX_VISIBLE_DREAMS);
+  const visibleDreams = filteredDreams.slice(0, visibleCount);
   const hiddenCount = Math.max(0, filteredDreams.length - visibleDreams.length);
 
   return (
@@ -131,7 +131,7 @@ export default function LucidJournalScreen() {
         <LucidButton
           icon="create-outline"
           label={copy.capture}
-          onPress={() => router.push('/recording')}
+          onPress={() => router.push('/lucid/morning')}
           testID="lucid-journal-capture"
         />
         <LucidCard
@@ -221,12 +221,12 @@ export default function LucidJournalScreen() {
       {visibleDreams.map((dream) => {
         const title = dream.title.trim() || copy.untitled;
         const preview = dreamPreview(dream);
-        const date = new Intl.DateTimeFormat(content.locale, { dateStyle: 'medium' }).format(dream.id);
+        const date = new Intl.DateTimeFormat(content.locale, { dateStyle: 'medium' }).format(dream.occurredAt);
         return (
           <LucidCard
             accessibilityLabel={copy.openDream(title)}
             key={dream.id}
-            onPress={() => router.push(`/journal/${dream.id}`)}
+            onPress={() => router.push(`/lucid/observation?id=${encodeURIComponent(dream.id)}`)}
             style={styles.dreamCard}
             testID={`lucid-journal-dream-${dream.id}`}
           >
@@ -245,7 +245,7 @@ export default function LucidJournalScreen() {
         );
       })}
       {hiddenCount > 0 ? (
-        <Text style={[styles.more, { color: palette.textSecondary }]}>{copy.more(hiddenCount)}</Text>
+        <LucidButton label={copy.more(hiddenCount)} onPress={() => setVisibleCount(count => count + PAGE_SIZE)} testID="lucid-journal-more" />
       ) : null}
     </LucidScreen>
   );

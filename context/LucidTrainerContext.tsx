@@ -12,8 +12,9 @@ import React, {
 } from 'react';
 import { AppState } from 'react-native';
 
+import { useLocalLucidVoiceAvailability } from '@/hooks/useLocalLucidVoiceAvailability';
 import { useAuth } from '@/context/AuthContext';
-import { useDreamsData } from '@/context/DreamsContext';
+import { projectLucidObservations, localLucidSignId, LUCID_LOCAL_SIGN_PREFIX, type LucidObservation } from '@/lib/lucid/observations';
 import { trackProductEvent } from '@/lib/analytics';
 import { isLucidTrainer } from '@/lib/appVariant';
 import {
@@ -41,7 +42,6 @@ import {
 import {
   LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT,
   areLucidDreamAtlasPreferencesSemanticallyEqual,
-  buildLucidDreamAtlas,
   createEmptyLucidDreamAtlasOverlay,
   lucidDreamAtlasOverlayPreferences,
   normalizeLucidDreamAtlasPreferences,
@@ -199,6 +199,7 @@ export type LucidTrainerContextValue = {
   syncStatus: LucidSyncStatus;
   lastSyncResult: LucidSyncReplayResult | null;
   guestImportAvailable: boolean;
+  observations: LucidObservation[];
   dreamSignCandidates: LucidDreamSignCandidate[];
   activeDreamSigns: LucidActiveDreamSign[];
   importGuestData: () => Promise<void>;
@@ -265,6 +266,37 @@ function currentDreamAtlasPreferences(state: LucidTrainerState): LucidDreamAtlas
       state.dreamAtlas ?? createEmptyLucidDreamAtlasOverlay(LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT)
     )
   );
+}
+
+// Derive liveness from the complete persisted observation set, never from a
+// loading UI projection. Historical Journal IDs remain unavailable, not deleted.
+function pruneOrphanedLocalAtlas(state: LucidTrainerState, now: number): LucidSyncEntity | null {
+  if (!state.dreamAtlas) return null;
+  const live = new Set(extractLucidDreamSignCandidates(projectLucidObservations(state.experiments), { maxCandidates: null })
+    .map(candidate => localLucidSignId(candidate.id)));
+  const keep = (id: string) => !id.startsWith(LUCID_LOCAL_SIGN_PREFIX) || live.has(id);
+  const current = currentDreamAtlasPreferences(state);
+  const preferences = {
+    ...current,
+    renamed: Object.fromEntries(Object.entries(current.renamed).filter(([id]) => keep(id))),
+    hidden: current.hidden.filter(keep),
+    merges: Object.fromEntries(Object.entries(current.merges).filter(([id, target]) => keep(id) && keep(target))),
+  };
+  if (areLucidDreamAtlasPreferencesSemanticallyEqual(current, preferences)) return null;
+  return { entityType: 'dream_atlas', entityKey: 'dream_atlas', value: { ...preferences, updatedAt: now } };
+}
+
+async function reconcilePersistedLocalAtlas(state: LucidTrainerState, scope: string): Promise<LucidTrainerState> {
+  if (!pruneOrphanedLocalAtlas(state, Date.now())) return state;
+  let entity: LucidSyncEntity | null = null;
+  const next = await updateLucidTrainerState(scope, current => {
+    entity = pruneOrphanedLocalAtlas(current, Date.now());
+    return entity ? applyLucidSyncEntity(current, entity) : current;
+  });
+  if (entity && scope !== 'guest' && next.preferences.cloudSyncEnabled) {
+    await queueLucidTrainerMutation(createLucidTrainerMutation({ userScope: scope, operation: 'upsert', entity }));
+  }
+  return next;
 }
 
 function cloneDreamAtlasPreferences(
@@ -356,9 +388,9 @@ function completeProgramSessionMutation(params: {
 
 export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
-  const { dreams, loaded: dreamsLoaded } = useDreamsData();
   const userId = user?.id;
   const userScope = userId ? `user:${userId}` : 'guest';
+  const localVoiceExperimentIds = useLocalLucidVoiceAvailability(userScope);
   const deviceLocale = normalizeLucidLocale(getLocales()[0]?.languageTag);
   const [state, setState] = useState<LucidTrainerState | null>(null);
   const [loading, setLoading] = useState(true);
@@ -368,9 +400,17 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const [guestImportAvailable, setGuestImportAvailable] = useState(false);
   const [activeScope, setActiveScope] = useState(userScope);
   const activeScopeRef = useRef(userScope);
+  const dreams = useMemo(() => projectLucidObservations(activeScope === userScope ? state?.experiments ?? [] : [], localVoiceExperimentIds), [activeScope, userScope, state?.experiments, localVoiceExperimentIds]);
+  const dreamsLoaded = !loading && activeScope === userScope;
   const dreamSignCandidates = useMemo(
-    () => extractLucidDreamSignCandidates(dreams),
-    [dreams]
+    () => [
+      ...extractLucidDreamSignCandidates(dreams).map(candidate => ({ ...candidate, id: localLucidSignId(candidate.id) })),
+      ...(activeScope === userScope ? state?.dreamSignDecisions ?? [] : []).filter(decision => !decision.id.startsWith(LUCID_LOCAL_SIGN_PREFIX)).map(decision => ({
+        id: decision.id, label: decision.customLabel || decision.id.replace(/^sign:/, '').replace(/_/g, ' '), category: null,
+        distinctDreamCount: decision.sourceDreamIds.length, sourceDreamIds: decision.sourceDreamIds, evidence: [],
+      })),
+    ],
+    [dreams, activeScope, userScope, state?.dreamSignDecisions]
   );
   const activeDreamSigns = useMemo(
     () => getActiveLucidDreamSigns(dreamSignCandidates, state?.dreamSignDecisions ?? []),
@@ -452,6 +492,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
           result.conflicts > 0
         ) {
           const refreshed = await loadLucidTrainerState(requestedScope);
+          refreshed.state = await reconcilePersistedLocalAtlas(refreshed.state, requestedScope);
           if (activeScopeRef.current === requestedScope) {
             setState(refreshed.state);
             void reconcileLoadedState(refreshed.state, requestedScope);
@@ -476,6 +517,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         locale: deviceLocale,
         timeZone: getTimeZone(),
       });
+      result.state = await reconcilePersistedLocalAtlas(result.state, requestedScope);
       const guestDataAvailable = Boolean(userId) && await hasLucidTrainerGuestData({
         loadState: getLucidTrainerState,
       });
@@ -528,7 +570,8 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       },
     });
     if (result.claimed) {
-      const imported = await getLucidTrainerState(userScope);
+      const stored = await getLucidTrainerState(userScope);
+      const imported = stored ? await reconcilePersistedLocalAtlas(stored, userScope) : null;
       if (activeScopeRef.current === userScope) setState(imported);
       if (imported) {
         await reconcileLoadedState(imported, userScope);
@@ -575,9 +618,15 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         const next = await updateLucidTrainerState(
           userScope,
           (current) => {
-            const result = updater(current, Date.now());
-            changed = result.changed;
-            return result.next;
+            const now = Date.now();
+            const result = updater(current, now);
+            const atlas = result.next.experiments !== current.experiments
+              ? pruneOrphanedLocalAtlas(result.next, now)
+              : null;
+            changed = atlas
+              ? [...result.changed.filter(entity => entity.entityType !== 'dream_atlas'), atlas]
+              : result.changed;
+            return atlas ? applyLucidSyncEntity(result.next, atlas) : result.next;
           },
           { locale: deviceLocale, timeZone: getTimeZone() }
         );
@@ -1050,7 +1099,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
           canonicalLucidJson(candidate.sourceDreamIds) !==
             canonicalLucidJson([...new Set(input.sourceDreamIds)].sort()))
       ) {
-        throw new Error('Dream sign must match current local journal evidence');
+        throw new Error('Dream sign must match current Lucid observation evidence');
       }
       let deleted = false;
       const next = await commit((current, now) => {
@@ -1059,6 +1108,11 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         );
         if (input.decision === 'pending') {
           if (!existing) return { next: current, changed: [] };
+          // Unprefixed records exist only as historical Journal references.
+          // Deleting them on "pending" would drop the synthetic candidate.
+          if (!existing.id.startsWith(LUCID_LOCAL_SIGN_PREFIX)) {
+            return { next: current, changed: [] };
+          }
           deleted = true;
           return {
             next: {
@@ -1194,13 +1248,17 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     [deviceLocale, state?.preferences.locale]
   );
 
+  const persistedExperiments = state?.experiments;
+  const persistedDecisions = state?.dreamSignDecisions;
   useEffect(() => {
-    const decisions = state?.dreamSignDecisions ?? [];
-    if (!dreamsLoaded || decisions.length === 0) return;
+    const decisions = persistedDecisions ?? [];
+    if (!dreamsLoaded || !persistedExperiments || decisions.length === 0) return;
     const candidatesById = new Map(
-      dreamSignCandidates.map((candidate) => [candidate.id, candidate] as const)
+      extractLucidDreamSignCandidates(projectLucidObservations(persistedExperiments), { maxCandidates: null })
+        .map(candidate => [localLucidSignId(candidate.id), candidate] as const)
     );
     const needsReconciliation = decisions.some((decision) => {
+      if (!decision.id.startsWith(LUCID_LOCAL_SIGN_PREFIX)) return false;
       const candidate = candidatesById.get(decision.id);
       return (
         !candidate ||
@@ -1217,6 +1275,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         const changed: LucidSyncEntity[] = [];
         const reconciled: LucidPersistedDreamSignDecision[] = [];
         for (const decision of current.dreamSignDecisions ?? []) {
+          if (!decision.id.startsWith(LUCID_LOCAL_SIGN_PREFIX)) { reconciled.push(decision); continue; }
           const candidate = candidatesById.get(decision.id);
           if (!candidate) {
             deletedIds.push(decision.id);
@@ -1269,39 +1328,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     })().catch((cause) => {
       if (__DEV__) console.warn('[LucidTrainer] Dream-sign reconciliation failed', cause);
     });
-  }, [commit, dreamSignCandidates, dreamsLoaded, state?.dreamSignDecisions, user?.id, userScope]);
-
-  useEffect(() => {
-    if (!dreamsLoaded || state == null) return;
-    const reconciledSigns = reconcileLucidDreamSignDecisions(
-      dreamSignCandidates,
-      state.dreamSignDecisions ?? []
-    );
-    const reconciledPreferences = buildLucidDreamAtlas({
-      signs: reconciledSigns,
-      dreams,
-      preferences: state.dreamAtlas,
-    }).preferences;
-    if (
-      areLucidDreamAtlasPreferencesSemanticallyEqual(
-        currentDreamAtlasPreferences(state),
-        reconciledPreferences
-      )
-    ) {
-      return;
-    }
-    void (async () => {
-      await updateDreamAtlasPreferences(() => reconciledPreferences);
-    })().catch((cause) => {
-      if (__DEV__) console.warn('[LucidTrainer] Dream atlas reconciliation failed', cause);
-    });
-  }, [
-    dreamSignCandidates,
-    dreams,
-    dreamsLoaded,
-    state,
-    updateDreamAtlasPreferences,
-  ]);
+  }, [commit, dreamsLoaded, persistedDecisions, persistedExperiments, user?.id, userScope]);
 
   const reconcileReminders = useCallback(async () => {
     if (!state) return;
@@ -1340,6 +1367,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       syncStatus,
       lastSyncResult,
       guestImportAvailable,
+      observations: dreams,
       dreamSignCandidates,
       activeDreamSigns,
       importGuestData,
@@ -1366,6 +1394,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       reload,
     }),
     [
+      dreams,
       state,
       content,
       loading,
@@ -1413,4 +1442,10 @@ export function useLucidTrainer(): LucidTrainerContextValue {
 /** Optional access for shared presentation components that also render in isolated tests. */
 export function useOptionalLucidTrainer(): LucidTrainerContextValue | null {
   return useContext(LucidTrainerContext);
+}
+
+/** Observation access never mounts or reads the Journal provider. */
+export function useLucidObservations() {
+  const { observations, loading } = useLucidTrainer();
+  return { dreams: observations, loaded: !loading };
 }

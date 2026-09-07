@@ -1,6 +1,8 @@
 # Noctalia Lucid Trainer — Spécification produit & technique
 
-**Version :** 1.0 · **Date :** 2026-08-20 · **Statut :** module implémenté dans le dépôt, jamais publié en magasin
+**Version documentaire :** 1.1 · **Revue ciblée :** 2026-09-07, base `795878a76` · **Statut :** code présent ; publication native non attestée par cette revue
+
+Le [contrat de marque](noctalia-brand-contract.md) définit les responsabilités des trois apps. Cette revue corrige les contrats devenus contradictoires (autonomie, microphone local, entrée en quatre écrans) ; les inventaires et dettes historiques datés du 20 août ne constituent pas une nouvelle validation exhaustive. TI-518 porte la séparation runtime des lectures Journal, TI-529 la qualification des permissions et TI-531 la preuve sur appareil.
 **Source de vérité :** le code du dépôt `dreamer`, branche du module Lucid Trainer. Ce document décrit ce
 qui existe, pas ce qui est souhaité. Chaque valeur citée est relevée dans un fichier nommé.
 **Documents frères :** [`LUCID_TRAINER_ARCHITECTURE.md`](../doc_web_interne/docs/LUCID_TRAINER_ARCHITECTURE.md)
@@ -14,15 +16,12 @@ restent la référence opérationnelle.
 
 ## 1. Ce qu'est le module
 
-Noctalia Lucid Trainer est une **application compagnon** de Noctalia, consacrée à l'entraînement
+Noctalia Lucid Trainer est une **application autonome de la marque Noctalia**, consacrée à l'entraînement
 au rêve lucide. Elle construit une routine en trois temps — l'attention en journée (tests de réalité),
 la préparation au coucher (programmes guidés, signaux nocturnes facultatifs), le bilan au réveil —
 puis restitue des tendances personnelles et une recommandation calculée hors ligne.
 
-Le partage des rôles est explicite et tenu dans les écrans eux-mêmes (`app/lucid/about.tsx`) :
-
-> **Lucid Trainer construit les routines. Noctalia reste le journal** pour enregistrer, interpréter
-> et conserver les rêves.
+Lucid possède ses observations matinales, notes vocales locales, signes confirmés et routines. Journal conserve les récits et leur réflexion facultative. Une observation d'entraînement n'est pas un doublon à supprimer ; installer Journal ou ouvrir un compte ne doit pas être nécessaire à la pratique. Au SHA de référence, plusieurs écrans lisent encore Journal : TI-518 corrige cet écart ; TI-522 définira un import facultatif distinct.
 
 Trois techniques sont couvertes, et seulement trois (`LUCID_TECHNIQUES` dans `lib/lucid/model.ts`) :
 **MILD**, **SSILD**, **WBTB**.
@@ -117,12 +116,9 @@ npm run test:e2e:lucid       # suite Maestro du compagnon (cf. §12 et §14.8)
 | Clés RevenueCat | `undefined` — elles doivent venir du profil de build du compagnon, jamais de Noctalia |
 | Supabase | **partagé** : même `supabaseUrl` et même `supabaseAnonKey` que Noctalia (cf. l'ADR d'identité) |
 
-### 2.3 Ce que la variante retire
+### 2.3 Microphone local et services retirés
 
-Le compagnon n'écoute pas. `createLucidExpoConfig` retire le plugin `expo-speech-recognition`,
-supprime `NSMicrophoneUsageDescription` et `NSSpeechRecognitionUsageDescription`, ajoute
-`android.permission.RECORD_AUDIO` aux `blockedPermissions` et configure `expo-audio` avec
-`microphonePermission: false`. `android.permissions` est vidé.
+`createLucidExpoConfig` conserve l'enregistrement local avec `expo-audio` et une description de permission dédiée. `RECORD_AUDIO` n'est plus bloqué. Le plugin `expo-speech-recognition` et la permission de reconnaissance vocale iOS restent retirés : une note audio locale ne déclenche pas de transcription distante. La demande de microphone intervient à l'action d'enregistrement ; son refus laisse la saisie texte disponible. Voir `scripts/lucid-microphone-contract.js`, `app/lucid/morning-voice.tsx` et `services/lucidMorningVoiceNoteStorage.ts`. La configuration source ne remplace pas la vérification du manifeste du binaire installé.
 
 Il ajoute en revanche neuf sons de signal groupés (`expo-audio` + `expo-notifications` avec
 `sounds:`), le plugin `./plugins/withLucidNoctaliaQueries` (déclaration `<queries>` étroite du schéma
@@ -346,7 +342,7 @@ compte ; l'import ne touche pas aux rappels du compte (la réconciliation reste 
 
 | # | Route | Rôle |
 |---|---|---|
-| 1 | `/lucid/onboarding` | 7 étapes, gestes de retour désactivés |
+| 1 | `/lucid/onboarding` | 4 écrans, gestes de retour désactivés |
 | 2 | `/lucid/(tabs)` → `index` | **Aujourd'hui** : prochaine pratique, test de réalité, bilan du matin, semaine, coach |
 | 3 | `/lucid/(tabs)/programs` | **Programmes** : les trois parcours, statut et progression |
 | 4 | `/lucid/(tabs)/night` | **Nuit** : sécurité audio, bibliothèque de signaux, volume, fenêtre |
@@ -373,11 +369,9 @@ courant, le statut d'onboarding et l'état de chargement, et renvoie soit une de
 quand on est déjà au bon endroit. Ce `null` est ce qui empêche une boucle de `replace` sur le web,
 où `/lucid` et `/lucid/(tabs)` désignent la même chose.
 
-### 5.2 Parcours d'entrée — 7 étapes
+### 5.2 Parcours d'entrée — quatre écrans
 
-Introduction et avis de bien-être → objectif → niveau → rythme (2/3/5/7 jours) → plage de sommeil
-(deux champs `HH:MM` validés en direct + fuseau de l'appareil) → notifications et réduction de
-mouvement → consentements (analytics, synchronisation, passage vers Noctalia, sécurité audio).
+TI-402 regroupe l'entrée en quatre écrans (`STEP_COUNT` dans `app/lucid/onboarding.tsx`) : réponses personnelles, rythme de sommeil, premier plan et préférences de démarrage. Les réponses alimentent un plan local réel ; les consentements ne sont pas déduits d'une connexion. Consulter le code et ses tests de parcours pour l'ordre exact des champs ; ne pas réintroduire l'ancien tunnel à sept étapes.
 Le bouton d'action est **épinglé hors du `ScrollView`** : dans le flux, quatre interrupteurs de 70 px
 poussaient « Configurer mon entraînement » hors de l'écran.
 
@@ -620,7 +614,7 @@ marqueurs, et vérifie **19 propriétés**. Le script sort en échec dès qu'une
 | 7 | Script iOS canonique `ios:lucid` **et** bundle `com.tanuki75.noctalia.lucid` |
 | 8 | `.env.lucid` porte bien les deux marqueurs |
 | 9 | Icône 1024×1024 **distincte** de celle de Noctalia (comparaison SHA-256) |
-| 10 | Collecte micro et parole retirée : `RECORD_AUDIO` bloqué, aucune clé Info.plist, plugin de reconnaissance vocale absent |
+| 10 | Microphone local déclaré pour les notes du matin ; reconnaissance vocale distante retirée, contrat `lucid-microphone-contract.js` |
 | 11 | Neuf sons de signal prudents configurés **et présents sur disque** |
 | 12 | Restauration des notifications après redémarrage conservée sur Android |
 | 13 | Requête de paquet Noctalia étroite (`withLucidNoctaliaQueries`) |

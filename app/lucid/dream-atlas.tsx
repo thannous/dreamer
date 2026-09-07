@@ -18,7 +18,7 @@ import {
   LucidSpace,
   LucidType,
 } from '@/constants/lucidTheme';
-import { useDreamsData } from '@/context/DreamsContext';
+import { useLucidObservations } from '@/context/LucidTrainerContext';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidDreamAtlas } from '@/hooks/useLucidDreamAtlas';
@@ -42,7 +42,7 @@ const COPY = {
     frequency: (count: number) => `Seen in ${count} ${count === 1 ? 'dream' : 'dreams'}`,
     lastSeen: 'Last appearance',
     sources: 'Source dreams',
-    sourceFallback: 'Recorded dream',
+    sourceFallback: 'Historical source unavailable',
     map: 'Map of visible signs',
     sharedDreams: (left: string, right: string, count: number) =>
       `${left} · ${right}: ${count} shared ${count === 1 ? 'dream' : 'dreams'}`,
@@ -90,7 +90,7 @@ const COPY = {
     frequency: (count: number) => `Vu dans ${count} rêve${count > 1 ? 's' : ''}`,
     lastSeen: 'Dernière apparition',
     sources: 'Rêves sources',
-    sourceFallback: 'Rêve enregistré',
+    sourceFallback: 'Source historique indisponible',
     map: 'Carte des signes visibles',
     sharedDreams: (left: string, right: string, count: number) =>
       `${left} · ${right} : ${count} rêve${count > 1 ? 's' : ''} en commun`,
@@ -138,7 +138,7 @@ const COPY = {
     frequency: (count: number) => `Aparece en ${count} ${count === 1 ? 'sueño' : 'sueños'}`,
     lastSeen: 'Última aparición',
     sources: 'Sueños de origen',
-    sourceFallback: 'Sueño registrado',
+    sourceFallback: 'Fuente histórica no disponible',
     map: 'Mapa de señales visibles',
     sharedDreams: (left: string, right: string, count: number) =>
       `${left} · ${right}: ${count} ${count === 1 ? 'sueño compartido' : 'sueños compartidos'}`,
@@ -186,7 +186,7 @@ const COPY = {
     frequency: (count: number) => `In ${count} ${count === 1 ? 'Traum' : 'Träumen'} gesehen`,
     lastSeen: 'Letztes Erscheinen',
     sources: 'Quellträume',
-    sourceFallback: 'Gespeicherter Traum',
+    sourceFallback: 'Historische Quelle nicht verfügbar',
     map: 'Karte sichtbarer Zeichen',
     sharedDreams: (left: string, right: string, count: number) =>
       `${left} · ${right}: ${count} ${count === 1 ? 'gemeinsamer Traum' : 'gemeinsame Träume'}`,
@@ -234,7 +234,7 @@ const COPY = {
     frequency: (count: number) => `Presente in ${count} ${count === 1 ? 'sogno' : 'sogni'}`,
     lastSeen: 'Ultima comparsa',
     sources: 'Sogni di origine',
-    sourceFallback: 'Sogno registrato',
+    sourceFallback: 'Fonte storica non disponibile',
     map: 'Mappa dei segnali visibili',
     sharedDreams: (left: string, right: string, count: number) =>
       `${left} · ${right}: ${count} ${count === 1 ? 'sogno in comune' : 'sogni in comune'}`,
@@ -328,7 +328,7 @@ function buildVisibleGraph<T extends { id: string; label: string; sourceDreamIds
 }
 
 export default function LucidDreamAtlasScreen() {
-  const { dreams, loaded } = useDreamsData();
+  const { dreams, loaded } = useLucidObservations();
   const { content, state, dreamSignCandidates } = useLucidTrainer();
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
@@ -339,15 +339,12 @@ export default function LucidDreamAtlasScreen() {
   const [mergeTargetId, setMergeTargetId] = useState<string | null>(null);
 
   const signs = useMemo(() => {
-    const candidates = dreamSignCandidates.length
-      ? dreamSignCandidates
-      : extractLucidDreamSignCandidates(dreams);
+    const candidates = dreamSignCandidates;
     return reconcileLucidDreamSignDecisions(candidates, state?.dreamSignDecisions ?? []);
-  }, [dreamSignCandidates, dreams, state?.dreamSignDecisions]);
+  }, [dreamSignCandidates, state?.dreamSignDecisions]);
 
   const atlas = useLucidDreamAtlas({
     signs,
-    dreams,
   });
 
   const nodes = atlas.snapshot?.nodes ?? [];
@@ -579,7 +576,8 @@ export default function LucidDreamAtlasScreen() {
                 <View key={sourceId} style={styles.sourceBlock} testID={`lucid-dream-atlas-source-row-${sourceId}`}>
                   <Pressable
                     accessibilityRole="link"
-                    onPress={() => router.push(`/journal/${sourceId}` as Href)}
+                    disabled={!dream}
+                    onPress={() => router.push(`/lucid/observation?id=${encodeURIComponent(sourceId)}` as Href)}
                     style={({ pressed }) => [
                       styles.source,
                       { backgroundColor: palette.surfaceRaised, borderColor: palette.borderInteractive },

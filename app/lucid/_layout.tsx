@@ -73,6 +73,7 @@ function LucidRouter() {
         <Stack.Screen name="ssild-lab" />
         <Stack.Screen name="morning" options={{ presentation: 'modal' }} />
         <Stack.Screen name="morning-voice" />
+        <Stack.Screen name="observation" />
         <Stack.Screen name="weekly" />
         <Stack.Screen name="permissions" />
         <Stack.Screen name="science" />

@@ -10,6 +10,7 @@ import { clearStayOnSettingsIntent, consumeStayOnSettingsDestination, peekReturn
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { normalizeSubscriptionTier } from '@/lib/quotaTier';
 import type { SubscriptionTier } from '@/lib/types';
+import { isLucidTrainer } from '@/lib/appVariant';
 import { clearRemoteDreamStorage } from '@/services/storageService';
 import { supabase } from '@/lib/supabase';
 
@@ -196,7 +197,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
       }
       const previousUserId = previousUserIdRef.current;
       const nextUserId = nextUser?.id ?? null;
-      if (previousUserId !== nextUserId) {
+      if (!isLucidTrainer && previousUserId !== nextUserId) {
         try {
           await clearRemoteDreamStorage();
         } catch {

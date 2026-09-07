@@ -183,9 +183,7 @@ jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({ colors: {}, mode: 'dark' }),
 }));
 
-jest.mock('@/context/DreamsContext', () => ({
-  useDreamsData: () => ({ dreams: mockDreams, loaded: true }),
-}));
+
 
 jest.mock('@/hooks/useLucidReducedMotion', () => ({
   useLucidReducedMotion: () => mockReduceMotion,
@@ -201,6 +199,7 @@ jest.mock('@/hooks/useLucidGuidedRitualSound', () => ({
 jest.mock('@/context/LucidTrainerContext', () => {
   const { getLucidContent } = jest.requireActual('@/lib/lucid/content');
   return {
+    useLucidObservations: () => ({ dreams: mockDreams, loaded: true }),
     useLucidTrainer: () => ({
       state: {
         onboarding: {

@@ -1,4 +1,6 @@
 /* @jest-environment jsdom */
+import * as dreamSignsModule from '@/lib/lucid/dreamSigns';
+import { lucidObservationSourceId } from '@/lib/lucid/observations';
 
 import React from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
@@ -24,7 +26,6 @@ const mockReconcileReminders = jest.fn();
 const mockQueueMutation = jest.fn();
 const mockCreateMutation = jest.fn((input: unknown) => input);
 let mockDreams: { id: number; title: string; transcript: string }[] = [];
-let mockDreamsLoaded = true;
 
 jest.mock('react-native', () => jest.requireActual('../../tests/react-native-stub'));
 jest.mock('expo-localization', () => ({ getLocales: () => [{ languageTag: 'en-US' }] }));
@@ -34,7 +35,7 @@ jest.mock('@/context/AuthContext', () => ({
   useAuth: () => ({ user: { id: 'user-1' } }),
 }));
 jest.mock('@/context/DreamsContext', () => ({
-  useDreamsData: () => ({ dreams: mockDreams, loaded: mockDreamsLoaded }),
+  useDreamsData: () => { throw new Error('Lucid must not access Journal context'); },
 }));
 
 jest.mock('@/lib/appVariant', () => ({ isLucidTrainer: true }));
@@ -46,6 +47,8 @@ jest.mock('@/services/lucidTrainerNotifications', () => ({
 
 
 jest.mock('@/services/lucidMorningVoiceNoteStorage', () => ({
+  loadLocalLucidVoiceExperimentIds: jest.fn(async () => new Set()),
+  subscribeLucidMorningVoiceNotes: jest.fn(() => jest.fn()),
   claimLucidMorningVoiceNoteScope: (...args: unknown[]) => mockClaimGuestVoiceNotes(...args),
   unlinkLucidMorningVoiceNotesFromExperiment: (...args: unknown[]) =>
     mockUnlinkVoiceNotesFromExperiment(...args),
@@ -77,7 +80,6 @@ describe('LucidTrainerContext account boundary', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockDreams = [];
-    mockDreamsLoaded = true;
     const state = createInitialLucidTrainerState({ now: 1_700_000_000_000, timeZone: 'UTC' });
     mockLoadState.mockResolvedValue({ state, recovered: false });
     mockGetState.mockResolvedValue(state);
@@ -1239,6 +1241,7 @@ describe('LucidTrainerContext account boundary', () => {
       { id: 101, title: 'Mirror hallway', transcript: 'A mirror stood in the hallway.' },
       { id: 102, title: 'Mirror room', transcript: 'The same mirror appeared again.' },
     ];
+    persistedState.experiments = mockDreams.map(dream => ({ id: String(dream.id), occurredAt: dream.id, updatedAt: dream.id, technique: null, preparationMinutes: null, result: null, lucidityLevel: null, recallLevel: null, sleepQuality: null, factors: [], recallText: dream.transcript, captureMode: 'write', cueOutcome: 'indeterminate' }));
     mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
     mockGetState.mockImplementation(async () => persistedState);
     mockUpdateState.mockImplementation(
@@ -1251,13 +1254,13 @@ describe('LucidTrainerContext account boundary', () => {
       }
     );
 
-    const { result, rerender } = renderHook(() => useLucidTrainer(), { wrapper });
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.activeDreamSigns).toEqual([]);
     const mirror = result.current.dreamSignCandidates.find(
-      (item: { id: string; sourceDreamIds: string[] }) => item.id === 'sign:mirror'
+      (item: { id: string; sourceDreamIds: string[] }) => item.id === 'sign:lucid:mirror'
     );
-    expect(mirror?.sourceDreamIds).toEqual(['101', '102']);
+    expect(mirror?.sourceDreamIds).toEqual([lucidObservationSourceId('101', 101), lucidObservationSourceId('102', 102)]);
 
     await act(async () => {
       await result.current.saveDreamSignDecision({
@@ -1270,26 +1273,25 @@ describe('LucidTrainerContext account boundary', () => {
 
     expect(persistedState.dreamSignDecisions).toEqual([
       expect.objectContaining({
-        id: 'sign:mirror',
+        id: 'sign:lucid:mirror',
         decision: 'confirmed',
         customLabel: 'My mirror',
-        sourceDreamIds: ['101', '102'],
+        sourceDreamIds: [lucidObservationSourceId('101', 101), lucidObservationSourceId('102', 102)],
       }),
     ]);
     expect(result.current.activeDreamSigns).toEqual([
-      expect.objectContaining({ id: 'sign:mirror', label: 'My mirror' }),
+      expect.objectContaining({ id: 'sign:lucid:mirror', label: 'My mirror' }),
     ]);
     expect(mockCreateMutation).toHaveBeenCalledWith(
       expect.objectContaining({
         operation: 'upsert',
-        entity: expect.objectContaining({ entityType: 'dream_sign', entityKey: 'sign:mirror' }),
+        entity: expect.objectContaining({ entityType: 'dream_sign', entityKey: 'sign:lucid:mirror' }),
       })
     );
 
     mockCreateMutation.mockClear();
     mockQueueMutation.mockClear();
-    mockDreams = [mockDreams[0]];
-    rerender();
+    await act(async () => { await result.current.deleteExperiment('102'); });
 
     await waitFor(() => expect(persistedState.dreamSignDecisions).toEqual([]));
     expect(result.current.activeDreamSigns).toEqual([]);
@@ -1297,9 +1299,74 @@ describe('LucidTrainerContext account boundary', () => {
       expect.objectContaining({
         operation: 'delete',
         entityType: 'dream_sign',
-        entityKey: 'sign:mirror',
+        entityKey: 'sign:lucid:mirror',
       })
     );
+  });
+
+  it('keeps unprefixed legacy rejected signs when reconsideration requests pending', async () => {
+    const initial = createInitialLucidTrainerState({
+      now: 1_700_000_000_000,
+      timeZone: 'UTC',
+    }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      preferences: { ...initial.preferences, cloudSyncEnabled: true },
+      dreamSignDecisions: [
+        {
+          id: 'sign:mirror',
+          decision: 'rejected',
+          customLabel: 'Hallway mirror',
+          sourceDreamIds: ['101', '102'],
+          updatedAt: 1_705_000_000_000,
+        },
+      ],
+    };
+    mockDreams = [];
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(
+      async (
+        _scope: string,
+        updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>
+      ) => {
+        persistedState = await updater(persistedState);
+        return persistedState;
+      }
+    );
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.dreamSignCandidates).toEqual([
+      expect.objectContaining({
+        id: 'sign:mirror',
+        sourceDreamIds: ['101', '102'],
+      }),
+    ]);
+
+    mockCreateMutation.mockClear();
+    mockQueueMutation.mockClear();
+    await act(async () => {
+      await result.current.saveDreamSignDecision({
+        id: 'sign:mirror',
+        decision: 'pending',
+        customLabel: 'Hallway mirror',
+        sourceDreamIds: ['101', '102'],
+      });
+    });
+
+    expect(persistedState.dreamSignDecisions).toEqual([
+      expect.objectContaining({
+        id: 'sign:mirror',
+        decision: 'rejected',
+        sourceDreamIds: ['101', '102'],
+      }),
+    ]);
+    expect(result.current.dreamSignCandidates).toEqual([
+      expect.objectContaining({ id: 'sign:mirror' }),
+    ]);
+    expect(mockCreateMutation).not.toHaveBeenCalled();
+    expect(mockQueueMutation).not.toHaveBeenCalled();
   });
 
   it('updates dream atlas preferences and queues a cloud upsert', async () => {
@@ -1498,16 +1565,6 @@ describe('LucidTrainerContext account boundary', () => {
     try {
       const { result } = renderHook(() => useLucidTrainer(), { wrapper });
       await waitFor(() => expect(result.current.loading).toBe(false));
-      await waitFor(() =>
-        expect(persistedState.dreamAtlas).toEqual({
-          version: 1,
-          renamed: {},
-          hidden: [],
-          merges: {},
-          deleted: ['sign:old'],
-          updatedAt: now,
-        })
-      );
       mockCreateMutation.mockClear();
       mockQueueMutation.mockClear();
 
@@ -1557,7 +1614,7 @@ describe('LucidTrainerContext account boundary', () => {
     }
   });
 
-  it('does not purge dream atlas orphans while dreams are still loading', async () => {
+  it('does not purge unavailable legacy atlas sources at startup', async () => {
     const initial = createInitialLucidTrainerState({
       now: 1_700_000_000_000,
       timeZone: 'UTC',
@@ -1574,7 +1631,6 @@ describe('LucidTrainerContext account boundary', () => {
       ...initial,
       dreamAtlas: overlay,
     };
-    mockDreamsLoaded = false;
     mockDreams = [];
     mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
     mockGetState.mockImplementation(async () => persistedState);
@@ -1600,7 +1656,7 @@ describe('LucidTrainerContext account boundary', () => {
     expect(mockQueueMutation).not.toHaveBeenCalled();
   });
 
-  it('purges orphan atlas overlays after dreams load and keeps deleted tombstones', async () => {
+  it('preserves legacy atlas overlays when Journal sources are unavailable', async () => {
     const now = 1_740_000_000_000;
     const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(now);
     const initial = createInitialLucidTrainerState({
@@ -1646,40 +1702,125 @@ describe('LucidTrainerContext account boundary', () => {
     try {
       const { result } = renderHook(() => useLucidTrainer(), { wrapper });
       await waitFor(() => expect(result.current.loading).toBe(false));
-      await waitFor(() =>
-        expect(persistedState.dreamAtlas).toEqual({
-          version: 1,
-          renamed: { 'sign:mirror': 'My mirror' },
-          hidden: ['sign:mirror'],
-          merges: {},
-          deleted: ['sign:old'],
-          updatedAt: now,
-        })
-      );
-
-      expect(result.current.state?.dreamAtlas).toEqual(persistedState.dreamAtlas);
-      expect(persistedState.dreamSignDecisions).toEqual([
-        expect.objectContaining({
-          id: 'sign:mirror',
-          decision: 'confirmed',
-          sourceDreamIds: ['101', '102'],
-        }),
-      ]);
-      expect(mockCreateMutation).toHaveBeenCalledTimes(1);
-      expect(mockCreateMutation).toHaveBeenCalledWith(
-        expect.objectContaining({
-          operation: 'upsert',
-          entity: expect.objectContaining({
-            entityType: 'dream_atlas',
-            entityKey: 'dream_atlas',
-            value: persistedState.dreamAtlas,
-          }),
-        })
-      );
-      expect(mockQueueMutation).toHaveBeenCalledTimes(1);
+      expect(persistedState.dreamAtlas?.renamed).toEqual({ 'sign:mirror': 'My mirror', 'sign:ghost': 'Ghost' });
+      expect(persistedState.dreamSignDecisions?.[0].sourceDreamIds).toEqual(['101', '102']);
+      expect(mockCreateMutation).not.toHaveBeenCalled();
+      expect(mockQueueMutation).not.toHaveBeenCalled();
     } finally {
       nowSpy.mockRestore();
     }
+  });
+
+  it('atomically removes orphaned local atlas preferences when deleting evidence without an atlas edit', async () => {
+    const initial = createInitialLucidTrainerState({ now: 1_700_000_000_000, timeZone: 'UTC' }) as LucidTrainerState;
+    const experiment: LucidExperiment = {
+      id: 'atlas-first', occurredAt: initial.createdAt, updatedAt: initial.createdAt,
+      technique: null, preparationMinutes: null, result: null, lucidityLevel: null,
+      recallLevel: null, sleepQuality: null, factors: [], captureMode: 'write',
+      recallText: 'A mirror appeared.', cueOutcome: 'indeterminate',
+    };
+    let persistedState: LucidTrainerState = {
+      ...initial,
+      preferences: { ...initial.preferences, cloudSyncEnabled: true },
+      experiments: [experiment, { ...experiment, id: 'atlas-second', occurredAt: initial.createdAt + 1 }],
+      dreamAtlas: {
+        version: 1, updatedAt: initial.createdAt,
+        renamed: { 'sign:lucid:mirror': 'Local mirror', 'sign:history': 'Historical mirror' },
+        hidden: ['sign:lucid:mirror', 'sign:history'],
+        merges: { 'sign:lucid:mirror': 'sign:old', 'sign:older': 'sign:lucid:mirror', 'sign:old': 'sign:oldest' },
+        deleted: ['sign:lucid:deliberate_tombstone'],
+      },
+    };
+    const writes: LucidTrainerState[] = [];
+    mockLoadState.mockImplementation(async () => ({ state: persistedState, source: 'stored' }));
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(async (_scope: string, updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>) => {
+      persistedState = await updater(persistedState);
+      writes.push(persistedState);
+      return persistedState;
+    });
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(persistedState.dreamAtlas?.renamed['sign:lucid:mirror']).toBe('Local mirror');
+    writes.length = 0;
+    await act(async () => { await result.current.deleteExperiment('atlas-second'); });
+    // The first durable deletion is already safe to export; no later effect or Atlas edit is needed.
+    const deletedWrite = writes.find(state => state.experiments.length === 1)!;
+    expect(deletedWrite.dreamAtlas).toMatchObject({
+      renamed: { 'sign:history': 'Historical mirror' }, hidden: ['sign:history'],
+      merges: { 'sign:old': 'sign:oldest' }, deleted: ['sign:lucid:deliberate_tombstone'],
+    });
+    expect(JSON.stringify(deletedWrite.dreamAtlas)).not.toContain('sign:lucid:mirror');
+    expect(mockCreateMutation).toHaveBeenCalledWith(expect.objectContaining({
+      operation: 'upsert', entity: expect.objectContaining({ entityType: 'dream_atlas', value: deletedWrite.dreamAtlas }),
+    }));
+    await act(async () => { await result.current.addExperiment({
+      technique: null, preparationMinutes: null, result: null, lucidityLevel: null,
+      recallLevel: null, sleepQuality: null, factors: [], captureMode: 'write',
+      recallText: 'A mirror appeared again.', cueOutcome: 'indeterminate',
+    }); });
+    expect(result.current.dreamSignCandidates.some((candidate: { id: string }) => candidate.id === 'sign:lucid:mirror')).toBe(true);
+    expect(persistedState.dreamAtlas?.renamed).toEqual({ 'sign:history': 'Historical mirror' });
+    expect(persistedState.dreamAtlas?.hidden).toEqual(['sign:history']);
+  });
+
+  it('preserves supported atlas preferences and decisions beyond the display candidate limit', async () => {
+    const initial = createInitialLucidTrainerState({ now: 1_700_000_000_000, timeZone: 'UTC' }) as LucidTrainerState;
+    const recallText = Array.from({ length: 201 }, (_, index) => `token${String(index).padStart(3, '0')}`).join(' ');
+    const experiments: LucidExperiment[] = [0, 1].map(index => ({
+      id: `large-${index}`, occurredAt: initial.createdAt + index, updatedAt: initial.createdAt,
+      technique: null, preparationMinutes: null, result: null, lucidityLevel: null,
+      recallLevel: null, sleepQuality: null, factors: [], captureMode: 'write',
+      recallText, cueOutcome: 'indeterminate',
+    }));
+    let persistedState: LucidTrainerState = {
+      ...initial, experiments,
+      dreamSignDecisions: [{ id: 'sign:lucid:token200', decision: 'confirmed', updatedAt: initial.createdAt,
+        sourceDreamIds: experiments.map(item => lucidObservationSourceId(item.id, item.occurredAt)) }],
+      dreamAtlas: { version: 1, updatedAt: initial.createdAt, renamed: { 'sign:lucid:token200': 'My sign' },
+        hidden: ['sign:lucid:token200'], merges: {}, deleted: [] },
+    };
+    mockLoadState.mockImplementation(async () => ({ state: persistedState, source: 'stored' }));
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(async (_scope: string, updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>) => {
+      persistedState = await updater(persistedState);
+      return persistedState;
+    });
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.dreamSignCandidates).toHaveLength(200);
+    const extraction = jest.spyOn(dreamSignsModule, 'extractLucidDreamSignCandidates');
+    try {
+      await act(async () => { await result.current.updatePreferences({ theme: 'dark' }); });
+      expect(extraction).not.toHaveBeenCalled();
+    } finally {
+      extraction.mockRestore();
+    }
+    await act(async () => { await result.current.deleteExperiment('missing-experiment'); });
+    expect(persistedState.dreamSignDecisions).toHaveLength(1);
+    expect(persistedState.dreamSignDecisions?.[0].id).toBe('sign:lucid:token200');
+    expect(persistedState.dreamAtlas?.renamed).toEqual({ 'sign:lucid:token200': 'My sign' });
+    expect(persistedState.dreamAtlas?.hidden).toEqual(['sign:lucid:token200']);
+  });
+
+  it('persists orphan cleanup before exposing loaded atlas data', async () => {
+    const initial = createInitialLucidTrainerState({ now: 1_700_000_000_000, timeZone: 'UTC' }) as LucidTrainerState;
+    let persistedState: LucidTrainerState = {
+      ...initial, dreamAtlas: {
+        version: 1, updatedAt: initial.createdAt, renamed: { 'sign:lucid:gone': 'Gone', 'sign:old': 'Old' },
+        hidden: ['sign:lucid:gone'], merges: {}, deleted: [],
+      },
+    };
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    mockUpdateState.mockImplementation(async (_scope: string, updater: (current: LucidTrainerState) => LucidTrainerState | Promise<LucidTrainerState>) => {
+      persistedState = await updater(persistedState);
+      return persistedState;
+    });
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.state?.dreamAtlas?.renamed).toEqual({ 'sign:old': 'Old' });
+    expect(persistedState.dreamAtlas?.hidden).toEqual([]);
   });
 
   it('does not commit a dream atlas upsert when preferences are already equivalent', async () => {

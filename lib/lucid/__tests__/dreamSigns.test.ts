@@ -79,6 +79,16 @@ function byId(candidates: readonly LucidDreamSignCandidate[], id: string) {
   return candidates.find((candidate) => candidate.id === id);
 }
 
+it('keeps the display cap while allowing exhaustive reconciliation with the same evidence threshold', () => {
+  const transcript = Array.from({ length: 201 }, (_, index) => `token${String(index).padStart(3, '0')}`).join(' ');
+  const dreams = [makeDream({ id: 1, transcript: `${transcript} singleton` }), makeDream({ id: 2, transcript })];
+  expect(extractLucidDreamSignCandidates(dreams)).toHaveLength(200);
+  const complete = extractLucidDreamSignCandidates(dreams, { maxCandidates: null });
+  expect(complete).toHaveLength(201);
+  expect(complete.some(candidate => candidate.id === 'sign:token200')).toBe(true);
+  expect(complete.some(candidate => candidate.id === 'sign:singleton')).toBe(false);
+});
+
 describe('lucid dream-sign extraction', () => {
   it('normalizes accents, case and punctuation without inventing tokens', () => {
     expect(normalizeLucidDreamSignText('Escalier  INFINI!')).toBe('escalier infini');
