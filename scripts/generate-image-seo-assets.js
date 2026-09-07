@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
+const { createImageBuildCache } = require('./lib/image-build-cache');
 const { generateEducationalDiagramSources } = require('./lib/educational-diagram-v2');
 const {
   buildVariantUrl,
@@ -169,42 +170,29 @@ async function validateSources(registry) {
   if (errors.length) throw new Error(`Invalid image sources:\n- ${errors.join('\n- ')}`);
 }
 
-/* Regenerating a variant is only needed when one of its inputs changed:
- * the source image, or the registry configs that drive crops and widths.
- * Everything else is skipped so repeated builds (docs:dev, CI reruns) do
- * not re-encode 600+ sharp variants for nothing. `--force` bypasses this. */
-const REGISTRY_CONFIG_PATHS = [
-  resolveRepoPath(path.join('docs-src', 'config', 'image-assets.json')),
-  resolveRepoPath(path.join('docs-src', 'config', 'page-illustrations.json')),
-];
-
-function newestMtimeMs(paths) {
-  let newest = 0;
-  for (const filePath of paths) {
-    if (fs.existsSync(filePath)) {
-      newest = Math.max(newest, fs.statSync(filePath).mtimeMs);
-    }
-  }
-  return newest;
-}
-
-function isVariantFresh(variant, configStampMs) {
-  if (!fs.existsSync(variant.outputPath)) return false;
-  const outputMtimeMs = fs.statSync(variant.outputPath).mtimeMs;
-  if (outputMtimeMs < configStampMs) return false;
-  const sourcePath = resolveRepoPath(variant.aspect.source || variant.asset.source);
-  return fs.existsSync(sourcePath) && outputMtimeMs >= fs.statSync(sourcePath).mtimeMs;
-}
-
-async function generateAssets(registry, { force = false } = {}) {
+async function generateAssets(registry, { force = false, manifestPath = resolveRepoPath(
+  'docs-src/config/image-build-cache/seo.json'
+) } = {}) {
   const variants = expectedVariants(registry);
-  const configStampMs = newestMtimeMs(REGISTRY_CONFIG_PATHS);
+  const cache = createImageBuildCache({
+    manifestPath,
+    codePaths: [__filename, require.resolve('./lib/image-build-cache'),
+      require.resolve('./lib/image-seo-assets'), require.resolve('./lib/page-illustrations'),
+      require.resolve('./lib/educational-diagram-v2')],
+    versions: sharp.versions,
+  });
   let generated = 0;
   for (const variant of variants) {
-    if (!force && isVariantFresh(variant, configStampMs)) continue;
+    const input = cache.fingerprint(
+      resolveRepoPath(variant.aspect.source || variant.asset.source),
+      { role: variant.asset.role, aspect: variant.aspect, width: variant.width,
+        height: variant.height, format: variant.format }
+    );
+    if (!force && cache.isFresh(variant.url, input, variant.outputPath)) continue;
     fs.mkdirSync(path.dirname(variant.outputPath), { recursive: true });
     const pipeline = await sourcePipeline(variant.asset, variant.aspect, variant.width);
     await encode(pipeline, variant.format).toFile(variant.outputPath);
+    cache.record(variant.url, input, variant.outputPath);
     generated += 1;
     if (generated % GENERATION_PROGRESS_INTERVAL === 0) {
       emitProgress(
@@ -218,6 +206,7 @@ async function generateAssets(registry, { force = false } = {}) {
         `${variants.length - generated} up to date.`
     );
   }
+  cache.commit();
   return variants;
 }
 

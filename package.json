@@ -48,6 +48,7 @@
     "docs:build:experience": "node ./scripts/build-experience.js",
     "docs:dev": "node ./scripts/docs-dev.js",
     "docs:check": "node ./scripts/docs-check.js",
+    "docs:build-impact": "node ./scripts/check-pages-build-impact.js",
     "docs:check-url-stability": "node ./scripts/check-public-url-stability.js",
     "docs:check-content-hubs": "node ./scripts/check-content-hub-contract.js",
     "docs:release-check": "node ./scripts/docs-release-check.js",
