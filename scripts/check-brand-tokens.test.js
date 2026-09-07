@@ -38,8 +38,8 @@ test('existing product palettes and semantic differences satisfy the contract', 
   const f = fixture();
   const result = f.check();
   assert.deepEqual(result.errors, []);
-  assert.equal(result.checked, 181);
-  assert.equal(f.check('journal').checked, 136);
+  assert.equal(result.checked, 233);
+  assert.equal(f.check('journal').checked, 188);
   assert.equal(f.check('meditation').checked, 45);
 });
 
@@ -105,4 +105,43 @@ test('Journal checking does not require Meditation sources', () => {
   const f = fixture();
   fs.rmSync(path.join(f.root, 'apps'), { recursive: true });
   assert.deepEqual(f.check('journal').errors, []);
+});
+
+
+test.each(['morning', 'afterglow'])('design drift in %s is rejected', mode => {
+  const f = fixture();
+  const original = fs.readFileSync(path.join(f.root, 'global.css'), 'utf8');
+  const block = original.match(new RegExp('@variant ' + mode + '\\s*\\{([^}]+)'))[1];
+  f.change('global.css', block, block.replace(/--color-ink-raised: [^;]+;/, '--color-ink-raised: #ffffff;'));
+  assert.match(f.check().errors.join('\n'), new RegExp(`Journal/Lucid design ${mode} --color-ink-raised`));
+});
+
+test.each(['global.css', 'apps/meditation/global.css'])('unmapped palette colours fail in %s', file => {
+  const f = fixture();
+  f.change(file, '@variant light {', '@variant light { --color-new-token: #ffffff;');
+  assert.match(f.check().errors.join('\n'), /light --color-new-token: Unmapped CSS colour token/);
+});
+
+test('new default colours also require an explicit contract', () => {
+  const f = fixture();
+  f.change('global.css', '@theme {', '@theme { --color-ink: #ffffff;');
+  f.change('apps/meditation/global.css', '@theme {', '@theme { --color-new-token: #ffffff;');
+  const errors = f.check().errors.join('\n');
+  assert.match(errors, /Journal\/Lucid default --color-ink: Unmapped/);
+  assert.match(errors, /Meditation default --color-new-token: Unmapped/);
+});
+
+test('utility-local variants are not theme palette declarations', () => {
+  const f = fixture();
+  fs.appendFileSync(path.join(f.root, 'global.css'), `
+    @utility example { @variant dark { background: red; .child { color: blue; } } }
+    .example { @variant light { color: red; } }
+  `);
+  assert.deepEqual(f.check().errors, []);
+});
+
+test('duplicate palette blocks still fail within the canonical scope', () => {
+  const f = fixture();
+  fs.appendFileSync(path.join(f.root, 'global.css'), '@layer theme { :root { @variant dark { --color-ink: #000; } } }');
+  assert.throws(() => f.check(), /Duplicate CSS block dark/);
 });

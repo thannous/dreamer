@@ -5,7 +5,8 @@
 Ce lot prépare le partage des primitives de marque en vérifiant les miroirs CSS
 et TypeScript existants. Il ne déplace pas les configurations natives et ne crée
 pas de package partagé avant d'avoir stabilisé les responsabilités des tokens.
-Les valeurs et les interfaces restent inchangées.
+Les interfaces restent inchangées. Les valeurs CSS restent la référence ; les
+surfaces TypeScript Morning/Afterglow sont alignées sur cette référence.
 
 Journal et Lucid utilisent les palettes de `constants/journalTheme.ts` et la
 feuille racine `global.css`. Meditation possède ses propres surfaces dans
@@ -30,9 +31,13 @@ Le contrat fonctionnel reste `specs/noctalia-brand-contract.md`.
 
 Le contrôle porte sur les couleurs des palettes Journal dark/light/morning/
 afterglow et Meditation dark/light. Les surfaces calculées par
-`getNoctaliaDesignTokens` sont contrôlées pour dark/light : cette fonction prend
-un mode binaire, pas une ambiance. Cela ne certifie pas ses surfaces calculées
-pour Morning ou Afterglow.
+`getNoctaliaDesignTokens` sont contrôlées pour les quatre combinaisons réelles :
+Dark/dark, Light/light, Morning/light et Afterglow/dark. Le mode binaire ne
+suffit pas à distinguer les surfaces : la fonction lit aussi `colors.ambience`.
+
+Chaque déclaration `--color-*` des palettes doit être enregistrée dans le
+mapping approprié. Le parseur limite ces palettes à `@layer theme > :root` ;
+un `@variant dark` dans une autre règle CSS ne crée pas une palette supplémentaire.
 
 Le contrôle ne certifie ni les contrastes de chaque écran, ni les thèmes des
 univers Meditation, ni les animations, ni le rendu sur appareil. Les tests de
@@ -46,7 +51,7 @@ que les jobs qualité existants le vérifient sans modifier les pipelines.
 Les divergences doivent être examinées : ne pas recopier mécaniquement une
 valeur d'un produit à l'autre pour obtenir un contrôle vert.
 
-## Preuves du lot
+## Preuves du lot initial (PR #118)
 
 Validation locale sur la base `eee5f80cf`, Node 24.19.0 :
 
@@ -63,3 +68,25 @@ Validation locale sur la base `eee5f80cf`, Node 24.19.0 :
 
 Aucune palette, feuille CSS, dépendance ou configuration native n'a été modifiée.
 Les preuves sont locales ; la CI de la PR constitue une vérification distincte.
+
+## Suivi de revue de la PR #118
+
+Trois remarques publiées après fusion ont motivé un correctif sur la base
+`77f49c0b4` :
+
+- 52 comparaisons supplémentaires couvrent les surfaces Morning et Afterglow.
+  Les miroirs TypeScript utilisent maintenant les couleurs CSS de ces ambiances.
+- Une couleur CSS non enregistrée fait échouer le contrôle.
+- Les variantes CSS de composants/utilitaires ne sont plus interprétées comme
+  des palettes. Les doublons dans le véritable scope des palettes restent refusés.
+
+Preuves locales : 233 comparaisons, 22 tests dans trois suites, types application
+et tests, lint ciblé et revue indépendante verts. Une comparaison des objets
+runtime complets avant/après conserve les quatre combinaisons Dark/Light et
+mode binaire.
+
+Prévisualisation web mock effectuée sur l'onboarding Lucid avec les paramètres
+`ambience=morning` et `ambience=afterglow`. Les deux écrans se rendent. Un défaut
+visuel distinct reste à traiter : les titres Morning sombres sont peu lisibles
+sur l'illustration nocturne derrière l'onboarding. Cela n'est pas une validation
+de contraste de cet écran ; le rendu natif n'a pas été qualifié dans ce lot.

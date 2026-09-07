@@ -52,12 +52,35 @@ function normalizeColor(value) {
 function cssBlocks(css) {
   const clean = css.replace(/\/\*[\s\S]*?\*\//g, '');
   const blocks = {};
-  const matcher = /@(variant\s+([\w-]+)|theme)\s*\{/g;
-  for (const match of clean.matchAll(matcher)) {
-    const name = match[2] || 'default';
-    const end = clean.indexOf('}', match.index + match[0].length);
-    if (end < 0) throw new Error(`Unclosed CSS block ${name}`);
-    const body = clean.slice(match.index + match[0].length, end);
+  // Track structural scopes, ignoring delimiters inside CSS strings.
+  const stack = [];
+  let start = 0;
+  let quote = null;
+  for (let index = 0; index < clean.length; index++) {
+    const char = clean[index];
+    if (quote) {
+      if (char === '\\') index++;
+      else if (char === quote) quote = null;
+      continue;
+    }
+    if (char === '"' || char === "'") { quote = char; continue; }
+    if (char === ';') { start = index + 1; continue; }
+    if (char === '{') {
+      stack.push({ selector: clean.slice(start, index).trim().replace(/\s+/g, ' '), start: index + 1 });
+      start = index + 1;
+      continue;
+    }
+    if (char !== '}') continue;
+    const scope = stack.pop();
+    if (!scope) throw new Error('Unbalanced CSS closing brace');
+    start = index + 1;
+    const variant = /^@variant ([\w-]+)$/.exec(scope.selector);
+    const isPalette = variant && stack.length === 2 &&
+      stack[0].selector === '@layer theme' && stack[1].selector === ':root';
+    const isDefault = scope.selector === '@theme' && stack.length === 0;
+    if (!isPalette && !isDefault) continue;
+    const name = isDefault ? 'default' : variant[1];
+    const body = clean.slice(scope.start, index);
     if (body.includes('{')) throw new Error(`Unsupported nested CSS block ${name}`);
     if (Object.hasOwn(blocks, name)) throw new Error(`Duplicate CSS block ${name}`);
     const tokens = {};
@@ -70,6 +93,7 @@ function cssBlocks(css) {
     }
     blocks[name] = tokens;
   }
+  if (stack.length || quote) throw new Error('Unclosed CSS block or string');
   return blocks;
 }
 
@@ -101,8 +125,8 @@ function typescriptReader(source, filename, ts) {
       return read(declarations.get(node.text), keys, env, new Set([...seen, node.text]));
     }
     if (ts.isPropertyAccessExpression(node)) return read(node.expression, [node.name.text, ...keys], env, seen);
-    if (ts.isConditionalExpression(node) && ts.isIdentifier(node.condition) && node.condition.text === 'isDark' && typeof env.isDark === 'boolean') {
-      return read(env.isDark ? node.whenTrue : node.whenFalse, keys, env, seen);
+    if (ts.isConditionalExpression(node) && ts.isIdentifier(node.condition) && ['isDark', 'isMorning', 'isAfterglow'].includes(node.condition.text) && typeof env[node.condition.text] === 'boolean') {
+      return read(env[node.condition.text] ? node.whenTrue : node.whenFalse, keys, env, seen);
     }
     if (ts.isObjectLiteralExpression(node) && keys.length) {
       const [key, ...remaining] = keys;
@@ -127,16 +151,23 @@ function typescriptReader(source, filename, ts) {
     design: (key, colors, mode) => {
       const fn = functions.get('getNoctaliaDesignTokens');
       const statements = fn?.body?.statements;
-      const guard = statements?.[0];
-      const declaration = guard && ts.isVariableStatement(guard) && guard.declarationList.declarations[0];
-      const condition = declaration?.initializer;
+      const guards = [['isDark', 'mode', 'dark'], ['isMorning', 'colors.ambience', 'morning'],
+        ['isAfterglow', 'colors.ambience', 'afterglow']];
+      const validGuards = guards.every(([name, left, right], index) => {
+        const statement = statements?.[index];
+        const declaration = statement && ts.isVariableStatement(statement) &&
+          statement.declarationList.declarations.length === 1 && statement.declarationList.declarations[0];
+        const condition = declaration?.initializer;
+        return declaration?.name.getText(file) === name && condition &&
+          ts.isBinaryExpression(condition) && condition.operatorToken.kind === ts.SyntaxKind.EqualsEqualsEqualsToken &&
+          condition.left.getText(file) === left && ts.isStringLiteral(condition.right) && condition.right.text === right;
+      });
       if (fn?.parameters.length !== 2 || fn.parameters[0].name.getText(file) !== 'colors' ||
-          fn.parameters[1].name.getText(file) !== 'mode' || statements?.length !== 2 ||
-          declaration?.name.getText(file) !== 'isDark' || !condition ||
-          !ts.isBinaryExpression(condition) || condition.operatorToken.kind !== ts.SyntaxKind.EqualsEqualsEqualsToken ||
-          condition.left.getText(file) !== 'mode' || !ts.isStringLiteral(condition.right) || condition.right.text !== 'dark' ||
-          !ts.isReturnStatement(statements[1])) throw new Error('Unsupported getNoctaliaDesignTokens structure');
-      return read(statements[1].expression, key.split('.'), { colors, isDark: mode === 'dark' });
+          fn.parameters[1].name.getText(file) !== 'mode' || statements?.length !== 4 ||
+          !validGuards || !ts.isReturnStatement(statements[3])) throw new Error('Unsupported getNoctaliaDesignTokens structure');
+      return read(statements[3].expression, key.split('.'), {
+        colors, isDark: mode === 'dark', isMorning: colors.ambience === 'morning', isAfterglow: colors.ambience === 'afterglow',
+      });
     },
   };
 }
@@ -146,6 +177,16 @@ function checkBrandTokens({ root = ROOT, product = 'journal', ts } = {}) {
   const errors = [];
   let checked = 0;
   const read = file => fs.readFileSync(path.join(root, file), 'utf8');
+  function rejectUnmapped(blocks, mapping, productName, emptyDefaults = false) {
+    for (const [mode, block] of Object.entries(blocks)) {
+      for (const name of Object.keys(block)) {
+        if (name.startsWith('--color-') &&
+            ((emptyDefaults && mode === 'default') || !Object.hasOwn(mapping, name.slice(8)))) {
+          errors.push(`${productName} ${mode} ${name}: Unmapped CSS colour token`);
+        }
+      }
+    }
+  }
   function compare(label, block, mapping, token) {
     for (const [css, property] of Object.entries(mapping)) {
       const name = `--color-${css}`;
@@ -159,20 +200,21 @@ function checkBrandTokens({ root = ROOT, product = 'journal', ts } = {}) {
   }
   if (product === 'all' || product === 'journal') {
     const blocks = cssBlocks(read('global.css'));
+    rejectUnmapped(blocks, { ...JOURNAL, ...DESIGN }, 'Journal/Lucid', true);
     const theme = typescriptReader(read('constants/journalTheme.ts'), 'constants/journalTheme.ts', ts);
     const design = typescriptReader(read('constants/noctaliaDesign.ts'), 'constants/noctaliaDesign.ts', ts);
     for (const [mode, name] of Object.entries({ dark: 'DarkTheme', light: 'LightTheme', morning: 'MorningTheme', afterglow: 'AfterglowTheme' })) {
       compare(`Journal/Lucid ${mode}`, blocks[mode], JOURNAL, key => theme.token(name, key));
-      // The design function has a binary dark/light contract, unlike the palette.
-      if (mode === 'dark' || mode === 'light') {
-        const colors = Object.fromEntries(Object.values(JOURNAL).filter(key => !key.includes('.')).map(key => [key, theme.token(name, key)]));
-        colors.overlay = theme.token(name, 'overlay');
-        compare(`Journal/Lucid design ${mode}`, blocks[mode], DESIGN, key => design.design(key, colors, mode));
-      }
+      const colors = Object.fromEntries(Object.values(JOURNAL).filter(key => !key.includes('.')).map(key => [key, theme.token(name, key)]));
+      colors.overlay = theme.token(name, 'overlay');
+      colors.ambience = theme.token(name, 'ambience');
+      compare(`Journal/Lucid design ${mode}`, blocks[mode], DESIGN, key => design.design(key, colors,
+        mode === 'dark' || mode === 'afterglow' ? 'dark' : 'light'));
     }
   }
   if (product === 'all' || product === 'meditation') {
     const blocks = cssBlocks(read('apps/meditation/global.css'));
+    rejectUnmapped(blocks, MEDITATION, 'Meditation');
     const theme = typescriptReader(read('apps/meditation/constants/theme.ts'), 'apps/meditation/constants/theme.ts', ts);
     for (const [mode, name] of Object.entries({ dark: 'NightTheme', light: 'PaperTheme', default: 'PaperTheme' })) {
       compare(`Meditation ${mode}`, blocks[mode], MEDITATION, key => theme.token(name, key));
