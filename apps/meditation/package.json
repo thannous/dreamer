@@ -13,7 +13,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest",
-    "lint": "expo lint app components constants context hooks lib services tests",
+    "lint": "npm run brand:check && expo lint app components constants context hooks lib services tests",
     "typecheck": "tsc --noEmit",
     "test:e2e": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/smoke.yml",
     "test:e2e:all": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/",
@@ -21,7 +21,8 @@
     "test:e2e:playback": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/session-playback.yml",
     "test:e2e:breathing": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/breathing.yml",
     "test:e2e:paywall": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/paywall.yml",
-    "test:e2e:settings": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/settings.yml"
+    "test:e2e:settings": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/settings.yml",
+    "brand:check": "node ../../scripts/check-brand-tokens.js --meditation"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",

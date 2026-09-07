@@ -82,7 +82,7 @@
     "aso:google-play:listing": "node ./scripts/export-google-play-listing.js",
     "seo:backlinks:check": "node ./scripts/check-backlink-results.js",
     "uniwind:types": "uniwind generate-artifacts --css ./global.css --theme morning --theme afterglow --dts ./uniwind-types.d.ts",
-    "lint": "expo lint app components hooks lib context constants services tests supabase/functions scripts",
+    "lint": "npm run brand:check && expo lint app components hooks lib context constants services tests supabase/functions scripts",
     "lint:scripts": "expo lint scripts --max-warnings=0",
     "scripts:list": "node ./scripts/list-scripts.js",
     "typecheck:app": "tsc --noEmit",
@@ -155,7 +155,8 @@
     "android:google-play-payments-profile-state": "node ./scripts/update-google-play-payments-profile-state.js",
     "android:supabase-play-integrity-secrets-state": "node ./scripts/update-supabase-play-integrity-secrets-state.js",
     "security:audit:mobile": "node ./scripts/check-mobile-security.js",
-    "security:audit:mobile:strict": "node ./scripts/check-mobile-security.js --strict"
+    "security:audit:mobile:strict": "node ./scripts/check-mobile-security.js --strict",
+    "brand:check": "node scripts/check-brand-tokens.js"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",
