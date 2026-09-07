@@ -184,7 +184,20 @@ describe('lucidTrainerSync', () => {
         await queueLucidTrainerMutation(mutation(localSign(), { id: `new-${i}`, clientRequestId: `new-${i}` }));
         await queueLucidTrainerMutation(mutation(dreamAtlasEntity(), { id: `atlas-${i}` }));
       }
-      expect(queue).toEqual([{ ...existing, status: 'blocked', nextAttemptAt: undefined, lastError: LUCID_SYNC_LOCAL_ONLY_REASON }]);
+      expect(queue).toEqual([existing]);
+      expect(spy).not.toHaveBeenCalled();
+    } finally { spy.mockRestore(); }
+  });
+
+  it('skips failing queue persistence for local-only saves while compatible mutations still report the failure', async () => {
+    const failure = new Error('queue persistence unavailable');
+    const spy = jest.spyOn(lucidStorage, 'updateLucidTrainerSyncQueue').mockRejectedValue(failure);
+    try {
+      await expect(queueLucidTrainerMutation(mutation(localSign()))).resolves.toEqual([]);
+      await expect(queueLucidTrainerMutation(mutation(dreamAtlasEntity()))).resolves.toEqual([]);
+      expect(spy).not.toHaveBeenCalled();
+      await expect(queueLucidTrainerMutation(mutation(preferencesEntity()))).rejects.toBe(failure);
+      expect(spy).toHaveBeenCalledTimes(1);
     } finally { spy.mockRestore(); }
   });
 

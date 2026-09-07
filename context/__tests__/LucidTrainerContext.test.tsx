@@ -1,4 +1,5 @@
 /* @jest-environment jsdom */
+import * as dreamSignsModule from '@/lib/lucid/dreamSigns';
 import { lucidObservationSourceId } from '@/lib/lucid/observations';
 
 import React from 'react';
@@ -1788,6 +1789,13 @@ describe('LucidTrainerContext account boundary', () => {
     const { result } = renderHook(() => useLucidTrainer(), { wrapper });
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.dreamSignCandidates).toHaveLength(200);
+    const extraction = jest.spyOn(dreamSignsModule, 'extractLucidDreamSignCandidates');
+    try {
+      await act(async () => { await result.current.updatePreferences({ theme: 'dark' }); });
+      expect(extraction).not.toHaveBeenCalled();
+    } finally {
+      extraction.mockRestore();
+    }
     await act(async () => { await result.current.deleteExperiment('missing-experiment'); });
     expect(persistedState.dreamSignDecisions).toHaveLength(1);
     expect(persistedState.dreamSignDecisions?.[0].id).toBe('sign:lucid:token200');

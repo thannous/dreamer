@@ -341,9 +341,10 @@ export function createLucidTrainerMutation(
 export async function queueLucidTrainerMutation(
   mutation: LucidSyncMutation
 ): Promise<LucidSyncMutation[]> {
+  // Local state is already durable. Queue I/O must not turn that successful
+  // save into a failure; legacy queued entries are quarantined during replay.
+  if (isLocalOnly(mutation)) return [];
   return updateLucidTrainerSyncQueue(mutation.userScope, (current) => {
-    // The state is already durable; do not accumulate unsendable new mutations.
-    if (isLocalOnly(mutation)) return current.map(quarantine);
     if (current.some((entry) => entry.clientRequestId === mutation.clientRequestId)) {
       return current;
     }

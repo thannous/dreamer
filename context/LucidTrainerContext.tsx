@@ -620,7 +620,9 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
           (current) => {
             const now = Date.now();
             const result = updater(current, now);
-            const atlas = pruneOrphanedLocalAtlas(result.next, now);
+            const atlas = result.next.experiments !== current.experiments
+              ? pruneOrphanedLocalAtlas(result.next, now)
+              : null;
             changed = atlas
               ? [...result.changed.filter(entity => entity.entityType !== 'dream_atlas'), atlas]
               : result.changed;
@@ -1246,11 +1248,13 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     [deviceLocale, state?.preferences.locale]
   );
 
+  const persistedExperiments = state?.experiments;
+  const persistedDecisions = state?.dreamSignDecisions;
   useEffect(() => {
-    const decisions = state?.dreamSignDecisions ?? [];
-    if (!dreamsLoaded || !state || decisions.length === 0) return;
+    const decisions = persistedDecisions ?? [];
+    if (!dreamsLoaded || !persistedExperiments || decisions.length === 0) return;
     const candidatesById = new Map(
-      extractLucidDreamSignCandidates(projectLucidObservations(state.experiments), { maxCandidates: null })
+      extractLucidDreamSignCandidates(projectLucidObservations(persistedExperiments), { maxCandidates: null })
         .map(candidate => [localLucidSignId(candidate.id), candidate] as const)
     );
     const needsReconciliation = decisions.some((decision) => {
@@ -1324,7 +1328,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     })().catch((cause) => {
       if (__DEV__) console.warn('[LucidTrainer] Dream-sign reconciliation failed', cause);
     });
-  }, [commit, dreamSignCandidates, dreamsLoaded, state?.dreamSignDecisions, state, user?.id, userScope]);
+  }, [commit, dreamsLoaded, persistedDecisions, persistedExperiments, user?.id, userScope]);
 
   const reconcileReminders = useCallback(async () => {
     if (!state) return;
