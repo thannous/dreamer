@@ -40,6 +40,8 @@ import {
   Keyboard,
   Platform,
   Text,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   type TextInput,
   View,
   type ViewToken,
@@ -103,21 +105,23 @@ export default function JournalListScreen() {
   const scrollHeader = !isDesktopLayout;
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
   const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
-  // Production SearchBar is 112dp at fontScale 2, and this screen's chrome adds
-  // 16dp before the top safe-area. Compact large-text nav can reserve ~200dp as
-  // FlashList marginBottom, which would leave no list viewport on 640x320.
-  // Cap the overlay margin so dreams stay reachable; leftover clearance becomes
-  // content padding so the last row can still scroll above the tab bar.
+  // The tab bar in app/(tabs)/_layout.tsx is position:absolute, so FlashList must
+  // reserve the full overlay from the viewport. Capping marginBottom would leave
+  // the remaining list box covered by the bar. Production SearchBar is 112dp at
+  // fontScale 2 plus 16dp chrome and the top inset; when that would consume the
+  // uncovered viewport, keep the input mounted outside the column-keyed list but
+  // out of flow so the list can fill the space above the overlay. A header spacer
+  // and scroll translation let a dream card move into that uncovered box.
   const mobileSearchHeaderHeight = isDesktopLayout
     ? 0
     : insets.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
   const overlayNavClearance = isDesktopLayout || isKeyboardVisible ? 0 : navigationClearance;
-  const availableBelowSearch = Math.max(0, height - mobileSearchHeaderHeight);
-  const listMarginBottom = Math.min(
-    overlayNavClearance,
-    Math.max(0, availableBelowSearch - MIN_MOBILE_JOURNAL_LIST_VIEWPORT),
-  );
-  const extraNavPaddingBottom = overlayNavClearance - listMarginBottom;
+  const viewportAboveNav = Math.max(0, height - overlayNavClearance);
+  const searchConsumesLayout = isDesktopLayout
+    || viewportAboveNav - mobileSearchHeaderHeight >= MIN_MOBILE_JOURNAL_LIST_VIEWPORT;
+  const searchLayoutKey = `${searchConsumesLayout ? 'flow' : 'overlay'}:${isTabletLayout ? 'tablet' : 'mobile'}`;
+  const [searchCollapse, setSearchCollapse] = useState({ key: searchLayoutKey, offset: 0 });
+  const searchCollapseOffset = searchCollapse.key === searchLayoutKey ? searchCollapse.offset : 0;
 
   useEffect(() => {
     const show = Keyboard.addListener(Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow', () => setIsKeyboardVisible(true));
@@ -178,9 +182,9 @@ export default function JournalListScreen() {
     setIsScrolling(next);
   }, []);
 
-  const listBottomPadding = (isDesktopLayout
+  const listBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
-    : ThemeLayout.spacing.lg) + extraNavPaddingBottom;
+    : ThemeLayout.spacing.lg;
   const listContentStyle = useMemo(
     () => [LIST_CONTENT_STYLE, { paddingBottom: listBottomPadding }],
     [listBottomPadding]
@@ -426,6 +430,15 @@ export default function JournalListScreen() {
       clearTimeout(scrollIdleTimeoutRef.current);
     }
   }, [setScrolling]);
+
+  const handleListScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    if (searchConsumesLayout) return;
+    const next = Math.max(0, Math.min(event.nativeEvent.contentOffset.y, mobileSearchHeaderHeight));
+    setSearchCollapse((current) => {
+      if (current.key === searchLayoutKey && Math.abs(current.offset - next) < 0.5) return current;
+      return { key: searchLayoutKey, offset: next };
+    });
+  }, [mobileSearchHeaderHeight, searchConsumesLayout, searchLayoutKey]);
 
   useEffect(() => {
     return () => {
@@ -715,6 +728,9 @@ export default function JournalListScreen() {
 
   const listHeader = (
     <View style={scrollHeader ? { marginHorizontal: -ThemeLayout.spacing.md } : undefined}>
+      {!searchConsumesLayout ? (
+        <View testID="journal-search-scroll-slot" style={{ height: mobileSearchHeaderHeight }} />
+      ) : null}
       <PageHeaderContent
         titleKey="journal.title"
         animationSeed={showHeaderAnimations ? 1 : 0}
@@ -801,8 +817,21 @@ export default function JournalListScreen() {
 
         {isDesktopLayout ? listHeader : (
           <View
+            testID="journal-search-chrome"
             className="px-4 pb-2"
-            style={{ paddingTop: insets.top + ThemeLayout.spacing.sm }}
+            style={{
+              paddingTop: insets.top + ThemeLayout.spacing.sm,
+              ...(searchConsumesLayout
+                ? null
+                : {
+                    position: 'absolute' as const,
+                    top: 0,
+                    start: 0,
+                    end: 0,
+                    zIndex: 2,
+                    transform: [{ translateY: -searchCollapseOffset }],
+                  }),
+            }}
           >
             {searchBar}
           </View>
@@ -845,8 +874,11 @@ export default function JournalListScreen() {
           getItemType={getDreamItemType}
           contentContainerStyle={listContentStyle}
           // The navigator hides its tab bar while the keyboard is shown.
-          style={{ marginBottom: listMarginBottom }}
+          // Always reserve the full absolute overlay, never a capped remainder.
+          style={{ flex: 1, marginBottom: overlayNavClearance }}
           ListHeaderComponent={listHeader}
+          onScroll={handleListScroll}
+          scrollEventThrottle={16}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
           contentInsetAdjustmentBehavior="never"

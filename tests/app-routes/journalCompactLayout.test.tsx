@@ -58,7 +58,15 @@ jest.mock('react-native', () => {
         return { remove: () => mockKeyboardListeners.delete(event) };
       },
     },
-    View: element('div'), Text: element('span'), Pressable: element('button'),
+    View: function MockView({ children, testID, onPress, accessibilityLabel, style }: any) {
+      return React.createElement('div', {
+        'data-testid': testID,
+        'aria-label': accessibilityLabel,
+        onClick: onPress,
+        'data-style': JSON.stringify(style ?? {}),
+      }, children);
+    },
+    Text: element('span'), Pressable: element('button'),
     useWindowDimensions: () => mockWindow,
     StyleSheet: { create: (styles: unknown) => styles, flatten: (styles: unknown) => styles },
   };
@@ -146,23 +154,42 @@ function mobileSearchHeaderHeight(fontScale: number) {
   return MOCK_INSETS.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
 }
 
-function expectReachableListViewport(width: number, height: number, fontScale: number, keyboardVisible = false) {
-  const searchMinHeight = searchBarLayout(fontScale).minHeight;
-  const searchHeaderHeight = mobileSearchHeaderHeight(fontScale);
+function overlayClearance(width: number, height: number, fontScale: number) {
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
-  const navigationClearance = navigationLayout.barHeight + Math.max(
+  return navigationLayout.barHeight + Math.max(
     MOCK_INSETS.bottom,
     navigationLayout.minimumBottomInset,
   );
+}
+
+function expectReachableListViewport(width: number, height: number, fontScale: number, keyboardVisible = false) {
+  const searchMinHeight = searchBarLayout(fontScale).minHeight;
+  const searchHeaderHeight = mobileSearchHeaderHeight(fontScale);
+  const reservedOverlay = keyboardVisible ? 0 : overlayClearance(width, height, fontScale);
   const listStyle = flattenStyle(mockListProps.style);
   const contentStyle = flattenStyle(mockListProps.contentContainerStyle);
   const marginBottom = listStyle.marginBottom ?? 0;
   const extraNavPadding = (contentStyle.paddingBottom ?? 0) - ThemeLayout.spacing.lg;
-  const listViewport = height - searchHeaderHeight - marginBottom;
+  const viewportAboveNav = height - reservedOverlay;
+  const searchInFlow = viewportAboveNav - searchHeaderHeight >= 120;
+  const listViewport = viewportAboveNav - (searchInFlow ? searchHeaderHeight : 0);
 
   expect(Number(screen.getByTestId(TID.Component.SearchBar).getAttribute('data-min-height'))).toBe(searchMinHeight);
+  expect(marginBottom).toBe(reservedOverlay);
+  expect(extraNavPadding).toBe(0);
+  expect(listStyle.flex).toBe(1);
   expect(listViewport).toBeGreaterThanOrEqual(120);
-  expect(marginBottom + extraNavPadding).toBe(keyboardVisible ? 0 : navigationClearance);
+
+  const chrome = JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}') as {
+    position?: string;
+  };
+  if (searchInFlow) {
+    expect(chrome.position).toBeUndefined();
+    expect(screen.queryByTestId('journal-search-scroll-slot')).toBeNull();
+  } else {
+    expect(chrome.position).toBe('absolute');
+    expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-search-scroll-slot'))).toBe(true);
+  }
 }
 
 afterEach(() => {
@@ -302,16 +329,31 @@ describe('Journal compact large-text layout', () => {
 
     const searchMinHeight = searchBarLayout(2).minHeight;
     const searchHeaderHeight = mobileSearchHeaderHeight(2);
+    const reservedOverlay = overlayClearance(640, 320, 2);
     const list = screen.getByTestId(TID.List.Dreams);
     const dreamCard = screen.getByTestId(TID.List.DreamItem(guestDream.id));
-    const listViewport = 320 - searchHeaderHeight - (mockListProps.style.marginBottom ?? 0);
+    const listStyle = flattenStyle(mockListProps.style);
+    const uncoveredListBox = 320 - reservedOverlay;
 
     expect(searchMinHeight).toBe(112);
     expect(searchHeaderHeight).toBe(152);
+    expect(reservedOverlay).toBe(200);
+    expect(listStyle.marginBottom).toBe(reservedOverlay);
+    expect(uncoveredListBox).toBeGreaterThanOrEqual(120);
+    expect(320 - searchHeaderHeight - reservedOverlay).toBeLessThan(120);
     expect(Number(screen.getByTestId(TID.Component.SearchBar).getAttribute('data-min-height'))).toBe(112);
     expect(list.contains(screen.getByTestId(TID.Input.SearchDreams))).toBe(false);
     expect(list.contains(dreamCard)).toBe(true);
-    expect(listViewport).toBeGreaterThanOrEqual(120);
+    expect(list.contains(screen.getByTestId('journal-search-scroll-slot'))).toBe(true);
+
+    act(() => {
+      mockListProps.onScroll({ nativeEvent: { contentOffset: { y: searchHeaderHeight } } });
+    });
+    const chrome = JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}') as {
+      transform?: { translateY: number }[];
+    };
+    expect(chrome.transform).toEqual([{ translateY: -searchHeaderHeight }]);
+    expect(list.contains(screen.getByTestId(TID.List.DreamItem(guestDream.id)))).toBe(true);
     expectReachableListViewport(640, 320, 2);
   });
 
