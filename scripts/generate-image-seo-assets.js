@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const sharp = require('sharp');
+const sharp = require('../apps/site/dependencies')('sharp');
 const { createImageBuildCache } = require('./lib/image-build-cache');
 const { generateEducationalDiagramSources } = require('./lib/educational-diagram-v2');
 const {

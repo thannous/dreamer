@@ -4,7 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { imageSize } = require('image-size');
+const { imageSize } = require('../apps/site/dependencies')('image-size');
 const { DOCS_DIR, ROOT_DIR, siteConfig } = require('./lib/docs-site-config');
 const {
   getPageResponsiveImages,
