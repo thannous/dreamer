@@ -35,7 +35,7 @@ import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
 import { router, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   Keyboard,
   Platform,
@@ -205,6 +205,13 @@ export default function JournalListScreen() {
   const scrollIdleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const listScrollOffsetRef = useRef(0);
   const overlaySearchDragOriginRef = useRef({ pageX: 0, pageY: 0, offset: 0 });
+
+  useLayoutEffect(() => {
+    // The keyed FlashList remounts at offset 0 when this layout key changes.
+    // Drop the previous list's origin so a later overlay drag cannot jump the
+    // new list past the header.
+    listScrollOffsetRef.current = 0;
+  }, [searchLayoutKey]);
 
   const setScrolling = useCallback((next: boolean) => {
     if (isScrollingRef.current === next) return;

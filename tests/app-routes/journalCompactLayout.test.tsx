@@ -668,6 +668,49 @@ describe('Journal compact large-text layout', () => {
     );
   });
 
+  it('resets overlay drag origin when the keyed list remounts', () => {
+    mockDreams.push(guestDream);
+    Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
+    const view = render(<JournalScreen />);
+
+    const searchHeaderHeight = mobileSearchHeaderHeight(2);
+    expect(mockListProps.numColumns).toBe(2);
+    expectReachableListViewport(640, 320, 2);
+
+    collapseSearchByOverlayGesture(searchHeaderHeight);
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
+      expect.objectContaining({ transform: [{ translateY: -searchHeaderHeight }] }),
+    );
+
+    Object.assign(mockWindow, { width: 320, height: 640, fontScale: 2 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(1);
+    expectReachableListViewport(320, 640, 2);
+
+    Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(2);
+    expectReachableListViewport(640, 320, 2);
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
+      expect.objectContaining({
+        position: 'absolute',
+        transform: [{ translateY: 0 }],
+      }),
+    );
+
+    const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
+    mockListScrollToOffset.mockClear();
+    act(() => {
+      dragFromSearchControls(9, input);
+    });
+    expect(mockListScrollToOffset).toHaveBeenCalled();
+    expect(mockListScrollToOffset.mock.calls.every(([args]) => args.offset <= 9)).toBe(true);
+    expect(mockListScrollToOffset).toHaveBeenLastCalledWith({ offset: 9, animated: false });
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
+      expect.objectContaining({ transform: [{ translateY: -9 }] }),
+    );
+  });
+
   it('preserves the fixed desktop header and grid', () => {
     mockPlatform = 'web';
     Object.assign(mockWindow, { width: 1440, height: 900, fontScale: 1.5 });
