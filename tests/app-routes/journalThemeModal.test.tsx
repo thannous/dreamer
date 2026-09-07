@@ -130,27 +130,33 @@ jest.doMock('@/components/journal/FilterBar', () => ({
   },
 }));
 
-jest.doMock('@/components/ui/SearchBar', () => ({
-  SearchBar: ({
-    testID,
-    inputTestID,
-    value,
-    onChangeText,
-  }: {
-    testID?: string;
-    inputTestID?: string;
-    value: string;
-    onChangeText: (text: string) => void;
-  }) => (
-    <div data-testid={testID ?? 'search-bar'}>
-      <input
-        data-testid={inputTestID ?? 'input.searchDreams'}
-        value={value}
-        onChange={(event) => onChangeText(event.target.value)}
-      />
-    </div>
-  ),
-}));
+jest.doMock('@/components/ui/SearchBar', () => {
+  const { searchBarLayout } = jest.requireActual('@/components/ui/SearchBar') as {
+    searchBarLayout: (fontScale: number) => { minHeight: number };
+  };
+  return {
+    searchBarLayout,
+    SearchBar: ({
+      testID,
+      inputTestID,
+      value,
+      onChangeText,
+    }: {
+      testID?: string;
+      inputTestID?: string;
+      value: string;
+      onChangeText: (text: string) => void;
+    }) => (
+      <div data-testid={testID ?? 'search-bar'}>
+        <input
+          data-testid={inputTestID ?? 'input.searchDreams'}
+          value={value}
+          onChange={(event) => onChangeText(event.target.value)}
+        />
+      </div>
+    ),
+  };
+});
 
 jest.doMock('@/components/inspiration/AtmosphericBackground', () => ({
   AtmosphericBackground: () => <div data-testid="atmospheric-background" />,
@@ -254,7 +260,7 @@ jest.doMock('react-native', () => {
     Text: createElement('span'),
     View: createElement('div'),
     Keyboard: {
-      isVisible: () => false,
+      // Intentionally omit isVisible: RN Web 0.21 does not implement it.
       addListener: () => ({ remove: () => {} }),
     },
     Platform: {

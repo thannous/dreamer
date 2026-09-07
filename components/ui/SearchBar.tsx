@@ -37,7 +37,7 @@ export function sanitizeSearchQuery(text: string) {
   return text.replace(/[\n\r]+/g, ' ');
 }
 
-function searchBarLayout(fontScale: number) {
+export function searchBarLayout(fontScale: number) {
   const scale = Number.isFinite(fontScale) ? Math.max(1, fontScale) : 1;
   const lineCount = scale >= 2 ? 2 : 1;
   const inputMinHeight = Math.round(20 * scale) * lineCount;
