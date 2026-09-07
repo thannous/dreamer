@@ -112,7 +112,18 @@ jest.mock('@/components/ui/SearchBar', () => {
       const { minHeight } = actualSearchBarLayout(useWindowDimensions().fontScale);
       return (
         <div data-testid={testID} data-min-height={minHeight} style={{ minHeight }}>
-          <input ref={ref} data-testid={inputTestID} value={value} onChange={(event) => onChangeText(event.target.value)} />
+          <input
+            ref={ref}
+            data-testid={inputTestID}
+            value={value}
+            onChange={(event) => onChangeText(event.target.value)}
+            onClick={(event) => event.currentTarget.focus()}
+          />
+          {value ? (
+            <button type="button" data-testid="journal-search-clear" onClick={() => onChangeText('')}>
+              Clear
+            </button>
+          ) : null}
         </div>
       );
     }),
@@ -161,6 +172,26 @@ function flattenStyle(style: unknown): Record<string, number> {
   return { ...(style as Record<string, number>) };
 }
 
+// RN hit testing, not CSS: `none` skips the view and its descendants, `box-none`
+// skips only the view, and `box-only` captures the view while blocking children.
+function isRnTouchable(node: Element): boolean {
+  const self = node.getAttribute('data-pointer-events');
+  if (self === 'none' || self === 'box-none') return false;
+
+  let ancestor = node.parentElement;
+  while (ancestor) {
+    const pe = ancestor.getAttribute('data-pointer-events');
+    if (pe === 'none' || pe === 'box-only') return false;
+    ancestor = ancestor.parentElement;
+  }
+  return true;
+}
+
+function pressSearchControl(node: HTMLElement) {
+  expect(isRnTouchable(node)).toBe(true);
+  fireEvent.click(node);
+}
+
 function mobileSearchHeaderHeight(fontScale: number) {
   return MOCK_INSETS.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
 }
@@ -192,35 +223,48 @@ function expectReachableListViewport(width: number, height: number, fontScale: n
   expect(listViewport).toBeGreaterThanOrEqual(120);
 
   const chromeNode = screen.getByTestId('journal-search-chrome');
+  const controls = screen.getByTestId('journal-search-controls');
+  const input = screen.getByTestId(TID.Input.SearchDreams);
   const chrome = JSON.parse(chromeNode.getAttribute('data-style') || '{}') as {
     position?: string;
   };
+  expect(chromeNode.contains(controls)).toBe(true);
+  expect(controls.contains(input)).toBe(true);
+  expect(controls.getAttribute('data-pointer-events')).toBe('auto');
   if (searchInFlow) {
     expect(chrome.position).toBeUndefined();
     expect(chromeNode.getAttribute('data-pointer-events')).toBe('auto');
     expect(screen.queryByTestId('journal-search-scroll-slot')).toBeNull();
   } else {
     expect(chrome.position).toBe('absolute');
-    expect(chromeNode.getAttribute('data-pointer-events')).toBe('none');
-    expect(chromeNode.style.pointerEvents).toBe('none');
+    expect(chromeNode.getAttribute('data-pointer-events')).toBe('box-none');
+    expect(chromeNode.style.pointerEvents).toBe('box-none');
+    expect(isRnTouchable(chromeNode)).toBe(false);
+    expect(isRnTouchable(input)).toBe(true);
     expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-search-scroll-slot'))).toBe(true);
   }
 }
 
 function collapseSearchByOverlayGesture(offset: number) {
   const chrome = screen.getByTestId('journal-search-chrome');
+  const controls = screen.getByTestId('journal-search-controls');
   const list = screen.getByTestId(TID.List.Dreams);
   const input = screen.getByTestId(TID.Input.SearchDreams);
   const overlayPointerEvents = chrome.getAttribute('data-pointer-events');
 
   expect(chrome.contains(input)).toBe(true);
   expect(list.contains(chrome)).toBe(false);
-  expect(overlayPointerEvents).toBe('none');
-  expect(chrome.style.pointerEvents).toBe('none');
+  expect(overlayPointerEvents).toBe('box-none');
+  expect(chrome.style.pointerEvents).toBe('box-none');
+  expect(isRnTouchable(chrome)).toBe(false);
+  expect(controls.getAttribute('data-pointer-events')).toBe('auto');
+  expect(isRnTouchable(input)).toBe(true);
 
-  // RN pointerEvents none skips the chrome and its TextInput, so the drag
-  // lands on the sibling FlashList rather than the overlay.
-  const gestureTarget = overlayPointerEvents === 'none' ? list : chrome;
+  // box-none skips the chrome box so a drag that misses SearchBar lands on
+  // the sibling FlashList. SearchBar stays a target via pointerEvents auto.
+  const gestureTarget = overlayPointerEvents === 'box-none' || overlayPointerEvents === 'none'
+    ? list
+    : chrome;
   expect(gestureTarget).toBe(list);
 
   act(() => {
@@ -386,6 +430,18 @@ describe('Journal compact large-text layout', () => {
     expect(list.contains(screen.getByTestId(TID.Input.SearchDreams))).toBe(false);
     expect(list.contains(dreamCard)).toBe(true);
     expect(list.contains(screen.getByTestId('journal-search-scroll-slot'))).toBe(true);
+
+    const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
+    pressSearchControl(input);
+    expect(document.activeElement).toBe(input);
+    fireEvent.change(input, { target: { value: 'blue room' } });
+    expect(input.value).toBe('blue room');
+
+    const clear = screen.getByTestId('journal-search-clear');
+    pressSearchControl(clear);
+    expect(input.value).toBe('');
+    expect(screen.queryByTestId('journal-search-clear')).toBeNull();
+    expect(document.activeElement).toBe(input);
 
     collapseSearchByOverlayGesture(searchHeaderHeight);
     const chrome = JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}') as {

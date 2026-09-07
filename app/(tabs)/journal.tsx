@@ -825,9 +825,10 @@ export default function JournalListScreen() {
             testID="journal-search-chrome"
             className="px-4 pb-2"
             // Overlay chrome is taller than the uncovered list box on short
-            // landscape. pointerEvents none lets FlashList receive the drag so
-            // the bar can collapse and reveal dream cards.
-            pointerEvents={searchConsumesLayout ? 'auto' : 'none'}
+            // landscape. box-none lets FlashList receive drags that miss the
+            // SearchBar, while auto on the controls keeps the input and clear
+            // button tappable.
+            pointerEvents={searchConsumesLayout ? 'auto' : 'box-none'}
             style={{
               paddingTop: insets.top + ThemeLayout.spacing.sm,
               ...(searchConsumesLayout
@@ -842,7 +843,9 @@ export default function JournalListScreen() {
                   }),
             }}
           >
-            {searchBar}
+            <View pointerEvents="auto" testID="journal-search-controls">
+              {searchBar}
+            </View>
           </View>
         )}
 
