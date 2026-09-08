@@ -1,7 +1,7 @@
 # Noctalia — contrat de marque et responsabilités produit
 
 Décision de cadrage confirmée le 6 septembre 2026 ; revue des sources au commit
-`f101aab9f7a2899559a8c4afb9be07f0afbc727e` (8 septembre). Suivi :
+`4e2b57334756c992fe132568fbb53127263d190c` (8 septembre). Suivi :
 [TI-558](https://linear.app/ti-max/issue/TI-558), epic
 [TI-513](https://linear.app/ti-max/issue/TI-513).
 
@@ -94,3 +94,16 @@ interapps avant tout import ; TI-561 traitera les surfaces de build après TI-51
 Le [lot B](../doc_web_interne/docs/architecture/NOCTALIA-LOT-B-VALIDATION.md) documente l'autonomie runtime Lucid et les frontières testées ; son absence de preuve native reste explicite. Le [lot Journal TI-531](https://github.com/thannous/dreamer/blob/ee591ed5e1d8224164ad56489f664e0087a1b65a/doc_web_interne/docs/architecture/NOCTALIA-TI531-JOURNAL-QUALIFICATION.md) qualifie le jeu initial de 2 501 rêves, la pagination, la suppression hors ligne et les changements de compte sur émulateur Android API 36. Après la suppression volontaire, 2 500 rêves restent dans le compte A et un dans B.
 
 Cette qualification du Journal ne valide ni le lecteur Meditation ni le parcours Lucid et ne prouve aucune publication Play/App Store. Les anciens états « source Journal encore couplée » sont remplacés ici par le comportement du code fusionné ; le suivi natif reste dans TI-518/531. Les noms publics, tarifs affichés par les stores et textes marketing publiés ne sont pas modifiés par cette mise à jour.
+
+
+## Consolidation de preuve — 8 septembre 2026
+
+La [matrice de capacités et de données](../doc_web_interne/docs/architecture/NOCTALIA-CAPABILITIES-2026-09-08.md), intégrée par #135, précise par produit permissions, refus, stockage, transmission, partage et suppression. Les descriptions caméra/photothèque et Face ID inutiles sont retirées de la configuration Lucid ; l’enregistrement est désactivé dans Meditation. Ces retraits sont vérifiés par introspection et nécessitent un prochain binaire pour modifier les permissions installées.
+
+Le partage individuel texte/image d’un rêve Journal ne constitue pas un export structuré exhaustif du journal. L’export structuré Lucid n’inclut pas son snapshot HealthKit ni une sauvegarde exhaustive de ses fichiers audio. Aucun export universel des trois produits n’est promis.
+
+La synchronisation Journal a achevé son extraction dans #132 (TI-524). Le lecteur et la persistance Meditation sont intégrés via #133 : [contrat de persistance](../doc_web_interne/docs/architecture/NOCTALIA-TI526-LIBRARY-PERSISTENCE.md) et [mesures de rendu](../doc_web_interne/docs/qa/TI525-PLAYER-RENDER-QUALIFICATION-2026-09-08.md). Ces preuves de source et de tests ne clôturent pas les interruptions natives : la qualification du 8 septembre a identifié une ancienne piste restant active après changement de séance, en cours de correction dans TI-525/531.
+
+La réflexion proportionnelle TI-559 et la découverte facultative TI-523 sont des livraisons distinctes du contrat de marque. Une promotion ne lit pas les rêves, ne relie pas les comptes et ne vaut pas consentement à l’import. TI-560 doit établir l’identité client et les droits serveur avant l’activation de l’import distant TI-522 ; la compatibilité des sessions historiques doit être explicitement traitée.
+
+Le cadrage de marque peut être accepté indépendamment des qualifications de chaque fonctionnalité. Les travaux natifs, la qualité réelle des générations et les publications restent suivis dans leurs tickets respectifs, sans transformer « codé » ou « fusionné » en « distribué ».
