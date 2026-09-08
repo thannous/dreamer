@@ -100,16 +100,16 @@ const normalizeMutation = (mutation: DreamMutation, userScope?: string | null): 
       ? `remote:${payload.remoteId}`
       : `local:${payload.dreamId ?? mutation.id}`);
 
-  const clientRequestId =
-    mutation.clientRequestId ||
-    dream?.clientRequestId ||
-    tombstone?.clientRequestId ||
-    generateUUID();
+  // The mutation receipt key is distinct from the dream's idempotency key.
+  // Legacy guest migration uploads ID-less dreams using this deterministic key.
+  const entityClientRequestId = dream?.clientRequestId ?? tombstone?.clientRequestId ??
+    (dream || tombstone ? `dream-${(dream ?? tombstone)!.id}` : undefined);
+  const clientRequestId = mutation.clientRequestId || entityClientRequestId || generateUUID();
   const normalizedPayload = {
     ...payload,
-    ...(dream ? { dream: { ...dream, clientRequestId: dream.clientRequestId ?? clientRequestId } } : {}),
+    ...(dream ? { dream: { ...dream, clientRequestId: entityClientRequestId } } : {}),
     ...(tombstone
-      ? { tombstone: { ...tombstone, clientRequestId: tombstone.clientRequestId ?? clientRequestId } }
+      ? { tombstone: { ...tombstone, clientRequestId: entityClientRequestId } }
       : {}),
   };
 

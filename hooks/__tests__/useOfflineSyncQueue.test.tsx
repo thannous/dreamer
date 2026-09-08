@@ -591,6 +591,48 @@ describe('useOfflineSyncQueue', () => {
     expect(mockCreateDream).not.toHaveBeenCalled();
   });
 
+  it.each(['delete', 'update'] as const)('reconciles a legacy migration finishing after a queued %s', async (operation: 'delete' | 'update') => {
+    const original = buildDream({ id: 887 });
+    let snapshot: { userScope: string; dreams: DreamAnalysis[] } | null = null;
+    const { result, rerender } = renderHook(() => useOfflineSyncQueue({
+      ...defaultOptions, userScope: 'user:user-123', remoteSnapshot: snapshot,
+    }));
+    const edited = { ...original, title: 'Edited during migration' };
+    mockUpdateDream.mockResolvedValue({ ...edited, remoteId: 1887, clientRequestId: 'dream-887' });
+    await act(async () => {
+      await result.current.queueOfflineOperation({
+        version: 1, id: 'migration-mutation', userScope: 'user:user-123', entityType: 'dream', entityKey: 'local:887',
+        operation, clientRequestId: 'independent-receipt-uuid', clientUpdatedAt: 2, createdAt: 2,
+        payload: operation === 'delete' ? { dreamId: 887, tombstone: original } : { dream: edited },
+        status: 'pending', retryCount: 0,
+      }, operation === 'delete' ? [] : [edited]);
+    });
+    const pending = result.current.pendingMutationsRef.current[0];
+    expect(pending.clientRequestId).toBe('independent-receipt-uuid');
+    expect((pending.payload.dream ?? pending.payload.tombstone)?.clientRequestId).toBe('dream-887');
+    // The actual guest migration contract supplies this key when its upload finishes.
+    snapshot = { userScope: 'user:user-123', dreams: [{ ...original, remoteId: 1887, clientRequestId: 'dream-887' }] };
+    rerender();
+    await waitFor(() => expect(result.current.pendingMutationsRef.current).toEqual([]));
+    if (operation === 'delete') expect(mockDeleteDream).toHaveBeenCalledWith(1887);
+    else expect(mockUpdateDream).toHaveBeenCalledWith(expect.objectContaining({
+      remoteId: 1887, clientRequestId: 'dream-887', title: 'Edited during migration',
+    }));
+  });
+
+  it('preserves a modern dream UUID independently of the mutation receipt key', async () => {
+    const original = buildDream({ id: 888, clientRequestId: 'modern-draft-uuid' });
+    const { result } = renderHook(() => useOfflineSyncQueue({ ...defaultOptions, hasNetwork: false }));
+    act(() => result.current.setPendingMutations([{
+      ...legacyMutation({ id: 'modern-create', type: 'create', dream: original, createdAt: 1 }),
+      clientRequestId: 'modern-receipt-uuid',
+    }]));
+    expect(result.current.pendingMutationsRef.current[0]).toEqual(expect.objectContaining({
+      clientRequestId: 'modern-receipt-uuid',
+      payload: expect.objectContaining({ dream: expect.objectContaining({ clientRequestId: 'modern-draft-uuid' }) }),
+    }));
+  });
+
   it.each([true, false])('cancels a create deleted during its sending-state write (failure=%s)', async (fails: boolean) => {
     const original = buildDream({ id: 886 });
     let finishWrite!: () => void;
