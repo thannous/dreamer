@@ -224,3 +224,26 @@ describe('guest signed media', () => {
     expect((await request).imageStatus).toBe('error');
   });
 });
+
+it('cache-only reads enforce owner, version and expiration without requests', async () => {
+  const { resolver, sign, advance } = setup();
+  const dream = { imageUrl: ref('A/offline'), imageUpdatedAt: 1 };
+  await resolver.resolveDreamMedia(dream, 'A');
+  expect((await resolver.resolveDreamMedia(dream, 'A', { cacheOnly: true })).imageStatus).toBe('ready');
+  expect((await resolver.resolveDreamMedia({ ...dream, imageUpdatedAt: 2 }, 'A', { cacheOnly: true })).imageStatus).toBe('error');
+  expect((await resolver.resolveDreamMedia({ imageUrl: ref('A/missing') }, 'A', { cacheOnly: true })).imageStatus).toBe('error');
+  expect((await resolver.resolveDreamMedia(dream, 'B', { cacheOnly: true })).imageStatus).toBe('error');
+  advance(86_340_000);
+  expect((await resolver.resolveDreamMedia(dream, 'A', { cacheOnly: true })).imageStatus).toBe('error');
+  resolver.setDreamMediaScope('B');
+  expect((await resolver.resolveDreamMedia(dream, 'A', { cacheOnly: true })).imageStatus).toBe('error');
+  expect((await resolver.resolveDreamMedia(dream, 'B', { cacheOnly: true })).imageStatus).toBe('error');
+  expect(sign).toHaveBeenCalledTimes(1);
+});
+it('cache-only guest misses never read guest identity or bootstrap a session', async () => {
+  const sign = jest.fn(); const guestOwner = jest.fn();
+  const resolver = createDreamMediaResolver({ sign, guestOwner });
+  expect((await resolver.resolveDreamMedia({ imageUrl: ref('guest/image') }, null, { cacheOnly: true })).imageStatus).toBe('error');
+  expect(sign).not.toHaveBeenCalled();
+  expect(guestOwner).not.toHaveBeenCalled();
+});

@@ -22,7 +22,7 @@ let userId = 'A';
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <AuthContext.Provider value={{ user: { id: userId } } as any}>{children}</AuthContext.Provider>
 );
-beforeEach(() => { resolve.mockReset(); userId = 'A'; mockNetwork.isInternetReachable = true; });
+beforeEach(() => { resolve.mockReset().mockResolvedValue({ imageUrl: '', imageStatus: 'error', thumbnailStatus: 'error' }); userId = 'A'; mockNetwork.isInternetReachable = true; });
 it('keeps unresolved media empty and ignores the previous account response', async () => {
   const a = pending(); const b = pending();
   resolve.mockReturnValueOnce(a.promise).mockReturnValueOnce(b.promise);
@@ -84,16 +84,17 @@ it('renews a mounted private URL at its cache expiry and hides the expired sourc
 });
 
 it('retries the same media identity when connectivity returns', async () => {
-  resolve.mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce(result('https://signed/recovered') as any);
+  resolve.mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce({ imageUrl: '', imageStatus: 'error', thumbnailStatus: 'missing' }).mockResolvedValueOnce(result('https://signed/recovered') as any);
   const { result: state, rerender } = renderHook(() => useDreamMedia(dream('private')), { wrapper });
   await act(async () => {});
   expect(state.current.error).toBe(true);
   mockNetwork.isInternetReachable = false; rerender();
-  expect(resolve).toHaveBeenCalledTimes(1);
+  await act(async () => {});
+  expect(resolve).toHaveBeenLastCalledWith(expect.anything(), 'A', { cacheOnly: true });
   mockNetwork.isInternetReachable = true; rerender();
   await act(async () => {});
   expect(state.current.imageUrl).toBe('https://signed/recovered');
-  expect(resolve).toHaveBeenCalledTimes(2);
+  expect(resolve).toHaveBeenCalledTimes(3);
 });
 
 it('hides an expired private URL offline without starting a network request', async () => {
@@ -105,7 +106,7 @@ it('hides an expired private URL offline without starting a network request', as
     mockNetwork.isInternetReachable = false; rerender();
     await act(async () => { jest.advanceTimersByTime(101); });
     expect(state.current.imageUrl).toBe('');
-    expect(resolve).toHaveBeenCalledTimes(1);
+    expect(resolve).toHaveBeenLastCalledWith(expect.anything(), 'A', { cacheOnly: true });
     unmount();
   } finally { jest.useRealTimers(); }
 });
@@ -149,12 +150,12 @@ it('cancels scheduled retries when offline or unmounted', async () => {
     await act(async () => {});
     mockNetwork.isInternetReachable = false; rerender();
     await act(async () => { jest.advanceTimersByTime(4000); });
-    expect(resolve).toHaveBeenCalledTimes(1);
+    expect(resolve).toHaveBeenCalledTimes(2);
     mockNetwork.isInternetReachable = true; rerender();
     await act(async () => {});
     unmount();
     await act(async () => { jest.advanceTimersByTime(4000); });
-    expect(resolve).toHaveBeenCalledTimes(2);
+    expect(resolve).toHaveBeenCalledTimes(3);
   } finally { jest.useRealTimers(); }
 });
 
@@ -168,7 +169,30 @@ it('does not overflow a long guest expiry timer or hide unexpired media offline'
     mockNetwork.isInternetReachable = false; rerender();
     await act(async () => { jest.advanceTimersByTime(2_147_483_648); });
     expect(state.current.imageUrl).toBe('https://signed/guest');
-    expect(resolve).toHaveBeenCalledTimes(1);
+    expect(resolve).toHaveBeenLastCalledWith(expect.anything(), 'A', { cacheOnly: true });
     unmount();
   } finally { jest.useRealTimers(); }
+});
+
+jest.mock('@/lib/supabase', () => ({ supabase: { storage: { from: jest.fn() } } }));
+jest.mock('@/lib/guestSession', () => ({ getGuestMediaOwner: jest.fn() }));
+it('reuses the warm process cache after unmount and an offline mount', async () => {
+  const { createDreamMediaResolver } = jest.requireActual('@/services/dreamMediaService');
+  const sign = jest.fn(async (_bucket: string, paths: string[]) => ({
+    data: paths.map(path => ({ path, signedUrl: `https://signed.test/${path}` })), error: null,
+  }));
+  const resolver = createDreamMediaResolver({ sign });
+  resolver.setDreamMediaScope('A');
+  resolve.mockImplementation(resolver.resolveDreamMedia);
+  const source = dream('supabase-storage://dream-images/A/image');
+  const first = renderHook(() => useDreamMedia(source), { wrapper });
+  await act(async () => {});
+  expect(first.result.current.imageUrl).toBe('https://signed.test/A/image');
+  first.unmount();
+  mockNetwork.isInternetReachable = false;
+  const second = renderHook(() => useDreamMedia(source), { wrapper });
+  await act(async () => {});
+  expect(second.result.current.imageUrl).toBe('https://signed.test/A/image');
+  expect(sign).toHaveBeenCalledTimes(1);
+  second.unmount();
 });

@@ -588,6 +588,56 @@ describe('useOfflineSyncQueue', () => {
     expect(mockDeleteDream).not.toHaveBeenCalled();
   });
 
+  it('resolves a later deletion from an unchanged successful remote snapshot', async () => {
+    const original = buildDream({ id: 885, clientRequestId: 'client-885' });
+    const snapshot = { userScope: 'user:user-123', dreams: [{ ...original, remoteId: 1885 }] };
+    const { result } = renderHook(() => useOfflineSyncQueue({
+      ...defaultOptions, userScope: snapshot.userScope, remoteSnapshot: snapshot,
+    }));
+    act(() => result.current.setPendingMutations([{
+      ...legacyMutation({ id: 'create-885', type: 'create', dream: original, createdAt: 1 }),
+      status: 'failed', lastAttemptAt: 2, retryCount: 1,
+    }]));
+    await act(async () => {
+      await result.current.queueOfflineOperation({
+        version: 1, id: 'delete-885', userScope: snapshot.userScope, entityType: 'dream', entityKey: '885',
+        operation: 'delete', clientRequestId: 'delete-885', clientUpdatedAt: 3, createdAt: 3,
+        payload: { dreamId: 885, tombstone: original }, status: 'pending', retryCount: 0,
+      }, []);
+    });
+    await waitFor(() => expect(mockDeleteDream).toHaveBeenCalledWith(1885));
+    expect(result.current.pendingMutationsRef.current).toEqual([]);
+    expect(mockCreateDream).not.toHaveBeenCalled();
+  });
+
+  it.each([true, false])('cancels a create deleted during its sending-state write (failure=%s)', async (fails: boolean) => {
+    const original = buildDream({ id: 886 });
+    let finishWrite!: () => void;
+    let failWrite!: (error: Error) => void;
+    mockSavePendingMutations.mockImplementationOnce(() => new Promise<void>((resolve, reject) => {
+      finishWrite = resolve; failWrite = reject;
+    }));
+    const { result } = renderHook(() => useOfflineSyncQueue(defaultOptions));
+    act(() => result.current.setPendingMutations([
+      legacyMutation({ id: 'create-886', type: 'create', dream: original, createdAt: 1 }),
+    ]));
+    let sync!: Promise<void>;
+    await act(async () => { sync = result.current.syncPendingMutations(); });
+    let deletion!: Promise<void>;
+    await act(async () => {
+      deletion = result.current.queueOfflineOperation(
+        legacyMutation({ id: 'delete-886', type: 'delete', dreamId: 886, createdAt: 2 }), []);
+    });
+    await act(async () => {
+      if (fails) failWrite(new Error('Disk unavailable')); else finishWrite();
+      await Promise.all([sync, deletion]);
+    });
+    expect(mockCreateDream).not.toHaveBeenCalled();
+    expect(mockDeleteDream).not.toHaveBeenCalled();
+    expect(result.current.pendingMutationsRef.current).toEqual([]);
+    expect(mockSavePendingMutations).toHaveBeenLastCalledWith([], undefined);
+  });
+
   it('resolves a deletion replacing an in-flight create without restoring the dream', async () => {
     const original = buildDream({ id: 881 });
     let finishCreate!: (dream: DreamAnalysis) => void;
@@ -672,7 +722,7 @@ describe('useOfflineSyncQueue', () => {
       await act(async () => { await result.current.syncPendingMutations(); });
       expect(mockCreateDream).not.toHaveBeenCalled();
       expect(result.current.pendingMutationsRef.current).toEqual([
-        expect.objectContaining({ id: 'retry-write', status: 'failed' }),
+        expect.objectContaining({ id: 'retry-write', status: 'pending' }),
       ]);
       await act(async () => { await result.current.syncPendingMutations(); });
       expect(mockCreateDream).toHaveBeenCalledTimes(1);

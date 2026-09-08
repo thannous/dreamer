@@ -18,20 +18,24 @@ export function useDreamMedia(dream?: DreamAnalysis | null) {
   const identity = JSON.stringify([userId, imageUrl, thumbnailUrl, imageUpdatedAt, dream?.analysisRequestId, dream?.analyzedAt]);
   const [resolved, setResolved] = useState<{ identity: string; epoch: number; value: DreamMediaResult }>();
   useEffect(() => {
-    if (!online) return;
     let current = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let attempts = 0;
     const run = async () => {
       let value: DreamMediaResult;
       try {
-        value = await resolveDreamMedia({ imageUrl, thumbnailUrl, imageUpdatedAt, analysisRequestId, analyzedAt }, userId);
+        value = await resolveDreamMedia({ imageUrl, thumbnailUrl, imageUpdatedAt, analysisRequestId, analyzedAt }, userId, { cacheOnly: !online });
       } catch {
         value = { imageUrl: '', imageStatus: 'error', thumbnailStatus: 'error' };
       }
       if (!current) return;
-      setResolved({ identity, epoch: refreshEpoch, value });
-      if ((value.imageStatus === 'error' || value.thumbnailStatus === 'error') && attempts < 2) {
+      setResolved(previous => {
+        // A mounted guest capability may be valid without an authenticated cache entry.
+        if (!online && previous?.identity === identity && previous.epoch === refreshEpoch
+          && previous.value.expiresAt !== undefined && previous.value.expiresAt > Date.now()) return previous;
+        return { identity, epoch: refreshEpoch, value };
+      });
+      if (online && (value.imageStatus === 'error' || value.thumbnailStatus === 'error') && attempts < 2) {
         timer = setTimeout(() => { attempts++; void run(); }, attempts === 0 ? 1000 : 3000);
       }
     };

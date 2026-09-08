@@ -146,7 +146,7 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, 
     }
   }
 
-  async function resolve(value: string | null | undefined, userId: string | null, version?: Version): Promise<Resource> {
+  async function resolve(value: string | null | undefined, userId: string | null, version?: Version, cacheOnly = false): Promise<Resource> {
     if (userId !== owner) return Promise.resolve(failed);
     if (!value) return Promise.resolve({ url: '', status: 'missing' });
     const parsed = parse(value);
@@ -154,6 +154,7 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, 
     if ('direct' in parsed) return Promise.resolve({ url: parsed.direct, status: 'ready' });
     const { path } = parsed;
     if (!owner) {
+      if (cacheOnly) return failed;
       // Guest objects cannot be re-signed with anonymous RLS. Preserve only this
       // device's existing server-signed capability, up to its actual expiry.
       const requestGeneration = generation;
@@ -178,6 +179,7 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, 
       cache.set(path, cached);
       return Promise.resolve(cached.resource);
     }
+    if (cacheOnly) return failed;
     if (cached) cache.delete(path);
     const existing = pending.get(path);
     if (existing && existing.version === version) {
@@ -215,12 +217,12 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, 
         if (parsed && 'path' in parsed) cancel(parsed.path);
       }
     },
-    async resolveDreamMedia(dream: DreamMediaInput, userId: string | null): Promise<DreamMediaResult> {
+    async resolveDreamMedia(dream: DreamMediaInput, userId: string | null, options?: { cacheOnly?: boolean }): Promise<DreamMediaResult> {
       const requestGeneration = generation;
       const version = dream.imageUpdatedAt ?? dream.analysisRequestId ?? dream.analyzedAt;
       const [image, thumbnail] = await Promise.all([
-        resolve(dream.imageUrl, userId, version),
-        resolve(dream.thumbnailUrl, userId, version),
+        resolve(dream.imageUrl, userId, version, options?.cacheOnly),
+        resolve(dream.thumbnailUrl, userId, version, options?.cacheOnly),
       ]);
       if (requestGeneration !== generation || userId !== owner) {
         return { imageUrl: '', imageStatus: 'error', thumbnailStatus: 'error' };
