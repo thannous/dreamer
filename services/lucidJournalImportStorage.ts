@@ -1,6 +1,6 @@
 import { canonicalLucidJson } from '@/lib/lucid/domain';
 import type { JournalImportSnapshot, JournalImportStorage } from '@/lib/lucid/journalImport';
-import { isJournalImportSourceDate, isJournalImportRevision, journalCopyIdentity } from '@/lib/lucid/journalImport';
+import { isJournalImportSourceDate, isJournalImportRevision, journalCopyIdentity, mergeJournalImportSnapshots } from '@/lib/lucid/journalImport';
 import { getLucidKeyValueStorage, isLucidNativeKeyValueStorage, type LucidKeyValueStorage } from './lucidKeyValueStorage';
 import { isLucidTrainerEncryptedValue, protectLucidTrainerStoredValue, revealLucidTrainerStoredValue } from './lucidTrainerSecureStorage';
 
@@ -211,14 +211,7 @@ export function claimLucidJournalImportGuestCopies(
     if (!guest) return;
     const destination = await adapter.load(destinationScope);
     assertActive();
-    const merged: JournalImportSnapshot = destination ?? { version: 1, copies: {}, checkpoint: null };
-    for (const [identity, copy] of Object.entries(guest.copies)) {
-      const existing = merged.copies[identity];
-      if (existing && canonicalLucidJson(existing) !== canonicalLucidJson(copy)) {
-        throw new Error('Guest Journal copy conflict requires explicit resolution');
-      }
-      merged.copies[identity] = copy;
-    }
+    const merged = mergeJournalImportSnapshots(destination, guest)!;
     // Guest checkpoint authorizes nothing in the destination; retain only its
     // pre-existing checkpoint. Preserve edits, tombstones and conflict payloads.
     const expected = canonicalLucidJson(merged);

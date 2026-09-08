@@ -237,6 +237,41 @@ it('does not delete anything when durable erasure intent cannot be written', asy
   expect(await x.adapter.load('guest')).toEqual(state);
 });
 
+function oneCopy(sourceAccount: string, id: string, text: string): JournalImportSnapshot {
+  const identity = journalCopyIdentity(sourceAccount, id);
+  return { version: 1, checkpoint: { grantId: `grant-${sourceAccount}`, sourceAccount, cursor: null, done: true },
+    copies: { [identity]: { identity, sourceProduct: 'journal', sourceAccount, sourceId: id,
+      sourceRevision: '00000000-0000-4000-8000-000000000001', createdAt: date, importedAt: date, text, edited: false, deleted: false } } };
+}
+
+it('unions distinct guest/account source identities through the one explicit transfer', async () => {
+  const x = fixture();
+  const guest = oneCopy('G', '1', 'Guest dream');
+  const account = oneCopy('A', '0', 'Account dream');
+  await x.adapter.save('guest', guest, () => undefined);
+  await x.adapter.save('user:B', account, () => undefined);
+  await claimLucidJournalImportGuestCopies('user:B', () => undefined, x.kv);
+  expect(await x.adapter.load('guest')).toBeNull();
+  const merged = await x.adapter.load('user:B');
+  expect(merged?.copies[journalCopyIdentity('G', '1')].text).toBe('Guest dream');
+  expect(merged?.copies[journalCopyIdentity('A', '0')].text).toBe('Account dream');
+  expect(merged?.checkpoint).toEqual(account.checkpoint);
+});
+
+it('does not erase guest copies when a destination chunk write fails', async () => {
+  const x = fixture();
+  const guest = oneCopy('G', '1', 'Guest dream');
+  await x.adapter.save('guest', guest, () => undefined);
+  const set = x.kv.setItem.getMockImplementation()!;
+  x.kv.setItem.mockImplementation(async (key, value) => {
+    if (key.includes('user%3AB') && key.includes(':chunk:')) throw new Error('full');
+    await set(key, value);
+  });
+  await expect(claimLucidJournalImportGuestCopies('user:B', () => undefined, x.kv)).rejects.toThrow('full');
+  expect(await x.adapter.load('guest')).toEqual(guest);
+  expect(await x.adapter.load('user:B')).toBeNull();
+});
+
 it('serializes erasure behind an already-issued page write across adapter instances', async () => {
   const x = fixture();
   const set = x.kv.setItem.getMockImplementation()!;

@@ -1,3 +1,5 @@
+import { canonicalLucidJson } from './domain';
+
 /** Local copies only. This module has no Journal provider or Lucid sync dependency. */
 export interface JournalImportItem {
   id: string;
@@ -38,6 +40,12 @@ export interface JournalImportSnapshot {
   copies: Record<string, JournalCopy>;
   checkpoint: { grantId: string; sourceAccount: string; cursor: string | null; done: boolean } | null;
 }
+export interface JournalImportProgress {
+  /** Pages confirmed durable during this start call, including a resumed run. */
+  persistedPages: number;
+  availableCopies: number;
+  done: boolean;
+}
 export interface JournalImportStorage {
   load(scope: string): Promise<JournalImportSnapshot | null>;
   save(scope: string, snapshot: JournalImportSnapshot, assertActive: () => void): Promise<void>;
@@ -50,6 +58,21 @@ export const journalCopyIdentity = (account: string, id: string): string => JSON
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 const sameSnapshot = (left: JournalImportSnapshot, right: JournalImportSnapshot): boolean =>
   JSON.stringify(left) === JSON.stringify(right);
+/** Local transfer union: no divergent copy arbitration and no cross-scope checkpoint. */
+export function mergeJournalImportSnapshots(
+  destination: JournalImportSnapshot | null,
+  source: JournalImportSnapshot | null,
+): JournalImportSnapshot | null {
+  if (!source) return destination ? clone(destination) : null;
+  const copies = destination ? clone(destination.copies) : {};
+  for (const [identity, copy] of Object.entries(source.copies)) {
+    if (Object.hasOwn(copies, identity) && canonicalLucidJson(copies[identity]) !== canonicalLucidJson(copy)) {
+      throw new Error('Guest Journal copy conflict requires explicit resolution');
+    }
+    copies[identity] = clone(copy);
+  }
+  return { version: 1, copies, checkpoint: destination ? clone(destination.checkpoint) : null };
+}
 
 export function createJournalImportEngine(deps: {
   storage: JournalImportStorage;
@@ -57,6 +80,7 @@ export function createJournalImportEngine(deps: {
   getCurrentDestinationScope(): string | null;
   getCurrentSourceAccount(): string | null;
   now(): Date;
+  onProgress?(progress: JournalImportProgress): void;
 }) {
   let generation = 0;
   let tail: Promise<unknown> = Promise.resolve();
@@ -103,6 +127,7 @@ export function createJournalImportEngine(deps: {
         let cursor = checkpoint?.grantId === input.grantId && checkpoint.sourceAccount === input.sourceAccount
           ? checkpoint.cursor : input.cursor;
         const seen = new Set<string>();
+        let persistedPages = 0;
         while (cursor !== null) {
           check();
           if (deps.now().getTime() >= Date.parse(input.expiresAt)) throw new Error('Import grant expired');
@@ -136,6 +161,14 @@ export function createJournalImportEngine(deps: {
           check();
           state = next;
           cursor = page.nextCursor;
+          persistedPages += 1;
+          // Observer errors cannot undo a durable page. Cancellation still applies.
+          try {
+            deps.onProgress?.({ persistedPages,
+              availableCopies: Object.values(state.copies).filter(copy => !copy.deleted).length,
+              done: page.done });
+          } catch { /* A progress observer is not part of persistence. */ }
+          check();
         }
         return clone(state);
       });
@@ -143,6 +176,23 @@ export function createJournalImportEngine(deps: {
     inspect(scope: string) {
       const check = guard(scope, generation);
       return serial(() => load(scope, check));
+    },
+    deleteAllCopies(scope: string) {
+      const check = guard(scope, generation);
+      return serial(async () => {
+        const state = await load(scope, check);
+        let changed = false;
+        for (const copy of Object.values(state.copies)) {
+          if (!copy.deleted || copy.text !== '' || copy.incoming !== undefined) {
+            copy.deleted = true;
+            copy.text = '';
+            delete copy.incoming;
+            changed = true;
+          }
+        }
+        check();
+        return changed ? persist(scope, state, check) : clone(state);
+      });
     },
     updateCopy(scope: string, identity: string, action: { type: 'edit'; text: string } | { type: 'delete' | 'keepLocal' | 'useIncoming' }) {
       const check = guard(scope, generation);
