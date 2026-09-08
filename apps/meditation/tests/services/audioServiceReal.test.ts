@@ -1,7 +1,7 @@
 import { createAudioPlayer } from 'expo-audio';
 import { Asset } from 'expo-asset';
 
-import { createSessionPlayer, resolvePlayableSource } from '@/services/audioServiceReal';
+import { createSessionPlayer, release, resolvePlayableSource } from '@/services/audioServiceReal';
 
 jest.mock('expo-audio', () => ({
   createAudioPlayer: jest.fn(),
@@ -52,6 +52,7 @@ describe('audioServiceReal session timeline', () => {
     setPlaybackRate: jest.Mock;
     addListener: jest.Mock;
     remove: jest.Mock;
+    release: jest.Mock;
     setActiveForLockScreen: jest.Mock;
     clearLockScreenControls: jest.Mock;
     updateLockScreenMetadata: jest.Mock;
@@ -80,11 +81,42 @@ describe('audioServiceReal session timeline', () => {
         return { remove: jest.fn() };
       }),
       remove: jest.fn(),
+      release: jest.fn(),
       setActiveForLockScreen: jest.fn(),
       clearLockScreenControls: jest.fn(),
       updateLockScreenMetadata: jest.fn(),
     };
     jest.mocked(createAudioPlayer).mockReturnValue(nativePlayer as never);
+  });
+
+  it('stops and releases a replaced session once and ignores queued native status', () => {
+    const player = createSessionPlayer(1, 600, 300);
+    const listener = jest.fn();
+    player.addListener('playbackStatusUpdate', listener);
+    player.play();
+    player.remove();
+    player.remove();
+    nativeListener?.(statusAt(42));
+    expect(nativePlayer.playing).toBe(false);
+    expect(nativePlayer.pause).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.remove).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.release).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.pause.mock.invocationCallOrder[0]).toBeLessThan(
+      nativePlayer.remove.mock.invocationCallOrder[0]!
+    );
+    expect(nativePlayer.remove.mock.invocationCallOrder[0]).toBeLessThan(
+      nativePlayer.release.mock.invocationCallOrder[0]!
+    );
+    expect(listener).not.toHaveBeenCalled();
+  });
+
+  it('releases raw texture resources immediately and only once', () => {
+    nativePlayer.play();
+    release(nativePlayer as never);
+    release(nativePlayer as never);
+    expect(nativePlayer.playing).toBe(false);
+    expect(nativePlayer.remove).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.release).toHaveBeenCalledTimes(1);
   });
 
   it('ends a three-minute session without waiting for the five-minute source', () => {
