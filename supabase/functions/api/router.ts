@@ -1,7 +1,8 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
-import { buildSupabaseUserAuthHeaders, resolveSupabaseUserBearer } from './lib/authHeader.ts';
+import { buildSupabaseUserAuthHeaders, hasApplicationClientClaim, resolveSupabaseUserBearer } from './lib/authHeader.ts';
 import { corsHeaders } from './lib/constants.ts';
 import { errorResponse } from './lib/http.ts';
+import { isProductRouteAllowed } from './lib/productAuthorization.ts';
 import type { ApiContext } from './types.ts';
 
 export type RouteHandler = (ctx: ApiContext) => Promise<Response>;
@@ -42,6 +43,20 @@ export const createApiHandler = (dependencies: ApiHandlerDependencies) => {
         ? await supabase.auth.getUser(userBearer).catch(() => ({ data: null }))
         : { data: null };
       const user = authData?.user ?? null;
+
+      if (hasApplicationClientClaim(req.headers.get('Authorization'))) {
+        // An invalid scoped bearer must not fall through to a guest handler.
+        if (!user) return errorResponse('Unauthorized', 401);
+        try {
+          // PostgREST validates the caller JWT again. The RPC reads its signed
+          // client_id against a private registry, never a request/body appId.
+          const { data: product, error } = await supabase.rpc('current_app_product');
+          if (error) return errorResponse('Application authorization unavailable', 503);
+          if (!isProductRouteAllowed(product, route)) return errorResponse('Forbidden', 403);
+        } catch {
+          return errorResponse('Application authorization unavailable', 503);
+        }
+      }
 
       const storageBucket = readEnv('SUPABASE_STORAGE_BUCKET') ?? 'dream-images';
       const supabaseServiceRoleKey = readEnv('SUPABASE_SERVICE_ROLE_KEY') ?? null;
