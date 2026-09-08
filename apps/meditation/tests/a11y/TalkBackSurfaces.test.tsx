@@ -136,15 +136,16 @@ jest.mock('@/components/journey/PracticeProgress', () => {
   return { PracticeProgress: () => React.createElement(View, { testID: 'practice-progress' }) };
 });
 
-jest.mock('@/context/LibraryContext', () => ({
-  useLibrary: () => ({
+jest.mock('@/context/LibraryContext', () => {
+  const useLibrary = () => ({
     isFavorite: () => mockFavorite,
     toggleFavorite: mockToggleFavorite,
     progress: {},
     favorites: [],
     practiceLog: [],
-  }),
-}));
+  });
+  return { useLibrary, useLibraryMetadata: useLibrary };
+});
 
 jest.mock('@/context/SubscriptionContext', () => ({
   useSubscription: () => ({
@@ -202,16 +203,17 @@ jest.mock('@/components/atmosphere/Screen', () => {
   };
 });
 
-jest.mock('@/context/PlayerContext', () => ({
-  usePlayer: () => ({
+jest.mock('@/context/PlayerContext', () => {
+  const usePlayer = () => ({
     session: require('@/content/sessions').SESSION_BY_ID['sleep-descent'],
     worldId: 'constellation',
     status: mockPlayerStatus,
     positionSec: 12,
     durationSec: 600,
     toggle: mockToggle,
-  }),
-}));
+  });
+  return { usePlayer, usePlayerState: usePlayer, usePlayerCommands: usePlayer, usePlayerProgress: usePlayer };
+});
 
 jest.mock('@/services/subscriptionService', () => ({
   listOffers: async () => [

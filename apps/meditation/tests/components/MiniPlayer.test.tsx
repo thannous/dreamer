@@ -68,7 +68,8 @@ jest.mock('@/components/ui/icon-symbol', () => ({
 }));
 
 jest.mock('@/context/PlayerContext', () => ({
-  usePlayer: () => ({
+  usePlayerCommands: () => ({ toggle: mockToggle, close: mockClose }),
+  usePlayerState: () => ({
     session: mockSession,
     worldId: mockWorldId,
     status: mockPlayerStatus,

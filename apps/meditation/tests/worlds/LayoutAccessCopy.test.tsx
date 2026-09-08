@@ -43,14 +43,15 @@ let mockSubscriptionsEnabled = true;
 let mockFavorites = ['sleep-body-scan'];
 let mockPracticeLog: { dateISO: string; sessionId: string; seconds: number }[] = [];
 
-jest.mock('@/context/LibraryContext', () => ({
-  useLibrary: () => ({
+jest.mock('@/context/LibraryContext', () => {
+  const useLibrary = () => ({
     favorites: mockFavorites,
     isFavorite: (id: string) => mockFavorites.includes(id),
     progress: {},
     practiceLog: mockPracticeLog,
-  }),
-}));
+  });
+  return { useLibrary, useLibraryMetadata: useLibrary };
+});
 
 jest.mock('@/context/SubscriptionContext', () => ({
   useSubscription: () => ({

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { act, renderHook, waitFor } from '@testing-library/react-native';
 
-import { LibraryProvider, useLibrary } from '@/context/LibraryContext';
+import { LibraryProvider, useLibrary, useLibraryMetadata, useLibraryCommands } from '@/context/LibraryContext';
 import { INITIAL_LIBRARY, type LibraryState } from '@/lib/types';
 import { StorageKey } from '@/services/storageService';
 
@@ -161,4 +161,45 @@ describe('LibraryProvider', () => {
       expect(result.current.favorites).toEqual(['sleep-descent']);
     });
   });
+});
+
+describe('library persistence recovery', () => {
+  it('retains unread storage and retries hydration before allowing writes', async () => {
+    const saved = { ...INITIAL_LIBRARY, favorites: ['sleep-descent'] };
+    await seedStorage(saved);
+    (AsyncStorage.getItem as jest.Mock).mockRejectedValueOnce(new Error('read failed'));
+    const view = renderHook(() => useLibrary(), { wrapper: LibraryProvider });
+    await waitFor(() => expect(view.result.current.persistenceError).not.toBeNull());
+    expect(view.result.current.loaded).toBe(false);
+    await act(async () => { await view.result.current.toggleFavorite('other'); });
+    expect(await readStorage()).toEqual(saved);
+    await act(async () => { await view.result.current.retryPersistence(); });
+    expect(view.result.current.loaded).toBe(true);
+    expect(view.result.current.favorites).toEqual(['sleep-descent']);
+  });
+
+  it('retries an identical failed position without counting another completion or updating its timestamp', async () => {
+    const view = await mountLibrary();
+    (AsyncStorage.setItem as jest.Mock).mockRejectedValueOnce(new Error('disk'));
+    await act(async () => { await view.result.current.recordProgress('sleep-descent', 30); });
+    const before = view.result.current.progress;
+    expect(view.result.current.persistenceError).not.toBeNull();
+    await act(async () => { await view.result.current.recordProgress('sleep-descent', 30); });
+    expect(view.result.current.progress).toBe(before);
+    expect(view.result.current.persistenceError).toBeNull();
+    view.unmount();
+    const restored = await mountLibrary();
+    expect(restored.result.current.progress).toEqual(before);
+  });
+});
+
+it('keeps metadata and command subscriptions stable during progress ticks', async () => {
+  const view = renderHook(() => ({ library: useLibrary(), metadata: useLibraryMetadata(), commands: useLibraryCommands() }), { wrapper: LibraryProvider });
+  await waitFor(() => expect(view.result.current.library.loaded).toBe(true));
+  const metadata = view.result.current.metadata;
+  const commands = view.result.current.commands;
+  await act(async () => { await commands.recordProgress('sleep-descent', 5); });
+  expect(view.result.current.metadata).toBe(metadata);
+  expect(view.result.current.commands).toBe(commands);
+  expect(view.result.current.library.progress['sleep-descent'].positionSec).toBe(5);
 });

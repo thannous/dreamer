@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- Jest hoists module factories above imports. */
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import React from 'react';
 
 import SessionDetail from '@/app/session/[id]';
@@ -13,8 +13,9 @@ const mockPush = jest.fn();
 const mockOpenPaywall = jest.fn();
 const mockToggleFavorite = jest.fn();
 const mockPlayerOpen = jest.fn();
+const mockPlayerToggle = jest.fn();
 let mockWorldId: WorldId = 'constellation';
-let mockPlayerStatus: 'idle' | 'paused' | 'unavailable' = 'paused';
+let mockPlayerStatus: 'idle' | 'paused' | 'playing' | 'unavailable' = 'paused';
 let mockRouteSessionId = 'sleep-descent';
 let mockRouteWorldId: WorldId | undefined;
 let mockOwnedWorldIds: WorldId[] = [];
@@ -76,20 +77,6 @@ jest.mock('@/components/atmosphere/Screen', () => {
   const React = require('react');
   const { View } = require('react-native');
   return { Screen: ({ children }: React.PropsWithChildren) => React.createElement(View, null, children) };
-});
-
-jest.mock('@/components/atmosphere/ProgressiveSilence', () => {
-  const React = require('react');
-  const { View } = require('react-native');
-  return {
-    ProgressiveSilence: ({ children }: React.PropsWithChildren) => React.createElement(View, null, children),
-  };
-});
-
-jest.mock('@/context/SilenceContext', () => {
-  const React = require('react');
-  const { View } = require('react-native');
-  return { SilenceProvider: ({ children }: React.PropsWithChildren) => React.createElement(View, null, children) };
 });
 
 jest.mock('@/components/atmosphere/EmptyIllustration', () => {
@@ -240,15 +227,16 @@ jest.mock('@/context/LanguageContext', () => ({
 let mockLibraryLoaded = true;
 let mockLibraryProgress: Record<string, { positionSec: number }> = {};
 
-jest.mock('@/context/LibraryContext', () => ({
-  useLibrary: () => ({
+jest.mock('@/context/LibraryContext', () => {
+  const useLibrary = () => ({
     favorites: [],
     isFavorite: () => false,
     toggleFavorite: mockToggleFavorite,
     progress: mockLibraryProgress,
     loaded: mockLibraryLoaded,
-  }),
-}));
+  });
+  return { useLibrary, useLibraryMetadata: useLibrary };
+});
 
 jest.mock('@/context/SubscriptionContext', () => ({
   useSubscription: () => ({
@@ -262,8 +250,8 @@ jest.mock('@/context/SubscriptionContext', () => ({
   }),
 }));
 
-jest.mock('@/context/PlayerContext', () => ({
-  usePlayer: () => ({
+jest.mock('@/context/PlayerContext', () => {
+  const usePlayer = () => ({
     session: null,
     worldId: null,
     status: mockPlayerStatus,
@@ -274,15 +262,16 @@ jest.mock('@/context/PlayerContext', () => ({
     fadeMinutes: null,
     fadeRemainingSec: null,
     open: mockPlayerOpen,
-    toggle: jest.fn(),
+    toggle: mockPlayerToggle,
     seekTo: jest.fn(),
     skip: jest.fn(),
     setRate: jest.fn(),
     setAmbience: jest.fn(),
     setFadeTimer: jest.fn(),
     close: jest.fn(),
-  }),
-}));
+  });
+  return { usePlayer, usePlayerState: usePlayer, usePlayerCommands: usePlayer, usePlayerProgress: usePlayer };
+});
 
 describe('world continuity from journey into practice', () => {
   beforeEach(() => {
@@ -303,6 +292,22 @@ describe('world continuity from journey into practice', () => {
     mockOpenPaywall.mockClear();
     mockToggleFavorite.mockClear();
     mockPlayerOpen.mockClear();
+    mockPlayerToggle.mockClear();
+  });
+
+  it('keeps pause directly available after the former silence delay', () => {
+    jest.useFakeTimers();
+    try {
+      mockPlayerStatus = 'playing';
+      render(<PlayerScreen />);
+      act(() => jest.advanceTimersByTime(7000));
+      expect(screen.queryByTestId(TID.Button.RevealControls)).toBeNull();
+      fireEvent.press(screen.getByRole('button', { name: 'Pause' }));
+      expect(mockPlayerToggle).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId(TID.Button.PlayerClose)).toBeTruthy();
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it.each<WorldId>(['constellation', 'forest', 'dawn'])(

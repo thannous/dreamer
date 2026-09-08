@@ -443,4 +443,7 @@ export const en = {
   'trainer.haptic.off': "Turn vibration on",
   'settings.motion': "Reduce animations",
   'settings.motion.system': "Follows your device setting",
+  'library.persistence.readError': "Your saved practices could not be loaded from this device.",
+  'library.persistence.writeError': "Your latest change could not be saved on this device.",
+  'library.persistence.retry': "Try again",
 } as const;

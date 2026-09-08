@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 
-import { useLibrary } from '@/context/LibraryContext';
+import { useLibraryMetadata } from '@/context/LibraryContext';
 import {
   canPlaySession,
   canUseBreathingPattern,
@@ -48,7 +48,7 @@ const SubscriptionContext = createContext<SubscriptionContextValue | null>(null)
 
 export const SubscriptionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const router = useRouter();
-  const { practiceLog } = useLibrary();
+  const { practiceLog } = useLibraryMetadata();
   const subscriptionsEnabled = areSubscriptionsEnabled();
   const [tier, setTier] = useState<SubscriptionTier>('free');
   const [loaded, setLoaded] = useState(!subscriptionsEnabled);

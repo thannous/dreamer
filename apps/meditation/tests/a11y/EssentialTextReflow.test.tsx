@@ -96,15 +96,16 @@ jest.mock('@/components/worlds/WorldScene', () => {
   };
 });
 
-jest.mock('@/context/LibraryContext', () => ({
-  useLibrary: () => ({
+jest.mock('@/context/LibraryContext', () => {
+  const useLibrary = () => ({
     isFavorite: () => false,
     toggleFavorite: jest.fn(),
     progress: {},
     favorites: [],
     practiceLog: [],
-  }),
-}));
+  });
+  return { useLibrary, useLibraryMetadata: useLibrary };
+});
 
 jest.mock('@/context/SubscriptionContext', () => ({
   useSubscription: () => ({
@@ -133,16 +134,17 @@ jest.mock('@/context/WorldContext', () => ({
   }),
 }));
 
-jest.mock('@/context/PlayerContext', () => ({
-  usePlayer: () => ({
+jest.mock('@/context/PlayerContext', () => {
+  const usePlayer = () => ({
     session: require('@/content/sessions').SESSION_BY_ID['sleep-quick-fall'],
     worldId: 'sanctuary',
     status: mockPlayerStatus,
     positionSec: 12,
     durationSec: 300,
     toggle: mockToggle,
-  }),
-}));
+  });
+  return { usePlayer, usePlayerState: usePlayer, usePlayerCommands: usePlayer, usePlayerProgress: usePlayer };
+});
 
 jest.mock('uniwind', () => ({
   ScopedTheme: ({ children }: React.PropsWithChildren<{ theme: string }>) => children,

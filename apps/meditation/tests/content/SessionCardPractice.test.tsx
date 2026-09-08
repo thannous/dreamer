@@ -32,14 +32,15 @@ jest.mock('@/components/session/SessionArtwork', () => {
   };
 });
 
-jest.mock('@/context/LibraryContext', () => ({
-  useLibrary: () => ({
+jest.mock('@/context/LibraryContext', () => {
+  const useLibrary = () => ({
     favorites: [],
     isFavorite: () => false,
     progress: {},
     practiceLog: [],
-  }),
-}));
+  });
+  return { useLibrary, useLibraryMetadata: useLibrary };
+});
 
 jest.mock('@/context/SubscriptionContext', () => ({
   useSubscription: () => ({ isPlus: false }),

@@ -34,6 +34,8 @@ jest.mock('react-native-safe-area-context', () => ({
     ),
 }));
 
+jest.mock('@/components/library/LibraryPersistenceNotice', () => ({ LibraryPersistenceNotice: () => null }));
+
 jest.mock('@/context/BreathContext', () => ({
   BreathProvider: ({ children }: React.PropsWithChildren) => children,
 }));

@@ -5,7 +5,7 @@ import { AppState } from 'react-native';
 
 import { MiniPlayer } from '@/components/player/MiniPlayer';
 import { PlayerControls } from '@/components/player/PlayerControls';
-import { PlayerProvider, usePlayer } from '@/context/PlayerContext';
+import { PlayerProvider, usePlayer, usePlayerCommands, usePlayerState, usePlayerProgress } from '@/context/PlayerContext';
 import { fadeVolume } from '@/lib/audio';
 import { TID } from '@/lib/testIDs';
 import * as audio from '@/services/audioService';
@@ -33,7 +33,7 @@ jest.mock('@/components/session/SessionArtwork', () => {
 });
 
 jest.mock('@/context/LibraryContext', () => ({
-  useLibrary: () => ({
+  useLibraryCommands: () => ({
     recordProgress: mockRecordProgress,
     recordPractice: mockRecordPractice,
   }),
@@ -779,7 +779,8 @@ describe('PlayerContext fade timer', () => {
     expect(result.current.status).toBe('paused');
     expect(mockReplace).not.toHaveBeenCalled();
     expect(mockRecordPractice).toHaveBeenCalledTimes(practiceBeforeExpiry);
-    expect(mockRecordProgress.mock.calls.length).toBe(progressBeforeExpiry);
+    expect(mockRecordProgress.mock.calls.length).toBe(progressBeforeExpiry + 1);
+    expect(mockRecordProgress).toHaveBeenLastCalledWith('anxiety-ground', 12, false);
 
     const pauseCalls = jest.mocked(audio.pause).mock.calls.length;
     act(() => {
@@ -935,5 +936,97 @@ describe('PlayerContext fade timer', () => {
     unmountClosed();
     expect(primaryPlayer).toBeTruthy();
     expect(texturePlayer).toBeTruthy();
+  });
+});
+
+describe('PlayerContext selective subscriptions and command lifetime', () => {
+  beforeEach(() => {
+    playbackListener = null;
+    jest.clearAllMocks();
+  });
+
+  const wrapper = ({ children }: React.PropsWithChildren) => <PlayerProvider>{children}</PlayerProvider>;
+  const tick = (position: number) => playbackListener?.({ currentTime: position, duration: 600, playing: true, didJustFinish: false });
+
+  it('keeps saved commands stable and uses the latest position when skipping, pausing and closing', async () => {
+    const { result } = renderHook(usePlayer, { wrapper });
+    const saved = { skip: result.current.skip, toggle: result.current.toggle, close: result.current.close };
+    act(() => result.current.open('sleep-descent'));
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    act(() => tick(30));
+    expect(result.current.skip).toBe(saved.skip);
+    expect(result.current.toggle).toBe(saved.toggle);
+    act(() => saved.skip(15));
+    expect(audio.seekTo).toHaveBeenLastCalledWith(expect.anything(), 45);
+    act(() => tick(46));
+    act(() => saved.toggle());
+    expect(mockRecordProgress).toHaveBeenLastCalledWith('sleep-descent', 46, false);
+    expect(result.current.status).toBe('paused');
+    act(() => saved.close());
+    expect(mockRecordProgress).toHaveBeenLastCalledWith('sleep-descent', 46, false);
+    expect(result.current.session).toBeNull();
+  });
+
+  it('persists outgoing progress and ignores a detached native listener after switching sessions', async () => {
+    const { result } = renderHook(usePlayer, { wrapper });
+    act(() => result.current.open('sleep-descent'));
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalledTimes(1));
+    act(() => tick(13));
+    const detached = playbackListener;
+    mockRecordProgress.mockClear();
+    act(() => result.current.open('sleep-descent', 20, 'forest'));
+    expect(mockRecordProgress).toHaveBeenCalledWith('sleep-descent', 13, false);
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalledTimes(2));
+    act(() => detached?.({ currentTime: 599, duration: 600, playing: false, didJustFinish: true }));
+    expect(result.current.positionSec).toBe(20);
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('invalidates pending opens on unmount and releases listeners and handles', async () => {
+    let resolveSource!: (source: string) => void;
+    jest.mocked(audio.resolvePlayableSource).mockImplementationOnce(() => new Promise((resolve) => { resolveSource = resolve; }));
+    const pending = renderHook(usePlayer, { wrapper });
+    act(() => pending.result.current.open('sleep-descent'));
+    pending.unmount();
+    await act(async () => { resolveSource('fixture'); await Promise.resolve(); });
+    expect(audio.createSessionPlayer).not.toHaveBeenCalled();
+    const active = renderHook(usePlayer, { wrapper });
+    act(() => active.result.current.open('sleep-descent'));
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalledTimes(1));
+    act(() => tick(13));
+    const handle = jest.mocked(audio.createSessionPlayer).mock.results[0].value;
+    const subscription = jest.mocked(handle.addListener).mock.results[0].value;
+    const detached = playbackListener;
+    active.unmount();
+    expect(subscription.remove).toHaveBeenCalledTimes(1);
+    expect(audio.release).toHaveBeenCalledWith(handle);
+    expect(mockRecordProgress).toHaveBeenLastCalledWith('sleep-descent', 13, false);
+    mockReplace.mockClear();
+    act(() => detached?.({ currentTime: 600, duration: 600, playing: false, didJustFinish: true }));
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('isolates 120 half-second ticks from command and general-state consumers', async () => {
+    const renders = { commands: 0, state: 0, progress: 0, legacy: 0 };
+    const timings: Record<string, number[]> = { commands: [], state: [], progress: [], legacy: [] };
+    let commands!: ReturnType<typeof usePlayerCommands>;
+    const Commands = () => { commands = usePlayerCommands(); renders.commands++; return null; };
+    const State = () => { usePlayerState(); renders.state++; return null; };
+    const Progress = () => { usePlayerProgress(); renders.progress++; return null; };
+    const Legacy = () => { usePlayer(); renders.legacy++; return null; };
+    const probes = { commands: Commands, state: State, progress: Progress, legacy: Legacy };
+    render(<PlayerProvider>{Object.entries(probes).map(([id, Probe]) => (
+      <React.Profiler key={id} id={id} onRender={(_id, _phase, duration) => { timings[id].push(duration); }}><Probe /></React.Profiler>
+    ))}</PlayerProvider>);
+    act(() => commands.open('sleep-descent'));
+    await waitFor(() => expect(audio.createSessionPlayer).toHaveBeenCalled());
+    act(() => tick(1));
+    const before = { ...renders };
+    for (const values of Object.values(timings)) values.length = 0;
+    for (let index = 1; index <= 120; index++) act(() => tick(1 + index / 2));
+    const delta = Object.fromEntries(Object.entries(renders).map(([key, value]) => [key, value - before[key as keyof typeof renders]]));
+    expect(delta).toEqual({ commands: 0, state: 0, progress: 120, legacy: 120 });
+    // Timings are diagnostic only: host Jest timings are not an Android frame benchmark.
+    if (process.env.TI525_RENDER_BENCHMARK === '1') console.info('TI525 render benchmark', JSON.stringify({ renders: delta, profilerMs: Object.fromEntries(Object.entries(timings).map(([key, values]) => [key, values.reduce((sum, value) => sum + value, 0)])) }));
   });
 });

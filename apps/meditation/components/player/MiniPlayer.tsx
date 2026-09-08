@@ -8,7 +8,7 @@ import { IconSymbol, Text } from '@/components/ui';
 import { getSessionArtwork } from '@/constants/catalogArtwork';
 import { WORLD_BY_ID } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
-import { usePlayer } from '@/context/PlayerContext';
+import { usePlayerCommands, usePlayerState } from '@/context/PlayerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import type { TranslationKey } from '@/lib/i18n';
@@ -25,7 +25,8 @@ export function MiniPlayer() {
   const router = useRouter();
   const segments = useSegments();
   const { t } = useTranslation();
-  const { session, worldId, status, toggle, close } = usePlayer();
+  const { session, worldId, status } = usePlayerState();
+  const { toggle, close } = usePlayerCommands();
   const { colors } = useTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
   const { fontScale } = useWindowDimensions();

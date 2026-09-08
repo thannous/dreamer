@@ -11,9 +11,10 @@ jest.mock('expo-router', () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
-jest.mock('@/context/LibraryContext', () => ({
-  useLibrary: () => ({ practiceLog: [] }),
-}));
+jest.mock('@/context/LibraryContext', () => {
+  const useLibrary = () => ({ practiceLog: [] });
+  return { useLibrary, useLibraryMetadata: useLibrary };
+});
 
 jest.mock('@/lib/env', () => ({
   areSubscriptionsEnabled: () => false,
