@@ -6,6 +6,20 @@ begin
   perform set_config('lock_timeout', '5s', true);
   perform set_config('statement_timeout', '60s', true);
 
+  -- Fresh databases never contained the retired Location subsystem. Only skip
+  -- when every named relation (including views) and function is absent. Any
+  -- partial state still enters the original fail-closed production checks.
+  if not exists (
+    select 1 from pg_class c join pg_namespace n on n.oid = c.relnamespace
+    where n.nspname = 'public' and c.relname = any (array['rental_dossiers','rental_dossier_activity','rental_dossier_comments','rental_dossier_documents','rental_dossier_notifications','rental_dossier_owners','user_location','user_location_sessions'])
+  ) and not exists (
+    select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where (n.nspname = 'public' and p.proname = any (array['document_add_by_token','document_delete_by_token','document_get_by_token','document_list_by_token','location_add_comment','location_add_document','location_add_notification','location_archive_dossier','location_create_dossier','location_delete_document','location_delete_dossier','location_get_document','location_get_dossier','location_list_documents','location_list_dossiers','location_list_notifications','location_login','location_rotate_dossier_links','location_update_dossier','notification_add_by_token','request_dossier_token','request_location_session','tenant_update_dossier_by_token']))
+       or (n.nspname = 'private' and p.proname = any (array['can_access_rental_dossier','current_location_user_id','require_location_user_id','can_access_location_dossier']))
+  ) then
+    return;
+  end if;
+
   select count(*) into actual_count
   from pg_class c join pg_namespace n on n.oid = c.relnamespace
   where n.nspname = 'public' and c.relkind in ('r', 'p')

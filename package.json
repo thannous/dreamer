@@ -43,6 +43,8 @@
     "content:audit-parity": "node ./scripts/audit-content-parity.js",
     "content:audit-parity:strict": "node ./scripts/audit-content-parity.js --strict-mobile",
     "db:contract:check": "node ./scripts/check-db-contract.js",
+    "db:qualify:prepare": "node ./scripts/ti528/prepare-local.cjs",
+    "db:qualify:local": "node ./scripts/ti528/qualify-local.cjs",
     "db:contract:check:local": "node ./scripts/check-db-contract.js --local",
     "validate-seo": "node ./scripts/validate-i18n-seo.js",
     "docs:build": "node ./scripts/docs-build.js",
