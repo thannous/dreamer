@@ -1,5 +1,5 @@
 import type { JournalImportSnapshot, JournalImportStorage } from '@/lib/lucid/journalImport';
-import { journalCopyIdentity } from '@/lib/lucid/journalImport';
+import { isJournalImportRevision, journalCopyIdentity } from '@/lib/lucid/journalImport';
 import { getLucidKeyValueStorage, isLucidNativeKeyValueStorage } from './lucidKeyValueStorage';
 import { isLucidTrainerEncryptedValue, protectLucidTrainerStoredValue, revealLucidTrainerStoredValue } from './lucidTrainerSecureStorage';
 
@@ -15,10 +15,10 @@ function parse(raw: string): JournalImportSnapshot {
     if (!copy || copy.identity !== identity || copy.sourceProduct !== 'journal' ||
       typeof copy.sourceAccount !== 'string' || !copy.sourceAccount || typeof copy.sourceId !== 'string' ||
       identity !== journalCopyIdentity(copy.sourceAccount, copy.sourceId) || !/^\d+$/.test(copy.sourceId) ||
-      typeof copy.sourceRevision !== 'string' || !/^\d+$/.test(copy.sourceRevision) ||
+      !isJournalImportRevision(copy.sourceRevision) ||
       typeof copy.text !== 'string' || typeof copy.edited !== 'boolean' || typeof copy.deleted !== 'boolean' ||
       !Number.isFinite(Date.parse(copy.createdAt)) || !Number.isFinite(Date.parse(copy.importedAt)) ||
-      (copy.incoming && (typeof copy.incoming.text !== 'string' || !/^\d+$/.test(copy.incoming.revision) ||
+      (copy.incoming && (typeof copy.incoming.text !== 'string' || !isJournalImportRevision(copy.incoming.revision) ||
         !Number.isFinite(Date.parse(copy.incoming.createdAt))))) throw new Error('Invalid stored copy');
   }
   const cp = value.checkpoint;

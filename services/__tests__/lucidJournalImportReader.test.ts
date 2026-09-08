@@ -1,10 +1,11 @@
+import { createJournalImportEngine, journalCopyIdentity, type JournalImportSnapshot } from '@/lib/lucid/journalImport';
 import { createLucidJournalImportReader, type JournalImportSessionAuthority } from '../lucidJournalImportReader';
 const uid = '00000000-0000-4000-8000-000000000001';
 const gid = '00000000-0000-4000-8000-000000000002';
 const cursor = '00000000-0000-4000-8000-000000000003';
 const next = '00000000-0000-4000-8000-000000000004';
 const date = '2026-09-09T00:00:00Z';
-const item = { id: '9007199254740993', clientRequestId: null, revision: '9007199254740994', createdAt: date, transcript: 'My dream' };
+const item = { id: '9007199254740993', clientRequestId: null, revision: '3aaee3bb-5491-4bc2-8800-52f11337c603', createdAt: date, transcript: 'My dream' };
 function setup() {
   let authority: JournalImportSessionAuthority | null = { userId: uid, clientId: 'registered-lucid', product: 'lucid', sessionGeneration: '1', destinationScope: 'guest' };
   let now = new Date(date);
@@ -17,7 +18,7 @@ function setup() {
     setAuthority: (patch: Partial<JournalImportSessionAuthority> | null) => { authority = patch === null ? null : { ...authority!, ...patch }; },
     expire: () => { now = new Date('2026-09-11'); } };
 }
-it('calls only the exact snake_case RPC arguments and preserves decimal strings/camelCase response', async () => {
+it('calls only the exact snake_case RPC arguments and preserves decimal IDs and opaque UUID revisions in the camelCase response', async () => {
   const x = setup();
   const read = createLucidJournalImportReader(x.deps);
   expect((await read(x.input)).items).toEqual([item]);
@@ -39,6 +40,7 @@ it('propagates denial as an error, never an empty page', async () => {
   expect(x.rpc).toHaveBeenCalledTimes(1);
 });
 it.each([
+  { grantId: gid, items: [{ ...item, revision: '123' }], nextCursor: null, done: true },
   null, { grant_id: gid, items: [], next_cursor: null, done: true },
   { grantId: 'wrong', items: [], nextCursor: null, done: true },
   { grantId: gid, items: [{ ...item, id: 9007199254740993 }], nextCursor: null, done: true },
@@ -73,4 +75,28 @@ it('requires a valid initial scoped session and valid limit', () => {
   expect(() => createLucidJournalImportReader({ ...x.deps, limit: 201 })).toThrow();
   x.setAuthority(null);
   expect(() => createLucidJournalImportReader(x.deps)).toThrow('session');
+});
+
+it('imports the real SQL response shape end to end with a UUID revision', async () => {
+  const x = setup();
+  let persisted: JournalImportSnapshot | null = null;
+  const engine = createJournalImportEngine({
+    storage: { load: async () => persisted, save: async (_scope, state, check) => { check(); persisted = state; } },
+    readPage: createLucidJournalImportReader(x.deps),
+    getCurrentDestinationScope: () => 'guest', getCurrentSourceAccount: () => uid, now: x.deps.now,
+  });
+  const state = await engine.start(x.deps.confirmation);
+  expect(state.copies[journalCopyIdentity(uid, item.id)]).toMatchObject({
+    sourceId: '9007199254740993', sourceRevision: '3aaee3bb-5491-4bc2-8800-52f11337c603', text: 'My dream',
+  });
+  expect(persisted).toEqual(state);
+});
+
+it('accepts a replay retaining the server original page IDs despite a smaller requested limit', async () => {
+  const x = setup();
+  const items = Array.from({ length: 200 }, (_, index) => ({ ...item, id: String(index + 1) }));
+  x.rpc.mockResolvedValue({ data: { grantId: gid, items, nextCursor: next, done: false }, error: null });
+  expect((await createLucidJournalImportReader({ ...x.deps, limit: 1 })(x.input)).items).toHaveLength(200);
+  x.rpc.mockResolvedValue({ data: { grantId: gid, items: [...items, { ...item, id: '201' }], nextCursor: null, done: true }, error: null });
+  await expect(createLucidJournalImportReader(x.deps)(x.input)).rejects.toThrow('Malformed');
 });

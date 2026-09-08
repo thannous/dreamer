@@ -23,7 +23,7 @@ function snapshot(count: number): JournalImportSnapshot {
     copies: Object.fromEntries(Array.from({ length: count }, (_, i) => {
       const identity = journalCopyIdentity('A', String(i));
       return [identity, { identity, sourceProduct: 'journal' as const, sourceAccount: 'A', sourceId: String(i),
-        sourceRevision: '1', createdAt: date, importedAt: date, text: 'Rêve 🌙 漢字'.repeat(120), edited: false, deleted: false }];
+        sourceRevision: '00000000-0000-4000-8000-000000000001', createdAt: date, importedAt: date, text: 'Rêve 🌙 漢字'.repeat(120), edited: false, deleted: false }];
     })) };
 }
 function fixture() {

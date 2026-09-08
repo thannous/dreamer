@@ -1,6 +1,7 @@
 import { createJournalImportEngine, journalCopyIdentity, type JournalImportSnapshot, type JournalImportPage } from '../journalImport';
 const date = '2026-09-08T00:00:00.000Z';
-const item = (id: number, revision = '1') => ({ id: String(id), revision, transcript: `Dream ${id}`, createdAt: date, clientRequestId: null });
+const revision = (value: number) => `00000000-0000-4000-8000-${String(value).padStart(12, '0')}`;
+const item = (id: number, rev = revision(1)) => ({ id: String(id), revision: rev, transcript: `Dream ${id}`, createdAt: date, clientRequestId: null });
 function setup(count = 1) {
   let saved: JournalImportSnapshot | null = null;
   let scope = 'guest';
@@ -49,15 +50,15 @@ it('preserves local edits, resolves incoming explicitly and retains deletion tom
   await x.engine.start(x.confirmation);
   const id = journalCopyIdentity('A', '0');
   await x.engine.updateCopy('guest', id, { type: 'edit', text: 'My words' });
-  x.readPage.mockResolvedValue({ grantId: 'g2', items: [item(0, '2')], nextCursor: null, done: true });
+  x.readPage.mockResolvedValue({ grantId: 'g2', items: [item(0, revision(2))], nextCursor: null, done: true });
   const second = await x.engine.start({ ...x.confirmation, grantId: 'g2' });
   expect(second.copies[id].text).toBe('My words');
-  expect(second.copies[id].incoming?.revision).toBe('2');
+  expect(second.copies[id].incoming?.revision).toBe(revision(2));
   const resolved = await x.engine.updateCopy('guest', id, { type: 'keepLocal' });
   expect(resolved.copies[id].text).toBe('My words');
-  expect(resolved.copies[id].sourceRevision).toBe('2');
+  expect(resolved.copies[id].sourceRevision).toBe(revision(2));
   await x.engine.updateCopy('guest', id, { type: 'delete' });
-  x.readPage.mockResolvedValue({ grantId: 'g3', items: [item(0, '3')], nextCursor: null, done: true });
+  x.readPage.mockResolvedValue({ grantId: 'g3', items: [item(0, revision(3))], nextCursor: null, done: true });
   const third = await x.engine.start({ ...x.confirmation, grantId: 'g3' });
   expect(third.copies[id].deleted).toBe(true);
   expect(third.copies[id].text).toBe('');
@@ -85,13 +86,13 @@ it('updates unedited copies and explicitly accepts an incoming conflict', async 
   const x = setup();
   await x.engine.start(x.confirmation);
   const id = journalCopyIdentity('A', '0');
-  x.readPage.mockResolvedValue({ grantId: 'g2', items: [{ ...item(0, '2'), transcript: 'New' }], nextCursor: null, done: true });
+  x.readPage.mockResolvedValue({ grantId: 'g2', items: [{ ...item(0, revision(2)), transcript: 'New' }], nextCursor: null, done: true });
   expect((await x.engine.start({ ...x.confirmation, grantId: 'g2' })).copies[id].text).toBe('New');
   await x.engine.updateCopy('guest', id, { type: 'edit', text: 'Own' });
-  x.readPage.mockResolvedValue({ grantId: 'g3', items: [{ ...item(0, '3'), transcript: 'Incoming' }], nextCursor: null, done: true });
+  x.readPage.mockResolvedValue({ grantId: 'g3', items: [{ ...item(0, revision(3)), transcript: 'Incoming' }], nextCursor: null, done: true });
   await x.engine.start({ ...x.confirmation, grantId: 'g3' });
   const state = await x.engine.updateCopy('guest', id, { type: 'useIncoming' });
-  expect(state.copies[id]).toMatchObject({ text: 'Incoming', edited: false, sourceRevision: '3' });
+  expect(state.copies[id]).toMatchObject({ text: 'Incoming', edited: false, sourceRevision: revision(3) });
 });
 it('rejects expired grants and malformed pages without empty overwrite', async () => {
   const x = setup();

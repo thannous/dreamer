@@ -1,3 +1,4 @@
+import { isJournalImportRevision } from '@/lib/lucid/journalImport';
 import type { JournalImportConfirmation, JournalImportItem, JournalImportPage } from '@/lib/lucid/journalImport';
 
 /** Supplied by the authenticated session owner, never by an appId header or user metadata. */
@@ -30,7 +31,7 @@ const record = (value: unknown): Record<string, unknown> => {
 };
 function parseItem(raw: unknown): JournalImportItem {
   const value = record(raw);
-  if (!decimal(value.id) || !decimal(value.revision) || !date(value.createdAt) || typeof value.transcript !== 'string' ||
+  if (!decimal(value.id) || !isJournalImportRevision(value.revision) || !date(value.createdAt) || typeof value.transcript !== 'string' ||
     !(value.clientRequestId === null || uuid(value.clientRequestId))) throw new Error('Malformed Journal import item');
   return { id: value.id, revision: value.revision, createdAt: value.createdAt,
     transcript: value.transcript, clientRequestId: value.clientRequestId };
@@ -74,7 +75,7 @@ export function createLucidJournalImportReader(deps: {
     // Denial is never represented as an empty page; no direct dreams access is attempted.
     if (result.error) throw new Error('Journal import page denied or unavailable', { cause: result.error });
     const value = record(result.data);
-    if (value.grantId !== grant.grantId || !Array.isArray(value.items) || value.items.length > limit ||
+    if (value.grantId !== grant.grantId || !Array.isArray(value.items) || value.items.length > 200 ||
       typeof value.done !== 'boolean' || (value.done ? value.nextCursor !== null : !uuid(value.nextCursor) || value.nextCursor === input.cursor)) {
       throw new Error('Malformed Journal import page');
     }
