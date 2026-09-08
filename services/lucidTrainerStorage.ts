@@ -24,6 +24,7 @@ import {
   inspectLucidDreamAtlasCompanion,
   overlayFromLucidDreamAtlasCompanion,
 } from '@/services/lucidDreamAtlasStorage';
+import { clearLucidJournalImportStorage } from '@/services/lucidJournalImportStorage';
 import { clearLucidDreamRehearsalState } from '@/services/lucidDreamRehearsalStorage';
 import { deleteLucidHealthKitSnapshot } from '@/services/lucidHealthKitStorage';
 import { clearLucidSsildSensoryLabCurrentSession } from '@/services/lucidSsildSensoryLabStorage';
@@ -450,6 +451,7 @@ export async function clearLucidTrainerLocalData(
       }
       await Promise.all([storage.removeItem(keys.state), storage.removeItem(keys.syncQueue)]);
       const companionResults = await Promise.allSettled([
+        clearLucidJournalImportStorage(userScope, storage),
         deleteLucidHealthKitSnapshot(userScope, storage),
         clearLucidDreamRehearsalState(userScope, storage),
         clearLucidDreamAtlasPreferences(userScope, storage),

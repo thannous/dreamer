@@ -192,3 +192,67 @@ it('keeps active copies readable through persistent orphan cleanup failure witho
   await x.adapter.save('guest', snapshot(4), () => undefined);
   expect(await x.adapter.load('guest')).toEqual(snapshot(4));
 });
+
+it('erases one destination including pending generations without touching other scopes or Journal', async () => {
+  const x = fixture();
+  await x.adapter.save('guest', snapshot(200), () => undefined);
+  await x.adapter.save('user:B', snapshot(2), () => undefined);
+  x.values.set('gemini_dream_journal_dreams', 'Journal remains');
+  const foreign = [...x.values].filter(([key]) => !key.startsWith('noctalia_lucid_journal_copies:guest:'));
+  const remove = x.kv.removeItem.getMockImplementation()!;
+  x.kv.removeItem.mockRejectedValue(new Error('cleanup unavailable'));
+  await x.adapter.save('guest', snapshot(1), () => undefined);
+  expect([...x.values.keys()].some(key => key.endsWith(':pending'))).toBe(true);
+  x.kv.removeItem.mockImplementation(remove);
+  await x.adapter.clear('guest');
+  expect(await x.adapter.load('guest')).toBeNull();
+  expect([...x.values]).toEqual(foreign);
+  await x.adapter.clear('guest');
+  expect([...x.values]).toEqual(foreign);
+});
+
+it.each(['chunk', 'manifest', 'erasing'])('retries interrupted %s removal without losing its deletion inventory', async phase => {
+  const x = fixture();
+  await x.adapter.save('guest', snapshot(200), () => undefined);
+  const remove = x.kv.removeItem.getMockImplementation()!;
+  x.kv.removeItem.mockImplementation(async key => {
+    if (phase === 'chunk' ? key.includes(':chunk:') : key.endsWith(phase === 'manifest' ? ':v2' : ':erasing')) throw new Error('remove failed');
+    await remove(key);
+  });
+  await expect(x.adapter.clear('guest')).rejects.toThrow('remove failed');
+  expect([...x.values.keys()].some(key => key.endsWith(':erasing'))).toBe(true);
+  await expect(x.adapter.load('guest')).rejects.toThrow('remove failed');
+  x.kv.removeItem.mockImplementation(remove);
+  await x.adapter.clear('guest');
+  expect(x.values.size).toBe(0);
+  expect(await x.adapter.load('guest')).toBeNull();
+});
+
+it('does not delete anything when durable erasure intent cannot be written', async () => {
+  const x = fixture();
+  const state = snapshot(1);
+  await x.adapter.save('guest', state, () => undefined);
+  x.kv.setItem.mockRejectedValue(new Error('write failed'));
+  await expect(x.adapter.clear('guest')).rejects.toThrow('write failed');
+  expect(await x.adapter.load('guest')).toEqual(state);
+});
+
+it('serializes erasure behind an already-issued page write across adapter instances', async () => {
+  const x = fixture();
+  const set = x.kv.setItem.getMockImplementation()!;
+  let release!: () => void;
+  let reached!: () => void;
+  const waiting = new Promise<void>(resolve => { reached = resolve; });
+  const blocked = new Promise<void>(resolve => { release = resolve; });
+  x.kv.setItem.mockImplementation(async (key, value) => {
+    if (key.endsWith(':v2')) { reached(); await blocked; }
+    await set(key, value);
+  });
+  const saving = x.adapter.save('guest', snapshot(1), () => undefined);
+  await waiting;
+  const clearing = createLucidJournalImportStorage().clear('guest');
+  release();
+  await saving;
+  await clearing;
+  expect(x.values.size).toBe(0);
+});

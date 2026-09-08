@@ -1,3 +1,4 @@
+import { createLucidJournalImportStorage } from '../lucidJournalImportStorage';
 import { projectLucidObservations, lucidObservationSourceId } from '@/lib/lucid/observations';
 import { Platform } from 'react-native';
 import { createInitialLucidTrainerState } from '@/lib/lucid/domain';
@@ -714,10 +715,14 @@ describe('lucidTrainerStorage', () => {
       [ssildKey]: JSON.stringify({ currentSession: { status: 'completed' } }),
       unrelated: 'keep',
     });
+    const imports = createLucidJournalImportStorage(storage);
+    await imports.save(SCOPE, { version: 1, copies: {}, checkpoint: null }, () => undefined);
     const cancelReminders = jest.fn(async () => undefined);
 
     await clearLucidTrainerLocalData(SCOPE, storage, cancelReminders);
 
+    expect(await imports.load(SCOPE)).toBeNull();
+    expect([...storage.values.keys()].some(key => key.startsWith('noctalia_lucid_journal_copies:'))).toBe(false);
     expect(cancelReminders).toHaveBeenCalledTimes(1);
     expect(storage.values.has(keys.state)).toBe(false);
     expect(storage.values.has(keys.syncQueue)).toBe(false);
