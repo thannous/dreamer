@@ -1,3 +1,5 @@
+import { resolveDreamRoute, getDreamRouteParams } from '@/lib/dreamRoute';
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Composer } from '@/components/chat/Composer';
 import { Exploration360Panel } from '@/components/chat/Exploration360Panel';
@@ -131,13 +133,21 @@ const isExploration360SynthesisUpgradeError = (error: unknown): boolean => {
 // Track chat history migrations across screen mounts to prevent duplicate writes when
 // users rapidly open the same chat multiple times.
 const CHAT_HISTORY_MIGRATION_VERSION = 1;
-const chatHistoryMigrationInFlightByDreamId = new Map<number, Promise<void>>();
-const chatHistoryMigrationCompletedByDreamId = new Map<number, number>();
+const chatHistoryMigrationInFlightByDreamId = new Map<string, Promise<void>>();
+const chatHistoryMigrationCompletedByDreamId = new Map<string, number>();
 
 export default function DreamChatScreen() {
+  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
+  const { user } = useAuth();
+  return <DreamChatContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])} />;
+}
+
+function DreamChatContent() {
   const { t } = useTranslation();
-  const { id, category, mode: routeMode, messageId: routeMessageId } = useLocalSearchParams<{
+  const { id, remoteId, clientRequestId, category, mode: routeMode, messageId: routeMessageId } = useLocalSearchParams<{
     id: string;
+    remoteId?: string;
+    clientRequestId?: string;
     category?: string;
     mode?: string;
     messageId?: string | string[];
@@ -151,7 +161,8 @@ export default function DreamChatScreen() {
   const isMockMode = isMockModeEnabled();
   const debugChat = __DEV__ && isChatDebugEnabled();
   const dreamId = useMemo(() => Number(id), [id]);
-  const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
+  const dream = useMemo(() => resolveDreamRoute(dreams, { id, remoteId, clientRequestId }), [dreams, id, remoteId, clientRequestId]);
+  const dreamIdentity = dream ? `${user?.id ?? 'guest'}:${getDreamIdentityKey(dream)}` : '';
   const exploration360Status = useMemo(() => getExploration360SynthesisStatus(dream), [dream]);
   const { quotaStatus, canExplore, canChat, tier } = useQuota({ dreamId, dream });
   const networkState = useNetworkState();
@@ -204,6 +215,7 @@ export default function DreamChatScreen() {
   const requestAbortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
       if (quotaCheckTimeoutRef.current) {
@@ -361,7 +373,7 @@ export default function DreamChatScreen() {
         const legacyMsg: LegacyChatMessage = msg;
 
         const rawId = legacyMsg.id;
-        const fallbackId = `legacy-${dream.id}-${index}`;
+        const fallbackId = `legacy-${dreamIdentity}-${index}`;
         const nextId = typeof rawId === 'string' && rawId.length > 0 ? rawId : fallbackId;
         if (nextId !== rawId) {
           didChange = true;
@@ -397,22 +409,22 @@ export default function DreamChatScreen() {
 
       if (
         didChange &&
-        chatHistoryMigrationCompletedByDreamId.get(dream.id) !== CHAT_HISTORY_MIGRATION_VERSION &&
-        !chatHistoryMigrationInFlightByDreamId.has(dream.id)
+        chatHistoryMigrationCompletedByDreamId.get(dreamIdentity) !== CHAT_HISTORY_MIGRATION_VERSION &&
+        !chatHistoryMigrationInFlightByDreamId.has(dreamIdentity)
       ) {
         const migration = (async () => {
           try {
             await updateDream({ ...dream, chatHistory: normalized } as DreamAnalysis);
-            chatHistoryMigrationCompletedByDreamId.set(dream.id, CHAT_HISTORY_MIGRATION_VERSION);
+            chatHistoryMigrationCompletedByDreamId.set(dreamIdentity, CHAT_HISTORY_MIGRATION_VERSION);
           } catch (error) {
             if (__DEV__) {
               console.warn('[DreamChat] Failed to persist chat history migration', error);
             }
           } finally {
-            chatHistoryMigrationInFlightByDreamId.delete(dream.id);
+            chatHistoryMigrationInFlightByDreamId.delete(dreamIdentity);
           }
         })();
-        chatHistoryMigrationInFlightByDreamId.set(dream.id, migration);
+        chatHistoryMigrationInFlightByDreamId.set(dreamIdentity, migration);
       }
     } else {
       // Start with initial AI greeting
@@ -421,7 +433,7 @@ export default function DreamChatScreen() {
       lastCategorySentKeyRef.current = null;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dream?.id, t]);
+  }, [dreamIdentity, t]);
 
   // Send category-specific question if category is provided
   useEffect(() => {
@@ -446,7 +458,7 @@ export default function DreamChatScreen() {
       return;
     }
 
-    const categoryKey = `${dream.id}:${category}`;
+    const categoryKey = `${dreamIdentity}:${category}`;
     if (lastCategorySentKeyRef.current === categoryKey) {
       return;
     }
@@ -468,7 +480,7 @@ export default function DreamChatScreen() {
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, dream, messages.length, t, hasQuotaCheckClearance, isQuotaGateBlocked, targetMessageId]); // sendMessage has stable dependencies via useCallback
+  }, [category, dream, dreamIdentity, messages.length, t, hasQuotaCheckClearance, isQuotaGateBlocked, targetMessageId]); // sendMessage has stable dependencies via useCallback
 
   const sendMessage = useCallback(
     async (
@@ -582,13 +594,16 @@ export default function DreamChatScreen() {
             // Ensure clientRequestId for idempotence (prevent duplicates)
             const dreamToSync = dream.clientRequestId
               ? dream
-              : { ...dream, clientRequestId: `dream-${dream.id}` };
+              : { ...dream, clientRequestId: generateUUID() };
 
+            if (!dream.clientRequestId) await updateDream(dreamToSync, dream);
+            if (!isMountedRef.current || controller.signal.aborted) return;
             const synced = await createDreamInSupabase(dreamToSync, user.id);
 
             // IMPORTANT: synced.id may differ from dream.id (reconstructed from server's created_at)
             // Update with the returned dream which has correct id + remoteId
-            await updateDream(synced);
+            if (!isMountedRef.current || controller.signal.aborted) return;
+            await updateDream(synced, dreamToSync);
 
             // Now proceed with chat using synced.remoteId
             const dreamIdString = String(synced.remoteId);
@@ -599,6 +614,8 @@ export default function DreamChatScreen() {
               onDelta: setStreamingReply,
             });
 
+            if (!isMountedRef.current || controller.signal.aborted) return;
+
             // Add user message
             const userMessage = createChatMessage('user', resolvedDisplayText, {
               id: chatRequestId,
@@ -607,7 +624,8 @@ export default function DreamChatScreen() {
             });
             const updatedMessages = [...baseMessages, userMessage];
 
-            const aiMessage = createChatMessage('model', aiResponse.text, {
+            if (!isMountedRef.current || controller.signal.aborted) return;
+        const aiMessage = createChatMessage('model', aiResponse.text, {
               id: aiResponse.message?.id,
               parts: aiResponse.message?.parts,
             });
@@ -635,7 +653,9 @@ export default function DreamChatScreen() {
               }
             }
             quotaService.invalidate(user);
+            if (isMountedRef.current) router.setParams(getDreamRouteParams(synced));
           } catch (error) {
+            if (!isMountedRef.current) return;
             setIsLoading(false);
             if (messageMeta?.exploration360Synthesis && isExploration360SynthesisUpgradeError(error)) {
               router.push(buildPaywallHref('exploration_limit'));
@@ -735,6 +755,7 @@ export default function DreamChatScreen() {
           });
         }
 
+        if (!isMountedRef.current || controller.signal.aborted) return;
         const aiMessage = createChatMessage('model', aiResponse.text, {
           id: aiResponse.message?.id,
           parts: aiResponse.message?.parts,
@@ -782,6 +803,7 @@ export default function DreamChatScreen() {
         }
         quotaService.invalidate(user);
       } catch (error) {
+        if (!isMountedRef.current) return;
         if (debugChat) {
           console.debug('[DreamChat] sendMessage error', {
             dreamId: dream.id,
@@ -926,7 +948,7 @@ export default function DreamChatScreen() {
       return;
     }
 
-    const synthesisKey = `${dream.id}:synthesis`;
+    const synthesisKey = `${dreamIdentity}:synthesis`;
     if (lastSynthesisSentKeyRef.current === synthesisKey) {
       return;
     }
@@ -942,6 +964,7 @@ export default function DreamChatScreen() {
     };
   }, [
     dream,
+    dreamIdentity,
     exploration360Status.canGenerateSynthesis,
     hasQuotaCheckClearance,
     isInteractionLocked,

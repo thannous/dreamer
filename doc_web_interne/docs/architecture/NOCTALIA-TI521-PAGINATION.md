@@ -50,8 +50,16 @@ Les tests couvrent 0, 1, 1 000, 1 001 et 2 501 rêves ; plafonds inférieurs à 
 
 `journalReadHttp.test.ts` utilise le véritable SDK PostgREST installé et un transport simulant un plafond de 700 pour une demande de 1 000 : 2 501 identifiants exportés une fois, après une erreur intermédiaire et reprise. Cela valide le contrat HTTP généré, pas une base RLS réelle.
 
-Le plafond local déclaré est `supabase/config.toml` : `max_rows = 1000`. La documentation officielle autorise une réponse plus courte que demandée : https://postgrest.org/en/stable/references/api/pagination_count.html . Le plafond réellement appliqué à l'API de production n'a pas été mesuré ni modifié. Le daemon Docker local était indisponible ; aucun test Supabase local réel ou RLS sur appareil n'est revendiqué.
+Le plafond local déclaré est `supabase/config.toml` : `max_rows = 1000`. La documentation officielle autorise une réponse plus courte que demandée : https://postgrest.org/en/stable/references/api/pagination_count.html . Le plafond réellement appliqué à l'API de production n'a pas été mesuré ni modifié. Après la validation initiale sans Docker, TI-528 a reconstruit une base jetable et exécuté les lectures et mutations réelles sous JWT clients : voir [qualification locale](NOCTALIA-TI528-LOCAL-QUALIFICATION.md).
 
 La vérification web en mode mock ne remplace pas une qualification Android ni une session distante réelle. Aucun déploiement, build EAS ou changement de CI n'est inclus.
 
-Validation finale : 255 tests dans 12 suites passent ; vérifications TypeScript application et tests passent. La revue indépendante a accepté la version intégrant l'aperçu distant et la reprise exhaustive toujours accessible. Lint ciblé sans erreur ; avertissements React Hooks conservés et explicitement distincts d'un échec de validation.
+Validation initiale : 255 tests dans 12 suites passent ; vérifications TypeScript application et tests passent. La revue indépendante a accepté la version intégrant l'aperçu distant et la reprise exhaustive toujours accessible. Lint ciblé sans erreur ; avertissements React Hooks conservés et explicitement distincts d'un échec de validation.
+
+## Identité des rêves partageant une date
+
+La qualification à dates identiques a reproduit un détail erroné sur Android et une suppression dirigée vers une autre ligne dans le batch applicatif réel. `DreamAnalysis.id` conserve sa sémantique temporelle ; `DreamTarget` porte l'identité distante ou client dans les routes, commandes et mutations. Une ancienne référence numérique ambiguë échoue sans sélectionner la première ligne. Les identités connues distinctes ne partagent plus d'alias de timestamp dans les reçus serveur.
+
+Les cartes, aperçus, détails, catégories, conversations, lectures personnelles et récapitulatifs transportent cette identité. Les anciens liens Today, indicateur d'analyse et notifications restent numériques : en cas de collision ils affichent introuvable, sans sélectionner ou modifier un autre rêve. Leur migration complète est une limite explicite.
+
+Les nouveaux brouillons de rappel des rêves identifiés utilisent une clé stable compte + identité client, avec identité distante en secours. Les anciens brouillons numériques ne portent pas de preuve du compte propriétaire : ils sont conservés mais ne sont pas automatiquement réattribués. Aucun récit, réponse ou brouillon existant n'est supprimé. Ce changement de clé est distinct de la persistance du journal.

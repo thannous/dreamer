@@ -1,3 +1,5 @@
+import { getDreamRouteParams } from '@/lib/dreamRoute';
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { UpsellCard } from '@/components/guest/UpsellCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
@@ -327,7 +329,7 @@ export default function JournalListScreen() {
     const full = await loadRemoteDreamForPreview(item.remoteId);
     if (!previewMounted.current || previewScopeRef.current.userId !== userId) return;
     void reloadDreams();
-    router.push(`/journal/${full.id}`);
+    router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(full) });
   }, [mediaUserId, loadRemoteDreamForPreview, reloadDreams]);
   const previewFiltersSupported = !selectedTheme && !selectedDreamType && !dateRange.start && !dateRange.end &&
     quickFilter === 'all' && !showRememberedOnly && !showRecurringOnly && !analysisStatus && sortOrder !== 'oldest';
@@ -436,12 +438,12 @@ export default function JournalListScreen() {
     setAnalysisStatus(status);
   }, []);
 
-  const handleDreamPress = useCallback((dreamId: number) => {
+  const handleDreamPress = useCallback((dream: DreamAnalysis) => {
     if (isNavigatingRef.current) {
       return;
     }
     isNavigatingRef.current = true;
-    router.push(`/journal/${dreamId}`);
+    router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
   }, []);
 
   // Track viewable items and prefetch thumbnails once scrolling is idle.
@@ -810,7 +812,7 @@ export default function JournalListScreen() {
     refreshState,
   ]);
 
-  const keyExtractor = useCallback((item: DreamAnalysis) => item.remoteId != null ? `remote:${item.remoteId}` : item.clientRequestId ? `client:${item.clientRequestId}` : `local:${item.id}`, []);
+  const keyExtractor = useCallback((item: DreamAnalysis) => getDreamIdentityKey(item), []);
   const getDreamItemType = useCallback((item: DreamAnalysis | undefined, index: number) => {
     if (!item) {
       // FlashList can query item types during layout passes where data isn't resolved yet.

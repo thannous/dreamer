@@ -1,3 +1,5 @@
+import { getDreamRouteParams } from '@/lib/dreamRoute';
+import type { DreamAnalysis } from '@/lib/types';
 import { router } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -68,8 +70,8 @@ export function WeeklyRecapScreen() {
     router.push('/recording');
   }, []);
 
-  const handleOpenDream = useCallback((id: number) => {
-    router.push(`/journal/${id}`);
+  const handleOpenDream = useCallback((dream: DreamAnalysis) => {
+    router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
   }, []);
 
   const handleUnlockEmotions = useCallback(() => {
@@ -224,7 +226,7 @@ export function WeeklyRecapScreen() {
                     {nextDream.transcript}
                   </Text>
                   <Pressable
-                    onPress={() => handleOpenDream(nextDream.id)}
+                    onPress={() => handleOpenDream(nextDream)}
                     accessibilityRole="button"
                     testID={TID.Button.WeeklyRecapOpenDream}
                     style={({ pressed }) => [

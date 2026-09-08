@@ -237,7 +237,7 @@ it('keeps its image frame, title and navigation available while signing is pendi
   expect(screen.getByText('Readable immediately')).toBeTruthy();
   expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBeNull();
   fireEvent.click(screen.getByTestId('pending-card'));
-  expect(onPress).toHaveBeenCalledWith(73);
+  expect(onPress).toHaveBeenCalledWith(dream);
   mockMediaPending = false;
   rerender(<DreamCard dream={{ ...dream, imageUrl: 'https://signed/image' }} onPress={onPress} testID="pending-card" />);
   expect(screen.getByTestId('dream-image').parentElement).toBe(frame);
