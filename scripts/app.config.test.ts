@@ -148,3 +148,17 @@ describe('Dreamer QA Expo identity', () => {
     );
   });
 });
+
+describe('product route roots', () => {
+  it('selects the dedicated Lucid context without changing Journal configuration', () => {
+    withEnv({}, () => {
+      const base = baseExpo();
+      expect(resolveExpoConfig({ config: base } as any).plugins).toEqual(base.plugins);
+    });
+    withEnv({ NOCTALIA_APP_VARIANT: 'lucid', EXPO_PUBLIC_APP_VARIANT: 'lucid-trainer' }, () => {
+      const config = resolveExpoConfig({ config: baseExpo() } as any);
+      expect(config.plugins?.filter((plugin) => (Array.isArray(plugin) ? plugin[0] : plugin) === 'expo-router'))
+        .toEqual([['expo-router', { root: './routes/lucid' }]]);
+    });
+  });
+});

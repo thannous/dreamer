@@ -122,6 +122,7 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
   const companionPlugins = (baseExpo.plugins ?? []).filter((plugin) => {
     const name = Array.isArray(plugin) ? plugin[0] : plugin;
     return (
+      name !== 'expo-router' &&
       name !== 'expo-audio' &&
       name !== 'expo-secure-store' &&
       name !== 'expo-image-picker' &&
@@ -208,6 +209,7 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     },
     plugins: [
       ...companionPlugins,
+      ['expo-router', { root: './routes/lucid' }],
       ['expo-secure-store', { faceIDPermission: false }],
       [
         'expo-image-picker',
