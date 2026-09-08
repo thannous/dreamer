@@ -81,10 +81,10 @@ describe('journal detail recall offer wiring', () => {
       source.indexOf('<DreamRecallAssistantCard')
     );
     expect(reveal3).toContain('<DreamRecallAssistantCard');
-    expect(reveal3).toContain('dreamId={String(dream.id)}');
+    expect(reveal3).toContain('dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}');
     expect(reveal3).toContain('originalTranscript={dream.transcript}');
     expect(reveal3).toContain(
-      'originalPersistedSegmentId={dream.clientRequestId ?? String(dream.id)}'
+      'originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}'
     );
     expect(reveal3).toContain('offerEligible={recallOffer.offerEligible}');
   });

@@ -1,10 +1,16 @@
+import { getDreamRouteParams } from '@/lib/dreamRoute';
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { UpsellCard } from '@/components/guest/UpsellCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal/AdvancedFilterSheet';
+import { RemoteJournalList } from '@/components/journal/RemoteJournalList';
+import type { DreamListItem } from '@/lib/journalReadContracts';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
+import { useJournalListPagination } from '@/hooks/useJournalListPagination';
+import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
 import { JournalPersistenceNotice } from '@/components/journal/JournalPersistenceNotice';
 import { FilterBar } from '@/components/journal/FilterBar';
 import { PressableScale } from '@/components/motion';
@@ -86,7 +92,7 @@ function getInitialKeyboardVisibility(): boolean {
 }
 
 export default function JournalListScreen() {
-  const { dreams, persistenceState, refreshState, reloadDreams, retryPersistence } = useDreams();
+  const { dreams, completeness, remotePreviewAllowed, loadRemoteDreamForPreview, persistenceState, refreshState, reloadDreams, retryPersistence } = useDreams();
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -310,6 +316,33 @@ export default function JournalListScreen() {
   }, []);
 
   const mediaUserId = useContext(AuthContext)?.user?.id ?? null;
+  const previewEligible = Boolean(remotePreviewAllowed && mediaUserId && dreams.length === 0);
+  const previewMounted = useRef(true);
+  useEffect(() => { previewMounted.current = true; return () => { previewMounted.current = false; }; }, []);
+  const previewScopeRef = useRef({ userId: mediaUserId, eligible: previewEligible });
+  useLayoutEffect(() => {
+    previewScopeRef.current = { userId: mediaUserId, eligible: previewEligible };
+  }, [mediaUserId, previewEligible]);
+  const openRemoteDream = useCallback(async (item: DreamListItem) => {
+    const userId = mediaUserId;
+    if (!userId || !item.remoteId || !previewScopeRef.current.eligible) return;
+    const full = await loadRemoteDreamForPreview(item.remoteId);
+    if (!previewMounted.current || previewScopeRef.current.userId !== userId) return;
+    void reloadDreams();
+    router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(full) });
+  }, [mediaUserId, loadRemoteDreamForPreview, reloadDreams]);
+  const previewFiltersSupported = !selectedTheme && !selectedDreamType && !dateRange.start && !dateRange.end &&
+    quickFilter === 'all' && !showRememberedOnly && !showRecurringOnly && !analysisStatus && sortOrder !== 'oldest';
+  const paginationScope = JSON.stringify([mediaUserId, deferredSearchQuery, selectedTheme, selectedDreamType,
+    dateRange.start, dateRange.end, quickFilter, showRememberedOnly, showRecurringOnly, analysisStatus, sortOrder]);
+  const { visibleItems, hasMore, loadMore } = useJournalListPagination(filteredDreams, paginationScope);
+  const listFooter = hasMore ? (
+    <PressableScale onPress={loadMore} accessibilityRole="button" className="min-h-[48px] items-center justify-center p-4">
+      <Text className="font-sans-bold text-body text-champagne-on">{t('journal.pagination.more')}</Text>
+    </PressableScale>
+  ) : filteredDreams.length > 0 ? (
+    <Text className="p-4 text-center font-sans text-body-sm text-ivory-muted">{t('journal.pagination.end')}</Text>
+  ) : null;
   const mediaGeneration = useRef(0);
   useLayoutEffect(() => {
     mediaGeneration.current += 1;
@@ -405,12 +438,12 @@ export default function JournalListScreen() {
     setAnalysisStatus(status);
   }, []);
 
-  const handleDreamPress = useCallback((dreamId: number) => {
+  const handleDreamPress = useCallback((dream: DreamAnalysis) => {
     if (isNavigatingRef.current) {
       return;
     }
     isNavigatingRef.current = true;
-    router.push(`/journal/${dreamId}`);
+    router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
   }, []);
 
   // Track viewable items and prefetch thumbnails once scrolling is idle.
@@ -779,7 +812,7 @@ export default function JournalListScreen() {
     refreshState,
   ]);
 
-  const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
+  const keyExtractor = useCallback((item: DreamAnalysis) => getDreamIdentityKey(item), []);
   const getDreamItemType = useCallback((item: DreamAnalysis | undefined, index: number) => {
     if (!item) {
       // FlashList can query item types during layout passes where data isn't resolved yet.
@@ -828,10 +861,12 @@ export default function JournalListScreen() {
         <MockNavigationRail />
         <JournalPersistenceNotice
           state={persistenceState}
-          refreshState={refreshState}
+          refreshState={completeness?.status === 'incomplete' ? undefined : refreshState}
           onRefresh={() => { void reloadDreams(); }}
           onRetry={() => void retryPersistence().catch(() => undefined)}
         />
+        {(!(previewEligible && previewFiltersSupported) || completeness?.status === 'incomplete') &&
+          <JournalCompletenessNotice status={completeness?.status} onRetry={() => { void reloadDreams(); }} />}
         {isDesktopLayout ? searchBar : null}
         <View className="flex-row flex-wrap items-start gap-2">
           <View className="min-w-0 flex-1 basis-[220px]">
@@ -939,12 +974,18 @@ export default function JournalListScreen() {
         )}
 
       {/* List */}
-      {isDesktopLayout ? (
+      {previewEligible && previewFiltersSupported && mediaUserId ? (
+        <RemoteJournalList key={mediaUserId} userId={mediaUserId} searchQuery={deferredSearchQuery}
+          onOpenDream={openRemoteDream} header={isDesktopLayout ? undefined : listHeader} bottomInset={overlayNavClearance} />
+      ) : isDesktopLayout ? (
         <FlashList
           testID={TID.List.Dreams}
           ref={flatListRef}
           key={`desktop-${desktopColumns}`}
-          data={filteredDreams}
+          data={visibleItems}
+          onEndReached={hasMore ? loadMore : undefined}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={listFooter}
           extraData={listExtraData}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
@@ -966,7 +1007,10 @@ export default function JournalListScreen() {
           testID={TID.List.Dreams}
           ref={flatListRef}
           key={mobileListKey}
-          data={filteredDreams}
+          data={visibleItems}
+          onEndReached={hasMore ? loadMore : undefined}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={listFooter}
           extraData={listExtraData}
           keyExtractor={keyExtractor}
           renderItem={isTabletLayout ? renderDreamItemTablet : renderDreamItem}

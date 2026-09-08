@@ -1,6 +1,7 @@
+import type { DreamTarget } from '../lib/dreamIdentity';
 import { AnalysisActivityProvider } from '@/context/AnalysisActivityContext';
 import { useDreamJournal } from '@/hooks/useDreamJournal';
-import type { DreamPersistenceState, DreamRefreshState } from '@/hooks/useDreamPersistence';
+import type { DreamPersistenceState, DreamRefreshState, JournalCompletenessState } from '@/hooks/useDreamPersistence';
 import type { AnalysisSource } from '@/lib/analytics';
 import type { DreamAnalysis, DreamCategorization } from '@/lib/types';
 import { AnalysisStep } from '@/hooks/useAnalysisProgress';
@@ -12,25 +13,28 @@ export type DreamsDataContextValue = {
   loaded: boolean;
   persistenceState: DreamPersistenceState;
   refreshState: DreamRefreshState;
+  completeness: JournalCompletenessState;
+  remotePreviewAllowed: boolean;
 };
 
 // Actions context - stable references, never triggers re-renders
 export type DreamsActionsContextValue = {
   addDream: (dream: DreamAnalysis) => Promise<DreamAnalysis>;
-  updateDream: (dream: DreamAnalysis) => Promise<void>;
+  updateDream: (dream: DreamAnalysis, priorTarget?: DreamTarget) => Promise<void>;
   applyServerDreamState: (dream: DreamAnalysis) => Promise<void>;
+  loadRemoteDreamForPreview: (remoteId: number) => Promise<DreamAnalysis>;
   applyDreamCategorization: (
-    dreamId: number,
+    dreamId: DreamTarget,
     categorization: DreamCategorization
   ) => Promise<DreamAnalysis | null>;
-  deleteDream: (id: number) => Promise<void>;
-  toggleFavorite: (id: number) => Promise<void>;
-  retryDreamSync: (id: number) => Promise<void>;
-  resolveDreamConflict: (id: number, resolution: 'keep_local' | 'use_server') => Promise<void>;
+  deleteDream: (id: DreamTarget) => Promise<void>;
+  toggleFavorite: (id: DreamTarget) => Promise<void>;
+  retryDreamSync: (id: DreamTarget) => Promise<void>;
+  resolveDreamConflict: (id: DreamTarget, resolution: 'keep_local' | 'use_server') => Promise<void>;
   reloadDreams: () => Promise<void>;
   retryPersistence: () => Promise<void>;
   generateDreamImage: (
-    dreamId: number,
+    dreamId: DreamTarget,
     options?: {
       prompt?: string;
       transcript?: string;
@@ -39,7 +43,7 @@ export type DreamsActionsContextValue = {
     }
   ) => Promise<DreamAnalysis>;
   analyzeDream: (
-    dreamId: number,
+    dreamId: DreamTarget,
     transcript: string,
     options?: {
       replaceExistingImage?: boolean;
@@ -67,8 +71,10 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       loaded: journal.loaded,
       persistenceState: journal.persistenceState,
       refreshState: journal.refreshState,
+      completeness: journal.completeness,
+      remotePreviewAllowed: journal.remotePreviewAllowed,
     }),
-    [journal.dreams, journal.loaded, journal.persistenceState, journal.refreshState]
+    [journal.dreams, journal.loaded, journal.persistenceState, journal.refreshState, journal.completeness, journal.remotePreviewAllowed]
   );
 
   const analysisActivityValue = useMemo(
@@ -85,6 +91,7 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       addDream: journal.addDream,
       updateDream: journal.updateDream,
       applyServerDreamState: journal.applyServerDreamState,
+      loadRemoteDreamForPreview: journal.loadRemoteDreamForPreview,
       applyDreamCategorization: journal.applyDreamCategorization,
       deleteDream: journal.deleteDream,
       toggleFavorite: journal.toggleFavorite,
@@ -99,6 +106,7 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       journal.addDream,
       journal.updateDream,
       journal.applyServerDreamState,
+      journal.loadRemoteDreamForPreview,
       journal.applyDreamCategorization,
       journal.deleteDream,
       journal.toggleFavorite,

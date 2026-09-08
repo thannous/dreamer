@@ -1,3 +1,4 @@
+import { JournalTraversalError, type DreamListItem, type JournalPage, type JournalReadOptions } from '@/lib/journalReadContracts';
 import { invalidateDreamMedia } from './dreamMediaService';
 import type { PostgrestError } from '@supabase/supabase-js';
 
@@ -868,7 +869,7 @@ const rememberRemoteId = (
   const dreamId = getMutationDreamId(mutation);
   const dreamClientRequestId = getDreamClientRequestId(mutation);
 
-  if (dreamId != null) {
+  if (dreamId != null && !dreamClientRequestId && getMutationRemoteId(mutation) == null) {
     idsByDreamId.set(dreamId, remoteId);
   }
 
@@ -885,7 +886,7 @@ const forgetRemoteId = (
   const dreamId = getMutationDreamId(mutation);
   const dreamClientRequestId = getDreamClientRequestId(mutation);
 
-  if (dreamId != null) {
+  if (dreamId != null && !dreamClientRequestId && getMutationRemoteId(mutation) == null) {
     idsByDreamId.delete(dreamId);
   }
 
@@ -907,8 +908,8 @@ const hydrateKnownRemoteId = (
   const dreamId = getMutationDreamId(mutation);
   const dreamClientRequestId = getDreamClientRequestId(mutation);
   const resolvedRemoteId =
-    (dreamId != null ? idsByDreamId.get(dreamId) : undefined) ??
-    (dreamClientRequestId ? idsByClientRequestId.get(dreamClientRequestId) : undefined);
+    (dreamClientRequestId ? idsByClientRequestId.get(dreamClientRequestId) : undefined) ??
+    (!dreamClientRequestId && dreamId != null ? idsByDreamId.get(dreamId) : undefined);
 
   return resolvedRemoteId != null ? applyResolvedRemoteId(mutation, resolvedRemoteId) : mutation;
 };
@@ -919,12 +920,15 @@ type AcknowledgedDreamState = {
 };
 
 const getMutationEntityAliases = (mutation: DreamMutation): string[] => {
-  const aliases = [`entity:${mutation.entityKey}`];
+  const aliases: string[] = [];
   const dreamId = getMutationDreamId(mutation);
   const remoteId = getMutationRemoteId(mutation);
   const dreamClientRequestId = getDreamClientRequestId(mutation);
 
-  if (dreamId != null) aliases.push(`local:${dreamId}`);
+  if (remoteId == null && !dreamClientRequestId) {
+    aliases.push(`entity:${mutation.entityKey}`);
+    if (dreamId != null) aliases.push(`local:${dreamId}`);
+  }
   if (remoteId != null) aliases.push(`remote:${remoteId}`);
   if (dreamClientRequestId) aliases.push(`client:${dreamClientRequestId}`);
   return aliases;
@@ -938,7 +942,9 @@ const hydrateAcknowledgedDreamState = (
     .map((alias) => statesByAlias.get(alias))
     .find((candidate): candidate is AcknowledgedDreamState => candidate != null);
 
-  if (!state || mutation.operation === 'create') {
+  if (!state || mutation.operation === 'create' ||
+    (getMutationRemoteId(mutation) != null && state.remoteId != null &&
+      getMutationRemoteId(mutation) !== state.remoteId)) {
     return mutation;
   }
 
@@ -1352,38 +1358,112 @@ export async function syncDreamMutationsInSupabase(
   });
 }
 
-export async function fetchDreamsFromSupabase(expectedUserId?: string): Promise<DreamAnalysis[]> {
-  let query = supabase.from(DREAMS_TABLE).select('*');
-  if (expectedUserId) query = query.eq('user_id', expectedUserId);
-  const { data, error } = await query.order('created_at', { ascending: false });
+const JOURNAL_LIST_COLUMNS = 'id,created_at,client_request_id,revision_id,updated_at,transcript,title,shareable_quote,exploration_started_at,image_url,dream_type,theme,is_favorite,memory,is_analyzed,analyzed_at,analysis_status,analysis_request_id,image_generation_failed';
 
-  if (error) {
-    throw formatError(error, 'Failed to load dreams from Supabase');
-  }
-
-  // Media references are resolved by visible consumers, never on the data path.
-  return (data ?? []).map(mapRowToDream);
+async function resolveJournalUser(expectedUserId?: string): Promise<string> {
+  const userId = expectedUserId ?? (await supabase.auth.getUser()).data.user?.id;
+  if (!userId?.trim()) throw new Error('A user is required to read the journal');
+  return userId;
 }
 
-export async function fetchDreamFromSupabase(remoteId: number): Promise<DreamAnalysis> {
-  if (!Number.isSafeInteger(remoteId) || remoteId <= 0) {
-    throw new Error('Invalid remote dream id');
-  }
+async function assertJournalSession(userId: string): Promise<void> {
+  const { data, error } = await supabase.auth.getSession();
+  if (error || data.session?.user.id !== userId) throw new Error('Journal account changed');
+}
 
-  const { data, error } = await supabase
-    .from(DREAMS_TABLE)
-    .select('*')
-    .eq('id', remoteId)
-    .single();
-
-  if (error) {
-    throw formatError(error, 'Failed to load dream from Supabase');
+async function readJournalPage<T>(
+  userId: string,
+  options: JournalReadOptions,
+  columns: string,
+  map: (row: SupabaseDreamRow) => T,
+): Promise<JournalPage<T>> {
+  const { cursor = null, pageSize = 500 } = options;
+  if (!userId.trim()) throw new Error('A user is required to read the journal');
+  if (!Number.isSafeInteger(pageSize) || pageSize < 1 || pageSize > 1000) throw new Error('Invalid journal page size');
+  if (cursor && (cursor.version !== 1 || cursor.userId !== userId || !Number.isSafeInteger(cursor.highWatermark) ||
+    !Number.isSafeInteger(cursor.beforeId) || cursor.beforeId <= 0 || cursor.highWatermark < cursor.beforeId)) {
+    throw new Error('Invalid journal cursor or account scope');
   }
-  if (!data) {
-    throw new Error('Failed to load dream from Supabase: Dream not found');
+  try {
+    await assertJournalSession(userId);
+    let query = supabase.from(DREAMS_TABLE).select(columns).eq('user_id', userId);
+    if (cursor) query = query.lte('id', cursor.highWatermark).lt('id', cursor.beforeId);
+    const { data, error } = await query.order('id', { ascending: false }).limit(pageSize);
+    await assertJournalSession(userId);
+    if (error) throw formatError(error, 'Failed to load dreams from Supabase');
+    if (!Array.isArray(data)) throw new Error('Invalid journal page response');
+    const rows = data as unknown as SupabaseDreamRow[];
+    if (!rows.length) return { items: [], nextCursor: null, complete: true };
+    let previous = cursor?.beforeId ?? Infinity;
+    for (const row of rows) {
+      if (!Number.isSafeInteger(row.id) || row.id <= 0 || row.id >= previous) throw new Error('Invalid journal page ordering');
+      previous = row.id;
+    }
+    return {
+      items: rows.map(map), complete: false,
+      nextCursor: { version: 1, userId, highWatermark: cursor?.highWatermark ?? rows[0].id, beforeId: rows[rows.length - 1].id },
+    };
+  } catch (error) {
+    throw new JournalTraversalError(userId, cursor, error);
   }
+}
 
+export function fetchDreamListPage(userId: string, options: JournalReadOptions = {}): Promise<JournalPage<DreamListItem>> {
+  return readJournalPage(userId, options, JOURNAL_LIST_COLUMNS, (row) => {
+    const dream = mapRowToDream(row);
+    return {
+      id: dream.id, remoteId: dream.remoteId, clientRequestId: dream.clientRequestId,
+      revisionId: dream.revisionId, updatedAt: dream.updatedAt, transcript: dream.transcript,
+      title: dream.title, shareableQuote: dream.shareableQuote, explorationStartedAt: dream.explorationStartedAt, imageUrl: dream.imageUrl, thumbnailUrl: dream.thumbnailUrl,
+      dreamType: dream.dreamType, theme: dream.theme, isFavorite: dream.isFavorite,
+      memory: dream.memory, isAnalyzed: dream.isAnalyzed, analyzedAt: dream.analyzedAt,
+      analysisStatus: dream.analysisStatus, analysisRequestId: dream.analysisRequestId,
+      imageGenerationFailed: dream.imageGenerationFailed,
+    };
+  });
+}
+
+export function fetchDreamFullPage(userId: string, options: JournalReadOptions = {}): Promise<JournalPage<DreamAnalysis>> {
+  return readJournalPage(userId, options, '*', mapRowToDream);
+}
+
+/** Consumers can persist nextCursor after each consumed page and resume without replay. */
+export async function* iterateDreamPages(userId: string, options: JournalReadOptions = {}): AsyncGenerator<JournalPage<DreamAnalysis>> {
+  let cursor = options.cursor;
+  for (;;) {
+    const page = await fetchDreamFullPage(userId, { ...options, cursor });
+    yield page;
+    if (page.complete) return;
+    cursor = page.nextCursor;
+  }
+}
+
+/** Compatibility full snapshot: never returns a partial result after a page failure. */
+export async function fetchDreamsFromSupabase(expectedUserId?: string): Promise<DreamAnalysis[]> {
+  const userId = await resolveJournalUser(expectedUserId);
+  const dreams: DreamAnalysis[] = [];
+  for await (const page of iterateDreamPages(userId)) dreams.push(...page.items);
+  return dreams;
+}
+
+export async function fetchDreamFromSupabase(remoteId: number, expectedUserId?: string): Promise<DreamAnalysis> {
+  if (!Number.isSafeInteger(remoteId) || remoteId <= 0) throw new Error('Invalid remote dream id');
+  const userId = await resolveJournalUser(expectedUserId);
+  await assertJournalSession(userId);
+  const { data, error } = await supabase.from(DREAMS_TABLE).select('*').eq('user_id', userId).eq('id', remoteId).single();
+  await assertJournalSession(userId);
+  if (error) throw formatError(error, 'Failed to load dream from Supabase');
+  if (!data) throw new Error('Failed to load dream from Supabase: Dream not found');
   return mapRowToDream(data);
+}
+
+export async function fetchDreamByClientRequestId(clientRequestId: string, userId: string): Promise<DreamAnalysis | null> {
+  if (!clientRequestId.trim() || !userId.trim()) throw new Error('Invalid dream lookup scope');
+  await assertJournalSession(userId);
+  const { data, error } = await supabase.from(DREAMS_TABLE).select('*').eq('user_id', userId).eq('client_request_id', clientRequestId).maybeSingle();
+  await assertJournalSession(userId);
+  if (error) throw formatError(error, 'Failed to load dream from Supabase');
+  return data ? mapRowToDream(data) : null;
 }
 
 export async function createDreamInSupabase(dream: DreamAnalysis, userId: string): Promise<DreamAnalysis> {

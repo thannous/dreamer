@@ -1,3 +1,6 @@
+import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
+import { resolveDreamRoute } from '@/lib/dreamRoute';
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { ReminderOptInCard } from '@/components/reminders/ReminderOptInCard';
 import { Toast } from '@/components/Toast';
@@ -220,8 +223,13 @@ const TypewriterText = ({ text, className, shouldAnimate }: { text: string; clas
 };
 
 export default function JournalDetailScreen() {
-  const { id, saved: savedParam } = useLocalSearchParams<{ id: string; saved?: string | string[] }>();
-  const dreamId = useMemo(() => Number(id), [id]);
+  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
+  const { user } = useAuth();
+  return <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])} />;
+}
+
+function JournalDetailContent() {
+  const { id, remoteId, clientRequestId, saved: savedParam } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[] }>();
   const [savedConfirmationVisible, setSavedConfirmationVisible] = useState(
     () => isJournalSavedConfirmationParam(savedParam)
   );
@@ -292,7 +300,7 @@ export default function JournalDetailScreen() {
   const [referenceImages, setReferenceImages] = useState<ReferenceImage[]>([]);
   const [isGeneratingWithReference, setIsGeneratingWithReference] = useState(false);
   const hasBackfilledSubjectRef = useRef(false);
-  const trackedAnalysisResultRef = useRef<number | null>(null);
+  const trackedAnalysisResultRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (isShareModalVisible) {
@@ -314,7 +322,7 @@ export default function JournalDetailScreen() {
   const isPlus = tier === 'plus';
   const canUseReference = referenceImagesEnabled && Boolean(user);
 
-  const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
+  const dream = useMemo(() => resolveDreamRoute(dreams, { id, remoteId, clientRequestId }), [dreams, id, remoteId, clientRequestId]);
   const handleImageUpgrade = useCallback(() => {
     router.push(buildPaywallHref('image_generation'));
   }, []);
@@ -557,12 +565,12 @@ export default function JournalDetailScreen() {
       !dream ||
       !analysisState.isAnalyzed ||
       !dream.interpretation?.trim() ||
-      trackedAnalysisResultRef.current === dream.id
+      trackedAnalysisResultRef.current === getDreamIdentityKey(dream)
     ) {
       return;
     }
 
-    trackedAnalysisResultRef.current = dream.id;
+    trackedAnalysisResultRef.current = getDreamIdentityKey(dream);
     const isOnboardingResult =
       onboardingState.pendingRecordingIntent?.savedDreamId === dream.id;
 
@@ -1000,7 +1008,7 @@ export default function JournalDetailScreen() {
     if (!dream || isAnalysisLocked) return;
     try {
       setFavoriteError(null);
-      await toggleFavorite(dream.id);
+      await toggleFavorite(dream);
     } catch (error) {
       if (__DEV__) {
         console.error('Failed to toggle favorite', error);
@@ -1013,7 +1021,7 @@ export default function JournalDetailScreen() {
     if (!dream) return;
     try {
       setIsRetryingSync(true);
-      await retryDreamSync(dream.id);
+      await retryDreamSync(dream);
     } catch (error) {
       if (__DEV__) {
         console.warn('[JournalDetail] Failed to retry sync', error);
@@ -1025,19 +1033,19 @@ export default function JournalDetailScreen() {
 
   const handleUseServerVersion = useCallback(async () => {
     if (!dream) return;
-    await resolveDreamConflict(dream.id, 'use_server');
+    await resolveDreamConflict(dream, 'use_server');
   }, [dream, resolveDreamConflict]);
 
   const handleKeepLocalVersion = useCallback(async () => {
     if (!dream) return;
-    await resolveDreamConflict(dream.id, 'keep_local');
+    await resolveDreamConflict(dream, 'keep_local');
   }, [dream, resolveDreamConflict]);
 
   const deleteAndNavigate = useCallback(async () => {
     if (!dream) return;
     try {
       setIsDeleting(true);
-      await deleteDream(dream.id);
+      await deleteDream(dream);
       // One haptic, at the moment the dream is actually gone, in the same frame as the
       // sheet closing and the journal replacing this screen. Never the only feedback.
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
@@ -1082,7 +1090,7 @@ export default function JournalDetailScreen() {
         throw new Error(t('journal.detail.image.no_source'));
       }
 
-      await generateDreamImage(dream.id, {
+      await generateDreamImage(dream, {
         transcript: sourceText,
         previousImageUrl: dream.imageUrl || undefined,
         clientRequestId: illustrationAccess.bundledRequestId,
@@ -1112,7 +1120,7 @@ export default function JournalDetailScreen() {
 
   const handleJourneyPress = useCallback(() => {
     if (!dream) return;
-    const href = buildReflectionResumeHref(dream.id, reflectionJourney.primary.resume);
+    const href = buildReflectionResumeHref(dream, reflectionJourney.primary.resume);
     if (!href) {
       return;
     }
@@ -1201,7 +1209,7 @@ export default function JournalDetailScreen() {
       setShowReplaceImageSheet(false);
       setIsAnalyzing(true);
       try {
-        await analyzeDream(dream.id, dream.transcript, {
+        await analyzeDream(dream, dream.transcript, {
           replaceExistingImage: replaceImage,
           lang: language,
           analyticsSource: 'journal_detail',
@@ -2116,9 +2124,9 @@ export default function JournalDetailScreen() {
               {renderStaleBanner()}
               {renderDetailActionCard(['analyze'])}
               <DreamRecallAssistantCard
-                dreamId={String(dream.id)}
+                dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
                 originalTranscript={dream.transcript}
-                originalPersistedSegmentId={dream.clientRequestId ?? String(dream.id)}
+                originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}
                 offerEligible={recallOffer.offerEligible}
               />
             </Reveal>

@@ -1,3 +1,4 @@
+import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import {
@@ -127,4 +128,16 @@ describe('dreamRecallAssistantStorage', () => {
     expect(mockStorage.has(`dream_recall_assistant:${DREAM_ID}`)).toBe(false);
     expect(mockStorage.get('dream_recall_assistant:other')).toBe('keep-me');
   });
+});
+
+
+it('does not assign an unscoped legacy draft to an account even when transcript and client ID match', async () => {
+  mockStorage.clear();
+  const legacy = { ...startedState(), dreamId: '42' };
+  const raw = serializeDreamRecallAssistantState(legacy);
+  mockStorage.set(getKey('42'), raw);
+  const key = getDreamRecallStorageId({ id: 42, remoteId: 17, clientRequestId: ORIGINAL_SEGMENT_ID }, 'account-a');
+  expect(await load(key)).toBeNull();
+  expect(mockStorage.get(getKey('42'))).toBe(raw);
+  expect(await load('42')).toEqual(legacy);
 });

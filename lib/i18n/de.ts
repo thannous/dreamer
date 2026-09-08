@@ -1,4 +1,13 @@
 const translations: Record<string, string> = {
+    "journal.preview.scope": "Die Suche umfasst die geladenen Vorschauen des Online-Tagebuchs.",
+    "journal.preview.loading": "Wird geladen…",
+    "journal.preview.open_failed": "Dieser Traum konnte nicht geöffnet werden. Tippe, um es erneut zu versuchen.",
+
+    "journal.completeness.loading": "Der Rest des Tagebuchs wird geladen. Die Suche umfasst derzeit die Inhalte auf diesem Gerät.",
+    "journal.completeness.incomplete": "Das Tagebuch wurde nicht vollständig geladen. Die Suche umfasst die derzeit verfügbaren Träume.",
+    "journal.completeness.trends": "Diese Trends basieren auf den Träumen auf diesem Gerät. Der gewählte Zeitraum kann unvollständig sein.",
+    "journal.pagination.more": "Weitere Träume anzeigen",
+    "journal.pagination.end": "Alle verfügbaren Ergebnisse angezeigt",
     'common.or': 'ODER',
     'common.unknown_error': 'Unbekannter Fehler',
     'common.clear': 'Löschen',

@@ -12,8 +12,11 @@ const mockRetryMedia = jest.fn();
 const mockShareComposite = jest.fn();
 jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => mockMedia ?? ({ imageUrl: dream?.imageUrl ?? '', thumbnailUrl: dream?.thumbnailUrl, loading: false, error: false, retry: mockRetryMedia }) }));
 
+const mockToggleFavorite = jest.fn();
+const mockAnalyzeDream = jest.fn();
+const mockDeleteDream = jest.fn();
 const mockSetParams = jest.fn();
-let mockSearchParams: { id: string; saved?: string | string[] } = { id: '42', saved: '1' };
+let mockSearchParams: { id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[] } = { id: '42', saved: '1' };
 let mockDreams: DreamAnalysis[] = [];
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
@@ -208,12 +211,14 @@ jest.mock('@/components/journal/JournalDetailSheets', () => ({
 
 jest.mock('@/components/journal/DreamRecallAssistantCard', () => ({
   DreamRecallAssistantCard: ({
+    dreamId,
     offerEligible,
   }: {
+    dreamId?: string;
     offerEligible?: boolean;
   }) =>
     offerEligible ? (
-      <div data-testid="component.dreamRecall.offer">
+      <div data-testid="component.dreamRecall.offer" data-dream-id={dreamId}>
         <button data-testid="btn.dreamRecall.start" type="button">
           Continuer
         </button>
@@ -236,13 +241,13 @@ jest.mock('@/context/AuthContext', () => ({
 jest.mock('@/context/DreamsContext', () => ({
   useDreams: () => ({
     dreams: mockDreams,
-    toggleFavorite: jest.fn(),
+    toggleFavorite: mockToggleFavorite,
     updateDream: jest.fn(),
-    deleteDream: jest.fn(),
+    deleteDream: mockDeleteDream,
     retryDreamSync: jest.fn(),
     resolveDreamConflict: jest.fn(),
     generateDreamImage: jest.fn(),
-    analyzeDream: jest.fn(),
+    analyzeDream: mockAnalyzeDream,
   }),
 }));
 
@@ -455,4 +460,45 @@ it('preserves intentional native text sharing when the dream has no media', () =
     fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
     expect(require('react-native').Share.share).toHaveBeenCalled();
   } finally { cleanup(); require('react-native').Platform.OS = 'web'; mockMedia = null; }
+});
+
+
+describe('stable dream route identity', () => {
+  afterEach(() => { cleanup(); mockSearchParams = { id: '42' }; });
+  it.each([17, 2501])('opens and favorites remote dream %i among identical timestamps', (remoteId: number) => {
+    mockMedia = null;
+    mockToggleFavorite.mockClear();
+    mockDreams = [buildDream({ remoteId: 17, clientRequestId: 'request-17', title: 'Seventeen' }), buildDream({ remoteId: 2501, clientRequestId: 'request-2501', title: 'Last dream' })];
+    mockSearchParams = { id: '42', remoteId: String(remoteId) };
+    render(<JournalDetailScreen />);
+    const selected = mockDreams.find(dream => dream.remoteId === remoteId)!;
+    expect(screen.getAllByText(selected.title).length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByTestId(TID.Button.DreamFavorite));
+    expect(mockToggleFavorite).toHaveBeenCalledWith(selected);
+  });
+  it('does not pick the first dream for an ambiguous legacy date-only route', () => {
+    mockDreams = [buildDream({ remoteId: 17 }), buildDream({ remoteId: 2501 })];
+    mockSearchParams = { id: '42' };
+    render(<JournalDetailScreen />);
+    expect(screen.queryByTestId(TID.Button.DreamFavorite)).toBeNull();
+  });
+});
+
+
+it('keeps the recall draft key when another page adds or removes an equal-date dream', () => {
+  mockMedia = null;
+  const selected = buildDream({ remoteId: 17, clientRequestId: 'request-17' });
+  mockDreams = [selected];
+  mockSearchParams = { id: '42', remoteId: '17', saved: '1' };
+  const { rerender, unmount } = render(<JournalDetailScreen />);
+  const key = () => screen.getByTestId(TID.Component.DreamRecallOffer).getAttribute('data-dream-id');
+  expect(key()).toBe('user-1:client:request-17');
+  mockDreams = [selected, buildDream({ remoteId: 2501, clientRequestId: 'request-2501' })];
+  rerender(<JournalDetailScreen />);
+  expect(key()).toBe('user-1:client:request-17');
+  mockDreams = [selected];
+  rerender(<JournalDetailScreen />);
+  expect(key()).toBe('user-1:client:request-17');
+  unmount();
+  mockSearchParams = { id: '42' };
 });

@@ -1,3 +1,4 @@
+import { type DreamTarget, matchesDreamTarget, getDreamIdentityKey, resolveDreamTarget } from '../lib/dreamIdentity';
 /**
  * useOfflineSyncQueue - Handles durable offline mutation logging and replay
  */
@@ -14,7 +15,7 @@ import {
   buildDreamMutationEntityKey,
   generateMutationId,
   generateUUID,
-  getMutationDreamId,
+  getMutationDreamTarget,
   getMutationRemoteId,
   removeDream,
   setDreamSyncState,
@@ -34,7 +35,7 @@ export type UseOfflineSyncQueueOptions = {
   hasNetwork: boolean;
   userScope?: string | null;
   persistRemoteDreams: (updater: DreamListUpdater) => Promise<void>;
-  resolveRemoteId: (dreamId: number) => number | undefined;
+  resolveRemoteId: (dreamId: DreamTarget) => number | undefined;
   remoteSnapshot?: { userScope: string | null; dreams: DreamAnalysis[] } | null;
   initialMutations?: DreamMutation[];
   initialMutationsLoaded?: boolean;
@@ -44,8 +45,8 @@ export type UseOfflineSyncQueueOptions = {
 export type UseOfflineSyncQueueResult = {
   pendingMutationsRef: React.RefObject<DreamMutation[]>;
   queueOfflineOperation: (mutation: DreamMutation, updater: DreamListUpdater) => Promise<void>;
-  clearQueuedMutationsForDream: (dreamId: number) => Promise<boolean>;
-  retryDreamMutations: (dreamId: number) => Promise<boolean>;
+  clearQueuedMutationsForDream: (dreamId: DreamTarget) => Promise<boolean>;
+  retryDreamMutations: (dreamId: DreamTarget) => Promise<boolean>;
   syncPendingMutations: () => Promise<void>;
   generateMutationId: () => string;
   setPendingMutations: (mutations: DreamMutation[]) => void;
@@ -103,7 +104,7 @@ const normalizeMutation = (mutation: DreamMutation, userScope?: string | null): 
   // The mutation receipt key is distinct from the dream's idempotency key.
   // Legacy guest migration uploads ID-less dreams using this deterministic key.
   const entityClientRequestId = dream?.clientRequestId ?? tombstone?.clientRequestId ??
-    (dream || tombstone ? `dream-${(dream ?? tombstone)!.id}` : undefined);
+    ((dream || tombstone) && getMutationRemoteId(mutation) == null ? `dream-${(dream ?? tombstone)!.id}` : undefined);
   const clientRequestId = mutation.clientRequestId || entityClientRequestId || generateUUID();
   const normalizedPayload = {
     ...payload,
@@ -147,7 +148,7 @@ const applyAckedMutation = (
   if (mutation.operation === 'delete') {
     return removeDream(
       list,
-      mutation.payload.dreamId ?? mutation.payload.tombstone?.id ?? -1,
+      getMutationDreamTarget(mutation),
       result.remoteId ?? getMutationRemoteId(mutation)
     );
   }
@@ -171,12 +172,7 @@ const applyFailedMutation = (
     return list;
   }
 
-  const existingDream = list.find(
-    (entry) =>
-      entry.id === localDream.id ||
-      (localDream.remoteId != null && entry.remoteId === localDream.remoteId) ||
-      (remoteDream?.remoteId != null && entry.remoteId === remoteDream.remoteId)
-  );
+  const existingDream = resolveDreamTarget(list, localDream);
 
   const nextDream = setDreamSyncState(
     {
@@ -320,8 +316,8 @@ export function useOfflineSyncQueue({
     if (!initialSnapshotMatchesScope || activeUserScopeRef.current !== userScope) return;
     const current = pendingMutationsRef.current.map((mutation) => normalizeMutation(mutation, userScope));
     const mergedById = new Map<string, DreamMutation>();
-    const deletedIds = new Set(current.filter((entry) => entry.operation === 'delete').map(getMutationDreamId));
-    [...initialMutations.filter((entry) => entry.operation === 'delete' || !deletedIds.has(getMutationDreamId(entry))).map((mutation) => normalizeMutation(mutation, userScope)), ...current].forEach((mutation) => {
+    const deletions = current.filter((entry) => entry.operation === 'delete');
+    [...initialMutations.filter((entry) => entry.operation === 'delete' || !deletions.some((deleted) => matchesDreamTarget(getMutationDreamTarget(entry), getMutationDreamTarget(deleted)))).map((mutation) => normalizeMutation(mutation, userScope)), ...current].forEach((mutation) => {
       mergedById.set(mutation.id, mutation);
     });
 
@@ -352,12 +348,12 @@ export function useOfflineSyncQueue({
       const current = pendingMutationsRef.current;
       if (mutation.operation === 'delete') {
         const neverSentCreate = current.find((entry) =>
-          getMutationDreamId(entry) === getMutationDreamId(mutation) &&
+          matchesDreamTarget(getMutationDreamTarget(entry), getMutationDreamTarget(mutation)) &&
           entry.operation === 'create' && (preparingCreatesRef.current.has(entry.id) ||
             (entry.status === 'pending' && entry.lastAttemptAt == null && entry.retryCount === 0))
         );
         await persistPendingMutations([
-          ...current.filter((entry) => getMutationDreamId(entry) !== getMutationDreamId(mutation)),
+          ...current.filter((entry) => !matchesDreamTarget(getMutationDreamTarget(entry), getMutationDreamTarget(mutation))),
           ...(neverSentCreate ? [] : [mutation]),
         ]);
         return;
@@ -398,8 +394,14 @@ export function useOfflineSyncQueue({
   );
 
   const clearQueuedMutationsForDream = useCallback(
-    async (dreamId: number): Promise<boolean> => {
-      const filtered = pendingMutationsRef.current.filter((mutation) => getMutationDreamId(mutation) !== dreamId);
+    async (dreamId: DreamTarget): Promise<boolean> => {
+      if (typeof dreamId === 'number') {
+        const keys = new Set(pendingMutationsRef.current.filter((entry) =>
+          matchesDreamTarget(getMutationDreamTarget(entry), dreamId)
+        ).map((entry) => getDreamIdentityKey(getMutationDreamTarget(entry))));
+        if (keys.size > 1) throw new Error('Dream identity is ambiguous or missing');
+      }
+      const filtered = pendingMutationsRef.current.filter((mutation) => !matchesDreamTarget(getMutationDreamTarget(mutation), dreamId));
       const changed = filtered.length !== pendingMutationsRef.current.length;
       if (changed) {
         await persistPendingMutations(filtered);
@@ -410,11 +412,17 @@ export function useOfflineSyncQueue({
   );
 
   const retryDreamMutations = useCallback(
-    async (dreamId: number): Promise<boolean> => {
+    async (dreamId: DreamTarget): Promise<boolean> => {
+      if (typeof dreamId === 'number') {
+        const keys = new Set(pendingMutationsRef.current.filter((entry) =>
+          matchesDreamTarget(getMutationDreamTarget(entry), dreamId)
+        ).map((entry) => getDreamIdentityKey(getMutationDreamTarget(entry))));
+        if (keys.size > 1) throw new Error('Dream identity is ambiguous or missing');
+      }
       let matched = false;
       const nextQueue: DreamMutation[] = pendingMutationsRef.current.map((mutation) => {
         if (
-          getMutationDreamId(mutation) !== dreamId ||
+          !matchesDreamTarget(getMutationDreamTarget(mutation), dreamId) ||
           !['pending', 'sending', 'failed'].includes(mutation.status)
         ) {
           return mutation;
@@ -514,7 +522,7 @@ export function useOfflineSyncQueue({
                   });
 
                   workingMutations.slice(index + 1).forEach((entry) => {
-                    const sameDream = getMutationDreamId(entry) === mutation.payload.dream?.id;
+                    const sameDream = matchesDreamTarget(getMutationDreamTarget(entry), getMutationDreamTarget(mutation));
                     if (!sameDream || dream.remoteId == null) {
                       return;
                     }
@@ -611,7 +619,7 @@ export function useOfflineSyncQueue({
             if (!result) {
               const receipt = results.find((entry) => entry.status === 'ack' && entry.remoteId != null &&
                 eligibleMutations.some((sent) => sent.id === entry.mutationId &&
-                  sent.operation === 'create' && getMutationDreamId(sent) === getMutationDreamId(mutation)));
+                  sent.operation === 'create' && matchesDreamTarget(getMutationDreamTarget(sent), getMutationDreamTarget(mutation))));
               if (!receipt || getMutationRemoteId(mutation) != null) return mutation;
               resolvedDependencies = true;
               return {
@@ -653,7 +661,7 @@ export function useOfflineSyncQueue({
             if (result.status === 'ack') {
               const currentIndex = pendingMutationsRef.current.findIndex((entry) => entry.id === mutation.id);
               const laterMutation = pendingMutationsRef.current.slice(currentIndex + 1).filter((entry) =>
-                getMutationDreamId(entry) === getMutationDreamId(mutation)).at(-1);
+                matchesDreamTarget(getMutationDreamTarget(entry), getMutationDreamTarget(mutation))).at(-1);
               if (laterMutation?.operation === 'delete') return;
               if (laterMutation?.payload.dream && result.remoteId != null) {
                 nextDreams = upsertDream(nextDreams, {

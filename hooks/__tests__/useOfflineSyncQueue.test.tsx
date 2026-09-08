@@ -554,6 +554,25 @@ describe('useOfflineSyncQueue', () => {
     expect(mockSavePendingMutations).toHaveBeenLastCalledWith([], undefined);
   });
 
+  it('keeps independent same-date mutations and replays each remote identity', async () => {
+    const first = buildDream({ id: 890, remoteId: 1890, clientRequestId: 'first' });
+    const second = buildDream({ id: 890, remoteId: 1891, clientRequestId: 'second' });
+    mockUpdateDream.mockImplementation(async (dream: DreamAnalysis) => dream);
+    const { result } = renderHook(() => useOfflineSyncQueue(defaultOptions));
+    act(() => result.current.setPendingMutations([
+      legacyMutation({ id: 'update-first', type: 'update', dream: first, createdAt: 1 }),
+      legacyMutation({ id: 'update-second', type: 'update', dream: second, createdAt: 2 }),
+    ]));
+    await act(async () => {
+      await result.current.queueOfflineOperation(legacyMutation({ id: 'delete-second', type: 'delete', dreamId: 890, remoteId: 1891, createdAt: 3 }), [first]);
+    });
+    expect(result.current.pendingMutationsRef.current.map((entry: DreamMutation) => entry.id)).toEqual(['update-first', 'delete-second']);
+    await act(async () => { await result.current.syncPendingMutations(); });
+    expect(mockUpdateDream).toHaveBeenCalledWith(expect.objectContaining({ remoteId: 1890 }));
+    expect(mockDeleteDream).toHaveBeenCalledWith(1891);
+    expect(result.current.pendingMutationsRef.current).toEqual([]);
+  });
+
   it('cancels a definitely unsent create and its dependent update when deleted offline', async () => {
     const original = buildDream({ id: 880 });
     const { result } = renderHook(() => useOfflineSyncQueue({ ...defaultOptions, hasNetwork: false }));

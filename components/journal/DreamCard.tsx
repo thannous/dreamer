@@ -1,3 +1,4 @@
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { PressableScale } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -19,7 +20,7 @@ export type DreamCardVariant = 'standard' | 'featured';
 
 interface DreamCardProps {
   dream: DreamAnalysis;
-  onPress: (dreamId: number) => void;
+  onPress: (dream: DreamAnalysis) => void;
   scrollState?: 'idle' | 'scrolling';
   testID?: string;
   /** Date string to display as an overline above the title */
@@ -70,8 +71,8 @@ export const DreamCard = memo(function DreamCard({
   const { t } = useTranslation();
   const media = useDreamMedia(dream);
   const handlePress = useCallback(() => {
-    onPress(dream.id);
-  }, [onPress, dream.id]);
+    onPress(dream);
+  }, [onPress, dream]);
 
   const isScrolling = scrollState === 'scrolling';
   const isFeatured = variant === 'featured';
@@ -120,7 +121,7 @@ export const DreamCard = memo(function DreamCard({
 
   // Get optimized image config for thumbnails
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
-  const imageRecyclingKey = `${dream.id}-${imageVersion ?? 0}`;
+  const imageRecyclingKey = `${getDreamIdentityKey(dream)}-${imageVersion ?? 0}`;
   const imageTransition = isScrolling ? 0 : imageConfig.transition;
   const imagePlaceholder = isScrolling ? null : { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
   const imagePriority = isScrolling ? 'low' : imageConfig.priority;

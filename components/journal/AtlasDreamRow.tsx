@@ -1,3 +1,4 @@
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -16,7 +17,7 @@ interface AtlasDreamRowProps {
   dream: DreamAnalysis;
   dateLabel: string;
   sectionLabel?: string | null;
-  onPress: (dreamId: number) => void;
+  onPress: (dream: DreamAnalysis) => void;
   scrollState?: 'idle' | 'scrolling';
   testID?: string;
 }
@@ -86,13 +87,13 @@ export const AtlasDreamRow = memo(function AtlasDreamRow({
   const isExplored = isDreamExplored(dream);
 
   const handlePress = useCallback(() => {
-    onPress(dream.id);
-  }, [dream.id, onPress]);
+    onPress(dream);
+  }, [dream, onPress]);
 
   const imageTransition = isScrolling ? 0 : imageConfig.transition;
   const imagePriority = isScrolling ? 'low' : imageConfig.priority;
   const imagePlaceholder = isScrolling ? null : { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
-  const imageRecyclingKey = `${dream.id}-${imageVersion ?? 0}`;
+  const imageRecyclingKey = `${getDreamIdentityKey(dream)}-${imageVersion ?? 0}`;
 
   return (
     <View>

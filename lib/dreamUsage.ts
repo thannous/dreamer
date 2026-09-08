@@ -1,3 +1,5 @@
+import { getDreamRouteParams, type DreamRouteParams } from './dreamRoute';
+import type { DreamTarget } from './dreamIdentity';
 import {
   isRecoverablePendingAnalysis,
   isResumableAnalysisRequest,
@@ -273,12 +275,11 @@ export function getJournalDetailPrimaryFamily(
 export type ReflectionResumeHref =
   | {
       pathname: '/dream-categories/[id]';
-      params: { id: string };
+      params: DreamRouteParams;
     }
   | {
       pathname: '/dream-chat/[id]';
-      params: {
-        id: string;
+      params: DreamRouteParams & {
         category?: Exploration360AxisId;
         mode?: 'synthesis';
         messageId?: string;
@@ -293,7 +294,7 @@ export type ReflectionResumeHref =
  * `mode`, so this does not auto-retry from the Journal CTA.
  */
 export function buildReflectionResumeHref(
-  dreamId: number,
+  dream: DreamTarget,
   resume: ReflectionResumeTarget
 ): ReflectionResumeHref | null {
   if (resume.kind === 'detail') {
@@ -303,16 +304,15 @@ export function buildReflectionResumeHref(
   if (resume.kind === 'categories') {
     return {
       pathname: '/dream-categories/[id]',
-      params: { id: String(dreamId) },
+      params: getDreamRouteParams(dream),
     };
   }
 
-  const params: {
-    id: string;
+  const params: DreamRouteParams & {
     category?: Exploration360AxisId;
     mode?: 'synthesis';
     messageId?: string;
-  } = { id: String(dreamId) };
+  } = getDreamRouteParams(dream);
 
   if (resume.category) {
     params.category = resume.category;

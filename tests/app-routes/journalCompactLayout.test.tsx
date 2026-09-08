@@ -9,11 +9,15 @@ import { searchBarLayout } from '@/components/ui/SearchBar';
 
 jest.mock('@/context/AuthContext', () => ({ AuthContext: require('react').createContext(null) }));
 jest.mock('@/services/dreamMediaService', () => ({ resolveDreamMedia: async (dream: any) => ({ imageUrl: dream.imageUrl ?? '', thumbnailUrl: dream.thumbnailUrl }) }));
+jest.mock('@/hooks/useRemoteJournalList', () => ({ useRemoteJournalList: () => ({ items: [], loading: false, error: false, complete: true, loadMore: jest.fn() }) }));
+jest.mock('@/components/journal/RemoteJournalList', () => ({ RemoteJournalList: ({ header, onOpenDream }: any) => <div data-testid="journal-remote-preview">{header}<button onClick={() => onOpenDream({ remoteId: 2501 })}>Open remote preview</button></div> }));
 
 const mockWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
 const mockPush = jest.fn();
 type GuestDream = {
   id: number;
+  remoteId?: number;
+  clientRequestId?: string;
   transcript: string;
   title: string;
   interpretation: string;
@@ -38,6 +42,10 @@ const guestDream = {
 const mockKeyboardListeners = new Map<string, (e?: { endCoordinates?: { height?: number; screenY?: number } }) => void>();
 const mockRetryPersistence = jest.fn(async () => undefined);
 const mockPersistenceState = { status: 'ready' as const, target: 'device' as const };
+const mockLoadRemoteDream = jest.fn();
+const mockReloadDreams = jest.fn(async () => undefined);
+let mockCompleteness: { status: 'incomplete' } | undefined;
+let mockRemotePreviewAllowed = false;
 const mockListScrollToOffset = jest.fn();
 const mockKeyboardDismiss = jest.fn();
 let mockPlatform = 'android';
@@ -148,6 +156,10 @@ jest.mock('react-native', () => {
 jest.mock('@/context/DreamsContext', () => ({
   useDreams: () => ({
     dreams: mockDreams,
+    completeness: mockCompleteness,
+    remotePreviewAllowed: mockRemotePreviewAllowed,
+    reloadDreams: mockReloadDreams,
+    loadRemoteDreamForPreview: mockLoadRemoteDream,
     persistenceState: mockPersistenceState,
     retryPersistence: mockRetryPersistence,
   }),
@@ -167,8 +179,8 @@ jest.mock('@/components/dev/MockNavigationRail', () => ({ MockNavigationRail: ()
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
 jest.mock('@/components/guest/UpsellCard', () => ({ UpsellCard: () => <div data-testid="journal-upsell" /> }));
 jest.mock('@/components/journal/DreamCard', () => ({
-  DreamCard: ({ testID, scrollState }: { testID?: string; scrollState?: string }) => (
-    <div data-testid={testID} data-scroll-state={scrollState} />
+  DreamCard: ({ testID, scrollState, dream, onPress }: any) => (
+    <button data-testid={testID} data-scroll-state={scrollState} onClick={() => onPress(dream)}>{dream.title}</button>
   ),
 }));
 jest.mock('@/components/journal/EmptyState', () => ({ EmptyState: () => <div data-testid="journal-empty" /> }));
@@ -389,6 +401,9 @@ function collapseSearchByOverlayGesture(offset: number) {
 }
 
 afterEach(() => {
+  mockCompleteness = undefined;
+  mockRemotePreviewAllowed = false;
+  mockReloadDreams.mockClear();
   cleanup();
   mockDreams.length = 0;
   Object.assign(mockWindow, { width: 390, height: 844, fontScale: 1 });
@@ -810,4 +825,38 @@ describe('Journal compact large-text layout', () => {
     expect(mockListProps.style).toBeUndefined();
     expect(mockListProps.numColumns).toBe(4);
   });
+});
+
+it('keeps exhaustive retry available after remote previews have finished', () => {
+  const { AuthContext } = require('@/context/AuthContext');
+  mockCompleteness = { status: 'incomplete' };
+  mockRemotePreviewAllowed = true;
+  mockDreams.length = 0;
+  render(<AuthContext.Provider value={{ user: { id: 'owner-a' } }}><JournalScreen /></AuthContext.Provider>);
+  expect(screen.getByTestId('journal-remote-preview')).toBeTruthy();
+  expect(screen.getByText('journal.completeness.incomplete')).toBeTruthy();
+  fireEvent.click(screen.getByText('journal.persistence.retry'));
+  expect(mockReloadDreams).toHaveBeenCalledTimes(1);
+});
+
+
+it('opens the selected card with its stable remote identity when timestamps collide', () => {
+  mockDreams.push({ ...guestDream, remoteId: 17, title: 'Other dream' }, { ...guestDream, remoteId: 2501, clientRequestId: 'last-request', title: 'Selected dream' });
+  render(<JournalScreen />);
+  fireEvent.click(screen.getByText('Selected dream'));
+  expect(mockPush).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: {
+    id: String(guestDream.id), remoteId: '2501', clientRequestId: 'last-request',
+  } });
+});
+
+
+it('carries stable identity from a cold remote preview into the detail route', async () => {
+  const { AuthContext } = require('@/context/AuthContext');
+  mockRemotePreviewAllowed = true;
+  mockLoadRemoteDream.mockResolvedValue({ ...guestDream, remoteId: 2501, clientRequestId: 'preview-request' });
+  render(<AuthContext.Provider value={{ user: { id: 'owner-a' } }}><JournalScreen /></AuthContext.Provider>);
+  await act(async () => { fireEvent.click(screen.getByText('Open remote preview')); });
+  expect(mockPush).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: {
+    id: String(guestDream.id), remoteId: '2501', clientRequestId: 'preview-request',
+  } });
 });

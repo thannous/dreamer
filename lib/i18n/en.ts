@@ -1,4 +1,13 @@
 const translations: Record<string, string> = {
+    "journal.preview.scope": "Search covers the loaded remote journal previews.",
+    "journal.preview.loading": "Loading…",
+    "journal.preview.open_failed": "Could not open this dream. Tap to try again.",
+
+    "journal.completeness.loading": "Loading the rest of your journal. Search currently covers saved content on this device.",
+    "journal.completeness.incomplete": "Journal loading is incomplete. Search covers the dreams currently available.",
+    "journal.completeness.trends": "These trends use the dreams available on this device. The selected period may be incomplete.",
+    "journal.pagination.more": "Show more dreams",
+    "journal.pagination.end": "All available results shown",
     'common.or': 'OR',
     'common.unknown_error': 'Unknown error',
     'common.clear': 'Clear',

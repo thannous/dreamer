@@ -16,6 +16,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { useAuth } from '../context/AuthContext';
 import { getAccessToken } from '../lib/auth';
 import { DreamPersistenceError } from '../lib/dreamStorageRead';
+import type { JournalCursor } from '../lib/journalReadContracts';
 import { logger } from '../lib/logger';
 import { reportSyncQueueMetrics } from '../lib/syncObservability';
 import type { DreamAnalysis, DreamListReadResult, DreamMutation } from '../lib/types';
@@ -41,13 +42,15 @@ import {
 } from '../services/storageService';
 import {
   createDreamInSupabase,
-  fetchDreamsFromSupabase,
+  fetchDreamFullPage,
 } from '../services/supabaseDreamService';
 
 export type UseDreamPersistenceOptions = {
   /** Whether remote sync is enabled (authenticated + not mock mode) */
   canUseRemoteSync: boolean;
 };
+
+export type JournalCompletenessState = { status: 'local' | 'loading' | 'complete' | 'incomplete' };
 
 export type DreamRefreshState = { status: 'idle' | 'refreshing' | 'error' };
 
@@ -75,6 +78,8 @@ export type UseDreamPersistenceResult = {
   /** Device persistence state, separate from per-dream cloud synchronization. */
   persistenceState: DreamPersistenceState;
   refreshState: DreamRefreshState;
+  completeness: JournalCompletenessState;
+  remotePreviewAllowed: boolean;
   remoteSnapshot: { userScope: string | null; dreams: DreamAnalysis[] } | null;
   /** Ref to current dreams for use in callbacks */
   dreamsRef: React.RefObject<DreamAnalysis[]>;
@@ -190,6 +195,9 @@ export function useDreamPersistence({
   });
   const dreamsRef = useRef<DreamAnalysis[]>([]);
   const [publishedScopeKey, setPublishedScopeKey] = useState(activeScopeKey);
+  const [completeness, setCompleteness] = useState<JournalCompletenessState>({ status: 'loading' });
+  const [remotePreviewAllowed, setRemotePreviewAllowed] = useState(false);
+  const traversalRef = useRef<{ scopeKey: string; sequence: number; cursor: JournalCursor | null; items: DreamAnalysis[] } | null>(null);
   const [refreshState, setRefreshState] = useState<DreamRefreshState>({ status: 'idle' });
   const [remoteSnapshot, setRemoteSnapshot] = useState<{ userScope: string | null; dreams: DreamAnalysis[] } | null>(null);
   const mountedRef = useRef(true);
@@ -206,6 +214,11 @@ export function useDreamPersistence({
   }, [pendingMutationsLoaded, pendingMutationsScope]);
 
   useLayoutEffect(() => {
+    if (activeScopeKeyRef.current !== activeScopeKey) {
+      traversalRef.current = null;
+      setRemotePreviewAllowed(false);
+      setCompleteness({ status: 'loading' });
+    }
     activeScopeKeyRef.current = activeScopeKey;
   }, [activeScopeKey]);
 
@@ -272,6 +285,8 @@ export function useDreamPersistence({
       writer: (dreams: DreamAnalysis[]) => Promise<void>,
       publishOptimistically: boolean
     ): Promise<void> => {
+      // A projection must never reintroduce a row hidden by a local mutation.
+      if (activeScopeKeyRef.current === scopeKey) setRemotePreviewAllowed(false);
       const scope = getWriteScope(scopeKey);
       if (!scope.hydrated) {
         setStateForScope(scopeKey, { status: 'error', operation: 'read', target });
@@ -768,6 +783,8 @@ export function useDreamPersistence({
     };
     if (isCurrent()) {
       setPublishedScopeKey(scopeKey);
+      setRemotePreviewAllowed(false);
+      setCompleteness({ status: 'loading' });
       if (!scope.hydrated) setLoaded(false);
       if (!scope.hydrated) setStateForScope(scopeKey, { status: 'loading', target });
       if (scope.failed) setDreamsForScope(scopeKey, scope.failed.dreams);
@@ -799,6 +816,7 @@ export function useDreamPersistence({
         } else if (isCurrent()) {
           setStateForScope(scopeKey, { status: 'error', operation: 'read', target });
         }
+        setCompleteness({ status: localResult.status !== 'error' ? 'local' : 'incomplete' });
         return { pendingMutations: [] };
       }
 
@@ -851,6 +869,8 @@ export function useDreamPersistence({
       }
       baseline ??= normalizeDreamList(applyPendingMutations(cacheRead ?? [], pendingMutations));
       setRefreshState({ status: 'refreshing' });
+      setRemotePreviewAllowed(storageReadSucceeded && pendingReadSucceeded &&
+        cacheRead?.length === 0 && pendingMutations.length === 0 && scope.sequence === 0);
       try {
         const hasSession = authSessionReady || await ensureAccessToken({
           isCurrent,
@@ -862,6 +882,7 @@ export function useDreamPersistence({
         if (!isCurrent()) return { pendingMutations };
         if (!hasSession) {
           setRefreshState({ status: 'error' });
+          setCompleteness({ status: 'incomplete' });
           const preserveWriteAuthority = mustPreserveWriteAuthority();
           if (cacheWasLoaded && cacheRead && isCurrent() && !preserveWriteAuthority) {
             setDreamsForScope(
@@ -894,6 +915,7 @@ export function useDreamPersistence({
             migrationError.target === 'device'
           ) {
             if (isCurrent()) {
+              setCompleteness({ status: 'incomplete' });
               setStateForScope(scopeKey, {
                 status: 'error',
                 operation: migrationError.operation,
@@ -905,7 +927,22 @@ export function useDreamPersistence({
         }
 
         if (!isCurrent()) return { pendingMutations };
-        const remoteDreams = await fetchDreamsFromSupabase(userId);
+        // Retain only an in-memory checkpoint; partial pages never replace the
+        // durable cache or become an authoritative deletion/sync snapshot.
+        const traversal = traversalRef.current?.scopeKey === scopeKey && traversalRef.current.sequence === scope.sequence
+          ? traversalRef.current
+          : { scopeKey, sequence: scope.sequence, cursor: null, items: [] };
+        traversalRef.current = traversal;
+        while (true) {
+          const page = await fetchDreamFullPage(userId!, { cursor: traversal.cursor });
+          if (!isCurrent()) return { pendingMutations };
+          if (!page.complete && !page.nextCursor) throw new Error('Incomplete journal page has no continuation');
+          traversal.items.push(...page.items);
+          traversal.cursor = page.nextCursor;
+          if (page.complete) break;
+        }
+        const remoteDreams = traversal.items;
+        traversalRef.current = null;
         if (!isCurrent()) return { pendingMutations };
         setRefreshState({ status: 'idle' });
         setRemoteSnapshot({ userScope, dreams: remoteDreams });
@@ -916,6 +953,7 @@ export function useDreamPersistence({
           : sortedRemote;
         if (!isCurrent()) return { pendingMutations };
         const preserveWriteAuthority = mustPreserveWriteAuthority();
+        setCompleteness({ status: storageReadSucceeded && !preserveWriteAuthority ? 'complete' : 'incomplete' });
         if (storageReadSucceeded && preserveWriteAuthority && !scope.failed) {
           const mergeAfterWrites = async () => {
             await scope.tail;
@@ -931,6 +969,7 @@ export function useDreamPersistence({
                 if (scope.failed) throw new DreamPersistenceError('write', target);
                 await saveCachedRemoteDreams(value, userScope);
               }, true);
+            if (isCurrent() && !scope.failed) setCompleteness({ status: 'complete' });
           };
           // Reload must not wait for an unrelated user write to finish.
           void mergeAfterWrites().catch(() => {
@@ -970,6 +1009,7 @@ export function useDreamPersistence({
       } catch (error) {
         if (!isCurrent()) return { pendingMutations };
         setRefreshState({ status: 'error' });
+        setCompleteness({ status: 'incomplete' });
         logger.error('Failed to load dreams from remote', error);
         const preserveWriteAuthority = mustPreserveWriteAuthority();
         if (cacheWasLoaded && cacheRead && isCurrent() && !preserveWriteAuthority) {
@@ -1002,6 +1042,7 @@ export function useDreamPersistence({
     } catch (error) {
       logger.error('Failed to load dreams', error);
       if (isCurrent()) {
+        setCompleteness({ status: 'incomplete' });
         setStateForScope(scopeKey, { status: 'error', operation: 'read', target });
       }
       return { pendingMutations };
@@ -1115,6 +1156,8 @@ export function useDreamPersistence({
         },
     remoteSnapshot: remoteSnapshot?.userScope === userScope ? remoteSnapshot : null,
     refreshState: snapshotMatchesActiveScope ? refreshState : { status: 'idle' },
+    completeness: snapshotMatchesActiveScope ? completeness : { status: 'loading' },
+    remotePreviewAllowed: snapshotMatchesActiveScope && remotePreviewAllowed && completeness.status !== 'complete',
     dreamsRef: snapshotMatchesActiveScope ? dreamsRef : EMPTY_DREAMS_REF,
     persistLocalDreams,
     persistRemoteDreams,
