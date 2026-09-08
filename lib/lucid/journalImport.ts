@@ -48,6 +48,8 @@ export const isJournalImportRevision = (value: unknown): value is string => type
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
 export const journalCopyIdentity = (account: string, id: string): string => JSON.stringify(['journal', account, id]);
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+const sameSnapshot = (left: JournalImportSnapshot, right: JournalImportSnapshot): boolean =>
+  JSON.stringify(left) === JSON.stringify(right);
 
 export function createJournalImportEngine(deps: {
   storage: JournalImportStorage;
@@ -72,6 +74,18 @@ export function createJournalImportEngine(deps: {
     const saved = await deps.storage.load(scope);
     check();
     return saved ? clone(saved) : { version: 1 as const, copies: {}, checkpoint: null };
+  };
+  const persist = async (scope: string, snapshot: JournalImportSnapshot, check: () => void) => {
+    try {
+      await deps.storage.save(scope, snapshot, check);
+      check();
+    } catch (error) {
+      check();
+      let durable: JournalImportSnapshot;
+      try { durable = await load(scope, check); } catch { throw error; }
+      if (!sameSnapshot(durable, snapshot)) throw error;
+    }
+    return clone(snapshot);
   };
   return {
     cancel() { generation += 1; },
@@ -117,8 +131,7 @@ export function createJournalImportEngine(deps: {
           }
           next.checkpoint = { grantId: input.grantId, sourceAccount: input.sourceAccount, cursor: page.nextCursor, done: page.done };
           check();
-          await deps.storage.save(input.destinationScope, next, check);
-          check();
+          await persist(input.destinationScope, next, check);
           state = next;
           cursor = page.nextCursor;
         }
@@ -134,13 +147,17 @@ export function createJournalImportEngine(deps: {
       return serial(async () => {
         const state = await load(scope, check);
         const copy = state.copies[identity];
-        if (!copy || copy.deleted) throw new Error('Copy unavailable');
         if (action.type === 'delete') {
+          if (!copy) throw new Error('Copy unavailable');
+          if (copy.deleted) return clone(state);
           copy.deleted = true; copy.text = ''; delete copy.incoming;
+        } else if (!copy || copy.deleted) {
+          throw new Error('Copy unavailable');
         } else if (action.type === 'edit') {
           copy.text = action.text; copy.edited = true;
+        } else if (!copy.incoming) {
+          return clone(state);
         } else {
-          if (!copy.incoming) throw new Error('No import conflict');
           if (action.type === 'useIncoming') {
             copy.text = copy.incoming.text; copy.createdAt = copy.incoming.createdAt; copy.edited = false;
           }
@@ -148,9 +165,7 @@ export function createJournalImportEngine(deps: {
           delete copy.incoming;
         }
         check();
-        await deps.storage.save(scope, state, check);
-        check();
-        return clone(state);
+        return persist(scope, state, check);
       });
     },
   };

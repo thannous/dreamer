@@ -91,6 +91,31 @@ it('keeps the published generation when the manifest write committed before repo
   expect(await x.adapter.load('guest')).toEqual(next);
   expect(x.values.size).toBe(2);
 });
+it('accepts Journal UUID revision tokens and rejects malformed or UUID source ids', async () => {
+  const x = fixture();
+  const revision = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
+  const incoming = 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee';
+  const identity = journalCopyIdentity('A', '0');
+  const state: JournalImportSnapshot = { version: 1, checkpoint: null, copies: {
+    [identity]: { identity, sourceProduct: 'journal', sourceAccount: 'A', sourceId: '0',
+      sourceRevision: revision, createdAt: date, importedAt: date, text: 'Dream', edited: true, deleted: false,
+      incoming: { text: 'New', revision: incoming, createdAt: date } },
+  } };
+  await x.adapter.save('guest', state, () => undefined);
+  expect(await x.adapter.load('guest')).toEqual(state);
+  const malformed = structuredClone(state);
+  malformed.copies[identity].sourceRevision = 'not-a-revision';
+  expect(() => x.adapter.save('guest', malformed, () => undefined)).toThrow('Invalid stored copy');
+  const empty = structuredClone(state);
+  empty.copies[identity].incoming = { text: 'New', revision: '', createdAt: date };
+  expect(() => x.adapter.save('guest', empty, () => undefined)).toThrow('Invalid stored copy');
+  const uuidId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
+  const uuidIdentity = journalCopyIdentity('A', uuidId);
+  expect(() => x.adapter.save('guest', { version: 1, checkpoint: null, copies: {
+    [uuidIdentity]: { identity: uuidIdentity, sourceProduct: 'journal', sourceAccount: 'A', sourceId: uuidId,
+      sourceRevision: revision, createdAt: date, importedAt: date, text: 'Dream', edited: false, deleted: false },
+  } }, () => undefined)).toThrow('Invalid stored copy');
+});
 it('serializes two adapters and fails closed on unprotected or missing chunks', async () => {
   const x = fixture();
   const second = createLucidJournalImportStorage();

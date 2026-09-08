@@ -101,3 +101,60 @@ it('rejects expired grants and malformed pages without empty overwrite', async (
   await expect(x.engine.start(x.confirmation)).rejects.toThrow('Invalid import page');
   expect(x.storage.save).not.toHaveBeenCalled();
 });
+it('accepts Journal UUID revision tokens and rejects empty, malformed, or UUID source ids', async () => {
+  const token = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
+  const x = setup();
+  x.readPage.mockResolvedValue({ grantId: 'g', items: [{ ...item(0, token) }], nextCursor: null, done: true });
+  expect((await x.engine.start(x.confirmation)).copies[journalCopyIdentity('A', '0')].sourceRevision).toBe(token);
+  for (const bad of [{ ...item(1, '') }, { ...item(1, 'not-a-revision') }, { ...item(1, token), id: token }]) {
+    const y = setup();
+    y.readPage.mockResolvedValue({ grantId: 'g', items: [bad], nextCursor: null, done: true });
+    await expect(y.engine.start(y.confirmation)).rejects.toThrow('Invalid import item');
+  }
+});
+it.each(['delete', 'keepLocal', 'useIncoming'] as const)(
+  'reconciles a committed %s after an uncertain save acknowledgement',
+  async type => {
+    const x = setup();
+    await x.engine.start(x.confirmation);
+    const id = journalCopyIdentity('A', '0');
+    if (type !== 'delete') {
+      await x.engine.updateCopy('guest', id, { type: 'edit', text: 'Own' });
+      x.readPage.mockResolvedValue({
+        grantId: 'g2', items: [{ ...item(0, revision(2)), transcript: 'Incoming' }], nextCursor: null, done: true,
+      });
+      await x.engine.start({ ...x.confirmation, grantId: 'g2' });
+    }
+    const persist = x.storage.save.getMockImplementation()!;
+    x.storage.save.mockImplementationOnce(async (scope, next, check) => {
+      await persist(scope, next, check);
+      throw new Error('uncertain acknowledgement');
+    });
+    const state = await x.engine.updateCopy('guest', id, { type });
+    if (type === 'delete') expect(state.copies[id]).toMatchObject({ deleted: true, text: '' });
+    else if (type === 'keepLocal') expect(state.copies[id]).toMatchObject({ text: 'Own', sourceRevision: revision(2) });
+    else expect(state.copies[id]).toMatchObject({ text: 'Incoming', edited: false, sourceRevision: revision(2) });
+    expect(state.copies[id].incoming).toBeUndefined();
+    const retried = await x.engine.updateCopy('guest', id, { type });
+    expect(retried.copies[id]).toEqual(state.copies[id]);
+  },
+);
+it('still rejects an uncommitted copy update', async () => {
+  const x = setup();
+  await x.engine.start(x.confirmation);
+  const id = journalCopyIdentity('A', '0');
+  x.storage.save.mockRejectedValueOnce(new Error('full'));
+  await expect(x.engine.updateCopy('guest', id, { type: 'delete' })).rejects.toThrow('full');
+  expect(x.saved()?.copies[id].deleted).not.toBe(true);
+});
+it('keeps a committed page when save reports an uncertain acknowledgement', async () => {
+  const x = setup();
+  const persist = x.storage.save.getMockImplementation()!;
+  x.storage.save.mockImplementationOnce(async (scope, next, check) => {
+    await persist(scope, next, check);
+    throw new Error('uncertain acknowledgement');
+  });
+  const state = await x.engine.start(x.confirmation);
+  expect(Object.keys(state.copies)).toHaveLength(1);
+  expect(state.checkpoint?.done).toBe(true);
+});
