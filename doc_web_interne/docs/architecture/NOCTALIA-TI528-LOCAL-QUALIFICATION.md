@@ -16,6 +16,7 @@ Scénarios vérifiés :
 - Erreur de transport injectée sur une vraie lecture, curseur d'erreur conservé, puis reprise au même curseur après rétablissement.
 - Lecture détaillée et curseur isolés entre comptes A/B, RLS REST explicite; insertion sous un autre propriétaire, modification, suppression et réattribution interdites, ligne propriétaire préservée.
 - RPC de mise à jour rejouée à l'identique, révision modifiée, suppression et replay idempotent.
+- Batch applicatif réel : modification de A puis suppression de B à date identique, reçus distincts, rejeu et mise à jour hors ligne obsolète de B sans résurrection ni modification de A.
 - Refus des accès directs client aux tables `ai_jobs` et `dream_sync_receipts`.
 - Upload et signature Storage autorisés au propriétaire, signature refusée à l'autre utilisateur.
 - Migration historique : absence complète autorisée; présence partielle d'une table, d'une vue ou d'une fonction refusée et objet sentinelle préservé.
@@ -23,6 +24,8 @@ Scénarios vérifiés :
 L'admission complète des quotas/jobs (TI-560) n'est pas couverte par le simple refus d'accès direct aux tables. Il s'agit d'un test d'intégration réel séquentiel, pas d'une preuve de performances Android ni de configuration de production. Les comptes Android sont distincts des comptes éphémères du test afin de préserver leur jeu de 2 501 rêves.
 
 ## Défaut historique trouvé et correction minimale
+
+Le scénario de dates identiques a révélé une collision supplémentaire dans le client : sur `5de967d01`, le batch applicatif « modifier A, supprimer B » retourne deux acquittements pour A. Le test réel reproduit cet échec avant correction, en exécutant la version historique du service sur les mêmes assertions. Les alias de synchronisation utilisaient le timestamp commun et pouvaient réattribuer à B l'identité acquittée de A. La correction conserve les dates, mais donne priorité aux identités distante/client ; elle est également vérifiée par la qualification Android des routes et actions. Les résultats de ce scénario ne sont pas déduits des seuls tests RPC.
 
 Le premier replay inchangé échouait dans `20260723143132_remove_location_subsystem_from_noctalia.sql` : `Location removal aborted: expected 8 tables, found 0`. Cette suppression supposait une ancienne installation Dashboard et comparait des empreintes exactes de données absentes de l'historique.
 

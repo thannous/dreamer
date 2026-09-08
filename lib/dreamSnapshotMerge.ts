@@ -1,10 +1,5 @@
+import { matchesDreamTarget as sameIdentity } from './dreamIdentity';
 import type { DreamAnalysis } from './types';
-
-const sameIdentity = (a: DreamAnalysis, b: DreamAnalysis): boolean => {
-  if (a.remoteId != null && b.remoteId != null) return a.remoteId === b.remoteId;
-  if (a.clientRequestId && b.clientRequestId) return a.clientRequestId === b.clientRequestId;
-  return a.id === b.id;
-};
 
 /** Apply only local changes since the read began, retaining unrelated server rows. */
 export const mergeDreamSnapshot = (

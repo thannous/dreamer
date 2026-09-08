@@ -679,6 +679,27 @@ describe('supabaseDreamService', () => {
     expect(dreams[0]?.clientRequestId).toBe('offline-10k-create');
   });
 
+  it('does not share receipt identity between distinct same-date remote dreams', async () => {
+    mocks.rpc = jest.fn().mockImplementation(async (_name: string, args: any) => ({
+      data: args.mutations.map((mutation: any) => ({
+        mutation_id: mutation.mutation_id, operation: 'update', status: 'ack',
+        remote_id: mutation.payload.remote_id,
+        dream: buildRow({ id: mutation.payload.remote_id, client_request_id: `dream-${mutation.payload.remote_id}`, revision_id: 'new-revision' }),
+      })), error: null,
+    }));
+    const { syncDreamMutationsInSupabase } = require('../supabaseDreamService');
+    const mutations = [42, 43].map((remoteId) => ({
+      version: 1, id: `mutation-${remoteId}`, userScope: 'user:user-1', entityType: 'dream',
+      entityKey: 'local:100', operation: 'update', clientRequestId: `operation-${remoteId}`,
+      baseRevision: `revision-${remoteId}`, status: 'pending', retryCount: 0, clientUpdatedAt: remoteId, createdAt: remoteId,
+      payload: { dream: buildDream({ id: 100, remoteId, clientRequestId: `dream-${remoteId}`, revisionId: `revision-${remoteId}` }) },
+    }));
+    await syncDreamMutationsInSupabase(mutations, 'user-1');
+    const sent = mocks.rpc!.mock.calls.flatMap((call: any[]) => call[1].mutations);
+    expect(sent.map((mutation: any) => mutation.payload.remote_id)).toEqual([42, 43]);
+    expect(sent.map((mutation: any) => mutation.base_revision)).toEqual(['revision-42', 'revision-43']);
+  });
+
   it('syncDreamMutationsInSupabase splits dependent create and update mutations', async () => {
     mocks.rpc = jest
       .fn()

@@ -869,7 +869,7 @@ const rememberRemoteId = (
   const dreamId = getMutationDreamId(mutation);
   const dreamClientRequestId = getDreamClientRequestId(mutation);
 
-  if (dreamId != null) {
+  if (dreamId != null && !dreamClientRequestId && getMutationRemoteId(mutation) == null) {
     idsByDreamId.set(dreamId, remoteId);
   }
 
@@ -886,7 +886,7 @@ const forgetRemoteId = (
   const dreamId = getMutationDreamId(mutation);
   const dreamClientRequestId = getDreamClientRequestId(mutation);
 
-  if (dreamId != null) {
+  if (dreamId != null && !dreamClientRequestId && getMutationRemoteId(mutation) == null) {
     idsByDreamId.delete(dreamId);
   }
 
@@ -908,8 +908,8 @@ const hydrateKnownRemoteId = (
   const dreamId = getMutationDreamId(mutation);
   const dreamClientRequestId = getDreamClientRequestId(mutation);
   const resolvedRemoteId =
-    (dreamId != null ? idsByDreamId.get(dreamId) : undefined) ??
-    (dreamClientRequestId ? idsByClientRequestId.get(dreamClientRequestId) : undefined);
+    (dreamClientRequestId ? idsByClientRequestId.get(dreamClientRequestId) : undefined) ??
+    (!dreamClientRequestId && dreamId != null ? idsByDreamId.get(dreamId) : undefined);
 
   return resolvedRemoteId != null ? applyResolvedRemoteId(mutation, resolvedRemoteId) : mutation;
 };
@@ -920,12 +920,15 @@ type AcknowledgedDreamState = {
 };
 
 const getMutationEntityAliases = (mutation: DreamMutation): string[] => {
-  const aliases = [`entity:${mutation.entityKey}`];
+  const aliases: string[] = [];
   const dreamId = getMutationDreamId(mutation);
   const remoteId = getMutationRemoteId(mutation);
   const dreamClientRequestId = getDreamClientRequestId(mutation);
 
-  if (dreamId != null) aliases.push(`local:${dreamId}`);
+  if (remoteId == null && !dreamClientRequestId) {
+    aliases.push(`entity:${mutation.entityKey}`);
+    if (dreamId != null) aliases.push(`local:${dreamId}`);
+  }
   if (remoteId != null) aliases.push(`remote:${remoteId}`);
   if (dreamClientRequestId) aliases.push(`client:${dreamClientRequestId}`);
   return aliases;
@@ -939,7 +942,9 @@ const hydrateAcknowledgedDreamState = (
     .map((alias) => statesByAlias.get(alias))
     .find((candidate): candidate is AcknowledgedDreamState => candidate != null);
 
-  if (!state || mutation.operation === 'create') {
+  if (!state || mutation.operation === 'create' ||
+    (getMutationRemoteId(mutation) != null && state.remoteId != null &&
+      getMutationRemoteId(mutation) !== state.remoteId)) {
     return mutation;
   }
 

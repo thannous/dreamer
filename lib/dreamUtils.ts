@@ -1,3 +1,4 @@
+import { type DreamTarget, matchesDreamTarget, resolveDreamTarget } from './dreamIdentity';
 /**
  * Pure utility functions for dream data manipulation
  * Extracted from useDreamJournal for reusability and testability
@@ -273,6 +274,12 @@ export const getMutationDreamId = (mutation: DreamMutation): number | undefined 
 export const getMutationRemoteId = (mutation: DreamMutation): number | undefined => {
   const payload = getMutationPayload(mutation);
   return payload.dream?.remoteId ?? payload.tombstone?.remoteId ?? payload.remoteId;
+};
+
+export const getMutationDreamTarget = (mutation: DreamMutation): Exclude<DreamTarget, number> => {
+  const payload = getMutationPayload(mutation);
+  const dream = payload.dream ?? payload.tombstone;
+  return { id: dream?.id ?? payload.dreamId ?? -1, remoteId: getMutationRemoteId(mutation), clientRequestId: dream?.clientRequestId ?? (getMutationRemoteId(mutation) == null ? `dream-${dream?.id ?? payload.dreamId ?? -1}` : undefined) };
 };
 
 const getMutationSortTime = (mutation: DreamMutation): number =>
@@ -614,12 +621,7 @@ export const normalizeDreamList = (list: DreamAnalysis[]): DreamAnalysis[] => {
  * Upsert a dream into a list (insert or update by id/remoteId)
  */
 export const upsertDream = (list: DreamAnalysis[], dream: DreamAnalysis): DreamAnalysis[] => {
-  const index = list.findIndex(
-    (d) =>
-      d.id === dream.id ||
-      (dream.remoteId != null && d.remoteId === dream.remoteId) ||
-      (dream.clientRequestId != null && d.clientRequestId === dream.clientRequestId)
-  );
+  const index = list.findIndex((entry) => matchesDreamTarget(entry, dream));
   if (index === -1) {
     return [dream, ...list];
   }
@@ -633,23 +635,23 @@ export const upsertDream = (list: DreamAnalysis[], dream: DreamAnalysis): DreamA
  */
 export const removeDream = (
   list: DreamAnalysis[],
-  dreamId: number,
+  target: DreamTarget,
   remoteId?: number
-): DreamAnalysis[] =>
-  list.filter((d) => {
-    const idMatches = d.id === dreamId;
-    const remoteMatches = remoteId != null && d.remoteId === remoteId;
-    return !idMatches && !remoteMatches;
-  });
+): DreamAnalysis[] => {
+  const selected = resolveDreamTarget(list, remoteId != null
+    ? { id: typeof target === 'number' ? target : target.id, remoteId }
+    : target);
+  return selected ? list.filter((entry) => !matchesDreamTarget(entry, selected)) : list;
+};
 
 /**
  * Check if there are pending mutations for a specific dream
  */
 export const hasPendingMutationsForDream = (
   mutations: DreamMutation[],
-  dreamId: number
+  target: DreamTarget
 ): boolean =>
-  mutations.some((mutation) => isMutationActive(mutation) && getMutationDreamId(mutation) === dreamId);
+  mutations.some((mutation) => isMutationActive(mutation) && matchesDreamTarget(getMutationDreamTarget(mutation), target));
 
 /**
  * Apply pending mutations to a source list of dreams
@@ -691,12 +693,9 @@ export const applyPendingMutations = (
             break;
           }
           const payload = getMutationPayload(mutation);
-          const deletedClientId = payload.tombstone?.clientRequestId ??
-            (payload.tombstone ? `dream-${payload.tombstone.id}` : undefined);
-          if (deletedClientId) next = next.filter((entry) => entry.clientRequestId !== deletedClientId);
           next = removeDream(
             next,
-            payload.dreamId ?? dream?.id ?? -1,
+            getMutationDreamTarget(mutation),
             payload.remoteId ?? dream?.remoteId
           );
           break;

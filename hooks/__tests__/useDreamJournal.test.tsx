@@ -1516,6 +1516,45 @@ describe('useDreamJournal', () => {
     });
   });
 
+  it('promotes an explicitly selected identityless dream without duplicating it', async () => {
+    const original = buildDream({ id: 899 });
+    setSavedDreams([original]);
+    const { result } = await renderLoadedDreamJournal();
+    await act(async () => { await result.current.updateDream({ ...original, clientRequestId: 'promoted' }, original); });
+    expect(result.current.dreams).toHaveLength(1);
+    expect(result.current.dreams[0].clientRequestId).toBe('promoted');
+  });
+
+  it('rejects ambiguous promotion before a remote write', async () => {
+    setMockUser({ id: 'user-1' });
+    const first = buildDream({ id: 898, remoteId: 1898 });
+    const second = buildDream({ id: 898, remoteId: 1899 });
+    mockFetchDreamsFromSupabase.mockResolvedValue([first, second]);
+    const { result } = await renderLoadedDreamJournal();
+    await act(async () => {
+      await expect(result.current.updateDream({ ...second, title: 'changed' }, 898)).rejects.toThrow('ambiguous');
+    });
+    expect(mockUpdateDreamInSupabase).not.toHaveBeenCalled();
+  });
+
+  it('targets only the selected same-date remote dream for favorite and deletion', async () => {
+    setMockUser({ id: 'user-1' });
+    const first = buildDream({ id: 900, remoteId: 1900, clientRequestId: 'first', isFavorite: false });
+    const second = buildDream({ id: 900, remoteId: 1901, clientRequestId: 'second', isFavorite: false });
+    mockFetchDreamsFromSupabase.mockResolvedValue([first, second]);
+    mockUpdateDreamInSupabase.mockResolvedValue({ ...second, isFavorite: true });
+    const { result } = await renderLoadedDreamJournal();
+    await act(async () => { await expect(result.current.deleteDream(900)).rejects.toThrow('ambiguous'); });
+    expect(mockDeleteDreamFromSupabase).not.toHaveBeenCalled();
+    await act(async () => { await result.current.toggleFavorite(second); });
+    expect(mockUpdateDreamInSupabase).toHaveBeenCalledWith(expect.objectContaining({ remoteId: 1901 }));
+    expect(result.current.dreams.find((dream: DreamAnalysis) => dream.remoteId === 1900)?.isFavorite).toBe(false);
+    expect(result.current.dreams).toHaveLength(2);
+    await act(async () => { await result.current.deleteDream(second); });
+    expect(mockDeleteDreamFromSupabase).toHaveBeenCalledWith(1901, undefined);
+    expect(result.current.dreams.map((dream: DreamAnalysis) => dream.remoteId)).toEqual([1900]);
+  });
+
   describe('toggleFavorite', () => {
     it('toggles favorite locally when not authenticated', async () => {
       const existingDream = buildDream({ id: 1, isFavorite: false });
@@ -1554,11 +1593,11 @@ describe('useDreamJournal', () => {
       expect(result.current.dreams[0].isFavorite).toBe(true);
     });
 
-    it('does nothing when dream not found', async () => {
+    it('rejects a missing dream target', async () => {
       const { result } = await renderLoadedDreamJournal();
 
       await act(async () => {
-        await result.current.toggleFavorite(999);
+        await expect(result.current.toggleFavorite(999)).rejects.toThrow('Dream identity is ambiguous or missing');
       });
 
       expect(mockSaveDreams).not.toHaveBeenCalled();

@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
+import type { DreamAnalysis, DreamMutation } from '@/lib/types';
 
 const { Client } = require('pg');
 const { readLocalStatus } = require('./local-config.cjs');
@@ -38,7 +39,7 @@ suite('TI528 real local Supabase qualification', () => {
         expect((await client.auth.signInWithPassword({ email, password })).error).toBeNull(); clients.push(client);
       }
       holder.client = clients[0];
-      const { fetchDreamListPage, fetchDreamFullPage, iterateDreamPages, fetchDreamFromSupabase } = jest.requireActual('@/services/supabaseDreamService') as typeof import('@/services/supabaseDreamService');
+      const { fetchDreamListPage, fetchDreamFullPage, iterateDreamPages, fetchDreamFromSupabase, syncDreamMutationsInSupabase } = jest.requireActual('@/services/supabaseDreamService') as typeof import('@/services/supabaseDreamService');
       for (const size of [0, 1, 1000, 1001, 2501]) {
         await db.query('delete from public.dreams where user_id=$1', [users[0]]);
         await db.query(`insert into public.dreams(user_id,transcript,title,interpretation,shareable_quote,dream_type,created_at,client_request_id)
@@ -87,6 +88,31 @@ suite('TI528 real local Supabase qualification', () => {
       expect(intact.error).toBeNull(); expect(intact.data.user_id).toBe(users[0]); expect(intact.data.title).toBe(detail.title);
 
       holder.client = clients[0];
+      // Exercise the application's batching/receipt hydration, not only the RPC.
+      // Both rows have the same legacy timestamp ID but distinct stable identities.
+      const sameDateA = await fetchDreamFromSupabase(newest - 1, users[0]);
+      const sameDateB = await fetchDreamFromSupabase(newest - 2, users[0]);
+      expect(sameDateA.id).toBe(sameDateB.id);
+      const queued = (dream: DreamAnalysis, operation: 'update' | 'delete'): DreamMutation => ({
+        version: 1, id: randomUUID(), userScope: users[0], entityType: 'dream',
+        entityKey: `remote:${dream.remoteId}`, operation, clientRequestId: randomUUID(),
+        baseRevision: dream.revisionId, clientUpdatedAt: Date.now(), createdAt: Date.now(),
+        status: 'pending', retryCount: 0,
+        payload: { dreamId: dream.id, remoteId: dream.remoteId,
+          ...(operation === 'delete' ? { tombstone: dream } : { dream }) },
+      });
+      const independentBatch = [queued({ ...sameDateA, title: 'identity A retained' }, 'update'), queued(sameDateB, 'delete')];
+      const identityResults = await syncDreamMutationsInSupabase(independentBatch, users[0]);
+      expect(identityResults.map(result => result.status)).toEqual(['ack', 'ack']);
+      expect(identityResults.map(result => result.remoteId)).toEqual([sameDateA.remoteId, sameDateB.remoteId]);
+      expect((await fetchDreamFromSupabase(sameDateA.remoteId!, users[0])).title).toBe('identity A retained');
+      await expect(fetchDreamFromSupabase(sameDateB.remoteId!, users[0])).rejects.toThrow();
+      const replayedIdentities = await syncDreamMutationsInSupabase(independentBatch, users[0]);
+      expect(replayedIdentities.map(result => result.status)).toEqual(['ack', 'ack']);
+      // A stale offline update must neither resurrect B nor touch its same-date neighbour.
+      await syncDreamMutationsInSupabase([queued({ ...sameDateB, title: 'stale offline B' }, 'update')], users[0]);
+      await expect(fetchDreamFromSupabase(sameDateB.remoteId!, users[0])).rejects.toThrow();
+      expect((await fetchDreamFromSupabase(sameDateA.remoteId!, users[0])).title).toBe('identity A retained');
       const mutation = { mutation_id: 'ti528', client_request_id: randomUUID(), entity_key: `remote:${newest}`, operation: 'update', base_revision: detail.revisionId, payload: { remote_id: newest, title: 'updated by synthetic replay' } };
       const replay1 = await clients[0].rpc('sync_dream_mutations', { mutations: [mutation] });
       expect(replay1.error).toBeNull();
