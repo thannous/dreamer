@@ -55,3 +55,15 @@ Base : `4ac7ff589` (PR #125). `createJournalMutationTransport` reçoit un getter
 Le transport importe le SDK uniquement comme type et peut être testé dans le projet Node sans initialiser Supabase ou React Native. La façade reste le point d'assemblage avec les adaptateurs réels. Le changement ne retire aucun repli destiné aux clients distribués et ne promet aucune nouvelle isolation de session au-delà des contrôles existants.
 
 La coordination durable du hook reste à traiter séparément : sérialisation des écritures, attente des snapshots, changements de périmètre et gestion des requêtes en vol. Les tests de replay existants et la base jetable restent obligatoires pour ce futur déplacement.
+
+## Quatrième lot — Coordination durable indépendante de React
+
+Base : `89b856293`, après intégration des trois lots précédents. `createJournalSyncEngine` possède désormais la file, les écritures sérialisées par compte, les créations en préparation, les attentes d'identité issues des snapshots et le propriétaire du replay en vol. Les adaptateurs de stockage, transport et observabilité sont injectés ; les imports d'exécution ne chargent ni React ni les services natifs ou Supabase.
+
+`useOfflineSyncQueue` assemble les adaptateurs et conserve seulement le cycle de vie React : activation du périmètre au commit, montage/démontage, hydratation, abonnement au snapshot et déclenchement du replay. Les bindings construisent des closures sans activer un compte pendant le rendu. Les commandes durables gardent leurs dépendances de callback historiques ; une variation réseau ne remplace pas une commande de sauvegarde. Une instance de moteur reste associée au montage du hook.
+
+L'algorithme et ses barrières sont déplacés sans migration : marqueur durable avant réseau, conservation du reçu de création au retry, annulation d'une création jamais envoyée, attente d'une identité distante persistée avant suppression, rejet des commandes d'un ancien compte, ignore des réponses après démontage ou changement de périmètre. Les replis de transport distribués restent dans le lot précédent.
+
+Les huit tests du moteur s'exécutent dans le projet Jest Node `journal`, sans mock de React ou du stockage natif. Ils couvrent les écritures concurrentes avec erreur disque, le reçu stable au retry, le replay concurrent, la suppression pendant préparation, la dépendance snapshot, la liaison spéculative et le changement de compte, la réponse tardive et la réactivation du cycle de vie. Les 44 tests historiques du hook sont conservés ; un test supplémentaire verrouille l'identité des callbacks lorsque seul le réseau change.
+
+Les quatre déplacements couvrent les frontières données, médias et synchronisation prévues pour TI-524. La validation native d'un ancien commit ne vaut pas validation de ce lot ; la base réelle, les contrôles de types, les tests liés et la revue indépendante restent des preuves distinctes. Aucun gain de performance ni qualification Play n'est déduit de cette extraction.

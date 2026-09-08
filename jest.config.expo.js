@@ -49,7 +49,7 @@ module.exports = {
     '\\.css$': '<rootDir>/tests/css-stub.js',
   },
   testPathIgnorePatterns: [
-    '<rootDir>/services/__tests__/journal(DreamMapper|Repository|QueueTransitions|MutationTransport)\\.test\\.ts$',
+    '<rootDir>/services/__tests__/journal(DreamMapper|Repository|QueueTransitions|MutationTransport|SyncEngine)\\.test\\.ts$',
     '<rootDir>/node_modules/',
     '<rootDir>/scripts/.*\\.test\\.js$',
     '\\.perf\\.test\\.(ts|tsx)$',
