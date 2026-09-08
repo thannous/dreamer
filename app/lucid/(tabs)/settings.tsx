@@ -13,6 +13,7 @@ import {
   LucidSectionHeader,
   LucidToggleRow,
 } from '@/components/lucid/LucidUI';
+import { LucidJournalDiscovery } from '@/components/lucid/LucidJournalDiscovery';
 import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useAuth } from '@/context/AuthContext';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
@@ -1241,6 +1242,7 @@ export default function LucidSettingsScreen() {
             </Pressable>
           ))}
         </SettingsDisclosure>
+        <LucidJournalDiscovery locale={content.locale} />
       </View>
     </LucidScreen>
   );
