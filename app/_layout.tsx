@@ -67,6 +67,7 @@ import { markPerformance } from '@/lib/performanceTrace';
 import { setProductAnalyticsLocale } from '@/lib/productAnalytics';
 import { scheduleAfterStartupPaint } from '@/lib/startupPaint';
 import type { LanguagePreference } from '@/lib/types';
+import { scheduleProductBootstrap } from '@/lib/productBootstrap';
 import { configureNotificationHandler } from '@/services/notificationService';
 import {
   clearPendingRecordingNotification,
@@ -926,30 +927,13 @@ export default function RootLayout() {
   useEffect(() => {
     if (!startupDestinationCommitted) return;
 
-    const task = InteractionManager.runAfterInteractions(() => {
-      if (!isLucidTrainer) void import('@/lib/guestSession')
-        .then(({ initGuestSession }) => initGuestSession())
-        .catch((error) => {
-          if (__DEV__) console.warn('[RootLayout] Guest session init failed:', error);
-        });
-
-      void import('@/lib/auth').then(({ initializeGoogleSignIn }) => {
-        initializeGoogleSignIn();
-      });
-
-      if (!isLucidTrainer) void Promise.all([
-        import('@/services/quota/GuestAnalysisCounter').then(
-          ({ migrateExistingGuestQuota }) => migrateExistingGuestQuota()
-        ),
-        import('@/services/quota/GuestDreamCounter').then(
-          ({ migrateExistingGuestDreamRecording }) => migrateExistingGuestDreamRecording()
-        ),
-      ]).catch((error) => {
-        if (__DEV__) console.warn('[RootLayout] Guest counter migration failed:', error);
-      });
-    });
-
-    return () => task.cancel();
+    return scheduleProductBootstrap(
+      isLucidTrainer ? 'lucid' : 'journal',
+      (callback) => InteractionManager.runAfterInteractions(callback),
+      (action, error) => {
+        if (__DEV__) console.warn(`[RootLayout] ${action} failed:`, error);
+      }
+    );
   }, [startupDestinationCommitted]);
 
   const handleSplashFinished = useCallback(() => {

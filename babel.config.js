@@ -6,9 +6,12 @@ module.exports = function (api) {
     ...(isTest
       ? {
           overrides: [{
-            // Only the root composition test needs its deferred startup imports
-            // resolved through Jest. Preserve other modules' existing semantics.
-            test: require('node:path').resolve(__dirname, 'app/_layout.tsx'),
+            // Root composition and its extracted bootstrap resolve deferred imports
+            // through Jest. Preserve other modules' existing semantics.
+            test: [
+              require('node:path').resolve(__dirname, 'app/_layout.tsx'),
+              require('node:path').resolve(__dirname, 'lib/productBootstrap.ts'),
+            ],
             plugins: ['@babel/plugin-transform-dynamic-import'],
           }],
         }
