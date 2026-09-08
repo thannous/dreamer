@@ -1,3 +1,4 @@
+import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Composer } from '@/components/chat/Composer';
 import { Exploration360Panel } from '@/components/chat/Exploration360Panel';
 import { LoadingIndicator, MessagesList } from '@/components/chat/MessagesList';
@@ -987,7 +988,8 @@ export default function DreamChatScreen() {
     return noctalia.accent.base;
   };
 
-  const dreamImageUri = dream?.imageUrl?.trim();
+  const media = useDreamMedia(dream);
+  const dreamImageUri = media.imageUrl;
 
   const handleBackPress = useCallback(() => {
     if (router.canGoBack()) {
@@ -1098,9 +1100,9 @@ export default function DreamChatScreen() {
   const headerComponent = (
     <>
       <View style={styles.imageContainer}>
-        {dreamImageUri ? (
+        {dream?.imageUrl ? (
           <Image
-            source={{ uri: dreamImageUri }}
+            source={dreamImageUri ? { uri: dreamImageUri } : null}
             style={styles.dreamImage}
             contentFit={imageConfig.contentFit}
             transition={imageConfig.transition}

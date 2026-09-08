@@ -1010,7 +1010,7 @@ describe('supabaseDreamService', () => {
     });
   });
 
-  it('fetchDreamsFromSupabase resolves dream-images references to signed URLs', async () => {
+  it('fetchDreamsFromSupabase returns text and stable media references without signing', async () => {
     const orderMock = jest.fn().mockResolvedValue({
       data: [
         buildRow({
@@ -1032,10 +1032,9 @@ describe('supabaseDreamService', () => {
     const { fetchDreamsFromSupabase } = require('../supabaseDreamService');
     const dreams = await fetchDreamsFromSupabase();
 
-    expect(dreams[0]?.imageUrl).toBe('https://signed.example.com/user-1/private.webp?token=owner');
-    expect(dreams[1]?.imageUrl).toBe('https://signed.example.com/user-1/legacy.webp?token=owner');
-    expect(mocks.storageCreateSignedUrl).toHaveBeenCalledWith('user-1/private.webp', 86400);
-    expect(mocks.storageCreateSignedUrl).toHaveBeenCalledWith('user-1/legacy.webp', 86400);
+    expect(dreams[0]?.imageUrl).toBe('supabase-storage://dream-images/user-1/private.webp');
+    expect(dreams[1]?.imageUrl).toBe('https://example.com/storage/v1/object/public/dream-images/user-1/legacy.webp');
+    expect(mocks.storageCreateSignedUrl).not.toHaveBeenCalled();
   });
 
   it('fetchDreamsFromSupabase throws when supabase returns error', async () => {
@@ -1053,7 +1052,7 @@ describe('supabaseDreamService', () => {
     await expect(fetchDreamsFromSupabase()).rejects.toThrow('query failed');
   });
 
-  it('fetchDreamFromSupabase reads and hydrates only the requested row', async () => {
+  it('fetchDreamFromSupabase reads the requested row without awaiting media', async () => {
     const singleMock = jest.fn().mockResolvedValue({
       data: buildRow({
         id: 42,
@@ -1070,7 +1069,7 @@ describe('supabaseDreamService', () => {
 
     expect(eqMock).toHaveBeenCalledWith('id', 42);
     expect(dream.remoteId).toBe(42);
-    expect(dream.imageUrl).toBe('https://signed.example.com/user-1/target.webp?token=owner');
+    expect(dream.imageUrl).toBe('supabase-storage://dream-images/user-1/target.webp');
   });
 
   it('fetchDreamFromSupabase rejects invalid ids before querying', async () => {
@@ -1149,9 +1148,9 @@ describe('supabaseDreamService', () => {
     expect(String(firstRow.image_url)).not.toContain('/storage/v1/object/public/');
 
     expect(mocks.storageGetPublicUrl).not.toHaveBeenCalled();
-    expect(mocks.storageCreateSignedUrl).toHaveBeenCalledWith('user-1/dream.webp', 86400);
-    expect(dream.imageUrl).toBe('https://signed.example.com/user-1/dream.webp?token=owner');
-    expect(dream.thumbnailUrl).toBe('https://signed.example.com/user-1/dream.webp?token=owner');
+    expect(mocks.storageCreateSignedUrl).not.toHaveBeenCalled();
+    expect(dream.imageUrl).toBe('supabase-storage://dream-images/user-1/dream.webp');
+    expect(dream.thumbnailUrl).toBe('supabase-storage://dream-images/user-1/dream.webp');
   });
 
   it('updateDreamInSupabase throws NOT_FOUND when no rows are returned', async () => {

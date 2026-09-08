@@ -1,3 +1,4 @@
+import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { ReminderOptInCard } from '@/components/reminders/ReminderOptInCard';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
@@ -327,6 +328,7 @@ export default function JournalDetailScreen() {
     () => (dream && !isMockMode ? getDreamSyncState(dream) : 'clean'),
     [dream]
   );
+  const media = useDreamMedia(dream);
   const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
   const dreamTypeLabel = useMemo(
     () => (dream ? getDreamTypeLabel(dream.dreamType, t) ?? dream.dreamType : undefined),
@@ -740,7 +742,7 @@ export default function JournalDetailScreen() {
   );
   const shareImage = useMemo<ShareImageData | undefined>(() => {
     if (!dream) return undefined;
-    const source = dream.imageUrl || dream.thumbnailUrl;
+    const source = media.imageUrl || media.thumbnailUrl;
     if (!source) return undefined;
     const extension = getFileExtensionFromUrl(source);
     return {
@@ -748,7 +750,13 @@ export default function JournalDetailScreen() {
       extension,
       mimeType: getMimeTypeFromExtension(extension),
     };
-  }, [dream]);
+  }, [dream, media.imageUrl, media.thumbnailUrl]);
+  const [shareMediaAttempt, setShareMediaAttempt] = useState(0);
+  const [shareMediaReady, setShareMediaReady] = useState<{ source: string; ready: boolean }>();
+  const onShareMediaReady = useCallback((source: string, ready: boolean) => {
+    setShareMediaReady(previous => previous?.source === source && previous.ready ? previous : { source, ready });
+  }, []);
+  const shareMediaPending = Platform.OS !== 'web' && Boolean(dream?.imageUrl || dream?.thumbnailUrl) && (media.loading || Boolean(shareImage && shareMediaReady?.source !== shareImage.source));
   const clipboardSupported = Platform.OS === 'web' && Boolean(getShareNavigator()?.clipboard?.writeText);
 
   const startMetadataEditing = useCallback(() => {
@@ -929,8 +937,8 @@ export default function JournalDetailScreen() {
   }, [dream?.imageUrl, imageVersion]);
   const displayImageUrl = useMemo(() => {
     if (!dream?.imageUrl) return undefined;
-    return withCacheBuster(dream.imageUrl, imageVersion);
-  }, [dream?.imageUrl, imageVersion]);
+    return media.imageUrl ? withCacheBuster(media.imageUrl, imageVersion) : undefined;
+  }, [dream?.imageUrl, media.imageUrl, imageVersion]);
 
 
   // Define callbacks before early return (hooks must be called unconditionally)
@@ -952,6 +960,16 @@ export default function JournalDetailScreen() {
         }
         openShareModal();
         return;
+      }
+
+      if (dream.imageUrl || dream.thumbnailUrl) {
+        if (shareMediaPending) return;
+        if (!shareImage || !shareMediaReady?.ready) {
+          setShareMediaReady(undefined);
+          setShareMediaAttempt(attempt => attempt + 1);
+          media.retry();
+          throw new Error('Dream media is not ready for sharing');
+        }
       }
 
       // Mobile (iOS/Android): Use composite image for sharing
@@ -976,7 +994,7 @@ export default function JournalDetailScreen() {
     } finally {
       setIsSharing(false);
     }
-  }, [dream, isAnalysisLocked, openShareModal, shareComposite, shareImage, shareMessage, shareTitle, t]);
+  }, [dream, isAnalysisLocked, openShareModal, shareComposite, shareImage, shareMessage, shareTitle, t, media, shareMediaPending, shareMediaReady]);
 
   const handleToggleFavorite = useCallback(async () => {
     if (!dream || isAnalysisLocked) return;
@@ -1903,7 +1921,7 @@ export default function JournalDetailScreen() {
           >
             <Image
               key={displayImageUrl ?? dream.imageUrl}
-              source={{ uri: displayImageUrl ?? dream.imageUrl, cacheKey: imageCacheKey }}
+              source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
               style={{ width: '100%', height: '100%' }}
               contentFit="cover"
               transition={imageConfig.transition}
@@ -2251,22 +2269,22 @@ export default function JournalDetailScreen() {
                 </PressableScale>
                 <PressableScale
                   onPress={onShare}
-                  disabled={isSharing || isAnalysisLocked}
+                  disabled={isSharing || isAnalysisLocked || shareMediaPending}
                   testID={TID.Button.DreamShare}
                   accessibilityLabel={t('journalDetail.a11y.shareDream')}
                   hitSlop={{ top: 8, bottom: 8, left: 0, right: 0 }}
                   className={`flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5 ${
-                    isSharing || isAnalysisLocked ? 'opacity-70' : ''
+                    isSharing || isAnalysisLocked || shareMediaPending ? 'opacity-70' : ''
                   }`}
                   style={shadows.sm}
                 >
-                  {isSharing ? (
+                  {isSharing || shareMediaPending ? (
                     <ActivityIndicator size="small" color={noctalia.text.primary} />
                   ) : (
                     <IconSymbol name="square.and.arrow.up" size={24} color={noctalia.text.primary} />
                   )}
                   <Text className="font-sans-medium text-[14px] text-ivory">
-                    {isSharing
+                    {isSharing || shareMediaPending
                       ? t('journal.detail.share.button_loading')
                       : t('journal.detail.share.button_default')}
                   </Text>
@@ -2380,7 +2398,7 @@ export default function JournalDetailScreen() {
             <View className="flex-1 items-center justify-center px-4">
               {dream.imageUrl ? (
                 <Image
-                  source={{ uri: displayImageUrl ?? dream.imageUrl, cacheKey: imageCacheKey }}
+                  source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
                   style={{ width: '100%', height: '80%' }}
                   contentFit="contain"
                 />
@@ -2518,7 +2536,7 @@ export default function JournalDetailScreen() {
         {/* Hidden composite image generator for sharing */}
         {dream && shareImage && (
           <View className="absolute top-0 left-[-10000px] h-[1350px] w-[1080px]">
-            <DreamShareImage ref={shareImageRef} dream={dream} t={t} />
+            <DreamShareImage key={shareMediaAttempt} ref={shareImageRef} dream={dream} t={t} resolvedMedia={media} onMediaReady={onShareMediaReady} />
           </View>
         )}
         </KeyboardAvoidingView>
