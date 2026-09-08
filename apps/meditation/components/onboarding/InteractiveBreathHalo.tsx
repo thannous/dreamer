@@ -56,10 +56,12 @@ export function InteractiveBreathHalo({ soundEnabled = true }: Props) {
   const [phase, setPhase] = useState<DemoPhase>('idle');
   const pressed = useSharedValue(0);
   const cuePlayerRef = useRef<audio.PlayerHandle | null>(null);
+  const cueGenerationRef = useRef(0);
   const engagedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const phaseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const stopCue = useCallback(() => {
+    cueGenerationRef.current += 1;
     const cuePlayer = cuePlayerRef.current;
     if (!cuePlayer) return;
     audio.pause(cuePlayer);
@@ -111,6 +113,7 @@ export function InteractiveBreathHalo({ soundEnabled = true }: Props) {
     }
 
     return () => {
+      cueGenerationRef.current += 1;
       if (engagedTimerRef.current) clearTimeout(engagedTimerRef.current);
       if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
       if (!cuePlayerRef.current) return;
@@ -148,10 +151,16 @@ export function InteractiveBreathHalo({ soundEnabled = true }: Props) {
     const cuePlayer = cuePlayerRef.current;
     if (soundEnabled && cuePlayer) {
       audio.pause(cuePlayer);
-      audio
-        .seekTo(cuePlayer, 0)
-        .then(() => audio.play(cuePlayer))
-        .catch(() => audio.play(cuePlayer));
+      const generation = ++cueGenerationRef.current;
+      const playIfCurrent = () => {
+        if (cuePlayerRef.current !== cuePlayer || cueGenerationRef.current !== generation) return;
+        try {
+          audio.play(cuePlayer);
+        } catch {
+          // The cue is optional; a native failure must not reject this task.
+        }
+      };
+      void audio.seekTo(cuePlayer, 0).then(playIfCurrent, playIfCurrent);
     }
 
     const haptic =

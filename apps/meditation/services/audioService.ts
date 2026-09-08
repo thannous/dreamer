@@ -81,4 +81,6 @@ export const setVolume = (player: PlayerHandle, volume: number): void => {
 export const setLoop = (player: PlayerHandle, loop: boolean): void => {
   player.loop = loop;
 };
-export const release = (player: PlayerHandle): void => player.remove();
+// Local cues are native even in mock mode. Cleanup follows the handle's native
+// capabilities, not the globally selected content implementation.
+export const release = (player: PlayerHandle): void => real.release(player);
