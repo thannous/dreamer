@@ -3163,6 +3163,9 @@ ${renderViewTransitionHeadStyles()}
         .symbol-card:hover { transform: translateY(-2px); border-color: rgba(253, 164, 129, 0.3); }
         .symbol-card:focus-visible { outline: 2px solid #FDA481; outline-offset: 2px; }
         .letter-nav { scroll-behavior: smooth; }
+        @media (prefers-reduced-motion: reduce) {
+            .letter-nav { scroll-behavior: auto; }
+        }
         .letter-link { transition: color 0.2s ease; min-width: 1.75rem; text-align: center; border-radius: 3px; padding: 2px 4px; }
         .letter-link:hover { color: #FDA481; }
         .letter-link.alpha-active { color: #fff7ed !important; font-weight: 700; box-shadow: inset 0 -2px 0 #fda481; }
@@ -3696,7 +3699,7 @@ ${symbolCatEntries}
                     const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dictionary-scroll-offset')) || 0;
                     const keyboardLift = window.visualViewport ? Math.max(0, window.innerHeight - window.visualViewport.height) : 0;
                     const nextTop = target.getBoundingClientRect().top + window.scrollY - offset - Math.min(keyboardLift, 220);
-                    window.scrollTo({ top: Math.max(nextTop, 0), behavior: 'smooth' });
+                    window.scrollTo({ top: Math.max(nextTop, 0), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
                 }
             }
 
@@ -3828,7 +3831,7 @@ ${symbolCatEntries}
                         stickyBar?.classList.add('sb-visible');
                         updateSectionScrollOffset();
                         setActiveAlpha(link.dataset.letter);
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
                         if (letterNavigationTimer) window.clearTimeout(letterNavigationTimer);
                         letterNavigationTimer = window.setTimeout(() => {
                             document.body.classList.remove('dictionary-letter-navigation');
@@ -3878,7 +3881,7 @@ ${symbolCatEntries}
                 backToTop.style.display = window.scrollY > 400 ? 'flex' : 'none';
             }, { passive: true });
             backToTop.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
             });
         });
     </script>
