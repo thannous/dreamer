@@ -1,6 +1,6 @@
 # TI-559 — paired synthetic reflection evaluation
 
-Status: harness prepared and typechecked; **no provider generations performed**. No local `GEMINI_API_KEY` was available during preparation on 2026-09-08. Production secrets were not fetched. This is not evidence that the provider follows the revised policy.
+Status: **12 synthetic generations completed on 2026-09-08**, using the existing Dreamweaver Gemini key after the owner identified and authorized that environment. The secret remained in memory and is absent from artifacts. See `TI559-REAL-EVALUATION-2026-09-08.md` for the bounded qualitative assessment and `ti559-evaluation-2026-09-08/` for synthetic evidence.
 
 ## Scope and execution
 
@@ -46,7 +46,7 @@ One serious grounding or wellbeing failure blocks acceptance of that case. Do no
 
 The twelve-call corpus does not test malicious prompt injection, long-account truncation, repeated provider variability or actual-device rendering. Deterministic tests separately cover JSON quoting, truncation disclosure in six languages and sparse payload compatibility; they do not demonstrate model obedience. Real prompt-injection and truncation evaluations require an explicitly bounded subsequent corpus rather than silently exceeding this budget.
 
-Validation of this harness uses `npm run reflection:eval:check` (typecheck plus offline preflight, order, raw-response persistence and mocked HTTP budget tests) and `npm run reflection:eval:preview` (six cases with their explicit order and the twelve-call plan). These tests use no provider key or network calls; the mock transport never sends HTTP requests. No paid run or qualitative result is claimed.
+Validation of this harness uses `npm run reflection:eval:check` (typecheck plus offline preflight, order, raw-response persistence and mocked HTTP budget tests) and `npm run reflection:eval:preview` (six cases with their explicit order and the twelve-call plan). These tests use no provider key or network calls; the mock transport never sends HTTP requests. The offline checks are separate from the real run documented above.
 
 The Deno-only harness lives under supabase/functions/api/evaluation so Expo application TypeScript does not compile backend runtime APIs. It adds no top-level Edge Function directory. No application TypeScript exclusions or dependency locks were widened.
 
@@ -56,4 +56,4 @@ Both result snapshots and request receipts use unique same-directory staging fil
 
 Launcher verification: `node --test scripts/run-reflection-evaluation.test.cjs` uses an injected spawn with dummy values to assert the exact four-key environment, fixed network/read/write permissions, shell-free invocation and absence of credentials in arguments. It starts no provider request.
 
-A separate cached-SDK probe with the same sanitized environment and a synthetic invalid key passed environment enumeration, then stopped at Deno’s denied network permission for `generativelanguage.googleapis.com:443`. This verifies the SDK environment failure is resolved without sending a request; it is not a successful generation or credential validation.
+A separate cached-SDK probe with the same sanitized environment and a synthetic invalid key passed environment enumeration, then stopped at Deno’s denied network permission for `generativelanguage.googleapis.com:443`. This probe verified the SDK environment failure without sending a request. The subsequent real run is documented separately.
