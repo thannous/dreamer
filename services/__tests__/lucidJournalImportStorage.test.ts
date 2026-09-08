@@ -161,3 +161,34 @@ it('rejects non-string importedAt timestamps from persisted copies', async () =>
     await expect(x.adapter.load('guest')).rejects.toThrow('Invalid stored copy');
   }
 });
+
+it.each([null, false, 0, '', []].map(incoming => ({ incoming })))('rejects a present non-object incoming conflict %j', async ({ incoming }) => {
+  const x = fixture();
+  const state = snapshot(1);
+  const copy = Object.values(state.copies)[0];
+  (copy as unknown as { incoming: unknown }).incoming = incoming;
+  expect(() => x.adapter.save('guest', state, () => undefined)).toThrow('Invalid stored copy');
+});
+it('keeps active copies readable through persistent orphan cleanup failure without losing recovery metadata', async () => {
+  const x = fixture();
+  await x.adapter.save('guest', snapshot(1), () => undefined);
+  await x.adapter.save('user:B', snapshot(3), () => undefined);
+  const foreign = [...x.values].filter(([key]) => key.includes('user%3AB'));
+  const remove = x.kv.removeItem.getMockImplementation()!;
+  x.kv.removeItem.mockRejectedValue(new Error('cleanup unavailable'));
+  const committed = snapshot(2);
+  await x.adapter.save('guest', committed, () => undefined);
+  const pendingKey = [...x.values.keys()].find(key => key.includes(':guest:') && key.endsWith(':pending'))!;
+  const pending = x.values.get(pendingKey);
+  expect(pending).toBeDefined();
+  expect(await x.adapter.load('guest')).toEqual(committed);
+  expect(await x.adapter.load('guest')).toEqual(committed);
+  await expect(x.adapter.save('guest', snapshot(4), () => undefined)).rejects.toThrow('cleanup unavailable');
+  expect(x.values.get(pendingKey)).toBe(pending);
+  expect([...x.values].filter(([key]) => key.includes('user%3AB'))).toEqual(foreign);
+  x.kv.removeItem.mockImplementation(remove);
+  expect(await x.adapter.load('guest')).toEqual(committed);
+  expect(x.values.has(pendingKey)).toBe(false);
+  await x.adapter.save('guest', snapshot(4), () => undefined);
+  expect(await x.adapter.load('guest')).toEqual(snapshot(4));
+});

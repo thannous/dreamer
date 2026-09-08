@@ -19,7 +19,7 @@ function parse(raw: string): JournalImportSnapshot {
       typeof copy.text !== 'string' || typeof copy.edited !== 'boolean' || typeof copy.deleted !== 'boolean' ||
       !isJournalImportSourceDate(copy.createdAt) || typeof copy.importedAt !== 'string' ||
       !Number.isFinite(Date.parse(copy.importedAt)) ||
-      (copy.incoming && (typeof copy.incoming.text !== 'string' || !isJournalImportRevision(copy.incoming.revision) ||
+      (copy.incoming !== undefined && (!copy.incoming || typeof copy.incoming !== 'object' || Array.isArray(copy.incoming) || typeof copy.incoming.text !== 'string' || !isJournalImportRevision(copy.incoming.revision) ||
         !isJournalImportSourceDate(copy.incoming.createdAt)))) throw new Error('Invalid stored copy');
   }
   const cp = value.checkpoint;
@@ -81,25 +81,31 @@ export function createLucidJournalImportStorage(): JournalImportStorage {
   };
   const chunkKey = (base: string, item: Manifest, index: number) => `${base}:chunk:${item.generation}:${index}`;
   // This journal is written before any chunk. Recovery never removes the active generation.
-  const recover = async (base: string): Promise<Manifest | null> => {
+  const recover = async (base: string, deferCleanupFailure = false): Promise<Manifest | null> => {
     const current = await readManifest(base);
     const raw = await read(`${base}:pending`);
     if (raw === null) return current;
     const pending = JSON.parse(raw) as Pending;
     if (!pending || pending.version !== 2) throw new Error('Invalid import pending generation');
     const candidates = [manifest(pending.next), ...(pending.previous === null ? [] : [manifest(pending.previous)])];
-    for (const candidate of candidates) {
-      if (candidate.generation === current?.generation) continue;
-      for (let index = 0; index < candidate.chunks; index += 1) await storage.removeItem(chunkKey(base, candidate, index));
+    try {
+      for (const candidate of candidates) {
+        if (candidate.generation === current?.generation) continue;
+        for (let index = 0; index < candidate.chunks; index += 1) await storage.removeItem(chunkKey(base, candidate, index));
+      }
+      await storage.removeItem(`${base}:pending`);
+    } catch (error) {
+      // An inactive chunk must not hide an intact active snapshot. Keep the journal
+      // for retry, and require successful cleanup before a later save replaces it.
+      if (!deferCleanupFailure) throw error;
     }
-    await storage.removeItem(`${base}:pending`);
     return current;
   };
   return {
     load(scope) {
       return serialized(scope, async () => {
         const base = key(scope);
-        const current = await recover(base);
+        const current = await recover(base, true);
         if (!current) return null;
         const parts: string[] = [];
         for (let index = 0; index < current.chunks; index += 1) {
@@ -130,7 +136,7 @@ export function createLucidJournalImportStorage(): JournalImportStorage {
           try { await recover(base); } catch { /* preserve original failure */ }
           throw error;
         }
-        await recover(base);
+        await recover(base, true);
         assertActive();
       });
     },
