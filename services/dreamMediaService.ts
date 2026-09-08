@@ -154,7 +154,6 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, 
     if ('direct' in parsed) return Promise.resolve({ url: parsed.direct, status: 'ready' });
     const { path } = parsed;
     if (!owner) {
-      if (cacheOnly) return failed;
       // Guest objects cannot be re-signed with anonymous RLS. Preserve only this
       // device's existing server-signed capability, up to its actual expiry.
       const requestGeneration = generation;

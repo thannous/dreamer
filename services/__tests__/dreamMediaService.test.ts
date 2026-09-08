@@ -199,20 +199,20 @@ describe('guest signed media', () => {
     const token = `header.${btoa(JSON.stringify({ exp, url: `dream-images/${tokenPath}` }))}.signature`;
     return `https://project.test/storage/v1/object/sign/dream-images/${owner}/image.png?token=${token}`;
   };
-  it('preserves unexpired locally owned guest media without anonymous signing, then expires', async () => {
+  it.each([false, true])('cacheOnly=%s preserves unexpired locally owned guest media without anonymous signing, then expires', async cacheOnly => {
     let now = 0;
     const sign = jest.fn();
     const resolver = createDreamMediaResolver({ sign, now: () => now, storageOrigin: 'https://project.test', guestOwner: async () => 'guest_device' });
     const imageUrl = signed('guest_device');
-    expect(await resolver.resolveDreamMedia({ imageUrl }, null)).toMatchObject({ imageUrl, imageStatus: 'ready', expiresAt: 3540000 });
+    expect(await resolver.resolveDreamMedia({ imageUrl }, null, { cacheOnly })).toMatchObject({ imageUrl, imageStatus: 'ready', expiresAt: 3540000 });
     now = 3540000;
-    expect((await resolver.resolveDreamMedia({ imageUrl }, null)).imageStatus).toBe('error');
+    expect((await resolver.resolveDreamMedia({ imageUrl }, null, { cacheOnly })).imageStatus).toBe('error');
     expect(sign).not.toHaveBeenCalled();
   });
-  it('rejects other guests, path-token mismatch and unsigned references', async () => {
+  it.each([false, true])('cacheOnly=%s rejects other guests, path-token mismatch and unsigned references', async cacheOnly => {
     const resolver = createDreamMediaResolver({ sign: jest.fn(), now: () => 0, storageOrigin: 'https://project.test', guestOwner: async () => 'guest_device' });
     for (const imageUrl of [signed('guest_other'), signed('guest_device', 3600, 'guest_other/image.png'), ref('guest_device/image.png')]) {
-      expect((await resolver.resolveDreamMedia({ imageUrl }, null)).imageStatus).toBe('error');
+      expect((await resolver.resolveDreamMedia({ imageUrl }, null, { cacheOnly })).imageStatus).toBe('error');
     }
   });
   it('discards local ownership resolution after account change', async () => {
@@ -240,10 +240,10 @@ it('cache-only reads enforce owner, version and expiration without requests', as
   expect((await resolver.resolveDreamMedia(dream, 'B', { cacheOnly: true })).imageStatus).toBe('error');
   expect(sign).toHaveBeenCalledTimes(1);
 });
-it('cache-only guest misses never read guest identity or bootstrap a session', async () => {
-  const sign = jest.fn(); const guestOwner = jest.fn();
+it('cache-only guest misses read only existing local identity without signing', async () => {
+  const sign = jest.fn(); const guestOwner = jest.fn(async () => null);
   const resolver = createDreamMediaResolver({ sign, guestOwner });
   expect((await resolver.resolveDreamMedia({ imageUrl: ref('guest/image') }, null, { cacheOnly: true })).imageStatus).toBe('error');
   expect(sign).not.toHaveBeenCalled();
-  expect(guestOwner).not.toHaveBeenCalled();
+  expect(guestOwner).toHaveBeenCalledTimes(1);
 });
