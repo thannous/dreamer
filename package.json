@@ -8,7 +8,7 @@
   "scripts": {
     "reflection:eval:check": "deno check --no-lock supabase/functions/api/evaluation/ti559/evaluate.ts && deno test --no-lock --allow-read=supabase/functions/api/evaluation/ti559/fixtures.json supabase/functions/api/evaluation/ti559/core.test.ts",
     "reflection:eval:preview": "deno run --no-lock --allow-read=supabase/functions/api/evaluation/ti559 --allow-env=GEMINI_MODEL supabase/functions/api/evaluation/ti559/evaluate.ts",
-    "reflection:eval:run": "deno run --no-lock --allow-read=supabase/functions/api/evaluation/ti559,supabase/functions/api/services/dreamAnalysis.ts --allow-write=/private/tmp/ti559-evaluation-run --allow-env=GEMINI_MODEL,GEMINI_API_KEY --allow-net=generativelanguage.googleapis.com supabase/functions/api/evaluation/ti559/evaluate.ts --execute --output=/private/tmp/ti559-evaluation-run",
+    "reflection:eval:run": "deno run --no-lock --allow-read=supabase/functions/api/evaluation/ti559,supabase/functions/api/services/dreamAnalysis.ts,/private/tmp/ti559-evaluation-run --allow-write=/private/tmp/ti559-evaluation-run --allow-env=GEMINI_MODEL,GEMINI_API_KEY --allow-net=generativelanguage.googleapis.com supabase/functions/api/evaluation/ti559/evaluate.ts --execute --output=/private/tmp/ti559-evaluation-run",
     "boundaries:check": "node scripts/check-monorepo-boundaries.js",
     "start": "node ./scripts/expo-safe-runner.js start",
     "start:mock": "node ./scripts/expo-safe-runner.js --profile .env.mock start",
