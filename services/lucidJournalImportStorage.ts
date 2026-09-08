@@ -1,5 +1,5 @@
 import type { JournalImportSnapshot, JournalImportStorage } from '@/lib/lucid/journalImport';
-import { isJournalImportSourceDate, isJournalImportRevision, journalCopyIdentity } from '@/lib/lucid/journalImport';
+import { isJournalImportSourceDate, isJournalImportRevision, journalCopyIdentity, mergeJournalImportSnapshots } from '@/lib/lucid/journalImport';
 import { getLucidKeyValueStorage, isLucidNativeKeyValueStorage, type LucidKeyValueStorage } from './lucidKeyValueStorage';
 import { isLucidTrainerEncryptedValue, protectLucidTrainerStoredValue, revealLucidTrainerStoredValue } from './lucidTrainerSecureStorage';
 
@@ -188,4 +188,86 @@ export function clearLucidJournalImportStorage(
   storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<void> {
   return createLucidJournalImportStorage(storage).clear(scope);
+}
+
+export type LucidJournalImportClaimAdapter = JournalImportStorage & { clear(scope: string): Promise<void> };
+
+export interface LucidJournalImportClaimResult {
+  claimed: boolean;
+  source: JournalImportSnapshot | null;
+  destination: JournalImportSnapshot | null;
+}
+
+function asClaimAdapter(
+  options?: { adapter?: LucidJournalImportClaimAdapter; storage?: LucidKeyValueStorage }
+): LucidJournalImportClaimAdapter {
+  return options?.adapter ?? createLucidJournalImportStorage(options?.storage);
+}
+
+/**
+ * Copies guest Journal import snapshots into the authenticated scope.
+ * Source cleanup is delayed until the caller confirms the rest of the claim,
+ * so a later trainer failure can still restore guest copies.
+ */
+export async function claimLucidJournalImportScope(
+  sourceScope: string,
+  targetScope: string,
+  options?: {
+    adapter?: LucidJournalImportClaimAdapter;
+    storage?: LucidKeyValueStorage;
+  }
+): Promise<LucidJournalImportClaimResult> {
+  if (sourceScope === targetScope) return { claimed: false, source: null, destination: null };
+  const adapter = asClaimAdapter(options);
+  const source = await adapter.load(sourceScope);
+  const destination = await adapter.load(targetScope);
+  if (!source) return { claimed: false, source: null, destination };
+  const merged = mergeJournalImportSnapshots(destination, source);
+  if (!merged) return { claimed: false, source, destination };
+  if (destination && sameSnapshotJson(destination, merged)) {
+    return { claimed: false, source, destination };
+  }
+  try {
+    await adapter.save(targetScope, merged, () => undefined);
+    const verified = await adapter.load(targetScope);
+    if (!verified || !sameSnapshotJson(verified, merged)) {
+      throw new Error('Guest journal copies were not retained on the account');
+    }
+  } catch (error) {
+    try {
+      if (destination) await adapter.save(targetScope, destination, () => undefined);
+      else await adapter.clear(targetScope);
+    } catch {
+      throw new Error('Guest import failed and local rollback was incomplete');
+    }
+    throw error;
+  }
+  return { claimed: true, source, destination };
+}
+
+/** Restore guest copies first so a failed claim cannot drop them from both scopes. */
+export async function restoreLucidJournalImportClaim(
+  sourceScope: string,
+  targetScope: string,
+  claim: Pick<LucidJournalImportClaimResult, 'source' | 'destination'>,
+  options?: { adapter?: LucidJournalImportClaimAdapter; storage?: LucidKeyValueStorage }
+): Promise<void> {
+  const adapter = asClaimAdapter(options);
+  if (claim.source) {
+    try {
+      await adapter.save(sourceScope, claim.source, () => undefined);
+    } catch (error) {
+      const merged = mergeJournalImportSnapshots(claim.destination, claim.source);
+      if (merged) {
+        try { await adapter.save(targetScope, merged, () => undefined); } catch { /* keep source failure */ }
+      }
+      throw error;
+    }
+  }
+  if (claim.destination) await adapter.save(targetScope, claim.destination, () => undefined);
+  else if (claim.source) await adapter.clear(targetScope);
+}
+
+function sameSnapshotJson(left: JournalImportSnapshot, right: JournalImportSnapshot): boolean {
+  return JSON.stringify(left) === JSON.stringify(right);
 }

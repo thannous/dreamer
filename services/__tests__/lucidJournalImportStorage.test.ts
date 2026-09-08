@@ -1,4 +1,4 @@
-import { createLucidJournalImportStorage } from '../lucidJournalImportStorage';
+import { claimLucidJournalImportScope, createLucidJournalImportStorage, restoreLucidJournalImportClaim } from '../lucidJournalImportStorage';
 import { journalCopyIdentity, type JournalImportSnapshot } from '@/lib/lucid/journalImport';
 import { getLucidKeyValueStorage } from '../lucidKeyValueStorage';
 
@@ -235,6 +235,69 @@ it('does not delete anything when durable erasure intent cannot be written', asy
   x.kv.setItem.mockRejectedValue(new Error('write failed'));
   await expect(x.adapter.clear('guest')).rejects.toThrow('write failed');
   expect(await x.adapter.load('guest')).toEqual(state);
+});
+
+function oneCopy(sourceAccount: string, id: string, text: string): JournalImportSnapshot {
+  const identity = journalCopyIdentity(sourceAccount, id);
+  return { version: 1, checkpoint: { grantId: `grant-${sourceAccount}`, sourceAccount, cursor: null, done: true },
+    copies: { [identity]: { identity, sourceProduct: 'journal', sourceAccount, sourceId: id,
+      sourceRevision: '00000000-0000-4000-8000-000000000001', createdAt: date, importedAt: date, text, edited: false, deleted: false } } };
+}
+
+it('copies guest Journal snapshots into the authenticated scope without clearing the source', async () => {
+  const x = fixture();
+  const guest = oneCopy('G', '1', 'Guest dream');
+  const account = oneCopy('A', '0', 'Account dream');
+  await x.adapter.save('guest', guest, () => undefined);
+  await x.adapter.save('user:B', account, () => undefined);
+  const result = await claimLucidJournalImportScope('guest', 'user:B', { adapter: x.adapter });
+  expect(result.claimed).toBe(true);
+  expect(await x.adapter.load('guest')).toEqual(guest);
+  const merged = await x.adapter.load('user:B');
+  expect(merged?.copies[journalCopyIdentity('G', '1')].text).toBe('Guest dream');
+  expect(merged?.copies[journalCopyIdentity('A', '0')].text).toBe('Account dream');
+});
+
+it('does not erase guest copies when the destination write fails', async () => {
+  const x = fixture();
+  const guest = oneCopy('G', '1', 'Guest dream');
+  await x.adapter.save('guest', guest, () => undefined);
+  const set = x.kv.setItem.getMockImplementation()!;
+  x.kv.setItem.mockImplementation(async (key, value) => {
+    if (key.includes('user%3AB') && key.includes(':chunk:')) throw new Error('full');
+    await set(key, value);
+  });
+  await expect(claimLucidJournalImportScope('guest', 'user:B', { adapter: x.adapter })).rejects.toThrow('full');
+  expect(await x.adapter.load('guest')).toEqual(guest);
+  expect(await x.adapter.load('user:B')).toBeNull();
+});
+
+it('restores guest copies after destination transfer when source cleanup already ran', async () => {
+  const x = fixture();
+  const guest = oneCopy('G', '1', 'Guest dream');
+  await x.adapter.save('guest', guest, () => undefined);
+  const result = await claimLucidJournalImportScope('guest', 'user:B', { adapter: x.adapter });
+  await x.adapter.clear('guest');
+  expect(await x.adapter.load('guest')).toBeNull();
+  await restoreLucidJournalImportClaim('guest', 'user:B', result, { adapter: x.adapter });
+  expect(await x.adapter.load('guest')).toEqual(guest);
+  expect(await x.adapter.load('user:B')).toBeNull();
+});
+
+it('keeps account copies when guest restore fails after source cleanup', async () => {
+  const x = fixture();
+  const guest = oneCopy('G', '1', 'Guest dream');
+  await x.adapter.save('guest', guest, () => undefined);
+  const result = await claimLucidJournalImportScope('guest', 'user:B', { adapter: x.adapter });
+  await x.adapter.clear('guest');
+  const save = x.adapter.save.bind(x.adapter);
+  x.adapter.save = async (scope, snapshot, assertActive) => {
+    if (scope === 'guest') throw new Error('restore failed');
+    return save(scope, snapshot, assertActive);
+  };
+  await expect(restoreLucidJournalImportClaim('guest', 'user:B', result, { adapter: x.adapter }))
+    .rejects.toThrow('restore failed');
+  expect(await x.adapter.load('user:B')).toEqual(guest);
 });
 
 it('serializes erasure behind an already-issued page write across adapter instances', async () => {

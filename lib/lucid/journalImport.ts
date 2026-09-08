@@ -50,6 +50,19 @@ export const journalCopyIdentity = (account: string, id: string): string => JSON
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 const sameSnapshot = (left: JournalImportSnapshot, right: JournalImportSnapshot): boolean =>
   JSON.stringify(left) === JSON.stringify(right);
+/** Destination identities win. Guest-only copies and a missing destination checkpoint are kept. */
+export function mergeJournalImportSnapshots(
+  destination: JournalImportSnapshot | null,
+  source: JournalImportSnapshot | null,
+): JournalImportSnapshot | null {
+  if (!source) return destination ? clone(destination) : null;
+  if (!destination) return clone(source);
+  const copies = clone(destination.copies);
+  for (const [identity, copy] of Object.entries(source.copies)) {
+    if (!Object.hasOwn(copies, identity)) copies[identity] = clone(copy);
+  }
+  return { version: 1, copies, checkpoint: destination.checkpoint ?? clone(source.checkpoint) };
+}
 
 export function createJournalImportEngine(deps: {
   storage: JournalImportStorage;
