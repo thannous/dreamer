@@ -343,9 +343,14 @@ export function useOfflineSyncQueue({
     async (mutation: DreamMutation) => {
       const current = pendingMutationsRef.current;
       if (mutation.operation === 'delete') {
+        const neverSentCreate = current.find((entry) =>
+          getMutationDreamId(entry) === getMutationDreamId(mutation) &&
+          entry.operation === 'create' && entry.status === 'pending' &&
+          entry.lastAttemptAt == null && entry.retryCount === 0
+        );
         await persistPendingMutations([
           ...current.filter((entry) => getMutationDreamId(entry) !== getMutationDreamId(mutation)),
-          mutation,
+          ...(neverSentCreate ? [] : [mutation]),
         ]);
         return;
       }
@@ -364,6 +369,7 @@ export function useOfflineSyncQueue({
           id: existing.id,
           createdAt: existing.createdAt,
           retryCount: existing.retryCount,
+          lastAttemptAt: existing.lastAttemptAt ?? mutation.lastAttemptAt,
         };
         await persistPendingMutations(current.map((entry, index) =>
           index === existingIndex ? retried : entry
@@ -424,7 +430,7 @@ export function useOfflineSyncQueue({
     [persistPendingMutations]
   );
 
-  const syncPendingMutations = useCallback(async () => {
+  const syncPendingMutations = useCallback(async function replayPendingMutations(): Promise<void> {
     if (!canUseRemoteSync || !user || !hasNetwork || activeUserScopeRef.current !== userScope) return;
     if (!pendingMutationsRef.current.length) return;
 
@@ -453,6 +459,7 @@ export function useOfflineSyncQueue({
       retryCount: extras.retryCount ?? mutation.retryCount,
     });
 
+    let resolvedDependencies = false;
     const syncPromise = (async () => {
       const startedAt = Date.now();
       const sendingIds = new Set(eligibleMutations.map((mutation) => mutation.id));
@@ -580,7 +587,20 @@ export function useOfflineSyncQueue({
           .map((mutation) => {
             const result = resultsById.get(mutation.id);
             if (!result) {
-              return mutation;
+              const receipt = results.find((entry) => entry.status === 'ack' && entry.remoteId != null &&
+                eligibleMutations.some((sent) => sent.id === entry.mutationId &&
+                  sent.operation === 'create' && getMutationDreamId(sent) === getMutationDreamId(mutation)));
+              if (!receipt || getMutationRemoteId(mutation) != null) return mutation;
+              resolvedDependencies = true;
+              return {
+                ...mutation,
+                baseRevision: receipt.dream?.revisionId,
+                payload: {
+                  ...mutation.payload,
+                  remoteId: receipt.remoteId,
+                  ...(mutation.payload.dream ? { dream: { ...mutation.payload.dream, remoteId: receipt.remoteId, revisionId: receipt.dream?.revisionId } } : {}),
+                },
+              };
             }
 
             if (result.status === 'ack') {
@@ -609,7 +629,19 @@ export function useOfflineSyncQueue({
             }
 
             if (result.status === 'ack') {
-              nextDreams = applyAckedMutation(nextDreams, mutation, result);
+              const currentIndex = pendingMutationsRef.current.findIndex((entry) => entry.id === mutation.id);
+              const laterMutation = pendingMutationsRef.current.slice(currentIndex + 1).filter((entry) =>
+                getMutationDreamId(entry) === getMutationDreamId(mutation)).at(-1);
+              if (laterMutation?.operation === 'delete') return;
+              if (laterMutation?.payload.dream && result.remoteId != null) {
+                nextDreams = upsertDream(nextDreams, {
+                  ...laterMutation.payload.dream,
+                  remoteId: result.remoteId,
+                  revisionId: result.dream?.revisionId,
+                });
+              } else {
+                nextDreams = applyAckedMutation(nextDreams, mutation, result);
+              }
               return;
             }
 
@@ -692,7 +724,10 @@ export function useOfflineSyncQueue({
     })();
 
     inFlightSyncRef.current = syncPromise;
-    return syncPromise;
+    await syncPromise;
+    if (resolvedDependencies && mountedRef.current && activeUserScopeRef.current === userScope) {
+      await replayPendingMutations();
+    }
   }, [canUseRemoteSync, hasNetwork, persistPendingMutations, persistRemoteDreams, user, userScope]);
 
   useEffect(() => {

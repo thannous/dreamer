@@ -1,3 +1,4 @@
+import { mergeDreamSnapshot } from '../lib/dreamSnapshotMerge';
 /**
  * useDreamPersistence - Handles dream storage and loading
  *
@@ -765,6 +766,9 @@ export function useDreamPersistence({
     const loadToken = ++scope.loadToken;
     const writeSequenceAtStart = scope.sequence;
     let refreshWriteCount = 0;
+    let baseline = scope.hydrated
+      ? (scope.pendingCount > 0 || scope.failed ? scope.durable ?? dreamsRef.current : dreamsRef.current)
+      : null;
     const isCurrent = () =>
       mounted.current && mountedRef.current &&
       activeScopeKeyRef.current === scopeKey &&
@@ -863,6 +867,7 @@ export function useDreamPersistence({
       } else {
         setStateForScope(scopeKey, { status: 'error', operation: 'read', target });
       }
+      baseline ??= normalizeDreamList(applyPendingMutations(cacheRead ?? [], pendingMutations));
       setRefreshState({ status: 'refreshing' });
       setRemotePreviewAllowed(storageReadSucceeded && pendingReadSucceeded &&
         cacheRead?.length === 0 && pendingMutations.length === 0 && scope.sequence === 0);
@@ -949,7 +954,28 @@ export function useDreamPersistence({
         if (!isCurrent()) return { pendingMutations };
         const preserveWriteAuthority = mustPreserveWriteAuthority();
         setCompleteness({ status: storageReadSucceeded && !preserveWriteAuthority ? 'complete' : 'incomplete' });
-        if (storageReadSucceeded && !preserveWriteAuthority) {
+        if (storageReadSucceeded && preserveWriteAuthority && !scope.failed) {
+          const mergeAfterWrites = async () => {
+            await scope.tail;
+            if (!isCurrent() || scope.failed) return;
+            const latestPending = await getPendingDreamMutations(userScope);
+            if (!isCurrent() || scope.failed) return;
+            const merged = normalizeDreamList(applyPendingMutations(
+              mergeDreamSnapshot(baseline ?? [], dreamsRef.current, sortedRemote), latestPending
+            ));
+            // Reserve after existing writes; newer edits reserve after this merge.
+            await enqueueWrite(scopeKey, target, merged,
+              async (value) => {
+                if (scope.failed) throw new DreamPersistenceError('write', target);
+                await saveCachedRemoteDreams(value, userScope);
+              }, true);
+            if (isCurrent() && !scope.failed) setCompleteness({ status: 'complete' });
+          };
+          // Reload must not wait for an unrelated user write to finish.
+          void mergeAfterWrites().catch(() => {
+            if (isCurrent() && !scope.failed) setRefreshState({ status: 'error' });
+          });
+        } else if (storageReadSucceeded && !preserveWriteAuthority) {
           if (isCurrent()) setDreamsForScope(scopeKey, nextDreams);
           try {
             const sequenceBeforeRefreshWrite = scope.sequence;

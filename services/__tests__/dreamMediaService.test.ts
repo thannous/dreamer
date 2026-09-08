@@ -1,5 +1,7 @@
 import { createDreamMediaResolver, getDirectDreamMediaUrl } from '../dreamMediaService';
 
+jest.mock('@/lib/guestSession', () => ({ getGuestMediaOwner: jest.fn() }));
+
 jest.mock('@/lib/supabase', () => ({ supabase: { storage: { from: jest.fn() } } }));
 
 const ref = (path: string) => `supabase-storage://dream-images/${path}`;
@@ -188,5 +190,37 @@ describe('dream media resolver', () => {
     expect(sign).toHaveBeenCalledTimes(2);
     resolver.invalidateDreamMedia();
     expect(resolver.getDreamMediaMetrics().cacheEntries).toBe(0);
+  });
+});
+
+
+describe('guest signed media', () => {
+  const signed = (owner: string, exp = 3600, tokenPath = `${owner}/image.png`) => {
+    const token = `header.${btoa(JSON.stringify({ exp, url: `dream-images/${tokenPath}` }))}.signature`;
+    return `https://project.test/storage/v1/object/sign/dream-images/${owner}/image.png?token=${token}`;
+  };
+  it('preserves unexpired locally owned guest media without anonymous signing, then expires', async () => {
+    let now = 0;
+    const sign = jest.fn();
+    const resolver = createDreamMediaResolver({ sign, now: () => now, storageOrigin: 'https://project.test', guestOwner: async () => 'guest_device' });
+    const imageUrl = signed('guest_device');
+    expect(await resolver.resolveDreamMedia({ imageUrl }, null)).toMatchObject({ imageUrl, imageStatus: 'ready', expiresAt: 3540000 });
+    now = 3540000;
+    expect((await resolver.resolveDreamMedia({ imageUrl }, null)).imageStatus).toBe('error');
+    expect(sign).not.toHaveBeenCalled();
+  });
+  it('rejects other guests, path-token mismatch and unsigned references', async () => {
+    const resolver = createDreamMediaResolver({ sign: jest.fn(), now: () => 0, storageOrigin: 'https://project.test', guestOwner: async () => 'guest_device' });
+    for (const imageUrl of [signed('guest_other'), signed('guest_device', 3600, 'guest_other/image.png'), ref('guest_device/image.png')]) {
+      expect((await resolver.resolveDreamMedia({ imageUrl }, null)).imageStatus).toBe('error');
+    }
+  });
+  it('discards local ownership resolution after account change', async () => {
+    let finish!: (value: string) => void;
+    const resolver = createDreamMediaResolver({ sign: jest.fn(), now: () => 0, storageOrigin: 'https://project.test', guestOwner: () => new Promise(resolve => { finish = resolve; }) });
+    const request = resolver.resolveDreamMedia({ imageUrl: signed('guest_device') }, null);
+    resolver.setDreamMediaScope('A');
+    finish('guest_device');
+    expect((await request).imageStatus).toBe('error');
   });
 });

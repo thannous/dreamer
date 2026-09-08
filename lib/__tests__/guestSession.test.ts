@@ -62,6 +62,28 @@ describe('guestSession bootstrap state', () => {
     mockGetTurnstileToken.mockReset();
   });
 
+  it('resolves guest media ownership locally without bootstrapping a session', async () => {
+    const guestSession = loadGuestSessionModule('android');
+    const secureStore = require('expo-secure-store');
+    secureStore.getItemAsync.mockResolvedValue(null);
+    await expect(guestSession.getGuestMediaOwner()).resolves.toBe('guest_fingerprint');
+    expect(require('@/lib/http').fetchJSON).not.toHaveBeenCalled();
+    secureStore.getItemAsync.mockRejectedValueOnce(new Error('unavailable'));
+    await expect(guestSession.getGuestMediaOwner()).resolves.toBe('guest_fingerprint');
+  });
+
+  it('uses the locally stored QA ownership only for the current fingerprint', async () => {
+    const guestSession = loadGuestSessionModule('android');
+    const secureStore = require('expo-secure-store');
+    const quotaSubject = 'qa:11111111-1111-4111-8111-111111111111';
+    const record = { fingerprint: 'fingerprint', expiresAt: new Date(0).toISOString(), token: `h.${btoa(JSON.stringify({ quotaSubject }))}.s` };
+    secureStore.getItemAsync.mockResolvedValue(JSON.stringify(record));
+    await expect(guestSession.getGuestMediaOwner()).resolves.toBe(`guest_${quotaSubject}`);
+    secureStore.getItemAsync.mockResolvedValue(JSON.stringify({ ...record, fingerprint: 'other' }));
+    await expect(guestSession.getGuestMediaOwner()).resolves.toBe('guest_fingerprint');
+    expect(require('@/lib/http').fetchJSON).not.toHaveBeenCalled();
+  });
+
   it('starts ready on iOS and stays ready when initGuestSession is a no-op', async () => {
     const guestSession = loadGuestSessionModule('ios');
 

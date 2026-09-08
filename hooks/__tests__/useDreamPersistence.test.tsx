@@ -235,9 +235,26 @@ describe('useDreamPersistence', () => {
       await flushEffects();
       const next = operation === 'delete' ? [] : [{ ...original, title: 'edited locally' }];
       await act(async () => { await result.current.persistRemoteDreams(next); });
+      const unrelated = buildDream({ id: 703, remoteId: 703, title: 'new on another device' });
+      await act(async () => { remote.resolve([original, unrelated]); });
+      expect(result.current.dreams).toEqual(expect.arrayContaining([...next, unrelated]));
+      expect(result.current.dreams).toHaveLength(next.length + 1);
+      expect(mockSaveCachedRemoteDreams).toHaveBeenLastCalledWith(expect.arrayContaining([...next, unrelated]), 'user:user-123');
+    });
+
+    it('applies a newly durable tombstone after merging a still-visible local edit', async () => {
+      const remote = deferred<DreamAnalysis[]>();
+      const original = buildDream({ id: 704, remoteId: 1704 });
+      mockGetCachedRemoteDreams.mockResolvedValue({ status: 'loaded', value: [original] });
+      mockFetchFromSupabase.mockReturnValue(remote.promise);
+      mockGetDreamsMigrationSynced.mockResolvedValue(true);
+      const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await flushEffects();
+      await act(async () => { await result.current.persistRemoteDreams([{ ...original, title: 'local edit' }]); });
+      mockGetPendingMutations.mockResolvedValue([legacyMutation({ id: 'new-delete', type: 'delete', dreamId: 704, remoteId: 1704, createdAt: 2 })]);
       await act(async () => { remote.resolve([original]); });
-      expect(result.current.dreams).toEqual(next);
-      expect(mockSaveCachedRemoteDreams).toHaveBeenLastCalledWith(next, 'user:user-123');
+      expect(result.current.dreams).toEqual([]);
+      expect(mockSaveCachedRemoteDreams).toHaveBeenLastCalledWith([], 'user:user-123');
     });
 
     it('runs an incomplete migration after the refresh itself changed the cache', async () => {
