@@ -104,6 +104,7 @@ import {
 } from '@/services/lucidMorningVoiceNoteStorage';
 import {
   clearLucidTrainerLocalData,
+  clearLucidTrainerClaimedGuestData,
   getLucidTrainerState,
   loadLucidTrainerState,
   loadLucidTrainerSyncQueue,
@@ -566,7 +567,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         updateState: (scope, updater) => updateLucidTrainerState(scope, updater),
         // Importing a storage scope must not cancel the authenticated account's
         // active reminders. Reminder reconciliation remains account-scoped.
-        clearScope: (scope) => clearLucidTrainerLocalData(scope, undefined, async () => {}),
+        clearScope: clearLucidTrainerClaimedGuestData,
       },
     });
     if (result.claimed) {
