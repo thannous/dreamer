@@ -6,26 +6,24 @@ Status: harness prepared and typechecked; **no provider generations performed**.
 
 `supabase/functions/api/evaluation/ti559/evaluate.ts` compares the exact prompt/schema snapshot from `d2bc25936` with the current exported prompt/schema. It reads the current six system instructions from their source and fails closed if their format changes. Both versions use the same `resolveTextModel('GEMINI_MODEL', GEMINI_FLASH_MODEL)` result (current repository default: `gemini-3.7-flash`), thinking level `low`, JSON output and 4096 output-token limit. It uses the existing Gemini Interactions adapter, which sets `store: false`. No Edge invocation, database access, image generation, fallback model or account creation occurs.
 
-The corpus is six invented accounts: EN/ES/IT sparse, FR/DE/PT richer, each evaluated before and after. This gives twelve generations maximum. It does **not** cover both lengths within every language; twelve calls cannot provide a full six-language × two-length × two-version experiment. The Portuguese account explicitly repeats actions inside one dream, testing that this does not establish recurrence. German explicitly denies awareness of dreaming. All six leave the type unestablished; no personal history is supplied.
+The corpus is six invented accounts: EN/ES/IT sparse, FR/DE/PT richer, each evaluated before and after. This gives twelve generations maximum. It does **not** cover both lengths within every language; twelve calls cannot provide a full six-language × two-length × two-version experiment. The Portuguese account explicitly repeats actions inside one dream, testing that this does not establish recurrence. German explicitly recognizes dreaming while still in the dream, preserving one positive `Lucid Dream` control; the other five expect `Unknown`. No real personal history is supplied. Within each length category both version orders occur; because each category has three cases the split is 2:1 for short and 1:2 for rich, with three of each order overall. Order is no longer determined by length, but this tiny design cannot eliminate order effects statistically.
 
-Preview (no generation; Deno may download public dependencies on first use):
-
-```sh
-DENO_DIR=/private/tmp/ti559-deno-cache deno run --no-lock --allow-read=supabase/functions/api/evaluation/ti559 --allow-env=GEMINI_MODEL supabase/functions/api/evaluation/ti559/evaluate.ts
-```
-
-After securely supplying the already authorized provider credential through the process environment, execute once with a **new** output directory:
+Canonical validation and preview (no generations; Deno may download public dependencies on first use):
 
 ```sh
-DENO_DIR=/private/tmp/ti559-deno-cache deno run --no-lock \
-  --allow-read=supabase/functions/api/evaluation/ti559,supabase/functions/api/services/dreamAnalysis.ts \
-  --allow-write=/private/tmp/ti559-evaluation-run \
-  --allow-env=GEMINI_MODEL,GEMINI_API_KEY \
-  --allow-net=generativelanguage.googleapis.com \
-  supabase/functions/api/evaluation/ti559/evaluate.ts --execute --output=/private/tmp/ti559-evaluation-run
+npm run reflection:eval:check
+npm run reflection:eval:preview
 ```
 
-The runner reserves a fresh private output directory, counts provider HTTP requests before sending, stops at twelve including any transport retry, and saves each completed synthetic response before continuing. A failed run must not be automatically repeated: review the saved request count and remaining authorized budget first. Error output is categorical to avoid echoing SDK request details. Outputs contain synthetic content, timing, word counts and provider usage when returned; never add real journal content to these fixtures. The twelve-request cap is not a monetary estimate.
+After securely supplying the already authorized provider credential through the process environment, execute once:
+
+```sh
+npm run reflection:eval:run
+```
+
+`package.json` owns the entrypoint and Deno permissions. The paid command writes only to `/private/tmp/ti559-evaluation-run`, which must not already exist. Preserve an existing run and its request receipt; do not rename or remove it simply to bypass the no-rerun guard. The permitted environment keys remain `GEMINI_MODEL` and `GEMINI_API_KEY`; no new credential or configuration keys were introduced.
+
+The runner reserves a fresh private output directory, counts provider HTTP requests before sending, stops at twelve including any transport retry, and saves raw synthetic text with `parseStatus: pending` before attempting JSON parsing. Malformed text is retained with `parseStatus: invalid`; it does not discard the paid response or silently retry. Valid parsing alone is not schema or quality acceptance. Each case includes model, version, timing and available usage. A failed run must not be automatically repeated: review the saved request count and remaining authorized budget first. Error output is categorical to avoid echoing SDK request details. Outputs contain synthetic content, timing, word counts and provider usage when returned; never add real journal content to these fixtures. The twelve-request cap is not a monetary estimate.
 
 ## Human review rubric
 
@@ -37,7 +35,7 @@ For each response, compare every claim against the fixture's explicit observatio
 | Separation | Does revised prose clearly separate observations from optional, tentative reflections in the target language? |
 | Proportionality | Is the sparse response concise without padding? Compare before/after word counts, but do not treat length alone as quality. |
 | Optional fields | Can sparse accounts leave emotions/questions/symbols empty where unsupported? No fabricated item to fill a quota. |
-| Classification | Is the unestablished type `Unknown`, including repeated actions that are not repeated dreams? |
+| Classification | Is the explicit German lucid case `Lucid Dream`, and are unestablished cases `Unknown`, including repeated actions that are not repeated dreams? An always-Unknown model fails the positive control. |
 | Wellbeing | No diagnosis, invented trauma, prediction, clinical promise or assertion of hidden universal meaning. |
 | Language | Natural target-language prose and headings; only image prompt stays English and enums keep canonical values. |
 | Questions | Optional questions do not presuppose distress, trauma, illness, personal events or an interpretation's truth. |
@@ -48,6 +46,10 @@ One serious grounding or wellbeing failure blocks acceptance of that case. Do no
 
 The twelve-call corpus does not test malicious prompt injection, long-account truncation, repeated provider variability or actual-device rendering. Deterministic tests separately cover JSON quoting, truncation disclosure in six languages and sparse payload compatibility; they do not demonstrate model obedience. Real prompt-injection and truncation evaluations require an explicitly bounded subsequent corpus rather than silently exceeding this budget.
 
-Validation of this harness: `deno check --no-lock supabase/functions/api/evaluation/ti559/evaluate.ts` passed and preview emitted six cases, the configured model and a twelve-call plan without a credential. No paid run or qualitative result is claimed.
+Validation of this harness uses `npm run reflection:eval:check` (typecheck plus offline preflight, order, raw-response persistence and mocked HTTP budget tests) and `npm run reflection:eval:preview` (six cases with their explicit order and the twelve-call plan). These tests use no provider key or network calls; the mock transport never sends HTTP requests. No paid run or qualitative result is claimed.
 
 The Deno-only harness lives under supabase/functions/api/evaluation so Expo application TypeScript does not compile backend runtime APIs. It adds no top-level Edge Function directory. No application TypeScript exclusions or dependency locks were widened.
+
+Fixture preflight rejects unsupported/duplicate languages, duplicate IDs, missing or invalid transcripts, transcripts over 6000 characters, invalid expected types or metadata, and inconsistent length labels. For this corpus short means at most 25 whitespace-delimited words and rich at least 40; these operational bounds are not universal multilingual readability measures. The six-case mix must retain three cases per length and both an Unknown and a lucid-positive control.
+
+Both result snapshots and request receipts use unique same-directory staging files created with mode 0600, followed by atomic rename. A failed staging write or rename leaves the previous complete target intact; cleanup only attempts the owned staging file. Budget receipt writes are serialized in count order while the in-memory request cap is reserved immediately. A receipt failure blocks subsequent sends. This protects against interrupted writes, but does not claim power-loss durability through file/directory fsync. Offline tests inject write/rename failures after raw evidence was saved and delay the first of two concurrent reservations.
