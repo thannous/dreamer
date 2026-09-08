@@ -109,3 +109,66 @@ it('hides an expired private URL offline without starting a network request', as
     unmount();
   } finally { jest.useRealTimers(); }
 });
+
+
+it('recovers a transient online signing failure with bounded backoff', async () => {
+  jest.useFakeTimers();
+  try {
+    resolve.mockRejectedValueOnce(new Error('temporary')).mockResolvedValueOnce(result('https://signed/recovered') as any);
+    const { result: state, unmount } = renderHook(() => useDreamMedia(dream('private')), { wrapper });
+    await act(async () => {});
+    await act(async () => { jest.advanceTimersByTime(1000); });
+    expect(state.current.imageUrl).toBe('https://signed/recovered');
+    expect(resolve).toHaveBeenCalledTimes(2);
+    unmount();
+  } finally { jest.useRealTimers(); }
+});
+
+it('stops after two automatic retries and permits an explicit retry', async () => {
+  jest.useFakeTimers();
+  try {
+    resolve.mockRejectedValue(new Error('temporary'));
+    const { result: state, unmount } = renderHook(() => useDreamMedia(dream('private')), { wrapper });
+    await act(async () => {});
+    await act(async () => { jest.advanceTimersByTime(1000); });
+    await act(async () => { jest.advanceTimersByTime(3000); });
+    await act(async () => { jest.advanceTimersByTime(60000); });
+    expect(resolve).toHaveBeenCalledTimes(3);
+    resolve.mockResolvedValue(result('https://signed/recovered') as any);
+    await act(async () => { state.current.retry(); });
+    expect(state.current.imageUrl).toBe('https://signed/recovered');
+    unmount();
+  } finally { jest.useRealTimers(); }
+});
+
+it('cancels scheduled retries when offline or unmounted', async () => {
+  jest.useFakeTimers();
+  try {
+    resolve.mockRejectedValue(new Error('temporary'));
+    const { rerender, unmount } = renderHook(() => useDreamMedia(dream('private')), { wrapper });
+    await act(async () => {});
+    mockNetwork.isInternetReachable = false; rerender();
+    await act(async () => { jest.advanceTimersByTime(4000); });
+    expect(resolve).toHaveBeenCalledTimes(1);
+    mockNetwork.isInternetReachable = true; rerender();
+    await act(async () => {});
+    unmount();
+    await act(async () => { jest.advanceTimersByTime(4000); });
+    expect(resolve).toHaveBeenCalledTimes(2);
+  } finally { jest.useRealTimers(); }
+});
+
+
+it('does not overflow a long guest expiry timer or hide unexpired media offline', async () => {
+  jest.useFakeTimers();
+  try {
+    resolve.mockResolvedValueOnce({ ...result('https://signed/guest'), expiresAt: Date.now() + 365 * 86400000 } as any);
+    const { result: state, rerender, unmount } = renderHook(() => useDreamMedia(dream('guest')), { wrapper });
+    await act(async () => {});
+    mockNetwork.isInternetReachable = false; rerender();
+    await act(async () => { jest.advanceTimersByTime(2_147_483_648); });
+    expect(state.current.imageUrl).toBe('https://signed/guest');
+    expect(resolve).toHaveBeenCalledTimes(1);
+    unmount();
+  } finally { jest.useRealTimers(); }
+});

@@ -17,6 +17,16 @@ let mockPersistenceState: { status: 'ready' | 'loading'; target: 'device' } | { 
 };
 const mockRetryPersistence = jest.fn(async () => undefined);
 
+// This route test exercises filter controls, not authentication or media I/O.
+// Keep their SDK initialization out of the isolated UI environment.
+jest.doMock('@/context/AuthContext', () => ({ AuthContext: React.createContext(null) }));
+jest.doMock('@/services/dreamMediaService', () => ({
+  resolveDreamMedia: async () => ({ imageUrl: '', thumbnailUrl: undefined }),
+}));
+jest.doMock('@/services/supabaseDreamService', () => ({
+  fetchDreamListPage: jest.fn(),
+}));
+
 jest.doMock('@/context/DreamsContext', () => ({
   useDreams: () => ({
     dreams: [],

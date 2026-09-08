@@ -20,25 +20,42 @@ export function useDreamMedia(dream?: DreamAnalysis | null) {
   useEffect(() => {
     if (!online) return;
     let current = true;
-    resolveDreamMedia({ imageUrl, thumbnailUrl, imageUpdatedAt, analysisRequestId, analyzedAt }, userId).then(value => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let attempts = 0;
+    const run = async () => {
+      let value: DreamMediaResult;
+      try {
+        value = await resolveDreamMedia({ imageUrl, thumbnailUrl, imageUpdatedAt, analysisRequestId, analyzedAt }, userId);
+      } catch {
+        value = { imageUrl: '', imageStatus: 'error', thumbnailStatus: 'error' };
+      }
       if (!current) return;
       setResolved({ identity, epoch: refreshEpoch, value });
-    }).catch(() => {
-      if (current) setResolved({ identity, epoch: refreshEpoch, value: {
-        imageUrl: '', imageStatus: 'error', thumbnailStatus: 'error',
-      } });
-    });
-    return () => { current = false; };
+      if ((value.imageStatus === 'error' || value.thumbnailStatus === 'error') && attempts < 2) {
+        timer = setTimeout(() => { attempts++; void run(); }, attempts === 0 ? 1000 : 3000);
+      }
+    };
+    void run();
+    return () => { current = false; if (timer) clearTimeout(timer); };
   }, [identity, imageUrl, thumbnailUrl, imageUpdatedAt, analysisRequestId, analyzedAt, userId, refreshEpoch, online]);
   // Expiry must keep running offline, even when no replacement request can start.
   useEffect(() => {
     if (resolved?.identity !== identity || resolved.epoch !== refreshEpoch || resolved.value.expiresAt === undefined) return;
-    const timer = setTimeout(() => setRefreshEpoch(epoch => epoch + 1), Math.max(1, resolved.value.expiresAt - Date.now() + 1));
+    const expiresAt = resolved.value.expiresAt;
+    let timer: ReturnType<typeof setTimeout>;
+    const scheduleExpiry = () => {
+      timer = setTimeout(() => {
+        if (Date.now() < expiresAt) scheduleExpiry();
+        else setRefreshEpoch(epoch => epoch + 1);
+      }, Math.min(2_147_483_647, Math.max(1, expiresAt - Date.now() + 1)));
+    };
+    scheduleExpiry();
     return () => clearTimeout(timer);
   }, [resolved, identity, refreshEpoch]);
   const value = resolved?.identity === identity && resolved.epoch === refreshEpoch
     ? resolved.value : undefined;
   return {
+    retry: () => setRefreshEpoch(epoch => epoch + 1),
     imageUrl: value?.imageUrl ?? getDirectDreamMediaUrl(imageUrl) ?? '',
     thumbnailUrl: value?.thumbnailUrl ?? getDirectDreamMediaUrl(thumbnailUrl),
     loading: !value && Boolean(imageUrl || thumbnailUrl),

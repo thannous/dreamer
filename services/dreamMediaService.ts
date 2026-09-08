@@ -1,5 +1,6 @@
 import Constants from 'expo-constants';
 import { supabase } from '@/lib/supabase';
+import { getGuestMediaOwner } from '@/lib/guestSession';
 
 const BUCKET = 'dream-images';
 const PREFIX = `supabase-storage://${BUCKET}/`;
@@ -33,6 +34,7 @@ type Options = {
   sign: (bucket: string, paths: string[], expiresIn: number) => Promise<SignedResponse>;
   now?: () => number;
   storageOrigin?: string;
+  guestOwner?: () => Promise<string | null>;
 };
 type Entry = {
   path: string;
@@ -58,7 +60,7 @@ export function getDirectDreamMediaUrl(value?: string | null): string | undefine
 const failed: Resource = { url: '', status: 'error' };
 
 /** Private URLs live only in this bounded, account-scoped memory cache. */
-export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin }: Options) {
+export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, guestOwner }: Options) {
   let owner: string | null = null;
   let generation = 0;
   let active = 0;
@@ -144,14 +146,31 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin }
     }
   }
 
-  function resolve(value: string | null | undefined, userId: string | null, version?: Version): Promise<Resource> {
+  async function resolve(value: string | null | undefined, userId: string | null, version?: Version): Promise<Resource> {
     if (userId !== owner) return Promise.resolve(failed);
     if (!value) return Promise.resolve({ url: '', status: 'missing' });
     const parsed = parse(value);
     if (!parsed) return Promise.resolve(failed);
     if ('direct' in parsed) return Promise.resolve({ url: parsed.direct, status: 'ready' });
     const { path } = parsed;
-    if (!owner || path.split('/')[0] !== owner) return Promise.resolve(failed);
+    if (!owner) {
+      // Guest objects cannot be re-signed with anonymous RLS. Preserve only this
+      // device's existing server-signed capability, up to its actual expiry.
+      const requestGeneration = generation;
+      const localOwner = await guestOwner?.().catch(() => null);
+      if (!localOwner || requestGeneration !== generation || owner !== null || path.split('/')[0] !== localOwner) return failed;
+      try {
+        const url = new URL(value);
+        if (url.origin !== origin || !url.pathname.startsWith('/storage/v1/object/sign/dream-images/')) return failed;
+        const encoded = url.searchParams.get('token')?.split('.')[1];
+        if (!encoded) return failed;
+        const payload = JSON.parse(atob(encoded.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(encoded.length / 4) * 4, '=')));
+        const expiresAt = typeof payload.exp === 'number' ? payload.exp * 1000 - EXPIRY_MARGIN_MS : NaN;
+        if (!Number.isFinite(expiresAt) || expiresAt <= now() || payload.url !== `${BUCKET}/${path}`) return failed;
+        return { url: value, status: 'ready', expiresAt };
+      } catch { return failed; }
+    }
+    if (path.split('/')[0] !== owner) return Promise.resolve(failed);
     const cached = cache.get(path);
     if (cached && cached.version === version && cached.expiresAt > now()) {
       counters.cacheHits++;
@@ -219,6 +238,7 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin }
 
 const resolver = createDreamMediaResolver({
   storageOrigin: configuredOrigin,
+  guestOwner: getGuestMediaOwner,
   sign: (bucket, paths, expiresIn) => supabase.storage.from(bucket).createSignedUrls(paths, expiresIn),
 });
 export const { resolveDreamMedia, setDreamMediaScope, invalidateDreamMedia, getDreamMediaMetrics } = resolver;

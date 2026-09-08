@@ -1,12 +1,16 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { DreamAnalysis } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
 
-jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => ({ imageUrl: dream?.imageUrl ?? '', thumbnailUrl: dream?.thumbnailUrl, loading: false, error: false }) }));
+let mockMedia: any = null;
+let mockCompositeLoads = true;
+const mockRetryMedia = jest.fn();
+const mockShareComposite = jest.fn();
+jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => mockMedia ?? ({ imageUrl: dream?.imageUrl ?? '', thumbnailUrl: dream?.thumbnailUrl, loading: false, error: false, retry: mockRetryMedia }) }));
 
 const mockSetParams = jest.fn();
 let mockSearchParams: { id: string; saved?: string | string[] } = { id: '42', saved: '1' };
@@ -147,6 +151,7 @@ jest.mock('@/components/motion', () => ({
     children,
     className,
     onPress,
+    disabled,
     testID,
   }: {
     accessibilityLabel?: string;
@@ -154,6 +159,7 @@ jest.mock('@/components/motion', () => ({
     children?: React.ReactNode;
     className?: string;
     onPress?: () => void;
+    disabled?: boolean;
     testID?: string;
   }) => (
     <button
@@ -161,6 +167,7 @@ jest.mock('@/components/motion', () => ({
       className={className}
       data-testid={testID}
       onClick={onPress}
+      disabled={disabled}
       role={accessibilityRole}
       type="button"
     >
@@ -179,7 +186,10 @@ jest.mock('@/components/inspiration/GlassCard', () => ({
 }));
 
 jest.mock('@/components/journal/DreamShareImage', () => ({
-  DreamShareImage: () => null,
+  DreamShareImage: ({ resolvedMedia, onMediaReady }: any) => {
+    require('react').useEffect(() => { if (resolvedMedia?.imageUrl) onMediaReady(resolvedMedia.imageUrl, mockCompositeLoads); }, [resolvedMedia?.imageUrl, onMediaReady]);
+    return null;
+  },
 }));
 
 jest.mock('@/components/journal/ImageRetry', () => ({
@@ -283,7 +293,7 @@ jest.mock('@/hooks/useClearWebFocus', () => ({
 jest.mock('@/hooks/useDreamShareComposite', () => ({
   useDreamShareComposite: () => ({
     shareImageRef: { current: null },
-    shareComposite: jest.fn(),
+    shareComposite: mockShareComposite,
     isGenerating: false,
   }),
 }));
@@ -342,6 +352,11 @@ const { default: JournalDetailScreen } = require('@/app/journal/[id]');
 describe('journal detail saved confirmation route', () => {
   beforeEach(() => {
     mockSetParams.mockReset();
+    mockMedia = null;
+    mockRetryMedia.mockReset();
+    mockShareComposite.mockReset();
+    require('react-native').Platform.OS = 'web';
+    require('react-native').Share.share.mockClear();
     mockSearchParams = { id: '42', saved: '1' };
     mockDreams = [buildDream()];
   });
@@ -383,4 +398,61 @@ describe('journal detail saved confirmation route', () => {
     expect(deleteButton.className).toContain('min-h-[44px]');
     expect(deleteButton.className).toContain('min-w-[44px]');
   });
+});
+
+
+describe('native share media readiness', () => {
+  beforeEach(() => { mockCompositeLoads = true; mockShareComposite.mockClear(); mockRetryMedia.mockClear(); require('react-native').Share.share.mockClear(); });
+  afterEach(() => { cleanup(); require('react-native').Platform.OS = 'web'; mockMedia = null; });
+  it('keeps sharing pending through delayed signing then shares the composite', async () => {
+    require('react-native').Platform.OS = 'android';
+    mockDreams = [buildDream({ imageUrl: 'supabase-storage://dream-images/A/image', isAnalyzed: true, analysisStatus: 'done' })];
+    mockMedia = { imageUrl: '', loading: true, error: false, retry: mockRetryMedia };
+    const { rerender } = render(<JournalDetailScreen />);
+    expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    expect(require('react-native').Share.share).not.toHaveBeenCalled();
+    mockMedia = { imageUrl: 'https://signed/image', loading: false, error: false, retry: mockRetryMedia };
+    rerender(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    expect(mockShareComposite).toHaveBeenCalled();
+    expect(require('react-native').Share.share).not.toHaveBeenCalled();
+  });
+  it('retries the same resolved URL after composite image failure', () => {
+    require('react-native').Platform.OS = 'android';
+    mockDreams = [buildDream({ imageUrl: 'https://cdn/image', isAnalyzed: true, analysisStatus: 'done' })];
+    mockMedia = { imageUrl: 'https://cdn/image', loading: false, error: false, retry: mockRetryMedia };
+    mockCompositeLoads = false;
+    render(<JournalDetailScreen />);
+    expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(false);
+    mockCompositeLoads = true;
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    expect(mockRetryMedia).toHaveBeenCalledTimes(1);
+    expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(false);
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    expect(mockShareComposite).toHaveBeenCalledTimes(1);
+    expect(require('react-native').Share.share).not.toHaveBeenCalled();
+  });
+  it('offers retry on media failure without silently sharing text', () => {
+    require('react-native').Platform.OS = 'android';
+    mockDreams = [buildDream({ imageUrl: 'supabase-storage://dream-images/A/image', isAnalyzed: true, analysisStatus: 'done' })];
+    mockMedia = { imageUrl: '', loading: false, error: true, retry: mockRetryMedia };
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    expect(mockRetryMedia).toHaveBeenCalled();
+    expect(require('react-native').Share.share).not.toHaveBeenCalled();
+  });
+});
+
+
+it('preserves intentional native text sharing when the dream has no media', () => {
+  require('react-native').Platform.OS = 'android';
+  require('react-native').Share.share.mockClear();
+  mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done' })];
+  mockMedia = { imageUrl: '', loading: false, error: false, retry: mockRetryMedia };
+  try {
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    expect(require('react-native').Share.share).toHaveBeenCalled();
+  } finally { cleanup(); require('react-native').Platform.OS = 'web'; mockMedia = null; }
 });
