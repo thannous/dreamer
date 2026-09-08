@@ -1,6 +1,6 @@
 # Noctalia Lucid Trainer — Spécification produit & technique
 
-**Version documentaire :** 1.1 · **Revue ciblée :** 2026-09-07, base `795878a76` · **Statut :** code présent ; publication native non attestée par cette revue
+**Version documentaire :** 1.2 · **Revue ciblée :** 2026-09-08, base `d2bc25936` · **Statut :** code présent ; publication native non attestée par cette revue
 
 Le [contrat de marque](noctalia-brand-contract.md) définit les responsabilités des trois apps. Cette revue corrige les contrats devenus contradictoires (autonomie, microphone local, entrée en quatre écrans) ; les inventaires et dettes historiques datés du 20 août ne constituent pas une nouvelle validation exhaustive. TI-518 porte la séparation runtime des lectures Journal, TI-529 la qualification des permissions et TI-531 la preuve sur appareil.
 **Source de vérité :** le code du dépôt `dreamer`, branche du module Lucid Trainer. Ce document décrit ce
@@ -21,7 +21,7 @@ au rêve lucide. Elle construit une routine en trois temps — l'attention en jo
 la préparation au coucher (programmes guidés, signaux nocturnes facultatifs), le bilan au réveil —
 puis restitue des tendances personnelles et une recommandation calculée hors ligne.
 
-Lucid possède ses observations matinales, notes vocales locales, signes confirmés et routines. Journal conserve les récits et leur réflexion facultative. Une observation d'entraînement n'est pas un doublon à supprimer ; installer Journal ou ouvrir un compte ne doit pas être nécessaire à la pratique. Au SHA de référence, plusieurs écrans lisent encore Journal : TI-518 corrige cet écart ; TI-522 définira un import facultatif distinct.
+Lucid possède ses observations matinales, notes vocales locales, signes confirmés et routines. Journal conserve les récits et leur réflexion facultative. Une observation d'entraînement n'est pas un doublon à supprimer ; installer Journal ou ouvrir un compte ne doit pas être nécessaire à la pratique. La composition autonome ne monte plus le fournisseur de données Journal ; les écrans utilisent les observations Lucid. TI-522 reste un import facultatif à livrer, distinct de la connexion au même compte.
 
 Trois techniques sont couvertes, et seulement trois (`LUCID_TECHNIQUES` dans `lib/lucid/model.ts`) :
 **MILD**, **SSILD**, **WBTB**.
@@ -126,7 +126,13 @@ Il ajoute en revanche neuf sons de signal groupés (`expo-audio` + `expo-notific
 et rétablit `expo-notifications` **sans** `withDisableNotificationsBootActions` : le compagnon veut la
 restauration des notifications après redémarrage.
 
-### 2.4 Arborescence du module
+### 2.4 Intégration sommeil facultative
+
+`app/lucid/sleep-integration.tsx` propose un import explicite de l’historique `sleepAnalysis` Apple Health, en lecture seule. Aucun appel d’autorisation au démarrage : le bouton de connexion/import déclenche la demande. Android reste utilisable sans HealthKit. Une réponse vide après demande ne permet pas de distinguer un refus, une révocation ou une absence de données ; l’interface ne doit pas prétendre les distinguer. Aucune détection REM en temps réel, écriture HealthKit ou commande des signaux nocturnes ne découle de cet import.
+
+Le snapshot a son stockage local séparé et protégé sur natif. Désactiver conserve les échantillons ; supprimer dans cet écran les efface. La suppression générale Lucid efface aussi ce snapshot. Il ne fait pas partie de l’export JSON/CSV structuré ni du transport de synchronisation Lucid. Les fichiers audio sont partagés individuellement, jamais inclus automatiquement dans cet export. Voir la [matrice des capacités et données](../doc_web_interne/docs/architecture/NOCTALIA-CAPABILITIES-2026-09-08.md) pour les distinctions code, configuration et preuve native.
+
+### 2.5 Arborescence du module
 
 ```
 app/lucid/
@@ -138,7 +144,7 @@ app/lucid/
 │   ├── night.tsx                   # Nuit
 │   ├── progress.tsx                # Progression
 │   └── settings.tsx                # Réglages
-├── onboarding.tsx                  # 7 étapes
+├── onboarding.tsx                  # 4 écrans
 ├── program/[id].tsx                # détail d'un programme
 ├── session/[program]/[session].tsx # séance guidée
 ├── reality-check.tsx               # modal
@@ -532,6 +538,8 @@ de Noctalia rattacherait les achats à la mauvaise application. La porte de rele
 
 ## 10. Pont avec Noctalia
 
+Le lien catégoriel historique ci-dessous ne constitue ni l’import de récits TI-522 ni la promotion progressive TI-523 : ces deux parcours restent à livrer. Un compte partagé ne vaut pas consentement de partage.
+
 Deux ponts, dans les deux sens, tous deux étroits :
 
 **Noctalia → Lucid.** La carte du rituel « lucide » propose « Ouvrir Lucid Trainer » et navigue vers
@@ -630,7 +638,9 @@ appareil décrite dans le runbook de release.
 
 ---
 
-## 14. Ce qui n'est pas fait
+## 14. Inventaire historique du 20 août — à requalifier
+
+Les constats ci-dessous sont conservés pour traçabilité, pas comme état actuel des tickets. Les preuves ultérieures TI-518/TI-531 et la matrice TI-529 priment pour les surfaces requalifiées. Cette section ne permet pas de conclure aujourd’hui à l’absence d’un test natif, SQL ou d’une publication.
 
 Dettes connues, vérifiées dans le code au 2026-08-20. Elles sont listées ici parce qu'un spec qui les
 tait ment par omission.
@@ -738,7 +748,7 @@ onglets, le bilan du matin, le refus des signaux nocturnes tant que la sécurit�
 acceptée, **et la transition inverse** : une fois les conditions remplies, le verrou s'ouvre — sans
 quoi un bouton câblé sur `false` passerait la suite.
 
-Aucun de ces flux n'a jamais tourné : il n'y a pas eu d'émulateur dans la session qui les a écrits.
+Au relevé historique du 20 août, aucun de ces flux n'avait tourné : il n'y a pas eu d'émulateur dans la session qui les a écrits.
 Leur syntaxe est calquée sur les flux existants et leurs testID sont tous vérifiés dans le code, mais
 la première exécution reste à faire, et c'est elle qui dira si le filet tient.
 
@@ -753,9 +763,9 @@ runbook de release reste entièrement manuelle.
 Noctalia parle six langues, Lucid Trainer cinq. `normalizeLucidLocale` replie `pt` sur `en` sans le
 signaler : un utilisateur lusophone du journal retrouve le compagnon en anglais.
 
-### 14.10 Non publié
+### 14.10 Publication — relevé historique du 20 août
 
-L'application n'a jamais été soumise à un magasin. `version` et `runtimeVersion` valent `1.0.0`,
+Le relevé du 20 août ne prouvait aucune soumission à un magasin. Il ne décrit pas l’état actuel des stores. `version` et `runtimeVersion` valent `1.0.0`,
 `buildNumber` et `versionCode` valent `1`, les clés RevenueCat du compagnon ne sont pas provisionnées,
 et les migrations Supabase du module sont additives mais **n'ont été ni appliquées ni testées sur une
 base réelle** (rapport de passation, §1 et §7). Aucun contrat SQL de ces migrations n'a donc été
