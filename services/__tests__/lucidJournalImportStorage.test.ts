@@ -141,3 +141,23 @@ it('round trips null source dates on copies and pending conflicts while retainin
   expect(await x.adapter.load('guest')).toEqual(state);
   expect(copy.importedAt).toBe(date);
 });
+it('rejects non-string importedAt timestamps from persisted copies', async () => {
+  const x = fixture();
+  const state = snapshot(1);
+  const identity = Object.keys(state.copies)[0];
+  for (const importedAt of [42, [0]]) {
+    const invalid = structuredClone(state);
+    (invalid.copies[identity] as { importedAt: unknown }).importedAt = importedAt;
+    expect(() => x.adapter.save('guest', invalid, () => undefined)).toThrow('Invalid stored copy');
+  }
+  await x.adapter.save('guest', state, () => undefined);
+  const chunk = [...x.values.keys()].find(key => key.includes(':chunk:'))!;
+  const prefix = `encrypted:${chunk.length}:${chunk}`;
+  const stored = JSON.parse(x.values.get(chunk)!.slice(prefix.length)) as JournalImportSnapshot;
+  const copy = stored.copies[identity] as { importedAt: unknown };
+  for (const importedAt of [42, [0]]) {
+    copy.importedAt = importedAt;
+    x.values.set(chunk, `${prefix}${JSON.stringify(stored)}`);
+    await expect(x.adapter.load('guest')).rejects.toThrow('Invalid stored copy');
+  }
+});

@@ -17,7 +17,8 @@ function parse(raw: string): JournalImportSnapshot {
       identity !== journalCopyIdentity(copy.sourceAccount, copy.sourceId) || !/^\d+$/.test(copy.sourceId) ||
       !isJournalImportRevision(copy.sourceRevision) ||
       typeof copy.text !== 'string' || typeof copy.edited !== 'boolean' || typeof copy.deleted !== 'boolean' ||
-      !isJournalImportSourceDate(copy.createdAt) || !Number.isFinite(Date.parse(copy.importedAt)) ||
+      !isJournalImportSourceDate(copy.createdAt) || typeof copy.importedAt !== 'string' ||
+      !Number.isFinite(Date.parse(copy.importedAt)) ||
       (copy.incoming && (typeof copy.incoming.text !== 'string' || !isJournalImportRevision(copy.incoming.revision) ||
         !isJournalImportSourceDate(copy.incoming.createdAt)))) throw new Error('Invalid stored copy');
   }
