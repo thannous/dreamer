@@ -81,4 +81,11 @@ export const setVolume = (player: PlayerHandle, volume: number): void => {
 export const setLoop = (player: PlayerHandle, loop: boolean): void => {
   player.loop = loop;
 };
-export const release = (player: PlayerHandle): void => player.remove();
+/**
+ * Raw texture, soundscape, and local-cue players come from real.createPlayer
+ * even in mock mode and need native release. Mock-only handles still just
+ * remove().
+ */
+export const release = (player: PlayerHandle): void => {
+  real.release(player as real.PlayerHandle);
+};
