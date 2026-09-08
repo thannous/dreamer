@@ -1,4 +1,8 @@
-import { JournalTraversalError, type DreamListItem, type JournalPage, type JournalReadOptions } from '@/lib/journalReadContracts';
+import { createJournalRepository } from './journalRepository';
+import { mapRowToDream, mapDreamToRow, mapDreamToSyncPayload, parseSyncResult } from './journalDreamMapper';
+import { formatError, type CodedError } from '@/lib/journalErrors';
+import type { SyncMutationResult } from '@/lib/journalSyncContracts';
+import { DREAM_IMAGE_BUCKET, isStoredDreamImageValue, buildStorageRef, extractStoragePathFromUrl } from '@/lib/journalImageReference';
 import { invalidateDreamMedia } from './dreamMediaService';
 import type { PostgrestError } from '@supabase/supabase-js';
 
@@ -10,37 +14,19 @@ import {
   getMutationRemoteId,
   normalizeDreamMemoryMetadata,
 } from '@/lib/dreamUtils';
-import {
-  ANALYSIS_TRANSCRIPT_HASH_KEY,
-  isAnalysisTranscriptHash,
-} from '@/lib/dreamAnalysisFreshness';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import * as FileSystem from 'expo-file-system';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
 import type { Action as ImageManipulatorAction } from 'expo-image-manipulator';
 import { Image, Platform } from 'react-native';
 import type {
-  ChatMessage,
   DreamAnalysis,
-  DreamMemoryMetadata,
   DreamMutation,
-  DreamType,
-  DreamTheme,
 } from '@/lib/types';
 
+export type { SyncMutationResult, SyncMutationResultStatus } from '@/lib/journalSyncContracts';
+
 const DREAMS_TABLE = 'dreams';
-const DREAM_IMAGE_BUCKET = 'dream-images';
-const DREAM_IMAGE_STORAGE_REF_PREFIX = `supabase-storage://${DREAM_IMAGE_BUCKET}/`;
-
-const isRemoteImageUrl = (url?: string | null): boolean =>
-  Boolean(url && /^https?:\/\//.test(url));
-
-const isDreamImageStorageRef = (value?: string | null): value is string =>
-  Boolean(value && value.startsWith(DREAM_IMAGE_STORAGE_REF_PREFIX));
-
-const isStoredDreamImageValue = (value?: string | null): value is string =>
-  Boolean(value && (isRemoteImageUrl(value) || isDreamImageStorageRef(value)));
-
 const isDataUriImage = (value?: string | null): value is string =>
   Boolean(value && value.startsWith('data:image'));
 
@@ -256,28 +242,6 @@ const applyVariantToPath = (path: string, variant: 'image' | 'thumbnail') => {
   return `${base}-thumb${ext}`;
 };
 
-const buildStorageRef = (path: string): string =>
-  `${DREAM_IMAGE_STORAGE_REF_PREFIX}${path.split('/').map(encodeURIComponent).join('/')}`;
-
-const extractStoragePathFromUrl = (url: string): string | null => {
-  if (isDreamImageStorageRef(url)) {
-    return decodeURIComponent(url.slice(DREAM_IMAGE_STORAGE_REF_PREFIX.length));
-  }
-
-  try {
-    const parsed = new URL(url);
-    const parts = parsed.pathname.split('/').filter(Boolean); // storage v1 object public/sign dream-images ...
-    const publicIdx = parts.findIndex((p) => p === 'public' || p === 'sign');
-    if (publicIdx === -1) return null;
-    const bucket = parts[publicIdx + 1];
-    if (bucket !== DREAM_IMAGE_BUCKET) return null;
-    const objectPath = parts.slice(publicIdx + 2).join('/');
-    return decodeURIComponent(objectPath);
-  } catch {
-    return null;
-  }
-};
-
 const deleteFromBucketIfPossible = async (url?: string | null, ownerId?: string) => {
   if (!url || !isStoredDreamImageValue(url)) return;
   const path = extractStoragePathFromUrl(url);
@@ -289,13 +253,6 @@ const deleteFromBucketIfPossible = async (url?: string | null, ownerId?: string)
   } catch {
     console.warn('[supabaseDreamService] failed to delete old image');
   }
-};
-
-const toStoredImageReference = (value?: string | null): string => {
-  if (!value) return '';
-  const path = extractStoragePathFromUrl(value);
-  if (path) return buildStorageRef(path);
-  return value;
 };
 
 const deriveStoragePath = (params: {
@@ -474,226 +431,7 @@ async function ensureRemoteImage(dream: DreamAnalysis, userId?: string): Promise
   }
 }
 
-type SupabaseDreamRow = {
-  id: number;
-  created_at: string | null;
-  updated_at?: string | null;
-  client_updated_at?: string | null;
-  revision_id?: string | null;
-  user_id?: string;
-  transcript: string;
-  title: string;
-  interpretation: string;
-  shareable_quote: string;
-  image_url: string | null;
-  chat_history: ChatMessage[] | null;
-  theme: DreamTheme | null;
-  dream_type: string;
-  is_favorite: boolean | null;
-  image_generation_failed?: boolean | null;
-  is_analyzed?: boolean | null;
-  analyzed_at?: string | null;
-  analysis_status?: 'none' | 'pending' | 'done' | 'failed' | null;
-  analysis_request_id?: string | null;
-  exploration_started_at?: string | null;
-  client_request_id?: string | null;
-  has_person?: boolean | null;
-  has_animal?: boolean | null;
-  memory?: DreamMemoryMetadata | Record<string, unknown> | null;
-  analysis_details?: Record<string, unknown> | null;
-};
-
-type AnalysisDetailFields = Pick<DreamAnalysis, 'symbols' | 'emotions' | 'reflectionQuestions' | 'promptVersion'>;
-
-type KnownAnalysisDetailFields = AnalysisDetailFields & Pick<DreamAnalysis, 'analysisTranscriptHash'>;
-
-const ANALYSIS_DETAILS_ALLOWLIST = [
-  'symbols',
-  'emotions',
-  'reflectionQuestions',
-  'promptVersion',
-  ANALYSIS_TRANSCRIPT_HASH_KEY,
-] as const satisfies readonly (keyof KnownAnalysisDetailFields)[];
-
-const asAnalysisDetailsRecord = (value: unknown): Record<string, unknown> =>
-  value && typeof value === 'object' && !Array.isArray(value)
-    ? { ...(value as Record<string, unknown>) }
-    : {};
-
-const pickAllowlistedAnalysisDetails = (source: Record<string, unknown>): Record<string, unknown> => {
-  const next: Record<string, unknown> = {};
-  for (const key of ANALYSIS_DETAILS_ALLOWLIST) {
-    if (!Object.prototype.hasOwnProperty.call(source, key)) continue;
-    next[key] = source[key];
-  }
-  return next;
-};
-
-const sanitizeKnownAnalysisDetails = (source: Record<string, unknown>): KnownAnalysisDetailFields => {
-  const symbols = Array.isArray(source.symbols)
-    ? source.symbols.filter(
-        (entry: any) => entry && typeof entry.name === 'string' && typeof entry.meaning === 'string'
-      )
-    : [];
-  const emotions = Array.isArray(source.emotions)
-    ? source.emotions.filter(
-        (entry: any) => entry && typeof entry.name === 'string' && typeof entry.insight === 'string'
-      )
-    : [];
-  const reflectionQuestions = Array.isArray(source.reflectionQuestions)
-    ? source.reflectionQuestions.filter((question: unknown): question is string => typeof question === 'string')
-    : [];
-  const promptVersion =
-    typeof source.promptVersion === 'string' && source.promptVersion.length > 0 && source.promptVersion.length <= 64
-      ? source.promptVersion
-      : undefined;
-  const analysisTranscriptHash = isAnalysisTranscriptHash(source[ANALYSIS_TRANSCRIPT_HASH_KEY])
-    ? source[ANALYSIS_TRANSCRIPT_HASH_KEY]
-    : undefined;
-
-  return {
-    ...(symbols.length > 0 ? { symbols } : {}),
-    ...(emotions.length > 0 ? { emotions } : {}),
-    ...(reflectionQuestions.length > 0 ? { reflectionQuestions } : {}),
-    ...(promptVersion ? { promptVersion } : {}),
-    ...(analysisTranscriptHash ? { analysisTranscriptHash } : {}),
-  };
-};
-
-const toAnalysisDetailsColumn = (dream: DreamAnalysis): Record<string, unknown> | null => {
-  const merged = {
-    ...pickAllowlistedAnalysisDetails(asAnalysisDetailsRecord(dream.analysisDetails)),
-    ...(dream.symbols !== undefined ? { symbols: dream.symbols } : {}),
-    ...(dream.emotions !== undefined ? { emotions: dream.emotions } : {}),
-    ...(dream.reflectionQuestions !== undefined ? { reflectionQuestions: dream.reflectionQuestions } : {}),
-    ...(dream.promptVersion !== undefined ? { promptVersion: dream.promptVersion } : {}),
-    ...(dream.analysisTranscriptHash !== undefined
-      ? { [ANALYSIS_TRANSCRIPT_HASH_KEY]: dream.analysisTranscriptHash }
-      : {}),
-  };
-  const known = sanitizeKnownAnalysisDetails(merged);
-  return Object.keys(known).length > 0 ? { ...known } : null;
-};
-
-const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
-  const createdAt = row.created_at ? Date.parse(row.created_at) : Date.now();
-  const imageUrl = row.image_url ?? '';
-  const hasImage = Boolean(imageUrl);
-  const imageGenerationFailed = hasImage ? false : row.image_generation_failed ?? false;
-  const analysisDetails = asAnalysisDetailsRecord(row.analysis_details);
-  const knownAnalysisDetails = sanitizeKnownAnalysisDetails(analysisDetails);
-  const allowlistedAnalysisDetails = {
-    ...pickAllowlistedAnalysisDetails(analysisDetails),
-    ...knownAnalysisDetails,
-  };
-  const persistedAnalysisDetails = sanitizeKnownAnalysisDetails(allowlistedAnalysisDetails);
-  return {
-    id: createdAt,
-    remoteId: row.id,
-    revisionId: row.revision_id ?? undefined,
-    updatedAt: row.updated_at ? Date.parse(row.updated_at) : undefined,
-    clientUpdatedAt: row.client_updated_at ? Date.parse(row.client_updated_at) : createdAt,
-    transcript: row.transcript ?? '',
-    title: row.title ?? '',
-    interpretation: row.interpretation ?? '',
-    shareableQuote: row.shareable_quote ?? '',
-    imageUrl,
-    thumbnailUrl: hasImage ? imageUrl : undefined,
-    chatHistory: Array.isArray(row.chat_history) ? row.chat_history : [],
-    theme: row.theme ?? undefined,
-    dreamType: (row.dream_type ?? 'Symbolic Dream') as DreamType,
-    isFavorite: row.is_favorite ?? false,
-    imageGenerationFailed,
-    isAnalyzed: row.is_analyzed ?? undefined,
-    analyzedAt: row.analyzed_at ? Date.parse(row.analyzed_at) : undefined,
-    analysisStatus: row.analysis_status ?? undefined,
-    analysisRequestId: row.analysis_request_id ?? undefined,
-    explorationStartedAt: row.exploration_started_at ? Date.parse(row.exploration_started_at) : undefined,
-    clientRequestId: row.client_request_id ?? undefined,
-    // Map subject detection: null from DB -> undefined (not checked), true/false preserved
-    hasPerson: row.has_person === null ? undefined : row.has_person,
-    hasAnimal: row.has_animal === null ? undefined : row.has_animal,
-    memory: normalizeDreamMemoryMetadata(row.memory),
-    ...(Object.keys(persistedAnalysisDetails).length > 0 ? { analysisDetails: persistedAnalysisDetails } : {}),
-    ...knownAnalysisDetails,
-  };
-};
-
-const mapDreamToRow = (
-  dream: DreamAnalysis,
-  userId?: string,
-  includeImageColumns = true,
-  includeClientUpdatedAtColumn = true,
-  includeMemoryColumn = true
-) => {
-  const memory = normalizeDreamMemoryMetadata(dream.memory);
-  const base = {
-    user_id: userId,
-    transcript: dream.transcript,
-    title: dream.title,
-    interpretation: dream.interpretation,
-    shareable_quote: dream.shareableQuote,
-    image_url: toStoredImageReference(dream.imageUrl) || null,
-    chat_history: dream.chatHistory ?? [],
-    theme: dream.theme ?? null,
-    dream_type: dream.dreamType,
-    is_favorite: dream.isFavorite ?? false,
-    is_analyzed: dream.isAnalyzed ?? false,
-    analysis_status: dream.analysisStatus ?? 'none',
-    ...(includeClientUpdatedAtColumn
-      ? { client_updated_at: new Date(dream.clientUpdatedAt ?? Date.now()).toISOString() }
-      : {}),
-    ...(includeMemoryColumn ? { memory: memory ?? {} } : {}),
-  };
-
-  // Avoid clearing existing server-side values when a field is missing locally.
-  // For monotonic fields (timestamps/idempotency keys), omit when undefined.
-  const quotaFields = {
-    ...(dream.analyzedAt != null ? { analyzed_at: new Date(dream.analyzedAt).toISOString() } : {}),
-    ...(dream.analysisRequestId != null ? { analysis_request_id: dream.analysisRequestId } : {}),
-    ...(dream.explorationStartedAt != null
-      ? { exploration_started_at: new Date(dream.explorationStartedAt).toISOString() }
-      : {}),
-    ...(dream.clientRequestId != null ? { client_request_id: dream.clientRequestId } : {}),
-    // Only include subject detection when explicitly set (undefined = not checked, omit to preserve DB)
-    ...(dream.hasPerson !== undefined ? { has_person: dream.hasPerson } : {}),
-    ...(dream.hasAnimal !== undefined ? { has_animal: dream.hasAnimal } : {}),
-    // Omit when locally absent so updates preserve any server-side details.
-    ...(toAnalysisDetailsColumn(dream) ? { analysis_details: toAnalysisDetailsColumn(dream) } : {}),
-  };
-
-  if (!includeImageColumns) return { ...base, ...quotaFields };
-
-  return {
-    ...base,
-    ...quotaFields,
-    image_generation_failed: dream.imageGenerationFailed ?? false,
-  };
-};
-
-const formatError = (error: PostgrestError | null, defaultMessage: string): CodedError => {
-  const message = error?.message?.trim() ? error.message : defaultMessage;
-  const err = new Error(message) as CodedError;
-  if (error?.code) {
-    err.code = error.code;
-  }
-  return err;
-};
-
-type CodedError = Error & { code?: string };
 type ConflictError = CodedError & { remoteDream?: DreamAnalysis };
-
-export type SyncMutationResultStatus = 'ack' | 'conflict' | 'failed';
-
-export type SyncMutationResult = {
-  mutationId: string;
-  clientRequestId: string;
-  operation: DreamMutation['operation'];
-  status: SyncMutationResultStatus;
-  dream?: DreamAnalysis;
-  remoteId?: number;
-  error?: string;
-};
 
 const createNotFoundError = (message: string): CodedError => {
   const error = new Error(message) as CodedError;
@@ -1013,12 +751,6 @@ const preserveAckDreamMemory = (
   };
 };
 
-const mapDreamToSyncPayload = (dream: DreamAnalysis, userId?: string, includeImageColumns = true) => ({
-  ...mapDreamToRow(dream, userId, includeImageColumns, true, memoryColumnAvailable),
-  remote_id: dream.remoteId ?? null,
-  revision_id: dream.revisionId ?? null,
-});
-
 const mapMutationToSyncPayload = async (
   mutation: DreamMutation,
   userId?: string
@@ -1043,36 +775,8 @@ const mapMutationToSyncPayload = async (
             remote_id: mutation.payload.remoteId ?? mutation.payload.tombstone?.remoteId ?? null,
             dream_id: mutation.payload.dreamId ?? mutation.payload.tombstone?.id ?? null,
           }
-        : mapDreamToSyncPayload(preparedDream ?? mutation.payload.dream!, userId, true),
+        : mapDreamToSyncPayload(preparedDream ?? mutation.payload.dream!, userId, true, memoryColumnAvailable),
   };
-};
-
-const parseSyncResult = async (data: unknown): Promise<SyncMutationResult[]> => {
-  if (!Array.isArray(data)) {
-    return [];
-  }
-
-  return Promise.all(
-    data.map(async (entry) => {
-      const row = entry as Record<string, unknown>;
-      const dreamPayload = row.dream as SupabaseDreamRow | undefined;
-      const dream = dreamPayload ? mapRowToDream(dreamPayload) : undefined;
-      return {
-        mutationId: String(row.mutation_id ?? ''),
-        clientRequestId: String(row.client_request_id ?? ''),
-        operation: (row.operation as DreamMutation['operation']) ?? 'update',
-        status: (row.status as SyncMutationResultStatus) ?? 'failed',
-        dream,
-        remoteId:
-          typeof row.remote_id === 'number'
-            ? row.remote_id
-            : typeof row.remote_id === 'string'
-              ? Number(row.remote_id)
-              : undefined,
-        error: typeof row.error === 'string' ? row.error : undefined,
-      };
-    })
-  );
 };
 
 const syncDreamMutationsDirectly = async (
@@ -1358,113 +1062,8 @@ export async function syncDreamMutationsInSupabase(
   });
 }
 
-const JOURNAL_LIST_COLUMNS = 'id,created_at,client_request_id,revision_id,updated_at,transcript,title,shareable_quote,exploration_started_at,image_url,dream_type,theme,is_favorite,memory,is_analyzed,analyzed_at,analysis_status,analysis_request_id,image_generation_failed';
-
-async function resolveJournalUser(expectedUserId?: string): Promise<string> {
-  const userId = expectedUserId ?? (await supabase.auth.getUser()).data.user?.id;
-  if (!userId?.trim()) throw new Error('A user is required to read the journal');
-  return userId;
-}
-
-async function assertJournalSession(userId: string): Promise<void> {
-  const { data, error } = await supabase.auth.getSession();
-  if (error || data.session?.user.id !== userId) throw new Error('Journal account changed');
-}
-
-async function readJournalPage<T>(
-  userId: string,
-  options: JournalReadOptions,
-  columns: string,
-  map: (row: SupabaseDreamRow) => T,
-): Promise<JournalPage<T>> {
-  const { cursor = null, pageSize = 500 } = options;
-  if (!userId.trim()) throw new Error('A user is required to read the journal');
-  if (!Number.isSafeInteger(pageSize) || pageSize < 1 || pageSize > 1000) throw new Error('Invalid journal page size');
-  if (cursor && (cursor.version !== 1 || cursor.userId !== userId || !Number.isSafeInteger(cursor.highWatermark) ||
-    !Number.isSafeInteger(cursor.beforeId) || cursor.beforeId <= 0 || cursor.highWatermark < cursor.beforeId)) {
-    throw new Error('Invalid journal cursor or account scope');
-  }
-  try {
-    await assertJournalSession(userId);
-    let query = supabase.from(DREAMS_TABLE).select(columns).eq('user_id', userId);
-    if (cursor) query = query.lte('id', cursor.highWatermark).lt('id', cursor.beforeId);
-    const { data, error } = await query.order('id', { ascending: false }).limit(pageSize);
-    await assertJournalSession(userId);
-    if (error) throw formatError(error, 'Failed to load dreams from Supabase');
-    if (!Array.isArray(data)) throw new Error('Invalid journal page response');
-    const rows = data as unknown as SupabaseDreamRow[];
-    if (!rows.length) return { items: [], nextCursor: null, complete: true };
-    let previous = cursor?.beforeId ?? Infinity;
-    for (const row of rows) {
-      if (!Number.isSafeInteger(row.id) || row.id <= 0 || row.id >= previous) throw new Error('Invalid journal page ordering');
-      previous = row.id;
-    }
-    return {
-      items: rows.map(map), complete: false,
-      nextCursor: { version: 1, userId, highWatermark: cursor?.highWatermark ?? rows[0].id, beforeId: rows[rows.length - 1].id },
-    };
-  } catch (error) {
-    throw new JournalTraversalError(userId, cursor, error);
-  }
-}
-
-export function fetchDreamListPage(userId: string, options: JournalReadOptions = {}): Promise<JournalPage<DreamListItem>> {
-  return readJournalPage(userId, options, JOURNAL_LIST_COLUMNS, (row) => {
-    const dream = mapRowToDream(row);
-    return {
-      id: dream.id, remoteId: dream.remoteId, clientRequestId: dream.clientRequestId,
-      revisionId: dream.revisionId, updatedAt: dream.updatedAt, transcript: dream.transcript,
-      title: dream.title, shareableQuote: dream.shareableQuote, explorationStartedAt: dream.explorationStartedAt, imageUrl: dream.imageUrl, thumbnailUrl: dream.thumbnailUrl,
-      dreamType: dream.dreamType, theme: dream.theme, isFavorite: dream.isFavorite,
-      memory: dream.memory, isAnalyzed: dream.isAnalyzed, analyzedAt: dream.analyzedAt,
-      analysisStatus: dream.analysisStatus, analysisRequestId: dream.analysisRequestId,
-      imageGenerationFailed: dream.imageGenerationFailed,
-    };
-  });
-}
-
-export function fetchDreamFullPage(userId: string, options: JournalReadOptions = {}): Promise<JournalPage<DreamAnalysis>> {
-  return readJournalPage(userId, options, '*', mapRowToDream);
-}
-
-/** Consumers can persist nextCursor after each consumed page and resume without replay. */
-export async function* iterateDreamPages(userId: string, options: JournalReadOptions = {}): AsyncGenerator<JournalPage<DreamAnalysis>> {
-  let cursor = options.cursor;
-  for (;;) {
-    const page = await fetchDreamFullPage(userId, { ...options, cursor });
-    yield page;
-    if (page.complete) return;
-    cursor = page.nextCursor;
-  }
-}
-
-/** Compatibility full snapshot: never returns a partial result after a page failure. */
-export async function fetchDreamsFromSupabase(expectedUserId?: string): Promise<DreamAnalysis[]> {
-  const userId = await resolveJournalUser(expectedUserId);
-  const dreams: DreamAnalysis[] = [];
-  for await (const page of iterateDreamPages(userId)) dreams.push(...page.items);
-  return dreams;
-}
-
-export async function fetchDreamFromSupabase(remoteId: number, expectedUserId?: string): Promise<DreamAnalysis> {
-  if (!Number.isSafeInteger(remoteId) || remoteId <= 0) throw new Error('Invalid remote dream id');
-  const userId = await resolveJournalUser(expectedUserId);
-  await assertJournalSession(userId);
-  const { data, error } = await supabase.from(DREAMS_TABLE).select('*').eq('user_id', userId).eq('id', remoteId).single();
-  await assertJournalSession(userId);
-  if (error) throw formatError(error, 'Failed to load dream from Supabase');
-  if (!data) throw new Error('Failed to load dream from Supabase: Dream not found');
-  return mapRowToDream(data);
-}
-
-export async function fetchDreamByClientRequestId(clientRequestId: string, userId: string): Promise<DreamAnalysis | null> {
-  if (!clientRequestId.trim() || !userId.trim()) throw new Error('Invalid dream lookup scope');
-  await assertJournalSession(userId);
-  const { data, error } = await supabase.from(DREAMS_TABLE).select('*').eq('user_id', userId).eq('client_request_id', clientRequestId).maybeSingle();
-  await assertJournalSession(userId);
-  if (error) throw formatError(error, 'Failed to load dream from Supabase');
-  return data ? mapRowToDream(data) : null;
-}
+const journalRepository = createJournalRepository({ getClient: () => supabase });
+export const { fetchDreamListPage, fetchDreamFullPage, iterateDreamPages, fetchDreamsFromSupabase, fetchDreamFromSupabase, fetchDreamByClientRequestId } = journalRepository;
 
 export async function createDreamInSupabase(dream: DreamAnalysis, userId: string): Promise<DreamAnalysis> {
   const withRequestId = dream.clientRequestId
