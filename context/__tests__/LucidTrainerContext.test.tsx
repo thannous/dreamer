@@ -11,6 +11,7 @@ import type { LucidDreamAtlasOverlay } from '@/lib/lucid/dreamAtlas';
 import type { LucidExperiment, LucidTrainerState } from '@/lib/lucid/model';
 import type { LucidReminderReconciliationResult } from '@/services/lucidTrainerNotifications';
 
+const mockClearClaimedGuest = jest.fn(async (..._args: unknown[]) => undefined);
 const mockClaimGuestScope = jest.fn();
 const mockClaimGuestVoiceNotes = jest.fn();
 const mockUnlinkVoiceNotesFromExperiment = jest.fn();
@@ -64,6 +65,7 @@ jest.mock('@/services/lucidTrainerSync', () => ({
 }));
 
 jest.mock('@/services/lucidTrainerStorage', () => ({
+  clearLucidTrainerClaimedGuestData: (...args: unknown[]) => mockClearClaimedGuest(...args),
   clearLucidTrainerLocalData: (...args: unknown[]) => mockClearLocalData(...args),
   getLucidTrainerState: (...args: unknown[]) => mockGetState(...args),
   loadLucidTrainerState: (...args: unknown[]) => mockLoadState(...args),
@@ -135,6 +137,10 @@ describe('LucidTrainerContext account boundary', () => {
       'user:user-1',
       expect.objectContaining({ storage: expect.any(Object) })
     );
+    const claimOptions = mockClaimGuestScope.mock.calls[0][1];
+    await claimOptions.storage.clearScope('guest');
+    expect(mockClearClaimedGuest).toHaveBeenCalledWith('guest');
+    expect(mockClearLocalData).not.toHaveBeenCalled();
     expect(result.current.guestImportAvailable).toBe(false);
   });
 

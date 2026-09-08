@@ -22,6 +22,7 @@ import {
 import {
   appendLucidTrainerSyncMutation,
   clearLucidTrainerLocalData,
+  clearLucidTrainerClaimedGuestData,
   EXPORT_VERSION,
   LEGACY_EXPORT_VERSION,
   exportLucidTrainerCsv,
@@ -732,6 +733,31 @@ describe('lucidTrainerStorage', () => {
     expect(storage.values.has(stabilizationKey)).toBe(false);
     expect(storage.values.has(ssildKey)).toBe(false);
     expect(storage.values.get('unrelated')).toBe('keep');
+  });
+
+  it('preserves imported guest copies after trainer claim without moving them to the account', async () => {
+    const guestKeys = getLucidTrainerStorageKeys('guest');
+    const storage = memoryStorage({ [guestKeys.state]: JSON.stringify(state()), unrelated: 'Journal' });
+    const imports = createLucidJournalImportStorage(storage);
+    const identity = JSON.stringify(['journal', 'source-A', '1']);
+    const snapshot = { version: 1 as const, copies: { [identity]: {
+      identity, sourceProduct: 'journal' as const, sourceAccount: 'source-A', sourceId: '1',
+      sourceRevision: '00000000-0000-4000-8000-000000000001',
+      createdAt: null, importedAt: '2026-09-09T00:00:00Z', text: 'Guest copy stays here', edited: false, deleted: false,
+    } }, checkpoint: null };
+    await imports.save('guest', snapshot, () => undefined);
+    await imports.save(SCOPE, snapshot, () => undefined);
+    const before = [...storage.values].filter(([key]) => key.startsWith('noctalia_lucid_journal_copies:'));
+    await clearLucidTrainerClaimedGuestData('guest', storage);
+    expect(storage.values.has(guestKeys.state)).toBe(false);
+    expect([...storage.values].filter(([key]) => key.startsWith('noctalia_lucid_journal_copies:'))).toEqual(before);
+    expect(await imports.load('guest')).toEqual(snapshot);
+    expect(await imports.load(SCOPE)).toEqual(snapshot);
+    expect(storage.values.get('unrelated')).toBe('Journal');
+    await expect(clearLucidTrainerClaimedGuestData(SCOPE, storage)).rejects.toThrow('guest scope');
+    await clearLucidTrainerLocalData('guest', storage, async () => undefined);
+    expect(await imports.load('guest')).toBeNull();
+    expect(await imports.load(SCOPE)).toEqual(snapshot);
   });
 
   it('still removes sensitive local data when OS reminder cleanup fails', async () => {
