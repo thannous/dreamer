@@ -1,6 +1,6 @@
 # TI-561 — Lucid route root boundary
 
-Candidate based on `3cf6` on 2026-09-09. Source implementation and local Android JavaScript export proof; no native build, install, device startup timing, store delivery or production claim.
+Candidate based on `3cf6e6b459647c8ade973df25b6cf45b5ce9a59a` on 2026-09-08. Source implementation and local Android JavaScript export proof; no native build, install, device startup timing, store delivery or production claim.
 
 ## Decision and compatibility
 
