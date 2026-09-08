@@ -9,7 +9,7 @@ export type Version = 'before' | 'after';
 const TYPES = ['Unknown', 'Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
 const strings = (value: unknown): value is string[] => Array.isArray(value) && value.length <= 30 &&
   value.every((x) => typeof x === 'string' && x.trim().length > 0 && x.length <= 500);
-export function validateFixtures(value: unknown): Fixture[] {
+export function validateFixtures(value: unknown, suite: 'initial' | 'followup' = 'initial'): Fixture[] {
   if (!Array.isArray(value) || value.length !== 6) throw new Error('Expected six synthetic fixtures.');
   const ids = new Set<string>();
   const languages = new Set<string>();
@@ -30,10 +30,13 @@ export function validateFixtures(value: unknown): Fixture[] {
     }
     ids.add(row.id); languages.add(row.lang);
   }
-  if (value.filter((row) => row.kind === 'short').length !== 3 ||
+  if ((suite === 'initial' && value.filter((row) => row.kind === 'short').length !== 3) ||
     !value.some((row) => row.expectedType === 'Lucid Dream') ||
     !value.some((row) => row.expectedType === 'Unknown')) {
     throw new Error('Expected three short, three rich and both lucid-positive and unknown controls.');
+  }
+  if (suite === 'followup' && !value.some((row) => row.expectedType === 'Nightmare')) {
+    throw new Error('Followup requires an explicit nightmare positive control.');
   }
   return value as Fixture[];
 }
