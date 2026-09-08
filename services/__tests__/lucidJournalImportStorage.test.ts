@@ -1,4 +1,4 @@
-import { createLucidJournalImportStorage } from '../lucidJournalImportStorage';
+import { createLucidJournalImportStorage, claimLucidJournalImportGuestCopies } from '../lucidJournalImportStorage';
 import { journalCopyIdentity, type JournalImportSnapshot } from '@/lib/lucid/journalImport';
 import { getLucidKeyValueStorage } from '../lucidKeyValueStorage';
 
@@ -255,4 +255,99 @@ it('serializes erasure behind an already-issued page write across adapter instan
   await saving;
   await clearing;
   expect(x.values.size).toBe(0);
+});
+
+it('claims copies locally with deduplication, provenance and tombstones, but no guest checkpoint', async () => {
+  const x = fixture();
+  const guest = snapshot(2);
+  Object.values(guest.copies)[1].deleted = true;
+  Object.values(guest.copies)[1].text = '';
+  const destination = snapshot(1);
+  destination.checkpoint = null;
+  await x.adapter.save('guest', guest, () => undefined);
+  await x.adapter.save('user:A', destination, () => undefined);
+  await x.adapter.save('user:B', snapshot(3), () => undefined);
+  await claimLucidJournalImportGuestCopies('user:A', () => undefined, x.kv);
+  expect(await x.adapter.load('guest')).toBeNull();
+  expect(await x.adapter.load('user:A')).toEqual({ ...guest, checkpoint: null });
+  expect(await x.adapter.load('user:B')).toEqual(snapshot(3));
+  await claimLucidJournalImportGuestCopies('user:A', () => undefined, x.kv);
+  expect(await x.adapter.load('user:A')).toEqual({ ...guest, checkpoint: null });
+  await x.adapter.clear('user:A');
+  expect(await x.adapter.load('user:A')).toBeNull();
+});
+
+it('refuses differing duplicate copies before altering either scope', async () => {
+  const x = fixture();
+  const guest = snapshot(1);
+  const destination = snapshot(1);
+  Object.values(destination.copies)[0].text = 'Edited account copy';
+  Object.values(destination.copies)[0].edited = true;
+  await x.adapter.save('guest', guest, () => undefined);
+  await x.adapter.save('user:A', destination, () => undefined);
+  const before = [...x.values];
+  await expect(claimLucidJournalImportGuestCopies('user:A', () => undefined, x.kv)).rejects.toThrow('conflict');
+  expect([...x.values]).toEqual(before);
+});
+
+it('verifies destination persistence after a lost write acknowledgement', async () => {
+  const x = fixture();
+  const guest = snapshot(1);
+  await x.adapter.save('guest', guest, () => undefined);
+  const set = x.kv.setItem.getMockImplementation()!;
+  x.kv.setItem.mockImplementation(async (key, value) => {
+    await set(key, value);
+    if (key === 'noctalia_lucid_journal_copies:user%3AA:v2') throw new Error('lost ack');
+  });
+  await claimLucidJournalImportGuestCopies('user:A', () => undefined, x.kv);
+  expect(await x.adapter.load('guest')).toBeNull();
+  expect(await x.adapter.load('user:A')).toEqual({ ...guest, checkpoint: null });
+});
+
+it('retries guest cleanup failure with the already verified destination intact', async () => {
+  const x = fixture();
+  const guest = snapshot(1);
+  const destination = snapshot(0);
+  destination.checkpoint = { grantId: 'destination-grant', sourceAccount: 'B', cursor: 'next', done: false };
+  await x.adapter.save('guest', guest, () => undefined);
+  await x.adapter.save('user:A', destination, () => undefined);
+  const remove = x.kv.removeItem.getMockImplementation()!;
+  x.kv.removeItem.mockImplementation(async key => {
+    if (key.startsWith('noctalia_lucid_journal_copies:guest:')) throw new Error('cleanup failed');
+    await remove(key);
+  });
+  await expect(claimLucidJournalImportGuestCopies('user:A', () => undefined, x.kv)).rejects.toThrow('cleanup failed');
+  expect(await x.adapter.load('user:A')).toEqual({ ...guest, checkpoint: destination.checkpoint });
+  x.kv.removeItem.mockImplementation(remove);
+  await claimLucidJournalImportGuestCopies('user:A', () => undefined, x.kv);
+  expect(await x.adapter.load('guest')).toBeNull();
+  expect(await x.adapter.load('user:A')).toEqual({ ...guest, checkpoint: destination.checkpoint });
+});
+
+it('retains guest copies on failed destination write and permits retry', async () => {
+  const x = fixture();
+  const guest = snapshot(1);
+  await x.adapter.save('guest', guest, () => undefined);
+  const set = x.kv.setItem.getMockImplementation()!;
+  x.kv.setItem.mockRejectedValue(new Error('full'));
+  await expect(claimLucidJournalImportGuestCopies('user:A', () => undefined, x.kv)).rejects.toThrow('full');
+  expect(await x.adapter.load('guest')).toEqual(guest);
+  x.kv.setItem.mockImplementation(set);
+  await claimLucidJournalImportGuestCopies('user:A', () => undefined, x.kv);
+  expect(await x.adapter.load('user:A')).toEqual({ ...guest, checkpoint: null });
+});
+
+it('does not clear guest data when the account generation changes after destination persistence', async () => {
+  const x = fixture();
+  const guest = snapshot(1);
+  await x.adapter.save('guest', guest, () => undefined);
+  let active = true;
+  const set = x.kv.setItem.getMockImplementation()!;
+  x.kv.setItem.mockImplementation(async (key, value) => {
+    await set(key, value);
+    if (key === 'noctalia_lucid_journal_copies:user%3AA:v2') active = false;
+  });
+  await expect(claimLucidJournalImportGuestCopies('user:A', () => { if (!active) throw new Error('account changed'); }, x.kv)).rejects.toThrow('account changed');
+  expect(await x.adapter.load('guest')).toEqual(guest);
+  expect(await x.adapter.load('user:B')).toBeNull();
 });

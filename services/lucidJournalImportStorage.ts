@@ -1,3 +1,4 @@
+import { canonicalLucidJson } from '@/lib/lucid/domain';
 import type { JournalImportSnapshot, JournalImportStorage } from '@/lib/lucid/journalImport';
 import { isJournalImportSourceDate, isJournalImportRevision, journalCopyIdentity } from '@/lib/lucid/journalImport';
 import { getLucidKeyValueStorage, isLucidNativeKeyValueStorage, type LucidKeyValueStorage } from './lucidKeyValueStorage';
@@ -188,4 +189,49 @@ export function clearLucidJournalImportStorage(
   storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<void> {
   return createLucidJournalImportStorage(storage).clear(scope);
+}
+
+/** Explicit guest import is a local copy, never a cloud sync or a new import grant.
+ * The owner must stop import writers in both scopes before invoking this operation.
+ * Each OS write may finish in its captured namespace after cancellation; guest is
+ * cleared only after the destination's complete snapshot is durably verified.
+ */
+export function claimLucidJournalImportGuestCopies(
+  destinationScope: string,
+  assertActive: () => void,
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
+): Promise<void> {
+  if (!destinationScope.startsWith('user:')) return Promise.reject(new Error('Authenticated destination required'));
+  key(destinationScope);
+  return serialized('guest-copy-claim', async () => {
+    const adapter = createLucidJournalImportStorage(storage);
+    assertActive();
+    const guest = await adapter.load('guest');
+    assertActive();
+    if (!guest) return;
+    const destination = await adapter.load(destinationScope);
+    assertActive();
+    const merged: JournalImportSnapshot = destination ?? { version: 1, copies: {}, checkpoint: null };
+    for (const [identity, copy] of Object.entries(guest.copies)) {
+      const existing = merged.copies[identity];
+      if (existing && canonicalLucidJson(existing) !== canonicalLucidJson(copy)) {
+        throw new Error('Guest Journal copy conflict requires explicit resolution');
+      }
+      merged.copies[identity] = copy;
+    }
+    // Guest checkpoint authorizes nothing in the destination; retain only its
+    // pre-existing checkpoint. Preserve edits, tombstones and conflict payloads.
+    const expected = canonicalLucidJson(merged);
+    let writeError: unknown;
+    try { await adapter.save(destinationScope, merged, assertActive); } catch (error) { writeError = error; }
+    assertActive();
+    const durable = await adapter.load(destinationScope);
+    assertActive();
+    if (canonicalLucidJson(durable) !== expected) throw writeError ?? new Error('Destination copy was not persisted');
+    const currentGuest = await adapter.load('guest');
+    assertActive();
+    if (canonicalLucidJson(currentGuest) !== canonicalLucidJson(guest)) throw new Error('Guest copies changed during transfer');
+    await adapter.clear('guest');
+    assertActive();
+  });
 }

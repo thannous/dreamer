@@ -11,9 +11,11 @@ import type { LucidDreamAtlasOverlay } from '@/lib/lucid/dreamAtlas';
 import type { LucidExperiment, LucidTrainerState } from '@/lib/lucid/model';
 import type { LucidReminderReconciliationResult } from '@/services/lucidTrainerNotifications';
 
-const mockClearClaimedGuest = jest.fn(async (..._args: unknown[]) => undefined);
+const mockClaimJournalCopies = jest.fn(async (..._args: unknown[]) => undefined);
+let mockAuthUserId = 'user-1';
 const mockClaimGuestScope = jest.fn();
 const mockClaimGuestVoiceNotes = jest.fn();
+const mockClearVoiceNotes = jest.fn(async (..._args: unknown[]) => undefined);
 const mockUnlinkVoiceNotesFromExperiment = jest.fn();
 const mockHasGuestData = jest.fn();
 const mockLoadState = jest.fn();
@@ -33,7 +35,7 @@ jest.mock('expo-localization', () => ({ getLocales: () => [{ languageTag: 'en-US
 jest.mock('expo-crypto', () => ({ randomUUID: () => '00000000-0000-4000-8000-000000000001' }));
 
 jest.mock('@/context/AuthContext', () => ({
-  useAuth: () => ({ user: { id: 'user-1' } }),
+  useAuth: () => ({ user: { id: mockAuthUserId } }),
 }));
 jest.mock('@/context/DreamsContext', () => ({
   useDreamsData: () => { throw new Error('Lucid must not access Journal context'); },
@@ -51,6 +53,7 @@ jest.mock('@/services/lucidMorningVoiceNoteStorage', () => ({
   loadLocalLucidVoiceExperimentIds: jest.fn(async () => new Set()),
   subscribeLucidMorningVoiceNotes: jest.fn(() => jest.fn()),
   claimLucidMorningVoiceNoteScope: (...args: unknown[]) => mockClaimGuestVoiceNotes(...args),
+  clearLucidMorningVoiceNotes: (...args: unknown[]) => mockClearVoiceNotes(...args),
   unlinkLucidMorningVoiceNotesFromExperiment: (...args: unknown[]) =>
     mockUnlinkVoiceNotesFromExperiment(...args),
 }));
@@ -64,8 +67,11 @@ jest.mock('@/services/lucidTrainerSync', () => ({
   replayLucidTrainerQueue: jest.fn(),
 }));
 
+jest.mock('@/services/lucidJournalImportStorage', () => ({
+  claimLucidJournalImportGuestCopies: (...args: unknown[]) => mockClaimJournalCopies(...args),
+}));
+
 jest.mock('@/services/lucidTrainerStorage', () => ({
-  clearLucidTrainerClaimedGuestData: (...args: unknown[]) => mockClearClaimedGuest(...args),
   clearLucidTrainerLocalData: (...args: unknown[]) => mockClearLocalData(...args),
   getLucidTrainerState: (...args: unknown[]) => mockGetState(...args),
   loadLucidTrainerState: (...args: unknown[]) => mockLoadState(...args),
@@ -80,6 +86,7 @@ const { LucidTrainerProvider, useLucidTrainer } = require('../LucidTrainerContex
 
 describe('LucidTrainerContext account boundary', () => {
   beforeEach(() => {
+    mockAuthUserId = 'user-1';
     jest.clearAllMocks();
     mockDreams = [];
     const state = createInitialLucidTrainerState({ now: 1_700_000_000_000, timeZone: 'UTC' });
@@ -139,9 +146,89 @@ describe('LucidTrainerContext account boundary', () => {
     );
     const claimOptions = mockClaimGuestScope.mock.calls[0][1];
     await claimOptions.storage.clearScope('guest');
-    expect(mockClearClaimedGuest).toHaveBeenCalledWith('guest');
-    expect(mockClearLocalData).not.toHaveBeenCalled();
+    expect(mockClearLocalData).toHaveBeenCalledWith('guest', undefined, expect.any(Function));
+    expect(mockClaimJournalCopies).toHaveBeenCalledWith('user:user-1', expect.any(Function));
+    expect(mockClaimJournalCopies.mock.invocationCallOrder[0]).toBeLessThan(mockClaimGuestScope.mock.invocationCallOrder[0]);
     expect(result.current.guestImportAvailable).toBe(false);
+  });
+
+  it('stops before voice and trainer claim when local Journal copies conflict', async () => {
+    mockClaimJournalCopies.mockRejectedValueOnce(new Error('copy conflict'));
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.guestImportAvailable).toBe(true));
+    await act(async () => {
+      await expect(result.current.importGuestData()).rejects.toThrow('copy conflict');
+    });
+    expect(mockClaimGuestVoiceNotes).not.toHaveBeenCalled();
+    expect(mockClaimGuestScope).not.toHaveBeenCalled();
+    expect(mockClearLocalData).not.toHaveBeenCalled();
+  });
+
+  it.each(['copies', 'voice'])('joins in-flight %s work before explicit reset and blocks new claims', async phase => {
+    const voiceCopies = new Set<string>();
+    mockClearVoiceNotes.mockImplementationOnce(async (scope) => { voiceCopies.delete(String(scope)); });
+    let release!: () => void;
+    let reached!: () => void;
+    const waiting = new Promise<void>(resolve => { reached = resolve; });
+    const blocked = new Promise<void>(resolve => { release = resolve; });
+    if (phase === 'copies') {
+      mockClaimJournalCopies.mockImplementationOnce(async () => { reached(); await blocked; });
+    } else {
+      mockClaimGuestVoiceNotes.mockImplementationOnce(async () => { reached(); await blocked; voiceCopies.add('user:user-1'); return { retainedGuest: 0 }; });
+    }
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.guestImportAvailable).toBe(true));
+    let claim!: Promise<void>;
+    let reset!: Promise<void>;
+    await act(async () => {
+      claim = result.current.importGuestData();
+      void claim.catch(() => undefined);
+      await waiting;
+      reset = result.current.resetLocalData();
+      expect(mockClearLocalData).not.toHaveBeenCalled();
+      expect(mockClearVoiceNotes).not.toHaveBeenCalled();
+      await expect(result.current.importGuestData()).rejects.toThrow('reset in progress');
+      release();
+      await expect(claim).rejects.toThrow('cancelled');
+      await reset;
+    });
+    expect(mockClaimGuestScope).not.toHaveBeenCalled();
+    expect(mockClearVoiceNotes).toHaveBeenCalledWith('user:user-1');
+    expect(voiceCopies.size).toBe(0);
+    expect(mockClearLocalData).toHaveBeenCalledTimes(1);
+    expect(mockClearLocalData).toHaveBeenCalledWith('user:user-1');
+  });
+
+  it('does not erase either account when the owner changes while reset joins a claim', async () => {
+    let release!: () => void;
+    let reached!: () => void;
+    const blocked = new Promise<void>(resolve => { release = resolve; });
+    const waiting = new Promise<void>(resolve => { reached = resolve; });
+    mockClaimJournalCopies.mockImplementationOnce(async () => { reached(); await blocked; });
+    const { result, rerender } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.guestImportAvailable).toBe(true));
+    const claim = result.current.importGuestData();
+    void claim.catch(() => undefined);
+    await waiting;
+    const reset = result.current.resetLocalData();
+    void reset.catch(() => undefined);
+    await act(async () => { mockAuthUserId = 'user-2'; rerender(); });
+    await act(async () => {
+      release();
+      await expect(claim).rejects.toThrow('cancelled');
+      await expect(reset).rejects.toThrow('account changed');
+    });
+    expect(mockClearVoiceNotes).not.toHaveBeenCalled();
+    expect(mockClearLocalData).not.toHaveBeenCalled();
+  });
+
+  it('reports an explicit reset storage failure and allows retry', async () => {
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    mockClearLocalData.mockRejectedValueOnce(new Error('erase failed'));
+    await act(async () => { await expect(result.current.resetLocalData()).rejects.toThrow('erase failed'); });
+    await act(async () => { await result.current.resetLocalData(); });
+    expect(mockClearLocalData).toHaveBeenCalledTimes(2);
   });
 
   it('does not claim trainer guest data if local voice transfer fails', async () => {

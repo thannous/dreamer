@@ -441,25 +441,6 @@ export async function clearLucidTrainerLocalData(
     return cancelAllLucidTrainerNotifications();
   }
 ): Promise<void> {
-  return clearTrainerScope(userScope, storage, cancelReminders, true);
-}
-
-/** Claim transfers trainer data only. Imported Journal copies remain owned by guest. */
-export async function clearLucidTrainerClaimedGuestData(
-  userScope: string,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
-): Promise<void> {
-  if (userScope !== 'guest') throw new Error('Claim cleanup requires guest scope');
-  // Account reminders are reconciled by the claim owner, not cancelled here.
-  return clearTrainerScope(userScope, storage, async () => undefined, false);
-}
-
-async function clearTrainerScope(
-  userScope: string,
-  storage: AsyncKeyValueStorage,
-  cancelReminders: () => Promise<unknown>,
-  eraseJournalCopies: boolean
-): Promise<void> {
   const keys = getLucidTrainerStorageKeys(userScope);
   await runSerialized(keys.state, () =>
     runSerialized(keys.syncQueue, async () => {
@@ -471,7 +452,7 @@ async function clearTrainerScope(
       }
       await Promise.all([storage.removeItem(keys.state), storage.removeItem(keys.syncQueue)]);
       const companionResults = await Promise.allSettled([
-        ...(eraseJournalCopies ? [clearLucidJournalImportStorage(userScope, storage)] : []),
+        clearLucidJournalImportStorage(userScope, storage),
         deleteLucidHealthKitSnapshot(userScope, storage),
         clearLucidDreamRehearsalState(userScope, storage),
         clearLucidDreamAtlasPreferences(userScope, storage),
