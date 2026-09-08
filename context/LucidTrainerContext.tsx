@@ -104,6 +104,8 @@ import {
 } from '@/services/lucidMorningVoiceNoteStorage';
 import {
   clearLucidTrainerLocalData,
+  clearLucidTrainerClaimedGuestData,
+  clearLucidTrainerRetainedGuestCopies,
   getLucidTrainerState,
   loadLucidTrainerState,
   loadLucidTrainerSyncQueue,
@@ -566,7 +568,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         updateState: (scope, updater) => updateLucidTrainerState(scope, updater),
         // Importing a storage scope must not cancel the authenticated account's
         // active reminders. Reminder reconciliation remains account-scoped.
-        clearScope: (scope) => clearLucidTrainerLocalData(scope, undefined, async () => {}),
+        clearScope: clearLucidTrainerClaimedGuestData,
       },
     });
     if (result.claimed) {
@@ -1347,6 +1349,11 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const resetLocalData = useCallback(async () => {
     resetLucidOnboardingCompletionNavigationClaim();
     await clearLucidTrainerLocalData(userScope);
+    // Claim cleanup can leave Journal copies under guest. Signed-in Delete
+    // trainer data and account deletion must erase that retained snapshot.
+    if (userScope !== 'guest') {
+      await clearLucidTrainerRetainedGuestCopies();
+    }
     setLoading(true);
     await load();
   }, [load, userScope]);
