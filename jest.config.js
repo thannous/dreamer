@@ -3,6 +3,7 @@ module.exports = {
   // Keep the lightweight Node CLI tests isolated from the Expo preset.
   projects: [
     '<rootDir>/jest.config.node.js',
+    '<rootDir>/jest.config.journal.js',
     '<rootDir>/jest.config.expo.js',
   ],
   // More Expo/JSDOM workers increase startup and teardown contention locally.
