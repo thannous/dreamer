@@ -21,7 +21,8 @@ preview, destination choice, deduplication and local deletion remain separate wo
   Journal client and owner. Repeating revocation is valid. Returns true.
 
 Items expose only id, clientRequestId, revision, createdAt and transcript. IDs are decimal bigint strings;
-revisions are opaque UUID strings from revision_id. There are no media URLs, audio, analysis, account
+revisions are opaque UUID strings from revision_id. Historical created_at values
+may be null; createdAt preserves that unknown date rather than inventing one. There are no media URLs, audio, analysis, account
 profile or health fields. Type declarations are in `scripts/ti560/import-contract.d.ts`.
 
 ## Pagination and concurrency
@@ -43,7 +44,7 @@ returns. Revocation prevents later page calls. Received client copies cannot be
 revoked remotely by this transport.
 
 Grant owner foreign keys cascade on Auth user deletion; cursor rows cascade with
-grants. Expired rows are inaccessible but retained until administrative cleanup.
+grants. Both referencing foreign keys are indexed to bound cascade lookup cost. Expired rows are inaccessible but retained until administrative cleanup.
 A future bounded TTL cleanup should delete expired grants; no production cron is
 created here. Unlimited repeated grant creation is not claimed abuse-resistant;
 rate limiting and UI activation are rollout gates.

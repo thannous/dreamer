@@ -18,6 +18,12 @@ create table app_authorization_private.journal_import_cursors (
   next_cursor uuid,
   processed boolean not null default false
 );
+-- Index both referencing keys so account/grant deletion can cascade without table scans.
+create index journal_import_grants_owner_idx
+  on app_authorization_private.journal_import_grants(owner_uid);
+create index journal_import_cursors_grant_idx
+  on app_authorization_private.journal_import_cursors(grant_id);
+
 revoke all on app_authorization_private.journal_import_grants,
   app_authorization_private.journal_import_cursors from public, anon, authenticated;
 

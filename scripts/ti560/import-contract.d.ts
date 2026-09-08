@@ -11,7 +11,8 @@ export interface JournalImportItem {
   clientRequestId: string | null;
   /** Opaque UUID from dreams.revision_id; not a numeric counter. */
   revision: string;
-  createdAt: string;
+  /** Unknown historical creation dates remain null; never replaced with import time. */
+  createdAt: string | null;
   transcript: string;
 }
 export interface JournalImportPage {
