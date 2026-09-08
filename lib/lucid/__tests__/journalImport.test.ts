@@ -1,4 +1,4 @@
-import { createJournalImportEngine, journalCopyIdentity, type JournalImportSnapshot, type JournalImportPage } from '../journalImport';
+import { createJournalImportEngine, journalCopyIdentity, mergeJournalImportSnapshots, type JournalImportSnapshot, type JournalImportPage } from '../journalImport';
 const date = '2026-09-08T00:00:00.000Z';
 const revision = (value: number) => `00000000-0000-4000-8000-${String(value).padStart(12, '0')}`;
 const item = (id: number, rev = revision(1)) => ({ id: String(id), revision: rev, transcript: `Dream ${id}`, createdAt: date, clientRequestId: null });
@@ -93,6 +93,27 @@ it('updates unedited copies and explicitly accepts an incoming conflict', async 
   await x.engine.start({ ...x.confirmation, grantId: 'g3' });
   const state = await x.engine.updateCopy('guest', id, { type: 'useIncoming' });
   expect(state.copies[id]).toMatchObject({ text: 'Incoming', edited: false, sourceRevision: revision(3) });
+});
+it('merges guest-only copies into the destination without overwriting account identities', () => {
+  const guestId = journalCopyIdentity('G', '1');
+  const accountId = journalCopyIdentity('A', '0');
+  const sharedId = journalCopyIdentity('A', '1');
+  const guest: JournalImportSnapshot = { version: 1, checkpoint: { grantId: 'g', sourceAccount: 'G', cursor: null, done: true }, copies: {
+    [guestId]: { identity: guestId, sourceProduct: 'journal', sourceAccount: 'G', sourceId: '1', sourceRevision: revision(1), createdAt: date, importedAt: date, text: 'Guest', edited: true, deleted: false },
+    [sharedId]: { identity: sharedId, sourceProduct: 'journal', sourceAccount: 'A', sourceId: '1', sourceRevision: revision(1), createdAt: date, importedAt: date, text: 'Guest shared', edited: true, deleted: false },
+  } };
+  const account: JournalImportSnapshot = { version: 1, checkpoint: { grantId: 'a', sourceAccount: 'A', cursor: 'c', done: false }, copies: {
+    [accountId]: { identity: accountId, sourceProduct: 'journal', sourceAccount: 'A', sourceId: '0', sourceRevision: revision(1), createdAt: date, importedAt: date, text: 'Account', edited: false, deleted: false },
+    [sharedId]: { identity: sharedId, sourceProduct: 'journal', sourceAccount: 'A', sourceId: '1', sourceRevision: revision(2), createdAt: date, importedAt: date, text: 'Account shared', edited: false, deleted: false },
+  } };
+  const merged = mergeJournalImportSnapshots(account, guest)!;
+  expect(merged.copies[guestId].text).toBe('Guest');
+  expect(merged.copies[accountId].text).toBe('Account');
+  expect(merged.copies[sharedId].text).toBe('Account shared');
+  expect(merged.checkpoint).toEqual(account.checkpoint);
+  expect(mergeJournalImportSnapshots(null, guest)).toEqual(guest);
+  expect(mergeJournalImportSnapshots(account, null)).toEqual(account);
+  expect(mergeJournalImportSnapshots(null, null)).toBeNull();
 });
 it('rejects expired grants and malformed pages without empty overwrite', async () => {
   const x = setup();
