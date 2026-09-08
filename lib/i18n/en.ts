@@ -318,6 +318,8 @@ const translations: Record<string, string> = {
     'journal.badge.sync_pending': 'Syncing',
     'journal.badge.sync_failed': 'Sync failed',
     'journal.badge.sync_conflict': 'Conflict',
+    'journal.persistence.refresh_title': 'Could not refresh your journal',
+    'journal.persistence.refresh_message': 'Your saved dreams remain available. Try again to check for updates.',
     'journal.persistence.read_title': 'Journal temporarily unavailable',
     'journal.persistence.read_device': 'We could not read the journal saved on this device. Nothing was erased. Try again before saving a new dream.',
     'journal.persistence.read_cache': 'We could not open the dreams saved on this device for your account. Nothing was erased. Try again to access them.',

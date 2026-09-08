@@ -679,7 +679,7 @@ export const applyPendingMutations = (
           }
           break;
         case 'delete':
-          if (mutation.status === 'failed' || mutation.status === 'blocked') {
+          if ((mutation.status === 'failed' || mutation.status === 'blocked') && getMutationRemoteId(mutation) != null) {
             if (dream) {
               next = upsertDream(
                 next,
@@ -691,6 +691,9 @@ export const applyPendingMutations = (
             break;
           }
           const payload = getMutationPayload(mutation);
+          const deletedClientId = payload.tombstone?.clientRequestId ??
+            (payload.tombstone ? `dream-${payload.tombstone.id}` : undefined);
+          if (deletedClientId) next = next.filter((entry) => entry.clientRequestId !== deletedClientId);
           next = removeDream(
             next,
             payload.dreamId ?? dream?.id ?? -1,

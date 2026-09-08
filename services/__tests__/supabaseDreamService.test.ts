@@ -947,6 +947,15 @@ describe('supabaseDreamService', () => {
     expect(result).toEqual(expect.objectContaining({ status: 'ack', remoteId: 42 }));
   });
 
+  it('constrains a scoped journal fetch to its captured user', async () => {
+    const order = jest.fn().mockResolvedValue({ data: [], error: null });
+    const eq = jest.fn().mockReturnValue({ order });
+    mocks.from.mockReturnValue({ select: jest.fn().mockReturnValue({ eq }) });
+    const { fetchDreamsFromSupabase } = require('../supabaseDreamService');
+    await expect(fetchDreamsFromSupabase('account-a')).resolves.toEqual([]);
+    expect(eq).toHaveBeenCalledWith('user_id', 'account-a');
+  });
+
   it('fetchDreamsFromSupabase maps rows correctly', async () => {
     const orderMock = jest.fn().mockResolvedValue({
       data: [

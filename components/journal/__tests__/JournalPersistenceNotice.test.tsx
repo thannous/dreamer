@@ -43,6 +43,28 @@ describe('JournalPersistenceNotice', () => {
     expect(screen.getByText('journal.persistence.write_cache')).toBeTruthy();
   });
 
+  it('retries a cloud refresh without retrying an unrelated disk write', () => {
+    const onRetry = jest.fn();
+    const onRefresh = jest.fn();
+    render(<JournalPersistenceNotice state={{ status: 'ready', target: 'remote-cache' }}
+      refreshState={{ status: 'error' }} onRetry={onRetry} onRefresh={onRefresh} />);
+    expect(screen.getByText('journal.persistence.refresh_message')).toBeTruthy();
+    fireEvent.press(screen.getByRole('button'));
+    expect(onRefresh).toHaveBeenCalledTimes(1);
+    expect(onRetry).not.toHaveBeenCalled();
+  });
+
+  it('prioritizes disk failures when cloud refresh also failed', () => {
+    const onRetry = jest.fn();
+    const onRefresh = jest.fn();
+    render(<JournalPersistenceNotice state={{ status: 'error', operation: 'write', target: 'remote-cache' }}
+      refreshState={{ status: 'error' }} onRetry={onRetry} onRefresh={onRefresh} />);
+    expect(screen.getByText('journal.persistence.write_cache')).toBeTruthy();
+    fireEvent.press(screen.getByRole('button'));
+    expect(onRetry).toHaveBeenCalledTimes(1);
+    expect(onRefresh).not.toHaveBeenCalled();
+  });
+
   it('stays hidden when storage is ready', () => {
     const { toJSON } = render(
       <JournalPersistenceNotice

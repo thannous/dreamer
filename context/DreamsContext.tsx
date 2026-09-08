@@ -1,6 +1,6 @@
 import { AnalysisActivityProvider } from '@/context/AnalysisActivityContext';
 import { useDreamJournal } from '@/hooks/useDreamJournal';
-import type { DreamPersistenceState } from '@/hooks/useDreamPersistence';
+import type { DreamPersistenceState, DreamRefreshState } from '@/hooks/useDreamPersistence';
 import type { AnalysisSource } from '@/lib/analytics';
 import type { DreamAnalysis, DreamCategorization } from '@/lib/types';
 import { AnalysisStep } from '@/hooks/useAnalysisProgress';
@@ -11,6 +11,7 @@ export type DreamsDataContextValue = {
   dreams: DreamAnalysis[];
   loaded: boolean;
   persistenceState: DreamPersistenceState;
+  refreshState: DreamRefreshState;
 };
 
 // Actions context - stable references, never triggers re-renders
@@ -65,8 +66,9 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       dreams: journal.dreams,
       loaded: journal.loaded,
       persistenceState: journal.persistenceState,
+      refreshState: journal.refreshState,
     }),
-    [journal.dreams, journal.loaded, journal.persistenceState]
+    [journal.dreams, journal.loaded, journal.persistenceState, journal.refreshState]
   );
 
   const analysisActivityValue = useMemo(

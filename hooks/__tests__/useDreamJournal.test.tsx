@@ -14,6 +14,7 @@ const loadedDreams = (value: DreamAnalysis[]): DreamListReadResult => ({ status:
 
 // Hoist mock functions
 const {
+  mockGetDreamsMigrationSynced,
   mockGetSavedDreams,
   mockSaveDreams,
   mockGetCachedRemoteDreams,
@@ -46,6 +47,7 @@ const {
   mockGetGuestDreamMigrationOwner,
   mockSetGuestDreamMigrationOwner,
 } = ((factory: any) => factory())(() => ({
+  mockGetDreamsMigrationSynced: typedJestFn<() => Promise<boolean>>(),
   mockGetSavedDreams: typedJestFn<() => Promise<DreamListReadResult>>(),
   mockSaveDreams: typedJestFn<(dreams: DreamAnalysis[]) => Promise<void>>(),
   mockGetCachedRemoteDreams: typedJestFn<(scope?: string | null) => Promise<DreamListReadResult>>(),
@@ -149,6 +151,8 @@ jest.mock('../useSubscription', () => ({
 
 // Mock storageService
 jest.mock('../../services/storageService', () => ({
+  getDreamsMigrationSynced: mockGetDreamsMigrationSynced,
+  setDreamsMigrationSynced: async () => undefined,
   getSavedDreams: mockGetSavedDreams,
   saveDreams: mockSaveDreams,
   getCachedRemoteDreams: mockGetCachedRemoteDreams,
@@ -300,6 +304,7 @@ const renderLoadedDreamJournal = async () => {
 describe('useDreamJournal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetDreamsMigrationSynced.mockResolvedValue(true);
     mockSubscriptionStatus = { tier: 'free' };
     mockEnvState.analysisJobsEnabled = false;
     mockEnvState.mockMode = false;
@@ -1263,6 +1268,145 @@ describe('useDreamJournal', () => {
   });
 
   describe('deleteDream', () => {
+    it('retains deletion during migration upload and removes the server result on the next fetch', async () => {
+      setMockUser({ id: 'user-1' });
+      mockGetDreamsMigrationSynced.mockResolvedValue(false);
+      const original = buildDream({ id: 870, clientRequestId: 'upload-870' });
+      let cache = [original];
+      let queue: DreamMutation[] = [];
+      mockGetCachedRemoteDreams.mockImplementation(async () => loadedDreams(cache));
+      mockSaveCachedRemoteDreams.mockImplementation(async (value: DreamAnalysis[]) => { cache = value; });
+      mockGetPendingDreamMutations.mockImplementation(async () => queue);
+      mockSavePendingDreamMutations.mockImplementation(async (value: DreamMutation[]) => { queue = value; });
+      mockFetchDreamsFromSupabase.mockResolvedValue([original]);
+      let finishUpload!: (dream: DreamAnalysis) => void;
+      mockCreateDreamInSupabase.mockReturnValue(new Promise((resolve) => { finishUpload = resolve; }));
+      const hook = await renderLoadedDreamJournal();
+      await waitFor(() => expect(mockCreateDreamInSupabase).toHaveBeenCalledTimes(1));
+      await act(async () => { await hook.result.current.deleteDream(870); });
+      expect(queue).toEqual([expect.objectContaining({ operation: 'delete', payload: expect.objectContaining({ tombstone: expect.objectContaining({ clientRequestId: 'upload-870' }) }) })]);
+      mockFetchDreamsFromSupabase.mockResolvedValue([]);
+      let earlyRefresh!: Promise<void>;
+      await act(async () => { earlyRefresh = hook.result.current.reloadDreams(); });
+      expect(queue).toHaveLength(1);
+      expect(mockDeleteDreamFromSupabase).not.toHaveBeenCalled();
+      const remote = { ...original, id: 999, remoteId: 1870 };
+      await act(async () => { finishUpload(remote); await earlyRefresh; });
+      expect(hook.result.current.dreams).toEqual([]);
+      mockFetchDreamsFromSupabase.mockResolvedValue([remote]);
+      mockDeleteDreamFromSupabase.mockResolvedValue(undefined);
+      await act(async () => { await hook.result.current.reloadDreams(); });
+      await waitFor(() => expect(mockDeleteDreamFromSupabase).toHaveBeenCalledWith(1870));
+      expect(hook.result.current.dreams).toEqual([]);
+      expect(queue).toEqual([]);
+    });
+
+    it('keeps the unresolved deletion scoped to A when its upload settles under B', async () => {
+      setMockUser({ id: 'user-1' });
+      mockGetDreamsMigrationSynced.mockResolvedValue(false);
+      const original = buildDream({ id: 871, clientRequestId: 'upload-871' });
+      let cache = [original];
+      let queue: DreamMutation[] = [];
+      mockGetCachedRemoteDreams.mockImplementation(async (scope?: string | null) => loadedDreams(scope === 'user:user-1' ? cache : []));
+      mockSaveCachedRemoteDreams.mockImplementation(async (value: DreamAnalysis[], scope?: string | null) => { if (scope === 'user:user-1') cache = value; });
+      mockGetPendingDreamMutations.mockImplementation(async (scope?: string | null) => scope === 'user:user-1' ? queue : []);
+      mockSavePendingDreamMutations.mockImplementation(async (value: DreamMutation[], scope?: string | null) => { if (scope === 'user:user-1') queue = value; });
+      mockFetchDreamsFromSupabase.mockResolvedValue([original]);
+      let finishUpload!: (dream: DreamAnalysis) => void;
+      mockCreateDreamInSupabase.mockReturnValue(new Promise((resolve) => { finishUpload = resolve; }));
+      const hook = await renderLoadedDreamJournal();
+      await waitFor(() => expect(mockCreateDreamInSupabase).toHaveBeenCalledTimes(1));
+      await act(async () => { await hook.result.current.deleteDream(871); });
+      mockFetchDreamsFromSupabase.mockResolvedValue([]);
+      setMockUser({ id: 'user-b' });
+      hook.rerender();
+      await act(async () => { finishUpload({ ...original, remoteId: 1871 }); });
+      expect(mockDeleteDreamFromSupabase).not.toHaveBeenCalled();
+      expect(queue).toHaveLength(1);
+      expect(queue[0].userScope).toBe('user:user-1');
+      expect(hook.result.current.dreams).toEqual([]);
+    });
+
+    it('keeps an edit made during migration queued until its remote identity is known', async () => {
+      setMockUser({ id: 'user-1' });
+      mockGetDreamsMigrationSynced.mockResolvedValue(false);
+      const original = buildDream({ id: 872, clientRequestId: 'upload-872' });
+      let cache = [original];
+      let queue: DreamMutation[] = [];
+      mockGetCachedRemoteDreams.mockImplementation(async () => loadedDreams(cache));
+      mockSaveCachedRemoteDreams.mockImplementation(async (value: DreamAnalysis[]) => { cache = value; });
+      mockGetPendingDreamMutations.mockImplementation(async () => queue);
+      mockSavePendingDreamMutations.mockImplementation(async (value: DreamMutation[]) => { queue = value; });
+      mockFetchDreamsFromSupabase.mockResolvedValue([original]);
+      let finishUpload!: (dream: DreamAnalysis) => void;
+      mockCreateDreamInSupabase.mockReturnValue(new Promise((resolve) => { finishUpload = resolve; }));
+      const hook = await renderLoadedDreamJournal();
+      await waitFor(() => expect(mockCreateDreamInSupabase).toHaveBeenCalledTimes(1));
+      await act(async () => { await hook.result.current.updateDream({ ...original, title: 'Edited while uploading' }); });
+      expect(queue).toEqual(expect.arrayContaining([expect.objectContaining({ operation: 'update' })]));
+      const remote = { ...original, remoteId: 1872 };
+      await act(async () => { finishUpload(remote); });
+      expect(hook.result.current.dreams[0].title).toBe('Edited while uploading');
+      mockGetDreamsMigrationSynced.mockResolvedValue(true);
+      mockFetchDreamsFromSupabase.mockResolvedValue([remote]);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => dream);
+      await act(async () => { await hook.result.current.reloadDreams(); });
+      await waitFor(() => expect(mockUpdateDreamInSupabase).toHaveBeenCalledWith(expect.objectContaining({ remoteId: 1872, title: 'Edited while uploading' })));
+      expect(hook.result.current.dreams[0].title).toBe('Edited while uploading');
+      expect(queue).toEqual([]);
+    });
+
+    it('does not restore a create rejected after the user deleted it', async () => {
+      setMockUser({ id: 'user-1' });
+      const original = buildDream({ id: 873, clientRequestId: 'upload-873' });
+      let cache = [original];
+      let queue = [legacyMutation({ id: 'create-873', type: 'create', dream: original, createdAt: 1 })];
+      mockGetCachedRemoteDreams.mockImplementation(async () => loadedDreams(cache));
+      mockSaveCachedRemoteDreams.mockImplementation(async (value: DreamAnalysis[]) => { cache = value; });
+      mockGetPendingDreamMutations.mockImplementation(async () => queue);
+      mockSavePendingDreamMutations.mockImplementation(async (value: DreamMutation[]) => { queue = value; });
+      mockFetchDreamsFromSupabase.mockResolvedValue([]);
+      let rejectUpload!: (error: Error) => void;
+      mockCreateDreamInSupabase.mockReturnValue(new Promise((_resolve, reject) => { rejectUpload = reject; }));
+      const hook = await renderLoadedDreamJournal();
+      let replay!: Promise<void>;
+      await act(async () => { replay = hook.result.current.retryDreamSync(873); });
+      await waitFor(() => expect(mockCreateDreamInSupabase).toHaveBeenCalledTimes(1));
+      await act(async () => { await hook.result.current.deleteDream(873); });
+      await act(async () => { rejectUpload(new Error('network response lost')); await replay; });
+      expect(hook.result.current.dreams).toEqual([]);
+      expect(cache).toEqual([]);
+      expect(queue).toEqual([expect.objectContaining({ operation: 'delete' })]);
+    });
+
+    it('does not rehydrate a consumed create queue when an old cache read completes', async () => {
+      setMockUser({ id: 'user-1' });
+      const original = buildDream({ id: 875, clientRequestId: 'upload-875' });
+      let cache = [original];
+      let queue = [legacyMutation({ id: 'create-875', type: 'create', dream: original, createdAt: 1 })];
+      mockGetCachedRemoteDreams.mockImplementation(async () => loadedDreams(cache));
+      mockSaveCachedRemoteDreams.mockImplementation(async (value: DreamAnalysis[]) => { cache = value; });
+      mockGetPendingDreamMutations.mockImplementation(async () => queue);
+      mockSavePendingDreamMutations.mockImplementation(async (value: DreamMutation[]) => { queue = value; });
+      mockFetchDreamsFromSupabase.mockResolvedValue([]);
+      const hook = await renderLoadedDreamJournal();
+      let finishCacheRead!: (value: DreamListReadResult) => void;
+      mockGetCachedRemoteDreams.mockReturnValueOnce(new Promise((resolve) => { finishCacheRead = resolve; }));
+      let reload!: Promise<void>;
+      await act(async () => { reload = hook.result.current.reloadDreams(); });
+      mockCreateDreamInSupabase.mockResolvedValue({ ...original, remoteId: 1875 });
+      await act(async () => { await hook.result.current.retryDreamSync(875); });
+      expect(queue).toEqual([]);
+      mockDeleteDreamFromSupabase.mockResolvedValue(undefined);
+      await act(async () => { await hook.result.current.deleteDream(875); });
+      expect(cache).toEqual([]);
+      await act(async () => { finishCacheRead(loadedDreams([original])); await reload; });
+      expect(hook.result.current.dreams).toEqual([]);
+      expect(queue).toEqual([]);
+      expect(mockCreateDreamInSupabase).toHaveBeenCalledTimes(1);
+      expect(mockSavePendingDreamMutations).toHaveBeenLastCalledWith([], 'user:user-1');
+    });
+
     it('deletes dream locally when not authenticated', async () => {
       const existingDream = buildDream({ id: 1 });
       setSavedDreams([existingDream]);
