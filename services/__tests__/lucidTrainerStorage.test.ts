@@ -2,6 +2,7 @@ import { createLucidJournalImportStorage } from '../lucidJournalImportStorage';
 import { projectLucidObservations, lucidObservationSourceId } from '@/lib/lucid/observations';
 import { Platform } from 'react-native';
 import { createInitialLucidTrainerState } from '@/lib/lucid/domain';
+import { journalCopyIdentity } from '@/lib/lucid/journalImport';
 import type { LucidSyncMutation } from '@/lib/lucid/model';
 import {
   getLucidDreamAtlasStorageKey,
@@ -23,6 +24,7 @@ import {
   appendLucidTrainerSyncMutation,
   clearLucidTrainerLocalData,
   clearLucidTrainerClaimedGuestData,
+  clearLucidTrainerRetainedGuestCopies,
   EXPORT_VERSION,
   LEGACY_EXPORT_VERSION,
   exportLucidTrainerCsv,
@@ -735,11 +737,11 @@ describe('lucidTrainerStorage', () => {
     expect(storage.values.get('unrelated')).toBe('keep');
   });
 
-  it('preserves imported guest copies after trainer claim without moving them to the account', async () => {
+  it('preserves imported guest copies after trainer claim cleanup', async () => {
     const guestKeys = getLucidTrainerStorageKeys('guest');
     const storage = memoryStorage({ [guestKeys.state]: JSON.stringify(state()), unrelated: 'Journal' });
     const imports = createLucidJournalImportStorage(storage);
-    const identity = JSON.stringify(['journal', 'source-A', '1']);
+    const identity = journalCopyIdentity('source-A', '1');
     const snapshot = { version: 1 as const, copies: { [identity]: {
       identity, sourceProduct: 'journal' as const, sourceAccount: 'source-A', sourceId: '1',
       sourceRevision: '00000000-0000-4000-8000-000000000001',
@@ -755,9 +757,44 @@ describe('lucidTrainerStorage', () => {
     expect(await imports.load(SCOPE)).toEqual(snapshot);
     expect(storage.values.get('unrelated')).toBe('Journal');
     await expect(clearLucidTrainerClaimedGuestData(SCOPE, storage)).rejects.toThrow('guest scope');
-    await clearLucidTrainerLocalData('guest', storage, async () => undefined);
+  });
+
+  it('erases a retained guest journal snapshot during signed-in local deletion', async () => {
+    const guestKeys = getLucidTrainerStorageKeys('guest');
+    const accountKeys = getLucidTrainerStorageKeys(SCOPE);
+    const storage = memoryStorage({
+      [guestKeys.state]: JSON.stringify(state()),
+      [accountKeys.state]: JSON.stringify(state()),
+    });
+    const imports = createLucidJournalImportStorage(storage);
+    const guestIdentity = journalCopyIdentity('source-A', '1');
+    const accountIdentity = journalCopyIdentity('source-B', '2');
+    const guestSnapshot = { version: 1 as const, copies: { [guestIdentity]: {
+      identity: guestIdentity, sourceProduct: 'journal' as const, sourceAccount: 'source-A', sourceId: '1',
+      sourceRevision: '00000000-0000-4000-8000-000000000001',
+      createdAt: null, importedAt: '2026-09-09T00:00:00Z', text: 'Retained guest transcript', edited: false, deleted: false,
+    } }, checkpoint: null };
+    const accountSnapshot = { version: 1 as const, copies: {
+      [guestIdentity]: guestSnapshot.copies[guestIdentity],
+      [accountIdentity]: {
+        identity: accountIdentity, sourceProduct: 'journal' as const, sourceAccount: 'source-B', sourceId: '2',
+        sourceRevision: '00000000-0000-4000-8000-000000000002',
+        createdAt: null, importedAt: '2026-09-09T00:00:00Z', text: 'Transferred account copy', edited: false, deleted: false,
+      },
+    }, checkpoint: null };
+    await imports.save('guest', guestSnapshot, () => undefined);
+    await imports.save(SCOPE, accountSnapshot, () => undefined);
+
+    await clearLucidTrainerClaimedGuestData('guest', storage);
+    expect(await imports.load('guest')).toEqual(guestSnapshot);
+    expect(await imports.load(SCOPE)).toEqual(accountSnapshot);
+
+    await clearLucidTrainerLocalData(SCOPE, storage, async () => undefined);
+    await clearLucidTrainerRetainedGuestCopies(storage);
+
     expect(await imports.load('guest')).toBeNull();
-    expect(await imports.load(SCOPE)).toEqual(snapshot);
+    expect(await imports.load(SCOPE)).toBeNull();
+    expect([...storage.values.keys()].some((key) => key.startsWith('noctalia_lucid_journal_copies:'))).toBe(false);
   });
 
   it('still removes sensitive local data when OS reminder cleanup fails', async () => {

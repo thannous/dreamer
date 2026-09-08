@@ -444,7 +444,10 @@ export async function clearLucidTrainerLocalData(
   return clearTrainerScope(userScope, storage, cancelReminders, true);
 }
 
-/** Claim transfers trainer data only. Imported Journal copies remain owned by guest. */
+/**
+ * Claim cleanup removes guest trainer state. Journal copies stay under guest
+ * until signed-in deletion; the claim path copies them to the account first.
+ */
 export async function clearLucidTrainerClaimedGuestData(
   userScope: string,
   storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
@@ -452,6 +455,13 @@ export async function clearLucidTrainerClaimedGuestData(
   if (userScope !== 'guest') throw new Error('Claim cleanup requires guest scope');
   // Account reminders are reconciled by the claim owner, not cancelled here.
   return clearTrainerScope(userScope, storage, async () => undefined, false);
+}
+
+/** Signed-in deletion also drops Journal copies left under guest after a claim. */
+export async function clearLucidTrainerRetainedGuestCopies(
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+): Promise<void> {
+  await clearLucidJournalImportStorage('guest', storage);
 }
 
 async function clearTrainerScope(

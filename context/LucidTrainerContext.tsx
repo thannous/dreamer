@@ -105,6 +105,7 @@ import {
 import {
   clearLucidTrainerLocalData,
   clearLucidTrainerClaimedGuestData,
+  clearLucidTrainerRetainedGuestCopies,
   getLucidTrainerState,
   loadLucidTrainerState,
   loadLucidTrainerSyncQueue,
@@ -1348,6 +1349,11 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const resetLocalData = useCallback(async () => {
     resetLucidOnboardingCompletionNavigationClaim();
     await clearLucidTrainerLocalData(userScope);
+    // Claim cleanup can leave Journal copies under guest. Signed-in Delete
+    // trainer data and account deletion must erase that retained snapshot.
+    if (userScope !== 'guest') {
+      await clearLucidTrainerRetainedGuestCopies();
+    }
     setLoading(true);
     await load();
   }, [load, userScope]);

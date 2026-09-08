@@ -1590,6 +1590,63 @@ describe('lucidTrainerSync', () => {
     expect(store.states.get(SCOPE)?.experiments.map((item) => item.id)).toContain('guest-experiment');
   });
 
+  it('keeps transferred journal copies when claim cleanup retains the guest snapshot', async () => {
+    const guest = state(false);
+    guest.experiments = [{
+      id: 'guest-experiment', occurredAt: NOW, technique: 'mild', preparationMinutes: 5,
+      result: 'none', lucidityLevel: 0, recallLevel: 2, sleepQuality: 3, factors: [], updatedAt: NOW,
+    }];
+    const account = state(true);
+    const store = guestClaimStore(guest, account);
+    const journal = memoryJournal();
+    const guestCopies = journalCopySnapshot('G', '1', 'Guest dream');
+    const accountCopies = journalCopySnapshot('A', '0', 'Account dream');
+    await journal.adapter.save('guest', guestCopies, () => undefined);
+    await journal.adapter.save(SCOPE, accountCopies, () => undefined);
+    store.adapter.clearScope = async (scope) => {
+      store.cleared.push(scope);
+      store.states.set(scope, createInitialLucidTrainerState({ now: NOW + 20, timeZone: 'UTC' }));
+      store.queues.set(scope, []);
+      await lucidStorage.clearLucidTrainerClaimedGuestData(scope, {
+        getItem: async (key: string) => journal.values.get(key) ?? null,
+        setItem: async (key: string, value: string) => {
+          journal.values.set(key, value);
+        },
+        removeItem: async (key: string) => {
+          journal.values.delete(key);
+        },
+      });
+    };
+
+    const result = await claimLucidTrainerGuestScope(SCOPE, {
+      storage: store.adapter,
+      journalImport: journal.adapter,
+      now: () => NOW + 50,
+      idFactory: () => '00000000-0000-4000-8000-000000000001',
+    });
+
+    expect(result.claimed).toBe(true);
+    expect(await journal.adapter.load('guest')).toEqual(guestCopies);
+    const claimed = await journal.adapter.load(SCOPE);
+    expect(claimed?.copies[journalCopyIdentity('G', '1')].text).toBe('Guest dream');
+    expect(claimed?.copies[journalCopyIdentity('A', '0')].text).toBe('Account dream');
+
+    const kv = {
+      getItem: async (key: string) => journal.values.get(key) ?? null,
+      setItem: async (key: string, value: string) => {
+        journal.values.set(key, value);
+      },
+      removeItem: async (key: string) => {
+        journal.values.delete(key);
+      },
+    };
+    await lucidStorage.clearLucidTrainerLocalData(SCOPE, kv, async () => undefined);
+    await lucidStorage.clearLucidTrainerRetainedGuestCopies(kv);
+
+    expect(await journal.adapter.load('guest')).toBeNull();
+    expect(await journal.adapter.load(SCOPE)).toBeNull();
+  });
+
   it('does not permanently erase guest journal copies when claim fails', async () => {
     const guest = state(false);
     guest.experiments = [{
