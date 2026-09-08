@@ -93,6 +93,19 @@ describe('useOfflineSyncQueue', () => {
     jest.resetAllMocks();
   });
 
+  it('keeps durable command identities stable when only connectivity changes', () => {
+    const { result, rerender } = renderHook(({ hasNetwork }) => useOfflineSyncQueue({
+      ...defaultOptions, hasNetwork,
+    }), { initialProps: { hasNetwork: false } });
+    const before = result.current;
+    rerender({ hasNetwork: true });
+    expect(result.current.queueOfflineOperation).toBe(before.queueOfflineOperation);
+    expect(result.current.clearQueuedMutationsForDream).toBe(before.clearQueuedMutationsForDream);
+    expect(result.current.retryDreamMutations).toBe(before.retryDreamMutations);
+    expect(result.current.setPendingMutations).toBe(before.setPendingMutations);
+    expect(result.current.syncPendingMutations).not.toBe(before.syncPendingMutations);
+  });
+
   describe('initialization', () => {
     it('initializes with empty pending mutations', () => {
       const { result } = renderHook(() => useOfflineSyncQueue(defaultOptions));
