@@ -20,8 +20,8 @@ preview, destination choice, deduplication and local deletion remain separate wo
 - `revoke_journal_import_grant(p_grant_id uuid)`: only the originating recognized
   Journal client and owner. Repeating revocation is valid. Returns true.
 
-Items expose only id, clientRequestId, revision, createdAt and transcript. IDs and
-revisions are decimal strings. There are no media URLs, audio, analysis, account
+Items expose only id, clientRequestId, revision, createdAt and transcript. IDs are decimal bigint strings;
+revisions are opaque UUID strings from revision_id. There are no media URLs, audio, analysis, account
 profile or health fields. Type declarations are in `scripts/ti560/import-contract.d.ts`.
 
 ## Pagination and concurrency
