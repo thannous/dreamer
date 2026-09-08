@@ -1,9 +1,9 @@
 import { budgetedFetch, planPairs, preserveResponse, validateFixtures, type Evidence, atomicWriteJson, type AtomicFileIO } from './core.ts';
-const corpus = JSON.parse(await Deno.readTextFile(new URL('./fixtures.json', import.meta.url)));
+import corpus from './fixtures.json' with { type: 'json' };
 function assert(value: unknown, message = 'Assertion failed'): asserts value {
   if (!value) throw new Error(message);
 }
-function rejectsFixture(mutate: (rows: typeof corpus) => void) {
+function rejectsFixture(mutate: (rows: Record<string, unknown>[]) => void) {
   const rows = structuredClone(corpus);
   mutate(rows);
   let rejected = false;
