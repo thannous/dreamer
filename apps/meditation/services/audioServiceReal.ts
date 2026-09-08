@@ -126,6 +126,7 @@ export function createSessionPlayer(
   });
   player.loop = true;
 
+  let disposed = false;
   let finished = false;
   let loopIndex = 0;
   let lastNativeTime = 0;
@@ -290,6 +291,7 @@ export function createSessionPlayer(
     },
     addListener(_eventName, listener) {
       return player.addListener('playbackStatusUpdate', (status) => {
+        if (disposed) return;
         if (finished) {
           listener(toStatus(status, true, safeDuration));
           return;
@@ -327,9 +329,21 @@ export function createSessionPlayer(
       });
     },
     remove: () => {
+      if (disposed) return;
+      disposed = true;
       playStartedAt = null;
-      deactivateLockScreen();
-      player.remove();
+      // remove() only drops Expo's registry entry. Release the manually-created
+      // SharedObject explicitly so ExoPlayer cannot outlive this session.
+      try {
+        player.pause();
+        deactivateLockScreen();
+      } finally {
+        try {
+          player.remove();
+        } finally {
+          player.release();
+        }
+      }
     },
   };
 }
@@ -346,4 +360,23 @@ export const setVolume = (player: PlayerHandle, volume: number): void => {
 export const setLoop = (player: PlayerHandle, loop: boolean): void => {
   player.loop = loop;
 };
-export const release = (player: PlayerHandle): void => player.remove();
+const releasedPlayers = new WeakSet<PlayerHandle>();
+export const release = (player: PlayerHandle): void => {
+  if (releasedPlayers.has(player)) return;
+  releasedPlayers.add(player);
+  // Session adapters own their cleanup; raw texture players also need native
+  // release immediately, rather than waiting for garbage collection.
+  if (typeof player.release !== 'function') {
+    player.remove();
+    return;
+  }
+  try {
+    player.pause();
+  } finally {
+    try {
+      player.remove();
+    } finally {
+      player.release();
+    }
+  }
+};
