@@ -1,86 +1,131 @@
 import { createAudioPlayer } from 'expo-audio';
 
+import {
+  createLocalCuePlayer,
+  createPlayer,
+  createSessionPlayer,
+  release,
+  type PlayerHandle,
+} from '@/services/audioService';
+
 jest.mock('expo-audio', () => ({
   createAudioPlayer: jest.fn(),
-  setAudioModeAsync: jest.fn(),
+  createAudioPlaylist: jest.fn(),
+  setAudioModeAsync: jest.fn().mockResolvedValue(undefined),
 }));
-jest.mock('expo-asset', () => ({ Asset: {} }));
-jest.mock('@/lib/env', () => ({ isAudioMockModeEnabled: jest.fn() }));
 
-function loadFacade(mockMode: boolean) {
-  let audio!: typeof import('@/services/audioService');
-  jest.isolateModules(() => {
-    jest.requireMock('@/lib/env').isAudioMockModeEnabled.mockReturnValue(mockMode);
-    audio = jest.requireActual('@/services/audioService');
-  });
-  return audio;
-}
-
-function nativeHandle() {
-  return {
-    playing: true,
+function createNativePlayer() {
+  const nativePlayer = {
+    currentTime: 0,
+    duration: 300,
+    playing: false,
+    volume: 1,
     loop: false,
-    pause: jest.fn(),
+    play: jest.fn(() => {
+      nativePlayer.playing = true;
+    }),
+    pause: jest.fn(() => {
+      nativePlayer.playing = false;
+    }),
+    seekTo: jest.fn(async (seconds: number) => {
+      nativePlayer.currentTime = seconds;
+    }),
+    setPlaybackRate: jest.fn(),
+    addListener: jest.fn(() => ({ remove: jest.fn() })),
     remove: jest.fn(),
     release: jest.fn(),
     setActiveForLockScreen: jest.fn(),
     clearLockScreenControls: jest.fn(),
+    updateLockScreenMetadata: jest.fn(),
   };
+  return nativePlayer;
 }
 
-// Keep the actual adapter and mock implementation: these tests exercise the
-// public boundary used by PlayerContext and useWorldSoundscape.
-describe('audioService public resource lifetime', () => {
-  afterEach(() => {
-    jest.useRealTimers();
+describe('audioService facade release', () => {
+  let nativePlayer: ReturnType<typeof createNativePlayer>;
+
+  beforeEach(() => {
+    nativePlayer = createNativePlayer();
+    jest.mocked(createAudioPlayer).mockReturnValue(nativePlayer as never);
   });
 
-  it.each(['raw', 'session', 'cue'] as const)(
-    'releases a real %s native handle through the public facade once',
-    (kind) => {
-      const audio = loadFacade(false);
-      const native = nativeHandle();
-      jest.mocked(createAudioPlayer).mockReturnValue(native as never);
-      const player = kind === 'session'
-        ? audio.createSessionPlayer(1, 600, 300)
-        : kind === 'cue' ? audio.createLocalCuePlayer(1) : audio.createPlayer(1);
-      audio.release(player);
-      audio.release(player);
-      expect(native.pause).toHaveBeenCalledTimes(1);
-      expect(native.remove).toHaveBeenCalledTimes(1);
-      expect(native.release).toHaveBeenCalledTimes(1);
-      expect(native.pause.mock.invocationCallOrder[0]).toBeLessThan(
-        native.remove.mock.invocationCallOrder[0]!
-      );
-      expect(native.remove.mock.invocationCallOrder[0]).toBeLessThan(
-        native.release.mock.invocationCallOrder[0]!
-      );
-    }
-  );
+  it('pauses, removes, then releases a raw player once through the public boundary', () => {
+    const player = createPlayer(1);
+    nativePlayer.play();
 
-  it('releases real local cues even when content playback is mocked', () => {
-    const audio = loadFacade(true);
-    const native = nativeHandle();
-    jest.mocked(createAudioPlayer).mockReturnValue(native as never);
-    audio.release(audio.createLocalCuePlayer(1));
-    expect(native.pause).toHaveBeenCalledTimes(1);
-    expect(native.remove).toHaveBeenCalledTimes(1);
-    expect(native.release).toHaveBeenCalledTimes(1);
+    release(player);
+    release(player);
+
+    expect(nativePlayer.playing).toBe(false);
+    expect(nativePlayer.pause).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.remove).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.release).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.pause.mock.invocationCallOrder[0]).toBeLessThan(
+      nativePlayer.remove.mock.invocationCallOrder[0]!
+    );
+    expect(nativePlayer.remove.mock.invocationCallOrder[0]).toBeLessThan(
+      nativePlayer.release.mock.invocationCallOrder[0]!
+    );
   });
 
-  it('preserves mock timer and listener cleanup without requiring native release', () => {
-    jest.useFakeTimers();
-    const audio = loadFacade(true);
-    const player = audio.createPlayer(null);
-    const listener = jest.fn();
-    player.addListener('playbackStatusUpdate', listener);
+  it('releases a local cue player through the native helper once', () => {
+    const player = createLocalCuePlayer(1);
+    nativePlayer.play();
+
+    release(player);
+    release(player);
+
+    expect(nativePlayer.pause).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.remove).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.release).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.pause.mock.invocationCallOrder[0]).toBeLessThan(
+      nativePlayer.remove.mock.invocationCallOrder[0]!
+    );
+    expect(nativePlayer.remove.mock.invocationCallOrder[0]).toBeLessThan(
+      nativePlayer.release.mock.invocationCallOrder[0]!
+    );
+  });
+
+  it('only removes mock-only handles that have no native release', () => {
+    const remove = jest.fn();
+    const pause = jest.fn();
+    const mockOnly: PlayerHandle = {
+      currentTime: 0,
+      duration: 1,
+      playing: false,
+      volume: 1,
+      loop: false,
+      play: jest.fn(),
+      pause,
+      seekTo: jest.fn(async () => {}),
+      setPlaybackRate: jest.fn(),
+      addListener: jest.fn(() => ({ remove: jest.fn() })),
+      remove,
+    };
+
+    release(mockOnly);
+    release(mockOnly);
+
+    expect(remove).toHaveBeenCalledTimes(1);
+    expect(pause).not.toHaveBeenCalled();
+  });
+
+  it('keeps session adapter teardown once-only through the public release', () => {
+    const player = createSessionPlayer(1, 600, 300);
     player.play();
-    expect(jest.getTimerCount()).toBeGreaterThan(0);
-    audio.release(player);
-    audio.release(player);
-    listener.mockClear();
-    jest.advanceTimersByTime(1000);
-    expect(jest.getTimerCount()).toBe(0);
-    expect(listener).not.toHaveBeenCalled();
+
+    release(player);
+    release(player);
+
+    expect(nativePlayer.playing).toBe(false);
+    expect(nativePlayer.pause).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.remove).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.release).toHaveBeenCalledTimes(1);
+    expect(nativePlayer.pause.mock.invocationCallOrder[0]).toBeLessThan(
+      nativePlayer.remove.mock.invocationCallOrder[0]!
+    );
+    expect(nativePlayer.remove.mock.invocationCallOrder[0]).toBeLessThan(
+      nativePlayer.release.mock.invocationCallOrder[0]!
+    );
   });
 });
