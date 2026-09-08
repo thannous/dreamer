@@ -1,0 +1,920 @@
+{
+  "promptVersion": "analysis-2026-09-08.1",
+  "baseline": "d2bc25936",
+  "results": [
+    {
+      "id": "en-short",
+      "version": "before",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 4075,
+      "rawText": "{\n  \"title\": \"The Threshold of Blue\",\n  \"interpretation\": \"A solitary blue door standing alone in your dreamscape represents a profound, minimalist threshold in your subconscious. Dreams with such stark, focused imagery often arrive when your mind is cutting through everyday noise to present a singular, significant invitation. The simplicity of the vision highlights an upcoming transition or an untapped realm within yourself waiting to be acknowledged.\\n\\nIn symbolic language, a door serves as a classic emblem of opportunity, transition, and the boundary between the known and the unknown. The color blue enriches this symbol with themes of deep intuition, calm, clarity, truth, and peace. Together, a blue door suggests an entry point toward greater emotional tranquility, honest self-expression, or creative expansion that you are preparing to explore.\\n\\nThe emotional atmosphere surrounding this brief vision is one of quiet curiosity and serene anticipation. Even without complex narrative action, the mere presence of the door evokes a gentle pause in waking life, offering a sacred space where you are invited to listen closely to your innermost yearnings without pressure or fear.\\n\\nIn your waking life, this dream may be calling your attention to a subtle opportunity or a shift in mindset that is ready to unfold. It encourages you to trust your intuitive sense and consider what new chapter of peace or creative truth you are ready to unlock and step into.\",\n  \"shareableQuote\": \"Sometimes the quietest doors lead to the deepest transformations of the soul.\",\n  \"theme\": \"mystical\",\n  \"dreamType\": \"Symbolic Dream\",\n  \"imagePrompt\": \"A solitary vibrant cobalt blue wooden door standing upright in soft ethereal mist, glowing gently with a warm, serene backlight, cinematic lighting, mystical atmosphere.\",\n  \"symbols\": [\n    {\n      \"name\": \"The Blue Door\",\n      \"meaning\": \"Represents a peaceful threshold and an invitation to explore deeper emotional truth or new opportunities.\"\n    },\n    {\n      \"name\": \"The Solitary Frame\",\n      \"meaning\": \"Signifies clarity and distilled focus, removing waking-life distractions to highlight a single essential choice.\"\n    },\n    {\n      \"name\": \"The Color Blue\",\n      \"meaning\": \"Embodies intuition, serene self-awareness, and emotional tranquility awaiting your discovery.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Quiet Curiosity\",\n      \"insight\": \"Reflects an openness to explore what lies beneath the surface of your conscious daily thoughts.\"\n    },\n    {\n      \"name\": \"Serenity\",\n      \"insight\": \"Indicates a deep inner readiness to embrace calm and trust the unfolding path ahead.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"What new opportunity or emotional truth in your life feels ready to be opened?\",\n    \"If you were to step through this blue door, what kind of peaceful environment would you hope to find on the other side?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 985,
+        "total_input_tokens": 356,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 356
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 629,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1103,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1103
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 645
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "The Threshold of Blue",
+        "interpretation": "A solitary blue door standing alone in your dreamscape represents a profound, minimalist threshold in your subconscious. Dreams with such stark, focused imagery often arrive when your mind is cutting through everyday noise to present a singular, significant invitation. The simplicity of the vision highlights an upcoming transition or an untapped realm within yourself waiting to be acknowledged.\n\nIn symbolic language, a door serves as a classic emblem of opportunity, transition, and the boundary between the known and the unknown. The color blue enriches this symbol with themes of deep intuition, calm, clarity, truth, and peace. Together, a blue door suggests an entry point toward greater emotional tranquility, honest self-expression, or creative expansion that you are preparing to explore.\n\nThe emotional atmosphere surrounding this brief vision is one of quiet curiosity and serene anticipation. Even without complex narrative action, the mere presence of the door evokes a gentle pause in waking life, offering a sacred space where you are invited to listen closely to your innermost yearnings without pressure or fear.\n\nIn your waking life, this dream may be calling your attention to a subtle opportunity or a shift in mindset that is ready to unfold. It encourages you to trust your intuitive sense and consider what new chapter of peace or creative truth you are ready to unlock and step into.",
+        "shareableQuote": "Sometimes the quietest doors lead to the deepest transformations of the soul.",
+        "theme": "mystical",
+        "dreamType": "Symbolic Dream",
+        "imagePrompt": "A solitary vibrant cobalt blue wooden door standing upright in soft ethereal mist, glowing gently with a warm, serene backlight, cinematic lighting, mystical atmosphere.",
+        "symbols": [
+          {
+            "name": "The Blue Door",
+            "meaning": "Represents a peaceful threshold and an invitation to explore deeper emotional truth or new opportunities."
+          },
+          {
+            "name": "The Solitary Frame",
+            "meaning": "Signifies clarity and distilled focus, removing waking-life distractions to highlight a single essential choice."
+          },
+          {
+            "name": "The Color Blue",
+            "meaning": "Embodies intuition, serene self-awareness, and emotional tranquility awaiting your discovery."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Quiet Curiosity",
+            "insight": "Reflects an openness to explore what lies beneath the surface of your conscious daily thoughts."
+          },
+          {
+            "name": "Serenity",
+            "insight": "Indicates a deep inner readiness to embrace calm and trust the unfolding path ahead."
+          }
+        ],
+        "reflectionQuestions": [
+          "What new opportunity or emotional truth in your life feels ready to be opened?",
+          "If you were to step through this blue door, what kind of peaceful environment would you hope to find on the other side?"
+        ]
+      },
+      "interpretationWords": 222
+    },
+    {
+      "id": "en-short",
+      "version": "after",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 1631,
+      "rawText": "{\n  \"title\": \"A Blue Door\",\n  \"interpretation\": \"### What your account describes\\nYou recall seeing a single blue door, with no further details or events remembered.\\n\\n### Possible reflections\\nBecause the dream is so brief, any meaning remains open. A door might visually suggest a threshold, an opening, or a boundary, while the color blue might carry personal impressions of calmness, curiosity, or simply visual simplicity.\",\n  \"shareableQuote\": \"A simple vision of a blue door standing on the edge of memory.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Unknown\",\n  \"imagePrompt\": \"A single minimalist blue door standing in a quiet, subtle space, soft lighting, calm atmosphere, artistic and clean composition.\",\n  \"symbols\": [\n    {\n      \"name\": \"Blue Door\",\n      \"meaning\": \"Often associated with thresholds, transitions, or mysteries, though here it stands simply as a singular visual memory.\"\n    }\n  ],\n  \"emotions\": [],\n  \"reflectionQuestions\": [\n    \"Does the color blue or the image of a door hold any personal significance for you recently?\",\n    \"What feeling or impression, if any, lingered when you remembered the door?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 945,
+        "total_input_tokens": 673,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 673
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 272,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1205,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1205
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 289
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "A Blue Door",
+        "interpretation": "### What your account describes\nYou recall seeing a single blue door, with no further details or events remembered.\n\n### Possible reflections\nBecause the dream is so brief, any meaning remains open. A door might visually suggest a threshold, an opening, or a boundary, while the color blue might carry personal impressions of calmness, curiosity, or simply visual simplicity.",
+        "shareableQuote": "A simple vision of a blue door standing on the edge of memory.",
+        "theme": "calm",
+        "dreamType": "Unknown",
+        "imagePrompt": "A single minimalist blue door standing in a quiet, subtle space, soft lighting, calm atmosphere, artistic and clean composition.",
+        "symbols": [
+          {
+            "name": "Blue Door",
+            "meaning": "Often associated with thresholds, transitions, or mysteries, though here it stands simply as a singular visual memory."
+          }
+        ],
+        "emotions": [],
+        "reflectionQuestions": [
+          "Does the color blue or the image of a door hold any personal significance for you recently?",
+          "What feeling or impression, if any, lingered when you remembered the door?"
+        ]
+      },
+      "interpretationWords": 59
+    },
+    {
+      "id": "fr-rich",
+      "version": "after",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 5495,
+      "rawText": "{\n  \"title\": \"L'attente à la gare et l'enveloppe fermée\",\n  \"interpretation\": \"### Ce que décrit votre récit\\nVous marchez avec votre sœur dans une gare vide où une horloge marque trois heures. Vous vous asseyez sur un banc pour attendre, puis un train rouge arrive sans faire de bruit. Vous ressentez de la curiosité et aucune peur. Votre sœur vous remet une enveloppe fermée, et votre réveil survient avant son ouverture, laissant son contenu inconnu.\\n\\n### Pistes de réflexion\\nL'atmosphère évoque un moment de transition ou d'attente partagée. La présence d'un train silencieux et d'une enveloppe non ouverte peut refléter l'idée d'un événement ou d'un message à venir dont les détails demeurent encore en suspens.\",\n  \"shareableQuote\": \"Une attente paisible sur le quai, portée par la curiosité d'un message encore scellé.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Unknown\",\n  \"imagePrompt\": \"An empty train station bathed in soft light, a large clock showing three o'clock, a vivid red train arriving silently at the platform, cinematic and tranquil atmosphere.\",\n  \"symbols\": [\n    {\n      \"name\": \"Gare vide\",\n      \"meaning\": \"Peut être associée à un lieu de départ, de passage ou d'attente.\"\n    },\n    {\n      \"name\": \"Horloge à trois heures\",\n      \"meaning\": \"Pourrait représenter une attention portée au temps ou à un repère précis.\"\n    },\n    {\n      \"name\": \"Train rouge\",\n      \"meaning\": \"Peut symboliser un moyen d'avancer ou un voyage imminent.\"\n    },\n    {\n      \"name\": \"Enveloppe fermée\",\n      \"meaning\": \"Peut évoquer une information non révélée ou une interrogation en attente.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Curiosité\",\n      \"insight\": \"Indique un intérêt ouvert et calme face aux événements du rêve.\"\n    },\n    {\n      \"name\": \"Absence de peur\",\n      \"insight\": \"Souligne un sentiment de sérénité ou de sécurité malgré l'inconnu.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"Que vous inspire l'image de cette enveloppe dont le contenu est resté secret ?\",\n    \"Ce moment d'attente partagé avec votre sœur évoque-t-il une ambiance familière pour vous ?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 2393,
+        "total_input_tokens": 767,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 767
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 586,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 1040,
+        "raw_prompt_token": 1299,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1299
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 603
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1040
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "L'attente à la gare et l'enveloppe fermée",
+        "interpretation": "### Ce que décrit votre récit\nVous marchez avec votre sœur dans une gare vide où une horloge marque trois heures. Vous vous asseyez sur un banc pour attendre, puis un train rouge arrive sans faire de bruit. Vous ressentez de la curiosité et aucune peur. Votre sœur vous remet une enveloppe fermée, et votre réveil survient avant son ouverture, laissant son contenu inconnu.\n\n### Pistes de réflexion\nL'atmosphère évoque un moment de transition ou d'attente partagée. La présence d'un train silencieux et d'une enveloppe non ouverte peut refléter l'idée d'un événement ou d'un message à venir dont les détails demeurent encore en suspens.",
+        "shareableQuote": "Une attente paisible sur le quai, portée par la curiosité d'un message encore scellé.",
+        "theme": "calm",
+        "dreamType": "Unknown",
+        "imagePrompt": "An empty train station bathed in soft light, a large clock showing three o'clock, a vivid red train arriving silently at the platform, cinematic and tranquil atmosphere.",
+        "symbols": [
+          {
+            "name": "Gare vide",
+            "meaning": "Peut être associée à un lieu de départ, de passage ou d'attente."
+          },
+          {
+            "name": "Horloge à trois heures",
+            "meaning": "Pourrait représenter une attention portée au temps ou à un repère précis."
+          },
+          {
+            "name": "Train rouge",
+            "meaning": "Peut symboliser un moyen d'avancer ou un voyage imminent."
+          },
+          {
+            "name": "Enveloppe fermée",
+            "meaning": "Peut évoquer une information non révélée ou une interrogation en attente."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Curiosité",
+            "insight": "Indique un intérêt ouvert et calme face aux événements du rêve."
+          },
+          {
+            "name": "Absence de peur",
+            "insight": "Souligne un sentiment de sérénité ou de sécurité malgré l'inconnu."
+          }
+        ],
+        "reflectionQuestions": [
+          "Que vous inspire l'image de cette enveloppe dont le contenu est resté secret ?",
+          "Ce moment d'attente partagé avec votre sœur évoque-t-il une ambiance familière pour vous ?"
+        ]
+      },
+      "interpretationWords": 104
+    },
+    {
+      "id": "fr-rich",
+      "version": "before",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 4806,
+      "rawText": "{\n  \"title\": \"L'enveloppe du train rouge\",\n  \"interpretation\": \"Ce rêve met en scène une traversée symbolique marquée par la transition et la découverte de soi. L'atmosphère paisible d'une gare déserte, partagée avec votre sœur, suggère que vous traversez actuellement une période d'attente sereine face à un nouveau tournant de votre vie, soutenu par des repères affectifs solides.\\n\\nLes symboles présents – l'heure précise de trois heures, souvent associée au renouveau ou à l'intuition, et ce train rouge vif arrivant en silence – évoquent une opportunité imminente et pleine d'énergie vitale qui s'invite sans heurts dans votre réalité. L'enveloppe scellée offerte par votre sœur représente un message intérieur, une révélation ou une vérité émotionnelle que votre inconscient prépare doucement sans vouloir la précipiter.\\n\\nSur le plan émotionnel, l'absence totale de peur et votre curiosité vive soulignent une belle disposition d'esprit : vous êtes prêt à accueillir l'inconnu avec confiance. Le fait de vous réveiller avant d'ouvrir la lettre n'est pas un échec, mais l'indice que le voyage intérieur commence tout juste et que vous détenez déjà la clé de votre propre avenir.\\n\\nDans votre vie éveillée, ce songe vous invite peut-être à écouter les messages subtils de votre intuition ou à accueillir une nouvelle étape avec confiance, en sachant que les réponses viendront exactement au moment où vous serez prêt à les recevoir.\",\n  \"shareableQuote\": \"Parfois, le plus beau message de l'inconscient réside dans la promesse sereine d'une lettre encore scellée.\",\n  \"theme\": \"mystical\",\n  \"dreamType\": \"Symbolic Dream\",\n  \"imagePrompt\": \"Surreal digital painting of an empty vintage train station at 3 o'clock, a silent sleek red train arriving on misty tracks, brother and sister on a wooden bench holding a glowing envelope, ethereal cinematic lighting.\",\n  \"symbols\": [\n    {\n      \"name\": \"La gare vide\",\n      \"meaning\": \"Lieu de passage et de carrefour existentiel, elle illustre un moment de pause réflexive avant de monter à bord d'une nouvelle phase de vie.\"\n    },\n    {\n      \"name\": \"Le train rouge silencieux\",\n      \"meaning\": \"Symbole d'un mouvement puissant et passionné qui s'approche de vous avec douceur et discrétion.\"\n    },\n    {\n      \"name\": \"L'enveloppe scellée\",\n      \"meaning\": \"Représente une vérité intuitive, un secret ou un potentiel intérieur qui attend d'être intégré à votre conscience.\"\n    },\n    {\n      \"name\": \"L'horloge à trois heures\",\n      \"meaning\": \"Évoque le temps juste, la trinité symbolique et l'éveil d'une nouvelle prise de conscience.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Curiosité\",\n      \"insight\": \"Révèle une ouverture d'esprit face à l'inconnu et une soif d'apprendre sur vous-même sans précipitation.\"\n    },\n    {\n      \"name\": \"Sérénité\",\n      \"insight\": \"Témoigne d'un sentiment profond de sécurité intérieure face aux transitions et aux changements futurs.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"Quel message ou conseil bienveillant imaginez-vous trouver à l'intérieur de cette enveloppe ?\",\n    \"Vers quelle nouvelle direction ou quel projet ce train rouge silencieux vous invite-t-il à voyager ?\",\n    \"Comment la présence de votre sœur reflète-t-elle le soutien émotionnel dont vous bénéficiez actuellement ?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1742,
+        "total_input_tokens": 448,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 448
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 855,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 439,
+        "raw_prompt_token": 977,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 977
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 871
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 439
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "L'enveloppe du train rouge",
+        "interpretation": "Ce rêve met en scène une traversée symbolique marquée par la transition et la découverte de soi. L'atmosphère paisible d'une gare déserte, partagée avec votre sœur, suggère que vous traversez actuellement une période d'attente sereine face à un nouveau tournant de votre vie, soutenu par des repères affectifs solides.\n\nLes symboles présents – l'heure précise de trois heures, souvent associée au renouveau ou à l'intuition, et ce train rouge vif arrivant en silence – évoquent une opportunité imminente et pleine d'énergie vitale qui s'invite sans heurts dans votre réalité. L'enveloppe scellée offerte par votre sœur représente un message intérieur, une révélation ou une vérité émotionnelle que votre inconscient prépare doucement sans vouloir la précipiter.\n\nSur le plan émotionnel, l'absence totale de peur et votre curiosité vive soulignent une belle disposition d'esprit : vous êtes prêt à accueillir l'inconnu avec confiance. Le fait de vous réveiller avant d'ouvrir la lettre n'est pas un échec, mais l'indice que le voyage intérieur commence tout juste et que vous détenez déjà la clé de votre propre avenir.\n\nDans votre vie éveillée, ce songe vous invite peut-être à écouter les messages subtils de votre intuition ou à accueillir une nouvelle étape avec confiance, en sachant que les réponses viendront exactement au moment où vous serez prêt à les recevoir.",
+        "shareableQuote": "Parfois, le plus beau message de l'inconscient réside dans la promesse sereine d'une lettre encore scellée.",
+        "theme": "mystical",
+        "dreamType": "Symbolic Dream",
+        "imagePrompt": "Surreal digital painting of an empty vintage train station at 3 o'clock, a silent sleek red train arriving on misty tracks, brother and sister on a wooden bench holding a glowing envelope, ethereal cinematic lighting.",
+        "symbols": [
+          {
+            "name": "La gare vide",
+            "meaning": "Lieu de passage et de carrefour existentiel, elle illustre un moment de pause réflexive avant de monter à bord d'une nouvelle phase de vie."
+          },
+          {
+            "name": "Le train rouge silencieux",
+            "meaning": "Symbole d'un mouvement puissant et passionné qui s'approche de vous avec douceur et discrétion."
+          },
+          {
+            "name": "L'enveloppe scellée",
+            "meaning": "Représente une vérité intuitive, un secret ou un potentiel intérieur qui attend d'être intégré à votre conscience."
+          },
+          {
+            "name": "L'horloge à trois heures",
+            "meaning": "Évoque le temps juste, la trinité symbolique et l'éveil d'une nouvelle prise de conscience."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Curiosité",
+            "insight": "Révèle une ouverture d'esprit face à l'inconnu et une soif d'apprendre sur vous-même sans précipitation."
+          },
+          {
+            "name": "Sérénité",
+            "insight": "Témoigne d'un sentiment profond de sécurité intérieure face aux transitions et aux changements futurs."
+          }
+        ],
+        "reflectionQuestions": [
+          "Quel message ou conseil bienveillant imaginez-vous trouver à l'intérieur de cette enveloppe ?",
+          "Vers quelle nouvelle direction ou quel projet ce train rouge silencieux vous invite-t-il à voyager ?",
+          "Comment la présence de votre sœur reflète-t-elle le soutien émotionnel dont vous bénéficiez actuellement ?"
+        ]
+      },
+      "interpretationWords": 214
+    },
+    {
+      "id": "es-short",
+      "version": "after",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 3494,
+      "rawText": "{\n  \"title\": \"Una taza sobre la mesa\",\n  \"interpretation\": \"### Lo que describe tu relato\\nTu relato describe de forma muy breve y puntual una única imagen: una taza situada sobre una mesa, sin recordar ningún otro elemento o acontecimiento.\\n\\n### Posibles reflexiones\\nAl ser un recuerdo tan conciso, el sueño no ofrece contexto adicional. Objetos como una taza o una mesa suelen asociarse a momentos cotidianos, de pausa o quietud, aunque la brevedad del relato deja abierta cualquier interpretación personal.\",\n  \"shareableQuote\": \"Una taza solitaria en reposo sobre una mesa.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Unknown\",\n  \"imagePrompt\": \"A single ceramic cup resting on a simple wooden table, bathed in soft, diffused morning light, minimalist aesthetic, quiet and peaceful atmosphere, cinematic composition.\",\n  \"symbols\": [\n    {\n      \"name\": \"Taza\",\n      \"meaning\": \"Posible asociación con momentos de descanso, cotidianeidad o un objeto contenedor.\"\n    },\n    {\n      \"name\": \"Mesa\",\n      \"meaning\": \"Posible asociación con una base de apoyo, estabilidad o un espacio doméstico.\"\n    }\n  ],\n  \"emotions\": [],\n  \"reflectionQuestions\": [\n    \"¿Te transmite alguna sensación particular la imagen de esa taza?\",\n    \"¿Esa escena te recuerda a algún espacio o momento de tu vida cotidiana?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1504,
+        "total_input_tokens": 679,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 679
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 325,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 500,
+        "raw_prompt_token": 1211,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1211
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 342
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 500
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "Una taza sobre la mesa",
+        "interpretation": "### Lo que describe tu relato\nTu relato describe de forma muy breve y puntual una única imagen: una taza situada sobre una mesa, sin recordar ningún otro elemento o acontecimiento.\n\n### Posibles reflexiones\nAl ser un recuerdo tan conciso, el sueño no ofrece contexto adicional. Objetos como una taza o una mesa suelen asociarse a momentos cotidianos, de pausa o quietud, aunque la brevedad del relato deja abierta cualquier interpretación personal.",
+        "shareableQuote": "Una taza solitaria en reposo sobre una mesa.",
+        "theme": "calm",
+        "dreamType": "Unknown",
+        "imagePrompt": "A single ceramic cup resting on a simple wooden table, bathed in soft, diffused morning light, minimalist aesthetic, quiet and peaceful atmosphere, cinematic composition.",
+        "symbols": [
+          {
+            "name": "Taza",
+            "meaning": "Posible asociación con momentos de descanso, cotidianeidad o un objeto contenedor."
+          },
+          {
+            "name": "Mesa",
+            "meaning": "Posible asociación con una base de apoyo, estabilidad o un espacio doméstico."
+          }
+        ],
+        "emotions": [],
+        "reflectionQuestions": [
+          "¿Te transmite alguna sensación particular la imagen de esa taza?",
+          "¿Esa escena te recuerda a algún espacio o momento de tu vida cotidiana?"
+        ]
+      },
+      "interpretationWords": 72
+    },
+    {
+      "id": "es-short",
+      "version": "before",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 3458,
+      "rawText": "{\n  \"title\": \"La quietud de la taza solitaria\",\n  \"interpretation\": \"A pesar de su extrema brevedad, este sueño encierra un potente mensaje sobre la pausa, la simplicidad y el vacío fértil. La imagen estática de una taza sobre una mesa actúa como un lienzo minimalista del subconsciente, invitando a detener el ruido mental y centrar la atención en lo esencial de la existencia cotidiana.\\n\\nEn el plano simbólico, la taza representa un recipiente: aquello que contiene nuestras experiencias, emociones, energía vital o capacidad de nutrirnos. Por su parte, la mesa aporta una base sólida, un soporte firme que sostiene la realidad. El hecho de que la taza esté allí, sin contexto adicional ni distracciones, sugiere un estado de disponibilidad o la expectativa de ser llenada con nuevas intenciones y vivencias.\\n\\nEl paisaje emocional de este sueño se tiñe de serenidad, misterio y una ligera intriga. Lejos de transmitir angustia por la falta de detalles, la escena evoca una calma casi meditativa, donde la mente busca descansar de la sobreestimulación diaria y encontrar consuelo en los objetos más puros y sencillos.\\n\\nEn tu vida despierta, este sueño puede ser un recordatorio para revisar qué estás conteniendo en tu interior y qué espacios de quietud te estás permitiendo. Quizás te encuentres en un momento propicio para simplificar tus rutinas, hacer una pausa reflexiva o preguntarte con qué deseas llenar tu día a día.\",\n  \"shareableQuote\": \"En la quietud de lo simple aguarda el espacio para todo lo que está por comenzar.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Symbolic Dream\",\n  \"imagePrompt\": \"A single ceramic mug resting on a rustic wooden table, soft morning sunlight casting gentle shadows, minimalist still life, serene and peaceful atmosphere, cinematic aesthetic.\",\n  \"symbols\": [\n    {\n      \"name\": \"La taza\",\n      \"meaning\": \"Simboliza tu propia capacidad receptiva, un contenedor emocional a la espera de ser llenado de nuevas vivencias o nutrir tu espíritu.\"\n    },\n    {\n      \"name\": \"La mesa\",\n      \"meaning\": \"Representa la estabilidad, el fundamento seguro y el punto de encuentro donde se apoyan tus pensamientos y realidades presentes.\"\n    },\n    {\n      \"name\": \"El espacio vacío\",\n      \"meaning\": \"Refleja la necesidad de despejar la sobrecarga mental para apreciar la belleza y el potencial de lo esencial.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Serenidad\",\n      \"insight\": \"Muestra un anhelo profundo de calma y sencillez frente al ajetreo cotidiano.\"\n    },\n    {\n      \"name\": \"Expectativa\",\n      \"insight\": \"Revela una sutil apertura hacia lo que está por venir, esperando descubrir con qué se llenará ese instante.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"¿Con qué pensamientos o emociones sientes que necesitas llenar tu recipiente interior hoy?\",\n    \"¿Qué aspectos de tu vida diaria podrían beneficiarse de una pausa tranquila y minimalista?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1061,
+        "total_input_tokens": 360,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 360
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 701,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 889,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 889
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 718
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "La quietud de la taza solitaria",
+        "interpretation": "A pesar de su extrema brevedad, este sueño encierra un potente mensaje sobre la pausa, la simplicidad y el vacío fértil. La imagen estática de una taza sobre una mesa actúa como un lienzo minimalista del subconsciente, invitando a detener el ruido mental y centrar la atención en lo esencial de la existencia cotidiana.\n\nEn el plano simbólico, la taza representa un recipiente: aquello que contiene nuestras experiencias, emociones, energía vital o capacidad de nutrirnos. Por su parte, la mesa aporta una base sólida, un soporte firme que sostiene la realidad. El hecho de que la taza esté allí, sin contexto adicional ni distracciones, sugiere un estado de disponibilidad o la expectativa de ser llenada con nuevas intenciones y vivencias.\n\nEl paisaje emocional de este sueño se tiñe de serenidad, misterio y una ligera intriga. Lejos de transmitir angustia por la falta de detalles, la escena evoca una calma casi meditativa, donde la mente busca descansar de la sobreestimulación diaria y encontrar consuelo en los objetos más puros y sencillos.\n\nEn tu vida despierta, este sueño puede ser un recordatorio para revisar qué estás conteniendo en tu interior y qué espacios de quietud te estás permitiendo. Quizás te encuentres en un momento propicio para simplificar tus rutinas, hacer una pausa reflexiva o preguntarte con qué deseas llenar tu día a día.",
+        "shareableQuote": "En la quietud de lo simple aguarda el espacio para todo lo que está por comenzar.",
+        "theme": "calm",
+        "dreamType": "Symbolic Dream",
+        "imagePrompt": "A single ceramic mug resting on a rustic wooden table, soft morning sunlight casting gentle shadows, minimalist still life, serene and peaceful atmosphere, cinematic aesthetic.",
+        "symbols": [
+          {
+            "name": "La taza",
+            "meaning": "Simboliza tu propia capacidad receptiva, un contenedor emocional a la espera de ser llenado de nuevas vivencias o nutrir tu espíritu."
+          },
+          {
+            "name": "La mesa",
+            "meaning": "Representa la estabilidad, el fundamento seguro y el punto de encuentro donde se apoyan tus pensamientos y realidades presentes."
+          },
+          {
+            "name": "El espacio vacío",
+            "meaning": "Refleja la necesidad de despejar la sobrecarga mental para apreciar la belleza y el potencial de lo esencial."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Serenidad",
+            "insight": "Muestra un anhelo profundo de calma y sencillez frente al ajetreo cotidiano."
+          },
+          {
+            "name": "Expectativa",
+            "insight": "Revela una sutil apertura hacia lo que está por venir, esperando descubrir con qué se llenará ese instante."
+          }
+        ],
+        "reflectionQuestions": [
+          "¿Con qué pensamientos o emociones sientes que necesitas llenar tu recipiente interior hoy?",
+          "¿Qué aspectos de tu vida diaria podrían beneficiarse de una pausa tranquila y minimalista?"
+        ]
+      },
+      "interpretationWords": 221
+    },
+    {
+      "id": "de-rich",
+      "version": "before",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 4926,
+      "rawText": "{\n  \"title\": \"Klarheit im sanften Regengarten\",\n  \"interpretation\": \"Dein Traum beginnt in einer Oase der Ruhe und führt dich über einen Moment des Innehaltens direkt in eine tiefere Ebene des Bewusstseins. Die Szenerie – ein stiller Garten, sanfter Regen und ein schützender Baum – beschreibt einen seelischen Rückzugsort, an dem du neue Kraft schöpfst. Das plötzliche Erkennen, dass du träumst, markiert einen kraftvollen Übergang von der passiven Beobachtung zur aktiven Selbstbestimmung.\\n\\nDas gelbe Fahrrad steht symbolisch für Leichtigkeit, Energie und persönliche Fortbewegung, die du im Moment des Regens behutsam unterstellst. Du erlaubst dir eine Pause, anstatt gegen den Lauf der Dinge anzukämpfen. Der Baum bietet dir dabei Geborgenheit und Erdung. Als der Hund am Zaun vorbeiläuft, weckt er deine Neugier auf das, was jenseits deines geschützten Raumes liegt, und leitet den Schritt zur Klarheit ein.\\n\\nDie emotionale Grundstimmung ist von einer tiefen, wohltuenden Gelassenheit geprägt. Das beruhigende Geräusch der Regentropfen spiegelt eine seelische Reinigung und Zufriedenheit wider. Der Moment des luziden Erwachens bringt kein Erschrecken, sondern ein Gefühl friedlicher Klarheit und intentionaler Stärke mit sich.\\n\\nIm Wachleben könnte dieser Traum darauf hinweisen, dass du derzeit lernst, wann es Zeit ist innezuhalten und wann du die Zügel bewusst in die Hand nehmen darfst. Er ermutigt dich, deiner inneren Klarheit zu vertrauen und neue Wege neugierig und selbstbestimmt zu erkunden.\",\n  \"shareableQuote\": \"Im sanften Rauschen des Regens erwacht der Geist zu seiner eigenen schöpferischen Kraft.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Lucid Dream\",\n  \"imagePrompt\": \"A vintage yellow bicycle standing under a lush sheltering tree in a serene rainy garden, soft raindrops hitting green leaves, warm cinematic light, calming atmosphere.\",\n  \"symbols\": [\n    {\n      \"name\": \"Gelbes Fahrrad\",\n      \"meaning\": \"Symbolisiert deine persönliche Lebensreise und freudige Tatkraft, die du im Traum achtsam vor dem Regen schützt.\"\n    },\n    {\n      \"name\": \"Schützender Baum\",\n      \"meaning\": \"Steht für inneren Halt, Sicherheit und die Fähigkeit, widrigen Momenten mit Gelassenheit zu begegnen.\"\n    },\n    {\n      \"name\": \"Sanfter Regen\",\n      \"meaning\": \"Repräsentiert emotionale Klärung und Erneuerung, die dich zur Ruhe und ins bewusste Erleben führt.\"\n    },\n    {\n      \"name\": \"Hund am Zaun\",\n      \"meaning\": \"Verkörpert Impuls, Neugier und die Verbindung zur Außenwelt jenseits deiner aktuellen Komfortzone.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Gelassenheit\",\n      \"insight\": \"Zeigt deine Fähigkeit, im Hier und Jetzt Ruhe zu finden und äußere Umstände entspannt anzunehmen.\"\n    },\n    {\n      \"name\": \"Klarheit & Selbstbestimmung\",\n      \"insight\": \"Offenbart das Erwachen deines bewussten Willens und das Vertrauen, eigene Entscheidungen mutig umzusetzen.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"In welchen Bereichen deines Lebens möchtest du gerade bewusst vom Beobachten ins aktive Gestalten wechseln?\",\n    \"Wo tut es dir gut, dir wie unter dem Baum eine Pause zu gönnen, bevor du den nächsten Schritt wagst?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1398,
+        "total_input_tokens": 456,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 456
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 846,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 96,
+        "raw_prompt_token": 1203,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1203
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 863
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 96
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "Klarheit im sanften Regengarten",
+        "interpretation": "Dein Traum beginnt in einer Oase der Ruhe und führt dich über einen Moment des Innehaltens direkt in eine tiefere Ebene des Bewusstseins. Die Szenerie – ein stiller Garten, sanfter Regen und ein schützender Baum – beschreibt einen seelischen Rückzugsort, an dem du neue Kraft schöpfst. Das plötzliche Erkennen, dass du träumst, markiert einen kraftvollen Übergang von der passiven Beobachtung zur aktiven Selbstbestimmung.\n\nDas gelbe Fahrrad steht symbolisch für Leichtigkeit, Energie und persönliche Fortbewegung, die du im Moment des Regens behutsam unterstellst. Du erlaubst dir eine Pause, anstatt gegen den Lauf der Dinge anzukämpfen. Der Baum bietet dir dabei Geborgenheit und Erdung. Als der Hund am Zaun vorbeiläuft, weckt er deine Neugier auf das, was jenseits deines geschützten Raumes liegt, und leitet den Schritt zur Klarheit ein.\n\nDie emotionale Grundstimmung ist von einer tiefen, wohltuenden Gelassenheit geprägt. Das beruhigende Geräusch der Regentropfen spiegelt eine seelische Reinigung und Zufriedenheit wider. Der Moment des luziden Erwachens bringt kein Erschrecken, sondern ein Gefühl friedlicher Klarheit und intentionaler Stärke mit sich.\n\nIm Wachleben könnte dieser Traum darauf hinweisen, dass du derzeit lernst, wann es Zeit ist innezuhalten und wann du die Zügel bewusst in die Hand nehmen darfst. Er ermutigt dich, deiner inneren Klarheit zu vertrauen und neue Wege neugierig und selbstbestimmt zu erkunden.",
+        "shareableQuote": "Im sanften Rauschen des Regens erwacht der Geist zu seiner eigenen schöpferischen Kraft.",
+        "theme": "calm",
+        "dreamType": "Lucid Dream",
+        "imagePrompt": "A vintage yellow bicycle standing under a lush sheltering tree in a serene rainy garden, soft raindrops hitting green leaves, warm cinematic light, calming atmosphere.",
+        "symbols": [
+          {
+            "name": "Gelbes Fahrrad",
+            "meaning": "Symbolisiert deine persönliche Lebensreise und freudige Tatkraft, die du im Traum achtsam vor dem Regen schützt."
+          },
+          {
+            "name": "Schützender Baum",
+            "meaning": "Steht für inneren Halt, Sicherheit und die Fähigkeit, widrigen Momenten mit Gelassenheit zu begegnen."
+          },
+          {
+            "name": "Sanfter Regen",
+            "meaning": "Repräsentiert emotionale Klärung und Erneuerung, die dich zur Ruhe und ins bewusste Erleben führt."
+          },
+          {
+            "name": "Hund am Zaun",
+            "meaning": "Verkörpert Impuls, Neugier und die Verbindung zur Außenwelt jenseits deiner aktuellen Komfortzone."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Gelassenheit",
+            "insight": "Zeigt deine Fähigkeit, im Hier und Jetzt Ruhe zu finden und äußere Umstände entspannt anzunehmen."
+          },
+          {
+            "name": "Klarheit & Selbstbestimmung",
+            "insight": "Offenbart das Erwachen deines bewussten Willens und das Vertrauen, eigene Entscheidungen mutig umzusetzen."
+          }
+        ],
+        "reflectionQuestions": [
+          "In welchen Bereichen deines Lebens möchtest du gerade bewusst vom Beobachten ins aktive Gestalten wechseln?",
+          "Wo tut es dir gut, dir wie unter dem Baum eine Pause zu gönnen, bevor du den nächsten Schritt wagst?"
+        ]
+      },
+      "interpretationWords": 210
+    },
+    {
+      "id": "de-rich",
+      "version": "after",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 2565,
+      "rawText": "{\n  \"title\": \"Regen im Garten und der bewusste Moment\",\n  \"interpretation\": \"### Was dein Bericht beschreibt\\nDu stehst in einem Garten neben einem gelben Fahrrad, als ein leiser Regen einsetzt. Du bringst das Fahrrad unter einem Baum in Sicherheit und wartest dort, während ein Hund am Zaun vorbeiläuft. Du nimmst die Regentropfen auf den Blättern wahr und fühlst dich ruhig. Im weiteren Verlauf wird dir bewusst, dass du träumst. Mit dieser Erkenntnis entscheidest du dich aktiv, zum Zaun zu gehen, bevor dich der Wecker weckt.\\n\\n### Mögliche Überlegungen\\nDie Szene verbindet eine friedliche Beobachtung der Natur mit dem Moment des luziden Erwachens. Das Unterstellen des Fahrrads und das Lauschen auf den Regen können ein Gefühl von Schutz und Entschleunigung widerspiegeln. Der Moment des Erkennens führte zu einer bewussten Handlungsentscheidung, die durch das Aufwachen offen blieb.\",\n  \"shareableQuote\": \"Ein leiser Regen unter dem Baum und der plötzliche Moment des Erkennens im eigenen Traum.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Lucid Dream\",\n  \"imagePrompt\": \"A gentle rain falling in a lush green garden, a yellow bicycle resting under a leafy tree, a fence in the background, serene and atmospheric light, painterly style.\",\n  \"symbols\": [\n    {\n      \"name\": \"Gelbes Fahrrad\",\n      \"meaning\": \"Könnte als Fortbewegungsmittel stehen, das im Moment der Rast und des Regens zur Seite gestellt wird.\"\n    },\n    {\n      \"name\": \"Baum und Regen\",\n      \"meaning\": \"Wird oft mit Schutz, Naturverbundenheit und einer ruhigen Pause assoziiert.\"\n    },\n    {\n      \"name\": \"Zaun\",\n      \"meaning\": \"Könnte eine Abgrenzung oder einen Übergangsbereich darstellen, dem du dich bewusst zugewandt hast.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Ruhig\",\n      \"insight\": \"Du hast die Geräusche des Regens und den geschützten Ort mit Gelassenheit wahrgenommen.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"Wie hat sich der Moment angefühlt, als dir klar wurde, dass du träumst?\",\n    \"Welche Gedanken oder Absichten hattest du, als du beschlossen hast, zum Zaun zu gehen?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1346,
+        "total_input_tokens": 777,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 777
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 569,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1309,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1309
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 586
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "Regen im Garten und der bewusste Moment",
+        "interpretation": "### Was dein Bericht beschreibt\nDu stehst in einem Garten neben einem gelben Fahrrad, als ein leiser Regen einsetzt. Du bringst das Fahrrad unter einem Baum in Sicherheit und wartest dort, während ein Hund am Zaun vorbeiläuft. Du nimmst die Regentropfen auf den Blättern wahr und fühlst dich ruhig. Im weiteren Verlauf wird dir bewusst, dass du träumst. Mit dieser Erkenntnis entscheidest du dich aktiv, zum Zaun zu gehen, bevor dich der Wecker weckt.\n\n### Mögliche Überlegungen\nDie Szene verbindet eine friedliche Beobachtung der Natur mit dem Moment des luziden Erwachens. Das Unterstellen des Fahrrads und das Lauschen auf den Regen können ein Gefühl von Schutz und Entschleunigung widerspiegeln. Der Moment des Erkennens führte zu einer bewussten Handlungsentscheidung, die durch das Aufwachen offen blieb.",
+        "shareableQuote": "Ein leiser Regen unter dem Baum und der plötzliche Moment des Erkennens im eigenen Traum.",
+        "theme": "calm",
+        "dreamType": "Lucid Dream",
+        "imagePrompt": "A gentle rain falling in a lush green garden, a yellow bicycle resting under a leafy tree, a fence in the background, serene and atmospheric light, painterly style.",
+        "symbols": [
+          {
+            "name": "Gelbes Fahrrad",
+            "meaning": "Könnte als Fortbewegungsmittel stehen, das im Moment der Rast und des Regens zur Seite gestellt wird."
+          },
+          {
+            "name": "Baum und Regen",
+            "meaning": "Wird oft mit Schutz, Naturverbundenheit und einer ruhigen Pause assoziiert."
+          },
+          {
+            "name": "Zaun",
+            "meaning": "Könnte eine Abgrenzung oder einen Übergangsbereich darstellen, dem du dich bewusst zugewandt hast."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Ruhig",
+            "insight": "Du hast die Geräusche des Regens und den geschützten Ort mit Gelassenheit wahrgenommen."
+          }
+        ],
+        "reflectionQuestions": [
+          "Wie hat sich der Moment angefühlt, als dir klar wurde, dass du träumst?",
+          "Welche Gedanken oder Absichten hattest du, als du beschlossen hast, zum Zaun zu gehen?"
+        ]
+      },
+      "interpretationWords": 124
+    },
+    {
+      "id": "it-short",
+      "version": "before",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 3544,
+      "rawText": "{\n  \"title\": \"Il Richiamo della Luce Pura\",\n  \"interpretation\": \"Questo sogno, nella sua essenziale brevità, racchiude un messaggio profondo di chiarezza e rinnovamento interiore. La visione di una finestra aperta inondata da una luce bianca pura simboleggia una soglia tra il tuo mondo interiore e nuove, luminose possibilità che attendono solo di essere accolte.\\n\\nLa finestra aperta rappresenta il superamento di barriere mentali ed emotive, un varco verso l'ignoto affrontato con apertura e vulnerabilità. La luce bianca, elemento centrale e potente, non è solo simbolo di rivelazione spirituale e verità, ma evoca anche una profonda purificazione da vecchi schemi o pensieri appesantiti dal passato.\\n\\nDal punto di vista emotivo, l'immagine trasmette un forte senso di pace interiore, libertà e risveglio della consapevolezza. È un'esperienza contemplativa in cui l'animo sperimenta una serena distensione, priva del rumore e delle ansie quotidiane.\\n\\nNella tua vita da sveglio, questo sogno potrebbe indicare che sei pronto per una nuova fase o per comprendere una situazione che finora appariva confusa. È un gentile invito ad accogliere nuove prospettive e ad avere fiducia nel processo di trasformazione personale che stai attraversando.\",\n  \"shareableQuote\": \"Quando l'anima apre una finestra verso l'ignoto, la luce della consapevolezza illumina il cammino.\",\n  \"theme\": \"mystical\",\n  \"dreamType\": \"Symbolic Dream\",\n  \"imagePrompt\": \"An open rustic wooden window glowing with intense, soft white ethereal light, gentle breeze moving sheer curtains, minimalist mystical atmosphere, cinematic lighting, photorealistic digital art.\",\n  \"symbols\": [\n    {\n      \"name\": \"Finestra Aperta\",\n      \"meaning\": \"Rappresenta una nuova prospettiva, l'apertura mentale verso nuove opportunità e il superamento dei propri limiti interiori.\"\n    },\n    {\n      \"name\": \"Luce Bianca\",\n      \"meaning\": \"Simboleggia una verità rivelata, chiarezza mentale e una profonda guarigione spirituale o emotiva.\"\n    },\n    {\n      \"name\": \"La Soglia Invisibile\",\n      \"meaning\": \"Indica il passaggio delicato ma consapevole da una fase di chiusura o confusione a una di pura consapevolezza.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Serenità\",\n      \"insight\": \"Riflette un profondo stato di calma interiore e il rilascio di tensioni accumulate.\"\n    },\n    {\n      \"name\": \"Speranza\",\n      \"insight\": \"Esprime un'intima fiducia nel futuro e nelle trasformazioni positive in arrivo.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"Verso quale aspetto della tua vita senti il bisogno di far entrare maggiore chiarezza o luce?\",\n    \"Quale porta o finestra emotiva sei pronto ad aprire al cambiamento in questo momento?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1049,
+        "total_input_tokens": 363,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 363
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 686,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1110,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1110
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 703
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "Il Richiamo della Luce Pura",
+        "interpretation": "Questo sogno, nella sua essenziale brevità, racchiude un messaggio profondo di chiarezza e rinnovamento interiore. La visione di una finestra aperta inondata da una luce bianca pura simboleggia una soglia tra il tuo mondo interiore e nuove, luminose possibilità che attendono solo di essere accolte.\n\nLa finestra aperta rappresenta il superamento di barriere mentali ed emotive, un varco verso l'ignoto affrontato con apertura e vulnerabilità. La luce bianca, elemento centrale e potente, non è solo simbolo di rivelazione spirituale e verità, ma evoca anche una profonda purificazione da vecchi schemi o pensieri appesantiti dal passato.\n\nDal punto di vista emotivo, l'immagine trasmette un forte senso di pace interiore, libertà e risveglio della consapevolezza. È un'esperienza contemplativa in cui l'animo sperimenta una serena distensione, priva del rumore e delle ansie quotidiane.\n\nNella tua vita da sveglio, questo sogno potrebbe indicare che sei pronto per una nuova fase o per comprendere una situazione che finora appariva confusa. È un gentile invito ad accogliere nuove prospettive e ad avere fiducia nel processo di trasformazione personale che stai attraversando.",
+        "shareableQuote": "Quando l'anima apre una finestra verso l'ignoto, la luce della consapevolezza illumina il cammino.",
+        "theme": "mystical",
+        "dreamType": "Symbolic Dream",
+        "imagePrompt": "An open rustic wooden window glowing with intense, soft white ethereal light, gentle breeze moving sheer curtains, minimalist mystical atmosphere, cinematic lighting, photorealistic digital art.",
+        "symbols": [
+          {
+            "name": "Finestra Aperta",
+            "meaning": "Rappresenta una nuova prospettiva, l'apertura mentale verso nuove opportunità e il superamento dei propri limiti interiori."
+          },
+          {
+            "name": "Luce Bianca",
+            "meaning": "Simboleggia una verità rivelata, chiarezza mentale e una profonda guarigione spirituale o emotiva."
+          },
+          {
+            "name": "La Soglia Invisibile",
+            "meaning": "Indica il passaggio delicato ma consapevole da una fase di chiusura o confusione a una di pura consapevolezza."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Serenità",
+            "insight": "Riflette un profondo stato di calma interiore e il rilascio di tensioni accumulate."
+          },
+          {
+            "name": "Speranza",
+            "insight": "Esprime un'intima fiducia nel futuro e nelle trasformazioni positive in arrivo."
+          }
+        ],
+        "reflectionQuestions": [
+          "Verso quale aspetto della tua vita senti il bisogno di far entrare maggiore chiarezza o luce?",
+          "Quale porta o finestra emotiva sei pronto ad aprire al cambiamento in questo momento?"
+        ]
+      },
+      "interpretationWords": 175
+    },
+    {
+      "id": "it-short",
+      "version": "after",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 2310,
+      "rawText": "{\n  \"title\": \"La finestra e la luce bianca\",\n  \"interpretation\": \"### Ciò che il racconto descrive\\nIl sogno si compone unicamente dell'immagine di una finestra aperta attraverso la quale o accanto alla quale è presente una luce bianca.\\n\\n### Possibili riflessioni\\nTrattandosi di un ricordo molto essenziale, l'immagine potrebbe evocare un senso di apertura, chiarezza o un punto di passaggio verso l'esterno, ma il significato dipende strettamente dalle sensazioni personali che questa visione suscita in te.\",\n  \"shareableQuote\": \"Una finestra aperta, una luce bianca: la semplicità di una soglia luminosa.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Unknown\",\n  \"imagePrompt\": \"An open window glowing with pure, bright white light streaming into a quiet, minimalist room, ethereal and serene, soft lighting.\",\n  \"symbols\": [\n    {\n      \"name\": \"Finestra aperta\",\n      \"meaning\": \"Può essere associata all'idea di apertura, a una prospettiva verso l'esterno o a un confine che si dischiude.\"\n    },\n    {\n      \"name\": \"Luce bianca\",\n      \"meaning\": \"Spesso collegata a sensazioni di chiarezza, novità o semplice luminosità visiva.\"\n    }\n  ],\n  \"emotions\": [],\n  \"reflectionQuestions\": [\n    \"Quale atmosfera o sensazione ti ha lasciato il ricordo di questa luce?\",\n    \"La finestra aperta ti trasmetteva una sensazione di invito o semplice neutralità?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1120,
+        "total_input_tokens": 681,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 681
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 352,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 87,
+        "raw_prompt_token": 1213,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1213
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 369
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 87
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "La finestra e la luce bianca",
+        "interpretation": "### Ciò che il racconto descrive\nIl sogno si compone unicamente dell'immagine di una finestra aperta attraverso la quale o accanto alla quale è presente una luce bianca.\n\n### Possibili riflessioni\nTrattandosi di un ricordo molto essenziale, l'immagine potrebbe evocare un senso di apertura, chiarezza o un punto di passaggio verso l'esterno, ma il significato dipende strettamente dalle sensazioni personali che questa visione suscita in te.",
+        "shareableQuote": "Una finestra aperta, una luce bianca: la semplicità di una soglia luminosa.",
+        "theme": "calm",
+        "dreamType": "Unknown",
+        "imagePrompt": "An open window glowing with pure, bright white light streaming into a quiet, minimalist room, ethereal and serene, soft lighting.",
+        "symbols": [
+          {
+            "name": "Finestra aperta",
+            "meaning": "Può essere associata all'idea di apertura, a una prospettiva verso l'esterno o a un confine che si dischiude."
+          },
+          {
+            "name": "Luce bianca",
+            "meaning": "Spesso collegata a sensazioni di chiarezza, novità o semplice luminosità visiva."
+          }
+        ],
+        "emotions": [],
+        "reflectionQuestions": [
+          "Quale atmosfera o sensazione ti ha lasciato il ricordo di questa luce?",
+          "La finestra aperta ti trasmetteva una sensazione di invito o semplice neutralità?"
+        ]
+      },
+      "interpretationWords": 66
+    },
+    {
+      "id": "pt-rich",
+      "version": "after",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 5197,
+      "rawText": "{\n  \"title\": \"A Busca pelo Livro Verde na Biblioteca\",\n  \"interpretation\": \"### O que seu relato descreve\\nVocê estava em uma biblioteca procurando por um livro verde e passou três vezes pela mesma estante. Uma bibliotecária apontou em silêncio para uma escada. Após subir dois degraus, você encontrou o livro fechado e sentiu contentamento, acordando antes de ler o título.\\n\\n### Possíveis reflexões\\nA busca e a repetição do trajeto podem sugerir a sensação de procurar algo que parece estar ao alcance, mas que exige outro olhar. O gesto silencioso da bibliotecária e os dois degraus subidos podem representar a possibilidade de que um pequeno deslocamento ou mudança de perspectiva seja suficiente para alcançar o objetivo, mesmo que o conteúdo do livro permaneça em aberto.\",\n  \"shareableQuote\": \"Subir apenas dois degraus foi o suficiente para encontrar o que se procurava.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Unknown\",\n  \"imagePrompt\": \"A quiet atmospheric library with tall wooden bookshelves, soft lighting, and a librarian pointing toward a small wooden staircase where a single closed green book rests on a shelf.\",\n  \"symbols\": [\n    {\n      \"name\": \"Livro verde\",\n      \"meaning\": \"Pode sugerir a busca por um conhecimento, ideia ou objetivo específico que foi alcançado, mas cujo conteúdo ainda não foi explorado.\"\n    },\n    {\n      \"name\": \"Escada\",\n      \"meaning\": \"Pode evocar uma pequena elevação de perspectiva ou um passo simples necessário para encontrar o que não estava visível à primeira vista.\"\n    },\n    {\n      \"name\": \"Bibliotecária\",\n      \"meaning\": \"Pode representar uma forma sutil de orientação ou um auxílio silencioso diante de uma busca.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Contente\",\n      \"insight\": \"Sentimento relatado no momento em que o livro procurado foi finalmente encontrado.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"A cor verde ou a imagem de um livro fechado trazem alguma lembrança ou significado pessoal para você?\",\n    \"Você tem vivido alguma situação recente em que uma pequena mudança de ponto de vista facilitou uma busca?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 2306,
+        "total_input_tokens": 764,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 764
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 520,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 1022,
+        "raw_prompt_token": 1296,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1296
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 537
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1022
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "A Busca pelo Livro Verde na Biblioteca",
+        "interpretation": "### O que seu relato descreve\nVocê estava em uma biblioteca procurando por um livro verde e passou três vezes pela mesma estante. Uma bibliotecária apontou em silêncio para uma escada. Após subir dois degraus, você encontrou o livro fechado e sentiu contentamento, acordando antes de ler o título.\n\n### Possíveis reflexões\nA busca e a repetição do trajeto podem sugerir a sensação de procurar algo que parece estar ao alcance, mas que exige outro olhar. O gesto silencioso da bibliotecária e os dois degraus subidos podem representar a possibilidade de que um pequeno deslocamento ou mudança de perspectiva seja suficiente para alcançar o objetivo, mesmo que o conteúdo do livro permaneça em aberto.",
+        "shareableQuote": "Subir apenas dois degraus foi o suficiente para encontrar o que se procurava.",
+        "theme": "calm",
+        "dreamType": "Unknown",
+        "imagePrompt": "A quiet atmospheric library with tall wooden bookshelves, soft lighting, and a librarian pointing toward a small wooden staircase where a single closed green book rests on a shelf.",
+        "symbols": [
+          {
+            "name": "Livro verde",
+            "meaning": "Pode sugerir a busca por um conhecimento, ideia ou objetivo específico que foi alcançado, mas cujo conteúdo ainda não foi explorado."
+          },
+          {
+            "name": "Escada",
+            "meaning": "Pode evocar uma pequena elevação de perspectiva ou um passo simples necessário para encontrar o que não estava visível à primeira vista."
+          },
+          {
+            "name": "Bibliotecária",
+            "meaning": "Pode representar uma forma sutil de orientação ou um auxílio silencioso diante de uma busca."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Contente",
+            "insight": "Sentimento relatado no momento em que o livro procurado foi finalmente encontrado."
+          }
+        ],
+        "reflectionQuestions": [
+          "A cor verde ou a imagem de um livro fechado trazem alguma lembrança ou significado pessoal para você?",
+          "Você tem vivido alguma situação recente em que uma pequena mudança de ponto de vista facilitou uma busca?"
+        ]
+      },
+      "interpretationWords": 114
+    },
+    {
+      "id": "pt-rich",
+      "version": "before",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 3768,
+      "rawText": "{\n  \"title\": \"O Segredo do Livro Verde\",\n  \"interpretation\": \"Seu sonho desenha uma jornada suave e profunda de autodescoberta e busca por sabedoria interior. A biblioteca representa o vasto repositório de suas memórias, potenciais e conhecimentos acumulados. Ao procurar algo específico nesse labirinto calmo, seu inconsciente revela uma prontidão para acessar respostas que já habitam dentro de você, mesmo que ainda pareçam ocultas à primeira vista.\\n\\nO ato de passar três vezes pela mesma estante sugere persistência e a necessidade de rever certas situações ou padrões em sua vida sob uma nova perspectiva. A bibliotecária atua como um arquétipo de guia silencioso, indicando que a direção certa muitas vezes não vem por palavras ruidosas, mas por intuição sutil. Subir os degraus simboliza uma pequena elevação de consciência, o suficiente para que o livro verde — cor associada à cura, renovação e esperança — finalmente fosse alcançado.\\n\\nA alegria sentida ao encontrar o livro fechado mostra que o valor do momento residiu na descoberta da sua própria capacidade de encontrar respostas, e não na pressa de desvendá-las por completo. O fato de acordar antes de ler o título não é uma frustração, mas um convite poético: a mensagem essencial está pronta para ser escrita ou vivida por você no seu dia a dia desperto.\",\n  \"shareableQuote\": \"Às vezes, basta subir dois degraus de consciência para encontrar a cura que procurávamos.\",\n  \"theme\": \"mystical\",\n  \"dreamType\": \"Symbolic Dream\",\n  \"imagePrompt\": \"A serene mystical library with towering wooden shelves, soft golden dust motes, a silent librarian pointing to a small wooden ladder where a glowing green book rests.\",\n  \"symbols\": [\n    {\n      \"name\": \"Biblioteca\",\n      \"meaning\": \"Representa o vasto acervo de sua mente inconsciente, memórias e o conhecimento que você acumulou ao longo da vida.\"\n    },\n    {\n      \"name\": \"Livro Verde\",\n      \"meaning\": \"Simboliza uma verdade pessoal ligada à renovação, crescimento ou cura interior que está prestes a ser integrada.\"\n    },\n    {\n      \"name\": \"Bibliotecária Silenciosa\",\n      \"meaning\": \"Personifica sua intuição interior, que aponta caminhos claros sem a necessidade de ruídos ou explicações excessivas.\"\n    },\n    {\n      \"name\": \"Escada de Dois Degraus\",\n      \"meaning\": \"Indica um movimento sutil de elevação e mudança de perspectiva necessário para alcançar o que procura.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Determinação Serena\",\n      \"insight\": \"Revela sua paciência e compromisso em buscar algo que você sabe intuitivamente que é importante para sua jornada.\"\n    },\n    {\n      \"name\": \"Contentamento\",\n      \"insight\": \"Demonstra a sensação de alívio e satisfação ao constatar que os recursos internos necessários estão ao seu alcance.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"Qual área da sua vida desperta está pedindo um momento de pausa para buscar uma nova perspectiva ou aprendizado?\",\n    \"Se você pudesse nomear o livro verde hoje, qual título refletiria o seu momento atual de renovação?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1201,
+        "total_input_tokens": 445,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 445
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 756,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1192,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1192
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 773
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "O Segredo do Livro Verde",
+        "interpretation": "Seu sonho desenha uma jornada suave e profunda de autodescoberta e busca por sabedoria interior. A biblioteca representa o vasto repositório de suas memórias, potenciais e conhecimentos acumulados. Ao procurar algo específico nesse labirinto calmo, seu inconsciente revela uma prontidão para acessar respostas que já habitam dentro de você, mesmo que ainda pareçam ocultas à primeira vista.\n\nO ato de passar três vezes pela mesma estante sugere persistência e a necessidade de rever certas situações ou padrões em sua vida sob uma nova perspectiva. A bibliotecária atua como um arquétipo de guia silencioso, indicando que a direção certa muitas vezes não vem por palavras ruidosas, mas por intuição sutil. Subir os degraus simboliza uma pequena elevação de consciência, o suficiente para que o livro verde — cor associada à cura, renovação e esperança — finalmente fosse alcançado.\n\nA alegria sentida ao encontrar o livro fechado mostra que o valor do momento residiu na descoberta da sua própria capacidade de encontrar respostas, e não na pressa de desvendá-las por completo. O fato de acordar antes de ler o título não é uma frustração, mas um convite poético: a mensagem essencial está pronta para ser escrita ou vivida por você no seu dia a dia desperto.",
+        "shareableQuote": "Às vezes, basta subir dois degraus de consciência para encontrar a cura que procurávamos.",
+        "theme": "mystical",
+        "dreamType": "Symbolic Dream",
+        "imagePrompt": "A serene mystical library with towering wooden shelves, soft golden dust motes, a silent librarian pointing to a small wooden ladder where a glowing green book rests.",
+        "symbols": [
+          {
+            "name": "Biblioteca",
+            "meaning": "Representa o vasto acervo de sua mente inconsciente, memórias e o conhecimento que você acumulou ao longo da vida."
+          },
+          {
+            "name": "Livro Verde",
+            "meaning": "Simboliza uma verdade pessoal ligada à renovação, crescimento ou cura interior que está prestes a ser integrada."
+          },
+          {
+            "name": "Bibliotecária Silenciosa",
+            "meaning": "Personifica sua intuição interior, que aponta caminhos claros sem a necessidade de ruídos ou explicações excessivas."
+          },
+          {
+            "name": "Escada de Dois Degraus",
+            "meaning": "Indica um movimento sutil de elevação e mudança de perspectiva necessário para alcançar o que procura."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Determinação Serena",
+            "insight": "Revela sua paciência e compromisso em buscar algo que você sabe intuitivamente que é importante para sua jornada."
+          },
+          {
+            "name": "Contentamento",
+            "insight": "Demonstra a sensação de alívio e satisfação ao constatar que os recursos internos necessários estão ao seu alcance."
+          }
+        ],
+        "reflectionQuestions": [
+          "Qual área da sua vida desperta está pedindo um momento de pausa para buscar uma nova perspectiva ou aprendizado?",
+          "Se você pudesse nomear o livro verde hoje, qual título refletiria o seu momento atual de renovação?"
+        ]
+      },
+      "interpretationWords": 204
+    }
+  ]
+}
