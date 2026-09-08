@@ -8,12 +8,12 @@ export const ANALYZE_DREAM_SCHEMA = {
     theme: { type: 'string', enum: ['surreal', 'mystical', 'calm', 'noir'] },
     dreamType: {
       type: 'string',
-      enum: ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'],
+      enum: ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream', 'Unknown'],
     },
     imagePrompt: { type: 'string' },
     symbols: {
       type: 'array',
-      minItems: 3,
+      minItems: 0,
       maxItems: 6,
       items: {
         type: 'object',
@@ -27,7 +27,7 @@ export const ANALYZE_DREAM_SCHEMA = {
     },
     emotions: {
       type: 'array',
-      minItems: 2,
+      minItems: 0,
       maxItems: 4,
       items: {
         type: 'object',
@@ -41,7 +41,7 @@ export const ANALYZE_DREAM_SCHEMA = {
     },
     reflectionQuestions: {
       type: 'array',
-      minItems: 2,
+      minItems: 0,
       maxItems: 3,
       items: { type: 'string' },
     },
@@ -67,7 +67,7 @@ export const CATEGORIZE_DREAM_SCHEMA = {
     theme: { type: 'string', enum: ['surreal', 'mystical', 'calm', 'noir'] },
     dreamType: {
       type: 'string',
-      enum: ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'],
+      enum: ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream', 'Unknown'],
     },
     hasPerson: { type: 'boolean' },
     hasAnimal: { type: 'boolean' },

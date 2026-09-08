@@ -502,3 +502,19 @@ it('keeps the recall draft key when another page adds or removes an equal-date d
   unmount();
   mockSearchParams = { id: '42' };
 });
+
+it('renders a sparse unclassified reflection without empty insight sections', () => {
+  mockDreams = [buildDream({
+    interpretation: 'Votre récit décrit une porte.',
+    dreamType: 'Unknown',
+    isAnalyzed: true,
+    analysisStatus: 'done',
+    symbols: [],
+    emotions: [],
+    reflectionQuestions: [],
+  })];
+  render(<JournalDetailScreen />);
+  expect(screen.getByText('Votre récit décrit une porte.')).toBeTruthy();
+  expect(screen.queryByText('journal.detail.symbols_header')).toBeNull();
+  expect(screen.queryByText('journal.detail.emotions_header')).toBeNull();
+});

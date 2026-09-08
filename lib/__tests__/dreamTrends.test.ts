@@ -475,3 +475,8 @@ describe('buildDreamTrends', () => {
     ]);
   });
 });
+
+it('does not turn unclassified accounts into symbolic or recurring motifs', () => {
+  const dreams = [1, 2, 3].map((day) => analyzed(localDay(2026, 7, day), { dreamType: 'Unknown' }));
+  expect(buildDreamTrends(dreams, { now: NOW }).patterns.types).toEqual([]);
+});

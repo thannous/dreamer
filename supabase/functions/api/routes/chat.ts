@@ -1,3 +1,4 @@
+import { REFLECTION_POLICY } from '../services/dreamAnalysis.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { type AiLanguage, localizedForAi } from '../lib/aiLanguage.ts';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
@@ -654,7 +655,7 @@ export async function handleChat(
     const apiKey = Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
-    const systemPreamble = localizedForAi(lang, CHAT_SYSTEM_PREAMBLES);
+    const systemPreamble = `${localizedForAi(lang, CHAT_SYSTEM_PREAMBLES)} ${REFLECTION_POLICY} Previous analysis and quotes are generated possibilities, not facts. Ground answers in the reported account and distinguish any new hypothesis explicitly. Keep answers proportional to available information.`;
 
     const contents: { role: 'user' | 'model'; parts: GeminiPart[] }[] = [];
     const { prompt: dreamContextPrompt, debug: contextDebug } = buildDreamContextPrompt(dream, lang);

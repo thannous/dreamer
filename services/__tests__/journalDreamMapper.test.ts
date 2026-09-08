@@ -199,3 +199,15 @@ describe('journal mapper import boundary', () => {
     expect(source).not.toMatch(/require\(['"](?:react-native|expo-|@supabase\/supabase-js)/);
   });
 });
+
+it('round-trips an unclassified sparse reflection without fabricating a type or insights', () => {
+  const source = row({ dream_type: 'Unknown', analysis_details: {
+    symbols: [], emotions: [], reflectionQuestions: [], promptVersion: 'analysis-2026-09-08.1',
+  } });
+  const dream = mapRowToDream(source);
+  expect(dream.dreamType).toBe('Unknown');
+  expect(dream.symbols ?? []).toEqual([]);
+  expect(dream.emotions ?? []).toEqual([]);
+  expect(mapDreamToRow(dream, 'user-a').dream_type).toBe('Unknown');
+  expect(mapRowToDreamListItem(source).dreamType).toBe('Unknown');
+});
