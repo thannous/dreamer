@@ -26,6 +26,7 @@ import { shareLucidTrainerExport } from '@/services/lucidTrainerExport';
 
 const COPY = {
   en: {
+    journalImport: "Import local copies from Journal",
     eyebrow: 'Data management',
     title: 'Keep control of every record',
     subtitle: 'Exports contain your Lucid Trainer data only. Nothing is transferred to Noctalia without a separate action.',
@@ -59,6 +60,7 @@ const COPY = {
       'This operation could not be completed. Some data or media may already have been removed, including a cloud copy if one existed.',
   },
   fr: {
+    journalImport: "Importer des copies locales depuis Journal",
     eyebrow: 'Gestion des données',
     title: 'Gardez le contrôle de chaque donnée',
     subtitle: 'Les exports contiennent uniquement Lucid Trainer. Rien ne passe vers Noctalia sans action séparée.',
@@ -92,6 +94,7 @@ const COPY = {
       'L’opération n’a pas abouti. Certaines données ou certains médias peuvent déjà avoir été retirés, y compris une copie cloud s’il en existait une.',
   },
   es: {
+    journalImport: "Importar copias locales desde Journal",
     eyebrow: 'Gestión de datos',
     title: 'Controla cada registro',
     subtitle: 'Las exportaciones solo contienen Lucid Trainer. Nada pasa a Noctalia sin otra acción.',
@@ -125,6 +128,7 @@ const COPY = {
       'No se pudo completar la operación. Algunos datos o archivos pueden haberse eliminado ya, incluida una copia en la nube si existía.',
   },
   de: {
+    journalImport: "Lokale Kopien aus Journal importieren",
     eyebrow: 'Datenverwaltung',
     title: 'Kontrolle über jeden Eintrag',
     subtitle: 'Exporte enthalten nur Lucid Trainer. Ohne eigene Aktion geht nichts an Noctalia.',
@@ -158,6 +162,7 @@ const COPY = {
       'Der Vorgang konnte nicht abgeschlossen werden. Einige Daten oder Medien wurden möglicherweise bereits entfernt, einschließlich einer Cloudkopie, falls vorhanden.',
   },
   it: {
+    journalImport: "Importa copie locali da Journal",
     eyebrow: 'Gestione dati',
     title: 'Controlla ogni dato',
     subtitle: 'Gli export contengono solo Lucid Trainer. Nulla passa a Noctalia senza un’azione separata.',
@@ -411,6 +416,11 @@ export default function LucidDataScreen() {
           onPress={() => router.push('/lucid/morning-voice' as never)}
         />
         <Text style={[styles.body, { color: palette.textSecondary }]}>{c.syncNote}</Text>
+      </LucidCard>
+
+      <LucidCard>
+        <LucidButton label={c.journalImport} variant="secondary" icon="download-outline"
+          onPress={() => router.push('/lucid/journal-import' as never)} />
       </LucidCard>
 
       <LucidSectionHeader title={c.bridge} />
