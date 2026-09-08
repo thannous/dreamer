@@ -101,3 +101,38 @@ it('rejects expired grants and malformed pages without empty overwrite', async (
   await expect(x.engine.start(x.confirmation)).rejects.toThrow('Invalid import page');
   expect(x.storage.save).not.toHaveBeenCalled();
 });
+
+it.each(['delete', 'keepLocal', 'useIncoming'] as const)('confirms %s after a committed write loses its acknowledgement', async type => {
+  const x = setup();
+  await x.engine.start(x.confirmation);
+  const id = journalCopyIdentity('A', '0');
+  if (type !== 'delete') {
+    await x.engine.updateCopy('guest', id, { type: 'edit', text: 'Own' });
+    x.readPage.mockResolvedValue({ grantId: 'g2', items: [{ ...item(0, revision(2)), transcript: 'Incoming' }], nextCursor: null, done: true });
+    await x.engine.start({ ...x.confirmation, grantId: 'g2' });
+  }
+  const save = x.storage.save.getMockImplementation()!;
+  x.storage.save.mockImplementationOnce(async (...args) => { await save(...args); throw new Error('acknowledgement lost'); });
+  const result = await x.engine.updateCopy('guest', id, { type });
+  expect(result).toEqual(x.saved());
+  expect(result.copies[id].incoming).toBeUndefined();
+  expect(result.copies[id].text).toBe(type === 'delete' ? '' : type === 'keepLocal' ? 'Own' : 'Incoming');
+  expect(result.copies[id].deleted).toBe(type === 'delete');
+});
+it('does not confirm an unapplied copy update and allows retry', async () => {
+  const x = setup();
+  await x.engine.start(x.confirmation);
+  const id = journalCopyIdentity('A', '0');
+  x.storage.save.mockRejectedValueOnce(new Error('storage full'));
+  await expect(x.engine.updateCopy('guest', id, { type: 'delete' })).rejects.toThrow('storage full');
+  expect(x.saved()!.copies[id].deleted).toBe(false);
+  expect((await x.engine.updateCopy('guest', id, { type: 'delete' })).copies[id].deleted).toBe(true);
+});
+it('rejects an account change while reconciling an uncertain update', async () => {
+  const x = setup();
+  await x.engine.start(x.confirmation);
+  const id = journalCopyIdentity('A', '0');
+  const save = x.storage.save.getMockImplementation()!;
+  x.storage.save.mockImplementationOnce(async (...args) => { await save(...args); x.switchScope(); throw new Error('acknowledgement lost'); });
+  await expect(x.engine.updateCopy('guest', id, { type: 'delete' })).rejects.toThrow('cancelled');
+});

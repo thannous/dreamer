@@ -32,3 +32,7 @@ Cleanup after success: original 2501 dreams preserved; zero synthetic users, imp
 Actual PostgreSQL projection metadata verified without reading personal content: id bigint NOT NULL; created_at timestamptz NULLABLE (default now()); transcript text NOT NULL; client_request_id UUID NOT NULL; revision_id UUID NOT NULL.
 
 Only the two newly reviewed FK indexes were applied locally and verified through pg_indexes: journal_import_grants_owner_idx(owner_uid), journal_import_cursors_grant_idx(grant_id). No full migration replay. The complete real reader/engine suite above then passed.
+
+## Subsequent local-write reconciliation
+
+After the real run above, updateCopy was changed to reread and confirm the exact intended durable snapshot when an atomic write acknowledgement fails. The page reader/import loop and SQL contract are unchanged; the engine file hash above identifies the real-run source, not this later full file. Independent review and 50 focused tests cover committed delete/conflict decisions, unapplied writes, retry and account changes. No additional database run is claimed for that local-only correction.

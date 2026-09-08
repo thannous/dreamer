@@ -148,7 +148,14 @@ export function createJournalImportEngine(deps: {
           delete copy.incoming;
         }
         check();
-        await deps.storage.save(scope, state, check);
+        try {
+          await deps.storage.save(scope, state, check);
+        } catch (writeError) {
+          // An atomic manifest can be committed even when its acknowledgement fails.
+          // Confirm the exact intended snapshot before reporting a user action as failed.
+          const durable = await load(scope, check);
+          if (JSON.stringify(durable) !== JSON.stringify(state)) throw writeError;
+        }
         check();
         return clone(state);
       });
