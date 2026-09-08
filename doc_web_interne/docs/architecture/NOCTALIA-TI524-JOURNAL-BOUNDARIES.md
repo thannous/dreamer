@@ -37,3 +37,13 @@ La qualification Android de la base fusionnée est conservée dans [le rapport T
 ## Prochains déplacements
 
 Les uploads, indicateurs de compatibilité, batchs de mutations et réconciliation restent dans la façade ; `useOfflineSyncQueue` conserve l'orchestration React. Leur extraction sera un lot distinct utilisant ces contrats et les tests de création/rejeu, conflit, suppression, erreur de stockage et changement de compte. Ce premier lot ne clôture donc pas globalement TI-524 et n'annonce aucun gain de performance non mesuré.
+
+## Deuxième lot — Uploads et transitions de file
+
+Base du lot : `ee591ed5e` (PR #124). `journalMediaUploadService` reçoit le client Storage, la configuration, l'invalidation et les opérations image par injection. `journalNativeImageAdapter` possède les API fichier et manipulation natives ; le service d'upload ne les initialise pas. La façade garde ses signatures publiques et délègue la préparation média.
+
+`lib/journalQueueTransitions.ts` possède la normalisation historique des mutations, la classification des reprises et l'application des résultats acquittés/échoués. Ces transitions s'exécutent dans Node sans React ni stockage. `useOfflineSyncQueue` garde les abonnements, la persistance sérialisée, les contrôles de périmètre et la coordination des requêtes. Cette étape ne remplace pas l'algorithme de replay.
+
+Les particularités historiques de l'upload sont conservées : référence principale et miniature retirées du résultat en cas d'échec, fichier temporaire de conversion partagé, compatibilités de schéma inchangées. Ce déplacement ne constitue pas une correction de ces politiques. Les tests caractérisent les références existantes, les variantes, les erreurs et les identités distinctes malgré une date identique.
+
+Restent à extraire par lot dédié : transport des mutations et replis de schéma, puis coordination durable de la file. Les preuves Android du premier lot ne sont pas attribuées automatiquement à ce deuxième lot.
