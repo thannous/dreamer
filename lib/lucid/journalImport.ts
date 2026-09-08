@@ -3,7 +3,7 @@ export interface JournalImportItem {
   id: string;
   clientRequestId: string | null;
   revision: string;
-  createdAt: string;
+  createdAt: string | null;
   transcript: string;
 }
 export interface JournalImportPage {
@@ -26,12 +26,12 @@ export interface JournalCopy {
   sourceAccount: string;
   sourceId: string;
   sourceRevision: string;
-  createdAt: string;
+  createdAt: string | null;
   importedAt: string;
   text: string;
   edited: boolean;
   deleted: boolean;
-  incoming?: { text: string; revision: string; createdAt: string };
+  incoming?: { text: string; revision: string; createdAt: string | null };
 }
 export interface JournalImportSnapshot {
   version: 1;
@@ -42,6 +42,8 @@ export interface JournalImportStorage {
   load(scope: string): Promise<JournalImportSnapshot | null>;
   save(scope: string, snapshot: JournalImportSnapshot, assertActive: () => void): Promise<void>;
 }
+export const isJournalImportSourceDate = (value: unknown): value is string | null => value === null ||
+  (typeof value === 'string' && Number.isFinite(Date.parse(value)));
 export const isJournalImportRevision = (value: unknown): value is string => typeof value === 'string' &&
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
 export const journalCopyIdentity = (account: string, id: string): string => JSON.stringify(['journal', account, id]);
@@ -101,7 +103,7 @@ export function createJournalImportEngine(deps: {
           for (const item of page.items) {
             if (!item || typeof item.id !== 'string' || typeof item.revision !== 'string' ||
               !/^\d+$/.test(item.id) || !isJournalImportRevision(item.revision) ||
-              typeof item.transcript !== 'string' || !Number.isFinite(Date.parse(item.createdAt))) throw new Error('Invalid import item');
+              typeof item.transcript !== 'string' || !isJournalImportSourceDate(item.createdAt)) throw new Error('Invalid import item');
             const identity = journalCopyIdentity(input.sourceAccount, item.id);
             const previous = next.copies[identity];
             if (previous?.deleted || previous?.sourceRevision === item.revision) continue;

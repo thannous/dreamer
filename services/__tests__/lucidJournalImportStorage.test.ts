@@ -104,3 +104,15 @@ it('serializes two adapters and fails closed on unprotected or missing chunks', 
   x.values.delete(chunk);
   await expect(x.adapter.load('guest')).rejects.toThrow('Missing import chunk');
 });
+
+it('round trips null source dates on copies and pending conflicts while retaining importedAt', async () => {
+  const x = fixture();
+  const state = snapshot(1);
+  const copy = Object.values(state.copies)[0];
+  copy.createdAt = null;
+  copy.edited = true;
+  copy.incoming = { text: 'Incoming', revision: '00000000-0000-4000-8000-000000000002', createdAt: null };
+  await x.adapter.save('guest', state, () => undefined);
+  expect(await x.adapter.load('guest')).toEqual(state);
+  expect(copy.importedAt).toBe(date);
+});

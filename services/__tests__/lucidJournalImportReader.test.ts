@@ -100,3 +100,22 @@ it('accepts a replay retaining the server original page IDs despite a smaller re
   x.rpc.mockResolvedValue({ data: { grantId: gid, items: [...items, { ...item, id: '201' }], nextCursor: null, done: true }, error: null });
   await expect(createLucidJournalImportReader(x.deps)(x.input)).rejects.toThrow('Malformed');
 });
+
+it('preserves SQL NULL source dates through the reader and engine without inventing a date', async () => {
+  const x = setup();
+  x.rpc.mockResolvedValue({ data: { grantId: gid, items: [{ ...item, createdAt: null }], nextCursor: null, done: true }, error: null });
+  let persisted: JournalImportSnapshot | null = null;
+  const engine = createJournalImportEngine({
+    storage: { load: async () => persisted, save: async (_scope, state, check) => { check(); persisted = state; } },
+    readPage: createLucidJournalImportReader(x.deps),
+    getCurrentDestinationScope: () => 'guest', getCurrentSourceAccount: () => uid, now: x.deps.now,
+  });
+  const state = await engine.start(x.deps.confirmation);
+  expect(state.copies[journalCopyIdentity(uid, item.id)]).toMatchObject({ createdAt: null, importedAt: new Date(date).toISOString() });
+  expect(persisted).toEqual(state);
+});
+it.each([undefined, 0, {}, 'not-a-date'])('rejects non-null invalid source date %#', async createdAt => {
+  const x = setup();
+  x.rpc.mockResolvedValue({ data: { grantId: gid, items: [{ ...item, createdAt }], nextCursor: null, done: true }, error: null });
+  await expect(createLucidJournalImportReader(x.deps)(x.input)).rejects.toThrow('Malformed');
+});

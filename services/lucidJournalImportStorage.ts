@@ -1,5 +1,5 @@
 import type { JournalImportSnapshot, JournalImportStorage } from '@/lib/lucid/journalImport';
-import { isJournalImportRevision, journalCopyIdentity } from '@/lib/lucid/journalImport';
+import { isJournalImportSourceDate, isJournalImportRevision, journalCopyIdentity } from '@/lib/lucid/journalImport';
 import { getLucidKeyValueStorage, isLucidNativeKeyValueStorage } from './lucidKeyValueStorage';
 import { isLucidTrainerEncryptedValue, protectLucidTrainerStoredValue, revealLucidTrainerStoredValue } from './lucidTrainerSecureStorage';
 
@@ -17,9 +17,9 @@ function parse(raw: string): JournalImportSnapshot {
       identity !== journalCopyIdentity(copy.sourceAccount, copy.sourceId) || !/^\d+$/.test(copy.sourceId) ||
       !isJournalImportRevision(copy.sourceRevision) ||
       typeof copy.text !== 'string' || typeof copy.edited !== 'boolean' || typeof copy.deleted !== 'boolean' ||
-      !Number.isFinite(Date.parse(copy.createdAt)) || !Number.isFinite(Date.parse(copy.importedAt)) ||
+      !isJournalImportSourceDate(copy.createdAt) || !Number.isFinite(Date.parse(copy.importedAt)) ||
       (copy.incoming && (typeof copy.incoming.text !== 'string' || !isJournalImportRevision(copy.incoming.revision) ||
-        !Number.isFinite(Date.parse(copy.incoming.createdAt))))) throw new Error('Invalid stored copy');
+        !isJournalImportSourceDate(copy.incoming.createdAt)))) throw new Error('Invalid stored copy');
   }
   const cp = value.checkpoint;
   if (cp !== null && (!cp || typeof cp.grantId !== 'string' || !cp.grantId || typeof cp.sourceAccount !== 'string' ||

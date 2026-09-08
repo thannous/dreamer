@@ -1,4 +1,4 @@
-import { isJournalImportRevision } from '@/lib/lucid/journalImport';
+import { isJournalImportSourceDate, isJournalImportRevision } from '@/lib/lucid/journalImport';
 import type { JournalImportConfirmation, JournalImportItem, JournalImportPage } from '@/lib/lucid/journalImport';
 
 /** Supplied by the authenticated session owner, never by an appId header or user metadata. */
@@ -31,7 +31,7 @@ const record = (value: unknown): Record<string, unknown> => {
 };
 function parseItem(raw: unknown): JournalImportItem {
   const value = record(raw);
-  if (!decimal(value.id) || !isJournalImportRevision(value.revision) || !date(value.createdAt) || typeof value.transcript !== 'string' ||
+  if (!decimal(value.id) || !isJournalImportRevision(value.revision) || !isJournalImportSourceDate(value.createdAt) || typeof value.transcript !== 'string' ||
     !(value.clientRequestId === null || uuid(value.clientRequestId))) throw new Error('Malformed Journal import item');
   return { id: value.id, revision: value.revision, createdAt: value.createdAt,
     transcript: value.transcript, clientRequestId: value.clientRequestId };
