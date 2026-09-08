@@ -44,12 +44,12 @@ const CONTEXT_HEADER: Record<AiLanguage, string> = {
 };
 
 const ANALYSIS_LABEL: Record<AiLanguage, string> = {
-  en: 'Analysis',
-  fr: 'Analyse',
-  es: 'Análisis',
-  de: 'Analyse',
-  it: 'Analisi',
-  pt: 'Análise',
+  en: 'Previous generated reflection (hypotheses, not facts)',
+  fr: 'Réflexion générée précédente (hypothèses, pas des faits)',
+  es: 'Reflexión generada anterior (hipótesis, no hechos)',
+  de: 'Frühere generierte Reflexion (Hypothesen, keine Fakten)',
+  it: 'Riflessione generata precedente (ipotesi, non fatti)',
+  pt: 'Reflexão gerada anterior (hipóteses, não fatos)',
 };
 
 const TRANSCRIPT_LABEL: Record<AiLanguage, string> = {
@@ -152,7 +152,7 @@ export function buildDreamContextPrompt(
   if (!transcript) {
     const noTranscript = localizedForAi(lang, NO_TRANSCRIPT);
     return {
-      prompt: `${noTranscript}\n\nTitle: "${title}"\nType: ${dreamType}${theme ? `\nTheme: ${theme}` : ''}\n`,
+      prompt: `${injectionSafety}\n${noTranscript}\n\nTitle: ${JSON.stringify(title)}\nType: ${JSON.stringify(dreamType)}${theme ? `\nTheme: ${JSON.stringify(theme)}` : ''}\n`,
       debug: { transcriptTruncated, interpretationTruncated },
     };
   }
@@ -167,21 +167,21 @@ export function buildDreamContextPrompt(
 
   const prompt = `${header}
 
-Title: "${title}"
-Type: ${dreamType}${theme ? `\nTheme: ${theme}` : ''}
+Title: ${JSON.stringify(title)}
+Type: ${JSON.stringify(dreamType)}${theme ? `\nTheme: ${JSON.stringify(theme)}` : ''}
 
 ${injectionSafety}
 
 ${transcriptLabel}:
 <<<BEGIN_DREAM_TRANSCRIPT>>>
-${transcript}
+${JSON.stringify(transcript)}
 <<<END_DREAM_TRANSCRIPT>>>${transcriptTruncated ? '\n[TRUNCATED]' : ''}
 
 ${analysisLabel}:
 <<<BEGIN_DREAM_ANALYSIS>>>
-${interpretation || localizedForAi(lang, NO_ANALYSIS)}
+${JSON.stringify(interpretation || localizedForAi(lang, NO_ANALYSIS))}
 <<<END_DREAM_ANALYSIS>>>${interpretationTruncated ? '\n[TRUNCATED]' : ''}${
-    quote ? `\n\n${keyInsightLabel}: "${quote}"` : ''
+    quote ? `\n\n${keyInsightLabel}: ${JSON.stringify(quote)}` : ''
   }${maybeTruncation}
 `;
 

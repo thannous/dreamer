@@ -203,6 +203,7 @@ const processAnalysisJob = async (input: {
     const analysis = await runDreamAnalysis({
       apiKey,
       transcript: resolvedTranscript.promptTranscript,
+      truncatedForPrompt: resolvedTranscript.truncatedForPrompt,
       lang,
       route: '/analysis-job-worker',
     });

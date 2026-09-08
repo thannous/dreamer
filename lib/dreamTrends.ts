@@ -10,6 +10,7 @@ const TOP_LIMIT = 5;
 const MAX_THEME_POINTS = 30;
 const ORDERED_WEEKDAYS = [1, 2, 3, 4, 5, 6, 0] as const;
 const DREAM_THEMES: ReadonlySet<DreamTheme> = new Set(['surreal', 'mystical', 'calm', 'noir']);
+// Unknown is deliberately not a motif: insufficient evidence must not become a pattern.
 const DREAM_TYPES: ReadonlySet<DreamType> = new Set([
   'Lucid Dream',
   'Recurring Dream',

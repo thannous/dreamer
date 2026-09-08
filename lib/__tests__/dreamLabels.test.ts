@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 
 import { EMOTION_FAMILY_IDS } from '../dreamEmotions';
-import { getEmotionFamilyLabel } from '../dreamLabels';
+import { getDreamTypeLabel, getEmotionFamilyLabel } from '../dreamLabels';
 import { getTranslator, loadTranslations } from '../i18n';
 
 const languages = ['en', 'fr', 'es', 'de', 'it', 'pt'] as const;
@@ -46,4 +46,15 @@ describe('getEmotionFamilyLabel', () => {
     expect(getEmotionFamilyLabel(null, t)).toBeUndefined();
     expect(getEmotionFamilyLabel(undefined, t)).toBeUndefined();
   });
+});
+
+
+it('localizes the server Unknown type in all supported catalogues', async () => {
+  await Promise.all(languages.map((language) => loadTranslations(language)));
+  for (const language of languages) {
+    const label = getDreamTypeLabel('Unknown', getTranslator(language));
+    expect(label).toBeTruthy();
+    expect(label).not.toBe('Unknown');
+    expect(label).not.toBe('dream.type.unknown');
+  }
 });

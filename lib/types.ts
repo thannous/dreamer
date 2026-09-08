@@ -43,7 +43,7 @@ export type SyncMutationOperation = 'create' | 'update' | 'delete';
  * Canonical dream type categories used in the app.
  * The AI/backend should always return one of these values.
  */
-export type DreamType = 'Lucid Dream' | 'Recurring Dream' | 'Nightmare' | 'Symbolic Dream';
+export type DreamType = 'Lucid Dream' | 'Recurring Dream' | 'Nightmare' | 'Symbolic Dream' | 'Unknown';
 
 /**
  * Canonical dream visual/emotional themes.
