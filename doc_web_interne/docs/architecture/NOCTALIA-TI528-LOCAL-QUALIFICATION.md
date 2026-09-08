@@ -52,3 +52,13 @@ La commande canonique `db:qualify:local` valide explicitement le fichier local, 
 Les deux scripts refusent les ports autres que ceux de l'environnement dédié. Le statut contient une clé privilégiée exclusivement locale : garder ce fichier temporaire privé, ne jamais le committer ni le transmettre à l'application. Le fichier client ne contient que les paramètres publics et les identifiants synthétiques nécessaires à Android. Sans `TI528_LOCAL_STATUS`, le test est explicitement ignoré et n'accède à aucune base.
 
 Sources : [développement local Supabase](https://supabase.com/docs/guides/local-development/cli/getting-started), [changelog vérifié](https://supabase.com/changelog), configuration et migrations versionnées. La limite de production n'est pas déduite de cette qualification locale.
+
+## Admissions concurrentes — premier complément
+
+La commande `db:qualify:local` exécute aussi `scripts/ti528/admission-local.test.ts` sur le même environnement jetable protégé. Le test appelle réellement `claim_ai_request_window` : succès sous le rôle serveur prévu, refus explicite `42501` sous les rôles anonyme et authentifié. Il ne présente pas un succès administrateur comme une preuve d'autorisation client.
+
+Sept demandes simultanées du même acteur doivent produire exactement trois admissions ; dix acteurs distincts doivent produire exactement quatre admissions globales. Les refus ne consomment pas de nouvelles places. Les capacités ont des compteurs distincts et les refus donnent un délai de reprise positif. Cette primitive ne possède pas de clé de requête : deux appels consomment deux admissions, sans promesse d'idempotence.
+
+Les identifiants/capacités sont synthétiques, chaque capacité est propre à l'exécution et le nettoyage ne cible que ses lignes et son compte temporaire. La durée de fenêtre est choisie à partir de l'horloge PostgreSQL pour ne pas traverser sa borne pendant le test. Les credentials restent dans le fichier local privé ; aucun fournisseur IA n'est appelé.
+
+Les admissions de jobs durables, quotas de consommation, leases de workers et autorisations interapps ne sont pas couvertes par ce seul complément. TI-528 reste ouvert. Référence technique vérifiée : [fonctions et privilèges Supabase](https://supabase.com/docs/guides/database/functions), 8 septembre 2026 ; migrations locales versionnées comme contrat de comportement.
