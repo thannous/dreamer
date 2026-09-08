@@ -47,3 +47,11 @@ Base du lot : `ee591ed5e` (PR #124). `journalMediaUploadService` reçoit le clie
 Les particularités historiques de l'upload sont conservées : référence principale et miniature retirées du résultat en cas d'échec, fichier temporaire de conversion partagé, compatibilités de schéma inchangées. Ce déplacement ne constitue pas une correction de ces politiques. Les tests caractérisent les références existantes, les variantes, les erreurs et les identités distinctes malgré une date identique.
 
 Restent à extraire par lot dédié : transport des mutations et replis de schéma, puis coordination durable de la file. Les preuves Android du premier lot ne sont pas attribuées automatiquement à ce deuxième lot.
+
+## Troisième lot — Transport des mutations
+
+Base : `4ac7ff589` (PR #125). `createJournalMutationTransport` reçoit un getter de client et la préparation média. Le batch RPC, les accès directs de compatibilité, les alias d'identité et les indicateurs de colonnes facultatives sont déplacés ensemble afin de conserver exactement leur ordre et leur durée de vie. Une seule instance est créée dans la façade ; ses wrappers création/modification/suppression conservent leurs signatures et leurs erreurs.
+
+Le transport importe le SDK uniquement comme type et peut être testé dans le projet Node sans initialiser Supabase ou React Native. La façade reste le point d'assemblage avec les adaptateurs réels. Le changement ne retire aucun repli destiné aux clients distribués et ne promet aucune nouvelle isolation de session au-delà des contrôles existants.
+
+La coordination durable du hook reste à traiter séparément : sérialisation des écritures, attente des snapshots, changements de périmètre et gestion des requêtes en vol. Les tests de replay existants et la base jetable restent obligatoires pour ce futur déplacement.
