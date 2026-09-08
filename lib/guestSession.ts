@@ -5,7 +5,7 @@ import { Platform } from 'react-native';
 
 import { fetchJSON } from '@/lib/http';
 import { getApiBaseUrl } from '@/lib/config';
-import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
+import { getDeviceFingerprint, getExistingDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { getAccessToken } from '@/lib/auth';
 import { GuestSessionError, GuestSessionErrorCode } from '@/lib/errors';
 import { getExpoPublicEnvValue } from '@/lib/env';
@@ -365,7 +365,7 @@ const toGuestSessionError = (state: GuestBootstrapState): GuestSessionError => {
 /** Local ownership only: media reads must not bootstrap a session or spend a guest call. */
 export async function getGuestMediaOwner(): Promise<string | null> {
   try {
-    const fingerprint = await getDeviceFingerprint();
+    const fingerprint = await getExistingDeviceFingerprint();
     if (!fingerprint) return null;
     let session = cached;
     if (!session) {

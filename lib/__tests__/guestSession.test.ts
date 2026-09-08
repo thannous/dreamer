@@ -28,6 +28,7 @@ const loadGuestSessionModule = (platform: PlatformName) => {
   }));
   jest.doMock('@/lib/deviceFingerprint', () => ({
     getDeviceFingerprint: jest.fn().mockResolvedValue('fingerprint'),
+    getExistingDeviceFingerprint: jest.fn().mockResolvedValue('fingerprint'),
   }));
   jest.doMock('@/lib/auth', () => ({
     getAccessToken: jest.fn().mockResolvedValue(null),
@@ -68,8 +69,18 @@ describe('guestSession bootstrap state', () => {
     secureStore.getItemAsync.mockResolvedValue(null);
     await expect(guestSession.getGuestMediaOwner()).resolves.toBe('guest_fingerprint');
     expect(require('@/lib/http').fetchJSON).not.toHaveBeenCalled();
+    expect(require('@/lib/deviceFingerprint').getDeviceFingerprint).not.toHaveBeenCalled();
     secureStore.getItemAsync.mockRejectedValueOnce(new Error('unavailable'));
     await expect(guestSession.getGuestMediaOwner()).resolves.toBe('guest_fingerprint');
+  });
+
+  it('does not create a fingerprint or session when local media identity is absent', async () => {
+    const guestSession = loadGuestSessionModule('android');
+    const device = require('@/lib/deviceFingerprint');
+    device.getExistingDeviceFingerprint.mockResolvedValue(null);
+    await expect(guestSession.getGuestMediaOwner()).resolves.toBeNull();
+    expect(device.getDeviceFingerprint).not.toHaveBeenCalled();
+    expect(require('@/lib/http').fetchJSON).not.toHaveBeenCalled();
   });
 
   it('uses the locally stored QA ownership only for the current fingerprint', async () => {

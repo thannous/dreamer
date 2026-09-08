@@ -196,3 +196,28 @@ it('reuses the warm process cache after unmount and an offline mount', async () 
   expect(sign).toHaveBeenCalledTimes(1);
   second.unmount();
 });
+
+it('remounts a locally owned guest capability offline without signing', async () => {
+  // The Expo jsdom setup does not expose a URL constructor.
+  const originalURL = Object.getOwnPropertyDescriptor(globalThis, 'URL');
+  Object.defineProperty(globalThis, 'URL', { configurable: true, writable: true, value: require('node:url').URL });
+  try {
+    const { createDreamMediaResolver } = jest.requireActual('@/services/dreamMediaService');
+    const sign = jest.fn();
+    const resolver = createDreamMediaResolver({ sign, storageOrigin: 'https://project.test', guestOwner: async () => 'guest_device' });
+    resolve.mockImplementation(resolver.resolveDreamMedia);
+    const token = `h.${btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600, url: 'dream-images/guest_device/image' }))}.s`;
+    const imageUrl = `https://project.test/storage/v1/object/sign/dream-images/guest_device/image?token=${token}`;
+    const guestWrapper = ({ children }: { children: React.ReactNode }) => <AuthContext.Provider value={{ user: null } as any}>{children}</AuthContext.Provider>;
+    const first = renderHook(() => useDreamMedia(dream(imageUrl)), { wrapper: guestWrapper });
+    await act(async () => {});
+    expect(first.result.current.imageUrl).toBe(imageUrl);
+    first.unmount();
+    mockNetwork.isInternetReachable = false;
+    const second = renderHook(() => useDreamMedia(dream(imageUrl)), { wrapper: guestWrapper });
+    await act(async () => {});
+    expect(second.result.current.imageUrl).toBe(imageUrl);
+    expect(sign).not.toHaveBeenCalled();
+    second.unmount();
+  } finally { if (originalURL) Object.defineProperty(globalThis, 'URL', originalURL); }
+});

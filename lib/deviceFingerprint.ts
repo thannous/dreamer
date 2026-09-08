@@ -80,6 +80,11 @@ async function getPlatformIdentifier(): Promise<string | null> {
   return null;
 }
 
+/** Reads an existing identity without generating or persisting one. */
+export async function getExistingDeviceFingerprint(): Promise<string | null> {
+  return memoized ?? await safeRead();
+}
+
 /**
  * Returns a pseudonymous device fingerprint hashed with SHA-256 and persisted in secure storage.
  * Used for rate-limit/quota purposes without exposing raw device identifiers.

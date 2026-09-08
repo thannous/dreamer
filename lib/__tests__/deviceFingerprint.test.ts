@@ -147,3 +147,16 @@ describe('deviceFingerprint', () => {
     });
   });
 });
+
+it('reads an existing fingerprint without creating or writing a missing identity', async () => {
+  jest.resetModules();
+  jest.clearAllMocks();
+  const { getExistingDeviceFingerprint } = require('../deviceFingerprint');
+  mockGetItemAsync.mockResolvedValueOnce(null).mockResolvedValueOnce('stored');
+  await expect(getExistingDeviceFingerprint()).resolves.toBeNull();
+  await expect(getExistingDeviceFingerprint()).resolves.toBe('stored');
+  expect(mockSetItemAsync).not.toHaveBeenCalled();
+  expect(mockGetAndroidId).not.toHaveBeenCalled();
+  expect(mockRandomUUID).not.toHaveBeenCalled();
+  expect(mockDigestStringAsync).not.toHaveBeenCalled();
+});

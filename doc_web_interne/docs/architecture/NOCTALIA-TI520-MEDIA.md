@@ -36,10 +36,12 @@ Parcours web en mode mock vérifié le 8 septembre 2026 : capture d’un récit 
 
 Les médias privés invités conservent seulement les capacités signées correspondant à leur propriétaire local et à leur chemin, jusqu'à expiration ; aucune signature anonyme n'est tentée. La résolution en ligne bénéficie de deux reprises bornées. Le partage natif attend la signature puis le chargement du composite et propose une reprise après échec, même lorsque l'URL reste identique.
 
-Au montage hors ligne, un consommateur authentifié consulte maintenant le cache chaud du résolveur, sans réseau ni bootstrap. Compte, version et expiration restent contrôlés. Les tests du résolveur et du hook couvrent le remontage, l'expiration et le changement de compte : 38 tests passent sur le correctif, types et lint ciblé passent, revue indépendante acceptée. Un invité déjà monté conserve sa capacité valide ; un nouvel invité monté hors ligne ne récupère pas de cache de capacités invitées.
+Au montage hors ligne, un consommateur authentifié consulte maintenant le cache chaud du résolveur, sans réseau ni bootstrap. Compte, version et expiration restent contrôlés. Les tests du résolveur et du hook couvrent le remontage, l'expiration et le changement de compte : 38 tests passent sur le correctif, types et lint ciblé passent, revue indépendante acceptée. Un invité monté ou remonté hors ligne peut réutiliser sa capacité signée valide après vérification locale du propriétaire, du chemin et de l’expiration. Cette lecture ne crée pas d’empreinte et ne renouvelle aucune session ; une identité absente ou un jeton expiré reste refusé.
 
 ## Limites restantes
 
 - Pas de validation native ni de mesure mémoire/latence sur appareil dans ce lot.
 - Le SDK utilisé n’expose pas d’annulation par requête pour `createSignedUrls`. Deux transports déjà partis et bloqués peuvent retarder les médias du compte suivant jusqu’à leur terminaison ; les promesses clientes obsolètes sont invalidées immédiatement et le texte reste disponible. Un timeout artificiel qui libérerait les slots sans annuler les transports ne garantirait plus la borne réseau.
 - La pagination et le parcours exhaustif restent le chantier TI-521. Aucun changement de schéma, de CI ou de déploiement serveur n’est nécessaire pour ce lot.
+
+La reprise des capacités invitées hors ligne est couverte par 57 tests ciblés (résolveur, hook, session invitée et empreinte locale), incluant identité absente, jeton expiré, propriétaire étranger et remontage hors ligne.
