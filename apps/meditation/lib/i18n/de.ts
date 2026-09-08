@@ -476,4 +476,7 @@ export const de: Record<keyof typeof en, string> = {
   'trainer.haptic.off': "Vibration an",
   'settings.motion': "Animationen reduzieren",
   'settings.motion.system': "Folgt der Geräteeinstellung",
+  'library.persistence.readError': "Deine gespeicherten Übungen konnten auf diesem Gerät nicht geladen werden.",
+  'library.persistence.writeError': "Deine letzte Änderung konnte auf diesem Gerät nicht gespeichert werden.",
+  'library.persistence.retry': "Erneut versuchen",
 };

@@ -3,7 +3,6 @@ import React, { useEffect, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { EmptyIllustration } from '@/components/atmosphere/EmptyIllustration';
-import { ProgressiveSilence } from '@/components/atmosphere/ProgressiveSilence';
 import { PlayerControls } from '@/components/player/PlayerControls';
 import { ProgressScrubber } from '@/components/player/ProgressScrubber';
 import { PracticeProgress } from '@/components/journey/PracticeProgress';
@@ -21,8 +20,7 @@ import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
 import { useSubscription } from '@/context/SubscriptionContext';
-import { SilenceProvider } from '@/context/SilenceContext';
-import { usePlayer } from '@/context/PlayerContext';
+import { usePlayerCommands, usePlayerState, usePlayerProgress } from '@/context/PlayerContext';
 import { useWorld } from '@/context/WorldContext';
 import { useWorldPurchases } from '@/context/WorldPurchaseContext';
 import { FADE_TIMERS, formatTime } from '@/lib/audio';
@@ -38,7 +36,9 @@ export default function PlayerScreen() {
   const { t } = useTranslation();
   const { loaded, progress } = useLibrary();
   const { gateForSession, gateForTimer, openPaywall } = useSubscription();
-  const player = usePlayer();
+  const state = usePlayerState();
+  const commands = usePlayerCommands();
+  const player = { ...state, ...commands };
   const { world: selectedWorld } = useWorld();
   const { loaded: worldPurchasesLoaded, isWorldOwned } = useWorldPurchases();
   const fallbackWorld = canAccessWorld(selectedWorld.id, isWorldOwned)
@@ -85,8 +85,7 @@ export default function PlayerScreen() {
     }
     startedSessionIdRef.current = id;
     player.open(id, progress[id]?.positionSec ?? 0, requestedWorld.id);
-    // `player` is a new object on every position tick and would restart the
-    // practice on each one. The stable open boundary is the route session.
+    // Opening is scoped to the route; hydration and rights are resolved first.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     alreadyOpen,
@@ -157,12 +156,8 @@ export default function PlayerScreen() {
     // a deeper continuation of the journey card, rather than an unrelated
     // generic video or a second competing illustration.
     <WorldScene world={world} artwork="trainer" scrimStrength={1.18}>
-      <SilenceProvider active={playing}>
         <View testID={TID.Screen.Player} className="flex-1">
-          {/* The one thing that never withdraws. Everything else on this screen
-              can go quiet, but a player with no visible way out is hostile —
-              and the artwork, which is most of the screen, belongs to no
-              control, so there is nothing obvious left to press. */}
+          {/* Essential transport stays visible throughout the practice. */}
           <View className="px-gutter pt-2" style={{ zIndex: 3 }}>
             <BackLink
               testID={TID.Button.PlayerClose}
@@ -172,9 +167,7 @@ export default function PlayerScreen() {
             />
           </View>
 
-          {/* Reserve the centre for the real world scene. It keeps the artwork
-              legible on small screens and leaves one obvious touch target when
-              progressive silence has withdrawn the non-essential chrome. */}
+          {/* Keep space for the artwork above the accessible controls. */}
           <View
             className="flex-1"
             pointerEvents="none"
@@ -182,9 +175,7 @@ export default function PlayerScreen() {
             importantForAccessibility="no-hide-descendants"
           />
 
-          {/* The signature: while a session plays, everything but the artwork
-              withdraws after a few seconds. One touch brings it back. */}
-          <ProgressiveSilence className="max-h-[72%] pb-4">
+          <View className="max-h-[72%] pb-4">
             <ScrollView
               contentContainerClassName="gap-5 px-gutter pb-4"
               showsVerticalScrollIndicator={false}>
@@ -197,11 +188,7 @@ export default function PlayerScreen() {
                 </Text>
               </View>
 
-              <ProgressScrubber
-                positionSec={player.positionSec}
-                durationSec={player.durationSec}
-                onSeek={player.seekTo}
-              />
+              <PlayerPosition />
 
               <PlayerControls
                 playing={playing}
@@ -252,15 +239,29 @@ export default function PlayerScreen() {
                 ))}
               </ScrollView>
 
-              {player.fadeRemainingSec !== null ? (
-                <Text variant="caption" className="text-center">
-                  {t('player.timer.remaining', { time: formatTime(player.fadeRemainingSec) })}
-                </Text>
-              ) : null}
+              <PlayerTimerRemaining />
             </ScrollView>
-          </ProgressiveSilence>
+          </View>
         </View>
-      </SilenceProvider>
     </WorldScene>
+  );
+}
+
+/** Only these small surfaces subscribe to the half-second position updates. */
+function PlayerPosition() {
+  const { positionSec } = usePlayerProgress();
+  const { durationSec } = usePlayerState();
+  const { seekTo } = usePlayerCommands();
+  return <ProgressScrubber positionSec={positionSec} durationSec={durationSec} onSeek={seekTo} />;
+}
+
+function PlayerTimerRemaining() {
+  const { fadeRemainingSec } = usePlayerProgress();
+  const { t } = useTranslation();
+  if (fadeRemainingSec === null) return null;
+  return (
+    <Text variant="caption" className="text-center">
+      {t('player.timer.remaining', { time: formatTime(fadeRemainingSec) })}
+    </Text>
   );
 }

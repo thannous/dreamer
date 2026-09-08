@@ -21,6 +21,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Duration } from '@/constants/motion';
+import { LibraryPersistenceNotice } from '@/components/library/LibraryPersistenceNotice';
 import { BreathProvider } from '@/context/BreathContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { LibraryProvider } from '@/context/LibraryContext';
@@ -84,6 +85,7 @@ function RootNavigator() {
   return (
     <>
       <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+      <LibraryPersistenceNotice />
       <Stack
         screenOptions={{
           headerShown: false,

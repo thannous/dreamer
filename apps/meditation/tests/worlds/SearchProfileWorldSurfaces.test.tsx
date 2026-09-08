@@ -62,6 +62,7 @@ jest.mock('react-native-safe-area-context', () => {
 
 jest.mock('@/context/LibraryContext', () => ({
   useLibrary: () => mockLibraryState,
+  useLibraryMetadata: () => mockLibraryState,
 }));
 
 jest.mock('@/context/SubscriptionContext', () => ({

@@ -11,7 +11,7 @@ import { WorldScene } from '@/components/worlds/WorldScene';
 import { Atmosphere, Themes } from '@/constants/theme';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
-import { useLibrary } from '@/context/LibraryContext';
+import { useLibraryMetadata } from '@/context/LibraryContext';
 import { useSubscription } from '@/context/SubscriptionContext';
 import { useWorld } from '@/context/WorldContext';
 import { useCompactLayout } from '@/hooks/useCompactLayout';
@@ -30,7 +30,7 @@ export default function ProfileTab() {
   const router = useRouter();
   const { t } = useTranslation();
   const tabBarInset = useTabBarInset();
-  const { practiceLog, favorites } = useLibrary();
+  const { practiceLog, favorites } = useLibraryMetadata();
   const { isPlus, subscriptionsEnabled = true } = useSubscription();
   const compact = useCompactLayout();
   const { world } = useWorld();

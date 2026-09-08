@@ -7,7 +7,7 @@ import { ArtworkGlassPanel, Text } from '@/components/ui';
 import { getSessionArtwork } from '@/constants/catalogArtwork';
 import type { ThemeMode } from '@/constants/theme';
 import { getSessionPractice } from '@/content/sessionPractice';
-import { useLibrary } from '@/context/LibraryContext';
+import { useLibraryMetadata } from '@/context/LibraryContext';
 import { useTranslation } from '@/context/LanguageContext';
 import { useSubscription } from '@/context/SubscriptionContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
@@ -30,7 +30,7 @@ type Props = {
 export function SessionCard({ session, variant = 'row', appearance, testID }: Props) {
   const router = useRouter();
   const { t } = useTranslation();
-  const { favorites } = useLibrary();
+  const { favorites } = useLibraryMetadata();
   const { subscriptionsEnabled = true, isPlus } = useSubscription();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
 

@@ -5,6 +5,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useLayoutEffect,
   useRef,
   useState,
 } from 'react';
@@ -16,7 +17,7 @@ import {
   WORLD_SOUND_TRACK_DURATION_SEC,
 } from '@/content/worldSounds';
 import { DEFAULT_WORLD_ID, type WorldId } from '@/constants/worlds';
-import { useLibrary } from '@/context/LibraryContext';
+import { useLibraryCommands } from '@/context/LibraryContext';
 import { useTranslation } from '@/context/LanguageContext';
 import {
   clampSeek,
@@ -58,11 +59,16 @@ type PlayerContextValue = {
   close: () => void;
 };
 
-const PlayerContext = createContext<PlayerContextValue | null>(null);
+export type PlayerCommands = Pick<PlayerContextValue, 'open' | 'toggle' | 'seekTo' | 'skip' | 'toggleSound' | 'setFadeTimer' | 'close'>;
+export type PlayerProgress = Pick<PlayerContextValue, 'positionSec' | 'fadeRemainingSec'>;
+export type PlayerState = Omit<PlayerContextValue, keyof PlayerCommands | keyof PlayerProgress>;
+const PlayerCommandsContext = createContext<PlayerCommands | null>(null);
+const PlayerStateContext = createContext<PlayerState | null>(null);
+const PlayerProgressContext = createContext<PlayerProgress | null>(null);
 
 export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const router = useRouter();
-  const { recordProgress, recordPractice } = useLibrary();
+  const { recordProgress, recordPractice } = useLibraryCommands();
   const { t } = useTranslation();
 
   const [session, setSession] = useState<MeditationSession | null>(null);
@@ -89,6 +95,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   const sessionRef = useRef<MeditationSession | null>(null);
   const positionSecRef = useRef(0);
   const soundEnabledRef = useRef(soundEnabled);
+  const fadeRemainingRef = useRef<number | null>(null);
 
   useEffect(() => {
     audio.configureAudioSession().catch(() => {
@@ -112,8 +119,6 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     textureVolumeRef.current = 0;
   }, []);
 
-  useEffect(() => teardown, [teardown]);
-
   const durationSec = effectiveDuration(loadedDuration, session?.durationSec ?? 0);
 
   const persist = useCallback(
@@ -123,6 +128,16 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     [recordProgress]
   );
   const persistRef = useRef(persist);
+  const durationRef = useRef(durationSec);
+  useLayoutEffect(() => { durationRef.current = durationSec; }, [durationSec]);
+
+  useEffect(() => () => {
+    openGenerationRef.current += 1;
+    seekRequestRef.current += 1;
+    const current = sessionRef.current;
+    if (current) persistRef.current(current.id, positionSecRef.current);
+    teardown();
+  }, [teardown]);
 
   const resetIdleState = useCallback(() => {
     seekRequestRef.current += 1;
@@ -135,6 +150,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     setPositionSec(0);
     pendingSeekRef.current = null;
     setFadeMinutes(null);
+    fadeRemainingRef.current = null;
     setFadeRemaining(null);
   }, []);
 
@@ -179,6 +195,8 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
           ? 0
           : requestedStart;
 
+      const outgoing = sessionRef.current;
+      if (outgoing) persistRef.current(outgoing.id, positionSecRef.current);
       const generation = ++openGenerationRef.current;
       seekRequestRef.current += 1;
       teardown();
@@ -196,6 +214,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       positionSecRef.current = startAt;
       setLoadedDuration(0);
       setFadeMinutes(null);
+      fadeRemainingRef.current = null;
       setFadeRemaining(null);
       statusRef.current = 'loading';
       setStatus('loading');
@@ -221,7 +240,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
               albumTitle: t(`world.${resolvedWorldId}.name` as TranslationKey),
             }
           );
-          audio.setVolume(player, soundEnabled ? sound.primary.volume : 0);
+          audio.setVolume(player, soundEnabledRef.current ? sound.primary.volume : 0);
 
           let texture = null;
           if (textureSource && sound.secondary) {
@@ -241,6 +260,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
           textureRef.current = texture;
 
           subscriptionRef.current = player.addListener('playbackStatusUpdate', (statusUpdate) => {
+            if (generation !== openGenerationRef.current || playerRef.current !== player) return;
             if (statusUpdate.error) {
               if (textureRef.current) audio.pause(textureRef.current);
               statusRef.current = 'unavailable';
@@ -327,7 +347,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
               .catch(() => recoverFailedSeek(player, next.id, startAt, requestId));
           }
           audio.play(player);
-          if (soundEnabled && textureRef.current) audio.play(textureRef.current);
+          if (soundEnabledRef.current && textureRef.current) audio.play(textureRef.current);
         } catch {
           if (generation !== openGenerationRef.current) return;
           teardown();
@@ -342,7 +362,6 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       recoverFailedSeek,
       resetIdleState,
       router,
-      soundEnabled,
       t,
       teardown,
     ]
@@ -350,13 +369,14 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
 
   const toggle = useCallback(() => {
     const player = playerRef.current;
-    if (!player || status === 'loading' || status === 'unavailable' || status === 'idle') return;
+    const currentStatus = statusRef.current;
+    if (!player || currentStatus === 'loading' || currentStatus === 'unavailable' || currentStatus === 'idle') return;
 
-    if (status === 'playing') {
+    if (currentStatus === 'playing') {
       audio.pause(player);
       statusRef.current = 'paused';
       setStatus('paused');
-      if (session) persist(session.id, positionSec);
+      if (sessionRef.current) persistRef.current(sessionRef.current.id, positionSecRef.current);
       if (textureRef.current) audio.pause(textureRef.current);
       return;
     }
@@ -364,15 +384,15 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     audio.play(player);
     statusRef.current = 'playing';
     setStatus('playing');
-    if (soundEnabled && textureRef.current) audio.play(textureRef.current);
-  }, [persist, positionSec, session, soundEnabled, status]);
+    if (soundEnabledRef.current && textureRef.current) audio.play(textureRef.current);
+  }, []);
 
   const seekTo = useCallback(
     (seconds: number) => {
       const player = playerRef.current;
       const currentSession = sessionRef.current;
       if (!player || !currentSession) return;
-      const target = clampSeek(seconds, durationSec);
+      const target = clampSeek(seconds, durationRef.current);
       const requestId = ++seekRequestRef.current;
       pendingSeekRef.current = target;
       lastPersistedRef.current = target;
@@ -383,31 +403,29 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
         .seekTo(player, target)
         .catch(() => recoverFailedSeek(player, currentSession.id, target, requestId));
     },
-    [durationSec, persist, recoverFailedSeek]
+    [persist, recoverFailedSeek]
   );
 
   const skip = useCallback(
-    (deltaSec: number) => seekTo(seekByPure(positionSec, deltaSec, durationSec)),
-    [positionSec, durationSec, seekTo]
+    (deltaSec: number) => seekTo(seekByPure(positionSecRef.current, deltaSec, durationRef.current)),
+    [seekTo]
   );
 
   const toggleSound = useCallback(() => {
-    setSoundEnabled((enabled) => {
-      const next = !enabled;
-      if (playerRef.current) {
-        audio.setVolume(playerRef.current, next ? primaryVolumeRef.current : 0);
-      }
-      if (textureRef.current) {
-        if (next && status === 'playing') audio.play(textureRef.current);
-        else audio.pause(textureRef.current);
-      }
-      return next;
-    });
-  }, [status]);
+    const next = !soundEnabledRef.current;
+    soundEnabledRef.current = next;
+    setSoundEnabled(next);
+    if (playerRef.current) audio.setVolume(playerRef.current, next ? primaryVolumeRef.current : 0);
+    if (textureRef.current) {
+      if (next && statusRef.current === 'playing') audio.play(textureRef.current);
+      else audio.pause(textureRef.current);
+    }
+  }, []);
 
   const setFadeTimer = useCallback((minutes: FadeTimerMinutes | null) => {
     setFadeMinutes(minutes);
-    setFadeRemaining(minutes === null ? null : minutes * 60);
+    fadeRemainingRef.current = minutes === null ? null : minutes * 60;
+    setFadeRemaining(fadeRemainingRef.current);
   }, []);
 
   /**
@@ -420,33 +438,23 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     if (fadeRemainingSec === null || status !== 'playing') return;
 
     const tick = setInterval(() => {
-      setFadeRemaining((remaining) => {
-        if (remaining === null) return null;
-        const next = remaining - 1;
-
-        const player = playerRef.current;
-        if (player) {
-          audio.setVolume(
-            player,
-            soundEnabled ? fadeVolume(next, primaryVolumeRef.current) : 0
-          );
-        }
-        if (textureRef.current) {
-          audio.setVolume(
-            textureRef.current,
-            soundEnabled ? fadeVolume(next, textureVolumeRef.current) : 0
-          );
-        }
-
-        if (next <= 0) {
-          if (player) audio.pause(player);
-          if (textureRef.current) audio.pause(textureRef.current);
-          statusRef.current = 'paused';
-          setStatus('paused');
-          return null;
-        }
-        return next;
-      });
+      const remaining = fadeRemainingRef.current;
+      if (remaining === null || statusRef.current !== 'playing') return;
+      const next = remaining - 1;
+      const player = playerRef.current;
+      if (player) audio.setVolume(player, soundEnabledRef.current ? fadeVolume(next, primaryVolumeRef.current) : 0);
+      if (textureRef.current) {
+        audio.setVolume(textureRef.current, soundEnabledRef.current ? fadeVolume(next, textureVolumeRef.current) : 0);
+      }
+      fadeRemainingRef.current = next <= 0 ? null : next;
+      setFadeRemaining(fadeRemainingRef.current);
+      if (next <= 0) {
+        if (player) audio.pause(player);
+        if (textureRef.current) audio.pause(textureRef.current);
+        statusRef.current = 'paused';
+        setStatus('paused');
+        if (sessionRef.current) persistRef.current(sessionRef.current.id, positionSecRef.current);
+      }
     }, 1000);
 
     return () => clearInterval(tick);
@@ -454,12 +462,12 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
 
   const close = useCallback(() => {
     openGenerationRef.current += 1;
-    if (session && positionSec > 0) persist(session.id, positionSec);
+    if (sessionRef.current) persistRef.current(sessionRef.current.id, positionSecRef.current);
     teardown();
     resetIdleState();
-  }, [persist, positionSec, resetIdleState, session, teardown]);
+  }, [resetIdleState, teardown]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     persistRef.current = persist;
   }, [persist]);
 
@@ -540,67 +548,43 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     return () => appSub.remove();
   }, [syncNativePlayback]);
 
-  const value = useMemo(
-    () => ({
-      session,
-      worldId,
-      status,
-      positionSec,
-      durationSec,
-      soundEnabled,
-      fadeMinutes,
-      fadeRemainingSec,
-      open,
-      toggle,
-      seekTo,
-      skip,
-      toggleSound,
-      setFadeTimer,
-      close,
-    }),
-    [
-      session,
-      worldId,
-      status,
-      positionSec,
-      durationSec,
-      soundEnabled,
-      fadeMinutes,
-      fadeRemainingSec,
-      open,
-      toggle,
-      seekTo,
-      skip,
-      toggleSound,
-      setFadeTimer,
-      close,
-    ]
+  // Stable command identities dispatch to the latest provider logic.
+  const commandRef = useRef<PlayerCommands>({ open, toggle, seekTo, skip, toggleSound, setFadeTimer, close });
+  useLayoutEffect(() => {
+    commandRef.current = { open, toggle, seekTo, skip, toggleSound, setFadeTimer, close };
+  }, [open, toggle, seekTo, skip, toggleSound, setFadeTimer, close]);
+  const commands = useMemo<PlayerCommands>(() => ({
+    open: (...args) => commandRef.current.open(...args),
+    toggle: () => commandRef.current.toggle(),
+    seekTo: (seconds) => commandRef.current.seekTo(seconds),
+    skip: (delta) => commandRef.current.skip(delta),
+    toggleSound: () => commandRef.current.toggleSound(),
+    setFadeTimer: (minutes) => commandRef.current.setFadeTimer(minutes),
+    close: () => commandRef.current.close(),
+  }), []);
+  const state = useMemo<PlayerState>(() => ({ session, worldId, status, durationSec, soundEnabled, fadeMinutes }),
+    [session, worldId, status, durationSec, soundEnabled, fadeMinutes]);
+  const progress = useMemo<PlayerProgress>(() => ({ positionSec, fadeRemainingSec }), [positionSec, fadeRemainingSec]);
+
+  return (
+    <PlayerCommandsContext.Provider value={commands}>
+      <PlayerStateContext.Provider value={state}>
+        <PlayerProgressContext.Provider value={progress}>{children}</PlayerProgressContext.Provider>
+      </PlayerStateContext.Provider>
+    </PlayerCommandsContext.Provider>
   );
-
-  return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;
 };
 
-export const usePlayer = (): PlayerContextValue => {
-  const ctx = useContext(PlayerContext);
-  if (ctx) return ctx;
-
-  return {
-    session: null,
-    worldId: null,
-    status: 'idle',
-    positionSec: 0,
-    durationSec: 0,
-    soundEnabled: true,
-    fadeMinutes: null,
-    fadeRemainingSec: null,
-    open: () => {},
-    toggle: () => {},
-    seekTo: () => {},
-    skip: () => {},
-    toggleSound: () => {},
-    setFadeTimer: () => {},
-    close: () => {},
-  };
+const idleCommands: PlayerCommands = {
+  open: () => {}, toggle: () => {}, seekTo: () => {}, skip: () => {},
+  toggleSound: () => {}, setFadeTimer: () => {}, close: () => {},
 };
+const idleState: PlayerState = { session: null, worldId: null, status: 'idle', durationSec: 0, soundEnabled: true, fadeMinutes: null };
+const idleProgress: PlayerProgress = { positionSec: 0, fadeRemainingSec: null };
+export const usePlayerCommands = (): PlayerCommands => useContext(PlayerCommandsContext) ?? idleCommands;
+export const usePlayerState = (): PlayerState => useContext(PlayerStateContext) ?? idleState;
+export const usePlayerProgress = (): PlayerProgress => useContext(PlayerProgressContext) ?? idleProgress;
+/** Compatibility facade: progress-aware consumers should prefer the focused hooks. */
+export const usePlayer = (): PlayerContextValue => ({ ...usePlayerState(), ...usePlayerProgress(), ...usePlayerCommands() });
 
 export { SEEK_STEP_SEC };

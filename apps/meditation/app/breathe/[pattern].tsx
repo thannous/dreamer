@@ -17,7 +17,7 @@ import {
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
-import { usePlayer } from '@/context/PlayerContext';
+import { usePlayerCommands, usePlayerState } from '@/context/PlayerContext';
 import { useWorld } from '@/context/WorldContext';
 import { cycleDurationMs, useBreathEngine } from '@/hooks/useBreathEngine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -42,7 +42,8 @@ export default function BreatheExercise() {
   const reducedMotion = useReducedMotion();
   const screenReader = useScreenReader();
   const { recordPractice } = useLibrary();
-  const player = usePlayer();
+  const { status: playerStatus } = usePlayerState();
+  const { toggle: togglePlayer } = usePlayerCommands();
   const { world } = useWorld();
 
   const valid = patternParam && isBreathingPatternId(patternParam);
@@ -219,7 +220,7 @@ export default function BreatheExercise() {
 
     // A trainer owns the soundscape while it runs. Preserve the other
     // session's position in the mini-player, but never mix both experiences.
-    if (player.status === 'playing') player.toggle();
+    if (playerStatus === 'playing') togglePlayer();
     engine.start();
   };
 

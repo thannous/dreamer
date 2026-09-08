@@ -15,6 +15,8 @@ import { SESSION_BY_ID } from '@/content/sessions';
 import { SEEK_STEP_SEC } from '@/lib/audio';
 import { calendarDays } from '@/lib/streak';
 
+jest.mock('@/context/LibraryContext', () => ({ useLibraryMetadata: () => ({ favorites: [] }) }));
+
 jest.mock('expo-router', () => ({
   useRouter: () => ({ push: jest.fn() }),
 }));

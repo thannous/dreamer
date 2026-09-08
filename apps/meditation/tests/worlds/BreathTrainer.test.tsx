@@ -57,7 +57,8 @@ jest.mock('@/hooks/useWorldSoundscape', () => ({
 }));
 
 jest.mock('@/context/PlayerContext', () => ({
-  usePlayer: () => ({ status: mockPlayerStatus, toggle: mockTogglePlayer }),
+  usePlayerState: () => ({ status: mockPlayerStatus }),
+  usePlayerCommands: () => ({ toggle: mockTogglePlayer }),
 }));
 
 const mockSpeakBreathPhase = jest.fn(() => Promise.resolve());

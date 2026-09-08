@@ -9,13 +9,13 @@ import { SessionCard } from '@/components/session/SessionCard';
 import { BackLink, Button, Rule, Text } from '@/components/ui';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
-import { useLibrary } from '@/context/LibraryContext';
+import { useLibraryMetadata } from '@/context/LibraryContext';
 import { useWorld } from '@/context/WorldContext';
 
 export default function FavoritesScreen() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { favorites } = useLibrary();
+  const { favorites } = useLibraryMetadata();
   const { world } = useWorld();
   const insets = useSafeAreaInsets();
 
