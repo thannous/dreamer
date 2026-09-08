@@ -32,6 +32,12 @@ Ces mesures vérifient l’ordre d’exécution, les requêtes et les bornes str
 
 Parcours web en mode mock vérifié le 8 septembre 2026 : capture d’un récit fictif, ouverture du détail, analyse et illustration simulées, retour à la carte illustrée du journal. Texte, illustration et navigation restent visibles et utilisables. Les signatures privées lentes sont couvertes par les tests contrôlés, pas par ce parcours mock. Aucun compte réel, publication ou génération payante n’a été utilisé.
 
+## Corrections de revue du 8 septembre
+
+Les médias privés invités conservent seulement les capacités signées correspondant à leur propriétaire local et à leur chemin, jusqu'à expiration ; aucune signature anonyme n'est tentée. La résolution en ligne bénéficie de deux reprises bornées. Le partage natif attend la signature puis le chargement du composite et propose une reprise après échec, même lorsque l'URL reste identique.
+
+Au montage hors ligne, un consommateur authentifié consulte maintenant le cache chaud du résolveur, sans réseau ni bootstrap. Compte, version et expiration restent contrôlés. Les tests du résolveur et du hook couvrent le remontage, l'expiration et le changement de compte : 38 tests passent sur le correctif, types et lint ciblé passent, revue indépendante acceptée. Un invité déjà monté conserve sa capacité valide ; un nouvel invité monté hors ligne ne récupère pas de cache de capacités invitées.
+
 ## Limites restantes
 
 - Pas de validation native ni de mesure mémoire/latence sur appareil dans ce lot.
