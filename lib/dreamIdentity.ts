@@ -6,6 +6,11 @@ export const matchesDreamTarget = (dream: Exclude<DreamTarget, number>, target: 
   if (typeof target === 'number') return dream.id === target;
   if (target.remoteId != null && dream.remoteId != null) return dream.remoteId === target.remoteId;
   if (target.clientRequestId && dream.clientRequestId) return dream.clientRequestId === target.clientRequestId;
+  // Legacy queue normalization stored this local alias before stable UUIDs.
+  // Recognize it only against an identityless local peer, never a remote row.
+  if (target.remoteId == null && dream.remoteId == null && dream.id === target.id &&
+    ((!target.clientRequestId && dream.clientRequestId === `dream-${dream.id}`) ||
+      (!dream.clientRequestId && target.clientRequestId === `dream-${target.id}`))) return true;
   if (target.remoteId != null || dream.remoteId != null || target.clientRequestId || dream.clientRequestId) return false;
   return dream.id === target.id;
 };

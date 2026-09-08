@@ -17,3 +17,13 @@ it('applies only the selected durable tombstone', () => {
   const deletion = { operation: 'delete', status: 'pending', payload: { dreamId: 100, remoteId: 2, tombstone: second } } as DreamMutation;
   expect(applyPendingMutations([first, second], [deletion])).toEqual([first]);
 });
+
+it('does not invent strong identity for a raw legacy deletion and removes only a unique target', () => {
+  const deletion = { operation: 'delete', status: 'pending', payload: { dreamId: 100 } } as DreamMutation;
+  expect(applyPendingMutations([first, second], [deletion])).toEqual([first, second]);
+  const local = { ...first, remoteId: undefined, clientRequestId: undefined };
+  expect(applyPendingMutations([local], [deletion])).toEqual([]);
+  expect(matchesDreamTarget(local, { id: 100, clientRequestId: 'dream-100' })).toBe(true);
+  expect(matchesDreamTarget(first, { id: 100, clientRequestId: 'dream-100' })).toBe(false);
+  expect(matchesDreamTarget(local, { id: 100, clientRequestId: 'other-stable-client' })).toBe(false);
+});

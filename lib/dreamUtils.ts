@@ -279,7 +279,7 @@ export const getMutationRemoteId = (mutation: DreamMutation): number | undefined
 export const getMutationDreamTarget = (mutation: DreamMutation): Exclude<DreamTarget, number> => {
   const payload = getMutationPayload(mutation);
   const dream = payload.dream ?? payload.tombstone;
-  return { id: dream?.id ?? payload.dreamId ?? -1, remoteId: getMutationRemoteId(mutation), clientRequestId: dream?.clientRequestId ?? (getMutationRemoteId(mutation) == null ? `dream-${dream?.id ?? payload.dreamId ?? -1}` : undefined) };
+  return { id: dream?.id ?? payload.dreamId ?? -1, remoteId: getMutationRemoteId(mutation), clientRequestId: dream?.clientRequestId };
 };
 
 const getMutationSortTime = (mutation: DreamMutation): number =>
