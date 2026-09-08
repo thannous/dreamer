@@ -6,7 +6,7 @@ readLocalStatus(process.env.TI528_LOCAL_STATUS); // fail rather than a green ski
 const root = path.resolve(__dirname, '../..');
 for (const args of [
   ['run', 'db:contract:check:local', '--', '--db-url', 'postgresql://postgres:postgres@127.0.0.1:55322/postgres'],
-  ['run', 'test:file', '--', 'scripts/ti528/journal-local.test.ts', 'scripts/ti528/admission-local.test.ts', '--watchman=false'],
+  ['run', 'test:file', '--', 'scripts/ti528/journal-local.test.ts', 'scripts/ti528/admission-local.test.ts', 'scripts/ti528/jobs-local.test.ts', 'scripts/ti528/leases-local.test.ts', '--watchman=false'],
 ]) {
   const result = spawnSync('npm', args, { cwd: root, stdio: 'inherit', env: process.env });
   if (result.error) throw result.error;
