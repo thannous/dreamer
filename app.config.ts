@@ -123,6 +123,8 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     const name = Array.isArray(plugin) ? plugin[0] : plugin;
     return (
       name !== 'expo-audio' &&
+      name !== 'expo-secure-store' &&
+      name !== 'expo-image-picker' &&
       name !== 'expo-notifications' &&
       name !== 'expo-splash-screen' &&
       name !== 'expo-speech-recognition' &&
@@ -145,6 +147,8 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
   const {
     NSMicrophoneUsageDescription: _microphoneUsageDescription,
     NSSpeechRecognitionUsageDescription: _speechRecognitionUsageDescription,
+    NSCameraUsageDescription: _cameraUsageDescription,
+    NSPhotoLibraryUsageDescription: _photoLibraryUsageDescription,
     ...lucidInfoPlist
   } = baseExpo.ios?.infoPlist ?? {};
 
@@ -204,6 +208,16 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     },
     plugins: [
       ...companionPlugins,
+      ['expo-secure-store', { faceIDPermission: false }],
+      [
+        'expo-image-picker',
+        {
+          cameraPermission: false,
+          photosPermission: false,
+          // false also blocks RECORD_AUDIO on Android, which local voice notes need.
+          microphonePermission: LUCID_MICROPHONE_PERMISSION,
+        },
+      ],
       [
         'expo-splash-screen',
         {
