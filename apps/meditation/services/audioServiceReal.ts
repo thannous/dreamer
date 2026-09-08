@@ -360,8 +360,13 @@ export const setVolume = (player: PlayerHandle, volume: number): void => {
 export const setLoop = (player: PlayerHandle, loop: boolean): void => {
   player.loop = loop;
 };
-const releasedPlayers = new WeakSet<PlayerHandle>();
-export const release = (player: PlayerHandle): void => {
+type ReleasablePlayer = {
+  pause(): void;
+  remove(): void;
+  release?(): void;
+};
+const releasedPlayers = new WeakSet<ReleasablePlayer>();
+export const release = (player: ReleasablePlayer): void => {
   if (releasedPlayers.has(player)) return;
   releasedPlayers.add(player);
   // Session adapters own their cleanup; raw texture players also need native

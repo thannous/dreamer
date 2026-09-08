@@ -90,7 +90,17 @@ export function useWorldSoundscape(worldId: WorldId, active: boolean) {
     const cue = cueRef.current;
     if (!cue || cuePlayedRef.current) return;
     cuePlayedRef.current = true;
-    audio.seekTo(cue, 0).then(() => audio.play(cue)).catch(() => audio.play(cue));
+    let cancelled = false;
+    const playIfCurrent = () => {
+      if (cancelled || cueRef.current !== cue) return;
+      try {
+        audio.play(cue);
+      } catch {
+        // Optional feedback must not reject after native playback failure.
+      }
+    };
+    void audio.seekTo(cue, 0).then(playIfCurrent, playIfCurrent);
+    return () => { cancelled = true; };
   }, [active, isFocused, readyToken, soundEnabled, worldId]);
 
   const toggleSound = useCallback(() => {
