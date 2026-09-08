@@ -4,25 +4,25 @@ Status: harness prepared and typechecked; **no provider generations performed**.
 
 ## Scope and execution
 
-`supabase/functions/evaluation/ti559/evaluate.ts` compares the exact prompt/schema snapshot from `d2bc25936` with the current exported prompt/schema. It reads the current six system instructions from their source and fails closed if their format changes. Both versions use the same `resolveTextModel('GEMINI_MODEL', GEMINI_FLASH_MODEL)` result (current repository default: `gemini-3.7-flash`), thinking level `low`, JSON output and 4096 output-token limit. It uses the existing Gemini Interactions adapter, which sets `store: false`. No Edge invocation, database access, image generation, fallback model or account creation occurs.
+`supabase/functions/api/evaluation/ti559/evaluate.ts` compares the exact prompt/schema snapshot from `d2bc25936` with the current exported prompt/schema. It reads the current six system instructions from their source and fails closed if their format changes. Both versions use the same `resolveTextModel('GEMINI_MODEL', GEMINI_FLASH_MODEL)` result (current repository default: `gemini-3.7-flash`), thinking level `low`, JSON output and 4096 output-token limit. It uses the existing Gemini Interactions adapter, which sets `store: false`. No Edge invocation, database access, image generation, fallback model or account creation occurs.
 
 The corpus is six invented accounts: EN/ES/IT sparse, FR/DE/PT richer, each evaluated before and after. This gives twelve generations maximum. It does **not** cover both lengths within every language; twelve calls cannot provide a full six-language × two-length × two-version experiment. The Portuguese account explicitly repeats actions inside one dream, testing that this does not establish recurrence. German explicitly denies awareness of dreaming. All six leave the type unestablished; no personal history is supplied.
 
 Preview (no generation; Deno may download public dependencies on first use):
 
 ```sh
-DENO_DIR=/private/tmp/ti559-deno-cache deno run --no-lock --allow-read=supabase/functions/evaluation/ti559 --allow-env=GEMINI_MODEL supabase/functions/evaluation/ti559/evaluate.ts
+DENO_DIR=/private/tmp/ti559-deno-cache deno run --no-lock --allow-read=supabase/functions/api/evaluation/ti559 --allow-env=GEMINI_MODEL supabase/functions/api/evaluation/ti559/evaluate.ts
 ```
 
 After securely supplying the already authorized provider credential through the process environment, execute once with a **new** output directory:
 
 ```sh
 DENO_DIR=/private/tmp/ti559-deno-cache deno run --no-lock \
-  --allow-read=supabase/functions/evaluation/ti559,supabase/functions/api/services/dreamAnalysis.ts \
+  --allow-read=supabase/functions/api/evaluation/ti559,supabase/functions/api/services/dreamAnalysis.ts \
   --allow-write=/private/tmp/ti559-evaluation-run \
   --allow-env=GEMINI_MODEL,GEMINI_API_KEY \
   --allow-net=generativelanguage.googleapis.com \
-  supabase/functions/evaluation/ti559/evaluate.ts --execute --output=/private/tmp/ti559-evaluation-run
+  supabase/functions/api/evaluation/ti559/evaluate.ts --execute --output=/private/tmp/ti559-evaluation-run
 ```
 
 The runner reserves a fresh private output directory, counts provider HTTP requests before sending, stops at twelve including any transport retry, and saves each completed synthetic response before continuing. A failed run must not be automatically repeated: review the saved request count and remaining authorized budget first. Error output is categorical to avoid echoing SDK request details. Outputs contain synthetic content, timing, word counts and provider usage when returned; never add real journal content to these fixtures. The twelve-request cap is not a monetary estimate.
@@ -48,6 +48,6 @@ One serious grounding or wellbeing failure blocks acceptance of that case. Do no
 
 The twelve-call corpus does not test malicious prompt injection, long-account truncation, repeated provider variability or actual-device rendering. Deterministic tests separately cover JSON quoting, truncation disclosure in six languages and sparse payload compatibility; they do not demonstrate model obedience. Real prompt-injection and truncation evaluations require an explicitly bounded subsequent corpus rather than silently exceeding this budget.
 
-Validation of this harness: `deno check --no-lock supabase/functions/evaluation/ti559/evaluate.ts` passed and preview emitted six cases, the configured model and a twelve-call plan without a credential. No paid run or qualitative result is claimed.
+Validation of this harness: `deno check --no-lock supabase/functions/api/evaluation/ti559/evaluate.ts` passed and preview emitted six cases, the configured model and a twelve-call plan without a credential. No paid run or qualitative result is claimed.
 
-The Deno-only harness lives under supabase/functions/evaluation so Expo application TypeScript does not compile backend runtime APIs. No application TypeScript exclusions or dependency locks were widened.
+The Deno-only harness lives under supabase/functions/api/evaluation so Expo application TypeScript does not compile backend runtime APIs. It adds no top-level Edge Function directory. No application TypeScript exclusions or dependency locks were widened.

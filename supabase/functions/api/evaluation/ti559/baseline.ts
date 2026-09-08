@@ -1,5 +1,5 @@
 // Exact pre-TI559 prompt snapshot at d2bc25936. Evaluation only.
-import type { AiLanguage } from "../../api/lib/aiLanguage.ts";
+import type { AiLanguage } from "../../lib/aiLanguage.ts";
 export const ANALYSIS_SYSTEM_INSTRUCTIONS: Record<AiLanguage, string> = {
   en: 'You are an expert, empathetic dream analyst. Return ONLY valid JSON.',
   fr: 'Tu es un analyste de rêves expert et bienveillant. Retourne UNIQUEMENT du JSON valide.',

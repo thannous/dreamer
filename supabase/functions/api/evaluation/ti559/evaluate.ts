@@ -1,8 +1,8 @@
 /** Synthetic-only, paired prompt evaluation. Default is a no-generation preview. */
-import { aiLanguageName, localizedForAi } from '../../api/lib/aiLanguage.ts';
-import { buildAnalysisPrompt, REFLECTION_POLICY, ANALYSIS_PROMPT_VERSION } from '../../api/services/dreamAnalysis.ts';
-import { ANALYZE_DREAM_SCHEMA } from '../../api/lib/schemas.ts';
-import { callGeminiWithFallback, GEMINI_FLASH_MODEL, resolveTextModel } from '../../api/services/gemini.ts';
+import { aiLanguageName, localizedForAi } from '../../lib/aiLanguage.ts';
+import { buildAnalysisPrompt, REFLECTION_POLICY, ANALYSIS_PROMPT_VERSION } from '../../services/dreamAnalysis.ts';
+import { ANALYZE_DREAM_SCHEMA } from '../../lib/schemas.ts';
+import { callGeminiWithFallback, GEMINI_FLASH_MODEL, resolveTextModel } from '../../services/gemini.ts';
 import { ANALYSIS_SYSTEM_INSTRUCTIONS as beforeSystem, buildAnalysisPrompt as beforePrompt } from './baseline.ts';
 import { ANALYZE_DREAM_SCHEMA as beforeSchema } from './baseline-schema.ts';
 
@@ -20,7 +20,7 @@ if (!key) throw new Error('GEMINI_API_KEY is unavailable. No generations started
 if (!output) throw new Error('Supply --output=/private/tmp/a-new-ti559-evaluation-directory');
 // A new directory prevents accidentally repeating the same paid experiment.
 await Deno.mkdir(output, { mode: 0o700 });
-const source = await Deno.readTextFile(new URL('../../api/services/dreamAnalysis.ts', import.meta.url));
+const source = await Deno.readTextFile(new URL('../../services/dreamAnalysis.ts', import.meta.url));
 const systemBlock = source.match(/const ANALYSIS_SYSTEM_INSTRUCTIONS[^=]*= \{([\s\S]*?)\n\};/)?.[1];
 if (!systemBlock) throw new Error('Cannot resolve current system instructions; review harness for source drift.');
 const afterSystem = Object.fromEntries([...systemBlock.matchAll(/\s*(en|fr|es|de|it|pt): '([^'\n]*)',/g)].map((m) => [m[1], m[2]]));
