@@ -24,6 +24,7 @@ const mocks = ((factory: any) => factory())(() => {
       getPublicUrl: storageGetPublicUrl,
       createSignedUrl: storageCreateSignedUrl,
     })),
+    authGetSession: jest.fn(async () => ({ data: { session: { user: { id: 'user-1' } } } })),
     authGetUser: jest.fn(async () => ({ data: { user: { id: 'user-1' } } })),
   };
 });
@@ -33,7 +34,7 @@ jest.mock('@supabase/supabase-js', () => ({
     from: mocks.from,
     rpc: mocks.rpc,
     storage: { from: mocks.storageFrom },
-    auth: { getUser: mocks.authGetUser },
+    auth: { getUser: mocks.authGetUser, getSession: mocks.authGetSession },
   })),
 }));
 
@@ -47,6 +48,17 @@ jest.mock('expo-image-manipulator', () => ({
 }));
 
 describe('supabaseDreamService', () => {
+  const pageQuery = (response: jest.Mock) => {
+    let subsequent = false;
+    const query: any = {
+      eq: jest.fn(() => query), lte: jest.fn(() => query),
+      lt: jest.fn(() => { subsequent = true; return query; }),
+      order: jest.fn(() => query),
+      limit: jest.fn(async () => subsequent ? { data: [], error: null } : response()),
+    };
+    return query;
+  };
+
   const buildDream = (overrides: Record<string, unknown> = {}) => ({
     id: 1,
     clientRequestId: 'dream-req-1',
@@ -88,6 +100,7 @@ describe('supabaseDreamService', () => {
   });
 
   beforeEach(() => {
+    mocks.authGetSession.mockResolvedValue({ data: { session: { user: { id: 'user-1' } } } });
     jest.resetModules();
     jest.clearAllMocks();
     mocks.rpc = undefined;
@@ -654,7 +667,7 @@ describe('supabaseDreamService', () => {
     });
 
     mocks.from.mockReturnValue({
-      select: jest.fn(() => ({ order: orderMock })),
+      select: jest.fn(() => pageQuery(orderMock)),
     });
 
     const { fetchDreamsFromSupabase } = require('../supabaseDreamService');
@@ -949,9 +962,11 @@ describe('supabaseDreamService', () => {
 
   it('constrains a scoped journal fetch to its captured user', async () => {
     const order = jest.fn().mockResolvedValue({ data: [], error: null });
-    const eq = jest.fn().mockReturnValue({ order });
+    const query = pageQuery(order);
+    const eq = query.eq;
     mocks.from.mockReturnValue({ select: jest.fn().mockReturnValue({ eq }) });
     const { fetchDreamsFromSupabase } = require('../supabaseDreamService');
+    mocks.authGetSession.mockResolvedValue({ data: { session: { user: { id: 'account-a' } } } });
     await expect(fetchDreamsFromSupabase('account-a')).resolves.toEqual([]);
     expect(eq).toHaveBeenCalledWith('user_id', 'account-a');
   });
@@ -991,7 +1006,7 @@ describe('supabaseDreamService', () => {
     });
 
     mocks.from.mockReturnValue({
-      select: jest.fn(() => ({ order: orderMock })),
+      select: jest.fn(() => pageQuery(orderMock)),
     });
 
     const { fetchDreamsFromSupabase } = require('../supabaseDreamService');
@@ -1014,7 +1029,7 @@ describe('supabaseDreamService', () => {
     const orderMock = jest.fn().mockResolvedValue({
       data: [
         buildRow({
-          id: 10,
+          id: 12,
           image_url: 'supabase-storage://dream-images/user-1/private.webp',
         }),
         buildRow({
@@ -1026,7 +1041,7 @@ describe('supabaseDreamService', () => {
     });
 
     mocks.from.mockReturnValue({
-      select: jest.fn(() => ({ order: orderMock })),
+      select: jest.fn(() => pageQuery(orderMock)),
     });
 
     const { fetchDreamsFromSupabase } = require('../supabaseDreamService');
@@ -1044,7 +1059,7 @@ describe('supabaseDreamService', () => {
     });
 
     mocks.from.mockReturnValue({
-      select: jest.fn(() => ({ order: orderMock })),
+      select: jest.fn(() => pageQuery(orderMock)),
     });
 
     const { fetchDreamsFromSupabase } = require('../supabaseDreamService');
@@ -1060,7 +1075,9 @@ describe('supabaseDreamService', () => {
       }),
       error: null,
     });
-    const eqMock = jest.fn(() => ({ single: singleMock }));
+    const detailQuery: any = { single: singleMock };
+    const eqMock = jest.fn(() => detailQuery);
+    detailQuery.eq = eqMock;
     const selectMock = jest.fn(() => ({ eq: eqMock }));
     mocks.from.mockReturnValue({ select: selectMock });
 

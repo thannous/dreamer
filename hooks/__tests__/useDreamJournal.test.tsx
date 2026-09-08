@@ -171,7 +171,8 @@ jest.mock('../../services/supabaseDreamService', () => ({
   updateDreamInSupabase: mockUpdateDreamInSupabase,
   deleteDreamFromSupabase: mockDeleteDreamFromSupabase,
   fetchDreamFromSupabase: mockFetchDreamFromSupabase,
-  fetchDreamsFromSupabase: mockFetchDreamsFromSupabase,
+  fetchDreamFullPage: async () => ({ items: await mockFetchDreamsFromSupabase(), complete: true, nextCursor: null }),
+  fetchDreamByClientRequestId: async (id: string) => (await mockFetchDreamsFromSupabase()).find((dream: DreamAnalysis) => dream.clientRequestId === id) ?? null,
 }));
 
 // Mock geminiService
@@ -302,6 +303,58 @@ const renderLoadedDreamJournal = async () => {
 };
 
 describe('useDreamJournal', () => {
+  describe('cold-cache remote detail', () => {
+    it('persists only the requested full detail before exhaustive loading finishes', async () => {
+      setMockUser({ id: 'user-1' });
+      mockFetchDreamsFromSupabase.mockImplementation(() => new Promise(() => {}));
+      const detail = buildDream({ remoteId: 101, transcript: 'Original '.repeat(1000) });
+      mockFetchDreamFromSupabase.mockResolvedValue(detail);
+      const { result, unmount } = renderHook(() => useDreamJournal());
+      await waitFor(() => expect(result.current.remotePreviewAllowed).toBe(true));
+      await act(async () => {
+        expect(await result.current.loadRemoteDreamForPreview(101)).toEqual(detail);
+      });
+      expect(mockFetchDreamFromSupabase).toHaveBeenCalledWith(101, 'user-1');
+      expect(result.current.dreams[0].transcript).toBe(detail.transcript);
+      expect(result.current.remotePreviewAllowed).toBe(false);
+      expect(result.current.completeness.status).not.toBe('complete');
+      unmount();
+    });
+
+    it('rejects an in-flight detail when another local write invalidates previews', async () => {
+      setMockUser({ id: 'user-1' });
+      mockFetchDreamsFromSupabase.mockImplementation(() => new Promise(() => {}));
+      let resolveDetail!: (dream: DreamAnalysis) => void;
+      mockFetchDreamFromSupabase.mockImplementation(() => new Promise(resolve => { resolveDetail = resolve; }));
+      const { result, unmount } = renderHook(() => useDreamJournal());
+      await waitFor(() => expect(result.current.remotePreviewAllowed).toBe(true));
+      const opening = result.current.loadRemoteDreamForPreview(101);
+      const rejected = expect(opening).rejects.toThrow('invalidated');
+      const other = buildDream({ id: 100, remoteId: 102 });
+      await act(async () => { await result.current.applyServerDreamState(other); });
+      await act(async () => { resolveDetail(buildDream({ remoteId: 101 })); await rejected; });
+      expect(result.current.dreams.map((dream: DreamAnalysis) => dream.remoteId)).toEqual([102]);
+      unmount();
+    });
+
+    it('never inserts the previous account detail after an account change', async () => {
+      setMockUser({ id: 'user-1' });
+      mockFetchDreamsFromSupabase.mockImplementation(() => new Promise(() => {}));
+      let resolveDetail!: (dream: DreamAnalysis) => void;
+      mockFetchDreamFromSupabase.mockImplementation(() => new Promise(resolve => { resolveDetail = resolve; }));
+      const { result, rerender, unmount } = renderHook(() => useDreamJournal());
+      await waitFor(() => expect(result.current.remotePreviewAllowed).toBe(true));
+      const opening = result.current.loadRemoteDreamForPreview(101);
+      const rejected = expect(opening).rejects.toThrow('scope changed');
+      setMockUser({ id: 'user-2' });
+      rerender();
+      await act(async () => { resolveDetail(buildDream({ remoteId: 101 })); await rejected; });
+      expect(result.current.dreams).toEqual([]);
+      expect(mockSaveCachedRemoteDreams).not.toHaveBeenCalled();
+      unmount();
+    });
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetDreamsMigrationSynced.mockResolvedValue(true);
@@ -1564,9 +1617,8 @@ describe('useDreamJournal', () => {
         revisionId: 'server-revision-latest',
         title: 'Latest server title',
       });
-      mockFetchDreamsFromSupabase
-        .mockResolvedValueOnce([conflictedDream])
-        .mockResolvedValueOnce([latestServerDream]);
+      mockFetchDreamsFromSupabase.mockResolvedValue([conflictedDream]);
+      mockFetchDreamFromSupabase.mockResolvedValue(latestServerDream);
       mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({
         ...dream,
         revisionId: 'server-revision-acked',
@@ -1579,7 +1631,8 @@ describe('useDreamJournal', () => {
         await result.current.resolveDreamConflict(1, 'keep_local');
       });
 
-      expect(mockFetchDreamsFromSupabase).toHaveBeenCalledTimes(2);
+      expect(mockFetchDreamsFromSupabase).toHaveBeenCalledTimes(1);
+      expect(mockFetchDreamFromSupabase).toHaveBeenCalledWith(101, 'user-1');
       expect(mockUpdateDreamInSupabase).toHaveBeenCalledWith(
         expect.objectContaining({
           remoteId: 101,
@@ -1609,9 +1662,8 @@ describe('useDreamJournal', () => {
         revisionId: 'server-revision-latest',
         title: 'Latest server title',
       });
-      mockFetchDreamsFromSupabase
-        .mockResolvedValueOnce([conflictedDream])
-        .mockResolvedValueOnce([latestServerDream]);
+      mockFetchDreamsFromSupabase.mockResolvedValue([conflictedDream]);
+      mockFetchDreamFromSupabase.mockResolvedValue(latestServerDream);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -1685,7 +1737,7 @@ describe('useDreamJournal', () => {
       }, FAST_WAIT_OPTIONS);
 
       expect(mockFetchDreamsFromSupabase).toHaveBeenCalledTimes(1);
-      expect(mockFetchDreamFromSupabase).toHaveBeenCalledWith(101);
+      expect(mockFetchDreamFromSupabase).toHaveBeenCalledWith(101, 'user-1');
       expect(mockUpdateDreamInSupabase).not.toHaveBeenCalled();
     });
 
@@ -2309,6 +2361,7 @@ describe('useDreamJournal', () => {
 
       const { result } = await renderLoadedDreamJournal();
 
+      await waitFor(() => expect(result.current.completeness.status).toBe('complete'));
       let analyzed: DreamAnalysis | undefined;
       await act(async () => {
         analyzed = await result.current.analyzeDream(1, existingDream.transcript, { lang: 'fr' });
@@ -2324,7 +2377,7 @@ describe('useDreamJournal', () => {
         replaceExistingImage: false,
       });
       expect(mockGetDreamAnalysisJobStatus).toHaveBeenCalledWith('analysis-job-1');
-      expect(mockFetchDreamFromSupabase).toHaveBeenCalledWith(101);
+      expect(mockFetchDreamFromSupabase).toHaveBeenCalledWith(101, 'user-1');
       expect(mockSavePendingImageJobs).not.toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({ jobId: 'image-job-from-analysis' }),

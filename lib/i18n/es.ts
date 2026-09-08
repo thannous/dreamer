@@ -1,4 +1,13 @@
 const translations: Record<string, string> = {
+    "journal.preview.scope": "La búsqueda incluye las vistas previas cargadas del diario remoto.",
+    "journal.preview.loading": "Cargando…",
+    "journal.preview.open_failed": "No se pudo abrir este sueño. Toca para reintentar.",
+
+    "journal.completeness.loading": "Cargando el resto del diario. La búsqueda abarca por ahora el contenido disponible en este dispositivo.",
+    "journal.completeness.incomplete": "La carga del diario está incompleta. La búsqueda incluye los sueños disponibles actualmente.",
+    "journal.completeness.trends": "Estas tendencias usan los sueños disponibles en este dispositivo. El periodo seleccionado puede estar incompleto.",
+    "journal.pagination.more": "Mostrar más sueños",
+    "journal.pagination.end": "Se muestran todos los resultados disponibles",
     'common.or': 'O',
     'common.unknown_error': 'Error desconocido',
     'common.clear': 'Borrar',

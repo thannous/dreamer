@@ -9,7 +9,7 @@
  */
 
 import { useNetworkState } from 'expo-network';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 
 import { useAuth } from '@/context/AuthContext';
@@ -83,7 +83,7 @@ import {
 import {
   deleteDreamFromSupabase,
   fetchDreamFromSupabase,
-  fetchDreamsFromSupabase,
+  fetchDreamByClientRequestId,
   updateDreamInSupabase,
 } from '@/services/supabaseDreamService';
 
@@ -96,16 +96,6 @@ const isActiveImageJobStatus = (
 
 const waitForPollDelay = (delayMs: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, delayMs));
-
-const findMatchingRemoteDream = (
-  remoteDreams: DreamAnalysis[],
-  localDream: DreamAnalysis
-): DreamAnalysis | undefined =>
-  remoteDreams.find(
-    (entry) =>
-      (localDream.remoteId != null && entry.remoteId === localDream.remoteId) ||
-      (localDream.clientRequestId != null && entry.clientRequestId === localDream.clientRequestId)
-  );
 
 const mergeRemoteDreamWithClientState = (
   remoteDream: DreamAnalysis,
@@ -189,6 +179,8 @@ export const useDreamJournal = () => {
     pendingMutationsScope,
     persistenceState,
     refreshState,
+    completeness,
+    remotePreviewAllowed,
     remoteSnapshot,
     reloadDreams,
     retryPersistence,
@@ -204,6 +196,7 @@ export const useDreamJournal = () => {
 
   // Use extracted offline sync queue hook
   const {
+    pendingMutationsRef: livePendingMutationsRef,
     queueOfflineOperation,
     clearQueuedMutationsForDream,
     retryDreamMutations,
@@ -301,6 +294,31 @@ export const useDreamJournal = () => {
     },
     [persistDreamClientState, resolveCurrentDream]
   );
+
+  const previewScopeRef = useRef({ userId: user?.id, allowed: remotePreviewAllowed });
+  useLayoutEffect(() => {
+    previewScopeRef.current = { userId: user?.id, allowed: remotePreviewAllowed };
+    return () => { previewScopeRef.current = { userId: undefined, allowed: false }; };
+  }, [remotePreviewAllowed, user?.id]);
+
+  const loadRemoteDreamForPreview = useCallback(async (remoteId: number): Promise<DreamAnalysis> => {
+    const owner = user?.id;
+    const scopeIsCurrent = () => owner && previewScopeRef.current.userId === owner &&
+      livePendingMutationsRef.current.length === 0;
+    if (!scopeIsCurrent() || !previewScopeRef.current.allowed) {
+      throw new Error('Journal preview is no longer available');
+    }
+    const detail = await fetchDreamFromSupabase(remoteId, owner);
+    if (!scopeIsCurrent()) throw new Error('Journal preview scope changed');
+    // A complete refresh may finish while the detail is in flight. Prefer its
+    // accepted row, never overwrite a newer snapshot with this earlier read.
+    const existing = dreamsRef.current.find((dream) => dream.remoteId === remoteId);
+    if (existing) return existing;
+    if (!previewScopeRef.current.allowed) throw new Error('Journal preview was invalidated');
+    await persistDreamClientState(detail);
+    if (previewScopeRef.current.userId !== owner) throw new Error('Journal preview scope changed');
+    return detail;
+  }, [dreamsRef, livePendingMutationsRef, persistDreamClientState, user?.id]);
 
   const hydratePendingImageJobs = useCallback(async () => {
     const jobs = await getPendingImageJobs();
@@ -936,7 +954,7 @@ export const useDreamJournal = () => {
             // The worker persists image_url on the dream before marking the job as
             // succeeded. Refresh that server-owned revision instead of sending a
             // redundant stale update that would create a revision conflict.
-            const remoteDream = await fetchDreamFromSupabase(currentDream.remoteId);
+            const remoteDream = await fetchDreamFromSupabase(currentDream.remoteId, user?.id);
             const refreshedDream = mergeRemoteDreamWithClientState(remoteDream, nextDream);
             await persistRemoteDreams((prev) => upsertDream(prev, refreshedDream));
             await finalizeTerminalImageJob(true);
@@ -1142,8 +1160,12 @@ export const useDreamJournal = () => {
 
       let remoteConflictDream: DreamAnalysis | undefined;
       try {
-        const remoteDreams = await fetchDreamsFromSupabase();
-        remoteConflictDream = findMatchingRemoteDream(remoteDreams, dream);
+        if (!user?.id) return;
+        remoteConflictDream = (dream.remoteId != null
+          ? await fetchDreamFromSupabase(dream.remoteId, user.id)
+          : dream.clientRequestId
+            ? await fetchDreamByClientRequestId(dream.clientRequestId, user.id)
+            : null) ?? undefined;
       } catch (error) {
         logger.warn('[useDreamJournal] Failed to refresh the server dream before conflict resolution', error);
       }
@@ -1196,6 +1218,7 @@ export const useDreamJournal = () => {
       persistRemoteDreams,
       queueOfflineOperation,
       syncPendingMutations,
+      user?.id,
     ]
   );
 
@@ -1354,7 +1377,7 @@ export const useDreamJournal = () => {
           }
 
           emitProgress(AnalysisStep.FINALIZING);
-          const remoteDream = await fetchDreamFromSupabase(syncedDream.remoteId!);
+          const remoteDream = await fetchDreamFromSupabase(syncedDream.remoteId!, user?.id);
           const mergedDream = mergeRemoteDreamWithClientState(remoteDream, latestDream);
           const stampedDream = stampDreamAnalysisTranscript(mergedDream, mergedDream.transcript);
           await updateDream(stampedDream);
@@ -1539,11 +1562,14 @@ export const useDreamJournal = () => {
     loaded,
     persistenceState,
     refreshState,
+    completeness,
+    remotePreviewAllowed,
     activeAnalysis,
     lastAnalysisOutcome,
     addDream,
     updateDream,
     applyServerDreamState,
+    loadRemoteDreamForPreview,
     applyDreamCategorization,
     deleteDream,
     toggleFavorite,

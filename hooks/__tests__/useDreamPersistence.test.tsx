@@ -4,6 +4,7 @@
 import { act, renderHook, waitFor as testingWaitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
+import type { JournalCursor, JournalPage } from '../../lib/journalReadContracts';
 import type { GuestDreamMigrationOwner, DreamAnalysis, DreamListReadResult, DreamMutation } from '../../lib/types';
 import { useDreamPersistence } from '../useDreamPersistence';
 
@@ -74,10 +75,11 @@ jest.mock('../../lib/auth', () => ({
 
 // Mock supabase service
 const mockFetchFromSupabase = typedJestFn<() => Promise<DreamAnalysis[]>>();
+const mockFetchPage = typedJestFn<(userId: string, options: { cursor?: JournalCursor | null }) => Promise<JournalPage<DreamAnalysis>>>();
 const mockCreateInSupabase = jest.fn();
 
 jest.mock('../../services/supabaseDreamService', () => ({
-  fetchDreamsFromSupabase: () => mockFetchFromSupabase(),
+  fetchDreamFullPage: (userId: string, options: { cursor?: JournalCursor | null }) => mockFetchPage(userId, options),
   createDreamInSupabase: (...args: unknown[]) => mockCreateInSupabase(...args),
 }));
 
@@ -131,8 +133,63 @@ describe('useDreamPersistence', () => {
       mockGuestMigrationOwner.current = ownerUserId;
     });
     mockFetchFromSupabase.mockResolvedValue([]);
+    mockFetchPage.mockReset();
+    mockFetchPage.mockImplementation(async () => ({ items: await mockFetchFromSupabase(), complete: true, nextCursor: null }));
     mockCreateInSupabase.mockResolvedValue(undefined);
     mockGetAccessToken.mockResolvedValue('access-token');
+  });
+
+  describe('exhaustive refresh checkpoints', () => {
+    it('preserves cache after an intermediate error and resumes only the failed page', async () => {
+      const cached = buildDream({ id: 99 });
+      const first = buildDream({ id: 2, remoteId: 2 });
+      const last = buildDream({ id: 1, remoteId: 1 });
+      const cursor: JournalCursor = { version: 1, userId: 'user-123', highWatermark: 2, beforeId: 2 };
+      mockGetCachedRemoteDreams.mockResolvedValue({ status: 'loaded', value: [cached] });
+      mockFetchPage.mockResolvedValueOnce({ items: [first], nextCursor: cursor, complete: false })
+        .mockRejectedValueOnce(new Error('offline'))
+        .mockResolvedValueOnce({ items: [last], nextCursor: null, complete: true });
+      const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await waitFor(() => expect(result.current.completeness.status).toBe('incomplete'));
+      expect(result.current.dreams).toEqual([cached]);
+      expect(result.current.remoteSnapshot).toBeNull();
+      expect(mockSaveCachedRemoteDreams).not.toHaveBeenCalled();
+      await act(async () => { await result.current.reloadDreams(); });
+      expect(mockFetchPage).toHaveBeenNthCalledWith(3, 'user-123', { cursor });
+      expect(result.current.completeness.status).toBe('complete');
+      expect(result.current.remoteSnapshot?.dreams).toEqual([first, last]);
+      expect(result.current.dreams.map((dream) => dream.id).sort()).toEqual([1, 2]);
+    });
+
+    it('restarts a checkpoint after a local write instead of reusing its stale prefix', async () => {
+      const original = buildDream({ id: 2, remoteId: 2, title: 'Before edit' });
+      const edited = { ...original, title: 'After edit' };
+      const cursor: JournalCursor = { version: 1, userId: 'user-123', highWatermark: 2, beforeId: 2 };
+      mockGetCachedRemoteDreams.mockResolvedValue({ status: 'loaded', value: [original] });
+      mockFetchPage.mockResolvedValueOnce({ items: [original], nextCursor: cursor, complete: false })
+        .mockRejectedValueOnce(new Error('offline'))
+        .mockResolvedValueOnce({ items: [edited], nextCursor: null, complete: true });
+      const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await waitFor(() => expect(result.current.completeness.status).toBe('incomplete'));
+      await act(async () => { await result.current.persistRemoteDreams([edited]); });
+      await act(async () => { await result.current.reloadDreams(); });
+      expect(mockFetchPage).toHaveBeenNthCalledWith(3, 'user-123', { cursor: null });
+      expect(result.current.dreams).toEqual([edited]);
+    });
+
+    it('discards a failed traversal checkpoint when the account changes', async () => {
+      const cursor: JournalCursor = { version: 1, userId: 'user-123', highWatermark: 2, beforeId: 2 };
+      mockFetchPage.mockResolvedValueOnce({ items: [buildDream({ id: 2 })], nextCursor: cursor, complete: false })
+        .mockRejectedValueOnce(new Error('offline'))
+        .mockResolvedValueOnce({ items: [], nextCursor: null, complete: true });
+      const hook = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await waitFor(() => expect(hook.result.current.completeness.status).toBe('incomplete'));
+      mockUser.current = { id: 'user-b' };
+      hook.rerender();
+      await waitFor(() => expect(hook.result.current.completeness.status).toBe('complete'));
+      expect(mockFetchPage).toHaveBeenNthCalledWith(3, 'user-b', { cursor: null });
+      expect(hook.result.current.remoteSnapshot).toEqual({ userScope: 'user:user-b', dreams: [] });
+    });
   });
 
   describe('cache-first scoped refresh', () => {

@@ -1,3 +1,4 @@
+import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useCallback, useMemo } from 'react';
@@ -92,7 +93,7 @@ function toRankedRows<T extends string>(
 }
 
 export default function StatisticsScreen() {
-  const { dreams, loaded } = useDreams();
+  const { dreams, loaded, completeness, reloadDreams } = useDreams();
   const { t } = useTranslation();
   const { formatDate, formatNumber } = useLocaleFormatting();
   const { width, height, fontScale } = useWindowDimensions();
@@ -226,6 +227,7 @@ export default function StatisticsScreen() {
         {scrollHeader ? header : null}
         <ScreenContainer key="resources">
           <MockNavigationRail />
+          <JournalCompletenessNotice status={completeness?.status} trends onRetry={() => { void reloadDreams(); }} />
           <View className="gap-6 p-4">
             <View
               className={`gap-4 rounded-[20px] border border-line-strong bg-ink-soft ${sectionPad}`}
