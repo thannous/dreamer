@@ -1,6 +1,6 @@
 import type { JournalImportSnapshot, JournalImportStorage } from '@/lib/lucid/journalImport';
 import { isJournalImportSourceDate, isJournalImportRevision, journalCopyIdentity } from '@/lib/lucid/journalImport';
-import { getLucidKeyValueStorage, isLucidNativeKeyValueStorage } from './lucidKeyValueStorage';
+import { getLucidKeyValueStorage, isLucidNativeKeyValueStorage, type LucidKeyValueStorage } from './lucidKeyValueStorage';
 import { isLucidTrainerEncryptedValue, protectLucidTrainerStoredValue, revealLucidTrainerStoredValue } from './lucidTrainerSecureStorage';
 
 function key(scope: string): string {
@@ -59,8 +59,9 @@ function chunks(text: string): string[] {
   return result;
 }
 /** Protected immutable chunks; only the small atomic manifest publishes a new page/cursor. */
-export function createLucidJournalImportStorage(): JournalImportStorage {
-  const storage = getLucidKeyValueStorage();
+export function createLucidJournalImportStorage(
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
+): JournalImportStorage & { clear(scope: string): Promise<void> } {
   const native = isLucidNativeKeyValueStorage(storage);
   const read = async (storageKey: string) => {
     const raw = await storage.getItem(storageKey);
@@ -80,6 +81,23 @@ export function createLucidJournalImportStorage(): JournalImportStorage {
     return raw === null ? null : manifest(JSON.parse(raw));
   };
   const chunkKey = (base: string, item: Manifest, index: number) => `${base}:chunk:${item.generation}:${index}`;
+  // Persist the complete inventory before removing any sensitive chunk. The marker
+  // survives partial deletion, including lost acknowledgements, and blocks reads/writes
+  // until cleanup succeeds. It contains no transcript and is protected like the manifest.
+  const finishErasure = async (base: string): Promise<boolean> => {
+    const raw = await read(`${base}:erasing`);
+    if (raw === null) return false;
+    const intent = JSON.parse(raw) as { version: number; manifests: unknown[] };
+    if (!intent || intent.version !== 1 || !Array.isArray(intent.manifests)) throw new Error('Invalid import erasure');
+    const generations = intent.manifests.map(manifest);
+    for (const item of generations) {
+      for (let index = 0; index < item.chunks; index += 1) await storage.removeItem(chunkKey(base, item, index));
+    }
+    await storage.removeItem(`${base}:pending`);
+    await storage.removeItem(base);
+    await storage.removeItem(`${base}:erasing`);
+    return true;
+  };
   // This journal is written before any chunk. Recovery never removes the active generation.
   const recover = async (base: string, deferCleanupFailure = false): Promise<Manifest | null> => {
     const current = await readManifest(base);
@@ -102,9 +120,28 @@ export function createLucidJournalImportStorage(): JournalImportStorage {
     return current;
   };
   return {
+    clear(scope) {
+      return serialized(scope, async () => {
+        const base = key(scope);
+        if (await finishErasure(base)) return;
+        const current = await readManifest(base);
+        const raw = await read(`${base}:pending`);
+        const generations = current ? [current] : [];
+        if (raw !== null) {
+          const pending = JSON.parse(raw) as Pending;
+          if (!pending || pending.version !== 2) throw new Error('Invalid import pending generation');
+          generations.push(manifest(pending.next));
+          if (pending.previous !== null) generations.push(manifest(pending.previous));
+        }
+        if (!generations.length) return;
+        await write(`${base}:erasing`, JSON.stringify({ version: 1, manifests: generations }), () => undefined);
+        await finishErasure(base);
+      });
+    },
     load(scope) {
       return serialized(scope, async () => {
         const base = key(scope);
+        await finishErasure(base);
         const current = await recover(base, true);
         if (!current) return null;
         const parts: string[] = [];
@@ -122,6 +159,8 @@ export function createLucidJournalImportStorage(): JournalImportStorage {
       parse(plaintext);
       return serialized(scope, async () => {
         const base = key(scope);
+        assertActive();
+        await finishErasure(base);
         assertActive();
         const previous = await recover(base);
         assertActive();
@@ -141,4 +180,12 @@ export function createLucidJournalImportStorage(): JournalImportStorage {
       });
     },
   };
+}
+
+/** The runtime owner must cancel its import engine before clearing this namespace. */
+export function clearLucidJournalImportStorage(
+  scope: string,
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
+): Promise<void> {
+  return createLucidJournalImportStorage(storage).clear(scope);
 }
