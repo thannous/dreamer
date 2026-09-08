@@ -7,6 +7,7 @@ module.exports = {
     '<rootDir>/services/__tests__/journalDreamMapper.test.ts',
     '<rootDir>/services/__tests__/journalRepository.test.ts',
     '<rootDir>/services/__tests__/journalQueueTransitions.test.ts',
+    '<rootDir>/services/__tests__/journalMutationTransport.test.ts',
   ],
   setupFiles: [],
   setupFilesAfterEnv: [],
