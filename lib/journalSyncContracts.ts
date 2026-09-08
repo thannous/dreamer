@@ -11,4 +11,3 @@ export type SyncMutationResult = {
   remoteId?: number;
   error?: string;
 };
-

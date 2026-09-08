@@ -38,4 +38,3 @@ export const toStoredImageReference = (value?: string | null): string => {
   if (path) return buildStorageRef(path);
   return value;
 };
-
