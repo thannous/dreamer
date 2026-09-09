@@ -4,10 +4,26 @@ import { buildChatSystem, buildChatHistory, MAX_RECENT_CHAT_MESSAGES, MAX_OLDER_
 import { buildDreamContextPrompt } from '../../lib/prompts.ts';
 import { atomicWriteJson } from './core.ts';
 
-const output = '/private/tmp/ti559-chat20-optimized-run';
+const outputName = 'ti559-chat20-optimized-run';
+function resolveOutput(args: string[]): string {
+  const requested = args.find((arg) => arg.startsWith('--output='))?.slice(9);
+  if (args.some((arg) => arg !== '--execute' && !arg.startsWith('--output='))) throw new Error('Unknown argument.');
+  if (requested) {
+    if (!requested.startsWith('/') || requested.includes('..') || requested.endsWith('/') || requested.split('/').pop() !== outputName) throw new Error('Output does not match the platform temp directory.');
+    return requested;
+  }
+  if (args.includes('--execute')) throw new Error('Execute requires --output under the platform temp directory.');
+  let tmp = '/tmp';
+  try {
+    tmp = (Deno.env.get('TMPDIR') || Deno.env.get('TMP') || Deno.env.get('TEMP') || '/tmp').replace(/\/+$/u, '') || '/tmp';
+  } catch {
+    // Preview may run without --allow-env; POSIX /tmp exists on Linux and macOS.
+  }
+  return `${tmp}/${outputName}`;
+}
+const output = resolveOutput(Deno.args);
 const model = 'gemini-3.5-flash-lite';
 const source = 'doc_web_interne/docs/qa/ti559-chat20-2026-09-09/results.json';
-if (Deno.args.some(arg => arg !== '--execute' && arg !== `--output=${output}`)) throw new Error('Unknown argument.');
 const baseline = JSON.parse(await Deno.readTextFile(source));
 const fixture = baseline.fixtures?.[0];
 if (baseline.fixtures?.length !== 1 || typeof fixture?.transcript !== 'string' || !Array.isArray(fixture.turns) || fixture.turns.length !== 20 || fixture.turns.some((t: unknown) => typeof t !== 'string' || !t.trim())) throw new Error('Expected one synthetic 20-turn fixture.');
