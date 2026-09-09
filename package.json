@@ -177,6 +177,8 @@
     "reflection:chat:20:check": "deno check --no-lock supabase/functions/api/evaluation/ti559/chat-20-optimized.ts",
     "reflection:completion:check": "deno check --no-lock supabase/functions/api/evaluation/ti559/completion.ts && deno test --no-lock --allow-read=supabase/functions/api/evaluation/ti559 supabase/functions/api/evaluation/ti559/completion.test.ts && node --test scripts/run-ti559-completion.test.cjs",
     "reflection:completion:preview": "deno run --no-lock --allow-read=supabase/functions/api supabase/functions/api/evaluation/ti559/completion.ts",
+    "reflection:compact:preview": "deno run --no-lock supabase/functions/api/evaluation/ti559/compact.ts",
+    "reflection:compact:run": "node scripts/run-ti559-compact.cjs",
     "reflection:completion:run": "node scripts/run-ti559-completion.cjs",
     "reflection:chat:signed:check": "deno check --no-lock supabase/functions/api/evaluation/ti559/chat-20-signed.ts",
     "reflection:chat:signed:run": "node scripts/run-chat20-signed.cjs"

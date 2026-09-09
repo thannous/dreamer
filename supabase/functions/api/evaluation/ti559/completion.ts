@@ -1,5 +1,5 @@
 import * as before from './completion-baseline.ts';
-import * as after from '../../services/dreamAnalysis.ts';
+import * as after from './completion-candidate.ts';
 import { aiLanguageName, AI_LANGUAGES } from '../../lib/aiLanguage.ts';
 import { boundTranscriptForPrompt } from '../../lib/prompts.ts';
 import { ANALYZE_DREAM_SCHEMA } from '../../lib/schemas.ts';
@@ -34,7 +34,7 @@ async function main() {
   const originals = JSON.parse(await Deno.readTextFile(new URL('./followup-fixtures.json', import.meta.url)));
   if (JSON.stringify(fixtures.slice(0, 6)) !== JSON.stringify(originals)) throw new Error('Historical fixture drift');
   const systems: Record<string, Record<string, string>> = {};
-  for (const [version, path] of [['before', './completion-baseline.ts'], ['after', '../../services/dreamAnalysis.ts']]) {
+  for (const [version, path] of [['before', './completion-baseline.ts'], ['after', './completion-candidate.ts']]) {
     const source = await Deno.readTextFile(new URL(path, import.meta.url));
     const block = source.match(/const ANALYSIS_SYSTEM_INSTRUCTIONS[^=]*= \{([\s\S]*?)\n\};/)?.[1] ?? '';
     systems[version] = Object.fromEntries([...block.matchAll(/\s*(en|fr|es|de|it|pt): '([^'\n]*)',/g)].map(m => [m[1], m[2]]));
