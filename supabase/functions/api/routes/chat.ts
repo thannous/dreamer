@@ -1,6 +1,5 @@
-import { REFLECTION_POLICY } from '../services/dreamAnalysis.ts';
+import { buildChatHistory, buildChatSystem } from '../services/chatContext.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
-import { type AiLanguage, localizedForAi } from '../lib/aiLanguage.ts';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { buildDreamContextPrompt } from '../lib/prompts.ts';
 import {
@@ -8,7 +7,7 @@ import {
   classifyGeminiError,
   extractModelParts,
   GEMINI_FLASH_LITE_MODEL,
-  GEMINI_FLASH_MODEL,
+  GEMINI_CHAT_MODEL,
   type GeminiGenerationConfig,
   type GeminiPart,
   requestGeminiStream,
@@ -24,17 +23,6 @@ import {
 } from '../lib/aiRequestPolicy.ts';
 import { admitSynchronousAiRequest } from '../services/aiAdmission.ts';
 import type { ApiContext } from '../types.ts';
-
-const CHAT_SYSTEM_PREAMBLES: Record<AiLanguage, string> = {
-  en: 'You are an empathetic assistant helping interpret dreams. Be clear and kind, avoid medical claims. Reply in English.',
-  fr: 'Tu es un assistant empathique qui aide à interpréter les rêves. Sois clair, bienveillant et évite les affirmations médicales. Réponds en français.',
-  es: 'Eres un asistente empático que ayuda a interpretar sueños. Sé claro y amable, evita afirmaciones médicas. Responde en español.',
-  de: 'Du bist ein einfühlsamer Assistent, der bei der Traumdeutung hilft. Sei klar und freundlich, vermeide medizinische Aussagen. Antworte auf Deutsch.',
-  it: 'Sei un assistente empatico che aiuta a interpretare i sogni. Sii chiaro e gentile, evita affermazioni mediche. Rispondi in italiano.',
-  pt: 'Você é um assistente acolhedor que ajuda a interpretar sonhos. Seja claro e gentil, evite afirmações médicas. Responda em português do Brasil.',
-};
-
-const MAX_HISTORY_TURNS = 20;
 
 type ChatDependencies = {
   admitRequest?: typeof admitSynchronousAiRequest;
@@ -655,7 +643,7 @@ export async function handleChat(
     const apiKey = Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
-    const systemPreamble = `${localizedForAi(lang, CHAT_SYSTEM_PREAMBLES)} ${REFLECTION_POLICY} Previous analysis and quotes are generated possibilities, not facts. Ground answers in the reported account and distinguish any new hypothesis explicitly. Keep answers proportional to available information.`;
+    const systemPreamble = buildChatSystem(lang);
 
     const contents: { role: 'user' | 'model'; parts: GeminiPart[] }[] = [];
     const { prompt: dreamContextPrompt, debug: contextDebug } = buildDreamContextPrompt(dream, lang);
@@ -670,9 +658,9 @@ export async function handleChat(
       historyLength: historyWithUserMsg.length,
     });
 
-    // Cap resent history: stateless calls resend every turn, so long chats
-    // grow token cost linearly. The dream context plus recent turns is enough.
-    for (const turn of historyWithUserMsg.slice(-MAX_HISTORY_TURNS)) {
+    const { recentMessages, olderUserNotes } = buildChatHistory(historyWithUserMsg);
+    if (olderUserNotes) contents.push({ role: 'user', parts: [{ text: olderUserNotes }] });
+    for (const turn of recentMessages) {
       const r = turn.role === 'model' ? 'model' : 'user';
       const parts = toContentParts(turn);
       if (parts.length > 0) contents.push({ role: r, parts });
@@ -680,10 +668,13 @@ export async function handleChat(
 
     const primaryModel = resolveTextModel(
       ['GEMINI_CHAT_MODEL', 'GEMINI_LITE_MODEL'],
-      GEMINI_FLASH_MODEL
+      GEMINI_CHAT_MODEL
     );
     const fallbackModel = resolveTextModel('GEMINI_LITE_MODEL', GEMINI_FLASH_LITE_MODEL);
-    const chatConfig: GeminiGenerationConfig = { thinkingLevel: 'low', maxOutputTokens: 2048 };
+    const chatConfig: GeminiGenerationConfig = {
+      thinkingLevel: primaryModel === 'gemini-3.5-flash-lite' ? 'minimal' : 'low',
+      maxOutputTokens: 2048,
+    };
 
     const buildModelMessage = (reply: string, rawParts: GeminiPart[] | null): StoredChatMessage => {
       const modelParts = sanitizeParts(rawParts);

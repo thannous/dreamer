@@ -48,3 +48,26 @@ test('followup launcher keeps the same sanitized environment and excludes the or
   assert.equal(args.some((x) => x.includes('/private/tmp/ti559-evaluation-run')), false);
   assert.throws(() => buildLaunch({}, '../custom'));
 });
+
+ test('model comparison uses a separate immutable output and dedicated entry', () => {
+  const { args } = buildLaunch({}, 'gemini38');
+  assert.ok(args.includes('supabase/functions/api/evaluation/ti559/evaluate-models.ts'));
+  assert.ok(args.includes('--allow-write=/private/tmp/ti559-gemini38-evaluation-run'));
+  assert.equal(args.some((x) => x.startsWith('--suite=')), false);
+  assert.equal(args.some((x) => x.includes('/private/tmp/ti559-followup-evaluation-run')), false);
+ });
+
+test('chat probe is isolated and can only read its route and write its own receipt', () => {
+  const { args } = buildLaunch({}, 'chatlite');
+  assert.ok(args.includes('supabase/functions/api/evaluation/ti559/chat-latency.ts'));
+  assert.ok(args.includes('--allow-write=/private/tmp/ti559-chat-lite-latency-run'));
+  assert.ok(args.some(x => x.startsWith('--allow-read=') && x.includes('supabase/functions/api/routes/chat.ts')));
+  assert.equal(args.some(x => x.includes('/private/tmp/ti559-gemini38-evaluation-run')), false);
+});
+
+test('optimization replay has fixed evidence input and isolated output', () => {
+  const { args } = buildLaunch({}, 'chatopt');
+  assert.ok(args.includes('supabase/functions/api/evaluation/ti559/chat-optimization.ts'));
+  assert.ok(args.includes('--allow-write=/private/tmp/ti559-chat-optimization-run'));
+  assert.ok(args.some(x => x.startsWith('--allow-read=') && x.includes('ti559-chat20-2026-09-09/results.json')));
+});

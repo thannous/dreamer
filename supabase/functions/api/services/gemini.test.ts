@@ -1,16 +1,19 @@
 import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import {
+  buildInteractionParams,
   extractInteractionImage,
   extractModelParts,
   GEMINI_FLASH_LITE_MODEL,
   GEMINI_FLASH_MODEL,
+  GEMINI_CHAT_MODEL,
   isRetiredTextModel,
   resolveTextModel,
 } from './gemini.ts';
 
 Deno.test('text model constants point at current Interactions-era models', () => {
-  assertEquals(GEMINI_FLASH_MODEL, 'gemini-3.7-flash');
+  assertEquals(GEMINI_FLASH_MODEL, 'gemini-3.8-flash');
+  assertEquals(GEMINI_CHAT_MODEL, 'gemini-3.5-flash-lite');
   assertEquals(GEMINI_FLASH_LITE_MODEL, 'gemini-3.5-flash-lite');
 });
 
@@ -128,4 +131,46 @@ Deno.test('extractModelParts tolerates missing or malformed steps', () => {
   assertEquals(extractModelParts(undefined), []);
   assertEquals(extractModelParts({ steps: 'nope' }), []);
   assertEquals(extractModelParts({ steps: [{ type: 'model_output' }] }), []);
+});
+
+Deno.test('interaction requests pin low thinking and opt out of provider storage', () => {
+  const params = buildInteractionParams({
+    apiKey: 'unused', model: GEMINI_FLASH_MODEL, contents: 'A synthetic dream.',
+  });
+  assertEquals(params, {
+    model: 'gemini-3.8-flash', input: 'A synthetic dream.', store: false,
+    generation_config: { thinking_level: 'low' },
+  });
+});
+
+Deno.test('interaction requests normalize minimal and preserve explicit supported levels', () => {
+  for (const [requested, expected] of [
+    ['minimal', 'low'], ['low', 'low'], ['medium', 'medium'], ['high', 'high'],
+  ] as const) {
+    const params = buildInteractionParams({
+      apiKey: 'unused', model: GEMINI_FLASH_MODEL, contents: 'Synthetic.',
+      config: { thinkingLevel: requested, maxOutputTokens: 2048 },
+    });
+    assertEquals(params.generation_config, { thinking_level: expected, max_output_tokens: 2048 });
+    assertEquals(params.store, false);
+    assertEquals('previous_interaction_id' in params, false);
+  }
+});
+
+Deno.test('interaction requests retain structured output schema with low thinking', () => {
+  const schema = { type: 'object', properties: { title: { type: 'string' } } };
+  const params = buildInteractionParams({
+    apiKey: 'unused', model: GEMINI_FLASH_MODEL, contents: 'Synthetic.',
+    config: { responseJsonSchema: schema },
+  });
+  assertEquals(params.response_format, { type: 'text', mime_type: 'application/json', schema });
+  assertEquals(params.generation_config, { thinking_level: 'low' });
+  assertEquals(params.store, false);
+});
+
+Deno.test('minimal is explicit and confined to qualified Lite 3.5 model', () => {
+  for (const model of ['gemini-3.5-flash-lite', 'gemini-3.8-flash', 'gemini-3.7-flash']) {
+    const p = buildInteractionParams({ apiKey: 'unused', model, contents: 'Synthetic', config: { thinkingLevel: 'minimal' } });
+    assertEquals(p.generation_config?.thinking_level, model === 'gemini-3.5-flash-lite' ? 'minimal' : 'low');
+  }
 });
