@@ -171,7 +171,10 @@
     "android:supabase-play-integrity-secrets-state": "node ./scripts/update-supabase-play-integrity-secrets-state.js",
     "security:audit:mobile": "node ./scripts/check-mobile-security.js",
     "security:audit:mobile:strict": "node ./scripts/check-mobile-security.js --strict",
-    "brand:check": "node scripts/check-brand-tokens.js"
+    "brand:check": "node scripts/check-brand-tokens.js",
+    "reflection:chat:20:preview": "deno run --no-lock --allow-read=doc_web_interne/docs/qa/ti559-chat20-2026-09-09/results.json supabase/functions/api/evaluation/ti559/chat-20-optimized.ts",
+    "reflection:chat:20:run": "node scripts/run-chat20-optimized.cjs",
+    "reflection:chat:20:check": "deno check --no-lock supabase/functions/api/evaluation/ti559/chat-20-optimized.ts"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",
