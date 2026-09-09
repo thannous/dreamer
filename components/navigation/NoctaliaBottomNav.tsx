@@ -271,7 +271,7 @@ export function NoctaliaBottomNav({
                   <View
                     accessible={false}
                     importantForAccessibility="no-hide-descendants"
-                    style={{ width: navigationLayout.itemWidth - 10, maxWidth: '100%' }}
+                    style={{ width: navigationLayout.itemWidth - (Platform.OS === 'web' ? 2 : 10), maxWidth: '100%' }}
                     className={`min-w-0 items-center justify-center ${
                       navigationLayout.compact ? 'gap-px' : 'gap-[5px]'
                     } w-full flex-1`}
@@ -286,7 +286,7 @@ export function NoctaliaBottomNav({
                         className={`font-sans-medium w-full min-w-0 shrink text-center ${labelSizeClassName} ${
                           isActive ? 'text-nav-active' : 'text-nav-inactive'
                         }`}
-                        style={[labelStyle, { width: navigationLayout.itemWidth - 10, maxWidth: '100%' }]}
+                        style={[labelStyle, { width: navigationLayout.itemWidth - (Platform.OS === 'web' ? 2 : 10), maxWidth: '100%' }]}
                         numberOfLines={navigationLayout.labelLines}
                         textBreakStrategy="simple"
                         ellipsizeMode="tail"
