@@ -5,10 +5,12 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
 const ENVIRONMENT_KEYS = ['PATH', 'HOME', 'GEMINI_MODEL', 'GEMINI_API_KEY'];
-const OUTPUT = '/private/tmp/ti559-evaluation-run';
+const OUTPUTS = { initial: '/private/tmp/ti559-evaluation-run', followup: '/private/tmp/ti559-followup-evaluation-run' };
 const ENTRY = 'supabase/functions/api/evaluation/ti559/evaluate.ts';
 
-function buildLaunch(environment) {
+function buildLaunch(environment, suite = 'initial') {
+  if (!Object.hasOwn(OUTPUTS, suite)) throw new Error('Unknown evaluation suite.');
+  const output = OUTPUTS[suite];
   const env = {};
   for (const key of ENVIRONMENT_KEYS) {
     if (typeof environment[key] === 'string') env[key] = environment[key];
@@ -17,18 +19,18 @@ function buildLaunch(environment) {
     command: 'deno',
     args: [
       'run', '--no-lock',
-      `--allow-read=supabase/functions/api/evaluation/ti559,supabase/functions/api/services/dreamAnalysis.ts,${OUTPUT}`,
-      `--allow-write=${OUTPUT}`,
+      `--allow-read=supabase/functions/api/evaluation/ti559,supabase/functions/api/services/dreamAnalysis.ts,${output}`,
+      `--allow-write=${output}`,
       // The SDK enumerates its environment. Only the four keys above reach Deno.
       '--allow-env', '--allow-net=generativelanguage.googleapis.com',
-      ENTRY, '--execute', `--output=${OUTPUT}`,
+      ENTRY, '--execute', ...(suite === 'followup' ? ['--suite=followup'] : []), `--output=${output}`,
     ],
     options: { cwd: path.resolve(__dirname, '..'), env, shell: false, stdio: 'inherit' },
   };
 }
 
-function launch(environment, spawn = spawnSync) {
-  const { command, args, options } = buildLaunch(environment);
+function launch(environment, spawn = spawnSync, suite = 'initial') {
+  const { command, args, options } = buildLaunch(environment, suite);
   const result = spawn(command, args, options);
   if (result.error || result.signal || typeof result.status !== 'number') {
     // Do not print spawn errors, arguments or environment values containing credentials.
@@ -39,11 +41,12 @@ function launch(environment, spawn = spawnSync) {
 }
 
 if (require.main === module) {
-  if (process.argv.length !== 2) {
-    console.error('Reflection evaluation accepts no launcher arguments.');
+  const args = process.argv.slice(2);
+  if (args.length > 1 || (args.length === 1 && args[0] !== '--followup')) {
+    console.error('Reflection evaluation accepts only the fixed --followup mode.');
     process.exitCode = 1;
   } else {
-    process.exitCode = launch(process.env);
+    process.exitCode = launch(process.env, spawnSync, args[0] === '--followup' ? 'followup' : 'initial');
   }
 }
 module.exports = { buildLaunch, launch };
