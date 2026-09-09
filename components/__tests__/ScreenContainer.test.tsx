@@ -87,3 +87,22 @@ describe('ScreenContainer', () => {
     expect(screen.getByTestId('screen-container').firstElementChild).toBeNull();
   });
 });
+
+it.each(['android', 'web'] as const)('fills the bounded wide %s wrapper only when requested', platform => {
+  mockPlatformOS = platform;
+  mockWindowWidth = 1280;
+  const { rerender } = render(<ScreenContainer testID="bounded" style={{ flex: 1 }} fillContent>Content</ScreenContainer>);
+  const outer = screen.getByTestId('bounded');
+  expect(outer.getAttribute('data-native-style')).toContain('"flex":1');
+  expect(outer.firstElementChild?.getAttribute('data-native-style')).toContain('"flex":1');
+  rerender(<ScreenContainer testID="bounded" style={{ flex: 1 }}>Content</ScreenContainer>);
+  expect(outer.firstElementChild?.getAttribute('data-native-style')).not.toContain('"flex":1');
+});
+it('keeps the bounded narrow layout in its existing parent', () => {
+  mockPlatformOS = 'android';
+  mockWindowWidth = 390;
+  render(<ScreenContainer testID="bounded" style={{ flex: 1 }} fillContent>Content</ScreenContainer>);
+  const outer = screen.getByTestId('bounded');
+  expect(outer.getAttribute('data-native-style')).toContain('"flex":1');
+  expect(outer.firstElementChild).toBeNull();
+});

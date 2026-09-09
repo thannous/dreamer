@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { LucidButton, LucidCard, LucidIconAction, LucidScreen, LucidSectionHeader } from '@/components/lucid/LucidUI';
 import { getLucidPalette, LucidSpace, LucidType } from '@/constants/lucidTheme';
@@ -231,73 +231,89 @@ export default function LucidJournalImportScreen() {
     } },
   ]);
   return (
-    <LucidScreen title={c.title} subtitle={c.intro} trailing={
+    <LucidScreen scroll={false} contentStyle={styles.listScreen} title={c.title} trailing={
       <LucidIconAction label={c.close} icon="close" onPress={() => closeLucidRoute(router, '/lucid/data')} />
     }>
-      <LucidCard>
-        <Text style={body}>{c.limits}</Text>
-        <LucidButton label={c.all} variant={perimeter === 'all' ? 'primary' : 'secondary'}
-          disabled={busy || state.status === 'ready'} onPress={() => setPerimeter('all')} />
-        <LucidButton label={c.recent} variant={perimeter === 'recent30' ? 'primary' : 'secondary'}
-          disabled={busy || state.status === 'ready'} onPress={() => setPerimeter('recent30')} />
-        {state.status === 'ready' && state.preparation ? (
-          <View style={styles.group}>
-            <Text style={body}>{c.scope}: {state.preparation.perimeter === 'all' ? c.all : c.recent}</Text>
-            <Text style={body}>{state.preparation.knownCount === null ? c.countUnknown : `${c.copies}: ${state.preparation.knownCount}`}</Text>
-            <Text style={body}>{c.source} · {state.preparation.sourceAccount}</Text>
-            <LucidButton label={c.confirm} onPress={() => { void flow.confirmStart(); }} />
-          </View>
-        ) : !busy ? (
-          <LucidButton label={state.status === 'error' || state.status === 'cancelled' ? c.retry : c.prepare}
-            disabled={!flow.remoteAvailable} onPress={() => { void flow.prepare(perimeter); }} />
-        ) : null}
-        {flow.available && flow.signedIn && !flow.remoteAvailable && !state.errorCode ? <Text style={body}>{c.unavailable}</Text> : null}
-        {busy ? <Text accessibilityLiveRegion="polite" style={body}>{state.status === 'preparing' ? c.preparing : c.importing}</Text> : null}
-        {state.progress ? <Text accessibilityLiveRegion="polite" style={body}>{c.pages}: {state.progress.persistedPages} · {c.available}: {state.progress.availableCopies}</Text> : null}
-        {state.status === 'complete' && !state.errorCode ? <Text style={body}>{c.complete} · {c.available}: {copies.length}</Text> : null}
-        {state.status === 'cancelled' ? <Text style={body}>{c.cancelled}</Text> : null}
-        {state.errorCode || state.status === 'error' ? <Text accessibilityRole="alert" style={body}>{state.errorCode === 'cleanup_failed' ? c.cleanup : state.errorCode === 'unavailable' ? c.unavailable : c.error}</Text> : null}
-        {busy || state.status === 'ready' || state.errorCode === 'cleanup_failed' ? <LucidButton label={c.cancel} variant="secondary" onPress={() => { void flow.cancel(); }} /> : null}
-      </LucidCard>
-      {!flow.signedIn ? <LucidCard>
-        <Text style={body}>{c.loginBody}</Text>
-        <LucidButton label={c.login} variant="secondary" onPress={() => router.push('/lucid/account')} />
-      </LucidCard> : null}
-      <LucidSectionHeader title={c.copies} />
-      {copies.length === 0 ? <Text style={body}>{c.empty}</Text> : null}
-      {copies.map(copy => (
-        <LucidCard key={copy.identity}>
-          <Text style={body}>{c.source} · {copy.sourceAccount}</Text>
-          <Text style={body}>{copy.createdAt ? new Date(copy.createdAt).toLocaleDateString(content.locale) : c.dateUnknown} · {c.local}</Text>
-          {editing?.scope === userScope && editing.id === copy.identity ? <>
-            <TextInput accessibilityLabel={c.edit} multiline value={editing.text}
-              onChangeText={text => setEditing({ ...editing, text })}
-              style={[styles.editor, { color: palette.text, borderColor: palette.textSecondary }]} />
-            <LucidButton label={c.save} disabled={localBusy || busy} onPress={() => {
-              void actLocal(async () => { const saved = await flow.updateCopy(copy.identity, { type: 'edit', text: editing.text }); if (saved) setEditing(null); });
-            }} />
-            <LucidButton label={c.cancel} variant="secondary" onPress={() => setEditing(null)} />
-          </> : <>
-            <Text style={[styles.body, { color: palette.text }]} numberOfLines={6}>{copy.text}</Text>
-            <LucidButton label={c.edit} variant="secondary" disabled={localBusy || busy}
-              onPress={() => setEditing({ scope: userScope, id: copy.identity, text: copy.text })} />
-          </>}
-          {copy.incoming ? <View style={styles.group}>
-            <Text style={body}>{c.conflict}</Text>
-            <Text style={body} numberOfLines={6}>{copy.incoming.text}</Text>
-            <LucidButton label={c.keep} variant="secondary" disabled={localBusy || busy}
-              onPress={() => { void actLocal(() => flow.updateCopy(copy.identity, { type: 'keepLocal' })); }} />
-            <LucidButton label={c.incoming} variant="secondary" disabled={localBusy || busy}
-              onPress={() => { void actLocal(() => flow.updateCopy(copy.identity, { type: 'useIncoming' })); }} />
-          </View> : null}
-          <LucidButton label={c.delete} variant="danger" disabled={localBusy || busy} onPress={() => confirmDelete(copy.identity)} />
-        </LucidCard>
-      ))}
-      {copies.length > 0 ? <LucidButton label={c.deleteAll} variant="danger" disabled={localBusy || busy} onPress={() => confirmDelete()} /> : null}
+      <FlatList
+        data={copies}
+        keyExtractor={copy => copy.identity}
+        initialNumToRender={4}
+        maxToRenderPerBatch={4}
+        windowSize={5}
+        keyboardShouldPersistTaps="handled"
+        style={styles.list}
+        contentContainerStyle={styles.listContent}
+        ListHeaderComponent={<View style={styles.group}>
+          <Text style={body}>{c.intro}</Text>
+          <LucidCard>
+            <Text style={body}>{c.limits}</Text>
+            <LucidButton label={c.all} variant={perimeter === 'all' ? 'primary' : 'secondary'}
+              disabled={busy || state.status === 'ready'} onPress={() => setPerimeter('all')} />
+            <LucidButton label={c.recent} variant={perimeter === 'recent30' ? 'primary' : 'secondary'}
+              disabled={busy || state.status === 'ready'} onPress={() => setPerimeter('recent30')} />
+            {state.status === 'ready' && state.preparation ? (
+              <View style={styles.group}>
+                <Text style={body}>{c.scope}: {state.preparation.perimeter === 'all' ? c.all : c.recent}</Text>
+                <Text style={body}>{state.preparation.knownCount === null ? c.countUnknown : `${c.copies}: ${state.preparation.knownCount}`}</Text>
+                <Text style={body}>{c.source} · {state.preparation.sourceAccount}</Text>
+                <LucidButton label={c.confirm} onPress={() => { void flow.confirmStart(); }} />
+              </View>
+            ) : !busy ? (
+              <LucidButton label={state.status === 'error' || state.status === 'cancelled' ? c.retry : c.prepare}
+                disabled={!flow.remoteAvailable} onPress={() => { void flow.prepare(perimeter); }} />
+            ) : null}
+            {flow.available && flow.signedIn && !flow.remoteAvailable && !state.errorCode ? <Text style={body}>{c.unavailable}</Text> : null}
+            {busy ? <Text accessibilityLiveRegion="polite" style={body}>{state.status === 'preparing' ? c.preparing : c.importing}</Text> : null}
+            {state.progress ? <Text accessibilityLiveRegion="polite" style={body}>{c.pages}: {state.progress.persistedPages} · {c.available}: {state.progress.availableCopies}</Text> : null}
+            {state.status === 'complete' && !state.errorCode ? <Text style={body}>{c.complete} · {c.available}: {copies.length}</Text> : null}
+            {state.status === 'cancelled' ? <Text style={body}>{c.cancelled}</Text> : null}
+            {state.errorCode || state.status === 'error' ? <Text accessibilityRole="alert" style={body}>{state.errorCode === 'cleanup_failed' ? c.cleanup : state.errorCode === 'unavailable' ? c.unavailable : c.error}</Text> : null}
+            {busy || state.status === 'ready' || state.errorCode === 'cleanup_failed' ? <LucidButton label={c.cancel} variant="secondary" onPress={() => { void flow.cancel(); }} /> : null}
+          </LucidCard>
+          {!flow.signedIn ? <LucidCard>
+            <Text style={body}>{c.loginBody}</Text>
+            <LucidButton label={c.login} variant="secondary" onPress={() => router.push('/lucid/account')} />
+          </LucidCard> : null}
+          <LucidSectionHeader title={c.copies} />
+        </View>}
+        ListEmptyComponent={<Text style={body}>{c.empty}</Text>}
+        renderItem={({ item: copy }) => (
+          <LucidCard key={copy.identity}>
+            <Text style={body}>{c.source} · {copy.sourceAccount}</Text>
+            <Text style={body}>{copy.createdAt ? new Date(copy.createdAt).toLocaleDateString(content.locale) : c.dateUnknown} · {c.local}</Text>
+            {editing?.scope === userScope && editing.id === copy.identity ? <>
+              <TextInput accessibilityLabel={c.edit} multiline value={editing.text}
+                onChangeText={text => setEditing({ ...editing, text })}
+                style={[styles.editor, { color: palette.text, borderColor: palette.textSecondary }]} />
+              <LucidButton label={c.save} disabled={localBusy || busy} onPress={() => {
+                void actLocal(async () => { const saved = await flow.updateCopy(copy.identity, { type: 'edit', text: editing.text }); if (saved) setEditing(null); });
+              }} />
+              <LucidButton label={c.cancel} variant="secondary" onPress={() => setEditing(null)} />
+            </> : <>
+              <Text style={[styles.body, { color: palette.text }]} numberOfLines={6}>{copy.text}</Text>
+              <LucidButton label={c.edit} variant="secondary" disabled={localBusy || busy}
+                onPress={() => setEditing({ scope: userScope, id: copy.identity, text: copy.text })} />
+            </>}
+            {copy.incoming ? <View style={styles.group}>
+              <Text style={body}>{c.conflict}</Text>
+              <Text style={body} numberOfLines={6}>{copy.incoming.text}</Text>
+              <LucidButton label={c.keep} variant="secondary" disabled={localBusy || busy}
+                onPress={() => { void actLocal(() => flow.updateCopy(copy.identity, { type: 'keepLocal' })); }} />
+              <LucidButton label={c.incoming} variant="secondary" disabled={localBusy || busy}
+                onPress={() => { void actLocal(() => flow.updateCopy(copy.identity, { type: 'useIncoming' })); }} />
+            </View> : null}
+            <LucidButton label={c.delete} variant="danger" disabled={localBusy || busy} onPress={() => confirmDelete(copy.identity)} />
+          </LucidCard>
+        )}
+        ListFooterComponent={copies.length > 0 ? <LucidButton label={c.deleteAll} variant="danger" disabled={localBusy || busy} onPress={() => confirmDelete()} /> : null}
+      />
     </LucidScreen>
   );
 }
 const styles = StyleSheet.create({
+  listScreen: { flex: 1 },
+  list: { flex: 1 },
+  listContent: { gap: LucidSpace.md },
   body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   group: { gap: LucidSpace.md },
   editor: { minHeight: 140, borderWidth: 1, borderRadius: 12, padding: LucidSpace.md, textAlignVertical: 'top', fontSize: 16 },

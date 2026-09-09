@@ -77,7 +77,7 @@ export function LucidScreen({
   const palette = getLucidPalette(colors, colorMode === 'dark' ? 'dark' : mode);
   const insets = useSafeAreaInsets();
   const content = (
-    <ScreenContainer style={styles.screenContainer} maxWidth={760}>
+    <ScreenContainer style={styles.screenContainer} maxWidth={760} fillContent={!scroll}>
       <View
         style={[
           styles.content,
