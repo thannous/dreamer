@@ -1,6 +1,6 @@
 # TI-559 — bounded v1/v2 followup evaluation
 
-Status: prepared, **not executed by the implementation agent**. This is a separate experiment of at most twelve provider HTTP requests. The first experiment's twelve requests are already consumed; its evidence in `/private/tmp/ti559-evaluation-run` must remain intact. No new qualitative outcome is claimed here.
+Status: **executed after explicit owner authorization on 9 September 2026**: 12 provider requests, 12 valid JSON responses. See [real evaluation](TI559-FOLLOWUP-REAL-EVALUATION-2026-09-09.md). The first experiment remains intact. No further calls are authorized by this receipt.
 
 ## Version identity
 
