@@ -37,6 +37,7 @@ export type GeminiGenerationConfig = {
 // Model identifiers are owned by lib/models.ts (single registry); these named
 // exports keep the existing import sites stable.
 export const GEMINI_FLASH_MODEL = GEMINI_MODELS.text.default;
+export const GEMINI_CHAT_MODEL = GEMINI_MODELS.text.chat;
 export const GEMINI_FLASH_LITE_MODEL = GEMINI_MODELS.text.fallback;
 export const GEMINI_FLASH_IMAGE_MODEL = GEMINI_MODELS.image.default;
 export const GEMINI_FLASH_LITE_IMAGE_MODEL = GEMINI_MODELS.image.lite;
@@ -155,12 +156,12 @@ const toSystemInstruction = (
   return String(systemInstruction);
 };
 
-// gemini-3.5-flash-lite rejects 'minimal' ("Allowed values are: low, high"),
-// so the lowest level callers can request is normalized to 'low'.
+// Gemini 3.8 Flash and 3.5 Flash Lite do not support 'minimal'.
+// Pin omitted levels to low rather than inheriting a provider default.
 const toThinkingLevel = (
   thinkingLevel?: GeminiThinkingLevel
-): 'low' | 'medium' | 'high' | undefined => {
-  if (!thinkingLevel) return undefined;
+): 'low' | 'medium' | 'high' => {
+  if (!thinkingLevel) return 'low';
   return thinkingLevel === 'minimal' ? 'low' : thinkingLevel;
 };
 
@@ -270,7 +271,7 @@ type GeminiRequestOptions = {
   config?: GeminiGenerationConfig;
 };
 
-const buildInteractionParams = (options: GeminiRequestOptions) => {
+export const buildInteractionParams = (options: GeminiRequestOptions) => {
   const { model, contents, systemInstruction, config } = options;
   const system = toSystemInstruction(systemInstruction);
   const responseFormat = toResponseFormat(config);

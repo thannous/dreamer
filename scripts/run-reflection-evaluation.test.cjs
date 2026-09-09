@@ -48,3 +48,11 @@ test('followup launcher keeps the same sanitized environment and excludes the or
   assert.equal(args.some((x) => x.includes('/private/tmp/ti559-evaluation-run')), false);
   assert.throws(() => buildLaunch({}, '../custom'));
 });
+
+ test('model comparison uses a separate immutable output and dedicated entry', () => {
+  const { args } = buildLaunch({}, 'gemini38');
+  assert.ok(args.includes('supabase/functions/api/evaluation/ti559/evaluate-models.ts'));
+  assert.ok(args.includes('--allow-write=/private/tmp/ti559-gemini38-evaluation-run'));
+  assert.equal(args.some((x) => x.startsWith('--suite=')), false);
+  assert.equal(args.some((x) => x.includes('/private/tmp/ti559-followup-evaluation-run')), false);
+ });
