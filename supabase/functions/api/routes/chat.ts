@@ -274,14 +274,21 @@ export const sanitizeGuestModelParts = (parts: unknown[], text: string): GeminiP
   return safe;
 };
 
-const sanitizeClientHistoryMessage = (message: unknown): StoredChatMessage | null => {
+export const sanitizeClientHistoryMessage = (message: unknown): StoredChatMessage | null => {
   if (!message || typeof message !== 'object') return null;
 
   const candidate = message as Record<string, unknown>;
   const role = candidate.role === 'model' ? 'model' : candidate.role === 'user' ? 'user' : null;
   if (!role) return null;
 
-  const text = trimToLimit(getMessageText(candidate as StoredChatMessage), GUEST_CONTEXT_LIMITS.chatMessageText);
+  const hasModelParts = role === 'model' && Array.isArray(candidate.parts);
+  const sourceText = getMessageText(candidate as StoredChatMessage);
+  // Signed model content must be replayed intact. Truncating only its visible
+  // text makes a legitimate saved response disagree with its original parts.
+  if (hasModelParts && sourceText.length > 32000) throw new Error('Chat history text exceeds limit');
+  const text = hasModelParts
+    ? sourceText
+    : trimToLimit(sourceText, GUEST_CONTEXT_LIMITS.chatMessageText);
   if (!text) return null;
 
   const meta = sanitizeMessageMeta(candidate.meta);
