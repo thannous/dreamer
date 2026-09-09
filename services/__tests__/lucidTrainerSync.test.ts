@@ -1,6 +1,4 @@
 import * as lucidStorage from '@/services/lucidTrainerStorage';
-import { createLucidJournalImportStorage } from '@/services/lucidJournalImportStorage';
-import { journalCopyIdentity, type JournalImportSnapshot } from '@/lib/lucid/journalImport';
 import {
   createInitialLucidTrainerState,
   createLucidProgramProgress,
@@ -31,30 +29,6 @@ import {
   type LucidSyncTransport,
   type LucidSyncTransportResult,
 } from '@/services/lucidTrainerSync';
-
-jest.mock('@/services/lucidJournalImportStorage', () => {
-  const actual = jest.requireActual<typeof import('@/services/lucidJournalImportStorage')>(
-    '@/services/lucidJournalImportStorage'
-  );
-  return {
-    ...actual,
-    createLucidJournalImportStorage: (
-      storage?: Parameters<typeof actual.createLucidJournalImportStorage>[0]
-    ) => {
-      if (storage) return actual.createLucidJournalImportStorage(storage);
-      const values = new Map<string, string>();
-      return actual.createLucidJournalImportStorage({
-        getItem: async (key: string) => values.get(key) ?? null,
-        setItem: async (key: string, value: string) => {
-          values.set(key, value);
-        },
-        removeItem: async (key: string) => {
-          values.delete(key);
-        },
-      });
-    },
-  };
-});
 
 type ResetAwareLucidSyncMutation = LucidSyncMutation & { resetRevision?: string };
 
@@ -1160,42 +1134,6 @@ describe('lucidTrainerSync', () => {
     expect(queues.get(SCOPE)).toEqual([]);
   });
 
-  function journalCopySnapshot(sourceAccount: string, id: string, text: string): JournalImportSnapshot {
-    const identity = journalCopyIdentity(sourceAccount, id);
-    return {
-      version: 1,
-      checkpoint: { grantId: `grant-${sourceAccount}`, sourceAccount, cursor: null, done: true },
-      copies: {
-        [identity]: {
-          identity,
-          sourceProduct: 'journal',
-          sourceAccount,
-          sourceId: id,
-          sourceRevision: '00000000-0000-4000-8000-000000000001',
-          createdAt: '2026-09-08T00:00:00.000Z',
-          importedAt: '2026-09-08T00:00:00.000Z',
-          text,
-          edited: false,
-          deleted: false,
-        },
-      },
-    };
-  }
-
-  function memoryJournal() {
-    const values = new Map<string, string>();
-    const kv = {
-      getItem: async (key: string) => values.get(key) ?? null,
-      setItem: async (key: string, value: string) => {
-        values.set(key, value);
-      },
-      removeItem: async (key: string) => {
-        values.delete(key);
-      },
-    };
-    return { values, adapter: createLucidJournalImportStorage(kv) };
-  }
-
   function guestClaimStore(
     guest: LucidTrainerState,
     account: LucidTrainerState,
@@ -1553,156 +1491,5 @@ describe('lucidTrainerSync', () => {
     expect(queue.filter((item) => item.operation === 'upsert' && item.entityType === 'dream_atlas')).toHaveLength(1);
     expect(queue.find((item) => item.id === 'pending-experiment')).toEqual(pendingExperiment);
     expect(store.cleared).toEqual(['guest']);
-  });
-
-  it('keeps guest journal copies in the authenticated scope after Import guest data', async () => {
-    const guest = state(false);
-    guest.experiments = [{
-      id: 'guest-experiment', occurredAt: NOW, technique: 'mild', preparationMinutes: 5,
-      result: 'none', lucidityLevel: 0, recallLevel: 2, sleepQuality: 3, factors: [], updatedAt: NOW,
-    }];
-    const account = state(true);
-    const store = guestClaimStore(guest, account);
-    const journal = memoryJournal();
-    const guestCopies = journalCopySnapshot('G', '1', 'Guest dream');
-    const accountCopies = journalCopySnapshot('A', '0', 'Account dream');
-    await journal.adapter.save('guest', guestCopies, () => undefined);
-    await journal.adapter.save(SCOPE, accountCopies, () => undefined);
-    store.adapter.clearScope = async (scope) => {
-      store.cleared.push(scope);
-      store.states.set(scope, createInitialLucidTrainerState({ now: NOW + 20, timeZone: 'UTC' }));
-      store.queues.set(scope, []);
-      await journal.adapter.clear(scope);
-    };
-
-    const result = await claimLucidTrainerGuestScope(SCOPE, {
-      storage: store.adapter,
-      journalImport: journal.adapter,
-      now: () => NOW + 50,
-      idFactory: () => '00000000-0000-4000-8000-000000000001',
-    });
-
-    expect(result.claimed).toBe(true);
-    expect(await journal.adapter.load('guest')).toBeNull();
-    const claimed = await journal.adapter.load(SCOPE);
-    expect(claimed?.copies[journalCopyIdentity('G', '1')].text).toBe('Guest dream');
-    expect(claimed?.copies[journalCopyIdentity('A', '0')].text).toBe('Account dream');
-    expect(store.states.get(SCOPE)?.experiments.map((item) => item.id)).toContain('guest-experiment');
-  });
-
-  it('keeps transferred journal copies when claim cleanup retains the guest snapshot', async () => {
-    const guest = state(false);
-    guest.experiments = [{
-      id: 'guest-experiment', occurredAt: NOW, technique: 'mild', preparationMinutes: 5,
-      result: 'none', lucidityLevel: 0, recallLevel: 2, sleepQuality: 3, factors: [], updatedAt: NOW,
-    }];
-    const account = state(true);
-    const store = guestClaimStore(guest, account);
-    const journal = memoryJournal();
-    const guestCopies = journalCopySnapshot('G', '1', 'Guest dream');
-    const accountCopies = journalCopySnapshot('A', '0', 'Account dream');
-    await journal.adapter.save('guest', guestCopies, () => undefined);
-    await journal.adapter.save(SCOPE, accountCopies, () => undefined);
-    store.adapter.clearScope = async (scope) => {
-      store.cleared.push(scope);
-      store.states.set(scope, createInitialLucidTrainerState({ now: NOW + 20, timeZone: 'UTC' }));
-      store.queues.set(scope, []);
-      await lucidStorage.clearLucidTrainerClaimedGuestData(scope, {
-        getItem: async (key: string) => journal.values.get(key) ?? null,
-        setItem: async (key: string, value: string) => {
-          journal.values.set(key, value);
-        },
-        removeItem: async (key: string) => {
-          journal.values.delete(key);
-        },
-      });
-    };
-
-    const result = await claimLucidTrainerGuestScope(SCOPE, {
-      storage: store.adapter,
-      journalImport: journal.adapter,
-      now: () => NOW + 50,
-      idFactory: () => '00000000-0000-4000-8000-000000000001',
-    });
-
-    expect(result.claimed).toBe(true);
-    expect(await journal.adapter.load('guest')).toEqual(guestCopies);
-    const claimed = await journal.adapter.load(SCOPE);
-    expect(claimed?.copies[journalCopyIdentity('G', '1')].text).toBe('Guest dream');
-    expect(claimed?.copies[journalCopyIdentity('A', '0')].text).toBe('Account dream');
-
-    const kv = {
-      getItem: async (key: string) => journal.values.get(key) ?? null,
-      setItem: async (key: string, value: string) => {
-        journal.values.set(key, value);
-      },
-      removeItem: async (key: string) => {
-        journal.values.delete(key);
-      },
-    };
-    await lucidStorage.clearLucidTrainerLocalData(SCOPE, kv, async () => undefined);
-    await lucidStorage.clearLucidTrainerRetainedGuestCopies(kv);
-
-    expect(await journal.adapter.load('guest')).toBeNull();
-    expect(await journal.adapter.load(SCOPE)).toBeNull();
-  });
-
-  it('does not permanently erase guest journal copies when claim fails', async () => {
-    const guest = state(false);
-    guest.experiments = [{
-      id: 'guest-experiment', occurredAt: NOW, technique: 'mild', preparationMinutes: 5,
-      result: 'none', lucidityLevel: 0, recallLevel: 2, sleepQuality: 3, factors: [], updatedAt: NOW,
-    }];
-    const account = state(true);
-    const store = guestClaimStore(guest, account);
-    const journal = memoryJournal();
-    const guestCopies = journalCopySnapshot('G', '1', 'Guest dream');
-    await journal.adapter.save('guest', guestCopies, () => undefined);
-    store.adapter.clearScope = async (scope) => {
-      store.cleared.push(scope);
-      store.states.set(scope, createInitialLucidTrainerState({ now: NOW + 20, timeZone: 'UTC' }));
-      store.queues.set(scope, []);
-      await journal.adapter.clear(scope);
-      throw new Error('storage failure');
-    };
-
-    await expect(claimLucidTrainerGuestScope(SCOPE, {
-      storage: store.adapter,
-      journalImport: journal.adapter,
-    })).rejects.toThrow('storage failure');
-
-    expect(await journal.adapter.load('guest')).toEqual(guestCopies);
-    expect(await journal.adapter.load(SCOPE)).toBeNull();
-    expect(store.states.get('guest')?.experiments.map((item) => item.id)).toEqual(['guest-experiment']);
-    expect(store.states.get(SCOPE)?.experiments).toEqual([]);
-  });
-
-  it('does not erase guest journal copies when the account copy fails before cleanup', async () => {
-    const guest = state(false);
-    guest.experiments = [{
-      id: 'guest-experiment', occurredAt: NOW, technique: 'mild', preparationMinutes: 5,
-      result: 'none', lucidityLevel: 0, recallLevel: 2, sleepQuality: 3, factors: [], updatedAt: NOW,
-    }];
-    const account = state(true);
-    const store = guestClaimStore(guest, account);
-    const journal = memoryJournal();
-    const guestCopies = journalCopySnapshot('G', '1', 'Guest dream');
-    await journal.adapter.save('guest', guestCopies, () => undefined);
-    const save = journal.adapter.save.bind(journal.adapter);
-    journal.adapter.save = async (scope, snapshot, assertActive) => {
-      if (scope === SCOPE) throw new Error('full');
-      return save(scope, snapshot, assertActive);
-    };
-
-    await expect(claimLucidTrainerGuestScope(SCOPE, {
-      storage: store.adapter,
-      journalImport: journal.adapter,
-    })).rejects.toThrow('full');
-
-    expect(await journal.adapter.load('guest')).toEqual(guestCopies);
-    expect(await journal.adapter.load(SCOPE)).toBeNull();
-    expect(store.cleared).toEqual([]);
-    expect(store.states.get(SCOPE)?.experiments).toEqual([]);
-    expect(store.states.get('guest')?.experiments.map((item) => item.id)).toEqual(['guest-experiment']);
   });
 });

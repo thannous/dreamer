@@ -28,13 +28,6 @@ import {
   updateLucidTrainerState,
   updateLucidTrainerSyncQueue,
 } from '@/services/lucidTrainerStorage';
-import {
-  claimLucidJournalImportScope,
-  createLucidJournalImportStorage,
-  restoreLucidJournalImportClaim,
-  type LucidJournalImportClaimAdapter,
-  type LucidJournalImportClaimResult,
-} from '@/services/lucidJournalImportStorage';
 
 // Older sync-v1 clients delete autonomous sign IDs they cannot derive.
 // Preserve these records locally until a versioned server contract is available.
@@ -800,7 +793,6 @@ export async function claimLucidTrainerGuestScope(
     guestScope?: string;
     now?: () => number;
     idFactory?: () => string;
-    journalImport?: LucidJournalImportClaimAdapter;
   }
 ): Promise<LucidGuestClaimResult> {
   const guestScope = options.guestScope ?? 'guest';
@@ -823,18 +815,7 @@ export async function claimLucidTrainerGuestScope(
       updatedAt: Math.max(merged.preferences.updatedAt, account.preferences.updatedAt),
     },
   };
-  const journalImport = options.journalImport ?? createLucidJournalImportStorage();
-  let journalClaim: LucidJournalImportClaimResult = {
-    claimed: false,
-    source: null,
-    destination: null,
-  };
   try {
-    // Copy Journal import snapshots before guest-scope cleanup. clearScope also
-    // erases that namespace, so the transfer must land first.
-    journalClaim = await claimLucidJournalImportScope(guestScope, targetUserScope, {
-      adapter: journalImport,
-    });
     await options.storage.updateState(targetUserScope, () => mergedForAccount);
 
     let queued = 0;
@@ -894,23 +875,14 @@ export async function claimLucidTrainerGuestScope(
   } catch (error) {
     // A guest import is consented data movement. If any step fails, restore both
     // scopes so a retry cannot silently lose or partially attach another
-    // person's device-local training. Restore Journal copies before trainer
-    // state so a failed claim cannot drop them from both scopes.
-    let journalRollbackFailed = false;
-    try {
-      await restoreLucidJournalImportClaim(guestScope, targetUserScope, journalClaim, {
-        adapter: journalImport,
-      });
-    } catch {
-      journalRollbackFailed = true;
-    }
+    // person's device-local training.
     const rollback = await Promise.allSettled([
       options.storage.updateState(targetUserScope, () => account),
       options.storage.updateQueue(targetUserScope, () => accountQueue),
       options.storage.updateState(guestScope, () => guest),
       options.storage.updateQueue(guestScope, () => guestQueue),
     ]);
-    if (journalRollbackFailed || rollback.some((result) => result.status === 'rejected')) {
+    if (rollback.some((result) => result.status === 'rejected')) {
       throw new Error('Guest import failed and local rollback was incomplete');
     }
     throw error;

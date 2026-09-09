@@ -1,3 +1,4 @@
+import { claimLucidJournalImportGuestCopies } from '@/services/lucidJournalImportStorage';
 import * as Crypto from 'expo-crypto';
 import { getLocales } from 'expo-localization';
 import React, {
@@ -100,6 +101,7 @@ import {
 } from '@/services/lucidTrainerSync';
 import {
   claimLucidMorningVoiceNoteScope,
+  clearLucidMorningVoiceNotes,
   unlinkLucidMorningVoiceNotesFromExperiment,
 } from '@/services/lucidMorningVoiceNoteStorage';
 import {
@@ -402,6 +404,10 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const [guestImportAvailable, setGuestImportAvailable] = useState(false);
   const [activeScope, setActiveScope] = useState(userScope);
   const activeScopeRef = useRef(userScope);
+  const guestClaimGeneration = useRef(0);
+  const guestClaimInFlight = useRef<Promise<void> | null>(null);
+  const resetInFlight = useRef<Promise<void> | null>(null);
+  useEffect(() => () => { guestClaimGeneration.current += 1; }, [userScope]);
   const dreams = useMemo(() => projectLucidObservations(activeScope === userScope ? state?.experiments ?? [] : [], localVoiceExperimentIds), [activeScope, userScope, state?.experiments, localVoiceExperimentIds]);
   const dreamsLoaded = !loading && activeScope === userScope;
   const dreamSignCandidates = useMemo(
@@ -550,27 +556,48 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     }
   }, [deviceLocale, reconcileLoadedState, runSync, userId, userScope]);
 
-  const importGuestData = useCallback(async () => {
+  const performGuestImport = useCallback(async () => {
     if (!userId) throw new Error('Authentication required');
+    const generation = guestClaimGeneration.current;
+    const assertClaimActive = () => {
+      if (activeScopeRef.current !== userScope || guestClaimGeneration.current !== generation) {
+        throw new Error('Guest import cancelled or account changed');
+      }
+    };
+    assertClaimActive();
+    await claimLucidJournalImportGuestCopies(userScope, assertClaimActive);
+    assertClaimActive();
     // Voice media is out of band from trainer state. Migrate guest notes to
     // the signed-in scope first. Only then claim trainer guest data, so a
     // voice failure leaves the guest trainer scope intact and a later trainer
     // failure still leaves the audio on the account.
     const voiceClaim = await claimLucidMorningVoiceNoteScope('guest', userScope);
+    assertClaimActive();
     if (voiceClaim.retainedGuest !== 0) {
       throw new Error('Guest voice notes remain after account copy');
     }
+    const guardedClaimOperation = async <T,>(action: () => Promise<T>): Promise<T> => {
+      assertClaimActive();
+      const value = await action();
+      assertClaimActive();
+      return value;
+    };
     const result = await claimLucidTrainerGuestScope(userScope, {
       storage: {
-        loadQueue: loadLucidTrainerSyncQueue,
-        updateQueue: updateLucidTrainerSyncQueue,
-        loadState: getLucidTrainerState,
-        updateState: (scope, updater) => updateLucidTrainerState(scope, updater),
+        loadQueue: (scope) => guardedClaimOperation(() => loadLucidTrainerSyncQueue(scope)),
+        updateQueue: (scope, updater) => guardedClaimOperation(() => updateLucidTrainerSyncQueue(scope, updater)),
+        loadState: (scope) => guardedClaimOperation(() => getLucidTrainerState(scope)),
+        updateState: (scope, updater) => guardedClaimOperation(() => updateLucidTrainerState(scope, updater)),
         // Importing a storage scope must not cancel the authenticated account's
         // active reminders. Reminder reconciliation remains account-scoped.
-        clearScope: clearLucidTrainerClaimedGuestData,
+        clearScope: async (scope) => {
+          assertClaimActive();
+          await clearLucidTrainerClaimedGuestData(scope);
+          assertClaimActive();
+        },
       },
     });
+    assertClaimActive();
     if (result.claimed) {
       const stored = await getLucidTrainerState(userScope);
       const imported = stored ? await reconcilePersistedLocalAtlas(stored, userScope) : null;
@@ -583,7 +610,18 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     setGuestImportAvailable(false);
   }, [reconcileLoadedState, runSync, userId, userScope]);
 
+  const importGuestData = useCallback((): Promise<void> => {
+    if (resetInFlight.current) return Promise.reject(new Error('Local data reset in progress'));
+    if (guestClaimInFlight.current) return guestClaimInFlight.current;
+    const operation = performGuestImport();
+    guestClaimInFlight.current = operation;
+    const settled = () => { if (guestClaimInFlight.current === operation) guestClaimInFlight.current = null; };
+    void operation.then(settled, settled);
+    return operation;
+  }, [performGuestImport]);
+
   useEffect(() => {
+    if (activeScopeRef.current !== userScope) guestClaimGeneration.current += 1;
     activeScopeRef.current = userScope;
     let cancelled = false;
     queueMicrotask(() => {
@@ -1346,16 +1384,39 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
     return () => subscription.remove();
   }, [reconcileReminders, state?.preferences.cloudSyncEnabled, syncNow, user?.id]);
 
-  const resetLocalData = useCallback(async () => {
-    resetLucidOnboardingCompletionNavigationClaim();
-    await clearLucidTrainerLocalData(userScope);
-    // Claim cleanup can leave Journal copies under guest. Signed-in Delete
-    // trainer data and account deletion must erase that retained snapshot.
-    if (userScope !== 'guest') {
-      await clearLucidTrainerRetainedGuestCopies();
-    }
-    setLoading(true);
-    await load();
+  const resetLocalData = useCallback((): Promise<void> => {
+    if (resetInFlight.current) return resetInFlight.current;
+    // Invalidate synchronously, then join every already-issued write/voice claim
+    // before erasing. A new claim cannot enter until the reset has settled.
+    const generation = ++guestClaimGeneration.current;
+    const claim = guestClaimInFlight.current;
+    const operation = (async () => {
+      if (claim) await claim.catch(() => undefined);
+      if (activeScopeRef.current !== userScope || guestClaimGeneration.current !== generation) {
+        throw new Error('Local data reset cancelled or account changed');
+      }
+      resetLucidOnboardingCompletionNavigationClaim();
+      await clearLucidMorningVoiceNotes(userScope);
+      if (activeScopeRef.current !== userScope || guestClaimGeneration.current !== generation) {
+        throw new Error('Local data reset cancelled or account changed');
+      }
+      await clearLucidTrainerLocalData(userScope);
+      if (activeScopeRef.current !== userScope || guestClaimGeneration.current !== generation) {
+        throw new Error('Local data reset cancelled or account changed');
+      }
+      if (userScope !== 'guest') {
+        await clearLucidTrainerRetainedGuestCopies();
+        if (activeScopeRef.current !== userScope || guestClaimGeneration.current !== generation) {
+          throw new Error('Local data reset cancelled or account changed');
+        }
+      }
+      setLoading(true);
+      await load();
+    })();
+    resetInFlight.current = operation;
+    const settled = () => { if (resetInFlight.current === operation) resetInFlight.current = null; };
+    void operation.then(settled, settled);
+    return operation;
   }, [load, userScope]);
 
   const reload = useCallback(async () => {
