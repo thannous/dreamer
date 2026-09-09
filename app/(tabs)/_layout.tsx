@@ -57,13 +57,15 @@ function TabBarItem({ label, icon, focused, palette, geometry }: {
   geometry: TabGeometry;
 }) {
   const { compact, narrow, stackedLabels } = geometry;
+  // Web Text cannot shrink to fit; use the available cell without the native inset.
+  const labelWidth = geometry.itemWidth - (Platform.OS === 'web' ? 2 : 10);
   return (
     <View
       accessible={false}
       importantForAccessibility="no-hide-descendants"
       // React Navigation centers this custom icon in an absolute wrapper.
       // A percentage on the Text alone cannot bound its intrinsic parent width.
-      style={{ width: geometry.itemWidth - 10, maxWidth: '100%' }}
+      style={{ width: labelWidth, maxWidth: '100%' }}
       className={`flex-1 min-w-0 items-center justify-center ${
         compact ? 'gap-[1px]' : narrow ? 'gap-[4px]' : 'gap-[5px]'
       }`}
@@ -81,7 +83,7 @@ function TabBarItem({ label, icon, focused, palette, geometry }: {
           fontSize: geometry.labelFontSize,
           lineHeight: geometry.labelLineHeight,
           height: stackedLabels ? geometry.labelHeight : undefined,
-          width: geometry.itemWidth - 10,
+          width: labelWidth,
           maxWidth: '100%',
         }}
         numberOfLines={geometry.labelLines}
@@ -193,6 +195,7 @@ function createTabButton({
     return (
       <HapticTab
         {...props}
+        style={Platform.OS === 'web' ? [props.style, { paddingHorizontal: 1 }] : props.style}
         testID={testID}
         accessibilityRole="tab"
         accessibilityLabel={accessibilityLabel}
