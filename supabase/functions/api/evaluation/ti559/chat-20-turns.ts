@@ -50,7 +50,7 @@ try {
       results.push(row);
       await atomicWriteJson(`${output}/results.json`, { fixtures, results, requests: count });
       if (!completed || !text.trim() || firstTextMs === null) throw new Error('Incomplete stream.');
-      
+
       history.push({ role: 'model', parts: parts.length ? parts : [{ text }] });
       console.log(JSON.stringify({ id: fixture.id, turn: turn + 1, firstTextMs, totalMs: row.totalMs }));
     }

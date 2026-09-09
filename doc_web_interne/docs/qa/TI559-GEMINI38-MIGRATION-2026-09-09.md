@@ -1,3 +1,5 @@
+> Final integration decision (2026-09-09): the later chat optimization experiment supersedes the initial low-only setting and draft checkpoint below. The selected configuration is Flash 3.8 low for analysis and Flash Lite 3.5 minimal for chat. Fresh independent review accepts this incremental code change; the owner has requested completion and merge of the application PRs. Historical observations below remain evidence, not the current merge gate. TI-559 stays open for analysis fidelity, lossless stateless thought-step persistence (pre-existing debt), and complete HTTP/DB/Android qualification. Merge does not activate or verify production configuration. See [final chat evidence](TI559-CHAT-OPTIMIZATION-2026-09-09.md).
+
 # Gemini 3.8 migration candidate and paired evaluation
 
 Latest chat update: [provenance and minimal qualification](TI559-CHAT-OPTIMIZATION-2026-09-09.md). Chat now selects minimal on Lite3.5; analysis remains low. The measurements below are historical low-vs-low model comparison.
