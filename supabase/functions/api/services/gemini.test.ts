@@ -13,7 +13,7 @@ import {
 
 Deno.test('text model constants point at current Interactions-era models', () => {
   assertEquals(GEMINI_FLASH_MODEL, 'gemini-3.8-flash');
-  assertEquals(GEMINI_CHAT_MODEL, 'gemini-3.7-flash');
+  assertEquals(GEMINI_CHAT_MODEL, 'gemini-3.5-flash-lite');
   assertEquals(GEMINI_FLASH_LITE_MODEL, 'gemini-3.5-flash-lite');
 });
 

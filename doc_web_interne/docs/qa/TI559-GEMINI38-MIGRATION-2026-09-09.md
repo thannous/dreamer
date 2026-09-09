@@ -5,7 +5,7 @@ Date: 9 September 2026. Decision: **candidate prepared, no production activation
 ## Changes and boundaries
 
 - Dream analysis default becomes gemini-3.8-flash in this draft branch.
-- Chat remains explicitly gemini-3.7-flash. Existing stateless adapter discards thinking steps; official documentation requires preserving all generated steps/signatures for thinking history. This existing limitation must be addressed and separately qualified before moving chat. Keeping 3.7 is containment, not proof its current history handling is fully compliant.
+- Owner selection after the comparison: chat defaults to gemini-3.5-flash-lite, analysis to gemini-3.8-flash. Low thinking and store:false remain explicit. This selection does not establish chat quality or time-to-first-token measurements. Existing stateless adapter discards thinking steps; exact history/signature preservation remains a separate qualification issue on the selected model.
 - Every text request explicitly selects low thinking when omitted; minimal normalizes to low. store:false remains enforced, no previous_interaction_id, no provider-side conversation persistence introduced.
 - Lite fallback, image models and categorisation remain unchanged. Existing valid environment overrides remain honored: analysis GEMINI_MODEL / GEMINI_FALLBACK_MODEL; chat GEMINI_CHAT_MODEL then GEMINI_LITE_MODEL, fallback GEMINI_LITE_MODEL. Production override values were not inspected or modified. A source default change cannot establish the deployed model.
 

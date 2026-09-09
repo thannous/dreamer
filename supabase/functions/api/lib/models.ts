@@ -12,8 +12,8 @@ export const GEMINI_MODELS = {
   text: {
     /** Primary text model for dream analysis. */
     default: 'gemini-3.8-flash',
-    /** Retained until stateless chat thinking-step persistence is qualified. */
-    chat: 'gemini-3.7-flash',
+    /** Cost-focused chat model selected independently from dream analysis. */
+    chat: 'gemini-3.5-flash-lite',
     /** Cheaper fallback used when the primary model rejects or times out. */
     fallback: 'gemini-3.5-flash-lite',
   },
