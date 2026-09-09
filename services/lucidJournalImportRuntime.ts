@@ -164,7 +164,12 @@ export function createLucidJournalImportRuntime(deps: LucidJournalImportRuntimeD
             await session.complete(result.url); guard();
             const identity = session.getAuthority();
             if (!identity || identity.userId !== user || identity.product !== product || identity.clientId !== (product === 'journal' ? deps.journalClientId : deps.lucidClientId)) throw unavailable();
-          } catch { await session.cancel(); throw unavailable(); }
+          } catch {
+            // stop already owns cancellation after an epoch change. A late
+            // browser/factory completion must not erase a newer session's keys.
+            if (epoch === version && !disposed) await session?.cancel();
+            throw unavailable();
+          }
         }
         selection = null;
         if (perimeter === 'recent30') {

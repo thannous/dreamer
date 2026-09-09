@@ -89,3 +89,21 @@ it('erases departed-owner credentials even if revocation fails without refreshin
  expect(f.sessions.journal.cancel).toHaveBeenCalled();expect(f.sessions.lucid.cancel).toHaveBeenCalled();
  expect(f.runtime.getState().snapshot).toBeNull();
 });
+
+it('does not cancel shared credentials again when the old browser returns after disposal',async()=>{
+ const f=fixture(),browser=deferred<{type:string;url:string}>();f.deps.openAuthSession.mockReturnValueOnce(browser.promise);
+ const pending=f.runtime.prepare('all');const rejected=expect(pending).rejects.toThrow();
+ while(!f.deps.openAuthSession.mock.calls.length) await Promise.resolve();
+ await f.runtime.dispose();expect(f.sessions.journal.cancel).toHaveBeenCalledTimes(1);
+ browser.resolve({type:'success',url:'callback'});await rejected;
+ expect(f.sessions.journal.cancel).toHaveBeenCalledTimes(1);
+ expect(f.sessions.journal.complete).not.toHaveBeenCalled();
+});
+
+it('does not erase credentials for a session factory finishing after disposal before begin',async()=>{
+ const f=fixture(),factory=deferred<typeof f.sessions.journal>();f.deps.createSession.mockReturnValueOnce(factory.promise);
+ const pending=f.runtime.prepare('all');const rejected=expect(pending).rejects.toThrow();
+ while(!f.deps.createSession.mock.calls.length) await Promise.resolve();
+ await f.runtime.dispose();factory.resolve(f.sessions.journal);await rejected;
+ expect(f.sessions.journal.begin).not.toHaveBeenCalled();expect(f.sessions.journal.cancel).not.toHaveBeenCalled();
+});
