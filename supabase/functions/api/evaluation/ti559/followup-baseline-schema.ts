@@ -59,4 +59,3 @@ export const ANALYZE_DREAM_SCHEMA = {
     'reflectionQuestions',
   ],
 };
-
