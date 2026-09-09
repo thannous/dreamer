@@ -3,6 +3,8 @@ import { AI_LANGUAGES } from '../lib/aiLanguage.ts';
 import { ANALYZE_DREAM_SCHEMA, CATEGORIZE_DREAM_SCHEMA } from '../lib/schemas.ts';
 import {
   buildAnalysisPrompt,
+  REFLECTION_POLICY,
+  ANALYSIS_PROMPT_VERSION,
   discloseAnalysisExcerpt,
   normalizeAnalysisDreamType,
   sanitizeAnalysisDetails,
@@ -52,4 +54,30 @@ Deno.test('prompt keeps malicious transcript as JSON data and distinguishes omit
   assertStringIncludes(prompt, 'What your account describes');
   assertStringIncludes(prompt, 'Possible reflections');
   assertEquals(buildAnalysisPrompt('A door.', 'English').includes('Only an excerpt is available'), false);
+});
+
+// These assertions pin the generation contract, not actual provider obedience.
+Deno.test('revised policy keeps partial recall and inferred scene details out of factual observations', () => {
+  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-09-09.1');
+  assertStringIncludes(REFLECTION_POLICY, 'A partial memory is not the complete dream');
+  assertStringIncludes(REFLECTION_POLICY, 'do not add spatial relationships, causes, intentions or motives');
+  assertStringIncludes(REFLECTION_POLICY, 'a window and a light do not establish where the light is');
+  assertStringIncludes(REFLECTION_POLICY, 'does not establish an intention to protect it');
+  assertStringIncludes(REFLECTION_POLICY, 'must stay outside observations and factual paraphrases');
+});
+
+Deno.test('all language prompts retain emotional and quote grounding alongside the existing safeguards', () => {
+  for (const lang of AI_LANGUAGES) {
+    const transcript = 'Synthetic partial recall: a window and a light; curiosity without fear.';
+    const prompt = buildAnalysisPrompt(transcript, lang, true);
+    assertStringIncludes(prompt, REFLECTION_POLICY);
+    assertStringIncludes(prompt, 'Absence of fear is not evidence of safety or serenity');
+    assertStringIncludes(prompt, 'curiosity alone is not evidence of calm');
+    assertStringIncludes(prompt, 'an optional faithful reformulation of reported details, or an empty string');
+    assertStringIncludes(prompt, 'Poetic wording must not introduce unreported locations');
+    assertStringIncludes(prompt, 'no minimum word count');
+    assertStringIncludes(prompt, 'Use Unknown when the account does not establish a type');
+    assertStringIncludes(prompt, 'Only an excerpt is available');
+    assertEquals(prompt.endsWith(JSON.stringify(transcript)), true);
+  }
 });

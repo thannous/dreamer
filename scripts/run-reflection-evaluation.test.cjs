@@ -37,3 +37,14 @@ test('missing optional keys remain absent and launch paths are fixed', () => {
   assert.ok(args.includes('--allow-read=supabase/functions/api/evaluation/ti559,supabase/functions/api/services/dreamAnalysis.ts,/private/tmp/ti559-evaluation-run'));
   assert.equal(options.cwd, require('node:path').resolve(__dirname, '..'));
 });
+
+test('followup launcher keeps the same sanitized environment and excludes the original output directory', () => {
+  const { args, options } = buildLaunch({ PATH: '/mock/bin', HOME: '/mock/home', GEMINI_API_KEY: 'dummy', OTHER_SECRET: 'omit' }, 'followup');
+  assert.deepEqual(options.env, { PATH: '/mock/bin', HOME: '/mock/home', GEMINI_API_KEY: 'dummy' });
+  assert.equal(options.shell, false);
+  assert.ok(args.includes('--suite=followup'));
+  assert.ok(args.includes('--allow-write=/private/tmp/ti559-followup-evaluation-run'));
+  assert.ok(args.includes('--output=/private/tmp/ti559-followup-evaluation-run'));
+  assert.equal(args.some((x) => x.includes('/private/tmp/ti559-evaluation-run')), false);
+  assert.throws(() => buildLaunch({}, '../custom'));
+});

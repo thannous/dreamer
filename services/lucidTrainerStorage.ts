@@ -430,6 +430,7 @@ export async function appendLucidTrainerSyncMutation(
   }, storage);
 }
 
+/** Explicit erasure includes local Journal copies in this destination namespace. */
 export async function clearLucidTrainerLocalData(
   userScope: string,
   storage: AsyncKeyValueStorage = getLucidKeyValueStorage(),
@@ -439,6 +440,35 @@ export async function clearLucidTrainerLocalData(
     );
     return cancelAllLucidTrainerNotifications();
   }
+): Promise<void> {
+  return clearTrainerScope(userScope, storage, cancelReminders, true);
+}
+
+/**
+ * Claim cleanup removes guest trainer state. Journal copies stay under guest
+ * until signed-in deletion; the claim path copies them to the account first.
+ */
+export async function clearLucidTrainerClaimedGuestData(
+  userScope: string,
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+): Promise<void> {
+  if (userScope !== 'guest') throw new Error('Claim cleanup requires guest scope');
+  // Account reminders are reconciled by the claim owner, not cancelled here.
+  return clearTrainerScope(userScope, storage, async () => undefined, false);
+}
+
+/** Signed-in deletion also drops Journal copies left under guest after a claim. */
+export async function clearLucidTrainerRetainedGuestCopies(
+  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+): Promise<void> {
+  await clearLucidJournalImportStorage('guest', storage);
+}
+
+async function clearTrainerScope(
+  userScope: string,
+  storage: AsyncKeyValueStorage,
+  cancelReminders: () => Promise<unknown>,
+  eraseJournalCopies: boolean
 ): Promise<void> {
   const keys = getLucidTrainerStorageKeys(userScope);
   await runSerialized(keys.state, () =>
@@ -451,7 +481,7 @@ export async function clearLucidTrainerLocalData(
       }
       await Promise.all([storage.removeItem(keys.state), storage.removeItem(keys.syncQueue)]);
       const companionResults = await Promise.allSettled([
-        clearLucidJournalImportStorage(userScope, storage),
+        ...(eraseJournalCopies ? [clearLucidJournalImportStorage(userScope, storage)] : []),
         deleteLucidHealthKitSnapshot(userScope, storage),
         clearLucidDreamRehearsalState(userScope, storage),
         clearLucidDreamAtlasPreferences(userScope, storage),
