@@ -13,7 +13,7 @@ Seul le hook useLucidJournalImport est remplacé dans la copie QA par une fixtur
 - 0 : état No local copies yet., sans crash, preuve ti522-zero.xml/png.
 - 1 : copie0001 et pied de liste Delete all copies accessibles après défilement. Suppression individuelle avec dialogue natif de confirmation ; retour à l'état vide, fixture absente. Preuves ti522-one.xml, ti522-delete-confirm.xml, ti522-one-deleted.xml.
 - 2501 : ouverture sans crash, titre et consentement visibles ; défilement natif depuis la première copie jusqu'aux copies0004/0005, au-delà des4 initiales. Preuves ti522-2501-final-header.xml/png et ti522-2501-final-scroll.xml.
-- Édition copie0005 : champ ouvert, texte QA_EDIT entré au clavier natif, sauvegarde puis texte affiché dans la carte. Preuves ti522-2501-final-edit.xml/png et ti522-2501-final-saved.xml. Sauvegarde en mémoire uniquement.
+- Édition copie0005 : champ ouvert et texte QA_EDIT entré au clavier natif. Preuves ti522-2501-final-edit.xml/png et ti522-2501-final-saved.xml. Malgré son nom, ce dernier fichier montre encore un EditText focalisé et le bouton Save locally : il ne prouve pas la sauvegarde ni le retour à la carte. La sauvegarde native reste non qualifiée dans cette passe.
 - Texte150% : header final avec espace entre cartes, texte et boutons sur plusieurs lignes sans coupe ; liste défilable jusqu'aux copies. Preuves ti522-2501-final-large.png et ti522-2501-final-large-scroll.xml/png. Font scale restauré à1.0 et relu.
 
 ## Limites
