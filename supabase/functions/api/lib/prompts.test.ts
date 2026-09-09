@@ -17,18 +17,18 @@ Deno.test('prompt truncation leaves short transcripts unchanged', () => {
   assertEquals(boundTranscriptForPrompt(source), { text: source, truncated: false });
 });
 
-Deno.test('prompt copies bound at 6000 characters without mutating the stored source', () => {
-  const stored = 'a'.repeat(10_000);
+Deno.test('prompt copies bound at 10000 characters without mutating the stored source', () => {
+  const stored = 'a'.repeat(10_001);
   const bounded = boundTranscriptForPrompt(stored);
 
-  assertEquals(stored.length, 10_000);
+  assertEquals(stored.length, 10_001);
   assertEquals(bounded.truncated, true);
   assertEquals(bounded.text.length, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS);
   assertEquals(bounded.text, stored.slice(0, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS));
 });
 
 Deno.test('analysis accepts stored transcripts longer than 600 and derives a separate prompt copy', () => {
-  const stored = 'x'.repeat(10_000);
+  const stored = 'x'.repeat(12_000);
   const resolved = resolveStoredTranscriptForAi(stored, AI_REQUEST_LIMITS.transcriptRequestChars);
 
   assertEquals(resolved.ok, true);
@@ -39,6 +39,23 @@ Deno.test('analysis accepts stored transcripts longer than 600 and derives a sep
   assertEquals(resolved.truncatedForPrompt, true);
   assertEquals(resolved.promptTranscript.length, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS);
   assertEquals(resolved.promptTranscript, stored.slice(0, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS));
+});
+
+Deno.test('the complete 10000-character dream reaches analysis and chat without truncation', async () => {
+  const { buildDreamContextPrompt } = await import('./prompts.ts');
+  for (const length of [9_999, 10_000]) {
+    const stored = 'a'.repeat(length - 10) + 'FINAL-DOOR';
+    const resolved = resolveStoredTranscriptForAi(stored, AI_REQUEST_LIMITS.transcriptRequestChars);
+    assertEquals(resolved.ok, true);
+    if (!resolved.ok) continue;
+    assertEquals(resolved.promptTranscript, stored);
+    assertEquals(resolved.truncatedForPrompt, false);
+    const { prompt } = buildDreamContextPrompt({
+      transcript: stored, title: '', interpretation: '', shareable_quote: '', dream_type: 'Unknown',
+    }, 'fr');
+    assertEquals(prompt.includes(JSON.stringify(stored)), true);
+    assertEquals(prompt.includes('[TRUNCATED]'), false);
+  }
 });
 
 Deno.test('analysis rejects empty transcripts and request-abuse payloads without changing a valid stored source', () => {

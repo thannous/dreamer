@@ -1,6 +1,7 @@
 import { type AiLanguage, localizedForAi } from './aiLanguage.ts';
 
-export const DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS = 6000;
+/** Product decision: retain the original; send up to 10,000 characters of its AI copy. */
+export const DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS = 10_000;
 const DREAM_CONTEXT_INTERPRETATION_MAX_CHARS = 4000;
 
 /**

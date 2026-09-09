@@ -1,7 +1,7 @@
 import { buildChatHistory, buildChatSystem } from '../services/chatContext.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
-import { buildDreamContextPrompt } from '../lib/prompts.ts';
+import { buildDreamContextPrompt, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS } from '../lib/prompts.ts';
 import {
   callGeminiWithFallback,
   classifyGeminiError,
@@ -83,7 +83,7 @@ type ClientDreamContext = {
 
 const ALLOWED_CHAT_CATEGORIES = new Set(['symbols', 'emotions', 'growth', 'general']);
 const GUEST_CONTEXT_LIMITS = {
-  transcript: 6000,
+  transcript: DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS,
   interpretation: 4000,
   title: 200,
   shareableQuote: 500,
