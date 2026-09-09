@@ -95,7 +95,7 @@ it('updates unedited copies and explicitly accepts an incoming conflict', async 
   const state = await x.engine.updateCopy('guest', id, { type: 'useIncoming' });
   expect(state.copies[id]).toMatchObject({ text: 'Incoming', edited: false, sourceRevision: revision(3) });
 });
-it('merges guest-only copies into the destination without overwriting account identities', () => {
+it('refuses divergent duplicates, then unions identical copies without transferring authorization', () => {
   const guestId = journalCopyIdentity('G', '1');
   const accountId = journalCopyIdentity('A', '0');
   const sharedId = journalCopyIdentity('A', '1');
@@ -107,12 +107,15 @@ it('merges guest-only copies into the destination without overwriting account id
     [accountId]: { identity: accountId, sourceProduct: 'journal', sourceAccount: 'A', sourceId: '0', sourceRevision: revision(1), createdAt: date, importedAt: date, text: 'Account', edited: false, deleted: false },
     [sharedId]: { identity: sharedId, sourceProduct: 'journal', sourceAccount: 'A', sourceId: '1', sourceRevision: revision(2), createdAt: date, importedAt: date, text: 'Account shared', edited: false, deleted: false },
   } };
+  expect(() => mergeJournalImportSnapshots(account, guest)).toThrow('conflict');
+  guest.copies[sharedId] = { ...account.copies[sharedId] };
   const merged = mergeJournalImportSnapshots(account, guest)!;
   expect(merged.copies[guestId].text).toBe('Guest');
   expect(merged.copies[accountId].text).toBe('Account');
   expect(merged.copies[sharedId].text).toBe('Account shared');
   expect(merged.checkpoint).toEqual(account.checkpoint);
-  expect(mergeJournalImportSnapshots(null, guest)).toEqual(guest);
+  expect(mergeJournalImportSnapshots(null, guest)).toEqual({ ...guest, checkpoint: null });
+  expect(mergeJournalImportSnapshots({ ...account, checkpoint: null }, guest)?.checkpoint).toBeNull();
   expect(mergeJournalImportSnapshots(account, null)).toEqual(account);
   expect(mergeJournalImportSnapshots(null, null)).toBeNull();
 });

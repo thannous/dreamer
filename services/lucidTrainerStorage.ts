@@ -445,8 +445,9 @@ export async function clearLucidTrainerLocalData(
 }
 
 /**
- * Claim cleanup removes guest trainer state. Journal copies stay under guest
- * until signed-in deletion; the claim path copies them to the account first.
+ * Claim cleanup removes guest trainer state without touching Journal copies.
+ * The coordinator transfers and verifies those copies first; any legacy retained
+ * snapshot is also covered by explicit signed-in deletion.
  */
 export async function clearLucidTrainerClaimedGuestData(
   userScope: string,

@@ -1,3 +1,5 @@
+import { canonicalLucidJson } from './domain';
+
 /** Local copies only. This module has no Journal provider or Lucid sync dependency. */
 export interface JournalImportItem {
   id: string;
@@ -56,18 +58,20 @@ export const journalCopyIdentity = (account: string, id: string): string => JSON
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 const sameSnapshot = (left: JournalImportSnapshot, right: JournalImportSnapshot): boolean =>
   JSON.stringify(left) === JSON.stringify(right);
-/** Destination identities win. Guest-only copies and a missing destination checkpoint are kept. */
+/** Local transfer union: no divergent copy arbitration and no cross-scope checkpoint. */
 export function mergeJournalImportSnapshots(
   destination: JournalImportSnapshot | null,
   source: JournalImportSnapshot | null,
 ): JournalImportSnapshot | null {
   if (!source) return destination ? clone(destination) : null;
-  if (!destination) return clone(source);
-  const copies = clone(destination.copies);
+  const copies = destination ? clone(destination.copies) : {};
   for (const [identity, copy] of Object.entries(source.copies)) {
-    if (!Object.hasOwn(copies, identity)) copies[identity] = clone(copy);
+    if (Object.hasOwn(copies, identity) && canonicalLucidJson(copies[identity]) !== canonicalLucidJson(copy)) {
+      throw new Error('Guest Journal copy conflict requires explicit resolution');
+    }
+    copies[identity] = clone(copy);
   }
-  return { version: 1, copies, checkpoint: destination.checkpoint ?? clone(source.checkpoint) };
+  return { version: 1, copies, checkpoint: destination ? clone(destination.checkpoint) : null };
 }
 
 export function createJournalImportEngine(deps: {

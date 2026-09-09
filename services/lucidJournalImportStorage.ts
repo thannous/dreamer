@@ -1,3 +1,4 @@
+import { canonicalLucidJson } from '@/lib/lucid/domain';
 import type { JournalImportSnapshot, JournalImportStorage } from '@/lib/lucid/journalImport';
 import { isJournalImportSourceDate, isJournalImportRevision, journalCopyIdentity, mergeJournalImportSnapshots } from '@/lib/lucid/journalImport';
 import { getLucidKeyValueStorage, isLucidNativeKeyValueStorage, type LucidKeyValueStorage } from './lucidKeyValueStorage';
@@ -190,84 +191,40 @@ export function clearLucidJournalImportStorage(
   return createLucidJournalImportStorage(storage).clear(scope);
 }
 
-export type LucidJournalImportClaimAdapter = JournalImportStorage & { clear(scope: string): Promise<void> };
-
-export interface LucidJournalImportClaimResult {
-  claimed: boolean;
-  source: JournalImportSnapshot | null;
-  destination: JournalImportSnapshot | null;
-}
-
-function asClaimAdapter(
-  options?: { adapter?: LucidJournalImportClaimAdapter; storage?: LucidKeyValueStorage }
-): LucidJournalImportClaimAdapter {
-  return options?.adapter ?? createLucidJournalImportStorage(options?.storage);
-}
-
-/**
- * Copies guest Journal import snapshots into the authenticated scope.
- * Source cleanup is delayed until the caller confirms the rest of the claim,
- * so a later trainer failure can still restore guest copies.
+/** Explicit guest import is a local copy, never a cloud sync or a new import grant.
+ * The owner must stop import writers in both scopes before invoking this operation.
+ * Each OS write may finish in its captured namespace after cancellation; guest is
+ * cleared only after the destination's complete snapshot is durably verified.
  */
-export async function claimLucidJournalImportScope(
-  sourceScope: string,
-  targetScope: string,
-  options?: {
-    adapter?: LucidJournalImportClaimAdapter;
-    storage?: LucidKeyValueStorage;
-  }
-): Promise<LucidJournalImportClaimResult> {
-  if (sourceScope === targetScope) return { claimed: false, source: null, destination: null };
-  const adapter = asClaimAdapter(options);
-  const source = await adapter.load(sourceScope);
-  const destination = await adapter.load(targetScope);
-  if (!source) return { claimed: false, source: null, destination };
-  const merged = mergeJournalImportSnapshots(destination, source);
-  if (!merged) return { claimed: false, source, destination };
-  if (destination && sameSnapshotJson(destination, merged)) {
-    return { claimed: false, source, destination };
-  }
-  try {
-    await adapter.save(targetScope, merged, () => undefined);
-    const verified = await adapter.load(targetScope);
-    if (!verified || !sameSnapshotJson(verified, merged)) {
-      throw new Error('Guest journal copies were not retained on the account');
-    }
-  } catch (error) {
-    try {
-      if (destination) await adapter.save(targetScope, destination, () => undefined);
-      else await adapter.clear(targetScope);
-    } catch {
-      throw new Error('Guest import failed and local rollback was incomplete');
-    }
-    throw error;
-  }
-  return { claimed: true, source, destination };
-}
-
-/** Restore guest copies first so a failed claim cannot drop them from both scopes. */
-export async function restoreLucidJournalImportClaim(
-  sourceScope: string,
-  targetScope: string,
-  claim: Pick<LucidJournalImportClaimResult, 'source' | 'destination'>,
-  options?: { adapter?: LucidJournalImportClaimAdapter; storage?: LucidKeyValueStorage }
+export function claimLucidJournalImportGuestCopies(
+  destinationScope: string,
+  assertActive: () => void,
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<void> {
-  const adapter = asClaimAdapter(options);
-  if (claim.source) {
-    try {
-      await adapter.save(sourceScope, claim.source, () => undefined);
-    } catch (error) {
-      const merged = mergeJournalImportSnapshots(claim.destination, claim.source);
-      if (merged) {
-        try { await adapter.save(targetScope, merged, () => undefined); } catch { /* keep source failure */ }
-      }
-      throw error;
-    }
-  }
-  if (claim.destination) await adapter.save(targetScope, claim.destination, () => undefined);
-  else if (claim.source) await adapter.clear(targetScope);
-}
-
-function sameSnapshotJson(left: JournalImportSnapshot, right: JournalImportSnapshot): boolean {
-  return JSON.stringify(left) === JSON.stringify(right);
+  if (!destinationScope.startsWith('user:')) return Promise.reject(new Error('Authenticated destination required'));
+  key(destinationScope);
+  return serialized('guest-copy-claim', async () => {
+    const adapter = createLucidJournalImportStorage(storage);
+    assertActive();
+    const guest = await adapter.load('guest');
+    assertActive();
+    if (!guest) return;
+    const destination = await adapter.load(destinationScope);
+    assertActive();
+    const merged = mergeJournalImportSnapshots(destination, guest)!;
+    // Guest checkpoint authorizes nothing in the destination; retain only its
+    // pre-existing checkpoint. Preserve edits, tombstones and conflict payloads.
+    const expected = canonicalLucidJson(merged);
+    let writeError: unknown;
+    try { await adapter.save(destinationScope, merged, assertActive); } catch (error) { writeError = error; }
+    assertActive();
+    const durable = await adapter.load(destinationScope);
+    assertActive();
+    if (canonicalLucidJson(durable) !== expected) throw writeError ?? new Error('Destination copy was not persisted');
+    const currentGuest = await adapter.load('guest');
+    assertActive();
+    if (canonicalLucidJson(currentGuest) !== canonicalLucidJson(guest)) throw new Error('Guest copies changed during transfer');
+    await adapter.clear('guest');
+    assertActive();
+  });
 }
