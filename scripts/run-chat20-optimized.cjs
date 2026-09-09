@@ -5,25 +5,31 @@ const os = require('node:os');
 const path = require('node:path');
 const OUTPUT_NAME = 'ti559-chat20-optimized-run';
 
-function resolveOutput(tmpdir = os.tmpdir()) {
-  return path.join(tmpdir, OUTPUT_NAME);
+function resolveOutput(tmpdir = os.tmpdir(), join = path.join) {
+  return join(tmpdir, OUTPUT_NAME);
 }
 
-function buildLaunch(environment, tmpdir = os.tmpdir()) {
+function buildLaunch(environment, tmpdir = os.tmpdir(), mode = 'run') {
+  if (mode !== 'run' && mode !== 'preview') throw new Error('Unknown launcher mode.');
   const output = resolveOutput(tmpdir);
   const env = {};
-  for (const key of ['PATH', 'HOME', 'GEMINI_API_KEY']) {
+  for (const key of mode === 'preview' ? ['PATH', 'HOME'] : ['PATH', 'HOME', 'GEMINI_API_KEY']) {
     if (typeof environment[key] === 'string') env[key] = environment[key];
   }
+  const source = 'doc_web_interne/docs/qa/ti559-chat20-2026-09-09/results.json';
+  const script = 'supabase/functions/api/evaluation/ti559/chat-20-optimized.ts';
+  const args = mode === 'preview'
+    ? ['run', '--no-lock', `--allow-read=${source}`, script, `--output=${output}`]
+    : ['run', '--no-lock', `--allow-read=${source},${output}`, `--allow-write=${output}`, '--allow-env', '--allow-net=generativelanguage.googleapis.com', script, '--execute', `--output=${output}`];
   return {
     command: 'deno',
-    args: ['run', '--no-lock', `--allow-read=doc_web_interne/docs/qa/ti559-chat20-2026-09-09/results.json,${output}`, `--allow-write=${output}`, '--allow-env', '--allow-net=generativelanguage.googleapis.com', 'supabase/functions/api/evaluation/ti559/chat-20-optimized.ts', '--execute', `--output=${output}`],
+    args,
     options: { cwd: path.resolve(__dirname, '..'), env, shell: false, stdio: 'inherit' },
   };
 }
 
-function launch(environment, spawn = spawnSync, tmpdir = os.tmpdir()) {
-  const { command, args, options } = buildLaunch(environment, tmpdir);
+function launch(environment, spawn = spawnSync, tmpdir = os.tmpdir(), mode = 'run') {
+  const { command, args, options } = buildLaunch(environment, tmpdir, mode);
   const result = spawn(command, args, options);
   if (result.error || result.signal || typeof result.status !== 'number') {
     console.error('Chat qualification process could not complete.');
@@ -33,7 +39,9 @@ function launch(environment, spawn = spawnSync, tmpdir = os.tmpdir()) {
 }
 
 if (require.main === module) {
-  if (process.argv.length !== 2) throw new Error('This launcher accepts no arguments.');
-  process.exitCode = launch(process.env);
+  const extra = process.argv.slice(2);
+  if (extra.length === 0) process.exitCode = launch(process.env);
+  else if (extra.length === 1 && extra[0] === '--preview') process.exitCode = launch(process.env, spawnSync, os.tmpdir(), 'preview');
+  else throw new Error('This launcher accepts no arguments other than --preview.');
 }
 module.exports = { OUTPUT_NAME, resolveOutput, buildLaunch, launch };

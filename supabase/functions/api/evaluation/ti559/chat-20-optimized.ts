@@ -5,21 +5,20 @@ import { buildDreamContextPrompt } from '../../lib/prompts.ts';
 import { atomicWriteJson } from './core.ts';
 
 const outputName = 'ti559-chat20-optimized-run';
+function isSafeLauncherOutput(requested: string): boolean {
+  if (!requested || requested.includes('..') || requested.endsWith('/') || requested.endsWith('\\')) return false;
+  if (requested.split(/[\\/]/u).pop() !== outputName) return false;
+  return requested.startsWith('/') || /^[A-Za-z]:[\\/]/u.test(requested);
+}
 function resolveOutput(args: string[]): string {
   const requested = args.find((arg) => arg.startsWith('--output='))?.slice(9);
   if (args.some((arg) => arg !== '--execute' && !arg.startsWith('--output='))) throw new Error('Unknown argument.');
   if (requested) {
-    if (!requested.startsWith('/') || requested.includes('..') || requested.endsWith('/') || requested.split('/').pop() !== outputName) throw new Error('Output does not match the platform temp directory.');
+    if (!isSafeLauncherOutput(requested)) throw new Error('Output does not match the platform temp directory.');
     return requested;
   }
   if (args.includes('--execute')) throw new Error('Execute requires --output under the platform temp directory.');
-  let tmp = '/tmp';
-  try {
-    tmp = (Deno.env.get('TMPDIR') || Deno.env.get('TMP') || Deno.env.get('TEMP') || '/tmp').replace(/\/+$/u, '') || '/tmp';
-  } catch {
-    // Preview may run without --allow-env; POSIX /tmp exists on Linux and macOS.
-  }
-  return `${tmp}/${outputName}`;
+  throw new Error('Preview requires --output from the launcher.');
 }
 const output = resolveOutput(Deno.args);
 const model = 'gemini-3.5-flash-lite';
