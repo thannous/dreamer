@@ -1,4 +1,4 @@
-import { createJournalImportEngine, journalCopyIdentity, type JournalImportSnapshot, type JournalImportPage } from '../journalImport';
+import { createJournalImportEngine, journalCopyIdentity, mergeJournalImportSnapshots, type JournalImportSnapshot, type JournalImportPage } from '../journalImport';
 const date = '2026-09-08T00:00:00.000Z';
 const revision = (value: number) => `00000000-0000-4000-8000-${String(value).padStart(12, '0')}`;
 const item = (id: number, rev = revision(1)) => ({ id: String(id), revision: rev, transcript: `Dream ${id}`, createdAt: date, clientRequestId: null });
@@ -14,10 +14,11 @@ function setup(count = 1) {
   const storage = { load: jest.fn(async () => saved), save: jest.fn(async (_scope: string, next: JournalImportSnapshot, check: () => void) => {
     check(); saved = JSON.parse(JSON.stringify(next));
   }) };
-  const engine = createJournalImportEngine({ storage, readPage, getCurrentDestinationScope: () => scope,
+  const onProgress = jest.fn();
+  const engine = createJournalImportEngine({ storage, readPage, onProgress, getCurrentDestinationScope: () => scope,
     getCurrentSourceAccount: () => account, now: () => new Date(date) });
   const confirmation = { confirmed: true as const, grantId: 'g', cursor: '0', expiresAt: '2026-09-09T00:00:00Z', sourceAccount: 'A', destinationScope: 'guest' };
-  return { engine, storage, readPage, confirmation, saved: () => saved, switchScope: () => { scope = 'user:B'; }, switchAccount: () => { account = 'B'; } };
+  return { engine, storage, readPage, onProgress, confirmation, saved: () => saved, switchScope: () => { scope = 'user:B'; }, switchAccount: () => { account = 'B'; } };
 }
 it.each([0, 1, 2501])('imports %i copies with durable exhaustive pagination', async count => {
   const x = setup(count);
@@ -93,6 +94,27 @@ it('updates unedited copies and explicitly accepts an incoming conflict', async 
   await x.engine.start({ ...x.confirmation, grantId: 'g3' });
   const state = await x.engine.updateCopy('guest', id, { type: 'useIncoming' });
   expect(state.copies[id]).toMatchObject({ text: 'Incoming', edited: false, sourceRevision: revision(3) });
+});
+it('merges guest-only copies into the destination without overwriting account identities', () => {
+  const guestId = journalCopyIdentity('G', '1');
+  const accountId = journalCopyIdentity('A', '0');
+  const sharedId = journalCopyIdentity('A', '1');
+  const guest: JournalImportSnapshot = { version: 1, checkpoint: { grantId: 'g', sourceAccount: 'G', cursor: null, done: true }, copies: {
+    [guestId]: { identity: guestId, sourceProduct: 'journal', sourceAccount: 'G', sourceId: '1', sourceRevision: revision(1), createdAt: date, importedAt: date, text: 'Guest', edited: true, deleted: false },
+    [sharedId]: { identity: sharedId, sourceProduct: 'journal', sourceAccount: 'A', sourceId: '1', sourceRevision: revision(1), createdAt: date, importedAt: date, text: 'Guest shared', edited: true, deleted: false },
+  } };
+  const account: JournalImportSnapshot = { version: 1, checkpoint: { grantId: 'a', sourceAccount: 'A', cursor: 'c', done: false }, copies: {
+    [accountId]: { identity: accountId, sourceProduct: 'journal', sourceAccount: 'A', sourceId: '0', sourceRevision: revision(1), createdAt: date, importedAt: date, text: 'Account', edited: false, deleted: false },
+    [sharedId]: { identity: sharedId, sourceProduct: 'journal', sourceAccount: 'A', sourceId: '1', sourceRevision: revision(2), createdAt: date, importedAt: date, text: 'Account shared', edited: false, deleted: false },
+  } };
+  const merged = mergeJournalImportSnapshots(account, guest)!;
+  expect(merged.copies[guestId].text).toBe('Guest');
+  expect(merged.copies[accountId].text).toBe('Account');
+  expect(merged.copies[sharedId].text).toBe('Account shared');
+  expect(merged.checkpoint).toEqual(account.checkpoint);
+  expect(mergeJournalImportSnapshots(null, guest)).toEqual(guest);
+  expect(mergeJournalImportSnapshots(account, null)).toEqual(account);
+  expect(mergeJournalImportSnapshots(null, null)).toBeNull();
 });
 it('rejects expired grants and malformed pages without empty overwrite', async () => {
   const x = setup();
@@ -209,4 +231,68 @@ it('rejects cancellation queued between reconciliation and its caller', async ()
     throw new Error('acknowledgement lost');
   });
   await expect(x.engine.updateCopy('guest', id, { type: 'delete' })).rejects.toThrow('cancelled');
+});
+
+
+it('reports only durable pages and excludes deleted copies from progress', async () => {
+  const x = setup(2501);
+  const durableCounts: number[] = [];
+  x.onProgress.mockImplementation(() => {
+    durableCounts.push(Object.values(x.saved()!.copies).filter(copy => !copy.deleted).length);
+  });
+  await x.engine.start(x.confirmation);
+  expect(durableCounts).toEqual([1000, 2000, 2501]);
+  expect(x.onProgress.mock.calls.map(([progress]) => progress)).toEqual([
+    { persistedPages: 1, availableCopies: 1000, done: false },
+    { persistedPages: 2, availableCopies: 2000, done: false },
+    { persistedPages: 3, availableCopies: 2501, done: true },
+  ]);
+  await x.engine.deleteAllCopies('guest');
+  x.onProgress.mockClear();
+  x.readPage.mockResolvedValue({ grantId: 'g2', items: [item(0, revision(2))], nextCursor: null, done: true });
+  await x.engine.start({ ...x.confirmation, grantId: 'g2' });
+  expect(x.onProgress).toHaveBeenCalledWith({ persistedPages: 1, availableCopies: 0, done: true });
+});
+it('does not report progress for an uncommitted page', async () => {
+  const x = setup();
+  x.storage.save.mockRejectedValueOnce(new Error('full'));
+  await expect(x.engine.start(x.confirmation)).rejects.toThrow('full');
+  expect(x.onProgress).not.toHaveBeenCalled();
+});
+it('ignores observer failures but honors cancellation triggered by an observer', async () => {
+  const x = setup(2501);
+  x.onProgress.mockImplementation(() => { throw new Error('observer failed'); });
+  expect((await x.engine.start(x.confirmation)).checkpoint?.done).toBe(true);
+  const y = setup(2501);
+  y.onProgress.mockImplementation(() => { y.engine.cancel(); throw new Error('observer failed'); });
+  await expect(y.engine.start(y.confirmation)).rejects.toThrow('cancelled');
+  expect(y.readPage).toHaveBeenCalledTimes(1);
+  expect(y.saved()?.checkpoint?.cursor).toBe('1000');
+});
+it('deletes all copies in one durable snapshot, retains checkpoint and is idempotent', async () => {
+  const x = setup(2);
+  await x.engine.start(x.confirmation);
+  await x.engine.updateCopy('guest', journalCopyIdentity('A', '0'), { type: 'edit', text: 'Own' });
+  x.readPage.mockResolvedValue({ grantId: 'g2', items: [item(0, revision(2))], nextCursor: null, done: true });
+  const before = await x.engine.start({ ...x.confirmation, grantId: 'g2' });
+  x.storage.save.mockClear();
+  const deleted = await x.engine.deleteAllCopies('guest');
+  expect(x.storage.save).toHaveBeenCalledTimes(1);
+  expect(deleted.checkpoint).toEqual(before.checkpoint);
+  expect(Object.values(deleted.copies)).toHaveLength(2);
+  for (const copy of Object.values(deleted.copies)) {
+    expect(copy).toMatchObject({ deleted: true, text: '' });
+    expect(copy.incoming).toBeUndefined();
+  }
+  expect(await x.engine.deleteAllCopies('guest')).toEqual(deleted);
+  expect(x.storage.save).toHaveBeenCalledTimes(1);
+  await expect(x.engine.deleteAllCopies('foreign')).rejects.toThrow('cancelled');
+  expect(x.storage.save).toHaveBeenCalledTimes(1);
+});
+it('leaves copies intact when bulk deletion cannot persist', async () => {
+  const x = setup(2);
+  const before = await x.engine.start(x.confirmation);
+  x.storage.save.mockRejectedValueOnce(new Error('full'));
+  await expect(x.engine.deleteAllCopies('guest')).rejects.toThrow('full');
+  expect(x.saved()).toEqual(before);
 });
