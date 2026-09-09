@@ -61,3 +61,31 @@ it('retains failed cleanup and really retries revocation before cancelling the s
 it('waits for source refresh and revocation before session cancellation',async()=>{
  const f=fixture();await f.runtime.prepare('all');await f.runtime.confirmStart();const refresh=deferred<string>();f.sessions.journal.getAccessToken.mockReturnValueOnce(refresh.promise);const stopping=f.runtime.cancel();await Promise.resolve();expect(f.sessions.journal.cancel).not.toHaveBeenCalled();refresh.resolve('rotated-token');await stopping;expect(f.request).toHaveBeenCalledWith(expect.objectContaining({accessToken:'rotated-token',path:'/rest/v1/rpc/revoke_journal_import_grant'}));expect(f.sessions.journal.cancel).toHaveBeenCalledTimes(1);
 });
+
+it.each([ { getOwner: () => null }, { journalClientId: '' }, { remoteConfigured: false } ])('reports unsupported authorization while preserving local access', async overrides => {
+ const f=fixture(), runtime=createLucidJournalImportRuntime({...f.deps,...overrides});
+ await runtime.inspectLocal(); const snapshot=runtime.getState().snapshot;
+ expect(runtime.canPrepare()).toBe(false);
+ await expect(runtime.prepare('all')).rejects.toThrow();
+ expect(runtime.getState()).toMatchObject({status:'error',errorCode:'unavailable',snapshot});
+ expect(f.deps.createSession).not.toHaveBeenCalled();expect(f.request).not.toHaveBeenCalled();
+ await runtime.deleteAll();
+});
+it('preserves saved copies after failed edits and clears the error on retry',async()=>{
+ const f=fixture();await f.runtime.prepare('all');const snapshot=await f.runtime.confirmStart(),identity=Object.keys(snapshot.copies)[0];
+ f.storage.save.mockRejectedValueOnce(Error('disk'));
+ await expect(f.runtime.updateCopy(identity,{type:'edit',text:'Edit'})).rejects.toThrow();
+ expect(f.runtime.getState()).toMatchObject({errorCode:'unavailable',snapshot});
+ await f.runtime.updateCopy(identity,{type:'edit',text:'Edit'});
+ expect(f.runtime.getState().errorCode).toBeNull();
+ expect(f.runtime.getState().snapshot?.copies[identity].text).toBe('Edit');
+});
+
+it('erases departed-owner credentials even if revocation fails without refreshing',async()=>{
+ const f=fixture();await f.runtime.prepare('all');await f.runtime.confirmStart();
+ f.changeOwner();f.sessions.journal.getAccessToken.mockClear();f.sessions.journal.getAccessToken.mockRejectedValue(Error('owner changed'));f.request.mockRejectedValue(Error('offline'));
+ await f.runtime.ownerChanged();
+ expect(f.sessions.journal.getAccessToken).not.toHaveBeenCalled();
+ expect(f.sessions.journal.cancel).toHaveBeenCalled();expect(f.sessions.lucid.cancel).toHaveBeenCalled();
+ expect(f.runtime.getState().snapshot).toBeNull();
+});

@@ -16,6 +16,7 @@ export interface LucidJournalImportRuntimeState {
 export type JournalImportCopyAction = { type: 'edit'; text: string } | { type: 'delete' | 'keepLocal' | 'useIncoming' };
 export interface LucidJournalImportRuntime {
   getState(): LucidJournalImportRuntimeState;
+  canPrepare(): boolean;
   subscribe(listener: () => void): () => void;
   prepare(perimeter: JournalImportPerimeter): Promise<JournalImportPreparation>;
   confirmStart(): Promise<JournalImportSnapshot>;
@@ -29,6 +30,7 @@ export interface LucidJournalImportRuntime {
 type ProductSession = Pick<ReturnType<typeof createProductOAuthSession>, 'begin' | 'complete' | 'getAccessToken' | 'getAuthority' | 'cancel'>;
 export interface LucidJournalImportRuntimeDependencies {
   journalClientId: string; lucidClientId: string;
+  remoteConfigured?: boolean;
   getOwner(): string | null; getOwnerGeneration(): string;
   createSession(product: 'journal' | 'lucid'): Promise<ProductSession>;
   openAuthSession(url: string, redirect: string): Promise<{ type: string; url?: string }>;
@@ -52,7 +54,8 @@ export function createLucidJournalImportRuntime(deps: LucidJournalImportRuntimeD
   let selection: string[] | null = null;
   let preparedOwnerGeneration: string | null = null;
   let activeGrant: string | null = null;
-  const pendingCleanup: { source: ProductSession | null; destination: ProductSession | null; grant: string | null }[] = [];
+  let grantBearer: string | null = null;
+  const pendingCleanup: { source: ProductSession | null; destination: ProductSession | null; grant: string | null; bearer: string | null }[] = [];
   let cleanupTail: Promise<unknown> = Promise.resolve();
   let readPage: ReturnType<typeof createLucidJournalImportReader> | null = null;
   const listeners = new Set<() => void>();
@@ -81,27 +84,29 @@ export function createLucidJournalImportRuntime(deps: LucidJournalImportRuntimeD
           const revoked = await deps.request({product:'journal',accessToken:bearer,path:'/rest/v1/rpc/revoke_journal_import_grant',body:{p_grant_id:(result as {grantId:string}).grantId}});
           if (revoked !== true) throw unavailable();
         } catch {
-          pendingCleanup.push({source:session,destination:null,grant:(result as {grantId:string}).grantId});
+          pendingCleanup.push({source:session,destination:null,grant:(result as {grantId:string}).grantId,bearer});
           emit({errorCode:'cleanup_failed'});
         }
       }
       throw unavailable();
     }
+    if (path.endsWith('/create_journal_import_grant')) grantBearer = bearer;
     return result;
   };
   const stop = async (clearSnapshot: boolean) => {
     const version = ++epoch; engine.cancel(); readPage = null;
-    if (source || destination || activeGrant) pendingCleanup.push({source,destination,grant:activeGrant});
-    source = null; destination = null; activeGrant = null; selection = null; preparedOwnerGeneration = null;
+    if (source || destination || activeGrant) pendingCleanup.push({source,destination,grant:activeGrant,bearer:grantBearer});
+    source = null; destination = null; activeGrant = null; grantBearer = null; selection = null; preparedOwnerGeneration = null;
     emit({ status: 'cancelled', preparation: null, progress: null, errorCode: pendingCleanup.length ? state.errorCode : null, ...(clearSnapshot ? { snapshot: null } : {}) });
     const cleanup = async () => {
-      let failed = false;
+      let failed = false, localCleanupFailed = false;
       for (const entry of [...pendingCleanup]) {
         try {
           if (entry.grant) {
             if (!entry.source) throw unavailable();
             // Keep the source session usable until refresh and revocation finish.
-            const accessToken = await entry.source.getAccessToken();
+            const accessToken = clearSnapshot ? entry.bearer : await entry.source.getAccessToken();
+            if (!accessToken) throw unavailable();
             const revoked = await deps.request({product:'journal',accessToken,path:'/rest/v1/rpc/revoke_journal_import_grant',body:{p_grant_id:entry.grant}});
             if (revoked !== true) throw unavailable();
             entry.grant = null;
@@ -110,9 +115,20 @@ export function createLucidJournalImportRuntime(deps: LucidJournalImportRuntimeD
           if (entry.destination) { await entry.destination.cancel(); entry.destination = null; }
           pendingCleanup.splice(pendingCleanup.indexOf(entry),1);
         } catch { failed = true; }
+        finally {
+          if (clearSnapshot) {
+            // Owner departure must erase local credentials even when remote
+            // revocation is offline; never refresh the previous owner session.
+            for (const session of [entry.source, entry.destination]) {
+              try { await session?.cancel(); } catch { failed = true; localCleanupFailed = true; }
+            }
+            const index = pendingCleanup.indexOf(entry);
+            if (index >= 0) pendingCleanup.splice(index, 1);
+          }
+        }
       }
       if (epoch === version) emit({errorCode:failed?'cleanup_failed':null});
-      if (failed) throw unavailable();
+      if (clearSnapshot ? localCleanupFailed : failed) throw unavailable();
     };
     const result = cleanupTail.then(cleanup,cleanup); cleanupTail = result.catch(() => undefined); await result;
   };
@@ -120,13 +136,16 @@ export function createLucidJournalImportRuntime(deps: LucidJournalImportRuntimeD
   const local = async (action: (scope: string) => Promise<JournalImportSnapshot>) => {
     const user = deps.getOwner(), version = epoch, generation = deps.getOwnerGeneration();
     if (disposed || !generation) throw unavailable();
-    try { const result = await action(uuid(user) ? `user:${user}` : 'guest'); check(version,user,generation); emit({ snapshot: result }); return copy(result); }
-    catch { if (epoch === version && !disposed) emit({ errorCode: 'unavailable' }); throw unavailable(); }
+    try { const result = await action(uuid(user) ? `user:${user}` : 'guest'); check(version,user,generation); emit({ snapshot: result, errorCode: state.errorCode === 'cleanup_failed' ? 'cleanup_failed' : null }); return copy(result); }
+    catch { if (epoch === version && !disposed) emit({ errorCode: state.errorCode === 'cleanup_failed' ? 'cleanup_failed' : 'unavailable' }); throw unavailable(); }
   };
+  const canPrepare = () => !disposed && uuid(deps.getOwner()) && !!deps.getOwnerGeneration() && deps.remoteConfigured !== false && uuid(deps.journalClientId) && uuid(deps.lucidClientId) && deps.journalClientId !== deps.lucidClientId;
   const runtime: LucidJournalImportRuntime = {
+    canPrepare,
     getState: () => state,
     subscribe(listener) { listeners.add(listener); return () => { listeners.delete(listener); }; },
     async prepare(perimeter) {
+      if (!canPrepare()) { if (!disposed) emit({ status: 'error', errorCode: 'unavailable' }); throw unavailable(); }
       const user = owner();
       if (!['all','recent30'].includes(perimeter) || ['preparing','importing','ready'].includes(state.status) || !uuid(deps.journalClientId) || !uuid(deps.lucidClientId) || deps.journalClientId === deps.lucidClientId) throw unavailable();
       if (pendingCleanup.length || source || destination || activeGrant) await stop(false);
@@ -219,12 +238,14 @@ export async function createNativeLucidJournalImportRuntime(owner: {
     if (base.protocol !== 'https:' || base.username || base.password || base.search || base.hash || base.pathname !== '/') throw unavailable();
     return { projectUrl: base.origin, publicKey: owner.publicKey };
   };
+  let remoteConfigured = false;
+  try { configuration(); remoteConfigured = true; } catch { /* Local copies remain usable. */ }
   const now = () => Date.now();
   const base64url = (value: Uint8Array) => {
     let binary=''; for (const byte of value) binary += String.fromCharCode(byte);
     return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
   };
-  return createLucidJournalImportRuntime({ ...owner,journalClientId:journalClientId??'',lucidClientId:lucidClientId??'',
+  return createLucidJournalImportRuntime({ ...owner,remoteConfigured,journalClientId:journalClientId??'',lucidClientId:lucidClientId??'',
     storage:createLucidJournalImportStorage(),now:()=>new Date(now()),
     async createSession(product) {
       const config=configuration();

@@ -249,13 +249,14 @@ export default function LucidJournalImportScreen() {
           </View>
         ) : !busy ? (
           <LucidButton label={state.status === 'error' || state.status === 'cancelled' ? c.retry : c.prepare}
-            disabled={!flow.available} onPress={() => { void flow.prepare(perimeter); }} />
+            disabled={!flow.remoteAvailable} onPress={() => { void flow.prepare(perimeter); }} />
         ) : null}
+        {flow.available && flow.signedIn && !flow.remoteAvailable && !state.errorCode ? <Text style={body}>{c.unavailable}</Text> : null}
         {busy ? <Text accessibilityLiveRegion="polite" style={body}>{state.status === 'preparing' ? c.preparing : c.importing}</Text> : null}
         {state.progress ? <Text accessibilityLiveRegion="polite" style={body}>{c.pages}: {state.progress.persistedPages} · {c.available}: {state.progress.availableCopies}</Text> : null}
-        {state.status === 'complete' ? <Text style={body}>{c.complete} · {c.available}: {copies.length}</Text> : null}
+        {state.status === 'complete' && !state.errorCode ? <Text style={body}>{c.complete} · {c.available}: {copies.length}</Text> : null}
         {state.status === 'cancelled' ? <Text style={body}>{c.cancelled}</Text> : null}
-        {state.status === 'error' ? <Text accessibilityRole="alert" style={body}>{state.errorCode === 'cleanup_failed' ? c.cleanup : state.errorCode === 'unavailable' ? c.unavailable : c.error}</Text> : null}
+        {state.errorCode || state.status === 'error' ? <Text accessibilityRole="alert" style={body}>{state.errorCode === 'cleanup_failed' ? c.cleanup : state.errorCode === 'unavailable' ? c.unavailable : c.error}</Text> : null}
         {busy || state.status === 'ready' || state.errorCode === 'cleanup_failed' ? <LucidButton label={c.cancel} variant="secondary" onPress={() => { void flow.cancel(); }} /> : null}
       </LucidCard>
       {!flow.signedIn ? <LucidCard>

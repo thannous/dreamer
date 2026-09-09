@@ -7,6 +7,7 @@ const mockPrepare = jest.fn();
 const mockConfirm = jest.fn();
 const mockCancel = jest.fn();
 const mockDeleteAll = jest.fn();
+let mockRemoteAvailable = true;
 let mockState: LucidJournalImportRuntimeState;
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
 jest.mock('@/context/LucidTrainerContext', () => ({ useLucidTrainer: () => ({ content: { locale: 'en' }, userScope: 'guest' }) }));
@@ -19,11 +20,12 @@ jest.mock('@/components/lucid/LucidUI', () => {
     LucidButton: ({ label, onPress, disabled }: any) => <Pressable disabled={disabled} onPress={onPress} accessibilityRole="button"><Text>{label}</Text></Pressable> };
 });
 jest.mock('@/hooks/useLucidJournalImport', () => ({ useLucidJournalImport: () => ({
-  state: mockState, available: true, signedIn: false, prepare: mockPrepare, confirmStart: mockConfirm,
+  state: mockState, available: true, remoteAvailable: mockRemoteAvailable, signedIn: true, prepare: mockPrepare, confirmStart: mockConfirm,
   cancel: mockCancel, updateCopy: jest.fn(), deleteAll: mockDeleteAll,
 }) }));
 beforeEach(() => {
   jest.clearAllMocks();
+  mockRemoteAvailable = true;
   mockState = { status: 'idle', preparation: null, snapshot: null, progress: null, errorCode: null };
 });
 it('requires separate preparation and explicit confirmation, including empty imports', () => {
@@ -62,4 +64,18 @@ it('keeps local copies visible when remote import is unavailable and confirms bu
   expect(alert).toHaveBeenCalled();
   expect(mockDeleteAll).not.toHaveBeenCalled();
   alert.mockRestore();
+});
+
+it('disables authorization without remote configuration and explains availability', () => {
+  mockRemoteAvailable = false;
+  const { getByText } = render(<LucidJournalImportScreen />);
+  fireEvent.press(getByText('Authorize reading in Journal'));
+  expect(mockPrepare).not.toHaveBeenCalled();
+  expect(getByText('Import is unavailable in this version. Local copies remain accessible.')).toBeTruthy();
+});
+it.each(['complete', 'cancelled'] as const)('shows failures even after %s', status => {
+  mockState = { ...mockState, status, errorCode: 'cleanup_failed' };
+  const { getByRole, queryByText } = render(<LucidJournalImportScreen />);
+  expect(getByRole('alert')).toBeTruthy();
+  expect(queryByText(/Import complete/)).toBeNull();
 });

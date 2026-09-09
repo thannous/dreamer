@@ -14,6 +14,9 @@ const INITIAL: LucidJournalImportRuntimeState = {
   status: 'idle', preparation: null, snapshot: null, progress: null, errorCode: null,
 };
 
+// Shared across route remounts: old credentials must be erased before a new runtime starts.
+let credentialTeardown: Promise<void> = Promise.resolve();
+
 /** Mounting inspects local copies only; remote authorization starts with prepare. */
 export function useLucidJournalImport() {
   const { user } = useAuth();
@@ -24,23 +27,25 @@ export function useLucidJournalImport() {
     owner.current = { key: ownerKey, scope: userScope, userId: user?.id ?? null, generation: owner.current.generation + 1 };
   }
   const runtime = useRef<{ key: string; value: LucidJournalImportRuntime } | null>(null);
-  const [view, setView] = useState({ key: ownerKey, state: INITIAL, available: false });
+  const [view, setView] = useState({ key: ownerKey, state: INITIAL, available: false, remoteAvailable: false });
   useEffect(() => {
     let active = true;
     let instance: LucidJournalImportRuntime | null = null;
     let unsubscribe: (() => void) | undefined;
     const publish = () => {
       if (active && owner.current.key === ownerKey && instance) {
-        setView({ key: ownerKey, state: instance.getState(), available: true });
+        setView({ key: ownerKey, state: instance.getState(), available: true, remoteAvailable: instance.canPrepare() });
       }
     };
-    void createNativeLucidJournalImportRuntime({
+    const previousTeardown = credentialTeardown;
+    const creation = previousTeardown.then(() => createNativeLucidJournalImportRuntime({
       ...(getSupabasePublicConfiguration() ?? {}),
       getOwner: () => owner.current.userId,
       getOwnerGeneration: () => String(owner.current.generation),
-    }).then(async created => {
+    }));
+    void creation.then(async created => {
       instance = created;
-      if (!active || owner.current.key !== ownerKey) { await created.dispose(); return; }
+      if (!active || owner.current.key !== ownerKey) return;
       runtime.current = { key: ownerKey, value: created };
       unsubscribe = created.subscribe(publish);
       publish();
@@ -48,17 +53,15 @@ export function useLucidJournalImport() {
       publish();
     }).catch(() => {
       if (active && owner.current.key === ownerKey) {
-        setView({ key: ownerKey, state: { ...INITIAL, status: 'error', errorCode: 'unavailable' }, available: !!instance });
+        setView({ key: ownerKey, state: { ...INITIAL, status: 'error', errorCode: 'unavailable' }, available: !!instance, remoteAvailable: instance?.canPrepare() ?? false });
       }
     });
     return () => {
       active = false;
       unsubscribe?.();
       if (runtime.current?.key === ownerKey) runtime.current = null;
-      if (instance) {
-        void instance.ownerChanged().catch(() => undefined);
-        void instance.dispose().catch(() => undefined);
-      }
+      credentialTeardown = creation.then(created => created.dispose(), () => previousTeardown);
+      void credentialTeardown.catch(() => undefined);
     };
   }, [ownerKey]);
 
@@ -67,9 +70,9 @@ export function useLucidJournalImport() {
     if (!current || current.key !== ownerKey || owner.current.key !== ownerKey) return false;
     try { await action(current.value); return true; } catch { return false; /* Runtime publishes a safe error code. */ }
   };
-  const current = view.key === ownerKey ? view : { state: INITIAL, available: false };
+  const current = view.key === ownerKey ? view : { state: INITIAL, available: false, remoteAvailable: false };
   return {
-    state: current.state, available: current.available, signedIn: !!user,
+    state: current.state, available: current.available, remoteAvailable: current.remoteAvailable, signedIn: !!user,
     prepare: (perimeter: JournalImportPerimeter) => run(engine => engine.prepare(perimeter)),
     confirmStart: () => run(engine => engine.confirmStart()),
     inspectLocal: () => run(engine => engine.inspectLocal()),
