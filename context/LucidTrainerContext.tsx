@@ -106,6 +106,8 @@ import {
 } from '@/services/lucidMorningVoiceNoteStorage';
 import {
   clearLucidTrainerLocalData,
+  clearLucidTrainerClaimedGuestData,
+  clearLucidTrainerRetainedGuestCopies,
   getLucidTrainerState,
   loadLucidTrainerState,
   loadLucidTrainerSyncQueue,
@@ -590,7 +592,7 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
         // active reminders. Reminder reconciliation remains account-scoped.
         clearScope: async (scope) => {
           assertClaimActive();
-          await clearLucidTrainerLocalData(scope, undefined, async () => {});
+          await clearLucidTrainerClaimedGuestData(scope);
           assertClaimActive();
         },
       },
@@ -1401,6 +1403,12 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       await clearLucidTrainerLocalData(userScope);
       if (activeScopeRef.current !== userScope || guestClaimGeneration.current !== generation) {
         throw new Error('Local data reset cancelled or account changed');
+      }
+      if (userScope !== 'guest') {
+        await clearLucidTrainerRetainedGuestCopies();
+        if (activeScopeRef.current !== userScope || guestClaimGeneration.current !== generation) {
+          throw new Error('Local data reset cancelled or account changed');
+        }
       }
       setLoading(true);
       await load();
