@@ -31,6 +31,50 @@ const DISABLED_OPACITY = 0.45;
 // haut : le contenu doit réserver de quoi passer dessous sans s'y cacher.
 export const LUCID_TAB_BAR_INSET = 92;
 
+export function LucidScreenHeader({
+  eyebrow,
+  eyebrowTone = 'muted',
+  title,
+  subtitle,
+  trailing,
+  colorMode = 'theme',
+}: {
+  eyebrow?: string;
+  eyebrowTone?: 'muted' | 'accent';
+  title?: string;
+  subtitle?: string;
+  trailing?: ReactNode;
+  colorMode?: 'theme' | 'dark';
+}) {
+  const { colors, mode } = useTheme();
+  const palette = getLucidPalette(colors, colorMode === 'dark' ? 'dark' : mode);
+  return (eyebrow || title || subtitle || trailing) ? (
+    <View style={styles.headerRow}>
+      <View style={styles.headerCopy}>
+        {eyebrow ? (
+          <Text
+            style={[
+              styles.eyebrow,
+              { color: eyebrowTone === 'accent' ? palette.accentStrong : palette.textMuted },
+            ]}
+          >
+            {eyebrow}
+          </Text>
+        ) : null}
+        {title ? (
+          <Text accessibilityRole="header" style={[styles.title, { color: palette.text }]}>
+            {title}
+          </Text>
+        ) : null}
+        {subtitle ? (
+          <Text style={[styles.subtitle, { color: palette.textSecondary }]}>{subtitle}</Text>
+        ) : null}
+      </View>
+      {trailing}
+    </View>
+  ) : null;
+}
+
 export function LucidScreen({
   children,
   background,
@@ -77,7 +121,7 @@ export function LucidScreen({
   const palette = getLucidPalette(colors, colorMode === 'dark' ? 'dark' : mode);
   const insets = useSafeAreaInsets();
   const content = (
-    <ScreenContainer style={styles.screenContainer} maxWidth={760}>
+    <ScreenContainer style={styles.screenContainer} maxWidth={760} fillContent={!scroll}>
       <View
         style={[
           styles.content,
@@ -89,31 +133,8 @@ export function LucidScreen({
         ]}
       >
         {status ? <View style={styles.statusRow}><LucidGlass radius={16} style={styles.statusGlass}>{status}</LucidGlass></View> : null}
-        {(eyebrow || title || subtitle || trailing) && (
-          <View style={styles.headerRow}>
-            <View style={styles.headerCopy}>
-              {eyebrow ? (
-                <Text
-                  style={[
-                    styles.eyebrow,
-                    { color: eyebrowTone === 'accent' ? palette.accentStrong : palette.textMuted },
-                  ]}
-                >
-                  {eyebrow}
-                </Text>
-              ) : null}
-              {title ? (
-                <Text accessibilityRole="header" style={[styles.title, { color: palette.text }]}>
-                  {title}
-                </Text>
-              ) : null}
-              {subtitle ? (
-                <Text style={[styles.subtitle, { color: palette.textSecondary }]}>{subtitle}</Text>
-              ) : null}
-            </View>
-            {trailing}
-          </View>
-        )}
+        <LucidScreenHeader eyebrow={eyebrow} eyebrowTone={eyebrowTone} title={title}
+          subtitle={subtitle} trailing={trailing} colorMode={colorMode} />
         {children}
       </View>
     </ScreenContainer>
