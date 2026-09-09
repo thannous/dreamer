@@ -11,6 +11,8 @@
     "reflection:eval:run": "node scripts/run-reflection-evaluation.cjs",
     "reflection:eval:followup:check": "deno check --no-lock supabase/functions/api/evaluation/ti559/evaluate.ts && deno test --no-lock --allow-read=supabase/functions/api/evaluation/ti559 supabase/functions/api/evaluation/ti559/core.test.ts supabase/functions/api/evaluation/ti559/followup.test.ts && node --test scripts/run-reflection-evaluation.test.cjs",
     "reflection:eval:followup:preview": "deno run --no-lock --allow-read=supabase/functions/api/evaluation/ti559 --allow-env=GEMINI_MODEL supabase/functions/api/evaluation/ti559/evaluate.ts --suite=followup",
+    "reflection:chat:preview": "deno run --no-lock --allow-read=supabase/functions/api/routes/chat.ts supabase/functions/api/evaluation/ti559/chat-latency.ts",
+    "reflection:chat:run": "node scripts/run-reflection-evaluation.cjs --chatlite",
     "reflection:eval:models:check": "deno check --no-lock supabase/functions/api/evaluation/ti559/evaluate-models.ts && node --test scripts/run-reflection-evaluation.test.cjs",
     "reflection:eval:models:preview": "deno run --no-lock --allow-read=supabase/functions/api/evaluation/ti559 supabase/functions/api/evaluation/ti559/evaluate-models.ts",
     "reflection:eval:models:run": "node scripts/run-reflection-evaluation.cjs --gemini38",
