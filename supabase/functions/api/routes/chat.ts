@@ -6,6 +6,7 @@ import {
   callGeminiWithFallback,
   classifyGeminiError,
   extractModelParts,
+  GeminiChatStream,
   GEMINI_FLASH_LITE_MODEL,
   GEMINI_CHAT_MODEL,
   type GeminiGenerationConfig,
@@ -165,6 +166,16 @@ const sanitizeParts = (parts: unknown): GeminiPart[] | undefined => {
       const thoughtSignature = typeof candidate.thoughtSignature === 'string'
         ? candidate.thoughtSignature
         : undefined;
+      const thoughtSummary = Array.isArray(candidate.thoughtSummary)
+        && candidate.thoughtSummary.length <= 64
+        && candidate.thoughtSummary.every((block: any) =>
+          (block?.type === 'text' && typeof block.text === 'string' && block.text.length <= 32000)
+          || (block?.type === 'image' && typeof block.data === 'string' && block.data.length <= 256000
+            && typeof block.mime_type === 'string' && block.mime_type.length <= 100))
+        ? candidate.thoughtSummary.map((block: any) => block.type === 'text'
+          ? { type: 'text' as const, text: block.text }
+          : { type: 'image' as const, data: block.data, mime_type: block.mime_type })
+        : undefined;
       const inlineData =
         candidate.inlineData
         && typeof candidate.inlineData === 'object'
@@ -181,6 +192,7 @@ const sanitizeParts = (parts: unknown): GeminiPart[] | undefined => {
         ...(text ? { text } : {}),
         ...(thought != null ? { thought } : {}),
         ...(thoughtSignature ? { thoughtSignature } : {}),
+        ...(thoughtSummary !== undefined ? { thoughtSummary } : {}),
         ...(inlineData ? { inlineData } : {}),
       };
     })
@@ -248,6 +260,20 @@ const toContentParts = (message: StoredChatMessage): GeminiPart[] => {
   return text ? [{ text }] : [];
 };
 
+export const sanitizeGuestModelParts = (parts: unknown[], text: string): GeminiPart[] => {
+  if (parts.length > 128 || JSON.stringify(parts).length > 512000) throw new Error('Chat history parts exceed limit');
+  const safe = sanitizeParts(parts);
+  if (parts.some((part: any, index) => part?.thoughtSummary !== undefined && safe?.[index]?.thoughtSummary === undefined)) throw new Error('Invalid thought summary');
+  if (!safe || safe.length !== parts.length || safe.some(part => part.inlineData
+    || (part.thought && (!part.thoughtSignature || part.thoughtSignature.length > 256000)))) {
+    throw new Error('Invalid chat history parts');
+  }
+  if (safe.filter(part => !part.thought).map(part => part.text ?? '').join('').trim() !== text) {
+    throw new Error('Chat history text mismatch');
+  }
+  return safe;
+};
+
 const sanitizeClientHistoryMessage = (message: unknown): StoredChatMessage | null => {
   if (!message || typeof message !== 'object') return null;
 
@@ -262,7 +288,7 @@ const sanitizeClientHistoryMessage = (message: unknown): StoredChatMessage | nul
   return {
     role,
     text,
-    parts: [{ text }],
+    parts: role === 'model' && Array.isArray(candidate.parts) ? sanitizeGuestModelParts(candidate.parts, text) : [{ text }],
     ...(meta ? { meta } : {}),
   };
 };
@@ -730,25 +756,20 @@ export async function handleChat(
           const send = (payload: unknown) =>
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
           let accumulated = '';
-          let finalInteraction: any = null;
+          const interaction = new GeminiChatStream();
           try {
             for await (const event of events) {
-              if (
-                event?.event_type === 'step.delta'
-                && event?.delta?.type === 'text'
-                && typeof event.delta.text === 'string'
-              ) {
-                accumulated += event.delta.text;
-                send({ delta: event.delta.text });
-              } else if (event?.event_type === 'interaction.completed') {
-                finalInteraction = event?.interaction ?? null;
+              const delta = interaction.push(event);
+              if (delta) {
+                accumulated += delta;
+                send({ delta });
               }
             }
 
+            const rawParts = interaction.finish();
             const reply = accumulated.trim();
             if (!reply) throw new Error('Empty model response');
 
-            const rawParts = finalInteraction ? extractModelParts(finalInteraction) : null;
             const modelMessage = buildModelMessage(
               reply,
               rawParts && rawParts.length > 0 ? rawParts : [{ text: reply }]
@@ -789,6 +810,7 @@ export async function handleChat(
       throw new Error('Empty model response');
     }
 
+    if (raw?.status !== 'completed') throw new Error('Incomplete interaction');
     const modelMessage = buildModelMessage(reply.trim(), extractModelParts(raw));
     await persistModelMessage(modelMessage);
 

@@ -3,6 +3,7 @@ import { AI_LANGUAGES } from '../lib/aiLanguage.ts';
 import { ANALYZE_DREAM_SCHEMA, CATEGORIZE_DREAM_SCHEMA } from '../lib/schemas.ts';
 import {
   buildAnalysisPrompt,
+  groundedAnalysisQuote,
   REFLECTION_POLICY,
   ANALYSIS_PROMPT_VERSION,
   discloseAnalysisExcerpt,
@@ -58,7 +59,7 @@ Deno.test('prompt keeps malicious transcript as JSON data and distinguishes omit
 
 // These assertions pin the generation contract, not actual provider obedience.
 Deno.test('revised policy keeps partial recall and inferred scene details out of factual observations', () => {
-  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-09-09.1');
+  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-09-09.2');
   assertStringIncludes(REFLECTION_POLICY, 'A partial memory is not the complete dream');
   assertStringIncludes(REFLECTION_POLICY, 'do not add spatial relationships, causes, intentions or motives');
   assertStringIncludes(REFLECTION_POLICY, 'a window and a light do not establish where the light is');
@@ -73,11 +74,20 @@ Deno.test('all language prompts retain emotional and quote grounding alongside t
     assertStringIncludes(prompt, REFLECTION_POLICY);
     assertStringIncludes(prompt, 'Absence of fear is not evidence of safety or serenity');
     assertStringIncludes(prompt, 'curiosity alone is not evidence of calm');
-    assertStringIncludes(prompt, 'an optional faithful reformulation of reported details, or an empty string');
-    assertStringIncludes(prompt, 'Poetic wording must not introduce unreported locations');
+    assertStringIncludes(prompt, 'an exact contiguous excerpt copied verbatim from the supplied account, or an empty string');
+    assertStringIncludes(prompt, 'Do not rephrase, combine separated passages');
     assertStringIncludes(prompt, 'no minimum word count');
     assertStringIncludes(prompt, 'Use Unknown when the account does not establish a type');
     assertStringIncludes(prompt, 'Only an excerpt is available');
     assertEquals(prompt.endsWith(JSON.stringify(transcript)), true);
   }
+});
+
+Deno.test('only verbatim source excerpts survive as shareable quotes', () => {
+  const source = "Ma sœur m’a donné une enveloppe fermée. Puis le réveil a sonné.";
+  assertEquals(groundedAnalysisQuote('une enveloppe fermée', source), 'une enveloppe fermée');
+  for (const value of ['une enveloppe scellée', 'Le réveil m’a réveillé.', 'Ma sœur puis le réveil', null, {}]) {
+    assertEquals(groundedAnalysisQuote(value, source), '');
+  }
+  assertEquals(source, "Ma sœur m’a donné une enveloppe fermée. Puis le réveil a sonné.");
 });

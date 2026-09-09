@@ -1,7 +1,7 @@
-import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { assertEquals, assertThrows } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import type { ApiContext } from '../types.ts';
-import { handleChat } from './chat.ts';
+import { handleChat, sanitizeGuestModelParts } from './chat.ts';
 
 const buildContext = (body: Record<string, unknown>) => ({
   req: new Request('https://example.test/functions/v1/api/chat', {
@@ -92,4 +92,13 @@ Deno.test('chat replays an authenticated completed turn without provider work', 
     },
   });
   assertEquals(rpcCalls, ['begin_authenticated_chat_turn']);
+});
+
+Deno.test('guest history preserves opaque signed model steps after JSON reload', () => {
+  const parts = [{ thought: true, thoughtSignature: 'fixture-signature', thoughtSummary: [{ type: 'text' as const, text: 'private summary' }] }, { text: 'Visible answer' }];
+  assertEquals(sanitizeGuestModelParts(JSON.parse(JSON.stringify(parts)), 'Visible answer'), parts);
+  assertThrows(() => sanitizeGuestModelParts([{ thought: true, thoughtSignature: 'x', thoughtSummary: [{ type: 'tool', command: 'x' }] }, { text: 'Answer' }], 'Answer'));
+  assertThrows(() => sanitizeGuestModelParts([{ thought: true }, { text: 'Answer' }], 'Answer'));
+  assertThrows(() => sanitizeGuestModelParts([{ text: 'Other answer' }], 'Answer'));
+  assertThrows(() => sanitizeGuestModelParts(Array(129).fill({ text: 'a' }), 'a'));
 });

@@ -1,0 +1,6 @@
+{
+  "requests": 7,
+  "dispatchedTurn": 7,
+  "model": "gemini-3.5-flash-lite",
+  "cap": 20
+}

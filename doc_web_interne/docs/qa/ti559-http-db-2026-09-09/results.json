@@ -1,0 +1,121 @@
+{
+  "fixtureId": "0651676f-7eb9-4890-a1bd-5c718d3cb0bc",
+  "dreamId": 126225,
+  "provider": "synthetic SSE fixture",
+  "turns": 20,
+  "persistedMessages": 40,
+  "signedModelMessages": 20,
+  "requests": [
+    {
+      "turn": 1,
+      "thoughts": 0,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 2,
+      "thoughts": 1,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 3,
+      "thoughts": 2,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 4,
+      "thoughts": 3,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 5,
+      "thoughts": 4,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 6,
+      "thoughts": 5,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 7,
+      "thoughts": 6,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 8,
+      "thoughts": 7,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 9,
+      "thoughts": 8,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 10,
+      "thoughts": 9,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 11,
+      "thoughts": 10,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 12,
+      "thoughts": 10,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 13,
+      "thoughts": 10,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 14,
+      "thoughts": 10,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 15,
+      "thoughts": 10,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 16,
+      "thoughts": 10,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 17,
+      "thoughts": 10,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 18,
+      "thoughts": 10,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 19,
+      "thoughts": 10,
+      "hasUserAssociation": true
+    },
+    {
+      "turn": 20,
+      "thoughts": 10,
+      "hasUserAssociation": true
+    }
+  ],
+  "duplicateNoProvider": true,
+  "otherAccountDenied": true,
+  "transcriptUnchanged": true,
+  "analysisUnchanged": true,
+  "associationStoredAsUserMessage": true,
+  "auth": "real local password login + getUser",
+  "database": "local Postgres and real admission/completion RPC",
+  "limitations": [
+    "No real Gemini quality proof",
+    "No Android UI proof"
+  ]
+}

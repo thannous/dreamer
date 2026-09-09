@@ -1,0 +1,6 @@
+{
+  "requests": 24,
+  "slot": 24,
+  "cap": 24,
+  "model": "gemini-3.8-flash"
+}
