@@ -66,8 +66,8 @@ Deno.test('synchronous dream input keeps a long stored transcript and derives a 
   assertEquals(parsed.transcript, stored);
   assertEquals(parsed.lang, 'fr');
   const promptCopy = boundTranscriptForPrompt(parsed.transcript);
-  assertEquals(promptCopy.truncated, true);
-  assertEquals(promptCopy.text.length, 6000);
+  assertEquals(promptCopy.truncated, false);
+  assertEquals(promptCopy.text.length, 10_000);
   assertEquals(parsed.transcript.length, 10_000);
 
   const overAbuse = parseDreamTextInput({
