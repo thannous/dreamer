@@ -114,6 +114,11 @@ const SUPABASE_ANON_KEY = envAnon || extraAnon;
 
 export const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 
+/** Public project configuration only; never returns a session or privileged key. */
+export function getSupabasePublicConfiguration(): { projectUrl: string; publicKey: string } | null {
+  return SUPABASE_URL && SUPABASE_ANON_KEY ? { projectUrl: SUPABASE_URL, publicKey: SUPABASE_ANON_KEY } : null;
+}
+
 if (!isSupabaseConfigured) {
   console.warn(
     'Missing EXPO_PUBLIC_SUPABASE_URL or EXPO_PUBLIC_SUPABASE_ANON_KEY. Auth will be disabled until configured.'
