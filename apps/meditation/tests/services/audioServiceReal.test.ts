@@ -277,17 +277,21 @@ describe('audioServiceReal session timeline', () => {
   });
 
   it('does not turn an interruption-time native reset into a full source loop', () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-08-28T16:00:00.000Z'));
     const player = createSessionPlayer(1, 600, 300);
     player.addListener('playbackStatusUpdate', jest.fn());
 
     player.play();
     nativeListener?.(statusAt(37.367));
-    expect(player.currentTime).toBe(37.367);
+    expect(player.currentTime).toBeCloseTo(37.367, 6);
 
     nativePlayer.playing = false;
     nativePlayer.currentTime = 0;
+    jest.advanceTimersByTime(45_000);
 
-    expect(player.currentTime).toBe(37.367);
+    expect(player.currentTime).toBeCloseTo(37.367, 6);
+    jest.useRealTimers();
   });
 
   it('refreshes lock-screen state once when Android auto-resumes after audio-focus loss', () => {

@@ -1,8 +1,9 @@
 import { assertEquals, assertRejects } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 import { guardedFetch, validate } from './completion.ts';
-Deno.test('completion corpus preserves historical cases and covers the real truncation boundary', async () => {
- const fixtures = validate(JSON.parse(await Deno.readTextFile(new URL('./completion-fixtures.json', import.meta.url))));
- const originals = JSON.parse(await Deno.readTextFile(new URL('./followup-fixtures.json', import.meta.url)));
+import completionFixtures from './completion-fixtures.json' with { type: 'json' };
+import originals from './followup-fixtures.json' with { type: 'json' };
+Deno.test('completion corpus preserves historical cases and covers the real truncation boundary', () => {
+ const fixtures = validate(completionFixtures);
  assertEquals(fixtures.slice(0,6), originals);
  assertEquals(fixtures.length,12);
 });
