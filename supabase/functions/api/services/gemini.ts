@@ -9,11 +9,16 @@ export type GeminiInlineData = {
   mimeType: string;
 };
 
+export type GeminiThoughtSummaryContent =
+  | { type: 'text'; text: string }
+  | { type: 'image'; data: string; mime_type: string };
+
 export type GeminiPart = {
   text?: string;
   inlineData?: GeminiInlineData;
   thought?: boolean;
   thoughtSignature?: string;
+  thoughtSummary?: GeminiThoughtSummaryContent[];
 };
 
 export type GeminiContent = {
@@ -99,10 +104,9 @@ type InteractionContentBlock =
 type InteractionInputStep = {
   type: 'user_input' | 'model_output';
   content: InteractionContentBlock[];
-};
+} | { type: 'thought'; signature: string; summary?: GeminiThoughtSummaryContent[] };
 
-// Thought parts are dropped on input: stateless Interactions turns carry plain
-// content blocks, and this API has no tool calls that would need signatures.
+// Thought blocks are emitted separately by toInteractionInput, never as visible text.
 const toContentBlocks = (parts: GeminiPart[]): InteractionContentBlock[] => {
   const blocks: InteractionContentBlock[] = [];
   for (const part of parts) {
@@ -131,12 +135,22 @@ const toInteractionInput = (
 
   const steps: InteractionInputStep[] = [];
   for (const content of contents) {
-    const blocks = toContentBlocks(content?.parts ?? []);
-    if (blocks.length === 0) continue;
-    steps.push({
-      type: content.role === 'model' ? 'model_output' : 'user_input',
-      content: blocks,
-    });
+    let pending: GeminiPart[] = [];
+    const flush = () => {
+      const blocks = toContentBlocks(pending);
+      if (blocks.length) steps.push({ type: content.role === 'model' ? 'model_output' : 'user_input', content: blocks });
+      pending = [];
+    };
+    for (const part of content.parts ?? []) {
+      if (part.thought === true) {
+        flush();
+        if (content.role === 'model' && part.thoughtSignature) {
+          steps.push({ type: 'thought', signature: part.thoughtSignature,
+            ...(part.thoughtSummary !== undefined ? { summary: part.thoughtSummary } : {}) });
+        }
+      } else pending.push(part);
+    }
+    flush();
   }
   return steps;
 };
@@ -243,6 +257,7 @@ export const extractModelParts = (interaction: any): GeminiPart[] => {
     if (step?.type === 'thought') {
       parts.push({
         thought: true,
+        ...(Array.isArray(step.summary) ? { thoughtSummary: structuredClone(step.summary) } : {}),
         ...(typeof step.signature === 'string' && step.signature
           ? { thoughtSignature: step.signature }
           : {}),
@@ -262,6 +277,70 @@ export const extractModelParts = (interaction: any): GeminiPart[] => {
   }
   return parts;
 };
+
+/** Rebuild the stateless text-chat timeline; thought content never becomes a UI delta. */
+export class GeminiChatStream {
+  private steps = new Map<number, any>();
+  private stopped = new Set<number>();
+  private completed = false;
+
+  push(event: any): string {
+    if (this.completed) throw new Error('Event after completed interaction');
+    if (event?.event_type === 'interaction.completed') {
+      if (event.interaction?.status && event.interaction.status !== 'completed') throw new Error('Incomplete interaction');
+      this.completed = true;
+      return '';
+    }
+    if (event?.event_type === 'interaction.failed' || event?.event_type === 'error'
+      || ['failed', 'cancelled', 'requires_action'].includes(event?.interaction?.status)) {
+      throw new Error('Incomplete interaction');
+    }
+    if (!['step.start', 'step.delta', 'step.stop'].includes(event?.event_type)) return '';
+    const index = event.index;
+    if (!Number.isSafeInteger(index) || index < 0) throw new Error('Invalid stream step index');
+    if (event.event_type === 'step.start') {
+      if (this.steps.has(index) || !['thought', 'model_output'].includes(event.step?.type)) throw new Error('Unsupported stream step');
+      const step = structuredClone(event.step);
+      this.steps.set(index, step);
+      return step.type === 'model_output' ? (step.content ?? []).filter((b: any) => b.type === 'text').map((b: any) => b.text).join('') : '';
+    }
+    const step = this.steps.get(index);
+    if (!step || this.stopped.has(index)) throw new Error('Invalid stream step lifecycle');
+    if (event.event_type === 'step.stop') {
+      this.stopped.add(index);
+      return '';
+    }
+    const delta = event.delta;
+    if (step.type === 'thought' && delta?.type === 'thought_signature' && typeof delta.signature === 'string') {
+      step.signature = (step.signature ?? '') + delta.signature;
+      return '';
+    }
+    if (step.type === 'thought' && delta?.type === 'thought_summary') {
+      const block = delta.content;
+      if (block?.type !== 'text' || typeof block.text !== 'string') throw new Error('Unsupported thought summary delta');
+      step.summary ??= [];
+      const last = step.summary.at(-1);
+      if (last?.type === 'text') last.text += block.text;
+      else step.summary.push(structuredClone(block));
+      return '';
+    }
+    if (step.type === 'model_output' && delta?.type === 'text' && typeof delta.text === 'string') {
+      step.content ??= [];
+      const last = step.content.at(-1);
+      if (last?.type === 'text') last.text += delta.text;
+      else step.content.push({ type: 'text', text: delta.text });
+      return delta.text;
+    }
+    throw new Error('Unsupported chat stream delta');
+  }
+
+  finish(): GeminiPart[] {
+    if (!this.completed || !this.steps.size || this.stopped.size !== this.steps.size) throw new Error('Incomplete interaction');
+    const steps = [...this.steps.entries()].sort(([a], [b]) => a - b).map(([, step]) => step);
+    if (steps.some(step => step.type === 'thought' && !step.signature)) throw new Error('Missing thought signature');
+    return extractModelParts({ steps });
+  }
+}
 
 type GeminiRequestOptions = {
   apiKey: string;

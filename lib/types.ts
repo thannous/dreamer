@@ -6,6 +6,7 @@ export interface ChatMessagePart {
   text?: string;
   thought?: boolean;
   thoughtSignature?: string;
+  thoughtSummary?: ({ type: 'text'; text: string } | { type: 'image'; data: string; mime_type: string })[];
   inlineData?: {
     data: string;
     mimeType: string;

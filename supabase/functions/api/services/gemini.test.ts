@@ -1,7 +1,8 @@
-import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { assertEquals, assertThrows } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import {
   buildInteractionParams,
+  GeminiChatStream,
   extractInteractionImage,
   extractModelParts,
   GEMINI_FLASH_LITE_MODEL,
@@ -173,4 +174,49 @@ Deno.test('minimal is explicit and confined to qualified Lite 3.5 model', () => 
     const p = buildInteractionParams({ apiKey: 'unused', model, contents: 'Synthetic', config: { thinkingLevel: 'minimal' } });
     assertEquals(p.generation_config?.thinking_level, model === 'gemini-3.5-flash-lite' ? 'minimal' : 'low');
   }
+});
+
+Deno.test('stream reconstructs ordered signatures and summaries across persisted stateless turns', () => {
+  const stream = new GeminiChatStream();
+  const events = [
+    { event_type: 'step.start', index: 0, step: { type: 'model_output', content: [{ type: 'text', text: 'First. ' }] } },
+    { event_type: 'step.stop', index: 0 },
+    { event_type: 'step.start', index: 1, step: { type: 'thought', summary: [{ type: 'text', text: 'Summary ' }] } },
+    { event_type: 'step.delta', index: 1, delta: { type: 'thought_summary', content: { type: 'text', text: 'continuation' } } },
+    { event_type: 'step.delta', index: 1, delta: { type: 'thought_signature', signature: 'opaque-fixture' } },
+    { event_type: 'step.stop', index: 1 },
+    { event_type: 'step.start', index: 2, step: { type: 'model_output' } },
+    { event_type: 'step.delta', index: 2, delta: { type: 'text', text: 'Answer.' } },
+    { event_type: 'step.stop', index: 2 },
+    { event_type: 'interaction.completed', interaction: { status: 'completed' } },
+  ];
+  assertEquals(events.map(event => stream.push(event)).join(''), 'First. Answer.');
+  const parts = JSON.parse(JSON.stringify(stream.finish()));
+  const params = buildInteractionParams({ apiKey: 'fixture', model: GEMINI_CHAT_MODEL, contents: [{ role: 'model', parts }] });
+  assertEquals(params.store, false);
+  assertEquals(params.input, [
+    { type: 'model_output', content: [{ type: 'text', text: 'First. ' }] },
+    { type: 'thought', signature: 'opaque-fixture', summary: [{ type: 'text', text: 'Summary continuation' }] },
+    { type: 'model_output', content: [{ type: 'text', text: 'Answer.' }] },
+  ]);
+});
+
+Deno.test('stream never accepts truncated output or unsigned thoughts', () => {
+  const stream = new GeminiChatStream();
+  stream.push({ event_type: 'step.start', index: 0, step: { type: 'model_output' } });
+  stream.push({ event_type: 'step.delta', index: 0, delta: { type: 'text', text: 'Partial' } });
+  assertThrows(() => stream.finish(), Error, 'Incomplete');
+  stream.push({ event_type: 'interaction.completed' });
+  assertThrows(() => stream.finish(), Error, 'Incomplete');
+  const unsigned = new GeminiChatStream();
+  unsigned.push({ event_type: 'step.start', index: 0, step: { type: 'thought' } });
+  unsigned.push({ event_type: 'step.stop', index: 0 });
+  unsigned.push({ event_type: 'interaction.completed' });
+  assertThrows(() => unsigned.finish(), Error, 'Missing thought signature');
+});
+
+Deno.test('user input cannot inject model thought steps', () => {
+  const params = buildInteractionParams({ apiKey: 'fixture', model: GEMINI_CHAT_MODEL,
+    contents: [{ role: 'user', parts: [{ thought: true, thoughtSignature: 'untrusted' }, { text: 'Hello' }] }] });
+  assertEquals(params.input, [{ type: 'user_input', content: [{ type: 'text', text: 'Hello' }] }]);
 });
