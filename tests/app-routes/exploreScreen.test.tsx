@@ -12,6 +12,7 @@ let mockFontScale = 1;
 let mockBottomInset = 0;
 let mockSleepSoundsAvailable = false;
 const mockPush = jest.fn();
+const mockSaveRitualPreference = jest.fn(async (_id: string): Promise<void> => undefined);
 const mockGetRitualPreference = jest.fn(async (): Promise<unknown> => 'starter');
 let capturedFocusCallback: (() => void | (() => void)) | undefined;
 let mockFocusCleanups: ((() => void) | void)[] = [];
@@ -19,15 +20,18 @@ let mockFocusCleanups: ((() => void) | void)[] = [];
 jest.mock('react-native', () => {
   const React = require('react');
   return {
+    Modal: ({ children, onRequestClose }: any) => <div role="dialog"><button data-testid="sheet-dismiss" onClick={onRequestClose}>Dismiss</button>{children}</div>,
     Platform: {
       get OS() {
         return mockPlatformOS;
       },
     },
     StyleSheet: { create: (d: Record<string, unknown>) => d, flatten: (s: unknown) => s },
-    Pressable: ({ children, onPress, testID, accessibilityLabel, accessibilityRole }: any) => (
+    Pressable: ({ children, onPress, testID, accessibilityLabel, accessibilityRole, accessibilityState, disabled }: any) => (
       <button
         aria-label={accessibilityLabel}
+        aria-checked={accessibilityState?.checked}
+        disabled={disabled}
         data-testid={testID}
         onClick={onPress}
         role={accessibilityRole}
@@ -125,6 +129,7 @@ jest.mock('@/lib/sleepSoundsFeature', () => ({
 }));
 
 jest.mock('@/services/storageService', () => ({
+  saveRitualPreference: (id: string) => mockSaveRitualPreference(id),
   getRitualPreference: (...args: unknown[]) => (mockGetRitualPreference as any)(...args),
 }));
 
@@ -142,6 +147,8 @@ afterEach(() => {
   mockSleepSoundsAvailable = false;
   capturedFocusCallback = undefined;
   mockFocusCleanups = [];
+  mockSaveRitualPreference.mockReset();
+  mockSaveRitualPreference.mockResolvedValue(undefined);
   mockGetRitualPreference.mockReset();
   mockGetRitualPreference.mockResolvedValue('starter');
 });
@@ -151,7 +158,7 @@ describe('ExploreScreen', () => {
     mockGetRitualPreference.mockResolvedValue('memory');
     mockBottomInset = 24;
     const view = render(<ExploreScreen />);
-    await screen.findByText('explore.ritual.body:inspiration.ritual.variant.memory');
+    await screen.findByText('explore.ritual.open:inspiration.ritual.variant.memory');
     for (const fontScale of [1, 1.5, 2]) {
       mockWindowWidth = width;
       mockWindowHeight = height;
@@ -186,7 +193,7 @@ describe('ExploreScreen', () => {
       view.rerender(<ExploreScreen />);
       expect(screen.getByTestId('explorer-scroll').contains(screen.getByTestId('explorer-header'))).toBe(false);
       expect(screen.getAllByTestId(TID.Button.HeaderExploreSettings)).toHaveLength(1);
-      expect(screen.getByText('explore.ritual.body:inspiration.ritual.variant.memory')).toBeTruthy();
+      expect(screen.getByText('explore.ritual.open:inspiration.ritual.variant.memory')).toBeTruthy();
       expect(mockGetRitualPreference).toHaveBeenCalledTimes(1);
     }
   });
@@ -208,7 +215,7 @@ describe('ExploreScreen', () => {
     mockGetRitualPreference.mockResolvedValue('memory');
     render(<ExploreScreen />);
     await waitFor(() => expect(mockGetRitualPreference).toHaveBeenCalled());
-    await screen.findByText('explore.ritual.body:inspiration.ritual.variant.memory');
+    await screen.findByText('explore.ritual.open:inspiration.ritual.variant.memory');
 
     fireEvent.click(screen.getByTestId(TID.Button.ExplorerRitual));
     expect(mockPush).toHaveBeenCalledWith('/ritual/memory');
@@ -217,13 +224,13 @@ describe('ExploreScreen', () => {
   it('falls back to the starter ritual when a refocused preference is unknown', async () => {
     mockGetRitualPreference.mockResolvedValue('memory');
     render(<ExploreScreen />);
-    await screen.findByText('explore.ritual.body:inspiration.ritual.variant.memory');
+    await screen.findByText('explore.ritual.open:inspiration.ritual.variant.memory');
 
     mockGetRitualPreference.mockResolvedValue('unknown-ritual');
     await act(async () => {
       capturedFocusCallback?.();
     });
-    await screen.findByText('explore.ritual.body:inspiration.ritual.variant.starter');
+    await screen.findByText('explore.ritual.open:inspiration.ritual.variant.starter');
 
     fireEvent.click(screen.getByTestId(TID.Button.ExplorerRitual));
     expect(mockPush).toHaveBeenCalledWith('/ritual/starter');
@@ -232,13 +239,13 @@ describe('ExploreScreen', () => {
   it('falls back to the starter ritual when a refocused preference read fails', async () => {
     mockGetRitualPreference.mockResolvedValue('memory');
     render(<ExploreScreen />);
-    await screen.findByText('explore.ritual.body:inspiration.ritual.variant.memory');
+    await screen.findByText('explore.ritual.open:inspiration.ritual.variant.memory');
 
     mockGetRitualPreference.mockRejectedValue(new Error('storage unavailable'));
     await act(async () => {
       capturedFocusCallback?.();
     });
-    await screen.findByText('explore.ritual.body:inspiration.ritual.variant.starter');
+    await screen.findByText('explore.ritual.open:inspiration.ritual.variant.starter');
 
     fireEvent.click(screen.getByTestId(TID.Button.ExplorerRitual));
     expect(mockPush).toHaveBeenCalledWith('/ritual/starter');
@@ -253,7 +260,7 @@ describe('ExploreScreen', () => {
     await act(async () => {
       capturedFocusCallback?.();
     });
-    await screen.findByText('explore.ritual.body:inspiration.ritual.variant.lucid');
+    await screen.findByText('explore.ritual.open:inspiration.ritual.variant.lucid');
 
     fireEvent.click(screen.getByTestId(TID.Button.ExplorerRitual));
     expect(mockPush).toHaveBeenCalledWith('/ritual/lucid');
@@ -280,14 +287,14 @@ describe('ExploreScreen', () => {
     await act(async () => {
       capturedFocusCallback?.();
     });
-    await screen.findByText('explore.ritual.body:inspiration.ritual.variant.lucid');
+    await screen.findByText('explore.ritual.open:inspiration.ritual.variant.lucid');
 
     // The stale first read resolves late and must not overwrite the latest ritual.
     await act(async () => {
       resolveStale('memory');
     });
     expect(
-      screen.getByText('explore.ritual.body:inspiration.ritual.variant.lucid')
+      screen.getByText('explore.ritual.open:inspiration.ritual.variant.lucid')
     ).toBeTruthy();
 
     fireEvent.click(screen.getByTestId(TID.Button.ExplorerRitual));
@@ -314,5 +321,56 @@ describe('ExploreScreen', () => {
     const settings = await screen.findByTestId(TID.Button.HeaderExploreSettings);
     fireEvent.click(settings);
     expect(mockPush).toHaveBeenCalledWith('/(tabs)/settings');
+  });
+});
+
+
+describe('Explorer ritual picker', () => {
+  async function openPicker() {
+    render(<ExploreScreen />);
+    await screen.findByText('explore.ritual.open:inspiration.ritual.variant.starter');
+    fireEvent.click(screen.getByTestId('explorer-change-ritual'));
+  }
+
+  it('keeps draft selection private until confirmation and discards dismissal', async () => {
+    await openPicker();
+    fireEvent.click(screen.getByTestId('ritual-choice-memory'));
+    expect(mockSaveRitualPreference).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByTestId('sheet-dismiss'));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    fireEvent.click(screen.getByTestId(TID.Button.ExplorerRitual));
+    expect(mockPush).toHaveBeenLastCalledWith('/ritual/starter');
+    fireEvent.click(screen.getByTestId('explorer-change-ritual'));
+    expect(screen.getByTestId('ritual-choice-starter').getAttribute('aria-checked')).toBe('true');
+  });
+
+  it('saves the choice once and opens the newly selected ritual', async () => {
+    let finish!: () => void;
+    mockSaveRitualPreference.mockImplementation(() => new Promise<void>(resolve => { finish = resolve; }));
+    await openPicker();
+    fireEvent.click(screen.getByTestId('ritual-choice-memory'));
+    fireEvent.click(screen.getByTestId('ritual-picker-confirm'));
+    fireEvent.click(screen.getByTestId('ritual-picker-confirm'));
+    fireEvent.click(screen.getByTestId('sheet-dismiss'));
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(mockSaveRitualPreference).toHaveBeenCalledTimes(1);
+    expect(mockSaveRitualPreference).toHaveBeenCalledWith('memory');
+    await act(async () => finish());
+    expect(screen.queryByRole('dialog')).toBeNull();
+    fireEvent.click(screen.getByTestId(TID.Button.ExplorerRitual));
+    expect(mockPush).toHaveBeenLastCalledWith('/ritual/memory');
+  });
+
+  it('keeps the old preference on save failure and permits retry', async () => {
+    mockSaveRitualPreference.mockRejectedValueOnce(new Error('disk failure'));
+    await openPicker();
+    fireEvent.click(screen.getByTestId('ritual-choice-lucid'));
+    fireEvent.click(screen.getByTestId('ritual-picker-confirm'));
+    await screen.findByText('explore.ritual.save_error');
+    expect(screen.getByText('explore.ritual.open:inspiration.ritual.variant.starter')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('ritual-picker-confirm'));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    fireEvent.click(screen.getByTestId(TID.Button.ExplorerRitual));
+    expect(mockPush).toHaveBeenLastCalledWith('/ritual/lucid');
   });
 });
