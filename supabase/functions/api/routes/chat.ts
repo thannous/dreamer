@@ -1,7 +1,7 @@
 import { buildChatHistory, buildChatSystem } from '../services/chatContext.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
-import { buildDreamContextPrompt, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS } from '../lib/prompts.ts';
+import { buildDreamContextPrompt, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS, truncateForPrompt } from '../lib/prompts.ts';
 import {
   callGeminiWithFallback,
   classifyGeminiError,
@@ -316,21 +316,30 @@ const sanitizeGuestChatHistory = (chatHistory: unknown, currentUserMessage: stri
   return sanitized;
 };
 
-const normalizeGuestDreamContext = (
+export const normalizeGuestDreamContext = (
   dreamId: string,
   dreamContext: ClientDreamContext,
   currentUserMessage: string
-) => ({
-  id: dreamId,
-  user_id: null,
-  chat_history: sanitizeGuestChatHistory(dreamContext.chatHistory, currentUserMessage),
-  transcript: trimToLimit(dreamContext.transcript, GUEST_CONTEXT_LIMITS.transcript),
-  title: trimToLimit(dreamContext.title || 'Untitled Dream', GUEST_CONTEXT_LIMITS.title),
-  interpretation: trimToLimit(dreamContext.interpretation, GUEST_CONTEXT_LIMITS.interpretation),
-  shareable_quote: trimToLimit(dreamContext.shareableQuote, GUEST_CONTEXT_LIMITS.shareableQuote),
-  dream_type: trimToLimit(dreamContext.dreamType || 'Dream', GUEST_CONTEXT_LIMITS.dreamType),
-  theme: dreamContext.theme == null ? null : trimToLimit(dreamContext.theme, GUEST_CONTEXT_LIMITS.theme),
-});
+) => {
+  const transcript = truncateForPrompt(dreamContext.transcript, GUEST_CONTEXT_LIMITS.transcript);
+  const interpretation = truncateForPrompt(
+    dreamContext.interpretation,
+    GUEST_CONTEXT_LIMITS.interpretation
+  );
+  return {
+    id: dreamId,
+    user_id: null,
+    chat_history: sanitizeGuestChatHistory(dreamContext.chatHistory, currentUserMessage),
+    transcript: transcript.text,
+    title: trimToLimit(dreamContext.title || 'Untitled Dream', GUEST_CONTEXT_LIMITS.title),
+    interpretation: interpretation.text,
+    shareable_quote: trimToLimit(dreamContext.shareableQuote, GUEST_CONTEXT_LIMITS.shareableQuote),
+    dream_type: trimToLimit(dreamContext.dreamType || 'Dream', GUEST_CONTEXT_LIMITS.dreamType),
+    theme: dreamContext.theme == null ? null : trimToLimit(dreamContext.theme, GUEST_CONTEXT_LIMITS.theme),
+    transcriptTruncated: transcript.truncated,
+    interpretationTruncated: interpretation.truncated,
+  };
+};
 
 const markAuthenticatedTurnFailed = async (
   supabase: ApiContext['supabase'],
@@ -455,6 +464,8 @@ export async function handleChat(
       shareable_quote: string;
       dream_type: string;
       theme: string | null;
+      transcriptTruncated?: boolean;
+      interpretationTruncated?: boolean;
     };
     let shouldPersist = true;
     let historyWithUserMsg: StoredChatMessage[] = [];

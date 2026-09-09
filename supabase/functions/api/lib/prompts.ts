@@ -129,6 +129,8 @@ export function buildDreamContextPrompt(
     shareable_quote: string;
     dream_type: string;
     theme?: string | null;
+    transcriptTruncated?: boolean;
+    interpretationTruncated?: boolean;
   },
   lang: string
 ): { prompt: string; debug: { transcriptTruncated: boolean; interpretationTruncated: boolean } } {
@@ -137,14 +139,18 @@ export function buildDreamContextPrompt(
   const theme = dream.theme ? String(dream.theme).trim() : '';
   const quote = String(dream.shareable_quote ?? '').trim();
 
-  const { text: transcript, truncated: transcriptTruncated } = truncateForPrompt(
+  const { text: transcript, truncated: slicedTranscript } = truncateForPrompt(
     dream.transcript,
     DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS
   );
-  const { text: interpretation, truncated: interpretationTruncated } = truncateForPrompt(
+  const { text: interpretation, truncated: slicedInterpretation } = truncateForPrompt(
     dream.interpretation,
     DREAM_CONTEXT_INTERPRETATION_MAX_CHARS
   );
+  // Callers may already have bounded the copy (guest sanitize). Keep that fact so
+  // a value sitting exactly at the limit still gets the truncation marker.
+  const transcriptTruncated = slicedTranscript || dream.transcriptTruncated === true;
+  const interpretationTruncated = slicedInterpretation || dream.interpretationTruncated === true;
 
   const truncationNote = localizedForAi(lang, TRUNCATION_NOTE);
 

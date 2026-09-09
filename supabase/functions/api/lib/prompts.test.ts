@@ -58,6 +58,23 @@ Deno.test('the complete 10000-character dream reaches analysis and chat without 
   }
 });
 
+Deno.test('a pre-bounded transcript still carries the truncation marker and localized note', async () => {
+  const { buildDreamContextPrompt } = await import('./prompts.ts');
+  const bounded = 'a'.repeat(DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS);
+  const { prompt, debug } = buildDreamContextPrompt({
+    transcript: bounded,
+    title: 'Door',
+    interpretation: '',
+    shareable_quote: '',
+    dream_type: 'Unknown',
+    transcriptTruncated: true,
+  }, 'en');
+  assertEquals(debug.transcriptTruncated, true);
+  assertEquals(prompt.includes('[TRUNCATED]'), true);
+  assertEquals(prompt.includes('Note: some fields were truncated to fit context limits.'), true);
+  assertEquals(prompt.includes(JSON.stringify(bounded)), true);
+});
+
 Deno.test('analysis rejects empty transcripts and request-abuse payloads without changing a valid stored source', () => {
   assertEquals(resolveStoredTranscriptForAi('   ', AI_REQUEST_LIMITS.transcriptRequestChars).ok, false);
   assertEquals(

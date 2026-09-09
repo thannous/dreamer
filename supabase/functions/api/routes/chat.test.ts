@@ -1,7 +1,8 @@
 import { assertEquals, assertThrows } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import type { ApiContext } from '../types.ts';
-import { handleChat, sanitizeClientHistoryMessage, sanitizeGuestModelParts } from './chat.ts';
+import { buildDreamContextPrompt, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS } from '../lib/prompts.ts';
+import { handleChat, normalizeGuestDreamContext, sanitizeClientHistoryMessage, sanitizeGuestModelParts } from './chat.ts';
 
 const buildContext = (body: Record<string, unknown>) => ({
   req: new Request('https://example.test/functions/v1/api/chat', {
@@ -112,4 +113,36 @@ Deno.test('guest history preserves long signed answers without widening legacy t
   assertEquals(sanitizeClientHistoryMessage({ role: 'user', text, parts: [{ text }] })?.text?.length, 4000);
   const oversized = 'a'.repeat(32001);
   assertThrows(() => sanitizeClientHistoryMessage({ role: 'model', text: oversized, parts: [{ text: oversized }] }));
+});
+
+Deno.test('guest sanitize keeps a bounded transcript and still signals truncation past the limit', () => {
+  const omitted = 'OMITTED-TAIL';
+  const source = 'a'.repeat(DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS) + omitted;
+  const guest = normalizeGuestDreamContext('guest-dream', {
+    transcript: source,
+    title: 'Long door',
+    interpretation: '',
+    shareableQuote: '',
+    dreamType: 'Dream',
+  }, 'What did I miss?');
+
+  assertEquals(guest.transcript.length, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS);
+  assertEquals(guest.transcript.includes(omitted), false);
+  assertEquals(guest.transcriptTruncated, true);
+
+  const { prompt, debug } = buildDreamContextPrompt(guest, 'en');
+  assertEquals(debug.transcriptTruncated, true);
+  assertEquals(prompt.includes('[TRUNCATED]'), true);
+  assertEquals(prompt.includes('Note: some fields were truncated to fit context limits.'), true);
+  assertEquals(prompt.includes(JSON.stringify(guest.transcript)), true);
+});
+
+Deno.test('guest sanitize does not mark a complete 10000-character transcript as truncated', () => {
+  const source = 'b'.repeat(DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS);
+  const guest = normalizeGuestDreamContext('guest-dream', { transcript: source }, 'A question');
+  assertEquals(guest.transcript, source);
+  assertEquals(guest.transcriptTruncated, false);
+  const { prompt, debug } = buildDreamContextPrompt(guest, 'en');
+  assertEquals(debug.transcriptTruncated, false);
+  assertEquals(prompt.includes('[TRUNCATED]'), false);
 });

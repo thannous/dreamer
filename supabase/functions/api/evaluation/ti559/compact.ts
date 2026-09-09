@@ -9,7 +9,7 @@ export const OUTPUT = '/private/tmp/ti559-compact-v4-evaluation-run';
 // not regenerated or overwritten; this is a bounded regression run, not an A/B trial.
 async function main() {
   if (Deno.args.some(arg => arg !== '--execute')) throw new Error('Unknown argument');
-  if (ANALYSIS_PROMPT_VERSION !== 'analysis-2026-09-09.4') throw new Error('Prompt drift');
+  if (ANALYSIS_PROMPT_VERSION !== 'analysis-2026-09-09.5') throw new Error('Prompt drift');
   const fixtures = validate(corpus);
   const metadata = { model: MODEL, promptVersion: ANALYSIS_PROMPT_VERSION, cap: 12, fixtures,
     comparison: 'doc_web_interne/docs/qa/ti559-completion-evaluation-2026-09-09/results.json (after)',

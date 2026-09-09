@@ -58,7 +58,7 @@ Deno.test('prompt keeps malicious transcript as JSON data and distinguishes omit
 });
 
 Deno.test('analysis sends the compact policy once at system level and preserves source-only output', async () => {
-  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-09-09.4');
+  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-09-09.5');
   const originalFetch = globalThis.fetch;
   let calls = 0;
   globalThis.fetch = async (input, init) => {
