@@ -156,13 +156,13 @@ const toSystemInstruction = (
   return String(systemInstruction);
 };
 
-// Gemini 3.8 Flash and 3.5 Flash Lite do not support 'minimal'.
+// Gemini 3.8 Flash does not support minimal; Lite 3.5 is qualified separately.
 // Pin omitted levels to low rather than inheriting a provider default.
 const toThinkingLevel = (
-  thinkingLevel?: GeminiThinkingLevel
-): 'low' | 'medium' | 'high' => {
+  model: string, thinkingLevel?: GeminiThinkingLevel
+): GeminiThinkingLevel => {
   if (!thinkingLevel) return 'low';
-  return thinkingLevel === 'minimal' ? 'low' : thinkingLevel;
+  return thinkingLevel === 'minimal' && model !== 'gemini-3.5-flash-lite' ? 'low' : thinkingLevel;
 };
 
 const toResponseFormat = (
@@ -275,7 +275,7 @@ export const buildInteractionParams = (options: GeminiRequestOptions) => {
   const { model, contents, systemInstruction, config } = options;
   const system = toSystemInstruction(systemInstruction);
   const responseFormat = toResponseFormat(config);
-  const thinkingLevel = toThinkingLevel(config?.thinkingLevel);
+  const thinkingLevel = toThinkingLevel(model, config?.thinkingLevel);
   const generationConfig = {
     ...(thinkingLevel ? { thinking_level: thinkingLevel } : {}),
     ...(typeof config?.maxOutputTokens === 'number'

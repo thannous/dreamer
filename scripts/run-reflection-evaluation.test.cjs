@@ -64,3 +64,10 @@ test('chat probe is isolated and can only read its route and write its own recei
   assert.ok(args.some(x => x.startsWith('--allow-read=') && x.includes('supabase/functions/api/routes/chat.ts')));
   assert.equal(args.some(x => x.includes('/private/tmp/ti559-gemini38-evaluation-run')), false);
 });
+
+test('optimization replay has fixed evidence input and isolated output', () => {
+  const { args } = buildLaunch({}, 'chatopt');
+  assert.ok(args.includes('supabase/functions/api/evaluation/ti559/chat-optimization.ts'));
+  assert.ok(args.includes('--allow-write=/private/tmp/ti559-chat-optimization-run'));
+  assert.ok(args.some(x => x.startsWith('--allow-read=') && x.includes('ti559-chat20-2026-09-09/results.json')));
+});

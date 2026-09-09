@@ -167,3 +167,10 @@ Deno.test('interaction requests retain structured output schema with low thinkin
   assertEquals(params.generation_config, { thinking_level: 'low' });
   assertEquals(params.store, false);
 });
+
+Deno.test('minimal is explicit and confined to qualified Lite 3.5 model', () => {
+  for (const model of ['gemini-3.5-flash-lite', 'gemini-3.8-flash', 'gemini-3.7-flash']) {
+    const p = buildInteractionParams({ apiKey: 'unused', model, contents: 'Synthetic', config: { thinkingLevel: 'minimal' } });
+    assertEquals(p.generation_config?.thinking_level, model === 'gemini-3.5-flash-lite' ? 'minimal' : 'low');
+  }
+});

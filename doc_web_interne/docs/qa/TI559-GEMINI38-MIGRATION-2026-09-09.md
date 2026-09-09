@@ -1,5 +1,7 @@
 # Gemini 3.8 migration candidate and paired evaluation
 
+Latest chat update: [provenance and minimal qualification](TI559-CHAT-OPTIMIZATION-2026-09-09.md). Chat now selects minimal on Lite3.5; analysis remains low. The measurements below are historical low-vs-low model comparison.
+
 Date: 9 September 2026. Decision: **candidate prepared, no production activation or quality acceptance**. Based on PR #157 (4a38afd27); changing models does not resolve its remaining fidelity reservations.
 
 ## Changes and boundaries
