@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Alert, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
-import { LucidButton, LucidCard, LucidIconAction, LucidScreen, LucidSectionHeader } from '@/components/lucid/LucidUI';
+import { LucidButton, LucidCard, LucidIconAction, LucidScreen, LucidScreenHeader, LucidSectionHeader } from '@/components/lucid/LucidUI';
 import { getLucidPalette, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -231,9 +231,7 @@ export default function LucidJournalImportScreen() {
     } },
   ]);
   return (
-    <LucidScreen scroll={false} contentStyle={styles.listScreen} title={c.title} trailing={
-      <LucidIconAction label={c.close} icon="close" onPress={() => closeLucidRoute(router, '/lucid/data')} />
-    }>
+    <LucidScreen scroll={false} contentStyle={styles.listScreen}>
       <FlatList
         data={copies}
         keyExtractor={copy => copy.identity}
@@ -244,6 +242,9 @@ export default function LucidJournalImportScreen() {
         style={styles.list}
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={<View style={styles.group}>
+          <LucidScreenHeader title={c.title} trailing={
+            <LucidIconAction label={c.close} icon="close" onPress={() => closeLucidRoute(router, '/lucid/data')} />
+          } />
           <Text style={body}>{c.intro}</Text>
           <LucidCard>
             <Text style={body}>{c.limits}</Text>

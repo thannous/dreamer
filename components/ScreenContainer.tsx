@@ -26,7 +26,7 @@ export function ScreenContainer({
     (Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT)
     || (Platform.OS === 'android' && width >= TABLET_BREAKPOINT);
 
-  if (!isWideConstrainedLayout) {
+  if (!isWideConstrainedLayout && !fillContent) {
     return (
       <View className={className} style={style} {...rest}>
         {children}
@@ -38,7 +38,7 @@ export function ScreenContainer({
     <View className={className} style={style} {...rest}>
       {/* `maxWidth` and the desktop gutter are props, so they stay values rather than
           classes — a caller can pass any number. */}
-      <View className="w-full self-center" style={{ maxWidth, paddingHorizontal: desktopPaddingHorizontal, ...(fillContent ? { flex: 1 } : {}) }}>
+      <View className="w-full self-center" style={{ ...(isWideConstrainedLayout ? { maxWidth, paddingHorizontal: desktopPaddingHorizontal } : {}), ...(fillContent ? { flex: 1 } : {}) }}>
         {children}
       </View>
     </View>

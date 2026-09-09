@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, FlatList } from 'react-native';
 import { act, fireEvent, render } from '@testing-library/react-native';
+import { LucidScreen } from '@/components/lucid/LucidUI';
 import LucidJournalImportScreen from '@/app/lucid/journal-import';
 import type { LucidJournalImportRuntimeState } from '@/services/lucidJournalImportRuntime';
 // Keep the real VirtualizedList; only replace its native scroll host in Jest.
@@ -27,7 +28,9 @@ jest.mock('@/constants/lucidTheme', () => ({ LucidSpace: { md: 16 }, LucidType: 
 jest.mock('@/components/lucid/LucidUI', () => {
   const { View, Text, Pressable } = require('react-native');
   return { LucidScreen: ({ children }: any) => <View>{children}</View>, LucidCard: View,
-    LucidSectionHeader: ({ title }: any) => <Text>{title}</Text>, LucidIconAction: () => null,
+    LucidSectionHeader: ({ title }: any) => <Text>{title}</Text>,
+    LucidScreenHeader: ({ title, trailing }: any) => <View><Text accessibilityRole="header">{title}</Text>{trailing}</View>,
+    LucidIconAction: ({ label, onPress }: any) => <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} />,
     LucidButton: ({ label, onPress, disabled }: any) => <Pressable disabled={disabled} onPress={onPress} accessibilityRole="button"><Text>{label}</Text></Pressable> };
 });
 jest.mock('@/hooks/useLucidJournalImport', () => ({ useLucidJournalImport: () => ({
@@ -139,4 +142,16 @@ it('retains a draft outside the rendered list window', () => {
   mockState = { ...mockState, snapshot: { ...mockState.snapshot!, copies } };
   screen.rerender(<LucidJournalImportScreen />);
   expect(screen.getByDisplayValue('Draft survives unmount')).toBeTruthy();
+});
+
+it('keeps the title and close action inside the scrollable list header', () => {
+  const screen = render(<LucidJournalImportScreen />);
+  const shell = screen.UNSAFE_getByType(LucidScreen);
+  expect(shell.props.title).toBeUndefined();
+  expect(shell.props.trailing).toBeUndefined();
+  expect(shell.props.scroll).toBe(false);
+  const listHeader = screen.UNSAFE_getByType(FlatList).props.ListHeaderComponent;
+  const header = render(listHeader);
+  expect(header.getByRole('header', { name: 'Import from Journal' })).toBeTruthy();
+  expect(header.getByRole('button', { name: 'Close' })).toBeTruthy();
 });

@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -98,11 +98,33 @@ it.each(['android', 'web'] as const)('fills the bounded wide %s wrapper only whe
   rerender(<ScreenContainer testID="bounded" style={{ flex: 1 }}>Content</ScreenContainer>);
   expect(outer.firstElementChild?.getAttribute('data-native-style')).not.toContain('"flex":1');
 });
-it('keeps the bounded narrow layout in its existing parent', () => {
+it('keeps a bounded wrapper in the narrow layout', () => {
   mockPlatformOS = 'android';
   mockWindowWidth = 390;
   render(<ScreenContainer testID="bounded" style={{ flex: 1 }} fillContent>Content</ScreenContainer>);
   const outer = screen.getByTestId('bounded');
   expect(outer.getAttribute('data-native-style')).toContain('"flex":1');
-  expect(outer.firstElementChild).toBeNull();
+  expect(outer.firstElementChild?.getAttribute('data-native-style')).toContain('"flex":1');
+});
+
+it('preserves child state and mount across wide and narrow bounded layouts', () => {
+  const mounted = jest.fn();
+  const unmounted = jest.fn();
+  function StatefulChild() {
+    const [count, setCount] = React.useState(0);
+    React.useEffect(() => { mounted(); return unmounted; }, []);
+    return <button onClick={() => setCount(count + 1)}>Draft {count}</button>;
+  }
+  mockPlatformOS = 'android';
+  mockWindowWidth = 390;
+  const tree = <ScreenContainer fillContent><StatefulChild /></ScreenContainer>;
+  const { rerender } = render(tree);
+  fireEvent.click(screen.getByText('Draft 0'));
+  for (const width of [840, 390, 1280]) {
+    mockWindowWidth = width;
+    rerender(<ScreenContainer fillContent><StatefulChild /></ScreenContainer>);
+    expect(screen.getByText('Draft 1')).toBeTruthy();
+    expect(mounted).toHaveBeenCalledTimes(1);
+    expect(unmounted).not.toHaveBeenCalled();
+  }
 });
