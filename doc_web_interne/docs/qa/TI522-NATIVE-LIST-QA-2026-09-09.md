@@ -28,3 +28,5 @@ Tous les artefacts sont sous /private/tmp. Aucun changement produit ou Git par Q
 
 
 Les preuves retenues sont sauvegardées dans [ti522-native-list-2026-09-09](ti522-native-list-2026-09-09/). Les chemins /private/tmp ci-dessus décrivent le contexte d’exécution.
+
+Le [complément après corrections P2](TI522-NATIVE-P2-QA-2026-09-09.md) qualifie le header défilant, la rotation et une sauvegarde mémoire effective sur le code c6ee101d2 ; les limites de cette première passe restent historiques.
