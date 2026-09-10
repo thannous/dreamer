@@ -1,9 +1,17 @@
 /* @jest-environment jsdom */
 import React from 'react';
+import { URL as NodeURL } from 'node:url';
 import { act, cleanup, render, screen } from '@testing-library/react';
 
 let mockLucid = true;
 let mockUser: { id: string } | null = null;
+let mockPathname = '/recording';
+let mockSearchParams: Record<string, string> = {};
+let mockAuthReturn: { destination: string; createdAt: number } | null = null;
+let mockOnboardingPersisting = false;
+let mockOnboardingStatus = 'completed';
+let mockOnboardingPath: string | null = null;
+const mockCompleteAuthReturn = jest.fn().mockResolvedValue(undefined);
 // Real DreamsProvider calls this boundary; no Journal pipeline can mount without it.
 // This isolates composition, not real network traffic or the hook's own behavior.
 const mockJournal = jest.fn(() => ({ dreams: [], loaded: true, persistenceState: {}, activeAnalysis: null }));
@@ -36,11 +44,13 @@ jest.mock('expo-router', () => {
     Screen: ({ name }: { name: string }) => <div data-testid={`route:${name}`} />,
     Protected: ({ guard, children }: React.PropsWithChildren<{ guard: boolean }>) => guard ? <>{children}</> : null,
   });
-  return { Stack, router: { replace: mockReplace, push: jest.fn() }, usePathname: () => mockLucid ? '/lucid' : '/recording', useNavigationContainerRef: () => mockNavigation, useRootNavigationState: () => ({ key: 'root' }) };
+  return { Stack, router: { replace: mockReplace, push: jest.fn() }, usePathname: () => mockLucid ? '/lucid' : mockPathname, useGlobalSearchParams: () => mockSearchParams, useNavigationContainerRef: () => mockNavigation, useRootNavigationState: () => ({ key: 'root' }) };
 });
+jest.mock('@/hooks/useAuthReturnIntent', () => ({ useAuthReturnIntent: () => ({ intent: mockLucid ? null : mockAuthReturn, ready: true }) }));
+jest.mock('@/lib/authReturnIntent', () => ({ ...jest.requireActual('@/lib/authReturnIntent'), completeAuthReturn: (...args: unknown[]) => mockCompleteAuthReturn(...args) }));
 jest.mock('@/lib/appVariant', () => ({ get isLucidTrainer() { return mockLucid; } }));
 jest.mock('@/context/AuthContext', () => ({ AuthProvider: (props: React.PropsWithChildren) => mockChildren(props), useAuth: () => ({ user: mockUser, loading: false, returningGuestBlocked: false }) }));
-jest.mock('@/context/OnboardingContext', () => ({ OnboardingProvider: (props: React.PropsWithChildren) => mockChildren(props), useOnboarding: () => ({ loading: false, scope: mockUser ? `user:${mockUser.id}` : 'guest', state: { status: 'completed', pendingRecordingIntent: null } }) }));
+jest.mock('@/context/OnboardingContext', () => ({ OnboardingProvider: (props: React.PropsWithChildren) => mockChildren(props), useOnboarding: () => ({ loading: false, persisting: mockOnboardingPersisting, scope: mockUser ? `user:${mockUser.id}` : 'guest', state: { status: mockOnboardingStatus, selectedPath: mockOnboardingPath, pendingRecordingIntent: null } }) }));
 jest.mock('@/context/LanguageContext', () => ({ LanguageProvider: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/context/ThemeContext', () => ({ ThemeProvider: (props: React.PropsWithChildren) => mockChildren(props), useTheme: () => ({ mode: 'dark' }) }));
 jest.mock('@/context/SubscriptionContext', () => ({ SubscriptionProvider: (props: React.PropsWithChildren) => mockChildren(props) }));
@@ -78,14 +88,22 @@ jest.mock('@/services/storageService', () => ({
 const RootLayout: React.ComponentType = require('@/app/_layout').default;
 
 async function mountStartup() {
-  render(<RootLayout />);
+  const view = render(<RootLayout />);
   for (let index = 0; index < 8; index += 1) {
     await act(async () => { jest.advanceTimersByTime(100); await Promise.resolve(); });
   }
+  return view;
 }
 
 describe('root product composition (real root and DreamsProvider)', () => {
-  beforeEach(() => { jest.useFakeTimers(); jest.clearAllMocks(); });
+  beforeEach(() => {
+    jest.useFakeTimers(); jest.clearAllMocks();
+    mockPathname = '/recording'; mockSearchParams = {}; mockAuthReturn = null;
+    mockOnboardingPersisting = false; mockOnboardingStatus = 'completed';
+    mockOnboardingPath = null;
+    Object.defineProperty(globalThis, 'URL', { configurable: true, writable: true, value: NodeURL });
+    require('react-native').Linking.getInitialURL.mockResolvedValue(null);
+  });
   afterEach(() => { cleanup(); jest.useRealTimers(); });
 
   it.each([null, { id: 'account-with-journal' }])('keeps Lucid startup outside Journal runtime for user %j', async (user) => {
@@ -152,5 +170,107 @@ describe('root product composition (real root and DreamsProvider)', () => {
     expect(mockGuestSession).toHaveBeenCalledTimes(1);
     expect(mockMigration).toHaveBeenCalledTimes(1);
     expect(mockDreamMigration).toHaveBeenCalledTimes(1);
+  });
+
+  it('resumes a requested dream once after login and acknowledges its full identity', async () => {
+    mockLucid = false;
+    mockUser = null;
+    const view = await mountStartup();
+    mockAuthReturn = { destination: '/journal/1700000000000?remoteId=42', createdAt: Date.now() };
+    mockPathname = '/settings';
+    await act(async () => { view.rerender(<RootLayout />); });
+    mockReplace.mockClear();
+    expect(mockCompleteAuthReturn).not.toHaveBeenCalled();
+    mockUser = { id: 'owner' };
+    await act(async () => { view.rerender(<RootLayout />); });
+    await act(async () => { jest.advanceTimersByTime(100); });
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockReplace).toHaveBeenCalledWith(mockAuthReturn.destination);
+    mockPathname = '/journal/1700000000000';
+    mockSearchParams = { remoteId: '43' };
+    await act(async () => { view.rerender(<RootLayout />); });
+    expect(mockCompleteAuthReturn).not.toHaveBeenCalled();
+    mockSearchParams = { remoteId: '42' };
+    await act(async () => { view.rerender(<RootLayout />); });
+    expect(mockCompleteAuthReturn).toHaveBeenCalledWith(mockAuthReturn);
+    mockAuthReturn = null;
+    mockPathname = '/recording';
+    await act(async () => { view.rerender(<RootLayout />); jest.advanceTimersByTime(100); });
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+  });
+
+  it('lets an explicit exit from sign-in cancel the pending destination', async () => {
+    mockLucid = false;
+    mockUser = null;
+    const view = await mountStartup();
+    mockAuthReturn = { destination: '/dream-chat/42?mode=free', createdAt: Date.now() };
+    mockPathname = '/settings';
+    await act(async () => { view.rerender(<RootLayout />); });
+    mockPathname = '/journal';
+    await act(async () => { view.rerender(<RootLayout />); });
+    expect(mockCompleteAuthReturn).toHaveBeenCalledTimes(1);
+    expect(mockCompleteAuthReturn).toHaveBeenCalledWith(mockAuthReturn);
+  });
+
+  it('does not replay an already consumed cold-start link on a later login', async () => {
+    mockLucid = false;
+    mockUser = null;
+    require('react-native').Linking.getInitialURL.mockResolvedValue('noctalia://journal/42');
+    const view = await mountStartup();
+    expect(mockReplace).toHaveBeenCalledWith('/journal/42');
+    mockPathname = '/settings';
+    mockReplace.mockClear();
+    mockUser = { id: 'new-session' };
+    await act(async () => { view.rerender(<RootLayout />); });
+    await act(async () => { jest.advanceTimersByTime(100); });
+    expect(mockReplace).not.toHaveBeenCalledWith('/journal/42');
+  });
+
+  it('waits for confirmed onboarding before resuming, including after a failed write', async () => {
+    mockLucid = false;
+    mockUser = { id: 'new-owner' };
+    mockAuthReturn = { destination: '/journal/42', createdAt: Date.now() };
+    mockOnboardingStatus = 'in_progress';
+    mockPathname = '/onboarding';
+    const view = await mountStartup();
+    mockReplace.mockClear();
+    mockOnboardingStatus = 'completed'; // optimistic state before the write
+    mockOnboardingPersisting = true;
+    await act(async () => { view.rerender(<RootLayout />); jest.advanceTimersByTime(100); });
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(mockCompleteAuthReturn).not.toHaveBeenCalled();
+    mockOnboardingStatus = 'in_progress'; // failed write rolled back
+    mockOnboardingPersisting = false;
+    await act(async () => { view.rerender(<RootLayout />); jest.advanceTimersByTime(100); });
+    expect(mockReplace).not.toHaveBeenCalledWith('/journal/42');
+    mockOnboardingStatus = 'completed';
+    await act(async () => { view.rerender(<RootLayout />); });
+    await act(async () => { jest.advanceTimersByTime(100); });
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockReplace).toHaveBeenCalledWith('/journal/42');
+  });
+
+  it.each(['completed', 'skipped'])('finishes %s onboarding normally if its delegated auth return expires during persistence', async (status: string) => {
+    mockLucid = false;
+    mockUser = { id: 'new-owner' };
+    mockAuthReturn = { destination: '/journal/42', createdAt: Date.now() };
+    mockOnboardingStatus = 'in_progress';
+    mockOnboardingPath = 'dictionary';
+    mockPathname = '/onboarding';
+    const view = await mountStartup();
+    mockReplace.mockClear();
+    mockOnboardingStatus = status;
+    mockOnboardingPersisting = true;
+    await act(async () => { view.rerender(<RootLayout />); });
+    mockAuthReturn = null; // expires while the optimistic completion is saving
+    await act(async () => { view.rerender(<RootLayout />); jest.advanceTimersByTime(100); });
+    expect(mockReplace).not.toHaveBeenCalled();
+    mockOnboardingPersisting = false;
+    await act(async () => { view.rerender(<RootLayout />); });
+    await act(async () => { jest.advanceTimersByTime(100); });
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockReplace).toHaveBeenCalledWith(status === 'completed'
+      ? { pathname: '/symbol-dictionary', params: { source: 'onboarding' } }
+      : '/recording');
   });
 });

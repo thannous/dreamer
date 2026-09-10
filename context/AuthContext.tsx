@@ -3,6 +3,7 @@ import type { User } from '@supabase/supabase-js';
 import { router } from 'expo-router';
 
 import { isMockModeEnabled } from '@/lib/env';
+import { getAuthReturnSnapshot } from '@/lib/authReturnIntent';
 import { getCurrentUser, onAuthChange } from '@/lib/auth';
 import { createCircuitBreaker } from '@/lib/circuitBreaker';
 import { getPaywallTrigger } from '@/lib/analytics';
@@ -95,6 +96,10 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         console.log('[AuthContext] ensureSettingsTab: no user, skipping');
       }
       return;
+    }
+    if (!isLucidTrainer && getAuthReturnSnapshot().intent) {
+      clearStayOnSettingsIntent();
+      return; // Root navigation resumes the requested dream after its gates.
     }
     const paywallTrigger = peekReturnToPaywallTrigger();
     if (paywallTrigger) {

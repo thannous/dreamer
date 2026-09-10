@@ -101,6 +101,7 @@ export type StartupDestinationInput = {
   hasUser: boolean;
   onboardingState: OnboardingState;
   pendingNotificationUrl?: '/recording' | null;
+  pendingAuthDestination?: Href | null;
   defaultDestination?: Href;
 };
 
@@ -109,6 +110,7 @@ export type StartupDestinationReason =
   | 'onboarding'
   | 'pending_intent'
   | 'notification'
+  | 'auth_return'
   | 'default';
 
 export type StartupDestinationDecision = {
@@ -656,6 +658,11 @@ export function resolveStartupDecision(
   }
   if (!isOnboardingTerminal(input.onboardingState)) {
     return { destination: '/onboarding', reason: 'onboarding' };
+  }
+  if (input.pendingAuthDestination) {
+    return input.hasUser
+      ? { destination: input.pendingAuthDestination, reason: 'auth_return' }
+      : { destination: '/(tabs)/settings', reason: 'default' };
   }
   if (input.onboardingState.pendingRecordingIntent) {
     return {

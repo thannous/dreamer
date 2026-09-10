@@ -23,6 +23,8 @@ import { PressableScale, Reveal } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
+import { SignInToOpenDream } from '@/components/auth/SignInToOpenDream';
+import { dreamAuthReturnDestination } from '@/lib/authReturnIntent';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useDreams } from '@/context/DreamsContext';
@@ -1342,6 +1344,9 @@ function JournalDetailContent() {
               <Text className="text-[18px] text-ivory">
                 {t('journal.detail.not_found.title')}
               </Text>
+              {!user ? (
+                <SignInToOpenDream destination={dreamAuthReturnDestination('journal', { id, remoteId, clientRequestId })} />
+              ) : null}
               <PressableScale
                 onPress={handleBackPress}
                 className="mt-4 rounded-sm bg-champagne px-6 py-3"

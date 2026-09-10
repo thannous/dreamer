@@ -5,14 +5,19 @@ import { router, type Href } from 'expo-router';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
+import { useAuthReturnIntent } from '@/hooks/useAuthReturnIntent';
 
 const AuthCallbackScreen: React.FC<{ destination?: Href }> = ({ destination = '/recording' }) => {
   const { colors, mode } = useTheme();
+  const { intent, ready } = useAuthReturnIntent();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   useEffect(() => {
+    // The root owns this return after auth and onboarding have settled. Do not
+    // race it with the callback screen's default Capture navigation.
+    if (destination === '/recording' && (!ready || intent)) return;
     router.replace(destination);
-  }, [destination]);
+  }, [destination, intent, ready]);
 
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>

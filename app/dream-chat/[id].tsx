@@ -7,6 +7,8 @@ import { LoadingIndicator, MessagesList } from '@/components/chat/MessagesList';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
+import { SignInToOpenDream } from '@/components/auth/SignInToOpenDream';
+import { dreamAuthReturnDestination } from '@/lib/authReturnIntent';
 import { ChatProvider, useKeyboardStateContext } from '@/context/ChatContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -1038,6 +1040,9 @@ function DreamChatContent() {
       <LinearGradient colors={gradientColors} style={styles.container}>
         <AtmosphericBackground />
         <Text style={[styles.errorText, { color: noctalia.text.primary }]}>{t('dream_chat.not_found.title')}</Text>
+        {!user ? (
+          <SignInToOpenDream destination={dreamAuthReturnDestination('dream-chat', { id, remoteId, clientRequestId, category, mode: routeMode, messageId: routeMessageId })} />
+        ) : null}
         <Pressable
           onPress={handleBackPress}
           style={[styles.missingDreamBackButton, { backgroundColor: noctalia.action.primary }]}

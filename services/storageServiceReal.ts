@@ -1452,6 +1452,14 @@ export async function clearPendingRecordingNotification(): Promise<void> {
   await removeItem(PENDING_RECORDING_NOTIFICATION_KEY);
 }
 
+export async function getPendingAuthReturn(): Promise<string | null> {
+  return getItem('gemini_dream_journal_auth_return_v1', { strict: true });
+}
+
+export async function savePendingAuthReturn(serialized: string): Promise<void> {
+  await setItem('gemini_dream_journal_auth_return_v1', serialized, { strict: true });
+}
+
 export async function getDreamsMigrationSynced(userId: string): Promise<boolean> {
   if (!userId) return false;
   try {

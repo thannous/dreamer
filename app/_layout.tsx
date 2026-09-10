@@ -17,7 +17,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } fro
 import { useFonts } from 'expo-font';
 import { useLocales } from 'expo-localization';
 import * as Notifications from 'expo-notifications';
-import { Stack, router, useNavigationContainerRef, usePathname, useRootNavigationState, type Href } from 'expo-router';
+import { Stack, router, useGlobalSearchParams, useNavigationContainerRef, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { InteractionManager, Linking, LogBox, NativeModules, Platform } from 'react-native';
@@ -41,6 +41,7 @@ import { StartupRouteProvider } from '@/context/StartupRouteContext';
 import { SubscriptionProvider } from '@/context/SubscriptionContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useAppState } from '@/hooks/useAppState';
+import { useAuthReturnIntent } from '@/hooks/useAuthReturnIntent';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useSplashFailsafe } from '@/hooks/useSplashFailsafe';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
@@ -48,6 +49,7 @@ import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 import { trackProductEvent } from '@/lib/analytics';
 import { isLucidTrainer } from '@/lib/appVariant';
 import { isPasswordResetPath } from '@/lib/authRoutes';
+import { authReturnHref, completeAuthReturn, isAuthReturnObserved, type AuthReturnIntent } from '@/lib/authReturnIntent';
 import { loadTranslations } from '@/lib/i18n';
 import {
   isSafeLucidNotificationRoute,
@@ -58,6 +60,7 @@ import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
 import { createNotificationResponseTracker } from '@/lib/notificationResponse';
 import {
   canReuseObservedStartupDestination,
+  isOnboardingTerminal,
   isStartupDestinationObserved,
   resolveExplicitStartupDestination,
   resolveStartupDecision,
@@ -213,9 +216,18 @@ function RootLayoutNav({
   const {
     state: onboardingState,
     loading: onboardingLoading,
+    persisting: onboardingPersisting,
     scope: onboardingScope,
   } = useOnboarding();
   const pathname = usePathname();
+  const searchParams = useGlobalSearchParams();
+  const { intent: authReturnIntent, ready: authReturnReady } = useAuthReturnIntent();
+  const pendingAuthDestination = authReturnIntent ? authReturnHref(authReturnIntent) : null;
+  const authReturnClaimed = useRef<AuthReturnIntent | null>(null);
+  const authReturnSettingsObserved = useRef<AuthReturnIntent | null>(null);
+  const authReturnOnboardingOwned = useRef<AuthReturnIntent | null>(null);
+  const [authReturnEngaged, setAuthReturnEngaged] = useState<AuthReturnIntent | null>(null);
+  const initialLaunchConsumed = useRef(false);
   const pathnameRef = useRef(pathname);
   const initialWebHrefRef = useRef<string | null>(
     Platform.OS === 'web' && typeof window !== 'undefined'
@@ -246,7 +258,9 @@ function RootLayoutNav({
   const startupReady =
     !authLoading &&
     !onboardingLoading &&
+    !onboardingPersisting &&
     notificationQueueLoaded &&
+    authReturnReady &&
     initialLaunchUrl !== undefined;
 
   useSubscriptionInitialize({ enabled: nonCriticalStartupEnabled });
@@ -396,6 +410,10 @@ function RootLayoutNav({
   const engageDecision = useCallback(
     (decision: StartupDestinationDecision, options?: { startup?: boolean }) => {
       const isStartup = options?.startup === true;
+      if (decision.reason === 'auth_return') {
+        if (!authReturnIntent || authReturnClaimed.current === authReturnIntent) return;
+        authReturnClaimed.current = authReturnIntent;
+      }
       if (decision.reason === 'notification') {
         if (notificationNavigationClaimed.current) {
           markPerformance('startup.notification_navigation_coalesced');
@@ -425,10 +443,38 @@ function RootLayoutNav({
         }
         if (isStartup) setStartupDestinationEngaged(true);
         if (decision.reason === 'notification') setNotificationWinningEngaged(true);
+        if (decision.reason === 'auth_return') setAuthReturnEngaged(authReturnIntent);
       });
     },
-    []
+    [authReturnIntent]
   );
+
+  useEffect(() => {
+    if (!authReturnEngaged || !user || !isAuthReturnObserved(authReturnEngaged, pathname, searchParams)) return;
+    authReturnOnboardingOwned.current = null;
+    void completeAuthReturn(authReturnEngaged).catch(() => {
+      console.warn('[AuthReturn] Unable to acknowledge navigation intent');
+    });
+  }, [authReturnEngaged, pathname, searchParams, user]);
+
+  useEffect(() => {
+    if (authReturnIntent && pathname === '/onboarding') authReturnOnboardingOwned.current = authReturnIntent;
+  }, [authReturnIntent, pathname]);
+
+  useEffect(() => {
+    if (!authReturnIntent || authLoading || user) return;
+    if (pathname === '/onboarding') return;
+    if (pathname === '/settings' || pathname === '/(tabs)/settings' || pathname.startsWith('/auth/')) {
+      authReturnSettingsObserved.current = authReturnIntent;
+    } else if (authReturnSettingsObserved.current === authReturnIntent) {
+      authReturnOnboardingOwned.current = null;
+      // Leaving sign-in deliberately cancels the return; a later unrelated
+      // login must not reopen the old dream.
+      void completeAuthReturn(authReturnIntent).catch(() => {
+        console.warn('[AuthReturn] Unable to cancel navigation intent');
+      });
+    }
+  }, [authLoading, authReturnIntent, pathname, user]);
 
   useEffect(() => {
     if (
@@ -495,13 +541,14 @@ function RootLayoutNav({
         return;
       }
 
-      const decision = pendingLucidNotificationUrl
+      const decision = pendingLucidNotificationUrl && !(user && pendingAuthDestination)
         ? { destination: pendingLucidNotificationUrl, reason: 'notification' as const }
         : resolveAppStartupDecision({
         returningGuestBlocked,
         hasUser: Boolean(user),
         onboardingState,
         pendingNotificationUrl,
+        pendingAuthDestination,
         });
       if (decision.reason !== 'default') {
         engageDecision(decision);
@@ -607,6 +654,7 @@ function RootLayoutNav({
       onboardingState,
       pathname,
       pendingNotificationUrl,
+      pendingAuthDestination,
       pendingLucidNotificationUrl,
       returningGuestBlocked,
       startupReady,
@@ -647,7 +695,7 @@ function RootLayoutNav({
       return;
     }
     const explicitDestination = resolveExplicitStartupDestination(
-      initialLaunchUrl,
+      initialLaunchConsumed.current ? null : initialLaunchUrl,
       pathnameRef.current
     ) ??
       (Platform.OS === 'web'
@@ -656,13 +704,15 @@ function RootLayoutNav({
           )
         : undefined);
     initialWebHrefRef.current = null;
-    const decision = pendingLucidNotificationUrl
+    initialLaunchConsumed.current = true;
+    const decision = pendingLucidNotificationUrl && !(user && pendingAuthDestination)
       ? { destination: pendingLucidNotificationUrl, reason: 'notification' as const }
       : resolveAppStartupDecision({
       returningGuestBlocked,
       hasUser: Boolean(user),
       onboardingState,
       pendingNotificationUrl,
+      pendingAuthDestination,
       defaultDestination: explicitDestination,
     });
     engageDecision(decision, { startup: true });
@@ -674,11 +724,43 @@ function RootLayoutNav({
     onStartupCommitted,
     pathname,
     pendingNotificationUrl,
+    pendingAuthDestination,
     pendingLucidNotificationUrl,
     returningGuestBlocked,
     startupReady,
     user,
   ]);
+
+  useEffect(() => {
+    if (!isNavigationReady || !startupReady || !hasInitialNavigated.current) return;
+    if (!pendingAuthDestination) {
+      if (authReturnOnboardingOwned.current && pathname === '/onboarding' && isOnboardingTerminal(onboardingState)) {
+        // The intent can expire while an onboarding write is in flight. Its
+        // screen has delegated navigation to us; still finish the chosen path.
+        authReturnOnboardingOwned.current = null;
+        const fallback = resolveAppStartupDecision({
+          returningGuestBlocked,
+          hasUser: Boolean(user),
+          onboardingState,
+          defaultDestination: onboardingState.status === 'completed' && onboardingState.selectedPath === 'dictionary'
+            ? { pathname: '/symbol-dictionary', params: { source: 'onboarding' } }
+            : '/recording',
+        });
+        return runAfterNavigationMount(() => engageDecision(fallback));
+      }
+      return;
+    }
+    const decision = resolveAppStartupDecision({
+      returningGuestBlocked,
+      hasUser: Boolean(user),
+      onboardingState,
+      pendingAuthDestination,
+    });
+    if (decision.reason === 'auth_return') return runAfterNavigationMount(() => engageDecision(decision));
+    else if (decision.reason === 'default' && (pathname === '/onboarding' || pathname.startsWith('/auth/callback'))) {
+      return runAfterNavigationMount(() => engageDecision(decision));
+    }
+  }, [engageDecision, isNavigationReady, onboardingState, pathname, pendingAuthDestination, returningGuestBlocked, startupReady, user]);
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
@@ -703,13 +785,14 @@ function RootLayoutNav({
       return;
     }
 
-    const decision = pendingLucidNotificationUrl
+    const decision = pendingLucidNotificationUrl && !(user && pendingAuthDestination)
       ? { destination: pendingLucidNotificationUrl, reason: 'notification' as const }
       : resolveAppStartupDecision({
       returningGuestBlocked,
       hasUser: Boolean(user),
       onboardingState,
       pendingNotificationUrl,
+      pendingAuthDestination,
         });
     if (decision.reason === 'notification') {
       engageDecision(decision);
@@ -720,6 +803,7 @@ function RootLayoutNav({
     notificationWinningDestination,
     onboardingState,
     pendingNotificationUrl,
+    pendingAuthDestination,
     pendingLucidNotificationUrl,
     returningGuestBlocked,
     startupReady,

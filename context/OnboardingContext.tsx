@@ -25,6 +25,7 @@ import { markPerformance } from '@/lib/performanceTrace';
 export type OnboardingContextValue = {
   state: OnboardingState;
   loading: boolean;
+  persisting: boolean;
   error: Error | null;
   scope: OnboardingScope;
   transition: (event: OnboardingEvent) => Promise<OnboardingState>;
@@ -71,6 +72,7 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
   const [state, setState] = useState<OnboardingState>(() => getDefaultOnboardingState());
   const [loadedScope, setLoadedScope] = useState<OnboardingScope | null>(null);
   const [loading, setLoading] = useState(true);
+  const [persisting, setPersisting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const activeLoadRef = useRef(0);
   const stateRef = useRef(state);
@@ -88,6 +90,7 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
     const loadId = activeLoadRef.current + 1;
     activeLoadRef.current = loadId;
     setLoading(true);
+    setPersisting(false);
     setError(null);
 
     try {
@@ -152,6 +155,7 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
       const transitionVersion = transitionVersionRef.current + 1;
       transitionVersionRef.current = transitionVersion;
       const next = reduceOnboardingState(previous, event);
+      setPersisting(true);
       stateRef.current = next;
       setState(next);
       setLoadedScope(scope);
@@ -179,6 +183,10 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
           setError(nextError);
         }
         throw nextError;
+      } finally {
+        if (scopeRef.current === scope && transitionVersionRef.current === transitionVersion) {
+          setPersisting(false);
+        }
       }
     },
     [loadedScope, scope]
@@ -191,6 +199,7 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
       ? reduceOnboardingState(base, { type: 'SKIP' })
       : reduceOnboardingState(base, { type: 'COMPLETE', path: reason });
     sessionOnlyRef.current = true;
+    setPersisting(false);
     stateRef.current = next;
     setState(next);
     setLoadedScope(scope);
@@ -203,6 +212,7 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
     () => ({
       state: scopeReady ? state : unloadedScopeState,
       loading: authLoading || loading || !scopeReady,
+      persisting,
       error,
       scope,
       transition,
@@ -215,6 +225,7 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
       error,
       loadScope,
       loading,
+      persisting,
       scope,
       scopeReady,
       state,
