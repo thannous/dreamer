@@ -4,7 +4,7 @@ import { isLucidAppPath } from '@/lib/lucid/routes';
 const isSharedAuthPath = (path: string) =>
   ['/auth/callback', '/auth/callback/success', '/auth/reset-password'].includes(path);
 
-export function normalizedLucidDestination(href: Href | null | undefined): string {
+export function normalizedLucidDestination(href: Href | string | null | undefined): string {
   const path = typeof href === 'string' ? href : String(href?.pathname ?? '');
   return path.split(/[?#]/)[0].replace('/(tabs)', '').replace(/\/+$/, '') || '/';
 }

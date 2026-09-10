@@ -1,0 +1,154 @@
+{
+  "observableTurns": 19,
+  "medianUpperMs": 3750,
+  "p95UpperMs": 5422,
+  "maximumUpperMs": 5422,
+  "upperBoundsAtMost2s": 0,
+  "attempts": 21,
+  "turns": [
+    {
+      "turn": 1,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 4208,
+      "previousFrameMs": 3551,
+      "file": "frame-006.png"
+    },
+    {
+      "turn": 2,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 4048,
+      "previousFrameMs": 3358,
+      "file": "frame-005.png"
+    },
+    {
+      "turn": 3,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": null
+    },
+    {
+      "turn": 4,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 4352,
+      "previousFrameMs": 3591,
+      "file": "frame-005.png"
+    },
+    {
+      "turn": 5,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 3773,
+      "previousFrameMs": 2991,
+      "file": "frame-004.png"
+    },
+    {
+      "turn": 6,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 2984,
+      "previousFrameMs": 2181,
+      "file": "frame-003.png"
+    },
+    {
+      "turn": 7,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 2961,
+      "previousFrameMs": 2174,
+      "file": "frame-003.png"
+    },
+    {
+      "turn": 8,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 3672,
+      "previousFrameMs": 2919,
+      "file": "frame-004.png"
+    },
+    {
+      "turn": 9,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 3691,
+      "previousFrameMs": 2919,
+      "file": "frame-004.png"
+    },
+    {
+      "turn": 10,
+      "prefixLength": 18,
+      "firstLegibleUpperMs": 3703,
+      "previousFrameMs": 2915,
+      "file": "frame-004.png"
+    },
+    {
+      "turn": 11,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 3643,
+      "previousFrameMs": 2872,
+      "file": "frame-004.png"
+    },
+    {
+      "turn": 12,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 3728,
+      "previousFrameMs": 2967,
+      "file": "frame-004.png"
+    },
+    {
+      "turn": 13,
+      "prefixLength": 16,
+      "firstLegibleUpperMs": 3750,
+      "previousFrameMs": 2939,
+      "file": "frame-004.png"
+    },
+    {
+      "turn": 14,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 4487,
+      "previousFrameMs": 3760,
+      "file": "frame-005.png"
+    },
+    {
+      "turn": 15,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 5422,
+      "previousFrameMs": 4588,
+      "file": "frame-006.png"
+    },
+    {
+      "turn": 16,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 3622,
+      "previousFrameMs": 2868,
+      "file": "frame-004.png"
+    },
+    {
+      "turn": 17,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 3753,
+      "previousFrameMs": 2972,
+      "file": "frame-004.png"
+    },
+    {
+      "turn": 18,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 3862,
+      "previousFrameMs": 3062,
+      "file": "frame-004.png"
+    },
+    {
+      "turn": 19,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 3084,
+      "previousFrameMs": 2275,
+      "file": "frame-003.png"
+    },
+    {
+      "turn": 20,
+      "prefixLength": 12,
+      "firstLegibleUpperMs": 3940,
+      "previousFrameMs": 3124,
+      "file": "frame-004.png"
+    }
+  ],
+  "limitations": [
+    "Debug Android; ADB PNG capture adds overhead; first 12 normalized reply characters is conservative visibility proxy, not exact first glyph time.",
+    "Turn 3 failed first attempt; retry was not captured with the frame timer.",
+    "Provider first-token latency not measured separately.",
+    "Turns 10 and 13 use longer unique prefixes (18 and 16 characters) because 12 characters also matched existing text."
+  ]
+}

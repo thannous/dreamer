@@ -644,6 +644,26 @@ describe('onboardingState', () => {
     ).toBe('/weekly-recap');
   });
 
+  it.each(['noctalia://explore', 'noctalia://explore/', 'https://dream.noctalia.app/explore'])(
+    'preserves the Explorer destination at cold start: %s',
+    (url: string) => {
+      const destination = resolveExplicitStartupDestination(url, '/recording');
+      expect(destination).toBe('/explore');
+      const completed = reduceOnboardingState(
+        { ...getDefaultOnboardingState(1), selectedPath: 'analyze' },
+        { type: 'COMPLETE' },
+        Date.now()
+      );
+      expect(resolveStartupDecision({
+        returningGuestBlocked: false,
+        hasUser: true,
+        onboardingState: { ...completed, pendingRecordingIntent: null },
+        pendingNotificationUrl: null,
+        defaultDestination: destination,
+      }).destination).toBe('/explore');
+    }
+  );
+
   it('lets a completed cold weekly-recap launch keep /weekly-recap instead of falling back to /recording', () => {
     const completed = {
       ...reduceOnboardingState(

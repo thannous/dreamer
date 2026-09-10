@@ -193,6 +193,14 @@ function DreamChatContent() {
   // and drop the "thinking" indicator as soon as the first tokens arrive.
   const displayMessages = useMemo(() => {
     if (!streamingReply) return messages;
+    // The completed reply can arrive before local persistence releases the send lock.
+    // Once it is in history, the virtual streaming bubble has been replaced.
+    const lastMessage = messages[messages.length - 1];
+    if (
+      lastMessage?.role === 'model' &&
+      !lastMessage.meta?.isError &&
+      lastMessage.text.trim() === streamingReply.trim()
+    ) return messages;
     return [
       ...messages,
       {
