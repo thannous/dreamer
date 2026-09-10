@@ -15,7 +15,9 @@ expo-env.d.ts
 # JetBrains IDE
 .idea/caches/
 
-# Agent skills (any hidden dir)
+# Repository metadata and agent configuration are not mobile build inputs.
+/.git
+/.mcp.json
 **/.*/skills/
 **/.agent/
 **/.agents/
