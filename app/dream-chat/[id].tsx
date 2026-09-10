@@ -16,6 +16,7 @@ import { useChatSendLock } from '@/hooks/useChatSendLock';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
+import { buildDisplayMessages } from '@/lib/chat/streamingDisplay';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { QUOTAS } from '@/constants/limits';
 import { getDreamAnalysisState } from '@/lib/dreamUsage';
@@ -67,8 +68,6 @@ type SendMessageOptions = {
 };
 
 const LEGACY_DRAFT_PREFIXES = ['Here is my dream:'];
-
-const STREAMING_MESSAGE_ID = 'streaming-reply';
 
 const getCategoryQuestion = (category: CategoryType, t: (key: string) => string): string => {
   const categoryQuestions: Record<CategoryType, string> = {
@@ -186,32 +185,18 @@ function DreamChatContent() {
     release: releaseSendLock,
   } = useChatSendLock();
   const isInteractionLocked = isLoading || isSendStarting;
-  // Partial model reply while the response streams in; null when idle.
-  const [streamingReply, setStreamingReply] = useState<string | null>(null);
+  // Partial model reply for the active send. Identity is the user message request id.
+  const streamingRequestIdRef = useRef<string | null>(null);
+  const [streaming, setStreaming] = useState<{ requestId: string; text: string } | null>(null);
 
   // While a reply streams in, render it as a virtual trailing model message
   // and drop the "thinking" indicator as soon as the first tokens arrive.
-  const displayMessages = useMemo(() => {
-    if (!streamingReply) return messages;
-    // The completed reply can arrive before local persistence releases the send lock.
-    // Once it is in history, the virtual streaming bubble has been replaced.
-    const lastMessage = messages[messages.length - 1];
-    if (
-      lastMessage?.role === 'model' &&
-      !lastMessage.meta?.isError &&
-      lastMessage.text.trim() === streamingReply.trim()
-    ) return messages;
-    return [
-      ...messages,
-      {
-        id: STREAMING_MESSAGE_ID,
-        role: 'model' as const,
-        text: streamingReply,
-        createdAt: (messages[messages.length - 1]?.createdAt ?? 0) + 1,
-      },
-    ];
-  }, [messages, streamingReply]);
-  const showThinkingIndicator = isInteractionLocked && !streamingReply;
+  // Replacement is tied to this send's completed reply, not text equality.
+  const displayMessages = useMemo(
+    () => buildDisplayMessages(messages, streaming?.text ?? null, streaming?.requestId ?? null),
+    [messages, streaming]
+  );
+  const showThinkingIndicator = isInteractionLocked && !streaming?.text;
   const [isScrolling, setIsScrolling] = useState(false);
   const [explorationBlocked, setExplorationBlocked] = useState(false);
   const [quotaCheckComplete, setQuotaCheckComplete] = useState(false);
@@ -588,6 +573,19 @@ function DreamChatContent() {
         return;
       }
 
+      const onStreamDelta = (text: string) => {
+        if (streamingRequestIdRef.current !== chatRequestId) return;
+        setStreaming({ requestId: chatRequestId, text });
+      };
+      const finishStreaming = () => {
+        if (streamingRequestIdRef.current !== chatRequestId) return;
+        streamingRequestIdRef.current = null;
+        setStreaming(null);
+      };
+      const startStreaming = () => {
+        streamingRequestIdRef.current = chatRequestId;
+      };
+
       // ✅ GUARD: Ensure dream is synced before allowing chat
       // If remoteId is missing, attempt auto-sync or show error
       // Note: Guests have local-only dreams and don't require sync
@@ -615,11 +613,12 @@ function DreamChatContent() {
 
             // Now proceed with chat using synced.remoteId
             const dreamIdString = String(synced.remoteId);
+            startStreaming();
             const aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
               signal: controller.signal,
               clientRequestId: chatRequestId,
               messageMeta,
-              onDelta: setStreamingReply,
+              onDelta: onStreamDelta,
             });
 
             if (!isMountedRef.current || controller.signal.aborted) return;
@@ -640,6 +639,7 @@ function DreamChatContent() {
             const finalMessages = [...updatedMessages, aiMessage];
 
             setMessages(finalMessages);
+            finishStreaming();
 
             // Persist chat history to dream
             const dreamUpdate: Partial<DreamAnalysis> = {
@@ -680,7 +680,7 @@ function DreamChatContent() {
             return;
           } finally {
             setIsLoading(false);
-            setStreamingReply(null);
+            finishStreaming();
             if (requestAbortRef.current) {
               requestAbortRef.current = null;
             }
@@ -739,6 +739,7 @@ function DreamChatContent() {
             theme: dream.theme,
             chatHistory: updatedMessages,  // Current messages before AI response
           };
+          startStreaming();
           aiResponse = await startOrContinueChat(
             String(dream.id),
             textToSend,
@@ -749,17 +750,18 @@ function DreamChatContent() {
               signal: controller.signal,
               clientRequestId: chatRequestId,
               messageMeta,
-              onDelta: setStreamingReply,
+              onDelta: onStreamDelta,
             }
           );
         } else {
           // Authenticated mode: send dreamId (current flow)
           const dreamIdString = String(dream.remoteId ?? dream.id);
+          startStreaming();
           aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
             signal: controller.signal,
             clientRequestId: chatRequestId,
             messageMeta,
-            onDelta: setStreamingReply,
+            onDelta: onStreamDelta,
           });
         }
 
@@ -771,6 +773,7 @@ function DreamChatContent() {
         const finalMessages = [...updatedMessages, aiMessage];
 
         setMessages(finalMessages);
+        finishStreaming();
         if (debugChat) {
           console.debug('[DreamChat] sendMessage success', {
             dreamId: dream.id,
@@ -845,7 +848,7 @@ function DreamChatContent() {
         setMessages([...updatedMessages, enrichedErrorMessage]);
       } finally {
         setIsLoading(false);
-        setStreamingReply(null);
+        finishStreaming();
         if (requestAbortRef.current) {
           requestAbortRef.current = null;
         }
