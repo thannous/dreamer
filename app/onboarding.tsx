@@ -7,6 +7,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
 import { peekReturnToPaywallTrigger } from '@/lib/navigationIntents';
+import { getAuthReturnSnapshot } from '@/lib/authReturnIntent';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import type { OnboardingPath, OnboardingStep } from '@/lib/onboardingState';
 import { markPerformance } from '@/lib/performanceTrace';
@@ -240,12 +241,14 @@ export default function OnboardingScreen() {
     isLeavingRef.current = true;
     setIsLeaving(true);
     setFailedAction(null);
+    const authReturn = getAuthReturnSnapshot().intent;
     try {
       const next = await transition({ type: 'COMPLETE', path });
       void trackProductEvent('onboarding_completed', {
         reason: path,
         experience_version: 2,
       });
+      if (authReturn) return; // Root resumes only after persistence settles.
       const pendingPaywall = peekReturnToPaywallTrigger();
       if (pendingPaywall) {
         // The user signed in from the paywall and onboarding intercepted the
@@ -271,6 +274,7 @@ export default function OnboardingScreen() {
     isLeavingRef.current = true;
     setIsLeaving(true);
     setFailedAction(null);
+    const authReturn = getAuthReturnSnapshot().intent;
     try {
       await transition({ type: 'SKIP' });
       void trackProductEvent('onboarding_choice_selected', {
@@ -279,6 +283,7 @@ export default function OnboardingScreen() {
         choice: 'skip',
       });
       void trackProductEvent('onboarding_completed', { reason: 'skip', experience_version: 2 });
+      if (authReturn) return;
       const pendingPaywall = peekReturnToPaywallTrigger();
       router.replace(pendingPaywall ? buildPaywallHref(getPaywallTrigger(pendingPaywall)) : '/recording');
     } catch {
@@ -343,9 +348,11 @@ export default function OnboardingScreen() {
     const action = failedAction;
     if (!action || (action.type !== 'skip' && action.type !== 'complete')) return;
     const reason = action.type === 'skip' ? 'skip' : action.path;
+    const authReturn = getAuthReturnSnapshot().intent;
     continueForSession(reason);
     setFailedAction(null);
     void trackProductEvent('onboarding_completed', { reason, experience_version: 2 });
+    if (authReturn) return;
     if (action.type === 'skip') {
       router.replace('/recording');
       return;

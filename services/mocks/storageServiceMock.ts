@@ -619,6 +619,14 @@ export async function clearPendingRecordingNotification(): Promise<void> {
   delete mockStorage[PENDING_RECORDING_NOTIFICATION_KEY];
 }
 
+export async function getPendingAuthReturn(): Promise<string | null> {
+  return mockStorage.gemini_dream_journal_auth_return_v1 ?? null;
+}
+
+export async function savePendingAuthReturn(serialized: string): Promise<void> {
+  mockStorage.gemini_dream_journal_auth_return_v1 = serialized;
+}
+
 export async function getDreamsMigrationSynced(userId: string): Promise<boolean> {
   if (!userId) return false;
   const key = `${DREAMS_MIGRATION_SYNCED_PREFIX}${userId}`;
