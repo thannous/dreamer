@@ -684,6 +684,7 @@ const normalizeObservedPath = (pathname: string): string =>
 const STATIC_NATIVE_ROUTES = new Set([
   'add-dream',
   'dream-guides',
+  'explore',
   'journal',
   'lucid',
   'modal',

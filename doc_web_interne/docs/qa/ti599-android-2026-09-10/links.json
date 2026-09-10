@@ -1,0 +1,170 @@
+[
+  {
+    "path": "recording",
+    "mode": "warm",
+    "appVisible": true,
+    "expected": "screen.recording",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://recording/... pkg=com.tanuki75.noctalia }\nWarning: Activity not started, intent has been delivered to currently running top-most instance.\nStatus: ok\nLaunchState: UNKNOWN (0)\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 0\nWaitTime: 5\nComplete\n",
+    "observedScreenIds": [
+      "screen.recording"
+    ],
+    "draftLength": 905
+  },
+  {
+    "path": "recording",
+    "mode": "background",
+    "appVisible": true,
+    "expected": "screen.recording",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://recording/... pkg=com.tanuki75.noctalia }\nWarning: Activity not started, its current task has been brought to the front\nStatus: ok\nLaunchState: UNKNOWN (0)\nActivity: com.tanuki75.noctalia/.MainActivity\nWaitTime: 52\nComplete\n",
+    "observedScreenIds": [
+      "screen.recording"
+    ],
+    "draftLength": 905
+  },
+  {
+    "path": "recording",
+    "mode": "cold",
+    "appVisible": true,
+    "expected": "screen.recording",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://recording/... pkg=com.tanuki75.noctalia }\nStatus: ok\nLaunchState: COLD\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 785\nWaitTime: 789\nComplete\n",
+    "observedScreenIds": [
+      "screen.recording"
+    ],
+    "draftLength": 905
+  },
+  {
+    "path": "explore",
+    "mode": "warm",
+    "appVisible": true,
+    "expected": "screen.explore",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://explore/... pkg=com.tanuki75.noctalia }\nWarning: Activity not started, intent has been delivered to currently running top-most instance.\nStatus: ok\nLaunchState: UNKNOWN (0)\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 0\nWaitTime: 9\nComplete\n",
+    "observedScreenIds": [
+      "screen.explore"
+    ],
+    "draftLength": null
+  },
+  {
+    "path": "explore",
+    "mode": "background",
+    "appVisible": true,
+    "expected": "screen.explore",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://explore/... pkg=com.tanuki75.noctalia }\nWarning: Activity not started, its current task has been brought to the front\nStatus: ok\nLaunchState: UNKNOWN (0)\nActivity: com.tanuki75.noctalia/.MainActivity\nWaitTime: 18\nComplete\n",
+    "observedScreenIds": [
+      "screen.explore"
+    ],
+    "draftLength": null
+  },
+  {
+    "path": "explore",
+    "mode": "cold",
+    "appVisible": true,
+    "expected": "screen.explore",
+    "destinationVerified": false,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://explore/... pkg=com.tanuki75.noctalia }\nStatus: ok\nLaunchState: COLD\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 768\nWaitTime: 771\nComplete\n",
+    "observedScreenIds": [
+      "screen.recording"
+    ],
+    "draftLength": 905
+  },
+  {
+    "path": "weekly-recap",
+    "mode": "warm",
+    "appVisible": true,
+    "expected": "screen.weeklyRecap",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://weekly-recap/... pkg=com.tanuki75.noctalia }\nWarning: Activity not started, intent has been delivered to currently running top-most instance.\nStatus: ok\nLaunchState: UNKNOWN (0)\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 0\nWaitTime: 4\nComplete\n",
+    "observedScreenIds": [
+      "screen.weeklyRecap"
+    ],
+    "draftLength": null
+  },
+  {
+    "path": "weekly-recap",
+    "mode": "background",
+    "appVisible": true,
+    "expected": "screen.weeklyRecap",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://weekly-recap/... pkg=com.tanuki75.noctalia }\nWarning: Activity not started, its current task has been brought to the front\nStatus: ok\nLaunchState: UNKNOWN (0)\nActivity: com.tanuki75.noctalia/.MainActivity\nWaitTime: 16\nComplete\n",
+    "observedScreenIds": [
+      "screen.weeklyRecap"
+    ],
+    "draftLength": null
+  },
+  {
+    "path": "weekly-recap",
+    "mode": "cold",
+    "appVisible": true,
+    "expected": "screen.weeklyRecap",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://weekly-recap/... pkg=com.tanuki75.noctalia }\nStatus: ok\nLaunchState: COLD\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 794\nWaitTime: 795\nComplete\n",
+    "observedScreenIds": [
+      "screen.weeklyRecap"
+    ],
+    "draftLength": null
+  },
+  {
+    "path": "journal/1848?remoteId=1848",
+    "mode": "warm",
+    "appVisible": true,
+    "expected": "synthetic-detail",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://journal/... pkg=com.tanuki75.noctalia }\nWarning: Activity not started, intent has been delivered to currently running top-most instance.\nStatus: ok\nLaunchState: UNKNOWN (0)\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 0\nWaitTime: 4\nComplete\n",
+    "observedScreenIds": [],
+    "draftLength": null
+  },
+  {
+    "path": "journal/1848?remoteId=1848",
+    "mode": "background",
+    "appVisible": true,
+    "expected": "synthetic-detail",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://journal/... pkg=com.tanuki75.noctalia }\nWarning: Activity not started, its current task has been brought to the front\nStatus: ok\nLaunchState: UNKNOWN (0)\nActivity: com.tanuki75.noctalia/.MainActivity\nWaitTime: 29\nComplete\n",
+    "observedScreenIds": [],
+    "draftLength": null
+  },
+  {
+    "path": "journal/1848?remoteId=1848",
+    "mode": "cold",
+    "appVisible": true,
+    "expected": "synthetic-detail",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://journal/... pkg=com.tanuki75.noctalia }\nStatus: ok\nLaunchState: COLD\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 743\nWaitTime: 745\nComplete\n",
+    "observedScreenIds": [],
+    "draftLength": null
+  },
+  {
+    "path": "journal/999999999",
+    "mode": "warm",
+    "appVisible": true,
+    "expected": "missing-detail",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://journal/... pkg=com.tanuki75.noctalia }\nWarning: Activity not started, intent has been delivered to currently running top-most instance.\nStatus: ok\nLaunchState: UNKNOWN (0)\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 0\nWaitTime: 7\nComplete\n",
+    "observedScreenIds": [],
+    "draftLength": null
+  },
+  {
+    "path": "journal/999999999",
+    "mode": "background",
+    "appVisible": true,
+    "expected": "missing-detail",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://journal/... pkg=com.tanuki75.noctalia }\nWarning: Activity not started, its current task has been brought to the front\nStatus: ok\nLaunchState: UNKNOWN (0)\nActivity: com.tanuki75.noctalia/.MainActivity\nWaitTime: 21\nComplete\n",
+    "observedScreenIds": [],
+    "draftLength": null
+  },
+  {
+    "path": "journal/999999999",
+    "mode": "cold",
+    "appVisible": true,
+    "expected": "missing-detail",
+    "destinationVerified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://journal/... pkg=com.tanuki75.noctalia }\nStatus: ok\nLaunchState: COLD\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 749\nWaitTime: 751\nComplete\n",
+    "observedScreenIds": [],
+    "draftLength": null
+  }
+]
