@@ -646,7 +646,7 @@ describe('onboardingState', () => {
 
   it.each(['noctalia://explore', 'noctalia://explore/', 'https://dream.noctalia.app/explore'])(
     'preserves the Explorer destination at cold start: %s',
-    (url) => {
+    (url: string) => {
       const destination = resolveExplicitStartupDestination(url, '/recording');
       expect(destination).toBe('/explore');
       const completed = reduceOnboardingState(
