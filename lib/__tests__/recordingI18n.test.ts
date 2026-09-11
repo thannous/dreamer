@@ -377,12 +377,12 @@ describe('Recording i18n - bottom sheets', () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
     const saveabilityByLocale: Record<(typeof languages)[number], RegExp> = {
-      en: /enough to save/i,
-      fr: /suffit pour enregistrer/i,
-      es: /ya se puede guardar/i,
-      de: /reicht zum speichern/i,
-      it: /basta per salvare/i,
-      pt: /suficiente para salvar/i,
+      en: /fragment.*enough.*journal/i,
+      fr: /fragment.*suffit.*journal/i,
+      es: /fragmento.*basta.*diario/i,
+      de: /fragment.*reicht.*tagebuch/i,
+      it: /basta.*frammento.*diario/i,
+      pt: /fragmento.*basta.*diário/i,
     };
 
     for (const lang of languages) {
@@ -591,12 +591,12 @@ describe('Recording i18n - bottom sheets', () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
     const savedByLocale: Record<(typeof languages)[number], RegExp> = {
-      en: /draft saved on this device/i,
-      fr: /brouillon enregistré sur cet appareil/i,
-      es: /borrador guardado en este dispositivo/i,
-      de: /entwurf auf diesem gerät gespeichert/i,
-      it: /bozza salvata su questo dispositivo/i,
-      pt: /rascunho salvo neste dispositivo/i,
+      en: /draft.*on this device/i,
+      fr: /brouillon.*sur cet appareil/i,
+      es: /borrador.*en este dispositivo/i,
+      de: /entwurf.*auf diesem gerät/i,
+      it: /bozza.*su questo dispositivo/i,
+      pt: /rascunho.*neste dispositivo/i,
     };
 
     for (const lang of languages) {

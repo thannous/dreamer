@@ -13,6 +13,7 @@ Lot approuvé après le dogfooding Motorola du matin. Base Git : `effc06cfed0d79
 ## Vérification locale
 
 - 5 suites ciblées : 94 tests réussis (fiche, journal compact, guides, capture, statut du brouillon).
+- CircleCI a élargi la sélection à 97 suites / 867 tests : deux assertions de traduction attendaient les anciens mots « saved / enregistrer ». Assertions mises à jour pour vérifier le fragment ajoutable au journal et le brouillon conservé sur l’appareil, sans imposer le verbe précédent.
 - `npm run typecheck:app` et `npm run typecheck:tests` : PASS.
 - Lint des fichiers touchés : 0 erreur ; 12 avertissements sur du code préexistant. Relecture du diff et `git diff --check` : PASS.
 - Dépendance HealthKit déjà présente dans le checkout de qualification réutilisée via un lien local ignoré pour le typecheck ; aucun manifeste modifié.
