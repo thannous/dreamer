@@ -1,0 +1,219 @@
+{
+  "at": "2026-09-09T09:49:34.509Z",
+  "results": [
+    {
+      "source": "docs-src/content/blog/blog.back-to-school-dreams/en.md",
+      "type": "back-to-school-dreams",
+      "lang": "en",
+      "url": "https://noctalia.app/en/blog/back-to-school-dreams-meaning",
+      "http": 200,
+      "canonical": "<link rel=\"canonical\" href=\"https://noctalia.app/en/blog/back-to-school-dreams-meaning\">",
+      "robotsMeta": "<meta name=\"robots\" content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">",
+      "xRobots": null,
+      "sitemapLoc": true,
+      "gscHttp": 200,
+      "index": {
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "sitemap": [
+          "https://noctalia.app/sitemap.xml"
+        ],
+        "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED"
+      }
+    },
+    {
+      "source": "docs-src/content/blog/blog.back-to-school-dreams/fr.md",
+      "type": "back-to-school-dreams",
+      "lang": "fr",
+      "url": "https://noctalia.app/fr/blog/rever-retourner-ecole",
+      "http": 200,
+      "canonical": "<link rel=\"canonical\" href=\"https://noctalia.app/fr/blog/rever-retourner-ecole\">",
+      "robotsMeta": "<meta name=\"robots\" content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">",
+      "xRobots": null,
+      "sitemapLoc": true,
+      "gscHttp": 200,
+      "index": {
+        "verdict": "NEUTRAL",
+        "coverageState": "URL is unknown to Google",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+      }
+    },
+    {
+      "source": "docs-src/content/blog/blog.back-to-school-dreams/de.md",
+      "type": "back-to-school-dreams",
+      "lang": "de",
+      "url": "https://noctalia.app/de/blog/traum-zurueck-in-die-schule",
+      "http": 200,
+      "canonical": "<link rel=\"canonical\" href=\"https://noctalia.app/de/blog/traum-zurueck-in-die-schule\">",
+      "robotsMeta": "<meta name=\"robots\" content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">",
+      "xRobots": null,
+      "sitemapLoc": true,
+      "gscHttp": 200,
+      "index": {
+        "verdict": "NEUTRAL",
+        "coverageState": "URL is unknown to Google",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+      }
+    },
+    {
+      "source": "docs-src/content/blog/blog.back-to-school-dreams/es.md",
+      "type": "back-to-school-dreams",
+      "lang": "es",
+      "url": "https://noctalia.app/es/blog/sonar-volver-escuela",
+      "http": 200,
+      "canonical": "<link rel=\"canonical\" href=\"https://noctalia.app/es/blog/sonar-volver-escuela\">",
+      "robotsMeta": "<meta name=\"robots\" content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">",
+      "xRobots": null,
+      "sitemapLoc": true,
+      "gscHttp": 200,
+      "index": {
+        "verdict": "NEUTRAL",
+        "coverageState": "URL is unknown to Google",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+      }
+    },
+    {
+      "source": "docs-src/content/blog/blog.back-to-school-dreams/it.md",
+      "type": "back-to-school-dreams",
+      "lang": "it",
+      "url": "https://noctalia.app/it/blog/sognare-tornare-scuola",
+      "http": 200,
+      "canonical": "<link rel=\"canonical\" href=\"https://noctalia.app/it/blog/sognare-tornare-scuola\">",
+      "robotsMeta": "<meta name=\"robots\" content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">",
+      "xRobots": null,
+      "sitemapLoc": true,
+      "gscHttp": 200,
+      "index": {
+        "verdict": "NEUTRAL",
+        "coverageState": "URL is unknown to Google",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED"
+      }
+    },
+    {
+      "source": "docs-src/content/blog/blog.back-to-school-nightmares-children/en.md",
+      "type": "back-to-school-nightmares-children",
+      "lang": "en",
+      "url": "https://noctalia.app/en/blog/back-to-school-nightmares-children",
+      "http": 200,
+      "canonical": "<link rel=\"canonical\" href=\"https://noctalia.app/en/blog/back-to-school-nightmares-children\">",
+      "robotsMeta": "<meta name=\"robots\" content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">",
+      "xRobots": null,
+      "sitemapLoc": true,
+      "gscHttp": 200,
+      "index": {
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "sitemap": [
+          "https://noctalia.app/sitemap.xml"
+        ],
+        "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED"
+      }
+    },
+    {
+      "source": "docs-src/content/blog/blog.back-to-school-nightmares-children/fr.md",
+      "type": "back-to-school-nightmares-children",
+      "lang": "fr",
+      "url": "https://noctalia.app/fr/blog/cauchemars-rentree-enfant",
+      "http": 200,
+      "canonical": "<link rel=\"canonical\" href=\"https://noctalia.app/fr/blog/cauchemars-rentree-enfant\">",
+      "robotsMeta": "<meta name=\"robots\" content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">",
+      "xRobots": null,
+      "sitemapLoc": true,
+      "gscHttp": 200,
+      "index": {
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "sitemap": [
+          "https://noctalia.app/sitemap.xml"
+        ],
+        "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED"
+      }
+    },
+    {
+      "source": "docs-src/content/blog/blog.back-to-school-nightmares-children/de.md",
+      "type": "back-to-school-nightmares-children",
+      "lang": "de",
+      "url": "https://noctalia.app/de/blog/albtraeume-schulanfang-kinder",
+      "http": 200,
+      "canonical": "<link rel=\"canonical\" href=\"https://noctalia.app/de/blog/albtraeume-schulanfang-kinder\">",
+      "robotsMeta": "<meta name=\"robots\" content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">",
+      "xRobots": null,
+      "sitemapLoc": true,
+      "gscHttp": 200,
+      "index": {
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "sitemap": [
+          "https://noctalia.app/sitemap.xml"
+        ],
+        "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED"
+      }
+    },
+    {
+      "source": "docs-src/content/blog/blog.back-to-school-nightmares-children/es.md",
+      "type": "back-to-school-nightmares-children",
+      "lang": "es",
+      "url": "https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos",
+      "http": 200,
+      "canonical": "<link rel=\"canonical\" href=\"https://noctalia.app/es/blog/pesadillas-vuelta-al-cole-ninos\">",
+      "robotsMeta": "<meta name=\"robots\" content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">",
+      "xRobots": null,
+      "sitemapLoc": true,
+      "gscHttp": 200,
+      "index": {
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "sitemap": [
+          "https://noctalia.app/sitemap.xml"
+        ],
+        "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED"
+      }
+    },
+    {
+      "source": "docs-src/content/blog/blog.back-to-school-nightmares-children/it.md",
+      "type": "back-to-school-nightmares-children",
+      "lang": "it",
+      "url": "https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini",
+      "http": 200,
+      "canonical": "<link rel=\"canonical\" href=\"https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini\">",
+      "robotsMeta": "<meta name=\"robots\" content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">",
+      "xRobots": null,
+      "sitemapLoc": true,
+      "gscHttp": 200,
+      "index": {
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "sitemap": [
+          "https://noctalia.app/sitemap.xml"
+        ],
+        "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED"
+      }
+    }
+  ]
+}

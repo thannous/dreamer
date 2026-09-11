@@ -1,0 +1,107 @@
+{
+  "fetchedAt": "2026-09-09T09:49:12.467Z",
+  "site": "sc-domain:noctalia.app",
+  "request": {
+    "type": "web",
+    "dataState": "final",
+    "rowLimit": 25000,
+    "dimensionFilterGroups": [
+      {
+        "groupType": "and",
+        "filters": [
+          {
+            "dimension": "page",
+            "operator": "equals",
+            "expression": "https://noctalia.app/es/simbolos/arbol"
+          }
+        ]
+      }
+    ],
+    "startDate": "2026-09-03",
+    "endDate": "2026-09-06",
+    "dimensions": [
+      "date"
+    ]
+  },
+  "responses": [
+    {
+      "rows": [
+        {
+          "keys": [
+            "2026-09-03"
+          ],
+          "clicks": 11,
+          "impressions": 1133,
+          "ctr": 0.009708737864077669,
+          "position": 5.691968225948808
+        },
+        {
+          "keys": [
+            "2026-09-04"
+          ],
+          "clicks": 7,
+          "impressions": 1130,
+          "ctr": 0.006194690265486726,
+          "position": 5.800884955752212
+        },
+        {
+          "keys": [
+            "2026-09-05"
+          ],
+          "clicks": 11,
+          "impressions": 1238,
+          "ctr": 0.008885298869143781,
+          "position": 5.726171243941842
+        },
+        {
+          "keys": [
+            "2026-09-06"
+          ],
+          "clicks": 17,
+          "impressions": 1251,
+          "ctr": 0.013589128697042365,
+          "position": 5.40687450039968
+        }
+      ],
+      "responseAggregationType": "byPage"
+    }
+  ],
+  "rows": [
+    {
+      "keys": [
+        "2026-09-03"
+      ],
+      "clicks": 11,
+      "impressions": 1133,
+      "ctr": 0.009708737864077669,
+      "position": 5.691968225948808
+    },
+    {
+      "keys": [
+        "2026-09-04"
+      ],
+      "clicks": 7,
+      "impressions": 1130,
+      "ctr": 0.006194690265486726,
+      "position": 5.800884955752212
+    },
+    {
+      "keys": [
+        "2026-09-05"
+      ],
+      "clicks": 11,
+      "impressions": 1238,
+      "ctr": 0.008885298869143781,
+      "position": 5.726171243941842
+    },
+    {
+      "keys": [
+        "2026-09-06"
+      ],
+      "clicks": 17,
+      "impressions": 1251,
+      "ctr": 0.013589128697042365,
+      "position": 5.40687450039968
+    }
+  ]
+}

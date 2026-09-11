@@ -92,7 +92,13 @@ npm run lint       # eslint
 ## Avant de proposer un changement
 
 Exécuter les commandes depuis `apps/meditation`. Pour les changements de code,
-faire les vérifications pertinentes, normalement `npm run typecheck` et `npm run lint`.
+appliquer la [validation proportionnée](../../doc_web_interne/docs/validation-proportionnee.md)
+du dépôt parent : tests ciblés pour un comportement, lint ciblé et écran concerné
+pour une petite retouche visuelle ; `npm run typecheck` et `npm run lint` selon
+l'impact. Les changements audio, achats ou stockage demandent les cas d'échec
+pertinents. Les commandes ne sont pas une checklist à exécuter intégralement.
+Réutiliser les résultats du code inchangé, regrouper les corrections avant push
+et ne pas relancer une suite applicative pour une correction documentaire.
 Pour une modification documentaire, vérifier le contenu et les liens sans lancer
 les suites applicatives. Les règles parentes de confidentialité, autorisation,
 préservation du travail et verrou partagé de l'appareil restent applicables.

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "arbol",
+    "url": "https://noctalia.app/es/simbolos/arbol",
+    "fetchedAt": "2026-09-09T09:51:37.392Z",
+    "status": 200,
+    "finalUrl": "https://noctalia.app/es/simbolos/arbol",
+    "title": "Soñar con árboles: grandes, caídos o cortados | Noctalia",
+    "canonical": "https://noctalia.app/es/simbolos/arbol",
+    "lastModified": null
+  },
+  {
+    "id": "pidocchi",
+    "url": "https://noctalia.app/it/simboli/pidocchi",
+    "fetchedAt": "2026-09-09T09:51:37.395Z",
+    "status": 200,
+    "finalUrl": "https://noctalia.app/it/simboli/pidocchi",
+    "title": "Sognare di avere i pidocchi: cosa significa | Noctalia",
+    "canonical": "https://noctalia.app/it/simboli/pidocchi",
+    "lastModified": null
+  },
+  {
+    "id": "work-en",
+    "url": "https://noctalia.app/en/blog/stress-dreams-work",
+    "fetchedAt": "2026-09-09T09:51:37.397Z",
+    "status": 200,
+    "finalUrl": "https://noctalia.app/en/blog/stress-dreams-work",
+    "title": "Dreaming About Work Every Night? Stress Dreams | Noctalia",
+    "canonical": "https://noctalia.app/en/blog/stress-dreams-work",
+    "lastModified": null
+  },
+  {
+    "id": "false-awakening-en",
+    "url": "https://noctalia.app/en/blog/false-awakening-dreams",
+    "fetchedAt": "2026-09-09T09:51:37.412Z",
+    "status": 200,
+    "finalUrl": "https://noctalia.app/en/blog/false-awakening-dreams",
+    "title": "False Awakenings: Dreaming You Woke Up | Noctalia",
+    "canonical": "https://noctalia.app/en/blog/false-awakening-dreams",
+    "lastModified": null
+  }
+]

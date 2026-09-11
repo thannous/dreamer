@@ -1,0 +1,14 @@
+{
+  "master": "84c85a9aa77bc24a6a4a05723a623600dc519b7e",
+  "changedTrackedFilesAfterBuild": [
+    "data/dream-symbols.json",
+    "docs-src/static/js/experience/experience.js"
+  ],
+  "title": "Soñar con un hospital: estar allí o verlo lleno | Noctalia",
+  "description": "¿Qué significa soñar con un hospital? Compara estar allí, verlo lleno de gente, enfermos o personal médico según tu emoción y contexto, sin predicciones.",
+  "canonical": "https://noctalia.app/es/simbolos/hospital",
+  "excludedBuildOutput": "experience.js, lenis-EYMXDREL.js, mini-VBHZKDYU.js restored from master in isolated copy",
+  "finalIntendedSourceChanges": [
+    "data/dream-symbols.json"
+  ]
+}

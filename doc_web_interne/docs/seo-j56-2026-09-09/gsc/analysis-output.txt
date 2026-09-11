@@ -1,0 +1,52 @@
+query {"common_count": 72, "before_visible": {"clicks": 9, "impressions": 1221, "ctr": 0.007371007371007371, "position": 7.714987714987715}, "after_visible": {"clicks": 9, "impressions": 1801, "ctr": 0.004997223764575236, "position": 7.242642976124375}, "common_before": {"clicks": 9, "impressions": 1172, "ctr": 0.007679180887372013, "position": 7.676621160409557}, "common_after": {"clicks": 8, "impressions": 1738, "ctr": 0.004602991944764097, "position": 7.300920598388953}, "after_ctr_baseline_weights": 0.004541189725093761, "before_ctr_after_weights": 0.00570253079413639, "after_position_baseline_weights": 6.96941365094085, "before_only": {"clicks": 0, "impressions": 49, "ctr": 0.0, "position": 8.63265306122449}, "after_only": {"clicks": 1, "impressions": 63, "ctr": 0.015873015873015872, "position": 5.634920634920635}}
+country-device {"common_count": 6, "before_visible": {"clicks": 9, "impressions": 1221, "ctr": 0.007371007371007371, "position": 7.714987714987715}, "after_visible": {"clicks": 9, "impressions": 1801, "ctr": 0.004997223764575236, "position": 7.242642976124375}, "common_before": {"clicks": 9, "impressions": 1210, "ctr": 0.00743801652892562, "position": 7.684297520661157}, "common_after": {"clicks": 9, "impressions": 1787, "ctr": 0.005036373810856184, "position": 7.226636821488528}, "after_ctr_baseline_weights": 0.006021388716676999, "before_ctr_after_weights": 0.00756393943846464, "after_position_baseline_weights": 6.888764484694484, "before_only": {"clicks": 0, "impressions": 11, "ctr": 0.0, "position": 11.090909090909092}, "after_only": {"clicks": 0, "impressions": 14, "ctr": 0.0, "position": 9.285714285714286}}
+query-country-device {"common_count": 99, "before_visible": {"clicks": 9, "impressions": 1221, "ctr": 0.007371007371007371, "position": 7.714987714987715}, "after_visible": {"clicks": 9, "impressions": 1801, "ctr": 0.004997223764575236, "position": 7.242642976124375}, "common_before": {"clicks": 9, "impressions": 1133, "ctr": 0.00794351279788173, "position": 7.63459841129744}, "common_after": {"clicks": 7, "impressions": 1656, "ctr": 0.004227053140096618, "position": 7.349033816425121}, "after_ctr_baseline_weights": 0.004090427274591309, "before_ctr_after_weights": 0.007605306946661938, "after_position_baseline_weights": 6.754678474206478, "before_only": {"clicks": 0, "impressions": 88, "ctr": 0.0, "position": 8.75}, "after_only": {"clicks": 2, "impressions": 145, "ctr": 0.013793103448275862, "position": 6.027586206896552}}
+clusters [{"period": "before", "cluster": "eau/inondation", "visible_queries": 23, "clicks": 0, "impressions": 226, "ctr": 0.0, "position": 8.544247787610619}, {"period": "before", "cluster": "maison inconnue", "visible_queries": 7, "clicks": 2, "impressions": 309, "ctr": 0.006472491909385114, "position": 5.951456310679611}, {"period": "before", "cluster": "autres maisons", "visible_queries": 64, "clicks": 7, "impressions": 686, "ctr": 0.01020408163265306, "position": 8.236151603498543}, {"period": "after", "cluster": "eau/inondation", "visible_queries": 29, "clicks": 3, "impressions": 849, "ctr": 0.0035335689045936395, "position": 7.131919905771496}, {"period": "after", "cluster": "maison inconnue", "visible_queries": 7, "clicks": 3, "impressions": 279, "ctr": 0.010752688172043012, "position": 3.8960573476702507}, {"period": "after", "cluster": "autres maisons", "visible_queries": 70, "clicks": 3, "impressions": 673, "ctr": 0.004457652303120356, "position": 8.769687964338782}]
+Largest click losses common cohorts
+('sognare una casa', 'ita', 'MOBILE') {'keys': ['sognare una casa', 'ita', 'MOBILE'], 'clicks': 2, 'impressions': 65, 'ctr': 0.03076923076923077, 'position': 6} {'keys': ['sognare una casa', 'ita', 'MOBILE'], 'clicks': 0, 'impressions': 69, 'ctr': 0, 'position': 6.333333333333333}
+('sognare una casa abbandonata', 'ita', 'MOBILE') {'keys': ['sognare una casa abbandonata', 'ita', 'MOBILE'], 'clicks': 1, 'impressions': 2, 'ctr': 0.5, 'position': 1} {'keys': ['sognare una casa abbandonata', 'ita', 'MOBILE'], 'clicks': 0, 'impressions': 11, 'ctr': 0, 'position': 8.454545454545453}
+('sognare una casa sconosciuta grande', 'ita', 'MOBILE') {'keys': ['sognare una casa sconosciuta grande', 'ita', 'MOBILE'], 'clicks': 1, 'impressions': 19, 'ctr': 0.05263157894736842, 'position': 5.315789473684211} {'keys': ['sognare una casa sconosciuta grande', 'ita', 'MOBILE'], 'clicks': 0, 'impressions': 24, 'ctr': 0, 'position': 2.291666666666667}
+('sognare una casa vecchia da ristrutturare', 'ita', 'MOBILE') {'keys': ['sognare una casa vecchia da ristrutturare', 'ita', 'MOBILE'], 'clicks': 1, 'impressions': 50, 'ctr': 0.02, 'position': 8.2} {'keys': ['sognare una casa vecchia da ristrutturare', 'ita', 'MOBILE'], 'clicks': 0, 'impressions': 2, 'ctr': 0, 'position': 9.5}
+('sognare la casa dove abitavo prima', 'ita', 'MOBILE') {'keys': ['sognare la casa dove abitavo prima', 'ita', 'MOBILE'], 'clicks': 1, 'impressions': 7, 'ctr': 0.14285714285714285, 'position': 5.571428571428571} {'keys': ['sognare la casa dove abitavo prima', 'ita', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 2}
+('sognare case vecchie', 'ita', 'MOBILE') {'keys': ['sognare case vecchie', 'ita', 'MOBILE'], 'clicks': 1, 'impressions': 13, 'ctr': 0.07692307692307693, 'position': 6.230769230769231} {'keys': ['sognare case vecchie', 'ita', 'MOBILE'], 'clicks': 0, 'impressions': 23, 'ctr': 0, 'position': 5.782608695652174}
+('sognare sempre la stessa casa sconosciuta', 'ita', 'MOBILE') {'keys': ['sognare sempre la stessa casa sconosciuta', 'ita', 'MOBILE'], 'clicks': 1, 'impressions': 25, 'ctr': 0.04, 'position': 6.76} {'keys': ['sognare sempre la stessa casa sconosciuta', 'ita', 'MOBILE'], 'clicks': 0, 'impressions': 23, 'ctr': 0, 'position': 6.739130434782608}
+('sognare casa', 'ita', 'MOBILE') {'keys': ['sognare casa', 'ita', 'MOBILE'], 'clicks': 1, 'impressions': 61, 'ctr': 0.01639344262295082, 'position': 6.967213114754099} {'keys': ['sognare casa', 'ita', 'MOBILE'], 'clicks': 0, 'impressions': 51, 'ctr': 0, 'position': 6.450980392156863}
+('sognare la casa allagata', 'ita', 'DESKTOP') {'keys': ['sognare la casa allagata', 'ita', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 11} {'keys': ['sognare la casa allagata', 'ita', 'DESKTOP'], 'clicks': 0, 'impressions': 5, 'ctr': 0, 'position': 7.6}
+('sognare case grandi', 'ita', 'DESKTOP') {'keys': ['sognare case grandi', 'ita', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 3} {'keys': ['sognare case grandi', 'ita', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 14}
+('sognare casa allagata acqua pulita', 'ita', 'DESKTOP') {'keys': ['sognare casa allagata acqua pulita', 'ita', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 13} {'keys': ['sognare casa allagata acqua pulita', 'ita', 'DESKTOP'], 'clicks': 0, 'impressions': 3, 'ctr': 0, 'position': 8.666666666666668}
+('sognare una casa vecchia', 'ita', 'MOBILE') {'keys': ['sognare una casa vecchia', 'ita', 'MOBILE'], 'clicks': 0, 'impressions': 23, 'ctr': 0, 'position': 10.434782608695652} {'keys': ['sognare una casa vecchia', 'ita', 'MOBILE'], 'clicks': 0, 'impressions': 34, 'ctr': 0, 'position': 8.794117647058822}
+country/device rows
+before {'keys': ['ita', 'MOBILE'], 'clicks': 9, 'impressions': 1074, 'ctr': 0.008379888268156424, 'position': 7.298882681564246}
+before {'keys': ['aus', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 15}
+before {'keys': ['bra', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 65}
+before {'keys': ['che', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 2}
+before {'keys': ['chl', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 14}
+before {'keys': ['esp', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 8}
+before {'keys': ['fra', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 11}
+before {'keys': ['idn', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 6}
+before {'keys': ['ita', 'DESKTOP'], 'clicks': 0, 'impressions': 111, 'ctr': 0, 'position': 10.495495495495495}
+before {'keys': ['ita', 'TABLET'], 'clicks': 0, 'impressions': 21, 'ctr': 0, 'position': 7.476190476190476}
+before {'keys': ['jpn', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 12}
+before {'keys': ['kor', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 7}
+before {'keys': ['mar', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 1}
+before {'keys': ['pak', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 17}
+before {'keys': ['smr', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 2}
+before {'keys': ['usa', 'DESKTOP'], 'clicks': 0, 'impressions': 2, 'ctr': 0, 'position': 33}
+before {'keys': ['vnm', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 33}
+after {'keys': ['ita', 'MOBILE'], 'clicks': 7, 'impressions': 1613, 'ctr': 0.0043397396156230625, 'position': 6.570365778053317}
+after {'keys': ['ita', 'TABLET'], 'clicks': 2, 'impressions': 16, 'ctr': 0.125, 'position': 3.9375}
+after {'keys': ['bol', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 29}
+after {'keys': ['bra', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 55}
+after {'keys': ['che', 'MOBILE'], 'clicks': 0, 'impressions': 3, 'ctr': 0, 'position': 6}
+after {'keys': ['dom', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 8}
+after {'keys': ['esp', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 7}
+after {'keys': ['gbr', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 3}
+after {'keys': ['idn', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 6}
+after {'keys': ['ind', 'MOBILE'], 'clicks': 0, 'impressions': 2, 'ctr': 0, 'position': 6}
+after {'keys': ['irl', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 7}
+after {'keys': ['ita', 'DESKTOP'], 'clicks': 0, 'impressions': 141, 'ctr': 0, 'position': 9.141843971631205}
+after {'keys': ['phl', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 8}
+after {'keys': ['pol', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 1}
+after {'keys': ['prt', 'MOBILE'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 11}
+after {'keys': ['usa', 'DESKTOP'], 'clicks': 0, 'impressions': 15, 'ctr': 0, 'position': 60.2}
+after {'keys': ['zmb', 'DESKTOP'], 'clicks': 0, 'impressions': 1, 'ctr': 0, 'position': 26}

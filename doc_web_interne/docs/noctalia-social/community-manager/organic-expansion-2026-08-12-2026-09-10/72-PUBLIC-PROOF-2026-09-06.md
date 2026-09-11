@@ -10,9 +10,9 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | C1 | TikTok `@noctaliadreams` | 15:30 | `NIGHT_COSMIC_STAR_OCEAN_01.mp4` | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique ; hook absent du profil exact après l'échéance |
 | C1 | Instagram `@noctaliadreams` | 15:45 | `NIGHT_COSMIC_STAR_OCEAN_01.mp4` | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique ; hook absent du profil authentifié exact après l'échéance |
 | C1 | X `@NoctaliaDreams` | 16:15 | `NIGHT_COSMIC_STAR_OCEAN_01.mp4` | **PUBLIÉ** | [2096603072898478203](https://x.com/NoctaliaDreams/status/2096603072898478203) — 16:15, vidéo 10 s, `Made with AI`, 1 vue, 0 réponse/repost/J'aime/favori |
-| C2 | TikTok `@noctaliadreams` | 19:30 | `NIGHT_CLOCKPUNK_TIME_PORTAL_01.mp4` | **PRÊT — NON PROGRAMMÉ** | À vérifier après 19:30 |
-| C2 | Instagram `@noctaliadreams` | 19:45 | `NIGHT_CLOCKPUNK_TIME_PORTAL_01.mp4` | **PRÊT — DIRECT** | À publier puis vérifier après 19:45 |
-| C2 | X `@NoctaliaDreams` | 20:15 | `NIGHT_CLOCKPUNK_TIME_PORTAL_01.mp4` | **PROGRAMMÉ** | À vérifier après 20:15 |
+| C2 | TikTok `@noctaliadreams` | 19:30 | `NIGHT_CLOCKPUNK_TIME_PORTAL_01.mp4` | **ÉCHEC — NON PUBLIÉ** | Aucune URL publique ; hook absent du profil exact après 19:30 et capacité native non prouvée |
+| C2 | Instagram `@noctaliadreams` | 19:45 | `NIGHT_CLOCKPUNK_TIME_PORTAL_01.mp4` | **PUBLIÉ** | [Dc9HLH3JFUm](https://www.instagram.com/noctaliadreams/reel/Dc9HLH3JFUm/) — compte et légende exacts, vidéo 10 s, badge `Creator avec IA`; vues non encore renseignées, 0 J’aime/commentaire/enregistrement/partage au premier relevé |
+| C2 | X `@NoctaliaDreams` | 20:15 | `NIGHT_CLOCKPUNK_TIME_PORTAL_01.mp4` | **PUBLIÉ** | [2096663470704119901](https://x.com/NoctaliaDreams/status/2096663470704119901) — compte et copie exacts, vidéo 10 s, `8:15 PM · Sep 6, 2026`, label `Made with AI`; 1 vue, 0 J’aime/repost/réponse/enregistrement au premier relevé |
 | C3 | TikTok `@noctaliadreams` | 22:30 | `NIGHT_OCEANPUNK_BIOLUMINESCENT_CITY_FPV_01.mp4` | **PRÊT — NON PROGRAMMÉ** | À vérifier après 22:30 |
 | C3 | Instagram `@noctaliadreams` | 22:45 | `NIGHT_OCEANPUNK_BIOLUMINESCENT_CITY_FPV_01.mp4` | **PRÊT — DIRECT** | À publier puis vérifier après 22:45 |
 | C3 | X `@NoctaliaDreams` | 23:15 | `NIGHT_OCEANPUNK_BIOLUMINESCENT_CITY_FPV_01.mp4` | **PROGRAMMÉ** | À vérifier après 23:15 |
@@ -33,6 +33,6 @@ Pour chaque ligne : attendre l'heure, vérifier le compte, le master exact, le
 hook et l'absence de doublon, puis ouvrir l'URL publique. En l'absence d'URL,
 conserver le statut préparatoire et ne jamais republier par supposition.
 
-- Principal : `1/9` URL publique, avec deux échecs C1 explicites.
+- Principal : `3/9` URL publiques, avec deux échecs C1 et un échec TikTok C2 explicites.
 - Hero secondaire : `1/3` URL publique ; YouTube et Facebook sont deux échecs explicites.
-- Total : `2/12` URL publiques à 18:46, avec quatre échecs explicites.
+- Total : `4/12` URL publiques à 20:47, avec cinq échecs explicites.

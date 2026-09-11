@@ -166,12 +166,17 @@ function validateProofDirectory(
     const date = registerDate(file);
     const requirePublished = date < today && date <= campaignEnd;
     const content = fs.readFileSync(path.join(directory, file), 'utf8');
-    const result = validatePublicProof(content, {
+    let result;
+    try {
+      result = validatePublicProof(content, {
       requirePublished,
       // A past row may be explicitly acknowledged as ÉCHEC — NON PUBLIÉ.
       // That closes the checkpoint without inventing a public URL.
       allowAcknowledgedFailures: requirePublished,
-    });
+      });
+    } catch (error) {
+      throw new Error(`${file}: ${error instanceof Error ? error.message : String(error)}`);
+    }
     if (expectedAssetsByDate.has(date)) {
       const actualAssets = proofPrimaryAssets(content);
       for (const [slot, expectedAsset] of expectedAssetsByDate.get(date)) {

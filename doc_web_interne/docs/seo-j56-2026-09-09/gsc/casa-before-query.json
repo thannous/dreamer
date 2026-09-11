@@ -1,0 +1,1727 @@
+{
+  "fetchedAt": "2026-09-09T09:49:17.343Z",
+  "site": "sc-domain:noctalia.app",
+  "request": {
+    "type": "web",
+    "dataState": "final",
+    "rowLimit": 25000,
+    "dimensionFilterGroups": [
+      {
+        "groupType": "and",
+        "filters": [
+          {
+            "dimension": "page",
+            "operator": "equals",
+            "expression": "https://noctalia.app/it/simboli/casa"
+          }
+        ]
+      }
+    ],
+    "startDate": "2026-07-11",
+    "endDate": "2026-08-07",
+    "dimensions": [
+      "query"
+    ]
+  },
+  "responses": [
+    {
+      "rows": [
+        {
+          "keys": [
+            "sognare una casa"
+          ],
+          "clicks": 2,
+          "impressions": 74,
+          "ctr": 0.02702702702702703,
+          "position": 6.135135135135135
+        },
+        {
+          "keys": [
+            "sognare casa"
+          ],
+          "clicks": 1,
+          "impressions": 70,
+          "ctr": 0.014285714285714285,
+          "position": 7.228571428571429
+        },
+        {
+          "keys": [
+            "sognare case vecchie"
+          ],
+          "clicks": 1,
+          "impressions": 13,
+          "ctr": 0.07692307692307693,
+          "position": 6.230769230769231
+        },
+        {
+          "keys": [
+            "sognare la casa dove abitavo prima"
+          ],
+          "clicks": 1,
+          "impressions": 9,
+          "ctr": 0.1111111111111111,
+          "position": 4.555555555555555
+        },
+        {
+          "keys": [
+            "sognare sempre la stessa casa sconosciuta"
+          ],
+          "clicks": 1,
+          "impressions": 26,
+          "ctr": 0.038461538461538464,
+          "position": 6.538461538461538
+        },
+        {
+          "keys": [
+            "sognare una casa abbandonata"
+          ],
+          "clicks": 1,
+          "impressions": 8,
+          "ctr": 0.125,
+          "position": 7.625
+        },
+        {
+          "keys": [
+            "sognare una casa sconosciuta grande"
+          ],
+          "clicks": 1,
+          "impressions": 19,
+          "ctr": 0.05263157894736842,
+          "position": 5.315789473684211
+        },
+        {
+          "keys": [
+            "sognare una casa vecchia da ristrutturare"
+          ],
+          "clicks": 1,
+          "impressions": 52,
+          "ctr": 0.019230769230769232,
+          "position": 8.288461538461538
+        },
+        {
+          "keys": [
+            "casa allagata significato esoterico"
+          ],
+          "clicks": 0,
+          "impressions": 13,
+          "ctr": 0,
+          "position": 7.538461538461538
+        },
+        {
+          "keys": [
+            "casa allagata sogno"
+          ],
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "position": 8.875
+        },
+        {
+          "keys": [
+            "casa nei sogni"
+          ],
+          "clicks": 0,
+          "impressions": 9,
+          "ctr": 0,
+          "position": 7.888888888888889
+        },
+        {
+          "keys": [
+            "cosa rappresenta la casa nei sogni"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 7
+        },
+        {
+          "keys": [
+            "cosa significa sognare la casa allagata"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 8
+        },
+        {
+          "keys": [
+            "cosa significa sognare la casa dove abitavo prima"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 16
+        },
+        {
+          "keys": [
+            "cosa significa sognare una casa"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 9.75
+        },
+        {
+          "keys": [
+            "cosa significa sognare una casa vecchia"
+          ],
+          "clicks": 0,
+          "impressions": 9,
+          "ctr": 0,
+          "position": 7.555555555555555
+        },
+        {
+          "keys": [
+            "interpretazione sogni casa"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 8.2
+        },
+        {
+          "keys": [
+            "site:noctalia.app"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 33
+        },
+        {
+          "keys": [
+            "sognare acqua in casa"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "sognare allagamento casa"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 7
+        },
+        {
+          "keys": [
+            "sognare allagamento in casa"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 11
+        },
+        {
+          "keys": [
+            "sognare casa a soqquadro"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 9.666666666666666
+        },
+        {
+          "keys": [
+            "sognare casa abbandonata"
+          ],
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "position": 8.875
+        },
+        {
+          "keys": [
+            "sognare casa allagata"
+          ],
+          "clicks": 0,
+          "impressions": 73,
+          "ctr": 0,
+          "position": 9.36986301369863
+        },
+        {
+          "keys": [
+            "sognare casa allagata acqua pulita"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 13
+        },
+        {
+          "keys": [
+            "sognare casa allagata significato"
+          ],
+          "clicks": 0,
+          "impressions": 12,
+          "ctr": 0,
+          "position": 8.75
+        },
+        {
+          "keys": [
+            "sognare casa che si allaga"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 9.4
+        },
+        {
+          "keys": [
+            "sognare casa diroccata"
+          ],
+          "clicks": 0,
+          "impressions": 7,
+          "ctr": 0,
+          "position": 1
+        },
+        {
+          "keys": [
+            "sognare casa distrutta"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 3
+        },
+        {
+          "keys": [
+            "sognare casa dove abitavo prima"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "sognare casa grande con tante stanze"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "sognare casa in costruzione"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 3
+        },
+        {
+          "keys": [
+            "sognare casa in disordine"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 29
+        },
+        {
+          "keys": [
+            "sognare casa in disordine smorfia"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 3
+        },
+        {
+          "keys": [
+            "sognare casa infestata"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 15
+        },
+        {
+          "keys": [
+            "sognare casa ristrutturata"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 20
+        },
+        {
+          "keys": [
+            "sognare casa sporca"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 25.5
+        },
+        {
+          "keys": [
+            "sognare casa vecchia"
+          ],
+          "clicks": 0,
+          "impressions": 43,
+          "ctr": 0,
+          "position": 8.279069767441861
+        },
+        {
+          "keys": [
+            "sognare casa vecchia dove abitavo prima"
+          ],
+          "clicks": 0,
+          "impressions": 33,
+          "ctr": 0,
+          "position": 10.848484848484848
+        },
+        {
+          "keys": [
+            "sognare casa vuota"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "sognare case"
+          ],
+          "clicks": 0,
+          "impressions": 28,
+          "ctr": 0,
+          "position": 6.535714285714286
+        },
+        {
+          "keys": [
+            "sognare case grandi"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 2.333333333333333
+        },
+        {
+          "keys": [
+            "sognare case significato"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 7.6
+        },
+        {
+          "keys": [
+            "sognare che la casa si allaga"
+          ],
+          "clicks": 0,
+          "impressions": 6,
+          "ctr": 0,
+          "position": 8.5
+        },
+        {
+          "keys": [
+            "sognare che si allaga casa"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 7.5
+        },
+        {
+          "keys": [
+            "sognare che si allaga la casa"
+          ],
+          "clicks": 0,
+          "impressions": 11,
+          "ctr": 0,
+          "position": 7
+        },
+        {
+          "keys": [
+            "sognare che si allaga la casa significato"
+          ],
+          "clicks": 0,
+          "impressions": 7,
+          "ctr": 0,
+          "position": 8.714285714285715
+        },
+        {
+          "keys": [
+            "sognare di allagare casa"
+          ],
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "position": 9
+        },
+        {
+          "keys": [
+            "sognare di avere la casa allagata"
+          ],
+          "clicks": 0,
+          "impressions": 7,
+          "ctr": 0,
+          "position": 7.571428571428571
+        },
+        {
+          "keys": [
+            "sognare di avere la casa sporca"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "sognare di cambiare casa"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 3
+        },
+        {
+          "keys": [
+            "sognare di cambiare casa cosa significa"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "sognare di comprare una casa vecchia"
+          ],
+          "clicks": 0,
+          "impressions": 11,
+          "ctr": 0,
+          "position": 8
+        },
+        {
+          "keys": [
+            "sognare di entrare in una casa altrui smorfia"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 3
+        },
+        {
+          "keys": [
+            "sognare di entrare in una casa sconosciuta"
+          ],
+          "clicks": 0,
+          "impressions": 13,
+          "ctr": 0,
+          "position": 7.076923076923077
+        },
+        {
+          "keys": [
+            "sognare di esplorare una casa"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 6
+        },
+        {
+          "keys": [
+            "sognare di essere in una casa sconosciuta"
+          ],
+          "clicks": 0,
+          "impressions": 14,
+          "ctr": 0,
+          "position": 6.571428571428571
+        },
+        {
+          "keys": [
+            "sognare di scoprire una nuova stanza in casa"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 11
+        },
+        {
+          "keys": [
+            "sognare di vendere casa"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "sognare di visitare una casa"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 21
+        },
+        {
+          "keys": [
+            "sognare di vivere in una casa vecchia"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 7.8
+        },
+        {
+          "keys": [
+            "sognare la casa"
+          ],
+          "clicks": 0,
+          "impressions": 27,
+          "ctr": 0,
+          "position": 6.962962962962963
+        },
+        {
+          "keys": [
+            "sognare la casa allagata"
+          ],
+          "clicks": 0,
+          "impressions": 23,
+          "ctr": 0,
+          "position": 9.391304347826088
+        },
+        {
+          "keys": [
+            "sognare la casa allagata significato"
+          ],
+          "clicks": 0,
+          "impressions": 7,
+          "ctr": 0,
+          "position": 7.857142857142857
+        },
+        {
+          "keys": [
+            "sognare la casa dei genitori morti"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 3
+        },
+        {
+          "keys": [
+            "sognare la casa dell'infanzia"
+          ],
+          "clicks": 0,
+          "impressions": 21,
+          "ctr": 0,
+          "position": 7.190476190476191
+        },
+        {
+          "keys": [
+            "sognare la casa dove abitavo da bambino"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 10
+        },
+        {
+          "keys": [
+            "sognare la casa in disordine"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 26
+        },
+        {
+          "keys": [
+            "sognare la casa sporca"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 21
+        },
+        {
+          "keys": [
+            "sognare la vecchia casa"
+          ],
+          "clicks": 0,
+          "impressions": 36,
+          "ctr": 0,
+          "position": 7.027777777777778
+        },
+        {
+          "keys": [
+            "sognare la vecchia casa di famiglia"
+          ],
+          "clicks": 0,
+          "impressions": 21,
+          "ctr": 0,
+          "position": 8.80952380952381
+        },
+        {
+          "keys": [
+            "sognare la vecchia casa di famiglia numeri lotto"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 12
+        },
+        {
+          "keys": [
+            "sognare lenzuola bianche stese"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "sognare pareti di casa rovinate"
+          ],
+          "clicks": 0,
+          "impressions": 13,
+          "ctr": 0,
+          "position": 9.076923076923077
+        },
+        {
+          "keys": [
+            "sognare persone sconosciute smorfia"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 3
+        },
+        {
+          "keys": [
+            "sognare residenziale"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 65
+        },
+        {
+          "keys": [
+            "sognare stanza allagata"
+          ],
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "position": 7.125
+        },
+        {
+          "keys": [
+            "sognare una bella casa"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 18
+        },
+        {
+          "keys": [
+            "sognare una casa allagata"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 8.333333333333332
+        },
+        {
+          "keys": [
+            "sognare una casa con tante stanze"
+          ],
+          "clicks": 0,
+          "impressions": 11,
+          "ctr": 0,
+          "position": 13.636363636363637
+        },
+        {
+          "keys": [
+            "sognare una casa grande"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 14.5
+        },
+        {
+          "keys": [
+            "sognare una casa grande con tante stanze"
+          ],
+          "clicks": 0,
+          "impressions": 6,
+          "ctr": 0,
+          "position": 11.166666666666666
+        },
+        {
+          "keys": [
+            "sognare una casa grande da ristrutturare"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 8
+        },
+        {
+          "keys": [
+            "sognare una casa grande e bella"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 14.2
+        },
+        {
+          "keys": [
+            "sognare una casa grande e vecchia"
+          ],
+          "clicks": 0,
+          "impressions": 49,
+          "ctr": 0,
+          "position": 9.020408163265307
+        },
+        {
+          "keys": [
+            "sognare una casa nuova grande"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 10.666666666666666
+        },
+        {
+          "keys": [
+            "sognare una casa sconosciuta"
+          ],
+          "clicks": 0,
+          "impressions": 224,
+          "ctr": 0,
+          "position": 5.741071428571429
+        },
+        {
+          "keys": [
+            "sognare una casa sconosciuta smorfia"
+          ],
+          "clicks": 0,
+          "impressions": 12,
+          "ctr": 0,
+          "position": 7.916666666666667
+        },
+        {
+          "keys": [
+            "sognare una casa sporca"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 22.5
+        },
+        {
+          "keys": [
+            "sognare una casa vecchia"
+          ],
+          "clicks": 0,
+          "impressions": 31,
+          "ctr": 0,
+          "position": 9.838709677419354
+        },
+        {
+          "keys": [
+            "sognare una stanza allagata"
+          ],
+          "clicks": 0,
+          "impressions": 15,
+          "ctr": 0,
+          "position": 7
+        },
+        {
+          "keys": [
+            "sognare vecchia casa"
+          ],
+          "clicks": 0,
+          "impressions": 14,
+          "ctr": 0,
+          "position": 6.785714285714286
+        },
+        {
+          "keys": [
+            "sogno casa allagata"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 7.4
+        },
+        {
+          "keys": [
+            "sogno casa allagata significato"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 7
+        }
+      ],
+      "responseAggregationType": "byPage"
+    }
+  ],
+  "rows": [
+    {
+      "keys": [
+        "sognare una casa"
+      ],
+      "clicks": 2,
+      "impressions": 74,
+      "ctr": 0.02702702702702703,
+      "position": 6.135135135135135
+    },
+    {
+      "keys": [
+        "sognare casa"
+      ],
+      "clicks": 1,
+      "impressions": 70,
+      "ctr": 0.014285714285714285,
+      "position": 7.228571428571429
+    },
+    {
+      "keys": [
+        "sognare case vecchie"
+      ],
+      "clicks": 1,
+      "impressions": 13,
+      "ctr": 0.07692307692307693,
+      "position": 6.230769230769231
+    },
+    {
+      "keys": [
+        "sognare la casa dove abitavo prima"
+      ],
+      "clicks": 1,
+      "impressions": 9,
+      "ctr": 0.1111111111111111,
+      "position": 4.555555555555555
+    },
+    {
+      "keys": [
+        "sognare sempre la stessa casa sconosciuta"
+      ],
+      "clicks": 1,
+      "impressions": 26,
+      "ctr": 0.038461538461538464,
+      "position": 6.538461538461538
+    },
+    {
+      "keys": [
+        "sognare una casa abbandonata"
+      ],
+      "clicks": 1,
+      "impressions": 8,
+      "ctr": 0.125,
+      "position": 7.625
+    },
+    {
+      "keys": [
+        "sognare una casa sconosciuta grande"
+      ],
+      "clicks": 1,
+      "impressions": 19,
+      "ctr": 0.05263157894736842,
+      "position": 5.315789473684211
+    },
+    {
+      "keys": [
+        "sognare una casa vecchia da ristrutturare"
+      ],
+      "clicks": 1,
+      "impressions": 52,
+      "ctr": 0.019230769230769232,
+      "position": 8.288461538461538
+    },
+    {
+      "keys": [
+        "casa allagata significato esoterico"
+      ],
+      "clicks": 0,
+      "impressions": 13,
+      "ctr": 0,
+      "position": 7.538461538461538
+    },
+    {
+      "keys": [
+        "casa allagata sogno"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 8.875
+    },
+    {
+      "keys": [
+        "casa nei sogni"
+      ],
+      "clicks": 0,
+      "impressions": 9,
+      "ctr": 0,
+      "position": 7.888888888888889
+    },
+    {
+      "keys": [
+        "cosa rappresenta la casa nei sogni"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "keys": [
+        "cosa significa sognare la casa allagata"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "keys": [
+        "cosa significa sognare la casa dove abitavo prima"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 16
+    },
+    {
+      "keys": [
+        "cosa significa sognare una casa"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 9.75
+    },
+    {
+      "keys": [
+        "cosa significa sognare una casa vecchia"
+      ],
+      "clicks": 0,
+      "impressions": 9,
+      "ctr": 0,
+      "position": 7.555555555555555
+    },
+    {
+      "keys": [
+        "interpretazione sogni casa"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 8.2
+    },
+    {
+      "keys": [
+        "site:noctalia.app"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 33
+    },
+    {
+      "keys": [
+        "sognare acqua in casa"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "sognare allagamento casa"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "keys": [
+        "sognare allagamento in casa"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 11
+    },
+    {
+      "keys": [
+        "sognare casa a soqquadro"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 9.666666666666666
+    },
+    {
+      "keys": [
+        "sognare casa abbandonata"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 8.875
+    },
+    {
+      "keys": [
+        "sognare casa allagata"
+      ],
+      "clicks": 0,
+      "impressions": 73,
+      "ctr": 0,
+      "position": 9.36986301369863
+    },
+    {
+      "keys": [
+        "sognare casa allagata acqua pulita"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 13
+    },
+    {
+      "keys": [
+        "sognare casa allagata significato"
+      ],
+      "clicks": 0,
+      "impressions": 12,
+      "ctr": 0,
+      "position": 8.75
+    },
+    {
+      "keys": [
+        "sognare casa che si allaga"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 9.4
+    },
+    {
+      "keys": [
+        "sognare casa diroccata"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "keys": [
+        "sognare casa distrutta"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "keys": [
+        "sognare casa dove abitavo prima"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "sognare casa grande con tante stanze"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "sognare casa in costruzione"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "keys": [
+        "sognare casa in disordine"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 29
+    },
+    {
+      "keys": [
+        "sognare casa in disordine smorfia"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "keys": [
+        "sognare casa infestata"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 15
+    },
+    {
+      "keys": [
+        "sognare casa ristrutturata"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 20
+    },
+    {
+      "keys": [
+        "sognare casa sporca"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 25.5
+    },
+    {
+      "keys": [
+        "sognare casa vecchia"
+      ],
+      "clicks": 0,
+      "impressions": 43,
+      "ctr": 0,
+      "position": 8.279069767441861
+    },
+    {
+      "keys": [
+        "sognare casa vecchia dove abitavo prima"
+      ],
+      "clicks": 0,
+      "impressions": 33,
+      "ctr": 0,
+      "position": 10.848484848484848
+    },
+    {
+      "keys": [
+        "sognare casa vuota"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "sognare case"
+      ],
+      "clicks": 0,
+      "impressions": 28,
+      "ctr": 0,
+      "position": 6.535714285714286
+    },
+    {
+      "keys": [
+        "sognare case grandi"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 2.333333333333333
+    },
+    {
+      "keys": [
+        "sognare case significato"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 7.6
+    },
+    {
+      "keys": [
+        "sognare che la casa si allaga"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 8.5
+    },
+    {
+      "keys": [
+        "sognare che si allaga casa"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 7.5
+    },
+    {
+      "keys": [
+        "sognare che si allaga la casa"
+      ],
+      "clicks": 0,
+      "impressions": 11,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "keys": [
+        "sognare che si allaga la casa significato"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 8.714285714285715
+    },
+    {
+      "keys": [
+        "sognare di allagare casa"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 9
+    },
+    {
+      "keys": [
+        "sognare di avere la casa allagata"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 7.571428571428571
+    },
+    {
+      "keys": [
+        "sognare di avere la casa sporca"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "sognare di cambiare casa"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "keys": [
+        "sognare di cambiare casa cosa significa"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "sognare di comprare una casa vecchia"
+      ],
+      "clicks": 0,
+      "impressions": 11,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "keys": [
+        "sognare di entrare in una casa altrui smorfia"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "keys": [
+        "sognare di entrare in una casa sconosciuta"
+      ],
+      "clicks": 0,
+      "impressions": 13,
+      "ctr": 0,
+      "position": 7.076923076923077
+    },
+    {
+      "keys": [
+        "sognare di esplorare una casa"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "keys": [
+        "sognare di essere in una casa sconosciuta"
+      ],
+      "clicks": 0,
+      "impressions": 14,
+      "ctr": 0,
+      "position": 6.571428571428571
+    },
+    {
+      "keys": [
+        "sognare di scoprire una nuova stanza in casa"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 11
+    },
+    {
+      "keys": [
+        "sognare di vendere casa"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "sognare di visitare una casa"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 21
+    },
+    {
+      "keys": [
+        "sognare di vivere in una casa vecchia"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 7.8
+    },
+    {
+      "keys": [
+        "sognare la casa"
+      ],
+      "clicks": 0,
+      "impressions": 27,
+      "ctr": 0,
+      "position": 6.962962962962963
+    },
+    {
+      "keys": [
+        "sognare la casa allagata"
+      ],
+      "clicks": 0,
+      "impressions": 23,
+      "ctr": 0,
+      "position": 9.391304347826088
+    },
+    {
+      "keys": [
+        "sognare la casa allagata significato"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 7.857142857142857
+    },
+    {
+      "keys": [
+        "sognare la casa dei genitori morti"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "keys": [
+        "sognare la casa dell'infanzia"
+      ],
+      "clicks": 0,
+      "impressions": 21,
+      "ctr": 0,
+      "position": 7.190476190476191
+    },
+    {
+      "keys": [
+        "sognare la casa dove abitavo da bambino"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 10
+    },
+    {
+      "keys": [
+        "sognare la casa in disordine"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 26
+    },
+    {
+      "keys": [
+        "sognare la casa sporca"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 21
+    },
+    {
+      "keys": [
+        "sognare la vecchia casa"
+      ],
+      "clicks": 0,
+      "impressions": 36,
+      "ctr": 0,
+      "position": 7.027777777777778
+    },
+    {
+      "keys": [
+        "sognare la vecchia casa di famiglia"
+      ],
+      "clicks": 0,
+      "impressions": 21,
+      "ctr": 0,
+      "position": 8.80952380952381
+    },
+    {
+      "keys": [
+        "sognare la vecchia casa di famiglia numeri lotto"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 12
+    },
+    {
+      "keys": [
+        "sognare lenzuola bianche stese"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "sognare pareti di casa rovinate"
+      ],
+      "clicks": 0,
+      "impressions": 13,
+      "ctr": 0,
+      "position": 9.076923076923077
+    },
+    {
+      "keys": [
+        "sognare persone sconosciute smorfia"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "keys": [
+        "sognare residenziale"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 65
+    },
+    {
+      "keys": [
+        "sognare stanza allagata"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 7.125
+    },
+    {
+      "keys": [
+        "sognare una bella casa"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 18
+    },
+    {
+      "keys": [
+        "sognare una casa allagata"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 8.333333333333332
+    },
+    {
+      "keys": [
+        "sognare una casa con tante stanze"
+      ],
+      "clicks": 0,
+      "impressions": 11,
+      "ctr": 0,
+      "position": 13.636363636363637
+    },
+    {
+      "keys": [
+        "sognare una casa grande"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 14.5
+    },
+    {
+      "keys": [
+        "sognare una casa grande con tante stanze"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 11.166666666666666
+    },
+    {
+      "keys": [
+        "sognare una casa grande da ristrutturare"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "keys": [
+        "sognare una casa grande e bella"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 14.2
+    },
+    {
+      "keys": [
+        "sognare una casa grande e vecchia"
+      ],
+      "clicks": 0,
+      "impressions": 49,
+      "ctr": 0,
+      "position": 9.020408163265307
+    },
+    {
+      "keys": [
+        "sognare una casa nuova grande"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 10.666666666666666
+    },
+    {
+      "keys": [
+        "sognare una casa sconosciuta"
+      ],
+      "clicks": 0,
+      "impressions": 224,
+      "ctr": 0,
+      "position": 5.741071428571429
+    },
+    {
+      "keys": [
+        "sognare una casa sconosciuta smorfia"
+      ],
+      "clicks": 0,
+      "impressions": 12,
+      "ctr": 0,
+      "position": 7.916666666666667
+    },
+    {
+      "keys": [
+        "sognare una casa sporca"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 22.5
+    },
+    {
+      "keys": [
+        "sognare una casa vecchia"
+      ],
+      "clicks": 0,
+      "impressions": 31,
+      "ctr": 0,
+      "position": 9.838709677419354
+    },
+    {
+      "keys": [
+        "sognare una stanza allagata"
+      ],
+      "clicks": 0,
+      "impressions": 15,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "keys": [
+        "sognare vecchia casa"
+      ],
+      "clicks": 0,
+      "impressions": 14,
+      "ctr": 0,
+      "position": 6.785714285714286
+    },
+    {
+      "keys": [
+        "sogno casa allagata"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 7.4
+    },
+    {
+      "keys": [
+        "sogno casa allagata significato"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 7
+    }
+  ]
+}

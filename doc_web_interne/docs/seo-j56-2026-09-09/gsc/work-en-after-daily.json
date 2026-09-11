@@ -1,0 +1,125 @@
+{
+  "fetchedAt": "2026-09-09T09:49:14.849Z",
+  "site": "sc-domain:noctalia.app",
+  "request": {
+    "type": "web",
+    "dataState": "final",
+    "rowLimit": 25000,
+    "dimensionFilterGroups": [
+      {
+        "groupType": "and",
+        "filters": [
+          {
+            "dimension": "page",
+            "operator": "equals",
+            "expression": "https://noctalia.app/en/blog/stress-dreams-work"
+          }
+        ]
+      }
+    ],
+    "startDate": "2026-09-02",
+    "endDate": "2026-09-06",
+    "dimensions": [
+      "date"
+    ]
+  },
+  "responses": [
+    {
+      "rows": [
+        {
+          "keys": [
+            "2026-09-02"
+          ],
+          "clicks": 0,
+          "impressions": 33,
+          "ctr": 0,
+          "position": 12.969696969696969
+        },
+        {
+          "keys": [
+            "2026-09-03"
+          ],
+          "clicks": 0,
+          "impressions": 27,
+          "ctr": 0,
+          "position": 11.25925925925926
+        },
+        {
+          "keys": [
+            "2026-09-04"
+          ],
+          "clicks": 0,
+          "impressions": 46,
+          "ctr": 0,
+          "position": 10.934782608695652
+        },
+        {
+          "keys": [
+            "2026-09-05"
+          ],
+          "clicks": 0,
+          "impressions": 32,
+          "ctr": 0,
+          "position": 11.375
+        },
+        {
+          "keys": [
+            "2026-09-06"
+          ],
+          "clicks": 0,
+          "impressions": 34,
+          "ctr": 0,
+          "position": 14.176470588235293
+        }
+      ],
+      "responseAggregationType": "byPage"
+    }
+  ],
+  "rows": [
+    {
+      "keys": [
+        "2026-09-02"
+      ],
+      "clicks": 0,
+      "impressions": 33,
+      "ctr": 0,
+      "position": 12.969696969696969
+    },
+    {
+      "keys": [
+        "2026-09-03"
+      ],
+      "clicks": 0,
+      "impressions": 27,
+      "ctr": 0,
+      "position": 11.25925925925926
+    },
+    {
+      "keys": [
+        "2026-09-04"
+      ],
+      "clicks": 0,
+      "impressions": 46,
+      "ctr": 0,
+      "position": 10.934782608695652
+    },
+    {
+      "keys": [
+        "2026-09-05"
+      ],
+      "clicks": 0,
+      "impressions": 32,
+      "ctr": 0,
+      "position": 11.375
+    },
+    {
+      "keys": [
+        "2026-09-06"
+      ],
+      "clicks": 0,
+      "impressions": 34,
+      "ctr": 0,
+      "position": 14.176470588235293
+    }
+  ]
+}

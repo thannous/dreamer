@@ -1,0 +1,107 @@
+{
+  "fetchedAt": "2026-09-09T09:49:12.957Z",
+  "site": "sc-domain:noctalia.app",
+  "request": {
+    "type": "web",
+    "dataState": "final",
+    "rowLimit": 25000,
+    "dimensionFilterGroups": [
+      {
+        "groupType": "and",
+        "filters": [
+          {
+            "dimension": "page",
+            "operator": "equals",
+            "expression": "https://noctalia.app/it/simboli/pidocchi"
+          }
+        ]
+      }
+    ],
+    "startDate": "2026-08-27",
+    "endDate": "2026-08-30",
+    "dimensions": [
+      "date"
+    ]
+  },
+  "responses": [
+    {
+      "rows": [
+        {
+          "keys": [
+            "2026-08-27"
+          ],
+          "clicks": 0,
+          "impressions": 194,
+          "ctr": 0,
+          "position": 8.45360824742268
+        },
+        {
+          "keys": [
+            "2026-08-28"
+          ],
+          "clicks": 0,
+          "impressions": 203,
+          "ctr": 0,
+          "position": 7.87192118226601
+        },
+        {
+          "keys": [
+            "2026-08-29"
+          ],
+          "clicks": 1,
+          "impressions": 200,
+          "ctr": 0.005,
+          "position": 7.875
+        },
+        {
+          "keys": [
+            "2026-08-30"
+          ],
+          "clicks": 1,
+          "impressions": 210,
+          "ctr": 0.004761904761904762,
+          "position": 7.633333333333334
+        }
+      ],
+      "responseAggregationType": "byPage"
+    }
+  ],
+  "rows": [
+    {
+      "keys": [
+        "2026-08-27"
+      ],
+      "clicks": 0,
+      "impressions": 194,
+      "ctr": 0,
+      "position": 8.45360824742268
+    },
+    {
+      "keys": [
+        "2026-08-28"
+      ],
+      "clicks": 0,
+      "impressions": 203,
+      "ctr": 0,
+      "position": 7.87192118226601
+    },
+    {
+      "keys": [
+        "2026-08-29"
+      ],
+      "clicks": 1,
+      "impressions": 200,
+      "ctr": 0.005,
+      "position": 7.875
+    },
+    {
+      "keys": [
+        "2026-08-30"
+      ],
+      "clicks": 1,
+      "impressions": 210,
+      "ctr": 0.004761904761904762,
+      "position": 7.633333333333334
+    }
+  ]
+}

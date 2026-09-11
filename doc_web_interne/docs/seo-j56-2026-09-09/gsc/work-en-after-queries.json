@@ -1,0 +1,431 @@
+{
+  "fetchedAt": "2026-09-09T09:49:15.136Z",
+  "site": "sc-domain:noctalia.app",
+  "request": {
+    "type": "web",
+    "dataState": "final",
+    "rowLimit": 25000,
+    "dimensionFilterGroups": [
+      {
+        "groupType": "and",
+        "filters": [
+          {
+            "dimension": "page",
+            "operator": "equals",
+            "expression": "https://noctalia.app/en/blog/stress-dreams-work"
+          }
+        ]
+      }
+    ],
+    "startDate": "2026-09-02",
+    "endDate": "2026-09-06",
+    "dimensions": [
+      "query"
+    ]
+  },
+  "responses": [
+    {
+      "rows": [
+        {
+          "keys": [
+            "dream about work"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 17
+        },
+        {
+          "keys": [
+            "dream about work every night"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 1
+        },
+        {
+          "keys": [
+            "dream of work"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 20
+        },
+        {
+          "keys": [
+            "dream of working"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 22.5
+        },
+        {
+          "keys": [
+            "dreaming about work"
+          ],
+          "clicks": 0,
+          "impressions": 12,
+          "ctr": 0,
+          "position": 23.5
+        },
+        {
+          "keys": [
+            "dreaming about work every night"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 2.8
+        },
+        {
+          "keys": [
+            "dreaming about workplace"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 14
+        },
+        {
+          "keys": [
+            "dreaming of work"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 11
+        },
+        {
+          "keys": [
+            "dreaming of working"
+          ],
+          "clicks": 0,
+          "impressions": 11,
+          "ctr": 0,
+          "position": 25.545454545454547
+        },
+        {
+          "keys": [
+            "dreams about work"
+          ],
+          "clicks": 0,
+          "impressions": 14,
+          "ctr": 0,
+          "position": 20.428571428571427
+        },
+        {
+          "keys": [
+            "how to not dream about work"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 17
+        },
+        {
+          "keys": [
+            "how to stop dreaming about work"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 18
+        },
+        {
+          "keys": [
+            "i dream about work every night"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 6
+        },
+        {
+          "keys": [
+            "is dreaming about work a sign of burnout"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 4.333333333333334
+        },
+        {
+          "keys": [
+            "site:noctalia.app"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 50
+        },
+        {
+          "keys": [
+            "träumen von der arbeit"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 47
+        },
+        {
+          "keys": [
+            "why do i dream about work"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 16
+        },
+        {
+          "keys": [
+            "why do i keep dreaming about work"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 11
+        },
+        {
+          "keys": [
+            "work dreams"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 15.666666666666666
+        },
+        {
+          "keys": [
+            "work stress dreams"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 21
+        },
+        {
+          "keys": [
+            "итог"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "сонник спать на работе"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 42
+        }
+      ],
+      "responseAggregationType": "byPage"
+    }
+  ],
+  "rows": [
+    {
+      "keys": [
+        "dream about work"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 17
+    },
+    {
+      "keys": [
+        "dream about work every night"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "keys": [
+        "dream of work"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 20
+    },
+    {
+      "keys": [
+        "dream of working"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 22.5
+    },
+    {
+      "keys": [
+        "dreaming about work"
+      ],
+      "clicks": 0,
+      "impressions": 12,
+      "ctr": 0,
+      "position": 23.5
+    },
+    {
+      "keys": [
+        "dreaming about work every night"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 2.8
+    },
+    {
+      "keys": [
+        "dreaming about workplace"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 14
+    },
+    {
+      "keys": [
+        "dreaming of work"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 11
+    },
+    {
+      "keys": [
+        "dreaming of working"
+      ],
+      "clicks": 0,
+      "impressions": 11,
+      "ctr": 0,
+      "position": 25.545454545454547
+    },
+    {
+      "keys": [
+        "dreams about work"
+      ],
+      "clicks": 0,
+      "impressions": 14,
+      "ctr": 0,
+      "position": 20.428571428571427
+    },
+    {
+      "keys": [
+        "how to not dream about work"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 17
+    },
+    {
+      "keys": [
+        "how to stop dreaming about work"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 18
+    },
+    {
+      "keys": [
+        "i dream about work every night"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "keys": [
+        "is dreaming about work a sign of burnout"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 4.333333333333334
+    },
+    {
+      "keys": [
+        "site:noctalia.app"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 50
+    },
+    {
+      "keys": [
+        "träumen von der arbeit"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 47
+    },
+    {
+      "keys": [
+        "why do i dream about work"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 16
+    },
+    {
+      "keys": [
+        "why do i keep dreaming about work"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 11
+    },
+    {
+      "keys": [
+        "work dreams"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 15.666666666666666
+    },
+    {
+      "keys": [
+        "work stress dreams"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 21
+    },
+    {
+      "keys": [
+        "итог"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "сонник спать на работе"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 42
+    }
+  ]
+}

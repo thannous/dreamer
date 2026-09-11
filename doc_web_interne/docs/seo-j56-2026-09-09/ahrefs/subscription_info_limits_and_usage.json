@@ -1,0 +1,14 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"limits_and_usage\": {\n    \"subscription\": \"Trial, billed monthly\",\n    \"usage_reset_date\": \"2026-09-16T00:00:00Z\",\n    \"units_limit_workspace\": 0,\n    \"units_usage_workspace\": 0,\n    \"units_limit_api_key\": null,\n    \"units_usage_api_key\": 0,\n    \"api_key_expiration_date\": \"2036-07-26T07:14:31Z\"\n  }\n}",
+      "annotations": {}
+    },
+    {
+      "type": "text",
+      "text": "{\"apiUsageCosts\":{\"rows\":1,\"units-cost-row\":0,\"units-cost-total-actual\":0,\"units-cost-total\":0,\"cache\":\"no_cache\"}}"
+    }
+  ],
+  "isError": false
+}

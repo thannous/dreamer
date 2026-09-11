@@ -1,0 +1,517 @@
+diff --git a/data/dream-symbols.json b/data/dream-symbols.json
+index f65a44603..f57e72cf8 100644
+--- a/data/dream-symbols.json
++++ b/data/dream-symbols.json
+@@ -4407,6 +4407,8 @@
+           "¿Qué parte de mi vida necesita cuidado, descanso o apoyo ahora?"
+         ],
+         "seoTitle": "hospital o estar allí",
++        "documentTitle": "Soñar con un hospital: estar allí o verlo lleno",
++        "documentMetaDescription": "¿Qué significa soñar con un hospital? Compara estar allí, verlo lleno de gente, enfermos o personal médico según tu emoción y contexto, sin predicciones.",
+         "faq": [
+           {
+             "question": "¿Qué significa soñar con hospital?",
+diff --git a/docs-src/content/blog/blog.dream-interpretation-history/en.md b/docs-src/content/blog/blog.dream-interpretation-history/en.md
+index 239cf2baf..0834e80a2 100644
+--- a/docs-src/content/blog/blog.dream-interpretation-history/en.md
++++ b/docs-src/content/blog/blog.dream-interpretation-history/en.md
+@@ -23,14 +23,14 @@
+   "twitterImage": "https://noctalia.app/img/blog/dream-interpretation-history.webp",
+   "twitterImageAlt": "Ancient temple under a starry sky representing dream history",
+   "publishedTime": "2025-12-11",
+-  "modifiedTime": "2026-07-28",
++  "modifiedTime": "2026-09-09",
+   "author": "Thanh Chau",
+   "prevPath": "/en/blog/rem-sleep-dreams",
+   "nextPath": "/en/blog/stress-dreams-work",
+   "preloadImage": "/img/blog/dream-interpretation-history.webp",
+   "jsonLd": [
+-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"History of Dream Interpretation: Ancient to Modern\",\n  \"description\": \"Trace the history of dream interpretation from Mesopotamia and Egypt to Greek medicine, Freud, Jung and modern neuroscience.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/dream-interpretation-history.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-28\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/dream-interpretation-history\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 2280,\n  \"timeRequired\": \"PT8M\",\n  \"url\": \"https://noctalia.app/en/blog/dream-interpretation-history\"\n}",
+-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Who first interpreted dreams?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"The earliest recorded dream interpretations come from ancient Mesopotamia around 3100 BCE. The Sumerians believed dreams were messages from the gods and kept detailed dream records on clay tablets. Ancient Egypt also had professional dream interpreters serving in temples as early as 2000 BCE.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Did Freud invent dream interpretation?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"No, Freud did not invent dream interpretation - humans have been interpreting dreams for at least 5,000 years. However, Freud revolutionized the field in 1899 with 'The Interpretation of Dreams,' which was the first systematic, psychological approach to dreams rather than a supernatural or divine one.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How do different cultures interpret dreams differently?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Dream interpretation varies significantly across cultures. Western psychology focuses on individual psychology and unconscious desires. Indigenous cultures often view dreams as spiritual journeys or ancestral communications. East Asian traditions see dreams as reflections of physical health and energy balance. These cultural differences reflect deeper worldviews about the nature of consciousness and reality.\"\n      }\n    }\n  ]\n}",
++    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"History of Dream Interpretation: Ancient to Modern\",\n  \"description\": \"Trace the history of dream interpretation from Mesopotamia and Egypt to Greek medicine, Freud, Jung and modern neuroscience.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/dream-interpretation-history.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-09-09\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/dream-interpretation-history\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1808,\n  \"timeRequired\": \"PT9M\",\n  \"url\": \"https://noctalia.app/en/blog/dream-interpretation-history\"\n}",
++    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Who first interpreted dreams?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"We cannot identify the first person to interpret a dream. A surviving example is Cylinder A of Gudea, dated by the Louvre to 2120–2110 BCE, which describes a dream about building a temple. It documents an ancient practice, not its exact beginning.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Did Freud invent dream interpretation?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"No. Freud developed a psychoanalytic account of dreams involving wishes, associations and disguised meanings. Ancient texts already discussed dreams, and Aristotle explored natural explanations long before Freud.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How do different cultures interpret dreams differently?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Dream beliefs need to be described in a specific historical and cultural setting. One text cannot represent an entire community. Ask who recorded an interpretation and whether it describes a belief, a personal practice or a research finding.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"What changed with modern dream science?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Laboratory studies combine physiological measurements with dream reports, including reports from REM and non-REM sleep. They investigate measurable aspects of dreaming without establishing a universal meaning for a particular dream symbol.\"\n      }\n    }\n  ]\n}",
+     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Dream Interpretation History\",\n      \"item\": \"https://noctalia.app/en/blog/dream-interpretation-history\"\n    }\n  ]\n}"
+   ],
+   "activeNav": "resources"
+@@ -63,13 +63,13 @@
+ <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="dream-meanings">Topic: Dream meanings</a>
+ <span aria-hidden="true" class="w-full sm:hidden"></span>
+ <span class="text-sm text-purple-300/60">Published December 11, 2025</span>
+-<span class="text-sm text-purple-300/60">8 min read</span>
++<span class="text-sm text-purple-300/60">9 min read</span>
+ </div>
+ <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
+                     The History of Dream Interpretation: From Ancient Temples to Modern Science
+                 </h1>
+ <p class="text-lg text-purple-200/80 leading-relaxed">
+-                    For over 5,000 years, humans have sought to decode the mysterious language of dreams. From ancient temple priests to modern neuroscientists, the quest to understand our nocturnal visions reveals as much about our evolving consciousness as it does about sleep itself.
++                    People have interpreted dreams for millennia. Surviving texts from Mesopotamia and Egypt offer examples of dreams understood as omens or divine encounters. Later writers also explored natural and psychological explanations. This history traces several of those approaches while separating historical beliefs from findings in sleep research.
+                 </p>
+ </header>
+ <!-- Author Byline (E-E-A-T) -->
+@@ -86,15 +86,15 @@
+ <!-- Quick Answer (AI SEO) -->
+ <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Quick answer</h2>
+-    <p class="text-purple-100/80 leading-relaxed">The history of dream interpretation begins in ancient Mesopotamia and Egypt, moves through Greek medicine, religious traditions, Freud and Jung, and now continues through modern neuroscience. Each era changed the answer to one question: are dreams messages, symptoms, symbols or emotional processing?</p>
++    <p class="text-purple-100/80 leading-relaxed">Surviving ancient texts document dream interpretation long before Freud and Jung. Religious readings, natural explanations and psychological theories have coexisted rather than simply replaced one another. Modern sleep research studies measurable aspects of dreaming; it does not establish a universal code for dream symbols.</p>
+ </section>
+ <section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
+ <h2 class="font-serif text-2xl text-dream-cream mb-4">Dream interpretation timeline at a glance</h2>
+ <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-300">
+-<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">3100 BCE: Mesopotamia</h3><p>Dreams were recorded as omens and messages from divine powers.</p></div>
+-<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">2000 BCE: Egypt</h3><p>Temple interpreters treated dreams as guidance, warning and healing material.</p></div>
+-<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Classical Greece</h3><p>Hippocrates, Aristotle and Artemidorus linked dreams to body, mind and symbolic reading.</p></div>
+-<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">1899 to today</h3><p>Freud, Jung and neuroscience reframed dreams as unconscious, archetypal and emotional processing.</p></div>
++<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">2120–2110 BCE: Gudea's narrative</h3><p>A surviving cylinder describes a dream about building a temple.</p></div>
++<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Ancient Egypt: a dream manual</h3><p>Papyrus Chester Beatty III preserves a written dream book.</p></div>
++<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Ancient and medieval explanations</h3><p>Aristotle and, later, Aquinas considered different causes of dreams.</p></div>
++<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Psychoanalysis and sleep experiments</h3><p>Freud and Jung offered interpretive theories; laboratory research later investigated sleep physiology and dream reports.</p></div>
+ </div>
+ </section>
+ <!-- Featured Image -->
+@@ -107,302 +107,71 @@
+ <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of Contents
+                 </h2>
+ <ol class="space-y-2 text-sm text-purple-200/70">
+-<li><a class="toc-link block" href="#ancient-mesopotamia">1. Ancient Mesopotamia: The first dream interpreters</a></li>
++<li><a class="toc-link block" href="#ancient-mesopotamia">1. Ancient Mesopotamia: A documented dream</a></li>
+ <li><a class="toc-link block" href="#ancient-egypt">2. Ancient Egypt: Dreams as divine messages</a></li>
+-<li><a class="toc-link block" href="#ancient-greece">3. Ancient Greece and Rome: Medical and prophetic dreams</a></li>
+-<li><a class="toc-link block" href="#religious-traditions">4. Religious interpretations across cultures</a></li>
+-<li><a class="toc-link block" href="#medieval-period">5. Medieval and Renaissance perspectives</a></li>
++<li><a class="toc-link block" href="#ancient-greece">3. Ancient Greece: Natural explanations</a></li>
++<li><a class="toc-link block" href="#religious-traditions">4. A religious dream narrative</a></li>
++<li><a class="toc-link block" href="#medieval-period">5. Medieval perspectives: Aquinas</a></li>
+ <li><a class="toc-link block" href="#freud-revolution">6. Freud's revolution: The unconscious mind</a></li>
+-<li><a class="toc-link block" href="#jung-archetypes">7. Jung and the collective unconscious</a></li>
++<li><a class="toc-link block" href="#jung-archetypes">7. Jung: Dreams and mythology</a></li>
+ <li><a class="toc-link block" href="#modern-neuroscience">8. Modern neuroscience: What science reveals</a></li>
+ <li><a class="toc-link block" href="#cultural-differences">9. Cultural differences in dream interpretation</a></li>
+ </ol>
+ </nav>
+ <!-- Article Content -->
+ <div class="prose max-w-none text-gray-300">
+-<h2 id="ancient-mesopotamia">Dream Interpretation in Ancient Mesopotamia: The First Dream Interpreters</h2>
+-<p>
+-                    The earliest written records of dream interpretation come from ancient <strong>Mesopotamia around 3100 BCE</strong>. The Sumerians, Assyrians, and Babylonians kept meticulous dream records on clay tablets, considering dreams to be messages from the divine realm.
+-                </p>
+-<p>
+-                    Best known among these records is the <strong>Assyrian Dream Book</strong>, a collection of dream omens dating to the 7th century BCE. This text categorized dreams and their meanings with remarkable specificity:
+-                </p>
+-<ul>
+-<li><strong>Flying dreams:</strong> Indicated freedom from burdens or elevation in status</li>
+-<li><strong><a class="text-dream-salmon hover:underline" href="../symbols/falling">Falling dreams</a>:</strong> Warned of loss of position or divine favor</li>
+-<li><strong>Water dreams:</strong> Related to purification, life force, or emotional states</li>
+-<li><strong>Animal appearances:</strong> Each creature held symbolic significance tied to deities</li>
+-</ul>
+-<p>
+-                    In Mesopotamian culture, dreams were considered a <strong>direct communication channel with gods</strong>. Kings would sleep in temples specifically to receive divine guidance through dreams - a practice called "incubation dreaming."
+-                </p>
+-<blockquote>
+-                    "If a man flies repeatedly in his dreams, whatever he owns will be lost." - Assyrian Dream Book, circa 7th century BCE
+-                </blockquote>
+-<h2 id="ancient-egypt">Dream Interpretation in Ancient Egypt: Dreams as Divine Messages</h2>
+-<p>
+-                    Ancient Egyptians elevated dream interpretation to a sophisticated art form. By <strong>2000 BCE</strong>, they had established a professional class of dream interpreters who served in temples and advised pharaohs.
+-                </p>
+-<p>
+-                    The <strong>Chester Beatty Papyrus III</strong>, dating to approximately 1350 BCE, is one of the oldest surviving dream interpretation manuals. This text contains over 200 dream scenarios and their meanings, organized systematically:
+-                </p>
+-<h3>Egyptian Dreams Considered Favorable (White Ink):</h3>
+-<ul>
+-<li>Seeing oneself dead: portended a long life</li>
+-<li>Drinking beer: indicated spiritual nourishment</li>
+-<li>Seeing the moon shining: meant forgiveness from the gods</li>
+-</ul>
+-<h3>Egyptian Dreams Considered Unfavorable (Red Ink):</h3>
+-<ul>
+-<li>Looking into a deep well: signified imprisonment</li>
+-<li>Seeing one's face in a mirror: warned of a second wife</li>
+-<li>Uncovering one's own backside: predicted orphanhood</li>
+-</ul>
+-<p>
+-                    Egyptians believed dreams could be influenced through <strong>magical rituals and incantations</strong>. They would recite spells before sleep to encourage prophetic dreams or ward off <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a>, often involving the god Bes, the protector of sleep.
+-                </p>
+-<h2 id="ancient-greece">Dream Interpretation in Ancient Greece and Rome: Medical and Prophetic Dreams</h2>
+-<p>
+-                    Ancient Greeks approached dreams from both <strong>medical and mystical perspectives</strong>. By the 5th century BCE, Greek physicians began treating dreams as diagnostic tools for physical illness.
+-                </p>
+-<p>
+-<strong>Hippocrates</strong> (460-370 BCE), the father of medicine, wrote that dreams could reveal imbalances in bodily humors. He believed certain dream images indicated specific health conditions - for example, dreams of <a class="text-dream-salmon hover:underline" href="../symbols/flood">floods</a> might suggest excess phlegm.
+-                </p>
+-<p>
+-                    <strong>Aristotle</strong> (384-322 BCE) pushed back with a rationalist view, arguing in "On Dreams" that dreams were not divine messages but mental residues of daily experiences and sensory impressions processed during sleep.
+-                </p>
+-<p>
+-                    Yet the most influential Greek text proved to be <strong>Artemidorus's "Oneirocritica"</strong> (The Interpretation of Dreams), written around 200 CE. This five-volume work became the standard dream interpretation manual for over 1,500 years. Artemidorus classified dreams into two categories:
+-                </p>
+-<ul>
+-<li><strong>Theorematic dreams:</strong> Direct prophecies that would literally come true</li>
+-<li><strong>Allegorical dreams:</strong> Symbolic visions requiring interpretation</li>
+-</ul>
+-<p>
+-                    Greek and Roman cultures also practiced <strong>temple sleep</strong> at healing sanctuaries dedicated to Asclepius, the god of medicine. Sick individuals would sleep in sacred chambers, hoping to receive healing dreams or medical guidance directly from the deity.
+-                </p>
+-<h2 id="religious-traditions">Religious Dream Interpretation Across Cultures</h2>
+-<p>
+-                    Dreams hold profound significance in virtually all major religious traditions, often viewed as a channel for divine revelation.
+-                </p>
+-<h3>Dream Interpretation in Judaism and Christianity</h3>
+-<p>
+-                    The Hebrew Bible contains over 20 significant dream narratives. <strong>Joseph's interpretation of Pharaoh's dreams</strong> (Genesis 41) established a model for prophetic dream reading. The Talmud later declared, "A dream uninterpreted is like a letter unread."
+-                </p>
+-<p>
+-                    Within Christianity, dreams guided crucial events: Joseph's dream about Mary's <a class="text-dream-salmon hover:underline" href="../symbols/pregnancy">pregnancy</a>, the Magi's warning not to return to Herod, and numerous visions in the Book of Revelation. Medieval Christian scholars debated whether dreams came from God, nature, or demons.
+-                </p>
+-<h3>Dream Interpretation in Islamic Tradition</h3>
+-<p>
+-                    Islamic tradition recognizes <strong>three types of dreams</strong>: true dreams from Allah (ru'ya), dreams from one's own thoughts (hulm), and dreams from Satan. The Prophet Muhammad reportedly said that true dreams are "one of the forty-six parts of prophethood."
+-                </p>
+-<p>
+-                    Scholar <strong>Ibn Sirin</strong> (653-728 CE) compiled one of Islam's most important dream interpretation manuals, still influential today. His interpretations emphasized the dreamer's personal context and spiritual state.
+-                </p>
+-<h3>Dream Interpretation in Hinduism and Buddhism</h3>
+-<p>
+-                    In Hindu tradition, dreams are discussed in ancient texts like the <strong>Upanishads</strong>, which describe dreams as a state of consciousness between waking and deep sleep. The Mandukya Upanishad outlines four states of consciousness, with dreams representing an intermediate realm.
+-                </p>
+-<p>
+-                    Buddhist texts describe dreams as <strong>illusory experiences</strong> that demonstrate the mind's nature. Tibetan Buddhism developed sophisticated practices of dream yoga, using <a class="text-dream-salmon hover:underline" href="lucid-dreaming-beginners-guide">lucid dreaming</a> as a path to spiritual awakening and understanding the nature of reality.
+-                </p>
+-<h2 id="medieval-period">Dream Interpretation in the Medieval and Renaissance Periods</h2>
+-<p>
+-                    During the <strong>Middle Ages (500-1500 CE)</strong>, European dream interpretation was dominated by Christian theology. Dreams were categorized as divine revelations, natural occurrences from bodily humors, or demonic deceptions.
+-                </p>
+-<p>
+-<strong>Thomas Aquinas</strong> (1225-1274) synthesized Aristotelian philosophy with Christian doctrine, arguing that while most dreams result from natural causes, God could occasionally use dreams to communicate with humans.
+-                </p>
+-<p>
+-                    The Renaissance brought renewed interest in classical texts, particularly Artemidorus's work. Dream interpretation manuals became popular publications:
+-                </p>
+-<ul>
+-<li><strong>Macrobius's "Commentary on the Dream of Scipio"</strong> (5th century) was widely studied</li>
+-<li><strong>Girolamo Cardano</strong> (1501-1576) wrote extensively on dream divination</li>
+-<li>Popular almanacs included dream dictionaries for common folk</li>
+-</ul>
+-<p>
+-                    Then the <strong>Age of Enlightenment</strong> (1685-1815) brought skepticism. Rationalist philosophers dismissed dream interpretation as superstition, viewing dreams as meaningless mental noise.
+-                </p>
++<h2 id="ancient-mesopotamia">Dream Interpretation in Ancient Mesopotamia: A Documented Dream</h2>
++<p>The <a class="text-dream-salmon hover:underline" href="https://collections.louvre.fr/en/ark:/53355/cl010124631" rel="noopener noreferrer" target="_blank">Louvre dates Cylinder A of Gudea</a> to 2120–2110 BCE. Its inscription describes the god Ningirsu appearing to Gudea in a dream and directing the construction of a temple. The narrative connects the ruler's building project with divine authority.</p>
++<p>This is a specific surviving example of the religious role of dreams in ancient Mesopotamia. It does not tell us who first interpreted a dream: the date of an object is different from the beginning of a human practice.</p>
++<h2 id="ancient-egypt">Dream Interpretation in Ancient Egypt: A Written Manual</h2>
++<p><a class="text-dream-salmon hover:underline" href="https://www.britishmuseum.org/collection/object/Y_EA10683-3" rel="noopener noreferrer" target="_blank">Papyrus Chester Beatty III in the British Museum</a> includes a dream book written in hieratic script. It offers another kind of evidence: a manuscript devoted to interpreting dreams, rather than a royal account of one dream.</p>
++<p>Reading such texts helps us understand a historical practice. Their survival does not validate the predictions they contain, and a single manuscript cannot represent everything ancient Egyptians believed about dreaming.</p>
++<h2 id="ancient-greece">Ancient Greece: Natural Explanations of Dreams</h2>
++<p>In <a class="text-dream-salmon hover:underline" href="https://classics.mit.edu/Aristotle/dreams.html" rel="noopener noreferrer" target="_blank"><em>On Dreams</em></a>, Aristotle examines dreaming through perception and imagination. He considers how sensory impressions can persist when their original objects are no longer present. This is an attempt to explain a mental experience through natural processes, many centuries before psychoanalysis.</p>
++<p>His separate work <a class="text-dream-salmon hover:underline" href="https://classics.mit.edu/Aristotle/prophesying.html" rel="noopener noreferrer" target="_blank"><em>On Prophesying by Dreams</em></a> addresses prediction. It considers bodily signs, actions prompted by a dream and coincidences. This discussion connects dreams with questions about health as well as divination; it is not a modern diagnostic method.</p>
++<p>These texts complicate a simple story in which all ancient people saw dreams as supernatural messages. They also show why explanations of how dreams arise should be distinguished from claims about what a particular dream predicts.</p>
++<h2 id="religious-traditions">A Religious Dream Narrative: Joseph and Pharaoh</h2>
++<p>In <a class="text-dream-salmon hover:underline" href="https://www.biblegateway.com/passage/?search=Genesis%2041&amp;version=KJV" rel="noopener noreferrer" target="_blank">Genesis 41</a>, Joseph interprets Pharaoh's dreams of cattle and grain as seven years of abundance followed by seven years of famine. Within the narrative, the interpretation is attributed to God and leads to a plan for storing food.</p>
++<p>This passage provides a concrete example of dream interpretation in a religious text. It should be read as that text's account, rather than as experimental evidence for prediction or a summary of every Jewish or Christian view.</p>
++<h2 id="medieval-period">Medieval Perspectives: Aquinas on the Causes of Dreams</h2>
++<p>In <a class="text-dream-salmon hover:underline" href="https://www.newadvent.org/summa/3095.htm#article6" rel="noopener noreferrer" target="_blank"><em>Summa Theologiae</em>, question 95, article 6</a>, Thomas Aquinas asks whether divination through dreams is unlawful. His answer distinguishes natural causes, including bodily conditions and waking thoughts, from supernatural causes within his theological framework.</p>
++<p>The passage shows natural and religious explanations appearing together in one medieval argument. Treating the whole period as either unquestioning belief or rejection of dreams would obscure that distinction.</p>
+ </div>
+ <!-- Era Cards -->
+ <div class="grid md:grid-cols-3 gap-6 my-12">
+-<div class="era-card glass-panel rounded-xl p-6 border border-transparent">
+-<div class="flex items-center gap-3 mb-4">
+-<div class="p-2 bg-purple-500/20 rounded-lg">
+-<i class="w-5 h-5 text-purple-300" data-lucide="scroll"></i>
+-</div>
+-<h3 class="font-serif text-lg text-dream-cream">Ancient Era</h3>
+-</div>
+-<p class="text-sm text-gray-300 mb-3">
+-                        Dreams as divine messages requiring temple priests and professional interpreters.
+-                    </p>
+-<p class="text-xs text-dream-salmon">3100 BCE - 500 CE</p>
+-</div>
+-<div class="era-card glass-panel rounded-xl p-6 border border-transparent">
+-<div class="flex items-center gap-3 mb-4">
+-<div class="p-2 bg-purple-500/20 rounded-lg">
+-<i class="w-5 h-5 text-purple-300" data-lucide="book-open"></i>
+-</div>
+-<h3 class="font-serif text-lg text-dream-cream">Religious Era</h3>
+-</div>
+-<p class="text-sm text-gray-300 mb-3">
+-                        Integration of dream interpretation with theological frameworks and spiritual practice.
+-                    </p>
+-<p class="text-xs text-dream-salmon">500 CE - 1800 CE</p>
+-</div>
+-<div class="era-card glass-panel rounded-xl p-6 border border-transparent">
+-<div class="flex items-center gap-3 mb-4">
+-<div class="p-2 bg-purple-500/20 rounded-lg">
+-<i class="w-5 h-5 text-purple-300" data-lucide="brain"></i>
+-</div>
+-<h3 class="font-serif text-lg text-dream-cream">Scientific Era</h3>
+-</div>
+-<p class="text-sm text-gray-300 mb-3">
+-                        Psychological and neurological understanding replacing supernatural explanations.
+-                    </p>
+-<p class="text-xs text-dream-salmon">1900 CE - Present</p>
+-</div>
++<div class="era-card glass-panel rounded-xl p-6 border border-transparent"><h3 class="font-serif text-lg text-dream-cream mb-3">Ancient texts</h3><p class="text-sm text-gray-300">Gudea's narrative, an Egyptian manual and Aristotle's treatises document different approaches.</p></div>
++<div class="era-card glass-panel rounded-xl p-6 border border-transparent"><h3 class="font-serif text-lg text-dream-cream mb-3">Medieval theology</h3><p class="text-sm text-gray-300">Aquinas discusses natural and supernatural causes within a religious framework.</p></div>
++<div class="era-card glass-panel rounded-xl p-6 border border-transparent"><h3 class="font-serif text-lg text-dream-cream mb-3">Modern approaches</h3><p class="text-sm text-gray-300">Psychoanalytic interpretation and experimental sleep research ask related but distinct questions.</p></div>
+ </div>
+ <div class="prose max-w-none text-gray-300">
+-<h2 id="freud-revolution">Freud's Revolution in Dream Interpretation: The Unconscious Mind</h2>
+-<p>
+-                    In <strong>1899</strong>, Sigmund Freud published "Die Traumdeutung" (The Interpretation of Dreams), transforming how Western civilization understood dreams. This work marked the birth of modern dream psychology.
+-                </p>
+-<p>
+-                    Freud's revolutionary insight was that dreams were not divine messages or meaningless brain activity, but rather <strong>expressions of unconscious wishes and desires</strong>. He proposed that dreams served as "the royal road to the unconscious."
+-                </p>
+-<h3>Freud's Key Dream Interpretation Concepts:</h3>
+-<ul>
+-<li><strong>Manifest content:</strong> The literal storyline of the dream as remembered</li>
+-<li><strong>Latent content:</strong> The hidden psychological meaning beneath the surface</li>
+-<li><strong>Dream work:</strong> The process of disguising unconscious desires through symbolism</li>
+-<li><strong>Wish fulfillment:</strong> Dreams as expressions of repressed wishes, often sexual in nature</li>
+-</ul>
+-<p>
+-                    Freud developed interpretive techniques including <strong>free association</strong>, where patients would speak freely about dream elements, revealing unconscious connections. He also created a symbolic lexicon - though he cautioned against rigid symbol interpretation, noting that dream symbolism must be understood in the context of the individual's life.
+-                </p>
+-<p>
+-                    While many of Freud's specific theories have been challenged, his fundamental insight - that dreams have psychological meaning - revolutionized both psychology and culture. Dreams became a subject worthy of scientific investigation.
+-                </p>
+-<blockquote>
+-                    "The interpretation of dreams is the royal road to a knowledge of the unconscious activities of the mind." - Sigmund Freud, 1899
+-                </blockquote>
+-<h2 id="jung-archetypes">Carl Jung's Dream Interpretation and the Collective Unconscious</h2>
+-<p>
+-<strong>Carl Jung</strong> (1875-1961), initially Freud's protégé, developed a radically different approach to dream interpretation that emphasized spiritual and creative dimensions.
+-                </p>
+-<p>
+-                    Jung proposed that beyond the personal unconscious described by Freud, humans share a <strong>collective unconscious</strong> - a reservoir of universal symbols and patterns he called "archetypes." These archetypes appear in dreams across all cultures and throughout history.
+-                </p>
+-<h3>Jungian Archetypes Commonly Appearing in Dreams:</h3>
+-<ul>
+-<li><strong>The Shadow:</strong> The dark, repressed aspects of personality</li>
+-<li><strong>The Anima/Animus:</strong> The feminine side in men / masculine side in women</li>
+-<li><strong>The Wise Old Man/Woman:</strong> Represents wisdom and guidance</li>
+-<li><strong>The Self:</strong> The archetype of wholeness and integration</li>
+-<li><strong>The Hero:</strong> The journey of overcoming obstacles</li>
+-</ul>
+-<p>
+-                    Unlike Freud's emphasis on past conflicts and repressed desires, Jung saw dreams as <strong>prospective and compensatory</strong> - they point toward future development and balance out one-sided conscious attitudes.
+-                </p>
+-<p>
+-                    Jung's approach also validated <strong>spiritual and mystical dimensions</strong> of dreams. He studied alchemy, mythology, and religious symbolism, finding these same patterns recurring in his patients' dreams. This made his work particularly influential in spiritual and artistic circles.
+-                </p>
+-<p>
+-                    The Jungian method emphasizes <strong>amplification</strong> - exploring the cultural, mythological, and symbolic associations of dream images - rather than reduction to personal experiences alone.
+-                </p>
+-<h2 id="modern-neuroscience">Modern Neuroscience of Dream Interpretation: What Science Reveals</h2>
+-<p>
+-                    When Eugene Aserinsky and Nathaniel Kleitman discovered <strong>REM (Rapid Eye Movement) sleep in 1953</strong>, they opened a new era of scientific dream research. For the first time, scientists could objectively identify when people were dreaming.
+-                </p>
+-<h3>What Modern Neuroscience Has Discovered About Dreams:</h3>
+-<p>
+-<strong>Brain activity during dreams:</strong> Modern imaging techniques (fMRI, PET scans) reveal that dreaming involves intense activity in the visual cortex, amygdala (emotions), and hippocampus (memory), while the prefrontal cortex (logical reasoning) shows reduced activity - explaining dreams' often illogical nature.
+-                </p>
+-<p>
+-<strong>The activation-synthesis hypothesis</strong> (J. Allan Hobson, 1977) proposed that dreams result from the brain attempting to make sense of random neural firing during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>. This theory has since been revised: dreams are not entirely random but reflect waking concerns and emotional processing.
+-                </p>
+-<p>
+-<strong>Memory consolidation:</strong> Research by Matthew Walker and others demonstrates that <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> is crucial for emotional memory processing. Dreams may help integrate new experiences, process emotions, and consolidate learning.
+-                </p>
+-<p>
+-<strong>The threat simulation theory</strong> (Antti Revonsuo, 2000) suggests dreams evolved as a biological defense mechanism, allowing us to rehearse responses to threats in a safe environment. This explains the prevalence of anxiety dreams and <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a>.
+-                </p>
+-<p>
+-<strong>The continuity hypothesis</strong> confirms that dream content mirrors waking life concerns. Studies find that roughly <strong>65% of dream content</strong> ties to recent waking experiences, emotional concerns, and ongoing life situations.
+-                </p>
+-<h3>Contemporary Dream Science Insights:</h3>
++<h2 id="freud-revolution">Freud's Approach: Wishes and the Unconscious</h2>
++<p>In <a class="text-dream-salmon hover:underline" href="https://www.gutenberg.org/ebooks/66048" rel="noopener noreferrer" target="_blank"><em>The Interpretation of Dreams</em></a>, Freud developed a psychoanalytic account of dreams involving wishes, associations and disguised meanings. His opening review discusses earlier writers; he did not invent dream interpretation or the attempt to explain dreams psychologically.</p>
+ <ul>
+-<li><strong>Problem-solving:</strong> Studies confirm that dreams can help creative problem-solving and insight</li>
+-<li><strong>Emotional regulation:</strong> REM sleep helps process and reduce the emotional charge of difficult experiences</li>
+-<li><strong>Neural network restructuring:</strong> Dreams may reflect the brain reorganizing neural connections</li>
+-<li><strong>Individual differences:</strong> Personality, mental health, and life circumstances strongly influence dream content</li>
++<li><strong>Manifest content:</strong> the remembered dream as it is reported.</li>
++<li><strong>Latent thoughts:</strong> the thoughts Freud sought to reconstruct through analysis.</li>
++<li><strong>Dream work:</strong> the transformations he proposed between those thoughts and the remembered dream.</li>
+ </ul>
+-<p>
+-                    Modern neuroscience doesn't discount meaning in dreams, but grounds interpretation in <strong>brain function and psychological processes</strong> rather than supernatural or purely symbolic frameworks.
+-                </p>
++<p>Freud's method gave the dreamer's associations a central role. These concepts describe a historical theory, not established rules for decoding every dream. Reading the original also helps distinguish his argument from a dictionary that assigns one fixed meaning to each image.</p>
++<h2 id="jung-archetypes">Jung: Dreams and Mythology</h2>
++<p>In <a class="text-dream-salmon hover:underline" href="https://www.gutenberg.org/files/65903/65903-h/65903-h.htm" rel="noopener noreferrer" target="_blank"><em>Psychology of the Unconscious</em></a>, Jung compares dream and fantasy material with mythology. His interpretation moves between an individual's images and stories from other settings, offering a different emphasis for readers interested in symbolic associations.</p>
++<p>Those comparisons belong to Jung's theoretical approach. Similar images in separate accounts do not, by themselves, prove that a symbol has the same meaning for everyone. The text is useful for understanding his method without adopting its assumptions as scientific findings.</p>
++<h2 id="modern-neuroscience">Modern Dream Research: What Can Be Measured?</h2>
++<p>In 1953, <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/13089671/" rel="noopener noreferrer" target="_blank">Aserinsky and Kleitman reported recurring periods of rapid eye movements during sleep</a>. This became an important landmark for experimental research on <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> and dreams.</p>
++<p>Later work, including <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/28394322/" rel="noopener noreferrer" target="_blank">Siclari and colleagues' 2017 study</a>, investigated dreaming in both REM and non-REM sleep using brain recordings and reports obtained after awakenings. Physiological measurements help researchers investigate dream experience; they do not reveal the personal meaning of a dream by themselves.</p>
++<h3>Dreams and waking experience</h3>
++<p>In a <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/12590838/" rel="noopener noreferrer" target="_blank">2003 diary study</a>, 29 participants recorded dreams and daily experiences over 14 days. Researchers reported that <strong>65% of 299 sleep reports included aspects of recent waking life</strong>, while only 1–2% replayed an episode. The figure describes reports in one study, not a universal proportion of dream content.</p>
++<h3>Proposed functions are still hypotheses</h3>
++<p><a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="noopener noreferrer" target="_blank">Revonsuo's threat-simulation hypothesis</a> proposes that dreaming could provide rehearsal for threatening situations. A proposed function is different from an established explanation for every nightmare. Likewise, a finding about sleep and memory does not automatically demonstrate an effect caused by dreaming itself.</p>
++<h3>Communication during lucid dreams</h3>
++<p>In a <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/33607035/" rel="noopener noreferrer" target="_blank">2021 study involving 36 participants</a>, experimenters obtained correct responses on 29 occasions from six participants during verified REM sleep. This was a limited demonstration of communication with sleeping dreamers, not the ability to read an entire dream.</p>
+ <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
+-<div class="flex items-start gap-4">
+-<div class="p-3 bg-dream-salmon/10 rounded-xl">
+-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
+-</div>
+-<div>
+-<h4 class="font-serif text-lg text-dream-cream mb-2">Capture your dreams instantly</h4>
+-<p class="text-sm text-gray-400 mb-4">Modern science shows that dream memories fade within minutes of waking. Noctalia lets you voice-record your dreams the moment you wake up, preserving details for analysis and reflection.</p>
+-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
+-                                Discover Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+-</a>
+-</div>
+-</div>
++<h4 class="font-serif text-lg text-dream-cream mb-2">Keep your own record</h4>
++<p class="text-sm text-gray-400 mb-4">Record what you remember after waking, then add your own associations and context. Noctalia lets you voice-record dreams for later reflection.</p>
++<a class="text-dream-salmon hover:underline" href="/">Discover Noctalia</a>
+ </aside>
+-<h2 id="cultural-differences">Cultural Differences in Dream Interpretation Around the World</h2>
+-<p>
+-                    Western psychology has dominated academic dream research, yet cultures worldwide maintain <strong>vastly different approaches</strong> to understanding dreams. These differences reveal fundamental variations in worldviews.
+-                </p>
+-<h3>Western Individualistic Approach to Dream Interpretation</h3>
+-<p>
+-                    Western psychology, following Freud and Jung, focuses on dreams as expressions of <strong>individual psychology</strong> - personal memories, desires, conflicts, and development. The dreamer is typically the sole author and subject of their dreams.
+-                </p>
+-<h3>Dream Interpretation in Indigenous and Tribal Traditions</h3>
+-<p>
+-                    Many indigenous cultures view dreams as <strong>collective experiences with social significance</strong>. Among the Iroquois of North America, important dreams were shared with the entire community, and the tribe would work together to fulfill the dream's message.
+-                </p>
+-<p>
+-                    Australian Aboriginal cultures see dreams as access to the <strong>"Dreamtime"</strong> - a timeless dimension where ancestral beings shaped the world. Dreams connect individuals to land, ancestors, and cosmic law.
+-                </p>
+-<p>
+-                    The Achuar people of Ecuador practice <strong>daily dream-sharing</strong> each morning. Dreams guide hunting decisions, social relations, and community direction. Shamans receive special training in dream interpretation and navigation.
+-                </p>
+-<h3>East Asian Perspectives on Dream Interpretation</h3>
+-<p>
+-                    Traditional Chinese medicine interprets dreams through the lens of <strong>energy systems and organ health</strong>. Different organs are associated with specific emotions and dream types:
+-                </p>
+-<ul>
+-<li><strong>Liver imbalance:</strong> Dreams of anger, forests, or being lost</li>
+-<li><strong>Heart imbalance:</strong> Dreams of <a class="text-dream-salmon hover:underline" href="../symbols/fire">fire</a>, laughter, or anxiety</li>
+-<li><strong>Kidney imbalance:</strong> Dreams of <a class="text-dream-salmon hover:underline" href="../symbols/water">water</a>, fear, or <a class="text-dream-salmon hover:underline" href="../symbols/falling">falling</a></li>
+-</ul>
+-<p>
+-                    In Japanese culture, the concept of <strong>"yūgen"</strong> (profound mystery) extends to dreams, which are seen as aesthetic experiences revealing deeper truths beyond rational understanding.
+-                </p>
+-<h3>Modern Multicultural Synthesis of Dream Interpretation</h3>
+-<p>
+-                    Contemporary dream workers increasingly recognize that <strong>interpretation methods should honor cultural context</strong>. A <a class="text-dream-salmon hover:underline" href="../symbols/snake">snake</a> in a dream might represent wisdom in Hindu tradition, danger in Western contexts, or healing in Native American perspectives.
+-                </p>
+-<p>
+-                    This awareness has enriched Western psychology, producing more nuanced, context-sensitive approaches that acknowledge both universal patterns and cultural specificity.
+-                </p>
+-<h3>The Future of Dream Interpretation and Science</h3>
+-<p>
+-                    As neuroscience advances, we're developing tools that seemed like science fiction: <strong>decoding dream content from brain scans, inducing specific dream themes, and even communicating with lucid dreamers during sleep</strong>.
+-                </p>
+-<p>
+-                    Yet the fundamental human impulse to find meaning in dreams persists. Perhaps the most profound insight from this 5,000-year history is that dreams serve multiple functions: they process emotions, consolidate memories, simulate threats, express desires, and reflect our deepest concerns - all simultaneously.
+-                </p>
+-<p>
+-                    What this 5,000-year history reveals is an evolving conversation between humans and their inner worlds, each era contributing unique insights while building on ancient wisdom.
+-                </p>
++<h2 id="cultural-differences">Reading Dream Beliefs in Their Cultural Context</h2>
++<p>A single account cannot represent every member of a religion, region or community. When reading an interpretation, ask who recorded it, when, and whether it describes a belief, a personal practice or a research finding. Avoid assigning one meaning to an image simply because it is associated with a broad cultural label.</p>
++<p>The history of dream interpretation brings together different ways of asking what dreams mean. Ancient texts document practices; psychological theories offer interpretive frameworks; sleep experiments investigate measurable aspects of dreaming. Keeping those forms of evidence distinct makes the history more useful without turning any one approach into a universal code.</p>
+ </div>
+ <div class="glass-panel rounded-xl p-6 my-8 border border-transparent hover:border-dream-salmon/30 transition-colors">
+     <a href="/en/blog/precognitive-dreams-science" class="block">
+@@ -420,7 +189,7 @@
+                     Explore Related Symbols
+                 </h2>
+ <p class="text-sm text-purple-300/60 mb-4">
+-                    Dive deeper into the symbols from this article - or browse the <a class="text-dream-salmon hover:underline" href="../guides/dream-symbols-dictionary">dream symbols dictionary</a>.
++                    Explore individual symbol guides, or browse the <a class="text-dream-salmon hover:underline" href="../guides/dream-symbols-dictionary">dream symbols dictionary</a>.
+                 </p>
+ <div class="flex flex-wrap gap-3">
+ <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/snake">
+@@ -442,7 +211,7 @@
+ </div>
+ <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Begin your dream journey today</h3>
+ <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
+-                    Join thousands of dreamers using Noctalia to record, analyze, and understand their dreams. Modern technology meets timeless dream wisdom.
++                    Use Noctalia to record your dreams and revisit them with your own notes and associations.
+                 </p>
+ <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
+                     Start Your Dream Journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
+@@ -453,40 +222,20 @@
+ <h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently Asked Questions</h2>
+ <div class="space-y-4">
+ <details class="glass-panel rounded-xl p-4 group cursor-pointer">
+-<summary class="font-medium flex justify-between items-center text-dream-cream">
+-                            Who first interpreted dreams?
+-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+-</summary>
+-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+-                            The earliest recorded dream interpretations come from ancient Mesopotamia around 3100 BCE. The Sumerians believed dreams were messages from the gods and kept detailed dream records on clay tablets. Ancient Egypt also had professional dream interpreters serving in temples as early as 2000 BCE.
+-                        </p>
++<summary class="font-medium flex justify-between items-center text-dream-cream">Who first interpreted dreams?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
++<p class="mt-4 text-sm text-gray-400 leading-relaxed">We cannot identify the first person to interpret a dream. A surviving example is Cylinder A of Gudea, dated by the Louvre to 2120–2110 BCE, which describes a dream about building a temple. It documents an ancient practice, not its exact beginning.</p>
+ </details>
+ <details class="glass-panel rounded-xl p-4 group cursor-pointer">
+-<summary class="font-medium flex justify-between items-center text-dream-cream">
+-                            Did Freud invent dream interpretation?
+-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+-</summary>
+-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+-                            No, Freud did not invent dream interpretation - humans have been interpreting dreams for at least 5,000 years. However, Freud revolutionized the field in 1899 with "The Interpretation of Dreams," which was the first systematic, psychological approach to dreams rather than a supernatural or divine one.
+-                        </p>
++<summary class="font-medium flex justify-between items-center text-dream-cream">Did Freud invent dream interpretation?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
++<p class="mt-4 text-sm text-gray-400 leading-relaxed">No. Freud developed a psychoanalytic account of dreams involving wishes, associations and disguised meanings. Ancient texts already discussed dreams, and Aristotle explored natural explanations long before Freud.</p>
+ </details>
+ <details class="glass-panel rounded-xl p-4 group cursor-pointer">
+-<summary class="font-medium flex justify-between items-center text-dream-cream">
+-                            How do different cultures interpret dreams differently?
+-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+-</summary>
+-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+-                            Dream interpretation varies significantly across cultures. Western psychology focuses on individual psychology and unconscious desires. Indigenous cultures often view dreams as spiritual journeys or ancestral communications. East Asian traditions see dreams as reflections of physical health and energy balance. These cultural differences reflect deeper worldviews about the nature of consciousness and reality.
+-                        </p>
++<summary class="font-medium flex justify-between items-center text-dream-cream">How do different cultures interpret dreams differently?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
++<p class="mt-4 text-sm text-gray-400 leading-relaxed">Dream beliefs need to be described in a specific historical and cultural setting. One text cannot represent an entire community. Ask who recorded an interpretation and whether it describes a belief, a personal practice or a research finding.</p>
+ </details>
+ <details class="glass-panel rounded-xl p-4 group cursor-pointer">
+-<summary class="font-medium flex justify-between items-center text-dream-cream">
+-                            What changed with modern dream science?
+-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+-</summary>
+-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+-                            Modern sleep science moved dream interpretation away from fixed omens and toward memory, emotion, REM sleep and personal context. Dreams can still be meaningful, but the meaning is read through brain activity, waking concerns and the dreamer's life rather than a universal code.
+-                        </p>
++<summary class="font-medium flex justify-between items-center text-dream-cream">What changed with modern dream science?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
++<p class="mt-4 text-sm text-gray-400 leading-relaxed">Laboratory studies combine physiological measurements with dream reports, including reports from REM and non-REM sleep. They investigate measurable aspects of dreaming without establishing a universal meaning for a particular dream symbol.</p>
+ </details>
+ </div>
+ </section>
+@@ -494,12 +243,21 @@
+ <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
+ <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
+ <ul class="mt-6 space-y-2 text-sm text-gray-400">
+-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology — Dream</a></li>
+-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (dream research overview)</a></li>
+-<li><a href="https://www.sleepfoundation.org/dreams/dream-interpretation" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Dream interpretation (overview)</a></li>
+-<li><a href="https://www.gutenberg.org/cache/epub/15489/pg15489-images.html" rel="nofollow noopener noreferrer" target="_blank">Freud (1900) — The Interpretation of Dreams (public domain)</a></li>
++<li><a class="text-dream-salmon hover:underline" href="https://collections.louvre.fr/en/ark:/53355/cl010124631" rel="noopener noreferrer" target="_blank">Louvre — Cylinder A of Gudea, MNB 1512</a></li>
++<li><a class="text-dream-salmon hover:underline" href="https://www.britishmuseum.org/collection/object/Y_EA10683-3" rel="noopener noreferrer" target="_blank">British Museum — Papyrus Chester Beatty III, EA10683,3</a></li>
++<li><a class="text-dream-salmon hover:underline" href="https://classics.mit.edu/Aristotle/dreams.html" rel="noopener noreferrer" target="_blank">Aristotle — On Dreams, translated by J. I. Beare</a></li>
++<li><a class="text-dream-salmon hover:underline" href="https://classics.mit.edu/Aristotle/prophesying.html" rel="noopener noreferrer" target="_blank">Aristotle — On Prophesying by Dreams, translated by J. I. Beare</a></li>
++<li><a class="text-dream-salmon hover:underline" href="https://www.biblegateway.com/passage/?search=Genesis%2041&amp;version=KJV" rel="noopener noreferrer" target="_blank">Genesis 41 — King James Version</a></li>
++<li><a class="text-dream-salmon hover:underline" href="https://www.newadvent.org/summa/3095.htm#article6" rel="noopener noreferrer" target="_blank">Thomas Aquinas — Summa Theologiae, II–II, question 95, article 6</a></li>
++<li><a class="text-dream-salmon hover:underline" href="https://www.gutenberg.org/ebooks/66048" rel="noopener noreferrer" target="_blank">Sigmund Freud — The Interpretation of Dreams, A. A. Brill translation</a></li>
++<li><a class="text-dream-salmon hover:underline" href="https://www.gutenberg.org/files/65903/65903-h/65903-h.htm" rel="noopener noreferrer" target="_blank">C. G. Jung — Psychology of the Unconscious, Beatrice M. Hinkle translation (1916)</a></li>
++<li><a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/13089671/" rel="noopener noreferrer" target="_blank">Aserinsky and Kleitman (1953) — Regularly occurring periods of eye motility, and concomitant phenomena, during sleep</a></li>
++<li><a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/28394322/" rel="noopener noreferrer" target="_blank">Siclari et al. (2017) — The neural correlates of dreaming</a></li>
++<li><a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/12590838/" rel="noopener noreferrer" target="_blank">Fosse et al. (2003) — Dreaming and episodic memory: a functional dissociation?</a></li>
++<li><a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="noopener noreferrer" target="_blank">Revonsuo (2000) — The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming</a></li>
++<li><a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/33607035/" rel="noopener noreferrer" target="_blank">Konkoly et al. (2021) — Real-time dialogue between experimenters and dreamers during REM sleep</a></li>
+ </ul>
+-<p class="mt-6 text-xs text-purple-200/60">Last updated: July 28, 2026</p>
++<p class="mt-6 text-xs text-purple-200/60">Last updated: September 9, 2026</p>
+ </section>
+ <!-- Blog Nav Start -->
+ <section class="mt-12" aria-label="Article navigation" data-blog-nav="">

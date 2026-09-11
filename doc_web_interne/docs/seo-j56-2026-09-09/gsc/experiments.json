@@ -1,0 +1,62 @@
+[
+  {
+    "id": "arbol",
+    "url": "https://noctalia.app/es/simbolos/arbol",
+    "publication": "2026-09-02",
+    "windows": {
+      "before": {
+        "startDate": "2026-08-27",
+        "endDate": "2026-08-30"
+      },
+      "after": {
+        "startDate": "2026-09-03",
+        "endDate": "2026-09-06"
+      }
+    }
+  },
+  {
+    "id": "pidocchi",
+    "url": "https://noctalia.app/it/simboli/pidocchi",
+    "publication": "2026-09-02",
+    "windows": {
+      "before": {
+        "startDate": "2026-08-27",
+        "endDate": "2026-08-30"
+      },
+      "after": {
+        "startDate": "2026-09-03",
+        "endDate": "2026-09-06"
+      }
+    }
+  },
+  {
+    "id": "work-en",
+    "url": "https://noctalia.app/en/blog/stress-dreams-work",
+    "publication": "2026-09-01",
+    "windows": {
+      "before": {
+        "startDate": "2026-08-26",
+        "endDate": "2026-08-30"
+      },
+      "after": {
+        "startDate": "2026-09-02",
+        "endDate": "2026-09-06"
+      }
+    }
+  },
+  {
+    "id": "false-awakening-en",
+    "url": "https://noctalia.app/en/blog/false-awakening-dreams",
+    "publication": "2026-09-01",
+    "windows": {
+      "before": {
+        "startDate": "2026-08-26",
+        "endDate": "2026-08-30"
+      },
+      "after": {
+        "startDate": "2026-09-02",
+        "endDate": "2026-09-06"
+      }
+    }
+  }
+]

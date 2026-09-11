@@ -1,0 +1,1763 @@
+{
+  "fetchedAt": "2026-09-09T09:49:11.971Z",
+  "site": "sc-domain:noctalia.app",
+  "request": {
+    "type": "web",
+    "dataState": "final",
+    "rowLimit": 25000,
+    "dimensionFilterGroups": [
+      {
+        "groupType": "and",
+        "filters": [
+          {
+            "dimension": "page",
+            "operator": "equals",
+            "expression": "https://noctalia.app/es/simbolos/arbol"
+          }
+        ]
+      }
+    ],
+    "startDate": "2026-08-27",
+    "endDate": "2026-08-30",
+    "dimensions": [
+      "query"
+    ]
+  },
+  "responses": [
+    {
+      "rows": [
+        {
+          "keys": [
+            "soñar con arboles"
+          ],
+          "clicks": 1,
+          "impressions": 2,
+          "ctr": 0.5,
+          "position": 3.5
+        },
+        {
+          "keys": [
+            "soñar con arboles que se caen"
+          ],
+          "clicks": 1,
+          "impressions": 3,
+          "ctr": 0.3333333333333333,
+          "position": 1
+        },
+        {
+          "keys": [
+            "soñar que se cae un arbol grande"
+          ],
+          "clicks": 1,
+          "impressions": 5,
+          "ctr": 0.2,
+          "position": 2.4
+        },
+        {
+          "keys": [
+            "que significa soñar arboles grandes"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 7
+        },
+        {
+          "keys": [
+            "que significa soñar con arbol"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 5.5
+        },
+        {
+          "keys": [
+            "que significa soñar con arboles"
+          ],
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "position": 6.875
+        },
+        {
+          "keys": [
+            "que significa soñar con arboles caidos"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 4.5
+        },
+        {
+          "keys": [
+            "que significa soñar con arboles gigantes"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 5.5
+        },
+        {
+          "keys": [
+            "que significa soñar con arboles grandes"
+          ],
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "position": 7
+        },
+        {
+          "keys": [
+            "que significa soñar con el arbol de la vida"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 11
+        },
+        {
+          "keys": [
+            "que significa soñar con ramas"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 5
+        },
+        {
+          "keys": [
+            "que significa soñar con ramas secas"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 9
+        },
+        {
+          "keys": [
+            "que significa soñar con troncos de árboles cortados"
+          ],
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "position": 7.875
+        },
+        {
+          "keys": [
+            "que significa soñar con un arbol"
+          ],
+          "clicks": 0,
+          "impressions": 7,
+          "ctr": 0,
+          "position": 7.428571428571429
+        },
+        {
+          "keys": [
+            "que significa soñar con un arbol gigante"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 7
+        },
+        {
+          "keys": [
+            "que significa soñar con un arbol grande"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 8
+        },
+        {
+          "keys": [
+            "que significa soñar con un arbol grande y frondoso"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 5.25
+        },
+        {
+          "keys": [
+            "que significa soñar con un arbol lleno de frutos"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 8.666666666666668
+        },
+        {
+          "keys": [
+            "que significa soñar con un árbol"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 6.75
+        },
+        {
+          "keys": [
+            "que significa soñar con un árbol muy grande"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 5.5
+        },
+        {
+          "keys": [
+            "que significa soñar con árboles"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 10.5
+        },
+        {
+          "keys": [
+            "que significa soñar con árboles caídos por el viento"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 10.5
+        },
+        {
+          "keys": [
+            "que significa soñar con árboles secos grandes"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 4
+        },
+        {
+          "keys": [
+            "que significa soñar que alguien corta un árbol"
+          ],
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "position": 7.125
+        },
+        {
+          "keys": [
+            "que significa soñar que cortan un árbol grande"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 5
+        },
+        {
+          "keys": [
+            "que significa soñar que plantas un arbol"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 8
+        },
+        {
+          "keys": [
+            "que significa soñar que se cae un arbol"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 4.5
+        },
+        {
+          "keys": [
+            "que significa soñar que se cae un arbol grande"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 5.5
+        },
+        {
+          "keys": [
+            "que significa soñar que se caen arboles grandes"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 8.333333333333332
+        },
+        {
+          "keys": [
+            "que significa soñar que se caen los arboles"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 5
+        },
+        {
+          "keys": [
+            "que significa soñar que te caes de un arbol"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 7.5
+        },
+        {
+          "keys": [
+            "que significa soñar que un arbol se cae"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 3.6666666666666665
+        },
+        {
+          "keys": [
+            "que significa soñar un arbol grande"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 6
+        },
+        {
+          "keys": [
+            "que significa soñar ver caer un árbol grande"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 5.5
+        },
+        {
+          "keys": [
+            "qué significa soñar con un árbol"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 8
+        },
+        {
+          "keys": [
+            "qué significa soñar con un árbol grande"
+          ],
+          "clicks": 0,
+          "impressions": 11,
+          "ctr": 0,
+          "position": 5.454545454545454
+        },
+        {
+          "keys": [
+            "qué significa soñar con un árbol seco"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 3
+        },
+        {
+          "keys": [
+            "qué significa soñar con árboles"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 13
+        },
+        {
+          "keys": [
+            "significado de soñar con arboles grandes"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 7.4
+        },
+        {
+          "keys": [
+            "significado de soñar que estoy arriba de un árbol"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 10
+        },
+        {
+          "keys": [
+            "soñar arboles"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 5
+        },
+        {
+          "keys": [
+            "soñar arboles frutales"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 28
+        },
+        {
+          "keys": [
+            "soñar arboles grandes"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 8
+        },
+        {
+          "keys": [
+            "soñar con arbol"
+          ],
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "position": 5
+        },
+        {
+          "keys": [
+            "soñar con arbol caido"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 4
+        },
+        {
+          "keys": [
+            "soñar con arbol de navidad"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "soñar con arbol grande"
+          ],
+          "clicks": 0,
+          "impressions": 6,
+          "ctr": 0,
+          "position": 4.833333333333334
+        },
+        {
+          "keys": [
+            "soñar con arboles caidos"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 3.3333333333333335
+        },
+        {
+          "keys": [
+            "soñar con arboles frutales cargados"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 10
+        },
+        {
+          "keys": [
+            "soñar con arboles gigantes"
+          ],
+          "clicks": 0,
+          "impressions": 6,
+          "ctr": 0,
+          "position": 7.666666666666667
+        },
+        {
+          "keys": [
+            "soñar con arboles grandes"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 9
+        },
+        {
+          "keys": [
+            "soñar con arboles grandes y frondosos"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 1
+        },
+        {
+          "keys": [
+            "soñar con arboles secos"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 1
+        },
+        {
+          "keys": [
+            "soñar con cortar arboles grandes"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 1
+        },
+        {
+          "keys": [
+            "soñar con el arbol de la vida"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 1
+        },
+        {
+          "keys": [
+            "soñar con podar un arbol"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 7
+        },
+        {
+          "keys": [
+            "soñar con ramas secas"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 5.5
+        },
+        {
+          "keys": [
+            "soñar con subir y bajar de un árbol"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 5
+        },
+        {
+          "keys": [
+            "soñar con trepar un arbol"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 7.5
+        },
+        {
+          "keys": [
+            "soñar con troncos de madera"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 29
+        },
+        {
+          "keys": [
+            "soñar con troncos de madera cortados"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 1
+        },
+        {
+          "keys": [
+            "soñar con troncos de árboles cortados"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 10
+        },
+        {
+          "keys": [
+            "soñar con un arbol"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 8.666666666666668
+        },
+        {
+          "keys": [
+            "soñar con un arbol caido"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 2.5
+        },
+        {
+          "keys": [
+            "soñar con un arbol gigante"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 9.5
+        },
+        {
+          "keys": [
+            "soñar con un arbol grande"
+          ],
+          "clicks": 0,
+          "impressions": 9,
+          "ctr": 0,
+          "position": 6.333333333333333
+        },
+        {
+          "keys": [
+            "soñar con un arbol lleno de frutos"
+          ],
+          "clicks": 0,
+          "impressions": 7,
+          "ctr": 0,
+          "position": 8.857142857142858
+        },
+        {
+          "keys": [
+            "soñar con un arbol seco"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 3
+        },
+        {
+          "keys": [
+            "soñar con un bosque con arboles grandes"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 9.5
+        },
+        {
+          "keys": [
+            "soñar con un árbol"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 3.75
+        },
+        {
+          "keys": [
+            "soñar con un árbol grande"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 7.5
+        },
+        {
+          "keys": [
+            "soñar con un árbol grande y viejo"
+          ],
+          "clicks": 0,
+          "impressions": 10,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "soñar con vientos fuertes y árboles caídos"
+          ],
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "position": 3.25
+        },
+        {
+          "keys": [
+            "soñar con árbol"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 3.75
+        },
+        {
+          "keys": [
+            "soñar con árbol cortado"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 1.5
+        },
+        {
+          "keys": [
+            "soñar con árbol dentro de una casa"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 7
+        },
+        {
+          "keys": [
+            "soñar con árbol gigante y frondoso"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 11
+        },
+        {
+          "keys": [
+            "soñar con árbol seco"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 4
+        },
+        {
+          "keys": [
+            "soñar con árboles"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 8.333333333333332
+        },
+        {
+          "keys": [
+            "soñar con árboles caídos por el viento"
+          ],
+          "clicks": 0,
+          "impressions": 9,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "soñar con árboles cortados"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 2.2
+        },
+        {
+          "keys": [
+            "soñar con árboles grandes"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 8.5
+        },
+        {
+          "keys": [
+            "soñar con árboles secos sin hojas"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 3
+        },
+        {
+          "keys": [
+            "soñar con árboles verdes y grandes"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 9.5
+        },
+        {
+          "keys": [
+            "soñar cortando ramas de un árbol"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 4.666666666666666
+        },
+        {
+          "keys": [
+            "soñar que alguien corta un árbol"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 4.5
+        },
+        {
+          "keys": [
+            "soñar que cortan un árbol grande"
+          ],
+          "clicks": 0,
+          "impressions": 6,
+          "ctr": 0,
+          "position": 7.833333333333333
+        },
+        {
+          "keys": [
+            "soñar que plantas un arbol"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 7.666666666666667
+        },
+        {
+          "keys": [
+            "soñar que se cae un arbol"
+          ],
+          "clicks": 0,
+          "impressions": 6,
+          "ctr": 0,
+          "position": 2.166666666666667
+        },
+        {
+          "keys": [
+            "soñar que se caen arboles grandes"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 9
+        },
+        {
+          "keys": [
+            "soñar que un arbol se cae"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 3.75
+        },
+        {
+          "keys": [
+            "soñar que un árbol se cae"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 9
+        },
+        {
+          "keys": [
+            "soñar que un árbol se cae sobre tu casa"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 6.4
+        },
+        {
+          "keys": [
+            "soñar que un árbol se rompe"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 4
+        },
+        {
+          "keys": [
+            "soñar un arbol grande"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 6
+        },
+        {
+          "keys": [
+            "soñar un arbol grande y frondoso"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 7.6
+        }
+      ],
+      "responseAggregationType": "byPage"
+    }
+  ],
+  "rows": [
+    {
+      "keys": [
+        "soñar con arboles"
+      ],
+      "clicks": 1,
+      "impressions": 2,
+      "ctr": 0.5,
+      "position": 3.5
+    },
+    {
+      "keys": [
+        "soñar con arboles que se caen"
+      ],
+      "clicks": 1,
+      "impressions": 3,
+      "ctr": 0.3333333333333333,
+      "position": 1
+    },
+    {
+      "keys": [
+        "soñar que se cae un arbol grande"
+      ],
+      "clicks": 1,
+      "impressions": 5,
+      "ctr": 0.2,
+      "position": 2.4
+    },
+    {
+      "keys": [
+        "que significa soñar arboles grandes"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "keys": [
+        "que significa soñar con arbol"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 5.5
+    },
+    {
+      "keys": [
+        "que significa soñar con arboles"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 6.875
+    },
+    {
+      "keys": [
+        "que significa soñar con arboles caidos"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 4.5
+    },
+    {
+      "keys": [
+        "que significa soñar con arboles gigantes"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 5.5
+    },
+    {
+      "keys": [
+        "que significa soñar con arboles grandes"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "keys": [
+        "que significa soñar con el arbol de la vida"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 11
+    },
+    {
+      "keys": [
+        "que significa soñar con ramas"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 5
+    },
+    {
+      "keys": [
+        "que significa soñar con ramas secas"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 9
+    },
+    {
+      "keys": [
+        "que significa soñar con troncos de árboles cortados"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 7.875
+    },
+    {
+      "keys": [
+        "que significa soñar con un arbol"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 7.428571428571429
+    },
+    {
+      "keys": [
+        "que significa soñar con un arbol gigante"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "keys": [
+        "que significa soñar con un arbol grande"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "keys": [
+        "que significa soñar con un arbol grande y frondoso"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 5.25
+    },
+    {
+      "keys": [
+        "que significa soñar con un arbol lleno de frutos"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 8.666666666666668
+    },
+    {
+      "keys": [
+        "que significa soñar con un árbol"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 6.75
+    },
+    {
+      "keys": [
+        "que significa soñar con un árbol muy grande"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 5.5
+    },
+    {
+      "keys": [
+        "que significa soñar con árboles"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 10.5
+    },
+    {
+      "keys": [
+        "que significa soñar con árboles caídos por el viento"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 10.5
+    },
+    {
+      "keys": [
+        "que significa soñar con árboles secos grandes"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 4
+    },
+    {
+      "keys": [
+        "que significa soñar que alguien corta un árbol"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 7.125
+    },
+    {
+      "keys": [
+        "que significa soñar que cortan un árbol grande"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 5
+    },
+    {
+      "keys": [
+        "que significa soñar que plantas un arbol"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "keys": [
+        "que significa soñar que se cae un arbol"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 4.5
+    },
+    {
+      "keys": [
+        "que significa soñar que se cae un arbol grande"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 5.5
+    },
+    {
+      "keys": [
+        "que significa soñar que se caen arboles grandes"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 8.333333333333332
+    },
+    {
+      "keys": [
+        "que significa soñar que se caen los arboles"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 5
+    },
+    {
+      "keys": [
+        "que significa soñar que te caes de un arbol"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 7.5
+    },
+    {
+      "keys": [
+        "que significa soñar que un arbol se cae"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 3.6666666666666665
+    },
+    {
+      "keys": [
+        "que significa soñar un arbol grande"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "keys": [
+        "que significa soñar ver caer un árbol grande"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 5.5
+    },
+    {
+      "keys": [
+        "qué significa soñar con un árbol"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "keys": [
+        "qué significa soñar con un árbol grande"
+      ],
+      "clicks": 0,
+      "impressions": 11,
+      "ctr": 0,
+      "position": 5.454545454545454
+    },
+    {
+      "keys": [
+        "qué significa soñar con un árbol seco"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "keys": [
+        "qué significa soñar con árboles"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 13
+    },
+    {
+      "keys": [
+        "significado de soñar con arboles grandes"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 7.4
+    },
+    {
+      "keys": [
+        "significado de soñar que estoy arriba de un árbol"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 10
+    },
+    {
+      "keys": [
+        "soñar arboles"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 5
+    },
+    {
+      "keys": [
+        "soñar arboles frutales"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 28
+    },
+    {
+      "keys": [
+        "soñar arboles grandes"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "keys": [
+        "soñar con arbol"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 5
+    },
+    {
+      "keys": [
+        "soñar con arbol caido"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 4
+    },
+    {
+      "keys": [
+        "soñar con arbol de navidad"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "soñar con arbol grande"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 4.833333333333334
+    },
+    {
+      "keys": [
+        "soñar con arboles caidos"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 3.3333333333333335
+    },
+    {
+      "keys": [
+        "soñar con arboles frutales cargados"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 10
+    },
+    {
+      "keys": [
+        "soñar con arboles gigantes"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 7.666666666666667
+    },
+    {
+      "keys": [
+        "soñar con arboles grandes"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 9
+    },
+    {
+      "keys": [
+        "soñar con arboles grandes y frondosos"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "keys": [
+        "soñar con arboles secos"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "keys": [
+        "soñar con cortar arboles grandes"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "keys": [
+        "soñar con el arbol de la vida"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "keys": [
+        "soñar con podar un arbol"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "keys": [
+        "soñar con ramas secas"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 5.5
+    },
+    {
+      "keys": [
+        "soñar con subir y bajar de un árbol"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 5
+    },
+    {
+      "keys": [
+        "soñar con trepar un arbol"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 7.5
+    },
+    {
+      "keys": [
+        "soñar con troncos de madera"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 29
+    },
+    {
+      "keys": [
+        "soñar con troncos de madera cortados"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "keys": [
+        "soñar con troncos de árboles cortados"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 10
+    },
+    {
+      "keys": [
+        "soñar con un arbol"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 8.666666666666668
+    },
+    {
+      "keys": [
+        "soñar con un arbol caido"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 2.5
+    },
+    {
+      "keys": [
+        "soñar con un arbol gigante"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 9.5
+    },
+    {
+      "keys": [
+        "soñar con un arbol grande"
+      ],
+      "clicks": 0,
+      "impressions": 9,
+      "ctr": 0,
+      "position": 6.333333333333333
+    },
+    {
+      "keys": [
+        "soñar con un arbol lleno de frutos"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 8.857142857142858
+    },
+    {
+      "keys": [
+        "soñar con un arbol seco"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "keys": [
+        "soñar con un bosque con arboles grandes"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 9.5
+    },
+    {
+      "keys": [
+        "soñar con un árbol"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 3.75
+    },
+    {
+      "keys": [
+        "soñar con un árbol grande"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 7.5
+    },
+    {
+      "keys": [
+        "soñar con un árbol grande y viejo"
+      ],
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "soñar con vientos fuertes y árboles caídos"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 3.25
+    },
+    {
+      "keys": [
+        "soñar con árbol"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 3.75
+    },
+    {
+      "keys": [
+        "soñar con árbol cortado"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 1.5
+    },
+    {
+      "keys": [
+        "soñar con árbol dentro de una casa"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "keys": [
+        "soñar con árbol gigante y frondoso"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 11
+    },
+    {
+      "keys": [
+        "soñar con árbol seco"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 4
+    },
+    {
+      "keys": [
+        "soñar con árboles"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 8.333333333333332
+    },
+    {
+      "keys": [
+        "soñar con árboles caídos por el viento"
+      ],
+      "clicks": 0,
+      "impressions": 9,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "soñar con árboles cortados"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 2.2
+    },
+    {
+      "keys": [
+        "soñar con árboles grandes"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 8.5
+    },
+    {
+      "keys": [
+        "soñar con árboles secos sin hojas"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "keys": [
+        "soñar con árboles verdes y grandes"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 9.5
+    },
+    {
+      "keys": [
+        "soñar cortando ramas de un árbol"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 4.666666666666666
+    },
+    {
+      "keys": [
+        "soñar que alguien corta un árbol"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 4.5
+    },
+    {
+      "keys": [
+        "soñar que cortan un árbol grande"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 7.833333333333333
+    },
+    {
+      "keys": [
+        "soñar que plantas un arbol"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 7.666666666666667
+    },
+    {
+      "keys": [
+        "soñar que se cae un arbol"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 2.166666666666667
+    },
+    {
+      "keys": [
+        "soñar que se caen arboles grandes"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 9
+    },
+    {
+      "keys": [
+        "soñar que un arbol se cae"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 3.75
+    },
+    {
+      "keys": [
+        "soñar que un árbol se cae"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 9
+    },
+    {
+      "keys": [
+        "soñar que un árbol se cae sobre tu casa"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 6.4
+    },
+    {
+      "keys": [
+        "soñar que un árbol se rompe"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 4
+    },
+    {
+      "keys": [
+        "soñar un arbol grande"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "keys": [
+        "soñar un arbol grande y frondoso"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 7.6
+    }
+  ]
+}

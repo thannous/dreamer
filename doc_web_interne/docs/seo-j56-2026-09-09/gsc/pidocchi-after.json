@@ -1,0 +1,45 @@
+{
+  "fetchedAt": "2026-09-09T09:49:13.390Z",
+  "site": "sc-domain:noctalia.app",
+  "request": {
+    "type": "web",
+    "dataState": "final",
+    "rowLimit": 25000,
+    "dimensionFilterGroups": [
+      {
+        "groupType": "and",
+        "filters": [
+          {
+            "dimension": "page",
+            "operator": "equals",
+            "expression": "https://noctalia.app/it/simboli/pidocchi"
+          }
+        ]
+      }
+    ],
+    "startDate": "2026-09-03",
+    "endDate": "2026-09-06",
+    "dimensions": []
+  },
+  "responses": [
+    {
+      "rows": [
+        {
+          "clicks": 2,
+          "impressions": 823,
+          "ctr": 0.002430133657351154,
+          "position": 7.976913730255164
+        }
+      ],
+      "responseAggregationType": "byPage"
+    }
+  ],
+  "rows": [
+    {
+      "clicks": 2,
+      "impressions": 823,
+      "ctr": 0.002430133657351154,
+      "position": 7.976913730255164
+    }
+  ]
+}

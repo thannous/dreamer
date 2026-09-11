@@ -1,6 +1,7 @@
 # Noctalia — Sources de vérité et prochaines actions
 
-- Dernière consolidation : **2026-09-06**.
+- Dernière consolidation : **2026-09-09 — audit correctif en cours**.
+- État opérationnel : **NON FIABILISÉ**. Lire [le plan correctif](./80-RECOVERY-AND-GOAL-2026-09-09.md). Les compteurs historiques ci-dessous ne prouvent pas la couverture actuelle.
 - [Classeur Drive partagé — onglet Pilotage agents](https://docs.google.com/spreadsheets/d/1acoGpbZCg89Wy3SR4JioJg0_exyNyVqp3R5QagdQTTs/edit?gid=904202609#gid=904202609)
 - Dossier Drive : `ChatGPT`.
 
@@ -49,7 +50,7 @@ YouTube `18:00`, Facebook `18:15`.
 
 ## État de la transition
 
-1. **TERMINÉ — réconciliation des preuves** : les registres quotidiens,
+1. **À REPRENDRE — réconciliation partielle des preuves** : les registres quotidiens,
    l'inventaire multi-plateforme et la couverture séparent désormais la file
    native d'une URL publique manquante. Deux TikTok du 01/09 initialement
    classés en échec ont été rouverts sur le compte exact et sont désormais
@@ -86,13 +87,21 @@ YouTube `18:00`, Facebook `18:15`.
    surfaces publiques exactes `/NoctaliaDreams/reels` et
    `/NoctaliaDreams/videos` restent indisponibles : la ligne native est
    conservée, mais la preuve devient `PROGRAMMÉ — ÉCHEC — NON PUBLIÉ`, sans URL
-   publique ni métrique inventée. La couverture Instagram courante devient
-   `54/84`, avec `30/84` lignes en dette. Les métriques absentes restent vides.
+   publique ni métrique inventée. Au C2 du 06/09, TikTok n'expose pas le hook
+   attendu après 19:30 et passe en échec sans upload tardif. Instagram est
+   publié et ouvert à l'URL `Dc9HLH3JFUm`, avec compte, légende, vidéo 10 s et
+   badge `Creator avec IA` vérifiés ; les vues ne sont pas encore renseignées
+   et le premier relevé expose 0 interaction. Cette ligne était déjà couverte
+   par `PRÊT — DIRECT` : Instagram reste donc à `54/84`, avec `30/84` lignes en
+   dette. X C2 est publié et ouvert à l'URL `2096663470704119901`, avec compte,
+   copie, vidéo 10 s, heure `20:15` et label `Made with AI` vérifiés ; le premier
+   relevé expose 1 vue et 0 engagement.
+   Les métriques absentes restent vides.
 2. **STRUCTURE TERMINÉE, ASSETS BLOQUÉS** : le calendrier du 11 au 24 septembre
    contient exactement 28 lignes et le même ordre A/B sur TikTok, Instagram et
    X. Il reste interdit de programmer tant que les masters, SHA-256, copies et
    contrôles anti-doublon ne sont pas affectés.
-3. **TERMINÉ — automation alignée** : l'automation consolidée
+3. **À REVALIDER — automation et fuseau effectif** : l'automation consolidée
    `noctalia-tiktok-programmation-roulante-ao-t` suit les onze checkpoints
    principaux et HERO du pilote jusqu'au 24 septembre, respecte les lignes
    bloquées et conserve une notification limitée aux changements matériels et
@@ -114,7 +123,7 @@ YouTube `18:00`, Facebook `18:15`.
 
 ## Critère de clôture de la transition
 
-La structure et l'automation sont prêtes. La transition devient exécutable
+La structure et l'automation ne sont pas encore validées de bout en bout. La transition devient exécutable
 uniquement après affectation des 28 masters et reste complète lorsque
 `social:health` et `social:automation:check` passent, puis que les premières
 mesures J+1/J+7 sont présentes dans le dépôt et dans le classeur Drive.

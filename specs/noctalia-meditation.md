@@ -143,7 +143,7 @@ apps/meditation/
 ├── tailwind.config.js
 ├── global.css
 ├── app.json / app.config.ts
-├── AGENTS.md · CLAUDE.md             # règles agents (comme Zen fournit Claude/Cursor rules)
+├── AGENTS.md                         # règles agents
 └── package.json
 ```
 
