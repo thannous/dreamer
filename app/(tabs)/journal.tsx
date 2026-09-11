@@ -109,8 +109,8 @@ export default function JournalListScreen() {
   const desktopColumns = width >= 1440 ? 4 : 3;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
   // Keep only the search input outside the column-keyed FlashList so rotation
-  // across the tablet breakpoint does not remount it. The remaining header,
-  // including the guest upsell, stays ListHeaderComponent so it can scroll away
+  // across the tablet breakpoint does not remount it. The remaining header
+  // stays ListHeaderComponent so it can scroll away
   // on short landscape viewports.
   const scrollHeader = !isDesktopLayout;
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
@@ -336,13 +336,19 @@ export default function JournalListScreen() {
   const paginationScope = JSON.stringify([mediaUserId, deferredSearchQuery, selectedTheme, selectedDreamType,
     dateRange.start, dateRange.end, quickFilter, showRememberedOnly, showRecurringOnly, analysisStatus, sortOrder]);
   const { visibleItems, hasMore, loadMore } = useJournalListPagination(filteredDreams, paginationScope);
-  const listFooter = hasMore ? (
+  const paginationFooter = hasMore ? (
     <PressableScale onPress={loadMore} accessibilityRole="button" className="min-h-[48px] items-center justify-center p-4">
       <Text className="font-sans-bold text-body text-champagne-on">{t('journal.pagination.more')}</Text>
     </PressableScale>
   ) : filteredDreams.length > 0 ? (
     <Text className="p-4 text-center font-sans text-body-sm text-ivory-muted">{t('journal.pagination.end')}</Text>
   ) : null;
+  const listFooter = (
+    <View>
+      <View className="px-4 py-2"><UpsellCard /></View>
+      {paginationFooter}
+    </View>
+  );
   const mediaGeneration = useRef(0);
   useLayoutEffect(() => {
     mediaGeneration.current += 1;
@@ -562,7 +568,7 @@ export default function JournalListScreen() {
   // No `entering` on a row: FlashList recycles them, so an entrance replays on every
   // scroll. The list itself is the thing that appeared, and it appeared with the screen.
   const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
-    const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
+    const dreamTypeLabel = item.dreamType && (item.dreamType !== 'Symbolic Dream' || isDreamAnalyzed(item)) ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
     const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
     const isFirstItem = index === 0;
 
@@ -581,7 +587,7 @@ export default function JournalListScreen() {
   }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
 
   const renderDreamItemTablet = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
-    const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
+    const dreamTypeLabel = item.dreamType && (item.dreamType !== 'Symbolic Dream' || isDreamAnalyzed(item)) ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
     const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
 
     return (
@@ -603,7 +609,7 @@ export default function JournalListScreen() {
     const isRecent = index < 3;
     const isFavorite = !!item.isFavorite;
     const isAnalyzed = isDreamAnalyzed(item);
-    const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
+    const dreamTypeLabel = item.dreamType && (item.dreamType !== 'Symbolic Dream' || isDreamAnalyzed(item)) ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
 
     const isHero = isRecent && hasImage;
     const weightClass = isHero
@@ -915,13 +921,6 @@ export default function JournalListScreen() {
         </View>
       </View>
 
-      {/* Guest Upsell */}
-      <View
-        className="mb-2 px-4"
-        style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
-      >
-        <UpsellCard />
-      </View>
 
     </View>
   );

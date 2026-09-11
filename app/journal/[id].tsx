@@ -626,7 +626,11 @@ function JournalDetailContent() {
     },
     [t]
   );
-  const quotaHintLabel = formatQuotaHint(quotaHint);
+  const quotaHintLabel = quotaHint.kind === 'none' ? null
+    : quotaLoading ? t('journal.detail.quota_hint.loading')
+    : quotaHint.kind === 'remaining' && quotaHint.remaining <= 0
+      ? t('journal.detail.quota_hint.empty')
+      : formatQuotaHint(quotaHint);
   const canRecoverPendingAnalysis = useMemo(
     () => !isAnalyzing && isRecoverablePendingAnalysis(dream, analysisRecoveryClock),
     [analysisRecoveryClock, dream, isAnalyzing]
@@ -1117,8 +1121,15 @@ function JournalDetailContent() {
   }, [dream, generateDreamImage, illustrationAccess.allowed, illustrationAccess.bundledRequestId, t]);
 
   const handleBackPress = useCallback(() => {
+    const pending = onboardingState.pendingRecordingIntent;
+    // Leaving the optional analysis confirmation must allow another capture.
+    if (pending?.savedDreamId === dream?.id && pending?.phase === 'analysis_confirmation') {
+      void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => {
+        console.warn('[JournalDetail] Failed to dismiss the onboarding analysis confirmation');
+      });
+    }
     router.replace('/(tabs)/journal');
-  }, []);
+  }, [dream?.id, onboardingState.pendingRecordingIntent, transitionOnboarding]);
 
   const handleJourneyPress = useCallback(() => {
     if (!dream) return;
@@ -1390,7 +1401,8 @@ function JournalDetailContent() {
             setIsEditingTranscript(true);
           }}
           testID={TID.Button.EditTranscript}
-          accessibilityLabel={t('journalDetail.a11y.editTranscript')}
+          accessibilityRole="button"
+          accessibilityLabel={t(isEditingTranscript ? 'journal.detail.save_edit' : 'journalDetail.a11y.editTranscript')}
           disabled={isAnalysisLocked}
           className={`h-8 w-8 items-center justify-center rounded-full border border-line ${
             isEditingTranscript ? 'bg-champagne' : 'bg-transparent'
@@ -1411,8 +1423,8 @@ function JournalDetailContent() {
           multiline
           value={editableTranscript}
           onChangeText={setEditableTranscript}
-          placeholder={t('journal.transcript.placeholder') || 'Edit transcript...'}
-          accessibilityLabel={t('journal.transcript.placeholder') || 'Edit transcript...'}
+          placeholder={t('recording.placeholder.accessibility')}
+          accessibilityLabel={t('recording.placeholder.accessibility')}
           placeholderTextColor={noctalia.text.secondary}
           textAlignVertical="top"
           autoFocus
@@ -1420,6 +1432,18 @@ function JournalDetailContent() {
       ) : (
         <Text className="font-sans text-[15px] leading-6 text-ivory-muted opacity-90">{dream.transcript}</Text>
       )}
+      {isEditingTranscript ? (
+        <View className="mt-3 flex-row flex-wrap justify-end gap-3">
+          <Pressable onPress={() => { setEditableTranscript(dream.transcript || ''); setIsEditingTranscript(false); }}
+            accessibilityRole="button" className="min-h-[44px] justify-center px-3">
+            <Text className="font-sans-medium text-ivory">{t('common.cancel')}</Text>
+          </Pressable>
+          <Pressable onPress={handleTranscriptSave} accessibilityRole="button" disabled={isAnalysisLocked}
+            className="min-h-[44px] justify-center rounded-md bg-champagne px-4">
+            <Text className="font-sans-bold text-on-champagne">{t('journal.detail.save_edit')}</Text>
+          </Pressable>
+        </View>
+      ) : null}
     </View>
   );
 
@@ -1469,12 +1493,12 @@ function JournalDetailContent() {
           placeholderTextColor={noctalia.text.secondary}
         />
       ) : (
-        <Text className="mb-3 font-display-semibold text-[26px] leading-[34px] text-ivory">
+        <Text numberOfLines={2} className="mb-3 font-display-semibold text-[22px] leading-[28px] text-ivory">
           {dream.title || t('journal.detail.untitled_dream')}
         </Text>
       )}
 
-      {(isEditing || dream.dreamType) && (
+      {(isEditing || (dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream'))) && (
         <View className={`mt-2 flex-row gap-2 ${isEditing ? 'items-start' : 'items-center'}`}
         >
           <IconSymbol name="moon.stars.fill" size={18} color={noctalia.text.primary} style={{ marginTop: isEditing ? 4 : 0 }} />
@@ -1545,9 +1569,14 @@ function JournalDetailContent() {
             </View>
           </ScrollView>
         ) : (
-          <Text className="flex-1 font-sans-bold text-[14px] capitalize text-ivory">
-            {dreamThemeLabel || t('journal.detail.theme_placeholder')}
-          </Text>
+          dreamThemeLabel ? (
+            <Text className="flex-1 font-sans-bold text-[14px] text-ivory">{dreamThemeLabel}</Text>
+          ) : (
+            <Pressable onPress={startMetadataEditing} disabled={isAnalysisLocked}
+              accessibilityRole="button" className="min-h-[44px] flex-1 justify-center">
+              <Text className="font-sans-medium text-[14px] text-champagne-on underline">{t('journal.detail.theme_placeholder')}</Text>
+            </Pressable>
+          )
         )}
       </View>
 
@@ -1702,6 +1731,11 @@ function JournalDetailContent() {
     );
   };
 
+  const analysisAccessLabel = visiblePrimaryAction !== 'analyze' || isPrimaryActionBusy ? null
+    : quotaHint.kind === 'unknown' ? t('journal.detail.check_analysis')
+      : quotaHint.kind === 'remaining' && quotaHint.remaining <= 0
+        ? t('journal.detail.analysis_options') : null;
+
   const renderQuotaHint = () => {
     if (!quotaHintLabel) {
       return null;
@@ -1796,12 +1830,14 @@ function JournalDetailContent() {
             >
               {detailActionCard.title}
             </Text>
-            <Text
-              className="font-sans text-[13px] leading-[18px] text-ivory-muted"
-              testID={TID.Text.DreamDetailActionMessage}
-            >
-              {detailActionCard.message}
-            </Text>
+            {analysisAccessLabel ? null : (
+              <Text
+                className="font-sans text-[13px] leading-[18px] text-ivory-muted"
+                testID={TID.Text.DreamDetailActionMessage}
+              >
+                {detailActionCard.message}
+              </Text>
+            )}
             {renderQuotaHint()}
           </View>
         </View>
@@ -1826,7 +1862,7 @@ function JournalDetailContent() {
             />
           )}
           <Text className="font-sans-bold text-[15px] text-on-champagne">
-            {detailActionCard.cta}
+            {analysisAccessLabel ?? detailActionCard.cta}
           </Text>
         </PressableScale>
       </View>

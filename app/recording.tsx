@@ -1029,7 +1029,7 @@ export default function RecordingScreen() {
       inlineFooter && styles.inlineFooterContent,
       isCompactLandscape && styles.mainContentCompact,
       {
-        paddingTop: 16 + insets.top,
+        paddingTop: 16,
         paddingBottom: inlineFooter
           ? 16 + (keyboardVisible ? insets.bottom : 0)
           : separateFooterViewport ? 16 : fixedFooterBottomOffset + footerHeight,
@@ -1038,7 +1038,6 @@ export default function RecordingScreen() {
     [
       fixedFooterBottomOffset,
       footerHeight,
-      insets.top,
       isCompactLandscape,
       separateFooterViewport,
       inlineFooter,
@@ -1374,7 +1373,7 @@ export default function RecordingScreen() {
         ) : null}
         <KeyboardAvoidingView
           behavior="height"
-          style={styles.keyboardView}
+          style={[styles.keyboardView, { paddingTop: insets.top }]}
         >
           <ScrollView
             ref={scrollViewRef}

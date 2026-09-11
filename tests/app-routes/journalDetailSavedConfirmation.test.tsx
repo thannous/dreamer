@@ -3,10 +3,15 @@ import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
+import type { PendingRecordingIntent } from '@/lib/onboardingState';
 import type { DreamAnalysis } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
 
+let mockPendingRecordingIntent: Partial<PendingRecordingIntent> | null = null;
+const mockTransitionOnboarding = jest.fn(async () => undefined);
 let mockMedia: any = null;
+let mockQuotaUsage: any = { analysis: { used: 0, limit: 3, remaining: 3 } };
+const mockUpdateDream = jest.fn();
 let mockCompositeLoads = true;
 const mockRetryMedia = jest.fn();
 const mockShareComposite = jest.fn();
@@ -242,7 +247,7 @@ jest.mock('@/context/DreamsContext', () => ({
   useDreams: () => ({
     dreams: mockDreams,
     toggleFavorite: mockToggleFavorite,
-    updateDream: jest.fn(),
+    updateDream: mockUpdateDream,
     deleteDream: mockDeleteDream,
     retryDreamSync: jest.fn(),
     resolveDreamConflict: jest.fn(),
@@ -258,10 +263,10 @@ jest.mock('@/context/LanguageContext', () => ({
 jest.mock('@/context/OnboardingContext', () => ({
   useOnboarding: () => ({
     state: {
-      pendingRecordingIntent: null,
+      pendingRecordingIntent: mockPendingRecordingIntent,
       completionReason: null,
     },
-    transition: jest.fn(),
+    transition: mockTransitionOnboarding,
   }),
 }));
 
@@ -316,7 +321,7 @@ jest.mock('@/hooks/useQuota', () => ({
     canAnalyze: true,
     canGenerateImageNow: true,
     tier: 'free',
-    usage: { analysis: { used: 0, limit: 3, remaining: 3 } },
+    usage: mockQuotaUsage,
     loading: false,
     quotaStatus: null,
   }),
@@ -357,7 +362,11 @@ const { default: JournalDetailScreen } = require('@/app/journal/[id]');
 describe('journal detail saved confirmation route', () => {
   beforeEach(() => {
     mockSetParams.mockReset();
+    mockPendingRecordingIntent = null;
+    mockTransitionOnboarding.mockClear();
     mockMedia = null;
+    mockQuotaUsage = { analysis: { used: 0, limit: 3, remaining: 3 } };
+    mockUpdateDream.mockClear();
     mockRetryMedia.mockReset();
     mockShareComposite.mockReset();
     require('react-native').Platform.OS = 'web';
@@ -368,6 +377,48 @@ describe('journal detail saved confirmation route', () => {
 
   afterEach(() => {
     cleanup();
+  });
+
+  it.each(['analysis_confirmation', 'analysis_requested'] as const)('only dismisses optional onboarding analysis on return: %s', (phase: 'analysis_confirmation' | 'analysis_requested') => {
+    mockPendingRecordingIntent = { savedDreamId: 42, phase };
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.NavigateJournal));
+    expect(mockTransitionOnboarding).toHaveBeenCalledTimes(phase === 'analysis_confirmation' ? 1 : 0);
+    if (phase === 'analysis_confirmation') {
+      expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+    }
+  });
+
+  it('does not present the default draft type as a classification and makes missing theme actionable', () => {
+    mockDreams = [buildDream({ theme: undefined })];
+    render(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Component.MetadataCard).textContent).not.toContain('Symbolic Dream');
+    fireEvent.click(screen.getByRole('button', { name: 'journal.detail.theme_placeholder' }));
+    expect(screen.getByTestId(TID.Input.DreamTitle)).toBeTruthy();
+  });
+
+  it('names transcript editing actions and cancels without writing the dream', () => {
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditTranscript));
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('aria-label')).toBe('recording.placeholder.accessibility');
+    expect(screen.getByTestId(TID.Button.EditTranscript).getAttribute('aria-label')).toBe('journal.detail.save_edit');
+    fireEvent.click(screen.getByRole('button', { name: 'common.cancel' }));
+    expect(screen.queryByTestId(TID.Input.DreamTranscript)).toBeNull();
+    expect(mockUpdateDream).not.toHaveBeenCalled();
+  });
+
+  it('makes unknown analysis access explicit before the click', () => {
+    mockQuotaUsage = undefined;
+    render(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Button.DreamDetailPrimaryCta).textContent).toContain('journal.detail.check_analysis');
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+  });
+
+  it('shows exhausted credits without claiming the dream is lost', () => {
+    mockQuotaUsage = { analysis: { used: 3, limit: 3, remaining: 0 } };
+    render(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Text.DreamDetailQuotaHint).textContent).toBe('journal.detail.quota_hint.empty');
+    expect(screen.getByTestId(TID.Button.DreamDetailPrimaryCta).textContent).toContain('journal.detail.analysis_options');
   });
 
   it('shows a visible saved confirmation when the mounted detail has saved=1', () => {
@@ -467,6 +518,8 @@ describe('stable dream route identity', () => {
   afterEach(() => { cleanup(); mockSearchParams = { id: '42' }; });
   it.each([17, 2501])('opens and favorites remote dream %i among identical timestamps', (remoteId: number) => {
     mockMedia = null;
+    mockQuotaUsage = { analysis: { used: 0, limit: 3, remaining: 3 } };
+    mockUpdateDream.mockClear();
     mockToggleFavorite.mockClear();
     mockDreams = [buildDream({ remoteId: 17, clientRequestId: 'request-17', title: 'Seventeen' }), buildDream({ remoteId: 2501, clientRequestId: 'request-2501', title: 'Last dream' })];
     mockSearchParams = { id: '42', remoteId: String(remoteId) };
