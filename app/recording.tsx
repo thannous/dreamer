@@ -12,7 +12,7 @@ import { RecordingDraftHydrationNotice } from '@/components/recording/RecordingD
 import { RememberedDreamProfileChips } from '@/components/recording/RememberedDreamProfileChips';
 import { Toast } from '@/components/Toast';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
-import { DESKTOP_BREAKPOINT, LARGE_TEXT_FONT_SCALE } from '@/constants/layout';
+import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -1014,13 +1014,12 @@ export default function RecordingScreen() {
     : isDesktopWeb
       ? insets.bottom
       : Math.max(bottomNavHeight, insets.bottom);
-  // A padded scroll document can still paint behind fixed controls. At large
-  // text sizes give it a smaller viewport, so every instruction can be scrolled
-  // fully above Save and navigation instead of being covered by them.
-  const separateFooterViewport = fontScale >= LARGE_TEXT_FONT_SCALE && !keyboardVisible;
-  // In short landscape windows, a fixed scaled Save button and navigation can
-  // consume the entire height. Keep the same action in the scroll document.
-  const inlineFooter = isCompactLandscape && fontScale >= LARGE_TEXT_FONT_SCALE;
+  // Keep the scroll viewport above Save and navigation at every text size.
+  // Content padding alone still lets the draft status paint behind the button.
+  const separateFooterViewport = !keyboardVisible;
+  // In short landscape windows, keep Save in the scroll document so its
+  // reserved area cannot squeeze the editor out of the viewport.
+  const inlineFooter = isCompactLandscape;
   const scrollBottomReservation = separateFooterViewport
     ? fixedFooterBottomOffset + (inlineFooter ? 0 : footerHeight)
     : 0;
@@ -1419,7 +1418,9 @@ export default function RecordingScreen() {
                     captureIntent === 'remembered'
                       ? t('recording.remembered.active_instruction')
                       : inputMode === 'voice'
-                      ? t('recording.instructions')
+                      ? (viewportHeight - insets.top - insets.bottom) / Math.max(1, fontScale) < 740
+                        ? ''
+                        : t('recording.instructions')
                       : t('recording.instructions.text') || "Ou transcris ici les murmures de ton subconscient..."
                   }
                   switchToVoiceLabel={voiceControlLabel}
