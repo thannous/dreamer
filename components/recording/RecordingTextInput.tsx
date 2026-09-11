@@ -100,6 +100,10 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               minHeight: composerLayout.inputMinHeight,
               maxHeight: composerLayout.inputMaxHeight,
             },
+            isVoiceFirst && hasValue && {
+              minHeight: (composerLayout.narrow ? composerLayout.inputMinHeight : 196) + 64,
+              maxHeight: (composerLayout.narrow ? composerLayout.inputMaxHeight : 286) + 64,
+            },
             compact && styles.textInputCompact,
             hasValue && styles.textInputWithValue,
             showInlineActions && styles.textInputWithInlineActions,
@@ -187,7 +191,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           status={voiceStatus}
           onPress={onSwitchToVoice}
           interaction={voiceControlDisabled ? 'disabled' : 'enabled'}
-          size="expressive"
+          size={hasValue ? "compact" : "expressive"}
           testID={TID.Button.RecordToggle}
           accessibilityLabel={voiceLabel}
         />
@@ -271,7 +275,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
 
     return (
       <>
-        <View
+        {instructionText ? <View
           style={[
             styles.recordingSection,
             composerLayout.narrow && styles.recordingSectionNarrow,
@@ -288,7 +292,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           >
             {instructionText}
           </Text>
-        </View>
+        </View> : null}
 
         <View
           nativeID={layout}

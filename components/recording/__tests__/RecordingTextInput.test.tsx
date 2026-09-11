@@ -348,7 +348,7 @@ describe('RecordingTextInput', () => {
     expect(screen.getByDisplayValue('A blue room')).toBeTruthy();
     expect(screen.queryByText('Pause dictation')).toBeNull();
     expect(screen.getByTestId(TID.Text.RecordingVoiceStatusDuration).textContent).toBe('0:38');
-    expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-size')).toBe('expressive');
+    expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-size')).toBe('compact');
     expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-status')).toBe('recording');
     expect(screen.getByTestId(TID.Text.RecordingVoiceStatusTitle).textContent).toBe('Recording');
     expect(screen.getByTestId(TID.Component.RecordingVoiceStatus).getAttribute('aria-live')).toBe('polite');
@@ -499,7 +499,7 @@ describe('RecordingTextInput', () => {
     expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
   });
 
-  it('places the expressive microphone above the editable transcript in tell mode', () => {
+  it('keeps the compact microphone above the editable transcript in tell mode', () => {
     render(
       <RecordingTextInput
         layout="voiceFirst"

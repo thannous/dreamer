@@ -654,17 +654,17 @@ describe('Recording screen', () => {
         const scroll = screen.getByTestId(TID.Screen.Recording);
         const save = screen.getByTestId('recording-save') as HTMLButtonElement;
         expect(screen.getAllByTestId('recording-save')).toHaveLength(1);
-        expect(scroll.contains(save)).toBe(scale >= 1.3);
+        expect(scroll.contains(save)).toBe(true);
         expect(save.disabled).toBe(false);
         const styles = JSON.parse(scroll.getAttribute('data-native-style') ?? '[]');
         const style = Object.assign({}, ...styles.filter(Boolean));
-        expect(style.marginBottom).toBe(scale >= 1.3 ? navHeight + 24 : undefined);
+        expect(style.marginBottom).toBe(navHeight + 24);
         expect(height - (style.marginBottom ?? 0)).toBeGreaterThanOrEqual(120);
 
         for (const event of ['keyboardDidShow', 'keyboardDidHide']) {
           act(() => mockKeyboardListeners[event]?.());
           expect(screen.getAllByTestId('recording-save')).toHaveLength(1);
-          expect(screen.getByTestId(TID.Screen.Recording).contains(screen.getByTestId('recording-save'))).toBe(scale >= 1.3);
+          expect(screen.getByTestId(TID.Screen.Recording).contains(screen.getByTestId('recording-save'))).toBe(true);
           expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(draft);
         }
 
@@ -699,7 +699,7 @@ describe('Recording screen', () => {
     expect(screen.getByTestId(TID.Input.DreamTranscript)).toBeTruthy();
   });
 
-  it.each([1, 1.5, 2])('keeps large-text scrolling above the measured footer and navigation at scale %s', async (fontScale: number) => {
+  it.each([1, 1.5, 2])('keeps scrolling above the measured footer and navigation at scale %s', async (fontScale: number) => {
     mockPlatformOS = 'android';
     mockFontScale = fontScale;
     render(<RecordingScreen />);
@@ -712,7 +712,7 @@ describe('Recording screen', () => {
 
     const styles = JSON.parse(screen.getByTestId(TID.Screen.Recording).getAttribute('data-native-style') ?? '[]');
     const style = Object.assign({}, ...styles.filter(Boolean));
-    expect(style.marginBottom).toBe(fontScale >= 1.3 ? 440 : undefined);
+    expect(style.marginBottom).toBe(440);
     expect(screen.getByTestId('recording-save')).toBeTruthy();
     expect(screen.getByTestId('recording-bottom-nav')).toBeTruthy();
   });
