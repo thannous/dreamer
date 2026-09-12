@@ -49,25 +49,6 @@ export function RecordingDraftProgress({ value, persisted = false }: RecordingDr
           {savedLabel}
         </Text>
       ) : null}
-      <View
-        style={[
-          styles.track,
-          {
-            backgroundColor: noctalia.surface.border,
-          },
-        ]}
-      >
-        <View
-          style={[
-            styles.fill,
-            {
-              backgroundColor: noctalia.accent.base,
-              width: `${Math.max(4, progress.ratio * 100)}%`,
-              opacity: progress.charCount === 0 ? 0.35 : 1,
-            },
-          ]}
-        />
-      </View>
     </View>
   );
 }
@@ -98,14 +79,5 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
     fontVariant: ['tabular-nums'],
-  },
-  track: {
-    height: 5,
-    borderRadius: 999,
-    overflow: 'hidden',
-  },
-  fill: {
-    height: '100%',
-    borderRadius: 999,
   },
 });

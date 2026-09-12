@@ -251,6 +251,7 @@ jest.mock('@shopify/flash-list', () => {
             {props.renderItem({ item, index })}
           </React.Fragment>
         ))}
+      {props.ListFooterComponent}
     </div>;
   }) };
 });
@@ -542,7 +543,7 @@ describe('Journal compact large-text layout', () => {
     );
   });
 
-  it.each([[640, 320], [915, 412]])('keeps the header upsell scrollable at %i by %i dp when a guest has a dream', (width: number, height: number) => {
+  it.each([[640, 320], [915, 412]])('keeps the footer upsell after dreams and scrollable at %i by %i dp when a guest has a dream', (width: number, height: number) => {
     mockDreams.push(guestDream);
     Object.assign(mockWindow, { width, height, fontScale: 2 });
     const view = render(<JournalScreen />);
@@ -554,6 +555,7 @@ describe('Journal compact large-text layout', () => {
     expect(list.contains(input)).toBe(false);
     expect(list.contains(upsell)).toBe(true);
     expect(list.contains(dreamCard)).toBe(true);
+    expect(dreamCard.compareDocumentPosition(screen.getByTestId('journal-upsell')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.queryByTestId('journal-empty')).toBeNull();
     expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
     expect(searchBarLayout(2).minHeight).toBe(112);
@@ -595,6 +597,7 @@ describe('Journal compact large-text layout', () => {
     expect(Number(screen.getByTestId(TID.Component.SearchBar).getAttribute('data-min-height'))).toBe(112);
     expect(list.contains(screen.getByTestId(TID.Input.SearchDreams))).toBe(false);
     expect(list.contains(dreamCard)).toBe(true);
+    expect(dreamCard.compareDocumentPosition(screen.getByTestId('journal-upsell')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(list.contains(screen.getByTestId('journal-search-scroll-slot'))).toBe(true);
 
     const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
@@ -820,7 +823,7 @@ describe('Journal compact large-text layout', () => {
     render(<JournalScreen />);
     const list = screen.getByTestId(TID.List.Dreams);
     expect(list.contains(screen.getByTestId(TID.Input.SearchDreams))).toBe(false);
-    expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(false);
+    expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
     expect(mockListProps.ListHeaderComponent).toBeUndefined();
     expect(mockListProps.style).toBeUndefined();
     expect(mockListProps.numColumns).toBe(4);
