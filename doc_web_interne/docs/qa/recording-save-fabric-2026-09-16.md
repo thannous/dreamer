@@ -49,3 +49,10 @@ Screenshots retained locally under `doc_web_interne/docs/qa/recording-save-fabri
 - Physical Motorola: inspected the active dictation field with microphone and upward arrow side by side. 30 focused component tests passed, including submission during listening and the existing shared-editor checks. App/test typechecks and focused lint passed.
 
 - Listening now has a small separate status below the question. The question remains visible while recording, and the opening prompt stays stable as the first answer grows. Motorola UI inspection confirmed both question and listening status simultaneously. The component suite now has 10 passing tests (31 including the unchanged shared-editor suite).
+
+## Question context retained with answers — 2026-09-17
+
+- New follow-up answers persist the exact displayed question with the answer as editable, localized Question/Answer text. The opening free narrative stays unchanged. No reconstruction request or storage migration is added.
+- Context is frozen when the reply starts and survives dictation pauses, keyboard corrections, tab changes, draft restoration and direct dream saving. Erasing an answer removes its unanswered question from the persisted text. Existing contextless answers cannot be reconstructed retroactively.
+- 66 focused recording-route/conversation-hook tests pass, including a one-word beach answer, draft restoration, direct saving and dictated-answer correction. App/test typechecks pass. Focused lint reports only the two existing effect warnings.
+- Metro has the change; the Motorola screen was inspected, but no new answer was submitted into the user's existing draft for device QA. Full new question/answer journey on hardware remains unverified.

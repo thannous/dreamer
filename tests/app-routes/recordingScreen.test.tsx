@@ -22,6 +22,7 @@ const mockPush = jest.fn();
 const mockReplace = jest.fn();
 const mockSaveInputModePreference = jest.fn();
 const mockStartRecording = jest.fn();
+const answerPair = (story: string, answer: string, question = 'What else do you remember?') => `${story}\n\nQuestion : ${question}\nRéponse : ${answer}`;
 const mockRequestCaptureQuestion = jest.fn(async () => ({ question: 'What else do you remember?', done: false }));
 const mockStopRecording = jest.fn();
 const mockTrackProductEvent = jest.fn().mockResolvedValue(undefined);
@@ -523,7 +524,7 @@ jest.doMock('@/hooks/useRecordingSession', () => ({
 
 jest.doMock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
-    t: (key: string) => key.startsWith('journal.persistence.')
+    t: (key: string) => (key.startsWith('journal.persistence.') || key === 'recording.conversation.question_label' || key === 'recording.conversation.answer_label')
       ? require('@/lib/i18n/fr').default[key]
       : key,
   }),
@@ -821,7 +822,7 @@ describe('Recording screen', () => {
     }
   });
 
-  it('asks inline and saves only the shared narrative and answers, without interpreting', async () => {
+  it('saves answered questions with the narrative without a reformulation or interpretation call', async () => {
     mockGetInputModePreference.mockResolvedValue('voice');
     render(<RecordingScreen />);
     await awaitEditorReady();
@@ -833,7 +834,34 @@ describe('Recording screen', () => {
     fireEvent.click(screen.getByTestId('conversation-submit'));
     fireEvent.click(screen.getByTestId('recording-save'));
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } }));
-    expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'A blue garden at dawn A door was open.' }));
+    expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: answerPair('A blue garden at dawn', 'A door was open.') }));
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+  });
+
+  it('preserves the exact question for a one-word answer in the draft, restored editor and direct save', async () => {
+    const question = 'De quelle couleur était la plage ?';
+    const expected = answerPair('Une plage.', 'Noire.', question);
+    mockGetInputModePreference.mockResolvedValue('voice');
+    mockGetSavedTranscript.mockResolvedValueOnce('Une plage.');
+    mockRequestCaptureQuestion.mockResolvedValueOnce({ question, done: false });
+    const { unmount } = render(<RecordingScreen />);
+    await awaitEditorReady();
+    await waitFor(() => expect(screen.getByTestId('conversation-question').textContent).toBe(question));
+    const calls = mockRequestCaptureQuestion.mock.calls.length;
+    fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'Noire.' } });
+    act(() => mockAppStateHandler?.('background'));
+    await waitFor(() => expect(mockSaveTranscript).toHaveBeenLastCalledWith(expected));
+    expect(screen.getByTestId('conversation-story').textContent).toBe('Une plage.');
+    expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(calls);
+    unmount();
+
+    mockGetSavedTranscript.mockResolvedValueOnce(expected);
+    mockGetInputModePreference.mockResolvedValueOnce('text');
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(expected);
+    fireEvent.click(screen.getByTestId('recording-save'));
+    await waitFor(() => expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: expected })));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
 
@@ -1448,7 +1476,7 @@ describe('Recording screen', () => {
     fireEvent.change(input, { target: { value: 'continued' } });
     act(() => mockAppStateHandler?.('background'));
     await waitFor(() => expect(mockSaveTranscript).toHaveBeenCalledTimes(1));
-    expect(mockSaveTranscript).toHaveBeenLastCalledWith('original durable dream continued');
+    expect(mockSaveTranscript).toHaveBeenLastCalledWith(answerPair('original durable dream', 'continued'));
   });
 
   it('keeps a single shared draft when switching Write -> Tell -> Write', async () => {
@@ -1488,7 +1516,7 @@ describe('Recording screen', () => {
     fireEvent.click(screen.getByTestId('recording-mode-text'));
     fireEvent.click(screen.getByTestId('recording-mode-voice'));
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'Du soleil.' } });
-    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('Un jardin. Une porte. Du soleil.');
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(answerPair(answerPair('Un jardin.', 'Une porte.'), 'Du soleil.', 'dream_recall.question.what_else'));
   });
 
   it('does not render the retired hamburger capture tour', () => {
@@ -1534,7 +1562,7 @@ describe('Recording screen', () => {
     });
     expect(
       (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
-    ).toBe('A blue room under the rain and a red bicycle');
+    ).toBe(answerPair('A blue room under the rain', 'and a red bicycle'));
     expect(screen.getByTestId(TID.Component.RecordingDraftProgress).textContent).not.toContain(
       'recording.draft_progress.saved_locally'
     );
@@ -1729,6 +1757,7 @@ describe('Recording screen', () => {
     mockGetSavedTranscript.mockResolvedValueOnce('Un jardin.');
     render(<RecordingScreen />);
     await awaitEditorReady();
+    await waitFor(() => expect(screen.getByTestId('conversation-question').textContent).toBe('What else do you remember?'));
     fireEvent.click(screen.getByTestId('recording-voice-control'));
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
     act(() => mockOnPartialTranscript?.('Une porte rouge.'));
@@ -1740,9 +1769,9 @@ describe('Recording screen', () => {
     });
     await act(async () => { fireEvent.click(screen.getByTestId('conversation-mute')); });
     fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'Une porte bleue.' } });
-    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('Un jardin. Une porte bleue.');
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(answerPair('Un jardin.', 'Une porte bleue.'));
     act(() => mockAppStateHandler?.('background'));
-    await waitFor(() => expect(mockSaveTranscript).toHaveBeenLastCalledWith('Un jardin. Une porte bleue.'));
+    await waitFor(() => expect(mockSaveTranscript).toHaveBeenLastCalledWith(answerPair('Un jardin.', 'Une porte bleue.')));
     fireEvent.click(screen.getByTestId('recording-voice-control'));
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
     act(() => mockOnPartialTranscript?.('Puis un oiseau.'));
@@ -1753,10 +1782,10 @@ describe('Recording screen', () => {
     });
     await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
     expect((screen.getByTestId('conversation-answer') as HTMLTextAreaElement).value).toBe('');
-    expect(screen.getByTestId('conversation-story').textContent).toBe('Un jardin. Une porte bleue. Puis un oiseau.');
+    expect(screen.getByTestId('conversation-story').textContent).toBe(answerPair('Un jardin.', 'Une porte bleue. Puis un oiseau.'));
     fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'Du soleil.' } });
     fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: '' } });
-    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('Un jardin. Une porte bleue. Puis un oiseau.');
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(answerPair('Un jardin.', 'Une porte bleue. Puis un oiseau.'));
   });
 
   it('mutes a Tell reply without requesting another question or restarting the microphone', async () => {

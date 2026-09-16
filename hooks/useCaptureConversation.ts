@@ -4,7 +4,7 @@ import { getDreamRecallQuestion, DREAM_RECALL_MAX_QUESTIONS } from '@/lib/dreamR
 
 type Options = { language: string; t: (key: string) => string; scope?: string };
 
-/** Questions never enter the user's persisted transcript. Network results belong to one draft revision. */
+/** Network results belong to one draft revision. The editor persists answered questions with their answers. */
 export function useCaptureConversation({ language, t, scope }: Options) {
   const [question, setQuestion] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
