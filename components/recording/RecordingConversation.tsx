@@ -61,9 +61,11 @@ export function RecordingConversation(props: Props) {
             : props.done ? t('recording.conversation.ready')
             : props.question ?? t(hasText ? 'dream_recall.question.what_else' : 'recording.conversation.welcome')}
         </Text>
-        <Text style={[styles.hint, { color: tokens.text.secondary }]}>
-          {props.unavailable ? t('recording.conversation.offline') : t('recording.conversation.take_time')}
-        </Text>
+        {props.unavailable ? (
+          <Text style={[styles.hint, { color: tokens.text.secondary }]}>
+            {t('recording.conversation.offline')}
+          </Text>
+        ) : null}
       </View>
       {props.loading ? <ActivityIndicator color={tokens.accent.text} accessibilityLabel={t('recording.conversation.thinking')} /> : null}
       <View style={styles.replyArea}>
