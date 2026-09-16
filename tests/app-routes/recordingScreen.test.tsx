@@ -1739,6 +1739,24 @@ describe('Recording screen', () => {
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toContain('Un jardin au soleil.');
   });
 
+  it('finishes an active reply only after stopping dictation and preserving its final words', async () => {
+    mockPlatformOS = 'android';
+    mockRecordingPermissionState = 'granted';
+    mockGetInputModePreference.mockResolvedValue('voice');
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    act(() => mockOnPartialTranscript?.('Un jardin'));
+    mockStopRecording.mockResolvedValueOnce({ transcript: 'Un jardin au soleil.' });
+    await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
+    expect(mockStopRecording).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(mockRequestCaptureQuestion).toHaveBeenCalledWith(
+      'Un jardin au soleil.', expect.any(String), expect.any(Array), expect.anything()
+    ));
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toContain('Un jardin au soleil.');
+  });
+
   it('asks a question after a Tell turn ends without restarting or stopping twice', async () => {
     mockPlatformOS = 'android';
     mockRecordingPermissionState = 'granted';

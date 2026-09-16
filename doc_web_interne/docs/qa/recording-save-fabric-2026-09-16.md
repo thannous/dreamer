@@ -22,3 +22,12 @@ Set `collapsable={false}` on the microphone circle so its native parent/stacking
 - This is physical Android development-build evidence. No release build, Store publication, installation or production deployment was performed. Speech recognition accuracy was not under test; the regression is reproduced with a typed answer in the voice conversation.
 
 Screenshots retained locally under `doc_web_interne/docs/qa/recording-save-fabric-2026-09-16/` (before.png, after.png); not included in this commit.
+
+## Approved compact layout follow-up
+
+- Removed the Noctalia title and decorative speaker row from the voice conversation.
+- The central microphone now starts/resumes or mutes listening. A separate checkmark button finishes the answer, waiting for final dictation text before requesting a follow-up question.
+- The pencil opens the shared compact answer editor; the entire full-width story card opens the existing manual transcript editor. The story is no longer truncated to four lines, and the save footer retains “Terminer et enregistrer”.
+- Physical Motorola with Expo: verified the compact layout, tapped the story body to open the complete editable transcript, and verified the central microphone changes from “Couper le micro” while listening back to “Répondre” after muting.
+- 66 focused tests passed across RecordingConversation and recordingScreen, including final dictation words before submission, mute without advancing, typed draft preservation, and tappable story editing. App and test typechecks passed. Focused lint passed; app/recording.tsx retains its two pre-existing set-state-in-effect warnings.
+- Personal transcript screenshots remain local and are not committed. No native reinstallation, release build, Store submission or production deployment.

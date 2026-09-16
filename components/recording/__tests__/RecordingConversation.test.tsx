@@ -9,7 +9,7 @@ jest.mock('react-native/Libraries/Components/Keyboard/Keyboard', () => ({
 }));
 jest.mock('@/context/ThemeContext', () => ({ useTheme: () => ({ colors: {}, mode: 'dark' }) }));
 jest.mock('@/constants/noctaliaDesign', () => ({ getNoctaliaDesignTokens: () => ({
-  text: { primary: '#fff', secondary: '#aaa' }, surface: { raised: '#111' },
+  text: { primary: '#fff', secondary: '#aaa' }, surface: { raised: '#111', border: '#444' },
   accent: { text: '#ddd' }, action: { primary: '#ddd', primaryText: '#111' },
 }) }));
 jest.mock('@/hooks/useTranslation', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
@@ -32,7 +32,7 @@ function props() {
   };
 }
 
-it('keeps permission preparation distinct from an actually listening microphone', () => {
+it('keeps permission preparation distinct from an actually listening microphone', async () => {
   const callbacks = props();
   const view = render(<RecordingConversation {...callbacks} voiceStatus="preparing" />);
   fireEvent.press(view.getByTestId(TID.Button.RecordToggle));
@@ -41,10 +41,11 @@ it('keeps permission preparation distinct from an actually listening microphone'
   view.rerender(<RecordingConversation {...callbacks} voiceStatus="recording" />);
   expect(view.getByText('recording.conversation.listening')).toBeTruthy();
   fireEvent.press(view.getByTestId(TID.Button.RecordToggle));
-  expect(callbacks.onVoice).toHaveBeenCalledTimes(1);
+  await waitFor(() => expect(callbacks.onMute).toHaveBeenCalledTimes(1));
+  expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
 });
 
-it('persists typed answers on change and explicitly submits before the next question', () => {
+it('persists typed answers on change and explicitly submits before the next question', async () => {
   const callbacks = props();
   const view = render(<RecordingConversation {...callbacks} />);
   fireEvent.press(view.getByTestId('recording-conversation-type'));
@@ -55,7 +56,7 @@ it('persists typed answers on change and explicitly submits before the next ques
   expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
   fireEvent.press(view.getByTestId('recording-conversation-submit'));
   expect(callbacks.onAnswerSubmit).toHaveBeenCalledTimes(1);
-  expect(view.queryByTestId('recording-conversation-answer')).toBeNull();
+  await waitFor(() => expect(view.queryByTestId('recording-conversation-answer')).toBeNull());
 });
 
 it('allows review after completion and presents fallback questions as general', () => {
@@ -97,7 +98,7 @@ it('disables reply dictation while busy and hides it when speech is unsupported'
 it('offers writing and mute while listening without submitting the answer', async () => {
   const callbacks = props();
   const view = render(<RecordingConversation {...callbacks} voiceStatus="recording" />);
-  fireEvent.press(view.getByTestId('recording-conversation-mute'));
+  fireEvent.press(view.getByTestId(TID.Button.RecordToggle));
   await waitFor(() => expect(callbacks.onMute).toHaveBeenCalledTimes(1));
   expect(callbacks.onVoice).not.toHaveBeenCalled();
   expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
@@ -105,4 +106,16 @@ it('offers writing and mute while listening without submitting the answer', asyn
   fireEvent.press(view.getByTestId('recording-conversation-type'));
   await waitFor(() => expect(view.getByTestId('recording-conversation-answer')).toBeTruthy());
   expect(callbacks.onMute).toHaveBeenCalledTimes(2);
+});
+
+
+it('lets the whole story card open manual editing and keeps completion separate from mute', async () => {
+  const callbacks = props();
+  const view = render(<RecordingConversation {...callbacks} />);
+  fireEvent.press(view.getByTestId('recording-voice-preview'));
+  expect(callbacks.onReview).toHaveBeenCalledTimes(1);
+  fireEvent.press(view.getByTestId('recording-conversation-submit'));
+  await waitFor(() => expect(callbacks.onAnswerSubmit).toHaveBeenCalledTimes(1));
+  expect(callbacks.onMute).not.toHaveBeenCalled();
+  expect(callbacks.onVoice).not.toHaveBeenCalled();
 });

@@ -1450,7 +1450,11 @@ export default function RecordingScreen() {
                     }}
                     onReview={switchToTextMode}
                     onAnswerChange={handleConversationAnswerChange}
-                    onAnswerSubmit={() => {
+                    onAnswerSubmit={async () => {
+                      captureMicrophoneMutedRef.current = true;
+                      if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
+                        await stopRecording({ silent: true, reason: 'stop' });
+                      }
                       typedAnswerInsertionRef.current = null;
                       captureMicrophoneMutedRef.current = false;
                       void askCaptureQuestion(baseTranscriptRef.current);
