@@ -2,6 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import { PENDING_ANALYSIS_RECOVERY_DELAY_MS } from '../analysisRequest';
 import {
+  buildReflectionResumeHref,
   getAnalyzedDreamCount,
   getDreamAnalysisState,
   getDreamDetailAction,
@@ -429,7 +430,7 @@ describe('getReflectionJourney', () => {
     expect(isDreamExplored(dream)).toBe(false);
   });
 
-  it('continues the next incomplete axis after a successful symbols reply', () => {
+  it('reopens a partial reflection without automatically sending the next angle', () => {
     const dream = buildDream({
       id: 43,
       ...analyzed,
@@ -444,13 +445,17 @@ describe('getReflectionJourney', () => {
     expect(journey.hasOpenChat).toBe(true);
     expect(journey.primary).toEqual({
       kind: 'continue_axis',
-      consumesQuota: 'message',
-      resume: { kind: 'chat', category: 'emotions' },
+      consumesQuota: 'none',
+      resume: { kind: 'chat' },
+    });
+    expect(buildReflectionResumeHref(dream, journey.primary.resume)).toEqual({
+      pathname: '/dream-chat/[id]',
+      params: { id: '43' },
     });
     expect(getDreamDetailAction(dream, now)).toBe('continue');
   });
 
-  it('offers 360 synthesis to Plus once all axes are complete', () => {
+  it('reopens a completed Plus reflection without generating a synthesis on navigation', () => {
     const dream = buildDream({
       id: 44,
       ...analyzed,
@@ -468,8 +473,12 @@ describe('getReflectionJourney', () => {
     expect(journey.hasSynthesis).toBe(false);
     expect(journey.primary).toEqual({
       kind: 'synthesize',
-      consumesQuota: 'synthesis360',
-      resume: { kind: 'chat', mode: 'synthesis' },
+      consumesQuota: 'none',
+      resume: { kind: 'chat' },
+    });
+    expect(buildReflectionResumeHref(dream, journey.primary.resume)).toEqual({
+      pathname: '/dream-chat/[id]',
+      params: { id: '44' },
     });
     expect(getDreamDetailAction(dream, now)).toBe('continue');
   });

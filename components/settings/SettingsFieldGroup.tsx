@@ -9,6 +9,7 @@ import {
   ScrollView,
   Switch,
   Text,
+  useWindowDimensions,
   View,
   type TextStyle,
 } from 'react-native';
@@ -278,22 +279,33 @@ function PreferenceRow({
   value,
   wideValue = false,
 }: PreferenceRowProps) {
+  const { width, fontScale } = useWindowDimensions();
+  const stackCopy = width < 375 || fontScale >= 1.3;
   return (
     <PressableScale
       accessibilityRole="button"
       onPress={onPress}
       hitSlop={NO_HIT_SLOP}
-      className={cx(ROW_CLASS, !isLast && 'border-b border-b-line')}
+      className={cx(ROW_CLASS, stackCopy && 'py-3', !isLast && 'border-b border-b-line')}
       testID={testID}
     >
       <IconSymbol name={icon} size={21} color={noctalia.accent.text} />
-      <Text className={ROW_LABEL_CLASS}>{label}</Text>
-      <Text
-        numberOfLines={1}
-        className={cx(ROW_VALUE_CLASS, wideValue && 'max-w-[48%]')}
-      >
-        {value}
-      </Text>
+      {stackCopy ? (
+        <View className="min-w-0 flex-1 gap-1">
+          <Text className="font-sans text-[15px] leading-[20px] text-ivory">{label}</Text>
+          <Text className="font-sans text-[15px] leading-[20px] text-ivory-muted">{value}</Text>
+        </View>
+      ) : (
+        <>
+          <Text className={ROW_LABEL_CLASS}>{label}</Text>
+          <Text
+            numberOfLines={1}
+            className={cx(ROW_VALUE_CLASS, wideValue && 'max-w-[48%]')}
+          >
+            {value}
+          </Text>
+        </>
+      )}
       <IconSymbol name="chevron.right" size={20} color={noctalia.text.tertiary} />
     </PressableScale>
   );
@@ -561,7 +573,7 @@ export function SettingsFieldGroup({
                     <Text className={`${ROW_LABEL_CLASS} flex-[0]`}>
                       {t('settings.rituals.weekly_recap')}
                     </Text>
-                    <Text className="text-caption text-ivory-faint" numberOfLines={2}>
+                    <Text className="text-caption text-ivory-faint">
                       {t('settings.rituals.weekly_recap_hint')}
                     </Text>
                   </View>
@@ -588,7 +600,7 @@ export function SettingsFieldGroup({
                     <Text className={`${ROW_LABEL_CLASS} flex-[0]`}>
                       {t('settings.rituals.streak_risk')}
                     </Text>
-                    <Text className="text-caption text-ivory-faint" numberOfLines={2}>
+                    <Text className="text-caption text-ivory-faint">
                       {t('settings.rituals.streak_risk_hint')}
                     </Text>
                   </View>
@@ -615,7 +627,7 @@ export function SettingsFieldGroup({
                     <Text className={`${ROW_LABEL_CLASS} flex-[0]`}>
                       {t('settings.rituals.inactivity_nudge')}
                     </Text>
-                    <Text className="text-caption text-ivory-faint" numberOfLines={2}>
+                    <Text className="text-caption text-ivory-faint">
                       {t('settings.rituals.inactivity_nudge_hint')}
                     </Text>
                   </View>

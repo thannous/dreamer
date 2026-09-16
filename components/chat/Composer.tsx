@@ -507,13 +507,12 @@ function Body({ children }: { children: React.ReactNode }) {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const isScrolling = useScrollPerf();
   const prefersReducedMotion = usePrefersReducedMotion();
-  const isWeb = Platform.OS === 'web';
   const reduceEffects = isScrolling || prefersReducedMotion;
   const blurIntensity = reduceEffects ? 0 : mode === 'dark' ? 15 : 5;
-  const opacityHex = Math.round((mode === 'dark' ? 0.4 : 0.65) * 255).toString(16).padStart(2, '0');
-  const shouldUseBlur = !isWeb && !reduceEffects;
-  const fallbackBackground = mode === 'dark' ? noctalia.surface.raised : `${colors.backgroundCard}${opacityHex}`;
-  const glassBackground = shouldUseBlur ? 'transparent' : fallbackBackground;
+  // Android's blur is not enabled here. A floating input needs an opaque
+  // surface so conversation text never shows through the user's draft.
+  const shouldUseBlur = Platform.OS === 'ios' && !reduceEffects;
+  const glassBackground = shouldUseBlur ? 'transparent' : colors.backgroundCard;
 
   return (
     <View

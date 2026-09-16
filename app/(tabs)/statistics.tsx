@@ -194,7 +194,7 @@ export default function StatisticsScreen() {
       });
   const metricClassName = stackWeekMetrics
     ? 'w-full min-w-0 gap-1'
-    : 'min-w-[140px] min-w-0 flex-1 gap-1';
+    : 'min-w-[140px] flex-1 gap-1';
   const sectionPad = compact ? 'p-4' : 'p-5';
   const themeRows = toRankedRows(
     patterns.themes,
