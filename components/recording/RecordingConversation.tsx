@@ -77,7 +77,12 @@ export function RecordingConversation(props: Props) {
             accessibilityState={{ disabled: locked || props.loading, busy: preparing }}
             style={styles.voiceAction}
           >
-            <View style={[styles.mic, { backgroundColor: tokens.action.primary, opacity: locked || props.loading ? 0.5 : 1 }]}>
+            <View
+              // Keep the icon's native parent stable when saving/loading changes opacity.
+              // Fabric can otherwise reparent it while the recording screen is removed.
+              collapsable={false}
+              style={[styles.mic, { backgroundColor: tokens.action.primary, opacity: locked || props.loading ? 0.5 : 1 }]}
+            >
               <IconSymbol name={listening ? 'pause.fill' : 'mic.fill'} size={32} color={tokens.action.primaryText} />
             </View>
             <Text style={[styles.voiceLabel, { color: tokens.text.primary }]}>{voiceLabel}</Text>
