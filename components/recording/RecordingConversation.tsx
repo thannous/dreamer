@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@/context/ThemeContext';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTranslation } from '@/hooks/useTranslation';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TID } from '@/lib/testIDs';
 import type { MicButtonStatus } from './MicButton';
+import { RecordingTextInput } from './RecordingTextInput';
 
 type Props = {
   transcript: string;
@@ -92,15 +93,19 @@ export function RecordingConversation(props: Props) {
         ) : null}
         {(typing || !props.voiceSupported) && !props.done ? (
           <View style={styles.typedReply}>
-            <TextInput
-              multiline autoFocus={typing} value={answer}
-              onChangeText={(text) => { setAnswer(text); props.onAnswerChange(text); }}
-              editable={!locked && !props.loading}
+            <RecordingTextInput
+              compact
+              autoFocus={typing}
+              value={answer}
+              onChange={(text) => { setAnswer(text); props.onAnswerChange(text); }}
+              disabled={locked || props.loading}
+              instructionText=""
+              lengthWarning=""
+              voiceSupported={false}
+              onSwitchToVoice={props.onVoice}
               placeholder={t('recording.conversation.answer_placeholder')}
-              accessibilityLabel={t('recording.conversation.answer_placeholder')}
-              placeholderTextColor={tokens.text.secondary}
-              style={[styles.answerInput, { color: tokens.text.primary, backgroundColor: tokens.surface.raised }]}
-              testID="recording-conversation-answer"
+              inputAccessibilityLabel={t('recording.conversation.answer_placeholder')}
+              inputTestID="recording-conversation-answer"
             />
             <Pressable
               disabled={locked || props.loading || !answer.trim()}
@@ -147,5 +152,4 @@ const styles = StyleSheet.create({
   voiceLabel: { fontSize: 16, lineHeight: 23, fontWeight: '500' },
   keyboardAction: { flexDirection: 'row', gap: 10, minHeight: 44, alignItems: 'center' },
   typedReply: { width: '100%', gap: 8 },
-  answerInput: { minHeight: 84, borderRadius: 18, padding: 16, fontSize: 16, lineHeight: 24, textAlignVertical: 'top' },
 });

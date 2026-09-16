@@ -296,6 +296,7 @@ jest.doMock('@/components/recording/RecordingTextInput', () => {
         showVoiceHint,
         voiceStatus,
         value,
+        inputTestID = TID.Input.DreamTranscript,
       }: {
         disabled?: boolean;
         layout: string;
@@ -305,13 +306,14 @@ jest.doMock('@/components/recording/RecordingTextInput', () => {
         showVoiceHint?: boolean;
         voiceStatus?: string;
         value: string;
+        inputTestID?: string;
       },
       _ref: React.ForwardedRef<unknown>
     ) => (
       <div data-layout={layout} data-testid="recording-composer">
         {showVoiceHint ? <span data-testid="recording-voice-hint">Voice hint</span> : null}
         <textarea
-          data-testid={TID.Input.DreamTranscript}
+          data-testid={inputTestID}
           disabled={disabled}
           onChange={(event) => onChange(event.currentTarget.value)}
           onSelect={(event) => onSelectionChange?.({ nativeEvent: { selection: {

@@ -10,6 +10,7 @@ jest.mock('@/constants/noctaliaDesign', () => ({ getNoctaliaDesignTokens: () => 
 }) }));
 jest.mock('@/hooks/useTranslation', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
+jest.mock('@/components/recording/MicButton', () => ({ MicButton: () => null }));
 
 function props() {
   return {

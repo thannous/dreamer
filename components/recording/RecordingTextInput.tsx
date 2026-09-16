@@ -30,6 +30,8 @@ export interface RecordingTextInputProps {
   onVoiceHintDismiss?: () => void;
   placeholder?: string;
   autoFocus?: boolean;
+  inputTestID?: string;
+  inputAccessibilityLabel?: string;
   onSwitchToVoice: () => void;
   onEditTranscript?: () => void;
   onOpenDetails?: () => void;
@@ -56,6 +58,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       onVoiceHintDismiss,
       placeholder,
       autoFocus = true,
+      inputTestID = TID.Input.DreamTranscript,
+      inputAccessibilityLabel,
       onSwitchToVoice,
       onEditTranscript,
       onOpenDetails,
@@ -89,7 +93,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       <View style={styles.editor}>
         {!hasValue ? (
           <View
-            style={styles.placeholderIcon}
+            style={[styles.placeholderIcon, compact && styles.placeholderIconCompact]}
             accessibilityElementsHidden={true}
             importantForAccessibility="no-hide-descendants"
           >
@@ -126,8 +130,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           editable={!disabled}
           placeholder={placeholder || t('recording.placeholder')}
           placeholderTextColor={noctalia.text.secondary}
-          testID={TID.Input.DreamTranscript}
-          accessibilityLabel={t('recording.placeholder.accessibility')}
+          testID={inputTestID}
+          accessibilityLabel={inputAccessibilityLabel ?? t('recording.placeholder.accessibility')}
           autoFocus={autoFocus}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
@@ -471,6 +475,9 @@ const styles = StyleSheet.create({
     left: 21,
     zIndex: 2,
     pointerEvents: 'none',
+  },
+  placeholderIconCompact: {
+    top: 15,
   },
   lengthWarning: {
     fontFamily: Fonts.spaceGrotesk.medium,
