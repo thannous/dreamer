@@ -3,6 +3,10 @@ import { fireEvent, render } from '@testing-library/react-native';
 import { RecordingConversation } from '../RecordingConversation';
 import { TID } from '@/lib/testIDs';
 
+jest.mock('react-native/Libraries/Components/Keyboard/Keyboard', () => ({
+  __esModule: true,
+  default: { dismiss: jest.fn() },
+}));
 jest.mock('@/context/ThemeContext', () => ({ useTheme: () => ({ colors: {}, mode: 'dark' }) }));
 jest.mock('@/constants/noctaliaDesign', () => ({ getNoctaliaDesignTokens: () => ({
   text: { primary: '#fff', secondary: '#aaa' }, surface: { raised: '#111' },
@@ -10,7 +14,14 @@ jest.mock('@/constants/noctaliaDesign', () => ({ getNoctaliaDesignTokens: () => 
 }) }));
 jest.mock('@/hooks/useTranslation', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
-jest.mock('@/components/recording/MicButton', () => ({ MicButton: () => null }));
+jest.mock('@/components/recording/MicButton', () => {
+  const { Pressable } = require('react-native');
+  return {
+    MicButton: ({ onPress, interaction, testID, accessibilityLabel }: {
+      onPress: () => void; interaction: string; testID: string; accessibilityLabel: string;
+    }) => <Pressable onPress={onPress} disabled={interaction === 'disabled'} testID={testID} accessibilityLabel={accessibilityLabel} />,
+  };
+});
 
 function props() {
   return {
@@ -55,4 +66,29 @@ it('allows review after completion and presents fallback questions as general', 
   expect(view.queryByTestId(TID.Button.RecordToggle)).toBeNull();
   fireEvent.press(view.getByTestId('recording-review-transcript'));
   expect(callbacks.onReview).toHaveBeenCalledTimes(1);
+});
+
+it('starts dictation from the reply editor without clearing the persisted typed answer', () => {
+  const callbacks = props();
+  const view = render(<RecordingConversation {...callbacks} />);
+  fireEvent.press(view.getByTestId('recording-conversation-type'));
+  fireEvent.changeText(view.getByTestId('recording-conversation-answer'), 'Une porte ouverte.');
+  fireEvent.press(view.getByTestId(TID.Button.RecordToggle));
+  expect(callbacks.onVoice).toHaveBeenCalledTimes(1);
+  expect(callbacks.onAnswerChange).toHaveBeenCalledTimes(1);
+  expect(callbacks.onAnswerChange).toHaveBeenLastCalledWith('Une porte ouverte.');
+  expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
+  view.rerender(<RecordingConversation {...callbacks} voiceStatus="recording" />);
+  expect(view.getByText('recording.conversation.listening')).toBeTruthy();
+});
+
+it('disables reply dictation while busy and hides it when speech is unsupported', () => {
+  const callbacks = props();
+  const view = render(<RecordingConversation {...callbacks} />);
+  fireEvent.press(view.getByTestId('recording-conversation-type'));
+  view.rerender(<RecordingConversation {...callbacks} loading />);
+  fireEvent.press(view.getByTestId(TID.Button.RecordToggle));
+  expect(callbacks.onVoice).not.toHaveBeenCalled();
+  view.rerender(<RecordingConversation {...callbacks} voiceSupported={false} />);
+  expect(view.queryByTestId(TID.Button.RecordToggle)).toBeNull();
 });

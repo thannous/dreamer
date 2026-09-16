@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@/context/ThemeContext';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -36,6 +36,13 @@ export function RecordingConversation(props: Props) {
   const voiceLabel = preparing ? t('recording.status.preparing.title')
     : listening ? t('recording.conversation.stop')
     : hasText ? t('recording.conversation.reply') : t('recording.conversation.begin');
+  const continueWithVoice = () => {
+    // Typed edits have already been persisted through onAnswerChange.
+    Keyboard.dismiss();
+    setTyping(false);
+    setAnswer('');
+    props.onVoice();
+  };
 
   return (
     <View style={styles.container} testID="recording-conversation">
@@ -101,8 +108,10 @@ export function RecordingConversation(props: Props) {
               disabled={locked || props.loading}
               instructionText=""
               lengthWarning=""
-              voiceSupported={false}
-              onSwitchToVoice={props.onVoice}
+              voiceSupported={props.voiceSupported}
+              voiceStatus={props.voiceStatus}
+              switchToVoiceLabel={t('recording.conversation.reply_voice')}
+              onSwitchToVoice={continueWithVoice}
               placeholder={t('recording.conversation.answer_placeholder')}
               inputAccessibilityLabel={t('recording.conversation.answer_placeholder')}
               inputTestID="recording-conversation-answer"
@@ -114,7 +123,7 @@ export function RecordingConversation(props: Props) {
             ><Text style={[styles.small, { color: tokens.accent.text }]}>{t('recording.conversation.send')}</Text></Pressable>
             {props.voiceSupported ? (
               <Pressable accessibilityRole="button" disabled={locked || props.loading} style={styles.link}
-                onPress={() => { setTyping(false); setAnswer(''); props.onVoice(); }}>
+                onPress={continueWithVoice}>
                 <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.reply_voice')}</Text>
               </Pressable>
             ) : null}
