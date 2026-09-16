@@ -3,6 +3,7 @@ import { GUEST_LIMITS, corsHeaders } from '../api/lib/constants.ts';
 import { ensureImagePrompt, generateAndStoreImage } from '../api/services/imagePipeline.ts';
 import { resolveImageModel, type ImageGenerationTier } from '../api/services/geminiImages.ts';
 import { reserveHdImageCredit, finishHdImageCredit } from '../api/services/hdImageQuota.ts';
+import { requireHdIllustrationsEnabled } from '../api/lib/illustrationFlags.ts';
 import {
   IMAGE_JOB_WORKER_AUTH_HEADER,
   createAdminClient,
@@ -522,6 +523,7 @@ const processImageJob = async (input: {
         throw Object.assign(new Error('Invalid image resolution'), { status: 400 });
       }
       if (highResolution) {
+        requireHdIllustrationsEnabled();
         if (imageTierDecision.tier !== 'plus') {
           throw Object.assign(new Error('High resolution requires Plus'), { code: 'HD_IMAGE_PLUS_REQUIRED' });
         }

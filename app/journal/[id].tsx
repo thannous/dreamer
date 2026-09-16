@@ -54,7 +54,7 @@ import {
   type ReflectionQuotaHint,
 } from '@/lib/dreamUsage';
 import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
-import { isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
+import { isHdIllustrationsEnabled, isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import {
@@ -1960,7 +1960,7 @@ function JournalDetailContent() {
 
     return (
       <View testID={TID.Component.JournalIllustration} className="mb-5 overflow-hidden rounded-lg">
-        {dream.imageJobErrorCode === 'HD_IMAGE_QUOTA_EXCEEDED' ? (
+        {isHdIllustrationsEnabled() && dream.imageJobErrorCode === 'HD_IMAGE_QUOTA_EXCEEDED' ? (
           <View className="gap-3 rounded-lg bg-ink-soft p-4">
             <Text accessibilityRole="alert" className="font-sans text-body-sm text-ivory">{t('settings.illustration.exhausted')}</Text>
             <Pressable accessibilityRole="button" onPress={() => router.push('/settings')} className="min-h-[44px] justify-center">

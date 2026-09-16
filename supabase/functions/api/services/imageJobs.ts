@@ -72,7 +72,7 @@ export const serializeImageJobError = (error: unknown): {
   const candidate = error as Record<string, unknown> | null;
   const explicitCode = typeof candidate?.code === 'string' ? candidate.code : null;
 
-  if (explicitCode && ['HD_IMAGE_QUOTA_EXCEEDED', 'HD_IMAGE_PLUS_REQUIRED', 'HD_IMAGE_QUOTA_UNAVAILABLE'].includes(explicitCode)) {
+  if (explicitCode && ['HD_IMAGE_DISABLED', 'HD_IMAGE_QUOTA_EXCEEDED', 'HD_IMAGE_PLUS_REQUIRED', 'HD_IMAGE_QUOTA_UNAVAILABLE'].includes(explicitCode)) {
     return { errorCode: explicitCode, errorMessage: 'High-resolution illustration unavailable', retryable: explicitCode === 'HD_IMAGE_QUOTA_UNAVAILABLE' };
   }
 

@@ -24,6 +24,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import { IllustrationQualityPreference } from './IllustrationQualityPreference';
+import { isHdIllustrationsEnabled } from '@/lib/env';
 
 import {
   getDateFromTime,
@@ -432,6 +433,7 @@ export function SettingsFieldGroup({
             ) : null}
             <PreferenceRow
               icon="globe"
+              isLast={!isHdIllustrationsEnabled()}
               label={language.title}
               noctalia={noctalia}
               onPress={() => setLanguageSheetVisible(true)}

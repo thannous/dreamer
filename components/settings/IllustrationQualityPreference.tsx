@@ -7,10 +7,15 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { getIllustrationResolution, saveIllustrationResolution, type IllustrationResolution } from '@/services/illustrationPreferences';
 import { getHdImageQuota, type HdImageQuota } from '@/services/hdImageQuota';
+import { isHdIllustrationsEnabled } from '@/lib/env';
 
 const resolutions: IllustrationResolution[] = ['1K', '2K', '4K'];
 
 export function IllustrationQualityPreference() {
+  return isHdIllustrationsEnabled() ? <EnabledIllustrationQualityPreference /> : null;
+}
+
+function EnabledIllustrationQualityPreference() {
   const { user } = useAuth();
   const { status } = useSubscription();
   const { t } = useTranslation();

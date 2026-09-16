@@ -1,5 +1,19 @@
 # Qualité des illustrations — 16 septembre 2026
 
+## État courant : HD désactivée
+
+À la demande de l'utilisateur, `EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED` et `HD_ILLUSTRATIONS_ENABLED` sont des opt-ins stricts (`true` uniquement). L'absence du flag signifie false. Les profils EAS, dont production/release, définissent explicitement le flag client à false.
+
+- UI HD masquée, sans lecture du quota. Les anciennes préférences HD sont conservées mais ignorées ; le service client force aussi une ancienne demande 2K/4K à 1K.
+- Admission et worker refusent la HD avec `HD_IMAGE_DISABLED` avant réservation ou appel fournisseur. Le worker force `gemini-3.1-flash-lite-image` pour tous les comptes, sans tenir compte des overrides premium tant que le flag est OFF.
+- Déployé : `illustration-hd` v2 et `image-job-worker` v19 ACTIVE. HTTP réel : demande HD authentifiée → 403 `HD_IMAGE_DISABLED`, anonyme → 401 ; aucune génération payante lancée.
+- Les anciennes routes directes de l'API v105 ont encore leurs propres variables `IMAGEN_PLUS_MODEL`, `IMAGEN_FREE_MODEL`, `IMAGEN_MODEL`. Leur bascule explicite à Lite dans la console reste à vérifier après connexion Supabase ; ne pas annoncer « tous les chemins en production utilisent Lite » avant cette étape.
+- La console est en attente de connexion utilisateur. Le CLI installé, ainsi qu'une copie fraîche du même paquet officiel, est interrompu par macOS (signature invalide). Aucun contournement de signature ou de session n'a été effectué.
+- Une réactivation ultérieure utilisera `IMAGEN_HD_MODEL` (Flash Image par défaut), indépendant des overrides Lite des anciennes routes. Un override HD = Lite est rejeté au profit de Flash Image.
+- Validation du flag : 89 tests Jest ciblés, 38 tests Deno ciblés puis 12 tests du modèle après correction de revue ; types application/tests et lint sans erreur (6 avertissements préexistants dans la fiche). Revue indépendante : fonctionnement OFF correct ; piège de réactivation des anciens overrides corrigé et testé.
+
+Les sections suivantes décrivent la fonctionnalité préparée, disponible seulement après réactivation explicite.
+
 ## Comportement livré dans le code
 
 - Préférences → Qualité des illustrations : Standard (1K), HD 2K, HD 4K. Standard reste la valeur initiale, y compris pour Plus. Le choix est explicite et conservé par compte sur cet appareil ; aucune illustration existante n'est régénérée.

@@ -1,4 +1,5 @@
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
+import { isHdIllustrationsEnabled } from '../lib/illustrationFlags.ts';
 import { requireGuestSession } from '../lib/guards.ts';
 import { claimGuestQaPaidCall } from '../lib/guestQa.ts';
 import {
@@ -332,6 +333,9 @@ export async function handleCreateImageJob(
     const imageSize = body.imageSize ?? '1K';
     if (!['1K', '2K', '4K'].includes(imageSize as string)) {
       return new Response(JSON.stringify({ error: 'Invalid image size' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+    if (imageSize !== '1K' && !isHdIllustrationsEnabled()) {
+      return new Response(JSON.stringify({ error: 'High resolution is disabled', code: 'HD_IMAGE_DISABLED' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
     if (imageSize !== '1K' && (!user || tierResolution.tier !== 'plus')) {
       return new Response(JSON.stringify({ error: 'High resolution requires Plus', code: 'HD_IMAGE_PLUS_REQUIRED' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });

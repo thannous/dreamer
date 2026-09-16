@@ -10,6 +10,7 @@ import { fetch as streamingFetch } from 'expo/fetch';
 import Constants from 'expo-constants';
 
 import { getApiBaseUrl } from '@/lib/config';
+import { isHdIllustrationsEnabled } from '@/lib/env';
 import { fetchJSONWithSession, getSessionAuthHeaders } from '@/lib/apiSession';
 import { HttpError, type HttpOptions } from '@/lib/http';
 import {
@@ -277,14 +278,16 @@ export async function generateImageForDream(prompt: string, previousImageUrl?: s
 export async function submitImageGenerationJob(
   request: ImageJobCommandRequest
 ): Promise<ImageJobCommandResponse> {
+  const effectiveRequest = !isHdIllustrationsEnabled() && (request.imageSize === '2K' || request.imageSize === '4K')
+    ? { ...request, imageSize: '1K' as const } : request;
   // Only hosted HD admission uses the isolated function. Standard requests,
   // local/proxied APIs and status polling keep the existing API contract.
-  const base = request.imageSize === '2K' || request.imageSize === '4K'
+  const base = effectiveRequest.imageSize === '2K' || effectiveRequest.imageSize === '4K'
     ? getApiBaseUrl().replace(/(\/functions\/v1|\.functions\.supabase\.co)\/api$/, '$1/illustration-hd')
     : getApiBaseUrl();
   return fetchJSONWithSession<ImageJobCommandResponse>(`${base}/image-jobs`, {
     method: 'POST',
-    body: { ...request, previousImageUrl: cleanupImageUrl(request.previousImageUrl) },
+    body: { ...effectiveRequest, previousImageUrl: cleanupImageUrl(request.previousImageUrl) },
     ...NETWORK_REQUEST_POLICIES.imageJobCommand,
   });
 }

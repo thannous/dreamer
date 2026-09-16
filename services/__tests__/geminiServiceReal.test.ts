@@ -2,6 +2,11 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 // Mock config to use our test URL
 let mockApiBaseUrl = 'https://api.example.com';
+let mockHdEnabled = true;
+jest.mock('../../lib/env', () => ({
+  ...(jest.requireActual('../../lib/env') as Record<string, unknown>),
+  isHdIllustrationsEnabled: () => mockHdEnabled,
+}));
 jest.mock('../../lib/config', () => ({
   getApiBaseUrl: () => mockApiBaseUrl,
 }));
@@ -98,6 +103,7 @@ describe('geminiServiceReal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockApiBaseUrl = 'https://api.example.com';
+    mockHdEnabled = true;
     mockGetAccessToken.mockResolvedValue(null);
     mockGetGuestHeaders.mockResolvedValue({});
     mockInvalidateGuestSession.mockResolvedValue(undefined);
@@ -570,6 +576,15 @@ describe('geminiServiceReal', () => {
   });
 
   describe('image job endpoints', () => {
+    it('forces a stale 4K request to Standard through the regular API while disabled', async () => {
+      mockHdEnabled = false;
+      mockApiBaseUrl = 'https://project.functions.supabase.co/api';
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(mockFetchResponse({ jobId: 'job', status: 'queued' }, true, 202));
+      await submitImageGenerationJob({ clientRequestId: 'request', imageSize: '4K' });
+      expect(global.fetch).toHaveBeenCalledWith(`${mockApiBaseUrl}/image-jobs`, expect.objectContaining({
+        body: JSON.stringify({ clientRequestId: 'request', imageSize: '1K' }),
+      }));
+    });
     it.each([
       ['https://project.supabase.co/functions/v1/api', '4K', 'https://project.supabase.co/functions/v1/illustration-hd'],
       ['https://project.functions.supabase.co/api', '2K', 'https://project.functions.supabase.co/illustration-hd'],

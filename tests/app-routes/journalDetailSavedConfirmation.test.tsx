@@ -347,6 +347,7 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 jest.mock('@/lib/env', () => ({
+  isHdIllustrationsEnabled: () => true,
   isMockModeEnabled: () => true,
   isReferenceImagesEnabled: () => false,
 }));

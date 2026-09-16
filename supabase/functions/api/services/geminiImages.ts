@@ -1,4 +1,5 @@
 import { RETIRED_IMAGE_MODELS } from '../lib/models.ts';
+import { isHdIllustrationsEnabled } from '../lib/illustrationFlags.ts';
 import {
   ApiError,
   extractInteractionImage,
@@ -60,12 +61,12 @@ export const resolveImageModel = (
   readEnv: EnvReader = readDenoEnv,
   resolution: ImageResolution = '1K'
 ): string => {
+  if (!isHdIllustrationsEnabled(readEnv)) return GEMINI_FLASH_LITE_IMAGE_MODEL;
   if (tier === 'plus' && resolution !== '1K') {
-    return (
-      readModelOverride(readEnv, 'IMAGEN_PLUS_MODEL') ??
-      readModelOverride(readEnv, 'IMAGEN_MODEL') ??
-      GEMINI_FLASH_IMAGE_MODEL
-    );
+    // Legacy overrides stay on Lite for old API clients. HD has its own model
+    // so re-enabling the flag cannot send unsupported 2K/4K requests to Lite.
+    const model = readModelOverride(readEnv, 'IMAGEN_HD_MODEL');
+    return model && model !== GEMINI_FLASH_LITE_IMAGE_MODEL ? model : GEMINI_FLASH_IMAGE_MODEL;
   }
 
   return readModelOverride(readEnv, 'IMAGEN_FREE_MODEL') ?? GEMINI_FLASH_LITE_IMAGE_MODEL;

@@ -5,6 +5,8 @@ import { getHdImageQuota } from '@/services/hdImageQuota';
 import { getIllustrationResolution, saveIllustrationResolution } from '@/services/illustrationPreferences';
 
 let mockPlus = true;
+let mockHdEnabled = true;
+jest.mock('@/lib/env', () => ({ isHdIllustrationsEnabled: () => mockHdEnabled }));
 jest.mock('expo-router', () => ({ useFocusEffect: (callback: () => void) => require('react').useEffect(callback, [callback]) }));
 jest.mock('@/context/AuthContext', () => ({ useAuth: () => ({ user: { id: 'owner' } }) }));
 jest.mock('@/hooks/useSubscription', () => ({ useSubscription: () => ({ status: { tier: mockPlus ? 'plus' : 'free', isActive: true } }) }));
@@ -16,9 +18,17 @@ const allowance = jest.mocked(getHdImageQuota);
 const preference = jest.mocked(getIllustrationResolution);
 const save = jest.mocked(saveIllustrationResolution);
 beforeEach(() => {
-  jest.clearAllMocks(); mockPlus = true;
+  jest.clearAllMocks(); mockPlus = true; mockHdEnabled = true;
   preference.mockResolvedValue('1K'); save.mockResolvedValue();
   allowance.mockResolvedValue({ used: 0, limit: 15, remaining: 15, resetsAt: '2026-10-01T00:00:00Z' });
+});
+
+it('hides the HD preference and makes no quota request while disabled', () => {
+  mockHdEnabled = false;
+  const view = render(<IllustrationQualityPreference />);
+  expect(view.queryByTestId('settings-illustration-quality')).toBeNull();
+  expect(allowance).not.toHaveBeenCalled();
+  expect(preference).not.toHaveBeenCalled();
 });
 
 it('keeps standard by default and saves 4K only after an explicit Plus selection', async () => {

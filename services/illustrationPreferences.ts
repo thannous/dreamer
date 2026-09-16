@@ -1,10 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { isHdIllustrationsEnabled } from '@/lib/env';
 
 export type IllustrationResolution = '1K' | '2K' | '4K';
 const key = (userId: string) => `noctalia:illustration-resolution:${userId}`;
 
 export async function getIllustrationResolution(userId?: string | null): Promise<IllustrationResolution> {
-  if (!userId) return '1K';
+  if (!userId || !isHdIllustrationsEnabled()) return '1K';
   const value = await AsyncStorage.getItem(key(userId));
   return value === '2K' || value === '4K' ? value : '1K';
 }
