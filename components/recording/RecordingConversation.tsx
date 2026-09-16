@@ -181,35 +181,42 @@ export function RecordingConversation(props: Props) {
         </View>
       ) : null}
       {props.storyTranscript.trim() ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('recording.tell.edit')}
-          disabled={locked}
-          accessibilityState={{ disabled: locked }}
-          onPress={props.onReview}
-          style={[styles.recap, { backgroundColor: tokens.surface.raised, borderColor: tokens.surface.border }]}
-          testID="recording-review-transcript"
-        >
+        <View style={[styles.recap, { backgroundColor: tokens.surface.raised, borderColor: tokens.surface.border }]}>
           <View style={styles.recapHeader}>
-            <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.your_story')}</Text>
-            <IconSymbol name="pencil" size={20} color={tokens.accent.text} />
+            <Pressable
+              onPress={props.onReview}
+              disabled={locked}
+              accessibilityRole="button"
+              accessibilityLabel={t('recording.tell.edit')}
+              accessibilityState={{ disabled: locked }}
+              style={styles.recapEdit}
+            >
+              <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.your_story')}</Text>
+              <IconSymbol name="pencil" size={20} color={tokens.accent.text} />
+            </Pressable>
+            <Pressable
+              onPress={props.onRestart}
+              accessibilityLabel={t('recording.conversation.restart')}
+              disabled={locked}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: locked }}
+              style={[styles.restartButton, { opacity: locked ? 0.4 : 1 }]}
+              testID="recording-conversation-restart"
+            >
+              <IconSymbol name="trash" size={20} color={tokens.text.secondary} />
+            </Pressable>
           </View>
-          <Text style={[styles.story, { color: tokens.text.primary }]} testID="recording-voice-preview">{props.storyTranscript}</Text>
-        </Pressable>
-      ) : null}
-      {hasText ? (
-        <Pressable
-          onPress={props.onRestart}
-          accessibilityLabel={t('recording.conversation.restart')}
-          disabled={locked}
-          accessibilityRole="button"
-          accessibilityState={{ disabled: locked }}
-          style={[styles.restartButton, { opacity: locked ? 0.4 : 1 }]}
-          testID="recording-conversation-restart"
-        >
-          <IconSymbol name="trash" size={18} color={tokens.text.secondary} />
-          <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.restart')}</Text>
-        </Pressable>
+          <Pressable
+            onPress={props.onReview}
+            disabled={locked}
+            accessibilityRole="button"
+            accessibilityLabel={t('recording.tell.edit')}
+            accessibilityState={{ disabled: locked }}
+            testID="recording-review-transcript"
+          >
+            <Text style={[styles.story, { color: tokens.text.primary }]} testID="recording-voice-preview">{props.storyTranscript}</Text>
+          </Pressable>
+        </View>
       ) : null}
     </View>
   );
@@ -217,7 +224,8 @@ export function RecordingConversation(props: Props) {
 
 const styles = StyleSheet.create({
   container: { width: '100%', maxWidth: 512, alignSelf: 'center', gap: 20, paddingTop: 4 },
-  restartButton: { minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  restartButton: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
+  recapEdit: { flex: 1, minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   questionBlock: { gap: 8 },
   question: { fontSize: 25, lineHeight: 33, fontWeight: '500', letterSpacing: -0.4 },
   hint: { fontSize: 15, lineHeight: 22 },
