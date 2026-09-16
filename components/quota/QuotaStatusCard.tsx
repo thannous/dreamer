@@ -156,7 +156,7 @@ export const QuotaStatusCard: React.FC<Props> = ({
       return;
     }
     if (isGuest) {
-      router.push('/(tabs)/settings?section=account');
+      router.push('/settings?section=account');
       return;
     }
     router.push(buildPaywallHref('settings_quota'));

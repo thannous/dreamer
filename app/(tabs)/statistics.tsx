@@ -1,3 +1,4 @@
+import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -99,6 +100,7 @@ export default function StatisticsScreen() {
   const { width, height, fontScale } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
+  const openQuickSettings = useQuickSettings();
   useClearWebFocus();
 
   const compact = width < COMPACT_BREAKPOINT;
@@ -128,7 +130,7 @@ export default function StatisticsScreen() {
       actions={[
         {
           icon: 'gear',
-          onPress: () => router.push('/(tabs)/settings'),
+          onPress: openQuickSettings,
           accessibilityLabel: t('nav.settings'),
           testID: TID.Button.HeaderTrendsSettings,
         },

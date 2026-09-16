@@ -252,11 +252,11 @@ describe('NoctaliaBottomNav', () => {
     expect(screen.getByTestId(TID.Tab.Explore)).toBeTruthy();
     expect(screen.queryByTestId(TID.Tab.Settings)).toBeNull();
     expect([
-      screen.getByText('nav.home'),
+      screen.getByText(/^nav\.home(?:_compact)?$/),
       screen.getByText('nav.journal'),
-      screen.getByText('nav.capture_dream'),
-      screen.getByText('nav.stats'),
-      screen.getByText('nav.explore'),
+      screen.getByText(/^nav\.capture_dream(?:_compact)?$/),
+      screen.getByText(/^nav\.stats(?:_compact)?$/),
+      screen.getByText(/^nav\.explore(?:_compact)?$/),
     ]).toHaveLength(5);
     expect(screen.queryByText('nav.settings')).toBeNull();
   });
@@ -310,11 +310,11 @@ describe('NoctaliaBottomNav', () => {
     const center = centerBox(TID.Tab.AddDream);
     const labels = barLabels();
 
-    expect(box.height).toBe(306);
-    expect(center.width).toBe(278);
-    expect(center.height).toBe(52);
+    expect(box.height).toBe(134);
+    expect(center.width).toBe(54.8);
+    expect(center.height).toBe(124);
     expect(labels).toHaveLength(5);
-    expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('1');
+    expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/).getAttribute('data-number-of-lines')).toBe('2');
     [TID.Tab.Home, TID.Tab.Journal, TID.Tab.AddDream, TID.Tab.Stats, TID.Tab.Explore]
       .forEach((testID) => expect(screen.getByTestId(testID).getAttribute('role')).toBe('tab'));
     expect(screen.getByTestId(TID.Tab.Explore).getAttribute('aria-label')).toBe('nav.explore');
@@ -322,7 +322,7 @@ describe('NoctaliaBottomNav', () => {
     expect(screen.getByTestId(TID.Tab.AddDream).getAttribute('aria-selected')).toBe('true');
   });
 
-  it.each([320, 360, 434])('keeps all five actions in reading order with Capture centered at %i dp', (width) => {
+  it.each([320, 360, 434])('keeps all five actions in reading order in one row with Capture centered at %i dp', (width) => {
     mockPlatformOS = 'android';
     mockWindowWidth = width;
     for (const scale of [1, 1.5, 2]) {
@@ -333,16 +333,7 @@ describe('NoctaliaBottomNav', () => {
         TID.Tab.Home, TID.Tab.Journal, TID.Tab.AddDream, TID.Tab.Stats, TID.Tab.Explore,
       ]);
       const frames = tabs.map((tab) => JSON.parse(tab.getAttribute('data-native-style') ?? '{}'));
-      if (scale === 1) {
-        expect(frames.every((frame) => frame.position === undefined)).toBe(true);
-      } else {
-        expect(frames[0].top).toBe(frames[1].top);
-        expect(frames[3].top).toBe(frames[4].top);
-        expect(frames[2].top).toBeGreaterThan(frames[0].top);
-        expect(frames[2].top).toBeLessThan(frames[3].top);
-        expect(frames[2].width).toBe(frames[0].width * 2);
-        expect(centerBox(TID.Tab.AddDream).width).toBeGreaterThan(130);
-      }
+      expect(frames.every((frame) => frame?.position === undefined)).toBe(true);
       fireEvent.click(tabs[4]);
       expect(mockPush).toHaveBeenLastCalledWith('/(tabs)/explore');
       view.unmount();
@@ -361,11 +352,11 @@ describe('NoctaliaBottomNav', () => {
     const center = centerBox(TID.Tab.AddDream);
     const labels = barLabels();
 
-    expect(box.height).toBe(176);
-    expect(center.width).toBeCloseTo(276.33, 2);
+    expect(box.height).toBe(102);
+    expect(center.width).toBeCloseTo(166.6, 2);
     expect(center.height).toBe(92);
     expect(labels).toHaveLength(5);
-    expect(screen.getByText('nav.capture_dream').getAttribute('data-number-of-lines')).toBe('1');
+    expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/).getAttribute('data-number-of-lines')).toBe('1');
   });
 
   it.each([[640, 320], [915, 412]])('preserves five logical actions around centered Capture at %i by %i dp', (width, height) => {
@@ -380,16 +371,7 @@ describe('NoctaliaBottomNav', () => {
         TID.Tab.Home, TID.Tab.Journal, TID.Tab.AddDream, TID.Tab.Stats, TID.Tab.Explore,
       ]);
       const frames = tabs.map((tab) => JSON.parse(tab.getAttribute('data-native-style') ?? '{}'));
-      if (scale === 1) {
-        expect(frames.every((frame) => frame.position === undefined)).toBe(true);
-      } else {
-        expect(frames[0].start).toBe(frames[1].start);
-        expect(frames[3].start).toBe(frames[4].start);
-        expect(frames[2].start).toBe(frames[0].width);
-        expect(frames[2].height).toBe(frames[0].height * 2);
-        expect(frames[1].top).toBe(frames[0].height);
-        expect(frames[4].top).toBe(frames[3].height);
-      }
+      expect(frames.every((frame) => frame?.position === undefined)).toBe(true);
       expect(tabs[2].getAttribute('aria-selected')).toBe('true');
       view.unmount();
     }

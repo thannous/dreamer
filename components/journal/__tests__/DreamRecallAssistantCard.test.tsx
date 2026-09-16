@@ -412,6 +412,40 @@ describe('DreamRecallAssistantCard', () => {
     cleanup();
   });
 
+  it('starts a requested capture continuation only after hydration and only once', async () => {
+    resetHook({ loading: true, hydrationStatus: 'loading' });
+    const view = renderCard({ startRequested: true });
+    expect(mockStart).not.toHaveBeenCalled();
+    resetHook();
+    view.rerender(<DreamRecallAssistantCard dreamId="dream-42" originalTranscript={ORIGINAL} originalPersistedSegmentId="persisted-original-42" offerEligible startRequested />);
+    await waitFor(() => expect(mockStart).toHaveBeenCalledTimes(1));
+    view.rerender(<DreamRecallAssistantCard dreamId="dream-42" originalTranscript={ORIGINAL} originalPersistedSegmentId="persisted-original-42" offerEligible startRequested />);
+    expect(mockStart).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not start an assistant without an explicit request', () => {
+    renderCard();
+    expect(mockStart).not.toHaveBeenCalled();
+  });
+
+  it('continues a saved capture through the real recall hook and persists its answer separately', async () => {
+    mockUseRealRecall = true;
+    renderCard({ startRequested: true });
+    await screen.findByText(QUESTION.text);
+    fireEvent.change(screen.getByTestId(TID.Input.DreamRecallAnswer), {
+      target: { value: 'The garden smelled of rain.' },
+    });
+    await waitFor(() => expect((screen.getByTestId(TID.Button.DreamRecallSubmit) as HTMLButtonElement).disabled).toBe(false));
+    fireEvent.click(screen.getByTestId(TID.Button.DreamRecallSubmit));
+    await waitFor(async () => {
+      const saved = JSON.parse((await AsyncStorage.getItem('dream_recall_assistant:dream-42'))!);
+      expect(saved.originalTranscript).toBe(ORIGINAL);
+      expect(saved.turns.filter((turn: { role: string }) => turn.role === 'answer')).toHaveLength(1);
+      expect(saved.turns[1].text).toBe('The garden smelled of rain.');
+      expect(saved.turns.filter((turn: { role: string }) => turn.role === 'question')).toHaveLength(2);
+    });
+  });
+
   it('renders nothing while loading', () => {
     resetHook({ loading: true });
     const { container } = renderCard();

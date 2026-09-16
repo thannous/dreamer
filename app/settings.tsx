@@ -1,9 +1,10 @@
 import { Host } from '@expo/ui';
-import { router } from 'expo-router';
-import { useBottomTabBarHeight } from 'expo-router/js-tabs';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useCallback, useMemo } from 'react';
 import {
   KeyboardAvoidingView,
+  ScrollView,
   Platform,
   Text,
   type ViewStyle,
@@ -16,7 +17,6 @@ import { VoiceLiveSpikeDebugEntry } from '@/components/dev/VoiceLiveSpikeDebugEn
 import { GuestProdQALab } from '@/components/guest/GuestProdQALab';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
-import { PageHeader } from '@/components/inspiration/PageHeader';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
 import { LegalSection } from '@/components/settings/LegalSection';
@@ -77,9 +77,10 @@ function SettingsHost({ children, colorScheme, hostKey, seedColor, style }: Sett
 }
 
 export default function SettingsScreen() {
+  const { auth, section } = useLocalSearchParams<{ auth?: string; section?: string }>();
   const { colors, mode } = useTheme();
   const { returningGuestBlocked } = useAuth();
-  const bottomTabBarHeight = useBottomTabBarHeight();
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { width, height } = useWindowDimensions();
@@ -91,9 +92,7 @@ export default function SettingsScreen() {
   const nativeHostKey = Platform.OS === 'android'
     ? `${Math.round(width)}x${Math.round(height)}`
     : undefined;
-  const bottomPadding = isDesktopLayout || returningGuestBlocked
-    ? ThemeLayout.spacing.xl
-    : bottomTabBarHeight + ThemeLayout.spacing.md;
+  const bottomPadding = insets.bottom + ThemeLayout.spacing.xl;
   const hostStyle = Platform.OS === 'web'
     ? [
         HOST_STYLE,
@@ -147,7 +146,7 @@ export default function SettingsScreen() {
           </View>
         </StaticFlatGlassCard>
       ) : null}
-      <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" />
+      <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" initialAccountSheetOpen={auth === 'signin'} />
       <GuestProdQALab />
       <VoiceLiveSpikeDebugEntry />
     </View>
@@ -165,6 +164,29 @@ export default function SettingsScreen() {
     </View>
   );
 
+  // Account links show only the account surface; general settings keep all sections.
+  if (section === 'account' && !returningGuestBlocked) {
+    return (
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        className="flex-1 bg-ink" testID="screen.account">
+        <NoctaliaScreenHeader titleKey="settings.account.title" actions={[{
+          icon: 'chevron.left',
+          accessibilityLabel: t('navigation.back'),
+          testID: 'settings.back',
+          onPress: () => router.canGoBack() ? router.back() : router.replace('/'),
+        }]} />
+        <ScrollView className="flex-1" testID="settings-account-only"
+          automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ padding: ThemeLayout.spacing.lg, paddingBottom: bottomPadding }}>
+          <View className="w-full max-w-[760px] self-center">
+            <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" initialAccountSheetOpen={auth === 'signin'} />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    );
+  }
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -172,16 +194,15 @@ export default function SettingsScreen() {
       testID="screen.settings"
     >
       <AtmosphericBackground variant="subtle" />
-      {isDesktopLayout ? (
-        <PageHeader
-          titleKey={returningGuestBlocked ? 'auth.returning_guest.title' : 'settings.title'}
-          animationSeed={0}
-        />
-      ) : (
-        <NoctaliaScreenHeader
-          titleKey={returningGuestBlocked ? 'auth.returning_guest.title' : 'settings.title'}
-        />
-      )}
+      <NoctaliaScreenHeader
+        titleKey={returningGuestBlocked ? 'auth.returning_guest.title' : 'settings.title'}
+        actions={returningGuestBlocked ? [] : [{
+          icon: 'chevron.left',
+          accessibilityLabel: t('navigation.back'),
+          testID: 'settings.back',
+          onPress: () => router.canGoBack() ? router.back() : router.replace('/'),
+        }]}
+      />
 
       {/* 760px is inline: Tailwind extracts class names statically, so it cannot
           come from a constant. */}

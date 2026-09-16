@@ -48,7 +48,7 @@ jest.mock('react-native', () => {
 });
 jest.mock('expo-router', () => ({
   router: { canGoBack: () => true, back: mockBack, replace: jest.fn(), setParams: jest.fn() },
-  useLocalSearchParams: () => ({ mode: 'voice' }),
+  useLocalSearchParams: () => ({ mode: 'text' }),
   useFocusEffect: () => {},
 }));
 jest.mock('react-native-safe-area-context', () => ({
@@ -98,7 +98,7 @@ jest.mock('@/services/nativeSpeechRecognition', () => ({
   resolveDeviceSpeechCapability: jest.fn(), shouldRestartHandsFreeSpeech: () => false,
 }));
 jest.mock('@/services/storageService', () => ({
-  getRecordingInputModePreference: jest.fn(async () => 'voice'),
+  getRecordingInputModePreference: jest.fn(async () => 'text'),
   getRecordingVoiceHintCompleted: jest.fn(async () => true),
   saveRecordingInputModePreference: jest.fn(async () => {}),
   saveRecordingVoiceHintCompleted: jest.fn(async () => {}),

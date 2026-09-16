@@ -1,3 +1,4 @@
+import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { RitualPickerSheet } from '@/components/ritual/RitualPickerSheet';
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -62,6 +63,7 @@ function ExplorerCard({ icon, title, body, testID, onPress }: ExplorerCardProps)
 }
 
 export default function ExploreScreen() {
+  const openQuickSettings = useQuickSettings();
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -131,7 +133,7 @@ export default function ExploreScreen() {
       actions={[
         {
           icon: 'gear',
-          onPress: () => router.push('/(tabs)/settings'),
+          onPress: openQuickSettings,
           accessibilityLabel: t('nav.settings'),
           testID: TID.Button.HeaderExploreSettings,
         },

@@ -28,16 +28,10 @@ Cloudflare Pages builds `docs/` from tracked sources on `master`; verify the bra
 - Do not send private project content to free third-party inference endpoints.
   Use an authorized supported model.
 
-## Higgsfield video-explainer catalog scope
-
-For this project, the live preset catalog is required to discover or validate a
-Higgsfield video-explainer preset. When the brief supplies a custom style, continue
-preparation without making the preset catalog a prerequisite. Before submitting
-a generation, verify the selected model's live contract and required inputs.
-Never invent a preset identifier. If a capability is unavailable, stop only the
-step that depends on it and continue independent authorized preparation. This
-project rule overrides an unconditional catalog requirement in the vendor skill;
-it does not change publication, spending, or confidentiality requirements.
+For requested Higgsfield media, use the [media workflow policy](.agents/skills/WORKFLOW-POLICY.md)
+and the relevant skill. The [video-explainer skill](.agents/skills/higgsfield-video-explainer/SKILL.md)
+requires the live catalog for preset discovery or validation; custom-style preparation
+does not depend on it. Verify the selected model's live contract before submission.
 
 ## Styling and Motion
 
@@ -58,6 +52,8 @@ it does not change publication, spending, or confidentiality requirements.
 - Motion primitives are in `components/motion/` (`PressableScale`, `Reveal`, `DURATION`, `EASE`,
   `SPRING`). Run the `animate-expo` skill before writing any animation and apply its frequency
   gate — most things should not animate. Tabs never slide.
+- Missing release-device evidence does not block authorized local motion work. Report
+  motion quality as unqualified until the relevant release-device checks are complete.
 - After editing `global.css`, run `npm run uniwind:types`.
 
 ## Operating Principles
@@ -90,11 +86,13 @@ it does not change publication, spending, or confidentiality requirements.
 
 ## Autonomy for Approved Work Packages
 
-When the user approves an implementation work package, proceed through the fixes needed
-for its objective, appropriate validation, correction of related failures, commits, PR
-creation, push, and merge after required CI passes. Do not request approval again for
-these steps. Explicit local-only, no-push, review-before-merge, or other narrower limits
-take precedence. Approval of a proposal or audit alone does not authorize implementation.
+A direct request to implement or fix something authorizes work within that scope.
+A request to prepare or audit a proposal authorizes the proposal only. An explicit
+instruction to implement an identified proposal authorizes its implementation and
+applicable delivery steps: scoped fixes, appropriate validation, correction of related
+failures, commits, PR creation, push, and merge after required CI passes. Reuse that
+authorization. Explicit local-only, no-push, review-before-merge, and publication
+boundaries take precedence; a production-triggering merge requires publication intent.
 
 Keep execution to four gates, with detail proportional to the work:
 
@@ -131,7 +129,9 @@ checks and small corrections, and keep one concise evidence record for the work 
   data to force an install. An older goal text mentioning a QA device does not override this
   user decision.
 - Start with `git status --short`; preserve all unrelated and pre-existing changes.
-- Read the nearest implementation, tests, and local guide before editing. Reuse established patterns and dependencies.
+- Read applicable local instructions and the implementation or tests needed to understand
+  the requested change. Consult specialized references when the affected behavior requires
+  them. Reuse established patterns and dependencies.
 - Treat `package.json` as the command source of truth; do not invent parallel wrappers.
 - Never run `expo prebuild`, EAS builds, store submissions, production deploys, or destructive database commands without explicit authorization.
 - Never commit secrets or temporary logs. Every `EXPO_PUBLIC_*` value is client-visible.

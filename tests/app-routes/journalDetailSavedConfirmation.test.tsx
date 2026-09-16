@@ -21,7 +21,7 @@ const mockToggleFavorite = jest.fn();
 const mockAnalyzeDream = jest.fn();
 const mockDeleteDream = jest.fn();
 const mockSetParams = jest.fn();
-let mockSearchParams: { id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[] } = { id: '42', saved: '1' };
+let mockSearchParams: { id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[] } = { id: '42', saved: '1' };
 let mockDreams: DreamAnalysis[] = [];
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
@@ -218,12 +218,14 @@ jest.mock('@/components/journal/DreamRecallAssistantCard', () => ({
   DreamRecallAssistantCard: ({
     dreamId,
     offerEligible,
+    startRequested,
   }: {
     dreamId?: string;
     offerEligible?: boolean;
+    startRequested?: boolean;
   }) =>
     offerEligible ? (
-      <div data-testid="component.dreamRecall.offer" data-dream-id={dreamId}>
+      <div data-testid="component.dreamRecall.offer" data-dream-id={dreamId} data-start-requested={String(Boolean(startRequested))}>
         <button data-testid="btn.dreamRecall.start" type="button">
           Continuer
         </button>
@@ -435,6 +437,16 @@ describe('journal detail saved confirmation route', () => {
     render(<JournalDetailScreen />);
 
     expect(screen.queryByTestId(TID.Text.RecordingSaveConfirmation)).toBeNull();
+  });
+
+  it('prioritizes the requested recall assistant once while preserving the saved dream', () => {
+    mockSearchParams = { id: '42', saved: '1', recall: '1' };
+    render(<JournalDetailScreen />);
+    const recall = screen.getByTestId(TID.Component.DreamRecallOffer);
+    expect(recall.getAttribute('data-start-requested')).toBe('true');
+    expect(screen.getAllByTestId(TID.Component.DreamRecallOffer)).toHaveLength(1);
+    const transcript = screen.getByTestId(TID.Component.TranscriptCard);
+    expect(recall.compareDocumentPosition(transcript) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('keeps analysis as the unique primary CTA before the optional recall offer', () => {

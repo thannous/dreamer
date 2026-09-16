@@ -17,7 +17,7 @@ const ITEMS = [
   { shortLabel: 'H', translationKey: 'nav.home', route: 'home', testID: TID.Button.MockNavHome, href: '/(tabs)' as const },
   { shortLabel: 'J', translationKey: 'nav.journal', route: 'journal', testID: TID.Button.MockNavJournal, href: '/(tabs)/journal' as const },
   { shortLabel: 'S', translationKey: 'nav.stats', route: 'statistics', testID: TID.Button.MockNavStats, href: '/(tabs)/statistics' as const },
-  { shortLabel: 'G', translationKey: 'nav.settings', route: 'settings', testID: TID.Button.MockNavSettings, href: '/(tabs)/settings' as const },
+  { shortLabel: 'G', translationKey: 'nav.settings', route: 'settings', testID: TID.Button.MockNavSettings, href: '/settings' as const },
 ];
 
 export function MockNavigationRail() {

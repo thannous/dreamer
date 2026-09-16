@@ -231,7 +231,8 @@ export default function JournalDetailScreen() {
 }
 
 function JournalDetailContent() {
-  const { id, remoteId, clientRequestId, saved: savedParam } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[] }>();
+  const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[] }>();
+  const recallRequested = isJournalSavedConfirmationParam(recallParam);
   const [savedConfirmationVisible, setSavedConfirmationVisible] = useState(
     () => isJournalSavedConfirmationParam(savedParam)
   );
@@ -1192,9 +1193,9 @@ function JournalDetailContent() {
     setShowQuotaLimitSheet(false);
     if (tier === 'guest') {
       if (quotaSheetMode === 'login') {
-        router.push('/(tabs)/settings?section=account');
+        router.push('/settings?section=account');
       } else {
-        router.push('/(tabs)/settings');
+        router.push('/settings');
       }
     } else {
       router.push(buildPaywallHref('analysis_cta'));
@@ -1207,7 +1208,7 @@ function JournalDetailContent() {
   }, []);
 
   const handleFirstValueBackup = useCallback(() => {
-    router.push('/(tabs)/settings?section=account');
+    router.push('/settings?section=account');
   }, []);
 
   const runAnalyze = useCallback(
@@ -2142,6 +2143,15 @@ function JournalDetailContent() {
                 screen and stay mounted, so toggling edit mode never replays the
                 entrance. `staggerDelay` caps at 6 steps, so the last one starts at
                 300 ms and this never reads as a loading sequence. */}
+            {recallRequested ? (
+              <DreamRecallAssistantCard
+                dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
+                originalTranscript={dream.transcript}
+                originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}
+                offerEligible
+                startRequested
+              />
+            ) : null}
             <Reveal index={0}>
               {/* Plus metadata card */}
               {!isEditing && renderMetadataCard()}
@@ -2164,12 +2174,14 @@ function JournalDetailContent() {
             <Reveal index={3}>
               {renderStaleBanner()}
               {renderDetailActionCard(['analyze'])}
+              {!recallRequested ? (
               <DreamRecallAssistantCard
                 dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
                 originalTranscript={dream.transcript}
                 originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}
                 offerEligible={recallOffer.offerEligible}
               />
+              ) : null}
             </Reveal>
 
             <Reveal index={4}>

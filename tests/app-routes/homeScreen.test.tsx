@@ -515,7 +515,7 @@ describe('Home Accueil Aujourd’hui', () => {
     expect(screen.getByTestId(TID.Button.HeaderHomeInspiration)).toBeTruthy();
 
     fireEvent.click(settings);
-    expect(mockPush).toHaveBeenCalledWith('/(tabs)/settings');
+    expect(mockPush).toHaveBeenCalledWith('/settings');
     expect(mockPush).not.toHaveBeenCalledWith('/symbol-dictionary');
     expect(mockPush).not.toHaveBeenCalledWith(expect.stringMatching(/^\/ritual\//));
   });

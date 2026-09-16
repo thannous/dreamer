@@ -1314,3 +1314,86 @@ Findings:
 - P2: none. The compact objective omission is an intentional density tradeoff and its content remains accessible and available in reflow.
 
 final result: passed
+
+
+## 2026-09-16 — Onboarding Brume onirique
+
+final result: passed (Android emulator visual scope only)
+
+Selected reference: `/Users/tanuki/.codex/generated_images/01a0a916-b515-79b0-9d91-a3ac32fd1fe9/exec-13fc676b-46b1-451c-a003-cf8db2fb1e22.png`.
+
+The source is a generated 1703×924 concept board, not two native 390×844 frames. Comparison preserves image proportions; no pixel-perfect viewport equivalence is claimed. The implementation adapts the composition to portrait Android. Per the latest user instruction, all THREE choices, including symbols, use the same grouped radio-row presentation. Existing destination-specific CTA labels and privacy access are retained.
+
+Evidence: [combined reference and implementation](doc_web_interne/docs/qa/onboarding-brume-2026-09-16/comparaison.webp), [intro](doc_web_interne/docs/qa/onboarding-brume-2026-09-16/intro.webp), [three choices](doc_web_interne/docs/qa/onboarding-brume-2026-09-16/choix.webp), [150% text](doc_web_interne/docs/qa/onboarding-brume-2026-09-16/choix-texte-150.webp).
+
+- Device: emulator-5554, Android API 36, base package com.tanuki75.noctalia, Expo development build / Metro 8081. No new native installation in this work package.
+- Baseline captures: 1080×2340 px, density 440 (about 393×851 dp), font scale 1.0. Also inspected at font scale 1.5 and compact 360×640 dp. Large content scrolls above the pinned CTA. Original emulator dimensions/density and font scale 1.5 restored afterward.
+- First comparison found incorrect image intrinsic sizing, cropping out the moon. Fixed image width/height to fill its viewport. Subsequent captures show the complete moon, continuous art behind header/footer, ivory text and coherent icon treatment.
+- Verified intro-to-choice and back, memory/symbol/analyze selections and corresponding CTA labels, privacy-sheet opening/closing. Existing 16 route tests cover completion destinations, retry/failure behavior and accessibility-layer isolation. No dream was created or analysis requested.
+- Added adaptive artwork spacing, wrapping CTA content, and a footer scrim for compact/large-text layouts.
+- Focused lint and git diff --check passed; onboardingScreen test suite 16/16 passed.
+- App and test typechecks are blocked by existing unavailable dependency @kingstinct/react-native-healthkit in services/lucidHealthKit.ts:48. This file was not changed.
+- Runtime Tools gear is a development overlay visible in source screenshots too; excluded from product-art fidelity. iOS, web, TalkBack and release-device QA are not qualified by these emulator checks.
+- No deployment or Store publication. Pre-existing .mcp.json / AGENTS.md changes and unrelated QA outputs preserved.
+
+## 2026-09-16 — Journal « Première page », clair et sombre
+
+- Référence choisie : proposition 3 (exec-84dfa1ce), adaptation sombre (exec-07b8d8db).
+- Périmètre final : journal réellement vide, illustration dédiée par thème, texte concis et CTA vers le parcours de rêve déjà vécu. Recherche/filtres conservés pour les journaux remplis ou filtrés. Chargement, erreur et synchronisation incomplète exclus du nouvel état vide.
+- Correction explicite du périmètre : la refonte de navigation tentée pendant cette passe a été annulée à la demande de l’utilisateur. Apparence antérieure rétablie (capsule, bouton champagne, icônes et libellés), en préservant les corrections de grand texte de la passe précédente.
+- Comparaison visuelle : `doc_web_interne/docs/qa/journal-first-page-2026-09-16/reference-comparison.png`. Hiérarchie, illustration et palettes reprises ; texture de fond simplifiée, illustration un peu moins grande, retours à la ligne adaptés au viewport Android. La navigation est intentionnellement celle de l’application, conformément à la dernière instruction.
+- Android émulateur API 36, 1080×2340, densité 440 : clair/sombre inspectés, texte 100/150/200 %. À 200 %, défilement nécessaire, CTA accessible et testé jusqu’à « Raconte un rêve déjà vécu ». Aucun rêve créé, aucune donnée effacée. Pas de validation iOS ou release physique pour ce lot.
+- 6 suites ciblées / 114 tests passent (journal, filtres, état vide, navigation et géométrie). Lint ciblé : 0 erreur, 4 avertissements existants de refs dans journal.tsx. `git diff --check` propre.
+- Typecheck application et tests : bloqués uniquement par la dépendance existante manquante `@kingstinct/react-native-healthkit` dans `services/lucidHealthKit.ts:48`. Pas de correction hors périmètre.
+- Livraison locale via Metro ; aucun commit, push, déploiement ou réinstallation.
+
+### Correction du header — 2026-09-16
+
+À la demande explicite de l’utilisateur, suppression du header particulier « Journal / Un espace pour tes rêves » de `JournalFirstPage`. Réutilisation de `NoctaliaScreenHeader`, identique aux autres onglets : marque Noctalia, nom de page et action Paramètres. Le header reste hors du contenu défilant ; la hauteur disponible est mesurée pour conserver le CTA accessible. Navbar inchangée pendant cette correction. Inspection Android à 150 % avec le réglage de langue actuel anglais : `shared-header-150.png`. Lint du composant sans erreur ; 46 tests ciblés (header commun et route Journal) passent.
+
+### Header compact — maquette 1, conversation latérale, 2026-09-16
+
+- Cible sélectionnée : `exec-4d5042b8-1d93-459c-bff9-71c79679bfe2.png` (première image affichée). Périmètre : composant commun `NoctaliaScreenHeader` et ses tests seulement ; aucune modification de navbar ni du contenu du journal.
+- Marque 24/30 et titre 15/21 regroupés à gauche, actions circulaires 44 dp à droite, séparation discrète. Retour des actions à la ligne seulement si la largeur disponible ne permet plus de conserver le titre lisible ; aucun plafonnement de la taille de texte système.
+- Inspection sur l’émulateur existant à 150 % : header Journal compact, paramètres à droite, contenu et navbar conservés. Comparaison visuelle du header cible avec la capture : `/tmp/noctalia-header-comparison.png`. Capture : `/tmp/compact-header.png`. Les thèmes restent issus des tokens existants ; pas de bascule de préférence pendant cette passe pour ne pas interrompre la conversation principale.
+- 48 tests passent (header et route Journal), lint ciblé sans erreur, diff-check propre. Pas de commit ou publication. `final result: passed` pour le périmètre local inspecté ; contrôles natifs des autres tailles et du thème sombre non exécutés dans cette passe.
+
+### Journal rempli sur Motorola — 2026-09-16
+
+Cause constatée sur le Motorola edge 60 fusion connecté en ADB Wi-Fi : le journal contient un rêve et emprunte la branche liste, qui utilisait encore PageHeaderContent au lieu du header commun. La correction précédente ne couvrait que JournalFirstPage (journal vide).
+
+Correction : header mobile commun NoctaliaScreenHeader au-dessus de la recherche pour les listes locales, résultats filtrés et aperçus distants ; action Paramètres déplacée dans ce header sans doublon. L’ancien titre centré reste réservé au desktop. La hauteur réelle du bloc header/recherche est mesurée pour préserver le mode compact et les résultats accessibles avec clavier/paysage. Aucune modification de navbar ni du composant de header partagé préexistant dans cette passe.
+
+Preuve physique : `doc_web_interne/docs/qa/journal-moto-header-2026-09-16/journal.png`. Vérification du titre Noctalia/Journal avec le rêve existant, puis recherche sans résultat et effacement du filtre ; liste normale remise à l’écran. Aucune écriture de rêve ou réinstallation. 50 tests ciblés passent, dont régression journal rempli/filtré et mesure du header en paysage. Lint : 0 erreur, 4 avertissements refs préexistants. Typecheck tests : seule erreur existante HealthKit manquant. Livraison locale Metro.
+
+### Recherche intégrée à la ligne du header — 2026-09-16
+
+Demande de gain de hauteur : recherche déplacée à côté du titre dans le header du Journal via l’option `inlineSlot` du composant partagé. Les autres headers restent identiques. Si largeur et taille de police ne permettent plus un champ utilisable, retour à une seconde ligne sans remonter le TextInput ni perdre focus/saisie. Régression dédiée à ce changement de largeur/font scale.
+
+Vérification sur Motorola : titre + recherche + paramètres sur une ligne, recherche « jardin » retrouvant le rêve existant, filtre effacé après contrôle. Capture `doc_web_interne/docs/qa/journal-moto-header-2026-09-16/search-inline.png`. 51 tests ciblés passent ; lint sans erreur (4 avertissements refs existants dans Journal). Typecheck tests : dépendance HealthKit manquante préexistante uniquement. Navbar inchangée.
+
+## 2026-09-16 — Réglages rapides et parcours Paramètres
+
+- La roue dentée des headers Accueil, Journal (vide et rempli), Tendances et Explorer ouvre un drawer à droite. Apparence, affichage du journal et langue réutilisent les contrôleurs de préférences des paramètres complets ; états de sauvegarde/erreur conservés. Le drawer ne modifie pas la navigation principale.
+- « Tous les paramètres » ouvre `/settings` dans la Stack racine. Suppression de l’ancien onglet caché, mise à jour des liens et retours d’authentification ; les routes Lucid restent distinctes. Bouton Retour explicite, repli Accueil pour entrée directe, navbar absente seulement de cette page. Le retour invité bloqué garde sa garde d’authentification.
+- Implémentation : moteur `react-native-drawer-layout` 4.2.10 déjà fourni par Expo Router SDK 57, déclaré en dépendance directe sans modification native. Référence https://docs.expo.dev/router/advanced/drawer/ . Panneau d’actions superposé, sans ajouter un second navigateur pour des préférences.
+- Mouvement occasionnel à but spatial : translation native du drawer front (Reanimated/UI thread), écran d’origine immobile, swipe de fermeture seulement. En réduction de mouvement, panneau statique sans translation. Retour Android, bouton Fermer, backdrop et Escape ferment le panneau. Les vues sous-jacentes sont masquées aux technologies d’assistance pendant l’ouverture.
+- Tests : 133 contrôles principaux passent (9 suites), puis 68 contrôles incluant tests spécifiques drawer, Retour, auth et paywall (8 suites ; la suite settings est reprise). Après qualification des testIDs, les 4 tests du drawer repassent. Typecheck app/tests : seule erreur préexistante `@kingstinct/react-native-healthkit` introuvable. Lint : aucune nouvelle erreur, avertissements refs/effects existants des layouts. `git diff --check` propre.
+- Appareil physique Motorola Wi-Fi : drawer clair/sombre, changement de thème, paramètres complets sans navbar, Retour retrouvant la recherche « jardin », effacement du filtre, Retour Android fermant le drawer sans quitter Journal. Préférence Dynamique remise après QA. Captures dans `doc_web_interne/docs/qa/settings-drawer-2026-09-16/`. Émulateur : parcours vérifié à font scale 150 %.
+- Incident de développement observé : crash natif Reanimated SIGSEGV pendant rechargement sur Moto, même signature déjà présente à 09:53 avant ce lot. Relance froide sans effacement/réinstallation puis parcours physique réussi. La cause native n’est pas déclarée corrigée. Qualité/performance de mouvement en build Release non qualifiée ; aucun build natif, commit, push ou déploiement dans ce lot.
+- Vérification physique complémentaire : positions des cartes comparées avant/après drawer → paramètres → Retour, strictement identiques. Journal remis en haut après contrôle.
+
+## 2026-09-16 — Profil, connexion et Noctalia Plus dans le drawer
+
+- Section compte en haut du drawer : nom (métadonnées full_name/name/display_name, repli sur email puis libellé localisé), initiales et email ; invité avec indication de stockage local et bouton Se connecter. Le profil ouvre les paramètres du compte. Identité et abonnement réutilisent AuthContext/useSubscription ; aucune nouvelle gestion de session.
+- Carte champagne « Passer à Noctalia Plus » vers le paywall existant, déclencheur settings. Pour un membre actif, libellé Noctalia Plus / Voir mon abonnement. Actions désactivées pendant chargement d’identité/droits. Aucune nouvelle promesse tarifaire ou transaction dans le drawer.
+- L’entrée invité `/settings?section=account&auth=signin` ouvre directement le formulaire existant via une option initialAccountSheetOpen, sans changer le comportement des autres entrées.
+- 56 tests ciblés passent : drawer invité/connecté/Plus, nom absent ou mal typé, chargements, routage et fermeture, paramètre de connexion transmis, formulaire ouvert directement, paywall existant. Lint des 3 composants touchés sans erreur ni avertissement. Typecheck app/tests : erreur HealthKit préexistante uniquement. Diff check propre.
+- Motorola connecté : nom/initiales/email réels visibles, accès Plus confirmé puis retour, profil vers compte et retour au drawer. Cas invité vérifié sur émulateur à texte 150 % : bouton connexion et formulaire email/mot de passe/Google visibles immédiatement. Aucune connexion soumise, aucun achat, aucune déconnexion de la session physique. Captures locales dans `doc_web_interne/docs/qa/drawer-profile-2026-09-16/` (celle du profil contient des coordonnées de compte ; ne pas publier).
+
+### 2026-09-16 — Fiche compte distincte et icônes du drawer
+
+- Le paramètre `section=account` affiche désormais uniquement la fiche Compte (session/email, connexion ou déconnexion), via le composant existant EmailAuthCard. Aucun bloc de préférences, quota ou abonnement dans cette vue. L’entrée standard `/settings` conserve les réglages complets ; la récupération d’un invité bloqué reste inchangée.
+- Langue placée avant Apparence. Icônes à gauche : globe pour la langue, palette pour l’apparence, horloge/téléphone/soleil/lune pour les thèmes, livre/cartes/liste pour le journal, personne pour la connexion et engrenage pour Tous les paramètres. Libellés accessibles explicites sur les choix.
+- 47 tests ciblés passent, dont distinction compte/réglages, connexion directe et garde invité. Lint sans erreur ni avertissement sur les deux composants touchés ; types app/tests restent bloqués uniquement par HealthKit préexistant. Diff check propre.
+- Moto : ordre Langue/Apparence vérifié, icônes inspectées en sombre, profil → `screen.account`, Tous les paramètres → `screen.settings`, retours fonctionnels. Session et thème conservés. Captures locales `moto-drawer-icons.png` et `moto-account-only.png` dans le dossier QA drawer-profile (coordonnées de compte, ne pas publier).

@@ -1,5 +1,4 @@
 import {
-  BottomSheet as ExpoBottomSheet,
   RNHostView,
 } from '@expo/ui';
 import React, { useEffect, useState, type ReactElement } from 'react';
@@ -10,7 +9,6 @@ import {
   ScrollView,
   Switch,
   Text,
-  useWindowDimensions,
   View,
   type TextStyle,
 } from 'react-native';
@@ -19,7 +17,6 @@ import { PressableScale } from '@/components/motion';
 import { DateTimePicker } from '@/components/ui/DateTimePicker';
 import {
   BottomSheet,
-  getNativeBottomSheetContentWidth,
 } from '@/components/ui/BottomSheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -73,7 +70,6 @@ const RITUAL_ROW_CLASS = `${ROW_CLASS} min-h-[42px]`;
 const ROW_LABEL_CLASS = 'flex-1 font-sans text-[15px] leading-[20px] text-ivory';
 const ROW_VALUE_CLASS = 'max-w-[36%] shrink font-sans text-[15px] leading-[20px] text-right text-ivory-muted';
 const CARD_CLASS = 'w-full rounded-[18px] border border-line-strong bg-ink-raised';
-const SHEET_HANDLE_CLASS = 'mb-[18px] h-1 w-[38px] self-center rounded-[2px] bg-line-strong';
 const SHEET_HEADER_CLASS = 'mb-[18px] flex-row items-center gap-3';
 const SHEET_HEADER_ICON_CLASS =
   'h-11 w-11 items-center justify-center rounded-[22px] border border-champagne-soft bg-ink-soft';
@@ -130,10 +126,10 @@ function PreferenceSheet<T extends string>({
     <BottomSheet
       visible={isPresented}
       onClose={onDismiss}
+      dismissBehavior={controller.saving ? 'none' : 'pan'}
       className={SHEET_CONTENT_CLASS}
       testID={`${testID}.sheet`}
     >
-      <View className={SHEET_HANDLE_CLASS} />
       <View className={SHEET_HEADER_CLASS}>
         <View className={SHEET_HEADER_ICON_CLASS}>
           <IconSymbol
@@ -339,7 +335,6 @@ export function SettingsFieldGroup({
 }: SettingsFieldGroupProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
-  const { width: viewportWidth } = useWindowDimensions();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const { theme, language } = useSettingsPreferences();
   const notifications = useNotificationSettingsController();
@@ -716,16 +711,13 @@ export function SettingsFieldGroup({
       />
 
       {Platform.OS === 'ios' ? (
-        <ExpoBottomSheet
-          isPresented={weekdayPickerVisible}
-          onDismiss={() => setWeekdayPickerVisible(false)}
-          showDragIndicator={false}
+        <BottomSheet
+          visible={weekdayPickerVisible}
+          onClose={() => setWeekdayPickerVisible(false)}
           testID="settings-notifications-weekday-sheet"
         >
-          <RNHostView matchContents>
             <View
-              className="w-full bg-ink-raised p-4"
-              style={{ width: getNativeBottomSheetContentWidth(viewportWidth, 'ios') }}
+              className="w-full"
             >
               <DateTimePicker
                 display="spinner"
@@ -745,8 +737,7 @@ export function SettingsFieldGroup({
                 </Text>
               </PressableScale>
             </View>
-          </RNHostView>
-        </ExpoBottomSheet>
+        </BottomSheet>
       ) : null}
 
       {Platform.OS === 'web' ? (
@@ -756,7 +747,6 @@ export function SettingsFieldGroup({
           className={SHEET_CONTENT_CLASS}
           testID="settings-notifications-weekday-sheet"
         >
-          <View className={SHEET_HANDLE_CLASS} />
           <View className={SHEET_HEADER_CLASS}>
             <View className={SHEET_HEADER_ICON_CLASS}>
               <IconSymbol name="clock" size={24} color={noctalia.accent.text} />

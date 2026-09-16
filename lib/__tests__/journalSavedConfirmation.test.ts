@@ -18,6 +18,12 @@ describe('journalSavedConfirmation', () => {
     });
   });
 
+  it('routes an explicit recall continuation with its saved dream', () => {
+    expect(buildJournalDetailHref(42, { saved: true, recall: true })).toEqual({
+      pathname: '/journal/[id]', params: { id: '42', saved: '1', recall: '1' },
+    });
+  });
+
   it('treats only explicit saved flags as confirmation', () => {
     expect(isJournalSavedConfirmationParam('1')).toBe(true);
     expect(isJournalSavedConfirmationParam(['1'])).toBe(true);

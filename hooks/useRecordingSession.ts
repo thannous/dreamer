@@ -103,6 +103,7 @@ export function useRecordingSession({
   onNativeEnd,
 }: UseRecordingSessionOptions) {
   const [isRecording, setIsRecording] = useState(false);
+  const [isSpeechListening, setIsSpeechListening] = useState(false);
   const [recordingPermissionState, setRecordingPermissionState] =
     useState<RecordingPermissionState>('unknown');
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
@@ -168,6 +169,7 @@ export function useRecordingSession({
       }
 
       setIsRecording(false);
+      setIsSpeechListening(false);
       isRecordingRef.current = false;
 
       const nativeSession = nativeSessionRef.current;
@@ -228,6 +230,7 @@ export function useRecordingSession({
 
       try {
         setIsRecording(false);
+        setIsSpeechListening(false);
         isRecordingRef.current = false;
         nativeSession = nativeSessionRef.current;
         nativeSessionRef.current = null;
@@ -376,6 +379,7 @@ export function useRecordingSession({
   const startRecording = useCallback(
     async (currentTranscript: string): Promise<{ success: boolean; error?: string }> => {
       let audioModeEnabled = false;
+      setIsSpeechListening(false);
 
       try {
         if (Platform.OS === 'web') {
@@ -420,6 +424,7 @@ export function useRecordingSession({
         baseTranscriptRef.current = currentTranscript;
 
         nativeSessionRef.current = await startNativeSpeechSession(transcriptionLocale, {
+          onListeningChange: setIsSpeechListening,
           permissionAlreadyGranted: Platform.OS !== 'web',
           onEnd: onNativeEnd,
           onPartial: (text) => {
@@ -469,6 +474,7 @@ export function useRecordingSession({
         isRecordingRef.current = true;
         return { success: true };
       } catch (err) {
+        setIsSpeechListening(false);
         try {
           nativeSessionRef.current?.abort();
         } catch (abortError) {
@@ -554,6 +560,7 @@ export function useRecordingSession({
   }, [getRecorderIsRecording, handleRecorderError, stopRecording]);
 
   return {
+    isSpeechListening,
     isRecording,
     recordingPermissionState,
     isRecordingRef,

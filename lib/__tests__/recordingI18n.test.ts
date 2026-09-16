@@ -87,6 +87,13 @@ const analysisLimitSheetKeys = [
 ] as const;
 
 const recordingStatusKeys = [
+  'recording.write.instruction',
+  'recording.tell.title',
+  'recording.tell.empty',
+  'recording.tell.edit',
+  'recording.tell.help',
+  'recording.tell.help_hint',
+  'recording.tell.save',
   'recording.status.permission_prompt.title',
   'recording.status.permission_prompt.detail',
   'recording.status.ready.title',

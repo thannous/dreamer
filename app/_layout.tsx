@@ -69,6 +69,7 @@ import {
 import { markPerformance } from '@/lib/performanceTrace';
 import { setProductAnalyticsLocale } from '@/lib/productAnalytics';
 import { scheduleAfterStartupPaint } from '@/lib/startupPaint';
+import { QuickSettingsProvider } from '@/components/settings/QuickSettingsProvider';
 import type { LanguagePreference } from '@/lib/types';
 import { scheduleProductBootstrap } from '@/lib/productBootstrap';
 import { configureNotificationHandler } from '@/services/notificationService';
@@ -464,7 +465,7 @@ function RootLayoutNav({
   useEffect(() => {
     if (!authReturnIntent || authLoading || user) return;
     if (pathname === '/onboarding') return;
-    if (pathname === '/settings' || pathname === '/(tabs)/settings' || pathname.startsWith('/auth/')) {
+    if (pathname === '/settings' || pathname.startsWith('/auth/')) {
       authReturnSettingsObserved.current = authReturnIntent;
     } else if (authReturnSettingsObserved.current === authReturnIntent) {
       authReturnOnboardingOwned.current = null;
@@ -519,7 +520,7 @@ function RootLayoutNav({
     }
 
     const currentPath = pathnameRef.current ?? pathname;
-    const allowedRoutes = ['/settings', '/(tabs)/settings'];
+    const allowedRoutes = ['/settings'];
     const isOnAllowedRoute =
       allowedRoutes.some(
         (route) => currentPath === route || currentPath?.startsWith(`${route}/`)
@@ -531,7 +532,7 @@ function RootLayoutNav({
           currentPath,
         });
       }
-      router.replace('/(tabs)/settings');
+      router.replace('/settings');
     }
   }, [isNavigationReady, pathname, returningGuestBlocked, startupReady, user]);
 
@@ -558,8 +559,8 @@ function RootLayoutNav({
       const currentPath = pathnameRef.current ?? pathname;
       const isInSettings =
         currentPath?.includes('/settings') ||
-        currentPath?.startsWith('/(tabs)/settings') ||
-        pathname?.startsWith('/(tabs)/settings');
+        currentPath?.startsWith('/settings') ||
+        pathname?.startsWith('/settings');
       const isInPasswordReset = isPasswordResetPath(currentPath);
       const isInPaywall = currentPath === '/paywall';
       const isInJournalList =
@@ -818,6 +819,7 @@ function RootLayoutNav({
               one native transition avoids scheduling transition work for a
               surface that is immediately detached; later navigation keeps the
               normal platform animation. */}
+          <QuickSettingsProvider disabled={isLucidTrainer}>
           <Stack
             screenOptions={{
               animation: nonCriticalStartupEnabled ? 'default' : 'none',
@@ -825,6 +827,7 @@ function RootLayoutNav({
           >
             <Stack.Protected guard={!isLucidTrainer}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="settings" options={{ headerShown: false }} />
             <Stack.Screen name="onboarding" options={{ headerShown: false }} />
             <Stack.Screen name="recording" options={{ headerShown: false }} />
             <Stack.Screen name="journal/[id]" options={{ headerShown: false }} />
@@ -843,6 +846,7 @@ function RootLayoutNav({
             <Stack.Screen name="lucid" options={{ headerShown: false }} />
             <Stack.Screen name="auth/reset-password" options={{ headerShown: false }} />
           </Stack>
+          </QuickSettingsProvider>
           {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><AnalysisFlightIndicator /></> : null}
           {!isLucidTrainer ? <VercelAnalytics /> : null}
           {!isLucidTrainer ? <VercelSpeedInsights /> : null}

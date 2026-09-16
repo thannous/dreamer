@@ -1,6 +1,7 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { DarkTheme } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -18,7 +19,8 @@ import {
 } from '@/lib/productAnalytics';
 import { TID } from '@/lib/testIDs';
 import { Asset } from 'expo-asset';
-import { router } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
@@ -28,11 +30,13 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Switch,
   Text,
   View,
   findNodeHandle,
+  useWindowDimensions,
   type ColorValue,
   type LayoutChangeEvent,
   type TextStyle,
@@ -64,9 +68,10 @@ const SIGNALS = [
   { id: 'profile', icon: 'sparkles' as const },
 ];
 
-const INTRO_BACKGROUND_IMAGE = require('@/assets/images/onboarding-astral-background.webp');
-const PATH_BACKGROUND_IMAGE = require('@/assets/images/onboarding-path-background.webp');
-const PATH_BACKGROUND_ASPECT_RATIO = 853 / 510;
+const BACKGROUND_IMAGE = require('@/assets/images/onboarding-reverie-background.webp');
+// The immersive artwork always needs its nocturnal contrast, independently of
+// the user's app theme. The privacy sheet retains the app's own palette.
+const ONBOARDING_TOKENS = getNoctaliaDesignTokens(DarkTheme, 'dark');
 
 const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
   ? ({
@@ -88,7 +93,9 @@ export default function OnboardingScreen() {
     continueForSession,
     reload,
   } = useOnboarding();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const sheetTokens = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const noctalia = ONBOARDING_TOKENS;
+  const { height: viewportHeight, fontScale } = useWindowDimensions();
   const [selectedPathOverride, setSelectedPathOverride] = useState<OnboardingPath | null>(null);
   const [isLeaving, setIsLeaving] = useState(false);
   const [isStepTransitioning, setIsStepTransitioning] = useState(false);
@@ -109,34 +116,29 @@ export default function OnboardingScreen() {
   const stepTransitionRef = useRef(false);
   const selectionVersionRef = useRef(0);
 
+  useFocusEffect(useCallback(() => {
+    const entry = StatusBar.pushStackEntry({ barStyle: 'light-content' });
+    return () => StatusBar.popStackEntry(entry);
+  }, []));
+
   const step: OnboardingStep = state.step === 'path' ? 'path' : 'intro';
   const titleAccent = noctalia.accent.text;
   const background = noctalia.screen.background;
-  const introUri = Asset.fromModule(INTRO_BACKGROUND_IMAGE).uri;
-  const pathUri = Asset.fromModule(PATH_BACKGROUND_IMAGE).uri;
-  const introBackgroundWebStyle = useMemo(
+  const backgroundUri = Asset.fromModule(BACKGROUND_IMAGE).uri;
+  const backgroundWebStyle = useMemo(
     () => ({
-      backgroundImage: `url("${introUri}")`,
-      backgroundPosition: 'center',
+      backgroundImage: `url("${backgroundUri}")`,
+      backgroundPosition: 'center top',
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
     }) as unknown as ViewStyle,
-    [introUri]
+    [backgroundUri]
   );
-  const pathBackgroundWebStyle = useMemo(
-    () => ({
-      backgroundImage: `url("${pathUri}")`,
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover',
-    }) as unknown as ViewStyle,
-    [pathUri]
-  );
-
-  useEffect(() => {
-    if (Platform.OS === 'web') return;
-    void Asset.loadAsync(PATH_BACKGROUND_IMAGE).catch(() => undefined);
-  }, []);
+  const largeText = fontScale > 1.2;
+  const artworkFraction = step === 'path'
+    ? (largeText ? 0.10 : 0.18)
+    : (largeText ? 0.18 : 0.25);
+  const artworkSpace = Math.max(72, Math.min(260, viewportHeight * artworkFraction));
 
   useEffect(() => {
     if (loading || pathPreloaded || step === 'path' || isLeaving) return;
@@ -424,14 +426,29 @@ export default function OnboardingScreen() {
   const layeredStepHeight = Math.max(stepHeights.intro ?? 0, stepHeights.path ?? 0) || undefined;
 
   return (
-    <View style={[styles.screen, { backgroundColor: background }]} testID={TID.Screen.Onboarding}>
+    <View
+      style={[styles.screen, { backgroundColor: background }]}
+      testID={TID.Screen.Onboarding}
+    >
+      <View style={StyleSheet.absoluteFill} pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants">
+        {Platform.OS === 'web' ? (
+          <View style={[StyleSheet.absoluteFill, backgroundWebStyle]} />
+        ) : (
+          <Image source={BACKGROUND_IMAGE} resizeMode="cover" fadeDuration={0} style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} />
+        )}
+        <LinearGradient
+          colors={['rgba(3,4,13,0.12)', 'rgba(3,4,13,0.08)', 'rgba(3,4,13,0.60)', 'rgba(3,4,13,0.88)']}
+          locations={[0, 0.25, 0.62, 1]}
+          style={StyleSheet.absoluteFill}
+        />
+      </View>
       <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
+        contentInsetAdjustmentBehavior="never"
         contentContainerStyle={[
           styles.content,
           {
             paddingTop: Math.max(insets.top + 12, 28),
-            paddingBottom: footerHeight,
+            paddingBottom: footerHeight + 16,
           },
         ]}
       >
@@ -510,19 +527,7 @@ export default function OnboardingScreen() {
             ]}
             testID={TID.Component.OnboardingIntro}
           >
-            <View style={styles.heroImageWrap} accessible={false} importantForAccessibility="no-hide-descendants">
-              {Platform.OS === 'web' ? (
-                <View style={[styles.heroImage, introBackgroundWebStyle]} />
-              ) : (
-                <Image
-                  accessible={false}
-                  fadeDuration={0}
-                  source={INTRO_BACKGROUND_IMAGE}
-                  resizeMode="cover"
-                  style={styles.heroImage}
-                />
-              )}
-            </View>
+            <View style={{ height: artworkSpace }} accessible={false} />
             <Text
               ref={introTitleRef}
               {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
@@ -531,7 +536,7 @@ export default function OnboardingScreen() {
               onLayout={() => handleTitleLayout('intro')}
               style={[styles.title, webTitleFocusResetStyle, { color: noctalia.text.primary }]}
             >
-              {t('onboarding.intro.title_lead')}{' '}
+              {t('onboarding.intro.title_lead')}{'\n'}
               <Text style={{ color: titleAccent }}>{t('onboarding.intro.title_accent')}</Text>
             </Text>
             <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
@@ -540,15 +545,12 @@ export default function OnboardingScreen() {
             <View style={styles.signalList} testID={TID.Component.OnboardingIntroSignals}>
               {SIGNALS.map((signal) => (
                 <View key={signal.id} style={styles.signalRow}>
-                  <View style={[styles.signalIcon, { backgroundColor: noctalia.surface.soft }]}>
+                  <View style={[styles.signalIcon, { borderColor: titleAccent }]}>
                     <IconSymbol name={signal.icon} size={21} color={titleAccent as ColorValue} />
                   </View>
                   <View style={styles.signalCopy}>
                     <Text style={[styles.signalTitle, { color: noctalia.text.primary }]}>
                       {t(`onboarding.intro.signal.${signal.id}.title`)}
-                    </Text>
-                    <Text style={[styles.signalBody, { color: noctalia.text.secondary }]}>
-                      {t(`onboarding.intro.signal.${signal.id}.body`)}
                     </Text>
                   </View>
                 </View>
@@ -584,19 +586,7 @@ export default function OnboardingScreen() {
               ]}
               testID={TID.Component.OnboardingPath}
             >
-            <View style={styles.pathHeroImageWrap} accessible={false} importantForAccessibility="no-hide-descendants">
-              {Platform.OS === 'web' ? (
-                <View style={[styles.pathHeroImage, pathBackgroundWebStyle]} />
-              ) : (
-                <Image
-                  accessible={false}
-                  fadeDuration={0}
-                  source={PATH_BACKGROUND_IMAGE}
-                  resizeMode="cover"
-                  style={styles.pathHeroImage}
-                />
-              )}
-            </View>
+            <View style={{ height: artworkSpace }} accessible={false} />
             <Text
               ref={pathTitleRef}
               {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
@@ -605,7 +595,7 @@ export default function OnboardingScreen() {
               onLayout={() => handleTitleLayout('path')}
               style={[styles.pathHeading, webTitleFocusResetStyle, { color: noctalia.text.primary }]}
             >
-              {t('onboarding.path.title_lead')}{' '}
+              {t('onboarding.path.title_lead')}{'\n'}
               <Text style={{ color: titleAccent }}>{t('onboarding.path.title_accent')}</Text>
             </Text>
             <Text style={[styles.pathSubtitle, { color: noctalia.text.secondary }]}>
@@ -614,7 +604,7 @@ export default function OnboardingScreen() {
             <View
               style={[
                 styles.pathCard,
-                { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.borderStrong },
+                { backgroundColor: 'rgba(33, 25, 47, 0.78)', borderColor: noctalia.surface.borderStrong },
               ]}
             >
               {PATHS.map((path, index) => {
@@ -710,10 +700,16 @@ export default function OnboardingScreen() {
           styles.footer,
           {
             paddingBottom: Math.max(insets.bottom + 10, 18),
-            backgroundColor: background,
+            backgroundColor: 'transparent',
           },
         ]}
       >
+        <LinearGradient
+          pointerEvents="none"
+          colors={['rgba(3,4,13,0)', 'rgba(3,4,13,0.92)', background]}
+          locations={[0, 0.45, 1]}
+          style={StyleSheet.absoluteFill}
+        />
         <Pressable
           accessibilityLabel={step === 'intro'
             ? t('onboarding.intro.cta')
@@ -737,32 +733,12 @@ export default function OnboardingScreen() {
             <ActivityIndicator color={noctalia.action.primaryText} />
           ) : (
             <View style={styles.primaryContent}>
-              <View
-                accessibilityElementsHidden={step !== 'intro'}
-                importantForAccessibility={step === 'intro' ? 'auto' : 'no-hide-descendants'}
-                style={[
-                  styles.primaryContentLayer,
-                  step !== 'intro' && styles.inactiveControl,
-                ]}
-              >
-                <Text style={[styles.primaryText, { color: noctalia.action.primaryText }]}>
-                  {t('onboarding.intro.cta')}
-                </Text>
-                <IconSymbol name="arrow.right" size={22} color={noctalia.action.primaryText} />
-              </View>
-              <View
-                accessibilityElementsHidden={step !== 'path'}
-                importantForAccessibility={step === 'path' ? 'auto' : 'no-hide-descendants'}
-                style={[
-                  styles.primaryContentLayer,
-                  step !== 'path' && styles.inactiveControl,
-                ]}
-              >
-                <Text style={[styles.primaryText, { color: noctalia.action.primaryText }]}>
-                  {t(`onboarding.path.${selectedDefinition.id}.cta`)}
-                </Text>
-                <IconSymbol name="arrow.right" size={22} color={noctalia.action.primaryText} />
-              </View>
+              <Text style={[styles.primaryText, { color: noctalia.action.primaryText }]}>
+                {step === 'intro'
+                  ? t('onboarding.intro.cta')
+                  : t(`onboarding.path.${selectedDefinition.id}.cta`)}
+              </Text>
+              <IconSymbol name="arrow.right" size={22} color={noctalia.action.primaryText} />
             </View>
           )}
         </Pressable>
@@ -782,25 +758,25 @@ export default function OnboardingScreen() {
         <View
           style={[
             styles.privacyAssurance,
-            { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border },
+            { backgroundColor: sheetTokens.surface.soft, borderColor: sheetTokens.surface.border },
           ]}
         >
-          <IconSymbol name="lock.fill" size={19} color={titleAccent} />
-          <Text style={[styles.privacyAssuranceText, { color: noctalia.text.secondary }]}>
+          <IconSymbol name="lock.fill" size={19} color={sheetTokens.accent.text} />
+          <Text style={[styles.privacyAssuranceText, { color: sheetTokens.text.secondary }]}>
             {t('onboarding.privacy.no_content')}
           </Text>
         </View>
         <View style={styles.privacyToggleRow}>
           <View style={styles.privacyToggleCopy}>
-            <Text style={[styles.privacyToggleLabel, { color: noctalia.text.primary }]}>
+            <Text style={[styles.privacyToggleLabel, { color: sheetTokens.text.primary }]}>
               {t('onboarding.privacy.toggle_label')}
             </Text>
-            <Text style={[styles.privacyToggleHint, { color: noctalia.text.secondary }]}>
+            <Text style={[styles.privacyToggleHint, { color: sheetTokens.text.secondary }]}>
               {t('onboarding.privacy.toggle_hint')}
             </Text>
             <Text
               accessibilityLiveRegion="polite"
-              style={[styles.privacyStatus, { color: analyticsPreferenceError ? noctalia.status.danger.text : titleAccent }]}
+              style={[styles.privacyStatus, { color: analyticsPreferenceError ? sheetTokens.status.danger.text : sheetTokens.accent.text }]}
             >
               {analyticsPreferenceError
                 ? t('onboarding.privacy.error')
@@ -810,7 +786,7 @@ export default function OnboardingScreen() {
             </Text>
           </View>
           {analyticsPreferenceLoading ? (
-            <ActivityIndicator color={titleAccent} />
+            <ActivityIndicator color={sheetTokens.accent.text} />
           ) : (
             <Switch
               disabled={!analyticsAvailable}
@@ -829,7 +805,7 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  content: { flexGrow: 1, paddingHorizontal: 20, gap: 18 },
+  content: { flexGrow: 1, paddingHorizontal: 24, gap: 8 },
   topBar: {
     minHeight: 44,
     flexDirection: 'row',
@@ -843,18 +819,11 @@ const styles = StyleSheet.create({
   iconButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   skipButton: { minWidth: 72, minHeight: 44, alignItems: 'flex-end', justifyContent: 'center' },
   skipText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15 },
-  intro: { alignItems: 'center', gap: 13 },
-  heroImageWrap: {
-    alignSelf: 'stretch',
-    height: 280,
-    marginHorizontal: -20,
-    overflow: 'hidden',
-  },
-  heroImage: { width: '100%', height: '100%' },
+  intro: { alignItems: 'center', gap: 16 },
   title: {
     fontFamily: Fonts.fraunces.regular,
-    fontSize: 36,
-    lineHeight: 42,
+    fontSize: 34,
+    lineHeight: 40,
     textAlign: 'center',
   },
   subtitle: {
@@ -864,12 +833,11 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     textAlign: 'center',
   },
-  signalList: { width: '100%', maxWidth: 520, gap: 8, paddingTop: 4 },
-  signalRow: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 12 },
-  signalIcon: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
-  signalCopy: { flex: 1, gap: 1 },
-  signalTitle: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15, lineHeight: 20 },
-  signalBody: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 18 },
+  signalList: { width: '100%', maxWidth: 420, flexDirection: 'row', justifyContent: 'space-around', gap: 8, paddingTop: 12 },
+  signalRow: { flex: 1, alignItems: 'center', gap: 10 },
+  signalIcon: { width: 48, height: 48, borderRadius: 24, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  signalCopy: { alignItems: 'center' },
+  signalTitle: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 19, textAlign: 'center' },
   privacyLink: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 8 },
   privacyLinkText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, textDecorationLine: 'underline' },
   stepStage: { position: 'relative', alignSelf: 'stretch' },
@@ -878,20 +846,13 @@ const styles = StyleSheet.create({
   inactiveControl: { opacity: 0 },
   paths: { gap: 12 },
   hiddenStep: { display: 'none' },
-  pathHeroImageWrap: {
-    alignSelf: 'stretch',
-    aspectRatio: PATH_BACKGROUND_ASPECT_RATIO,
-    marginHorizontal: -20,
-    overflow: 'hidden',
-  },
-  pathHeroImage: { width: '100%', height: '100%' },
   pathHeading: { fontFamily: Fonts.fraunces.regular, fontSize: 34, lineHeight: 40, textAlign: 'center' },
   pathSubtitle: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 21, textAlign: 'center' },
-  pathCard: { borderWidth: 1, borderRadius: 24, borderCurve: 'continuous', overflow: 'hidden' },
-  pathRow: { minHeight: 94, paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', gap: 13 },
+  pathCard: { marginTop: 10, borderWidth: 1, borderRadius: 24, borderCurve: 'continuous', overflow: 'hidden' },
+  pathRow: { minHeight: 100, paddingHorizontal: 16, paddingVertical: 16, flexDirection: 'row', alignItems: 'center', gap: 13 },
   pathIcon: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
   pathCopy: { flex: 1, gap: 4 },
-  pathTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 19, lineHeight: 24 },
+  pathTitle: { fontFamily: Fonts.fraunces.medium, fontSize: 19, lineHeight: 24 },
   pathBody: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 18 },
   radio: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
   errorCard: { borderWidth: 1, borderRadius: 16, padding: 14, gap: 10 },
@@ -899,14 +860,10 @@ const styles = StyleSheet.create({
   errorActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   errorButton: { minHeight: 44, justifyContent: 'center', borderWidth: 1, borderColor: 'transparent', borderRadius: 12, paddingHorizontal: 12 },
   errorButtonText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 13 },
-  footer: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 20, paddingTop: 10 },
-  primaryButton: { minHeight: 60, borderRadius: 20, borderCurve: 'continuous', borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 18 },
-  // flex: 1 (not alignSelf: 'stretch') — in the row-direction button, stretch only
-  // affects height; with absolute-only children the box collapses to width 0 and
-  // Android drops the label entirely.
-  primaryContent: { flex: 1, height: 24 },
-  primaryContentLayer: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12 },
-  primaryText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 17, lineHeight: 22, textAlign: 'center' },
+  footer: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 24, paddingTop: 10 },
+  primaryButton: { minHeight: 56, borderRadius: 28, borderCurve: 'continuous', borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 18 },
+  primaryContent: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingVertical: 14 },
+  primaryText: { flexShrink: 1, fontFamily: Fonts.spaceGrotesk.bold, fontSize: 17, lineHeight: 22, textAlign: 'center' },
   privacyAssurance: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, borderWidth: 1, borderRadius: 14, padding: 12, marginBottom: 14 },
   privacyAssuranceText: { flex: 1, fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 19 },
   privacyToggleRow: { minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 16 },

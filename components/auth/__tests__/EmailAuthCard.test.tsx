@@ -649,6 +649,12 @@ describe('EmailAuthCard', () => {
     expect(screen.getByText('settings.account.description_signed_in')).toBeDefined();
   });
 
+  it('opens the account form immediately for a direct sign-in request', () => {
+    render(<EmailAuthCard presentation="embedded" initialAccountSheetOpen />);
+    expect(screen.getByTestId('settings-account-sheet')).toBeTruthy();
+    expect(screen.getByTestId('account-sheet-scroll')).toBeTruthy();
+  });
+
   it('opens the account form in a full-height keyboard-scrollable sheet', () => {
     render(<EmailAuthCard presentation="embedded" />);
 

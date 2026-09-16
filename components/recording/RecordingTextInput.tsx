@@ -1,5 +1,5 @@
 import React, { forwardRef, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions, type TextInputProps } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { MicButton, type MicButtonStatus } from '@/components/recording/MicButton';
@@ -16,6 +16,8 @@ export interface RecordingTextInputProps {
   layout?: 'textFirst' | 'voiceFirst';
   value: string;
   onChange: (text: string) => void;
+  selection?: TextInputProps['selection'];
+  onSelectionChange?: TextInputProps['onSelectionChange'];
   disabled: boolean;
   lengthWarning: string;
   instructionText: string;
@@ -29,6 +31,7 @@ export interface RecordingTextInputProps {
   placeholder?: string;
   autoFocus?: boolean;
   onSwitchToVoice: () => void;
+  onEditTranscript?: () => void;
   onOpenDetails?: () => void;
   onClear?: () => void;
 }
@@ -40,6 +43,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       value,
       layout = 'textFirst',
       onChange,
+      selection,
+      onSelectionChange,
       disabled,
       lengthWarning,
       instructionText,
@@ -52,6 +57,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       placeholder,
       autoFocus = true,
       onSwitchToVoice,
+      onEditTranscript,
       onOpenDetails,
       onClear,
     },
@@ -77,7 +83,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
         ? t('recording.status.recording.title')
         : null;
     const showInlineActions =
-      Boolean(onOpenDetails && hasValue) || Boolean(onClear && hasValue);
+      (!isVoiceFirst && voiceSupported) || Boolean(onOpenDetails && hasValue) || Boolean(onClear && hasValue);
 
     const textEditor = (
       <View style={styles.editor}>
@@ -94,6 +100,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           ref={ref}
           value={value}
           onChangeText={onChange}
+          selection={selection}
+          onSelectionChange={onSelectionChange}
           style={[
             styles.textInput,
             composerLayout.narrow && {
@@ -138,6 +146,16 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               style={styles.inlineActionFade}
             />
             <View style={styles.inlineActions}>
+              {!isVoiceFirst && voiceSupported ? (
+                <MicButton
+                  status={voiceStatus}
+                  onPress={onSwitchToVoice}
+                  interaction={voiceControlDisabled ? 'disabled' : 'enabled'}
+                  size="inline"
+                  testID={TID.Button.RecordToggle}
+                  accessibilityLabel={voiceLabel}
+                />
+              ) : null}
               {onOpenDetails && hasValue ? (
                 <Pressable
                   onPress={onOpenDetails}
@@ -273,6 +291,34 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       </View>
     );
 
+    const voiceTranscript = (
+      <View style={[styles.voicePreview, { backgroundColor: noctalia.surface.base, borderColor: noctalia.surface.border }]}>
+        <Text style={[styles.voicePreviewTitle, { color: noctalia.text.primary }]}>
+          {t('recording.tell.title')}
+        </Text>
+        <Text
+          numberOfLines={hasValue ? 4 : undefined}
+          style={[styles.voicePreviewText, { color: noctalia.text.secondary }]}
+          testID="recording-voice-preview"
+        >
+          {hasValue ? value : t('recording.tell.empty')}
+        </Text>
+        {hasValue && onEditTranscript ? (
+          <Pressable
+            onPress={onEditTranscript}
+            disabled={disabled || isVoicePreparing}
+            accessibilityRole="button"
+            accessibilityLabel={t('recording.tell.edit')}
+            style={styles.voiceReviewButton}
+            testID="recording-review-transcript"
+          >
+            <IconSymbol name="pencil" size={16} color={noctalia.accent.text} />
+            <Text style={[styles.voiceReviewText, { color: noctalia.accent.text }]}>{t('recording.tell.edit')}</Text>
+          </Pressable>
+        ) : null}
+      </View>
+    );
+
     return (
       <>
         {instructionText ? <View
@@ -300,7 +346,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           testID="recording-composer"
         >
           {isVoiceFirst && voiceSupported ? expressiveVoiceControl : textEditor}
-          {isVoiceFirst && voiceSupported ? textEditor : null}
+          {isVoiceFirst && voiceSupported ? voiceTranscript : null}
 
           {lengthWarning ? (
             <Text style={[styles.lengthWarning, { color: noctalia.accent.text }]}>
@@ -435,6 +481,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     paddingVertical: 2,
+  },
+  voicePreview: {
+    borderWidth: 1,
+    borderRadius: 22,
+    padding: 20,
+    gap: 10,
+  },
+  voicePreviewTitle: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 16,
+    lineHeight: 22,
+  },
+  voicePreviewText: {
+    fontFamily: Fonts.lora.regularItalic,
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  voiceReviewButton: {
+    minHeight: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  voiceReviewText: {
+    flexShrink: 1,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 14,
+    lineHeight: 20,
   },
   voiceHint: {
     width: '100%',

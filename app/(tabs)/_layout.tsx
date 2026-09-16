@@ -58,7 +58,7 @@ function TabBarItem({ label, icon, focused, palette, geometry }: {
 }) {
   const { compact, narrow, stackedLabels } = geometry;
   // Web Text cannot shrink to fit; use the available cell without the native inset.
-  const labelWidth = geometry.itemWidth - (Platform.OS === 'web' ? 2 : 10);
+  const labelWidth = geometry.itemWidth - (Platform.OS === 'web' || geometry.largeText ? 2 : 10);
   return (
     <View
       accessible={false}
@@ -195,7 +195,7 @@ function createTabButton({
     return (
       <HapticTab
         {...props}
-        style={Platform.OS === 'web' ? [props.style, { paddingHorizontal: 1 }] : props.style}
+        style={[props.style, { paddingHorizontal: 1 }]}
         testID={testID}
         accessibilityRole="tab"
         accessibilityLabel={accessibilityLabel}
@@ -342,7 +342,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.home'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="house" label={t('nav.home')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem icon="house" label={t(navigationLayout.largeText ? 'nav.home_compact' : 'nav.home')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(0, navigationLayout),
         }}
@@ -374,6 +374,7 @@ export default function TabLayout() {
           tabBarButton: (props) => (
             <HapticTab
               {...props}
+              style={[props.style, { paddingHorizontal: 1 }]}
               onPress={handleAddDreamPress}
               testID={TID.Tab.AddDream}
               accessibilityRole="tab"
@@ -382,7 +383,7 @@ export default function TabLayout() {
             />
           ),
           tabBarIcon: () => (
-            <AddDreamTabItem label={t('nav.capture_dream')} palette={palette} geometry={geometry} />
+            <AddDreamTabItem label={t(navigationLayout.largeText ? 'nav.capture_dream_compact' : 'nav.capture_dream')} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(2, navigationLayout),
         }}
@@ -399,7 +400,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.stats'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="chart.bar" label={t('nav.stats')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem icon="chart.bar" label={t(navigationLayout.largeText ? 'nav.stats_compact' : 'nav.stats')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(3, navigationLayout),
         }}
@@ -416,25 +417,9 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.explore'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="sparkles" label={t('nav.explore')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem icon="sparkles" label={t(navigationLayout.largeText ? 'nav.explore_compact' : 'nav.explore')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(4, navigationLayout),
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={returningGuestBlocked ? {
-          title: t('nav.settings'),
-          tabBarButton: createTabButton({
-            testID: TID.Tab.Settings,
-            accessibilityLabel: t('nav.settings'),
-          }),
-          tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="gear" label={t('nav.settings')} focused={focused} palette={palette} geometry={geometry} />
-          ),
-        } : {
-          href: null,
-          title: t('nav.settings'),
         }}
       />
     </Tabs>

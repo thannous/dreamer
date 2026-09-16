@@ -375,7 +375,7 @@ describe('native speech module integration', () => {
     await expect(startNativeSpeechSession('en-US')).resolves.toBeNull();
 
     expect(start).toHaveBeenCalledTimes(1);
-    expect(speechModule.addListener).toHaveBeenCalledTimes(4);
+    expect(speechModule.addListener).toHaveBeenCalledWith('start', expect.any(Function));
     removeListeners.forEach((remove) => expect(remove).toHaveBeenCalledTimes(1));
   });
 
@@ -452,9 +452,16 @@ describe('native speech module integration', () => {
     __setCachedSpeechModuleForTests(speechModule);
 
     const onEnd = jest.fn();
-    const session = await startNativeSpeechSession('en-US', { onEnd });
+    const onListeningChange = jest.fn();
+    const session = await startNativeSpeechSession('en-US', { onEnd, onListeningChange });
+    expect(onListeningChange).not.toHaveBeenCalled();
+    listeners.get('start')?.();
+    expect(onListeningChange).toHaveBeenLastCalledWith(true);
 
     listeners.get('end')?.();
+    expect(onListeningChange).toHaveBeenLastCalledWith(false);
+    listeners.get('start')?.();
+    expect(onListeningChange).toHaveBeenLastCalledWith(false);
 
     expect(onEnd).toHaveBeenCalledTimes(1);
     await session!.stop();

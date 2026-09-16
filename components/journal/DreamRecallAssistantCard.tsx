@@ -19,6 +19,8 @@ export type DreamRecallAssistantCardProps = {
   originalTranscript: string;
   originalPersistedSegmentId: string;
   offerEligible: boolean;
+  /** The user explicitly chose to complete their saved dream with this assistant. */
+  startRequested?: boolean;
 };
 
 type RecallActionProps = {
@@ -64,6 +66,7 @@ export function DreamRecallAssistantCard({
   originalTranscript,
   originalPersistedSegmentId,
   offerEligible,
+  startRequested = false,
 }: DreamRecallAssistantCardProps) {
   const { t, currentLang } = useTranslation();
   const { colors } = useTheme();
@@ -103,6 +106,13 @@ export function DreamRecallAssistantCard({
     originalPersistedSegmentId,
     t,
   });
+
+  const startedForDreamRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!startRequested || loading || hydrationStatus !== 'ready' || isBusy || state || startedForDreamRef.current === dreamId) return;
+    startedForDreamRef.current = dreamId;
+    void start();
+  }, [dreamId, hydrationStatus, isBusy, loading, start, startRequested, state]);
 
   const lastTurn = state?.turns[state.turns.length - 1];
   const openQuestionKey = lastTurn?.role === 'question' ? `${dreamId}:${lastTurn.id}` : null;
@@ -412,6 +422,11 @@ export function DreamRecallAssistantCard({
         <Text className="font-sans text-body-sm text-ivory-muted">
           {String(t('dream_recall.offer.body'))}
         </Text>
+        {error ? (
+          <Text accessibilityLiveRegion="polite" className="font-sans text-body-sm text-danger-on">
+            {String(t('dream_recall.session.error'))}
+          </Text>
+        ) : null}
         <View className="mt-1 flex-row flex-wrap gap-2">
           <RecallAction
             testID={TID.Button.DreamRecallStart}

@@ -2,7 +2,10 @@
 
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
+
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
+
+jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 24, bottom: 24, left: 0, right: 0 }) }));
 
 type HardwareBackHandler = (event: { timeStamp: number; type: string }) => boolean;
 type HardwareBackEvent = Parameters<HardwareBackHandler>[0];

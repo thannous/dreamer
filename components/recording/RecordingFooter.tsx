@@ -11,6 +11,9 @@ interface RecordingFooterProps {
   isSaveDisabled: boolean;
   saveButtonLabel: string;
   saveButtonAccessibilityLabel?: string;
+  onCompleteWithHelp?: () => void;
+  helpLabel?: string;
+  helpHint?: string;
 }
 
 export function RecordingFooter({
@@ -18,6 +21,9 @@ export function RecordingFooter({
   isSaveDisabled,
   saveButtonLabel,
   saveButtonAccessibilityLabel,
+  onCompleteWithHelp,
+  helpLabel,
+  helpHint,
 }: RecordingFooterProps) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -67,6 +73,20 @@ export function RecordingFooter({
           {saveButtonLabel}
         </Text>
       </Pressable>
+      {onCompleteWithHelp && helpLabel ? (
+        <Pressable
+          onPress={onCompleteWithHelp}
+          disabled={isSaveDisabled}
+          accessibilityRole="button"
+          accessibilityLabel={helpLabel}
+          accessibilityHint={helpHint}
+          testID="recording-complete-with-help"
+          style={styles.helpButton}
+        >
+          <Text style={[styles.helpLabel, { color: noctalia.accent.text }]}>{helpLabel}</Text>
+          {helpHint ? <Text style={[styles.helpHint, { color: noctalia.text.secondary }]}>{helpHint}</Text> : null}
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -104,5 +124,25 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  helpButton: {
+    minHeight: 48,
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 4,
+    gap: 4,
+  },
+  helpLabel: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 15,
+    lineHeight: 21,
+    textAlign: 'center',
+  },
+  helpHint: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 12,
+    lineHeight: 17,
+    textAlign: 'center',
   },
 });

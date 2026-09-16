@@ -140,7 +140,7 @@ export default function PaywallScreen() {
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.replace('/(tabs)/settings');
+      router.replace('/settings');
     }
   }, [analyticsTier, isActive, paywallTrigger, selectedId]);
 
@@ -160,7 +160,7 @@ export default function PaywallScreen() {
     // Remember the paywall context so a successful sign-in comes straight back
     // here instead of leaving the user on the Settings tab.
     requestReturnToPaywallIntent(paywallTrigger, { persist: true });
-    router.replace('/(tabs)/settings?section=account');
+    router.replace('/settings?section=account');
   }, [paywallTrigger]);
 
   const handleOpenLegalLink = useCallback((kind: LegalLinkKind) => {

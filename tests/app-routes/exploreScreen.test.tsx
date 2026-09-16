@@ -184,7 +184,7 @@ describe('ExploreScreen', () => {
         expect(content.paddingBottom).toBeGreaterThan(clearance);
       }
       fireEvent.click(settings);
-      expect(mockPush).toHaveBeenLastCalledWith('/(tabs)/settings');
+      expect(mockPush).toHaveBeenLastCalledWith('/settings');
       fireEvent.click(screen.getByTestId(TID.Button.ExplorerRitual));
       expect(mockPush).toHaveBeenLastCalledWith('/ritual/memory');
 
@@ -320,7 +320,7 @@ describe('ExploreScreen', () => {
     render(<ExploreScreen />);
     const settings = await screen.findByTestId(TID.Button.HeaderExploreSettings);
     fireEvent.click(settings);
-    expect(mockPush).toHaveBeenCalledWith('/(tabs)/settings');
+    expect(mockPush).toHaveBeenCalledWith('/settings');
   });
 });
 
@@ -336,7 +336,7 @@ describe('Explorer ritual picker', () => {
     await openPicker();
     fireEvent.click(screen.getByTestId('ritual-choice-memory'));
     expect(mockSaveRitualPreference).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByTestId('sheet-dismiss'));
+    fireEvent.click(screen.getByRole('button', { name: 'Dismiss ritual-picker' }));
     expect(screen.queryByRole('dialog')).toBeNull();
     fireEvent.click(screen.getByTestId(TID.Button.ExplorerRitual));
     expect(mockPush).toHaveBeenLastCalledWith('/ritual/starter');
@@ -351,7 +351,7 @@ describe('Explorer ritual picker', () => {
     fireEvent.click(screen.getByTestId('ritual-choice-memory'));
     fireEvent.click(screen.getByTestId('ritual-picker-confirm'));
     fireEvent.click(screen.getByTestId('ritual-picker-confirm'));
-    fireEvent.click(screen.getByTestId('sheet-dismiss'));
+    fireEvent.click(screen.getByRole('button', { name: 'Dismiss ritual-picker' }));
     expect(screen.getByRole('dialog')).toBeTruthy();
     expect(mockSaveRitualPreference).toHaveBeenCalledTimes(1);
     expect(mockSaveRitualPreference).toHaveBeenCalledWith('memory');

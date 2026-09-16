@@ -309,7 +309,7 @@ describe('Statistics screen VNext trends', () => {
     const settings = screen.getByTestId(TID.Button.HeaderTrendsSettings);
     expect(settings.getAttribute('aria-label')).toBe('nav.settings');
     fireEvent.click(settings);
-    expect(mockPush).toHaveBeenCalledWith('/(tabs)/settings');
+    expect(mockPush).toHaveBeenCalledWith('/settings');
     expect(screen.queryByTestId(TID.Tab.Settings)).toBeNull();
   });
 

@@ -11,6 +11,8 @@ import {
 } from '@/lib/speechCapability';
 
 type NativeSpeechOptions = {
+  /** True only after the recognizer reports that it is ready to listen. */
+  onListeningChange?: (listening: boolean) => void;
   onPartial?: (text: string) => void;
   /** Recognition ended without the caller requesting stop/abort. */
   onEnd?: () => void;
@@ -624,6 +626,7 @@ export async function startNativeSpeechSession(
     const endPromise = new Promise<void>((resolve) => {
       resolveEnd = () => {
         ended = true;
+        options?.onListeningChange?.(false);
         resolve();
       };
     });
@@ -632,6 +635,11 @@ export async function startNativeSpeechSession(
       unexpectedEndNotified = true;
       options?.onEnd?.();
     };
+
+    const startSub = speechModule.addListener('start', () => {
+      if (sessionId !== globalSessionCounter || ended || stopRequested) return;
+      options?.onListeningChange?.(true);
+    });
 
     const resultSub = speechModule.addListener('result', (event) => {
       // Ignore events from old sessions (race condition protection)
@@ -700,6 +708,7 @@ export async function startNativeSpeechSession(
         console.log('[nativeSpeech] audioend', { sessionId, hasUri: Boolean(event?.uri) });
       }
       recordedUri = event?.uri ?? null;
+      options?.onListeningChange?.(false);
     });
 
     const errorSub = speechModule.addListener('error', (event) => {
@@ -731,8 +740,10 @@ export async function startNativeSpeechSession(
 
     const cleanup = () => {
       resolveEnd = null;
+      options?.onListeningChange?.(false);
 
       // Guaranteed cleanup: remove all listeners even if one fails
+      try { startSub.remove(); } catch {}
       try { resultSub.remove(); } catch {}
       try { endSub.remove(); } catch {}
       try { audioEndSub.remove(); } catch {}
@@ -768,6 +779,7 @@ export async function startNativeSpeechSession(
 
     const stop = async () => {
       stopRequested = true;
+      options?.onListeningChange?.(false);
       if (!ended) {
         try {
           speechModule.stop();

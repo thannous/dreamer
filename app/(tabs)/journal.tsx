@@ -1,3 +1,4 @@
+import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { UpsellCard } from '@/components/guest/UpsellCard';
@@ -9,6 +10,8 @@ import { RemoteJournalList } from '@/components/journal/RemoteJournalList';
 import type { DreamListItem } from '@/lib/journalReadContracts';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
+import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
+import { JournalFirstPage } from '@/components/journal/JournalFirstPage';
 import { useJournalListPagination } from '@/hooks/useJournalListPagination';
 import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
 import { JournalPersistenceNotice } from '@/components/journal/JournalPersistenceNotice';
@@ -94,6 +97,7 @@ function getInitialKeyboardVisibility(): boolean {
 export default function JournalListScreen() {
   const { dreams, completeness, remotePreviewAllowed, loadRemoteDreamForPreview, persistenceState, refreshState, reloadDreams, retryPersistence } = useDreams();
   const { colors, mode } = useTheme();
+  const openQuickSettings = useQuickSettings();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   useClearWebFocus();
@@ -108,10 +112,9 @@ export default function JournalListScreen() {
   const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
   const desktopColumns = width >= 1440 ? 4 : 3;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
-  // Keep only the search input outside the column-keyed FlashList so rotation
-  // across the tablet breakpoint does not remount it. The remaining header
-  // stays ListHeaderComponent so it can scroll away
-  // on short landscape viewports.
+  // Keep the shared brand header and search outside the column-keyed list so
+  // rotation cannot remount the input. Filters remain in ListHeaderComponent;
+  // on short viewports the measured chrome can collapse as the list scrolls.
   const scrollHeader = !isDesktopLayout;
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -123,9 +126,13 @@ export default function JournalListScreen() {
   // uncovered viewport, keep the input mounted outside the column-keyed list but
   // out of flow so the list can fill the space above the overlay. A header spacer
   // and scroll translation let a dream card move into that uncovered box.
+  const headerMeasureKey = `${width}:${fontScale}:${insets.top}`;
+  const [measuredHeader, setMeasuredHeader] = useState({ key: '', height: 0 });
   const mobileSearchHeaderHeight = isDesktopLayout
     ? 0
-    : insets.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
+    : measuredHeader.key === headerMeasureKey
+      ? measuredHeader.height
+      : insets.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
   const overlayNavClearance = isDesktopLayout || isKeyboardVisible ? 0 : navigationClearance;
   const viewportAboveNav = Math.max(0, height - overlayNavClearance);
   // iOS software keyboards overlay the window and do not shrink
@@ -850,7 +857,7 @@ export default function JournalListScreen() {
       {!searchConsumesLayout ? (
         <View testID="journal-search-scroll-slot" style={{ height: mobileSearchHeaderHeight }} />
       ) : null}
-      <PageHeaderContent
+      {isDesktopLayout ? <PageHeaderContent
         titleKey="journal.title"
         animationSeed={showHeaderAnimations ? 1 : 0}
         style={
@@ -858,7 +865,7 @@ export default function JournalListScreen() {
             ? DESKTOP_MAX_WIDTH_STYLE
             : { paddingTop: ThemeLayout.spacing.sm }
         }
-      />
+      /> : null}
 
       <View
         className="gap-4 p-4"
@@ -886,8 +893,8 @@ export default function JournalListScreen() {
             />
           </View>
           <View className="ml-auto flex-row items-center gap-2">
-            <PressableScale
-              onPress={() => router.push('/(tabs)/settings')}
+            {isDesktopLayout ? <PressableScale
+              onPress={openQuickSettings}
               haptic="selection"
               accessibilityRole="button"
               accessibilityLabel={t('nav.settings')}
@@ -899,7 +906,7 @@ export default function JournalListScreen() {
                 size={18}
                 color={noctalia.text.primary}
               />
-            </PressableScale>
+            </PressableScale> : null}
             <PressableScale
               onPress={() => setShowAdvancedFilters(true)}
               haptic="selection"
@@ -925,6 +932,28 @@ export default function JournalListScreen() {
     </View>
   );
 
+  // An empty local cache is not proof of an empty journal while a remote
+  // preview, incomplete sync, loading state or read failure is active.
+  const showFirstPage = canStartRememberedDreamFromEmpty
+    && persistenceState.status === 'ready'
+    && refreshState?.status !== 'refreshing'
+    && refreshState?.status !== 'error'
+    && completeness?.status !== 'incomplete'
+    && completeness?.status !== 'loading'
+    && !previewEligible;
+
+  if (showFirstPage) {
+    return (
+      <View className="flex-1 bg-ink" testID={TID.Screen.Journal}>
+        <JournalFirstPage
+          bottomInset={overlayNavClearance}
+          onStartDream={handleStartRememberedDreamFromEmpty}
+          onSettings={openQuickSettings}
+        />
+      </View>
+    );
+  }
+
   return (
     <ScrollPerfProvider isScrolling={isScrolling}>
       <View className="flex-1 bg-ink" testID={TID.Screen.Journal}>
@@ -934,7 +963,12 @@ export default function JournalListScreen() {
         {isDesktopLayout ? listHeader : (
           <View
             testID="journal-search-chrome"
-            className="px-4 pb-2"
+            className="pb-2"
+            onLayout={(event) => {
+              const nextHeight = event.nativeEvent.layout.height;
+              setMeasuredHeader((current) => current.key === headerMeasureKey && current.height === nextHeight
+                ? current : { key: headerMeasureKey, height: nextHeight });
+            }}
             // Overlay chrome is taller than the uncovered list box on short
             // landscape. box-none lets FlashList receive drags that miss the
             // SearchBar. Vertical drags that start on the controls are forwarded
@@ -942,7 +976,6 @@ export default function JournalListScreen() {
             // input and clear button.
             pointerEvents={searchConsumesLayout ? 'auto' : 'box-none'}
             style={{
-              paddingTop: insets.top + ThemeLayout.spacing.sm,
               ...(searchConsumesLayout
                 ? null
                 : {
@@ -967,7 +1000,16 @@ export default function JournalListScreen() {
               onResponderRelease={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
               onResponderTerminate={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
             >
-              {searchBar}
+              <NoctaliaScreenHeader
+                titleKey="nav.journal"
+                actions={[{
+                  icon: 'gear',
+                  onPress: openQuickSettings,
+                  accessibilityLabel: t('nav.settings'),
+                  testID: TID.Button.HeaderJournalSettings,
+                }]}
+                inlineSlot={searchBar}
+              />
             </View>
           </View>
         )}

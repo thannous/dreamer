@@ -533,7 +533,7 @@ describe('onboardingState', () => {
         hasUser: false,
         onboardingState: incomplete,
       })
-    ).toBe('/(tabs)/settings');
+    ).toBe('/settings');
   });
 
   it('keeps a notification queued until it actually wins startup arbitration', () => {
@@ -568,12 +568,12 @@ describe('onboardingState', () => {
     } as const;
     expect(isStartupDestinationObserved(destination, '/onboarding')).toBe(false);
     expect(isStartupDestinationObserved(destination, '/recording')).toBe(true);
-    expect(isStartupDestinationObserved('/(tabs)/settings', '/settings')).toBe(true);
+    expect(isStartupDestinationObserved('/settings', '/settings')).toBe(true);
   });
 
   it('reuses only an already observed path-only startup destination', () => {
     expect(canReuseObservedStartupDestination('/onboarding', '/onboarding')).toBe(true);
-    expect(canReuseObservedStartupDestination('/(tabs)/settings', '/settings')).toBe(true);
+    expect(canReuseObservedStartupDestination('/settings', '/settings')).toBe(true);
     expect(canReuseObservedStartupDestination('/recording', '/onboarding')).toBe(false);
     expect(canReuseObservedStartupDestination('/recording?source=notification', '/recording')).toBe(
       false

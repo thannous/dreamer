@@ -34,24 +34,24 @@ export function getBottomNavigationLayout(
   const stackedLabels = narrow || largeText;
   const horizontalLayout = getTabBarHorizontalLayout(width);
   const contentWidth = Math.max(0, width - horizontalLayout.start * 2 - (narrow ? 8 : 16) - 2);
-  const itemWidth = contentWidth / (largeText ? compact ? 3 : 2 : 5);
+  const itemWidth = contentWidth / 5;
   const labelFontSize = compact || width < 400 ? 11 : 12;
   const labelLineHeight = 16;
-  // Keep visible words on narrow screens and for people using large text.
-  // The longest translated label has eleven characters. Reserve conservative
-  // wrapping space rather than shrinking the user's requested text size.
+  // Large text uses the translated short labels (at most eight characters,
+  // five for Capture); full names remain on the accessible tab controls.
+  // Reserve wrapping height while keeping all five destinations in one row.
   const labelLines = largeText
-    ? Math.max(1, Math.ceil((11 * labelFontSize * safeFontScale * 0.65) / Math.max(1, itemWidth - 10)))
+    ? Math.max(1, Math.ceil((8 * labelFontSize * safeFontScale * 0.52) / Math.max(1, itemWidth - 2)))
     : stackedLabels
     ? Math.max(2, Math.ceil((11 * labelFontSize * safeFontScale * 0.65) / Math.max(1, itemWidth - 8)))
     : 1;
   const labelHeight = Math.ceil(labelLines * labelLineHeight * safeFontScale + 4);
   const centerActionWidth = largeText
-    ? compact ? itemWidth - 8 : Math.min(420, contentWidth - 16)
+    ? itemWidth - 4
     : Math.min(compact ? 60 : narrow ? 64 : 72, itemWidth - 4);
-  const horizontalCenter = largeText && !compact;
+  const horizontalCenter = false;
   const centerLabelLines = largeText
-    ? Math.max(1, Math.ceil((11 * labelFontSize * safeFontScale * 0.65) / Math.max(1, centerActionWidth - (horizontalCenter ? 40 : 4))))
+    ? Math.max(1, Math.ceil((5 * labelFontSize * safeFontScale * 0.65) / Math.max(1, centerActionWidth - 4)))
     : labelLines;
   const centerLabelHeight = Math.ceil(centerLabelLines * labelLineHeight * safeFontScale + 4);
   const rowHeight = 24 + 10 + labelHeight + 3 + 10;
@@ -77,39 +77,25 @@ export function getBottomNavigationLayout(
     labelLineHeight,
     labelLines,
     labelHeight,
-    barHeight: largeText
-      ? compact ? Math.max(rowHeight * 2, centerRowHeight) + 10 : rowHeight * 2 + centerRowHeight + 16
-      : Math.max(compact ? COMPACT_TAB_BAR_HEIGHT : TAB_BAR_HEIGHT, centerActionHeight + 10),
+    // Grow the labels within one row; never turn the persistent navigation
+    // into a three-row panel when the user increases their text size.
+    barHeight: Math.max(
+      compact ? COMPACT_TAB_BAR_HEIGHT : TAB_BAR_HEIGHT,
+      centerActionHeight + 10,
+      largeText ? rowHeight + 14 : 0,
+    ),
     centerActionWidth,
     centerActionHeight,
     minimumBottomInset: compact ? COMPACT_TAB_BAR_BOTTOM_INSET : 14,
   };
 }
 
-/** Preserve reading order and centered Capture: portrait rows, landscape columns. */
+/** Keep the five destinations in the same horizontal reading order at every text size. */
 export function getBottomNavigationItemStyle(
-  index: number,
-  layout: ReturnType<typeof getBottomNavigationLayout>
+  _index: number,
+  _layout: ReturnType<typeof getBottomNavigationLayout>
 ): ViewStyle {
-  if (!layout.largeText) return { flex: 1, height: '100%' };
-  if (layout.compact) {
-    return {
-      position: 'absolute',
-      start: index < 2 ? 0 : index === 2 ? layout.itemWidth : layout.itemWidth * 2,
-      top: index === 1 || index === 4 ? layout.rowHeight : 0,
-      width: layout.itemWidth,
-      height: index === 2 ? layout.barHeight - 10 : layout.rowHeight,
-      flex: 1,
-    };
-  }
-  return {
-    position: 'absolute',
-    start: index === 1 || index === 4 ? layout.itemWidth : 0,
-    top: index < 2 ? 0 : index === 2 ? layout.rowHeight : layout.rowHeight + layout.centerRowHeight,
-    width: index === 2 ? layout.contentWidth : layout.itemWidth,
-    height: index === 2 ? layout.centerRowHeight : layout.rowHeight,
-    flex: 1,
-  };
+  return { flex: 1, height: '100%' };
 }
 
 export const TAB_BAR_HORIZONTAL_MARGIN = 22;

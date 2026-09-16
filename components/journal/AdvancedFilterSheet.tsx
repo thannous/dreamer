@@ -119,6 +119,7 @@ export function AdvancedFilterSheet({
   return (
     <BottomSheet
       visible={visible}
+      scrollable={false}
       onClose={onClose}
       style={[SHEET_STYLE, { backgroundColor: noctalia.surface.raised, maxHeight }]}
       testID={TID.Modal.AdvancedFilters}
@@ -145,6 +146,8 @@ export function AdvancedFilterSheet({
       </View>
 
       <ScrollView
+        nestedScrollEnabled
+        style={{ flexShrink: 1 }}
         showsVerticalScrollIndicator={false}
         contentContainerClassName="gap-6 pb-4"
       >

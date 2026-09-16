@@ -294,7 +294,7 @@ function DreamChatContent() {
           text: tier === 'guest'
             ? t('dream_chat.limit_cta_guest')
             : t('dream_chat.limit_cta_free'),
-          onPress: () => router.push('/(tabs)/settings' as const),
+          onPress: () => router.push('/settings' as const),
         }]),
     ];
     Alert.alert(
@@ -1443,7 +1443,7 @@ function ComposerFooter({
           {tier !== 'plus' && (
             <View>
               <GesturePressable
-                onPress={() => router.push('/(tabs)/settings')}
+                onPress={() => router.push('/settings')}
                 style={[
                   styles.limitCtaButton,
                   { backgroundColor: noctalia.status.danger.icon },

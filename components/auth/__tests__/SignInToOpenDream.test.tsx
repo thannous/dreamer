@@ -25,7 +25,7 @@ it('waits for durable destination storage before opening sign-in', async () => {
   expect(mockRequest).toHaveBeenCalledWith('/journal/1700000000000?remoteId=42');
   expect(mockReplace).not.toHaveBeenCalled();
   saved();
-  await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/(tabs)/settings'));
+  await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/settings'));
 });
 it('keeps the original screen and offers a retry when destination storage fails', async () => {
   mockRequest.mockRejectedValue(new Error('disk unavailable'));

@@ -136,7 +136,7 @@ export function NoctaliaBottomNav({
   const items: BottomNavItem[] = [
     {
       key: 'home',
-      label: t('nav.home'),
+      label: t(navigationLayout.largeText ? 'nav.home_compact' : 'nav.home'),
       accessibilityLabel: t('nav.home'),
       icon: 'house',
       href: '/',
@@ -152,7 +152,7 @@ export function NoctaliaBottomNav({
     },
     {
       key: 'addDream',
-      label: t('nav.capture_dream'),
+      label: t(navigationLayout.largeText ? 'nav.capture_dream_compact' : 'nav.capture_dream'),
       accessibilityLabel: t('nav.capture_dream_accessibility'),
       icon: addDreamIcon,
       href: '/recording',
@@ -160,7 +160,7 @@ export function NoctaliaBottomNav({
     },
     {
       key: 'stats',
-      label: t('nav.stats'),
+      label: t(navigationLayout.largeText ? 'nav.stats_compact' : 'nav.stats'),
       accessibilityLabel: t('nav.stats'),
       icon: 'chart.bar',
       href: '/statistics',
@@ -168,7 +168,7 @@ export function NoctaliaBottomNav({
     },
     {
       key: 'explore',
-      label: t('nav.explore'),
+      label: t(navigationLayout.largeText ? 'nav.explore_compact' : 'nav.explore'),
       accessibilityLabel: t('nav.explore'),
       icon: 'sparkles',
       // Keep the nested tab state explicit. When this bar is used from Capture,
@@ -271,7 +271,7 @@ export function NoctaliaBottomNav({
                   <View
                     accessible={false}
                     importantForAccessibility="no-hide-descendants"
-                    style={{ width: navigationLayout.itemWidth - (Platform.OS === 'web' ? 2 : 10), maxWidth: '100%' }}
+                    style={{ width: navigationLayout.itemWidth - (Platform.OS === 'web' || navigationLayout.largeText ? 2 : 10), maxWidth: '100%' }}
                     className={`min-w-0 items-center justify-center ${
                       navigationLayout.compact ? 'gap-px' : 'gap-[5px]'
                     } w-full flex-1`}
@@ -286,7 +286,7 @@ export function NoctaliaBottomNav({
                         className={`font-sans-medium w-full min-w-0 shrink text-center ${labelSizeClassName} ${
                           isActive ? 'text-nav-active' : 'text-nav-inactive'
                         }`}
-                        style={[labelStyle, { width: navigationLayout.itemWidth - (Platform.OS === 'web' ? 2 : 10), maxWidth: '100%' }]}
+                        style={[labelStyle, { width: navigationLayout.itemWidth - (Platform.OS === 'web' || navigationLayout.largeText ? 2 : 10), maxWidth: '100%' }]}
                         numberOfLines={navigationLayout.labelLines}
                         textBreakStrategy="simple"
                         ellipsizeMode="tail"

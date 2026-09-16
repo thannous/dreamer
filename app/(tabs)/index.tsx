@@ -1,3 +1,4 @@
+import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { router, useFocusEffect } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
@@ -69,6 +70,7 @@ const REMINDER_CARD_SPACING: ViewStyle = { marginBottom: 24 };
  */
 export default function InspirationScreen() {
   const { colors, mode } = useTheme();
+  const openQuickSettings = useQuickSettings();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, currentLang } = useTranslation();
   const guideCopy = useMemo(
@@ -185,12 +187,12 @@ export default function InspirationScreen() {
       },
       {
         icon: "gear" as IconName,
-        onPress: () => router.push("/(tabs)/settings" as any),
+        onPress: openQuickSettings,
         accessibilityLabel: t("nav.settings"),
         testID: TID.Button.HeaderHomeSettings,
       },
     ],
-    [selectedRitualId, t],
+    [selectedRitualId, t, openQuickSettings],
   );
 
   const syncTodayClock = useCallback((nextNow = Date.now()) => {

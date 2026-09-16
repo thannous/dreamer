@@ -65,6 +65,7 @@ jest.mock('@/components/analysis/AnalysisFlightIndicator', () => ({ AnalysisFlig
 jest.mock('@/components/reminders/EngagementRemindersHost', () => ({ EngagementRemindersHost: () => <div data-testid="reminders-host" /> }));
 jest.mock('@/components/speech/OfflineModelPromptHost', () => ({ OfflineModelPromptHost: () => <div data-testid="speech-host" /> }));
 jest.mock('@/components/releases/WhatsNewModal', () => ({ WhatsNewModalHost: () => null }));
+jest.mock('@/components/settings/QuickSettingsProvider', () => ({ QuickSettingsProvider: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/components/VercelAnalytics', () => ({ VercelAnalytics: () => null }));
 jest.mock('@/components/VercelSpeedInsights', () => ({ VercelSpeedInsights: () => null }));
 jest.mock('@/lib/i18n', () => ({ loadTranslations: jest.fn().mockResolvedValue(undefined) }));

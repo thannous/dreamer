@@ -22,6 +22,8 @@ jest.mock('@/constants/noctaliaDesign', () => ({
   getNoctaliaDesignTokens: () => ({
     action: { primary: '#dcaf70', primaryBorder: '#eac291', primaryText: '#21180f' },
     surface: { borderStrong: '#555' },
+    accent: { text: '#dcaf70' },
+    text: { secondary: '#aaa' },
   }),
 }));
 
@@ -61,6 +63,21 @@ describe('RecordingFooter', () => {
       expect(label.props.maxFontSizeMultiplier).toBeUndefined();
       expect(button.props.accessibilityLabel).toBe('Enregistrer le rêve sans analyse');
     }
+  });
+
+  it('offers help as a separate explicit action and disables both choices during saving', () => {
+    const onSave = jest.fn();
+    const onCompleteWithHelp = jest.fn();
+    const props = { onSave, onCompleteWithHelp, saveButtonLabel: 'Save', helpLabel: 'Help', helpHint: 'Saved before continuing' };
+    const view = render(<RecordingFooter {...props} isSaveDisabled={false} />);
+    fireEvent.press(view.getByTestId('recording-complete-with-help'));
+    expect(onCompleteWithHelp).toHaveBeenCalledTimes(1);
+    expect(onSave).not.toHaveBeenCalled();
+    view.rerender(<RecordingFooter {...props} isSaveDisabled />);
+    fireEvent.press(view.getByTestId('recording-complete-with-help'));
+    fireEvent.press(view.getByTestId(TID.Button.SaveDream));
+    expect(onCompleteWithHelp).toHaveBeenCalledTimes(1);
+    expect(onSave).not.toHaveBeenCalled();
   });
 
   it('keeps the default-size button content-sized', () => {

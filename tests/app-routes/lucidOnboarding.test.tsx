@@ -3,6 +3,8 @@
 import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
+jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 24, bottom: 24, left: 0, right: 0 }) }));
+
 const mockCompleteOnboarding = jest.fn();
 const mockSaveOnboardingDraft = jest.fn();
 const mockReplace = jest.fn();

@@ -53,7 +53,7 @@ import {
 import { canDictate } from '@/lib/speechCapability';
 import { buildJournalDetailHref } from '@/lib/journalSavedConfirmation';
 import { isTranscriptSaveable } from '@/lib/recordingDraftProgress';
-import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
+import { insertDictation, type DictationInsertion, type TranscriptSelection } from '@/lib/dictationInsertion';
 import { TID } from '@/lib/testIDs';
 import type {
   DreamAnalysis,
@@ -121,7 +121,7 @@ export default function RecordingScreen() {
     transition: transitionOnboarding,
   } = useOnboarding();
   const insets = useSafeAreaInsets();
-  const { width: viewportWidth, height: viewportHeight, fontScale } = useWindowDimensions();
+  const { width: viewportWidth, height: viewportHeight } = useWindowDimensions();
   const recordingParams = useLocalSearchParams<RecordingRouteParams>();
   const parsedRecordingParams = useMemo(
     () => parseRecordingRouteParams(recordingParams),
@@ -141,6 +141,9 @@ export default function RecordingScreen() {
   const [isPreparingRecording, setIsPreparingRecording] = useState(false);
   const recordingTransitionRef = useRef(false);
   const baseTranscriptRef = useRef('');
+  const transcriptSelectionRef = useRef<TranscriptSelection | undefined>(undefined);
+  const [transcriptSelection, setTranscriptSelection] = useState<TranscriptSelection | undefined>();
+  const dictationInsertionRef = useRef<DictationInsertion | null>(null);
   const dictationIntentRef = useRef<'idle' | 'listening' | 'paused'>('idle');
   const [dictationIntent, setDictationIntent] = useState<'idle' | 'listening' | 'paused'>('idle');
   const [isHandsFreeRestarting, setIsHandsFreeRestarting] = useState(false);
@@ -150,6 +153,9 @@ export default function RecordingScreen() {
   const handleRestoreDraft = useCallback((savedTranscript: string) => {
     setTranscript(savedTranscript);
     baseTranscriptRef.current = savedTranscript;
+    dictationInsertionRef.current = null;
+    transcriptSelectionRef.current = undefined;
+    setTranscriptSelection(undefined);
   }, []);
   const { noteInput, clearAfterSuccessfulSave, lastPersistedValue, isHydrated, hydrationStatus, retryHydration } = useRecordingDraftPersistence({
     transcript,
@@ -343,26 +349,6 @@ export default function RecordingScreen() {
   const textInputRef = useRef<TextInput | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
   const lastInputSourceRef = useRef<RecordingInputModePreference>('text');
-  const combineTranscript = useCallback(
-    (base: string, addition: string) => {
-      return combineTranscriptPure({
-        base,
-        addition,
-        devLog: __DEV__,
-      });
-    },
-    []
-  );
-
-  const normalizeForComparison = useCallback((text: string): string => {
-    return text
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, ' ')
-      .trim();
-  }, []);
-
   const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
 
   // Voice is blocked only when the device cannot capture speech at all. Every
@@ -420,9 +406,29 @@ export default function RecordingScreen() {
       }
       setTranscript(text);
       baseTranscriptRef.current = text;
+      dictationInsertionRef.current = null;
+      transcriptSelectionRef.current = undefined;
+      setTranscriptSelection(undefined);
     },
     [captureIntent, isHydrated, noteInput]
   );
+
+  const applyDictationTranscript = useCallback((speech: string): boolean => {
+    if (!isHydrated || !speech.trim()) return false;
+    const base = baseTranscriptRef.current;
+    const insertion = dictationInsertionRef.current ?? {
+      base,
+      selection: transcriptSelectionRef.current ?? { start: base.length, end: base.length },
+    };
+    const result = insertDictation(insertion, speech);
+    if (noteInput(result.text) !== true) return false;
+    dictationInsertionRef.current = insertion;
+    baseTranscriptRef.current = result.text;
+    transcriptSelectionRef.current = result.selection;
+    setTranscriptSelection(result.selection);
+    setTranscript(result.text);
+    return true;
+  }, [isHydrated, noteInput]);
 
   const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
 
@@ -433,17 +439,15 @@ export default function RecordingScreen() {
       stopRecordingFromNativeEndRef.current?.();
     },
     onPartialTranscript: (text) => {
-      if (!isHydrated) return;
-      const { text: combined } = combineTranscript(baseTranscriptRef.current, text);
-      if (noteInput(combined) !== true) return;
-      consecutiveEmptyHandsFreeRestartsRef.current = 0;
-      setTranscript(combined);
-      baseTranscriptRef.current = combined;
+      if (applyDictationTranscript(text)) {
+        consecutiveEmptyHandsFreeRestartsRef.current = 0;
+      }
     },
   });
 
   const {
     isRecording,
+    isSpeechListening,
     isRecordingRef,
     recordingPermissionState,
     startRecording: startSessionRecording,
@@ -495,6 +499,8 @@ export default function RecordingScreen() {
       handsFreeRestartGenerationRef.current += 1;
       handsFreeRestartInFlightRef.current = false;
       baseTranscriptRef.current = '';
+      dictationInsertionRef.current = null;
+      transcriptSelectionRef.current = undefined;
       void forceStopRecording('unmount');
       blurActiveElement();
     };
@@ -552,6 +558,9 @@ export default function RecordingScreen() {
     setRememberedApproximatePeriod(undefined);
     setRememberedStrongestFragment(undefined);
     baseTranscriptRef.current = '';
+    dictationInsertionRef.current = null;
+    transcriptSelectionRef.current = undefined;
+    setTranscriptSelection(undefined);
     captureStartedTrackedRef.current = false;
   }, []);
 
@@ -561,11 +570,14 @@ export default function RecordingScreen() {
     setLengthWarning('');
     setVoiceFallbackReason(null);
     baseTranscriptRef.current = '';
+    dictationInsertionRef.current = null;
+    transcriptSelectionRef.current = undefined;
+    setTranscriptSelection(undefined);
   }, [isHydrated, noteInput]);
 
   const navigateToJournalDetail = useCallback((
     dreamId: string | number,
-    options?: { saved?: boolean }
+    options?: { saved?: boolean; recall?: boolean }
   ) => {
     router.replace(buildJournalDetailHref(dreamId, options));
   }, []);
@@ -612,45 +624,7 @@ export default function RecordingScreen() {
     Platform.OS === 'android' ? 'android' : Platform.OS === 'ios' ? 'ios' : 'web'
   ) as 'android' | 'ios' | 'web';
 
-  const applyStoppedTranscript = useCallback((transcriptText: string): boolean => {
-    if (!isHydrated) return false;
-    const trimmed = transcriptText.trim();
-    if (!trimmed) {
-      return false;
-    }
-
-    const normalizedBase = normalizeForComparison(baseTranscriptRef.current);
-    const normalizedFinal = normalizeForComparison(trimmed);
-
-    log.debug('stopRecording', {
-      baseLength: normalizedBase.length,
-      finalLength: normalizedFinal.length,
-      baseSample: normalizedBase.substring(0, 30) + '...',
-      finalSample: normalizedFinal.substring(0, 30) + '...',
-    });
-
-    const baseLen = normalizedBase.length;
-    const finalLen = normalizedFinal.length;
-    const similarity = baseLen > 0 && finalLen > 0
-      ? Math.min(baseLen, finalLen) / Math.max(baseLen, finalLen)
-      : 0;
-
-    if (similarity > 0.9 && normalizedFinal.startsWith(normalizedBase.substring(0, Math.min(20, normalizedBase.length)))) {
-      log.debug('final very similar to base, using final (may have corrections)', {
-        similarity: similarity.toFixed(2),
-      });
-      if (noteInput(trimmed) !== true) return false;
-      baseTranscriptRef.current = trimmed;
-      setTranscript(trimmed);
-      return true;
-    }
-
-    const { text: combined } = combineTranscript(baseTranscriptRef.current, trimmed);
-    if (noteInput(combined) !== true) return false;
-    baseTranscriptRef.current = combined;
-    setTranscript((prev) => (prev.trim() === combined.trim() ? prev : combined));
-    return true;
-  }, [combineTranscript, isHydrated, normalizeForComparison, noteInput]);
+  const applyStoppedTranscript = applyDictationTranscript;
 
   const stopRecording = useCallback(async (options?: {
     silent?: boolean;
@@ -716,7 +690,6 @@ export default function RecordingScreen() {
   const startRecording = useCallback(async (options?: { preserveDraft?: boolean }) => {
     if (!isHydrated) return false;
     const previousIntent = dictationIntentRef.current;
-    setDictationIntentState('listening');
     try {
       setIsPreparingRecording(true);
       setVoiceFallbackReason(null);
@@ -726,8 +699,16 @@ export default function RecordingScreen() {
       }
 
       const sourceTranscript = baseTranscriptRef.current || transcript;
+      dictationInsertionRef.current = {
+        base: sourceTranscript,
+        selection: transcriptSelectionRef.current ?? {
+          start: sourceTranscript.length,
+          end: sourceTranscript.length,
+        },
+      };
       const response = await startSessionRecording(sourceTranscript);
       if (response.success) {
+        setDictationIntentState('listening');
         lastInputSourceRef.current = 'voice';
         if (!captureStartedTrackedRef.current) {
           captureStartedTrackedRef.current = true;
@@ -903,7 +884,7 @@ export default function RecordingScreen() {
     };
   }, [dictationIntent, isHandsFreeRestarting, isRecording, stopRecording]);
 
-  const handleSaveDream = useCallback(async () => {
+  const handleSaveDream = useCallback(async (completeWithHelp = false) => {
     if (!isHydrated || isPersisting) return;
     if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
       await stopRecording({ silent: true, reason: 'stop' });
@@ -960,7 +941,7 @@ export default function RecordingScreen() {
           }
         });
       }
-      navigateToJournalDetail(savedDream.id, { saved: true });
+      navigateToJournalDetail(savedDream.id, { saved: true, recall: completeWithHelp });
     } catch (error) {
       const message = error instanceof DreamPersistenceError
         ? t(
@@ -1079,6 +1060,8 @@ export default function RecordingScreen() {
 
   const focusTranscriptEnd = useCallback((value: string) => {
     const len = value.length;
+    transcriptSelectionRef.current = { start: len, end: len };
+    setTranscriptSelection({ start: len, end: len });
     const focus = () => {
       const input = textInputRef.current;
       if (!input) return;
@@ -1162,7 +1145,7 @@ export default function RecordingScreen() {
     trimmedTranscript,
   ]);
 
-  const isVoiceListening = isRecording || dictationIntent === 'listening' || isHandsFreeRestarting;
+  const isVoiceListening = isSpeechListening;
   const recordingDurationLabel = isVoiceListening
     ? t('recording.status.duration', { duration: formatRecordingDuration(recordingDurationSeconds) })
     : undefined;
@@ -1325,12 +1308,17 @@ export default function RecordingScreen() {
 
   const saveFooter = (
     <RecordingFooter
-      onSave={handleSaveDream}
+      onSave={() => { void handleSaveDream(); }}
+      onCompleteWithHelp={inputMode === 'voice' && hasSaveableContent && !isRecording && !isPreparingRecording && !isHandsFreeRestarting
+        ? () => { void handleSaveDream(true); }
+        : undefined}
+      helpLabel={t('recording.tell.help')}
+      helpHint={t('recording.tell.help_hint')}
       isSaveDisabled={isSaveDisabled}
       saveButtonLabel={
         captureIntent === 'remembered'
           ? t('recording.remembered.save_button')
-          : t('recording.button.save_dream')
+          : inputMode === 'voice' ? t('recording.tell.save') : t('recording.button.save_dream')
       }
       saveButtonAccessibilityLabel={
         captureIntent === 'remembered'
@@ -1411,16 +1399,19 @@ export default function RecordingScreen() {
                   ref={textInputRef}
                   value={transcript}
                   onChange={handleTranscriptChange}
+                  selection={transcriptSelection}
+                  onSelectionChange={({ nativeEvent: { selection } }) => {
+                    transcriptSelectionRef.current = selection;
+                    setTranscriptSelection(selection);
+                  }}
                   disabled={interactionDisabled}
                   lengthWarning={lengthWarning}
                   instructionText={
                     captureIntent === 'remembered'
                       ? t('recording.remembered.active_instruction')
                       : inputMode === 'voice'
-                      ? (viewportHeight - insets.top - insets.bottom) / Math.max(1, fontScale) < 740
-                        ? ''
-                        : t('recording.instructions')
-                      : t('recording.instructions.text') || "Ou transcris ici les murmures de ton subconscient..."
+                      ? ''
+                      : t('recording.write.instruction')
                   }
                   switchToVoiceLabel={voiceControlLabel}
                   voiceSupported={isVoiceSupported}
@@ -1435,6 +1426,7 @@ export default function RecordingScreen() {
                   }
                   autoFocus={false}
                   onSwitchToVoice={handleVoiceCapturePress}
+                  onEditTranscript={switchToTextMode}
                   onOpenDetails={
                     captureIntent === 'remembered'
                       ? () => setShowRememberedDetailsSheet(true)
@@ -1482,6 +1474,7 @@ export default function RecordingScreen() {
 
       <StandardBottomSheet
         visible={captureIntent === 'remembered' && showRememberedDetailsSheet}
+        bodyScrollEnabled={false}
         onClose={() => setShowRememberedDetailsSheet(false)}
         title={t('recording.remembered_profile.accordion_title')}
         subtitle={t('recording.remembered_profile.title')}

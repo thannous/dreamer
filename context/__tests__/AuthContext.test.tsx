@@ -37,7 +37,7 @@ const {
 
   const mockClearRemoteDreamStorage = jest.fn();
   const mockConsumeStayOnSettingsIntent = jest.fn(() =>
-    stayOnSettings ? '/(tabs)/settings' : null
+    stayOnSettings ? '/settings' : null
   );
   const mockRouterReplace = jest.fn();
 
@@ -190,7 +190,7 @@ describe('AuthContext', () => {
       expect(result.current.loading).toBe(false);
     });
 
-    expect(mockRouterReplace).toHaveBeenCalledWith('/(tabs)/settings');
+    expect(mockRouterReplace).toHaveBeenCalledWith('/settings');
   });
 
   it('given a pending paywall return__when user loads__then goes back to the paywall with its trigger', async () => {

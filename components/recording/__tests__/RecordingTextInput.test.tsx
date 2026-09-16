@@ -237,7 +237,7 @@ describe('RecordingTextInput', () => {
     mockFontScale = 1;
   });
 
-  it('keeps write mode calm without an inline microphone', () => {
+  it('offers an inline microphone in write mode without starting automatically', () => {
     const onSwitchToVoice = jest.fn();
 
     render(
@@ -255,7 +255,7 @@ describe('RecordingTextInput', () => {
     expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
     expect(screen.getByTestId('icon.pencil')).toBeTruthy();
     expect(screen.queryByText('Dictate the dream')).toBeNull();
-    expect(screen.queryByTestId(TID.Button.RecordToggle)).toBeNull();
+    expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-size')).toBe('inline');
     expect(onSwitchToVoice).not.toHaveBeenCalled();
   });
 
@@ -291,7 +291,7 @@ describe('RecordingTextInput', () => {
 
     const { rerender } = render(
       <RecordingTextInput
-        layout="voiceFirst"
+        layout="textFirst"
         value=""
         onChange={jest.fn()}
         disabled={false}
@@ -306,7 +306,7 @@ describe('RecordingTextInput', () => {
 
     rerender(
       <RecordingTextInput
-        layout="voiceFirst"
+        layout="textFirst"
         value="A room under the sea"
         onChange={jest.fn()}
         disabled={false}
@@ -324,15 +324,17 @@ describe('RecordingTextInput', () => {
     expect(onOpenDetails).toHaveBeenCalledTimes(1);
   });
 
-  it('keeps the transcript editable while dictating in voice mode', () => {
+  it('shows a compact transcript while dictating and offers a handoff to the editor', () => {
     const onSwitchToVoice = jest.fn();
     const onChange = jest.fn();
+    const onEditTranscript = jest.fn();
 
     render(
       <RecordingTextInput
         layout="voiceFirst"
         value="A blue room"
         onChange={onChange}
+        onEditTranscript={onEditTranscript}
         disabled={false}
         lengthWarning=""
         instructionText="Write what you remember"
@@ -344,8 +346,8 @@ describe('RecordingTextInput', () => {
       />
     );
 
-    expect(screen.getByTestId(TID.Input.DreamTranscript)).toBeTruthy();
-    expect(screen.getByDisplayValue('A blue room')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Input.DreamTranscript)).toBeNull();
+    expect(screen.getByText('A blue room')).toBeTruthy();
     expect(screen.queryByText('Pause dictation')).toBeNull();
     expect(screen.getByTestId(TID.Text.RecordingVoiceStatusDuration).textContent).toBe('0:38');
     expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-size')).toBe('compact');
@@ -353,17 +355,16 @@ describe('RecordingTextInput', () => {
     expect(screen.getByTestId(TID.Text.RecordingVoiceStatusTitle).textContent).toBe('Recording');
     expect(screen.getByTestId(TID.Component.RecordingVoiceStatus).getAttribute('aria-live')).toBe('polite');
 
-    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
-      target: { value: 'A blue room with rain' },
-    });
+    fireEvent.click(screen.getByTestId('recording-review-transcript'));
+    expect(onEditTranscript).toHaveBeenCalledTimes(1);
 
     fireEvent.click(screen.getByTestId(TID.Button.RecordToggle));
 
-    expect(onChange).toHaveBeenCalledWith('A blue room with rain');
+    expect(onChange).not.toHaveBeenCalled();
     expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
   });
 
-  it('can prioritize the expressive microphone above the editable text box', () => {
+  it('can prioritize the expressive microphone above the voice introduction', () => {
     const onSwitchToVoice = jest.fn();
 
     render(
@@ -381,7 +382,8 @@ describe('RecordingTextInput', () => {
 
     expect(screen.getByText('Dictate your dream')).toBeTruthy();
     expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-size')).toBe('expressive');
-    expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Input.DreamTranscript)).toBeNull();
+    expect(screen.getByTestId('recording-voice-preview')).toBeTruthy();
     expect(screen.queryByText('Dictate the dream')).toBeNull();
 
     fireEvent.click(screen.getByTestId(TID.Button.RecordToggle));
@@ -409,23 +411,27 @@ describe('RecordingTextInput', () => {
     expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
   });
 
-  it('hides the microphone in write mode even when speech is supported', () => {
+  it.each(['', 'A blue room'])('starts dictation in write mode while preserving the draft %j', (value: string) => {
+    const onSwitchToVoice = jest.fn();
+    const onChange = jest.fn();
     render(
       <RecordingTextInput
         layout="textFirst"
         voiceSupported
-        value=""
-        onChange={jest.fn()}
+        value={value}
+        onChange={onChange}
         disabled={false}
         lengthWarning=""
         instructionText="Type your dream"
         switchToVoiceLabel="Dictate the dream"
-        onSwitchToVoice={jest.fn()}
+        onSwitchToVoice={onSwitchToVoice}
       />
     );
 
-    expect(screen.queryByTestId(TID.Button.RecordToggle)).toBeNull();
-    expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
+    fireEvent.click(screen.getByTestId(TID.Button.RecordToggle));
+    expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
+    expect(onChange).not.toHaveBeenCalled();
+    expect((screen.getByPlaceholderText('Tell your dream...') as HTMLTextAreaElement).value).toBe(value);
   });
 
   it('keeps write mode usable when speech is unsupported', () => {
@@ -499,7 +505,7 @@ describe('RecordingTextInput', () => {
     expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
   });
 
-  it('keeps the compact microphone above the editable transcript in tell mode', () => {
+  it('keeps the compact microphone above the transcript preview in tell mode', () => {
     render(
       <RecordingTextInput
         layout="voiceFirst"
@@ -519,13 +525,13 @@ describe('RecordingTextInput', () => {
 
     const html = composer.innerHTML;
     expect(html.indexOf(TID.Button.RecordToggle)).toBeGreaterThanOrEqual(0);
-    expect(html.indexOf(TID.Input.DreamTranscript)).toBeGreaterThan(
+    expect(html.indexOf('recording-voice-preview')).toBeGreaterThan(
       html.indexOf(TID.Button.RecordToggle)
     );
     expect(html.indexOf(TID.Component.RecordingVoiceStatus)).toBeGreaterThan(
       html.indexOf(TID.Button.RecordToggle)
     );
-    expect(html.indexOf(TID.Input.DreamTranscript)).toBeGreaterThan(
+    expect(html.indexOf('recording-voice-preview')).toBeGreaterThan(
       html.indexOf(TID.Component.RecordingVoiceStatus)
     );
   });
@@ -547,7 +553,7 @@ describe('RecordingTextInput', () => {
     expect(screen.getByTestId(TID.Text.RecordingVoiceStatusTitle).textContent).toBe(
       'Preparing microphone'
     );
-    expect(screen.getByDisplayValue('A remembered corridor')).toBeTruthy();
+    expect(screen.getByText('A remembered corridor')).toBeTruthy();
     expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-status')).toBe('preparing');
   });
 
@@ -567,7 +573,7 @@ describe('RecordingTextInput', () => {
 
     expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('textFirst');
     expect(screen.getByDisplayValue('A blue room under the rain')).toBeTruthy();
-    expect(screen.queryByTestId(TID.Button.RecordToggle)).toBeNull();
+    expect(screen.getByTestId(TID.Button.RecordToggle)).toBeTruthy();
 
     rerender(
       <RecordingTextInput
@@ -582,8 +588,13 @@ describe('RecordingTextInput', () => {
     );
 
     expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('voiceFirst');
-    expect(screen.getByDisplayValue('A blue room under the rain')).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.RecordToggle)).toBeTruthy();
+    expect(screen.getByText('A blue room under the rain')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Input.DreamTranscript)).toBeNull();
+    rerender(
+      <RecordingTextInput layout="textFirst" value="A blue room under the rain"
+        onChange={onChange} disabled={false} lengthWarning="" instructionText=""
+        onSwitchToVoice={jest.fn()} />
+    );
     expect(screen.getAllByTestId(TID.Input.DreamTranscript)).toHaveLength(1);
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {

@@ -38,7 +38,7 @@ export const UpsellCard: React.FC<Props> = ({ testID }) => {
           { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.raised },
         ]}
         accessibilityRole="button"
-        onPress={() => router.push('/(tabs)/settings')}
+        onPress={() => router.push('/settings')}
       >
         <Text style={[styles.ctaText, { color: noctalia.accent.text }]}>
           {t('guest.upsell.compact')}

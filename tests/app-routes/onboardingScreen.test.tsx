@@ -89,6 +89,7 @@ const renderOnboarding = (
 
 jest.doMock('expo-router', () => ({
   router: { replace: mockReplace },
+  useFocusEffect: () => undefined,
 }));
 jest.doMock('@/lib/authReturnIntent', () => ({ getAuthReturnSnapshot: () => ({ intent: mockAuthReturn, ready: true }) }));
 
@@ -183,6 +184,7 @@ jest.doMock('react-native', () => {
     },
     Pressable: createElement('button'),
     ScrollView: createElement('div'),
+    StatusBar: { pushStackEntry: jest.fn(), popStackEntry: jest.fn() },
     StyleSheet: {
       create: <T extends Record<string, any>>(styles: T) => styles,
       hairlineWidth: 1,
@@ -209,6 +211,7 @@ jest.doMock('react-native', () => {
     Text: createElement('span'),
     View: createElement('div'),
     findNodeHandle: () => 1,
+    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
   };
 });
 

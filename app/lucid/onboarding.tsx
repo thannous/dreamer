@@ -1,6 +1,7 @@
+import { BottomSheet } from '@/components/ui/BottomSheet';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo, useRef, useState } from 'react';
-import { Modal, Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import {
   LucidOnboardingBackdrop,
@@ -641,14 +642,12 @@ function SleepWindowPicker({
         />
       ) : null}
 
-      <Modal
-        accessibilityViewIsModal
-        onRequestClose={() => setActivePicker(null)}
-        transparent
+      <BottomSheet
+        onClose={() => setActivePicker(null)}
         visible={activePicker !== null && Platform.OS !== 'android'}
+        surfaceColor={palette.surface}
+        style={[styles.pickerSheet, { backgroundColor: palette.surface }]}
       >
-        <View style={styles.pickerModalRoot}>
-          <View style={[styles.pickerSheet, { backgroundColor: palette.surface }]}>
             <Text accessibilityRole="header" style={[styles.pickerTitle, { color: palette.text }]}>
               {activeLabel}
             </Text>
@@ -673,9 +672,7 @@ function SleepWindowPicker({
                 <LucidButton label={doneLabel} onPress={() => commitPendingTime(pendingTime)} />
               </View>
             </View>
-          </View>
-        </View>
-      </Modal>
+      </BottomSheet>
     </>
   );
 }
@@ -877,11 +874,6 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   nativePickerAnchor: { width: 1, height: 1 },
-  pickerModalRoot: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(3, 11, 16, 0.74)',
-  },
   pickerSheet: {
     borderTopLeftRadius: LucidRadius.xl,
     borderTopRightRadius: LucidRadius.xl,

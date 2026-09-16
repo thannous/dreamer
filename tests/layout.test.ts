@@ -30,20 +30,16 @@ describe('getBottomNavigationLayout', () => {
     expect(layout.barHeight).toBeGreaterThan(TAB_BAR_HEIGHT);
   });
 
-  it.each([320, 360, 434, 1280])('bounds three rows and centers Capture at %i dp', (width: number) => {
-    for (const fontScale of [1.5, 2]) {
+  it.each([320, 360, 434, 1280])('keeps five equal horizontal cells at %i dp with large text', (width: number) => {
+    for (const fontScale of [1, 1.5, 2]) {
       const layout = getBottomNavigationLayout(width, 900, fontScale);
-      const frames = [0, 1, 2, 3, 4].map((index) => getBottomNavigationItemStyle(index, layout)!);
-      expect(frames.map((frame) => frame.top)).toEqual([0, 0, layout.rowHeight, layout.rowHeight + layout.centerRowHeight, layout.rowHeight + layout.centerRowHeight]);
-      expect(frames[2].width).toBe(layout.contentWidth);
-      expect(layout.centerActionWidth).toBeGreaterThan(130);
-      frames.forEach((frame) => {
-        expect(Number(frame.start) + Number(frame.width)).toBeLessThanOrEqual(layout.contentWidth);
-        expect(Number(frame.top) + Number(frame.height)).toBeLessThan(layout.barHeight);
-      });
+      const frames = [0, 1, 2, 3, 4].map((index) => getBottomNavigationItemStyle(index, layout));
+      expect(frames.every((frame) => frame.position === undefined && frame.flex === 1)).toBe(true);
+      expect(layout.itemWidth * 5).toBeCloseTo(layout.contentWidth);
+      expect(layout.centerActionWidth).toBeLessThan(layout.itemWidth);
+      expect(layout.barHeight).toBeLessThan(160);
       expect(layout.contentWidth).toBeLessThanOrEqual(960);
     }
-    expect(getBottomNavigationItemStyle(2, getBottomNavigationLayout(width, 900, 1))?.position).toBeUndefined();
   });
 
   it('uses the regular navigation size in portrait', () => {
@@ -115,13 +111,13 @@ describe('getBottomNavigationLayout', () => {
       labelLineHeight: 16,
       labelLines: 2,
       labelHeight: 68,
-      barHeight: 306,
-      centerActionWidth: 278,
-      centerActionHeight: 52,
+      barHeight: 134,
+      centerActionWidth: 54.8,
+      centerActionHeight: 124,
       minimumBottomInset: 14,
     });
     expect(layout.labelLines).toBeGreaterThanOrEqual(2);
-    expect(layout.barHeight).toBeGreaterThan(layout.centerActionHeight + 10);
+    expect(layout.barHeight).toBeGreaterThanOrEqual(layout.centerActionHeight + 10);
     expect(layout.barHeight).toBeGreaterThan(TAB_BAR_HEIGHT);
   });
 
@@ -136,13 +132,13 @@ describe('getBottomNavigationLayout', () => {
       labelLineHeight: 16,
       labelLines: 2,
       labelHeight: 68,
-      barHeight: 306,
-      centerActionWidth: 334,
-      centerActionHeight: 52,
+      barHeight: 134,
+      centerActionWidth: 66,
+      centerActionHeight: 124,
       minimumBottomInset: 14,
     });
     expect(layout.labelLines).toBeGreaterThanOrEqual(2);
-    expect(layout.barHeight).toBeGreaterThan(layout.centerActionHeight + 10);
+    expect(layout.barHeight).toBeGreaterThanOrEqual(layout.centerActionHeight + 10);
   });
 
   it('keeps compact landscape labels readable at fontScale 2 without capping them', () => {
@@ -156,29 +152,21 @@ describe('getBottomNavigationLayout', () => {
       labelLineHeight: 16,
       labelLines: 1,
       labelHeight: 36,
-      barHeight: 176,
+      barHeight: 102,
       centerActionHeight: 92,
       minimumBottomInset: COMPACT_TAB_BAR_BOTTOM_INSET,
     });
     expect(layout.labelLines).toBeGreaterThanOrEqual(1);
     expect(layout.barHeight).toBeGreaterThan(COMPACT_TAB_BAR_HEIGHT);
-    expect(layout.centerActionWidth).toBeCloseTo(276.33, 2);
+    expect(layout.centerActionWidth).toBeCloseTo(166.6, 2);
   });
 
-  it.each([[640, 320], [915, 412]])('keeps compact large text within two rows at %i by %i dp', (width: number, height: number) => {
+  it.each([[640, 320], [915, 412]])('keeps compact large text in one row at %i by %i dp', (width: number, height: number) => {
     for (const scale of [1, 1.5, 2]) {
       const layout = getBottomNavigationLayout(width, height, scale);
       const frames = [0, 1, 2, 3, 4].map((index) => getBottomNavigationItemStyle(index, layout));
-      if (scale === 1) {
-        expect(frames.every((frame) => frame.position === undefined)).toBe(true);
-      } else {
-        expect(frames.map((frame) => frame.start)).toEqual([0, 0, layout.itemWidth, layout.itemWidth * 2, layout.itemWidth * 2]);
-        expect(frames.map((frame) => frame.top)).toEqual([0, layout.rowHeight, 0, 0, layout.rowHeight]);
-        expect(frames[2].height).toBe(layout.rowHeight * 2);
-        expect(layout.labelLines).toBe(1);
-        expect(layout.centerLabelLines).toBe(1);
-        expect(height - layout.barHeight - 24).toBeGreaterThanOrEqual(120);
-      }
+      expect(frames.every((frame) => frame.position === undefined)).toBe(true);
+      expect(height - layout.barHeight - 24).toBeGreaterThanOrEqual(120);
     }
   });
 

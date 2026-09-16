@@ -654,7 +654,7 @@ export function resolveStartupDecision(
   input: StartupDestinationInput
 ): StartupDestinationDecision {
   if (input.returningGuestBlocked && !input.hasUser) {
-    return { destination: '/(tabs)/settings', reason: 'returning_guest_blocked' };
+    return { destination: '/settings', reason: 'returning_guest_blocked' };
   }
   if (!isOnboardingTerminal(input.onboardingState)) {
     return { destination: '/onboarding', reason: 'onboarding' };
@@ -662,7 +662,7 @@ export function resolveStartupDecision(
   if (input.pendingAuthDestination) {
     return input.hasUser
       ? { destination: input.pendingAuthDestination, reason: 'auth_return' }
-      : { destination: '/(tabs)/settings', reason: 'default' };
+      : { destination: '/settings', reason: 'default' };
   }
   if (input.onboardingState.pendingRecordingIntent) {
     return {

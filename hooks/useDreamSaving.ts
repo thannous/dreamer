@@ -99,7 +99,7 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
           [
             {
               text: t('recording.alert.limit.cta'),
-              onPress: () => router.push(isUpgradedGuest ? '/(tabs)/settings?section=account' : '/(tabs)/settings'),
+              onPress: () => router.push(isUpgradedGuest ? '/settings?section=account' : '/settings'),
             },
             { text: t('common.cancel'), style: 'cancel' },
           ]
@@ -139,7 +139,7 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
             [
               {
                 text: t('recording.alert.limit.cta'),
-                onPress: () => router.push(isLoginRequired ? '/(tabs)/settings?section=account' : '/(tabs)/settings'),
+                onPress: () => router.push(isLoginRequired ? '/settings?section=account' : '/settings'),
               },
               { text: t('common.cancel'), style: 'cancel' },
             ]

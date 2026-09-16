@@ -12,12 +12,13 @@ export function isJournalSavedConfirmationParam(
 
 export function buildJournalDetailHref(
   dreamId: string | number,
-  options?: { saved?: boolean }
+  options?: { saved?: boolean; recall?: boolean }
 ): Href {
   const params: Record<string, string> = { id: String(dreamId) };
   if (options?.saved) {
     params[JOURNAL_SAVED_CONFIRMATION_PARAM] = JOURNAL_SAVED_CONFIRMATION_VALUE;
   }
+  if (options?.recall) params.recall = '1';
 
   return {
     pathname: '/journal/[id]',

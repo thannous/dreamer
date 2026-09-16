@@ -1,7 +1,7 @@
 /* @jest-environment jsdom */
 import React from 'react';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { afterEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getBottomNavigationLayout } from '@/constants/layout';
 import { TID } from '@/lib/testIDs';
@@ -44,12 +44,13 @@ const mockRetryPersistence = jest.fn(async () => undefined);
 const mockPersistenceState = { status: 'ready' as const, target: 'device' as const };
 const mockLoadRemoteDream = jest.fn();
 const mockReloadDreams = jest.fn(async () => undefined);
-let mockCompleteness: { status: 'incomplete' } | undefined;
+let mockCompleteness: { status: 'incomplete' | 'loading' } | undefined;
 let mockRemotePreviewAllowed = false;
 const mockListScrollToOffset = jest.fn();
 const mockKeyboardDismiss = jest.fn();
 let mockPlatform = 'android';
 let mockListProps: Record<string, any> = {};
+let mockHeaderOnLayout: ((event: any) => void) | undefined;
 
 jest.mock('expo-router', () => ({ router: { push: (...args: unknown[]) => mockPush(...args) }, useFocusEffect: () => {} }));
 jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 24, bottom: 24, left: 0, right: 0 }) }));
@@ -86,7 +87,9 @@ jest.mock('react-native', () => {
       onResponderMove,
       onResponderRelease,
       onResponderTerminate,
+      onLayout,
     }: any) {
+      if (testID === 'journal-search-chrome') mockHeaderOnLayout = onLayout;
       const capturingRef = React.useRef(false);
       const toResponderEvent = (event: any) => {
         const native = event?.nativeEvent ?? event;
@@ -174,6 +177,9 @@ jest.mock('@/lib/analytics', () => ({ trackProductEvent: () => Promise.resolve()
 jest.mock('@/lib/imageUtils', () => ({ getDreamThumbnailUri: () => null, preloadImage: () => Promise.resolve() }));
 jest.mock('@/context/ScrollPerfContext', () => ({ ScrollPerfProvider: ({ children }: any) => <>{children}</> }));
 jest.mock('@/components/inspiration/AtmosphericBackground', () => ({ AtmosphericBackground: () => null }));
+jest.mock('@/components/NoctaliaScreenHeader', () => ({
+  NoctaliaScreenHeader: ({ titleKey, actions = [], slot, inlineSlot }: any) => <header data-testid="journal-shared-header"><span>Noctalia</span><span>{titleKey}</span>{actions.map((action: any) => <button key={action.testID} data-testid={action.testID} aria-label={action.accessibilityLabel} onClick={action.onPress} />)}{inlineSlot ?? slot}</header>,
+}));
 jest.mock('@/components/inspiration/PageHeader', () => ({ PageHeaderContent: () => <header data-testid="journal-header">Journal</header> }));
 jest.mock('@/components/dev/MockNavigationRail', () => ({ MockNavigationRail: () => null }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
@@ -183,6 +189,7 @@ jest.mock('@/components/journal/DreamCard', () => ({
     <button data-testid={testID} data-scroll-state={scrollState} onClick={() => onPress(dream)}>{dream.title}</button>
   ),
 }));
+jest.mock('@/components/journal/JournalFirstPage', () => ({ JournalFirstPage: ({ onStartDream, onSettings }: any) => <div data-testid="journal-first-page"><button onClick={onStartDream}>Start first dream</button><button onClick={onSettings}>Settings</button></div> }));
 jest.mock('@/components/journal/EmptyState', () => ({ EmptyState: () => <div data-testid="journal-empty" /> }));
 jest.mock('@/components/motion', () => ({ PressableScale: ({ children, onPress, testID }: any) => <button data-testid={testID} onClick={onPress}>{children}</button> }));
 jest.mock('@/components/journal/AdvancedFilterSheet', () => ({
@@ -417,6 +424,27 @@ afterEach(() => {
 });
 
 describe('Journal compact large-text layout', () => {
+  beforeEach(() => { mockDreams.push(guestDream); });
+  it('keeps the shared branded header visible for a populated journal and filtered results', () => {
+    render(<JournalScreen />);
+    const header = screen.getByTestId('journal-shared-header');
+    expect(header.textContent).toContain('Noctalia');
+    expect(header.textContent).toContain('nav.journal');
+    expect(header.contains(screen.getByTestId(TID.Button.HeaderJournalSettings))).toBe(true);
+    expect(screen.getByTestId(TID.List.Dreams).contains(header)).toBe(false);
+    fireEvent.change(screen.getByTestId(TID.Input.SearchDreams), { target: { value: 'no matching dream' } });
+    expect(screen.getByTestId('journal-shared-header')).toBe(header);
+    expect(screen.queryByTestId('journal-first-page')).toBeNull();
+  });
+  it('reserves the measured branded header height in a short landscape viewport', () => {
+    Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
+    render(<JournalScreen />);
+    act(() => { mockHeaderOnLayout?.({ nativeEvent: { layout: { height: 240 } } }); });
+    expect(JSON.parse(screen.getByTestId('journal-search-scroll-slot').getAttribute('data-style') || '{}').height).toBe(240);
+    expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-shared-header'))).toBe(false);
+    expect(screen.getByText('Blue room')).toBeTruthy();
+  });
+
   it.each([[640, 320], [915, 412]])('keeps virtualization and persistent controls at %i by %i dp', (width: number, height: number) => {
     const view = render(<JournalScreen />);
     for (const scale of [1, 1.5, 2]) {
@@ -465,7 +493,7 @@ describe('Journal compact large-text layout', () => {
       expect(mockListProps.keyboardShouldPersistTaps).toBe('handled');
       fireEvent.click(screen.getByTestId('advanced-filters'));
       fireEvent.click(screen.getByTestId(TID.Button.HeaderJournalSettings));
-      expect(mockPush).toHaveBeenLastCalledWith('/(tabs)/settings');
+      expect(mockPush).toHaveBeenLastCalledWith('/settings');
     }
   });
 
@@ -476,7 +504,7 @@ describe('Journal compact large-text layout', () => {
     const list = screen.getByTestId(TID.List.Dreams);
     const navigationClearance = mockListProps.style.marginBottom;
     expect(list.contains(input)).toBe(false);
-    expect(list.contains(screen.getByTestId('journal-header'))).toBe(true);
+    expect(list.contains(screen.getByTestId('journal-shared-header'))).toBe(false);
     expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
     expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
     expectReachableListViewport(437, 949, fontScale);
@@ -507,7 +535,6 @@ describe('Journal compact large-text layout', () => {
 
   it('keeps search overlaid on iOS short landscape when the keyboard does not shrink the window', () => {
     mockPlatform = 'ios';
-    mockDreams.push(guestDream);
     Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
     render(<JournalScreen />);
 
@@ -544,7 +571,6 @@ describe('Journal compact large-text layout', () => {
   });
 
   it.each([[640, 320], [915, 412]])('keeps the footer upsell after dreams and scrollable at %i by %i dp when a guest has a dream', (width: number, height: number) => {
-    mockDreams.push(guestDream);
     Object.assign(mockWindow, { width, height, fontScale: 2 });
     const view = render(<JournalScreen />);
     const list = screen.getByTestId(TID.List.Dreams);
@@ -576,7 +602,6 @@ describe('Journal compact large-text layout', () => {
   });
 
   it('keeps dream cards reachable under the production SearchBar at 640 by 320 dp and fontScale 2', () => {
-    mockDreams.push(guestDream);
     Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
     render(<JournalScreen />);
 
@@ -590,7 +615,7 @@ describe('Journal compact large-text layout', () => {
 
     expect(searchMinHeight).toBe(112);
     expect(searchHeaderHeight).toBe(152);
-    expect(reservedOverlay).toBe(200);
+    expect(reservedOverlay).toBeLessThanOrEqual(128);
     expect(listStyle.marginBottom).toBe(reservedOverlay);
     expect(uncoveredListBox).toBeGreaterThanOrEqual(120);
     expect(320 - searchHeaderHeight - reservedOverlay).toBeLessThan(120);
@@ -629,7 +654,6 @@ describe('Journal compact large-text layout', () => {
   });
 
   it('idles scrolling when a forwarded overlay search drag is terminated', async () => {
-    mockDreams.push(guestDream);
     Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
     render(<JournalScreen />);
 
@@ -661,7 +685,6 @@ describe('Journal compact large-text layout', () => {
   });
 
   it('resets collapsed search when the overlay layout key changes', () => {
-    mockDreams.push(guestDream);
     Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
     const view = render(<JournalScreen />);
 
@@ -690,7 +713,6 @@ describe('Journal compact large-text layout', () => {
   });
 
   it('resets overlay drag origin when the keyed list remounts', () => {
-    mockDreams.push(guestDream);
     Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
     const view = render(<JournalScreen />);
 
@@ -734,7 +756,6 @@ describe('Journal compact large-text layout', () => {
 
   it('resets overlay drag origin when returning from desktop', () => {
     mockPlatform = 'web';
-    mockDreams.push(guestDream);
     Object.assign(mockWindow, { width: 590, height: 320, fontScale: 2 });
     const view = render(<JournalScreen />);
 
@@ -777,7 +798,6 @@ describe('Journal compact large-text layout', () => {
   });
 
   it('preserves overlay drag origin when the keyed list does not remount', () => {
-    mockDreams.push(guestDream);
     Object.assign(mockWindow, { width: 640, height: 800, fontScale: 2 });
     const view = render(<JournalScreen />);
 
@@ -862,4 +882,23 @@ it('carries stable identity from a cold remote preview into the detail route', a
   expect(mockPush).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: {
     id: String(guestDream.id), remoteId: '2501', clientRequestId: 'preview-request',
   } });
+});
+
+
+describe('Journal first page', () => {
+  it('offers the remembered-dream flow and settings after an empty successful read', () => {
+    render(<JournalScreen />);
+    expect(screen.getByTestId('journal-first-page')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Input.SearchDreams)).toBeNull();
+    fireEvent.click(screen.getByText('Start first dream'));
+    expect(mockPush).toHaveBeenCalledWith({ pathname: '/recording', params: { intent: 'remembered', source: 'journal' } });
+    fireEvent.click(screen.getByText('Settings'));
+    expect(mockPush).toHaveBeenCalledWith('/settings');
+  });
+
+  it.each(['loading', 'incomplete'] as const)('does not treat %s synchronization as an empty journal', (status: 'loading' | 'incomplete') => {
+    mockCompleteness = { status };
+    render(<JournalScreen />);
+    expect(screen.queryByTestId('journal-first-page')).toBeNull();
+  });
 });

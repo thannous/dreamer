@@ -17,7 +17,7 @@ export function SignInToOpenDream({ destination }: { destination: string | null 
     try {
       await requestAuthReturn(destination);
       clearReturnToPaywallIntent();
-      router.replace('/(tabs)/settings');
+      router.replace('/settings');
     } catch {
       Alert.alert(t('common.error_title'), t('common.unknown_error'));
       setOpening(false);

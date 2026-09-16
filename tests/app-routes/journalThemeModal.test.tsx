@@ -6,11 +6,13 @@ import { afterEach, describe, expect, it, jest } from '@jest/globals';
 afterEach(() => {
   cleanup();
   mockWindowWidth = 390;
+  mockHasDreams = true;
   mockPersistenceState = { status: 'ready', target: 'device' };
   mockRetryPersistence.mockClear();
 });
 
 let mockWindowWidth = 390;
+let mockHasDreams = true;
 let mockPersistenceState: { status: 'ready' | 'loading'; target: 'device' } | { status: 'error'; operation: 'read'; target: 'device' } = {
   status: 'ready',
   target: 'device',
@@ -29,7 +31,7 @@ jest.doMock('@/services/supabaseDreamService', () => ({
 
 jest.doMock('@/context/DreamsContext', () => ({
   useDreams: () => ({
-    dreams: [],
+    dreams: mockHasDreams ? [{ id: 1700000000000, title: 'Dream', transcript: 'A dream', dreamType: 'Symbolic Dream', chatHistory: [], isAnalyzed: false }] : [],
     persistenceState: mockPersistenceState,
     retryPersistence: mockRetryPersistence,
   }),
@@ -172,6 +174,9 @@ jest.doMock('@/components/inspiration/AtmosphericBackground', () => ({
   AtmosphericBackground: () => <div data-testid="atmospheric-background" />,
 }));
 
+jest.doMock('@/components/NoctaliaScreenHeader', () => ({
+  NoctaliaScreenHeader: ({ titleKey, actions = [], slot, inlineSlot }: any) => <header data-testid="journal-shared-header"><span>Noctalia</span><span>{titleKey}</span>{actions.map((action: any) => <button key={action.testID} data-testid={action.testID} aria-label={action.accessibilityLabel} onClick={action.onPress} />)}{inlineSlot ?? slot}</header>,
+}));
 jest.doMock('@/components/inspiration/PageHeader', () => ({
   PageHeaderContent: () => <div data-testid="page-header-content" />,
 }));
@@ -387,26 +392,32 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
 }));
 
+jest.doMock('@/components/journal/JournalFirstPage', () => ({ JournalFirstPage: () => <div data-testid="journal-first-page" /> }));
+
 const { default: JournalListScreen } = require('@/app/(tabs)/journal');
 
 describe('Journal advanced filter sheet', () => {
   it('waits for a successful read before presenting a first-use empty journal', () => {
+    mockHasDreams = false;
     mockPersistenceState = { status: 'loading', target: 'device' };
     const view = render(<JournalListScreen />);
     expect(screen.queryByTestId('empty-state')).toBeNull();
+    expect(screen.queryByTestId('journal-first-page')).toBeNull();
     expect(screen.queryByRole('alert')).toBeNull();
 
     mockPersistenceState = { status: 'ready', target: 'device' };
     view.rerender(<JournalListScreen />);
-    expect(screen.getByTestId('empty-state')).toBeTruthy();
+    expect(screen.getByTestId('journal-first-page')).toBeTruthy();
   });
 
   it('hides first-use empty state after a failed read and wires retry', () => {
+    mockHasDreams = false;
     mockPersistenceState = { status: 'error', operation: 'read', target: 'device' };
 
     render(<JournalListScreen />);
 
     expect(screen.queryByTestId('empty-state')).toBeNull();
+    expect(screen.queryByTestId('journal-first-page')).toBeNull();
     expect(screen.getByRole('alert')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'journal.persistence.retry' }));
     expect(mockRetryPersistence).toHaveBeenCalledTimes(1);
@@ -457,13 +468,12 @@ describe('Journal advanced filter sheet', () => {
     const settings = screen.getByTestId('btn.header.journal.settings');
     expect(settings.getAttribute('aria-label')).toBe('nav.settings');
     fireEvent.click(settings);
-    expect(mockPush).toHaveBeenCalledWith('/(tabs)/settings');
+    expect(mockPush).toHaveBeenCalledWith('/settings');
     expect(screen.queryByTestId('tab.settings')).toBeNull();
   });
-  it('keeps journal settings and more actions at least 44 dp', () => {
+  it('uses shared header settings and retains the 44 dp filter action', () => {
     render(<JournalListScreen />);
-    expect(screen.getByTestId('btn.header.journal.settings').className).toContain('min-h-[44px]');
-    expect(screen.getByTestId('btn.header.journal.settings').className).toContain('min-w-[44px]');
+    expect(screen.getByTestId('journal-shared-header').contains(screen.getByTestId('btn.header.journal.settings'))).toBe(true);
     expect(screen.getByTestId('btn.filterMore').className).toContain('min-h-[44px]');
     expect(screen.getByTestId('btn.filterMore').className).toContain('min-w-[44px]');
   });

@@ -72,13 +72,13 @@ describe('journal detail recall offer wiring', () => {
     source.indexOf('<Reveal index={4}>')
   );
 
-  it('mounts DreamRecallAssistantCard with exact props after the original transcript', () => {
+  it('mounts the optional recall offer after the original transcript', () => {
     expect(source).toContain(
       "import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard'"
     );
     expect(source).toContain('resolveJournalDreamRecallOfferEligible');
     expect(source.indexOf('<Reveal index={2}>')).toBeLessThan(
-      source.indexOf('<DreamRecallAssistantCard')
+      source.indexOf('<DreamRecallAssistantCard', source.indexOf('<Reveal index={3}>'))
     );
     expect(reveal3).toContain('<DreamRecallAssistantCard');
     expect(reveal3).toContain('dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}');

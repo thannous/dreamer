@@ -1,24 +1,31 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 afterEach(() => {
   cleanup();
   jest.clearAllMocks();
+  mockParams = {};
 });
 
 const mockPush = jest.fn();
+const mockBack = jest.fn();
+const mockReplace = jest.fn();
+let mockCanGoBack = true;
 const mockUseAuth = jest.fn();
 const mockUseSubscription = jest.fn();
 let mockWindowWidth = 390;
 let mockPlatformOS = 'web';
 
 let capturedSettingsProps: any = null;
+let mockParams: { auth?: string; section?: string } = {};
+let mockInitialAccountSheetOpen = false;
 
 jest.doMock('expo-router', () => ({
-  router: { push: mockPush },
+  router: { push: mockPush, back: mockBack, replace: mockReplace, canGoBack: () => mockCanGoBack },
   useFocusEffect: () => {},
+  useLocalSearchParams: () => mockParams,
 }));
 
 jest.doMock('react-native', () => {
@@ -159,7 +166,7 @@ jest.doMock('@/components/inspiration/PageHeader', () => ({
 }));
 
 jest.doMock('@/components/NoctaliaScreenHeader', () => ({
-  NoctaliaScreenHeader: ({ titleKey }: { titleKey: string }) => <div>{titleKey}</div>,
+  NoctaliaScreenHeader: ({ titleKey, actions = [] }: any) => <div>{titleKey}{actions.map((action: any) => <button key={action.testID} data-testid={action.testID} onClick={action.onPress} />)}</div>,
 }));
 
 jest.doMock('@/components/inspiration/SectionHeading', () => ({
@@ -219,7 +226,7 @@ jest.doMock('@/hooks/useScrollIdle', () => ({
 }));
 
 jest.doMock('@/components/auth/EmailAuthCard', () => ({
-  EmailAuthCard: () => <div data-testid="email-auth-card" />,
+  EmailAuthCard: ({ initialAccountSheetOpen }: any) => { mockInitialAccountSheetOpen = initialAccountSheetOpen; return <div data-testid="email-auth-card" />; },
 }));
 
 jest.doMock('@/components/quota/QuotaStatusCard', () => ({
@@ -287,7 +294,7 @@ jest.doMock('react-native-reanimated', () => {
   };
 });
 
-const { default: SettingsScreen } = require('@/app/(tabs)/settings');
+const { default: SettingsScreen } = require('@/app/settings');
 const { VOICE_LIVE_SPIKE_TEST_IDS } = require('@/lib/voiceLiveSpikeHost');
 const { withDevFlag } = require('@/tests/setDevFlag');
 
@@ -418,4 +425,41 @@ describe('Settings screen', () => {
       'subscription.settings.title.plus'
     );
   });
+});
+
+
+it.each([true, false])('returns to the calling screen with a safe direct-link fallback (history=%s)', (hasHistory: boolean) => {
+  mockCanGoBack = hasHistory;
+  mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+  render(<SettingsScreen />);
+  fireEvent.click(screen.getByTestId('settings.back'));
+  if (hasHistory) expect(mockBack).toHaveBeenCalledTimes(1);
+  else expect(mockReplace).toHaveBeenCalledWith('/');
+});
+
+
+it('opens the account form for the drawer sign-in entry', () => {
+  mockParams = { auth: 'signin' };
+  mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+  render(<SettingsScreen />);
+  expect(mockInitialAccountSheetOpen).toBe(true);
+});
+
+
+it.each([undefined, 'signin'])('keeps the profile entry limited to the account surface (auth=%s)', (auth: string | undefined) => {
+  mockParams = { section: 'account', auth };
+  mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+  render(<SettingsScreen />);
+  expect(screen.getByTestId('settings-account-only')).toBeTruthy();
+  expect(screen.getByTestId('email-auth-card')).toBeTruthy();
+  expect(screen.queryByTestId('settings-field-group')).toBeNull();
+  expect(screen.queryByTestId('settings-quota-rn-content')).toBeNull();
+  expect(mockInitialAccountSheetOpen).toBe(auth === 'signin');
+});
+it('preserves the authentication recovery surface for a blocked returning guest', () => {
+  mockParams = { section: 'account' };
+  mockUseAuth.mockReturnValue({ returningGuestBlocked: true });
+  render(<SettingsScreen />);
+  expect(screen.queryByTestId('settings-account-only')).toBeNull();
+  expect(screen.getByTestId('settings-field-group')).toBeTruthy();
 });
