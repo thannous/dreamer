@@ -25,11 +25,15 @@ Pour reproduire le contrôle SQL, installer `@electric-sql/pglite` dans un répe
 NODE_PATH=/tmp/noctalia-hd-db/node_modules node doc_web_interne/docs/qa/illustration-quality-2026-09-16/quota-check.cjs
 ```
 
-## Limites de preuve et activation
+## Déploiement serveur et limites de preuve
 
-- Aucune migration HD ni fonction HD n'a été publiée en production. Aucun appel payant de génération HD réelle n'a été effectué. Le contrôle des pixels concerne une image synthétique.
+- Après autorisation explicite de l'utilisateur : migration `20260916185856_hd_illustration_monthly_quota` appliquée (nom local aligné sur la version attribuée par Supabase), worker `image-job-worker` v17 ACTIVE, fonction isolée `illustration-hd` v1 ACTIVE. L'API v105 et `capture-recall` v2 sont conservées.
+- Le contrôle automatique a refusé le remplacement complet de l'API : charge de revue supérieure à 200 000 octets. L'alternative isolée (~80 Ko) expose uniquement l'admission d'images et réutilise les gardes d'authentification, d'application et d'abonnement existantes. Le client dirige uniquement les créations HD hébergées vers cette fonction ; Standard et suivi des jobs gardent leur contrat actuel.
+- Vérifications HTTP en production : anonyme → 401, utilisateur QA Free demandant 4K → 403 `HD_IMAGE_PLUS_REQUIRED`, quota Free → 200 avec limite 0, tentative de réservation privilégiée par le client → 403, accès anonyme au worker → 401. Aucun appel payant de génération HD réelle n'a été effectué (seul un compte QA Free est disponible). Le contrôle des pixels concerne une image synthétique.
+- SQL en production : RLS activé ; aucun accès direct à la table pour anon/authenticated ; réservation réservée au serveur ; lecture du quota accessible uniquement à l'utilisateur authentifié. Les avis Supabase concernant la table sans politique et la RPC SECURITY DEFINER sont intentionnels : table privée et RPC filtrée par `auth.uid()`. [Avis RLS](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy).
+- Delta d'isolation : 49 tests client passés (dont URLs hébergées moderne/ancienne, Standard et proxy local), types des tests, lint ciblé et `deno check --frozen illustration-hd/index.ts` passés.
 - Motorola verrouillé : parcours visuel non qualifié. Émulateur installé : Capture visible mais navigation/deep links vers Préférences sans effet dans cette session. Aucun effacement de données ni réinstallation. Le parcours natif Préférences → génération réelle reste à vérifier.
 - Branche basée sur `codex/capture-conversation-20260916` (PR #175). Cette livraison HD doit rester distincte du déploiement antérieur de `capture-recall`.
-- Activation serveur prévue, après autorisation explicite : appliquer `20260916190000_hd_illustration_monthly_quota.sql`, déployer les changements API et image-job-worker en préservant les correctifs déjà en production, vérifier les versions et tester un parcours authentifié. Puis livrer le client par le canal mobile autorisé. Un merge seul ne prouve aucune de ces étapes.
+- La livraison mobile par un canal Store/OTA reste distincte et n'a pas été effectuée. Restent à qualifier : parcours visuel et génération réelle 4K avec un compte Plus.
 
 Contrat fournisseur vérifié : [génération d'images Gemini](https://ai.google.dev/gemini-api/docs/image-generation), [Gemini 3.1 Flash Image](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image).

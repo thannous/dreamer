@@ -277,7 +277,12 @@ export async function generateImageForDream(prompt: string, previousImageUrl?: s
 export async function submitImageGenerationJob(
   request: ImageJobCommandRequest
 ): Promise<ImageJobCommandResponse> {
-  return fetchWithSessionHeaders<ImageJobCommandResponse>('/image-jobs', {
+  // Only hosted HD admission uses the isolated function. Standard requests,
+  // local/proxied APIs and status polling keep the existing API contract.
+  const base = request.imageSize === '2K' || request.imageSize === '4K'
+    ? getApiBaseUrl().replace(/(\/functions\/v1|\.functions\.supabase\.co)\/api$/, '$1/illustration-hd')
+    : getApiBaseUrl();
+  return fetchJSONWithSession<ImageJobCommandResponse>(`${base}/image-jobs`, {
     method: 'POST',
     body: { ...request, previousImageUrl: cleanupImageUrl(request.previousImageUrl) },
     ...NETWORK_REQUEST_POLICIES.imageJobCommand,

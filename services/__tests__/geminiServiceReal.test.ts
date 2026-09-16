@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // Mock config to use our test URL
+let mockApiBaseUrl = 'https://api.example.com';
 jest.mock('../../lib/config', () => ({
-  getApiBaseUrl: () => 'https://api.example.com',
+  getApiBaseUrl: () => mockApiBaseUrl,
 }));
 
 // Mock auth to avoid supabase dependency
@@ -96,6 +97,7 @@ describe('geminiServiceReal', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockApiBaseUrl = 'https://api.example.com';
     mockGetAccessToken.mockResolvedValue(null);
     mockGetGuestHeaders.mockResolvedValue({});
     mockInvalidateGuestSession.mockResolvedValue(undefined);
@@ -568,6 +570,20 @@ describe('geminiServiceReal', () => {
   });
 
   describe('image job endpoints', () => {
+    it.each([
+      ['https://project.supabase.co/functions/v1/api', '4K', 'https://project.supabase.co/functions/v1/illustration-hd'],
+      ['https://project.functions.supabase.co/api', '2K', 'https://project.functions.supabase.co/illustration-hd'],
+      ['https://project.functions.supabase.co/api', '1K', 'https://project.functions.supabase.co/api'],
+      ['https://api.example.com', '4K', 'https://api.example.com'],
+    ])('routes %s %s admission to the expected function', async (base: string, imageSize: string, expected: string) => {
+      mockApiBaseUrl = base;
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(mockFetchResponse({ jobId: 'job', status: 'queued' }, true, 202));
+      await submitImageGenerationJob({ clientRequestId: 'request', transcript: 'A synthetic garden', imageSize });
+      expect(global.fetch).toHaveBeenCalledWith(`${expected}/image-jobs`, expect.objectContaining({
+        method: 'POST', body: JSON.stringify({ clientRequestId: 'request', transcript: 'A synthetic garden', imageSize }),
+      }));
+    });
+
     it('submits an image job command', async () => {
       (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({

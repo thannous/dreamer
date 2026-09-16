@@ -9,7 +9,7 @@ async function main() {
  create function auth.uid() returns uuid language sql as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
  create table public.ai_jobs(id uuid primary key, user_id uuid, job_type text, status text, request_payload jsonb);
  create function public.get_effective_subscription_tier(p_user_id uuid) returns text language sql as $$ select tier from auth.users where id=p_user_id $$;`);
- await db.exec(fs.readFileSync(require('node:path').join(process.cwd(), 'supabase/migrations/20260916190000_hd_illustration_monthly_quota.sql'),'utf8'));
+ await db.exec(fs.readFileSync(require('node:path').join(process.cwd(), 'supabase/migrations/20260916185856_hd_illustration_monthly_quota.sql'),'utf8'));
  const owner=randomUUID(), other=randomUUID(), free=randomUUID();
  for(const id of [owner,other,free]) await db.query('insert into auth.users(id) values ($1)',[id]);
  await db.query("update auth.users set tier='free' where id=$1",[free]);
