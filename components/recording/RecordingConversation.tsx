@@ -46,19 +46,6 @@ export function RecordingConversation(props: Props) {
 
   return (
     <View style={styles.container} testID="recording-conversation">
-      {hasText ? (
-        <View style={styles.recap}>
-          <View style={styles.recapHeader}>
-            <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.your_story')}</Text>
-            <Pressable accessibilityRole="button" disabled={locked} onPress={props.onReview} style={styles.link} testID="recording-review-transcript">
-              <Text style={[styles.small, { color: tokens.accent.text }]}>{t('recording.conversation.review')}</Text>
-            </Pressable>
-          </View>
-          <View style={[styles.bubble, { backgroundColor: tokens.surface.raised }]}>
-            <Text numberOfLines={4} style={[styles.story, { color: tokens.text.primary }]} testID="recording-voice-preview">{props.transcript}</Text>
-          </View>
-        </View>
-      ) : null}
       <View style={styles.questionBlock}>
         <View style={styles.speaker}>
           <IconSymbol name="sparkles" size={22} color={tokens.accent.text} />
@@ -138,6 +125,19 @@ export function RecordingConversation(props: Props) {
           </Pressable>
         ) : null}
       </View>
+      {hasText ? (
+        <View style={styles.recap}>
+          <View style={styles.recapHeader}>
+            <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.your_story')}</Text>
+            <Pressable accessibilityRole="button" disabled={locked} onPress={props.onReview} style={styles.link} testID="recording-review-transcript">
+              <Text style={[styles.small, { color: tokens.accent.text }]}>{t('recording.conversation.review')}</Text>
+            </Pressable>
+          </View>
+          <View style={[styles.bubble, { backgroundColor: tokens.surface.raised }]}>
+            <Text numberOfLines={4} style={[styles.story, { color: tokens.text.primary }]} testID="recording-voice-preview">{props.transcript}</Text>
+          </View>
+        </View>
+      ) : null}
     </View>
   );
 }
