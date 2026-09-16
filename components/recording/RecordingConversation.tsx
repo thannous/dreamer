@@ -112,7 +112,7 @@ export function RecordingConversation(props: Props) {
                   collapsable={false}
                   style={[styles.mic, { backgroundColor: tokens.action.primary, opacity: locked || props.loading ? 0.5 : 1 }]}
                 >
-                  <IconSymbol name={listening ? 'mic.slash.fill' : 'mic.fill'} size={32} color={tokens.action.primaryText} />
+                  <IconSymbol name={listening ? 'stop.fill' : 'mic.fill'} size={32} color={tokens.action.primaryText} />
                 </View>
               </Pressable>
               <Pressable
@@ -155,7 +155,7 @@ export function RecordingConversation(props: Props) {
                         style={[styles.editorAction, { borderColor: tokens.surface.border, opacity: locked || props.loading ? 0.4 : 1 }]}
                         testID={TID.Button.RecordToggle}
                       >
-                        <IconSymbol name={listening ? 'mic.slash.fill' : 'mic.fill'} size={22} color={tokens.text.primary} />
+                        <IconSymbol name={listening ? 'stop.fill' : 'mic.fill'} size={22} color={tokens.text.primary} />
                       </Pressable>
                     ) : null}
                     <Pressable
