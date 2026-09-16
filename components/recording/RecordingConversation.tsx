@@ -93,7 +93,7 @@ export function RecordingConversation(props: Props) {
               collapsable={false}
               style={[styles.mic, { backgroundColor: tokens.action.primary, opacity: locked || props.loading ? 0.5 : 1 }]}
             >
-              <IconSymbol name={listening ? 'pause.fill' : 'mic.fill'} size={32} color={tokens.action.primaryText} />
+              <IconSymbol name={listening ? 'stop.fill' : 'mic.fill'} size={32} color={tokens.action.primaryText} />
             </View>
             <Text style={[styles.voiceLabel, { color: tokens.text.primary }]}>{voiceLabel}</Text>
           </Pressable>
