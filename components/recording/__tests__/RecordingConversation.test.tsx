@@ -27,7 +27,7 @@ function props() {
   return {
     transcript: 'Un jardin.', answer: '', storyTranscript: 'Un jardin.', question: 'Que te revient-il de ce jardin ?', loading: false,
     unavailable: false, done: false, disabled: false, voiceSupported: true,
-    voiceStatus: 'idle' as const, onVoice: jest.fn(), onMute: jest.fn(async () => {}), onReview: jest.fn(),
+    voiceStatus: 'idle' as const, onVoice: jest.fn(), onMute: jest.fn(async () => {}), onReview: jest.fn(), onRestart: jest.fn(),
     onAnswerChange: jest.fn(), onAnswerSubmit: jest.fn(),
   };
 }
@@ -160,4 +160,16 @@ it('keeps the opening prompt stable while the first dictated answer grows', () =
   view.rerender(<RecordingConversation {...callbacks} transcript="Un jardin." answer="Un jardin." voiceStatus="idle" />);
   expect(view.queryByTestId('recording-listening-status')).toBeNull();
   expect(view.getByTestId('recording-conversation-question').props.children).toBe('recording.conversation.welcome');
+});
+
+it('offers restarting for existing content and hides it for an empty story', () => {
+  const callbacks = props();
+  const view = render(<RecordingConversation {...callbacks} />);
+  fireEvent.press(view.getByTestId('recording-conversation-restart'));
+  expect(callbacks.onRestart).toHaveBeenCalledTimes(1);
+  expect(callbacks.onReview).not.toHaveBeenCalled();
+  view.rerender(<RecordingConversation {...callbacks} disabled />);
+  expect(view.getByTestId('recording-conversation-restart')).toBeDisabled();
+  view.rerender(<RecordingConversation {...callbacks} transcript="" storyTranscript="" />);
+  expect(view.queryByTestId('recording-conversation-restart')).toBeNull();
 });

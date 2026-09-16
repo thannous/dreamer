@@ -143,6 +143,9 @@ export default function RecordingScreen() {
   const answerInsertionRef = useRef<(DictationInsertion & { storyBase: string }) | null>(null);
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
   const [isPersisting, setIsPersisting] = useState(false);
+  const [isRestartingCapture, setIsRestartingCapture] = useState(false);
+  const [captureRestartCount, setCaptureRestartCount] = useState(0);
+  const restartingCaptureRef = useRef(false);
   const [isPreparingRecording, setIsPreparingRecording] = useState(false);
   const recordingTransitionRef = useRef(false);
   const baseTranscriptRef = useRef('');
@@ -369,7 +372,7 @@ export default function RecordingScreen() {
     [handleOfflineModelSheetClose]
   );
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
-  const interactionDisabled = isPersisting || !isHydrated;
+  const interactionDisabled = isPersisting || isRestartingCapture || !isHydrated;
   const isCompactLandscape = viewportWidth > viewportHeight && viewportHeight < 600;
   const hasSaveableContent = isTranscriptSaveable(transcript);
   const isSaveDisabled = !hasSaveableContent || interactionDisabled;
@@ -444,7 +447,7 @@ export default function RecordingScreen() {
   );
 
   const applyDictationTranscript = useCallback((speech: string): boolean => {
-    if (!isHydrated || !speech.trim()) return false;
+    if (!isHydrated || restartingCaptureRef.current || !speech.trim()) return false;
     const base = baseTranscriptRef.current;
     const insertion = dictationInsertionRef.current ?? {
       base,
@@ -732,6 +735,36 @@ export default function RecordingScreen() {
     stopSessionRecording,
     t,
   ]);
+
+  const handleRestartCapture = useCallback(() => {
+    if (!isHydrated || isPersisting || restartingCaptureRef.current) return;
+    Alert.alert(
+      t('recording.conversation.restart_title'),
+      t('recording.conversation.restart_message'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('recording.conversation.restart'), style: 'destructive',
+          onPress: async () => {
+            if (restartingCaptureRef.current) return;
+            restartingCaptureRef.current = true;
+            setIsRestartingCapture(true);
+            try {
+              // Discard late speech before clearing, so it cannot restore the old draft.
+              await stopRecording({ silent: true, reason: 'stop' });
+              if (noteInput('') !== true) return;
+              resetComposer();
+              setCaptureRestartCount(count => count + 1);
+              Keyboard.dismiss();
+            } finally {
+              restartingCaptureRef.current = false;
+              setIsRestartingCapture(false);
+            }
+          },
+        },
+      ]
+    );
+  }, [isHydrated, isPersisting, noteInput, resetComposer, stopRecording, t]);
 
   const startRecording = useCallback(async (options?: { preserveDraft?: boolean }) => {
     if (!isHydrated) return false;
@@ -1481,6 +1514,8 @@ export default function RecordingScreen() {
 
                 {inputMode === 'voice' ? (
                   <RecordingConversation
+                    key={captureRestartCount}
+                    onRestart={handleRestartCapture}
                     transcript={transcript}
                     answer={currentAnswer}
                     storyTranscript={answerBase ?? transcript}

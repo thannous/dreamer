@@ -1,5 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
+import type { AlertButton } from 'react-native';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
@@ -344,6 +345,7 @@ jest.doMock('@/components/recording/RecordingConversation', () => ({
       <textarea data-testid="conversation-answer" value={props.answer} onChange={(event) => props.onAnswerChange(event.currentTarget.value)} />
       <span data-testid="conversation-story">{props.storyTranscript}</span>
       <span data-testid="conversation-question">{props.question}</span>
+      <button data-testid="conversation-restart" onClick={props.onRestart}>Restart</button>
       <button data-testid="conversation-mute" onClick={props.onMute}>Mute</button>
       <button data-testid="conversation-submit" onClick={props.onAnswerSubmit}>Send</button>
       <button data-testid="recording-review-transcript" onClick={props.onReview}>Review</button>
@@ -863,6 +865,47 @@ describe('Recording screen', () => {
     fireEvent.click(screen.getByTestId('recording-save'));
     await waitFor(() => expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: expected })));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
+  });
+
+  it('confirms restart, stops dictation, clears the durable draft and resets question history', async () => {
+    mockPlatformOS = 'android';
+    mockRecordingPermissionState = 'granted';
+    mockGetInputModePreference.mockResolvedValue('voice');
+    mockGetSavedTranscript.mockResolvedValueOnce('Ancien récit.');
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    await waitFor(() => expect(screen.getByTestId('conversation-question').textContent).toBe('What else do you remember?'));
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    act(() => mockOnPartialTranscript?.('Une réponse.'));
+    const before = (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value;
+    fireEvent.click(screen.getByTestId('conversation-restart'));
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(before);
+    expect(mockStopRecording).not.toHaveBeenCalled();
+    const buttons = jest.mocked(Alert.alert).mock.calls.at(-1)?.[2] as AlertButton[] | undefined;
+    expect(buttons?.find(button => button.style === 'cancel')).toBeTruthy();
+    let resolveStop!: (value: { transcript: string }) => void;
+    const stop = { promise: new Promise<{ transcript: string }>(resolve => { resolveStop = resolve; }) };
+    mockStopRecording.mockReturnValueOnce(stop.promise);
+    let pending: unknown;
+    act(() => { pending = buttons?.find(button => button.style === 'destructive')?.onPress?.(); });
+    expect(mockStopRecording).toHaveBeenCalledTimes(1);
+    act(() => mockOnPartialTranscript?.('Derniers mots à ignorer.'));
+    await act(async () => {
+      mockIsRecordingRef.current = false;
+      resolveStop({ transcript: 'Derniers mots à ignorer.' });
+      await pending;
+    });
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('');
+    expect((screen.getByTestId('conversation-answer') as HTMLTextAreaElement).value).toBe('');
+    expect(screen.getByTestId('conversation-question').textContent).toBe('');
+    act(() => mockAppStateHandler?.('background'));
+    await waitFor(() => expect(mockSaveTranscript).toHaveBeenLastCalledWith(''));
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
+    fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'Nouveau rêve.' } });
+    await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
+    expect(mockRequestCaptureQuestion).toHaveBeenLastCalledWith('Nouveau rêve.', expect.any(String), [], expect.anything());
+    expect(mockAddDream).not.toHaveBeenCalled();
   });
 
   it('keeps the conversational draft and stays on capture if saving fails', async () => {

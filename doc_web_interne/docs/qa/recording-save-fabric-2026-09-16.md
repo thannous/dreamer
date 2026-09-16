@@ -56,3 +56,8 @@ Screenshots retained locally under `doc_web_interne/docs/qa/recording-save-fabri
 - Context is frozen when the reply starts and survives dictation pauses, keyboard corrections, tab changes, draft restoration and direct dream saving. Erasing an answer removes its unanswered question from the persisted text. Existing contextless answers cannot be reconstructed retroactively.
 - 66 focused recording-route/conversation-hook tests pass, including a one-word beach answer, draft restoration, direct saving and dictated-answer correction. App/test typechecks pass. Focused lint reports only the two existing effect warnings.
 - Metro has the change; the Motorola screen was inspected, but no new answer was submitted into the user's existing draft for device QA. Full new question/answer journey on hardware remains unverified.
+
+## Clear and restart capture — 2026-09-17
+
+- Added an accessible “Effacer et recommencer” action below the story, with cancel/destructive confirmation. It stops speech, ignores late transcription during reset, clears the durable draft and current answer, resets question history and returns the composer to its initial state without starting the microphone automatically.
+- 73 focused route/component tests pass. App/test typechecks pass; lint has the same two existing effect warnings. The button was observed on Motorola. The confirmation/clear journey is covered by tests, not claimed as verified on hardware while the user was interacting with the device.

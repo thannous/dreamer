@@ -23,6 +23,7 @@ type Props = {
   onVoice: () => void;
   onMute: () => Promise<void>;
   onReview: () => void;
+  onRestart: () => void;
   onAnswerChange: (text: string) => void;
   onAnswerSubmit: () => void | Promise<void>;
 };
@@ -196,12 +197,27 @@ export function RecordingConversation(props: Props) {
           <Text style={[styles.story, { color: tokens.text.primary }]} testID="recording-voice-preview">{props.storyTranscript}</Text>
         </Pressable>
       ) : null}
+      {hasText ? (
+        <Pressable
+          onPress={props.onRestart}
+          accessibilityLabel={t('recording.conversation.restart')}
+          disabled={locked}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: locked }}
+          style={[styles.restartButton, { opacity: locked ? 0.4 : 1 }]}
+          testID="recording-conversation-restart"
+        >
+          <IconSymbol name="trash" size={18} color={tokens.text.secondary} />
+          <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.restart')}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { width: '100%', maxWidth: 512, alignSelf: 'center', gap: 20, paddingTop: 4 },
+  restartButton: { minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
   questionBlock: { gap: 8 },
   question: { fontSize: 25, lineHeight: 33, fontWeight: '500', letterSpacing: -0.4 },
   hint: { fontSize: 15, lineHeight: 22 },
