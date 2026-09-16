@@ -93,6 +93,9 @@ jest.mock('@/lib/analytics', () => ({
 }));
 jest.mock('@/lib/logger', () => ({ createScopedLogger: () => ({ debug: jest.fn(), error: jest.fn(), warn: jest.fn() }) }));
 jest.mock('@/services/geminiService', () => ({ categorizeDream: jest.fn(async () => ({})) }));
+jest.mock('@/services/captureConversation', () => ({
+  requestCaptureQuestion: jest.fn(async () => ({ question: 'De quoi te souviens-tu ?', done: false })),
+}));
 jest.mock('@/services/nativeSpeechRecognition', () => ({
   registerOfflineModelPromptHandler: () => () => {},
   resolveDeviceSpeechCapability: jest.fn(), shouldRestartHandsFreeSpeech: () => false,

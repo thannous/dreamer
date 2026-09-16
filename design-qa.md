@@ -1416,3 +1416,14 @@ Final result: passed for the local native presentation and checked interactions.
 Validation: 91 focused Jest tests across seven suites (including delta reruns); 11 Deno route/admission tests; app/test TypeScript and Deno API check passed. Focused lint has no errors; two existing set-state-in-effect warnings remain in the capture route. `git diff --check` passed.
 
 The new authenticated journal-only `POST /recall-question` route uses the existing Gemini Interactions wrapper (`store:false`), bounded input/output, admission limits, a maximum of five questions, and a quoted transcript anchor. Questions never enter the stored narrative. Local fallback questions are explicitly identified as general when the API fails. Provider output and user dreams are not logged by the new route. Live provider behavior still needs validation after authorized server deployment. No database migration, native rebuild, reinstall or production deployment was performed.
+
+### Authorized server deployment — 2026-09-16
+
+The user explicitly approved server deployment. Automatic review rejected the monolithic API payload because it exceeded its 200,000-byte review limit. Deployed a narrower, independently authenticated `capture-recall` function instead (about 67 KB, 18 source/config files); the existing API v105 and its newer image fixes were preserved. Hosted clients now address this isolated function, while local/proxied APIs keep `/recall-question`.
+
+- Supabase project `noctalia` / `usuyppgsmmowzizhaoqj`: `capture-recall` v2 ACTIVE, bundle SHA-256 `a5e59d7756164ee3ac0ba6eb3a84b5186af180ba621d1454657fe4bf4163a5a4`.
+- Live synthetic authenticated checks: two HTTP 200 personalized French questions in 3.405 s and 5.355 s; five-question cap returns `{question:null,done:true}`; unauthenticated call returns 401. No dream is saved by these probes.
+- Defaults in the deployed registry: Gemini 3.8 Flash; fallback Gemini 3.5 Flash Lite. French prompt now explicitly uses informal singular address. The API response does not expose which provider model served an individual request.
+- Isolated deployment import graph typechecked; 27 route/admission/Gemini adapter tests passed, followed by six route tests after the prompt adjustment. Eight client service tests (modern and legacy Supabase hosts) and three hydration tests passed. Test TypeScript passed.
+- CI on initial PR head found a hydration test importing the new real network service (1923 tests passed, one suite failed). Fixed the test boundary with the same service mock as other route tests; this was a test integration failure, not attributed to baseline.
+- Production backend is verified independently of PR CI, merge and mobile Store release. No schema migration or app reinstall.

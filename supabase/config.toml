@@ -351,6 +351,10 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 [functions.api]
 verify_jwt = false
 
+# Custom user JWT / signed guest authentication is enforced by the shared API handler.
+[functions.capture-recall]
+verify_jwt = false
+
 [functions.analysis-job-worker]
 verify_jwt = false
 

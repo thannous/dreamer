@@ -2,11 +2,12 @@ import { requestCaptureQuestion } from '../captureConversation';
 import { fetchJSONWithSession } from '@/lib/apiSession';
 
 jest.mock('@/lib/apiSession', () => ({ fetchJSONWithSession: jest.fn() }));
-jest.mock('@/lib/config', () => ({ getApiBaseUrl: () => 'https://api.example.test' }));
+let mockBaseUrl = 'https://api.example.test';
+jest.mock('@/lib/config', () => ({ getApiBaseUrl: () => mockBaseUrl }));
 jest.mock('@/lib/env', () => ({ isMockModeEnabled: () => false }));
 const fetch = jest.mocked(fetchJSONWithSession);
 
-beforeEach(() => fetch.mockReset());
+beforeEach(() => { fetch.mockReset(); mockBaseUrl = 'https://api.example.test'; });
 
 it('sends only the narrative and question history through the authenticated API with cancellation', async () => {
   fetch.mockResolvedValue({ question: 'Que te revient-il du jardin ?', done: false });
@@ -25,4 +26,14 @@ it.each([
 ])('rejects a malformed conversation response: %j', async response => {
   fetch.mockResolvedValue(response);
   await expect(requestCaptureQuestion('Un jardin.', 'fr', [])).rejects.toThrow('Invalid recall response');
+});
+
+it.each([
+  ['https://project.supabase.co/functions/v1/api', 'https://project.supabase.co/functions/v1/capture-recall/recall-question'],
+  ['https://project.functions.supabase.co/api', 'https://project.functions.supabase.co/capture-recall/recall-question'],
+])('uses the isolated recall function for the hosted base %s', async (base, endpoint) => {
+  mockBaseUrl = base;
+  fetch.mockResolvedValue({ question: null, done: true });
+  await requestCaptureQuestion('Un jardin.', 'fr', []);
+  expect(fetch).toHaveBeenCalledWith(endpoint, expect.any(Object));
 });

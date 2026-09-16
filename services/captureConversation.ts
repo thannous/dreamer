@@ -12,7 +12,12 @@ export async function requestCaptureQuestion(
   if (isMockModeEnabled()) {
     return { question: String(getTranslator(lang as Parameters<typeof getTranslator>[0])('dream_recall.question.what_else')), done: false };
   }
-  const result = await fetchJSONWithSession<CaptureQuestion>(`${getApiBaseUrl()}/recall-question`, {
+  // Hosted recall is deployed independently; local/proxied APIs keep their existing route.
+  const baseUrl = getApiBaseUrl().replace(
+    /(\/functions\/v1|\.functions\.supabase\.co)\/api$/,
+    '$1/capture-recall'
+  );
+  const result = await fetchJSONWithSession<CaptureQuestion>(`${baseUrl}/recall-question`, {
     method: 'POST', body: { transcript, lang, previousQuestions },
     ...NETWORK_REQUEST_POLICIES.recallQuestion, signal,
   });
