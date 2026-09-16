@@ -340,6 +340,8 @@ jest.doMock('@/components/recording/RecordingConversation', () => ({
     return <>
       <Editor layout="voiceFirst" value={props.transcript} onChange={props.onAnswerChange}
         onSwitchToVoice={props.onVoice} voiceStatus={props.voiceStatus} disabled={props.disabled} />
+      <textarea data-testid="conversation-answer" value={props.answer} onChange={(event) => props.onAnswerChange(event.currentTarget.value)} />
+      <span data-testid="conversation-story">{props.storyTranscript}</span>
       <span data-testid="conversation-question">{props.question}</span>
       <button data-testid="conversation-mute" onClick={props.onMute}>Mute</button>
       <button data-testid="conversation-submit" onClick={props.onAnswerSubmit}>Send</button>
@@ -1720,6 +1722,43 @@ describe('Recording screen', () => {
     });
   });
 
+  it('edits dictated words in the current answer without duplicating them or changing earlier answers', async () => {
+    mockPlatformOS = 'android';
+    mockRecordingPermissionState = 'granted';
+    mockGetInputModePreference.mockResolvedValue('voice');
+    mockGetSavedTranscript.mockResolvedValueOnce('Un jardin.');
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    act(() => mockOnPartialTranscript?.('Une porte rouge.'));
+    expect((screen.getByTestId('conversation-answer') as HTMLTextAreaElement).value).toBe('Une porte rouge.');
+    expect(screen.getByTestId('conversation-story').textContent).toBe('Un jardin.');
+    mockStopRecording.mockImplementationOnce(async () => {
+      mockIsRecordingRef.current = false;
+      return { transcript: 'Une porte rouge.' };
+    });
+    await act(async () => { fireEvent.click(screen.getByTestId('conversation-mute')); });
+    fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'Une porte bleue.' } });
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('Un jardin. Une porte bleue.');
+    act(() => mockAppStateHandler?.('background'));
+    await waitFor(() => expect(mockSaveTranscript).toHaveBeenLastCalledWith('Un jardin. Une porte bleue.'));
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
+    act(() => mockOnPartialTranscript?.('Puis un oiseau.'));
+    expect((screen.getByTestId('conversation-answer') as HTMLTextAreaElement).value).toBe('Une porte bleue. Puis un oiseau.');
+    mockStopRecording.mockImplementationOnce(async () => {
+      mockIsRecordingRef.current = false;
+      return { transcript: 'Puis un oiseau.' };
+    });
+    await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
+    expect((screen.getByTestId('conversation-answer') as HTMLTextAreaElement).value).toBe('');
+    expect(screen.getByTestId('conversation-story').textContent).toBe('Un jardin. Une porte bleue. Puis un oiseau.');
+    fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'Du soleil.' } });
+    fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: '' } });
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('Un jardin. Une porte bleue. Puis un oiseau.');
+  });
+
   it('mutes a Tell reply without requesting another question or restarting the microphone', async () => {
     mockPlatformOS = 'android';
     mockRecordingPermissionState = 'granted';
@@ -1757,7 +1796,7 @@ describe('Recording screen', () => {
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toContain('Un jardin au soleil.');
   });
 
-  it('asks a question after a Tell turn ends without restarting or stopping twice', async () => {
+  it('keeps a Tell answer editable after native speech ends without advancing or restarting', async () => {
     mockPlatformOS = 'android';
     mockRecordingPermissionState = 'granted';
     mockGetInputModePreference.mockResolvedValue('voice');
@@ -1767,7 +1806,8 @@ describe('Recording screen', () => {
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
     act(() => mockOnPartialTranscript?.('Un jardin au soleil.'));
     await act(async () => { mockOnNativeEnd?.(); });
-    await waitFor(() => expect(screen.getByTestId('conversation-question').textContent).toBe('What else do you remember?'));
+    expect(mockRequestCaptureQuestion).not.toHaveBeenCalled();
+    expect((screen.getByTestId('conversation-answer') as HTMLTextAreaElement).value).toBe('Un jardin au soleil.');
     expect(mockStopRecording).toHaveBeenCalledTimes(1);
     expect(mockStartRecording).toHaveBeenCalledTimes(1);
     await act(async () => { mockOnNativeEnd?.(); });

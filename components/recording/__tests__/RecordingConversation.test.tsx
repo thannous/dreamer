@@ -25,7 +25,7 @@ jest.mock('@/components/recording/MicButton', () => {
 
 function props() {
   return {
-    transcript: 'Un jardin.', question: 'Que te revient-il de ce jardin ?', loading: false,
+    transcript: 'Un jardin.', answer: '', storyTranscript: 'Un jardin.', question: 'Que te revient-il de ce jardin ?', loading: false,
     unavailable: false, done: false, disabled: false, voiceSupported: true,
     voiceStatus: 'idle' as const, onVoice: jest.fn(), onMute: jest.fn(async () => {}), onReview: jest.fn(),
     onAnswerChange: jest.fn(), onAnswerSubmit: jest.fn(),
@@ -53,9 +53,11 @@ it('persists typed answers on change and explicitly submits before the next ques
   expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
   fireEvent.changeText(view.getByTestId('recording-conversation-answer'), 'Une porte ouverte.');
   expect(callbacks.onAnswerChange).toHaveBeenLastCalledWith('Une porte ouverte.');
+  view.rerender(<RecordingConversation {...callbacks} answer="Une porte ouverte." />);
   expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
   fireEvent.press(view.getByTestId('recording-conversation-submit'));
   expect(callbacks.onAnswerSubmit).toHaveBeenCalledTimes(1);
+  view.rerender(<RecordingConversation {...callbacks} answer="" />);
   await waitFor(() => expect(view.queryByTestId('recording-conversation-answer')).toBeNull());
 });
 
@@ -110,7 +112,7 @@ it('offers writing and mute while listening without submitting the answer', asyn
 
 
 it('lets the whole story card open manual editing and keeps completion separate from mute', async () => {
-  const callbacks = props();
+  const callbacks = { ...props(), answer: 'Une porte.' };
   const view = render(<RecordingConversation {...callbacks} />);
   fireEvent.press(view.getByTestId('recording-voice-preview'));
   expect(callbacks.onReview).toHaveBeenCalledTimes(1);
@@ -118,4 +120,20 @@ it('lets the whole story card open manual editing and keeps completion separate 
   await waitFor(() => expect(callbacks.onAnswerSubmit).toHaveBeenCalledTimes(1));
   expect(callbacks.onMute).not.toHaveBeenCalled();
   expect(callbacks.onVoice).not.toHaveBeenCalled();
+});
+
+
+it('prefills the reply editor with dictation and keeps the completed story separate', async () => {
+  const callbacks = { ...props(), answer: 'Une porte ouverte.', transcript: 'Un jardin. Une porte ouverte.' };
+  const view = render(<RecordingConversation {...callbacks} voiceStatus="recording" />);
+  expect(view.getByTestId('recording-conversation-answer').props.value).toBe('Une porte ouverte.');
+  expect(view.getByTestId('recording-conversation-answer').props.editable).toBe(false);
+  expect(view.getByTestId('recording-voice-preview').props.children).toBe('Un jardin.');
+  fireEvent.press(view.getByTestId('recording-conversation-type'));
+  await waitFor(() => expect(callbacks.onMute).toHaveBeenCalledTimes(1));
+  view.rerender(<RecordingConversation {...callbacks} voiceStatus="idle" />);
+  await waitFor(() => expect(view.getByTestId('recording-conversation-answer').props.editable).toBe(true));
+  expect(view.getByTestId('recording-conversation-answer').props.value).toBe('Une porte ouverte.');
+  fireEvent.changeText(view.getByTestId('recording-conversation-answer'), 'Une porte bleue.');
+  expect(callbacks.onAnswerChange).toHaveBeenLastCalledWith('Une porte bleue.');
 });

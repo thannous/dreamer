@@ -11,6 +11,8 @@ import { Fonts } from '@/constants/theme';
 
 type Props = {
   transcript: string;
+  answer: string;
+  storyTranscript: string;
   question: string | null;
   loading: boolean;
   unavailable: boolean;
@@ -30,7 +32,7 @@ export function RecordingConversation(props: Props) {
   const tokens = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const [typing, setTyping] = useState(false);
-  const [answer, setAnswer] = useState('');
+  const answer = props.answer;
   const [switching, setSwitching] = useState(false);
   const hasText = Boolean(props.transcript.trim());
   const listening = props.voiceStatus === 'recording';
@@ -43,7 +45,6 @@ export function RecordingConversation(props: Props) {
     // Typed edits have already been persisted through onAnswerChange.
     Keyboard.dismiss();
     setTyping(false);
-    setAnswer('');
     props.onVoice();
   };
 
@@ -55,7 +56,6 @@ export function RecordingConversation(props: Props) {
     setSwitching(true);
     try {
       if (listening) await props.onMute();
-      setAnswer('');
       setTyping(true);
     } finally {
       setSwitching(false);
@@ -65,7 +65,6 @@ export function RecordingConversation(props: Props) {
     setSwitching(true);
     try {
       await props.onAnswerSubmit();
-      setAnswer('');
       setTyping(false);
       Keyboard.dismiss();
     } finally {
@@ -73,7 +72,7 @@ export function RecordingConversation(props: Props) {
     }
   };
   const editingAnswer = typing || !props.voiceSupported;
-  const submitDisabled = locked || props.loading || !(editingAnswer ? answer.trim() : hasText);
+  const submitDisabled = locked || props.loading || !answer.trim();
 
   return (
     <View style={styles.container} testID="recording-conversation">
@@ -92,24 +91,7 @@ export function RecordingConversation(props: Props) {
       {props.loading ? <ActivityIndicator color={tokens.accent.text} accessibilityLabel={t('recording.conversation.thinking')} /> : null}
       {!props.done ? (
         <View style={styles.replyArea}>
-          {editingAnswer ? (
-            <RecordingTextInput
-              compact
-              autoFocus={typing}
-              value={answer}
-              onChange={(text) => { setAnswer(text); props.onAnswerChange(text); }}
-              disabled={locked || props.loading}
-              instructionText=""
-              lengthWarning=""
-              voiceSupported={props.voiceSupported}
-              voiceStatus={props.voiceStatus}
-              switchToVoiceLabel={t('recording.conversation.reply_voice')}
-              onSwitchToVoice={continueWithVoice}
-              placeholder={t('recording.conversation.answer_placeholder')}
-              inputAccessibilityLabel={t('recording.conversation.answer_placeholder')}
-              inputTestID="recording-conversation-answer"
-            />
-          ) : (
+          {!editingAnswer ? (
             <View style={styles.voiceControls}>
               <Pressable
                 testID={TID.Button.RecordToggle}
@@ -138,7 +120,29 @@ export function RecordingConversation(props: Props) {
                 <IconSymbol name="pencil" size={22} color={tokens.accent.text} />
               </Pressable>
             </View>
-          )}
+          ) : null}
+          {editingAnswer || answer.length > 0 ? (
+            <View style={styles.answerSection}>
+              <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.current_answer')}</Text>
+              <RecordingTextInput
+                key={typing ? 'editing' : 'preview'}
+                compact
+                autoFocus={typing}
+                value={answer}
+                onChange={props.onAnswerChange}
+                disabled={locked || props.loading || listening}
+                instructionText=""
+                lengthWarning=""
+                voiceSupported={props.voiceSupported && editingAnswer}
+                voiceStatus={props.voiceStatus}
+                switchToVoiceLabel={t('recording.conversation.reply_voice')}
+                onSwitchToVoice={continueWithVoice}
+                placeholder={t('recording.conversation.answer_placeholder')}
+                inputAccessibilityLabel={t('recording.conversation.answer_placeholder')}
+                inputTestID="recording-conversation-answer"
+              />
+            </View>
+          ) : null}
           <Pressable
             disabled={submitDisabled}
             onPress={submitAnswer}
@@ -153,7 +157,7 @@ export function RecordingConversation(props: Props) {
           </Pressable>
         </View>
       ) : null}
-      {hasText ? (
+      {props.storyTranscript.trim() ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('recording.tell.edit')}
@@ -167,7 +171,7 @@ export function RecordingConversation(props: Props) {
             <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.your_story')}</Text>
             <IconSymbol name="pencil" size={20} color={tokens.accent.text} />
           </View>
-          <Text style={[styles.story, { color: tokens.text.primary }]} testID="recording-voice-preview">{props.transcript}</Text>
+          <Text style={[styles.story, { color: tokens.text.primary }]} testID="recording-voice-preview">{props.storyTranscript}</Text>
         </Pressable>
       ) : null}
     </View>
@@ -179,6 +183,7 @@ const styles = StyleSheet.create({
   questionBlock: { gap: 8 },
   question: { fontSize: 25, lineHeight: 33, fontWeight: '500', letterSpacing: -0.4 },
   hint: { fontSize: 15, lineHeight: 22 },
+  answerSection: { width: '100%', gap: 8 },
   replyArea: { width: '100%', alignItems: 'center', gap: 16 },
   voiceControls: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 },
   mic: { width: 76, height: 76, borderRadius: 38, alignItems: 'center', justifyContent: 'center' },

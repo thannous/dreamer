@@ -31,3 +31,12 @@ Screenshots retained locally under `doc_web_interne/docs/qa/recording-save-fabri
 - Physical Motorola with Expo: verified the compact layout, tapped the story body to open the complete editable transcript, and verified the central microphone changes from “Couper le micro” while listening back to “Répondre” after muting.
 - 66 focused tests passed across RecordingConversation and recordingScreen, including final dictation words before submission, mute without advancing, typed draft preservation, and tappable story editing. App and test typechecks passed. Focused lint passed; app/recording.tsx retains its two pre-existing set-state-in-effect warnings.
 - Personal transcript screenshots remain local and are not committed. No native reinstallation, release build, Store submission or production deployment.
+
+## Shared voice/keyboard answer (2026-09-17)
+
+- A controlled current-answer field now receives both speech previews/final words and keyboard edits. Keyboard corrections replace the same answer; resumed dictation appends to it without duplicating earlier words.
+- “Ton récit” displays the earlier answers while the current answer remains editable above it. The combined draft is still persisted immediately, including unfinished input, and is still included when saving the dream directly.
+- Native speech ending no longer submits the answer automatically. Only “Terminer ma réponse” advances the conversation, for both input methods.
+- The voice screen no longer scrolls to the bottom of the full story when the keyboard opens, which could hide the active answer field.
+- 68 focused component/route tests passed; app/test typechecks passed; lint has only the two existing recording.tsx effect warnings.
+- Physical Motorola Expo: current-answer field visible with keyboard; synthetic typed answer preserved through starting dictation and returning to the keyboard. Synthetic input was then cleared without saving a dream. Recognizer partial/final editing and duplicate prevention are covered by focused tests; no new spoken transcription accuracy claim.
