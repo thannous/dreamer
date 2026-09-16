@@ -23,6 +23,7 @@ import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from '@/constants/
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
+import { IllustrationQualityPreference } from './IllustrationQualityPreference';
 
 import {
   getDateFromTime,
@@ -431,13 +432,13 @@ export function SettingsFieldGroup({
             ) : null}
             <PreferenceRow
               icon="globe"
-              isLast
               label={language.title}
               noctalia={noctalia}
               onPress={() => setLanguageSheetVisible(true)}
               testID="settings-language-choice"
               value={language.currentLabel}
             />
+            <IllustrationQualityPreference />
           </EditorialCard>
 
           {!returningGuestBlocked ? (

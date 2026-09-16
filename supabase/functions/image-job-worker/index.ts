@@ -2,6 +2,7 @@ import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { GUEST_LIMITS, corsHeaders } from '../api/lib/constants.ts';
 import { ensureImagePrompt, generateAndStoreImage } from '../api/services/imagePipeline.ts';
 import { resolveImageModel, type ImageGenerationTier } from '../api/services/geminiImages.ts';
+import { reserveHdImageCredit, finishHdImageCredit } from '../api/services/hdImageQuota.ts';
 import {
   IMAGE_JOB_WORKER_AUTH_HEADER,
   createAdminClient,
@@ -211,7 +212,7 @@ const clearGuestImageClaim = async (
   return true;
 };
 
-const claimSpecificJob = async (
+export const claimSpecificJob = async (
   adminClient: ReturnType<typeof createAdminClient>,
   jobId: string
 ): Promise<ImageJobRow | null> => {
@@ -234,7 +235,9 @@ const claimSpecificJob = async (
     normalizedCurrentJob.status !== 'queued' ||
     normalizedCurrentJob.attempt_count >= normalizedCurrentJob.max_attempts
   ) {
-    return normalizedCurrentJob ?? null;
+    // A running job belongs to a different worker invocation. Returning it
+    // would generate and spend twice for the same reserved monthly credit.
+    return null;
   }
 
   const { data: claimedJob, error: claimError } = await adminClient
@@ -289,6 +292,7 @@ export const redactedRequestPayload = (job: ImageJobRow) => {
       typeof job.request_payload?.transcript === 'string'
       && job.request_payload.transcript.length > 0,
     hadPreviousImage: Boolean(job.request_payload?.previousImageUrl),
+    ...(job.request_payload?.imageSize ? { imageSize: job.request_payload.imageSize } : {}),
     ...(retryPayloadHash ? { [IMAGE_RETRY_PAYLOAD_HASH_KEY]: retryPayloadHash } : {}),
   };
 };
@@ -352,6 +356,12 @@ export const markTerminalFailure = async (
     error_message: errorMessage,
     finished_at: new Date().toISOString(),
   });
+  if (job.request_payload?.imageSize === '2K' || job.request_payload?.imageSize === '4K') {
+    await finishHdImageCredit(adminClient, job.id, false).catch(() => {
+      // Quota reads/reservations reconcile failed jobs if bookkeeping is unavailable.
+      console.warn('[image-job-worker] HD refund bookkeeping pending', { jobId: job.id });
+    });
+  }
   await persistDreamImageFailure(adminClient, job);
 };
 
@@ -454,6 +464,7 @@ const processImageJob = async (input: {
       prompt?: string | null;
       transcript?: string | null;
       previousImageUrl?: string | null;
+      imageSize?: '1K' | '2K' | '4K';
     };
 
     const imageTierDecision = await resolveImageGenerationTier(adminClient, job.user_id);
@@ -503,8 +514,19 @@ const processImageJob = async (input: {
     const apiKey = getRequiredEnv('GEMINI_API_KEY');
     let startedUpstream = false;
     let claimedQuotaThisRun = false;
+    const imageSize = requestPayload.imageSize ?? '1K';
+    const highResolution = imageSize === '2K' || imageSize === '4K';
 
     try {
+      if (!['1K', '2K', '4K'].includes(imageSize)) {
+        throw Object.assign(new Error('Invalid image resolution'), { status: 400 });
+      }
+      if (highResolution) {
+        if (imageTierDecision.tier !== 'plus') {
+          throw Object.assign(new Error('High resolution requires Plus'), { code: 'HD_IMAGE_PLUS_REQUIRED' });
+        }
+        await reserveHdImageCredit(adminClient, job.user_id, job.id);
+      }
       const quotaDecision = await claimGuestImageQuota(adminClient, job);
       if (!quotaDecision.allowed) {
         if (quotaDecision.retryable && job.attempt_count < job.max_attempts) {
@@ -531,7 +553,8 @@ const processImageJob = async (input: {
       const ownerId = job.user_id ?? `guest_${job.guest_fingerprint ?? 'guest'}`;
       const result = await generateAndStoreImage({
         apiKey,
-        model: resolveImageModel(imageTierDecision.tier),
+        model: resolveImageModel(imageTierDecision.tier, undefined, imageSize),
+        imageSize,
         prompt,
         previousImageUrl: requestPayload.previousImageUrl,
         supabaseUrl: input.supabaseUrl,
@@ -551,6 +574,13 @@ const processImageJob = async (input: {
         error_message: null,
         finished_at: new Date().toISOString(),
       });
+      if (highResolution) {
+        // A failed bookkeeping update must never regenerate an already stored image.
+        // The reservation still counts towards the monthly limit.
+        await finishHdImageCredit(adminClient, job.id, true).catch(() => {
+          console.warn('[image-job-worker] HD completion bookkeeping pending', { jobId: job.id });
+        });
+      }
     } catch (error) {
       const serialized = serializeImageJobError(error);
       let guestClaimCleared = false;

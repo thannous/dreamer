@@ -33,6 +33,7 @@ export type GeminiGenerationConfig = {
   responseJsonSchema?: unknown;
   responseModalities?: ('TEXT' | 'IMAGE' | 'AUDIO')[];
   imageConfig?: {
+    imageSize?: '1K' | '2K' | '4K';
     aspectRatio?: string;
   };
   thinkingLevel?: GeminiThinkingLevel;
@@ -175,6 +176,9 @@ const toSystemInstruction = (
 const toThinkingLevel = (
   model: string, thinkingLevel?: GeminiThinkingLevel
 ): GeminiThinkingLevel => {
+  if (model === GEMINI_FLASH_IMAGE_MODEL || model === GEMINI_FLASH_LITE_IMAGE_MODEL) {
+    return thinkingLevel === 'high' ? 'high' : 'minimal';
+  }
   if (!thinkingLevel) return 'low';
   return thinkingLevel === 'minimal' && model !== 'gemini-3.5-flash-lite' ? 'low' : thinkingLevel;
 };
@@ -185,6 +189,7 @@ const toResponseFormat = (
   if (config?.responseModalities?.includes('IMAGE')) {
     return {
       type: 'image',
+      ...(config.imageConfig?.imageSize ? { image_size: config.imageConfig.imageSize } : {}),
       ...(config.imageConfig?.aspectRatio
         ? { aspect_ratio: config.imageConfig.aspectRatio }
         : {}),

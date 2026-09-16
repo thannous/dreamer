@@ -10,6 +10,7 @@ import {
 } from './gemini.ts';
 
 export type ImageGenerationTier = 'free' | 'plus';
+export type ImageResolution = '1K' | '2K' | '4K';
 
 type EnvReader = (name: string) => string | undefined;
 
@@ -51,15 +52,15 @@ export const resolveImagePromptModel = (
 };
 
 /**
- * Resolve the image model from the server-authoritative subscription tier.
- * Unknown tiers intentionally use the economy model to avoid accidental premium cost.
- * `IMAGEN_MODEL` remains the legacy override for subscribers only.
+ * Standard illustrations use Lite, including for subscribers. Higher resolutions
+ * require an explicit choice and a server-verified Plus entitlement/quota claim.
  */
 export const resolveImageModel = (
   tier: unknown = 'free',
-  readEnv: EnvReader = readDenoEnv
+  readEnv: EnvReader = readDenoEnv,
+  resolution: ImageResolution = '1K'
 ): string => {
-  if (tier === 'plus') {
+  if (tier === 'plus' && resolution !== '1K') {
     return (
       readModelOverride(readEnv, 'IMAGEN_PLUS_MODEL') ??
       readModelOverride(readEnv, 'IMAGEN_MODEL') ??
@@ -75,6 +76,7 @@ export async function generateImageFromPrompt(options: {
   apiKey: string;
   aspectRatio?: string;
   model?: string;
+  imageSize?: ImageResolution;
 }): Promise<{ imageBase64?: string; mimeType?: string; raw: any; retryAttempts?: number }> {
   const { prompt, apiKey, aspectRatio = '9:16', model = resolveImageModel('free') } = options;
 
@@ -92,7 +94,7 @@ export async function generateImageFromPrompt(options: {
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         config: {
           responseModalities: ['IMAGE'],
-          imageConfig: { aspectRatio },
+          imageConfig: { aspectRatio, imageSize: options.imageSize ?? '1K' },
         },
       });
     } catch (error) {

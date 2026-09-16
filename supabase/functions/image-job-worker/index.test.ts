@@ -3,6 +3,7 @@ import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 import type { ImageJobRow } from '../api/services/imageJobs.ts';
 import {
   IMAGE_RETRY_PAYLOAD_HASH_KEY,
+  claimSpecificJob,
   markTerminalFailure,
   persistDreamImageFailure,
   persistDreamImageResult,
@@ -91,6 +92,27 @@ Deno.test('terminal image failure flags only image_generation_failed on the drea
   assertEquals('analysis_status' in (dreamUpdate?.values ?? {}), false);
   assertEquals('title' in (dreamUpdate?.values ?? {}), false);
   assertEquals('image_url' in (dreamUpdate?.values ?? {}), false);
+});
+
+Deno.test('HD refund failure still persists the terminal dream failure', async () => {
+  const { client, updates } = createUpdateTracker();
+  const quotaCalls: string[] = [];
+  const failingQuotaClient = {
+    ...client,
+    rpc(name: string) {
+      quotaCalls.push(name);
+      return Promise.resolve({ data: null, error: new Error('quota unavailable') });
+    },
+  };
+  await markTerminalFailure(
+    failingQuotaClient as any,
+    { ...imageJob, request_payload: { ...imageJob.request_payload, imageSize: '4K' } },
+    'IMAGE_JOB_FAILED',
+    'Image generation failed'
+  );
+  assertEquals(quotaCalls, ['finish_hd_image_credit']);
+  assertEquals(updates.find((update) => update.table === 'ai_jobs')?.values.status, 'failed');
+  assertEquals(updates.find((update) => update.table === 'dreams')?.values.image_generation_failed, true);
 });
 
 Deno.test('image success clears image_generation_failed without touching text analysis', async () => {
@@ -250,4 +272,9 @@ Deno.test('guest image persistence without dream_id does not write dreams', asyn
   await persistDreamImageFailure(client as any, guestJob);
 
   assertEquals(updates, []);
+});
+
+Deno.test('duplicate worker triggers cannot claim an already-running job', async () => {
+  const client = { from: () => ({ select: () => ({ eq: () => ({ eq: () => ({ limit: () => ({ maybeSingle: async () => ({ data: imageJob, error: null }) }) }) }) }) }) };
+  assertEquals(await claimSpecificJob(client as any, imageJob.id), null);
 });

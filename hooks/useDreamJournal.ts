@@ -77,6 +77,7 @@ import {
 } from '@/services/quota/GuestDreamCounter';
 import { markMockAnalysis, markMockImage } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
+import { getIllustrationResolution } from '@/services/illustrationPreferences';
 import {
   getPendingImageJobs,
   savePendingImageJobs,
@@ -424,16 +425,19 @@ export const useDreamJournal = () => {
         prompt?: string;
         transcript?: string;
         previousImageUrl?: string;
+        imageSize?: '1K' | '2K' | '4K';
       }
     ) => {
       const latestDream = resolveCurrentDream(dream);
       const clientRequestId = request.clientRequestId ?? generateUUID();
+      const imageSize = tier === 'plus' ? request.imageSize ?? await getIllustrationResolution(user?.id) : '1K';
       const job = await submitImageGenerationJob({
         clientRequestId,
         dreamId: latestDream.remoteId,
         prompt: request.prompt,
         transcript: request.transcript,
         previousImageUrl: request.previousImageUrl,
+        ...(imageSize !== '1K' ? { imageSize } : {}),
       });
 
       const currentDream = resolveCurrentDream(latestDream);
@@ -448,7 +452,7 @@ export const useDreamJournal = () => {
         job,
       };
     },
-    [registerPendingImageJob, resolveCurrentDream]
+    [registerPendingImageJob, resolveCurrentDream, tier, user?.id]
   );
 
   const waitForAnalysisJob = useCallback(async (jobId: string) => {
@@ -1123,7 +1127,7 @@ export const useDreamJournal = () => {
       const result = await submitImageJobForDream(dream, {
         clientRequestId:
           options?.clientRequestId ??
-          (!dream.imageUrl && dream.isAnalyzed ? dream.analysisRequestId : undefined),
+          (tier !== 'plus' && !dream.imageUrl && dream.isAnalyzed ? dream.analysisRequestId : undefined),
         prompt,
         transcript,
         previousImageUrl: options?.previousImageUrl ?? dream.imageUrl,
@@ -1131,7 +1135,7 @@ export const useDreamJournal = () => {
 
       return result.dream;
     },
-    [dreamsRef, submitImageJobForDream]
+    [dreamsRef, submitImageJobForDream, tier]
   );
 
   const retryDreamSync = useCallback(
@@ -1369,11 +1373,15 @@ export const useDreamJournal = () => {
       setActiveAnalysis({ dreamId });
       try {
         if (useServerAnalysisJob) {
+          const requestedImageSize = shouldReplaceImage && tier === 'plus'
+            ? await getIllustrationResolution(user?.id) : '1K';
           const command = await submitDreamAnalysisJob({
             dreamId: syncedDream.remoteId!,
             analysisRequestId: requestId,
             lang: options?.lang,
-            replaceExistingImage: shouldReplaceImage,
+            // HD is admitted through the image endpoint with its explicit size;
+            // never let the legacy analysis bundle also generate a standard image.
+            replaceExistingImage: shouldReplaceImage && requestedImageSize === '1K',
           });
           serverJobAccepted = true;
 
@@ -1389,7 +1397,19 @@ export const useDreamJournal = () => {
           analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'done');
           let latestDream = resolveCurrentDream(syncedDream);
           const imageJob = status.resultPayload?.imageJob;
-          if (
+          if (shouldReplaceImage && requestedImageSize !== '1K') {
+            emitProgress(AnalysisStep.GENERATING_IMAGE);
+            try {
+              const submitted = await submitImageJobForDream(latestDream, {
+                clientRequestId: requestId, transcript: latestDream.transcript,
+                previousImageUrl: latestDream.imageUrl || undefined, imageSize: requestedImageSize,
+              });
+              latestDream = submitted.dream;
+            } catch {
+              latestDream = { ...latestDream, imageGenerationFailed: !latestDream.imageUrl, imageJobErrorCode: 'IMAGE_JOB_SUBMISSION_FAILED' };
+              await persistDreamClientState(latestDream);
+            }
+          } else if (
             shouldReplaceImage
             && imageJob
             && (imageJob.status === 'queued' || imageJob.status === 'running')

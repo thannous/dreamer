@@ -1960,6 +1960,14 @@ function JournalDetailContent() {
 
     return (
       <View testID={TID.Component.JournalIllustration} className="mb-5 overflow-hidden rounded-lg">
+        {dream.imageJobErrorCode === 'HD_IMAGE_QUOTA_EXCEEDED' ? (
+          <View className="gap-3 rounded-lg bg-ink-soft p-4">
+            <Text accessibilityRole="alert" className="font-sans text-body-sm text-ivory">{t('settings.illustration.exhausted')}</Text>
+            <Pressable accessibilityRole="button" onPress={() => router.push('/settings')} className="min-h-[44px] justify-center">
+              <Text className="font-sans-medium text-champagne-on">{t('settings.illustration.preferences')}</Text>
+            </Pressable>
+          </View>
+        ) : null}
         {dream.imageUrl ? (
           <PressableScale
             testID={TID.Button.JournalIllustrationExpand}

@@ -9,8 +9,8 @@ import { resolveImageModel, resolveImagePromptModel } from './geminiImages.ts';
 
 const envReader = (values: Record<string, string | undefined>) => (name: string) => values[name];
 
-Deno.test('resolveImageModel uses stable Flash Image for subscribers', () => {
-  assertEquals(resolveImageModel('plus', envReader({})), GEMINI_FLASH_IMAGE_MODEL);
+Deno.test('resolveImageModel uses stable Flash Image only for explicit subscriber HD requests', () => {
+  assertEquals(resolveImageModel('plus', envReader({}), '4K'), GEMINI_FLASH_IMAGE_MODEL);
   assertEquals(GEMINI_FLASH_IMAGE_MODEL, 'gemini-3.1-flash-image');
 });
 
@@ -30,14 +30,14 @@ Deno.test('resolveImageModel keeps subscriber and free overrides isolated', () =
     IMAGEN_FREE_MODEL: ' custom-free ',
   });
 
-  assertEquals(resolveImageModel('plus', readEnv), 'custom-plus');
+  assertEquals(resolveImageModel('plus', readEnv, '2K'), 'custom-plus');
   assertEquals(resolveImageModel('free', readEnv), 'custom-free');
 });
 
 Deno.test('resolveImageModel supports the legacy subscriber override without charging free users', () => {
   const readEnv = envReader({ IMAGEN_MODEL: ' legacy-plus ' });
 
-  assertEquals(resolveImageModel('plus', readEnv), 'legacy-plus');
+  assertEquals(resolveImageModel('plus', readEnv, '2K'), 'legacy-plus');
   assertEquals(resolveImageModel('free', readEnv), GEMINI_FLASH_LITE_IMAGE_MODEL);
 });
 
@@ -48,7 +48,7 @@ Deno.test('resolveImageModel ignores blank overrides', () => {
     IMAGEN_FREE_MODEL: '\n',
   });
 
-  assertEquals(resolveImageModel('plus', readEnv), GEMINI_FLASH_IMAGE_MODEL);
+  assertEquals(resolveImageModel('plus', readEnv, '2K'), GEMINI_FLASH_IMAGE_MODEL);
   assertEquals(resolveImageModel('free', readEnv), GEMINI_FLASH_LITE_IMAGE_MODEL);
 });
 
@@ -59,7 +59,7 @@ Deno.test('resolveImageModel ignores retired preview overrides', () => {
     IMAGEN_FREE_MODEL: 'gemini-2.5-flash-image-preview',
   });
 
-  assertEquals(resolveImageModel('plus', readEnv), GEMINI_FLASH_IMAGE_MODEL);
+  assertEquals(resolveImageModel('plus', readEnv, '2K'), GEMINI_FLASH_IMAGE_MODEL);
   assertEquals(resolveImageModel('free', readEnv), GEMINI_FLASH_LITE_IMAGE_MODEL);
 });
 
@@ -83,4 +83,9 @@ Deno.test('resolveImagePromptModel ignores blank overrides and preserves valid c
     resolveImagePromptModel(envReader({ GEMINI_LITE_MODEL: ' gemini-3.5-flash ' })),
     'gemini-3.5-flash'
   );
+});
+
+Deno.test('Plus standard illustrations also use Lite despite premium overrides', () => {
+  assertEquals(resolveImageModel('plus', envReader({ IMAGEN_PLUS_MODEL: 'costly-model' })), GEMINI_FLASH_LITE_IMAGE_MODEL);
+  assertEquals(resolveImageModel('free', envReader({}), '4K'), GEMINI_FLASH_LITE_IMAGE_MODEL);
 });

@@ -4,6 +4,7 @@ import { classifyGeminiError } from './gemini.ts';
 export type ImageJobStatus = 'queued' | 'running' | 'succeeded' | 'failed';
 
 export type ImageJobRequestPayload = {
+  imageSize?: '1K' | '2K' | '4K';
   prompt?: string | null;
   transcript?: string | null;
   previousImageUrl?: string | null;
@@ -71,6 +72,10 @@ export const serializeImageJobError = (error: unknown): {
   const candidate = error as Record<string, unknown> | null;
   const explicitCode = typeof candidate?.code === 'string' ? candidate.code : null;
 
+  if (explicitCode && ['HD_IMAGE_QUOTA_EXCEEDED', 'HD_IMAGE_PLUS_REQUIRED', 'HD_IMAGE_QUOTA_UNAVAILABLE'].includes(explicitCode)) {
+    return { errorCode: explicitCode, errorMessage: 'High-resolution illustration unavailable', retryable: explicitCode === 'HD_IMAGE_QUOTA_UNAVAILABLE' };
+  }
+
   if (explicitCode === 'QUOTA_EXCEEDED' || explicitCode === 'GUEST_DEVICE_UPGRADED') {
     return {
       errorCode: explicitCode,
@@ -82,6 +87,15 @@ export const serializeImageJobError = (error: unknown): {
 
   const classified = classifyGeminiError(error);
   const retryable = Boolean(candidate?.isTransient) || classified.canRetry;
+
+  // Preserve the terminal image-provider categories already deployed in api v105.
+  const terminalProviderCodes: Record<number, string> = {
+    400: 'IMAGE_REQUEST_INVALID', 401: 'IMAGE_AUTH_FAILED',
+    403: 'IMAGE_ACCESS_DENIED', 404: 'IMAGE_MODEL_NOT_FOUND',
+  };
+  if (terminalProviderCodes[classified.status]) {
+    return { errorCode: terminalProviderCodes[classified.status], errorMessage: classified.userMessage, retryable: false };
+  }
 
   if (classified.status === 429) {
     return {

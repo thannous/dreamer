@@ -1,5 +1,6 @@
 import { callGeminiWithFallback } from './gemini.ts';
 import { generateImageFromPrompt, resolveImagePromptModel } from './geminiImages.ts';
+import type { ImageResolution } from './geminiImages.ts';
 import { optimizeImage } from './image.ts';
 import { createStorageHelpers } from './storage.ts';
 
@@ -18,7 +19,16 @@ type StoredImageOptions = {
   supabaseServiceRoleKey: string | null;
   storageBucket: string;
   ownerId: string;
+  imageSize?: ImageResolution;
 };
+
+export async function prepareIllustrationForStorage(
+  image: { base64: string; contentType: string }, resolution: ImageResolution = '1K'
+) {
+  if (resolution === '2K' || resolution === '4K') return image;
+  return (await optimizeImage(image, { maxWidth: 1024, maxHeight: 1024, quality: 78, aspectRatio: 9 / 16 })
+    .catch(() => null)) ?? image;
+}
 
 export async function ensureImagePrompt(options: ImagePromptOptions): Promise<string> {
   const prompt = String(options.prompt ?? '').trim();
@@ -61,6 +71,7 @@ export async function generateAndStoreImage(
     apiKey: options.apiKey,
     model: options.model,
     aspectRatio: '9:16',
+    imageSize: options.imageSize ?? '1K',
   });
 
   if (!imageBase64) {
@@ -70,14 +81,9 @@ export async function generateAndStoreImage(
     });
   }
 
-  const optimized =
-    (await optimizeImage(
-      { base64: imageBase64, contentType: mimeType ?? 'image/png' },
-      { maxWidth: 1024, maxHeight: 1024, quality: 78, aspectRatio: 9 / 16 }
-    ).catch(() => null)) ?? {
-      base64: imageBase64,
-      contentType: mimeType ?? 'image/png',
-    };
+  const highResolution = options.imageSize === '2K' || options.imageSize === '4K';
+  const original = { base64: imageBase64, contentType: mimeType ?? 'image/png' };
+  const optimized = await prepareIllustrationForStorage(original, options.imageSize);
 
   const { uploadImageToStorage, deleteImageFromStorage } = createStorageHelpers({
     supabaseUrl: options.supabaseUrl,
@@ -87,6 +93,9 @@ export async function generateAndStoreImage(
   });
 
   const storedImageUrl = await uploadImageToStorage(optimized.base64, optimized.contentType);
+  if (highResolution && !storedImageUrl) {
+    throw new Error('High-resolution image storage failed');
+  }
   const imageUrl = storedImageUrl ?? `data:${optimized.contentType};base64,${optimized.base64}`;
 
   if (options.previousImageUrl) {

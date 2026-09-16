@@ -62,6 +62,7 @@ export type AnalysisRequestContext = {
 };
 
 export type ImageJobCommandRequest = {
+  imageSize?: '1K' | '2K' | '4K';
   clientRequestId: string;
   dreamId?: number;
   prompt?: string;

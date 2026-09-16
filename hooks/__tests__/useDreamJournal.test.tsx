@@ -176,6 +176,8 @@ jest.mock('../../services/supabaseDreamService', () => ({
 }));
 
 // Mock geminiService
+const mockGetIllustrationResolution = typedJestFn<() => Promise<'1K' | '2K' | '4K'>>();
+jest.mock('../../services/illustrationPreferences', () => ({ getIllustrationResolution: mockGetIllustrationResolution }));
 jest.mock('../../services/geminiService', () => ({
   analyzeDream: mockAnalyzeDreamText,
   submitDreamAnalysisJob: mockSubmitDreamAnalysisJob,
@@ -356,6 +358,7 @@ describe('useDreamJournal', () => {
   });
 
   beforeEach(() => {
+    mockGetIllustrationResolution.mockResolvedValue('1K');
     jest.clearAllMocks();
     mockGetDreamsMigrationSynced.mockResolvedValue(true);
     mockSubscriptionStatus = { tier: 'free' };
@@ -2434,9 +2437,11 @@ describe('useDreamJournal', () => {
       expect(getDreamAnalysisFreshness(analyzed)).toBe('fresh');
     });
 
-    it('registers a server image job only when replaceExistingImage is true', async () => {
+    it.each(['1K', '4K'] as const)('creates only the requested %s image after server analysis', async (resolution: '1K' | '4K') => {
       mockEnvState.analysisJobsEnabled = true;
       setMockUser({ id: 'user-1' });
+      mockSubscriptionStatus = { tier: 'plus' };
+      mockGetIllustrationResolution.mockResolvedValue(resolution);
       const requestId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
       const existingDream = buildDream({
         id: 1,
@@ -2462,12 +2467,12 @@ describe('useDreamJournal', () => {
         clientRequestId: requestId,
         resultPayload: {
           dreamId: 101,
-          imageJob: {
+          ...(resolution === '1K' ? { imageJob: {
             id: 'image-job-from-analysis',
             status: 'queued',
             client_request_id: requestId,
             dream_id: 101,
-          },
+          } } : {}),
         },
       });
 
@@ -2485,12 +2490,14 @@ describe('useDreamJournal', () => {
         dreamId: 101,
         analysisRequestId: requestId,
         lang: 'fr',
-        replaceExistingImage: true,
+        replaceExistingImage: resolution === '1K',
       });
+      if (resolution === '4K') expect(mockSubmitImageGenerationJob).toHaveBeenCalledWith(expect.objectContaining({ imageSize: '4K' }));
+      else expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
       expect(analyzed).toEqual(expect.objectContaining({
         title: 'Server-owned title',
         analysisStatus: 'done',
-        imageJobId: 'image-job-from-analysis',
+        imageJobId: resolution === '1K' ? 'image-job-from-analysis' : 'job-queued',
         imageJobStatus: 'queued',
       }));
     });
@@ -3308,6 +3315,19 @@ describe('useDreamJournal', () => {
   });
 
   describe('generateDreamImage', () => {
+    it('submits the explicit Plus resolution and does not send HD for a free account', async () => {
+      setMockUser({ id: 'user-1' });
+      mockSubscriptionStatus = { tier: 'plus' };
+      mockGetIllustrationResolution.mockResolvedValue('4K');
+      mockFetchDreamsFromSupabase.mockResolvedValue([buildDream({ id: 1, remoteId: 101 })]);
+      const { result, rerender } = await renderLoadedDreamJournal();
+      await act(async () => { await result.current.generateDreamImage(1); });
+      expect(mockSubmitImageGenerationJob).toHaveBeenLastCalledWith(expect.objectContaining({ imageSize: '4K' }));
+      mockSubscriptionStatus = { tier: 'free' };
+      rerender();
+      await act(async () => { await result.current.generateDreamImage(1); });
+      expect(mockSubmitImageGenerationJob.mock.calls.at(-1)?.[0]).not.toHaveProperty('imageSize');
+    });
     it('reuses the analysis request id to recover a missing bundled image', async () => {
       setMockUser({ id: 'user-1' });
       const analysisRequestId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';

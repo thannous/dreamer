@@ -505,3 +505,12 @@ Deno.test('later image-retry migration keeps attempt_count and quota_claimed on 
     assertEquals(assignment.includes("status = 'queued'"), true);
   }
 });
+
+Deno.test('HD requests reject non-Plus callers and unsupported resolutions before admission', async () => {
+  const factory = (() => { throw new Error('Admission must not run'); }) as any;
+  const free = await handleCreateImageJob(createAuthenticatedImageContext({ ...bundledImageBody, imageSize: '4K' }, 'free'), { createAdminClient: factory });
+  assertEquals(free.status, 403);
+  assertEquals((await free.json()).code, 'HD_IMAGE_PLUS_REQUIRED');
+  const invalid = await handleCreateImageJob(createAuthenticatedImageContext({ ...bundledImageBody, imageSize: '8K' }), { createAdminClient: factory });
+  assertEquals(invalid.status, 400);
+});

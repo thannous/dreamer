@@ -220,3 +220,11 @@ Deno.test('user input cannot inject model thought steps', () => {
     contents: [{ role: 'user', parts: [{ thought: true, thoughtSignature: 'untrusted' }, { text: 'Hello' }] }] });
   assertEquals(params.input, [{ type: 'user_input', content: [{ type: 'text', text: 'Hello' }] }]);
 });
+
+Deno.test('HD image requests preserve explicit resolution and supported minimal thinking', () => {
+  const request = buildInteractionParams({ apiKey: 'test', model: 'gemini-3.1-flash-image', contents: 'A garden',
+    config: { responseModalities: ['IMAGE'], imageConfig: { aspectRatio: '9:16', imageSize: '4K' } } });
+  assertEquals(request.response_format, { type: 'image', image_size: '4K', aspect_ratio: '9:16' });
+  assertEquals(request.generation_config?.thinking_level, 'minimal');
+  assertEquals(request.store, false);
+});
