@@ -16,6 +16,7 @@ import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { handleDeleteAccount } from './routes/account.ts';
 import { handleStoreAppleAuthToken } from './routes/appleAuthToken.ts';
 import { handleChat } from './routes/chat.ts';
+import { handleRecallQuestion } from './routes/recall.ts';
 import { handleAnalyzeDream, handleAnalyzeDreamFull, handleCategorizeDream } from './routes/dreams.ts';
 import { handleCreateImageJob, handleGetImageJobStatus } from './routes/imageJobs.ts';
 import { handleGenerateImage, handleGenerateImageWithReference } from './routes/images.ts';
@@ -52,6 +53,7 @@ const routes = new Map<string, RouteHandler>([
   ['POST /auth/apple-token', handleStoreAppleAuthToken],
   ['DELETE /account', handleDeleteAccount],
   ['POST /chat', handleChat],
+  ['POST /recall-question', handleRecallQuestion],
   ['POST /transcribe', handleTranscribe],
   ['POST /analyzeDream', handleAnalyzeDream],
   ['POST /analyzeDreamFull', handleAnalyzeDreamFull],

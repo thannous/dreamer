@@ -11,9 +11,10 @@ import { getRecordingDraftProgress } from '@/lib/recordingDraftProgress';
 type RecordingDraftProgressProps = {
   value: string;
   persisted?: boolean;
+  compact?: boolean;
 };
 
-export function RecordingDraftProgress({ value, persisted = false }: RecordingDraftProgressProps) {
+export function RecordingDraftProgress({ value, persisted = false, compact = false }: RecordingDraftProgressProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -28,7 +29,7 @@ export function RecordingDraftProgress({ value, persisted = false }: RecordingDr
       style={styles.container}
       testID={TID.Component.RecordingDraftProgress}
     >
-      <View style={styles.headerRow}>
+      {!compact ? <View style={styles.headerRow}>
         {shouldShowHint ? (
           <Text style={[styles.hint, { color: noctalia.text.secondary }]}>
             {hint}
@@ -40,7 +41,7 @@ export function RecordingDraftProgress({ value, persisted = false }: RecordingDr
         >
           {countLabel}
         </Text>
-      </View>
+      </View> : null}
       {savedLabel ? (
         <Text
           accessibilityLiveRegion="polite"

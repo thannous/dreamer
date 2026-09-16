@@ -6,6 +6,8 @@ import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDo
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { MicPermissionRationaleSheet } from '@/components/recording/RecordingSheets';
 import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
+import { RecordingConversation } from '@/components/recording/RecordingConversation';
+import { useCaptureConversation } from '@/hooks/useCaptureConversation';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RecordingDraftProgress } from '@/components/recording/RecordingDraftProgress';
 import { RecordingDraftHydrationNotice } from '@/components/recording/RecordingDraftHydrationNotice';
@@ -161,6 +163,9 @@ export default function RecordingScreen() {
     transcript,
     onRestore: handleRestoreDraft,
   });
+  const conversation = useCaptureConversation({ language, t, scope: onboardingScope });
+  const { ask: askCaptureQuestion, reset: resetConversation } = conversation;
+  const typedAnswerInsertionRef = useRef<DictationInsertion | null>(null);
   const [lengthWarning, setLengthWarning] = useState('');
   const hasAutoStoppedRecordingRef = useRef(false);
   const [showMicRationaleSheet, setShowMicRationaleSheet] = useState(false);
@@ -548,6 +553,8 @@ export default function RecordingScreen() {
   );
 
   const resetComposer = useCallback(() => {
+    resetConversation();
+    typedAnswerInsertionRef.current = null;
     setTranscript('');
     setDraftDream(null);
     setLengthWarning('');
@@ -562,10 +569,12 @@ export default function RecordingScreen() {
     transcriptSelectionRef.current = undefined;
     setTranscriptSelection(undefined);
     captureStartedTrackedRef.current = false;
-  }, []);
+  }, [resetConversation]);
 
   const handleClearTranscript = useCallback(() => {
     if (!isHydrated || noteInput('') !== true) return;
+    resetConversation();
+    typedAnswerInsertionRef.current = null;
     setTranscript('');
     setLengthWarning('');
     setVoiceFallbackReason(null);
@@ -573,7 +582,7 @@ export default function RecordingScreen() {
     dictationInsertionRef.current = null;
     transcriptSelectionRef.current = undefined;
     setTranscriptSelection(undefined);
-  }, [isHydrated, noteInput]);
+  }, [resetConversation, isHydrated, noteInput]);
 
   const navigateToJournalDetail = useCallback((
     dreamId: string | number,
@@ -677,8 +686,11 @@ export default function RecordingScreen() {
       Alert.alert(t('common.error_title'), t('recording.alert.stop_failed'));
     } finally {
       hasAutoStoppedRecordingRef.current = false;
+      if (inputMode === 'voice' && reason === 'pause') void askCaptureQuestion(baseTranscriptRef.current);
     }
   }, [
+    askCaptureQuestion,
+    inputMode,
     applyStoppedTranscript,
     cancelHandsFreeRestart,
     handleVoiceCaptureFailure,
@@ -699,6 +711,8 @@ export default function RecordingScreen() {
       }
 
       const sourceTranscript = baseTranscriptRef.current || transcript;
+      if (inputMode === 'voice') transcriptSelectionRef.current = { start: sourceTranscript.length, end: sourceTranscript.length };
+      typedAnswerInsertionRef.current = null;
       dictationInsertionRef.current = {
         base: sourceTranscript,
         selection: transcriptSelectionRef.current ?? {
@@ -753,9 +767,14 @@ export default function RecordingScreen() {
     } finally {
       setIsPreparingRecording(false);
     }
-  }, [captureIntent, handleVoiceCaptureFailure, isHydrated, language, setDictationIntentState, startSessionRecording, t, transcript]);
+  }, [captureIntent, handleVoiceCaptureFailure, inputMode, isHydrated, language, setDictationIntentState, startSessionRecording, t, transcript]);
 
   const handleUnexpectedNativeEnd = useCallback(async () => {
+    if (inputMode === 'voice') {
+      if (dictationIntentRef.current !== 'listening') return;
+      await stopRecording({ silent: true, reason: 'pause' });
+      return;
+    }
     const canRestart = shouldRestartHandsFreeSpeech({
       platform: speechPlatform,
       dictationIntent: dictationIntentRef.current,
@@ -820,6 +839,7 @@ export default function RecordingScreen() {
       }
     }
   }, [
+    inputMode,
     applyStoppedTranscript,
     setDictationIntentState,
     speechPlatform,
@@ -1007,7 +1027,7 @@ export default function RecordingScreen() {
   const mainContentStyle = useMemo(
     () => [
       styles.mainContent,
-      inlineFooter && styles.inlineFooterContent,
+      (inlineFooter || inputMode === 'voice') && styles.inlineFooterContent,
       isCompactLandscape && styles.mainContentCompact,
       {
         paddingTop: 16,
@@ -1022,6 +1042,7 @@ export default function RecordingScreen() {
       isCompactLandscape,
       separateFooterViewport,
       inlineFooter,
+      inputMode,
       keyboardVisible,
       insets.bottom,
     ]
@@ -1202,6 +1223,7 @@ export default function RecordingScreen() {
   }, [textFallbackNotice]);
 
   const switchToTextMode = useCallback(async () => {
+    typedAnswerInsertionRef.current = null;
     if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
       recordingTransitionRef.current = true;
       try {
@@ -1222,6 +1244,7 @@ export default function RecordingScreen() {
         return;
       }
 
+      typedAnswerInsertionRef.current = null;
       setVoiceFallbackReason(null);
 
       if (preference === 'text' && (isRecordingRef.current || dictationIntentRef.current === 'listening')) {
@@ -1306,19 +1329,32 @@ export default function RecordingScreen() {
     await switchToTextMode();
   }, [switchToTextMode]);
 
+  useEffect(() => {
+    if (inputMode === 'voice' && isHydrated && !isRecordingRef.current && !typedAnswerInsertionRef.current) {
+      void askCaptureQuestion(baseTranscriptRef.current);
+    }
+  }, [askCaptureQuestion, inputMode, isHydrated, isRecordingRef]);
+
+  const handleConversationAnswerChange = useCallback((text: string) => {
+    if (!isHydrated) return;
+    const base = baseTranscriptRef.current;
+    const insertion = typedAnswerInsertionRef.current ?? { base, selection: { start: base.length, end: base.length } };
+    const result = insertDictation(insertion, text);
+    if (noteInput(result.text) !== true) return;
+    typedAnswerInsertionRef.current = insertion;
+    baseTranscriptRef.current = result.text;
+    setTranscript(result.text);
+    transcriptSelectionRef.current = result.selection;
+  }, [isHydrated, noteInput]);
+
   const saveFooter = (
     <RecordingFooter
       onSave={() => { void handleSaveDream(); }}
-      onCompleteWithHelp={inputMode === 'voice' && hasSaveableContent && !isRecording && !isPreparingRecording && !isHandsFreeRestarting
-        ? () => { void handleSaveDream(true); }
-        : undefined}
-      helpLabel={t('recording.tell.help')}
-      helpHint={t('recording.tell.help_hint')}
       isSaveDisabled={isSaveDisabled}
       saveButtonLabel={
         captureIntent === 'remembered'
           ? t('recording.remembered.save_button')
-          : inputMode === 'voice' ? t('recording.tell.save') : t('recording.button.save_dream')
+          : inputMode === 'voice' ? t('recording.conversation.finish') : t('recording.button.save_dream')
       }
       saveButtonAccessibilityLabel={
         captureIntent === 'remembered'
@@ -1339,7 +1375,7 @@ export default function RecordingScreen() {
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
-        <AtmosphereBackground />
+        {inputMode === 'text' ? <AtmosphereBackground /> : null}
         {isDesktopWeb ? (
           <Pressable
             onPress={closeRecording}
@@ -1393,9 +1429,28 @@ export default function RecordingScreen() {
                   }}
                 />
 
-                <RecordingTextInput
+                {inputMode === 'voice' ? (
+                  <RecordingConversation
+                    transcript={transcript}
+                    question={conversation.question}
+                    loading={conversation.loading}
+                    unavailable={conversation.unavailable}
+                    done={conversation.done}
+                    disabled={interactionDisabled}
+                    voiceSupported={isVoiceSupported}
+                    voiceStatus={voiceControlStatus}
+                    onVoice={handleVoiceCapturePress}
+                    onReview={switchToTextMode}
+                    onAnswerChange={handleConversationAnswerChange}
+                    onAnswerSubmit={() => {
+                      typedAnswerInsertionRef.current = null;
+                      void askCaptureQuestion(baseTranscriptRef.current);
+                      Keyboard.dismiss();
+                    }}
+                  />
+                ) : <RecordingTextInput
                   compact={isCompactLandscape}
-                  layout={inputMode === 'voice' ? 'voiceFirst' : 'textFirst'}
+                  layout="textFirst"
                   ref={textInputRef}
                   value={transcript}
                   onChange={handleTranscriptChange}
@@ -1409,8 +1464,6 @@ export default function RecordingScreen() {
                   instructionText={
                     captureIntent === 'remembered'
                       ? t('recording.remembered.active_instruction')
-                      : inputMode === 'voice'
-                      ? ''
                       : t('recording.write.instruction')
                   }
                   switchToVoiceLabel={voiceControlLabel}
@@ -1433,10 +1486,11 @@ export default function RecordingScreen() {
                       : undefined
                   }
                   onClear={handleClearTranscript}
-                />
+                />}
 
                 {hydrationStatus === 'ready' ? (
                   <RecordingDraftProgress
+                    compact={inputMode === 'voice'}
                     value={transcript}
                     persisted={transcript.length > 0 && lastPersistedValue === transcript}
                   />

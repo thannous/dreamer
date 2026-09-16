@@ -3,7 +3,6 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -50,7 +49,7 @@ export function RecordingInputModeSelect({
         styles.wrap,
         {
           backgroundColor: noctalia.surface.base,
-          borderColor: noctalia.surface.border,
+          borderColor: 'transparent',
           opacity: disabled ? 0.65 : 1,
         },
       ]}
@@ -71,7 +70,7 @@ export function RecordingInputModeSelect({
               styles.option,
               {
                 backgroundColor: isSelected ? noctalia.surface.active : 'transparent',
-                borderColor: isSelected ? noctalia.accent.base : 'transparent',
+                borderColor: 'transparent',
               },
             ]}
             accessibilityRole="tab"
@@ -82,7 +81,7 @@ export function RecordingInputModeSelect({
             <IconSymbol
               name={option.icon}
               size={16}
-              color={isSelected ? noctalia.accent.text : noctalia.text.secondary}
+              color={isSelected ? noctalia.text.primary : noctalia.text.secondary}
             />
             <Text
               style={[
@@ -128,6 +127,6 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 15,
     lineHeight: 20,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontWeight: '600',
   },
 });
