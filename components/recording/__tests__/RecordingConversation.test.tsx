@@ -173,3 +173,18 @@ it('offers restarting for existing content and hides it for an empty story', () 
   view.rerender(<RecordingConversation {...callbacks} transcript="" storyTranscript="" />);
   expect(view.queryByTestId('recording-conversation-restart')).toBeNull();
 });
+
+
+it('keeps native sizing text in sync with disabled dictation and subsequent edits', () => {
+  const callbacks = { ...props(), answer: 'Une plage.', voiceStatus: 'recording' as const };
+  const view = render(<RecordingConversation {...callbacks} />);
+  const input = () => view.getByTestId('recording-conversation-answer');
+  const measurement = () => view.getByTestId('recording-conversation-answer-measurement', { includeHiddenElements: true });
+  expect(input().props.editable).toBe(false);
+  view.rerender(<RecordingConversation {...callbacks} answer="Une plage. Des vagues, des rochers et un chemin qui longe la mer." />);
+  expect(measurement().props.children).toBe(input().props.value);
+  expect(view.queryByTestId('recording-conversation-answer-measurement')).toBeNull();
+  view.rerender(<RecordingConversation {...callbacks} voiceStatus="idle" answer="Une plage." />);
+  expect(measurement().props.children).toBe('Une plage.');
+  expect(input().props.editable).toBe(true);
+});

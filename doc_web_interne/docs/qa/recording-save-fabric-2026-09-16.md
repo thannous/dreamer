@@ -61,3 +61,9 @@ Screenshots retained locally under `doc_web_interne/docs/qa/recording-save-fabri
 
 - Added an accessible “Effacer et recommencer” action below the story, with cancel/destructive confirmation. It stops speech, ignores late transcription during reset, clears the durable draft and current answer, resets question history and returns the composer to its initial state without starting the microphone automatically.
 - 73 focused route/component tests pass. App/test typechecks pass; lint has the same two existing effect warnings. The button was observed on Motorola. The confirmation/clear journey is covered by tests, not claimed as verified on hardware while the user was interacting with the device.
+
+## Natural answer-editor height — 2026-09-17
+
+- Replaced event-driven fixed input height with an inaccessible, invisible native Text in normal layout flow; the editable input overlays it with the same typography and padding. Dictated controlled updates resize the field even when keyboard editing is disabled.
+- Removed the compact editor height cap, including the short-landscape cap. Longer replies grow the page instead of forcing a small internally scrolling field. No dictation, persistence or submission logic changed.
+- 33 focused editor/conversation tests passed, app/test typechecks and focused lint passed. Expo updated; hardware screenshots showed completion/empty states, so actual multiline dictation growth still needs device qualification.

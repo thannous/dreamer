@@ -80,9 +80,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     );
     const hasValue = value.trim().length > 0;
     const [isFocused, setIsFocused] = useState(false);
-    const [contentHeight, setContentHeight] = useState(0);
     const compactMinHeight = Math.max(96, 23 * fontScale + 70);
-    const compactMaxHeight = Math.max(compactMinHeight, Math.min(320, height * 0.4));
     const isVoicePreparing = voiceStatus === 'preparing';
     const isVoiceFirst = layout === 'voiceFirst';
     const voiceLabel = switchToVoiceLabel || t('recording.mode.switch_to_voice') || 'Dicter mon r\u00eave';
@@ -106,6 +104,27 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
             <IconSymbol name="pencil" size={18} color={noctalia.text.secondary} />
           </View>
         ) : null}
+        {compact ? (
+          <Text
+            // Let native text layout size the editor even while dictation disables
+            // keyboard input. The editable field overlays this invisible copy.
+            pointerEvents="none"
+            accessible={false}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+            style={[
+              styles.textInput,
+              styles.textInputCompact,
+              hasValue && styles.textInputWithValue,
+              showInlineActions && styles.textInputWithInlineActionsCompact,
+              { minHeight: compactMinHeight, maxHeight: undefined },
+              styles.textMeasurement,
+            ]}
+            testID={`${inputTestID}-measurement`}
+          >
+            {value || ' '}
+          </Text>
+        ) : null}
         <TextInput
           ref={ref}
           value={value}
@@ -123,11 +142,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               maxHeight: (composerLayout.narrow ? composerLayout.inputMaxHeight : 286) + 64,
             },
             compact && styles.textInputCompact,
-            compact && {
-              minHeight: compactMinHeight,
-              maxHeight: compactMaxHeight,
-              height: Math.min(compactMaxHeight, Math.max(compactMinHeight, hasValue ? contentHeight : 0)),
-            },
+            compact && styles.compactInputOverlay,
             hasValue && styles.textInputWithValue,
             showInlineActions && styles.textInputWithInlineActions,
             compact && showInlineActions && styles.textInputWithInlineActionsCompact,
@@ -137,9 +152,6 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               color: noctalia.text.primary,
             },
           ]}
-          onContentSizeChange={compact ? (event) => {
-            setContentHeight(Math.ceil(event.nativeEvent.contentSize.height));
-          } : undefined}
           multiline
           editable={!disabled}
           placeholder={placeholder || t('recording.placeholder')}
@@ -431,6 +443,16 @@ const styles = StyleSheet.create({
     lineHeight: 23,
     fontFamily: Fonts.lora.regularItalic,
     textAlignVertical: 'top',
+  },
+  textMeasurement: { opacity: 0 },
+  compactInputOverlay: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    minHeight: 0,
+    maxHeight: undefined,
   },
   textInputCompact: {
     paddingTop: 12,
