@@ -73,15 +73,21 @@ export function RecordingConversation(props: Props) {
   };
   const editingAnswer = typing || !props.voiceSupported;
   const submitDisabled = locked || props.loading || !answer.trim();
+  const showAnswerEditor = editingAnswer || answer.length > 0;
 
   return (
     <View style={styles.container} testID="recording-conversation">
       <View style={styles.questionBlock}>
         <Text accessibilityLiveRegion="polite" style={[styles.question, { color: tokens.text.primary }]} testID="recording-conversation-question">
-          {listening ? t('recording.conversation.listening') : props.loading ? t('recording.conversation.thinking')
+          {props.loading ? t('recording.conversation.thinking')
             : props.done ? t('recording.conversation.ready')
-            : props.question ?? t(hasText ? 'dream_recall.question.what_else' : 'recording.conversation.welcome')}
+            : props.question ?? t(props.storyTranscript.trim() ? 'dream_recall.question.what_else' : 'recording.conversation.welcome')}
         </Text>
+        {listening ? (
+          <Text accessibilityLiveRegion="polite" style={[styles.hint, { color: tokens.text.secondary }]} testID="recording-listening-status">
+            {t('recording.conversation.listening')}
+          </Text>
+        ) : null}
         {props.unavailable ? (
           <Text style={[styles.hint, { color: tokens.text.secondary }]}>
             {t('recording.conversation.offline')}
@@ -91,7 +97,7 @@ export function RecordingConversation(props: Props) {
       {props.loading ? <ActivityIndicator color={tokens.accent.text} accessibilityLabel={t('recording.conversation.thinking')} /> : null}
       {!props.done ? (
         <View style={styles.replyArea}>
-          {!editingAnswer ? (
+          {!showAnswerEditor ? (
             <View style={styles.voiceControls}>
               <Pressable
                 testID={TID.Button.RecordToggle}
@@ -121,7 +127,7 @@ export function RecordingConversation(props: Props) {
               </Pressable>
             </View>
           ) : null}
-          {editingAnswer || answer.length > 0 ? (
+          {showAnswerEditor ? (
             <View style={styles.answerSection}>
               <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.current_answer')}</Text>
               <RecordingTextInput
@@ -137,24 +143,40 @@ export function RecordingConversation(props: Props) {
                 voiceStatus={props.voiceStatus}
                 switchToVoiceLabel={t('recording.conversation.reply_voice')}
                 onSwitchToVoice={continueWithVoice}
+                footerActions={
+                  <>
+                    {props.voiceSupported ? (
+                      <Pressable
+                        onPress={listening ? mute : continueWithVoice}
+                        disabled={locked || props.loading}
+                        accessibilityRole="button"
+                        accessibilityLabel={voiceLabel}
+                        accessibilityState={{ disabled: locked || props.loading, busy: preparing }}
+                        style={[styles.editorAction, { borderColor: tokens.surface.border, opacity: locked || props.loading ? 0.4 : 1 }]}
+                        testID={TID.Button.RecordToggle}
+                      >
+                        <IconSymbol name={listening ? 'mic.slash.fill' : 'mic.fill'} size={22} color={tokens.text.primary} />
+                      </Pressable>
+                    ) : null}
+                    <Pressable
+                      onPress={submitAnswer}
+                      disabled={submitDisabled}
+                      accessibilityRole="button"
+                      accessibilityLabel={t('recording.conversation.stop')}
+                      accessibilityState={{ disabled: submitDisabled, busy: switching }}
+                      style={[styles.editorAction, { backgroundColor: tokens.action.primary, borderColor: tokens.action.primary, opacity: submitDisabled ? 0.4 : 1 }]}
+                      testID="recording-conversation-submit"
+                    >
+                      <IconSymbol name="arrow.up" size={24} color={tokens.action.primaryText} />
+                    </Pressable>
+                  </>
+                }
                 placeholder={t('recording.conversation.answer_placeholder')}
                 inputAccessibilityLabel={t('recording.conversation.answer_placeholder')}
                 inputTestID="recording-conversation-answer"
               />
             </View>
           ) : null}
-          <Pressable
-            disabled={submitDisabled}
-            onPress={submitAnswer}
-            accessibilityRole="button"
-            accessibilityLabel={t('recording.conversation.stop')}
-            accessibilityState={{ disabled: submitDisabled, busy: switching }}
-            style={[styles.submitButton, { borderColor: tokens.surface.border, opacity: submitDisabled ? 0.4 : 1 }]}
-            testID="recording-conversation-submit"
-          >
-            <IconSymbol name="checkmark" size={22} color={tokens.text.primary} />
-            <Text style={[styles.submitLabel, { color: tokens.text.primary }]}>{t('recording.conversation.stop')}</Text>
-          </Pressable>
         </View>
       ) : null}
       {props.storyTranscript.trim() ? (
@@ -187,9 +209,8 @@ const styles = StyleSheet.create({
   replyArea: { width: '100%', alignItems: 'center', gap: 16 },
   voiceControls: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 },
   mic: { width: 76, height: 76, borderRadius: 38, alignItems: 'center', justifyContent: 'center' },
+  editorAction: { width: 48, height: 48, borderRadius: 24, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   secondaryButton: { width: 48, height: 48, borderRadius: 24, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  submitButton: { minHeight: 48, maxWidth: '100%', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 18, borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 },
-  submitLabel: { fontSize: 16, lineHeight: 23, fontFamily: Fonts.spaceGrotesk.medium, flexShrink: 1, textAlign: 'center' },
   recap: { width: '100%', minHeight: 144, borderRadius: 22, borderWidth: 1, padding: 18, gap: 14 },
   recapHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   small: { fontSize: 15, lineHeight: 21, flexShrink: 1 },

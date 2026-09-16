@@ -37,6 +37,7 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   'chart.bar': 'bar-chart',
   'arrow.clockwise': 'refresh',
   'arrow.down': 'arrow-downward',
+  'arrow.up': 'arrow-upward',
   'arrow.up.circle': 'arrow-circle-up',
   'bubble.left.and.bubble.right': 'chat-bubble-outline',
   'bubble.left.and.bubble.right.fill': 'chat-bubble',

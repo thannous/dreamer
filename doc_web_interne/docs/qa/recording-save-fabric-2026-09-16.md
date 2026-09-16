@@ -40,3 +40,12 @@ Screenshots retained locally under `doc_web_interne/docs/qa/recording-save-fabri
 - The voice screen no longer scrolls to the bottom of the full story when the keyboard opens, which could hide the active answer field.
 - 68 focused component/route tests passed; app/test typechecks passed; lint has only the two existing recording.tsx effect warnings.
 - Physical Motorola Expo: current-answer field visible with keyboard; synthetic typed answer preserved through starting dictation and returning to the keyboard. Synthetic input was then cleared without saving a dream. Recognizer partial/final editing and duplicate prevention are covered by focused tests; no new spoken transcription accuracy claim.
+
+## Inline answer completion arrow (2026-09-17)
+
+- Replaced the separate completion row with an icon-only upward arrow beside the microphone inside the response field. Its accessible name remains “Terminer ma réponse”.
+- The editor footer uses a controls slot, keeping text read-only during recognition while still allowing mute or explicit completion. The microphone is not duplicated outside the field once the answer editor is visible.
+- Empty/busy completion stays disabled. The dream-save footer is unchanged.
+- Physical Motorola: inspected the active dictation field with microphone and upward arrow side by side. 30 focused component tests passed, including submission during listening and the existing shared-editor checks. App/test typechecks and focused lint passed.
+
+- Listening now has a small separate status below the question. The question remains visible while recording, and the opening prompt stays stable as the first answer grows. Motorola UI inspection confirmed both question and listening status simultaneously. The component suite now has 10 passing tests (31 including the unchanged shared-editor suite).

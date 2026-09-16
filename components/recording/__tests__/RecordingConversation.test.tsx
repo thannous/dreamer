@@ -40,6 +40,7 @@ it('keeps permission preparation distinct from an actually listening microphone'
   expect(view.queryByText('recording.conversation.listening')).toBeNull();
   view.rerender(<RecordingConversation {...callbacks} voiceStatus="recording" />);
   expect(view.getByText('recording.conversation.listening')).toBeTruthy();
+  expect(view.getByTestId('recording-conversation-question').props.children).toBe(callbacks.question);
   fireEvent.press(view.getByTestId(TID.Button.RecordToggle));
   await waitFor(() => expect(callbacks.onMute).toHaveBeenCalledTimes(1));
   expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
@@ -129,11 +130,34 @@ it('prefills the reply editor with dictation and keeps the completed story separ
   expect(view.getByTestId('recording-conversation-answer').props.value).toBe('Une porte ouverte.');
   expect(view.getByTestId('recording-conversation-answer').props.editable).toBe(false);
   expect(view.getByTestId('recording-voice-preview').props.children).toBe('Un jardin.');
-  fireEvent.press(view.getByTestId('recording-conversation-type'));
+  fireEvent.press(view.getByTestId(TID.Button.RecordToggle));
   await waitFor(() => expect(callbacks.onMute).toHaveBeenCalledTimes(1));
   view.rerender(<RecordingConversation {...callbacks} voiceStatus="idle" />);
   await waitFor(() => expect(view.getByTestId('recording-conversation-answer').props.editable).toBe(true));
   expect(view.getByTestId('recording-conversation-answer').props.value).toBe('Une porte ouverte.');
   fireEvent.changeText(view.getByTestId('recording-conversation-answer'), 'Une porte bleue.');
   expect(callbacks.onAnswerChange).toHaveBeenLastCalledWith('Une porte bleue.');
+});
+
+
+it('keeps the inline finish action available during dictation without making the transcript editable', async () => {
+  const callbacks = { ...props(), answer: 'Une porte.' };
+  const view = render(<RecordingConversation {...callbacks} voiceStatus="recording" />);
+  expect(view.getByTestId('recording-conversation-answer').props.editable).toBe(false);
+  expect(view.getAllByTestId(TID.Button.RecordToggle)).toHaveLength(1);
+  fireEvent.press(view.getByTestId('recording-conversation-submit'));
+  await waitFor(() => expect(callbacks.onAnswerSubmit).toHaveBeenCalledTimes(1));
+  expect(callbacks.onVoice).not.toHaveBeenCalled();
+});
+
+it('keeps the opening prompt stable while the first dictated answer grows', () => {
+  const callbacks = { ...props(), question: null, storyTranscript: '', transcript: '', answer: '' };
+  const view = render(<RecordingConversation {...callbacks} voiceStatus="recording" />);
+  expect(view.getByTestId('recording-conversation-question').props.children).toBe('recording.conversation.welcome');
+  view.rerender(<RecordingConversation {...callbacks} transcript="Un jardin." answer="Un jardin." voiceStatus="recording" />);
+  expect(view.getByTestId('recording-conversation-question').props.children).toBe('recording.conversation.welcome');
+  expect(view.getByTestId('recording-listening-status')).toBeTruthy();
+  view.rerender(<RecordingConversation {...callbacks} transcript="Un jardin." answer="Un jardin." voiceStatus="idle" />);
+  expect(view.queryByTestId('recording-listening-status')).toBeNull();
+  expect(view.getByTestId('recording-conversation-question').props.children).toBe('recording.conversation.welcome');
 });

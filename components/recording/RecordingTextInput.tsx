@@ -32,6 +32,8 @@ export interface RecordingTextInputProps {
   autoFocus?: boolean;
   inputTestID?: string;
   inputAccessibilityLabel?: string;
+  /** Optional controls rendered inside the editor instead of its default microphone. */
+  footerActions?: React.ReactNode;
   onSwitchToVoice: () => void;
   onEditTranscript?: () => void;
   onOpenDetails?: () => void;
@@ -60,6 +62,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       autoFocus = true,
       inputTestID = TID.Input.DreamTranscript,
       inputAccessibilityLabel,
+      footerActions,
       onSwitchToVoice,
       onEditTranscript,
       onOpenDetails,
@@ -87,7 +90,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
         ? t('recording.status.recording.title')
         : null;
     const showInlineActions =
-      (!isVoiceFirst && voiceSupported) || Boolean(onOpenDetails && hasValue) || Boolean(onClear && hasValue);
+      Boolean(footerActions) || (!isVoiceFirst && voiceSupported) || Boolean(onOpenDetails && hasValue) || Boolean(onClear && hasValue);
 
     const textEditor = (
       <View style={styles.editor}>
@@ -150,7 +153,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               style={styles.inlineActionFade}
             />
             <View style={styles.inlineActions}>
-              {!isVoiceFirst && voiceSupported ? (
+              {footerActions ?? (!isVoiceFirst && voiceSupported ? (
                 <MicButton
                   status={voiceStatus}
                   onPress={onSwitchToVoice}
@@ -159,7 +162,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
                   testID={TID.Button.RecordToggle}
                   accessibilityLabel={voiceLabel}
                 />
-              ) : null}
+              ) : null)}
               {onOpenDetails && hasValue ? (
                 <Pressable
                   onPress={onOpenDetails}
