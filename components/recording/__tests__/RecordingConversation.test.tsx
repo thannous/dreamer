@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { RecordingConversation } from '../RecordingConversation';
 import { TID } from '@/lib/testIDs';
 
@@ -27,7 +27,7 @@ function props() {
   return {
     transcript: 'Un jardin.', question: 'Que te revient-il de ce jardin ?', loading: false,
     unavailable: false, done: false, disabled: false, voiceSupported: true,
-    voiceStatus: 'idle' as const, onVoice: jest.fn(), onReview: jest.fn(),
+    voiceStatus: 'idle' as const, onVoice: jest.fn(), onMute: jest.fn(async () => {}), onReview: jest.fn(),
     onAnswerChange: jest.fn(), onAnswerSubmit: jest.fn(),
   };
 }
@@ -91,4 +91,18 @@ it('disables reply dictation while busy and hides it when speech is unsupported'
   expect(callbacks.onVoice).not.toHaveBeenCalled();
   view.rerender(<RecordingConversation {...callbacks} voiceSupported={false} />);
   expect(view.queryByTestId(TID.Button.RecordToggle)).toBeNull();
+});
+
+
+it('offers writing and mute while listening without submitting the answer', async () => {
+  const callbacks = props();
+  const view = render(<RecordingConversation {...callbacks} voiceStatus="recording" />);
+  fireEvent.press(view.getByTestId('recording-conversation-mute'));
+  await waitFor(() => expect(callbacks.onMute).toHaveBeenCalledTimes(1));
+  expect(callbacks.onVoice).not.toHaveBeenCalled();
+  expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
+  await waitFor(() => expect(view.getByTestId('recording-conversation-type')).toBeEnabled());
+  fireEvent.press(view.getByTestId('recording-conversation-type'));
+  await waitFor(() => expect(view.getByTestId('recording-conversation-answer')).toBeTruthy());
+  expect(callbacks.onMute).toHaveBeenCalledTimes(2);
 });

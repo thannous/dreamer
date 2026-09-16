@@ -166,6 +166,7 @@ export default function RecordingScreen() {
   const conversation = useCaptureConversation({ language, t, scope: onboardingScope });
   const { ask: askCaptureQuestion, reset: resetConversation } = conversation;
   const typedAnswerInsertionRef = useRef<DictationInsertion | null>(null);
+  const captureMicrophoneMutedRef = useRef(false);
   const [lengthWarning, setLengthWarning] = useState('');
   const hasAutoStoppedRecordingRef = useRef(false);
   const [showMicRationaleSheet, setShowMicRationaleSheet] = useState(false);
@@ -554,6 +555,7 @@ export default function RecordingScreen() {
 
   const resetComposer = useCallback(() => {
     resetConversation();
+    captureMicrophoneMutedRef.current = false;
     typedAnswerInsertionRef.current = null;
     setTranscript('');
     setDraftDream(null);
@@ -574,6 +576,7 @@ export default function RecordingScreen() {
   const handleClearTranscript = useCallback(() => {
     if (!isHydrated || noteInput('') !== true) return;
     resetConversation();
+    captureMicrophoneMutedRef.current = false;
     typedAnswerInsertionRef.current = null;
     setTranscript('');
     setLengthWarning('');
@@ -701,6 +704,7 @@ export default function RecordingScreen() {
 
   const startRecording = useCallback(async (options?: { preserveDraft?: boolean }) => {
     if (!isHydrated) return false;
+    captureMicrophoneMutedRef.current = false;
     const previousIntent = dictationIntentRef.current;
     try {
       setIsPreparingRecording(true);
@@ -1330,7 +1334,7 @@ export default function RecordingScreen() {
   }, [switchToTextMode]);
 
   useEffect(() => {
-    if (inputMode === 'voice' && isHydrated && !isRecordingRef.current && !typedAnswerInsertionRef.current) {
+    if (inputMode === 'voice' && isHydrated && !isRecordingRef.current && !typedAnswerInsertionRef.current && !captureMicrophoneMutedRef.current) {
       void askCaptureQuestion(baseTranscriptRef.current);
     }
   }, [askCaptureQuestion, inputMode, isHydrated, isRecordingRef]);
@@ -1440,10 +1444,15 @@ export default function RecordingScreen() {
                     voiceSupported={isVoiceSupported}
                     voiceStatus={voiceControlStatus}
                     onVoice={handleVoiceCapturePress}
+                    onMute={() => {
+                      captureMicrophoneMutedRef.current = true;
+                      return stopRecording({ silent: true, reason: 'stop' });
+                    }}
                     onReview={switchToTextMode}
                     onAnswerChange={handleConversationAnswerChange}
                     onAnswerSubmit={() => {
                       typedAnswerInsertionRef.current = null;
+                      captureMicrophoneMutedRef.current = false;
                       void askCaptureQuestion(baseTranscriptRef.current);
                       Keyboard.dismiss();
                     }}

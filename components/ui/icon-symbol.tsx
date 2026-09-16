@@ -64,6 +64,7 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   iphone: 'phone-iphone',
   mic: 'mic',
   'mic.fill': 'mic',
+  'mic.slash.fill': 'mic-off',
   'pause.fill': 'pause',
   'play.fill': 'play-arrow',
   paintpalette: 'palette',

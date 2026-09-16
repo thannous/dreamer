@@ -341,6 +341,7 @@ jest.doMock('@/components/recording/RecordingConversation', () => ({
       <Editor layout="voiceFirst" value={props.transcript} onChange={props.onAnswerChange}
         onSwitchToVoice={props.onVoice} voiceStatus={props.voiceStatus} disabled={props.disabled} />
       <span data-testid="conversation-question">{props.question}</span>
+      <button data-testid="conversation-mute" onClick={props.onMute}>Mute</button>
       <button data-testid="conversation-submit" onClick={props.onAnswerSubmit}>Send</button>
       <button data-testid="recording-review-transcript" onClick={props.onReview}>Review</button>
     </>;
@@ -1717,6 +1718,25 @@ describe('Recording screen', () => {
       expect(mockStopRecording).toHaveBeenCalledTimes(1);
       expect(mockStartRecording).toHaveBeenCalledTimes(2);
     });
+  });
+
+  it('mutes a Tell reply without requesting another question or restarting the microphone', async () => {
+    mockPlatformOS = 'android';
+    mockRecordingPermissionState = 'granted';
+    mockGetInputModePreference.mockResolvedValue('voice');
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    act(() => mockOnPartialTranscript?.('Un jardin au soleil.'));
+    const questionCount = mockRequestCaptureQuestion.mock.calls.length;
+    await act(async () => { fireEvent.click(screen.getByTestId('conversation-mute')); });
+    expect(mockStopRecording).toHaveBeenCalledTimes(1);
+    expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(questionCount);
+    await act(async () => { mockOnNativeEnd?.(); });
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
+    expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(questionCount);
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toContain('Un jardin au soleil.');
   });
 
   it('asks a question after a Tell turn ends without restarting or stopping twice', async () => {

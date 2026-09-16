@@ -18,6 +18,7 @@ type Props = {
   voiceSupported: boolean;
   voiceStatus: MicButtonStatus;
   onVoice: () => void;
+  onMute: () => Promise<void>;
   onReview: () => void;
   onAnswerChange: (text: string) => void;
   onAnswerSubmit: () => void;
@@ -29,10 +30,11 @@ export function RecordingConversation(props: Props) {
   const { t } = useTranslation();
   const [typing, setTyping] = useState(false);
   const [answer, setAnswer] = useState('');
+  const [switching, setSwitching] = useState(false);
   const hasText = Boolean(props.transcript.trim());
   const listening = props.voiceStatus === 'recording';
   const preparing = props.voiceStatus === 'preparing';
-  const locked = props.disabled || preparing;
+  const locked = props.disabled || preparing || switching;
   const voiceLabel = preparing ? t('recording.status.preparing.title')
     : listening ? t('recording.conversation.stop')
     : hasText ? t('recording.conversation.reply') : t('recording.conversation.begin');
@@ -64,6 +66,7 @@ export function RecordingConversation(props: Props) {
       </View>
       {props.loading ? <ActivityIndicator color={tokens.accent.text} accessibilityLabel={t('recording.conversation.thinking')} /> : null}
       <View style={styles.replyArea}>
+        <View style={!typing && props.voiceSupported ? styles.voiceControls : styles.typedReply}>
         {props.voiceSupported && !typing && !props.done ? (
           <Pressable
             testID={TID.Button.RecordToggle}
@@ -115,15 +118,45 @@ export function RecordingConversation(props: Props) {
               </Pressable>
             ) : null}
           </View>
-        ) : !listening && !props.done ? (
-          <Pressable
-            onPress={() => { setTyping(true); setAnswer(''); }} disabled={locked || props.loading}
-            accessibilityRole="button" style={styles.keyboardAction} testID="recording-conversation-type"
-          >
-            <IconSymbol name="keyboard" size={18} color={tokens.text.secondary} />
-            <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.type')}</Text>
-          </Pressable>
+        ) : !props.done ? (
+          <View style={styles.secondaryActions}>
+            <Pressable
+              onPress={async () => {
+                setSwitching(true);
+                try {
+                  if (listening) await props.onMute();
+                  setTyping(true);
+                  setAnswer('');
+                } finally {
+                  setSwitching(false);
+                }
+              }}
+              disabled={locked || props.loading}
+              accessibilityRole="button"
+              accessibilityLabel={t('recording.conversation.type')}
+              style={[styles.secondaryButton, { backgroundColor: tokens.surface.raised }]}
+              testID="recording-conversation-type"
+            >
+              <IconSymbol name="pencil" size={20} color={tokens.text.secondary} />
+            </Pressable>
+            {listening ? (
+              <Pressable
+                onPress={async () => {
+                  setSwitching(true);
+                  try { await props.onMute(); } finally { setSwitching(false); }
+                }}
+                disabled={locked}
+                accessibilityRole="button"
+                accessibilityLabel={t('recording.conversation.mute')}
+                style={[styles.secondaryButton, { backgroundColor: tokens.surface.raised }]}
+                testID="recording-conversation-mute"
+              >
+                <IconSymbol name="mic.slash.fill" size={20} color={tokens.text.secondary} />
+              </Pressable>
+            ) : null}
+          </View>
         ) : null}
+        </View>
       </View>
       {hasText ? (
         <View style={styles.recap}>
@@ -156,9 +189,11 @@ const styles = StyleSheet.create({
   question: { fontSize: 25, lineHeight: 33, fontWeight: '500', letterSpacing: -0.4 },
   hint: { fontSize: 15, lineHeight: 22 },
   replyArea: { alignItems: 'center', gap: 14, paddingVertical: 6 },
-  voiceAction: { alignItems: 'center', gap: 10 },
+  voiceAction: { alignItems: 'center', gap: 10, flexShrink: 1 },
   mic: { width: 76, height: 76, borderRadius: 38, alignItems: 'center', justifyContent: 'center' },
-  voiceLabel: { fontSize: 16, lineHeight: 23, fontWeight: '500' },
-  keyboardAction: { flexDirection: 'row', gap: 10, minHeight: 44, alignItems: 'center' },
+  voiceLabel: { fontSize: 16, lineHeight: 23, fontWeight: '500', textAlign: 'center' },
+  voiceControls: { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 },
+  secondaryActions: { alignItems: 'center', gap: 10 },
+  secondaryButton: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
   typedReply: { width: '100%', gap: 8 },
 });

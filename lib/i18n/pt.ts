@@ -555,6 +555,7 @@ const translations: Record<string, string> = {
     "recording.conversation.listening": "Estou a ouvir…",
     "recording.conversation.thinking": "A preparar uma pergunta…",
     "recording.conversation.ready": "O teu relato está pronto.",
+    "recording.conversation.mute": "Desativar o microfone",
     "recording.conversation.welcome": "Conta-me o teu sonho",
     "recording.conversation.offline": "A ajuda personalizada está indisponível. Aqui está uma pergunta geral.",
     "recording.conversation.answer_placeholder": "O que recordo…",
