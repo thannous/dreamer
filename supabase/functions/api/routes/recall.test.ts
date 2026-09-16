@@ -37,11 +37,12 @@ Deno.test('recall enforces admission before any provider call', async () => {
   assertEquals(calls, 0);
 });
 
-Deno.test('recall uses Gemini 3.8 with a bounded, non-interpretive JSON contract', async () => {
+Deno.test('recall uses Gemini 3.5 Flash-Lite with a bounded, non-interpretive JSON contract', async () => {
   const response = await handleRecallQuestion(ctx(body), {
     apiKey: 'test-key', admit,
     generate: async (_key, model, _fallback, contents, instruction, config) => {
-      assertEquals(model, 'gemini-3.8-flash');
+      assertEquals(model, 'gemini-3.5-flash-lite');
+      assertEquals(config.thinkingLevel, 'minimal');
       assertStringIncludes(instruction, 'Do not interpret');
       assertStringIncludes(instruction, 'French');
       assertEquals(JSON.parse(contents[0].parts[0].text!).transcript, body.transcript);
