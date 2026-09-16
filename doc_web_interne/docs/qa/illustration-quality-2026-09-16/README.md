@@ -17,6 +17,7 @@
 - PGlite sérialise les requêtes : ce test ne mesure pas une contention entre plusieurs processus PostgreSQL. Le verrou transactionnel par utilisateur a été examiné lors de la revue indépendante.
 - Test de pixels avec une image synthétique 2304 × 4096 : hauteur 4096 conservée en HD et ramenée à 1024 en Standard.
 - Revue Bugbot : deux P2 trouvés puis corrigés (reprise Standard masquée ; remboursement empêchant la persistance d'échec). Régressions ciblées passées après correction.
+- Premier passage CI : test de pixels bloqué par l'absence d'accès réseau au codec ImageScript. Permission Deno limitée à `deno.land` ajoutée pour charger son module WASM versionné ; aucun test, filtre ou contrôle retiré. La commande complète des tests Edge corrigée passe localement : 199 tests.
 
 Pour reproduire le contrôle SQL, installer `@electric-sql/pglite` dans un répertoire temporaire puis, depuis la racine du dépôt :
 
