@@ -18,7 +18,6 @@ import {
   ReplaceImageSheet,
   type AnalysisNotice,
 } from '@/components/journal/JournalDetailSheets';
-import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PressableScale, Reveal } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -728,7 +727,7 @@ function JournalDetailContent() {
     }
     const quote = dream.shareableQuote?.trim();
     if (quote) {
-      sections.push(`“${quote}”`);
+      sections.push(`${t('journal.detail.dream_image_label')} : ${quote}`);
     }
     if (dream.interpretation?.trim()) {
       sections.push(
@@ -2200,13 +2199,15 @@ function JournalDetailContent() {
                   {renderDetailZoneHeader(t('journal.detail.zone.reading'), TID.Text.DreamDetailReadingZone)}
                   {isAnalysisPending ? (
                     <Skeleton className="h-[60px] w-full rounded-sm" />
-                  ) : dream.shareableQuote ? (
-                    <FlatGlassCard style={{ padding: 20, marginVertical: 16, position: 'relative' }} animationDelay={450}>
-                      <IconSymbol name="quote.opening" size={28} color={noctalia.accent.text} style={{ position: 'absolute', top: 12, left: 12, opacity: 0.25 }} />
-                      <Text className="pl-2 text-[20px] leading-[30px] text-ivory" style={{ fontFamily: Fonts.lora.boldItalic }}>
-                        &quot;{dream.shareableQuote}&quot;
+                  ) : dream.shareableQuote?.trim() ? (
+                    <View className="my-4 gap-2">
+                      <Text className="font-sans-medium text-[12px] text-ivory-muted">
+                        {t('journal.detail.dream_image_label')}
                       </Text>
-                    </FlatGlassCard>
+                      <Text className="text-[20px] leading-[30px] text-ivory" style={{ fontFamily: Fonts.lora.regular }}>
+                        {dream.shareableQuote.trim()}
+                      </Text>
+                    </View>
                   ) : null}
 
                   {isAnalysisPending ? (

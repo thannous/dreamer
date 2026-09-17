@@ -78,14 +78,12 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
           {dream.title}
         </Text>
 
-        {/* Shareable Quote */}
-        {dream.shareableQuote && (
+        {/* Scene caption; never attribute generated prose as a verbatim quotation. */}
+        {dream.shareableQuote?.trim() ? (
           <Text style={[styles.quote, { color: noctalia.text.secondary }]} numberOfLines={3}>
-            {'\u201C'}
-            {dream.shareableQuote}
-            {'\u201D'}
+            {dream.shareableQuote.trim()}
           </Text>
-        )}
+        ) : null}
 
         {/* Metadata */}
         {metadataText && (

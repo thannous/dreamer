@@ -384,6 +384,18 @@ describe('journal detail saved confirmation route', () => {
     cleanup();
   });
 
+  it('presents a scene caption without quotation marks and omits the section when absent', () => {
+    const caption = 'On a red bird above a forest.';
+    mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: caption })];
+    const view = render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.dream_image_label')).toBeTruthy();
+    expect(screen.getByText(caption).textContent).toBe(caption);
+    view.unmount();
+    mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: '  ' })];
+    render(<JournalDetailScreen />);
+    expect(screen.queryByText('journal.detail.dream_image_label')).toBeNull();
+  });
+
   it('keeps illustration retry available after the HD quota is exhausted', () => {
     mockTier = 'plus';
     mockDreams = [buildDream({

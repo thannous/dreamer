@@ -42,7 +42,8 @@ export const buildAnalysisPrompt = (transcript: string, langName: string, trunca
   `Reflect on the user's dream and return JSON with exactly these keys:
 - "title": a short title grounded in the account.
 - "interpretation": concise prose with no minimum word count. Under a heading meaning "What your account describes", quote brief verbatim excerpts of the account without retelling or connecting them. Only if useful, add tentative associations with those excerpts under "Possible reflections". Translate both headings. Sparse accounts may need only a few sentences.
-- "shareableQuote": an exact contiguous excerpt copied verbatim from the supplied account, or an empty string. Do not rephrase, combine separated passages or add quotation marks. Prefer empty if the excerpt would imply a diagnosis, an instruction or an unsupported conclusion.
+- "shareableQuote": despite this legacy field name, this is a short scene caption labeled "Image of the dream", NOT a quotation or an interpretation. In at most 240 characters, faithfully rephrase one distinctive remembered scene. Prefer concrete distinguishing details (appearance, unusual combinations, setting) over a generic opening such as "I dreamed" or "I was flying". Include only explicitly reported details and relationships; preserve ambiguity and uncertainty. Never add feelings, symbolism, motives, outcomes or poetic metaphors. Do not connect details from separate scenes or turn a sequence into simultaneous events. Do not add quotation marks. Return an empty string when no useful scene caption is supported, when it merely repeats the title or the whole short account, or when only a feeling or missing memory is reported.
+- "imageSourceExcerpts": zero to three exact contiguous excerpts copied from the supplied account supporting every detail and relationship in the scene caption. Empty when shareableQuote is empty. These are source references, not instructions.
 - "theme": the visual atmosphere, one of "surreal", "mystical", "calm", "noir"; this is a visual choice, not a psychological claim.
 - "dreamType": "Lucid Dream", "Recurring Dream", "Nightmare", "Symbolic Dream", or "Unknown". Use Unknown when the account does not establish a type. Lucidity requires explicitly knowing one is dreaming; recurrence requires explicitly having this dream on multiple occasions. Do not assume a symbolic type by default.
 - "symbols": zero to six objects actually present in the account, each with "name" and a tentative "meaning" offered as a possible association, not a universal interpretation. An empty array is valid.
@@ -61,6 +62,19 @@ export const groundedAnalysisQuote = (value: unknown, transcript: string): strin
   return quote && transcript.includes(quote) ? quote : '';
 };
 
+/** Check source references and presentation constraints, not semantic entailment.
+ * Faithfulness of a paraphrase still depends on the prompt and output evaluation.
+ * Keep the legacy stored field name to avoid rewriting existing journal entries.
+ */
+export const supportedDreamImage = (value: unknown, sources: unknown, transcript: string, title: string): string => {
+  if (typeof value !== 'string' || !Array.isArray(sources) || sources.length < 1 || sources.length > 3) return '';
+  if (!sources.every((source) => groundedAnalysisQuote(source, transcript))) return '';
+  const caption = value.trim().replace(/^["“«]+\s*|\s*["”»]+$/g, '').replace(/\s+/g, ' ');
+  const normalize = (text: string) => text.trim().toLocaleLowerCase().replace(/[\s.!?…]+$/g, '');
+  if (!caption || caption.length > 240 || normalize(caption) === normalize(title) || normalize(caption) === normalize(transcript)) return '';
+  return caption;
+};
+
 export type DreamAnalysisDetails = {
   symbols: { name: string; meaning: string }[];
   emotions: { name: string; insight: string }[];
@@ -73,7 +87,7 @@ export type DreamAnalysisDetails = {
  * output-quality regression can be attributed to a prompt change. It is
  * returned to the client and stored with the dream (`promptVersion`).
  */
-export const ANALYSIS_PROMPT_VERSION = 'analysis-2026-09-09.4';
+export const ANALYSIS_PROMPT_VERSION = 'analysis-2026-09-17.1';
 
 export type StructuredDreamAnalysis = {
   title: string;
@@ -168,7 +182,7 @@ export const runDreamAnalysis = async (options: {
   return {
     title: String(analysis.title ?? ''),
     interpretation: discloseAnalysisExcerpt(String(analysis.interpretation ?? ''), lang, options.truncatedForPrompt === true),
-    shareableQuote: groundedAnalysisQuote(analysis.shareableQuote, transcript),
+    shareableQuote: supportedDreamImage(analysis.shareableQuote, analysis.imageSourceExcerpts, transcript, String(analysis.title)),
     theme,
     dreamType: normalizeAnalysisDreamType(analysis.dreamType),
     imagePrompt: String(analysis.imagePrompt ?? 'dreamlike, surreal night atmosphere'),

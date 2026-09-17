@@ -84,3 +84,11 @@ it('reports a bounded image-load timeout for retry instead of remaining pending 
     unmount();
   } finally { jest.useRealTimers(); }
 });
+
+
+it('shares a scene caption without presenting it as a verbatim quotation', () => {
+  const caption = 'On a red bird above a forest.';
+  render(<DreamShareImage dream={{ id: 1, shareableQuote: caption } as DreamAnalysis} t={key => key} />);
+  expect(screen.getByText(caption).textContent).toBe(caption);
+  expect(screen.queryByText(`“${caption}”`)).toBeNull();
+});

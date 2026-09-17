@@ -127,6 +127,7 @@ export interface DreamAnalysis {
   captureOriginalTranscript?: string;
   title: string;
   interpretation: string;
+  /** Legacy storage key: a short scene caption for new analyses; older entries may contain an excerpt. */
   shareableQuote: string;
   // Structured analysis details from the enriched analysis output.
   // Absent on dreams analyzed before the feature shipped.

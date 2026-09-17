@@ -452,6 +452,7 @@ const translations: Record<string, string> = {
     'journal.detail.zone.memory': 'Memória do sonho',
     'journal.detail.zone.dream': 'Meu sonho',
     'journal.detail.zone.reflection': 'Minha reflexão',
+    'journal.detail.dream_image_label': 'Imagem do sonho',
     'journal.detail.zone.reading': 'Análise Noctalia',
     'journal.detail.zone.actions': 'Ações',
     'journal.detail.stale.label': 'A análise pode estar desatualizada',
