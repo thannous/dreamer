@@ -1,4 +1,4 @@
-import { CaptureOriginal } from '@/components/recording/CaptureReviewPanel';
+import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { resolveDreamRoute } from '@/lib/dreamRoute';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
