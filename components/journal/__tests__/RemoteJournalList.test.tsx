@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { RemoteJournalList } from '../RemoteJournalList';
 import { useRemoteJournalList } from '@/hooks/useRemoteJournalList';
 jest.mock('react-native/Libraries/Lists/FlatList', () => {
@@ -38,6 +38,6 @@ it('allows only one pending detail read', async () => {
   fireEvent.press(screen.getByText('Night'));
   fireEvent.press(screen.getByText('Night'));
   expect(open).toHaveBeenCalledTimes(1);
-  resolve();
+  await act(async () => { resolve(); });
   await waitFor(() => expect(screen.queryByText('journal.preview.loading')).toBeNull());
 });
