@@ -26,3 +26,10 @@ La recherche de détails manquants devenait trop proche d’une liste de cases �
 - Modèle par défaut : Gemini 3.5 Flash-Lite ; sortie maximale 256 tokens ; pas d’appel de réécriture ni de critique supplémentaire.
 - Déploiement autorisé explicitement par l’utilisateur après cette revue. Paquet préparé à partir de la fonction déployée v3 : seuls api/routes/recall.ts et api/lib/models.ts changent ; les quinze autres fichiers et verify_jwt=false (authentification interne) sont conservés.
 - La lecture du contrat produit ne constitue pas une validation scientifique du rappel de rêve. La qualité réelle et les limites du modèle restent à observer.
+
+## Preuve de déploiement
+
+- Projet Noctalia usuyppgsmmowzizhaoqj ; seule fonction capture-recall déployée, v4 ACTIVE. SHA du paquet serveur : 6437fff623efdc156fed6210566c7ada1c815b03c52005ceced4cffc34eb7af1.
+- Relecture distante après déploiement : api/routes/recall.ts et api/lib/models.ts correspondent exactement aux sources préparées du commit bf0f364c0. Modèle de rappel par défaut : gemini-3.5-flash-lite ; surcharges serveur éventuelles non inspectées.
+- Requête HTTP synthétique non authentifiée sur /recall-question : 401 Missing guest fingerprint, confirmant que la route déployée répond et conserve son contrôle d’accès. Aucun appel Gemini authentifié n’a été réalisé pendant cette vérification ; pas de preuve sémantique en conditions réelles revendiquée.
+- Aucun rêve personnel envoyé par les tests, aucune autre fonction ni table modifiée, aucune publication native. Les prochaines requêtes de relance utiliseront la fonction mise à jour ; une question déjà affichée ne change pas rétroactivement.
