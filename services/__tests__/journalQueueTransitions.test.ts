@@ -190,7 +190,7 @@ describe('journal queue transitions', () => {
       imageJobId: 'job-17',
       imageJobStatus: 'running',
       imageJobRequestId: 'image-request-17',
-      imageJobErrorCode: 'IMAGE_TIMEOUT',
+      imageJobErrorCode: undefined,
       imageJobErrorMessage: 'retry later',
       captureOriginalTranscript: 'Original question and answer',
       syncState: 'clean',

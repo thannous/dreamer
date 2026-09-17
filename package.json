@@ -182,7 +182,8 @@
     "reflection:compact:run": "node scripts/run-ti559-compact.cjs",
     "reflection:completion:run": "node scripts/run-ti559-completion.cjs",
     "reflection:chat:signed:check": "deno check --no-lock supabase/functions/api/evaluation/ti559/chat-20-signed.ts",
-    "reflection:chat:signed:run": "node scripts/run-chat20-signed.cjs"
+    "reflection:chat:signed:run": "node scripts/run-chat20-signed.cjs",
+    "test:analysis-authorization:db": "node scripts/verify-analysis-authorization.mjs"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",
@@ -261,6 +262,7 @@
   "devDependencies": {
     "@babel/plugin-transform-template-literals": "^7.27.1",
     "@cspell/dict-fr-fr": "^2.3.2",
+    "@electric-sql/pglite": "0.5.8",
     "@noctalia/site-tooling": "file:apps/site",
     "@react-native/jest-preset": "0.86.3",
     "@testing-library/dom": "^10.4.1",

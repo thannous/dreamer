@@ -211,3 +211,12 @@ it('round-trips an unclassified sparse reflection without fabricating a type or 
   expect(mapDreamToRow(dream, 'user-a').dream_type).toBe('Unknown');
   expect(mapRowToDreamListItem(source).dreamType).toBe('Unknown');
 });
+
+
+it('loads a durable image failure after restart without letting clients write it back', () => {
+  const mapped = mapRowToDream(row({ image_url: '', image_generation_failed: false, image_generation_error_code: 'FREE_IMAGE_ANALYSIS_REQUIRED' }));
+  expect(mapped.imageGenerationFailed).toBe(true);
+  expect(mapped.imageJobErrorCode).toBe('FREE_IMAGE_ANALYSIS_REQUIRED');
+  expect(mapDreamToRow(mapped, 'user-a')).not.toHaveProperty('image_generation_error_code');
+  expect(mapRowToDream(row({ image_generation_error_code: 'FREE_IMAGE_ANALYSIS_REQUIRED' })).imageJobErrorCode).toBeUndefined();
+});

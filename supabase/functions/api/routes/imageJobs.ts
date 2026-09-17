@@ -1,3 +1,4 @@
+import { verifyAnalysisImageAuthorization } from '../services/analysisAuthorization.ts';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { isHdIllustrationsEnabled } from '../lib/illustrationFlags.ts';
 import { requireGuestSession } from '../lib/guards.ts';
@@ -354,6 +355,18 @@ export async function handleCreateImageJob(
     }
 
     const adminClient = adminFactory(supabaseUrl, supabaseServiceRoleKey);
+
+    // A completed analysis cannot acquire a missing pre-provider receipt by waiting.
+    // Reject it before creating/retrying a job; never trust client-written done flags.
+    if (user && tierResolution.tier === 'free' && dreamAuthorizationContext?.is_analyzed === true) {
+      const authorization = await verifyAnalysisImageAuthorization(adminClient, {
+        userId: user.id, dreamId, requestId: clientRequestId, analysisComplete: true,
+      });
+      if (!authorization.allowed) {
+        if (authorization.retryable) return serviceUnavailable(authorization.errorMessage);
+        return freeImageAnalysisRequiredResponse();
+      }
+    }
 
     if (!user && guestCheck.fingerprint) {
       const { data: status, error: statusError } = await adminClient.rpc('get_guest_quota_status', {

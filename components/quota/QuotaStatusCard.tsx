@@ -1,3 +1,5 @@
+import { SubscriptionExpiryNotice } from '@/components/subscription/SubscriptionExpiryNotice';
+import { manageSubscription } from '@/services/subscriptionService';
 import React, { useCallback, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ActivityIndicator, Platform } from 'react-native';
 import { ProgressFill } from '@/components/motion';
@@ -75,7 +77,7 @@ export const QuotaStatusCard: React.FC<Props> = ({
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const cardBg = noctalia.surface.raised;
   const { t } = useTranslation();
-  const { quotaStatus, loading, error, refetch, tier } = useQuota();
+  const { quotaStatus, loading, error, refetch, tier, subscriptionStatus, subscriptionLoading } = useQuota();
   const { formatDate } = useLocaleFormatting();
   const isDegradedGuest = !user && quotaStatus?.guestBootstrapStatus === 'degraded';
 
@@ -132,23 +134,22 @@ export const QuotaStatusCard: React.FC<Props> = ({
   }, [t, tier, formatDate]);
 
   const [managing, setManaging] = useState(false);
+  const [manageError, setManageError] = useState(false);
   const canManageSubscription = isPaidTier && Platform.OS !== 'web';
   const handleManageSubscription = useCallback(async () => {
     if (managing) return;
     setManaging(true);
+    setManageError(false);
     try {
-      // RevenueCat Customer Center: cancel / pause / restore flows with the
-      // configured retention offer, instead of sending people to the store.
-      // Loaded lazily so the native purchases-ui module is only touched on demand.
-      const { presentRevenueCatCustomerCenter } = await import('@/services/revenuecatUI');
-      await presentRevenueCatCustomerCenter({ userId: user?.id ?? null });
+      await manageSubscription(user?.id ?? null);
       refetch();
     } catch (error) {
       log.warn('Customer Center unavailable', error);
+      setManageError(true);
     } finally {
       setManaging(false);
     }
-  }, [managing, refetch, user?.id]);
+  }, [managing, refetch, user]);
 
   const handleUpgrade = () => {
     if (onUpgradePress) {
@@ -182,6 +183,8 @@ export const QuotaStatusCard: React.FC<Props> = ({
         </View>
         {loading && <ActivityIndicator color={noctalia.accent.text} />}
       </View>
+
+      <SubscriptionExpiryNotice status={subscriptionStatus} loading={subscriptionLoading} />
 
       {error && (
         <Pressable
@@ -255,6 +258,11 @@ export const QuotaStatusCard: React.FC<Props> = ({
         </View>
       )}
 
+      {manageError ? (
+        <Text accessibilityRole="alert" style={[styles.noticeText, { color: noctalia.status.danger.text }]}>
+          {t('subscription.error.manage_failed')}
+        </Text>
+      ) : null}
       {canManageSubscription && (
         <Pressable
           style={[styles.manageButton, { borderColor: noctalia.surface.borderStrong }]}

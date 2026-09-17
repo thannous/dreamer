@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import React from 'react';
 
@@ -134,6 +134,9 @@ jest.mock('@/constants/theme', () => ({
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
 
+const mockPresentCustomerCenter = jest.fn();
+jest.mock('@/services/subscriptionService', () => ({ manageSubscription: () => mockPresentCustomerCenter() }));
+
 jest.mock('@/lib/logger', () => ({
   createScopedLogger: () => ({ warn: jest.fn() }),
 }));
@@ -155,6 +158,8 @@ const guestStatus = (imageUsed: number, analysisUsed = 0): QuotaStatus => ({
 
 describe('QuotaStatusCard illustration row', () => {
   beforeEach(() => {
+    require('react-native').Platform.OS = 'web';
+    mockPresentCustomerCenter.mockReset();
     mockQuota = {
       quotaStatus: guestStatus(1, 2),
       loading: false,
@@ -228,4 +233,16 @@ describe('QuotaStatusCard illustration row', () => {
 
     expect(screen.getByTestId(TID.Quota.ImageValue).textContent).toBe('recording.quota.unlimited');
   });
+  it('shows an error when subscription management fails, then clears it on retry', async () => {
+    require('react-native').Platform.OS = 'android';
+    mockQuota = { ...mockQuota, tier: 'plus' };
+    mockPresentCustomerCenter.mockRejectedValueOnce(new Error('store unavailable')).mockResolvedValueOnce(undefined);
+    render(<QuotaStatusCard />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.ManageSubscription)); });
+    expect(screen.getByText('subscription.error.manage_failed')).toBeTruthy();
+    expect(mockPresentCustomerCenter).toHaveBeenCalledTimes(1);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.ManageSubscription)); });
+    expect(screen.queryByText('subscription.error.manage_failed')).toBeNull();
+  });
+
 });

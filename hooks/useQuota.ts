@@ -242,6 +242,8 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   }, [user?.id]); // Only on user ID change, not user object reference
 
   return {
+    subscriptionStatus,
+    subscriptionLoading,
     quotaStatus,
     // Only wait for RevenueCat when we don't have an optimistic paid tier from Supabase.
     loading: loading || (subscriptionLoading && !isPaidTier),

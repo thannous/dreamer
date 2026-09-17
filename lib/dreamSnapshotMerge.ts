@@ -1,13 +1,22 @@
 import { matchesDreamTarget as sameIdentity } from './dreamIdentity';
 import type { DreamAnalysis } from './types';
 
-/** Device-only capture sources survive a remote refresh without overriding server content. */
+/** Server failures win. A legacy server without the new column keeps a matching cached reason. */
+export function retainedImageJobError(remote: DreamAnalysis, local?: DreamAnalysis): string | undefined {
+  if (remote.imageUrl || !remote.imageGenerationFailed) return undefined;
+  if (Object.prototype.hasOwnProperty.call(remote, 'imageJobErrorCode')) return remote.imageJobErrorCode;
+  return remote.analysisRequestId === local?.analysisRequestId ? local?.imageJobErrorCode : undefined;
+}
+
+/** Device-only capture sources and legacy diagnostics survive a remote refresh. */
 export function retainCaptureSources(remote: DreamAnalysis[], local: DreamAnalysis[]): DreamAnalysis[] {
   return remote.map((dream) => {
     const cached = local.find((candidate) => sameIdentity(candidate, dream));
-    return cached?.captureOriginalTranscript
-      ? { ...dream, captureOriginalTranscript: cached.captureOriginalTranscript }
-      : dream;
+    return {
+      ...dream,
+      ...(cached?.captureOriginalTranscript ? { captureOriginalTranscript: cached.captureOriginalTranscript } : {}),
+      ...(dream.imageGenerationFailed ? { imageJobErrorCode: retainedImageJobError(dream, cached) } : {}),
+    };
   });
 }
 

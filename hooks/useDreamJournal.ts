@@ -1,3 +1,4 @@
+import { retainedImageJobError } from '@/lib/dreamSnapshotMerge';
 import { type DreamTarget, matchesDreamTarget, resolveDreamTarget, getDreamIdentityKey } from '../lib/dreamIdentity';
 /**
  * useDreamJournal - Main hook for dream journal operations
@@ -114,7 +115,7 @@ const mergeRemoteDreamWithClientState = (
       imageJobId: localDream.imageJobId,
       imageJobStatus: localDream.imageJobStatus,
       imageJobRequestId: localDream.imageJobRequestId,
-      imageJobErrorCode: localDream.imageJobErrorCode,
+      imageJobErrorCode: retainedImageJobError(remoteDream, localDream),
       imageJobErrorMessage: localDream.imageJobErrorMessage,
     },
     'clean',
