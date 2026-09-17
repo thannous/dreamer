@@ -9,7 +9,7 @@ import { RecordingInputModeSelect } from '@/components/recording/RecordingInputM
 import { CaptureDraftEditor } from '@/components/recording/CaptureDraftEditor';
 import { parseCaptureEditableDraft, serializeCaptureEditableDraft, updateCaptureDraftSection, type CaptureEditableDraft } from '@/lib/captureEditableDraft';
 import { CaptureReviewPanel } from '@/components/recording/CaptureReviewPanel';
-import { decodeCaptureDraft, encodeCaptureReview, type CaptureReview } from '@/lib/captureReviewDraft';
+import { buildCaptureNarrative, decodeCaptureDraft, encodeCaptureReview, type CaptureReview } from '@/lib/captureReviewDraft';
 import { RecordingConversation } from '@/components/recording/RecordingConversation';
 import { useCaptureConversation } from '@/hooks/useCaptureConversation';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
@@ -144,7 +144,10 @@ export default function RecordingScreen() {
 
   const [transcript, setTranscript] = useState('');
   const [editableCapture, setEditableCapture] = useState<CaptureEditableDraft | null>(null);
-  const [captureReview, setCaptureReview] = useState<CaptureReview | null>(null);
+  const [captureReviewState, setCaptureReview] = useState<CaptureReview | null>(null);
+  const captureReview = useMemo(() => captureReviewState && captureReviewState.text === captureReviewState.source
+    ? { ...captureReviewState, text: buildCaptureNarrative(captureReviewState.source) }
+    : captureReviewState, [captureReviewState]);
   const [reviewExitStep, setReviewExitStep] = useState<'options' | 'confirm' | null>(null);
   const [isLeavingReview, setIsLeavingReview] = useState(false);
   const leavingReviewRef = useRef(false);
@@ -1568,8 +1571,8 @@ export default function RecordingScreen() {
       const source = baseTranscriptRef.current || transcript;
       if (!isTranscriptSaveable(source)) return;
       formatSourceRef.current = source;
-      // Review exactly what the narrator entered; no AI call or invented transitions.
-      const text = source;
+      // Keep narrator words in the review and questions in the original exchanges.
+      const text = buildCaptureNarrative(source);
       if (controller.signal.aborted || formatRequestRef.current !== controller) return;
       const review = { source, text };
       if (!noteInput(encodeCaptureReview(review))) return;

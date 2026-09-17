@@ -1,4 +1,11 @@
+import { parseCaptureEditableDraft } from './captureEditableDraft';
+
 export type CaptureReview = { source: string; text: string };
+export function buildCaptureNarrative(source: string): string {
+  return parseCaptureEditableDraft(source).sections
+    .map(section => section.text.trim()).filter(Boolean).join('\n\n');
+}
+
 const PREFIX = 'NOCTALIA_CAPTURE_REVIEW_V1\n';
 
 /** One durable draft record keeps the source and edited proposal together. Legacy plain drafts still work. */
@@ -11,7 +18,7 @@ export function decodeCaptureDraft(value: string): { transcript: string; review:
     try {
       const parsed = JSON.parse(value.slice(PREFIX.length));
       if (typeof parsed?.source === 'string' && typeof parsed?.text === 'string') {
-        return { transcript: parsed.source, review: { source: parsed.source, text: parsed.text } };
+        return { transcript: parsed.source, review: { source: parsed.source, text: parsed.text === parsed.source ? buildCaptureNarrative(parsed.source) : parsed.text } };
       }
     } catch { /* Preserve unrecognized text; never erase a draft. */ }
   }

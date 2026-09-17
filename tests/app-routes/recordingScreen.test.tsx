@@ -879,10 +879,10 @@ describe('Recording screen', () => {
     }
     expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(3);
     expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
-    expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe(expected);
+    expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('A garden.\n\nBlue flowers.\n\nA bird.\n\nIt was quiet.');
     expect(mockAddDream).not.toHaveBeenCalled();
     fireEvent.click(screen.getByTestId('recording-save'));
-    await waitFor(() => expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: expected })));
+    await waitFor(() => expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'A garden.\n\nBlue flowers.\n\nA bird.\n\nIt was quiet.', captureOriginalTranscript: expected })));
     expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(3);
     expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
   });
@@ -991,7 +991,7 @@ describe('Recording screen', () => {
     fireEvent.click(screen.getByTestId('recording-save'));
     await screen.findByTestId('capture-review-text');
     expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
-    expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe(edited);
+    expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('Je marchais sur une plage.\n\nGris, je crois.');
     expect(mockAddDream).not.toHaveBeenCalled();
     expect(screen.queryByTestId('capture-draft-editor')).toBeNull();
   });
