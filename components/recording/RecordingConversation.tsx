@@ -1,3 +1,4 @@
+import { MarkdownText } from '@/components/ui/MarkdownText';
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@/context/ThemeContext';
@@ -68,12 +69,12 @@ export function RecordingConversation(props: Props) {
   return (
     <View style={styles.container} testID="recording-conversation">
       <View style={styles.questionBlock}>
-        <Text accessibilityLiveRegion="polite" style={[styles.question, { color: tokens.text.primary }]} testID="recording-conversation-question">
+        <MarkdownText accessibilityLiveRegion="polite" style={[styles.question, { color: tokens.text.primary }]} testID="recording-conversation-question">
           {props.loading ? t('recording.conversation.thinking')
             : props.done ? t('recording.conversation.ready')
             : props.needsDecision ? t('recording.conversation.edited')
             : props.question ?? t(props.storyTranscript.trim() ? 'dream_recall.question.what_else' : 'recording.conversation.welcome')}
-        </Text>
+        </MarkdownText>
         {listening ? (
           <Text accessibilityLiveRegion="polite" style={[styles.hint, { color: tokens.text.secondary }]} testID="recording-listening-status">
             {t('recording.conversation.listening')}

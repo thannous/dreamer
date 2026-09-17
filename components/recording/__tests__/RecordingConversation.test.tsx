@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor, within } from '@testing-library/react-native';
 import { RecordingConversation } from '../RecordingConversation';
 import { TID } from '@/lib/testIDs';
 
@@ -40,7 +40,7 @@ it('keeps permission preparation distinct from an actually listening microphone'
   expect(view.queryByText('recording.conversation.listening')).toBeNull();
   view.rerender(<RecordingConversation {...callbacks} voiceStatus="recording" />);
   expect(view.getByText('recording.conversation.listening')).toBeTruthy();
-  expect(view.getByTestId('recording-conversation-question').props.children).toBe(callbacks.question);
+  expect(within(view.getByTestId('recording-conversation-question')).getByText(callbacks.question!)).toBeTruthy();
   fireEvent.press(view.getByTestId(TID.Button.RecordToggle));
   await waitFor(() => expect(callbacks.onMute).toHaveBeenCalledTimes(1));
   expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
@@ -152,13 +152,13 @@ it('keeps the inline finish action available during dictation without making the
 it('keeps the opening prompt stable while the first dictated answer grows', () => {
   const callbacks = { ...props(), question: null, storyTranscript: '', transcript: '', answer: '' };
   const view = render(<RecordingConversation {...callbacks} voiceStatus="recording" />);
-  expect(view.getByTestId('recording-conversation-question').props.children).toBe('recording.conversation.welcome');
+  expect(within(view.getByTestId('recording-conversation-question')).getByText('recording.conversation.welcome')).toBeTruthy();
   view.rerender(<RecordingConversation {...callbacks} transcript="Un jardin." answer="Un jardin." voiceStatus="recording" />);
-  expect(view.getByTestId('recording-conversation-question').props.children).toBe('recording.conversation.welcome');
+  expect(within(view.getByTestId('recording-conversation-question')).getByText('recording.conversation.welcome')).toBeTruthy();
   expect(view.getByTestId('recording-listening-status')).toBeTruthy();
   view.rerender(<RecordingConversation {...callbacks} transcript="Un jardin." answer="Un jardin." voiceStatus="idle" />);
   expect(view.queryByTestId('recording-listening-status')).toBeNull();
-  expect(view.getByTestId('recording-conversation-question').props.children).toBe('recording.conversation.welcome');
+  expect(within(view.getByTestId('recording-conversation-question')).getByText('recording.conversation.welcome')).toBeTruthy();
 });
 
 it('offers restarting for existing content and hides it for an empty story', () => {

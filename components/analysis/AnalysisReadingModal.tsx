@@ -1,3 +1,4 @@
+import { MarkdownText } from '@/components/ui/MarkdownText';
 import React, { useEffect, useState } from 'react';
 import { Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -68,7 +69,7 @@ export function AnalysisReadingModal({ dream, onClose }: Props) {
           {presented && (readingVisible || reducedMotion || !quote) ? (
             <Reveal distance={0} testID="analysis.reading.body">
               <Text accessibilityRole="header" style={[styles.title, { color: tokens.text.primary }]}>{dream.title}</Text>
-              <Text style={[styles.body, { color: tokens.text.primary }]}>{dream.interpretation?.trim()}</Text>
+              <MarkdownText variant="reading" style={[styles.body, { color: tokens.text.primary }]}>{dream.interpretation?.trim() ?? ''}</MarkdownText>
             </Reveal>
           ) : null}
         </ScrollView>

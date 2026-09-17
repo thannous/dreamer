@@ -1,5 +1,7 @@
 import { jest } from '@jest/globals';
 
+jest.mock('react-native-enriched-markdown', () => require('react-native-enriched-markdown/jest'));
+
 // Vitest provided this helper; keep behavior stable for existing tests.
 const jestAny = jest as any;
 

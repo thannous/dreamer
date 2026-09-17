@@ -1,3 +1,4 @@
+import { MarkdownText } from '@/components/ui/MarkdownText';
 import { AnalysisReadingModal } from '@/components/analysis/AnalysisReadingModal';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
@@ -197,34 +198,6 @@ const cropDreamImageToAspect = async (
 const Skeleton = ({ className }: { className: string }) => (
   <View className={`bg-ink-soft ${className}`} />
 );
-
-const TypewriterText = ({ text, className, shouldAnimate }: { text: string; className: string; shouldAnimate: boolean }) => {
-  const [displayedText, setDisplayedText] = useState(shouldAnimate ? '' : text);
-
-  useEffect(() => {
-    if (!shouldAnimate) {
-      setDisplayedText(text);
-      return;
-    }
-
-    if (!text.length) {
-      setDisplayedText('');
-      return;
-    }
-
-    let i = 0;
-    const timer = setInterval(() => {
-      i = Math.min(i + 2, text.length); // Speed
-      setDisplayedText(text.slice(0, i));
-      if (i >= text.length) {
-        clearInterval(timer);
-      }
-    }, 10);
-    return () => clearInterval(timer);
-  }, [text, shouldAnimate]);
-
-  return <Text className={className}>{displayedText}</Text>;
-};
 
 export default function JournalDetailScreen() {
   const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
@@ -1447,7 +1420,7 @@ function JournalDetailContent() {
           autoFocus
         />
       ) : (
-        <Text className="font-sans text-[15px] leading-6 text-ivory-muted opacity-90">{dream.transcript}</Text>
+        <MarkdownText style={{ fontSize: 15, lineHeight: 24, color: noctalia.text.secondary }}>{dream.transcript}</MarkdownText>
       )}
       {dream.captureOriginalTranscript ? <CaptureOriginal source={dream.captureOriginalTranscript} /> : null}
       {isEditingTranscript ? (
@@ -2234,11 +2207,9 @@ function JournalDetailContent() {
                         </Text>
                         <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
                       </View>
-                      <TypewriterText
-                        text={dream.interpretation}
-                        className="mb-4 font-sans text-body text-ivory-muted"
-                        shouldAnimate={false}
-                      />
+                      <MarkdownText variant="reading" style={{ fontSize: 16, lineHeight: 26, color: noctalia.text.primary }} containerStyle={{ marginBottom: 16 }}>
+                        {dream.interpretation}
+                      </MarkdownText>
                     </>
                   ) : null}
                 </View>
@@ -2271,9 +2242,9 @@ function JournalDetailContent() {
                       <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
                         {symbol.name}
                       </Text>
-                      <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
+                      <MarkdownText style={{ fontSize: 15, lineHeight: 22, color: noctalia.text.secondary }}>
                         {symbol.meaning}
-                      </Text>
+                      </MarkdownText>
                     </View>
                   ))}
                 </>
@@ -2292,9 +2263,9 @@ function JournalDetailContent() {
                       <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
                         {emotion.name}
                       </Text>
-                      <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
+                      <MarkdownText style={{ fontSize: 15, lineHeight: 22, color: noctalia.text.secondary }}>
                         {emotion.insight}
-                      </Text>
+                      </MarkdownText>
                     </View>
                   ))}
                 </>
@@ -2314,9 +2285,9 @@ function JournalDetailContent() {
                       </View>
                       {dream.reflectionQuestions.map((question, index) => (
                         <View key={`reflection-${index}`} className="mb-3">
-                          <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
+                          <MarkdownText style={{ fontSize: 15, lineHeight: 22, color: noctalia.text.secondary }}>
                             {question}
-                          </Text>
+                          </MarkdownText>
                         </View>
                       ))}
                     </>

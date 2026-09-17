@@ -73,6 +73,8 @@ const hook: UseDreamRecallAssistantResult = {
   complete: mockComplete,
 };
 
+jest.mock('@/components/ui/MarkdownText', () => ({ MarkdownText: ({ children }: { children: string }) => <span>{children}</span> }));
+
 jest.mock('@/hooks/useDreamRecallAssistant', () => ({
   useDreamRecallAssistant: (params: unknown) => {
     const [, publish] = require('react').useState(0);

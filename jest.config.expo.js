@@ -27,11 +27,13 @@ module.exports = {
   ),
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   transformIgnorePatterns: (preset.transformIgnorePatterns ?? []).map((pattern) =>
-    pattern.replace('(.pnpm|react-native', '(.pnpm|.deno|react-native')
+    pattern.replace('(.pnpm|react-native', '(.pnpm|.deno|remend|mdast-util-|micromark|unist-util-|decode-named-character-reference|character-entities|devlop|react-native')
   ),
   moduleNameMapper: {
     ...(preset.moduleNameMapper ?? {}),
     '^@/(.*)$': '<rootDir>/$1',
+    '^remend$': '<rootDir>/node_modules/remend/dist/index.js',
+    '^mdast-util-from-markdown$': '<rootDir>/node_modules/mdast-util-from-markdown/index.js',
     '^react-native$': '<rootDir>/tests/react-native-stub.ts',
     '^react-native-reanimated$': '<rootDir>/tests/react-native-reanimated-stub.ts',
     '^@react-native-masked-view/masked-view$': '<rootDir>/tests/masked-view-stub.ts',

@@ -543,6 +543,7 @@ const translations: Record<string, string> = {
     'journal.detail.delete_confirm.title': 'Elimina sogno',
     'journal.detail.delete_confirm.message': 'Sei sicuro di voler eliminare questo sogno?',
     'journal.detail.delete_confirm.confirm': 'Elimina',
+    'common.copy': 'Copia',
     'analysis.reading.eyebrow': 'Il tuo sogno, sotto una nuova luce',
     'analysis.reading.close': 'Chiudi l’analisi',
     'journal.detail.interpretation_header': 'Interpretazione',

@@ -1,3 +1,4 @@
+import { MarkdownText } from '@/components/ui/MarkdownText';
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AppState, Platform, Text, TextInput, View } from 'react-native';
 
@@ -467,7 +468,7 @@ export function DreamRecallAssistantCard({
       <View className={cardClass} testID={TID.Component.DreamRecallAssistantCard}>
         <Text className="font-sans-bold text-[18px] text-ivory">{sessionTitle}</Text>
         {currentQuestion ? (
-          <Text className="font-sans text-body text-ivory">{currentQuestion.text}</Text>
+          <MarkdownText>{currentQuestion.text}</MarkdownText>
         ) : null}
         {error ? (
           <Text accessibilityLiveRegion="polite" className="font-sans text-body-sm text-danger-on">
@@ -524,7 +525,7 @@ export function DreamRecallAssistantCard({
 
       {currentQuestion ? (
         <>
-          <Text className="font-sans text-body text-ivory">{currentQuestion.text}</Text>
+          <MarkdownText>{currentQuestion.text}</MarkdownText>
           <View className="gap-2">
             <Text className="font-sans text-caption text-ivory-muted">{inputLabel}</Text>
             <View className="flex-row items-start gap-2">

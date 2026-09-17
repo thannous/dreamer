@@ -1,3 +1,4 @@
+import { MarkdownText } from '@/components/ui/MarkdownText';
 import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -145,12 +146,12 @@ export default function SymbolDetailScreen() {
             </Text>
 
             {/* Short description */}
-            <Text
+            <MarkdownText
               selectable
               style={[styles.description, { color: noctalia.text.secondary }]}
             >
               {content.shortDescription}
-            </Text>
+            </MarkdownText>
           </FlatGlassCard>
         </MotiView>
 
@@ -164,15 +165,11 @@ export default function SymbolDetailScreen() {
           >
             <SectionTitle text={t('symbols.interpretation')} noctalia={noctalia} />
             <FlatGlassCard style={styles.contentCard} animationDelay={0}>
-              {paragraphs.map((p, i) => (
-                <Text
-                  key={`${p}-${i}`}
-                  selectable
-                  style={[styles.paragraphText, { color: noctalia.text.primary }]}
-                >
-                  {p}
-                </Text>
-              ))}
+              <MarkdownText
+                style={[styles.paragraphText, { color: noctalia.text.primary }]}
+              >
+                {paragraphs.join('\n\n')}
+              </MarkdownText>
             </FlatGlassCard>
           </MotiView>
         )}
@@ -212,12 +209,13 @@ export default function SymbolDetailScreen() {
               {content.askYourself.map((q, i) => (
                 <View key={`${q}-${i}`} style={styles.askRow}>
                   <IconSymbol name="questionmark.circle.fill" size={18} color={noctalia.accent.text} />
-                  <Text
+                  <MarkdownText
                     selectable
+                    containerStyle={{ flex: 1 }}
                     style={[styles.askText, { color: noctalia.text.primary }]}
                   >
                     {q}
-                  </Text>
+                  </MarkdownText>
                 </View>
               ))}
             </FlatGlassCard>
@@ -325,12 +323,12 @@ function VariationCard({
           {variation.context}
         </Text>
         <View style={[styles.variationDivider, { backgroundColor: noctalia.accent.base }]} />
-        <Text
+        <MarkdownText
           selectable
           style={[styles.variationMeaning, { color: noctalia.text.primary }]}
         >
           {variation.meaning}
-        </Text>
+        </MarkdownText>
       </View>
     </MotiView>
   );

@@ -16,6 +16,8 @@ const mockUpdateDream = jest.fn();
 let mockCompositeLoads = true;
 const mockRetryMedia = jest.fn();
 const mockShareComposite = jest.fn();
+jest.mock('@/components/ui/MarkdownText', () => ({ MarkdownText: ({ children }: { children: string }) => <span>{children}</span> }));
+
 jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => mockMedia ?? ({ imageUrl: dream?.imageUrl ?? '', thumbnailUrl: dream?.thumbnailUrl, loading: false, error: false, retry: mockRetryMedia }) }));
 
 const mockToggleFavorite = jest.fn();

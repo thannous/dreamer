@@ -1,215 +1,24 @@
-/**
- * Markdown styles for react-native-markdown-display
- * Theme-aware styling for markdown elements in chat messages
- */
-
-import { Platform, StyleSheet, type TextStyle, type ViewStyle } from 'react-native';
+import type { TextStyle } from 'react-native';
+import type { MarkdownStyle } from 'react-native-enriched-markdown';
 import { Fonts } from './theme';
 import type { ThemeColors } from './journalTheme';
 
-interface MarkdownStyles {
-  [key: string]: TextStyle | ViewStyle;
-}
-
-/**
- * Create theme-aware markdown styles
- * @param colors - Theme colors (DarkTheme or LightTheme)
- * @returns StyleSheet of markdown element styles
- */
-export function createMarkdownStyles(colors: ThemeColors): MarkdownStyles {
-  return StyleSheet.create({
-    // Document body
-    body: {
-      color: colors.textPrimary,
-      fontSize: 14,
-      fontFamily: Fonts.spaceGrotesk.regular,
-      lineHeight: 20,
-    },
-
-    // Headings
-    heading1: {
-      color: colors.textPrimary,
-      fontSize: 24,
-      fontFamily: Fonts.spaceGrotesk.bold,
-      fontWeight: '700',
-      lineHeight: 32,
-      marginTop: 12,
-      marginBottom: 8,
-    },
-    heading2: {
-      color: colors.textPrimary,
-      fontSize: 20,
-      fontFamily: Fonts.spaceGrotesk.bold,
-      fontWeight: '700',
-      lineHeight: 28,
-      marginTop: 10,
-      marginBottom: 6,
-    },
-    heading3: {
-      color: colors.textPrimary,
-      fontSize: 17,
-      fontFamily: Fonts.spaceGrotesk.medium,
-      fontWeight: '500',
-      lineHeight: 24,
-      marginTop: 8,
-      marginBottom: 4,
-    },
-    heading4: {
-      color: colors.textPrimary,
-      fontSize: 15,
-      fontFamily: Fonts.spaceGrotesk.medium,
-      fontWeight: '500',
-      lineHeight: 21,
-      marginTop: 6,
-      marginBottom: 3,
-    },
-    heading5: {
-      color: colors.textPrimary,
-      fontSize: 14,
-      fontFamily: Fonts.spaceGrotesk.bold,
-      fontWeight: '700',
-      lineHeight: 20,
-      marginTop: 4,
-      marginBottom: 2,
-    },
-    heading6: {
-      color: colors.textSecondary,
-      fontSize: 13,
-      fontFamily: Fonts.spaceGrotesk.bold,
-      fontWeight: '700',
-      lineHeight: 18,
-      marginTop: 2,
-      marginBottom: 0,
-    },
-
-    // Paragraph
-    paragraph: {
-      marginTop: 0,
-      marginBottom: 8,
-      lineHeight: 20,
-    },
-
-    // Inline formatting
-    strong: {
-      fontFamily: Fonts.spaceGrotesk.bold,
-      fontWeight: '700',
-      color: colors.textPrimary,
-    },
-    em: {
-      fontFamily: Fonts.spaceGrotesk.regular,
-      fontStyle: 'italic',
-      color: colors.textPrimary,
-    },
-    s: {
-      textDecorationLine: 'line-through',
-      color: colors.textSecondary,
-    },
-
-    // Links
-    link: {
-      color: colors.accentText,
-      textDecorationLine: 'underline',
-    },
-
-    // Code
-    code_inline: {
-      backgroundColor: colors.backgroundSecondary,
-      color: colors.accentText,
-      fontFamily: Platform.select({
-        ios: Fonts.mono,
-        default: 'monospace',
-      }) as any,
-      fontSize: 13,
-      paddingHorizontal: 4,
-      paddingVertical: 2,
-      borderRadius: 4,
-    },
-
-    // Code block
-    fence: {
-      backgroundColor: colors.backgroundSecondary,
-      color: colors.textPrimary,
-      fontFamily: Platform.select({
-        ios: Fonts.mono,
-        default: 'monospace',
-      }) as any,
-      fontSize: 12,
-      padding: 12,
-      borderRadius: 8,
-      marginVertical: 8,
-      lineHeight: 18,
-    },
-
-    // Lists
-    bullet_list: {
-      marginTop: 4,
-      marginBottom: 8,
-    },
-    ordered_list: {
-      marginTop: 4,
-      marginBottom: 8,
-    },
-    list_item: {
-      flexDirection: 'row',
-      marginBottom: 6,
-    },
-    list_item_bullet: {
-      color: colors.accentText,
-      marginRight: 8,
-    },
-    list_item_number: {
-      color: colors.accentText,
-      marginRight: 8,
-    },
-
-    // Blockquote
-    blockquote: {
-      backgroundColor: colors.backgroundSecondary,
-      borderLeftWidth: 4,
-      borderLeftColor: colors.accent,
-      paddingLeft: 12,
-      paddingRight: 12,
-      paddingVertical: 8,
-      marginVertical: 8,
-      marginHorizontal: 0,
-    },
-
-    // Horizontal rule
-    hr: {
-      backgroundColor: colors.divider,
-      height: 1,
-      marginVertical: 8,
-    },
-
-    // Tables (if supported)
-    table: {
-      borderWidth: 1,
-      borderColor: colors.divider,
-      marginVertical: 8,
-    },
-    tableHeader: {
-      backgroundColor: colors.backgroundSecondary,
-    },
-    tableHeaderCell: {
-      flex: 1,
-      color: colors.textPrimary,
-      fontFamily: Fonts.spaceGrotesk.bold,
-      fontWeight: '700',
-      padding: 8,
-      borderWidth: 1,
-      borderColor: colors.divider,
-    },
-    tableRow: {
-      flexDirection: 'row',
-      borderBottomWidth: 1,
-      borderBottomColor: colors.divider,
-    },
-    tableRowCell: {
-      flex: 1,
-      color: colors.textPrimary,
-      padding: 8,
-      borderWidth: 1,
-      borderColor: colors.divider,
-    },
-  });
+export function createMarkdownStyles(colors: ThemeColors, style: TextStyle = {}, variant: 'body' | 'reading' = 'body'): MarkdownStyle {
+  const fontSize = style.fontSize ?? 16;
+  const color = typeof style.color === 'string' ? style.color : colors.textPrimary;
+  const base = { fontSize, color, fontFamily: style.fontFamily ?? Fonts.spaceGrotesk.regular, lineHeight: style.lineHeight ?? fontSize * 1.5, fontWeight: style.fontWeight == null ? undefined : String(style.fontWeight) };
+  const heading = (scale: number) => ({ ...base, fontFamily: variant === 'reading' ? Fonts.lora.bold : Fonts.spaceGrotesk.bold, fontWeight: '700', fontSize: fontSize * scale, lineHeight: fontSize * scale * 1.35, marginTop: fontSize, marginBottom: 8 });
+  return {
+    paragraph: { ...base, textAlign: style.textAlign, marginTop: 0, marginBottom: variant === 'reading' ? 20 : 10 },
+    h1: heading(1.5), h2: heading(1.3), h3: heading(1.15), h4: heading(1.05), h5: heading(1), h6: heading(1),
+    strong: { color, fontFamily: Fonts.spaceGrotesk.bold, fontWeight: 'normal' },
+    em: { color, fontFamily: Fonts.lora.regularItalic, fontStyle: 'normal' },
+    link: { color: colors.accentText, underline: true },
+    list: { ...base, marginTop: 4, marginBottom: 12, marginLeft: 24, markerMinWidth: 8, bulletSize: 4, gapWidth: 12, itemSpacing: 6, bulletColor: color, markerColor: color },
+    blockquote: { ...base, fontFamily: Fonts.lora.regularItalic, backgroundColor: colors.backgroundSecondary, borderColor: colors.accent, borderWidth: 2, gapWidth: 12, padding: 10, marginTop: 8, marginBottom: 12 },
+    code: { fontFamily: Fonts.mono, fontSize: fontSize - 1, color, backgroundColor: colors.backgroundSecondary },
+    codeBlock: { ...base, fontFamily: Fonts.mono, fontSize: fontSize - 2, backgroundColor: colors.backgroundSecondary, borderColor: colors.divider, borderRadius: 8, padding: 12, marginTop: 8, marginBottom: 12 },
+    thematicBreak: { color: colors.divider, height: 1, marginTop: 12, marginBottom: 12 },
+    table: { ...base, fontSize: Math.max(14, fontSize - 1), headerFontFamily: Fonts.spaceGrotesk.bold, headerTextColor: color, headerBackgroundColor: colors.backgroundSecondary, rowEvenBackgroundColor: colors.backgroundCard, rowOddBackgroundColor: colors.backgroundSecondary, borderColor: colors.divider, borderWidth: 1, cellPaddingHorizontal: 10, cellPaddingVertical: 8 },
+  };
 }
