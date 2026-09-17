@@ -31,7 +31,6 @@ export function CaptureReviewPanel({ text, source, disabled, onChange, onExit }:
     {shortAnswers.length ? (
       <View style={[styles.context, { borderColor: theme.surface.border }]} testID="capture-review-answer-context">
         <Text accessibilityRole="header" style={[styles.contextTitle, { color: theme.text.primary }]}>{t('recording.review.context_title')}</Text>
-        <Text style={[styles.contextHint, { color: theme.text.secondary }]}>{t('recording.review.context_hint')}</Text>
         {shortAnswers.map((section, index) => (
           <View key={index} style={styles.contextPair}>
             <Text style={[styles.contextHint, { color: theme.text.secondary }]}>{section.question}</Text>
