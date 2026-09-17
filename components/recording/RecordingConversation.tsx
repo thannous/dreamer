@@ -155,7 +155,7 @@ export function RecordingConversation(props: Props) {
         </View>
       ) : null}
       {props.storyTranscript.trim() ? (
-        <View style={[styles.recap, { backgroundColor: tokens.surface.raised, borderColor: tokens.surface.border }]}>
+        <View style={[styles.recap, { borderTopColor: tokens.surface.border }]}>
           <View style={styles.recapHeader}>
             <Pressable
               onPress={props.onReview}
@@ -165,7 +165,7 @@ export function RecordingConversation(props: Props) {
               accessibilityState={{ disabled: locked }}
               style={styles.recapEdit}
             >
-              <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.your_story')}</Text>
+              <Text style={[styles.storyTitle, { color: tokens.text.primary }]}>{t('recording.conversation.your_story')}</Text>
               <IconSymbol name="pencil" size={20} color={tokens.accent.text} />
             </Pressable>
             <Pressable
@@ -208,8 +208,9 @@ const styles = StyleSheet.create({
   editorAction: { width: 48, height: 48, borderRadius: 24, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   directions: { width: '100%', flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   direction: { minHeight: 44, justifyContent: 'center', borderWidth: 1, borderRadius: 16, paddingHorizontal: 12, paddingVertical: 8 },
-  recap: { width: '100%', minHeight: 144, borderRadius: 22, borderWidth: 1, padding: 18, gap: 14 },
+  recap: { width: '100%', borderTopWidth: 1, marginTop: 8, paddingTop: 16, paddingBottom: 8, gap: 12 },
+  storyTitle: { fontSize: 22, lineHeight: 29, fontFamily: Fonts.lora.regular, flexShrink: 1 },
   recapHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   small: { fontSize: 15, lineHeight: 21, flexShrink: 1 },
-  story: { fontSize: 16, lineHeight: 24, fontFamily: Fonts.lora.regularItalic },
+  story: { fontSize: 17, lineHeight: 28, fontFamily: Fonts.lora.regular },
 });
