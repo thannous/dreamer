@@ -70,3 +70,42 @@ it('does not restart the three-question allowance on a restored draft', async ()
   expect(request).not.toHaveBeenCalled();
   expect(result.current.done).toBe(true);
 });
+
+it('invalidates an edited question without requesting another and retains the question budget', async () => {
+  request.mockResolvedValue({ question: 'Que cherchais-tu ?', done: false });
+  const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t }));
+  await act(async () => { await result.current.ask('Je cherchais.'); });
+  act(() => result.current.invalidateSource('Je cherchais.'));
+  expect(result.current).toMatchObject({ question: null, needsDecision: true, loading: false });
+  expect(request).toHaveBeenCalledTimes(1);
+  await act(async () => { await result.current.ask('Je cherchais une valise.'); });
+  expect(request.mock.calls[1][2]).toEqual(['Que cherchais-tu ?']);
+  expect(result.current.needsDecision).toBe(false);
+  await act(async () => { await result.current.ask('Une valise rouge.'); });
+  act(() => result.current.invalidateSource('Une valise rouge.'));
+  expect(result.current).toMatchObject({ question: null, done: true, needsDecision: false });
+  await act(async () => { await result.current.ask('Une valise bleue.'); });
+  expect(request).toHaveBeenCalledTimes(3);
+});
+
+it('preserves an early finished state after editing and never asks again', async () => {
+  request.mockResolvedValue({ question: null, done: true });
+  const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t }));
+  await act(async () => { await result.current.ask('Une image.'); });
+  act(() => result.current.invalidateSource('Une image.'));
+  await act(async () => { await result.current.ask('Une image bleue.'); });
+  expect(result.current).toMatchObject({ done: true, needsDecision: false, question: null });
+  expect(request).toHaveBeenCalledTimes(1);
+});
+
+it('discards a pending question when its source is edited', async () => {
+  let resolve!: (value: { question: string; done: boolean }) => void;
+  request.mockImplementation(() => new Promise(r => { resolve = r; }));
+  const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t }));
+  let pending!: ReturnType<typeof result.current.ask>;
+  act(() => { pending = result.current.ask('Je cherchais.'); });
+  act(() => result.current.invalidateSource('Je cherchais.'));
+  expect(request.mock.calls[0][3]?.aborted).toBe(true);
+  await act(async () => { resolve({ question: 'Que cherchais-tu ?', done: false }); await pending; });
+  expect(result.current).toMatchObject({ question: null, needsDecision: true, loading: false });
+});

@@ -349,6 +349,8 @@ jest.doMock('@/components/recording/RecordingConversation', () => ({
       <textarea data-testid="conversation-answer" value={props.answer} onChange={(event) => props.onAnswerChange(event.currentTarget.value)} />
       <span data-testid="conversation-story">{props.storyTranscript}</span>
       <span data-testid="conversation-question">{props.question}</span>
+      {props.needsDecision ? <button data-testid="conversation-continue-questions" onClick={props.onContinueQuestions}>Continue questions</button> : null}
+      <button data-testid="conversation-finish" onClick={props.onFinish}>Done</button>
       <button data-testid="conversation-restart" onClick={props.onRestart}>Restart</button>
       <button data-testid="conversation-mute" onClick={props.onMute}>Mute</button>
       <button data-testid="conversation-submit" onClick={props.onAnswerSubmit}>Send</button>
@@ -994,6 +996,25 @@ describe('Recording screen', () => {
     expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('Je marchais sur une plage.\n\nGris, je crois.');
     expect(mockAddDream).not.toHaveBeenCalled();
     expect(screen.queryByTestId('capture-draft-editor')).toBeNull();
+  });
+
+  it('removes a stale question after editing and offers explicit continuation or local review', async () => {
+    mockGetInputModePreference.mockResolvedValue('voice');
+    mockGetSavedTranscript.mockResolvedValueOnce('Je cherchais.');
+    mockRequestCaptureQuestion.mockResolvedValueOnce({ question: 'Que cherchais-tu ?', done: false });
+    render(<RecordingScreen />);
+    await waitFor(() => expect(screen.getByTestId('conversation-question').textContent).toBe('Que cherchais-tu ?'));
+    await act(async () => { fireEvent.click(screen.getByTestId('recording-review-transcript')); });
+    fireEvent.change(screen.getByTestId('capture-adjust-section-0'), { target: { value: 'Je cherchais une valise rouge.' } });
+    fireEvent.click(screen.getByTestId('capture-adjust-close'));
+    expect(screen.getByTestId('conversation-question').textContent).toBe('');
+    expect(screen.getByTestId('conversation-continue-questions')).toBeTruthy();
+    expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByTestId('conversation-finish'));
+    await screen.findByTestId('capture-review-text');
+    expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('Je cherchais une valise rouge.');
+    expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(1);
+    expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
   });
 
   it('does not validate empty narrator fields just because the source contains questions', async () => {

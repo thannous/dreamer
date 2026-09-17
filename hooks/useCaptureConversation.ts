@@ -12,6 +12,8 @@ export function useCaptureConversation({ language, t, scope }: Options) {
   const [loading, setLoading] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
   const [done, setDone] = useState(false);
+  const [needsDecision, setNeedsDecision] = useState(false);
+  const finished = useRef(false);
   const previous = useRef<string[]>([]);
   const requested = useRef('');
   const controller = useRef<AbortController | null>(null);
@@ -34,28 +36,53 @@ export function useCaptureConversation({ language, t, scope }: Options) {
     setLoading(false);
     setUnavailable(false);
     setDone(false);
+    setNeedsDecision(false);
+    finished.current = false;
   }, []);
+
+  const rememberQuestions = useCallback((text: string) => {
+    const label = t('recording.conversation.question_label');
+    const restored = text.split(/\r?\n/).filter(line => line.startsWith(label)).map(line => line.slice(label.length).trim()).filter(Boolean);
+    if (restored.length > previous.current.length) previous.current = restored;
+  }, [t]);
+
+  const invalidateSource = useCallback((transcript: string) => {
+    rememberQuestions(transcript);
+    cancel();
+    requested.current = '';
+    setQuestion(null);
+    setUnavailable(false);
+    if (finished.current || previous.current.length >= CAPTURE_MAX_QUESTIONS) {
+      finished.current = true;
+      setDone(true);
+      setNeedsDecision(false);
+    } else {
+      setNeedsDecision(true);
+    }
+  }, [cancel, rememberQuestions]);
 
   const ask = useCallback(async (transcript: string) => {
     const text = transcript.trim();
     const key = `${language}:${text}`;
+    if (finished.current) return true;
     if (!text || requested.current === key) return;
     controller.current?.abort();
     const owner = ++generation.current;
     requested.current = key;
     // Restored drafts already contain their answered questions; reopening must not reset the cap.
-    const label = t('recording.conversation.question_label');
-    const restored = text.split(/\r?\n/).filter(line => line.startsWith(label)).map(line => line.slice(label.length).trim()).filter(Boolean);
-    if (restored.length > previous.current.length) previous.current = restored;
+    rememberQuestions(text);
     if (previous.current.length >= CAPTURE_MAX_QUESTIONS) {
       setQuestion(null);
+      finished.current = true;
       setDone(true);
+      setNeedsDecision(false);
       setLoading(false);
       setUnavailable(false);
       return true;
     }
     const abort = new AbortController();
     controller.current = abort;
+    setNeedsDecision(false);
     setLoading(true);
     setQuestion(null);
     setUnavailable(false);
@@ -65,6 +92,7 @@ export function useCaptureConversation({ language, t, scope }: Options) {
       if (generation.current !== owner) return;
       setQuestion(result.question);
       setDone(result.done);
+      finished.current = result.done;
       if (result.question) previous.current.push(result.question);
       return result.done;
     } catch {
@@ -80,7 +108,7 @@ export function useCaptureConversation({ language, t, scope }: Options) {
         setLoading(false);
       }
     }
-  }, [language, t]);
+  }, [language, rememberQuestions, t]);
 
   useEffect(() => {
     // Account identity is external state: cancel its pending request and clear its visible question together.
@@ -88,5 +116,5 @@ export function useCaptureConversation({ language, t, scope }: Options) {
     reset();
     return () => { generation.current += 1; controller.current?.abort(); };
   }, [scope, reset]);
-  return { question, loading, unavailable, done, ask, reset, cancel };
+  return { question, loading, unavailable, done, needsDecision, ask, reset, cancel, invalidateSource };
 }

@@ -192,7 +192,7 @@ export default function RecordingScreen() {
     onRestore: handleRestoreDraft,
   });
   const conversation = useCaptureConversation({ language, t, scope: onboardingScope });
-  const { ask: askCaptureQuestion, reset: resetConversation, cancel: cancelConversation } = conversation;
+  const { ask: askCaptureQuestion, reset: resetConversation, cancel: cancelConversation, invalidateSource: invalidateCaptureSource } = conversation;
   useEffect(() => {
     // Preparing a review cannot outlive its screen or account scope.
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -1436,10 +1436,11 @@ export default function RecordingScreen() {
     const draft = updateCaptureDraftSection(editableCapture, index, text);
     const source = serializeCaptureEditableDraft(draft);
     if (!noteInput(source)) return;
+    if (source !== baseTranscriptRef.current) invalidateCaptureSource(baseTranscriptRef.current);
     setEditableCapture(draft);
     baseTranscriptRef.current = source;
     setTranscript(source);
-  }, [editableCapture, interactionDisabled, noteInput]);
+  }, [invalidateCaptureSource, editableCapture, interactionDisabled, noteInput]);
 
   const handleInputModePreferenceChange = useCallback(
     async (preference: RecordingInputModePreference) => {
@@ -1535,10 +1536,10 @@ export default function RecordingScreen() {
   }, [switchToTextMode]);
 
   useEffect(() => {
-    if (!editableCapture && !captureReview && !isFormatting && inputMode === 'voice' && isHydrated && !isRecordingRef.current && !answerInsertionRef.current && !captureMicrophoneMutedRef.current) {
+    if (!conversation.needsDecision && !editableCapture && !captureReview && !isFormatting && inputMode === 'voice' && isHydrated && !isRecordingRef.current && !answerInsertionRef.current && !captureMicrophoneMutedRef.current) {
       void askCaptureQuestion(baseTranscriptRef.current);
     }
-  }, [askCaptureQuestion, captureReview, editableCapture, isFormatting, inputMode, isHydrated, isRecordingRef]);
+  }, [askCaptureQuestion, conversation.needsDecision, captureReview, editableCapture, isFormatting, inputMode, isHydrated, isRecordingRef]);
 
   const handleConversationAnswerChange = useCallback((text: string) => {
     if (!isHydrated) return;
@@ -1693,6 +1694,12 @@ export default function RecordingScreen() {
                     loading={conversation.loading}
                     unavailable={conversation.unavailable}
                     done={conversation.done}
+                    needsDecision={conversation.needsDecision}
+                    onContinueQuestions={async () => {
+                      const done = await askCaptureQuestion(baseTranscriptRef.current);
+                      if (done) await handleValidateCapture();
+                    }}
+                    onFinish={() => { void handleValidateCapture(); }}
                     disabled={interactionDisabled}
                     voiceSupported={isVoiceSupported}
                     voiceStatus={voiceControlStatus}
