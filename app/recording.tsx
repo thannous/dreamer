@@ -1,5 +1,6 @@
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
+import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
@@ -23,6 +24,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useOnboarding } from '@/context/OnboardingContext';
+import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useRecordingDraftPersistence } from '@/hooks/useRecordingDraftPersistence';
 import { useRecordingSession } from '@/hooks/useRecordingSession';
@@ -122,6 +124,7 @@ export default function RecordingScreen() {
   const { colors, mode } = useTheme();
   const { language } = useLanguage();
   const { t } = useTranslation();
+  const openQuickSettings = useQuickSettings();
   const {
     state: onboardingState,
     scope: onboardingScope,
@@ -1643,7 +1646,7 @@ export default function RecordingScreen() {
         ) : null}
         <KeyboardAvoidingView
           behavior="height"
-          style={[styles.keyboardView, { paddingTop: insets.top }]}
+          style={[styles.keyboardView, { paddingTop: isDesktopWeb ? insets.top : 0 }]}
         >
           <ScrollView
             ref={scrollViewRef}
@@ -1656,6 +1659,16 @@ export default function RecordingScreen() {
             testID={TID.Screen.Recording}
             accessibilityState={{ busy: hydrationStatus === 'loading' }}
           >
+            {!isDesktopWeb ? (
+              <NoctaliaScreenHeader
+                titleKey="nav.capture_dream"
+                actions={[{
+                  icon: 'gear',
+                  onPress: openQuickSettings,
+                  accessibilityLabel: t('nav.settings'),
+                }]}
+              />
+            ) : null}
             <MockNavigationRail />
             <View style={mainContentStyle}>
               <View style={[styles.bodySection, isCompactLandscape && styles.bodySectionCompact]}>
