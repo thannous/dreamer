@@ -26,6 +26,7 @@ export type UseRecordingDraftPersistenceResult = {
   retryHydration: () => void;
   noteInput: (value: string) => boolean;
   clearAfterSuccessfulSave: () => void;
+  persistBeforeExit: (value: string) => Promise<boolean>;
   lastPersistedValue: string | null;
 };
 
@@ -151,6 +152,25 @@ export function useRecordingDraftPersistence({
     return true;
   }, [scheduleAutosave]);
 
+  const persistBeforeExit = useCallback(async (value: string): Promise<boolean> => {
+    if (!mountedRef.current || !hydratedRef.current) return false;
+    const previous = latestValueRef.current;
+    // Invalidate queued older autosaves; an in-flight write finishes before this one.
+    const generation = ++generationRef.current;
+    if (!noteInput(value)) return false;
+    flushPending();
+    // The same queue includes storage backoff and the existing automatic retry.
+    const saved = await queueDraftStorage(async () =>
+      persistedRef.current?.generation === generation && persistedRef.current.value === value
+      && generationRef.current === generation && latestValueRef.current === value
+    );
+    if (!saved && generationRef.current === generation && latestValueRef.current === value) {
+      // A failed discard must not make a later lifecycle flush erase the visible draft.
+      noteInput(previous);
+    }
+    return Boolean(saved && mountedRef.current);
+  }, [flushPending, noteInput]);
+
   const clearAfterSuccessfulSave = useCallback(() => {
     if (!mountedRef.current || !hydratedRef.current) {
       return;
@@ -253,6 +273,7 @@ export function useRecordingDraftPersistence({
     retryHydration,
     noteInput,
     clearAfterSuccessfulSave,
+    persistBeforeExit,
     lastPersistedValue,
   };
 }

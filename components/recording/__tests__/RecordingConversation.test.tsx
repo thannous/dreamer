@@ -28,7 +28,7 @@ function props() {
     transcript: 'Un jardin.', answer: '', storyTranscript: 'Un jardin.', question: 'Que te revient-il de ce jardin ?', loading: false,
     unavailable: false, done: false, disabled: false, voiceSupported: true,
     voiceStatus: 'idle' as const, onVoice: jest.fn(), onMute: jest.fn(async () => {}), onReview: jest.fn(), onRestart: jest.fn(),
-    onAnswerChange: jest.fn(), onAnswerSubmit: jest.fn(), onDirection: jest.fn(),
+    onAnswerChange: jest.fn(), onAnswerSubmit: jest.fn(),
   };
 }
 
@@ -195,18 +195,5 @@ it('shows an empty answer field immediately without opening the keyboard', () =>
   expect(view.getByTestId('recording-conversation-answer').props.autoFocus).toBe(false);
   expect(view.getByTestId('recording-conversation-submit')).toBeDisabled();
   expect(view.queryByTestId('recording-conversation-type')).toBeNull();
-  expect(view.queryByTestId('recording-direction-place')).toBeNull();
-});
-
-it('offers optional directions only before answering and never submits a suggested dream detail', () => {
-  const callbacks = props();
-  const view = render(<RecordingConversation {...callbacks} />);
-  fireEvent.press(view.getByTestId('recording-direction-place'));
-  expect(callbacks.onDirection).toHaveBeenCalledWith('place');
-  expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
-  expect(callbacks.onAnswerChange).not.toHaveBeenCalled();
-  view.rerender(<RecordingConversation {...callbacks} answer="Du sable." />);
-  expect(view.queryByTestId('recording-direction-done')).toBeNull();
-  view.rerender(<RecordingConversation {...callbacks} voiceStatus="recording" />);
   expect(view.queryByTestId('recording-direction-place')).toBeNull();
 });

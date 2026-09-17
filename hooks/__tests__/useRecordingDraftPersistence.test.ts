@@ -83,6 +83,38 @@ describe('useRecordingDraftPersistence', () => {
     jest.restoreAllMocks();
   });
 
+  it('serializes explicit discard after an in-flight autosave and does not resurrect it on unmount', async () => {
+    const oldWrite = deferred<void>();
+    const { result, rerender, unmount } = renderHook(({ transcript }) => useRecordingDraftPersistence({ transcript, onRestore: jest.fn() }), {
+      initialProps: { transcript: '' },
+    });
+    await flushPromises();
+    mockSaveTranscript.mockReturnValueOnce(oldWrite.promise);
+    act(() => { result.current.noteInput('Old draft'); });
+    rerender({ transcript: 'Old draft' });
+    await act(async () => { jest.advanceTimersByTime(RECORDING_DRAFT_AUTOSAVE_DELAY_MS); });
+    expect(mockSaveTranscript).toHaveBeenLastCalledWith('Old draft');
+    let pending!: Promise<boolean>;
+    act(() => { pending = result.current.persistBeforeExit(''); });
+    expect(mockSaveTranscript).not.toHaveBeenCalledWith('');
+    await act(async () => { oldWrite.resolve(); expect(await pending).toBe(true); });
+    expect(mockSaveTranscript).toHaveBeenLastCalledWith('');
+    unmount();
+    await flushPromises();
+    expect(mockSaveTranscript.mock.calls.map(([value]: [string]) => value)).toEqual(['Old draft', '']);
+  });
+
+  it('restores the visible draft as the next flush target when explicit discard fails', async () => {
+    mockGetSavedTranscript.mockResolvedValue('Original and reviewed draft');
+    const { result } = renderHook(() => useRecordingDraftPersistence({ transcript: 'Original and reviewed draft', onRestore: jest.fn() }));
+    await flushPromises();
+    mockSaveTranscript.mockRejectedValueOnce(new Error('storage failure')).mockRejectedValueOnce(new Error('storage failure'));
+    await act(async () => { expect(await result.current.persistBeforeExit('')).toBe(false); });
+    act(() => appStateListener?.('background'));
+    await flushPromises();
+    expect(mockSaveTranscript).toHaveBeenLastCalledWith('Original and reviewed draft');
+  });
+
   it('restores a saved draft after remount', async () => {
     mockGetSavedTranscript.mockResolvedValue('a remembered dream');
     const onRestore = jest.fn();

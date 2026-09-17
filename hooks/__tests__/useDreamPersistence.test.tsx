@@ -139,6 +139,36 @@ describe('useDreamPersistence', () => {
     mockGetAccessToken.mockResolvedValue('access-token');
   });
 
+  it('keeps guest capture originals in the account cache before cleaning migrated guest dreams', async () => {
+    const guest = buildDream({ id: 7, captureOriginalTranscript: 'Original guest exchanges' });
+    const server = buildDream({ id: 7, remoteId: 107, clientRequestId: 'dream-7' });
+    mockGetSavedDreams.mockResolvedValue({ status: 'loaded', value: [guest] });
+    mockCreateInSupabase.mockResolvedValue(server);
+    mockFetchFromSupabase.mockResolvedValue([server]);
+    const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+    await waitFor(() => expect(result.current.dreams).toEqual(expect.arrayContaining([
+      expect.objectContaining({ remoteId: 107, captureOriginalTranscript: 'Original guest exchanges' }),
+    ])));
+    expect(mockSaveCachedRemoteDreams).toHaveBeenCalledWith(expect.arrayContaining([
+      expect.objectContaining({ captureOriginalTranscript: 'Original guest exchanges' }),
+    ]), expect.anything());
+  });
+
+  it('retains the original exchanges while accepting a clean remote transcript refresh', async () => {
+    const cached = buildDream({ id: 1, remoteId: 101, captureOriginalTranscript: 'Question and short answer' });
+    const server = buildDream({ id: 1, remoteId: 101, transcript: 'Server edited narrative' });
+    mockGetCachedRemoteDreams.mockResolvedValue({ status: 'loaded', value: [cached] });
+    mockFetchFromSupabase.mockResolvedValue([server]);
+    const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+    await waitFor(() => expect(result.current.completeness.status).toBe('complete'));
+    expect(result.current.dreams).toEqual([expect.objectContaining({
+      transcript: 'Server edited narrative', captureOriginalTranscript: 'Question and short answer',
+    })]);
+    expect(mockSaveCachedRemoteDreams).toHaveBeenCalledWith(expect.arrayContaining([
+      expect.objectContaining({ captureOriginalTranscript: 'Question and short answer' }),
+    ]), expect.anything());
+  });
+
   describe('exhaustive refresh checkpoints', () => {
     it('preserves cache after an intermediate error and resumes only the failed page', async () => {
       const cached = buildDream({ id: 99 });

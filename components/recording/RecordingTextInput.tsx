@@ -1,6 +1,5 @@
 import React, { forwardRef, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions, type TextInputProps } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 
 import { MicButton, type MicButtonStatus } from '@/components/recording/MicButton';
 import { getRecordingComposerLayout, LARGE_TEXT_FONT_SCALE } from '@/constants/layout';
@@ -170,11 +169,6 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               { backgroundColor: colors.backgroundCard },
             ]}
           >
-            <LinearGradient
-              colors={[`${colors.backgroundCard}00`, colors.backgroundCard]}
-              pointerEvents="none"
-              style={styles.inlineActionFade}
-            />
             <View style={styles.inlineActions}>
               {footerActions ?? (!isVoiceFirst && voiceSupported ? (
                 <MicButton
@@ -482,13 +476,6 @@ const styles = StyleSheet.create({
   inlineActionFooterCompact: {
     minHeight: 48,
     paddingBottom: 2,
-  },
-  inlineActionFade: {
-    position: 'absolute',
-    top: -30,
-    left: 0,
-    right: 0,
-    height: 30,
   },
   inlineActions: {
     flexDirection: 'row',

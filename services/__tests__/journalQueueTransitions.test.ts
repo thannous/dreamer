@@ -156,6 +156,7 @@ describe('journal queue transitions', () => {
       imageJobRequestId: 'image-request-17',
       imageJobErrorCode: 'IMAGE_TIMEOUT',
       imageJobErrorMessage: 'retry later',
+      captureOriginalTranscript: 'Original question and answer',
     });
     const server = dream({
       remoteId: 17,
@@ -191,6 +192,7 @@ describe('journal queue transitions', () => {
       imageJobRequestId: 'image-request-17',
       imageJobErrorCode: 'IMAGE_TIMEOUT',
       imageJobErrorMessage: 'retry later',
+      captureOriginalTranscript: 'Original question and answer',
       syncState: 'clean',
     });
   });

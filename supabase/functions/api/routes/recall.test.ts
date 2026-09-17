@@ -37,21 +37,29 @@ Deno.test('recall enforces admission before any provider call', async () => {
   assertEquals(calls, 0);
 });
 
-Deno.test('recall uses Gemini 3.5 Flash-Lite with a bounded, non-interpretive JSON contract', async () => {
-  const response = await handleRecallQuestion(ctx(body), {
+Deno.test('recall forwards contextual answers and question history in one bounded Flash-Lite call', async () => {
+  const contextualBody = {
+    ...body,
+    transcript: 'Une cabane en bois.\nQuestion : Que remarques-tu sur ce bois ?\nRéponse : Le bois ne compte pas, la forme de la cabane est importante.',
+    previousQuestions: ['Que remarques-tu sur ce bois ?'],
+  };
+  let calls = 0;
+  const response = await handleRecallQuestion(ctx(contextualBody), {
     apiKey: 'test-key', admit,
     generate: async (_key, model, _fallback, contents, instruction, config) => {
+      calls++;
       assertEquals(model, 'gemini-3.5-flash-lite');
       assertEquals(config.thinkingLevel, 'minimal');
       assertStringIncludes(instruction, 'Do not interpret');
       assertStringIncludes(instruction, 'French');
-      assertEquals(JSON.parse(contents[0].parts[0].text!).transcript, body.transcript);
+      assertEquals(JSON.parse(contents[0].parts[0].text!), { transcript: contextualBody.transcript, previousQuestions: contextualBody.previousQuestions });
       assertEquals(config.maxOutputTokens, 256);
-      return { text: JSON.stringify({ question: 'Que te revient-il de ce jardin ?', anchor: 'un jardin' }), raw: {} };
+      return { text: JSON.stringify({ question: 'Que te revient-il de la forme de la cabane ?', anchor: 'la forme de la cabane' }), raw: {} };
     },
   });
   assertEquals(response.status, 200);
-  assertEquals(await response.json(), { question: 'Que te revient-il de ce jardin ?', done: false });
+  assertEquals(await response.json(), { question: 'Que te revient-il de la forme de la cabane ?', done: false });
+  assertEquals(calls, 1);
 });
 
 Deno.test('recall rejects ungrounded, repeated and malformed model responses', async () => {
@@ -67,7 +75,39 @@ Deno.test('recall rejects ungrounded, repeated and malformed model responses', a
   }
 });
 
-Deno.test('recall stops after five questions without provider work', async () => {
-  const response = await handleRecallQuestion(ctx({ ...body, previousQuestions: Array(5).fill('Une question ?') }));
+Deno.test('recall stops after three questions without provider work', async () => {
+  const response = await handleRecallQuestion(ctx({ ...body, previousQuestions: Array(3).fill('Une question ?') }));
   assertEquals(await response.json(), { question: null, done: true });
+});
+
+
+Deno.test('recall accepts a useful scene-level follow-up after an appearance answer in one call', async () => {
+  const appearance = {
+    ...body,
+    transcript: 'Des oiseaux étaient dans la cour.\nQuestion : À quoi ressemblaient-ils ?\nRéponse : Ils étaient grands, bleus et jaunes.',
+    previousQuestions: ['À quoi ressemblaient-ils ?'],
+  };
+  let calls = 0;
+  const response = await handleRecallQuestion(ctx(appearance), {
+    apiKey: 'test-key', admit,
+    generate: async (_key, _model, _fallback, contents) => {
+      calls++;
+      assertEquals(JSON.parse(contents[0].parts[0].text!), {
+        transcript: appearance.transcript, previousQuestions: appearance.previousQuestions,
+      });
+      return { text: JSON.stringify({ question: 'Que faisaient ces oiseaux ?', anchor: 'oiseaux' }), raw: {} };
+    },
+  });
+  assertEquals(await response.json(), { question: 'Que faisaient ces oiseaux ?', done: false });
+  assertEquals(calls, 1);
+});
+
+Deno.test('recall accepts an early stop without filling the remaining question allowance', async () => {
+  let calls = 0;
+  const response = await handleRecallQuestion(ctx({ ...body, transcript: 'Une cour. Je ne me souviens de rien de plus.' }), {
+    apiKey: 'test-key', admit,
+    generate: async () => { calls++; return { text: JSON.stringify({ question: null, anchor: '' }), raw: {} }; },
+  });
+  assertEquals(await response.json(), { question: null, done: true });
+  assertEquals(calls, 1);
 });

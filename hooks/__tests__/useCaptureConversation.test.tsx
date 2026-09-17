@@ -43,13 +43,13 @@ it('ends the conversation when the provider has no useful further question', asy
   expect(result.current).toMatchObject({ question: null, done: true, unavailable: false });
 });
 
-it('stops after five questions and discards a response when the account scope changes', async () => {
+it('stops after three questions and discards a response when the account scope changes', async () => {
   request.mockResolvedValue({ question: 'Une question ?', done: false });
   const { result, rerender } = renderHook(({ scope }) => useCaptureConversation({ language: 'fr', t, scope }), { initialProps: { scope: 'guest' } });
-  for (let revision = 0; revision < 6; revision++) {
+  for (let revision = 0; revision < 4; revision++) {
     await act(async () => { await result.current.ask(`Récit ${revision}`); });
   }
-  expect(request).toHaveBeenCalledTimes(5);
+  expect(request).toHaveBeenCalledTimes(3);
   expect(result.current.done).toBe(true);
   rerender({ scope: 'user-one' });
   let resolve!: (value: { question: string; done: boolean }) => void;
@@ -63,31 +63,10 @@ it('stops after five questions and discards a response when the account scope ch
   expect(result.current.question).toBeNull();
 });
 
-
-it('changes direction locally and uses that question as context on the next response', async () => {
-  request.mockResolvedValue({ question: 'Une question personnalisée ?', done: false });
-  const translate = (key: string) => key;
+it('does not restart the three-question allowance on a restored draft', async () => {
+  const translate = (key: string) => key === 'recording.conversation.question_label' ? 'Question :' : 'Autre chose ?';
   const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t: translate }));
-  await act(async () => { await result.current.ask('Une plage.'); });
-  act(() => result.current.chooseDirection('place'));
-  expect(result.current.question).toBe('dream_recall.question.where');
-  act(() => result.current.chooseDirection('next'));
-  expect(result.current.question).toBe('dream_recall.question.what_next');
-  expect(request).toHaveBeenCalledTimes(1);
-  await act(async () => { await result.current.ask('Une plage. Puis une vague.'); });
-  expect(request.mock.calls[1][2]).toEqual(['dream_recall.question.what_next']);
-  act(() => result.current.chooseDirection('done'));
-  expect(result.current).toMatchObject({ done: true, question: null, loading: false });
-  expect(request).toHaveBeenCalledTimes(2);
-});
-
-it('does not replace a chosen direction with a late network response', async () => {
-  let resolve!: (value: { question: string; done: boolean }) => void;
-  request.mockImplementation(() => new Promise(r => { resolve = r; }));
-  const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t: key => key }));
-  let pending!: Promise<void>;
-  act(() => { pending = result.current.ask('Une plage.'); });
-  act(() => result.current.chooseDirection('place'));
-  await act(async () => { resolve({ question: 'Ancienne question ?', done: false }); await pending; });
-  expect(result.current.question).toBe('dream_recall.question.where');
+  await act(async () => { await result.current.ask('Une plage.\nQuestion : Un ?\nRéponse : oui\nQuestion : Deux ?\nRéponse : non\nQuestion : Trois ?\nRéponse : peut-être'); });
+  expect(request).not.toHaveBeenCalled();
+  expect(result.current.done).toBe(true);
 });

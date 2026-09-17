@@ -31,3 +31,11 @@ describe('mergeDreamSnapshot', () => {
     expect(mergeDreamSnapshot([], [local], [{ ...local, id: 2, remoteId: 12 }])).toEqual([local]);
   });
 });
+
+it('retains the device source when a clean server snapshot changes the formatted account', () => {
+  const local = { ...dream(1, 11), captureOriginalTranscript: 'Original exchanges' };
+  const remote = { ...dream(1, 11), transcript: 'Updated from another device' };
+  expect(mergeDreamSnapshot([local], [local], [remote])).toEqual([
+    { ...remote, captureOriginalTranscript: 'Original exchanges' },
+  ]);
+});

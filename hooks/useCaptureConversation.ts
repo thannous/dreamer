@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { requestCaptureQuestion } from '@/services/captureConversation';
-import { getDreamRecallQuestion, DREAM_RECALL_MAX_QUESTIONS } from '@/lib/dreamRecallQuestions';
+import { getDreamRecallQuestion } from '@/lib/dreamRecallQuestions';
 
-export type CaptureDirection = 'place' | 'next' | 'done';
+export const CAPTURE_MAX_QUESTIONS = 3;
 
 type Options = { language: string; t: (key: string) => string; scope?: string };
 
@@ -16,6 +16,14 @@ export function useCaptureConversation({ language, t, scope }: Options) {
   const requested = useRef('');
   const controller = useRef<AbortController | null>(null);
   const generation = useRef(0);
+
+  const cancel = useCallback(() => {
+    if (controller.current) requested.current = '';
+    generation.current += 1;
+    controller.current?.abort();
+    controller.current = null;
+    setLoading(false);
+  }, []);
 
   const reset = useCallback(() => {
     generation.current += 1;
@@ -35,7 +43,11 @@ export function useCaptureConversation({ language, t, scope }: Options) {
     controller.current?.abort();
     const owner = ++generation.current;
     requested.current = key;
-    if (previous.current.length >= DREAM_RECALL_MAX_QUESTIONS) {
+    // Restored drafts already contain their answered questions; reopening must not reset the cap.
+    const label = t('recording.conversation.question_label');
+    const restored = text.split(/\r?\n/).filter(line => line.startsWith(label)).map(line => line.slice(label.length).trim()).filter(Boolean);
+    if (restored.length > previous.current.length) previous.current = restored;
+    if (previous.current.length >= CAPTURE_MAX_QUESTIONS) {
       setQuestion(null);
       setDone(true);
       setLoading(false);
@@ -61,25 +73,12 @@ export function useCaptureConversation({ language, t, scope }: Options) {
       setUnavailable(true);
       previous.current.push(fallback);
     } finally {
-      if (generation.current === owner) setLoading(false);
+      if (generation.current === owner) {
+        controller.current = null;
+        setLoading(false);
+      }
     }
   }, [language, t]);
-
-  const chooseDirection = useCallback((direction: CaptureDirection) => {
-    generation.current += 1;
-    controller.current?.abort();
-    setLoading(false);
-    setUnavailable(false);
-    setDone(direction === 'done');
-    if (direction === 'done') {
-      setQuestion(null);
-      return;
-    }
-    const nextQuestion = t(direction === 'place' ? 'dream_recall.question.where' : 'dream_recall.question.what_next');
-    // Replace the unanswered prompt; choosing another direction does not consume a turn.
-    previous.current = [...previous.current.slice(0, -1), nextQuestion];
-    setQuestion(nextQuestion);
-  }, [t]);
 
   useEffect(() => {
     // Account identity is external state: cancel its pending request and clear its visible question together.
@@ -87,5 +86,5 @@ export function useCaptureConversation({ language, t, scope }: Options) {
     reset();
     return () => { generation.current += 1; controller.current?.abort(); };
   }, [scope, reset]);
-  return { question, loading, unavailable, done, ask, reset, chooseDirection };
+  return { question, loading, unavailable, done, ask, reset, cancel };
 }

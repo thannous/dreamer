@@ -1,4 +1,4 @@
-import { requestCaptureQuestion } from '../captureConversation';
+import { requestCaptureQuestion, formatCaptureNarrative } from '../captureConversation';
 import { fetchJSONWithSession } from '@/lib/apiSession';
 
 jest.mock('@/lib/apiSession', () => ({ fetchJSONWithSession: jest.fn() }));
@@ -36,4 +36,15 @@ it.each([
   fetch.mockResolvedValue({ question: null, done: true });
   await requestCaptureQuestion('Un jardin.', 'fr', []);
   expect(fetch).toHaveBeenCalledWith(endpoint, expect.any(Object));
+});
+
+it('formats through the isolated route without automatic retries and rejects unusable proposals', async () => {
+  mockBaseUrl = 'https://project.supabase.co/functions/v1/api';
+  fetch.mockResolvedValueOnce({ transcript: ' Une plage noire. ' });
+  expect(await formatCaptureNarrative('Une plage. Question : couleur ? Réponse : noire.', 'fr')).toBe('Une plage noire.');
+  expect(fetch).toHaveBeenLastCalledWith('https://project.supabase.co/functions/v1/capture-recall/format-recall', expect.objectContaining({ retries: 0, timeoutMs: 45000 }));
+  for (const response of [{}, { transcript: '' }, { transcript: 'a'.repeat(20001) }]) {
+    fetch.mockResolvedValueOnce(response);
+    await expect(formatCaptureNarrative('Une plage.', 'fr')).rejects.toThrow('Invalid formatted narrative');
+  }
 });
