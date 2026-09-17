@@ -158,6 +158,7 @@ export default function RecordingScreen() {
   const [answerBase, setAnswerBase] = useState<string | null>(null);
   const answerInsertionRef = useRef<(DictationInsertion & { storyBase: string }) | null>(null);
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
+  const saveInFlightRef = useRef(false);
   const [isPersisting, setIsPersisting] = useState(false);
   const [isRestartingCapture, setIsRestartingCapture] = useState(false);
   const [captureRestartCount, setCaptureRestartCount] = useState(0);
@@ -1012,20 +1013,21 @@ export default function RecordingScreen() {
   }, [dictationIntent, isHandsFreeRestarting, isRecording, stopRecording]);
 
   const handleSaveDream = useCallback(async (completeWithHelp = false) => {
-    if (!isHydrated || isPersisting || formatRequestRef.current) return;
-    if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
-      await stopRecording({ silent: true, reason: 'stop' });
-    }
-
-    const latestSource = captureReview ? captureReview.text : baseTranscriptRef.current || transcript;
-    if (!isTranscriptSaveable(latestSource)) {
-      Alert.alert(t('recording.alert.empty.title'), t('recording.alert.empty.message'));
-      return;
-    }
-    const latestTranscript = latestSource.trim();
-
+    if (!isHydrated || isPersisting || saveInFlightRef.current || formatRequestRef.current) return;
+    saveInFlightRef.current = true;
     setIsPersisting(true);
     try {
+      if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
+        await stopRecording({ silent: true, reason: 'stop' });
+      }
+
+      const latestSource = captureReview ? captureReview.text : baseTranscriptRef.current || transcript;
+      if (!isTranscriptSaveable(latestSource)) {
+        Alert.alert(t('recording.alert.empty.title'), t('recording.alert.empty.message'));
+        return;
+      }
+      const latestTranscript = latestSource.trim();
+
       // Persist first. Optional AI categorization must never delay durable capture.
       const dreamToSave = draftDream && draftDream.transcript === latestTranscript
         ? draftDream
@@ -1088,6 +1090,7 @@ export default function RecordingScreen() {
           : 'Unexpected error occurred. Please try again.';
       Alert.alert(t('common.error_title'), message);
     } finally {
+      saveInFlightRef.current = false;
       setIsPersisting(false);
     }
   }, [
