@@ -70,7 +70,7 @@ export function RecordingInputModeSelect({
               styles.option,
               {
                 backgroundColor: isSelected ? noctalia.surface.active : 'transparent',
-                borderColor: 'transparent',
+                borderColor: isSelected ? noctalia.accent.base : 'transparent',
               },
             ]}
             accessibilityRole="tab"
