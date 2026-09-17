@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "apps": {
+    "noctalia": {
+      "version": "3.2.0",
+      "sourceRef": "f09a786947047983f704b9e1d59246efd6e7a6ea",
+      "baseline": "Prepared source snapshot; not a Store publication claim"
+    },
+    "lucid": {
+      "version": "1.0.0",
+      "sourceRef": "bc4911f711ac0dccc3e7f9247434bb6e6fb9470b",
+      "baseline": "Adoption snapshot, not a Store publication claim"
+    },
+    "meditation": {
+      "version": "0.1.0",
+      "sourceRef": "bc4911f711ac0dccc3e7f9247434bb6e6fb9470b",
+      "baseline": "Adoption snapshot, not a Store publication claim"
+    }
+  }
+}

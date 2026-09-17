@@ -8,6 +8,20 @@ const {
 } = require('./sync-android-native-version');
 
 describe('syncAndroidNativeVersion', () => {
+  it('uses the selected variant and never rewrites another app identity', () => {
+    const writeFileSync = jest.fn();
+    const options = {
+      cwd: '/repo', existsSync: () => true,
+      readFileSync: () => 'applicationId "com.lucid"\nversionCode 1\nversionName "1.0.0"',
+      writeFileSync,
+      expoConfig: { version: '1.1.0', android: { versionCode: 2, package: 'com.lucid' } },
+    };
+    expect(syncAndroidNativeVersion(options)).toMatchObject({ versionName: '1.1.0', versionCode: 2 });
+    expect(writeFileSync.mock.calls[0][1]).toContain('versionCode 2');
+    writeFileSync.mockClear();
+    expect(() => syncAndroidNativeVersion({ ...options, expoConfig: { version: '3.2.0', android: { versionCode: 69, package: 'com.noctalia' } } })).toThrow('identity differs');
+    expect(writeFileSync).not.toHaveBeenCalled();
+  });
   it('skips managed projects without a generated Android directory', () => {
     expect(syncAndroidNativeVersion({
       cwd: '/repo',

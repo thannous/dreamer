@@ -9,6 +9,7 @@ function syncAndroidNativeVersion({
   existsSync = fs.existsSync,
   readFileSync = fs.readFileSync,
   writeFileSync = fs.writeFileSync,
+  expoConfig,
 } = {}) {
   const appConfigPath = path.join(cwd, 'app.json');
   const buildGradlePath = path.join(cwd, 'android', 'app', 'build.gradle');
@@ -17,9 +18,9 @@ function syncAndroidNativeVersion({
     return { status: 'native-project-missing' };
   }
 
-  const appConfig = JSON.parse(readFileSync(appConfigPath, 'utf8'));
-  const versionName = appConfig?.expo?.version;
-  const versionCode = appConfig?.expo?.android?.versionCode;
+  const config = expoConfig ?? JSON.parse(readFileSync(appConfigPath, 'utf8')).expo;
+  const versionName = config?.version;
+  const versionCode = config?.android?.versionCode;
 
   if (!versionName || !Number.isInteger(versionCode)) {
     throw new Error(
@@ -28,6 +29,10 @@ function syncAndroidNativeVersion({
   }
 
   const currentGradle = readFileSync(buildGradlePath, 'utf8');
+  const applicationId = currentGradle.match(/\bapplicationId\s+['"]([^'"]+)['"]/);
+  if (config.android?.package && applicationId?.[1] !== config.android.package) {
+    throw new Error('Generated Android app identity differs from the selected Expo variant. Regenerate its native project before syncing versions.');
+  }
   const versionCodePattern = /(\bversionCode\s+)\d+/;
   const versionNamePattern = /(\bversionName\s+)"[^"]*"/;
 
