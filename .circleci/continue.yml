@@ -275,17 +275,28 @@ jobs:
           name: Check site
           command: npm run docs:check
           no_output_timeout: 30m
-      - run:
-          name: Test site tooling changed since the diff base
-          environment:
-            JEST_CHANGED_SINCE: << parameters.diff_base >>
-          command: |
-            set -euo pipefail
-            if [[ -n "$JEST_CHANGED_SINCE" ]] && \
-              ! git cat-file -e "${JEST_CHANGED_SINCE}^{commit}" 2>/dev/null; then
-              git fetch --no-tags origin "$JEST_CHANGED_SINCE"
-            fi
-            npm run test:changed -- --runInBand
+      # Noctalia runs the same root Jest portfolio (affected or exhaustive).
+      # Keep site-only coverage, but do not execute that portfolio twice.
+      - when:
+          condition:
+            not:
+              and:
+                - << pipeline.parameters.run_noctalia >>
+                - or:
+                    - << pipeline.parameters.run_changed_tests >>
+                    - << pipeline.parameters.run_full_tests >>
+          steps:
+            - run:
+                name: Test site tooling changed since the diff base
+                environment:
+                  JEST_CHANGED_SINCE: << parameters.diff_base >>
+                command: |
+                  set -euo pipefail
+                  if [[ -n "$JEST_CHANGED_SINCE" ]] && \
+                    ! git cat-file -e "${JEST_CHANGED_SINCE}^{commit}" 2>/dev/null; then
+                    git fetch --no-tags origin "$JEST_CHANGED_SINCE"
+                  fi
+                  npm run test:changed -- --runInBand
 
   edge-functions:
     executor: node

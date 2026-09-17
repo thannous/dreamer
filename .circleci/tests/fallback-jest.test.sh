@@ -60,7 +60,52 @@ const publishGate = fullGate.when.steps.find(
 );
 if (!publishGate) throw new Error('timing baseline publication guard is missing');
 
-console.log('Continuation mapping and full-Jest guards passed.');
+// Evaluate the actual site condition across every routing combination.
+const siteGate = config.jobs['site-build'].steps.find(step => step.when);
+const siteJest = siteGate?.when.steps.find(step => step.run?.name === 'Test site tooling changed since the diff base');
+const changedGate = config.jobs['noctalia-quality'].steps.find(step => step.when?.condition === '<< parameters.run_changed_tests >>');
+const appJest = changedGate?.when.steps.find(step => step.run?.name === 'Test Noctalia files changed since the diff base');
+for (const step of [siteJest, appJest]) {
+  if (!step?.run?.command?.includes('npm run test:changed --') ||
+      /--(?:selectProjects|ignoreProjects|testPath|testName|findRelatedTests)/.test(step.run.command) ||
+      step.run.environment?.JEST_CHANGED_SINCE !== '<< parameters.diff_base >>') {
+    throw new Error('Site and application must retain the same affected Jest portfolio and base');
+  }
+}
+for (const job of ['site', 'noctalia']) {
+  const parameters = config.workflows[job].jobs[0][job === 'site' ? 'site-build' : 'noctalia-quality'];
+  if (parameters.diff_base !== '<< pipeline.parameters.diff_base >>') throw new Error('Diff bases diverge');
+}
+function evaluate(condition, parameters) {
+  if (typeof condition === 'boolean') return condition;
+  if (typeof condition === 'string') {
+    const key = condition.match(/^<< pipeline\.parameters\.(\w+) >>$/)?.[1];
+    if (!Object.hasOwn(parameters, key)) throw new Error(`Unknown condition: ${condition}`);
+    return parameters[key];
+  }
+  if (condition.not !== undefined) return !evaluate(condition.not, parameters);
+  if (condition.and) return condition.and.every(child => evaluate(child, parameters));
+  if (condition.or) return condition.or.some(child => evaluate(child, parameters));
+  throw new Error('Unknown condition structure');
+}
+for (const run_noctalia of [false, true]) {
+  for (const run_changed_tests of [false, true]) {
+    for (const run_full_tests of [false, true]) {
+      const parameters = { run_noctalia, run_changed_tests, run_full_tests };
+      const coveredByApp = run_noctalia && (run_changed_tests || run_full_tests);
+      const runsOnSite = evaluate(siteGate.when.condition, parameters);
+      if (Number(coveredByApp) + Number(runsOnSite) !== 1) {
+        throw new Error(`Root Jest is missing or duplicated for ${JSON.stringify(parameters)}`);
+      }
+    }
+  }
+}
+for (const command of ['npm run docs:build', 'npm run docs:check']) {
+  if (!config.jobs['site-build'].steps.some(step => step.run?.command === command)) {
+    throw new Error(`Unconditional site check missing: ${command}`);
+  }
+}
+console.log('Continuation mapping, full-Jest guards and site coverage routing passed.');
 NODE
 
 fixture_results="$test_root/jest-test-results"

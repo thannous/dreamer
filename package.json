@@ -107,6 +107,7 @@
     "test:file": "jest --runTestsByPath --runInBand --silent",
     "test:related": "jest --findRelatedTests --passWithNoTests --silent",
     "test:changed": "node ./scripts/run-jest-changed.js",
+    "test:prepush": "node ./scripts/run-jest-changed.js --pre-push",
     "test:node": "jest --selectProjects node",
     "test:expo": "jest --selectProjects expo",
     "test:coverage": "npm run test:coverage:jest && npm run test:coverage:edge",
