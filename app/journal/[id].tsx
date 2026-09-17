@@ -72,7 +72,10 @@ import {
 } from '@/lib/journalIllustrationPolicy';
 import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
 import { resolveJournalDreamRecallOfferEligible } from '@/lib/journalDreamRecallOffer';
-import { isJournalSavedConfirmationParam } from '@/lib/journalSavedConfirmation';
+import {
+  isJournalSavedConfirmationParam,
+  shouldOfferSavedDreamAnalysis,
+} from '@/lib/journalSavedConfirmation';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
@@ -211,11 +214,19 @@ export default function JournalDetailScreen() {
 function JournalDetailContent() {
   const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[] }>();
   const recallRequested = isJournalSavedConfirmationParam(recallParam);
+  const { state: onboardingState, transition: transitionOnboarding } = useOnboarding();
   const [savedConfirmationVisible, setSavedConfirmationVisible] = useState(
     () => isJournalSavedConfirmationParam(savedParam)
   );
   const [showSavedAnalysisSheet, setShowSavedAnalysisSheet] = useState(
-    () => isJournalSavedConfirmationParam(savedParam) && !recallRequested
+    () =>
+      shouldOfferSavedDreamAnalysis({
+        savedParam,
+        recallRequested,
+        pendingPhase: onboardingState.pendingRecordingIntent?.phase,
+        pendingSavedDreamId: onboardingState.pendingRecordingIntent?.savedDreamId,
+        dreamId: id,
+      })
   );
   const savedAnalysisChoiceHandledRef = useRef(false);
   const analysisLaunchInFlightRef = useRef(false);
@@ -247,7 +258,6 @@ function JournalDetailContent() {
     analyzeDream,
   } = useDreams();
   const { user } = useAuth();
-  const { state: onboardingState, transition: transitionOnboarding } = useOnboarding();
   const { colors, shadows, mode } = useTheme();
   const insets = useSafeAreaInsets();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -1271,23 +1281,37 @@ function JournalDetailContent() {
     [analyzeDream, dream, ensureAnalyzeAllowed, isAnalysisLocked, isPlus, language, showAnalysisNotice, t, tier]
   );
 
-  const dismissSavedAnalysis = useCallback(() => {
+  const closeSavedAnalysisSheet = useCallback(() => {
     savedAnalysisChoiceHandledRef.current = true;
     setShowSavedAnalysisSheet(false);
+  }, []);
+
+  const dismissSavedAnalysis = useCallback(() => {
+    closeSavedAnalysisSheet();
     const pending = onboardingState.pendingRecordingIntent;
     if (pending?.savedDreamId === dream?.id && pending?.phase === 'analysis_confirmation') {
       void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => {
         console.warn('[JournalDetail] Failed to dismiss the onboarding analysis confirmation');
       });
     }
-  }, [dream?.id, onboardingState.pendingRecordingIntent, transitionOnboarding]);
+  }, [closeSavedAnalysisSheet, dream?.id, onboardingState.pendingRecordingIntent, transitionOnboarding]);
 
   const confirmSavedAnalysis = useCallback(() => {
     if (!dream || savedAnalysisChoiceHandledRef.current) return;
-    dismissSavedAnalysis();
+    closeSavedAnalysisSheet();
+    const pending = onboardingState.pendingRecordingIntent;
+    if (pending?.savedDreamId === dream.id && pending.phase === 'analysis_confirmation') {
+      void transitionOnboarding({
+        type: 'SET_PENDING_PHASE',
+        phase: 'analysis_requested',
+        savedDreamId: dream.id,
+      }).catch(() => {
+        console.warn('[JournalDetail] Failed to persist the onboarding analysis request');
+      });
+    }
     // Explicit consent requests the existing bundled analysis + image pipeline.
     void runAnalyze(true);
-  }, [dismissSavedAnalysis, dream, runAnalyze]);
+  }, [closeSavedAnalysisSheet, dream, onboardingState.pendingRecordingIntent, runAnalyze, transitionOnboarding]);
 
   const handleAnalyze = useCallback(async () => {
     if (!dream) return;

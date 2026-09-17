@@ -1675,7 +1675,7 @@ describe('Recording screen', () => {
     await waitFor(() => {
       expect(mockReplace).toHaveBeenCalledWith({
         pathname: '/journal/[id]',
-        params: { id: '42' },
+        params: { id: '42', saved: '1' },
       });
     });
     expect(mockReplace).toHaveBeenCalledTimes(1);
@@ -1692,6 +1692,25 @@ describe('Recording screen', () => {
     expect(mockReplace).toHaveBeenCalledTimes(1);
     expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
     expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
+  });
+
+  it('resumes an in-flight analysis request without reopening the confirmation route', async () => {
+    mockPendingRecordingIntent = {
+      entryId: 'pending-entry',
+      savedDreamId: 42,
+      phase: 'analysis_requested',
+    };
+    mockDreams = [buildDream('already saved pending dream', 42)];
+    render(<RecordingScreen />);
+
+    await waitFor(() => {
+      expect(mockReplace).toHaveBeenCalledWith({
+        pathname: '/journal/[id]',
+        params: { id: '42' },
+      });
+    });
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
   });
 
   it('preserves the stored draft and rejects early input before hydration completes', async () => {

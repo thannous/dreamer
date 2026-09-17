@@ -1,6 +1,7 @@
 import {
   buildJournalDetailHref,
   isJournalSavedConfirmationParam,
+  shouldOfferSavedDreamAnalysis,
 } from '@/lib/journalSavedConfirmation';
 
 describe('journalSavedConfirmation', () => {
@@ -31,5 +32,54 @@ describe('journalSavedConfirmation', () => {
     expect(isJournalSavedConfirmationParam('0')).toBe(false);
     expect(isJournalSavedConfirmationParam(undefined)).toBe(false);
     expect(isJournalSavedConfirmationParam(['0'])).toBe(false);
+  });
+
+  it('restores the saved-analysis offer from a matching pending confirmation', () => {
+    expect(
+      shouldOfferSavedDreamAnalysis({
+        savedParam: undefined,
+        pendingPhase: 'analysis_confirmation',
+        pendingSavedDreamId: 42,
+        dreamId: '42',
+      })
+    ).toBe(true);
+    expect(
+      shouldOfferSavedDreamAnalysis({
+        savedParam: '1',
+        pendingPhase: null,
+        dreamId: '42',
+      })
+    ).toBe(true);
+  });
+
+  it('does not reopen the offer for recall, a different dream, or a later phase', () => {
+    expect(
+      shouldOfferSavedDreamAnalysis({
+        savedParam: '1',
+        recallRequested: true,
+        pendingPhase: 'analysis_confirmation',
+        pendingSavedDreamId: 42,
+        dreamId: '42',
+      })
+    ).toBe(false);
+    expect(
+      shouldOfferSavedDreamAnalysis({
+        pendingPhase: 'analysis_confirmation',
+        pendingSavedDreamId: 41,
+        dreamId: '42',
+      })
+    ).toBe(false);
+    expect(
+      shouldOfferSavedDreamAnalysis({
+        pendingPhase: 'analysis_requested',
+        pendingSavedDreamId: 42,
+        dreamId: '42',
+      })
+    ).toBe(false);
+    expect(
+      shouldOfferSavedDreamAnalysis({
+        dreamId: '42',
+      })
+    ).toBe(false);
   });
 });
