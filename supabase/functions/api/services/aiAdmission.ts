@@ -7,6 +7,7 @@ export type SynchronousAiCapability =
   | 'analyze_dream'
   | 'analyze_dream_full'
   | 'categorize_dream'
+  | 'recall_question'
   | 'chat'
   | 'transcribe'
   | 'generate_image_legacy';
@@ -39,6 +40,7 @@ const DEFAULTS: Record<SynchronousAiCapability, AdmissionDefaults> = {
   analyze_dream: { guest: 2, free: 6, plus: 20, global: 300 },
   analyze_dream_full: { guest: 1, free: 2, plus: 8, global: 100 },
   categorize_dream: { guest: 4, free: 12, plus: 30, global: 600 },
+  recall_question: { guest: 6, free: 18, plus: 40, global: 600 },
   chat: { guest: 12, free: 30, plus: 60, global: 1000 },
   transcribe: { guest: 3, free: 10, plus: 20, global: 200 },
   generate_image_legacy: { guest: 1, free: 2, plus: 8, global: 100 },

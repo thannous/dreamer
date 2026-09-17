@@ -1397,3 +1397,33 @@ Vérification sur Motorola : titre + recherche + paramètres sur une ligne, rech
 - Langue placée avant Apparence. Icônes à gauche : globe pour la langue, palette pour l’apparence, horloge/téléphone/soleil/lune pour les thèmes, livre/cartes/liste pour le journal, personne pour la connexion et engrenage pour Tous les paramètres. Libellés accessibles explicites sur les choix.
 - 47 tests ciblés passent, dont distinction compte/réglages, connexion directe et garde invité. Lint sans erreur ni avertissement sur les deux composants touchés ; types app/tests restent bloqués uniquement par HealthKit préexistant. Diff check propre.
 - Moto : ordre Langue/Apparence vérifié, icônes inspectées en sombre, profil → `screen.account`, Tous les paramètres → `screen.settings`, retours fonctionnels. Session et thème conservés. Captures locales `moto-drawer-icons.png` et `moto-account-only.png` dans le dossier QA drawer-profile (coordonnées de compte, ne pas publier).
+
+
+## Capture conversation — 2026-09-16
+
+Source: selected refined conversational mock, local generated image `exec-78274d0d-e377-4e83-8c7d-1d0f252c2e33.png` in session `01a0aa38-1881-7351-91bb-e1f3cd305f82`. Latest user exception: preserve the existing footer/navigation.
+
+Final result: passed for the local native presentation and checked interactions. Personalized Gemini responses are **not deployed or qualified live**.
+
+- Inspected the reference and the physical Motorola capture together: compact right-aligned recap, one prominent question, system sans typography, subdued segmented tabs, mic action, keyboard alternative, explicit finish action. Reused the app's ink/ivory/champagne tokens and icons.
+- Preserved `NoctaliaBottomNav.tsx` and `RecordingFooter.tsx` byte-for-byte; the existing save button gains the contextual label, and the former help action moves into the conversation. Native status bar, navigation, and the local debug shortcut intentionally differ from the generated concept.
+- Removed the extra character count in Tell while keeping the truthful local-draft persistence status. Write retains its editor and dictation controls.
+- Found and fixed keyboard clipping: conversational content now grows inside the scroll view, so Continue and Continue by voice remain reachable above the existing save action.
+- Device: Motorola edge 60 fusion, 1220×2712, installed local debug app `com.tanuki75.noctalia`, v3.1.0 (54). Verified Tell, Review → Write, return to Tell, and opening the reply keyboard. The real draft was neither edited, saved nor deleted.
+- Private device captures remain outside Git: `/tmp/noctalia-conversation-final.png`, `/tmp/noctalia-conversation-write-verified.png`, `/tmp/noctalia-conversation-keyboard-fixed.png`. They contain personal dream content and are intentionally not published.
+- No remaining P0/P1/P2 presentation issues in the inspected portrait states. Fresh voice recognition, TalkBack, enlarged-text device QA, iOS and release builds remain unqualified for this change.
+
+Validation: 91 focused Jest tests across seven suites (including delta reruns); 11 Deno route/admission tests; app/test TypeScript and Deno API check passed. Focused lint has no errors; two existing set-state-in-effect warnings remain in the capture route. `git diff --check` passed.
+
+The new authenticated journal-only `POST /recall-question` route uses the existing Gemini Interactions wrapper (`store:false`), bounded input/output, admission limits, a maximum of five questions, and a quoted transcript anchor. Questions never enter the stored narrative. Local fallback questions are explicitly identified as general when the API fails. Provider output and user dreams are not logged by the new route. Live provider behavior still needs validation after authorized server deployment. No database migration, native rebuild, reinstall or production deployment was performed.
+
+### Authorized server deployment — 2026-09-16
+
+The user explicitly approved server deployment. Automatic review rejected the monolithic API payload because it exceeded its 200,000-byte review limit. Deployed a narrower, independently authenticated `capture-recall` function instead (about 67 KB, 18 source/config files); the existing API v105 and its newer image fixes were preserved. Hosted clients now address this isolated function, while local/proxied APIs keep `/recall-question`.
+
+- Supabase project `noctalia` / `usuyppgsmmowzizhaoqj`: `capture-recall` v2 ACTIVE, bundle SHA-256 `a5e59d7756164ee3ac0ba6eb3a84b5186af180ba621d1454657fe4bf4163a5a4`.
+- Live synthetic authenticated checks: two HTTP 200 personalized French questions in 3.405 s and 5.355 s; five-question cap returns `{question:null,done:true}`; unauthenticated call returns 401. No dream is saved by these probes.
+- Defaults in the deployed registry: Gemini 3.8 Flash; fallback Gemini 3.5 Flash Lite. French prompt now explicitly uses informal singular address. The API response does not expose which provider model served an individual request.
+- Isolated deployment import graph typechecked; 27 route/admission/Gemini adapter tests passed, followed by six route tests after the prompt adjustment. Eight client service tests (modern and legacy Supabase hosts) and three hydration tests passed. Test TypeScript passed.
+- CI on initial PR head found a hydration test importing the new real network service (1923 tests passed, one suite failed). Fixed the test boundary with the same service mock as other route tests; this was a test integration failure, not attributed to baseline.
+- Production backend is verified independently of PR CI, merge and mobile Store release. No schema migration or app reinstall.
