@@ -121,6 +121,9 @@
             "minSdkVersion": 28,
             "enableMinifyInReleaseBuilds": true,
             "enableShrinkResourcesInReleaseBuilds": true
+          },
+          "ios": {
+            "enableSceneSupport": true
           }
         }
       ],
