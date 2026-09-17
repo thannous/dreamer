@@ -77,7 +77,10 @@ export const QuotaStatusCard: React.FC<Props> = ({
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const cardBg = noctalia.surface.raised;
   const { t } = useTranslation();
-  const { quotaStatus, loading, error, refetch, tier, subscriptionStatus, subscriptionLoading } = useQuota();
+  const {
+    quotaStatus, loading, error, refetch, tier, subscriptionStatus, subscriptionLoading,
+    subscriptionRefreshing, refreshSubscription,
+  } = useQuota();
   const { formatDate } = useLocaleFormatting();
   const isDegradedGuest = !user && quotaStatus?.guestBootstrapStatus === 'degraded';
 
@@ -108,7 +111,10 @@ export const QuotaStatusCard: React.FC<Props> = ({
   }, [quotaStatus?.usage.analysis, quotaStatus?.usage.image, t]);
 
   const isPaidTier = tier === 'plus';
-  const showCta = Boolean(quotaStatus) && !isPaidTier;
+  const subscriptionPending = subscriptionLoading || subscriptionRefreshing;
+  const subscriptionKnown = tier === 'guest' || Boolean(subscriptionStatus);
+  // Subscription actions must remain available even when usage cannot be loaded.
+  const showCta = !subscriptionPending && !isPaidTier && subscriptionKnown;
   const ctaLabel = tier === 'guest'
     ? t('settings.quota.cta_guest')
     : t('settings.quota.cta_upgrade');
@@ -163,6 +169,15 @@ export const QuotaStatusCard: React.FC<Props> = ({
     router.push(buildPaywallHref('settings_quota'));
   };
 
+  const handleRefreshSubscription = async () => {
+    try {
+      await refreshSubscription();
+    } catch {
+      // The subscription hook retains the error; keep the retry surface usable.
+      log.warn('Subscription status refresh unavailable');
+    }
+  };
+
   return (
     <View
       style={[
@@ -177,14 +192,27 @@ export const QuotaStatusCard: React.FC<Props> = ({
           <Text style={[styles.title, { color: noctalia.text.primary }]}>
             {t('settings.quota.title')}
           </Text>
-          <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
-            {t('settings.quota.subtitle', { tier: tierLabel })}
-          </Text>
+          {subscriptionPending || subscriptionKnown ? (
+            <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
+              {subscriptionPending
+                ? t('settings.quota.subscription_checking')
+                : t('settings.quota.subtitle', { tier: tierLabel })}
+            </Text>
+          ) : null}
         </View>
-        {loading && <ActivityIndicator color={noctalia.accent.text} />}
+        {(loading || subscriptionPending) && <ActivityIndicator color={noctalia.accent.text} />}
       </View>
 
-      <SubscriptionExpiryNotice status={subscriptionStatus} loading={subscriptionLoading} />
+      <SubscriptionExpiryNotice status={subscriptionStatus} loading={subscriptionPending} />
+
+      {!subscriptionPending && !subscriptionKnown ? (
+        <Pressable accessibilityRole="button" onPress={() => void handleRefreshSubscription()}
+          style={[styles.errorBanner, { backgroundColor: noctalia.status.danger.background, borderColor: noctalia.status.danger.border }]}>
+          <Text style={[styles.errorText, { color: noctalia.status.danger.text }]}>
+            {t('settings.quota.subscription_unavailable')}
+          </Text>
+        </Pressable>
+      ) : null}
 
       {error && (
         <Pressable
@@ -250,7 +278,7 @@ export const QuotaStatusCard: React.FC<Props> = ({
         );
       })}
 
-      {tier === 'plus' && (
+      {!subscriptionPending && subscriptionKnown && tier === 'plus' && (
         <View style={[styles.notice, { backgroundColor: noctalia.surface.soft }]}>
           <Text style={[styles.noticeText, { color: noctalia.text.primary }]}>
             {t('settings.quota.plus_message')}
@@ -282,7 +310,7 @@ export const QuotaStatusCard: React.FC<Props> = ({
         </Pressable>
       )}
 
-      {tier === 'free' && freeResetMessage && (
+      {!subscriptionPending && subscriptionKnown && tier === 'free' && freeResetMessage && (
         <View style={[styles.notice, { backgroundColor: noctalia.surface.soft }]}>
           <Text style={[styles.noticeText, { color: noctalia.text.secondary }]}>
             {freeResetMessage}

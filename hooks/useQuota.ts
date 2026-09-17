@@ -44,7 +44,10 @@ function normalizeTarget(input?: QuotaTargetInput): NormalizedQuotaTarget | unde
 export function useQuota(targetInput?: QuotaTargetInput) {
   const isMockMode = isMockModeEnabled();
   const { user } = useAuth();
-  const { status: subscriptionStatus, loading: subscriptionLoading } = useSubscription();
+  const {
+    status: subscriptionStatus, loading: subscriptionLoading,
+    refreshing: subscriptionRefreshing, refreshSubscription,
+  } = useSubscription();
   const [quotaStatus, setQuotaStatus] = useState<QuotaStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -244,6 +247,8 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   return {
     subscriptionStatus,
     subscriptionLoading,
+    subscriptionRefreshing,
+    refreshSubscription,
     quotaStatus,
     // Only wait for RevenueCat when we don't have an optimistic paid tier from Supabase.
     loading: loading || (subscriptionLoading && !isPaidTier),

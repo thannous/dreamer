@@ -164,7 +164,7 @@ export default function SettingsScreen() {
     </View>
   );
 
-  // Account links show only the account surface; general settings keep all sections.
+  // Account links include their subscription; general preferences stay in settings.
   if (section === 'account' && !returningGuestBlocked) {
     return (
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -181,6 +181,7 @@ export default function SettingsScreen() {
           contentContainerStyle={{ padding: ThemeLayout.spacing.lg, paddingBottom: bottomPadding }}>
           <View className="w-full max-w-[760px] self-center">
             <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" initialAccountSheetOpen={auth === 'signin'} />
+            <View className="mt-8">{quota}</View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
