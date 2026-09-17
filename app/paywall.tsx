@@ -1,3 +1,4 @@
+import { SubscriptionExpiryNotice } from '@/components/subscription/SubscriptionExpiryNotice';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -488,6 +489,8 @@ export default function PaywallScreen() {
 
             <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>{headerTitle}</Text>
             <Text style={[styles.headerSubtitle, { color: noctalia.text.secondary }]}>{headerSubtitle}</Text>
+
+            <SubscriptionExpiryNotice status={subscriptionStatus} loading={loading} />
 
             {isActive && formattedExpiryDate ? (
               <Text style={[styles.expiryDate, { color: noctalia.text.secondary }]}>

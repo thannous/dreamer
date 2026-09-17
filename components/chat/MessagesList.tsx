@@ -407,6 +407,7 @@ export function MessagesList({
         onRetryMessage &&
         item.role === 'model' &&
         item.meta?.isError &&
+        item.meta.retry &&
         lastErrorMessageId &&
         item.id === lastErrorMessageId
       );

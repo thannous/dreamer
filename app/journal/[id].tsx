@@ -10,6 +10,8 @@ import { ReminderOptInCard } from '@/components/reminders/ReminderOptInCard';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
+import { getImageJobFailure } from '@/lib/imageJobErrors';
+import { ErrorType } from '@/lib/errors';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import {
   AnalysisNoticeSheet,
@@ -274,6 +276,8 @@ function JournalDetailContent() {
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
   const [quotaSheetMode, setQuotaSheetMode] = useState<'quota' | 'login'>('quota');
   const [imageErrorMessage, setImageErrorMessage] = useState<string | null>(null);
+  const [imageErrorCanRetry, setImageErrorCanRetry] = useState(true);
+  const [imageErrorNeedsSubscription, setImageErrorNeedsSubscription] = useState(false);
 
   // Reference image generation state
   const [showReferenceSheet, setShowReferenceSheet] = useState(false);
@@ -1077,7 +1081,11 @@ function JournalDetailContent() {
 
   const onRetryImage = useCallback(async () => {
     if (!dream) return;
+    setImageErrorCanRetry(true);
+    setImageErrorNeedsSubscription(false);
     if (!illustrationAccess.allowed) {
+      setImageErrorCanRetry(false);
+      setImageErrorNeedsSubscription(Boolean(user));
       setImageErrorMessage(t('journal.detail.image.quota_exceeded_message'));
       return;
     }
@@ -1096,6 +1104,8 @@ function JournalDetailContent() {
       });
     } catch (error) {
       if (error instanceof QuotaError) {
+        setImageErrorCanRetry(false);
+        setImageErrorNeedsSubscription(Boolean(user));
         setImageErrorMessage(t('journal.detail.image.quota_exceeded_message'));
         return;
       }
@@ -1103,6 +1113,8 @@ function JournalDetailContent() {
         error instanceof Error ? error : new Error(t('common.unknown_error')),
         t
       );
+      setImageErrorCanRetry(classified.canRetry);
+      setImageErrorNeedsSubscription(classified.type === ErrorType.IMAGE_AUTHORIZATION);
       setImageErrorMessage(
         classified.userMessage === t('error.interpretation_limit')
           ? t('journal.detail.image.quota_exceeded_message')
@@ -1111,7 +1123,7 @@ function JournalDetailContent() {
     } finally {
       setIsRetryingImage(false);
     }
-  }, [dream, generateDreamImage, illustrationAccess.allowed, illustrationAccess.bundledRequestId, t]);
+  }, [dream, generateDreamImage, illustrationAccess.allowed, illustrationAccess.bundledRequestId, t, user]);
 
   const handleBackPress = useCallback(() => {
     const pending = onboardingState.pendingRecordingIntent;
@@ -1984,8 +1996,10 @@ function JournalDetailContent() {
             />
           </PressableScale>
         ) : illustrationSidecar === 'failed' ? (
-          visibleIllustrationCta === 'retry' ? (
-            <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
+          visibleIllustrationCta === 'retry' || getImageJobFailure(dream.imageJobErrorCode) ? (
+            <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage}
+              errorCode={dream.imageJobErrorCode}
+              onManageSubscription={() => router.push('/settings?section=account')} />
           ) : (
             <View className="min-h-[180px] flex-col items-center justify-center gap-2.5 rounded-lg border border-line bg-ink-soft px-5 py-6">
               <IconSymbol name="photo" size={40} color={noctalia.text.secondary} />
@@ -2509,6 +2523,11 @@ function JournalDetailContent() {
           onRetry={handleRetryImageError}
           isRetrying={isRetryingImage}
           message={imageErrorMessage}
+          canRetry={imageErrorCanRetry}
+          onManageSubscription={imageErrorNeedsSubscription ? () => {
+            setImageErrorMessage(null);
+            router.push('/settings?section=account');
+          } : undefined}
         />
         <Modal
           visible={isShareModalVisible}

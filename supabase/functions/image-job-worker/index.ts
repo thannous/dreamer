@@ -1,3 +1,4 @@
+import { verifyAnalysisImageAuthorization } from '../api/services/analysisAuthorization.ts';
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { GUEST_LIMITS, corsHeaders } from '../api/lib/constants.ts';
 import { ensureImagePrompt, generateAndStoreImage } from '../api/services/imagePipeline.ts';
@@ -107,69 +108,14 @@ const resolveImageGenerationTier = async (
   }
 };
 
-const requireFreeAnalysisClaim = async (
+const requireFreeAnalysisClaim = (
   adminClient: ReturnType<typeof createAdminClient>,
   job: ImageJobRow
 ): Promise<FreeAnalysisClaimDecision> => {
-  if (!job.user_id) {
-    return { allowed: true };
-  }
-
-  if (job.dream_id == null) {
-    return {
-      allowed: false,
-      errorCode: 'FREE_IMAGE_ANALYSIS_REQUIRED',
-      errorMessage: 'Free image generation must be linked to a dream analysis',
-      retryable: false,
-    };
-  }
-
-  try {
-    const { data, error } = await adminClient
-      .from('quota_usage')
-      .select('id')
-      .eq('user_id', job.user_id)
-      .eq('dream_id', job.dream_id)
-      .eq('quota_type', 'analysis')
-      .contains('metadata', { analysis_request_id: job.client_request_id })
-      .limit(1)
-      .maybeSingle();
-
-    if (error) {
-      console.warn('[image-job-worker] Failed to verify free analysis claim', {
-        jobId: job.id,
-        code: error?.code ?? null,
-      });
-      return {
-        allowed: false,
-        errorCode: 'FREE_IMAGE_ANALYSIS_CLAIM_UNAVAILABLE',
-        errorMessage: 'Analysis authorization unavailable',
-        retryable: true,
-      };
-    }
-
-    if (!data) {
-      return {
-        allowed: false,
-        errorCode: 'FREE_IMAGE_ANALYSIS_CLAIM_PENDING',
-        errorMessage: 'Waiting for the authorized analysis claim',
-        retryable: true,
-      };
-    }
-
-    return { allowed: true };
-  } catch {
-    console.warn('[image-job-worker] Free analysis claim check threw', {
-      jobId: job.id,
-      reason: 'unexpected_error',
-    });
-    return {
-      allowed: false,
-      errorCode: 'FREE_IMAGE_ANALYSIS_CLAIM_UNAVAILABLE',
-      errorMessage: 'Analysis authorization unavailable',
-      retryable: true,
-    };
-  }
+  if (!job.user_id) return Promise.resolve({ allowed: true });
+  return verifyAnalysisImageAuthorization(adminClient, {
+    userId: job.user_id, dreamId: job.dream_id, requestId: job.client_request_id,
+  });
 };
 
 const releaseImageClaim = async (

@@ -2,6 +2,7 @@ import { PressableScale } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getImageJobFailure } from '@/lib/imageJobErrors';
 import { ErrorType } from '@/lib/errors';
 import { TID } from '@/lib/testIDs';
 import React, { useMemo } from 'react';
@@ -13,32 +14,37 @@ interface ImageRetryProps {
   isRetrying?: boolean;
   /** Optional error type for contextual messaging */
   errorType?: ErrorType;
+  errorCode?: string;
+  onManageSubscription?: () => void;
 }
 
-export function ImageRetry({ onRetry, isRetrying = false, errorType }: ImageRetryProps) {
+export function ImageRetry({ onRetry, isRetrying = false, errorType, errorCode, onManageSubscription }: ImageRetryProps) {
   const { t } = useTranslation();
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   // Determine if error is transient (can retry) or blocked (cannot retry)
+  const failure = getImageJobFailure(errorCode);
   const isBlocked = errorType === ErrorType.IMAGE_BLOCKED;
   const isTransient = errorType === ErrorType.IMAGE_TRANSIENT;
 
   // Get contextual title and message based on error type
   const getTitle = () => {
+    if (failure) return t(failure.titleKey);
     if (isBlocked) return t('image_retry.content_blocked');
     if (isTransient) return t('image_retry.transient_error');
     return t('image_retry.generation_failed');
   };
 
   const getMessage = () => {
+    if (failure) return t(failure.messageKey);
     if (isBlocked) return t('image_retry.blocked_message');
     if (isTransient) return t('image_retry.transient_message');
     return t('image_retry.default_message');
   };
 
   // Blocked errors cannot be retried
-  const canRetry = !isBlocked;
+  const canRetry = !isBlocked && !failure;
 
   return (
     <View className="aspect-[2/3] w-full items-center justify-center rounded-lg border-2 border-dashed border-line bg-ink-soft p-6">
@@ -60,6 +66,12 @@ export function ImageRetry({ onRetry, isRetrying = false, errorType }: ImageRetr
         {getMessage()}
       </Text>
 
+      {failure?.action === 'subscription' && onManageSubscription ? (
+        <PressableScale onPress={onManageSubscription} accessibilityRole="button"
+          className="min-h-[44px] justify-center px-4 py-3">
+          <Text className="text-center font-sans-bold text-champagne-on">{t('image_retry.check_subscription')}</Text>
+        </PressableScale>
+      ) : null}
       {canRetry && (
         <PressableScale
           className={`flex-row items-center justify-center rounded-md border border-champagne-soft bg-champagne px-6 py-3.5 ${

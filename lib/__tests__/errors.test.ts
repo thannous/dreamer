@@ -449,3 +449,15 @@ describe('SubscriptionError', () => {
     expect(error.message).toBe(customMessage);
   });
 });
+
+// Actual /chat payloads: exploration returns code, message quota returns error.
+it.each([
+  { code: 'QUOTA_EXPLORATION_LIMIT_REACHED' },
+  { error: 'QUOTA_MESSAGE_LIMIT_REACHED' },
+])('does not advise waiting and retrying for a durable chat quota: %j', (body: { code?: string; error?: string }) => {
+  const error = Object.assign(new Error('HTTP 429 Too Many Requests'), { status: 429, body });
+  const result = classifyError(error);
+  expect(result.canRetry).toBe(false);
+  expect(result.type).toBe(ErrorType.CLIENT);
+  expect(result.userMessage).toContain('remain');
+});

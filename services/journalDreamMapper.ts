@@ -22,6 +22,7 @@ export type SupabaseDreamRow = {
   dream_type: string;
   is_favorite: boolean | null;
   image_generation_failed?: boolean | null;
+  image_generation_error_code?: string | null;
   is_analyzed?: boolean | null;
   analyzed_at?: string | null;
   analysis_status?: 'none' | 'pending' | 'done' | 'failed' | null;
@@ -110,7 +111,7 @@ export const mapRowToDream = (row: SupabaseDreamRow, now: () => number = Date.no
   const createdAt = row.created_at ? Date.parse(row.created_at) : now();
   const imageUrl = row.image_url ?? '';
   const hasImage = Boolean(imageUrl);
-  const imageGenerationFailed = hasImage ? false : row.image_generation_failed ?? false;
+  const imageGenerationFailed = !hasImage && Boolean(row.image_generation_failed || row.image_generation_error_code);
   const analysisDetails = asAnalysisDetailsRecord(row.analysis_details);
   const knownAnalysisDetails = sanitizeKnownAnalysisDetails(analysisDetails);
   const allowlistedAnalysisDetails = {
@@ -135,6 +136,7 @@ export const mapRowToDream = (row: SupabaseDreamRow, now: () => number = Date.no
     dreamType: (row.dream_type ?? 'Symbolic Dream') as DreamType,
     isFavorite: row.is_favorite ?? false,
     imageGenerationFailed,
+    ...(row.image_generation_error_code !== undefined ? { imageJobErrorCode: hasImage ? undefined : row.image_generation_error_code ?? undefined } : {}),
     isAnalyzed: row.is_analyzed ?? undefined,
     analyzedAt: row.analyzed_at ? Date.parse(row.analyzed_at) : undefined,
     analysisStatus: row.analysis_status ?? undefined,

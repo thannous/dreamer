@@ -189,3 +189,18 @@ describe('MessagesList streaming visibility', () => {
     }
   });
 });
+
+
+describe('MessagesList terminal errors', () => {
+  it('offers retry only when the error carries an actionable retry request', async () => {
+    const { MessagesList } = await import('../MessagesList');
+    const failed = { id: 'quota-error', role: 'model', text: 'Current plan limit reached', meta: { isError: true } };
+    const onRetryMessage = vi.fn();
+    const utils = render(<MessagesList messages={[failed] as any} onRetryMessage={onRetryMessage} />);
+    try {
+      expect(utils.container.querySelectorAll('button').length).toBe(0);
+      utils.rerender(<MessagesList messages={[{ ...failed, meta: { isError: true, retry: { messageText: 'Try again' } } }] as any} onRetryMessage={onRetryMessage} />);
+      expect(utils.container.querySelectorAll('button').length).toBe(1);
+    } finally { utils.unmount(); }
+  });
+});

@@ -24,7 +24,7 @@ import { QUOTAS } from '@/constants/limits';
 import { getDreamAnalysisState } from '@/lib/dreamUsage';
 import { generateUUID } from '@/lib/dreamUtils';
 import { isChatDebugEnabled, isMockModeEnabled } from '@/lib/env';
-import { getUserErrorMessage, QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { classifyError, coerceQuotaError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { canUseExploration360Synthesis, getExploration360SynthesisStatus } from '@/lib/exploration360';
 import { HttpError } from '@/lib/http';
 import { getImageConfig } from '@/lib/imageUtils';
@@ -832,11 +832,16 @@ function DreamChatContent() {
         if (__DEV__) {
           console.error('Chat error:', error);
         }
-        const userMessage = error instanceof Error ? getUserErrorMessage(error, t) : t('dream_chat.error_message');
+        const classified = error instanceof Error ? classifyError(error, t) : null;
+        const userMessage = classified?.userMessage ?? t('dream_chat.error_message');
+        if (coerceQuotaError(error, tier)?.code === QuotaErrorCode.EXPLORATION_LIMIT_REACHED) {
+          setExplorationBlocked(true);
+          quotaService.invalidate(user);
+        }
         const errorMessage = createChatMessage('model', t('dream_chat.error_message'), {
           meta: {
             isError: true,
-            retry: {
+            retry: classified?.canRetry === false ? undefined : {
               messageText: textToSend,
               displayText: resolvedDisplayText,
               clientRequestId: chatRequestId,

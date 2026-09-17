@@ -536,3 +536,36 @@ Deno.test('disabled HD rejects Plus before admitting or billing a job', async ()
     if (previous !== undefined) Deno.env.set('HD_ILLUSTRATIONS_ENABLED', previous);
   }
 });
+
+Deno.test('completed free image requires its exact trusted analysis receipt before admission', async () => {
+  for (const outcome of ['authorized', 'missing', 'unavailable'] as const) {
+    const filters: Record<string, unknown> = {};
+    let admissions = 0;
+    let triggers = 0;
+    const query = {
+      select: () => query,
+      eq: (key: string, value: unknown) => { filters[key] = value; return query; },
+      contains: (key: string, value: unknown) => { filters[key] = value; return query; },
+      limit: () => query,
+      maybeSingle: async () => ({
+        data: outcome === 'authorized' ? { id: 'trusted-receipt' } : null,
+        error: outcome === 'unavailable' ? { code: '08006' } : null,
+      }),
+    };
+    const response = await handleCreateImageJob(createAuthenticatedImageContext(bundledImageBody, 'free'), {
+      createAdminClient: (() => ({
+        from: (table: string) => { assertEquals(table, 'quota_usage'); return query; },
+        rpc: async () => {
+          admissions++;
+          return { data: { allowed: true, job: { id: EXISTING_IMAGE_JOB_ID, status: 'queued', client_request_id: BUNDLED_REQUEST_ID } }, error: null };
+        },
+      })) as any,
+      triggerImageJobWorker: async () => { triggers++; return true; },
+    });
+    assertEquals(filters, { user_id: 'user-1', dream_id: 42, quota_type: 'analysis', metadata: { analysis_request_id: BUNDLED_REQUEST_ID } });
+    assertEquals(response.status, outcome === 'authorized' ? 202 : outcome === 'missing' ? 402 : 503);
+    assertEquals(admissions, outcome === 'authorized' ? 1 : 0);
+    assertEquals(triggers, outcome === 'authorized' ? 1 : 0);
+    if (outcome === 'missing') assertEquals((await response.json()).code, 'FREE_IMAGE_ANALYSIS_REQUIRED');
+  }
+});

@@ -330,6 +330,9 @@ jobs:
               image-job-worker/index.ts \
               revenuecat-webhook/index.ts
       - run:
+          name: Test analysis authorization and durable image failure migrations
+          command: npm run test:analysis-authorization:db
+      - run:
           name: Test Edge Functions
           working_directory: supabase/functions
           command: |

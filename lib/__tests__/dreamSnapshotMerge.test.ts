@@ -1,4 +1,4 @@
-import { mergeDreamSnapshot } from '../dreamSnapshotMerge';
+import { mergeDreamSnapshot, retainedImageJobError } from '../dreamSnapshotMerge';
 import type { DreamAnalysis } from '../types';
 
 const dream = (id: number, remoteId?: number): DreamAnalysis => ({
@@ -38,4 +38,15 @@ it('retains the device source when a clean server snapshot changes the formatted
   expect(mergeDreamSnapshot([local], [local], [remote])).toEqual([
     { ...remote, captureOriginalTranscript: 'Original exchanges' },
   ]);
+});
+
+
+it('keeps a legacy local failure after reload but gives server outcomes precedence', () => {
+  const cached = { ...dream(1, 11), imageGenerationFailed: true, analysisRequestId: 'same', imageJobErrorCode: 'FREE_IMAGE_ANALYSIS_CLAIM_PENDING' };
+  const remote = { ...dream(1, 11), imageGenerationFailed: true, analysisRequestId: 'same' };
+  expect(mergeDreamSnapshot([cached], [cached], [remote])[0].imageJobErrorCode).toBe(cached.imageJobErrorCode);
+  expect(retainedImageJobError({ ...remote, imageJobErrorCode: 'AI_JOB_ATTEMPTS_EXHAUSTED' }, cached)).toBe('AI_JOB_ATTEMPTS_EXHAUSTED');
+  expect(retainedImageJobError({ ...remote, imageJobErrorCode: undefined }, cached)).toBeUndefined();
+  expect(retainedImageJobError({ ...remote, analysisRequestId: 'new-analysis' }, cached)).toBeUndefined();
+  expect(retainedImageJobError({ ...remote, imageUrl: 'existing-image' }, cached)).toBeUndefined();
 });
