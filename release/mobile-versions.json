@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "apps": {
+    "noctalia": {
+      "version": "3.1.0",
+      "sourceRef": "e9c8d647c601b05e5b68e31c2ac8db8c22bdab9a",
+      "baseline": "EAS production build 285f4363-10bf-4b2b-8833-54a028f9b2dd, Android 68; not necessarily an ancestor of master"
+    },
+    "lucid": {
+      "version": "1.0.0",
+      "sourceRef": "bc4911f711ac0dccc3e7f9247434bb6e6fb9470b",
+      "baseline": "Adoption snapshot, not a Store publication claim"
+    },
+    "meditation": {
+      "version": "0.1.0",
+      "sourceRef": "bc4911f711ac0dccc3e7f9247434bb6e6fb9470b",
+      "baseline": "Adoption snapshot, not a Store publication claim"
+    }
+  }
+}

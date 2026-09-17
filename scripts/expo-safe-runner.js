@@ -251,8 +251,14 @@ function main(args = process.argv.slice(2)) {
     parsedArgs = parseRunnerArgs(args);
     const lockFlags = extractAndroidLockFlags(parsedArgs.expoArgs);
     parsedArgs.expoArgs = lockFlags.expoArgs;
+    if (parsedArgs.envFile) {
+      const resolvedPath = loadEnvProfile(parsedArgs.envFile);
+      console.error(`[expo] Environment profile: ${path.relative(process.cwd(), resolvedPath)}`);
+    }
     if (isAndroidRun(parsedArgs.expoArgs)) {
-      const result = syncAndroidNativeVersion();
+      const result = syncAndroidNativeVersion({
+        expoConfig: require('@expo/config').getConfig(process.cwd(), { skipPlugins: true }).exp,
+      });
       if (result.status === 'updated') {
         console.error(
           `[android] Synced native version ${result.versionName} (${result.versionCode})`,
@@ -276,10 +282,6 @@ function main(args = process.argv.slice(2)) {
           `[android] Device lock owner: ${reserved.owner} metro=${reserved.metroPort}`
         );
       }
-    }
-    if (parsedArgs.envFile) {
-      const resolvedPath = loadEnvProfile(parsedArgs.envFile);
-      console.error(`[expo] Environment profile: ${path.relative(process.cwd(), resolvedPath)}`);
     }
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));

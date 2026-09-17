@@ -22,7 +22,12 @@
     "test:e2e:breathing": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/breathing.yml",
     "test:e2e:paywall": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/paywall.yml",
     "test:e2e:settings": "node ../../scripts/android-device-lock.js wrap --owner meditation -- maestro test maestro/settings.yml",
-    "brand:check": "node ../../scripts/check-brand-tokens.js --meditation"
+    "brand:check": "node ../../scripts/check-brand-tokens.js --meditation",
+    "release:plan": "node ../../scripts/mobile-release.js plan --app meditation",
+    "release:prepare": "node ../../scripts/mobile-release.js prepare --app meditation",
+    "release:check": "node ../../scripts/mobile-release.js check --app meditation",
+    "release:build": "node ../../scripts/mobile-release.js build --app meditation",
+    "eas-build-pre-install": "node ../../scripts/mobile-release.js verify --app meditation"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",

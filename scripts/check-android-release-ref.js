@@ -39,6 +39,8 @@ function readReleaseIdentity(rootDir = ROOT, readFileSync = fs.readFileSync) {
 
 function validateReleaseRef({
   builtVersionCode = '',
+  expectedRemoteVersionCode = '',
+  versionSource = 'local',
   refName = '',
   refType = '',
   releaseIdentity,
@@ -50,7 +52,17 @@ function validateReleaseRef({
     }
   }
 
-  if (builtVersionCode && String(releaseIdentity.versionCode) !== String(builtVersionCode)) {
+  if (!['local', 'remote'].includes(versionSource)) throw new Error('Unknown appVersionSource');
+  if (builtVersionCode && !/^[1-9]\d*$/.test(String(builtVersionCode))) throw new Error('Invalid built versionCode');
+  if (builtVersionCode && versionSource === 'remote') {
+    if (!/^[1-9]\d*$/.test(String(expectedRemoteVersionCode))) {
+      throw new Error('Remote versioning requires EXPECTED_ANDROID_VERSION_CODE from the exact EAS build metadata.');
+    }
+    if (String(expectedRemoteVersionCode) !== String(builtVersionCode)) {
+      throw new Error(`Built versionCode ${builtVersionCode} does not match the EAS build ${expectedRemoteVersionCode}.`);
+    }
+  }
+  if (builtVersionCode && versionSource === 'local' && String(releaseIdentity.versionCode) !== String(builtVersionCode)) {
     throw new Error(
       `EAS build versionCode ${builtVersionCode} does not match app.json ${releaseIdentity.versionCode}.`
     );
@@ -65,8 +77,11 @@ function validateReleaseRef({
 }
 
 function main(env = process.env) {
+  const easConfig = JSON.parse(fs.readFileSync(path.join(ROOT, 'eas.json'), 'utf8'));
   const result = validateReleaseRef({
     builtVersionCode: String(env.BUILT_ANDROID_VERSION_CODE || '').trim(),
+    expectedRemoteVersionCode: String(env.EXPECTED_ANDROID_VERSION_CODE || '').trim(),
+    versionSource: easConfig.cli?.appVersionSource || 'local',
     refName: String(env.RELEASE_REF_NAME || '').trim(),
     refType: String(env.RELEASE_REF_TYPE || '').trim(),
     releaseIdentity: readReleaseIdentity(),
