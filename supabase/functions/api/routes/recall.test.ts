@@ -37,7 +37,7 @@ Deno.test('recall enforces admission before any provider call', async () => {
   assertEquals(calls, 0);
 });
 
-Deno.test('recall forwards contextual answers and question history in one bounded Flash-Lite call', async () => {
+Deno.test('recall forwards contextual answers and question history in one bounded Gemini 3.8 Flash call', async () => {
   const contextualBody = {
     ...body,
     transcript: 'Une cabane en bois.\nQuestion : Que remarques-tu sur ce bois ?\nRéponse : Le bois ne compte pas, la forme de la cabane est importante.',
@@ -48,7 +48,7 @@ Deno.test('recall forwards contextual answers and question history in one bounde
     apiKey: 'test-key', admit,
     generate: async (_key, model, _fallback, contents, instruction, config) => {
       calls++;
-      assertEquals(model, 'gemini-3.5-flash-lite');
+      assertEquals(model, 'gemini-3.8-flash');
       assertEquals(config.thinkingLevel, 'minimal');
       assertStringIncludes(instruction, 'Do not interpret');
       assertStringIncludes(instruction, 'French');
