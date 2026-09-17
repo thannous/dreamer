@@ -1401,6 +1401,27 @@ describe('Recording screen', () => {
     }
   );
 
+  it('persists only once for rapid save presses before storage resolves', async () => {
+    let finish!: (dream: DreamAnalysis) => void;
+    mockAddDream.mockImplementationOnce(() => new Promise<DreamAnalysis>(resolve => { finish = resolve; }));
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'A blue room under the rain' },
+    });
+    const save = screen.getByTestId('recording-save');
+    await act(async () => {
+      fireEvent.click(save);
+      fireEvent.click(save);
+    });
+    expect(mockAddDream).toHaveBeenCalledTimes(1);
+    expect(mockReplace).not.toHaveBeenCalled();
+    await act(async () => { finish(buildDream('A blue room under the rain', 42)); });
+    expect(mockReplace).toHaveBeenCalledWith({
+      pathname: '/journal/[id]', params: { id: '42', saved: '1' },
+    });
+  });
+
   it('saves a dream without launching analysis or illustration', async () => {
     let resolveCategorize: ((value: { title: string; theme: string; dreamType: string }) => void) | undefined;
     mockCategorizeDream.mockImplementation(

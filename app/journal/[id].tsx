@@ -15,6 +15,7 @@ import { ErrorType } from '@/lib/errors';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import {
   AnalysisNoticeSheet,
+  SavedDreamAnalysisSheet,
   DeleteConfirmSheet,
   ImageErrorSheet,
   QuotaLimitSheet,
@@ -213,6 +214,11 @@ function JournalDetailContent() {
   const [savedConfirmationVisible, setSavedConfirmationVisible] = useState(
     () => isJournalSavedConfirmationParam(savedParam)
   );
+  const [showSavedAnalysisSheet, setShowSavedAnalysisSheet] = useState(
+    () => isJournalSavedConfirmationParam(savedParam) && !recallRequested
+  );
+  const savedAnalysisChoiceHandledRef = useRef(false);
+  const analysisLaunchInFlightRef = useRef(false);
   const recallEligibleDreamIdRef = useRef<string | null>(
     resolveJournalDreamRecallOfferEligible({
       dreamId: id,
@@ -1217,16 +1223,17 @@ function JournalDetailContent() {
 
   const runAnalyze = useCallback(
     async (replaceImage: boolean, skipAllowanceCheck = false) => {
-      if (!dream) return;
-
-      if (!skipAllowanceCheck && !isResumableAnalysisRequest(dream)) {
-        const allowed = await ensureAnalyzeAllowed();
-        if (!allowed) return;
-      }
-
-      setShowReplaceImageSheet(false);
+      if (!dream || isAnalysisLocked || analysisLaunchInFlightRef.current) return;
+      // Lock synchronously, including the asynchronous quota check.
+      analysisLaunchInFlightRef.current = true;
       setIsAnalyzing(true);
       try {
+        if (!skipAllowanceCheck && !isResumableAnalysisRequest(dream)) {
+          const allowed = await ensureAnalyzeAllowed();
+          if (!allowed) return;
+        }
+
+        setShowReplaceImageSheet(false);
         await analyzeDream(dream, dream.transcript, {
           replaceExistingImage: replaceImage,
           lang: language,
@@ -1257,11 +1264,30 @@ function JournalDetailContent() {
           showAnalysisNotice(t('analysis_error.title'), classified.userMessage, 'error');
         }
       } finally {
+        analysisLaunchInFlightRef.current = false;
         setIsAnalyzing(false);
       }
     },
-    [analyzeDream, dream, ensureAnalyzeAllowed, isPlus, language, showAnalysisNotice, t, tier]
+    [analyzeDream, dream, ensureAnalyzeAllowed, isAnalysisLocked, isPlus, language, showAnalysisNotice, t, tier]
   );
+
+  const dismissSavedAnalysis = useCallback(() => {
+    savedAnalysisChoiceHandledRef.current = true;
+    setShowSavedAnalysisSheet(false);
+    const pending = onboardingState.pendingRecordingIntent;
+    if (pending?.savedDreamId === dream?.id && pending?.phase === 'analysis_confirmation') {
+      void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => {
+        console.warn('[JournalDetail] Failed to dismiss the onboarding analysis confirmation');
+      });
+    }
+  }, [dream?.id, onboardingState.pendingRecordingIntent, transitionOnboarding]);
+
+  const confirmSavedAnalysis = useCallback(() => {
+    if (!dream || savedAnalysisChoiceHandledRef.current) return;
+    dismissSavedAnalysis();
+    // Explicit consent requests the existing bundled analysis + image pipeline.
+    void runAnalyze(true);
+  }, [dismissSavedAnalysis, dream, runAnalyze]);
 
   const handleAnalyze = useCallback(async () => {
     if (!dream) return;
@@ -2595,6 +2621,11 @@ function JournalDetailContent() {
           </View>
         </Modal>
 
+        <SavedDreamAnalysisSheet
+          visible={showSavedAnalysisSheet && !dream.isAnalyzed && dream.analysisStatus !== 'pending' && !isAnalyzing}
+          onClose={dismissSavedAnalysis}
+          onAnalyze={confirmSavedAnalysis}
+        />
         <ReferenceImageSheet
           visible={referenceImagesEnabled && showReferenceSheet}
           subjectType={referenceSubjectType}

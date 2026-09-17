@@ -118,6 +118,33 @@ export function AnalysisNoticeSheet({
   );
 }
 
+export function SavedDreamAnalysisSheet({
+  visible,
+  onClose,
+  onAnalyze,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onAnalyze: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <StandardBottomSheet
+      visible={visible}
+      onClose={onClose}
+      title={t('recording.saved_analysis.title')}
+      subtitle={t('recording.saved_analysis.message')}
+      testID={TID.Sheet.SavedDreamAnalysis}
+      actions={{
+        primaryLabel: t('recording.saved_analysis.accept'),
+        onPrimary: onAnalyze,
+        secondaryLabel: t('recording.saved_analysis.later'),
+        onSecondary: onClose,
+      }}
+    />
+  );
+}
+
 export function ReplaceImageSheet({
   visible,
   onClose,

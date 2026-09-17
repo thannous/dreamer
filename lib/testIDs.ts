@@ -331,6 +331,7 @@ export const TID = {
   Sheet: {
     QuotaLimit: 'sheet.quotaLimit',
     AnalysisNotice: 'sheet.analysisNotice',
+    SavedDreamAnalysis: 'sheet.savedDreamAnalysis',
     MicRationale: 'sheet.recording.micRationale',
     OnboardingPrivacy: 'sheet.onboarding.privacy',
     AnalysisOffer: 'sheet.recording.analysisOffer',
