@@ -100,15 +100,14 @@ Deno.test("/transcribe accepts an authenticated request and returns the transcri
   assertEquals(providerCalls, 1);
 });
 
-Deno.test("/transcribe bounds provider output to the app transcript limit", async () => {
+Deno.test("/transcribe returns the complete provider transcript past 600 characters", async () => {
+  const providerTranscript = `  ${"x".repeat(650)}  `;
   const response = await handleTranscribe(
     createContext(validBody(), { id: "user-1" }),
     {
       apiKey: TEST_API_KEY,
       fetch: () => Promise.resolve(Response.json({
-        results: [{ alternatives: [{
-          transcript: `  ${"x".repeat(AI_REQUEST_LIMITS.transcriptChars + 50)}  `,
-        }] }],
+        results: [{ alternatives: [{ transcript: providerTranscript }] }],
       })),
       admitRequest: allowAdmission,
     },
@@ -116,7 +115,39 @@ Deno.test("/transcribe bounds provider output to the app transcript limit", asyn
 
   assertEquals(response.status, 200);
   const body = await response.json();
-  assertEquals(body.transcript.length, AI_REQUEST_LIMITS.transcriptChars);
+  assertEquals(body.transcript, "x".repeat(650));
+  assertEquals(body.transcript.length, 650);
+});
+
+Deno.test("/transcribe preserves a much longer provider transcript and only applies the request-abuse bound", async () => {
+  const longTranscript = "y".repeat(10_000);
+  const longResponse = await handleTranscribe(
+    createContext(validBody(), { id: "user-1" }),
+    {
+      apiKey: TEST_API_KEY,
+      fetch: () => Promise.resolve(Response.json({
+        results: [{ alternatives: [{ transcript: longTranscript }] }],
+      })),
+      admitRequest: allowAdmission,
+    },
+  );
+  assertEquals(longResponse.status, 200);
+  assertEquals((await longResponse.json()).transcript, longTranscript);
+
+  const oversized = "z".repeat(AI_REQUEST_LIMITS.transcriptRequestChars + 80);
+  const boundedResponse = await handleTranscribe(
+    createContext(validBody(), { id: "user-1" }),
+    {
+      apiKey: TEST_API_KEY,
+      fetch: () => Promise.resolve(Response.json({
+        results: [{ alternatives: [{ transcript: oversized }] }],
+      })),
+      admitRequest: allowAdmission,
+    },
+  );
+  assertEquals(boundedResponse.status, 200);
+  const boundedBody = await boundedResponse.json();
+  assertEquals(boundedBody.transcript.length, AI_REQUEST_LIMITS.transcriptRequestChars);
 });
 
 Deno.test("/transcribe rejects an oversized audio payload with 413", async () => {

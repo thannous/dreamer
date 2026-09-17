@@ -5,7 +5,7 @@ const content = {
   chrome: {
     appName: 'Noctalia Lucid Trainer',
     tagline: 'Allena la consapevolezza proteggendo il sonno.',
-    tabs: { today: 'Oggi', programs: 'Programmi', night: 'Notte', progress: 'Progressi', settings: 'Impostazioni' },
+    tabs: { today: 'Oggi', journal: 'Diario', programs: 'Percorsi', night: 'Notte', progress: 'Insight', settings: 'Profilo' },
     common: {
       continue: 'Continua', back: 'Indietro', save: 'Salva', cancel: 'Annulla', done: 'Fatto', retry: 'Riprova', skipTonight: 'Salta questa notte', optional: 'Facoltativo', offlineReady: 'Disponibile offline', loading: 'Caricamento del tuo allenamento…', error: 'Impossibile caricare questo contenuto. L’allenamento salvato resta su questo dispositivo.',
     },
@@ -35,7 +35,7 @@ const content = {
     notificationPermission: 'Le notifiche vengono richieste solo dopo aver creato un promemoria. Se rifiuti, l’allenamento resta disponibile con indicazioni manuali.',
     audioPermission: 'L’audio notturno è inizialmente disattivato. Ascoltalo da sveglio, imposta un volume basso e un timer, poi decidi se attivarlo. Il microfono non serve.',
     accessibilityTitle: 'Adatta l’esperienza',
-    accessibilityBody: 'Sono supportati dimensione del testo di sistema, lettori di schermo, movimento ridotto e aspetto chiaro o scuro. I passaggi essenziali non dipendono mai solo dal colore o dalle animazioni.',
+    accessibilityBody: 'Sono supportati dimensione del testo di sistema, lettori di schermo, movimento ridotto e aspetto dinamico, chiaro o scuro. I passaggi essenziali non dipendono mai solo dal colore o dalle animazioni.',
     consentTitle: 'Le tue scelte restano sotto il tuo controllo',
     consentItems: [
       'L’allenamento funziona offline senza account.',
@@ -216,7 +216,7 @@ const content = {
     consentControl: 'Puoi rivedere o revocare il consenso senza bloccare l’allenamento offline.',
   },
   settings: {
-    title: 'Impostazioni', reminders: 'Promemoria dei test di realtà', sleepWindow: 'Intervallo di sonno abituale', nightSignals: 'Segnali audio notturni', permissions: 'Autorizzazioni', accessibility: 'Accessibilità e movimento', language: 'Lingua', appearance: 'Aspetto chiaro, scuro o di sistema', privacy: 'Privacy e analisi', dataManagement: 'Esporta ed elimina i dati', subscription: 'Noctalia Plus e acquisti', noctaliaConnection: 'Collegamento a Noctalia', scienceAndLimits: 'Scienza e limiti', help: 'Aiuto e sicurezza', about: 'Informazioni su Lucid Trainer',
+    title: 'Impostazioni', reminders: 'Promemoria dei test di realtà', sleepWindow: 'Intervallo di sonno abituale', nightSignals: 'Segnali audio notturni', permissions: 'Autorizzazioni', accessibility: 'Accessibilità e movimento', language: 'Lingua', appearance: 'Aspetto dinamico, chiaro, scuro o di sistema', privacy: 'Privacy e analisi', dataManagement: 'Esporta ed elimina i dati', subscription: 'Noctalia Plus e acquisti', noctaliaConnection: 'Collegamento a Noctalia', scienceAndLimits: 'Scienza e limiti', help: 'Aiuto e sicurezza', about: 'Informazioni su Lucid Trainer',
   },
 } as const satisfies LucidTrainerContent;
 

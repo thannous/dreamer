@@ -2,9 +2,9 @@ import { BlurView } from 'expo-blur';
 import { useRouter } from 'expo-router';
 // expo-router ships its own copy of the drawer navigator; its props type is
 // the one the `drawerContent` callback is actually given.
-import type { DrawerContentComponentProps } from 'expo-router/drawer';
+import { getDrawerStatusFromState, type DrawerContentComponentProps } from 'expo-router/drawer';
 import React from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScopedTheme } from 'uniwind';
@@ -16,6 +16,7 @@ import { usePressMotion } from '@/hooks/usePressMotion';
 import type { TranslationKey } from '@/lib/i18n';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const LINK_HIT_SLOP = { top: 6, bottom: 6, left: 4, right: 4 } as const;
 
 /**
  * What the panel leads to. Everything here already exists in the root stack —
@@ -44,13 +45,14 @@ function DrawerLink({
 
   return (
     <AnimatedPressable
-      accessibilityRole="button"
+      accessibilityRole="link"
       accessibilityLabel={label}
+      hitSlop={LINK_HIT_SLOP}
       onPress={() => onNavigate(href)}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      style={style}
-      className="flex-row items-center gap-4 rounded-xl px-3 py-3">
+      style={[styles.link, style]}
+      className="flex-row items-center gap-4 rounded-xl px-3">
       <IconSymbol name={icon as never} size={20} color={colors.accentText} />
       <Text variant="body">{label}</Text>
     </AnimatedPressable>
@@ -64,11 +66,12 @@ function DrawerLink({
  * reason the tab pill does — a single surface that never scrolls, sitting over
  * content it needs to obscure.
  */
-export function DrawerContent({ navigation }: DrawerContentComponentProps) {
+export function DrawerContent({ navigation, state }: DrawerContentComponentProps) {
   const { t } = useTranslation();
   const { mode, colors } = useChromeTheme();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const isOpen = getDrawerStatusFromState(state) === 'open';
 
   const go = (href: string) => {
     navigation.closeDrawer();
@@ -79,6 +82,8 @@ export function DrawerContent({ navigation }: DrawerContentComponentProps) {
     <BlurView
       intensity={mode === 'dark' ? 40 : 48}
       tint={mode === 'dark' ? 'dark' : 'light'}
+      accessibilityViewIsModal={isOpen}
+      importantForAccessibility={isOpen ? 'yes' : 'no-hide-descendants'}
       style={{
         flex: 1,
         backgroundColor: colors.navbarBg,
@@ -110,3 +115,11 @@ export function DrawerContent({ navigation }: DrawerContentComponentProps) {
     </BlurView>
   );
 }
+
+const styles = StyleSheet.create({
+  link: {
+    minHeight: 48,
+    minWidth: 48,
+    justifyContent: 'center',
+  },
+});

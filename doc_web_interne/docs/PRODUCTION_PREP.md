@@ -47,7 +47,7 @@ la piste Internal Testing.
 - Aucun fichier `.jks` / `.keystore` n'est actuellement tracké par git, et `.gitignore` couvre ces extensions. Avant release, confirmer que les credentials Android prod sont bien gérés par EAS remote credentials ou Play App Signing.
 - `app.json` ne déclare actuellement que `RECORD_AUDIO` et `MODIFY_AUDIO_SETTINGS` côté Android. Avant soumission, vérifier l'AAB/manifest généré pour confirmer l'absence de permissions legacy (`READ/WRITE_EXTERNAL_STORAGE`, `SYSTEM_ALERT_WINDOW`) ajoutées par un plugin. Ajouter/justifier `POST_NOTIFICATIONS` seulement si le produit demande réellement la permission notifications en production.
 - Données sensibles: micro + transcripts envoyés au backend → prévoir Privacy Policy + fiche Data Safety (collecte audio/texte, identifiants supabase, analytics si ajoutés).
-- Mises à jour OTA: `runtimeVersion` appVersion, `updates.url` configuré (expo-owner tanuki75). Utiliser le même compte Expo pour les builds de prod.
+- Mises à jour OTA: `runtimeVersion.policy` `fingerprint`, `updates.url` configuré (expo-owner tanuki75). Utiliser le même compte Expo pour les builds de prod. La policy fingerprint lie les OTA à la compatibilité native réelle, pas au numéro de version marketing.
 
 ## Tests / validation
 - Lancer `npm run typecheck:app`, `npm run lint`, `npm test -- --runInBand --watchman=false`, Maestro flows (`npm run test:e2e*` selon périmètre), puis `eas build --platform android --profile production` (AAB).

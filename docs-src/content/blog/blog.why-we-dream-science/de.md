@@ -457,7 +457,7 @@
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8"> Gestellte Fragen</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Häufig gestellte Fragen</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">

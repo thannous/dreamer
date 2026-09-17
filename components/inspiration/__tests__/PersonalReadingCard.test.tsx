@@ -60,7 +60,7 @@ describe('PersonalReadingCard', () => {
     expect(screen.getByTestId(TID.Text.PersonalReadingReminder).textContent).toBe('Tomorrow at 07:00');
 
     fireEvent.click(screen.getByTestId(TID.Button.PersonalReadingNext));
-    expect(mockPush).toHaveBeenCalledWith('/journal/42');
+    expect(mockPush).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42' } });
     fireEvent.click(screen.getByTestId(TID.Button.PersonalReadingRecap));
     expect(mockPush).toHaveBeenCalledWith('/weekly-recap');
   });

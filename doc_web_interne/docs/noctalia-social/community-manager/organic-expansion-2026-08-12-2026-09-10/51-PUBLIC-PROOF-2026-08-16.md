@@ -8,13 +8,13 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | Créneau | Plateforme et compte | Heure | Asset exact | État préparatoire | URL publique vérifiée |
 |---|---|---:|---|---|---|
 | C1 | TikTok `@noctaliadreams` | 15:30 | `09-monde-miroir-brisure.mp4` | **PUBLIÉ** | [URL publique](https://www.tiktok.com/@noctaliadreams/video/7672907476156615958) |
-| C1 | Instagram `@noctaliadreams` | 15:45 | `09-monde-miroir-brisure.mp4` | **PRÊT — DIRECT** | À publier puis vérifier après 15:45 |
+| C1 | Instagram `@noctaliadreams` | 15:45 | `09-monde-miroir-brisure.mp4` | **ÉCHEC — NON PUBLIÉ** | Réconciliation du 04/09 : aucun Reel public exact ni ligne Instagram correspondante dans l'export Insights 90 jours ; aucune URL inventée |
 | C1 | X `@NoctaliaDreams` | 16:15 | `09-monde-miroir-brisure.mp4` | **PUBLIÉ** | [URL publique](https://x.com/NoctaliaDreams/status/2088992927599222981) |
 | C2 | TikTok `@noctaliadreams` | 19:30 | `10-constellation-naissance.mp4` | **PUBLIÉ** | [URL publique](https://www.tiktok.com/@noctaliadreams/video/7672907603541871894) |
-| C2 | Instagram `@noctaliadreams` | 19:45 | `10-constellation-naissance.mp4` | **PRÊT — DIRECT** | À publier puis vérifier après 19:45 |
+| C2 | Instagram `@noctaliadreams` | 19:45 | `10-constellation-naissance.mp4` | **ÉCHEC — NON PUBLIÉ** | Réconciliation du 04/09 : aucun Reel public exact ni ligne Instagram correspondante dans l'export Insights 90 jours ; aucune URL inventée |
 | C2 | X `@NoctaliaDreams` | 20:15 | `10-constellation-naissance.mp4` | **PUBLIÉ** | [URL publique](https://x.com/NoctaliaDreams/status/2089053325538840775) |
 | C3 | TikTok `@noctaliadreams` | 22:30 | `HIGGS_2026-08-05_130802_CRAYON_MARKET_b09972e9.mp4` | **PUBLIÉ** | [URL publique](https://www.tiktok.com/@noctaliadreams/video/7672907707799702806) |
-| C3 | Instagram `@noctaliadreams` | 22:45 | `HIGGS_2026-08-05_130802_CRAYON_MARKET_b09972e9.mp4` | **PRÊT — DIRECT** | À publier puis vérifier après 22:45 |
+| C3 | Instagram `@noctaliadreams` | 22:45 | `HIGGS_2026-08-05_130802_CRAYON_MARKET_b09972e9.mp4` | **ÉCHEC — NON PUBLIÉ** | Réconciliation du 04/09 : aucun Reel public exact ni ligne Instagram correspondante dans l'export Insights 90 jours ; aucune URL inventée |
 | C3 | X `@NoctaliaDreams` | 23:15 | `HIGGS_2026-08-05_130802_CRAYON_MARKET_b09972e9.mp4` | **PUBLIÉ** | [URL publique](https://x.com/NoctaliaDreams/status/2089098624043225268) |
 
 ## Hero secondaire — 3 preuves

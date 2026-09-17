@@ -93,16 +93,16 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Tabla de Contenidos
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#porque">1. Por qué sonamos con nuestros ex</a></li>
+<li><a class="toc-link block" href="#porque">1. Por qué soñamos con nuestros ex</a></li>
 <li><a class="toc-link block" href="#escenarios">2. Escenarios comunes de sueños con ex</a></li>
 <li><a class="toc-link block" href="#significados">3. Lo que estos sueños significan</a></li>
 <li><a class="toc-link block" href="#psicología">4. La psicología explicada</a></li>
 <li><a class="toc-link block" href="#actual">5. Cuando estás en una nueva relación</a></li>
-<li><a class="toc-link block" href="#seguir">6. Como procesar estos sueños</a></li>
+<li><a class="toc-link block" href="#seguir">6. Cómo procesar estos sueños</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
-<h2 id="porque">Sueños con tu ex: por qué sonamos con exparejas</h2>
+<h2 id="porque">Sueños con tu ex: por qué soñamos con exparejas</h2>
 <p>
                     Primero, abordemos el tema directamente: <strong>soñar con tu ex no significa que quieras volver con esa persona</strong>. De hecho, la mayoría de los sueños con ex no tienen nada que ver con querer reavivar la relación.
                 </p>
@@ -151,7 +151,7 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="bed"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Sueños intimos</h3>
+<h3 class="font-serif text-lg text-dream-cream">Sueños íntimos</h3>
 </div>
 <p class="text-sm text-gray-300">
                         Los sueños sexuales con un ex son comunes y no significan que lo/la quieras. A menudo representan <strong>extrañar la intimidad en general</strong> o reconectarte con tu propia sensualidad.
@@ -209,7 +209,7 @@
 <p>
                     Algo en tu vida actual puede desencadenar sueños con ex. Quizás estás enfrentando situaciones similares - <strong>problemas de confianza, desafíos de comunicación o dinámicas de relación</strong> - que tu cerebro asocia con esa relación pasada.
                 </p>
-<h3>5. Extranar partes de ti mismo</h3>
+<h3>5. Extrañar partes de ti mismo</h3>
 <p>
                     A veces perdemos partes de nosotros mismos en las relaciones o sus secuelas. Los sueños con un ex pueden representar <strong>aspectos de ti mismo de esa época</strong> - pasatiempos abandonados, confianza perdida o una versión de ti que extrañas.
                 </p>
@@ -259,7 +259,7 @@
 <p>
                     No hay obligación de compartir sueños. Considera el contexto: ¿Ayudaría a tu relación o causaria preocupación innecesaria? Si los sueños con ex son frecuentes y angustiantes, <strong>discutir patrones (no detalles)</strong> con un terapeuta puede ser más apropiado.
                 </p>
-<h2 id="seguir">Como procesar estos sueños</h2>
+<h2 id="seguir">Cómo procesar estos sueños</h2>
 <h3>1. Escribe sobre ello</h3>
 <p>
                     Anota el sueño inmediatamente al despertar. Registra <strong>el escenario, emociones y cualquier símbolo</strong> (como una <a class="text-dream-salmon hover:underline" href="../simbolos/casa">casa</a>, una <a class="text-dream-salmon hover:underline" href="../simbolos/puerta">puerta</a>, un <a class="text-dream-salmon hover:underline" href="../simbolos/telefono">teléfono</a> o un <a class="text-dream-salmon hover:underline" href="../simbolos/espejo">espejo</a>). Con el tiempo, emergen patrones que revelan en qué está trabajando tu subconsciente.
@@ -272,7 +272,7 @@
 <p>
                     Si sentimientos no resueltos impulsan los sueños, crea tu propio cierre. Escribe una carta (no tienes que enviarla), <strong>reconoce lo que aprendiste y libera conscientemente</strong> lo que ya no te sirve.
                 </p>
-<h3>4. Enfocate en el crecimiento</h3>
+<h3>4. Enfócate en el crecimiento</h3>
 <p>
                     En lugar de ver los sueños con ex como retrocesos, velos como <strong>evidencia de procesamiento emocional continuo</strong>. Tu cerebro está haciendo trabajo importante integrando experiencias pasadas.
                 </p>
@@ -360,7 +360,7 @@
 <p class="mt-6 text-xs text-purple-200/60">Actualizado el 6 de enero de 2026</p>
 </section>
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Articulos Relacionados</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Artículos Relacionados</h2>
 <div class="grid md:grid-cols-2 gap-6">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="significado-suenos-recurrentes">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>

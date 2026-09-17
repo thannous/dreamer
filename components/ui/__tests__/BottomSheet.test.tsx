@@ -3,10 +3,13 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
+
 import {
   BottomSheet,
   getNativeBottomSheetContentWidth,
 } from '@/components/ui/BottomSheet';
+
+jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 24, bottom: 24, left: 0, right: 0 }) }));
 
 jest.mock('react-native', () => require('../../../tests/react-native-stub'));
 
@@ -14,9 +17,9 @@ afterEach(cleanup);
 
 describe('BottomSheet Expo UI adapter', () => {
   it('gives auto-sized native hosts an explicit content width', () => {
-    expect(getNativeBottomSheetContentWidth(402, 'ios')).toBe(370);
-    expect(getNativeBottomSheetContentWidth(1024, 'ios')).toBe(508);
-    expect(getNativeBottomSheetContentWidth(800, 'android')).toBe(608);
+    expect(getNativeBottomSheetContentWidth(402, 'ios')).toBe(402);
+    expect(getNativeBottomSheetContentWidth(1024, 'ios')).toBe(540);
+    expect(getNativeBottomSheetContentWidth(800, 'android')).toBe(640);
   });
 
   it('hosts the existing React Native content in the presented sheet', () => {

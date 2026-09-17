@@ -14,6 +14,7 @@ import { jsonResponse } from '../lib/http.ts';
 import {
   AI_REQUEST_LIMITS,
   aiInputErrorResponse,
+  parseLegacyImageTranscriptInput,
   validateBoundedText,
 } from '../lib/aiRequestPolicy.ts';
 import { admitSynchronousAiRequest } from '../services/aiAdmission.ts';
@@ -171,12 +172,8 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
       required: false,
     });
     if (!promptInput.ok) return aiInputErrorResponse(promptInput);
-    const transcriptInput = validateBoundedText(body?.transcript, {
-      field: 'transcript',
-      maxChars: AI_REQUEST_LIMITS.transcriptChars,
-      required: false,
-    });
-    if (!transcriptInput.ok) return aiInputErrorResponse(transcriptInput);
+    const parsedTranscript = parseLegacyImageTranscriptInput(body?.transcript);
+    if (parsedTranscript instanceof Response) return parsedTranscript;
     const previousImageInput = validateBoundedText(body?.previousImageUrl, {
       field: 'previousImageUrl',
       maxChars: AI_REQUEST_LIMITS.previousImageUrlChars,
@@ -185,7 +182,7 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
     if (!previousImageInput.ok) return aiInputErrorResponse(previousImageInput);
 
     let prompt = promptInput.value;
-    const transcript = transcriptInput.value;
+    const transcript = parsedTranscript.promptTranscript;
     const previousImageUrl = previousImageInput.value;
 
     if (!prompt && !transcript) {
@@ -309,12 +306,8 @@ export async function handleGenerateImageWithReference(ctx: ApiContext): Promise
       required: false,
     });
     if (!promptInput.ok) return aiInputErrorResponse(promptInput);
-    const transcriptInput = validateBoundedText(body?.transcript, {
-      field: 'transcript',
-      maxChars: AI_REQUEST_LIMITS.transcriptChars,
-      required: false,
-    });
-    if (!transcriptInput.ok) return aiInputErrorResponse(transcriptInput);
+    const parsedTranscript = parseLegacyImageTranscriptInput(body?.transcript);
+    if (parsedTranscript instanceof Response) return parsedTranscript;
     const referenceImages = body?.referenceImages ?? [];
     const previousImageInput = validateBoundedText(body?.previousImageUrl, {
       field: 'previousImageUrl',
@@ -323,7 +316,7 @@ export async function handleGenerateImageWithReference(ctx: ApiContext): Promise
     });
     if (!previousImageInput.ok) return aiInputErrorResponse(previousImageInput);
     let prompt = promptInput.value;
-    const transcript = transcriptInput.value;
+    const transcript = parsedTranscript.promptTranscript;
     const previousImageUrl = previousImageInput.value;
 
     if (!prompt && !transcript) {

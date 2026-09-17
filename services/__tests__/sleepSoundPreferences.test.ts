@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const mockStorage = {
@@ -16,9 +17,20 @@ describe('sleepSoundPreferences', () => {
     jest.clearAllMocks();
     mockStorage.getItem.mockResolvedValue(null);
     mockStorage.setItem.mockResolvedValue(undefined);
+    Platform.OS = 'ios';
     jest.doMock('expo-sqlite/kv-store', () => ({
       __esModule: true,
       default: mockStorage,
+    }));
+    jest.doMock('@react-native-async-storage/async-storage', () => ({
+      __esModule: true,
+      default: {
+        getItem: jest.fn(async () => {
+          throw new Error('sleep sound native tests must not use web AsyncStorage');
+        }),
+        setItem: jest.fn(async () => undefined),
+        removeItem: jest.fn(async () => undefined),
+      },
     }));
     preferencesModule = require('@/services/sleepSoundPreferences');
   });

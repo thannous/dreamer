@@ -22,8 +22,13 @@ const state = {
     analyticsConsent: false,
   },
   experiments: [],
-  progress: [],
+  progress: [] as {
+    technique: string;
+    currentDay: number;
+    completedExerciseIds: string[];
+  }[],
   preferences: {
+    audioCuesEnabled: false,
     noctaliaLinkEnabled: false,
     timeZone: 'UTC',
   },
@@ -38,6 +43,14 @@ jest.mock('@expo/vector-icons', () => ({
   Ionicons: () => null,
 }));
 
+jest.mock('expo-image', () => ({
+  Image: ({ testID }: { testID?: string }) => <img alt="" data-testid={testID} />,
+}));
+
+jest.mock('expo-audio', () => ({
+  requestRecordingPermissionsAsync: jest.fn().mockResolvedValue({ granted: true }),
+}));
+
 jest.mock('expo-router', () => ({
   router: {
     back: mockBack,
@@ -45,10 +58,17 @@ jest.mock('expo-router', () => ({
     push: mockPush,
     replace: mockReplace,
   },
+  useFocusEffect: (callback: () => void | (() => void)) => {
+    const React = require('react');
+    React.useEffect(callback, [callback]);
+  },
   useLocalSearchParams: () => mockRouteParams,
 }));
 
 jest.mock('@/constants/lucidTheme', () => ({
+  // Les échelles sont des constantes pures : aucune raison de les simuler, et
+  // les simuler faisait planter les StyleSheet.create qui les lisent au chargement.
+  ...jest.requireActual('@/constants/lucidTheme'),
   getLucidPalette: () => ({
     accent: '#7654d4',
     accentSoft: '#eee8ff',
@@ -70,18 +90,39 @@ jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({ colors: {}, mode: 'light' }),
 }));
 
+
+
+jest.mock('@/hooks/useLucidReducedMotion', () => ({
+  useLucidReducedMotion: () => false,
+}));
+
+jest.mock('@/hooks/useLucidGuidedRitualSound', () => ({
+  useLucidGuidedRitualSound: () => ({
+    playTransition: jest.fn().mockResolvedValue(false),
+    stop: jest.fn().mockResolvedValue(undefined),
+  }),
+}));
+
+jest.mock('@/components/lucid/LucidGuideOrb', () => ({
+  LucidGuideOrb: () => null,
+}));
+
 jest.mock('@/context/LucidTrainerContext', () => {
   const { getLucidContent } = jest.requireActual('@/lib/lucid/content');
   return {
+    useLucidObservations: () => ({ dreams: [], loaded: true }),
     useLucidTrainer: () => ({
       state,
       content: getLucidContent('en'),
+      activeDreamSigns: [],
       addExperiment: mockAddExperiment,
       addRealityCheck: mockAddRealityCheck,
       saveWeeklyReview: mockSaveWeeklyReview,
       startProgram: mockStartProgram,
       pauseProgram: mockPauseProgram,
       completeProgramSession: jest.fn(),
+      updateGuidedRitual: jest.fn(),
+      completeGuidedRitualSession: jest.fn(),
       resetLocalData: jest.fn(),
     }),
   };
@@ -121,18 +162,28 @@ jest.mock('@/services/lucidTrainerNotifications', () => ({
 }));
 
 jest.mock('@/components/lucid/LucidUI', () => ({
+  // Primitives ajoutées par C4 : le double doit suivre le composant, sinon
+  // l'écran rend `undefined` et la suite tombe sur « Element type is invalid ».
+  LucidIconTile: () => null,
+  LucidOverline: ({ text }: { text: string }) => <span>{text}</span>,
   LucidScreen: ({
     children,
+    footer,
+    subtitle,
     testID,
     trailing,
   }: {
     children: React.ReactNode;
+    footer?: React.ReactNode;
+    subtitle?: string;
     testID?: string;
     trailing?: React.ReactNode;
   }) => (
     <main data-testid={testID}>
       {trailing}
+      {subtitle ? <p>{subtitle}</p> : null}
       {children}
+      {footer}
     </main>
   ),
   LucidIconAction: ({ label, onPress }: { label: string; onPress: () => void }) => (
@@ -222,7 +273,7 @@ const coldRoutes = [
   {
     name: 'session',
     screen: <LucidSessionScreen />,
-    closeLabel: 'Back',
+    closeLabel: 'Cancel',
     fallback: '/lucid/program/mild',
   },
 ] as const;
@@ -232,6 +283,7 @@ describe('Lucid cold-route navigation', () => {
     jest.clearAllMocks();
     mockCanGoBack.mockReturnValue(false);
     mockRouteParams = { id: 'mild', program: 'mild', session: '1' };
+    state.progress = [];
   });
 
   afterEach(cleanup);
@@ -264,6 +316,10 @@ describe('Lucid cold-route navigation', () => {
   it('uses the same cold-launch fallback after saving a morning review', async () => {
     render(<LucidMorningScreen />);
 
+    fireEvent.click(screen.getByRole('button', { name: 'Nothing for now' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Unsure' }));
+    fireEvent.click(screen.getByTestId('lucid-morning-next'));
+
     fireEvent.click(screen.getByTestId('lucid-morning-save'));
     await waitFor(() => expect(mockAlert).toHaveBeenCalledTimes(1));
 
@@ -272,5 +328,57 @@ describe('Lucid cold-route navigation', () => {
 
     expect(mockReplace).toHaveBeenCalledWith('/lucid');
     expect(mockBack).not.toHaveBeenCalled();
+  });
+
+  it('keeps the weekly note optional until the final recap, then persists it once', async () => {
+    render(<LucidWeeklyScreen />);
+
+    fireEvent.click(screen.getByTestId('lucid-weekly-next'));
+    fireEvent.change(screen.getByTestId('lucid-weekly-notes'), {
+      target: { value: 'A calmer bedtime helped.' },
+    });
+    fireEvent.click(screen.getByTestId('lucid-weekly-review'));
+
+    expect(mockSaveWeeklyReview).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByTestId('lucid-weekly-save'));
+    await waitFor(() => expect(mockSaveWeeklyReview).toHaveBeenCalledTimes(1));
+
+    expect(mockSaveWeeklyReview).toHaveBeenCalledWith(expect.objectContaining({
+      notes: 'A calmer bedtime helped.',
+    }));
+  });
+
+  it('blocks a future sequential session opened by URL and offers an explicit return', () => {
+    state.progress = [
+      {
+        technique: 'mild',
+        currentDay: 1,
+        completedExerciseIds: [],
+      },
+    ];
+    mockRouteParams = { id: 'mild', program: 'mild', session: '3' };
+    render(<LucidSessionScreen />);
+
+    expect(
+      screen.getByText('This session opens after the previous one. The calendar is only a suggestion.')
+    ).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Back to program' }));
+    expect(mockReplace).toHaveBeenCalledWith('/lucid/program/mild');
+    expect(mockBack).not.toHaveBeenCalled();
+  });
+
+  it('still reopens a completed session from a direct URL', () => {
+    state.progress = [
+      {
+        technique: 'mild',
+        currentDay: 3,
+        completedExerciseIds: ['mild-01', 'mild-02'],
+      },
+    ];
+    mockRouteParams = { id: 'mild', program: 'mild', session: '1' };
+    render(<LucidSessionScreen />);
+
+    expect(screen.getByTestId('lucid-session-complete')).toBeTruthy();
+    expect(screen.queryByTestId('lucid-session-unavailable-back')).toBeNull();
   });
 });

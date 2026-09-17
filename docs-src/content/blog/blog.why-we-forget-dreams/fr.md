@@ -166,7 +166,7 @@
 <p>
                     Fait crucial : <strong>les phases REM s'allongent au fil de la nuit</strong>. La première dure à peine 10 minutes, tandis que les dernières (au petit matin) peuvent atteindre 60 minutes. C'est pourquoi les rêves dont on se souvient le mieux sont généralement ceux du matin.
                 </p>
-<h3>Le moment du réveil determine le souvenir de vos rêves</h3>
+<h3>Le moment du réveil détermine le souvenir de vos rêves</h3>
 <p>
                     Si vous vous réveillez en plein milieu d'un rêve (pendant le sommeil REM), vous avez environ <strong>80% de chances de vous en souvenir</strong>. Mais si vous vous réveillez pendant une autre phase du sommeil, ce taux <a class="text-dream-salmon hover:underline" href="../symboles/chute">chute</a> à 20%.
                 </p>
@@ -221,7 +221,7 @@
 <div class="p-2 bg-blue-500/20 rounded-lg">
 <i class="w-5 h-5 text-blue-300" data-lucide="smartphone"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Les ecrans avant le coucher</h3>
+<h3 class="font-serif text-lg text-dream-cream">Les écrans avant le coucher</h3>
 </div>
 <p class="text-sm text-gray-300">
                         La lumiere bleue des ecrans supprime la production de melatonine et retarde l'endormissement. Mais surtout, consulter son telephone dès le réveil detourne immédiatement l'attention des souvenirs oniriques, les effacant avant qu'ils ne puissent être consolides.
@@ -232,7 +232,7 @@
 <div class="p-2 bg-amber-500/20 rounded-lg">
 <i class="w-5 h-5 text-amber-300" data-lucide="wine"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">L'alcool et certains medicaments</h3>
+<h3 class="font-serif text-lg text-dream-cream">L'alcool et certains médicaments</h3>
 </div>
 <p class="text-sm text-gray-300">
                         L'alcool supprime le sommeil REM en début de nuit, puis provoque un "rebond REM" avec des rêves intenses mais fragmentés. Certains medicaments (antidepresseurs, somniferes, beta-bloquants) modifient également la chimie cérébrale et reduisent le rappel des rêves.
@@ -266,14 +266,14 @@
                     Pour un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> efficace :
                 </p>
 <ul>
-<li>Gardez de quoi ecrire (ou enregistrer) juste à cote de votre lit</li>
-<li>Notez tout immédiatement, avant même de vous lever ou de consulter votre telephone</li>
-<li>Commencez par les emotions et les images les plus fortes</li>
-<li>Ne cherchez pas à interpreter tout de suite, capturez d'abord</li>
-<li>Même un fragment vaut la peine d'être note</li>
+<li>Gardez de quoi écrire (ou enregistrer) juste à côté de votre lit</li>
+<li>Notez tout immédiatement, avant même de vous lever ou de consulter votre téléphone</li>
+<li>Commencez par les émotions et les images les plus fortes</li>
+<li>Ne cherchez pas à interpréter tout de suite, capturez d'abord</li>
+<li>Même un fragment vaut la peine d'être noté</li>
 </ul>
 <p>
-                    Après 1 à 2 semaines de pratique régulière, la plupart des personnes constatent une <strong>amelioration spectaculaire</strong> de leur rappel onirique. Pour aller plus loin, consultez notre <a href="comment-se-souvenir-de-ses-reves">guide complet pour se souvenir de ses rêves</a>.
+                    Après 1 à 2 semaines de pratique régulière, la plupart des personnes constatent une <strong>amélioration spectaculaire</strong> de leur rappel onirique. Pour aller plus loin, consultez notre <a href="comment-se-souvenir-de-ses-reves">guide complet pour se souvenir de ses rêves</a>.
                 </p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -306,7 +306,7 @@
 <p>
                     Cela fonctionne car la technique <strong>active la mémoire prospective</strong> (la capacité à se souvenir d'effectuer une action dans le futur) et oriente l'attention du cerveau vers les expériences oniriques.
                 </p>
-<h3>Optimiser son hygiene de sommeil pour mieux rêver</h3>
+<h3>Optimiser son hygiène de sommeil pour mieux rêver</h3>
 <p>
                     La qualité du sommeil influence directement la quantité et l'intensité des rêves. Un sommeil de mauvaise qualité réduit les phases REM et compromet la mémoire onirique.
                 </p>
@@ -321,7 +321,7 @@
 <p>
                     Pour des conseils detailles sur l'<a href="guide-incubation-reves">incubation de rêves</a>, consultez notre guide spécialisé.
                 </p>
-<h3>Le reve lucide comme outil de mémorisation</h3>
+<h3>Le rêve lucide comme outil de mémorisation</h3>
 <p>
                     Le <a href="guide-reve-lucide-debutant">reve lucide</a> est l'art de devenir conscient que l'on reve tout en restant endormi. Cette pratique ameliore naturellement la mémoire des rêves car elle renforce la connexion entre la conscience vigile et les expériences oniriques.
                 </p>
@@ -339,7 +339,7 @@
                     Rappelons que :
                 </p>
 <ul>
-<li><strong>Tout le monde reve</strong>, même ceux qui pensent ne jamais rêver. Les études en laboratoire le prouvent</li>
+<li><strong>Tout le monde rêve</strong>, même ceux qui pensent ne jamais rêver. Les études en laboratoire le prouvent</li>
 <li><strong>Le rappel des rêves est très variable</strong> d'une personne à l'autre et depend de nombreux facteurs (génétique, personnalite, style de vie)</li>
 <li><strong>Ne pas se souvenir de ses rêves n'affecte pas leur fonction</strong>. Le traitement emotionnel et la consolidation de la mémoire se font indépendamment du rappel conscient</li>
 <li><strong>La mémoire des rêves peut être entraînee</strong> à tout age avec les bonnes techniques</li>
@@ -372,7 +372,7 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Ne laissez plus vos rêves s'echapper</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Ne laissez plus vos rêves s'échapper</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Noctalia vous permet de capturer vos rêves à la voix dès le réveil, avant qu'ils ne s'effacent. L'analyse IA vous aide ensuite à comprendre les themes et motifs de vos nuits.
                 </p>

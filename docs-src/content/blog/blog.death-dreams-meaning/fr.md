@@ -67,7 +67,7 @@
                     Rêves de Mort : Signification et Interprétation
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Vous vous réveillez en sursaut, le coeur battant. Dans votre rêve, vous avez été témoin de la mort - peut-être la votre, peut-être celle d'un être cher. Les émotions persistent : peur, chagrin, confusion. Mais avant que l'anxiété ne vous submergé, sachez ceci - les rêves de mort font partie des plus mal compris. Loin d'être des présages, ils portent souvent des messages profonds sur la transformation, le changement et les nouveaux départs.
+                    Vous vous réveillez en sursaut, le cœur battant. Dans votre rêve, vous avez été témoin de la mort - peut-être la vôtre, peut-être celle d'un être cher. Les émotions persistent : peur, chagrin, confusion. Mais avant que l'anxiété ne vous submergé, sachez ceci - les rêves de mort font partie des plus mal compris. Loin d'être des présages, ils portent souvent des messages profonds sur la transformation, le changement et les nouveaux départs.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -93,12 +93,12 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table des matières
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#reassurance">1. Rever de la mort : pourquoi ne pas paniquer</a></li>
-<li><a class="toc-link block" href="#scénarios">2. Les scénarios courants des reves de mort</a></li>
-<li><a class="toc-link block" href="#interpretations">3. Signification des reves de mort : 6 messages</a></li>
-<li><a class="toc-link block" href="#psychologie">4. Psychologie des reves de mort</a></li>
-<li><a class="toc-link block" href="#culturel">5. Reve de mort : interpretations culturelles</a></li>
-<li><a class="toc-link block" href="#action">6. Que faire apres un reve de mort</a></li>
+<li><a class="toc-link block" href="#reassurance">1. Rêver de la mort : pourquoi ne pas paniquer</a></li>
+<li><a class="toc-link block" href="#scénarios">2. Les scénarios courants des rêves de mort</a></li>
+<li><a class="toc-link block" href="#interpretations">3. Signification des rêves de mort : 6 messages</a></li>
+<li><a class="toc-link block" href="#psychologie">4. Psychologie des rêves de mort</a></li>
+<li><a class="toc-link block" href="#culturel">5. Rêve de mort : interprétations culturelles</a></li>
+<li><a class="toc-link block" href="#action">6. Que faire après un rêve de mort</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
@@ -112,7 +112,7 @@
 <blockquote>
                     "Dans les rêves, la mort est un symbole de transformation. Le rêve vous montre que quelque chose dans votre vie se termine pour que quelque chose de nouveau puisse commencer." - Dr. Rubin Naiman, Spécialiste du sommeil et des rêves
                 </blockquote>
-<h2 id="scénarios">Les scénarios courants des reves de mort</h2>
+<h2 id="scénarios">Les scénarios courants des rêves de mort</h2>
 <p>
                     Chaque scénario de votre rêve de mort fournit des indices importants sur sa signification :
                 </p>
@@ -186,31 +186,31 @@
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="interpretations">Signification des reves de mort : 6 messages</h2>
+<h2 id="interpretations">Signification des rêves de mort : 6 messages</h2>
 <p>
                     Derrière l'imagerie perturbante, les rêves de mort communiquent généralement l'une de ces significations plus profondes :
                 </p>
-<h3>Reve de mort et transformation personnelle</h3>
+<h3>Rêve de mort et transformation personnelle</h3>
 <p>
                     Voici l'interprétation la plus courante. La mort dans les rêves représente la <strong>fin d'un chapitre et le début d'un autre</strong>. Vous dépassez peut-être d'anciennes façons d'être, terminez une phase de vie ou vivez un changement intérieur profond. Comme le phénix, quelque chose doit mourir pour que quelque chose de nouveau naisse.
                 </p>
-<h3>Rever de la mort comme symbole de fin</h3>
+<h3>Rêver de la mort comme symbole de fin</h3>
 <p>
                     Ces rêves apparaissent souvent quand quelque chose dans votre vie <strong>touche à sa fin</strong> - une relation, un emploi, une situation de vie ou une phase. Votre rêve vous aide à traiter et accepter la fin, même si vous n'en êtes pas consciemment conscient.
                 </p>
-<h3>Reve de mort lié a l'anxiete et la peur</h3>
+<h3>Rêve de mort lié à l'anxiété et la peur</h3>
 <p>
-                    Parfois, les rêves de mort reflètent simplement une <strong>anxiété sous-jacente</strong> - concernant la mortalité, la santé, la perte d'êtres chers ou les incertitudes de la vie. Particulièrement apres une perte ou pendant une maladie, ces rêves peuvent traiter vos peurs sous forme symbolique.
+                    Parfois, les rêves de mort reflètent simplement une <strong>anxiété sous-jacente</strong> - concernant la mortalité, la santé, la perte d'êtres chers ou les incertitudes de la vie. Particulièrement après une perte ou pendant une maladie, ces rêves peuvent traiter vos peurs sous forme symbolique.
                 </p>
-<h3>Rever d'un mort et deuil non resolu</h3>
+<h3>Rêver d'un mort et deuil non résolu</h3>
 <p>
                     Les rêves de proches décèdes surgissent souvent quand le <strong>deuil reste non traite</strong>. Le rêve peut offrir une opportunité de connexion continue, de conversations finales ou de travailler sur des sentiments que vous n'avez pas pu exprimer de leur vivant.
                 </p>
-<h3>Reve de mort : apprendre a lacher prise</h3>
+<h3>Rêve de mort : apprendre à lâcher prise</h3>
 <p>
                     Ces rêves peuvent signaler qu'il est temps de <strong>libérer quelque chose</strong> - vieilles rancunes, croyances dépassées, relations toxiques ou versions passées de vous-même. La mort y sert de métaphore pour une libération nécessaire.
                 </p>
-<h3>Rever de la mort comme signal d'alarme</h3>
+<h3>Rêver de la mort comme signal d'alarme</h3>
 <p>
                     Parfois, les rêves de mort servent de <strong>rappel de la mortalité</strong> - pas de manière morbide, mais comme motivation pour vivre plus pleinement. Ils peuvent inciter à la réflexion sur la façon dont vous passez votre temps et si votre vie correspond à vos valeurs.
                 </p>
@@ -228,27 +228,27 @@
 </div>
 </div>
 </aside>
-<h2 id="psychologie">Psychologie des reves de mort</h2>
-<h3>Interpretation freudienne des reves de mort</h3>
+<h2 id="psychologie">Psychologie des rêves de mort</h2>
+<h3>Interprétation freudienne des rêves de mort</h3>
 <p>
                     Freud croyait que les rêves de mort pouvaient représenter une <strong>hostilité refoulée</strong> envers la personne qui meurt dans le rêve, ou des souhaits inconscients (pas nécessairement des souhaits de mort, mais peut-être des désirs de changement ou de liberté). Il les voyait aussi comme des expressions d'anxiété concernant sa propre mortalité.
                 </p>
-<h3>Analyse jungienne des reves de mort</h3>
+<h3>Analyse jungienne des rêves de mort</h3>
 <p>
                     Carl Jung voyait la mort dans les rêves comme une <strong>transformation profonde de la psyché</strong>. La mort représente l'ego mourant à sa perspective limitée, permettant la croissance psychologique et l'intégration. C'est la destruction nécessaire avant la création.
                 </p>
-<h3>Rever de la mort : perspective existentielle</h3>
+<h3>Rêver de la mort : perspective existentielle</h3>
 <p>
                     D'un point de vue existentiel, les rêves de mort nous confrontent à la <strong>conscience humaine fondamentale de la mortalité</strong>. Plutôt que d'être morbides, ils peuvent nous éveiller à vivre plus authentiquement et à faire des choix conscients sur la façon dont nous passons notre temps limite.
                 </p>
-<h3>Recherche moderne sur les reves de mort</h3>
+<h3>Recherche moderne sur les rêves de mort</h3>
 <p>
                     Selon les chercheurs contemporains, les rêves de mort nous aident à <strong>répéter et traiter le concept des fins</strong>. Notre cerveau peut utiliser l'espace sûr des rêves pour explorer la mortalité, la perte et le changement sans conséquences réelles.
                 </p>
 <blockquote>
                     "L'apparition de la mort dans les rêves ne signifie pas nécessairement quelque chose de négatif. Cela peut indiquer que vous faites une transition d'une phase de votre vie à une autre." - Dr. Michael Lennox, Psychologue des rêves
                 </blockquote>
-<h2 id="culturel">Reve de mort : interpretations culturelles</h2>
+<h2 id="culturel">Rêve de mort : interprétations culturelles</h2>
 <p>
                     Différentes cultures ont compris les rêves de mort de diverses manières :
                 </p>
@@ -260,11 +260,11 @@
 <li><strong>Tradition islamique :</strong> Différentes interprétations selon qui meurt et l'état émotionnel du rêveur</li>
 <li><strong>Psychologie occidentale :</strong> Voit généralement les rêves de mort comme symboliques du changement et de la transformation</li>
 </ul>
-<h2 id="action">Que faire apres un reve de mort</h2>
+<h2 id="action">Que faire après un rêve de mort</h2>
 <p>
                     Si les rêves de mort vous troublent, voici comment travailler avec eux de manière constructive :
                 </p>
-<h3>Notez les details de votre reve de mort</h3>
+<h3>Notez les détails de votre rêve de mort</h3>
 <p>
                     Notez tout : qui est mort, comment, ou, et surtout, <strong>comment vous vous sentiez</strong>. Le ton émotionnel révèle souvent plus que le contenu littéral. Aviez-vous peur ? Étiez-vous en paix ? Soulage ? Triste ?
                 </p>
@@ -272,15 +272,15 @@
 <p>
                     Demandez-vous : <strong>Qu'est-ce qui se termine ou change dans ma vie ?</strong> Nouvel emploi ? Changement relationnel ? Croissance personnelle ? Déménagement ? La mort dans votre rêve peut refléter une transition du monde réel.
                 </p>
-<h3>Analysez qui meurt dans votre reve</h3>
+<h3>Analysez qui meurt dans votre rêve</h3>
 <p>
                     Si quelqu'un de spécifique est mort, <strong>que représente-t-il pour vous ?</strong> Quelles qualités lui associez-vous ? Ces qualités peuvent se transformer en vous ou nécessiter attention.
                 </p>
-<h3>Acceptez la fin symbolisee par le reve</h3>
+<h3>Acceptez la fin symbolisée par le rêve</h3>
 <p>
                     Si le rêve signale que quelque chose se termine, <strong>reconnaissez et honorez consciemment cette fin</strong>. Un rituel, l'écriture ou la conversation peuvent vous aider à traiter les transitions que votre rêve met en lumière.
                 </p>
-<h3>Consultez un specialiste si les reves persistent</h3>
+<h3>Consultez un spécialiste si les rêves persistent</h3>
 <p>
                     Si les rêves de mort sont fréquents, intensément perturbants ou lies au deuil ou au traumatisme, envisagez de <strong>parler à un thérapeute</strong>. Il peut vous aider à traiter les émotions sous-jacentes en toute sécurité.
                 </p>

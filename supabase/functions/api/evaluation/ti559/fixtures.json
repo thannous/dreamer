@@ -1,0 +1,94 @@
+[
+  {
+    "id": "en-short",
+    "lang": "en",
+    "kind": "short",
+    "transcript": "I saw a blue door. That is all I remember.",
+    "observations": [
+      "blue door"
+    ],
+    "expectedType": "Unknown",
+    "reportedEmotions": []
+  },
+  {
+    "id": "fr-rich",
+    "lang": "fr",
+    "kind": "rich",
+    "transcript": "Je marchais dans une gare vide avec ma sœur. Une horloge indiquait trois heures. Nous avons attendu sur un banc puis un train rouge est arrivé sans bruit. Je me sentais curieux, sans peur. Ma sœur m'a donné une enveloppe fermée et je me suis réveillé avant de l'ouvrir. Je ne sais pas ce qu'elle contenait. C'est la première fois que je me souviens de ce rêve.",
+    "observations": [
+      "gare vide",
+      "sœur",
+      "trois heures",
+      "banc",
+      "train rouge silencieux",
+      "enveloppe fermée"
+    ],
+    "expectedType": "Unknown",
+    "reportedEmotions": [
+      "curiosité",
+      "absence de peur"
+    ]
+  },
+  {
+    "id": "es-short",
+    "lang": "es",
+    "kind": "short",
+    "transcript": "Había una taza sobre una mesa. No recuerdo nada más.",
+    "observations": [
+      "taza",
+      "mesa"
+    ],
+    "expectedType": "Unknown",
+    "reportedEmotions": []
+  },
+  {
+    "id": "de-rich",
+    "lang": "de",
+    "kind": "rich",
+    "transcript": "Ich stand in einem Garten neben einem gelben Fahrrad. Es begann leise zu regnen. Ich stellte das Fahrrad unter einen Baum und wartete dort. Ein Hund lief am Zaun vorbei. Ich fühlte mich ruhig und hörte die Tropfen auf den Blättern. Dann erkannte ich im Traum ausdrücklich: Ich träume gerade. Ich entschied bewusst, zum Zaun zu gehen. Dann klingelte mein Wecker. Ob ich schon einmal davon geträumt habe, weiß ich nicht.",
+    "observations": [
+      "Garten",
+      "gelbes Fahrrad",
+      "Regen",
+      "Baum",
+      "Hund am Zaun",
+      "Wecker",
+      "ausdrückliches Erkennen im Traum, dass ich träume",
+      "bewusste Entscheidung zum Zaun zu gehen"
+    ],
+    "expectedType": "Lucid Dream",
+    "reportedEmotions": [
+      "Ruhe"
+    ]
+  },
+  {
+    "id": "it-short",
+    "lang": "it",
+    "kind": "short",
+    "transcript": "Ricordo soltanto una finestra aperta e una luce bianca.",
+    "observations": [
+      "finestra aperta",
+      "luce bianca"
+    ],
+    "expectedType": "Unknown",
+    "reportedEmotions": []
+  },
+  {
+    "id": "pt-rich",
+    "lang": "pt",
+    "kind": "rich",
+    "transcript": "Eu estava numa biblioteca procurando um livro verde. Passei três vezes pela mesma estante dentro desse único sonho. Uma bibliotecária apontou para uma escada, mas não disse nada. Subi dois degraus e encontrei o livro fechado. Fiquei contente por encontrá-lo. Acordei antes de ler o título. Não lembro de ter tido esse sonho em outra noite e não sabia que estava sonhando.",
+    "observations": [
+      "biblioteca",
+      "livro verde fechado",
+      "três passagens na mesma estante dentro de um sonho",
+      "bibliotecária",
+      "escada",
+      "dois degraus"
+    ],
+    "expectedType": "Unknown",
+    "reportedEmotions": [
+      "contentamento"
+    ]
+  }
+]

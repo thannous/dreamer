@@ -1,10 +1,23 @@
 import en from '@/lib/i18n/en';
+import de from '@/lib/i18n/de';
+import es from '@/lib/i18n/es';
+import fr from '@/lib/i18n/fr';
+import italian from '@/lib/i18n/it';
+import pt from '@/lib/i18n/pt';
 import {
   buildOptInNotificationSettings,
   deriveWeekendTime,
   getReminderTimeBucket,
   REMINDER_OPT_IN_PRESETS,
 } from '@/lib/reminderOptIn';
+
+const notificationCopyKeys = [
+  'reminders.opt_in.includes',
+  'notifications.analysis_ready.title',
+  'notifications.analysis_ready.body',
+] as const;
+
+const packs = { en, fr, es, de, it: italian, pt } as const;
 
 describe('reminderOptIn', () => {
   it('offers four morning presets', () => {
@@ -24,14 +37,14 @@ describe('reminderOptIn', () => {
         { weekdayEnabled: false, weekdayTime: '07:00', weekendEnabled: false, weekendTime: '10:00' },
         '07:30'
       )
-    ).toEqual({ weekdayEnabled: true, weekdayTime: '07:30', weekendEnabled: true, weekendTime: '08:30', weeklyRecapEnabled: true, streakRiskEnabled: true, inactivityNudgeEnabled: true });
+    ).toEqual({ weekdayEnabled: true, weekdayTime: '07:30', weekendEnabled: true, weekendTime: '08:30', weeklyRecapEnabled: true, streakRiskEnabled: false, inactivityNudgeEnabled: false });
 
     expect(
       buildOptInNotificationSettings(
         { weekdayEnabled: false, weekdayTime: '07:00', weekendEnabled: true, weekendTime: '11:15' },
         '06:30'
       )
-    ).toEqual({ weekdayEnabled: true, weekdayTime: '06:30', weekendEnabled: true, weekendTime: '11:15', weeklyRecapEnabled: true, streakRiskEnabled: true, inactivityNudgeEnabled: true });
+    ).toEqual({ weekdayEnabled: true, weekdayTime: '06:30', weekendEnabled: true, weekendTime: '11:15', weeklyRecapEnabled: true, streakRiskEnabled: false, inactivityNudgeEnabled: false });
   });
 
   it('arms exactly the families the card discloses, and no more', () => {
@@ -43,19 +56,28 @@ describe('reminderOptIn', () => {
       .filter(([, value]) => value === true)
       .map(([key]) => key)
       .sort();
-    // One tap arms the morning reminder (weekday + weekend), the Sunday recap,
-    // the evening streak heads-up and the two comeback nudges. Every family
-    // below must be named in `reminders.opt_in.includes` (rendered by
-    // ReminderOptInCard) before the user accepts — adding one here without
-    // updating that copy is a silent opt-in.
+    // One tap arms the essential morning reminder and the Sunday recap.
+    // Streak and inactivity stay off unless the user already enabled them.
     expect(enabled).toEqual([
-      'inactivityNudgeEnabled',
-      'streakRiskEnabled',
       'weekdayEnabled',
       'weekendEnabled',
       'weeklyRecapEnabled',
     ]);
     expect(en['reminders.opt_in.includes']).toBeTruthy();
+  });
+
+  it('localizes opt-in disclosure and analysis-ready copy in every catalogue', () => {
+    for (const translations of Object.values(packs)) {
+      for (const key of notificationCopyKeys) {
+        expect(translations[key]).toEqual(expect.any(String));
+        expect(translations[key]).not.toBe(key);
+        expect(translations[key].trim()).not.toBe('');
+      }
+      expect(translations['reminders.opt_in.includes'].toLowerCase()).toMatch(/sunday recap|récap du dimanche|resumen del domingo|sonntagsübersicht|riepilogo della domenica|resumo de domingo/);
+      expect(translations['notifications.analysis_ready.body'].toLowerCase()).not.toMatch(
+        /symbol|symbole|símbolo|simbolo|nightmare|cauchemar|pesadilla|incubo|pesadelo/
+      );
+    }
   });
 
   it('buckets reminder times without exposing the exact value', () => {

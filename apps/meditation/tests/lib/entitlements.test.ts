@@ -3,7 +3,9 @@ import {
   canPlaySession,
   canUseBreathingPattern,
   canUseFadeTimer,
+  formatQuotaResetDate,
   FREE_PLAYS_PER_MONTH,
+  freeQuotaResetDay,
   playsThisMonth,
   remainingFreePlays,
 } from '@/lib/entitlements';
@@ -119,5 +121,26 @@ describe('remainingFreePlays', () => {
 
   it('is unbounded for Plus', () => {
     expect(remainingFreePlays('plus', 100)).toBe(Number.POSITIVE_INFINITY);
+  });
+});
+
+describe('freeQuotaResetDay', () => {
+  it('returns the first local day of the next month', () => {
+    expect(freeQuotaResetDay('2026-08-26')).toBe('2026-09-01');
+    expect(freeQuotaResetDay('2026-12-31')).toBe('2027-01-01');
+  });
+});
+
+describe('formatQuotaResetDate', () => {
+  it('localises the reset without leaking an ISO token', () => {
+    expect(formatQuotaResetDate('2026-09-01', 'en')).toBe('1 September 2026');
+    expect(formatQuotaResetDate('2026-09-01', 'fr')).toBe('1 septembre 2026');
+    expect(formatQuotaResetDate('2027-01-01', 'en')).toBe('1 January 2027');
+    expect(formatQuotaResetDate('2027-01-01', 'fr')).toBe('1 janvier 2027');
+    expect(formatQuotaResetDate('2027-01-01', 'de')).toMatch(/Januar 2027/);
+    expect(formatQuotaResetDate('2027-01-01', 'es')).toMatch(/enero de 2027/i);
+    expect(formatQuotaResetDate('2027-01-01', 'it')).toMatch(/gennaio 2027/i);
+    expect(formatQuotaResetDate('2027-01-01', 'pt')).toMatch(/janeiro de 2027/i);
+    expect(formatQuotaResetDate('2027-01-01', 'en')).not.toMatch(/\d{4}-\d{2}-\d{2}/);
   });
 });

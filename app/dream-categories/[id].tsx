@@ -1,3 +1,4 @@
+import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { FlatGlassCard, GlassCard } from '@/components/inspiration/GlassCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
@@ -58,13 +59,13 @@ const CATEGORIES: Category[] = [
 
 export default function DreamCategoriesScreen() {
   const { t } = useTranslation();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
   const { dreams } = useDreams();
   const { colors, shadows, mode } = useTheme();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const scrollPerf = useScrollIdle();
   useClearWebFocus();
-  const dream = dreams.find((d) => d.id === Number(id));
+  const dream = resolveDreamRoute(dreams, route);
   const hasExistingChat = isDreamExplored(dream);
   const exploration360Progress = getExploration360Progress(dream);
   const hasSynthesis = hasExploration360Synthesis(dream);
@@ -85,14 +86,14 @@ export default function DreamCategoriesScreen() {
   const handleCategoryPress = (categoryId: string) => {
     router.push({
       pathname: `/dream-chat/[id]`,
-      params: { id: id, category: categoryId },
+      params: { ...getDreamRouteParams(dream), category: categoryId },
     });
   };
 
   const handleSynthesisPress = () => {
     router.push({
       pathname: `/dream-chat/[id]`,
-      params: { id: id, mode: 'synthesis' },
+      params: { ...getDreamRouteParams(dream), mode: 'synthesis' },
     });
   };
 
@@ -195,7 +196,7 @@ export default function DreamCategoriesScreen() {
             transition={{ type: 'timing', duration: 500, delay: 200 + availableCategories.length * 120 + 80 }}
           >
             <Pressable
-              onPress={() => (hasExistingChat ? router.push(`/dream-chat/${id}`) : handleCategoryPress('general'))}
+              onPress={() => (hasExistingChat ? router.push({ pathname: '/dream-chat/[id]', params: getDreamRouteParams(dream) }) : handleCategoryPress('general'))}
               testID={TID.Button.DreamFreeChat}
               style={[styles.freeChatButton, shadows.md, {
                 backgroundColor: noctalia.action.primary,

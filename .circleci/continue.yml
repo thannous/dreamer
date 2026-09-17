@@ -116,6 +116,16 @@ jobs:
     steps:
       - install-root-dependencies
       - run:
+          name: Verify product import boundaries
+          command: npm run boundaries:check
+      - run:
+          name: Verify CI classification and Jest fallback
+          command: |
+            set -euo pipefail
+            bash .circleci/tests/classify-changes.test.sh
+            python3 .circleci/tests/shared-build-impact.test.py
+            bash .circleci/tests/fallback-jest.test.sh
+      - run:
           name: Typecheck Noctalia application
           command: npm run typecheck:app
       - run:
@@ -211,6 +221,9 @@ jobs:
     steps:
       - install-meditation-dependencies
       - run:
+          name: Verify Meditation import boundaries
+          command: node scripts/check-monorepo-boundaries.js --meditation
+      - run:
           name: Typecheck Meditation application
           working_directory: apps/meditation
           command: npm run typecheck
@@ -257,9 +270,11 @@ jobs:
       - run:
           name: Build site
           command: npm run docs:build
+          no_output_timeout: 30m
       - run:
           name: Check site
           command: npm run docs:check
+          no_output_timeout: 30m
       - run:
           name: Test site tooling changed since the diff base
           environment:
@@ -311,6 +326,7 @@ jobs:
             deno test \
               --frozen \
               --allow-env \
+              --allow-read=../migrations \
               --junit-path=../../artifacts/test-results/deno.xml \
               api \
               revenuecat-webhook

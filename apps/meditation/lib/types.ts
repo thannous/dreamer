@@ -68,8 +68,6 @@ export const INITIAL_ONBOARDING: OnboardingState = {
 /** A category slug doubles as a practice goal — the two vocabularies are one. */
 export type CategorySlug = PracticeGoal;
 
-export type NarratorId = 'camille' | 'adrien' | 'wordless';
-
 export type SessionId = string;
 
 /** Gradient pair painted as artwork, until real artwork exists. */
@@ -80,16 +78,9 @@ export type Category = {
   accent: AccentPair;
 };
 
-export type Narrator = {
-  id: NarratorId;
-  /** Proper noun — the same in every language, so it is not a translation key. */
-  name: string;
-};
-
 export type MeditationSession = {
   id: SessionId;
   categorySlug: CategorySlug;
-  narratorId: NarratorId;
   durationSec: number;
   /** Three, always. A fourth stops being read. */
   benefitCount: 3;
@@ -107,7 +98,7 @@ export type SessionProgress = {
 /**
  * One completed practice — guided session or breathing exercise alike. This is
  * what L5 builds the streak and the statistics from, so a breathing exercise
- * counts exactly as much as a narration.
+ * counts exactly as much as a guided session.
  */
 export type PracticeEntry = {
   /** Local calendar day, `YYYY-MM-DD`. The streak is counted in local days. */

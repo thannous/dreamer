@@ -1,4 +1,4 @@
-/** Testi del catalogo: sessioni, categorie e voci. L’interfaccia vive in `it.ts`. */
+/** Testi del catalogo: sessioni e categorie. L’interfaccia vive in `it.ts`. */
 export const contentIt = {
   'category.sleep.name': 'Sonno',
   'category.sleep.tagline': 'Scendere verso la notte',
@@ -13,10 +13,6 @@ export const contentIt = {
   'category.dream-prep.name': 'Preparazione al sogno',
   'category.dream-prep.tagline': 'Porre una domanda alla notte',
 
-  'narrator.camille.bio': 'Voce dolce, ritmo lento.',
-  'narrator.adrien.bio': 'Voce grave, frasi brevi.',
-  'narrator.wordless.bio': 'Respiro e silenzio, nulla da seguire.',
-
   'session.sleep-descent.title': 'Abbassare il respiro',
   'session.sleep-descent.description':
     'Un’espirazione più lunga dell’inspirazione, finché il corpo capisce che la giornata è finita.',
@@ -28,7 +24,7 @@ export const contentIt = {
   'session.sleep-quick-fall.description':
     'Niente da ascoltare, niente da seguire: un respiro guidato che sfuma mentre te ne vai.',
   'session.sleep-quick-fall.benefit.1': 'Per le notti corte',
-  'session.sleep-quick-fall.benefit.2': 'Senza voce',
+  'session.sleep-quick-fall.benefit.2': 'Respiro e silenzio',
   'session.sleep-quick-fall.benefit.3': 'Si interrompe da sola',
 
   'session.sleep-body-scan.title': 'Il corpo che si posa',
@@ -43,7 +39,7 @@ export const contentIt = {
     'Per i risvegli delle tre: riprendere il sonno senza lottare contro l’insonnia.',
   'session.sleep-night-return.benefit.1': 'Risvegli notturni',
   'session.sleep-night-return.benefit.2': 'Senza schermo',
-  'session.sleep-night-return.benefit.3': 'Voce molto bassa',
+  'session.sleep-night-return.benefit.3': 'Ambiente basso',
 
   'session.stress-shoulders.title': 'Posare le spalle',
   'session.stress-shoulders.description':
@@ -89,9 +85,9 @@ export const contentIt = {
 
   'session.focus-thread.title': 'Riprendere il filo',
   'session.focus-thread.description':
-    'Dopo un’interruzione, dieci minuti senza voce per ritrovare dove eri.',
+    'Dopo un’interruzione, dieci minuti di respiro e silenzio per ritrovare dove eri.',
   'session.focus-thread.benefit.1': 'Dopo uno stacco',
-  'session.focus-thread.benefit.2': 'Senza voce',
+  'session.focus-thread.benefit.2': 'Respiro e silenzio',
   'session.focus-thread.benefit.3': 'Durante il giorno',
 
   'session.focus-deep.title': 'Scendere nel lavoro',
@@ -113,7 +109,7 @@ export const contentIt = {
     'L’ansia sale e ridiscende. Impariamo a non seguirla fino in cima.',
   'session.anxiety-wave.benefit.1': 'Non combatte l’ansia',
   'session.anxiety-wave.benefit.2': 'Insegna ad aspettare',
-  'session.anxiety-wave.benefit.3': 'Voce ferma',
+  'session.anxiety-wave.benefit.3': 'Ritmo fermo',
 
   'session.anxiety-chest.title': 'Aprire il petto',
   'session.anxiety-chest.description':

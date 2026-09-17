@@ -29,7 +29,7 @@ export default function DreamGuideDetailScreen() {
   const guideId = Array.isArray(id) ? id[0] : id;
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { currentLang } = useTranslation();
+  const { currentLang, t } = useTranslation();
   const language = (currentLang ?? 'en') as DreamGuideLanguage;
   const copy = getDreamGuideCopy(language);
   const scrollPerf = useScrollIdle();
@@ -52,6 +52,7 @@ export default function DreamGuideDetailScreen() {
         <AtmosphericBackground variant="subtle" />
         <Pressable
           onPress={() => router.back()}
+          accessibilityLabel={t('navigation.back')}
           accessibilityRole="button"
           style={[
             styles.emptyBackButton,
@@ -92,6 +93,7 @@ export default function DreamGuideDetailScreen() {
           <View style={styles.headerRow}>
             <Pressable
               onPress={() => router.back()}
+              accessibilityLabel={t('navigation.back')}
               accessibilityRole="button"
               style={[
                 styles.backButton,

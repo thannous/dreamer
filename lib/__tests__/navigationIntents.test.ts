@@ -69,6 +69,6 @@ describe('navigation intents', () => {
   it('normalizes an old persisted flag to the legacy settings destination', () => {
     sessionStorage.setItem('dreamer:return_to_settings', '1');
 
-    expect(consumeStayOnSettingsDestination()).toBe('/(tabs)/settings');
+    expect(consumeStayOnSettingsDestination()).toBe('/settings');
   });
 });

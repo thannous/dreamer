@@ -11,11 +11,15 @@ import type { QuotaStatus } from '@/lib/types';
 import type { CacheEntry, QuotaDreamTarget, QuotaProvider } from './types';
 import { GuestQuotaProvider } from './GuestQuotaProvider';
 import { syncWithServerCount } from './GuestAnalysisCounter';
+import { buildQuotaMetric, isQuotaMetricAvailable } from './quotaMetrics';
+
+type RemoteQuotaMetric = { used?: number; limit?: number | null };
 
 type RemoteQuotaUsage = {
-  analysis?: { used?: number; limit?: number | null };
-  exploration?: { used?: number; limit?: number | null };
-  messages?: { used?: number; limit?: number | null };
+  analysis?: RemoteQuotaMetric;
+  exploration?: RemoteQuotaMetric;
+  messages?: RemoteQuotaMetric;
+  image?: RemoteQuotaMetric;
 };
 
 type RemoteQuotaResponse = {
@@ -23,6 +27,7 @@ type RemoteQuotaResponse = {
   usage?: RemoteQuotaUsage;
   canAnalyze?: boolean;
   canExplore?: boolean;
+  canGenerateImage?: boolean;
   isUpgraded?: boolean;
   riskScore?: number;
   riskLevel?: 'low' | 'elevated' | 'high';
@@ -64,16 +69,22 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
     const fallbackAnalysisUsed = fallback?.analysis.used ?? 0;
     const fallbackExplorationUsed = fallback?.exploration.used ?? 0;
     const fallbackMessagesUsed = fallback?.messages.used ?? 0;
+    const fallbackImageUsed = fallback?.image?.used ?? 0;
 
     const analysisUsed = Math.max(remote?.analysis?.used ?? 0, fallbackAnalysisUsed);
     const explorationUsed = Math.max(remote?.exploration?.used ?? 0, fallbackExplorationUsed);
     const messagesUsed = Math.max(remote?.messages?.used ?? 0, fallbackMessagesUsed);
+    const imageUsed = Math.max(remote?.image?.used ?? 0, fallbackImageUsed);
 
     const analysisLimit = remote?.analysis?.limit ?? fallback?.analysis.limit ?? defaults.analysis ?? null;
     const explorationLimit =
       remote?.exploration?.limit ?? fallback?.exploration.limit ?? defaults.exploration ?? null;
     const messagesLimit =
       remote?.messages?.limit ?? fallback?.messages.limit ?? defaults.messagesPerDream ?? null;
+    const imageLimit =
+      remote?.image?.limit !== undefined
+        ? remote.image.limit ?? null
+        : (fallback?.image?.limit !== undefined ? fallback.image.limit : defaults.image ?? null);
 
     return {
       analysis: {
@@ -91,6 +102,7 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
         limit: messagesLimit,
         remaining: messagesLimit === null ? null : Math.max(messagesLimit - messagesUsed, 0),
       },
+      image: buildQuotaMetric(imageUsed, imageLimit),
     };
   }
 
@@ -99,17 +111,23 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
     const canAnalyzeByLimit = usage.analysis.limit === null || usage.analysis.used < usage.analysis.limit;
     const canExploreByLimit =
       usage.exploration.limit === null || usage.exploration.used < usage.exploration.limit;
+    const canGenerateImageByLimit = isQuotaMetricAvailable(usage.image);
 
     // Respect stricter remote flags but never allow exceeding local limits/special-case allowances (e.g. already explored dream)
     const canAnalyze = (remote.canAnalyze ?? true) && (fallback.canAnalyze ?? canAnalyzeByLimit) && canAnalyzeByLimit;
     const fallbackCanExplore = fallback.canExplore ?? canExploreByLimit;
     const canExplore = (remote.canExplore ?? true) && (fallbackCanExplore || canExploreByLimit);
+    const canGenerateImage =
+      (remote.canGenerateImage ?? canGenerateImageByLimit) &&
+      (fallback.canGenerateImage ?? canGenerateImageByLimit) &&
+      canGenerateImageByLimit;
 
     return {
       tier: remote.tier ?? 'guest',
       usage,
       canAnalyze,
       canExplore,
+      canGenerateImage,
       isUpgraded: false,
       riskScore: remote.riskScore,
       riskLevel: remote.riskLevel,
@@ -175,6 +193,7 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
       usage,
       canAnalyze: false,
       canExplore: false,
+      canGenerateImage: false,
       isUpgraded: fallback.isUpgraded ?? false,
       reasons: [reasonsByCode[reasonCode]],
       guestBootstrapStatus: 'degraded',
@@ -225,6 +244,11 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
       if (typeof response.usage?.exploration?.used === 'number') {
         await syncWithServerCount(response.usage.exploration.used, 'exploration').catch((err) => {
           if (__DEV__) console.warn('[Quota] Failed to sync exploration count:', err);
+        });
+      }
+      if (typeof response.usage?.image?.used === 'number') {
+        await syncWithServerCount(response.usage.image.used, 'image').catch((err) => {
+          if (__DEV__) console.warn('[Quota] Failed to sync image count:', err);
         });
       }
 
@@ -301,6 +325,12 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
     return used < limit;
   }
 
+  async canGenerateImage(user: User | null, tier: UserTier = 'guest'): Promise<boolean> {
+    if (user) return true;
+    const status = await this.fetchQuota(undefined, tier);
+    return status.canGenerateImage ?? isQuotaMetricAvailable(status.usage.image);
+  }
+
   async getQuotaStatus(user: User | null, tier: UserTier, target?: QuotaDreamTarget): Promise<QuotaStatus> {
     if (user) {
       return {
@@ -309,9 +339,11 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
           analysis: { used: 0, limit: null, remaining: null },
           exploration: { used: 0, limit: null, remaining: null },
           messages: { used: 0, limit: null, remaining: null },
+          image: { used: 0, limit: null, remaining: null },
         },
         canAnalyze: true,
         canExplore: true,
+        canGenerateImage: true,
       };
     }
     return this.fetchQuota(target, tier);

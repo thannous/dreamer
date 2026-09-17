@@ -20,6 +20,7 @@ export interface Entitlement {
 export interface CustomerInfoLike {
   entitlements?: {
     active?: Record<string, Entitlement>;
+    all?: Record<string, Entitlement>;
   };
 }
 
@@ -170,22 +171,75 @@ export function mapTierFromCustomerInfo(info: CustomerInfoLike | null): Subscrip
 export function mapStatus(info: CustomerInfoLike | null): SubscriptionStatus {
   const activeEntitlement = getActiveEntitlement(info);
   const entitlementId = getActiveEntitlementId(info);
-  const expiryDate = activeEntitlement?.expirationDate ?? null;
-  const willRenew = activeEntitlement?.willRenew ?? undefined;
-
-  // ✅ PHASE 3: Check if entitlement has expired
-  const isExpired = isEntitlementExpired(expiryDate);
+  const activeExpiryDate = activeEntitlement?.expirationDate ?? null;
+  const isExpired = isEntitlementExpired(activeExpiryDate);
   const tier = (activeEntitlement && !isExpired && entitlementId) ? tierFromEntitlementId(entitlementId) : 'free';
   const active = tier === 'plus';
-  const productId = activeEntitlement?.productIdentifier ?? null;
 
+  if (activeEntitlement) {
+    return {
+      tier,
+      isActive: active,
+      expiryDate: activeExpiryDate,
+      productId: activeEntitlement.productIdentifier ?? null,
+      willRenew: activeEntitlement.willRenew,
+    };
+  }
+
+  const historicalEntitlement = getHistoricalPlusEntitlement(info);
   return {
-    tier,
-    isActive: active,
-    expiryDate,
-    productId,
-    willRenew,
+    tier: 'free',
+    isActive: false,
+    expiryDate: normalizeExpiryDate(historicalEntitlement?.expirationDate),
+    productId: historicalEntitlement?.productIdentifier ?? null,
+    willRenew: historicalEntitlement?.willRenew,
   };
+}
+
+function parseExpiryTimestamp(expiryDate: string | null | undefined): number | null {
+  if (!expiryDate) return null;
+  const timestamp = Date.parse(expiryDate);
+  return Number.isFinite(timestamp) ? timestamp : null;
+}
+
+function normalizeExpiryDate(expiryDate: string | null | undefined): string | null {
+  if (!expiryDate || parseExpiryTimestamp(expiryDate) == null) return null;
+  return expiryDate;
+}
+
+/**
+ * Recognized Plus history from entitlements.all. Never unlocks access.
+ * Prefers the latest valid expiration, then ENTITLEMENT_PRIORITY on ties
+ * or when no parseable expiration exists. Unknown IDs are ignored.
+ */
+function getHistoricalPlusEntitlement(info: CustomerInfoLike | null): Entitlement | null {
+  const all = info?.entitlements?.all;
+  if (!all) return null;
+
+  let selected: Entitlement | null = null;
+  let selectedTimestamp: number | null = null;
+  let selectedPriority = Number.POSITIVE_INFINITY;
+
+  ENTITLEMENT_PRIORITY.forEach((id, priority) => {
+    const entitlement = all[id];
+    if (!entitlement) return;
+
+    const timestamp = parseExpiryTimestamp(entitlement.expirationDate);
+    const hasLaterDate =
+      timestamp != null && (selectedTimestamp == null || timestamp > selectedTimestamp);
+    const isSameDateHigherPriority =
+      timestamp != null && timestamp === selectedTimestamp && priority < selectedPriority;
+    const bothUndatedHigherPriority =
+      timestamp == null && selectedTimestamp == null && priority < selectedPriority;
+
+    if (selected == null || hasLaterDate || isSameDateHigherPriority || bothUndatedHigherPriority) {
+      selected = entitlement;
+      selectedTimestamp = timestamp;
+      selectedPriority = priority;
+    }
+  });
+
+  return selected;
 }
 
 /**

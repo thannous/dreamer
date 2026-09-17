@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
 
 let themeCallCount = 0;
+let streamingForTest = false;
 
 vi.mock('react-native', async () => {
   const React = await import('react');
@@ -54,7 +55,10 @@ vi.mock('react-native-reanimated', async () => {
     ReduceMotion: { System: 'system', Always: 'always', Never: 'never' },
     Easing: { out: (fn: any) => fn, quad: () => 0 },
     runOnJS: (fn: any) => fn,
-    useAnimatedReaction: () => {},
+    useAnimatedReaction: (prepare: () => unknown, react: (current: unknown, previous: unknown) => void) => {
+      const value = prepare();
+      React.useEffect(() => { react(value, null); }, [value]);
+    },
     useAnimatedStyle: (factory: () => any) => factory(),
     useSharedValue: (value: any) => ({ value }),
     withDelay: (_delay: number, value: any) => value,
@@ -113,7 +117,7 @@ vi.mock('../../../context/ChatContext', () => ({
   useComposerHeightContext: () => ({ composerHeight: { value: { value: 0 }, get: () => 0, set: () => {} } }),
   useMessageListContext: () => ({ isNearBottom: { value: { value: true }, get: () => true, set: () => {} } }),
   useNewMessageAnimationContext: () => ({
-    isStreaming: { value: { value: false }, get: () => false, set: () => {} },
+    isStreaming: { value: { value: false }, get: () => streamingForTest, set: () => {} },
     hasAnimatedMessages: { current: new Set<string>() },
   }),
 }));
@@ -164,4 +168,24 @@ describe('perf(MessagesList): rerender churn', () => {
     console.log(`[perf] MessagesList useTheme() calls on no-op rerender: ${themeCallCount}`);
     expect(themeCallCount).toBeGreaterThan(0);
   }, 20000);
+});
+
+
+describe('MessagesList streaming visibility', () => {
+  it('shows every received fragment immediately and keeps earlier text when the stream grows', async () => {
+    streamingForTest = true;
+    const { MessagesList } = await import('../MessagesList');
+    const user = { id: 'user-stream', role: 'user', text: 'A synthetic question' };
+    const utils = render(<MessagesList messages={[user] as any} />);
+    try {
+      const reply = { id: 'streaming-reply', role: 'model', text: 'The first fragment' };
+      utils.rerender(<MessagesList messages={[user, reply] as any} />);
+      expect(utils.container.textContent).toContain('The first fragment');
+      utils.rerender(<MessagesList messages={[user, { ...reply, text: 'The first fragment followed by more text' }] as any} />);
+      expect(utils.container.textContent).toContain('The first fragment followed by more text');
+    } finally {
+      streamingForTest = false;
+      utils.unmount();
+    }
+  });
 });

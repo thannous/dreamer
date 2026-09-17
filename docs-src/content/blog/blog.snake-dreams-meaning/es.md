@@ -225,13 +225,13 @@
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Sueños de volar: que significa volar en sueños</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Sueños de volar: qué significa volar en sueños</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="guia-incubacion-suenos" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Incubación de sueños: como soñar exactamente lo que quieres esta noche</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Incubación de sueños: cómo soñar exactamente lo que quieres esta noche</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>

@@ -2,7 +2,10 @@
 
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
+
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
+
+jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 24, bottom: 24, left: 0, right: 0 }) }));
 
 type HardwareBackHandler = (event: { timeStamp: number; type: string }) => boolean;
 type HardwareBackEvent = Parameters<HardwareBackHandler>[0];
@@ -136,18 +139,6 @@ jest.doMock('@/components/settings/useSettingsPreferences', () => ({
     theme: preference('theme', 'auto', selectTheme as never),
     language: preference('language', 'fr', selectLanguage as never),
     journalLayout: preference('layout', 'cards', selectJournalLayout as never),
-    recording: {
-      title: 'settings.onboarding.title',
-      description: 'settings.onboarding.description',
-      actionLabel: 'settings.onboarding.restart',
-      actionHint: 'settings.onboarding.restart_hint',
-      testID: 'btn.recording.onboarding.restart',
-      loading: false,
-      saving: false,
-      error: false,
-      restart: restartRecordingGuide,
-      replay: restartRecordingGuide,
-    },
   }),
 }));
 
@@ -243,6 +234,7 @@ describe('SettingsFieldGroup', () => {
     expect(screen.getByText('settings.section.rituals')).toBeTruthy();
     expect(screen.getByText('Noctalia Plus')).toBeTruthy();
     expect(screen.getByTestId('settings-app-version').textContent).toBe('Version 3.0.1 (42)');
+    expect(screen.queryByTestId('settings-journal-layout-choice')).toBeNull();
   });
 
   it('keeps the returning guest barrier to account and language', () => {
@@ -345,14 +337,21 @@ describe('SettingsFieldGroup', () => {
     expect(openSubscription).toHaveBeenCalledTimes(1);
   });
 
-  it('replays the recording onboarding from the experience card', () => {
+  it('does not offer the retired hamburger capture tour from Settings', () => {
     render(<SettingsFieldGroup {...baseProps} />);
 
-    // Uniwind resolves `className` in the Metro transformer, which Jest never runs, so
-    // the wide-value column is asserted on the class rather than on a resolved style.
-    expect(screen.getByText('settings.onboarding.restart').className).toContain('max-w-[48%]');
-    fireEvent.click(screen.getByTestId('btn.recording.onboarding.restart'));
+    expect(screen.queryByTestId('btn.recording.onboarding.restart')).toBeNull();
+    expect(screen.queryByText('settings.onboarding.restart')).toBeNull();
+    expect(restartRecordingGuide).not.toHaveBeenCalled();
+  });
 
-    expect(restartRecordingGuide).toHaveBeenCalledTimes(1);
+  it('hides the orphan journal layout preference because it no longer drives Journal', () => {
+    render(<SettingsFieldGroup {...baseProps} />);
+
+    expect(screen.getByTestId('settings-theme-choice')).toBeTruthy();
+    expect(screen.getByTestId('settings-language-choice')).toBeTruthy();
+    expect(screen.queryByTestId('settings-journal-layout-choice')).toBeNull();
+    expect(screen.queryByTestId('btn.settings.journalLayout.cards')).toBeNull();
+    expect(screen.queryByTestId('btn.settings.journalLayout.compact')).toBeNull();
   });
 });

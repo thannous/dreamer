@@ -2,6 +2,14 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 const LUCID_APP_VERSION = '1.0.0';
 const LUCID_EAS_PROJECT_ID = 'd210576f-5dc4-4f7a-a5e1-a407c209c3a2';
+const LUCID_MICROPHONE_PERMISSION =
+  'Noctalia Lucid Trainer records a morning dream note on this device after you tap Speak. Audio stays local and is never uploaded or transcribed automatically.';
+
+export const DREAMER_QA_BUILD_ENV = 'NOCTALIA_DREAMER_QA_BUILD';
+export const DREAMER_QA_ANDROID_PACKAGE = 'com.tanuki75.noctalia.qa';
+export const DREAMER_QA_IOS_BUNDLE_IDENTIFIER = 'com.tanuki75.noctalia.qa';
+export const DREAMER_QA_APP_NAME = 'Noctalia QA';
+export const DREAMER_QA_SCHEME = 'noctalia-qa';
 
 function isLucidNativeMarker(value: string | undefined): boolean {
   if (value === undefined || value === '' || value === 'noctalia') return false;
@@ -30,6 +38,54 @@ function resolveLucidBuildEnabled(): boolean {
   }
 
   return nativeLucid;
+}
+
+export function parseDreamerQaBuildMarker(value: string | undefined): boolean {
+  if (value === undefined || value === '' || value === '0') return false;
+  if (value === '1') return true;
+  throw new Error(
+    `[app.config] Unsupported ${DREAMER_QA_BUILD_ENV}: ${value}. Expected unset, 0, or 1.`
+  );
+}
+
+export function resolveDreamerQaBuildEnabled(
+  env: NodeJS.ProcessEnv = process.env
+): boolean {
+  return parseDreamerQaBuildMarker(env[DREAMER_QA_BUILD_ENV]);
+}
+
+export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
+  return {
+    ...baseExpo,
+    name: DREAMER_QA_APP_NAME,
+    scheme: DREAMER_QA_SCHEME,
+    ios: {
+      ...baseExpo.ios,
+      bundleIdentifier: DREAMER_QA_IOS_BUNDLE_IDENTIFIER,
+      associatedDomains: [],
+    },
+    android: {
+      ...baseExpo.android,
+      package: DREAMER_QA_ANDROID_PACKAGE,
+      intentFilters: [],
+    },
+    extra: {
+      ...baseExpo.extra,
+      eas: undefined,
+    },
+    updates: undefined,
+  };
+}
+
+function assertDreamerQaLucidConflict(
+  qaEnabled: boolean,
+  lucidEnabled: boolean
+): void {
+  if (qaEnabled && lucidEnabled) {
+    throw new Error(
+      '[app.config] Dreamer QA build cannot be combined with Lucid Trainer.'
+    );
+  }
 }
 
 function resolveLucidGooglePlugin(): NonNullable<ExpoConfig['plugins']> {
@@ -66,7 +122,10 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
   const companionPlugins = (baseExpo.plugins ?? []).filter((plugin) => {
     const name = Array.isArray(plugin) ? plugin[0] : plugin;
     return (
+      name !== 'expo-router' &&
       name !== 'expo-audio' &&
+      name !== 'expo-secure-store' &&
+      name !== 'expo-image-picker' &&
       name !== 'expo-notifications' &&
       name !== 'expo-splash-screen' &&
       name !== 'expo-speech-recognition' &&
@@ -89,6 +148,8 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
   const {
     NSMicrophoneUsageDescription: _microphoneUsageDescription,
     NSSpeechRecognitionUsageDescription: _speechRecognitionUsageDescription,
+    NSCameraUsageDescription: _cameraUsageDescription,
+    NSPhotoLibraryUsageDescription: _photoLibraryUsageDescription,
     ...lucidInfoPlist
   } = baseExpo.ios?.infoPlist ?? {};
 
@@ -112,6 +173,7 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
         ...lucidInfoPlist,
         CADisableMinimumFrameDurationOnPhone: true,
         LSApplicationQueriesSchemes: ['noctalia'],
+        NSMicrophoneUsageDescription: LUCID_MICROPHONE_PERMISSION,
       },
     },
     android: {
@@ -132,8 +194,9 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
       ],
       permissions: [],
       blockedPermissions: [
-        ...(baseExpo.android?.blockedPermissions ?? []),
-        'android.permission.RECORD_AUDIO',
+        ...(baseExpo.android?.blockedPermissions ?? []).filter(
+          (permission) => permission !== 'android.permission.RECORD_AUDIO'
+        ),
       ],
     },
     web: {
@@ -146,6 +209,17 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     },
     plugins: [
       ...companionPlugins,
+      ['expo-router', { root: './routes/lucid' }],
+      ['expo-secure-store', { faceIDPermission: false }],
+      [
+        'expo-image-picker',
+        {
+          cameraPermission: false,
+          photosPermission: false,
+          // false also blocks RECORD_AUDIO on Android, which local voice notes need.
+          microphonePermission: LUCID_MICROPHONE_PERMISSION,
+        },
+      ],
       [
         'expo-splash-screen',
         {
@@ -156,10 +230,28 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
           dark: { backgroundColor: '#201131' },
         },
       ],
-      ['expo-audio', { microphonePermission: false, enableBackgroundPlayback: true }],
+      [
+        'expo-audio',
+        {
+          microphonePermission: LUCID_MICROPHONE_PERMISSION,
+          enableBackgroundPlayback: true,
+        },
+      ],
       ['expo-notifications', { sounds: lucidCueSounds }],
+      [
+        '@kingstinct/react-native-healthkit',
+        {
+          background: false,
+          NSHealthUpdateUsageDescription: false,
+          NSHealthShareUsageDescription:
+            'Noctalia Lucid Trainer can import your past sleep history from Apple Health on this device so you can compare it with your dream journal. It never writes Health data, detects REM in real time, or controls night cues.',
+        },
+      ],
       './plugins/withLucidNoctaliaQueries',
       ...lucidGooglePlugins,
+      // google-signin still autolinks from package.json without OAuth IDs, so
+      // CocoaPods needs these targeted modular headers on every Lucid iOS build.
+      './plugins/withLucidGoogleSignInModularHeaders',
     ],
     extra: {
       ...baseExpo.extra,
@@ -178,9 +270,16 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
 
 export default function resolveExpoConfig({ config }: ConfigContext): ExpoConfig {
   const baseExpo = config as ExpoConfig;
+  const qaEnabled = resolveDreamerQaBuildEnabled();
+  const lucidEnabled = resolveLucidBuildEnabled();
+  assertDreamerQaLucidConflict(qaEnabled, lucidEnabled);
 
-  if (resolveLucidBuildEnabled()) {
+  if (lucidEnabled) {
     return createLucidExpoConfig(baseExpo);
+  }
+
+  if (qaEnabled) {
+    return createDreamerQaExpoConfig(baseExpo);
   }
 
   return baseExpo;

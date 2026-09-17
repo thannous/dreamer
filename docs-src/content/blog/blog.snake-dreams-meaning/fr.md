@@ -98,17 +98,17 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommaire
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#symbolisme">1. Rever de serpent : symbolisme ancestral</a></li>
-<li><a class="toc-link block" href="#types">2. Types de serpents dans les reves</a></li>
-<li><a class="toc-link block" href="#scénarios">3. Scenarios courants des reves de serpent</a></li>
-<li><a class="toc-link block" href="#interpretations">4. Signification des reves de serpent : 7 messages</a></li>
-<li><a class="toc-link block" href="#psychologie">5. Psychologie des reves de serpent</a></li>
-<li><a class="toc-link block" href="#action">6. Que faire apres un reve de serpent</a></li>
+<li><a class="toc-link block" href="#symbolisme">1. Rêver de serpent : symbolisme ancestral</a></li>
+<li><a class="toc-link block" href="#types">2. Types de serpents dans les rêves</a></li>
+<li><a class="toc-link block" href="#scénarios">3. Scénarios courants des rêves de serpent</a></li>
+<li><a class="toc-link block" href="#interpretations">4. Signification des rêves de serpent : 7 messages</a></li>
+<li><a class="toc-link block" href="#psychologie">5. Psychologie des rêves de serpent</a></li>
+<li><a class="toc-link block" href="#action">6. Que faire après un rêve de serpent</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="symbolisme">Rever de serpent : symbolisme ancestral</h2>
+<h2 id="symbolisme">Rêver de serpent : symbolisme ancestral</h2>
 <p>
                     Les <a class="text-dream-salmon hover:underline" href="../symboles/serpent">serpents</a> fascinent et terrifient l'humanité depuis l'aube de la conscience. Ils apparaissent dans les mythologies les plus anciennes, les textes religieux et les œuvres d'art - du serpent de l'Éden au bâton de guérison d'Asclépios, de la chevelure de Méduse à l'énergie kundalini de la tradition hindoue.
                 </p>
@@ -121,7 +121,7 @@
 <p>
                     À travers les cultures, les serpents représentent la <strong>dualité</strong> : ils muent (transformation/renaissance), ils possèdent du venin (danger/guérison), ils se déplacent entre la terre et le monde souterrain (conscience/inconscience). Votre rêve de serpent puise dans ce riche réservoir symbolique.
                 </p>
-<h2 id="types">Types de serpents dans les reves et signification</h2>
+<h2 id="types">Types de serpents dans les rêves et signification</h2>
 <p>
                     Le type spécifique de serpent dans votre rêve ajoute des couches de signification :
                 </p>
@@ -196,34 +196,34 @@
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="scénarios">Scenarios courants des reves de serpent</h2>
+<h2 id="scénarios">Scénarios courants des rêves de serpent</h2>
 <p>
                     Ce qui se passe avec le serpent compte autant que le serpent lui-même :
                 </p>
-<h3>Rever d'etre mordu par un serpent</h3>
+<h3>Rêver d'être mordu par un serpent</h3>
 <p>
                     Un des rêves de serpent les plus alarmants. Une morsure de serpent représente généralement un <strong>signal d'alarme</strong> - quelque chose exige votre attention immédiate. L'endroit de la morsure compte : main (actions), cœur (émotions), jambe (direction de vie). La morsure peut aussi symboliser une trahison par quelqu'un de proche ou une situation "toxique" qui vous affecte enfin.
                 </p>
-<h3>Reve de serpent attaquant quelqu'un</h3>
+<h3>Rêve de serpent attaquant quelqu'un</h3>
 <p>
                     Regarder un serpent attaquer une autre personne peut refléter votre <strong>inquiétude pour elle</strong> ou votre perception qu'elle est dans une situation nocive. Alternativement, cela pourrait représenter une <strong>agressivité refoulée</strong> - votre propre "venin" dirigé vers quelqu'un.
                 </p>
-<h3>Rever de tuer un serpent : signification</h3>
+<h3>Rêver de tuer un serpent : signification</h3>
 <p>
                     Tuer un serpent avec succès suggère que vous <strong>surmontez une menace ou une peur</strong>. Vous prenez le contrôle de quelque chose qui vous effrayait autrefois. Cependant, si vous vous sentez coupable après l'avoir tué, vous réprimez peut-être quelque chose que vous devriez accepter.
                 </p>
-<h3>Reve de serpent amical ou apprivoise</h3>
+<h3>Rêve de serpent amical ou apprivoisé</h3>
 <p>
                     Les interactions positives avec un serpent suggèrent que vous avez <strong>intégré votre ombre intérieure</strong> ou fait la paix avec vos peurs. Un serpent de compagnie indique que la sagesse et la guérison sont à votre disposition. C'est souvent un rêve de transformation positive.
                 </p>
-<h3>Rever de serpents partout autour de soi</h3>
+<h3>Rêver de serpents partout autour de soi</h3>
 <p>
                     Être entouré de serpents indique une <strong>anxiété écrasante ou des menaces</strong> venant de multiples sources. Vous avez peut-être l'impression que des dangers vous guettent partout. Cela apparaît souvent pendant les périodes de stress intense.
                 </p>
 <p>
                     Ces rêves se déroulent parfois dans une <a class="text-dream-salmon hover:underline" href="../symboles/foret">forêt</a> sombre ou aux côtés d'autres symboles de peur comme les <a class="text-dream-salmon hover:underline" href="../symboles/araignee">araignées</a>, ce qui peut intensifier la menace.
                 </p>
-<h3>Reve de serpent qui mue : transformation</h3>
+<h3>Rêve de serpent qui mue : transformation</h3>
 <p>
                     Voir un serpent muer est un puissant <strong>symbole de transformation</strong>. Vous êtes prêt à abandonner d'anciens schémas, croyances ou identités. La renaissance est imminente - embrassez le changement.
                 </p>
@@ -242,66 +242,66 @@
 </div>
 </div>
 </aside>
-<h2 id="interpretations">Signification des reves de serpent : 7 messages</h2>
+<h2 id="interpretations">Signification des rêves de serpent : 7 messages</h2>
 <p>
                     Bien que le contexte soit primordial, voici les significations les plus courantes des rêves de serpents :
                 </p>
-<h3>Reve de serpent et transformation</h3>
+<h3>Rêve de serpent et transformation</h3>
 <p>
                     Voici l'interprétation la plus positive. Comme un serpent qui mue, vous traversez peut-être un <strong>profond changement personnel</strong>. Les anciens schémas s'effacent. Votre rêve vous encourage à embrasser la transformation plutôt qu'à y résister.
                 </p>
-<h3>Rever de serpent : peurs cachees</h3>
+<h3>Rêver de serpent : peurs cachées</h3>
 <p>
                     Les serpents peuvent représenter des <strong>peurs tapies sous la surface</strong> - des choses que vous pressentez mais n'avez pas consciemment reconnues. Votre subconscient vous alerte d'un danger, que ce soit une personne, une situation ou votre propre comportement.
                 </p>
-<h3>Serpent dans les reves : symbole de guerison</h3>
+<h3>Serpent dans les rêves : symbole de guérison</h3>
 <p>
                     Symbole de guérison depuis la Grèce antique (le caducée d'Asclépios), le serpent en rêve peut indiquer qu'une <strong>énergie de guérison est à l'œuvre</strong> dans votre vie, ou suggérer que vous devez vous concentrer sur votre santé - physique, émotionnelle ou spirituelle.
                 </p>
-<h3>Reve de serpent et energie vitale</h3>
+<h3>Rêve de serpent et énergie vitale</h3>
 <p>
                     Freud interprétait célèbrement les serpents comme des symboles phalliques. Au-delà du simple symbolisme sexuel, les serpents représentent l'<strong>énergie vitale brute et le pouvoir créatif</strong> - la force kundalini dans la tradition hindoue. Votre rêve peut concerner la passion, la créativité ou les pulsions primales.
                 </p>
-<h3>Rever de serpent : trahison et tromperie</h3>
+<h3>Rêver de serpent : trahison et tromperie</h3>
 <p>
                     "Serpent" est un terme courant pour désigner une personne traîtresse. Votre rêve pourrait vous avertir de <strong>quelqu'un d'indigne de confiance</strong> dans votre vie. Prêtez attention à qui d'autre apparaît dans le rêve, ou à qui le serpent vous fait penser.
                 </p>
-<h3>Serpent en reve : sagesse et intuition</h3>
+<h3>Serpent en rêve : sagesse et intuition</h3>
 <p>
                     Dans de nombreuses traditions, les serpents symbolisent la <strong>sagesse ancestrale et les capacités psychiques</strong>. Un serpent non menaçant peut représenter votre intuition qui essaie de vous guider. Le serpent dans votre rêve pourrait être un guide spirituel.
                 </p>
-<h3>Reve de serpent et aspects refoules</h3>
+<h3>Rêve de serpent et aspects refoulés</h3>
 <p>
                     Jung voyait le serpent comme représentant l'<strong>ombre intérieure</strong> - des parties de votre personnalité que vous avez rejetées ou enfouies. Le rêve de serpent vous invite à reconnaître et intégrer ces aspects plutôt qu'à les craindre.
                 </p>
-<h2 id="psychologie">Psychologie des reves de serpent</h2>
+<h2 id="psychologie">Psychologie des rêves de serpent</h2>
 <p>
                     Différents cadres psychologiques offrent des perspectives uniques sur les rêves de serpents :
                 </p>
-<h3>Interpretation freudienne du serpent en reve</h3>
+<h3>Interprétation freudienne du serpent en rêve</h3>
 <p>
                     Sigmund Freud voyait les serpents comme des <strong>symboles phalliques</strong> représentant le désir sexuel, l'anxiété ou la répression. Bien que cette interprétation semble datée, elle s'applique parfois - particulièrement quand le rêve à des sous-entendus sexuels évidents ou implique des sentiments de culpabilité.
                 </p>
-<h3>Analyse jungienne des reves de serpent</h3>
+<h3>Analyse jungienne des rêves de serpent</h3>
 <p>
                     Carl Jung voyait le serpent comme un <strong>symbole archétypal de transformation</strong>. Le serpent nous connecte aux profondeurs de notre inconscient et représente le processus d'individuation - devenir notre vrai soi complet. Un rêve de serpent signale souvent une croissance psychologique.
                 </p>
-<h3>Reve de serpent et theorie evolutive</h3>
+<h3>Rêve de serpent et théorie évolutive</h3>
 <p>
                     Des chercheurs modernes comme Antti Revonsuo suggèrent que nous rêvons de serpents parce que notre cerveau <strong>pratique des réponses aux menaces</strong>. Pendant des millions d'années, les serpents étaient de vrais dangers. Les rêves de serpents pourraient simplement être votre cerveau qui effectue des simulations de survie.
                 </p>
 <blockquote>
                     "Le serpent dans les rêves représente souvent quelque chose auquel nous devons prêter attention - pas nécessairement éviter. Le ton émotionnel du rêve nous dit s'il faut approcher ou reculer." - Dr. Rubin Naiman, Chercheur sur le Sommeil
                 </blockquote>
-<h2 id="action">Que faire apres un reve de serpent</h2>
+<h2 id="action">Que faire après un rêve de serpent</h2>
 <p>
                     Les rêves de serpents méritent attention. Voici comment travailler avec eux :
                 </p>
-<h3>Notez les details de votre reve de serpent</h3>
+<h3>Notez les détails de votre rêve de serpent</h3>
 <p>
                     Écrivez tout immédiatement au réveil : l'apparence du serpent, son comportement, vos émotions, le décor, les autres personnes présentes. <strong>Les détails s'estompent vite</strong> mais contiennent souvent des significations symboliques clés.
                 </p>
-<h3>Analysez vos emotions face au serpent</h3>
+<h3>Analysez vos émotions face au serpent</h3>
 <p>
                     Étiez-vous terrifié, curieux, calme, ou même fasciné ? Votre <strong>réaction émotionnelle est cruciale</strong>. Un serpent craint suggère une anxiété non résolue ; une interaction calme suggère une intégration ou une acceptation.
                 </p>
@@ -313,7 +313,7 @@
 <p>
                     Quelqu'un dans votre vie est-il trompeur ou nuisible ? Y a-t-il une situation qui semble "venimeuse" ? Le rêve peut être un <strong>avertissement d'être prudent</strong> envers quelqu'un ou quelque chose.
                 </p>
-<h3>Reve de serpent : faites le point sante</h3>
+<h3>Rêve de serpent : faites le point santé</h3>
 <p>
                     Étant donné l'association du serpent avec la guérison, <strong>faites le point sur votre corps</strong>. Ignorez-vous des problèmes de santé ? Le stress affecte-t-il votre bien-être ? Le serpent attire peut-être l'attention sur une guérison nécessaire.
                 </p>

@@ -397,7 +397,7 @@
                     </a>
                     <a href="guia-incubacion-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Incubación de sueños: como soñar exactamente lo que quieres esta noche</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Incubación de sueños: cómo soñar exactamente lo que quieres esta noche</h3>
                         <p class="text-sm text-gray-400">Aprende el arte antiguo de la incubación onírica para resolver problemas y estimular tu creatividad.</p>
                     </a>
                     <a href="guia-paralisis-sueno" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">

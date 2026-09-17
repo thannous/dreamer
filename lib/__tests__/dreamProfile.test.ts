@@ -144,7 +144,10 @@ describe('dreamProfile', () => {
       interpretation: 'Analysis',
       ...overrides,
     });
-  const exploredChat = [{ id: 'm1', role: 'model' as const, text: 'Insight' }];
+  const exploredChat = [
+    { id: 'u1', role: 'user' as const, text: 'What does the quiet city mean?' },
+    { id: 'm1', role: 'model' as const, text: 'The city may represent memory.' },
+  ];
 
   it('never asks for an anchor dream once the journal is living, even without a seed', () => {
     const profile = buildDreamProfile([

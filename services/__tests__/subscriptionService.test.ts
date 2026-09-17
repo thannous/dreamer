@@ -5,6 +5,8 @@ const {
   mockSetMockMode,
   mockGetPlatformOS,
   mockSetPlatformOS,
+  mockGetLucidTrainer,
+  mockSetLucidTrainer,
   mockGetPublicEnv,
   mockSetPublicEnv,
   mockClearPublicEnv,
@@ -13,6 +15,7 @@ const {
 } = ((factory: any) => factory())(() => {
   let mockMode = false;
   let platformOS = 'ios';
+  let lucidTrainer = false;
   const publicEnv = new Map<string, string>();
 
   const buildService = () => ({
@@ -38,6 +41,10 @@ const {
     mockSetPlatformOS: (value: string) => {
       platformOS = value;
     },
+    mockGetLucidTrainer: () => lucidTrainer,
+    mockSetLucidTrainer: (value: boolean) => {
+      lucidTrainer = value;
+    },
     mockGetPublicEnv: (key: string) => publicEnv.get(key),
     mockSetPublicEnv: (key: string, value: string) => publicEnv.set(key, value),
     mockClearPublicEnv: () => publicEnv.clear(),
@@ -49,6 +56,12 @@ const {
 jest.mock('@/lib/env', () => ({
   getExpoPublicEnvValue: (key: string) => mockGetPublicEnv(key),
   isMockModeEnabled: () => mockGetMockMode(),
+}));
+
+jest.mock('@/lib/appVariant', () => ({
+  get isLucidTrainer() {
+    return mockGetLucidTrainer();
+  },
 }));
 
 jest.mock('react-native', () => ({
@@ -69,6 +82,7 @@ describe('subscriptionService', () => {
     jest.clearAllMocks();
     mockSetMockMode(false);
     mockSetPlatformOS('ios');
+    mockSetLucidTrainer(false);
     mockClearPublicEnv();
     mockService.refreshStatus = jest.fn();
     mockRealService.refreshStatus = jest.fn();
@@ -188,5 +202,82 @@ describe('subscriptionService', () => {
 
     expect(mockService.logOutUser).toHaveBeenCalled();
     expect(mockRealService.logOutUser).not.toHaveBeenCalled();
+  });
+
+  it('given Lucid companion without a dedicated key__when loading service__then uses real implementation', async () => {
+    mockSetMockMode(false);
+    mockSetLucidTrainer(true);
+    mockSetPlatformOS('ios');
+
+    const service = require('../subscriptionService');
+    await service.getSubscriptionStatus();
+
+    expect(mockRealService.getStatus).toHaveBeenCalled();
+    expect(mockService.getStatus).not.toHaveBeenCalled();
+  });
+
+  it('given Lucid companion on web without a dedicated key__when loading service__then uses real implementation', async () => {
+    mockSetMockMode(false);
+    mockSetLucidTrainer(true);
+    mockSetPlatformOS('web');
+
+    const service = require('../subscriptionService');
+    await service.getSubscriptionStatus();
+
+    expect(mockRealService.getStatus).toHaveBeenCalled();
+    expect(mockService.getStatus).not.toHaveBeenCalled();
+  });
+
+  it('given explicit mock mode on Lucid companion__when loading service__then uses mock implementation', async () => {
+    mockSetMockMode(true);
+    mockSetLucidTrainer(true);
+    mockSetPlatformOS('android');
+
+    const service = require('../subscriptionService');
+    await service.getSubscriptionStatus();
+
+    expect(mockService.getStatus).toHaveBeenCalled();
+    expect(mockRealService.getStatus).not.toHaveBeenCalled();
+  });
+
+  it('selects mock only for explicit mock mode or Noctalia fallback, never for a keyless Lucid companion', () => {
+    const { shouldUseMockSubscriptionService } = require('../subscriptionService');
+    const noctaliaIosDev = {
+      isMockMode: false,
+      isDev: true,
+      isLucidTrainer: false,
+      platform: 'ios',
+      hasWebKey: false,
+      hasAndroidKey: false,
+      hasIosKey: false,
+    };
+
+    expect(shouldUseMockSubscriptionService(noctaliaIosDev)).toBe(true);
+    expect(
+      shouldUseMockSubscriptionService({
+        ...noctaliaIosDev,
+        isLucidTrainer: true,
+      })
+    ).toBe(false);
+    expect(
+      shouldUseMockSubscriptionService({
+        ...noctaliaIosDev,
+        isLucidTrainer: true,
+        platform: 'web',
+      })
+    ).toBe(false);
+    expect(
+      shouldUseMockSubscriptionService({
+        ...noctaliaIosDev,
+        isLucidTrainer: true,
+        isMockMode: true,
+      })
+    ).toBe(true);
+    expect(
+      shouldUseMockSubscriptionService({
+        ...noctaliaIosDev,
+        isDev: false,
+      })
+    ).toBe(false);
   });
 });

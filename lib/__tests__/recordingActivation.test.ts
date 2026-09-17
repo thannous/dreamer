@@ -45,7 +45,7 @@ describe('getRecordingActivationPromptState', () => {
     });
   });
 
-  it('shows the onboarding tour after the remembered dream prompt is dismissed', () => {
+  it('does not reopen the retired hamburger capture tour after the remembered dream prompt', () => {
     expect(
       getRecordingActivationPromptState({
         ...baseInput,
@@ -53,7 +53,7 @@ describe('getRecordingActivationPromptState', () => {
       })
     ).toEqual({
       showRememberedDreamPrompt: false,
-      showRecordingOnboardingTour: true,
+      showRecordingOnboardingTour: false,
     });
   });
 

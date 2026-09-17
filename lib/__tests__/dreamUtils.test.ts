@@ -16,7 +16,11 @@ import {
   resolveDreamListUpdater,
   areDreamMemoryMetadataEqual,
   areDreamsEqualForLocalState,
+  applyDreamUpdateIntent,
   buildRememberedDream,
+  createDreamUpdateIntent,
+  hasDreamUpdateIntentConflict,
+  mergeAuthoritativeDreamIdentity,
 } from '../dreamUtils';
 
 // Mock imageUtils
@@ -46,6 +50,111 @@ const legacyMutation = (mutation: {
 }): DreamMutation => mutation as unknown as DreamMutation;
 
 describe('dreamUtils', () => {
+  describe('dream update intents', () => {
+    it('rebases only fields changed by the caller onto the latest server state', () => {
+      const base = buildDream({
+        id: 1,
+        remoteId: 101,
+        revisionId: 'revision-1',
+        title: 'Original title',
+        analysisStatus: 'none',
+        interpretation: '',
+      });
+      const requested = {
+        ...base,
+        title: 'Categorized title',
+      };
+      const latest = {
+        ...base,
+        revisionId: 'revision-2',
+        analysisStatus: 'done' as const,
+        interpretation: 'Worker-owned interpretation',
+      };
+
+      const intent = createDreamUpdateIntent(base, requested);
+      const rebased = applyDreamUpdateIntent(latest, intent);
+
+      expect(rebased).toEqual(
+        expect.objectContaining({
+          title: 'Categorized title',
+          revisionId: 'revision-2',
+          analysisStatus: 'done',
+          interpretation: 'Worker-owned interpretation',
+        })
+      );
+      expect(hasDreamUpdateIntentConflict(base, latest, intent)).toBe(false);
+    });
+
+    it('detects a real conflict when server and caller changed the same field', () => {
+      const base = buildDream({ id: 1, title: 'Original title' });
+      const intent = createDreamUpdateIntent(base, {
+        ...base,
+        title: 'Local title',
+      });
+
+      expect(
+        hasDreamUpdateIntentConflict(
+          base,
+          { ...base, title: 'Title from another device' },
+          intent
+        )
+      ).toBe(true);
+    });
+
+    it('accepts a newer revision when it already satisfies the caller intent', () => {
+      const base = buildDream({ id: 1, isFavorite: false });
+      const requested = { ...base, isFavorite: true };
+      const intent = createDreamUpdateIntent(base, requested);
+
+      expect(
+        hasDreamUpdateIntentConflict(
+          base,
+          { ...base, revisionId: 'revision-2', isFavorite: true },
+          intent
+        )
+      ).toBe(false);
+    });
+
+    it('merges newly resolved server identity without rewinding a later revision', () => {
+      const unsynced = buildDream({
+        id: 1,
+        clientRequestId: 'offline-create-1',
+      });
+      const synced = {
+        ...unsynced,
+        id: 1000,
+        remoteId: 101,
+        revisionId: 'revision-1',
+        updatedAt: 2000,
+      };
+
+      expect(mergeAuthoritativeDreamIdentity(unsynced, synced)).toEqual(
+        expect.objectContaining({
+          id: 1,
+          clientRequestId: 'offline-create-1',
+          remoteId: 101,
+          revisionId: 'revision-1',
+          updatedAt: 2000,
+        })
+      );
+
+      const laterRevision = {
+        ...unsynced,
+        remoteId: 101,
+        revisionId: 'revision-2',
+        updatedAt: 3000,
+      };
+      expect(mergeAuthoritativeDreamIdentity(laterRevision, synced)).toEqual(
+        expect.objectContaining({
+          id: 1,
+          remoteId: 101,
+          revisionId: 'revision-2',
+          updatedAt: 3000,
+        })
+      );
+    });
+  });
+
   describe('sortDreams', () => {
     it('given unsorted dreams when sorting then returns descending by id', () => {
       const dreams = [
@@ -413,6 +522,31 @@ describe('dreamUtils', () => {
 
       expect(result).toHaveLength(2);
       expect(result[0].title).toBe('Updated');
+    });
+
+    it('given matching clientRequestId when upserting then updates in place', () => {
+      const existing = [
+        buildDream({ id: 1, clientRequestId: 'offline-create-1', title: 'Original' }),
+        buildDream({ id: 2 }),
+      ];
+      const updated = buildDream({
+        id: 1000,
+        clientRequestId: 'offline-create-1',
+        remoteId: 101,
+        title: 'Updated',
+      });
+
+      const result = upsertDream(existing, updated);
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toEqual(
+        expect.objectContaining({
+          id: 1000,
+          clientRequestId: 'offline-create-1',
+          remoteId: 101,
+          title: 'Updated',
+        })
+      );
     });
 
     it('given empty list when upserting then returns single item', () => {

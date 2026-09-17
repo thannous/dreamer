@@ -102,7 +102,7 @@ describe('WeeklyRecapScreen', () => {
     expect(mockPush).toHaveBeenCalledWith({ pathname: '/paywall', params: { trigger: 'stats_profile' } });
 
     fireEvent.click(screen.getByTestId(TID.Button.WeeklyRecapOpenDream));
-    expect(mockPush).toHaveBeenCalledWith(`/journal/${NOW - DAY}`);
+    expect(mockPush).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: String(NOW - DAY) } });
   });
 
   it('reveals the recurring emotion for Plus subscribers', () => {

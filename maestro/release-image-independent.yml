@@ -1,0 +1,41 @@
+# Release image gate: after save, analysis and illustration remain separate
+# actions. This flow never starts analysis and never generates an image.
+appId: ${APP_ID || "com.tanuki75.noctalia"}
+name: Release independent illustration CTA
+tags:
+  - release
+  - image
+---
+- launchApp:
+    stopApp: false
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
+
+- runFlow: subflows/ti429-ready-empty-editor.yml
+- inputText: "Independent image sentinel lantern garden"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 90000
+- assertVisible:
+    id: btn.dream.primaryCta
+- assertVisible:
+    id: component.transcriptCard
+- scrollUntilVisible:
+    element:
+      id: btn.dream.delete
+    direction: DOWN
+    timeout: 20000
+    visibilityPercentage: 40
+- assertVisible:
+    id: btn.dream.delete
+- assertNotVisible:
+    id: btn.journal.illustrate
+- takeScreenshot: ti429-image-pre-analysis

@@ -48,6 +48,10 @@ L'ordre de rattrapage privilégie les meilleures vidéos, pas les plus anciennes
 
 ## Sources de vérité et limites
 
+- L'index consolidé pour les agents est
+  [`78-SOURCE-OF-TRUTH-AND-NEXT-ACTIONS-2026-09-04.md`](./78-SOURCE-OF-TRUTH-AND-NEXT-ACTIONS-2026-09-04.md).
+  Il précise l'autorité de chaque registre et renvoie vers le
+  [classeur Drive partagé — onglet Pilotage agents](https://docs.google.com/spreadsheets/d/1acoGpbZCg89Wy3SR4JioJg0_exyNyVqp3R5QagdQTTs/edit?gid=904202609#gid=904202609).
 - L'asset exact, sa date et son statut proviennent uniquement du
   [calendrier principal](../2026-08-us-europe-publication-plan.md).
 - La présence locale ou Drive ne signifie ni validation, ni programmation, ni
@@ -89,6 +93,24 @@ universelles. Ils seront réévalués aux revues J7 et J14.
 | 18:30–18:55 | Répondre aux commentaires et effectuer la mission Reddit/DreamViews du jour. |
 | J+1 | Relever les mesures à 24 heures. |
 | J+7 | Relever les mesures à 7 jours et consigner l'apprentissage. |
+
+## Décision de cadence après le programme
+
+L'analyse arrêtée au 3 septembre réduit la cadence des réseaux principaux à
+**deux vidéos par jour à partir du 11 septembre 2026**. La campagne en cours et
+ses files natives jusqu'au 10 septembre restent inchangées.
+
+| Réseau | Horaires du prochain cycle | Statut de la preuve |
+|---|---|---|
+| TikTok | 15:30 et 19:30 | Signal modéré ; 22:30 est nettement inférieur |
+| Instagram | 19:45 et 22:45 | 45/46 Reels publiés de l'agenda mesurés (`16 / 15 / 14`) ; C3 robuste, second choix encore à revalider |
+| X | 16:15 et 20:15 | Provisoire ; égalité de portée et faible échantillon |
+
+Les deux assets quotidiens restent identiques sur TikTok, Instagram et X. Les
+plateformes secondaires conservent un seul hero quotidien à `17:30` Pinterest,
+`18:00` YouTube et `18:15` Facebook. Voir
+[`77-OPTIMAL-POSTING-TIMES-ANALYSIS-2026-09-03.md`](./77-OPTIMAL-POSTING-TIMES-ANALYSIS-2026-09-03.md)
+pour les données, limites et seuils de revalidation.
 
 ## Documents d'exécution
 
@@ -182,6 +204,13 @@ universelles. Ils seront réévalués aux revues J7 et J14.
     dix-sept matrices qui prolongent la preuve jusqu'à la fin du programme en
     conservant les écarts réels : prêt, programmé, remplacement requis ou
     publication directe.
+30. [`77-OPTIMAL-POSTING-TIMES-ANALYSIS-2026-09-03.md`](./77-OPTIMAL-POSTING-TIMES-ANALYSIS-2026-09-03.md) —
+    analyse des vues par horaire, décision de passage à deux vidéos quotidiennes
+    au prochain cycle et limites statistiques par réseau.
+31. [`79-TWO-POSTS-PER-DAY-CALENDAR-2026-09-11-24.md`](./79-TWO-POSTS-PER-DAY-CALENDAR-2026-09-11-24.md) —
+    calendrier pilote du 11 au 24 septembre, avec les deux horaires retenus par
+    réseau, 28 lignes chronologiques et blocage explicite jusqu'à validation des
+    masters et contrôles anti-doublon.
 
 La commande `npm run social:proof:registers` découvre automatiquement tous les
 registres `PUBLIC-PROOF-YYYY-MM-DD` du dossier. Elle exige exactement la fenêtre

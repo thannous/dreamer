@@ -51,7 +51,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Guia diario de sueños</span>
+<span class="text-dream-cream" itemprop="name">Guía diario de sueños</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>

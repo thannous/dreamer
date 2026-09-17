@@ -14,6 +14,7 @@ export const StorageKey = {
   theme: `${PREFIX}theme`,
   language: `${PREFIX}language`,
   world: `${PREFIX}world`,
+  purchasedWorlds: `${PREFIX}purchased-worlds`,
   reminders: `${PREFIX}reminders`,
   playerPrefs: `${PREFIX}player-prefs`,
 } as const;
@@ -61,4 +62,14 @@ export async function saveThemePreference(preference: ThemePreference): Promise<
 /** Wipes every key owned by the app. Used by "reset my data" in settings. */
 export async function clearAll(): Promise<void> {
   await AsyncStorage.multiRemove(Object.values(StorageKey));
+}
+
+/** Strict variants for state whose read/write failure must never become empty data. */
+export async function readJsonStrict(key: StorageKeyName): Promise<unknown | undefined> {
+  const raw = await AsyncStorage.getItem(key);
+  return raw === null ? undefined : JSON.parse(raw);
+}
+
+export async function writeJsonStrict(key: StorageKeyName, value: unknown): Promise<void> {
+  await AsyncStorage.setItem(key, JSON.stringify(value));
 }

@@ -17,10 +17,16 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
-- assertVisible:
-    id: text.analyzePromptTitle
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: btn.dream.primaryCta
+    direction: DOWN
 - tapOn:
-    id: btn.analyzePrompt.analyze
+    id: btn.dream.primaryCta
 - waitForAnimationToEnd
 - assertVisible:
     id: btn.exploreDream
@@ -35,10 +41,16 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
-- assertVisible:
-    id: text.analyzePromptTitle
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: btn.dream.primaryCta
+    direction: DOWN
 - tapOn:
-    id: btn.analyzePrompt.analyze
+    id: btn.dream.primaryCta
 - waitForAnimationToEnd
 - assertVisible:
     id: sheet.quotaLimit

@@ -232,7 +232,7 @@
 </div>
 </aside>
 <h2 id="quien">Quién tiene sueños de embarazo</h2>
-<h3>Personas de todos los generos</h3>
+<h3>Personas de todos los géneros</h3>
 <p>
 <strong>Los hombres y personas no binarias también tienen sueños de embarazo</strong>. Ya que estos sueños son simbólicos de creación y desarrollo, no están limitados por la biología. Un hombre soñando con estar embarazado puede estar nutriendo una idea de negocio o desarrollando un nuevo aspecto de sí mismo.
                 </p>
@@ -363,7 +363,7 @@
 <p class="mt-6 text-xs text-purple-200/60">Actualizado el 26 de diciembre de 2025</p>
 </section>
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Articulos Relacionados</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Artículos Relacionados</h2>
 <div class="grid md:grid-cols-2 gap-6">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="suenos-de-agua">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>

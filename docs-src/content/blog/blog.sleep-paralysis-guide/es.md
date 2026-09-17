@@ -199,7 +199,7 @@
 <li><strong>Uso de sustancias:</strong> Alcohol, cafeína y ciertos medicamentos</li>
 <li><strong>Mala higiene del sueño:</strong> Uso de pantallas antes de dormir, ambiente de sueño incómodo</li>
 </ul>
-<h3>Condiciones medicas asociadas a la parálisis</h3>
+<h3>Condiciones médicas asociadas a la parálisis</h3>
 <ul>
 <li><strong>Apnea del sueño:</strong> Interrupciones de la respiración durante el sueño</li>
 <li><strong>TEPT:</strong> El estrés postraumatico aumenta la vulnerabilidad</li>

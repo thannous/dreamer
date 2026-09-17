@@ -1,4 +1,8 @@
-import { areAccountsEnabled, isMockModeEnabled } from '@/lib/env';
+import {
+  areAccountsEnabled,
+  isAudioMockModeEnabled,
+  isMockModeEnabled,
+} from '@/lib/env';
 
 /** Written out in full, like the app itself: dynamic access is forbidden. */
 const setAccountsEnv = (value: string | undefined) => {
@@ -9,6 +13,11 @@ const setAccountsEnv = (value: string | undefined) => {
 const setMockEnv = (value: string | undefined) => {
   if (value === undefined) delete process.env.EXPO_PUBLIC_MOCK_MODE;
   else process.env.EXPO_PUBLIC_MOCK_MODE = value;
+};
+
+const setAudioMockEnv = (value: string | undefined) => {
+  if (value === undefined) delete process.env.EXPO_PUBLIC_MOCK_AUDIO;
+  else process.env.EXPO_PUBLIC_MOCK_AUDIO = value;
 };
 
 describe('areAccountsEnabled', () => {
@@ -57,5 +66,29 @@ describe('isMockModeEnabled', () => {
 
     setMockEnv('1');
     expect(isMockModeEnabled()).toBe(true);
+  });
+});
+
+describe('isAudioMockModeEnabled', () => {
+  const originalMock = process.env.EXPO_PUBLIC_MOCK_MODE;
+  const originalAudioMock = process.env.EXPO_PUBLIC_MOCK_AUDIO;
+
+  afterEach(() => {
+    setMockEnv(originalMock);
+    setAudioMockEnv(originalAudioMock);
+  });
+
+  it('keeps real local audio enabled in the general mock app', () => {
+    setMockEnv('true');
+    setAudioMockEnv(undefined);
+
+    expect(isMockModeEnabled()).toBe(true);
+    expect(isAudioMockModeEnabled()).toBe(false);
+  });
+
+  it.each(['true', '1'])('only mocks audio through its explicit flag (%p)', (value) => {
+    setAudioMockEnv(value);
+
+    expect(isAudioMockModeEnabled()).toBe(true);
   });
 });
