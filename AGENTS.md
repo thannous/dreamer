@@ -164,6 +164,9 @@ Choose validation by the behavior and risk changed, not by the number of files o
 - Add tests only for meaningful behavior or regression risks not already covered. Do not add tests that merely mirror implementation or assert cosmetic wording.
 - Once checks pass, rerun only when changed code, dependencies/configuration, a failure or an unresolved risk invalidates that evidence. A documentation-only follow-up does not invalidate code tests.
 - Consolidate local corrections and evidence before pushing when practical. Do not push each small documentation correction separately merely to trigger another CI run.
+- For functional, shared-code or tooling PRs, use `npm run test:prepush` once on the clean committed worktree as the final affected-test entry point; it replaces a guessed manual test selection. It refreshes `origin/master`, uses the CI classifier, checks applicable app/test types and root Jest, and rejects revisions modified during the run. Documentation-only and small visual changes retain the proportional validation above. It does not replace lint, native, site-build, Meditation or Edge checks required by the changed surface.
+- `test:changed` defaults to the merge-base with the local `origin/master`; `JEST_CHANGED_SINCE=HEAD` is only an explicit working-tree delta, never proof of a committed PR. Use `test:prepush` for a fresh remote base. Preserve unrelated WIP by validating in an isolated worktree.
+- A CI watcher can finish for an older head while another task pushes. After it finishes, read the PR head and checks again; merge with `--match-head-commit <verified-sha>`. If the head changed, qualify the new head. Batch a coherent work package before pushing; coordinate ownership of a branch receiving concurrent edits.
 - Keep required CI checks intact and verify them on the final PR head. Do not bypass checks or alter CI filtering as part of a feature without a separate justified scope.
 - Minor follow-up fixes need a focused delta review when relevant, not a new full review/test cycle. Reuse evidence for unchanged code and identify the revision it covers.
 - Missing native evidence stays unqualified; do not replace it with repeated unit tests or claim a mock proves persistence or production behavior.
@@ -184,6 +187,7 @@ Commit source inputs and tracked manifests, never generated `docs/`. Deployment 
 - Use strict TypeScript, 2-space indentation, focused typed functions, function components, PascalCase components, and `useX` hooks.
 - Reuse components, theme constants, service boundaries, and i18n patterns. Keep hook dependencies correct; memoize only for a clear or measured rerender issue.
 - Use `@testing-library/react-native`. Name tests `*.test.ts` or `*.test.tsx`, colocated or under `__tests__/`; keep them deterministic and behavior-focused.
+- In React tests, await asynchronous interactions inside `act` (or the library's async event helpers) and resolve test-controlled promises inside awaited `act` before asserting committed UI state. Do not repair timing races by inflating timeouts. Copy-contract tests should preserve meaning such as optionality and saved state rather than require obsolete cosmetic wording.
 - Add `testID` only for stable automation or UI targeting. Validate affected mobile surfaces and capture screenshots or recordings when useful.
 
 ## Official References
