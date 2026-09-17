@@ -67,3 +67,9 @@ Screenshots retained locally under `doc_web_interne/docs/qa/recording-save-fabri
 - Replaced event-driven fixed input height with an inaccessible, invisible native Text in normal layout flow; the editable input overlays it with the same typography and padding. Dictated controlled updates resize the field even when keyboard editing is disabled.
 - Removed the compact editor height cap, including the short-landscape cap. Longer replies grow the page instead of forcing a small internally scrolling field. No dictation, persistence or submission logic changed.
 - 33 focused editor/conversation tests passed, app/test typechecks and focused lint passed. Expo updated; hardware screenshots showed completion/empty states, so actual multiline dictation growth still needs device qualification.
+
+## Always-visible reply field and optional directions — 2026-09-17
+
+- Replaced the separate mic/pencil entry buttons with an immediately editable answer field and an explicit write/dictate placeholder. Keyboard stays closed until the user focuses the field. Microphone/stop and submit arrow remain inside the field. Empty placeholder participates in natural height layout.
+- Once the story has content, optional place/next/no-more-memory choices are available before a new answer begins. Choosing a direction locally replaces the unanswered question without an API request, and its exact question is retained with the eventual answer. Late responses cannot overwrite a chosen direction. No-more-memory ends questioning without saving or deleting the draft.
+- 105 focused route/editor/conversation/hook tests pass. App/test typechecks and lint verified separately. Existing recording.tsx effect warnings remain. Motorola screenshot confirmed the new field and three choices; no personal text was edited or submitted during inspection.

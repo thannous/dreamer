@@ -122,7 +122,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
             ]}
             testID={`${inputTestID}-measurement`}
           >
-            {value || ' '}
+            {value || placeholder || t('recording.placeholder')}
           </Text>
         ) : null}
         <TextInput

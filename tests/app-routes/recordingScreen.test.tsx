@@ -345,6 +345,7 @@ jest.doMock('@/components/recording/RecordingConversation', () => ({
       <textarea data-testid="conversation-answer" value={props.answer} onChange={(event) => props.onAnswerChange(event.currentTarget.value)} />
       <span data-testid="conversation-story">{props.storyTranscript}</span>
       <span data-testid="conversation-question">{props.question}</span>
+      <button data-testid="conversation-direction-place" onClick={() => props.onDirection('place')}>Place</button>
       <button data-testid="conversation-restart" onClick={props.onRestart}>Restart</button>
       <button data-testid="conversation-mute" onClick={props.onMute}>Mute</button>
       <button data-testid="conversation-submit" onClick={props.onAnswerSubmit}>Send</button>
@@ -906,6 +907,25 @@ describe('Recording screen', () => {
     await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
     expect(mockRequestCaptureQuestion).toHaveBeenLastCalledWith('Nouveau rêve.', expect.any(String), [], expect.anything());
     expect(mockAddDream).not.toHaveBeenCalled();
+  });
+
+  it('keeps a chosen local direction with the answer without another question request', async () => {
+    mockGetInputModePreference.mockResolvedValue('voice');
+    mockGetSavedTranscript.mockResolvedValueOnce('Une plage.');
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    await waitFor(() => expect(screen.getByTestId('conversation-question').textContent).toBe('What else do you remember?'));
+    // An erased draft answer must not freeze the old question for the next direction.
+    fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: ' ' } });
+    const calls = mockRequestCaptureQuestion.mock.calls.length;
+    fireEvent.click(screen.getByTestId('conversation-direction-place'));
+    expect(screen.getByTestId('conversation-question').textContent).toBe('dream_recall.question.where');
+    fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'Sur une île.' } });
+    expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(calls);
+    fireEvent.click(screen.getByTestId('recording-save'));
+    await waitFor(() => expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({
+      transcript: answerPair('Une plage.', 'Sur une île.', 'dream_recall.question.where'),
+    })));
   });
 
   it('keeps the conversational draft and stays on capture if saving fails', async () => {

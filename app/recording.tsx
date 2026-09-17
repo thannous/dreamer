@@ -1516,6 +1516,14 @@ export default function RecordingScreen() {
                   <RecordingConversation
                     key={captureRestartCount}
                     onRestart={handleRestartCapture}
+                    onDirection={(direction) => {
+                      if (currentAnswer.trim() || isRecordingRef.current || isPreparingRecording || interactionDisabled) return;
+                      answerInsertionRef.current = null;
+                      setAnswerBase(null);
+                      captureMicrophoneMutedRef.current = true;
+                      conversation.chooseDirection(direction);
+                      Keyboard.dismiss();
+                    }}
                     transcript={transcript}
                     answer={currentAnswer}
                     storyTranscript={answerBase ?? transcript}

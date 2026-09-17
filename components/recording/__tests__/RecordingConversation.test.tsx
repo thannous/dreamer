@@ -28,7 +28,7 @@ function props() {
     transcript: 'Un jardin.', answer: '', storyTranscript: 'Un jardin.', question: 'Que te revient-il de ce jardin ?', loading: false,
     unavailable: false, done: false, disabled: false, voiceSupported: true,
     voiceStatus: 'idle' as const, onVoice: jest.fn(), onMute: jest.fn(async () => {}), onReview: jest.fn(), onRestart: jest.fn(),
-    onAnswerChange: jest.fn(), onAnswerSubmit: jest.fn(),
+    onAnswerChange: jest.fn(), onAnswerSubmit: jest.fn(), onDirection: jest.fn(),
   };
 }
 
@@ -49,7 +49,6 @@ it('keeps permission preparation distinct from an actually listening microphone'
 it('persists typed answers on change and explicitly submits before the next question', async () => {
   const callbacks = props();
   const view = render(<RecordingConversation {...callbacks} />);
-  fireEvent.press(view.getByTestId('recording-conversation-type'));
   fireEvent.press(view.getByTestId('recording-conversation-submit'));
   expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
   fireEvent.changeText(view.getByTestId('recording-conversation-answer'), 'Une porte ouverte.');
@@ -61,7 +60,7 @@ it('persists typed answers on change and explicitly submits before the next ques
   });
   expect(callbacks.onAnswerSubmit).toHaveBeenCalledTimes(1);
   view.rerender(<RecordingConversation {...callbacks} answer="" />);
-  await waitFor(() => expect(view.queryByTestId('recording-conversation-answer')).toBeNull());
+  await waitFor(() => expect(view.getByTestId('recording-conversation-answer').props.value).toBe(''));
 });
 
 it('allows review after completion and presents fallback questions as general', () => {
@@ -77,7 +76,6 @@ it('allows review after completion and presents fallback questions as general', 
 it('starts dictation from the reply editor without clearing the persisted typed answer', () => {
   const callbacks = props();
   const view = render(<RecordingConversation {...callbacks} />);
-  fireEvent.press(view.getByTestId('recording-conversation-type'));
   fireEvent.changeText(view.getByTestId('recording-conversation-answer'), 'Une porte ouverte.');
   fireEvent.press(view.getByTestId(TID.Button.RecordToggle));
   expect(callbacks.onVoice).toHaveBeenCalledTimes(1);
@@ -91,7 +89,6 @@ it('starts dictation from the reply editor without clearing the persisted typed 
 it('disables reply dictation while busy and hides it when speech is unsupported', () => {
   const callbacks = props();
   const view = render(<RecordingConversation {...callbacks} />);
-  fireEvent.press(view.getByTestId('recording-conversation-type'));
   view.rerender(<RecordingConversation {...callbacks} loading />);
   fireEvent.press(view.getByTestId(TID.Button.RecordToggle));
   expect(callbacks.onVoice).not.toHaveBeenCalled();
@@ -107,10 +104,10 @@ it('offers writing and mute while listening without submitting the answer', asyn
   await waitFor(() => expect(callbacks.onMute).toHaveBeenCalledTimes(1));
   expect(callbacks.onVoice).not.toHaveBeenCalled();
   expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
-  await waitFor(() => expect(view.getByTestId('recording-conversation-type')).toBeEnabled());
-  fireEvent.press(view.getByTestId('recording-conversation-type'));
+  view.rerender(<RecordingConversation {...callbacks} voiceStatus="idle" />);
+  await waitFor(() => expect(view.getByTestId('recording-conversation-answer').props.editable).toBe(true));
   await waitFor(() => expect(view.getByTestId('recording-conversation-answer')).toBeTruthy());
-  expect(callbacks.onMute).toHaveBeenCalledTimes(2);
+  expect(callbacks.onMute).toHaveBeenCalledTimes(1);
 });
 
 
@@ -189,4 +186,27 @@ it('keeps native sizing text in sync with disabled dictation and subsequent edit
   view.rerender(<RecordingConversation {...callbacks} voiceStatus="idle" answer="Une plage." />);
   expect(measurement().props.children).toBe('Une plage.');
   expect(input().props.editable).toBe(true);
+});
+
+
+it('shows an empty answer field immediately without opening the keyboard', () => {
+  const view = render(<RecordingConversation {...props()} transcript="" storyTranscript="" question={null} />);
+  expect(view.getByTestId('recording-conversation-answer').props.editable).toBe(true);
+  expect(view.getByTestId('recording-conversation-answer').props.autoFocus).toBe(false);
+  expect(view.getByTestId('recording-conversation-submit')).toBeDisabled();
+  expect(view.queryByTestId('recording-conversation-type')).toBeNull();
+  expect(view.queryByTestId('recording-direction-place')).toBeNull();
+});
+
+it('offers optional directions only before answering and never submits a suggested dream detail', () => {
+  const callbacks = props();
+  const view = render(<RecordingConversation {...callbacks} />);
+  fireEvent.press(view.getByTestId('recording-direction-place'));
+  expect(callbacks.onDirection).toHaveBeenCalledWith('place');
+  expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
+  expect(callbacks.onAnswerChange).not.toHaveBeenCalled();
+  view.rerender(<RecordingConversation {...callbacks} answer="Du sable." />);
+  expect(view.queryByTestId('recording-direction-done')).toBeNull();
+  view.rerender(<RecordingConversation {...callbacks} voiceStatus="recording" />);
+  expect(view.queryByTestId('recording-direction-place')).toBeNull();
 });
