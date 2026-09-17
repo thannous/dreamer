@@ -123,6 +123,8 @@ export interface DreamAnalysis {
   updatedAt?: number; // Server timestamp for the latest accepted mutation
   clientUpdatedAt?: number; // Client timestamp for the latest local edit
   transcript: string;
+  /** Original capture exchanges, retained on this device after narrative formatting. */
+  captureOriginalTranscript?: string;
   title: string;
   interpretation: string;
   shareableQuote: string;

@@ -20,6 +20,7 @@ export const mergeServerDreamWithLocalState = (
     {
       ...serverDream,
       id: localDream?.id ?? serverDream.id,
+      captureOriginalTranscript: localDream?.captureOriginalTranscript,
       memory: serverDream.memory ?? localDream?.memory,
       imageUpdatedAt: localDream?.imageUpdatedAt ?? serverDream.imageUpdatedAt,
       imageSource: localDream?.imageSource ?? serverDream.imageSource,

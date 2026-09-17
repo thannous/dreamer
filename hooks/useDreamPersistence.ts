@@ -1,4 +1,4 @@
-import { mergeDreamSnapshot } from '../lib/dreamSnapshotMerge';
+import { mergeDreamSnapshot, retainCaptureSources } from '../lib/dreamSnapshotMerge';
 /**
  * useDreamPersistence - Handles dream storage and loading
  *
@@ -571,7 +571,13 @@ export function useDreamPersistence({
           dream.clientRequestId ?? (typeof dream.id === 'number' ? `dream-${dream.id}` : undefined);
         const dreamToSync = clientRequestId ? { ...dream, clientRequestId } : dream;
         try {
-          await createDreamInSupabase(dreamToSync, userId);
+          const synced = await createDreamInSupabase(dreamToSync, userId);
+          if (dream.captureOriginalTranscript) {
+            // Preserve the local source durably in the owning account before guest cleanup.
+            await persistRemoteDreams((prev) => upsertDream(prev, {
+              ...synced, captureOriginalTranscript: dream.captureOriginalTranscript,
+            }));
+          }
         } catch (error) {
           logger.warn('Guest dream migration failed for dream', dream.id, error);
           // Keep snapshot identity; the deterministic request ID is rebuilt on retry.
@@ -590,6 +596,7 @@ export function useDreamPersistence({
     ensureAccessToken,
     ensureRetainedLocalWriteIsDurable,
     hydrateWriteScope,
+    persistRemoteDreams,
     persistLocalMigrationResult,
     userId,
     userScope,
@@ -716,7 +723,7 @@ export function useDreamPersistence({
           // upsertDream matches by id OR remoteId, so will correctly update the dream
           if (!isMigrationCurrent()) return { value: undefined, release: false };
           const sequenceBeforeMigrationWrite = migrationScope.sequence;
-          const migrationWrite = persistRemoteDreams((prev) => upsertDream(prev, synced));
+          const migrationWrite = persistRemoteDreams((prev) => upsertDream(prev, dream.captureOriginalTranscript ? { ...synced, captureOriginalTranscript: dream.captureOriginalTranscript } : synced));
           expectedWriteSequence += migrationScope.sequence - sequenceBeforeMigrationWrite;
           await migrationWrite;
 
@@ -946,7 +953,7 @@ export function useDreamPersistence({
         if (!isCurrent()) return { pendingMutations };
         setRefreshState({ status: 'idle' });
         setRemoteSnapshot({ userScope, dreams: remoteDreams });
-        const normalizedRemote = normalizeDreamList(remoteDreams);
+        const normalizedRemote = normalizeDreamList(retainCaptureSources(remoteDreams, dreamsRef.current));
         const sortedRemote = sortDreams(normalizedRemote);
         const nextDreams = pendingMutations.length
           ? normalizeDreamList(applyPendingMutations(sortedRemote, pendingMutations))

@@ -6,6 +6,9 @@ import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDo
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { MicPermissionRationaleSheet } from '@/components/recording/RecordingSheets';
 import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
+import { CaptureReviewPanel } from '@/components/recording/CaptureReviewPanel';
+import { formatCaptureNarrative } from '@/services/captureConversation';
+import { decodeCaptureDraft, encodeCaptureReview, type CaptureReview } from '@/lib/captureReviewDraft';
 import { RecordingConversation } from '@/components/recording/RecordingConversation';
 import { useCaptureConversation } from '@/hooks/useCaptureConversation';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
@@ -138,6 +141,10 @@ export default function RecordingScreen() {
   );
 
   const [transcript, setTranscript] = useState('');
+  const [captureReview, setCaptureReview] = useState<CaptureReview | null>(null);
+  const [isFormatting, setIsFormatting] = useState(false);
+  const formatRequestRef = useRef<AbortController | null>(null);
+  const formatSourceRef = useRef<string | null>(null);
   const [currentAnswer, setCurrentAnswer] = useState('');
   const [answerBase, setAnswerBase] = useState<string | null>(null);
   const answerInsertionRef = useRef<(DictationInsertion & { storyBase: string }) | null>(null);
@@ -158,7 +165,9 @@ export default function RecordingScreen() {
   const handsFreeRestartGenerationRef = useRef(0);
   const handsFreeRestartInFlightRef = useRef(false);
   const consecutiveEmptyHandsFreeRestartsRef = useRef(0);
-  const handleRestoreDraft = useCallback((savedTranscript: string) => {
+  const handleRestoreDraft = useCallback((savedValue: string) => {
+    const { transcript: savedTranscript, review } = decodeCaptureDraft(savedValue);
+    setCaptureReview(review);
     setTranscript(savedTranscript);
     answerInsertionRef.current = null;
     setAnswerBase(null);
@@ -168,12 +177,23 @@ export default function RecordingScreen() {
     transcriptSelectionRef.current = undefined;
     setTranscriptSelection(undefined);
   }, []);
+  const persistedDraftValue = captureReview ? encodeCaptureReview(captureReview) : transcript;
   const { noteInput, clearAfterSuccessfulSave, lastPersistedValue, isHydrated, hydrationStatus, retryHydration } = useRecordingDraftPersistence({
-    transcript,
+    transcript: persistedDraftValue,
     onRestore: handleRestoreDraft,
   });
   const conversation = useCaptureConversation({ language, t, scope: onboardingScope });
-  const { ask: askCaptureQuestion, reset: resetConversation } = conversation;
+  const { ask: askCaptureQuestion, reset: resetConversation, cancel: cancelConversation } = conversation;
+  useEffect(() => {
+    // A formatting result cannot outlive its screen or account scope.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsFormatting(false);
+    return () => {
+      formatRequestRef.current?.abort();
+      formatRequestRef.current = null;
+      formatSourceRef.current = null;
+    };
+  }, [onboardingScope]);
   // Freeze the question when an answer begins. Persist the pair as editable text
   // so draft restoration and analysis retain context without another AI request.
   const getAnswerInsertion = useCallback(() => {
@@ -372,9 +392,9 @@ export default function RecordingScreen() {
     [handleOfflineModelSheetClose]
   );
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
-  const interactionDisabled = isPersisting || isRestartingCapture || !isHydrated;
+  const interactionDisabled = isPersisting || isFormatting || isRestartingCapture || !isHydrated;
   const isCompactLandscape = viewportWidth > viewportHeight && viewportHeight < 600;
-  const hasSaveableContent = isTranscriptSaveable(transcript);
+  const hasSaveableContent = isTranscriptSaveable(captureReview?.text ?? transcript);
   const isSaveDisabled = !hasSaveableContent || interactionDisabled;
   const textInputRef = useRef<TextInput | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
@@ -447,7 +467,7 @@ export default function RecordingScreen() {
   );
 
   const applyDictationTranscript = useCallback((speech: string): boolean => {
-    if (!isHydrated || restartingCaptureRef.current || !speech.trim()) return false;
+    if (!isHydrated || restartingCaptureRef.current || formatSourceRef.current !== null || !speech.trim()) return false;
     const base = baseTranscriptRef.current;
     const insertion = dictationInsertionRef.current ?? {
       base,
@@ -584,6 +604,8 @@ export default function RecordingScreen() {
   );
 
   const resetComposer = useCallback(() => {
+    setCaptureReview(null);
+    formatSourceRef.current = null;
     resetConversation();
     captureMicrophoneMutedRef.current = false;
     answerInsertionRef.current = null;
@@ -978,12 +1000,12 @@ export default function RecordingScreen() {
   }, [dictationIntent, isHandsFreeRestarting, isRecording, stopRecording]);
 
   const handleSaveDream = useCallback(async (completeWithHelp = false) => {
-    if (!isHydrated || isPersisting) return;
+    if (!isHydrated || isPersisting || formatRequestRef.current) return;
     if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
       await stopRecording({ silent: true, reason: 'stop' });
     }
 
-    const latestSource = baseTranscriptRef.current || transcript;
+    const latestSource = captureReview ? captureReview.text : baseTranscriptRef.current || transcript;
     if (!isTranscriptSaveable(latestSource)) {
       Alert.alert(t('recording.alert.empty.title'), t('recording.alert.empty.message'));
       return;
@@ -998,8 +1020,11 @@ export default function RecordingScreen() {
         : buildDraftDream(latestTranscript);
 
       // Keep the same capture identity if durable persistence fails and the user retries.
-      setDraftDream(dreamToSave);
-      const savedDream = await addDream(dreamToSave);
+      const capturedDream = captureReview
+        ? { ...dreamToSave, captureOriginalTranscript: captureReview.source }
+        : dreamToSave;
+      setDraftDream(capturedDream);
+      const savedDream = await addDream(capturedDream);
       clearAfterSuccessfulSave();
       setDraftDream(savedDream);
       void categorizeDream(latestTranscript, language)
@@ -1058,6 +1083,7 @@ export default function RecordingScreen() {
     applyDreamCategorization,
     buildDraftDream,
     captureIntent,
+    captureReview,
     clearAfterSuccessfulSave,
     draftDream,
     isHydrated,
@@ -1409,10 +1435,10 @@ export default function RecordingScreen() {
   }, [switchToTextMode]);
 
   useEffect(() => {
-    if (inputMode === 'voice' && isHydrated && !isRecordingRef.current && !answerInsertionRef.current && !captureMicrophoneMutedRef.current) {
+    if (!captureReview && !isFormatting && inputMode === 'voice' && isHydrated && !isRecordingRef.current && !answerInsertionRef.current && !captureMicrophoneMutedRef.current) {
       void askCaptureQuestion(baseTranscriptRef.current);
     }
-  }, [askCaptureQuestion, inputMode, isHydrated, isRecordingRef]);
+  }, [askCaptureQuestion, captureReview, isFormatting, inputMode, isHydrated, isRecordingRef]);
 
   const handleConversationAnswerChange = useCallback((text: string) => {
     if (!isHydrated) return;
@@ -1430,20 +1456,54 @@ export default function RecordingScreen() {
     transcriptSelectionRef.current = result.selection;
   }, [getAnswerInsertion, isHydrated, noteInput]);
 
+  const handleValidateCapture = useCallback(async () => {
+    if (!isHydrated || isPersisting || formatRequestRef.current) return;
+    const controller = new AbortController();
+    formatRequestRef.current = controller;
+    setIsFormatting(true);
+    cancelConversation();
+    captureMicrophoneMutedRef.current = true;
+    try {
+      if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
+        await stopRecording({ silent: true, reason: 'stop' });
+      }
+      if (controller.signal.aborted) return;
+      const source = baseTranscriptRef.current || transcript;
+      if (!isTranscriptSaveable(source)) return;
+      formatSourceRef.current = source;
+      const text = await formatCaptureNarrative(source, language, controller.signal);
+      if (controller.signal.aborted || formatRequestRef.current !== controller) return;
+      const review = { source, text };
+      if (!noteInput(encodeCaptureReview(review))) return;
+      setCaptureReview(review);
+      Keyboard.dismiss();
+      scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+    } catch {
+      if (!controller.signal.aborted) {
+        Alert.alert(t('common.error_title'), t('recording.review.error'), [
+          { text: t('common.cancel'), style: 'cancel' },
+          { text: t('recording.review.save_original'), onPress: () => { void handleSaveDream(); } },
+        ]);
+      }
+    } finally {
+      if (formatRequestRef.current === controller) {
+        formatRequestRef.current = null;
+        formatSourceRef.current = null;
+        setIsFormatting(false);
+      }
+    }
+  }, [cancelConversation, handleSaveDream, isHydrated, isPersisting, isRecordingRef, language, noteInput, stopRecording, t, transcript]);
+
+  const saveButtonLabel = isFormatting ? t('recording.review.preparing')
+    : captureReview ? t('recording.button.save_dream')
+    : inputMode === 'voice' ? t('recording.review.validate')
+    : captureIntent === 'remembered' ? t('recording.remembered.save_button') : t('recording.button.save_dream');
   const saveFooter = (
     <RecordingFooter
-      onSave={() => { void handleSaveDream(); }}
+      onSave={() => { void (inputMode === 'voice' && !captureReview ? handleValidateCapture() : handleSaveDream()); }}
       isSaveDisabled={isSaveDisabled}
-      saveButtonLabel={
-        captureIntent === 'remembered'
-          ? t('recording.remembered.save_button')
-          : inputMode === 'voice' ? t('recording.conversation.finish') : t('recording.button.save_dream')
-      }
-      saveButtonAccessibilityLabel={
-        captureIntent === 'remembered'
-          ? t('recording.remembered.save_button_accessibility')
-          : t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })
-      }
+      saveButtonLabel={saveButtonLabel}
+      saveButtonAccessibilityLabel={saveButtonLabel}
     />
   );
 
@@ -1498,7 +1558,7 @@ export default function RecordingScreen() {
               <View style={[styles.bodySection, isCompactLandscape && styles.bodySectionCompact]}>
                 <RecordingInputModeSelect
                   value={inputMode}
-                  disabled={interactionDisabled || isPreparingRecording}
+                  disabled={interactionDisabled || isPreparingRecording || !!captureReview}
                   onChange={handleInputModePreferenceChange}
                 />
 
@@ -1512,7 +1572,21 @@ export default function RecordingScreen() {
                   }}
                 />
 
-                {inputMode === 'voice' ? (
+                {captureReview ? <CaptureReviewPanel
+                  text={captureReview.text} source={captureReview.source} disabled={interactionDisabled}
+                  onChange={(text) => {
+                    const review = { ...captureReview, text };
+                    if (noteInput(encodeCaptureReview(review))) setCaptureReview(review);
+                  }}
+                  onBack={() => {
+                    if (!noteInput(captureReview.source)) return;
+                    formatSourceRef.current = null;
+                    setCaptureReview(null);
+                    if (inputMode === 'voice' && !conversation.question && !conversation.done) {
+                      void askCaptureQuestion(captureReview.source);
+                    }
+                  }}
+                /> : inputMode === 'voice' ? (
                   <RecordingConversation
                     key={captureRestartCount}
                     onRestart={handleRestartCapture}
@@ -1589,8 +1663,8 @@ export default function RecordingScreen() {
                 {hydrationStatus === 'ready' ? (
                   <RecordingDraftProgress
                     compact={inputMode === 'voice'}
-                    value={transcript}
-                    persisted={transcript.length > 0 && lastPersistedValue === transcript}
+                    value={captureReview?.text ?? transcript}
+                    persisted={transcript.length > 0 && lastPersistedValue === persistedDraftValue}
                   />
                 ) : null}
 

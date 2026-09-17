@@ -32,6 +32,7 @@ export const NETWORK_REQUEST_POLICIES = {
   analysisJobStatus: createPolicy(10000, 1, 1000),
   categorizeDream: createPolicy(30000, 0, 1200),
   recallQuestion: createPolicy(15000, 0, 1200),
+  formatRecall: createPolicy(45000, 0, 1200),
   analyzeDreamFull: createPolicy(60000, 0, 1200),
   chat: createPolicy(45000, 0, 1200), // no auto-retry to avoid duplicate sends
 

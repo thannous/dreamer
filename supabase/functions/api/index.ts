@@ -17,6 +17,7 @@ import { handleDeleteAccount } from './routes/account.ts';
 import { handleStoreAppleAuthToken } from './routes/appleAuthToken.ts';
 import { handleChat } from './routes/chat.ts';
 import { handleRecallQuestion } from './routes/recall.ts';
+import { handleFormatRecall } from './routes/formatRecall.ts';
 import { handleAnalyzeDream, handleAnalyzeDreamFull, handleCategorizeDream } from './routes/dreams.ts';
 import { handleCreateImageJob, handleGetImageJobStatus } from './routes/imageJobs.ts';
 import { handleGenerateImage, handleGenerateImageWithReference } from './routes/images.ts';
@@ -53,7 +54,7 @@ const routes = new Map<string, RouteHandler>([
   ['POST /auth/apple-token', handleStoreAppleAuthToken],
   ['DELETE /account', handleDeleteAccount],
   ['POST /chat', handleChat],
-  ['POST /recall-question', handleRecallQuestion],
+  ['POST /recall-question', handleRecallQuestion], ['POST /format-recall', handleFormatRecall],
   ['POST /transcribe', handleTranscribe],
   ['POST /analyzeDream', handleAnalyzeDream],
   ['POST /analyzeDreamFull', handleAnalyzeDreamFull],

@@ -75,8 +75,8 @@ Deno.test('recall rejects ungrounded, repeated and malformed model responses', a
   }
 });
 
-Deno.test('recall stops after five questions without provider work', async () => {
-  const response = await handleRecallQuestion(ctx({ ...body, previousQuestions: Array(5).fill('Une question ?') }));
+Deno.test('recall stops after three questions without provider work', async () => {
+  const response = await handleRecallQuestion(ctx({ ...body, previousQuestions: Array(3).fill('Une question ?') }));
   assertEquals(await response.json(), { question: null, done: true });
 });
 

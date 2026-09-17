@@ -43,13 +43,13 @@ it('ends the conversation when the provider has no useful further question', asy
   expect(result.current).toMatchObject({ question: null, done: true, unavailable: false });
 });
 
-it('stops after five questions and discards a response when the account scope changes', async () => {
+it('stops after three questions and discards a response when the account scope changes', async () => {
   request.mockResolvedValue({ question: 'Une question ?', done: false });
   const { result, rerender } = renderHook(({ scope }) => useCaptureConversation({ language: 'fr', t, scope }), { initialProps: { scope: 'guest' } });
-  for (let revision = 0; revision < 6; revision++) {
+  for (let revision = 0; revision < 4; revision++) {
     await act(async () => { await result.current.ask(`Récit ${revision}`); });
   }
-  expect(request).toHaveBeenCalledTimes(5);
+  expect(request).toHaveBeenCalledTimes(3);
   expect(result.current.done).toBe(true);
   rerender({ scope: 'user-one' });
   let resolve!: (value: { question: string; done: boolean }) => void;
@@ -61,4 +61,12 @@ it('stops after five questions and discards a response when the account scope ch
   expect(signal?.aborted).toBe(true);
   await act(async () => { resolve({ question: 'Ancienne question ?', done: false }); await pending; });
   expect(result.current.question).toBeNull();
+});
+
+it('does not restart the three-question allowance on a restored draft', async () => {
+  const translate = (key: string) => key === 'recording.conversation.question_label' ? 'Question :' : 'Autre chose ?';
+  const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t: translate }));
+  await act(async () => { await result.current.ask('Une plage.\nQuestion : Un ?\nRéponse : oui\nQuestion : Deux ?\nRéponse : non\nQuestion : Trois ?\nRéponse : peut-être'); });
+  expect(request).not.toHaveBeenCalled();
+  expect(result.current.done).toBe(true);
 });

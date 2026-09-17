@@ -1,3 +1,4 @@
+import { CaptureOriginal } from '@/components/recording/CaptureReviewPanel';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { resolveDreamRoute } from '@/lib/dreamRoute';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
@@ -1433,6 +1434,7 @@ function JournalDetailContent() {
       ) : (
         <Text className="font-sans text-[15px] leading-6 text-ivory-muted opacity-90">{dream.transcript}</Text>
       )}
+      {dream.captureOriginalTranscript ? <CaptureOriginal source={dream.captureOriginalTranscript} /> : null}
       {isEditingTranscript ? (
         <View className="mt-3 flex-row flex-wrap justify-end gap-3">
           <Pressable onPress={() => { setEditableTranscript(dream.transcript || ''); setIsEditingTranscript(false); }}

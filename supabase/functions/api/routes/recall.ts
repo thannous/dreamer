@@ -27,7 +27,7 @@ export async function handleRecallQuestion(ctx: ApiContext, deps: Dependencies =
   if (!Array.isArray(previous) || previous.length > 5 || previous.some(q => typeof q !== 'string' || !q.trim() || q.length > 280)) {
     return jsonResponse({ error: 'Invalid questions' }, 400);
   }
-  if (previous.length === 5) return jsonResponse({ question: null, done: true });
+  if (previous.length >= 3) return jsonResponse({ question: null, done: true });
   const admission = await (deps.admit ?? admitSynchronousAiRequest)({ ctx, capability: 'recall_question', guestFingerprint: session.fingerprint });
   if (admission instanceof Response) return admission;
   const apiKey = deps.apiKey ?? Deno.env.get('GEMINI_API_KEY');
