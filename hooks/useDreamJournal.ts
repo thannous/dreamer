@@ -581,11 +581,9 @@ export const useDreamJournal = () => {
       };
 
       const queuedDream = await queueAndPersist();
-      if (hasNetwork) {
-        void syncPendingMutations().catch((error) => {
-          logger.warn('Background dream creation sync failed', error);
-        });
-      }
+      void syncPendingMutations({ refreshNetworkState: !hasNetwork }).catch((error) => {
+        logger.warn('Background dream creation sync failed', error);
+      });
       return queuedDream;
     },
     [
@@ -691,6 +689,11 @@ export const useDreamJournal = () => {
             conflictRemoteDream: undefined,
           });
           await queueAndPersist(pendingVersion);
+          if (!hasNetwork) {
+            void syncPendingMutations({ refreshNetworkState: true }).catch((error) => {
+              logger.warn('Background dream update sync failed', error);
+            });
+          }
           return;
         }
 
@@ -752,6 +755,7 @@ export const useDreamJournal = () => {
       resolveRemoteId,
       resolveCurrentDream,
       runSerializedDreamWrite,
+      syncPendingMutations,
       tier,
     ]
   );
@@ -1151,7 +1155,16 @@ export const useDreamJournal = () => {
       });
 
       if (retried) {
-        await persistRemoteDreams((prev) => upsertDream(prev, resetDream));
+        await persistRemoteDreams((prev) => {
+          // An in-flight acknowledgement can land while retry markers are saved.
+          // Never overwrite its remote identity/revision with the pre-await dream.
+          const latest = resolveDreamTarget(prev, target);
+          if (!latest || getDreamSyncState(latest) === 'clean') return prev;
+          return upsertDream(prev, setDreamSyncState(latest, 'pending', {
+            lastSyncError: undefined,
+            conflictRemoteDream: undefined,
+          }));
+        });
       } else if (getDreamSyncState(dream) !== 'clean') {
         const resolvedDream = {
           ...resetDream,
@@ -1165,7 +1178,7 @@ export const useDreamJournal = () => {
       }
 
       if (retried) {
-        await syncPendingMutations();
+        await syncPendingMutations({ refreshNetworkState: true });
       }
     },
     [
