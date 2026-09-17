@@ -5,9 +5,7 @@ type Translator = (key: string, replacements?: { [k: string]: string | number })
 
 /**
  * Sentinel used by aggregations (statistics) for dreams that carry no dreamType
- * yet — typically a dream captured but never analyzed/categorized. It is kept
- * deliberately OUT of the canonical `DreamType` union so that every caller that
- * needs a real type stays exhaustive.
+ * yet — typically a dream captured but never analyzed/categorized. It is also returned by reflection when the account does not establish a type.
  */
 export const UNKNOWN_DREAM_TYPE = 'Unknown';
 

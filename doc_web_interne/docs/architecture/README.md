@@ -4,6 +4,7 @@ This folder contains implementation specs for the top architecture failure modes
 
 ## Specs
 
+- [Noctalia — premier lot de fiabilité](./NOCTALIA-RELIABILITY-LOT-A.md)
 - [01-api-chokepoint-and-async-ai.md](./01-api-chokepoint-and-async-ai.md)
 - [02-durable-sync-and-convergence.md](./02-durable-sync-and-convergence.md)
 - [03-subscription-entitlement-convergence.md](./03-subscription-entitlement-convergence.md)

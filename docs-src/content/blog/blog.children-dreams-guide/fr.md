@@ -167,6 +167,9 @@
 <p>
                     Les enfants d'âge scolaire rêvent de plus en plus de <strong>situations sociales</strong> : amitiés, conflits avec les pairs, enseignants et scénarios à l'<a class="text-dream-salmon hover:underline" href="../symboles/ecole">école</a>. Les rêves d'être poursuivi, de tomber ou d'être embarrassé en public deviennent plus fréquents pendant cette période, reflétant l'importance croissante du statut social et de l'anxiété de performance dans la vie de l'enfant.
                 </p>
+<p>
+                    Quand ces rêves se concentrent autour d’une nouvelle rentrée, notre guide sur les <a class="text-dream-salmon hover:underline" href="cauchemars-rentree-enfant">cauchemars de rentrée chez l’enfant</a> aide les parents à distinguer mauvais rêve, cauchemar et terreur nocturne.
+                </p>
 <h3>Adolescents : Identité et émotions</h3>
 <p>
                     Les rêves des adolescents ressemblent à ceux des adultes par leur complexité. Les thèmes de l'identité, des relations amoureuses, de l'image corporelle et des aspirations futures dominent. Les ados vivent aussi davantage de <a class="text-dream-salmon hover:underline" href="guide-cauchemars">cauchemars</a> pendant les périodes de changements hormonaux et de pression scolaire. Comprendre <a class="text-dream-salmon hover:underline" href="pourquoi-nous-revons-science">pourquoi nous rêvons</a> peut aider les adolescents à donner du sens à l'intensité émotionnelle qu'ils vivent pendant le sommeil.

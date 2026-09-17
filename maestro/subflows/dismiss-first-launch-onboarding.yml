@@ -1,4 +1,4 @@
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 ---
 - runFlow:
     when:
@@ -21,6 +21,10 @@ appId: com.tanuki75.noctalia
             visible:
               id: btn.onboarding.path.analyze
           commands:
+            - swipe:
+                start: 90%, 10%
+                end: 12%, 82%
+                duration: 1000
             - tapOn:
                 id: btn.onboarding.skip
             - extendedWaitUntil:

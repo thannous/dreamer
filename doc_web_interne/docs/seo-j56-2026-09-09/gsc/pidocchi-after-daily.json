@@ -1,0 +1,107 @@
+{
+  "fetchedAt": "2026-09-09T09:49:13.667Z",
+  "site": "sc-domain:noctalia.app",
+  "request": {
+    "type": "web",
+    "dataState": "final",
+    "rowLimit": 25000,
+    "dimensionFilterGroups": [
+      {
+        "groupType": "and",
+        "filters": [
+          {
+            "dimension": "page",
+            "operator": "equals",
+            "expression": "https://noctalia.app/it/simboli/pidocchi"
+          }
+        ]
+      }
+    ],
+    "startDate": "2026-09-03",
+    "endDate": "2026-09-06",
+    "dimensions": [
+      "date"
+    ]
+  },
+  "responses": [
+    {
+      "rows": [
+        {
+          "keys": [
+            "2026-09-03"
+          ],
+          "clicks": 0,
+          "impressions": 213,
+          "ctr": 0,
+          "position": 7.845070422535211
+        },
+        {
+          "keys": [
+            "2026-09-04"
+          ],
+          "clicks": 1,
+          "impressions": 198,
+          "ctr": 0.005050505050505051,
+          "position": 8.207070707070706
+        },
+        {
+          "keys": [
+            "2026-09-05"
+          ],
+          "clicks": 0,
+          "impressions": 185,
+          "ctr": 0,
+          "position": 8.4
+        },
+        {
+          "keys": [
+            "2026-09-06"
+          ],
+          "clicks": 1,
+          "impressions": 227,
+          "ctr": 0.004405286343612335,
+          "position": 7.5550660792951545
+        }
+      ],
+      "responseAggregationType": "byPage"
+    }
+  ],
+  "rows": [
+    {
+      "keys": [
+        "2026-09-03"
+      ],
+      "clicks": 0,
+      "impressions": 213,
+      "ctr": 0,
+      "position": 7.845070422535211
+    },
+    {
+      "keys": [
+        "2026-09-04"
+      ],
+      "clicks": 1,
+      "impressions": 198,
+      "ctr": 0.005050505050505051,
+      "position": 8.207070707070706
+    },
+    {
+      "keys": [
+        "2026-09-05"
+      ],
+      "clicks": 0,
+      "impressions": 185,
+      "ctr": 0,
+      "position": 8.4
+    },
+    {
+      "keys": [
+        "2026-09-06"
+      ],
+      "clicks": 1,
+      "impressions": 227,
+      "ctr": 0.004405286343612335,
+      "position": 7.5550660792951545
+    }
+  ]
+}

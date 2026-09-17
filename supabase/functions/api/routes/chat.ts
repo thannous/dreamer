@@ -1,13 +1,14 @@
+import { buildChatHistory, buildChatSystem } from '../services/chatContext.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
-import { type AiLanguage, localizedForAi } from '../lib/aiLanguage.ts';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
-import { buildDreamContextPrompt } from '../lib/prompts.ts';
+import { buildDreamContextPrompt, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS } from '../lib/prompts.ts';
 import {
   callGeminiWithFallback,
   classifyGeminiError,
   extractModelParts,
+  GeminiChatStream,
   GEMINI_FLASH_LITE_MODEL,
-  GEMINI_FLASH_MODEL,
+  GEMINI_CHAT_MODEL,
   type GeminiGenerationConfig,
   type GeminiPart,
   requestGeminiStream,
@@ -23,17 +24,6 @@ import {
 } from '../lib/aiRequestPolicy.ts';
 import { admitSynchronousAiRequest } from '../services/aiAdmission.ts';
 import type { ApiContext } from '../types.ts';
-
-const CHAT_SYSTEM_PREAMBLES: Record<AiLanguage, string> = {
-  en: 'You are an empathetic assistant helping interpret dreams. Be clear and kind, avoid medical claims. Reply in English.',
-  fr: 'Tu es un assistant empathique qui aide à interpréter les rêves. Sois clair, bienveillant et évite les affirmations médicales. Réponds en français.',
-  es: 'Eres un asistente empático que ayuda a interpretar sueños. Sé claro y amable, evita afirmaciones médicas. Responde en español.',
-  de: 'Du bist ein einfühlsamer Assistent, der bei der Traumdeutung hilft. Sei klar und freundlich, vermeide medizinische Aussagen. Antworte auf Deutsch.',
-  it: 'Sei un assistente empatico che aiuta a interpretare i sogni. Sii chiaro e gentile, evita affermazioni mediche. Rispondi in italiano.',
-  pt: 'Você é um assistente acolhedor que ajuda a interpretar sonhos. Seja claro e gentil, evite afirmações médicas. Responda em português do Brasil.',
-};
-
-const MAX_HISTORY_TURNS = 20;
 
 type ChatDependencies = {
   admitRequest?: typeof admitSynchronousAiRequest;
@@ -93,7 +83,7 @@ type ClientDreamContext = {
 
 const ALLOWED_CHAT_CATEGORIES = new Set(['symbols', 'emotions', 'growth', 'general']);
 const GUEST_CONTEXT_LIMITS = {
-  transcript: 6000,
+  transcript: DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS,
   interpretation: 4000,
   title: 200,
   shareableQuote: 500,
@@ -176,6 +166,16 @@ const sanitizeParts = (parts: unknown): GeminiPart[] | undefined => {
       const thoughtSignature = typeof candidate.thoughtSignature === 'string'
         ? candidate.thoughtSignature
         : undefined;
+      const thoughtSummary = Array.isArray(candidate.thoughtSummary)
+        && candidate.thoughtSummary.length <= 64
+        && candidate.thoughtSummary.every((block: any) =>
+          (block?.type === 'text' && typeof block.text === 'string' && block.text.length <= 32000)
+          || (block?.type === 'image' && typeof block.data === 'string' && block.data.length <= 256000
+            && typeof block.mime_type === 'string' && block.mime_type.length <= 100))
+        ? candidate.thoughtSummary.map((block: any) => block.type === 'text'
+          ? { type: 'text' as const, text: block.text }
+          : { type: 'image' as const, data: block.data, mime_type: block.mime_type })
+        : undefined;
       const inlineData =
         candidate.inlineData
         && typeof candidate.inlineData === 'object'
@@ -192,6 +192,7 @@ const sanitizeParts = (parts: unknown): GeminiPart[] | undefined => {
         ...(text ? { text } : {}),
         ...(thought != null ? { thought } : {}),
         ...(thoughtSignature ? { thoughtSignature } : {}),
+        ...(thoughtSummary !== undefined ? { thoughtSummary } : {}),
         ...(inlineData ? { inlineData } : {}),
       };
     })
@@ -259,21 +260,42 @@ const toContentParts = (message: StoredChatMessage): GeminiPart[] => {
   return text ? [{ text }] : [];
 };
 
-const sanitizeClientHistoryMessage = (message: unknown): StoredChatMessage | null => {
+export const sanitizeGuestModelParts = (parts: unknown[], text: string): GeminiPart[] => {
+  if (parts.length > 128 || JSON.stringify(parts).length > 512000) throw new Error('Chat history parts exceed limit');
+  const safe = sanitizeParts(parts);
+  if (parts.some((part: any, index) => part?.thoughtSummary !== undefined && safe?.[index]?.thoughtSummary === undefined)) throw new Error('Invalid thought summary');
+  if (!safe || safe.length !== parts.length || safe.some(part => part.inlineData
+    || (part.thought && (!part.thoughtSignature || part.thoughtSignature.length > 256000)))) {
+    throw new Error('Invalid chat history parts');
+  }
+  if (safe.filter(part => !part.thought).map(part => part.text ?? '').join('').trim() !== text) {
+    throw new Error('Chat history text mismatch');
+  }
+  return safe;
+};
+
+export const sanitizeClientHistoryMessage = (message: unknown): StoredChatMessage | null => {
   if (!message || typeof message !== 'object') return null;
 
   const candidate = message as Record<string, unknown>;
   const role = candidate.role === 'model' ? 'model' : candidate.role === 'user' ? 'user' : null;
   if (!role) return null;
 
-  const text = trimToLimit(getMessageText(candidate as StoredChatMessage), GUEST_CONTEXT_LIMITS.chatMessageText);
+  const hasModelParts = role === 'model' && Array.isArray(candidate.parts);
+  const sourceText = getMessageText(candidate as StoredChatMessage);
+  // Signed model content must be replayed intact. Truncating only its visible
+  // text makes a legitimate saved response disagree with its original parts.
+  if (hasModelParts && sourceText.length > 32000) throw new Error('Chat history text exceeds limit');
+  const text = hasModelParts
+    ? sourceText
+    : trimToLimit(sourceText, GUEST_CONTEXT_LIMITS.chatMessageText);
   if (!text) return null;
 
   const meta = sanitizeMessageMeta(candidate.meta);
   return {
     role,
     text,
-    parts: [{ text }],
+    parts: role === 'model' && Array.isArray(candidate.parts) ? sanitizeGuestModelParts(candidate.parts, text) : [{ text }],
     ...(meta ? { meta } : {}),
   };
 };
@@ -654,7 +676,7 @@ export async function handleChat(
     const apiKey = Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
-    const systemPreamble = localizedForAi(lang, CHAT_SYSTEM_PREAMBLES);
+    const systemPreamble = buildChatSystem(lang);
 
     const contents: { role: 'user' | 'model'; parts: GeminiPart[] }[] = [];
     const { prompt: dreamContextPrompt, debug: contextDebug } = buildDreamContextPrompt(dream, lang);
@@ -669,9 +691,9 @@ export async function handleChat(
       historyLength: historyWithUserMsg.length,
     });
 
-    // Cap resent history: stateless calls resend every turn, so long chats
-    // grow token cost linearly. The dream context plus recent turns is enough.
-    for (const turn of historyWithUserMsg.slice(-MAX_HISTORY_TURNS)) {
+    const { recentMessages, olderUserNotes } = buildChatHistory(historyWithUserMsg);
+    if (olderUserNotes) contents.push({ role: 'user', parts: [{ text: olderUserNotes }] });
+    for (const turn of recentMessages) {
       const r = turn.role === 'model' ? 'model' : 'user';
       const parts = toContentParts(turn);
       if (parts.length > 0) contents.push({ role: r, parts });
@@ -679,10 +701,13 @@ export async function handleChat(
 
     const primaryModel = resolveTextModel(
       ['GEMINI_CHAT_MODEL', 'GEMINI_LITE_MODEL'],
-      GEMINI_FLASH_MODEL
+      GEMINI_CHAT_MODEL
     );
     const fallbackModel = resolveTextModel('GEMINI_LITE_MODEL', GEMINI_FLASH_LITE_MODEL);
-    const chatConfig: GeminiGenerationConfig = { thinkingLevel: 'low', maxOutputTokens: 2048 };
+    const chatConfig: GeminiGenerationConfig = {
+      thinkingLevel: primaryModel === 'gemini-3.5-flash-lite' ? 'minimal' : 'low',
+      maxOutputTokens: 2048,
+    };
 
     const buildModelMessage = (reply: string, rawParts: GeminiPart[] | null): StoredChatMessage => {
       const modelParts = sanitizeParts(rawParts);
@@ -738,25 +763,20 @@ export async function handleChat(
           const send = (payload: unknown) =>
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
           let accumulated = '';
-          let finalInteraction: any = null;
+          const interaction = new GeminiChatStream();
           try {
             for await (const event of events) {
-              if (
-                event?.event_type === 'step.delta'
-                && event?.delta?.type === 'text'
-                && typeof event.delta.text === 'string'
-              ) {
-                accumulated += event.delta.text;
-                send({ delta: event.delta.text });
-              } else if (event?.event_type === 'interaction.completed') {
-                finalInteraction = event?.interaction ?? null;
+              const delta = interaction.push(event);
+              if (delta) {
+                accumulated += delta;
+                send({ delta });
               }
             }
 
+            const rawParts = interaction.finish();
             const reply = accumulated.trim();
             if (!reply) throw new Error('Empty model response');
 
-            const rawParts = finalInteraction ? extractModelParts(finalInteraction) : null;
             const modelMessage = buildModelMessage(
               reply,
               rawParts && rawParts.length > 0 ? rawParts : [{ text: reply }]
@@ -797,6 +817,7 @@ export async function handleChat(
       throw new Error('Empty model response');
     }
 
+    if (raw?.status !== 'completed') throw new Error('Incomplete interaction');
     const modelMessage = buildModelMessage(reply.trim(), extractModelParts(raw));
     await persistModelMessage(modelMessage);
 

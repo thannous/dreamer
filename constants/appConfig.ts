@@ -11,8 +11,8 @@ export const SPLASH_ANIMATION = {
 } as const;
 
 export const RECORDING = {
-  /** Maximum characters allowed in transcript */
-  MAX_TRANSCRIPT_CHARS: 600,
+  /** Soft visual reference for recording progress. Not a storage or input limit. */
+  TRANSCRIPT_PROGRESS_REFERENCE_CHARS: 600,
   /** Timeout for speech recognition end event */
   END_TIMEOUT_MS: 4000,
   /** Recorder release error snippet for detection */

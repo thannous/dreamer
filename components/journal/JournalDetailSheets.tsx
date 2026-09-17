@@ -25,17 +25,13 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
  * objects. Everything rendered inside them is Uniwind.
  */
 const SHEET_BASE = {
-  borderTopLeftRadius: 24,
-  borderTopRightRadius: 24,
   paddingHorizontal: 20,
   paddingTop: 18,
   paddingBottom: 24,
-  borderWidth: 1,
 } as const;
 const SHEET_STYLE = { ...SHEET_BASE, gap: 12 } as const;
 const NOTICE_SHEET_STYLE = { ...SHEET_BASE, gap: 14 } as const;
 
-const HANDLE_CLASS = 'mb-3 h-1 w-11 self-center rounded-full bg-line opacity-70';
 const TITLE_CLASS = 'font-serif-bold text-[20px] text-ivory';
 const BODY_CLASS = 'font-sans text-[15px] leading-[22px] text-ivory-muted';
 
@@ -104,7 +100,6 @@ export function AnalysisNoticeSheet({
       ]}
       testID={TID.Sheet.AnalysisNotice}
     >
-      <View className={HANDLE_CLASS} />
       <View className="flex-row items-center gap-3">
         <View className={`h-11 w-11 items-center justify-center rounded-[14px] ${NOTICE_TONE_CLASS[tone]}`}>
           <IconSymbol name={iconName} size={24} color={toneTokens.icon} />
@@ -151,7 +146,6 @@ export function ReplaceImageSheet({
         shadows.xl,
       ]}
     >
-      <View className={HANDLE_CLASS} />
       <Text className={TITLE_CLASS}>
         {t('journal.detail.image_replace.title')}
       </Text>
@@ -206,7 +200,6 @@ export function ReanalyzeSheet({
         shadows.xl,
       ]}
     >
-      <View className={HANDLE_CLASS} />
       <Text className={TITLE_CLASS}>
         {t('journal.detail.reanalyze_prompt.title')}
       </Text>
@@ -279,6 +272,7 @@ export function DeleteConfirmSheet({
     <BottomSheet
       visible={visible}
       onClose={onClose}
+      dismissBehavior={isDeleting ? 'none' : 'pan'}
       backdropColor={noctalia.surface.overlay}
       style={[
         SHEET_STYLE,
@@ -286,7 +280,6 @@ export function DeleteConfirmSheet({
         shadows.xl,
       ]}
     >
-      <View className={HANDLE_CLASS} />
       <Text className={TITLE_CLASS}>
         {t('journal.detail.delete_confirm.title')}
       </Text>
@@ -369,7 +362,6 @@ export function QuotaLimitSheet({
       ]}
       testID={TID.Sheet.QuotaLimit}
     >
-      <View className={HANDLE_CLASS} />
       <Text className={TITLE_CLASS} testID={TID.Text.QuotaLimitTitle}>
         {title}
       </Text>
@@ -424,7 +416,6 @@ export function ImageErrorSheet({
         shadows.xl,
       ]}
     >
-      <View className={HANDLE_CLASS} />
       <View className="flex-row items-center gap-3">
         <View className="h-11 w-11 items-center justify-center rounded-[14px] bg-danger">
           <IconSymbol name="exclamationmark.circle.fill" size={24} color={noctalia.status.danger.icon} />

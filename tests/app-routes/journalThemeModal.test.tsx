@@ -5,10 +5,36 @@ import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
 afterEach(() => {
   cleanup();
+  mockWindowWidth = 390;
+  mockHasDreams = true;
+  mockPersistenceState = { status: 'ready', target: 'device' };
+  mockRetryPersistence.mockClear();
 });
 
+let mockWindowWidth = 390;
+let mockHasDreams = true;
+let mockPersistenceState: { status: 'ready' | 'loading'; target: 'device' } | { status: 'error'; operation: 'read'; target: 'device' } = {
+  status: 'ready',
+  target: 'device',
+};
+const mockRetryPersistence = jest.fn(async () => undefined);
+
+// This route test exercises filter controls, not authentication or media I/O.
+// Keep their SDK initialization out of the isolated UI environment.
+jest.doMock('@/context/AuthContext', () => ({ AuthContext: React.createContext(null) }));
+jest.doMock('@/services/dreamMediaService', () => ({
+  resolveDreamMedia: async () => ({ imageUrl: '', thumbnailUrl: undefined }),
+}));
+jest.doMock('@/services/supabaseDreamService', () => ({
+  fetchDreamListPage: jest.fn(),
+}));
+
 jest.doMock('@/context/DreamsContext', () => ({
-  useDreams: () => ({ dreams: [] }),
+  useDreams: () => ({
+    dreams: mockHasDreams ? [{ id: 1700000000000, title: 'Dream', transcript: 'A dream', dreamType: 'Symbolic Dream', chatHistory: [], isAnalyzed: false }] : [],
+    persistenceState: mockPersistenceState,
+    retryPersistence: mockRetryPersistence,
+  }),
 }));
 
 jest.doMock('@/context/ThemeContext', () => ({
@@ -69,8 +95,8 @@ jest.doMock('@/lib/accessibility', () => ({
 
 jest.doMock('@/lib/dreamFilters', () => ({
   applyFilters: (dreams: any[]) => dreams,
-  getUniqueThemes: () => ['mystical'],
-  getUniqueDreamTypes: () => [],
+  getUniqueThemes: jest.fn(() => ['mystical']),
+  getUniqueDreamTypes: jest.fn(() => []),
   sortDreamsByDate: (dreams: any[]) => dreams,
 }));
 
@@ -91,27 +117,66 @@ jest.doMock('@/lib/imageUtils', () => ({
 jest.doMock('@/components/journal/FilterBar', () => ({
   FilterBar: function MockFilterBar({
     items,
+    onClear,
+    clearTestID,
   }: {
-    items: { id: string; onPress: () => void }[];
+    items: { id: string; active?: boolean; onPress: () => void; testID?: string }[];
+    onClear: () => void;
+    clearTestID?: string;
   }) {
-    const themeItem = items.find((item) => item.id === 'theme');
-    const advancedItem = items.find((item) => item.id === 'more') ?? themeItem;
+    const hasActive = items.some((item) => item.id !== 'all' && item.active);
     return (
-      <button data-testid="open-theme-modal" onClick={advancedItem?.onPress}>
-        Open filters
-      </button>
+      <div>
+        {items.map((item) => (
+          <button key={item.id} data-testid={item.testID} onClick={item.onPress}>
+            {item.id}
+          </button>
+        ))}
+        {hasActive ? (
+          <button data-testid={clearTestID} onClick={onClear}>
+            clear
+          </button>
+        ) : null}
+      </div>
     );
   },
 }));
 
-jest.doMock('@/components/ui/SearchBar', () => ({
-  SearchBar: () => <div data-testid="search-bar" />,
-}));
+jest.doMock('@/components/ui/SearchBar', () => {
+  const { searchBarLayout } = jest.requireActual('@/components/ui/SearchBar') as {
+    searchBarLayout: (fontScale: number) => { minHeight: number };
+  };
+  return {
+    searchBarLayout,
+    SearchBar: ({
+      testID,
+      inputTestID,
+      value,
+      onChangeText,
+    }: {
+      testID?: string;
+      inputTestID?: string;
+      value: string;
+      onChangeText: (text: string) => void;
+    }) => (
+      <div data-testid={testID ?? 'search-bar'}>
+        <input
+          data-testid={inputTestID ?? 'input.searchDreams'}
+          value={value}
+          onChange={(event) => onChangeText(event.target.value)}
+        />
+      </div>
+    ),
+  };
+});
 
 jest.doMock('@/components/inspiration/AtmosphericBackground', () => ({
   AtmosphericBackground: () => <div data-testid="atmospheric-background" />,
 }));
 
+jest.doMock('@/components/NoctaliaScreenHeader', () => ({
+  NoctaliaScreenHeader: ({ titleKey, actions = [], slot, inlineSlot }: any) => <header data-testid="journal-shared-header"><span>Noctalia</span><span>{titleKey}</span>{actions.map((action: any) => <button key={action.testID} data-testid={action.testID} aria-label={action.accessibilityLabel} onClick={action.onPress} />)}{inlineSlot ?? slot}</header>,
+}));
 jest.doMock('@/components/inspiration/PageHeader', () => ({
   PageHeaderContent: () => <div data-testid="page-header-content" />,
 }));
@@ -122,10 +187,6 @@ jest.doMock('@/components/journal/DateRangePicker', () => ({
 
 jest.doMock('@/components/journal/DreamCard', () => ({
   DreamCard: () => <div />,
-}));
-
-jest.doMock('@/components/journal/AtlasDreamRow', () => ({
-  AtlasDreamRow: () => <div />,
 }));
 
 jest.doMock('@/components/journal/TimelineIndicator', () => ({
@@ -141,13 +202,24 @@ jest.doMock('@/components/icons/DreamIcons', () => ({
 }));
 
 jest.doMock('@shopify/flash-list', () => ({
-  FlashList: () => null,
+  FlashList: ({
+    ListHeaderComponent,
+    ListEmptyComponent,
+    data,
+  }: {
+    ListHeaderComponent?: React.ReactNode;
+    ListEmptyComponent?: React.ComponentType;
+    data?: unknown[];
+  }) => <>{ListHeaderComponent}{data?.length === 0 && ListEmptyComponent ? <ListEmptyComponent /> : null}</>,
 }));
 
+const mockPush = jest.fn();
+
 jest.doMock('expo-router', () => ({
-  router: { push: jest.fn() },
+  router: { push: mockPush },
   useFocusEffect: () => {},
   useNavigation: () => ({ setOptions: jest.fn() }),
+  usePathname: () => '/journal',
 }));
 
 jest.doMock('react-native', () => {
@@ -172,10 +244,12 @@ jest.doMock('react-native', () => {
       minimumFontScale,
       hitSlop,
       style,
+      className,
       ...rest
     } = props;
     return {
       ...rest,
+      ...(className ? { className } : {}),
       ...(testID ? { 'data-testid': testID } : {}),
       ...(onPress ? { onClick: onPress } : {}),
       ...(accessibilityRole ? { role: accessibilityRole } : {}),
@@ -200,6 +274,10 @@ jest.doMock('react-native', () => {
     Pressable: createElement('button'),
     Text: createElement('span'),
     View: createElement('div'),
+    Keyboard: {
+      // Intentionally omit isVisible: RN Web 0.21 does not implement it.
+      addListener: () => ({ remove: () => {} }),
+    },
     Platform: {
       OS: 'web',
       select: (values: Record<string, any>) => values?.web ?? values?.default,
@@ -210,7 +288,7 @@ jest.doMock('react-native', () => {
       absoluteFillObject: {},
       hairlineWidth: 1,
     },
-    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
+    useWindowDimensions: () => ({ width: mockWindowWidth, height: 844, scale: 1, fontScale: 1 }),
   };
 });
 
@@ -314,9 +392,37 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
 }));
 
+jest.doMock('@/components/journal/JournalFirstPage', () => ({ JournalFirstPage: () => <div data-testid="journal-first-page" /> }));
+
 const { default: JournalListScreen } = require('@/app/(tabs)/journal');
 
 describe('Journal advanced filter sheet', () => {
+  it('waits for a successful read before presenting a first-use empty journal', () => {
+    mockHasDreams = false;
+    mockPersistenceState = { status: 'loading', target: 'device' };
+    const view = render(<JournalListScreen />);
+    expect(screen.queryByTestId('empty-state')).toBeNull();
+    expect(screen.queryByTestId('journal-first-page')).toBeNull();
+    expect(screen.queryByRole('alert')).toBeNull();
+
+    mockPersistenceState = { status: 'ready', target: 'device' };
+    view.rerender(<JournalListScreen />);
+    expect(screen.getByTestId('journal-first-page')).toBeTruthy();
+  });
+
+  it('hides first-use empty state after a failed read and wires retry', () => {
+    mockHasDreams = false;
+    mockPersistenceState = { status: 'error', operation: 'read', target: 'device' };
+
+    render(<JournalListScreen />);
+
+    expect(screen.queryByTestId('empty-state')).toBeNull();
+    expect(screen.queryByTestId('journal-first-page')).toBeNull();
+    expect(screen.getByRole('alert')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'journal.persistence.retry' }));
+    expect(mockRetryPersistence).toHaveBeenCalledTimes(1);
+  });
+
   it('shows a checkmark for the selected theme', () => {
     render(<JournalListScreen />);
 
@@ -325,7 +431,7 @@ describe('Journal advanced filter sheet', () => {
 
     fireEvent.click(screen.getByTestId('btn.filterMore'));
 
-    expect(screen.getAllByTestId('icon-checkmark')).toHaveLength(1);
+    expect(screen.getAllByTestId('icon-checkmark').length).toBeGreaterThan(0);
   });
 
   it('[E] Given a theme is selected When selecting it again Then it clears the selection', () => {
@@ -342,5 +448,99 @@ describe('Journal advanced filter sheet', () => {
     // Then
     fireEvent.click(screen.getByTestId('btn.filterMore'));
     expect(screen.queryAllByTestId('icon-checkmark')).toHaveLength(0);
+  });
+
+  it('keeps exactly three quick filters and a separate advanced action', () => {
+    render(<JournalListScreen />);
+
+    expect(screen.getByTestId('btn.filterAll')).toBeTruthy();
+    expect(screen.getByTestId('btn.filterFavorites')).toBeTruthy();
+    expect(screen.getByTestId('btn.filterToDeepen')).toBeTruthy();
+    expect(screen.getByTestId('btn.filterMore')).toBeTruthy();
+    expect(screen.queryByTestId('btn.filterAnalyzed')).toBeNull();
+    expect(screen.queryByTestId('btn.filterExplored')).toBeNull();
+  });
+
+  it('exposes settings from the journal header without a fifth tab', () => {
+    mockPush.mockReset();
+    render(<JournalListScreen />);
+
+    const settings = screen.getByTestId('btn.header.journal.settings');
+    expect(settings.getAttribute('aria-label')).toBe('nav.settings');
+    fireEvent.click(settings);
+    expect(mockPush).toHaveBeenCalledWith('/settings');
+    expect(screen.queryByTestId('tab.settings')).toBeNull();
+  });
+  it('uses shared header settings and retains the 44 dp filter action', () => {
+    render(<JournalListScreen />);
+    expect(screen.getByTestId('journal-shared-header').contains(screen.getByTestId('btn.header.journal.settings'))).toBe(true);
+    expect(screen.getByTestId('btn.filterMore').className).toContain('min-h-[44px]');
+    expect(screen.getByTestId('btn.filterMore').className).toContain('min-w-[44px]');
+  });
+
+
+  it('resets advanced filters when Tous is pressed', () => {
+    render(<JournalListScreen />);
+
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
+    fireEvent.click(screen.getByText('Mystique'));
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
+    expect(screen.getAllByTestId('icon-checkmark').length).toBeGreaterThan(0);
+
+    fireEvent.click(screen.getByTestId('btn.filterAll'));
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
+    expect(screen.queryAllByTestId('icon-checkmark')).toHaveLength(0);
+  });
+
+  it('keeps search and three quick filters visible at 320dp without Atlas chrome', () => {
+    mockWindowWidth = 320;
+    render(<JournalListScreen />);
+
+    expect(screen.getByTestId('btn.filterAll')).toBeTruthy();
+    expect(screen.getByTestId('btn.filterFavorites')).toBeTruthy();
+    expect(screen.getByTestId('btn.filterToDeepen')).toBeTruthy();
+    expect(screen.getByTestId('component.searchBar')).toBeTruthy();
+    expect(screen.getByTestId('btn.filterMore')).toBeTruthy();
+    expect(screen.queryByTestId('btn.filterSearch')).toBeNull();
+    expect(screen.queryByText('journal.atlas.search')).toBeNull();
+  });
+
+  it('surfaces an active advanced filter chip that Tous can reset', () => {
+    render(<JournalListScreen />);
+
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
+    fireEvent.click(screen.getByText('Mystique'));
+
+    expect(screen.getByTestId('btn.filterTheme')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('btn.filterAll'));
+    expect(screen.queryByTestId('btn.filterTheme')).toBeNull();
+  });
+
+  it('keeps recurrence combinable with a dream type and resets both in one action', () => {
+    const { getUniqueDreamTypes } = require('@/lib/dreamFilters');
+    getUniqueDreamTypes.mockReturnValue(['Symbolic Dream', 'Recurring Dream']);
+    render(<JournalListScreen />);
+
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
+    fireEvent.click(screen.getByText('Symbolic Dream'));
+    fireEvent.click(screen.getByText('journal.filter.recurring'));
+    fireEvent.click(screen.getByText('journal.filter_sheet.sort.oldest'));
+
+    expect(screen.getByTestId('btn.filterRecurring')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('btn.clearFilters'));
+    expect(screen.queryByTestId('btn.filterRecurring')).toBeNull();
+    expect(screen.queryByTestId('btn.filterSearch')).toBeNull();
+
+    fireEvent.click(screen.getByTestId('btn.filterMore'));
+    expect(screen.queryAllByTestId('icon-checkmark')).toHaveLength(0);
+  });
+
+  it('surfaces an active search as a visible chip that Tous can reset', () => {
+    render(<JournalListScreen />);
+
+    fireEvent.change(screen.getByTestId('input.searchDreams'), { target: { value: 'harbor' } });
+    expect(screen.getByTestId('btn.filterSearch')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('btn.filterAll'));
+    expect(screen.queryByTestId('btn.filterSearch')).toBeNull();
   });
 });

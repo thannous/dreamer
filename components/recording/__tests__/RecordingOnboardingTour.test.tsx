@@ -67,7 +67,7 @@ jest.mock('@/constants/theme', () => ({
 jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string, params?: Record<string, number>) => ({
-      'recording.guide.step_mode': 'Appuie sur le sélecteur de mode.',
+      'recording.guide.step_mode': 'Choisis Écrire ou Raconter en haut de l’écran.',
       'recording.guide.step_modes': 'Choisis la façon dont tu préfères raconter ton rêve.',
       'recording.guide.step_control_text': 'Appuie dans le champ mis en évidence.',
       'recording.guide.step_control_voice': 'Appuie sur le micro mis en évidence.',
@@ -86,12 +86,13 @@ const defaultProps = {
 };
 
 describe('RecordingOnboardingTour', () => {
-  it('guides the user to the mode selector first', () => {
+  it('does not teach a hidden hamburger selector', () => {
     render(<RecordingOnboardingTour {...defaultProps} step={0} />);
 
     expect(screen.getByTestId(TID.Component.RecordingOnboardingTour)).toBeTruthy();
     expect(screen.getByText('Étape 1/3')).toBeTruthy();
-    expect(screen.getByText('Appuie sur le sélecteur de mode.')).toBeTruthy();
+    expect(screen.getByText('Choisis Écrire ou Raconter en haut de l’écran.')).toBeTruthy();
+    expect(screen.queryByText(/hamburger|sélecteur de mode|haut à droite/i)).toBeNull();
     expect(screen.queryByText('Terminer')).toBeNull();
   });
 

@@ -1,7 +1,26 @@
 import type { Href } from 'expo-router';
 
 export const LUCID_HOME_HREF = '/lucid' as const;
+export const LUCID_TABS_HREF = '/lucid/(tabs)' as const;
 export const LUCID_ONBOARDING_HREF = '/lucid/onboarding' as const;
+
+let completionNavigationClaimed = false;
+
+/**
+ * Bridge the brief overlap where native-stack keeps the outgoing and incoming
+ * Lucid layouts alive with different context snapshots.
+ */
+export function claimLucidOnboardingCompletionNavigation(): void {
+  completionNavigationClaimed = true;
+}
+
+export function hasLucidOnboardingCompletionNavigationClaim(): boolean {
+  return completionNavigationClaimed;
+}
+
+export function resetLucidOnboardingCompletionNavigationClaim(): void {
+  completionNavigationClaimed = false;
+}
 
 export type LucidOnboardingGateHref =
   | typeof LUCID_HOME_HREF
@@ -16,6 +35,7 @@ export type LucidNotificationRoute =
   | '/lucid/program/ssild'
   | '/lucid/program/wbtb'
   | '/lucid/(tabs)'
+  | '/lucid/(tabs)/journal'
   | '/lucid/(tabs)/night'
   | '/lucid/(tabs)/progress'
   | '/lucid/(tabs)/programs'
@@ -30,6 +50,7 @@ const SAFE_LUCID_NOTIFICATION_ROUTES: ReadonlySet<string> = new Set<LucidNotific
   '/lucid/program/ssild',
   '/lucid/program/wbtb',
   '/lucid/(tabs)',
+  '/lucid/(tabs)/journal',
   '/lucid/(tabs)/night',
   '/lucid/(tabs)/progress',
   '/lucid/(tabs)/programs',
@@ -78,9 +99,35 @@ export function isLucidHomePath(pathname: string | null | undefined): boolean {
 }
 
 /**
- * Decide whether the Lucid shell must leave onboarding or return to it.
+ * True for `/lucid` and nested Lucid routes such as `/lucid/subscription`.
+ * `/lucidity` is rejected because it only shares a prefix, not a path boundary.
+ */
+export function isLucidAppPath(pathname: string | null | undefined): boolean {
+  const path = normalizeLucidPathname(pathname?.split('?')[0]?.split('#')[0]);
+  return path === LUCID_HOME_HREF || path.startsWith(`${LUCID_HOME_HREF}/`);
+}
+
+/**
+ * Preserve a Lucid URL already mounted by the web router on cold start.
+ */
+export function resolveObservedLucidWebStartupDestination(
+  href: string | null | undefined
+): Href | undefined {
+  const rawHref = href?.trim();
+  if (!rawHref) return undefined;
+  const path = normalizeLucidPathname(rawHref.split('?')[0]?.split('#')[0]);
+  if (!isLucidAppPath(path)) return undefined;
+  const suffixIndex = rawHref.search(/[?#]/);
+  const suffix = suffixIndex >= 0 ? rawHref.slice(suffixIndex) : '';
+  return `${path}${suffix}` as Href;
+}
+
+/**
+ * Decide whether the Lucid shell must return to onboarding.
  * Returns null when the current path is already the right place, so callers
  * can avoid replace loops on web where `/lucid/(tabs)` and `/lucid` collide.
+ * The onboarding screen owns its completed transition after its async writes
+ * settle; mounting tabs from this provider-driven gate races Android/Fabric.
  */
 export function resolveLucidOnboardingGate(input: {
   pathname: string | null | undefined;
@@ -91,6 +138,5 @@ export function resolveLucidOnboardingGate(input: {
   const complete = input.onboardingStatus === 'completed';
   const inOnboarding = isLucidOnboardingPath(input.pathname);
   if (!complete && !inOnboarding) return LUCID_ONBOARDING_HREF;
-  if (complete && inOnboarding) return LUCID_HOME_HREF;
   return null;
 }

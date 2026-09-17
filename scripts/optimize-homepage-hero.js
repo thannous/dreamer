@@ -5,7 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const sharp = require('sharp');
+const sharp = require('../apps/site/dependencies')('sharp');
 const { DOCS_SRC_DIR, ROOT_DIR } = require('./lib/docs-site-config');
 
 const INPUT_PATH = path.join(

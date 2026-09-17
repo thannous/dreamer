@@ -29,7 +29,7 @@ import { TID } from '@/lib/testIDs';
 type Phase = 'checking' | 'ready' | 'success' | 'expired';
 
 const CONTINUE_DESTINATION = isLucidTrainer ? '/lucid' : '/recording';
-const SIGN_IN_DESTINATION = isLucidTrainer ? '/lucid/account' : '/(tabs)/settings';
+const SIGN_IN_DESTINATION = isLucidTrainer ? '/lucid/account' : '/settings';
 
 const getUpdateErrorKey = (error: unknown): string => {
   if (isAuthApiError(error) && error.code === 'same_password') {

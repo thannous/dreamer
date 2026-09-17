@@ -741,6 +741,34 @@
             }
           }
         },
+        "blog.false-awakening-dreams": {
+          "id": "blog.false-awakening-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "false-awakening-dreams",
+          "locales": {
+            "en": {
+              "slug": "false-awakening-dreams",
+              "path": "/en/blog/false-awakening-dreams"
+            },
+            "fr": {
+              "slug": "faux-reveil-reve",
+              "path": "/fr/blog/faux-reveil-reve"
+            },
+            "es": {
+              "slug": "falso-despertar-sueno",
+              "path": "/es/blog/falso-despertar-sueno"
+            },
+            "de": {
+              "slug": "falsches-erwachen-traum",
+              "path": "/de/blog/falsches-erwachen-traum"
+            },
+            "it": {
+              "slug": "falso-risveglio-sogno",
+              "path": "/it/blog/falso-risveglio-sogno"
+            }
+          }
+        },
         "blog.flying-dreams-meaning": {
           "id": "blog.flying-dreams-meaning",
           "type": "blogArticle",

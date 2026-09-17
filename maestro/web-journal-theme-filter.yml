@@ -3,13 +3,26 @@ url: "http://localhost:8081"
 - runFlow: subflows/web-select-existing-mock-profile.yml
 - tapOn: "Journal"
 - waitForAnimationToEnd
-- assertVisible: "(Theme|Th.me)"
-- tapOn: "(Theme|Th.me)"
+- assertVisible:
+    id: "btn.filterMore"
+- tapOn:
+    id: "btn.filterMore"
 - waitForAnimationToEnd
-- assertVisible: "(Select Theme|Sélectionner un thème|Seleccionar tema)"
+- assertVisible:
+    id: "modal.advancedFilters"
 - tapOn: "(Mystical|Mystique)"
 - waitForAnimationToEnd
+- tapOn: "(Done|Terminé|Listo|Fertig|Fatto|Concluir)"
+- waitForAnimationToEnd
 - assertVisible: "The Infinite Library"
+- runFlow:
+    when:
+      visible:
+        id: "btn.filterAll"
+    commands:
+      - tapOn:
+          id: "btn.filterAll"
+      - waitForAnimationToEnd
 - runFlow:
     when:
       visible:

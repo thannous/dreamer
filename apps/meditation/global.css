@@ -17,12 +17,16 @@
 
   --text-display: 34px;
   --text-display--line-height: 40px;
+  --text-hero: 40px;
+  --text-hero--line-height: 46px;
   --text-h1: 28px;
   --text-h1--line-height: 34px;
   --text-h2: 22px;
   --text-h2--line-height: 28px;
   --text-h3: 18px;
   --text-h3--line-height: 24px;
+  --text-cta: 20px;
+  --text-cta--line-height: 28px;
   --text-body: 16px;
   --text-body--line-height: 24px;
   --text-body-sm: 14px;
@@ -47,8 +51,8 @@
   --color-ink-panel: rgba(243, 239, 231, 0.55);
   --color-ink-raised: rgba(252, 251, 248, 0.92);
   --color-ivory: #2a2838;
-  --color-ivory-muted: #6b6880;
-  --color-ivory-faint: #6f6c84;
+  --color-ivory-muted: #4f4c63;
+  --color-ivory-faint: #5c5870;
   --color-champagne: #d4a574;
   --color-champagne-text: #9a6332;
   --color-champagne-deep: #9a6332;
@@ -67,8 +71,8 @@
       --color-ink-panel: rgba(243, 239, 231, 0.55);
       --color-ink-raised: rgba(252, 251, 248, 0.92);
       --color-ivory: #2a2838;
-      --color-ivory-muted: #6b6880;
-      --color-ivory-faint: #6f6c84;
+      --color-ivory-muted: #4f4c63;
+      --color-ivory-faint: #5c5870;
       /* `champagne` is a FILL, never a text colour — use champagne-text. */
       --color-champagne: #d4a574;
       --color-champagne-text: #9a6332;

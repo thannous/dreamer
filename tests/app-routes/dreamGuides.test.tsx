@@ -40,7 +40,7 @@ jest.mock('@/context/ThemeContext', () => ({
 }));
 
 jest.mock('@/hooks/useTranslation', () => ({
-  useTranslation: () => ({ currentLang: 'en' }),
+  useTranslation: () => ({ currentLang: 'en', t: (key: string) => key === 'navigation.back' ? 'Back' : key }),
 }));
 
 jest.mock('@/hooks/useScrollIdle', () => ({

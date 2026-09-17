@@ -1,4 +1,4 @@
-/** Textos do catálogo: sessões, categorias e vozes. A interface vive em `pt.ts`. */
+/** Textos do catálogo: sessões e categorias. A interface vive em `pt.ts`. */
 export const contentPt = {
   'category.sleep.name': 'Sono',
   'category.sleep.tagline': 'Descer rumo à noite',
@@ -13,10 +13,6 @@ export const contentPt = {
   'category.dream-prep.name': 'Preparação para o sonho',
   'category.dream-prep.tagline': 'Fazer uma pergunta para a noite',
 
-  'narrator.camille.bio': 'Voz suave, ritmo lento.',
-  'narrator.adrien.bio': 'Voz grave, frases curtas.',
-  'narrator.wordless.bio': 'Respiração e silêncio, nada a seguir.',
-
   'session.sleep-descent.title': 'Deixar a respiração descer',
   'session.sleep-descent.description':
     'Uma expiração mais longa que a inspiração, até o corpo entender que o dia acabou.',
@@ -28,7 +24,7 @@ export const contentPt = {
   'session.sleep-quick-fall.description':
     'Nada para ouvir, nada para seguir: uma respiração guiada que vai se apagando enquanto você adormece.',
   'session.sleep-quick-fall.benefit.1': 'Para as noites curtas',
-  'session.sleep-quick-fall.benefit.2': 'Sem voz',
+  'session.sleep-quick-fall.benefit.2': 'Respiração e silêncio',
   'session.sleep-quick-fall.benefit.3': 'Termina sozinha',
 
   'session.sleep-body-scan.title': 'O corpo que se acomoda',
@@ -43,7 +39,7 @@ export const contentPt = {
     'Para os despertares das três da manhã: voltar a dormir sem lutar contra a insônia.',
   'session.sleep-night-return.benefit.1': 'Despertares noturnos',
   'session.sleep-night-return.benefit.2': 'Sem tela',
-  'session.sleep-night-return.benefit.3': 'Voz muito baixa',
+  'session.sleep-night-return.benefit.3': 'Ambiente baixo',
 
   'session.stress-shoulders.title': 'Baixar os ombros',
   'session.stress-shoulders.description':
@@ -89,9 +85,9 @@ export const contentPt = {
 
   'session.focus-thread.title': 'Retomar o fio',
   'session.focus-thread.description':
-    'Depois de uma interrupção, dez minutos sem voz para reencontrar onde você estava.',
+    'Depois de uma interrupção, dez minutos de respiração e silêncio para reencontrar onde você estava.',
   'session.focus-thread.benefit.1': 'Depois de uma pausa',
-  'session.focus-thread.benefit.2': 'Sem voz',
+  'session.focus-thread.benefit.2': 'Respiração e silêncio',
   'session.focus-thread.benefit.3': 'Durante o dia',
 
   'session.focus-deep.title': 'Mergulhar no trabalho',
@@ -113,7 +109,7 @@ export const contentPt = {
     'A ansiedade sobe e depois desce. Aprendemos a não segui-la até o topo.',
   'session.anxiety-wave.benefit.1': 'Não combate a ansiedade',
   'session.anxiety-wave.benefit.2': 'Ensina a esperar',
-  'session.anxiety-wave.benefit.3': 'Voz tranquila',
+  'session.anxiety-wave.benefit.3': 'Ritmo constante',
 
   'session.anxiety-chest.title': 'Abrir o peito',
   'session.anxiety-chest.description':

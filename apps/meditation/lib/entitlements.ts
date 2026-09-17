@@ -1,5 +1,5 @@
 import type { BreathingPatternId } from '@/content/breathing';
-import type { MeditationSession, PracticeEntry } from '@/lib/types';
+import type { AppLanguage, MeditationSession, PracticeEntry } from '@/lib/types';
 
 /**
  * What a free listener may do, and what asks for Noctalia Plus.
@@ -73,4 +73,41 @@ export function canUseFadeTimer(minutes: number | null, tier: SubscriptionTier):
 export function remainingFreePlays(tier: SubscriptionTier, monthlyPlays: number): number {
   if (tier === 'plus') return Number.POSITIVE_INFINITY;
   return Math.max(0, FREE_PLAYS_PER_MONTH - monthlyPlays);
+}
+
+/** First local calendar day of the next month — when the free quota resets. */
+export function freeQuotaResetDay(today: string): string {
+  const year = Number(today.slice(0, 4));
+  const month = Number(today.slice(5, 7));
+  const nextMonth = month === 12 ? 1 : month + 1;
+  const nextYear = month === 12 ? year + 1 : year;
+
+  return `${String(nextYear).padStart(4, '0')}-${String(nextMonth).padStart(2, '0')}-01`;
+}
+
+const RESET_DATE_LOCALES: Record<AppLanguage, string> = {
+  en: 'en-GB',
+  fr: 'fr-FR',
+  es: 'es-ES',
+  de: 'de-DE',
+  it: 'it-IT',
+  pt: 'pt-PT',
+};
+
+/**
+ * Human date for the quota reset. Never returns a raw `YYYY-MM-DD` string:
+ * that looks like a system token on a practice screen.
+ */
+export function formatQuotaResetDate(day: string, language: AppLanguage): string {
+  const year = Number(day.slice(0, 4));
+  const month = Number(day.slice(5, 7));
+  const date = Number(day.slice(8, 10));
+  const utc = new Date(Date.UTC(year, month - 1, date));
+
+  return new Intl.DateTimeFormat(RESET_DATE_LOCALES[language] ?? 'en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(utc);
 }

@@ -7,6 +7,7 @@ import {
   isValidClientRequestId,
   validateBoundedText,
 } from '../lib/aiRequestPolicy.ts';
+import { boundTranscriptForPrompt } from '../lib/prompts.ts';
 import type { ApiContext } from '../types.ts';
 import {
   buildImageJobActorFilter,
@@ -24,6 +25,7 @@ type GuestQuotaStatus = {
 type ImageJobAdmission = {
   allowed?: boolean;
   duplicate?: boolean;
+  requeued?: boolean;
   code?:
     | 'AI_GLOBAL_BACKLOG_LIMIT'
     | 'AI_ACTOR_CONCURRENCY_LIMIT'
@@ -31,6 +33,11 @@ type ImageJobAdmission = {
     | 'AI_IDEMPOTENCY_KEY_REUSED';
   retry_after_seconds?: number;
   job?: ImageJobRow;
+};
+
+export type ImageJobHandlerDependencies = {
+  createAdminClient?: typeof createAdminClient;
+  triggerImageJobWorker?: typeof triggerImageJobWorker;
 };
 
 const readPositiveEnv = (name: string, fallback: number, maximum: number): number => {
@@ -180,19 +187,35 @@ const resolveImageGenerationTier = async (
   return { tier: normalizeEffectiveSubscriptionTier(data) };
 };
 
-const triggerWorkerAndLog = async (options: {
-  supabaseUrl: string;
-  serviceRoleKey: string;
-  jobId: string;
-}) => {
-  const triggered = await triggerImageJobWorker(options);
+const triggerWorkerAndLog = async (
+  options: {
+    supabaseUrl: string;
+    serviceRoleKey: string;
+    jobId: string;
+  },
+  triggerWorker: typeof triggerImageJobWorker = triggerImageJobWorker
+) => {
+  const triggered = await triggerWorker(options);
   if (!triggered) {
     console.warn('[api] /image-jobs worker trigger returned false', { jobId: options.jobId });
   }
 };
 
-export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
+const shouldTriggerImageJobWorker = (
+  admission: ImageJobAdmission,
+  job: ImageJobRow
+): boolean =>
+  admission.requeued === true
+  || job.status === 'queued'
+  || job.status === 'running';
+
+export async function handleCreateImageJob(
+  ctx: ApiContext,
+  dependencies: ImageJobHandlerDependencies = {}
+): Promise<Response> {
   const { req, user, supabase, supabaseUrl, supabaseServiceRoleKey } = ctx;
+  const adminFactory = dependencies.createAdminClient ?? createAdminClient;
+  const triggerWorker = dependencies.triggerImageJobWorker ?? triggerImageJobWorker;
 
   if (!supabaseServiceRoleKey) {
     return serviceUnavailable();
@@ -220,7 +243,7 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
     if (!promptInput.ok) return aiInputErrorResponse(promptInput);
     const transcriptInput = validateBoundedText(body?.transcript, {
       field: 'transcript',
-      maxChars: AI_REQUEST_LIMITS.transcriptChars,
+      maxChars: AI_REQUEST_LIMITS.transcriptRequestChars,
       required: false,
     });
     if (!transcriptInput.ok) return aiInputErrorResponse(transcriptInput);
@@ -237,7 +260,7 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
     if (!clientRequestInput.ok) return aiInputErrorResponse(clientRequestInput);
 
     const prompt = promptInput.value;
-    const transcript = transcriptInput.value;
+    const transcript = boundTranscriptForPrompt(transcriptInput.value).text;
     const previousImageUrl = previousImageInput.value;
     const clientRequestId = clientRequestInput.value;
     const requestedDreamId =
@@ -311,7 +334,7 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
       return freeImageAnalysisRequiredResponse();
     }
 
-    const adminClient = createAdminClient(supabaseUrl, supabaseServiceRoleKey);
+    const adminClient = adminFactory(supabaseUrl, supabaseServiceRoleKey);
 
     if (!user && guestCheck.fingerprint) {
       const { data: status, error: statusError } = await adminClient.rpc('get_guest_quota_status', {
@@ -405,17 +428,24 @@ export async function handleCreateImageJob(ctx: ApiContext): Promise<Response> {
       return serviceUnavailable();
     }
 
-    await triggerWorkerAndLog({
-      supabaseUrl,
-      serviceRoleKey: supabaseServiceRoleKey,
-      jobId: admittedJob.id,
-    });
+    if (shouldTriggerImageJobWorker(admission, admittedJob)) {
+      await triggerWorkerAndLog(
+        {
+          supabaseUrl,
+          serviceRoleKey: supabaseServiceRoleKey,
+          jobId: admittedJob.id,
+        },
+        triggerWorker
+      );
+    }
 
     return new Response(
       JSON.stringify({
         jobId: admittedJob.id,
         status: admittedJob.status,
         clientRequestId: admittedJob.client_request_id,
+        ...(admission.duplicate === true ? { duplicate: true } : {}),
+        ...(admission.requeued === true ? { requeued: true } : {}),
       }),
       {
         status: 202,

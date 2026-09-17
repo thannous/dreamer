@@ -4,6 +4,15 @@
 
 **Date:** 2026-08-13
 
+**Product clarification, 2026-09-07 (TI-558):** this ADR records the existing
+Journal/Lucid identity and entitlement implementation. It does not authorize
+Journal data access from Lucid, nor promise that every Noctalia product shares a
+paid plan. Meditation subscriptions are disabled by default and its one-time
+world purchases remain separate. See the [brand contract](../../specs/noctalia-brand-contract.md).
+TI-518 isolates Lucid's normal processing; TI-522/560 must establish the explicit
+import and authorization contract. Core local practice must remain useful without
+an account, purchase in another product, or installation of Journal.
+
 ## Context
 
 Noctalia and Noctalia Lucid Trainer are separate applications from the same publisher. Users should not need to create two unrelated accounts or lose a Noctalia Plus entitlement when they move between them. At the same time, dream-journal content is more sensitive than the minimal identity record needed to sign in, and Lucid Trainer must remain useful without an account.

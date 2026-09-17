@@ -28,6 +28,7 @@ if (__DEV__) {
 export const getSavedDreams = service.getSavedDreams;
 export const saveDreams = service.saveDreams;
 export const getSavedTranscript = service.getSavedTranscript;
+export const getRecordingDraft = service.getRecordingDraft;
 export const saveTranscript = service.saveTranscript;
 export const clearSavedTranscript = service.clearSavedTranscript;
 export const getNotificationSettings = service.getNotificationSettings;
@@ -72,5 +73,9 @@ export const saveOnboardingGuestClaimedBy = service.saveOnboardingGuestClaimedBy
 export const getPendingRecordingNotification = service.getPendingRecordingNotification;
 export const savePendingRecordingNotification = service.savePendingRecordingNotification;
 export const clearPendingRecordingNotification = service.clearPendingRecordingNotification;
+export const getPendingAuthReturn = service.getPendingAuthReturn;
+export const savePendingAuthReturn = service.savePendingAuthReturn;
 export const getDreamsMigrationSynced = service.getDreamsMigrationSynced;
 export const setDreamsMigrationSynced = service.setDreamsMigrationSynced;
+export const getGuestDreamMigrationOwner = service.getGuestDreamMigrationOwner;
+export const setGuestDreamMigrationOwner = service.setGuestDreamMigrationOwner;

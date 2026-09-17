@@ -537,6 +537,7 @@ describe('useQuota', () => {
         analysis: 2,
         exploration: 1,
         messages: 5,
+        image: 0,
       });
       expect(mockGetUsedAnalysisCount).toHaveBeenCalledWith(null);
       expect(mockGetUsedExplorationCount).toHaveBeenCalledWith(null);
@@ -560,6 +561,7 @@ describe('useQuota', () => {
         analysis: 2,
         exploration: 1,
         messages: 0,
+        image: 0,
       });
       expect(mockGetUsedMessagesCount).not.toHaveBeenCalled();
     });
@@ -600,6 +602,95 @@ describe('useQuota', () => {
       expect(mockGetQuotaStatus).toHaveBeenCalledTimes(initialCallCount + 1);
 
       expect(mockGetQuotaStatus).toHaveBeenLastCalledWith(null, 'guest', undefined);
+    });
+  });
+
+  describe('illustration quota', () => {
+    it('allows guest illustrations when analysis is exhausted but image remaining', async () => {
+      mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({
+        canAnalyze: false,
+        canGenerateImage: true,
+        usage: {
+          analysis: { used: 2, limit: 2, remaining: 0 },
+          exploration: { used: 0, limit: null, remaining: null },
+          messages: { used: 0, limit: 10, remaining: 10 },
+          image: { used: 1, limit: 2, remaining: 1 },
+        },
+      }));
+
+      const { result } = renderHook(() => useQuota());
+      await settleQuotaStatus(result);
+
+      expect(result.current.canAnalyzeNow).toBe(false);
+      expect(result.current.canGenerateImageNow).toBe(true);
+    });
+
+    it('denies guest illustrations when the image pool is exhausted even if analysis remains', async () => {
+      mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({
+        canAnalyze: true,
+        canGenerateImage: false,
+        usage: {
+          analysis: { used: 1, limit: 2, remaining: 1 },
+          exploration: { used: 0, limit: null, remaining: null },
+          messages: { used: 0, limit: 10, remaining: 10 },
+          image: { used: 2, limit: 2, remaining: 0 },
+        },
+      }));
+
+      const { result } = renderHook(() => useQuota());
+      await settleQuotaStatus(result);
+
+      expect(result.current.canAnalyzeNow).toBe(true);
+      expect(result.current.canGenerateImageNow).toBe(false);
+    });
+
+    it('does not grant authenticated free a generic monthly illustration credit', async () => {
+      mockUser = { id: 'user-1' };
+      mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({
+        tier: 'free',
+        canAnalyze: true,
+        usage: {
+          analysis: { used: 1, limit: 3, remaining: 2 },
+          exploration: { used: 0, limit: null, remaining: null },
+          messages: { used: 0, limit: 10, remaining: 10 },
+        },
+      }));
+
+      const { result } = renderHook(() => useQuota());
+      await settleQuotaStatus(result);
+
+      expect(result.current.canGenerateImageNow).toBe(false);
+      await expect(result.current.canGenerateImage()).resolves.toBe(false);
+    });
+
+    it('treats plus illustrations as unlimited without fetching quota', async () => {
+      mockUser = { id: 'user-1', app_metadata: { tier: 'plus' } };
+      mockSubscriptionStatus = { tier: 'plus' };
+
+      const { result } = renderHook(() => useQuota());
+      await settleQuotaStatus(result);
+
+      expect(mockGetQuotaStatus).not.toHaveBeenCalled();
+      expect(result.current.canGenerateImageNow).toBe(true);
+      expect(result.current.usage?.image?.limit).toBeNull();
+      await expect(result.current.canGenerateImage()).resolves.toBe(true);
+    });
+
+    it('defaults missing older guest image fields without coupling to analysis', async () => {
+      mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({
+        canAnalyze: false,
+        usage: {
+          analysis: { used: 2, limit: 2, remaining: 0 },
+          exploration: { used: 0, limit: null, remaining: null },
+          messages: { used: 0, limit: 10, remaining: 10 },
+        },
+      }));
+
+      const { result } = renderHook(() => useQuota());
+      await settleQuotaStatus(result);
+
+      expect(result.current.canAnalyzeNow).toBe(false);
+      expect(result.current.canGenerateImageNow).toBe(true);
     });
   });
 });

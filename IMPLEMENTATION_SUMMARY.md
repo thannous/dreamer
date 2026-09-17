@@ -47,7 +47,7 @@ services/
 .env.mock                      # Mock mode environment variables
 MOCK_MODE_QUICKSTART.md        # Quick start guide (2-minute setup)
 IMPLEMENTATION_SUMMARY.md      # This file
-CLAUDE.md                      # Updated with Mock Mode section
+AGENTS.md                      # Current repository guidelines
 package.json                   # Added start:mock and start:real scripts
 scripts/test-mock-mode.js      # Verification script
 ```
@@ -270,10 +270,10 @@ npm start
 
 - **Quick Start:** See `MOCK_MODE_QUICKSTART.md`
 - **Mock Data Details:** See `mock-data/README.md`
-- **Full Documentation:** See `CLAUDE.md` (Mock Mode section)
+- **Full Documentation:** See `MOCK_MODE_QUICKSTART.md`
 
 ---
 
 **Implementation Date:** 2025-01-08
 **Status:** ✅ Complete and tested
-**Maintainer:** See CLAUDE.md for development guidelines
+**Maintainer:** See AGENTS.md for development guidelines

@@ -24,7 +24,7 @@ import { router } from 'expo-router';
 export default function DreamGuidesScreen() {
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { currentLang } = useTranslation();
+  const { currentLang, t } = useTranslation();
   const language = (currentLang ?? 'en') as DreamGuideLanguage;
   const copy = getDreamGuideCopy(language);
   const generalGuides = getGeneralDreamGuides();
@@ -57,7 +57,7 @@ export default function DreamGuidesScreen() {
             <Pressable
               onPress={() => router.back()}
               accessibilityRole="button"
-              accessibilityLabel={copy.screenTitle}
+              accessibilityLabel={t('navigation.back')}
               style={[
                 styles.backButton,
                 shadows.sm,

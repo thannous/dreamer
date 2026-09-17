@@ -1,0 +1,8 @@
+{
+  "requests": 12,
+  "models": {
+    "before": "gemini-3.7-flash",
+    "after": "gemini-3.8-flash"
+  },
+  "suite": "gemini38"
+}

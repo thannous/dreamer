@@ -6,6 +6,7 @@ import {
   handleCreateAnalysisJob,
   handleGetAnalysisJobStatus,
   resolveAnalysisJobAdmissionPolicy,
+  resolveReplaceExistingImageFlag,
 } from './analysisJobs.ts';
 
 Deno.test('analysis quota admission returns a typed upgrade response', async () => {
@@ -107,6 +108,16 @@ Deno.test('analysis job creation rejects invalid flags before database access', 
   }));
   assertEquals(response.status, 400);
   assertEquals((await response.json()).field, 'replaceExistingImage');
+});
+
+Deno.test('analysis job omission does not request image replacement', () => {
+  assertEquals(resolveReplaceExistingImageFlag(undefined), false);
+  assertEquals(resolveReplaceExistingImageFlag(null), false);
+  assertEquals(resolveReplaceExistingImageFlag(false), false);
+});
+
+Deno.test('analysis job requests image replacement only for exact true', () => {
+  assertEquals(resolveReplaceExistingImageFlag(true), true);
 });
 
 Deno.test('analysis job status rejects malformed job identifiers before database access', async () => {

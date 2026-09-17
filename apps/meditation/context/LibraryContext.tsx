@@ -15,13 +15,15 @@ import {
   type PracticeEntry,
   type SessionId,
 } from '@/lib/types';
-import { readJson, StorageKey, writeJson } from '@/services/storageService';
+import { createLibraryPersistence } from '@/services/libraryPersistence';
 
 type LibraryContextValue = {
   favorites: SessionId[];
   progress: LibraryState['progress'];
   practiceLog: PracticeEntry[];
   loaded: boolean;
+  persistenceError: Error | null;
+  retryPersistence: () => Promise<void>;
   isFavorite: (id: SessionId) => boolean;
   toggleFavorite: (id: SessionId) => Promise<void>;
   /** Records where a session was left. */
@@ -30,40 +32,73 @@ type LibraryContextValue = {
   recordPractice: (entry: Omit<PracticeEntry, 'dateISO'>, dateISO?: string) => Promise<void>;
 };
 
+type LibraryCommands = Pick<LibraryContextValue, 'recordProgress' | 'recordPractice' | 'toggleFavorite' | 'retryPersistence'>;
+type LibraryMetadata = Omit<LibraryContextValue, 'progress'>;
+const LibraryMetadataContext = createContext<LibraryMetadata | null>(null);
+const LibraryProgressContext = createContext<LibraryState['progress']>({});
+const LibraryCommandsContext = createContext<LibraryCommands | null>(null);
+
 const LibraryContext = createContext<LibraryContextValue | null>(null);
 
 export const LibraryProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [state, setState] = useState<LibraryState>(INITIAL_LIBRARY);
   const [loaded, setLoaded] = useState(false);
 
-  // Same synchronous mirror as OnboardingContext: two taps in one tick must
-  // both land. Favourites are toggled fast, in lists.
+  const [persistenceError, setPersistenceError] = useState<Error | null>(null);
+  const [persistence] = useState(createLibraryPersistence);
   const stateRef = useRef(state);
+  const hydratedRef = useRef(false);
+  const mountedRef = useRef(true);
+  const save = useCallback(async (next: LibraryState) => {
+    try {
+      await persistence.save(next);
+      if (mountedRef.current) setPersistenceError(null);
+    } catch (error) {
+      if (mountedRef.current) setPersistenceError(error instanceof Error ? error : new Error(String(error)));
+    }
+  }, [persistence]);
 
   const commit = useCallback(async (next: LibraryState) => {
+    // An unread library must never be replaced by the initial empty UI state.
+    if (!hydratedRef.current) return;
     stateRef.current = next;
-    setState(next);
-    await writeJson(StorageKey.favorites, next);
-  }, []);
+    if (mountedRef.current) setState(next);
+    await save(next);
+  }, [save]);
+
+  const retryPersistence = useCallback(async () => {
+    if (hydratedRef.current) {
+      await save(stateRef.current);
+      return;
+    }
+    try {
+      const stored = await persistence.load();
+      if (!mountedRef.current) return;
+      stateRef.current = stored;
+      hydratedRef.current = true;
+      setState(stored);
+      setLoaded(true);
+      if (mountedRef.current) setPersistenceError(null);
+    } catch (error) {
+      if (mountedRef.current) setPersistenceError(error instanceof Error ? error : new Error(String(error)));
+    }
+  }, [persistence, save]);
 
   useEffect(() => {
     let mounted = true;
-
-    readJson<LibraryState>(StorageKey.favorites, INITIAL_LIBRARY)
-      .then((stored) => {
-        if (!mounted) return;
-        const merged = { ...INITIAL_LIBRARY, ...stored };
-        stateRef.current = merged;
-        setState(merged);
-      })
-      .finally(() => {
-        if (mounted) setLoaded(true);
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    mountedRef.current = true;
+    persistence.load().then((stored) => {
+      if (!mounted) return;
+      stateRef.current = stored;
+      hydratedRef.current = true;
+      setState(stored);
+      setLoaded(true);
+      if (mountedRef.current) setPersistenceError(null);
+    }).catch((error) => {
+      if (mounted) setPersistenceError(error instanceof Error ? error : new Error(String(error)));
+    });
+    return () => { mounted = false; mountedRef.current = false; };
+  }, [persistence]);
 
   const isFavorite = useCallback(
     (id: SessionId) => state.favorites.includes(id),
@@ -85,6 +120,10 @@ export const LibraryProvider: React.FC<React.PropsWithChildren> = ({ children })
     async (id: SessionId, positionSec: number, completed = false) => {
       const current = stateRef.current;
       const previous = current.progress[id];
+      if (!completed && previous?.positionSec === positionSec) {
+        if (hydratedRef.current) await save(current);
+        return;
+      }
 
       await commit({
         ...current,
@@ -98,7 +137,7 @@ export const LibraryProvider: React.FC<React.PropsWithChildren> = ({ children })
         },
       });
     },
-    [commit]
+    [commit, save]
   );
 
   const recordPractice = useCallback(
@@ -122,6 +161,8 @@ export const LibraryProvider: React.FC<React.PropsWithChildren> = ({ children })
       progress: state.progress,
       practiceLog: state.practiceLog,
       loaded,
+      persistenceError,
+      retryPersistence,
       isFavorite,
       toggleFavorite,
       recordProgress,
@@ -132,6 +173,8 @@ export const LibraryProvider: React.FC<React.PropsWithChildren> = ({ children })
       state.progress,
       state.practiceLog,
       loaded,
+      persistenceError,
+      retryPersistence,
       isFavorite,
       toggleFavorite,
       recordProgress,
@@ -139,7 +182,18 @@ export const LibraryProvider: React.FC<React.PropsWithChildren> = ({ children })
     ]
   );
 
-  return <LibraryContext.Provider value={value}>{children}</LibraryContext.Provider>;
+  const commands = useMemo(() => ({ recordProgress, recordPractice, toggleFavorite, retryPersistence }),
+    [recordProgress, recordPractice, toggleFavorite, retryPersistence]);
+  const metadata = useMemo(() => ({ favorites: state.favorites, practiceLog: state.practiceLog,
+    loaded, persistenceError, isFavorite, ...commands }),
+    [state.favorites, state.practiceLog, loaded, persistenceError, isFavorite, commands]);
+  return <LibraryCommandsContext.Provider value={commands}>
+    <LibraryMetadataContext.Provider value={metadata}>
+    <LibraryProgressContext.Provider value={state.progress}>
+    <LibraryContext.Provider value={value}>{children}</LibraryContext.Provider>
+    </LibraryProgressContext.Provider>
+    </LibraryMetadataContext.Provider>
+  </LibraryCommandsContext.Provider>;
 };
 
 export const useLibrary = (): LibraryContextValue => {
@@ -151,6 +205,8 @@ export const useLibrary = (): LibraryContextValue => {
       progress: {},
       practiceLog: [],
       loaded: false,
+      persistenceError: null,
+      retryPersistence: async () => {},
       isFavorite: () => false,
       toggleFavorite: async () => {},
       recordProgress: async () => {},
@@ -158,3 +214,18 @@ export const useLibrary = (): LibraryContextValue => {
     }
   );
 };
+
+/** Stable mutation subscription for the player; progress updates do not invalidate it. */
+export const useLibraryCommands = (): LibraryCommands => {
+  const commands = useContext(LibraryCommandsContext);
+  if (!commands) throw new Error('useLibraryCommands requires LibraryProvider');
+  return commands;
+};
+
+export const useLibraryMetadata = (): LibraryMetadata => {
+  const metadata = useContext(LibraryMetadataContext);
+  if (!metadata) throw new Error('useLibraryMetadata requires LibraryProvider');
+  return metadata;
+};
+
+export const useLibraryProgress = (): LibraryState['progress'] => useContext(LibraryProgressContext);

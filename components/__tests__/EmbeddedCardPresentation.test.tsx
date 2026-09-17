@@ -122,6 +122,7 @@ jest.mock('@/context/AuthContext', () => ({
 jest.mock('@/context/DreamsContext', () => ({
   useDreams: () => ({ dreams: [] }),
   useDreamsActions: () => ({ reloadDreams: jest.fn() }),
+  useOptionalDreamsActions: () => ({ reloadDreams: jest.fn() }),
 }));
 
 jest.mock('@/context/LanguageContext', () => ({
@@ -169,10 +170,6 @@ jest.mock('@/lib/auth', () => ({
 jest.mock('@/lib/env', () => ({
   getExpoPublicEnvValue: jest.fn(),
   isMockModeEnabled: () => mockIsMockModeEnabled(),
-}));
-
-jest.mock('@/lib/guestLimits', () => ({
-  getGuestDreamRecordingLimit: () => 3,
 }));
 
 jest.mock('@/lib/navigationIntents', () => ({

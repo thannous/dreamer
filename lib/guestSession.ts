@@ -5,7 +5,7 @@ import { Platform } from 'react-native';
 
 import { fetchJSON } from '@/lib/http';
 import { getApiBaseUrl } from '@/lib/config';
-import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
+import { getDeviceFingerprint, getExistingDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { getAccessToken } from '@/lib/auth';
 import { GuestSessionError, GuestSessionErrorCode } from '@/lib/errors';
 import { getExpoPublicEnvValue } from '@/lib/env';
@@ -361,6 +361,29 @@ const toGuestSessionError = (state: GuestBootstrapState): GuestSessionError => {
       );
   }
 };
+
+/** Local ownership only: media reads must not bootstrap a session or spend a guest call. */
+export async function getGuestMediaOwner(): Promise<string | null> {
+  try {
+    const fingerprint = await getExistingDeviceFingerprint();
+    if (!fingerprint) return null;
+    let session = cached;
+    if (!session) {
+      try { session = decodeStored(await SecureStore.getItemAsync(STORAGE_KEY)); } catch { /* SecureStore is unavailable on web. */ }
+    }
+    if (session?.fingerprint === fingerprint) {
+      // This claim selects local ownership, not authorization. Storage still verifies its signed URL.
+      const encoded = session.token.split('.')[1];
+      try {
+        const payload = JSON.parse(atob(encoded.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(encoded.length / 4) * 4, '=')));
+        if (typeof payload.quotaSubject === 'string' && /^qa:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(payload.quotaSubject)) {
+          return `guest_${payload.quotaSubject}`;
+        }
+      } catch { /* A normal guest can still use their device-owned media. */ }
+    }
+    return `guest_${fingerprint}`;
+  } catch { return null; }
+}
 
 export async function getGuestHeaders(
   options?: { requireSession?: boolean }

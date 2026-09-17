@@ -24,9 +24,9 @@ function getErrorMessage(error: unknown): string | undefined {
 }
 
 export default function AppleSignInButton({
-  returnTo = '/(tabs)/settings',
+  returnTo = '/settings',
 }: {
-  returnTo?: '/(tabs)/settings' | '/lucid/(tabs)/settings';
+  returnTo?: '/settings' | '/lucid/(tabs)/settings';
 }) {
   const [loading, setLoading] = useState(false);
   const { colors, mode } = useTheme();
