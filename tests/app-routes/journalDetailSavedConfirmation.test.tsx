@@ -388,13 +388,13 @@ describe('journal detail saved confirmation route', () => {
     const caption = 'On a red bird above a forest.';
     mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: caption, promptVersion: 'analysis-2026-09-17.poetic1' })];
     const view = render(<JournalDetailScreen />);
-    expect(screen.getByText('journal.detail.quote_label')).toBeTruthy();
     expect(screen.getByText(`“${caption}”`)).toBeTruthy();
     expect(screen.getByText('journal.detail.quote_attribution')).toBeTruthy();
     view.unmount();
     mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: '  ' })];
     render(<JournalDetailScreen />);
-    expect(screen.queryByText('journal.detail.quote_label')).toBeNull();
+    expect(screen.queryByText(`“${caption}”`)).toBeNull();
+    expect(screen.queryByText('journal.detail.quote_attribution')).toBeNull();
   });
 
   it('keeps a legacy excerpt without falsely attributing it to Noctalia', () => {

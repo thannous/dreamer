@@ -2203,9 +2203,6 @@ function JournalDetailContent() {
                     <Skeleton className="h-[60px] w-full rounded-sm" />
                   ) : dream.shareableQuote?.trim() ? (
                     <View className="my-4 gap-2">
-                      <Text className="font-sans-medium text-[12px] text-ivory-muted">
-                        {t('journal.detail.quote_label')}
-                      </Text>
                       <Text className="text-[20px] leading-[30px] text-ivory" style={{ fontFamily: Fonts.lora.regularItalic }}>
                         “{dream.shareableQuote.trim()}”
                       </Text>

@@ -453,7 +453,6 @@ const translations: Record<string, string> = {
     'journal.detail.zone.memory': 'Souvenir du rêve',
     'journal.detail.zone.dream': 'Mon rêve',
     'journal.detail.zone.reflection': 'Ma réflexion',
-    'journal.detail.quote_label': 'Citation du rêve',
     'journal.detail.quote_attribution': 'Noctalia · inspiré de ton rêve',
     'journal.detail.zone.reading': 'Analyse Noctalia',
     'journal.detail.zone.actions': 'Actions',
