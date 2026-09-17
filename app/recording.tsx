@@ -1578,14 +1578,6 @@ export default function RecordingScreen() {
                     const review = { ...captureReview, text };
                     if (noteInput(encodeCaptureReview(review))) setCaptureReview(review);
                   }}
-                  onBack={() => {
-                    if (!noteInput(captureReview.source)) return;
-                    formatSourceRef.current = null;
-                    setCaptureReview(null);
-                    if (inputMode === 'voice' && !conversation.question && !conversation.done) {
-                      void askCaptureQuestion(captureReview.source);
-                    }
-                  }}
                 /> : inputMode === 'voice' ? (
                   <RecordingConversation
                     key={captureRestartCount}
