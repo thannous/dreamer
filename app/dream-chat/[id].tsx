@@ -1224,7 +1224,7 @@ function DreamChatContent() {
           ) : null}
         </View>
       ) : null}
-      {messages.length <= 2 && (
+      {(messages.length <= 2 || !exploration360Status.progress.isComplete) && (
         <View style={styles.quickCategoriesContainer}>
           <Text
             accessibilityLiveRegion="polite"

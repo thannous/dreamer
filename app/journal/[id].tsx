@@ -1469,10 +1469,10 @@ function JournalDetailContent() {
           variant === 'floating' ? 'rounded-[20px]' : '',
         ].join(' ')}
       >
-      <View className="mb-3 flex-row items-center justify-between">
-        <View className="flex-1 flex-row items-center gap-1.5">
+      <View className="mb-3 flex-row items-center justify-between gap-4">
+        <View className="min-w-0 flex-1 flex-row items-center gap-1.5">
           <IconSymbol name="calendar" size={16} color={noctalia.text.primary} />
-          <Text className="font-sans-bold text-[14px] text-ivory">{formatDreamDate(dream.id)}</Text>
+          <Text className="min-w-0 flex-1 font-sans-bold text-[14px] text-ivory">{formatDreamDate(dream.id)}</Text>
         </View>
         <View className="flex-row items-center gap-1.5">
           <IconSymbol name="clock" size={16} color={noctalia.text.primary} />

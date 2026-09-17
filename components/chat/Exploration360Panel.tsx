@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, Text, View, useWindowDimensions, type ViewStyle } from 'react-native';
 
 import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -29,6 +29,7 @@ export function Exploration360Panel({
 }: Exploration360PanelProps) {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
+  const { fontScale } = useWindowDimensions();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const bodyKey = hasSynthesis
     ? 'dream_categories.exploration360.body.done'
@@ -97,6 +98,7 @@ export function Exploration360Panel({
               key={axis.id}
               style={[
                 styles.axisItem,
+                fontScale >= 1.3 && styles.axisItemLargeText,
                 {
                   borderColor: axis.completed ? noctalia.surface.borderStrong : noctalia.surface.border,
                   backgroundColor: axis.completed ? noctalia.surface.active : noctalia.surface.soft,
@@ -109,7 +111,7 @@ export function Exploration360Panel({
                   size={15}
                   color={axis.completed ? noctalia.accent.text : noctalia.text.secondary}
                 />
-                <Text style={[styles.axisTitle, { color: noctalia.text.primary }]} numberOfLines={1}>
+                <Text style={[styles.axisTitle, { color: noctalia.text.primary }]}>
                   {t(axis.titleKey)}
                 </Text>
               </View>
@@ -229,12 +231,15 @@ const styles = StyleSheet.create({
   },
   axisItem: {
     flex: 1,
-    minWidth: 92,
+    minWidth: 140,
     borderWidth: 1,
     borderRadius: 14,
     borderCurve: 'continuous',
     padding: 10,
     gap: 5,
+  },
+  axisItemLargeText: {
+    flexBasis: '100%',
   },
   axisHeader: {
     flexDirection: 'row',
@@ -267,6 +272,7 @@ const styles = StyleSheet.create({
     opacity: 0.55,
   },
   synthesisButtonText: {
+    flexShrink: 1,
     fontSize: 14,
     lineHeight: 18,
     fontFamily: Fonts.spaceGrotesk.bold,

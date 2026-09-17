@@ -386,8 +386,9 @@ function getAnalyzedPrimary(
 
     return {
       kind: 'continue_axis',
-      consumesQuota: 'message',
-      resume: { kind: 'chat', category: nextAxis },
+      // Resuming is navigation. The next angle is an explicit action in chat.
+      consumesQuota: 'none',
+      resume: { kind: 'chat' },
     };
   }
 
@@ -395,8 +396,9 @@ function getAnalyzedPrimary(
     if (canUseExploration360Synthesis(options?.tier)) {
       return {
         kind: 'synthesize',
-        consumesQuota: 'synthesis360',
-        resume: { kind: 'chat', mode: 'synthesis' },
+        // The user chooses Generate synthesis after reopening the conversation.
+        consumesQuota: 'none',
+        resume: { kind: 'chat' },
       };
     }
 
