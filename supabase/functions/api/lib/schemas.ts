@@ -5,7 +5,7 @@ export const ANALYZE_DREAM_SCHEMA = {
     title: { type: 'string' },
     interpretation: { type: 'string' },
     shareableQuote: { type: 'string' },
-    imageSourceExcerpts: { type: 'array', minItems: 0, maxItems: 3, items: { type: 'string' } },
+    quoteSourceExcerpts: { type: 'array', minItems: 0, maxItems: 3, items: { type: 'string' } },
     theme: { type: 'string', enum: ['surreal', 'mystical', 'calm', 'noir'] },
     dreamType: {
       type: 'string',
@@ -51,7 +51,7 @@ export const ANALYZE_DREAM_SCHEMA = {
     'title',
     'interpretation',
     'shareableQuote',
-    'imageSourceExcerpts',
+    'quoteSourceExcerpts',
     'theme',
     'dreamType',
     'imagePrompt',

@@ -86,9 +86,11 @@ it('reports a bounded image-load timeout for retry instead of remaining pending 
 });
 
 
-it('shares a scene caption without presenting it as a verbatim quotation', () => {
-  const caption = 'On a red bird above a forest.';
-  render(<DreamShareImage dream={{ id: 1, shareableQuote: caption } as DreamAnalysis} t={key => key} />);
-  expect(screen.getByText(caption).textContent).toBe(caption);
-  expect(screen.queryByText(`“${caption}”`)).toBeNull();
-});
+it.each([undefined, 'analysis-2026-09-17.1', 'analysis-2026-09-17.poetic1'])(
+  'shares the quotation and only attributes a poetic generation to Noctalia (%s)', (promptVersion) => {
+    const quote = 'A red bird carried me above the silence of the forest.';
+    render(<DreamShareImage dream={{ id: 1, shareableQuote: quote, promptVersion } as DreamAnalysis} t={key => key} />);
+    expect(screen.getByText(`“${quote}”`)).toBeTruthy();
+    expect(Boolean(screen.queryByText('journal.detail.quote_attribution'))).toBe(promptVersion?.endsWith('.poetic1') ?? false);
+  }
+);

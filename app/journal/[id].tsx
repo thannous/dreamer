@@ -1,3 +1,4 @@
+import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { resolveDreamRoute } from '@/lib/dreamRoute';
@@ -727,7 +728,8 @@ function JournalDetailContent() {
     }
     const quote = dream.shareableQuote?.trim();
     if (quote) {
-      sections.push(`${t('journal.detail.dream_image_label')} : ${quote}`);
+      sections.push(`“${quote}”`);
+      if (isPoeticDreamQuote(dream)) sections.push(t('journal.detail.quote_attribution'));
     }
     if (dream.interpretation?.trim()) {
       sections.push(
@@ -2202,11 +2204,16 @@ function JournalDetailContent() {
                   ) : dream.shareableQuote?.trim() ? (
                     <View className="my-4 gap-2">
                       <Text className="font-sans-medium text-[12px] text-ivory-muted">
-                        {t('journal.detail.dream_image_label')}
+                        {t('journal.detail.quote_label')}
                       </Text>
-                      <Text className="text-[20px] leading-[30px] text-ivory" style={{ fontFamily: Fonts.lora.regular }}>
-                        {dream.shareableQuote.trim()}
+                      <Text className="text-[20px] leading-[30px] text-ivory" style={{ fontFamily: Fonts.lora.regularItalic }}>
+                        “{dream.shareableQuote.trim()}”
                       </Text>
+                      {isPoeticDreamQuote(dream) ? (
+                        <Text className="font-sans text-[12px] text-ivory-muted">
+                          {t('journal.detail.quote_attribution')}
+                        </Text>
+                      ) : null}
                     </View>
                   ) : null}
 

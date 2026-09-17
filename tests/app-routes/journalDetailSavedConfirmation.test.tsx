@@ -384,16 +384,24 @@ describe('journal detail saved confirmation route', () => {
     cleanup();
   });
 
-  it('presents a scene caption without quotation marks and omits the section when absent', () => {
+  it('attributes an original poetic quote and omits the section when absent', () => {
     const caption = 'On a red bird above a forest.';
-    mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: caption })];
+    mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: caption, promptVersion: 'analysis-2026-09-17.poetic1' })];
     const view = render(<JournalDetailScreen />);
-    expect(screen.getByText('journal.detail.dream_image_label')).toBeTruthy();
-    expect(screen.getByText(caption).textContent).toBe(caption);
+    expect(screen.getByText('journal.detail.quote_label')).toBeTruthy();
+    expect(screen.getByText(`“${caption}”`)).toBeTruthy();
+    expect(screen.getByText('journal.detail.quote_attribution')).toBeTruthy();
     view.unmount();
     mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: '  ' })];
     render(<JournalDetailScreen />);
-    expect(screen.queryByText('journal.detail.dream_image_label')).toBeNull();
+    expect(screen.queryByText('journal.detail.quote_label')).toBeNull();
+  });
+
+  it('keeps a legacy excerpt without falsely attributing it to Noctalia', () => {
+    mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: 'I flew over a quiet city' })];
+    render(<JournalDetailScreen />);
+    expect(screen.getByText('“I flew over a quiet city”')).toBeTruthy();
+    expect(screen.queryByText('journal.detail.quote_attribution')).toBeNull();
   });
 
   it('keeps illustration retry available after the HD quota is exhausted', () => {

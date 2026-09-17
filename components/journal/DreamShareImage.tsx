@@ -1,3 +1,4 @@
+import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { DarkTheme } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -78,11 +79,18 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
           {dream.title}
         </Text>
 
-        {/* Scene caption; never attribute generated prose as a verbatim quotation. */}
+        {/* An original poetic line, identified separately from the dream transcript. */}
         {dream.shareableQuote?.trim() ? (
-          <Text style={[styles.quote, { color: noctalia.text.secondary }]} numberOfLines={3}>
-            {dream.shareableQuote.trim()}
-          </Text>
+          <View>
+            <Text style={[styles.quote, { color: noctalia.text.secondary }]} numberOfLines={4}>
+              “{dream.shareableQuote.trim()}”
+            </Text>
+            {isPoeticDreamQuote(dream) ? (
+              <Text style={[styles.quoteAttribution, { color: noctalia.text.secondary }]}>
+                {t('journal.detail.quote_attribution')}
+              </Text>
+            ) : null}
+          </View>
         ) : null}
 
         {/* Metadata */}
@@ -142,6 +150,12 @@ const styles = StyleSheet.create({
     fontSize: 40,
     marginBottom: 32,
     lineHeight: 52,
+  },
+  quoteAttribution: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 24,
+    lineHeight: 32,
+    marginBottom: 24,
   },
   metadata: {
     fontFamily: Fonts.spaceGrotesk.medium,
