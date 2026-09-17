@@ -62,3 +62,32 @@ it('stops after five questions and discards a response when the account scope ch
   await act(async () => { resolve({ question: 'Ancienne question ?', done: false }); await pending; });
   expect(result.current.question).toBeNull();
 });
+
+
+it('changes direction locally and uses that question as context on the next response', async () => {
+  request.mockResolvedValue({ question: 'Une question personnalisée ?', done: false });
+  const translate = (key: string) => key;
+  const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t: translate }));
+  await act(async () => { await result.current.ask('Une plage.'); });
+  act(() => result.current.chooseDirection('place'));
+  expect(result.current.question).toBe('dream_recall.question.where');
+  act(() => result.current.chooseDirection('next'));
+  expect(result.current.question).toBe('dream_recall.question.what_next');
+  expect(request).toHaveBeenCalledTimes(1);
+  await act(async () => { await result.current.ask('Une plage. Puis une vague.'); });
+  expect(request.mock.calls[1][2]).toEqual(['dream_recall.question.what_next']);
+  act(() => result.current.chooseDirection('done'));
+  expect(result.current).toMatchObject({ done: true, question: null, loading: false });
+  expect(request).toHaveBeenCalledTimes(2);
+});
+
+it('does not replace a chosen direction with a late network response', async () => {
+  let resolve!: (value: { question: string; done: boolean }) => void;
+  request.mockImplementation(() => new Promise(r => { resolve = r; }));
+  const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t: key => key }));
+  let pending!: Promise<void>;
+  act(() => { pending = result.current.ask('Une plage.'); });
+  act(() => result.current.chooseDirection('place'));
+  await act(async () => { resolve({ question: 'Ancienne question ?', done: false }); await pending; });
+  expect(result.current.question).toBe('dream_recall.question.where');
+});

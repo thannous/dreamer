@@ -30,6 +30,10 @@ export interface RecordingTextInputProps {
   onVoiceHintDismiss?: () => void;
   placeholder?: string;
   autoFocus?: boolean;
+  inputTestID?: string;
+  inputAccessibilityLabel?: string;
+  /** Optional controls rendered inside the editor instead of its default microphone. */
+  footerActions?: React.ReactNode;
   onSwitchToVoice: () => void;
   onEditTranscript?: () => void;
   onOpenDetails?: () => void;
@@ -56,6 +60,9 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       onVoiceHintDismiss,
       placeholder,
       autoFocus = true,
+      inputTestID = TID.Input.DreamTranscript,
+      inputAccessibilityLabel,
+      footerActions,
       onSwitchToVoice,
       onEditTranscript,
       onOpenDetails,
@@ -73,6 +80,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     );
     const hasValue = value.trim().length > 0;
     const [isFocused, setIsFocused] = useState(false);
+    const compactMinHeight = Math.max(96, 23 * fontScale + 70);
     const isVoicePreparing = voiceStatus === 'preparing';
     const isVoiceFirst = layout === 'voiceFirst';
     const voiceLabel = switchToVoiceLabel || t('recording.mode.switch_to_voice') || 'Dicter mon r\u00eave';
@@ -83,18 +91,39 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
         ? t('recording.status.recording.title')
         : null;
     const showInlineActions =
-      (!isVoiceFirst && voiceSupported) || Boolean(onOpenDetails && hasValue) || Boolean(onClear && hasValue);
+      Boolean(footerActions) || (!isVoiceFirst && voiceSupported) || Boolean(onOpenDetails && hasValue) || Boolean(onClear && hasValue);
 
     const textEditor = (
       <View style={styles.editor}>
         {!hasValue ? (
           <View
-            style={styles.placeholderIcon}
+            style={[styles.placeholderIcon, compact && styles.placeholderIconCompact]}
             accessibilityElementsHidden={true}
             importantForAccessibility="no-hide-descendants"
           >
             <IconSymbol name="pencil" size={18} color={noctalia.text.secondary} />
           </View>
+        ) : null}
+        {compact ? (
+          <Text
+            // Let native text layout size the editor even while dictation disables
+            // keyboard input. The editable field overlays this invisible copy.
+            pointerEvents="none"
+            accessible={false}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+            style={[
+              styles.textInput,
+              styles.textInputCompact,
+              hasValue && styles.textInputWithValue,
+              showInlineActions && styles.textInputWithInlineActionsCompact,
+              { minHeight: compactMinHeight, maxHeight: undefined },
+              styles.textMeasurement,
+            ]}
+            testID={`${inputTestID}-measurement`}
+          >
+            {value || placeholder || t('recording.placeholder')}
+          </Text>
         ) : null}
         <TextInput
           ref={ref}
@@ -113,6 +142,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               maxHeight: (composerLayout.narrow ? composerLayout.inputMaxHeight : 286) + 64,
             },
             compact && styles.textInputCompact,
+            compact && styles.compactInputOverlay,
             hasValue && styles.textInputWithValue,
             showInlineActions && styles.textInputWithInlineActions,
             compact && showInlineActions && styles.textInputWithInlineActionsCompact,
@@ -126,8 +156,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           editable={!disabled}
           placeholder={placeholder || t('recording.placeholder')}
           placeholderTextColor={noctalia.text.secondary}
-          testID={TID.Input.DreamTranscript}
-          accessibilityLabel={t('recording.placeholder.accessibility')}
+          testID={inputTestID}
+          accessibilityLabel={inputAccessibilityLabel ?? t('recording.placeholder.accessibility')}
           autoFocus={autoFocus}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
@@ -146,7 +176,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               style={styles.inlineActionFade}
             />
             <View style={styles.inlineActions}>
-              {!isVoiceFirst && voiceSupported ? (
+              {footerActions ?? (!isVoiceFirst && voiceSupported ? (
                 <MicButton
                   status={voiceStatus}
                   onPress={onSwitchToVoice}
@@ -155,7 +185,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
                   testID={TID.Button.RecordToggle}
                   accessibilityLabel={voiceLabel}
                 />
-              ) : null}
+              ) : null)}
               {onOpenDetails && hasValue ? (
                 <Pressable
                   onPress={onOpenDetails}
@@ -414,9 +444,17 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.lora.regularItalic,
     textAlignVertical: 'top',
   },
+  textMeasurement: { opacity: 0 },
+  compactInputOverlay: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    minHeight: 0,
+    maxHeight: undefined,
+  },
   textInputCompact: {
-    minHeight: 96,
-    maxHeight: 112,
     paddingTop: 12,
   },
   textInputWithInlineActions: {
@@ -471,6 +509,9 @@ const styles = StyleSheet.create({
     left: 21,
     zIndex: 2,
     pointerEvents: 'none',
+  },
+  placeholderIconCompact: {
+    top: 15,
   },
   lengthWarning: {
     fontFamily: Fonts.spaceGrotesk.medium,

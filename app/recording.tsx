@@ -138,8 +138,14 @@ export default function RecordingScreen() {
   );
 
   const [transcript, setTranscript] = useState('');
+  const [currentAnswer, setCurrentAnswer] = useState('');
+  const [answerBase, setAnswerBase] = useState<string | null>(null);
+  const answerInsertionRef = useRef<(DictationInsertion & { storyBase: string }) | null>(null);
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
   const [isPersisting, setIsPersisting] = useState(false);
+  const [isRestartingCapture, setIsRestartingCapture] = useState(false);
+  const [captureRestartCount, setCaptureRestartCount] = useState(0);
+  const restartingCaptureRef = useRef(false);
   const [isPreparingRecording, setIsPreparingRecording] = useState(false);
   const recordingTransitionRef = useRef(false);
   const baseTranscriptRef = useRef('');
@@ -154,6 +160,9 @@ export default function RecordingScreen() {
   const consecutiveEmptyHandsFreeRestartsRef = useRef(0);
   const handleRestoreDraft = useCallback((savedTranscript: string) => {
     setTranscript(savedTranscript);
+    answerInsertionRef.current = null;
+    setAnswerBase(null);
+    setCurrentAnswer('');
     baseTranscriptRef.current = savedTranscript;
     dictationInsertionRef.current = null;
     transcriptSelectionRef.current = undefined;
@@ -165,7 +174,23 @@ export default function RecordingScreen() {
   });
   const conversation = useCaptureConversation({ language, t, scope: onboardingScope });
   const { ask: askCaptureQuestion, reset: resetConversation } = conversation;
-  const typedAnswerInsertionRef = useRef<DictationInsertion | null>(null);
+  // Freeze the question when an answer begins. Persist the pair as editable text
+  // so draft restoration and analysis retain context without another AI request.
+  const getAnswerInsertion = useCallback(() => {
+    if (answerInsertionRef.current) return answerInsertionRef.current;
+    const storyBase = baseTranscriptRef.current;
+    const question = storyBase.trim()
+      ? conversation.question ?? t('dream_recall.question.what_else')
+      : null;
+    const base = question
+      ? `${storyBase}\n\n${t('recording.conversation.question_label')} ${question}\n${t('recording.conversation.answer_label')} `
+      : storyBase;
+    const insertion = { base, storyBase, selection: { start: base.length, end: base.length } };
+    answerInsertionRef.current = insertion;
+    setAnswerBase(storyBase);
+    return insertion;
+  }, [conversation.question, t]);
+  const captureMicrophoneMutedRef = useRef(false);
   const [lengthWarning, setLengthWarning] = useState('');
   const hasAutoStoppedRecordingRef = useRef(false);
   const [showMicRationaleSheet, setShowMicRationaleSheet] = useState(false);
@@ -347,7 +372,7 @@ export default function RecordingScreen() {
     [handleOfflineModelSheetClose]
   );
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
-  const interactionDisabled = isPersisting || !isHydrated;
+  const interactionDisabled = isPersisting || isRestartingCapture || !isHydrated;
   const isCompactLandscape = viewportWidth > viewportHeight && viewportHeight < 600;
   const hasSaveableContent = isTranscriptSaveable(transcript);
   const isSaveDisabled = !hasSaveableContent || interactionDisabled;
@@ -409,6 +434,9 @@ export default function RecordingScreen() {
           capture_context: captureIntent,
         });
       }
+      answerInsertionRef.current = null;
+      setAnswerBase(null);
+      setCurrentAnswer('');
       setTranscript(text);
       baseTranscriptRef.current = text;
       dictationInsertionRef.current = null;
@@ -419,7 +447,7 @@ export default function RecordingScreen() {
   );
 
   const applyDictationTranscript = useCallback((speech: string): boolean => {
-    if (!isHydrated || !speech.trim()) return false;
+    if (!isHydrated || restartingCaptureRef.current || !speech.trim()) return false;
     const base = baseTranscriptRef.current;
     const insertion = dictationInsertionRef.current ?? {
       base,
@@ -432,6 +460,9 @@ export default function RecordingScreen() {
     transcriptSelectionRef.current = result.selection;
     setTranscriptSelection(result.selection);
     setTranscript(result.text);
+    if (answerInsertionRef.current) {
+      setCurrentAnswer(result.text.slice(answerInsertionRef.current.base.length).trimStart());
+    }
     return true;
   }, [isHydrated, noteInput]);
 
@@ -554,7 +585,10 @@ export default function RecordingScreen() {
 
   const resetComposer = useCallback(() => {
     resetConversation();
-    typedAnswerInsertionRef.current = null;
+    captureMicrophoneMutedRef.current = false;
+    answerInsertionRef.current = null;
+    setAnswerBase(null);
+    setCurrentAnswer('');
     setTranscript('');
     setDraftDream(null);
     setLengthWarning('');
@@ -574,7 +608,10 @@ export default function RecordingScreen() {
   const handleClearTranscript = useCallback(() => {
     if (!isHydrated || noteInput('') !== true) return;
     resetConversation();
-    typedAnswerInsertionRef.current = null;
+    captureMicrophoneMutedRef.current = false;
+    answerInsertionRef.current = null;
+    setAnswerBase(null);
+    setCurrentAnswer('');
     setTranscript('');
     setLengthWarning('');
     setVoiceFallbackReason(null);
@@ -699,8 +736,39 @@ export default function RecordingScreen() {
     t,
   ]);
 
+  const handleRestartCapture = useCallback(() => {
+    if (!isHydrated || isPersisting || restartingCaptureRef.current) return;
+    Alert.alert(
+      t('recording.conversation.restart_title'),
+      t('recording.conversation.restart_message'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('recording.conversation.restart'), style: 'destructive',
+          onPress: async () => {
+            if (restartingCaptureRef.current) return;
+            restartingCaptureRef.current = true;
+            setIsRestartingCapture(true);
+            try {
+              // Discard late speech before clearing, so it cannot restore the old draft.
+              await stopRecording({ silent: true, reason: 'stop' });
+              if (noteInput('') !== true) return;
+              resetComposer();
+              setCaptureRestartCount(count => count + 1);
+              Keyboard.dismiss();
+            } finally {
+              restartingCaptureRef.current = false;
+              setIsRestartingCapture(false);
+            }
+          },
+        },
+      ]
+    );
+  }, [isHydrated, isPersisting, noteInput, resetComposer, stopRecording, t]);
+
   const startRecording = useCallback(async (options?: { preserveDraft?: boolean }) => {
     if (!isHydrated) return false;
+    captureMicrophoneMutedRef.current = false;
     const previousIntent = dictationIntentRef.current;
     try {
       setIsPreparingRecording(true);
@@ -710,9 +778,13 @@ export default function RecordingScreen() {
         consecutiveEmptyHandsFreeRestartsRef.current = 0;
       }
 
-      const sourceTranscript = baseTranscriptRef.current || transcript;
-      if (inputMode === 'voice') transcriptSelectionRef.current = { start: sourceTranscript.length, end: sourceTranscript.length };
-      typedAnswerInsertionRef.current = null;
+      let sourceTranscript = baseTranscriptRef.current || transcript;
+      if (inputMode === 'voice') {
+        const answerInsertion = getAnswerInsertion();
+        // An unanswered question is only persisted once words are entered.
+        if (sourceTranscript === answerInsertion.storyBase) sourceTranscript = answerInsertion.base;
+        transcriptSelectionRef.current = { start: sourceTranscript.length, end: sourceTranscript.length };
+      }
       dictationInsertionRef.current = {
         base: sourceTranscript,
         selection: transcriptSelectionRef.current ?? {
@@ -767,12 +839,13 @@ export default function RecordingScreen() {
     } finally {
       setIsPreparingRecording(false);
     }
-  }, [captureIntent, handleVoiceCaptureFailure, inputMode, isHydrated, language, setDictationIntentState, startSessionRecording, t, transcript]);
+  }, [captureIntent, getAnswerInsertion, handleVoiceCaptureFailure, inputMode, isHydrated, language, setDictationIntentState, startSessionRecording, t, transcript]);
 
   const handleUnexpectedNativeEnd = useCallback(async () => {
     if (inputMode === 'voice') {
       if (dictationIntentRef.current !== 'listening') return;
-      await stopRecording({ silent: true, reason: 'pause' });
+      captureMicrophoneMutedRef.current = true;
+      await stopRecording({ silent: true, reason: 'stop' });
       return;
     }
     const canRestart = shouldRestartHandsFreeSpeech({
@@ -1068,7 +1141,9 @@ export default function RecordingScreen() {
   }, [viewportHeight]);
 
   useEffect(() => {
-    if (!keyboardVisible || footerHeight === 0) {
+    // The voice reply sits above the full story: scrolling to the document end
+    // would hide the focused answer when the keyboard opens.
+    if (!keyboardVisible || footerHeight === 0 || inputMode === 'voice') {
       return;
     }
 
@@ -1077,7 +1152,7 @@ export default function RecordingScreen() {
     });
 
     return () => cancelAnimationFrame(frame);
-  }, [footerHeight, keyboardVisible]);
+  }, [footerHeight, inputMode, keyboardVisible]);
 
   const focusTranscriptEnd = useCallback((value: string) => {
     const len = value.length;
@@ -1223,7 +1298,9 @@ export default function RecordingScreen() {
   }, [textFallbackNotice]);
 
   const switchToTextMode = useCallback(async () => {
-    typedAnswerInsertionRef.current = null;
+    answerInsertionRef.current = null;
+    setAnswerBase(null);
+    setCurrentAnswer('');
     if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
       recordingTransitionRef.current = true;
       try {
@@ -1244,7 +1321,9 @@ export default function RecordingScreen() {
         return;
       }
 
-      typedAnswerInsertionRef.current = null;
+      answerInsertionRef.current = null;
+      setAnswerBase(null);
+      setCurrentAnswer('');
       setVoiceFallbackReason(null);
 
       if (preference === 'text' && (isRecordingRef.current || dictationIntentRef.current === 'listening')) {
@@ -1330,22 +1409,26 @@ export default function RecordingScreen() {
   }, [switchToTextMode]);
 
   useEffect(() => {
-    if (inputMode === 'voice' && isHydrated && !isRecordingRef.current && !typedAnswerInsertionRef.current) {
+    if (inputMode === 'voice' && isHydrated && !isRecordingRef.current && !answerInsertionRef.current && !captureMicrophoneMutedRef.current) {
       void askCaptureQuestion(baseTranscriptRef.current);
     }
   }, [askCaptureQuestion, inputMode, isHydrated, isRecordingRef]);
 
   const handleConversationAnswerChange = useCallback((text: string) => {
     if (!isHydrated) return;
-    const base = baseTranscriptRef.current;
-    const insertion = typedAnswerInsertionRef.current ?? { base, selection: { start: base.length, end: base.length } };
-    const result = insertDictation(insertion, text);
+    const insertion = getAnswerInsertion();
+    const result = text.trim()
+      ? insertDictation(insertion, text)
+      : { text: insertion.storyBase, selection: { start: insertion.storyBase.length, end: insertion.storyBase.length } };
     if (noteInput(result.text) !== true) return;
-    typedAnswerInsertionRef.current = insertion;
+    answerInsertionRef.current = insertion;
+    setAnswerBase(insertion.storyBase);
+    setCurrentAnswer(text);
+    dictationInsertionRef.current = null;
     baseTranscriptRef.current = result.text;
     setTranscript(result.text);
     transcriptSelectionRef.current = result.selection;
-  }, [isHydrated, noteInput]);
+  }, [getAnswerInsertion, isHydrated, noteInput]);
 
   const saveFooter = (
     <RecordingFooter
@@ -1431,7 +1514,19 @@ export default function RecordingScreen() {
 
                 {inputMode === 'voice' ? (
                   <RecordingConversation
+                    key={captureRestartCount}
+                    onRestart={handleRestartCapture}
+                    onDirection={(direction) => {
+                      if (currentAnswer.trim() || isRecordingRef.current || isPreparingRecording || interactionDisabled) return;
+                      answerInsertionRef.current = null;
+                      setAnswerBase(null);
+                      captureMicrophoneMutedRef.current = true;
+                      conversation.chooseDirection(direction);
+                      Keyboard.dismiss();
+                    }}
                     transcript={transcript}
+                    answer={currentAnswer}
+                    storyTranscript={answerBase ?? transcript}
                     question={conversation.question}
                     loading={conversation.loading}
                     unavailable={conversation.unavailable}
@@ -1440,10 +1535,21 @@ export default function RecordingScreen() {
                     voiceSupported={isVoiceSupported}
                     voiceStatus={voiceControlStatus}
                     onVoice={handleVoiceCapturePress}
+                    onMute={() => {
+                      captureMicrophoneMutedRef.current = true;
+                      return stopRecording({ silent: true, reason: 'stop' });
+                    }}
                     onReview={switchToTextMode}
                     onAnswerChange={handleConversationAnswerChange}
-                    onAnswerSubmit={() => {
-                      typedAnswerInsertionRef.current = null;
+                    onAnswerSubmit={async () => {
+                      captureMicrophoneMutedRef.current = true;
+                      if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
+                        await stopRecording({ silent: true, reason: 'stop' });
+                      }
+                      answerInsertionRef.current = null;
+                      setAnswerBase(null);
+                      setCurrentAnswer('');
+                      captureMicrophoneMutedRef.current = false;
                       void askCaptureQuestion(baseTranscriptRef.current);
                       Keyboard.dismiss();
                     }}

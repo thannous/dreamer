@@ -12,6 +12,8 @@ export const GEMINI_MODELS = {
   text: {
     /** Primary text model for dream analysis. */
     default: 'gemini-3.8-flash',
+    /** Short, non-interpretive questions during dream capture. */
+    recall: 'gemini-3.5-flash-lite',
     /** Cost-focused chat model selected independently from dream analysis. */
     chat: 'gemini-3.5-flash-lite',
     /** Cheaper fallback used when the primary model rejects or times out. */

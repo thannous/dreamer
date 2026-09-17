@@ -662,7 +662,7 @@ describe('RecordingTextInput', () => {
     );
   });
 
-  it('preserves the existing short-landscape compact geometry', () => {
+  it('allows the compact editor to grow with its content on a short landscape screen', () => {
     mockWindowWidth = 640;
     mockWindowHeight = 320;
 
@@ -687,7 +687,7 @@ describe('RecordingTextInput', () => {
 
     expect(instructionStyle).toContain('"fontSize":18');
     expect(instructionStyle).toContain('"lineHeight":24');
-    expect(inputStyle).toContain('"minHeight":96');
-    expect(inputStyle).toContain('"maxHeight":112');
+    expect(inputStyle).toContain('"minHeight":0');
+    expect(screen.getByTestId(`${TID.Input.DreamTranscript}-measurement`).getAttribute('data-native-style')).not.toContain('"maxHeight"');
   });
 });

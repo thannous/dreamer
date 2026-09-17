@@ -1,14 +1,19 @@
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@/context/ThemeContext';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTranslation } from '@/hooks/useTranslation';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TID } from '@/lib/testIDs';
+import type { CaptureDirection } from '@/hooks/useCaptureConversation';
 import type { MicButtonStatus } from './MicButton';
+import { RecordingTextInput } from './RecordingTextInput';
+import { Fonts } from '@/constants/theme';
 
 type Props = {
   transcript: string;
+  answer: string;
+  storyTranscript: string;
   question: string | null;
   loading: boolean;
   unavailable: boolean;
@@ -17,128 +22,194 @@ type Props = {
   voiceSupported: boolean;
   voiceStatus: MicButtonStatus;
   onVoice: () => void;
+  onMute: () => Promise<void>;
   onReview: () => void;
+  onRestart: () => void;
+  onDirection: (direction: CaptureDirection) => void;
   onAnswerChange: (text: string) => void;
-  onAnswerSubmit: () => void;
+  onAnswerSubmit: () => void | Promise<void>;
 };
 
 export function RecordingConversation(props: Props) {
   const { colors, mode } = useTheme();
   const tokens = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
-  const [typing, setTyping] = useState(false);
-  const [answer, setAnswer] = useState('');
+  const answer = props.answer;
+  const [switching, setSwitching] = useState(false);
   const hasText = Boolean(props.transcript.trim());
   const listening = props.voiceStatus === 'recording';
   const preparing = props.voiceStatus === 'preparing';
-  const locked = props.disabled || preparing;
+  const locked = props.disabled || preparing || switching;
   const voiceLabel = preparing ? t('recording.status.preparing.title')
-    : listening ? t('recording.conversation.stop')
+    : listening ? t('recording.conversation.mute')
     : hasText ? t('recording.conversation.reply') : t('recording.conversation.begin');
+  const continueWithVoice = () => {
+    // Typed edits have already been persisted through onAnswerChange.
+    Keyboard.dismiss();
+    props.onVoice();
+  };
+
+  const mute = async () => {
+    setSwitching(true);
+    try { await props.onMute(); } finally { setSwitching(false); }
+  };
+  const submitAnswer = async () => {
+    setSwitching(true);
+    try {
+      await props.onAnswerSubmit();
+      Keyboard.dismiss();
+    } finally {
+      setSwitching(false);
+    }
+  };
+  const submitDisabled = locked || props.loading || !answer.trim();
+  const showDirections = Boolean(props.storyTranscript.trim()) && !answer.trim() && !listening && !props.loading;
 
   return (
     <View style={styles.container} testID="recording-conversation">
-      {hasText ? (
-        <View style={styles.recap}>
-          <View style={styles.recapHeader}>
-            <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.your_story')}</Text>
-            <Pressable accessibilityRole="button" disabled={locked} onPress={props.onReview} style={styles.link} testID="recording-review-transcript">
-              <Text style={[styles.small, { color: tokens.accent.text }]}>{t('recording.conversation.review')}</Text>
-            </Pressable>
-          </View>
-          <View style={[styles.bubble, { backgroundColor: tokens.surface.raised }]}>
-            <Text numberOfLines={4} style={[styles.story, { color: tokens.text.primary }]} testID="recording-voice-preview">{props.transcript}</Text>
-          </View>
-        </View>
-      ) : null}
       <View style={styles.questionBlock}>
-        <View style={styles.speaker}>
-          <IconSymbol name="sparkles" size={22} color={tokens.accent.text} />
-          <Text style={[styles.speakerName, { color: tokens.text.secondary }]}>Noctalia</Text>
-        </View>
         <Text accessibilityLiveRegion="polite" style={[styles.question, { color: tokens.text.primary }]} testID="recording-conversation-question">
-          {listening ? t('recording.conversation.listening') : props.loading ? t('recording.conversation.thinking')
+          {props.loading ? t('recording.conversation.thinking')
             : props.done ? t('recording.conversation.ready')
-            : props.question ?? t(hasText ? 'dream_recall.question.what_else' : 'recording.conversation.welcome')}
+            : props.question ?? t(props.storyTranscript.trim() ? 'dream_recall.question.what_else' : 'recording.conversation.welcome')}
         </Text>
-        <Text style={[styles.hint, { color: tokens.text.secondary }]}>
-          {props.unavailable ? t('recording.conversation.offline') : t('recording.conversation.take_time')}
-        </Text>
+        {listening ? (
+          <Text accessibilityLiveRegion="polite" style={[styles.hint, { color: tokens.text.secondary }]} testID="recording-listening-status">
+            {t('recording.conversation.listening')}
+          </Text>
+        ) : null}
+        {props.unavailable ? (
+          <Text style={[styles.hint, { color: tokens.text.secondary }]}>
+            {t('recording.conversation.offline')}
+          </Text>
+        ) : null}
       </View>
       {props.loading ? <ActivityIndicator color={tokens.accent.text} accessibilityLabel={t('recording.conversation.thinking')} /> : null}
-      <View style={styles.replyArea}>
-        {props.voiceSupported && !typing && !props.done ? (
-          <Pressable
-            testID={TID.Button.RecordToggle}
-            onPress={props.onVoice}
-            disabled={locked || props.loading}
-            accessibilityRole="button"
-            accessibilityLabel={voiceLabel}
-            accessibilityState={{ disabled: locked || props.loading, busy: preparing }}
-            style={styles.voiceAction}
-          >
-            <View style={[styles.mic, { backgroundColor: tokens.action.primary, opacity: locked || props.loading ? 0.5 : 1 }]}>
-              <IconSymbol name={listening ? 'pause.fill' : 'mic.fill'} size={32} color={tokens.action.primaryText} />
-            </View>
-            <Text style={[styles.voiceLabel, { color: tokens.text.primary }]}>{voiceLabel}</Text>
-          </Pressable>
-        ) : null}
-        {(typing || !props.voiceSupported) && !props.done ? (
-          <View style={styles.typedReply}>
-            <TextInput
-              multiline autoFocus={typing} value={answer}
-              onChangeText={(text) => { setAnswer(text); props.onAnswerChange(text); }}
-              editable={!locked && !props.loading}
+      {!props.done ? (
+        <View style={styles.replyArea}>
+          <View style={styles.answerSection}>
+            <RecordingTextInput
+              compact
+              autoFocus={false}
+              value={answer}
+              onChange={props.onAnswerChange}
+              disabled={locked || props.loading || listening}
+              instructionText=""
+              lengthWarning=""
+              voiceSupported={props.voiceSupported}
+              voiceStatus={props.voiceStatus}
+              switchToVoiceLabel={t('recording.conversation.reply_voice')}
+              onSwitchToVoice={continueWithVoice}
+              footerActions={
+                <>
+                  {props.voiceSupported ? (
+                    <Pressable
+                      onPress={listening ? mute : continueWithVoice}
+                      disabled={locked || props.loading}
+                      accessibilityRole="button"
+                      accessibilityLabel={voiceLabel}
+                      accessibilityState={{ disabled: locked || props.loading, busy: preparing }}
+                      style={[styles.editorAction, { borderColor: tokens.surface.border, opacity: locked || props.loading ? 0.4 : 1 }]}
+                      testID={TID.Button.RecordToggle}
+                    >
+                      <IconSymbol name={listening ? 'stop.fill' : 'mic.fill'} size={22} color={tokens.text.primary} />
+                    </Pressable>
+                  ) : null}
+                  <Pressable
+                    onPress={submitAnswer}
+                    disabled={submitDisabled}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('recording.conversation.stop')}
+                    accessibilityState={{ disabled: submitDisabled, busy: switching }}
+                    style={[styles.editorAction, { backgroundColor: tokens.action.primary, borderColor: tokens.action.primary, opacity: submitDisabled ? 0.4 : 1 }]}
+                    testID="recording-conversation-submit"
+                  >
+                    <IconSymbol name="arrow.up" size={24} color={tokens.action.primaryText} />
+                  </Pressable>
+                </>
+              }
               placeholder={t('recording.conversation.answer_placeholder')}
-              accessibilityLabel={t('recording.conversation.answer_placeholder')}
-              placeholderTextColor={tokens.text.secondary}
-              style={[styles.answerInput, { color: tokens.text.primary, backgroundColor: tokens.surface.raised }]}
-              testID="recording-conversation-answer"
+              inputAccessibilityLabel={t('recording.conversation.answer_placeholder')}
+              inputTestID="recording-conversation-answer"
             />
-            <Pressable
-              disabled={locked || props.loading || !answer.trim()}
-              accessibilityRole="button" onPress={() => { props.onAnswerSubmit(); setAnswer(''); setTyping(false); }}
-              style={[styles.link, (locked || props.loading || !answer.trim()) && { opacity: 0.4 }]} testID="recording-conversation-submit"
-            ><Text style={[styles.small, { color: tokens.accent.text }]}>{t('recording.conversation.send')}</Text></Pressable>
-            {props.voiceSupported ? (
-              <Pressable accessibilityRole="button" disabled={locked || props.loading} style={styles.link}
-                onPress={() => { setTyping(false); setAnswer(''); props.onVoice(); }}>
-                <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.reply_voice')}</Text>
-              </Pressable>
-            ) : null}
           </View>
-        ) : !listening && !props.done ? (
+          {showDirections ? (
+            <View style={styles.directions}>
+              {(['place', 'next', 'done'] as const).map(direction => (
+                <Pressable
+                  key={direction}
+                  onPress={() => props.onDirection(direction)}
+                  disabled={locked}
+                  accessibilityRole="button"
+                  accessibilityState={{ disabled: locked }}
+                  style={[styles.direction, { borderColor: tokens.surface.border, opacity: locked ? 0.4 : 1 }]}
+                  testID={`recording-direction-${direction}`}
+                >
+                  <Text style={[styles.small, { color: tokens.text.secondary }]}>
+                    {t(`recording.conversation.direction_${direction}`)}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          ) : null}
+        </View>
+      ) : null}
+      {props.storyTranscript.trim() ? (
+        <View style={[styles.recap, { backgroundColor: tokens.surface.raised, borderColor: tokens.surface.border }]}>
+          <View style={styles.recapHeader}>
+            <Pressable
+              onPress={props.onReview}
+              disabled={locked}
+              accessibilityRole="button"
+              accessibilityLabel={t('recording.tell.edit')}
+              accessibilityState={{ disabled: locked }}
+              style={styles.recapEdit}
+            >
+              <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.your_story')}</Text>
+              <IconSymbol name="pencil" size={20} color={tokens.accent.text} />
+            </Pressable>
+            <Pressable
+              onPress={props.onRestart}
+              accessibilityLabel={t('recording.conversation.restart')}
+              disabled={locked}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: locked }}
+              style={[styles.restartButton, { opacity: locked ? 0.4 : 1 }]}
+              testID="recording-conversation-restart"
+            >
+              <IconSymbol name="trash" size={20} color={tokens.text.secondary} />
+            </Pressable>
+          </View>
           <Pressable
-            onPress={() => { setTyping(true); setAnswer(''); }} disabled={locked || props.loading}
-            accessibilityRole="button" style={styles.keyboardAction} testID="recording-conversation-type"
+            onPress={props.onReview}
+            disabled={locked}
+            accessibilityRole="button"
+            accessibilityLabel={t('recording.tell.edit')}
+            accessibilityState={{ disabled: locked }}
+            testID="recording-review-transcript"
           >
-            <IconSymbol name="keyboard" size={18} color={tokens.text.secondary} />
-            <Text style={[styles.small, { color: tokens.text.secondary }]}>{t('recording.conversation.type')}</Text>
+            <Text style={[styles.story, { color: tokens.text.primary }]} testID="recording-voice-preview">{props.storyTranscript}</Text>
           </Pressable>
-        ) : null}
-      </View>
+        </View>
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { width: '100%', maxWidth: 512, alignSelf: 'center', gap: 28, paddingTop: 12 },
-  recap: { alignSelf: 'flex-end', width: '86%' },
-  recapHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  small: { fontSize: 15, lineHeight: 21 },
-  link: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 4 },
-  bubble: { borderRadius: 22, padding: 18 },
-  story: { fontSize: 16, lineHeight: 24 },
-  questionBlock: { gap: 14, paddingHorizontal: 8 },
-  speaker: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  speakerName: { fontSize: 15, lineHeight: 22 },
+  container: { width: '100%', maxWidth: 512, alignSelf: 'center', gap: 20, paddingTop: 4 },
+  restartButton: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
+  recapEdit: { flex: 1, minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
+  questionBlock: { gap: 8 },
   question: { fontSize: 25, lineHeight: 33, fontWeight: '500', letterSpacing: -0.4 },
   hint: { fontSize: 15, lineHeight: 22 },
-  replyArea: { alignItems: 'center', gap: 14, paddingVertical: 6 },
-  voiceAction: { alignItems: 'center', gap: 10 },
-  mic: { width: 76, height: 76, borderRadius: 38, alignItems: 'center', justifyContent: 'center' },
-  voiceLabel: { fontSize: 16, lineHeight: 23, fontWeight: '500' },
-  keyboardAction: { flexDirection: 'row', gap: 10, minHeight: 44, alignItems: 'center' },
-  typedReply: { width: '100%', gap: 8 },
-  answerInput: { minHeight: 84, borderRadius: 18, padding: 16, fontSize: 16, lineHeight: 24, textAlignVertical: 'top' },
+  answerSection: { width: '100%', gap: 8 },
+  replyArea: { width: '100%', alignItems: 'center', gap: 16 },
+  editorAction: { width: 48, height: 48, borderRadius: 24, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  directions: { width: '100%', flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  direction: { minHeight: 44, justifyContent: 'center', borderWidth: 1, borderRadius: 16, paddingHorizontal: 12, paddingVertical: 8 },
+  recap: { width: '100%', minHeight: 144, borderRadius: 22, borderWidth: 1, padding: 18, gap: 14 },
+  recapHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
+  small: { fontSize: 15, lineHeight: 21, flexShrink: 1 },
+  story: { fontSize: 16, lineHeight: 24, fontFamily: Fonts.lora.regularItalic },
 });
