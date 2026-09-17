@@ -50,14 +50,26 @@ L’actualisation au retour au premier plan, les mises à jour RevenueCat et le 
 - Tests ciblés interface/erreurs : 79 tests réussis ; persistance et fusion : 21 tests réussis ; rendu des relances de chat : 3 tests réussis.
 - `test:prepush` réussi sur le commit de code `a989c7d722cb295c9ce7fbec918257109d395164` : types app/tests, 188 suites et 2 157 tests réussis, une suite/un test déjà ignorés. Base distante actualisée `214c6e845e73599f0ee61cfa535303e2cfa73717`. Ces résultats locaux ne sont pas un verdict CI distant.
 - Motorola : version locale chargée via Metro 8083 et tunnel ADB, sans réinstallation ni effacement. L’avis d’expiration réel du compte est lisible et annonce la date 17 septembre à 17 h 51. Aucune transaction lancée.
-- Le motif restauré de l’ancien échec et la génération réelle après correction nécessitent encore l’application des migrations et le déploiement serveur. Les tests locaux ne sont pas présentés comme une réparation de production.
+- Le motif de l’ancien échec est restauré en production par la migration. Une génération réelle après correction reste à qualifier séparément ; aucun rejeu historique n’a été effectué.
 
 ## Livraison et récupération ciblée
 
 Branche isolée basée sur `codex/dream-image-20260917`, sans inclusion des modifications de synchronisation ni des autres travaux locaux. Les captures, logs, identifiants de compte et la procédure de récupération de l’incident restent hors Git.
 
-Ordre de publication prévu : appliquer uniquement les deux nouvelles migrations, puis déployer `api` et `image-job-worker`, vérifier les définitions et versions réellement publiées, puis qualifier un parcours réel. Ne pas utiliser un `db push` global.
+Publication effectuée : uniquement les deux nouvelles migrations, puis `api` et `image-job-worker`, avec vérification des définitions et versions réellement publiées. Aucun `db push` global. Une génération réelle reste à qualifier séparément.
 
 La récupération du job historique est distincte : une procédure privée vérifie les identités exactes, l’heure de l’analyse, la ligne de quota et l’empreinte originale de la demande. Elle peut rétablir la preuve vérifiée sous Plus puis autoriser une seule tentative supplémentaire sur le même job, sans remettre les trois tentatives précédentes à zéro. Elle n’a pas été exécutée.
 
-Les déploiements et cette relance de production attendent une autorisation explicite, conformément au guide du dépôt. Les modifications de code, les validations locales et la préparation de la PR sont autorisées.
+## Publication serveur du 17 septembre 2026
+
+Après accord de déploiement de l’utilisateur, les deux migrations ont été appliquées et vérifiées en production. Les versions enregistrées correspondent aux fichiers Git et leurs contenus ont été comparés par empreinte MD5 : `2e0dc0d3bccddb52d18e51df2fe3b031` pour l’autorisation, `4ed3f8268b80fe85cefbeff2d65d837a` pour le motif d’erreur. Le connecteur attribue initialement ses propres horodatages ; les deux entrées ont été alignées sur les versions des fichiers après vérification stricte du nom et du contenu.
+
+Les deux parcours SQL utilisent la réservation commune. Les fonctions d’autorisation restent inaccessibles aux rôles `anon` et `authenticated`, et le trigger de projection est actif. L’ancien échec a maintenant son motif durable ; le job et sa ligne de quota restent inchangés. Aucun job actif à la vérification et aucune relance historique effectuée. Le comparatif des conseillers de sécurité ne montre aucun nouvel avis.
+
+La comparaison avec les sources réellement déployées a révélé des différences indépendantes de cette PR. Les paquets de publication ont donc été préparés depuis `api` v108 et `image-job-worker` v20, en ajoutant uniquement le vérificateur commun et son appel dans chaque fonction. Les autres routes, modèles, contrôles HD et mécanismes d’authentification déployés sont conservés. Types Deno des deux paquets valides ; quatre assertions ciblées API et quatorze tests worker/vérificateur réussis. Les tests worker nécessitent l’accès à `deno.land` pour charger le WASM d’ImageScript ; l’échec initial sans cette permission est environnemental.
+
+Après le changement de permissions et la demande de nouvel essai de l’utilisateur, le connecteur a publié les mêmes paquets préparés : **`api` v109 et `image-job-worker` v21, tous deux ACTIVE**. Les 49 fichiers de l’API et les 13 fichiers du worker ont été relus depuis Supabase et correspondent exactement aux manifestes soumis. `analysis-job-worker` reste en v8. Les deux points d’entrée refusent une requête sans authentification avec HTTP 401. Les migrations et le job historique ont été revérifiés après publication ; le job conserve ses trois tentatives épuisées et n’a pas été relancé.
+
+Le blocage initial provenait des permissions : la CLI avait reçu HTTP 403, puis le contrôle automatique du connecteur avait refusé les fonctions malgré l’accord explicite. La nouvelle tentative a utilisé ce même connecteur après la mise à jour des permissions, sans contournement. Le Motorola est toujours visible via ADB mais son écran est verrouillé lors du contrôle après publication ; ce contrôle ne qualifie donc pas l’affichage final du motif d’échec sur l’appareil. L’avis d’expiration avait été vérifié auparavant sur la version locale. Aucune publication Play Store ni mise à jour OTA n’a été réalisée.
+
+Empreintes SHA-256 des manifestes de publication privés : API `7d47bc99fb1328894696fed4c53014e06fd2ced617bbf80bdb337c4cf1a1e003`, worker `bfcb693cea0c2940c16b29c0d1cb277324748e335e6a783ed0f7906f3fd8b7c8`. Les captures, paquets et logs restent hors Git. La publication serveur est vérifiée ; la récupération de l’image reste distincte et soumise à un accord spécifique.
