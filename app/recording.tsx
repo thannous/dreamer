@@ -1689,7 +1689,7 @@ export default function RecordingScreen() {
                     onRestart={handleRestartCapture}
                     transcript={transcript}
                     answer={currentAnswer}
-                    storyTranscript={answerBase ?? transcript}
+                    storyTranscript={conversation.done ? buildCaptureNarrative(answerBase ?? transcript) : answerBase ?? transcript}
                     question={conversation.question}
                     loading={conversation.loading}
                     unavailable={conversation.unavailable}
