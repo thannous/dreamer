@@ -87,7 +87,7 @@ describe('Android release ref guard', () => {
   it('compares remote builds with their exact EAS metadata, not the local mirror', () => {
     const releaseIdentity = { version: '3.2.0', versionCode: 68 };
     expect(validateReleaseRef({ releaseIdentity, versionSource: 'remote', builtVersionCode: '69', expectedRemoteVersionCode: '69' }))
-      .toMatchObject({ builtVersionCode: '69' });
+      .toMatchObject({ builtVersionCode: '69', versionCode: 69 });
     expect(() => validateReleaseRef({ releaseIdentity, versionSource: 'remote', builtVersionCode: '69' })).toThrow('EXPECTED_ANDROID_VERSION_CODE');
     expect(() => validateReleaseRef({ releaseIdentity, versionSource: 'remote', builtVersionCode: '69', expectedRemoteVersionCode: '70' })).toThrow('does not match the EAS build');
     expect(() => validateReleaseRef({ releaseIdentity, versionSource: 'remote', builtVersionCode: 'NaN', expectedRemoteVersionCode: '69' })).toThrow('Invalid');

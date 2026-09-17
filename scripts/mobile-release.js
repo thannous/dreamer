@@ -104,7 +104,8 @@ function plan(root, app) {
   catch { throw new Error(`Missing baseline ${entry.sourceRef}; fetch the release history before planning. No version guessed.`); }
   const files = git(root, 'diff', '--name-only', '--no-renames', '-z', entry.sourceRef, head).split('\0').filter(Boolean)
     .filter(file => affects(app, file))
-    .filter(file => normalized(file, contents(root, entry.sourceRef, file) ?? 'null') !== normalized(file, contents(root, head, file) ?? 'null'));
+    .filter(file => !/(^|\/)(package(-lock)?|app)\.json$/.test(file)
+      || normalized(file, contents(root, entry.sourceRef, file) ?? 'null') !== normalized(file, contents(root, head, file) ?? 'null'));
   const relevant = new Set(files);
   let level = files.length ? 'patch' : 'none';
   const reasons = [];

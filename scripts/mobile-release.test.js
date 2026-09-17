@@ -156,4 +156,18 @@ describe('release planning against real Git histories', () => {
     write(root, 'app/home.tsx', 'new fix'); commit(root, 'fix: correct home');
     expect(() => main(['build', '--platform', 'android'], root)).toThrow('Unversioned mobile changes');
   });
+  it('detects binary asset changes without decoding them as UTF-8', () => {
+    const root = fixture();
+    fs.mkdirSync(path.join(root, 'assets/images'), { recursive: true });
+    const image = path.join(root, 'assets/images/image.png');
+    fs.writeFileSync(image, Buffer.from([255]));
+    const baseline = commit(root, 'fix: image');
+    const file = path.join(root, 'release/mobile-versions.json');
+    const state = JSON.parse(fs.readFileSync(file));
+    state.apps.noctalia.sourceRef = baseline;
+    fs.writeFileSync(file, JSON.stringify(state));
+    fs.writeFileSync(image, Buffer.from([254]));
+    commit(root, 'fix: replace image');
+    expect(plan(root, 'noctalia').next).toBe('3.1.1');
+  });
 });

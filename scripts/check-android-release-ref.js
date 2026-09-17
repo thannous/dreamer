@@ -70,6 +70,7 @@ function validateReleaseRef({
 
   return {
     ...releaseIdentity,
+    versionCode: versionSource === 'remote' && builtVersionCode ? Number(builtVersionCode) : releaseIdentity.versionCode,
     builtVersionCode,
     refName,
     refType,
