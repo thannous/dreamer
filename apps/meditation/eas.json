@@ -1,7 +1,7 @@
 {
   "cli": {
     "version": ">= 16.24.1",
-    "appVersionSource": "local"
+    "appVersionSource": "remote"
   },
   "build": {
     "base": {
@@ -38,7 +38,8 @@
         "EXPO_PUBLIC_MOCK_MODE": "false",
         "EXPO_PUBLIC_ACCOUNTS_ENABLED": "false",
         "EXPO_PUBLIC_SUBSCRIPTIONS_ENABLED": "false"
-      }
+      },
+      "autoIncrement": true
     }
   },
   "submit": {

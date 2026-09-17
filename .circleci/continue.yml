@@ -119,6 +119,9 @@ jobs:
           name: Verify product import boundaries
           command: npm run boundaries:check
       - run:
+          name: Verify mobile version metadata
+          command: node scripts/mobile-release.js verify --app all
+      - run:
           name: Verify CI classification and Jest fallback
           command: |
             set -euo pipefail

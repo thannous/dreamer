@@ -1,6 +1,8 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 
-const LUCID_APP_VERSION = '1.0.0';
+import mobileVersions from './release/mobile-versions.json';
+
+const LUCID_APP_VERSION = mobileVersions.apps.lucid.version;
 const LUCID_EAS_PROJECT_ID = 'd210576f-5dc4-4f7a-a5e1-a407c209c3a2';
 const LUCID_MICROPHONE_PERMISSION =
   'Noctalia Lucid Trainer records a morning dream note on this device after you tap Speak. Audio stays local and is never uploaded or transcribed automatically.';

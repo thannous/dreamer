@@ -182,7 +182,12 @@
     "reflection:compact:run": "node scripts/run-ti559-compact.cjs",
     "reflection:completion:run": "node scripts/run-ti559-completion.cjs",
     "reflection:chat:signed:check": "deno check --no-lock supabase/functions/api/evaluation/ti559/chat-20-signed.ts",
-    "reflection:chat:signed:run": "node scripts/run-chat20-signed.cjs"
+    "reflection:chat:signed:run": "node scripts/run-chat20-signed.cjs",
+    "release:plan": "node ./scripts/mobile-release.js plan",
+    "release:prepare": "node ./scripts/mobile-release.js prepare",
+    "release:check": "node ./scripts/mobile-release.js check",
+    "release:build": "node ./scripts/mobile-release.js build",
+    "eas-build-pre-install": "node ./scripts/mobile-release.js verify"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",
