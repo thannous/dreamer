@@ -27,6 +27,7 @@ const mockStartRecording = jest.fn();
 const answerPair = (story: string, answer: string, question = 'What else do you remember?') => `${story}\n\nQuestion : ${question}\nRéponse : ${answer}`;
 const mockRequestCaptureQuestion = jest.fn(async () => ({ question: 'What else do you remember?', done: false }));
 const mockFormatCaptureNarrative = jest.fn(async (_source: string) => 'A blue garden at dawn. A door was open.');
+const mockUseFocusEffect = jest.fn();
 const mockStopRecording = jest.fn();
 const mockTrackProductEvent = jest.fn().mockResolvedValue(undefined);
 
@@ -77,7 +78,7 @@ jest.doMock('expo-router', () => ({
     replace: mockReplace,
     setParams: jest.fn(),
   },
-  useFocusEffect: () => {},
+  useFocusEffect: mockUseFocusEffect,
   useLocalSearchParams: () => ({}),
 }));
 
@@ -419,7 +420,13 @@ jest.doMock('@/components/Toast', () => ({
 }));
 
 jest.doMock('@/components/ui/StandardBottomSheet', () => ({
-  StandardBottomSheet: () => null,
+  StandardBottomSheet: ({ visible, title, subtitle, actions, onClose, testID }: any) => visible ? <div data-testid={testID}>
+    <span>{title}</span><span>{subtitle}</span>
+    <button data-testid={actions.primaryTestID} disabled={actions.primaryDisabled || actions.primaryLoading} onClick={actions.onPrimary}>{actions.primaryLabel}</button>
+    {actions.secondaryLabel ? <button data-testid={actions.secondaryTestID} disabled={actions.secondaryDisabled} onClick={actions.onSecondary}>{actions.secondaryLabel}</button> : null}
+    {actions.linkLabel ? <button data-testid={actions.linkTestID} onClick={actions.onLink}>{actions.linkLabel}</button> : null}
+    <button data-testid={`${testID}-close`} onClick={onClose}>Close sheet</button>
+  </div> : null,
 }));
 
 jest.doMock('@/components/ui/icon-symbol', () => ({
@@ -999,6 +1006,75 @@ describe('Recording screen', () => {
     expect((screen.getByTestId('capture-adjust-section-1') as HTMLTextAreaElement).value).toBe('Noir, je crois.');
     expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
     expect(mockAddDream).not.toHaveBeenCalled();
+  });
+
+  it('waits for the edited review and original to persist before leaving without a journal save', async () => {
+    const review = { source: 'Une plage.', text: 'Une plage noire.' };
+    mockGetSavedTranscript.mockResolvedValueOnce(encodeCaptureReview(review));
+    render(<RecordingScreen />);
+    await screen.findByTestId('capture-review-text');
+    fireEvent.change(screen.getByTestId('capture-review-text'), { target: { value: 'Une plage noire, je crois.' } });
+    fireEvent.click(screen.getByTestId('capture-review-exit'));
+    let resolveWrite!: () => void;
+    const pending = { promise: new Promise<void>(resolve => { resolveWrite = resolve; }), resolve: () => resolveWrite() };
+    mockSaveTranscript.mockReturnValueOnce(pending.promise);
+    fireEvent.click(screen.getByTestId('capture-review-keep'));
+    await waitFor(() => expect(mockSaveTranscript).toHaveBeenCalled());
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(mockAddDream).not.toHaveBeenCalled();
+    await act(async () => { pending.resolve(); });
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/(tabs)'));
+    expect(mockSaveTranscript).toHaveBeenLastCalledWith(encodeCaptureReview({ ...review, text: 'Une plage noire, je crois.' }));
+    expect(mockAddDream).not.toHaveBeenCalled();
+  });
+
+  it('continues without leaving and only deletes both review and originals after explicit confirmation', async () => {
+    mockGetSavedTranscript.mockResolvedValueOnce(encodeCaptureReview({ source: 'Original exchanges.', text: 'A reviewed account.' }));
+    render(<RecordingScreen />);
+    await screen.findByTestId('capture-review-text');
+    fireEvent.click(screen.getByTestId('capture-review-exit'));
+    fireEvent.click(screen.getByTestId('capture-review-continue'));
+    expect(screen.queryByTestId('capture-review-exit-sheet')).toBeNull();
+    expect(mockReplace).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByTestId('capture-review-exit'));
+    fireEvent.click(screen.getByTestId('capture-review-discard'));
+    expect(mockSaveTranscript).not.toHaveBeenCalledWith('');
+    fireEvent.click(screen.getByTestId('capture-review-discard-cancel'));
+    expect(screen.getByTestId('capture-review-keep')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('capture-review-discard'));
+    fireEvent.click(screen.getByTestId('capture-review-discard-confirm'));
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/(tabs)'));
+    expect(mockSaveTranscript).toHaveBeenLastCalledWith('');
+    expect(mockAddDream).not.toHaveBeenCalled();
+  });
+
+  it('keeps the review open if durable deletion fails', async () => {
+    const saved = encodeCaptureReview({ source: 'Original exchanges.', text: 'A reviewed account.' });
+    mockGetSavedTranscript.mockResolvedValueOnce(saved);
+    render(<RecordingScreen />);
+    await screen.findByTestId('capture-review-text');
+    mockSaveTranscript.mockRejectedValueOnce(new Error('disk full')).mockRejectedValueOnce(new Error('disk full'));
+    fireEvent.click(screen.getByTestId('capture-review-exit'));
+    fireEvent.click(screen.getByTestId('capture-review-discard'));
+    fireEvent.click(screen.getByTestId('capture-review-discard-confirm'));
+    await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith('common.error_title', 'recording.review.exit_error'));
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('A reviewed account.');
+    act(() => mockAppStateHandler?.('background'));
+    await waitFor(() => expect(mockSaveTranscript).toHaveBeenLastCalledWith(saved));
+  });
+
+  it('opens the same exit options with Android Back and does not save the dream', async () => {
+    mockGetSavedTranscript.mockResolvedValueOnce(encodeCaptureReview({ source: 'Original exchanges.', text: 'A reviewed account.' }));
+    render(<RecordingScreen />);
+    await screen.findByTestId('capture-review-text');
+    const focus = mockUseFocusEffect.mock.calls.at(-1)?.[0] as (() => (() => void));
+    const unfocus = focus();
+    const backHandler = jest.requireMock('react-native').BackHandler.addEventListener.mock.calls.at(-1)[1] as () => boolean;
+    act(() => { expect(backHandler()).toBe(true); });
+    expect(screen.getByTestId('capture-review-keep')).toBeTruthy();
+    expect(mockAddDream).not.toHaveBeenCalled();
+    unfocus();
   });
 
   it('keeps the raw account when formatting fails and permits saving without AI', async () => {

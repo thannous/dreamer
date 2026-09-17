@@ -146,6 +146,9 @@ export default function RecordingScreen() {
   const [transcript, setTranscript] = useState('');
   const [editableCapture, setEditableCapture] = useState<CaptureEditableDraft | null>(null);
   const [captureReview, setCaptureReview] = useState<CaptureReview | null>(null);
+  const [reviewExitStep, setReviewExitStep] = useState<'options' | 'confirm' | null>(null);
+  const [isLeavingReview, setIsLeavingReview] = useState(false);
+  const leavingReviewRef = useRef(false);
   const [isFormatting, setIsFormatting] = useState(false);
   const formatRequestRef = useRef<AbortController | null>(null);
   const formatSourceRef = useRef<string | null>(null);
@@ -182,7 +185,7 @@ export default function RecordingScreen() {
     setTranscriptSelection(undefined);
   }, []);
   const persistedDraftValue = captureReview ? encodeCaptureReview(captureReview) : transcript;
-  const { noteInput, clearAfterSuccessfulSave, lastPersistedValue, isHydrated, hydrationStatus, retryHydration } = useRecordingDraftPersistence({
+  const { noteInput, persistBeforeExit, clearAfterSuccessfulSave, lastPersistedValue, isHydrated, hydrationStatus, retryHydration } = useRecordingDraftPersistence({
     transcript: persistedDraftValue,
     onRestore: handleRestoreDraft,
   });
@@ -396,7 +399,7 @@ export default function RecordingScreen() {
     [handleOfflineModelSheetClose]
   );
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
-  const interactionDisabled = isPersisting || isFormatting || isRestartingCapture || !isHydrated;
+  const interactionDisabled = isPersisting || isFormatting || isLeavingReview || isRestartingCapture || !isHydrated;
   const isCompactLandscape = viewportWidth > viewportHeight && viewportHeight < 600;
   const hasSaveableContent = isTranscriptSaveable(captureReview?.text ??
     (editableCapture ?? parseCaptureEditableDraft(transcript)).sections.map(section => section.text).join('\n'));
@@ -610,6 +613,7 @@ export default function RecordingScreen() {
 
   const resetComposer = useCallback(() => {
     setCaptureReview(null);
+    setReviewExitStep(null);
     setEditableCapture(null);
     formatSourceRef.current = null;
     resetConversation();
@@ -1115,6 +1119,36 @@ export default function RecordingScreen() {
     }
     router.replace('/(tabs)');
   }, []);
+  const openReviewExit = useCallback(() => {
+    if (!captureReview || interactionDisabled || leavingReviewRef.current) return;
+    Keyboard.dismiss();
+    setReviewExitStep('options');
+  }, [captureReview, interactionDisabled]);
+
+  const dismissReviewExit = useCallback(() => {
+    if (leavingReviewRef.current) return;
+    setReviewExitStep(step => step === 'confirm' ? 'options' : null);
+  }, []);
+
+  const leaveReview = useCallback(async (discard: boolean) => {
+    if (!captureReview || !isHydrated || isPersisting || leavingReviewRef.current) return;
+    leavingReviewRef.current = true;
+    setIsLeavingReview(true);
+    try {
+      const saved = await persistBeforeExit(discard ? '' : encodeCaptureReview(captureReview));
+      if (!saved) {
+        Alert.alert(t('common.error_title'), t('recording.review.exit_error'));
+        return;
+      }
+      if (discard) resetComposer();
+      setReviewExitStep(null);
+      router.replace('/(tabs)');
+    } finally {
+      leavingReviewRef.current = false;
+      setIsLeavingReview(false);
+    }
+  }, [captureReview, isHydrated, isPersisting, persistBeforeExit, resetComposer, t]);
+
   const fixedFooterBottomOffset = keyboardVisible
     ? insets.bottom
     : isDesktopWeb || editableCapture
@@ -1355,14 +1389,23 @@ export default function RecordingScreen() {
 
   const isAdjustingCapture = editableCapture !== null;
   useFocusEffect(useCallback(() => {
-    if (!isAdjustingCapture) return;
+    if (!isAdjustingCapture && !captureReview) return;
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (formatRequestRef.current) return true;
+      if (formatRequestRef.current || leavingReviewRef.current || isPersisting) return true;
+      if (keyboardVisible) {
+        Keyboard.dismiss();
+        return true;
+      }
+      if (captureReview) {
+        if (reviewExitStep) dismissReviewExit();
+        else openReviewExit();
+        return true;
+      }
       closeCaptureEditor();
       return true;
     });
     return () => subscription.remove();
-  }, [isAdjustingCapture, closeCaptureEditor]));
+  }, [isAdjustingCapture, captureReview, closeCaptureEditor, dismissReviewExit, isPersisting, keyboardVisible, openReviewExit, reviewExitStep]));
 
   const openCaptureEditor = useCallback(async () => {
     if (!isHydrated || interactionDisabled || recordingTransitionRef.current) return;
@@ -1577,7 +1620,7 @@ export default function RecordingScreen() {
         {inputMode === 'text' && !editableCapture ? <AtmosphereBackground /> : null}
         {isDesktopWeb ? (
           <Pressable
-            onPress={closeRecording}
+            onPress={captureReview ? openReviewExit : closeRecording}
             style={[
               styles.desktopCloseButton,
               {
@@ -1630,8 +1673,9 @@ export default function RecordingScreen() {
 
                 {editableCapture ? <CaptureDraftEditor draft={editableCapture} disabled={interactionDisabled}
                   onChange={handleCaptureSectionChange} onClose={closeCaptureEditor} /> : captureReview ? <CaptureReviewPanel
-                  text={captureReview.text} source={captureReview.source} disabled={interactionDisabled}
+                  text={captureReview.text} source={captureReview.source} disabled={interactionDisabled} onExit={openReviewExit}
                   onChange={(text) => {
+                    if (leavingReviewRef.current) return;
                     const review = { ...captureReview, text };
                     if (noteInput(encodeCaptureReview(review))) setCaptureReview(review);
                   }}
@@ -1746,6 +1790,39 @@ export default function RecordingScreen() {
           />
         ) : null}
       </View>
+
+      <StandardBottomSheet
+        visible={reviewExitStep !== null}
+        onClose={dismissReviewExit}
+        title={t(reviewExitStep === 'confirm' ? 'recording.review.discard_title' : 'recording.review.exit_title')}
+        subtitle={reviewExitStep === 'confirm' ? t('recording.review.discard_message') : undefined}
+        bodyScrollEnabled={false}
+        dismissBehavior={isLeavingReview ? 'none' : 'pan'}
+        testID="capture-review-exit-sheet"
+        actions={reviewExitStep === 'confirm' ? {
+          primaryLabel: t('recording.review.discard_confirm'),
+          primaryVariant: 'danger',
+          onPrimary: () => { void leaveReview(true); },
+          primaryLoading: isLeavingReview,
+          primaryTestID: 'capture-review-discard-confirm',
+          secondaryLabel: t('common.cancel'),
+          onSecondary: dismissReviewExit,
+          secondaryDisabled: isLeavingReview,
+          secondaryTestID: 'capture-review-discard-cancel',
+        } : {
+          primaryLabel: t('recording.review.keep_later'),
+          onPrimary: () => { void leaveReview(false); },
+          primaryLoading: isLeavingReview,
+          primaryTestID: 'capture-review-keep',
+          secondaryLabel: t('recording.review.discard'),
+          onSecondary: () => { if (!leavingReviewRef.current) setReviewExitStep('confirm'); },
+          secondaryDisabled: isLeavingReview,
+          secondaryTestID: 'capture-review-discard',
+          linkLabel: t('recording.review.continue'),
+          onLink: dismissReviewExit,
+          linkTestID: 'capture-review-continue',
+        }}
+      />
 
       <StandardBottomSheet
         visible={captureIntent === 'remembered' && showRememberedDetailsSheet}
