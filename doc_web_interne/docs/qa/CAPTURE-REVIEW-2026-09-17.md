@@ -21,3 +21,14 @@
 Target only `capture-recall` on project `usuyppgsmmowzizhaoqj`. Live snapshot is v4. Candidate changes four files: entrypoint, journal route allowlist, three-question limit, new formatting route; preserves fourteen other deployed files. Existing custom user/guest guards and `verify_jwt=false` configuration remain unchanged. No database migration or broader API/image deployment.
 
 The deployment was not applied. It needs explicit user approval before retrying. After approval, compare the live version again, deploy the reviewed candidate, verify the remote source and authenticated device journey. Local tests do not establish real model fidelity or device persistence.
+
+
+## Authorized deployment and Moto verification
+
+The user explicitly authorized deployment on 17 September. First deployment hit a stale inherited import-map path; setting the existing `deno.json` path explicitly resolved it. Version 5 became active, then version 6 refined the formatting instruction after real-device inspection showed conversational corrections were being copied literally. The refinement explicitly applies corrections and resolves short answers against their established referents, without guessing missing content.
+
+Final active version: **6**, SHA `c4929eab08631f75f5d9af397592394977a7027bcb19f8209834aa6c53b26a25`. A fresh source retrieval matched all eighteen candidate files exactly. Unauthenticated formatting still returns HTTP 401.
+
+On the physical Motorola, the previous unavailable alert was dismissed, “Valider mon récit” was invoked and an editable “Relis ton récit” proposal appeared without the assistant question labels. The unchanged first proposal was returned to its original exchanges and formatted again; no journal save was pressed. The draft UI confirms local preservation. Model wording remained conservative in the inspected sample, including conversational repair phrasing; this is not proof that the model always resolves corrections correctly. The editable review remains necessary. Raw user content and screenshots stay outside Git.
+
+The frontend pre-push check previously passed on `e71385e59608594a2d5410c26d32a7c507e0dadc`: 211 suites, 2,550 tests, one skipped. The final prompt delta retains 11 passing Edge tests; the new committed head will receive the mandatory pre-push check before publication. Journal persistence is covered locally, but the final save of this personal dream was intentionally not exercised on hardware.
