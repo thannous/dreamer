@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { RecordingConversation } from '../RecordingConversation';
 import { TID } from '@/lib/testIDs';
 
@@ -56,7 +56,9 @@ it('persists typed answers on change and explicitly submits before the next ques
   expect(callbacks.onAnswerChange).toHaveBeenLastCalledWith('Une porte ouverte.');
   view.rerender(<RecordingConversation {...callbacks} answer="Une porte ouverte." />);
   expect(callbacks.onAnswerSubmit).not.toHaveBeenCalled();
-  fireEvent.press(view.getByTestId('recording-conversation-submit'));
+  await act(async () => {
+    fireEvent.press(view.getByTestId('recording-conversation-submit'));
+  });
   expect(callbacks.onAnswerSubmit).toHaveBeenCalledTimes(1);
   view.rerender(<RecordingConversation {...callbacks} answer="" />);
   await waitFor(() => expect(view.queryByTestId('recording-conversation-answer')).toBeNull());
