@@ -2,7 +2,7 @@
   "expo": {
     "name": "Noctalia",
     "slug": "noctalia",
-    "version": "3.1.0",
+    "version": "3.2.0",
     "icon": "./assets/images/icon.png",
     "scheme": "noctalia",
     "userInterfaceStyle": "automatic",
