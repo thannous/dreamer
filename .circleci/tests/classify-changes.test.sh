@@ -8,6 +8,9 @@ test_root="$(mktemp -d)"
 trap 'rm -rf "$test_root"' EXIT
 
 git -C "$test_root" init -q -b master
+# This short-lived fixture must not start background writers during EXIT cleanup.
+git -C "$test_root" config gc.auto 0
+git -C "$test_root" config maintenance.auto false
 git -C "$test_root" config user.email ci-test@noctalia.invalid
 git -C "$test_root" config user.name "Noctalia CI test"
 
