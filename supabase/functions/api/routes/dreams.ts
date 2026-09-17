@@ -1,7 +1,7 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { aiLanguageName, type AiLanguage, localizedForAi } from '../lib/aiLanguage.ts';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
-import { CATEGORIZE_DREAM_SCHEMA } from '../lib/schemas.ts';
+import { CATEGORIZE_DREAM_SCHEMA, DREAM_TYPE_VALUES } from '../lib/schemas.ts';
 import {
   callGeminiWithFallback,
   classifyGeminiError,
@@ -23,7 +23,7 @@ import {
 } from '../lib/aiRequestPolicy.ts';
 import { boundTranscriptForPrompt } from '../lib/prompts.ts';
 import { admitSynchronousAiRequest } from '../services/aiAdmission.ts';
-import { runDreamAnalysis, REFLECTION_POLICY, normalizeAnalysisDreamType } from '../services/dreamAnalysis.ts';
+import { runDreamAnalysis, REFLECTION_POLICY, normalizeAnalysisDreamType, DREAM_TYPE_POLICY } from '../services/dreamAnalysis.ts';
 
 export {
   sanitizeAnalysisDetails,
@@ -537,7 +537,7 @@ export async function handleCategorizeDream(ctx: ApiContext): Promise<Response> 
     const langName = aiLanguageName(lang);
     const systemInstruction = `${localizedForAi(lang, CATEGORIZE_SYSTEM_INSTRUCTIONS)} ${REFLECTION_POLICY}`;
 
-    const prompt = `You analyze user dreams with keys: {"title": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream"|"Unknown", "hasPerson": boolean, "hasAnimal": boolean}. Choose a visual theme. Use Unknown unless the account explicitly supports a type. Lucidity requires knowing one is dreaming; recurrence requires repeated dreams on separate occasions, not repeated actions within one dream. Never infer trauma or diagnosis. The title MUST be in ${langName}.
+    const prompt = `You analyze user dreams with keys: {"title": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": ${DREAM_TYPE_VALUES.map((type) => JSON.stringify(type)).join("|")}, "hasPerson": boolean, "hasAnimal": boolean}. Choose a visual theme. ${DREAM_TYPE_POLICY} Never infer trauma or diagnosis. The title MUST be in ${langName}.
 
 "hasPerson": true if the dream mentions any person (self, friend, stranger, family member, character, figure, etc.), false otherwise
 "hasAnimal": true if the dream mentions any animal (pet, wild animal, creature, bird, mythical being, etc.), false otherwise

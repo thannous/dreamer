@@ -16,6 +16,8 @@ const DREAM_TYPES: ReadonlySet<DreamType> = new Set([
   'Recurring Dream',
   'Nightmare',
   'Symbolic Dream',
+  'Everyday Dream',
+  'Fantastical Dream',
 ]);
 
 export type DreamTrendsNextAction =

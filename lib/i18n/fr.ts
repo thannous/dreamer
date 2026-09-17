@@ -414,6 +414,8 @@ const translations: Record<string, string> = {
     'dream.type.recurring': 'Rêve récurrent',
     'dream.type.nightmare': 'Cauchemar',
     'dream.type.symbolic': 'Rêve symbolique',
+    'dream.type.everyday': 'Rêve du quotidien',
+    'dream.type.fantastical': 'Rêve fantastique',
     'dream.type.unknown': 'Non classé',
     'dream.theme.surreal': 'Surréaliste',
     'dream.theme.mystical': 'Mystique',

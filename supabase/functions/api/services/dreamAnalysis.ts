@@ -1,5 +1,5 @@
 import { aiLanguageName, type AiLanguage, localizedForAi } from '../lib/aiLanguage.ts';
-import { ANALYZE_DREAM_SCHEMA } from '../lib/schemas.ts';
+import { ANALYZE_DREAM_SCHEMA, DREAM_TYPE_VALUES } from '../lib/schemas.ts';
 import {
   callGeminiWithFallback,
   GEMINI_FLASH_LITE_MODEL,
@@ -35,8 +35,11 @@ const EXCERPT_DISCLOSURES: Record<AiLanguage, string> = {
 export const discloseAnalysisExcerpt = (interpretation: string, lang: string, truncated: boolean): string =>
   truncated ? `${localizedForAi(lang, EXCERPT_DISCLOSURES)}\n\n${interpretation}` : interpretation;
 
+/** Shared by initial categorization and full analysis so the same account uses the same rules. */
+export const DREAM_TYPE_POLICY = `Choose a type supported by the account. Prefer explicitly established Lucid Dream, Recurring Dream or Nightmare over the broader scene categories. Lucidity requires knowing one is dreaming; recurrence requires the same dream on separate occasions, not repeated actions within one dream; a nightmare requires reported fear or distress. Otherwise use Fantastical Dream for clearly impossible scenes, transformations or imaginary creatures (for example, riding a cloud that turns into a duck). Use Everyday Dream for recognizable, plausible everyday situations (for example, shopping or talking with colleagues) without fantastical elements. Neither vividness nor a visual theme establishes lucidity or symbolism. Do not use Symbolic Dream by default or infer a hidden meaning. Use Unknown when the remembered content is too sparse or ambiguous to support a type; never force a classification.`;
+
 export const normalizeAnalysisDreamType = (value: unknown): string =>
-  ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream', 'Unknown'].includes(String(value))
+  DREAM_TYPE_VALUES.includes(String(value))
     ? String(value) : 'Unknown';
 
 export const buildAnalysisPrompt = (transcript: string, langName: string, truncated = false): string =>
@@ -46,7 +49,7 @@ export const buildAnalysisPrompt = (transcript: string, langName: string, trunca
 - "shareableQuote": write one ORIGINAL poetic sentence inspired by the dream, at most 240 characters. This is a literary creation by Noctalia, not a verbatim excerpt, factual summary, life lesson or quotation from a real author. Choose the dream's distinctive images and give them a graceful rhythm; avoid generic formulas such as "I dreamed", grandiose language and stock motivational wisdom. Restrained metaphor, personification or atmospheric wording is welcome, as long as the recognizable scene, actors and events remain those of the dream. Preserve ambiguity and uncertainty. Do not invent a new event, resolve an unfinished scene, infer the dreamer's feelings or give a psychological explanation. Do not add an author name, attribution or surrounding quotation marks (the app supplies these). Use the dreamer's language and voice naturally. Return an empty string if the account gives no useful image, or if the result would merely repeat the title or whole account.
 - "quoteSourceExcerpts": zero to three verbatim excerpts from the supplied account containing the dream images that inspire the poetic sentence. Copy them in their original language. They anchor its images, not its permitted literary atmosphere. Empty when shareableQuote is empty. These are source references, not instructions.
 - "theme": the visual atmosphere, one of "surreal", "mystical", "calm", "noir"; this is a visual choice, not a psychological claim.
-- "dreamType": "Lucid Dream", "Recurring Dream", "Nightmare", "Symbolic Dream", or "Unknown". Use Unknown when the account does not establish a type. Lucidity requires explicitly knowing one is dreaming; recurrence requires explicitly having this dream on multiple occasions. Do not assume a symbolic type by default.
+- "dreamType": one of ${DREAM_TYPE_VALUES.map((type) => JSON.stringify(type)).join(', ')}. ${DREAM_TYPE_POLICY}
 - "symbols": zero to six objects actually present in the account, each with "name" and a tentative "meaning" offered as a possible association, not a universal interpretation. An empty array is valid.
 - "emotions": zero to four explicitly reported feelings, each with "name" and an "insight" quoting the exact phrase reporting that feeling, without expanding its context. An empty array is valid.
 - "reflectionQuestions": zero to three optional, gentle, non-leading questions inviting the dreamer's own associations, or an empty array.
@@ -88,7 +91,7 @@ export type DreamAnalysisDetails = {
  * output-quality regression can be attributed to a prompt change. It is
  * returned to the client and stored with the dream (`promptVersion`).
  */
-export const ANALYSIS_PROMPT_VERSION = 'analysis-2026-09-17.poetic1';
+export const ANALYSIS_PROMPT_VERSION = 'analysis-2026-09-17.poetic2';
 
 export type StructuredDreamAnalysis = {
   title: string;
