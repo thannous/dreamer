@@ -78,3 +78,11 @@ Screenshots retained locally under `doc_web_interne/docs/qa/recording-save-fabri
 
 - Removed optional direction controls, their hook/API surface, localized labels and associated tests at the user's request. The persistent answer field, voice/keyboard input, explicit submission and editable story remain.
 - 80 focused route/conversation/hook tests pass, app/test typechecks and focused lint pass. Motorola screenshot verifies that only the free answer field sits between the question and the separate reading section.
+
+## Useful recall follow-ups — 2026-09-17
+
+- Preserved the existing contextual-prompt improvements from the shared checkout and added explicit coverage checks (setting, appearance, feelings, actions, sequence). Appearance already described should not lead to vague questions about perceiving the same colours. Prefer a relevant missing action/interaction/event, respect the narrator's chosen focus and actor roles, or stop early when no useful question remains.
+- Kept Flash-Lite, minimal thinking, the 256-token output budget and the existing single generation call/fallback path. No rewrite or separate critique call added.
+- Eight Deno route tests and the capture-recall entry-point typecheck pass. Mocked tests cover request context, response validation and early completion; they do not establish real-model question quality. No local Gemini API credential was available for a provider evaluation.
+- Synthetic acceptance cases for live validation: (1) birds already described as large/blue/yellow: ask about an unknown event/action, not perception or colour refinement; (2) a narrator dismisses wood and asks to focus on the cabin shape: follow that correction; (3) actor roles unclear: ask one neutral clarification without inventing who attacked whom; (4) no additional recall: return question:null; (5) actions already answered: avoid rephrasing the same intent.
+- Server deployment remains separate and requires explicit authorization under AGENTS.md. The current Motorola flow does not prove the candidate prompt is active.
