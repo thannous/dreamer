@@ -573,7 +573,7 @@ const translations: Record<string, string> = {
     "recording.conversation.edited_hint": "La question précédente a été retirée. Tu peux continuer les questions ou terminer pour relire ton récit.",
     "recording.conversation.continue_questions": "Continuer les questions",
     "recording.conversation.done": "Terminer",
-    "recording.review.context_title": "Repères pour relire",
+    "recording.review.context_title": "Tes réponses",
     "recording.review.context_hint": "Voici le contexte de tes réponses courtes d’origine. Tu peux préciser leur sens dans le récit ci-dessus.",
     "recording.conversation.send": "Continuer",
     "recording.conversation.type": "Écrire ma réponse",
