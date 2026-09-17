@@ -5,7 +5,10 @@
   },
   "build": {
     "base": {
-      "node": "24.19.0"
+      "node": "24.19.0",
+      "env": {
+        "SHARP_IGNORE_GLOBAL_LIBVIPS": "1"
+      }
     },
     "release": {
       "extends": "base",
@@ -96,6 +99,9 @@
       "android": {
         "buildType": "app-bundle",
         "credentialsSource": "remote"
+      },
+      "ios": {
+        "credentialsSource": "remote"
       }
     },
     "ai-internal": {
@@ -161,6 +167,9 @@
       }
     },
     "production": {
+      "ios": {
+        "ascAppId": "6805876363"
+      },
       "android": {
         "track": "production"
       }

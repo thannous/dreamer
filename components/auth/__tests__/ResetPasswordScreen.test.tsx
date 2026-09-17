@@ -142,7 +142,7 @@ describe('ResetPasswordScreen', () => {
 
     fireEvent.click(screen.getByTestId(TID.Button.AuthResetBackToSignIn));
 
-    expect(mockReplace).toHaveBeenCalledWith('/(tabs)/settings');
+    expect(mockReplace).toHaveBeenCalledWith('/settings');
     expect(mockUpdatePassword).not.toHaveBeenCalled();
   });
 

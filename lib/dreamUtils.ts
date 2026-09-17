@@ -1,3 +1,4 @@
+import { type DreamTarget, matchesDreamTarget, resolveDreamTarget } from './dreamIdentity';
 /**
  * Pure utility functions for dream data manipulation
  * Extracted from useDreamJournal for reusability and testability
@@ -275,6 +276,12 @@ export const getMutationRemoteId = (mutation: DreamMutation): number | undefined
   return payload.dream?.remoteId ?? payload.tombstone?.remoteId ?? payload.remoteId;
 };
 
+export const getMutationDreamTarget = (mutation: DreamMutation): Exclude<DreamTarget, number> => {
+  const payload = getMutationPayload(mutation);
+  const dream = payload.dream ?? payload.tombstone;
+  return { id: dream?.id ?? payload.dreamId ?? -1, remoteId: getMutationRemoteId(mutation), clientRequestId: dream?.clientRequestId };
+};
+
 const getMutationSortTime = (mutation: DreamMutation): number =>
   mutation.clientUpdatedAt || mutation.createdAt;
 
@@ -329,6 +336,119 @@ const areChatHistoriesEqual = (a: ChatMessage[], b: ChatMessage[]): boolean => {
   return true;
 };
 
+const DREAM_REMOTE_UPDATE_FIELDS = [
+  'transcript',
+  'title',
+  'interpretation',
+  'shareableQuote',
+  'symbols',
+  'emotions',
+  'reflectionQuestions',
+  'promptVersion',
+  'analysisTranscriptHash',
+  'imageUrl',
+  'chatHistory',
+  'theme',
+  'dreamType',
+  'memory',
+  'isFavorite',
+  'imageGenerationFailed',
+  'hasPerson',
+  'hasAnimal',
+  'isAnalyzed',
+  'analyzedAt',
+  'analysisStatus',
+  'analysisRequestId',
+  'explorationStartedAt',
+] as const satisfies readonly (keyof DreamAnalysis)[];
+
+const DREAM_LOCAL_UPDATE_FIELDS = [
+  'thumbnailUrl',
+  'imageUpdatedAt',
+  'imageSource',
+  'imageJobId',
+  'imageJobStatus',
+  'imageJobRequestId',
+  'imageJobErrorCode',
+  'imageJobErrorMessage',
+] as const satisfies readonly (keyof DreamAnalysis)[];
+
+const DREAM_UPDATE_INTENT_FIELDS = [
+  ...DREAM_REMOTE_UPDATE_FIELDS,
+  ...DREAM_LOCAL_UPDATE_FIELDS,
+] as const;
+
+type DreamUpdateIntentField = (typeof DREAM_UPDATE_INTENT_FIELDS)[number];
+export type DreamUpdateIntent = Partial<Pick<DreamAnalysis, DreamUpdateIntentField>>;
+
+const areDreamUpdateFieldValuesEqual = (left: unknown, right: unknown): boolean => {
+  if (Object.is(left, right)) return true;
+  if (left == null || right == null) return false;
+  if (typeof left !== 'object' || typeof right !== 'object') return false;
+  return JSON.stringify(left) === JSON.stringify(right);
+};
+
+/**
+ * Capture the fields one caller meant to change, independently from revision and
+ * sync metadata. This lets a delayed write be replayed over a newer dream
+ * without restoring unrelated stale values from the caller's snapshot.
+ */
+export const createDreamUpdateIntent = (
+  base: DreamAnalysis,
+  requested: DreamAnalysis
+): DreamUpdateIntent => {
+  const intent: DreamUpdateIntent = {};
+  DREAM_UPDATE_INTENT_FIELDS.forEach((field) => {
+    if (!areDreamUpdateFieldValuesEqual(base[field], requested[field])) {
+      Object.assign(intent, { [field]: requested[field] });
+    }
+  });
+  return intent;
+};
+
+export const applyDreamUpdateIntent = (
+  latest: DreamAnalysis,
+  intent: DreamUpdateIntent
+): DreamAnalysis => ({
+  ...latest,
+  ...intent,
+});
+
+/**
+ * Merge newly resolved server identity onto the latest local dream.
+ * User-edit intent never includes these fields, so they must be applied
+ * separately. Existing identity on latest wins so a stale caller snapshot
+ * cannot rewind a rebase. Local `id` stays put: it is the route/list key,
+ * while Supabase identity is `remoteId` plus the acknowledged revision.
+ */
+export const mergeAuthoritativeDreamIdentity = (
+  latest: DreamAnalysis,
+  requested: DreamAnalysis
+): DreamAnalysis => ({
+  ...latest,
+  remoteId: latest.remoteId ?? requested.remoteId,
+  revisionId: latest.revisionId ?? requested.revisionId,
+  updatedAt: latest.updatedAt ?? requested.updatedAt,
+  clientRequestId: latest.clientRequestId ?? requested.clientRequestId,
+});
+
+/**
+ * A rebase is a conflict only when the latest value differs from both the
+ * base value and the intended value. If latest already equals the intended
+ * value, the intent is satisfied.
+ */
+export const hasDreamUpdateIntentConflict = (
+  base: DreamAnalysis,
+  latest: DreamAnalysis,
+  intent: DreamUpdateIntent
+): boolean =>
+  DREAM_REMOTE_UPDATE_FIELDS.some(
+    (field) =>
+      Object.prototype.hasOwnProperty.call(intent, field) &&
+      !areDreamUpdateFieldValuesEqual(base[field], latest[field]) &&
+      !areDreamUpdateFieldValuesEqual(intent[field], latest[field])
+  );
+
 type DreamRemoteComparable = {
   transcript: string;
   title: string;
@@ -349,6 +469,11 @@ type DreamRemoteComparable = {
   explorationStartedAt: number | null;
   clientRequestId: string | null;
   memory: DreamMemoryMetadata | undefined;
+  analysisTranscriptHash: string | null;
+  symbols: DreamAnalysis['symbols'];
+  emotions: DreamAnalysis['emotions'];
+  reflectionQuestions: DreamAnalysis['reflectionQuestions'];
+  promptVersion: string | null;
 };
 
 const toRemoteComparable = (dream: DreamAnalysis): DreamRemoteComparable => {
@@ -373,6 +498,11 @@ const toRemoteComparable = (dream: DreamAnalysis): DreamRemoteComparable => {
     explorationStartedAt: dream.explorationStartedAt ?? null,
     clientRequestId: dream.clientRequestId ?? null,
     memory: normalizeDreamMemoryMetadata(dream.memory),
+    analysisTranscriptHash: dream.analysisTranscriptHash ?? null,
+    symbols: dream.symbols,
+    emotions: dream.emotions,
+    reflectionQuestions: dream.reflectionQuestions,
+    promptVersion: dream.promptVersion ?? null,
   };
 };
 
@@ -403,7 +533,12 @@ export const areDreamsEqualForRemoteSync = (a: DreamAnalysis, b: DreamAnalysis):
     left.analysisRequestId !== right.analysisRequestId ||
     left.explorationStartedAt !== right.explorationStartedAt ||
     left.clientRequestId !== right.clientRequestId ||
-    !areDreamMemoryMetadataEqual(left.memory, right.memory)
+    !areDreamMemoryMetadataEqual(left.memory, right.memory) ||
+    left.analysisTranscriptHash !== right.analysisTranscriptHash ||
+    !areDreamUpdateFieldValuesEqual(left.symbols, right.symbols) ||
+    !areDreamUpdateFieldValuesEqual(left.emotions, right.emotions) ||
+    !areDreamUpdateFieldValuesEqual(left.reflectionQuestions, right.reflectionQuestions) ||
+    left.promptVersion !== right.promptVersion
   ) {
     return false;
   }
@@ -449,12 +584,17 @@ export const areDreamsEqualForLocalState = (a: DreamAnalysis, b: DreamAnalysis):
   if ((left.analysisStatus ?? 'none') !== (right.analysisStatus ?? 'none')) return false;
   if ((left.analysisRequestId ?? null) !== (right.analysisRequestId ?? null)) return false;
   if ((left.explorationStartedAt ?? null) !== (right.explorationStartedAt ?? null)) return false;
+  if (!areDreamUpdateFieldValuesEqual(left.symbols, right.symbols)) return false;
+  if (!areDreamUpdateFieldValuesEqual(left.emotions, right.emotions)) return false;
+  if (!areDreamUpdateFieldValuesEqual(left.reflectionQuestions, right.reflectionQuestions)) return false;
+  if ((left.promptVersion ?? null) !== (right.promptVersion ?? null)) return false;
   if ((left.imageJobId ?? null) !== (right.imageJobId ?? null)) return false;
   if ((left.imageJobStatus ?? null) !== (right.imageJobStatus ?? null)) return false;
   if ((left.imageJobRequestId ?? null) !== (right.imageJobRequestId ?? null)) return false;
   if ((left.imageJobErrorCode ?? null) !== (right.imageJobErrorCode ?? null)) return false;
   if ((left.imageJobErrorMessage ?? null) !== (right.imageJobErrorMessage ?? null)) return false;
   if (!areDreamMemoryMetadataEqual(left.memory, right.memory)) return false;
+  if ((left.analysisTranscriptHash ?? null) !== (right.analysisTranscriptHash ?? null)) return false;
 
   const leftChat = Array.isArray(left.chatHistory) ? left.chatHistory : [];
   const rightChat = Array.isArray(right.chatHistory) ? right.chatHistory : [];
@@ -481,9 +621,7 @@ export const normalizeDreamList = (list: DreamAnalysis[]): DreamAnalysis[] => {
  * Upsert a dream into a list (insert or update by id/remoteId)
  */
 export const upsertDream = (list: DreamAnalysis[], dream: DreamAnalysis): DreamAnalysis[] => {
-  const index = list.findIndex(
-    (d) => d.id === dream.id || (dream.remoteId && d.remoteId === dream.remoteId)
-  );
+  const index = list.findIndex((entry) => matchesDreamTarget(entry, dream));
   if (index === -1) {
     return [dream, ...list];
   }
@@ -497,23 +635,23 @@ export const upsertDream = (list: DreamAnalysis[], dream: DreamAnalysis): DreamA
  */
 export const removeDream = (
   list: DreamAnalysis[],
-  dreamId: number,
+  target: DreamTarget,
   remoteId?: number
-): DreamAnalysis[] =>
-  list.filter((d) => {
-    const idMatches = d.id === dreamId;
-    const remoteMatches = remoteId != null && d.remoteId === remoteId;
-    return !idMatches && !remoteMatches;
-  });
+): DreamAnalysis[] => {
+  const selected = resolveDreamTarget(list, remoteId != null
+    ? { id: typeof target === 'number' ? target : target.id, remoteId }
+    : target);
+  return selected ? list.filter((entry) => !matchesDreamTarget(entry, selected)) : list;
+};
 
 /**
  * Check if there are pending mutations for a specific dream
  */
 export const hasPendingMutationsForDream = (
   mutations: DreamMutation[],
-  dreamId: number
+  target: DreamTarget
 ): boolean =>
-  mutations.some((mutation) => isMutationActive(mutation) && getMutationDreamId(mutation) === dreamId);
+  mutations.some((mutation) => isMutationActive(mutation) && matchesDreamTarget(getMutationDreamTarget(mutation), target));
 
 /**
  * Apply pending mutations to a source list of dreams
@@ -543,7 +681,7 @@ export const applyPendingMutations = (
           }
           break;
         case 'delete':
-          if (mutation.status === 'failed' || mutation.status === 'blocked') {
+          if ((mutation.status === 'failed' || mutation.status === 'blocked') && getMutationRemoteId(mutation) != null) {
             if (dream) {
               next = upsertDream(
                 next,
@@ -557,7 +695,7 @@ export const applyPendingMutations = (
           const payload = getMutationPayload(mutation);
           next = removeDream(
             next,
-            payload.dreamId ?? dream?.id ?? -1,
+            getMutationDreamTarget(mutation),
             payload.remoteId ?? dream?.remoteId
           );
           break;

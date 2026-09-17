@@ -11,6 +11,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSavedDreams } from '@/services/storageService';
 import { isMockModeEnabled } from '@/lib/env';
+import { requireReadableDreams } from '@/lib/dreamStorageRead';
 
 const DREAM_RECORDING_KEY = 'guest_total_dream_recording_count_v1';
 const MIGRATION_KEY = 'guest_dream_recording_migrated_v1';
@@ -111,8 +112,8 @@ export async function migrateExistingGuestDreamRecording(): Promise<void> {
     const migrated = await AsyncStorage.getItem(MIGRATION_KEY);
     if (migrated) return;
 
-    const dreams = await getSavedDreams();
-    const count = Array.isArray(dreams) ? dreams.length : 0;
+    const dreams = requireReadableDreams(await getSavedDreams());
+    const count = dreams.length;
 
     if (count > 0) {
       await AsyncStorage.setItem(DREAM_RECORDING_KEY, String(count));

@@ -1,5 +1,6 @@
 type JwtPayload = {
   sub?: unknown;
+  client_id?: unknown;
 };
 
 export function extractBearerToken(authorization: string | null): string | null {
@@ -49,4 +50,12 @@ export function resolveSupabaseUserBearer(authorization: string | null): string 
 export function buildSupabaseUserAuthHeaders(authorization: string | null): Record<string, string> {
   const token = resolveSupabaseUserBearer(authorization);
   return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+// This only selects stricter verification; decoded claims never authorize access.
+export function hasApplicationClientClaim(authorization: string | null): boolean {
+  const token = extractBearerToken(authorization);
+  const payload = token ? decodeJwtPayload(token) : null;
+  return payload !== null && typeof payload === 'object' &&
+    Object.prototype.hasOwnProperty.call(payload, 'client_id');
 }

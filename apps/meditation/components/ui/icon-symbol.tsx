@@ -38,6 +38,7 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   'gobackward.15': 'rotate-left',
   'goforward.15': 'rotate-right',
   'speaker.wave.2.fill': 'volume-up',
+  'speaker.slash.fill': 'volume-off',
   'moon.zzz': 'bedtime',
 
   // Navigation and actions
@@ -61,6 +62,7 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   globe: 'language',
   'info.circle': 'info',
   'questionmark.circle': 'help-outline',
+  'lock.fill': 'lock',
   'lock.shield': 'enhanced-encryption',
   photo: 'photo',
   trash: 'delete',

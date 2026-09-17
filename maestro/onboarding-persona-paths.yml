@@ -51,26 +51,35 @@ env:
 - tapOn:
     id: input.dreamTranscript
 - inputText: "Je traverse une gare et je retrouve une cle."
-- assertVisible:
-    id: component.recording.activationInsight
 - hideKeyboard
 - tapOn:
     id: btn.saveDream
 - extendedWaitUntil:
     visible:
-      id: sheet.recording.analysisOffer
+      id: text.dreamDetail.actionTitle
     timeout: 30000
-- assertVisible:
-    id: btn.recording.analysisOffer.primary
-- tapOn:
-    id: btn.recording.analysisOffer.later
 
 # Memory path: an already-lived dream should open remembered capture.
-- openLink: noctalia://onboarding
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Development Build"
+    timeout: 30000
+- openLink: ${DEV_CLIENT_URL}
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn: "Continue"
+- runFlow:
+    when:
+      visible: "Reload"
+    commands:
+      - pressKey: back
 - extendedWaitUntil:
     visible:
       id: screen.onboarding
-    timeout: 30000
+    timeout: 60000
 - tapOn:
     id: btn.onboarding.intro.next
 - extendedWaitUntil:
@@ -85,19 +94,58 @@ env:
     visible:
       id: screen.recording
     timeout: 60000
-- assertVisible:
-    id: component.recording.remembered.metadata
 - assertNotVisible:
     id: component.recording.rememberedProfileChips
+- assertVisible:
+    id: btn.recording.inputMode.text
+- assertVisible:
+    id: btn.recording.inputMode.voice
 - tapOn:
-    id: btn.recording.inputMode.select
-- tapOn:
-    text: "Voice"
+    id: btn.recording.inputMode.voice
 - assertVisible:
     id: text.recording.inputMode.voice
-- stopApp
-- launchApp
+- tapOn:
+    id: btn.recording.inputMode.text
+- assertVisible:
+    id: input.dreamTranscript
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Un souvenir ancien de maison et de pluie."
+- hideKeyboard
+- assertVisible:
+    id: btn.recording.remembered.metadata.toggle
+- tapOn:
+    id: btn.recording.remembered.metadata.toggle
+- extendedWaitUntil:
+    visible:
+      id: sheet.recording.remembered.details
+    timeout: 30000
+- assertVisible:
+    id: sheet.recording.remembered.details
+- assertVisible:
+    id: component.recording.rememberedProfileChips
+- tapOn:
+    id: btn.recording.remembered.details.done
+- waitForAnimationToEnd
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+
+# Dictionary path: opens the symbol dictionary.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Development Build"
+    timeout: 30000
 - openLink: ${DEV_CLIENT_URL}
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn: "Continue"
 - runFlow:
     when:
       visible: "Reload"
@@ -105,39 +153,8 @@ env:
       - pressKey: back
 - extendedWaitUntil:
     visible:
-      id: screen.recording
-    timeout: 60000
-- assertVisible:
-    id: component.recording.remembered.metadata
-- assertVisible:
-    id: text.recording.inputMode.voice
-- assertNotVisible:
-    id: input.dreamTranscript
-- tapOn:
-    id: btn.recording.inputMode.select
-- tapOn:
-    text: "Writing"
-- assertVisible:
-    id: input.dreamTranscript
-- tapOn:
-    id: input.dreamTranscript
-- inputText: "Un souvenir ancien de maison et de pluie."
-- hideKeyboard
-- tapOn:
-    id: btn.saveDream
-- extendedWaitUntil:
-    visible:
-      id: sheet.recording.analysisOffer
-    timeout: 30000
-- tapOn:
-    id: btn.recording.analysisOffer.primary
-
-# Dictionary path: opens the symbol dictionary.
-- openLink: noctalia://onboarding
-- extendedWaitUntil:
-    visible:
       id: screen.onboarding
-    timeout: 30000
+    timeout: 60000
 - tapOn:
     id: btn.onboarding.intro.next
 - extendedWaitUntil:
@@ -160,11 +177,26 @@ env:
     timeout: 30000
 
 # Skip is terminal for this session and opens capture without implicit prompts.
-- openLink: noctalia://onboarding
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Development Build"
+    timeout: 30000
+- openLink: ${DEV_CLIENT_URL}
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn: "Continue"
+- runFlow:
+    when:
+      visible: "Reload"
+    commands:
+      - pressKey: back
 - extendedWaitUntil:
     visible:
       id: screen.onboarding
-    timeout: 30000
+    timeout: 60000
 - swipe:
     start: 90%, 10%
     end: 12%, 82%
@@ -190,23 +222,10 @@ env:
     id: component.recording.unforgettableDreamPrompt
 - assertNotVisible:
     id: component.recording.onboardingTour
-
-# The guide can be replayed explicitly from Settings, independently of the journal.
 - openLink: noctalia://settings
-- scrollUntilVisible:
-    element:
-      id: btn.recording.onboarding.restart
-    direction: DOWN
-    timeout: 30000
-- tapOn:
-    id: btn.recording.onboarding.restart
 - extendedWaitUntil:
     visible:
-      id: component.recording.onboardingTour
+      id: settings-section-preferences
     timeout: 30000
-- tapOn:
-    id: btn.recording.onboarding.next
-- tapOn:
-    id: btn.recording.onboarding.next
 - assertNotVisible:
-    id: component.recording.onboardingTour
+    id: btn.recording.onboarding.restart

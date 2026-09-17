@@ -1,0 +1,376 @@
+{
+  "fetchedAt": "2026-09-09T09:49:17.634Z",
+  "site": "sc-domain:noctalia.app",
+  "request": {
+    "type": "web",
+    "dataState": "final",
+    "rowLimit": 25000,
+    "dimensionFilterGroups": [
+      {
+        "groupType": "and",
+        "filters": [
+          {
+            "dimension": "page",
+            "operator": "equals",
+            "expression": "https://noctalia.app/it/simboli/casa"
+          }
+        ]
+      }
+    ],
+    "startDate": "2026-07-11",
+    "endDate": "2026-08-07",
+    "dimensions": [
+      "country",
+      "device"
+    ]
+  },
+  "responses": [
+    {
+      "rows": [
+        {
+          "keys": [
+            "ita",
+            "MOBILE"
+          ],
+          "clicks": 9,
+          "impressions": 1074,
+          "ctr": 0.008379888268156424,
+          "position": 7.298882681564246
+        },
+        {
+          "keys": [
+            "aus",
+            "DESKTOP"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 15
+        },
+        {
+          "keys": [
+            "bra",
+            "DESKTOP"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 65
+        },
+        {
+          "keys": [
+            "che",
+            "DESKTOP"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "chl",
+            "DESKTOP"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 14
+        },
+        {
+          "keys": [
+            "esp",
+            "DESKTOP"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 8
+        },
+        {
+          "keys": [
+            "fra",
+            "DESKTOP"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 11
+        },
+        {
+          "keys": [
+            "idn",
+            "MOBILE"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 6
+        },
+        {
+          "keys": [
+            "ita",
+            "DESKTOP"
+          ],
+          "clicks": 0,
+          "impressions": 111,
+          "ctr": 0,
+          "position": 10.495495495495495
+        },
+        {
+          "keys": [
+            "ita",
+            "TABLET"
+          ],
+          "clicks": 0,
+          "impressions": 21,
+          "ctr": 0,
+          "position": 7.476190476190476
+        },
+        {
+          "keys": [
+            "jpn",
+            "MOBILE"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 12
+        },
+        {
+          "keys": [
+            "kor",
+            "MOBILE"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 7
+        },
+        {
+          "keys": [
+            "mar",
+            "DESKTOP"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 1
+        },
+        {
+          "keys": [
+            "pak",
+            "MOBILE"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 17
+        },
+        {
+          "keys": [
+            "smr",
+            "MOBILE"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 2
+        },
+        {
+          "keys": [
+            "usa",
+            "DESKTOP"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 33
+        },
+        {
+          "keys": [
+            "vnm",
+            "DESKTOP"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 33
+        }
+      ],
+      "responseAggregationType": "byPage"
+    }
+  ],
+  "rows": [
+    {
+      "keys": [
+        "ita",
+        "MOBILE"
+      ],
+      "clicks": 9,
+      "impressions": 1074,
+      "ctr": 0.008379888268156424,
+      "position": 7.298882681564246
+    },
+    {
+      "keys": [
+        "aus",
+        "DESKTOP"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 15
+    },
+    {
+      "keys": [
+        "bra",
+        "DESKTOP"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 65
+    },
+    {
+      "keys": [
+        "che",
+        "DESKTOP"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "chl",
+        "DESKTOP"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 14
+    },
+    {
+      "keys": [
+        "esp",
+        "DESKTOP"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "keys": [
+        "fra",
+        "DESKTOP"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 11
+    },
+    {
+      "keys": [
+        "idn",
+        "MOBILE"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "keys": [
+        "ita",
+        "DESKTOP"
+      ],
+      "clicks": 0,
+      "impressions": 111,
+      "ctr": 0,
+      "position": 10.495495495495495
+    },
+    {
+      "keys": [
+        "ita",
+        "TABLET"
+      ],
+      "clicks": 0,
+      "impressions": 21,
+      "ctr": 0,
+      "position": 7.476190476190476
+    },
+    {
+      "keys": [
+        "jpn",
+        "MOBILE"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 12
+    },
+    {
+      "keys": [
+        "kor",
+        "MOBILE"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "keys": [
+        "mar",
+        "DESKTOP"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "keys": [
+        "pak",
+        "MOBILE"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 17
+    },
+    {
+      "keys": [
+        "smr",
+        "MOBILE"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "usa",
+        "DESKTOP"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 33
+    },
+    {
+      "keys": [
+        "vnm",
+        "DESKTOP"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 33
+    }
+  ]
+}

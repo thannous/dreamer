@@ -3,9 +3,11 @@ import { TextInput, View, type TextInputProps } from 'react-native';
 
 import { IconSymbol } from './icon-symbol';
 
+import { Themes, type ThemeMode } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
 import { Text } from './Text';
+import { ArtworkGlassPanel } from './ArtworkGlassPanel';
 
 type Props = TextInputProps & {
   label: string;
@@ -14,11 +16,20 @@ type Props = TextInputProps & {
   hideLabel?: boolean;
   /** Leading SF Symbol, e.g. `magnifyingglass` on a search field. */
   icon?: 'magnifyingglass';
+  appearance?: ThemeMode;
   className?: string;
 };
 
-export function TextField({ label, hideLabel = false, icon, className, ...rest }: Props) {
-  const { colors } = useTheme();
+export function TextField({
+  label,
+  hideLabel = false,
+  icon,
+  appearance,
+  className,
+  ...rest
+}: Props) {
+  const { colors: appColors } = useTheme();
+  const colors = appearance ? Themes[appearance] : appColors;
 
   return (
     <View className={`gap-2 ${className ?? ''}`}>
@@ -29,7 +40,20 @@ export function TextField({ label, hideLabel = false, icon, className, ...rest }
             <IconSymbol name={icon} color={colors.textTertiary} size={20} />
           </View>
         ) : null}
-        <TextInput
+        {appearance ? (
+          <ArtworkGlassPanel appearance={appearance}>
+            <TextInput
+              accessibilityLabel={label}
+              placeholderTextColor={colors.textTertiary}
+              selectionColor={colors.accent}
+              className={`min-h-12 bg-transparent py-3 font-sans text-body text-ivory ${
+                icon ? 'pl-11 pr-4' : 'px-4'
+              }`}
+              {...rest}
+            />
+          </ArtworkGlassPanel>
+        ) : (
+          <TextInput
           accessibilityLabel={label}
           placeholderTextColor={colors.textTertiary}
           // The caret and selection are the one place the champagne fill is
@@ -39,7 +63,8 @@ export function TextField({ label, hideLabel = false, icon, className, ...rest }
             icon ? 'pl-11 pr-4' : 'px-4'
           }`}
           {...rest}
-        />
+          />
+        )}
       </View>
     </View>
   );

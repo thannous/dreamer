@@ -1,0 +1,18 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{ \"healthscores\": [] }",
+      "annotations": {}
+    },
+    {
+      "type": "text",
+      "text": "Display these results with `render-data-table`. Pass `source` with tool=\"site-audit-projects\" and the params you used."
+    },
+    {
+      "type": "text",
+      "text": "{\"apiUsageCosts\":{\"rows\":0,\"units-cost-row\":0,\"units-cost-total-actual\":0,\"units-cost-total\":0,\"cache\":\"no_cache\"}}"
+    }
+  ],
+  "isError": false
+}

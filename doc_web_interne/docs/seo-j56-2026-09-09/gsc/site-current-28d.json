@@ -1,0 +1,33 @@
+{
+  "fetchedAt": "2026-09-09T09:49:11.022Z",
+  "site": "sc-domain:noctalia.app",
+  "request": {
+    "type": "web",
+    "dataState": "final",
+    "rowLimit": 25000,
+    "startDate": "2026-08-10",
+    "endDate": "2026-09-06",
+    "dimensions": []
+  },
+  "responses": [
+    {
+      "rows": [
+        {
+          "clicks": 6885,
+          "impressions": 822858,
+          "ctr": 0.008367178784188767,
+          "position": 7.087046610715336
+        }
+      ],
+      "responseAggregationType": "byProperty"
+    }
+  ],
+  "rows": [
+    {
+      "clicks": 6885,
+      "impressions": 822858,
+      "ctr": 0.008367178784188767,
+      "position": 7.087046610715336
+    }
+  ]
+}

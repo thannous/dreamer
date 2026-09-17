@@ -1,4 +1,4 @@
-/** Katalogtexte: Sitzungen, Kategorien und Stimmen. Die Oberfläche liegt in `de.ts`. */
+/** Katalogtexte: Sitzungen und Kategorien. Die Oberfläche liegt in `de.ts`. */
 export const contentDe = {
   'category.sleep.name': 'Schlaf',
   'category.sleep.tagline': 'Hinab in die Nacht',
@@ -13,10 +13,6 @@ export const contentDe = {
   'category.dream-prep.name': 'Traumvorbereitung',
   'category.dream-prep.tagline': 'Der Nacht eine Frage stellen',
 
-  'narrator.camille.bio': 'Sanfte Stimme, langsames Tempo.',
-  'narrator.adrien.bio': 'Tiefe Stimme, kurze Sätze.',
-  'narrator.wordless.bio': 'Atem und Stille, nichts zu folgen.',
-
   'session.sleep-descent.title': 'Den Atem senken',
   'session.sleep-descent.description':
     'Länger ausatmen als einatmen, bis der Körper versteht, dass der Tag vorbei ist.',
@@ -28,7 +24,7 @@ export const contentDe = {
   'session.sleep-quick-fall.description':
     'Nichts zu hören, nichts zu verfolgen: ein geführter Atem, der verklingt, während du wegdämmerst.',
   'session.sleep-quick-fall.benefit.1': 'Für kurze Nächte',
-  'session.sleep-quick-fall.benefit.2': 'Ohne Stimme',
+  'session.sleep-quick-fall.benefit.2': 'Atem und Stille',
   'session.sleep-quick-fall.benefit.3': 'Endet von selbst',
 
   'session.sleep-body-scan.title': 'Der Körper, der sich setzt',
@@ -43,7 +39,7 @@ export const contentDe = {
     'Für das Erwachen um drei: zurück in den Schlaf, ohne gegen die Schlaflosigkeit zu kämpfen.',
   'session.sleep-night-return.benefit.1': 'Nächtliches Erwachen',
   'session.sleep-night-return.benefit.2': 'Ohne Bildschirm',
-  'session.sleep-night-return.benefit.3': 'Sehr leise Stimme',
+  'session.sleep-night-return.benefit.3': 'Leise Atmosphäre',
 
   'session.stress-shoulders.title': 'Die Schultern ablegen',
   'session.stress-shoulders.description':
@@ -89,9 +85,9 @@ export const contentDe = {
 
   'session.focus-thread.title': 'Den Faden wieder aufnehmen',
   'session.focus-thread.description':
-    'Nach einer Unterbrechung zehn wortlose Minuten, um wiederzufinden, wo du warst.',
+    'Nach einer Unterbrechung zehn Minuten Atem und Stille, um wiederzufinden, wo du warst.',
   'session.focus-thread.benefit.1': 'Nach einer Störung',
-  'session.focus-thread.benefit.2': 'Ohne Stimme',
+  'session.focus-thread.benefit.2': 'Atem und Stille',
   'session.focus-thread.benefit.3': 'Tagsüber',
 
   'session.focus-deep.title': 'Hinab in die Arbeit',
@@ -113,7 +109,7 @@ export const contentDe = {
     'Angst steigt und fällt. Wir lernen, ihr nicht bis nach oben zu folgen.',
   'session.anxiety-wave.benefit.1': 'Bekämpft die Angst nicht',
   'session.anxiety-wave.benefit.2': 'Lehrt das Warten',
-  'session.anxiety-wave.benefit.3': 'Ruhige Stimme',
+  'session.anxiety-wave.benefit.3': 'Ruhiges Tempo',
 
   'session.anxiety-chest.title': 'Den Brustkorb öffnen',
   'session.anxiety-chest.description':

@@ -28,6 +28,35 @@ function bytes(value: string): Uint8Array {
   return new TextEncoder().encode(value);
 }
 
+function decodeBase64ToBytes(value: string): Uint8Array {
+  if (typeof globalThis.atob === 'function') {
+    const binary = globalThis.atob(value);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i += 1) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return bytes;
+  }
+
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  const sanitized = value.replace(/[^A-Za-z0-9+/=]/g, '');
+  const padding = sanitized.endsWith('==') ? 2 : sanitized.endsWith('=') ? 1 : 0;
+  const length = Math.floor((sanitized.length * 3) / 4) - padding;
+  const output = new Uint8Array(length);
+  let byteIndex = 0;
+  for (let i = 0; i < sanitized.length; i += 4) {
+    const enc1 = Math.max(0, chars.indexOf(sanitized[i]));
+    const enc2 = Math.max(0, chars.indexOf(sanitized[i + 1]));
+    const enc3 = sanitized[i + 2] === '=' ? 0 : Math.max(0, chars.indexOf(sanitized[i + 2]));
+    const enc4 = sanitized[i + 3] === '=' ? 0 : Math.max(0, chars.indexOf(sanitized[i + 3]));
+    const chunk = (enc1 << 18) | (enc2 << 12) | ((enc3 & 63) << 6) | (enc4 & 63);
+    if (byteIndex < length) output[byteIndex++] = (chunk >> 16) & 0xff;
+    if (byteIndex < length) output[byteIndex++] = (chunk >> 8) & 0xff;
+    if (byteIndex < length) output[byteIndex++] = chunk & 0xff;
+  }
+  return output;
+}
+
 async function getDeviceKey(): Promise<AESEncryptionKey> {
   if (keyPromise) return keyPromise;
   keyPromise = (async () => {
@@ -148,8 +177,13 @@ export async function revealLucidTrainerStoredValue(
   const combined = assertEncryptedEnvelope(storedValue);
   const key = await getDeviceKey();
   try {
+    // Expo Crypto 57 leaves a base64 string as-is; Android fromCombined
+    // expects a ByteArray. Decode before crossing the native bridge.
     const decrypted = await aesDecryptAsync(
-      AESSealedData.fromCombined(combined),
+      AESSealedData.fromCombined(decodeBase64ToBytes(combined), {
+        ivLength: GCM_NONCE_BYTES,
+        tagLength: GCM_TAG_BYTES,
+      }),
       key,
       { additionalData: bytes(storageKey) }
     );

@@ -533,7 +533,7 @@ describe('onboardingState', () => {
         hasUser: false,
         onboardingState: incomplete,
       })
-    ).toBe('/(tabs)/settings');
+    ).toBe('/settings');
   });
 
   it('keeps a notification queued until it actually wins startup arbitration', () => {
@@ -568,12 +568,12 @@ describe('onboardingState', () => {
     } as const;
     expect(isStartupDestinationObserved(destination, '/onboarding')).toBe(false);
     expect(isStartupDestinationObserved(destination, '/recording')).toBe(true);
-    expect(isStartupDestinationObserved('/(tabs)/settings', '/settings')).toBe(true);
+    expect(isStartupDestinationObserved('/settings', '/settings')).toBe(true);
   });
 
   it('reuses only an already observed path-only startup destination', () => {
     expect(canReuseObservedStartupDestination('/onboarding', '/onboarding')).toBe(true);
-    expect(canReuseObservedStartupDestination('/(tabs)/settings', '/settings')).toBe(true);
+    expect(canReuseObservedStartupDestination('/settings', '/settings')).toBe(true);
     expect(canReuseObservedStartupDestination('/recording', '/onboarding')).toBe(false);
     expect(canReuseObservedStartupDestination('/recording?source=notification', '/recording')).toBe(
       false
@@ -598,6 +598,18 @@ describe('onboardingState', () => {
     ).toBe('/journal');
     expect(
       resolveExplicitStartupDestination(
+        'noctalia-qa://journal/1788445127800',
+        '/recording'
+      )
+    ).toBe('/journal/1788445127800');
+    expect(
+      resolveExplicitStartupDestination(
+        'noctalia-qa-evil://journal/1788445127800',
+        '/recording'
+      )
+    ).toBeUndefined();
+    expect(
+      resolveExplicitStartupDestination(
         'https://dream.noctalia.app.evil.example/settings',
         '/settings'
       )
@@ -618,6 +630,77 @@ describe('onboardingState', () => {
         '/recording'
       )
     ).toBe('/auth/reset-password#access_token=abc&type=recovery');
+    expect(
+      resolveExplicitStartupDestination('noctalia://weekly-recap', '/recording')
+    ).toBe('/weekly-recap');
+    expect(
+      resolveExplicitStartupDestination(
+        'https://dream.noctalia.app/weekly-recap',
+        '/recording'
+      )
+    ).toBe('/weekly-recap');
+    expect(
+      resolveExplicitStartupDestination('noctalia://weekly-recap/', '/recording')
+    ).toBe('/weekly-recap');
+  });
+
+  it.each(['noctalia://explore', 'noctalia://explore/', 'https://dream.noctalia.app/explore'])(
+    'preserves the Explorer destination at cold start: %s',
+    (url: string) => {
+      const destination = resolveExplicitStartupDestination(url, '/recording');
+      expect(destination).toBe('/explore');
+      const completed = reduceOnboardingState(
+        { ...getDefaultOnboardingState(1), selectedPath: 'analyze' },
+        { type: 'COMPLETE' },
+        Date.now()
+      );
+      expect(resolveStartupDecision({
+        returningGuestBlocked: false,
+        hasUser: true,
+        onboardingState: { ...completed, pendingRecordingIntent: null },
+        pendingNotificationUrl: null,
+        defaultDestination: destination,
+      }).destination).toBe('/explore');
+    }
+  );
+
+  it('lets a completed cold weekly-recap launch keep /weekly-recap instead of falling back to /recording', () => {
+    const completed = {
+      ...reduceOnboardingState(
+        { ...getDefaultOnboardingState(1), selectedPath: 'analyze' },
+        { type: 'COMPLETE' },
+        Date.now()
+      ),
+      pendingRecordingIntent: null,
+    };
+    const destination = resolveExplicitStartupDestination(
+      'noctalia://weekly-recap',
+      '/recording'
+    );
+    expect(destination).toBe('/weekly-recap');
+    expect(
+      resolveStartupDecision({
+        returningGuestBlocked: false,
+        hasUser: false,
+        onboardingState: completed,
+        defaultDestination: destination,
+      })
+    ).toEqual({ destination: '/weekly-recap', reason: 'default' });
+    expect(
+      resolveStartupDestination({
+        returningGuestBlocked: false,
+        hasUser: false,
+        onboardingState: completed,
+        defaultDestination: destination,
+      })
+    ).toBe('/weekly-recap');
+    expect(
+      resolveStartupDestination({
+        returningGuestBlocked: false,
+        hasUser: false,
+        onboardingState: completed,
+      })
+    ).toBe('/recording');
   });
 
   it('keeps startup guards above an explicit deep-link default', () => {

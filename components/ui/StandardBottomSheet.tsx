@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import {
   AccessibilityInfo,
+  ScrollView,
   findNodeHandle,
   Text,
   View,
@@ -81,6 +82,9 @@ export type StandardBottomSheetProps = {
   style?: StyleProp<ViewStyle>;
   /** Optional native sheet heights. Omit to keep content-sized behavior. */
   snapPoints?: BottomSheetProps['snapPoints'];
+  /** Existing nested scrollers can retain their own keyboard and inset behavior. */
+  bodyScrollEnabled?: boolean;
+  dismissBehavior?: BottomSheetProps['dismissBehavior'];
 };
 
 /**
@@ -121,6 +125,8 @@ export function StandardBottomSheet({
   titleTestID,
   style,
   snapPoints,
+  bodyScrollEnabled = true,
+  dismissBehavior,
 }: StandardBottomSheetProps) {
   const { colors, mode, shadows } = useTheme();
   const insets = useSafeAreaInsets();
@@ -159,7 +165,9 @@ export function StandardBottomSheet({
       onClose={onClose}
       backdropColor={backdropColor}
       snapPoints={snapPoints}
-      className="rounded-t-xl border-t border-line bg-ink-raised px-6 pt-1"
+      scrollable={false}
+      dismissBehavior={dismissBehavior ?? (actions.primaryLoading ? 'none' : 'pan')}
+      className="px-6 pt-2"
       style={[
         // Safe-area inset and the theme shadow are runtime values, not classes.
         { paddingBottom: insets.bottom + ThemeLayout.spacing.md },
@@ -168,8 +176,7 @@ export function StandardBottomSheet({
       ]}
       testID={testID}
     >
-      {/* Handle indicator */}
-      <View className="mb-4 h-1 w-9 self-center rounded-[2px] bg-line" />
+      <ScrollView scrollEnabled={bodyScrollEnabled} style={{ flexShrink: 1 }} nestedScrollEnabled keyboardShouldPersistTaps="handled">
 
       {/* Title */}
       {headerIcon ? (
@@ -203,7 +210,9 @@ export function StandardBottomSheet({
       {/* Optional custom body content */}
       {children}
 
-      {/* Actions */}
+      </ScrollView>
+
+      {/* Actions remain outside the scrollable content. */}
       <BottomSheetActions>
         <BottomSheetPrimaryAction
           label={actions.primaryLabel}

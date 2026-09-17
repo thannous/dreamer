@@ -77,10 +77,10 @@ export function MicButton({
           pulseScale: 1.2,
         }
       : {
-          container: 240,
-          button: 206,
-          glow: 216,
-          icon: 104,
+          container: 240 * 0.8,
+          button: 206 * 0.8,
+          glow: 216 * 0.8,
+          icon: 104 * 0.8,
           border: 2,
           pulseScale: 1.4,
         };

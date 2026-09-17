@@ -133,7 +133,7 @@ Edit `mock-data/assets.ts` to change the image URLs.
 ## Next Steps
 
 - Read `mock-data/README.md` for details on mock data structure
-- See `CLAUDE.md` for complete mock mode documentation
+- See `AGENTS.md` for repository conventions and runtime commands
 - Explore the mock service implementations in `services/mocks/`
 
 Happy coding! 🚀

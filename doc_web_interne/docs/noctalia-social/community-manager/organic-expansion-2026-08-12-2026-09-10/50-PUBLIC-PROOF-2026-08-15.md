@@ -8,14 +8,14 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 | Créneau | Plateforme et compte | Heure | Asset exact | État préparatoire | URL publique vérifiée |
 |---|---|---:|---|---|---|
 | C1 | TikTok `@noctaliadreams` | 15:30 | `07-couloir-portes-deferlement.mp4` | **PUBLIÉ** — compte, hook et vidéo publique contrôlés le 15/08 | [Vidéo publique](https://www.tiktok.com/@noctaliadreams/video/7672903215687519491) |
-| C1 | Instagram `@noctaliadreams` | 15:45 | `07-couloir-portes-deferlement.mp4` | **PRÊT — DIRECT** | À publier puis vérifier après 15:45 |
+| C1 | Instagram `@noctaliadreams` | 15:45 | `07-couloir-portes-deferlement.mp4` | **ÉCHEC — NON PUBLIÉ** | Réconciliation du 04/09 : aucun Reel public exact ni ligne Instagram correspondante dans l'export Insights 90 jours ; aucune URL inventée |
 | C1 | X `@NoctaliaDreams` | 16:15 | `07-couloir-portes-deferlement.mp4` | **PUBLIÉ** — compte, hook, vidéo 15 s et label `Made with AI` contrôlés le 15/08 | [Post public](https://x.com/NoctaliaDreams/status/2088630540065026342) |
 | C2 | TikTok `@noctaliadreams` | 19:30 | `74-ocean-de-plumes.mp4` | **PUBLIÉ** — compte, hook et vidéo 12 s contrôlés le 15/08 | [Vidéo publique](https://www.tiktok.com/@noctaliadreams/video/7669511893291257110) |
-| C2 | Instagram `@noctaliadreams` | 19:45 | `74-ocean-de-plumes.mp4` | **PRÊT — DIRECT** | À publier puis vérifier après 19:45 |
+| C2 | Instagram `@noctaliadreams` | 19:45 | `74-ocean-de-plumes.mp4` | **ÉCHEC — NON PUBLIÉ** | Réconciliation du 04/09 : aucun Reel public exact ni ligne Instagram correspondante dans l'export Insights 90 jours ; aucune URL inventée |
 | C2 | X `@NoctaliaDreams` | 20:15 | `74-ocean-de-plumes.mp4` | **PUBLIÉ** — compte, hook, vidéo 12 s et label `Made with AI` contrôlés le 15/08 | [Post public](https://x.com/NoctaliaDreams/status/2088690938059338155) |
-| C3 | TikTok `@noctaliadreams` | 22:30 | `08-baleines-celestes-impact.mp4` | **PROGRAMMÉ** | À vérifier après 22:30 |
-| C3 | Instagram `@noctaliadreams` | 22:45 | `08-baleines-celestes-impact.mp4` | **PRÊT — DIRECT** | À publier puis vérifier après 22:45 |
-| C3 | X `@NoctaliaDreams` | 23:15 | `08-baleines-celestes-impact.mp4` | **PROGRAMMÉ** | À vérifier après 23:15 |
+| C3 | TikTok `@noctaliadreams` | 22:30 | `08-baleines-celestes-impact.mp4` | **PUBLIÉ** | [7672905012036766978](https://www.tiktok.com/@noctaliadreams/video/7672905012036766978) rouvert le 04/09 sur `@noctaliadreams` avec le hook exact |
+| C3 | Instagram `@noctaliadreams` | 22:45 | `08-baleines-celestes-impact.mp4` | **ÉCHEC — NON PUBLIÉ** | Réconciliation du 04/09 : aucun Reel public exact ni ligne Instagram correspondante dans l'export Insights 90 jours ; aucune URL inventée |
+| C3 | X `@NoctaliaDreams` | 23:15 | `08-baleines-celestes-impact.mp4` | **ÉCHEC — NON PUBLIÉ** — PROGRAMMÉ NATIVEMENT, PREUVE PUBLIQUE MANQUANTE | Réconciliation du 04/09 : la ligne native historique est conservée, mais aucune URL publique exacte n'a été retrouvée ; aucune publication tardive |
 
 ## Hero secondaire — 3 preuves
 

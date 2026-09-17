@@ -7,6 +7,11 @@ const {
   isAndroidRun,
   loadEnvProfile,
   parseRunnerArgs,
+  inferExpoLockOwner,
+  extractAndroidLockFlags,
+  applyStableExpoMetroPort,
+  holdExpoAndroidDeviceLockUntilProcessExit,
+  reserveExpoAndroidDeviceLock,
 } = require('./expo-safe-runner');
 
 describe('expo-safe-runner', () => {
@@ -112,6 +117,73 @@ describe('expo-safe-runner', () => {
         'https://example.functions.supabase.co/api',
       );
       expect(env.EXPO_NO_DOTENV).toBe('1');
+    });
+  });
+
+  describe('android device lock', () => {
+    it('infers Lucid vs Dreamer owners and injects the stable Metro port', () => {
+      expect(inferExpoLockOwner('.env.lucid', {})).toBe('lucid');
+      expect(inferExpoLockOwner('.env.mock', { NOCTALIA_APP_VARIANT: 'lucid' })).toBe('lucid');
+      expect(inferExpoLockOwner('.env.mock', {})).toBe('dreamer');
+
+      const lucidEnv = {};
+      expect(applyStableExpoMetroPort(['run:android', '--device', 'ZY22LJM555'], 'lucid', lucidEnv))
+        .toMatchObject({
+          expoArgs: ['run:android', '--device', 'ZY22LJM555', '--port', '8082'],
+          metroPort: 8082,
+        });
+      expect(lucidEnv.RCT_METRO_PORT).toBe('8082');
+      expect(lucidEnv.EXPO_METRO_PORT).toBe('8082');
+
+      const kept = applyStableExpoMetroPort(['start', '--android', '--port', '8099'], 'dreamer', {});
+      expect(kept.metroPort).toBe(8099);
+      expect(kept.expoArgs).toEqual(['start', '--android', '--port', '8099']);
+    });
+
+    it('strips lock flags and holds the lock until process exit instead of require() return', () => {
+      expect(extractAndroidLockFlags([
+        'run:android',
+        '--device',
+        'ZY22LJM555',
+        '--steal-lock',
+        '--lock-owner',
+        'lucid',
+      ])).toEqual({
+        expoArgs: ['run:android', '--device', 'ZY22LJM555'],
+        stealLock: true,
+        lockOwner: 'lucid',
+      });
+
+      const events = [];
+      const processRef = {
+        once(name, handler) {
+          events.push({ name, handler });
+        },
+      };
+      const released = [];
+      const release = holdExpoAndroidDeviceLockUntilProcessExit(() => released.push('lock'), {
+        processRef,
+      });
+      expect(released).toEqual([]);
+      expect(events.map((event) => event.name)).toEqual(['beforeExit', 'exit']);
+      events[0].handler();
+      expect(released).toEqual(['lock']);
+      expect(release()).toEqual({ released: false, reason: 'already' });
+    });
+
+    it('reserves a physical Expo Android run with the injected Metro port', () => {
+      const env = {};
+      const reserved = reserveExpoAndroidDeviceLock({
+        expoArgs: ['run:android', '--device', 'emulator-5554'],
+        envFile: '.env.mock',
+        env,
+        attachSignals: () => () => {},
+      });
+      expect(reserved.owner).toBe('dreamer');
+      expect(reserved.metroPort).toBe(8081);
+      expect(reserved.expoArgs).toEqual(['run:android', '--device', 'emulator-5554', '--port', '8081']);
+      expect(reserved.skipped).toBe('emulator-only');
+      expect(env.RCT_METRO_PORT).toBe('8081');
     });
   });
 });

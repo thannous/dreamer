@@ -7,10 +7,11 @@ import {
   LucidButton,
   LucidCard,
   LucidIconAction,
+  LucidIconTile,
   LucidPill,
   LucidScreen,
 } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { buildLucidReminderPlan } from '@/lib/lucid/reminders';
@@ -148,28 +149,14 @@ export default function LucidPermissionsScreen() {
         />
       }
     >
-      <LucidCard accent={permission === 'granted' ? 'cyan' : 'amber'}>
+      <LucidCard accent={permission === 'granted' ? 'accent' : 'amber'}>
         <View style={styles.top}>
-          <View
-            style={[
-              styles.icon,
-              {
-                backgroundColor:
-                  permission === 'granted' ? palette.cyanSoft : palette.amberSoft,
-              },
-            ]}
-          >
-            <Ionicons
-              name="notifications"
-              size={28}
-              color={permission === 'granted' ? palette.cyan : palette.amber}
-            />
-          </View>
+          <LucidIconTile icon="notifications" tone={permission === 'granted' ? 'accent' : 'amber'} size="md" />
           <View style={styles.copy}>
             <Text style={[styles.title, { color: palette.text }]}>{c.notifications}</Text>
             <LucidPill
               label={c[permission]}
-              tone={permission === 'granted' ? 'cyan' : 'amber'}
+              tone={permission === 'granted' ? 'accent' : 'amber'}
             />
           </View>
         </View>
@@ -215,7 +202,7 @@ function Info({
   return (
     <LucidCard>
       <View style={styles.info}>
-        <Ionicons name={icon} size={23} color={palette.accent} />
+        <Ionicons name={icon} size={LucidIcon.lg} color={palette.accent} />
         <View style={styles.copy}>
           <Text style={[styles.title, { color: palette.text }]}>{title}</Text>
           <Text style={[styles.body, { color: palette.textSecondary }]}>{body}</Text>
@@ -226,16 +213,9 @@ function Info({
 }
 
 const styles = StyleSheet.create({
-  top: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  icon: {
-    width: 54,
-    height: 54,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  copy: { flex: 1, gap: 5 },
-  title: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 15, lineHeight: 21 },
-  info: { flexDirection: 'row', alignItems: 'flex-start', gap: 13 },
-  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 19 },
+  top: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
+  copy: { flex: 1, gap: LucidSpace.xs },
+  title: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  info: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.md },
+  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
 });

@@ -11,6 +11,10 @@ import {
   resolveLucidEntityConflict,
 } from '@/lib/lucid/domain';
 import {
+  LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT,
+  hasLucidDreamAtlasOverlayData,
+} from '@/lib/lucid/dreamAtlas';
+import {
   LUCID_TRAINER_MUTATION_VERSION,
   isLucidSyncEntity,
   type LucidSyncEntity,
@@ -24,6 +28,20 @@ import {
   updateLucidTrainerState,
   updateLucidTrainerSyncQueue,
 } from '@/services/lucidTrainerStorage';
+
+// Older sync-v1 clients delete autonomous sign IDs they cannot derive.
+// Preserve these records locally until a versioned server contract is available.
+export const LUCID_SYNC_LOCAL_ONLY_REASON = 'local-only: requires autonomous Lucid sync v2';
+function isLocalOnly(entity: { entityType: string; entityKey: string }): boolean {
+  return entity.entityType === 'dream_atlas' ||
+    (entity.entityType === 'dream_sign' && entity.entityKey.startsWith('sign:lucid:'));
+}
+function quarantine(mutation: LucidSyncMutation): LucidSyncMutation {
+  return isLocalOnly(mutation) ? {
+    ...mutation, status: 'blocked', nextAttemptAt: undefined,
+    lastError: LUCID_SYNC_LOCAL_ONLY_REASON,
+  } : mutation;
+}
 
 export const LUCID_SYNC_BATCH_SIZE = 25;
 export const LUCID_SYNC_BASE_DELAY_MS = 5_000;
@@ -148,8 +166,111 @@ function hasLucidTrainerStateData(state: LucidTrainerState): boolean {
     state.experiments.length > 0 ||
     state.realityChecks.length > 0 ||
     state.weeklyReviews.length > 0 ||
+    (state.dreamSignDecisions?.length ?? 0) > 0 ||
+    isNonPristineDreamAtlasOverlay(state.dreamAtlas) ||
     state.updatedAt > state.createdAt
   );
+}
+
+type ResetAwareLucidSyncMutation = LucidSyncMutation & { resetRevision?: string };
+
+function isNonPristineDreamAtlasOverlay(
+  overlay: LucidTrainerState['dreamAtlas']
+): boolean {
+  if (overlay == null) return false;
+  // An explicit empty overlay with updatedAt > 0 is a durable clear, not a
+  // missing pristine companion. Guest claim must treat it as local data.
+  return (
+    overlay.updatedAt > LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT ||
+    hasLucidDreamAtlasOverlayData(overlay)
+  );
+}
+
+function shouldQueueMergedDreamAtlas(
+  mergedAtlas: Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> | undefined,
+  account: LucidTrainerState
+): mergedAtlas is Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> {
+  if (!mergedAtlas || !isNonPristineDreamAtlasOverlay(mergedAtlas.value)) return false;
+  const accountAtlas = findSyncEntity(account, 'dream_atlas', 'dream_atlas');
+  return !(
+    accountAtlas != null &&
+    canonicalLucidJson(accountAtlas) === canonicalLucidJson(mergedAtlas)
+  );
+}
+
+function replaceStalePendingDreamAtlasUpsert(params: {
+  mutation: ResetAwareLucidSyncMutation;
+  mergedAtlas: Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> | undefined;
+  account: LucidTrainerState;
+  userScope: string;
+  now: () => number;
+  idFactory: () => string;
+}): ResetAwareLucidSyncMutation {
+  const { mutation, mergedAtlas, account, userScope, now, idFactory } = params;
+  if (
+    mutation.operation !== 'upsert' ||
+    mutation.entityType !== 'dream_atlas' ||
+    mutation.entityKey !== 'dream_atlas' ||
+    !shouldQueueMergedDreamAtlas(mergedAtlas, account)
+  ) {
+    return mutation;
+  }
+  if (
+    mutation.payload.entity &&
+    canonicalLucidJson(mutation.payload.entity) === canonicalLucidJson(mergedAtlas)
+  ) {
+    return mutation;
+  }
+  const replacement: ResetAwareLucidSyncMutation = createLucidTrainerMutation(
+    {
+      userScope,
+      operation: 'upsert',
+      entity: mergedAtlas,
+      baseRevision: mutation.baseRevision,
+    },
+    { now, idFactory }
+  );
+  const resetRevision = mutation.resetRevision;
+  if (typeof resetRevision !== 'string') return replacement;
+  const next: ResetAwareLucidSyncMutation = {
+    ...replacement,
+    resetRevision,
+  };
+  return next;
+}
+
+function coalesceDreamAtlasQueueEntries(params: {
+  current: readonly ResetAwareLucidSyncMutation[];
+  mergedAtlas: Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> | undefined;
+  account: LucidTrainerState;
+  userScope: string;
+  now: () => number;
+  idFactory: () => string;
+}): ResetAwareLucidSyncMutation[] {
+  const { current, mergedAtlas, account, userScope, now, idFactory } = params;
+  if (!shouldQueueMergedDreamAtlas(mergedAtlas, account)) return [...current];
+  let seenDreamAtlasUpsert = false;
+  return current.flatMap((mutation) => {
+    if (
+      mutation.operation !== 'upsert' ||
+      mutation.entityType !== 'dream_atlas' ||
+      mutation.entityKey !== 'dream_atlas'
+    ) {
+      return [mutation];
+    }
+    if (seenDreamAtlasUpsert) return [];
+    seenDreamAtlasUpsert = true;
+    return [
+      replaceStalePendingDreamAtlasUpsert({
+        mutation,
+        mergedAtlas,
+        account,
+        userScope,
+        now,
+        idFactory,
+      }),
+    ];
+  });
 }
 
 type CreateLucidMutationInput =
@@ -166,8 +287,6 @@ type CreateLucidMutationInput =
       entityKey: string;
       baseRevision?: string;
     };
-
-type ResetAwareLucidSyncMutation = LucidSyncMutation & { resetRevision?: string };
 
 function defaultIdFactory(): string {
   return Crypto.randomUUID();
@@ -222,6 +341,9 @@ export function createLucidTrainerMutation(
 export async function queueLucidTrainerMutation(
   mutation: LucidSyncMutation
 ): Promise<LucidSyncMutation[]> {
+  // Local state is already durable. Queue I/O must not turn that successful
+  // save into a failure; legacy queued entries are quarantined during replay.
+  if (isLocalOnly(mutation)) return [];
   return updateLucidTrainerSyncQueue(mutation.userScope, (current) => {
     if (current.some((entry) => entry.clientRequestId === mutation.clientRequestId)) {
       return current;
@@ -235,7 +357,7 @@ export async function queueLucidTrainerMutation(
           resetRevision: (resetRevision as ResetAwareLucidSyncMutation).resetRevision,
         }
       : mutation;
-    return [...current, next].sort(
+    return [...current, next].map(quarantine).sort(
       (left, right) => left.createdAt - right.createdAt || left.id.localeCompare(right.id)
     );
   });
@@ -291,6 +413,8 @@ const LUCID_REMOTE_ENTITY_TYPES = [
   'experiment',
   'reality_check',
   'weekly_review',
+  'dream_sign',
+  'dream_atlas',
 ] as const satisfies readonly LucidSyncEntity['entityType'][];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -325,6 +449,11 @@ function parseRemoteRecord(value: unknown): LucidRemoteEntityRecord | null {
     !/^[1-9]\d*$/.test(revision) ||
     clientUpdatedAt === null
   ) {
+    return null;
+  }
+  // Dream atlas is a durable singleton. A mismatched key is not a collection
+  // row and must never be interpreted as a full-account reset.
+  if (entityType === 'dream_atlas' && entityKey !== 'dream_atlas') {
     return null;
   }
 
@@ -562,6 +691,7 @@ export async function pullLucidTrainerRemoteState(
   await storage.updateState(userScope, (current) => {
     let next = current;
     records.forEach((record) => {
+      if (isLocalOnly(record)) return;
       const key = syncEntityKey(record.entityType, record.entityKey);
       const local = findSyncEntity(next, record.entityType, record.entityKey);
       if (record.entity) {
@@ -642,7 +772,7 @@ export async function pullLucidTrainerRemoteState(
         return { ...mutation, resetRevision };
       });
     }
-    return next.sort(
+    return next.map(quarantine).sort(
       (left, right) => left.createdAt - right.createdAt || left.id.localeCompare(right.id)
     );
   });
@@ -691,18 +821,38 @@ export async function claimLucidTrainerGuestScope(
     let queued = 0;
     if (mergedForAccount.preferences.cloudSyncEnabled) {
       const entities = getLucidSyncEntities(mergedForAccount);
+      const mergedAtlas = entities.find(
+        (entity): entity is Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> =>
+          entity.entityType === 'dream_atlas'
+      );
       await options.storage.updateQueue(targetUserScope, (current) => {
+        const pending: readonly ResetAwareLucidSyncMutation[] = current;
         const existingKeys = new Set(
-          current
+          pending
             .filter((mutation) => mutation.operation === 'upsert')
             .map((mutation) => syncEntityKey(mutation.entityType, mutation.entityKey))
         );
+        const coalesced = coalesceDreamAtlasQueueEntries({
+          current: pending,
+          mergedAtlas,
+          account,
+          userScope: targetUserScope,
+          now,
+          idFactory,
+        });
         const additions = entities.flatMap((entity) => {
+          if (isLocalOnly(entity)) return [];
           if (existingKeys.has(syncEntityKey(entity.entityType, entity.entityKey))) return [];
           const existing = findSyncEntity(account, entity.entityType, entity.entityKey);
           if (
             existing &&
             canonicalLucidJson(existing) === canonicalLucidJson(entity)
+          ) {
+            return [];
+          }
+          if (
+            entity.entityType === 'dream_atlas' &&
+            !isNonPristineDreamAtlasOverlay(entity.value)
           ) {
             return [];
           }
@@ -714,7 +864,7 @@ export async function claimLucidTrainerGuestScope(
           ];
         });
         queued = additions.length;
-        return [...current, ...additions].sort(
+        return [...coalesced, ...additions].map(quarantine).sort(
           (left, right) => left.createdAt - right.createdAt || left.id.localeCompare(right.id)
         );
       });
@@ -815,8 +965,8 @@ function replaySummary(
   return {
     outcome,
     ...counts,
-    blocked: queue.filter((mutation) => mutation.status === 'blocked').length,
-    pending: queue.length,
+    blocked: queue.filter((mutation) => !isLocalOnly(mutation) && mutation.status === 'blocked').length,
+    pending: queue.filter((mutation) => !isLocalOnly(mutation)).length,
   };
 }
 
@@ -832,7 +982,7 @@ export async function replayLucidTrainerQueue(
   const idFactory = options.idFactory ?? defaultIdFactory;
   const maxRetries = Math.max(1, options.maxRetries ?? LUCID_SYNC_MAX_RETRIES);
   const batchSize = Math.max(1, Math.min(100, options.batchSize ?? LUCID_SYNC_BATCH_SIZE));
-  const queue = await storage.loadQueue(userScope);
+  const queue = await storage.updateQueue(userScope, (current) => current.map(quarantine));
   const emptyCounts = { attempted: 0, acknowledged: 0, failed: 0, conflicts: 0 };
   const state = await storage.loadState(userScope);
 
@@ -845,7 +995,7 @@ export async function replayLucidTrainerQueue(
   }
 
   const now = nowFactory();
-  const eligible = queue.filter((mutation) => canAttempt(mutation, now)).slice(0, batchSize);
+  const eligible = queue.filter((mutation) => !isLocalOnly(mutation) && canAttempt(mutation, now)).slice(0, batchSize);
   if (!eligible.length) {
     return replaySummary('idle', queue, emptyCounts);
   }
@@ -923,6 +1073,12 @@ export async function replayLucidTrainerQueue(
           maxRetries,
         })
       );
+      continue;
+    }
+
+    if (result.remoteEntity && isLocalOnly(result.remoteEntity)) {
+      failed += 1;
+      replacements.set(mutation.id, { ...mutation, status: 'blocked', lastError: 'Unexpected local-only entity in sync response' });
       continue;
     }
 

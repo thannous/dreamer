@@ -1,6 +1,14 @@
 import {
+  LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT,
+  createEmptyLucidDreamAtlasOverlay,
+  hasLucidDreamAtlasOverlayData,
+} from '@/lib/lucid/dreamAtlas';
+import {
+  DEFAULT_LUCID_MINDFUL_PAUSE_REMINDER_ANCHORS,
   LUCID_TRAINER_SCHEMA_VERSION,
+  LUCID_TECHNIQUES,
   type LucidOnboardingState,
+  type LucidGuidedRitualProgress,
   type LucidProgramProgress,
   type LucidSyncEntity,
   type LucidTechnique,
@@ -49,6 +57,15 @@ function maxNullable(left: number | null, right: number | null): number | null {
   return Math.max(left, right);
 }
 
+function mergeLucidGuidedRitualProgress(
+  left: LucidGuidedRitualProgress | undefined,
+  right: LucidGuidedRitualProgress | undefined
+): LucidGuidedRitualProgress | undefined {
+  if (!left) return right;
+  if (!right) return left;
+  return chooseNewest(left, right);
+}
+
 export function mergeLucidProgramProgress(
   left: LucidProgramProgress,
   right: LucidProgramProgress
@@ -60,6 +77,10 @@ export function mergeLucidProgramProgress(
   const newest = chooseNewest(left, right);
   const status =
     left.status === 'completed' || right.status === 'completed' ? 'completed' : newest.status;
+  const guidedRitual = mergeLucidGuidedRitualProgress(
+    left.guidedRitual,
+    right.guidedRitual
+  );
 
   return {
     technique: left.technique,
@@ -74,6 +95,57 @@ export function mergeLucidProgramProgress(
     startedAt: minNullable(left.startedAt, right.startedAt),
     completedAt: status === 'completed' ? maxNullable(left.completedAt, right.completedAt) : null,
     updatedAt: Math.max(left.updatedAt, right.updatedAt),
+    ...(guidedRitual ? { guidedRitual } : {}),
+  };
+}
+
+/**
+ * At most one program may be `active`. Extra actives are paused in place so
+ * their cursor, completed sessions and practice dates are preserved.
+ * A local user action may pass `preferredTechnique`. Sync/apply must omit it
+ * so the newest `updatedAt` wins, then the earliest technique name.
+ */
+export function enforceLucidSingleActiveProgram(
+  progressList: readonly LucidProgramProgress[],
+  preferredTechnique?: LucidTechnique
+): LucidProgramProgress[] {
+  const sorted = [...progressList].sort((left, right) => left.technique.localeCompare(right.technique));
+  const active = sorted.filter((item) => item.status === 'active');
+  if (active.length <= 1) return sorted;
+
+  const preferred = preferredTechnique
+    ? active.find((item) => item.technique === preferredTechnique)
+    : undefined;
+  const winner =
+    preferred ??
+    [...active].sort((left, right) => {
+      if (left.updatedAt !== right.updatedAt) return right.updatedAt - left.updatedAt;
+      return left.technique.localeCompare(right.technique);
+    })[0];
+
+  const pauseUpdatedAt = Math.max(winner.updatedAt, ...active.map((item) => item.updatedAt));
+  return sorted.map((item) =>
+    item.status === 'active' && item.technique !== winner.technique
+      ? { ...item, status: 'paused' as const, updatedAt: pauseUpdatedAt }
+      : item
+  );
+}
+
+export function applyLucidProgramProgress(
+  state: LucidTrainerState,
+  progress: LucidProgramProgress,
+  preferredTechnique?: LucidTechnique
+): LucidTrainerState {
+  return {
+    ...state,
+    updatedAt: Math.max(state.updatedAt, progress.updatedAt),
+    progress: enforceLucidSingleActiveProgram(
+      [
+        ...state.progress.filter((item) => item.technique !== progress.technique),
+        progress,
+      ],
+      preferredTechnique
+    ),
   };
 }
 
@@ -108,14 +180,19 @@ export function createInitialLucidTrainerState(params: {
       },
       completedAt: null,
       updatedAt: now,
+      wakeSensitivity: null,
+      draftStep: 0,
+      sleepScheduleConfirmed: false,
+      sleepScheduleDraft: { bedtime: null, wakeTime: null },
     },
     preferences: {
       locale,
-      theme: 'system',
+      theme: 'dynamic',
       cloudSyncEnabled: false,
       noctaliaLinkEnabled: false,
       notificationsEnabled: false,
       realityCheckRemindersPerDay: 3,
+      mindfulPauseReminderAnchors: [...DEFAULT_LUCID_MINDFUL_PAUSE_REMINDER_ANCHORS],
       audioCuesEnabled: false,
       audioVolume: 0.25,
       timeZone,
@@ -125,6 +202,8 @@ export function createInitialLucidTrainerState(params: {
     experiments: [],
     realityChecks: [],
     weeklyReviews: [],
+    dreamSignDecisions: [],
+    dreamAtlas: createEmptyLucidDreamAtlasOverlay(LUCID_DREAM_ATLAS_PRISTINE_UPDATED_AT),
   };
 }
 
@@ -218,6 +297,16 @@ export function getLucidSyncEntities(state: LucidTrainerState): LucidSyncEntity[
         value,
       })
     ),
+    ...(state.dreamSignDecisions ?? []).map(
+      (value): LucidSyncEntity => ({
+        entityType: 'dream_sign',
+        entityKey: value.id,
+        value,
+      })
+    ),
+    ...(state.dreamAtlas
+      ? [{ entityType: 'dream_atlas' as const, entityKey: 'dream_atlas' as const, value: state.dreamAtlas }]
+      : []),
   ];
 }
 
@@ -232,14 +321,9 @@ export function applyLucidSyncEntity(
     case 'preferences':
       return { ...state, preferences: entity.value, updatedAt };
     case 'progress':
-      return {
-        ...state,
-        updatedAt,
-        progress: [
-          ...state.progress.filter((item) => item.technique !== entity.entityKey),
-          entity.value,
-        ].sort((a, b) => a.technique.localeCompare(b.technique)),
-      };
+      // Remote/apply order must not decide the active program. The newest
+      // active entity wins deterministically on every device.
+      return applyLucidProgramProgress(state, entity.value);
     case 'experiment':
       return {
         ...state,
@@ -267,7 +351,76 @@ export function applyLucidSyncEntity(
           entity.value,
         ].sort((a, b) => b.weekStart.localeCompare(a.weekStart) || a.id.localeCompare(b.id)),
       };
+    case 'dream_sign':
+      return {
+        ...state,
+        updatedAt,
+        dreamSignDecisions: [
+          ...(state.dreamSignDecisions ?? []).filter((item) => item.id !== entity.entityKey),
+          entity.value,
+        ].sort((a, b) => a.id.localeCompare(b.id)),
+      };
+    case 'dream_atlas':
+      return { ...state, dreamAtlas: entity.value, updatedAt };
   }
+}
+
+export function diffLucidProgramProgress(
+  previous: readonly LucidProgramProgress[],
+  next: readonly LucidProgramProgress[]
+): LucidProgramProgress[] {
+  const previousByTechnique = new Map(previous.map((item) => [item.technique, item]));
+  return next.filter((item) => {
+    const before = previousByTechnique.get(item.technique);
+    return !before || canonicalLucidJson(before) !== canonicalLucidJson(item);
+  });
+}
+
+/**
+ * Exclusive activations share one strictly monotone batch timestamp.
+ * The block is larger than the number of techniques, then ordered by the
+ * stable technique rank, so two same-millisecond activations never collide
+ * and the entire winning batch outranks the losing one during merge.
+ */
+function lucidActivationBatchUpdatedAt(
+  baseline: number,
+  now: number,
+  technique: LucidTechnique
+): number {
+  const techniqueCount = LUCID_TECHNIQUES.length;
+  const techniqueRank = LUCID_TECHNIQUES.indexOf(technique);
+  const blockSize = techniqueCount + 1;
+  const floor = Math.max(now, baseline) + 1;
+  const blockStart = Math.ceil(floor / blockSize) * blockSize;
+  return blockStart + techniqueRank;
+}
+
+/**
+ * Activates `technique` and pauses every other active program in place.
+ * Progress, cursor and practice dates of paused programs are preserved.
+ * The active target and every auto-paused peer share this batch timestamp.
+ */
+export function activateExclusiveLucidProgram(
+  state: LucidTrainerState,
+  technique: LucidTechnique,
+  now: number
+): { next: LucidTrainerState; changed: LucidProgramProgress[] } {
+  const existing =
+    state.progress.find((item) => item.technique === technique) ??
+    createLucidProgramProgress(technique, now);
+  const baseline = Math.max(
+    state.updatedAt,
+    ...state.progress.map((item) => item.updatedAt)
+  );
+  const mutationUpdatedAt = lucidActivationBatchUpdatedAt(baseline, now, technique);
+  const progress: LucidProgramProgress = {
+    ...existing,
+    status: 'active',
+    startedAt: existing.startedAt ?? now,
+    updatedAt: mutationUpdatedAt,
+  };
+  const next = applyLucidProgramProgress(state, progress, technique);
+  return { next, changed: diffLucidProgramProgress(state.progress, next.progress) };
 }
 
 export function removeLucidSyncEntity(
@@ -307,6 +460,22 @@ export function removeLucidSyncEntity(
         updatedAt: nextUpdatedAt,
         weeklyReviews: state.weeklyReviews.filter((item) => item.id !== entityKey),
       };
+    case 'dream_sign':
+      return {
+        ...state,
+        updatedAt: nextUpdatedAt,
+        dreamSignDecisions: (state.dreamSignDecisions ?? []).filter(
+          (item) => item.id !== entityKey
+        ),
+      };
+    case 'dream_atlas':
+      // Remote clear keeps the singleton. An empty timestamped overlay is the
+      // durable deletion, never a missing field or a global wipe.
+      return {
+        ...state,
+        updatedAt: nextUpdatedAt,
+        dreamAtlas: createEmptyLucidDreamAtlasOverlay(nextUpdatedAt),
+      };
   }
 }
 
@@ -326,6 +495,10 @@ export function mergeLucidTrainerStates(
   if (!onboarding || !preferences) {
     throw new Error('Lucid Trainer state is missing required singleton entities');
   }
+  const dreamAtlas = mergedEntities.find(
+    (entity): entity is Extract<LucidSyncEntity, { entityType: 'dream_atlas' }> =>
+      entity.entityType === 'dream_atlas'
+  );
 
   return {
     schemaVersion: LUCID_TRAINER_SCHEMA_VERSION,
@@ -333,12 +506,14 @@ export function mergeLucidTrainerStates(
     updatedAt: Math.max(left.updatedAt, right.updatedAt),
     onboarding: onboarding.value,
     preferences: preferences.value,
-    progress: mergedEntities
-      .filter(
-        (entity): entity is Extract<LucidSyncEntity, { entityType: 'progress' }> =>
-          entity.entityType === 'progress'
-      )
-      .map((entity) => entity.value),
+    progress: enforceLucidSingleActiveProgram(
+      mergedEntities
+        .filter(
+          (entity): entity is Extract<LucidSyncEntity, { entityType: 'progress' }> =>
+            entity.entityType === 'progress'
+        )
+        .map((entity) => entity.value)
+    ),
     experiments: mergedEntities
       .filter(
         (entity): entity is Extract<LucidSyncEntity, { entityType: 'experiment' }> =>
@@ -360,7 +535,19 @@ export function mergeLucidTrainerStates(
       )
       .map((entity) => entity.value)
       .sort((a, b) => b.weekStart.localeCompare(a.weekStart) || a.id.localeCompare(b.id)),
+    dreamSignDecisions: mergedEntities
+      .filter(
+        (entity): entity is Extract<LucidSyncEntity, { entityType: 'dream_sign' }> =>
+          entity.entityType === 'dream_sign'
+      )
+      .map((entity) => entity.value)
+      .sort((a, b) => a.id.localeCompare(b.id)),
+    ...(dreamAtlas ? { dreamAtlas: dreamAtlas.value } : {}),
   };
+}
+
+export function hasLucidDreamAtlasSyncData(state: LucidTrainerState): boolean {
+  return state.dreamAtlas != null && hasLucidDreamAtlasOverlayData(state.dreamAtlas);
 }
 
 export function updateLucidOnboarding(

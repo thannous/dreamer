@@ -39,6 +39,17 @@ export const BreathAmplitude = {
   ring: 0.02,
 } as const;
 
+/**
+ * The onboarding halo is not ambient decoration: it teaches the rhythm.
+ * Its travel therefore has to be consciously legible while remaining slow.
+ */
+export const BreathScale = {
+  introHalo: {
+    exhaled: 0.9,
+    inhaled: 1.05,
+  },
+} as const;
+
 /** Chrome fades out after this long without a touch, in immersive contexts. */
 // Six seconds, not four: four is barely enough to read the ambience and
 // timer rows before they vanish under your eyes.
@@ -47,6 +58,8 @@ export const SilenceDelayMs = 6000;
 export const Curve = {
   /** Default for UI transitions. */
   standard: Easing.bezier(0.32, 0.72, 0, 1),
+  /** Moving an object already on screen: smooth at both ends, never delayed. */
+  move: Easing.bezier(0.77, 0, 0.175, 1),
   /** Breath in/out — symmetric, no overshoot ever. */
   breath: Easing.inOut(Easing.sin),
   enter: Easing.out(Easing.cubic),

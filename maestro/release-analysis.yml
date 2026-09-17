@@ -1,7 +1,7 @@
 # Manual Release integration probe: save a guest dream and complete a real
 # backend analysis. Kept outside the repeatable smoke workflow because guest
 # analysis quota is intentionally persistent for a device fingerprint.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release guest analysis
 tags:
   - release
@@ -74,10 +74,10 @@ onFlowComplete:
     id: btn.saveDream
 - extendedWaitUntil:
     visible:
-      id: text.firstDream.title
+      id: text.dreamDetail.actionTitle
     timeout: 90000
 - tapOn:
-    id: btn.firstDream.analyze
+    id: btn.dream.primaryCta
 
 # The interpretation section exists only after the real analysis response has
 # populated the saved dream. Waiting on that content avoids transient CTA races.
@@ -95,3 +95,12 @@ onFlowComplete:
     visibilityPercentage: 60
 - assertVisible:
     id: component.transcriptCard
+- scrollUntilVisible:
+    element:
+      id: btn.journal.illustrate
+    direction: DOWN
+    timeout: 30000
+    visibilityPercentage: 40
+- assertVisible:
+    id: btn.journal.illustrate
+- takeScreenshot: ti429-analysis-illustrate-cta

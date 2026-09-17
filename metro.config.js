@@ -19,4 +19,5 @@ config.resolver.blockList = [
 module.exports = withUniwindConfig(config, {
   cssEntryFile: './global.css',
   dtsFile: './uniwind-types.d.ts',
+  extraThemes: ['morning', 'afterglow'],
 });

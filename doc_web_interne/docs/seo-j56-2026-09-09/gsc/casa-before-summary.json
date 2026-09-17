@@ -1,0 +1,45 @@
+{
+  "fetchedAt": "2026-09-09T09:49:16.834Z",
+  "site": "sc-domain:noctalia.app",
+  "request": {
+    "type": "web",
+    "dataState": "final",
+    "rowLimit": 25000,
+    "dimensionFilterGroups": [
+      {
+        "groupType": "and",
+        "filters": [
+          {
+            "dimension": "page",
+            "operator": "equals",
+            "expression": "https://noctalia.app/it/simboli/casa"
+          }
+        ]
+      }
+    ],
+    "startDate": "2026-07-11",
+    "endDate": "2026-08-07",
+    "dimensions": []
+  },
+  "responses": [
+    {
+      "rows": [
+        {
+          "clicks": 39,
+          "impressions": 5482,
+          "ctr": 0.007114191900766144,
+          "position": 7.500729660707771
+        }
+      ],
+      "responseAggregationType": "byPage"
+    }
+  ],
+  "rows": [
+    {
+      "clicks": 39,
+      "impressions": 5482,
+      "ctr": 0.007114191900766144,
+      "position": 7.500729660707771
+    }
+  ]
+}

@@ -43,7 +43,7 @@ You have access to the Expo MCP (Model Context Protocol) tools. Use these extens
    - Look up proper configuration for native modules
 
 2. **Understand the Project Context:**
-   - Check for existing patterns in the codebase (CLAUDE.md, package.json, app.json/app.config.js)
+   - Check for existing patterns in the codebase (AGENTS.md, package.json, app.json/app.config.js)
    - Respect established conventions for styling, state management, and file organization
    - Consider whether the project uses Expo Go, development builds, or bare workflow
 
@@ -130,7 +130,7 @@ When providing solutions:
 ## Project-Specific Considerations
 
 When working within this dream journaling app specifically:
-- Follow the established patterns in CLAUDE.md
+- Follow the established patterns in AGENTS.md
 - Use the existing theme system (constants/theme.ts)
 - Integrate with DreamsContext for dream data
 - Follow the service layer pattern (services/)

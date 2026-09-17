@@ -1,6 +1,7 @@
 import { type AiLanguage, localizedForAi } from './aiLanguage.ts';
 
-const DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS = 6000;
+/** Product decision: retain the original; send up to 10,000 characters of its AI copy. */
+export const DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS = 10_000;
 const DREAM_CONTEXT_INTERPRETATION_MAX_CHARS = 4000;
 
 /**
@@ -44,12 +45,12 @@ const CONTEXT_HEADER: Record<AiLanguage, string> = {
 };
 
 const ANALYSIS_LABEL: Record<AiLanguage, string> = {
-  en: 'Analysis',
-  fr: 'Analyse',
-  es: 'Análisis',
-  de: 'Analyse',
-  it: 'Analisi',
-  pt: 'Análise',
+  en: 'Previous generated reflection (hypotheses, not facts)',
+  fr: 'Réflexion générée précédente (hypothèses, pas des faits)',
+  es: 'Reflexión generada anterior (hipótesis, no hechos)',
+  de: 'Frühere generierte Reflexion (Hypothesen, keine Fakten)',
+  it: 'Riflessione generata precedente (ipotesi, non fatti)',
+  pt: 'Reflexão gerada anterior (hipóteses, não fatos)',
 };
 
 const TRANSCRIPT_LABEL: Record<AiLanguage, string> = {
@@ -83,6 +84,37 @@ export function truncateForPrompt(input: unknown, maxChars: number): { text: str
   const text = String(input ?? '').trim();
   if (text.length <= maxChars) return { text, truncated: false };
   return { text: text.slice(0, maxChars).trimEnd(), truncated: true };
+}
+
+export function boundTranscriptForPrompt(
+  input: unknown,
+  maxChars: number = DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS
+): { text: string; truncated: boolean } {
+  return truncateForPrompt(input, maxChars);
+}
+
+export function resolveStoredTranscriptForAi(
+  raw: unknown,
+  requestMaxChars: number
+):
+  | {
+      ok: true;
+      storedTranscript: string;
+      promptTranscript: string;
+      truncatedForPrompt: boolean;
+    }
+  | { ok: false } {
+  const storedTranscript = String(raw ?? '').trim();
+  if (!storedTranscript || storedTranscript.length > requestMaxChars) {
+    return { ok: false };
+  }
+  const bounded = boundTranscriptForPrompt(storedTranscript);
+  return {
+    ok: true,
+    storedTranscript,
+    promptTranscript: bounded.text,
+    truncatedForPrompt: bounded.truncated,
+  };
 }
 
 /**
@@ -121,7 +153,7 @@ export function buildDreamContextPrompt(
   if (!transcript) {
     const noTranscript = localizedForAi(lang, NO_TRANSCRIPT);
     return {
-      prompt: `${noTranscript}\n\nTitle: "${title}"\nType: ${dreamType}${theme ? `\nTheme: ${theme}` : ''}\n`,
+      prompt: `${injectionSafety}\n${noTranscript}\n\nTitle: ${JSON.stringify(title)}\nType: ${JSON.stringify(dreamType)}${theme ? `\nTheme: ${JSON.stringify(theme)}` : ''}\n`,
       debug: { transcriptTruncated, interpretationTruncated },
     };
   }
@@ -136,21 +168,21 @@ export function buildDreamContextPrompt(
 
   const prompt = `${header}
 
-Title: "${title}"
-Type: ${dreamType}${theme ? `\nTheme: ${theme}` : ''}
+Title: ${JSON.stringify(title)}
+Type: ${JSON.stringify(dreamType)}${theme ? `\nTheme: ${JSON.stringify(theme)}` : ''}
 
 ${injectionSafety}
 
 ${transcriptLabel}:
 <<<BEGIN_DREAM_TRANSCRIPT>>>
-${transcript}
+${JSON.stringify(transcript)}
 <<<END_DREAM_TRANSCRIPT>>>${transcriptTruncated ? '\n[TRUNCATED]' : ''}
 
 ${analysisLabel}:
 <<<BEGIN_DREAM_ANALYSIS>>>
-${interpretation || localizedForAi(lang, NO_ANALYSIS)}
+${JSON.stringify(interpretation || localizedForAi(lang, NO_ANALYSIS))}
 <<<END_DREAM_ANALYSIS>>>${interpretationTruncated ? '\n[TRUNCATED]' : ''}${
-    quote ? `\n\n${keyInsightLabel}: "${quote}"` : ''
+    quote ? `\n\n${keyInsightLabel}: ${JSON.stringify(quote)}` : ''
   }${maybeTruncation}
 `;
 

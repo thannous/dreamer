@@ -64,6 +64,10 @@ Ces éléments restent dans l'archive privée ignorée par Git. Les valeurs repr
 - [`j38-plan-2026-08-22.md`](./j38-plan-2026-08-22.md) : plan J38 avec triage du mail Rank Tracker 10 up / 16 down, checkpoint GSC J+14 de `casa`–`ragno`–`perro`, décision de publication séparée pour `escaleras`, micro-lot Starter `snail` plafonné à 8 crédits et contrôle DreamWell sans envoi.
 - [`j38-execution-2026-08-22.md`](./j38-execution-2026-08-22.md) : exécution P0/P1 J38, publication publique de `escaleras`, checkpoint GSC partiel au 20 août, micro-lot `snail` avec verdict `HOLD_EVIDENCE`, arrêt coût 12 → 21 et dossier Marika Pech prêt pour confirmation au moment de l'envoi.
 - [`j39-p0-p1-execution-2026-08-23.md`](./j39-p0-p1-execution-2026-08-23.md) : fenêtre GSC complète du cluster eau IT, optimisation bornée de la fiche propriétaire et garde-fou maintenant l’article EN `flying-dreams-meaning` gelé jusqu’au checkpoint du 25 août.
+- [`j46-plan-2026-08-30.md`](./j46-plan-2026-08-30.md) : plan J46 fondé sur GSC complet au 28 août, progression semaine contre semaine, leviers rêve lucide/indexation rentrée et micro-gate Ahrefs à deux crédits pour deux nouveaux sujets.
+- [`j46-two-seo-article-briefs-2026-08-30.md`](./j46-two-seo-article-briefs-2026-08-30.md) : briefs multilingues `jet lag, sommeil et rêves` et `faux réveil`, contrats d'intention, routes prospectives, maillage et gate avant rédaction.
+- [`j46-implementation-review-2026-08-30.md`](./j46-implementation-review-2026-08-30.md) : implémentation locale revue, split post-gate entre les cinq routes faux réveil candidates et les brouillons jet lag archivés hors build.
+- [`j46-ahrefs-micro-gate-2026-09-01.md`](./j46-ahrefs-micro-gate-2026-09-01.md) : deux crédits Ahrefs exactement, compteur 23 → 25, métriques US/ES et verdict `GO_PUBLISH_CANDIDATE` faux réveil contre `HOLD_RESEARCH` jet lag.
 - [`j27-misabueso-gsc-ownership-2026-08-11.md`](./j27-misabueso-gsc-ownership-2026-08-11.md) : baseline GSC espagnole après l'analyse Misabueso, propriétaires confirmés et plus petit lot d'ancre justifié.
 - [`j27-misabueso-gsc-ownership-matrix-2026-08-11.csv`](./j27-misabueso-gsc-ownership-matrix-2026-08-11.csv) : matrice GO / ADJUST / HOLD des URL et clusters espagnols sur deux fenêtres comparables de 28 jours.
 - [`drive-archive-2026-08-11.md`](./drive-archive-2026-08-11.md) : emplacements Drive des lots J25–J27, Misabueso GSC et preuves brutes, périmètres synchronisés et règles de conservation.
@@ -261,3 +265,148 @@ Cette revue reste documentaire à l'exception de l'ancre allemande `Traumlexikon
   avertissement), tests node 88/88, contrat URL inchangé. Aucun crédit
   Ahrefs, changement Rank Tracker ni demande d'indexation. Lecture prévue à
   partir du 16 septembre. Détails : `j35-exact-query-matching-2026-08-18.md`.
+
+## Actualisation J40 au 24 août 2026 — découverte des articles rentrée
+
+- GSC complet au 22 août affiche `4 708` clics, `614 641` impressions, CTR
+  `0,8 %` et position `7,6` sur 28 jours.
+- Les dix articles rentrée sont encore à `0` clic et `0` impression. Les dix
+  sont non indexés, sans crawl connu et sans page d'origine détectée ; un seul
+  est déjà détecté avec le sitemap comme source.
+- Dix pages éditoriales existantes et déjà visibles dans GSC reçoivent un lien
+  contextuel : cinq articles sur les examens vers les intentions « retourner à
+  l'école » et cinq guides sur les rêves d'enfants vers les cauchemars de
+  rentrée.
+- `scuola`, `casa`, `ragno`, `perro`, `flying dreams`, les 50 suivis et leurs
+  tags restent inchangés. Aucune demande d'indexation ni dépense Ahrefs
+  générale.
+- Ahrefs reste à `21` crédits généraux utilisés, Rank Tracker `50/50` et Site
+  Audit `1 000/10 000`. Le crawl automatique du 24 août conserve un Health
+  Score de `100`; son unique erreur concerne `dream.noctalia.app`, hors contenu
+  éditorial du site marketing.
+- Le dossier Marika Pech est réconcilié : un message a déjà été envoyé le
+  23 août à 16:45 depuis `contact@noctalia.app`; aucune réponse ni mise à jour
+  publique n'est visible à J40. Aucun doublon n'est envoyé.
+- Détails et protocole de mesure : `j40-execution-2026-08-24.md`.
+
+## Actualisation J41 au 25 août 2026 — preuves « precognitive dreams »
+
+- L'URL EN existante `/en/blog/precognitive-dreams-science` concentre
+  `20 238` impressions, `4` clics et une position moyenne de `7,8` sur
+  28 jours complets au 23 août. Le CTR calculé est `0,0198 %`.
+- Le lot local remplace les anecdotes et théories spéculatives non étayées par
+  trois études primaires : résultat positif limité en ligne, absence d'effet
+  dans le laboratoire suivant et mécanismes mesurés de rappel sélectif.
+- Title, H1, description, données sociales, JSON-LD, quick answer, FAQ et CTA
+  sont alignés sur une promesse prudente : une trace horodatée réduit le recul,
+  elle ne prouve pas la précognition.
+- Route, canonical, hreflang et sitemap restent inchangés. Aucune nouvelle
+  page, aucun crédit Ahrefs général, aucune demande d'indexation et aucune
+  mutation des expériences ou des 50 suivis.
+- Détails et plan de mesure :
+  `j41-precognitive-evidence-refresh-2026-08-25.md`.
+
+## Actualisation J42 au 26 août 2026 — preuves « flying dreams »
+
+- La fenêtre postérieure à la modification du 28 juillet est complète :
+  `/en/blog/flying-dreams-meaning` cumule `31` clics, `5 723` impressions,
+  un CTR calculé de `0,542 %` et une position moyenne de `11,9` sur 28 jours
+  complets au 24 août.
+- Les requêtes propriétaires restent faibles : `flying dreams` est en position
+  `21,2`, `flying dreams meaning` en `23,6`, `dreaming of flying` en `22,9`
+  et `dream of flying` en `23,7`. Aucune nouvelle URL n'est créée.
+- Le lot local remplace le taux non sourcé de 33 %, les interprétations
+  universelles et les techniques dites « proven » par trois études primaires,
+  six scénarios contextuels et une méthode de journalisation qui conserve les
+  hypothèses ouvertes.
+- Title, H1, description, données sociales, JSON-LD automatique, quick answer,
+  FAQ et CTA sont alignés sur une promesse prudente. Route, canonical,
+  hreflang, image et sitemap restent inchangés.
+- Aucun crédit Ahrefs général, aucune demande d'indexation et aucune mutation
+  des expériences ou des 50 suivis. Détails et plan de mesure :
+  `j42-flying-dreams-evidence-refresh-2026-08-26.md`.
+
+## Actualisation J43 au 27 août 2026 — propriétaire IT « mare / oceano »
+
+- GSC complet du 29 juillet au 25 août attribue à `/it/simboli/oceano`
+  `11` clics, `5 371` impressions, un CTR de `0,2 %` et une position moyenne
+  de `8,0`.
+- Les requêtes visibles utilisent surtout `mare` : `sognare il mare
+  significato` affiche `289` impressions à la position `7,3` sans clic,
+  `sognare il mare` `186` impressions à la position `8,7` avec un clic et
+  `sognare mare agitato` `98` impressions à la position `8,2` sans clic.
+- Le propriétaire existant est conservé sans nouvelle route : le nom devient
+  `Mare / Oceano`, le title commence par `Sognare il mare` et le contenu
+  italien donne la priorité lexicale à `mare` sans promettre de signification
+  certaine.
+- `docs:build`, `docs:check`, les contrats d'URL, liens, profondeur, images et
+  surface de déploiement sont verts. Les `1 256` routes canoniques restent
+  inchangées.
+- Aucun crédit Ahrefs général, changement Rank Tracker, crawl ou demande
+  d'indexation n'a été effectué.
+- Le lot a été publié sur `master` le 28 août via `f9a7e6ec6` ; la route
+  publique répond `200` avec le nouveau title et le sitemap porte un `lastmod`
+  au 28 août.
+- Détails et protocole de mesure :
+  `j43-ocean-owner-alignment-2026-08-27.md`.
+
+## Actualisation J44 au 28 août 2026 — propriétaire IT « incendio / fuoco »
+
+- GSC complet du 30 juillet au 26 août attribue à `/it/simboli/fuoco`
+  `145` clics, `18 696` impressions, un CTR de `0,78 %` et une position moyenne
+  de `4,6`.
+- Les requêtes `sognare incendio` et `sognare un incendio` restent à seulement
+  `0,56 %` et `0,22 %` de CTR malgré des positions moyennes de `3,5` et `2,8`.
+- Le propriétaire existant est conservé sans nouvelle route : son title devient
+  `Sognare un incendio o il fuoco: significato | Noctalia`, et la première
+  réponse italienne donne la priorité à `incendio` sans promettre de sens fixe.
+- `docs:build`, `docs:check`, les contrats d'URL, liens, profondeur, images et
+  surface de déploiement sont verts. Les `1 256` routes canoniques restent
+  inchangées.
+- Aucun crédit Ahrefs général, changement Rank Tracker, crawl ou demande
+  d'indexation n'a été effectué.
+- Le lot a été publié sur `master` le 28 août via `f9a7e6ec6` ; la route
+  publique répond `200` avec le nouveau title et le sitemap porte un `lastmod`
+  au 28 août.
+- Détails et protocole de mesure :
+  `j44-fire-owner-alignment-2026-08-28.md`.
+
+## Actualisation J46 au 1er septembre 2026 — gate Ahrefs et candidat publication
+
+- GSC complet du 1er au 28 août affiche `5 544` clics, `697 106`
+  impressions, un CTR de `0,795 %` et une position moyenne de `7,29`.
+- La semaine du 22 au 28 août progresse par rapport au 15–21 août :
+  `1 995` contre `1 549` clics, `220 690` contre `195 851` impressions,
+  CTR `0,904 %` contre `0,791 %` et position `6,78` contre `7,14`.
+- Le levier existant le plus net est le cluster rêve lucide : guide EN à
+  `0` clic, `1 171` impressions et position `26,56`, guide ES à `3` clics,
+  `266` impressions et position `21,38`. Le travail doit rester sur les URL
+  existantes ; aucune nouvelle page « comment faire un rêve lucide ».
+- Le lot evergreen EN suivant doit rester séquentiel : historique de
+  l'interprétation (`4 280` impressions, position `15,1`), grossesse (`2 952`,
+  `14,5`), stress au travail (`1 992`, `13,9`) et rêves récurrents (`1 979`,
+  `21,0`). Une seule URL sera retenue après contrôle de son historique.
+- Les dix URL rentrée J34 restent sans ligne dans l'export pages au 28 août.
+  La prochaine action est l'inspection d'indexation sans demande manuelle, pas
+  un nouveau maillage à l'aveugle.
+- Le micro-gate Ahrefs autorisé a consommé exactement deux crédits : compteur
+  live `23 → 25`, Rank Tracker inchangé à `50/50`, remise à zéro affichée le
+  16 septembre 2026 UTC.
+- `false awakening` passe le gate : intention informationnelle, KD `2`, volume
+  US `2 200` et TP `1 900`; `falso despertar` confirme le marché ES avec KD
+  `0` et volume `40`.
+- `jet lag dreams` et `jet lag vivid dreams` ne montrent que `10` recherches
+  US chacune, sans KD ni TP ; les requêtes ES ne sont pas indexées dans Ahrefs.
+  Les cinq localisations jet lag sont donc archivées hors build en
+  `HOLD_RESEARCH`.
+- Le candidat de publication J46 est limité au faux réveil en cinq langues,
+  avec le refresh rêve lucide EN/ES et le maillage associé.
+- Le guide rêve lucide EN/ES, les hubs, les maillages et les manifests sont
+  modifiés localement. `docs:build` et `docs:check` sont verts : 1 261 URLs de
+  sitemap, 0 lien cassé, 0 erreur et 0 avertissement.
+- Aucun suivi Rank Tracker, crawl, abonnement, indexation, commit, push ou
+  publication n'est modifié à J46.
+- Détails : `j46-plan-2026-08-30.md`,
+  `j46-two-seo-article-briefs-2026-08-30.md`,
+  `j46-implementation-review-2026-08-30.md` et
+  `j46-ahrefs-micro-gate-2026-09-01.md`.

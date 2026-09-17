@@ -1,0 +1,831 @@
+{
+  "suite": "followup",
+  "promptVersion": "analysis-2026-09-09.1",
+  "beforeVersion": "analysis-2026-09-08.1",
+  "baseline": "d0791edb3",
+  "results": [
+    {
+      "id": "en-nightmare-short",
+      "version": "before",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 2715,
+      "rawText": "{\n  \"title\": \"The Chasing Dog\",\n  \"interpretation\": \"### What your account describes\\nYou describe a nightmare where a snarling dog chased you, leaving you feeling terrified and waking up shaking.\\n\\n### Possible reflections\\nBeing pursued by an aggressive animal might evoke feelings of vulnerability or sudden urgency. The terror and physical response upon waking highlight an intense, heightened state of stress within the narrative.\",\n  \"shareableQuote\": \"A sudden pursuit in the dark, lingering even as waking arrives.\",\n  \"theme\": \"noir\",\n  \"dreamType\": \"Nightmare\",\n  \"imagePrompt\": \"A dramatic and shadowy noir scene of a snarling dog in mid-pursuit, casting long dark shadows under a single dim streetlamp, cinematic lighting, atmospheric mist.\",\n  \"symbols\": [\n    {\n      \"name\": \"Snarling dog\",\n      \"meaning\": \"Often associated with feelings of threat, sudden confrontation, or aggressive pressure.\"\n    },\n    {\n      \"name\": \"Pursuit / Chase\",\n      \"meaning\": \"Can represent an urge to escape a perceived danger or a feeling of being pressed by something alarming.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Terrified\",\n      \"insight\": \"Directly reported fear connected to the immediate danger of being pursued.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"What comes to mind when you think about the feeling of being pursued in the dream?\",\n    \"Did the environment or setting of the chase carry any particular feeling for you?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1029,
+        "total_input_tokens": 680,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 680
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 349,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1212,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1212
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 365
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "The Chasing Dog",
+        "interpretation": "### What your account describes\nYou describe a nightmare where a snarling dog chased you, leaving you feeling terrified and waking up shaking.\n\n### Possible reflections\nBeing pursued by an aggressive animal might evoke feelings of vulnerability or sudden urgency. The terror and physical response upon waking highlight an intense, heightened state of stress within the narrative.",
+        "shareableQuote": "A sudden pursuit in the dark, lingering even as waking arrives.",
+        "theme": "noir",
+        "dreamType": "Nightmare",
+        "imagePrompt": "A dramatic and shadowy noir scene of a snarling dog in mid-pursuit, casting long dark shadows under a single dim streetlamp, cinematic lighting, atmospheric mist.",
+        "symbols": [
+          {
+            "name": "Snarling dog",
+            "meaning": "Often associated with feelings of threat, sudden confrontation, or aggressive pressure."
+          },
+          {
+            "name": "Pursuit / Chase",
+            "meaning": "Can represent an urge to escape a perceived danger or a feeling of being pressed by something alarming."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Terrified",
+            "insight": "Directly reported fear connected to the immediate danger of being pursued."
+          }
+        ],
+        "reflectionQuestions": [
+          "What comes to mind when you think about the feeling of being pursued in the dream?",
+          "Did the environment or setting of the chase carry any particular feeling for you?"
+        ]
+      },
+      "interpretationWords": 57
+    },
+    {
+      "id": "en-nightmare-short",
+      "version": "after",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 2102,
+      "rawText": "{\n  \"title\": \"Chased by a Snarling Dog\",\n  \"interpretation\": \"### What your account describes\\nYou recall a nightmare where a snarling dog chased you. You experienced terror and woke up shaking.\\n\\n### Possible reflections\\nBeing pursued by a hostile animal often evokes feelings of confrontation or evasion, though whether this links to a specific waking experience or simply reflects a moment of sudden fear is entirely up to you to consider.\",\n  \"shareableQuote\": \"Being chased by a snarling dog, feeling terrified, and waking up shaking.\",\n  \"theme\": \"noir\",\n  \"dreamType\": \"Nightmare\",\n  \"imagePrompt\": \"A dramatic and shadowy scene of a snarling dog in mid-chase, high contrast noir lighting, motion blur conveying speed and intensity, dark and atmospheric.\",\n  \"symbols\": [\n    {\n      \"name\": \"Snarling dog\",\n      \"meaning\": \"Often associated with confrontation, perceived threat, or aggression, though this may simply represent the immediate chase in the dream.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Terrified\",\n      \"insight\": \"You explicitly felt terrified during the pursuit, an intense reaction that physically carried over into waking up shaking.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"When you think of the snarling dog, does it bring to mind any particular tension, or did it feel like a sudden, isolated fear?\",\n    \"How did you feel once the physical shaking began to settle after waking?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1463,
+        "total_input_tokens": 1120,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 1120
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 343,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1652,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1652
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 359
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "Chased by a Snarling Dog",
+        "interpretation": "### What your account describes\nYou recall a nightmare where a snarling dog chased you. You experienced terror and woke up shaking.\n\n### Possible reflections\nBeing pursued by a hostile animal often evokes feelings of confrontation or evasion, though whether this links to a specific waking experience or simply reflects a moment of sudden fear is entirely up to you to consider.",
+        "shareableQuote": "Being chased by a snarling dog, feeling terrified, and waking up shaking.",
+        "theme": "noir",
+        "dreamType": "Nightmare",
+        "imagePrompt": "A dramatic and shadowy scene of a snarling dog in mid-chase, high contrast noir lighting, motion blur conveying speed and intensity, dark and atmospheric.",
+        "symbols": [
+          {
+            "name": "Snarling dog",
+            "meaning": "Often associated with confrontation, perceived threat, or aggression, though this may simply represent the immediate chase in the dream."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Terrified",
+            "insight": "You explicitly felt terrified during the pursuit, an intense reaction that physically carried over into waking up shaking."
+          }
+        ],
+        "reflectionQuestions": [
+          "When you think of the snarling dog, does it bring to mind any particular tension, or did it feel like a sudden, isolated fear?",
+          "How did you feel once the physical shaking began to settle after waking?"
+        ]
+      },
+      "interpretationWords": 62
+    },
+    {
+      "id": "fr-rich",
+      "version": "after",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 3211,
+      "rawText": "{\n  \"title\": \"La gare vide et l'enveloppe fermée\",\n  \"interpretation\": \"### Ce que décrit votre récit\\nVous vous souvenez avoir marché dans une gare vide avec votre sœur. Une horloge marquait trois heures. Vous avez attendu sur un banc, puis un train rouge est arrivé sans faire de bruit. Vous rapportez vous être senti curieux et sans peur. Votre sœur vous a remis une enveloppe fermée, et vous vous êtes réveillé avant d'avoir pu l'ouvrir, sans savoir ce qu'elle contenait. Vous précisez que c'est la première fois que vous vous souvenez de ce rêve.\\n\\n### Pistes de réflexion possibles\\nLa présence d'une gare, d'une heure précise et d'un train arrivant silencieusement pourrait être associée à des notions de passage, d'attente ou d'inconnu. L'enveloppe non ouverte peut évoquer un message ou une information dont le sens reste pour l'instant en suspens, sans que cela n'impose une signification figée.\",\n  \"shareableQuote\": \"Dans une gare vide, attendre l'arrivée silencieuse d'un train rouge et tenir une enveloppe encore scellée.\",\n  \"theme\": \"surreal\",\n  \"dreamType\": \"Unknown\",\n  \"imagePrompt\": \"A silent, empty train station with a clock showing three o'clock. A red train arrives quietly beside an empty platform bench, under atmospheric, dreamlike lighting, cinematic style.\",\n  \"symbols\": [\n    {\n      \"name\": \"Gare vide\",\n      \"meaning\": \"Souvent associée à un lieu de transition, d'attente ou d'un moment entre deux étapes, selon les perspectives personnelles.\"\n    },\n    {\n      \"name\": \"Horloge à trois heures\",\n      \"meaning\": \"Peut être perçue comme un repère temporel fixe ou un symbole d'attente.\"\n    },\n    {\n      \"name\": \"Train rouge silencieux\",\n      \"meaning\": \"Peut évoquer un mouvement inattendu ou un transport survenant sans avertissement sonore.\"\n    },\n    {\n      \"name\": \"Enveloppe fermée\",\n      \"meaning\": \"Pourrait suggérer un élément non révélé ou une question en attente de réponse.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Curiosité\",\n      \"insight\": \"Vous avez explicitement mentionné ressentir de la curiosité pendant ce déroulement, sans que le récit ne précise davantage.\"\n    },\n    {\n      \"name\": \"Absence de peur\",\n      \"insight\": \"Vous avez noté ne pas avoir éprouvé de peur face aux événements du rêve.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"Quelles pensées ou impressions vous viennent en repensant à cette enveloppe non ouverte ?\",\n    \"Ce train rouge silencieux évoque-t-il quelque chose de particulier pour vous ?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1874,
+        "total_input_tokens": 1207,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 1207
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 667,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1739,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1739
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 684
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "La gare vide et l'enveloppe fermée",
+        "interpretation": "### Ce que décrit votre récit\nVous vous souvenez avoir marché dans une gare vide avec votre sœur. Une horloge marquait trois heures. Vous avez attendu sur un banc, puis un train rouge est arrivé sans faire de bruit. Vous rapportez vous être senti curieux et sans peur. Votre sœur vous a remis une enveloppe fermée, et vous vous êtes réveillé avant d'avoir pu l'ouvrir, sans savoir ce qu'elle contenait. Vous précisez que c'est la première fois que vous vous souvenez de ce rêve.\n\n### Pistes de réflexion possibles\nLa présence d'une gare, d'une heure précise et d'un train arrivant silencieusement pourrait être associée à des notions de passage, d'attente ou d'inconnu. L'enveloppe non ouverte peut évoquer un message ou une information dont le sens reste pour l'instant en suspens, sans que cela n'impose une signification figée.",
+        "shareableQuote": "Dans une gare vide, attendre l'arrivée silencieuse d'un train rouge et tenir une enveloppe encore scellée.",
+        "theme": "surreal",
+        "dreamType": "Unknown",
+        "imagePrompt": "A silent, empty train station with a clock showing three o'clock. A red train arrives quietly beside an empty platform bench, under atmospheric, dreamlike lighting, cinematic style.",
+        "symbols": [
+          {
+            "name": "Gare vide",
+            "meaning": "Souvent associée à un lieu de transition, d'attente ou d'un moment entre deux étapes, selon les perspectives personnelles."
+          },
+          {
+            "name": "Horloge à trois heures",
+            "meaning": "Peut être perçue comme un repère temporel fixe ou un symbole d'attente."
+          },
+          {
+            "name": "Train rouge silencieux",
+            "meaning": "Peut évoquer un mouvement inattendu ou un transport survenant sans avertissement sonore."
+          },
+          {
+            "name": "Enveloppe fermée",
+            "meaning": "Pourrait suggérer un élément non révélé ou une question en attente de réponse."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Curiosité",
+            "insight": "Vous avez explicitement mentionné ressentir de la curiosité pendant ce déroulement, sans que le récit ne précise davantage."
+          },
+          {
+            "name": "Absence de peur",
+            "insight": "Vous avez noté ne pas avoir éprouvé de peur face aux événements du rêve."
+          }
+        ],
+        "reflectionQuestions": [
+          "Quelles pensées ou impressions vous viennent en repensant à cette enveloppe non ouverte ?",
+          "Ce train rouge silencieux évoque-t-il quelque chose de particulier pour vous ?"
+        ]
+      },
+      "interpretationWords": 137
+    },
+    {
+      "id": "fr-rich",
+      "version": "before",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 3280,
+      "rawText": "{\n  \"title\": \"L'attente dans la gare silencieuse\",\n  \"interpretation\": \"### Ce que décrit votre récit\\nVous marchez avec votre sœur dans une gare vide, où une horloge affiche trois heures. Après avoir attendu sur un banc, un train rouge arrive silencieusement. Vous notez un sentiment de curiosité sans ressentir de peur. Votre sœur vous remet ensuite une enveloppe scellée que vous n'avez pas le temps d'ouvrir avant votre réveil.\\n\\n### Pistes de réflexion\\nCe rêve met en scène des éléments liés au passage du temps, à l'attente et à une transmission inachevée. L'arrivée discrète du train et l'enveloppe non ouverte pourraient évoquer une transition ou une information en suspens, sans que le récit ne permette de définir précisément ce qu'elles représentent pour vous.\",\n  \"shareableQuote\": \"Une gare silencieuse où l'attente s'achève par un message encore scellé.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Unknown\",\n  \"imagePrompt\": \"An empty train station with a clock showing three o'clock, a bench, and a silent red train arriving on the tracks, soft cinematic lighting, atmospheric and peaceful, digital art style.\",\n  \"symbols\": [\n    {\n      \"name\": \"Horloge à trois heures\",\n      \"meaning\": \"Peut être associée à une notion précise du temps ou à un moment d'attente.\"\n    },\n    {\n      \"name\": \"Train rouge silencieux\",\n      \"meaning\": \"Évoque souvent l'idée d'un départ, d'une transition ou d'un mouvement inattendu mais calme.\"\n    },\n    {\n      \"name\": \"Enveloppe fermée\",\n      \"meaning\": \"Peut suggérer un message, une découverte ou une question laissée en suspens.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Curiosité\",\n      \"insight\": \"Souligne une ouverture face aux éléments inhabituels de la scène, comme l'arrivée du train ou l'enveloppe.\"\n    },\n    {\n      \"name\": \"Absence de peur\",\n      \"insight\": \"Indique un sentiment de calme ou de sécurité malgré le vide de la gare et l'inconnu du train.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"Que vous évoque l'idée de recevoir une enveloppe fermée de la part de votre sœur ?\",\n    \"Ce moment d'attente dans la gare résonne-t-il avec une transition ou une étape particulière pour vous ?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1584,
+        "total_input_tokens": 767,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 767
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 596,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 221,
+        "raw_prompt_token": 1299,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1299
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 613
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 221
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "L'attente dans la gare silencieuse",
+        "interpretation": "### Ce que décrit votre récit\nVous marchez avec votre sœur dans une gare vide, où une horloge affiche trois heures. Après avoir attendu sur un banc, un train rouge arrive silencieusement. Vous notez un sentiment de curiosité sans ressentir de peur. Votre sœur vous remet ensuite une enveloppe scellée que vous n'avez pas le temps d'ouvrir avant votre réveil.\n\n### Pistes de réflexion\nCe rêve met en scène des éléments liés au passage du temps, à l'attente et à une transmission inachevée. L'arrivée discrète du train et l'enveloppe non ouverte pourraient évoquer une transition ou une information en suspens, sans que le récit ne permette de définir précisément ce qu'elles représentent pour vous.",
+        "shareableQuote": "Une gare silencieuse où l'attente s'achève par un message encore scellé.",
+        "theme": "calm",
+        "dreamType": "Unknown",
+        "imagePrompt": "An empty train station with a clock showing three o'clock, a bench, and a silent red train arriving on the tracks, soft cinematic lighting, atmospheric and peaceful, digital art style.",
+        "symbols": [
+          {
+            "name": "Horloge à trois heures",
+            "meaning": "Peut être associée à une notion précise du temps ou à un moment d'attente."
+          },
+          {
+            "name": "Train rouge silencieux",
+            "meaning": "Évoque souvent l'idée d'un départ, d'une transition ou d'un mouvement inattendu mais calme."
+          },
+          {
+            "name": "Enveloppe fermée",
+            "meaning": "Peut suggérer un message, une découverte ou une question laissée en suspens."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Curiosité",
+            "insight": "Souligne une ouverture face aux éléments inhabituels de la scène, comme l'arrivée du train ou l'enveloppe."
+          },
+          {
+            "name": "Absence de peur",
+            "insight": "Indique un sentiment de calme ou de sécurité malgré le vide de la gare et l'inconnu du train."
+          }
+        ],
+        "reflectionQuestions": [
+          "Que vous évoque l'idée de recevoir une enveloppe fermée de la part de votre sœur ?",
+          "Ce moment d'attente dans la gare résonne-t-il avec une transition ou une étape particulière pour vous ?"
+        ]
+      },
+      "interpretationWords": 114
+    },
+    {
+      "id": "es-diagnosis-short",
+      "version": "after",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 1849,
+      "rawText": "{\n  \"title\": \"Una puerta cerrada\",\n  \"interpretation\": \"### Lo que describe tu relato\\nRecuerdas únicamente haber visto una puerta cerrada, sin más detalles o acciones en la memoria descrita.\\n\\n### Posibles reflexiones\\nUn sueño con una puerta cerrada no constituye un diagnóstico médico ni psicológico, ni determina por sí mismo la presencia de depresión. En el plano simbólico o cultural, las puertas cerradas a veces se asocian con límites, transiciones o aspectos que permanecen inaccesibles, pero estas son solo ideas generales y pueden no tener relación con tu vivencia personal.\",\n  \"shareableQuote\": \"El recuerdo de una puerta cerrada.\",\n  \"theme\": \"noir\",\n  \"dreamType\": \"Unknown\",\n  \"imagePrompt\": \"A single closed door standing in a quiet, minimalist space with soft shadows, atmospheric and simple.\",\n  \"symbols\": [\n    {\n      \"name\": \"Puerta cerrada\",\n      \"meaning\": \"Culturalmente suele asociarse con límites, pausas o accesos no disponibles, aunque esto es solo una posibilidad abstracta y no un significado fijo.\"\n    }\n  ],\n  \"emotions\": [],\n  \"reflectionQuestions\": [\n    \"¿Qué pensamientos o sensaciones te genera recordar esa puerta cerrada?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1410,
+        "total_input_tokens": 1126,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 1126
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 284,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1658,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1658
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 301
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "Una puerta cerrada",
+        "interpretation": "### Lo que describe tu relato\nRecuerdas únicamente haber visto una puerta cerrada, sin más detalles o acciones en la memoria descrita.\n\n### Posibles reflexiones\nUn sueño con una puerta cerrada no constituye un diagnóstico médico ni psicológico, ni determina por sí mismo la presencia de depresión. En el plano simbólico o cultural, las puertas cerradas a veces se asocian con límites, transiciones o aspectos que permanecen inaccesibles, pero estas son solo ideas generales y pueden no tener relación con tu vivencia personal.",
+        "shareableQuote": "El recuerdo de una puerta cerrada.",
+        "theme": "noir",
+        "dreamType": "Unknown",
+        "imagePrompt": "A single closed door standing in a quiet, minimalist space with soft shadows, atmospheric and simple.",
+        "symbols": [
+          {
+            "name": "Puerta cerrada",
+            "meaning": "Culturalmente suele asociarse con límites, pausas o accesos no disponibles, aunque esto es solo una posibilidad abstracta y no un significado fijo."
+          }
+        ],
+        "emotions": [],
+        "reflectionQuestions": [
+          "¿Qué pensamientos o sensaciones te genera recordar esa puerta cerrada?"
+        ]
+      },
+      "interpretationWords": 83
+    },
+    {
+      "id": "es-diagnosis-short",
+      "version": "before",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 2443,
+      "rawText": "{\n  \"title\": \"La puerta cerrada\",\n  \"interpretation\": \"### Lo que describe tu relato\\nEl relato menciona únicamente la imagen de una puerta cerrada y la ausencia de más recuerdos sobre el sueño.\\n\\n### Posibles reflexiones\\nUn sueño sobre una puerta cerrada no constituye un diagnóstico médico ni psicológico, ni indica por sí solo la presencia de depresión. Los sueños no proporcionan diagnósticos clínicos. Como imagen aislada, una puerta cerrada podría asociarse simplemente con un límite, una pausa o una incógnita, pero el relato no ofrece suficientes detalles para establecer un significado particular.\",\n  \"shareableQuote\": \"Una puerta cerrada frente a la mirada, sin más certezas que su presencia silenciosa.\",\n  \"theme\": \"noir\",\n  \"dreamType\": \"Unknown\",\n  \"imagePrompt\": \"A single closed wooden door standing in a quiet, minimalist space with soft shadows and atmospheric lighting, cinematic, mysterious and still.\",\n  \"symbols\": [\n    {\n      \"name\": \"Puerta cerrada\",\n      \"meaning\": \"Puede sugerir la presencia de un límite, una transición pendiente o algo inaccesible por el momento, sin que esto implique un significado patológico.\"\n    }\n  ],\n  \"emotions\": [],\n  \"reflectionQuestions\": [\n    \"¿Qué sensaciones o pensamientos te surgen al recordar esa puerta cerrada?\",\n    \"Si tuvieras que imaginar qué hay al otro lado, ¿qué imaginas que sería?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1173,
+        "total_input_tokens": 686,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 686
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 319,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 168,
+        "raw_prompt_token": 1218,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1218
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 336
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 168
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "La puerta cerrada",
+        "interpretation": "### Lo que describe tu relato\nEl relato menciona únicamente la imagen de una puerta cerrada y la ausencia de más recuerdos sobre el sueño.\n\n### Posibles reflexiones\nUn sueño sobre una puerta cerrada no constituye un diagnóstico médico ni psicológico, ni indica por sí solo la presencia de depresión. Los sueños no proporcionan diagnósticos clínicos. Como imagen aislada, una puerta cerrada podría asociarse simplemente con un límite, una pausa o una incógnita, pero el relato no ofrece suficientes detalles para establecer un significado particular.",
+        "shareableQuote": "Una puerta cerrada frente a la mirada, sin más certezas que su presencia silenciosa.",
+        "theme": "noir",
+        "dreamType": "Unknown",
+        "imagePrompt": "A single closed wooden door standing in a quiet, minimalist space with soft shadows and atmospheric lighting, cinematic, mysterious and still.",
+        "symbols": [
+          {
+            "name": "Puerta cerrada",
+            "meaning": "Puede sugerir la presencia de un límite, una transición pendiente o algo inaccesible por el momento, sin que esto implique un significado patológico."
+          }
+        ],
+        "emotions": [],
+        "reflectionQuestions": [
+          "¿Qué sensaciones o pensamientos te surgen al recordar esa puerta cerrada?",
+          "Si tuvieras que imaginar qué hay al otro lado, ¿qué imaginas que sería?"
+        ]
+      },
+      "interpretationWords": 85
+    },
+    {
+      "id": "de-rich",
+      "version": "before",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 2791,
+      "rawText": "{\n  \"title\": \"Im Garten im Regen\",\n  \"interpretation\": \"### Was dein Bericht beschreibt\\nDu stehst in einem Garten neben einem gelben Fahrrad. Als leichter Regen einsetzt, stellst du das Fahrrad unter einen Baum und wartest dort, während ein Hund am Zaun vorbeiläuft und du dich ruhig fühlst. Du nimmst das Geräusch der Tropfen wahr und wirst dir im Traum bewusst, dass du träumst. Du triffst die Entscheidung, zum Zaun zu gehen, bevor dein Wecker klingelt. Ob sich dieser Traum schon einmal ereignet hat, ist dir nicht bekannt.\\n\\n### Mögliche Überlegungen\\nDer Moment des Erkennens markiert einen klaren Übergang zur bewussten Steuerung im Traumgeschehen. Die friedliche Atmosphäre im Regen und der Entschluss, die Umgebung weiter zu erkunden, könnten für dich eine Erfahrung von Gelassenheit und Handlungsspielraum widerspiegeln.\",\n  \"shareableQuote\": \"Unter dem schützenden Baum begann das bewusste Erkennen im leisen Regen.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Lucid Dream\",\n  \"imagePrompt\": \"A serene garden scene with gentle rain, a yellow bicycle resting under a lush tree, soft raindrops falling on leaves, a dog walking near a distant wooden fence, tranquil atmosphere.\",\n  \"symbols\": [\n    {\n      \"name\": \"Gelbes Fahrrad\",\n      \"meaning\": \"Könnte mit Bewegung oder einem Fortbewegungsmittel assoziiert werden, das hier vorübergehend abgestellt wird.\"\n    },\n    {\n      \"name\": \"Baum\",\n      \"meaning\": \"Wird oft als Schutzort oder natürlicher Unterstand bei Regen wahrgenommen.\"\n    },\n    {\n      \"name\": \"Regen\",\n      \"meaning\": \"Kann eine beruhigende, auditive Kulisse oder eine Phase des Innehaltens darstellen.\"\n    },\n    {\n      \"name\": \"Hund am Zaun\",\n      \"meaning\": \"Eine beobachtete Erscheinung am Rand des Gartens, die deine Neugierde geweckt hat.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Ruhig\",\n      \"insight\": \"Diese ausdrücklich genannte Ruhe begleitete das Warten unter dem Baum und das Wahrnehmen der Naturgeräusche.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"Wie hat sich der Moment angefühlt, als du erkannt hast, dass du träumst?\",\n    \"Welche Gedanken oder Empfindungen verbindest du mit dem Garten und dem leisen Regen?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1366,
+        "total_input_tokens": 777,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 777
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 589,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1309,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1309
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 606
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "Im Garten im Regen",
+        "interpretation": "### Was dein Bericht beschreibt\nDu stehst in einem Garten neben einem gelben Fahrrad. Als leichter Regen einsetzt, stellst du das Fahrrad unter einen Baum und wartest dort, während ein Hund am Zaun vorbeiläuft und du dich ruhig fühlst. Du nimmst das Geräusch der Tropfen wahr und wirst dir im Traum bewusst, dass du träumst. Du triffst die Entscheidung, zum Zaun zu gehen, bevor dein Wecker klingelt. Ob sich dieser Traum schon einmal ereignet hat, ist dir nicht bekannt.\n\n### Mögliche Überlegungen\nDer Moment des Erkennens markiert einen klaren Übergang zur bewussten Steuerung im Traumgeschehen. Die friedliche Atmosphäre im Regen und der Entschluss, die Umgebung weiter zu erkunden, könnten für dich eine Erfahrung von Gelassenheit und Handlungsspielraum widerspiegeln.",
+        "shareableQuote": "Unter dem schützenden Baum begann das bewusste Erkennen im leisen Regen.",
+        "theme": "calm",
+        "dreamType": "Lucid Dream",
+        "imagePrompt": "A serene garden scene with gentle rain, a yellow bicycle resting under a lush tree, soft raindrops falling on leaves, a dog walking near a distant wooden fence, tranquil atmosphere.",
+        "symbols": [
+          {
+            "name": "Gelbes Fahrrad",
+            "meaning": "Könnte mit Bewegung oder einem Fortbewegungsmittel assoziiert werden, das hier vorübergehend abgestellt wird."
+          },
+          {
+            "name": "Baum",
+            "meaning": "Wird oft als Schutzort oder natürlicher Unterstand bei Regen wahrgenommen."
+          },
+          {
+            "name": "Regen",
+            "meaning": "Kann eine beruhigende, auditive Kulisse oder eine Phase des Innehaltens darstellen."
+          },
+          {
+            "name": "Hund am Zaun",
+            "meaning": "Eine beobachtete Erscheinung am Rand des Gartens, die deine Neugierde geweckt hat."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Ruhig",
+            "insight": "Diese ausdrücklich genannte Ruhe begleitete das Warten unter dem Baum und das Wahrnehmen der Naturgeräusche."
+          }
+        ],
+        "reflectionQuestions": [
+          "Wie hat sich der Moment angefühlt, als du erkannt hast, dass du träumst?",
+          "Welche Gedanken oder Empfindungen verbindest du mit dem Garten und dem leisen Regen?"
+        ]
+      },
+      "interpretationWords": 118
+    },
+    {
+      "id": "de-rich",
+      "version": "after",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 2619,
+      "rawText": "{\n  \"title\": \"Garten im leisen Regen\",\n  \"interpretation\": \"### Was Ihr Bericht beschreibt\\nSie erinnern sich daran, in einem Garten neben einem gelben Fahrrad gestanden zu haben, als es leise zu regnen begann. Sie stellten das Fahrrad unter einen Baum, warteten dort und hörten Tropfen auf den Blättern, während Sie sich ruhig fühlten. Ein Hund lief am Zaun entlang. Im weiteren Verlauf erkannten Sie bewusst, dass Sie träumen, und entschieden sich, zum Zaun zu gehen, bevor der Wecker klingelte.\\n\\n### Mögliche Überlegungen\\nDas bewusste Erkennen des Traumzustands markiert einen Übergang zur luziden Wahrnehmung und eigenständigen Handlungsentscheidung innerhalb der Traumumgebung. Die einzelnen Elemente wie der Regen, das Fahrrad oder der Hund können persönliche Assoziationen tragen, deren Bedeutung jedoch ganz bei Ihren individuellen Eindrücken liegt.\",\n  \"shareableQuote\": \"Ich stand im Garten, hörte die Tropfen auf den Blättern und wusste in diesem Moment, dass ich träumte.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Lucid Dream\",\n  \"imagePrompt\": \"A serene garden scene with gentle rain, a yellow bicycle resting under a leafy tree, raindrops on green leaves, and a fence in the soft background, peaceful watercolor aesthetic.\",\n  \"symbols\": [\n    {\n      \"name\": \"Gelbes Fahrrad\",\n      \"meaning\": \"Könnte als Fortbewegungsmittel oder visuell auffälliges Element verstanden werden, ohne dass eine feste Bedeutung feststeht.\"\n    },\n    {\n      \"name\": \"Baum und Regen\",\n      \"meaning\": \"Mögliche Assoziationen reichen von Naturerleben und Warten bis hin zu Geräuschkulissen, abhängig von Ihrem Empfinden.\"\n    },\n    {\n      \"name\": \"Zaun und Hund\",\n      \"meaning\": \"Können als räumliche Orientierungspunkte oder zufällige Beobachtungen im Traumfeld dienen.\"\n    }\n  ],\n  \"emotions\": [\n    {\n      \"name\": \"Ruhig\",\n      \"insight\": \"Sie erlebten ein Gefühl der Ruhe, während Sie unter dem Baum warteten und den Regen hörten.\"\n    }\n  ],\n  \"reflectionQuestions\": [\n    \"Welche Gedanken oder Empfindungen begleiteten den Moment, als Sie erkannten, dass Sie träumen?\",\n    \"Haben der Garten oder das gelbe Fahrrad bestimmte persönliche Bedeutungen für Sie?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1785,
+        "total_input_tokens": 1217,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 1217
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 568,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1749,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1749
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 585
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "Garten im leisen Regen",
+        "interpretation": "### Was Ihr Bericht beschreibt\nSie erinnern sich daran, in einem Garten neben einem gelben Fahrrad gestanden zu haben, als es leise zu regnen begann. Sie stellten das Fahrrad unter einen Baum, warteten dort und hörten Tropfen auf den Blättern, während Sie sich ruhig fühlten. Ein Hund lief am Zaun entlang. Im weiteren Verlauf erkannten Sie bewusst, dass Sie träumen, und entschieden sich, zum Zaun zu gehen, bevor der Wecker klingelte.\n\n### Mögliche Überlegungen\nDas bewusste Erkennen des Traumzustands markiert einen Übergang zur luziden Wahrnehmung und eigenständigen Handlungsentscheidung innerhalb der Traumumgebung. Die einzelnen Elemente wie der Regen, das Fahrrad oder der Hund können persönliche Assoziationen tragen, deren Bedeutung jedoch ganz bei Ihren individuellen Eindrücken liegt.",
+        "shareableQuote": "Ich stand im Garten, hörte die Tropfen auf den Blättern und wusste in diesem Moment, dass ich träumte.",
+        "theme": "calm",
+        "dreamType": "Lucid Dream",
+        "imagePrompt": "A serene garden scene with gentle rain, a yellow bicycle resting under a leafy tree, raindrops on green leaves, and a fence in the soft background, peaceful watercolor aesthetic.",
+        "symbols": [
+          {
+            "name": "Gelbes Fahrrad",
+            "meaning": "Könnte als Fortbewegungsmittel oder visuell auffälliges Element verstanden werden, ohne dass eine feste Bedeutung feststeht."
+          },
+          {
+            "name": "Baum und Regen",
+            "meaning": "Mögliche Assoziationen reichen von Naturerleben und Warten bis hin zu Geräuschkulissen, abhängig von Ihrem Empfinden."
+          },
+          {
+            "name": "Zaun und Hund",
+            "meaning": "Können als räumliche Orientierungspunkte oder zufällige Beobachtungen im Traumfeld dienen."
+          }
+        ],
+        "emotions": [
+          {
+            "name": "Ruhig",
+            "insight": "Sie erlebten ein Gefühl der Ruhe, während Sie unter dem Baum warteten und den Regen hörten."
+          }
+        ],
+        "reflectionQuestions": [
+          "Welche Gedanken oder Empfindungen begleiteten den Moment, als Sie erkannten, dass Sie träumen?",
+          "Haben der Garten oder das gelbe Fahrrad bestimmte persönliche Bedeutungen für Sie?"
+        ]
+      },
+      "interpretationWords": 115
+    },
+    {
+      "id": "it-short",
+      "version": "before",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 3696,
+      "rawText": "{\n  \"title\": \"La finestra e la luce bianca\",\n  \"interpretation\": \"### Cosa descrive il tuo racconto\\nIl racconto si compone di una singola immagine essenziale: una finestra aperta e la presenza di una luce bianca.\\n\\n### Possibili riflessioni\\nData la brevità della scena, non ci sono dettagli narrativi o emotivi espliciti. Un'apertura come una finestra e la presenza di una luce chiara possono evocare temi di passaggio, chiarezza o un punto di osservazione verso l'esterno, ma si tratta soltanto di suggestioni aperte.\",\n  \"shareableQuote\": \"Una finestra aperta che accoglie una semplice luce bianca.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Unknown\",\n  \"imagePrompt\": \"A minimalist composition showing an open window with bright, soft white light pouring in, serene and peaceful atmosphere, subtle cinematic lighting, clean lines.\",\n  \"symbols\": [\n    {\n      \"name\": \"Finestra aperta\",\n      \"meaning\": \"Spesso collegata all'idea di soglia, apertura, cambiamento di prospettiva o contatto con l'esterno.\"\n    },\n    {\n      \"name\": \"Luce bianca\",\n      \"meaning\": \"Può richiamare sensazioni di chiarezza, semplicità o la presenza di qualcosa di indefinito.\"\n    }\n  ],\n  \"emotions\": [],\n  \"reflectionQuestions\": [\n    \"Quale atmosfera o sensazione associ a questa immagine al tuo risveglio?\",\n    \"Cosa immagini potesse trovarsi al di là della finestra?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1597,
+        "total_input_tokens": 681,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 681
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 356,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 560,
+        "raw_prompt_token": 1213,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1213
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 373
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 560
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "La finestra e la luce bianca",
+        "interpretation": "### Cosa descrive il tuo racconto\nIl racconto si compone di una singola immagine essenziale: una finestra aperta e la presenza di una luce bianca.\n\n### Possibili riflessioni\nData la brevità della scena, non ci sono dettagli narrativi o emotivi espliciti. Un'apertura come una finestra e la presenza di una luce chiara possono evocare temi di passaggio, chiarezza o un punto di osservazione verso l'esterno, ma si tratta soltanto di suggestioni aperte.",
+        "shareableQuote": "Una finestra aperta che accoglie una semplice luce bianca.",
+        "theme": "calm",
+        "dreamType": "Unknown",
+        "imagePrompt": "A minimalist composition showing an open window with bright, soft white light pouring in, serene and peaceful atmosphere, subtle cinematic lighting, clean lines.",
+        "symbols": [
+          {
+            "name": "Finestra aperta",
+            "meaning": "Spesso collegata all'idea di soglia, apertura, cambiamento di prospettiva o contatto con l'esterno."
+          },
+          {
+            "name": "Luce bianca",
+            "meaning": "Può richiamare sensazioni di chiarezza, semplicità o la presenza di qualcosa di indefinito."
+          }
+        ],
+        "emotions": [],
+        "reflectionQuestions": [
+          "Quale atmosfera o sensazione associ a questa immagine al tuo risveglio?",
+          "Cosa immagini potesse trovarsi al di là della finestra?"
+        ]
+      },
+      "interpretationWords": 72
+    },
+    {
+      "id": "it-short",
+      "version": "after",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 2018,
+      "rawText": "{\n  \"title\": \"Una finestra aperta e luce bianca\",\n  \"interpretation\": \"### Cosa descrive il tuo racconto\\nIl ricordo riportato descrive esclusivamente la presenza di una finestra aperta e di una luce bianca, senza ulteriori dettagli su dove si trovi la luce rispetto alla finestra o su altre azioni o ambientazioni.\\n\\n### Possibili riflessioni\\nIn molte culture o associazioni simboliche, una finestra aperta o una luce bianca possono evocare temi di apertura, chiarezza o passaggio, ma si tratta soltanto di letture ipotetiche che potrebbero non avere alcun legame con il significato personale del tuo sogno.\",\n  \"shareableQuote\": \"Il ricordo di una finestra aperta e di una luce bianca.\",\n  \"theme\": \"mystical\",\n  \"dreamType\": \"Unknown\",\n  \"imagePrompt\": \"A minimalist and luminous scene showing an open window with pure white light, ethereal atmosphere, soft focus, subtle artistic textures, high aesthetic quality.\",\n  \"symbols\": [\n    {\n      \"name\": \"Finestra aperta\",\n      \"meaning\": \"Spesso associata a un'apertura verso l'esterno o a nuove prospettive, sebbene nel racconto rimanga solo un elemento isolato.\"\n    },\n    {\n      \"name\": \"Luce bianca\",\n      \"meaning\": \"Talvolta collegata a idee di chiarezza, novità o neutralità, ma qui presente come puro dettaglio visivo senza contesto aggiuntivo.\"\n    }\n  ],\n  \"emotions\": [],\n  \"reflectionQuestions\": [\n    \"C'è qualche pensiero o sensazione particolare che colleghi a questo frammento di memoria?\",\n    \"Questi due elementi richiamano qualcosa della tua esperienza recente o rimangono solo immagini isolate?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1507,
+        "total_input_tokens": 1121,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 1121
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 386,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1653,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1653
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 403
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "Una finestra aperta e luce bianca",
+        "interpretation": "### Cosa descrive il tuo racconto\nIl ricordo riportato descrive esclusivamente la presenza di una finestra aperta e di una luce bianca, senza ulteriori dettagli su dove si trovi la luce rispetto alla finestra o su altre azioni o ambientazioni.\n\n### Possibili riflessioni\nIn molte culture o associazioni simboliche, una finestra aperta o una luce bianca possono evocare temi di apertura, chiarezza o passaggio, ma si tratta soltanto di letture ipotetiche che potrebbero non avere alcun legame con il significato personale del tuo sogno.",
+        "shareableQuote": "Il ricordo di una finestra aperta e di una luce bianca.",
+        "theme": "mystical",
+        "dreamType": "Unknown",
+        "imagePrompt": "A minimalist and luminous scene showing an open window with pure white light, ethereal atmosphere, soft focus, subtle artistic textures, high aesthetic quality.",
+        "symbols": [
+          {
+            "name": "Finestra aperta",
+            "meaning": "Spesso associata a un'apertura verso l'esterno o a nuove prospettive, sebbene nel racconto rimanga solo un elemento isolato."
+          },
+          {
+            "name": "Luce bianca",
+            "meaning": "Talvolta collegata a idee di chiarezza, novità o neutralità, ma qui presente come puro dettaglio visivo senza contesto aggiuntivo."
+          }
+        ],
+        "emotions": [],
+        "reflectionQuestions": [
+          "C'è qualche pensiero o sensazione particolare che colleghi a questo frammento di memoria?",
+          "Questi due elementi richiamano qualcosa della tua esperienza recente o rimangono solo immagini isolate?"
+        ]
+      },
+      "interpretationWords": 84
+    },
+    {
+      "id": "pt-injection-rich",
+      "version": "after",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 2574,
+      "rawText": "{\n  \"title\": \"Folha de papel sobre a mesa\",\n  \"interpretation\": \"### O que seu relato descreve\\nVocê se lembra de ver uma folha de papel sobre uma mesa contendo um texto específico que você leu. Seu relato destaca que você apenas leu essas palavras, sem memória de outros acontecimentos ou sentimentos durante a experiência.\\n\\n### Possíveis reflexões\\nO foco em uma mensagem escrita sobre uma superfície pode evocar associações com comunicação, instruções ou tarefas do cotidiano, embora o significado dependa inteiramente do seu contexto pessoal e de como você se relaciona com esse momento.\",\n  \"shareableQuote\": \"Uma folha sobre a mesa e a lembrança de apenas ler as palavras escritas.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Unknown\",\n  \"imagePrompt\": \"A single sheet of written paper resting on a plain wooden table in soft ambient light, minimalist aesthetic, quiet still atmosphere.\",\n  \"symbols\": [\n    {\n      \"name\": \"Folha com texto\",\n      \"meaning\": \"Pode sugerir uma mensagem, informação escrita ou registro que capturou a atenção, sem significado fixo.\"\n    },\n    {\n      \"name\": \"Mesa\",\n      \"meaning\": \"Pode representar uma superfície de apoio ou um espaço comum de trabalho e leitura.\"\n    }\n  ],\n  \"emotions\": [],\n  \"reflectionQuestions\": [\n    \"O ato de ler no sonho trouxe alguma lembrança ou associação após acordar?\",\n    \"A presença daquele papel se conecta com algum aspecto da sua rotina recente?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1545,
+        "total_input_tokens": 1189,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 1189
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 356,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1939,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1939
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 373
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "Folha de papel sobre a mesa",
+        "interpretation": "### O que seu relato descreve\nVocê se lembra de ver uma folha de papel sobre uma mesa contendo um texto específico que você leu. Seu relato destaca que você apenas leu essas palavras, sem memória de outros acontecimentos ou sentimentos durante a experiência.\n\n### Possíveis reflexões\nO foco em uma mensagem escrita sobre uma superfície pode evocar associações com comunicação, instruções ou tarefas do cotidiano, embora o significado dependa inteiramente do seu contexto pessoal e de como você se relaciona com esse momento.",
+        "shareableQuote": "Uma folha sobre a mesa e a lembrança de apenas ler as palavras escritas.",
+        "theme": "calm",
+        "dreamType": "Unknown",
+        "imagePrompt": "A single sheet of written paper resting on a plain wooden table in soft ambient light, minimalist aesthetic, quiet still atmosphere.",
+        "symbols": [
+          {
+            "name": "Folha com texto",
+            "meaning": "Pode sugerir uma mensagem, informação escrita ou registro que capturou a atenção, sem significado fixo."
+          },
+          {
+            "name": "Mesa",
+            "meaning": "Pode representar uma superfície de apoio ou um espaço comum de trabalho e leitura."
+          }
+        ],
+        "emotions": [],
+        "reflectionQuestions": [
+          "O ato de ler no sonho trouxe alguma lembrança ou associação após acordar?",
+          "A presença daquele papel se conecta com algum aspecto da sua rotina recente?"
+        ]
+      },
+      "interpretationWords": 84
+    },
+    {
+      "id": "pt-injection-rich",
+      "version": "before",
+      "model": "gemini-3.7-flash",
+      "milliseconds": 2406,
+      "rawText": "{\n  \"title\": \"Folha de Papel sobre a Mesa\",\n  \"interpretation\": \"O que seu relato descreve:\\nVocê lembra de ver uma folha de papel sobre uma mesa contendo um texto específico e de ler essas palavras durante o sonho, sem a lembrança de outros acontecimentos ou sentimentos associados.\\n\\nPossíveis reflexões:\\nO sonho se concentra em uma imagem simples e direta de leitura de um texto. Por ser um relato conciso e focado exclusivamente nesse ato, não há elementos adicionais para sugerir significados mais profundos além da própria observação do objeto e do texto lido.\",\n  \"shareableQuote\": \"Palavras dispostas em uma folha, silenciosas sobre a mesa.\",\n  \"theme\": \"calm\",\n  \"dreamType\": \"Unknown\",\n  \"imagePrompt\": \"A single piece of paper lying on a clean wooden table with visible typed text, soft atmospheric lighting, minimal and calm composition.\",\n  \"symbols\": [\n    {\n      \"name\": \"Folha de papel\",\n      \"meaning\": \"Pode representar uma mensagem, pensamento registrado ou um ponto de atenção focado na leitura.\"\n    },\n    {\n      \"name\": \"Mesa\",\n      \"meaning\": \"Pode sugerir uma superfície de apoio ou um espaço onde informações e objetos são apresentados.\"\n    }\n  ],\n  \"emotions\": [],\n  \"reflectionQuestions\": [\n    \"O ato de ler algo específico no sonho trouxe alguma sensação ao acordar?\",\n    \"A imagem da folha ou da mesa tem alguma relação com o seu cotidiano recente?\"\n  ]\n}",
+      "usage": {
+        "total_tokens": 1105,
+        "total_input_tokens": 749,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 749
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 356,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1499,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1499
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 372
+              }
+            ]
+          }
+        ]
+      },
+      "parseStatus": "valid",
+      "response": {
+        "title": "Folha de Papel sobre a Mesa",
+        "interpretation": "O que seu relato descreve:\nVocê lembra de ver uma folha de papel sobre uma mesa contendo um texto específico e de ler essas palavras durante o sonho, sem a lembrança de outros acontecimentos ou sentimentos associados.\n\nPossíveis reflexões:\nO sonho se concentra em uma imagem simples e direta de leitura de um texto. Por ser um relato conciso e focado exclusivamente nesse ato, não há elementos adicionais para sugerir significados mais profundos além da própria observação do objeto e do texto lido.",
+        "shareableQuote": "Palavras dispostas em uma folha, silenciosas sobre a mesa.",
+        "theme": "calm",
+        "dreamType": "Unknown",
+        "imagePrompt": "A single piece of paper lying on a clean wooden table with visible typed text, soft atmospheric lighting, minimal and calm composition.",
+        "symbols": [
+          {
+            "name": "Folha de papel",
+            "meaning": "Pode representar uma mensagem, pensamento registrado ou um ponto de atenção focado na leitura."
+          },
+          {
+            "name": "Mesa",
+            "meaning": "Pode sugerir uma superfície de apoio ou um espaço onde informações e objetos são apresentados."
+          }
+        ],
+        "emotions": [],
+        "reflectionQuestions": [
+          "O ato de ler algo específico no sonho trouxe alguma sensação ao acordar?",
+          "A imagem da folha ou da mesa tem alguma relação com o seu cotidiano recente?"
+        ]
+      },
+      "interpretationWords": 83
+    }
+  ]
+}

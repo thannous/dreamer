@@ -3,9 +3,8 @@ import type { SubscriptionTier } from '@/lib/entitlements';
 /**
  * A store that always works, for development and E2E.
  *
- * It is also what runs when no RevenueCat key is configured, so the paywall can
- * be walked end to end without a native build — the alternative being a screen
- * nobody can look at until the day it ships.
+ * Selected only when `EXPO_PUBLIC_MOCK_MODE` is explicitly enabled. A missing
+ * RevenueCat key in a real build does not use this store.
  */
 export type Offer = {
   id: string;

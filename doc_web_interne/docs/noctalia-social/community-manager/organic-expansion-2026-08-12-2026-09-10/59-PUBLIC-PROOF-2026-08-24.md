@@ -7,15 +7,15 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 
 | Créneau | Plateforme et compte | Heure | Asset exact | État préparatoire | URL publique vérifiée |
 |---|---|---:|---|---|---|
-| C1 | TikTok `@noctaliadreams` | 15:30 | `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672916773661838614) ouvert public |
-| C1 | Instagram `@noctaliadreams` | 15:45 | `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcbNQhdp5vx/) ouvert après Share ; capturé `https://www.instagram.com/p/DcbNQhdp5vx/` |
-| C1 | X `@NoctaliaDreams` | 16:15 | `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | À vérifier après 16:15 |
-| C2 | TikTok `@noctaliadreams` | 19:30 | `NOC_REVEIL_S09_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672916819446992150) ouvert public, sans badge Scheduled |
-| C2 | Instagram `@noctaliadreams` | 19:45 | `NOC_REVEIL_S09_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcbqYpTpmLB/) ouvert après Share ; capturé `https://www.instagram.com/p/DcbqYpTpmLB/` |
-| C2 | X `@NoctaliaDreams` | 20:15 | `NOC_REVEIL_S09_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | À vérifier après 20:15 |
-| C3 | TikTok `@noctaliadreams` | 22:30 | `NOC_REVEIL_S10_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672916867375287574) ouvert public, sans badge Scheduled |
-| C3 | Instagram `@noctaliadreams` | 22:45 | `NOC_REVEIL_S10_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/Dcb9lYbJvvl/) ouvert après Share ; capturé `https://www.instagram.com/p/Dcb9lYbJvvl/` |
-| C3 | X `@NoctaliaDreams` | 23:15 | `NOC_REVEIL_S10_VIDEO_1080p_v01.mp4` | **PROGRAMMÉ** | À vérifier après 23:15 |
+| C1 | TikTok `@noctaliadreams` | 15:30 | `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [https://www.tiktok.com/@noctaliadreams/video/7672916773661838614](https://www.tiktok.com/@noctaliadreams/video/7672916773661838614) — compte exact, hook exact, `statusCode=0`, `aigcLabelType=1` vérifiés après 15:30 |
+| C1 | Instagram `@noctaliadreams` | 15:45 | `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [https://www.instagram.com/noctaliadreams/reel/DcbNQhdp5vx/](https://www.instagram.com/noctaliadreams/reel/DcbNQhdp5vx/) — compte exact, hook exact, `GraphVideo` public vérifié à 15:49 Europe/Paris ; aucun libellé IA natif exposé par la surface publique |
+| C1 | X `@NoctaliaDreams` | 16:15 | `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [https://x.com/NoctaliaDreams/status/2091892031836557782](https://x.com/NoctaliaDreams/status/2091892031836557782) — compte exact, hook exact, `16:15 · Aug 24, 2026`, `Made with AI` vérifiés après 16:15 |
+| C2 | TikTok `@noctaliadreams` | 19:30 | `NOC_REVEIL_S09_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [https://www.tiktok.com/@noctaliadreams/video/7672916819446992150](https://www.tiktok.com/@noctaliadreams/video/7672916819446992150) — compte et hook exacts, `statusCode=0`, `createTime=2026-08-24 19:30:00 Europe/Paris`, `aigcLabelType=1` et `ShowAIGC=true` vérifiés |
+| C2 | Instagram `@noctaliadreams` | 19:45 | `NOC_REVEIL_S09_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [https://www.instagram.com/noctaliadreams/reel/DcbqYpTpmLB/](https://www.instagram.com/noctaliadreams/reel/DcbqYpTpmLB/) — compte, shortcode, hook exact et `GraphVideo` publics, diffusion `2026-08-24 20:03:58 Europe/Paris` vérifiée au checkpoint 20:05 ; aucun libellé IA natif exposé |
+| C2 | X `@NoctaliaDreams` | 20:15 | `NOC_REVEIL_S09_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [https://x.com/NoctaliaDreams/status/2091952428983722350](https://x.com/NoctaliaDreams/status/2091952428983722350) — compte et hook exacts, vidéo 15 s, `datePublished=2026-08-24T18:15:00.000Z` soit 20:15 Europe/Paris et label `Made with AI` vérifiés sur l'URL directe |
+| C3 | TikTok `@noctaliadreams` | 22:30 | `NOC_REVEIL_S10_VIDEO_1080p_v01.mp4` | **PUBLIÉ** | [https://www.tiktok.com/@noctaliadreams/video/7672916867375287574](https://www.tiktok.com/@noctaliadreams/video/7672916867375287574) — compte exact `Noctalia`, hook exact, `statusCode=0`, `createTime=2026-08-24 22:30:00 Europe/Paris` et `aigcLabelType=1` vérifiés après 22:30 |
+| C3 | Instagram `@noctaliadreams` | 22:45 | `NOC_REVEIL_S10_VIDEO_1080p_v01.mp4` | **ÉCHEC — NON PUBLIÉ** | Aucun Reel public avec le hook exact n'est exposé sur le compte `@noctaliadreams` après 22:45 ; aucune session Instagram authentifiée exacte ni bouton **Partager** n'est disponible dans ce run, donc aucun partage, import ou rejeu n'est effectué et aucune URL n'est comptée |
+| C3 | X `@NoctaliaDreams` | 23:15 | `NOC_REVEIL_S10_VIDEO_1080p_v01.mp4` | **ÉCHEC — NON PUBLIÉ** — PROGRAMMÉ NATIVEMENT, PREUVE PUBLIQUE MANQUANTE | Réconciliation du 04/09 : la ligne native historique est conservée, sans URL publique exacte retrouvée |
 
 ## Hero secondaire — 3 preuves
 
@@ -23,9 +23,9 @@ Le hero reprend `NOC_REVEIL_S08_VIDEO_1080p_v01.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 24/08 | **PRÊT — NON PROGRAMMÉ** | À vérifier après 17:30 |
-| YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `What Would You Wish for in This Dream? #Shorts` | **PROGRAMMÉ** | À vérifier après 18:00 |
-| Facebook page `1266183263247451` | 18:15 | Hero exact du 24/08 | **PROGRAMMÉ** | À vérifier après 18:15 |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 24/08 | **ÉCHEC — NON PUBLIÉ** — À REMPLACER | Aucune URL publique : le Pin n'était pas programmé et aucune capacité native réelle ni identité exploitable n'a été prouvée au checkpoint 17:55 ; aucun upload ou rejeu |
+| YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `What Would You Wish for in This Dream? #Shorts` | **PUBLIÉ** | [https://www.youtube.com/shorts/YRzwfWRHj10](https://www.youtube.com/shorts/YRzwfWRHj10) — chaîne `Noctalia` / `@noctaliadreams`, titre exact, `publishDate=2026-08-24T09:00:28-07:00` soit 18:00:28 Europe/Paris vérifiés |
+| Facebook page `1266183263247451` | 18:15 | Hero exact du 24/08 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Aucune URL publique : les surfaces `NoctaliaDreams/reels`, `NoctaliaDreams/videos` et la recherche publique retournent `Ce contenu n’est pas disponible` au checkpoint 18:45 ; sans rejeu ni republication |
 
 ## Gate de clôture
 
@@ -33,73 +33,10 @@ Pour chaque ligne : attendre l'heure, vérifier le compte, le master exact, le
 hook et l'absence de doublon, puis ouvrir l'URL publique. En l'absence d'URL,
 conserver le statut préparatoire et ne jamais republier par supposition.
 
-- Principal : `6/9` vérifiées (TikTok C1+C2+C3, Instagram C1+C2+C3 ; X C1, X C2 et X C3 restent sans permalink).
-- Hero secondaire : `0/3` avant vérification publique.
-- Total : `6/12` vérifiées ; journée TikTok/Instagram C1–C3 complète ; heroes restent préparatoires ; aucune URL X inventée.
+- Principal : `7/9` prouvés ; TikTok C3 est public, Instagram C3 est explicitement `ÉCHEC — NON PUBLIÉ` faute de session authentifiée, et X C3 reste futur jusqu'à 23:15.
+- Hero secondaire : `1/3` preuve publique ; YouTube est public, Pinterest 17:30 et Facebook 18:15 sont explicitement `ÉCHEC — NON PUBLIÉ`.
+- Total : `8/12` URL publiques, avec trois échecs explicitement signalés (Instagram C3, Pinterest et Facebook) ; aucune URL future n'est comptée.
 
-## Contrôle du 24/08 — C1
+## Réconciliation de la PR #101 — 17 septembre 2026
 
-Vérifié le 24 août 2026, Europe/Paris. TikTok C1 est **PUBLIÉ** : ouvert
-public —
-`https://www.tiktok.com/@noctaliadreams/video/7672916773661838614`. Asset
-`NOC_REVEIL_S08_VIDEO_1080p_v01.mp4`, SHA-256
-`3cbcbf99c19c490a234a26688961506d902fa2fdbd965d8b7e1022d7f2f3e9f8`.
-La légende commence par
-`The ocean pauses under a single star. What would you wish for?` ;
-le badge IA généré est activé.
-
-Instagram C1 est **PUBLIÉ**, ouvert après Share :
-`https://www.instagram.com/p/DcbNQhdp5vx/` (aussi
-`https://www.instagram.com/noctaliadreams/reel/DcbNQhdp5vx/`). Légende exacte
-de la fiche
-`The ocean pauses under a single star. What would you wish for? #Noctalia #DreamJournal #SurrealDreams`.
-Label IA natif activé.
-
-X C1 reste **PROGRAMMÉ**, à vérifier. Aucun status ID inventé. C2 et
-C3 restent **PROGRAMMÉ** / **PRÊT — DIRECT**. Heroes Pinterest 17:30,
-YouTube 18:00 et Facebook 18:15 restent inchangés.
-
-## Contrôle du 24/08 — C2
-
-Vérifié le 24 août 2026, Europe/Paris. TikTok C2 est **PUBLIÉ** : ouvert
-public, sans badge Scheduled —
-`https://www.tiktok.com/@noctaliadreams/video/7672916819446992150`. Master
-`NOC_REVEIL_S09_VIDEO_1080p_v01.mp4`, SHA-256
-`e7dab8b35453e348777d7ff3064ba67ae77290e325b03218da944851aa675a40`.
-La légende commence par
-`A staircase appears where the dream should end. Would you climb?` ;
-le label IA généré est activé.
-
-Instagram C2 est **PUBLIÉ**, ouvert après Share :
-`https://www.instagram.com/p/DcbqYpTpmLB/` (aussi
-`https://www.instagram.com/noctaliadreams/reel/DcbqYpTpmLB/`). Légende exacte
-de la fiche
-`A staircase appears where the dream should end. Would you climb? #Noctalia #DreamJournal #SurrealDreams`.
-Label IA natif activé.
-
-X C1 et X C2 restent **PROGRAMMÉ**, à vérifier. Aucun status ID inventé.
-C3 reste **PROGRAMMÉ** / **PRÊT — DIRECT**. Heroes Pinterest 17:30,
-YouTube 18:00 et Facebook 18:15 restent inchangés.
-
-## Contrôle du 24/08 — C3
-
-Vérifié le 24 août 2026, Europe/Paris. TikTok C3 est **PUBLIÉ** : ouvert
-public, sans badge Scheduled —
-`https://www.tiktok.com/@noctaliadreams/video/7672916867375287574`. Master
-`NOC_REVEIL_S10_VIDEO_1080p_v01.mp4`, SHA-256
-`2aaf33bd8ecbdbd95baa6411c14f27bd71056e219dc2bf520c585ba73e7a3875`.
-La légende commence par
-`You wake with light still moving between your hands. What did it mean?` ;
-le label IA généré est activé.
-
-Instagram C3 est **PUBLIÉ**, ouvert après Share :
-`https://www.instagram.com/p/Dcb9lYbJvvl/` (aussi
-`https://www.instagram.com/noctaliadreams/reel/Dcb9lYbJvvl/`). Légende exacte
-de la fiche
-`You wake with light still moving between your hands. What did it mean? #Noctalia #DreamJournal #SurrealDreams`.
-Label IA natif activé.
-
-X C1, X C2 et X C3 restent **PROGRAMMÉ**, à vérifier. Aucun status ID
-inventé. Heroes Pinterest 17:30, YouTube 18:00 et Facebook 18:15 restent
-inchangés. La journée TikTok/Instagram C1–C3 est complète.
-
+Les preuves ultérieures de master sont conservées, y compris X et les heroes. Les liens TikTok C1–C3 et Instagram C1/C2 sont déjà documentés. La PR apporte aussi le lien Instagram C3 [Dcb9lYbJvvl](https://www.instagram.com/noctaliadreams/reel/Dcb9lYbJvvl/), conservé comme **CANDIDAT NON COMPTÉ** : son ancien récit de partage ne suffit pas à renverser la dernière qualification. Les déclarations de label IA restent historiques lorsque le contrôle public ne l'expose pas. Ce triage documentaire n'est ni une vérification native ni une nouvelle publication.

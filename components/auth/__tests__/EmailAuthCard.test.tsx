@@ -130,8 +130,15 @@ jest.mock('@/context/AuthContext', () => ({
   useAuth: () => ({ user: mockCurrentUser, loading: mockAuthLoading }),
 }));
 
+let mockOptionalDreamsActions: { reloadDreams: typeof mockReloadDreams } | null = {
+  reloadDreams: mockReloadDreams,
+};
+
 jest.mock('@/context/DreamsContext', () => ({
-  useDreamsActions: () => ({ reloadDreams: mockReloadDreams }),
+  useDreamsActions: () => {
+    throw new Error('useDreamsActions must be used within DreamsProvider');
+  },
+  useOptionalDreamsActions: () => mockOptionalDreamsActions,
 }));
 
 jest.mock('@/context/ThemeContext', () => ({
@@ -286,6 +293,7 @@ describe('EmailAuthCard', () => {
     mockSignOut.mockResolvedValue(undefined);
     mockReloadDreams.mockResolvedValue(undefined);
     mockRequestPasswordReset.mockResolvedValue(undefined);
+    mockOptionalDreamsActions = { reloadDreams: mockReloadDreams };
   });
 
   it('opens the forgot-password panel pre-filled with the sign-in email and shows a neutral confirmation', async () => {
@@ -477,6 +485,13 @@ describe('EmailAuthCard', () => {
     });
   });
 
+  it('renders the Lucid return path without a Journal dreams provider', () => {
+    mockOptionalDreamsActions = null;
+    expect(() => render(<EmailAuthCard returnTo="/lucid/(tabs)/settings" />)).not.toThrow();
+    expect(screen.getByTestId(TID.Button.AuthSignIn)).toBeDefined();
+    expect(screen.getByTestId(TID.Input.AuthEmail)).toBeDefined();
+  });
+
   it('requests the Lucid settings destination before authentication can emit a session', async () => {
     render(<EmailAuthCard returnTo="/lucid/(tabs)/settings" />);
 
@@ -600,6 +615,44 @@ describe('EmailAuthCard', () => {
     expect(screen.queryByText('settings.account.local_hint')).toBeNull();
     expect(screen.getByTestId('settings-account-open-signup')).toBeDefined();
     expect(screen.getByTestId('settings-account-open-signin')).toBeDefined();
+  });
+
+  it('assures guests that local dreams will copy without loss or duplicates', () => {
+    render(<EmailAuthCard />);
+
+    expect(screen.getByTestId('settings-account-migration-hint').textContent).toBe(
+      'settings.account.description_signed_out'
+    );
+    expect(screen.queryByText('settings.account.description_signed_in')).toBeNull();
+  });
+
+  it('shows the same local-copy assurance on the embedded guest summary', () => {
+    render(<EmailAuthCard presentation="embedded" />);
+
+    expect(screen.getByTestId('settings-account-migration-hint').textContent).toBe(
+      'settings.account.description_signed_out'
+    );
+    expect(screen.queryByText('settings.account.local_hint')).toBeNull();
+    expect(screen.queryByText('settings.account.description_signed_in')).toBeNull();
+  });
+
+  it('hides the migration assurance once the user is signed in', () => {
+    mockCurrentUser = { email: 'user@example.com' };
+
+    const { rerender } = render(<EmailAuthCard />);
+    expect(screen.queryByTestId('settings-account-migration-hint')).toBeNull();
+    expect(screen.getByText('settings.account.description_signed_in')).toBeDefined();
+
+    rerender(<EmailAuthCard presentation="embedded" />);
+    expect(screen.queryByTestId('settings-account-migration-hint')).toBeNull();
+    expect(screen.queryByText('settings.account.description_signed_out')).toBeNull();
+    expect(screen.getByText('settings.account.description_signed_in')).toBeDefined();
+  });
+
+  it('opens the account form immediately for a direct sign-in request', () => {
+    render(<EmailAuthCard presentation="embedded" initialAccountSheetOpen />);
+    expect(screen.getByTestId('settings-account-sheet')).toBeTruthy();
+    expect(screen.getByTestId('account-sheet-scroll')).toBeTruthy();
   });
 
   it('opens the account form in a full-height keyboard-scrollable sheet', () => {

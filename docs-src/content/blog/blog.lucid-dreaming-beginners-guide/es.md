@@ -23,15 +23,15 @@
   "twitterImage": "https://noctalia.app/img/blog/lucid-dreaming-beginners-guide.webp",
   "twitterImageAlt": "Paisaje fantástico que ilustra el control en los sueños lúcidos",
   "publishedTime": "2025-01-06",
-  "modifiedTime": "2026-07-28",
+  "modifiedTime": "2026-08-30",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/significado-suenos-recurrentes",
   "nextPath": "/es/blog/suenos-dientes-caen",
   "preloadImage": "/img/blog/lucid-dreaming-beginners-guide.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Cómo tener sueños lúcidos: guía paso a paso para principiantes\",\n  \"description\": \"Aprende cómo tener sueños lúcidos paso a paso con diario de sueños, tests de realidad, MILD y WBTB, y consejos para mantener la lucidez.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/lucid-dreaming-beginners-guide.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-01-06\",\n  \"dateModified\": \"2026-07-28\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1067,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué es un sueño lúcido?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Un sueño lúcido es un sueño en el que eres consciente de que estás soñando. Esta conciencia te permite controlar el contenido del sueño y explorar activamente tu mente subconsciente.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Es peligroso tener sueños lúcidos?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"No, los sueños lúcidos no son peligrosos para personas mentalmente sanas. Pueden incluso tener beneficios terapéuticos. Sin embargo, las personas con trastornos disociativos o ciertas condiciones psiquiátricas deberían consultar a un profesional antes de practicar.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Cuánto tiempo se tarda en tener el primer sueño lúcido?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Esto varía enormemente entre individuos. Algunos lo logran en pocos días, otros en varias semanas. En promedio, con práctica regular, la mayoría de personas experimenta su primer sueño lúcido en 3 a 8 semanas.\"\n      }\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"HowTo\",\n  \"name\": \"Cómo Tener Sueños Lúcidos\",\n  \"description\": \"Guía paso a paso para inducir un sueño lúcido\",\n  \"step\": [\n    {\n      \"@type\": \"HowToStep\",\n      \"name\": \"Lleva un diario de sueños\",\n      \"text\": \"Escribe tus sueños cada mañana para mejorar tu memoria onírica.\"\n    },\n    {\n      \"@type\": \"HowToStep\",\n      \"name\": \"Practica tests de realidad\",\n      \"text\": \"Realiza tests de realidad varias veces al día para crear un hábito.\"\n    },\n    {\n      \"@type\": \"HowToStep\",\n      \"name\": \"Usa la técnica MILD\",\n      \"text\": \"Antes de dormir, repite tu intención de tomar conciencia en tus sueños.\"\n    },\n    {\n      \"@type\": \"HowToStep\",\n      \"name\": \"Prueba el método WBTB\",\n      \"text\": \"Despiértate después de 5 horas de sueño, mantente despierto 30 minutos y vuelve a dormir.\"\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Cómo tener sueños lúcidos: guía paso a paso para principiantes\",\n  \"description\": \"Aprende cómo tener sueños lúcidos paso a paso con diario de sueños, tests de realidad, MILD y WBTB, y consejos para mantener la lucidez.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/lucid-dreaming-beginners-guide.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-01-06\",\n  \"dateModified\": \"2026-08-30\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1936,\n  \"timeRequired\": \"PT10M\",\n  \"url\": \"https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes\"\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué es un sueño lúcido?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Un sueño lúcido es un sueño en el que sabes que estás soñando mientras sigues dormido. Esa consciencia a veces permite influir en algunos elementos, pero el control total no es necesario ni está garantizado.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Los tests de realidad garantizan un sueño lúcido?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Los tests de realidad pueden ayudar a notar que sueñas cuando se combinan con un diario y una intención MILD. Ningún test, técnica ni plazo garantiza la lucidez.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿El método WBTB conviene a todo el mundo?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"WBTB fragmenta el sueño a propósito. Evítalo si ya duermes poco, tienes insomnio o necesitas estar muy alerta al día siguiente, y detenlo si empeora el descanso o el funcionamiento diurno.\"\n      }\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"HowTo\",\n  \"name\": \"Cómo Tener Sueños Lúcidos\",\n  \"description\": \"Pasos iniciales para reconocer que estás soñando, sin prometer el control de los sueños.\",\n  \"step\": [\n    {\n      \"@type\": \"HowToStep\",\n      \"name\": \"Lleva un diario de sueños\",\n      \"text\": \"Escribe tus sueños cada mañana para mejorar tu memoria onírica.\"\n    },\n    {\n      \"@type\": \"HowToStep\",\n      \"name\": \"Practica tests de realidad\",\n      \"text\": \"Realiza tests de realidad varias veces al día para crear un hábito.\"\n    },\n    {\n      \"@type\": \"HowToStep\",\n      \"name\": \"Usa la técnica MILD\",\n      \"text\": \"Antes de dormir, repite tu intención de tomar conciencia en tus sueños.\"\n    },\n    {\n      \"@type\": \"HowToStep\",\n      \"name\": \"Prueba WBTB solo si no recorta el sueño necesario\",\n      \"text\": \"Usa una breve interrupción únicamente si no reduce el sueño que necesitas; luego vuelve a dormir con una intención MILD.\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Recursos\",\n      \"item\": \"https://noctalia.app/es/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sueños lúcidos\",\n      \"item\": \"https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -64,7 +64,7 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="suenos-lucidos">Tema: Sueños lúcidos</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 6 de enero de 2025</span>
-<span class="text-sm text-purple-300/60">4 min de lectura</span>
+<span class="text-sm text-purple-300/60">10 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Cómo tener sueños lúcidos: guía paso a paso para principiantes
@@ -121,47 +121,47 @@
 <ul>
 <li><strong>Lucidez mínima:</strong> Sabes que estás soñando pero no controlas nada</li>
 <li><strong>Lucidez moderada:</strong> Puedes influir en ciertos elementos del sueño</li>
-<li><strong>Lucidez completa:</strong> Controlas completamente el escenario y el entorno</li>
+<li><strong>Lucidez alta:</strong> Puedes influir más en la escena, sin un control total garantizado</li>
 </ul>
 <blockquote>
                     "En un sueño lúcido, lo imposible se vuelve posible. Eres simultáneamente el director, el protagonista y el público de tu propia película." - Stephen LaBerge, pionero de la investigación sobre sueños lúcidos
                 </blockquote>
 <h2 id="science">La ciencia detrás de los sueños lúcidos y el cerebro</h2>
 <p>
-                    Los sueños lúcidos no son un mito: son un fenómeno científicamente probado. En 1975, el psicólogo <strong>Keith Hearne</strong> demostró por primera vez que un soñador lúcido podía comunicarse con el mundo de vigilia mediante movimientos oculares predeterminados.
+                    El sueño lúcido es un fenómeno documentado. En estudios de laboratorio, algunos soñadores han usado movimientos oculares acordados durante el sueño REM para señalar que sabían que estaban soñando.
                 </p>
 <p>
-                    Desde entonces, la neurociencia ha revelado que durante un sueño lúcido:
+                    Los estudios de EEG e imagen exploran cómo cambia la autoconsciencia durante estos sueños. Los resultados varían entre estudios pequeños, así que no existe una única señal cerebral que demuestre todos los sueños lúcidos. Para empezar, la distinción útil sigue siendo la experiencia:
                 </p>
 <ul>
-<li>La <strong>corteza prefrontal dorsolateral</strong> (asociada con la autoconciencia) se activa</li>
-<li>Las ondas cerebrales muestran una mezcla de actividad REM y de vigilia (ondas gamma)</li>
-<li>El soñador retiene su memoria de trabajo y capacidad de reflexión</li>
+<li>reconoces que la experiencia actual es un sueño;</li>
+<li>puedes recuperar parte del pensamiento reflexivo mientras continúa el sueño REM;</li>
+<li>ser consciente no implica controlar por completo la escena.</li>
 </ul>
 <p>
                     Un metaanálisis de <a href="https://pubmed.ncbi.nlm.nih.gov/27337287/" rel="nofollow noopener noreferrer" target="_blank">Saunders et al. (2016)</a> mostró que <strong>el 55% de las personas</strong> ha tenido al menos un sueño lúcido en su vida, y alrededor del 23% los tiene al menos una vez al mes.
                 </p>
-<h2 id="benefits">Beneficios de tener sueños lúcidos para tu vida</h2>
+<h2 id="benefits">Qué se puede explorar en un sueño lúcido</h2>
 <p>
-                    Más allá del entretenimiento, los sueños lúcidos ofrecen beneficios concretos:
+                    Algunas personas usan los sueños lúcidos para la curiosidad, el ensayo mental o la creatividad. La evidencia sobre beneficios duraderos sigue siendo limitada, y un sueño interesante no equivale a un resultado terapéutico.
                 </p>
-<h3>Sueños lúcidos para el desarrollo personal</h3>
+<h3>Reflexión personal</h3>
 <ul>
-<li>Enfrentar tus miedos en un entorno seguro</li>
-<li>Practicar situaciones antes de experimentarlas</li>
-<li>Acceder a conocimientos de tu subconsciente</li>
+<li>Observar cómo respondes a una escena difícil</li>
+<li>Ensayar una situación cotidiana sin asumir que mejorará el rendimiento despierto</li>
+<li>Anotar ideas y emociones para revisarlas después</li>
 </ul>
-<h3>Sueños lúcidos para potenciar la creatividad</h3>
+<h3>Exploración creativa</h3>
 <ul>
 <li>Explorar ideas sin limitaciones físicas</li>
-<li>Muchos artistas y científicos se inspiran en sus sueños</li>
-<li>Salvador Dalí y Paul McCartney atribuyeron crédito a sus sueños</li>
+<li>Guardar una imagen, melodía o escena al despertar</li>
+<li>Evaluar la idea después, cuando estés completamente despierto</li>
 </ul>
-<h3>Beneficios terapéuticos de los sueños lúcidos</h3>
+<h3>Investigación clínica, con límites</h3>
 <ul>
-<li>Tratamiento de <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas recurrentes</a></li>
-<li>Manejo del estrés postraumático (como complemento)</li>
-<li>Mejora de la confianza en uno mismo</li>
+<li>Se han estudiado enfoques con sueños lúcidos para <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas recurrentes</a>, pero la evidencia sigue siendo limitada</li>
+<li>No sustituyen la atención habitual del sueño o la salud mental</li>
+<li>Las pesadillas relacionadas con trauma requieren apoyo profesional, no autoexperimentación</li>
 </ul>
 <h2 id="prerequisites">Requisitos para tener sueños lúcidos</h2>
 <p>
@@ -169,7 +169,7 @@
                 </p>
 <h3>1. El diario de sueños para soñar lúcido</h3>
 <p>
-	                    Este es <strong>EL fundamento esencial</strong>. Sin memoria de tus sueños, nunca sabrás si fuiste lúcido. Escribe tus sueños cada mañana, incluso fragmentos. Si estás empezando, sigue esta <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">guía del diario de sueños</a> para estructurar tus notas. En pocas semanas, tu recuerdo de los sueños mejorará de forma notable.
+                    Un diario permite registrar si hubo lucidez y qué señales se repiten. Anota los sueños cuando los recuerdes, aunque solo sean fragmentos. Si estás empezando, sigue esta <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">guía del diario de sueños</a> para estructurar tus notas. El recuerdo cambia a un ritmo distinto en cada persona.
 	                </p>
 <h3>2. Higiene del sueño para sueños lúcidos</h3>
 <p>
@@ -265,15 +265,15 @@
 </ol>
 <h3>2. WBTB (Despertar y Volver a Dormir)</h3>
 <p>
-                    Combinada con MILD, esta técnica multiplica tus posibilidades:
+                    Combinada con MILD, este método es opcional y no debe recortar el sueño que necesitas:
                 </p>
 <ol>
-<li>Programa una alarma para despertar después de 5-6 horas</li>
-<li>Quédate despierto durante 20-60 minutos (lee sobre sueños lúcidos)</li>
-<li>Vuelve a la cama mientras practicas MILD</li>
+<li>Pon una alarma solo si una breve interrupción es aceptable al día siguiente</li>
+<li>Permanece despierto poco tiempo y vuelve a la cama en lugar de forzar una vigilia larga</li>
+<li>Vuelve a dormir repitiendo una intención MILD</li>
 </ol>
 <p>
-                    La tasa de éxito de WBTB+MILD es <strong>60% mayor</strong> que MILD solo según los estudios.
+                    Evita WBTB si ya duermes poco, tienes insomnio o debes estar muy alerta al día siguiente, y detenlo si empeora el descanso o el funcionamiento diurno.
                 </p>
 <h3>3. DILD (Sueño Lúcido Iniciado en el Sueño)</h3>
 <p>
@@ -298,24 +298,24 @@
 <li>Entra gradualmente al sueño consciente</li>
 </ol>
 <p>
-<strong>Advertencia:</strong> WILD puede causar <a class="text-dream-salmon hover:underline" href="guia-paralisis-sueno">parálisis del sueño</a>. Empieza con MILD/WBTB.
+<strong>Advertencia:</strong> WILD puede coincidir con sensaciones inquietantes al dormir o con <a class="text-dream-salmon hover:underline" href="guia-paralisis-sueno">parálisis del sueño</a>. Detente si altera el descanso y empieza por el enfoque menos disruptivo de diario y MILD.
                 </p>
 <h2 id="stabilize">Cómo estabilizar y prolongar un sueño lúcido</h2>
 <p>
-                    Tu primer sueño lúcido probablemente dure poco: unos segundos antes de despertar o perder la lucidez. Aquí te mostramos cómo prolongar la experiencia:
+                    Un primer sueño lúcido puede ser breve antes de despertar o perder la lucidez. Las propuestas siguientes son experimentos habituales, no formas fiables de prolongar todos los sueños:
                 </p>
-<h3>Técnicas para estabilizar sueños lúcidos</h3>
+<h3>Experimentos habituales de estabilización</h3>
 <ul>
-<li><strong>Frota tus manos:</strong> Crea una sensación táctil que te ancla en el sueño</li>
-<li><strong>Toca el suelo/paredes:</strong> Activa los sentidos para mantener la consciencia</li>
-<li><strong>Mira tus manos:</strong> Un punto de enfoque estable que previene el despertar</li>
-<li><strong>Gira sobre ti mismo:</strong> Técnica de LaBerge para permanecer en el sueño</li>
-<li><strong>Ordena "¡Claridad ahora!":</strong> Verbaliza tus intenciones</li>
+<li><strong>Frota tus manos:</strong> Observa una sensación táctil dentro del sueño</li>
+<li><strong>Toca el suelo o una pared:</strong> Devuelve la atención a la escena</li>
+<li><strong>Mira tus manos:</strong> Usa un punto visual como foco</li>
+<li><strong>Gira despacio:</strong> Observa si la escena cambia o continúa</li>
+<li><strong>Nombra tu intención:</strong> Di qué quieres observar sin esperar un resultado garantizado</li>
 </ul>
 <h3>Errores que terminan los sueños lúcidos</h3>
 <ul>
 <li>Emocionarte demasiado (causa el despertar)</li>
-<li>Cerrar los ojos durante demasiado tiempo (riesgo de falso despertar o despertar real)</li>
+<li>Cerrar los ojos durante demasiado tiempo (riesgo de <a class="text-dream-salmon hover:underline" href="falso-despertar-sueno">falso despertar</a> o despertar real)</li>
 <li>Enfocarte demasiado en el hecho de que estás soñando</li>
 </ul>
 <h2 id="mistakes">Errores comunes de principiantes en sueños lúcidos</h2>
@@ -325,18 +325,18 @@
                 </p>
 <h3>2. Practicar sueños lúcidos sin constancia</h3>
 <p>
-                    La consistencia supera la intensidad. Cinco minutos de práctica diaria son mejores que dos horas una vez a la semana.
+                    Una rutina breve y sostenible tiene menos riesgo de interferir con el descanso que un horario intenso basado en alarmas.
                 </p>
 <h3>3. Rendirse antes del primer sueño lúcido</h3>
 <p>
-                    El primer sueño lúcido puede tardar varias semanas. Es normal. Cada noche sin lucidez es un paso hacia el éxito.
+                    No existe un plazo fiable para el primer sueño lúcido. Si la práctica frustra o perjudica el descanso, haz una pausa.
                 </p>
 <h3>4. No fijar la intención de soñar lúcido</h3>
 <p>
-                    Los tests de realidad sin cuestionamiento genuino son inútiles. La intención consciente es la clave.
+                    Los tests de realidad tienen más sentido cuando te detienes y observas la situación de verdad, en lugar de repetirlos de forma mecánica.
                 </p>
 <blockquote>
-                    "Los sueños lúcidos no son un don, son una habilidad. Y como cualquier habilidad, se desarrolla con práctica y paciencia."
+                    Trata la lucidez como una observación que practicas, no como un resultado que te deben en una fecha.
                 </blockquote>
 </div>
 <!-- CTA Section -->
@@ -358,29 +358,29 @@
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Es peligroso tener sueños lúcidos?
+                            ¿Qué es un sueño lúcido?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            No, los sueños lúcidos no son peligrosos para personas mentalmente sanas. Pueden incluso tener beneficios terapéuticos. Sin embargo, las personas con trastornos disociativos o ciertas condiciones psiquiátricas deberían consultar a un profesional.
+                            Un sueño lúcido es un sueño en el que sabes que estás soñando mientras sigues dormido. Esa consciencia a veces permite influir en algunos elementos, pero el control total no es necesario ni está garantizado.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Cuánto tiempo hasta el primer sueño lúcido?
+                            ¿Los tests de realidad garantizan un sueño lúcido?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Esto varía enormemente. Algunos lo logran en pocos días, otros en varias semanas. En promedio, con práctica regular, la mayoría de personas experimenta su primer sueño lúcido en 3 a 8 semanas.
+                            Los tests de realidad pueden ayudar a notar que sueñas cuando se combinan con un diario y una intención MILD. Ningún test, técnica ni plazo garantiza la lucidez.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Puedes quedarte atrapado en un sueño lúcido?
+                            ¿El método WBTB conviene a todo el mundo?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            No, es imposible. Los ciclos naturales del sueño te despertarán automáticamente. Si quieres salir de un sueño, normalmente solo necesitas cerrar los ojos con fuerza o intentar "lanzarte hacia atrás".
+                            WBTB fragmenta el sueño a propósito. Evítalo si ya duermes poco, tienes insomnio o necesitas estar muy alerta al día siguiente, y detenlo si empeora el descanso o el funcionamiento diurno.
                         </p>
 </details>
 </div>
@@ -394,10 +394,17 @@
                     Preguntas frecuentes
                 </h2>
                 <div class="grid gap-4">
-
                 <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">¿Cuánto tiempo se tarda en tener el primer sueño lúcido?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">Esto varía enormemente entre individuos. Algunos lo logran en pocos días, otros en varias semanas. En promedio, con práctica regular, la mayoría de personas experimenta su primer sueño lúcido en 3 a 8 semanas.</p>
+                    <h3 class="font-medium text-dream-cream mb-2">¿Qué es un sueño lúcido?</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">Un sueño lúcido es un sueño en el que sabes que estás soñando mientras sigues dormido. Esa consciencia a veces permite influir en algunos elementos, pero el control total no es necesario ni está garantizado.</p>
+                </div>
+                <div class="glass-panel rounded-2xl p-6 border border-transparent">
+                    <h3 class="font-medium text-dream-cream mb-2">¿Los tests de realidad garantizan un sueño lúcido?</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">Los tests de realidad pueden ayudar a notar que sueñas cuando se combinan con un diario y una intención MILD. Ningún test, técnica ni plazo garantiza la lucidez.</p>
+                </div>
+                <div class="glass-panel rounded-2xl p-6 border border-transparent">
+                    <h3 class="font-medium text-dream-cream mb-2">¿El método WBTB conviene a todo el mundo?</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">WBTB fragmenta el sueño a propósito. Evítalo si ya duermes poco, tienes insomnio o necesitas estar muy alerta al día siguiente, y detenlo si empeora el descanso o el funcionamiento diurno.</p>
                 </div>
                 </div>
             </section>
@@ -410,7 +417,7 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/35167686/" rel="nofollow noopener noreferrer" target="_blank">Baird, Tononi &amp; LaBerge (2022):Sueños lúcidos en sueño REM (Sleep, PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/dreams/lucid-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation:Sueños lúcidos</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 28 de julio de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 30 de agosto de 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Símbolos de sueños relacionados" class="mt-12 mb-8">

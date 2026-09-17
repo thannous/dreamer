@@ -1,0 +1,100 @@
+# Real-device contract for the MILD journey. It keeps persistence, navigation,
+# paused-state locking and the honest completed-session counter in one flow.
+appId: com.tanuki75.noctalia.lucid
+---
+- runFlow: subflows/open-lucid-app.yml
+- runFlow:
+    file: subflows/complete-lucid-onboarding.yml
+    env:
+      ACCEPT_AUDIO_SAFETY: "false"
+
+# Enter through the public Programs surface; no route is skipped for startup.
+- tapOn:
+    id: lucid-tab-programs
+- extendedWaitUntil:
+    visible:
+      id: lucid-programs
+    timeout: 20000
+- tapOn:
+    id: lucid-program-mild
+- extendedWaitUntil:
+    visible:
+      id: lucid-program-detail
+    timeout: 20000
+
+# Discovery is 0/7. Session 1 is announced but cannot navigate; only the CTA
+# is enabled to persist the program before opening the session.
+- assertVisible: "0 / 7"
+- scrollUntilVisible:
+    element:
+      id: lucid-journey-session-1
+      enabled: false
+    direction: DOWN
+    timeout: 30000
+- assertVisible:
+    id: lucid-journey-session-1
+    enabled: false
+- scrollUntilVisible:
+    element:
+      id: lucid-journey-continue
+      enabled: true
+    direction: UP
+    timeout: 30000
+- assertVisible: "Start program|Commencer le programme|Iniciar programa|Programm starten|Inizia programma"
+- tapOn:
+    id: lucid-journey-continue
+- extendedWaitUntil:
+    visible:
+      id: lucid-session-complete
+    timeout: 20000
+
+# Returning without completing keeps the truthful 0/7 while the persisted
+# program now offers Resume instead of Start.
+- pressKey: back
+- extendedWaitUntil:
+    visible:
+      id: lucid-program-detail
+    timeout: 20000
+- scrollUntilVisible:
+    element: "0 / 7"
+    direction: UP
+    timeout: 20000
+- assertVisible: "0 / 7"
+- assertVisible: "Resume training|Reprendre l’entraînement|Continuar entrenamiento|Training fortsetzen|Continua training"
+
+# Pause from the real program control. A paused program preserves 0/7 but its
+# current session cannot be opened directly until training is resumed.
+- scrollUntilVisible:
+    element: "Pause program|Mettre en pause|Pausar programa|Programm pausieren|Metti in pausa"
+    direction: DOWN
+    timeout: 30000
+- tapOn: "Pause program|Mettre en pause|Pausar programa|Programm pausieren|Metti in pausa"
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: lucid-journey-session-1
+      enabled: false
+    direction: UP
+    timeout: 30000
+- assertVisible:
+    id: lucid-journey-session-1
+    text: ".*Current session.*|.*Séance actuelle.*|.*Sesión actual.*|.*Aktuelle Einheit.*|.*Sessione attuale.*"
+    enabled: false
+
+# Resume is the only control that reactivates training and opens the current
+# session. The program counter was still 0/7 above; the final 1/7 is the
+# session screen's first exercise step, not a fabricated completed session.
+- scrollUntilVisible:
+    element:
+      id: lucid-journey-continue
+      enabled: true
+    direction: UP
+    timeout: 30000
+- assertVisible: "Resume training|Reprendre l’entraînement|Continuar entrenamiento|Training fortsetzen|Continua training"
+- tapOn:
+    id: lucid-journey-continue
+- extendedWaitUntil:
+    visible:
+      id: lucid-session-complete
+    timeout: 20000
+- assertVisible: "1 / 7"

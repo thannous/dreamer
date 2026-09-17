@@ -39,11 +39,12 @@ function proofUrl(platform, host, index, kind) {
   return `https://${host}/${kind}-${index}`;
 }
 
-function register(published) {
+function register(published, failedRows = []) {
+  const failures = new Set(failedRows);
   const primary = platforms.map(([slot, platform, time, host], index) =>
-    `| ${slot} | ${platform} \`${accounts[platform]}\` | ${time} | \`asset-${slot}.mp4\` | **${published ? 'PUBLIÉ' : 'PROGRAMMÉ'}** | ${published ? `[URL](${proofUrl(platform, host, index, 'main')})` : 'À vérifier'} |`);
+    `| ${slot} | ${platform} \`${accounts[platform]}\` | ${time} | \`asset-${slot}.mp4\` | **${failures.has(index) ? 'ÉCHEC — NON PUBLIÉ' : published ? 'PUBLIÉ' : 'PROGRAMMÉ'}** | ${published && !failures.has(index) ? `[URL](${proofUrl(platform, host, index, 'main')})` : 'À vérifier'} |`);
   const secondary = heroes.map(([platform, time, host], index) =>
-    `| ${platform} \`${accounts[platform]}\` | ${time} | Hero | **${published ? 'PUBLIÉ' : 'PROGRAMMÉ'}** | ${published ? `[URL](${proofUrl(platform, host, index, 'hero')})` : 'À vérifier'} |`);
+    `| ${platform} \`${accounts[platform]}\` | ${time} | Hero | **${failures.has(index + 9) ? 'ÉCHEC — NON PUBLIÉ' : published ? 'PUBLIÉ' : 'PROGRAMMÉ'}** | ${published && !failures.has(index + 9) ? `[URL](${proofUrl(platform, host, index, 'hero')})` : 'À vérifier'} |`);
   return `Le hero secondaire reprend \`asset-C1.mp4\`.\n\n${[...primary, ...secondary].join('\n')}`;
 }
 
@@ -91,6 +92,19 @@ describe('dated social proof registers', () => {
     fs.writeFileSync(path.join(directory, 'PUBLIC-PROOF-2026-08-12.md'), register(false));
     fs.writeFileSync(path.join(directory, 'PUBLIC-PROOF-2026-08-13.md'), register(false));
     expect(() => validateProofDirectory(directory, '2026-08-13', '2026-08-13')).toThrow('statut PUBLIÉ manquant');
+  });
+
+  it('closes a past register when a missing publication is explicitly acknowledged as a failure', () => {
+    fs.writeFileSync(path.join(directory, 'PUBLIC-PROOF-2026-08-12.md'), register(true, [1]));
+    fs.writeFileSync(path.join(directory, 'PUBLIC-PROOF-2026-08-13.md'), register(false));
+    expect(validateProofDirectory(directory, '2026-08-13', '2026-08-13')).toEqual({
+      files: 2,
+      rows: 24,
+      urls: 11,
+      closed: 1,
+      open: 1,
+      acknowledgedFailures: 1,
+    });
   });
 
   it('rejects a missing register in the daily sequence through today', () => {

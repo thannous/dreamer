@@ -5,84 +5,146 @@ import { Linking, Pressable, ScrollView, View, useWindowDimensions } from 'react
 import { Screen } from '@/components/atmosphere/Screen';
 import { BackLink, Button, Card, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
-import { TID } from '@/lib/testIDs';
 import { useSubscription } from '@/context/SubscriptionContext';
 import type { GateReason } from '@/lib/entitlements';
 import type { TranslationKey } from '@/lib/i18n';
+import { TID } from '@/lib/testIDs';
 import * as subscriptions from '@/services/subscriptionService';
 
 const BENEFITS = [1, 2, 3, 4] as const;
 const TERMS_URL = 'https://noctalia.app/terms';
+const PRIVACY_URL = 'https://noctalia.app/privacy';
+const GATE_REASONS: readonly GateReason[] = [
+  'premium-session',
+  'monthly-quota',
+  'premium-pattern',
+  'premium-timer',
+];
+const REASON_ALIASES: Record<string, GateReason> = {
+  session: 'premium-session',
+  quota: 'monthly-quota',
+};
+
+function firstParam(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function isGateReason(value: string): value is GateReason {
+  return (GATE_REASONS as readonly string[]).includes(value);
+}
+
+/** Maps the query string to a known gate, including the older `session` alias. */
+export function resolvePaywallReason(
+  raw: string | string[] | undefined
+): GateReason | null {
+  const value = firstParam(raw);
+  if (!value) return null;
+  if (isGateReason(value)) return value;
+  return REASON_ALIASES[value] ?? null;
+}
+
+/** Never interpolates an unknown token: missing and garbage both fall back. */
+export function paywallReasonKey(
+  raw: string | string[] | undefined
+): TranslationKey {
+  const resolved = resolvePaywallReason(raw);
+  return resolved
+    ? (`paywall.reason.${resolved}` as TranslationKey)
+    : 'paywall.reason.fallback';
+}
 
 function PlanCard({
   offer,
-  selected,
-  onPress,
+  compact,
 }: {
   offer: subscriptions.Offer;
-  selected: boolean;
-  onPress: () => void;
+  compact?: boolean;
 }) {
   const { t } = useTranslation();
+  const periodKey = (
+    offer.period === 'annual' ? 'paywall.plan.annual' : 'paywall.plan.monthly'
+  ) satisfies TranslationKey;
 
   return (
-    <Pressable
-      accessibilityRole="radio"
-      accessibilityState={{ checked: selected }}
-      aria-checked={selected}
-      onPress={onPress}
-      className={`rounded-xl border p-gutter active:opacity-80 ${
-        selected ? 'border-champagne bg-ink-panel' : 'border-hairline bg-ink-card'
-      }`}>
-      <View className="flex-row items-center justify-between">
-        <Text variant="h3">{t(`paywall.plan.${offer.period}` as TranslationKey)}</Text>
-        <Text variant="h3" tone="accent">
+    <View
+      testID="paywall.plan"
+      className={`rounded-xl border border-champagne bg-ink-panel ${compact ? 'p-3' : 'p-gutter'}`}>
+      <View className="flex-row flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <Text variant="h3" testID="paywall.plan.period">
+          {t(periodKey)}
+        </Text>
+        <Text variant="h3" tone="accent" testID="paywall.plan.price">
           {offer.priceLabel}
         </Text>
       </View>
-      <Text variant="bodySm" className="mt-1">
+      <Text variant="bodySm" className="mt-1" testID="paywall.plan.trial">
         {offer.period === 'annual'
           ? t('paywall.plan.trial', { price: offer.priceLabel })
-          : t('paywall.plan.per.monthly')}
+          : t('paywall.plan.price.monthly', { price: offer.priceLabel })}
       </Text>
-    </Pressable>
+      <Text variant="caption" className="mt-2" testID="paywall.plan.renewal">
+        {t('paywall.plan.renewal')}
+      </Text>
+    </View>
   );
+}
+
+function commercialTerms(
+  offer: subscriptions.Offer,
+  t: (key: TranslationKey, values?: { price: string }) => string
+): string {
+  return offer.period === 'annual'
+    ? t('paywall.terms.trial', { price: offer.priceLabel })
+    : t('paywall.terms.monthly', { price: offer.priceLabel });
 }
 
 export default function PaywallScreen() {
   const { reason } = useLocalSearchParams<{ reason?: GateReason }>();
   const router = useRouter();
   const { t } = useTranslation();
-  const { fontScale } = useWindowDimensions();
-  const { isPlus, applyTier, remainingPlays } = useSubscription();
+  const { width, height, fontScale } = useWindowDimensions();
+  const {
+    subscriptionsEnabled = true,
+    isPlus,
+    applyTier,
+    remainingPlays,
+  } = useSubscription();
+  const reasonKey = paywallReasonKey(reason);
   const largeText = fontScale >= 1.5;
+  const compact = width < 375 || height < 700 || fontScale > 1.15;
+  const prioritizeOffer = compact || largeText;
 
-  const [offers, setOffers] = useState<subscriptions.Offer[]>([]);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [offer, setOffer] = useState<subscriptions.Offer | null>(null);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
+    if (!subscriptionsEnabled) return;
+
     let mounted = true;
 
     subscriptions
       .listOffers()
       .then((list) => {
         if (!mounted) return;
-        setOffers(list);
-        // The annual plan carries the trial, so highlight it without removing
-        // the monthly offer required by the monetization contract.
-        setSelected(list.find((item) => item.period === 'annual')?.id ?? list[0]?.id ?? null);
+        // One decision, one offer: the annual plan carries the trial and is the
+        // only purchase presented. Keeping the monthly fallback here still
+        // leaves the paywall usable if a store configuration temporarily omits
+        // the annual package.
+        setOffer(list.find((item) => item.period === 'annual') ?? list[0] ?? null);
       })
       .catch(() => {});
 
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [subscriptionsEnabled]);
+
+  useEffect(() => {
+    if (!subscriptionsEnabled) router.replace('/');
+  }, [router, subscriptionsEnabled]);
 
   const buy = async () => {
-    const offer = offers.find((item) => item.id === selected);
     if (!offer) return;
 
     setBusy(true);
@@ -119,11 +181,18 @@ export default function PaywallScreen() {
           ? 'gap-2 pb-4 pt-2'
           : 'gap-2 border-t border-hairline bg-ink-raised px-gutter pb-4 pt-3'
       }>
+      {offer ? (
+        <Text variant="caption" className="text-center">
+          {commercialTerms(offer, t)}
+        </Text>
+      ) : null}
       <Button
         testID={TID.Button.PaywallBuy}
-        label={t('paywall.cta')}
+        label={
+          offer?.period === 'monthly' ? t('paywall.cta.monthly') : t('paywall.cta')
+        }
         loading={busy}
-        disabled={!selected}
+        disabled={!offer}
         onPress={buy}
       />
       {/* Both are mandatory on a paywall, on either store. */}
@@ -133,23 +202,37 @@ export default function PaywallScreen() {
         variant="ghost"
         onPress={restore}
       />
-      <Pressable
-        accessibilityRole="link"
-        onPress={() => Linking.openURL(TERMS_URL).catch(() => {})}
-        className="items-center py-1 active:opacity-70">
-        <Text variant="caption">{t('paywall.legal')}</Text>
-      </Pressable>
+      <View className="flex-row flex-wrap items-center justify-center gap-x-4">
+        <Pressable
+          accessibilityRole="link"
+          accessibilityLabel={t('legal.terms')}
+          testID="paywall.legal.terms"
+          onPress={() => Linking.openURL(TERMS_URL).catch(() => {})}
+          className="min-h-12 min-w-12 items-center justify-center px-2 py-1 active:opacity-70">
+          <Text variant="caption">{t('legal.terms')}</Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="link"
+          accessibilityLabel={t('legal.privacy')}
+          testID="paywall.legal.privacy"
+          onPress={() => Linking.openURL(PRIVACY_URL).catch(() => {})}
+          className="min-h-12 min-w-12 items-center justify-center px-2 py-1 active:opacity-70">
+          <Text variant="caption">{t('legal.privacy')}</Text>
+        </Pressable>
+      </View>
     </View>
   );
+
+  if (!subscriptionsEnabled) return null;
 
   if (isPlus) {
     return (
       <Screen variant="immersive">
         <BackLink
-        testID={TID.Button.PaywallClose}
-        label={t('paywall.close')}
-        className="px-gutter pt-2"
-      />
+          testID={TID.Button.PaywallClose}
+          label={t('paywall.close')}
+          className="px-gutter pt-2"
+        />
         <View className="flex-1 items-center justify-center gap-3 px-gutter">
           <Text variant="h1" className="text-center">
             {t('paywall.active.title')}
@@ -165,31 +248,42 @@ export default function PaywallScreen() {
 
   return (
     <Screen variant="immersive">
-      <BackLink label={t('paywall.close')} className="px-gutter pt-2" />
+      <BackLink
+        testID={TID.Button.PaywallClose}
+        label={t('paywall.close')}
+        className="px-gutter pt-2"
+      />
 
       <ScrollView
         testID={TID.Screen.Paywall}
-        contentContainerClassName="px-gutter pb-6 pt-2 gap-6"
+        contentContainerClassName={
+          prioritizeOffer ? 'px-gutter pb-6 pt-2 gap-4' : 'px-gutter pb-6 pt-2 gap-6'
+        }
         showsVerticalScrollIndicator={false}>
-        <View className="gap-3">
-          <Text variant="overline">{t('paywall.title')}</Text>
-          <Text variant="display">{t('paywall.subtitle')}</Text>
-          <Rule className="self-start" />
-          {reason ? (
-            <Text variant="quote">{t(`paywall.reason.${reason}` as TranslationKey)}</Text>
-          ) : null}
-        </View>
+        <Text variant="overline">{t('paywall.title')}</Text>
 
-        <View className="gap-3">
-          {offers.map((offer) => (
-            <PlanCard
-              key={offer.id}
-              offer={offer}
-              selected={selected === offer.id}
-              onPress={() => setSelected(offer.id)}
-            />
-          ))}
-        </View>
+        {prioritizeOffer ? null : (
+          <View className="gap-3">
+            <Text variant="display">{t('paywall.subtitle')}</Text>
+            <Rule className="self-start" />
+            <Text variant="quote">{t(reasonKey)}</Text>
+          </View>
+        )}
+
+        {offer ? <PlanCard offer={offer} compact={prioritizeOffer} /> : null}
+
+        {prioritizeOffer ? <Text variant="bodySm">{t(reasonKey)}</Text> : null}
+
+        {/* Keep the commercial terms in the first viewport at 150–200% text,
+            where a sticky footer would cover the offer itself. */}
+        {largeText ? purchaseActions : null}
+
+        {prioritizeOffer ? (
+          <View className="gap-3">
+            <Text variant="h1">{t('paywall.subtitle')}</Text>
+            <Rule className="self-start" />
+          </View>
+        ) : null}
 
         <Card featured>
           <View className="gap-3">
@@ -213,11 +307,6 @@ export default function PaywallScreen() {
               ? t('paywall.remaining.one')
               : t('paywall.remaining', { count: remainingPlays })}
         </Text>
-
-        {/* At accessibility text sizes a sticky footer can consume most of a
-            phone screen. Let the actions follow the offer instead, so the
-            complete proposition remains readable before purchase. */}
-        {largeText ? purchaseActions : null}
       </ScrollView>
 
       {/* Chrome over scrolling content, so it says so: the hairline and the
