@@ -47,3 +47,5 @@ Contrôler compte, anti-doublon, fichier et SHA avant chaque action. Inscrire
 Le pilote archive Facebook `68-prairie-des-lanternes.mp4` est une ligne
 distincte, programmée à 12:30 ; ne pas la confondre avec le hero et ne pas la
 dupliquer sur YouTube/Pinterest sans confirmation native.
+
+Réconciliation documentaire de la PR #98 : voir [le registre du 23/08](58-PUBLIC-PROOF-2026-08-23.md#réconciliation-de-la-pr-98--17-septembre-2026). Les contrôles ultérieurs priment sur les déclarations historiques de partage.
