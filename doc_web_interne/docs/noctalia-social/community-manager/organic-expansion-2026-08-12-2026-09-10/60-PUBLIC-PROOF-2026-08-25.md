@@ -36,3 +36,7 @@ conserver le statut préparatoire et ne jamais republier par supposition.
 - Principal : `6/9` prouvés après TikTok C3 ; TikTok C3 est public, Instagram C2 et C3 restent explicitement `ÉCHEC — NON PUBLIÉ`, X C3 reste futur jusqu'à 23:15.
 - Hero secondaire : `1/3` preuve publique ; Pinterest et Facebook sont explicitement `ÉCHEC — NON PUBLIÉ`, YouTube est public.
 - Total : `7/12` URL publiques, avec quatre échecs explicites et aucune URL future comptée.
+
+## Réconciliation de la PR #103 — 17 septembre 2026
+
+Les statuts et preuves ultérieurs de master restent prioritaires, notamment X et les heroes. Les liens TikTok C1–C3 et Instagram C1 sont déjà documentés. Les liens Instagram [DceNs3MJh4W](https://www.instagram.com/noctaliadreams/reel/DceNs3MJh4W/) (C2) et [DceiUMIJ6DA](https://www.instagram.com/noctaliadreams/reel/DceiUMIJ6DA/) (C3) sont conservés comme **CANDIDATS NON COMPTÉS**, sans promouvoir leurs anciennes déclarations de partage en preuve actuelle. Aucune nouvelle vérification native ou publication pendant ce triage.

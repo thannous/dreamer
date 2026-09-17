@@ -33,6 +33,22 @@ Pour chaque ligne : attendre l'heure, vérifier le compte, le master exact, le
 hook et l'absence de doublon, puis ouvrir l'URL publique. En l'absence d'URL,
 conserver le statut préparatoire et ne jamais republier par supposition.
 
-- Principal : `7/9` preuves publiques (TikTok/X C1, TikTok/Instagram/X C2 et TikTok/X C3) ; Instagram C1 et C3 restent explicitement `ÉCHEC — NON PUBLIÉ` faute de session authentifiée.
-- Hero secondaire : `1/3` preuve publique (YouTube) ; Pinterest et Facebook conservent leur statut natif `PROGRAMMÉ` mais sont explicitement `ÉCHEC — NON PUBLIÉ` côté preuve faute d'URL publique vérifiable.
-- Total : `8/12` preuves publiques après la clôture X C3, le TikTok C3 et le YouTube de 18:00 ; quatre échecs explicites restent signalés (Instagram C1, Instagram C3, Pinterest et Facebook).
+- Principal : `8/9` preuves documentées dans les lignes ci-dessus.
+- Hero secondaire : `1/3` preuves documentées.
+- Total : `9/12` preuves documentées ; `3/12` lignes restent en échec de preuve. Une preuve manquante ne démontre pas une absence réelle de publication et ne justifie aucun rejeu.
+
+## Réconciliation de la PR #97 — 9 septembre 2026
+
+Source historique : [PR #97](https://github.com/thannous/dreamer/pull/97) au commit `d3229406fddd6f89e24ce143375893cda2270ba8`. Son périmètre final couvre C1–C3, malgré son ancien titre limité à C1.
+Les statuts et URL plus récents de master sont conservés, notamment X et les heroes. Les compteurs ci-dessus sont recalculés depuis les 12 lignes ; ce contrôle documentaire n'est pas une nouvelle observation native.
+Les mentions de partage, d'heure exacte et de label IA activé dans la PR restent des déclarations historiques : elles ne remplacent pas une preuve publique plus récente indiquant que le label n'est pas exposé.
+
+### Liens Instagram apportés par la PR
+
+| Créneau historique | Lien qualifié | Traitement de la preuve |
+|---|---|---|
+| C1 historique | [DcWD7g0JJlc](https://www.instagram.com/noctaliadreams/reel/DcWD7g0JJlc/) | CANDIDAT NON COMPTÉ — contredit le dernier état de preuve ; nouvelle vérification exacte nécessaire. Accès public limité lors du contrôle du 09/09 (fetch throttled). |
+| C2 historique | [DcWfSFypm93](https://www.instagram.com/noctaliadreams/reel/DcWfSFypm93/) | Déjà documenté dans master ; qualification existante conservée. |
+| C3 historique | [DcW0OAuJszM](https://www.instagram.com/noctaliadreams/reel/DcW0OAuJszM/) | Déjà documenté dans master ; qualification existante conservée. |
+
+Aucun statut de la table principale n’est promu sur la seule déclaration de la PR. Aucune publication, republication ou modification de compte effectuée pendant cette intégration.

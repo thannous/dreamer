@@ -110,7 +110,9 @@ ou B, modifier la file archive ou ouvrir Snapchat.
 
 - vérifier la répétabilité : trois des cinq dernières publications de chaque
   candidat doivent dépasser la médiane du canal sur la métrique primaire ;
-- préparer la décision Snapchat sans l'exécuter.
+- la porte qualitative Snapchat a déjà été levée par override propriétaire le
+  24 août 2026 (`OPEN-PENDING-ACCOUNT`) ; cette revue ne crée pas de compte et
+  n'autorise aucune publication.
 
 ### J30 — 10 septembre
 
@@ -143,9 +145,28 @@ A+B aurait créé un critère circulaire et potentiellement impossible à rempli
 
 ## Porte Snapchat
 
-Statut initial : **SNAPCHAT BLOQUÉ**.
+Statut courant : **OPEN-PENDING-ACCOUNT** — override propriétaire.
 
-Snapchat Spotlight peut être ouvert seulement si :
+Le 24 août 2026 vers 03:24 Europe/Paris, le propriétaire thanh a explicitement
+choisi « Ouvrir Snapchat maintenant » lors de la revue de cette porte avec le
+community manager Noctalia (Nori). Cette décision lève la porte qualitative
+sans que deux formats aient le statut `GAGNANT DIRECTIONNEL`.
+
+Aucun compte Snapchat Noctalia public n'a été trouvé. Snapchat n'est pas un
+profil autorisé live. Aucun handle n'est inscrit au mandat. Aucune publication
+Spotlight n'est autorisée tant que le compte n'existe pas, n'est pas ajouté au
+mandat avec une URL publique réelle, et qu'une session authentifiée n'est pas
+vérifiée.
+
+Handle envisagé **si** le compte est créé : `@noctaliadreams`, contact
+`contact@noctalia.app`. Ce compte n'est pas créé. Ne pas inventer d'URL, de
+ligne de profil ni de statut `PUBLIÉ`.
+
+### Critères historiques (avant override)
+
+Statut initial jusqu'au 24 août 2026 : **SNAPCHAT BLOQUÉ**.
+
+Snapchat Spotlight pouvait être ouvert seulement si :
 
 - deux formats distincts ont le statut `GAGNANT DIRECTIONNEL` ;
 - cinq assets propres par semaine peuvent être adaptés nativement ;
@@ -154,8 +175,11 @@ Snapchat Spotlight peut être ouvert seulement si :
 - aucune plateforme prioritaire n'a de retard opérationnel supérieur à 10 % ;
 - le propriétaire valide explicitement l'ouverture et la publication.
 
-Si une condition manque, la décision est `PROLONGER LE TEST` ou
-`NE PAS OUVRIR SNAPCHAT`.
+Si une condition manquait, la décision était `PROLONGER LE TEST` ou
+`NE PAS OUVRIR SNAPCHAT`. Ces critères restent la référence historique du
+programme ; ils ne bloquent plus l'ouverture de la porte, mais ils ne
+remplacent pas l'existence d'un compte, d'une URL publique et d'une session
+vérifiée.
 
 ## Fiche de revue hebdomadaire
 

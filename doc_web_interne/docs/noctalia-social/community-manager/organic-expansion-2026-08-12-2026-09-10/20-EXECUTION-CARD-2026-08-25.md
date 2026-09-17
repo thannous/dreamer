@@ -24,3 +24,5 @@ hook, le fichier et le SHA avant chaque action ; `PUBLIÉ` exige une URL publiqu
 
 Hero secondaire C1 : YouTube et Facebook programmés ; Pinterest `PRÊT`, à
 programmer seulement après libération d'une place dans la file roulante.
+
+Réconciliation documentaire de la PR #103 : voir [le registre du 25/08](60-PUBLIC-PROOF-2026-08-25.md#réconciliation-de-la-pr-103--17-septembre-2026). Les contrôles ultérieurs priment sur les déclarations historiques de partage.

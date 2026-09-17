@@ -36,3 +36,7 @@ conserver le statut préparatoire et ne jamais republier par supposition.
 - Principal : `5/9` prouvés après TikTok et X C1 puis TikTok, Instagram et X C2 ; Instagram C1 reste explicitement `ÉCHEC — NON PUBLIÉ` faute de session authentifiée.
 - Hero secondaire : `2/3` prouvés ; Facebook reste explicitement `ÉCHEC — NON PUBLIÉ` faute d'URL publique exacte.
 - Total : `7/12` preuves publiques ; deux échecs explicites sont signalés (Instagram C1 et Facebook HERO), les autres lignes restent futures.
+
+## Réconciliation de la PR #98 — 17 septembre 2026
+
+Les contrôles documentés du 04/09 dans master restent prioritaires. Les liens C1/C2 de la PR sont déjà présents ; les statuts X plus récents sont conservés. Le lien Instagram C3 [DcZY1iXpQXw](https://www.instagram.com/noctaliadreams/reel/DcZY1iXpQXw/) est conservé comme **CANDIDAT NON COMPTÉ**, car la vérification du 04/09 n'a pas retrouvé ce Reel exact. La déclaration historique de partage ne remplace pas une vérification publique. Aucune nouvelle publication ni nouvelle preuve native pendant ce triage.
