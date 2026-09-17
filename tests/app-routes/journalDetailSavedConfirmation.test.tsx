@@ -11,6 +11,7 @@ let mockPendingRecordingIntent: Partial<PendingRecordingIntent> | null = null;
 const mockTransitionOnboarding = jest.fn(async () => undefined);
 let mockMedia: any = null;
 let mockQuotaUsage: any = { analysis: { used: 0, limit: 3, remaining: 3 } };
+let mockTier: 'free' | 'plus' = 'free';
 const mockUpdateDream = jest.fn();
 let mockCompositeLoads = true;
 const mockRetryMedia = jest.fn();
@@ -201,7 +202,7 @@ jest.mock('@/components/journal/DreamShareImage', () => ({
 }));
 
 jest.mock('@/components/journal/ImageRetry', () => ({
-  ImageRetry: () => null,
+  ImageRetry: ({ onRetry }: { onRetry: () => void }) => <button onClick={onRetry}>Retry illustration</button>,
 }));
 
 jest.mock('@/components/journal/JournalDetailSheets', () => ({
@@ -322,7 +323,7 @@ jest.mock('@/hooks/useQuota', () => ({
     canAnalyzeNow: true,
     canAnalyze: true,
     canGenerateImageNow: true,
-    tier: 'free',
+    tier: mockTier,
     usage: mockQuotaUsage,
     loading: false,
     quotaStatus: null,
@@ -346,6 +347,7 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 jest.mock('@/lib/env', () => ({
+  isHdIllustrationsEnabled: () => true,
   isMockModeEnabled: () => true,
   isReferenceImagesEnabled: () => false,
 }));
@@ -368,6 +370,7 @@ describe('journal detail saved confirmation route', () => {
     mockTransitionOnboarding.mockClear();
     mockMedia = null;
     mockQuotaUsage = { analysis: { used: 0, limit: 3, remaining: 3 } };
+    mockTier = 'free';
     mockUpdateDream.mockClear();
     mockRetryMedia.mockReset();
     mockShareComposite.mockReset();
@@ -379,6 +382,19 @@ describe('journal detail saved confirmation route', () => {
 
   afterEach(() => {
     cleanup();
+  });
+
+  it('keeps illustration retry available after the HD quota is exhausted', () => {
+    mockTier = 'plus';
+    mockDreams = [buildDream({
+      isAnalyzed: true,
+      analysisStatus: 'done',
+      imageGenerationFailed: true,
+      imageJobErrorCode: 'HD_IMAGE_QUOTA_EXCEEDED',
+    })];
+    render(<JournalDetailScreen />);
+    expect(screen.getByRole('button', { name: 'settings.illustration.preferences' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Retry illustration' })).toBeTruthy();
   });
 
   it.each(['analysis_confirmation', 'analysis_requested'] as const)('only dismisses optional onboarding analysis on return: %s', (phase: 'analysis_confirmation' | 'analysis_requested') => {

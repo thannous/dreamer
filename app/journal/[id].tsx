@@ -54,7 +54,7 @@ import {
   type ReflectionQuotaHint,
 } from '@/lib/dreamUsage';
 import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
-import { isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
+import { isHdIllustrationsEnabled, isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import {
@@ -1469,10 +1469,10 @@ function JournalDetailContent() {
           variant === 'floating' ? 'rounded-[20px]' : '',
         ].join(' ')}
       >
-      <View className="mb-3 flex-row items-center justify-between">
-        <View className="flex-1 flex-row items-center gap-1.5">
+      <View className="mb-3 flex-row items-center justify-between gap-4">
+        <View className="min-w-0 flex-1 flex-row items-center gap-1.5">
           <IconSymbol name="calendar" size={16} color={noctalia.text.primary} />
-          <Text className="font-sans-bold text-[14px] text-ivory">{formatDreamDate(dream.id)}</Text>
+          <Text className="min-w-0 flex-1 font-sans-bold text-[14px] text-ivory">{formatDreamDate(dream.id)}</Text>
         </View>
         <View className="flex-row items-center gap-1.5">
           <IconSymbol name="clock" size={16} color={noctalia.text.primary} />
@@ -1960,6 +1960,14 @@ function JournalDetailContent() {
 
     return (
       <View testID={TID.Component.JournalIllustration} className="mb-5 overflow-hidden rounded-lg">
+        {isHdIllustrationsEnabled() && dream.imageJobErrorCode === 'HD_IMAGE_QUOTA_EXCEEDED' ? (
+          <View className="gap-3 rounded-lg bg-ink-soft p-4">
+            <Text accessibilityRole="alert" className="font-sans text-body-sm text-ivory">{t('settings.illustration.exhausted')}</Text>
+            <Pressable accessibilityRole="button" onPress={() => router.push('/settings')} className="min-h-[44px] justify-center">
+              <Text className="font-sans-medium text-champagne-on">{t('settings.illustration.preferences')}</Text>
+            </Pressable>
+          </View>
+        ) : null}
         {dream.imageUrl ? (
           <PressableScale
             testID={TID.Button.JournalIllustrationExpand}

@@ -46,7 +46,9 @@ export function resolveJournalIllustrationAccess(input: {
       : undefined;
 
   if (input.tier === 'plus') {
-    return { allowed: true, bundledRequestId, reason: 'allowed' };
+    // Plus requests are independent of the free analysis bundle, including
+    // a new standard request after the user exhausts their HD allowance.
+    return { allowed: true, bundledRequestId: undefined, reason: 'allowed' };
   }
 
   if (input.tier === 'guest') {

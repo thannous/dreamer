@@ -1,4 +1,5 @@
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
+import { isHdIllustrationsEnabled } from '../lib/illustrationFlags.ts';
 import { requireGuestSession } from '../lib/guards.ts';
 import { claimGuestQaPaidCall } from '../lib/guestQa.ts';
 import {
@@ -30,7 +31,8 @@ type ImageJobAdmission = {
     | 'AI_GLOBAL_BACKLOG_LIMIT'
     | 'AI_ACTOR_CONCURRENCY_LIMIT'
     | 'AI_ACTOR_RATE_LIMIT'
-    | 'AI_IDEMPOTENCY_KEY_REUSED';
+    | 'AI_IDEMPOTENCY_KEY_REUSED'
+    | 'AI_JOB_ATTEMPTS_EXHAUSTED';
   retry_after_seconds?: number;
   job?: ImageJobRow;
 };
@@ -72,6 +74,11 @@ export const resolveImageJobAdmissionPolicy = (
 };
 
 const imageAdmissionBlockedResponse = (admission: ImageJobAdmission): Response => {
+  if (admission.code === 'AI_JOB_ATTEMPTS_EXHAUSTED') {
+    return new Response(JSON.stringify({ error: 'Image retry budget exhausted', code: admission.code }), {
+      status: 409, headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    });
+  }
   if (admission.code === 'AI_IDEMPOTENCY_KEY_REUSED') {
     return new Response(
       JSON.stringify({
@@ -228,6 +235,7 @@ export async function handleCreateImageJob(
       previousImageUrl?: string;
       clientRequestId?: string;
       dreamId?: number | null;
+      imageSize?: unknown;
     };
 
     const guestCheck = await requireGuestSession(req, null, user);
@@ -322,6 +330,17 @@ export async function handleCreateImageJob(
       return tierResolution.response;
     }
 
+    const imageSize = body.imageSize ?? '1K';
+    if (!['1K', '2K', '4K'].includes(imageSize as string)) {
+      return new Response(JSON.stringify({ error: 'Invalid image size' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+    if (imageSize !== '1K' && !isHdIllustrationsEnabled()) {
+      return new Response(JSON.stringify({ error: 'High resolution is disabled', code: 'HD_IMAGE_DISABLED' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+    if (imageSize !== '1K' && (!user || tierResolution.tier !== 'plus')) {
+      return new Response(JSON.stringify({ error: 'High resolution requires Plus', code: 'HD_IMAGE_PLUS_REQUIRED' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
     if (!canCreateImageJobForTier({
       tier: tierResolution.tier,
       userId: user?.id ?? null,
@@ -401,6 +420,8 @@ export async function handleCreateImageJob(
         prompt: prompt || null,
         transcript: transcript || null,
         previousImageUrl: previousImageUrl || null,
+        // Preserve legacy 1K request hashes when older clients retry a job.
+        ...(imageSize !== '1K' ? { imageSize } : {}),
       },
       p_client_request_id: clientRequestId,
       p_max_attempts: admissionPolicy.maxAttempts,

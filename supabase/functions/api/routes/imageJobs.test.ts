@@ -505,3 +505,34 @@ Deno.test('later image-retry migration keeps attempt_count and quota_claimed on 
     assertEquals(assignment.includes("status = 'queued'"), true);
   }
 });
+
+Deno.test('HD requests reject non-Plus callers and unsupported resolutions before admission', async () => {
+  const previous = Deno.env.get('HD_ILLUSTRATIONS_ENABLED');
+  Deno.env.set('HD_ILLUSTRATIONS_ENABLED', 'true');
+  try {
+    const factory = (() => { throw new Error('Admission must not run'); }) as any;
+    const free = await handleCreateImageJob(createAuthenticatedImageContext({ ...bundledImageBody, imageSize: '4K' }, 'free'), { createAdminClient: factory });
+    assertEquals(free.status, 403);
+    assertEquals((await free.json()).code, 'HD_IMAGE_PLUS_REQUIRED');
+    const invalid = await handleCreateImageJob(createAuthenticatedImageContext({ ...bundledImageBody, imageSize: '8K' }), { createAdminClient: factory });
+    assertEquals(invalid.status, 400);
+  } finally {
+    if (previous === undefined) Deno.env.delete('HD_ILLUSTRATIONS_ENABLED');
+    else Deno.env.set('HD_ILLUSTRATIONS_ENABLED', previous);
+  }
+});
+
+Deno.test('disabled HD rejects Plus before admitting or billing a job', async () => {
+  const previous = Deno.env.get('HD_ILLUSTRATIONS_ENABLED');
+  Deno.env.delete('HD_ILLUSTRATIONS_ENABLED');
+  try {
+    const response = await handleCreateImageJob(
+      createAuthenticatedImageContext({ ...bundledImageBody, imageSize: '4K' }, 'plus'),
+      { createAdminClient: (() => { throw new Error('Admission must not run'); }) as any }
+    );
+    assertEquals(response.status, 403);
+    assertEquals((await response.json()).code, 'HD_IMAGE_DISABLED');
+  } finally {
+    if (previous !== undefined) Deno.env.set('HD_ILLUSTRATIONS_ENABLED', previous);
+  }
+});

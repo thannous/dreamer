@@ -355,6 +355,10 @@ verify_jwt = false
 [functions.capture-recall]
 verify_jwt = false
 
+# Same shared user/guest authentication as api; HD additionally requires Plus.
+[functions.illustration-hd]
+verify_jwt = false
+
 [functions.analysis-job-worker]
 verify_jwt = false
 

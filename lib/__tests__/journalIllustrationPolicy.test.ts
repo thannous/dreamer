@@ -63,7 +63,7 @@ describe('resolveJournalIllustrationAccess', () => {
 
     expect(access.allowed).toBe(true);
     expect(access.reason).toBe('allowed');
-    expect(access.bundledRequestId).toBe(BUNDLED_REQUEST_ID);
+    expect(access.bundledRequestId).toBeUndefined();
   });
 
   it('allows authenticated free when a valid bundle exists even if analysis remaining is zero', () => {
