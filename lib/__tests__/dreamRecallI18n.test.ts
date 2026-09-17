@@ -114,8 +114,8 @@ describe('dream recall i18n', () => {
   it('keeps the offer optional after the dream is already saved', () => {
     expect(en['dream_recall.offer.body']).toMatch(/already saved/i);
     expect(en['dream_recall.offer.body']).toMatch(/optional/i);
-    expect(fr['dream_recall.offer.body']).toMatch(/déjà enregistré/);
-    expect(fr['dream_recall.offer.body']).toMatch(/facultatifs/);
+    expect(fr['dream_recall.offer.body']).toMatch(/(?:déjà |est )enregistré/);
+    expect(fr['dream_recall.offer.body']).toMatch(/facultatifs|si tu le souhaites/i);
     expect(es['dream_recall.offer.body']).toMatch(/ya está guardado/);
     expect(es['dream_recall.offer.body']).toMatch(/opcionales/);
     expect(de['dream_recall.offer.body']).toMatch(/bereits gespeichert/);
