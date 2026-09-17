@@ -689,6 +689,11 @@ export const useDreamJournal = () => {
             conflictRemoteDream: undefined,
           });
           await queueAndPersist(pendingVersion);
+          if (!hasNetwork) {
+            void syncPendingMutations({ refreshNetworkState: true }).catch((error) => {
+              logger.warn('Background dream update sync failed', error);
+            });
+          }
           return;
         }
 
@@ -750,6 +755,7 @@ export const useDreamJournal = () => {
       resolveRemoteId,
       resolveCurrentDream,
       runSerializedDreamWrite,
+      syncPendingMutations,
       tier,
     ]
   );

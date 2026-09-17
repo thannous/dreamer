@@ -94,10 +94,12 @@ const mockNetworkState = {
   isConnected: true as boolean | null,
 };
 
+const mockGetCurrentNetworkState = jest.fn(async () => mockNetworkState);
+
 // Mock dependencies
 jest.mock('expo-network', () => ({
   useNetworkState: () => mockNetworkState,
-  getNetworkStateAsync: async () => mockNetworkState,
+  getNetworkStateAsync: () => mockGetCurrentNetworkState(),
 }));
 
 jest.mock('expo-localization', () => ({
@@ -369,6 +371,7 @@ describe('useDreamJournal', () => {
     mockGuestDreamCounterState.count = 0;
     mockNetworkState.isInternetReachable = true;
     mockNetworkState.isConnected = true;
+    mockGetCurrentNetworkState.mockImplementation(async () => mockNetworkState);
     mockGetGuestRecordedDreamCount.mockResolvedValue(0);
     process.env.EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED = '';
     setSavedDreams([]);
@@ -869,6 +872,22 @@ describe('useDreamJournal', () => {
   });
 
   describe('updateDream', () => {
+    it('sends a follow-up edit when the cached network state is offline but native connectivity has recovered', async () => {
+      setMockUser({ id: 'user-1' });
+      mockNetworkState.isInternetReachable = false;
+      mockNetworkState.isConnected = false;
+      const original = buildDream({ id: 97, remoteId: 1097, syncState: 'clean' });
+      mockFetchDreamsFromSupabase.mockResolvedValue([original]);
+      mockUpdateDreamInSupabase.mockImplementation(async (value: DreamAnalysis) => value);
+      const { result } = await renderLoadedDreamJournal();
+      mockGetCurrentNetworkState.mockResolvedValueOnce({ isInternetReachable: true, isConnected: true });
+      await act(async () => { await result.current.updateDream({ ...original, title: 'Follow-up edit' }); });
+      await waitFor(() => expect(mockUpdateDreamInSupabase).toHaveBeenCalledWith(expect.objectContaining({
+        remoteId: 1097, title: 'Follow-up edit',
+      })));
+      await waitFor(() => expect(result.current.dreams[0]).toMatchObject({ title: 'Follow-up edit', syncState: 'clean' }));
+    });
+
     it('updates dream locally when not authenticated', async () => {
       const existingDream = buildDream({ id: 1, title: 'Original' });
       setSavedDreams([existingDream]);
