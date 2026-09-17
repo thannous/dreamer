@@ -67,9 +67,9 @@ describe('resolveJournalDreamRecallOfferEligible', () => {
 
 describe('journal detail recall offer wiring', () => {
   const source = readFileSync(join(__dirname, '../../app/journal/[id].tsx'), 'utf8');
-  const reveal3 = source.slice(
-    source.indexOf('<Reveal index={3}>'),
-    source.indexOf('<Reveal index={4}>')
+  const optionalRecall = source.slice(
+    source.indexOf('{!recallRequested ? ('),
+    source.indexOf('{renderIllustrationSection()}')
   );
 
   it('mounts the optional recall offer after the original transcript', () => {
@@ -80,23 +80,17 @@ describe('journal detail recall offer wiring', () => {
     expect(source.indexOf('<Reveal index={2}>')).toBeLessThan(
       source.indexOf('<DreamRecallAssistantCard', source.indexOf('<Reveal index={3}>'))
     );
-    expect(reveal3).toContain('<DreamRecallAssistantCard');
-    expect(reveal3).toContain('dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}');
-    expect(reveal3).toContain('originalTranscript={dream.transcript}');
-    expect(reveal3).toContain(
+    expect(optionalRecall).toContain('<DreamRecallAssistantCard');
+    expect(optionalRecall).toContain('dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}');
+    expect(optionalRecall).toContain('originalTranscript={dream.transcript}');
+    expect(optionalRecall).toContain(
       'originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}'
     );
-    expect(reveal3).toContain('offerEligible={recallOffer.offerEligible}');
+    expect(optionalRecall).toContain('offerEligible={recallOffer.offerEligible}');
   });
 
-  it('places the optional recall card after analysis CTA and before interpretation', () => {
-    expect(reveal3.indexOf('<DreamRecallAssistantCard')).toBeGreaterThan(-1);
-    expect(reveal3.indexOf("renderDetailActionCard(['analyze'])")).toBeLessThan(
-      reveal3.indexOf('<DreamRecallAssistantCard')
-    );
-    expect(reveal3).not.toContain('dream.interpretation');
-    expect(reveal3).not.toContain('showCompletedReading');
-  });
+  // The rendered order is exercised in journalDetailSavedConfirmation.test.tsx.
+
 });
 
 describe('journal detail zone presentation', () => {

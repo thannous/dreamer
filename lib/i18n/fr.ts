@@ -544,6 +544,8 @@ const translations: Record<string, string> = {
     'journal.detail.delete_confirm.title': 'Supprimer le rêve',
     'journal.detail.delete_confirm.message': 'Es-tu sûr·e de vouloir supprimer ce rêve ? Cette action est définitive.',
     'journal.detail.delete_confirm.confirm': 'Supprimer',
+    'analysis.reading.eyebrow': 'Ton rêve, autrement',
+    'analysis.reading.close': 'Fermer l’analyse',
     'journal.detail.interpretation_header': 'Interprétation',
     'journal.detail.symbols_header': 'Symboles',
     'journal.detail.emotions_header': 'Émotions',

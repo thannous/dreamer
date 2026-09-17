@@ -1,3 +1,4 @@
+import { AnalysisReadingModal } from '@/components/analysis/AnalysisReadingModal';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
@@ -282,6 +283,8 @@ function JournalDetailContent() {
   const [isRetryingImage, setIsRetryingImage] = useState(false);
   const [isRetryingSync, setIsRetryingSync] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isReadingAnalysis, setIsReadingAnalysis] = useState(false);
+  const awaitingAnalysisReading = useRef(false);
   const [analysisRecoveryClock, setAnalysisRecoveryClock] = useState(() => Date.now());
   const [showReplaceImageSheet, setShowReplaceImageSheet] = useState(false);
   const [showReanalyzeSheet, setShowReanalyzeSheet] = useState(false);
@@ -558,6 +561,17 @@ function JournalDetailContent() {
     dream?.analysisStatus,
     analysisState.isAnalyzed
   );
+  useEffect(() => {
+    if (dream?.analysisStatus === 'pending') {
+      awaitingAnalysisReading.current = true;
+    } else if (dream?.analysisStatus === 'failed') {
+      awaitingAnalysisReading.current = false;
+    } else if (showCompletedReading && dream?.interpretation?.trim() && awaitingAnalysisReading.current) {
+      awaitingAnalysisReading.current = false;
+      setIsReadingAnalysis(true);
+    }
+  }, [dream?.analysisStatus, dream?.interpretation, showCompletedReading]);
+
   const analysisFreshness = useMemo(() => getDreamAnalysisFreshness(dream), [dream]);
   const isAnalysisStale = analysisFreshness === 'stale';
   const visibleIllustrationCta =
@@ -2185,14 +2199,6 @@ function JournalDetailContent() {
             <Reveal index={3}>
               {renderStaleBanner()}
               {renderDetailActionCard(['analyze'])}
-              {!recallRequested ? (
-              <DreamRecallAssistantCard
-                dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
-                originalTranscript={dream.transcript}
-                originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}
-                offerEligible={recallOffer.offerEligible}
-              />
-              ) : null}
             </Reveal>
 
             <Reveal index={4}>
@@ -2239,7 +2245,17 @@ function JournalDetailContent() {
               ) : null}
             </Reveal>
 
-            <Reveal index={5}>{renderIllustrationSection()}</Reveal>
+            <Reveal index={5}>
+              {!recallRequested ? (
+                <DreamRecallAssistantCard
+                  dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
+                  originalTranscript={dream.transcript}
+                  originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}
+                  offerEligible={recallOffer.offerEligible}
+                />
+              ) : null}
+              {renderIllustrationSection()}
+            </Reveal>
 
             <Reveal index={6}>
               {!isAnalysisPending && showCompletedReading && dream.symbols && dream.symbols.length > 0 ? (
@@ -2435,6 +2451,9 @@ function JournalDetailContent() {
             </View>
           </View>
         )}
+        {isReadingAnalysis && dream.interpretation?.trim() ? (
+          <AnalysisReadingModal dream={dream} onClose={() => setIsReadingAnalysis(false)} />
+        ) : null}
         <AnalysisNoticeSheet
           visible={Boolean(analysisNotice)}
           onClose={handleDismissAnalysisNotice}

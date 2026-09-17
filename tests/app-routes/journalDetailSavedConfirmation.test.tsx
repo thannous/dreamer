@@ -147,6 +147,12 @@ jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 0, left: 0 }),
 }));
 
+jest.mock('@/components/analysis/AnalysisReadingModal', () => ({
+  AnalysisReadingModal: ({ onClose }: { onClose: () => void }) => (
+    <div data-testid="analysis.reading.modal"><button onClick={onClose}>Close reading</button></div>
+  ),
+}));
+
 jest.mock('@/components/Toast', () => ({
   Toast: ({ message, testID }: { message: string; testID?: string }) => (
     <div data-testid={testID}>{message}</div>
@@ -382,6 +388,39 @@ describe('journal detail saved confirmation route', () => {
 
   afterEach(() => {
     cleanup();
+  });
+
+  it('reveals a newly completed analysis once, but not on a revisit or failed attempt', () => {
+    mockDreams = [buildDream({ analysisStatus: 'pending' })];
+    const view = render(<JournalDetailScreen />);
+    expect(screen.queryByTestId('analysis.reading.modal')).toBeNull();
+    mockDreams = [buildDream({ analysisStatus: 'done', isAnalyzed: true, interpretation: 'Reflection' })];
+    view.rerender(<JournalDetailScreen />);
+    expect(screen.getByTestId('analysis.reading.modal')).toBeTruthy();
+    fireEvent.click(screen.getByText('Close reading'));
+    view.rerender(<JournalDetailScreen />);
+    expect(screen.queryByTestId('analysis.reading.modal')).toBeNull();
+    view.unmount();
+    const revisit = render(<JournalDetailScreen />);
+    expect(screen.queryByTestId('analysis.reading.modal')).toBeNull();
+    mockDreams = [buildDream({ analysisStatus: 'pending', isAnalyzed: true, interpretation: 'Old reflection' })];
+    revisit.rerender(<JournalDetailScreen />);
+    mockDreams = [buildDream({ analysisStatus: 'failed', isAnalyzed: true, interpretation: 'Old reflection' })];
+    revisit.rerender(<JournalDetailScreen />);
+    expect(screen.queryByTestId('analysis.reading.modal')).toBeNull();
+    mockDreams = [buildDream({ analysisStatus: 'pending' })];
+    revisit.rerender(<JournalDetailScreen />);
+    mockDreams = [buildDream({ analysisStatus: 'done', isAnalyzed: true, interpretation: 'New reflection' })];
+    revisit.rerender(<JournalDetailScreen />);
+    expect(screen.getByTestId('analysis.reading.modal')).toBeTruthy();
+  });
+
+  it('places the completed reading before optional recall', () => {
+    mockDreams = [buildDream({ analysisStatus: 'done', isAnalyzed: true, interpretation: 'Reflection' })];
+    render(<JournalDetailScreen />);
+    const reading = screen.getByTestId(TID.Component.DreamDetailReadingZone);
+    const recall = screen.getByTestId(TID.Component.DreamRecallOffer);
+    expect(reading.compareDocumentPosition(recall) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('attributes an original poetic quote and omits the section when absent', () => {
