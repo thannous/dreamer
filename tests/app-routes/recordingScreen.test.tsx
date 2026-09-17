@@ -1149,10 +1149,8 @@ describe('Recording screen', () => {
       source: 'Une plage. Question : couleur ? Réponse : noire.', text: 'Une plage noire, peut-être.',
     })));
     expect(screen.queryByText('recording.review.back')).toBeNull();
-    fireEvent.click(screen.getByText('recording.review.original'));
-    expect(screen.getByText('Une plage. Question : couleur ? Réponse : noire.')).toBeTruthy();
+    expect(screen.queryByText('recording.review.original')).toBeNull();
     expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('Une plage noire, peut-être.');
-    fireEvent.click(screen.getByText('recording.review.original'));
     expect(screen.queryByText('Une plage. Question : couleur ? Réponse : noire.')).toBeNull();
   });
 

@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { parseCaptureEditableDraft } from '@/lib/captureEditableDraft';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { CaptureOriginal } from './CaptureOriginal';
 import { RecordingTextInput } from './RecordingTextInput';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useTheme } from '@/context/ThemeContext';
@@ -39,7 +38,6 @@ export function CaptureReviewPanel({ text, source, disabled, onChange, onExit }:
         ))}
       </View>
     ) : null}
-    <CaptureOriginal source={source} />
   </View>;
 }
 const styles = StyleSheet.create({
