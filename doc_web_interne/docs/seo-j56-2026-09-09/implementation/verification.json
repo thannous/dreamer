@@ -1,0 +1,30 @@
+{
+  "preservedMetadataFields": [
+    "pageId",
+    "slug",
+    "title",
+    "description",
+    "publishedTime",
+    "author",
+    "ogTitle",
+    "ogDescription",
+    "twitterTitle",
+    "twitterDescription"
+  ],
+  "modifiedTime": "2026-09-09",
+  "jsonLdTypes": [
+    "BlogPosting",
+    "FAQPage",
+    "BreadcrumbList"
+  ],
+  "docs/en/blog/dream-interpretation-history.html": {
+    "title": "History of Dream Interpretation: Ancient to Modern | Noctalia",
+    "canonical": "https://noctalia.app/en/blog/dream-interpretation-history",
+    "description": "Trace the history of dream interpretation from Mesopotamia and Egypt to Greek medicine, Freud, Jung and modern neuroscience."
+  },
+  "docs/es/simbolos/hospital.html": {
+    "title": "Soñar con un hospital: estar allí o verlo lleno | Noctalia",
+    "canonical": "https://noctalia.app/es/simbolos/hospital",
+    "description": "¿Qué significa soñar con un hospital? Compara estar allí, verlo lleno de gente, enfermos o personal médico según tu emoción y contexto, sin predicciones."
+  }
+}

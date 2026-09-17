@@ -269,7 +269,7 @@ describe('Paywall screen', () => {
 
     fireEvent.click(screen.getByTestId(TID.Button.PaywallClose));
 
-    expect(mockReplace).toHaveBeenCalledWith('/(tabs)/settings');
+    expect(mockReplace).toHaveBeenCalledWith('/settings');
     expect(mockBack).not.toHaveBeenCalled();
   });
 
@@ -378,7 +378,7 @@ describe('Paywall screen', () => {
     fireEvent.click(screen.getByTestId(TID.Button.PaywallPurchase));
 
     expect(mockRequestReturnToPaywallIntent).toHaveBeenCalledWith('settings', { persist: true });
-    expect(mockReplace).toHaveBeenCalledWith('/(tabs)/settings?section=account');
+    expect(mockReplace).toHaveBeenCalledWith('/settings?section=account');
     expect(mockPurchase).not.toHaveBeenCalled();
   });
 

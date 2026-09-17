@@ -220,11 +220,13 @@ describe('OnboardingContext scope isolation', () => {
 
     expect(result.current.state).toMatchObject({ step: 'path', selectedPath: 'analyze' });
     expect(mockHarness.persist).toHaveBeenCalledTimes(1);
+    expect(result.current.persisting).toBe(true);
 
     await act(async () => {
       resolvePersist(result.current.state);
       await transitionPromise;
     });
+    expect(result.current.persisting).toBe(false);
   });
 
   it('rolls back to the last durable state when the latest write fails', async () => {
@@ -240,6 +242,7 @@ describe('OnboardingContext scope isolation', () => {
 
     expect(result.current.state).toMatchObject({ status: 'not_started', step: null });
     expect(result.current.error?.message).toBe('write failed');
+    expect(result.current.persisting).toBe(false);
   });
 
   it('does not let a stale failed write overwrite a newer optimistic state', async () => {

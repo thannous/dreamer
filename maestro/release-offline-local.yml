@@ -1,5 +1,5 @@
 # Release offline gate: a guest dream is durable while offline and after network restoration.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release offline local persistence
 tags:
   - release
@@ -74,22 +74,10 @@ onFlowComplete:
     id: btn.saveDream
 - extendedWaitUntil:
     visible:
-      id: "text.firstDream.title|text.analyzePromptTitle"
+      id: text.dreamDetail.actionTitle
     timeout: 90000
-- runFlow:
-    when:
-      visible:
-        id: text.firstDream.title
-    commands:
-      - tapOn:
-          id: btn.firstDream.journal
-- runFlow:
-    when:
-      visible:
-        id: text.analyzePromptTitle
-    commands:
-      - tapOn:
-          id: btn.analyzePrompt.journal
+- tapOn:
+    id: btn.navigateJournal
 - extendedWaitUntil:
     visible: "Release offline local sentinel"
     timeout: 20000
@@ -125,6 +113,7 @@ onFlowComplete:
       - tapOn:
           id: input.searchDreams
       - inputText: "Release offline local sentinel"
+      - hideKeyboard
       - extendedWaitUntil:
           visible:
             id: "dream.item.*"
@@ -133,8 +122,11 @@ onFlowComplete:
           id: "dream.item.*"
           index: 0
 - extendedWaitUntil:
-    visible: "Release offline local sentinel"
+    visible:
+      id: component.transcriptCard
     timeout: 20000
+- assertVisible: "Release offline local sentinel"
+- takeScreenshot: ti429-offline-transcript
 
 # Restore connectivity explicitly, resume the app, and verify the local record remains.
 - setAirplaneMode: disabled

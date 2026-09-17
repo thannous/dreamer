@@ -1,3 +1,4 @@
+import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { DarkTheme } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -5,11 +6,13 @@ import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import type { DreamAnalysis } from '@/lib/types';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import { Image as RNImage, StyleSheet, Text, View } from 'react-native';
 
 interface DreamShareImageProps {
   dream: DreamAnalysis;
+  resolvedMedia?: { imageUrl: string; thumbnailUrl?: string };
+  onMediaReady?: (source: string, ready: boolean) => void;
   t: (key: string, params?: any) => string;
 }
 
@@ -19,15 +22,23 @@ interface DreamShareImageProps {
  * Instagram 4:5 ratio: 1080x1350px
  */
 export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function DreamShareImage(
-  { dream, t },
+  { dream, t, resolvedMedia, onMediaReady },
   ref
 ) {
-  const [imageError, setImageError] = useState(false);
+  const requestedMedia = useDreamMedia(resolvedMedia ? undefined : dream);
+  const media = resolvedMedia ?? requestedMedia;
+  const [settledImage, setSettledImage] = useState<string>();
+  const [failedImage, setFailedImage] = useState<string>();
   const noctalia = getNoctaliaDesignTokens(DarkTheme, 'dark');
 
   // Use imageUrl first, fallback to thumbnailUrl
-  const imageSource = dream.imageUrl || dream.thumbnailUrl;
-  const hasImage = !!imageSource && !imageError;
+  const imageSource = media.imageUrl || media.thumbnailUrl;
+  useEffect(() => {
+    if (!imageSource || !onMediaReady || settledImage === imageSource) return;
+    const timer = setTimeout(() => onMediaReady(imageSource, false), 10000);
+    return () => clearTimeout(timer);
+  }, [imageSource, onMediaReady, settledImage]);
+  const hasImage = !!imageSource && failedImage !== imageSource;
 
   const dreamTypeLabel = getDreamTypeLabel(dream.dreamType, t);
   const themeLabel = getDreamThemeLabel(dream.theme, t);
@@ -46,7 +57,8 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
           source={{ uri: imageSource }}
           style={styles.backgroundImage}
           contentFit="cover"
-          onError={() => setImageError(true)}
+          onLoad={() => { setSettledImage(imageSource); onMediaReady?.(imageSource, true); }}
+          onError={() => { setSettledImage(imageSource); setFailedImage(imageSource); onMediaReady?.(imageSource, false); }}
         />
       ) : (
         <View style={[styles.fallbackBackground, { backgroundColor: noctalia.screen.background }]} />

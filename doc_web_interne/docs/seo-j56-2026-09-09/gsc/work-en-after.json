@@ -1,0 +1,45 @@
+{
+  "fetchedAt": "2026-09-09T09:49:14.514Z",
+  "site": "sc-domain:noctalia.app",
+  "request": {
+    "type": "web",
+    "dataState": "final",
+    "rowLimit": 25000,
+    "dimensionFilterGroups": [
+      {
+        "groupType": "and",
+        "filters": [
+          {
+            "dimension": "page",
+            "operator": "equals",
+            "expression": "https://noctalia.app/en/blog/stress-dreams-work"
+          }
+        ]
+      }
+    ],
+    "startDate": "2026-09-02",
+    "endDate": "2026-09-06",
+    "dimensions": []
+  },
+  "responses": [
+    {
+      "rows": [
+        {
+          "clicks": 0,
+          "impressions": 172,
+          "ctr": 0,
+          "position": 12.098837209302326
+        }
+      ],
+      "responseAggregationType": "byPage"
+    }
+  ],
+  "rows": [
+    {
+      "clicks": 0,
+      "impressions": 172,
+      "ctr": 0,
+      "position": 12.098837209302326
+    }
+  ]
+}

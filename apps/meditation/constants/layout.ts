@@ -12,5 +12,11 @@ export const TabBar = {
   margin: 10,
 } as const;
 
+/** A denser pill for narrow or short screens; tab items remain at least 48 pt. */
+export const CompactTabBar = {
+  height: 52,
+  margin: 6,
+} as const;
+
 /** Artwork (40) + vertical padding (2 × 8) + the hairline above it. */
 export const MiniPlayerHeight = 57;

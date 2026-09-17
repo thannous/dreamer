@@ -148,6 +148,36 @@ adb connect <host>:<connect-port>
 Le téléphone doit être réveillé, déverrouillé et visible comme `device` avant
 de lancer Maestro.
 
+## 3bis. Verrou physique Dreamer / Lucid / Meditation
+
+Un package ID distinct ne réserve pas le Motorola. Dreamer Maestro, l'install
+Release locale `--install` et les `test:e2e*` Meditation prennent un verrou
+atomique sur `sha256(android_id)` avant toute mutation. Le `host:port` Wi-Fi
+reste informatif.
+
+Le fichier de verrou n'est pas dans le checkout. Il vit dans un répertoire
+hôte partagé, `os.tmpdir()/noctalia-android-device-locks-<uid>`, donc Dreamer,
+Meditation et tous les worktrees du même compte voient le même lock. Un
+override de test (`NOCTALIA_ANDROID_DEVICE_LOCK_DIR`) reste possible.
+
+Un téléphone physique exige `--device <serial>`. Un verrou vivant ou expiré
+n'est jamais volé ni supprimé tout seul. `--steal-lock` n'est autorisé que
+pour un verrou stale, après diagnostic. Ne jamais lancer `adb kill-server`
+ni `adb disconnect` pour "libérer" le téléphone.
+Si le fichier stale disparaît pendant le steal, la reprise se fait en `wx` :
+un lock vivant réapparu n'est jamais écrasé en `w`.
+
+Ports Metro stables : Dreamer 8081, Lucid 8082, Meditation 8083. Ne pas tuer
+ni `adb reverse --remove` le port d'un autre owner.
+
+`expo-safe-runner` (`android`, `android:lucid`, `start --android`) réserve le
+téléphone physique et injecte `--port` 8081/8082 selon l'owner. Le lock n'est
+pas libéré au retour de `require('expo/bin/cli')` : il tient jusqu'à
+`beforeExit`/`exit` et SIGINT/SIGTERM.
+
+Chemins encore non verrouillés : `measure-android-performance`,
+`android:play-upgrade`, et tout `adb`/`maestro` manuel hors ces runners.
+
 ## 4. Préparer le baseline Play v33
 
 Préparation neuve, une seule fois :

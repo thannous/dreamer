@@ -59,27 +59,33 @@ let mockInvalidateGuestSession: ReturnType<typeof jest.fn>;
 let mockIsGuestSessionError: ReturnType<typeof jest.fn>;
 let mockGetGuestBootstrapState: ReturnType<typeof jest.fn>;
 
-const buildUsage = (analysisUsed: number) => ({
+const buildUsage = (analysisUsed: number, imageUsed = 0) => ({
   analysis: { used: analysisUsed, limit: 2, remaining: Math.max(2 - analysisUsed, 0) },
   exploration: { used: 0, limit: 2, remaining: 2 },
   messages: { used: 0, limit: 20, remaining: 20 },
+  image: { used: imageUsed, limit: 2, remaining: Math.max(2 - imageUsed, 0) },
 });
 
-const createFallback = (initialAnalysisUsed: number) => {
+const createFallback = (initialAnalysisUsed: number, initialImageUsed = 0) => {
   let analysisUsed = initialAnalysisUsed;
+  let imageUsed = initialImageUsed;
 
   const getQuotaStatus = typedJestFn<() => Promise<QuotaStatus>>().mockImplementation(() =>
     Promise.resolve({
       tier: 'guest',
-      usage: buildUsage(analysisUsed),
+      usage: buildUsage(analysisUsed, imageUsed),
       canAnalyze: analysisUsed < 2,
       canExplore: true,
+      canGenerateImage: imageUsed < 2,
     })
   );
 
   return {
     setAnalysisUsed(next: number) {
       analysisUsed = next;
+    },
+    setImageUsed(next: number) {
+      imageUsed = next;
     },
     getQuotaStatus,
     invalidate: jest.fn(),
@@ -341,5 +347,96 @@ describe('RemoteGuestQuotaProvider', () => {
     expect(recovered.canAnalyze).toBe(true);
     expect(recovered.usage.analysis.used).toBe(1);
     expect(mockFetchJSON).toHaveBeenCalledTimes(1);
+  });
+
+  it('allows illustrations when analysis is exhausted but image remaining', async () => {
+    const fallback = createFallback(2, 1);
+    mockFetchJSON.mockResolvedValue({
+      tier: 'guest',
+      usage: {
+        analysis: { used: 2, limit: 2 },
+        exploration: { used: 0, limit: null },
+        messages: { used: 0, limit: 10 },
+        image: { used: 1, limit: 2 },
+      },
+      canAnalyze: false,
+      canExplore: true,
+      canGenerateImage: true,
+    });
+
+    const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
+    const provider = new RemoteGuestQuotaProvider(fallback as any);
+    const status = await provider.getQuotaStatus(null, 'guest');
+
+    expect(status.canAnalyze).toBe(false);
+    expect(status.canGenerateImage).toBe(true);
+    expect(status.usage.image).toEqual({ used: 1, limit: 2, remaining: 1 });
+    expect(await provider.canGenerateImage(null, 'guest')).toBe(true);
+  });
+
+  it('denies illustrations when the image pool is exhausted even if analysis remains', async () => {
+    const fallback = createFallback(0, 2);
+    mockFetchJSON.mockResolvedValue({
+      tier: 'guest',
+      usage: {
+        analysis: { used: 1, limit: 2 },
+        exploration: { used: 0, limit: null },
+        messages: { used: 0, limit: 10 },
+        image: { used: 2, limit: 2 },
+      },
+      canAnalyze: true,
+      canExplore: true,
+      canGenerateImage: false,
+    });
+
+    const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
+    const provider = new RemoteGuestQuotaProvider(fallback as any);
+    const status = await provider.getQuotaStatus(null, 'guest');
+
+    expect(status.canAnalyze).toBe(true);
+    expect(status.canGenerateImage).toBe(false);
+    expect(status.usage.image?.remaining).toBe(0);
+  });
+
+  it('defaults missing older image fields from the guest pool without coupling to analysis', async () => {
+    const fallback = createFallback(2, 0);
+    mockFetchJSON.mockResolvedValue({
+      tier: 'guest',
+      usage: {
+        analysis: { used: 2, limit: 2 },
+        exploration: { used: 0, limit: null },
+        messages: { used: 0, limit: 10 },
+      },
+      canAnalyze: false,
+      canExplore: true,
+    });
+
+    const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
+    const provider = new RemoteGuestQuotaProvider(fallback as any);
+    const status = await provider.getQuotaStatus(null, 'guest');
+
+    expect(status.canAnalyze).toBe(false);
+    expect(status.canGenerateImage).toBe(true);
+    expect(status.usage.image).toEqual({ used: 0, limit: 2, remaining: 2 });
+  });
+
+  it('syncs remote illustration counts separately from analysis', async () => {
+    const fallback = createFallback(0, 0);
+    mockFetchJSON.mockResolvedValue({
+      tier: 'guest',
+      usage: {
+        analysis: { used: 2, limit: 2 },
+        exploration: { used: 0, limit: null },
+        messages: { used: 0, limit: 10 },
+        image: { used: 1, limit: 2 },
+      },
+    });
+
+    const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
+    const provider = new RemoteGuestQuotaProvider(fallback as any);
+    await provider.getQuotaStatus(null, 'guest');
+
+    expect(mockSyncWithServerCount).toHaveBeenCalledWith(2, 'analysis');
+    expect(mockSyncWithServerCount).toHaveBeenCalledWith(1, 'image');
   });
 });

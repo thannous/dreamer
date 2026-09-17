@@ -181,7 +181,6 @@ export const expoLucidNotificationAdapter: LucidNotificationAdapter = {
       name: 'Lucid Trainer reminders',
       importance: Notifications.AndroidImportance.DEFAULT,
       vibrationPattern: [0, 150],
-      sound: 'default',
     });
   },
   configureNightCueChannel: async (soundId, volumeBand) => {
@@ -366,7 +365,7 @@ function occurrenceRequest(
     content: {
       title: occurrence.reminder.title,
       body: occurrence.reminder.body,
-      sound: occurrence.reminder.sound === false ? false : 'default',
+      sound: occurrence.reminder.sound !== false,
       priority: Notifications.AndroidNotificationPriority.DEFAULT,
       data: {
         url: occurrence.reminder.url,

@@ -315,7 +315,7 @@
 <h3>Cosa evitare quando sogni lucidi</h3>
 <ul>
 <li>Essere troppo eccitato (provoca il risveglio)</li>
-<li>Chiudere gli occhi troppo a lungo (rischio di falso risveglio o di vero risveglio)</li>
+<li>Chiudere gli occhi troppo a lungo (rischio di <a class="text-dream-salmon hover:underline" href="falso-risveglio-sogno">falso risveglio</a> o di vero risveglio)</li>
 <li>Concentrarsi troppo sul fatto che stai sognando</li>
 </ul>
 <h2 id="mistakes">Errori comuni nei sogni lucidi da evitare</h2>

@@ -1,0 +1,10 @@
+const fs=require('fs'),path=require('path'),Module=require('module');
+const root=process.cwd(),filename=path.resolve('scripts/export-search-console.js');
+const m=new Module(filename,module);m.filename=filename;m.paths=Module._nodeModulePaths(path.dirname(filename));m._compile(fs.readFileSync(filename,'utf8')+'\nmodule.exports.getAccessToken=getAccessToken;',filename);
+async function main(){
+ const targets=[]; for(const type of ['back-to-school-dreams','back-to-school-nightmares-children']) for(const lang of ['en','fr','de','es','it']){const source='docs-src/content/blog/blog.'+type+'/'+lang+'.md'; const meta=JSON.parse(fs.readFileSync(source,'utf8').split('---')[1]);targets.push({source,type,lang,url:'https://noctalia.app/'+lang+'/blog/'+meta.slug});}
+ const {token,quotaProjectId}=await m.exports.getAccessToken();const sitemap=await(await fetch('https://noctalia.app/sitemap.xml')).text(); const robots=await(await fetch('https://noctalia.app/robots.txt')).text();console.log('ROBOTS',robots);
+ const results=[];for(const t of targets){ const p=await fetch(t.url);const html=await p.text(); const r=await fetch('https://searchconsole.googleapis.com/v1/urlInspection/index:inspect',{method:'POST',headers:{authorization:'Bearer '+token,'content-type':'application/json',...(quotaProjectId?{'x-goog-user-project':quotaProjectId}:{})},body:JSON.stringify({inspectionUrl:t.url,siteUrl:'sc-domain:noctalia.app',languageCode:'en-US'})});const data=await r.json();const out={...t,http:p.status,canonical:html.match(/<link[^>]*rel="canonical"[^>]*>/)?.[0],robotsMeta:html.match(/<meta[^>]*name="robots"[^>]*>/)?.[0],xRobots:p.headers.get('x-robots-tag'),sitemapLoc:sitemap.includes('<loc>'+t.url+'</loc>'),gscHttp:r.status,index:data.inspectionResult?.indexStatusResult,error:data.error?.message};results.push(out);console.log(JSON.stringify(out));}
+ fs.writeFileSync(path.join(__dirname,'inspections-http.json'),JSON.stringify({at:new Date().toISOString(),results},null,2));
+}
+main().catch(e=>{console.error(e.message);process.exitCode=1});

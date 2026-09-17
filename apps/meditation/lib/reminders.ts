@@ -27,6 +27,29 @@ export const formatHour = (hour: number, minute: number): string =>
   `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
 
 /**
+ * Keeps a numeric mobile keyboard while presenting the familiar HH:MM shape.
+ * Partial values remain partial so the field never invents a time while the
+ * listener is still typing.
+ */
+export const formatTimeEntry = (value: string): string => {
+  const digits = value.replace(/\D/g, '').slice(0, 4);
+
+  if (digits.length <= 2) return digits;
+  return `${digits.slice(0, 2)}:${digits.slice(2)}`;
+};
+
+/** A complete 24-hour entry, or null while partial/out of range. */
+export const parseTimeEntry = (value: string): { hour: number; minute: number } | null => {
+  const match = /^(\d{2}):(\d{2})$/.exec(value);
+  if (!match) return null;
+
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+
+  return hour <= 23 && minute <= 59 ? { hour, minute } : null;
+};
+
+/**
  * The next moment a reminder should fire, from `now`.
  *
  * Today still counts if the hour has not passed yet — someone enabling a 21:30

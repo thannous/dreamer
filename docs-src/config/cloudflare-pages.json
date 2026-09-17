@@ -4,5 +4,28 @@
   "productionBranch": "master",
   "rootDirectory": "",
   "buildCommand": "npm run docs:build && npm run docs:check",
-  "buildOutputDirectory": "docs"
+  "buildOutputDirectory": "docs",
+  "buildWatchPaths": {
+    "include": ["*"],
+    "exclude": [
+      "app/*",
+      "apps/meditation/*",
+      "components/*",
+      "constants/*",
+      "context/*",
+      "hooks/*",
+      "lib/*",
+      "services/*",
+      "tests/*",
+      "__mocks__/*",
+      "mock-data/*",
+      "maestro/*",
+      "marketing/*",
+      "specs/*",
+      "doc_web_interne/*",
+      "AGENTS.md",
+      "CLAUDE.md",
+      "README.md"
+    ]
+  }
 }

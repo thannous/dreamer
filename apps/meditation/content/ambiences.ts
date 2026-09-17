@@ -11,8 +11,8 @@ export type Ambience = {
  * Loops layered under a session, at an independent volume. Shared with the
  * Noctalia journal app, which is why they are already recorded.
  *
- * `none` is first on purpose: a guided session does not need a bed, and forcing
- * one on someone who wants only the voice is a reason to leave.
+ * `none` stays available for surfaces that let the user choose silence. World
+ * journeys use their own restrained combinations from `worldSounds.ts`.
  */
 export const AMBIENCES: Ambience[] = [
   { id: 'none', source: null },

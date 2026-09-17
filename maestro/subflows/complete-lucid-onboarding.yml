@@ -1,0 +1,68 @@
+appId: com.tanuki75.noctalia.lucid
+---
+# Four-screen local-first onboarding. No account, permission, consent, audio or
+# microphone prompt is allowed to interrupt this activation path.
+- assertVisible:
+    id: lucid-onboarding-continue
+
+# 1 / 4 — intention and starting level. Neither answer is preselected.
+- tapOn:
+    id: lucid-goal-improve_recall
+- scrollUntilVisible:
+    element:
+      id: lucid-experience-beginner
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    id: lucid-experience-beginner
+- tapOn:
+    id: lucid-onboarding-continue
+
+# 2 / 4 — sleep window and wake sensitivity. The controls initially say that
+# no real time is set; opening and confirming each native picker is explicit.
+- extendedWaitUntil:
+    visible:
+      id: lucid-sleep-bedtime
+    timeout: 20000
+- tapOn:
+    id: lucid-sleep-bedtime
+- tapOn: "Done|Terminé|Listo|Fertig|Fatto"
+- tapOn:
+    id: lucid-sleep-wake-time
+- tapOn: "Done|Terminé|Listo|Fertig|Fatto"
+- scrollUntilVisible:
+    element:
+      id: lucid-wake-sensitivity-not_sensitive
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    id: lucid-wake-sensitivity-not_sensitive
+- tapOn:
+    id: lucid-onboarding-continue
+
+# 3 / 4 — the generated first week comes from the production personalization
+# engine and exposes its current night restrictions.
+- extendedWaitUntil:
+    visible:
+      id: lucid-onboarding-plan
+    timeout: 20000
+- assertVisible:
+    id: lucid-onboarding-plan
+- tapOn:
+    id: lucid-onboarding-continue
+
+# 4 / 4 — local-first contract, then the shell gate releases Today.
+- extendedWaitUntil:
+    visible:
+      id: lucid-onboarding-local-first
+    timeout: 20000
+- assertVisible:
+    id: lucid-onboarding-local-first
+- tapOn:
+    id: lucid-onboarding-continue
+- extendedWaitUntil:
+    visible:
+      id: lucid-today
+    timeout: 60000
+- assertVisible:
+    id: lucid-today

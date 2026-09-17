@@ -1,12 +1,17 @@
 import {
+  activateExclusiveLucidProgram,
   applyLucidSyncEntity,
   createInitialLucidTrainerState,
   createLucidProgramProgress,
+  enforceLucidSingleActiveProgram,
+  getLucidSyncEntities,
+  hasLucidDreamAtlasSyncData,
   mergeLucidProgramProgress,
   mergeLucidTrainerStates,
   removeLucidSyncEntity,
   resolveLucidEntityConflict,
 } from '@/lib/lucid/domain';
+import { createEmptyLucidDreamAtlasOverlay } from '@/lib/lucid/dreamAtlas';
 import type { LucidExperiment, LucidSyncEntity } from '@/lib/lucid/model';
 
 describe('Lucid Trainer domain', () => {
@@ -91,6 +96,16 @@ describe('Lucid Trainer domain', () => {
     );
   });
 
+  it('creates a four-step draft with no assumed sensitivity or confirmed sleep window', () => {
+    const state = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    expect(state.schemaVersion).toBe(1);
+    expect(state.onboarding.wakeSensitivity).toBeNull();
+    expect(state.onboarding.draftStep).toBe(0);
+    expect(state.onboarding.sleepScheduleConfirmed).toBe(false);
+    expect(state.onboarding.sleepScheduleDraft).toEqual({ bedtime: null, wakeTime: null });
+    expect(state.preferences.mindfulPauseReminderAnchors).toEqual(['transition']);
+  });
+
   it('merges complete states and applies deterministic deletions', () => {
     const left = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
     const right = createInitialLucidTrainerState({ now: NOW + 10, timeZone: 'UTC' });
@@ -133,5 +148,410 @@ describe('Lucid Trainer domain', () => {
       removeLucidSyncEntity(withCheck, 'reality_check', 'check-1', NOW + 30)
         .realityChecks
     ).toHaveLength(0);
+  });
+
+  it('merges, applies and removes dream-sign decisions as sync entities', () => {
+    const left = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    const right = createInitialLucidTrainerState({ now: NOW + 1, timeZone: 'UTC' });
+    left.dreamSignDecisions = [{
+      id: 'sign:mirror',
+      decision: 'confirmed',
+      customLabel: 'Mirror',
+      sourceDreamIds: ['101', '102'],
+      updatedAt: NOW + 10,
+    }];
+    right.dreamSignDecisions = [{
+      id: 'sign:mirror',
+      decision: 'rejected',
+      sourceDreamIds: ['101', '102'],
+      updatedAt: NOW + 20,
+    }];
+
+    const merged = mergeLucidTrainerStates(left, right);
+    expect(merged.dreamSignDecisions).toEqual([
+      expect.objectContaining({ id: 'sign:mirror', decision: 'rejected', updatedAt: NOW + 20 }),
+    ]);
+    expect(mergeLucidTrainerStates(right, left).dreamSignDecisions).toEqual(
+      merged.dreamSignDecisions
+    );
+
+    const applied = applyLucidSyncEntity(left, {
+      entityType: 'dream_sign',
+      entityKey: 'sign:school',
+      value: {
+        id: 'sign:school',
+        decision: 'confirmed',
+        sourceDreamIds: ['201', '202'],
+        updatedAt: NOW + 30,
+      },
+    });
+    expect(applied.dreamSignDecisions?.map((item) => item.id)).toEqual([
+      'sign:mirror',
+      'sign:school',
+    ]);
+    expect(
+      removeLucidSyncEntity(applied, 'dream_sign', 'sign:mirror', NOW + 40)
+        .dreamSignDecisions
+    ).toEqual([expect.objectContaining({ id: 'sign:school' })]);
+  });
+
+  it('syncs the dream atlas overlay as a LWW singleton and clears it to an empty timestamped overlay', () => {
+    const left = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    const right = createInitialLucidTrainerState({ now: NOW + 1, timeZone: 'UTC' });
+    expect(left.dreamAtlas).toEqual(createEmptyLucidDreamAtlasOverlay(0));
+    expect(hasLucidDreamAtlasSyncData(left)).toBe(false);
+    expect(getLucidSyncEntities(left).some((entity) => entity.entityType === 'dream_atlas')).toBe(true);
+
+    const legacy = { ...right };
+    delete (legacy as { dreamAtlas?: unknown }).dreamAtlas;
+    expect(getLucidSyncEntities(legacy).some((entity) => entity.entityType === 'dream_atlas')).toBe(false);
+
+    const older = {
+      version: 1 as const,
+      updatedAt: NOW + 10,
+      renamed: { 'sign:mirror': 'Miroir' },
+      hidden: [],
+      merges: {},
+      deleted: ['sign:gone'],
+    };
+    const newer = {
+      version: 1 as const,
+      updatedAt: NOW + 20,
+      renamed: { 'sign:school': 'Ecole' },
+      hidden: ['sign:mirror'],
+      merges: { 'sign:ghost': 'sign:school' },
+      deleted: ['sign:gone', 'sign:old'],
+    };
+    left.dreamAtlas = older;
+    right.dreamAtlas = newer;
+
+    const merged = mergeLucidTrainerStates(left, right);
+    expect(merged.dreamAtlas).toEqual(newer);
+    expect(mergeLucidTrainerStates(right, left).dreamAtlas).toEqual(newer);
+    expect(hasLucidDreamAtlasSyncData(merged)).toBe(true);
+
+    const tiedLeft = {
+      entityType: 'dream_atlas' as const,
+      entityKey: 'dream_atlas' as const,
+      value: { ...older, updatedAt: NOW + 30, renamed: { 'sign:alpha': 'Alpha' } },
+    };
+    const tiedRight = {
+      entityType: 'dream_atlas' as const,
+      entityKey: 'dream_atlas' as const,
+      value: { ...older, updatedAt: NOW + 30, renamed: { 'sign:omega': 'Omega' } },
+    };
+    expect(resolveLucidEntityConflict(tiedLeft, tiedRight)).toEqual(
+      resolveLucidEntityConflict(tiedRight, tiedLeft)
+    );
+
+    const applied = applyLucidSyncEntity(legacy, {
+      entityType: 'dream_atlas',
+      entityKey: 'dream_atlas',
+      value: newer,
+    });
+    expect(applied.dreamAtlas).toEqual(newer);
+    expect(applied.updatedAt).toBe(NOW + 20);
+
+    const cleared = removeLucidSyncEntity(applied, 'dream_atlas', 'dream_atlas', NOW + 40);
+    expect(cleared.dreamAtlas).toEqual(createEmptyLucidDreamAtlasOverlay(NOW + 40));
+    expect(cleared.dreamAtlas?.deleted).toEqual([]);
+    expect(hasLucidDreamAtlasSyncData(cleared)).toBe(false);
+    expect(cleared.onboarding).toEqual(applied.onboarding);
+    expect(cleared.preferences).toEqual(applied.preferences);
+
+    const olderWithoutTombstones = {
+      ...applied,
+      dreamAtlas: {
+        version: 1 as const,
+        updatedAt: NOW + 15,
+        renamed: { 'sign:school': 'Ecole' },
+        hidden: [],
+        merges: {},
+        deleted: [],
+      },
+      updatedAt: NOW + 15,
+    };
+    const keptTombstones = mergeLucidTrainerStates(olderWithoutTombstones, applied);
+    expect(keptTombstones.dreamAtlas?.deleted).toEqual(['sign:gone', 'sign:old']);
+    expect(mergeLucidTrainerStates(applied, olderWithoutTombstones).dreamAtlas).toEqual(applied.dreamAtlas);
+
+    const fresh = createInitialLucidTrainerState({ now: NOW + 50_000, timeZone: 'UTC' });
+    const remote = {
+      ...createInitialLucidTrainerState({ now: NOW - 50_000, timeZone: 'UTC' }),
+      dreamAtlas: {
+        version: 1 as const,
+        updatedAt: NOW - 40_000,
+        renamed: { 'sign:mirror': 'Miroir distant' },
+        hidden: [],
+        merges: {},
+        deleted: ['sign:gone'],
+      },
+    };
+    expect(fresh.dreamAtlas?.updatedAt).toBe(0);
+    expect(fresh.updatedAt).toBeGreaterThan(remote.dreamAtlas.updatedAt);
+    expect(mergeLucidTrainerStates(fresh, remote).dreamAtlas).toEqual(remote.dreamAtlas);
+    expect(mergeLucidTrainerStates(remote, fresh).dreamAtlas).toEqual(remote.dreamAtlas);
+  });
+
+  it('pauses extra active programs without losing their sequential progress', () => {
+    const mild = {
+      ...createLucidProgramProgress('mild', NOW),
+      status: 'active' as const,
+      currentDay: 4,
+      completedExerciseIds: ['mild-01', 'mild-02', 'mild-03'],
+      practiceDates: ['2026-08-10'],
+      startedAt: NOW,
+      updatedAt: NOW + 10,
+    };
+    const ssild = {
+      ...createLucidProgramProgress('ssild', NOW),
+      status: 'active' as const,
+      currentDay: 2,
+      completedExerciseIds: ['ssild-01'],
+      practiceDates: ['2026-08-11'],
+      startedAt: NOW + 5,
+      updatedAt: NOW + 20,
+    };
+
+    const normalized = enforceLucidSingleActiveProgram([mild, ssild], 'mild');
+    expect(normalized.map((item) => [item.technique, item.status])).toEqual([
+      ['mild', 'active'],
+      ['ssild', 'paused'],
+    ]);
+    expect(normalized.find((item) => item.technique === 'ssild')).toMatchObject({
+      currentDay: 2,
+      completedExerciseIds: ['ssild-01'],
+      practiceDates: ['2026-08-11'],
+    });
+  });
+
+  it('keeps a deterministic winner when two active programs arrive through merge or apply', () => {
+    const left = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    const right = createInitialLucidTrainerState({ now: NOW + 10, timeZone: 'UTC' });
+    left.progress = [
+      {
+        ...createLucidProgramProgress('mild', NOW),
+        status: 'active',
+        currentDay: 3,
+        completedExerciseIds: ['mild-01'],
+        updatedAt: NOW + 30,
+      },
+    ];
+    right.progress = [
+      {
+        ...createLucidProgramProgress('wbtb', NOW + 10),
+        status: 'active',
+        currentDay: 2,
+        completedExerciseIds: ['wbtb-01'],
+        updatedAt: NOW + 40,
+      },
+    ];
+
+    const merged = mergeLucidTrainerStates(left, right);
+    expect(merged.progress.filter((item) => item.status === 'active')).toHaveLength(1);
+    expect(merged.progress.find((item) => item.status === 'active')?.technique).toBe('wbtb');
+    expect(merged.progress.find((item) => item.technique === 'mild')).toMatchObject({
+      status: 'paused',
+      currentDay: 3,
+      completedExerciseIds: ['mild-01'],
+    });
+
+    const applied = applyLucidSyncEntity(merged, {
+      entityType: 'progress',
+      entityKey: 'mild',
+      value: {
+        ...merged.progress.find((item) => item.technique === 'mild')!,
+        status: 'active',
+        updatedAt: NOW + 50,
+      },
+    });
+    expect(applied.progress.filter((item) => item.status === 'active').map((item) => item.technique)).toEqual([
+      'mild',
+    ]);
+    expect(applied.progress.find((item) => item.technique === 'wbtb')?.status).toBe('paused');
+  });
+
+  it('does not let a stale remote active displace a newer local active program', () => {
+    const state = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    state.progress = [
+      {
+        ...createLucidProgramProgress('ssild', NOW),
+        status: 'active',
+        currentDay: 3,
+        completedExerciseIds: ['ssild-01'],
+        startedAt: NOW + 40,
+        updatedAt: NOW + 40,
+      },
+      {
+        ...createLucidProgramProgress('mild', NOW),
+        status: 'paused',
+        currentDay: 2,
+        completedExerciseIds: ['mild-01'],
+        startedAt: NOW,
+        updatedAt: NOW + 10,
+      },
+    ];
+
+    const applied = applyLucidSyncEntity(state, {
+      entityType: 'progress',
+      entityKey: 'mild',
+      value: {
+        ...state.progress.find((item) => item.technique === 'mild')!,
+        status: 'active',
+        updatedAt: NOW + 10,
+      },
+    });
+
+    expect(applied.progress.filter((item) => item.status === 'active').map((item) => item.technique)).toEqual([
+      'ssild',
+    ]);
+    expect(applied.progress.find((item) => item.technique === 'mild')).toMatchObject({
+      status: 'paused',
+      currentDay: 2,
+      completedExerciseIds: ['mild-01'],
+    });
+  });
+
+  it('converges on the same active program regardless of remote apply order', () => {
+    const initial = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    const entities = [
+      {
+        entityType: 'progress' as const,
+        entityKey: 'mild',
+        value: {
+          ...createLucidProgramProgress('mild', NOW),
+          status: 'active' as const,
+          updatedAt: NOW + 30,
+        },
+      },
+      {
+        entityType: 'progress' as const,
+        entityKey: 'wbtb',
+        value: {
+          ...createLucidProgramProgress('wbtb', NOW),
+          status: 'active' as const,
+          updatedAt: NOW + 40,
+        },
+      },
+    ];
+    const forward = entities.reduce(applyLucidSyncEntity, initial);
+    const reverse = [...entities].reverse().reduce(applyLucidSyncEntity, initial);
+
+    expect(forward.progress).toEqual(reverse.progress);
+    expect(forward.progress.filter((item) => item.status === 'active').map((item) => item.technique)).toEqual([
+      'wbtb',
+    ]);
+  });
+
+  it('queues paused programs when a new technique is started exclusively', () => {
+    const state = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    state.progress = [
+      {
+        ...createLucidProgramProgress('mild', NOW),
+        status: 'active',
+        currentDay: 3,
+        completedExerciseIds: ['mild-01'],
+        startedAt: NOW,
+        updatedAt: NOW + 100,
+      },
+    ];
+
+    const { next, changed } = activateExclusiveLucidProgram(state, 'ssild', NOW + 5);
+    expect(next.progress.filter((item) => item.status === 'active').map((item) => item.technique)).toEqual([
+      'ssild',
+    ]);
+    expect(changed.map((item) => [item.technique, item.status])).toEqual([
+      ['mild', 'paused'],
+      ['ssild', 'active'],
+    ]);
+    expect(next.progress.find((item) => item.technique === 'mild')).toMatchObject({
+      currentDay: 3,
+      completedExerciseIds: ['mild-01'],
+    });
+    expect(next.progress.find((item) => item.technique === 'ssild')!.updatedAt).toBeGreaterThan(
+      NOW + 100
+    );
+
+    const replayedInReverse = [...changed]
+      .reverse()
+      .map((value) => ({ entityType: 'progress' as const, entityKey: value.technique, value }))
+      .reduce(applyLucidSyncEntity, state);
+    expect(replayedInReverse.progress).toEqual(next.progress);
+  });
+
+  it('gives concurrent exclusive activations a deterministic batch winner', () => {
+    const state = createInitialLucidTrainerState({ now: NOW, timeZone: 'UTC' });
+    const mildBaseline = {
+      ...createLucidProgramProgress('mild', NOW),
+      status: 'active' as const,
+      currentDay: 4,
+      completedExerciseIds: ['mild-01', 'mild-02'],
+      practiceDates: ['2026-08-10'],
+      startedAt: NOW - 20,
+      updatedAt: NOW,
+    };
+    const ssildBaseline = {
+      ...createLucidProgramProgress('ssild', NOW),
+      status: 'paused' as const,
+      currentDay: 2,
+      completedExerciseIds: ['ssild-01'],
+      practiceDates: ['2026-08-11'],
+      startedAt: NOW - 10,
+      updatedAt: NOW,
+    };
+    state.progress = [mildBaseline, ssildBaseline];
+    const baseline = Math.max(state.updatedAt, ...state.progress.map((item) => item.updatedAt));
+
+    const deviceA = activateExclusiveLucidProgram(state, 'mild', NOW);
+    const deviceB = activateExclusiveLucidProgram(state, 'ssild', NOW);
+
+    const mildTimestamp = deviceA.next.progress.find((item) => item.technique === 'mild')!.updatedAt;
+    const ssildTimestamp = deviceB.next.progress.find((item) => item.technique === 'ssild')!
+      .updatedAt;
+
+    expect(mildTimestamp).toBeGreaterThan(baseline);
+    expect(ssildTimestamp).toBeGreaterThan(baseline);
+    expect(mildTimestamp).not.toBe(ssildTimestamp);
+    expect(new Set(deviceA.changed.map((item) => item.updatedAt))).toEqual(new Set([mildTimestamp]));
+    expect(new Set(deviceB.changed.map((item) => item.updatedAt))).toEqual(new Set([ssildTimestamp]));
+
+    const identicalStamp = baseline + 1;
+    const staleA = {
+      ...deviceA.next,
+      progress: deviceA.next.progress.map((item) => ({ ...item, updatedAt: identicalStamp })),
+      updatedAt: identicalStamp,
+    };
+    const staleB = {
+      ...deviceB.next,
+      progress: deviceB.next.progress.map((item) => ({ ...item, updatedAt: identicalStamp })),
+      updatedAt: identicalStamp,
+    };
+    const staleMerged = mergeLucidTrainerStates(staleA, staleB);
+    expect(staleA.progress.find((item) => item.technique === 'mild')?.status).toBe('active');
+    expect(staleA.progress.find((item) => item.technique === 'ssild')?.status).toBe('paused');
+    expect(staleB.progress.find((item) => item.technique === 'mild')?.status).toBe('paused');
+    expect(staleB.progress.find((item) => item.technique === 'ssild')?.status).toBe('active');
+    expect(
+      staleMerged.progress.filter((item) => item.status === 'active').map((item) => item.technique)
+    ).toEqual([]);
+
+    const merged = mergeLucidTrainerStates(deviceA.next, deviceB.next);
+    const reversed = mergeLucidTrainerStates(deviceB.next, deviceA.next);
+    expect(merged).toEqual(reversed);
+    expect(
+      merged.progress.filter((item) => item.status === 'active').map((item) => item.technique)
+    ).toEqual(['ssild']);
+    expect(merged.progress.find((item) => item.technique === 'mild')).toMatchObject({
+      status: 'paused',
+      currentDay: 4,
+      completedExerciseIds: ['mild-01', 'mild-02'],
+      practiceDates: ['2026-08-10'],
+    });
+    expect(merged.progress.find((item) => item.technique === 'ssild')).toMatchObject({
+      status: 'active',
+      currentDay: 2,
+      completedExerciseIds: ['ssild-01'],
+      practiceDates: ['2026-08-11'],
+    });
   });
 });

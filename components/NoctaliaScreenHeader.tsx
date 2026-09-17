@@ -43,6 +43,8 @@ interface NoctaliaScreenHeaderProps {
   actions?: NoctaliaHeaderAction[];
   chips?: NoctaliaHeaderChip[];
   slot?: ReactNode;
+  /** Search or another compact control beside the title when space permits. */
+  inlineSlot?: ReactNode;
 }
 
 export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
@@ -50,46 +52,65 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   actions = [],
   chips = [],
   slot,
+  inlineSlot,
 }: NoctaliaScreenHeaderProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
-  const isNarrow = width < 380;
+  const { width, fontScale } = useWindowDimensions();
+  const isNarrow = width < 480;
+  // Keep actions beside the title, including enlarged text, whenever both fit.
+  const availableTitleWidth = width - (isNarrow ? 32 : 48) - actions.length * 52;
+  const stackActions = actions.length > 0 && availableTitleWidth < 110 * Math.min(fontScale, 2);
+  const inlineTitleWidth = 120 * Math.min(fontScale, 2);
+  const canInlineSlot = Boolean(inlineSlot) && availableTitleWidth - (isNarrow ? 16 : 32)
+    >= inlineTitleWidth + 140 * Math.min(fontScale, 1.5);
+  const wrapInlineSlot = Boolean(inlineSlot) && !canInlineSlot;
+  const wrapTitle = stackActions || fontScale >= 1.3;
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const iconButtonBg = noctalia.surface.soft;
   const quietIconColor = noctalia.text.secondary;
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + ThemeLayout.spacing.md }]}>
-      <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow]}>
-        <View style={styles.titleBlock}>
+    <View style={[styles.container, { paddingTop: insets.top + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
+      <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow, stackActions && styles.titleRowStacked, wrapInlineSlot && styles.searchRowWrapped]}>
+        <View style={[styles.titleBlock, stackActions && styles.titleBlockStacked,
+          Boolean(inlineSlot) && (canInlineSlot
+            ? { flex: 0, width: inlineTitleWidth }
+            : { flex: 0, width: '100%', paddingRight: stackActions ? 0 : actions.length * 52 }),
+        ]}>
           <Text
             style={[styles.brand, { color: noctalia.text.primary }]}
-            numberOfLines={1}
-            adjustsFontSizeToFit
+            numberOfLines={wrapTitle ? undefined : 1}
+            adjustsFontSizeToFit={!wrapTitle}
             minimumFontScale={0.84}
           >
             Noctalia
           </Text>
           <Text
             style={[styles.subtitle, { color: noctalia.text.secondary }]}
-            numberOfLines={1}
-            adjustsFontSizeToFit
+            numberOfLines={wrapTitle ? undefined : 1}
+            adjustsFontSizeToFit={!wrapTitle}
             minimumFontScale={0.84}
           >
             {t(titleKey)}
           </Text>
         </View>
+        {inlineSlot ? (
+          <View style={[styles.inlineSlot, wrapInlineSlot && styles.inlineSlotWrapped]}>
+            {inlineSlot}
+          </View>
+        ) : null}
         {actions.length > 0 ? (
-          <View style={[styles.headerActions, isNarrow && styles.headerActionsNarrow]}>
+          <View style={[styles.headerActions, isNarrow && styles.headerActionsNarrow, stackActions && styles.headerActionsStacked,
+            wrapInlineSlot && !stackActions && { position: 'absolute', top: 0, right: isNarrow ? 16 : 24 },
+          ]}>
             {actions.map((action) => (
               <Pressable
                 key={action.accessibilityLabel}
                 onPress={action.onPress}
                 style={[
                   styles.iconButton,
-                  isNarrow && styles.iconButtonNarrow,
                   {
                     backgroundColor: action.active ? noctalia.action.primary : iconButtonBg,
                     borderColor: action.active ? noctalia.action.primaryBorder : noctalia.surface.border,
@@ -102,7 +123,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
               >
                 <IconSymbol
                   name={action.icon}
-                  size={isNarrow ? 22 : 24}
+                  size={20}
                   color={action.active ? noctalia.action.primaryText : quietIconColor}
                 />
               </Pressable>
@@ -166,6 +187,7 @@ const styles = StyleSheet.create({
   container: {
     gap: ThemeLayout.spacing.md,
     paddingBottom: ThemeLayout.spacing.sm,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   titleRow: {
     flexDirection: 'row',
@@ -182,13 +204,23 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
   },
+  titleRowStacked: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  },
+  titleBlockStacked: {
+    flex: 0,
+    width: '100%',
+  },
   brand: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 36,
+    fontSize: 24,
+    lineHeight: 30,
   },
   subtitle: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 20,
+    fontSize: 15,
+    lineHeight: 21,
     opacity: 0.92,
   },
   headerActions: {
@@ -199,18 +231,27 @@ const styles = StyleSheet.create({
   headerActionsNarrow: {
     gap: ThemeLayout.spacing.sm,
   },
+  headerActionsStacked: {
+    flexWrap: 'wrap',
+  },
   iconButton: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  iconButtonNarrow: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+  searchRowWrapped: {
+    flexWrap: 'wrap',
+  },
+  inlineSlot: {
+    flex: 1,
+    minWidth: 0,
+  },
+  inlineSlotWrapped: {
+    flexBasis: '100%',
+    width: '100%',
   },
   slot: {
     paddingHorizontal: ThemeLayout.spacing.md,
@@ -227,16 +268,17 @@ const styles = StyleSheet.create({
     gap: ThemeLayout.spacing.sm,
   },
   chip: {
-    height: 42,
+    minHeight: 44,
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
     flexGrow: 0,
     flexShrink: 0,
     gap: 7,
-    borderRadius: 21,
+    borderRadius: 22,
     borderWidth: 1,
     paddingHorizontal: ThemeLayout.spacing.md,
+    paddingVertical: 10,
   },
   chipText: {
     fontFamily: Fonts.spaceGrotesk.medium,

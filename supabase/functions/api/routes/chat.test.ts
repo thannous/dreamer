@@ -1,7 +1,7 @@
-import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { assertEquals, assertThrows } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import type { ApiContext } from '../types.ts';
-import { handleChat } from './chat.ts';
+import { handleChat, sanitizeClientHistoryMessage, sanitizeGuestModelParts } from './chat.ts';
 
 const buildContext = (body: Record<string, unknown>) => ({
   req: new Request('https://example.test/functions/v1/api/chat', {
@@ -92,4 +92,24 @@ Deno.test('chat replays an authenticated completed turn without provider work', 
     },
   });
   assertEquals(rpcCalls, ['begin_authenticated_chat_turn']);
+});
+
+Deno.test('guest history preserves opaque signed model steps after JSON reload', () => {
+  const parts = [{ thought: true, thoughtSignature: 'fixture-signature', thoughtSummary: [{ type: 'text' as const, text: 'private summary' }] }, { text: 'Visible answer' }];
+  assertEquals(sanitizeGuestModelParts(JSON.parse(JSON.stringify(parts)), 'Visible answer'), parts);
+  assertThrows(() => sanitizeGuestModelParts([{ thought: true, thoughtSignature: 'x', thoughtSummary: [{ type: 'tool', command: 'x' }] }, { text: 'Answer' }], 'Answer'));
+  assertThrows(() => sanitizeGuestModelParts([{ thought: true }, { text: 'Answer' }], 'Answer'));
+  assertThrows(() => sanitizeGuestModelParts([{ text: 'Other answer' }], 'Answer'));
+  assertThrows(() => sanitizeGuestModelParts(Array(129).fill({ text: 'a' }), 'a'));
+});
+
+Deno.test('guest history preserves long signed answers without widening legacy text limits', () => {
+  const text = 'a'.repeat(5000);
+  const parts = [{ thought: true, thoughtSignature: 'fixture-signature' }, { text }];
+  const saved = JSON.parse(JSON.stringify({ role: 'model', text, parts }));
+  assertEquals(sanitizeClientHistoryMessage(saved), saved);
+  assertEquals(sanitizeClientHistoryMessage({ role: 'model', text })?.text?.length, 4000);
+  assertEquals(sanitizeClientHistoryMessage({ role: 'user', text, parts: [{ text }] })?.text?.length, 4000);
+  const oversized = 'a'.repeat(32001);
+  assertThrows(() => sanitizeClientHistoryMessage({ role: 'model', text: oversized, parts: [{ text: oversized }] }));
 });

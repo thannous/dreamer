@@ -1,10 +1,16 @@
+import type { DreamAnalysis, DreamListReadResult } from '../types';
+import type { GuestQaLocalStateError } from '../guestQaLocalState';
+
 const mockClearAccountCreated = jest.fn();
 const mockInvalidateGuestSession = jest.fn();
 const mockResetAnalysisQuota = jest.fn();
 const mockResetDreamQuota = jest.fn();
 const mockClearTranscript = jest.fn();
-const mockGetSavedDreams = jest.fn();
+const mockGetSavedDreams = jest.fn() as jest.MockedFunction<() => Promise<DreamListReadResult>>;
 const mockSaveOnboardingSnapshot = jest.fn();
+
+const setSavedDreams = (value: { id: number }[]) =>
+  mockGetSavedDreams.mockResolvedValue({ status: 'loaded', value: value as DreamAnalysis[] });
 
 jest.mock('@/lib/deviceFingerprint', () => ({
   clearAccountCreatedOnDeviceForQa: () => mockClearAccountCreated(),
@@ -28,14 +34,13 @@ jest.mock('@/services/storageService', () => ({
 }));
 
 const {
-  GuestQaLocalStateError,
   prepareGuestQaLocalState,
 } = require('@/lib/guestQaLocalState') as typeof import('@/lib/guestQaLocalState');
 
 describe('guest QA local preparation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetSavedDreams.mockResolvedValue([]);
+    setSavedDreams([]);
     mockClearAccountCreated.mockResolvedValue(undefined);
     mockInvalidateGuestSession.mockResolvedValue(undefined);
     mockResetAnalysisQuota.mockResolvedValue(undefined);
@@ -45,10 +50,10 @@ describe('guest QA local preparation', () => {
   });
 
   it('refuses to discard unsynchronized guest dreams', async () => {
-    mockGetSavedDreams.mockResolvedValue([{ id: 1 }]);
+    setSavedDreams([{ id: 1 }]);
 
     await expect(prepareGuestQaLocalState()).rejects.toEqual(
-      expect.objectContaining<Partial<InstanceType<typeof GuestQaLocalStateError>>>({
+      expect.objectContaining<Partial<GuestQaLocalStateError>>({
         code: 'QA_LOCAL_DREAMS_PENDING',
         pendingDreamCount: 1,
       })

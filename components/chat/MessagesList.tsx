@@ -37,7 +37,6 @@ import {
   Text,
   View,
   type StyleProp,
-  type TextStyle,
   type ViewStyle,
 } from 'react-native';
 import Animated, {
@@ -103,11 +102,6 @@ const UserMessage = memo(function UserMessage({ message }: { message: ChatMessag
 /**
  * AssistantMessage - Styled AI message bubble with streaming support
  */
-const HANDWRITING_CHAR_MS = 26;
-const HANDWRITING_MIN_DURATION = 650;
-const HANDWRITING_MAX_DURATION = 2400;
-const HANDWRITING_TICK_MS = 16;
-
 const stripMarkdownForHandwriting = (value: string): string => {
   return value
     .replace(/```/g, '')
@@ -126,72 +120,6 @@ const MARKDOWN_HINT_REGEX =
 const hasMarkdownSyntax = (value: string): boolean => {
   return MARKDOWN_HINT_REGEX.test(value);
 };
-
-type HandwritingTextProps = {
-  text: string;
-  style?: StyleProp<TextStyle>;
-  animate: boolean;
-};
-
-function HandwritingText({ text, style, animate }: HandwritingTextProps) {
-  const [displayedText, setDisplayedText] = useState(animate ? '' : text);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    if (!animate) {
-      setDisplayedText(text);
-      return undefined;
-    }
-
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
-
-    setDisplayedText('');
-    if (text.length === 0) {
-      return undefined;
-    }
-
-    const totalDuration = Math.min(
-      HANDWRITING_MAX_DURATION,
-      Math.max(HANDWRITING_MIN_DURATION, text.length * HANDWRITING_CHAR_MS)
-    );
-    const step = Math.max(1, Math.ceil(text.length / (totalDuration / HANDWRITING_TICK_MS)));
-
-    if (__DEV__) {
-      console.debug('[HandwritingText] start', {
-        length: text.length,
-        totalDuration,
-        step,
-      });
-    }
-
-    let index = 0;
-
-    timerRef.current = setInterval(() => {
-      index = Math.min(text.length, index + step);
-      setDisplayedText(text.slice(0, index));
-
-      if (index >= text.length && timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    }, HANDWRITING_TICK_MS);
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    };
-  }, [animate, text]);
-
-  return (
-    <Text style={style}>
-      {displayedText}
-    </Text>
-  );
-}
 
 const AssistantMessage = memo(function AssistantMessage({
   message,
@@ -258,7 +186,6 @@ const AssistantMessage = memo(function AssistantMessage({
     }
   }, [deferMarkdownSwitch, isStreaming, shouldHandwritePlainText, showMarkdown]);
 
-  const shouldAnimateHandwriting = shouldHandwritePlainText && isStreaming;
   const shouldShowPlainText = shouldHandwritePlainText && !showMarkdown;
   const markdownText = shouldHandwritePlainText && isStreaming ? markdownTextRef.current : message.text;
 
@@ -304,11 +231,7 @@ const AssistantMessage = memo(function AssistantMessage({
       {Platform.OS === 'android' ? (
         // Android: Single layer - only render the active component to avoid draw cycle conflicts
         shouldShowPlainText ? (
-          <HandwritingText
-            text={handwritingText}
-            style={textStyle}
-            animate={shouldAnimateHandwriting}
-          />
+          <Text style={textStyle}>{handwritingText}</Text>
         ) : (
           <MarkdownText style={textStyle}>
             {markdownText}
@@ -332,11 +255,7 @@ const AssistantMessage = memo(function AssistantMessage({
             ]}
             pointerEvents={shouldShowPlainText ? 'auto' : 'none'}
           >
-            <HandwritingText
-              text={handwritingText}
-              style={textStyle}
-              animate={shouldAnimateHandwriting}
-            />
+            <Text style={textStyle}>{handwritingText}</Text>
           </View>
         </>
       )}

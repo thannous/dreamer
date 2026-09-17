@@ -1,17 +1,23 @@
+import { useQuickSettings } from '@/context/QuickSettingsContext';
+import { getDreamRouteParams } from '@/lib/dreamRoute';
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { UpsellCard } from '@/components/guest/UpsellCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal/AdvancedFilterSheet';
-import { AtlasDreamRow } from '@/components/journal/AtlasDreamRow';
-import { DateRangePicker } from '@/components/journal/DateRangePicker';
+import { RemoteJournalList } from '@/components/journal/RemoteJournalList';
+import type { DreamListItem } from '@/lib/journalReadContracts';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
+import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
+import { JournalFirstPage } from '@/components/journal/JournalFirstPage';
+import { useJournalListPagination } from '@/hooks/useJournalListPagination';
+import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
+import { JournalPersistenceNotice } from '@/components/journal/JournalPersistenceNotice';
 import { FilterBar } from '@/components/journal/FilterBar';
 import { PressableScale } from '@/components/motion';
-import { NoctaliaScreenHeader, type NoctaliaHeaderChip } from '@/components/NoctaliaScreenHeader';
-import { SearchBar } from '@/components/ui/SearchBar';
-import { BottomSheet } from '@/components/ui/BottomSheet';
+import { SearchBar, searchBarLayout } from '@/components/ui/SearchBar';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -22,27 +28,32 @@ import {
   getBottomNavigationLayout,
 } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
+import { AuthContext } from '@/context/AuthContext';
+import { resolveDreamMedia } from '@/services/dreamMediaService';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
-import { useJournalLayoutPreference } from '@/hooks/useJournalLayoutPreference';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
-import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
-import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
-import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
+import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate, type JournalAnalysisStatusFilter, type JournalQuickFilter } from '@/lib/dreamFilters';
+import { getDreamTypeLabel } from '@/lib/dreamLabels';
+import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import { getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
 import { trackProductEvent } from '@/lib/analytics';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
 import { router, useFocusEffect } from 'expo-router';
-import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
+  Keyboard,
   Platform,
-  Pressable,
   Text,
+  type GestureResponderEvent,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   type TextInput,
   View,
   type ViewToken,
@@ -53,6 +64,8 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
 const PREFETCH_MAX_PER_FLUSH = 8;
+const MIN_MOBILE_JOURNAL_LIST_VIEWPORT = 120;
+const OVERLAY_SEARCH_DRAG_SLOP = 8;
 
 /**
  * FlashList owns these through props that take a style object, and the desktop max
@@ -60,12 +73,6 @@ const PREFETCH_MAX_PER_FLUSH = 8;
  */
 const DESKTOP_MAX_WIDTH_STYLE = { alignSelf: 'center', width: '100%', maxWidth: LAYOUT_MAX_WIDTH } as const;
 const LIST_CONTENT_STYLE = { paddingHorizontal: ThemeLayout.spacing.md } as const;
-const LIST_CONTENT_ATLAS_STYLE = { paddingHorizontal: ThemeLayout.spacing.lg } as const;
-
-const MODAL_OPTION_CLASS = 'mb-2 rounded-sm border px-4 py-3';
-const MODAL_OPTION_TEXT_CLASS = 'text-center font-sans-medium text-[16px] capitalize';
-const MODAL_CHECK_BADGE_CLASS =
-  'absolute right-4 top-1/2 h-[22px] w-[22px] -translate-y-[11px] items-center justify-center rounded-full bg-ink-raised';
 
 const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
   // Supabase thumbnails use a `-thumb` filename suffix (see `services/supabaseDreamService.ts`).
@@ -79,27 +86,97 @@ const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
   return false;
 };
 
+function getInitialKeyboardVisibility(): boolean {
+  // RN Web 0.21's Keyboard shim does not implement isVisible.
+  if (Platform.OS === 'web') {
+    return false;
+  }
+  return typeof Keyboard.isVisible === 'function' ? Keyboard.isVisible() : false;
+}
+
 export default function JournalListScreen() {
-  const { dreams } = useDreams();
+  const { dreams, completeness, remotePreviewAllowed, loadRemoteDreamForPreview, persistenceState, refreshState, reloadDreams, retryPersistence } = useDreams();
   const { colors, mode } = useTheme();
+  const openQuickSettings = useQuickSettings();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   useClearWebFocus();
-  const { formatDate, formatShortDate: formatDreamListDate } = useLocaleFormatting();
+  const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
   const searchInputRef = useRef<TextInput>(null);
-  const pendingSearchFocusRef = useRef(false);
-  const { width, height } = useWindowDimensions();
-  const { preference: journalLayoutPreference } = useJournalLayoutPreference();
+  const { width, height, fontScale } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   const isWeb = Platform.OS === 'web';
   const isDesktopLayout = isWeb && width >= DESKTOP_BREAKPOINT;
   const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
-  const useAtlasHeader = !isDesktopLayout && !isTabletLayout;
-  const isAtlasLayout = journalLayoutPreference === 'compact' && !isDesktopLayout && !isTabletLayout;
-  const isCompactJournalFilters = !isDesktopLayout && !isTabletLayout;
   const desktopColumns = width >= 1440 ? 4 : 3;
-  const navigationLayout = getBottomNavigationLayout(width, height);
+  const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
+  // Keep the shared brand header and search outside the column-keyed list so
+  // rotation cannot remount the input. Filters remain in ListHeaderComponent;
+  // on short viewports the measured chrome can collapse as the list scrolls.
+  const scrollHeader = !isDesktopLayout;
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
+  // The tab bar in app/(tabs)/_layout.tsx is position:absolute, so FlashList must
+  // reserve the full overlay from the viewport. Capping marginBottom would leave
+  // the remaining list box covered by the bar. Production SearchBar is 112dp at
+  // fontScale 2 plus 16dp chrome and the top inset; when that would consume the
+  // uncovered viewport, keep the input mounted outside the column-keyed list but
+  // out of flow so the list can fill the space above the overlay. A header spacer
+  // and scroll translation let a dream card move into that uncovered box.
+  const headerMeasureKey = `${width}:${fontScale}:${insets.top}`;
+  const [measuredHeader, setMeasuredHeader] = useState({ key: '', height: 0 });
+  const mobileSearchHeaderHeight = isDesktopLayout
+    ? 0
+    : measuredHeader.key === headerMeasureKey
+      ? measuredHeader.height
+      : insets.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
+  const overlayNavClearance = isDesktopLayout || isKeyboardVisible ? 0 : navigationClearance;
+  const viewportAboveNav = Math.max(0, height - overlayNavClearance);
+  // iOS software keyboards overlay the window and do not shrink
+  // useWindowDimensions(). Subtract that occlusion, and if iOS reports no
+  // height keep search out of flow so results can still scroll.
+  const keyboardAvoidedViewport = !isKeyboardVisible || Platform.OS !== 'ios'
+    ? viewportAboveNav
+    : keyboardHeight > 0
+      ? Math.max(0, viewportAboveNav - keyboardHeight)
+      : 0;
+  const searchConsumesLayout = isDesktopLayout
+    || keyboardAvoidedViewport - mobileSearchHeaderHeight >= MIN_MOBILE_JOURNAL_LIST_VIEWPORT;
+  const searchLayoutKey = `${searchConsumesLayout ? 'flow' : 'overlay'}:${isTabletLayout ? 'tablet' : 'mobile'}`;
+  // Column count, not overlay vs flow. Keyboard and viewport-height changes can
+  // flip searchConsumesLayout without remounting FlashList or clearing its offset.
+  const mobileListKey = isTabletLayout ? 'tablet-2col' : 'mobile-cards-1col';
+  const [searchCollapse, setSearchCollapse] = useState({ key: searchLayoutKey, offset: 0 });
+  if (searchCollapse.key !== searchLayoutKey) {
+    // Comparing keys only hid a stale offset. Reinitialize so a rotation back
+    // to overlay:tablet cannot reuse the previous layout's collapse.
+    setSearchCollapse({ key: searchLayoutKey, offset: 0 });
+  }
+  const searchCollapseOffset = searchCollapse.key === searchLayoutKey ? searchCollapse.offset : 0;
+
+  useEffect(() => {
+    const show = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      (e: { endCoordinates?: { height?: number } }) => {
+        setIsKeyboardVisible(true);
+        setKeyboardHeight(e?.endCoordinates?.height ?? 0);
+      },
+    );
+    const hide = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        setIsKeyboardVisible(false);
+        setKeyboardHeight(0);
+      },
+    );
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
 
   const [showHeaderAnimations, setShowHeaderAnimations] = useState(false);
 
@@ -119,44 +196,19 @@ export default function JournalListScreen() {
     start: null,
     end: null,
   });
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [showAnalyzedOnly, setShowAnalyzedOnly] = useState(false);
-  const [showExploredOnly, setShowExploredOnly] = useState(false);
+  const [quickFilter, setQuickFilter] = useState<JournalQuickFilter>('all');
   const [showRememberedOnly, setShowRememberedOnly] = useState(false);
-  const [showNeedsExplorationOnly, setShowNeedsExplorationOnly] = useState(false);
+  const [showRecurringOnly, setShowRecurringOnly] = useState(false);
+  const [analysisStatus, setAnalysisStatus] = useState<JournalAnalysisStatusFilter | null>(null);
   const [sortOrder, setSortOrder] = useState<JournalSortOrder>('newest');
-  const [showAtlasSearch, setShowAtlasSearch] = useState(false);
-
-  const focusSearchInput = useCallback(() => {
-    requestAnimationFrame(() => {
-      searchInputRef.current?.focus();
-      setTimeout(() => searchInputRef.current?.focus(), 80);
-    });
-  }, []);
-
-  const handleAtlasSearchPress = useCallback(() => {
-    pendingSearchFocusRef.current = true;
-    setShowAtlasSearch(true);
-    focusSearchInput();
-  }, [focusSearchInput]);
-
-  useEffect(() => {
-    if (!pendingSearchFocusRef.current || !(showAtlasSearch || searchQuery.length > 0)) {
-      return;
-    }
-    pendingSearchFocusRef.current = false;
-    focusSearchInput();
-  }, [focusSearchInput, searchQuery.length, showAtlasSearch]);
 
   // Modal states
-  const [showThemeModal, setShowThemeModal] = useState(false);
-  const [showDateModal, setShowDateModal] = useState(false);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   useEffect(() => {
-    if (showThemeModal || showDateModal || showAdvancedFilters) {
+    if (showAdvancedFilters) {
       blurActiveElement();
     }
-  }, [showAdvancedFilters, showDateModal, showThemeModal]);
+  }, [showAdvancedFilters]);
 
   const prefetchedImageUrisRef = useRef(new Set<string>());
   const isNavigatingRef = useRef(false);
@@ -169,6 +221,17 @@ export default function JournalListScreen() {
   const isScrollingRef = useRef(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollIdleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const listScrollOffsetRef = useRef(0);
+  const overlaySearchDragOriginRef = useRef({ pageX: 0, pageY: 0, offset: 0 });
+
+  useLayoutEffect(() => {
+    // The column-keyed FlashList remounts at offset 0 when this key changes.
+    // Desktop unmounts that list while mobileListKey stays mobile-cards-1col,
+    // so include the desktop switch. Keep the origin when only
+    // searchConsumesLayout flips so a later overlay drag continues from the
+    // retained list offset instead of jumping to the top.
+    listScrollOffsetRef.current = 0;
+  }, [mobileListKey, isDesktopLayout]);
 
   const setScrolling = useCallback((next: boolean) => {
     if (isScrollingRef.current === next) return;
@@ -178,15 +241,9 @@ export default function JournalListScreen() {
 
   const listBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
-    : navigationLayout.barHeight
-      + navigationLayout.minimumBottomInset
-      + ThemeLayout.spacing.lg;
+    : ThemeLayout.spacing.lg;
   const listContentStyle = useMemo(
     () => [LIST_CONTENT_STYLE, { paddingBottom: listBottomPadding }],
-    [listBottomPadding]
-  );
-  const listContentAtlasStyle = useMemo(
-    () => [LIST_CONTENT_ATLAS_STYLE, { paddingBottom: listBottomPadding }],
     [listBottomPadding]
   );
   const listContentDesktopStyle = useMemo(
@@ -194,8 +251,8 @@ export default function JournalListScreen() {
     [listBottomPadding]
   );
   const listExtraData = useMemo(
-    () => ({ isAtlasLayout, isScrolling }),
-    [isAtlasLayout, isScrolling],
+    () => ({ isScrolling }),
+    [isScrolling],
   );
 
   // Get available themes
@@ -222,10 +279,11 @@ export default function JournalListScreen() {
       dreamType: selectedDreamType,
       startDate: dateRange.start,
       endDate: dateRange.end,
-      favoritesOnly: showFavoritesOnly,
-      analyzedOnly: showAnalyzedOnly,
-      exploredOnly: showExploredOnly,
+      favoritesOnly: quickFilter === 'favorites',
       rememberedOnly: showRememberedOnly,
+      recurringOnly: showRecurringOnly,
+      needsExplorationOnly: quickFilter === 'to_deepen',
+      analysisStatus,
     }, {
       searchOptions: {
         dreamTypeLabelResolver: (dreamType) => getDreamTypeLabel(dreamType, t),
@@ -233,9 +291,7 @@ export default function JournalListScreen() {
       },
     });
 
-    const orderedDreams = showNeedsExplorationOnly
-      ? baseDreams.filter((dream) => isDreamAnalyzed(dream) && !isDreamExplored(dream))
-      : baseDreams;
+    const orderedDreams = baseDreams;
 
     // Stored order is newest-first; only the opposite order needs a sort.
     return sortOrder === 'oldest' ? sortDreamsByDate(orderedDreams, true) : orderedDreams;
@@ -245,11 +301,10 @@ export default function JournalListScreen() {
     selectedTheme,
     selectedDreamType,
     dateRange,
-    showFavoritesOnly,
-    showAnalyzedOnly,
-    showExploredOnly,
+    quickFilter,
     showRememberedOnly,
-    showNeedsExplorationOnly,
+    showRecurringOnly,
+    analysisStatus,
     resolveDreamMemorySearchLabel,
     t,
     sortOrder,
@@ -267,24 +322,66 @@ export default function JournalListScreen() {
     return true;
   }, []);
 
-  // Preload first items to warm expo-image cache (no setState during scroll)
-  useEffect(() => {
+  const mediaUserId = useContext(AuthContext)?.user?.id ?? null;
+  const previewEligible = Boolean(remotePreviewAllowed && mediaUserId && dreams.length === 0);
+  const previewMounted = useRef(true);
+  useEffect(() => { previewMounted.current = true; return () => { previewMounted.current = false; }; }, []);
+  const previewScopeRef = useRef({ userId: mediaUserId, eligible: previewEligible });
+  useLayoutEffect(() => {
+    previewScopeRef.current = { userId: mediaUserId, eligible: previewEligible };
+  }, [mediaUserId, previewEligible]);
+  const openRemoteDream = useCallback(async (item: DreamListItem) => {
+    const userId = mediaUserId;
+    if (!userId || !item.remoteId || !previewScopeRef.current.eligible) return;
+    const full = await loadRemoteDreamForPreview(item.remoteId);
+    if (!previewMounted.current || previewScopeRef.current.userId !== userId) return;
+    void reloadDreams();
+    router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(full) });
+  }, [mediaUserId, loadRemoteDreamForPreview, reloadDreams]);
+  const previewFiltersSupported = !selectedTheme && !selectedDreamType && !dateRange.start && !dateRange.end &&
+    quickFilter === 'all' && !showRememberedOnly && !showRecurringOnly && !analysisStatus && sortOrder !== 'oldest';
+  const paginationScope = JSON.stringify([mediaUserId, deferredSearchQuery, selectedTheme, selectedDreamType,
+    dateRange.start, dateRange.end, quickFilter, showRememberedOnly, showRecurringOnly, analysisStatus, sortOrder]);
+  const { visibleItems, hasMore, loadMore } = useJournalListPagination(filteredDreams, paginationScope);
+  const paginationFooter = hasMore ? (
+    <PressableScale onPress={loadMore} accessibilityRole="button" className="min-h-[48px] items-center justify-center p-4">
+      <Text className="font-sans-bold text-body text-champagne-on">{t('journal.pagination.more')}</Text>
+    </PressableScale>
+  ) : filteredDreams.length > 0 ? (
+    <Text className="p-4 text-center font-sans text-body-sm text-ivory-muted">{t('journal.pagination.end')}</Text>
+  ) : null;
+  const listFooter = (
+    <View>
+      <View className="px-4 py-2"><UpsellCard /></View>
+      {paginationFooter}
+    </View>
+  );
+  const mediaGeneration = useRef(0);
+  useLayoutEffect(() => {
+    mediaGeneration.current += 1;
     prefetchedImageUrisRef.current.clear();
-    const initial = filteredDreams.slice(0, JOURNAL_LIST.INITIAL_VISIBLE_COUNT + JOURNAL_LIST.PRELOAD_BUFFER);
-    initial.forEach((dream) => {
-      const thumbnailUri = getDreamThumbnailUri(dream);
-      if (!thumbnailUri) {
-        return;
+    return () => { mediaGeneration.current += 1; };
+  }, [mediaUserId, filteredDreams]);
+
+  const prefetchDreamMedia = useCallback(async (entries: DreamAnalysis[]) => {
+    const generation = mediaGeneration.current;
+    const resolved = await Promise.all(entries.slice(0, PREFETCH_MAX_PER_FLUSH).map(async (dream) => ({
+      ...dream,
+      ...await resolveDreamMedia(dream, mediaUserId),
+    })));
+    for (const dream of resolved) {
+      if (generation !== mediaGeneration.current) return;
+      const uri = getDreamThumbnailUri(dream);
+      if (uri && isLikelyOptimizedThumbnailUri(uri) && rememberPrefetchedUri(uri)) {
+        await preloadImage(uri);
       }
-      if (!isLikelyOptimizedThumbnailUri(thumbnailUri)) {
-        return;
-      }
-      if (!rememberPrefetchedUri(thumbnailUri)) {
-        return;
-      }
-      void preloadImage(thumbnailUri);
-    });
-  }, [filteredDreams, rememberPrefetchedUri]);
+    }
+  }, [mediaUserId, rememberPrefetchedUri]);
+
+  // Only warm a bounded window. Text rendering never waits for signatures.
+  useEffect(() => {
+    void prefetchDreamMedia(filteredDreams.slice(0, PREFETCH_MAX_PER_FLUSH));
+  }, [filteredDreams, prefetchDreamMedia]);
 
   // Scroll to top when filters change
   useEffect(() => {
@@ -297,11 +394,11 @@ export default function JournalListScreen() {
     selectedTheme,
     selectedDreamType,
     dateRange,
-    showFavoritesOnly,
-    showAnalyzedOnly,
-    showExploredOnly,
+    quickFilter,
     showRememberedOnly,
-    showNeedsExplorationOnly,
+    showRecurringOnly,
+    analysisStatus,
+    sortOrder,
   ]);
 
   useFocusEffect(
@@ -315,70 +412,51 @@ export default function JournalListScreen() {
     setSelectedTheme(null);
     setSelectedDreamType(null);
     setDateRange({ start: null, end: null });
-    setShowFavoritesOnly(false);
-    setShowAnalyzedOnly(false);
-    setShowExploredOnly(false);
+    setQuickFilter('all');
     setShowRememberedOnly(false);
-    setShowNeedsExplorationOnly(false);
+    setShowRecurringOnly(false);
+    setAnalysisStatus(null);
     setSortOrder('newest');
   }, []);
 
+  const handleQuickFilterPress = useCallback((next: JournalQuickFilter) => {
+    if (next === 'all') {
+      handleClearFilters();
+      return;
+    }
+    setQuickFilter((current) => (current === next ? 'all' : next));
+  }, [handleClearFilters]);
+
   const toggleThemeFilter = useCallback((theme: DreamTheme) => {
-    setSelectedTheme(theme === selectedTheme ? null : theme);
-  }, [selectedTheme]);
+    setSelectedTheme((current) => (theme === current ? null : theme));
+  }, []);
 
   const toggleDreamTypeFilter = useCallback((dreamType: DreamType) => {
     setSelectedDreamType((current) => (dreamType === current ? null : dreamType));
   }, []);
 
-  const handleThemeSelect = useCallback((theme: DreamTheme) => {
-    toggleThemeFilter(theme);
-    setShowThemeModal(false);
-  }, [toggleThemeFilter]);
-
-  const handleDreamTypeSelect = useCallback((dreamType: DreamType) => {
-    toggleDreamTypeFilter(dreamType);
-    setShowThemeModal(false);
-  }, [toggleDreamTypeFilter]);
-
   const handleDateRangeChange = useCallback((start: Date | null, end: Date | null) => {
     setDateRange({ start, end });
-  }, []);
-
-  const handleFavoritesToggle = useCallback(() => {
-    setShowFavoritesOnly((prev) => !prev);
-  }, []);
-
-  const handleAnalyzedToggle = useCallback(() => {
-    setShowAnalyzedOnly((prev) => !prev);
-  }, []);
-
-  const handleExploredToggle = useCallback(() => {
-    setShowExploredOnly((prev) => !prev);
   }, []);
 
   const handleRememberedToggle = useCallback(() => {
     setShowRememberedOnly((prev) => !prev);
   }, []);
 
-  const handleNeedsExplorationToggle = useCallback(() => {
-    setShowNeedsExplorationOnly((prev) => !prev);
-  }, []);
-
   const handleRecurringToggle = useCallback(() => {
-    setSelectedDreamType((current) => (current === 'Recurring Dream' ? null : 'Recurring Dream'));
+    setShowRecurringOnly((prev) => !prev);
   }, []);
 
-  const handleNightmareToggle = useCallback(() => {
-    setSelectedDreamType((current) => (current === 'Nightmare' ? null : 'Nightmare'));
+  const handleAnalysisStatusChange = useCallback((status: JournalAnalysisStatusFilter | null) => {
+    setAnalysisStatus(status);
   }, []);
 
-  const handleDreamPress = useCallback((dreamId: number) => {
+  const handleDreamPress = useCallback((dream: DreamAnalysis) => {
     if (isNavigatingRef.current) {
       return;
     }
     isNavigatingRef.current = true;
-    router.push(`/journal/${dreamId}`);
+    router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
   }, []);
 
   // Track viewable items and prefetch thumbnails once scrolling is idle.
@@ -401,21 +479,8 @@ export default function JournalListScreen() {
 
     const start = Math.max(0, range.min - JOURNAL_LIST.PRELOAD_BUFFER);
     const end = Math.min(currentFilteredDreams.length - 1, range.max + JOURNAL_LIST.PRELOAD_BUFFER);
-    const urisToPrefetch: string[] = [];
-
-    for (let idx = start; idx <= end && urisToPrefetch.length < PREFETCH_MAX_PER_FLUSH; idx++) {
-      const dream = currentFilteredDreams[idx];
-      const thumbnailUri = getDreamThumbnailUri(dream);
-      if (!thumbnailUri) continue;
-      if (!isLikelyOptimizedThumbnailUri(thumbnailUri)) continue;
-      if (!rememberPrefetchedUri(thumbnailUri)) continue;
-      urisToPrefetch.push(thumbnailUri);
-    }
-
-    for (const uri of urisToPrefetch) {
-      await preloadImage(uri);
-    }
-  }, [rememberPrefetchedUri]);
+    await prefetchDreamMedia(currentFilteredDreams.slice(start, end + 1));
+  }, [prefetchDreamMedia]);
 
   const onViewableItemsChanged = useRef(({ viewableItems }: ViewabilityInfo) => {
     let min = Number.POSITIVE_INFINITY;
@@ -452,6 +517,53 @@ export default function JournalListScreen() {
     }
   }, [setScrolling]);
 
+  const handleListScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const y = event.nativeEvent.contentOffset.y;
+    listScrollOffsetRef.current = y;
+    if (searchConsumesLayout) return;
+    const next = Math.max(0, Math.min(y, mobileSearchHeaderHeight));
+    setSearchCollapse((current) => {
+      if (current.key === searchLayoutKey && Math.abs(current.offset - next) < 0.5) return current;
+      return { key: searchLayoutKey, offset: next };
+    });
+  }, [mobileSearchHeaderHeight, searchConsumesLayout, searchLayoutKey]);
+
+  const handleOverlaySearchTouchStart = useCallback((event: GestureResponderEvent) => {
+    overlaySearchDragOriginRef.current = {
+      pageX: event.nativeEvent.pageX,
+      pageY: event.nativeEvent.pageY,
+      offset: listScrollOffsetRef.current,
+    };
+  }, []);
+
+  const shouldForwardOverlaySearchDrag = useCallback((event: GestureResponderEvent) => {
+    if (searchConsumesLayout) return false;
+    const origin = overlaySearchDragOriginRef.current;
+    const dx = event.nativeEvent.pageX - origin.pageX;
+    const dy = event.nativeEvent.pageY - origin.pageY;
+    return Math.abs(dy) > OVERLAY_SEARCH_DRAG_SLOP && Math.abs(dy) >= Math.abs(dx);
+  }, [searchConsumesLayout]);
+
+  const handleOverlaySearchDragGrant = useCallback(() => {
+    // Forwarded overlay drags use scrollToOffset, so FlashList
+    // keyboardDismissMode on-drag never runs.
+    if (typeof Keyboard.dismiss === 'function') {
+      Keyboard.dismiss();
+    }
+  }, []);
+
+  const handleOverlaySearchDragMove = useCallback((event: GestureResponderEvent) => {
+    if (searchConsumesLayout) return;
+    const dy = event.nativeEvent.pageY - overlaySearchDragOriginRef.current.pageY;
+    const next = Math.max(0, overlaySearchDragOriginRef.current.offset - dy);
+    handleScrollBegin();
+    flatListRef.current?.scrollToOffset({ offset: next, animated: false });
+  }, [handleScrollBegin, searchConsumesLayout]);
+
+  const handleOverlaySearchDragEnd = useCallback(() => {
+    scheduleIdle();
+  }, [scheduleIdle]);
+
   useEffect(() => {
     return () => {
       if (scrollIdleTimeoutRef.current) {
@@ -463,29 +575,9 @@ export default function JournalListScreen() {
   // No `entering` on a row: FlashList recycles them, so an entrance replays on every
   // scroll. The list itself is the thing that appeared, and it appeared with the screen.
   const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
-    const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
+    const dreamTypeLabel = item.dreamType && (item.dreamType !== 'Symbolic Dream' || isDreamAnalyzed(item)) ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
     const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
     const isFirstItem = index === 0;
-
-    if (isAtlasLayout) {
-      const monthLabel = formatDate(item.id, { month: 'short', year: 'numeric' }).replace('.', '').toUpperCase();
-      const previousDream = filteredDreams[index - 1];
-      const previousMonthLabel = previousDream
-        ? formatDate(previousDream.id, { month: 'short', year: 'numeric' }).replace('.', '').toUpperCase()
-        : null;
-      const sectionLabel = index === 0 || monthLabel !== previousMonthLabel ? monthLabel : null;
-
-      return (
-        <AtlasDreamRow
-          dream={item}
-          onPress={handleDreamPress}
-          scrollState={isScrolling ? 'scrolling' : 'idle'}
-          testID={TID.List.DreamItem(item.id)}
-          dateLabel={formatDreamListDate(item.id)}
-          sectionLabel={sectionLabel}
-        />
-      );
-    }
 
     return (
       <View className="mb-6">
@@ -499,10 +591,10 @@ export default function JournalListScreen() {
         />
       </View>
     );
-  }, [filteredDreams, formatDate, formatDreamListDate, t, handleDreamPress, isAtlasLayout, isScrolling]);
+  }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
 
   const renderDreamItemTablet = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
-    const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
+    const dreamTypeLabel = item.dreamType && (item.dreamType !== 'Symbolic Dream' || isDreamAnalyzed(item)) ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
     const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
 
     return (
@@ -524,7 +616,7 @@ export default function JournalListScreen() {
     const isRecent = index < 3;
     const isFavorite = !!item.isFavorite;
     const isAnalyzed = isDreamAnalyzed(item);
-    const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
+    const dreamTypeLabel = item.dreamType && (item.dreamType !== 'Symbolic Dream' || isDreamAnalyzed(item)) ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
 
     const isHero = isRecent && hasImage;
     const weightClass = isHero
@@ -555,33 +647,29 @@ export default function JournalListScreen() {
     );
   }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
 
+  const hasNonDefaultSort = sortOrder !== 'newest';
   const hasActiveFilter = !!(
     searchQuery ||
     selectedTheme ||
     selectedDreamType ||
     dateRange.start ||
     dateRange.end ||
-    showFavoritesOnly ||
-    showAnalyzedOnly ||
-    showExploredOnly ||
+    quickFilter !== 'all' ||
     showRememberedOnly ||
-    showNeedsExplorationOnly
+    showRecurringOnly ||
+    analysisStatus ||
+    hasNonDefaultSort
   );
-  const hasActiveNonSearchFilter = !!(
+  const hasActiveAdvancedFilter = !!(
     selectedTheme ||
     selectedDreamType ||
     dateRange.start ||
     dateRange.end ||
-    showFavoritesOnly ||
-    showAnalyzedOnly ||
-    showExploredOnly ||
     showRememberedOnly ||
-    showNeedsExplorationOnly
+    showRecurringOnly ||
+    analysisStatus ||
+    hasNonDefaultSort
   );
-  const advancedFilterCount = Number(Boolean(selectedTheme)) + Number(Boolean(selectedDreamType)) + Number(Boolean(dateRange.start || dateRange.end));
-  const advancedFilterLabel = advancedFilterCount > 0
-    ? t('journal.filter.more_count', { count: advancedFilterCount })
-    : t('journal.filter.more');
   const canStartRememberedDreamFromEmpty = dreams.length === 0 && !hasActiveFilter;
   const handleStartRememberedDreamFromEmpty = useCallback(() => {
     void trackProductEvent('empty_journal_remembered_cta_clicked', {
@@ -593,160 +681,135 @@ export default function JournalListScreen() {
     });
   }, []);
   const advancedFiltersMaxHeight = Math.min(760, Math.max(420, Math.round(height * 0.86)));
-  const journalFilterItems = useMemo(() => {
-    if (isCompactJournalFilters) {
-      return [
-        {
-          id: 'favorites' as const,
-          label: t('journal.filter.favorites'),
-          active: showFavoritesOnly,
-          onPress: handleFavoritesToggle,
-          testID: TID.Button.FilterFavorites,
-        },
-        {
-          id: 'analyzed' as const,
-          label: t('journal.filter.analyzed'),
-          active: showAnalyzedOnly,
-          onPress: handleAnalyzedToggle,
-          testID: TID.Button.FilterAnalyzed,
-        },
-        {
-          id: 'explored' as const,
-          label: t('journal.filter.explored'),
-          active: showExploredOnly,
-          onPress: handleExploredToggle,
-          testID: TID.Button.FilterExplored,
-        },
-        {
-          id: 'more' as const,
-          label: advancedFilterLabel,
-          active: advancedFilterCount > 0,
-          onPress: () => setShowAdvancedFilters(true),
-          testID: TID.Button.FilterMore,
-        },
-      ];
-    }
-
-    return [
-      {
-        id: 'theme' as const,
-        label: t('journal.filter.theme'),
-        active: selectedTheme !== null || selectedDreamType !== null,
-        onPress: () => setShowThemeModal(true),
-        testID: TID.Button.FilterTheme,
-      },
-      {
-        id: 'date' as const,
-        label: t('journal.filter.date'),
-        active: dateRange.start !== null || dateRange.end !== null,
-        onPress: () => setShowDateModal(true),
-        testID: TID.Button.FilterDate,
-      },
-      {
-        id: 'favorites' as const,
-        label: t('journal.filter.favorites'),
-        active: showFavoritesOnly,
-        onPress: handleFavoritesToggle,
-        testID: TID.Button.FilterFavorites,
-      },
-      {
-        id: 'analyzed' as const,
-        label: t('journal.filter.analyzed'),
-        active: showAnalyzedOnly,
-        onPress: handleAnalyzedToggle,
-        testID: TID.Button.FilterAnalyzed,
-      },
-      {
-        id: 'explored' as const,
-        label: t('journal.filter.explored'),
-        active: showExploredOnly,
-        onPress: handleExploredToggle,
-        testID: TID.Button.FilterExplored,
-      },
-    ];
-  }, [
-    advancedFilterCount,
-    advancedFilterLabel,
-    dateRange.end,
-    dateRange.start,
-    handleAnalyzedToggle,
-    handleExploredToggle,
-    handleFavoritesToggle,
-    isCompactJournalFilters,
-    selectedDreamType,
-    selectedTheme,
-    showAnalyzedOnly,
-    showExploredOnly,
-    showFavoritesOnly,
-    t,
-  ]);
-  const atlasQuickFilters = useMemo<NoctaliaHeaderChip[]>(() => [
+  const journalFilterItems = useMemo(() => [
     {
-      id: 'favorites',
+      id: 'all' as const,
+      label: t('journal.filter.all'),
+      active: quickFilter === 'all' && !hasActiveAdvancedFilter && !searchQuery.trim(),
+      onPress: () => handleQuickFilterPress('all'),
+      accessibilityLabel: t('journal.filter.accessibility.all'),
+      testID: TID.Button.FilterAll,
+    },
+    {
+      id: 'favorites' as const,
       label: t('journal.filter.favorites'),
-      icon: 'heart',
-      active: showFavoritesOnly,
-      onPress: handleFavoritesToggle,
+      active: quickFilter === 'favorites',
+      onPress: () => handleQuickFilterPress('favorites'),
       accessibilityLabel: t('journal.filter.accessibility.favorites'),
       testID: TID.Button.FilterFavorites,
     },
     {
-      id: 'remembered',
-      label: t('recording.activation_insight.signal.memory'),
-      icon: 'moon.stars.fill',
-      active: showRememberedOnly,
+      id: 'to_deepen' as const,
+      label: t('journal.filter.to_deepen'),
+      active: quickFilter === 'to_deepen',
+      onPress: () => handleQuickFilterPress('to_deepen'),
+      accessibilityLabel: t('journal.filter.accessibility.to_deepen'),
+      testID: TID.Button.FilterToDeepen,
+    },
+    ...(selectedTheme ? [{
+      id: 'theme' as const,
+      label: t('journal.filter.theme'),
+      active: true,
+      onPress: () => toggleThemeFilter(selectedTheme),
+      accessibilityLabel: t('journal.filter.accessibility.theme'),
+      testID: TID.Button.FilterTheme,
+    }] : []),
+    ...(selectedDreamType ? [{
+      id: 'type' as const,
+      label: getDreamTypeLabel(selectedDreamType, t) ?? selectedDreamType,
+      active: true,
+      onPress: () => toggleDreamTypeFilter(selectedDreamType),
+      accessibilityLabel: t('journal.filter.accessibility.theme'),
+    }] : []),
+    ...(dateRange.start || dateRange.end ? [{
+      id: 'date' as const,
+      label: t('journal.filter.date'),
+      active: true,
+      onPress: () => handleDateRangeChange(null, null),
+      accessibilityLabel: t('journal.filter.accessibility.date'),
+      testID: TID.Button.FilterDate,
+    }] : []),
+    ...(showRememberedOnly ? [{
+      id: 'remembered' as const,
+      label: t('journal.filter.remembered'),
+      active: true,
       onPress: handleRememberedToggle,
-      accessibilityLabel: t('recording.activation_insight.signal.memory'),
-    },
-    {
-      id: 'to-explore',
-      label: t('journal.atlas.filter.to_explore'),
-      icon: 'sparkles',
-      active: showNeedsExplorationOnly,
-      onPress: handleNeedsExplorationToggle,
-      accessibilityLabel: t('journal.atlas.filter.to_explore'),
-    },
-    {
-      id: 'analyzed',
+      accessibilityLabel: t('journal.filter.accessibility.remembered'),
+      testID: TID.Button.FilterRemembered,
+    }] : []),
+    ...(showRecurringOnly ? [{
+      id: 'recurring' as const,
+      label: t('journal.filter.recurring'),
+      active: true,
+      onPress: handleRecurringToggle,
+      accessibilityLabel: t('journal.filter.accessibility.recurring'),
+      testID: TID.Button.FilterRecurring,
+    }] : []),
+    ...(searchQuery.trim() ? [{
+      id: 'search' as const,
+      label: searchQuery.trim(),
+      active: true,
+      onPress: () => setSearchQuery(''),
+      accessibilityLabel: t('journal.search_placeholder'),
+      testID: TID.Button.FilterSearch,
+    }] : []),
+    ...(hasNonDefaultSort ? [{
+      id: 'sort' as const,
+      label: t(`journal.filter_sheet.sort.${sortOrder}`),
+      active: true,
+      onPress: () => setSortOrder('newest'),
+      accessibilityLabel: t(`journal.filter_sheet.sort.${sortOrder}`),
+    }] : []),
+    ...(analysisStatus === 'unanalyzed' ? [{
+      id: 'unanalyzed' as const,
+      label: t('journal.filter_sheet.status.unanalyzed'),
+      active: true,
+      onPress: () => handleAnalysisStatusChange(null),
+      accessibilityLabel: t('journal.filter_sheet.status.unanalyzed'),
+      testID: TID.Button.FilterAnalyzed,
+    }] : []),
+    ...(analysisStatus === 'analyzed' ? [{
+      id: 'analyzed' as const,
       label: t('journal.filter.analyzed'),
-      icon: 'brain',
-      active: showAnalyzedOnly,
-      onPress: handleAnalyzedToggle,
+      active: true,
+      onPress: () => handleAnalysisStatusChange(null),
       accessibilityLabel: t('journal.filter.accessibility.analyzed'),
       testID: TID.Button.FilterAnalyzed,
-    },
-    {
-      id: 'recurring',
-      label: t('journal.atlas.filter.recurring'),
-      icon: 'arrow.triangle.2.circlepath',
-      active: selectedDreamType === 'Recurring Dream',
-      onPress: handleRecurringToggle,
-      accessibilityLabel: t('journal.atlas.filter.recurring'),
-    },
-    {
-      id: 'nightmares',
-      label: t('journal.atlas.filter.nightmares'),
-      icon: 'moon.stars.fill',
-      active: selectedDreamType === 'Nightmare',
-      onPress: handleNightmareToggle,
-      accessibilityLabel: t('journal.atlas.filter.nightmares'),
-    },
+    }] : []),
+    ...(analysisStatus === 'explored' ? [{
+      id: 'explored' as const,
+      label: t('journal.filter.explored'),
+      active: true,
+      onPress: () => handleAnalysisStatusChange(null),
+      accessibilityLabel: t('journal.filter.accessibility.explored'),
+      testID: TID.Button.FilterExplored,
+    }] : []),
   ], [
-    handleAnalyzedToggle,
-    handleFavoritesToggle,
+    analysisStatus,
+    dateRange.end,
+    dateRange.start,
+    handleAnalysisStatusChange,
+    handleDateRangeChange,
+    handleQuickFilterPress,
     handleRememberedToggle,
-    handleNeedsExplorationToggle,
-    handleNightmareToggle,
     handleRecurringToggle,
+    hasActiveAdvancedFilter,
+    hasNonDefaultSort,
+    quickFilter,
+    searchQuery,
     selectedDreamType,
-    showAnalyzedOnly,
-    showFavoritesOnly,
+    selectedTheme,
     showRememberedOnly,
-    showNeedsExplorationOnly,
+    showRecurringOnly,
+    sortOrder,
     t,
+    toggleDreamTypeFilter,
+    toggleThemeFilter,
   ]);
   const renderEmptyState = useCallback(() => (
-    <EmptyState
+    refreshState?.status === 'refreshing' || refreshState?.status === 'error' ||
+    persistenceState.status === 'loading' ||
+    (persistenceState.status === 'error' && persistenceState.operation === 'read') ? null : <EmptyState
       hasActiveFilter={hasActiveFilter}
       onClearFilters={handleClearFilters}
       onStartRememberedDream={
@@ -758,13 +821,12 @@ export default function JournalListScreen() {
     handleClearFilters,
     handleStartRememberedDreamFromEmpty,
     hasActiveFilter,
+    persistenceState,
+    refreshState,
   ]);
 
-  const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
+  const keyExtractor = useCallback((item: DreamAnalysis) => getDreamIdentityKey(item), []);
   const getDreamItemType = useCallback((item: DreamAnalysis | undefined, index: number) => {
-    if (isAtlasLayout) {
-      return 'atlas-row';
-    }
     if (!item) {
       // FlashList can query item types during layout passes where data isn't resolved yet.
       return 'text-only';
@@ -775,7 +837,122 @@ export default function JournalListScreen() {
     return !item.imageGenerationFailed && (item.thumbnailUrl || item.imageUrl)
       ? 'with-image'
       : 'text-only';
-  }, [isAtlasLayout]);
+  }, []);
+
+  // An element, not a component factory: typing must not create a new header
+  // component type and remount the search input when it lives outside FlashList.
+  const searchBar = (
+    <SearchBar
+      ref={searchInputRef}
+      testID={TID.Component.SearchBar}
+      inputTestID={TID.Input.SearchDreams}
+      value={searchQuery}
+      onChangeText={setSearchQuery}
+      placeholder={t('journal.search_placeholder')}
+    />
+  );
+
+  const listHeader = (
+    <View style={scrollHeader ? { marginHorizontal: -ThemeLayout.spacing.md } : undefined}>
+      {!searchConsumesLayout ? (
+        <View testID="journal-search-scroll-slot" style={{ height: mobileSearchHeaderHeight }} />
+      ) : null}
+      {isDesktopLayout ? <PageHeaderContent
+        titleKey="journal.title"
+        animationSeed={showHeaderAnimations ? 1 : 0}
+        style={
+          isDesktopLayout
+            ? DESKTOP_MAX_WIDTH_STYLE
+            : { paddingTop: ThemeLayout.spacing.sm }
+        }
+      /> : null}
+
+      <View
+        className="gap-4 p-4"
+        style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
+      >
+        <MockNavigationRail />
+        <JournalPersistenceNotice
+          state={persistenceState}
+          refreshState={completeness?.status === 'incomplete' ? undefined : refreshState}
+          onRefresh={() => { void reloadDreams(); }}
+          onRetry={() => void retryPersistence().catch(() => undefined)}
+        />
+        {(!(previewEligible && previewFiltersSupported) || completeness?.status === 'incomplete') &&
+          <JournalCompletenessNotice status={completeness?.status} onRetry={() => { void reloadDreams(); }} />}
+        {isDesktopLayout ? searchBar : null}
+        <View className="flex-row flex-wrap items-start gap-2">
+          <View className="min-w-0 flex-1 basis-[220px]">
+            <FilterBar
+              items={journalFilterItems}
+              onClear={handleClearFilters}
+              dateRange={dateRange}
+              selectedTheme={selectedTheme}
+              selectedDreamType={selectedDreamType}
+              clearTestID={TID.Button.ClearFilters}
+            />
+          </View>
+          <View className="ml-auto flex-row items-center gap-2">
+            {isDesktopLayout ? <PressableScale
+              onPress={openQuickSettings}
+              haptic="selection"
+              accessibilityRole="button"
+              accessibilityLabel={t('nav.settings')}
+              testID={TID.Button.HeaderJournalSettings}
+              className="h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-continuous border-line bg-ink-soft"
+            >
+              <IconSymbol
+                name="gear"
+                size={18}
+                color={noctalia.text.primary}
+              />
+            </PressableScale> : null}
+            <PressableScale
+              onPress={() => setShowAdvancedFilters(true)}
+              haptic="selection"
+              accessibilityRole="button"
+              accessibilityState={{ selected: hasActiveAdvancedFilter }}
+              accessibilityLabel={t('journal.filter.accessibility.more')}
+              testID={TID.Button.FilterMore}
+              className={`h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-continuous ${
+                hasActiveAdvancedFilter ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
+              }`}
+            >
+              <IconSymbol
+                name="slider.horizontal.3"
+                size={18}
+                color={hasActiveAdvancedFilter ? noctalia.action.primaryText : noctalia.text.primary}
+              />
+            </PressableScale>
+          </View>
+        </View>
+      </View>
+
+
+    </View>
+  );
+
+  // An empty local cache is not proof of an empty journal while a remote
+  // preview, incomplete sync, loading state or read failure is active.
+  const showFirstPage = canStartRememberedDreamFromEmpty
+    && persistenceState.status === 'ready'
+    && refreshState?.status !== 'refreshing'
+    && refreshState?.status !== 'error'
+    && completeness?.status !== 'incomplete'
+    && completeness?.status !== 'loading'
+    && !previewEligible;
+
+  if (showFirstPage) {
+    return (
+      <View className="flex-1 bg-ink" testID={TID.Screen.Journal}>
+        <JournalFirstPage
+          bottomInset={overlayNavClearance}
+          onStartDream={handleStartRememberedDreamFromEmpty}
+          onSettings={openQuickSettings}
+        />
+      </View>
+    );
+  }
 
   return (
     <ScrollPerfProvider isScrolling={isScrolling}>
@@ -783,116 +960,73 @@ export default function JournalListScreen() {
         {/* Atmospheric dreamlike background */}
         <AtmosphericBackground variant="subtle" />
 
-        {useAtlasHeader ? (
-          <NoctaliaScreenHeader
-            titleKey="nav.journal"
-            chips={atlasQuickFilters}
-            actions={[
-              {
-                icon: 'magnifyingglass',
-                onPress: handleAtlasSearchPress,
-                accessibilityLabel: t('journal.atlas.search'),
-                active: showAtlasSearch || searchQuery.length > 0,
-                testID: TID.Button.FilterSearch,
-              },
-              {
-                icon: 'slider.horizontal.3',
-                onPress: () => setShowAdvancedFilters(true),
-                accessibilityLabel: t('journal.filter.accessibility.more'),
-                active: hasActiveNonSearchFilter,
-                testID: TID.Button.FilterMore,
-              },
-            ]}
-            slot={
-              showAtlasSearch || searchQuery.length > 0 ? (
-                <SearchBar
-                  autoFocus
-                  ref={searchInputRef}
-                  testID={TID.Component.SearchBar}
-                  inputTestID={TID.Input.SearchDreams}
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                  placeholder={t('journal.search_placeholder')}
-                />
-              ) : null
-            }
-          />
-        ) : (
-          <>
-            {/* Header */}
-            <PageHeaderContent
-              titleKey="journal.title"
-              animationSeed={showHeaderAnimations ? 1 : 0}
-              style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
-            />
-
-            {/* Search and Filters */}
+        {isDesktopLayout ? listHeader : (
+          <View
+            testID="journal-search-chrome"
+            className="pb-2"
+            onLayout={(event) => {
+              const nextHeight = event.nativeEvent.layout.height;
+              setMeasuredHeader((current) => current.key === headerMeasureKey && current.height === nextHeight
+                ? current : { key: headerMeasureKey, height: nextHeight });
+            }}
+            // Overlay chrome is taller than the uncovered list box on short
+            // landscape. box-none lets FlashList receive drags that miss the
+            // SearchBar. Vertical drags that start on the controls are forwarded
+            // to the list so the bar can collapse, while taps still reach the
+            // input and clear button.
+            pointerEvents={searchConsumesLayout ? 'auto' : 'box-none'}
+            style={{
+              ...(searchConsumesLayout
+                ? null
+                : {
+                    position: 'absolute' as const,
+                    top: 0,
+                    start: 0,
+                    end: 0,
+                    zIndex: 2,
+                    transform: [{ translateY: -searchCollapseOffset }],
+                  }),
+            }}
+          >
             <View
-              className="gap-4 p-4"
-              style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
+              pointerEvents="auto"
+              testID="journal-search-controls"
+              onTouchStart={searchConsumesLayout ? undefined : handleOverlaySearchTouchStart}
+              onStartShouldSetResponderCapture={searchConsumesLayout ? undefined : () => false}
+              onMoveShouldSetResponderCapture={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
+              onMoveShouldSetResponder={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
+              onResponderGrant={searchConsumesLayout ? undefined : handleOverlaySearchDragGrant}
+              onResponderMove={searchConsumesLayout ? undefined : handleOverlaySearchDragMove}
+              onResponderRelease={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
+              onResponderTerminate={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
             >
-              <MockNavigationRail />
-              {/* SearchBar */}
-              <SearchBar
-                testID={TID.Component.SearchBar}
-                inputTestID={TID.Input.SearchDreams}
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                placeholder={t('journal.search_placeholder')}
+              <NoctaliaScreenHeader
+                titleKey="nav.journal"
+                actions={[{
+                  icon: 'gear',
+                  onPress: openQuickSettings,
+                  accessibilityLabel: t('nav.settings'),
+                  testID: TID.Button.HeaderJournalSettings,
+                }]}
+                inlineSlot={searchBar}
               />
-              <FilterBar
-                items={journalFilterItems}
-                onClear={handleClearFilters}
-                dateRange={dateRange}
-                selectedTheme={selectedTheme}
-                selectedDreamType={selectedDreamType}
-                clearTestID={TID.Button.ClearFilters}
-              />
-              <PressableScale
-                onPress={handleRememberedToggle}
-                haptic="selection"
-                accessibilityRole="button"
-                accessibilityState={{ selected: showRememberedOnly }}
-                accessibilityLabel={t('recording.activation_insight.signal.memory')}
-                className={`flex-row items-center gap-1.5 self-start rounded-full border border-continuous px-3 py-2 ${
-                  showRememberedOnly ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
-                }`}
-              >
-                <IconSymbol
-                  name="moon.stars.fill"
-                  size={16}
-                  color={showRememberedOnly ? noctalia.action.primaryText : noctalia.text.primary}
-                />
-                <Text
-                  className={`font-sans-medium text-[14px] ${
-                    showRememberedOnly ? 'text-on-champagne' : 'text-ivory'
-                  }`}
-                >
-                  {t('recording.activation_insight.signal.memory')}
-                </Text>
-                {showRememberedOnly ? (
-                  <IconSymbol name="checkmark" size={12} color={noctalia.action.primaryText} />
-                ) : null}
-              </PressableScale>
             </View>
-          </>
+          </View>
         )}
 
-      {/* Guest Upsell */}
-      <View
-        className="mb-2 px-4"
-        style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
-      >
-        <UpsellCard />
-      </View>
-
       {/* List */}
-      {isDesktopLayout ? (
+      {previewEligible && previewFiltersSupported && mediaUserId ? (
+        <RemoteJournalList key={mediaUserId} userId={mediaUserId} searchQuery={deferredSearchQuery}
+          onOpenDream={openRemoteDream} header={isDesktopLayout ? undefined : listHeader} bottomInset={overlayNavClearance} />
+      ) : isDesktopLayout ? (
         <FlashList
           testID={TID.List.Dreams}
           ref={flatListRef}
           key={`desktop-${desktopColumns}`}
-          data={filteredDreams}
+          data={visibleItems}
+          onEndReached={hasMore ? loadMore : undefined}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={listFooter}
           extraData={listExtraData}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
@@ -913,16 +1047,27 @@ export default function JournalListScreen() {
         <FlashList
           testID={TID.List.Dreams}
           ref={flatListRef}
-          key={isTabletLayout ? 'tablet-2col' : isAtlasLayout ? 'mobile-compact-1col' : 'mobile-cards-1col'}
-          data={filteredDreams}
+          key={mobileListKey}
+          data={visibleItems}
+          onEndReached={hasMore ? loadMore : undefined}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={listFooter}
           extraData={listExtraData}
           keyExtractor={keyExtractor}
           renderItem={isTabletLayout ? renderDreamItemTablet : renderDreamItem}
           numColumns={isTabletLayout ? 2 : 1}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
-          contentContainerStyle={isAtlasLayout ? listContentAtlasStyle : listContentStyle}
-          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={listContentStyle}
+          // The navigator hides its tab bar while the keyboard is shown.
+          // Always reserve the full absolute overlay, never a capped remainder.
+          style={{ flex: 1, marginBottom: overlayNavClearance }}
+          ListHeaderComponent={listHeader}
+          onScroll={handleListScroll}
+          scrollEventThrottle={16}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          contentInsetAdjustmentBehavior="never"
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
           viewabilityConfig={viewabilityConfigRef.current}
@@ -944,102 +1089,18 @@ export default function JournalListScreen() {
         selectedTheme={selectedTheme}
         selectedDreamType={selectedDreamType}
         dateRange={dateRange}
+        rememberedOnly={showRememberedOnly}
+        recurringOnly={showRecurringOnly}
+        analysisStatus={analysisStatus}
         onThemeSelect={toggleThemeFilter}
         onDreamTypeSelect={toggleDreamTypeFilter}
         onDateRangeChange={handleDateRangeChange}
+        onRememberedToggle={handleRememberedToggle}
+        onRecurringToggle={handleRecurringToggle}
+        onAnalysisStatusChange={handleAnalysisStatusChange}
         sortOrder={sortOrder}
         onSortOrderChange={setSortOrder}
       />
-
-      {/* Theme Selection BottomSheet */}
-      <BottomSheet
-        visible={showThemeModal}
-        onClose={() => setShowThemeModal(false)}
-        style={{ backgroundColor: noctalia.surface.raised }}
-        testID={TID.Modal.Theme}
-      >
-        <Text className="mb-4 text-center font-sans-bold text-[20px] text-ivory">
-          {t('journal.theme_modal.title')}
-        </Text>
-        <Text className="mb-4 text-center font-sans text-[14px] text-ivory-muted">
-          {t('journal.detail.theme_label')}
-        </Text>
-        {availableThemes.map((theme) => (
-          <PressableScale
-            key={theme}
-            className={`${MODAL_OPTION_CLASS} ${
-              selectedTheme === theme ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
-            }`}
-            onPress={() => handleThemeSelect(theme)}
-          >
-            <Text
-              className={`${MODAL_OPTION_TEXT_CLASS} ${
-                selectedTheme === theme ? 'text-on-champagne' : 'text-ivory'
-              }`}
-            >
-              {getDreamThemeLabel(theme, t) ?? theme}
-            </Text>
-            {selectedTheme === theme && (
-              <View className="absolute inset-0">
-                <View className={MODAL_CHECK_BADGE_CLASS}>
-                  <IconSymbol name="checkmark" size={14} color={noctalia.accent.text} />
-                </View>
-              </View>
-            )}
-          </PressableScale>
-        ))}
-        <View style={{ height: 16 }} />
-        <Text className="mb-4 text-center font-sans text-[14px] text-ivory-muted">
-          {t('journal.detail.dream_type_label')}
-        </Text>
-        {availableDreamTypes.map((dreamType) => (
-          <PressableScale
-            key={dreamType}
-            className={`${MODAL_OPTION_CLASS} ${
-              selectedDreamType === dreamType ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'
-            }`}
-            onPress={() => handleDreamTypeSelect(dreamType)}
-          >
-            <Text
-              className={`${MODAL_OPTION_TEXT_CLASS} ${
-                selectedDreamType === dreamType ? 'text-on-champagne' : 'text-ivory'
-              }`}
-            >
-              {getDreamTypeLabel(dreamType, t) ?? dreamType}
-            </Text>
-            {selectedDreamType === dreamType && (
-              <View className="absolute inset-0">
-                <View className={MODAL_CHECK_BADGE_CLASS}>
-                  <IconSymbol name="checkmark" size={14} color={noctalia.accent.text} />
-                </View>
-              </View>
-            )}
-          </PressableScale>
-        ))}
-        <Pressable
-          className="mt-4 py-3"
-          onPress={() => setShowThemeModal(false)}
-        >
-          <Text className="text-center font-sans-medium text-[16px] text-ivory-muted">
-            {t('common.cancel')}
-          </Text>
-        </Pressable>
-      </BottomSheet>
-
-      {/* Date Range BottomSheet */}
-      <BottomSheet
-        visible={showDateModal}
-        onClose={() => setShowDateModal(false)}
-        style={{ backgroundColor: noctalia.surface.raised }}
-        testID={TID.Modal.DateRange}
-      >
-        <DateRangePicker
-          startDate={dateRange.start}
-          endDate={dateRange.end}
-          onRangeChange={handleDateRangeChange}
-          onClose={() => setShowDateModal(false)}
-        />
-      </BottomSheet>
       </View>
     </ScrollPerfProvider>
   );

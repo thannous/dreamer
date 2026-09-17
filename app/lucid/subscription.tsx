@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -7,11 +7,12 @@ import {
   LucidButton,
   LucidCard,
   LucidIconAction,
+  LucidIconTile,
   LucidPill,
   LucidScreen,
   LucidSectionHeader,
 } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -21,9 +22,14 @@ import {
   calculateMonthlyEquivalent,
   sortPackages,
 } from '@/lib/paywallUtils';
+import {
+  LUCID_PLUS_CURRENT_BENEFIT_IDS,
+  LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS,
+  listLucidPlusPaywallItems,
+} from '@/lib/lucid/plusEntitlements';
 import type { PurchasePackage, SubscriptionTier } from '@/lib/types';
 
-const COPY = {
+export const COPY = {
   en: {
     eyebrow: 'Noctalia Plus',
     title: 'One subscription, two companions',
@@ -37,12 +43,33 @@ const COPY = {
     activeBody:
       'Your Plus entitlement is recognised here and in Noctalia when you use the same account.',
     benefitsTitle: 'What Plus adds',
-    benefitsCaption: 'Optional extras across the Noctalia ecosystem.',
-    benefits: [
-      'Expanded trends and comparisons',
-      'Noctalia premium interpretation features',
-      'One entitlement restored on the same account',
-    ],
+    benefitsCaption: 'Only extras that already exist in this version.',
+    benefits: {
+      additional_immersive_rehearsal: 'Additional immersive scene rehearsals after the free preview',
+      expanded_trends_comparisons: 'Deeper trends and comparisons already in Noctalia',
+      premium_interpretation: 'Noctalia premium interpretation already in the journal',
+      shared_account_entitlement: 'The same Plus right on this account',
+    },
+    remainingFreeTitle: 'What stays free',
+    remainingFree: {
+      journal_text: 'Text journal',
+      programs_mild_ssild_wbtb: 'MILD, SSILD and WBTB programmes',
+      mindful_pauses: 'Mindful pauses',
+      morning_review: 'Morning review',
+      safety: 'Complete safety controls',
+      night_stop: 'Night stop',
+      local_storage: 'Local storage',
+      export: 'Export',
+      delete: 'Delete',
+      basic_stats: 'Basic statistics',
+      weekly_recommendation: 'One weekly recommendation',
+      accessibility: 'Accessibility',
+      dream_atlas: 'Dream atlas',
+      first_immersive_rehearsal: 'The first immersive rehearsal, complete and local',
+    },
+    fromRehearsalTitle: 'You already rehearsed one scene',
+    fromRehearsalSubtitle:
+      'The first immersive rehearsal stays yours. Extra rehearsals use Plus, along with the extras already in this version.',
     plansTitle: 'Choose a plan',
     plansCaption: 'The store confirms the exact price and renewal terms before payment.',
     monthly: 'Monthly',
@@ -63,6 +90,9 @@ const COPY = {
     signIn: 'Open account',
     loadingTitle: 'Loading store offers',
     loadingBody: 'This can take a moment. Your free training remains available.',
+    offlineTitle: 'You are offline',
+    offlineBody:
+      'The store cannot be reached right now. No charge is assumed, and free training remains available on this device.',
     errorTitle: 'Store temporarily unavailable',
     errorBody:
       'The store could not load or complete this action. No charge is assumed, and free training remains available.',
@@ -85,6 +115,7 @@ const COPY = {
       'Purchases use the device store through RevenueCat and then converge with the connected Noctalia account.',
     renewsOn: 'Renews on {date}',
     accessUntil: 'Access until {date}',
+    expired: 'Plus access ended on {date}',
     privacy: 'Privacy and data',
     storeNote:
       'Apple or Google handles payment. The final store sheet shows the exact price, billing period and cancellation terms.',
@@ -102,12 +133,33 @@ const COPY = {
     activeBody:
       'Votre droit Plus est reconnu ici et dans Noctalia lorsque vous utilisez le même compte.',
     benefitsTitle: 'Ce que Plus ajoute',
-    benefitsCaption: 'Des compléments facultatifs dans l’écosystème Noctalia.',
-    benefits: [
-      'Tendances et comparaisons approfondies',
-      'Fonctions d’interprétation premium dans Noctalia',
-      'Un droit restauré avec le même compte',
-    ],
+    benefitsCaption: 'Uniquement des compléments déjà présents dans cette version.',
+    benefits: {
+      additional_immersive_rehearsal: 'Des répétitions immersives supplémentaires après la scène gratuite',
+      expanded_trends_comparisons: 'Tendances et comparaisons approfondies déjà dans Noctalia',
+      premium_interpretation: 'Interprétation premium Noctalia déjà dans le journal',
+      shared_account_entitlement: 'Le même droit Plus sur ce compte',
+    },
+    remainingFreeTitle: 'Ce qui reste gratuit',
+    remainingFree: {
+      journal_text: 'Journal texte',
+      programs_mild_ssild_wbtb: 'Programmes MILD, SSILD et WBTB',
+      mindful_pauses: 'Pauses conscientes',
+      morning_review: 'Bilan du matin',
+      safety: 'Contrôles de sécurité complets',
+      night_stop: 'Arrêt nocturne',
+      local_storage: 'Stockage local',
+      export: 'Export',
+      delete: 'Suppression',
+      basic_stats: 'Statistiques de base',
+      weekly_recommendation: 'Une recommandation hebdomadaire',
+      accessibility: 'Accessibilité',
+      dream_atlas: 'Atlas des rêves',
+      first_immersive_rehearsal: 'La première répétition immersive, complète et locale',
+    },
+    fromRehearsalTitle: 'Tu as déjà répété une scène',
+    fromRehearsalSubtitle:
+      'La première répétition immersive reste à toi. Les suivantes utilisent Plus, avec les compléments déjà présents dans cette version.',
     plansTitle: 'Choisir une formule',
     plansCaption: 'La boutique confirme le prix exact et le renouvellement avant paiement.',
     monthly: 'Mensuelle',
@@ -128,6 +180,9 @@ const COPY = {
     signIn: 'Ouvrir le compte',
     loadingTitle: 'Chargement des offres',
     loadingBody: 'Cela peut prendre un instant. Votre entraînement gratuit reste disponible.',
+    offlineTitle: 'Vous êtes hors ligne',
+    offlineBody:
+      'La boutique n’est pas joignable pour le moment. Aucun débit n’est supposé et l’entraînement gratuit reste disponible sur cet appareil.',
     errorTitle: 'Boutique temporairement indisponible',
     errorBody:
       'La boutique n’a pas pu charger ou terminer cette action. Aucun débit n’est supposé et l’entraînement gratuit reste disponible.',
@@ -150,6 +205,7 @@ const COPY = {
       'Les achats passent par la boutique de l’appareil via RevenueCat, puis convergent avec le compte Noctalia connecté.',
     renewsOn: 'Renouvellement le {date}',
     accessUntil: 'Accès jusqu’au {date}',
+    expired: 'Plus a pris fin le {date}',
     privacy: 'Confidentialité et données',
     storeNote:
       'Apple ou Google gère le paiement. La fiche finale de la boutique affiche le prix exact, la période et les modalités de résiliation.',
@@ -167,12 +223,33 @@ const COPY = {
     activeBody:
       'Tu derecho Plus se reconoce aquí y en Noctalia cuando utilizas la misma cuenta.',
     benefitsTitle: 'Qué añade Plus',
-    benefitsCaption: 'Extras opcionales en el ecosistema Noctalia.',
-    benefits: [
-      'Tendencias y comparaciones ampliadas',
-      'Funciones premium de interpretación en Noctalia',
-      'Un derecho restaurado con la misma cuenta',
-    ],
+    benefitsCaption: 'Solo extras que ya existen en esta versión.',
+    benefits: {
+      additional_immersive_rehearsal: 'Ensayos inmersivos extra después de la escena gratuita',
+      expanded_trends_comparisons: 'Tendencias y comparaciones ampliadas ya en Noctalia',
+      premium_interpretation: 'Interpretación premium de Noctalia ya en el diario',
+      shared_account_entitlement: 'El mismo derecho Plus en esta cuenta',
+    },
+    remainingFreeTitle: 'Qué sigue gratis',
+    remainingFree: {
+      journal_text: 'Diario de texto',
+      programs_mild_ssild_wbtb: 'Programas MILD, SSILD y WBTB',
+      mindful_pauses: 'Pausas conscientes',
+      morning_review: 'Revisión matinal',
+      safety: 'Controles de seguridad completos',
+      night_stop: 'Parada nocturna',
+      local_storage: 'Almacenamiento local',
+      export: 'Exportar',
+      delete: 'Eliminar',
+      basic_stats: 'Estadísticas básicas',
+      weekly_recommendation: 'Una recomendación semanal',
+      accessibility: 'Accesibilidad',
+      dream_atlas: 'Atlas de sueños',
+      first_immersive_rehearsal: 'El primer ensayo inmersivo, completo y local',
+    },
+    fromRehearsalTitle: 'Ya ensayaste una escena',
+    fromRehearsalSubtitle:
+      'El primer ensayo inmersivo sigue siendo tuyo. Los extra usan Plus, junto con los extras que ya existen en esta versión.',
     plansTitle: 'Elige un plan',
     plansCaption: 'La tienda confirma el precio exacto y la renovación antes del pago.',
     monthly: 'Mensual',
@@ -193,6 +270,9 @@ const COPY = {
     signIn: 'Abrir cuenta',
     loadingTitle: 'Cargando ofertas',
     loadingBody: 'Puede tardar un momento. Tu entrenamiento gratuito sigue disponible.',
+    offlineTitle: 'Estás sin conexión',
+    offlineBody:
+      'No se puede contactar con la tienda ahora. No se presupone ningún cobro y el entrenamiento gratuito sigue disponible en este dispositivo.',
     errorTitle: 'Tienda temporalmente no disponible',
     errorBody:
       'La tienda no pudo cargar o completar esta acción. No se presupone ningún cobro y el entrenamiento gratuito sigue disponible.',
@@ -215,6 +295,7 @@ const COPY = {
       'Las compras usan la tienda del dispositivo mediante RevenueCat y después convergen con la cuenta de Noctalia conectada.',
     renewsOn: 'Se renueva el {date}',
     accessUntil: 'Acceso hasta el {date}',
+    expired: 'Plus terminó el {date}',
     privacy: 'Privacidad y datos',
     storeNote:
       'Apple o Google gestiona el pago. La ficha final de la tienda muestra el precio, el periodo y las condiciones de cancelación.',
@@ -232,12 +313,33 @@ const COPY = {
     activeBody:
       'Dein Plus-Anspruch wird hier und in Noctalia erkannt, wenn du dasselbe Konto verwendest.',
     benefitsTitle: 'Was Plus ergänzt',
-    benefitsCaption: 'Optionale Extras im Noctalia-Ökosystem.',
-    benefits: [
-      'Erweiterte Trends und Vergleiche',
-      'Premium-Deutungsfunktionen in Noctalia',
-      'Ein Anspruch, der mit demselben Konto wiederhergestellt wird',
-    ],
+    benefitsCaption: 'Nur Extras, die in dieser Version bereits existieren.',
+    benefits: {
+      additional_immersive_rehearsal: 'Weitere immersive Szenenproben nach der kostenlosen Vorschau',
+      expanded_trends_comparisons: 'Tiefere Trends und Vergleiche, die es in Noctalia bereits gibt',
+      premium_interpretation: 'Noctalia-Premiumdeutung, die es im Journal bereits gibt',
+      shared_account_entitlement: 'Derselbe Plus-Anspruch auf diesem Konto',
+    },
+    remainingFreeTitle: 'Was kostenlos bleibt',
+    remainingFree: {
+      journal_text: 'Texttagebuch',
+      programs_mild_ssild_wbtb: 'MILD-, SSILD- und WBTB-Programme',
+      mindful_pauses: 'Achtsame Pausen',
+      morning_review: 'Morgenrückblick',
+      safety: 'Vollständige Sicherheitskontrollen',
+      night_stop: 'Nächtlicher Stopp',
+      local_storage: 'Lokaler Speicher',
+      export: 'Export',
+      delete: 'Löschen',
+      basic_stats: 'Basisstatistiken',
+      weekly_recommendation: 'Eine wöchentliche Empfehlung',
+      accessibility: 'Barrierefreiheit',
+      dream_atlas: 'Traumatlas',
+      first_immersive_rehearsal: 'Die erste immersive Probe, vollständig und lokal',
+    },
+    fromRehearsalTitle: 'Du hast bereits eine Szene geprobt',
+    fromRehearsalSubtitle:
+      'Die erste immersive Probe bleibt bei dir. Weitere Proben nutzen Plus, zusammen mit den Extras, die es in dieser Version schon gibt.',
     plansTitle: 'Abo auswählen',
     plansCaption: 'Der Store bestätigt Preis und Verlängerung vor der Zahlung.',
     monthly: 'Monatlich',
@@ -258,6 +360,9 @@ const COPY = {
     signIn: 'Konto öffnen',
     loadingTitle: 'Store-Angebote werden geladen',
     loadingBody: 'Das kann einen Moment dauern. Dein kostenloses Training bleibt verfügbar.',
+    offlineTitle: 'Du bist offline',
+    offlineBody:
+      'Der Store ist gerade nicht erreichbar. Es wird keine Abbuchung angenommen; das kostenlose Training bleibt auf diesem Gerät verfügbar.',
     errorTitle: 'Store vorübergehend nicht verfügbar',
     errorBody:
       'Der Store konnte diese Aktion nicht laden oder abschließen. Es wird keine Abbuchung angenommen; das kostenlose Training bleibt verfügbar.',
@@ -280,6 +385,7 @@ const COPY = {
       'Käufe laufen über den Gerätestore via RevenueCat und werden anschließend mit dem verbundenen Noctalia-Konto abgeglichen.',
     renewsOn: 'Verlängerung am {date}',
     accessUntil: 'Zugang bis {date}',
+    expired: 'Plus-Zugang endete am {date}',
     privacy: 'Datenschutz und Daten',
     storeNote:
       'Apple oder Google verarbeitet die Zahlung. Das letzte Store-Fenster zeigt Preis, Zeitraum und Kündigungsbedingungen.',
@@ -297,12 +403,33 @@ const COPY = {
     activeBody:
       'Il tuo diritto Plus viene riconosciuto qui e in Noctalia quando usi lo stesso account.',
     benefitsTitle: 'Cosa aggiunge Plus',
-    benefitsCaption: 'Extra facoltativi nell’ecosistema Noctalia.',
-    benefits: [
-      'Tendenze e confronti più approfonditi',
-      'Funzioni premium di interpretazione in Noctalia',
-      'Un diritto ripristinato con lo stesso account',
-    ],
+    benefitsCaption: 'Solo extra già presenti in questa versione.',
+    benefits: {
+      additional_immersive_rehearsal: 'Ripetizioni immersive extra dopo l’anteprima gratuita',
+      expanded_trends_comparisons: 'Tendenze e confronti approfonditi già in Noctalia',
+      premium_interpretation: 'Interpretazione premium Noctalia già nel diario',
+      shared_account_entitlement: 'Lo stesso diritto Plus su questo account',
+    },
+    remainingFreeTitle: 'Cosa resta gratuito',
+    remainingFree: {
+      journal_text: 'Diario di testo',
+      programs_mild_ssild_wbtb: 'Programmi MILD, SSILD e WBTB',
+      mindful_pauses: 'Pause consapevoli',
+      morning_review: 'Bilancio del mattino',
+      safety: 'Controlli di sicurezza completi',
+      night_stop: 'Stop notturno',
+      local_storage: 'Archivio locale',
+      export: 'Esportazione',
+      delete: 'Eliminazione',
+      basic_stats: 'Statistiche di base',
+      weekly_recommendation: 'Una raccomandazione settimanale',
+      accessibility: 'Accessibilità',
+      dream_atlas: 'Atlante dei sogni',
+      first_immersive_rehearsal: 'La prima ripetizione immersiva, completa e locale',
+    },
+    fromRehearsalTitle: 'Hai già ripetuto una scena',
+    fromRehearsalSubtitle:
+      'La prima ripetizione immersiva resta tua. Le successive usano Plus, insieme agli extra già presenti in questa versione.',
     plansTitle: 'Scegli un piano',
     plansCaption: 'Lo store conferma il prezzo esatto e il rinnovo prima del pagamento.',
     monthly: 'Mensile',
@@ -323,6 +450,9 @@ const COPY = {
     signIn: 'Apri account',
     loadingTitle: 'Caricamento delle offerte',
     loadingBody: 'Potrebbe richiedere un momento. L’allenamento gratuito resta disponibile.',
+    offlineTitle: 'Sei offline',
+    offlineBody:
+      'Lo store non è raggiungibile ora. Non si presume alcun addebito e l’allenamento gratuito resta disponibile su questo dispositivo.',
     errorTitle: 'Store temporaneamente non disponibile',
     errorBody:
       'Lo store non ha potuto caricare o completare questa azione. Non si presume alcun addebito e l’allenamento gratuito resta disponibile.',
@@ -345,6 +475,7 @@ const COPY = {
       'Gli acquisti usano lo store del dispositivo tramite RevenueCat e poi convergono con l’account Noctalia collegato.',
     renewsOn: 'Rinnovo il {date}',
     accessUntil: 'Accesso fino al {date}',
+    expired: 'L’accesso Plus è terminato il {date}',
     privacy: 'Privacy e dati',
     storeNote:
       'Apple o Google gestisce il pagamento. La schermata finale dello store mostra prezzo, periodo e condizioni di annullamento.',
@@ -360,6 +491,15 @@ type Feedback = {
 
 function replaceToken(template: string, token: string, value: string): string {
   return template.replace(`{${token}}`, value);
+}
+
+const SUBSCRIPTION_NETWORK_ERROR_CODE = 'subscription.error.network';
+
+function isSubscriptionNetworkError(error: unknown): boolean {
+  if (typeof error === 'string') return error === SUBSCRIPTION_NETWORK_ERROR_CODE;
+  if (!error || typeof error !== 'object') return false;
+  const message = 'message' in error && typeof error.message === 'string' ? error.message : '';
+  return message === SUBSCRIPTION_NETWORK_ERROR_CODE;
 }
 
 function getTier(status: { tier: SubscriptionTier; isActive: boolean } | null): 'free' | 'plus' | 'unknown' {
@@ -403,12 +543,26 @@ function formatExpiryDate(value: string, locale: string): string | null {
   }
 }
 
+function firstParam(value: string | string[] | undefined): string {
+  if (Array.isArray(value)) return value[0] ?? '';
+  return value ?? '';
+}
+
 export default function LucidSubscriptionScreen() {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const { content, state } = useLucidTrainer();
+  const params = useLocalSearchParams<{ source?: string | string[] }>();
+  const source = firstParam(params.source);
+  const fromRehearsal = source === 'dream_rehearsal';
   const subscription = useSubscription({ loadPackages: true });
   const copy = COPY[content.locale];
+  const isOfflineError = isSubscriptionNetworkError(subscription.error);
+  const plusBenefits = listLucidPlusPaywallItems(LUCID_PLUS_CURRENT_BENEFIT_IDS, copy.benefits);
+  const remainingFree = listLucidPlusPaywallItems(
+    LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS,
+    copy.remainingFree
+  );
   const analyticsEnabled = state?.onboarding.analyticsConsent === true;
   const tier = getTier(subscription.status);
   const sortedPackages = useMemo(
@@ -479,7 +633,7 @@ export default function LucidSubscriptionScreen() {
         tone: completedTier === 'plus' ? 'success' : 'neutral',
         message: completedTier === 'plus' ? copy.purchaseSuccess : copy.purchasePending,
       });
-      if (analyticsEnabled) {
+      if (analyticsEnabled && completedTier === 'plus') {
         void trackProductEvent('lucid_conversion', {
           surface: 'paywall',
           action: 'completed',
@@ -562,7 +716,11 @@ export default function LucidSubscriptionScreen() {
     : null;
   const expiryLabel = expiry
     ? replaceToken(
-        subscription.status?.willRenew ? copy.renewsOn : copy.accessUntil,
+        !subscription.isActive
+          ? copy.expired
+          : subscription.status?.willRenew
+            ? copy.renewsOn
+            : copy.accessUntil,
         'date',
         expiry
       )
@@ -579,38 +737,23 @@ export default function LucidSubscriptionScreen() {
   return (
     <LucidScreen
       eyebrow={copy.eyebrow}
-      title={copy.title}
-      subtitle={copy.subtitle}
+      title={fromRehearsal ? copy.fromRehearsalTitle : copy.title}
+      subtitle={fromRehearsal ? copy.fromRehearsalSubtitle : copy.subtitle}
       trailing={
         <LucidIconAction label={content.chrome.common.back} icon="close" onPress={close} />
       }
       testID="lucid-subscription-screen"
     >
-      <LucidCard accent={subscription.isActive ? 'cyan' : 'violet'}>
+      <LucidCard accent={subscription.isActive ? 'accent' : 'none'}>
         <View style={styles.hero}>
-          <View
-            style={[
-              styles.heroIcon,
-              {
-                backgroundColor: subscription.isActive
-                  ? palette.cyanSoft
-                  : palette.accentSoft,
-              },
-            ]}
-          >
-            <Ionicons
-              name="diamond"
-              size={34}
-              color={subscription.isActive ? palette.cyan : palette.accent}
-            />
-          </View>
+          <LucidIconTile icon="diamond" tone="accent" size="lg" />
           <View style={styles.heroCopy}>
             <View style={styles.pills}>
               <LucidPill
                 label={subscription.isActive ? copy.active : copy.free}
-                tone={subscription.isActive ? 'cyan' : 'neutral'}
+                tone={subscription.isActive ? 'accent' : 'neutral'}
               />
-              <LucidPill label={copy.shared} tone="violet" icon="link" />
+              <LucidPill label={copy.shared} tone="accent" icon="link" />
             </View>
             <Text style={[styles.heroBody, { color: palette.text }]}>
               {subscription.isActive ? copy.activeBody : copy.freeBody}
@@ -621,12 +764,26 @@ export default function LucidSubscriptionScreen() {
 
       <LucidCard>
         <LucidSectionHeader title={copy.benefitsTitle} caption={copy.benefitsCaption} />
-        <View style={styles.features}>
-          {copy.benefits.map((feature) => (
-            <View key={feature} style={styles.featureRow}>
-              <Ionicons name="checkmark-circle" size={20} color={palette.cyan} />
+        <View style={styles.features} testID="lucid-subscription-plus-benefits">
+          {plusBenefits.map((feature) => (
+            <View key={feature.id} style={styles.featureRow} testID={`lucid-plus-benefit-${feature.id}`}>
+              <Ionicons name="checkmark-circle" size={LucidIcon.md} color={palette.accent} />
               <Text style={[styles.featureText, { color: palette.textSecondary }]}>
-                {feature}
+                {feature.label}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </LucidCard>
+
+      <LucidCard>
+        <LucidSectionHeader title={copy.remainingFreeTitle} />
+        <View style={styles.features} testID="lucid-subscription-free-benefits">
+          {remainingFree.map((feature) => (
+            <View key={feature.id} style={styles.featureRow} testID={`lucid-free-benefit-${feature.id}`}>
+              <Ionicons name="ellipse-outline" size={LucidIcon.md} color={palette.textMuted} />
+              <Text style={[styles.featureText, { color: palette.textSecondary }]}>
+                {feature.label}
               </Text>
             </View>
           ))}
@@ -636,7 +793,7 @@ export default function LucidSubscriptionScreen() {
       {subscription.requiresAuth ? (
         <LucidCard accent="amber">
           <View style={styles.stateRow}>
-            <Ionicons name="person-circle" size={26} color={palette.amber} />
+            <Ionicons name="person-circle" size={LucidIcon.lg} color={palette.amber} />
             <View style={styles.stateCopy}>
               <Text accessibilityRole="header" style={[styles.cardTitle, { color: palette.text }]}>
                 {copy.signInTitle}
@@ -678,13 +835,26 @@ export default function LucidSubscriptionScreen() {
       ) : null}
 
       {subscription.error ? (
-        <LucidCard accent="amber">
+        <LucidCard
+          accent="amber"
+          testID={
+            isOfflineError
+              ? 'lucid-subscription-offline'
+              : 'lucid-subscription-store-error'
+          }
+        >
           <View accessibilityLiveRegion="assertive" accessibilityRole="alert" style={styles.stateRow}>
-            <Ionicons name="cloud-offline" size={25} color={palette.amber} />
+            <Ionicons
+              name={isOfflineError ? 'cloud-offline' : 'warning'}
+              size={LucidIcon.lg}
+              color={palette.amber}
+            />
             <View style={styles.stateCopy}>
-              <Text style={[styles.cardTitle, { color: palette.text }]}>{copy.errorTitle}</Text>
+              <Text style={[styles.cardTitle, { color: palette.text }]}>
+                {isOfflineError ? copy.offlineTitle : copy.errorTitle}
+              </Text>
               <Text style={[styles.cardBody, { color: palette.textSecondary }]}>
-                {copy.errorBody}
+                {isOfflineError ? copy.offlineBody : copy.errorBody}
               </Text>
             </View>
           </View>
@@ -735,8 +905,8 @@ export default function LucidSubscriptionScreen() {
                     styles.plan,
                     {
                       backgroundColor: selected ? palette.accentSoft : palette.surface,
-                      borderColor: selected ? palette.accent : palette.border,
-                      opacity: busy ? 0.55 : pressed ? 0.78 : 1,
+                      borderColor: selected ? palette.accent : palette.borderInteractive,
+                      opacity: busy ? 0.55 : pressed ? LucidPress.opacity : 1,
                     },
                   ]}
                 >
@@ -746,7 +916,7 @@ export default function LucidSubscriptionScreen() {
                       {pkg.interval === 'annual' && annualDiscount ? (
                         <LucidPill
                           label={replaceToken(copy.save, 'discount', String(annualDiscount))}
-                          tone="cyan"
+                          tone="accent"
                         />
                       ) : null}
                     </View>
@@ -760,7 +930,7 @@ export default function LucidSubscriptionScreen() {
                   </View>
                   <Ionicons
                     name={selected ? 'checkmark-circle' : 'ellipse-outline'}
-                    size={25}
+                    size={LucidIcon.lg}
                     color={selected ? palette.accent : palette.textMuted}
                   />
                 </Pressable>
@@ -787,10 +957,10 @@ export default function LucidSubscriptionScreen() {
         </View>
       ) : null}
 
-      {!subscription.loading && !subscription.isActive && sortedPackages.length === 0 ? (
+      {!subscription.loading && !subscription.error && !subscription.isActive && sortedPackages.length === 0 ? (
         <LucidCard>
           <View style={styles.stateRow}>
-            <Ionicons name="bag-handle" size={25} color={palette.textMuted} />
+            <Ionicons name="bag-handle" size={LucidIcon.lg} color={palette.textMuted} />
             <View style={styles.stateCopy}>
               <Text accessibilityRole="header" style={[styles.cardTitle, { color: palette.text }]}>
                 {copy.unavailableTitle}
@@ -834,7 +1004,7 @@ export default function LucidSubscriptionScreen() {
                   ? 'alert-circle'
                   : 'information-circle'
             }
-            size={21}
+            size={LucidIcon.md}
             color={
               feedback.tone === 'success'
                 ? palette.success
@@ -851,8 +1021,8 @@ export default function LucidSubscriptionScreen() {
         <View style={styles.stateRow}>
           <Ionicons
             name={subscription.isActive ? 'shield-checkmark' : 'shield-outline'}
-            size={25}
-            color={subscription.isActive ? palette.cyan : palette.accent}
+            size={LucidIcon.lg}
+            color={subscription.isActive ? palette.accent : palette.accent}
           />
           <View style={styles.stateCopy}>
             <Text accessibilityRole="header" style={[styles.cardTitle, { color: palette.text }]}>
@@ -890,138 +1060,135 @@ const styles = StyleSheet.create({
   hero: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
-  },
-  heroIcon: {
-    width: 66,
-    height: 66,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
+    gap: LucidSpace.lg,
   },
   heroCopy: {
     flex: 1,
-    gap: 10,
+    gap: LucidSpace.md,
   },
   pills: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: LucidSpace.sm,
   },
   heroBody: {
     fontFamily: 'Fraunces_500Medium',
-    fontSize: 17,
-    lineHeight: 24,
+    fontSize: LucidType.h3[0],
+    lineHeight: LucidType.h3[1],
   },
   features: {
-    gap: 11,
+    gap: LucidSpace.md,
   },
   featureRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 10,
+    gap: LucidSpace.md,
   },
   featureText: {
     flex: 1,
     fontFamily: 'SpaceGrotesk_500Medium',
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: LucidType.bodySm[0],
+    lineHeight: LucidType.bodySm[1],
   },
   stateRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 12,
+    gap: LucidSpace.md,
   },
   stateCopy: {
     flex: 1,
-    gap: 6,
+    gap: LucidSpace.sm,
   },
   cardTitle: {
     fontFamily: 'SpaceGrotesk_700Bold',
-    fontSize: 16,
-    lineHeight: 21,
+    fontSize: LucidType.body[0],
+    lineHeight: LucidType.body[1],
   },
   cardBody: {
     fontFamily: 'SpaceGrotesk_400Regular',
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
   },
   loadingRow: {
     minHeight: 66,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
+    gap: LucidSpace.lg,
   },
   section: {
-    gap: 13,
+    gap: LucidSpace.md,
   },
   planList: {
-    gap: 11,
+    gap: LucidSpace.md,
   },
   plan: {
     minHeight: 104,
-    borderRadius: 20,
+    borderRadius: LucidRadius.lg,
     borderWidth: 1,
-    padding: 15,
+    padding: LucidSpace.lg,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: LucidSpace.md,
   },
   planCopy: {
     flex: 1,
-    gap: 5,
+    gap: LucidSpace.xs,
   },
   planHeading: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: LucidSpace.sm,
   },
   planName: {
     fontFamily: 'SpaceGrotesk_700Bold',
-    fontSize: 16,
-    lineHeight: 21,
+    fontSize: LucidType.body[0],
+    lineHeight: LucidType.body[1],
   },
   priceRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
     flexWrap: 'wrap',
-    gap: 6,
+    gap: LucidSpace.sm,
   },
   price: {
-    fontFamily: 'Fraunces_600SemiBold',
-    fontSize: 25,
-    lineHeight: 30,
+    fontFamily: 'SpaceGrotesk_700Bold',
+    fontSize: LucidType.h2[0],
+    lineHeight: LucidType.h2[1],
+    fontVariant: ['tabular-nums'],
   },
   period: {
     fontFamily: 'SpaceGrotesk_500Medium',
-    fontSize: 12,
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
   },
   billing: {
     fontFamily: 'SpaceGrotesk_400Regular',
-    fontSize: 12,
-    lineHeight: 17,
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
   },
   feedback: {
     minHeight: 52,
-    borderRadius: 16,
+    borderRadius: LucidRadius.lg,
     borderWidth: 1,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingHorizontal: LucidSpace.lg,
+    paddingVertical: LucidSpace.md,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: LucidSpace.md,
   },
   feedbackText: {
     flex: 1,
-    fontFamily: 'SpaceGrotesk_600SemiBold',
-    fontSize: 13,
-    lineHeight: 18,
+    // _600SemiBold n'est chargée nulle part (app/_layout.tsx ne charge que 400,
+    // 500 et 700) : l'appeler retombait silencieusement sur la police système.
+    fontFamily: 'SpaceGrotesk_700Bold',
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
   },
   storeNote: {
     fontFamily: 'SpaceGrotesk_400Regular',
-    fontSize: 11,
-    lineHeight: 16,
+    fontSize: LucidType.overline[0],
+    lineHeight: LucidType.overline[1],
     textAlign: 'center',
   },
 });

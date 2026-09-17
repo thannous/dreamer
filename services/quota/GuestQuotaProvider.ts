@@ -9,7 +9,10 @@ import {
   getUserChatMessageCount,
 } from '@/lib/dreamUsage';
 import { getSavedDreams } from '@/services/storageServiceReal';
-import { getLocalAnalysisCount, getLocalExplorationCount } from './GuestAnalysisCounter';
+import { requireReadableDreams } from '@/lib/dreamStorageRead';
+import { getLocalAnalysisCount, getLocalExplorationCount, getLocalImageCount } from './GuestAnalysisCounter';
+import { countAiGeneratedImages } from './imageUsage';
+import { buildQuotaMetric, resolveCanGenerateImage } from './quotaMetrics';
 
 /**
  * Guest quota provider - counts quotas from local AsyncStorage
@@ -30,7 +33,7 @@ export class GuestQuotaProvider implements QuotaProvider {
       return cached.value;
     }
 
-    const dreams = await getSavedDreams();
+    const dreams = requireReadableDreams(await getSavedDreams());
     this.cache.set(cacheKey, {
       value: dreams,
       expiresAt: Date.now() + this.CACHE_TTL,
@@ -60,6 +63,18 @@ export class GuestQuotaProvider implements QuotaProvider {
       this.getGuestDreams(),
     ]);
     const derivedCount = getExploredDreamCount(dreams);
+
+    return Math.max(localCount, derivedCount);
+  }
+
+  async getUsedImageCount(user: User | null): Promise<number> {
+    if (user) return 0;
+
+    const [localCount, dreams] = await Promise.all([
+      getLocalImageCount(),
+      this.getGuestDreams(),
+    ]);
+    const derivedCount = countAiGeneratedImages(dreams);
 
     return Math.max(localCount, derivedCount);
   }
@@ -107,6 +122,15 @@ export class GuestQuotaProvider implements QuotaProvider {
     return used < limit;
   }
 
+  async canGenerateImage(user: User | null, _tier: UserTier = 'guest'): Promise<boolean> {
+    if (user) return true;
+
+    const used = await this.getUsedImageCount(null);
+    const limit = QUOTAS.guest.image;
+    if (limit === null) return true;
+    return used < limit;
+  }
+
   async getQuotaStatus(user: User | null, tier: UserTier, target?: QuotaDreamTarget): Promise<QuotaStatus> {
     if (user) {
       // Not a guest, return placeholder
@@ -116,26 +140,38 @@ export class GuestQuotaProvider implements QuotaProvider {
           analysis: { used: 0, limit: null, remaining: null },
           exploration: { used: 0, limit: null, remaining: null },
           messages: { used: 0, limit: null, remaining: null },
+          image: { used: 0, limit: null, remaining: null },
         },
         canAnalyze: true,
         canExplore: true,
+        canGenerateImage: true,
       };
     }
 
     const analysisUsed = await this.getUsedAnalysisCount(null);
     const explorationUsed = await this.getUsedExplorationCount(null);
+    const imageUsed = await this.getUsedImageCount(null);
     const messagesUsed = target ? await this.getUsedMessagesCount(target, null) : 0;
 
     const analysisLimit = QUOTAS.guest.analysis!;
     const explorationLimit = QUOTAS.guest.exploration;
     const messagesLimit = QUOTAS.guest.messagesPerDream!;
+    const imageLimit = QUOTAS.guest.image;
+    const image = buildQuotaMetric(imageUsed, imageLimit);
 
     const canAnalyze = await this.canAnalyzeDream(null);
     const canExplore = true;
+    const canGenerateImage = resolveCanGenerateImage({
+      tier: 'guest',
+      image,
+    });
 
     const reasons: string[] = [];
     if (!canAnalyze) {
       reasons.push(`Guest analysis limit reached (${analysisUsed}/${analysisLimit}). Create a free account to continue!`);
+    }
+    if (!canGenerateImage && imageLimit !== null) {
+      reasons.push(`Guest illustration limit reached (${imageUsed}/${imageLimit}).`);
     }
 
     return {
@@ -156,9 +192,11 @@ export class GuestQuotaProvider implements QuotaProvider {
           limit: messagesLimit,
           remaining: messagesLimit - messagesUsed,
         },
+        image,
       },
       canAnalyze,
       canExplore,
+      canGenerateImage,
       reasons: reasons.length > 0 ? reasons : undefined,
     };
   }

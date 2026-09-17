@@ -45,9 +45,6 @@ export function getRecordingActivationPromptState(
 
   return {
     showRememberedDreamPrompt,
-    showRecordingOnboardingTour: isReadyForFirstRunPrompt
-      && input.recordingOnboardingLoaded
-      && !input.recordingOnboardingDismissed
-      && !showRememberedDreamPrompt,
+    showRecordingOnboardingTour: false,
   };
 }

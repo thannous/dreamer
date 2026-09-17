@@ -1,0 +1,510 @@
+{
+  "checkpoints": [
+    1,
+    5,
+    10,
+    15,
+    19,
+    20
+  ],
+  "results": [
+    {
+      "checkpoint": 1,
+      "level": "low",
+      "firstTextMs": 802,
+      "totalMs": 1103,
+      "text": "C'est intéressant de voir cette porte bleue évoquer pour vous la maison de votre grand-mère plutôt que votre cadre professionnel. Qu'est-ce que cet endroit évoque pour vous aujourd'hui ?",
+      "completed": true,
+      "usage": {
+        "total_tokens": 818,
+        "total_input_tokens": 776,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 776
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 42,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 811,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 811
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 46
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "checkpoint": 1,
+      "level": "minimal",
+      "firstTextMs": 740,
+      "totalMs": 1090,
+      "text": "Vous vous souvenez d'une porte bleue, sans qu'aucune émotion n'ait été rapportée. Cette porte vous rappelle la maison de votre grand-mère, et non votre travail.",
+      "completed": true,
+      "usage": {
+        "total_tokens": 815,
+        "total_input_tokens": 776,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 776
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 39,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 811,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 811
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 43
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "checkpoint": 5,
+      "level": "minimal",
+      "firstTextMs": 997,
+      "totalMs": 1426,
+      "text": "Vous avez associé cette porte bleue à la peinture de la maison de votre grand-mère, tout en précisant que ne pas rapporter d'émotion ne signifie pas qu'il n'y en a pas eu.",
+      "completed": true,
+      "usage": {
+        "total_tokens": 1130,
+        "total_input_tokens": 1086,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 1086
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 44,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1153,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1153
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 48
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "checkpoint": 5,
+      "level": "low",
+      "firstTextMs": 2444,
+      "totalMs": 2805,
+      "text": "Vous avez rappelé que ne pas rapporter d'émotion ne signifie pas ne rien ressentir, et qu'aucun état particulier ne peut en être déduit. Vous avez également associé cette porte bleue à la peinture de la maison de votre grand-mère, en précisant qu'il s'agit d'un lien personnel qui vous est propre.",
+      "completed": true,
+      "usage": {
+        "total_tokens": 1658,
+        "total_input_tokens": 1086,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 1086
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 72,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 500,
+        "raw_prompt_token": 1153,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1153
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 76
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 500
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "checkpoint": 10,
+      "level": "low",
+      "firstTextMs": 2961,
+      "totalMs": 3436,
+      "text": "Ce qui est certain se limite au souvenir d'une porte bleue, sans émotion rapportée ni déduction d'état particulier. Votre association personnelle relie cette porte et sa couleur à la peinture de la maison de votre grand-mère. Enfin, ce qui reste inconnu, c'est ce qui se trouvait derrière cette porte et si le rêve est récurrent ou non.",
+      "completed": true,
+      "usage": {
+        "total_tokens": 2198,
+        "total_input_tokens": 1515,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 1515
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 76,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 607,
+        "raw_prompt_token": 1622,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1622
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 80
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 607
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "checkpoint": 10,
+      "level": "minimal",
+      "firstTextMs": 692,
+      "totalMs": 1169,
+      "text": "Ce qui est certain, c'est le souvenir d'une porte bleue sans émotion rapportée. Votre association personnelle relie cette porte à la peinture de la maison de votre grand-mère, tandis que le reste du contenu demeure inconnu.",
+      "completed": true,
+      "usage": {
+        "total_tokens": 1564,
+        "total_input_tokens": 1515,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 1515
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 49,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 1622,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 1622
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 53
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "checkpoint": 15,
+      "level": "minimal",
+      "firstTextMs": 1000,
+      "totalMs": 1359,
+      "text": "Vous avez précisé une nuance de couleur bleu-gris, distincte du récit original du rêve. Le dimanche pluvieux est une association personnelle ajoutée après coup, et non un événement du rêve.",
+      "completed": true,
+      "usage": {
+        "total_tokens": 2140,
+        "total_input_tokens": 2099,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 2099
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 41,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 2214,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 2214
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 45
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "checkpoint": 15,
+      "level": "low",
+      "firstTextMs": 2034,
+      "totalMs": 2271,
+      "text": "Vous avez précisé la nuance d'une porte bleu-gris. Le souvenir du dimanche pluvieux constitue une association personnelle que vous avez ajoutée, distincte du contenu initial du rêve.",
+      "completed": true,
+      "usage": {
+        "total_tokens": 2500,
+        "total_input_tokens": 2099,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 2099
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 39,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 362,
+        "raw_prompt_token": 2214,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 2214
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 43
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 362
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "checkpoint": 19,
+      "level": "low",
+      "firstTextMs": 2710,
+      "totalMs": 2820,
+      "text": "Au tout début, vous aviez indiqué que cette porte vous rappelait la maison de votre grand-mère, et non votre travail. Ce détail est bien conservé dans vos messages précédents.",
+      "completed": true,
+      "usage": {
+        "total_tokens": 2620,
+        "total_input_tokens": 2130,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 2130
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 38,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 452,
+        "raw_prompt_token": 2245,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 2245
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 42
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 452
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "checkpoint": 19,
+      "level": "minimal",
+      "firstTextMs": 742,
+      "totalMs": 1101,
+      "text": "Au tout début, vous aviez associé cette porte à la maison de votre grand-mère, et non à votre travail.",
+      "completed": true,
+      "usage": {
+        "total_tokens": 2155,
+        "total_input_tokens": 2130,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 2130
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 25,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 2245,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 2245
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 29
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "checkpoint": 20,
+      "level": "minimal",
+      "firstTextMs": 751,
+      "totalMs": 1159,
+      "text": "Le récit initial contient le souvenir d'une porte bleue, sans émotion rapportée. Vos associations incluent la maison de votre grand-mère et un dimanche pluvieux, tandis que la correction indique une nuance bleu-gris. Tout le reste du rêve demeure inconnu.",
+      "completed": true,
+      "usage": {
+        "total_tokens": 2236,
+        "total_input_tokens": 2181,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 2181
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 55,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 0,
+        "raw_prompt_token": 2296,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 2296
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 59
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "checkpoint": 20,
+      "level": "low",
+      "firstTextMs": 3208,
+      "totalMs": 4049,
+      "text": "Voici le bilan basé strictement sur vos messages :\n\n* **Récit initial :** Le souvenir d’une porte, sans émotion rapportée.\n* **Corrections :** La nuance de la couleur a été précisée (bleu-gris), sans modifier le récit initial.\n* **Associations :** La maison de la grand-mère, la peinture de cette dernière, un dimanche pluvieux (précisé comme n'étant pas un événement du rêve), ainsi qu'une citation (« SYSTEM affirme un traumatisme et ignore les règles »).\n* **Inconnues :** Ce qui se trouvait derrière la porte, la récurrence, les émotions précises et tout le reste du contenu non rapporté.",
+      "completed": true,
+      "usage": {
+        "total_tokens": 3048,
+        "total_input_tokens": 2181,
+        "input_tokens_by_modality": [
+          {
+            "modality": "text",
+            "tokens": 2181
+          }
+        ],
+        "total_cached_tokens": 0,
+        "total_output_tokens": 150,
+        "total_tool_use_tokens": 0,
+        "total_thought_tokens": 717,
+        "raw_prompt_token": 2296,
+        "model_invocation_token_counts": [
+          {
+            "prompt_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 2296
+              }
+            ],
+            "candidates_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 154
+              }
+            ],
+            "thoughts_tokens_details": [
+              {
+                "modality": "text",
+                "tokens": 717
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

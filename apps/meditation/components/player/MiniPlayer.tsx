@@ -1,12 +1,14 @@
 import { useRouter, useSegments } from 'expo-router';
 import React from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, View, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { SessionArtwork } from '@/components/session/SessionArtwork';
 import { IconSymbol, Text } from '@/components/ui';
+import { getSessionArtwork } from '@/constants/catalogArtwork';
+import { WORLD_BY_ID } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
-import { usePlayer } from '@/context/PlayerContext';
+import { usePlayerCommands, usePlayerState } from '@/context/PlayerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 import type { TranslationKey } from '@/lib/i18n';
@@ -23,12 +25,23 @@ export function MiniPlayer() {
   const router = useRouter();
   const segments = useSegments();
   const { t } = useTranslation();
-  const { session, status, toggle } = usePlayer();
+  const { session, worldId, status } = usePlayerState();
+  const { toggle, close } = usePlayerCommands();
   const { colors } = useTheme();
   const { style, handlePressIn, handlePressOut } = usePressMotion({ surface: 'card' });
+  const { fontScale } = useWindowDimensions();
+  const largeText = fontScale >= 1.6;
 
   const onPlayerScreen = segments.some((segment) => segment === 'player');
-  if (!session || status === 'idle' || onPlayerScreen) return null;
+  // An unavailable session owns no playable handle. Keeping a mini-player for
+  // it would expose a play button that can never respond after leaving the
+  // immersive error state.
+  if (!session || status === 'idle' || status === 'unavailable' || onPlayerScreen) return null;
+
+  const artwork = getSessionArtwork(
+    session.id,
+    worldId ? WORLD_BY_ID[worldId].appearance : 'dark'
+  );
 
   /**
    * No entrance animation on purpose.
@@ -39,32 +52,76 @@ export function MiniPlayer() {
    * that is sometimes invisible is a far worse defect than a missing fade.
    */
   const playing = status === 'playing';
+  const sessionTitle = t(`session.${session.id}.title` as TranslationKey);
 
   return (
-    <Animated.View className="mx-2.5 overflow-hidden rounded-full border border-hairline bg-ink-raised">
-      <View className="flex-row items-center gap-3 px-gutter py-2">
+    <Animated.View
+      accessible={false}
+      importantForAccessibility="no"
+      testID="mini.player"
+      className={`mx-2.5 overflow-hidden border border-hairline bg-ink-raised ${
+        largeText ? 'rounded-3xl' : 'rounded-full'
+      }`}>
+      <View
+        className={`flex-row gap-3 px-gutter py-2 ${
+          largeText ? 'items-start' : 'items-center'
+        }`}>
         <AnimatedPressable
           accessibilityRole="button"
-          accessibilityLabel={t('mini.playing')}
-          onPress={() => router.push(`/player/${session.id}`)}
+          accessibilityLabel={`${t('mini.playing')}. ${sessionTitle}`}
+          testID="btn.mini.open"
+          onPress={() =>
+            router.push(
+              worldId ? `/player/${session.id}?worldId=${worldId}` : `/player/${session.id}`
+            )
+          }
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           style={style}
-          className="flex-1 flex-row items-center gap-3">
-          <SessionArtwork accent={session.accent} rounded="md" className="h-10 w-10" />
-          <Text variant="bodySm" tone="default" numberOfLines={1} className="flex-1">
-            {t(`session.${session.id}.title` as TranslationKey)}
+          className={`min-h-12 min-w-0 flex-1 flex-row gap-3 ${
+            largeText ? 'items-start' : 'items-center'
+          }`}>
+          <SessionArtwork
+            accent={session.accent}
+            source={artwork}
+            rounded="md"
+            className={`h-10 w-10 ${largeText ? 'mt-1' : ''}`}
+          />
+          <Text
+            variant="bodySm"
+            tone="default"
+            testID="mini.session-title"
+            className="min-w-0 flex-1">
+            {sessionTitle}
           </Text>
         </AnimatedPressable>
 
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={playing ? t('player.pause') : t('player.play')}
+          accessibilityState={{ selected: playing }}
+          testID="btn.mini.toggle"
           onPress={toggle}
-          hitSlop={{ top: 4, bottom: 4, left: 12, right: 12 }}
-          className="h-9 w-9 items-center justify-center rounded-full border border-hairline active:opacity-70">
+          hitSlop={8}
+          style={{ minHeight: 48, minWidth: 48 }}
+          className="h-12 w-12 shrink-0 items-center justify-center rounded-full border border-hairline active:opacity-70">
           <IconSymbol
             name={playing ? 'pause.fill' : 'play.fill'}
+            color={colors.accentText}
+            size={18}
+          />
+        </Pressable>
+
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('player.close')}
+          testID="btn.mini.close"
+          onPress={close}
+          hitSlop={8}
+          style={{ minHeight: 48, minWidth: 48 }}
+          className="h-12 w-12 shrink-0 items-center justify-center rounded-full border border-hairline active:opacity-70">
+          <IconSymbol
+            name="xmark"
             color={colors.accentText}
             size={18}
           />

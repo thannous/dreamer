@@ -11,7 +11,7 @@ appId: com.tanuki75.noctalia
       timeout: 30000
 - runFlow: subflows/clear-journal-filters.yml
 
-# Un-tagged as analyzed -> primary CTA shows Analyze dream
+# Failed analysis -> primary CTA shows Retry analysis
 - runFlow: subflows/ensure-journal-search-visible.yml
 - tapOn:
       id: input.searchDreams
@@ -23,12 +23,13 @@ appId: com.tanuki75.noctalia
       timeout: 10000
 - assertVisible: "The Shadowy Pursuer"
 - tapOn:
-      point: "50%,56%"
+      id: "dream.item.*"
+      index: 0
 - scrollUntilVisible:
       element:
           id: btn.dream.primaryCta
       direction: DOWN
-- assertVisible: "Analyze dream"
+- assertVisible: "Retry analysis"
 - tapOn:
       id: btn.navigateJournal
 - extendedWaitUntil:
@@ -36,7 +37,7 @@ appId: com.tanuki75.noctalia
           id: screen.journal
       timeout: 30000
 
-# Analyzed but not explored -> Explore dream further
+# Analyzed but not explored -> Start my reflection
 - runFlow: subflows/ensure-journal-search-visible.yml
 - tapOn:
       id: input.searchDreams
@@ -48,12 +49,13 @@ appId: com.tanuki75.noctalia
       timeout: 10000
 - assertVisible: "The Infinite Library"
 - tapOn:
-      point: "50%,56%"
+      id: "dream.item.*"
+      index: 0
 - scrollUntilVisible:
       element:
-          id: btn.dream.primaryCta
+          id: component.dreamDetail.actionCard
       direction: DOWN
-- assertVisible: "Explore dream further"
+- assertVisible: "Start my reflection"
 - tapOn:
       id: btn.navigateJournal
 - extendedWaitUntil:
@@ -61,7 +63,7 @@ appId: com.tanuki75.noctalia
           id: screen.journal
       timeout: 30000
 
-# Explored -> Continue analyzing
+# Explored -> Continue my reflection
 - runFlow: subflows/ensure-journal-search-visible.yml
 - tapOn:
       id: input.searchDreams
@@ -73,9 +75,10 @@ appId: com.tanuki75.noctalia
       timeout: 10000
 - assertVisible: "Ocean of Stars"
 - tapOn:
-      point: "50%,56%"
+      id: "dream.item.*"
+      index: 0
 - scrollUntilVisible:
       element:
-          id: btn.dream.primaryCta
+          id: component.dreamDetail.actionCard
       direction: DOWN
-- assertVisible: "Continue analyzing"
+- assertVisible: "Continue my reflection"

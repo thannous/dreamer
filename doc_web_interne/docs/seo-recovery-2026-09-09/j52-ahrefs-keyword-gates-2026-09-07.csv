@@ -1,0 +1,25 @@
+observed_at,country,keyword,volume_country,kd,traffic_potential_country,serp_updated_display,decision
+2026-09-07,es,soñar con pan,250,0,150,26 Jul,bread_candidate
+2026-09-07,es,soñar con huevos,250,0,250,9 Aug,eggs_candidate
+2026-09-07,es,soñar con garrapatas,450,0,150,14 Aug,ticks_reserve
+2026-09-07,es,soñar con hospital,90,0,40,24 Aug,optimize_existing_owner
+2026-09-07,it,sognare pane,700,0,1100,13 Aug,bread_candidate
+2026-09-07,it,sognare uova,900,0,400,3 days,eggs_candidate
+2026-09-07,it,sognare zecche,200,0,200,17 Aug,ticks_reserve
+2026-09-07,fr,rêver de pain,80,0,250,23 Aug,bread_candidate
+2026-09-07,fr,rêver de tiques,10,0,20,26 Jul,ticks_reserve
+2026-09-07,fr,rêver d'oeufs,20,,,,hold_missing_kd_tp_serp
+2026-09-07,fr,rêver des œufs,20,,,,hold_missing_kd_tp_serp
+2026-09-07,fr,rêver d’œufs,,,,,keyword_not_indexed_in_ahrefs
+2026-09-07,de,traumdeutung brot,80,,,,hold_missing_kd_tp_serp
+2026-09-07,de,traumdeutung eier,90,0,60,3 Aug,eggs_candidate
+2026-09-07,de,traumdeutung zecken,20,,,,hold_missing_kd_tp_serp
+2026-09-07,us,bread dream meaning,20,0,10,22 Aug,bread_candidate
+2026-09-07,us,dreaming about bread,10,0,20,19 Aug,variant_not_additive
+2026-09-07,us,dream of eggs,100,0,90,a day,eggs_candidate_spiritual_parent
+2026-09-07,us,dreaming about eggs,30,0,90,5 Jul,variant_not_additive
+2026-09-07,us,dreaming about ticks,40,0,200,28 Aug,ticks_reserve
+2026-09-07,us,dream interpretation history,10,,,,existing_owner_gsc_priority
+2026-09-07,de,brot traumdeutung,20,,,,hold_missing_kd_tp_serp
+2026-09-07,de,brot im traum,0–10,,,,hold_missing_kd_tp_serp
+2026-09-07,de,von brot träumen,0–10,,,,hold_missing_kd_tp_serp

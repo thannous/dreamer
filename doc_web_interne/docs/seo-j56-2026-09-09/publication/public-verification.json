@@ -1,0 +1,48 @@
+{
+  "verifiedAtUtc": "2026-09-09T10:37:49.718297+00:00",
+  "results": [
+    {
+      "url": "https://noctalia.app/es/simbolos/hospital",
+      "http": 200,
+      "title": "Soñar con un hospital: estar allí o verlo lleno | Noctalia",
+      "description": "¿Qué significa soñar con un hospital? Compara estar allí, verlo lleno de gente, enfermos o personal médico según tu emoción y contexto, sin predicciones.",
+      "canonical": "https://noctalia.app/es/simbolos/hospital",
+      "checks": {
+        "http200": true,
+        "canonical": true,
+        "title": true,
+        "description": true,
+        "sitemap": true
+      },
+      "headers": {
+        "Date": "Wed, 09 Sep 2026 10:37:48 GMT",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a3858f4b3edc0246-CDG"
+      }
+    },
+    {
+      "url": "https://noctalia.app/en/blog/dream-interpretation-history",
+      "http": 200,
+      "title": "History of Dream Interpretation: Ancient to Modern | Noctalia",
+      "description": "Trace the history of dream interpretation from Mesopotamia and Egypt to Greek medicine, Freud, Jung and modern neuroscience.",
+      "canonical": "https://noctalia.app/en/blog/dream-interpretation-history",
+      "checks": {
+        "http200": true,
+        "canonical": true,
+        "correctedStatistic": true,
+        "oldStatisticAbsent": true,
+        "modified": true,
+        "published": true,
+        "faq4": true,
+        "correctFreudLink": true,
+        "sitemap": true
+      },
+      "headers": {
+        "Date": "Wed, 09 Sep 2026 10:37:48 GMT",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a3858f4bdb5fd081-CDG"
+      }
+    }
+  ],
+  "passed": true
+}

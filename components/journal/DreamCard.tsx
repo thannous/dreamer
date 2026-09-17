@@ -1,3 +1,5 @@
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { PressableScale } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
@@ -18,7 +20,7 @@ export type DreamCardVariant = 'standard' | 'featured';
 
 interface DreamCardProps {
   dream: DreamAnalysis;
-  onPress: (dreamId: number) => void;
+  onPress: (dream: DreamAnalysis) => void;
   scrollState?: 'idle' | 'scrolling';
   testID?: string;
   /** Date string to display as an overline above the title */
@@ -67,9 +69,10 @@ export const DreamCard = memo(function DreamCard({
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
+  const media = useDreamMedia(dream);
   const handlePress = useCallback(() => {
-    onPress(dream.id);
-  }, [onPress, dream.id]);
+    onPress(dream);
+  }, [onPress, dream]);
 
   const isScrolling = scrollState === 'scrolling';
   const isFeatured = variant === 'featured';
@@ -81,18 +84,18 @@ export const DreamCard = memo(function DreamCard({
   );
   const thumbnailUri = useMemo(() => (
     getDreamThumbnailUri({
-      thumbnailUrl: dream.thumbnailUrl,
-      imageUrl: dream.imageUrl,
+      thumbnailUrl: media.thumbnailUrl,
+      imageUrl: media.imageUrl,
       imageUpdatedAt: dream.imageUpdatedAt,
       analysisRequestId: dream.analysisRequestId,
       analyzedAt: dream.analyzedAt,
       id: dream.id,
     }) ?? ''
-  ), [dream.thumbnailUrl, dream.imageUrl, dream.imageUpdatedAt, dream.analysisRequestId, dream.analyzedAt, dream.id]);
+  ), [media.thumbnailUrl, media.imageUrl, dream.imageUpdatedAt, dream.analysisRequestId, dream.analyzedAt, dream.id]);
   const fullImageUri = useMemo(() => {
-    const uri = dream.imageUrl?.trim() ?? '';
+    const uri = media.imageUrl?.trim() ?? '';
     return uri ? withCacheBuster(uri, imageVersion) : '';
-  }, [dream.imageUrl, imageVersion]);
+  }, [media.imageUrl, imageVersion]);
   const trimmedThumbnailUri = thumbnailUri.trim();
 
   // OPTIMIZATION: Initialize state with known failed status to avoid double-render on mount
@@ -112,13 +115,13 @@ export const DreamCard = memo(function DreamCard({
   const imageUri = preferFullImage
     ? fullImageUri
     : (trimmedThumbnailUri || fullImageUri);
-  const hasImage = Boolean(imageUri);
+  const hasImage = Boolean(dream.imageUrl || dream.thumbnailUrl);
 
   const themeLabel = useMemo(() => getDreamThemeLabel(dream.theme, t) ?? dream.theme, [dream.theme, t]);
 
   // Get optimized image config for thumbnails
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
-  const imageRecyclingKey = `${dream.id}-${imageVersion ?? 0}`;
+  const imageRecyclingKey = `${getDreamIdentityKey(dream)}-${imageVersion ?? 0}`;
   const imageTransition = isScrolling ? 0 : imageConfig.transition;
   const imagePlaceholder = isScrolling ? null : { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
   const imagePriority = isScrolling ? 'low' : imageConfig.priority;
@@ -240,7 +243,7 @@ export const DreamCard = memo(function DreamCard({
       >
         <View className={`w-full overflow-hidden ${isFeatured ? 'h-[200px]' : 'h-[160px]'}`}>
           <Image
-            source={{ uri: imageUri }}
+            source={imageUri ? { uri: imageUri } : null}
             style={CARD_IMAGE_STYLE}
             contentFit={imageConfig.contentFit}
             transition={imageTransition}

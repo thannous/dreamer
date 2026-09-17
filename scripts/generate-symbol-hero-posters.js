@@ -5,7 +5,7 @@
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const sharp = require('sharp');
+const sharp = require('../apps/site/dependencies')('sharp');
 const { ROOT_DIR } = require('./lib/docs-site-config');
 const { inlineLucideIcons } = require('./lib/lucide-inline');
 const {

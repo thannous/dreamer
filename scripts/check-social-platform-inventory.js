@@ -156,7 +156,7 @@ function validateReplacementCoverage(inventory, coverage, relatedSources = '') {
 function validateActiveYouTubeOrder(inventory, activeCard) {
   const pendingYouTubeReplacement = parseInventoryRows(inventory).some((row) =>
     /À EXCLURE.*SUPPLANTÉ/u.test(row[2]) &&
-    /PROGRAMMÉ.*À REMPLACER/u.test(row[7])
+    /À REMPLACER/u.test(row[7])
   );
   if (!pendingYouTubeReplacement) return;
 
@@ -191,7 +191,7 @@ function validateYouTubeReplacementProtocol(inventory, executionCard, proofRegis
   const newRow = rows.find((row) => row[0] === '`AFTERGLOW_SURREAL_FLOWER_WORLD_FLIGHT_01.mp4`');
   if (!oldRow || !newRow) throw new Error('Paire de remplacement YouTube du 30/08 absente de l’inventaire.');
 
-  const pending = /PROGRAMMÉ.*À REMPLACER/u.test(oldRow[7]);
+  const pending = /À REMPLACER/u.test(oldRow[7]);
   if (!pending) return;
 
   const requiredCard = [
@@ -210,7 +210,7 @@ function validateYouTubeReplacementProtocol(inventory, executionCard, proofRegis
     if (!pattern.test(executionCard)) throw new Error(`Remplacement YouTube 30/08 incomplet : ${message}.`);
   }
 
-  if (!/YouTube `UCQZsVAOggq_meTWYG-4dHfw` \| 18:00 \| `Would You Fly Through This Flower World\? #Shorts` \| \*\*À REMPLACER — NON CONFIRMÉ\*\*/u.test(proofRegister)) {
+  if (!/YouTube `UCQZsVAOggq_meTWYG-4dHfw` \| 18:00 \| `Would You Fly Through This Flower World\? #Shorts` \| (?:\*\*À REMPLACER — NON CONFIRMÉ\*\*|\*\*ÉCHEC — NON PUBLIÉ\*\* — À REMPLACER — BROUILLON PRIVÉ)/u.test(proofRegister)) {
     throw new Error('Registre public YouTube du 30/08 incohérent avec le remplacement en attente.');
   }
   if (!/elle sera alors passée en `Privée`, jamais supprimée/u.test(proofRegister)) {
@@ -226,7 +226,10 @@ function scheduledHeroDates(directory) {
     const content = fs.readFileSync(path.join(directory, file), 'utf8');
     for (const platform of result.keys()) {
       const line = content.split('\n').find((candidate) => candidate.startsWith(`| ${platform} `)) || '';
-      if (/\| \*\*(?:PROGRAMMÉ|PUBLIÉ)(?:\s|\*)/u.test(line)) result.get(platform).push(date);
+      const hasNativeSchedule = /programmation native historique conservée/iu.test(line);
+      if (/\| \*\*(?:PROGRAMMÉ|PUBLIÉ)(?:\s|\*)/u.test(line) || hasNativeSchedule) {
+        result.get(platform).push(date);
+      }
     }
   }
   for (const dates of result.values()) dates.sort();
@@ -245,8 +248,14 @@ function primaryQueueSlots(directory) {
       const platform = ['TikTok', 'Instagram', 'X'].find((name) => (row[1] || '').startsWith(name));
       if (!platform) continue;
       const status = row[row.length - 2] || '';
+      const rowText = row.join(' | ');
       const key = `${date}-${row[0]}`;
-      if (/^\*\*(?:PROGRAMMÉ|PUBLIÉ)/u.test(status)) result.get(platform).push(key);
+      const hasPreservedXSchedule = platform === 'X' &&
+        /^\*\*ÉCHEC — NON PUBLIÉ/u.test(status) &&
+        /PROGRAMMÉ NATIVEMENT/iu.test(rowText);
+      if (/^\*\*(?:PROGRAMMÉ|PUBLIÉ)/u.test(status) || hasPreservedXSchedule) {
+        result.get(platform).push(key);
+      }
       if (platform === 'Instagram' && /^\*\*PRÊT — DIRECT/u.test(status)) directInstagram.push(key);
       if (platform === 'Instagram' && /^\*\*ÉCHEC — NON PUBLIÉ/u.test(status)) failedInstagram.push(key);
     }

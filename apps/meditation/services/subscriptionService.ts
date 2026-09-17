@@ -6,10 +6,11 @@ import * as real from './subscriptionServiceReal';
 /**
  * Conditional export, resolved at bundle time — the Noctalia convention.
  *
- * The mock also stands in when no RevenueCat key is configured: a paywall that
- * cannot be opened is a paywall nobody reviews before release.
+ * Mock is an explicit opt-in (`EXPO_PUBLIC_MOCK_MODE`). A missing RevenueCat
+ * key never falls back to a fake store: the real client stays selected and
+ * returns free / no offers, so the UI cannot simulate a purchase.
  */
-const implementation = isMockModeEnabled() || !real.isConfigured() ? mock : real;
+const implementation = isMockModeEnabled() ? mock : real;
 
 export type Offer = real.Offer | mock.Offer;
 

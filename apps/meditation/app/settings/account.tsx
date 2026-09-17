@@ -10,13 +10,18 @@ import { useTranslation } from '@/context/LanguageContext';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { useSettings } from '@/context/SettingsContext';
 import type { TranslationKey } from '@/lib/i18n';
+import {
+  DAILY_INTENTIONS,
+  PRACTICE_GOALS,
+  type DailyIntention,
+} from '@/lib/types';
 import { clearAll } from '@/services/storageService';
 
 export default function AccountScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const { profile, setProfile } = useSettings();
-  const { state, reset } = useOnboarding();
+  const { state, update, reset } = useOnboarding();
   const [name, setName] = useState(profile.displayName);
 
   const pickPhoto = async () => {
@@ -95,8 +100,37 @@ export default function AccountScreen() {
         <View className="gap-3">
           <Text variant="overline">{t('account.goals')}</Text>
           <View className="flex-row flex-wrap gap-2">
-            {state.goals.map((goal) => (
-              <Chip key={goal} label={t(`onboarding.goals.${goal}` as TranslationKey)} selected />
+            {PRACTICE_GOALS.map((goal) => (
+              <Chip
+                key={goal}
+                label={t(`onboarding.goals.${goal}` as TranslationKey)}
+                selected={state.goals.includes(goal)}
+                accessibilityLabel={t(`onboarding.goals.${goal}` as TranslationKey)}
+                onPress={() => {
+                  void update((current) => ({
+                    goals: current.goals.includes(goal)
+                      ? current.goals.filter((item) => item !== goal)
+                      : [...current.goals, goal],
+                  }));
+                }}
+              />
+            ))}
+          </View>
+        </View>
+
+        <View className="gap-3">
+          <Text variant="overline">{t('onboarding.intention.title')}</Text>
+          <View className="flex-row flex-wrap gap-2">
+            {DAILY_INTENTIONS.map((minutes) => (
+              <Chip
+                key={minutes}
+                label={t('onboarding.intention.minutes', { count: minutes })}
+                selected={state.dailyIntentionMin === minutes}
+                accessibilityLabel={t('onboarding.intention.minutes', { count: minutes })}
+                onPress={() => {
+                  void update({ dailyIntentionMin: minutes as DailyIntention });
+                }}
+              />
             ))}
           </View>
         </View>

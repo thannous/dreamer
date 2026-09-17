@@ -1,4 +1,4 @@
-export type TranscriptMergeResult = { text: string; truncated: boolean };
+export type TranscriptMergeResult = { text: string; truncated: false };
 
 export const normalizeTranscriptText = (text: string) => text.replace(/\s+/g, ' ').trim();
 
@@ -12,26 +12,17 @@ export const normalizeForComparison = (text: string) =>
 type CombineTranscriptParams = {
   base: string;
   addition: string;
-  maxChars: number;
   devLog?: boolean;
-};
-
-const clampTranscript = (text: string, maxChars: number): TranscriptMergeResult => {
-  if (text.length <= maxChars) {
-    return { text, truncated: false };
-  }
-  return { text: text.slice(0, maxChars), truncated: true };
 };
 
 export function combineTranscript({
   base,
   addition,
-  maxChars,
   devLog = false,
 }: CombineTranscriptParams): TranscriptMergeResult {
   const trimmedAddition = addition.trim();
   if (!trimmedAddition) {
-    return clampTranscript(base, maxChars);
+    return { text: base, truncated: false };
   }
   const trimmedBase = base.trim();
 
@@ -69,12 +60,12 @@ export function combineTranscript({
 
     // If STT re-sends text we already have, keep the existing transcript to avoid duplicates.
     if (normalizedBase.includes(normalizedAddition)) {
-      return clampTranscript(trimmedBase, maxChars);
+      return { text: trimmedBase, truncated: false };
     }
 
     // When the recognizer returns the whole transcript plus new words, keep the expanded text once.
     if (normalizedAddition.startsWith(normalizedBase) || hasNearPrefixMatch(normalizedBase, normalizedAddition)) {
-      return clampTranscript(trimmedAddition, maxChars);
+      return { text: trimmedAddition, truncated: false };
     }
 
     // If only the last line is being incrementally extended or lightly corrected, replace that line instead of stacking.
@@ -84,11 +75,11 @@ export function combineTranscript({
       const normalizedLastLine = normalizeForComparison(lastLine);
       if (normalizedAddition.startsWith(normalizedLastLine) || hasNearPrefixMatch(normalizedLastLine, normalizedAddition)) {
         baseLines[baseLines.length - 1] = trimmedAddition;
-        return clampTranscript(baseLines.join('\n'), maxChars);
+        return { text: baseLines.join('\n'), truncated: false };
       }
     }
   }
 
   const combined = trimmedBase ? `${trimmedBase}\n${trimmedAddition}` : trimmedAddition;
-  return clampTranscript(combined, maxChars);
+  return { text: combined, truncated: false };
 }

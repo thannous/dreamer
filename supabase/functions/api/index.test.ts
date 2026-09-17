@@ -152,3 +152,62 @@ Deno.test('unknown routes return 401 for anonymous callers and 404 for authentic
   assertEquals(authenticated.headers.get('Access-Control-Allow-Origin'), '*');
   assertEquals(await authenticated.json(), { error: 'Not found' });
 });
+
+
+Deno.test('scoped clients are checked before privileged route dispatch', async () => {
+  for (const [product, route, expected] of [
+    ['journal', 'POST /analyzeDream', 200],
+    ['lucid', 'POST /analyzeDream', 403],
+    ['unknown', 'POST /analyzeDream', 403],
+    ['legacy', 'POST /analyzeDream', 403],
+    ['journal', 'DELETE /account', 403],
+    ['lucid', 'DELETE /account', 403],
+    ['journal', 'POST /subscription/reconcile', 403],
+    ['journal', 'POST /new-unclassified', 403],
+    ['lucid', 'POST /analytics/events', 200],
+  ] as const) {
+    let dispatched = 0;
+    let resolved = 0;
+    const [method, path] = route.split(' ');
+    const token = [encodeBase64Url({ alg: 'HS256' }),
+      encodeBase64Url({ sub: 'user-1', client_id: 'registered-client' }), 'signature'].join('.');
+    const createClient = (() => ({
+      auth: { getUser: () => Promise.resolve({ data: { user: { id: 'user-1' } } }) },
+      rpc: (name: string) => {
+        assertEquals(name, 'current_app_product');
+        resolved++;
+        return Promise.resolve({ data: product, error: null });
+      },
+    })) as unknown as ApiHandlerDependencies['createClient'];
+    const handler = createApiHandler({ readEnv, createClient, routes: new Map([
+      [route, () => { dispatched++; return Promise.resolve(new Response('ok')); }],
+    ]) });
+    const response = await handler(request(path, { method, headers: {
+      Authorization: `Bearer ${token}`, 'X-App-Id': 'journal',
+    } }));
+    assertEquals(response.status, expected, `${product} ${route}`);
+    assertEquals(dispatched, expected === 200 ? 1 : 0);
+    assertEquals(resolved, 1);
+  }
+});
+
+Deno.test('invalid scoped tokens cannot become guests; resolver failure denies dispatch', async () => {
+  for (const mode of ['invalid', 'error', 'throw', 'null-claim'] as const) {
+    let dispatched = false;
+    const token = [encodeBase64Url({ alg: 'HS256' }),
+      encodeBase64Url({ sub: 'user-1', client_id: mode === 'null-claim' ? null : 'client' }), 'signature'].join('.');
+    const createClient = (() => ({
+      auth: { getUser: () => Promise.resolve({ data: { user: mode === 'invalid' ? null : { id: 'user-1' } } }) },
+      rpc: () => {
+        if (mode === 'throw') throw new Error('resolver down');
+        return Promise.resolve({ data: 'unknown', error: mode === 'error' ? { message: 'down' } : null });
+      },
+    })) as unknown as ApiHandlerDependencies['createClient'];
+    const handler = createApiHandler({ readEnv, createClient, routes: new Map([
+      ['POST /analyzeDream', () => { dispatched = true; return Promise.resolve(new Response('ok')); }],
+    ]) });
+    const response = await handler(request('/analyzeDream', { headers: { Authorization: `Bearer ${token}` } }));
+    assertEquals(response.status, mode === 'invalid' ? 401 : mode === 'null-claim' ? 403 : 503);
+    assertEquals(dispatched, false);
+  }
+});

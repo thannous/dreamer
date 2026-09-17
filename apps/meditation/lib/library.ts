@@ -1,7 +1,9 @@
 import { SESSION_BY_ID, SESSIONS } from '@/content/sessions';
+import { shiftDay } from '@/lib/streak';
 import {
   RESUME_MAX_RATIO,
   RESUME_MIN_RATIO,
+  type DailyIntention,
   type MeditationSession,
   type PracticeGoal,
   type SessionId,
@@ -23,6 +25,12 @@ function hash(value: string): number {
   return Math.abs(h);
 }
 
+/** Stable bounded index shared by deterministic editorial selectors. */
+export function stableIndex(value: string, length: number): number {
+  if (length <= 0) return 0;
+  return hash(value) % length;
+}
+
 /**
  * The session of the day.
  *
@@ -31,16 +39,65 @@ function hash(value: string): number {
  * the whole catalogue as the pool if they chose none. Premium sessions stay in
  * the pool: the recommendation is also where a free user meets Noctalia Plus.
  */
-export function sessionOfTheDay(dateISO: string, goals: PracticeGoal[]): MeditationSession {
+export function sessionOfTheDay(
+  dateISO: string,
+  goals: PracticeGoal[],
+  dailyIntentionMin?: DailyIntention | null
+): MeditationSession {
   const pool = goals.length
     ? SESSIONS.filter((session) => goals.includes(session.categorySlug))
     : SESSIONS;
 
   // A goal set with no sessions would divide by zero; fall back to everything.
   const candidates = pool.length ? pool : SESSIONS;
-  const ordered = [...candidates].sort((a, b) => a.id.localeCompare(b.id));
+  const preferred = sessionsMatchingIntention(candidates, dailyIntentionMin);
+  const poolForDay = preferred.length ? preferred : candidates;
+  const ordered = [...poolForDay].sort((a, b) => a.id.localeCompare(b.id));
 
-  return ordered[hash(dateISO) % ordered.length];
+  return ordered[stableIndex(dateISO, ordered.length)];
+}
+
+/** Keep the daily intention honest: never recommend a practice longer than the chosen pause. */
+export function sessionsMatchingIntention(
+  sessions: MeditationSession[],
+  dailyIntentionMin?: DailyIntention | null
+): MeditationSession[] {
+  if (dailyIntentionMin == null) return sessions;
+
+  const maxSec = dailyIntentionMin * 60;
+  return sessions.filter((session) => session.durationSec <= maxSec);
+}
+
+export const UPCOMING_JOURNEY_COUNT = 3;
+
+/**
+ * The next practices after today, derived from the same daily recommendation
+ * used on Home — never a slice of the catalogue.
+ *
+ * Walks tomorrow, the day after, then further local days until `count` unique
+ * sessions are found or the catalogue is exhausted. The active session is
+ * excluded so "up next" cannot repeat what the large card already offers.
+ */
+export function upcomingSessions(
+  dateISO: string,
+  goals: PracticeGoal[],
+  activeSessionId: SessionId,
+  count: number = UPCOMING_JOURNEY_COUNT
+): MeditationSession[] {
+  const limit = Math.max(0, count);
+  const seen = new Set<SessionId>([activeSessionId]);
+  const results: MeditationSession[] = [];
+  const maxOffset = SESSIONS.length + Math.max(limit, 1);
+
+  for (let offset = 1; offset <= maxOffset && results.length < limit; offset += 1) {
+    const day = shiftDay(dateISO, offset);
+    const session = sessionOfTheDay(day, goals);
+    if (seen.has(session.id)) continue;
+    seen.add(session.id);
+    results.push(session);
+  }
+
+  return results;
 }
 
 export type ResumableSession = {

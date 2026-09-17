@@ -7,7 +7,6 @@ describe('transcriptMerge', () => {
     const result = combineTranscript({
       base: 'Hello world',
       addition: 'Hello',
-      maxChars: 10_000,
     });
 
     expect(result).toEqual({ text: 'Hello world', truncated: false });
@@ -17,7 +16,6 @@ describe('transcriptMerge', () => {
     const result = combineTranscript({
       base: 'Hello world',
       addition: 'Hello world again',
-      maxChars: 10_000,
     });
 
     expect(result.text).toBe('Hello world again');
@@ -28,7 +26,6 @@ describe('transcriptMerge', () => {
     const result = combineTranscript({
       base: 'I was there',
       addition: 'I was there.',
-      maxChars: 10_000,
     });
 
     expect(result.text).toBe('I was there');
@@ -38,7 +35,6 @@ describe('transcriptMerge', () => {
     const result = combineTranscript({
       base: 'first line\nhello worl',
       addition: 'hello world',
-      maxChars: 10_000,
     });
 
     expect(result.text).toBe('first line\nhello world');
@@ -48,21 +44,29 @@ describe('transcriptMerge', () => {
     const result = combineTranscript({
       base: 'a',
       addition: 'b',
-      maxChars: 10_000,
     });
 
     expect(result.text).toBe('a\nb');
   });
 
-  it('clamps the transcript and reports truncation', () => {
-    const result = combineTranscript({
-      base: '12345',
-      addition: '67890',
-      maxChars: 8,
-    });
+  it('preserves combined transcripts beyond 600 characters', () => {
+    const base = 'n'.repeat(400);
+    const addition = 'w'.repeat(201);
+    const result = combineTranscript({ base, addition });
 
-    expect(result.text.length).toBe(8);
-    expect(result.truncated).toBe(true);
+    expect(result.text).toBe(`${base}\n${addition}`);
+    expect(result.text.length).toBe(602);
+    expect(result.truncated).toBe(false);
+  });
+
+  it('preserves a much longer combined transcript without slicing', () => {
+    const base = 'day '.repeat(300);
+    const addition = 'night '.repeat(200);
+    const result = combineTranscript({ base, addition });
+
+    expect(result.text).toBe(`${base.trim()}\n${addition.trim()}`);
+    expect(result.text.length).toBeGreaterThan(1200);
+    expect(result.truncated).toBe(false);
   });
 });
 

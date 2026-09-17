@@ -17,6 +17,9 @@ describe('WorldProvider', () => {
 
     expect(result.current.worldId).toBe(DEFAULT_WORLD_ID);
     expect(result.current.world).toBe(WORLD_BY_ID[DEFAULT_WORLD_ID]);
+    expect(result.current.previewWorldId).toBeNull();
+    expect(result.current.presentationWorldId).toBe(DEFAULT_WORLD_ID);
+    expect(result.current.presentationWorld).toBe(WORLD_BY_ID[DEFAULT_WORLD_ID]);
   });
 
   it('restores a previously selected world', async () => {
@@ -26,6 +29,7 @@ describe('WorldProvider', () => {
 
     expect(result.current.worldId).toBe('dawn');
     expect(result.current.world).toBe(WORLD_BY_ID.dawn);
+    expect(result.current.presentationWorld).toBe(WORLD_BY_ID.dawn);
   });
 
   it('falls back safely when storage contains an unknown world', async () => {
@@ -46,6 +50,61 @@ describe('WorldProvider', () => {
 
     expect(result.current.worldId).toBe('dawn');
     expect(result.current.world).toBe(WORLD_BY_ID.dawn);
+    expect(result.current.presentationWorld).toBe(WORLD_BY_ID.dawn);
     expect(await AsyncStorage.getItem(StorageKey.world)).toBe(JSON.stringify('dawn'));
+  });
+
+  it('presents a locked preview without persisting it', async () => {
+    const { result } = await mountWorld();
+
+    act(() => {
+      result.current.setPreviewWorld('cloud');
+    });
+
+    expect(result.current.worldId).toBe(DEFAULT_WORLD_ID);
+    expect(result.current.world).toBe(WORLD_BY_ID[DEFAULT_WORLD_ID]);
+    expect(result.current.previewWorldId).toBe('cloud');
+    expect(result.current.presentationWorldId).toBe('cloud');
+    expect(result.current.presentationWorld).toBe(WORLD_BY_ID.cloud);
+    expect(result.current.presentationWorld.appearance).toBe('light');
+    expect(await AsyncStorage.getItem(StorageKey.world)).toBeNull();
+  });
+
+  it('clears the preview when an owned world is selected', async () => {
+    const { result } = await mountWorld();
+
+    act(() => {
+      result.current.setPreviewWorld('tide');
+    });
+
+    await act(async () => {
+      await result.current.setWorld('dawn');
+    });
+
+    expect(result.current.previewWorldId).toBeNull();
+    expect(result.current.worldId).toBe('dawn');
+    expect(result.current.presentationWorldId).toBe('dawn');
+    expect(result.current.presentationWorld.appearance).toBe('light');
+    expect(await AsyncStorage.getItem(StorageKey.world)).toBe(JSON.stringify('dawn'));
+  });
+
+  it('dismisses a preview without changing the persisted world', async () => {
+    const { result } = await mountWorld();
+
+    await act(async () => {
+      await result.current.setWorld('forest');
+    });
+
+    act(() => {
+      result.current.setPreviewWorld('cloud');
+    });
+    act(() => {
+      result.current.setPreviewWorld(null);
+    });
+
+    expect(result.current.previewWorldId).toBeNull();
+    expect(result.current.worldId).toBe('forest');
+    expect(result.current.presentationWorld).toBe(WORLD_BY_ID.forest);
+    expect(await AsyncStorage.getItem(StorageKey.world)).toBe(JSON.stringify('forest'));
   });
 });

@@ -2,6 +2,7 @@ import { Drawer } from 'expo-router/drawer';
 import React from 'react';
 
 import { DrawerContent } from '@/components/navigation/DrawerContent';
+import { useTranslation } from '@/context/LanguageContext';
 import { useChromeTheme } from '@/hooks/useChromeTheme';
 
 /**
@@ -16,7 +17,8 @@ import { useChromeTheme } from '@/hooks/useChromeTheme';
  * drawer is a way in, not a reason to move screens.
  */
 export default function DrawerLayout() {
-  const { colors } = useChromeTheme();
+  const { mode } = useChromeTheme();
+  const { t } = useTranslation();
 
   return (
     <Drawer
@@ -32,7 +34,8 @@ export default function DrawerLayout() {
         // screen pushed above the tabs, and a wide activation zone here would
         // take that gesture away.
         swipeEdgeWidth: 40,
-        overlayColor: colors.drawerOverlay,
+        overlayColor: mode === 'dark' ? 'rgba(3, 4, 13, 0.55)' : 'rgba(42, 40, 56, 0.28)',
+        overlayAccessibilityLabel: t('drawer.close'),
       }}>
       <Drawer.Screen name="(tabs)" />
     </Drawer>

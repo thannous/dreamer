@@ -1,0 +1,89 @@
+# Release navigation gate: journal, dream detail, Trends, and notification
+# deep links open the expected surfaces on the installed binary.
+appId: ${APP_ID || "com.tanuki75.noctalia"}
+env:
+  TI429_RUN_ID: ${Date.now() + "-" + Math.floor(Math.random() * 1000000000)}
+name: Release journal trends notification deeplinks
+tags:
+  - release
+  - journal
+  - trends
+  - notifications
+---
+- launchApp:
+    stopApp: false
+- runFlow: subflows/open-release-recording.yml
+- runFlow: subflows/ensure-recording-text.yml
+
+- runFlow: subflows/ti429-ready-empty-editor.yml
+- inputText: "Trends deeplink sentinel ${TI429_RUN_ID} quiet harbour"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
+- tapOn:
+    id: btn.navigateJournal
+- extendedWaitUntil:
+    visible: "Trends deeplink sentinel ${TI429_RUN_ID} quiet harbour"
+    timeout: 20000
+
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://journal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+# Do not alter an existing search/filter or open an arbitrary first dream.
+- extendedWaitUntil:
+    visible:
+      id: "dream.item.*"
+      containsDescendants:
+        - text: "Trends deeplink sentinel ${TI429_RUN_ID} quiet harbour"
+    timeout: 20000
+- tapOn:
+    id: "dream.item.*"
+    containsDescendants:
+      - text: "Trends deeplink sentinel ${TI429_RUN_ID} quiet harbour"
+- extendedWaitUntil:
+    visible:
+      id: component.transcriptCard
+    timeout: 20000
+- assertVisible: "Trends deeplink sentinel ${TI429_RUN_ID} quiet harbour"
+- takeScreenshot: ti429-journal-detail
+
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://statistics
+- runFlow:
+    when:
+      notVisible:
+        id: trends.section.week
+    commands:
+      - tapOn:
+          id: tab.stats
+- extendedWaitUntil:
+    visible:
+      id: trends.section.week
+    timeout: 20000
+- assertVisible:
+    id: trends.section.week
+
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://weekly-recap
+- extendedWaitUntil:
+    visible:
+      id: screen.weeklyRecap
+    timeout: 20000
+- assertVisible:
+    id: screen.weeklyRecap
+
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://recording
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000
+- assertVisible:
+    id: screen.recording

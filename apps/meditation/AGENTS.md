@@ -1,14 +1,20 @@
 # AGENTS.md — Noctalia Meditation
 
 Guide de contribution pour agents et développeurs. La spécification complète du
-produit vit dans `../dreamer/specs/noctalia-meditation.md` — elle fait foi sur le
+produit vit dans `../../specs/noctalia-meditation.md` — elle fait foi sur le
 périmètre, les écrans et les décisions d'architecture.
 
 ## Ce qu'est ce projet
 
-Seconde application de la marque Noctalia : méditation guidée, respiration,
-séries de pratique. Clone fonctionnel du template « Zen » (native-templates.com)
-rhabillé aux couleurs Noctalia.
+Application autonome de la marque Noctalia : méditation guidée, respiration,
+univers et progression douce. La boucle essentielle est choisir une intention,
+écouter ou reprendre une séance disponible, puis terminer calmement. Zen est une
+référence historique, sans obligation de parité. Voir
+`../../specs/noctalia-brand-contract.md` pour les responsabilités produit.
+
+Les abonnements sont désactivés par défaut (`lib/env.ts`). Les achats uniques
+d'univers restent distincts ; aucune modification ne doit réactiver implicitement
+un abonnement ou déduire un droit commercial du compte d'une autre app.
 
 **Pas de compte, pas de backend applicatif.** Tout l'état est local
 (AsyncStorage). Les pistes audio distantes viennent d'un bucket statique.
@@ -85,4 +91,17 @@ npm run lint       # eslint
 
 ## Avant de proposer un changement
 
-`npm run typecheck && npm run lint` doivent passer sans erreur.
+Exécuter les commandes depuis `apps/meditation`. Pour les changements de code,
+appliquer la [validation proportionnée](../../doc_web_interne/docs/validation-proportionnee.md)
+du dépôt parent : tests ciblés pour un comportement, lint ciblé et écran concerné
+pour une petite retouche visuelle ; `npm run typecheck` et `npm run lint` selon
+l'impact. Les changements audio, achats ou stockage demandent les cas d'échec
+pertinents. Les commandes ne sont pas une checklist à exécuter intégralement.
+Réutiliser les résultats du code inchangé, regrouper les corrections avant push
+et ne pas relancer une suite applicative pour une correction documentaire.
+Pour une modification documentaire, vérifier le contenu et les liens sans lancer
+les suites applicatives. Les règles parentes de confidentialité, autorisation,
+préservation du travail et verrou partagé de l'appareil restent applicables.
+Les chemins de thème et de services de ce guide sont propres à Meditation.
+Conserver le contournement des animations de layout tant qu'un cas reproductible
+n'a pas été revérifié sur les versions installées.
