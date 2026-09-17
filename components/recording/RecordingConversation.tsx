@@ -99,34 +99,39 @@ export function RecordingConversation(props: Props) {
       {!props.done ? (
         <View style={styles.replyArea}>
           {!showAnswerEditor ? (
-            <View style={styles.voiceControls}>
-              <Pressable
-                testID={TID.Button.RecordToggle}
-                onPress={listening ? mute : props.onVoice}
-                disabled={locked || props.loading}
-                accessibilityRole="button"
-                accessibilityLabel={voiceLabel}
-                accessibilityState={{ disabled: locked || props.loading, busy: preparing }}
-              >
-                <View
-                  // Keep the native icon parent stable as disabled opacity changes.
-                  collapsable={false}
-                  style={[styles.mic, { backgroundColor: tokens.action.primary, opacity: locked || props.loading ? 0.5 : 1 }]}
+            <>
+              <View style={styles.voiceControls}>
+                <Pressable
+                  testID={TID.Button.RecordToggle}
+                  onPress={listening ? mute : props.onVoice}
+                  disabled={locked || props.loading}
+                  accessibilityRole="button"
+                  accessibilityLabel={voiceLabel}
+                  accessibilityState={{ disabled: locked || props.loading, busy: preparing }}
                 >
-                  <IconSymbol name={listening ? 'stop.fill' : 'mic.fill'} size={32} color={tokens.action.primaryText} />
-                </View>
-              </Pressable>
-              <Pressable
-                onPress={writeAnswer}
-                disabled={locked || props.loading}
-                accessibilityRole="button"
-                accessibilityLabel={t('recording.conversation.type')}
-                style={[styles.secondaryButton, { borderColor: tokens.surface.border, opacity: locked || props.loading ? 0.5 : 1 }]}
-                testID="recording-conversation-type"
-              >
-                <IconSymbol name="pencil" size={22} color={tokens.accent.text} />
-              </Pressable>
-            </View>
+                  <View
+                    // Keep the native icon parent stable as disabled opacity changes.
+                    collapsable={false}
+                    style={[styles.mic, { backgroundColor: tokens.action.primary, opacity: locked || props.loading ? 0.5 : 1 }]}
+                  >
+                    <IconSymbol name={listening ? 'stop.fill' : 'mic.fill'} size={32} color={tokens.action.primaryText} />
+                  </View>
+                </Pressable>
+                <Pressable
+                  onPress={writeAnswer}
+                  disabled={locked || props.loading}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('recording.conversation.type')}
+                  style={[styles.secondaryButton, { borderColor: tokens.surface.border, opacity: locked || props.loading ? 0.5 : 1 }]}
+                  testID="recording-conversation-type"
+                >
+                  <IconSymbol name="pencil" size={22} color={tokens.accent.text} />
+                </Pressable>
+              </View>
+              <Text style={[styles.hint, { color: tokens.text.secondary }]}>
+                {t('recording.conversation.reply')}
+              </Text>
+            </>
           ) : null}
           {showAnswerEditor ? (
             <View style={styles.answerSection}>
