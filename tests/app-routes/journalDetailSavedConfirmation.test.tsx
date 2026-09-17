@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { PendingRecordingIntent } from '@/lib/onboardingState';
@@ -13,6 +13,7 @@ let mockMedia: any = null;
 let mockQuotaUsage: any = { analysis: { used: 0, limit: 3, remaining: 3 } };
 let mockTier: 'free' | 'plus' = 'free';
 const mockUpdateDream = jest.fn();
+const mockRetryDreamSync = jest.fn(async (): Promise<void> => undefined);
 let mockCompositeLoads = true;
 const mockRetryMedia = jest.fn();
 const mockShareComposite = jest.fn();
@@ -92,7 +93,7 @@ jest.mock('react-native', () => {
 
   return {
     __esModule: true,
-    ActivityIndicator: createElement('div'),
+    ActivityIndicator: () => <div role="progressbar" />,
     Alert: { alert: jest.fn() },
     Keyboard: {
       addListener: () => ({ remove: jest.fn() }),
@@ -258,7 +259,7 @@ jest.mock('@/context/DreamsContext', () => ({
     toggleFavorite: mockToggleFavorite,
     updateDream: mockUpdateDream,
     deleteDream: mockDeleteDream,
-    retryDreamSync: jest.fn(),
+    retryDreamSync: mockRetryDreamSync,
     resolveDreamConflict: jest.fn(),
     generateDreamImage: jest.fn(),
     analyzeDream: mockAnalyzeDream,
@@ -354,7 +355,7 @@ jest.mock('@/hooks/useTranslation', () => ({
 
 jest.mock('@/lib/env', () => ({
   isHdIllustrationsEnabled: () => true,
-  isMockModeEnabled: () => true,
+  isMockModeEnabled: () => false,
   isReferenceImagesEnabled: () => false,
 }));
 
@@ -378,6 +379,7 @@ describe('journal detail saved confirmation route', () => {
     mockQuotaUsage = { analysis: { used: 0, limit: 3, remaining: 3 } };
     mockTier = 'free';
     mockUpdateDream.mockClear();
+    mockRetryDreamSync.mockReset();
     mockRetryMedia.mockReset();
     mockShareComposite.mockReset();
     require('react-native').Platform.OS = 'web';
@@ -388,6 +390,21 @@ describe('journal detail saved confirmation route', () => {
 
   afterEach(() => {
     cleanup();
+  });
+
+  it('shows pending sync without a perpetual spinner and exposes a failed manual retry', async () => {
+    mockDreams = [buildDream({ syncState: 'pending' })];
+    let rejectRetry!: (error: Error) => void;
+    mockRetryDreamSync.mockReturnValueOnce(new Promise<void>((_resolve, reject) => { rejectRetry = reject; }));
+    render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.sync.pending_title')).toBeTruthy();
+    expect(screen.queryByRole('progressbar')).toBeNull();
+    await act(async () => { fireEvent.click(screen.getByText('journal.detail.sync.retry')); });
+    expect(mockRetryDreamSync).toHaveBeenCalledWith(mockDreams[0]);
+    expect(screen.getByRole('progressbar')).toBeTruthy();
+    await act(async () => { rejectRetry(new Error('offline')); });
+    expect(screen.queryByRole('progressbar')).toBeNull();
+    expect(screen.getByRole('alert').textContent).toContain('journal.detail.sync.retry_error');
   });
 
   it('reveals a newly completed analysis once, but not on a revisit or failed attempt', () => {
@@ -607,6 +624,7 @@ describe('stable dream route identity', () => {
     mockMedia = null;
     mockQuotaUsage = { analysis: { used: 0, limit: 3, remaining: 3 } };
     mockUpdateDream.mockClear();
+    mockRetryDreamSync.mockReset();
     mockToggleFavorite.mockClear();
     mockDreams = [buildDream({ remoteId: 17, clientRequestId: 'request-17', title: 'Seventeen' }), buildDream({ remoteId: 2501, clientRequestId: 'request-2501', title: 'Last dream' })];
     mockSearchParams = { id: '42', remoteId: String(remoteId) };

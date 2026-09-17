@@ -82,6 +82,27 @@ describe('injected durable Journal sync engine', () => {
     expect(commands.pendingMutationsRef.current).toEqual([]);
   });
 
+  it('allows the new account to sync while an old account request is still unresolved', async () => {
+    const { commands, engine, options, dependencies } = setup([mutation()]);
+    const network = deferred();
+    dependencies.createDreamInSupabase.mockImplementationOnce(async (value) => {
+      await network.promise; return { ...value, remoteId: 10 };
+    });
+    const oldReplay = commands.syncPendingMutations();
+    await flush();
+    engine.activate('user:b', true);
+    const next = engine.bind({ ...options, userScope: 'user:b' }, { id: 'b' });
+    next.setPendingMutations([mutation('new-account', 'user:b')]);
+    const nextReplay = next.syncPendingMutations();
+    await flush();
+    expect(dependencies.createDreamInSupabase).toHaveBeenCalledTimes(2);
+    await nextReplay;
+    expect(next.pendingMutationsRef.current).toEqual([]);
+    network.resolve();
+    await oldReplay;
+    expect(next.pendingMutationsRef.current).toEqual([]);
+  });
+
   it('cancels a never-sent create deleted while its sending marker is persisted', async () => {
     const { commands, dependencies } = setup([mutation()]);
     const write = deferred();

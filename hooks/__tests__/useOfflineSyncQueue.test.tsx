@@ -8,6 +8,16 @@ import { DreamPersistenceError } from '../../lib/dreamStorageRead';
 import type { DreamAnalysis, DreamMutation } from '../../lib/types';
 import { useOfflineSyncQueue } from '../useOfflineSyncQueue';
 
+const mockGetNetworkState = jest.fn(async () => ({ isConnected: true, isInternetReachable: true }));
+const mockAppStateListeners = new Set<(state: string) => void>();
+jest.mock('expo-network', () => ({ getNetworkStateAsync: () => mockGetNetworkState() }));
+jest.mock('react-native', () => ({ AppState: {
+  addEventListener: (_event: string, listener: (state: string) => void) => {
+    mockAppStateListeners.add(listener);
+    return { remove: () => mockAppStateListeners.delete(listener) };
+  },
+} }));
+
 // Mock AuthContext
 const mockUser = ((factory: any) => factory())(() => ({ current: { id: 'user-123' } as { id: string } | null }));
 
@@ -87,6 +97,7 @@ describe('useOfflineSyncQueue', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUser.current = { id: 'user-123' };
+    mockGetNetworkState.mockResolvedValue({ isConnected: true, isInternetReachable: true });
   });
 
   afterEach(() => {
@@ -104,6 +115,64 @@ describe('useOfflineSyncQueue', () => {
     expect(result.current.retryDreamMutations).toBe(before.retryDreamMutations);
     expect(result.current.setPendingMutations).toBe(before.setPendingMutations);
     expect(result.current.syncPendingMutations).not.toBe(before.syncPendingMutations);
+  });
+
+  it('replays a matching queue that hydrates after the initial effect without another render dependency changing', async () => {
+    const dream = buildDream({ id: 92 });
+    mockCreateDream.mockResolvedValue({ ...dream, remoteId: 1092 });
+    const scope = 'user:user-123';
+    const { result, rerender } = renderHook(({ loaded, mutations }) => useOfflineSyncQueue({
+      ...defaultOptions, userScope: scope, initialMutationsLoaded: loaded,
+      initialMutationsScope: scope, initialMutations: mutations,
+    }), { initialProps: { loaded: false, mutations: [] as DreamMutation[] } });
+    expect(mockCreateDream).not.toHaveBeenCalled();
+    rerender({ loaded: true, mutations: [legacyMutation({
+      id: 'late-hydration', type: 'create', dream, createdAt: 92,
+    })] });
+    await waitFor(() => expect(mockCreateDream).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(result.current.pendingMutationsRef.current).toEqual([]));
+  });
+
+  it.each(['manual', 'foreground'] as const)('refreshes stale offline state on %s replay without remounting', async (trigger: 'manual' | 'foreground') => {
+    const dream = buildDream({ id: 93 });
+    mockCreateDream.mockResolvedValue({ ...dream, remoteId: 1093 });
+    const { result } = renderHook(() => useOfflineSyncQueue({ ...defaultOptions, hasNetwork: false }));
+    await act(async () => {
+      await result.current.queueOfflineOperation(legacyMutation({ id: 'stale-offline', type: 'create', dream, createdAt: 93 }), [dream]);
+    });
+    expect(mockCreateDream).not.toHaveBeenCalled();
+    await act(async () => {
+      if (trigger === 'manual') await result.current.syncPendingMutations({ refreshNetworkState: true });
+      else mockAppStateListeners.forEach((listener) => listener('active'));
+    });
+    await waitFor(() => expect(result.current.pendingMutationsRef.current).toEqual([]));
+    expect(mockGetNetworkState).toHaveBeenCalledTimes(1);
+    expect(mockCreateDream).toHaveBeenCalledTimes(1);
+  });
+
+  it('retains the queue and rejects an explicit retry while genuinely offline', async () => {
+    mockGetNetworkState.mockResolvedValue({ isConnected: false, isInternetReachable: false });
+    const dream = buildDream({ id: 94 });
+    const { result } = renderHook(() => useOfflineSyncQueue({ ...defaultOptions, hasNetwork: false }));
+    await result.current.queueOfflineOperation(legacyMutation({ id: 'offline', type: 'create', dream, createdAt: 94 }), [dream]);
+    await expect(result.current.syncPendingMutations({ refreshNetworkState: true })).rejects.toThrow('internet connection');
+    expect(mockCreateDream).not.toHaveBeenCalled();
+    expect(result.current.pendingMutationsRef.current).toEqual([expect.objectContaining({ id: 'offline', status: 'pending' })]);
+  });
+
+  it('bounds a stalled connectivity probe and removes its foreground listener on unmount', async () => {
+    jest.useFakeTimers();
+    try {
+      mockGetNetworkState.mockImplementationOnce(() => new Promise(() => {}));
+      const { result, unmount } = renderHook(() => useOfflineSyncQueue(defaultOptions));
+      const attempt = result.current.syncPendingMutations({ refreshNetworkState: true });
+      const failure = expect(attempt).rejects.toThrow('timed out');
+      await act(async () => { jest.advanceTimersByTime(5000); });
+      await failure;
+      expect(mockCreateDream).not.toHaveBeenCalled();
+      unmount();
+      expect(mockAppStateListeners.size).toBe(0);
+    } finally { jest.useRealTimers(); }
   });
 
   describe('initialization', () => {

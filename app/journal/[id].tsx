@@ -282,6 +282,7 @@ function JournalDetailContent() {
   }, [savedParam]);
   const [isRetryingImage, setIsRetryingImage] = useState(false);
   const [isRetryingSync, setIsRetryingSync] = useState(false);
+  const [syncRetryFailed, setSyncRetryFailed] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isReadingAnalysis, setIsReadingAnalysis] = useState(false);
   const awaitingAnalysisReading = useRef(false);
@@ -1043,12 +1044,14 @@ function JournalDetailContent() {
   const handleRetrySync = useCallback(async () => {
     if (!dream) return;
     try {
+      setSyncRetryFailed(false);
       setIsRetryingSync(true);
       await retryDreamSync(dream);
     } catch (error) {
       if (__DEV__) {
         console.warn('[JournalDetail] Failed to retry sync', error);
       }
+      setSyncRetryFailed(true);
     } finally {
       setIsRetryingSync(false);
     }
@@ -1705,8 +1708,10 @@ function JournalDetailContent() {
           <Text className={`flex-1 font-serif-bold text-[22px] ${titleToneClassName}`}>{title}</Text>
         </View>
         <Text className={`mb-5 font-sans text-[15px] leading-[22px] ${messageToneClassName}`}>{message}</Text>
-        {isSyncPending ? (
-          <ActivityIndicator size="small" color={noctalia.accent.text} />
+        {syncRetryFailed ? (
+          <Text accessibilityRole="alert" className="mb-4 font-sans text-[15px] text-ivory-muted">
+            {t('journal.detail.sync.retry_error')}
+          </Text>
         ) : null}
         {isSyncPending || isSyncFailed ? (
           <PressableScale

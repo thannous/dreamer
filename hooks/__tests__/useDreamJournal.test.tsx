@@ -97,6 +97,7 @@ const mockNetworkState = {
 // Mock dependencies
 jest.mock('expo-network', () => ({
   useNetworkState: () => mockNetworkState,
+  getNetworkStateAsync: async () => mockNetworkState,
 }));
 
 jest.mock('expo-localization', () => ({
@@ -1445,14 +1446,20 @@ describe('useDreamJournal', () => {
       mockGetPendingDreamMutations.mockImplementation(async () => queue);
       mockSavePendingDreamMutations.mockImplementation(async (value: DreamMutation[]) => { queue = value; });
       mockFetchDreamsFromSupabase.mockResolvedValue([]);
+      let finishCreate!: (dream: DreamAnalysis) => void;
+      mockCreateDreamInSupabase.mockReturnValueOnce(new Promise((resolve) => { finishCreate = resolve; }));
       const hook = await renderLoadedDreamJournal();
       let finishCacheRead!: (value: DreamListReadResult) => void;
       mockGetCachedRemoteDreams.mockReturnValueOnce(new Promise((resolve) => { finishCacheRead = resolve; }));
       let reload!: Promise<void>;
       await act(async () => { reload = hook.result.current.reloadDreams(); });
-      mockCreateDreamInSupabase.mockResolvedValue({ ...original, remoteId: 1875 });
-      await act(async () => { await hook.result.current.retryDreamSync(875); });
+      await act(async () => {
+        const retry = hook.result.current.retryDreamSync(875);
+        finishCreate({ ...original, remoteId: 1875 });
+        await retry;
+      });
       expect(queue).toEqual([]);
+      expect(hook.result.current.dreams[0]).toMatchObject({ remoteId: 1875, syncState: 'clean' });
       mockDeleteDreamFromSupabase.mockResolvedValue(undefined);
       await act(async () => { await hook.result.current.deleteDream(875); });
       expect(cache).toEqual([]);
