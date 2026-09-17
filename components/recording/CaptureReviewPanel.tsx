@@ -15,7 +15,7 @@ export function CaptureReviewPanel({ text, source, disabled, onChange, onExit }:
   const theme = getNoctaliaDesignTokens(colors, mode);
   return <View>
     <View style={styles.header}>
-      <Text accessibilityRole="header" style={[styles.title, { color: theme.text.primary }]}>{t('recording.review.title')}</Text>
+      <Text accessibilityRole="header" style={[styles.title, { color: theme.text.primary }]}>{t('recording.conversation.ready')}</Text>
       <Pressable onPress={onExit} disabled={disabled} accessibilityRole="button"
         accessibilityLabel={t('recording.review.exit')} style={styles.close} testID="capture-review-exit">
         <IconSymbol name="xmark" size={23} color={theme.text.primary} />

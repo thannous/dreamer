@@ -9,7 +9,6 @@ import { RecordingInputModeSelect } from '@/components/recording/RecordingInputM
 import { CaptureDraftEditor } from '@/components/recording/CaptureDraftEditor';
 import { parseCaptureEditableDraft, serializeCaptureEditableDraft, updateCaptureDraftSection, type CaptureEditableDraft } from '@/lib/captureEditableDraft';
 import { CaptureReviewPanel } from '@/components/recording/CaptureReviewPanel';
-import { formatCaptureNarrative } from '@/services/captureConversation';
 import { decodeCaptureDraft, encodeCaptureReview, type CaptureReview } from '@/lib/captureReviewDraft';
 import { RecordingConversation } from '@/components/recording/RecordingConversation';
 import { useCaptureConversation } from '@/hooks/useCaptureConversation';
@@ -192,7 +191,7 @@ export default function RecordingScreen() {
   const conversation = useCaptureConversation({ language, t, scope: onboardingScope });
   const { ask: askCaptureQuestion, reset: resetConversation, cancel: cancelConversation } = conversation;
   useEffect(() => {
-    // A formatting result cannot outlive its screen or account scope.
+    // Preparing a review cannot outlive its screen or account scope.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsFormatting(false);
     return () => {
@@ -1569,7 +1568,8 @@ export default function RecordingScreen() {
       const source = baseTranscriptRef.current || transcript;
       if (!isTranscriptSaveable(source)) return;
       formatSourceRef.current = source;
-      const text = await formatCaptureNarrative(source, language, controller.signal);
+      // Review exactly what the narrator entered; no AI call or invented transitions.
+      const text = source;
       if (controller.signal.aborted || formatRequestRef.current !== controller) return;
       const review = { source, text };
       if (!noteInput(encodeCaptureReview(review))) return;
@@ -1591,7 +1591,7 @@ export default function RecordingScreen() {
         setIsFormatting(false);
       }
     }
-  }, [cancelConversation, handleSaveDream, isHydrated, isPersisting, isRecordingRef, language, noteInput, stopRecording, t, transcript]);
+  }, [cancelConversation, handleSaveDream, isHydrated, isPersisting, isRecordingRef, noteInput, stopRecording, t, transcript]);
 
   const saveButtonLabel = isFormatting ? t('recording.review.preparing')
     : captureReview ? t('recording.button.save_dream')
@@ -1709,7 +1709,8 @@ export default function RecordingScreen() {
                       setAnswerBase(null);
                       setCurrentAnswer('');
                       captureMicrophoneMutedRef.current = false;
-                      void askCaptureQuestion(baseTranscriptRef.current);
+                      const done = await askCaptureQuestion(baseTranscriptRef.current);
+                      if (done) await handleValidateCapture();
                       Keyboard.dismiss();
                     }}
                   />

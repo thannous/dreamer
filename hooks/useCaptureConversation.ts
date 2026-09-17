@@ -51,7 +51,8 @@ export function useCaptureConversation({ language, t, scope }: Options) {
       setQuestion(null);
       setDone(true);
       setLoading(false);
-      return;
+      setUnavailable(false);
+      return true;
     }
     const abort = new AbortController();
     controller.current = abort;
@@ -65,6 +66,7 @@ export function useCaptureConversation({ language, t, scope }: Options) {
       setQuestion(result.question);
       setDone(result.done);
       if (result.question) previous.current.push(result.question);
+      return result.done;
     } catch {
       if (generation.current !== owner) return;
       // A general local question keeps capture usable offline, without pretending it was personalized.

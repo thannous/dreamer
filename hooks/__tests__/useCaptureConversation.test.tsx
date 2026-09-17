@@ -29,7 +29,7 @@ it('discards a stale question after the draft is cleared', async () => {
   let resolve!: (value: { question: string; done: boolean }) => void;
   request.mockImplementation(() => new Promise(r => { resolve = r; }));
   const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t }));
-  let pending!: Promise<void>;
+  let pending!: ReturnType<typeof result.current.ask>;
   act(() => { pending = result.current.ask('Ancien rêve'); });
   act(() => result.current.reset());
   await act(async () => { resolve({ question: 'Ancienne question ?', done: false }); await pending; });
@@ -54,7 +54,7 @@ it('stops after three questions and discards a response when the account scope c
   rerender({ scope: 'user-one' });
   let resolve!: (value: { question: string; done: boolean }) => void;
   request.mockImplementation(() => new Promise(r => { resolve = r; }));
-  let pending!: Promise<void>;
+  let pending!: ReturnType<typeof result.current.ask>;
   act(() => { pending = result.current.ask('Un autre rêve'); });
   const signal = request.mock.calls.at(-1)![3];
   rerender({ scope: 'user-two' });
