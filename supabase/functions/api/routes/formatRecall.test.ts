@@ -1,5 +1,6 @@
 import { assertEquals, assertStringIncludes } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 import { handleFormatRecall } from './formatRecall.ts';
+import { GEMINI_MODELS } from '../lib/models.ts';
 import { isProductRouteAllowed } from '../lib/productAuthorization.ts';
 import type { ApiContext } from '../types.ts';
 const ctx = (body: unknown, user: unknown = { id: 'u1' }): ApiContext => ({
@@ -19,12 +20,12 @@ Deno.test('formatting uses journal authorization, size limits and recall admissi
   assertEquals((await handleFormatRecall(ctx(body), { ...deps, admit: async () => new Response('', { status: 429 }) })).status, 429);
   assertEquals(calls, 0);
 });
-Deno.test('formatting forwards all exchanges in one Lite call and returns a proposal without persistence', async () => {
+Deno.test('formatting forwards all exchanges in one configured recall-model call and returns a proposal without persistence', async () => {
   let calls = 0;
   const response = await handleFormatRecall(ctx(body), { apiKey: 'test', admit,
     generate: async (_key, model, fallback, contents, instruction) => {
       calls++;
-      assertEquals(model, 'gemini-3.5-flash-lite');
+      assertEquals(model, GEMINI_MODELS.text.recall);
       assertEquals(fallback, model);
       assertEquals(JSON.parse(contents[0].parts[0].text!), { transcript: body.transcript });
       assertStringIncludes(instruction, 'French');

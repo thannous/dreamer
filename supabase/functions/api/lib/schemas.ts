@@ -1,3 +1,5 @@
+export const DREAM_TYPE_VALUES = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream', 'Everyday Dream', 'Fantastical Dream', 'Unknown'];
+
 export const ANALYZE_DREAM_SCHEMA = {
   type: 'object',
   additionalProperties: false,
@@ -5,10 +7,11 @@ export const ANALYZE_DREAM_SCHEMA = {
     title: { type: 'string' },
     interpretation: { type: 'string' },
     shareableQuote: { type: 'string' },
+    quoteSourceExcerpts: { type: 'array', minItems: 0, maxItems: 3, items: { type: 'string' } },
     theme: { type: 'string', enum: ['surreal', 'mystical', 'calm', 'noir'] },
     dreamType: {
       type: 'string',
-      enum: ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream', 'Unknown'],
+      enum: DREAM_TYPE_VALUES,
     },
     imagePrompt: { type: 'string' },
     symbols: {
@@ -50,6 +53,7 @@ export const ANALYZE_DREAM_SCHEMA = {
     'title',
     'interpretation',
     'shareableQuote',
+    'quoteSourceExcerpts',
     'theme',
     'dreamType',
     'imagePrompt',
@@ -67,7 +71,7 @@ export const CATEGORIZE_DREAM_SCHEMA = {
     theme: { type: 'string', enum: ['surreal', 'mystical', 'calm', 'noir'] },
     dreamType: {
       type: 'string',
-      enum: ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream', 'Unknown'],
+      enum: DREAM_TYPE_VALUES,
     },
     hasPerson: { type: 'boolean' },
     hasAnimal: { type: 'boolean' },

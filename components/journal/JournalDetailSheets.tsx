@@ -394,12 +394,16 @@ export function ImageErrorSheet({
   onRetry,
   isRetrying,
   message,
+  canRetry = true,
+  onManageSubscription,
 }: {
   visible: boolean;
   onClose: () => void;
   onRetry: () => void;
   isRetrying: boolean;
   message?: string | null;
+  canRetry?: boolean;
+  onManageSubscription?: () => void;
 }) {
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -421,18 +425,22 @@ export function ImageErrorSheet({
           <IconSymbol name="exclamationmark.circle.fill" size={24} color={noctalia.status.danger.icon} />
         </View>
         <Text className={TITLE_CLASS}>
-          {t('image_retry.generation_failed')}
+          {t(onManageSubscription ? 'image_retry.authorization_title' : 'image_retry.generation_failed')}
         </Text>
       </View>
       <Text className={BODY_CLASS}>
         {message ?? t('common.unknown_error')}
       </Text>
       <BottomSheetActions>
-        <BottomSheetPrimaryAction
-          label={t('analysis.retry')}
-          onPress={onRetry}
-          state={isRetrying ? 'loading' : 'enabled'}
-        />
+        {onManageSubscription ? (
+          <BottomSheetPrimaryAction label={t('image_retry.check_subscription')} onPress={onManageSubscription} />
+        ) : canRetry ? (
+          <BottomSheetPrimaryAction
+            label={t('analysis.retry')}
+            onPress={onRetry}
+            state={isRetrying ? 'loading' : 'enabled'}
+          />
+        ) : null}
         <BottomSheetSecondaryAction label={t('common.cancel')} onPress={onClose} />
       </BottomSheetActions>
     </BottomSheet>

@@ -280,6 +280,18 @@ describe('buildDreamTrends', () => {
     expect(trends.patterns.empty).toBe(false);
   });
 
+  it('includes everyday and fantastical dreams in type patterns', () => {
+    const trends = buildDreamTrends([
+      analyzed(localDay(2026, 7, 23), { dreamType: 'Everyday Dream' }),
+      analyzed(localDay(2026, 7, 24), { dreamType: 'Fantastical Dream' }),
+      analyzed(localDay(2026, 7, 25), { dreamType: 'Fantastical Dream' }),
+    ], { now: NOW });
+    expect(trends.patterns.types).toEqual([
+      { value: 'Fantastical Dream', count: 2 },
+      { value: 'Everyday Dream', count: 1 },
+    ]);
+  });
+
   it('treats types as honest motifs even without themes or recurrence', () => {
     const trends = buildDreamTrends(
       [

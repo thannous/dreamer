@@ -1,3 +1,4 @@
+import { MarkdownText } from '@/components/ui/MarkdownText';
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@/context/ThemeContext';
@@ -17,6 +18,9 @@ type Props = {
   loading: boolean;
   unavailable: boolean;
   done: boolean;
+  needsDecision?: boolean;
+  onContinueQuestions?: () => void | Promise<void>;
+  onFinish?: () => void;
   disabled: boolean;
   voiceSupported: boolean;
   voiceStatus: MicButtonStatus;
@@ -65,11 +69,12 @@ export function RecordingConversation(props: Props) {
   return (
     <View style={styles.container} testID="recording-conversation">
       <View style={styles.questionBlock}>
-        <Text accessibilityLiveRegion="polite" style={[styles.question, { color: tokens.text.primary }]} testID="recording-conversation-question">
+        <MarkdownText accessibilityLiveRegion="polite" style={[styles.question, { color: tokens.text.primary }]} testID="recording-conversation-question">
           {props.loading ? t('recording.conversation.thinking')
             : props.done ? t('recording.conversation.ready')
+            : props.needsDecision ? t('recording.conversation.edited')
             : props.question ?? t(props.storyTranscript.trim() ? 'dream_recall.question.what_else' : 'recording.conversation.welcome')}
-        </Text>
+        </MarkdownText>
         {listening ? (
           <Text accessibilityLiveRegion="polite" style={[styles.hint, { color: tokens.text.secondary }]} testID="recording-listening-status">
             {t('recording.conversation.listening')}
@@ -82,7 +87,18 @@ export function RecordingConversation(props: Props) {
         ) : null}
       </View>
       {props.loading ? <ActivityIndicator color={tokens.accent.text} accessibilityLabel={t('recording.conversation.thinking')} /> : null}
-      {!props.done ? (
+      {props.needsDecision ? (
+        <View style={styles.choiceArea}>
+          <Text style={[styles.hint, { color: tokens.text.secondary }]}>{t('recording.conversation.edited_hint')}</Text>
+          <Pressable onPress={() => { void props.onContinueQuestions?.(); }} disabled={locked || props.loading}
+            accessibilityRole="button" accessibilityState={{ disabled: locked || props.loading }}
+            style={[styles.choiceButton, { borderColor: tokens.surface.border }]}
+            testID="recording-conversation-continue-questions">
+            <Text style={[styles.small, { color: tokens.text.primary }]}>{t('recording.conversation.continue_questions')}</Text>
+          </Pressable>
+        </View>
+      ) : null}
+      {!props.done && !props.needsDecision ? (
         <View style={styles.replyArea}>
           <View style={styles.answerSection}>
             <RecordingTextInput
@@ -116,12 +132,13 @@ export function RecordingConversation(props: Props) {
                     onPress={submitAnswer}
                     disabled={submitDisabled}
                     accessibilityRole="button"
-                    accessibilityLabel={t('recording.conversation.stop')}
+                    accessibilityLabel={t('recording.conversation.send')}
                     accessibilityState={{ disabled: submitDisabled, busy: switching }}
-                    style={[styles.editorAction, { backgroundColor: tokens.action.primary, borderColor: tokens.action.primary, opacity: submitDisabled ? 0.4 : 1 }]}
+                    style={[styles.editorAction, styles.continueButton, { backgroundColor: tokens.action.primary, borderColor: tokens.action.primary, opacity: submitDisabled ? 0.4 : 1 }]}
                     testID="recording-conversation-submit"
                   >
-                    <IconSymbol name="arrow.up" size={24} color={tokens.action.primaryText} />
+                    <Text style={[styles.small, { color: tokens.action.primaryText }]}>{t('recording.conversation.send')}</Text>
+                    <IconSymbol name="arrow.right" size={20} color={tokens.action.primaryText} />
                   </Pressable>
                 </>
               }
@@ -131,6 +148,12 @@ export function RecordingConversation(props: Props) {
             />
           </View>
         </View>
+      ) : null}
+      {!props.done && props.storyTranscript.trim() && props.onFinish ? (
+        <Pressable onPress={props.onFinish} disabled={locked} accessibilityRole="button"
+          accessibilityState={{ disabled: locked }} style={styles.finishButton} testID="recording-conversation-finish">
+          <Text style={[styles.small, { color: tokens.accent.text }]}>{t('recording.conversation.done')}</Text>
+        </Pressable>
       ) : null}
       {props.storyTranscript.trim() ? (
         <View style={[styles.recap, { borderTopColor: tokens.surface.border }]}>
@@ -176,6 +199,10 @@ export function RecordingConversation(props: Props) {
 
 const styles = StyleSheet.create({
   container: { width: '100%', maxWidth: 512, alignSelf: 'center', gap: 20, paddingTop: 4 },
+  choiceArea: { gap: 12 },
+  choiceButton: { minHeight: 48, borderWidth: StyleSheet.hairlineWidth, borderRadius: 16, padding: 14, alignItems: 'center' },
+  finishButton: { minHeight: 48, alignItems: 'center', justifyContent: 'center' },
+  continueButton: { width: 'auto', minWidth: 48, flexDirection: 'row', gap: 8, paddingHorizontal: 14, flexShrink: 1 },
   restartButton: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
   recapEdit: { flex: 1, minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   questionBlock: { gap: 8 },

@@ -69,3 +69,9 @@ export const loadSubscriptionPackages = service.loadOfferings;
 export const purchaseSubscriptionPackage = service.purchasePackage;
 export const restoreSubscriptionPurchases = service.restorePurchases;
 export const logOutSubscriptionUser = service.logOutUser ?? (async () => {});
+
+/** Native management remains lazy; screens use the subscription service boundary. */
+export async function manageSubscription(userId: string | null) {
+  const { presentRevenueCatCustomerCenter } = await import('./revenuecatUI');
+  return presentRevenueCatCustomerCenter({ userId });
+}

@@ -122,4 +122,23 @@ describe('ImageRetry', () => {
     expect(screen.getByText('image_retry.generating')).toBeTruthy();
     expect((screen.getByTestId(TID.Button.JournalImageRetry) as HTMLButtonElement).disabled).toBe(true);
   });
+  it.each(['FREE_IMAGE_ANALYSIS_REQUIRED', 'FREE_IMAGE_ANALYSIS_CLAIM_PENDING'])('offers subscription information instead of a futile retry for %s', (errorCode: string) => {
+    const onRetry = jest.fn();
+    const onManageSubscription = jest.fn();
+    const { ImageRetry } = require('../ImageRetry');
+    render(<ImageRetry onRetry={onRetry} errorCode={errorCode} onManageSubscription={onManageSubscription} />);
+    expect(screen.getByText('image_retry.authorization_message')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Button.JournalImageRetry)).toBeNull();
+    fireEvent.click(screen.getByText('image_retry.check_subscription'));
+    expect(onManageSubscription).toHaveBeenCalledTimes(1);
+    expect(onRetry).not.toHaveBeenCalled();
+  });
+
+  it('does not offer retry when the server has exhausted this request', () => {
+    const { ImageRetry } = require('../ImageRetry');
+    render(<ImageRetry onRetry={jest.fn()} errorCode="AI_JOB_ATTEMPTS_EXHAUSTED" />);
+    expect(screen.getByText('image_retry.exhausted_message')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Button.JournalImageRetry)).toBeNull();
+  });
+
 });

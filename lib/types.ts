@@ -44,7 +44,7 @@ export type SyncMutationOperation = 'create' | 'update' | 'delete';
  * Canonical dream type categories used in the app.
  * The AI/backend should always return one of these values.
  */
-export type DreamType = 'Lucid Dream' | 'Recurring Dream' | 'Nightmare' | 'Symbolic Dream' | 'Unknown';
+export type DreamType = 'Lucid Dream' | 'Recurring Dream' | 'Nightmare' | 'Symbolic Dream' | 'Everyday Dream' | 'Fantastical Dream' | 'Unknown';
 
 /**
  * Canonical dream visual/emotional themes.
@@ -127,6 +127,7 @@ export interface DreamAnalysis {
   captureOriginalTranscript?: string;
   title: string;
   interpretation: string;
+  /** Legacy storage key: an original poetic line for poetic prompt versions; older entries may contain an excerpt. */
   shareableQuote: string;
   // Structured analysis details from the enriched analysis output.
   // Absent on dreams analyzed before the feature shipped.

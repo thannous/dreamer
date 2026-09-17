@@ -9,8 +9,7 @@ import { RecordingInputModeSelect } from '@/components/recording/RecordingInputM
 import { CaptureDraftEditor } from '@/components/recording/CaptureDraftEditor';
 import { parseCaptureEditableDraft, serializeCaptureEditableDraft, updateCaptureDraftSection, type CaptureEditableDraft } from '@/lib/captureEditableDraft';
 import { CaptureReviewPanel } from '@/components/recording/CaptureReviewPanel';
-import { formatCaptureNarrative } from '@/services/captureConversation';
-import { decodeCaptureDraft, encodeCaptureReview, type CaptureReview } from '@/lib/captureReviewDraft';
+import { buildCaptureNarrative, decodeCaptureDraft, encodeCaptureReview, type CaptureReview } from '@/lib/captureReviewDraft';
 import { RecordingConversation } from '@/components/recording/RecordingConversation';
 import { useCaptureConversation } from '@/hooks/useCaptureConversation';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
@@ -145,7 +144,10 @@ export default function RecordingScreen() {
 
   const [transcript, setTranscript] = useState('');
   const [editableCapture, setEditableCapture] = useState<CaptureEditableDraft | null>(null);
-  const [captureReview, setCaptureReview] = useState<CaptureReview | null>(null);
+  const [captureReviewState, setCaptureReview] = useState<CaptureReview | null>(null);
+  const captureReview = useMemo(() => captureReviewState && captureReviewState.text === captureReviewState.source
+    ? { ...captureReviewState, text: buildCaptureNarrative(captureReviewState.source) }
+    : captureReviewState, [captureReviewState]);
   const [reviewExitStep, setReviewExitStep] = useState<'options' | 'confirm' | null>(null);
   const [isLeavingReview, setIsLeavingReview] = useState(false);
   const leavingReviewRef = useRef(false);
@@ -190,9 +192,9 @@ export default function RecordingScreen() {
     onRestore: handleRestoreDraft,
   });
   const conversation = useCaptureConversation({ language, t, scope: onboardingScope });
-  const { ask: askCaptureQuestion, reset: resetConversation, cancel: cancelConversation } = conversation;
+  const { ask: askCaptureQuestion, reset: resetConversation, cancel: cancelConversation, invalidateSource: invalidateCaptureSource } = conversation;
   useEffect(() => {
-    // A formatting result cannot outlive its screen or account scope.
+    // Preparing a review cannot outlive its screen or account scope.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsFormatting(false);
     return () => {
@@ -1434,10 +1436,11 @@ export default function RecordingScreen() {
     const draft = updateCaptureDraftSection(editableCapture, index, text);
     const source = serializeCaptureEditableDraft(draft);
     if (!noteInput(source)) return;
+    if (source !== baseTranscriptRef.current) invalidateCaptureSource(baseTranscriptRef.current);
     setEditableCapture(draft);
     baseTranscriptRef.current = source;
     setTranscript(source);
-  }, [editableCapture, interactionDisabled, noteInput]);
+  }, [invalidateCaptureSource, editableCapture, interactionDisabled, noteInput]);
 
   const handleInputModePreferenceChange = useCallback(
     async (preference: RecordingInputModePreference) => {
@@ -1533,10 +1536,10 @@ export default function RecordingScreen() {
   }, [switchToTextMode]);
 
   useEffect(() => {
-    if (!editableCapture && !captureReview && !isFormatting && inputMode === 'voice' && isHydrated && !isRecordingRef.current && !answerInsertionRef.current && !captureMicrophoneMutedRef.current) {
+    if (!conversation.needsDecision && !editableCapture && !captureReview && !isFormatting && inputMode === 'voice' && isHydrated && !isRecordingRef.current && !answerInsertionRef.current && !captureMicrophoneMutedRef.current) {
       void askCaptureQuestion(baseTranscriptRef.current);
     }
-  }, [askCaptureQuestion, captureReview, editableCapture, isFormatting, inputMode, isHydrated, isRecordingRef]);
+  }, [askCaptureQuestion, conversation.needsDecision, captureReview, editableCapture, isFormatting, inputMode, isHydrated, isRecordingRef]);
 
   const handleConversationAnswerChange = useCallback((text: string) => {
     if (!isHydrated) return;
@@ -1569,7 +1572,8 @@ export default function RecordingScreen() {
       const source = baseTranscriptRef.current || transcript;
       if (!isTranscriptSaveable(source)) return;
       formatSourceRef.current = source;
-      const text = await formatCaptureNarrative(source, language, controller.signal);
+      // Keep narrator words in the review and questions in the original exchanges.
+      const text = buildCaptureNarrative(source);
       if (controller.signal.aborted || formatRequestRef.current !== controller) return;
       const review = { source, text };
       if (!noteInput(encodeCaptureReview(review))) return;
@@ -1591,7 +1595,7 @@ export default function RecordingScreen() {
         setIsFormatting(false);
       }
     }
-  }, [cancelConversation, handleSaveDream, isHydrated, isPersisting, isRecordingRef, language, noteInput, stopRecording, t, transcript]);
+  }, [cancelConversation, handleSaveDream, isHydrated, isPersisting, isRecordingRef, noteInput, stopRecording, t, transcript]);
 
   const saveButtonLabel = isFormatting ? t('recording.review.preparing')
     : captureReview ? t('recording.button.save_dream')
@@ -1685,11 +1689,17 @@ export default function RecordingScreen() {
                     onRestart={handleRestartCapture}
                     transcript={transcript}
                     answer={currentAnswer}
-                    storyTranscript={answerBase ?? transcript}
+                    storyTranscript={conversation.done ? buildCaptureNarrative(answerBase ?? transcript) : answerBase ?? transcript}
                     question={conversation.question}
                     loading={conversation.loading}
                     unavailable={conversation.unavailable}
                     done={conversation.done}
+                    needsDecision={conversation.needsDecision}
+                    onContinueQuestions={async () => {
+                      const done = await askCaptureQuestion(baseTranscriptRef.current);
+                      if (done) await handleValidateCapture();
+                    }}
+                    onFinish={() => { void handleValidateCapture(); }}
                     disabled={interactionDisabled}
                     voiceSupported={isVoiceSupported}
                     voiceStatus={voiceControlStatus}
@@ -1709,7 +1719,8 @@ export default function RecordingScreen() {
                       setAnswerBase(null);
                       setCurrentAnswer('');
                       captureMicrophoneMutedRef.current = false;
-                      void askCaptureQuestion(baseTranscriptRef.current);
+                      const done = await askCaptureQuestion(baseTranscriptRef.current);
+                      if (done) await handleValidateCapture();
                       Keyboard.dismiss();
                     }}
                   />

@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { PendingRecordingIntent } from '@/lib/onboardingState';
@@ -13,9 +13,12 @@ let mockMedia: any = null;
 let mockQuotaUsage: any = { analysis: { used: 0, limit: 3, remaining: 3 } };
 let mockTier: 'free' | 'plus' = 'free';
 const mockUpdateDream = jest.fn();
+const mockRetryDreamSync = jest.fn(async (): Promise<void> => undefined);
 let mockCompositeLoads = true;
 const mockRetryMedia = jest.fn();
 const mockShareComposite = jest.fn();
+jest.mock('@/components/ui/MarkdownText', () => ({ MarkdownText: ({ children }: { children: string }) => <span>{children}</span> }));
+
 jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => mockMedia ?? ({ imageUrl: dream?.imageUrl ?? '', thumbnailUrl: dream?.thumbnailUrl, loading: false, error: false, retry: mockRetryMedia }) }));
 
 const mockToggleFavorite = jest.fn();
@@ -92,7 +95,7 @@ jest.mock('react-native', () => {
 
   return {
     __esModule: true,
-    ActivityIndicator: createElement('div'),
+    ActivityIndicator: () => <div role="progressbar" />,
     Alert: { alert: jest.fn() },
     Keyboard: {
       addListener: () => ({ remove: jest.fn() }),
@@ -145,6 +148,12 @@ jest.mock('expo-linear-gradient', () => ({
 
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 0, left: 0 }),
+}));
+
+jest.mock('@/components/analysis/AnalysisReadingModal', () => ({
+  AnalysisReadingModal: ({ onClose }: { onClose: () => void }) => (
+    <div data-testid="analysis.reading.modal"><button onClick={onClose}>Close reading</button></div>
+  ),
 }));
 
 jest.mock('@/components/Toast', () => ({
@@ -252,7 +261,7 @@ jest.mock('@/context/DreamsContext', () => ({
     toggleFavorite: mockToggleFavorite,
     updateDream: mockUpdateDream,
     deleteDream: mockDeleteDream,
-    retryDreamSync: jest.fn(),
+    retryDreamSync: mockRetryDreamSync,
     resolveDreamConflict: jest.fn(),
     generateDreamImage: jest.fn(),
     analyzeDream: mockAnalyzeDream,
@@ -348,7 +357,7 @@ jest.mock('@/hooks/useTranslation', () => ({
 
 jest.mock('@/lib/env', () => ({
   isHdIllustrationsEnabled: () => true,
-  isMockModeEnabled: () => true,
+  isMockModeEnabled: () => false,
   isReferenceImagesEnabled: () => false,
 }));
 
@@ -372,6 +381,7 @@ describe('journal detail saved confirmation route', () => {
     mockQuotaUsage = { analysis: { used: 0, limit: 3, remaining: 3 } };
     mockTier = 'free';
     mockUpdateDream.mockClear();
+    mockRetryDreamSync.mockReset();
     mockRetryMedia.mockReset();
     mockShareComposite.mockReset();
     require('react-native').Platform.OS = 'web';
@@ -382,6 +392,74 @@ describe('journal detail saved confirmation route', () => {
 
   afterEach(() => {
     cleanup();
+  });
+
+  it('shows pending sync without a perpetual spinner and exposes a failed manual retry', async () => {
+    mockDreams = [buildDream({ syncState: 'pending' })];
+    let rejectRetry!: (error: Error) => void;
+    mockRetryDreamSync.mockReturnValueOnce(new Promise<void>((_resolve, reject) => { rejectRetry = reject; }));
+    render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.sync.pending_title')).toBeTruthy();
+    expect(screen.queryByRole('progressbar')).toBeNull();
+    await act(async () => { fireEvent.click(screen.getByText('journal.detail.sync.retry')); });
+    expect(mockRetryDreamSync).toHaveBeenCalledWith(mockDreams[0]);
+    expect(screen.getByRole('progressbar')).toBeTruthy();
+    await act(async () => { rejectRetry(new Error('offline')); });
+    expect(screen.queryByRole('progressbar')).toBeNull();
+    expect(screen.getByRole('alert').textContent).toContain('journal.detail.sync.retry_error');
+  });
+
+  it('reveals a newly completed analysis once, but not on a revisit or failed attempt', () => {
+    mockDreams = [buildDream({ analysisStatus: 'pending' })];
+    const view = render(<JournalDetailScreen />);
+    expect(screen.queryByTestId('analysis.reading.modal')).toBeNull();
+    mockDreams = [buildDream({ analysisStatus: 'done', isAnalyzed: true, interpretation: 'Reflection' })];
+    view.rerender(<JournalDetailScreen />);
+    expect(screen.getByTestId('analysis.reading.modal')).toBeTruthy();
+    fireEvent.click(screen.getByText('Close reading'));
+    view.rerender(<JournalDetailScreen />);
+    expect(screen.queryByTestId('analysis.reading.modal')).toBeNull();
+    view.unmount();
+    const revisit = render(<JournalDetailScreen />);
+    expect(screen.queryByTestId('analysis.reading.modal')).toBeNull();
+    mockDreams = [buildDream({ analysisStatus: 'pending', isAnalyzed: true, interpretation: 'Old reflection' })];
+    revisit.rerender(<JournalDetailScreen />);
+    mockDreams = [buildDream({ analysisStatus: 'failed', isAnalyzed: true, interpretation: 'Old reflection' })];
+    revisit.rerender(<JournalDetailScreen />);
+    expect(screen.queryByTestId('analysis.reading.modal')).toBeNull();
+    mockDreams = [buildDream({ analysisStatus: 'pending' })];
+    revisit.rerender(<JournalDetailScreen />);
+    mockDreams = [buildDream({ analysisStatus: 'done', isAnalyzed: true, interpretation: 'New reflection' })];
+    revisit.rerender(<JournalDetailScreen />);
+    expect(screen.getByTestId('analysis.reading.modal')).toBeTruthy();
+  });
+
+  it('places the completed reading before optional recall', () => {
+    mockDreams = [buildDream({ analysisStatus: 'done', isAnalyzed: true, interpretation: 'Reflection' })];
+    render(<JournalDetailScreen />);
+    const reading = screen.getByTestId(TID.Component.DreamDetailReadingZone);
+    const recall = screen.getByTestId(TID.Component.DreamRecallOffer);
+    expect(reading.compareDocumentPosition(recall) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('attributes an original poetic quote and omits the section when absent', () => {
+    const caption = 'On a red bird above a forest.';
+    mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: caption, promptVersion: 'analysis-2026-09-17.poetic1' })];
+    const view = render(<JournalDetailScreen />);
+    expect(screen.getByText(`“${caption}”`)).toBeTruthy();
+    expect(screen.getByText('journal.detail.quote_attribution')).toBeTruthy();
+    view.unmount();
+    mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: '  ' })];
+    render(<JournalDetailScreen />);
+    expect(screen.queryByText(`“${caption}”`)).toBeNull();
+    expect(screen.queryByText('journal.detail.quote_attribution')).toBeNull();
+  });
+
+  it('keeps a legacy excerpt without falsely attributing it to Noctalia', () => {
+    mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: 'I flew over a quiet city' })];
+    render(<JournalDetailScreen />);
+    expect(screen.getByText('“I flew over a quiet city”')).toBeTruthy();
+    expect(screen.queryByText('journal.detail.quote_attribution')).toBeNull();
   });
 
   it('keeps illustration retry available after the HD quota is exhausted', () => {
@@ -548,6 +626,7 @@ describe('stable dream route identity', () => {
     mockMedia = null;
     mockQuotaUsage = { analysis: { used: 0, limit: 3, remaining: 3 } };
     mockUpdateDream.mockClear();
+    mockRetryDreamSync.mockReset();
     mockToggleFavorite.mockClear();
     mockDreams = [buildDream({ remoteId: 17, clientRequestId: 'request-17', title: 'Seventeen' }), buildDream({ remoteId: 2501, clientRequestId: 'request-2501', title: 'Last dream' })];
     mockSearchParams = { id: '42', remoteId: String(remoteId) };

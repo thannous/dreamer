@@ -1,3 +1,4 @@
+import { retainedImageJobError } from './dreamSnapshotMerge';
 /** Journal queue transitions. No React, persistence or network side effects. */
 import { resolveDreamTarget } from './dreamIdentity';
 import type { DreamAnalysis, DreamMutation } from './types';
@@ -27,7 +28,7 @@ export const mergeServerDreamWithLocalState = (
       imageJobId: localDream?.imageJobId,
       imageJobStatus: localDream?.imageJobStatus,
       imageJobRequestId: localDream?.imageJobRequestId,
-      imageJobErrorCode: localDream?.imageJobErrorCode,
+      imageJobErrorCode: retainedImageJobError(serverDream, localDream),
       imageJobErrorMessage: localDream?.imageJobErrorMessage,
     },
     'clean',

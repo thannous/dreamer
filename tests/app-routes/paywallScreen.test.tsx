@@ -439,4 +439,18 @@ describe('Paywall screen', () => {
     fireEvent.click(screen.getByTestId(TID.Button.PaywallPrivacyPolicy));
     expect(mockOpenURL).toHaveBeenCalledWith(getLegalLink('privacyPolicy', 'fr'));
   });
+  it.each([
+    ['expired', false, '2020-01-01T12:00:00Z', true],
+    ['new free account', false, null, false],
+    ['active non-renewing plan', true, '2099-01-01T12:00:00Z', false],
+  ] as const)('shows the expiration explanation only for %s', (_label: string, active: boolean, expiryDate: string | null, visible: boolean) => {
+    mockUseSubscription.mockReturnValue({
+      status: { tier: active ? 'plus' : 'free', isActive: active, expiryDate, willRenew: false },
+      isActive: active, loading: false, processing: false, error: null,
+      packages, purchase: mockPurchase, restore: mockRestore, requiresAuth: false,
+    });
+    render(<PaywallScreen />);
+    expect(Boolean(screen.queryByTestId('subscription-expired-notice'))).toBe(visible);
+  });
+
 });

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { parseCaptureEditableDraft } from '@/lib/captureEditableDraft';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { CaptureOriginal } from './CaptureOriginal';
 import { RecordingTextInput } from './RecordingTextInput';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useTheme } from '@/context/ThemeContext';
@@ -13,9 +13,11 @@ export function CaptureReviewPanel({ text, source, disabled, onChange, onExit }:
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const theme = getNoctaliaDesignTokens(colors, mode);
+  const answers = useMemo(() => parseCaptureEditableDraft(source).sections
+    .filter(section => section.question && section.text.trim()), [source]);
   return <View>
     <View style={styles.header}>
-      <Text accessibilityRole="header" style={[styles.title, { color: theme.text.primary }]}>{t('recording.review.title')}</Text>
+      <Text accessibilityRole="header" style={[styles.title, { color: theme.text.primary }]}>{t('recording.conversation.ready')}</Text>
       <Pressable onPress={onExit} disabled={disabled} accessibilityRole="button"
         accessibilityLabel={t('recording.review.exit')} style={styles.close} testID="capture-review-exit">
         <IconSymbol name="xmark" size={23} color={theme.text.primary} />
@@ -25,10 +27,24 @@ export function CaptureReviewPanel({ text, source, disabled, onChange, onExit }:
     <RecordingTextInput value={text} onChange={onChange} disabled={disabled} lengthWarning=""
       instructionText="" voiceSupported={false} autoFocus={false} onSwitchToVoice={() => {}}
       inputTestID="capture-review-text" inputAccessibilityLabel={t('recording.review.title')} />
-    <CaptureOriginal source={source} />
+    {answers.length ? (
+      <View style={[styles.context, { borderColor: theme.surface.border }]} testID="capture-review-answer-context">
+        <Text accessibilityRole="header" style={[styles.contextTitle, { color: theme.text.primary }]}>{t('recording.review.context_title')}</Text>
+        {answers.map((section, index) => (
+          <View key={index} style={styles.contextPair}>
+            <Text style={[styles.contextHint, { color: theme.text.secondary }]}>{section.question}</Text>
+            <Text selectable style={[styles.body, { color: theme.text.primary }]}>{section.text.trim()}</Text>
+          </View>
+        ))}
+      </View>
+    ) : null}
   </View>;
 }
 const styles = StyleSheet.create({
+  context: { marginTop: 16, marginBottom: 12, padding: 16, borderWidth: StyleSheet.hairlineWidth, borderRadius: 14, gap: 10 },
+  contextTitle: { fontSize: 17, lineHeight: 24, fontWeight: '600' },
+  contextHint: { fontSize: 14, lineHeight: 21 },
+  contextPair: { gap: 4 },
   header: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 },
   close: { minHeight: 48, minWidth: 48, alignItems: 'center', justifyContent: 'center' },
   title: { flex: 1, fontSize: 22, lineHeight: 30 },

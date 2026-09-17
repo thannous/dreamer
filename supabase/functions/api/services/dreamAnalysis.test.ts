@@ -5,6 +5,7 @@ import {
   buildAnalysisPrompt,
   runDreamAnalysis,
   groundedAnalysisQuote,
+  supportedPoeticQuote,
   REFLECTION_POLICY,
   ANALYSIS_PROMPT_VERSION,
   discloseAnalysisExcerpt,
@@ -58,7 +59,7 @@ Deno.test('prompt keeps malicious transcript as JSON data and distinguishes omit
 });
 
 Deno.test('analysis sends the compact policy once at system level and preserves source-only output', async () => {
-  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-09-09.4');
+  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-09-17.poetic2');
   const originalFetch = globalThis.fetch;
   let calls = 0;
   globalThis.fetch = async (input, init) => {
@@ -95,4 +96,45 @@ Deno.test('only verbatim source excerpts survive as shareable quotes', () => {
     assertEquals(groundedAnalysisQuote(value, source), '');
   }
   assertEquals(source, "Ma sœur m’a donné une enveloppe fermée. Puis le réveil a sonné.");
+});
+
+Deno.test('poetic lines allow literary atmosphere while requiring real source images', () => {
+  const source = 'I rode a red bird with a crocodile head. A forest was below.';
+  const caption = 'A red bird with a crocodile head carried me above the silence of the forest.';
+  assertEquals(supportedPoeticQuote(caption, [source], source, 'Red bird'), caption);
+  assertEquals(supportedPoeticQuote(`“${caption}”`, [source], source, 'Red bird'), caption);
+  for (const references of [undefined, [], ['A blue bird.'], ['', source], [source, source, source, source]]) {
+    assertEquals(supportedPoeticQuote(caption, references, source, 'Red bird'), '');
+  }
+});
+
+Deno.test('empty, oversized and redundant poetic lines stay absent', () => {
+  const source = 'A blue door.';
+  for (const caption of ['', null, {}, 'x'.repeat(241), source, 'a blue door', 'Door']) {
+    assertEquals(supportedPoeticQuote(caption, [source], source, 'Door'), '');
+  }
+});
+
+Deno.test('analysis returns an original poetic line without exposing source references', async () => {
+  const originalFetch = globalThis.fetch;
+  const source = 'I rode a red bird with a crocodile head. A forest was below.';
+  const caption = 'A red bird with a crocodile head carried me above the silence of the forest.';
+  globalThis.fetch = async () => new Response(JSON.stringify({ status: 'completed', steps: [{ type: 'model_output', content: [{ type: 'text', text: JSON.stringify({ title: 'Red bird', interpretation: 'A remembered scene.', shareableQuote: caption, quoteSourceExcerpts: [source] }) }] }] }), { headers: { 'Content-Type': 'application/json' } });
+  try {
+    const result = await runDreamAnalysis({ apiKey: 'synthetic-test-key', transcript: source, lang: 'en', route: 'test' });
+    assertEquals(result.shareableQuote, caption);
+    assertEquals('quoteSourceExcerpts' in result, false);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+Deno.test('literary license stays scoped to the poetic field and never becomes factual analysis', () => {
+  const prompt = buildAnalysisPrompt('A red bird.', 'English');
+  assertStringIncludes(REFLECTION_POLICY, 'In factual analysis fields');
+  assertStringIncludes(REFLECTION_POLICY, 'Only shareableQuote is a literary creation');
+  assertStringIncludes(prompt, 'one ORIGINAL poetic sentence');
+  assertStringIncludes(prompt, 'not a verbatim excerpt');
+  assertStringIncludes(prompt, 'Do not add an author name');
+  assertStringIncludes(prompt, "infer the dreamer's feelings");
 });

@@ -30,7 +30,6 @@ import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  InteractionManager,
   Platform,
   Pressable,
   StyleSheet,
@@ -87,9 +86,9 @@ const UserMessage = memo(function UserMessage({ message }: { message: ChatMessag
           end={{ x: 1, y: 0 }}
           style={[styles.messageBubble, styles.messageBubbleUser]}
         >
-          <Text style={[styles.messageText, { color: noctalia.action.primaryText }]}>
+          <MarkdownText tone="onAccent" style={[styles.messageText, { color: noctalia.action.primaryText }]}>
             {message.text}
-          </Text>
+          </MarkdownText>
         </LinearGradient>
         <View style={[styles.avatar, { backgroundColor: noctalia.surface.active }]}>
           <IconSymbol name="person.fill" size={20} color={noctalia.text.primary} />
@@ -102,25 +101,6 @@ const UserMessage = memo(function UserMessage({ message }: { message: ChatMessag
 /**
  * AssistantMessage - Styled AI message bubble with streaming support
  */
-const stripMarkdownForHandwriting = (value: string): string => {
-  return value
-    .replace(/```/g, '')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/^#{1,6}\s+/gm, '')
-    .replace(/(\*\*|__)(.*?)\1/g, '$2')
-    .replace(/(\*|_)(.*?)\1/g, '$2')
-    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    .replace(/^\s*[-+*]\s+/gm, '');
-};
-
-const MARKDOWN_HINT_REGEX =
-  /(^#{1,6}\s|```|`[^`]+`|\*\*[^*]+\*\*|__[^_]+__|\*[^*\n]+\*|_[^_\n]+_|!\[[^\]]*]\([^)]+\)|\[[^\]]+]\([^)]+\)|^\s*[-+*]\s+|^\s*\d+\.\s+|^\s*>)/m;
-
-const hasMarkdownSyntax = (value: string): boolean => {
-  return MARKDOWN_HINT_REGEX.test(value);
-};
-
 const AssistantMessage = memo(function AssistantMessage({
   message,
   isStreaming,
@@ -139,129 +119,14 @@ const AssistantMessage = memo(function AssistantMessage({
 }) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const shouldHandwritePlainText = useMemo(
-    () => shouldHandwrite && !hasMarkdownSyntax(message.text),
-    [message.text, shouldHandwrite]
-  );
-  const [showMarkdown, setShowMarkdown] = useState(!shouldHandwritePlainText);
-  const handwritingText = useMemo(() => {
-    // Perf: `stripMarkdownForHandwriting()` runs ~7 regex passes over the full string.
-    // Only compute it when handwriting mode is actually active; most model messages contain Markdown.
-    return shouldHandwritePlainText ? stripMarkdownForHandwriting(message.text) : '';
-  }, [message.text, shouldHandwritePlainText]);
-  const markdownTextRef = useRef(shouldHandwritePlainText ? '' : message.text);
-  const runAfterInteractionsRef = useRef<ReturnType<typeof InteractionManager.runAfterInteractions> | null>(null);
-  const deferMarkdownSwitch = useCallback(() => {
-    // On Android, defer the visual switch to MarkdownText to avoid NullPointerException
-    // in ViewGroup.dispatchDraw when the view tree changes during a draw cycle.
-    if (showMarkdown) return;
-    const applySwitch = () => {
-      requestAnimationFrame(() => {
-        setShowMarkdown(true);
-      });
-    };
-    if (Platform.OS === 'android') {
-      runAfterInteractionsRef.current?.cancel();
-      runAfterInteractionsRef.current = InteractionManager.runAfterInteractions(applySwitch);
-    } else {
-      applySwitch();
-    }
-  }, [showMarkdown]);
-
-  useEffect(() => {
-    return () => {
-      runAfterInteractionsRef.current?.cancel();
-    };
-  }, []);
-
-  useEffect(() => {
-    setShowMarkdown(!shouldHandwritePlainText);
-    runAfterInteractionsRef.current?.cancel();
-  }, [message.id, shouldHandwritePlainText]);
-
-  useEffect(() => {
-    if (!shouldHandwritePlainText) return;
-    if (!isStreaming && !showMarkdown) {
-      deferMarkdownSwitch();
-    }
-  }, [deferMarkdownSwitch, isStreaming, shouldHandwritePlainText, showMarkdown]);
-
-  const shouldShowPlainText = shouldHandwritePlainText && !showMarkdown;
-  const markdownText = shouldHandwritePlainText && isStreaming ? markdownTextRef.current : message.text;
-
-  if (!shouldHandwritePlainText || !isStreaming) {
-    markdownTextRef.current = message.text;
-  }
-
-  const textStyle = [styles.messageText, { color: noctalia.text.primary }];
-
-  useEffect(() => {
-    if (!__DEV__) return;
-    console.debug('[AssistantMessage] render state', {
-      id: message.id,
-      isStreaming,
-      shouldHandwrite,
-      shouldHandwritePlainText,
-      showMarkdown,
-      shouldShowPlainText,
-      activeTextLength: shouldShowPlainText ? handwritingText.length : message.text.length,
-      fullTextLength: message.text.length,
-    });
-  }, [
-    handwritingText.length,
-    isStreaming,
-    message.id,
-    message.text.length,
-    shouldHandwritePlainText,
-    shouldShowPlainText,
-    shouldHandwrite,
-    showMarkdown,
-  ]);
-
   const aiBubbleStyle = {
     backgroundColor: noctalia.surface.raised,
     borderColor: noctalia.surface.border,
     borderWidth: 1,
   };
 
-  // On Android, we use a single-layer approach to avoid NullPointerException in ViewGroup.dispatchDraw
-  // when the view tree changes during a draw cycle. iOS can use the dual-layer approach safely.
-  const messageContent = shouldHandwritePlainText ? (
-    <View style={styles.messageContent}>
-      {Platform.OS === 'android' ? (
-        // Android: Single layer - only render the active component to avoid draw cycle conflicts
-        shouldShowPlainText ? (
-          <Text style={textStyle}>{handwritingText}</Text>
-        ) : (
-          <MarkdownText style={textStyle}>
-            {markdownText}
-          </MarkdownText>
-        )
-      ) : (
-        // iOS: Dual layer with opacity switching - safe on iOS
-        <>
-          <View
-            style={[styles.contentLayer, shouldShowPlainText ? styles.layerHidden : styles.layerVisible]}
-            pointerEvents={shouldShowPlainText ? 'none' : 'auto'}
-          >
-            <MarkdownText style={textStyle}>
-              {markdownText}
-            </MarkdownText>
-          </View>
-          <View
-            style={[
-              styles.contentLayerOverlay,
-              shouldShowPlainText ? styles.layerVisible : styles.layerHidden,
-            ]}
-            pointerEvents={shouldShowPlainText ? 'auto' : 'none'}
-          >
-            <Text style={textStyle}>{handwritingText}</Text>
-          </View>
-        </>
-      )}
-    </View>
-  ) : (
-    <MarkdownText style={textStyle}>
+  const messageContent = (
+    <MarkdownText style={[styles.messageText, { color: noctalia.text.primary }]} isStreaming={isStreaming}>
       {message.text}
     </MarkdownText>
   );
@@ -542,6 +407,7 @@ export function MessagesList({
         onRetryMessage &&
         item.role === 'model' &&
         item.meta?.isError &&
+        item.meta.retry &&
         lastErrorMessageId &&
         item.id === lastErrorMessageId
       );

@@ -68,6 +68,8 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
       pendingMutationsRef.current = [];
       syncTokenRef.current += 1;
       syncingRef.current = false;
+      // An old account's unresolved request must not hold the new account hostage.
+      inFlightSyncRef.current = null;
       preparingCreatesRef.current.clear();
     }
     mutationsLoadedRef.current = initialSnapshotMatchesScope;
@@ -269,8 +271,14 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
     persistence = bindPersistence({ canUseRemoteSync, userScope })) => {
     const { persistPendingMutations } = persistence;
     const syncPendingMutations = async function replayPendingMutations(): Promise<void> {
-      if (!canUseRemoteSync || !user || !hasNetwork || activeUserScopeRef.current !== userScope) return;
       if (!pendingMutationsRef.current.length) return;
+      const deferredReason = !canUseRemoteSync || !user ? 'session_unavailable'
+        : !hasNetwork ? 'offline_snapshot'
+          : activeUserScopeRef.current !== userScope ? 'account_changed' : null;
+      if (deferredReason || !user) {
+        logger.warn('Journal sync deferred', { reason: deferredReason, pendingCount: pendingMutationsRef.current.length });
+        return;
+      }
 
       if (inFlightSyncRef.current) {
         await inFlightSyncRef.current;

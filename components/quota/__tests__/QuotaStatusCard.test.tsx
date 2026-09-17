@@ -1,11 +1,11 @@
 /**
  * @jest-environment jsdom
  */
-import { cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import React from 'react';
 
-import type { QuotaStatus } from '@/lib/types';
+import type { QuotaStatus, SubscriptionStatus } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
 
 const flattenStyle = (style: unknown) =>
@@ -22,6 +22,9 @@ let mockQuota: {
   error: Error | null;
   refetch: () => void;
   tier: 'guest' | 'free' | 'plus';
+  subscriptionStatus?: SubscriptionStatus | null;
+  subscriptionLoading?: boolean;
+  refreshSubscription?: () => Promise<void>;
 };
 
 jest.mock('react-native', () => {
@@ -134,6 +137,9 @@ jest.mock('@/constants/theme', () => ({
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
 
+const mockPresentCustomerCenter = jest.fn();
+jest.mock('@/services/subscriptionService', () => ({ manageSubscription: () => mockPresentCustomerCenter() }));
+
 jest.mock('@/lib/logger', () => ({
   createScopedLogger: () => ({ warn: jest.fn() }),
 }));
@@ -155,6 +161,8 @@ const guestStatus = (imageUsed: number, analysisUsed = 0): QuotaStatus => ({
 
 describe('QuotaStatusCard illustration row', () => {
   beforeEach(() => {
+    require('react-native').Platform.OS = 'web';
+    mockPresentCustomerCenter.mockReset();
     mockQuota = {
       quotaStatus: guestStatus(1, 2),
       loading: false,
@@ -228,4 +236,64 @@ describe('QuotaStatusCard illustration row', () => {
 
     expect(screen.getByTestId(TID.Quota.ImageValue).textContent).toBe('recording.quota.unlimited');
   });
+  it('shows an error when subscription management fails, then clears it on retry', async () => {
+    require('react-native').Platform.OS = 'android';
+    mockQuota = { ...mockQuota, tier: 'plus' };
+    mockPresentCustomerCenter.mockRejectedValueOnce(new Error('store unavailable')).mockResolvedValueOnce(undefined);
+    render(<QuotaStatusCard />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.ManageSubscription)); });
+    expect(screen.getByText('subscription.error.manage_failed')).toBeTruthy();
+    expect(mockPresentCustomerCenter).toHaveBeenCalledTimes(1);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.ManageSubscription)); });
+    expect(screen.queryByText('subscription.error.manage_failed')).toBeNull();
+  });
+
+  it('keeps the upgrade action available for an expired subscription when quota loading fails', () => {
+    const onUpgradePress = jest.fn();
+    mockQuota = {
+      ...mockQuota,
+      tier: 'free',
+      quotaStatus: null,
+      error: new Error('quota unavailable'),
+      subscriptionLoading: false,
+      subscriptionStatus: { tier: 'free', isActive: false, expiryDate: '2020-01-01T00:00:00Z' },
+    };
+    render(<QuotaStatusCard onUpgradePress={onUpgradePress} />);
+    expect(screen.getByTestId('subscription-expired-notice')).toBeTruthy();
+    expect(screen.getByText('settings.quota.subtitle', { exact: false }).textContent).toContain('settings.quota.tier.free');
+    fireEvent.click(screen.getByText('settings.quota.cta_upgrade'));
+    expect(onUpgradePress).toHaveBeenCalledTimes(1);
+  });
+
+  it.each(['loading', 'unavailable', 'active'] as const)('does not offer another subscription while status is %s', (state: 'loading' | 'unavailable' | 'active') => {
+    mockQuota = {
+      ...mockQuota,
+      tier: state === 'active' ? 'plus' : 'free',
+      subscriptionLoading: state === 'loading',
+      subscriptionStatus: state === 'active' ? { tier: 'plus', isActive: true } : null,
+      refreshSubscription: jest.fn(async () => undefined),
+    };
+    render(<QuotaStatusCard />);
+    expect(screen.queryByText('settings.quota.cta_upgrade')).toBeNull();
+    if (state === 'active') expect(screen.getByText('settings.quota.plus_message')).toBeTruthy();
+    else expect(screen.queryByText('settings.quota.subtitle', { exact: false })).toBeNull();
+    if (state === 'loading') expect(screen.getByText('settings.quota.subscription_checking')).toBeTruthy();
+    if (state === 'unavailable') {
+      fireEvent.click(screen.getByText('settings.quota.subscription_unavailable'));
+      expect(mockQuota.refreshSubscription).toHaveBeenCalledTimes(1);
+    }
+  });
+
+  it('keeps an unavailable subscription retry usable after a refresh rejection', async () => {
+    mockQuota = {
+      ...mockQuota, tier: 'free', subscriptionStatus: null,
+      refreshSubscription: jest.fn(async () => { throw new Error('offline'); }),
+    };
+    render(<QuotaStatusCard />);
+    await act(async () => { fireEvent.click(screen.getByText('settings.quota.subscription_unavailable')); });
+    expect(screen.getByText('settings.quota.subscription_unavailable')).toBeTruthy();
+    expect(screen.queryByText('settings.quota.cta_upgrade')).toBeNull();
+    expect(mockQuota.refreshSubscription).toHaveBeenCalledTimes(1);
+  });
+
 });

@@ -230,7 +230,8 @@ jest.doMock('@/components/auth/EmailAuthCard', () => ({
 }));
 
 jest.doMock('@/components/quota/QuotaStatusCard', () => ({
-  QuotaStatusCard: () => <div data-testid="quota-status-card" />,
+  QuotaStatusCard: ({ onUpgradePress }: { onUpgradePress?: () => void }) =>
+    <button data-testid="quota-status-card" onClick={onUpgradePress}>subscription-options</button>,
 }));
 
 jest.doMock('@/components/settings/LegalSection', () => ({
@@ -446,14 +447,16 @@ it('opens the account form for the drawer sign-in entry', () => {
 });
 
 
-it.each([undefined, 'signin'])('keeps the profile entry limited to the account surface (auth=%s)', (auth: string | undefined) => {
+it.each([undefined, 'signin'])('includes subscription access in the account without general preferences (auth=%s)', (auth: string | undefined) => {
   mockParams = { section: 'account', auth };
   mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
   render(<SettingsScreen />);
   expect(screen.getByTestId('settings-account-only')).toBeTruthy();
   expect(screen.getByTestId('email-auth-card')).toBeTruthy();
   expect(screen.queryByTestId('settings-field-group')).toBeNull();
-  expect(screen.queryByTestId('settings-quota-rn-content')).toBeNull();
+  expect(screen.getByTestId('settings-quota-rn-content')).toBeTruthy();
+  fireEvent.click(screen.getByTestId('quota-status-card'));
+  expect(mockPush).toHaveBeenCalledWith({ pathname: '/paywall', params: { trigger: 'settings' } });
   expect(mockInitialAccountSheetOpen).toBe(auth === 'signin');
 });
 it('preserves the authentication recovery surface for a blocked returning guest', () => {

@@ -1,3 +1,6 @@
+import { MarkdownText } from '@/components/ui/MarkdownText';
+import { AnalysisReadingModal } from '@/components/analysis/AnalysisReadingModal';
+import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { resolveDreamRoute } from '@/lib/dreamRoute';
@@ -7,6 +10,8 @@ import { ReminderOptInCard } from '@/components/reminders/ReminderOptInCard';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
+import { getImageJobFailure } from '@/lib/imageJobErrors';
+import { ErrorType } from '@/lib/errors';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import {
   AnalysisNoticeSheet,
@@ -18,7 +23,6 @@ import {
   ReplaceImageSheet,
   type AnalysisNotice,
 } from '@/components/journal/JournalDetailSheets';
-import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PressableScale, Reveal } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -116,7 +120,7 @@ const getShareNavigator = (): ShareNavigator | undefined => {
   return navigator as ShareNavigator;
 };
 
-const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
+const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream', 'Everyday Dream', 'Fantastical Dream'];
 const DREAM_THEMES: DreamTheme[] = ['surreal', 'mystical', 'calm', 'noir'];
 const isMockMode = isMockModeEnabled();
 const DREAM_IMAGE_ASPECT = 9 / 16;
@@ -197,34 +201,6 @@ const Skeleton = ({ className }: { className: string }) => (
   <View className={`bg-ink-soft ${className}`} />
 );
 
-const TypewriterText = ({ text, className, shouldAnimate }: { text: string; className: string; shouldAnimate: boolean }) => {
-  const [displayedText, setDisplayedText] = useState(shouldAnimate ? '' : text);
-
-  useEffect(() => {
-    if (!shouldAnimate) {
-      setDisplayedText(text);
-      return;
-    }
-
-    if (!text.length) {
-      setDisplayedText('');
-      return;
-    }
-
-    let i = 0;
-    const timer = setInterval(() => {
-      i = Math.min(i + 2, text.length); // Speed
-      setDisplayedText(text.slice(0, i));
-      if (i >= text.length) {
-        clearInterval(timer);
-      }
-    }, 10);
-    return () => clearInterval(timer);
-  }, [text, shouldAnimate]);
-
-  return <Text className={className}>{displayedText}</Text>;
-};
-
 export default function JournalDetailScreen() {
   const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
   const { user } = useAuth();
@@ -281,7 +257,10 @@ function JournalDetailContent() {
   }, [savedParam]);
   const [isRetryingImage, setIsRetryingImage] = useState(false);
   const [isRetryingSync, setIsRetryingSync] = useState(false);
+  const [syncRetryFailed, setSyncRetryFailed] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isReadingAnalysis, setIsReadingAnalysis] = useState(false);
+  const awaitingAnalysisReading = useRef(false);
   const [analysisRecoveryClock, setAnalysisRecoveryClock] = useState(() => Date.now());
   const [showReplaceImageSheet, setShowReplaceImageSheet] = useState(false);
   const [showReanalyzeSheet, setShowReanalyzeSheet] = useState(false);
@@ -297,6 +276,8 @@ function JournalDetailContent() {
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
   const [quotaSheetMode, setQuotaSheetMode] = useState<'quota' | 'login'>('quota');
   const [imageErrorMessage, setImageErrorMessage] = useState<string | null>(null);
+  const [imageErrorCanRetry, setImageErrorCanRetry] = useState(true);
+  const [imageErrorNeedsSubscription, setImageErrorNeedsSubscription] = useState(false);
 
   // Reference image generation state
   const [showReferenceSheet, setShowReferenceSheet] = useState(false);
@@ -558,6 +539,17 @@ function JournalDetailContent() {
     dream?.analysisStatus,
     analysisState.isAnalyzed
   );
+  useEffect(() => {
+    if (dream?.analysisStatus === 'pending') {
+      awaitingAnalysisReading.current = true;
+    } else if (dream?.analysisStatus === 'failed') {
+      awaitingAnalysisReading.current = false;
+    } else if (showCompletedReading && dream?.interpretation?.trim() && awaitingAnalysisReading.current) {
+      awaitingAnalysisReading.current = false;
+      setIsReadingAnalysis(true);
+    }
+  }, [dream?.analysisStatus, dream?.interpretation, showCompletedReading]);
+
   const analysisFreshness = useMemo(() => getDreamAnalysisFreshness(dream), [dream]);
   const isAnalysisStale = analysisFreshness === 'stale';
   const visibleIllustrationCta =
@@ -729,6 +721,7 @@ function JournalDetailContent() {
     const quote = dream.shareableQuote?.trim();
     if (quote) {
       sections.push(`“${quote}”`);
+      if (isPoeticDreamQuote(dream)) sections.push(t('journal.detail.quote_attribution'));
     }
     if (dream.interpretation?.trim()) {
       sections.push(
@@ -1028,12 +1021,14 @@ function JournalDetailContent() {
   const handleRetrySync = useCallback(async () => {
     if (!dream) return;
     try {
+      setSyncRetryFailed(false);
       setIsRetryingSync(true);
       await retryDreamSync(dream);
     } catch (error) {
       if (__DEV__) {
         console.warn('[JournalDetail] Failed to retry sync', error);
       }
+      setSyncRetryFailed(true);
     } finally {
       setIsRetryingSync(false);
     }
@@ -1086,7 +1081,11 @@ function JournalDetailContent() {
 
   const onRetryImage = useCallback(async () => {
     if (!dream) return;
+    setImageErrorCanRetry(true);
+    setImageErrorNeedsSubscription(false);
     if (!illustrationAccess.allowed) {
+      setImageErrorCanRetry(false);
+      setImageErrorNeedsSubscription(Boolean(user));
       setImageErrorMessage(t('journal.detail.image.quota_exceeded_message'));
       return;
     }
@@ -1105,6 +1104,8 @@ function JournalDetailContent() {
       });
     } catch (error) {
       if (error instanceof QuotaError) {
+        setImageErrorCanRetry(false);
+        setImageErrorNeedsSubscription(Boolean(user));
         setImageErrorMessage(t('journal.detail.image.quota_exceeded_message'));
         return;
       }
@@ -1112,6 +1113,8 @@ function JournalDetailContent() {
         error instanceof Error ? error : new Error(t('common.unknown_error')),
         t
       );
+      setImageErrorCanRetry(classified.canRetry);
+      setImageErrorNeedsSubscription(classified.type === ErrorType.IMAGE_AUTHORIZATION);
       setImageErrorMessage(
         classified.userMessage === t('error.interpretation_limit')
           ? t('journal.detail.image.quota_exceeded_message')
@@ -1120,7 +1123,7 @@ function JournalDetailContent() {
     } finally {
       setIsRetryingImage(false);
     }
-  }, [dream, generateDreamImage, illustrationAccess.allowed, illustrationAccess.bundledRequestId, t]);
+  }, [dream, generateDreamImage, illustrationAccess.allowed, illustrationAccess.bundledRequestId, t, user]);
 
   const handleBackPress = useCallback(() => {
     const pending = onboardingState.pendingRecordingIntent;
@@ -1432,7 +1435,7 @@ function JournalDetailContent() {
           autoFocus
         />
       ) : (
-        <Text className="font-sans text-[15px] leading-6 text-ivory-muted opacity-90">{dream.transcript}</Text>
+        <MarkdownText style={{ fontSize: 15, lineHeight: 24, color: noctalia.text.secondary }}>{dream.transcript}</MarkdownText>
       )}
       {dream.captureOriginalTranscript ? <CaptureOriginal source={dream.captureOriginalTranscript} /> : null}
       {isEditingTranscript ? (
@@ -1690,8 +1693,10 @@ function JournalDetailContent() {
           <Text className={`flex-1 font-serif-bold text-[22px] ${titleToneClassName}`}>{title}</Text>
         </View>
         <Text className={`mb-5 font-sans text-[15px] leading-[22px] ${messageToneClassName}`}>{message}</Text>
-        {isSyncPending ? (
-          <ActivityIndicator size="small" color={noctalia.accent.text} />
+        {syncRetryFailed ? (
+          <Text accessibilityRole="alert" className="mb-4 font-sans text-[15px] text-ivory-muted">
+            {t('journal.detail.sync.retry_error')}
+          </Text>
         ) : null}
         {isSyncPending || isSyncFailed ? (
           <PressableScale
@@ -1991,8 +1996,10 @@ function JournalDetailContent() {
             />
           </PressableScale>
         ) : illustrationSidecar === 'failed' ? (
-          visibleIllustrationCta === 'retry' ? (
-            <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
+          visibleIllustrationCta === 'retry' || getImageJobFailure(dream.imageJobErrorCode) ? (
+            <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage}
+              errorCode={dream.imageJobErrorCode}
+              onManageSubscription={() => router.push('/settings?section=account')} />
           ) : (
             <View className="min-h-[180px] flex-col items-center justify-center gap-2.5 rounded-lg border border-line bg-ink-soft px-5 py-6">
               <IconSymbol name="photo" size={40} color={noctalia.text.secondary} />
@@ -2184,14 +2191,6 @@ function JournalDetailContent() {
             <Reveal index={3}>
               {renderStaleBanner()}
               {renderDetailActionCard(['analyze'])}
-              {!recallRequested ? (
-              <DreamRecallAssistantCard
-                dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
-                originalTranscript={dream.transcript}
-                originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}
-                offerEligible={recallOffer.offerEligible}
-              />
-              ) : null}
             </Reveal>
 
             <Reveal index={4}>
@@ -2200,13 +2199,17 @@ function JournalDetailContent() {
                   {renderDetailZoneHeader(t('journal.detail.zone.reading'), TID.Text.DreamDetailReadingZone)}
                   {isAnalysisPending ? (
                     <Skeleton className="h-[60px] w-full rounded-sm" />
-                  ) : dream.shareableQuote ? (
-                    <FlatGlassCard style={{ padding: 20, marginVertical: 16, position: 'relative' }} animationDelay={450}>
-                      <IconSymbol name="quote.opening" size={28} color={noctalia.accent.text} style={{ position: 'absolute', top: 12, left: 12, opacity: 0.25 }} />
-                      <Text className="pl-2 text-[20px] leading-[30px] text-ivory" style={{ fontFamily: Fonts.lora.boldItalic }}>
-                        &quot;{dream.shareableQuote}&quot;
+                  ) : dream.shareableQuote?.trim() ? (
+                    <View className="my-4 gap-2">
+                      <Text className="text-[20px] leading-[30px] text-ivory" style={{ fontFamily: Fonts.lora.regularItalic }}>
+                        “{dream.shareableQuote.trim()}”
                       </Text>
-                    </FlatGlassCard>
+                      {isPoeticDreamQuote(dream) ? (
+                        <Text className="font-sans text-[12px] text-ivory-muted">
+                          {t('journal.detail.quote_attribution')}
+                        </Text>
+                      ) : null}
+                    </View>
                   ) : null}
 
                   {isAnalysisPending ? (
@@ -2223,18 +2226,26 @@ function JournalDetailContent() {
                         </Text>
                         <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
                       </View>
-                      <TypewriterText
-                        text={dream.interpretation}
-                        className="mb-4 font-sans text-body text-ivory-muted"
-                        shouldAnimate={false}
-                      />
+                      <MarkdownText variant="reading" style={{ fontSize: 16, lineHeight: 26, color: noctalia.text.primary }} containerStyle={{ marginBottom: 16 }}>
+                        {dream.interpretation}
+                      </MarkdownText>
                     </>
                   ) : null}
                 </View>
               ) : null}
             </Reveal>
 
-            <Reveal index={5}>{renderIllustrationSection()}</Reveal>
+            <Reveal index={5}>
+              {!recallRequested ? (
+                <DreamRecallAssistantCard
+                  dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
+                  originalTranscript={dream.transcript}
+                  originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}
+                  offerEligible={recallOffer.offerEligible}
+                />
+              ) : null}
+              {renderIllustrationSection()}
+            </Reveal>
 
             <Reveal index={6}>
               {!isAnalysisPending && showCompletedReading && dream.symbols && dream.symbols.length > 0 ? (
@@ -2250,9 +2261,9 @@ function JournalDetailContent() {
                       <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
                         {symbol.name}
                       </Text>
-                      <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
+                      <MarkdownText style={{ fontSize: 15, lineHeight: 22, color: noctalia.text.secondary }}>
                         {symbol.meaning}
-                      </Text>
+                      </MarkdownText>
                     </View>
                   ))}
                 </>
@@ -2271,9 +2282,9 @@ function JournalDetailContent() {
                       <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
                         {emotion.name}
                       </Text>
-                      <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
+                      <MarkdownText style={{ fontSize: 15, lineHeight: 22, color: noctalia.text.secondary }}>
                         {emotion.insight}
-                      </Text>
+                      </MarkdownText>
                     </View>
                   ))}
                 </>
@@ -2293,9 +2304,9 @@ function JournalDetailContent() {
                       </View>
                       {dream.reflectionQuestions.map((question, index) => (
                         <View key={`reflection-${index}`} className="mb-3">
-                          <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
+                          <MarkdownText style={{ fontSize: 15, lineHeight: 22, color: noctalia.text.secondary }}>
                             {question}
-                          </Text>
+                          </MarkdownText>
                         </View>
                       ))}
                     </>
@@ -2430,6 +2441,9 @@ function JournalDetailContent() {
             </View>
           </View>
         )}
+        {isReadingAnalysis && dream.interpretation?.trim() ? (
+          <AnalysisReadingModal dream={dream} onClose={() => setIsReadingAnalysis(false)} />
+        ) : null}
         <AnalysisNoticeSheet
           visible={Boolean(analysisNotice)}
           onClose={handleDismissAnalysisNotice}
@@ -2509,6 +2523,11 @@ function JournalDetailContent() {
           onRetry={handleRetryImageError}
           isRetrying={isRetryingImage}
           message={imageErrorMessage}
+          canRetry={imageErrorCanRetry}
+          onManageSubscription={imageErrorNeedsSubscription ? () => {
+            setImageErrorMessage(null);
+            router.push('/settings?section=account');
+          } : undefined}
         />
         <Modal
           visible={isShareModalVisible}

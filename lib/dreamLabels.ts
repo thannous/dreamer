@@ -17,6 +17,8 @@ const DREAM_TYPE_LABEL_KEYS: Record<DreamTypeKey, string> = {
   'Recurring Dream': 'dream.type.recurring',
   Nightmare: 'dream.type.nightmare',
   'Symbolic Dream': 'dream.type.symbolic',
+  'Everyday Dream': 'dream.type.everyday',
+  'Fantastical Dream': 'dream.type.fantastical',
   Unknown: 'dream.type.unknown',
 };
 

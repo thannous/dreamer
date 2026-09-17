@@ -48,7 +48,8 @@ describe('home today i18n', () => {
   });
 
   it('keeps French Accueil copy in tutoiement', () => {
-    expect(fr['home.today.draft_resume.body']).toMatch(/Termine le rêve/);
+    expect(fr['home.today.draft_resume.body']).toMatch(/brouillon.*enregistré/);
+    expect(fr['home.today.draft_resume.body']).toMatch(/\btu\b/);
     expect(fr['home.today.empty.cta']).toMatch(/Capturer/);
     expect(fr['home.today.rest.title']).toBe('Tu as terminé pour aujourd’hui');
     expect(fr['home.today.rest.body']).toBe(
