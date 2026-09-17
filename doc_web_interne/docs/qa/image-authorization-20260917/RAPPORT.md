@@ -48,7 +48,7 @@ L’actualisation au retour au premier plan, les mises à jour RevenueCat et le 
 - PostgreSQL synthétique : 30 assertions, dont reproduction de l’ancien défaut avant migration, Plus → gratuit, quotas gratuits, idempotence, isolation compte/rêve, permissions, refus sans état pending résiduel, projection et ordre des échecs.
 - Edge Functions : vérification de types des quatre entrées API/workers/webhook et 227 tests réussis.
 - Tests ciblés interface/erreurs : 79 tests réussis ; persistance et fusion : 21 tests réussis ; rendu des relances de chat : 3 tests réussis.
-- Le contrôle final `test:prepush` et son résultat sont consignés dans la PR après commit.
+- `test:prepush` réussi sur le commit de code `a989c7d722cb295c9ce7fbec918257109d395164` : types app/tests, 188 suites et 2 157 tests réussis, une suite/un test déjà ignorés. Base distante actualisée `214c6e845e73599f0ee61cfa535303e2cfa73717`. Ces résultats locaux ne sont pas un verdict CI distant.
 - Motorola : version locale chargée via Metro 8083 et tunnel ADB, sans réinstallation ni effacement. L’avis d’expiration réel du compte est lisible et annonce la date 17 septembre à 17 h 51. Aucune transaction lancée.
 - Le motif restauré de l’ancien échec et la génération réelle après correction nécessitent encore l’application des migrations et le déploiement serveur. Les tests locaux ne sont pas présentés comme une réparation de production.
 
