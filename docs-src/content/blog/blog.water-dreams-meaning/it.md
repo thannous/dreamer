@@ -84,7 +84,7 @@
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Risposta rapida</h2>
     <p class="text-purple-100/80 leading-relaxed">Sognare un’alluvione indica che qualcosa sembra difficile da contenere. Un’alluvione di acqua pulita può parlare di liberazione o chiarezza; l’acqua sporca indica confusione, stanchezza o emozioni mescolate. Se l’acqua entra in casa, guarda prima famiglia, intimità e sicurezza personale.</p>
-    <p class="text-sm text-purple-200/70 mt-4">Questa guida confronta scenari completi come alluvione, mare, annegamento e casa allagata. Se cerchi una definizione breve, apri prima la <a class="text-dream-salmon hover:underline" href="../simboli/acqua">scheda del simbolo acqua</a>; per l’acqua che entra in casa, la <a class="text-dream-salmon hover:underline" href="../simboli/alluvione">scheda alluvione e casa allagata</a> raccoglie gli scenari in breve.</p>
+    <p class="text-sm text-purple-200/70 mt-4">Questa guida confronta scenari completi come alluvione, mare, annegamento e casa allagata. Se cerchi una definizione breve, apri prima la <a class="text-dream-salmon hover:underline" href="../simboli/acqua">scheda sul significato di sognare acqua sporca o torbida</a>; per l’acqua che entra in casa, la <a class="text-dream-salmon hover:underline" href="../simboli/alluvione">scheda alluvione e casa allagata</a> raccoglie gli scenari in breve.</p>
 </section>
 <!-- GSC SEO Update: water and flood intent -->
 <section class="glass-panel rounded-2xl p-6 my-10 border border-dream-salmon/15 bg-white/5">

@@ -17,6 +17,7 @@ const mockSetProductAnalyticsEnabled = jest.fn();
 const mockTrackProductEvent = jest.fn().mockResolvedValue(undefined);
 const mockTransition = jest.fn();
 const mockUseOnboarding = jest.fn();
+let mockAuthReturn: { destination: string; createdAt: number } | null = null;
 const previousExpoOS = process.env.EXPO_OS;
 process.env.EXPO_OS = 'android';
 
@@ -88,7 +89,9 @@ const renderOnboarding = (
 
 jest.doMock('expo-router', () => ({
   router: { replace: mockReplace },
+  useFocusEffect: () => undefined,
 }));
+jest.doMock('@/lib/authReturnIntent', () => ({ getAuthReturnSnapshot: () => ({ intent: mockAuthReturn, ready: true }) }));
 
 jest.doMock('expo-asset', () => ({
   Asset: {
@@ -181,6 +184,7 @@ jest.doMock('react-native', () => {
     },
     Pressable: createElement('button'),
     ScrollView: createElement('div'),
+    StatusBar: { pushStackEntry: jest.fn(), popStackEntry: jest.fn() },
     StyleSheet: {
       create: <T extends Record<string, any>>(styles: T) => styles,
       hairlineWidth: 1,
@@ -207,6 +211,7 @@ jest.doMock('react-native', () => {
     Text: createElement('span'),
     View: createElement('div'),
     findNodeHandle: () => 1,
+    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
   };
 });
 
@@ -278,6 +283,7 @@ jest.doMock('@/lib/productAnalytics', () => ({
 const { default: OnboardingScreen } = require('@/app/onboarding');
 
 describe('Onboarding screen', () => {
+  afterEach(() => { mockAuthReturn = null; });
   afterAll(() => {
     if (previousExpoOS === undefined) {
       delete process.env.EXPO_OS;
@@ -420,6 +426,29 @@ describe('Onboarding screen', () => {
     expect(mockReplace).not.toHaveBeenCalled();
     resolveCompletion(buildCompletedState('dictionary'));
     await waitFor(() => expect(mockReplace).toHaveBeenCalled());
+  });
+
+  it('does not overwrite a centrally resumed dream when completion persistence resolves late', async () => {
+    let resolveCompletion!: (state: OnboardingState) => void;
+    mockTransition.mockImplementationOnce(() => new Promise<OnboardingState>((resolve) => { resolveCompletion = resolve; }));
+    mockAuthReturn = { destination: '/journal/42', createdAt: Date.now() };
+    renderOnboarding({ step: 'path', selectedPath: 'dictionary' });
+    fireEvent.click(screen.getByTestId(TID.Button.OnboardingPrimary));
+    expect(mockReplace).not.toHaveBeenCalled();
+    // The root may acknowledge the return before the screen's await resumes.
+    mockAuthReturn = null;
+    await act(async () => { resolveCompletion(buildCompletedState('dictionary')); });
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('keeps a failed onboarding completion in place with the auth return intact', async () => {
+    mockAuthReturn = { destination: '/journal/42', createdAt: Date.now() };
+    mockTransition.mockRejectedValueOnce(new Error('write failed'));
+    renderOnboarding({ step: 'path', selectedPath: 'dictionary' });
+    fireEvent.click(screen.getByTestId(TID.Button.OnboardingPrimary));
+    await waitFor(() => expect(screen.getByTestId(TID.Button.OnboardingRetry)).toBeTruthy());
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(mockAuthReturn?.destination).toBe('/journal/42');
   });
 
   it('ignores a rapid duplicate step transition', async () => {

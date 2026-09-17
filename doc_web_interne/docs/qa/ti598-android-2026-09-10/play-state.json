@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-09-10",
+  "package": "com.tanuki75.noctalia",
+  "production": {
+    "versionName": "3.1.0",
+    "versionCode": 57,
+    "status": "Available on Google Play, full rollout"
+  },
+  "internal": {
+    "versionName": "3.1.0",
+    "versionCode": 65,
+    "status": "Available to internal testers, full rollout"
+  },
+  "installed": {
+    "versionName": "3.1.0",
+    "versionCode": 54,
+    "installer": null,
+    "certificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c"
+  },
+  "playCertificateSha256": "6a8cb2e2cdd2c1fdd7c5cfcf00d7c3cc5861c2cd3faf49f69a312535a44fee0f",
+  "signatureCompatible": false,
+  "source": "Google Play Console release overview and key management; local apksigner on installed APK",
+  "changesToPlayConsole": false
+}

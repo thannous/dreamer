@@ -1,0 +1,13 @@
+{
+  "id": "aad16636-c39b-4cdb-8e94-dd0408216ba8",
+  "url": "https://aad16636.noctalia.pages.dev",
+  "environment": "production",
+  "sha": "e84dff036b9c839b1f0e532be46516339f28ec8d",
+  "stage": "deploy",
+  "status": "success",
+  "completedAt": "2026-09-09T10:36:52.934648Z",
+  "includesJ56Merge": "b800c3a9294f9286d60b19f085008bd61c364d39",
+  "supersededDeployment": "9833e163-2658-476c-a42f-313c9eec4e76",
+  "ancestryVerified": true,
+  "twoReviewedFilesUnchanged": true
+}

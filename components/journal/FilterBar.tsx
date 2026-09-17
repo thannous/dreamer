@@ -2,20 +2,35 @@ import { PressableScale } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
+import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import type { DreamTheme, DreamType } from '@/lib/types';
 import React, { memo, useMemo } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
-type FilterItemId = 'theme' | 'date' | 'favorites' | 'analyzed' | 'explored' | 'more';
+type FilterItemId =
+  | 'all'
+  | 'favorites'
+  | 'to_deepen'
+  | 'theme'
+  | 'type'
+  | 'date'
+  | 'remembered'
+  | 'recurring'
+  | 'search'
+  | 'sort'
+  | 'unanalyzed'
+  | 'analyzed'
+  | 'explored'
+  | 'more';
 
 export type FilterBarItem = {
   id: FilterItemId;
   active: boolean;
   onPress: () => void;
   label?: string;
+  accessibilityLabel?: string;
   testID?: string;
 };
 
@@ -42,6 +57,14 @@ function CategoryIcon({ size = 16, color = '#FFFFFF' }) {
   );
 }
 
+function AllIcon({ size = 16, color = '#FFFFFF' }) {
+  return <IconSymbol name="rectangle.stack.fill" size={size} color={color} />;
+}
+
+function ToDeepenIcon({ size = 16, color = '#FFFFFF' }) {
+  return <IconSymbol name="sparkles" size={size} color={color} />;
+}
+
 function AnalyzedIcon({ size = 16, color = '#FFFFFF' }) {
   return <IconSymbol name="sparkles" size={size} color={color} />;
 }
@@ -52,6 +75,18 @@ function ExploredIcon({ size = 16, color = '#FFFFFF' }) {
 
 function MoreIcon({ size = 16, color = '#FFFFFF' }) {
   return <IconSymbol name="slider.horizontal.3" size={size} color={color} />;
+}
+
+function RecurringIcon({ size = 16, color = '#FFFFFF' }) {
+  return <IconSymbol name="arrow.triangle.2.circlepath" size={size} color={color} />;
+}
+
+function SearchFilterIcon({ size = 16, color = '#FFFFFF' }) {
+  return <IconSymbol name="magnifyingglass" size={size} color={color} />;
+}
+
+function SortIcon({ size = 16, color = '#FFFFFF' }) {
+  return <IconSymbol name="arrow.up.circle" size={size} color={color} />;
 }
 
 function FavoriteIcon({ size = 16, color = '#FFFFFF' }) {
@@ -116,12 +151,28 @@ function getDateRangeBadge(
 
 const renderIcon = (id: FilterItemId, color: string) => {
   switch (id) {
+    case 'all':
+      return <AllIcon size={16} color={color} />;
     case 'theme':
+      return <CategoryIcon size={16} color={color} />;
+    case 'type':
       return <CategoryIcon size={16} color={color} />;
     case 'date':
       return <CalendarIcon size={16} color={color} />;
     case 'favorites':
       return <FavoriteIcon size={16} color={color} />;
+    case 'to_deepen':
+      return <ToDeepenIcon size={16} color={color} />;
+    case 'remembered':
+      return <CalendarIcon size={16} color={color} />;
+    case 'recurring':
+      return <RecurringIcon size={16} color={color} />;
+    case 'search':
+      return <SearchFilterIcon size={16} color={color} />;
+    case 'sort':
+      return <SortIcon size={16} color={color} />;
+    case 'unanalyzed':
+      return <AnalyzedIcon size={16} color={color} />;
     case 'analyzed':
       return <AnalyzedIcon size={16} color={color} />;
     case 'explored':
@@ -131,14 +182,31 @@ const renderIcon = (id: FilterItemId, color: string) => {
   }
 };
 
-const getAccessibilityLabel = (id: FilterItemId, t: (key: string) => string) => {
+const getAccessibilityLabel = (id: FilterItemId, t: (key: string) => string, explicitLabel?: string) => {
+  if (explicitLabel) return explicitLabel;
   switch (id) {
+    case 'all':
+      return t('journal.filter.accessibility.all');
     case 'theme':
+      return t('journal.filter.accessibility.theme');
+    case 'type':
       return t('journal.filter.accessibility.theme');
     case 'date':
       return t('journal.filter.accessibility.date');
     case 'favorites':
       return t('journal.filter.accessibility.favorites');
+    case 'to_deepen':
+      return t('journal.filter.accessibility.to_deepen');
+    case 'remembered':
+      return t('journal.filter.accessibility.remembered');
+    case 'recurring':
+      return t('journal.filter.accessibility.recurring');
+    case 'search':
+      return t('journal.search_placeholder');
+    case 'sort':
+      return t('journal.filter_sheet.sort_section');
+    case 'unanalyzed':
+      return t('journal.filter_sheet.status.unanalyzed');
     case 'analyzed':
       return t('journal.filter.accessibility.analyzed');
     case 'explored':
@@ -149,7 +217,7 @@ const getAccessibilityLabel = (id: FilterItemId, t: (key: string) => string) => 
 };
 
 const PILL_CLASSNAME =
-  'flex-row shrink-0 grow-0 items-center gap-1.5 self-start rounded-full border-continuous px-3 py-1.5';
+  'min-h-[44px] min-w-[44px] flex-row shrink-0 grow-0 items-center gap-1.5 self-start rounded-full border-continuous px-3 py-2';
 
 /**
  * Filter pill.
@@ -193,28 +261,20 @@ export const FilterBar = memo(function FilterBar({
   clearTestID,
   dateRange,
   selectedTheme,
-  selectedDreamType,
 }: FilterBarProps) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
-  const hasActiveFilters = items.some((item) => item.active);
+  const hasActiveFilters = items.some((item) => item.id !== 'all' && item.active);
   const dateRangeBadge = getDateRangeBadge(dateRange, t);
   const iconColor = noctalia.text.primary;
   const activeIconColor = noctalia.action.primaryText;
-
-  const themeLabelParts: string[] = [];
-  if (selectedTheme) themeLabelParts.push(getDreamThemeLabel(selectedTheme, t) ?? selectedTheme);
-  if (selectedDreamType) themeLabelParts.push(getDreamTypeLabel(selectedDreamType, t) ?? selectedDreamType);
-  const themeFilterSuffix = themeLabelParts.length ? ` • ${themeLabelParts.join(' • ')}` : '';
+  const themeFilterSuffix = selectedTheme
+    ? ` • ${getDreamThemeLabel(selectedTheme, t) ?? selectedTheme}`
+    : '';
 
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerClassName="grow-0 pr-4"
-    >
-      <View className="web:w-max flex-row flex-nowrap items-center gap-2">
+    <View className="w-full flex-row flex-wrap items-center gap-2" testID="journal-filter-bar">
         {items.map((item) => {
           const isActive = item.active;
           const color = isActive ? activeIconColor : iconColor;
@@ -230,7 +290,7 @@ export const FilterBar = memo(function FilterBar({
               key={item.id}
               isActive={isActive}
               onPress={item.onPress}
-              accessibilityLabel={getAccessibilityLabel(item.id, t)}
+              accessibilityLabel={getAccessibilityLabel(item.id, t, item.accessibilityLabel)}
               testID={item.testID}
             >
               {renderIcon(item.id, color)}
@@ -262,7 +322,6 @@ export const FilterBar = memo(function FilterBar({
             </Text>
           </PressableScale>
         )}
-      </View>
-    </ScrollView>
+    </View>
   );
 });

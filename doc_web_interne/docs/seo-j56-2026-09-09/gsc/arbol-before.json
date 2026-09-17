@@ -1,0 +1,45 @@
+{
+  "fetchedAt": "2026-09-09T09:49:11.535Z",
+  "site": "sc-domain:noctalia.app",
+  "request": {
+    "type": "web",
+    "dataState": "final",
+    "rowLimit": 25000,
+    "dimensionFilterGroups": [
+      {
+        "groupType": "and",
+        "filters": [
+          {
+            "dimension": "page",
+            "operator": "equals",
+            "expression": "https://noctalia.app/es/simbolos/arbol"
+          }
+        ]
+      }
+    ],
+    "startDate": "2026-08-27",
+    "endDate": "2026-08-30",
+    "dimensions": []
+  },
+  "responses": [
+    {
+      "rows": [
+        {
+          "clicks": 43,
+          "impressions": 4979,
+          "ctr": 0.008636272343844146,
+          "position": 5.831492267523599
+        }
+      ],
+      "responseAggregationType": "byPage"
+    }
+  ],
+  "rows": [
+    {
+      "clicks": 43,
+      "impressions": 4979,
+      "ctr": 0.008636272343844146,
+      "position": 5.831492267523599
+    }
+  ]
+}

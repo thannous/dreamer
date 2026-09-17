@@ -25,6 +25,12 @@ jest.mock('@/lib/i18n', () => ({
 }));
 jest.mock('@/services/storageService', () => ({
   getLanguagePreference: jest.fn(async () => 'auto'),
+  getNotificationSettings: jest.fn(async () => ({
+    weekdayEnabled: false,
+    weekdayTime: '07:00',
+    weekendEnabled: false,
+    weekendTime: '10:00',
+  })),
 }));
 jest.mock('expo-localization', () => ({
   getLocales: () => [{ languageCode: 'en' }],
@@ -35,6 +41,16 @@ const baseSettings: NotificationSettings = {
   weekdayTime: '07:00',
   weekendEnabled: true,
   weekendTime: '10:00',
+};
+
+const quietSettings: NotificationSettings = {
+  weekdayEnabled: false,
+  weekdayTime: '07:00',
+  weekendEnabled: false,
+  weekendTime: '10:00',
+  weeklyRecapEnabled: false,
+  streakRiskEnabled: false,
+  inactivityNudgeEnabled: false,
 };
 
 const IN_TWO_HOURS = () => Date.now() + 2 * 60 * 60 * 1000;
@@ -56,7 +72,7 @@ describe('scheduleStreakRiskReminder', () => {
     const triggerAt = IN_TWO_HOURS();
 
     await scheduleStreakRiskReminder(
-      { ...baseSettings, streakRiskEnabled: true },
+      { ...quietSettings, streakRiskEnabled: true },
       { triggerAt, streakLength: 5 }
     );
 
@@ -69,7 +85,14 @@ describe('scheduleStreakRiskReminder', () => {
     });
     expect(call.content.title).toBe('notifications.streak_risk.title');
     expect(call.content.body).toBe('notifications.streak_risk.body');
-    expect(call.content.data).toEqual({ url: '/recording', dreamerReminderType: 'streak_risk' });
+    expect(call.content.data).toEqual(
+      expect.objectContaining({
+        url: '/recording',
+        dreamerReminderType: 'streak_risk',
+        noctaliaNotificationOwner: 'dreamer',
+        dreamerReminderOccurrenceId: 'streak_risk:once',
+      })
+    );
   });
 
   it('cancels the previous streak reminder without touching the other families', async () => {
@@ -112,7 +135,7 @@ describe('scheduleStreakRiskReminder', () => {
 
     const { scheduleStreakRiskReminder } = require('../notificationServiceReal') as typeof import('../notificationServiceReal');
     await scheduleStreakRiskReminder(
-      { ...baseSettings, streakRiskEnabled: false },
+      { ...quietSettings, streakRiskEnabled: false },
       { triggerAt: IN_TWO_HOURS(), streakLength: 4 }
     );
 
@@ -122,7 +145,7 @@ describe('scheduleStreakRiskReminder', () => {
 
   it('schedules nothing for a null plan', async () => {
     const { scheduleStreakRiskReminder } = require('../notificationServiceReal') as typeof import('../notificationServiceReal');
-    await scheduleStreakRiskReminder({ ...baseSettings, streakRiskEnabled: true }, null);
+    await scheduleStreakRiskReminder({ ...quietSettings, streakRiskEnabled: true }, null);
 
     expect(mockNotifications.scheduleNotificationAsync).not.toHaveBeenCalled();
   });
@@ -130,7 +153,7 @@ describe('scheduleStreakRiskReminder', () => {
   it('refuses a trigger already in the past instead of firing immediately', async () => {
     const { scheduleStreakRiskReminder } = require('../notificationServiceReal') as typeof import('../notificationServiceReal');
     await scheduleStreakRiskReminder(
-      { ...baseSettings, streakRiskEnabled: true },
+      { ...quietSettings, streakRiskEnabled: true },
       { triggerAt: Date.now() - 1000, streakLength: 3 }
     );
 
@@ -160,11 +183,14 @@ describe('scheduleInactivityReminders', () => {
     );
     expect(first.content.title).toBe('notifications.inactivity.day3.title');
     expect(first.content.body).toBe('notifications.inactivity.day3.body');
-    expect(first.content.data).toEqual({
-      url: '/recording',
-      dreamerReminderType: 'inactivity',
-      inactivityStage: 3,
-    });
+    expect(first.content.data).toEqual(
+      expect.objectContaining({
+        url: '/recording',
+        dreamerReminderType: 'inactivity',
+        inactivityStage: 3,
+        noctaliaNotificationOwner: 'dreamer',
+      })
+    );
     expect(second.content.title).toBe('notifications.inactivity.day7.title');
     expect(second.content.body).toBe('notifications.inactivity.day7.body');
     expect(second.trigger).toEqual({ type: 'date', date: new Date(day7), channelId: 'dream-reminders' });

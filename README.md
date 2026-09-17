@@ -28,3 +28,9 @@ Noctalia is designed for dream journaling, sleep reflection, personal developmen
 ## Privacy
 
 Voice recordings are used for transcription and are not stored. Journal data is hosted securely in the European Union.
+
+## Development
+
+See [AGENTS.md](AGENTS.md) for repository conventions and the
+[proportional validation guide](doc_web_interne/docs/validation-proportionnee.md)
+for choosing tests and reviews according to the change.

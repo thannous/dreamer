@@ -14,7 +14,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const esbuild = require('esbuild');
+const esbuild = require('../apps/site/dependencies')('esbuild');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const ENTRY_POINT = path.join(ROOT_DIR, 'docs-src', 'experience', 'experience.js');
@@ -28,6 +28,9 @@ async function buildExperience() {
   const result = await esbuild.build({
     entryPoints: [ENTRY_POINT],
     bundle: true,
+    // The site can build without the root Expo installation.
+    nodePaths: [path.join(ROOT_DIR, 'apps/site/node_modules')],
+    tsconfigRaw: {},
     minify: true,
     format: 'esm',
     splitting: true,

@@ -56,7 +56,13 @@ onFlowComplete:
       id: screen.journal
     timeout: 20000
 - tapOn:
-    id: tab.settings
+    id: tab.home
+- extendedWaitUntil:
+    visible:
+      id: btn.header.home.settings
+    timeout: 20000
+- tapOn:
+    id: btn.header.home.settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 20000
@@ -110,7 +116,13 @@ onFlowComplete:
       id: screen.journal
     timeout: 20000
 - tapOn:
-    id: tab.settings
+    id: tab.home
+- extendedWaitUntil:
+    visible:
+      id: btn.header.home.settings
+    timeout: 20000
+- tapOn:
+    id: btn.header.home.settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 20000

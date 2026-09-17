@@ -9,13 +9,13 @@ et les trois heroes secondaires. Elle n'autorise aucune publication anticipée.
 |---|---|---:|---|---|---|
 | C1 | TikTok `@noctaliadreams` | 15:30 | `HIGGS_2026-08-05_183301_TIME_FREEZE_CITY_073670c9.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672911514487033110) vérifié à 15:30 |
 | C1 | Instagram `@noctaliadreams` | 15:45 | `HIGGS_2026-08-05_183301_TIME_FREEZE_CITY_073670c9.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcOWIEWpgSh/) vérifié à 15:45 ; capturé `https://www.instagram.com/reel/DcOWIEWpgSh/` |
-| C1 | X `@NoctaliaDreams` | 16:15 | `HIGGS_2026-08-05_183301_TIME_FREEZE_CITY_073670c9.mp4` | **PROGRAMMÉ** | URL à collecter |
+| C1 | X `@NoctaliaDreams` | 16:15 | `HIGGS_2026-08-05_183301_TIME_FREEZE_CITY_073670c9.mp4` | **ÉCHEC — NON PUBLIÉ** — PROGRAMMÉ NATIVEMENT, PREUVE PUBLIQUE MANQUANTE | Réconciliation du 04/09 : la ligne native historique est conservée, sans URL publique exacte retrouvée |
 | C2 | TikTok `@noctaliadreams` | 19:30 | `HIGGS_2026-08-05_212002_MAGIC_DOOR_b3d4a35f.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672911596418649366) vérifié à 19:30 |
 | C2 | Instagram `@noctaliadreams` | 19:45 | `HIGGS_2026-08-05_212002_MAGIC_DOOR_b3d4a35f.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcOxRJKplYp/) vérifié à 19:45 ; capturé `https://www.instagram.com/reel/DcOxRJKplYp/` |
-| C2 | X `@NoctaliaDreams` | 20:15 | `HIGGS_2026-08-05_212002_MAGIC_DOOR_b3d4a35f.mp4` | **PROGRAMMÉ** | URL à collecter |
+| C2 | X `@NoctaliaDreams` | 20:15 | `HIGGS_2026-08-05_212002_MAGIC_DOOR_b3d4a35f.mp4` | **ÉCHEC — NON PUBLIÉ** — PROGRAMMÉ NATIVEMENT, PREUVE PUBLIQUE MANQUANTE | Réconciliation du 04/09 : la ligne native historique est conservée, sans URL publique exacte retrouvée |
 | C3 | TikTok `@noctaliadreams` | 22:30 | `HIGGS_2026-08-06_001_FP_CITY.mp4` | **PUBLIÉ** | [TikTok public](https://www.tiktok.com/@noctaliadreams/video/7672911649380011287) vérifié à 22:30 |
 | C3 | Instagram `@noctaliadreams` | 22:45 | `HIGGS_2026-08-06_001_FP_CITY.mp4` | **PUBLIÉ** | [Reel public](https://www.instagram.com/noctaliadreams/reel/DcPFyBwpwAd/) vérifié à 22:45 ; capturé `https://www.instagram.com/reel/DcPFyBwpwAd/` |
-| C3 | X `@NoctaliaDreams` | 23:15 | `HIGGS_2026-08-06_001_FP_CITY.mp4` | **PROGRAMMÉ** | URL à collecter |
+| C3 | X `@NoctaliaDreams` | 23:15 | `HIGGS_2026-08-06_001_FP_CITY.mp4` | **ÉCHEC — NON PUBLIÉ** — PROGRAMMÉ NATIVEMENT, PREUVE PUBLIQUE MANQUANTE | Réconciliation du 04/09 : la ligne native historique est conservée, sans URL publique exacte retrouvée |
 
 ## Hero secondaire — 3 preuves
 
@@ -23,9 +23,9 @@ Le hero reprend `HIGGS_2026-08-05_183301_TIME_FREEZE_CITY_073670c9.mp4`.
 
 | Plateforme et compte | Heure | Identifiant éditorial | État préparatoire | URL publique vérifiée |
 |---|---:|---|---|---|
-| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 19/08 | **PROGRAMMÉ** | À vérifier après 17:30 |
-| YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `Give Every Dream a Five-Word Title #Shorts` | **PROGRAMMÉ** | À vérifier après 18:00 |
-| Facebook page `1266183263247451` | 18:15 | Hero exact du 19/08 | **PROGRAMMÉ** | À vérifier après 18:15 |
+| Pinterest `@noctaliadreams` | 17:30 | Hero exact du 19/08 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Réconciliation du 04/09 : aucune URL publique exacte retrouvée |
+| YouTube `UCQZsVAOggq_meTWYG-4dHfw` | 18:00 | `Give Every Dream a Five-Word Title #Shorts` | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Réconciliation du 04/09 : aucune URL publique exacte retrouvée sur la chaîne |
+| Facebook page `1266183263247451` | 18:15 | Hero exact du 19/08 | **ÉCHEC — NON PUBLIÉ** — programmation native historique conservée | Réconciliation du 04/09 : aucune URL publique exacte retrouvée |
 
 ## Gate de clôture
 
@@ -85,4 +85,3 @@ X C1, X C2 et X C3 restent **PROGRAMMÉ**, URL à collecter. Aucun status ID
 inventé. Heroes Pinterest, YouTube et Facebook restent **PROGRAMMÉ**. Le
 registre du 17/08 n'est pas clos. La journée TikTok/Instagram C1–C3 est
 complète.
-

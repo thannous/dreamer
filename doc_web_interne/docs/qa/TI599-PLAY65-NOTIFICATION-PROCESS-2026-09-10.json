@@ -1,0 +1,12 @@
+{
+  "processAbsentBeforeTap": true,
+  "checkedAt": 1789077560.775532,
+  "processAbsentImmediatelyBeforeTap": true,
+  "captureOpened": true,
+  "draftExact": true,
+  "backExitsApp": true,
+  "package": "com.tanuki75.noctalia",
+  "versionCode": 65,
+  "installer": "com.android.vending",
+  "method": "am stop-app; existing real reminder tap"
+}

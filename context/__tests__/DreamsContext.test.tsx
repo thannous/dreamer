@@ -8,12 +8,14 @@ const { mockJournal } = ((factory: any) => factory())(() => {
   const mockJournal = {
     dreams: [{ id: 1, title: 'Dream', transcript: 'text', isAnalyzed: false }],
     loaded: true,
+    persistenceState: { status: 'ready', target: 'device' } as const,
     addDream: jest.fn(async (dream: DreamAnalysis) => dream),
     updateDream: jest.fn(async () => undefined),
     applyDreamCategorization: jest.fn(async () => null),
     deleteDream: jest.fn(async () => undefined),
     toggleFavorite: jest.fn(async () => undefined),
     reloadDreams: jest.fn(async () => undefined),
+    retryPersistence: jest.fn(async () => undefined),
     generateDreamImage: jest.fn(async () => ({ id: 1 })),
     analyzeDream: jest.fn(async () => ({ id: 1 })),
   };
@@ -25,7 +27,7 @@ jest.mock('../../hooks/useDreamJournal', () => ({
   useDreamJournal: () => mockJournal,
 }));
 
-const { DreamsProvider, useDreams, useDreamsActions, useDreamsData } = require('../DreamsContext');
+const { DreamsProvider, useDreams, useDreamsActions, useDreamsData, useOptionalDreamsActions } = require('../DreamsContext');
 
 describe('DreamsContext', () => {
   beforeEach(() => {
@@ -41,6 +43,7 @@ describe('DreamsContext', () => {
 
     expect(result.current.dreams).toEqual(mockJournal.dreams);
     expect(result.current.loaded).toBe(true);
+    expect(result.current.persistenceState).toEqual({ status: 'ready', target: 'device' });
   });
 
   it('given provider__when invoking actions__then delegates to journal', async () => {
@@ -54,6 +57,8 @@ describe('DreamsContext', () => {
     expect(mockJournal.addDream).toHaveBeenCalledWith({ id: 2 });
     await result.current.reloadDreams();
     expect(mockJournal.reloadDreams).toHaveBeenCalledTimes(1);
+    await result.current.retryPersistence();
+    expect(mockJournal.retryPersistence).toHaveBeenCalledTimes(1);
   });
 
   it('given provider__when using combined hook__then returns data and actions', () => {
@@ -71,5 +76,16 @@ describe('DreamsContext', () => {
     expect(() => renderHook(() => useDreamsData())).toThrow(
       'useDreamsData must be used within DreamsProvider'
     );
+  });
+
+  it('given missing provider__when using actions hook__then throws', () => {
+    expect(() => renderHook(() => useDreamsActions())).toThrow(
+      'useDreamsActions must be used within DreamsProvider'
+    );
+  });
+
+  it('given missing provider__when using optional actions hook__then returns null', () => {
+    const { result } = renderHook(() => useOptionalDreamsActions());
+    expect(result.current).toBeNull();
   });
 });

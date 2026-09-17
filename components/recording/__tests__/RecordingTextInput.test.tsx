@@ -95,12 +95,25 @@ jest.mock('react-native', () => {
       children,
       style,
       testID,
+      nativeID,
+      accessibilityLiveRegion,
     }: {
       children?: React.ReactNode;
       style?: unknown;
       testID?: string;
+      nativeID?: string;
+      accessibilityLiveRegion?: 'none' | 'polite' | 'assertive';
     }) => (
-      <div data-native-style={JSON.stringify(flattenStyle(style))} data-testid={testID}>
+      <div
+        data-native-style={JSON.stringify(flattenStyle(style))}
+        data-testid={testID}
+        data-layout={nativeID}
+        aria-live={
+          accessibilityLiveRegion === 'polite' || accessibilityLiveRegion === 'assertive'
+            ? accessibilityLiveRegion
+            : 'off'
+        }
+      >
         {children}
       </div>
     ),
@@ -119,15 +132,17 @@ jest.mock('@/components/recording/MicButton', () => ({
     onPress,
     size,
     status,
+    testID,
   }: {
     accessibilityLabel?: string;
     onPress?: () => void;
     size?: string;
     status?: string;
+    testID?: string;
   }) => (
     <button
       aria-label={accessibilityLabel}
-      data-testid="compact-mic"
+      data-testid={testID ?? 'compact-mic'}
       data-size={size}
       data-status={status}
       onClick={onPress}
@@ -191,6 +206,8 @@ jest.mock('@/hooks/useTranslation', () => ({
         'recording.guide.dismiss': 'Close guide',
         'recording.mic.pause': 'Pause dictation',
         'recording.mic.pause_hint': 'Double tap to pause dictation',
+        'recording.status.preparing.title': 'Preparing microphone',
+        'recording.status.recording.title': 'Recording',
         'recording.activation_insight.eyebrow': 'First read',
         'recording.activation_insight.summary.memory': 'This memory is saved as a remembered dream.',
         'recording.activation_insight.summary.signals': 'Noctalia already notices: {signals}.',
@@ -220,7 +237,7 @@ describe('RecordingTextInput', () => {
     mockFontScale = 1;
   });
 
-  it('prioritizes the editable transcript while keeping voice available in text mode', () => {
+  it('offers an inline microphone in write mode without starting automatically', () => {
     const onSwitchToVoice = jest.fn();
 
     render(
@@ -238,11 +255,8 @@ describe('RecordingTextInput', () => {
     expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
     expect(screen.getByTestId('icon.pencil')).toBeTruthy();
     expect(screen.queryByText('Dictate the dream')).toBeNull();
-    expect(screen.getByTestId('compact-mic').getAttribute('data-size')).toBe('inline');
-
-    fireEvent.click(screen.getByTestId('compact-mic'));
-
-    expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-size')).toBe('inline');
+    expect(onSwitchToVoice).not.toHaveBeenCalled();
   });
 
   it('keeps typed text editable and surfaces clear when there is content', () => {
@@ -277,7 +291,7 @@ describe('RecordingTextInput', () => {
 
     const { rerender } = render(
       <RecordingTextInput
-        layout="voiceFirst"
+        layout="textFirst"
         value=""
         onChange={jest.fn()}
         disabled={false}
@@ -292,7 +306,7 @@ describe('RecordingTextInput', () => {
 
     rerender(
       <RecordingTextInput
-        layout="voiceFirst"
+        layout="textFirst"
         value="A room under the sea"
         onChange={jest.fn()}
         disabled={false}
@@ -310,15 +324,17 @@ describe('RecordingTextInput', () => {
     expect(onOpenDetails).toHaveBeenCalledTimes(1);
   });
 
-  it('keeps the transcript editable while dictating in voice mode', () => {
+  it('shows a compact transcript while dictating and offers a handoff to the editor', () => {
     const onSwitchToVoice = jest.fn();
     const onChange = jest.fn();
+    const onEditTranscript = jest.fn();
 
     render(
       <RecordingTextInput
         layout="voiceFirst"
         value="A blue room"
         onChange={onChange}
+        onEditTranscript={onEditTranscript}
         disabled={false}
         lengthWarning=""
         instructionText="Write what you remember"
@@ -330,24 +346,25 @@ describe('RecordingTextInput', () => {
       />
     );
 
-    expect(screen.getByTestId(TID.Input.DreamTranscript)).toBeTruthy();
-    expect(screen.getByDisplayValue('A blue room')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Input.DreamTranscript)).toBeNull();
+    expect(screen.getByText('A blue room')).toBeTruthy();
     expect(screen.queryByText('Pause dictation')).toBeNull();
     expect(screen.getByTestId(TID.Text.RecordingVoiceStatusDuration).textContent).toBe('0:38');
-    expect(screen.getByTestId('compact-mic').getAttribute('data-size')).toBe('expressive');
-    expect(screen.getByTestId('compact-mic').getAttribute('data-status')).toBe('recording');
+    expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-size')).toBe('compact');
+    expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-status')).toBe('recording');
+    expect(screen.getByTestId(TID.Text.RecordingVoiceStatusTitle).textContent).toBe('Recording');
+    expect(screen.getByTestId(TID.Component.RecordingVoiceStatus).getAttribute('aria-live')).toBe('polite');
 
-    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
-      target: { value: 'A blue room with rain' },
-    });
+    fireEvent.click(screen.getByTestId('recording-review-transcript'));
+    expect(onEditTranscript).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(screen.getByTestId('compact-mic'));
+    fireEvent.click(screen.getByTestId(TID.Button.RecordToggle));
 
-    expect(onChange).toHaveBeenCalledWith('A blue room with rain');
+    expect(onChange).not.toHaveBeenCalled();
     expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
   });
 
-  it('can prioritize the expressive microphone above the editable text box', () => {
+  it('can prioritize the expressive microphone above the voice introduction', () => {
     const onSwitchToVoice = jest.fn();
 
     render(
@@ -364,11 +381,12 @@ describe('RecordingTextInput', () => {
     );
 
     expect(screen.getByText('Dictate your dream')).toBeTruthy();
-    expect(screen.getByTestId('compact-mic').getAttribute('data-size')).toBe('expressive');
-    expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-size')).toBe('expressive');
+    expect(screen.queryByTestId(TID.Input.DreamTranscript)).toBeNull();
+    expect(screen.getByTestId('recording-voice-preview')).toBeTruthy();
     expect(screen.queryByText('Dictate the dream')).toBeNull();
 
-    fireEvent.click(screen.getByTestId('compact-mic'));
+    fireEvent.click(screen.getByTestId(TID.Button.RecordToggle));
 
     expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
   });
@@ -389,29 +407,34 @@ describe('RecordingTextInput', () => {
     );
 
     // The text editor must remain fully usable — blocking voice never blocks capture.
-    expect(screen.queryByTestId('compact-mic')).toBeNull();
+    expect(screen.queryByTestId(TID.Button.RecordToggle)).toBeNull();
     expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
   });
 
-  it('keeps the microphone in text layout when the device supports speech', () => {
+  it.each(['', 'A blue room'])('starts dictation in write mode while preserving the draft %j', (value: string) => {
+    const onSwitchToVoice = jest.fn();
+    const onChange = jest.fn();
     render(
       <RecordingTextInput
         layout="textFirst"
         voiceSupported
-        value=""
-        onChange={jest.fn()}
+        value={value}
+        onChange={onChange}
         disabled={false}
         lengthWarning=""
         instructionText="Type your dream"
         switchToVoiceLabel="Dictate the dream"
-        onSwitchToVoice={jest.fn()}
+        onSwitchToVoice={onSwitchToVoice}
       />
     );
 
-    expect(screen.getByTestId('compact-mic')).toBeTruthy();
+    fireEvent.click(screen.getByTestId(TID.Button.RecordToggle));
+    expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
+    expect(onChange).not.toHaveBeenCalled();
+    expect((screen.getByPlaceholderText('Tell your dream...') as HTMLTextAreaElement).value).toBe(value);
   });
 
-  it('hides the microphone in text layout when speech is unsupported', () => {
+  it('keeps write mode usable when speech is unsupported', () => {
     render(
       <RecordingTextInput
         layout="textFirst"
@@ -426,10 +449,12 @@ describe('RecordingTextInput', () => {
       />
     );
 
-    expect(screen.queryByTestId('compact-mic')).toBeNull();
+    expect(screen.queryByTestId(TID.Button.RecordToggle)).toBeNull();
+    expect(screen.getByPlaceholderText('Tell your dream...')).toBeTruthy();
   });
 
-  it('points first-time voice users to the microphone and can be dismissed', () => {
+  it.each([1, 1.5, 2])('keeps the voice hint and dismissal available at text scale %s', (fontScale: number) => {
+    mockFontScale = fontScale;
     const onVoiceHintDismiss = jest.fn();
 
     render(
@@ -449,6 +474,8 @@ describe('RecordingTextInput', () => {
     expect(screen.getByTestId(TID.Component.RecordingVoiceHint)).toBeTruthy();
     expect(screen.getByText('Tap the mic to dictate your dream.')).toBeTruthy();
     expect(screen.getByText('Got it')).toBeTruthy();
+    const hintStyle = JSON.parse(screen.getByTestId(TID.Component.RecordingVoiceHint).getAttribute('data-native-style') ?? '{}');
+    expect(hintStyle.flexDirection).toBe(fontScale >= 1.3 ? 'column' : 'row');
 
     fireEvent.click(screen.getByTestId(TID.Button.RecordingVoiceHintDismiss));
 
@@ -473,9 +500,107 @@ describe('RecordingTextInput', () => {
 
     expect(screen.queryByText('Retry voice')).toBeNull();
 
-    fireEvent.click(screen.getByTestId('compact-mic'));
+    fireEvent.click(screen.getByTestId(TID.Button.RecordToggle));
 
     expect(onSwitchToVoice).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the compact microphone above the transcript preview in tell mode', () => {
+    render(
+      <RecordingTextInput
+        layout="voiceFirst"
+        value="A blue room"
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Dictate your dream"
+        voiceStatus="recording"
+        recordingDurationLabel="0:12"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    const composer = screen.getByTestId('recording-composer');
+    expect(composer.getAttribute('data-layout')).toBe('voiceFirst');
+
+    const html = composer.innerHTML;
+    expect(html.indexOf(TID.Button.RecordToggle)).toBeGreaterThanOrEqual(0);
+    expect(html.indexOf('recording-voice-preview')).toBeGreaterThan(
+      html.indexOf(TID.Button.RecordToggle)
+    );
+    expect(html.indexOf(TID.Component.RecordingVoiceStatus)).toBeGreaterThan(
+      html.indexOf(TID.Button.RecordToggle)
+    );
+    expect(html.indexOf('recording-voice-preview')).toBeGreaterThan(
+      html.indexOf(TID.Component.RecordingVoiceStatus)
+    );
+  });
+
+  it('announces the preparing state without hiding the transcript', () => {
+    render(
+      <RecordingTextInput
+        layout="voiceFirst"
+        value="A remembered corridor"
+        onChange={jest.fn()}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Dictate your dream"
+        voiceStatus="preparing"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    expect(screen.getByTestId(TID.Text.RecordingVoiceStatusTitle).textContent).toBe(
+      'Preparing microphone'
+    );
+    expect(screen.getByText('A remembered corridor')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.RecordToggle).getAttribute('data-status')).toBe('preparing');
+  });
+
+  it('keeps the same editable draft when switching Write and Tell layouts', () => {
+    const onChange = jest.fn();
+    const { rerender } = render(
+      <RecordingTextInput
+        layout="textFirst"
+        value="A blue room under the rain"
+        onChange={onChange}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Write what you remember"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('textFirst');
+    expect(screen.getByDisplayValue('A blue room under the rain')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.RecordToggle)).toBeTruthy();
+
+    rerender(
+      <RecordingTextInput
+        layout="voiceFirst"
+        value="A blue room under the rain"
+        onChange={onChange}
+        disabled={false}
+        lengthWarning=""
+        instructionText="Dictate your dream"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('voiceFirst');
+    expect(screen.getByText('A blue room under the rain')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Input.DreamTranscript)).toBeNull();
+    rerender(
+      <RecordingTextInput layout="textFirst" value="A blue room under the rain"
+        onChange={onChange} disabled={false} lengthWarning="" instructionText=""
+        onSwitchToVoice={jest.fn()} />
+    );
+    expect(screen.getAllByTestId(TID.Input.DreamTranscript)).toHaveLength(1);
+
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'A blue room under the rain and a red bicycle' },
+    });
+    expect(onChange).toHaveBeenCalledWith('A blue room under the rain and a red bicycle');
   });
 
   it.each([

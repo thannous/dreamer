@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Noctalia sign-in</title>
+  </head>
+  <body>
+    <script>
+      (function () {
+        var href = window.location.href;
+        if (window.opener && window.opener !== window) {
+          window.opener.postMessage(href, window.location.origin);
+        }
+      })();
+    </script>
+  </body>
+</html>

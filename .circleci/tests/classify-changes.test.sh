@@ -73,7 +73,7 @@ assert_change() {
 
 full="$(parameters_json full "" true true true true true false true true true false false)"
 release="$(parameters_json full "" true true true true true false true true false false false)"
-fallback="$(parameters_json affected "" true true true true true false false false false false false)"
+fallback="$(parameters_json affected "" true true true true true false true false false false false)"
 none="$(parameters_json affected "$base_revision" false false false false false false false false false false false)"
 all_surfaces="$(parameters_json affected "$base_revision" true true true true true true false false false false false)"
 
@@ -81,6 +81,48 @@ assert_parameters "full mode" "$full" full "" "$base_revision"
 assert_parameters "release mode" "$release" release "" "$base_revision"
 assert_parameters "invalid PR base fail-safe" "$fallback" pr deadbeef "$base_revision"
 assert_parameters "invalid main base fail-safe" "$fallback" main deadbeef "$base_revision"
+assert_parameters "invalid head ref fail-safe" "$fallback" pr "$base_revision" deadbeef
+
+unrelated_revision="$(git -C "$test_root" commit-tree "$(git -C "$test_root" mktree </dev/null)" -m unrelated)"
+assert_parameters "non-ancestor diff base fail-safe" "$fallback" pr "$unrelated_revision" "$base_revision"
+
+fake_git_bin="$test_root/fake-bin"
+mkdir -p "$fake_git_bin"
+real_git="$(command -v git)"
+cat > "$fake_git_bin/git" <<EOF
+#!/usr/bin/env bash
+if [[ "\${1:-}" == "diff" ]]; then
+  echo "simulated git diff failure" >&2
+  exit 23
+fi
+exec "$real_git" "\$@"
+EOF
+chmod +x "$fake_git_bin/git"
+
+assert_parameters_with_path() {
+  local label="$1"
+  local expected="$2"
+  local mode="$3"
+  local base="$4"
+  local head="$5"
+  local output="$test_root/parameters.json"
+  local actual
+
+  (
+    cd "$test_root"
+    PATH="$fake_git_bin:$PATH" "$classifier" "$mode" "$base" "$head" "$output" >/dev/null
+  )
+
+  actual="$(cat "$output")"
+  if [[ "$actual" != "$expected" ]]; then
+    echo "$label failed" >&2
+    echo "expected: $expected" >&2
+    echo "actual:   $actual" >&2
+    exit 1
+  fi
+}
+
+assert_parameters_with_path "git diff failure fail-safe" "$fallback" pr "$base_revision" "$base_revision"
 assert_parameters "no changes" "$none" pr "$base_revision" "$base_revision"
 
 git -C "$test_root" reset -q --hard "$base_revision"
@@ -113,7 +155,7 @@ assert_change \
 git -C "$test_root" reset -q --hard "$base_revision"
 commit_change app/main-batch.ts >/dev/null
 main_batch_head="$(commit_change docs-src/content/main-batch.md)"
-expected="$(parameters_json affected "$base_revision" true false false false false true false false false false false)"
+expected="$(parameters_json affected "$base_revision" true false true false false true false false false false false)"
 assert_parameters \
   "main multi-commit push covers every changed surface" \
   "$expected" \
@@ -126,8 +168,8 @@ assert_change \
   false true false false false false false false false false false
 
 assert_change \
-  "site source change takes the no-op route" docs-src/content/page.md pr \
-  false false false false false false false false false false false
+  "tracked docs-src content runs the site without Noctalia" docs-src/content/page.md pr \
+  false false true false false false false false false true false
 
 assert_change \
   "generated docs output is a no-op" docs/index.html pr \
@@ -143,11 +185,12 @@ assert_change \
 
 git -C "$test_root" reset -q --hard "$base_revision"
 skip_head="$(commit_change docs-src/content/skip.md '[ci skip] SEO-only batch')"
-assert_parameters "explicit CI opt-out for editorial site sources" "$none" pr "$base_revision" "$skip_head"
+expected="$(parameters_json affected "$base_revision" false false true false false false false false false true false)"
+assert_parameters "CI opt-out does not skip tracked docs-src sources" "$expected" pr "$base_revision" "$skip_head"
 
 git -C "$test_root" reset -q --hard "$base_revision"
 alt_skip_head="$(commit_change docs-src/content/skip-alt.md '[skip ci] SEO-only batch')"
-assert_parameters "skip ci alias also no-ops editorial site sources" "$none" pr "$base_revision" "$alt_skip_head"
+assert_parameters "skip ci alias does not skip tracked docs-src sources" "$expected" pr "$base_revision" "$alt_skip_head"
 
 git -C "$test_root" reset -q --hard "$base_revision"
 ignored_skip_head="$(commit_change app/skip-ci.ts '[ci skip] app change')"
@@ -179,11 +222,16 @@ assert_parameters "CI opt-out after the first 250 characters does not skip Nocta
 
 git -C "$test_root" reset -q --hard "$base_revision"
 upper_skip_head="$(commit_change docs-src/content/upper.md '[CI SKIP] editorial')"
-assert_parameters "uppercase CI opt-out still no-ops editorial sources" "$none" pr "$base_revision" "$upper_skip_head"
+expected="$(parameters_json affected "$base_revision" false false true false false false false false false true false)"
+assert_parameters "uppercase CI opt-out does not skip tracked docs-src sources" "$expected" pr "$base_revision" "$upper_skip_head"
 
 assert_change \
-  "docs-src config remains a site no-op" docs-src/config/site.config.json pr \
-  false false false false false false false false false false false
+  "docs-src config runs the site without Noctalia" docs-src/config/site.config.json pr \
+  false false true false false false false false false true false
+
+assert_change \
+  "ordinary tracked docs-src file selects site-build only" docs-src/content/pages/page.home/en.md pr \
+  false false true false false false false false false true false
 
 assert_change \
   "generic site data still runs the site" data/seo-url-contract-baseline.json pr \
@@ -211,11 +259,11 @@ assert_change \
 
 assert_change \
   "root lockfile consumers" package-lock.json pr \
-  true false true false true true false false false false false
+  true false true true true true false false false false false
 
 assert_change \
   "shared Node version" .nvmrc pr \
-  true true true false true true false false false false false
+  true true true true true true false false false false false
 
 assert_change \
   "site generator change" scripts/docs-check.js pr \
@@ -236,5 +284,30 @@ assert_change \
 assert_change \
   "unknown global file fails closed" .gitignore pr \
   true true true true true true false false false false false
+
+# Every row in the actual map is a classification fixture, not a second path list.
+while IFS=$'\t' read -r input graph consumers; do
+  [[ -z "$input" || "$input" == \#* ]] && continue
+  noctalia=false meditation=false site=false edge=false contracts=false
+  for consumer in $consumers; do
+    case "$consumer" in
+      noctalia) noctalia=true ;;
+      meditation) meditation=true ;;
+      site) site=true ;;
+      edge_functions) edge=true ;;
+      edge_contracts) contracts=true ;;
+      *) echo "Invalid mapped consumer $consumer" >&2; exit 1 ;;
+    esac
+  done
+  site_cache=false contract_cache=false
+  if [[ "$site" == true && "$noctalia" == false ]]; then site_cache=true
+  elif [[ "$contracts" == true && "$noctalia" == false ]]; then contract_cache=true; fi
+  assert_change "$graph map: $input" "$input" pr "$noctalia" "$meditation" "$site" "$edge" "$contracts" "$noctalia" false false false "$site_cache" "$contract_cache"
+done < "$repository_root/.circleci/dependency-consumers.tsv"
+
+# Regression expectation comes from the real consumers, independently of the map.
+assert_change "Android lock validates both application consumers only" scripts/android-device-lock.js pr true true false false false true false false false false false
+assert_change "unknown shared execution input fails closed" scripts/new-shared-tool.js pr true true true true true true false false false false false
+assert_change "unknown shared data fails closed" data/new-common-contract.json pr true true true true true true false false false false false
 
 echo "CircleCI path classification tests passed."

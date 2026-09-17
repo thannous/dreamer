@@ -1,0 +1,184 @@
+{
+  "query": {
+    "common_count": 72,
+    "before_visible": {
+      "clicks": 9,
+      "impressions": 1221,
+      "ctr": 0.007371007371007371,
+      "position": 7.714987714987715
+    },
+    "after_visible": {
+      "clicks": 9,
+      "impressions": 1801,
+      "ctr": 0.004997223764575236,
+      "position": 7.242642976124375
+    },
+    "common_before": {
+      "clicks": 9,
+      "impressions": 1172,
+      "ctr": 0.007679180887372013,
+      "position": 7.676621160409557
+    },
+    "common_after": {
+      "clicks": 8,
+      "impressions": 1738,
+      "ctr": 0.004602991944764097,
+      "position": 7.300920598388953
+    },
+    "after_ctr_baseline_weights": 0.004541189725093761,
+    "before_ctr_after_weights": 0.00570253079413639,
+    "after_position_baseline_weights": 6.96941365094085,
+    "before_only": {
+      "clicks": 0,
+      "impressions": 49,
+      "ctr": 0.0,
+      "position": 8.63265306122449
+    },
+    "after_only": {
+      "clicks": 1,
+      "impressions": 63,
+      "ctr": 0.015873015873015872,
+      "position": 5.634920634920635
+    }
+  },
+  "country-device": {
+    "common_count": 6,
+    "before_visible": {
+      "clicks": 9,
+      "impressions": 1221,
+      "ctr": 0.007371007371007371,
+      "position": 7.714987714987715
+    },
+    "after_visible": {
+      "clicks": 9,
+      "impressions": 1801,
+      "ctr": 0.004997223764575236,
+      "position": 7.242642976124375
+    },
+    "common_before": {
+      "clicks": 9,
+      "impressions": 1210,
+      "ctr": 0.00743801652892562,
+      "position": 7.684297520661157
+    },
+    "common_after": {
+      "clicks": 9,
+      "impressions": 1787,
+      "ctr": 0.005036373810856184,
+      "position": 7.226636821488528
+    },
+    "after_ctr_baseline_weights": 0.006021388716676999,
+    "before_ctr_after_weights": 0.00756393943846464,
+    "after_position_baseline_weights": 6.888764484694484,
+    "before_only": {
+      "clicks": 0,
+      "impressions": 11,
+      "ctr": 0.0,
+      "position": 11.090909090909092
+    },
+    "after_only": {
+      "clicks": 0,
+      "impressions": 14,
+      "ctr": 0.0,
+      "position": 9.285714285714286
+    }
+  },
+  "query-country-device": {
+    "common_count": 99,
+    "before_visible": {
+      "clicks": 9,
+      "impressions": 1221,
+      "ctr": 0.007371007371007371,
+      "position": 7.714987714987715
+    },
+    "after_visible": {
+      "clicks": 9,
+      "impressions": 1801,
+      "ctr": 0.004997223764575236,
+      "position": 7.242642976124375
+    },
+    "common_before": {
+      "clicks": 9,
+      "impressions": 1133,
+      "ctr": 0.00794351279788173,
+      "position": 7.63459841129744
+    },
+    "common_after": {
+      "clicks": 7,
+      "impressions": 1656,
+      "ctr": 0.004227053140096618,
+      "position": 7.349033816425121
+    },
+    "after_ctr_baseline_weights": 0.004090427274591309,
+    "before_ctr_after_weights": 0.007605306946661938,
+    "after_position_baseline_weights": 6.754678474206478,
+    "before_only": {
+      "clicks": 0,
+      "impressions": 88,
+      "ctr": 0.0,
+      "position": 8.75
+    },
+    "after_only": {
+      "clicks": 2,
+      "impressions": 145,
+      "ctr": 0.013793103448275862,
+      "position": 6.027586206896552
+    }
+  },
+  "clusters": [
+    {
+      "period": "before",
+      "cluster": "eau/inondation",
+      "visible_queries": 23,
+      "clicks": 0,
+      "impressions": 226,
+      "ctr": 0.0,
+      "position": 8.544247787610619
+    },
+    {
+      "period": "before",
+      "cluster": "maison inconnue",
+      "visible_queries": 7,
+      "clicks": 2,
+      "impressions": 309,
+      "ctr": 0.006472491909385114,
+      "position": 5.951456310679611
+    },
+    {
+      "period": "before",
+      "cluster": "autres maisons",
+      "visible_queries": 64,
+      "clicks": 7,
+      "impressions": 686,
+      "ctr": 0.01020408163265306,
+      "position": 8.236151603498543
+    },
+    {
+      "period": "after",
+      "cluster": "eau/inondation",
+      "visible_queries": 29,
+      "clicks": 3,
+      "impressions": 849,
+      "ctr": 0.0035335689045936395,
+      "position": 7.131919905771496
+    },
+    {
+      "period": "after",
+      "cluster": "maison inconnue",
+      "visible_queries": 7,
+      "clicks": 3,
+      "impressions": 279,
+      "ctr": 0.010752688172043012,
+      "position": 3.8960573476702507
+    },
+    {
+      "period": "after",
+      "cluster": "autres maisons",
+      "visible_queries": 70,
+      "clicks": 3,
+      "impressions": 673,
+      "ctr": 0.004457652303120356,
+      "position": 8.769687964338782
+    }
+  ]
+}

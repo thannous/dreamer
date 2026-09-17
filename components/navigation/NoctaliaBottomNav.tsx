@@ -2,6 +2,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import {
   DESKTOP_BREAKPOINT,
   getBottomNavigationLayout,
+  getBottomNavigationItemStyle,
   getTabBarHorizontalLayout,
 } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -24,7 +25,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
-type BottomNavKey = 'home' | 'journal' | 'addDream' | 'stats' | 'settings';
+type BottomNavKey = 'home' | 'journal' | 'addDream' | 'stats' | 'explore';
 
 type BottomNavItem = {
   key: BottomNavKey;
@@ -82,7 +83,7 @@ export function NoctaliaBottomNav({
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width, height } = useWindowDimensions();
+  const { width, height, fontScale } = useWindowDimensions();
   // The Capture button doubles as the in-progress indicator for a background
   // dream analysis, so no overlay has to cover the screen content.
   const { activeAnalysis } = useAnalysisActivity();
@@ -91,7 +92,7 @@ export function NoctaliaBottomNav({
     return null;
   }
 
-  const navigationLayout = getBottomNavigationLayout(width, height);
+  const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
   const floatingBottomInset = Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   // Icon and indicator colours are values on native props, so they stay on the tokens.
   const navActiveColor = noctalia.nav.active;
@@ -107,12 +108,18 @@ export function NoctaliaBottomNav({
 
   const addItemClassName = [
     'items-center justify-center border-2 border-champagne-soft bg-champagne',
+    navigationLayout.horizontalCenter ? 'flex-row' : '',
     navigationLayout.compact
-      ? 'h-[56px] w-[60px] gap-px rounded-[22px]'
+      ? 'gap-px rounded-[22px]'
       : navigationLayout.narrow
-        ? 'h-[68px] w-[64px] gap-[3px] rounded-[24px]'
-        : 'h-[76px] w-[72px] gap-1 rounded-[27px]',
+        ? 'gap-[3px] rounded-[24px]'
+        : 'gap-1 rounded-[27px]',
   ].join(' ');
+  const labelStyle = {
+    fontSize: navigationLayout.labelFontSize,
+    lineHeight: navigationLayout.labelLineHeight,
+    height: navigationLayout.stackedLabels ? navigationLayout.labelHeight : undefined,
+  };
 
   const addLift = navigationLayout.compact
     ? ADD_LIFT.compact
@@ -129,7 +136,7 @@ export function NoctaliaBottomNav({
   const items: BottomNavItem[] = [
     {
       key: 'home',
-      label: t('nav.home'),
+      label: t(navigationLayout.largeText ? 'nav.home_compact' : 'nav.home'),
       accessibilityLabel: t('nav.home'),
       icon: 'house',
       href: '/',
@@ -145,7 +152,7 @@ export function NoctaliaBottomNav({
     },
     {
       key: 'addDream',
-      label: t('nav.capture_dream'),
+      label: t(navigationLayout.largeText ? 'nav.capture_dream_compact' : 'nav.capture_dream'),
       accessibilityLabel: t('nav.capture_dream_accessibility'),
       icon: addDreamIcon,
       href: '/recording',
@@ -153,19 +160,21 @@ export function NoctaliaBottomNav({
     },
     {
       key: 'stats',
-      label: t('nav.stats'),
+      label: t(navigationLayout.largeText ? 'nav.stats_compact' : 'nav.stats'),
       accessibilityLabel: t('nav.stats'),
       icon: 'chart.bar',
       href: '/statistics',
       testID: TID.Tab.Stats,
     },
     {
-      key: 'settings',
-      label: t('nav.settings'),
-      accessibilityLabel: t('nav.settings'),
-      icon: 'gear',
-      href: '/settings',
-      testID: TID.Tab.Settings,
+      key: 'explore',
+      label: t(navigationLayout.largeText ? 'nav.explore_compact' : 'nav.explore'),
+      accessibilityLabel: t('nav.explore'),
+      icon: 'sparkles',
+      // Keep the nested tab state explicit. When this bar is used from Capture,
+      // a resource route can now return to Explorer instead of the default Today tab.
+      href: '/(tabs)/explore',
+      testID: TID.Tab.Explore,
     },
   ];
 
@@ -183,72 +192,118 @@ export function NoctaliaBottomNav({
           },
         ]}
       >
-        {items.map((item) => {
-          const isCenter = item.key === 'addDream';
-          const isActive = item.key === activeKey;
+        <View className="relative flex-1 flex-row">
+          {items.map((item, index) => {
+            const isCenter = item.key === 'addDream';
+            const isActive = item.key === activeKey;
 
-          return (
-            <Pressable
-              key={item.key}
-              onPress={isActive ? undefined : () => router.push(item.href as any)}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: isActive }}
-              accessibilityLabel={item.accessibilityLabel}
-              testID={item.testID}
-              className="h-full min-w-0 flex-1 items-center justify-center active:opacity-[0.72]"
-            >
-              {isCenter ? (
-                <View className={addItemClassName} style={[ADD_SHADOW, addLift]}>
-                  {activeAnalysis ? (
-                    <ActivityIndicator size="small" color={addTextColor} />
-                  ) : (
+            return (
+              <Pressable
+                key={item.key}
+                onPress={isActive ? undefined : () => router.push(item.href as any)}
+                accessibilityRole="tab"
+                aria-selected={isActive}
+                aria-busy={isCenter ? Boolean(activeAnalysis) : undefined}
+                accessibilityState={{
+                  selected: isActive,
+                  busy: isCenter ? Boolean(activeAnalysis) : undefined,
+                }}
+                accessibilityLabel={item.accessibilityLabel}
+                testID={item.testID}
+                style={[
+                  { width: navigationLayout.itemWidth },
+                  getBottomNavigationItemStyle(index, navigationLayout),
+                ]}
+                className="h-full min-w-0 flex-1 items-center justify-center active:opacity-[0.72]"
+              >
+                {isCenter ? (
+                  <View
+                    accessible={false}
+                    importantForAccessibility="no-hide-descendants"
+                    className={addItemClassName}
+                    style={[
+                      ADD_SHADOW,
+                      !navigationLayout.largeText && addLift,
+                      {
+                        width: navigationLayout.centerActionWidth,
+                        height: navigationLayout.centerActionHeight,
+                      },
+                    ]}
+                  >
+                    {activeAnalysis ? (
+                      <ActivityIndicator size="small" color={addTextColor} />
+                    ) : (
+                      <IconSymbol
+                        size={24}
+                        name={item.icon}
+                        color={addTextColor}
+                      />
+                    )}
+                      <Text
+                        accessible={false}
+                        className={`font-sans-bold w-full min-w-0 shrink text-center text-on-champagne ${
+                          navigationLayout.narrow ? 'text-[11px] px-px' : 'text-[12px]'
+                        }`}
+                        style={[
+                          labelStyle,
+                          {
+                            height: navigationLayout.stackedLabels ? navigationLayout.centerLabelHeight : undefined,
+                            width: navigationLayout.centerActionWidth - (navigationLayout.horizontalCenter ? 40 : 4),
+                            maxWidth: '100%',
+                          },
+                        ]}
+                        numberOfLines={navigationLayout.centerLabelLines}
+                        textBreakStrategy="simple"
+                        ellipsizeMode="tail"
+                        adjustsFontSizeToFit={!navigationLayout.stackedLabels}
+                        minimumFontScale={navigationLayout.narrow ? 0.75 : 0.85}
+                      >
+                        {item.label}
+                      </Text>
+                    {isActive ? (
+                      <View style={[
+                        { width: 16, height: 3, borderRadius: 2, backgroundColor: addTextColor },
+                        navigationLayout.horizontalCenter && { position: 'absolute', bottom: 3 },
+                      ]} />
+                    ) : null}
+                  </View>
+                ) : (
+                  <View
+                    accessible={false}
+                    importantForAccessibility="no-hide-descendants"
+                    style={{ width: navigationLayout.itemWidth - (Platform.OS === 'web' || navigationLayout.largeText ? 2 : 10), maxWidth: '100%' }}
+                    className={`min-w-0 items-center justify-center ${
+                      navigationLayout.compact ? 'gap-px' : 'gap-[5px]'
+                    } w-full flex-1`}
+                  >
                     <IconSymbol
                       size={24}
                       name={item.icon}
-                      color={addTextColor}
+                      color={isActive ? navActiveColor : navInactiveColor}
                     />
-                  )}
-                  <Text
-                    className={`font-sans-bold w-full min-w-0 shrink text-center text-on-champagne ${
-                      navigationLayout.narrow ? 'text-[11px] px-px' : 'text-[12px]'
-                    }`}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    adjustsFontSizeToFit
-                    minimumFontScale={navigationLayout.narrow ? 0.75 : 0.85}
-                    maxFontSizeMultiplier={navigationLayout.narrow ? 1.3 : undefined}
-                  >
-                    {item.label}
-                  </Text>
-                </View>
-              ) : (
-                <View
-                  className={`w-full min-w-0 flex-1 items-center justify-center ${
-                    navigationLayout.compact ? 'gap-px' : 'gap-[5px]'
-                  }`}
-                >
-                  <IconSymbol
-                    size={24}
-                    name={item.icon}
-                    color={isActive ? navActiveColor : navInactiveColor}
-                  />
-                  <Text
-                    className={`font-sans-medium w-full min-w-0 shrink text-center ${labelSizeClassName} ${
-                      isActive ? 'text-nav-active' : 'text-nav-inactive'
-                    }`}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    adjustsFontSizeToFit
-                    minimumFontScale={navigationLayout.narrow ? 0.75 : 0.8}
-                    maxFontSizeMultiplier={navigationLayout.narrow ? 1.3 : undefined}
-                  >
-                    {item.label}
-                  </Text>
-                </View>
-              )}
-            </Pressable>
-          );
-        })}
+                      <Text
+                        accessible={false}
+                        className={`font-sans-medium w-full min-w-0 shrink text-center ${labelSizeClassName} ${
+                          isActive ? 'text-nav-active' : 'text-nav-inactive'
+                        }`}
+                        style={[labelStyle, { width: navigationLayout.itemWidth - (Platform.OS === 'web' || navigationLayout.largeText ? 2 : 10), maxWidth: '100%' }]}
+                        numberOfLines={navigationLayout.labelLines}
+                        textBreakStrategy="simple"
+                        ellipsizeMode="tail"
+                        adjustsFontSizeToFit={!navigationLayout.stackedLabels}
+                        minimumFontScale={navigationLayout.narrow ? 0.75 : 0.8}
+                      >
+                        {item.label}
+                      </Text>
+                    <View
+                      style={{ width: 16, height: 3, borderRadius: 2, backgroundColor: isActive ? navActiveColor : 'transparent' }}
+                    />
+                  </View>
+                )}
+              </Pressable>
+            );
+          })}
+        </View>
       </View>
     </View>
   );

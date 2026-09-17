@@ -7,16 +7,21 @@
     "scheme": "noctalia",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "requireFullScreen": false,
       "bundleIdentifier": "com.tanuki75.noctalia",
       "usesAppleSignIn": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      },
       "associatedDomains": [
         "applinks:dream.noctalia.app"
       ],
       "infoPlist": {
         "NSSpeechRecognitionUsageDescription": "Allow $(PRODUCT_NAME) to use speech recognition.",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to use the microphone.",
+        "NSCameraUsageDescription": "Allow Noctalia to use the camera when you choose to add a reference image to a dream.",
+        "NSPhotoLibraryUsageDescription": "Allow Noctalia to select a reference image for your dream.",
         "CADisableMinimumFrameDurationOnPhone": true,
         "LSApplicationQueriesSchemes": [
           "mailto",
@@ -144,7 +149,9 @@
       }
     },
     "owner": "tanuki75",
-    "runtimeVersion": "3.1.0",
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
     "updates": {
       "url": "https://u.expo.dev/cfd1b275-9dad-40d7-9d9a-147c7bb38415"
     }

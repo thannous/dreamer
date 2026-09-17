@@ -1,3 +1,4 @@
+import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { router } from 'expo-router';
 import React, { memo, useCallback, useMemo } from 'react';
 import { Text, View, type ViewStyle } from 'react-native';
@@ -64,7 +65,7 @@ export const PersonalReadingCard = memo(function PersonalReadingCard({
 
   const handleNextAction = useCallback(() => {
     if (nextDream) {
-      router.push(`/journal/${nextDream.id}`);
+      router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(nextDream) });
     } else {
       router.push('/recording');
     }

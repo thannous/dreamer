@@ -1,18 +1,25 @@
 import {
   closeLucidRoute,
+  claimLucidOnboardingCompletionNavigation,
+  hasLucidOnboardingCompletionNavigationClaim,
+  isLucidAppPath,
   isLucidHomePath,
   isLucidOnboardingPath,
   isSafeLucidNotificationRoute,
-  LUCID_HOME_HREF,
   LUCID_ONBOARDING_HREF,
+  resetLucidOnboardingCompletionNavigationClaim,
   resolveLucidOnboardingGate,
+  resolveObservedLucidWebStartupDestination,
 } from '@/lib/lucid/routes';
+
+afterEach(() => resetLucidOnboardingCompletionNavigationClaim());
 
 describe('Lucid Trainer notification routes', () => {
   it.each([
     '/lucid/reality-check',
     '/lucid/morning',
     '/lucid/program/wbtb',
+    '/lucid/(tabs)/journal',
     '/lucid/(tabs)/night',
   ])('accepts the owned route %s', (route) => {
     expect(isSafeLucidNotificationRoute(route)).toBe(true);
@@ -60,6 +67,14 @@ describe('closeLucidRoute', () => {
 });
 
 describe('resolveLucidOnboardingGate', () => {
+  it('shares a completion-navigation claim across overlapping layouts', () => {
+    claimLucidOnboardingCompletionNavigation();
+
+    expect(hasLucidOnboardingCompletionNavigationClaim()).toBe(true);
+    resetLucidOnboardingCompletionNavigationClaim();
+    expect(hasLucidOnboardingCompletionNavigationClaim()).toBe(false);
+  });
+
   it('sends incomplete trainers to onboarding from the home URL', () => {
     expect(
       resolveLucidOnboardingGate({
@@ -85,13 +100,13 @@ describe('resolveLucidOnboardingGate', () => {
     ).toBeNull();
   });
 
-  it('opens the tab home after onboarding instead of /lucid/(tabs)', () => {
+  it('leaves the completed onboarding transition to the screen owner', () => {
     expect(
       resolveLucidOnboardingGate({
         pathname: '/lucid/onboarding',
         onboardingStatus: 'completed',
       })
-    ).toBe(LUCID_HOME_HREF);
+    ).toBeNull();
     expect(isLucidHomePath('/lucid')).toBe(true);
     expect(isLucidHomePath('/lucid/(tabs)')).toBe(true);
     expect(
@@ -116,5 +131,25 @@ describe('resolveLucidOnboardingGate', () => {
         loading: true,
       })
     ).toBeNull();
+  });
+});
+
+describe('resolveObservedLucidWebStartupDestination', () => {
+  it('preserves exact /lucid and nested /lucid/ prefixes as same-origin hrefs', () => {
+    expect(isLucidAppPath('/lucid')).toBe(true);
+    expect(isLucidAppPath('/lucid/subscription')).toBe(true);
+    expect(isLucidAppPath('/lucid/subscription?source=dream_rehearsal')).toBe(true);
+    expect(isLucidAppPath('/lucidity')).toBe(false);
+    expect(isLucidAppPath('/recording')).toBe(false);
+
+    expect(resolveObservedLucidWebStartupDestination('/lucid')).toBe('/lucid');
+    expect(resolveObservedLucidWebStartupDestination('/lucid/subscription')).toBe('/lucid/subscription');
+    expect(
+      resolveObservedLucidWebStartupDestination('/lucid/subscription?source=dream_rehearsal#pay')
+    ).toBe('/lucid/subscription?source=dream_rehearsal#pay');
+    expect(resolveObservedLucidWebStartupDestination('/lucid/subscription/')).toBe('/lucid/subscription');
+    expect(resolveObservedLucidWebStartupDestination('/lucidity')).toBeUndefined();
+    expect(resolveObservedLucidWebStartupDestination('/recording')).toBeUndefined();
+    expect(resolveObservedLucidWebStartupDestination(undefined)).toBeUndefined();
   });
 });

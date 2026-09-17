@@ -6,6 +6,7 @@ import { quotaService } from '@/services/quotaService';
 import { useAuth } from '@/context/AuthContext';
 import { useSubscription } from './useSubscription';
 import { deriveUserTier } from '@/lib/quotaTier';
+import { resolveCanGenerateImage, UNLIMITED_QUOTA_METRIC } from '@/services/quota/quotaMetrics';
 
 /**
  * React hook for quota management
@@ -110,16 +111,17 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   const fetchQuotaStatus = useCallback(async () => {
     // For paid tiers, mirror RevenueCat (source of truth) and short-circuit to unlimited.
     if (isPaidTier) {
-      const unlimitedUsage = { used: 0, limit: null, remaining: null } as const;
       setQuotaStatus({
         tier,
         usage: {
-          analysis: unlimitedUsage,
-          exploration: unlimitedUsage,
-          messages: unlimitedUsage,
+          analysis: UNLIMITED_QUOTA_METRIC,
+          exploration: UNLIMITED_QUOTA_METRIC,
+          messages: UNLIMITED_QUOTA_METRIC,
+          image: UNLIMITED_QUOTA_METRIC,
         },
         canAnalyze: true,
         canExplore: true,
+        canGenerateImage: true,
       });
       setLoading(false);
       setError(null);
@@ -181,6 +183,22 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   );
 
   /**
+   * Generic illustration permission from quota status.
+   * Authenticated free stays false here so a bundled analysis-tied request can
+   * be allowed independently by the caller.
+   */
+  const canGenerateImage = useCallback(async (): Promise<boolean> => {
+    if (isPaidTier) return true;
+    if (tier === 'free') return false;
+    const status = await quotaService.getQuotaStatus(user, tier, baseTarget);
+    return resolveCanGenerateImage({
+      tier,
+      canGenerateImage: status.canGenerateImage,
+      image: status.usage.image,
+    });
+  }, [isPaidTier, user, tier, baseTarget]);
+
+  /**
    * Get usage counts
    */
   const getUsageCounts = useCallback(async () => {
@@ -189,6 +207,7 @@ export function useQuota(targetInput?: QuotaTargetInput) {
         analysis: 0,
         exploration: 0,
         messages: 0,
+        image: 0,
       };
     }
 
@@ -202,8 +221,9 @@ export function useQuota(targetInput?: QuotaTargetInput) {
       analysis: analysisCount,
       exploration: explorationCount,
       messages: messageCount,
+      image: quotaStatus?.usage.image?.used ?? 0,
     };
-  }, [isPaidTier, user, baseTarget]);
+  }, [isPaidTier, user, baseTarget, quotaStatus?.usage.image?.used]);
 
   // Fetch on mount, when user/dreamId changes, and when guest bootstrap changes.
   // Keeping this in one effect avoids two identical guest requests on mount/sign-out.
@@ -231,6 +251,7 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     canAnalyze,
     canExplore,
     canChat,
+    canGenerateImage,
     getUsageCounts,
 
     // Convenience flags from quota status
@@ -238,6 +259,15 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     tier,
     canAnalyzeNow: isGuestBootstrapReady ? (quotaStatus?.canAnalyze ?? true) : false,
     canExploreNow: isGuestBootstrapReady ? (quotaStatus?.canExplore ?? true) : false,
+    canGenerateImageNow: isPaidTier
+      ? true
+      : !isGuestBootstrapReady
+        ? false
+        : resolveCanGenerateImage({
+            tier,
+            canGenerateImage: quotaStatus?.canGenerateImage,
+            image: quotaStatus?.usage.image,
+          }),
     usage: quotaStatus?.usage,
     reasons: quotaStatus?.reasons,
     guestBootstrapStatus: quotaStatus?.guestBootstrapStatus ?? (!user ? guestBootstrapStatus : undefined),

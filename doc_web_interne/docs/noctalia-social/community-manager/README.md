@@ -30,10 +30,10 @@ n'est ni validé, ni planifié, ni publié.
   `20:45`, `23:05`, `23:45`). Une ligne encore sans statut `PUBLIÉ` et URL
   publique après son checkpoint rend `social:health` rouge ; avant le premier
   checkpoint, ce contrôle reste un no-op vérifié.
-- `npm run social:automation:check` : contrôle localement les deux heartbeats
-  actifs, leurs 14 passages principaux, leurs 6 passages secondaires, les
-  horaires minimums attendus, les gates DreamViews/Reddit et l'absence de
-  chevauchement. Ce contrôle dépend des automations Codex de la machine et
+- `npm run social:automation:check` : contrôle localement le heartbeat
+  consolidé, ses 11 passages principaux et HERO, les horaires minimums
+  attendus, les compteurs de couverture et les gates DreamViews/Reddit. Ce
+  contrôle dépend de l'automation Codex de la machine et
   reste séparé de `social:health` pour ne pas simuler une preuve native.
 
 Une commande verte n'autorise jamais une publication anticipée et ne remplace
@@ -42,8 +42,8 @@ dans la plateforme native.
 
 ## Mission
 
-- piloter la diffusion principale de trois vidéos distinctes par jour sur
-  TikTok, Instagram et X, puis la vidéo hero quotidienne sur YouTube Shorts,
+- piloter la diffusion principale de deux vidéos distinctes par jour sur
+  TikTok, Instagram et X à partir du 11 septembre 2026, puis la vidéo hero quotidienne sur YouTube Shorts,
   Facebook Reels et Pinterest ;
 - sur X `@NoctaliaDreams` uniquement : exécuter le protocole de croissance
   (réponses, 1 texte/jour, légendes X) décrit dans

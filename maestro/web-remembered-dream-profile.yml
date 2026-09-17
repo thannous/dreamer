@@ -58,9 +58,9 @@ url: "http://localhost:8081"
 - waitForAnimationToEnd
 - tapOn: "(Save this memory|Enregistrer ce souvenir|Guardar este recuerdo)"
 - waitForAnimationToEnd
-- assertVisible:
-    id: text.firstDream.title
-- tapOn:
-    id: btn.firstDream.journal
+- extendedWaitUntil:
+    visible:
+      id: text.dreamDetail.actionTitle
+    timeout: 30000
 - waitForAnimationToEnd
 - assertVisible: "(Dream Journey|Voyage onirique|Viaje on.rico)"

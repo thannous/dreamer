@@ -39,9 +39,12 @@ describe('TID', () => {
     expect(TID.Component.Exploration360Panel).toBe('component.exploration360.panel');
     expect(TID.Component.RememberedDreamProfileChips).toBe('component.recording.rememberedProfileChips');
     expect(TID.Component.RecordingActivationInsight).toBe('component.recording.activationInsight');
+    expect(TID.Component.RecordingDraftProgressCount).toBe('component.recording.draftProgress.count');
     expect(TID.Text.RecordingActivationInsightSummary).toBe('text.recording.activationInsight.summary');
     expect(TID.Component.OnboardingIntro).toBe('component.onboarding.intro');
     expect(TID.Component.OnboardingIntroSignals).toBe('component.onboarding.introSignals');
+    expect(TID.Text.DreamDetailQuotaHint).toBe('text.dreamDetail.quotaHint');
+    expect(TID.Chat.RetryTarget).toBe('chat.retryTarget');
   });
 
   it('builds dynamic IDs', () => {

@@ -127,5 +127,5 @@
 <li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1177/02762366241254818" rel="nofollow noopener noreferrer" target="_blank">Schredl (2024), continuity between waking life and dreaming</a></li>
 </ul>
 </section>
-<p class="text-sm text-purple-200/70 mt-10"><a class="text-dream-salmon hover:underline" href="../simboli/esame">sognare un esame</a> · <a class="text-dream-salmon hover:underline" href="sogni-ansia-significato">sogni d’ansia</a> · <a class="text-dream-salmon hover:underline" href="significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti">sogni ricorrenti</a></p>
+<p class="text-sm text-purple-200/70 mt-10"><a class="text-dream-salmon hover:underline" href="../simboli/esame">sognare un esame</a> · <a class="text-dream-salmon hover:underline" href="sogni-ansia-significato">sogni d’ansia</a> · <a class="text-dream-salmon hover:underline" href="significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti">sogni ricorrenti</a> · <a class="text-dream-salmon hover:underline" href="sognare-tornare-scuola">sognare di tornare a scuola</a></p>
 </article>

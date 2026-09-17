@@ -2,7 +2,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const sharp = require('sharp');
+const sharp = require('../apps/site/dependencies')('sharp');
+const { createImageBuildCache } = require('./lib/image-build-cache');
 const { generateEducationalDiagramSources } = require('./lib/educational-diagram-v2');
 const {
   buildVariantUrl,
@@ -13,6 +14,18 @@ const { readCompleteImageAssetRegistry } = require('./lib/page-illustrations');
 
 const MAX_1200_BYTES = 250 * 1024;
 const WARN_1200_BYTES = 180 * 1024;
+const GENERATION_PROGRESS_INTERVAL = 25;
+const VALIDATION_PROGRESS_INTERVAL = 100;
+
+function emitProgress(message) {
+  // CircleCI kills steps after 10 minutes with no output. stdout is often
+  // fully buffered when it is not a TTY, so write the heartbeat to stderr.
+  try {
+    fs.writeSync(2, `${message}\n`);
+  } catch {
+    console.error(message);
+  }
+}
 
 function outputPathForUrl(url) {
   if (!url.startsWith('/img/')) throw new Error(`Refusing non-image output URL: ${url}`);
@@ -127,6 +140,8 @@ function expectedVariants(registry) {
 
 async function validateSources(registry) {
   const errors = [];
+  const assetCount = Object.keys(registry.assets).length;
+  emitProgress(`[generate-image-seo-assets] validating ${assetCount} sources...`);
   for (const [assetId, asset] of Object.entries(registry.assets)) {
     for (const [aspectName, aspect] of Object.entries(asset.aspects)) {
       const source = aspect.source || asset.source;
@@ -155,43 +170,35 @@ async function validateSources(registry) {
   if (errors.length) throw new Error(`Invalid image sources:\n- ${errors.join('\n- ')}`);
 }
 
-/* Regenerating a variant is only needed when one of its inputs changed:
- * the source image, or the registry configs that drive crops and widths.
- * Everything else is skipped so repeated builds (docs:dev, CI reruns) do
- * not re-encode 600+ sharp variants for nothing. `--force` bypasses this. */
-const REGISTRY_CONFIG_PATHS = [
-  resolveRepoPath(path.join('docs-src', 'config', 'image-assets.json')),
-  resolveRepoPath(path.join('docs-src', 'config', 'page-illustrations.json')),
-];
-
-function newestMtimeMs(paths) {
-  let newest = 0;
-  for (const filePath of paths) {
-    if (fs.existsSync(filePath)) {
-      newest = Math.max(newest, fs.statSync(filePath).mtimeMs);
-    }
-  }
-  return newest;
-}
-
-function isVariantFresh(variant, configStampMs) {
-  if (!fs.existsSync(variant.outputPath)) return false;
-  const outputMtimeMs = fs.statSync(variant.outputPath).mtimeMs;
-  if (outputMtimeMs < configStampMs) return false;
-  const sourcePath = resolveRepoPath(variant.aspect.source || variant.asset.source);
-  return fs.existsSync(sourcePath) && outputMtimeMs >= fs.statSync(sourcePath).mtimeMs;
-}
-
-async function generateAssets(registry, { force = false } = {}) {
+async function generateAssets(registry, { force = false, manifestPath = resolveRepoPath(
+  'docs-src/config/image-build-cache/seo.json'
+) } = {}) {
   const variants = expectedVariants(registry);
-  const configStampMs = newestMtimeMs(REGISTRY_CONFIG_PATHS);
+  const cache = createImageBuildCache({
+    manifestPath,
+    codePaths: [__filename, require.resolve('./lib/image-build-cache'),
+      require.resolve('./lib/image-seo-assets'), require.resolve('./lib/page-illustrations'),
+      require.resolve('./lib/educational-diagram-v2')],
+    versions: sharp.versions,
+  });
   let generated = 0;
   for (const variant of variants) {
-    if (!force && isVariantFresh(variant, configStampMs)) continue;
+    const input = cache.fingerprint(
+      resolveRepoPath(variant.aspect.source || variant.asset.source),
+      { role: variant.asset.role, aspect: variant.aspect, width: variant.width,
+        height: variant.height, format: variant.format }
+    );
+    if (!force && cache.isFresh(variant.url, input, variant.outputPath)) continue;
     fs.mkdirSync(path.dirname(variant.outputPath), { recursive: true });
     const pipeline = await sourcePipeline(variant.asset, variant.aspect, variant.width);
     await encode(pipeline, variant.format).toFile(variant.outputPath);
+    cache.record(variant.url, input, variant.outputPath);
     generated += 1;
+    if (generated % GENERATION_PROGRESS_INTERVAL === 0) {
+      emitProgress(
+        `[generate-image-seo-assets] regenerated ${generated}/${variants.length} variants...`
+      );
+    }
   }
   if (generated < variants.length) {
     console.log(
@@ -199,6 +206,7 @@ async function generateAssets(registry, { force = false } = {}) {
         `${variants.length - generated} up to date.`
     );
   }
+  cache.commit();
   return variants;
 }
 
@@ -207,6 +215,8 @@ async function validateOutputs(registry) {
   const errors = [];
   const warnings = [];
   let totalBytes = 0;
+  let checked = 0;
+  emitProgress(`[generate-image-seo-assets] checking ${variants.length} variants...`);
   for (const variant of variants) {
     if (!fs.existsSync(variant.outputPath)) {
       errors.push(`${variant.assetId}: missing ${variant.url}`);
@@ -214,6 +224,10 @@ async function validateOutputs(registry) {
     }
     const stats = fs.statSync(variant.outputPath);
     const metadata = await sharp(variant.outputPath).metadata();
+    checked += 1;
+    if (checked % VALIDATION_PROGRESS_INTERVAL === 0) {
+      emitProgress(`[generate-image-seo-assets] checked ${checked}/${variants.length} variants...`);
+    }
     totalBytes += stats.size;
     if (metadata.width !== variant.width || metadata.height !== variant.height) {
       errors.push(
@@ -251,6 +265,9 @@ function validatePageImageResolution(registry) {
 async function main() {
   const checkOnly = process.argv.includes('--check');
   const force = process.argv.includes('--force');
+  emitProgress(
+    `[generate-image-seo-assets] starting ${checkOnly ? 'check' : 'generation'}...`
+  );
   generateEducationalDiagramSources({ checkOnly });
   const registry = readCompleteImageAssetRegistry();
   await validateSources(registry);

@@ -1,6 +1,6 @@
 # Production Release integration: create while authenticated and offline,
 # replay the durable queue, clear all local state, then prove remote recovery.
-appId: com.tanuki75.noctalia
+appId: ${APP_ID || "com.tanuki75.noctalia"}
 name: Release authenticated offline synchronization
 tags:
   - release
@@ -24,13 +24,7 @@ onFlowComplete:
       id: screen.onboarding
     timeout: 20000
 - runFlow: subflows/dismiss-first-launch-onboarding.yml
-- openLink: noctalia://settings
-- runFlow:
-    when:
-      notVisible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
-    commands:
-      - tapOn:
-          id: tab.settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000
@@ -57,23 +51,11 @@ onFlowComplete:
     id: btn.saveDream
 - extendedWaitUntil:
     visible:
-      id: "text.firstDream.title|text.analyzePromptTitle"
+      id: text.dreamDetail.actionTitle
     timeout: 90000
-- runFlow:
-    when:
-      visible:
-        id: text.firstDream.title
-    commands:
-      - tapOn:
-          id: btn.firstDream.journal
-- runFlow:
-    when:
-      visible:
-        id: text.analyzePromptTitle
-    commands:
-      - tapOn:
-          id: btn.analyzePrompt.journal
-- openLink: noctalia://journal
+- tapOn:
+    id: btn.navigateJournal
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://journal
 - runFlow:
     when:
       notVisible:
@@ -113,18 +95,12 @@ onFlowComplete:
       id: screen.onboarding
     timeout: 20000
 - runFlow: subflows/dismiss-first-launch-onboarding.yml
-- openLink: noctalia://settings
-- runFlow:
-    when:
-      notVisible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
-    commands:
-      - tapOn:
-          id: tab.settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000
 - runFlow: subflows/sign-in-email-qa.yml
-- openLink: noctalia://journal
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://journal
 - runFlow:
     when:
       notVisible:
@@ -147,13 +123,7 @@ onFlowComplete:
 - assertNotVisible: "Syncing|Synchronisation|Sincronizando|Sincronizzazione|Synchronisierung läuft"
 
 # Leave the shared QA account signed out.
-- openLink: noctalia://settings
-- runFlow:
-    when:
-      notVisible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
-    commands:
-      - tapOn:
-          id: tab.settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes|Impostazioni|Einstellungen"
     timeout: 30000

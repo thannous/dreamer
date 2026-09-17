@@ -4,7 +4,7 @@ import { Alert, StyleSheet, Text } from 'react-native';
 
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
 import { LucidButton, LucidCard, LucidIconAction, LucidScreen } from '@/components/lucid/LucidUI';
-import { getLucidPalette } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { isGoogleSignInAvailable } from '@/lib/auth';
@@ -123,6 +123,6 @@ export default function LucidAccountScreen() {
 }
 
 const styles = StyleSheet.create({
-  importTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: 16 },
-  importBody: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: 13, lineHeight: 19 },
+  importTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1] },
+  importBody: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
 });

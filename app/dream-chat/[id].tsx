@@ -1,9 +1,14 @@
+import { resolveDreamRoute, getDreamRouteParams } from '@/lib/dreamRoute';
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Composer } from '@/components/chat/Composer';
 import { Exploration360Panel } from '@/components/chat/Exploration360Panel';
 import { LoadingIndicator, MessagesList } from '@/components/chat/MessagesList';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
+import { SignInToOpenDream } from '@/components/auth/SignInToOpenDream';
+import { dreamAuthReturnDestination } from '@/lib/authReturnIntent';
 import { ChatProvider, useKeyboardStateContext } from '@/context/ChatContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -13,7 +18,9 @@ import { useChatSendLock } from '@/hooks/useChatSendLock';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
+import { buildDisplayMessages } from '@/lib/chat/streamingDisplay';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
+import { QUOTAS } from '@/constants/limits';
 import { getDreamAnalysisState } from '@/lib/dreamUsage';
 import { generateUUID } from '@/lib/dreamUtils';
 import { isChatDebugEnabled, isMockModeEnabled } from '@/lib/env';
@@ -40,7 +47,17 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNetworkState } from 'expo-network';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  ActivityIndicator,
+  Alert,
+  findNodeHandle,
+  InteractionManager,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { Pressable as GesturePressable } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
@@ -53,8 +70,6 @@ type SendMessageOptions = {
 };
 
 const LEGACY_DRAFT_PREFIXES = ['Here is my dream:'];
-
-const STREAMING_MESSAGE_ID = 'streaming-reply';
 
 const getCategoryQuestion = (category: CategoryType, t: (key: string) => string): string => {
   const categoryQuestions: Record<CategoryType, string> = {
@@ -119,12 +134,26 @@ const isExploration360SynthesisUpgradeError = (error: unknown): boolean => {
 // Track chat history migrations across screen mounts to prevent duplicate writes when
 // users rapidly open the same chat multiple times.
 const CHAT_HISTORY_MIGRATION_VERSION = 1;
-const chatHistoryMigrationInFlightByDreamId = new Map<number, Promise<void>>();
-const chatHistoryMigrationCompletedByDreamId = new Map<number, number>();
+const chatHistoryMigrationInFlightByDreamId = new Map<string, Promise<void>>();
+const chatHistoryMigrationCompletedByDreamId = new Map<string, number>();
 
 export default function DreamChatScreen() {
+  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
+  const { user } = useAuth();
+  return <DreamChatContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])} />;
+}
+
+function DreamChatContent() {
   const { t } = useTranslation();
-  const { id, category, mode: routeMode } = useLocalSearchParams<{ id: string; category?: string; mode?: string }>();
+  const { id, remoteId, clientRequestId, category, mode: routeMode, messageId: routeMessageId } = useLocalSearchParams<{
+    id: string;
+    remoteId?: string;
+    clientRequestId?: string;
+    category?: string;
+    mode?: string;
+    messageId?: string | string[];
+  }>();
+  const targetMessageId = Array.isArray(routeMessageId) ? routeMessageId[0] : routeMessageId;
   const { dreams, updateDream, applyServerDreamState } = useDreams();
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -133,7 +162,8 @@ export default function DreamChatScreen() {
   const isMockMode = isMockModeEnabled();
   const debugChat = __DEV__ && isChatDebugEnabled();
   const dreamId = useMemo(() => Number(id), [id]);
-  const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
+  const dream = useMemo(() => resolveDreamRoute(dreams, { id, remoteId, clientRequestId }), [dreams, id, remoteId, clientRequestId]);
+  const dreamIdentity = dream ? `${user?.id ?? 'guest'}:${getDreamIdentityKey(dream)}` : '';
   const exploration360Status = useMemo(() => getExploration360SynthesisStatus(dream), [dream]);
   const { quotaStatus, canExplore, canChat, tier } = useQuota({ dreamId, dream });
   const networkState = useNetworkState();
@@ -157,24 +187,18 @@ export default function DreamChatScreen() {
     release: releaseSendLock,
   } = useChatSendLock();
   const isInteractionLocked = isLoading || isSendStarting;
-  // Partial model reply while the response streams in; null when idle.
-  const [streamingReply, setStreamingReply] = useState<string | null>(null);
+  // Partial model reply for the active send. Identity is the user message request id.
+  const streamingRequestIdRef = useRef<string | null>(null);
+  const [streaming, setStreaming] = useState<{ requestId: string; text: string } | null>(null);
 
   // While a reply streams in, render it as a virtual trailing model message
   // and drop the "thinking" indicator as soon as the first tokens arrive.
-  const displayMessages = useMemo(() => {
-    if (!streamingReply) return messages;
-    return [
-      ...messages,
-      {
-        id: STREAMING_MESSAGE_ID,
-        role: 'model' as const,
-        text: streamingReply,
-        createdAt: (messages[messages.length - 1]?.createdAt ?? 0) + 1,
-      },
-    ];
-  }, [messages, streamingReply]);
-  const showThinkingIndicator = isInteractionLocked && !streamingReply;
+  // Replacement is tied to this send's completed reply, not text equality.
+  const displayMessages = useMemo(
+    () => buildDisplayMessages(messages, streaming?.text ?? null, streaming?.requestId ?? null),
+    [messages, streaming]
+  );
+  const showThinkingIndicator = isInteractionLocked && !streaming?.text;
   const [isScrolling, setIsScrolling] = useState(false);
   const [explorationBlocked, setExplorationBlocked] = useState(false);
   const [quotaCheckComplete, setQuotaCheckComplete] = useState(false);
@@ -186,6 +210,7 @@ export default function DreamChatScreen() {
   const requestAbortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
       if (quotaCheckTimeoutRef.current) {
@@ -232,11 +257,13 @@ export default function DreamChatScreen() {
 
   const quotaMessages = quotaStatus?.usage.messages;
   const rawMessageLimit = quotaMessages?.limit;
+  const fallbackMessageLimit =
+    QUOTAS[tier === 'plus' ? 'plus' : tier === 'free' ? 'free' : 'guest'].messagesPerDream;
   const messageLimit = typeof rawMessageLimit === 'number'
     ? rawMessageLimit
     : rawMessageLimit === null
       ? null
-      : 20;
+      : fallbackMessageLimit;
 
   const quotaRemaining = typeof quotaMessages?.remaining === 'number' ? quotaMessages.remaining : null;
   const localRemaining = messageLimit === null
@@ -267,7 +294,7 @@ export default function DreamChatScreen() {
           text: tier === 'guest'
             ? t('dream_chat.limit_cta_guest')
             : t('dream_chat.limit_cta_free'),
-          onPress: () => router.push('/(tabs)/settings' as const),
+          onPress: () => router.push('/settings' as const),
         }]),
     ];
     Alert.alert(
@@ -341,7 +368,7 @@ export default function DreamChatScreen() {
         const legacyMsg: LegacyChatMessage = msg;
 
         const rawId = legacyMsg.id;
-        const fallbackId = `legacy-${dream.id}-${index}`;
+        const fallbackId = `legacy-${dreamIdentity}-${index}`;
         const nextId = typeof rawId === 'string' && rawId.length > 0 ? rawId : fallbackId;
         if (nextId !== rawId) {
           didChange = true;
@@ -377,22 +404,22 @@ export default function DreamChatScreen() {
 
       if (
         didChange &&
-        chatHistoryMigrationCompletedByDreamId.get(dream.id) !== CHAT_HISTORY_MIGRATION_VERSION &&
-        !chatHistoryMigrationInFlightByDreamId.has(dream.id)
+        chatHistoryMigrationCompletedByDreamId.get(dreamIdentity) !== CHAT_HISTORY_MIGRATION_VERSION &&
+        !chatHistoryMigrationInFlightByDreamId.has(dreamIdentity)
       ) {
         const migration = (async () => {
           try {
             await updateDream({ ...dream, chatHistory: normalized } as DreamAnalysis);
-            chatHistoryMigrationCompletedByDreamId.set(dream.id, CHAT_HISTORY_MIGRATION_VERSION);
+            chatHistoryMigrationCompletedByDreamId.set(dreamIdentity, CHAT_HISTORY_MIGRATION_VERSION);
           } catch (error) {
             if (__DEV__) {
               console.warn('[DreamChat] Failed to persist chat history migration', error);
             }
           } finally {
-            chatHistoryMigrationInFlightByDreamId.delete(dream.id);
+            chatHistoryMigrationInFlightByDreamId.delete(dreamIdentity);
           }
         })();
-        chatHistoryMigrationInFlightByDreamId.set(dream.id, migration);
+        chatHistoryMigrationInFlightByDreamId.set(dreamIdentity, migration);
       }
     } else {
       // Start with initial AI greeting
@@ -401,7 +428,7 @@ export default function DreamChatScreen() {
       lastCategorySentKeyRef.current = null;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dream?.id, t]);
+  }, [dreamIdentity, t]);
 
   // Send category-specific question if category is provided
   useEffect(() => {
@@ -415,7 +442,7 @@ export default function DreamChatScreen() {
       return;
     }
 
-    if (!dream || !category || category === 'general') {
+    if (!dream || !category || category === 'general' || targetMessageId) {
       return;
     }
 
@@ -426,7 +453,7 @@ export default function DreamChatScreen() {
       return;
     }
 
-    const categoryKey = `${dream.id}:${category}`;
+    const categoryKey = `${dreamIdentity}:${category}`;
     if (lastCategorySentKeyRef.current === categoryKey) {
       return;
     }
@@ -448,7 +475,7 @@ export default function DreamChatScreen() {
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, dream, messages.length, t, hasQuotaCheckClearance, isQuotaGateBlocked]); // sendMessage has stable dependencies via useCallback
+  }, [category, dream, dreamIdentity, messages.length, t, hasQuotaCheckClearance, isQuotaGateBlocked, targetMessageId]); // sendMessage has stable dependencies via useCallback
 
   const sendMessage = useCallback(
     async (
@@ -548,6 +575,19 @@ export default function DreamChatScreen() {
         return;
       }
 
+      const onStreamDelta = (text: string) => {
+        if (streamingRequestIdRef.current !== chatRequestId) return;
+        setStreaming({ requestId: chatRequestId, text });
+      };
+      const finishStreaming = () => {
+        if (streamingRequestIdRef.current !== chatRequestId) return;
+        streamingRequestIdRef.current = null;
+        setStreaming(null);
+      };
+      const startStreaming = () => {
+        streamingRequestIdRef.current = chatRequestId;
+      };
+
       // ✅ GUARD: Ensure dream is synced before allowing chat
       // If remoteId is missing, attempt auto-sync or show error
       // Note: Guests have local-only dreams and don't require sync
@@ -562,22 +602,28 @@ export default function DreamChatScreen() {
             // Ensure clientRequestId for idempotence (prevent duplicates)
             const dreamToSync = dream.clientRequestId
               ? dream
-              : { ...dream, clientRequestId: `dream-${dream.id}` };
+              : { ...dream, clientRequestId: generateUUID() };
 
+            if (!dream.clientRequestId) await updateDream(dreamToSync, dream);
+            if (!isMountedRef.current || controller.signal.aborted) return;
             const synced = await createDreamInSupabase(dreamToSync, user.id);
 
             // IMPORTANT: synced.id may differ from dream.id (reconstructed from server's created_at)
             // Update with the returned dream which has correct id + remoteId
-            await updateDream(synced);
+            if (!isMountedRef.current || controller.signal.aborted) return;
+            await updateDream(synced, dreamToSync);
 
             // Now proceed with chat using synced.remoteId
             const dreamIdString = String(synced.remoteId);
+            startStreaming();
             const aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
               signal: controller.signal,
               clientRequestId: chatRequestId,
               messageMeta,
-              onDelta: setStreamingReply,
+              onDelta: onStreamDelta,
             });
+
+            if (!isMountedRef.current || controller.signal.aborted) return;
 
             // Add user message
             const userMessage = createChatMessage('user', resolvedDisplayText, {
@@ -587,13 +633,15 @@ export default function DreamChatScreen() {
             });
             const updatedMessages = [...baseMessages, userMessage];
 
-            const aiMessage = createChatMessage('model', aiResponse.text, {
+            if (!isMountedRef.current || controller.signal.aborted) return;
+        const aiMessage = createChatMessage('model', aiResponse.text, {
               id: aiResponse.message?.id,
               parts: aiResponse.message?.parts,
             });
             const finalMessages = [...updatedMessages, aiMessage];
 
             setMessages(finalMessages);
+            finishStreaming();
 
             // Persist chat history to dream
             const dreamUpdate: Partial<DreamAnalysis> = {
@@ -615,7 +663,9 @@ export default function DreamChatScreen() {
               }
             }
             quotaService.invalidate(user);
+            if (isMountedRef.current) router.setParams(getDreamRouteParams(synced));
           } catch (error) {
+            if (!isMountedRef.current) return;
             setIsLoading(false);
             if (messageMeta?.exploration360Synthesis && isExploration360SynthesisUpgradeError(error)) {
               router.push(buildPaywallHref('exploration_limit'));
@@ -632,7 +682,7 @@ export default function DreamChatScreen() {
             return;
           } finally {
             setIsLoading(false);
-            setStreamingReply(null);
+            finishStreaming();
             if (requestAbortRef.current) {
               requestAbortRef.current = null;
             }
@@ -691,6 +741,7 @@ export default function DreamChatScreen() {
             theme: dream.theme,
             chatHistory: updatedMessages,  // Current messages before AI response
           };
+          startStreaming();
           aiResponse = await startOrContinueChat(
             String(dream.id),
             textToSend,
@@ -701,20 +752,22 @@ export default function DreamChatScreen() {
               signal: controller.signal,
               clientRequestId: chatRequestId,
               messageMeta,
-              onDelta: setStreamingReply,
+              onDelta: onStreamDelta,
             }
           );
         } else {
           // Authenticated mode: send dreamId (current flow)
           const dreamIdString = String(dream.remoteId ?? dream.id);
+          startStreaming();
           aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
             signal: controller.signal,
             clientRequestId: chatRequestId,
             messageMeta,
-            onDelta: setStreamingReply,
+            onDelta: onStreamDelta,
           });
         }
 
+        if (!isMountedRef.current || controller.signal.aborted) return;
         const aiMessage = createChatMessage('model', aiResponse.text, {
           id: aiResponse.message?.id,
           parts: aiResponse.message?.parts,
@@ -722,6 +775,7 @@ export default function DreamChatScreen() {
         const finalMessages = [...updatedMessages, aiMessage];
 
         setMessages(finalMessages);
+        finishStreaming();
         if (debugChat) {
           console.debug('[DreamChat] sendMessage success', {
             dreamId: dream.id,
@@ -762,6 +816,7 @@ export default function DreamChatScreen() {
         }
         quotaService.invalidate(user);
       } catch (error) {
+        if (!isMountedRef.current) return;
         if (debugChat) {
           console.debug('[DreamChat] sendMessage error', {
             dreamId: dream.id,
@@ -795,7 +850,7 @@ export default function DreamChatScreen() {
         setMessages([...updatedMessages, enrichedErrorMessage]);
       } finally {
         setIsLoading(false);
-        setStreamingReply(null);
+        finishStreaming();
         if (requestAbortRef.current) {
           requestAbortRef.current = null;
         }
@@ -848,6 +903,22 @@ export default function DreamChatScreen() {
     },
     [isInteractionLocked, messages, sendMessage]
   );
+  const targetFailedMessage = useMemo(() => {
+    if (!targetMessageId) return null;
+    return messages.find((message) => message.id === targetMessageId) ?? null;
+  }, [messages, targetMessageId]);
+  const targetRetryRef = useRef<View>(null);
+
+  useEffect(() => {
+    if (!targetFailedMessage) return undefined;
+    const handle = InteractionManager.runAfterInteractions(() => {
+      const node = findNodeHandle(targetRetryRef.current);
+      if (node) {
+        AccessibilityInfo.setAccessibilityFocus(node);
+      }
+    });
+    return () => handle.cancel();
+  }, [targetFailedMessage]);
 
   const sendSynthesisRequest = useCallback(
     (baseMessages?: ChatMessage[]) => {
@@ -877,7 +948,7 @@ export default function DreamChatScreen() {
   }, [sendSynthesisRequest]);
 
   useEffect(() => {
-    if (routeMode !== 'synthesis' || !dream || !exploration360Status.canGenerateSynthesis) {
+    if (routeMode !== 'synthesis' || !dream || !exploration360Status.canGenerateSynthesis || targetMessageId) {
       return;
     }
     if (!hasQuotaCheckClearance || isQuotaGateBlocked || isInteractionLocked) {
@@ -890,7 +961,7 @@ export default function DreamChatScreen() {
       return;
     }
 
-    const synthesisKey = `${dream.id}:synthesis`;
+    const synthesisKey = `${dreamIdentity}:synthesis`;
     if (lastSynthesisSentKeyRef.current === synthesisKey) {
       return;
     }
@@ -906,6 +977,7 @@ export default function DreamChatScreen() {
     };
   }, [
     dream,
+    dreamIdentity,
     exploration360Status.canGenerateSynthesis,
     hasQuotaCheckClearance,
     isInteractionLocked,
@@ -913,6 +985,7 @@ export default function DreamChatScreen() {
     messages,
     routeMode,
     sendSynthesisRequest,
+    targetMessageId,
   ]);
 
   const handleQuickCategory = (categoryId: string) => {
@@ -951,7 +1024,8 @@ export default function DreamChatScreen() {
     return noctalia.accent.base;
   };
 
-  const dreamImageUri = dream?.imageUrl?.trim();
+  const media = useDreamMedia(dream);
+  const dreamImageUri = media.imageUrl;
 
   const handleBackPress = useCallback(() => {
     if (router.canGoBack()) {
@@ -966,6 +1040,9 @@ export default function DreamChatScreen() {
       <LinearGradient colors={gradientColors} style={styles.container}>
         <AtmosphericBackground />
         <Text style={[styles.errorText, { color: noctalia.text.primary }]}>{t('dream_chat.not_found.title')}</Text>
+        {!user ? (
+          <SignInToOpenDream destination={dreamAuthReturnDestination('dream-chat', { id, remoteId, clientRequestId, category, mode: routeMode, messageId: routeMessageId })} />
+        ) : null}
         <Pressable
           onPress={handleBackPress}
           style={[styles.missingDreamBackButton, { backgroundColor: noctalia.action.primary }]}
@@ -1062,9 +1139,9 @@ export default function DreamChatScreen() {
   const headerComponent = (
     <>
       <View style={styles.imageContainer}>
-        {dreamImageUri ? (
+        {dream?.imageUrl ? (
           <Image
-            source={{ uri: dreamImageUri }}
+            source={dreamImageUri ? { uri: dreamImageUri } : null}
             style={styles.dreamImage}
             contentFit={imageConfig.contentFit}
             transition={imageConfig.transition}
@@ -1107,6 +1184,46 @@ export default function DreamChatScreen() {
         animationDelay={160}
         style={styles.exploration360Panel}
       />
+      {targetFailedMessage ? (
+        <View
+          ref={targetRetryRef}
+          testID={TID.Chat.RetryTarget}
+          accessible
+          accessibilityRole="summary"
+          accessibilityLiveRegion="polite"
+          accessibilityLabel={t('dream_chat.retry_target.label')}
+          style={[
+            styles.retryTargetCard,
+            {
+              backgroundColor: noctalia.status.warning.background,
+              borderColor: noctalia.status.warning.border,
+            },
+          ]}
+        >
+          <Text style={[styles.retryTargetTitle, { color: noctalia.status.warning.text }]}>
+            {t('dream_chat.retry_target.label')}
+          </Text>
+          <Text style={[styles.retryTargetBody, { color: noctalia.text.secondary }]} numberOfLines={3}>
+            {targetFailedMessage.text}
+          </Text>
+          {targetFailedMessage.meta?.retry ? (
+            <Pressable
+              onPress={() => handleRetryMessage(targetFailedMessage)}
+              disabled={isInteractionLocked}
+              accessibilityRole="button"
+              accessibilityLabel={t('dream_chat.retry_target.cta')}
+              style={[
+                styles.retryTargetButton,
+                { backgroundColor: noctalia.action.primary, opacity: isInteractionLocked ? 0.75 : 1 },
+              ]}
+            >
+              <Text style={[styles.retryTargetButtonText, { color: noctalia.action.primaryText }]}>
+                {t('dream_chat.retry_target.cta')}
+              </Text>
+            </Pressable>
+          ) : null}
+        </View>
+      ) : null}
       {messages.length <= 2 && (
         <View style={styles.quickCategoriesContainer}>
           <Text
@@ -1162,9 +1279,7 @@ export default function DreamChatScreen() {
     ? t('dream_chat.input.limit_placeholder')
     : t('dream_chat.input.placeholder');
 
-  // Show counter only when approaching the limit (≥15 messages) or limit reached
-  const shouldShowCounter = typeof messageLimit === 'number' &&
-    (userMessageCount >= 15 || messageLimitReached);
+  const shouldShowCounter = typeof messageLimit === 'number';
 
   // IMPORTANT: Always render these components to prevent Android NullPointerException
   // when animated views are removed mid-animation. Use visible prop instead.
@@ -1328,7 +1443,7 @@ function ComposerFooter({
           {tier !== 'plus' && (
             <View>
               <GesturePressable
-                onPress={() => router.push('/(tabs)/settings')}
+                onPress={() => router.push('/settings')}
                 style={[
                   styles.limitCtaButton,
                   { backgroundColor: noctalia.status.danger.icon },
@@ -1445,6 +1560,38 @@ const styles = StyleSheet.create({
   exploration360Panel: {
     marginTop: 16,
     marginHorizontal: 16,
+  },
+  retryTargetCard: {
+    marginTop: 16,
+    marginHorizontal: 16,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 8,
+  },
+  retryTargetTitle: {
+    fontSize: 13,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    textTransform: 'uppercase',
+  },
+  retryTargetBody: {
+    fontSize: 14,
+    fontFamily: Fonts.lora.regularItalic,
+    lineHeight: 20,
+  },
+  retryTargetButton: {
+    alignSelf: 'flex-start',
+    marginTop: 4,
+    minHeight: 44,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  retryTargetButtonText: {
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   quickCategoriesLabel: {
     fontSize: 12,

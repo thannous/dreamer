@@ -168,6 +168,21 @@ describe('useRecordingSession', () => {
     expect(onNativeEnd).toHaveBeenCalledTimes(1);
   });
 
+  it('waits for recognizer readiness before reporting active speech, then clears it on end', async () => {
+    let onListeningChange: ((listening: boolean) => void) | undefined;
+    jest.mocked(startNativeSpeechSession).mockImplementationOnce(async (_locale, options) => {
+      onListeningChange = options?.onListeningChange;
+      return { stop: jest.fn(), abort: jest.fn(), hasRecording: true };
+    });
+    const { result } = renderHook(() => useRecordingSession(defaultOptions));
+    await act(async () => { await result.current.startRecording('A blue room'); });
+    expect(result.current.isSpeechListening).toBe(false);
+    act(() => onListeningChange?.(true));
+    expect(result.current.isSpeechListening).toBe(true);
+    act(() => onListeningChange?.(false));
+    expect(result.current.isSpeechListening).toBe(false);
+  });
+
   it('startRecording should return success when permissions granted', async () => {
     const { result } = renderHook(() => useRecordingSession(defaultOptions));
 

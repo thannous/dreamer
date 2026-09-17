@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-08-20",
+    "lastUpdated": "2026-08-28",
     "totalSymbols": 160,
     "languages": [
       "en",
@@ -204,13 +204,13 @@
       "it": {
         "slug": "acqua",
         "name": "Acqua",
-        "shortDescription": "Questa scheda rapida riassume il simbolo acqua: limpida, torbida, alta, corrente o dentro casa. Per confrontare alluvioni, mare, annegamento e altri scenari completi, usa la guida ai sogni d’acqua collegata in fondo alla pagina.",
+        "shortDescription": "Sognare acqua sporca o torbida può indicare confusione, stanchezza emotiva o una situazione difficile da leggere. La scheda distingue anche acqua pulita, limpida, corrente o in casa; la guida collegata tratta alluvioni, mare e annegamento.",
         "askYourself": [
           "L’acqua era pulita, limpida, torbida, sporca o in movimento?",
           "Stavo nuotando, osservando l’acqua o venivo trascinato?",
           "Quale emozione attuale somiglia allo stato dell’acqua?"
         ],
-        "seoTitle": "acqua pulita, limpida o sporca",
+        "seoTitle": "acqua sporca, torbida o limpida",
         "faq": [
           {
             "question": "Cosa significa sognare acqua?",
@@ -222,7 +222,7 @@
           },
           {
             "question": "Cosa significa sognare acqua torbida o sporca?",
-            "answer": "Acqua torbida o sporca suggerisce confusione, stanchezza emotiva o una situazione che non riesci ancora a leggere con lucidità."
+            "answer": "Sognare acqua torbida o sporca può suggerire confusione, stanchezza emotiva o una situazione che non riesci ancora a leggere con lucidità. Nota anche odore, profondità, movimento e ciò che provavi."
           },
           {
             "question": "Cosa significa sognare acqua che scorre?",
@@ -240,7 +240,7 @@
           "button": "Prova l'app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-07-16"
+        "modifiedAt": "2026-08-23"
       },
       "pt": {
         "slug": "agua",
@@ -1070,18 +1070,18 @@
       },
       "it": {
         "slug": "oceano",
-        "name": "Oceano / Mare",
-        "shortDescription": "Sognare l’oceano o il mare può richiamare libertà, emozioni intense, distanza o incertezza. Acqua calma, onde alte, profondità, riva e modo di muoverti cambiano la lettura.",
+        "name": "Mare / Oceano",
+        "shortDescription": "Sognare il mare o l’oceano può richiamare libertà, emozioni intense, distanza o incertezza. Acqua calma, onde alte, profondità, riva e modo di muoverti cambiano la lettura.",
         "askYourself": [
           "Il mare era calmo, agitato, limpido, scuro o molto profondo?",
           "Ero sulla riva, nuotavo, navigavo oppure rischiavo di affondare?",
           "Quale situazione attuale mi sembra vasta, liberatoria o difficile da controllare?"
         ],
-        "seoTitle": "oceano calmo, onde alte o nuotare",
+        "seoTitle": "il mare calmo o agitato",
         "faq": [
           {
-            "question": "Cosa significa sognare l’oceano o il mare?",
-            "answer": "L’oceano può collegarsi a libertà, emozioni, distanza o incertezza. Il tempo, le onde, la profondità, la tua posizione e l’emozione indicano quale lettura è più adatta."
+            "question": "Cosa significa sognare il mare o l’oceano?",
+            "answer": "Il mare o l’oceano possono collegarsi a libertà, emozioni, distanza o incertezza. Il tempo, le onde, la profondità, la tua posizione e l’emozione indicano quale lettura è più adatta."
           },
           {
             "question": "Cosa significa sognare un mare calmo?",
@@ -1096,7 +1096,7 @@
             "answer": "Nuotare può riflettere il modo in cui affronti un compito o un’emozione ampia. Affondare può richiamare sovraccarico, senza essere una diagnosi; conta se comparivano aiuto, riva o una via d’uscita."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-08-28"
       },
       "pt": {
         "slug": "oceano-mar",
@@ -1677,18 +1677,18 @@
       },
       "it": {
         "slug": "fuoco",
-        "name": "Fuoco",
-        "shortDescription": "Sognare il fuoco può accompagnare rabbia, energia, urgenza o un cambiamento vissuto con intensità. Distingui un fuoco utile da un incendio fuori controllo e considera luogo, fumo, persone presenti ed emozione.",
+        "name": "Incendio / Fuoco",
+        "shortDescription": "Sognare un incendio o il fuoco può richiamare energia, rabbia, urgenza o un cambiamento intenso nella vita. Distingui un fuoco utile da fiamme fuori controllo e considera luogo, fumo, persone presenti ed emozione.",
         "askYourself": [
           "Il fuoco scaldava, illuminava, bruciava o distruggeva?",
-          "Era un fuoco controllato, un incendio, un fuoco in casa o c’era del fumo nero?",
+          "Era un incendio, un fuoco controllato, un fuoco in casa o c’era del fumo nero?",
           "Quale emozione nella mia vita sembra accendersi troppo in fretta?"
         ],
-        "seoTitle": "fuoco o incendio in casa",
+        "seoTitle": "un incendio o il fuoco",
         "faq": [
           {
-            "question": "Cosa significa sognare il fuoco?",
-            "answer": "Il fuoco può richiamare energia, desiderio, rabbia, urgenza o cambiamento. Non ha un significato unico: un camino che scalda, una fiamma controllata e un incendio vissuto con paura raccontano scene diverse."
+            "question": "Cosa significa sognare un incendio o il fuoco?",
+            "answer": "Un incendio o il fuoco possono richiamare energia, desiderio, rabbia, urgenza o cambiamento. Non hanno un significato unico: un camino che scalda, una fiamma controllata e un incendio vissuto con paura raccontano scene diverse."
           },
           {
             "question": "Che differenza c’è tra fuoco controllato e incendio?",
@@ -1714,7 +1714,7 @@
           "button": "Prova l'app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-08-28"
       },
       "pt": {
         "slug": "fogo",
@@ -3195,6 +3195,8 @@
       "es": {
         "slug": "arbol",
         "name": "Árbol",
+        "documentTitle": "Soñar con árboles: grandes, caídos o cortados",
+        "documentMetaDescription": "Soñar con árboles grandes, caídos o cortados: compara raíces, estado, entorno y emoción para explorar el sueño sin imponer una predicción.",
         "shortDescription": "Soñar con un árbol suele relacionarse con crecimiento, estabilidad, raíces y ciclos vitales: un árbol grande, sus ramas o raíces, un árbol seco o uno que cae pueden reflejar apoyo, cambio, desgaste o la necesidad de renovar una base importante.",
         "askYourself": [
           "¿El árbol estaba vivo, seco, caído, cortado o lleno de frutos?",
@@ -4405,6 +4407,8 @@
           "¿Qué parte de mi vida necesita cuidado, descanso o apoyo ahora?"
         ],
         "seoTitle": "hospital o estar allí",
+        "documentTitle": "Soñar con un hospital: estar allí o verlo lleno",
+        "documentMetaDescription": "¿Qué significa soñar con un hospital? Compara estar allí, verlo lleno de gente, enfermos o personal médico según tu emoción y contexto, sin predicciones.",
         "faq": [
           {
             "question": "¿Qué significa soñar con hospital?",
@@ -14673,8 +14677,8 @@
         "slug": "pidocchi",
         "name": "Pidocchi",
         "seoTitle": "pidocchi nei capelli, toglierli o vederne molti",
-        "documentTitle": "Sognare i pidocchi: significato e scenari",
-        "documentMetaDescription": "Sognare i pidocchi: confronta capelli, rimozione, grande quantità e presenza su altre persone usando emozione e contesto, senza previsioni.",
+        "documentTitle": "Sognare di avere i pidocchi: cosa significa",
+        "documentMetaDescription": "Sognare di avere i pidocchi? Confronta capelli, quantità, rimozione e persona coinvolta usando emozione e contesto recente, senza previsioni.",
         "shortDescription": "I pidocchi in sogno possono mettere in primo piano irritazione ripetuta, confini troppo vicini, cura o timore dell’esposizione sociale. Persona coinvolta, quantità e modo di agire distinguono una preoccupazione pratica da un tema emotivo.",
         "askYourself": [
           "I pidocchi erano nei miei capelli, erano molti, li toglievo o comparivano su un bambino o un’altra persona?",

@@ -1,4 +1,4 @@
-/** Catalogue copy: sessions, categories and narrators. UI chrome lives in `fr.ts`. */
+/** Catalogue copy: sessions and categories. UI chrome lives in `fr.ts`. */
 export const contentFr = {
   'category.sleep.name': "Sommeil",
   'category.sleep.tagline': "Descendre vers la nuit",
@@ -13,10 +13,6 @@ export const contentFr = {
   'category.dream-prep.name': "Préparation au rêve",
   'category.dream-prep.tagline': "Poser une question à la nuit",
 
-  'narrator.camille.bio': "Voix douce, rythme lent.",
-  'narrator.adrien.bio': "Voix grave, phrases courtes.",
-  'narrator.wordless.bio': 'Souffle et silence, rien à suivre.',
-
   'session.sleep-descent.title': "Descendre le souffle",
   'session.sleep-descent.description': "Une expiration plus longue que l’inspiration, jusqu’à ce que le corps comprenne que la journée est finie.",
   'session.sleep-descent.benefit.1': "Ralentit le rythme cardiaque",
@@ -26,7 +22,7 @@ export const contentFr = {
   'session.sleep-quick-fall.title': "S’endormir en cinq minutes",
   'session.sleep-quick-fall.description': "Rien à écouter, rien à suivre : un souffle guidé qui s’efface à mesure que vous partez.",
   'session.sleep-quick-fall.benefit.1': "Pour les nuits courtes",
-  'session.sleep-quick-fall.benefit.2': "Aucune voix",
+  'session.sleep-quick-fall.benefit.2': "Souffle et silence",
   'session.sleep-quick-fall.benefit.3': "S’arrête toute seule",
 
   'session.sleep-body-scan.title': "Le corps qui se pose",
@@ -39,7 +35,7 @@ export const contentFr = {
   'session.sleep-night-return.description': "Pour les réveils de 3 h : reprendre le sommeil sans lutter contre l’insomnie.",
   'session.sleep-night-return.benefit.1': "Réveils nocturnes",
   'session.sleep-night-return.benefit.2': "Sans écran",
-  'session.sleep-night-return.benefit.3': "Voix très basse",
+  'session.sleep-night-return.benefit.3': "Ambiance basse",
 
   'session.stress-shoulders.title': "Reposer les épaules",
   'session.stress-shoulders.description': "Cinq minutes pour déposer ce que le corps porte depuis le matin.",
@@ -78,9 +74,9 @@ export const contentFr = {
   'session.focus-one-thing.benefit.3': "Convient aux débutants",
 
   'session.focus-thread.title': "Reprendre le fil",
-  'session.focus-thread.description': "Après une interruption, dix minutes sans voix pour retrouver où vous en étiez.",
+  'session.focus-thread.description': "Après une interruption, dix minutes de souffle et de silence pour retrouver où vous en étiez.",
   'session.focus-thread.benefit.1': "Après une coupure",
-  'session.focus-thread.benefit.2': "Aucune voix",
+  'session.focus-thread.benefit.2': "Souffle et silence",
   'session.focus-thread.benefit.3': "En journée",
 
   'session.focus-deep.title': "Descendre dans la tâche",
@@ -99,7 +95,7 @@ export const contentFr = {
   'session.anxiety-wave.description': "L’anxiété monte et redescend. On apprend à ne pas la suivre jusqu’en haut.",
   'session.anxiety-wave.benefit.1': "Ne combat pas l’anxiété",
   'session.anxiety-wave.benefit.2': "Apprend à attendre",
-  'session.anxiety-wave.benefit.3': "Voix égale",
+  'session.anxiety-wave.benefit.3': "Rythme égal",
 
   'session.anxiety-chest.title': "Ouvrir la poitrine",
   'session.anxiety-chest.description': "Quand la respiration se bloque en haut du thorax, on la fait redescendre.",

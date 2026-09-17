@@ -5,7 +5,7 @@
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const sharp = require('sharp');
+const sharp = require('../apps/site/dependencies')('sharp');
 const { ROOT_DIR } = require('./lib/docs-site-config');
 const { inlineLucideIcons } = require('./lib/lucide-inline');
 const {
@@ -331,8 +331,19 @@ async function generatePosters({ checkOnly = false } = {}) {
   };
 }
 
+function emitProgress(message) {
+  try {
+    fs.writeSync(2, `${message}\n`);
+  } catch {
+    console.error(message);
+  }
+}
+
 async function main() {
   const checkOnly = process.argv.includes('--check');
+  emitProgress(
+    `[generate-symbol-hero-posters] starting ${checkOnly ? 'check' : 'generation'}...`
+  );
   const result = await generatePosters({ checkOnly });
   console.log(
     `Symbol hero posters ${checkOnly ? 'checked' : 'generated'}: ` +

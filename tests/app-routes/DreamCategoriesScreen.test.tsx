@@ -251,3 +251,17 @@ describe('Dream categories screen', () => {
     expect(screen.getByText('dream_categories.not_found.title')).toBeTruthy();
   });
 });
+
+
+it('keeps the selected remote identity when opening a category with identical dates', () => {
+  mockUseLocalSearchParams.mockReturnValue({ id: '123', remoteId: '2501' });
+  mockUseDreams.mockReturnValue({ dreams: [
+    { id: 123, remoteId: 17, title: 'Other', chatHistory: [] },
+    { id: 123, remoteId: 2501, clientRequestId: 'last-request', title: 'Selected', chatHistory: [] },
+  ] });
+  render(<DreamCategoriesScreen />);
+  fireEvent.click(screen.getByTestId(TID.Button.DreamCategory('symbols')));
+  expect(mockPush).toHaveBeenCalledWith({ pathname: '/dream-chat/[id]', params: {
+    id: '123', remoteId: '2501', clientRequestId: 'last-request', category: 'symbols',
+  } });
+});

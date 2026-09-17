@@ -36,7 +36,7 @@ export function RecordingOnboardingTour({
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const cardRef = useRef<View | null>(null);
   const isLast = step === 2;
-  const icon = step < 2 ? 'slider.horizontal.3' : inputMode === 'voice' ? 'mic' : 'pencil';
+  const icon = inputMode === 'voice' ? 'mic' : 'pencil';
   const bodyKey = step === 0
     ? 'recording.guide.step_mode'
     : step === 1

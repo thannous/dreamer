@@ -1,0 +1,44 @@
+[
+  {
+    "path": "explore",
+    "expected": "screen.explore",
+    "verified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://explore/... pkg=com.tanuki75.noctalia }\nStatus: ok\nLaunchState: COLD\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 861\nWaitTime: 864\nComplete\n",
+    "draftLength": null
+  },
+  {
+    "path": "explore",
+    "expected": "screen.explore",
+    "verified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://explore/... pkg=com.tanuki75.noctalia }\nStatus: ok\nLaunchState: COLD\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 850\nWaitTime: 854\nComplete\n",
+    "draftLength": null
+  },
+  {
+    "path": "explore",
+    "expected": "screen.explore",
+    "verified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://explore/... pkg=com.tanuki75.noctalia }\nStatus: ok\nLaunchState: COLD\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 847\nWaitTime: 850\nComplete\n",
+    "draftLength": null
+  },
+  {
+    "path": "dream-guides",
+    "expected": "screen.dreamGuides",
+    "verified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://dream-guides/... pkg=com.tanuki75.noctalia }\nStatus: ok\nLaunchState: COLD\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 941\nWaitTime: 945\nComplete\n",
+    "draftLength": null
+  },
+  {
+    "path": "symbol-dictionary",
+    "expected": "symbol-list",
+    "verified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://symbol-dictionary/... pkg=com.tanuki75.noctalia }\nStatus: ok\nLaunchState: COLD\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 1962\nWaitTime: 1964\nComplete\n",
+    "draftLength": null
+  },
+  {
+    "path": "recording",
+    "expected": "screen.recording",
+    "verified": true,
+    "launch": "Starting: Intent { act=android.intent.action.VIEW dat=noctalia://recording/... pkg=com.tanuki75.noctalia }\nStatus: ok\nLaunchState: COLD\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 880\nWaitTime: 884\nComplete\n",
+    "draftLength": 905
+  }
+]

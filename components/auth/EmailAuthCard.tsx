@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 import { useAuth } from '@/context/AuthContext';
-import { useDreamsActions } from '@/context/DreamsContext';
+import { useOptionalDreamsActions } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -82,15 +82,17 @@ const isUnverifiedEmailError = (error: unknown): error is AuthApiError => {
 type Props = {
   isCompact?: boolean;
   presentation?: 'card' | 'embedded';
-  returnTo?: '/(tabs)/settings' | '/lucid/(tabs)/settings';
+  returnTo?: '/settings' | '/lucid/(tabs)/settings';
   showGoogleSignIn?: boolean;
+  initialAccountSheetOpen?: boolean;
 };
 
 export const EmailAuthCard: React.FC<Props> = ({
   isCompact = false,
   presentation = 'card',
-  returnTo = '/(tabs)/settings',
+  returnTo = '/settings',
   showGoogleSignIn = true,
+  initialAccountSheetOpen = false,
 }) => {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -98,7 +100,7 @@ export const EmailAuthCard: React.FC<Props> = ({
   const cardBg = noctalia.surface.raised;
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
-  const { reloadDreams } = useDreamsActions();
+  const dreamsActions = useOptionalDreamsActions();
   const { language } = useLanguage();
 
   const [email, setEmail] = useState('');
@@ -123,7 +125,7 @@ export const EmailAuthCard: React.FC<Props> = ({
     titleKey: string;
     messageKey: string | null;
   }>({ visible: false, titleKey: '', messageKey: null });
-  const [accountSheetVisible, setAccountSheetVisible] = useState(false);
+  const [accountSheetVisible, setAccountSheetVisible] = useState(initialAccountSheetOpen);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
   const [forgotPasswordStatus, setForgotPasswordStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
@@ -309,7 +311,7 @@ export const EmailAuthCard: React.FC<Props> = ({
     setSubmitting('signout');
     try {
       await signOut();
-      await reloadDreams();
+      await dreamsActions?.reloadDreams();
       clearPendingVerification();
       clearStayOnSettingsIntent();
     } catch (error) {
@@ -871,6 +873,7 @@ export const EmailAuthCard: React.FC<Props> = ({
           isEmbedded && styles.embeddedDescription,
           { color: noctalia.text.secondary },
         ]}
+        testID={isEmbedded ? undefined : 'settings-account-migration-hint'}
       >
         {t('settings.account.description_signed_out')}
       </Text>
@@ -1068,7 +1071,14 @@ export const EmailAuthCard: React.FC<Props> = ({
             <Text style={[styles.summaryDescription, { color: noctalia.text.secondary }]}>
               {t('settings.account.description_signed_in')}
             </Text>
-          ) : null}
+          ) : (
+            <Text
+              style={[styles.summaryDescription, { color: noctalia.text.secondary }]}
+              testID="settings-account-migration-hint"
+            >
+              {t('settings.account.description_signed_out')}
+            </Text>
+          )}
           {user?.email ? (
             <Text
               numberOfLines={1}
@@ -1188,6 +1198,7 @@ export const EmailAuthCard: React.FC<Props> = ({
       />
       <StandardBottomSheet
         visible={isEmbedded && accountSheetVisible}
+        bodyScrollEnabled={false}
         onClose={() => setAccountSheetVisible(false)}
         title={t('settings.account.title')}
         actions={{

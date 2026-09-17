@@ -1,0 +1,2969 @@
+{
+  "collectedAt": "2026-09-09T09:52:24.686Z",
+  "zone": {
+    "id": "0176cc0f4b4e08556d4f2de38c135594",
+    "name": "noctalia.app",
+    "plan": "Free Website"
+  },
+  "columns": [
+    "count",
+    "averageSampleInterval",
+    "clientRequestPath",
+    "edgeResponseStatus",
+    "userAgent",
+    "verifiedBotCategory",
+    "requestSource",
+    "datetimeHour"
+  ],
+  "accessChecks": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"endpoint\": \"zone logpush jobs\",\n  \"error\": \"Error: Cloudflare API error: 10000: Authentication error\"\n}"
+          }
+        ]
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"endpoint\": \"log retention\",\n  \"error\": \"Error: Cloudflare API error: 10000: Unauthorized\"\n}"
+          }
+        ]
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"success\": true,\n  \"status\": 200,\n  \"result\": {\n    \"viewer\": {\n      \"zones\": [\n        {\n          \"settings\": {\n            \"firewallEventsAdaptiveGroups\": {\n              \"enabled\": false,\n              \"maxDuration\": 0,\n              \"maxPageSize\": 10000,\n              \"notOlderThan\": 0\n            },\n            \"httpRequestsAdaptiveGroups\": {\n              \"enabled\": true,\n              \"maxDuration\": 86400,\n              \"maxPageSize\": 10000,\n              \"notOlderThan\": 691200\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"errors\": [],\n  \"messages\": []\n}"
+          }
+        ]
+      }
+    }
+  ],
+  "fieldAccessFailure": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Error: GraphQL error: zone '0176cc0f4b4e08556d4f2de38c135594' does not have access to the field 'botmanagementdecision' from the path"
+      }
+    ],
+    "isError": true
+  },
+  "windows": [
+    {
+      "start": "2026-09-02T00:00:00Z",
+      "end": "2026-09-03T00:00:00Z",
+      "query": "{ viewer { zones(filter: {zoneTag: \"0176cc0f4b4e08556d4f2de38c135594\"}) { httpRequestsAdaptiveGroups(limit:10000,filter:{datetime_geq:\"2026-09-02T00:00:00Z\",datetime_lt:\"2026-09-03T00:00:00Z\",clientRequestHTTPHost:\"noctalia.app\",clientRequestPath_in:[\"/en/blog/back-to-school-dreams-meaning\",\"/fr/blog/rever-retourner-ecole\",\"/de/blog/traum-zurueck-in-die-schule\",\"/es/blog/sonar-volver-escuela\",\"/it/blog/sognare-tornare-scuola\",\"/en/blog/back-to-school-nightmares-children\",\"/fr/blog/cauchemars-rentree-enfant\",\"/de/blog/albtraeume-schulanfang-kinder\",\"/es/blog/pesadillas-vuelta-al-cole-ninos\",\"/it/blog/incubi-rientro-scolastico-bambini\"]}){count avg { sampleInterval } dimensions { clientRequestPath edgeResponseStatus userAgent verifiedBotCategory requestSource datetimeHour } } } } }",
+      "result": {
+        "status": 200,
+        "errors": [],
+        "rows": [
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-02T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "curl/8.7.1",
+            "",
+            "eyeball",
+            "2026-09-02T18:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)",
+            "AI Search",
+            "eyeball",
+            "2026-09-02T22:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-02T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-02T10:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-02T18:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-02T23:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-02T18:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-02T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (compatible; Barkrowler/0.9; +https://babbar.tech/crawler)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-02T12:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-02T22:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot",
+            "Search Engine Crawler",
+            "eyeball",
+            "2026-09-02T23:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "Mozilla/5.0 (compatible; Barkrowler/0.9; +https://babbar.tech/crawler)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-02T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (compatible; Barkrowler/0.9; +https://babbar.tech/crawler)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-02T11:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "curl/8.7.1",
+            "",
+            "eyeball",
+            "2026-09-02T18:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            200,
+            "Mozilla/5.0 (compatible; Barkrowler/0.9; +https://babbar.tech/crawler)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-02T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)",
+            "AI Search",
+            "eyeball",
+            "2026-09-02T22:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-02T10:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-02T19:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-02T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (compatible; Barkrowler/0.9; +https://babbar.tech/crawler)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-02T12:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (Linux; Android 5.0) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; Bytespider; spider-feedback@bytedance.com)",
+            "",
+            "eyeball",
+            "2026-09-02T23:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-02T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (compatible; Barkrowler/0.9; +https://babbar.tech/crawler)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-02T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-02T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-02T23:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (compatible; Barkrowler/0.9; +https://babbar.tech/crawler)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-02T12:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-02T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (compatible; Barkrowler/0.9; +https://babbar.tech/crawler)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-02T12:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-02T22:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-02T07:00:00Z"
+          ]
+        ]
+      }
+    },
+    {
+      "start": "2026-09-03T00:00:00Z",
+      "end": "2026-09-04T00:00:00Z",
+      "query": "{ viewer { zones(filter: {zoneTag: \"0176cc0f4b4e08556d4f2de38c135594\"}) { httpRequestsAdaptiveGroups(limit:10000,filter:{datetime_geq:\"2026-09-03T00:00:00Z\",datetime_lt:\"2026-09-04T00:00:00Z\",clientRequestHTTPHost:\"noctalia.app\",clientRequestPath_in:[\"/en/blog/back-to-school-dreams-meaning\",\"/fr/blog/rever-retourner-ecole\",\"/de/blog/traum-zurueck-in-die-schule\",\"/es/blog/sonar-volver-escuela\",\"/it/blog/sognare-tornare-scuola\",\"/en/blog/back-to-school-nightmares-children\",\"/fr/blog/cauchemars-rentree-enfant\",\"/de/blog/albtraeume-schulanfang-kinder\",\"/es/blog/pesadillas-vuelta-al-cole-ninos\",\"/it/blog/incubi-rientro-scolastico-bambini\"]}){count avg { sampleInterval } dimensions { clientRequestPath edgeResponseStatus userAgent verifiedBotCategory requestSource datetimeHour } } } } }",
+      "result": {
+        "status": 200,
+        "errors": [],
+        "rows": [
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-03T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-03T12:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-03T12:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-03T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-03T11:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot",
+            "Search Engine Crawler",
+            "eyeball",
+            "2026-09-03T04:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-03T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-03T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot",
+            "Search Engine Crawler",
+            "eyeball",
+            "2026-09-03T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-03T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-03T16:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-03T17:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-03T11:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot",
+            "Search Engine Crawler",
+            "eyeball",
+            "2026-09-03T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-03T23:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-03T16:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot",
+            "Search Engine Crawler",
+            "eyeball",
+            "2026-09-03T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-03T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-03T08:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-03T05:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-03T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-03T08:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "python-httpx/0.28.1",
+            "",
+            "eyeball",
+            "2026-09-03T18:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot",
+            "Search Engine Crawler",
+            "eyeball",
+            "2026-09-03T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-03T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-03T17:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-03T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-03T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-03T23:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-03T05:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-03T04:00:00Z"
+          ]
+        ]
+      }
+    },
+    {
+      "start": "2026-09-04T00:00:00Z",
+      "end": "2026-09-05T00:00:00Z",
+      "query": "{ viewer { zones(filter: {zoneTag: \"0176cc0f4b4e08556d4f2de38c135594\"}) { httpRequestsAdaptiveGroups(limit:10000,filter:{datetime_geq:\"2026-09-04T00:00:00Z\",datetime_lt:\"2026-09-05T00:00:00Z\",clientRequestHTTPHost:\"noctalia.app\",clientRequestPath_in:[\"/en/blog/back-to-school-dreams-meaning\",\"/fr/blog/rever-retourner-ecole\",\"/de/blog/traum-zurueck-in-die-schule\",\"/es/blog/sonar-volver-escuela\",\"/it/blog/sognare-tornare-scuola\",\"/en/blog/back-to-school-nightmares-children\",\"/fr/blog/cauchemars-rentree-enfant\",\"/de/blog/albtraeume-schulanfang-kinder\",\"/es/blog/pesadillas-vuelta-al-cole-ninos\",\"/it/blog/incubi-rientro-scolastico-bambini\"]}){count avg { sampleInterval } dimensions { clientRequestPath edgeResponseStatus userAgent verifiedBotCategory requestSource datetimeHour } } } } }",
+      "result": {
+        "status": 200,
+        "errors": [],
+        "rows": [
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot)",
+            "",
+            "eyeball",
+            "2026-09-04T05:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-04T10:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot)",
+            "",
+            "eyeball",
+            "2026-09-04T05:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)",
+            "Search Engine Crawler",
+            "eyeball",
+            "2026-09-04T15:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-04T00:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-04T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-04T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (Linux; Android 5.0) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; TikTokSpider; ttspider-feedback@tiktok.com)",
+            "",
+            "eyeball",
+            "2026-09-04T07:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-04T09:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-04T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-04T20:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "curl/8.7.1",
+            "",
+            "eyeball",
+            "2026-09-04T09:00:00Z"
+          ],
+          [
+            2,
+            2,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Mobile Safari/537.36 (Ecosia android@150.0.0.0)",
+            "",
+            "eyeball",
+            "2026-09-04T09:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (compatible; Qwantbot/1.0; +https://help.qwant.com/bot/)",
+            "Search Engine Crawler",
+            "eyeball",
+            "2026-09-04T09:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-04T09:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot)",
+            "",
+            "eyeball",
+            "2026-09-04T05:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (X11; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0",
+            "",
+            "eyeball",
+            "2026-09-04T09:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-04T10:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-04T16:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (compatible; heritrix/3.14.2-SNAPSHOT-2026-04-13T06:21:22Z +https://www.image-meta.com)",
+            "",
+            "eyeball",
+            "2026-09-04T17:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot)",
+            "",
+            "eyeball",
+            "2026-09-04T05:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "curl/8.7.1",
+            "",
+            "eyeball",
+            "2026-09-04T09:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot)",
+            "",
+            "eyeball",
+            "2026-09-04T08:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "DuckDuckBot/1.0; (+http://duckduckgo.com/duckduckbot.html)",
+            "Search Engine Crawler",
+            "eyeball",
+            "2026-09-04T05:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-04T09:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-04T12:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-04T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-04T23:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)",
+            "AI Search",
+            "eyeball",
+            "2026-09-04T12:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (compatible; heritrix/3.14.2-SNAPSHOT-2026-04-13T06:21:22Z +https://www.image-meta.com)",
+            "",
+            "eyeball",
+            "2026-09-04T17:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-04T16:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-04T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-04T12:00:00Z"
+          ]
+        ]
+      }
+    },
+    {
+      "start": "2026-09-05T00:00:00Z",
+      "end": "2026-09-06T00:00:00Z",
+      "query": "{ viewer { zones(filter: {zoneTag: \"0176cc0f4b4e08556d4f2de38c135594\"}) { httpRequestsAdaptiveGroups(limit:10000,filter:{datetime_geq:\"2026-09-05T00:00:00Z\",datetime_lt:\"2026-09-06T00:00:00Z\",clientRequestHTTPHost:\"noctalia.app\",clientRequestPath_in:[\"/en/blog/back-to-school-dreams-meaning\",\"/fr/blog/rever-retourner-ecole\",\"/de/blog/traum-zurueck-in-die-schule\",\"/es/blog/sonar-volver-escuela\",\"/it/blog/sognare-tornare-scuola\",\"/en/blog/back-to-school-nightmares-children\",\"/fr/blog/cauchemars-rentree-enfant\",\"/de/blog/albtraeume-schulanfang-kinder\",\"/es/blog/pesadillas-vuelta-al-cole-ninos\",\"/it/blog/incubi-rientro-scolastico-bambini\"]}){count avg { sampleInterval } dimensions { clientRequestPath edgeResponseStatus userAgent verifiedBotCategory requestSource datetimeHour } } } } }",
+      "result": {
+        "status": 200,
+        "errors": [],
+        "rows": [
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-05T21:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-05T21:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-05T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-05T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-05T23:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
+            "Search Engine Crawler",
+            "eyeball",
+            "2026-09-05T21:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (Linux; Android 15; SM-S928B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-05T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-05T18:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (Linux; Android 5.0) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; Bytespider; spider-feedback@bytedance.com)",
+            "",
+            "eyeball",
+            "2026-09-05T11:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-05T05:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-05T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/136.0.0.0 Mobile/15E148 Safari/604.1",
+            "",
+            "eyeball",
+            "2026-09-05T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-05T17:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-05T14:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-05T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-05T21:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0",
+            "",
+            "eyeball",
+            "2026-09-05T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-05T11:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot)",
+            "",
+            "eyeball",
+            "2026-09-05T19:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-05T23:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot)",
+            "",
+            "eyeball",
+            "2026-09-05T19:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-05T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-05T15:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-05T18:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot)",
+            "",
+            "eyeball",
+            "2026-09-05T19:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-05T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-05T12:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-05T17:00:00Z"
+          ]
+        ]
+      }
+    },
+    {
+      "start": "2026-09-06T00:00:00Z",
+      "end": "2026-09-07T00:00:00Z",
+      "query": "{ viewer { zones(filter: {zoneTag: \"0176cc0f4b4e08556d4f2de38c135594\"}) { httpRequestsAdaptiveGroups(limit:10000,filter:{datetime_geq:\"2026-09-06T00:00:00Z\",datetime_lt:\"2026-09-07T00:00:00Z\",clientRequestHTTPHost:\"noctalia.app\",clientRequestPath_in:[\"/en/blog/back-to-school-dreams-meaning\",\"/fr/blog/rever-retourner-ecole\",\"/de/blog/traum-zurueck-in-die-schule\",\"/es/blog/sonar-volver-escuela\",\"/it/blog/sognare-tornare-scuola\",\"/en/blog/back-to-school-nightmares-children\",\"/fr/blog/cauchemars-rentree-enfant\",\"/de/blog/albtraeume-schulanfang-kinder\",\"/es/blog/pesadillas-vuelta-al-cole-ninos\",\"/it/blog/incubi-rientro-scolastico-bambini\"]}){count avg { sampleInterval } dimensions { clientRequestPath edgeResponseStatus userAgent verifiedBotCategory requestSource datetimeHour } } } } }",
+      "result": {
+        "status": 200,
+        "errors": [],
+        "rows": [
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-06T23:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-06T00:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-06T21:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-06T22:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-06T02:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-06T08:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-06T01:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-06T00:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-06T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-06T21:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-06T10:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (Linux; Android 5.0) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; Bytespider; spider-feedback@bytedance.com)",
+            "",
+            "eyeball",
+            "2026-09-06T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-06T01:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-06T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-06T08:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-06T10:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-06T02:00:00Z"
+          ]
+        ]
+      }
+    },
+    {
+      "start": "2026-09-07T00:00:00Z",
+      "end": "2026-09-08T00:00:00Z",
+      "query": "{ viewer { zones(filter: {zoneTag: \"0176cc0f4b4e08556d4f2de38c135594\"}) { httpRequestsAdaptiveGroups(limit:10000,filter:{datetime_geq:\"2026-09-07T00:00:00Z\",datetime_lt:\"2026-09-08T00:00:00Z\",clientRequestHTTPHost:\"noctalia.app\",clientRequestPath_in:[\"/en/blog/back-to-school-dreams-meaning\",\"/fr/blog/rever-retourner-ecole\",\"/de/blog/traum-zurueck-in-die-schule\",\"/es/blog/sonar-volver-escuela\",\"/it/blog/sognare-tornare-scuola\",\"/en/blog/back-to-school-nightmares-children\",\"/fr/blog/cauchemars-rentree-enfant\",\"/de/blog/albtraeume-schulanfang-kinder\",\"/es/blog/pesadillas-vuelta-al-cole-ninos\",\"/it/blog/incubi-rientro-scolastico-bambini\"]}){count avg { sampleInterval } dimensions { clientRequestPath edgeResponseStatus userAgent verifiedBotCategory requestSource datetimeHour } } } } }",
+      "result": {
+        "status": 200,
+        "errors": [],
+        "rows": [
+          [
+            2,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36 Chrome-Lighthouse",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-07T11:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T21:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            200,
+            "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T19:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "node",
+            "",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 Mobile Safari/537.36 (compatible; AhrefsSiteAudit/6.1; +http://ahrefs.com/robot/site-audit)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Mobile/15E148 Safari/604.1",
+            "",
+            "eyeball",
+            "2026-09-07T21:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            200,
+            "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)",
+            "",
+            "eyeball",
+            "2026-09-07T11:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T11:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "node",
+            "",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            200,
+            "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36 Chrome-Lighthouse",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)",
+            "",
+            "eyeball",
+            "2026-09-07T21:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            200,
+            "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 Mobile Safari/537.36 (compatible; AhrefsSiteAudit/6.1; +http://ahrefs.com/robot/site-audit)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)",
+            "",
+            "eyeball",
+            "2026-09-07T11:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "node",
+            "",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T10:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T08:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-07T11:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 Mobile Safari/537.36 (compatible; AhrefsSiteAudit/6.1; +http://ahrefs.com/robot/site-audit)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36 Chrome-Lighthouse",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "node",
+            "",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (compatible; Qwantbot/1.0; +https://help.qwant.com/bot/)",
+            "Search Engine Crawler",
+            "eyeball",
+            "2026-09-07T09:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 Mobile Safari/537.36 (compatible; AhrefsSiteAudit/6.1; +http://ahrefs.com/robot/site-audit)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            200,
+            "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T15:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-07T07:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36 Chrome-Lighthouse",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T11:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T21:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "node",
+            "",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 Mobile Safari/537.36 (compatible; AhrefsSiteAudit/6.1; +http://ahrefs.com/robot/site-audit)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            200,
+            "node",
+            "",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T17:00:00Z"
+          ],
+          [
+            4,
+            1.3333333333333333,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T11:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)",
+            "",
+            "eyeball",
+            "2026-09-07T11:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "node",
+            "",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T11:00:00Z"
+          ],
+          [
+            3,
+            1.5,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36 Chrome-Lighthouse",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; YouBot/1.0; +https://docs.you.com/youbot; env:prod) Chrome/142.0.0.0 Safari/537.36",
+            "Search Engine Crawler",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-07T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-07T12:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 Mobile Safari/537.36 (compatible; AhrefsSiteAudit/6.1; +http://ahrefs.com/robot/site-audit)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T19:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 Mobile Safari/537.36 (compatible; AhrefsSiteAudit/6.1; +http://ahrefs.com/robot/site-audit)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T08:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T19:00:00Z"
+          ],
+          [
+            3,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            3,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T19:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T19:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)",
+            "",
+            "eyeball",
+            "2026-09-07T11:00:00Z"
+          ],
+          [
+            3,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 Mobile Safari/537.36 (compatible; AhrefsSiteAudit/6.1; +http://ahrefs.com/robot/site-audit)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T11:00:00Z"
+          ],
+          [
+            3,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            3,
+            1.5,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36 Chrome-Lighthouse",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T08:00:00Z"
+          ],
+          [
+            3,
+            1.5,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36 Chrome-Lighthouse",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36 Chrome-Lighthouse",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T21:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 Mobile Safari/537.36 (compatible; AhrefsSiteAudit/6.1; +http://ahrefs.com/robot/site-audit)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            3,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36 Chrome-Lighthouse",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; YouBot/1.0; +https://docs.you.com/youbot; env:prod) Chrome/142.0.0.0 Safari/537.36",
+            "Search Engine Crawler",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "node",
+            "",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)",
+            "",
+            "eyeball",
+            "2026-09-07T21:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-07T11:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "node",
+            "",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T21:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 Mobile Safari/537.36 (compatible; AhrefsSiteAudit/6.1; +http://ahrefs.com/robot/site-audit)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T19:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T08:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "node",
+            "",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ],
+          [
+            2,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36 Chrome-Lighthouse",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T13:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-07T20:00:00Z"
+          ]
+        ]
+      }
+    },
+    {
+      "start": "2026-09-08T00:00:00Z",
+      "end": "2026-09-09T00:00:00Z",
+      "query": "{ viewer { zones(filter: {zoneTag: \"0176cc0f4b4e08556d4f2de38c135594\"}) { httpRequestsAdaptiveGroups(limit:10000,filter:{datetime_geq:\"2026-09-08T00:00:00Z\",datetime_lt:\"2026-09-09T00:00:00Z\",clientRequestHTTPHost:\"noctalia.app\",clientRequestPath_in:[\"/en/blog/back-to-school-dreams-meaning\",\"/fr/blog/rever-retourner-ecole\",\"/de/blog/traum-zurueck-in-die-schule\",\"/es/blog/sonar-volver-escuela\",\"/it/blog/sognare-tornare-scuola\",\"/en/blog/back-to-school-nightmares-children\",\"/fr/blog/cauchemars-rentree-enfant\",\"/de/blog/albtraeume-schulanfang-kinder\",\"/es/blog/pesadillas-vuelta-al-cole-ninos\",\"/it/blog/incubi-rientro-scolastico-bambini\"]}){count avg { sampleInterval } dimensions { clientRequestPath edgeResponseStatus userAgent verifiedBotCategory requestSource datetimeHour } } } } }",
+      "result": {
+        "status": 200,
+        "errors": [],
+        "rows": [
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-08T18:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-08T23:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-08T02:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-08T02:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-08T18:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-08T22:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-08T17:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+            "Search Engine Optimization",
+            "eyeball",
+            "2026-09-08T00:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)",
+            "AI Search",
+            "eyeball",
+            "2026-09-08T22:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-08T17:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-08T02:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/traum-zurueck-in-die-schule",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-08T18:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-08T17:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-08T02:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-08T08:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-08T08:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "LohiSoftBot/1.0 (+https://lohisoft.com/bot)",
+            "",
+            "eyeball",
+            "2026-09-08T10:00:00Z"
+          ]
+        ]
+      }
+    },
+    {
+      "start": "2026-09-09T00:00:00Z",
+      "end": "2026-09-09T09:45:00Z",
+      "query": "{ viewer { zones(filter: {zoneTag: \"0176cc0f4b4e08556d4f2de38c135594\"}) { httpRequestsAdaptiveGroups(limit:10000,filter:{datetime_geq:\"2026-09-09T00:00:00Z\",datetime_lt:\"2026-09-09T09:45:00Z\",clientRequestHTTPHost:\"noctalia.app\",clientRequestPath_in:[\"/en/blog/back-to-school-dreams-meaning\",\"/fr/blog/rever-retourner-ecole\",\"/de/blog/traum-zurueck-in-die-schule\",\"/es/blog/sonar-volver-escuela\",\"/it/blog/sognare-tornare-scuola\",\"/en/blog/back-to-school-nightmares-children\",\"/fr/blog/cauchemars-rentree-enfant\",\"/de/blog/albtraeume-schulanfang-kinder\",\"/es/blog/pesadillas-vuelta-al-cole-ninos\",\"/it/blog/incubi-rientro-scolastico-bambini\"]}){count avg { sampleInterval } dimensions { clientRequestPath edgeResponseStatus userAgent verifiedBotCategory requestSource datetimeHour } } } } }",
+      "result": {
+        "status": 200,
+        "errors": [],
+        "rows": [
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-09T00:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-09T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-09T09:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-09T05:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "python-httpx/0.28.1",
+            "",
+            "eyeball",
+            "2026-09-09T08:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/pesadillas-vuelta-al-cole-ninos",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-09T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-09T05:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-09T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/cauchemars-rentree-enfant",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+            "",
+            "eyeball",
+            "2026-09-09T06:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-dreams-meaning",
+            200,
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36 [ip:93.41.125.186]",
+            "",
+            "eyeball",
+            "2026-09-09T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-09T08:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/incubi-rientro-scolastico-bambini",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-09T04:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-09T02:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/en/blog/back-to-school-nightmares-children",
+            200,
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36 [ip:93.41.125.186]",
+            "",
+            "eyeball",
+            "2026-09-09T07:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
+            "",
+            "eyeball",
+            "2026-09-09T00:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/de/blog/albtraeume-schulanfang-kinder",
+            200,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)",
+            "AI Search",
+            "eyeball",
+            "2026-09-09T00:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/fr/blog/rever-retourner-ecole",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-09T02:00:00Z"
+          ],
+          [
+            2,
+            2,
+            "/fr/blog/cauchemars-rentree-enfant",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-09T06:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/it/blog/sognare-tornare-scuola",
+            504,
+            "nginx-ssl early hints",
+            "",
+            "earlyHintsCache",
+            "2026-09-09T00:00:00Z"
+          ],
+          [
+            1,
+            1,
+            "/es/blog/sonar-volver-escuela",
+            200,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 (compatible; meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler))",
+            "AI Crawler",
+            "eyeball",
+            "2026-09-09T09:00:00Z"
+          ]
+        ]
+      }
+    }
+  ],
+  "control": {
+    "query": "{ viewer { zones(filter: {zoneTag: \"0176cc0f4b4e08556d4f2de38c135594\"}) { httpRequestsAdaptiveGroups(limit:10000,filter:{datetime_geq:\"2026-09-08T00:00:00Z\",datetime_lt:\"2026-09-09T00:00:00Z\",clientRequestHTTPHost:\"noctalia.app\",userAgent_like:\"%Googlebot%\"}){count avg {sampleInterval} dimensions { edgeResponseStatus userAgent verifiedBotCategory requestSource } } } } }",
+    "result": {
+      "success": true,
+      "status": 200,
+      "result": {
+        "viewer": {
+          "zones": [
+            {
+              "httpRequestsAdaptiveGroups": [
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 86,
+                  "dimensions": {
+                    "edgeResponseStatus": 200,
+                    "requestSource": "eyeball",
+                    "userAgent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+                    "verifiedBotCategory": "Search Engine Crawler"
+                  }
+                },
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 1,
+                  "dimensions": {
+                    "edgeResponseStatus": 200,
+                    "requestSource": "eyeball",
+                    "userAgent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/151.0.7922.173 Safari/537.36",
+                    "verifiedBotCategory": ""
+                  }
+                },
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 1,
+                  "dimensions": {
+                    "edgeResponseStatus": 200,
+                    "requestSource": "eyeball",
+                    "userAgent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/151.0.7922.108 Safari/537.36",
+                    "verifiedBotCategory": ""
+                  }
+                },
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 9,
+                  "dimensions": {
+                    "edgeResponseStatus": 200,
+                    "requestSource": "eyeball",
+                    "userAgent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/151.0.7922.108 Safari/537.36",
+                    "verifiedBotCategory": "Search Engine Crawler"
+                  }
+                },
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 4,
+                  "dimensions": {
+                    "edgeResponseStatus": 200,
+                    "requestSource": "eyeball",
+                    "userAgent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.108 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+                    "verifiedBotCategory": "Search Engine Crawler"
+                  }
+                },
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 1,
+                  "dimensions": {
+                    "edgeResponseStatus": 200,
+                    "requestSource": "eyeball",
+                    "userAgent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.7977.75 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+                    "verifiedBotCategory": "Search Engine Crawler"
+                  }
+                },
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 1,
+                  "dimensions": {
+                    "edgeResponseStatus": 200,
+                    "requestSource": "eyeball",
+                    "userAgent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+                    "verifiedBotCategory": ""
+                  }
+                },
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 148,
+                  "dimensions": {
+                    "edgeResponseStatus": 200,
+                    "requestSource": "eyeball",
+                    "userAgent": "Googlebot-Image/1.0",
+                    "verifiedBotCategory": "Search Engine Crawler"
+                  }
+                },
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 1,
+                  "dimensions": {
+                    "edgeResponseStatus": 200,
+                    "requestSource": "eyeball",
+                    "userAgent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+                    "verifiedBotCategory": "Search Engine Crawler"
+                  }
+                },
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 1,
+                  "dimensions": {
+                    "edgeResponseStatus": 200,
+                    "requestSource": "eyeball",
+                    "userAgent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/152.0.7977.64 Safari/537.36",
+                    "verifiedBotCategory": ""
+                  }
+                },
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 16,
+                  "dimensions": {
+                    "edgeResponseStatus": 200,
+                    "requestSource": "eyeball",
+                    "userAgent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/152.0.7977.64 Safari/537.36",
+                    "verifiedBotCategory": "Search Engine Crawler"
+                  }
+                },
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 1,
+                  "dimensions": {
+                    "edgeResponseStatus": 301,
+                    "requestSource": "eyeball",
+                    "userAgent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+                    "verifiedBotCategory": "Search Engine Crawler"
+                  }
+                },
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 9,
+                  "dimensions": {
+                    "edgeResponseStatus": 301,
+                    "requestSource": "eyeball",
+                    "userAgent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.173 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+                    "verifiedBotCategory": "Search Engine Crawler"
+                  }
+                },
+                {
+                  "avg": {
+                    "sampleInterval": 1
+                  },
+                  "count": 74,
+                  "dimensions": {
+                    "edgeResponseStatus": 200,
+                    "requestSource": "eyeball",
+                    "userAgent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+                    "verifiedBotCategory": "Search Engine Crawler"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "errors": [],
+      "messages": []
+    }
+  }
+}

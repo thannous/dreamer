@@ -6,6 +6,7 @@ export interface ChatMessagePart {
   text?: string;
   thought?: boolean;
   thoughtSignature?: string;
+  thoughtSummary?: ({ type: 'text'; text: string } | { type: 'image'; data: string; mime_type: string })[];
   inlineData?: {
     data: string;
     mimeType: string;
@@ -43,7 +44,7 @@ export type SyncMutationOperation = 'create' | 'update' | 'delete';
  * Canonical dream type categories used in the app.
  * The AI/backend should always return one of these values.
  */
-export type DreamType = 'Lucid Dream' | 'Recurring Dream' | 'Nightmare' | 'Symbolic Dream';
+export type DreamType = 'Lucid Dream' | 'Recurring Dream' | 'Nightmare' | 'Symbolic Dream' | 'Unknown';
 
 /**
  * Canonical dream visual/emotional themes.
@@ -132,6 +133,16 @@ export interface DreamAnalysis {
   reflectionQuestions?: string[];
   /** Version of the analysis prompt/schema that produced this reading (server-stamped). */
   promptVersion?: string;
+  /**
+   * Raw analysis_details JSON as stored in Supabase.
+   * Known fields are also exposed on the dream; unknown keys stay here so they round-trip.
+   */
+  analysisDetails?: Record<string, unknown>;
+  /**
+   * Deterministic hash of the transcript that produced the current analysis.
+   * Absent on legacy analyses so they stay unstaled until the next successful analysis.
+   */
+  analysisTranscriptHash?: string;
   imageUrl: string; // Full-resolution image for detail views
   thumbnailUrl?: string; // Smaller thumbnail for list views (optional for backward compatibility)
   imageUpdatedAt?: number; // Timestamp bump to force image refresh when replaced
@@ -193,13 +204,23 @@ export interface RitualStepProgress {
   steps: Partial<Record<RitualId, Record<string, boolean>>>;
 }
 
-export type ThemePreference = 'light' | 'dark' | 'auto';
+export type ThemePreference = 'dynamic' | 'light' | 'dark' | 'auto';
 
 export type ThemeMode = 'light' | 'dark';
 
 export type JournalLayoutPreference = 'cards' | 'compact';
 
 export type RecordingInputModePreference = 'text' | 'voice';
+
+export type RecordingDraftReadResult =
+  | { status: 'loaded'; value: string }
+  | { status: 'absent' }
+  | { status: 'error' };
+
+export type DreamListReadResult =
+  | { status: 'loaded'; value: DreamAnalysis[] }
+  | { status: 'absent' }
+  | { status: 'error' };
 
 export type AppLanguage = 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt';
 
@@ -236,24 +257,27 @@ export interface DreamMutation {
 }
 
 /**
+ * One quota metric. `limit`/`remaining` are null when unlimited.
+ */
+export interface QuotaMetric {
+  used: number;
+  limit: number | null;
+  remaining: number | null;
+}
+
+/**
  * Quota usage information
  */
 export interface QuotaUsage {
-  analysis: {
-    used: number;
-    limit: number | null; // null = unlimited
-    remaining: number | null; // null = unlimited
-  };
-  exploration: {
-    used: number;
-    limit: number | null;
-    remaining: number | null;
-  };
-  messages: {
-    used: number; // For a specific dream
-    limit: number | null;
-    remaining: number | null;
-  };
+  analysis: QuotaMetric;
+  exploration: QuotaMetric;
+  messages: QuotaMetric; // For a specific dream
+  /**
+   * Illustration usage. Optional on older payloads.
+   * Guest: existing device image pool. Plus: unlimited (`limit` null).
+   * Authenticated free generic status is not a monthly illustration credit.
+   */
+  image?: QuotaMetric;
 }
 
 export type SubscriptionTier = 'guest' | 'free' | 'plus';
@@ -288,6 +312,14 @@ export interface QuotaStatus {
   usage: QuotaUsage;
   canAnalyze: boolean;
   canExplore: boolean;
+  /**
+   * Whether a standalone illustration request is currently allowed.
+   * Guest: follows image remaining, not analysis remaining.
+   * Plus: always true. Authenticated free generic status is false — images stay
+   * bundled with a dream analysis request, not a monthly credit pool.
+   * Optional on older payloads.
+   */
+  canGenerateImage?: boolean;
   reasons?: string[]; // Reasons why an action is blocked
   /** @deprecated Kept only for compatibility with old quota payloads. */
   isUpgraded?: boolean;
@@ -342,3 +374,8 @@ export interface ReferenceImageGenerationRequest {
   previousImageUrl?: string;
   lang?: string;
 }
+
+export type GuestDreamMigrationOwner = {
+  userId: string;
+  dreamIds: number[];
+};
