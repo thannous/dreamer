@@ -5,7 +5,6 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTranslation } from '@/hooks/useTranslation';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TID } from '@/lib/testIDs';
-import type { CaptureDirection } from '@/hooks/useCaptureConversation';
 import type { MicButtonStatus } from './MicButton';
 import { RecordingTextInput } from './RecordingTextInput';
 import { Fonts } from '@/constants/theme';
@@ -25,7 +24,6 @@ type Props = {
   onMute: () => Promise<void>;
   onReview: () => void;
   onRestart: () => void;
-  onDirection: (direction: CaptureDirection) => void;
   onAnswerChange: (text: string) => void;
   onAnswerSubmit: () => void | Promise<void>;
 };
@@ -63,7 +61,6 @@ export function RecordingConversation(props: Props) {
     }
   };
   const submitDisabled = locked || props.loading || !answer.trim();
-  const showDirections = Boolean(props.storyTranscript.trim()) && !answer.trim() && !listening && !props.loading;
 
   return (
     <View style={styles.container} testID="recording-conversation">
@@ -133,25 +130,6 @@ export function RecordingConversation(props: Props) {
               inputTestID="recording-conversation-answer"
             />
           </View>
-          {showDirections ? (
-            <View style={styles.directions}>
-              {(['place', 'next', 'done'] as const).map(direction => (
-                <Pressable
-                  key={direction}
-                  onPress={() => props.onDirection(direction)}
-                  disabled={locked}
-                  accessibilityRole="button"
-                  accessibilityState={{ disabled: locked }}
-                  style={[styles.direction, { borderColor: tokens.surface.border, opacity: locked ? 0.4 : 1 }]}
-                  testID={`recording-direction-${direction}`}
-                >
-                  <Text style={[styles.small, { color: tokens.text.secondary }]}>
-                    {t(`recording.conversation.direction_${direction}`)}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          ) : null}
         </View>
       ) : null}
       {props.storyTranscript.trim() ? (
@@ -206,8 +184,6 @@ const styles = StyleSheet.create({
   answerSection: { width: '100%', gap: 8 },
   replyArea: { width: '100%', alignItems: 'center', gap: 16 },
   editorAction: { width: 48, height: 48, borderRadius: 24, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  directions: { width: '100%', flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  direction: { minHeight: 44, justifyContent: 'center', borderWidth: 1, borderRadius: 16, paddingHorizontal: 12, paddingVertical: 8 },
   recap: { width: '100%', borderTopWidth: 1, marginTop: 8, paddingTop: 16, paddingBottom: 8, gap: 12 },
   storyTitle: { fontSize: 22, lineHeight: 29, fontFamily: Fonts.lora.regular, flexShrink: 1 },
   recapHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },

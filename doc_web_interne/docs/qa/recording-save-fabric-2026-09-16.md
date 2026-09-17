@@ -73,3 +73,8 @@ Screenshots retained locally under `doc_web_interne/docs/qa/recording-save-fabri
 - Replaced the separate mic/pencil entry buttons with an immediately editable answer field and an explicit write/dictate placeholder. Keyboard stays closed until the user focuses the field. Microphone/stop and submit arrow remain inside the field. Empty placeholder participates in natural height layout.
 - Once the story has content, optional place/next/no-more-memory choices are available before a new answer begins. Choosing a direction locally replaces the unanswered question without an API request, and its exact question is retained with the eventual answer. Late responses cannot overwrite a chosen direction. No-more-memory ends questioning without saving or deleting the draft.
 - 105 focused route/editor/conversation/hook tests pass. App/test typechecks and lint verified separately. Existing recording.tsx effect warnings remain. Motorola screenshot confirmed the new field and three choices; no personal text was edited or submitted during inspection.
+
+## Free-response flow — 2026-09-17
+
+- Removed optional direction controls, their hook/API surface, localized labels and associated tests at the user's request. The persistent answer field, voice/keyboard input, explicit submission and editable story remain.
+- 80 focused route/conversation/hook tests pass, app/test typechecks and focused lint pass. Motorola screenshot verifies that only the free answer field sits between the question and the separate reading section.

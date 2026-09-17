@@ -2,8 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { requestCaptureQuestion } from '@/services/captureConversation';
 import { getDreamRecallQuestion, DREAM_RECALL_MAX_QUESTIONS } from '@/lib/dreamRecallQuestions';
 
-export type CaptureDirection = 'place' | 'next' | 'done';
-
 type Options = { language: string; t: (key: string) => string; scope?: string };
 
 /** Network results belong to one draft revision. The editor persists answered questions with their answers. */
@@ -65,27 +63,11 @@ export function useCaptureConversation({ language, t, scope }: Options) {
     }
   }, [language, t]);
 
-  const chooseDirection = useCallback((direction: CaptureDirection) => {
-    generation.current += 1;
-    controller.current?.abort();
-    setLoading(false);
-    setUnavailable(false);
-    setDone(direction === 'done');
-    if (direction === 'done') {
-      setQuestion(null);
-      return;
-    }
-    const nextQuestion = t(direction === 'place' ? 'dream_recall.question.where' : 'dream_recall.question.what_next');
-    // Replace the unanswered prompt; choosing another direction does not consume a turn.
-    previous.current = [...previous.current.slice(0, -1), nextQuestion];
-    setQuestion(nextQuestion);
-  }, [t]);
-
   useEffect(() => {
     // Account identity is external state: cancel its pending request and clear its visible question together.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     reset();
     return () => { generation.current += 1; controller.current?.abort(); };
   }, [scope, reset]);
-  return { question, loading, unavailable, done, ask, reset, chooseDirection };
+  return { question, loading, unavailable, done, ask, reset };
 }
