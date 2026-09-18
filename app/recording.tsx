@@ -679,7 +679,10 @@ export default function RecordingScreen() {
     const savedDream = dreams.find((dream) => dream.id === pending.savedDreamId);
     if (!savedDream) return;
     restoredPendingIntentRef.current = pending.entryId;
-    navigateToJournalDetail(savedDream.id);
+    navigateToJournalDetail(
+      savedDream.id,
+      pending.phase === 'analysis_confirmation' ? { saved: true } : undefined
+    );
   }, [dreams, navigateToJournalDetail, onboardingState.pendingRecordingIntent]);
 
   const handleVoiceCaptureFailure = useCallback((failure: VoiceCaptureFailure) => {

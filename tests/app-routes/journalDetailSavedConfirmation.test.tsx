@@ -11,9 +11,11 @@ let mockPendingRecordingIntent: Partial<PendingRecordingIntent> | null = null;
 const mockTransitionOnboarding = jest.fn(async () => undefined);
 let mockMedia: any = null;
 let mockQuotaUsage: any = { analysis: { used: 0, limit: 3, remaining: 3 } };
+let mockQuotaStatus: { isUpgraded?: boolean } | null = null;
 let mockCanAnalyzeNow = true;
 const mockCanAnalyze = jest.fn(async () => true);
 let mockTier: 'free' | 'plus' = 'free';
+let mockUser: { id: string } | null = { id: 'user-1' };
 const mockUpdateDream = jest.fn();
 const mockRetryDreamSync = jest.fn(async (): Promise<void> => undefined);
 let mockCompositeLoads = true;
@@ -261,7 +263,7 @@ jest.mock('@/components/ui/icon-symbol', () => ({
 }));
 
 jest.mock('@/context/AuthContext', () => ({
-  useAuth: () => ({ user: { id: 'user-1' } }),
+  useAuth: () => ({ user: mockUser }),
 }));
 
 jest.mock('@/context/DreamsContext', () => ({
@@ -344,7 +346,7 @@ jest.mock('@/hooks/useQuota', () => ({
     tier: mockTier,
     usage: mockQuotaUsage,
     loading: false,
-    quotaStatus: null,
+    quotaStatus: mockQuotaStatus,
   }),
 }));
 
@@ -370,8 +372,9 @@ jest.mock('@/lib/env', () => ({
   isReferenceImagesEnabled: () => false,
 }));
 
+const mockTrackProductEvent = jest.fn();
 jest.mock('@/lib/analytics', () => ({
-  trackProductEvent: jest.fn(),
+  trackProductEvent: (...args: unknown[]) => mockTrackProductEvent(...args),
 }));
 
 jest.mock('@/services/geminiService', () => ({
@@ -385,8 +388,11 @@ describe('journal detail saved confirmation route', () => {
   beforeEach(() => {
     mockSetParams.mockReset();
     mockAnalyzeDream.mockReset();
+    mockTrackProductEvent.mockReset();
     mockCanAnalyzeNow = true;
     mockCanAnalyze.mockReset().mockResolvedValue(true);
+    mockUser = { id: 'user-1' };
+    mockQuotaStatus = null;
     mockPendingRecordingIntent = null;
     mockTransitionOnboarding.mockClear();
     mockMedia = null;
@@ -416,6 +422,116 @@ describe('journal detail saved confirmation route', () => {
       replaceExistingImage: true, lang: 'fr', analyticsSource: 'journal_detail',
     });
     expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
+    expect(mockTransitionOnboarding).not.toHaveBeenCalled();
+  });
+
+  it('restores the saved-analysis offer from a persisted confirmation without saved=1', () => {
+    mockSearchParams = { id: '42' };
+    mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
+    render(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Sheet.SavedDreamAnalysis)).toBeTruthy();
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(mockTransitionOnboarding).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { phase: 'analysis_requested' as const, savedDreamId: 42 },
+    { phase: 'analysis_confirmation' as const, savedDreamId: 41 },
+  ])('does not restore the offer from $phase for dream $savedDreamId', ({
+    phase,
+    savedDreamId,
+  }: {
+    phase: 'analysis_confirmation' | 'analysis_requested';
+    savedDreamId: number;
+  }) => {
+    mockSearchParams = { id: '42' };
+    mockPendingRecordingIntent = { savedDreamId, phase };
+    render(<JournalDetailScreen />);
+    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
+  });
+
+  it('advances a matching confirmation to analysis_requested on accept', async () => {
+    mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
+    expect(mockTransitionOnboarding).toHaveBeenCalledWith({
+      type: 'SET_PENDING_PHASE',
+      phase: 'analysis_requested',
+      savedDreamId: 42,
+    });
+    expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
+  });
+
+  it('persists analysis_requested only after the allowance check succeeds', async () => {
+    mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
+    mockCanAnalyzeNow = false;
+    let allow!: (value: boolean) => void;
+    mockCanAnalyze.mockReturnValueOnce(new Promise<boolean>(resolve => { allow = resolve; }));
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(mockTransitionOnboarding).not.toHaveBeenCalled();
+    await act(async () => { allow(true); });
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
+    expect(mockTransitionOnboarding).toHaveBeenCalledWith({
+      type: 'SET_PENDING_PHASE',
+      phase: 'analysis_requested',
+      savedDreamId: 42,
+    });
+  });
+
+  it.each([
+    {
+      label: 'quota',
+      setup: () => {
+        mockCanAnalyzeNow = false;
+        mockCanAnalyze.mockResolvedValueOnce(false);
+      },
+    },
+    {
+      label: 'auth',
+      setup: () => {
+        mockUser = null;
+        mockQuotaStatus = { isUpgraded: true };
+        mockCanAnalyzeNow = false;
+        mockCanAnalyze.mockResolvedValueOnce(false);
+      },
+    },
+  ])('does not persist analysis_requested when accept is rejected by $label', async ({
+    setup,
+  }: {
+    label: string;
+    setup: () => void;
+  }) => {
+    mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
+    setup();
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    expect(screen.getByTestId('quota-limit')).toBeTruthy();
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(mockTransitionOnboarding).not.toHaveBeenCalled();
+  });
+
+  it('clears the pending intent once the onboarding analysis result is visible', () => {
+    mockSearchParams = { id: '42' };
+    mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_requested' };
+    mockDreams = [buildDream({ analysisStatus: 'pending' })];
+    const view = render(<JournalDetailScreen />);
+    expect(mockTransitionOnboarding).not.toHaveBeenCalled();
+    mockDreams = [buildDream({
+      analysisStatus: 'done',
+      isAnalyzed: true,
+      analyzedAt: Date.now(),
+      interpretation: 'Reflection',
+    })];
+    view.rerender(<JournalDetailScreen />);
+    expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+    expect(mockTrackProductEvent).toHaveBeenCalledWith(
+      'analysis_result_viewed',
+      { source: 'recording_flow' }
+    );
   });
 
   it.each(['Later', 'Dismiss offer'])('keeps the saved dream untouched on %s and does not reopen on rerender', (action: string) => {
