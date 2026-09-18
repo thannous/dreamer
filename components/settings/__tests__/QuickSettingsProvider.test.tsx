@@ -64,18 +64,28 @@ it.each([false, true])('closes with Android Back without remounting the page (re
   expect(screen.getByRole('textbox')).toBe(input);
   expect((input as HTMLInputElement).value).toBe('garden');
 });
-it('uses the shared preference controllers and closes before opening full settings', () => {
-  render(<QuickSettingsProvider><Page /></QuickSettingsProvider>);
+it.each([false, true])('keeps preference changes open and closes before full settings (reduced motion=%s)', async (reduced: boolean) => {
+  mockReduced = reduced;
+  const view = render(<QuickSettingsProvider><Page /></QuickSettingsProvider>);
   fireEvent.click(screen.getByText('Open quick settings'));
-  fireEvent.click(screen.getByTestId('quick-settings.theme.dark'));
-  fireEvent.click(screen.getByTestId('quick-settings.journal.compact'));
-  fireEvent.click(screen.getByTestId('quick-settings.language'));
-  fireEvent.click(screen.getByTestId('quick-settings.language.fr'));
+  for (const id of ['quick-settings.theme.dark', 'quick-settings.journal.compact', 'quick-settings.language', 'quick-settings.language.fr']) {
+    await act(async () => { fireEvent.click(screen.getByTestId(id)); });
+    view.rerender(<QuickSettingsProvider><Page /></QuickSettingsProvider>);
+    expect(screen.getByTestId('quick-settings.drawer')).toBeTruthy();
+    expect(mockPush).not.toHaveBeenCalled();
+  }
   expect(mockThemeSelect).toHaveBeenCalledWith('dark');
   expect(mockLayoutSelect).toHaveBeenCalledWith('compact');
   expect(mockLanguageSelect).toHaveBeenCalledWith('fr');
   fireEvent.click(screen.getByTestId('quick-settings.all'));
   expect(mockPush).toHaveBeenCalledWith('/settings');
+  expect(screen.queryByTestId('quick-settings.drawer')).toBeNull();
+});
+it.each([false, true])('closes explicitly with the close button (reduced motion=%s)', (reduced: boolean) => {
+  mockReduced = reduced;
+  render(<QuickSettingsProvider><Page /></QuickSettingsProvider>);
+  fireEvent.click(screen.getByText('Open quick settings'));
+  fireEvent.click(screen.getByTestId('quick-settings.close'));
   expect(screen.queryByTestId('quick-settings.drawer')).toBeNull();
 });
 it('dismisses with Escape and when navigation changes', () => {

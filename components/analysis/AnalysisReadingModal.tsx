@@ -72,7 +72,7 @@ export function AnalysisReadingModal({ dream, imageUri, imageLoadFailed, onReloa
   const insets = useSafeAreaInsets();
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const quote = dream.shareableQuote?.trim();
-  const backgroundColor = mode === 'dark' ? DarkTheme.backgroundCard : MorningTheme.backgroundCard;
+  const backgroundColor = tokens.surface.raised;
   const insights = [
     { key: 'symbols', heading: t('journal.detail.symbols_header'), items: dream.symbols?.map(item => ({ name: item.name, text: item.meaning })) },
     { key: 'emotions', heading: t('journal.detail.emotions_header'), items: dream.emotions?.map(item => ({ name: item.name, text: item.insight })) },

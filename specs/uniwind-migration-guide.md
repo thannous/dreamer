@@ -11,7 +11,8 @@ Working agreement for porting Noctalia's screens from `StyleSheet` to Uniwind
 
 | Piece | Where |
 |---|---|
-| Tokens, both themes | [`global.css`](../global.css) |
+| Canonical colours | [`constants/noctaliaPalette.ts`](../constants/noctaliaPalette.ts) |
+| Generated CSS colours | [`global.css`](../global.css), `npm run theme:generate` / `npm run theme:check` |
 | Metro integration | [`metro.config.js`](../metro.config.js) — `withUniwindConfig` is outermost |
 | CSS entry import | first line of [`app/_layout.tsx`](../app/_layout.tsx) |
 | Theme sync | [`context/ThemeContext.tsx`](../context/ThemeContext.tsx) → `Uniwind.setTheme` |
@@ -112,8 +113,13 @@ Keep `variant` = font + size, `tone` = colour.
 - anything passed to a native module
 
 This is expected and permanent, not debt. The values are the same on both sides because
-`global.css` and `constants/journalTheme.ts` are kept in step by hand — **if you change a
-colour, change both.**
+`constants/noctaliaPalette.ts` owns the colour values. `journalTheme.ts` and
+`noctaliaDesign.ts` derive runtime values from it; `npm run theme:generate` updates the
+colour block in `global.css`. **Edit the source palette, never the generated CSS block.**
+`npm run uniwind:types` includes generation. `npm run theme:check` and `npm run brand:check`
+verify generated output and semantic parity. Light/morning share satin champagne;
+dark/afterglow share the validated night palette. Typography, spacing and motion tokens
+remain authored in CSS.
 
 ---
 

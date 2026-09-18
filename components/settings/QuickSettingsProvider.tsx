@@ -220,7 +220,7 @@ export function QuickSettingsProvider({ children, disabled = false }: React.Prop
               </View>
             ) : null) : (
               <Drawer open={visible} onOpen={show} onClose={close} drawerPosition="right" drawerType="front"
-                swipeEnabled={visible} swipeEdgeWidth={0} overlayAccessibilityLabel={t('settings.quick.close')}
+                swipeEnabled={false} overlayAccessibilityLabel={t('settings.quick.close')}
                 drawerStyle={{ width: drawerWidth, backgroundColor: tokens.screen.background }}
                 renderDrawerContent={content}>
                 <View className="flex-1" />

@@ -551,12 +551,16 @@ function RootLayoutNav({
         pendingNotificationUrl,
         pendingAuthDestination,
         });
+      const currentPath = pathnameRef.current ?? pathname;
+      // Store sheets background the app. The current offer/detail owns the saved
+      // dream journey; resuming its recording intent here would reopen capture.
+      if (decision.reason === 'pending_intent'
+        && (currentPath === '/paywall' || currentPath?.startsWith('/journal/'))) return;
       if (decision.reason !== 'default') {
         engageDecision(decision);
         return;
       }
 
-      const currentPath = pathnameRef.current ?? pathname;
       const isInSettings =
         currentPath?.includes('/settings') ||
         currentPath?.startsWith('/settings') ||

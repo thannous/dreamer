@@ -5,19 +5,20 @@ import en from '@/lib/i18n/en';
 import es from '@/lib/i18n/es';
 import fr from '@/lib/i18n/fr';
 import italian from '@/lib/i18n/it';
+import pt from '@/lib/i18n/pt';
 
 const RELEASE_NOTES_KEYS = [
   'release_notes.badge',
   'release_notes.title',
   'release_notes.subtitle',
-  'release_notes.stats.title',
-  'release_notes.stats.body',
-  'release_notes.patterns.title',
-  'release_notes.patterns.body',
-  'release_notes.android.title',
-  'release_notes.android.body',
-  'release_notes.navigation.title',
-  'release_notes.navigation.body',
+  'release_notes.design.title',
+  'release_notes.design.body',
+  'release_notes.capture.title',
+  'release_notes.capture.body',
+  'release_notes.reading.title',
+  'release_notes.reading.body',
+  'release_notes.reliability.title',
+  'release_notes.reliability.body',
   'release_notes.primary',
   'release_notes.later',
   'release_notes.close',
@@ -31,6 +32,7 @@ describe('release notes translations', () => {
       ['es', es],
       ['de', de],
       ['it', italian],
+      ['pt', pt],
     ];
 
     for (const [language, translations] of languagePacks) {

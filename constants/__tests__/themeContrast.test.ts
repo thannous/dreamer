@@ -25,12 +25,47 @@ function contrastRatio(foreground: string, background: string): number {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
+function compositeSurface(rgba: string, ground: string): string {
+  const [r, g, b, alpha] = rgba.match(/[\d.]+/g)!.map(Number);
+  return '#' + [r, g, b].map((channel, index) => {
+    const base = parseInt(ground.slice(1 + index * 2, 3 + index * 2), 16);
+    return Math.round(channel * alpha + base * (1 - alpha)).toString(16).padStart(2, '0');
+  }).join('');
+}
+
 describe('theme contrast', () => {
+  it.each(['light', 'dark'] as const)('keeps illustrated journal copy readable on its %s ground', (mode: 'light' | 'dark') => {
+    const { cover } = getNoctaliaDesignTokens(mode === 'dark' ? DarkTheme : LightTheme, mode);
+    for (const foreground of [cover.title, cover.date, cover.muted, cover.accent]) {
+      expect(contrastRatio(foreground, cover.background)).toBeGreaterThanOrEqual(4.5);
+    }
+    expect(contrastRatio(cover.danger, cover.background)).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(cover.onAccent, cover.accent)).toBeGreaterThanOrEqual(4.5);
+    for (const surface of [cover.surface, cover.actionTint]) {
+      const background = compositeSurface(surface, cover.background);
+      expect(contrastRatio(cover.title, background)).toBeGreaterThanOrEqual(4.5);
+      expect(contrastRatio(cover.accent, background)).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it.each(['light', 'dark'] as const)('keeps app dialogs, inputs and semantic states readable in %s', (mode: 'light' | 'dark') => {
+    const base = mode === 'dark' ? DarkTheme : LightTheme;
+    const tokens = getNoctaliaDesignTokens(base, mode);
+    for (const surface of [tokens.screen.background, tokens.surface.raised]) {
+      for (const foreground of [tokens.text.primary, tokens.text.secondary, tokens.accent.text]) {
+        expect(contrastRatio(foreground, surface)).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+    for (const status of Object.values(tokens.status)) {
+      expect(contrastRatio(status.text, status.background)).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
   it('keeps light-mode copy and accent text at WCAG AA on paper and cards', () => {
     const light = getNoctaliaDesignTokens(LightTheme, 'light');
     const surfaces = [LightTheme.backgroundDark, LightTheme.backgroundCard];
 
-    expect(light.accent.base).toBe('#D4A574');
+    expect(light.accent.base).toBe(LightTheme.accent);
     expect(light.accent.text).toBe(LightTheme.accentDark);
     expect(light.text.tertiary).toBe(light.nav.inactive);
 

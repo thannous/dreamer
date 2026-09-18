@@ -47,7 +47,9 @@ export function MicButton({
     }, [])
   );
 
-  const buttonBackground = noctalia.surface.active;
+  // An elevated translucent surface can reveal Android shadow artifacts.
+  // Use the opaque theme surface for the button itself.
+  const buttonBackground = colors.backgroundSecondary;
   const buttonRecordingBackground = noctalia.accent.strong;
   const glowColor = noctalia.accent.base;
   const shouldAnimate = isFocused && !prefersReducedMotion;
@@ -58,6 +60,7 @@ export function MicButton({
   const animateButtonSurface = shouldAnimateMicButtonSurface(status);
   const isInline = size === 'inline';
   const isCompact = size === 'compact' || isInline;
+  const buttonShadow = isInline ? undefined : shadows.sm;
   const dimensions = isInline
     ? {
         container: 48,
@@ -177,7 +180,7 @@ export function MicButton({
           }}
           style={[
             styles.button,
-            shadows.xl,
+            buttonShadow,
             {
               borderColor: noctalia.accent.base,
               width: dimensions.button,
@@ -206,7 +209,7 @@ export function MicButton({
             <IconSymbol
               name={isRecording ? 'pause.fill' : 'mic.fill'}
               size={dimensions.icon}
-              color={noctalia.text.primary}
+              color={isRecording ? noctalia.text.onAccent : noctalia.text.primary}
             />
           </MotiView>
         </MotiView>
@@ -214,7 +217,7 @@ export function MicButton({
         <View
           style={[
             styles.button,
-            shadows.xl,
+            buttonShadow,
             {
               backgroundColor: buttonBackground,
               borderColor: noctalia.accent.base,

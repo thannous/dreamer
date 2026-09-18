@@ -53,6 +53,7 @@ export default function PaywallScreen() {
   const params = useLocalSearchParams<AnalysisPaywallParams & { trigger?: string }>();
   const { user } = useAuth();
   const savedDreamReturnRoute = useMemo(() => getSavedDreamReturnRoute(params, user?.id), [params, user?.id]);
+  const exitDispatchedRef = useRef(false);
   const [exitDestination, setExitDestination] = useState<Href | null>(null);
   const navigateToDream = useCallback((destination: Href) => setExitDestination(destination), []);
   useClearWebFocus();
@@ -96,7 +97,7 @@ export default function PaywallScreen() {
   const routeTrigger = getPaywallTrigger(params.trigger);
   const paywallTrigger = isDeviceUpgraded ? 'returning_device' : routeTrigger;
   const isDreamAnalysisOffer = paywallTrigger === 'analysis_cta' && Boolean(params.dreamId)
-    && params.dreamOwnerId === user?.id && !isActive;
+    && params.dreamOwnerId === user?.id;
   const paywallVariant = useMemo(() => getPaywallVariant(paywallTrigger), [paywallTrigger]);
 
   useEffect(() => {
@@ -176,7 +177,8 @@ export default function PaywallScreen() {
 
   // Release the navigation guard before performing the chosen exit.
   useEffect(() => {
-    if (!exitDestination) return;
+    if (!exitDestination || exitDispatchedRef.current) return;
+    exitDispatchedRef.current = true;
     if (savedDreamReturnRoute) router.replace(exitDestination);
     else router.dismissTo(exitDestination);
   }, [exitDestination, savedDreamReturnRoute]);
