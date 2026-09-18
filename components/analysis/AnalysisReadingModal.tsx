@@ -43,7 +43,7 @@ function ReadingIllustration({ dream, imageUri, imageLoadFailed, onReloadImage, 
         : hasImage ? t('analysis.reading.image_loading') : t('journal.detail.image.no_image_title');
 
   return (
-    <View style={[styles.illustration, { backgroundColor: tokens.surface.soft }]} testID="analysis.reading.illustration">
+    <View style={[styles.illustration, hasImage || pending ? styles.imageFrame : styles.emptyFrame, { backgroundColor: tokens.surface.soft }]} testID="analysis.reading.illustration">
       {hasImage && imageUri && !loadFailed ? (
         <Image source={{ uri: imageUri }} contentFit="cover" style={StyleSheet.absoluteFill}
           accessibilityLabel={t('analysis.reading.image_alt', { title: dream.title })}
@@ -132,8 +132,10 @@ const styles = StyleSheet.create({
   close: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
   content: { paddingTop: 10, width: '100%', maxWidth: 620, alignSelf: 'center' },
   title: { fontFamily: Fonts.lora.regular, fontSize: 26, lineHeight: 35, marginBottom: 20 },
-  illustration: { width: '100%', minHeight: 190, aspectRatio: 4 / 3, borderRadius: 20, overflow: 'hidden', marginBottom: 28 },
-  imageStatus: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 20 },
+  illustration: { width: '100%', borderRadius: 20, overflow: 'hidden', marginBottom: 28 },
+  imageFrame: { minHeight: 190, aspectRatio: 4 / 3 },
+  emptyFrame: { minHeight: 140 },
+  imageStatus: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 20 },
   imageLabel: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 22, textAlign: 'center' },
   retry: { minHeight: 48, justifyContent: 'center', paddingHorizontal: 12 },
   body: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 17, lineHeight: 28 },
