@@ -1885,6 +1885,24 @@ function JournalDetailContent() {
       return null;
     }
 
+    if (awaitingPurchasedAnalysis || isAnalyzing || isAnalysisPending) {
+      return (
+        <View
+          testID={TID.Component.DreamDetailActionCard}
+          accessibilityLiveRegion="polite"
+          className="mb-[18px] flex-row items-center gap-3 rounded-lg border border-line-strong bg-ink-active p-4"
+        >
+          <ActivityIndicator size="small" color={noctalia.accent.text} />
+          <Text
+            testID={TID.Text.DreamDetailActionTitle}
+            className="flex-1 font-sans-bold text-[16px] text-ivory"
+          >
+            {t('loading.analyzing')}
+          </Text>
+        </View>
+      );
+    }
+
     const disabled = detailActionCard.disabled || isPrimaryActionBusy || isAnalysisLocked;
     const onPress = isStalePrimaryAction
       ? handleStaleReanalyze

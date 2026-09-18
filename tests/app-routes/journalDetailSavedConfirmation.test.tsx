@@ -527,7 +527,10 @@ describe('journal detail saved confirmation route', () => {
     mockAnalyzeDream.mockReturnValueOnce(new Promise<void>(resolve => { finish = resolve; }));
     await act(async () => { render(<JournalDetailScreen />); });
     expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
-    expect(screen.getAllByText('loading.analyzing').length).toBeGreaterThan(0);
+    expect(screen.getByText('loading.analyzing')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Text.DreamDetailActionMessage)).toBeNull();
+    expect(screen.queryByTestId(TID.Button.DreamDetailPrimaryCta)).toBeNull();
+    expect(screen.queryByTestId(TID.Text.DreamDetailQuotaHint)).toBeNull();
     expect(screen.queryByText('Analyze saved dream')).toBeNull();
     await act(async () => { finish(); });
   });
@@ -699,7 +702,8 @@ describe('journal detail saved confirmation route', () => {
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     await act(async () => { allow(true); });
     expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
-    expect((screen.getByTestId(TID.Button.DreamDetailPrimaryCta) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.queryByTestId(TID.Button.DreamDetailPrimaryCta)).toBeNull();
+    expect(screen.getByText('loading.analyzing')).toBeTruthy();
     await act(async () => { finish(); });
   });
 
