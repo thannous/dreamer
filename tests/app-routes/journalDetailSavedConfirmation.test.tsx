@@ -519,6 +519,22 @@ describe('journal detail saved confirmation route', () => {
     expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
   });
 
+  it('shows analysis in progress on the detail while the purchased analysis is running', async () => {
+    mockTier = 'plus';
+    requestAnalysisReturnRoute({ dreamId: '42', dreamClientRequestId: 'persisted-original-42', dreamOwnerId: 'user-1' }, 'user-1');
+    mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' };
+    let finish!: () => void;
+    mockAnalyzeDream.mockReturnValueOnce(new Promise<void>(resolve => { finish = resolve; }));
+    await act(async () => { render(<JournalDetailScreen />); });
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('loading.analyzing')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Text.DreamDetailActionMessage)).toBeNull();
+    expect(screen.queryByTestId(TID.Button.DreamDetailPrimaryCta)).toBeNull();
+    expect(screen.queryByTestId(TID.Text.DreamDetailQuotaHint)).toBeNull();
+    expect(screen.queryByText('Analyze saved dream')).toBeNull();
+    await act(async () => { finish(); });
+  });
+
   it('does not launch an analysis from a stale or fabricated purchase URL', async () => {
     mockTier = 'plus';
     mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' };
@@ -686,7 +702,8 @@ describe('journal detail saved confirmation route', () => {
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     await act(async () => { allow(true); });
     expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
-    expect((screen.getByTestId(TID.Button.DreamDetailPrimaryCta) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.queryByTestId(TID.Button.DreamDetailPrimaryCta)).toBeNull();
+    expect(screen.getByText('loading.analyzing')).toBeTruthy();
     await act(async () => { finish(); });
   });
 

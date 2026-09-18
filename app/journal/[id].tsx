@@ -649,19 +649,22 @@ function JournalDetailContent() {
     [analysisRecoveryClock, dream, isAnalyzing]
   );
   const isAnalysisPending = reflectionJourney.isPendingFresh && !isAnalyzing;
-  const isPrimaryActionBusy = visiblePrimaryAction === 'analyze' && (isAnalyzing || isAnalysisPending);
+  const awaitingPurchasedAnalysis = analyzeAfterPurchase === '1' && analysisOwnerId === user?.id
+    && Boolean(dream && !dream.isAnalyzed);
+  const isPrimaryActionBusy = visiblePrimaryAction === 'analyze'
+    && (awaitingPurchasedAnalysis || isAnalyzing || isAnalysisPending);
   const detailActionCard = useMemo(() => {
     if (!dream) {
       return null;
     }
 
-    if (isAnalysisPending) {
+    if (awaitingPurchasedAnalysis || isAnalyzing || isAnalysisPending) {
       return {
         icon: 'sparkles' as const,
-        title: t('journal.detail.action.pending.title'),
+        title: t('loading.analyzing'),
         message: t('journal.detail.action.pending.message'),
         step: t('journal.detail.action.pending.step'),
-        cta: t('journal.detail.action.pending.cta'),
+        cta: t('loading.analyzing'),
         disabled: true,
       };
     }
@@ -725,7 +728,7 @@ function JournalDetailContent() {
       cta: t('journal.detail.explore_button.new'),
       disabled: false,
     };
-  }, [canRecoverPendingAnalysis, dream, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, t]);
+  }, [awaitingPurchasedAnalysis, canRecoverPendingAnalysis, dream, isAnalyzing, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, t]);
   const isAnalysisLocked = !!dream && (isAnalysisPending || isAnalyzing);
   const isImageJobPending = illustrationSidecar === 'pending';
   const isSyncPending = dreamSyncState === 'pending';
@@ -1880,6 +1883,24 @@ function JournalDetailContent() {
     }
     if (visibleFamilies && !visibleFamilies.includes(visiblePrimaryAction)) {
       return null;
+    }
+
+    if (awaitingPurchasedAnalysis || isAnalyzing || isAnalysisPending) {
+      return (
+        <View
+          testID={TID.Component.DreamDetailActionCard}
+          accessibilityLiveRegion="polite"
+          className="mb-[18px] flex-row items-center gap-3 rounded-lg border border-line-strong bg-ink-active p-4"
+        >
+          <ActivityIndicator size="small" color={noctalia.accent.text} />
+          <Text
+            testID={TID.Text.DreamDetailActionTitle}
+            className="flex-1 font-sans-bold text-[16px] text-ivory"
+          >
+            {t('loading.analyzing')}
+          </Text>
+        </View>
+      );
     }
 
     const disabled = detailActionCard.disabled || isPrimaryActionBusy || isAnalysisLocked;
