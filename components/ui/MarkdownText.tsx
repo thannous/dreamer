@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, type ErrorInfo, type ReactNode } from 'react';
-import { Linking, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewProps, type ViewStyle } from 'react-native';
+import { Linking, Platform, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewProps, type ViewStyle } from 'react-native';
 import { EnrichedMarkdownText } from 'react-native-enriched-markdown';
 import remend from 'remend';
 import { useTheme } from '@/context/ThemeContext';
@@ -97,16 +97,19 @@ export const MarkdownText = React.memo(function MarkdownText({
           <EnrichedMarkdownText
             markdown={markdown}
             markdownStyle={markdownStyle}
-            flavor="github"
             selectable={selectable}
-            allowFontScaling
-            enableLinkPreview={false}
             enableTaskListItemToggle={false}
             onLinkPress={onLinkPress}
             onLinkLongPress={onLinkPress}
             md4cFlags={{ latexMath: false }}
-            spoilerOverlay="solid"
-            selectionMenuConfig={{ copy: { label: t('common.copy') }, copyAsMarkdown: { enabled: false }, copyImageUrl: { enabled: false } }}
+            // The web renderer spreads unsupported native options onto its DOM element.
+            {...(Platform.OS === 'web' ? {} : {
+              flavor: 'github',
+              allowFontScaling: true,
+              enableLinkPreview: false,
+              spoilerOverlay: 'solid',
+              selectionMenuConfig: { copy: { label: t('common.copy') }, copyAsMarkdown: { enabled: false }, copyImageUrl: { enabled: false } },
+            })}
           />
         </MarkdownErrorBoundary>
       )}

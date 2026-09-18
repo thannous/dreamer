@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, render } from '@testing-library/react-native';
-import { Linking } from 'react-native';
+import { Linking, Platform } from 'react-native';
 import { EnrichedMarkdownText } from 'react-native-enriched-markdown';
 import { MarkdownText } from '../MarkdownText';
 
@@ -15,9 +15,12 @@ jest.mock('@/context/ThemeContext', () => ({ useTheme: () => ({ colors: {
 } }) }));
 
 const latestProps = () => jest.mocked(EnrichedMarkdownText).mock.calls.at(-1)![0];
+const originalPlatform = Platform.OS;
 beforeEach(() => jest.mocked(EnrichedMarkdownText).mockClear());
+afterEach(() => { Platform.OS = originalPlatform; });
 
-it('passes Markdown to the native GFM renderer and preserves the caller typography', () => {
+it.each(['ios', 'android'] as const)('passes Markdown to the %s GFM renderer and preserves the caller typography', (platform) => {
+  Platform.OS = platform;
   const source = '# Titre\n\n**Gras** et *italique*\n\n- Premier\n- Second\n\n| A | B |\n|---|---|\n| 1 | 2 |';
   render(<MarkdownText variant="reading" style={{ fontSize: 17, lineHeight: 28, color: '#fff9ef' }}>{source}</MarkdownText>);
   expect(latestProps().markdown).toBe(source);
@@ -27,6 +30,28 @@ it('passes Markdown to the native GFM renderer and preserves the caller typograp
   expect(latestProps().selectable).toBe(true);
   expect(latestProps().enableLinkPreview).toBe(false);
   expect(latestProps().enableTaskListItemToggle).toBe(false);
+  expect(latestProps().spoilerOverlay).toBe('solid');
+  expect(latestProps().selectionMenuConfig).toEqual({
+    copy: { label: 'common.copy' },
+    copyAsMarkdown: { enabled: false },
+    copyImageUrl: { enabled: false },
+  });
+});
+
+it('keeps native-only options out of the web renderer DOM passthrough', () => {
+  Platform.OS = 'web';
+  const source = '**Gras** et [lien](https://example.com)';
+  render(<MarkdownText selectable={false}>{source}</MarkdownText>);
+  expect(latestProps()).toMatchObject({
+    markdown: source,
+    selectable: false,
+    enableTaskListItemToggle: false,
+    md4cFlags: { latexMath: false },
+    onLinkPress: expect.any(Function),
+  });
+  for (const prop of ['flavor', 'allowFontScaling', 'enableLinkPreview', 'spoilerOverlay', 'selectionMenuConfig']) {
+    expect(latestProps()).not.toHaveProperty(prop);
+  }
 });
 
 it('repairs unfinished formatting only during streaming without replacing the source', () => {
