@@ -912,7 +912,7 @@ describe('Recording screen', () => {
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
 
-  it('confirms restart, stops dictation, clears the durable draft and resets question history', async () => {
+  it('confirms clearing, stops dictation, clears the durable draft and returns to text mode', async () => {
     mockPlatformOS = 'android';
     mockRecordingPermissionState = 'granted';
     mockGetInputModePreference.mockResolvedValue('voice');
@@ -942,11 +942,14 @@ describe('Recording screen', () => {
       await pending;
     });
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('');
-    expect((screen.getByTestId('conversation-answer') as HTMLTextAreaElement).value).toBe('');
-    expect(screen.getByTestId('conversation-question').textContent).toBe('');
+    expect(screen.queryByTestId('conversation-answer')).toBeNull();
+    expect(screen.queryByTestId('conversation-question')).toBeNull();
+    expect(screen.getByTestId('recording-mode').getAttribute('data-value')).toBe('text');
+    expect(mockSaveInputModePreference).toHaveBeenLastCalledWith('text', expect.anything());
     act(() => mockAppStateHandler?.('background'));
     await waitFor(() => expect(mockSaveTranscript).toHaveBeenLastCalledWith(''));
     expect(mockStartRecording).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByTestId('recording-mode-voice'));
     fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'Nouveau rêve.' } });
     await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
     expect(mockRequestCaptureQuestion).toHaveBeenLastCalledWith('Nouveau rêve.', expect.any(String), [], expect.anything());

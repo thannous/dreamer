@@ -817,6 +817,8 @@ export default function RecordingScreen() {
               await stopRecording({ silent: true, reason: 'stop' });
               if (noteInput('') !== true) return;
               resetComposer();
+              setInputMode('text');
+              persistInputModePreference('text');
               setCaptureRestartCount(count => count + 1);
               Keyboard.dismiss();
             } finally {
@@ -827,7 +829,7 @@ export default function RecordingScreen() {
         },
       ]
     );
-  }, [isHydrated, isPersisting, noteInput, resetComposer, stopRecording, t]);
+  }, [isHydrated, isPersisting, noteInput, persistInputModePreference, resetComposer, stopRecording, t]);
 
   const startRecording = useCallback(async (options?: { preserveDraft?: boolean }) => {
     if (!isHydrated) return false;
