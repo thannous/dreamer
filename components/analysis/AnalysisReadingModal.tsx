@@ -12,11 +12,12 @@ import { DarkTheme, MorningTheme } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import type { DreamAnalysis } from '@/lib/types';
 
 type Props = {
   dream: Pick<DreamAnalysis, 'title' | 'shareableQuote' | 'interpretation'> & Partial<Pick<DreamAnalysis,
-    'symbols' | 'emotions' | 'reflectionQuestions' | 'imageUrl' | 'imageJobStatus' | 'imageGenerationFailed'>>;
+    'promptVersion' | 'symbols' | 'emotions' | 'reflectionQuestions' | 'imageUrl' | 'imageJobStatus' | 'imageGenerationFailed'>>;
   /** Resolved through the journal media boundary (including private storage signing). */
   imageUri?: string;
   imageLoadFailed?: boolean;
@@ -116,7 +117,7 @@ export function AnalysisReadingModal({ dream, imageUri, imageLoadFailed, onReloa
           {quote ? (
             <View style={[styles.quoteBlock, { borderTopColor: tokens.accent.base }]}>
               <Text style={[styles.quote, { color: tokens.text.secondary }]}>{`« ${quote} »`}</Text>
-              <Text style={[styles.attribution, { color: tokens.text.secondary }]}>{t('journal.detail.quote_attribution')}</Text>
+              {isPoeticDreamQuote(dream) ? <Text style={[styles.attribution, { color: tokens.text.secondary }]}>{t('journal.detail.quote_attribution')}</Text> : null}
             </View>
           ) : null}
         </ScrollView>

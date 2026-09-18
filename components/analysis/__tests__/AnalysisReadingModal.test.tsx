@@ -90,3 +90,13 @@ it('preserves sparse and legacy analyses without fabricating missing sections', 
   expect(view.getByText('journal.detail.image.no_image_title')).toBeTruthy();
   expect(view.getByText('Un souvenir.')).toBeTruthy();
 });
+
+it('attributes only server-stamped poetic generations, never legacy excerpts', () => {
+  const view = render(<AnalysisReadingModal dream={dream} onClose={jest.fn()} />);
+  expect(view.getByText('« Le voyage commence. »')).toBeTruthy();
+  expect(view.queryByText('journal.detail.quote_attribution')).toBeNull();
+  view.rerender(<AnalysisReadingModal dream={{ ...dream, promptVersion: 'analysis-2026-09-18.poetic3' }} onClose={jest.fn()} />);
+  expect(view.getByText('journal.detail.quote_attribution')).toBeTruthy();
+  view.rerender(<AnalysisReadingModal dream={{ ...dream, promptVersion: 'analysis-2026-09-01' }} onClose={jest.fn()} />);
+  expect(view.queryByText('journal.detail.quote_attribution')).toBeNull();
+});

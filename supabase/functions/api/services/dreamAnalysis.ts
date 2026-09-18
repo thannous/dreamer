@@ -91,7 +91,7 @@ export type DreamAnalysisDetails = {
  * output-quality regression can be attributed to a prompt change. It is
  * returned to the client and stored with the dream (`promptVersion`).
  */
-export const ANALYSIS_PROMPT_VERSION = 'analysis-2026-09-18.grounded-depth1';
+export const ANALYSIS_PROMPT_VERSION = 'analysis-2026-09-18.poetic3';
 
 export type StructuredDreamAnalysis = {
   title: string;
