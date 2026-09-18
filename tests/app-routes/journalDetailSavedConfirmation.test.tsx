@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 import type { PendingRecordingIntent } from '@/lib/onboardingState';
 import type { DreamAnalysis } from '@/lib/types';
+import { requestAnalysisReturnRoute } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 
 let mockPendingRecordingIntent: Partial<PendingRecordingIntent> | null = null;
@@ -491,6 +492,7 @@ describe('journal detail saved confirmation route', () => {
   });
 
   it('resumes once after purchase when Plus becomes available, preserving any existing image', async () => {
+    requestAnalysisReturnRoute({ dreamId: '42', dreamClientRequestId: 'persisted-original-42', dreamOwnerId: 'user-1' }, 'user-1');
     mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' };
     const view = render(<JournalDetailScreen />);
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
@@ -505,9 +507,17 @@ describe('journal detail saved confirmation route', () => {
     expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
   });
 
+  it('does not launch an analysis from a stale or fabricated purchase URL', async () => {
+    mockTier = 'plus';
+    mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' };
+    await act(async () => { render(<JournalDetailScreen />); });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+  });
+
   it.each(['another-account', 'done', 'pending'])('does not resume an analysis for %s', async (state: string) => {
     mockTier = 'plus';
     mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: state === 'another-account' ? 'other' : 'user-1' };
+    requestAnalysisReturnRoute({ dreamId: '42', dreamClientRequestId: 'persisted-original-42', dreamOwnerId: 'user-1' }, 'user-1');
     if (state === 'done') mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done' })];
     if (state === 'pending') mockDreams = [buildDream({ analysisStatus: 'pending' })];
     await act(async () => { render(<JournalDetailScreen />); });

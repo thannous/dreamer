@@ -1,4 +1,4 @@
-import { buildPaywallHref, getAnalysisReturnRoute } from '@/lib/paywallRoute';
+import { buildPaywallHref, requestAnalysisReturnRoute, consumePurchasedAnalysisReturn } from '@/lib/paywallRoute';
 
 describe('paywallRoute', () => {
   it('builds a paywall route with contextual trigger params', () => {
@@ -20,13 +20,32 @@ describe('analysis return route', () => {
     { dreamId: '42', dreamOwnerId: 'owner', dreamRemoteId: '9007199254740993' },
     { dreamId: '42', dreamOwnerId: 'owner', dreamClientRequestId: '' },
   ])('rejects a missing, malformed or foreign dream destination: %j', (params) => {
-    expect(getAnalysisReturnRoute(params, 'owner')).toBeNull();
+    expect(requestAnalysisReturnRoute(params, 'owner')).toBeNull();
   });
 
   it('preserves stable identity when two dreams have the same timestamp', () => {
-    expect(getAnalysisReturnRoute({ dreamId: '42', dreamRemoteId: '17', dreamClientRequestId: 'request-17', dreamOwnerId: 'owner' }, 'owner')).toEqual({
+    expect(requestAnalysisReturnRoute({ dreamId: '42', dreamRemoteId: '17', dreamClientRequestId: 'request-17', dreamOwnerId: 'owner' }, 'owner')).toEqual({
       pathname: '/journal/[id]',
       params: { id: '42', remoteId: '17', clientRequestId: 'request-17', analyzeAfterPurchase: '1', analysisOwnerId: 'owner' },
     });
   });
+});
+
+
+it('allows only a matching, one-time purchase return and rejects an old route flag', () => {
+  requestAnalysisReturnRoute({ dreamId: '42', dreamRemoteId: '17', dreamOwnerId: 'owner' }, 'owner');
+  expect(consumePurchasedAnalysisReturn({ id: '42', remoteId: '18' }, 'owner')).toBe(false);
+  expect(consumePurchasedAnalysisReturn({ id: '42', remoteId: '17' }, 'other')).toBe(false);
+  expect(consumePurchasedAnalysisReturn({ id: '42', remoteId: '17' }, 'owner')).toBe(true);
+  expect(consumePurchasedAnalysisReturn({ id: '42', remoteId: '17' }, 'owner')).toBe(false);
+});
+
+it('expires an abandoned purchase return', () => {
+  const clock = jest.spyOn(Date, 'now');
+  try {
+    clock.mockReturnValue(0);
+    requestAnalysisReturnRoute({ dreamId: '42', dreamOwnerId: 'owner' }, 'owner');
+    clock.mockReturnValue(11 * 60 * 1000);
+    expect(consumePurchasedAnalysisReturn({ id: '42' }, 'owner')).toBe(false);
+  } finally { clock.mockRestore(); }
 });

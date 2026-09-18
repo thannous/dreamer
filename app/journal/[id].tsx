@@ -3,7 +3,7 @@ import { AnalysisReadingModal } from '@/components/analysis/AnalysisReadingModal
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
-import { resolveDreamRoute } from '@/lib/dreamRoute';
+import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { ReminderOptInCard } from '@/components/reminders/ReminderOptInCard';
@@ -76,7 +76,7 @@ import {
   isJournalSavedConfirmationParam,
   shouldOfferSavedDreamAnalysis,
 } from '@/lib/journalSavedConfirmation';
-import { buildAnalysisPaywallHref, buildPaywallHref } from '@/lib/paywallRoute';
+import { buildAnalysisPaywallHref, buildPaywallHref, consumePurchasedAnalysisReturn } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
@@ -1354,7 +1354,8 @@ function JournalDetailContent() {
     purchaseAnalysisHandledRef.current = true;
     router.setParams({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
     savedAnalysisChoiceHandledRef.current = true;
-    if (!dream.isAnalyzed && dream.analysisStatus !== 'pending') {
+    if (consumePurchasedAnalysisReturn(getDreamRouteParams(dream), user.id)
+      && !dream.isAnalyzed && dream.analysisStatus !== 'pending') {
       // Consume an external purchase-navigation event, guarded above to run once.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       void runAnalyze(false);

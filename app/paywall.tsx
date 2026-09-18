@@ -16,7 +16,7 @@ import { getLegalLink, type LegalLinkKind } from '@/constants/legalLinks';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
-import { getAnalysisReturnRoute, type AnalysisPaywallParams } from '@/lib/paywallRoute';
+import { requestAnalysisReturnRoute, type AnalysisPaywallParams } from '@/lib/paywallRoute';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
@@ -189,8 +189,8 @@ export default function PaywallScreen() {
         plan: selectedPlan,
         tier: nextStatus?.tier ?? 'plus',
       });
-      const returnRoute = getAnalysisReturnRoute(params, user?.id);
-      if (nextStatus?.isActive && returnRoute) {
+      const returnRoute = nextStatus?.isActive ? requestAnalysisReturnRoute(params, user?.id) : null;
+      if (returnRoute) {
         router.replace(returnRoute);
         return;
       }
@@ -217,8 +217,8 @@ export default function PaywallScreen() {
         trigger: paywallTrigger,
         outcome: restored ? 'restored' : 'nothing_to_restore',
       });
-      const returnRoute = getAnalysisReturnRoute(params, user?.id);
-      if (restored && returnRoute) {
+      const returnRoute = restored ? requestAnalysisReturnRoute(params, user?.id) : null;
+      if (returnRoute) {
         router.replace(returnRoute);
         return;
       }

@@ -26,7 +26,30 @@ export function buildAnalysisPaywallHref(dream: DreamAnalysis, ownerId: string):
 }
 
 /** Only resume the saved dream for the account that opened this offer. */
-export function getAnalysisReturnRoute(params: AnalysisPaywallParams, ownerId?: string): Href | null {
+let pendingPurchasedAnalysis: { key: string; createdAt: number } | null = null;
+const PURCHASE_RETURN_TTL_MS = 10 * 60 * 1000;
+
+function analysisReturnKey(route: DreamRouteParams, ownerId: string): string {
+  const identity = route.clientRequestId ? ['client', route.clientRequestId]
+    : route.remoteId ? ['remote', route.remoteId] : ['local', route.id];
+  return JSON.stringify([ownerId, identity]);
+}
+
+/** A route flag alone is not consent to launch an analysis. Consume the purchase once. */
+export function consumePurchasedAnalysisReturn(route: DreamRouteParams, ownerId: string): boolean {
+  if (!pendingPurchasedAnalysis) return false;
+  const intent = pendingPurchasedAnalysis;
+  if (Date.now() - intent.createdAt > PURCHASE_RETURN_TTL_MS) {
+    pendingPurchasedAnalysis = null;
+    return false;
+  }
+  if (intent.key !== analysisReturnKey(route, ownerId)) return false;
+  pendingPurchasedAnalysis = null;
+  return true;
+}
+
+/** Call only after the store confirms active access from this contextual offer. */
+export function requestAnalysisReturnRoute(params: AnalysisPaywallParams, ownerId?: string): Href | null {
   if (!ownerId || params.dreamOwnerId !== ownerId
     || typeof params.dreamId !== 'string' || !params.dreamId.trim()
     || !Number.isFinite(Number(params.dreamId))) return null;
@@ -40,6 +63,7 @@ export function getAnalysisReturnRoute(params: AnalysisPaywallParams, ownerId?: 
     if (typeof params.dreamClientRequestId !== 'string' || !params.dreamClientRequestId.trim()) return null;
     route.clientRequestId = params.dreamClientRequestId;
   }
+  pendingPurchasedAnalysis = { key: analysisReturnKey(route, ownerId), createdAt: Date.now() };
   return {
     pathname: '/journal/[id]',
     params: { ...route, analyzeAfterPurchase: '1', analysisOwnerId: ownerId },
