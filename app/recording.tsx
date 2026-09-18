@@ -21,6 +21,10 @@ import { Toast } from '@/components/Toast';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useAuth } from '@/context/AuthContext';
+import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
+import { useQuota } from '@/hooks/useQuota';
+import { buildAnalysisPaywallHref } from '@/lib/paywallRoute';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useOnboarding } from '@/context/OnboardingContext';
@@ -121,6 +125,12 @@ export default function RecordingScreen() {
     applyDreamCategorization,
     dreams,
   } = useDreams();
+  const { user } = useAuth();
+  const { tier, quotaStatus, loading: quotaLoading, error: quotaError } = useQuota();
+  const latestAccessRef = useRef({ user, tier, quotaStatus, quotaLoading, quotaError });
+  useEffect(() => {
+    latestAccessRef.current = { user, tier, quotaStatus, quotaLoading, quotaError };
+  }, [user, tier, quotaStatus, quotaLoading, quotaError]);
   const { colors, mode } = useTheme();
   const { language } = useLanguage();
   const { t } = useTranslation();
@@ -659,17 +669,29 @@ export default function RecordingScreen() {
     setTranscriptSelection(undefined);
   }, [resetConversation, isHydrated, noteInput]);
 
-  const navigateToJournalDetail = useCallback((
-    dreamId: string | number,
+  const navigateToSavedDream = useCallback((
+    dream: DreamAnalysis,
     options?: { saved?: boolean; recall?: boolean }
   ) => {
-    router.replace(buildJournalDetailHref(dreamId, options));
-  }, []);
+    const access = latestAccessRef.current;
+    if (options?.saved && !options.recall && access.user && getSavedAnalysisAction({
+      tier: access.tier, loading: access.quotaLoading, error: access.quotaError, status: access.quotaStatus,
+    }) === 'upgrade') {
+      void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch((error) => {
+        log.warn('Failed to clear the completed capture intent', error);
+      });
+      router.replace(buildAnalysisPaywallHref(dream, access.user.id, { afterSave: true }));
+      return;
+    }
+    // Unknown/offline access must not block durable capture or cause a later redirect.
+    router.replace(buildJournalDetailHref(dream, options));
+  }, [transitionOnboarding]);
 
   useEffect(() => {
     const pending = onboardingState.pendingRecordingIntent;
     if (
-      !pending?.savedDreamId
+      saveInFlightRef.current
+      || !pending?.savedDreamId
       || pending.phase === 'capture'
       || restoredPendingIntentRef.current === pending.entryId
     ) {
@@ -679,11 +701,11 @@ export default function RecordingScreen() {
     const savedDream = dreams.find((dream) => dream.id === pending.savedDreamId);
     if (!savedDream) return;
     restoredPendingIntentRef.current = pending.entryId;
-    navigateToJournalDetail(
-      savedDream.id,
+    navigateToSavedDream(
+      savedDream,
       pending.phase === 'analysis_confirmation' ? { saved: true } : undefined
     );
-  }, [dreams, navigateToJournalDetail, onboardingState.pendingRecordingIntent]);
+  }, [dreams, navigateToSavedDream, onboardingState.pendingRecordingIntent]);
 
   const handleVoiceCaptureFailure = useCallback((failure: VoiceCaptureFailure) => {
     setVoiceFallbackReason(failure);
@@ -1063,6 +1085,7 @@ export default function RecordingScreen() {
       recordingStartedAtRef.current = null;
 
       resetComposer();
+      restoredPendingIntentRef.current = onboardingState.pendingRecordingIntent?.entryId ?? null;
       const onboardingPostSave = activePostSaveRef.current;
       activePostSaveRef.current = null;
       if (onboardingPostSave) {
@@ -1079,7 +1102,7 @@ export default function RecordingScreen() {
           }
         });
       }
-      navigateToJournalDetail(savedDream.id, { saved: true, recall: completeWithHelp });
+      navigateToSavedDream(savedDream, { saved: true, recall: completeWithHelp });
     } catch (error) {
       const message = error instanceof DreamPersistenceError
         ? t(
@@ -1111,7 +1134,8 @@ export default function RecordingScreen() {
     isPersisting,
     isRecordingRef,
     language,
-    navigateToJournalDetail,
+    navigateToSavedDream,
+    onboardingState.pendingRecordingIntent,
     resetComposer,
     stopRecording,
     t,

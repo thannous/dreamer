@@ -280,6 +280,41 @@ describe('useSubscription', () => {
       expect(mockSetUserTierLocally).toHaveBeenCalledWith(expect.objectContaining({ tier: 'plus' }));
     });
 
+    it.each(['purchase', 'restore'])('does not claim server confirmation when %s succeeds locally but synchronization fails', async (action: string) => {
+      const { result } = renderSubscriptionHook();
+      await act(async () => {});
+      const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+      syncSubscriptionFromServer.mockRejectedValueOnce(new Error('temporary sync failure'));
+      let outcome: any;
+      await act(async () => {
+        outcome = action === 'purchase' ? await result.current.purchase('mock_monthly') : await result.current.restore();
+      });
+      expect(outcome).toEqual(expect.objectContaining({ isActive: true, storeActive: true, serverConfirmed: false }));
+      expect(result.current.processing).toBe(false);
+    });
+
+    it.each(['purchase', 'restore'])('marks %s as confirmed only after the server responds', async (action: string) => {
+      const { result } = renderSubscriptionHook();
+      await act(async () => {});
+      const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+      let finish!: (value: any) => void;
+      syncSubscriptionFromServer.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+      let operation!: Promise<any>;
+      let completed = false;
+      await act(async () => {
+        operation = action === 'purchase' ? result.current.purchase('mock_monthly') : result.current.restore();
+        void operation.then(() => { completed = true; });
+      });
+      expect(completed).toBe(false);
+      expect(result.current.processing).toBe(true);
+      let outcome: any;
+      await act(async () => {
+        finish({ ok: true, tier: 'plus', isActive: true, version: 1, changed: true });
+        outcome = await operation;
+      });
+      expect(outcome).toEqual(expect.objectContaining({ tier: 'plus', isActive: true, serverConfirmed: true }));
+    });
+
     it('given authenticated user when purchasing fails then sets error and throws', async () => {
       // Given
       const { purchaseSubscriptionPackage } = require('../services/subscriptionService');

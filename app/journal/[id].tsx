@@ -1,9 +1,10 @@
+import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { AnalysisReadingModal } from '@/components/analysis/AnalysisReadingModal';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
-import { resolveDreamRoute } from '@/lib/dreamRoute';
+import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { ReminderOptInCard } from '@/components/reminders/ReminderOptInCard';
@@ -76,7 +77,7 @@ import {
   isJournalSavedConfirmationParam,
   shouldOfferSavedDreamAnalysis,
 } from '@/lib/journalSavedConfirmation';
-import { buildPaywallHref } from '@/lib/paywallRoute';
+import { buildAnalysisPaywallHref, buildPaywallHref, consumePurchasedAnalysisReturn } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
@@ -212,7 +213,7 @@ export default function JournalDetailScreen() {
 }
 
 function JournalDetailContent() {
-  const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[] }>();
+  const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam, analyzeAfterPurchase, analysisOwnerId } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; analyzeAfterPurchase?: string; analysisOwnerId?: string }>();
   const recallRequested = isJournalSavedConfirmationParam(recallParam);
   const { state: onboardingState, transition: transitionOnboarding } = useOnboarding();
   const [savedConfirmationVisible, setSavedConfirmationVisible] = useState(
@@ -220,7 +221,7 @@ function JournalDetailContent() {
   );
   const [showSavedAnalysisSheet, setShowSavedAnalysisSheet] = useState(
     () =>
-      shouldOfferSavedDreamAnalysis({
+      analyzeAfterPurchase !== '1' && shouldOfferSavedDreamAnalysis({
         savedParam,
         recallRequested,
         pendingPhase: onboardingState.pendingRecordingIntent?.phase,
@@ -230,6 +231,7 @@ function JournalDetailContent() {
   );
   const savedAnalysisChoiceHandledRef = useRef(false);
   const analysisLaunchInFlightRef = useRef(false);
+  const purchaseAnalysisHandledRef = useRef(false);
   const recallEligibleDreamIdRef = useRef<string | null>(
     resolveJournalDreamRecallOfferEligible({
       dreamId: id,
@@ -316,6 +318,7 @@ function JournalDetailContent() {
     tier,
     usage,
     loading: quotaLoading,
+    error: quotaError,
     quotaStatus,
   } = useQuota();
   const { t } = useTranslation();
@@ -1183,12 +1186,21 @@ function JournalDetailContent() {
 
   const ensureAnalyzeAllowed = useCallback(async () => {
     try {
-      const allowed = canAnalyzeNow || (await canAnalyze());
+      const allowed = isPlus || (!quotaLoading && Boolean(usage?.analysis) && canAnalyzeNow) || (await canAnalyze());
       if (!allowed) {
+        if (quotaError || quotaStatus?.guestBootstrapStatus === 'degraded'
+          || quotaStatus?.guestBootstrapStatus === 'disabled') {
+          showAnalysisNotice(t('common.error_title'), t('journal.detail.quota_check_error'), 'error');
+          return false;
+        }
         // Don't show for paid users
         if (isPlus) return false;
-        setQuotaSheetMode(!user && quotaStatus?.isUpgraded ? 'login' : 'quota');
-        setShowQuotaLimitSheet(true);
+        if (tier === 'free' && user && dream) {
+          router.push(buildAnalysisPaywallHref(dream, user.id));
+        } else {
+          setQuotaSheetMode(!user && quotaStatus?.isUpgraded ? 'login' : 'quota');
+          setShowQuotaLimitSheet(true);
+        }
         return false;
       }
       return true;
@@ -1203,7 +1215,7 @@ function JournalDetailContent() {
       );
       return false;
     }
-  }, [canAnalyze, canAnalyzeNow, isPlus, quotaStatus?.isUpgraded, showAnalysisNotice, t, user]);
+  }, [canAnalyze, canAnalyzeNow, dream, isPlus, quotaError, quotaLoading, quotaStatus, showAnalysisNotice, t, tier, usage, user]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
     setShowQuotaLimitSheet(false);
@@ -1218,13 +1230,12 @@ function JournalDetailContent() {
         router.push('/settings');
       }
     } else {
-      router.push(buildPaywallHref('analysis_cta'));
+      if (dream && user) router.push(buildAnalysisPaywallHref(dream, user.id));
     }
-  }, [quotaSheetMode, tier]);
+  }, [dream, quotaSheetMode, tier, user]);
 
   const handleQuotaLimitSecondary = useCallback(() => {
     setShowQuotaLimitSheet(false);
-    router.push('/(tabs)/journal');
   }, []);
 
   const handleFirstValueBackup = useCallback(() => {
@@ -1270,8 +1281,12 @@ function JournalDetailContent() {
           }
           // Show quota limit sheet with upgrade CTA for non-paid users
           if (!isPlus) {
-            setQuotaSheetMode('quota');
-            setShowQuotaLimitSheet(true);
+            if (tier === 'free' && user) {
+              router.push(buildAnalysisPaywallHref(dream, user.id));
+            } else {
+              setQuotaSheetMode('quota');
+              setShowQuotaLimitSheet(true);
+            }
           } else {
             // Plus users should never hit quota errors, but show a notice if they do.
             showAnalysisNotice(
@@ -1301,6 +1316,7 @@ function JournalDetailContent() {
       t,
       tier,
       transitionOnboarding,
+      user,
     ]
   );
 
@@ -1319,13 +1335,46 @@ function JournalDetailContent() {
     }
   }, [closeSavedAnalysisSheet, dream?.id, onboardingState.pendingRecordingIntent, transitionOnboarding]);
 
+  const savedAnalysisAction = getSavedAnalysisAction({
+    tier, loading: quotaLoading, error: quotaError, status: quotaStatus,
+  });
+
   const confirmSavedAnalysis = useCallback(() => {
-    if (!dream || savedAnalysisChoiceHandledRef.current) return;
+    if (!dream || savedAnalysisChoiceHandledRef.current || savedAnalysisAction === 'checking') return;
     closeSavedAnalysisSheet();
+    if (savedAnalysisAction === 'upgrade' && user) {
+      router.push(buildAnalysisPaywallHref(dream, user.id));
+      return;
+    }
+    if (savedAnalysisAction === 'signup' || savedAnalysisAction === 'login') {
+      router.push('/settings?section=account');
+      return;
+    }
     // Persist analysis_requested only after runAnalyze's allowance check succeeds.
     // Explicit consent requests the existing bundled analysis + image pipeline.
     void runAnalyze(true);
-  }, [closeSavedAnalysisSheet, dream, runAnalyze]);
+  }, [closeSavedAnalysisSheet, dream, runAnalyze, savedAnalysisAction, user]);
+
+  useEffect(() => {
+    if (analyzeAfterPurchase !== '1' || purchaseAnalysisHandledRef.current) return;
+    // Wait for the verified subscription to reach this screen; never consume a
+    // free credit while the purchase result is still propagating.
+    if (!user || analysisOwnerId !== user.id) {
+      purchaseAnalysisHandledRef.current = true;
+      router.setParams({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
+      return;
+    }
+    if (!dream || !isPlus || quotaLoading) return;
+    purchaseAnalysisHandledRef.current = true;
+    router.setParams({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
+    savedAnalysisChoiceHandledRef.current = true;
+    if (consumePurchasedAnalysisReturn(getDreamRouteParams(dream), user.id)
+      && !dream.isAnalyzed && dream.analysisStatus !== 'pending') {
+      // Consume an external purchase-navigation event, guarded above to run once.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void runAnalyze(!hasExistingImage);
+    }
+  }, [analysisOwnerId, analyzeAfterPurchase, dream, hasExistingImage, isPlus, quotaLoading, runAnalyze, user]);
 
   const handleAnalyze = useCallback(async () => {
     if (!dream) return;
@@ -2576,7 +2625,6 @@ function JournalDetailContent() {
           onClose={handleQuotaLimitDismiss}
           onPrimary={handleQuotaLimitPrimary}
           onSecondary={handleQuotaLimitSecondary}
-          onLink={handleQuotaLimitDismiss}
           tier={tier}
           mode={quotaSheetMode}
           usageLimit={usage?.analysis.limit}
@@ -2660,9 +2708,10 @@ function JournalDetailContent() {
         </Modal>
 
         <SavedDreamAnalysisSheet
-          visible={showSavedAnalysisSheet && !dream.isAnalyzed && dream.analysisStatus !== 'pending' && !isAnalyzing}
+          visible={showSavedAnalysisSheet && savedAnalysisAction !== 'checking' && !dream.isAnalyzed && dream.analysisStatus !== 'pending' && !isAnalyzing}
           onClose={dismissSavedAnalysis}
-          onAnalyze={confirmSavedAnalysis}
+          onPrimary={confirmSavedAnalysis}
+          action={savedAnalysisAction}
         />
         <ReferenceImageSheet
           visible={referenceImagesEnabled && showReferenceSheet}

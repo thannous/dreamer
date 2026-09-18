@@ -5,16 +5,18 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 import type { PendingRecordingIntent } from '@/lib/onboardingState';
 import type { DreamAnalysis } from '@/lib/types';
+import { requestAnalysisReturnRoute } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 
 let mockPendingRecordingIntent: Partial<PendingRecordingIntent> | null = null;
 const mockTransitionOnboarding = jest.fn(async () => undefined);
 let mockMedia: any = null;
 let mockQuotaUsage: any = { analysis: { used: 0, limit: 3, remaining: 3 } };
-let mockQuotaStatus: { isUpgraded?: boolean } | null = null;
+let mockQuotaStatus: { isUpgraded?: boolean; canAnalyze?: boolean; guestBootstrapStatus?: string } | null = null;
 let mockCanAnalyzeNow = true;
+let mockQuotaLoading = false;
 const mockCanAnalyze = jest.fn(async () => true);
-let mockTier: 'free' | 'plus' = 'free';
+let mockTier: 'guest' | 'free' | 'plus' = 'free';
 let mockUser: { id: string } | null = { id: 'user-1' };
 const mockUpdateDream = jest.fn();
 const mockRetryDreamSync = jest.fn(async (): Promise<void> => undefined);
@@ -29,7 +31,7 @@ const mockToggleFavorite = jest.fn();
 const mockAnalyzeDream = jest.fn();
 const mockDeleteDream = jest.fn();
 const mockSetParams = jest.fn();
-let mockSearchParams: { id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[] } = { id: '42', saved: '1' };
+let mockSearchParams: { id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; analyzeAfterPurchase?: string; analysisOwnerId?: string } = { id: '42', saved: '1' };
 let mockDreams: DreamAnalysis[] = [];
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
@@ -219,9 +221,9 @@ jest.mock('@/components/journal/ImageRetry', () => ({
 }));
 
 jest.mock('@/components/journal/JournalDetailSheets', () => ({
-  SavedDreamAnalysisSheet: ({ visible, onClose, onAnalyze }: any) => visible ? (
+  SavedDreamAnalysisSheet: ({ visible, onClose, onPrimary, action }: any) => visible ? (
     <div data-testid="sheet.savedDreamAnalysis">
-      <button onClick={onAnalyze}>Analyze saved dream</button>
+      <button disabled={action === 'checking'} onClick={onPrimary}>{action === 'upgrade' ? 'Discover Plus' : action === 'signup' ? 'Create account' : action === 'login' ? 'Sign in' : 'Analyze saved dream'}</button>
       <button onClick={onClose}>Later</button>
       <button onClick={onClose}>Dismiss offer</button>
     </div>
@@ -345,8 +347,9 @@ jest.mock('@/hooks/useQuota', () => ({
     canGenerateImageNow: true,
     tier: mockTier,
     usage: mockQuotaUsage,
-    loading: false,
-    quotaStatus: mockQuotaStatus,
+    loading: mockQuotaLoading,
+    quotaStatus: mockQuotaStatus ? { tier: mockTier, usage: mockQuotaUsage, canAnalyze: (mockQuotaUsage?.analysis.remaining ?? 1) > 0, ...mockQuotaStatus }
+      : mockCanAnalyzeNow && mockQuotaUsage ? { tier: mockTier, usage: mockQuotaUsage, canAnalyze: true } : null,
   }),
 }));
 
@@ -390,6 +393,8 @@ describe('journal detail saved confirmation route', () => {
     mockAnalyzeDream.mockReset();
     mockTrackProductEvent.mockReset();
     mockCanAnalyzeNow = true;
+    mockQuotaLoading = false;
+    require('expo-router').router.push.mockClear();
     mockCanAnalyze.mockReset().mockResolvedValue(true);
     mockUser = { id: 'user-1' };
     mockQuotaStatus = null;
@@ -423,6 +428,112 @@ describe('journal detail saved confirmation route', () => {
     });
     expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
     expect(mockTransitionOnboarding).not.toHaveBeenCalled();
+  });
+
+  it('never redirects from the detail when an exhausted quota becomes known', async () => {
+    mockQuotaLoading = true;
+    mockQuotaUsage = undefined;
+    const view = render(<JournalDetailScreen />);
+    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
+    mockQuotaLoading = false;
+    mockCanAnalyzeNow = false;
+    mockQuotaUsage = { analysis: { used: 3, limit: 3, remaining: 0 } };
+    mockQuotaStatus = { canAnalyze: false };
+    view.rerender(<JournalDetailScreen />);
+    expect(require('expo-router').router.push).not.toHaveBeenCalled();
+    expect(screen.getByText('Discover Plus')).toBeTruthy();
+    await act(async () => { fireEvent.click(screen.getByText('Discover Plus')); });
+    expect(require('expo-router').router.push).toHaveBeenCalledTimes(1);
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(mockUpdateDream).not.toHaveBeenCalled();
+  });
+
+  it('does not advertise analysis or sell an upgrade for degraded guest access with remaining credits', async () => {
+    mockTier = 'guest';
+    mockUser = null;
+    mockCanAnalyzeNow = false;
+    mockQuotaStatus = { canAnalyze: false, guestBootstrapStatus: 'degraded' };
+    mockCanAnalyze.mockResolvedValue(false);
+    render(<JournalDetailScreen />);
+    expect(screen.queryByText('Create account')).toBeNull();
+    expect(screen.queryByText('Discover Plus')).toBeNull();
+    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    expect(screen.getByRole('alert')).toBeTruthy();
+    expect(screen.queryByTestId('quota-limit')).toBeNull();
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+  });
+
+  it('offers Plus when permission is denied and the remaining metric is negative', () => {
+    mockQuotaStatus = { canAnalyze: false };
+    mockCanAnalyzeNow = false;
+    mockQuotaUsage = { analysis: { used: 4, limit: 3, remaining: -1 } };
+    render(<JournalDetailScreen />);
+    expect(screen.getByText('Discover Plus')).toBeTruthy();
+  });
+
+  it('offers analysis to Plus even while an old free quota is still cached', async () => {
+    mockTier = 'plus';
+    mockQuotaUsage = { analysis: { used: 3, limit: 3, remaining: 0 } };
+    mockCanAnalyzeNow = false;
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText('Discover Plus')).toBeNull();
+  });
+
+  it.each([false, true])('preserves the guest account path (returning device: %s)', async (isUpgraded: boolean) => {
+    mockTier = 'guest';
+    mockUser = null;
+    mockQuotaStatus = { isUpgraded };
+    mockQuotaUsage = { analysis: { used: 2, limit: 2, remaining: 0 } };
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByText(isUpgraded ? 'Sign in' : 'Create account')); });
+    expect(require('expo-router').router.push).toHaveBeenCalledWith('/settings?section=account');
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+  });
+
+  it('verifies unknown access instead of trusting the optimistic canAnalyzeNow default', async () => {
+    mockQuotaUsage = undefined;
+    mockCanAnalyze.mockRejectedValueOnce(new Error('offline'));
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    expect(mockCanAnalyze).toHaveBeenCalledTimes(1);
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert')).toBeTruthy();
+  });
+
+  it.each(['', '   ', 'https://example.com/existing.webp'])('resumes once with the correct illustration policy for %j', async (imageUrl: string) => {
+    mockDreams = [buildDream({ imageUrl })];
+    requestAnalysisReturnRoute({ dreamId: '42', dreamClientRequestId: 'persisted-original-42', dreamOwnerId: 'user-1' }, 'user-1');
+    mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' };
+    const view = render(<JournalDetailScreen />);
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    mockTier = 'plus';
+    await act(async () => { view.rerender(<JournalDetailScreen />); });
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
+    expect(mockAnalyzeDream).toHaveBeenCalledWith(mockDreams[0], mockDreams[0].transcript, {
+      replaceExistingImage: !imageUrl.trim(), lang: 'fr', analyticsSource: 'journal_detail',
+    });
+    expect(mockSetParams).toHaveBeenCalledWith({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
+    await act(async () => { view.rerender(<JournalDetailScreen />); });
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not launch an analysis from a stale or fabricated purchase URL', async () => {
+    mockTier = 'plus';
+    mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' };
+    await act(async () => { render(<JournalDetailScreen />); });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+  });
+
+  it.each(['another-account', 'done', 'pending'])('does not resume an analysis for %s', async (state: string) => {
+    mockTier = 'plus';
+    mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: state === 'another-account' ? 'other' : 'user-1' };
+    requestAnalysisReturnRoute({ dreamId: '42', dreamClientRequestId: 'persisted-original-42', dreamOwnerId: 'user-1' }, 'user-1');
+    if (state === 'done') mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done' })];
+    if (state === 'pending') mockDreams = [buildDream({ analysisStatus: 'pending' })];
+    await act(async () => { render(<JournalDetailScreen />); });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
 
   it('restores the saved-analysis offer from a persisted confirmation without saved=1', () => {
@@ -500,7 +611,7 @@ describe('journal detail saved confirmation route', () => {
       },
     },
   ])('does not persist analysis_requested when accept is rejected by $label', async ({
-    setup,
+    setup, label,
   }: {
     label: string;
     setup: () => void;
@@ -509,7 +620,8 @@ describe('journal detail saved confirmation route', () => {
     setup();
     render(<JournalDetailScreen />);
     await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
-    expect(screen.getByTestId('quota-limit')).toBeTruthy();
+    if (label === 'auth') expect(screen.getByTestId('quota-limit')).toBeTruthy();
+    else expect(require('expo-router').router.push).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/paywall' }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockTransitionOnboarding).not.toHaveBeenCalled();
   });
@@ -578,12 +690,13 @@ describe('journal detail saved confirmation route', () => {
     await act(async () => { finish(); });
   });
 
-  it('opens the existing quota sheet without changing the saved dream', async () => {
+  it('opens the offer directly when a recheck finds the quota exhausted', async () => {
     mockCanAnalyzeNow = false;
     mockCanAnalyze.mockResolvedValueOnce(false);
     render(<JournalDetailScreen />);
     await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
-    expect(screen.getByTestId('quota-limit')).toBeTruthy();
+    expect(screen.queryByTestId('quota-limit')).toBeNull();
+    expect(require('expo-router').router.push).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/paywall' }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockUpdateDream).not.toHaveBeenCalled();
   });

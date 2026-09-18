@@ -1,7 +1,8 @@
 import { SubscriptionExpiryNotice } from '@/components/subscription/SubscriptionExpiryNotice';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams, type Href } from 'expo-router';
+import { usePreventRemove } from 'expo-router/react-navigation';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, BackHandler, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
@@ -15,6 +16,8 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { getLegalLink, type LegalLinkKind } from '@/constants/legalLinks';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { useAuth } from '@/context/AuthContext';
+import { getSavedDreamReturnRoute, requestAnalysisReturnRoute, type AnalysisPaywallParams } from '@/lib/paywallRoute';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
@@ -47,7 +50,11 @@ export default function PaywallScreen() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, translationRevision, currentLang } = useTranslation();
   const { formatDate, formatNumber, formatTime } = useLocaleFormatting();
-  const params = useLocalSearchParams<{ trigger?: string }>();
+  const params = useLocalSearchParams<AnalysisPaywallParams & { trigger?: string }>();
+  const { user } = useAuth();
+  const savedDreamReturnRoute = useMemo(() => getSavedDreamReturnRoute(params, user?.id), [params, user?.id]);
+  const [exitDestination, setExitDestination] = useState<Href | null>(null);
+  const navigateToDream = useCallback((destination: Href) => setExitDestination(destination), []);
   useClearWebFocus();
   const {
     status: subscriptionStatus,
@@ -58,8 +65,13 @@ export default function PaywallScreen() {
     packages,
     purchase,
     restore,
+    refreshSubscription,
     requiresAuth,
   } = useSubscription({ loadPackages: true });
+  const operationInFlightRef = useRef(false);
+  const [operationPending, setOperationPending] = useState(false);
+  const [awaitingServerAccess, setAwaitingServerAccess] = useState(false);
+  const busy = processing || operationPending;
   const { quotaStatus } = useQuota();
   const insets = useSafeAreaInsets();
   const sortedPackages = useMemo(() => sortPackages(packages), [packages]);
@@ -83,6 +95,8 @@ export default function PaywallScreen() {
   const isDeviceUpgraded = requiresAuth && quotaStatus?.isUpgraded === true;
   const routeTrigger = getPaywallTrigger(params.trigger);
   const paywallTrigger = isDeviceUpgraded ? 'returning_device' : routeTrigger;
+  const isDreamAnalysisOffer = paywallTrigger === 'analysis_cta' && Boolean(params.dreamId)
+    && params.dreamOwnerId === user?.id && !isActive;
   const paywallVariant = useMemo(() => getPaywallVariant(paywallTrigger), [paywallTrigger]);
 
   useEffect(() => {
@@ -125,9 +139,10 @@ export default function PaywallScreen() {
   const selectedTrialDays = selectedPackage?.freeTrialDays ?? null;
   const analyticsTier = subscriptionStatus?.tier ?? 'free';
   const canPurchase =
-    Boolean(effectiveSelectedId) && !processing && !loading && !isActive && !requiresAuth;
+    Boolean(effectiveSelectedId) && !busy && !awaitingServerAccess && !loading && !isActive && !requiresAuth;
 
   const handleClose = useCallback(() => {
+    if (operationInFlightRef.current || processing) return;
     // Leaving the paywall on purpose ends any "come back after sign-in" intent.
     clearReturnToPaywallIntent();
     if (!isActive && purchaseOutcomeRef.current === 'none' && !dismissedTrackedRef.current) {
@@ -138,12 +153,33 @@ export default function PaywallScreen() {
         plan_selected: selectedId !== null,
       });
     }
-    if (router.canGoBack()) {
+    if (savedDreamReturnRoute) {
+      navigateToDream(savedDreamReturnRoute);
+    } else if (router.canGoBack()) {
       router.back();
     } else {
       router.replace('/settings');
     }
-  }, [analyticsTier, isActive, paywallTrigger, selectedId]);
+  }, [analyticsTier, isActive, navigateToDream, paywallTrigger, processing, savedDreamReturnRoute, selectedId]);
+
+  // A direct capture -> offer transition has no detail screen underneath it.
+  // Native gestures, Android Back and explicit dismissal share the same destination.
+  usePreventRemove((Boolean(savedDreamReturnRoute) || busy) && exitDestination === null, handleClose);
+  useFocusEffect(useCallback(() => {
+    if ((!savedDreamReturnRoute && !busy) || exitDestination !== null) return;
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      handleClose();
+      return true;
+    });
+    return () => subscription.remove();
+  }, [busy, exitDestination, handleClose, savedDreamReturnRoute]));
+
+  // Release the navigation guard before performing the chosen exit.
+  useEffect(() => {
+    if (!exitDestination) return;
+    if (savedDreamReturnRoute) router.replace(exitDestination);
+    else router.dismissTo(exitDestination);
+  }, [exitDestination, savedDreamReturnRoute]);
 
   const handleSelect = useCallback((id: string) => {
     setSelectedId(id);
@@ -170,8 +206,44 @@ export default function PaywallScreen() {
     });
   }, [currentLang]);
 
+  const resumeConfirmedAnalysis = useCallback(async (result: Awaited<ReturnType<typeof purchase>> | null) => {
+    if (!params.dreamId || params.dreamOwnerId !== user?.id) return true;
+    setAwaitingServerAccess(true);
+    let confirmed = result;
+    if (!confirmed?.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') {
+      try {
+        // One automatic convergence retry; further retries never repeat the store purchase.
+        confirmed = await refreshSubscription();
+      } catch {
+        return false;
+      }
+    }
+    if (!confirmed.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') return false;
+    const returnRoute = requestAnalysisReturnRoute(params, user?.id);
+    if (returnRoute) {
+      setAwaitingServerAccess(false);
+      navigateToDream(returnRoute);
+      return true;
+    }
+    return false;
+  }, [navigateToDream, params, refreshSubscription, user?.id]);
+
+  const handleRetryActivation = useCallback(async () => {
+    if (operationInFlightRef.current || processing) return;
+    operationInFlightRef.current = true;
+    setOperationPending(true);
+    try {
+      await resumeConfirmedAnalysis(null);
+    } finally {
+      operationInFlightRef.current = false;
+      setOperationPending(false);
+    }
+  }, [processing, resumeConfirmedAnalysis]);
+
   const handlePurchase = useCallback(async () => {
-    if (!effectiveSelectedId || !canPurchase || !selectedPlan) return;
+    if (!effectiveSelectedId || !canPurchase || !selectedPlan || operationInFlightRef.current) return;
+    operationInFlightRef.current = true;
+    setOperationPending(true);
     void trackProductEvent('purchase_started', {
       trigger: paywallTrigger,
       plan: selectedPlan,
@@ -186,6 +258,9 @@ export default function PaywallScreen() {
         plan: selectedPlan,
         tier: nextStatus?.tier ?? 'plus',
       });
+      if (nextStatus?.isActive || nextStatus?.storeActive) {
+        if (!await resumeConfirmedAnalysis(nextStatus)) return;
+      }
       setToastMessage(t('subscription.paywall.toast.success'));
     } catch (purchaseError) {
       void trackProductEvent('purchase_failed', {
@@ -193,11 +268,16 @@ export default function PaywallScreen() {
         plan: selectedPlan,
         reason: classifyPurchaseFailure(purchaseError),
       });
+    } finally {
+      operationInFlightRef.current = false;
+      setOperationPending(false);
     }
-  }, [analyticsTier, canPurchase, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t]);
+  }, [analyticsTier, canPurchase, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, resumeConfirmedAnalysis]);
 
   const handleRestore = useCallback(async () => {
-    if (processing || requiresAuth) return;
+    if (processing || requiresAuth || operationInFlightRef.current) return;
+    operationInFlightRef.current = true;
+    setOperationPending(true);
     try {
       const nextStatus = await restore();
       const restored = Boolean(nextStatus?.isActive);
@@ -209,14 +289,20 @@ export default function PaywallScreen() {
         trigger: paywallTrigger,
         outcome: restored ? 'restored' : 'nothing_to_restore',
       });
+      if (restored || nextStatus?.storeActive) {
+        if (!await resumeConfirmedAnalysis(nextStatus)) return;
+      }
       setToastMessage(t('subscription.paywall.toast.restored'));
     } catch (restoreError) {
       void trackProductEvent('restore_completed', {
         trigger: paywallTrigger,
         outcome: classifyPurchaseFailure(restoreError) === 'cancelled' ? 'cancelled' : 'failed',
       });
+    } finally {
+      operationInFlightRef.current = false;
+      setOperationPending(false);
     }
-  }, [paywallTrigger, processing, requiresAuth, restore, t]);
+  }, [paywallTrigger, processing, requiresAuth, restore, t, resumeConfirmedAnalysis]);
 
   const handleHideToast = useCallback(() => {
     setToastMessage(null);
@@ -238,10 +324,12 @@ export default function PaywallScreen() {
   const activeTierKey = 'plus';
   const headerTitle = isActive
     ? t(`subscription.paywall.header.${activeTierKey}` as const)
-    : translateWithFallback(paywallVariant.headerTitleKey);
+    : isDreamAnalysisOffer ? t('recording.saved_analysis.title')
+      : translateWithFallback(paywallVariant.headerTitleKey);
   const headerSubtitle = isActive
     ? t(`subscription.paywall.header.subtitle.${activeTierKey}` as const)
-    : translateWithFallback(paywallVariant.headerSubtitleKey);
+    : isDreamAnalysisOffer ? t('subscription.paywall.saved_dream.message')
+      : translateWithFallback(paywallVariant.headerSubtitleKey);
 
   const formattedExpiryDate = useMemo(() => {
     const expiryDate = subscriptionStatus?.expiryDate;
@@ -267,12 +355,15 @@ export default function PaywallScreen() {
   const subscriptionFeatures = useMemo(
     () => {
       void translationRevision;
+      if (isDreamAnalysisOffer) {
+        return [t('subscription.paywall.saved_dream.analysis'), t('subscription.paywall.saved_dream.illustration')];
+      }
       if (!isActive) {
         return paywallVariant.featureKeys.map((key) => translateWithFallback(key));
       }
       return PLUS_PAYWALL_FEATURE_KEYS.map((key) => t(key));
     },
-    [isActive, paywallVariant.featureKeys, t, translateWithFallback, translationRevision]
+    [isActive, isDreamAnalysisOffer, paywallVariant.featureKeys, t, translateWithFallback, translationRevision]
   );
 
   const packageOptions = useMemo(
@@ -382,6 +473,7 @@ export default function PaywallScreen() {
             </Text>
             <Pressable
               onPress={handleClose}
+              disabled={busy}
               style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
               accessibilityRole="button"
               testID={TID.Button.PaywallClose}
@@ -428,6 +520,7 @@ export default function PaywallScreen() {
               <Pressable
                 style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
                 onPress={handleClose}
+                disabled={busy}
                 accessibilityRole="button"
               >
                 <Text style={[styles.secondaryLabel, { color: noctalia.text.secondary }]}>
@@ -463,6 +556,7 @@ export default function PaywallScreen() {
             </View>
             <Pressable
               onPress={handleClose}
+              disabled={busy}
               style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
               accessibilityRole="button"
               testID={TID.Button.PaywallClose}
@@ -481,7 +575,7 @@ export default function PaywallScreen() {
               <View style={styles.kickerRow}>
                 <IconSymbol name="sparkles" size={13} color={noctalia.accent.text} />
                 <Text style={[styles.kickerText, { color: noctalia.accent.text }]}>
-                  {translateWithFallback(paywallVariant.chipKey)}
+                  {isDreamAnalysisOffer ? 'Noctalia Plus' : translateWithFallback(paywallVariant.chipKey)}
                 </Text>
                 <IconSymbol name="sparkles" size={13} color={noctalia.accent.text} />
               </View>
@@ -490,7 +584,7 @@ export default function PaywallScreen() {
             <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>{headerTitle}</Text>
             <Text style={[styles.headerSubtitle, { color: noctalia.text.secondary }]}>{headerSubtitle}</Text>
 
-            <SubscriptionExpiryNotice status={subscriptionStatus} loading={loading} />
+            {!isDreamAnalysisOffer ? <SubscriptionExpiryNotice status={subscriptionStatus} loading={loading} /> : null}
 
             {isActive && formattedExpiryDate ? (
               <Text style={[styles.expiryDate, { color: noctalia.text.secondary }]}>
@@ -514,7 +608,7 @@ export default function PaywallScreen() {
           ) : null}
 
           <Reveal index={1}>
-          {!isActive ? (
+          {!isActive && !isDreamAnalysisOffer ? (
             <View
               style={[
                 styles.comparisonTable,
@@ -593,7 +687,7 @@ export default function PaywallScreen() {
               {visibleSubscriptionFeatures.map((feature, index) => (
                 <View key={feature} style={styles.benefitRow}>
                   <View style={[styles.benefitIcon, { backgroundColor: noctalia.surface.active }]}>
-                    {index < 2 ? (
+                    {!isDreamAnalysisOffer && index < 2 ? (
                       <Text
                         accessible={false}
                         style={[styles.benefitInfinity, { color: noctalia.accent.text }]}
@@ -607,7 +701,7 @@ export default function PaywallScreen() {
                   <Text
                     style={[
                       styles.benefitText,
-                      index < 2 && styles.benefitTextUnlimited,
+                      !isDreamAnalysisOffer && index < 2 && styles.benefitTextUnlimited,
                       { color: noctalia.text.primary },
                     ]}
                   >
@@ -655,31 +749,36 @@ export default function PaywallScreen() {
           ) : null}
 
           <Reveal index={3} style={styles.actions}>
-            {!isActive ? (
+            {awaitingServerAccess ? (
+              <Text style={[styles.notice, { color: noctalia.text.secondary }]} accessibilityRole="alert">
+                {t('subscription.paywall.activation_pending')}
+              </Text>
+            ) : null}
+            {!isActive || awaitingServerAccess ? (
               <PressableScale
                 style={[
                   styles.primaryButton,
                   {
-                    backgroundColor: requiresAuth
+                    backgroundColor: awaitingServerAccess || requiresAuth
                       ? noctalia.action.primary
                       : canPurchase
                         ? noctalia.action.primary
                         : noctalia.action.disabled,
-                    borderColor: requiresAuth || canPurchase
+                    borderColor: awaitingServerAccess || requiresAuth || canPurchase
                       ? noctalia.action.primaryBorder
                       : noctalia.action.disabledBorder,
                   },
                 ]}
                 transitionProperties={CTA_TRANSITION}
-                disabled={requiresAuth ? processing || loading : !canPurchase}
-                onPress={requiresAuth ? handleOpenAuth : handlePurchase}
+                disabled={awaitingServerAccess ? busy : requiresAuth ? busy || loading : !canPurchase}
+                onPress={awaitingServerAccess ? handleRetryActivation : requiresAuth ? handleOpenAuth : handlePurchase}
                 // The button spans the screen and already clears 44pt; extra slop would
                 // only reach into the footnote above it.
                 hitSlop={0}
                 accessibilityRole="button"
                 testID={TID.Button.PaywallPurchase}
               >
-                {processing ? (
+                {busy ? (
                   <ActivityIndicator color={noctalia.action.primaryText} />
                 ) : (
                   <Text
@@ -687,17 +786,19 @@ export default function PaywallScreen() {
                       styles.primaryLabel,
                       {
                         color:
-                          requiresAuth || canPurchase
+                          awaitingServerAccess || requiresAuth || canPurchase
                             ? noctalia.action.primaryText
                             : noctalia.action.disabledText,
                       },
                     ]}
                   >
-                    {requiresAuth
+                    {awaitingServerAccess ? t('subscription.paywall.retry_activation')
+                      : requiresAuth
                       ? t('subscription.paywall.button.primary.auth')
                       : selectedTrialDays
                         ? t('subscription.paywall.button.primary.trial', { days: selectedTrialDays })
-                        : translateWithFallback(paywallVariant.primaryLabelKey)}
+                        : isDreamAnalysisOffer ? t('subscription.paywall.saved_dream.cta')
+                          : translateWithFallback(paywallVariant.primaryLabelKey)}
                   </Text>
                 )}
               </PressableScale>
@@ -719,11 +820,11 @@ export default function PaywallScreen() {
               <Pressable
                 style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
                 onPress={handleClose}
-                disabled={processing}
+                disabled={busy}
                 accessibilityRole="button"
               >
                 <Text style={[styles.secondaryLabel, { color: noctalia.text.secondary }]}>
-                  {t('subscription.paywall.button.continue_free')}
+                  {t(isDreamAnalysisOffer ? 'recording.analysis_offer.view' : 'subscription.paywall.button.continue_free')}
                 </Text>
               </Pressable>
             ) : null}
@@ -732,7 +833,7 @@ export default function PaywallScreen() {
               <Pressable
                 style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
                 onPress={handleRestore}
-                disabled={processing}
+                disabled={busy}
                 accessibilityRole="button"
                 testID={TID.Button.PaywallRestore}
               >

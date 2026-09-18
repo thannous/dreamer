@@ -1,3 +1,5 @@
+import { getDreamRouteParams } from '@/lib/dreamRoute';
+import type { DreamAnalysis } from '@/lib/types';
 import type { Href } from 'expo-router';
 
 export const JOURNAL_SAVED_CONFIRMATION_PARAM = 'saved';
@@ -36,10 +38,12 @@ export function shouldOfferSavedDreamAnalysis(input: {
 }
 
 export function buildJournalDetailHref(
-  dreamId: string | number,
+  dreamId: string | number | DreamAnalysis,
   options?: { saved?: boolean; recall?: boolean }
 ): Href {
-  const params: Record<string, string> = { id: String(dreamId) };
+  const params: Record<string, string> = typeof dreamId === 'object'
+    ? { ...getDreamRouteParams(dreamId) }
+    : { id: String(dreamId) };
   if (options?.saved) {
     params[JOURNAL_SAVED_CONFIRMATION_PARAM] = JOURNAL_SAVED_CONFIRMATION_VALUE;
   }
