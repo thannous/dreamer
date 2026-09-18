@@ -1243,6 +1243,17 @@ function JournalDetailContent() {
           if (!allowed) return;
         }
 
+        const pending = onboardingState.pendingRecordingIntent;
+        if (pending?.savedDreamId === dream.id && pending.phase === 'analysis_confirmation') {
+          void transitionOnboarding({
+            type: 'SET_PENDING_PHASE',
+            phase: 'analysis_requested',
+            savedDreamId: dream.id,
+          }).catch(() => {
+            console.warn('[JournalDetail] Failed to persist the onboarding analysis request');
+          });
+        }
+
         setShowReplaceImageSheet(false);
         await analyzeDream(dream, dream.transcript, {
           replaceExistingImage: replaceImage,
@@ -1278,7 +1289,19 @@ function JournalDetailContent() {
         setIsAnalyzing(false);
       }
     },
-    [analyzeDream, dream, ensureAnalyzeAllowed, isAnalysisLocked, isPlus, language, showAnalysisNotice, t, tier]
+    [
+      analyzeDream,
+      dream,
+      ensureAnalyzeAllowed,
+      isAnalysisLocked,
+      isPlus,
+      language,
+      onboardingState.pendingRecordingIntent,
+      showAnalysisNotice,
+      t,
+      tier,
+      transitionOnboarding,
+    ]
   );
 
   const closeSavedAnalysisSheet = useCallback(() => {
@@ -1299,19 +1322,10 @@ function JournalDetailContent() {
   const confirmSavedAnalysis = useCallback(() => {
     if (!dream || savedAnalysisChoiceHandledRef.current) return;
     closeSavedAnalysisSheet();
-    const pending = onboardingState.pendingRecordingIntent;
-    if (pending?.savedDreamId === dream.id && pending.phase === 'analysis_confirmation') {
-      void transitionOnboarding({
-        type: 'SET_PENDING_PHASE',
-        phase: 'analysis_requested',
-        savedDreamId: dream.id,
-      }).catch(() => {
-        console.warn('[JournalDetail] Failed to persist the onboarding analysis request');
-      });
-    }
+    // Persist analysis_requested only after runAnalyze's allowance check succeeds.
     // Explicit consent requests the existing bundled analysis + image pipeline.
     void runAnalyze(true);
-  }, [closeSavedAnalysisSheet, dream, onboardingState.pendingRecordingIntent, runAnalyze, transitionOnboarding]);
+  }, [closeSavedAnalysisSheet, dream, runAnalyze]);
 
   const handleAnalyze = useCallback(async () => {
     if (!dream) return;
