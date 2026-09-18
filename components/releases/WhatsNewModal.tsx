@@ -31,7 +31,7 @@ import {
   saveLastSeenReleaseNotesVersion,
 } from '@/services/storageService';
 
-export const RELEASE_NOTES_VERSION = '3.1.0';
+export const RELEASE_NOTES_VERSION = '3.3.0';
 
 const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
   ? ({
@@ -68,24 +68,24 @@ export function WhatsNewModal({ visible, onClose, onPrimary }: WhatsNewModalProp
   const features = useMemo<Feature[]>(
     () => [
       {
-        icon: 'chart.bar.fill',
-        title: t('release_notes.stats.title'),
-        body: t('release_notes.stats.body'),
+        icon: 'photo',
+        title: t('release_notes.design.title'),
+        body: t('release_notes.design.body'),
       },
       {
-        icon: 'heart.fill',
-        title: t('release_notes.patterns.title'),
-        body: t('release_notes.patterns.body'),
+        icon: 'mic',
+        title: t('release_notes.capture.title'),
+        body: t('release_notes.capture.body'),
       },
       {
-        icon: 'bolt.fill',
-        title: t('release_notes.android.title'),
-        body: t('release_notes.android.body'),
+        icon: 'book.fill',
+        title: t('release_notes.reading.title'),
+        body: t('release_notes.reading.body'),
       },
       {
-        icon: 'slider.horizontal.3',
-        title: t('release_notes.navigation.title'),
-        body: t('release_notes.navigation.body'),
+        icon: 'checkmark.circle.fill',
+        title: t('release_notes.reliability.title'),
+        body: t('release_notes.reliability.body'),
       },
     ],
     [t]
@@ -151,7 +151,7 @@ export function WhatsNewModal({ visible, onClose, onPrimary }: WhatsNewModalProp
           style={[
             styles.card,
             {
-              backgroundColor: isDark ? 'rgba(13, 11, 28, 0.98)' : 'rgba(255, 253, 248, 0.99)',
+              backgroundColor: noctalia.surface.raised,
               borderColor: isDark ? noctalia.accent.strong : noctalia.accent.soft,
               maxHeight: maxCardHeight,
             },
@@ -335,7 +335,7 @@ export function WhatsNewModalHost({ ready }: { ready: boolean }) {
 
   const handlePrimary = useCallback(() => {
     persistDismissal();
-    router.push('/statistics');
+    router.push('/journal');
   }, [persistDismissal]);
 
   return (

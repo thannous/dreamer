@@ -25,7 +25,6 @@ import {
   ReplaceImageSheet,
   type AnalysisNotice,
 } from '@/components/journal/JournalDetailSheets';
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PressableScale, Reveal } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -100,10 +99,12 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { getDreamCoverLayout } from '@/lib/dreamCoverLayout';
 
 type ShareNavigator = Navigator & {
   share?: (data: { title?: string; text?: string; url?: string }) => Promise<void>;
@@ -262,6 +263,14 @@ function JournalDetailContent() {
   const { user } = useAuth();
   const { colors, shadows, mode } = useTheme();
   const insets = useSafeAreaInsets();
+  const windowSize = useWindowDimensions();
+  const [coverViewport, setCoverViewport] = useState<{ width: number; height: number } | null>(null);
+  const [coverCaptionHeight, setCoverCaptionHeight] = useState(128);
+  const coverLayout = getDreamCoverLayout(
+    coverViewport?.width ?? windowSize.width,
+    (coverViewport?.height ?? windowSize.height) - insets.bottom,
+    coverCaptionHeight,
+  );
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { language } = useLanguage();
   const scrollPerf = useScrollIdle();
@@ -649,19 +658,22 @@ function JournalDetailContent() {
     [analysisRecoveryClock, dream, isAnalyzing]
   );
   const isAnalysisPending = reflectionJourney.isPendingFresh && !isAnalyzing;
-  const isPrimaryActionBusy = visiblePrimaryAction === 'analyze' && (isAnalyzing || isAnalysisPending);
+  const awaitingPurchasedAnalysis = analyzeAfterPurchase === '1' && analysisOwnerId === user?.id
+    && Boolean(dream && !dream.isAnalyzed);
+  const isPrimaryActionBusy = visiblePrimaryAction === 'analyze'
+    && (awaitingPurchasedAnalysis || isAnalyzing || isAnalysisPending);
   const detailActionCard = useMemo(() => {
     if (!dream) {
       return null;
     }
 
-    if (isAnalysisPending) {
+    if (awaitingPurchasedAnalysis || isAnalyzing || isAnalysisPending) {
       return {
         icon: 'sparkles' as const,
-        title: t('journal.detail.action.pending.title'),
+        title: t('loading.analyzing'),
         message: t('journal.detail.action.pending.message'),
         step: t('journal.detail.action.pending.step'),
-        cta: t('journal.detail.action.pending.cta'),
+        cta: t('loading.analyzing'),
         disabled: true,
       };
     }
@@ -725,7 +737,7 @@ function JournalDetailContent() {
       cta: t('journal.detail.explore_button.new'),
       disabled: false,
     };
-  }, [canRecoverPendingAnalysis, dream, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, t]);
+  }, [awaitingPurchasedAnalysis, canRecoverPendingAnalysis, dream, isAnalyzing, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, t]);
   const isAnalysisLocked = !!dream && (isAnalysisPending || isAnalyzing);
   const isImageJobPending = illustrationSidecar === 'pending';
   const isSyncPending = dreamSyncState === 'pending';
@@ -1440,8 +1452,6 @@ function JournalDetailContent() {
     setShowReplaceImageSheet(false);
   }, []);
 
-  const gradientColors = ([noctalia.screen.gradient[0], noctalia.screen.gradient[1], noctalia.screen.background] as const);
-  const gradientLocations = mode === 'dark' ? ([0, 0.7, 1] as const) : undefined;
   const displayedAnalysisNotice = analysisNotice ?? lastAnalysisNoticeRef.current;
 
   const keyboardBehavior: 'padding' | 'height' | undefined = Platform.select({
@@ -1451,19 +1461,13 @@ function JournalDetailContent() {
   });
   const keyboardVerticalOffset = Platform.select({ ios: 0, android: 0, web: 0 }) ?? 0;
   const shouldHideHeroMedia = isKeyboardVisible && (isEditing || isEditingTranscript);
+  const hasIllustratedCover = Boolean(dream?.imageUrl?.trim()) && !shouldHideHeroMedia;
   const floatingTranscriptBottom = Platform.OS === 'ios' ? 32 : 24;
 
   if (!dream) {
     return (
       <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
         <View className="relative flex-1 overflow-hidden bg-ink">
-          <LinearGradient
-            colors={gradientColors}
-            locations={gradientLocations}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
-          <AtmosphericBackground />
           <KeyboardAvoidingView
             className="flex-1"
             behavior={keyboardBehavior}
@@ -1502,14 +1506,14 @@ function JournalDetailContent() {
   const renderTranscriptBody = () => (
     <View
       testID={TID.Component.TranscriptCard}
-      className={`font-sans text-[15px] leading-6 opacity-90 ${
-        isEditingTranscript ? 'border-2 border-champagne' : 'border-0 border-transparent'
-      }`}
+      className="font-sans text-[15px] leading-6"
     >
       <View className="mb-3 flex-row items-center justify-between">
         <View className="flex-1 pr-3">
-          {renderDetailZoneHeader(t('journal.detail.zone.dream'), TID.Text.DreamDetailDreamZone)}
-          <Text className="font-sans-bold text-[18px] text-ivory">
+          <Text testID={TID.Text.DreamDetailDreamZone} className="mb-1 font-sans text-[11px] uppercase tracking-[1.5px] text-champagne-on">
+            {t('journal.detail.zone.dream')}
+          </Text>
+          <Text className="font-sans-medium text-[17px] text-ivory">
             {t('journal.original_transcript')}
           </Text>
         </View>
@@ -1522,7 +1526,7 @@ function JournalDetailContent() {
           accessibilityRole="button"
           accessibilityLabel={t(isEditingTranscript ? 'journal.detail.save_edit' : 'journalDetail.a11y.editTranscript')}
           disabled={isAnalysisLocked}
-          className={`h-8 w-8 items-center justify-center rounded-full border border-line ${
+          className={`h-8 w-8 items-center justify-center rounded-full ${!isEditingTranscript ? '' : 'border border-line'} ${
             isEditingTranscript ? 'bg-champagne' : 'bg-transparent'
           } ${isAnalysisLocked ? 'opacity-70' : ''}`}
           hitSlop={8}
@@ -1530,7 +1534,7 @@ function JournalDetailContent() {
           <IconSymbol
             name={isEditingTranscript ? 'checkmark' : 'pencil'}
             size={18}
-            color={isEditingTranscript ? noctalia.action.primaryText : noctalia.text.secondary}
+            color={isEditingTranscript ? noctalia.action.primaryText : noctalia.accent.text}
           />
         </PressableScale>
       </View>
@@ -1544,11 +1548,12 @@ function JournalDetailContent() {
           placeholder={t('recording.placeholder.accessibility')}
           accessibilityLabel={t('recording.placeholder.accessibility')}
           placeholderTextColor={noctalia.text.secondary}
+          selectionColor={noctalia.accent.base}
           textAlignVertical="top"
           autoFocus
         />
       ) : (
-        <MarkdownText style={{ fontSize: 15, lineHeight: 24, color: noctalia.text.secondary }}>{dream.transcript}</MarkdownText>
+        <MarkdownText style={{ fontSize: 14, lineHeight: 26, color: noctalia.text.secondary }}>{dream.transcript}</MarkdownText>
       )}
       {dream.captureOriginalTranscript ? <CaptureOriginal source={dream.captureOriginalTranscript} /> : null}
       {isEditingTranscript ? (
@@ -1567,56 +1572,71 @@ function JournalDetailContent() {
   );
 
   const renderMetadataCard = (variant: 'inline' | 'floating' = 'inline') => {
+    const compactMetadata = variant === 'inline' && !isEditing;
     // The main content card and its inner accent cards share one surface colour so the
     // padding around them doesn't read as a darker band on Android.
-    const borderClassName = isEditing
-      ? 'border-2 border-champagne'
-      : variant === 'floating'
-        ? 'border border-line'
-        : 'border-0 border-line-strong';
+    const borderClassName = variant === 'floating'
+      ? 'border border-line'
+      : 'border-0 border-line-strong';
 
     return (
       <View
         testID={TID.Component.MetadataCard}
-        style={variant === 'floating' ? shadows.xl : shadows.md}
+        style={compactMetadata ? undefined : variant === 'floating' ? shadows.xl : shadows.md}
         className={[
-          'mb-6 rounded-t-xl rounded-b-lg px-5 pt-5 bg-ink-raised',
-          borderClassName,
+          compactMetadata ? 'mx-2 mb-5 border-b border-line pb-5 pr-10' : 'mb-6 rounded-t-xl rounded-b-lg px-5 pt-5 bg-ink-raised',
+          compactMetadata ? '' : borderClassName,
           // Keep room for the floating edit/check button so it doesn't overlap chips
-          isEditing ? 'pb-16' : 'pb-5',
+          isEditing ? 'pb-16' : compactMetadata ? '' : 'pb-5',
           variant === 'floating' ? 'rounded-[20px]' : '',
         ].join(' ')}
       >
-      <View className="mb-3 flex-row items-center justify-between gap-4">
-        <View className="min-w-0 flex-1 flex-row items-center gap-1.5">
-          <IconSymbol name="calendar" size={16} color={noctalia.text.primary} />
-          <Text className="min-w-0 flex-1 font-sans-bold text-[14px] text-ivory">{formatDreamDate(dream.id)}</Text>
-        </View>
-        <View className="flex-row items-center gap-1.5">
-          <IconSymbol name="clock" size={16} color={noctalia.text.primary} />
-          <Text className="font-sans-bold text-[14px] text-ivory">{formatDreamTime(dream.id)}</Text>
-        </View>
-      </View>
-      <View className="my-3 h-px bg-line" />
+      {!hasIllustratedCover || isEditing ? (
+        <>
+          {isEditing ? (
+            <TextInput
+              testID={TID.Input.DreamTitle}
+              nativeID={TID.Input.DreamTitle}
+              className="mb-3 border-b border-line pb-1 font-serif-bold text-[24px] leading-8 text-ivory"
+              selectTextOnFocus
+              value={editableTitle}
+              onChangeText={setEditableTitle}
+              placeholder={t('journal.detail.title_placeholder')}
+              accessibilityLabel={t('journal.detail.title_placeholder')}
+              placeholderTextColor={noctalia.text.secondary}
+              selectionColor={noctalia.accent.base}
+            />
+          ) : (
+            <Text accessibilityRole="header" className="mb-2 font-serif text-[28px] leading-9 text-ivory">
+              {dream.title || t('journal.detail.untitled_dream')}
+            </Text>
+          )}
+          <Text className="mb-5 font-sans text-[12px] leading-5 text-ivory-muted">
+            {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
+          </Text>
+        </>
+      ) : null}
 
-      {isEditing ? (
-        <TextInput
-          testID={TID.Input.DreamTitle}
-          nativeID={TID.Input.DreamTitle}
-          className="mb-3 border-b border-line pb-1 font-serif-bold text-[24px] leading-8 text-ivory"
-          selectTextOnFocus
-          value={editableTitle}
-          onChangeText={setEditableTitle}
-          placeholder={t('journal.detail.title_placeholder')}
-          accessibilityLabel={t('journal.detail.title_placeholder')}
-          placeholderTextColor={noctalia.text.secondary}
-        />
-      ) : (
-        <Text numberOfLines={2} className="mb-3 font-display-semibold text-[22px] leading-[28px] text-ivory">
-          {dream.title || t('journal.detail.untitled_dream')}
-        </Text>
-      )}
-
+      {compactMetadata ? (
+        <View className="flex-row flex-wrap items-center gap-x-5 gap-y-2">
+          {dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream') ? (
+            <View className="max-w-full flex-row items-center gap-1.5">
+              <IconSymbol name="moon.stars.fill" size={15} color={noctalia.accent.text} />
+              <Text className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamTypeLabel || dream.dreamType}</Text>
+            </View>
+          ) : null}
+          <View className="max-w-full flex-row items-center gap-1.5">
+            <IconSymbol name="paintpalette" size={15} color={noctalia.accent.text} />
+            {dreamThemeLabel ? (
+              <Text className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamThemeLabel}</Text>
+            ) : (
+              <Pressable onPress={startMetadataEditing} disabled={isAnalysisLocked} accessibilityRole="button" className="min-h-[44px] shrink justify-center">
+                <Text className="font-sans-medium text-[13px] text-champagne-on underline">{t('journal.detail.theme_placeholder')}</Text>
+              </Pressable>
+            )}
+          </View>
+        </View>
+      ) : <>
       {(isEditing || (dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream'))) && (
         <View className={`mt-2 flex-row gap-2 ${isEditing ? 'items-start' : 'items-center'}`}
         >
@@ -1693,17 +1713,18 @@ function JournalDetailContent() {
           ) : (
             <Pressable onPress={startMetadataEditing} disabled={isAnalysisLocked}
               accessibilityRole="button" className="min-h-[44px] flex-1 justify-center">
-              <Text className="font-sans-medium text-[14px] text-champagne-on underline">{t('journal.detail.theme_placeholder')}</Text>
+              <Text className={`font-sans-medium text-[14px] text-champagne-on underline`}>{t('journal.detail.theme_placeholder')}</Text>
             </Pressable>
           )
         )}
       </View>
+      </>}
 
       {!isEditing && dreamMemoryItems.length > 0 && (
         <View className="mt-3.5 gap-2 border-t border-t-line pt-3">
           <View className="flex-row items-center gap-2">
             <IconSymbol name="moon.stars.fill" size={16} color={noctalia.accent.text} />
-            <Text className="font-sans-bold text-[12px] uppercase text-champagne-on">
+            <Text className={`font-sans-bold text-[12px] uppercase text-champagne-on`}>
               {t('journal.detail.zone.memory')}
             </Text>
           </View>
@@ -1740,15 +1761,15 @@ function JournalDetailContent() {
         accessibilityState={{ disabled: isAnalysisLocked }}
         accessible
         disabled={isAnalysisLocked}
-        className={`absolute bottom-4 right-4 h-8 w-8 items-center justify-center rounded-full ${
-          isEditing ? 'bg-champagne' : 'bg-ink-active'
+        className={`absolute ${compactMetadata ? 'top-0 right-0' : 'bottom-4 right-4'} h-8 w-8 items-center justify-center rounded-full ${
+          isEditing ? 'bg-champagne' : compactMetadata ? 'bg-transparent' : 'bg-ink-active'
         } ${isAnalysisLocked ? 'opacity-70' : ''}`}
         hitSlop={8}
       >
         <IconSymbol
           name={isEditing ? 'checkmark' : 'pencil'}
           size={16}
-          color={isEditing ? noctalia.action.primaryText : noctalia.text.secondary}
+          color={isEditing ? noctalia.action.primaryText : noctalia.accent.text}
         />
       </PressableScale>
     </View>
@@ -1882,6 +1903,24 @@ function JournalDetailContent() {
       return null;
     }
 
+    if (awaitingPurchasedAnalysis || isAnalyzing || isAnalysisPending) {
+      return (
+        <View
+          testID={TID.Component.DreamDetailActionCard}
+          accessibilityLiveRegion="polite"
+          className="mb-[18px] flex-row items-center gap-3 rounded-lg border border-line-strong bg-ink-active p-4"
+        >
+          <ActivityIndicator size="small" color={noctalia.accent.text} />
+          <Text
+            testID={TID.Text.DreamDetailActionTitle}
+            className="flex-1 font-sans-bold text-[16px] text-ivory"
+          >
+            {t('loading.analyzing')}
+          </Text>
+        </View>
+      );
+    }
+
     const disabled = detailActionCard.disabled || isPrimaryActionBusy || isAnalysisLocked;
     const onPress = isStalePrimaryAction
       ? handleStaleReanalyze
@@ -1908,12 +1947,12 @@ function JournalDetailContent() {
             disabled ? 'opacity-75' : ''
           }`}
         >
-          <View className="h-[34px] w-[34px] items-center justify-center rounded-full bg-champagne">
-            <IconSymbol name={detailActionCard.icon} size={18} color={noctalia.action.primaryText} />
+          <View className={`h-[34px] w-[34px] items-center justify-center rounded-full bg-ink-active`}>
+            <IconSymbol name={detailActionCard.icon} size={18} color={noctalia.accent.text} />
           </View>
           <View className="flex-1 gap-1">
             <Text
-              className="font-sans-bold text-[16px] text-ivory"
+              className={`font-sans-bold text-[16px] text-ivory`}
               testID={TID.Text.DreamDetailActionTitle}
             >
               {detailActionCard.cta}
@@ -1921,9 +1960,9 @@ function JournalDetailContent() {
             {renderQuotaHint()}
           </View>
           {isPrimaryActionBusy ? (
-            <ActivityIndicator size="small" color={noctalia.text.primary} />
+            <ActivityIndicator size="small" color={noctalia.accent.text} />
           ) : (
-            <IconSymbol name="arrow.right" size={18} color={noctalia.text.primary} />
+            <IconSymbol name="arrow.right" size={18} color={noctalia.accent.text} />
           )}
         </PressableScale>
       );
@@ -1932,21 +1971,21 @@ function JournalDetailContent() {
     return (
       <View
         testID={TID.Component.DreamDetailActionCard}
-        className="mb-[18px] gap-3.5 rounded-lg border border-line-strong bg-ink-active p-4"
+        className={`mb-[18px] gap-3.5 rounded-lg border border-line-strong bg-ink-active p-4`}
       >
         <View className="flex-row items-start gap-3">
-          <View className="h-[34px] w-[34px] items-center justify-center rounded-full bg-champagne">
-            <IconSymbol name={detailActionCard.icon} size={18} color={noctalia.action.primaryText} />
+          <View className={`h-[34px] w-[34px] items-center justify-center rounded-full bg-ink-active`}>
+            <IconSymbol name={detailActionCard.icon} size={18} color={noctalia.accent.text} />
           </View>
           <View className="flex-1 gap-1">
             <Text
-              className="font-sans-bold text-[11px] uppercase text-champagne-on"
+              className={`font-sans-bold text-[11px] uppercase text-champagne-on`}
               testID={TID.Text.DreamDetailActionStep}
             >
               {detailActionCard.step}
             </Text>
             <Text
-              className="font-display-medium text-[17px] leading-[23px] text-ivory"
+              className={`font-display-medium text-[17px] leading-[23px] text-ivory`}
               testID={TID.Text.DreamDetailActionTitle}
             >
               {detailActionCard.title}
@@ -1982,7 +2021,7 @@ function JournalDetailContent() {
               color={noctalia.action.primaryText}
             />
           )}
-          <Text className="font-sans-bold text-[15px] text-on-champagne">
+          <Text className={`font-sans-bold text-[15px] text-on-champagne`}>
             {analysisAccessLabel ?? detailActionCard.cta}
           </Text>
         </PressableScale>
@@ -1998,30 +2037,30 @@ function JournalDetailContent() {
     return (
       <View
         testID={TID.Component.FirstValueBackupCard}
-        className="mb-5 gap-2.5 rounded-lg border border-line-strong bg-ink-soft p-4"
+        className={`mb-5 gap-2.5 rounded-lg border border-line-strong bg-ink-soft p-4`}
       >
         <View className="flex-row items-center gap-2">
           <IconSymbol name="lock.shield" size={20} color={noctalia.accent.text} />
           <Text
-            className="flex-1 font-display-medium text-[16px] leading-[22px] text-ivory"
+            className={`flex-1 font-display-medium text-[16px] leading-[22px] text-ivory`}
             testID={TID.Text.FirstValueBackupTitle}
           >
             {t('journal.detail.backup_prompt.title')}
           </Text>
         </View>
-        <Text className="font-sans text-[13px] leading-[18px] text-ivory-muted">
+        <Text className={`font-sans text-[13px] leading-[18px] text-ivory-muted`}>
           {t('journal.detail.backup_prompt.message')}
         </Text>
         <PressableScale
           testID={TID.Button.FirstValueBackupCta}
           onPress={handleFirstValueBackup}
-          className="flex-row items-center gap-1.5 self-start rounded-full border border-line px-3.5 py-[9px]"
+          className={`flex-row items-center gap-1.5 self-start rounded-full border border-line bg-ink-active px-3.5 py-[9px]`}
           accessibilityRole="button"
         >
-          <Text className="font-sans-bold text-[13px] text-ivory">
+          <Text className={`font-sans-bold text-[13px] text-ivory`}>
             {t('journal.detail.backup_prompt.cta')}
           </Text>
-          <IconSymbol name="arrow.right" size={16} color={noctalia.text.primary} />
+          <IconSymbol name="arrow.right" size={16} color={noctalia.accent.text} />
         </PressableScale>
       </View>
     );
@@ -2030,7 +2069,7 @@ function JournalDetailContent() {
   const renderDetailZoneHeader = (label: string, testID?: string) => (
     <View className="mb-3 flex-row items-center gap-2.5">
       <Text
-        className="font-sans-bold text-[12px] uppercase text-champagne-on"
+        className={`font-sans-bold text-[12px] uppercase text-champagne-on`}
         testID={testID}
       >
         {label}
@@ -2079,35 +2118,58 @@ function JournalDetailContent() {
     }
 
     return (
-      <View testID={TID.Component.JournalIllustration} className="mb-5 overflow-hidden rounded-lg">
-        {isHdIllustrationsEnabled() && dream.imageJobErrorCode === 'HD_IMAGE_QUOTA_EXCEEDED' ? (
-          <View className="gap-3 rounded-lg bg-ink-soft p-4">
-            <Text accessibilityRole="alert" className="font-sans text-body-sm text-ivory">{t('settings.illustration.exhausted')}</Text>
-            <Pressable accessibilityRole="button" onPress={() => router.push('/settings')} className="min-h-[44px] justify-center">
-              <Text className="font-sans-medium text-champagne-on">{t('settings.illustration.preferences')}</Text>
-            </Pressable>
-          </View>
-        ) : null}
+      <View testID={TID.Component.JournalIllustration} className={hasIllustratedCover ? '-mx-4 mb-4' : 'mb-5 overflow-hidden rounded-lg'}>
         {dream.imageUrl ? (
-          <PressableScale
-            testID={TID.Button.JournalIllustrationExpand}
-            onPress={() => setIsIllustrationFullscreen(true)}
-            accessibilityRole="button"
-            accessibilityLabel={t('journal.detail.image.expand_accessibility')}
-            className="overflow-hidden rounded-lg bg-ink-soft"
-            style={{ height: 220 }}
-          >
-            <Image
-              key={displayImageUrl ?? dream.imageUrl}
-              source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
-              style={{ width: '100%', height: '100%' }}
-              contentFit="cover"
-              transition={imageConfig.transition}
-              cachePolicy={imageConfig.cachePolicy}
-              priority={imageConfig.priority}
-              placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
-            />
-          </PressableScale>
+          <View className="relative overflow-hidden bg-ink">
+            <PressableScale
+              testID={TID.Button.JournalIllustrationExpand}
+              onPress={() => setIsIllustrationFullscreen(true)}
+              accessibilityRole="button"
+              accessibilityLabel={t('journal.detail.image.expand_accessibility')}
+              className="absolute top-0 right-0 left-0"
+              style={{ height: coverLayout.imageHeight }}
+            >
+              <Image
+                key={displayImageUrl ?? dream.imageUrl}
+                source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
+                style={{ width: '100%', height: '100%' }}
+                contentFit="cover"
+                transition={imageConfig.transition}
+                cachePolicy={imageConfig.cachePolicy}
+                priority={imageConfig.priority}
+                placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+              />
+            </PressableScale>
+            <View
+              pointerEvents="none"
+              className="absolute top-0 right-0 left-0"
+              style={{ height: coverLayout.imageHeight + 1 }}
+            >
+              <LinearGradient
+                colors={noctalia.cover.gradient}
+                locations={noctalia.cover.gradientLocations}
+                className="absolute bottom-0 right-0 left-0"
+                style={{ height: Math.min(360, coverLayout.imageHeight) }}
+              />
+            </View>
+            {/* Prefer the portrait ratio, but reserve measured title/date space
+                on short screens. The caption sits 50 units above the image end. */}
+            <View pointerEvents="none" style={{ height: coverLayout.captionTop }} />
+            <View
+              pointerEvents="none"
+              className="px-6 pb-6 pt-4"
+              onLayout={({ nativeEvent: { layout } }) => {
+                setCoverCaptionHeight(previous => previous === layout.height ? previous : layout.height);
+              }}
+            >
+              <Text accessibilityRole="header" className="font-serif text-[28px] leading-9 text-ivory">
+                {dream.title || t('journal.detail.untitled_dream')}
+              </Text>
+              <Text className="mt-2 font-sans text-[12px] leading-5 text-ivory-muted">
+                {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
+              </Text>
+            </View>
+          </View>
         ) : illustrationSidecar === 'failed' ? (
           visibleIllustrationCta === 'retry' || getImageJobFailure(dream.imageJobErrorCode) ? (
             <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage}
@@ -2216,6 +2278,14 @@ function JournalDetailContent() {
             )}
           </View>
         )}
+        {isHdIllustrationsEnabled() && dream.imageJobErrorCode === 'HD_IMAGE_QUOTA_EXCEEDED' ? (
+          <View className="gap-3 rounded-lg bg-ink-soft p-4">
+            <Text accessibilityRole="alert" className="font-sans text-body-sm text-ivory">{t('settings.illustration.exhausted')}</Text>
+            <Pressable accessibilityRole="button" onPress={() => router.push('/settings')} className="min-h-[44px] justify-center">
+              <Text className={`font-sans-medium text-champagne-on`}>{t('settings.illustration.preferences')}</Text>
+            </Pressable>
+          </View>
+        ) : null}
         {isRetryingImage && (
           <View className="absolute inset-0 items-center justify-center rounded-lg bg-ink-overlay">
             <ActivityIndicator color={noctalia.text.primary} />
@@ -2228,13 +2298,6 @@ function JournalDetailContent() {
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <View className="relative flex-1 overflow-hidden bg-ink">
-        <LinearGradient
-          colors={gradientColors}
-          locations={gradientLocations}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
-        <AtmosphericBackground />
         <KeyboardAvoidingView
           className="flex-1"
           behavior={keyboardBehavior}
@@ -2242,21 +2305,26 @@ function JournalDetailContent() {
         >
         <PressableScale
           onPress={handleBackPress}
-          className="absolute left-5 z-50 h-11 w-11 items-center justify-center rounded-[22px] border border-line bg-ink-raised"
-          style={[shadows.lg, { top: insets.top + 12 }]}
+          className="absolute left-3 z-50 min-h-11 flex-row items-center gap-2 rounded-[22px] border border-line bg-ink/90 px-3"
+          style={{ top: insets.top + 12 }}
           testID={TID.Button.NavigateJournal}
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <IconSymbol name="chevron.left" size={22} color={noctalia.text.primary} />
+          <Text className="font-sans-medium text-[13px] text-ivory">{t('nav.journal')}</Text>
         </PressableScale>
         <ScrollView
           ref={scrollViewRef}
           className="flex-1"
-          style={{ marginTop: insets.top }}
+          onLayout={({ nativeEvent: { layout } }) => {
+            setCoverViewport(previous => previous?.width === layout.width && previous.height === layout.height
+              ? previous : { width: layout.width, height: layout.height });
+          }}
+          style={{ marginTop: hasIllustratedCover ? 0 : insets.top }}
           contentContainerStyle={{
-            paddingTop: 64,
+            paddingTop: hasIllustratedCover ? 0 : 80,
             paddingBottom:
               ((isEditing || isEditingTranscript) ? 220 : 100) + insets.bottom,
           }}
@@ -2268,6 +2336,7 @@ function JournalDetailContent() {
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
           <View className="px-4 pb-6">
+            {hasIllustratedCover ? renderIllustrationSection() : null}
             {/* The sections enter once, staggered, as the dream loads in. The `Reveal`
                 wrappers sit OUTSIDE the conditionals on purpose: they mount with the
                 screen and stay mounted, so toggling edit mode never replays the
@@ -2294,7 +2363,7 @@ function JournalDetailContent() {
                 onLayout={(event) => setTranscriptSectionOffset(event.nativeEvent.layout.y)}
               >
                 <Reveal index={2}>
-                  <View className="rounded-md border-t border-t-line bg-ink-soft px-4 pt-6 pb-4 dark:bg-ink-card">
+                  <View className="px-2 pb-4">
                     {renderTranscriptBody()}
                   </View>
                 </Reveal>
@@ -2340,7 +2409,7 @@ function JournalDetailContent() {
                   ) : dream.interpretation ? (
                     <>
                       <View className="mt-2 mb-3 items-center">
-                        <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
+                        <Text className={`font-display-medium text-[13px] uppercase text-champagne-on`}>
                           {t('journal.detail.interpretation_header')}
                         </Text>
                         <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
@@ -2363,14 +2432,14 @@ function JournalDetailContent() {
                   offerEligible={recallOffer.offerEligible}
                 />
               ) : null}
-              {renderIllustrationSection()}
+              {!hasIllustratedCover ? renderIllustrationSection() : null}
             </Reveal>
 
             <Reveal index={6}>
               {!isAnalysisPending && showCompletedReading && dream.symbols && dream.symbols.length > 0 ? (
                 <>
                   <View className="mt-2 mb-3 items-center">
-                    <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
+                    <Text className={`font-display-medium text-[13px] uppercase text-champagne-on`}>
                       {t('journal.detail.symbols_header')}
                     </Text>
                     <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
@@ -2391,7 +2460,7 @@ function JournalDetailContent() {
               {!isAnalysisPending && showCompletedReading && dream.emotions && dream.emotions.length > 0 ? (
                 <>
                   <View className="mt-2 mb-3 items-center">
-                    <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
+                    <Text className={`font-display-medium text-[13px] uppercase text-champagne-on`}>
                       {t('journal.detail.emotions_header')}
                     </Text>
                     <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
@@ -2416,7 +2485,7 @@ function JournalDetailContent() {
                   {!isAnalysisPending && showCompletedReading && dream.reflectionQuestions && dream.reflectionQuestions.length > 0 ? (
                     <>
                       <View className="mt-2 mb-3 items-center">
-                        <Text className="font-display-medium text-[13px] uppercase text-champagne-on">
+                        <Text className={`font-display-medium text-[13px] uppercase text-champagne-on`}>
                           {t('journal.detail.reflection_header')}
                         </Text>
                         <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
@@ -2455,14 +2524,14 @@ function JournalDetailContent() {
                   className={`flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5 ${
                     isAnalysisLocked ? 'opacity-60' : ''
                   }`}
-                  style={shadows.sm}
+
                 >
                   <IconSymbol
                     name={dream.isFavorite ? 'heart.fill' : 'heart'}
                     size={24}
-                    color={dream.isFavorite ? noctalia.status.warning.icon : noctalia.text.primary}
+                    color={noctalia.accent.text}
                   />
-                  <Text className="font-sans-medium text-[14px] text-ivory">
+                  <Text className={`font-sans-medium text-[14px] text-ivory`}>
                     {dream.isFavorite
                       ? t('journal.detail.favorite.on')
                       : t('journal.detail.favorite.off')}
@@ -2477,14 +2546,14 @@ function JournalDetailContent() {
                   className={`flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5 ${
                     isSharing || isAnalysisLocked || shareMediaPending ? 'opacity-70' : ''
                   }`}
-                  style={shadows.sm}
+
                 >
                   {isSharing || shareMediaPending ? (
-                    <ActivityIndicator size="small" color={noctalia.text.primary} />
+                    <ActivityIndicator size="small" color={noctalia.accent.text} />
                   ) : (
-                    <IconSymbol name="square.and.arrow.up" size={24} color={noctalia.text.primary} />
+                    <IconSymbol name="square.and.arrow.up" size={24} color={noctalia.accent.text} />
                   )}
-                  <Text className="font-sans-medium text-[14px] text-ivory">
+                  <Text className={`font-sans-medium text-[14px] text-ivory`}>
                     {isSharing || shareMediaPending
                       ? t('journal.detail.share.button_loading')
                       : t('journal.detail.share.button_default')}
@@ -2501,7 +2570,7 @@ function JournalDetailContent() {
                 accessibilityLabel={t('journalDetail.a11y.deleteDream')}
               >
                 <IconSymbol name="trash" size={18} color={noctalia.status.danger.icon} />
-                <Text className="font-sans-bold text-[15px] text-danger-on">
+                <Text className={`font-sans-medium text-[15px] text-danger-on`}>
                   {t('journal.menu.delete')}
                 </Text>
               </PressableScale>
@@ -2595,7 +2664,7 @@ function JournalDetailContent() {
         >
           <View
             testID={TID.Modal.JournalIllustrationFullscreen}
-            className="flex-1 bg-ink-overlay"
+            className="flex-1 bg-ink"
           >
             <Pressable
               className="absolute inset-0"

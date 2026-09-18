@@ -277,17 +277,27 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     return result;
   }, [applyLocalSubscriptionCache, isMockMode, user, userId, waitForSubscriptionVersion]);
 
+  const syncInBackground = useCallback((source: string) => {
+    void syncSubscription(source).catch((err: unknown) => {
+      // Background refresh must never become an unhandled rejection. Do not
+      // log the HttpError itself: it contains the response body and URL.
+      if (__DEV__) {
+        const status = (err as { status?: unknown } | null)?.status;
+        console.warn('[useSubscription] Background sync failed', {
+          source,
+          status: typeof status === 'number' ? status : undefined,
+        });
+      }
+    });
+  }, [syncSubscription]);
+
   const syncOnStatusChange = useCallback((source: string, nextStatus: SubscriptionStatus | null) => {
     if (!userId || !nextStatus || requiresAuth) return;
     const statusKey = `${nextStatus.tier}-${nextStatus.isActive}-${nextStatus.expiryDate ?? 'no-expiry'}`;
     if (lastSyncedStatusKeyRef.current === statusKey) return;
     lastSyncedStatusKeyRef.current = statusKey;
-    void syncSubscription(source).catch((err) => {
-      if (__DEV__) {
-        console.warn('[useSubscription] Subscription sync failed', err);
-      }
-    });
-  }, [requiresAuth, syncSubscription, userId]);
+    syncInBackground(source);
+  }, [requiresAuth, syncInBackground, userId]);
 
   const convergeServerSubscription = useCallback(async (
     source: string,
@@ -623,8 +633,8 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       return;
     }
     applyStatusUpdate('resume', newStatus);
-    void syncSubscription('resume');
-  }, [applyStatusUpdate, syncSubscription]);
+    syncInBackground('resume');
+  }, [applyStatusUpdate, syncInBackground]);
 
   const handleStatusFromCustomerInfo = useCallback((newStatus: SubscriptionStatus) => {
     // ✅ FIX: Ignore stale RevenueCat updates during user transition
@@ -637,9 +647,9 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     }
     applyStatusUpdate('customer_info', newStatus);
     if (newStatus.tier === 'free' || newStatus.isActive === false) {
-      void syncSubscription('customer_info_free');
+      syncInBackground('customer_info_free');
     }
-  }, [applyStatusUpdate, syncSubscription]);
+  }, [applyStatusUpdate, syncInBackground]);
 
   const handleStatusFromExpiryTimer = useCallback((newStatus: SubscriptionStatus) => {
     // ✅ FIX: Ignore stale updates during user transition

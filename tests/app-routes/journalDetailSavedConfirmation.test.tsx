@@ -21,6 +21,7 @@ let mockUser: { id: string } | null = { id: 'user-1' };
 const mockUpdateDream = jest.fn();
 const mockRetryDreamSync = jest.fn(async (): Promise<void> => undefined);
 let mockCompositeLoads = true;
+let mockThemeMode: 'light' | 'dark' = 'dark';
 const mockRetryMedia = jest.fn();
 const mockShareComposite = jest.fn();
 jest.mock('@/components/ui/MarkdownText', () => ({ MarkdownText: ({ children }: { children: string }) => <span>{children}</span> }));
@@ -124,6 +125,7 @@ jest.mock('react-native', () => {
     },
     Text: createElement('span'),
     TextInput: createElement('input'),
+    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
     View: createElement('div'),
   };
 });
@@ -297,7 +299,7 @@ jest.mock('@/context/OnboardingContext', () => ({
 
 jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({
-    mode: 'dark',
+    mode: mockThemeMode,
     colors: {
       accent: '#6f62b5',
       accentText: '#55479c',
@@ -389,6 +391,7 @@ const { default: JournalDetailScreen } = require('@/app/journal/[id]');
 
 describe('journal detail saved confirmation route', () => {
   beforeEach(() => {
+    mockThemeMode = 'dark';
     mockSetParams.mockReset();
     mockAnalyzeDream.mockReset();
     mockTrackProductEvent.mockReset();
@@ -517,6 +520,22 @@ describe('journal detail saved confirmation route', () => {
     expect(mockSetParams).toHaveBeenCalledWith({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
     await act(async () => { view.rerender(<JournalDetailScreen />); });
     expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows analysis in progress on the detail while the purchased analysis is running', async () => {
+    mockTier = 'plus';
+    requestAnalysisReturnRoute({ dreamId: '42', dreamClientRequestId: 'persisted-original-42', dreamOwnerId: 'user-1' }, 'user-1');
+    mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' };
+    let finish!: () => void;
+    mockAnalyzeDream.mockReturnValueOnce(new Promise<void>(resolve => { finish = resolve; }));
+    await act(async () => { render(<JournalDetailScreen />); });
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('loading.analyzing')).toBeTruthy();
+    expect(screen.queryByTestId(TID.Text.DreamDetailActionMessage)).toBeNull();
+    expect(screen.queryByTestId(TID.Button.DreamDetailPrimaryCta)).toBeNull();
+    expect(screen.queryByTestId(TID.Text.DreamDetailQuotaHint)).toBeNull();
+    expect(screen.queryByText('Analyze saved dream')).toBeNull();
+    await act(async () => { finish(); });
   });
 
   it('does not launch an analysis from a stale or fabricated purchase URL', async () => {
@@ -686,7 +705,8 @@ describe('journal detail saved confirmation route', () => {
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     await act(async () => { allow(true); });
     expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
-    expect((screen.getByTestId(TID.Button.DreamDetailPrimaryCta) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.queryByTestId(TID.Button.DreamDetailPrimaryCta)).toBeNull();
+    expect(screen.getByText('loading.analyzing')).toBeTruthy();
     await act(async () => { finish(); });
   });
 
@@ -777,6 +797,59 @@ describe('journal detail saved confirmation route', () => {
     render(<JournalDetailScreen />);
     expect(screen.getByText('“I flew over a quiet city”')).toBeTruthy();
     expect(screen.queryByText('journal.detail.quote_attribution')).toBeNull();
+  });
+
+  it.each(['light', 'dark'] as const)('keeps the illustrated title/date and image/edit actions in %s mode', async (theme: 'light' | 'dark') => {
+    mockThemeMode = theme;
+    const title = 'The lake beneath a golden moon, beyond the mountains and the quiet sleeping village';
+    mockDreams = [buildDream({ title, imageUrl: 'https://example.com/dream.webp' })];
+    render(<JournalDetailScreen />);
+
+    const cover = screen.getByTestId(TID.Component.JournalIllustration);
+    const metadata = screen.getByTestId(TID.Component.MetadataCard);
+    expect(screen.getAllByText(title)).toHaveLength(1);
+    expect(cover.contains(screen.getByText(title))).toBe(true);
+    expect(cover.compareDocumentPosition(metadata) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(metadata.contains(screen.getByText(title))).toBe(false);
+    const date = screen.getByText('3 sept. · 07:12');
+    expect(cover.contains(date)).toBe(true);
+    expect(screen.getByText(title).compareDocumentPosition(date) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.JournalIllustrationExpand)); });
+    expect(screen.getByTestId(TID.Modal.JournalIllustrationFullscreen)).toBeTruthy();
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.JournalIllustrationClose)); });
+    expect(screen.queryByTestId(TID.Modal.JournalIllustrationFullscreen)).toBeNull();
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.EditMetadata)); });
+    expect((screen.getByTestId(TID.Input.DreamTitle) as HTMLInputElement).value).toBe(title);
+    expect(mockUpdateDream).not.toHaveBeenCalled();
+  });
+
+  it.each([false, true])('keeps narrative, analysis and reflection in reading order with image=%s', (withImage: boolean) => {
+    mockSearchParams = { id: '42' };
+    mockDreams = [buildDream({
+      isAnalyzed: true,
+      analysisStatus: 'done',
+      interpretation: 'A quiet reflection',
+      imageGenerationFailed: !withImage,
+      symbols: [{ name: 'Lake', meaning: 'Stillness' }],
+      imageUrl: withImage ? 'https://example.com/dream.webp' : undefined,
+    })];
+    render(<JournalDetailScreen />);
+    const narrative = screen.getByTestId(TID.Component.TranscriptCard);
+    const reading = screen.getByTestId(TID.Component.DreamDetailReadingZone);
+    const illustration = screen.getByTestId(TID.Component.JournalIllustration);
+    const reflection = screen.getByTestId(TID.Text.DreamDetailReflectionZone);
+    const before = (first: Element, second: Element) => {
+      expect(first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    };
+    before(narrative, reading);
+    before(reading, screen.getByText('Lake'));
+    before(screen.getByText('Lake'), reflection);
+    if (withImage) before(illustration, narrative);
+    else {
+      before(reading, illustration);
+      before(illustration, reflection);
+    }
   });
 
   it('keeps illustration retry available after the HD quota is exhausted', () => {

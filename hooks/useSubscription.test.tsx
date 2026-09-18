@@ -51,6 +51,15 @@ let mockCurrentUser: any = { id: 'user-1', app_metadata: { subscription_version:
 const mockRefreshUser = jest.fn(async () => mockCurrentUser);
 const mockSetUserTierLocally = jest.fn();
 
+const mockSubscriptionMonitor = jest.fn();
+const mockCustomerInfoListener = jest.fn();
+jest.mock('./useSubscriptionMonitor', () => ({
+  useSubscriptionMonitor: (...args: unknown[]) => mockSubscriptionMonitor(...args),
+}));
+jest.mock('./useSubscriptionCustomerInfoListener', () => ({
+  useSubscriptionCustomerInfoListener: (...args: unknown[]) => mockCustomerInfoListener(...args),
+}));
+
 jest.mock('../context/AuthContext', () => ({
   useAuth: () => ({
     user: mockCurrentUser,
@@ -133,6 +142,34 @@ describe('useSubscription', () => {
     jest.mocked(service.restoreSubscriptionPurchases).mockResolvedValue({ tier: 'plus', isActive: true } as any);
     jest.mocked(service.syncSubscriptionPurchases).mockResolvedValue(undefined as any);
     jest.mocked(service.addSubscriptionStatusUpdateListener).mockReturnValue(() => {});
+  });
+
+  it.each(['resume', 'customer_info_free'])('handles a background 401 from %s without rejecting or changing the user tier', async (source: string) => {
+    const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const now = jest.spyOn(Date, 'now');
+    try {
+      const { result } = renderSubscriptionHook();
+      await waitFor(() => expect(result.current.loading).toBe(false));
+      mockSetUserTierLocally.mockClear();
+      now.mockReturnValue(Date.now() + 61_000);
+      syncSubscriptionFromServer.mockRejectedValueOnce(Object.assign(new Error('HTTP 401'), {
+        status: 401, bodyText: 'private response', url: 'https://private.example',
+      }));
+      const hook = source === 'resume' ? mockSubscriptionMonitor : mockCustomerInfoListener;
+      const callback = hook.mock.calls.at(-1)?.[0] as (status: { tier: string; isActive: boolean }) => void;
+      await act(async () => {
+        callback({ tier: 'free', isActive: false });
+      });
+      await waitFor(() => expect(warn).toHaveBeenCalledWith(
+        '[useSubscription] Background sync failed', { source, status: 401 }
+      ));
+      expect(mockSetUserTierLocally).not.toHaveBeenCalled();
+      expect(result.current.loading).toBe(false);
+    } finally {
+      now.mockRestore();
+      warn.mockRestore();
+    }
   });
 
   describe('authentication handling', () => {

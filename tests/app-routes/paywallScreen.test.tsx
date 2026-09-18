@@ -358,6 +358,22 @@ describe('Paywall screen', () => {
     });
   });
 
+  it('dispatches the purchase destination once while route params and entitlement rerender', async () => {
+    mockParams = { trigger: 'analysis_cta', afterSave: '1', dreamId: '42', dreamOwnerId: 'user-1' };
+    mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true, serverConfirmed: true });
+    const view = render(<PaywallScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.PaywallPurchase)); });
+    mockParams = { ...mockParams };
+    const previous = mockUseSubscription.mock.results.at(-1)?.value as Record<string, unknown>;
+    mockUseSubscription.mockReturnValue({ ...previous, isActive: true, status: { tier: 'plus', isActive: true } });
+    view.rerender(<PaywallScreen />);
+    mockParams = { ...mockParams };
+    view.rerender(<PaywallScreen />);
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockDismissTo).not.toHaveBeenCalled();
+    expect(mockBack).not.toHaveBeenCalled();
+  });
+
   it.each(['cancelled', 'inactive', 'account-change'])('does not resume a dream after %s', async (outcome: string) => {
     mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamOwnerId: 'user-1' };
     if (outcome === 'cancelled') mockPurchase.mockRejectedValue(Object.assign(new Error('Cancelled'), { userCancelled: true }));
