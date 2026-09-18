@@ -2310,6 +2310,12 @@ function JournalDetailContent() {
               {(showCompletedReading || isAnalysisPending) ? (
                 <View testID={TID.Component.DreamDetailReadingZone}>
                   {renderDetailZoneHeader(t('journal.detail.zone.reading'), TID.Text.DreamDetailReadingZone)}
+                  {showCompletedReading && !isAnalysisPending && dream.interpretation?.trim() ? (
+                    <PressableScale onPress={() => setIsReadingAnalysis(true)} accessibilityRole="button"
+                      testID="analysis.reading.open" className="min-h-[48px] justify-center self-start py-3">
+                      <Text className="font-sans-bold text-[15px] text-champagne-on">{t('analysis.reading.open')}</Text>
+                    </PressableScale>
+                  ) : null}
                   {isAnalysisPending ? (
                     <Skeleton className="h-[60px] w-full rounded-sm" />
                   ) : dream.shareableQuote?.trim() ? (
@@ -2555,7 +2561,11 @@ function JournalDetailContent() {
           </View>
         )}
         {isReadingAnalysis && dream.interpretation?.trim() ? (
-          <AnalysisReadingModal dream={dream} onClose={() => setIsReadingAnalysis(false)} />
+          <AnalysisReadingModal dream={dream} imageUri={displayImageUrl}
+            imageLoadFailed={Boolean(dream.imageUrl && !displayImageUrl && media.error)} onReloadImage={media.retry}
+            isRetryingImage={isRetryingImage}
+            onRetryImage={visibleIllustrationCta === 'retry' && !getImageJobFailure(dream.imageJobErrorCode) ? onRetryImage : undefined}
+            onClose={() => setIsReadingAnalysis(false)} />
         ) : null}
         <AnalysisNoticeSheet
           visible={Boolean(analysisNotice)}
