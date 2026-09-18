@@ -53,13 +53,13 @@ Deno.test('prompt keeps malicious transcript as JSON data and distinguishes omit
   assertEquals(prompt.endsWith(JSON.stringify(transcript)), true);
   assertStringIncludes(prompt, 'Only an excerpt is available');
   assertStringIncludes(prompt, 'no minimum word count');
-  assertStringIncludes(prompt, 'What your account describes');
-  assertStringIncludes(prompt, 'Possible reflections');
+  assertStringIncludes(prompt, 'What stands out');
+  assertStringIncludes(prompt, 'Possible readings');
   assertEquals(buildAnalysisPrompt('A door.', 'English').includes('Only an excerpt is available'), false);
 });
 
 Deno.test('analysis sends the compact policy once at system level and preserves source-only output', async () => {
-  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-09-17.poetic2');
+  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-09-18.grounded-depth1');
   const originalFetch = globalThis.fetch;
   let calls = 0;
   globalThis.fetch = async (input, init) => {
@@ -137,4 +137,20 @@ Deno.test('literary license stays scoped to the poetic field and never becomes f
   assertStringIncludes(prompt, 'not a verbatim excerpt');
   assertStringIncludes(prompt, 'Do not add an author name');
   assertStringIncludes(prompt, "infer the dreamer's feelings");
+});
+
+Deno.test('reading depth stays grounded while supporting places, gestures and specific questions', () => {
+  const prompt = buildAnalysisPrompt('I stood below a balcony. People looked down at me.', 'English');
+  assertStringIncludes(prompt, 'literal and figurative readings');
+  assertStringIncludes(prompt, 'objects, places, gestures or interactions actually present');
+  assertStringIncludes(prompt, 'one to three optional, gentle, non-leading questions anchored in distinct details');
+  assertStringIncludes(prompt, 'no minimum word count');
+  assertStringIncludes(prompt, "Do not infer the dreamer's unreported feelings");
+  assertEquals(sanitizeAnalysisDetails({
+    symbols: [{ name: 'Balcony', meaning: 'The reported height could invite a personal association with distance.' }],
+    emotions: [], reflectionQuestions: ['What did looking down mean in this scene?'],
+  }), {
+    symbols: [{ name: 'Balcony', meaning: 'The reported height could invite a personal association with distance.' }],
+    emotions: [], reflectionQuestions: ['What did looking down mean in this scene?'],
+  });
 });
