@@ -31,6 +31,8 @@ const mockUseFocusEffect = jest.fn();
 const mockStopRecording = jest.fn();
 const mockTrackProductEvent = jest.fn().mockResolvedValue(undefined);
 
+let mockQuotaState = { tier: 'free' as 'guest' | 'free' | 'plus', loading: false, error: null as Error | null, usage: { analysis: { used: 0, limit: 3, remaining: 3 } } };
+
 let mockCurrentUser: { id: string } | null = { id: 'user-1' };
 let mockDreams: DreamAnalysis[] = [];
 let mockPendingRecordingIntent: {
@@ -517,11 +519,8 @@ jest.doMock('@/hooks/useAnalysisProgress', () => ({
 jest.doMock('@/hooks/useQuota', () => ({
   useQuota: () => ({
     canAnalyzeNow: true,
-    error: null,
-    loading: false,
     quotaStatus: null,
-    tier: 'free',
-    usage: { analysis: { used: 0, limit: 3, remaining: 3 } },
+    ...mockQuotaState,
   }),
 }));
 
@@ -611,10 +610,6 @@ jest.doMock('@/lib/onboardingState', () => ({
   }),
   resolvePendingAnalysisRestart: () => 'none',
   resolveRecordingEntryIntent: () => null,
-}));
-
-jest.doMock('@/lib/paywallRoute', () => ({
-  buildPaywallHref: () => '/paywall',
 }));
 
 jest.doMock('@/lib/recordingActivation', () => ({
@@ -778,6 +773,7 @@ describe('Recording screen', () => {
 
   beforeEach(() => {
     mockCurrentUser = { id: 'user-1' };
+    mockQuotaState = { tier: 'free', loading: false, error: null, usage: { analysis: { used: 0, limit: 3, remaining: 3 } } };
     mockDreams = [];
     mockPendingRecordingIntent = null;
     mockTransitionOnboarding = jest.fn().mockResolvedValue(undefined);
@@ -1456,6 +1452,67 @@ describe('Recording screen', () => {
     resolveCategorize?.({ title: 'Rain Room', theme: 'calm', dreamType: 'Symbolic Dream' });
   });
 
+  it('saves once then opens only the offer with the exact saved dream identity', async () => {
+    mockQuotaState.usage.analysis = { used: 3, limit: 3, remaining: 0 };
+    let finish!: (dream: DreamAnalysis) => void;
+    mockAddDream.mockImplementationOnce(() => new Promise<DreamAnalysis>(resolve => { finish = resolve; }));
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A quiet lake' } });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('recording-save'));
+      fireEvent.click(screen.getByTestId('recording-save'));
+    });
+    expect(mockAddDream).toHaveBeenCalledTimes(1);
+    expect(mockReplace).not.toHaveBeenCalled();
+    await act(async () => { finish({ ...buildDream('A quiet lake'), remoteId: 17, clientRequestId: 'capture-42' }); });
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockReplace).toHaveBeenCalledWith({
+      pathname: '/paywall',
+      params: { trigger: 'analysis_cta', afterSave: '1', dreamId: '42', dreamRemoteId: '17', dreamClientRequestId: 'capture-42', dreamOwnerId: 'user-1' },
+    });
+    expect(mockPush).not.toHaveBeenCalled();
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+  });
+
+  it.each(['available', 'plus', 'guest', 'loading', 'offline'])(
+    'opens only the detail when access is %s, without a late redirect', async (access: string) => {
+      mockQuotaState.usage.analysis = { used: 3, limit: 3, remaining: access === 'available' ? 1 : 0 };
+      if (access === 'plus') mockQuotaState.tier = 'plus';
+      if (access === 'guest') { mockQuotaState.tier = 'guest'; mockCurrentUser = null; }
+      if (access === 'loading') mockQuotaState.loading = true;
+      if (access === 'offline') mockQuotaState.error = new Error('offline');
+      const view = render(<RecordingScreen />);
+      await awaitEditorReady();
+      fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A quiet lake' } });
+      await act(async () => { fireEvent.click(screen.getByTestId('recording-save')); });
+      expect(mockReplace).toHaveBeenCalledTimes(1);
+      expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } });
+      mockQuotaState.loading = false;
+      mockQuotaState.error = null;
+      view.rerender(<RecordingScreen />);
+      expect(mockReplace).toHaveBeenCalledTimes(1);
+      expect(mockPush).not.toHaveBeenCalled();
+      expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    }
+  );
+
+  it('uses the latest entitlement if it changes while the dream is being persisted', async () => {
+    mockQuotaState.usage.analysis = { used: 3, limit: 3, remaining: 0 };
+    let finish!: (dream: DreamAnalysis) => void;
+    mockAddDream.mockImplementationOnce(() => new Promise<DreamAnalysis>(resolve => { finish = resolve; }));
+    const view = render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A quiet lake' } });
+    await act(async () => { fireEvent.click(screen.getByTestId('recording-save')); });
+    mockQuotaState.tier = 'plus';
+    view.rerender(<RecordingScreen />);
+    await act(async () => { finish(buildDream('A quiet lake')); });
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } });
+  });
+
   it('opens the saved dream immediately after a successful save', async () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
@@ -1692,6 +1749,18 @@ describe('Recording screen', () => {
     expect(mockReplace).toHaveBeenCalledTimes(1);
     expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
     expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
+  });
+
+  it('restores an exhausted saved capture straight to the offer only once', async () => {
+    mockQuotaState.usage.analysis = { used: 3, limit: 3, remaining: 0 };
+    mockPendingRecordingIntent = { entryId: 'pending-entry', savedDreamId: 42, phase: 'analysis_confirmation' };
+    mockDreams = [buildDream('already saved pending dream')];
+    const view = render(<RecordingScreen />);
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/paywall' })));
+    view.rerender(<RecordingScreen />);
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockAddDream).not.toHaveBeenCalled();
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
 
   it('resumes an in-flight analysis request without reopening the confirmation route', async () => {

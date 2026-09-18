@@ -1,4 +1,4 @@
-import { buildPaywallHref, requestAnalysisReturnRoute, consumePurchasedAnalysisReturn } from '@/lib/paywallRoute';
+import { buildPaywallHref, requestAnalysisReturnRoute, consumePurchasedAnalysisReturn, getSavedDreamReturnRoute } from '@/lib/paywallRoute';
 
 describe('paywallRoute', () => {
   it('builds a paywall route with contextual trigger params', () => {
@@ -48,4 +48,14 @@ it('expires an abandoned purchase return', () => {
     clock.mockReturnValue(11 * 60 * 1000);
     expect(consumePurchasedAnalysisReturn({ id: '42' }, 'owner')).toBe(false);
   } finally { clock.mockRestore(); }
+});
+
+
+it('returns to the saved dream without authorizing analysis when the direct offer is dismissed', () => {
+  expect(getSavedDreamReturnRoute({ afterSave: '1', dreamId: '456', dreamClientRequestId: 'saved-456', dreamOwnerId: 'owner' }, 'owner')).toEqual({
+    pathname: '/journal/[id]', params: { id: '456', clientRequestId: 'saved-456' },
+  });
+  expect(consumePurchasedAnalysisReturn({ id: '456', clientRequestId: 'saved-456' }, 'owner')).toBe(false);
+  expect(getSavedDreamReturnRoute({ afterSave: '1', dreamId: '456', dreamOwnerId: 'other' }, 'owner')).toBeNull();
+  expect(getSavedDreamReturnRoute({ dreamId: '456', dreamOwnerId: 'owner' }, 'owner')).toBeNull();
 });

@@ -9,6 +9,10 @@ let mockParams: Record<string, string> = { trigger: 'settings' };
 let mockUser = { id: 'user-1' };
 jest.doMock('@/context/AuthContext', () => ({ useAuth: () => ({ user: mockUser }) }));
 
+let mockHardwareBack: (() => boolean) | undefined;
+const mockPreventRemove = jest.fn((_prevent: boolean, _callback: () => void) => undefined);
+jest.doMock('expo-router/react-navigation', () => ({ usePreventRemove: mockPreventRemove }));
+
 const mockBack = jest.fn();
 const mockCanGoBack = jest.fn();
 const mockReplace = jest.fn();
@@ -25,6 +29,9 @@ jest.doMock('expo-router', () => ({
     replace: mockReplace,
   },
   useLocalSearchParams: () => mockParams,
+  useFocusEffect: (callback: () => void | (() => void)) => {
+    require('react').useEffect(callback, [callback]);
+  },
 }));
 
 jest.doMock('react-native', () => {
@@ -67,6 +74,10 @@ jest.doMock('react-native', () => {
 
   return {
     __esModule: true,
+    BackHandler: { addEventListener: (_name: string, callback: () => boolean) => {
+      mockHardwareBack = callback;
+      return { remove: () => { mockHardwareBack = undefined; } };
+    } },
     ActivityIndicator: () => <span data-testid="activity-indicator" />,
     Platform: {
       OS: 'web',
@@ -269,6 +280,28 @@ describe('Paywall screen', () => {
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
+  it.each(['close', 'view', 'system-back', 'android-root-back'])('returns directly to the saved dream on %s after capture', async (action: string) => {
+    mockParams = { trigger: 'analysis_cta', afterSave: '1', dreamId: '42', dreamRemoteId: '17', dreamClientRequestId: 'capture-42', dreamOwnerId: 'user-1' };
+    if (action === 'android-root-back') mockCanGoBack.mockReturnValue(false);
+    render(<PaywallScreen />);
+    await act(async () => {
+      if (action === 'android-root-back') {
+        expect(mockHardwareBack?.()).toBe(true);
+      } else if (action === 'system-back') {
+        const [prevent, callback] = mockPreventRemove.mock.calls.at(-1)!;
+        expect(prevent).toBe(true);
+        callback();
+      } else {
+        fireEvent.click(action === 'close' ? screen.getByTestId(TID.Button.PaywallClose) : screen.getByText('recording.analysis_offer.view'));
+      }
+    });
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', remoteId: '17', clientRequestId: 'capture-42' } });
+    expect(mockPreventRemove.mock.calls.at(-1)?.[0]).toBe(false);
+    expect(mockBack).not.toHaveBeenCalled();
+    expect(mockPurchase).not.toHaveBeenCalled();
+  });
+
   it('returns to settings when there is no route to go back to', () => {
     mockCanGoBack.mockReturnValue(false);
     render(<PaywallScreen />);
@@ -309,7 +342,7 @@ describe('Paywall screen', () => {
   });
 
   it.each(['purchase', 'restore'])('returns to the same dream after a confirmed %s', async (action: string) => {
-    mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamRemoteId: '17', dreamClientRequestId: 'request-42', dreamOwnerId: 'user-1' };
+    mockParams = { trigger: 'analysis_cta', afterSave: '1', dreamId: '42', dreamRemoteId: '17', dreamClientRequestId: 'request-42', dreamOwnerId: 'user-1' };
     mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true });
     mockRestore.mockResolvedValue({ tier: 'plus', isActive: true });
     render(<PaywallScreen />);

@@ -9,14 +9,16 @@ export type AnalysisPaywallParams = {
   dreamRemoteId?: string;
   dreamClientRequestId?: string;
   dreamOwnerId?: string;
+  afterSave?: string;
 };
 
-export function buildAnalysisPaywallHref(dream: DreamAnalysis, ownerId: string): Href {
+export function buildAnalysisPaywallHref(dream: DreamAnalysis, ownerId: string, options?: { afterSave?: boolean }): Href {
   const route = getDreamRouteParams(dream);
   return {
     pathname: '/paywall',
     params: {
       trigger: 'analysis_cta',
+      ...(options?.afterSave ? { afterSave: '1' } : {}),
       dreamId: route.id,
       dreamRemoteId: route.remoteId,
       dreamClientRequestId: route.clientRequestId,
@@ -48,8 +50,7 @@ export function consumePurchasedAnalysisReturn(route: DreamRouteParams, ownerId:
   return true;
 }
 
-/** Call only after the store confirms active access from this contextual offer. */
-export function requestAnalysisReturnRoute(params: AnalysisPaywallParams, ownerId?: string): Href | null {
+function getAnalysisDreamParams(params: AnalysisPaywallParams, ownerId?: string): DreamRouteParams | null {
   if (!ownerId || params.dreamOwnerId !== ownerId
     || typeof params.dreamId !== 'string' || !params.dreamId.trim()
     || !Number.isFinite(Number(params.dreamId))) return null;
@@ -63,6 +64,20 @@ export function requestAnalysisReturnRoute(params: AnalysisPaywallParams, ownerI
     if (typeof params.dreamClientRequestId !== 'string' || !params.dreamClientRequestId.trim()) return null;
     route.clientRequestId = params.dreamClientRequestId;
   }
+  return route;
+}
+
+/** Closing an offer opened directly from capture reveals the saved dream, without analysis. */
+export function getSavedDreamReturnRoute(params: AnalysisPaywallParams, ownerId?: string): Href | null {
+  if (params.afterSave !== '1') return null;
+  const route = getAnalysisDreamParams(params, ownerId);
+  return route ? { pathname: '/journal/[id]', params: route } as Href : null;
+}
+
+/** Call only after the store confirms active access from this contextual offer. */
+export function requestAnalysisReturnRoute(params: AnalysisPaywallParams, ownerId?: string): Href | null {
+  const route = getAnalysisDreamParams(params, ownerId);
+  if (!route || !ownerId) return null;
   pendingPurchasedAnalysis = { key: analysisReturnKey(route, ownerId), createdAt: Date.now() };
   return {
     pathname: '/journal/[id]',

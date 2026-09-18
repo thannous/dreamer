@@ -429,36 +429,19 @@ describe('journal detail saved confirmation route', () => {
     expect(mockTransitionOnboarding).not.toHaveBeenCalled();
   });
 
-  it('opens the offer directly for an exhausted free account, preserving the dream identity', async () => {
+  it('never redirects from the detail when an exhausted quota becomes known', async () => {
+    mockQuotaLoading = true;
+    mockQuotaUsage = undefined;
+    const view = render(<JournalDetailScreen />);
+    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
+    mockQuotaLoading = false;
     mockCanAnalyzeNow = false;
     mockQuotaUsage = { analysis: { used: 3, limit: 3, remaining: 0 } };
-    mockDreams = [buildDream({ remoteId: 17 })];
-    mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
-    const view = render(<JournalDetailScreen />);
-    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
-    expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
     view.rerender(<JournalDetailScreen />);
-    expect(require('expo-router').router.push).toHaveBeenCalledTimes(1);
-    expect(require('expo-router').router.push).toHaveBeenCalledWith({
-      pathname: '/paywall',
-      params: { trigger: 'analysis_cta', dreamId: '42', dreamRemoteId: '17', dreamClientRequestId: 'persisted-original-42', dreamOwnerId: 'user-1' },
-    });
-    expect(screen.queryByTestId('quota-limit')).toBeNull();
-    expect(mockAnalyzeDream).not.toHaveBeenCalled();
-    expect(mockUpdateDream).not.toHaveBeenCalled();
-  });
-
-  it('waits for quota loading before presenting an upgrade and lets the dream remain accessible', async () => {
-    mockQuotaLoading = true;
-    mockQuotaUsage = { analysis: { used: 3, limit: 3, remaining: 0 } };
-    const view = render(<JournalDetailScreen />);
-    expect(screen.queryByText('Discover Plus')).toBeNull();
-    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
     expect(require('expo-router').router.push).not.toHaveBeenCalled();
-    mockQuotaLoading = false;
-    view.rerender(<JournalDetailScreen />);
+    expect(screen.getByText('Discover Plus')).toBeTruthy();
+    await act(async () => { fireEvent.click(screen.getByText('Discover Plus')); });
     expect(require('expo-router').router.push).toHaveBeenCalledTimes(1);
-    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockUpdateDream).not.toHaveBeenCalled();
   });

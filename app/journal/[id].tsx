@@ -1334,15 +1334,6 @@ function JournalDetailContent() {
         ? tier === 'guest' ? quotaStatus?.isUpgraded ? 'login' : 'signup' : 'upgrade'
         : usage?.analysis ? 'analyze' : 'check';
 
-  useEffect(() => {
-    if (!showSavedAnalysisSheet || savedAnalysisAction !== 'upgrade'
-      || savedAnalysisChoiceHandledRef.current || !dream || !user
-      || dream.isAnalyzed || dream.analysisStatus === 'pending' || isAnalyzing) return;
-    // Replace the post-save invitation with the actual offer when access is exhausted.
-    dismissSavedAnalysis();
-    router.push(buildAnalysisPaywallHref(dream, user.id));
-  }, [dismissSavedAnalysis, dream, isAnalyzing, savedAnalysisAction, showSavedAnalysisSheet, user]);
-
   const confirmSavedAnalysis = useCallback(() => {
     if (!dream || savedAnalysisChoiceHandledRef.current || savedAnalysisAction === 'checking') return;
     closeSavedAnalysisSheet();
@@ -2712,7 +2703,7 @@ function JournalDetailContent() {
         </Modal>
 
         <SavedDreamAnalysisSheet
-          visible={showSavedAnalysisSheet && savedAnalysisAction !== 'upgrade' && savedAnalysisAction !== 'checking' && !dream.isAnalyzed && dream.analysisStatus !== 'pending' && !isAnalyzing}
+          visible={showSavedAnalysisSheet && savedAnalysisAction !== 'checking' && !dream.isAnalyzed && dream.analysisStatus !== 'pending' && !isAnalyzing}
           onClose={dismissSavedAnalysis}
           onPrimary={confirmSavedAnalysis}
           action={savedAnalysisAction}

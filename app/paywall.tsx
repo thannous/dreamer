@@ -1,7 +1,8 @@
 import { SubscriptionExpiryNotice } from '@/components/subscription/SubscriptionExpiryNotice';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams, type Href } from 'expo-router';
+import { usePreventRemove } from 'expo-router/react-navigation';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, BackHandler, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
@@ -16,7 +17,7 @@ import { getLegalLink, type LegalLinkKind } from '@/constants/legalLinks';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
-import { requestAnalysisReturnRoute, type AnalysisPaywallParams } from '@/lib/paywallRoute';
+import { getSavedDreamReturnRoute, requestAnalysisReturnRoute, type AnalysisPaywallParams } from '@/lib/paywallRoute';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
@@ -51,6 +52,12 @@ export default function PaywallScreen() {
   const { formatDate, formatNumber, formatTime } = useLocaleFormatting();
   const params = useLocalSearchParams<AnalysisPaywallParams & { trigger?: string }>();
   const { user } = useAuth();
+  const savedDreamReturnRoute = useMemo(() => getSavedDreamReturnRoute(params, user?.id), [params, user?.id]);
+  const [exitDestination, setExitDestination] = useState<Href | null>(null);
+  const navigateToDream = useCallback((destination: Href) => {
+    if (savedDreamReturnRoute) setExitDestination(destination);
+    else router.replace(destination);
+  }, [savedDreamReturnRoute]);
   useClearWebFocus();
   const {
     status: subscriptionStatus,
@@ -143,12 +150,31 @@ export default function PaywallScreen() {
         plan_selected: selectedId !== null,
       });
     }
-    if (router.canGoBack()) {
+    if (savedDreamReturnRoute) {
+      navigateToDream(savedDreamReturnRoute);
+    } else if (router.canGoBack()) {
       router.back();
     } else {
       router.replace('/settings');
     }
-  }, [analyticsTier, isActive, paywallTrigger, selectedId]);
+  }, [analyticsTier, isActive, navigateToDream, paywallTrigger, savedDreamReturnRoute, selectedId]);
+
+  // A direct capture -> offer transition has no detail screen underneath it.
+  // Native gestures, Android Back and explicit dismissal share the same destination.
+  usePreventRemove(Boolean(savedDreamReturnRoute) && exitDestination === null, handleClose);
+  useFocusEffect(useCallback(() => {
+    if (!savedDreamReturnRoute || exitDestination !== null) return;
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      handleClose();
+      return true;
+    });
+    return () => subscription.remove();
+  }, [exitDestination, handleClose, savedDreamReturnRoute]));
+
+  // Release the navigation guard before performing the chosen exit.
+  useEffect(() => {
+    if (exitDestination) router.replace(exitDestination);
+  }, [exitDestination]);
 
   const handleSelect = useCallback((id: string) => {
     setSelectedId(id);
@@ -193,7 +219,7 @@ export default function PaywallScreen() {
       });
       const returnRoute = nextStatus?.isActive ? requestAnalysisReturnRoute(params, user?.id) : null;
       if (returnRoute) {
-        router.replace(returnRoute);
+        navigateToDream(returnRoute);
         return;
       }
       setToastMessage(t('subscription.paywall.toast.success'));
@@ -204,7 +230,7 @@ export default function PaywallScreen() {
         reason: classifyPurchaseFailure(purchaseError),
       });
     }
-  }, [analyticsTier, canPurchase, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, params, user]);
+  }, [analyticsTier, canPurchase, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, params, user, navigateToDream]);
 
   const handleRestore = useCallback(async () => {
     if (processing || requiresAuth) return;
@@ -221,7 +247,7 @@ export default function PaywallScreen() {
       });
       const returnRoute = restored ? requestAnalysisReturnRoute(params, user?.id) : null;
       if (returnRoute) {
-        router.replace(returnRoute);
+        navigateToDream(returnRoute);
         return;
       }
       setToastMessage(t('subscription.paywall.toast.restored'));
@@ -231,7 +257,7 @@ export default function PaywallScreen() {
         outcome: classifyPurchaseFailure(restoreError) === 'cancelled' ? 'cancelled' : 'failed',
       });
     }
-  }, [paywallTrigger, processing, requiresAuth, restore, t, params, user]);
+  }, [paywallTrigger, processing, requiresAuth, restore, t, params, user, navigateToDream]);
 
   const handleHideToast = useCallback(() => {
     setToastMessage(null);

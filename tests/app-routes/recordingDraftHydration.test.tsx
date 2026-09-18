@@ -15,6 +15,9 @@ const mockAddDream = jest.fn(async (dream: object) => ({ ...dream, id: 42 }));
 const mockBack = jest.fn();
 const mockRecordingRef = { current: false };
 
+jest.mock('@/context/AuthContext', () => ({ useAuth: () => ({ user: null }) }));
+jest.mock('@/hooks/useQuota', () => ({ useQuota: () => ({ tier: 'guest', loading: false }) }));
+
 jest.mock('react-native', () => {
   const React = require('react');
   const Box = React.forwardRef(({ children, testID, accessibilityState }: any, ref: any) => (
