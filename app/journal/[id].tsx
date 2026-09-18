@@ -76,7 +76,7 @@ import {
   isJournalSavedConfirmationParam,
   shouldOfferSavedDreamAnalysis,
 } from '@/lib/journalSavedConfirmation';
-import { buildPaywallHref } from '@/lib/paywallRoute';
+import { buildAnalysisPaywallHref, buildPaywallHref } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
@@ -212,7 +212,7 @@ export default function JournalDetailScreen() {
 }
 
 function JournalDetailContent() {
-  const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[] }>();
+  const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam, analyzeAfterPurchase, analysisOwnerId } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; analyzeAfterPurchase?: string; analysisOwnerId?: string }>();
   const recallRequested = isJournalSavedConfirmationParam(recallParam);
   const { state: onboardingState, transition: transitionOnboarding } = useOnboarding();
   const [savedConfirmationVisible, setSavedConfirmationVisible] = useState(
@@ -220,7 +220,7 @@ function JournalDetailContent() {
   );
   const [showSavedAnalysisSheet, setShowSavedAnalysisSheet] = useState(
     () =>
-      shouldOfferSavedDreamAnalysis({
+      analyzeAfterPurchase !== '1' && shouldOfferSavedDreamAnalysis({
         savedParam,
         recallRequested,
         pendingPhase: onboardingState.pendingRecordingIntent?.phase,
@@ -230,6 +230,7 @@ function JournalDetailContent() {
   );
   const savedAnalysisChoiceHandledRef = useRef(false);
   const analysisLaunchInFlightRef = useRef(false);
+  const purchaseAnalysisHandledRef = useRef(false);
   const recallEligibleDreamIdRef = useRef<string | null>(
     resolveJournalDreamRecallOfferEligible({
       dreamId: id,
@@ -1183,7 +1184,7 @@ function JournalDetailContent() {
 
   const ensureAnalyzeAllowed = useCallback(async () => {
     try {
-      const allowed = canAnalyzeNow || (await canAnalyze());
+      const allowed = isPlus || (!quotaLoading && Boolean(usage?.analysis) && canAnalyzeNow) || (await canAnalyze());
       if (!allowed) {
         // Don't show for paid users
         if (isPlus) return false;
@@ -1203,7 +1204,7 @@ function JournalDetailContent() {
       );
       return false;
     }
-  }, [canAnalyze, canAnalyzeNow, isPlus, quotaStatus?.isUpgraded, showAnalysisNotice, t, user]);
+  }, [canAnalyze, canAnalyzeNow, isPlus, quotaLoading, quotaStatus, showAnalysisNotice, t, usage, user]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
     setShowQuotaLimitSheet(false);
@@ -1218,13 +1219,12 @@ function JournalDetailContent() {
         router.push('/settings');
       }
     } else {
-      router.push(buildPaywallHref('analysis_cta'));
+      if (dream && user) router.push(buildAnalysisPaywallHref(dream, user.id));
     }
-  }, [quotaSheetMode, tier]);
+  }, [dream, quotaSheetMode, tier, user]);
 
   const handleQuotaLimitSecondary = useCallback(() => {
     setShowQuotaLimitSheet(false);
-    router.push('/(tabs)/journal');
   }, []);
 
   const handleFirstValueBackup = useCallback(() => {
@@ -1319,13 +1319,47 @@ function JournalDetailContent() {
     }
   }, [closeSavedAnalysisSheet, dream?.id, onboardingState.pendingRecordingIntent, transitionOnboarding]);
 
+  const savedAnalysisAction = isPlus ? 'analyze'
+    : quotaLoading ? 'checking'
+      : usage?.analysis.remaining === 0
+        ? tier === 'guest' ? quotaStatus?.isUpgraded ? 'login' : 'signup' : 'upgrade'
+        : usage?.analysis ? 'analyze' : 'check';
+
   const confirmSavedAnalysis = useCallback(() => {
-    if (!dream || savedAnalysisChoiceHandledRef.current) return;
+    if (!dream || savedAnalysisChoiceHandledRef.current || savedAnalysisAction === 'checking') return;
     closeSavedAnalysisSheet();
+    if (savedAnalysisAction === 'upgrade' && user) {
+      router.push(buildAnalysisPaywallHref(dream, user.id));
+      return;
+    }
+    if (savedAnalysisAction === 'signup' || savedAnalysisAction === 'login') {
+      router.push('/settings?section=account');
+      return;
+    }
     // Persist analysis_requested only after runAnalyze's allowance check succeeds.
     // Explicit consent requests the existing bundled analysis + image pipeline.
     void runAnalyze(true);
-  }, [closeSavedAnalysisSheet, dream, runAnalyze]);
+  }, [closeSavedAnalysisSheet, dream, runAnalyze, savedAnalysisAction, user]);
+
+  useEffect(() => {
+    if (analyzeAfterPurchase !== '1' || purchaseAnalysisHandledRef.current) return;
+    // Wait for the verified subscription to reach this screen; never consume a
+    // free credit while the purchase result is still propagating.
+    if (!user || analysisOwnerId !== user.id) {
+      purchaseAnalysisHandledRef.current = true;
+      router.setParams({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
+      return;
+    }
+    if (!dream || !isPlus || quotaLoading) return;
+    purchaseAnalysisHandledRef.current = true;
+    router.setParams({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
+    savedAnalysisChoiceHandledRef.current = true;
+    if (!dream.isAnalyzed && dream.analysisStatus !== 'pending') {
+      // Consume an external purchase-navigation event, guarded above to run once.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void runAnalyze(false);
+    }
+  }, [analysisOwnerId, analyzeAfterPurchase, dream, isPlus, quotaLoading, runAnalyze, user]);
 
   const handleAnalyze = useCallback(async () => {
     if (!dream) return;
@@ -2576,7 +2610,6 @@ function JournalDetailContent() {
           onClose={handleQuotaLimitDismiss}
           onPrimary={handleQuotaLimitPrimary}
           onSecondary={handleQuotaLimitSecondary}
-          onLink={handleQuotaLimitDismiss}
           tier={tier}
           mode={quotaSheetMode}
           usageLimit={usage?.analysis.limit}
@@ -2662,7 +2695,8 @@ function JournalDetailContent() {
         <SavedDreamAnalysisSheet
           visible={showSavedAnalysisSheet && !dream.isAnalyzed && dream.analysisStatus !== 'pending' && !isAnalyzing}
           onClose={dismissSavedAnalysis}
-          onAnalyze={confirmSavedAnalysis}
+          onPrimary={confirmSavedAnalysis}
+          action={savedAnalysisAction}
         />
         <ReferenceImageSheet
           visible={referenceImagesEnabled && showReferenceSheet}

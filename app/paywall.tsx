@@ -15,6 +15,8 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { getLegalLink, type LegalLinkKind } from '@/constants/legalLinks';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { useAuth } from '@/context/AuthContext';
+import { getAnalysisReturnRoute, type AnalysisPaywallParams } from '@/lib/paywallRoute';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
@@ -47,7 +49,8 @@ export default function PaywallScreen() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, translationRevision, currentLang } = useTranslation();
   const { formatDate, formatNumber, formatTime } = useLocaleFormatting();
-  const params = useLocalSearchParams<{ trigger?: string }>();
+  const params = useLocalSearchParams<AnalysisPaywallParams & { trigger?: string }>();
+  const { user } = useAuth();
   useClearWebFocus();
   const {
     status: subscriptionStatus,
@@ -186,6 +189,11 @@ export default function PaywallScreen() {
         plan: selectedPlan,
         tier: nextStatus?.tier ?? 'plus',
       });
+      const returnRoute = getAnalysisReturnRoute(params, user?.id);
+      if (nextStatus?.isActive && returnRoute) {
+        router.replace(returnRoute);
+        return;
+      }
       setToastMessage(t('subscription.paywall.toast.success'));
     } catch (purchaseError) {
       void trackProductEvent('purchase_failed', {
@@ -194,7 +202,7 @@ export default function PaywallScreen() {
         reason: classifyPurchaseFailure(purchaseError),
       });
     }
-  }, [analyticsTier, canPurchase, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t]);
+  }, [analyticsTier, canPurchase, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, params, user]);
 
   const handleRestore = useCallback(async () => {
     if (processing || requiresAuth) return;
@@ -209,6 +217,11 @@ export default function PaywallScreen() {
         trigger: paywallTrigger,
         outcome: restored ? 'restored' : 'nothing_to_restore',
       });
+      const returnRoute = getAnalysisReturnRoute(params, user?.id);
+      if (restored && returnRoute) {
+        router.replace(returnRoute);
+        return;
+      }
       setToastMessage(t('subscription.paywall.toast.restored'));
     } catch (restoreError) {
       void trackProductEvent('restore_completed', {
@@ -216,7 +229,7 @@ export default function PaywallScreen() {
         outcome: classifyPurchaseFailure(restoreError) === 'cancelled' ? 'cancelled' : 'failed',
       });
     }
-  }, [paywallTrigger, processing, requiresAuth, restore, t]);
+  }, [paywallTrigger, processing, requiresAuth, restore, t, params, user]);
 
   const handleHideToast = useCallback(() => {
     setToastMessage(null);

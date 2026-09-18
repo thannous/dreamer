@@ -1,9 +1,13 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { TID } from '@/lib/testIDs';
+
+let mockParams: Record<string, string> = { trigger: 'settings' };
+let mockUser = { id: 'user-1' };
+jest.doMock('@/context/AuthContext', () => ({ useAuth: () => ({ user: mockUser }) }));
 
 const mockBack = jest.fn();
 const mockCanGoBack = jest.fn();
@@ -20,7 +24,7 @@ jest.doMock('expo-router', () => ({
     canGoBack: mockCanGoBack,
     replace: mockReplace,
   },
-  useLocalSearchParams: () => ({ trigger: 'settings' }),
+  useLocalSearchParams: () => mockParams,
 }));
 
 jest.doMock('react-native', () => {
@@ -233,6 +237,8 @@ const packages = [
 
 describe('Paywall screen', () => {
   beforeEach(() => {
+    mockParams = { trigger: 'settings' };
+    mockUser = { id: 'user-1' };
     mockCanGoBack.mockReturnValue(true);
     mockPurchase.mockResolvedValue(undefined);
     mockRestore.mockResolvedValue(undefined);
@@ -285,6 +291,37 @@ describe('Paywall screen', () => {
     expect((await screen.findByTestId(TID.Toast.PaywallSuccess)).textContent).toBe(
       'subscription.paywall.toast.success'
     );
+  });
+
+  it.each(['purchase', 'restore'])('returns to the same dream after a confirmed %s', async (action: string) => {
+    mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamRemoteId: '17', dreamClientRequestId: 'request-42', dreamOwnerId: 'user-1' };
+    mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true });
+    mockRestore.mockResolvedValue({ tier: 'plus', isActive: true });
+    render(<PaywallScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(action === 'purchase' ? TID.Button.PaywallPurchase : TID.Button.PaywallRestore)); });
+    expect(mockReplace).toHaveBeenCalledWith({
+      pathname: '/journal/[id]',
+      params: { id: '42', remoteId: '17', clientRequestId: 'request-42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' },
+    });
+  });
+
+  it.each(['cancelled', 'inactive', 'account-change'])('does not resume a dream after %s', async (outcome: string) => {
+    mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamOwnerId: 'user-1' };
+    if (outcome === 'cancelled') mockPurchase.mockRejectedValue(Object.assign(new Error('Cancelled'), { userCancelled: true }));
+    else mockPurchase.mockResolvedValue({ tier: outcome === 'inactive' ? 'free' : 'plus', isActive: outcome !== 'inactive' });
+    if (outcome === 'account-change') mockUser = { id: 'other' };
+    render(<PaywallScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.PaywallPurchase)); });
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('closing the contextual offer does not request analysis', async () => {
+    mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamOwnerId: 'user-1' };
+    render(<PaywallScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.PaywallClose)); });
+    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(mockPurchase).not.toHaveBeenCalled();
   });
 
   it('tracks the purchase funnel around a successful purchase', async () => {

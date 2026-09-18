@@ -121,24 +121,38 @@ export function AnalysisNoticeSheet({
 export function SavedDreamAnalysisSheet({
   visible,
   onClose,
-  onAnalyze,
+  onPrimary,
+  action,
 }: {
   visible: boolean;
   onClose: () => void;
-  onAnalyze: () => void;
+  onPrimary: () => void;
+  action: 'analyze' | 'upgrade' | 'signup' | 'login' | 'checking' | 'check';
 }) {
   const { t } = useTranslation();
+  const messageKey = action === 'upgrade' ? 'recording.saved_analysis.exhausted'
+    : action === 'signup' ? 'recording.saved_analysis.guest_exhausted'
+      : action === 'login' ? 'journal.detail.quota_limit.message_login'
+        : 'recording.saved_analysis.message';
+  const primaryKey = action === 'upgrade' ? 'recording.saved_analysis.upgrade'
+    : action === 'signup' ? 'journal.detail.quota_limit.cta_guest'
+      : action === 'login' ? 'journal.detail.quota_limit.cta_login'
+        : action === 'checking' ? 'recording.saved_analysis.checking'
+          : action === 'check' ? 'journal.detail.check_analysis'
+            : 'recording.saved_analysis.accept';
   return (
     <StandardBottomSheet
       visible={visible}
       onClose={onClose}
       title={t('recording.saved_analysis.title')}
-      subtitle={t('recording.saved_analysis.message')}
+      subtitle={t(messageKey)}
       testID={TID.Sheet.SavedDreamAnalysis}
       actions={{
-        primaryLabel: t('recording.saved_analysis.accept'),
-        onPrimary: onAnalyze,
-        secondaryLabel: t('recording.saved_analysis.later'),
+        primaryLabel: t(primaryKey),
+        onPrimary,
+        primaryDisabled: action === 'checking',
+        primaryLoading: action === 'checking',
+        secondaryLabel: t('recording.analysis_offer.view'),
         onSecondary: onClose,
       }}
     />
@@ -335,7 +349,6 @@ export function QuotaLimitSheet({
   onClose,
   onPrimary,
   onSecondary,
-  onLink,
   tier,
   mode,
   usageLimit,
@@ -344,7 +357,6 @@ export function QuotaLimitSheet({
   onClose: () => void;
   onPrimary: () => void;
   onSecondary: () => void;
-  onLink: () => void;
   tier: SubscriptionTier;
   mode: QuotaMode;
   usageLimit?: number | null;
@@ -402,13 +414,9 @@ export function QuotaLimitSheet({
           testID={tier === 'guest' ? TID.Button.QuotaLimitCtaGuest : TID.Button.QuotaLimitCtaFree}
         />
         <BottomSheetSecondaryAction
-          label={t('journal.detail.quota_limit.journal')}
+          label={t('recording.analysis_offer.view')}
           onPress={onSecondary}
           testID={TID.Button.QuotaLimitJournal}
-        />
-        <BottomSheetLinkAction
-          label={t('journal.detail.quota_limit.dismiss')}
-          onPress={onLink}
         />
       </BottomSheetActions>
     </BottomSheet>
