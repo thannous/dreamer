@@ -293,6 +293,21 @@ describe('Paywall screen', () => {
     );
   });
 
+  it('shows the saved dream, analysis, illustration, plans and purchase together without a comparison step', () => {
+    mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamOwnerId: 'user-1' };
+    render(<PaywallScreen />);
+    expect(screen.getByText('recording.saved_analysis.title')).toBeTruthy();
+    expect(screen.getByText('subscription.paywall.saved_dream.analysis')).toBeTruthy();
+    expect(screen.getByText('subscription.paywall.saved_dream.illustration')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.PaywallSelectMonthly)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.PaywallSelectAnnual)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.PaywallPurchase).textContent).toBe('subscription.paywall.saved_dream.cta');
+    expect(screen.queryByText('subscription.paywall.comparison.free')).toBeNull();
+    fireEvent.click(screen.getByText('recording.analysis_offer.view'));
+    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockPurchase).not.toHaveBeenCalled();
+  });
+
   it.each(['purchase', 'restore'])('returns to the same dream after a confirmed %s', async (action: string) => {
     mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamRemoteId: '17', dreamClientRequestId: 'request-42', dreamOwnerId: 'user-1' };
     mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true });

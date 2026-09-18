@@ -433,9 +433,12 @@ describe('journal detail saved confirmation route', () => {
     mockCanAnalyzeNow = false;
     mockQuotaUsage = { analysis: { used: 3, limit: 3, remaining: 0 } };
     mockDreams = [buildDream({ remoteId: 17 })];
-    render(<JournalDetailScreen />);
-    expect(screen.queryByText('Analyze saved dream')).toBeNull();
-    await act(async () => { fireEvent.click(screen.getByText('Discover Plus')); });
+    mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
+    const view = render(<JournalDetailScreen />);
+    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
+    expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+    view.rerender(<JournalDetailScreen />);
+    expect(require('expo-router').router.push).toHaveBeenCalledTimes(1);
     expect(require('expo-router').router.push).toHaveBeenCalledWith({
       pathname: '/paywall',
       params: { trigger: 'analysis_cta', dreamId: '42', dreamRemoteId: '17', dreamClientRequestId: 'persisted-original-42', dreamOwnerId: 'user-1' },
@@ -450,11 +453,11 @@ describe('journal detail saved confirmation route', () => {
     mockQuotaUsage = { analysis: { used: 3, limit: 3, remaining: 0 } };
     const view = render(<JournalDetailScreen />);
     expect(screen.queryByText('Discover Plus')).toBeNull();
-    expect((screen.getByText('Analyze saved dream') as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
+    expect(require('expo-router').router.push).not.toHaveBeenCalled();
     mockQuotaLoading = false;
     view.rerender(<JournalDetailScreen />);
-    expect(screen.getByText('Discover Plus')).toBeTruthy();
-    await act(async () => { fireEvent.click(screen.getByText('Later')); });
+    expect(require('expo-router').router.push).toHaveBeenCalledTimes(1);
     expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockUpdateDream).not.toHaveBeenCalled();
@@ -599,7 +602,7 @@ describe('journal detail saved confirmation route', () => {
       },
     },
   ])('does not persist analysis_requested when accept is rejected by $label', async ({
-    setup,
+    setup, label,
   }: {
     label: string;
     setup: () => void;
@@ -608,7 +611,8 @@ describe('journal detail saved confirmation route', () => {
     setup();
     render(<JournalDetailScreen />);
     await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
-    expect(screen.getByTestId('quota-limit')).toBeTruthy();
+    if (label === 'auth') expect(screen.getByTestId('quota-limit')).toBeTruthy();
+    else expect(require('expo-router').router.push).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/paywall' }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockTransitionOnboarding).not.toHaveBeenCalled();
   });
@@ -677,12 +681,13 @@ describe('journal detail saved confirmation route', () => {
     await act(async () => { finish(); });
   });
 
-  it('opens the existing quota sheet without changing the saved dream', async () => {
+  it('opens the offer directly when a recheck finds the quota exhausted', async () => {
     mockCanAnalyzeNow = false;
     mockCanAnalyze.mockResolvedValueOnce(false);
     render(<JournalDetailScreen />);
     await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
-    expect(screen.getByTestId('quota-limit')).toBeTruthy();
+    expect(screen.queryByTestId('quota-limit')).toBeNull();
+    expect(require('expo-router').router.push).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/paywall' }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockUpdateDream).not.toHaveBeenCalled();
   });

@@ -1188,8 +1188,12 @@ function JournalDetailContent() {
       if (!allowed) {
         // Don't show for paid users
         if (isPlus) return false;
-        setQuotaSheetMode(!user && quotaStatus?.isUpgraded ? 'login' : 'quota');
-        setShowQuotaLimitSheet(true);
+        if (tier === 'free' && user && dream) {
+          router.push(buildAnalysisPaywallHref(dream, user.id));
+        } else {
+          setQuotaSheetMode(!user && quotaStatus?.isUpgraded ? 'login' : 'quota');
+          setShowQuotaLimitSheet(true);
+        }
         return false;
       }
       return true;
@@ -1204,7 +1208,7 @@ function JournalDetailContent() {
       );
       return false;
     }
-  }, [canAnalyze, canAnalyzeNow, isPlus, quotaLoading, quotaStatus, showAnalysisNotice, t, usage, user]);
+  }, [canAnalyze, canAnalyzeNow, dream, isPlus, quotaLoading, quotaStatus, showAnalysisNotice, t, tier, usage, user]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
     setShowQuotaLimitSheet(false);
@@ -1270,8 +1274,12 @@ function JournalDetailContent() {
           }
           // Show quota limit sheet with upgrade CTA for non-paid users
           if (!isPlus) {
-            setQuotaSheetMode('quota');
-            setShowQuotaLimitSheet(true);
+            if (tier === 'free' && user) {
+              router.push(buildAnalysisPaywallHref(dream, user.id));
+            } else {
+              setQuotaSheetMode('quota');
+              setShowQuotaLimitSheet(true);
+            }
           } else {
             // Plus users should never hit quota errors, but show a notice if they do.
             showAnalysisNotice(
@@ -1301,6 +1309,7 @@ function JournalDetailContent() {
       t,
       tier,
       transitionOnboarding,
+      user,
     ]
   );
 
@@ -1324,6 +1333,15 @@ function JournalDetailContent() {
       : usage?.analysis.remaining === 0
         ? tier === 'guest' ? quotaStatus?.isUpgraded ? 'login' : 'signup' : 'upgrade'
         : usage?.analysis ? 'analyze' : 'check';
+
+  useEffect(() => {
+    if (!showSavedAnalysisSheet || savedAnalysisAction !== 'upgrade'
+      || savedAnalysisChoiceHandledRef.current || !dream || !user
+      || dream.isAnalyzed || dream.analysisStatus === 'pending' || isAnalyzing) return;
+    // Replace the post-save invitation with the actual offer when access is exhausted.
+    dismissSavedAnalysis();
+    router.push(buildAnalysisPaywallHref(dream, user.id));
+  }, [dismissSavedAnalysis, dream, isAnalyzing, savedAnalysisAction, showSavedAnalysisSheet, user]);
 
   const confirmSavedAnalysis = useCallback(() => {
     if (!dream || savedAnalysisChoiceHandledRef.current || savedAnalysisAction === 'checking') return;
@@ -2694,7 +2712,7 @@ function JournalDetailContent() {
         </Modal>
 
         <SavedDreamAnalysisSheet
-          visible={showSavedAnalysisSheet && !dream.isAnalyzed && dream.analysisStatus !== 'pending' && !isAnalyzing}
+          visible={showSavedAnalysisSheet && savedAnalysisAction !== 'upgrade' && savedAnalysisAction !== 'checking' && !dream.isAnalyzed && dream.analysisStatus !== 'pending' && !isAnalyzing}
           onClose={dismissSavedAnalysis}
           onPrimary={confirmSavedAnalysis}
           action={savedAnalysisAction}

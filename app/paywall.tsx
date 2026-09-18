@@ -86,6 +86,8 @@ export default function PaywallScreen() {
   const isDeviceUpgraded = requiresAuth && quotaStatus?.isUpgraded === true;
   const routeTrigger = getPaywallTrigger(params.trigger);
   const paywallTrigger = isDeviceUpgraded ? 'returning_device' : routeTrigger;
+  const isDreamAnalysisOffer = paywallTrigger === 'analysis_cta' && Boolean(params.dreamId)
+    && params.dreamOwnerId === user?.id && !isActive;
   const paywallVariant = useMemo(() => getPaywallVariant(paywallTrigger), [paywallTrigger]);
 
   useEffect(() => {
@@ -251,10 +253,12 @@ export default function PaywallScreen() {
   const activeTierKey = 'plus';
   const headerTitle = isActive
     ? t(`subscription.paywall.header.${activeTierKey}` as const)
-    : translateWithFallback(paywallVariant.headerTitleKey);
+    : isDreamAnalysisOffer ? t('recording.saved_analysis.title')
+      : translateWithFallback(paywallVariant.headerTitleKey);
   const headerSubtitle = isActive
     ? t(`subscription.paywall.header.subtitle.${activeTierKey}` as const)
-    : translateWithFallback(paywallVariant.headerSubtitleKey);
+    : isDreamAnalysisOffer ? t('subscription.paywall.saved_dream.message')
+      : translateWithFallback(paywallVariant.headerSubtitleKey);
 
   const formattedExpiryDate = useMemo(() => {
     const expiryDate = subscriptionStatus?.expiryDate;
@@ -280,12 +284,15 @@ export default function PaywallScreen() {
   const subscriptionFeatures = useMemo(
     () => {
       void translationRevision;
+      if (isDreamAnalysisOffer) {
+        return [t('subscription.paywall.saved_dream.analysis'), t('subscription.paywall.saved_dream.illustration')];
+      }
       if (!isActive) {
         return paywallVariant.featureKeys.map((key) => translateWithFallback(key));
       }
       return PLUS_PAYWALL_FEATURE_KEYS.map((key) => t(key));
     },
-    [isActive, paywallVariant.featureKeys, t, translateWithFallback, translationRevision]
+    [isActive, isDreamAnalysisOffer, paywallVariant.featureKeys, t, translateWithFallback, translationRevision]
   );
 
   const packageOptions = useMemo(
@@ -494,7 +501,7 @@ export default function PaywallScreen() {
               <View style={styles.kickerRow}>
                 <IconSymbol name="sparkles" size={13} color={noctalia.accent.text} />
                 <Text style={[styles.kickerText, { color: noctalia.accent.text }]}>
-                  {translateWithFallback(paywallVariant.chipKey)}
+                  {isDreamAnalysisOffer ? 'Noctalia Plus' : translateWithFallback(paywallVariant.chipKey)}
                 </Text>
                 <IconSymbol name="sparkles" size={13} color={noctalia.accent.text} />
               </View>
@@ -503,7 +510,7 @@ export default function PaywallScreen() {
             <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>{headerTitle}</Text>
             <Text style={[styles.headerSubtitle, { color: noctalia.text.secondary }]}>{headerSubtitle}</Text>
 
-            <SubscriptionExpiryNotice status={subscriptionStatus} loading={loading} />
+            {!isDreamAnalysisOffer ? <SubscriptionExpiryNotice status={subscriptionStatus} loading={loading} /> : null}
 
             {isActive && formattedExpiryDate ? (
               <Text style={[styles.expiryDate, { color: noctalia.text.secondary }]}>
@@ -527,7 +534,7 @@ export default function PaywallScreen() {
           ) : null}
 
           <Reveal index={1}>
-          {!isActive ? (
+          {!isActive && !isDreamAnalysisOffer ? (
             <View
               style={[
                 styles.comparisonTable,
@@ -606,7 +613,7 @@ export default function PaywallScreen() {
               {visibleSubscriptionFeatures.map((feature, index) => (
                 <View key={feature} style={styles.benefitRow}>
                   <View style={[styles.benefitIcon, { backgroundColor: noctalia.surface.active }]}>
-                    {index < 2 ? (
+                    {!isDreamAnalysisOffer && index < 2 ? (
                       <Text
                         accessible={false}
                         style={[styles.benefitInfinity, { color: noctalia.accent.text }]}
@@ -620,7 +627,7 @@ export default function PaywallScreen() {
                   <Text
                     style={[
                       styles.benefitText,
-                      index < 2 && styles.benefitTextUnlimited,
+                      !isDreamAnalysisOffer && index < 2 && styles.benefitTextUnlimited,
                       { color: noctalia.text.primary },
                     ]}
                   >
@@ -710,7 +717,8 @@ export default function PaywallScreen() {
                       ? t('subscription.paywall.button.primary.auth')
                       : selectedTrialDays
                         ? t('subscription.paywall.button.primary.trial', { days: selectedTrialDays })
-                        : translateWithFallback(paywallVariant.primaryLabelKey)}
+                        : isDreamAnalysisOffer ? t('subscription.paywall.saved_dream.cta')
+                          : translateWithFallback(paywallVariant.primaryLabelKey)}
                   </Text>
                 )}
               </PressableScale>
@@ -736,7 +744,7 @@ export default function PaywallScreen() {
                 accessibilityRole="button"
               >
                 <Text style={[styles.secondaryLabel, { color: noctalia.text.secondary }]}>
-                  {t('subscription.paywall.button.continue_free')}
+                  {t(isDreamAnalysisOffer ? 'recording.analysis_offer.view' : 'subscription.paywall.button.continue_free')}
                 </Text>
               </Pressable>
             ) : null}
