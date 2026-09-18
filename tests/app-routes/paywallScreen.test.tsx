@@ -16,6 +16,8 @@ jest.doMock('expo-router/react-navigation', () => ({ usePreventRemove: mockPreve
 const mockBack = jest.fn();
 const mockCanGoBack = jest.fn();
 const mockReplace = jest.fn();
+const mockDismissTo = jest.fn();
+const mockRefreshSubscription = jest.fn();
 const mockPurchase = jest.fn();
 const mockRestore = jest.fn();
 const mockTrackProductEvent = jest.fn().mockResolvedValue(undefined);
@@ -27,6 +29,7 @@ jest.doMock('expo-router', () => ({
     back: mockBack,
     canGoBack: mockCanGoBack,
     replace: mockReplace,
+    dismissTo: mockDismissTo,
   },
   useLocalSearchParams: () => mockParams,
   useFocusEffect: (callback: () => void | (() => void)) => {
@@ -253,6 +256,7 @@ describe('Paywall screen', () => {
     mockCanGoBack.mockReturnValue(true);
     mockPurchase.mockResolvedValue(undefined);
     mockRestore.mockResolvedValue(undefined);
+    mockRefreshSubscription.mockReset().mockResolvedValue({ tier: 'plus', isActive: true, serverConfirmed: true, storeActive: true });
     mockUseSubscription.mockReturnValue({
       status: { tier: 'free', isActive: false, expiryDate: null },
       isActive: false,
@@ -262,6 +266,7 @@ describe('Paywall screen', () => {
       packages,
       purchase: mockPurchase,
       restore: mockRestore,
+      refreshSubscription: mockRefreshSubscription,
       requiresAuth: false,
     });
   });
@@ -343,8 +348,8 @@ describe('Paywall screen', () => {
 
   it.each(['purchase', 'restore'])('returns to the same dream after a confirmed %s', async (action: string) => {
     mockParams = { trigger: 'analysis_cta', afterSave: '1', dreamId: '42', dreamRemoteId: '17', dreamClientRequestId: 'request-42', dreamOwnerId: 'user-1' };
-    mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true });
-    mockRestore.mockResolvedValue({ tier: 'plus', isActive: true });
+    mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true, serverConfirmed: true, storeActive: true });
+    mockRestore.mockResolvedValue({ tier: 'plus', isActive: true, serverConfirmed: true, storeActive: true });
     render(<PaywallScreen />);
     await act(async () => { fireEvent.click(screen.getByTestId(action === 'purchase' ? TID.Button.PaywallPurchase : TID.Button.PaywallRestore)); });
     expect(mockReplace).toHaveBeenCalledWith({
@@ -372,8 +377,56 @@ describe('Paywall screen', () => {
     expect(mockPurchase).not.toHaveBeenCalled();
   });
 
+  it.each(['purchase', 'restore'])('waits for server confirmation before resuming %s and retries without buying again', async (action: string) => {
+    mockParams = { trigger: 'analysis_cta', afterSave: '1', dreamId: '42', dreamOwnerId: 'user-1' };
+    mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true, serverConfirmed: false, storeActive: true });
+    mockRestore.mockResolvedValue({ tier: 'plus', isActive: true, serverConfirmed: false, storeActive: true });
+    mockRefreshSubscription.mockRejectedValueOnce(new Error('offline'));
+    render(<PaywallScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(action === 'purchase' ? TID.Button.PaywallPurchase : TID.Button.PaywallRestore)); });
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(mockDismissTo).not.toHaveBeenCalled();
+    expect(screen.getByText('subscription.paywall.activation_pending')).toBeTruthy();
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.PaywallPurchase)); });
+    expect(mockRefreshSubscription).toHaveBeenCalledTimes(2);
+    expect(mockReplace).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/journal/[id]' }));
+    expect(mockPurchase).toHaveBeenCalledTimes(action === 'purchase' ? 1 : 0);
+    expect(mockRestore).toHaveBeenCalledTimes(action === 'restore' ? 1 : 0);
+  });
+
+  it.each(['purchase', 'restore'])('blocks close and every back path while %s is in progress', async (action: string) => {
+    mockParams = { trigger: 'analysis_cta', afterSave: '1', dreamId: '42', dreamOwnerId: 'user-1' };
+    let finish!: (value: any) => void;
+    (action === 'purchase' ? mockPurchase : mockRestore).mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
+    render(<PaywallScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(action === 'purchase' ? TID.Button.PaywallPurchase : TID.Button.PaywallRestore)); });
+    expect((screen.getByTestId(TID.Button.PaywallClose) as HTMLButtonElement).disabled).toBe(true);
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(TID.Button.PaywallClose));
+      expect(mockHardwareBack?.()).toBe(true);
+      const [blocked, callback] = mockPreventRemove.mock.calls.at(-1)!;
+      expect(blocked).toBe(true);
+      callback();
+    });
+    expect(mockBack).not.toHaveBeenCalled();
+    expect(mockReplace).not.toHaveBeenCalled();
+    await act(async () => { finish({ tier: 'plus', isActive: true, serverConfirmed: true, storeActive: true }); });
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockReplace).toHaveBeenCalledWith(expect.objectContaining({ params: expect.objectContaining({ analyzeAfterPurchase: '1' }) }));
+  });
+
+  it.each(['purchase', 'restore'])('dismisses back to the existing detail after %s without replacing it with a duplicate', async (action: string) => {
+    mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamOwnerId: 'user-1' };
+    mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true, serverConfirmed: true });
+    mockRestore.mockResolvedValue({ tier: 'plus', isActive: true, serverConfirmed: true });
+    render(<PaywallScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(action === 'purchase' ? TID.Button.PaywallPurchase : TID.Button.PaywallRestore)); });
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(mockDismissTo).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' } });
+  });
+
   it('tracks the purchase funnel around a successful purchase', async () => {
-    mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true });
+    mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true, serverConfirmed: true, storeActive: true });
     render(<PaywallScreen />);
 
     fireEvent.click(screen.getByTestId(TID.Button.PaywallPurchase));
@@ -456,6 +509,7 @@ describe('Paywall screen', () => {
       packages,
       purchase: mockPurchase,
       restore: mockRestore,
+      refreshSubscription: mockRefreshSubscription,
       requiresAuth: true,
     });
     render(<PaywallScreen />);
@@ -483,6 +537,7 @@ describe('Paywall screen', () => {
       packages: [packages[0], { ...packages[1], freeTrialDays: 7 }],
       purchase: mockPurchase,
       restore: mockRestore,
+      refreshSubscription: mockRefreshSubscription,
       requiresAuth: false,
     });
     render(<PaywallScreen />);
@@ -505,6 +560,7 @@ describe('Paywall screen', () => {
       packages,
       purchase: mockPurchase,
       restore: mockRestore,
+      refreshSubscription: mockRefreshSubscription,
       requiresAuth: false,
     });
 

@@ -982,6 +982,8 @@ const translations: Record<string, string> = {
     'subscription.settings.subtitle.plus': 'Seu perfil de sonhos vivo e as explorações 360° estão ativos.',
     'subscription.settings.cta.free': 'Ver opções do Noctalia Plus',
     'subscription.settings.cta.plus': 'Ver detalhes da assinatura',
+    'subscription.paywall.activation_pending': 'A tua subscrição foi reconhecida. A ativação do acesso ainda está pendente. Podes tentar novamente sem voltar a pagar.',
+    'subscription.paywall.retry_activation': 'Tentar ativar novamente',
     'subscription.paywall.saved_dream.message': 'Utilizaste as tuas análises gratuitas. Com o Noctalia Plus, explora este sonho e os próximos.',
     'subscription.paywall.saved_dream.analysis': 'Uma análise dos símbolos e das emoções do teu sonho',
     'subscription.paywall.saved_dream.illustration': 'Uma ilustração inspirada no teu relato',

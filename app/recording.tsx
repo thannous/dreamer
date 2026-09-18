@@ -22,6 +22,7 @@ import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
+import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { useQuota } from '@/hooks/useQuota';
 import { buildAnalysisPaywallHref } from '@/lib/paywallRoute';
 import { useDreams } from '@/context/DreamsContext';
@@ -125,11 +126,11 @@ export default function RecordingScreen() {
     dreams,
   } = useDreams();
   const { user } = useAuth();
-  const { tier, usage, loading: quotaLoading, error: quotaError } = useQuota();
-  const latestAccessRef = useRef({ user, tier, usage, quotaLoading, quotaError });
+  const { tier, quotaStatus, loading: quotaLoading, error: quotaError } = useQuota();
+  const latestAccessRef = useRef({ user, tier, quotaStatus, quotaLoading, quotaError });
   useEffect(() => {
-    latestAccessRef.current = { user, tier, usage, quotaLoading, quotaError };
-  }, [user, tier, usage, quotaLoading, quotaError]);
+    latestAccessRef.current = { user, tier, quotaStatus, quotaLoading, quotaError };
+  }, [user, tier, quotaStatus, quotaLoading, quotaError]);
   const { colors, mode } = useTheme();
   const { language } = useLanguage();
   const { t } = useTranslation();
@@ -673,8 +674,9 @@ export default function RecordingScreen() {
     options?: { saved?: boolean; recall?: boolean }
   ) => {
     const access = latestAccessRef.current;
-    if (options?.saved && !options.recall && !access.quotaLoading && !access.quotaError
-      && access.tier === 'free' && access.user && access.usage?.analysis.remaining === 0) {
+    if (options?.saved && !options.recall && access.user && getSavedAnalysisAction({
+      tier: access.tier, loading: access.quotaLoading, error: access.quotaError, status: access.quotaStatus,
+    }) === 'upgrade') {
       void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch((error) => {
         log.warn('Failed to clear the completed capture intent', error);
       });

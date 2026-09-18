@@ -1,3 +1,4 @@
+import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { AnalysisReadingModal } from '@/components/analysis/AnalysisReadingModal';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
@@ -317,6 +318,7 @@ function JournalDetailContent() {
     tier,
     usage,
     loading: quotaLoading,
+    error: quotaError,
     quotaStatus,
   } = useQuota();
   const { t } = useTranslation();
@@ -1186,6 +1188,11 @@ function JournalDetailContent() {
     try {
       const allowed = isPlus || (!quotaLoading && Boolean(usage?.analysis) && canAnalyzeNow) || (await canAnalyze());
       if (!allowed) {
+        if (quotaError || quotaStatus?.guestBootstrapStatus === 'degraded'
+          || quotaStatus?.guestBootstrapStatus === 'disabled') {
+          showAnalysisNotice(t('common.error_title'), t('journal.detail.quota_check_error'), 'error');
+          return false;
+        }
         // Don't show for paid users
         if (isPlus) return false;
         if (tier === 'free' && user && dream) {
@@ -1208,7 +1215,7 @@ function JournalDetailContent() {
       );
       return false;
     }
-  }, [canAnalyze, canAnalyzeNow, dream, isPlus, quotaLoading, quotaStatus, showAnalysisNotice, t, tier, usage, user]);
+  }, [canAnalyze, canAnalyzeNow, dream, isPlus, quotaError, quotaLoading, quotaStatus, showAnalysisNotice, t, tier, usage, user]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
     setShowQuotaLimitSheet(false);
@@ -1328,11 +1335,9 @@ function JournalDetailContent() {
     }
   }, [closeSavedAnalysisSheet, dream?.id, onboardingState.pendingRecordingIntent, transitionOnboarding]);
 
-  const savedAnalysisAction = isPlus ? 'analyze'
-    : quotaLoading ? 'checking'
-      : usage?.analysis.remaining === 0
-        ? tier === 'guest' ? quotaStatus?.isUpgraded ? 'login' : 'signup' : 'upgrade'
-        : usage?.analysis ? 'analyze' : 'check';
+  const savedAnalysisAction = getSavedAnalysisAction({
+    tier, loading: quotaLoading, error: quotaError, status: quotaStatus,
+  });
 
   const confirmSavedAnalysis = useCallback(() => {
     if (!dream || savedAnalysisChoiceHandledRef.current || savedAnalysisAction === 'checking') return;
@@ -1367,9 +1372,9 @@ function JournalDetailContent() {
       && !dream.isAnalyzed && dream.analysisStatus !== 'pending') {
       // Consume an external purchase-navigation event, guarded above to run once.
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      void runAnalyze(false);
+      void runAnalyze(!hasExistingImage);
     }
-  }, [analysisOwnerId, analyzeAfterPurchase, dream, isPlus, quotaLoading, runAnalyze, user]);
+  }, [analysisOwnerId, analyzeAfterPurchase, dream, hasExistingImage, isPlus, quotaLoading, runAnalyze, user]);
 
   const handleAnalyze = useCallback(async () => {
     if (!dream) return;

@@ -54,10 +54,7 @@ export default function PaywallScreen() {
   const { user } = useAuth();
   const savedDreamReturnRoute = useMemo(() => getSavedDreamReturnRoute(params, user?.id), [params, user?.id]);
   const [exitDestination, setExitDestination] = useState<Href | null>(null);
-  const navigateToDream = useCallback((destination: Href) => {
-    if (savedDreamReturnRoute) setExitDestination(destination);
-    else router.replace(destination);
-  }, [savedDreamReturnRoute]);
+  const navigateToDream = useCallback((destination: Href) => setExitDestination(destination), []);
   useClearWebFocus();
   const {
     status: subscriptionStatus,
@@ -68,8 +65,13 @@ export default function PaywallScreen() {
     packages,
     purchase,
     restore,
+    refreshSubscription,
     requiresAuth,
   } = useSubscription({ loadPackages: true });
+  const operationInFlightRef = useRef(false);
+  const [operationPending, setOperationPending] = useState(false);
+  const [awaitingServerAccess, setAwaitingServerAccess] = useState(false);
+  const busy = processing || operationPending;
   const { quotaStatus } = useQuota();
   const insets = useSafeAreaInsets();
   const sortedPackages = useMemo(() => sortPackages(packages), [packages]);
@@ -137,9 +139,10 @@ export default function PaywallScreen() {
   const selectedTrialDays = selectedPackage?.freeTrialDays ?? null;
   const analyticsTier = subscriptionStatus?.tier ?? 'free';
   const canPurchase =
-    Boolean(effectiveSelectedId) && !processing && !loading && !isActive && !requiresAuth;
+    Boolean(effectiveSelectedId) && !busy && !awaitingServerAccess && !loading && !isActive && !requiresAuth;
 
   const handleClose = useCallback(() => {
+    if (operationInFlightRef.current || processing) return;
     // Leaving the paywall on purpose ends any "come back after sign-in" intent.
     clearReturnToPaywallIntent();
     if (!isActive && purchaseOutcomeRef.current === 'none' && !dismissedTrackedRef.current) {
@@ -157,24 +160,26 @@ export default function PaywallScreen() {
     } else {
       router.replace('/settings');
     }
-  }, [analyticsTier, isActive, navigateToDream, paywallTrigger, savedDreamReturnRoute, selectedId]);
+  }, [analyticsTier, isActive, navigateToDream, paywallTrigger, processing, savedDreamReturnRoute, selectedId]);
 
   // A direct capture -> offer transition has no detail screen underneath it.
   // Native gestures, Android Back and explicit dismissal share the same destination.
-  usePreventRemove(Boolean(savedDreamReturnRoute) && exitDestination === null, handleClose);
+  usePreventRemove((Boolean(savedDreamReturnRoute) || busy) && exitDestination === null, handleClose);
   useFocusEffect(useCallback(() => {
-    if (!savedDreamReturnRoute || exitDestination !== null) return;
+    if ((!savedDreamReturnRoute && !busy) || exitDestination !== null) return;
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
       handleClose();
       return true;
     });
     return () => subscription.remove();
-  }, [exitDestination, handleClose, savedDreamReturnRoute]));
+  }, [busy, exitDestination, handleClose, savedDreamReturnRoute]));
 
   // Release the navigation guard before performing the chosen exit.
   useEffect(() => {
-    if (exitDestination) router.replace(exitDestination);
-  }, [exitDestination]);
+    if (!exitDestination) return;
+    if (savedDreamReturnRoute) router.replace(exitDestination);
+    else router.dismissTo(exitDestination);
+  }, [exitDestination, savedDreamReturnRoute]);
 
   const handleSelect = useCallback((id: string) => {
     setSelectedId(id);
@@ -201,8 +206,44 @@ export default function PaywallScreen() {
     });
   }, [currentLang]);
 
+  const resumeConfirmedAnalysis = useCallback(async (result: Awaited<ReturnType<typeof purchase>> | null) => {
+    if (!params.dreamId || params.dreamOwnerId !== user?.id) return true;
+    setAwaitingServerAccess(true);
+    let confirmed = result;
+    if (!confirmed?.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') {
+      try {
+        // One automatic convergence retry; further retries never repeat the store purchase.
+        confirmed = await refreshSubscription();
+      } catch {
+        return false;
+      }
+    }
+    if (!confirmed.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') return false;
+    const returnRoute = requestAnalysisReturnRoute(params, user?.id);
+    if (returnRoute) {
+      setAwaitingServerAccess(false);
+      navigateToDream(returnRoute);
+      return true;
+    }
+    return false;
+  }, [navigateToDream, params, refreshSubscription, user?.id]);
+
+  const handleRetryActivation = useCallback(async () => {
+    if (operationInFlightRef.current || processing) return;
+    operationInFlightRef.current = true;
+    setOperationPending(true);
+    try {
+      await resumeConfirmedAnalysis(null);
+    } finally {
+      operationInFlightRef.current = false;
+      setOperationPending(false);
+    }
+  }, [processing, resumeConfirmedAnalysis]);
+
   const handlePurchase = useCallback(async () => {
-    if (!effectiveSelectedId || !canPurchase || !selectedPlan) return;
+    if (!effectiveSelectedId || !canPurchase || !selectedPlan || operationInFlightRef.current) return;
+    operationInFlightRef.current = true;
+    setOperationPending(true);
     void trackProductEvent('purchase_started', {
       trigger: paywallTrigger,
       plan: selectedPlan,
@@ -217,10 +258,8 @@ export default function PaywallScreen() {
         plan: selectedPlan,
         tier: nextStatus?.tier ?? 'plus',
       });
-      const returnRoute = nextStatus?.isActive ? requestAnalysisReturnRoute(params, user?.id) : null;
-      if (returnRoute) {
-        navigateToDream(returnRoute);
-        return;
+      if (nextStatus?.isActive || nextStatus?.storeActive) {
+        if (!await resumeConfirmedAnalysis(nextStatus)) return;
       }
       setToastMessage(t('subscription.paywall.toast.success'));
     } catch (purchaseError) {
@@ -229,11 +268,16 @@ export default function PaywallScreen() {
         plan: selectedPlan,
         reason: classifyPurchaseFailure(purchaseError),
       });
+    } finally {
+      operationInFlightRef.current = false;
+      setOperationPending(false);
     }
-  }, [analyticsTier, canPurchase, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, params, user, navigateToDream]);
+  }, [analyticsTier, canPurchase, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, resumeConfirmedAnalysis]);
 
   const handleRestore = useCallback(async () => {
-    if (processing || requiresAuth) return;
+    if (processing || requiresAuth || operationInFlightRef.current) return;
+    operationInFlightRef.current = true;
+    setOperationPending(true);
     try {
       const nextStatus = await restore();
       const restored = Boolean(nextStatus?.isActive);
@@ -245,10 +289,8 @@ export default function PaywallScreen() {
         trigger: paywallTrigger,
         outcome: restored ? 'restored' : 'nothing_to_restore',
       });
-      const returnRoute = restored ? requestAnalysisReturnRoute(params, user?.id) : null;
-      if (returnRoute) {
-        navigateToDream(returnRoute);
-        return;
+      if (restored || nextStatus?.storeActive) {
+        if (!await resumeConfirmedAnalysis(nextStatus)) return;
       }
       setToastMessage(t('subscription.paywall.toast.restored'));
     } catch (restoreError) {
@@ -256,8 +298,11 @@ export default function PaywallScreen() {
         trigger: paywallTrigger,
         outcome: classifyPurchaseFailure(restoreError) === 'cancelled' ? 'cancelled' : 'failed',
       });
+    } finally {
+      operationInFlightRef.current = false;
+      setOperationPending(false);
     }
-  }, [paywallTrigger, processing, requiresAuth, restore, t, params, user, navigateToDream]);
+  }, [paywallTrigger, processing, requiresAuth, restore, t, resumeConfirmedAnalysis]);
 
   const handleHideToast = useCallback(() => {
     setToastMessage(null);
@@ -428,6 +473,7 @@ export default function PaywallScreen() {
             </Text>
             <Pressable
               onPress={handleClose}
+              disabled={busy}
               style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
               accessibilityRole="button"
               testID={TID.Button.PaywallClose}
@@ -474,6 +520,7 @@ export default function PaywallScreen() {
               <Pressable
                 style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
                 onPress={handleClose}
+                disabled={busy}
                 accessibilityRole="button"
               >
                 <Text style={[styles.secondaryLabel, { color: noctalia.text.secondary }]}>
@@ -509,6 +556,7 @@ export default function PaywallScreen() {
             </View>
             <Pressable
               onPress={handleClose}
+              disabled={busy}
               style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
               accessibilityRole="button"
               testID={TID.Button.PaywallClose}
@@ -701,31 +749,36 @@ export default function PaywallScreen() {
           ) : null}
 
           <Reveal index={3} style={styles.actions}>
-            {!isActive ? (
+            {awaitingServerAccess ? (
+              <Text style={[styles.notice, { color: noctalia.text.secondary }]} accessibilityRole="alert">
+                {t('subscription.paywall.activation_pending')}
+              </Text>
+            ) : null}
+            {!isActive || awaitingServerAccess ? (
               <PressableScale
                 style={[
                   styles.primaryButton,
                   {
-                    backgroundColor: requiresAuth
+                    backgroundColor: awaitingServerAccess || requiresAuth
                       ? noctalia.action.primary
                       : canPurchase
                         ? noctalia.action.primary
                         : noctalia.action.disabled,
-                    borderColor: requiresAuth || canPurchase
+                    borderColor: awaitingServerAccess || requiresAuth || canPurchase
                       ? noctalia.action.primaryBorder
                       : noctalia.action.disabledBorder,
                   },
                 ]}
                 transitionProperties={CTA_TRANSITION}
-                disabled={requiresAuth ? processing || loading : !canPurchase}
-                onPress={requiresAuth ? handleOpenAuth : handlePurchase}
+                disabled={awaitingServerAccess ? busy : requiresAuth ? busy || loading : !canPurchase}
+                onPress={awaitingServerAccess ? handleRetryActivation : requiresAuth ? handleOpenAuth : handlePurchase}
                 // The button spans the screen and already clears 44pt; extra slop would
                 // only reach into the footnote above it.
                 hitSlop={0}
                 accessibilityRole="button"
                 testID={TID.Button.PaywallPurchase}
               >
-                {processing ? (
+                {busy ? (
                   <ActivityIndicator color={noctalia.action.primaryText} />
                 ) : (
                   <Text
@@ -733,13 +786,14 @@ export default function PaywallScreen() {
                       styles.primaryLabel,
                       {
                         color:
-                          requiresAuth || canPurchase
+                          awaitingServerAccess || requiresAuth || canPurchase
                             ? noctalia.action.primaryText
                             : noctalia.action.disabledText,
                       },
                     ]}
                   >
-                    {requiresAuth
+                    {awaitingServerAccess ? t('subscription.paywall.retry_activation')
+                      : requiresAuth
                       ? t('subscription.paywall.button.primary.auth')
                       : selectedTrialDays
                         ? t('subscription.paywall.button.primary.trial', { days: selectedTrialDays })
@@ -766,7 +820,7 @@ export default function PaywallScreen() {
               <Pressable
                 style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
                 onPress={handleClose}
-                disabled={processing}
+                disabled={busy}
                 accessibilityRole="button"
               >
                 <Text style={[styles.secondaryLabel, { color: noctalia.text.secondary }]}>
@@ -779,7 +833,7 @@ export default function PaywallScreen() {
               <Pressable
                 style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
                 onPress={handleRestore}
-                disabled={processing}
+                disabled={busy}
                 accessibilityRole="button"
                 testID={TID.Button.PaywallRestore}
               >

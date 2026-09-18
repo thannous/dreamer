@@ -329,8 +329,8 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       }
 
       return result
-        ? { ...nextStatus, tier: result.tier, isActive: result.isActive }
-        : nextStatus;
+        ? { ...nextStatus, tier: result.tier, isActive: result.isActive, serverConfirmed: result.ok === true, storeActive: nextStatus.isActive }
+        : { ...nextStatus, serverConfirmed: isMockMode, storeActive: nextStatus.isActive };
     } catch (err) {
       console.warn('[useSubscription] Subscription convergence failed', {
         timestamp: new Date().toISOString(),
@@ -345,9 +345,9 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
         throw err;
       }
 
-      return nextStatus;
+      return { ...nextStatus, serverConfirmed: false, storeActive: nextStatus.isActive };
     }
-  }, [applyLocalSubscriptionCache, getSubscriptionVersionFromUser, syncSubscription, user, userId, userTier]);
+  }, [applyLocalSubscriptionCache, getSubscriptionVersionFromUser, isMockMode, syncSubscription, user, userId, userTier]);
 
   useEffect(() => {
     let mounted = true;

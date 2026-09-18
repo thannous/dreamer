@@ -519,7 +519,7 @@ jest.doMock('@/hooks/useAnalysisProgress', () => ({
 jest.doMock('@/hooks/useQuota', () => ({
   useQuota: () => ({
     canAnalyzeNow: true,
-    quotaStatus: null,
+    quotaStatus: { ...mockQuotaState, canAnalyze: mockQuotaState.tier === 'plus' || mockQuotaState.usage.analysis.remaining > 0 },
     ...mockQuotaState,
   }),
 }));

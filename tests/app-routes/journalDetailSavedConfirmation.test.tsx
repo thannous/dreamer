@@ -12,7 +12,7 @@ let mockPendingRecordingIntent: Partial<PendingRecordingIntent> | null = null;
 const mockTransitionOnboarding = jest.fn(async () => undefined);
 let mockMedia: any = null;
 let mockQuotaUsage: any = { analysis: { used: 0, limit: 3, remaining: 3 } };
-let mockQuotaStatus: { isUpgraded?: boolean } | null = null;
+let mockQuotaStatus: { isUpgraded?: boolean; canAnalyze?: boolean; guestBootstrapStatus?: string } | null = null;
 let mockCanAnalyzeNow = true;
 let mockQuotaLoading = false;
 const mockCanAnalyze = jest.fn(async () => true);
@@ -348,7 +348,8 @@ jest.mock('@/hooks/useQuota', () => ({
     tier: mockTier,
     usage: mockQuotaUsage,
     loading: mockQuotaLoading,
-    quotaStatus: mockQuotaStatus,
+    quotaStatus: mockQuotaStatus ? { tier: mockTier, usage: mockQuotaUsage, canAnalyze: (mockQuotaUsage?.analysis.remaining ?? 1) > 0, ...mockQuotaStatus }
+      : mockCanAnalyzeNow && mockQuotaUsage ? { tier: mockTier, usage: mockQuotaUsage, canAnalyze: true } : null,
   }),
 }));
 
@@ -437,6 +438,7 @@ describe('journal detail saved confirmation route', () => {
     mockQuotaLoading = false;
     mockCanAnalyzeNow = false;
     mockQuotaUsage = { analysis: { used: 3, limit: 3, remaining: 0 } };
+    mockQuotaStatus = { canAnalyze: false };
     view.rerender(<JournalDetailScreen />);
     expect(require('expo-router').router.push).not.toHaveBeenCalled();
     expect(screen.getByText('Discover Plus')).toBeTruthy();
@@ -444,6 +446,29 @@ describe('journal detail saved confirmation route', () => {
     expect(require('expo-router').router.push).toHaveBeenCalledTimes(1);
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockUpdateDream).not.toHaveBeenCalled();
+  });
+
+  it('does not advertise analysis or sell an upgrade for degraded guest access with remaining credits', async () => {
+    mockTier = 'guest';
+    mockUser = null;
+    mockCanAnalyzeNow = false;
+    mockQuotaStatus = { canAnalyze: false, guestBootstrapStatus: 'degraded' };
+    mockCanAnalyze.mockResolvedValue(false);
+    render(<JournalDetailScreen />);
+    expect(screen.queryByText('Create account')).toBeNull();
+    expect(screen.queryByText('Discover Plus')).toBeNull();
+    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    expect(screen.getByRole('alert')).toBeTruthy();
+    expect(screen.queryByTestId('quota-limit')).toBeNull();
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+  });
+
+  it('offers Plus when permission is denied and the remaining metric is negative', () => {
+    mockQuotaStatus = { canAnalyze: false };
+    mockCanAnalyzeNow = false;
+    mockQuotaUsage = { analysis: { used: 4, limit: 3, remaining: -1 } };
+    render(<JournalDetailScreen />);
+    expect(screen.getByText('Discover Plus')).toBeTruthy();
   });
 
   it('offers analysis to Plus even while an old free quota is still cached', async () => {
@@ -477,7 +502,8 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.getByRole('alert')).toBeTruthy();
   });
 
-  it('resumes once after purchase when Plus becomes available, preserving any existing image', async () => {
+  it.each(['', '   ', 'https://example.com/existing.webp'])('resumes once with the correct illustration policy for %j', async (imageUrl: string) => {
+    mockDreams = [buildDream({ imageUrl })];
     requestAnalysisReturnRoute({ dreamId: '42', dreamClientRequestId: 'persisted-original-42', dreamOwnerId: 'user-1' }, 'user-1');
     mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' };
     const view = render(<JournalDetailScreen />);
@@ -486,7 +512,7 @@ describe('journal detail saved confirmation route', () => {
     await act(async () => { view.rerender(<JournalDetailScreen />); });
     expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
     expect(mockAnalyzeDream).toHaveBeenCalledWith(mockDreams[0], mockDreams[0].transcript, {
-      replaceExistingImage: false, lang: 'fr', analyticsSource: 'journal_detail',
+      replaceExistingImage: !imageUrl.trim(), lang: 'fr', analyticsSource: 'journal_detail',
     });
     expect(mockSetParams).toHaveBeenCalledWith({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
     await act(async () => { view.rerender(<JournalDetailScreen />); });
