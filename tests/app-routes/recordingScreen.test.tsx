@@ -301,6 +301,7 @@ jest.doMock('@/components/recording/RecordingTextInput', () => {
         onChange,
         onSelectionChange,
         onSwitchToVoice,
+        onClear,
         showVoiceHint,
         voiceStatus,
         value,
@@ -311,6 +312,7 @@ jest.doMock('@/components/recording/RecordingTextInput', () => {
         onChange: (value: string) => void;
         onSelectionChange?: (event: { nativeEvent: { selection: { start: number; end: number } } }) => void;
         onSwitchToVoice: () => void;
+        onClear?: () => void;
         showVoiceHint?: boolean;
         voiceStatus?: string;
         value: string;
@@ -319,6 +321,7 @@ jest.doMock('@/components/recording/RecordingTextInput', () => {
       _ref: React.ForwardedRef<unknown>
     ) => (
       <div data-layout={layout} data-testid="recording-composer">
+        {onClear && value ? <button data-testid={TID.Button.ClearDream} onClick={onClear}>Clear</button> : null}
         {showVoiceHint ? <span data-testid="recording-voice-hint">Voice hint</span> : null}
         <textarea
           data-testid={inputTestID}
@@ -912,7 +915,7 @@ describe('Recording screen', () => {
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
 
-  it('confirms restart, stops dictation, clears the durable draft and resets question history', async () => {
+  it('confirms clearing, stops dictation, clears the durable draft and returns to text mode', async () => {
     mockPlatformOS = 'android';
     mockRecordingPermissionState = 'granted';
     mockGetInputModePreference.mockResolvedValue('voice');
@@ -942,15 +945,41 @@ describe('Recording screen', () => {
       await pending;
     });
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('');
-    expect((screen.getByTestId('conversation-answer') as HTMLTextAreaElement).value).toBe('');
-    expect(screen.getByTestId('conversation-question').textContent).toBe('');
+    act(() => mockOnPartialTranscript?.('Résultat reçu après effacement.'));
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('');
+    expect(screen.queryByTestId('conversation-answer')).toBeNull();
+    expect(screen.queryByTestId('conversation-question')).toBeNull();
+    expect(screen.getByTestId('recording-mode').getAttribute('data-value')).toBe('text');
+    expect(mockSaveInputModePreference).toHaveBeenLastCalledWith('text', expect.anything());
     act(() => mockAppStateHandler?.('background'));
     await waitFor(() => expect(mockSaveTranscript).toHaveBeenLastCalledWith(''));
     expect(mockStartRecording).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByTestId('recording-mode-voice'));
     fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'Nouveau rêve.' } });
     await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
     expect(mockRequestCaptureQuestion).toHaveBeenLastCalledWith('Nouveau rêve.', expect.any(String), [], expect.anything());
     expect(mockAddDream).not.toHaveBeenCalled();
+  });
+
+  it('stops inline dictation when clearing and ignores late speech until a new dictation starts', async () => {
+    mockPlatformOS = 'android';
+    mockRecordingPermissionState = 'granted';
+    mockGetSavedTranscript.mockResolvedValueOnce('Brouillon précédent.');
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    await act(async () => { mockOnPartialTranscript?.('Ancien rêve.'); });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.ClearDream)); });
+    expect(mockStopRecording).toHaveBeenCalledTimes(1);
+    await act(async () => { mockOnPartialTranscript?.('Ancien rêve revenu.'); });
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('');
+    act(() => mockAppStateHandler?.('background'));
+    await waitFor(() => expect(mockSaveTranscript).toHaveBeenLastCalledWith(''));
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
+    await act(async () => { mockOnPartialTranscript?.('Nouveau rêve.'); });
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('Nouveau rêve.');
   });
 
   it('keeps the conversational draft and stays on capture if saving fails', async () => {

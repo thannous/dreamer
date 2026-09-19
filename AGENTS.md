@@ -35,16 +35,17 @@ does not depend on it. Verify the selected model's live contract before submissi
 
 ## Styling and Motion
 
-- Styling is **Uniwind** (Tailwind v4 bindings for React Native). The canonical CSS tokens live in
-  `global.css`; keep the TS mirrors below synchronized. `metro.config.js` wraps
+- Styling is **Uniwind** (Tailwind v4 bindings for React Native). Canonical colours live in
+  `constants/noctaliaPalette.ts`; `global.css` contains generated colour tokens. `metro.config.js` wraps
   the config with `withUniwindConfig` as the
   outermost wrapper. See `specs/uniwind-migration-guide.md` and `specs/adr-001-nativewind-vs-uniwind.md`.
 - Colour vocabulary: `ink` (grounds and surfaces), `ivory` (text), `champagne` (accent).
   **`champagne` is never a text colour** — accented copy uses `text-champagne-on`, which is
   WCAG AA on both grounds.
-- `global.css` and `constants/journalTheme.ts` / `constants/noctaliaDesign.ts` are kept in
-  step by hand: screens still on `StyleSheet` read the TS constants, migrated screens read the
-  CSS variables. Change a colour in one, change it in the other.
+- `constants/journalTheme.ts` / `constants/noctaliaDesign.ts` derive from the common palette.
+  Edit colour values there only via `constants/noctaliaPalette.ts`, then run
+  `npm run uniwind:types` (includes CSS generation). Do not hand-edit the generated
+  colour block in `global.css`; `npm run theme:check` and `npm run brand:check` verify parity.
 - Uniwind and `StyleSheet` coexist; migration is incremental. Migrate a component fully or not
   at all — a component half in `className` is where contrast and spacing regressions hide.
 - Colour values passed as *props* (LinearGradient `colors`, icon `color=`, chart colours) stay

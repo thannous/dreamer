@@ -11,13 +11,14 @@ const JOURNAL = {
   ink: 'backgroundDark', 'ink-panel': 'backgroundSecondary', 'ink-solid': 'backgroundCard',
   ivory: 'textPrimary', 'ivory-muted': 'textSecondary', 'ivory-faint': 'textTertiary',
   champagne: 'accent', 'champagne-on': 'accentText', 'champagne-deep': 'accentDark',
-  'champagne-soft': 'accentLight', 'on-champagne': 'textOnAccentSurface',
-  line: 'divider', timeline: 'timeline', 'ink-nav': 'navbarBg', 'line-nav': 'navbarBorder',
+  'on-champagne': 'textOnAccentSurface',
+  timeline: 'timeline', 'ink-nav': 'navbarBg', 'line-nav': 'navbarBorder',
   'nav-active': 'navbarTextActive', 'nav-inactive': 'navbarTextInactive',
   'tag-surreal': 'tags.surreal', 'tag-mystical': 'tags.mystical',
   'tag-calm': 'tags.calm', 'tag-noir': 'tags.noir',
 };
 const DESIGN = {
+  'champagne-soft': 'action.primaryBorder', line: 'surface.border',
   'ink-card': 'surface.base', 'ink-raised': 'surface.raised', 'ink-active': 'surface.active',
   'ink-soft': 'surface.soft', 'ink-overlay': 'surface.overlay', 'line-strong': 'surface.borderStrong',
   'champagne-dim': 'action.disabled', 'champagne-dim-line': 'action.disabledBorder',
@@ -99,7 +100,7 @@ function cssBlocks(css) {
 
 // Read only the AST paths participating in the contract. Never execute theme files
 // (they import native modules and contain unrelated runtime functions).
-function typescriptReader(source, filename, ts) {
+function typescriptReader(source, filename, ts, importedFactory) {
   const file = ts.createSourceFile(filename, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
   if (file.parseDiagnostics.length) throw new Error(`Invalid TypeScript: ${filename}`);
   const declarations = new Map();
@@ -112,6 +113,26 @@ function typescriptReader(source, filename, ts) {
     }
     if (ts.isFunctionDeclaration(statement) && statement.name) functions.set(statement.name.text, statement);
   }
+  const binding = Symbol('static token binding');
+  function factory(name, args, keys) {
+    const fn = functions.get(name);
+    if (!fn && importedFactory) return importedFactory(name, args, keys.join('.'));
+    if (!fn?.body || fn.parameters.length !== args.length) throw new Error(`Unsupported token factory: ${name}`);
+    const env = Object.fromEntries(fn.parameters.map((parameter, index) => [parameter.name.getText(file), args[index]]));
+    for (const statement of fn.body.statements) {
+      if (ts.isVariableStatement(statement)) {
+        for (const declaration of statement.declarationList.declarations) {
+          if (!ts.isIdentifier(declaration.name)) throw new Error('Unsupported token binding');
+          env[declaration.name.text] = { [binding]: true, node: declaration.initializer, env: { ...env } };
+        }
+      } else if (ts.isReturnStatement(statement)) {
+        return read(statement.expression, keys, env);
+      } else {
+        throw new Error(`Unsupported token factory statement: ${statement.getText(file)}`);
+      }
+    }
+    throw new Error(`Missing token factory return: ${name}`);
+  }
   function read(node, keys, env = {}, seen = new Set()) {
     if (!node) throw new Error(`Missing TypeScript token ${filename}: ${keys.join('.')}`);
     if (ts.isAsExpression(node) || ts.isParenthesizedExpression(node) || ts.isSatisfiesExpression(node)) {
@@ -119,14 +140,36 @@ function typescriptReader(source, filename, ts) {
     }
     if (ts.isIdentifier(node)) {
       if (Object.hasOwn(env, node.text)) {
-        return keys.reduce((value, key) => value?.[key], env[node.text]);
+        const value = env[node.text];
+        if (value?.[binding]) return read(value.node, keys, value.env, seen);
+        return keys.reduce((value, key) => value?.[key], value);
       }
       if (seen.has(node.text)) throw new Error(`Cyclic token reference: ${node.text}`);
       return read(declarations.get(node.text), keys, env, new Set([...seen, node.text]));
     }
     if (ts.isPropertyAccessExpression(node)) return read(node.expression, [node.name.text, ...keys], env, seen);
-    if (ts.isConditionalExpression(node) && ts.isIdentifier(node.condition) && ['isDark', 'isMorning', 'isAfterglow'].includes(node.condition.text) && typeof env[node.condition.text] === 'boolean') {
-      return read(env[node.condition.text] ? node.whenTrue : node.whenFalse, keys, env, seen);
+    if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.EqualsEqualsEqualsToken && !keys.length) {
+      return read(node.left, [], env, seen) === read(node.right, [], env, seen);
+    }
+    if (ts.isConditionalExpression(node)) {
+      const condition = read(node.condition, [], env, seen);
+      if (typeof condition !== 'boolean') throw new Error('Unsupported non-boolean token condition');
+      return read(condition ? node.whenTrue : node.whenFalse, keys, env, seen);
+    }
+    if (ts.isCallExpression(node) && ts.isIdentifier(node.expression)) {
+      const name = node.expression.text;
+      const args = node.arguments.map(arg => read(arg, [], env, seen));
+      if (['getNoctaliaPalette', 'createNoctaliaTheme', 'getNoctaliaDesignTokens'].includes(name)) return factory(name, args, keys);
+      // Only the known colour-compositing primitive is supported; never execute TS.
+      if (name === 'onGround' && !keys.length && args.length === 2) {
+        const [color, ground] = args.map(normalizeColor);
+        if (color.startsWith('#')) return color;
+        const [r, g, b, alpha] = color.match(/[\d.]+/g).map(Number);
+        return '#' + [r, g, b].map((channel, index) => {
+          const base = parseInt(ground.slice(1 + index * 2, 3 + index * 2), 16);
+          return Math.round(channel * alpha + base * (1 - alpha)).toString(16).padStart(2, '0');
+        }).join('');
+      }
     }
     if (ts.isObjectLiteralExpression(node) && keys.length) {
       const [key, ...remaining] = keys;
@@ -135,6 +178,8 @@ function typescriptReader(source, filename, ts) {
           try { return read(property.expression, keys, env, seen); } catch (error) {
             if (!error.message.startsWith('Missing TypeScript token')) throw error;
           }
+        } else if (ts.isShorthandPropertyAssignment(property)) {
+          if (property.name.text === key) return read(property.name, remaining, env, seen);
         } else if (ts.isPropertyAssignment(property) && !ts.isComputedPropertyName(property.name)) {
           if (property.name.text === key) return read(property.initializer, remaining, env, seen);
         } else {
@@ -148,27 +193,7 @@ function typescriptReader(source, filename, ts) {
   }
   return {
     token: (name, key) => read(declarations.get(name), key.split('.')),
-    design: (key, colors, mode) => {
-      const fn = functions.get('getNoctaliaDesignTokens');
-      const statements = fn?.body?.statements;
-      const guards = [['isDark', 'mode', 'dark'], ['isMorning', 'colors.ambience', 'morning'],
-        ['isAfterglow', 'colors.ambience', 'afterglow']];
-      const validGuards = guards.every(([name, left, right], index) => {
-        const statement = statements?.[index];
-        const declaration = statement && ts.isVariableStatement(statement) &&
-          statement.declarationList.declarations.length === 1 && statement.declarationList.declarations[0];
-        const condition = declaration?.initializer;
-        return declaration?.name.getText(file) === name && condition &&
-          ts.isBinaryExpression(condition) && condition.operatorToken.kind === ts.SyntaxKind.EqualsEqualsEqualsToken &&
-          condition.left.getText(file) === left && ts.isStringLiteral(condition.right) && condition.right.text === right;
-      });
-      if (fn?.parameters.length !== 2 || fn.parameters[0].name.getText(file) !== 'colors' ||
-          fn.parameters[1].name.getText(file) !== 'mode' || statements?.length !== 4 ||
-          !validGuards || !ts.isReturnStatement(statements[3])) throw new Error('Unsupported getNoctaliaDesignTokens structure');
-      return read(statements[3].expression, key.split('.'), {
-        colors, isDark: mode === 'dark', isMorning: colors.ambience === 'morning', isAfterglow: colors.ambience === 'afterglow',
-      });
-    },
+    factory: (name, args, key) => factory(name, args, key.split('.')),
   };
 }
 
@@ -201,15 +226,14 @@ function checkBrandTokens({ root = ROOT, product = 'journal', ts } = {}) {
   if (product === 'all' || product === 'journal') {
     const blocks = cssBlocks(read('global.css'));
     rejectUnmapped(blocks, { ...JOURNAL, ...DESIGN }, 'Journal/Lucid', true);
-    const theme = typescriptReader(read('constants/journalTheme.ts'), 'constants/journalTheme.ts', ts);
-    const design = typescriptReader(read('constants/noctaliaDesign.ts'), 'constants/noctaliaDesign.ts', ts);
-    for (const [mode, name] of Object.entries({ dark: 'DarkTheme', light: 'LightTheme', morning: 'MorningTheme', afterglow: 'AfterglowTheme' })) {
-      compare(`Journal/Lucid ${mode}`, blocks[mode], JOURNAL, key => theme.token(name, key));
-      const colors = Object.fromEntries(Object.values(JOURNAL).filter(key => !key.includes('.')).map(key => [key, theme.token(name, key)]));
-      colors.overlay = theme.token(name, 'overlay');
-      colors.ambience = theme.token(name, 'ambience');
-      compare(`Journal/Lucid design ${mode}`, blocks[mode], DESIGN, key => design.design(key, colors,
-        mode === 'dark' || mode === 'afterglow' ? 'dark' : 'light'));
+    const palette = typescriptReader(read('constants/noctaliaPalette.ts'), 'constants/noctaliaPalette.ts', ts);
+    const theme = typescriptReader(read('constants/journalTheme.ts'), 'constants/journalTheme.ts', ts, palette.factory);
+    for (const [ambience, name] of Object.entries({ dark: 'DarkTheme', light: 'LightTheme', morning: 'MorningTheme', afterglow: 'AfterglowTheme' })) {
+      const mode = ambience === 'dark' || ambience === 'afterglow' ? 'dark' : 'light';
+      compare(`Journal/Lucid ${ambience}`, blocks[ambience], JOURNAL,
+        key => theme.token(name, key));
+      compare(`Journal/Lucid design ${ambience}`, blocks[ambience], DESIGN,
+        key => palette.factory('getNoctaliaDesignTokens', [{}, mode], key));
     }
   }
   if (product === 'all' || product === 'meditation') {

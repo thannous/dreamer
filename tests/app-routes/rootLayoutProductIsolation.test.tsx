@@ -11,6 +11,8 @@ let mockAuthReturn: { destination: string; createdAt: number } | null = null;
 let mockOnboardingPersisting = false;
 let mockOnboardingStatus = 'completed';
 let mockOnboardingPath: string | null = null;
+let mockPendingRecordingIntent: Record<string, unknown> | null = null;
+let mockForeground: (() => void) | undefined;
 const mockCompleteAuthReturn = jest.fn().mockResolvedValue(undefined);
 // Real DreamsProvider calls this boundary; no Journal pipeline can mount without it.
 // This isolates composition, not real network traffic or the hook's own behavior.
@@ -50,13 +52,13 @@ jest.mock('@/hooks/useAuthReturnIntent', () => ({ useAuthReturnIntent: () => ({ 
 jest.mock('@/lib/authReturnIntent', () => ({ ...jest.requireActual('@/lib/authReturnIntent'), completeAuthReturn: (...args: unknown[]) => mockCompleteAuthReturn(...args) }));
 jest.mock('@/lib/appVariant', () => ({ get isLucidTrainer() { return mockLucid; } }));
 jest.mock('@/context/AuthContext', () => ({ AuthProvider: (props: React.PropsWithChildren) => mockChildren(props), useAuth: () => ({ user: mockUser, loading: false, returningGuestBlocked: false }) }));
-jest.mock('@/context/OnboardingContext', () => ({ OnboardingProvider: (props: React.PropsWithChildren) => mockChildren(props), useOnboarding: () => ({ loading: false, persisting: mockOnboardingPersisting, scope: mockUser ? `user:${mockUser.id}` : 'guest', state: { status: mockOnboardingStatus, selectedPath: mockOnboardingPath, pendingRecordingIntent: null } }) }));
+jest.mock('@/context/OnboardingContext', () => ({ OnboardingProvider: (props: React.PropsWithChildren) => mockChildren(props), useOnboarding: () => ({ loading: false, persisting: mockOnboardingPersisting, scope: mockUser ? `user:${mockUser.id}` : 'guest', state: { status: mockOnboardingStatus, selectedPath: mockOnboardingPath, pendingRecordingIntent: mockPendingRecordingIntent } }) }));
 jest.mock('@/context/LanguageContext', () => ({ LanguageProvider: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/context/ThemeContext', () => ({ ThemeProvider: (props: React.PropsWithChildren) => mockChildren(props), useTheme: () => ({ mode: 'dark' }) }));
 jest.mock('@/context/SubscriptionContext', () => ({ SubscriptionProvider: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/hooks/useDreamJournal', () => ({ useDreamJournal: () => mockJournal() }));
 jest.mock('@/hooks/useSubscriptionInitialize', () => ({ useSubscriptionInitialize: jest.fn() }));
-jest.mock('@/hooks/useAppState', () => ({ useAppState: jest.fn() }));
+jest.mock('@/hooks/useAppState', () => ({ useAppState: (callback: () => void) => { mockForeground = callback; } }));
 jest.mock('@/hooks/usePrefersReducedMotion', () => ({ usePrefersReducedMotion: () => true }));
 jest.mock('@/hooks/useSplashFailsafe', () => ({ useSplashFailsafe: () => false }));
 jest.mock('@/components/AnimatedSplashScreen', () => ({ __esModule: true, default: () => null, getSplashMinimumVisibleMs: () => 0 }));
@@ -101,11 +103,23 @@ describe('root product composition (real root and DreamsProvider)', () => {
     jest.useFakeTimers(); jest.clearAllMocks();
     mockPathname = '/recording'; mockSearchParams = {}; mockAuthReturn = null;
     mockOnboardingPersisting = false; mockOnboardingStatus = 'completed';
-    mockOnboardingPath = null;
+    mockOnboardingPath = null; mockPendingRecordingIntent = null; mockForeground = undefined;
     Object.defineProperty(globalThis, 'URL', { configurable: true, writable: true, value: NodeURL });
     require('react-native').Linking.getInitialURL.mockResolvedValue(null);
   });
   afterEach(() => { cleanup(); jest.useRealTimers(); });
+
+  it.each(['/paywall', '/journal/42'])('keeps the saved dream journey on %s after returning from the store', async (path) => {
+    mockLucid = false;
+    mockUser = { id: 'user-1' };
+    const view = await mountStartup();
+    mockPathname = path;
+    mockPendingRecordingIntent = { entryId: 'saved-entry', intent: 'record_dream', source: 'onboarding', postSave: 'confirm_analysis', phase: 'analysis_confirmation', savedDreamId: 42 };
+    await act(async () => { view.rerender(<RootLayout />); });
+    mockReplace.mockClear();
+    await act(async () => { mockForeground?.(); });
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
 
   it.each([null, { id: 'account-with-journal' }])('keeps Lucid startup outside Journal runtime for user %j', async (user) => {
     mockLucid = true;

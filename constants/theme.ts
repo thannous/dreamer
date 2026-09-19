@@ -5,27 +5,21 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+import { createNoctaliaTheme } from './noctaliaPalette';
 
-export const Colors = {
-  light: {
-    text: '#11181C',
-    background: '#F0EEE6',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
-  },
-};
+function legacyColors(mode: 'light' | 'dark') {
+  const theme = createNoctaliaTheme(mode, mode);
+  return {
+    text: theme.textPrimary,
+    background: theme.backgroundDark,
+    tint: theme.accentText,
+    icon: theme.textSecondary,
+    tabIconDefault: theme.navbarTextInactive,
+    tabIconSelected: theme.navbarTextActive,
+  };
+}
+
+export const Colors = { light: legacyColors('light'), dark: legacyColors('dark') };
 
 export const Fonts = {
   // Space Grotesk - for display/body text

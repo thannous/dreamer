@@ -7,15 +7,12 @@
  *   ivory     -> everything written on it
  *   champagne -> the gold accent
  *
- * Values are copied from the existing source of truth and must stay in step with it:
- *   colors     -> constants/journalTheme.ts (DarkTheme / LightTheme)
- *   surfaces   -> constants/noctaliaDesign.ts (getNoctaliaDesignTokens)
- *   fonts      -> constants/theme.ts (Fonts)
- *   motion     -> constants/animations.ts
- * Screens still on StyleSheet read the TS constants; screens on Uniwind read these
- * variables. Change one, change the other.
+ * Color source of truth: constants/noctaliaPalette.ts. The color block below is
+ * generated with npm run theme:generate and verified by npm run theme:check.
+ * journalTheme.ts and noctaliaDesign.ts derive from that same source.
+ * Fonts, geometry and motion below remain hand-authored.
  *
- * NON-NEGOTIABLE: `champagne` (#D4A574) is a fill and rule colour. It is never text.
+ * NON-NEGOTIABLE: `champagne` is a fill and rule colour. It is never text.
  * Text and icons use `champagne-on`, which is WCAG AA on both grounds.
  */
 @import 'tailwindcss';
@@ -116,69 +113,52 @@
   --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+/* Generated from constants/noctaliaPalette.ts. Run npm run theme:generate. */
 @layer theme {
   :root {
-    /* ==================================================================== */
-    /* DARK — the primary palette: nocturnal ink under champagne gold        */
-    /* ==================================================================== */
     @variant dark {
-      /* -- ink: grounds and surfaces ---------------------------------- */
-      --color-ink: #03040d; /* backgroundDark */
-      --color-ink-panel: #192344; /* backgroundSecondary */
-      --color-ink-card: rgba(13, 11, 28, 0.92); /* surface.base */
-      --color-ink-raised: rgba(18, 13, 35, 0.86); /* surface.raised */
-      --color-ink-active: rgba(25, 35, 68, 0.88); /* surface.active */
-      --color-ink-soft: rgba(255, 249, 239, 0.06); /* surface.soft */
-      --color-ink-solid: #0d0b1c; /* backgroundCard, opaque */
-      --color-ink-overlay: rgba(3, 4, 13, 0.72); /* surface.overlay */
-      --color-ink-nav: #050510; /* navbarBg */
-
-      /* -- ivory: everything written ---------------------------------- */
-      --color-ivory: #fff9ef; /* textPrimary */
-      --color-ivory-muted: #b7aec9; /* textSecondary */
-      --color-ivory-faint: #8e84a7; /* textTertiary */
-      --color-ivory-disabled: rgba(255, 249, 239, 0.44);
-
-      /* -- champagne: the accent -------------------------------------- */
-      --color-champagne: #d4a574; /* fills and rules ONLY */
-      --color-champagne-on: #ead4b4; /* the readable one — text and icons */
-      --color-champagne-deep: #9a6332; /* pressed states, strong borders */
-      --color-champagne-soft: #ead4b4; /* hairlines, highlights */
-      --color-champagne-dim: rgba(234, 212, 180, 0.2); /* disabled fill */
-      --color-champagne-dim-line: rgba(234, 212, 180, 0.18); /* action.disabledBorder */
-      --color-on-champagne: #3b2412; /* text ON a gold surface */
-
-      /* -- lines ------------------------------------------------------- */
-      --color-line: #514637; /* divider */
-      --color-line-strong: rgba(234, 212, 180, 0.36);
+      --color-ink: #03040D;
+      --color-ink-panel: #1F1D21;
+      --color-ink-card: #14131A;
+      --color-ink-raised: #14131A;
+      --color-ink-active: rgba(234, 212, 180, 0.12);
+      --color-ink-soft: rgba(234, 212, 180, 0.06);
+      --color-ink-solid: #14131A;
+      --color-ink-overlay: rgba(0, 0, 0, 0.64);
+      --color-ink-nav: #14131A;
+      --color-ivory: #FFF9EF;
+      --color-ivory-muted: #B7AEC9;
+      --color-ivory-faint: #B7AEC9;
+      --color-ivory-disabled: #B7AEC9;
+      --color-champagne: #EAD4B4;
+      --color-champagne-on: #EAD4B4;
+      --color-champagne-deep: #EAD4B4;
+      --color-champagne-soft: #514637;
+      --color-champagne-dim: rgba(234, 212, 180, 0.12);
+      --color-champagne-dim-line: #514637;
+      --color-on-champagne: #382D35;
+      --color-line: #514637;
+      --color-line-strong: #514637;
       --color-line-nav: #514637;
-      --color-timeline: #6b573d;
-
-      /* -- navigation -------------------------------------------------- */
-      --color-nav-active: #fff9ef;
-      --color-nav-inactive: #afa7bb;
-
-      /* -- status ------------------------------------------------------ */
-      --color-danger: rgba(159, 18, 57, 0.22);
-      --color-danger-line: rgba(253, 164, 175, 0.35);
-      --color-danger-on: #ffe4ea;
-      --color-danger-icon: #fda4af;
-      --color-success: rgba(22, 101, 52, 0.22);
-      --color-success-line: rgba(134, 239, 172, 0.28);
-      --color-success-on: #dcfce7;
-      --color-success-icon: #86efac;
-      --color-warning: rgba(154, 99, 50, 0.22);
-      --color-warning-line: rgba(234, 212, 180, 0.34);
-      --color-warning-on: #fff7d6;
-      --color-warning-icon: #ead4b4;
-
-      /* -- dream tags -------------------------------------------------- */
-      --color-tag-surreal: #7f6fa8;
-      --color-tag-mystical: #6c568f;
-      --color-tag-calm: #446b8c;
-      --color-tag-noir: #31354f;
-
-      /* -- atmosphere -------------------------------------------------- */
+      --color-timeline: #514637;
+      --color-nav-active: #FFF9EF;
+      --color-nav-inactive: #B7AEC9;
+      --color-danger: #302126;
+      --color-danger-line: #936D68;
+      --color-danger-on: #E6A49B;
+      --color-danger-icon: #E6A49B;
+      --color-success: #1C2722;
+      --color-success-line: #688060;
+      --color-success-on: #B7CFB0;
+      --color-success-icon: #B7CFB0;
+      --color-warning: #2C251D;
+      --color-warning-line: #8C7357;
+      --color-warning-on: #EAD4B4;
+      --color-warning-icon: #EAD4B4;
+      --color-tag-surreal: #7F6FA8;
+      --color-tag-mystical: #6C568F;
+      --color-tag-calm: #446B8C;
+      --color-tag-noir: #31354F;
       --color-particle: rgba(234, 212, 180, 0.22);
       --color-star: rgba(234, 212, 180, 0.7);
       --color-veil: rgba(25, 35, 68, 0.42);
@@ -186,184 +166,154 @@
       --color-horizon: rgba(255, 249, 239, 0.08);
     }
 
-    /* ==================================================================== */
-    /* LIGHT — cream paper, for reading a dream minutes after waking         */
-    /* ==================================================================== */
     @variant light {
-      --color-ink: #fbfaf7;
-      --color-ink-panel: #f3efe7;
-      --color-ink-card: #fffdf8;
-      --color-ink-raised: #fffdf8;
-      --color-ink-active: #f3efe7;
-      --color-ink-soft: #f3efe7;
-      --color-ink-solid: #fffdf8;
-      --color-ink-overlay: rgba(251, 250, 247, 0.92);
-      --color-ink-nav: #fbfaf7;
-
-      --color-ivory: #2a2838;
-      --color-ivory-muted: #6b6880;
-      --color-ivory-faint: #6f6c84;
-      --color-ivory-disabled: rgba(42, 40, 56, 0.45);
-
-      --color-champagne: #d4a574;
-      --color-champagne-on: #9a6332; /* never `champagne` as text on cream */
-      --color-champagne-deep: #9a6332;
-      --color-champagne-soft: #ead4b4;
-      --color-champagne-dim: rgba(212, 165, 116, 0.28);
-      --color-champagne-dim-line: rgba(154, 99, 50, 0.18); /* action.disabledBorder */
-      --color-on-champagne: #4a2f1b;
-
-      --color-line: #e4ddd2;
-      --color-line-strong: #e4ddd2;
-      --color-line-nav: #e8e2d8;
-      --color-timeline: #e7ded0;
-
-      --color-nav-active: #2a2838;
-      --color-nav-inactive: #6f6c84;
-
-      --color-danger: #fff1f2;
-      --color-danger-line: #fda4af;
-      --color-danger-on: #9f1239;
-      --color-danger-icon: #be123c;
-      --color-success: #ecfdf3;
-      --color-success-line: #bbf7d0;
-      --color-success-on: #166534;
-      --color-success-icon: #16a34a;
-      --color-warning: #fef3c7;
-      --color-warning-line: #f59e0b;
-      --color-warning-on: #92400e;
-      --color-warning-icon: #d97706;
-
-      --color-tag-surreal: #b8aecb;
-      --color-tag-mystical: #c5b8d8;
-      --color-tag-calm: #a5c4e0;
-      --color-tag-noir: #a8a8c0;
-
-      --color-particle: rgba(212, 165, 116, 0.34);
-      --color-star: rgba(154, 99, 50, 0.45);
-      --color-veil: rgba(243, 239, 231, 0.72);
-      --color-orbit: rgba(154, 99, 50, 0.18);
-      --color-horizon: rgba(154, 99, 50, 0.1);
+      --color-ink: #F0E4D4;
+      --color-ink-panel: #E7D8C6;
+      --color-ink-card: #F5EADB;
+      --color-ink-raised: #F5EADB;
+      --color-ink-active: rgba(124, 76, 43, 0.08);
+      --color-ink-soft: rgba(255, 249, 239, 0.14);
+      --color-ink-solid: #F5EADB;
+      --color-ink-overlay: rgba(38, 27, 28, 0.44);
+      --color-ink-nav: #F5EADB;
+      --color-ivory: #382D35;
+      --color-ivory-muted: #64514F;
+      --color-ivory-faint: #64514F;
+      --color-ivory-disabled: #64514F;
+      --color-champagne: #7C4C2B;
+      --color-champagne-on: #7C4C2B;
+      --color-champagne-deep: #7C4C2B;
+      --color-champagne-soft: rgba(126, 83, 49, 0.25);
+      --color-champagne-dim: rgba(124, 76, 43, 0.08);
+      --color-champagne-dim-line: rgba(126, 83, 49, 0.25);
+      --color-on-champagne: #FFF9EF;
+      --color-line: rgba(126, 83, 49, 0.25);
+      --color-line-strong: rgba(126, 83, 49, 0.25);
+      --color-line-nav: #D7C4B1;
+      --color-timeline: #D4C0AB;
+      --color-nav-active: #382D35;
+      --color-nav-inactive: #64514F;
+      --color-danger: #E4C2AF;
+      --color-danger-line: #A56959;
+      --color-danger-on: #873830;
+      --color-danger-icon: #873830;
+      --color-success: #D4D1B4;
+      --color-success-line: #6F7F58;
+      --color-success-on: #405539;
+      --color-success-icon: #405539;
+      --color-warning: #E6CCA6;
+      --color-warning-line: #9B784F;
+      --color-warning-on: #754B25;
+      --color-warning-icon: #754B25;
+      --color-tag-surreal: #B8AECB;
+      --color-tag-mystical: #C5B8D8;
+      --color-tag-calm: #A5C4E0;
+      --color-tag-noir: #A8A8C0;
+      --color-particle: rgba(124, 76, 43, 0.12);
+      --color-star: rgba(124, 76, 43, 0.25);
+      --color-veil: rgba(240, 228, 212, 0.7);
+      --color-orbit: rgba(124, 76, 43, 0.12);
+      --color-horizon: rgba(124, 76, 43, 0.06);
     }
 
-    /* ==================================================================== */
-    /* MORNING — warm daylight before the neutral reading palette            */
-    /* ==================================================================== */
     @variant morning {
-      --color-ink: #f5ebdd;
-      --color-ink-panel: #ebdccb;
-      --color-ink-card: #fff8ec;
-      --color-ink-raised: #fff3e4;
-      --color-ink-active: #ebdccb;
-      --color-ink-soft: #f0e1d2;
-      --color-ink-solid: #fff8ec;
-      --color-ink-overlay: rgba(255, 248, 236, 0.9);
-      --color-ink-nav: #f5ebdd;
-
-      --color-ivory: #302722;
-      --color-ivory-muted: #705f56;
-      --color-ivory-faint: #79675d;
-      --color-ivory-disabled: rgba(48, 39, 34, 0.45);
-
-      --color-champagne: #d58a59;
-      --color-champagne-on: #8a4b2d;
-      --color-champagne-deep: #955433;
-      --color-champagne-soft: #f0c9a8;
-      --color-champagne-dim: rgba(213, 138, 89, 0.25);
-      --color-champagne-dim-line: rgba(149, 84, 51, 0.2);
-      --color-on-champagne: #3d281c;
-
-      --color-line: #ddcbbb;
-      --color-line-strong: #cdb5a2;
-      --color-line-nav: #ddcbbb;
-      --color-timeline: #dfcab8;
-
-      --color-nav-active: #302722;
-      --color-nav-inactive: #79675d;
-
-      --color-danger: #fae8e5;
-      --color-danger-line: #d99a94;
-      --color-danger-on: #8f333b;
-      --color-danger-icon: #a63b42;
-      --color-success: #e1eee4;
-      --color-success-line: #a5c9ad;
-      --color-success-on: #28583d;
-      --color-success-icon: #35684a;
-      --color-warning: #f7e6c9;
-      --color-warning-line: #d8ad6e;
-      --color-warning-on: #74470e;
-      --color-warning-icon: #8a5a12;
-
-      --color-tag-surreal: #c5b2c7;
-      --color-tag-mystical: #d1b8ce;
-      --color-tag-calm: #afcbd2;
-      --color-tag-noir: #b7aeb6;
-
-      --color-particle: rgba(213, 138, 89, 0.35);
-      --color-star: rgba(149, 84, 51, 0.42);
-      --color-veil: rgba(235, 220, 203, 0.7);
-      --color-orbit: rgba(149, 84, 51, 0.2);
-      --color-horizon: rgba(135, 176, 184, 0.14);
+      --color-ink: #F0E4D4;
+      --color-ink-panel: #E7D8C6;
+      --color-ink-card: #F5EADB;
+      --color-ink-raised: #F5EADB;
+      --color-ink-active: rgba(124, 76, 43, 0.08);
+      --color-ink-soft: rgba(255, 249, 239, 0.14);
+      --color-ink-solid: #F5EADB;
+      --color-ink-overlay: rgba(38, 27, 28, 0.44);
+      --color-ink-nav: #F5EADB;
+      --color-ivory: #382D35;
+      --color-ivory-muted: #64514F;
+      --color-ivory-faint: #64514F;
+      --color-ivory-disabled: #64514F;
+      --color-champagne: #7C4C2B;
+      --color-champagne-on: #7C4C2B;
+      --color-champagne-deep: #7C4C2B;
+      --color-champagne-soft: rgba(126, 83, 49, 0.25);
+      --color-champagne-dim: rgba(124, 76, 43, 0.08);
+      --color-champagne-dim-line: rgba(126, 83, 49, 0.25);
+      --color-on-champagne: #FFF9EF;
+      --color-line: rgba(126, 83, 49, 0.25);
+      --color-line-strong: rgba(126, 83, 49, 0.25);
+      --color-line-nav: #D7C4B1;
+      --color-timeline: #D4C0AB;
+      --color-nav-active: #382D35;
+      --color-nav-inactive: #64514F;
+      --color-danger: #E4C2AF;
+      --color-danger-line: #A56959;
+      --color-danger-on: #873830;
+      --color-danger-icon: #873830;
+      --color-success: #D4D1B4;
+      --color-success-line: #6F7F58;
+      --color-success-on: #405539;
+      --color-success-icon: #405539;
+      --color-warning: #E6CCA6;
+      --color-warning-line: #9B784F;
+      --color-warning-on: #754B25;
+      --color-warning-icon: #754B25;
+      --color-tag-surreal: #B8AECB;
+      --color-tag-mystical: #C5B8D8;
+      --color-tag-calm: #A5C4E0;
+      --color-tag-noir: #A8A8C0;
+      --color-particle: rgba(124, 76, 43, 0.12);
+      --color-star: rgba(124, 76, 43, 0.25);
+      --color-veil: rgba(240, 228, 212, 0.7);
+      --color-orbit: rgba(124, 76, 43, 0.12);
+      --color-horizon: rgba(124, 76, 43, 0.06);
     }
 
-    /* ==================================================================== */
-    /* AFTERGLOW — violet dusk with a restrained coral ember                 */
-    /* ==================================================================== */
     @variant afterglow {
-      --color-ink: #160f22;
-      --color-ink-panel: #3a2444;
-      --color-ink-card: rgba(36, 23, 45, 0.94);
-      --color-ink-raised: rgba(49, 29, 58, 0.9);
-      --color-ink-active: rgba(58, 36, 68, 0.92);
-      --color-ink-soft: rgba(255, 244, 233, 0.07);
-      --color-ink-solid: #24172d;
-      --color-ink-overlay: rgba(22, 15, 34, 0.76);
-      --color-ink-nav: #160f22;
-
-      --color-ivory: #fff4e9;
-      --color-ivory-muted: #d5bbc9;
-      --color-ivory-faint: #b79bae;
-      --color-ivory-disabled: rgba(255, 244, 233, 0.45);
-
-      --color-champagne: #e99a79;
-      --color-champagne-on: #f5c0a1;
-      --color-champagne-deep: #a9565c;
-      --color-champagne-soft: #f5c0a1;
-      --color-champagne-dim: rgba(233, 154, 121, 0.22);
-      --color-champagne-dim-line: rgba(245, 192, 161, 0.2);
-      --color-on-champagne: #3a1f21;
-
-      --color-line: #624158;
-      --color-line-strong: rgba(245, 192, 161, 0.34);
-      --color-line-nav: #624158;
-      --color-timeline: #7e4c64;
-
-      --color-nav-active: #fff4e9;
-      --color-nav-inactive: #b79bae;
-
-      --color-danger: rgba(160, 40, 68, 0.25);
-      --color-danger-line: rgba(255, 158, 161, 0.38);
-      --color-danger-on: #ffe5e6;
-      --color-danger-icon: #ff9ea1;
-      --color-success: rgba(53, 104, 74, 0.27);
-      --color-success-line: rgba(167, 214, 168, 0.34);
-      --color-success-on: #e0f3e1;
-      --color-success-icon: #a7d6a8;
-      --color-warning: rgba(126, 76, 51, 0.3);
-      --color-warning-line: rgba(243, 195, 125, 0.36);
-      --color-warning-on: #fff0d7;
-      --color-warning-icon: #f3c37d;
-
-      --color-tag-surreal: #9a6e9d;
-      --color-tag-mystical: #82588d;
-      --color-tag-calm: #566f95;
-      --color-tag-noir: #493b59;
-
-      --color-particle: rgba(245, 192, 161, 0.25);
-      --color-star: rgba(245, 192, 161, 0.72);
-      --color-veil: rgba(126, 76, 139, 0.36);
-      --color-orbit: rgba(233, 154, 121, 0.28);
-      --color-horizon: rgba(255, 244, 233, 0.1);
+      --color-ink: #03040D;
+      --color-ink-panel: #1F1D21;
+      --color-ink-card: #14131A;
+      --color-ink-raised: #14131A;
+      --color-ink-active: rgba(234, 212, 180, 0.12);
+      --color-ink-soft: rgba(234, 212, 180, 0.06);
+      --color-ink-solid: #14131A;
+      --color-ink-overlay: rgba(0, 0, 0, 0.64);
+      --color-ink-nav: #14131A;
+      --color-ivory: #FFF9EF;
+      --color-ivory-muted: #B7AEC9;
+      --color-ivory-faint: #B7AEC9;
+      --color-ivory-disabled: #B7AEC9;
+      --color-champagne: #EAD4B4;
+      --color-champagne-on: #EAD4B4;
+      --color-champagne-deep: #EAD4B4;
+      --color-champagne-soft: #514637;
+      --color-champagne-dim: rgba(234, 212, 180, 0.12);
+      --color-champagne-dim-line: #514637;
+      --color-on-champagne: #382D35;
+      --color-line: #514637;
+      --color-line-strong: #514637;
+      --color-line-nav: #514637;
+      --color-timeline: #514637;
+      --color-nav-active: #FFF9EF;
+      --color-nav-inactive: #B7AEC9;
+      --color-danger: #302126;
+      --color-danger-line: #936D68;
+      --color-danger-on: #E6A49B;
+      --color-danger-icon: #E6A49B;
+      --color-success: #1C2722;
+      --color-success-line: #688060;
+      --color-success-on: #B7CFB0;
+      --color-success-icon: #B7CFB0;
+      --color-warning: #2C251D;
+      --color-warning-line: #8C7357;
+      --color-warning-on: #EAD4B4;
+      --color-warning-icon: #EAD4B4;
+      --color-tag-surreal: #7F6FA8;
+      --color-tag-mystical: #6C568F;
+      --color-tag-calm: #446B8C;
+      --color-tag-noir: #31354F;
+      --color-particle: rgba(234, 212, 180, 0.22);
+      --color-star: rgba(234, 212, 180, 0.7);
+      --color-veil: rgba(25, 35, 68, 0.42);
+      --color-orbit: rgba(234, 212, 180, 0.24);
+      --color-horizon: rgba(255, 249, 239, 0.08);
     }
   }
 }

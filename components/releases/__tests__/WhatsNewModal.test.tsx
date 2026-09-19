@@ -96,7 +96,7 @@ jest.mock('@/constants/noctaliaDesign', () => ({
   getNoctaliaDesignTokens: (_colors: unknown, mode: 'light' | 'dark') => ({
     text: { primary: mode === 'dark' ? '#fff' : '#222', secondary: '#777', tertiary: '#888' },
     accent: { base: '#D4A574', strong: '#9A6332', soft: '#EAD4B4', text: '#9A6332'},
-    surface: { soft: '#eee', border: '#ddd', borderStrong: '#ccc' },
+    surface: { raised: mode === 'dark' ? '#14131A' : '#F5EADB', soft: '#eee', border: '#ddd', borderStrong: '#ccc' },
     action: { primary: '#D4A574', primaryBorder: '#EAD4B4', primaryText: '#3B2412' },
   }),
 }));
@@ -110,20 +110,20 @@ jest.mock('react-native-safe-area-context', () => ({
 }));
 
 const copy: Record<string, string> = {
-  'release_notes.badge': 'NOUVEAUTÉS · {version}',
-  'release_notes.title': 'Noctalia 3.1 est là',
-  'release_notes.subtitle': 'De nouveaux repères pour lire tes rêves dans la durée.',
-  'release_notes.stats.title': 'Des statistiques plus riches',
-  'release_notes.stats.body': 'Visualise ton rythme de journal et tes périodes les plus actives.',
-  'release_notes.patterns.title': 'Tes tendances oniriques',
-  'release_notes.patterns.body': 'Repère tes émotions dominantes et l’évolution de tes thèmes avec Plus.',
-  'release_notes.android.title': 'Android plus fluide',
-  'release_notes.android.body': 'Profite d’un démarrage plus rapide et d’une expérience plus stable.',
-  'release_notes.navigation.title': 'Une navigation plus claire',
-  'release_notes.navigation.body': 'Des repères plus lisibles et de nouvelles améliorations d’accessibilité.',
-  'release_notes.primary': 'Voir mes statistiques',
-  'release_notes.later': 'Plus tard',
-  'release_notes.close': 'Fermer les nouveautés',
+  "release_notes.badge": "NOUVEAUTÉS · {version}",
+  "release_notes.title": "Noctalia 3.3 est là",
+  "release_notes.subtitle": "Une nouvelle ambiance pour raconter, contempler et explorer tes rêves.",
+  "release_notes.design.title": "Un journal plus immersif",
+  "release_notes.design.body": "Découvre le thème clair satin champagne et des illustrations agrandies jusqu’en haut de l’écran.",
+  "release_notes.capture.title": "Du souvenir au récit",
+  "release_notes.capture.body": "Relis ton récit après les questions guidées, puis choisis de l’analyser et de l’illustrer après l’avoir enregistré.",
+  "release_notes.reading.title": "Une nouvelle lecture de tes rêves",
+  "release_notes.reading.body": "Retrouve l’interprétation, les symboles et les émotions dans une lecture dédiée, avec de nouveaux types de rêves et des phrases poétiques.",
+  "release_notes.reliability.title": "Un quotidien plus fluide",
+  "release_notes.reliability.body": "Dictée, synchronisation, réglages et navigation après abonnement : plusieurs corrections facilitent ton expérience.",
+  "release_notes.primary": "Découvrir mon journal",
+  "release_notes.later": "Plus tard",
+  "release_notes.close": "Fermer les nouveautés"
 };
 
 jest.mock('@/hooks/useTranslation', () => ({
@@ -155,7 +155,7 @@ describe('WhatsNewModal', () => {
     mockSaveLastSeenReleaseNotesVersion.mockResolvedValue(undefined);
   });
 
-  it('renders the 3.1.0 release copy and exposes every dismissal path', () => {
+  it('renders the 3.3.0 release copy and exposes every dismissal path', () => {
     const onClose = jest.fn();
     const onPrimary = jest.fn();
     const view = render(
@@ -163,10 +163,10 @@ describe('WhatsNewModal', () => {
     );
 
     expect(view.getByText(`NOUVEAUTÉS · ${RELEASE_NOTES_VERSION}`)).toBeTruthy();
-    expect(view.getByText('Des statistiques plus riches')).toBeTruthy();
-    expect(view.getByText('Tes tendances oniriques')).toBeTruthy();
-    expect(view.getByText('Android plus fluide')).toBeTruthy();
-    expect(view.getByText('Une navigation plus claire')).toBeTruthy();
+    expect(view.getByText('Un journal plus immersif')).toBeTruthy();
+    expect(view.getByText('Du souvenir au récit')).toBeTruthy();
+    expect(view.getByText('Une nouvelle lecture de tes rêves')).toBeTruthy();
+    expect(view.getByText('Un quotidien plus fluide')).toBeTruthy();
 
     fireEvent.press(view.getByTestId(TID.Button.WhatsNewPrimary));
     fireEvent.press(view.getByTestId(TID.Button.WhatsNewLater));
@@ -179,22 +179,22 @@ describe('WhatsNewModal', () => {
   it('adapts its elevated surface to dark and light themes', () => {
     const view = render(<WhatsNewModal visible onClose={jest.fn()} onPrimary={jest.fn()} />);
     const darkStyle = StyleSheet.flatten(view.getByTestId(TID.Component.WhatsNewCard).props.style);
-    expect(darkStyle.backgroundColor).toBe('rgba(13, 11, 28, 0.98)');
+    expect(darkStyle.backgroundColor).toBe('#14131A');
 
     mockMode = 'light';
     view.rerender(<WhatsNewModal visible onClose={jest.fn()} onPrimary={jest.fn()} />);
     const lightStyle = StyleSheet.flatten(view.getByTestId(TID.Component.WhatsNewCard).props.style);
-    expect(lightStyle.backgroundColor).toBe('rgba(255, 253, 248, 0.99)');
+    expect(lightStyle.backgroundColor).toBe('#F5EADB');
   });
 
-  it('shows once after onboarding and persists the version before opening statistics', async () => {
+  it('shows once after onboarding and persists the version before opening the journal', async () => {
     const view = render(<WhatsNewModalHost ready />);
 
     await waitFor(() => expect(view.getByTestId(TID.Modal.WhatsNew)).toBeTruthy());
     fireEvent.press(view.getByTestId(TID.Button.WhatsNewPrimary));
 
     expect(mockSaveLastSeenReleaseNotesVersion).toHaveBeenCalledWith(RELEASE_NOTES_VERSION);
-    expect(mockPush).toHaveBeenCalledWith('/statistics');
+    expect(mockPush).toHaveBeenCalledWith('/journal');
   });
 
   it('does not show during onboarding or after this release was seen', async () => {

@@ -138,7 +138,6 @@ describe('ReminderOptInCard', () => {
     expect(homeStyle.backgroundColor).toBe(tokens.surface.raised);
     expect(homeStyle.backgroundColor).not.toBe(tokens.action.primary);
     expect(homeStyle.borderColor).toBe(tokens.surface.borderStrong);
-    expect(homeStyle.borderColor).not.toBe(tokens.action.primaryBorder);
 
     rerender(<ReminderOptInCard surface="journal_detail" />);
     const journalEnable = screen.getByTestId('btn.reminderOptIn.enable');

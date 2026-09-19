@@ -176,6 +176,7 @@ export default function RecordingScreen() {
   const [isRestartingCapture, setIsRestartingCapture] = useState(false);
   const [captureRestartCount, setCaptureRestartCount] = useState(0);
   const restartingCaptureRef = useRef(false);
+  const discardDictationRef = useRef(false);
   const [isPreparingRecording, setIsPreparingRecording] = useState(false);
   const recordingTransitionRef = useRef(false);
   const baseTranscriptRef = useRef('');
@@ -491,7 +492,7 @@ export default function RecordingScreen() {
   );
 
   const applyDictationTranscript = useCallback((speech: string): boolean => {
-    if (!isHydrated || restartingCaptureRef.current || formatSourceRef.current !== null || !speech.trim()) return false;
+    if (!isHydrated || discardDictationRef.current || restartingCaptureRef.current || formatSourceRef.current !== null || !speech.trim()) return false;
     const base = baseTranscriptRef.current;
     const insertion = dictationInsertionRef.current ?? {
       base,
@@ -653,22 +654,6 @@ export default function RecordingScreen() {
     captureStartedTrackedRef.current = false;
   }, [resetConversation]);
 
-  const handleClearTranscript = useCallback(() => {
-    if (!isHydrated || noteInput('') !== true) return;
-    resetConversation();
-    captureMicrophoneMutedRef.current = false;
-    answerInsertionRef.current = null;
-    setAnswerBase(null);
-    setCurrentAnswer('');
-    setTranscript('');
-    setLengthWarning('');
-    setVoiceFallbackReason(null);
-    baseTranscriptRef.current = '';
-    dictationInsertionRef.current = null;
-    transcriptSelectionRef.current = undefined;
-    setTranscriptSelection(undefined);
-  }, [resetConversation, isHydrated, noteInput]);
-
   const navigateToSavedDream = useCallback((
     dream: DreamAnalysis,
     options?: { saved?: boolean; recall?: boolean }
@@ -799,6 +784,25 @@ export default function RecordingScreen() {
     t,
   ]);
 
+  const handleClearTranscript = useCallback(async () => {
+    if (!isHydrated || isPersisting || restartingCaptureRef.current) return;
+    restartingCaptureRef.current = true;
+    discardDictationRef.current = true;
+    setIsRestartingCapture(true);
+    try {
+      await stopRecording({ silent: true, reason: 'stop' });
+      if (noteInput('') !== true) return;
+      resetComposer();
+      setInputMode('text');
+      persistInputModePreference('text');
+      setCaptureRestartCount(count => count + 1);
+      Keyboard.dismiss();
+    } finally {
+      restartingCaptureRef.current = false;
+      setIsRestartingCapture(false);
+    }
+  }, [isHydrated, isPersisting, noteInput, persistInputModePreference, resetComposer, stopRecording]);
+
   const handleRestartCapture = useCallback(() => {
     if (!isHydrated || isPersisting || restartingCaptureRef.current) return;
     Alert.alert(
@@ -808,29 +812,15 @@ export default function RecordingScreen() {
         { text: t('common.cancel'), style: 'cancel' },
         {
           text: t('recording.conversation.restart'), style: 'destructive',
-          onPress: async () => {
-            if (restartingCaptureRef.current) return;
-            restartingCaptureRef.current = true;
-            setIsRestartingCapture(true);
-            try {
-              // Discard late speech before clearing, so it cannot restore the old draft.
-              await stopRecording({ silent: true, reason: 'stop' });
-              if (noteInput('') !== true) return;
-              resetComposer();
-              setCaptureRestartCount(count => count + 1);
-              Keyboard.dismiss();
-            } finally {
-              restartingCaptureRef.current = false;
-              setIsRestartingCapture(false);
-            }
-          },
+          onPress: handleClearTranscript,
         },
       ]
     );
-  }, [isHydrated, isPersisting, noteInput, resetComposer, stopRecording, t]);
+  }, [handleClearTranscript, isHydrated, isPersisting, t]);
 
   const startRecording = useCallback(async (options?: { preserveDraft?: boolean }) => {
-    if (!isHydrated) return false;
+    if (!isHydrated || restartingCaptureRef.current) return false;
+    discardDictationRef.current = false;
     captureMicrophoneMutedRef.current = false;
     const previousIntent = dictationIntentRef.current;
     try {
@@ -932,10 +922,10 @@ export default function RecordingScreen() {
     try {
       setIsPreparingRecording(false);
       const result = await stopSessionRecording();
-      const applied = applyStoppedTranscript(result.transcript ?? '');
       if (generation !== handsFreeRestartGenerationRef.current) {
         return;
       }
+      const applied = applyStoppedTranscript(result.transcript ?? '');
       if (dictationIntentRef.current !== 'listening') {
         return;
       }
