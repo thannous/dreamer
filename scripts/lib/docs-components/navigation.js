@@ -1,3 +1,4 @@
+const { contextConversionLinkAttributes: conversionLink } = require('./conversion-link');
 const { getAndroidStoreUrl, getLanguageTag, getWebAppUrl, siteConfig } = require('../docs-site-config');
 const { escapeHtml } = require('../docs-source-utils');
 
@@ -101,8 +102,8 @@ function renderMobileMenuPanel(context) {
     '        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">',
     '            <div class="mobile-menu-surface rounded-2xl py-2">',
     navLinks,
-    `                <a href="${getAndroidStoreUrl(lang)}" class="${linkClass} text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">${escapeHtml(downloadLabel)}</a>`,
-    `                <a href="${webAppHref}" class="${linkClass} noctalia-premium-webapp-mobile" rel="noopener" target="_blank">${escapeHtml(locale.webAppCta)}</a>`,
+    `                <a${conversionLink(context, 'nav-mobile', 'play')} href="${getAndroidStoreUrl(lang)}" class="${linkClass} text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">${escapeHtml(downloadLabel)}</a>`,
+    `                <a${conversionLink(context, 'nav-mobile', 'web')} href="${webAppHref}" class="${linkClass} noctalia-premium-webapp-mobile" rel="noopener" target="_blank">${escapeHtml(locale.webAppCta)}</a>`,
     '                <div class="border-t border-white/10 mt-2 pt-2">',
     langLinks,
     '                </div>',
@@ -158,8 +159,8 @@ function renderNavigation(context) {
     dropdown,
     '                    </div>',
     '                </div>',
-    `                <a href="${storeHref}" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">${escapeHtml(downloadLabel)}</a>`,
-    `                <a href="${webAppHref}" class="noctalia-premium-download noctalia-premium-webapp rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="noopener" target="_blank">${escapeHtml(locale.webAppCta)}</a>`,
+    `                <a${conversionLink(context, 'nav-desktop', 'play')} href="${storeHref}" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">${escapeHtml(downloadLabel)}</a>`,
+    `                <a${conversionLink(context, 'nav-desktop', 'web')} href="${webAppHref}" class="noctalia-premium-download noctalia-premium-webapp rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="noopener" target="_blank">${escapeHtml(locale.webAppCta)}</a>`,
     `                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="${escapeHtml(menuLabel)}" aria-expanded="false">`,
     '                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>',
     '                </button>',

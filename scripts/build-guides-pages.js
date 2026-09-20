@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const { conversionLinkAttributes } = require('./lib/docs-components/conversion-link');
 const path = require('path');
 const { imageSize } = require('../apps/site/dependencies')('image-size');
 const { renderAhrefsAnalyticsScript } = require('./lib/ahrefs-analytics');
@@ -497,7 +498,7 @@ const DICTIONARY_UI_COPY = {
     activeSearchLabel: 'Aktive Suche',
     backToTop: 'Nach oben',
     methodologyLink: 'So wird dieser Katalog gepflegt',
-    storeCta: 'Noctalia kostenlos installieren',
+    storeCta: 'Bei Google Play installieren',
     detailsCta: 'So bezieht Noctalia deinen Kontext ein',
     platformNote: 'Android 13+ · Kostenloses Konto · Optionale In-App-Käufe',
     proofItems: [
@@ -2964,7 +2965,7 @@ ${priorityLinks.map((item) => `                    <a href="${escapeHtml(item.hr
                     <h2 id="dictionaryConversionTitle">${escapeHtml(dc.cta_title || dc.analyze_heading)}</h2>
                     <p>${escapeHtml(dc.cta_subtitle || dc.analyze_text)}</p>
                     <div class="dictionary-conversion-actions">
-                        <a href="${getAndroidStoreUrl(lang)}" class="dictionary-store-cta" rel="nofollow noopener noreferrer" target="_blank">
+                        <a${conversionLinkAttributes(currentPaths[lang], 'inline', 'play')} href="${getAndroidStoreUrl(lang)}" class="dictionary-store-cta" rel="nofollow noopener noreferrer" target="_blank">
                             ${escapeHtml(uiCopy.storeCta)} <i data-lucide="external-link" class="w-4 h-4"></i>
                         </a>
                         <a href="${escapeHtml(productDetailsPath)}" class="dictionary-details-cta">
@@ -3511,7 +3512,7 @@ ${faqHtml}
                     ${escapeHtml(dc.analyze_text)}
                 </p>
                 <div class="dictionary-conversion-actions justify-center">
-                    <a href="${getAndroidStoreUrl(lang)}" class="dictionary-store-cta" rel="nofollow noopener noreferrer" target="_blank">
+                    <a${conversionLinkAttributes(currentPaths[lang], 'final', 'play')} href="${getAndroidStoreUrl(lang)}" class="dictionary-store-cta" rel="nofollow noopener noreferrer" target="_blank">
                         ${escapeHtml(uiCopy.storeCta)} <i data-lucide="external-link" class="w-4 h-4"></i>
                     </a>
                     <a href="${escapeHtml(productDetailsPath)}" class="dictionary-details-cta">

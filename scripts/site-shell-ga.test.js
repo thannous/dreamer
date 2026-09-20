@@ -57,6 +57,50 @@ describe('site shell Google Analytics consent control', () => {
 
   const dataLayerCalls = () => (window.dataLayer || []).map((args) => Array.from(args));
 
+  const clickConversionLink = (id = 'cta-it-dog-inline-web', href = 'https://dream.noctalia.app/?private=value') => {
+    const link = document.createElement('a');
+    link.id = id;
+    link.href = href;
+    link.innerHTML = '<span>Try in browser</span>';
+    document.body.append(link);
+    // Cancel only jsdom navigation; the real listener must not cancel it.
+    let navigationAllowed;
+    window.addEventListener('click', (event) => {
+      navigationAllowed = !event.defaultPrevented;
+      event.preventDefault();
+    }, { once: true });
+    link.firstChild.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    expect(navigationAllowed).toBe(true);
+  };
+
+  it('records one consented web-app click from a nested element without query data', () => {
+    renderConsent({ stored: storedPreference('granted') });
+    clickConversionLink();
+    expect(dataLayerCalls().filter(([type]) => type === 'event')).toEqual([
+      ['event', 'web_app_click', {
+        link_id: 'cta-it-dog-inline-web',
+        link_domain: 'dream.noctalia.app',
+        link_url: 'https://dream.noctalia.app/',
+      }],
+    ]);
+  });
+
+  it('ignores Play, unrelated pages and unexpected destinations', () => {
+    renderConsent({ stored: storedPreference('granted') });
+    clickConversionLink('cta-it-dog-inline-play', 'https://play.google.com/store/apps/details');
+    clickConversionLink('cta-it-rain-inline-web');
+    clickConversionLink('cta-it-dog-inline-web', 'https://example.com/');
+    expect(dataLayerCalls().filter(([type]) => type === 'event')).toEqual([]);
+  });
+
+  it.each(['undecided', 'denied', 'withdrawn', 'gpc'])('does not track web-app clicks with %s consent', (state) => {
+    renderConsent({ stored: state === 'undecided' ? null : storedPreference(state === 'denied' ? 'denied' : 'granted') });
+    if (state === 'withdrawn') window.NoctaliaAnalyticsConsent.update(false);
+    if (state === 'gpc') Object.defineProperty(navigator, 'globalPrivacyControl', { configurable: true, value: true });
+    clickConversionLink();
+    expect(dataLayerCalls().filter(([type]) => type === 'event')).toEqual([]);
+  });
+
   it('keeps Google Analytics absent before a decision', () => {
     renderConsent();
 

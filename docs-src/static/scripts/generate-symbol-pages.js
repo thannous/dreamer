@@ -16,6 +16,7 @@
  */
 
 const fs = require('fs');
+const { conversionLinkAttributes } = require('../../scripts/lib/docs-components/conversion-link');
 const path = require('path');
 const { createRenderContext } = require('../../scripts/lib/docs-components/context');
 const { getWebAppUrl, loadLocales } = require('../../scripts/lib/docs-site-config');
@@ -336,15 +337,15 @@ const SYMBOL_CONVERSION_COPY = {
 // `content` identifies the page family entry (canonical symbol id, or a
 // `category-`/`guide-` prefixed id) so web-app clicks can be attributed per
 // landing page independently of the localized slug.
-function renderSymbolConversionActions(lang, content) {
+function renderSymbolConversionActions(lang, content, pagePath = '') {
   const copy = SYMBOL_CONVERSION_COPY[lang] || SYMBOL_CONVERSION_COPY.en;
   const sharedLocale = SHARED_LOCALES[lang] || SHARED_LOCALES.en;
   const webAppHref = getWebAppUrl(lang, { medium: 'symbol_page', content });
   return `<div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-3">
-                    <a href="${webAppHref}" class="symbol-webapp-cta inline-flex items-center justify-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" rel="noopener" target="_blank">
+                    <a${conversionLinkAttributes(pagePath, 'final', 'web')} href="${webAppHref}" class="symbol-webapp-cta inline-flex items-center justify-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" rel="noopener" target="_blank">
                         ${escapeHtml(sharedLocale.webAppCta)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     </a>
-                    <a href="${getAndroidStoreUrl(lang)}" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" rel="nofollow noopener noreferrer" target="_blank">
+                    <a${conversionLinkAttributes(pagePath, 'final', 'play')} href="${getAndroidStoreUrl(lang)}" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" rel="nofollow noopener noreferrer" target="_blank">
                         ${escapeHtml(copy.store)} <i data-lucide="external-link" class="w-5 h-5"></i>
                     </a>
                     <a href="${getSymbolCtaUrl(lang)}" class="inline-flex items-center justify-center gap-2 px-8 py-4 glass-button text-dream-cream rounded-full font-bold hover:border-dream-salmon/40 transition-colors">
@@ -950,8 +951,9 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                 <h2 class="symbol-h2">${t.section_learn_more}</h2>${relatedReadingCard}
             </section>` : '';
 
-  const symbolFaq = Array.isArray(symbolData.faq) ? symbolData.faq.slice(0, 4) : [];
+  const symbolFaq = Array.isArray(symbolData.faq) ? symbolData.faq.slice(0, symbol.id === 'spider' && lang === 'it' ? 5 : 4) : [];
 
+  const conversionPath = `/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}`;
   const softCtaHtml = softCta ? `
             <!-- Soft App CTA -->
             <aside class="symbol-soft-cta">
@@ -961,9 +963,12 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                         <h2 class="text-xl md:text-2xl text-dream-cream mb-3">${escapeHtml(softCta.title)}</h2>
                         <p class="text-sm md:text-base leading-relaxed">${escapeHtml(softCta.text)}</p>
                     </div>
-                    <a href="${escapeHtml(softCta.href)}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors">
+                    ${softCta.webButton ? '<div class="flex flex-col gap-3 shrink-0">' : ''}
+                    <a${conversionLinkAttributes(conversionPath, 'inline', 'play')} href="${escapeHtml(softCta.href)}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors">
                         ${escapeHtml(softCta.button || t.cta_button)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </a>
+                    </a>${softCta.webButton ? `
+                    <a${conversionLinkAttributes(conversionPath, 'inline', 'web')} href="${escapeHtml(getWebAppUrl(lang, { medium: 'symbol_page', content: symbol.id }))}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full glass-button text-dream-cream font-bold transition-colors" rel="noopener" target="_blank">${escapeHtml(softCta.webButton)}</a>
+                    </div>` : ''}
                 </div>
             </aside>` : '';
   const visibleHeadline = `${t.h1_prefix} ${symbolData.name}`.trim();
@@ -1730,7 +1735,7 @@ ${relatedArticleHtml}
                 <p class="mb-6 max-w-lg mx-auto">
                     ${t.cta_description}
                 </p>
-                ${renderSymbolConversionActions(lang, symbol.id)}
+                ${renderSymbolConversionActions(lang, symbol.id, currentPaths[lang])}
             </aside>
 
             <!-- Back to Dictionary -->

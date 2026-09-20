@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-08-28",
+    "lastUpdated": "2026-09-19",
     "totalSymbols": 160,
     "languages": [
       "en",
@@ -1352,13 +1352,14 @@
           }
         ],
         "softCta": {
-          "kicker": "Noctalia su Android",
+          "kicker": "Il tuo diario dei sogni con Noctalia",
           "title": "Salva il sogno prima che svanisca",
           "text": "Se il cane ritorna nei tuoi sogni, registralo a voce e confronta comportamento, emozione e simboli ricorrenti nella tua cronologia.",
-          "button": "Prova l'app",
-          "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
+          "button": "Installa su Google Play",
+          "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages&hl=it&utm_content=dog",
+          "webButton": "Prova nel browser"
         },
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-09-19"
       },
       "pt": {
         "slug": "cachorro",
@@ -1532,9 +1533,17 @@
           {
             "question": "Cosa significa sognare una ragnatela?",
             "answer": "Una ragnatela parla di legami, pazienza e trappole sottili. Può mostrare una situazione costruita nel tempo, difficile da sciogliere subito."
+          },
+          {
+            "question": "Cosa significa sognare un ragno grande o gigante?",
+            "answer": "Un ragno grande o gigante può rendere una paura più intensa nel sogno, ma la sua dimensione non misura la gravità di un problema reale. Nota se si avvicinava, restava fermo o ti incuriosiva e confronta la scena con ricordi o immagini recenti."
+          },
+          {
+            "question": "Cosa significa sognare ragni in casa?",
+            "answer": "Osserva in quale stanza erano, quanti erano e come reagivi: fuggivi, li allontanavi o li guardavi con calma? Questi dettagli aiutano a esplorare le tue associazioni con la casa. Il sogno non dimostra una minaccia nascosta o una persona manipolatrice."
           }
         ],
-        "modifiedAt": "2026-07-06"
+        "modifiedAt": "2026-09-19"
       },
       "pt": {
         "slug": "aranha",
@@ -1708,13 +1717,14 @@
           }
         ],
         "softCta": {
-          "kicker": "Noctalia su Android",
+          "kicker": "Il tuo diario dei sogni con Noctalia",
           "title": "Rileggi il sogno quando sei più lucido",
           "text": "Registra il fuoco, il luogo e la tua emozione appena sveglio. Più tardi puoi capire se parlava di energia, rabbia o cambiamento.",
-          "button": "Prova l'app",
-          "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
+          "button": "Installa su Google Play",
+          "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages&hl=it&utm_content=fire",
+          "webButton": "Prova nel browser"
         },
-        "modifiedAt": "2026-08-28"
+        "modifiedAt": "2026-09-19"
       },
       "pt": {
         "slug": "fogo",

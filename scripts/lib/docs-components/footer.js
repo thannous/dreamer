@@ -1,3 +1,4 @@
+const { contextConversionLinkAttributes: conversionLink } = require('./conversion-link');
 const fs = require('fs');
 const path = require('path');
 const {
@@ -329,14 +330,14 @@ function renderFooter(context) {
     '                </ul>',
     `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerDownload)}</h5>`,
     '                <div class="flex flex-col gap-3">',
-    `                    <a href="${getAndroidStoreUrl(lang)}" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">`,
+    `                    <a${conversionLink(context, 'footer', 'play')} href="${getAndroidStoreUrl(lang)}" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">`,
     '                        <i data-lucide="play" class="w-5 h-5 fill-current"></i>',
     '                        <div class="leading-none">',
     `                            <div class="text-[9px] uppercase">${escapeHtml(locale.availableOn)}</div>`,
     `                            <div class="text-sm font-bold">${escapeHtml(locale.googlePlay)}</div>`,
     '                        </div>',
     '                    </a>',
-    `                    <a href="${getWebAppUrl(lang, { medium: 'footer' })}" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10 footer-webapp-cta" rel="noopener" target="_blank">`,
+    `                    <a${conversionLink(context, 'footer', 'web')} href="${getWebAppUrl(lang, { medium: 'footer' })}" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10 footer-webapp-cta" rel="noopener" target="_blank">`,
     '                        <i data-lucide="globe" class="w-5 h-5"></i>',
     '                        <div class="leading-none">',
     `                            <div class="text-[9px] uppercase">${escapeHtml(locale.webAppKicker)}</div>`,

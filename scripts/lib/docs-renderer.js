@@ -1090,6 +1090,7 @@ function renderManagedPage({
       lang: context.lang,
       locale: context.locale,
       pageId: entryId,
+      pagePath: context.entry?.locales?.[context.lang]?.path,
     });
   } else {
     renderedBodyHtml = promoteManagedContentHero(renderedBodyHtml, renderMeta, imageContext);

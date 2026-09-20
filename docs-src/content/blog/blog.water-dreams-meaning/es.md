@@ -129,11 +129,14 @@
 <aside class="glass-panel rounded-2xl p-6 my-10 border border-dream-salmon/15">
 <div class="flex flex-col sm:flex-row sm:items-center gap-5">
 <div class="flex-1 min-w-0">
-<p class="text-xs font-bold uppercase tracking-[0.12em] text-dream-salmon mb-2">Noctalia en Android</p>
+<p class="text-xs font-bold uppercase tracking-[0.12em] text-dream-salmon mb-2">Tu diario de sueños con Noctalia</p>
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Registra la emoción antes de que cambie</h2>
 <p class="text-sm md:text-base text-purple-200/75 leading-relaxed">Si las inundaciones aparecen varias veces, graba el sueño al despertar y compara agua, lugar, emoción y símbolos relacionados como <a class="text-dream-salmon hover:underline" href="../simbolos/inundacion">inundación</a>, <a class="text-dream-salmon hover:underline" href="../simbolos/oceano">océano</a> o <a class="text-dream-salmon hover:underline" href="../simbolos/casa">casa</a>.</p>
 </div>
-<a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=plan_a_existing_pages" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors">Probar la app <i data-lucide="arrow-right" class="w-5 h-5"></i></a>
+<div class="flex flex-col gap-3 shrink-0">
+<a id="cta-es-water-dreams-meaning-inline-play" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=plan_a_existing_pages&amp;utm_content=water-dreams-meaning" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors">Instalar en Google Play <i data-lucide="arrow-right" class="w-5 h-5"></i></a>
+<a id="cta-es-water-dreams-meaning-inline-web" href="https://dream.noctalia.app/?utm_source=noctalia.app&amp;utm_medium=blog&amp;utm_campaign=web_app&amp;utm_content=water-dreams-meaning" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full glass-button text-dream-cream font-bold transition-colors" rel="noopener" target="_blank">Probar en el navegador</a>
+</div>
 </div>
 </aside>
 

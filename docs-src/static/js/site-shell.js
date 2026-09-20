@@ -368,6 +368,26 @@
     }
   };
 
+  // GA4 outbound measurement does not cover our web-app subdomain. Keep this
+  // separate from its automatic `click` event and scoped to the four-page test.
+  document.addEventListener('click', (event) => {
+    if (!analyticsConsentGranted || isGpcEnabled() || typeof window.gtag !== 'function') return;
+    const link = event.target instanceof Element ? event.target.closest('a[id]') : null;
+    if (!link || !/^cta-(de-dictionary|es-water-dreams-meaning|it-dog|it-fire)-(nav-desktop|nav-mobile|inline|final|footer)-web$/.test(link.id)) return;
+    try {
+      const destination = new URL(link.href);
+      if (destination.origin !== 'https://dream.noctalia.app') return;
+      window.gtag('event', 'web_app_click', {
+        link_id: link.id,
+        link_domain: destination.hostname,
+        // Placement is sufficient; never copy arbitrary query parameters.
+        link_url: `${destination.origin}${destination.pathname}`,
+      });
+    } catch {
+      // Analytics must never interrupt navigation.
+    }
+  });
+
   window.addEventListener(CLARITY_CONSENT_EVENT, (event) => {
     updateAnalyticsConsent(event.detail?.analytics === true);
   });
