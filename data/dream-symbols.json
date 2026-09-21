@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-09-19",
+    "lastUpdated": "2026-09-21",
     "totalSymbols": 160,
     "languages": [
       "en",
@@ -1445,11 +1445,28 @@
       "it": {
         "slug": "gatto",
         "name": "Gatto",
-        "shortDescription": "I gatti simboleggiano indipendenza, intuizione ed energia femminile. Possono anche rappresentare mistero, sensualità e il bisogno di fidarsi dei propri istinti.",
+        "shortDescription": "Sognare un gatto o più gatti non ha un significato unico. Osserva se li conoscevi, come si comportavano e cosa provavi: un gatto affettuoso, nero o aggressivo offre dettagli diversi da confrontare con i tuoi ricordi.",
         "askYourself": [
-          "Quanto sono connesso con la mia intuizione?",
-          "Ho bisogno di più indipendenza?"
-        ]
+          "Conoscevo il gatto? Dove si trovava e cosa faceva?",
+          "Provavo calma, curiosità o paura? Quale episodio recente mi ricorda questa scena?"
+        ],
+        "documentTitle": "Sognare gatti: significato e scenari comuni",
+        "documentMetaDescription": "Cosa significa sognare gatti? Esplora gatto nero, affettuoso o aggressivo partendo da comportamento, ricordi ed emozioni, senza presagi o significati fissi.",
+        "faq": [
+          {
+            "question": "Cosa significa sognare gatti?",
+            "answer": "Non esiste un significato valido per tutti. Parti dal comportamento del gatto, dalla tua familiarità con lui e dall’emozione provata. Un incontro recente, un ricordo o una preoccupazione concreta possono aiutarti a capire perché quella scena ti è rimasta impressa."
+          },
+          {
+            "question": "Cosa significa sognare un gatto nero?",
+            "answer": "Il colore nero non è un presagio di sfortuna. Osserva cosa faceva il gatto e come reagivi, poi considera le tue associazioni personali con quel colore, un animale conosciuto o una storia recente."
+          },
+          {
+            "question": "Cosa significa sognare un gatto aggressivo?",
+            "answer": "Un gatto che soffia, graffia o cerca di mordere può rendere la scena minacciosa, ma non dimostra che qualcuno voglia farti del male. Nota la distanza, cosa accadeva prima e se riuscivi ad allontanarti; confronta poi la sensazione con esperienze recenti."
+          }
+        ],
+        "modifiedAt": "2026-09-21"
       },
       "pt": {
         "slug": "gato",
