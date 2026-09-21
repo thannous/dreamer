@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "apps": {
     "noctalia": {
-      "version": "3.4.1",
-      "sourceRef": "bcb2325ee6727aa8ab38c86547586f3c4b47e656",
-      "baseline": "Play Internal reading performance and CPU profiling candidate; not a production publication claim"
+      "version": "3.4.2",
+      "sourceRef": "0b1da45f6515f86e85fd5ddc176fced5fdedb864",
+      "baseline": "Play Internal reading and Worklets lifecycle candidate; foreground runtime cost remains under investigation"
     },
     "lucid": {
       "version": "1.0.0",
