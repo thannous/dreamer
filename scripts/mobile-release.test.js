@@ -62,6 +62,9 @@ describe('semantic release policy', () => {
     expect(affects('lucid', 'components/ui/Button.tsx')).toBe(true);
     expect(affects('noctalia', 'components/ui/Button.tsx')).toBe(true);
     expect(affects('meditation', 'package-lock.json')).toBe(false);
+    expect(affects('noctalia', 'patches/react-native-enriched-markdown+1.0.2.patch')).toBe(true);
+    expect(affects('lucid', 'patches/react-native-enriched-markdown+1.0.2.patch')).toBe(true);
+    expect(affects('meditation', 'patches/react-native-enriched-markdown+1.0.2.patch')).toBe(false);
     expect(affects('noctalia', 'lib/a.test.ts')).toBe(false);
     expect(affects('lucid', 'lib/lucid/README.md')).toBe(false);
     expect(affects('noctalia', 'docs-src/index.html')).toBe(false);
