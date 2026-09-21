@@ -99,7 +99,7 @@
     },
     "production": {
       "extends": "base",
-      "channel": "production",
+      "channel": "markdown-performance",
       "autoIncrement": true,
       "environment": "production",
       "env": {
