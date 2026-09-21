@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "apps": {
     "noctalia": {
-      "version": "3.3.0",
-      "sourceRef": "6c22b3fa61ba7d213f8091d62c2d23f01b9e0055",
-      "baseline": "Finalize the user-selected 3.3.0 candidate after internal testing; not a Store publication claim"
+      "version": "3.4.0",
+      "sourceRef": "a95b612c26a21dc85cc3157d6832eae42129c17c",
+      "baseline": "Play Internal performance candidate on scoped branch; not a production publication claim"
     },
     "lucid": {
       "version": "1.0.0",
