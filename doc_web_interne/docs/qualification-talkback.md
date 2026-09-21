@@ -49,6 +49,14 @@ longue série de gestes, installer plusieurs outils ou transcrire du silence.
 - Un balayage injecté par ADB n'est pas automatiquement un geste TalkBack.
   Observer le déplacement avant de poursuivre. Tab/Entrée et taps par coordonnées
   peuvent aider au diagnostic, mais restent des preuves clavier/coordonnées.
+- Pour diagnostiquer le focus avec un clavier natif USB/UHID, vérifier le jeu de
+  raccourcis TalkBack actif. Sur le Motorola avec le jeu amélioré, Action/Windows
+  + flèche droite/gauche déplace le focus du lecteur et Action/Windows + Espace
+  active l'élément. Vérifier visuellement le cadre TalkBack avant chaque activation.
+  Ouvrir aussi le panneau par le lecteur : un tap ADB préalable ne prépare pas
+  nécessairement le même historique de focus. Cette preuve reste une preuve
+  **clavier TalkBack**, pas un balayage/double appui tactile. Retirer le périphérique
+  UHID temporaire dans un bloc de nettoyage, même si le pilote échoue.
 - Ne pas lancer un `uiautomator dump` standard pendant TalkBack : une session
   UiAutomation peut supprimer les autres services d'accessibilité. Utiliser les
   captures du focus ou un outil dont la coexistence est vérifiée.
@@ -120,4 +128,5 @@ Verdict et prochaine action :
 
 Références techniques : [AppState Android](https://reactnative.dev/docs/appstate),
 [UiAutomation](https://developer.android.com/reference/android/app/UiAutomation),
+[raccourcis TalkBack](https://support.google.com/accessibility/android/answer/6110948?hl=fr),
 [audio scrcpy](https://github.com/Genymobile/scrcpy/blob/master/doc/audio.md).
