@@ -1,5 +1,5 @@
 import { MarkdownText } from '@/components/ui/MarkdownText';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -73,6 +73,7 @@ export function AnalysisReadingModal({ dream, imageUri, imageLoadFailed, onReloa
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const quote = dream.shareableQuote?.trim();
   const backgroundColor = tokens.surface.raised;
+  const bodyStyle = useMemo(() => [styles.body, { color: tokens.text.primary }], [tokens.text.primary]);
   const insights = [
     { key: 'symbols', heading: t('journal.detail.symbols_header'), items: dream.symbols?.map(item => ({ name: item.name, text: item.meaning })) },
     { key: 'emotions', heading: t('journal.detail.emotions_header'), items: dream.emotions?.map(item => ({ name: item.name, text: item.insight })) },
@@ -93,7 +94,7 @@ export function AnalysisReadingModal({ dream, imageUri, imageLoadFailed, onReloa
           <ReadingIllustration key={`${dream.imageUrl ?? ''}:${imageUri ?? ''}`} dream={dream} imageUri={imageUri} imageLoadFailed={imageLoadFailed} onReloadImage={onReloadImage}
             onRetryImage={onRetryImage} isRetryingImage={isRetryingImage} />
           <View testID="analysis.reading.body">
-            <MarkdownText variant="reading" style={[styles.body, { color: tokens.text.primary }]}>{dream.interpretation?.trim() ?? ''}</MarkdownText>
+            <MarkdownText variant="reading" style={bodyStyle}>{dream.interpretation?.trim() ?? ''}</MarkdownText>
           </View>
           {insights.map(section => section.items?.length ? (
             <View key={section.key} style={styles.section} testID={`analysis.reading.${section.key}`}>
@@ -101,7 +102,7 @@ export function AnalysisReadingModal({ dream, imageUri, imageLoadFailed, onReloa
               {section.items.map((item, index) => (
                 <View key={`${item.name}-${index}`} style={styles.insight}>
                   <Text style={[styles.insightTitle, { color: tokens.text.primary }]}>{item.name}</Text>
-                  <MarkdownText variant="reading" style={[styles.body, { color: tokens.text.primary }]}>{item.text}</MarkdownText>
+                  <MarkdownText variant="reading" style={bodyStyle}>{item.text}</MarkdownText>
                 </View>
               ))}
             </View>

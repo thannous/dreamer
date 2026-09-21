@@ -3,11 +3,13 @@
  */
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { useLayoutEffect } from 'react';
 
 import { useTranslation } from '../useTranslation';
 // Mock LanguageContext
 const mockLanguage = ((factory: any) => factory())(() => ({ current: 'en' }));
-const mockLoadTranslations = jest.fn(() => new Promise<void>(() => {}));
+const mockLoadTranslations = jest.fn((_language: string) => new Promise<void>(() => {}));
+const mockLoadedLanguages = new Set(['en']);
 
 jest.mock('../../context/LanguageContext', () => ({
   useLanguage: () => ({
@@ -19,6 +21,7 @@ jest.mock('../../context/LanguageContext', () => ({
 
 // Mock i18n getTranslator
 jest.mock('../../lib/i18n', () => ({
+  areTranslationsLoaded: (language: string) => mockLoadedLanguages.has(language),
   getTranslator: (lang: string) => {
     const translations: Record<string, Record<string, string>> = {
       en: {
@@ -59,6 +62,8 @@ jest.mock('../../lib/i18n', () => ({
 
 beforeEach(() => {
   mockLanguage.current = 'en';
+  mockLoadedLanguages.clear();
+  mockLoadedLanguages.add('en');
   mockLoadTranslations.mockClear();
   mockLoadTranslations.mockImplementation(() => new Promise<void>(() => {}));
 });
@@ -173,6 +178,7 @@ describe('useTranslation', () => {
       expect(mockLoadTranslations).toHaveBeenCalledWith('fr');
 
       await act(async () => {
+        mockLoadedLanguages.add('fr');
         resolveLoad?.();
       });
 
@@ -180,6 +186,44 @@ describe('useTranslation', () => {
         expect(result.current.translationRevision).toBe(1);
       });
       expect(result.current.t).toBe(firstT);
+    });
+
+    it('refreshes fallback text when the pack becomes ready between render and effect', async () => {
+      mockLanguage.current = 'fr';
+      mockLoadTranslations.mockResolvedValue(undefined);
+
+      const { result } = renderHook(() => {
+        const translation = useTranslation();
+        useLayoutEffect(() => {
+          mockLoadedLanguages.add('fr');
+        }, []);
+        return translation;
+      });
+
+      await act(async () => { await Promise.resolve(); });
+
+      expect(mockLoadTranslations).toHaveBeenCalledWith('fr');
+      expect(result.current.translationRevision).toBe(1);
+    });
+
+    it('ignores an old language load after switching to a cached language', async () => {
+      mockLanguage.current = 'fr';
+      let resolveLoad: (() => void) | undefined;
+      mockLoadTranslations.mockImplementation(() => new Promise<void>((resolve) => {
+        resolveLoad = resolve;
+      }));
+      const { result, rerender } = renderHook(() => useTranslation());
+
+      mockLanguage.current = 'en';
+      rerender();
+      await act(async () => {
+        mockLoadedLanguages.add('fr');
+        resolveLoad?.();
+      });
+
+      expect(result.current.currentLang).toBe('en');
+      expect(result.current.translationRevision).toBe(0);
+      expect(result.current.t('common.hello')).toBe('Hello');
     });
   });
 

@@ -1,13 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
-import { getTranslator, loadTranslations } from '@/lib/i18n';
+import { areTranslationsLoaded, getTranslator, loadTranslations } from '@/lib/i18n';
 import { useLanguage } from '@/context/LanguageContext';
 
 export const useTranslation = () => {
   const { language } = useLanguage();
   const [translationRevision, setTranslationRevision] = useState(0);
+  // Capture readiness during render so a pack loaded before the effect still
+  // refreshes any fallback text that was just rendered.
+  const translationsLoaded = areTranslationsLoaded(language);
 
   useEffect(() => {
-    if (language === 'en') {
+    if (translationsLoaded) {
       return;
     }
 
@@ -22,7 +25,7 @@ export const useTranslation = () => {
     return () => {
       active = false;
     };
-  }, [language]);
+  }, [language, translationsLoaded]);
 
   const t = useMemo(() => getTranslator(language), [language]);
   return { t, currentLang: language, translationRevision };
