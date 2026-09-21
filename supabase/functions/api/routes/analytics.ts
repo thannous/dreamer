@@ -18,6 +18,7 @@ const EVENT_NAMES = [
   'dream_capture_started',
   'recording_started',
   'recording_saved',
+  'dream_save_milestone',
   'recording_activation_insight_shown',
   'analysis_started',
   'analysis_completed',
@@ -61,7 +62,7 @@ export type ValidatedAnalyticsEvent = {
   schema_version: 1;
   occurred_at: string;
   journey_id: string | null;
-  platform: 'android' | 'ios';
+  platform: 'android' | 'ios' | 'web';
   app_version: string;
   locale: 'fr' | 'en' | 'es' | 'de' | 'it' | 'pt';
   properties: Properties;
@@ -114,6 +115,10 @@ const PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySchema> = {
     language: supportedLanguage,
     speech_available: bool,
     offline_model_state: oneOf('ready', 'online_fallback', 'unavailable', 'unknown'),
+  },
+  dream_save_milestone: {
+    stage: oneOf('first', 'return_7d'),
+    cohort_day: (value) => typeof value === 'number' && Number.isInteger(value) && value >= 20_000 && value <= 100_000,
   },
   recording_saved: {
     input_mode: oneOf('voice', 'text'),
@@ -306,7 +311,7 @@ export function validateProductAnalyticsEvent(
 
   if (typeof event.event_id !== 'string' || !UUID_PATTERN.test(event.event_id)) return false;
   if (typeof event.event_name !== 'string' || !EVENT_NAMES.includes(event.event_name as AnalyticsEventName)) return false;
-  if (event.schema_version !== 1 || (event.platform !== 'android' && event.platform !== 'ios')) return false;
+  if (event.schema_version !== 1 || (event.platform !== 'android' && event.platform !== 'ios' && event.platform !== 'web')) return false;
   if (event.journey_id !== null && (typeof event.journey_id !== 'string' || !UUID_PATTERN.test(event.journey_id))) return false;
   if (typeof event.app_version !== 'string' || !/^[0-9A-Za-z.+_-]{1,32}$/.test(event.app_version)) return false;
   if (typeof event.locale !== 'string' || !['fr', 'en', 'es', 'de', 'it', 'pt'].includes(event.locale)) return false;
@@ -314,7 +319,13 @@ export function validateProductAnalyticsEvent(
   const occurredAt = Date.parse(event.occurred_at);
   if (!Number.isFinite(occurredAt) || occurredAt < now - MAX_EVENT_AGE_MS || occurredAt > now + MAX_FUTURE_SKEW_MS) return false;
 
-  return validateProperties(event.event_name as AnalyticsEventName, event.properties);
+  if (!validateProperties(event.event_name as AnalyticsEventName, event.properties)) return false;
+  if (event.event_name === 'dream_save_milestone') {
+    const props = event.properties as { stage: string; cohort_day: number };
+    const days = Math.floor(occurredAt / 86400_000) - props.cohort_day;
+    if (props.stage === 'first' ? days !== 0 : days < 1 || days > 7) return false;
+  }
+  return true;
 }
 
 function jsonResponse(body: unknown, status: number): Response {

@@ -190,7 +190,8 @@
     "release:prepare": "node ./scripts/mobile-release.js prepare",
     "release:check": "node ./scripts/mobile-release.js check",
     "release:build": "node ./scripts/mobile-release.js build",
-    "eas-build-pre-install": "node ./scripts/mobile-release.js verify"
+    "eas-build-pre-install": "node ./scripts/mobile-release.js verify",
+    "analytics:baseline": "node ./scripts/product-funnel-report.js"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",

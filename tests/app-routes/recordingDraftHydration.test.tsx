@@ -92,6 +92,7 @@ jest.mock('@/lib/moti', () => ({ MotiView: ({ children }: { children?: React.Rea
 jest.mock('@/lib/env', () => ({ isMockModeEnabled: () => false }));
 jest.mock('@/lib/analytics', () => ({
   trackProductEvent: jest.fn(async () => {}), getRecordingDurationBucket: () => 'none',
+  trackDreamSaveMilestone: jest.fn(async () => {}),
   getTranscriptLengthBucket: () => 'short',
 }));
 jest.mock('@/lib/logger', () => ({ createScopedLogger: () => ({ debug: jest.fn(), error: jest.fn(), warn: jest.fn() }) }));
