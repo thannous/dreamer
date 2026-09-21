@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
-import { FlatList, Modal } from 'react-native';
+import { Modal } from 'react-native';
 import { AnalysisReadingModal } from '../AnalysisReadingModal';
 
 jest.mock('react-native/Libraries/Modal/Modal', () => {
@@ -24,13 +24,6 @@ const dream = { title: 'Un nouveau départ', shareableQuote: 'Le voyage commence
   symbols: [{ name: 'La gare', meaning: 'Un lieu de passage, présent dans le récit.' }],
   emotions: [{ name: 'Joie', insight: 'Tu dis « je suis heureux ».' }],
   reflectionQuestions: ['Que représente cette gare pour toi ?'] };
-
-it('mounts the interpretation before the offscreen insights', () => {
-  const view = render(<AnalysisReadingModal dream={dream} onClose={jest.fn()} />);
-  expect(view.getByText(dream.title)).toBeTruthy();
-  expect(view.getByText(dream.interpretation)).toBeTruthy();
-  expect(view.queryByText(dream.symbols[0].meaning)).toBeNull();
-});
 
 it('supports close and system back', () => {
   const onClose = jest.fn();
@@ -94,17 +87,14 @@ it('preserves sparse and legacy analyses without fabricating missing sections', 
 
 it('retains every section and attributes only server-stamped poetic quotes', () => {
   const view = render(<AnalysisReadingModal dream={dream} onClose={jest.fn()} />);
-  const list = view.UNSAFE_getByType(FlatList);
-  const rows = list.props.data;
-  const rowText = rows.map((row: { text: string }) => row.text);
-  expect(rowText).toEqual([dream.interpretation, dream.symbols[0].meaning, dream.emotions[0].insight, dream.reflectionQuestions[0], dream.shareableQuote]);
-  const quoteRow = rows[rows.length - 1];
-  const quoteView = render(list.props.renderItem({ item: quoteRow }));
-  expect(quoteView.getByText('« Le voyage commence. »')).toBeTruthy();
-  expect(quoteView.queryByText('journal.detail.quote_attribution')).toBeNull();
+  for (const text of [dream.interpretation, dream.symbols[0].meaning, dream.emotions[0].insight]) {
+    expect(view.getByText(text)).toBeTruthy();
+  }
+  expect(view.getByText(`1. ${dream.reflectionQuestions[0]}`)).toBeTruthy();
+  expect(view.getByText('« Le voyage commence. »')).toBeTruthy();
+  expect(view.queryByText('journal.detail.quote_attribution')).toBeNull();
   view.rerender(<AnalysisReadingModal dream={{ ...dream, promptVersion: 'analysis-2026-09-18.poetic3' }} onClose={jest.fn()} />);
-  quoteView.rerender(view.UNSAFE_getByType(FlatList).props.renderItem({ item: quoteRow }));
-  expect(quoteView.getByText('journal.detail.quote_attribution')).toBeTruthy();
+  expect(view.getByText('journal.detail.quote_attribution')).toBeTruthy();
 });
 
 it('shares a versioned memory/disk image cache and resets loading when the image changes', () => {
