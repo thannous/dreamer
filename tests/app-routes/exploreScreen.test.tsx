@@ -22,8 +22,7 @@ let mockFocusCleanups: ((() => void) | void)[] = [];
 jest.mock('react-native', () => {
   const React = require('react');
   return {
-    AccessibilityInfo: { setAccessibilityFocus: mockAccessibilityFocus },
-    findNodeHandle: () => 501,
+    AccessibilityInfo: { sendAccessibilityEvent: mockAccessibilityFocus },
     AppState: { addEventListener: (event: string, callback: () => void) => {
       mockWindowListeners.set(event, callback);
       return { remove: () => mockWindowListeners.delete(event) };
@@ -148,6 +147,7 @@ const { getBottomNavigationLayout } = require('@/constants/layout');
 afterEach(() => {
   cleanup();
   mockWindowListeners.clear();
+  jest.useRealTimers();
   jest.restoreAllMocks();
   jest.clearAllMocks();
   mockPlatformOS = 'android';
@@ -388,59 +388,49 @@ describe('Explorer ritual picker', () => {
 
 
 describe('Explorer native window focus restoration', () => {
-  it.each(['cancel', 'confirm'])('waits for the activity window after %s and restores only once', async (action: string) => {
-    const frames = new Map<number, FrameRequestCallback>();
-    let nextFrame = 0;
-    jest.spyOn(global, 'requestAnimationFrame').mockImplementation((callback: FrameRequestCallback) => {
-      frames.set(++nextFrame, callback);
-      return nextFrame;
-    });
-    jest.spyOn(global, 'cancelAnimationFrame').mockImplementation((id: number) => { frames.delete(id); });
+  it.each(['cancel', 'confirm'])('waits for the activity and TalkBack after %s, then restores only once', async (action: string) => {
     render(<ExploreScreen />);
     await screen.findByText('explore.ritual.open:inspiration.ritual.variant.starter');
+    jest.useFakeTimers();
     await act(async () => fireEvent.click(screen.getByTestId('explorer-change-ritual')));
     await act(async () => mockWindowListeners.get('blur')?.());
     await act(async () => {
-      if (action === 'confirm') {
-        fireEvent.click(screen.getByTestId('ritual-choice-memory'));
-      }
+      if (action === 'confirm') fireEvent.click(screen.getByTestId('ritual-choice-memory'));
     });
     await act(async () => fireEvent.click(screen.getByTestId(
       action === 'confirm' ? 'ritual-picker-confirm' : 'ritual-picker-close',
     )));
     expect(screen.queryByRole('dialog')).toBeNull();
-    expect(frames.size).toBe(0);
+    await act(async () => jest.advanceTimersByTime(2000));
     expect(mockAccessibilityFocus).not.toHaveBeenCalled();
     await act(async () => mockWindowListeners.get('focus')?.());
+    await act(async () => jest.advanceTimersByTime(550));
     expect(mockAccessibilityFocus).not.toHaveBeenCalled();
-    await act(async () => {
-      const callbacks = [...frames.values()];
-      frames.clear();
-      callbacks.forEach(callback => callback(0));
-    });
+    await act(async () => jest.advanceTimersByTime(50));
     expect(mockAccessibilityFocus).toHaveBeenCalledTimes(1);
-    expect(mockAccessibilityFocus).toHaveBeenCalledWith(501);
+    expect(mockAccessibilityFocus).toHaveBeenCalledWith(
+      screen.getByTestId('explorer-change-ritual'), 'focus',
+    );
     await act(async () => { mockWindowListeners.get('blur')?.(); });
     await act(async () => { mockWindowListeners.get('focus')?.(); });
-    expect(frames.size).toBe(0);
+    await act(async () => jest.runOnlyPendingTimers());
+    expect(mockAccessibilityFocus).toHaveBeenCalledTimes(1);
   });
 
-  it('discards a pending restoration if the picker reopens or the screen loses focus', async () => {
-    const frame = jest.spyOn(global, 'requestAnimationFrame');
+  it.each(['reopen', 'leave'])('cancels the scheduled TalkBack restoration on %s', async (action: string) => {
     render(<ExploreScreen />);
     await screen.findByText('explore.ritual.open:inspiration.ritual.variant.starter');
+    jest.useFakeTimers();
     await act(async () => fireEvent.click(screen.getByTestId('explorer-change-ritual')));
     await act(async () => mockWindowListeners.get('blur')?.());
     await act(async () => fireEvent.click(screen.getByTestId('ritual-picker-close')));
-    await act(async () => fireEvent.click(screen.getByTestId('explorer-change-ritual')));
     await act(async () => mockWindowListeners.get('focus')?.());
-    expect(frame).not.toHaveBeenCalled();
-    expect(mockAccessibilityFocus).not.toHaveBeenCalled();
-    await act(async () => mockWindowListeners.get('blur')?.());
-    await act(async () => fireEvent.click(screen.getByTestId('ritual-picker-close')));
-    await act(async () => mockFocusCleanups.forEach(cleanup => cleanup?.()));
-    await act(async () => mockWindowListeners.get('focus')?.());
-    expect(frame).not.toHaveBeenCalled();
+    await act(async () => jest.advanceTimersByTime(300));
+    await act(async () => {
+      if (action === 'reopen') fireEvent.click(screen.getByTestId('explorer-change-ritual'));
+      else mockFocusCleanups.forEach(cleanup => cleanup?.());
+    });
+    await act(async () => jest.runOnlyPendingTimers());
     expect(mockAccessibilityFocus).not.toHaveBeenCalled();
   });
 });

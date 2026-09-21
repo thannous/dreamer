@@ -15,8 +15,13 @@ import { TID } from '@/lib/testIDs';
 import { getRitualPreference, saveRitualPreference } from '@/services/storageService';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AccessibilityInfo, AppState, findNodeHandle, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { AccessibilityInfo, AppState, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+// TalkBack rejects input-focus events while its window transition is unstable.
+// Its WindowEventInterpreter uses 550 ms; leave one small scheduling margin.
+// https://github.com/google/talkback/blob/master/utils/src/main/java/com/google/android/accessibility/utils/input/WindowEventInterpreter.java
+const TALKBACK_WINDOW_SETTLE_MS = 600;
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
 
@@ -112,15 +117,16 @@ export default function ExploreScreen() {
       } else {
         // View.focus() sends a TextInput command on native; it does not
         // restore TalkBack focus on a Pressable.
-        const node = findNodeHandle(trigger);
-        if (node != null) AccessibilityInfo.setAccessibilityFocus(node);
+        AccessibilityInfo.sendAccessibilityEvent(trigger, 'focus');
       }
     };
-    if (Platform.OS === 'ios') {
-      const timer = setTimeout(restore, 120);
+    if (Platform.OS !== 'web') {
+      // Activity focus returns before TalkBack's window-stability gate opens.
+      // This bounded wait starts only after Android actually regains focus.
+      const timer = setTimeout(restore, Platform.OS === 'android' ? TALKBACK_WINDOW_SETTLE_MS : 120);
       return () => clearTimeout(timer);
     }
-    // Let the recovered activity window commit before sending the event.
+    // Let the web dialog unmount before focusing its trigger.
     const frame = requestAnimationFrame(restore);
     return () => cancelAnimationFrame(frame);
   }, [pickerVisible, androidWindowFocused]);
