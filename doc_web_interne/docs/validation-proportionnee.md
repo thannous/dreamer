@@ -115,3 +115,5 @@ Les tests locaux, la QA sur émulateur/appareil, la CI et la livraison restent d
 preuves distinctes. Un test avec fixture mémoire ne valide pas la persistance.
 Une capture de l'éditeur ne prouve pas une sauvegarde. Une preuve native absente
 reste à qualifier ; multiplier les tests unitaires ne la remplace pas.
+
+Pour TalkBack sur Motorola, utiliser le [protocole court de qualification](qualification-talkback.md) : pilote de la méthode avant la recette, preuve gestuelle distincte du clavier, puis restauration vérifiée.

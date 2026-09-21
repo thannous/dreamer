@@ -15,8 +15,13 @@ import { TID } from '@/lib/testIDs';
 import { getRitualPreference, saveRitualPreference } from '@/services/storageService';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AccessibilityInfo, findNodeHandle, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { AccessibilityInfo, AppState, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+// TalkBack rejects input-focus events while its window transition is unstable.
+// Its WindowEventInterpreter uses 550 ms; leave one small scheduling margin.
+// https://github.com/google/talkback/blob/master/utils/src/main/java/com/google/android/accessibility/utils/input/WindowEventInterpreter.java
+const TALKBACK_WINDOW_SETTLE_MS = 600;
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
 
@@ -76,24 +81,55 @@ export default function ExploreScreen() {
   const wasPickerVisible = useRef(false);
   const screenFocused = useRef(false);
 
+  const restoreFocusPending = useRef(false);
+  const [androidWindowFocused, setAndroidWindowFocused] = useState(true);
+
   useEffect(() => {
-    const shouldRestore = wasPickerVisible.current && !pickerVisible;
+    if (Platform.OS !== 'android') return;
+    // Compose presents the sheet in a separate window. Its dismissal can
+    // outlive the React render which closes the picker.
+    const focus = AppState.addEventListener('focus', () => setAndroidWindowFocused(true));
+    const blur = AppState.addEventListener('blur', () => setAndroidWindowFocused(false));
+    return () => {
+      focus.remove();
+      blur.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (wasPickerVisible.current && !pickerVisible) restoreFocusPending.current = true;
     wasPickerVisible.current = pickerVisible;
-    if (!shouldRestore) return;
-    // Wait for the native modal window to detach before restoring both
-    // keyboard and screen-reader focus to the control that opened it.
-    const timer = setTimeout(() => {
+    if (pickerVisible) {
+      restoreFocusPending.current = false;
+      return;
+    }
+    if (!restoreFocusPending.current) return;
+    if (Platform.OS === 'android' && !androidWindowFocused) return;
+
+    const restore = () => {
+      if (!restoreFocusPending.current) return;
+      restoreFocusPending.current = false;
       if (!screenFocused.current) return;
       const trigger = changeRitualRef.current;
       if (!trigger) return;
-      trigger.focus();
-      if (Platform.OS !== 'web') {
-        const node = findNodeHandle(trigger);
-        if (node != null) AccessibilityInfo.setAccessibilityFocus(node);
+      if (Platform.OS === 'web') {
+        trigger.focus();
+      } else {
+        // View.focus() sends a TextInput command on native; it does not
+        // restore TalkBack focus on a Pressable.
+        AccessibilityInfo.sendAccessibilityEvent(trigger, 'focus');
       }
-    }, 120);
-    return () => clearTimeout(timer);
-  }, [pickerVisible]);
+    };
+    if (Platform.OS !== 'web') {
+      // Activity focus returns before TalkBack's window-stability gate opens.
+      // This bounded wait starts only after Android actually regains focus.
+      const timer = setTimeout(restore, Platform.OS === 'android' ? TALKBACK_WINDOW_SETTLE_MS : 120);
+      return () => clearTimeout(timer);
+    }
+    // Let the web dialog unmount before focusing its trigger.
+    const frame = requestAnimationFrame(restore);
+    return () => cancelAnimationFrame(frame);
+  }, [pickerVisible, androidWindowFocused]);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
   const scrollHeader = navigationLayout.compact && navigationLayout.largeText && !isDesktopLayout;
@@ -122,6 +158,7 @@ export default function ExploreScreen() {
       return () => {
         active = false;
         screenFocused.current = false;
+        restoreFocusPending.current = false;
       };
     }, []),
   );
