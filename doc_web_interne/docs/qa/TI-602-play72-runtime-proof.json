@@ -1,0 +1,32 @@
+{
+  "boot": {
+    "boot": 3,
+    "deviceStartTime": "09-21 16:25:51.000",
+    "hostObservedAt": "2026-09-21T14:25:55.360704+00:00",
+    "processAbsentBeforeLaunch": true,
+    "pid": "13948",
+    "component": "com.tanuki75.noctalia/.MainActivity",
+    "launchResult": "Stopping: com.tanuki75.noctalia\nStarting: Intent { cmp=com.tanuki75.noctalia/.MainActivity }\nStatus: ok\nLaunchState: COLD\nActivity: com.tanuki75.noctalia/.MainActivity\nTotalTime: 763\nWaitTime: 766\nComplete"
+  },
+  "identity": {
+    "schemaVersion": 1,
+    "observedAt": "2026-09-21T14:25:54.538Z",
+    "applicationId": "com.tanuki75.noctalia",
+    "nativeApplicationVersion": "3.3.0",
+    "nativeBuildVersion": "72",
+    "development": false,
+    "updatesEnabled": true,
+    "updateId": "01a0c458-8e30-70d0-8b76-8f208cad6bfd",
+    "runtimeVersion": "bb6007193f94371a51eec34f32439d2c9012fb05",
+    "isEmbeddedLaunch": false,
+    "launchSource": "ota",
+    "isEmergencyLaunch": false,
+    "channel": "production"
+  },
+  "deviceModel": "motorola edge 60 fusion",
+  "androidVersion": "16",
+  "installSource": "com.android.vending",
+  "playCertificateSha256": "6a8cb2e2cdd2c1fdd7c5cfcf00d7c3cc5861c2cd3faf49f69a312535a44fee0f",
+  "publishedGroup": "e2f3e2eb-c3ba-4a55-a12b-1499cadf3595",
+  "gitCommitHash": "e846564cd54d4699717eef07b5964470003bacea"
+}
