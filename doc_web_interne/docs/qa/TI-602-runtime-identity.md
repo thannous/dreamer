@@ -1,19 +1,72 @@
 # TI-602 — Identité du runtime Android exécuté
 
-## Périmètre et état au 21 septembre 2026
+## Résultat vérifié — 21 septembre 2026
 
-Diagnostic préparé pour le Journal Noctalia Android, package de base
-`com.tanuki75.noctalia`. Base source : `a00dbf3eb`. Le changement préexistant de
-`components/analysis/AnalysisReadingModal.tsx` sur master est exclu.
+**Objectif TI-602 atteint sur le Motorola Edge 60 Fusion, Android 16.** Noctalia
+3.3.0 (72), package `com.tanuki75.noctalia`, installateur et initiateur
+`com.android.vending`, certificat Play SHA-256
+`6a8cb2e2cdd2c1fdd7c5cfcf00d7c3cc5861c2cd3faf49f69a312535a44fee0f`.
 
-**La preuve Motorola / Play reste à obtenir.** ADB ne voit aucun appareil ; la
-connexion à l’adresse de débogage fournie échoue avec `No route to host`, y compris
-hors sandbox. Aucun démarrage, arrêt, remplacement d’application, effacement,
-publication OTA, build EAS ou soumission Store n’a été effectué.
+Après autorisation explicite de publication, le diagnostic a été livré par OTA
+Android sur le canal `production`, uniquement pour le runtime
+`bb6007193f94371a51eec34f32439d2c9012fb05`.
 
-Le ticket conserve son état en cours tant que l’identité du runtime effectivement
-exécuté sur une installation Play vérifiée n’est pas relevée. Les anciennes valeurs
-Play 65 du ticket ne sont pas présentées comme celles de l’installation actuelle.
+| Preuve | Valeur |
+| --- | --- |
+| Update exécutée | `01a0c458-8e30-70d0-8b76-8f208cad6bfd` |
+| Groupe EAS publié | `e2f3e2eb-c3ba-4a55-a12b-1499cadf3595` |
+| Runtime exécuté | `bb6007193f94371a51eec34f32439d2c9012fb05` |
+| Origine | `isEmbeddedLaunch=false`, `launchSource=ota` |
+| Mode | `development=false`, `updatesEnabled=true` |
+| Secours | `isEmergencyLaunch=false` |
+| Heure du diagnostic | `2026-09-21T14:25:54.538Z` |
+| Processus frais | PID `13948`, absence vérifiée avant lancement, Android `LaunchState: COLD` |
+
+La [preuve JSON expurgée](TI-602-play72-runtime-proof.json) contient la ligne
+observée dans ce PID après le début de la fenêtre, la provenance Play et le résultat
+du démarrage. L’identifiant observé correspond exactement à l’update publiée.
+L’écran d’accueil « Tes rêves ont une histoire » / « Commencer » reste accessible.
+
+Les étapes antérieures ont établi le téléchargement au premier lancement, puis
+le chargement OTA au second. Android ayant indiqué `WARM` pour cette seconde
+activité malgré un nouveau processus, un dernier `am start -S -W` a levé cette
+ambiguïté avec un démarrage `COLD` et la même identité OTA.
+
+### Code et compatibilité de la livraison
+
+- Build EAS 72 : `695c5c2e-8786-439c-acf8-2cceb85725e0`, source
+  `2b06816d85d0e8c59746b642415c444e806d8262`.
+- Candidat publié : `e846564cd54d4699717eef07b5964470003bacea`, branche
+  `codex/ti602-play72-delivery` : source exacte Play 72 et seul patch TI-602 de la
+  PR #196, sans les modifications ultérieures du dictionnaire ou du site.
+- `npm ci` isolé ; fingerprint strictement égal à l’APK et à EAS, également avec
+  l’environnement de publication. Aucune surcharge forcée de runtime.
+- `npm run test:prepush` du candidat : 1553 tests / 155 suites et types app/tests
+  réussis. La sélection large vient du merge-base antérieur au lot Play 72 ; elle
+  ne signifie pas que tous ces fichiers ont été modifiés pour ce diagnostic.
+- Export Hermes Android de production réussi, marqueur du diagnostic présent.
+  SHA-256 : `118fe205d216424f99e85befdeaf6eceb8f8dd7f01dc71c8d626ea295c365cf2`.
+- L’export a repris les variables du profil de build 72, dont les différences avec
+  l’environnement EAS : HD désactivé, images de référence désactivées, mode test
+  RevenueCat non débogable, SHARP_IGNORE_GLOBAL_LIBVIPS=1. Aucun secret consigné.
+- Publication avec `--platform android --channel production --environment production
+  --skip-bundler`, sans nouveau build natif ni soumission Store.
+
+### Données et limites
+
+L’installation précédente était une version de développement signée différemment.
+L’utilisateur l’a désinstallée lui-même puis a explicitement autorisé la suppression
+et l’installation Play. Aucune restauration de ses anciennes données n’est revendiquée.
+Le test OTA s’est déroulé sur le nouvel écran d’accueil, sans compte connecté ni saisie
+active ; aucune désinstallation, suppression de données ou réinstallation pendant
+la mise à jour et sa qualification. Aucun contenu du journal ou identifiant utilisateur
+n’a été exporté. Les permissions/consentements de l’onboarding n’ont pas été sélectionnés.
+
+Le manifeste embarqué `45064c4f-e1ae-4571-bef6-0ce464bbb48e` et le runtime natif
+ont été relevés séparément dans l’APK ; ils ne sont pas la preuve d’exécution.
+La preuve d’exécution est la ligne `[NoctaliaRuntime]` issue de l’app.
+Ce contrôle ne constitue pas une qualification complète des parcours de la release.
+La PR #196 reste ouverte ; la publication OTA et la fusion Git sont distinctes.
 
 ## Diagnostic préparé
 
@@ -97,16 +150,11 @@ layout limitée au Journal Android. La qualification finale utilise
 `npm run test:prepush` sur le worktree propre et commité ; les résultats sont
 consignés dans la PR et le ticket. Cette validation locale ne vaut pas preuve Play.
 
-### Résultat local vérifié
+### Validation initiale du patch
 
-- Commit de code : `a0c6405b83ef65f73a1e47d45649eef35d287aa5`.
-- `npm run test:prepush` : réussi, 31 tests / 2 suites et types app/tests ; base
-  distante actualisée `a00dbf3ebfb377463d70b24ddc62a17a062ee09b`.
-- Lint ciblé : aucune erreur ; quatre avertissements préexistants dans le layout,
-  hors des lignes modifiées. `git diff --check` : réussi.
-- Première exécution : six échecs dus aux mocks CommonJS copiés à l’import ;
-  correction des mocks ES modules puis validation finale intégrale réussie.
-- Push refusé par l’approbation automatique : accord explicite demandé pour exporter
-  le changement vers le dépôt public `thannous/dreamer`. PR non créée, CI distante
-  non exécutée pour cette branche ; aucune fusion ou publication.
-- L’identité du runtime Play demeure inconnue et le Motorola n’a subi aucune action.
+Le commit de code original `a0c6405b83ef65f73a1e47d45649eef35d287aa5` a passé
+31 tests / 2 suites et les types app/tests via `test:prepush`, puis CircleCI
+`noctalia-quality` sur la PR. Lint ciblé : aucune erreur, quatre avertissements
+préexistants hors des lignes modifiées. La nouvelle preuve documentaire ne modifie
+pas le code du diagnostic. Le WIP initial de `AnalysisReadingModal.tsx` sur master
+est resté exclu.
