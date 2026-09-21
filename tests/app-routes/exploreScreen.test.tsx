@@ -362,7 +362,7 @@ describe('Explorer ritual picker', () => {
     expect(screen.getByTestId('ritual-choice-starter').getAttribute('aria-checked')).toBe('true');
   });
 
-  it.each(['ios', 'web'] as const)('leaves native radio announcements alone on %s', async (platform) => {
+  it.each(['ios', 'web'] as const)('leaves native radio announcements alone on %s', async (platform: 'ios' | 'web') => {
     mockPlatformOS = platform;
     await openPicker();
     await act(async () => fireEvent.click(screen.getByTestId('ritual-choice-memory')));
