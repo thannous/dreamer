@@ -12,7 +12,7 @@ const { parseAdbDevices } = require('./check-android-adb-device');
 
 const DEFAULT_PACKAGE = 'com.tanuki75.noctalia';
 const DEFAULT_ACTIVITY = '.MainActivity';
-const MODES = new Set(['cold', 'warm', 'resume', 'all']);
+const MODES = new Set(['cold', 'warm', 'resume', 'all', 'reading']);
 const FATAL_PATTERN = /FATAL EXCEPTION|ANR in|AndroidRuntime: FATAL|SIG(?:SEGV|ABRT)|OutOfMemoryError/i;
 const DEV_TRANSPORT_PATTERN = /Development Build|expo-dev-launcher|https?:\/\/[^\s]+:8081|tcp:8081|Metro waiting|Connecting to Metro/i;
 
@@ -35,6 +35,10 @@ function parseArgs(argv) {
       options.help = true;
       continue;
     }
+    if (arg === '--pilot' || arg === '--resume') {
+      options[arg.slice(2)] = true;
+      continue;
+    }
     const value = argv[index + 1];
     if (!value || value.startsWith('--')) {
       throw new Error(`Missing value for ${arg}`);
@@ -45,6 +49,12 @@ function parseArgs(argv) {
     else if (arg === '--activity') options.activity = value;
     else if (arg === '--mode') options.mode = value;
     else if (arg === '--output') options.output = path.resolve(value);
+    else if (arg === '--scenario') options.scenario = path.resolve(value);
+    else if (arg === '--baseline') options.baseline = path.resolve(value);
+    else if (arg === '--phases') options.phases = value;
+    else if (arg === '--trace-processor') options.traceProcessor = path.resolve(value);
+    else if (arg === '--apkanalyzer') options.apkanalyzer = path.resolve(value);
+    else if (arg === '--apksigner') options.apksigner = path.resolve(value);
     else if (arg === '--runs') options.runs = parsePositiveInteger(value, '--runs');
     else if (arg === '--settle-ms') options.settleMs = parseNonNegativeInteger(value, '--settle-ms');
     else if (arg === '--timeout-ms') options.timeoutMs = parsePositiveInteger(value, '--timeout-ms');
@@ -53,7 +63,10 @@ function parseArgs(argv) {
   }
 
   if (!MODES.has(options.mode)) {
-    throw new Error(`Unsupported --mode ${options.mode}. Expected cold, warm, resume, or all.`);
+    throw new Error(`Unsupported --mode ${options.mode}. Expected cold, warm, resume, all, or reading.`);
+  }
+  if (options.mode === 'reading' && !options.help && (!options.scenario || !options.traceProcessor)) {
+    throw new Error('Reading mode requires --scenario and --trace-processor.');
   }
   return options;
 }
@@ -403,10 +416,30 @@ function printHelp() {
     'Usage:',
     '  npm run android:perf:measure -- --device <serial> [--apk <release.apk>] [--mode cold|warm|resume|all] [--runs 15] [--output <dir>]',
     '',
+    'Reading: --mode reading --scenario <private.json> --trace-processor <binary> [--phases reading-open,reading-scroll] [--pilot] [--resume] [--baseline <report.json>]',
+    'Reading mode verifies installed manifest/signature/runtime, retains partial results and analyzes FrameTimeline. See scripts/android/README-performance.md.',
+    '',
     'The script refuses debuggable builds, removes tcp:8081 adb reverse, records raw artifacts, and writes report.json/report.csv.',
     'warm = task brought back after 250 ms in background; resume = task restored after 5 s in background.',
     '',
   ].join('\n'));
+}
+
+function runReading(options) {
+  const sdk = process.env.ANDROID_HOME || process.env.ANDROID_SDK_ROOT || path.join(os.homedir(), 'Library/Android/sdk');
+  const builds = path.join(sdk, 'build-tools');
+  const versions = fs.existsSync(builds) ? fs.readdirSync(builds).sort((a, b) => b.localeCompare(a, undefined, { numeric: true })) : [];
+  options.output ||= getDefaultOutputDirectory();
+  options.apkanalyzer ||= resolveCommand('apkanalyzer') || path.join(sdk, 'cmdline-tools/latest/bin/apkanalyzer');
+  options.apksigner ||= resolveCommand('apksigner') || path.join(builds, versions[0] || '', 'apksigner');
+  const result = spawnSync(process.env.PYTHON_BIN || 'python3', [path.join(__dirname, 'android/reading-performance.py')], {
+    input: JSON.stringify(options),
+    encoding: 'utf8',
+    stdio: ['pipe', 'inherit', 'inherit'],
+    timeout: (options.runs * 120 + 120) * 1000,
+  });
+  if (result.error) throw result.error;
+  process.exitCode = result.status ?? 1;
 }
 
 function main() {
@@ -417,6 +450,10 @@ function main() {
   }
   const adbCommand = process.env.ADB_BIN || resolveCommand('adb') || 'adb';
   const serial = resolveDevice(adbCommand, options.device);
+  if (options.mode === 'reading') {
+    runReading({ ...options, device: serial, adbCommand });
+    return;
+  }
   const adb = createAdb(adbCommand, serial);
   const outputDirectory = options.output || getDefaultOutputDirectory();
   fs.mkdirSync(outputDirectory, { recursive: true });

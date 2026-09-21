@@ -26,6 +26,14 @@ describe('measure-android-performance', () => {
     expect(() => parseArgs(['--mode', 'debug'])).toThrow('Unsupported --mode');
   });
 
+  it('supports selected reading phases and explicit recovery without changing startup modes', () => {
+    expect(parseArgs(['--mode', 'reading', '--scenario', './private.json', '--trace-processor', './trace_processor', '--phases', 'reading-open', '--pilot', '--resume'])).toMatchObject({
+      mode: 'reading', phases: 'reading-open', pilot: true, resume: true,
+    });
+    expect(() => parseArgs(['--mode', 'reading'])).toThrow('requires --scenario');
+    expect(parseArgs(['--mode', 'resume'])).toMatchObject({ mode: 'resume', runs: 5 });
+  });
+
   it('parses launch, marker, frame, and memory evidence', () => {
     expect(parseLaunch('Status: ok\nLaunchState: COLD\nActivity: app/.Main\nTotalTime: 895\nWaitTime: 897\n')).toEqual({
       activity: 'app/.Main',
