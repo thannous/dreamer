@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "suenos-de-muerte",
   "title": "Soñar con la muerte: significado según quién muere | Noctalia",
-  "description": "Descubre qué significa soñar con la muerte, tu propia muerte, un familiar o un funeral. No es una predicción: suele hablar de cambio, duelo o cierre.",
+  "description": "Soñar que mueres, que casi mueres o que fallece un familiar: distingue los escenarios y las emociones, sin presagios ni interpretaciones automáticas.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Soñar con la muerte: significado según quién muere | Noctalia",
-  "ogDescription": "Descubre qué significa soñar con la muerte, tu propia muerte, un familiar o un funeral. No es una predicción: suele hablar de cambio, duelo o cierre.",
+  "ogDescription": "Soñar que mueres, que casi mueres o que fallece un familiar: distingue los escenarios y las emociones, sin presagios ni interpretaciones automáticas.",
   "ogImage": "https://noctalia.app/img/blog/death-dreams-meaning.webp",
-  "ogImageAlt": "Bosque con niebla que representa el cambio y el renacimiento",
+  "ogImageAlt": "Silueta frente a una abertura luminosa rodeada de mariposas",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Soñar con la muerte: significado según quién muere | Noctalia",
-  "twitterDescription": "Descubre qué significa soñar con la muerte, tu propia muerte, un familiar o un funeral. No es una predicción: suele hablar de cambio, duelo o cierre.",
+  "twitterDescription": "Soñar que mueres, que casi mueres o que fallece un familiar: distingue los escenarios y las emociones, sin presagios ni interpretaciones automáticas.",
   "twitterImage": "https://noctalia.app/img/blog/death-dreams-meaning.webp",
-  "twitterImageAlt": "Bosque con niebla que representa el cambio y el renacimiento",
+  "twitterImageAlt": "Silueta frente a una abertura luminosa rodeada de mariposas",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-28",
+  "modifiedTime": "2026-09-21",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-ser-perseguido",
   "nextPath": "/es/blog/suenos-de-agua",
   "preloadImage": "/img/blog/death-dreams-meaning.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Soñar con la muerte: qué significa según quién muere\",\n  \"description\": \"Descubre qué significa soñar con la muerte, tu propia muerte, un familiar o un funeral. No es una predicción: suele hablar de cambio, duelo o cierre.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/death-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-28\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/suenos-de-muerte\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1024,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/es/blog/suenos-de-muerte\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con muerte?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Soñar con muerte suele simbolizar cambio, final de etapa, duelo o transformación. No debe leerse como una predicción literal.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con la muerte de un familiar?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Puede reflejar miedo a perder a esa persona, cambios en la relación o una preocupación emocional que todavía no has procesado.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con tu propia muerte?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Normalmente habla de una identidad, etapa o hábito que termina. También puede aparecer en momentos de transición intensa.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar con un funeral?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Un funeral en sueños suele indicar despedida simbólica, necesidad de cierre o aceptación de un cambio.\"\n      }\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Recursos\",\n      \"item\": \"https://noctalia.app/es/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sueños de Muerte\",\n      \"item\": \"https://noctalia.app/es/blog/suenos-de-muerte\"\n    }\n  ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Soñar con la muerte: significado según quién muere\",\n    \"description\": \"Soñar que mueres, que casi mueres o que fallece un familiar: distingue los escenarios y las emociones, sin presagios ni interpretaciones automáticas.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/death-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-09-21\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-de-muerte\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1256,\n    \"timeRequired\": \"PT6M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-de-muerte\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar que mueres?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No tiene un significado único ni anuncia tu muerte. Describe la escena y lo que sientes. Una asociación con una pérdida o un cambio puede ser personal, pero no es una explicación obligatoria.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar que casi mueres?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Importa distinguir el peligro del desenlace: cómo sobrevives, quién ayuda y qué sientes después. El sueño no predice un accidente ni prueba que hayas escapado de un peligro real.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Soñar que muere un familiar es un presagio?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"El sueño no permite predecir su muerte ni conocer su salud. Si existe una preocupación real por esa persona, valórala a partir de hechos y conversaciones, no del sueño.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Por qué sueño con alguien que ya falleció?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Los encuentros con personas fallecidas se han documentado en personas en duelo y pueden tener tonos distintos. Un sueño concreto no permite establecer su causa ni diagnosticar cómo estás viviendo la pérdida.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños de Muerte\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-de-muerte\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -61,14 +61,12 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significado-de-suenos">Tema: Significado de sueños</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 11 de diciembre de 2025</span>
-<span class="text-sm text-purple-300/60">4 min de lectura</span>
+<span class="text-sm text-purple-300/60">6 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Soñar con la muerte: qué significa según quién muere
-                </h1>
-<p class="text-lg text-purple-200/80 leading-relaxed">
-                    Soñar con la muerte puede provocar miedo, pero no suele ser un presagio. El significado cambia según mueras tú, un familiar, una persona desconocida o aparezca un funeral, y suele relacionarse con transformación, duelo o cierre.
-                </p>
+Soñar con la muerte: significado según quién muere
+</h1>
+<p class="text-lg text-purple-200/80 leading-relaxed">Soñar con tu propia muerte, con la de un familiar o con alguien que ya falleció puede dejarte una emoción intensa. Son escenas distintas. Para explorar su significado, empieza por quién aparece, qué sucede y cómo te sientes, sin tomar el sueño como una advertencia sobre el futuro.</p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
 <div class="flex items-center gap-3 mb-8 text-sm text-purple-200/70">
@@ -83,266 +81,60 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rápida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Soñar con muerte casi nunca predice una muerte real. Suele hablar de final, cambio, duelo, miedo a perder algo o transformación. Si sueñas con tu propia muerte, el foco suele ser una etapa personal que termina; si muere un familiar, puede reflejar miedo, separación o cambios en ese vínculo.</p>
+    <p class="text-purple-100/80 leading-relaxed">Soñar con la muerte no permite predecir una muerte real. Puede evocarte una pérdida, un cambio o un recuerdo, pero ninguna de esas asociaciones es obligatoria. Distingue morir en el sueño, sobrevivir a un peligro y reencontrarte con una persona fallecida.</p>
 </section>
-
-<!-- GSC SEO Update: death high-position scenarios -->
-<section class="glass-panel rounded-2xl p-6 my-10 border border-dream-salmon/15 bg-white/5">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Soñar con muerte no suele anunciar una muerte real</h2>
-<p class="text-purple-100/80 leading-relaxed mb-4">La lectura más útil es simbólica: una etapa termina, una relación cambia, una identidad se transforma o una emoción de duelo necesita espacio. Por eso esta página prioriza los escenarios que más busca la gente.</p>
-<div class="grid md:grid-cols-2 gap-4 text-sm text-gray-300">
-<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Soñar con tu propia muerte</h3><p>Se relaciona con transformación personal, cierre de ciclo o miedo ante una decisión grande.</p></div>
-<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Soñar con la muerte de un familiar</h3><p>Puede reflejar miedo a perder, distancia emocional o cambios en el rol que esa persona ocupa para ti.</p></div>
-<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Soñar con un funeral</h3><p>Habla de despedida simbólica, aceptación o necesidad de cerrar una etapa con más claridad.</p></div>
-<div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">Soñar que matas a alguien</h3><p>Suele señalar ira, rechazo de una dinámica o deseo de cortar con un patrón interno.</p></div>
-</div>
-<p class="text-sm text-purple-200/70 mt-4">También puedes ampliar con <a class="text-dream-salmon hover:underline" href="../simbolos/muerte">soñar con muerte</a> y <a class="text-dream-salmon hover:underline" href="../simbolos/persona-fallecida">soñar con una persona fallecida</a>.</p>
-</section>
-
-
-<!-- GSC Visible FAQ -->
-<section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Preguntas frecuentes</h2>
-<div class="grid gap-4">
-<div class="glass-panel rounded-xl p-5 border border-white/10">
-<h3 class="font-serif text-lg text-dream-cream mb-2">¿Qué significa soñar con muerte?</h3>
-<p class="text-sm text-gray-300 leading-relaxed">Soñar con muerte suele simbolizar cambio, final de etapa, duelo o transformación. No debe leerse como una predicción literal.</p>
-</div>
-
-<div class="glass-panel rounded-xl p-5 border border-white/10">
-<h3 class="font-serif text-lg text-dream-cream mb-2">¿Qué significa soñar con la muerte de un familiar?</h3>
-<p class="text-sm text-gray-300 leading-relaxed">Puede reflejar miedo a perder a esa persona, cambios en la relación o una preocupación emocional que todavía no has procesado.</p>
-</div>
-
-<div class="glass-panel rounded-xl p-5 border border-white/10">
-<h3 class="font-serif text-lg text-dream-cream mb-2">¿Qué significa soñar con tu propia muerte?</h3>
-<p class="text-sm text-gray-300 leading-relaxed">Normalmente habla de una identidad, etapa o hábito que termina. También puede aparecer en momentos de transición intensa.</p>
-</div>
-
-<div class="glass-panel rounded-xl p-5 border border-white/10">
-<h3 class="font-serif text-lg text-dream-cream mb-2">¿Qué significa soñar con un funeral?</h3>
-<p class="text-sm text-gray-300 leading-relaxed">Un funeral en sueños suele indicar despedida simbólica, necesidad de cierre o aceptación de un cambio.</p>
-</div>
-</div>
-</section>
-
-
 
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Bosque con niebla que representa el cambio y el renacimiento" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/death-dreams-meaning.webp" srcset="../../img/blog/death-dreams-meaning-480w.webp 480w, ../../img/blog/death-dreams-meaning-800w.webp 800w, ../../img/blog/death-dreams-meaning-1200w.webp 1200w" width="1200">
+<img alt="Silueta frente a una abertura luminosa rodeada de mariposas" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/death-dreams-meaning.webp" srcset="../../img/blog/death-dreams-meaning-480w.webp 480w, ../../img/blog/death-dreams-meaning-800w.webp 800w, ../../img/blog/death-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
-<nav class="glass-panel rounded-2xl p-6 mb-12">
-<h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Tabla de contenidos
-                </h2>
+<!-- Table of Contents -->
+<nav class="glass-panel rounded-2xl p-6 mb-12" aria-label="Contenido">
+<h2 class="font-serif text-lg text-dream-cream mb-4">Contenido</h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#tranquilidad">1. Primero, no entres en pánico</a></li>
-<li><a class="toc-link block" href="#escenarios">2. Escenarios comunes de sueños de muerte</a></li>
-<li><a class="toc-link block" href="#interpretaciones">3. Lo que realmente significan los sueños de muerte</a></li>
-<li><a class="toc-link block" href="#psicología">4. Perspectivas psicológicas</a></li>
-<li><a class="toc-link block" href="#cultural">5. Interpretaciones culturales</a></li>
-<li><a class="toc-link block" href="#accion">6. Trabajando con los sueños de muerte</a></li>
+<li><a class="toc-link block" href="#tranquilidad">1. ¿Soñar con la muerte anuncia algo malo?</a></li>
+<li><a class="toc-link block" href="#escenarios">2. Tu propia muerte, casi morir y otros escenarios</a></li>
+<li><a class="toc-link block" href="#interpretaciones">3. Cómo explorar un significado personal</a></li>
+<li><a class="toc-link block" href="#psicología">4. Sueños durante el duelo: qué dice la investigación</a></li>
+<li><a class="toc-link block" href="#cultural">5. Creencias familiares y significados espirituales</a></li>
+<li><a class="toc-link block" href="#accion">6. Qué hacer si el sueño se repite o te inquieta</a></li>
 </ol>
 </nav>
+<!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="tranquilidad">Sueños de muerte: primero, no entres en pánico</h2>
-<p>
-                    Abordemos el tema directamente: <strong>los sueños de <a class="text-dream-salmon hover:underline" href="../simbolos/muerte">muerte</a> casi nunca predicen la muerte real</strong>. A pesar de siglos de superstición, no hay evidencia científica de que los sueños de muerte sean proféticos. En el lenguaje de los sueños, la muerte es un símbolo - y como la mayoría de los símbolos oníricos, raramente significa lo que literalmente representa.
-                </p>
-<p>
-                    Estos sueños son extraordinariamente comunes. Los estudios sugieren que <strong>más del 70% de las personas</strong> han soñado con la muerte en algún momento - la suya, la de un ser querido o incluso la de un desconocido. Aparecen en todas las culturas y edades, lo que apunta a una función psicológica importante.
-                </p>
-<blockquote>
-                    "En los sueños, la muerte es un símbolo de transformación. El sueño te muestra que algo en tu vida está terminando para que algo nuevo pueda comenzar." - Dr. Rubin Naiman, Especialista en Sueño y Sueños
-                </blockquote>
-<h2 id="escenarios">Escenarios comunes de sueños de muerte y su interpretación</h2>
-<p>
-                    Cada escenario de tu sueño de muerte proporciona pistas importantes sobre su significado:
-                </p>
+<h2 id="tranquilidad">¿Soñar con la muerte anuncia algo malo?</h2>
+<p>El contenido del sueño no es una prueba de que tú o alguien cercano vaya a morir. Tampoco permite identificar una enfermedad. Si te despiertas con miedo, tómate un momento para reconocer dónde estás antes de buscar una explicación.</p>
+<p>Quizá la escena te recuerde una despedida, una noticia o una preocupación reciente. Esa relación puede ser significativa para ti sin convertirse en una regla para todos. La <a href="../simbolos/muerte">ficha del símbolo muerte</a> resume el tema; aquí distinguimos situaciones concretas.</p>
+
+<h2 id="escenarios">Tu propia muerte, casi morir y otros escenarios</h2>
+<h3>Soñar que mueres</h3>
+<p>¿Recuerdas el momento, observas la escena desde fuera o sabes que has muerto sin verlo? Anota también qué ocurre después. Si lo relacionas con el final de una etapa, explica por qué esa asociación encaja contigo; no hace falta inventar un cambio para darle sentido.</p>
+<h3>Soñar que casi mueres, pero sobrevives</h3>
+<p>Sobrevivir a una caída, un accidente o una amenaza es distinto de morir. Fíjate en cómo escapas, si recibes ayuda y si terminas con alivio o miedo. Puedes preguntarte qué significa para ti estar a salvo. El desenlace no anuncia un peligro evitado ni garantiza protección.</p>
+<h3>Soñar que muere un familiar, tu pareja o un hijo</h3>
+<p>Describe quién aparece y tu reacción: buscar ayuda, despedirte, quedarte inmóvil o no creer lo sucedido. La preocupación por alguien puede ser una asociación personal; el sueño no revela su estado de salud ni significa que desees perderlo. Si tienes una preocupación real, atiéndela por sus propios motivos.</p>
+<h3>Ver viva a una persona que ya falleció</h3>
+<p>Un encuentro cotidiano, una conversación o una despedida pueden resultar reconfortantes o dolorosos. Puedes conservar lo que recuerdas sin exigirle un mensaje. Para este caso específico, consulta también la <a href="../simbolos/persona-fallecida">ficha sobre una persona fallecida</a>.</p>
+<h3>Un funeral o un entierro</h3>
+<p>¿Sabes a quién despiden? ¿Participas o miras desde lejos? Un funeral conocido y uno sin personas identificables no son la misma escena. Una asociación con la despedida puede servirte para reflexionar, pero no convierte el sueño en una predicción.</p>
+<h3>Matar a alguien, ver morir a un desconocido o perder una mascota</h3>
+<p>No deduzcas una intención real de una acción soñada. Separa lo que ocurrió de tu reacción al despertar. Con una mascota, puedes observar qué recuerdos del animal aparecen; con un desconocido, quizá no haya una persona real a la que vincular la escena.</p>
+
+<h2 id="interpretaciones">Cómo explorar un significado personal</h2>
+<p>Las ideas de cambio, separación o miedo a perder a alguien son posibles asociaciones, no seis respuestas prefijadas. Escribe primero el relato y después una pregunta concreta: “¿Esto me recuerda alguna despedida reciente?”. Si no encuentras un vínculo, dejarlo sin resolver también es válido.</p>
+<p>Compara el tono del sueño con el del despertar. Sentir calma en una escena difícil no mide tu amor por alguien. Sentir angustia tampoco demuestra que haya un peligro. Esa diferencia puede ayudarte a describir la experiencia con más precisión.</p>
+
+<h2 id="psicología">Sueños durante el duelo: qué dice la investigación</h2>
+<p>Una encuesta de Wright y colaboradores a 278 personas en duelo encontró que el 58 % recordaba sueños de la persona fallecida. Los relatos podían ser agradables o combinar emociones agradables y perturbadoras.</p>
+<p>El estudio trata de personas en duelo, no de todos los sueños sobre la muerte. No permite diagnosticar un duelo ni decidir qué significa tu sueño. El NINDS señala que la función exacta de los sueños sigue siendo incierta.</p>
+
+<h2 id="cultural">Creencias familiares y significados espirituales</h2>
+<p>Quizá en tu familia se interprete este sueño como longevidad, despedida o visita espiritual. Puedes reconocer esa creencia como parte de tu historia y de tu manera de recordar a alguien. Aquí no se presenta como un hecho comprobado ni como una razón para tomar decisiones médicas.</p>
+
+<h2 id="accion">Qué hacer si el sueño se repite o te inquieta</h2>
+<p>Si quieres llevar un registro, apunta la escena, la emoción, la frecuencia y cómo has descansado. No necesitas reconstruir detalles que no recuerdas. Si anotar el sueño te incomoda, puedes limitarte a una frase sobre cómo te encuentras.</p>
+<p>El NHS recomienda consultar cuando las pesadillas regulares afectan al sueño y a la vida diaria. Puedes llevar ese registro a un profesional sanitario. Pedir apoyo por el malestar no exige encontrar antes una interpretación.</p>
+
 </div>
-<div class="grid md:grid-cols-2 gap-6 my-12">
-<div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-dream-salmon/10 rounded-lg">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="user"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Tu propia muerte</h3>
-</div>
-<p class="text-sm text-gray-300">
-                        Soñar con tu propia muerte típicamente significa <strong>transformación personal importante</strong>. Antiguos aspectos de ti mismo - hábitos, creencias, identidad - están "muriendo" para dar paso a quien te estás convirtiendo.
-                    </p>
-</div>
-<div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-dream-salmon/10 rounded-lg">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="heart"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Un ser querido muriendo</h3>
-</div>
-<p class="text-sm text-gray-300">
-                        A menudo refleja <strong>miedo a perderlo</strong> o cambios en tu relación. También puede representar cualidades que asocias con ellos que se están transformando dentro de ti.
-                    </p>
-</div>
-<div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-dream-salmon/10 rounded-lg">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="baby"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Un niño muriendo</h3>
-</div>
-<p class="text-sm text-gray-300">
-                        Puede representar el <strong>fin de la inocencia</strong>, pérdida de cualidades infantiles, o preocupaciones sobre un proyecto o empresa creativa (nuestro "bebé") que no sobrevive.
-                    </p>
-</div>
-<div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-dream-salmon/10 rounded-lg">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="users"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Un desconocido muriendo</h3>
-</div>
-<p class="text-sm text-gray-300">
-                        El desconocido a menudo representa <strong>un aspecto desconocido de ti mismo</strong> - un potencial, rasgo o camino aún no explorado que puede estar desvaneciéndose o necesita atención.
-                    </p>
-</div>
-<div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-dream-salmon/10 rounded-lg">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="dog"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Una mascota muriendo</h3>
-</div>
-<p class="text-sm text-gray-300">
-                        Las mascotas a menudo simbolizan <strong>amor incondicional, lealtad o instintos</strong>. Su muerte en sueños puede indicar que estas cualidades están siendo descuidadas o transformadas.
-                    </p>
-</div>
-<div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-dream-salmon/10 rounded-lg">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="rotate-ccw"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Alguien muerto vuelve a la vida</h3>
-</div>
-<p class="text-sm text-gray-300">
-                        Cuando personas <a class="text-dream-salmon hover:underline" href="../simbolos/persona-fallecida">fallecidas</a> aparecen vivas, a menudo significa que sus <strong>cualidades o lecciones están resurgiendo</strong> en tu vida, o estás procesando el duelo y manteniendo vivo su recuerdo.
-                    </p>
-</div>
-</div>
-<div class="prose max-w-none text-gray-300">
-<h2 id="interpretaciones">Lo que realmente significan los sueños de muerte</h2>
-<p>
-                    Detrás de las imágenes perturbadoras, los sueños de muerte típicamente comunican uno de estos significados más profundos:
-                </p>
-<h3>1. Transformación y renacimiento</h3>
-<p>
-                    Es la interpretación más frecuente. La muerte en sueños representa el <strong>fin de un capítulo y el comienzo de otro</strong>. Puedes estar superando viejas formas de ser, terminando una fase de vida, o experimentando un cambio interior profundo. Como el fénix, algo debe morir para que algo nuevo nazca.
-                </p>
-<h3>2. Finales y cierre</h3>
-<p>
-                    Estos sueños a menudo aparecen cuando algo en tu vida está <strong>llegando a su fin</strong> - una relación, trabajo, situación de vida o fase. Tu sueño te ayuda a procesar y aceptar el final, incluso si no eres conscientemente consciente de que está sucediendo.
-                </p>
-<h3>3. Miedo y ansiedad</h3>
-<p>
-                    A veces los sueños de muerte simplemente reflejan <strong>ansiedad subyacente</strong> - sobre la mortalidad, la salud, perder seres queridos o las incertidumbres de la vida. Particularmente después de una pérdida o durante una enfermedad, estos sueños pueden procesar tus miedos en forma simbólica.
-                </p>
-<h3>4. Duelo no resuelto</h3>
-<p>
-                    Los sueños sobre seres queridos fallecidos a menudo surgen cuando el <strong>duelo permanece sin procesar</strong>. El sueño puede ofrecer una oportunidad para conexión continua, conversaciones finales, o trabajar sentimientos que no pudiste expresar cuando estaban vivos.
-                </p>
-<h3>5. Dejar ir</h3>
-<p>
-                    Los sueños de muerte pueden señalar que es tiempo de <strong>liberar algo</strong> - viejos rencores, creencias obsoletas, relaciones tóxicas, o versiones pasadas de ti mismo. El sueño usa la muerte como metáfora para una liberación necesaria.
-                </p>
-<h3>6. Llamada de atención</h3>
-<p>
-                    A veces los sueños de muerte sirven como <strong>recordatorio de la mortalidad</strong> - no de manera mórbida, sino como motivación para vivir más plenamente. Pueden provocar reflexión sobre cómo estás pasando tu tiempo y si tu vida se alinea con tus valores.
-                </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Comprende tus sueños de muerte</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analiza los detalles específicos de tu sueño de muerte - quién murió, cómo y las emociones involucradas - para proporcionar perspectivas personalizadas sobre qué transformación está procesando tu subconsciente.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/app-analisis-suenos-android">
-                                Prueba Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
-<h2 id="psicología">Perspectivas psicológicas</h2>
-<h3>Visión freudiana</h3>
-<p>
-                    Freud creía que los sueños de muerte podían representar <strong>hostilidad reprimida</strong> hacia la persona que muere en el sueño, o deseos inconscientes (no necesariamente deseos de muerte, pero quizás deseos de cambio o libertad). También los veía como expresiones de ansiedad sobre la propia mortalidad.
-                </p>
-<h3>Interpretación junguiana</h3>
-<p>
-                    Carl Jung veía la muerte en sueños como <strong>transformación profunda de la psique</strong>. La muerte representa al ego muriendo a su perspectiva limitada, permitiendo el crecimiento psicológico y la integración. Es la destrucción necesaria antes de la creación.
-                </p>
-<h3>Perspectiva existencial</h3>
-<p>
-                    Desde un punto de vista existencial, los sueños de muerte nos confrontan con la <strong>conciencia humana fundamental de la mortalidad</strong>. En lugar de ser mórbidos, pueden despertarnos a vivir más auténticamente y tomar decisiones conscientes sobre cómo pasamos nuestro tiempo limitado.
-                </p>
-<h3>Investigación moderna</h3>
-<p>
-                    Según los investigadores contemporaneos, los sueños de muerte nos ayudan a <strong>ensayar y procesar el concepto de los finales</strong>. Nuestros cerebros pueden usar el espacio seguro de los sueños para explorar la mortalidad, la pérdida y el cambio sin consecuencias del mundo real.
-                </p>
-<blockquote>
-                    "La aparición de la muerte en sueños no necesariamente significa algo negativo. Puede indicar que estás haciendo una transición de una fase de tu vida a otra." - Dr. Michael Lennox, Psicólogo de Sueños
-                </blockquote>
-<h2 id="cultural">Interpretaciones culturales</h2>
-<p>
-                    Diferentes culturas han entendido los sueños de muerte de varias maneras:
-                </p>
-<ul>
-<li><strong>Antiguo Egipto:</strong> Creía que los sueños de muerte podían ser mensajes de los muertos o vislumbres del más allá</li>
-<li><strong>Tradición griega:</strong> Veía los sueños de muerte como potencialmente proféticos, aunque a menudo simbólicos en lugar de literales</li>
-<li><strong>Cultura china:</strong> La muerte en sueños puede simbolizar buena fortuna y longevidad (interpretación opuesta)</li>
-<li><strong>Nativos americanos:</strong> Los sueños de muerte a menudo vistos como viajes espirituales o mensajes de los ancestros</li>
-<li><strong>Tradición islámica:</strong> Diferentes interpretaciones basadas en quién muere y el estado emocional del soñador</li>
-<li><strong>Psicología occidental:</strong> Generalmente ve los sueños de muerte como simbólicos de cambio y transformación</li>
-</ul>
-<h2 id="accion">Trabajando con los sueños de muerte</h2>
-<p>
-                    Si los sueños de muerte te están perturbando, aquí tienes cómo trabajar con ellos constructivamente:
-                </p>
-<h3>1. Registra los detalles</h3>
-<p>
-                    Anota todo: quién murió, cómo, dónde y, lo más importante, <strong>cómo te sentiste</strong>. El tono emocional a menudo revela más que el contenido literal. ¿Tenías miedo? ¿Estabas en paz? ¿Aliviado? ¿Triste?
-                </p>
-<h3>2. Busca las transiciones</h3>
-<p>
-                    Pregúntate: <strong>¿Qué está terminando o cambiando en mi vida?</strong> ¿Nuevo trabajo? ¿Cambio en las relaciones? ¿Crecimiento personal? ¿Mudanza? La muerte en tu sueño puede estar reflejando una transición del mundo real.
-                </p>
-<h3>3. Considera a la persona que murió</h3>
-<p>
-                    Si alguien específico murió, <strong>¿qué representa para ti?</strong> ¿Qué cualidades asocias con esa persona? Estas cualidades pueden estar transformándose dentro de ti o necesitando atención.
-                </p>
-<h3>4. Honra el final</h3>
-<p>
-                    Si el sueño señala que algo está terminando, <strong>reconoce y honra conscientemente ese final</strong>. Rituales, escribir un diario o conversaciones pueden ayudarte a procesar las transiciones que tu sueño está destacando.
-                </p>
-<h3>5. Busca apoyo si es necesario</h3>
-<p>
-                    Si los sueños de muerte son frecuentes, intensamente perturbadores, o conectados con duelo o trauma, considera <strong>hablar con un terapeuta</strong>. Pueden ayudarte a procesar las emociones subyacentes de manera segura.
-                </p>
-</div>
-<!-- Symbol Guide CTA -->
-<aside class="glass-panel rounded-xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="w-12 h-12 bg-dream-salmon/10 rounded-full flex items-center justify-center flex-shrink-0">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Explora el simbolismo de la muerte</h4>
-<p class="text-sm text-gray-400 mb-3">Descubre el significado profundo de la muerte en los sueños con nuestra guía completa.</p>
-<a class="inline-flex items-center gap-2 text-dream-salmon hover:underline text-sm font-medium" href="../simbolos/muerte">
-                            Leer la guía completa <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
 <!-- Related Symbols Start -->
 <section aria-label="Símbolos de sueños relacionados" class="mt-12 mb-8">
 <h2 class="font-serif text-xl mb-4 text-dream-cream flex items-center gap-2">
@@ -358,75 +150,42 @@
 </div>
 </section>
 <!-- Related Symbols End -->
+<!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
-<div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
-<i class="w-8 h-8 text-dream-salmon" data-lucide="sunrise"></i>
-</div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Transforma el miedo en comprensión</h3>
-<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Los sueños de muerte llevan mensajes de transformación, no de fatalidad. Registra los tuyos en Noctalia y deja que Noctalia te ayude a descifrar qué cambio está procesando tu subconsciente.
-                </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/app-analisis-suenos-android">
-                    Comienza a explorar tus sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Guarda el relato a tu ritmo</h3>
+<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Anota en Noctalia lo que recuerdas y tus preguntas. Puedes volver al relato sin tratarlo como una predicción.</p>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">Empezar un diario de sueños</a>
 </aside>
+<!-- FAQ Section -->
 <section class="mt-16">
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas frecuentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Los sueños de muerte predicen la muerte real?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            No, los sueños de muerte muy raramente predicen la muerte real. En el simbolismo onírico, la muerte típicamente representa finales, transformación y cambio en lugar de muerte literal. Estos sueños a menudo señalan el fin de una fase de la vida y el comienzo de otra.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">¿Qué significa soñar que mueres?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">No tiene un significado único ni anuncia tu muerte. Describe la escena y lo que sientes. Una asociación con una pérdida o un cambio puede ser personal, pero no es una explicación obligatoria.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Por qué sueño que alguien que amo muere?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Los sueños sobre la muerte de un ser querido a menudo reflejan el miedo a perderlo, cambios en tu relación, o aspectos de ti mismo que asocias con esa persona. Estos sueños también pueden aparecer durante tiempos de transición o cuando la relación está evolucionando.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">¿Qué significa soñar que casi mueres?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Importa distinguir el peligro del desenlace: cómo sobrevives, quién ayuda y qué sientes después. El sueño no predice un accidente ni prueba que hayas escapado de un peligro real.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Qué significa soñar con tu propia muerte?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Soñar con tu propia muerte típicamente simboliza transformación personal, el fin de viejos hábitos o formas de pensar, o una transición de vida significativa. A menudo indica que estás atravesando o listo para un cambio personal importante.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">¿Soñar que muere un familiar es un presagio?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">El sueño no permite predecir su muerte ni conocer su salud. Si existe una preocupación real por esa persona, valórala a partir de hechos y conversaciones, no del sueño.</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">¿Por qué sueño con alguien que ya falleció?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Los encuentros con personas fallecidas se han documentado en personas en duelo y pueden tener tonos distintos. Un sueño concreto no permite establecer su causa ni diagnosticar cómo estás viviendo la pérdida.</p>
 </details>
 </div>
 </section>
-<!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Lectura adicional</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y límites de la investigación</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">Domhoff (2003) — The scientific study of dreams</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Brain mechanisms of dream recall (PubMed)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000) — La reinterpretación de los sueños: teoría de la simulación de amenazas (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/23449603/" rel="nofollow noopener noreferrer" target="_blank">Wright y colaboradores (2014) — Encuesta sobre sueños durante el duelo</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS — El sueño y los límites del conocimiento sobre los sueños</a></li>
+<li><a href="https://www.nhs.uk/conditions/night-terrors/" rel="nofollow noopener noreferrer" target="_blank">NHS — Pesadillas y cuándo consultar</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 28 de julio de 2026</p>
-</section>
-<section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Artículos relacionados</h2>
-<div class="grid md:grid-cols-2 gap-6">
-<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="significado-suenos-recurrentes">
-<span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Significado de sueños recurrentes</h3>
-<p class="text-sm text-gray-400">¿Por qué sigues teniendo el mismo sueño? Descubre los mensajes ocultos.</p>
-</a>
-<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="suenos-ser-perseguido">
-<span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de ser perseguido</h3>
-<p class="text-sm text-gray-400">¿Qué significa soñar que te persiguen?</p>
-</a>
-</div>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 21 de septiembre de 2026</p>
 </section>
 <!-- Blog Nav Start -->
 <section class="mt-12" aria-label="Navegación entre artículos" data-blog-nav="">
@@ -448,7 +207,6 @@
   </div>
 </section>
 <!-- Blog Nav End -->
-
 <!-- Blog Related Start -->
 <section class="mt-12" aria-label="Para seguir leyendo" data-blog-related="">
   <header class="mb-6">
@@ -459,7 +217,7 @@
         <a href="significado-suenos-recurrentes" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Significado de Sueños Recurrentes: Entender sus Mensajes</h3>
-            <p class="text-sm text-gray-400">¿Por qué sigues teniendo el mismo sueño? Descubre lo que tu subconsciente está tratando de decirte.</p>
+            <p class="text-sm text-gray-400">¿Por qué sigues teniendo el mismo sueño? Compara las escenas y las emociones que se repiten.</p>
         </a>
         <a href="suenos-dientes-caen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
