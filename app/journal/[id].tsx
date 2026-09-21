@@ -1,6 +1,6 @@
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { MarkdownText } from '@/components/ui/MarkdownText';
-import { AnalysisReadingModal } from '@/components/analysis/AnalysisReadingModal';
+import { AnalysisReadingLauncher, type AnalysisReadingHandle } from '@/components/analysis/AnalysisReadingLauncher';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
@@ -288,7 +288,7 @@ function JournalDetailContent() {
   const [isRetryingSync, setIsRetryingSync] = useState(false);
   const [syncRetryFailed, setSyncRetryFailed] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [isReadingAnalysis, setIsReadingAnalysis] = useState(false);
+  const analysisReadingRef = useRef<AnalysisReadingHandle>(null);
   const awaitingAnalysisReading = useRef(false);
   const [analysisRecoveryClock, setAnalysisRecoveryClock] = useState(() => Date.now());
   const [showReplaceImageSheet, setShowReplaceImageSheet] = useState(false);
@@ -576,7 +576,7 @@ function JournalDetailContent() {
       awaitingAnalysisReading.current = false;
     } else if (showCompletedReading && dream?.interpretation?.trim() && awaitingAnalysisReading.current) {
       awaitingAnalysisReading.current = false;
-      setIsReadingAnalysis(true);
+      analysisReadingRef.current?.open();
     }
   }, [dream?.analysisStatus, dream?.interpretation, showCompletedReading]);
 
@@ -2374,10 +2374,11 @@ function JournalDetailContent() {
                 <View testID={TID.Component.DreamDetailReadingZone}>
                   {renderDetailZoneHeader(t('journal.detail.zone.reading'), TID.Text.DreamDetailReadingZone)}
                   {showCompletedReading && !isAnalysisPending && dream.interpretation?.trim() ? (
-                    <PressableScale onPress={() => setIsReadingAnalysis(true)} accessibilityRole="button"
-                      testID="analysis.reading.open" className="min-h-[48px] justify-center self-start py-3">
-                      <Text className="font-sans-bold text-[15px] text-champagne-on">{t('analysis.reading.open')}</Text>
-                    </PressableScale>
+                    <AnalysisReadingLauncher ref={analysisReadingRef} dream={dream} imageUri={displayImageUrl}
+                      imageCacheKey={imageCacheKey}
+                      imageLoadFailed={Boolean(dream.imageUrl && !displayImageUrl && media.error)} onReloadImage={media.retry}
+                      isRetryingImage={isRetryingImage}
+                      onRetryImage={visibleIllustrationCta === 'retry' && !getImageJobFailure(dream.imageJobErrorCode) ? onRetryImage : undefined} />
                   ) : null}
                   {isAnalysisPending ? (
                     <Skeleton className="h-[60px] w-full rounded-sm" />
@@ -2623,13 +2624,6 @@ function JournalDetailContent() {
             </View>
           </View>
         )}
-        {isReadingAnalysis && dream.interpretation?.trim() ? (
-          <AnalysisReadingModal dream={dream} imageUri={displayImageUrl}
-            imageLoadFailed={Boolean(dream.imageUrl && !displayImageUrl && media.error)} onReloadImage={media.retry}
-            isRetryingImage={isRetryingImage}
-            onRetryImage={visibleIllustrationCta === 'retry' && !getImageJobFailure(dream.imageJobErrorCode) ? onRetryImage : undefined}
-            onClose={() => setIsReadingAnalysis(false)} />
-        ) : null}
         <AnalysisNoticeSheet
           visible={Boolean(analysisNotice)}
           onClose={handleDismissAnalysisNotice}

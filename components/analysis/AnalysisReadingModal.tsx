@@ -1,6 +1,6 @@
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Modal, StyleSheet, Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,11 +15,12 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import type { DreamAnalysis } from '@/lib/types';
 
-type Props = {
+export type AnalysisReadingModalProps = {
   dream: Pick<DreamAnalysis, 'title' | 'shareableQuote' | 'interpretation'> & Partial<Pick<DreamAnalysis,
     'promptVersion' | 'symbols' | 'emotions' | 'reflectionQuestions' | 'imageUrl' | 'imageJobStatus' | 'imageGenerationFailed'>>;
   /** Resolved through the journal media boundary (including private storage signing). */
   imageUri?: string;
+  imageCacheKey?: string;
   imageLoadFailed?: boolean;
   onReloadImage?: () => void;
   onRetryImage?: () => void;
@@ -27,7 +28,12 @@ type Props = {
   onClose: () => void;
 };
 
-function ReadingIllustration({ dream, imageUri, imageLoadFailed, onReloadImage, onRetryImage, isRetryingImage }: Omit<Props, 'onClose'>) {
+type ReadingRow =
+  | { key: string; kind: 'body' | 'quote'; text: string }
+  | { key: string; kind: 'insight'; text: string; name: string; section: 'symbols' | 'emotions'; first: boolean }
+  | { key: string; kind: 'question'; text: string; index: number };
+
+function ReadingIllustration({ dream, imageUri, imageCacheKey, imageLoadFailed, onReloadImage, onRetryImage, isRetryingImage }: Omit<AnalysisReadingModalProps, 'onClose'>) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const tokens = getNoctaliaDesignTokens(colors, mode);
@@ -46,7 +52,7 @@ function ReadingIllustration({ dream, imageUri, imageLoadFailed, onReloadImage, 
   return (
     <View style={[styles.illustration, hasImage || pending ? styles.imageFrame : styles.emptyFrame, { backgroundColor: tokens.surface.soft }]} testID="analysis.reading.illustration">
       {hasImage && imageUri && !loadFailed ? (
-        <Image source={{ uri: imageUri }} contentFit="cover" style={StyleSheet.absoluteFill}
+        <Image source={{ uri: imageUri, cacheKey: imageCacheKey }} cachePolicy="memory-disk" contentFit="cover" style={StyleSheet.absoluteFill}
           accessibilityLabel={t('analysis.reading.image_alt', { title: dream.title })}
           onLoad={() => setLoaded(true)} onError={() => setLoadFailed(true)} testID="analysis.reading.image" />
       ) : null}
@@ -66,7 +72,7 @@ function ReadingIllustration({ dream, imageUri, imageLoadFailed, onReloadImage, 
 }
 
 /** The same saved analysis remains readable while its illustration finishes. */
-export function AnalysisReadingModal({ dream, imageUri, imageLoadFailed, onReloadImage, onRetryImage, isRetryingImage, onClose }: Props) {
+export function AnalysisReadingModal({ dream, imageUri, imageCacheKey, imageLoadFailed, onReloadImage, onRetryImage, isRetryingImage, onClose }: AnalysisReadingModalProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
@@ -74,10 +80,52 @@ export function AnalysisReadingModal({ dream, imageUri, imageLoadFailed, onReloa
   const quote = dream.shareableQuote?.trim();
   const backgroundColor = tokens.surface.raised;
   const bodyStyle = useMemo(() => [styles.body, { color: tokens.text.primary }], [tokens.text.primary]);
-  const insights = [
-    { key: 'symbols', heading: t('journal.detail.symbols_header'), items: dream.symbols?.map(item => ({ name: item.name, text: item.meaning })) },
-    { key: 'emotions', heading: t('journal.detail.emotions_header'), items: dream.emotions?.map(item => ({ name: item.name, text: item.insight })) },
-  ];
+  const rows = useMemo<ReadingRow[]>(() => [
+    { key: 'body', kind: 'body', text: dream.interpretation?.trim() ?? '' },
+    ...(dream.symbols ?? []).map((item, index): ReadingRow => ({
+      key: `symbol-${index}`, kind: 'insight', section: 'symbols', first: index === 0,
+      name: item.name, text: item.meaning,
+    })),
+    ...(dream.emotions ?? []).map((item, index): ReadingRow => ({
+      key: `emotion-${index}`, kind: 'insight', section: 'emotions', first: index === 0,
+      name: item.name, text: item.insight,
+    })),
+    ...(dream.reflectionQuestions ?? []).map((text, index): ReadingRow => ({
+      key: `question-${index}`, kind: 'question', text, index,
+    })),
+    ...(quote ? [{ key: 'quote', kind: 'quote' as const, text: quote }] : []),
+  ], [dream.interpretation, dream.symbols, dream.emotions, dream.reflectionQuestions, quote]);
+
+  const renderRow = ({ item }: { item: ReadingRow }) => {
+    if (item.kind === 'body') {
+      return <View testID="analysis.reading.body"><MarkdownText variant="reading" style={bodyStyle}>{item.text}</MarkdownText></View>;
+    }
+    if (item.kind === 'insight') {
+      return (
+        <View style={item.first ? styles.section : undefined} testID={item.first ? `analysis.reading.${item.section}` : undefined}>
+          {item.first ? <Text accessibilityRole="header" style={[styles.sectionTitle, { color: tokens.text.primary }]}>{t(`journal.detail.${item.section}_header`)}</Text> : null}
+          <View style={styles.insight}>
+            <Text style={[styles.insightTitle, { color: tokens.text.primary }]}>{item.name}</Text>
+            <MarkdownText variant="reading" style={bodyStyle}>{item.text}</MarkdownText>
+          </View>
+        </View>
+      );
+    }
+    if (item.kind === 'question') {
+      return (
+        <View style={item.index === 0 ? styles.section : undefined} testID={item.index === 0 ? 'analysis.reading.questions' : undefined}>
+          {item.index === 0 ? <Text accessibilityRole="header" style={[styles.sectionTitle, { color: tokens.text.primary }]}>{t('journal.detail.reflection_header')}</Text> : null}
+          <Text style={[styles.question, { color: tokens.text.primary }]}>{`${item.index + 1}. ${item.text}`}</Text>
+        </View>
+      );
+    }
+    return (
+      <View style={[styles.quoteBlock, { borderTopColor: tokens.accent.base }]}>
+        <Text style={[styles.quote, { color: tokens.text.secondary }]}>{`« ${item.text} »`}</Text>
+        {isPoeticDreamQuote(dream) ? <Text style={[styles.attribution, { color: tokens.text.secondary }]}>{t('journal.detail.quote_attribution')}</Text> : null}
+      </View>
+    );
+  };
 
   return (
     <Modal visible animationType="none" presentationStyle="fullScreen" onRequestClose={onClose}>
@@ -89,39 +137,24 @@ export function AnalysisReadingModal({ dream, imageUri, imageLoadFailed, onReloa
             <IconSymbol name="xmark" size={23} color={tokens.text.primary} />
           </PressableScale>
         </View>
-        <ScrollView contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40, paddingLeft: Math.max(insets.left, 24), paddingRight: Math.max(insets.right, 24) }]}>
-          <Text accessibilityRole="header" style={[styles.title, { color: tokens.text.primary }]}>{dream.title}</Text>
-          <ReadingIllustration key={`${dream.imageUrl ?? ''}:${imageUri ?? ''}`} dream={dream} imageUri={imageUri} imageLoadFailed={imageLoadFailed} onReloadImage={onReloadImage}
-            onRetryImage={onRetryImage} isRetryingImage={isRetryingImage} />
-          <View testID="analysis.reading.body">
-            <MarkdownText variant="reading" style={bodyStyle}>{dream.interpretation?.trim() ?? ''}</MarkdownText>
-          </View>
-          {insights.map(section => section.items?.length ? (
-            <View key={section.key} style={styles.section} testID={`analysis.reading.${section.key}`}>
-              <Text accessibilityRole="header" style={[styles.sectionTitle, { color: tokens.text.primary }]}>{section.heading}</Text>
-              {section.items.map((item, index) => (
-                <View key={`${item.name}-${index}`} style={styles.insight}>
-                  <Text style={[styles.insightTitle, { color: tokens.text.primary }]}>{item.name}</Text>
-                  <MarkdownText variant="reading" style={bodyStyle}>{item.text}</MarkdownText>
-                </View>
-              ))}
-            </View>
-          ) : null)}
-          {dream.reflectionQuestions?.length ? (
-            <View style={styles.section} testID="analysis.reading.questions">
-              <Text accessibilityRole="header" style={[styles.sectionTitle, { color: tokens.text.primary }]}>{t('journal.detail.reflection_header')}</Text>
-              {dream.reflectionQuestions.map((question, index) => (
-                <Text key={`${index}-${question}`} style={[styles.question, { color: tokens.text.primary }]}>{`${index + 1}. ${question}`}</Text>
-              ))}
-            </View>
-          ) : null}
-          {quote ? (
-            <View style={[styles.quoteBlock, { borderTopColor: tokens.accent.base }]}>
-              <Text style={[styles.quote, { color: tokens.text.secondary }]}>{`« ${quote} »`}</Text>
-              {isPoeticDreamQuote(dream) ? <Text style={[styles.attribution, { color: tokens.text.secondary }]}>{t('journal.detail.quote_attribution')}</Text> : null}
-            </View>
-          ) : null}
-        </ScrollView>
+        <FlatList
+          data={rows}
+          keyExtractor={row => row.key}
+          renderItem={renderRow}
+          initialNumToRender={1}
+          maxToRenderPerBatch={2}
+          windowSize={5}
+          // Keep selectable native text attached within the render window.
+          removeClippedSubviews={false}
+          contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40, paddingLeft: Math.max(insets.left, 24), paddingRight: Math.max(insets.right, 24) }]}
+          ListHeaderComponent={(
+            <>
+              <Text accessibilityRole="header" style={[styles.title, { color: tokens.text.primary }]}>{dream.title}</Text>
+              <ReadingIllustration key={`${dream.imageUrl ?? ''}:${imageUri ?? ''}`} dream={dream} imageUri={imageUri} imageCacheKey={imageCacheKey}
+                imageLoadFailed={imageLoadFailed} onReloadImage={onReloadImage} onRetryImage={onRetryImage} isRetryingImage={isRetryingImage} />
+            </>
+          )}
+        />
       </View>
     </Modal>
   );

@@ -191,7 +191,8 @@
     "release:check": "node ./scripts/mobile-release.js check",
     "release:build": "node ./scripts/mobile-release.js build",
     "eas-build-pre-install": "node ./scripts/mobile-release.js verify",
-    "analytics:baseline": "node ./scripts/product-funnel-report.js"
+    "analytics:baseline": "node ./scripts/product-funnel-report.js",
+    "postinstall": "patch-package --error-on-fail"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",
@@ -302,7 +303,8 @@
     "vitest": "^4.0.13",
     "workbox-cli": "^7.0.0",
     "wrangler": "4.110.0",
-    "yaml": "2.9.0"
+    "yaml": "2.9.0",
+    "patch-package": "8.0.1"
   },
   "overrides": {
     "markdown-it": "14.3.0",
