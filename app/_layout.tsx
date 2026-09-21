@@ -923,6 +923,14 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
+    if (Platform.OS !== 'android' || isLucidTrainer) return;
+    // Lazy and best-effort: release diagnostics must not hold up navigation.
+    void import('@/lib/runtimeIdentity')
+      .then(({ reportRuntimeIdentity }) => reportRuntimeIdentity())
+      .catch(() => { /* Optional diagnostic unavailable; never log a raw native error. */ });
+  }, []);
+
+  useEffect(() => {
     if (hasBootstrappedLanguage.current) {
       return;
     }

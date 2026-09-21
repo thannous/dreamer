@@ -4,6 +4,8 @@ import { URL as NodeURL } from 'node:url';
 import { act, cleanup, render, screen } from '@testing-library/react';
 
 let mockLucid = true;
+let mockPlatform = 'ios';
+const mockReportRuntimeIdentity = jest.fn();
 let mockUser: { id: string } | null = null;
 let mockPathname = '/recording';
 let mockSearchParams: Record<string, string> = {};
@@ -27,9 +29,10 @@ const mockNavigation = { isReady: () => true, addListener: () => () => undefined
 const mockChildren = ({ children }: React.PropsWithChildren) => <>{children}</>;
 
 jest.mock('@/global.css', () => ({}));
+jest.mock('@/lib/runtimeIdentity', () => ({ reportRuntimeIdentity: mockReportRuntimeIdentity }));
 jest.mock('react-native', () => ({
   ...jest.requireActual('../react-native-stub'),
-  Platform: { OS: 'ios' },
+  Platform: { get OS() { return mockPlatform; } },
   LogBox: { ignoreLogs: jest.fn() },
   InteractionManager: { runAfterInteractions: (fn: () => void) => { fn(); return { cancel: jest.fn() }; } },
   Linking: { getInitialURL: jest.fn().mockResolvedValue(null), addEventListener: () => ({ remove: jest.fn() }) },
@@ -101,6 +104,8 @@ async function mountStartup() {
 describe('root product composition (real root and DreamsProvider)', () => {
   beforeEach(() => {
     jest.useFakeTimers(); jest.clearAllMocks();
+    mockPlatform = 'ios';
+    mockReportRuntimeIdentity.mockReset();
     mockPathname = '/recording'; mockSearchParams = {}; mockAuthReturn = null;
     mockOnboardingPersisting = false; mockOnboardingStatus = 'completed';
     mockOnboardingPath = null; mockPendingRecordingIntent = null; mockForeground = undefined;
@@ -108,6 +113,30 @@ describe('root product composition (real root and DreamsProvider)', () => {
     require('react-native').Linking.getInitialURL.mockResolvedValue(null);
   });
   afterEach(() => { cleanup(); jest.useRealTimers(); });
+
+  it.each([
+    ['android', false, 1],
+    ['android', true, 0],
+    ['ios', false, 0],
+    ['web', false, 0],
+  ] as const)('scopes runtime diagnostics to Android Journal (%s, lucid=%s)', async (platform, lucid, calls) => {
+    mockPlatform = platform;
+    mockLucid = lucid;
+    mockUser = null;
+    await mountStartup();
+    expect(mockReportRuntimeIdentity).toHaveBeenCalledTimes(calls);
+    expect(mockMark).toHaveBeenCalledWith('startup.route_committed');
+  });
+
+  it('continues Android navigation when the optional diagnostic fails', async () => {
+    mockPlatform = 'android';
+    mockLucid = false;
+    mockUser = null;
+    mockReportRuntimeIdentity.mockImplementation(() => { throw new Error('native diagnostic unavailable'); });
+    await mountStartup();
+    expect(mockReportRuntimeIdentity).toHaveBeenCalledTimes(1);
+    expect(mockMark).toHaveBeenCalledWith('startup.route_committed');
+  });
 
   it.each(['/paywall', '/journal/42'])('keeps the saved dream journey on %s after returning from the store', async (path) => {
     mockLucid = false;
