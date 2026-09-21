@@ -1,5 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  AccessibilityInfo,
+  Platform,
   Pressable,
   ScrollView,
   Text,
@@ -31,6 +33,20 @@ export function RitualPickerSheet({
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const [draft, setDraft] = useState(currentId);
+  const previousDraft = useRef(currentId);
+  useEffect(() => {
+    if (previousDraft.current === draft) return;
+    previousDraft.current = draft;
+    // On Android, the radio's updated checked state is read on refocus but
+    // may be silent after a TalkBack double tap. Announce the draft only
+    // after the change commits; opening or reselecting must stay silent.
+    if (Platform.OS === "android") {
+      const ritual = RITUALS.find((item) => item.id === draft)!;
+      AccessibilityInfo.announceForAccessibility(
+        t("explore.ritual.selection_announcement", { ritual: t(ritual.labelKey) }),
+      );
+    }
+  }, [draft, t]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(false);
   const inFlight = useRef(false);

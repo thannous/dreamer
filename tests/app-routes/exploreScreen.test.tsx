@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it, jest } from '@jest/globals';
 import { TID } from '@/lib/testIDs';
 
 const mockAccessibilityFocus = jest.fn();
+const mockAccessibilityAnnouncement = jest.fn();
 const mockWindowListeners = new Map<string, () => void>();
 let mockPlatformOS: 'android' | 'ios' | 'web' = 'android';
 let mockWindowWidth = 390;
@@ -22,7 +23,7 @@ let mockFocusCleanups: ((() => void) | void)[] = [];
 jest.mock('react-native', () => {
   const React = require('react');
   return {
-    AccessibilityInfo: { sendAccessibilityEvent: mockAccessibilityFocus },
+    AccessibilityInfo: { sendAccessibilityEvent: mockAccessibilityFocus, announceForAccessibility: mockAccessibilityAnnouncement },
     AppState: { addEventListener: (event: string, callback: () => void) => {
       mockWindowListeners.set(event, callback);
       return { remove: () => mockWindowListeners.delete(event) };
@@ -342,6 +343,31 @@ describe('Explorer ritual picker', () => {
     await screen.findByText('explore.ritual.open:inspiration.ritual.variant.starter');
     fireEvent.click(screen.getByTestId('explorer-change-ritual'));
   }
+
+  it('announces each changed Android draft once without claiming it is saved', async () => {
+    await openPicker();
+    expect(mockAccessibilityAnnouncement).not.toHaveBeenCalled();
+    await act(async () => fireEvent.click(screen.getByTestId('ritual-choice-memory')));
+    expect(mockAccessibilityAnnouncement).toHaveBeenCalledWith(
+      'explore.ritual.selection_announcement:inspiration.ritual.variant.memory',
+    );
+    expect(mockSaveRitualPreference).not.toHaveBeenCalled();
+    await act(async () => fireEvent.click(screen.getByTestId('ritual-choice-memory')));
+    expect(mockAccessibilityAnnouncement).toHaveBeenCalledTimes(1);
+    await act(async () => fireEvent.click(screen.getByTestId('ritual-choice-lucid')));
+    expect(mockAccessibilityAnnouncement).toHaveBeenCalledTimes(2);
+    await act(async () => fireEvent.click(screen.getByTestId('ritual-picker-close')));
+    await act(async () => fireEvent.click(screen.getByTestId('explorer-change-ritual')));
+    expect(mockAccessibilityAnnouncement).toHaveBeenCalledTimes(2);
+    expect(screen.getByTestId('ritual-choice-starter').getAttribute('aria-checked')).toBe('true');
+  });
+
+  it.each(['ios', 'web'] as const)('leaves native radio announcements alone on %s', async (platform) => {
+    mockPlatformOS = platform;
+    await openPicker();
+    await act(async () => fireEvent.click(screen.getByTestId('ritual-choice-memory')));
+    expect(mockAccessibilityAnnouncement).not.toHaveBeenCalled();
+  });
 
   it('keeps draft selection private until confirmation and discards dismissal', async () => {
     await openPicker();

@@ -86,6 +86,7 @@ const translations: Record<string, string> = {
     'explore.ritual.change': "Mudar de ritual",
     'explore.ritual.choose_hint': "Escolhe o que combina contigo hoje.",
     'explore.ritual.current': "Atual",
+    'explore.ritual.selection_announcement': "{ritual} selecionado. Confirma para guardar esta escolha.",
     'explore.ritual.confirm': "Escolher este ritual",
     'explore.ritual.saving': "A guardar…",
     'explore.ritual.save_error': "Não foi possível guardar a escolha. O ritual atual foi mantido. Tenta novamente.",
