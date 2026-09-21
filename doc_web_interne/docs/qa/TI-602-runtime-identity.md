@@ -96,3 +96,17 @@ les versions natives indisponibles, l’échec de journalisation et l’intégra
 layout limitée au Journal Android. La qualification finale utilise
 `npm run test:prepush` sur le worktree propre et commité ; les résultats sont
 consignés dans la PR et le ticket. Cette validation locale ne vaut pas preuve Play.
+
+### Résultat local vérifié
+
+- Commit de code : `a0c6405b83ef65f73a1e47d45649eef35d287aa5`.
+- `npm run test:prepush` : réussi, 31 tests / 2 suites et types app/tests ; base
+  distante actualisée `a00dbf3ebfb377463d70b24ddc62a17a062ee09b`.
+- Lint ciblé : aucune erreur ; quatre avertissements préexistants dans le layout,
+  hors des lignes modifiées. `git diff --check` : réussi.
+- Première exécution : six échecs dus aux mocks CommonJS copiés à l’import ;
+  correction des mocks ES modules puis validation finale intégrale réussie.
+- Push refusé par l’approbation automatique : accord explicite demandé pour exporter
+  le changement vers le dépôt public `thannous/dreamer`. PR non créée, CI distante
+  non exécutée pour cette branche ; aucune fusion ou publication.
+- L’identité du runtime Play demeure inconnue et le Motorola n’a subi aucune action.
