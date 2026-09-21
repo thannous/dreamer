@@ -35,6 +35,10 @@ export type AnalyticsEventMap = {
     speech_available: boolean;
     offline_model_state: 'ready' | 'online_fallback' | 'unavailable' | 'unknown';
   };
+  dream_save_milestone: {
+    stage: 'first' | 'return_7d';
+    cohort_day: number;
+  };
   recording_saved: {
     input_mode: 'voice' | 'text';
     capture_context: 'fresh' | 'remembered';
@@ -388,5 +392,17 @@ export async function trackProductEvent<TName extends AnalyticsEventName>(
     await provider.track(eventName, properties);
   } catch (error) {
     log.warn('track failed', eventName, error);
+  }
+}
+
+/** Best-effort milestone delivery, subject to the same build and mock gates. */
+export async function trackDreamSaveMilestone(isFirstDream: boolean): Promise<void> {
+  if (isAnalyticsDebugEnabled() || isMockModeEnabled() || getExpoPublicEnvValue('EXPO_PUBLIC_MOCK_MODE') === 'true' ||
+    (process.env.EXPO_PUBLIC_PRODUCT_ANALYTICS_ENABLED ?? '').toLowerCase() !== 'true') return;
+  try {
+    const analytics = await import('@/lib/productAnalytics');
+    await analytics.trackDreamSaveMilestone(isFirstDream);
+  } catch {
+    // Optional measurement cannot block capture or expose storage/network details.
   }
 }

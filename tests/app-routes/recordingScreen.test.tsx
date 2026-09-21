@@ -9,6 +9,7 @@ import { encodeCaptureReview } from '@/lib/captureReviewDraft';
 import { TID } from '@/lib/testIDs';
 
 const mockAddDream = jest.fn();
+const mockTrackDreamSaveMilestone = jest.fn(async () => undefined);
 const mockAnalyzeDream = jest.fn();
 const mockAnalysisSetStep = jest.fn();
 const mockApplyDreamCategorization = jest.fn();
@@ -578,6 +579,7 @@ jest.doMock('@/lib/analytics', () => ({
   getTranscriptLengthBucket: () => 'short',
   getTranscriptLengthBucketFromLength: () => 'short',
   trackProductEvent: mockTrackProductEvent,
+  trackDreamSaveMilestone: mockTrackDreamSaveMilestone,
 }));
 
 jest.doMock('@/lib/dreamUtils', () => ({
@@ -1441,10 +1443,22 @@ describe('Recording screen', () => {
     });
     expect(mockAddDream).toHaveBeenCalledTimes(1);
     expect(mockReplace).not.toHaveBeenCalled();
+    expect(mockTrackDreamSaveMilestone).not.toHaveBeenCalled();
     await act(async () => { finish(buildDream('A blue room under the rain', 42)); });
+    await waitFor(() => expect(mockTrackDreamSaveMilestone).toHaveBeenCalledWith(true));
+    expect(mockTrackDreamSaveMilestone).toHaveBeenCalledTimes(1);
     expect(mockReplace).toHaveBeenCalledWith({
       pathname: '/journal/[id]', params: { id: '42', saved: '1' },
     });
+  });
+
+  it('marks a new save into an existing journal as a return candidate, never a first save', async () => {
+    mockDreams = [buildDream('Existing dream', 99)];
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A blue room under the rain' } });
+    fireEvent.click(screen.getByTestId('recording-save'));
+    await waitFor(() => expect(mockTrackDreamSaveMilestone).toHaveBeenCalledWith(false));
   });
 
   it('saves a dream without launching analysis or illustration', async () => {
