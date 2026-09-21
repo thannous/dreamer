@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "guia-diario-suenos",
   "title": "Diario de sueños: método simple para empezar esta noche | Noctalia",
-  "description": "Cómo llevar un diario de sueños, qué anotar al despertar y cómo mejorar el recuerdo sin convertir la mañana en una tarea pesada.",
+  "description": "Empieza un diario de sueños con cuatro campos y un ejemplo breve. Qué anotar, qué hacer sin recuerdos y cómo releer sin imponer una interpretación.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Diario de sueños: método simple para empezar esta noche | Noctalia",
-  "ogDescription": "Qué escribir en un diario de sueños y cómo mejorar el recuerdo sin complicar la mañana.",
+  "ogDescription": "Empieza un diario de sueños con cuatro campos y un ejemplo breve. Qué anotar, qué hacer sin recuerdos y cómo releer sin imponer una interpretación.",
   "ogImage": "https://noctalia.app/img/blog/dream-journal-guide.webp",
-  "ogImageAlt": "Diario de sueños abierto con una pluma sobre una mesa de noche",
+  "ogImageAlt": "Libro abierto del que surgen paisajes y figuras imaginarias",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Diario de sueños: empieza esta noche | Noctalia",
-  "twitterDescription": "Qué anotar al despertar y cómo recordar más sueños.",
+  "twitterDescription": "Empieza un diario de sueños con cuatro campos y un ejemplo breve. Qué anotar, qué hacer sin recuerdos y cómo releer sin imponer una interpretación.",
   "twitterImage": "https://noctalia.app/img/blog/dream-journal-guide.webp",
-  "twitterImageAlt": "Diario de sueños abierto con una pluma sobre una mesa de noche",
+  "twitterImageAlt": "Libro abierto del que surgen paisajes y figuras imaginarias",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-15",
+  "modifiedTime": "2026-09-21",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/guia-paralisis-sueno",
   "nextPath": "/es/blog/suenos-salud-mental",
   "preloadImage": "/img/blog/dream-journal-guide.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Diario de sueños: método simple para empezar esta noche\",\n  \"description\": \"Cómo llevar un diario de sueños, qué anotar al despertar y cómo mejorar el recuerdo sin convertir la mañana en una tarea pesada.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/dream-journal-guide.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-15\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/guia-diario-suenos\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1320,\n  \"timeRequired\": \"PT5M\",\n  \"url\": \"https://noctalia.app/es/blog/guia-diario-suenos\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Cómo empiezo un diario de sueños?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Deja el cuaderno o el teléfono junto a la cama, fija una intención antes de dormir, despierta lentamente y registra fragmentos antes de analizarlos.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué debo escribir en un diario de sueños?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Escribe la escena, emoción, personas, símbolos, colores, sensaciones corporales y cualquier conexión con la vida despierta. Incluso unas pocas palabras sirven.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Cuánto se tarda en mejorar el recuerdo de sueños?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La mayoría de las personas nota mejor recuerdo en una o dos semanas de registro constante, sobre todo si escribe justo al despertar.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué pasa si no recuerdo ningún sueño?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Escribe “no recuerdo sueño” y una emoción al despertar. Mantiene el hábito activo y entrena la mente para tratar los sueños como algo que vale la pena recordar.\"\n      }\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Recursos\",\n      \"item\": \"https://noctalia.app/es/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Guía diario de sueños\",\n      \"item\": \"https://noctalia.app/es/blog/guia-diario-suenos\"\n    }\n  ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Diario de sueños: método simple para empezar esta noche\",\n    \"description\": \"Empieza un diario de sueños con cuatro campos y un ejemplo breve. Qué anotar, qué hacer sin recuerdos y cómo releer sin imponer una interpretación.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dream-journal-guide.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-09-21\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/guia-diario-suenos\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1406,\n    \"timeRequired\": \"PT7M\",\n    \"url\": \"https://noctalia.app/es/blog/guia-diario-suenos\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Cómo empiezo un diario de sueños?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Prepara un cuaderno o una nota de voz y anota la fecha al despertar. Usa cuatro campos: escenario, emoción, imagen o símbolo y una pregunta opcional. Una frase incompleta también es una entrada válida.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué escribo si no recuerdo ningún sueño?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Puedes anotar «sin recuerdo esta mañana» y cómo te encuentras, o dejar pasar ese día. No inventes escenas. La ausencia de recuerdo no demuestra que no hayas soñado.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Cuánto se tarda en mejorar el recuerdo?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No existe un plazo ni una cantidad de sueños garantizados. El diario permite conservar lo que sí recuerdas y comparar tus propias experiencias, sin prometer una mejora general de la memoria.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Es mejor escribir o grabar la voz?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Usa el formato que te resulte cómodo. Puedes combinar una nota de voz breve con una revisión escrita posterior. Ningún formato es superior para todas las personas.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Guía diario de sueños\",\n            \"item\": \"https://noctalia.app/es/blog/guia-diario-suenos\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -63,13 +63,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="diario-de-suenos">Tema: Diario de sueños</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 11 de diciembre de 2025</span>
-<span class="text-sm text-purple-300/60">5 min de lectura</span>
+<span class="text-sm text-purple-300/60">7 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Diario de sueños: método simple para empezar esta noche
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Un diario de sueños sirve para capturar las imágenes antes de que desaparezcan: lugar, emoción, personajes, frase extraña, sensación al despertar. No necesitas escribir tres páginas cada mañana. Una nota de voz, cinco palabras clave y una emoción bastan para entrenar el recuerdo y detectar patrones recurrentes.
+                    Un diario de sueños sirve para capturar las imágenes antes de que desaparezcan: lugar, emoción, personajes, frase extraña, sensación al despertar. No necesitas escribir tres páginas cada mañana. Una nota de voz, unas palabras clave y una emoción bastan para conservar una primera entrada que puedas releer.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rápida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Para empezar un diario de sueños, anota la fecha, tres detalles, la emoción dominante y una pregunta. Hazlo en los dos minutos posteriores al despertar, antes de mirar el teléfono. La constancia importa más que la longitud.</p>
+    <p class="text-purple-100/80 leading-relaxed">Para empezar un diario de sueños, anota la fecha y usa cuatro campos: escenario, emoción, imagen o símbolo y una pregunta opcional. Un fragmento basta. Hazlo cuando te resulte cómodo al despertar, sin buscar una interpretación ni interrumpir el descanso.</p>
 </section>
 <!-- GSC SEO Update: dream journal template -->
 <section class="glass-panel rounded-2xl p-6 mb-10 border border-white/10 bg-white/5">
@@ -94,14 +94,15 @@
     <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-300">
         <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">1. El escenario</h3><p>¿Dónde estabas? Casa, escuela, carretera, hospital, bosque, lugar desconocido.</p></div>
         <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">2. La emoción</h3><p>Anota la sensación bruta: miedo, calma, vergüenza, curiosidad, alivio.</p></div>
-        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">3. El símbolo</h3><p>Elige la imagen que queda: agua, puerta, perro, casa, caída, persona.</p></div>
-        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">4. La pregunta</h3><p>Pregúntate: “¿A qué se parece esto en mi vida despierta?”</p></div>
+        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">3. La imagen o el símbolo</h3><p>Elige la imagen que queda: agua, puerta, perro, casa, caída, persona.</p></div>
+        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">4. La pregunta</h3><p>Si quieres, pregunta: “¿Me recuerda a algo reciente?”. Puedes dejar este campo vacío.</p></div>
     </div>
-    <p class="text-sm text-purple-200/70 mt-4">Después de guardar el recuerdo bruto, usa el <a class="text-dream-salmon hover:underline" href="/es/guides/diccionario-simbolos-suenos">diccionario de símbolos de sueños</a> para comparar significados cercanos.</p>
+    <p class="text-sm text-purple-200/70 mt-4">Los 60 segundos son una orientación, no un plazo obligatorio. El <a class="text-dream-salmon hover:underline" href="/es/guides/diccionario-simbolos-suenos">diccionario de símbolos</a> ofrece asociaciones para explorar después; no determina lo que significa tu sueño.</p>
 </section>
+<aside class="glass-panel rounded-xl p-4 mt-4"><h3 class="text-dream-cream font-medium mb-2">Ejemplo ficticio de una entrada breve</h3><p class="text-sm text-gray-300"><strong>Fecha:</strong> 21 de septiembre. <strong>Escenario:</strong> espero un autobús en una plaza desconocida. <strong>Emoción:</strong> curiosidad, sin miedo. <strong>Imagen:</strong> una maleta amarilla. <strong>Pregunta:</strong> ¿me recuerda al viaje que estoy preparando? No recuerdo el final.</p></aside>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Diario de sueños abierto con una pluma sobre una mesa de noche" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/dream-journal-guide.webp" srcset="../../img/blog/dream-journal-guide-480w.webp 480w, ../../img/blog/dream-journal-guide-800w.webp 800w, ../../img/blog/dream-journal-guide-1200w.webp 1200w" width="1200">
+<img alt="Libro abierto del que surgen paisajes y figuras imaginarias" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/dream-journal-guide.webp" srcset="../../img/blog/dream-journal-guide-480w.webp 480w, ../../img/blog/dream-journal-guide-800w.webp 800w, ../../img/blog/dream-journal-guide-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -109,294 +110,34 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Tabla de contenidos
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#por-que">1. ¿Por qué llevar un diario de sueños?</a></li>
-<li><a class="toc-link block" href="#ciencia">2. La ciencia de la memoria onírica</a></li>
-<li><a class="toc-link block" href="#empezar">3. Cómo empezar</a></li>
-<li><a class="toc-link block" href="#que-registrar">4. Qué registrar</a></li>
-<li><a class="toc-link block" href="#tecnicas">5. Técnicas para mejorar el recuerdo</a></li>
-<li><a class="toc-link block" href="#formatos">6. Formatos de diario</a></li>
-<li><a class="toc-link block" href="#analisis">7. Analizar tus sueños</a></li>
-<li><a class="toc-link block" href="#errores">8. Errores comunes a evitar</a></li>
+<li><a class="toc-link block" href="#por-que">1. ¿Para qué sirve un diario de sueños?</a></li>
+<li><a class="toc-link block" href="#ciencia">2. Recuerdo de sueños: qué sabemos y qué no</a></li>
+<li><a class="toc-link block" href="#empezar">3. Cómo preparar tu primera entrada</a></li>
+<li><a class="toc-link block" href="#que-registrar">4. Qué registrar y qué dejar para después</a></li>
+<li><a class="toc-link block" href="#tecnicas">5. Si recuerdas poco o no recuerdas nada</a></li>
+<li><a class="toc-link block" href="#formatos">6. Cuaderno, voz, texto o dibujo</a></li>
+<li><a class="toc-link block" href="#analisis">7. Cómo releer sin imponer una interpretación</a></li>
+<li><a class="toc-link block" href="#errores">8. Errores que conviene evitar</a></li>
 </ol>
 </nav>
-<!-- GSC Visible FAQ: dream journal -->
-<section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Preguntas frecuentes</h2>
-<div class="grid gap-4">
-<div class="glass-panel rounded-xl p-5 border border-white/10"><h3 class="font-serif text-lg text-dream-cream mb-2">¿Cómo empiezo un diario de sueños?</h3><p class="text-sm text-gray-300 leading-relaxed">Deja el cuaderno o el teléfono junto a la cama, fija una intención antes de dormir, despierta lentamente y registra fragmentos antes de analizarlos.</p></div>
-<div class="glass-panel rounded-xl p-5 border border-white/10"><h3 class="font-serif text-lg text-dream-cream mb-2">¿Qué debo escribir en un diario de sueños?</h3><p class="text-sm text-gray-300 leading-relaxed">Escribe la escena, emoción, personas, símbolos, colores, sensaciones corporales y cualquier conexión con la vida despierta. Incluso unas pocas palabras sirven.</p></div>
-<div class="glass-panel rounded-xl p-5 border border-white/10"><h3 class="font-serif text-lg text-dream-cream mb-2">¿Cuánto se tarda en mejorar el recuerdo de sueños?</h3><p class="text-sm text-gray-300 leading-relaxed">La mayoría de las personas nota mejor recuerdo en una o dos semanas de registro constante, sobre todo si escribe justo al despertar.</p></div>
-<div class="glass-panel rounded-xl p-5 border border-white/10"><h3 class="font-serif text-lg text-dream-cream mb-2">¿Qué pasa si no recuerdo ningún sueño?</h3><p class="text-sm text-gray-300 leading-relaxed">Escribe “no recuerdo sueño” y una emoción al despertar. Mantiene el hábito activo y entrena la mente para tratar los sueños como algo que vale la pena recordar.</p></div>
-</div>
-</section>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="por-que">¿Por qué llevar un diario de sueños cada día?</h2>
-<p>
-                    El diario de sueños no es solo para los amantes del sueño lúcido o los entusiastas de la psicología. Es una <strong>poderosa herramienta de autodescubrimiento</strong> de la que cualquiera puede beneficiarse. He aquí por qué millones de personas en todo el mundo mantienen diarios de sueños:
-                </p>
-<h3>Diario de sueños para el crecimiento personal</h3>
-<ul>
-<li><strong>Procesar emociones:</strong> Los sueños a menudo reflejan sentimientos y experiencias no procesados</li>
-<li><strong>Identificar patrones:</strong> Los temas recurrentes revelan preocupaciones o intereses continuos</li>
-<li><strong>Resolución de problemas:</strong> Tu subconsciente trabaja en los desafios mientras duermes</li>
-<li><strong>Autoconocimiento:</strong> Entiende tus miedos, deseos y pensamientos ocultos</li>
-</ul>
-<h3>Beneficios de escribir tus sueños</h3>
-<ul>
-<li><strong>Memoria mejorada:</strong> Entrenar el recuerdo de sueños fortalece la memoria general</li>
-<li><strong>Mejor conciencia del sueño:</strong> Nota patrones que afectan la calidad del sueño</li>
-<li><strong>Inspiración creativa:</strong> Los sueños son una fuente inagotable de ideas</li>
-<li><strong>Base para sueños lucidos:</strong> Primer paso esencial para el control de sueños</li>
-</ul>
-<p>
-                    Un diario de sueños puede favorecer el recuerdo y ayudar a detectar temas recurrentes con el tiempo. Su valor proviene de la observación constante, no de revelar un único significado oculto.
-                </p>
-<h2 id="ciencia">La ciencia de la memoria onírica y los sueños</h2>
-<p>
-                    Entender por que los sueños se desvanecen tan rápido te ayuda a capturarlos más de forma eficaz. Esto es lo que pasa en tu cerebro:
-                </p>
-<h3>¿Por qué olvidamos los sueños al despertar?</h3>
-<p>
-                    Los sueños ocurren principalmente durante el <strong>sueño REM</strong>, cuando tu hipocampo (centro de memoria) está menos activo que durante la vigilia. Esta actividad reducida significa que los sueños no se consolidan en memoria a largo plazo de la misma manera que las experiencias despiertas.
-                </p>
-<p>
-                    Al despertar:
-                </p>
-<ul>
-<li>Los niveles de <strong>norepinefrina</strong> aumentan, cambiando tu cerebro a "modo despierto" y apartando el contenido onírico</li>
-<li>La <strong>nueva entrada sensorial</strong> comienza inmediatamente a sobrescribir los recuerdos de sueños</li>
-<li>El <strong>córtex prefrontal</strong> activa el pensamiento lógico, que puede "descartar" el contenido ilógico del sueño</li>
-</ul>
-<h3>Los primeros 5 minutos para recordar sueños</h3>
-<p>
-                    La investigación muestra que <strong>dentro de los 5 minutos de despertar</strong>, el 50 % del contenido del sueño se olvida. Después de 10 minutos, hasta el 90 % se ha ido. Por eso capturar los sueños inmediatamente al despertar es crucial.
-                </p>
-<p>
-                    La buena noticia: <strong>El recuerdo de sueños es entrenable</strong>. Los estudios muestran que el journaling consistente aumenta el recuerdo de sueños de un promedio de 0,5 sueños por noche a 2-4 sueños en semanas.
-                </p>
-<h2 id="empezar">¿Cómo empezar un diario de sueños paso a paso?</h2>
-<p>
-                    Comenzar un diario de sueños es simple, pero hacerlo de forma eficaz requiere la configuración correcta:
-                </p>
-<h3>Paso 1: Elige cómo registrar tus sueños</h3>
-<ul>
-<li><strong>Grabación de voz:</strong> Método más rápido, ideal para capturar detalles antes de que se desvanezcan</li>
-<li><strong>Diario físico:</strong> Muchos encuentran que escribir a mano ayuda al procesamiento y memoria</li>
-<li><strong>Aplicación digital:</strong> Buscable, organizada, con funciones como etiquetas</li>
-<li><strong>Combinación:</strong> Graba inmediatamente con voz, transcribe después</li>
-</ul>
-<h3>Paso 2: Prepara tu espacio para escribir sueños</h3>
-<ul>
-<li>Coloca tu diario/teléfono <strong>al alcance de la mano</strong> desde tu cama</li>
-<li>Si usas un bolígrafo, asegúrate de que funciona (pruébalo cada noche)</li>
-<li>Considera una <strong>luz tenue</strong> o dispositivo retroiluminado para evitar despertar completamente</li>
-<li>Mantén la barrera de grabación lo más baja posible</li>
-</ul>
-<h3>Paso 3: Fija tu intención de recordar sueños</h3>
-<p>
-                    Antes de dormir, dite: <strong>"Recordaré mis sueños".</strong> Esta simple fijación de intención mejora de forma medible el recuerdo de sueños. Visualízate despertando y grabando tus sueños.
-                </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">La forma más fácil de hacer journaling</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia te permite capturar sueños con tu voz en el momento en que despiertas. Sin manipular bolígrafos ni teclear: simplemente habla y deja que Noctalia te ayude a entender tus sueños.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/diario-de-suenos-por-voz">
-                                Prueba Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
-<h2 id="que-registrar">¿Qué escribir en tu diario de sueños?</h2>
-<p>
-                    Una entrada de sueño completa captura más que la historia. Esto es lo que incluir:
-                </p>
-<h3>Elementos esenciales en una entrada de sueños</h3>
-<ul>
-<li><strong>Fecha y hora:</strong> Rastrea patrones de cuándo ocurren los sueños vívidos</li>
-<li><strong>Narrativa:</strong> La historia de lo que paso, en tiempo presente</li>
-<li><strong>Emociones:</strong> ¿Cómo te sentiste durante y después del sueño?</li>
-<li><strong>Personajes:</strong> Quien aparecio - personas reales, extranos, tu mismo</li>
-<li><strong>Escenarios:</strong> ¿Dónde tuvo lugar? Lugares familiares, extraños o específicos.</li>
-</ul>
-<h3>Detalles que enriquecen tu diario de sueños</h3>
-<ul>
-<li><strong>Colores:</strong> Los colores vívidos a menudo tienen significado</li>
-<li><strong>Símbolos:</strong> Objetos, animales o elementos recurrentes - consulta nuestro <a class="text-dream-salmon hover:underline" href="../guides/diccionario-simbolos-suenos">diccionario de símbolos de sueños</a> para descifrar los motivos comunes</li>
-<li><strong>Dialogos:</strong> Cualquier palabra hablada o escuchada</li>
-<li><strong>Sensaciones fisicas:</strong> Tacto, temperatura, movimiento</li>
-<li><strong>Nivel de lucidez:</strong> ¿Eras consciente de que estabas soñando?</li>
-</ul>
-<h3>Contexto de vida para interpretar sueños</h3>
-<ul>
-<li><strong>Calidad del sueño:</strong> ¿Qué tan bien dormiste?</li>
-<li><strong>Conexiones con la vida despierta:</strong> Eventos del día anterior</li>
-<li><strong>Signos oníricos:</strong> Elementos que podrian indicar el sueño</li>
-</ul>
-</div>
-<!-- Tip Cards -->
-<div class="grid md:grid-cols-2 gap-6 my-12">
-<div class="tip-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-purple-500/20 rounded-lg">
-<i class="w-5 h-5 text-purple-300" data-lucide="clock"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Registra inmediatamente</h3>
-</div>
-<p class="text-sm text-gray-300 mb-3">
-                        No esperes ni un minuto. Empieza a grabar en el momento que despiertes, incluso antes de abrir los ojos si es posible.
-                    </p>
-</div>
-<div class="tip-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-purple-500/20 rounded-lg">
-<i class="w-5 h-5 text-purple-300" data-lucide="feather"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Escribe en presente</h3>
-</div>
-<p class="text-sm text-gray-300 mb-3">
-                        "Estoy caminando por un bosque" te mantiene conectado a la experiencia del sueño más que el pasado.
-                    </p>
-</div>
-<div class="tip-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-purple-500/20 rounded-lg">
-<i class="w-5 h-5 text-purple-300" data-lucide="puzzle"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Registra fragmentos</h3>
-</div>
-<p class="text-sm text-gray-300 mb-3">
-                        Incluso una sola imagen, sentimiento o palabra vale la pena registrar. Los fragmentos a menudo desencadenan recuerdos más completos.
-                    </p>
-</div>
-<div class="tip-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-purple-500/20 rounded-lg">
-<i class="w-5 h-5 text-purple-300" data-lucide="tag"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Titula tus sueños</h3>
-</div>
-<p class="text-sm text-gray-300 mb-3">
-                        Un título memorable hace los sueños más fáciles de recordar y consultar después. ¡Sé creativo!
-                    </p>
-</div>
-</div>
-<div class="prose max-w-none text-gray-300">
-<h2 id="tecnicas">Técnicas para recordar sueños al despertar</h2>
-<p>
-	                    Si estás luchando por recordar sueños, estas técnicas probadas pueden mejorar drásticamente el recuerdo. Para una guía completa, lee <a class="text-dream-salmon hover:underline" href="como-recordar-suenos">cómo recordar sueños</a>:
-	                </p>
-<h3>Estrategias de despertar para recordar sueños</h3>
-<ol>
-<li><strong>Quedate quieto:</strong> No te muevas al despertar. El movimiento señala a tu cerebro que cambie de foco</li>
-<li><strong>Mantén los ojos cerrados:</strong> La entrada visual sobrescribe los recuerdos de sueños</li>
-<li><strong>Retraza el sueño:</strong> Trabaja hacia atras desde lo ultimo que recuerdas</li>
-<li><strong>Cambia de posición:</strong> A veces volver a tu posición de sueño activa el recuerdo</li>
-</ol>
-<h3>Horario de sueño optimo para recordar sueños</h3>
-<ul>
-<li><strong>Fija alarmas de intención:</strong> Despierta 5-6 horas después de dormir (durante REM)</li>
-<li><strong>Practica WBTB:</strong> Despierta, graba, vuelve a dormir</li>
-<li><strong>Duerme más:</strong> Más sueño = más REM = más sueños para recordar</li>
-<li><strong>Horario consistente:</strong> Patrones de sueño regulares mejoran la claridad de los sueños</li>
-</ul>
-<h3>Rituales antes de dormir para recordar sueños</h3>
-<ul>
-<li><strong>Revisa sueños anteriores:</strong> Leer entradas antiguas antes de dormir prepara tu cerebro</li>
-<li><strong>Visualización:</strong> Imaginate grabando sueños al despertar</li>
-<li><strong>Evita alcohol y cannabis:</strong> Ambos suprimen el sueño REM</li>
-<li><strong>Meditación:</strong> Aumenta la vivacidad y recuerdo de sueños</li>
-</ul>
-<h2 id="formatos">Formatos de diario de sueños que funcionan</h2>
-<p>
-                    El formato de tu diario debe coincidir con tu estilo y objetivos:
-                </p>
-<h3>Diario de sueños con flujo libre</h3>
-<p>
-                    Escribe todo como viene, sin estructura. Ideal para capturar rápidamente el contenido crudo del sueño.
-                </p>
-<h3>Plantilla estructurada para sueños</h3>
-<p>
-                    Usa categorías consistentes: fecha, título del sueño, Narrativa, Emociones, Símbolos, Interpretación. Ideal para el análisis de patrones.
-                </p>
-<h3>Diario de sueños ilustrado con dibujos</h3>
-<p>
-                    Incluye bocetos de escenas de sueños, personajes o símbolos. Especialmente poderoso para sonadores visuales.
-                </p>
-<h3>App de diario de sueños digital</h3>
-<p>
-                    Aplicaciones con etiquetas, búsqueda y funciones de análisis. Ideal para encontrar patrones a través de cientos de entradas.
-                </p>
-<h2 id="analisis">¿Cómo analizar e interpretar tus sueños?</h2>
-<p>
-                    Registrar es solo el primer paso. Para extraer significado, prueba estos enfoques de análisis:
-                </p>
-<h3>Identificar patrones en tus sueños</h3>
-<ul>
-<li>Nota los <strong>símbolos recurrentes</strong>: ¿qué aparece una y otra vez?</li>
-<li>Rastrea los <strong>temas comunes</strong>: ser perseguido, volar, agua, etc.</li>
-<li>Identifica los <strong>personajes de sueño</strong>: ¿quién aparece más a menudo?</li>
-<li>Mapea los <strong>patrones emocionales</strong>: ¿qué sentimientos dominan tus sueños?</li>
-</ul>
-<h3>Significado personal de los símbolos oníricos</h3>
-<p>
-                    En lugar de usar diccionarios de sueños genéricos, pregúntate: <strong>"¿Qué significa este símbolo para mí?"</strong> Una serpiente podría representar miedo para una persona y transformación para otra.
-                </p>
-<h3>Conectar sueños con tu vida diaria</h3>
-<p>
-                    Los sueños a menudo procesan experiencias recientes. Pregunta:
-                </p>
-<ul>
-<li>¿Qué pasó ayer que podría estar conectado?</li>
-<li>¿De qué estoy preocupado o emocionado?</li>
-<li>¿Qué me hizo sentir este sueño y cuándo más he sentido eso?</li>
-</ul>
-<h2 id="errores">Errores al escribir un diario de sueños</h2>
-<h3>Esperar demasiado para escribir sueños</h3>
-<p>
-                    Incluso 5 minutos de retraso pueden borrar la mayoría del contenido del sueño. Graba primero, luego toma cafe.
-                </p>
-<h3>Ignorar sueños que parecen aburridos</h3>
-<p>
-                    Cada sueño cuenta. Los sueños mundanos aun revelan patrones y fortalecen la capacidad de recuerdo.
-                </p>
-<h3>No escribir sueños todos los dias</h3>
-<p>
-                    El recuerdo de sueños es una habilidad que se atrofia rápidamente. Incluso registrar "no recordé sueños" mantiene vivo el hábito.
-                </p>
-<h3>Sobre-interpretar el significado de sueños</h3>
-<p>
-                    No todos los sueños son profundamente significativos. A veces un perro es solo un perro. Concentrate en patrones a lo largo del tiempo.
-                </p>
-<h3>Limitarse a un solo método de registro</h3>
-<p>
-                    Si escribir se siente como demasiado esfuerzo medio dormido, prueba la grabación de voz. Elimina toda fricción del proceso.
-                </p>
-<blockquote>
-                    "El diario de sueños es un puente entre dos mundos - el inconsciente y el consciente. Cruzalo diariamente, y ambos lados florecen."
-                </blockquote>
-</div>
-<div class="glass-panel rounded-xl p-6 my-8 border border-transparent hover:border-dream-salmon/30 transition-colors">
-    <a href="/es/blog/como-recordar-suenos" class="block">
-        <span class="text-xs text-dream-salmon uppercase mb-2 block">Lectura recomendada</span>
-        <h4 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños al despertar: 10 técnicas</h4>
-        <span class="text-sm text-purple-200/60 flex items-center gap-2">
-            Leer artículo <i data-lucide="arrow-right" class="w-4 h-4"></i>
-        </span>
-    </a>
-</div>
-<div class="glass-panel rounded-xl p-6 my-8 border border-transparent hover:border-dream-salmon/30 transition-colors">
-    <a href="/es/blog/por-que-olvidamos-suenos" class="block">
-        <span class="text-xs text-dream-salmon uppercase mb-2 block">Lectura recomendada</span>
-        <h4 class="font-serif text-lg text-dream-cream mb-2">¿Por qué olvidamos los sueños?</h4>
-        <span class="text-sm text-purple-200/60 flex items-center gap-2">
-            Leer artículo <i data-lucide="arrow-right" class="w-4 h-4"></i>
-        </span>
-    </a>
+<h2 id="por-que">¿Para qué sirve un diario de sueños?</h2>
+<p>Sirve para conservar relatos que de otro modo quizá olvidarías y compararlos con tus propias notas. Puedes usarlo por curiosidad, para dibujar una escena o para observar qué se repite. No tienes que escribir cada día ni encontrar un significado profundo.</p><p>Este es un método para crear una entrada concreta. La plantilla de cuatro campos es el punto de partida; el esquema de detalles que aparece más abajo ofrece opciones para ampliarla, no campos obligatorios. El <a href="diario-de-suenos">índice de recursos sobre el diario de sueños</a> reúne otros enfoques. Llevar un diario no demuestra por sí mismo una mejora de la memoria general ni un beneficio terapéutico.</p>
+<h2 id="ciencia">Recuerdo de sueños: qué sabemos y qué no</h2>
+<p>El NINDS explica que se puede soñar en distintas fases del sueño. Soñar y recordar no son lo mismo. No recordar una escena al despertar no prueba que no haya habido un sueño.</p><p>En un estudio con EEG, Marzano y colaboradores (2011) observaron relaciones entre actividad cerebral antes del despertar y recuerdo posterior. No probaron esta plantilla ni un plazo de dos minutos. No hay aquí una base para prometer que recordarás de dos a cuatro sueños por noche en unas semanas.</p>
+<h2 id="empezar">Cómo preparar tu primera entrada</h2>
+<ol><li>Elige un cuaderno, una nota digital o una grabación de voz que puedas usar con facilidad.</li><li>Déjalo preparado antes de acostarte. No necesitas comprar material específico.</li><li>Al despertar, escribe la fecha y lo que recuerdes con los cuatro campos de arriba.</li><li>Si prefieres, añade un título breve para encontrar la entrada después.</li></ol><p>Una frase es suficiente. Por ejemplo: “pasillo azul, buscaba una puerta, estaba tranquilo”. No completes los huecos para que la historia parezca más coherente.</p>
+<h2 id="que-registrar">Qué registrar y qué dejar para después</h2>
+<p>La escena, la emoción y una imagen memorable bastan para empezar. Si recuerdas personas, palabras, colores o movimiento, añádelos. Puedes distinguir cómo te sentías en el sueño y cómo te sientes al despertar.</p><p>Separa el relato de la interpretación: “no encontraba la salida” es un recuerdo; “quizá pienso en el trabajo” es una hipótesis. La pregunta es opcional. Si anotas lucidez, indica si sabías durante el sueño que estabas soñando, sin deducirlo de una escena extraña.</p>
+<h2 id="tecnicas">Si recuerdas poco o no recuerdas nada</h2>
+<p>Empieza por la última imagen o sensación y pregúntate qué ocurría antes. Si nada vuelve, escribe “sin recuerdo esta mañana”, si te apetece, y sigue con tu día. Eso conserva una observación del momento; no prueba que estés entrenando un mecanismo cerebral específico.</p><p>Para trabajar la rutina del despertar, consulta <a href="como-recordar-suenos">cómo recordar sueños</a>. Si tu pregunta es por qué se olvidan, ve al <a href="por-que-olvidamos-suenos">artículo sobre el olvido</a>. No hace falta programar alarmas nocturnas para llevar este diario.</p>
+<h2 id="formatos">Cuaderno, voz, texto o dibujo</h2>
+<p>El formato útil es el que te resulta accesible. Puedes hablar si escribir te cuesta al despertar, dibujar un lugar o usar etiquetas para recuperar entradas. No hay un ganador universal entre papel, teclado y voz.</p><p>Si empleas una herramienta de transcripción, relee los nombres y las frases antes de guardar. Puedes añadir una corrección sin convertir una palabra dudosa en un detalle seguro. El <a href="/es/diario-de-suenos-por-voz">diario por voz</a> es otra forma de registrar, no una garantía de recordar más.</p>
+<h2 id="analisis">Cómo releer sin imponer una interpretación</h2>
+<p>Cuando tengas varias entradas, compara escenas, emociones y desenlaces. ¿Vuelve el mismo lugar? ¿Cambia tu reacción? ¿Hay una coincidencia con algo que anotaste del día anterior? Una coincidencia puede sugerir una pregunta, pero no demuestra la causa.</p><p>Tu propia asociación puede ser más útil que una definición general. También puedes no encontrar ninguna. Evita decidir sobre la salud o las intenciones de otra persona a partir del diario.</p>
+<h2 id="errores">Errores que conviene evitar</h2>
+<ul><li><strong>Forzar una historia:</strong> deja claro qué recuerdas y qué no.</li><li><strong>Exigir una racha diaria:</strong> una pausa no invalida las entradas anteriores.</li><li><strong>Buscar cifras obligatorias:</strong> no hay una cantidad de sueños que debas recordar.</li><li><strong>Sacrificar el sueño:</strong> durante un despertar nocturno, prioriza volver a dormir si escribir te activa.</li><li><strong>Releer por obligación:</strong> puedes parar si el contenido te resulta desagradable.</li></ul><p>Si las pesadillas regulares afectan al descanso y a la vida diaria, consulta con un profesional sanitario. El diario puede servir para describir la experiencia, pero no sustituye una valoración.</p>
 </div>
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
@@ -405,7 +146,7 @@
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Comienza tu diario de sueños hoy</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia hace el diario de sueños sin esfuerzo. Despierta, toca grabar y habla de tus sueños. El análisis de Noctalia te ayuda a encontrar patrones y significados que nunca notarías solo.
+                    Noctalia permite guardar el relato por escrito o por voz y volver a tus notas. Conserva tus recuerdos y tus preguntas como cosas distintas.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
                     Obtener Noctalia <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -416,44 +157,32 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas frecuentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Cuánto tiempo toma mejorar el recuerdo de sueños?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La mayoría de las personas nota una mejora significativa en el recuerdo de sueños después de una o dos semanas de registro constante. Después de un mes, puedes recordar entre dos y cuatro sueños por noche, frente a fragmentos ocasionales antes de empezar.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">¿Cómo empiezo un diario de sueños?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Prepara un cuaderno o una nota de voz y anota la fecha al despertar. Usa cuatro campos: escenario, emoción, imagen o símbolo y una pregunta opcional. Una frase incompleta también es una entrada válida.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Debo escribir o teclear mi diario de sueños?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Ambos métodos funcionan, pero la grabación de voz es a menudo la mejor para capturar sueños inmediatamente al despertar. Escribir a mano puede profundizar el procesamiento, mientras que teclear es más rápido. La clave es elegir un método que realmente uses consistentemente.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">¿Qué escribo si no recuerdo ningún sueño?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Puedes anotar «sin recuerdo esta mañana» y cómo te encuentras, o dejar pasar ese día. No inventes escenas. La ausencia de recuerdo no demuestra que no hayas soñado.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Qué pasa si no recuerdo ningún sueño?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Empieza escribiendo "No recuerdo mis sueños" cada mañana - esto señala la intención a tu cerebro. Fija una intención antes de dormir, despierta lentamente sin moverte, e intenta despertar durante los ciclos REM (aproximadamente 90 minutos después de dormirte, luego cada 90 minutos).
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">¿Cuánto se tarda en mejorar el recuerdo?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">No existe un plazo ni una cantidad de sueños garantizados. El diario permite conservar lo que sí recuerdas y comparar tus propias experiencias, sin prometer una mejora general de la memoria.</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">¿Es mejor escribir o grabar la voz?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Usa el formato que te resulte cómodo. Puedes combinar una nota de voz breve con una revisión escrita posterior. Ningún formato es superior para todas las personas.</p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Para Ir Más Lejos</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y límites de la investigación</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology — Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://dictionary.apa.org/memory" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary — Memory</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Mecanismos del recuerdo de sueños (revisión, PubMed)</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS — Sueño y sueños</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/21543596/" rel="nofollow noopener noreferrer" target="_blank">Marzano y colaboradores (2011) — EEG y recuerdo de sueños</a></li>
+<li><a href="https://www.nhs.uk/conditions/night-terrors/" rel="nofollow noopener noreferrer" target="_blank">NHS — Pesadillas y cuándo consultar</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 26 de diciembre de 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 21 de septiembre de 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Símbolos de sueños relacionados" class="mt-12 mb-8">
@@ -501,7 +230,7 @@
         <a href="como-recordar-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas efectivas</h3>
-            <p class="text-sm text-gray-400">Descubre métodos científicamente probados para mejorar tu recuerdo de sueños y nunca más olvidar tus sueños al despertar. Técnicas simples que puedes aplicar esta noche.</p>
+            <p class="text-sm text-gray-400">Una rutina para anotar fragmentos al despertar, sin prometer un resultado.</p>
         </a>
         <a href="guia-incubacion-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>

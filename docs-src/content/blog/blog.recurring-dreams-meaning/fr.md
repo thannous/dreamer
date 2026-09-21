@@ -16,21 +16,21 @@
   "ogTitle": "Rêves récurrents : causes possibles et pistes utiles | Noctalia",
   "ogDescription": "Détails à comparer lorsqu’un rêve revient et repères pour les cauchemars pénibles.",
   "ogImage": "https://noctalia.app/img/blog/recurring-dreams-meaning.webp",
-  "ogImageAlt": "Motifs géométriques répétés en violet et bleu",
+  "ogImageAlt": "Silhouette entre deux rangées de portes sous une lune et des cercles lumineux",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Rêves récurrents : causes possibles et pistes utiles | Noctalia",
   "twitterDescription": "Détails à comparer lorsqu’un rêve revient et repères pour les cauchemars pénibles.",
   "twitterImage": "https://noctalia.app/img/blog/recurring-dreams-meaning.webp",
-  "twitterImageAlt": "Motifs géométriques répétés en violet et bleu",
+  "twitterImageAlt": "Silhouette entre deux rangées de portes sous une lune et des cercles lumineux",
   "publishedTime": "2025-01-06",
-  "modifiedTime": "2026-07-18",
+  "modifiedTime": "2026-09-21",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/pourquoi-oublie-reves-reveil",
   "nextPath": "/fr/blog/guide-reve-lucide-debutant",
   "preloadImage": "/img/blog/recurring-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Rêves récurrents : causes possibles et pistes utiles\",\n            \"description\": \"Pourquoi certains rêves reviennent, quel rôle le quotidien peut jouer et quand demander un avis professionnel.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/recurring-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-06\",\n            \"dateModified\": \"2026-07-18\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/signification-reves-recurrents\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 705,\n            \"timeRequired\": \"PT3M\",\n            \"url\": \"https://noctalia.app/fr/blog/signification-reves-recurrents\"\n        }",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Pourquoi fait-on des rêves récurrents ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Le stress, des expériences difficiles et des préoccupations répétées peuvent être associés aux rêves récurrents. Leur contenu seul ne permet pas d’en déterminer la cause ; comparez les épisodes et le contexte des jours précédents.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Les rêves récurrents sont-ils dangereux ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les rêves récurrents ne sont pas automatiquement un signal d’alerte. S’ils provoquent une forte détresse, perturbent régulièrement le sommeil ou sont liés à un traumatisme connu, demandez un avis médical ou psychothérapeutique.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Comment arrêter de faire le même rêve ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Aucune méthode ne fonctionne à coup sûr pour tous les rêves récurrents. Pour les cauchemars pénibles, la répétition d’imagerie mentale peut être proposée avec un professionnel ; un journal aide aussi à comparer les changements.\"\n                    }\n                }\n            ]\n        }",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Rêves récurrents : causes possibles et pistes utiles\",\n    \"description\": \"Pourquoi certains rêves reviennent, quel rôle le stress et le quotidien peuvent jouer, et quand des cauchemars pénibles justifient un avis professionnel.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/recurring-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-01-06\",\n    \"dateModified\": \"2026-09-21\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/signification-reves-recurrents\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1636,\n    \"timeRequired\": \"PT8M\",\n    \"url\": \"https://noctalia.app/fr/blog/signification-reves-recurrents\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Un rêve récurrent est-il forcément un cauchemar ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non. Un rêve récurrent peut être agréable, neutre ou pénible. La récurrence décrit un thème qui revient ; le cauchemar est une expérience éprouvante qui peut vous réveiller. Notez aussi les effets sur votre repos et votre journée.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Pourquoi fait-on des rêves récurrents ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Le stress, des expériences difficiles et des préoccupations répétées peuvent être associés aux rêves récurrents. Leur contenu seul ne permet pas d’en déterminer la cause ; comparez les épisodes et le contexte des jours précédents.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Comment arrêter de faire le même rêve ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Aucune méthode ne fonctionne à coup sûr. Si les cauchemars perturbent régulièrement le sommeil ou la vie quotidienne, demandez un avis professionnel. La répétition d’imagerie mentale est une approche destinée aux cauchemars, pas à tous les rêves récurrents.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêves récurrents\",\n            \"item\": \"https://noctalia.app/fr/blog/signification-reves-recurrents\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -63,7 +63,7 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="signification-des-reves">Thématique : Signification des rêves</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publié le 6 janvier 2025</span>
-<span class="text-sm text-purple-300/60">3 min de lecture</span>
+<span class="text-sm text-purple-300/60">8 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Rêves récurrents : causes possibles et pistes utiles
@@ -86,11 +86,11 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Réponse rapide</h2>
-    <p class="text-purple-100/80 leading-relaxed">Un rêve récurrent est une scène ou un thème qui revient au fil du temps. Le stress, des expériences difficiles ou des préoccupations répétées peuvent jouer un rôle, sans donner au contenu un message fixe. Notez ce qui change entre les épisodes et ce qui s’est passé les jours précédents.</p>
+    <p class="text-purple-100/80 leading-relaxed">Un rêve récurrent reprend une scène ou un thème au fil du temps ; il peut être agréable, neutre ou pénible. Un cauchemar est un rêve éprouvant qui peut vous réveiller. Les deux peuvent se rejoindre, mais la répétition seule n’est pas un diagnostic. Comparez les variations, les émotions et les effets sur votre sommeil.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Motifs géométriques répétés en violet et bleu" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/recurring-dreams-meaning.webp" srcset="../../img/blog/recurring-dreams-meaning-480w.webp 480w, ../../img/blog/recurring-dreams-meaning-800w.webp 800w, ../../img/blog/recurring-dreams-meaning-1200w.webp 1200w" width="1200">
+<img alt="Silhouette entre deux rangées de portes sous une lune et des cercles lumineux" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/recurring-dreams-meaning.webp" srcset="../../img/blog/recurring-dreams-meaning-480w.webp 480w, ../../img/blog/recurring-dreams-meaning-800w.webp 800w, ../../img/blog/recurring-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -110,7 +110,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="definition">Rêves récurrents : définition et caractéristiques</h2>
 <p>
-                    Un rêve récurrent est un rêve qui <strong>se répète de manière identique ou similaire</strong> sur une période prolongée - parfois des semaines, des mois, voire des années. Contrairement aux rêves ordinaires qui varient chaque nuit, ces rêves suivent un scénario prévisible.
+                    Un rêve récurrent reprend une scène ou un thème de manière <strong>identique ou similaire</strong>, parfois sur des semaines, des mois ou des années. Le lieu, les personnages ou la fin peuvent changer : le scénario n’est pas nécessairement identique ni prévisible.
                 </p>
 <p>
                     Ils reprennent souvent des motifs familiers comme la <a class="text-dream-salmon hover:underline" href="../symboles/chute">chute</a>, la poursuite ou l’examen. Le motif seul n’établit ni la cause ni une signification personnelle.
@@ -118,6 +118,7 @@
 <p>
                     Ces rêves peuvent devenir plus visibles pendant une période de stress ou de transition. Notez la scène répétée, l’émotion ressentie et les changements récents de votre quotidien.
                 </p>
+<p>La récurrence décrit ce qui revient ; le cauchemar décrit une expérience pénible. Revenir dans une maison familière sans peur n’est pas la même chose que se réveiller régulièrement terrifié. Pour ce second cas, le <a href="guide-cauchemars">guide des cauchemars</a> complète cet article.</p>
 <h2 id="causes">Pourquoi certains rêves peuvent-ils revenir ?</h2>
 <p>
                     Il n’existe pas d’explication unique. Ces quatre pistes servent de questions, pas de diagnostics :
@@ -136,7 +137,7 @@
                 </p>
 <h3>4. Des besoins psychologiques insatisfaits</h3>
 <p>
-                    Des travaux observent des associations entre la frustration de certains besoins et des thèmes oniriques jugés plus négatifs. Il s’agit d’une relation statistique, pas de l’interprétation d’un rêve individuel.
+                    <a href="https://biblio.ugent.be/publication/8550248" rel="nofollow noopener noreferrer" target="_blank">Weinstein et ses collègues (2018)</a> ont observé une association entre frustration des besoins psychologiques et tonalité négative des rêves dans une enquête de 200 personnes et un journal de trois jours tenu par 110 personnes. Cette association ne prouve pas une cause ni le sens d’un rêve individuel.
                 </p>
 <h2 id="top10">Dix motifs de rêve souvent rapportés</h2>
 <p>
@@ -214,7 +215,7 @@
 <h3 class="font-serif text-lg text-dream-cream">6. Voler</h3>
 </div>
 <p class="text-sm text-gray-300">
-<strong>Questions à vous poser :</strong> Contrôliez-vous le vol, où alliez-vous et ressentiez-vous du plaisir ou de la peur ?
+<strong>Questions à vous poser :</strong> Contrôliez-vous le vol, où alliez-vous et ressentiez-vous du plaisir ou de la peur ? Le guide des <a href="reves-de-voler">rêves de vol</a> distingue ces variantes.
                     </p>
 </div>
 <!-- Dream 7 -->
@@ -262,7 +263,7 @@
 <h3 class="font-serif text-lg text-dream-cream">10. Mort d'un proche</h3>
 </div>
 <p class="text-sm text-gray-300">
-<strong>Questions à vous poser :</strong> Le rêve n’est pas une prédiction. Pensez à votre inquiétude pour cette personne, aux nouvelles récentes et à l’émotion du réveil.
+<strong>Questions à vous poser :</strong> Le rêve n’est pas une prédiction. Pensez à votre inquiétude pour cette personne, aux nouvelles récentes et à l’émotion du réveil. Le guide des <a href="reves-de-mort">rêves de mort</a> distingue perte réelle et scènes rêvées.
                     </p>
 </div>
 </div>
@@ -271,7 +272,7 @@
 <p>
                     Une trace écrite aide à comparer les changements et les déclencheurs possibles sans supposer que le rêve transmet un message :
                 </p>
-<h3>1. Notez tous les détails</h3>
+<h3>1. Notez les détails dont vous vous souvenez</h3>
 <p>
                     Tenez un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a>. Notez la scène, les <strong>émotions, les personnes, le lieu et les différences</strong> avec les épisodes précédents.
                 </p>
@@ -312,7 +313,7 @@
                 </p>
 <h3>La thérapie par répétition d’imagerie mentale</h3>
 <p>
-                    Cette approche consiste à réécrire un cauchemar avec un déroulement moins pénible, puis à le répéter mentalement à l’état de veille. Elle peut être pratiquée avec un professionnel ; les données concernent les cauchemars, pas tous les rêves récurrents.
+                    Cette approche consiste à réécrire un cauchemar avec un déroulement moins pénible, puis à le répéter mentalement à l’état de veille. L’<a href="https://aasm.org/new-position-paper-recommends-treatment-options-for-nightmare-disorder-in-adults/" rel="nofollow noopener noreferrer" target="_blank">American Academy of Sleep Medicine</a> la recommande pour le trouble des cauchemars et les cauchemars associés au stress post-traumatique. Un professionnel peut évaluer si elle convient ; il ne s’agit pas d’un traitement de tous les rêves récurrents.
                 </p>
 <h3>Notez les changements entre les épisodes</h3>
 <p>
@@ -335,7 +336,7 @@
 <li>Il perturbe votre qualité de sommeil de manière chronique</li>
 <li>Il est lié à un <strong>traumatisme connu</strong> (PTSD)</li>
 <li>Il s'accompagne d'autres symptômes (anxiété, dépression)</li>
-<li>Il ne s'améliore pas malgré vos efforts</li>
+<li>La peur de refaire le rêve vous conduit à éviter de dormir</li>
 </ul>
 <p>
                     Votre médecin traitant peut être un premier interlocuteur et vous orienter, si nécessaire, vers la psychothérapie ou la médecine du sommeil.
@@ -385,42 +386,28 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fréquentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Pourquoi fait-on des rêves récurrents ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Le stress, des expériences difficiles et des préoccupations répétées peuvent être associés aux rêves récurrents. Leur contenu seul ne permet pas d’en déterminer la cause ; comparez les épisodes et le contexte des jours précédents.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">Un rêve récurrent est-il forcément un cauchemar ?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Non. Un rêve récurrent peut être agréable, neutre ou pénible. La récurrence décrit un thème qui revient ; le cauchemar est une expérience éprouvante qui peut vous réveiller. Notez aussi les effets sur votre repos et votre journée.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Les rêves récurrents sont-ils dangereux ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Les rêves récurrents ne sont pas automatiquement un signal d’alerte. S’ils provoquent une forte détresse, perturbent régulièrement le sommeil ou sont liés à un traumatisme connu, demandez un avis médical ou psychothérapeutique.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">Pourquoi fait-on des rêves récurrents ?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Le stress, des expériences difficiles et des préoccupations répétées peuvent être associés aux rêves récurrents. Leur contenu seul ne permet pas d’en déterminer la cause ; comparez les épisodes et le contexte des jours précédents.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Comment arrêter de faire le même rêve ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Aucune méthode ne fonctionne à coup sûr pour tous les rêves récurrents. Pour les cauchemars pénibles, la thérapie par répétition d’imagerie mentale peut être proposée avec un professionnel ; un journal aide aussi à comparer les déclencheurs et les changements.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">Comment arrêter de faire le même rêve ?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Aucune méthode ne fonctionne à coup sûr. Si les cauchemars perturbent régulièrement le sommeil ou la vie quotidienne, demandez un avis professionnel. La répétition d’imagerie mentale est une approche destinée aux cauchemars, pas à tous les rêves récurrents.</p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et limites de la recherche</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology :Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net :G. William Domhoff (dream research overview)</a></li>
+<li><a href="https://biblio.ugent.be/publication/8550248" rel="nofollow noopener noreferrer" target="_blank">Weinstein et collègues (2018) — Besoins psychologiques et rêves récurrents</a></li>
+<li><a href="https://aasm.org/new-position-paper-recommends-treatment-options-for-nightmare-disorder-in-adults/" rel="nofollow noopener noreferrer" target="_blank">AASM (2018) — Prise en charge des cauchemars chez l’adulte</a></li>
+<li><a href="https://www.nhs.uk/conditions/night-terrors/" rel="nofollow noopener noreferrer" target="_blank">NHS — Cauchemars et motifs de consultation</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 18 juillet 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 21 septembre 2026</p>
 </section>
 <!-- Blog Nav Start -->
 <section class="mt-12" aria-label="Navigation entre articles" data-blog-nav="">
@@ -435,7 +422,7 @@
     <a href="guide-reve-lucide-debutant" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Guide du rêve lucide pour débutants : prenez le contrôle de vos nuits</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Rêve lucide : tests de réalité pour débuter</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>

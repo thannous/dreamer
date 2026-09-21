@@ -16,21 +16,21 @@
   "ogTitle": "Se souvenir de ses rêves : 10 techniques simples",
   "ogDescription": "Routine des 3 premières minutes, journal ou dictaphone, méthode du soir et erreurs à éviter pour mieux se rappeler de ses rêves.",
   "ogImage": "https://noctalia.app/img/blog/dream-memory-hero.jpg",
-  "ogImageAlt": "Personne dormant paisiblement, illustration de la mémoire des rêves",
+  "ogImageAlt": "Chat endormi sous une couette",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Se souvenir de ses rêves : 10 techniques simples",
   "twitterDescription": "Routine des 3 premières minutes, journal ou dictaphone, méthode du soir et erreurs à éviter pour mieux se rappeler de ses rêves.",
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.jpg",
-  "twitterImageAlt": "Personne dormant paisiblement, illustration de la mémoire des rêves",
+  "twitterImageAlt": "Chat endormi sous une couette",
   "publishedTime": "2025-01-06",
-  "modifiedTime": "2026-07-12",
+  "modifiedTime": "2026-09-21",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "/fr/blog/pourquoi-oublie-reves-reveil",
   "preloadImage": "/img/blog/dream-memory-hero.jpg",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Se souvenir de ses rêves : 10 techniques simples\",\n    \"description\": \"Routine des 3 premières minutes, journal ou dictaphone, méthode du soir et erreurs à éviter pour mieux se rappeler de ses rêves.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dream-memory-hero.jpg\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-01-06\",\n    \"dateModified\": \"2026-07-12\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1450,\n    \"timeRequired\": \"PT5M\",\n    \"url\": \"https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves\"\n}",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Que faire dans les 3 premières minutes au réveil ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Restez immobile, gardez les yeux fermés, remontez le rêve à rebours puis dictez ou notez les fragments avant de toucher votre téléphone. Ces premières minutes protègent les images les plus fragiles.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Pourquoi les rêves s’effacent-ils si vite ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Au réveil, les nouvelles sensations, le mouvement et la pensée logique prennent le dessus. Les souvenirs de rêves sont souvent peu consolidés, surtout si vous bougez ou consultez un écran immédiatement.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Journal ou dictaphone : que choisir ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Le dictaphone ou la note vocale aide à capturer vite les détails au réveil. Le journal écrit aide ensuite à relire et repérer les motifs. L’idéal est souvent de dicter d’abord, puis d’organiser plus tard.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Comment se rappeler de ses rêves le soir ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Avant de dormir, relisez une entrée récente, formulez une intention simple et visualisez le geste du réveil. Cette préparation augmente vos chances de vous souvenir d’au moins un fragment.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Qu’est-ce qui gêne le rappel des rêves ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les réveils brutaux, le manque de sommeil, l’alcool, le cannabis, les horaires irréguliers et la consultation immédiate du téléphone peuvent réduire le rappel. Commencez par réduire ces frictions avant d’ajouter des techniques avancées.\"\n                    }\n                }\n            ]\n        }",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Se souvenir de ses rêves : 10 techniques simples\",\n    \"description\": \"Routine des 3 premières minutes, journal ou dictaphone, méthode du soir et erreurs à éviter pour mieux se rappeler de ses rêves.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dream-memory-hero.jpg\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-01-06\",\n    \"dateModified\": \"2026-09-21\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2059,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Que faire dans les 3 premières minutes au réveil ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Prenez un moment calme, recherchez la dernière image ou émotion, puis notez ou dictez les fragments. Les trois minutes sont un repère de routine, pas un délai obligatoire. Vous pouvez utiliser votre téléphone directement pour enregistrer.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Pourquoi les rêves s’effacent-ils si vite ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Le rappel dépend de plusieurs facteurs liés au sommeil et à la mémoire. Il varie d’une nuit à l’autre ; aucune règle ne permet de dire qu’un pourcentage précis du rêve disparaît après quelques minutes.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Journal ou dictaphone : que choisir ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Choisissez ce qui vous permet de conserver une trace facilement. Quelques mots écrits ou une note vocale suffisent. Vous pourrez organiser le récit plus tard ; aucun format n’est meilleur pour tout le monde.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Comment se rappeler de ses rêves le soir ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Avant de dormir, vous pouvez relire une note récente et préparer le geste du réveil. Une intention brève donne un repère pour le matin, mais ne garantit pas qu’un souvenir reviendra.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Que faire si je ne me souviens de rien ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Vous pouvez écrire « aucun souvenir ce matin » et votre ressenti au réveil, puis arrêter la recherche. Ne pas retrouver de récit ne prouve pas que vous n’avez pas rêvé. Aucun fragment ne doit être inventé.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Mémoire des rêves\",\n            \"item\": \"https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -67,7 +67,7 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="journal-de-reves">Thématique : Journal de rêves</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publié le 6 janvier 2025</span>
-<span class="text-sm text-purple-300/60">4 min de lecture</span>
+<span class="text-sm text-purple-300/60">10 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Comment se souvenir de ses rêves au réveil : 10 techniques simples
@@ -100,11 +100,12 @@
         <li class="glass-panel rounded-xl p-4"><strong class="text-dream-cream block mb-2">90 à 180 secondes</strong>Dictez ou notez les fragments dans un <a class="text-dream-salmon hover:underline" href="/fr/journal-de-reves-vocal">journal de rêves vocal</a>. Vous pourrez utiliser le <a class="text-dream-salmon hover:underline" href="/fr/blog/guide-journal-reves">guide du journal de rêves</a> et l’<a class="text-dream-salmon hover:underline" href="/fr/application-interpretation-reves-ia">application d’interprétation IA</a> plus tard, une fois bien réveillé.</li>
     </ol>
 </section>
+<p class="text-sm text-purple-200/70 mb-8">Ces durées sont des repères pratiques, pas une fenêtre scientifique obligatoire. Si aucun souvenir ne revient, notez simplement « aucun souvenir ce matin » et passez à votre journée, sans inventer de scène.</p>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <picture>
 <source sizes="(min-width: 1024px) 1024px, 92vw" srcset="/img/blog/how-to-remember-dreams.webp 600w, /img/blog/how-to-remember-dreams-1200w.webp 1200w" type="image/webp">
-<img alt="Personne dormant paisiblement, illustration de la mémoire des rêves" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(min-width: 1024px) 1024px, 92vw" src="/img/blog/dream-memory-hero.jpg" srcset="/img/blog/dream-memory-hero-600w.jpg 600w, /img/blog/dream-memory-hero.jpg 1200w" width="1200">
+<img alt="Chat endormi sous une couette" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(min-width: 1024px) 1024px, 92vw" src="/img/blog/dream-memory-hero.jpg" srcset="/img/blog/dream-memory-hero-600w.jpg 600w, /img/blog/dream-memory-hero.jpg 1200w" width="1200">
 </picture>
 </figure>
 <!-- Table of Contents -->
@@ -119,34 +120,23 @@
 <li><a class="toc-link block" href="#technique-1">1. Journal ou dictaphone</a></li>
 <li><a class="toc-link block" href="#technique-2">2. Se rappeler de ses rêves : méthode du soir</a></li>
 <li><a class="toc-link block" href="#technique-3">3. Le réveil en douceur</a></li>
-<li><a class="toc-link block" href="#technique-4">4. La technique MILD</a></li>
+<li><a class="toc-link block" href="#technique-4">4. Rappel et MILD : deux objectifs</a></li>
 <li><a class="toc-link block" href="#technique-5">5. Ce qui gêne le rappel</a></li>
 <li><a class="toc-link block" href="#technique-6">6. L'enregistrement vocal</a></li>
-<li><a class="toc-link block" href="#technique-7">7. La méditation et la pleine conscience</a></li>
+<li><a class="toc-link block" href="#technique-7">7. Un moment calme avant de dormir</a></li>
 <li><a class="toc-link block" href="#technique-8">8. Reconstituer le rêve à rebours</a></li>
-<li><a class="toc-link block" href="#technique-9">9. La méthode WBTB</a></li>
-<li><a class="toc-link block" href="#technique-10">10. L'ancrage sensoriel</a></li>
+<li><a class="toc-link block" href="#technique-9">9. Réveils programmés : facultatifs</a></li>
+<li><a class="toc-link block" href="#technique-10">10. Partir des sensations présentes</a></li>
 <li><a class="toc-link block" href="#conclusion">Conclusion</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
 <h2 id="pourquoi-oublie">Pourquoi les rêves s’effacent au réveil</h2>
-<p>
-                    Avant de passer aux techniques, examinons le mécanisme. <strong>L’oubli des rêves n’est pas un défaut</strong>, mais une caractéristique naturelle de notre cerveau. Pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a> (phase REM), la noradrénaline — un neurotransmetteur lié à la formation des souvenirs — atteint son niveau le plus bas.
-                </p>
-<p>
-                    L’hippocampe, cette région cérébrale qui participe à la transformation des expériences à court terme en souvenirs durables, fonctionne aussi différemment pendant le sommeil. Selon une étude publiée dans <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Science</em> (2019)</a>, le transfert des informations entre l’hippocampe et le cortex diminue pendant le sommeil paradoxal.
-                </p>
-<blockquote>
-                    « Nous rêvons plusieurs fois par nuit, mais nous ne nous souvenons que d’une partie de cette activité onirique. »
-                </blockquote>
-<p>
-                    Le rappel varie d’une personne et d’une nuit à l’autre. Voici 10 techniques pratiques, classées par ordre de simplicité.
-                </p>
+<p>Rêver et se souvenir d’un rêve sont deux choses différentes. Le NINDS rappelle que les rêves peuvent survenir à plusieurs stades du sommeil. Ne rien retrouver au réveil ne permet donc pas de conclure que vous n’avez pas rêvé.</p><p>Chez l’humain, <a href="https://pubmed.ncbi.nlm.nih.gov/21543596/" rel="nofollow noopener noreferrer" target="_blank">Marzano et ses collègues (2011)</a> ont observé des associations entre activité EEG avant le réveil et rappel après sommeil REM ou non-REM. Cela ne valide ni un minuteur précis ni une méthode qui fonctionnerait pour tout le monde.</p><p>Le rappel varie d’une personne et d’une nuit à l’autre. Voici dix pistes pratiques ; commencez par celles qui vous aident à noter les fragments sans perturber votre repos.</p>
 <h2 id="technique-1">1. Journal ou dictaphone : capturer le rêve avant qu’il s’efface</h2>
 <p>
-                    C’est la technique fondamentale. Le simple fait de <strong>noter vos rêves dès le réveil</strong> envoie un signal clair à votre cerveau : ces expériences nocturnes méritent d’être gardées.
+                    C’est un point de départ simple. <strong>Noter vos rêves dès le réveil</strong> vous laisse une trace à relire, même si le reste du souvenir disparaît ensuite.
                 </p>
 <h3>Comment noter ses rêves efficacement</h3>
 <ul>
@@ -167,7 +157,7 @@
 <li>Allongez-vous confortablement, prêt à dormir</li>
 <li>Répétez mentalement : « Cette nuit, je prêterai attention à mes rêves »</li>
 <li>Visualisez-vous en train de vous réveiller et de vous rappeler un rêve</li>
-<li>Répétez cette intention jusqu’à l’endormissement</li>
+<li>Gardez cette intention brièvement, puis laissez-vous dormir sans effort supplémentaire</li>
 </ol>
 <p>
                     Associez cette intention au <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> pour savoir quoi faire si un fragment revient.
@@ -186,31 +176,20 @@
 <p>
                     Ces premières secondes sont précieuses. Accordez-leur l’attention qu’elles méritent.
                 </p>
-<h2 id="technique-4">4. Technique MILD au moment du coucher</h2>
-<p>
-                    Développée par le psychologue Stephen LaBerge, la technique MILD associe intention et visualisation dans la pratique du rêve lucide. Ici, elle est adaptée au moment du coucher, sans alarme ni réveil programmé.
-                </p>
-<h3>Routine MILD au coucher</h3>
-<ol>
-<li>Au moment de vous coucher, repensez à un rêve récent ou à un décor onirique familier</li>
-<li>Choisissez un détail qui pourrait vous aider à reconnaître que vous rêvez</li>
-<li>Répétez une intention simple : « La prochaine fois que je rêverai, je remarquerai que je rêve »</li>
-<li>Imaginez que vous repérez cet indice, puis que vous vous réveillez naturellement et notez ce dont vous vous souvenez</li>
-</ol>
+<h2 id="technique-4">4. Distinguer rappel des rêves et méthode MILD</h2>
+<p>Le rappel consiste à retrouver le rêve après le réveil. MILD vise à reconnaître que l’on rêve pendant le rêve : c’est une démarche de lucidité, différente de la simple prise de notes.</p><p>Si vous souhaitez l’explorer, consultez le <a href="guide-reve-lucide-debutant">guide du rêve lucide pour débutants</a>. Pour vous souvenir d’un fragment demain matin, vous pouvez rester sur le journal, l’intention du soir et votre réveil habituel.</p>
 <h2 id="technique-5">5. Ce qui gêne le rappel des rêves</h2>
-<p>
-                    La qualité du sommeil influence directement la quantité et l’intensité des rêves. <strong>Un sommeil fragmenté ou insuffisant</strong> réduit les phases REM, où se produisent les rêves les plus vivaces, mais certains gestes du matin effacent aussi le souvenir.
-                </p>
+<p>Le sommeil et le rappel ne se résument pas à une quantité de rêves. Notez vos horaires et votre fatigue séparément des souvenirs. Au réveil, les messages, les conversations ou la précipitation peuvent surtout vous détourner du moment prévu pour écrire.</p>
 <h3>Freins fréquents au rappel onirique</h3>
 <ul>
 <li>Réveil brutal, alarme agressive ou saut hors du lit</li>
 <li>Consultation immédiate du téléphone et nouvelles informations visuelles</li>
 <li>Manque de sommeil, horaires irréguliers ou nuits trop courtes</li>
-<li>Alcool et cannabis, qui peuvent réduire ou déplacer le sommeil REM</li>
+<li>Changements de vos habitudes de sommeil à noter sans leur attribuer automatiquement une cause</li>
 <li>Stress du matin, café lancé trop vite, conversation avant la prise de notes</li>
 </ul>
 <p>
-                    Commencez par réduire ces frictions, puis ajoutez les techniques plus avancées. Le rappel s’améliore souvent quand le réveil devient plus lent et plus prévisible.
+                    Commencez par rendre la prise de notes facile, puis observez ce qui vous convient. Il n’est pas nécessaire d’ajouter une technique avancée.
                 </p>
 <h2 id="technique-6">6. Enregistrer ses rêves à la voix au réveil</h2>
 <p>
@@ -234,20 +213,8 @@
 </div>
 </div>
 </aside>
-<h2 id="technique-7">7. Méditation et pleine conscience pour les rêves</h2>
-<p>
-                    Certaines personnes qui méditent régulièrement rapportent un rappel plus précis. <strong>La méditation entraîne la conscience métacognitive</strong>, c’est-à-dire la capacité à observer ses pensées et ses états mentaux.
-                </p>
-<p>
-                    Une étude de l’Université de Lincoln (2015) a observé une association entre méditation, rappel des rêves et lucidité onirique, sans garantir le même effet pour chacun.
-                </p>
-<h3>Exercice de méditation avant le sommeil</h3>
-<ul>
-<li>Méditez 10-15 minutes avant le coucher</li>
-<li>Concentrez-vous sur votre respiration</li>
-<li>Observez vos pensées sans vous y attacher</li>
-<li>Terminez par l'intention de vous souvenir de vos rêves</li>
-</ul>
+<h2 id="technique-7">7. Un moment calme avant de dormir</h2>
+<p>Si vous appréciez une courte pause au coucher, prenez quelques instants pour respirer normalement et laisser passer les pensées. C’est une option de détente, pas une technique démontrée ici pour améliorer le rappel.</p><p>Vous pouvez terminer en préparant votre carnet ou votre dictaphone. Ne prolongez pas l’exercice au détriment du sommeil et laissez-le de côté s’il devient une obligation.</p>
 <h2 id="technique-8">8. Reconstituer le rêve à rebours</h2>
 <p>
                     S’il ne reste qu’une émotion ou une dernière scène, utilisez ce fragment comme point de départ sans chercher à inventer une histoire complète. Cette méthode se pratique après le réveil et ne demande pas d’interrompre volontairement le sommeil.
@@ -262,44 +229,21 @@
 <p>
                     Si rien ne revient après une ou deux minutes, laissez tomber et réessayez le lendemain. Préserver votre sommeil et garder une routine sans pression compte davantage que forcer le souvenir.
                 </p>
-<h2 id="technique-9">9. Méthode WBTB pour se souvenir de ses rêves</h2>
-<p>
-                    Cette technique exploite la structure naturelle du sommeil. <strong>Les phases REM sont plus longues en fin de nuit</strong>, ce qui rend les rêves plus vivaces et mémorables.
-                </p>
-<h3>Protocole WBTB étape par étape</h3>
-<ol>
-<li>Essayez cette méthode uniquement si un réveil programmé ne réduit pas la durée de sommeil dont vous avez besoin</li>
-<li>Mettez une alarme pour vous réveiller 5 à 6 heures après l’endormissement</li>
-<li>Restez éveillé brièvement, environ 5 à 20 minutes, avec une lumière tamisée et sans activité stimulante</li>
-<li>Recouchez-vous avec l’intention de vous souvenir de vos rêves</li>
-</ol>
-<p>
-                    WBTB fragmente volontairement le sommeil. Évitez cette méthode si vous manquez déjà de sommeil, souffrez d’insomnie ou de somnolence en journée, ou devez être pleinement vigilant tôt le lendemain. Arrêtez si votre sommeil ou votre fonctionnement diurne se dégrade ; le journal et le réveil en douceur ne nécessitent aucun réveil programmé.
-                </p>
-<h2 id="technique-10">10. Ancrage sensoriel pour rappeler ses rêves</h2>
-<p>
-                    Cette technique utilise un stimulus spécifique pour <strong>créer une association entre le monde éveillé et le monde onirique</strong>.
-                </p>
-<h3>Comment utiliser les odeurs pour la mémoire onirique</h3>
-<ul>
-<li>Choisissez un parfum spécifique (huile essentielle de lavande, par exemple)</li>
-<li>Respirez ce parfum chaque soir avant de dormir en répétant votre intention</li>
-<li>Gardez ce parfum près de votre lit pour le sentir au réveil</li>
-<li>L'association sensorielle peut aider à "ramener" les souvenirs de rêves</li>
-</ul>
+<h2 id="technique-9">9. Garder les réveils programmés facultatifs</h2>
+<p>WBTB consiste à se réveiller puis à se recoucher ; elle est étudiée dans l’induction des rêves lucides. Elle n’est pas nécessaire pour cette routine de rappel. Lors d’un réveil spontané, une brève note peut suffire si elle ne vous maintient pas éveillé ; sinon, privilégiez le retour au sommeil.</p><p>Une interruption programmée fragmente le sommeil. Évitez-la si vous manquez déjà de repos, souffrez d’insomnie ou de somnolence dans la journée, ou devez être très vigilant le lendemain. Arrêtez toute pratique qui dégrade votre repos. Le <a href="guide-reve-lucide-debutant">guide de la lucidité</a> distingue cette option du parcours débutant.</p>
+<h2 id="technique-10">10. Partir des sensations réellement présentes</h2>
+<p>Une couleur, un son ou une sensation dont vous vous souvenez peut être un point de départ, comme la dernière scène de la méthode à rebours. Décrivez ce qui vous revient sans ajouter un parfum ou un accessoire censé récupérer le rêve.</p><p>Si un détail arrive plus tard, ajoutez-le comme souvenir tardif avec son degré d’incertitude. Laissez les blancs là où vous ne savez plus.</p>
 <h2 id="conclusion">Se souvenir de ses rêves : la constance est la clé</h2>
 <p>
                     Le rappel des rêves varie d’une personne à l’autre, mais une routine peut vous aider à mieux conserver les fragments. Utilisez notre <a class="text-dream-salmon hover:underline" href="../guides/dictionnaire-symboles-reves">dictionnaire des rêves</a> pour situer les symboles que vous retrouvez, puis l’<a class="text-dream-salmon hover:underline" href="/fr/application-interpretation-reves-ia">application d’interprétation de rêves IA</a> pour transformer vos notes en pistes d’interprétation.
                 </p>
 <p>
-                    Commencez par les techniques les plus simples : le journal de rêves et l'intention avant le sommeil. Une fois ces habitudes ancrées, explorez les méthodes plus avancées comme MILD ou WBTB.
+                    Commencez par les techniques les plus simples : le journal de rêves et l'intention avant le sommeil. Vous n’avez pas besoin de passer ensuite à MILD ou WBTB : reconnaître un rêve en cours est un objectif distinct.
                 </p>
 <p>
                     L’important est la régularité. Même si vous ne vous souvenez que de fragments au début, notez-les et observez ce qui évolue sans vous imposer de résultat.
                 </p>
-<blockquote>
-                    « Les rêves sont des lettres que nous nous écrivons à nous-mêmes. Apprendre à s’en souvenir, c’est ouvrir une correspondance avec notre inconscient. »
-                </blockquote>
+
 </div>
 <div class="glass-panel rounded-xl p-6 my-8 border border-transparent hover:border-dream-salmon/30 transition-colors">
     <a href="/fr/blog/guide-journal-reves" class="block">
@@ -328,49 +272,24 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fréquentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Que faire dans les 3 premières minutes au réveil ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Restez immobile, gardez les yeux fermés, remontez le rêve à rebours puis dictez ou notez les fragments avant de toucher votre téléphone. Ces premières minutes protègent les images les plus fragiles.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">Que faire dans les 3 premières minutes au réveil ?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Prenez un moment calme, recherchez la dernière image ou émotion, puis notez ou dictez les fragments. Les trois minutes sont un repère de routine, pas un délai obligatoire. Vous pouvez utiliser votre téléphone directement pour enregistrer.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Pourquoi les rêves s’effacent-ils si vite ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Au réveil, les nouvelles sensations, le mouvement et la pensée logique prennent le dessus. Les souvenirs de rêves sont souvent peu consolidés, surtout si vous bougez ou consultez un écran immédiatement.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">Pourquoi les rêves s’effacent-ils si vite ?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Le rappel dépend de plusieurs facteurs liés au sommeil et à la mémoire. Il varie d’une nuit à l’autre ; aucune règle ne permet de dire qu’un pourcentage précis du rêve disparaît après quelques minutes.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Journal ou dictaphone : que choisir ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Le dictaphone ou la note vocale aide à capturer vite les détails au réveil. Le journal écrit aide ensuite à relire et repérer les motifs. L’idéal est souvent de dicter d’abord, puis d’organiser plus tard.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">Journal ou dictaphone : que choisir ?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Choisissez ce qui vous permet de conserver une trace facilement. Quelques mots écrits ou une note vocale suffisent. Vous pourrez organiser le récit plus tard ; aucun format n’est meilleur pour tout le monde.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Comment se rappeler de ses rêves le soir ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Avant de dormir, relisez une entrée récente, formulez une intention simple et visualisez le geste du réveil. Cette préparation augmente vos chances de vous souvenir d’au moins un fragment.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">Comment se rappeler de ses rêves le soir ?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Avant de dormir, vous pouvez relire une note récente et préparer le geste du réveil. Une intention brève donne un repère pour le matin, mais ne garantit pas qu’un souvenir reviendra.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Qu’est-ce qui gêne le rappel des rêves ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Les réveils brutaux, le manque de sommeil, l’alcool, le cannabis, les horaires irréguliers et la consultation immédiate du téléphone peuvent réduire le rappel. Commencez par réduire ces frictions avant d’ajouter des techniques avancées.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">Que faire si je ne me souviens de rien ?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Vous pouvez écrire « aucun souvenir ce matin » et votre ressenti au réveil, puis arrêter la recherche. Ne pas retrouver de récit ne prouve pas que vous n’avez pas rêvé. Aucun fragment ne doit être inventé.</p>
 </details>
 </div>
 </section>
@@ -378,14 +297,13 @@
 <section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Réveil nocturne</h2><p>Pour adapter cette méthode à un réveil en pleine nuit sans casser le sommeil, consultez <a class="text-dream-salmon hover:underline" href="reveil-nocturne-rappel-reves">réveil nocturne et rappel des rêves</a>.</p></section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et limites de la recherche</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology — Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Mécanismes du rappel des rêves (revue, PubMed)</a></li>
-<li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Les stades du sommeil</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/21543596/" rel="nofollow noopener noreferrer" target="_blank">Marzano et collègues (2011) — EEG et rappel des rêves chez l’humain</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS — Sommeil et rêves</a></li>
+<li><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.01746/full" rel="nofollow noopener noreferrer" target="_blank">Étude ILDIS (2020) — Induction de lucidité, un objectif distinct du rappel</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 12 juillet 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 21 septembre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Symboles de rêves associés" class="mt-12 mb-8">

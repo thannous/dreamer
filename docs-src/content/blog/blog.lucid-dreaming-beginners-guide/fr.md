@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "guide-reve-lucide-debutant",
   "title": "Rêve lucide : tests de réalité pour débuter | Noctalia",
-  "description": "Comment faire un rêve lucide : journal, tests de réalité, méthode MILD et précautions WBTB pour débuter sans réduire le sommeil nécessaire.",
+  "description": "Tests de réalité et journal pour explorer le rêve lucide : un parcours débutant, les limites des techniques et les précautions pour préserver le sommeil.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Rêve lucide : tests de réalité pour débuter",
-  "ogDescription": "Journal, tests de réalité, méthode MILD et précautions WBTB pour débuter le rêve lucide.",
+  "ogDescription": "Tests de réalité et journal pour explorer le rêve lucide : un parcours débutant, les limites des techniques et les précautions pour préserver le sommeil.",
   "ogImage": "https://noctalia.app/img/blog/lucid-dreaming-beginners-guide.webp",
-  "ogImageAlt": "Paysage fantastique illustrant la conscience au sein d'un rêve lucide",
+  "ogImageAlt": "Personne tendant la main vers un ciel étoilé dans un paysage imaginaire",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Rêve lucide : tests de réalité pour débuter",
-  "twitterDescription": "Journal, tests de réalité, méthode MILD et précautions WBTB pour débuter.",
+  "twitterDescription": "Tests de réalité et journal pour explorer le rêve lucide : un parcours débutant, les limites des techniques et les précautions pour préserver le sommeil.",
   "twitterImage": "https://noctalia.app/img/blog/lucid-dreaming-beginners-guide.webp",
-  "twitterImageAlt": "Paysage fantastique illustrant la conscience au sein d'un rêve lucide",
+  "twitterImageAlt": "Personne tendant la main vers un ciel étoilé dans un paysage imaginaire",
   "publishedTime": "2025-01-06",
-  "modifiedTime": "2026-07-12",
+  "modifiedTime": "2026-09-21",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/signification-reves-recurrents",
   "nextPath": "/fr/blog/reves-dents-qui-tombent",
   "preloadImage": "/img/blog/lucid-dreaming-beginners-guide.webp",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"headline\":\"Rêve lucide : tests de réalité pour débuter\",\"description\":\"Comment faire un rêve lucide : journal, tests de réalité, méthode MILD et précautions WBTB pour débuter sans réduire le sommeil nécessaire.\",\"image\":{\"@type\":\"ImageObject\",\"url\":\"https://noctalia.app/img/blog/lucid-dreaming-beginners-guide.webp\",\"width\":1200,\"height\":630},\"author\":[{\"@type\":\"Person\",\"@id\":\"https://noctalia.app/fr/a-propos#person\",\"name\":\"Thanh Chau\",\"jobTitle\":\"Founder & Publication Director\",\"url\":\"https://noctalia.app/fr/a-propos\",\"worksFor\":{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\",\"name\":\"Noctalia\",\"url\":\"https://noctalia.app\"}},{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\",\"name\":\"Noctalia\",\"url\":\"https://noctalia.app\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://noctalia.app/logo/logo_noctalia.png\"}}],\"publisher\":{\"@type\":\"Organization\",\"name\":\"Noctalia\",\"url\":\"https://noctalia.app\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://noctalia.app/logo/logo_noctalia.png\"}},\"datePublished\":\"2025-01-06\",\"dateModified\":\"2026-07-12\",\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://noctalia.app/fr/blog/guide-reve-lucide-debutant\"},\"inLanguage\":\"fr\",\"isAccessibleForFree\":true,\"wordCount\":1057,\"timeRequired\":\"PT4M\",\"url\":\"https://noctalia.app/fr/blog/guide-reve-lucide-debutant\"}",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Qu’est-ce qu’un rêve lucide ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Un rêve lucide est un rêve pendant lequel vous savez que vous rêvez. Cette lucidité permet parfois d’influencer certains éléments, mais le contrôle total n’est ni nécessaire ni garanti.\"}},{\"@type\":\"Question\",\"name\":\"Les tests de réalité suffisent-ils pour devenir lucide ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Les tests de réalité peuvent aider à développer l’habitude de questionner son état, surtout lorsqu’ils sont associés à un journal de rêves et à la méthode MILD. Aucun test ne garantit un rêve lucide.\"}},{\"@type\":\"Question\",\"name\":\"La méthode WBTB convient-elle à tout le monde ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"WBTB fragmente volontairement le sommeil. Évitez-la si vous manquez déjà de sommeil, souffrez d’insomnie ou devez être très vigilant le lendemain, et arrêtez si elle dégrade votre repos ou votre fonctionnement diurne.\"}}]}",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"Comment faire un rêve lucide\",\"description\":\"Guide étape par étape pour induire un rêve lucide\",\"step\":[{\"@type\":\"HowToStep\",\"name\":\"Tenir un journal de rêves\",\"text\":\"Notez vos rêves chaque matin pour améliorer votre mémoire onirique.\"},{\"@type\":\"HowToStep\",\"name\":\"Pratiquer les reality checks\",\"text\":\"Effectuez des tests de réalité plusieurs fois par jour pour créer une habitude.\"},{\"@type\":\"HowToStep\",\"name\":\"Utiliser la technique MILD\",\"text\":\"Avant de dormir, répétez votre intention de devenir conscient dans vos rêves.\"},{\"@type\":\"HowToStep\",\"name\":\"Essayer la méthode WBTB\",\"text\":\"Essayez WBTB seulement si une courte interruption ne réduit pas le sommeil dont vous avez besoin ; restez éveillé brièvement, puis rendormez-vous avec une intention MILD.\"}]}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Rêve lucide : tests de réalité pour débuter\",\n    \"description\": \"Tests de réalité et journal pour explorer le rêve lucide : un parcours débutant, les limites des techniques et les précautions pour préserver le sommeil.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/lucid-dreaming-beginners-guide.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-01-06\",\n    \"dateModified\": \"2026-09-21\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/guide-reve-lucide-debutant\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1517,\n    \"timeRequired\": \"PT7M\",\n    \"url\": \"https://noctalia.app/fr/blog/guide-reve-lucide-debutant\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Qu’est-ce qu’un rêve lucide ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"C’est un rêve pendant lequel vous savez que vous rêvez. Influencer le scénario est une autre capacité : le contrôle total n’est ni nécessaire ni garanti.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Les tests de réalité suffisent-ils pour devenir lucide ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Aucun test ne garantit la lucidité. Observer un texte, ses mains ou le contexte est un exercice d’attention ; les particularités attendues ne surviennent pas systématiquement dans les rêves.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Faut-il se réveiller la nuit pour commencer ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non. Vous pouvez commencer par une note après un réveil naturel et une intention brève au coucher. WBTB interrompt le sommeil et reste facultative ; laissez-la de côté si elle risque de nuire à votre repos ou à votre vigilance.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"HowTo\",\n    \"name\": \"Comment faire un rêve lucide\",\n    \"description\": \"Guide étape par étape pour induire un rêve lucide\",\n    \"step\": [\n        {\n            \"@type\": \"HowToStep\",\n            \"name\": \"Tenir un journal de rêves\",\n            \"text\": \"Notez vos rêves chaque matin pour améliorer votre mémoire onirique.\"\n        },\n        {\n            \"@type\": \"HowToStep\",\n            \"name\": \"Pratiquer les reality checks\",\n            \"text\": \"Effectuez des tests de réalité plusieurs fois par jour pour créer une habitude.\"\n        },\n        {\n            \"@type\": \"HowToStep\",\n            \"name\": \"Utiliser la technique MILD\",\n            \"text\": \"Avant de dormir, répétez votre intention de devenir conscient dans vos rêves.\"\n        },\n        {\n            \"@type\": \"HowToStep\",\n            \"name\": \"Essayer la méthode WBTB\",\n            \"text\": \"Essayez WBTB seulement si une courte interruption ne réduit pas le sommeil dont vous avez besoin ; restez éveillé brièvement, puis rendormez-vous avec une intention MILD.\"\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêve lucide\",\n            \"item\": \"https://noctalia.app/fr/blog/guide-reve-lucide-debutant\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -64,14 +64,12 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="reve-lucide">Thématique : Rêve lucide</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publié le 6 janvier 2025</span>
-<span class="text-sm text-purple-300/60">4 min de lecture</span>
+<span class="text-sm text-purple-300/60">7 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Rêve lucide : tests de réalité pour débuter
                 </h1>
-<p class="text-lg text-purple-200/80 leading-relaxed">
-                    Un rêve lucide est un rêve pendant lequel vous savez que vous rêvez. Pour débuter, combinez un journal, des tests de réalité faits avec attention et la méthode MILD ; utilisez WBTB seulement si elle ne réduit pas le sommeil dont vous avez besoin.
-                </p>
+<p class="text-lg text-purple-200/80 leading-relaxed">Un rêve lucide est un rêve pendant lequel vous savez que vous rêvez. Pour débuter, distinguez trois objectifs : vous souvenir du rêve, reconnaître que vous rêvez et, éventuellement, essayer d’en influencer le déroulement. Vous pouvez commencer sans programmer de réveil nocturne.</p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
 <div class="flex items-center gap-3 mb-8 text-sm text-purple-200/70">
@@ -87,11 +85,12 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Réponse rapide</h2>
-    <p class="text-purple-100/80 leading-relaxed">Les tests de réalité peuvent soutenir le rêve lucide lorsqu’ils sont associés à un journal et à une intention MILD. Aucun test ne garantit un résultat, et les méthodes qui interrompent la nuit doivent rester facultatives.</p>
+    <p class="text-purple-100/80 leading-relaxed">Commencez par une note au réveil et un test de réalité attentif dans un moment sûr de la journée. La lucidité consiste à savoir que l’on rêve ; contrôler le scénario n’est pas nécessaire. Les techniques d’induction sont facultatives et aucun test ne garantit un résultat.</p>
 </section>
+<section class="glass-panel rounded-2xl p-6 mb-10 border border-white/10 bg-white/5" aria-labelledby="parcours-debutant"><h2 id="parcours-debutant" class="font-serif text-2xl text-dream-cream mb-4">Parcours débutant sans réveil programmé</h2><ol class="space-y-3 text-gray-300"><li><strong>Au réveil :</strong> notez un fragment, ou simplement l’absence de souvenir.</li><li><strong>Dans la journée :</strong> observez calmement un texte ou vos mains, puis demandez-vous comment vous êtes arrivé là.</li><li><strong>Au coucher :</strong> gardez éventuellement une intention brève de reconnaître un rêve, puis dormez normalement.</li></ol><p class="text-sm text-purple-200/70 mt-4">C’est une manière simple d’explorer, pas un protocole garantissant la lucidité. N’ajoutez pas d’exercice si cela devient stressant ou perturbe votre sommeil.</p></section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Paysage fantastique illustrant la conscience au sein d'un rêve lucide" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/lucid-dreaming-beginners-guide.webp" srcset="../../img/blog/lucid-dreaming-beginners-guide-480w.webp 480w, ../../img/blog/lucid-dreaming-beginners-guide-800w.webp 800w, ../../img/blog/lucid-dreaming-beginners-guide-1200w.webp 1200w" width="1200">
+<img alt="Personne tendant la main vers un ciel étoilé dans un paysage imaginaire" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/lucid-dreaming-beginners-guide.webp" srcset="../../img/blog/lucid-dreaming-beginners-guide-480w.webp 480w, ../../img/blog/lucid-dreaming-beginners-guide-800w.webp 800w, ../../img/blog/lucid-dreaming-beginners-guide-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -99,245 +98,34 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommaire
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#definition">1. Qu'est-ce qu'un rêve lucide ?</a></li>
-<li><a class="toc-link block" href="#science">2. La science derrière le rêve lucide</a></li>
-<li><a class="toc-link block" href="#bienfaits">3. Les bienfaits du rêve lucide</a></li>
-<li><a class="toc-link block" href="#prerequis">4. Les prérequis essentiels</a></li>
-<li><a class="toc-link block" href="#reality-checks">5. Les reality checks (tests de réalité)</a></li>
-<li><a class="toc-link block" href="#techniques">6. Les techniques d'induction</a></li>
-<li><a class="toc-link block" href="#stabiliser">7. Comment stabiliser un rêve lucide</a></li>
-<li><a class="toc-link block" href="#erreurs">8. Les erreurs courantes à éviter</a></li>
+<li><a class="toc-link block" href="#definition">1. Lucidité et contrôle : deux choses différentes</a></li>
+<li><a class="toc-link block" href="#science">2. Ce que les études permettent de dire</a></li>
+<li><a class="toc-link block" href="#bienfaits">3. Intérêt personnel et bénéfice thérapeutique</a></li>
+<li><a class="toc-link block" href="#prerequis">4. Préparer le rappel sans sacrifier le repos</a></li>
+<li><a class="toc-link block" href="#reality-checks">5. Comment essayer un test de réalité</a></li>
+<li><a class="toc-link block" href="#techniques">6. MILD, WBTB, DILD et WILD : où les situer ?</a></li>
+<li><a class="toc-link block" href="#stabiliser">7. Si vous remarquez que vous rêvez</a></li>
+<li><a class="toc-link block" href="#erreurs">8. Éviter la pression de résultat</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="definition">Qu'est-ce qu'un rêve lucide exactement ?</h2>
-<p>
-                    Un rêve lucide est un état de conscience particulier dans lequel <strong>vous savez que vous êtes en <a class="text-dream-salmon hover:underline" href="../symboles/train">train</a> de rêver</strong>, tout en restant endormi. Cette prise de conscience peut survenir spontanément ou être induite par diverses techniques.
-                </p>
-<p>
-                    Plusieurs niveaux de lucidité existent :
-                </p>
-<ul>
-<li><strong>Lucidité minimale :</strong> Vous savez que vous rêvez mais ne contrôlez rien</li>
-<li><strong>Lucidité modérée :</strong> Vous pouvez influencer certains éléments du rêve</li>
-<li><strong>Lucidité complète :</strong> Vous contrôlez entièrement le scénario et l'environnement</li>
-</ul>
-<blockquote>
-                    "Dans un rêve lucide, l'impossible devient possible. Vous êtes à la fois le réalisateur, l'acteur principal et le spectateur de votre propre film." - Stephen LaBerge, pionnier de la recherche sur le rêve lucide
-                </blockquote>
-<h2 id="science">La science du rêve lucide : ce que dit la recherche</h2>
-<p>
-                    Le rêve lucide n'est pas un mythe - c'est un phénomène scientifiquement prouve. En 1975, le psychologue <strong>Keith Hearne</strong> à démontre pour la première fois qu'un rêveur lucide pouvait communiquer avec le monde éveille via des mouvements oculaires prédéfinis.
-                </p>
-<p>
-                    Depuis, les neurosciences ont révèle que pendant un rêve lucide :
-                </p>
-<ul>
-<li>Le <strong>cortex préfrontal dorsolateral</strong> (associe à la conscience de soi) devient actif</li>
-<li>Les ondes cérébrales montrent un mélange de REM et d'activité de veille (ondes gamma)</li>
-<li>Le rêveur conserve sa mémoire de travail et sa capacité de réflexion</li>
-</ul>
-<p>
-                    Une méta-analyse de <a href="https://pubmed.ncbi.nlm.nih.gov/27337287/" rel="nofollow noopener noreferrer" target="_blank">Saunders et al. (2016)</a> montre que <strong>55% des personnes</strong> ont eu au moins un rêve lucide dans leur vie, et environ 23% en font au moins une fois par mois.
-                </p>
-<h2 id="bienfaits">Les bienfaits du rêve lucide pour le quotidien</h2>
-<p>
-                    Au-delà du divertissement, le rêve lucide offre des bénéfices concrets :
-                </p>
-<h3>Rêve lucide et développement personnel</h3>
-<ul>
-<li>Confronter ses peurs en environnement sécurise</li>
-<li>Expérimenter des situations avant de les vivre</li>
-<li>Accéder à des insights de l'inconscient</li>
-</ul>
-<h3>Booster sa créativité grâce au rêve lucide</h3>
-<ul>
-<li>Explorer des idées sans limites physiques</li>
-<li>De nombreux artistes et scientifiques s'en inspirent</li>
-<li>Salvador Dali et Paul McCartney ont crédit leurs rêves</li>
-</ul>
-<h3>Bénéfices thérapeutiques du rêve lucide</h3>
-<ul>
-<li>Traitement des cauchemars récurrents</li>
-<li>Gestion du stress post-traumatique (en complément)</li>
-<li>Amélioration de la confiance en soi</li>
-</ul>
-<h2 id="prerequis">Les prérequis pour faire un rêve lucide</h2>
-<p>
-                    Avant de vous lancer dans les techniques d'induction, deux fondations sont absolument nécessaires :
-                </p>
-<h3>1. Tenir un journal de rêves pour la lucidité</h3>
-<p>
-                    C'est <strong>LA base incontournable</strong>. Sans mémoire de vos rêves, vous ne saurez jamais si vous avez été lucide. Notez vos rêves chaque matin, même les fragments. En quelques semaines, votre mémoire onirique s'améliorera nettement.
-                </p>
-<h3>2. Hygiène de sommeil pour favoriser le rêve lucide</h3>
-<p>
-                    Les rêves lucides surviennent principalement pendant le sommeil REM, plus abondant en fin de nuit. Dormez suffisamment (7-9h) et a horaires réguliers pour maximiser vos chances.
-                </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Facilitez votre journal de rêves</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia vous permet d'enregistrer vos rêves à la voix des le réveil, sans effort. Parfait pour capturer les détails avant qu'ils ne s'effacent.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Découvrir Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
-<h2 id="reality-checks">Reality checks : les tests de réalité pour le rêve lucide</h2>
-<p>
-                    Les reality checks sont des <strong>tests que vous effectuez régulièrement</strong> pour vérifier si vous rêvez. L'idée est de créer une habitude si forte qu'elle se reproduit automatiquement dans vos rêves.
-                </p>
-</div>
-<!-- Reality Check Cards -->
-<div class="grid md:grid-cols-2 gap-6 my-12">
-<div class="technique-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-purple-500/20 rounded-lg">
-<i class="w-5 h-5 text-purple-300" data-lucide="hand"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Test des mains</h3>
-</div>
-<p class="text-sm text-gray-300 mb-3">
-                        Regardez vos mains attentivement. Dans un rêve, elles apparaissent souvent floues, déformées ou avec un nombre incorrect de doigts.
-                    </p>
-<p class="text-xs text-dream-salmon">Efficacité : Très élevée</p>
-</div>
-<div class="technique-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-purple-500/20 rounded-lg">
-<i class="w-5 h-5 text-purple-300" data-lucide="wind"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Test de la respiration</h3>
-</div>
-<p class="text-sm text-gray-300 mb-3">
-                        Pincez votre nez et essayez de respirer. Dans un rêve, vous pouvez respirer normalement malgré le nez <a class="text-dream-salmon hover:underline" href="../symboles/bouche">bouche</a>.
-                    </p>
-<p class="text-xs text-dream-salmon">Efficacité : Excellente</p>
-</div>
-<div class="technique-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-purple-500/20 rounded-lg">
-<i class="w-5 h-5 text-purple-300" data-lucide="book-open"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Test du texte</h3>
-</div>
-<p class="text-sm text-gray-300 mb-3">
-                        Lisez un texte, détournez le regard, puis relisez. Dans un rêve, le texte change entre les deux lectures.
-                    </p>
-<p class="text-xs text-dream-salmon">Efficacité : Très élevée</p>
-</div>
-<div class="technique-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-purple-500/20 rounded-lg">
-<i class="w-5 h-5 text-purple-300" data-lucide="clock"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Test de l'horloge</h3>
-</div>
-<p class="text-sm text-gray-300 mb-3">
-                        Regardez l'heure, détournez le regard, puis regardez a nouveau. L'heure change de manière incohérente dans les rêves.
-                    </p>
-<p class="text-xs text-dream-salmon">Efficacité : Élevée</p>
-</div>
-</div>
-<div class="prose max-w-none text-gray-300">
-<p>
-<strong>Conseil clé :</strong> Ne faites pas ces tests mécaniquement. À chaque reality check, demandez-vous sérieusement "Suis-je en train de rêver ?" et attendez quelques secondes. C'est cette <strong>attitude de questionnement sincère</strong> qui se reproduira dans vos rêves.
-                </p>
-<h2 id="techniques">Techniques d'induction du rêve lucide</h2>
-<p>
-                    Voici quatre méthodes courantes, de la plus accessible à la plus exigeante. Leur efficacité varie selon les personnes et aucune ne garantit un rêve lucide :
-                </p>
-<h3>1. Technique MILD pour débutants</h3>
-<p>
-                    Développée par Stephen LaBerge, c'est la technique idéale pour débuter :
-                </p>
-<ol>
-<li>Réveillez-vous après 5-6 heures de sommeil</li>
-<li>Rappelez-vous votre dernier rêve en détail</li>
-<li>En vous rendormant, répétez : "La prochaine fois que je rêve, je saurai que je rêve"</li>
-<li>Visualisez-vous devenant lucide dans ce même rêve</li>
-</ol>
-<h3>2. Méthode WBTB : se réveiller pour rêver lucide</h3>
-<p>
-                    WBTB interrompt volontairement le sommeil avant une nouvelle tentative MILD :
-                </p>
-<ol>
-<li>Essayez-la uniquement si cette interruption ne réduit pas le sommeil dont vous avez besoin</li>
-<li>Après 5-6 heures de sommeil, restez éveillé brièvement, environ 5 à 20 minutes, dans une lumière faible</li>
-<li>Recouchez-vous en pratiquant MILD</li>
-</ol>
-<p>
-                    Évitez WBTB si vous manquez déjà de sommeil, avez de l’insomnie ou devez être très vigilant le lendemain. Arrêtez si elle dégrade votre repos ou votre fonctionnement dans la journée.
-                </p>
-<h3>3. DILD : devenir lucide dans le rêve</h3>
-<p>
-                    C'est le rêve lucide "naturel" déclenche par un élément étrange du rêve :
-                </p>
-<ul>
-<li>Un <strong>dream sign</strong> (élément récurrent dans vos rêves) active votre lucidité</li>
-<li>Un reality check automatique se déclenche</li>
-<li>Vous réalisez soudainement que vous rêvez</li>
-</ul>
-<p>
-                    Pour favoriser les DILD, identifiez vos dream signs grâce à votre journal et programmez-vous mentalement à les reconnaître. Notre <a class="text-dream-salmon hover:underline" href="../guides/dictionnaire-symboles-reves">guide des symboles de rêves</a> peut vous aider à cataloguer et comprendre les signes récurrents.
-                </p>
-<h3>4. Technique WILD avancée pour rêve lucide</h3>
-<p>
-                    Technique avancée consistant à passer directement de l'éveil au rêve :
-                </p>
-<ol>
-<li>Après WBTB, allongez-vous sans bouger</li>
-<li>Restez conscient pendant que votre corps s'endort</li>
-<li>Observez les images hypnagogiques sans vous y attacher</li>
-<li>Entrez progressivement dans le rêve conscient</li>
-</ol>
-<p>
-<strong>Attention :</strong> WILD peut s’accompagner d’expériences transitoires de paralysie du sommeil chez certaines personnes. Préférez d’abord le journal, les tests de réalité et MILD, sans sacrifier votre sommeil.
-                </p>
-<h2 id="stabiliser">Comment stabiliser et prolonger un rêve lucide</h2>
-<p>
-                    Votre premier rêve lucide sera probablement bref - quelques secondes avant de se réveiller ou de perdre la lucidité. Voici comment prolonger l'expérience :
-                </p>
-<h3>Techniques pour ne pas se réveiller en rêve lucide</h3>
-<ul>
-<li><strong>Frotter ses mains :</strong> Crée une sensation tactile qui ancre dans le rêve</li>
-<li><strong>Toucher le sol/murs :</strong> Active les sens pour maintenir la conscience</li>
-<li><strong>Regarder ses mains :</strong> Point de focus stable qui évite le réveil</li>
-<li><strong>Tourner sur soi-même :</strong> Technique de LaBerge pour rester dans le rêve</li>
-<li><strong>Commander "Clarté maintenant!" :</strong> Verbalisez vos intentions</li>
-</ul>
-<h3>Erreurs qui font perdre la lucidité</h3>
-<ul>
-<li>S'exciter excessivement (réveille)</li>
-<li>Fermer les yeux longtemps (risque de <a class="text-dream-salmon hover:underline" href="faux-reveil-reve">faux réveil</a> ou de vrai réveil)</li>
-<li>Se concentrer trop sur le fait qu'on rêve</li>
-</ul>
-<h2 id="erreurs">Erreurs de débutant en rêve lucide à éviter</h2>
-<h3>1. Ne pas tenir de journal de rêves</h3>
-<p>
-                    Sans journal, vous oublierez vos rêves lucides ou ne remarquerez pas les progrès. C'est le fondement de tout.
-                </p>
-<h3>2. Pratiquer les techniques de façon irrégulière</h3>
-<p>
-                    La régularité prime sur l'intensité. Mieux vaut 5 minutes de pratique quotidienne que 2 heures une fois par semaine.
-                </p>
-<h3>3. Abandonner avant le premier rêve lucide</h3>
-<p>
-                    Le premier rêve lucide peut prendre plusieurs semaines. C'est normal. Chaque nuit sans lucidité est un pas vers la réussite.
-                </p>
-<h3>4. Faire les reality checks sans intention</h3>
-<p>
-                    Les reality checks sans véritable questionnement sont inutiles. L'intention consciente est la clé.
-                </p>
-<blockquote>
-                    "Le rêve lucide n'est pas un don, c'est une compétence. Et comme toute compétence, elle se développe avec la pratique et la patience."
-                </blockquote>
+<h2 id="definition">Lucidité et contrôle : deux choses différentes</h2>
+<p>Être lucide signifie reconnaître que l’expérience en cours est un rêve. Vous pouvez le savoir sans réussir à changer le lieu, les personnages ou vos actions. Inversement, voler ou choisir une direction dans un rêve ne prouve pas que vous aviez conscience de rêver.</p><p>Ribeiro et ses collègues (2016) ont étudié séparément conscience de rêver et contrôle dans les questionnaires. Nous ne les présentons donc pas comme les degrés d’une échelle allant forcément jusqu’au contrôle total. Le <a href="reve-lucide">dossier sur le rêve lucide</a> donne un aperçu général ; cette page se concentre sur les premiers essais et leurs limites.</p>
+<h2 id="science">Ce que les études permettent de dire</h2>
+<p>L’étude ILDIS (2020) a suivi 355 adultes intéressés par la lucidité, avec une semaine de référence puis une semaine d’exercices combinant plusieurs techniques. Elle apporte des données sur l’induction, pas une garantie individuelle.</p><p>Le suivi était court et reposait sur des déclarations. Certains troubles du sommeil ou de santé mentale faisaient partie des critères d’exclusion : l’absence d’effet défavorable moyen sur le sommeil ne prouve pas que la pratique convient à tout le monde. Les résultats d’un protocole combiné ne valident pas chaque geste utilisé seul.</p>
+<h2 id="bienfaits">Intérêt personnel et bénéfice thérapeutique</h2>
+<p>La curiosité, l’envie d’explorer une scène ou de garder une idée créative peuvent motiver un essai. Ce sont des objectifs personnels, sans résultat assuré. Aucun guide ne peut promettre plus de confiance en soi ou une amélioration de la santé mentale.</p><p>Si votre objectif est de traiter des cauchemars ou un traumatisme, ne considérez pas ce parcours comme une thérapie. Parlez du problème à un professionnel ; le <a href="guide-cauchemars">guide des cauchemars</a> distingue observation et prise en charge.</p>
+<h2 id="prerequis">Préparer le rappel sans sacrifier le repos</h2>
+<p>Un carnet ou une note vocale permet de retrouver ce que vous avez vécu. Ce n’est pas une condition pour qu’un rêve lucide spontané existe, ni une promesse de progrès en quelques semaines. Le <a href="comment-se-souvenir-de-ses-reves">guide du rappel au réveil</a> propose une routine simple ; le <a href="guide-journal-reves">guide du journal</a> explique quoi noter.</p><p>Gardez le temps de sommeil dont vous avez besoin et vos horaires habituels. Un fragment noté après un réveil naturel suffit pour commencer. Ne jugez pas la qualité d’une nuit au nombre de rêves mémorisés.</p>
+<h2 id="reality-checks">Comment essayer un test de réalité</h2>
+<p>Dans un moment calme et sûr, regardez vos mains ou lisez une courte phrase, détournez le regard et observez de nouveau. Demandez-vous aussi comment vous êtes arrivé à cet endroit. L’exercice porte sur l’attention au contexte, pas sur la répétition mécanique d’un geste.</p><p>Dans un rêve, un texte ou une forme peut sembler inhabituel ; cela ne change pas systématiquement. Aucun test n’est infaillible et rien ne justifie ici les classements « efficacité excellente » ou « très élevée ».</p><p>Gardez ces essais brefs. Ne les pratiquez pas en conduisant ou dans une situation demandant toute votre attention. Si le questionnement vous rend anxieux ou confus, arrêtez et revenez à une simple prise de notes au réveil.</p>
+<h2 id="techniques">MILD, WBTB, DILD et WILD : où les situer ?</h2>
+<h3>MILD : se souvenir de reconnaître un rêve</h3><p>MILD associe le souvenir d’un rêve à l’intention de reconnaître le prochain comme tel. Vous pouvez comprendre ce principe sans mettre d’alarme : repensez brièvement à un détail du récit et imaginez remarquer que vous rêvez. Cette version au coucher ne doit pas être présentée comme équivalente aux protocoles de recherche après un réveil nocturne.</p><h3>WBTB : une interruption facultative</h3><p>WBTB signifie se réveiller puis retourner au lit. Elle fragmente volontairement le sommeil et n’est pas un prérequis du parcours ci-dessus. Évitez-la si vous manquez de sommeil, souffrez d’insomnie ou de somnolence diurne, ou devez être très vigilant le lendemain. Arrêtez si votre repos ou votre journée se dégrade.</p><h3>DILD : prendre conscience au cours d’un rêve</h3><p>Ce terme décrit la lucidité qui apparaît alors que le rêve est déjà en cours. Un détail étrange peut attirer votre attention, mais reconnaître cet indice n’est pas automatique. Un <a href="faux-reveil-reve">faux réveil</a> est encore une autre expérience : rêver que l’on s’est réveillé.</p><h3>WILD : une démarche plus exigeante</h3><p>WILD désigne une entrée dans le rêve en essayant de maintenir une continuité de conscience depuis l’éveil. Il n’est pas nécessaire de la pratiquer pour débuter. Ne vous imposez pas une immobilité prolongée ni un effort pour rester conscient au détriment du sommeil.</p>
+<h2 id="stabiliser">Si vous remarquez que vous rêvez</h2>
+<p>Vous pouvez simplement observer la scène et ce que vous ressentez. Il n’est pas nécessaire de voler, de vous confronter à quelque chose ou de prolonger l’expérience. Si vous vous réveillez, notez le moment où vous avez reconnu le rêve.</p><p>Toucher un objet du rêve ou observer un détail sont des suggestions parfois rapportées, pas des moyens garantis de le stabiliser. Un épisode bref n’est pas un échec, et perdre la lucidité ne permet pas de mesurer votre niveau.</p>
+<h2 id="erreurs">Éviter la pression de résultat</h2>
+<ul><li>Ne confondez pas récit très vif, contrôle d’une action et conscience de rêver.</li><li>Ne multipliez pas les techniques ou les alarmes pour atteindre un résultat dans un délai fixé.</li><li>Ne transformez pas chaque nuit sans lucidité en échec ou en étape forcément utile.</li><li>Faites une pause si l’exercice augmente l’inquiétude, la fatigue ou les difficultés de sommeil.</li></ul><p>En cas de troubles du sommeil ou de santé mentale, demandez conseil à un professionnel avant de chercher à induire des rêves lucides. Votre repos passe avant l’expérimentation.</p>
 </div>
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
@@ -357,45 +145,28 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fréquentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Qu’est-ce qu’un rêve lucide ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Un rêve lucide est un rêve pendant lequel vous savez que vous rêvez. Cette lucidité permet parfois d’influencer certains éléments, mais le contrôle total n’est ni nécessaire ni garanti.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">Qu’est-ce qu’un rêve lucide ?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">C’est un rêve pendant lequel vous savez que vous rêvez. Influencer le scénario est une autre capacité : le contrôle total n’est ni nécessaire ni garanti.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Les tests de réalité suffisent-ils pour devenir lucide ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Les tests de réalité peuvent aider à développer l’habitude de questionner son état, surtout lorsqu’ils sont associés à un journal de rêves et à la méthode MILD. Aucun test ne garantit un rêve lucide.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">Les tests de réalité suffisent-ils pour devenir lucide ?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Aucun test ne garantit la lucidité. Observer un texte, ses mains ou le contexte est un exercice d’attention ; les particularités attendues ne surviennent pas systématiquement dans les rêves.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            La méthode WBTB convient-elle à tout le monde ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            WBTB fragmente volontairement le sommeil. Évitez-la si vous manquez déjà de sommeil, souffrez d’insomnie ou devez être très vigilant le lendemain, et arrêtez si elle dégrade votre repos ou votre fonctionnement diurne.
-                        </p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">Faut-il se réveiller la nuit pour commencer ?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Non. Vous pouvez commencer par une note après un réveil naturel et une intention brève au coucher. WBTB interrompt le sommeil et reste facultative ; laissez-la de côté si elle risque de nuire à votre repos ou à votre vigilance.</p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et limites de la recherche</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology :Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net :G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/19750924/" rel="nofollow noopener noreferrer" target="_blank">Voss et al. (2009) :Lucid dreaming as a hybrid state (Sleep, PubMed)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/35167686/" rel="nofollow noopener noreferrer" target="_blank">Baird, Tononi &amp; LaBerge (2022) :Rêves lucides et sommeil REM (Sleep, PubMed)</a></li>
-<li><a href="https://www.sleepfoundation.org/dreams/lucid-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation :Rêves lucides</a></li>
+<li><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2016.01306/full" rel="nofollow noopener noreferrer" target="_blank">Ribeiro et collègues (2016) — Conscience de rêver et contrôle</a></li>
+<li><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.01746/full" rel="nofollow noopener noreferrer" target="_blank">Étude ILDIS (2020) — Méthodes, résultats et limites de l’induction</a></li>
+<li><a href="https://www.nhs.uk/conditions/night-terrors/" rel="nofollow noopener noreferrer" target="_blank">NHS — Cauchemars et avis professionnel</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 12 juillet 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 21 septembre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Symboles de rêves associés" class="mt-12 mb-8">
@@ -419,7 +190,7 @@
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article précédent</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Signification des rêves récurrents : comprendre leurs messages</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Rêves récurrents : causes possibles et pistes utiles</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="reves-dents-qui-tombent" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -443,17 +214,17 @@
                     <a href="comment-se-souvenir-de-ses-reves" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Comment se souvenir de ses rêves : 10 techniques efficaces</h3>
-                        <p class="text-sm text-gray-400">Découvrez des méthodes scientifiquement prouvées pour améliorer votre mémoire onirique et ne plus jamais oublier vos rêves au réveil. Des techniques simples à appliquer des ce soir.</p>
+                        <p class="text-sm text-gray-400">Une routine pour noter les fragments au réveil, sans garantie de résultat.</p>
                     </a>
                     <a href="pourquoi-oublie-reves-reveil" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Pourquoi oublie-t-on ses rêves au réveil ? Les explications scientifiques</h3>
-                        <p class="text-sm text-gray-400">Découvrez les mécanismes cérébraux et neurochimiques qui expliquent pourquoi nous oublions 95% de nos rêves.</p>
+                        <p class="text-sm text-gray-400">Découvrez les recherches et les questions ouvertes sur le rappel des rêves.</p>
                     </a>
                     <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents : comprendre leurs messages</h3>
-                        <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le même rêve ? Découvrez ce que votre inconscient essaie de vous dire.</p>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves récurrents : causes possibles et pistes utiles</h3>
+                        <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le même rêve ? Comparez les scènes et les émotions qui reviennent.</p>
                     </a>
               </div>
             </section>
