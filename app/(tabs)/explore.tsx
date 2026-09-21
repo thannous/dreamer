@@ -88,8 +88,8 @@ export default function ExploreScreen() {
     if (Platform.OS !== 'android') return;
     // Compose presents the sheet in a separate window. Its dismissal can
     // outlive the React render which closes the picker.
-    const focus = AppState.addEventListener('focus', () => setAndroidWindowFocused(true));
-    const blur = AppState.addEventListener('blur', () => setAndroidWindowFocused(false));
+    const focus = AppState.addEventListener('focus', () => { console.info('[TI600Focus] window-focus'); setAndroidWindowFocused(true); });
+    const blur = AppState.addEventListener('blur', () => { console.info('[TI600Focus] window-blur'); setAndroidWindowFocused(false); });
     return () => {
       focus.remove();
       blur.remove();
@@ -97,6 +97,7 @@ export default function ExploreScreen() {
   }, []);
 
   useEffect(() => {
+    console.info('[TI600Focus] transition', JSON.stringify({ previous: wasPickerVisible.current, visible: pickerVisible, window: androidWindowFocused, route: screenFocused.current, trigger: Boolean(changeRitualRef.current) }));
     if (wasPickerVisible.current && !pickerVisible) restoreFocusPending.current = true;
     wasPickerVisible.current = pickerVisible;
     if (pickerVisible) {
@@ -107,6 +108,7 @@ export default function ExploreScreen() {
     if (Platform.OS === 'android' && !androidWindowFocused) return;
 
     const restore = () => {
+      console.info('[TI600Focus] restore', JSON.stringify({ pending: restoreFocusPending.current, route: screenFocused.current, trigger: Boolean(changeRitualRef.current) }));
       if (!restoreFocusPending.current) return;
       restoreFocusPending.current = false;
       if (!screenFocused.current) return;
