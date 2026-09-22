@@ -1,7 +1,7 @@
 import { resolveDreamRoute, getDreamRouteParams } from '@/lib/dreamRoute';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
-import { Composer } from '@/components/chat/Composer';
+import { ChatComposer, type ChatComposerHandle } from '@/components/chat/ChatComposer';
 import { Exploration360Panel } from '@/components/chat/Exploration360Panel';
 import { LoadingIndicator, MessagesList } from '@/components/chat/MessagesList';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -17,7 +17,6 @@ import { useTheme } from '@/context/ThemeContext';
 import { useChatSendLock } from '@/hooks/useChatSendLock';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
-import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
 import { buildDisplayMessages } from '@/lib/chat/streamingDisplay';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { QUOTAS } from '@/constants/limits';
@@ -180,7 +179,7 @@ function DreamChatContent() {
   }, [networkState.isConnected, networkState.isInternetReachable]);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [inputText, setInputText] = useState('');
+  const composerRef = useRef<ChatComposerHandle>(null);
   const [isLoading, setIsLoading] = useState(false);
   const {
     activeCategory: activeSendCategory,
@@ -481,11 +480,11 @@ function DreamChatContent() {
 
   const sendMessage = useCallback(
     async (
-      messageText?: string,
+      messageText: string,
       displayText?: string,
       options?: SendMessageOptions
     ) => {
-      const textToSend = messageText || inputText.trim();
+      const textToSend = messageText;
       if (!textToSend || !dream) return;
       const resolvedDisplayText = displayText ?? textToSend;
       const messageMeta = resolveChatMessageMeta({
@@ -597,7 +596,7 @@ function DreamChatContent() {
         if (hasNetwork) {
           // Auto-sync the dream with idempotence
           setIsLoading(true);
-          setInputText((current) => computeNextInputAfterSend(current, textToSend));
+          composerRef.current?.clearSentText(textToSend);
           try {
             const controller = new AbortController();
             requestAbortRef.current = controller;
@@ -709,7 +708,7 @@ function DreamChatContent() {
       });
       const updatedMessages = [...baseMessages, userMessage];
       setMessages(updatedMessages);
-      setInputText((current) => computeNextInputAfterSend(current, textToSend));
+      composerRef.current?.clearSentText(textToSend);
       setIsLoading(true);
 
       try {
@@ -875,7 +874,6 @@ function DreamChatContent() {
       explorationBlocked,
       hasNetwork,
       hasQuotaCheckClearance,
-      inputText,
       isLoading,
       isExistingExploration,
       isMockMode,
@@ -1334,26 +1332,16 @@ function DreamChatContent() {
             onScrollStateChange={setIsScrolling}
           />
 
-          <Composer.Root
-            value={inputText}
-            onChangeText={setInputText}
-            onSend={(text) => sendMessage(text)}
+          <ChatComposer
+            ref={composerRef}
+            onSendText={sendMessage}
             placeholder={composerPlaceholder}
             isLoading={isInteractionLocked}
             isDisabled={messageLimitReached}
             transcriptionLocale={transcriptionLocale}
-            testID={TID.Chat.Input}
-            micTestID={TID.Chat.Mic}
-            sendTestID={TID.Chat.Send}
-          >
-            <Composer.Footer>{composerFooter}</Composer.Footer>
-            <Composer.Header>{composerHeader}</Composer.Header>
-            <Composer.Body>
-              <Composer.Input />
-              <Composer.MicButton />
-              <Composer.SendButton />
-            </Composer.Body>
-          </Composer.Root>
+            footer={composerFooter}
+            header={composerHeader}
+          />
         </LinearGradient>
       </ScrollPerfProvider>
     </ChatProvider>

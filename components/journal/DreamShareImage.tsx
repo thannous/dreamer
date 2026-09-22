@@ -58,7 +58,7 @@ export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function D
           source={{ uri: imageSource }}
           style={styles.backgroundImage}
           contentFit="cover"
-          onLoad={() => { setSettledImage(imageSource); onMediaReady?.(imageSource, true); }}
+          onDisplay={() => { setSettledImage(imageSource); onMediaReady?.(imageSource, true); }}
           onError={() => { setSettledImage(imageSource); setFailedImage(imageSource); onMediaReady?.(imageSource, false); }}
         />
       ) : (

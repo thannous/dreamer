@@ -379,7 +379,7 @@ describe('native speech module integration', () => {
     removeListeners.forEach((remove) => expect(remove).toHaveBeenCalledTimes(1));
   });
 
-  it('starts a speech session and captures results', async () => {
+  it('publishes only changed previews while preserving final results across sessions', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'ios';
     (Platform as any).Version = 17;
@@ -413,17 +413,32 @@ describe('native speech module integration', () => {
 
     expect(session).not.toBeNull();
 
-    listeners.get('result')?.({ results: [{ transcript: 'hello' }], isFinal: false });
+    for (let i = 0; i < 100; i++) {
+      listeners.get('result')?.({ results: [{ transcript: 'hello' }], isFinal: false });
+    }
+    listeners.get('result')?.({ results: [{ transcript: 'hello wurld' }], isFinal: false });
+    listeners.get('result')?.({ results: [{ transcript: 'hello world' }], isFinal: false });
+    listeners.get('result')?.({ results: [{ transcript: 'hello world' }], isFinal: true });
     listeners.get('result')?.({ results: [{ transcript: 'hello world' }], isFinal: true });
     listeners.get('audioend')?.({ uri: 'file://audio.pcm' });
 
     const result = await session!.stop();
 
-    expect(onPartial).toHaveBeenCalled();
+    expect(onPartial.mock.calls).toEqual([
+      ['hello'],
+      ['hello wurld'],
+      ['hello world'],
+    ]);
     expect(result.transcript).toBe('hello world');
     expect(result.recordedUri).toBe('file://audio.pcm');
     expect(result.hasRecording).toBe(true);
     expect(clearTimeoutSpy).toHaveBeenCalled();
+
+    const nextSession = await startNativeSpeechSession('en-US', { onPartial });
+    listeners.get('result')?.({ results: [{ transcript: 'hello' }], isFinal: true });
+    expect(onPartial).toHaveBeenLastCalledWith('hello');
+    expect(onPartial).toHaveBeenCalledTimes(4);
+    await expect(nextSession!.stop()).resolves.toMatchObject({ transcript: 'hello' });
   });
 
   it('notifies the caller when recognition ends without an explicit stop', async () => {

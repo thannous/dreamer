@@ -83,7 +83,7 @@ import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -115,6 +115,22 @@ interface ShareImageData {
   source: string;
   extension: string;
   mimeType: string;
+}
+
+type SharePreparationStatus = 'ready' | 'failed' | 'stale';
+
+interface ShareCompositeRequest {
+  id: number;
+  source: string;
+  dream: DreamAnalysis;
+  onMediaReady: (source: string, ready: boolean) => void;
+}
+
+interface PendingShareComposite {
+  id: number;
+  source: string;
+  dreamIdentity: string;
+  resolve: (status: SharePreparationStatus) => void;
 }
 
 const getShareNavigator = (): ShareNavigator | undefined => {
@@ -793,12 +809,37 @@ function JournalDetailContent() {
       mimeType: getMimeTypeFromExtension(extension),
     };
   }, [dream, media.imageUrl, media.thumbnailUrl]);
-  const [shareMediaAttempt, setShareMediaAttempt] = useState(0);
-  const [shareMediaReady, setShareMediaReady] = useState<{ source: string; ready: boolean }>();
-  const onShareMediaReady = useCallback((source: string, ready: boolean) => {
-    setShareMediaReady(previous => previous?.source === source && previous.ready ? previous : { source, ready });
+  const [shareRequest, setShareRequest] = useState<ShareCompositeRequest | null>(null);
+  const shareRequestIdRef = useRef(0);
+  const pendingShareRef = useRef<PendingShareComposite | null>(null);
+  const shareInFlightRef = useRef(false);
+  const shareScreenMountedRef = useRef(true);
+  const shareDreamIdentity = dream ? getDreamIdentityKey(dream) : undefined;
+  const latestShareMediaRef = useRef({ source: shareImage?.source, dreamIdentity: shareDreamIdentity });
+  const onShareMediaReady = useCallback((requestId: number, source: string, ready: boolean) => {
+    const pending = pendingShareRef.current;
+    if (!pending || pending.id !== requestId || pending.source !== source) return;
+    pendingShareRef.current = null;
+    pending.resolve(ready && Boolean(shareImageRef.current) ? 'ready' : 'failed');
+  }, [shareImageRef]);
+  useLayoutEffect(() => {
+    latestShareMediaRef.current = { source: shareImage?.source, dreamIdentity: shareDreamIdentity };
+    const pending = pendingShareRef.current;
+    if (pending && (pending.source !== shareImage?.source || pending.dreamIdentity !== shareDreamIdentity)) {
+      pendingShareRef.current = null;
+      pending.resolve('stale');
+    }
+  }, [shareImage?.source, shareDreamIdentity]);
+  useEffect(() => {
+    shareScreenMountedRef.current = true;
+    return () => {
+      shareScreenMountedRef.current = false;
+      const pending = pendingShareRef.current;
+      pendingShareRef.current = null;
+      pending?.resolve('stale');
+    };
   }, []);
-  const shareMediaPending = Platform.OS !== 'web' && Boolean(dream?.imageUrl || dream?.thumbnailUrl) && (media.loading || Boolean(shareImage && shareMediaReady?.source !== shareImage.source));
+  const shareMediaPending = Platform.OS !== 'web' && Boolean(dream?.imageUrl || dream?.thumbnailUrl) && media.loading;
   const clipboardSupported = Platform.OS === 'web' && Boolean(getShareNavigator()?.clipboard?.writeText);
 
   const startMetadataEditing = useCallback(() => {
@@ -985,7 +1026,8 @@ function JournalDetailContent() {
 
   // Define callbacks before early return (hooks must be called unconditionally)
   const onShare = useCallback(async () => {
-    if (!dream || isAnalysisLocked) return;
+    if (!dream || isAnalysisLocked || shareInFlightRef.current) return;
+    shareInFlightRef.current = true;
     setIsSharing(true);
     try {
       if (Platform.OS === 'web') {
@@ -1006,16 +1048,31 @@ function JournalDetailContent() {
 
       if (dream.imageUrl || dream.thumbnailUrl) {
         if (shareMediaPending) return;
-        if (!shareImage || !shareMediaReady?.ready) {
-          setShareMediaReady(undefined);
-          setShareMediaAttempt(attempt => attempt + 1);
+        if (!shareImage || !shareDreamIdentity) {
           media.retry();
           throw new Error('Dream media is not ready for sharing');
         }
-      }
 
-      // Mobile (iOS/Android): Use composite image for sharing
-      if (shareImage) {
+        const requestId = ++shareRequestIdRef.current;
+        const source = shareImage.source;
+        const preparation = await new Promise<SharePreparationStatus>(resolve => {
+          pendingShareRef.current = { id: requestId, source, dreamIdentity: shareDreamIdentity, resolve };
+          setShareRequest({
+            id: requestId,
+            source,
+            dream,
+            onMediaReady: (readySource, ready) => onShareMediaReady(requestId, readySource, ready),
+          });
+        });
+        if (preparation === 'stale'
+          || latestShareMediaRef.current.source !== source
+          || latestShareMediaRef.current.dreamIdentity !== shareDreamIdentity) return;
+        if (preparation !== 'ready' || !shareImageRef.current) {
+          if (shareScreenMountedRef.current) media.retry();
+          throw new Error('Dream media is not ready for sharing');
+        }
+
+        // Mobile (iOS/Android): capture only after the requested image is displayed.
         await shareComposite(dream);
         return;
       }
@@ -1027,6 +1084,7 @@ function JournalDetailContent() {
       });
       return;
     } catch (error) {
+      if (!shareScreenMountedRef.current) return;
       console.error('Share failed:', error);
       if (Platform.OS === 'web') {
         openShareModal();
@@ -1034,9 +1092,14 @@ function JournalDetailContent() {
         Alert.alert(t('common.error_title'), t('journal.detail.share.error_message'));
       }
     } finally {
-      setIsSharing(false);
+      pendingShareRef.current = null;
+      shareInFlightRef.current = false;
+      if (shareScreenMountedRef.current) {
+        setShareRequest(null);
+        setIsSharing(false);
+      }
     }
-  }, [dream, isAnalysisLocked, openShareModal, shareComposite, shareImage, shareMessage, shareTitle, t, media, shareMediaPending, shareMediaReady]);
+  }, [dream, isAnalysisLocked, openShareModal, shareComposite, shareImage, shareMessage, shareTitle, t, media, shareMediaPending, shareDreamIdentity, shareImageRef, onShareMediaReady]);
 
   const handleToggleFavorite = useCallback(async () => {
     if (!dream || isAnalysisLocked) return;
@@ -2808,10 +2871,17 @@ function JournalDetailContent() {
           />
         ) : null}
 
-        {/* Hidden composite image generator for sharing */}
-        {dream && shareImage && (
+        {/* Mount the share composite only for an active native share request. */}
+        {shareRequest && (
           <View className="absolute top-0 left-[-10000px] h-[1350px] w-[1080px]">
-            <DreamShareImage key={shareMediaAttempt} ref={shareImageRef} dream={dream} t={t} resolvedMedia={media} onMediaReady={onShareMediaReady} />
+            <DreamShareImage
+              key={shareRequest.id}
+              ref={shareImageRef}
+              dream={shareRequest.dream}
+              t={t}
+              resolvedMedia={{ imageUrl: shareRequest.source }}
+              onMediaReady={shareRequest.onMediaReady}
+            />
           </View>
         )}
       </KeyboardAvoidingView>
