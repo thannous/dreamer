@@ -1,5 +1,22 @@
 # Reading performance through the canonical runner
 
+## Native commit safety
+
+Keep `reanimated.staticFeatureFlags.DISABLE_COMMIT_PAUSING_MECHANISM` set to
+`false` in `package.json` while using the stable, prebuilt React Native runtime.
+Setting it to `true` requires React Native's `preventShadowTreeCommitExhaustion`
+to be active in the compiled runtime. Without that protection, animated updates
+can starve React commits: the debug runtime can abort at
+`ShadowTree.cpp` with `attempts < 1024`. See the
+[Reanimated feature flag contract](https://docs.swmansion.com/react-native-reanimated/docs/guides/feature-flags/#disable_commit_pausing_mechanism).
+
+This is a native compile-time setting. Rebuild the app after changing it; Metro
+reloads cannot validate it. Retest the chat's thinking-to-response transition and
+scrolling, and verify that the installed APK is the rebuilt artifact. A successful
+debug retest does not establish Release frame performance or iOS behavior.
+
+## Reading measurements
+
 Keep startup modes (`cold`, `warm`, `resume`, `all`) unchanged. Reading uses Python 3's standard library, adb, Android SDK `apkanalyzer`/`apksigner`, and an explicitly supplied official Perfetto `trace_processor_shell`.
 
 Use the repository device lock around the canonical command. Leave the base Noctalia app open and the reference card reachable in the journal. The runner never installs, clears data, changes settings, or chooses a different dream.
