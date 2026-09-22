@@ -29,6 +29,7 @@ describe('mobile static asset contract', () => {
   it.each([
     ['onboarding-astral-background.webp', 731, 650, ASSET_BASELINES.intro],
     ['onboarding-path-background.webp', 853, 510, ASSET_BASELINES.path],
+    ['onboarding-reverie-background.webp', 887, 1774, ASSET_BASELINES.intro],
   ])('keeps %s as an opaque, size-efficient WebP at its source ratio', async (
     filename,
     width,
@@ -53,12 +54,9 @@ describe('mobile static asset contract', () => {
     const metroConfig = require('../metro.config');
 
     expect(source).toContain(
-      "require('@/assets/images/onboarding-astral-background.webp')"
+      "require('@/assets/images/onboarding-reverie-background.webp')"
     );
-    expect(source).toContain(
-      "require('@/assets/images/onboarding-path-background.webp')"
-    );
-    expect(source).not.toMatch(/onboarding-(?:astral|path)-background\.png/);
+    expect(source).not.toMatch(/onboarding-(?:astral|path|reverie)-background\.png/);
     expect(metroConfig.resolver.assetExts).toContain('webp');
   });
 });

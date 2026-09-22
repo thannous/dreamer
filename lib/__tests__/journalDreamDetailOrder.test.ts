@@ -11,14 +11,14 @@ describe('journal dream detail visible order', () => {
     return index;
   };
 
-  it('renders title, original transcript, analysis state, compact illustration, then symbols and secondary actions', () => {
+  it('renders title, original transcript, analysis, optional recall, fallback illustration, then symbols and secondary actions', () => {
     const titleAndDate = markerIndex(mainReturn, '{!isEditing && renderMetadataCard()}');
     const originalTranscript = markerIndex(mainReturn, '{renderTranscriptBody()}');
     const recallOffer = markerIndex(mainReturn, '<DreamRecallAssistantCard');
     const analysisState = markerIndex(mainReturn, "renderDetailActionCard(['analyze'])");
     const analysisResult = markerIndex(mainReturn, "t('journal.detail.zone.reading')");
     const interpretation = markerIndex(mainReturn, "t('journal.detail.interpretation_header')");
-    const illustration = markerIndex(mainReturn, '{renderIllustrationSection()}');
+    const illustration = markerIndex(mainReturn, '!hasIllustratedCover ? renderIllustrationSection() : null');
     const symbols = markerIndex(mainReturn, "t('journal.detail.symbols_header')");
     const emotions = markerIndex(mainReturn, "t('journal.detail.emotions_header')");
     const reflection = markerIndex(mainReturn, "t('journal.detail.zone.reflection')");
@@ -27,10 +27,10 @@ describe('journal dream detail visible order', () => {
 
     expect(titleAndDate).toBeLessThan(originalTranscript);
     expect(originalTranscript).toBeLessThan(analysisState);
-    expect(analysisState).toBeLessThan(recallOffer);
-    expect(recallOffer).toBeLessThan(analysisResult);
+    expect(analysisState).toBeLessThan(analysisResult);
     expect(analysisResult).toBeLessThan(interpretation);
-    expect(interpretation).toBeLessThan(illustration);
+    expect(interpretation).toBeLessThan(recallOffer);
+    expect(recallOffer).toBeLessThan(illustration);
     expect(illustration).toBeLessThan(symbols);
     expect(symbols).toBeLessThan(emotions);
     expect(emotions).toBeLessThan(reflection);
@@ -44,11 +44,13 @@ describe('journal dream detail visible order', () => {
     expect(source).toContain("t('journal.detail.zone.reflection')");
     expect(mainReturn.split("t('journal.detail.zone.reading')")).toHaveLength(2);
     expect(mainReturn.split("t('journal.detail.zone.reflection')")).toHaveLength(2);
-    expect(mainReturn.split('{renderIllustrationSection()}')).toHaveLength(2);
+    expect(mainReturn.split('!hasIllustratedCover ? renderIllustrationSection() : null')).toHaveLength(2);
     expect(mainReturn.split("renderDetailActionCard(['analyze'])")).toHaveLength(2);
     expect(mainReturn.split("renderDetailActionCard(['explore', 'continue'])")).toHaveLength(2);
     expect(mainReturn).not.toContain('{renderDetailActionCard()}');
     expect(mainReturn).toContain('<DreamRecallAssistantCard');
+    expect(source).toContain('{hasIllustratedCover ? renderIllustrationSection() : null}');
+    expect(mainReturn).toContain('{!recallRequested ? (');
     expect(source).toContain('TID.Component.JournalIllustration');
     expect(source).toContain('TID.Modal.JournalIllustrationFullscreen');
     expect(source).toContain('TID.Component.AnalysisStaleBanner');

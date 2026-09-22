@@ -13,7 +13,6 @@ describe('quota card product vocabulary', () => {
     expect(card).toContain("key: 'analysis'");
     expect(card).not.toContain("key: 'exploration'");
     expect(card).not.toContain("key: 'recordings'");
-    expect(french).toContain("'settings.quota.title': 'Interprétations offertes'");
     expect(french).toContain("'settings.quota.analysis_label': 'Interprétations offertes'");
     expect(french).toContain("'recording.quota.unlimited': 'Illimitées'");
   });

@@ -31,7 +31,7 @@ test('shared map names existing inputs and actual shared execution consumers', (
   expect(new Set(rows.map(row => row[0])).size).toBe(rows.length);
   for (const [input, graph, consumers] of rows) {
     expect(fs.existsSync(path.join(root, input))).toBe(true);
-    expect(['build', 'execution', 'content', 'contract']).toContain(graph);
+    expect(['build', 'execution', 'content', 'contract', 'runtime']).toContain(graph);
     for (const consumer of consumers.split(' ')) expect(['noctalia', 'meditation', 'site', 'edge_functions', 'edge_contracts']).toContain(consumer);
   }
   expect(fs.readFileSync(path.join(root, 'apps/meditation/package.json'), 'utf8')).toContain('scripts/android-device-lock.js');
