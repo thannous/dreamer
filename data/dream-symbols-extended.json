@@ -1,7 +1,7 @@
 {
   "meta": {
     "description": "Extended content for dream symbols - full interpretations and variations",
-    "lastUpdated": "2026-08-28"
+    "lastUpdated": "2026-09-22"
   },
   "symbols": {
     "water": {
@@ -1968,15 +1968,19 @@
         }
       },
       "es": {
-        "fullInterpretation": "<p>Empieza por el perro concreto del sueño: ¿era conocido o desconocido, estaba cerca o lejos, jugaba, protegía, estaba herido o mostraba los dientes? Anota también qué hacías tú y qué emoción quedó al despertar.</p>\n<p>Un perro tranquilo podría encajar con confianza, compañía o apoyo. Un perro que gruñe, persigue o muerde podría acercarse más a un conflicto o a una relación que se siente imprevisible. Si la escena era alegre, el perro también puede ser simplemente una imagen de afecto.</p>\n<p>Antes de buscar un significado oculto, considera lo reciente: tu propia mascota, un paseo, un perro que viste en la calle, una visita al veterinario o un vídeo pueden reaparecer durante el sueño. Esa explicación literal puede ser suficiente.</p>",
+        "fullInterpretation": "<p>Empieza por el perro concreto del sueño: ¿era conocido o desconocido, estaba cerca o lejos, jugaba, protegía, estaba herido o mostraba los dientes? Anota también qué hacías tú y qué emoción quedó al despertar.</p>\n<p>Un perro tranquilo podría encajar con confianza, compañía o apoyo. Si el perro gruñía, perseguía o mordía, observa a quién se dirigía y cómo reaccionabas. El miedo de la escena puede encajar con un susto o una preocupación reciente; por sí solo no demuestra una traición ni anuncia un ataque real. Si la escena era alegre, el perro también puede ser simplemente una imagen de afecto.</p>\n<p>Antes de buscar un significado oculto, considera lo reciente: tu propia mascota, un paseo, un perro que viste en la calle, una visita al veterinario o un vídeo pueden reaparecer durante el sueño. Esa explicación literal puede ser suficiente.</p>",
         "variations": [
           {
             "context": "Un perro amigable y juguetón",
             "meaning": "La confianza, la compañía o una relación segura son pistas posibles. Saber si conocías al perro ayuda a precisar la escena."
           },
           {
-            "context": "Un perro agresivo o que ataca",
-            "meaning": "Un conflicto, un estado de alerta o una situación imprevisible pueden encajar con la escena. No anuncia una traición ni una agresión real."
+            "context": "Un perro que te ataca o te muerde",
+            "meaning": "Distingue si el perro solo amenazaba, te perseguía o llegaba a morderte. ¿Era conocido? ¿Podías alejarte, protegerte o pedir ayuda? El miedo, la sorpresa o la rabia pueden ayudarte a comparar la escena con un susto o una preocupación reciente, sin atribuir al sueño un significado fijo ni una predicción."
+          },
+          {
+            "context": "Un perro que ataca o muerde a otra persona o a tu hijo",
+            "meaning": "Observa quién recibía el ataque, si conocías al perro y qué intentabas hacer. Proteger a alguien, pedir ayuda o sentirte incapaz de intervenir son situaciones distintas. La escena puede conectar con una preocupación por esa persona o con algo que viste recientemente; no indica que esté en peligro ni que vaya a sufrir una agresión."
           },
           {
             "context": "Un perro perdido o callejero",
@@ -13916,6 +13920,10 @@
       "it": {
         "fullInterpretation": "<p>Una tartaruga può rendere visibili ritmo e protezione. Parti dal movimento: attraversava la terra, nuotava, restava ferma, era bloccata o rientrava nel guscio? Progresso tranquillo e ritardo frustrante creano contesti diversi.</p>\n<p>Il guscio può collegarsi a privacy, confini o tempo necessario prima di rispondere. Una tartaruga che procede con costanza può invece mettere in primo piano perseveranza e un ritmo sostenibile, anche se appare lento.</p>\n<p>Un animale domestico, documentario, visita alla spiaggia, storia di tutela o immagine recente possono fornire direttamente il simbolo. Il sogno non predice longevità o fortuna; confrontalo con il bisogno attuale di sicurezza e avanzamento.</p>",
         "variations": [
+          {
+            "context": "Sognare tartarughe di terra",
+            "meaning": "Dove si trovavano: in giardino, lungo un sentiero o in un recinto? Nota se camminavano libere, cercavano un riparo o non riuscivano a uscire. Calma, fretta e preoccupazione danno contesti diversi alla stessa scena. Puoi confrontarli con il tuo bisogno attuale di spazio, protezione o tempo, senza attribuire alla tartaruga un significato fisso. Anche un animale visto di recente può spiegare il sogno."
+          },
           { "context": "Una tartaruga nell’acqua", "meaning": "Nuotare può evidenziare adattamento, emozione o movimento più facile del cammino sulla terra." },
           { "context": "Una tartaruga nascosta nel guscio", "meaning": "Il ritiro può riflettere privacy, protezione o tempo prima di partecipare di nuovo." },
           { "context": "Una tartaruga lenta o bloccata", "meaning": "Il ritmo può riprendere frustrazione, pazienza o un processo che non va accelerato." },

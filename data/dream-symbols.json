@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-09-21",
+    "lastUpdated": "2026-09-22",
     "totalSymbols": 160,
     "languages": [
       "en",
@@ -1256,38 +1256,34 @@
       "es": {
         "slug": "perro",
         "name": "Perro",
-        "shortDescription": "Soñar con un perro o con perros suele hablar de confianza, lealtad y protección. Si el perro ataca, muerde, gruñe, te persigue o parece herido, el sueño señala una relación que ya no se siente del todo segura.",
+        "shortDescription": "Soñar con un perro o con varios perros no tiene un significado único. Observa si eran conocidos, cómo se comportaban y qué sentías. Una escena de ataque o mordida puede recordar un susto reciente, sin anunciar una traición ni un peligro real.",
         "askYourself": [
-          "¿El perro era cariñoso, agresivo, callejero o protector?",
-          "¿Me atacaba, mordía, perseguía, seguía o defendía a alguien?",
-          "¿Qué relación de confianza se siente fuerte, frágil o herida ahora?"
+          "¿Conocía al perro y cómo se comportaba conmigo o con otras personas?",
+          "¿A quién atacaba o mordía, y qué hacía yo: huir, proteger, pedir ayuda o quedarme inmóvil?",
+          "¿Qué emoción me quedó y qué encuentro, imagen o preocupación reciente podría relacionarse con la escena?"
         ],
         "seoTitle": "perro que ataca, muerde o persigue",
         "documentTitle": "Soñar con perros que atacan y muerden",
         "documentMetaDescription": "Qué significa soñar con perros que atacan, muerden o te persiguen. Compara quién recibe el ataque, cómo reaccionas y qué emoción sientes al despertar.",
         "faq": [
           {
-            "question": "¿Qué significa soñar con un perro?",
-            "answer": "Soñar con un perro suele relacionarse con confianza, lealtad, protección y relaciones. El significado cambia si el perro es cariñoso, agresivo, callejero, herido o si te sigue."
-          },
-          {
-            "question": "¿Qué significa soñar con perros?",
-            "answer": "Varios perros pueden representar grupo, familia, amistades o dinámicas sociales. Si están tranquilos hablan de apoyo; si son agresivos indican presión o conflicto."
+            "question": "¿Qué significa soñar con un perro o con varios perros?",
+            "answer": "No hay un significado único. Fíjate en si conocías a los perros, cómo se comportaban y qué sentías. La compañía, el miedo o la responsabilidad son posibles asociaciones personales; una mascota, un encuentro o una imagen reciente también pueden explicar la escena."
           },
           {
             "question": "¿Qué significa soñar con un perro que te ataca?",
-            "answer": "Un perro que ataca puede indicar miedo a la traición, conflicto en una relación o una amenaza percibida en alguien que normalmente debería ser confiable."
+            "answer": "La escena puede encajar con una sensación de amenaza o con un susto reciente, sin demostrar que alguien quiera hacerte daño. Observa si el perro era conocido, si llegaba a alcanzarte y si huías, te defendías o pedías ayuda. El sueño no predice una agresión real."
           },
           {
-            "question": "¿Qué significa soñar con un perro que muerde?",
-            "answer": "La mordida de un perro señala confianza herida, una palabra agresiva o una relación que pasó de protegerte a doler."
+            "question": "¿Qué significa soñar con un perro que te muerde?",
+            "answer": "Una mordida no tiene una interpretación fija ni demuestra una traición. Recuerda qué ocurría antes, cómo reaccionabas y qué emoción persistió al despertar. Un recuerdo de un perro, una escena vista o una preocupación reciente pueden ofrecer contexto sin necesidad de atribuirlo a una relación."
           },
           {
-            "question": "¿Qué significa soñar con un perro que te persigue?",
-            "answer": "Un perro que te persigue puede mostrar una tensión relacional que intentas evitar: miedo a una reacción, una conversación pendiente o una lealtad que se volvió presión."
+            "question": "¿Qué significa soñar que un perro muerde a otra persona o a mi hijo?",
+            "answer": "Importa quién recibía la mordida y si intentabas proteger, pedir ayuda o no podías intervenir. La escena puede conectar con una preocupación por esa persona o con una imagen reciente, pero no anuncia que vaya a sufrir un ataque. Compara lo que sentías con tu contexto actual."
           }
         ],
-        "modifiedAt": "2026-07-06"
+        "modifiedAt": "2026-09-22"
       },
       "de": {
         "slug": "hund",
@@ -14333,7 +14329,8 @@
             "question": "Che cosa significano tartarughe appena nate o molte tartarughe?",
             "answer": "I piccoli possono evidenziare un inizio fragile o passi ridotti; molte tartarughe possono accentuare un ritmo condiviso o responsabilità ripetute, senza predire risultati."
           }
-        ]
+        ],
+        "modifiedAt": "2026-09-22"
       },
       "pt": {
         "slug": "tartarugas",
