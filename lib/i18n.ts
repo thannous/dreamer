@@ -124,6 +124,10 @@ async function importLanguagePack(language: AppLanguage): Promise<Translations> 
   }
 }
 
+export function areTranslationsLoaded(lang?: string): boolean {
+  return loadedTranslations[resolveLanguage(lang)] !== undefined;
+}
+
 export async function loadTranslations(lang?: string): Promise<Translations> {
   const language = resolveLanguage(lang);
   const existing = loadedTranslations[language];
@@ -184,4 +188,3 @@ export const getTranslator = (lang?: string) => {
     return s;
   };
 };
-

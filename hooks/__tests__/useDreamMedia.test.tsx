@@ -9,7 +9,7 @@ import type { DreamAnalysis } from '@/lib/types';
 jest.mock('@/context/AuthContext', () => ({ AuthContext: require('react').createContext(null) }));
 jest.mock('@/services/dreamMediaService', () => ({ resolveDreamMedia: jest.fn(), getDirectDreamMediaUrl: () => undefined }));
 const mockNetwork = { isConnected: true, isInternetReachable: true };
-jest.mock('expo-network', () => ({ useNetworkState: () => mockNetwork }));
+jest.mock('../useNetworkOnline', () => ({ useNetworkOnline: () => mockNetwork.isInternetReachable ?? mockNetwork.isConnected ?? true }));
 const resolve = jest.mocked(resolveDreamMedia);
 const pending = () => {
   let finish!: (value: any) => void;

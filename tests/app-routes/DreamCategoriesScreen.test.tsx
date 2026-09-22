@@ -108,7 +108,7 @@ jest.mock('@/context/ThemeContext', () => ({
 
 const mockUseDreams = jest.fn();
 jest.mock('@/context/DreamsContext', () => ({
-  useDreams: () => mockUseDreams(),
+  useDreamsData: () => mockUseDreams(),
 }));
 
 jest.mock('react-native-safe-area-context', () => ({

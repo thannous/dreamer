@@ -60,8 +60,49 @@ export function createJournalRepository({ getClient, now = () => Date.now() }: {
     return readJournalPage(userId, options, JOURNAL_LIST_COLUMNS, (row) => mapRowToDreamListItem(row, now));
   }
 
-  function fetchDreamFullPage(userId: string, options: JournalReadOptions = {}): Promise<JournalPage<DreamAnalysis>> {
-    return readJournalPage(userId, options, '*', (row) => mapRowToDream(row, now));
+  async function fetchDreamFullPage(
+    userId: string,
+    options: JournalReadOptions & {
+      /** Complete, unmodified server rows from this account; never a local storage projection. */
+      cachedDreams?: ReadonlyMap<number, DreamAnalysis>;
+    } = {},
+  ): Promise<JournalPage<DreamAnalysis>> {
+    const cached = options.cachedDreams;
+    if (!cached?.size) return readJournalPage(userId, options, '*', (row) => mapRowToDream(row, now));
+
+    // Every row update rotates revision_id (trg_touch_dream_revision). Scan all
+    // identities for deletion detection, but transfer histories only if changed.
+    const page = await readJournalPage(userId, options, 'id,revision_id', (row) => row);
+    const resolved = new Map<number, DreamAnalysis>();
+    const missing: number[] = [];
+    for (const row of page.items) {
+      const dream = cached.get(row.id);
+      if (row.revision_id && dream?.remoteId === row.id && dream.revisionId === row.revision_id) {
+        resolved.set(row.id, dream);
+      } else missing.push(row.id);
+    }
+    // A bulk change should not turn one full-page read into many detail requests.
+    if (missing.length > 100) return readJournalPage(userId, options, '*', (row) => mapRowToDream(row, now));
+    try {
+      // Bound URL size and never silently accept a capped/partial detail query.
+      for (let offset = 0; offset < missing.length; offset += 100) {
+        const ids = missing.slice(offset, offset + 100);
+        await assertJournalSession(userId);
+        const { data, error } = await getClient().from(DREAMS_TABLE).select('*')
+          .eq('user_id', userId).in('id', ids).limit(ids.length);
+        await assertJournalSession(userId);
+        if (error) throw formatError(error, 'Failed to refresh dreams from Supabase');
+        if (!Array.isArray(data) || data.length !== ids.length) throw new Error('Incomplete journal detail response');
+        const remaining = new Set(ids);
+        for (const row of data as unknown as SupabaseDreamRow[]) {
+          if (!remaining.delete(row.id)) throw new Error('Invalid journal detail identity');
+          resolved.set(row.id, mapRowToDream(row, now));
+        }
+      }
+      return { ...page, items: page.items.map((row) => resolved.get(row.id)!) };
+    } catch (error) {
+      throw new JournalTraversalError(userId, options.cursor ?? null, error);
+    }
   }
 
   /** Consumers can persist nextCursor after each consumed page and resume without replay. */

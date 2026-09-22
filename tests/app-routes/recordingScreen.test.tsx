@@ -446,7 +446,15 @@ jest.doMock('@/context/AuthContext', () => ({
 }));
 
 jest.doMock('@/context/DreamsContext', () => ({
-  useDreams: () => ({
+  useDreamsData: () => ({
+    addDream: mockAddDream,
+    analyzeDream: mockAnalyzeDream,
+    applyDreamCategorization: mockApplyDreamCategorization,
+    dreams: mockDreams,
+    reloadDreams: jest.fn(),
+    updateDream: jest.fn(),
+  }),
+  useDreamsActions: () => ({
     addDream: mockAddDream,
     analyzeDream: mockAnalyzeDream,
     applyDreamCategorization: mockApplyDreamCategorization,

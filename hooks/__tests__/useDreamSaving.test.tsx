@@ -52,7 +52,13 @@ jest.mock('../../context/AuthContext', () => ({
 }));
 
 jest.mock('../../context/DreamsContext', () => ({
-  useDreams: jest.fn().mockReturnValue({
+  useDreamsData: jest.fn().mockReturnValue({
+    addDream: mockAddDream,
+    applyDreamCategorization: mockApplyDreamCategorization,
+    dreams: [],
+    analyzeDream: mockAnalyzeDream,
+  }),
+  useDreamsActions: jest.fn().mockReturnValue({
     addDream: mockAddDream,
     applyDreamCategorization: mockApplyDreamCategorization,
     dreams: [],

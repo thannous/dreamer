@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Datenschutzerklärung",
   "publishedTime": "",
-  "modifiedTime": "2026-08-27",
+  "modifiedTime": "2026-09-22",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Datenschutzerklärung</h1>
-<p class="text-lg text-purple-200/80 mb-10">Gültig ab 27. August 2026</p>
+<p class="text-lg text-purple-200/80 mb-10">Gültig ab 22. September 2026</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -80,7 +80,7 @@
       <li><strong>Kontodaten:</strong> E-Mail-Adresse, gehashter Passwortwert, Sprache, Anzeigepräferenzen und Kontoverwaltungsdaten.</li>
       <li><strong>Traumdaten:</strong> Texte, Transkripte, KI-Analysen, Zitate, Themen, Traumtypen, Favoriten, generierte Bilder und Verlauf der geführten Reflexion.</li>
       <li><strong>Audio:</strong> Wenn du die Sprachfunktion nutzt, wird deine Stimme zur Erstellung eines Transkripts verarbeitet. Noctalia speichert Audiodateien nicht dauerhaft auf seinen Servern; sie werden nur im technischen Ablauf verarbeitet. Gespeichert wird das Transkript.</li>
-      <li><strong>Technische Daten:</strong> Fehler-, Leistungs- und Sicherheitsprotokolle, App-Version, Betriebssystem und ein gehashter Geräteindikator ausschließlich zur Verwaltung kostenloser Kontingente. Auf Android und iOS kann Noctalia zusätzlich eine begrenzte Zahl funktionaler Ereignisse messen (angezeigter Onboarding-Schritt, getroffene Auswahl, gespeicherter Traum oder aufgerufenes Ergebnis). Dafür wird eine zufällige Journey-Kennung höchstens sieben Tage auf dem Gerät gespeichert. Diese interne Messung enthält niemals Traumtext, Titel oder Analyse und weder E-Mail-Adresse, Konto- oder Gerätekennung noch eine dauerhaft gespeicherte IP-Adresse. Sie verwendet keine Drittanbieter-Marketing-Analytics und kann in der Einführung oder den Einstellungen deaktiviert werden.</li>
+      <li><strong>Technische Daten:</strong> Fehler-, Leistungs- und Sicherheitsprotokolle, App-Version, Betriebssystem und ein gehashter Geräteindikator ausschließlich zur Verwaltung kostenloser Kontingente. Die Nutzungsmessung der App ist freiwillig, standardmäßig deaktiviert und beginnt erst nach deiner Aktivierung in der Einführung oder den Einstellungen. Sie hilft Noctalia, Navigation, erste Speicherungen und die Rückkehr innerhalb von sieben Tagen zu verbessern. Du kannst die App ohne Zustimmung nutzen und deine Einwilligung jederzeit in den Einstellungen widerrufen. Auf Android, iOS und in der Web-App kann Noctalia zusätzlich eine begrenzte Zahl funktionaler Ereignisse messen (angezeigter Onboarding-Schritt, getroffene Auswahl, gespeicherter Traum oder aufgerufenes Ergebnis). Dafür wird eine zufällige Journey-Kennung höchstens sieben Tage auf dem Gerät gespeichert. Diese interne Messung enthält niemals Traumtext, Titel oder Analyse und weder E-Mail-Adresse, Konto- oder Gerätekennung noch eine dauerhaft gespeicherte IP-Adresse. Sie verwendet keine Drittanbieter-Marketing-Analytics und kann in der Einführung oder den Einstellungen deaktiviert werden.</li>
       <li><strong>Reichweitenmessung der Website:</strong> Beim Besuch von noctalia.app misst Ahrefs Web Analytics Seitenaufrufe, Referrer und gegebenenfalls Klicks auf externe Links sowie Formularübermittlungen. Außerdem werden Browser, Gerät, Betriebssystem, Sprache und ein ungefährer Standort auf Landes- und Stadtebene abgeleitet. Dabei werden weder Cookies noch dauerhafte Kennungen verwendet. Die rohe IP-Adresse wird nur vorübergehend für den ungefähren Standort und einen täglich gesalzenen Besucher-Hash genutzt und anschließend verworfen, ohne gespeichert zu werden. Konto- oder Trauminhalte werden nicht an Ahrefs übermittelt.</li>
       <li><strong>Nutzungsanalyse der Website mit deiner Einwilligung:</strong> Ausschließlich um Noctalia und diese Website zu verbessern, misst Microsoft Clarity besuchte Seiten, Klicks, Scrollvorgänge und grundlegende technische Informationen und erstellt Heatmaps sowie Sitzungsaufzeichnungen, wenn du Analytics erlaubst. Angezeigte Texte, Eingabefelder und Auswahllisten werden durch strikte Maskierung verborgen. Clarity kann die Cookies <code>_clck</code> und <code>_clsk</code> setzen. Werbespeicherung bleibt abgelehnt; Traum- oder Kontodaten senden wir nicht absichtlich an Clarity.</li>
       <li><strong>Reichweitenmessung mit deiner Einwilligung:</strong> Ausschließlich um Noctalia und diese Website zu verbessern, misst Google Analytics besuchte Seiten, Zugriffsquellen, grundlegende Interaktionen und technische Informationen (Browser, Gerät, Betriebssystem, Sprache, ungefährer Standort auf Länderebene), wenn du Analytics erlaubst. Google Analytics kann die Cookies <code>_ga</code> und <code>_ga_*</code> setzen. Werbefunktionen und Werbespeicherung bleiben deaktiviert; Traum- oder Kontodaten senden wir nicht absichtlich an Google Analytics.</li>
@@ -91,10 +91,11 @@
 
   <section>
     <h2 class="text-2xl font-serif text-white mb-4 mt-8">3. Zwecke und Rechtsgrundlagen</h2>
+                <p class="mt-4">Die freiwillige Nutzungsmessung der App beruht auf deiner Einwilligung, unabhängig von den technischen Vorgängen, die zur Bereitstellung und Absicherung des Dienstes erforderlich sind.</p>
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Bereitstellung der App:</strong> Konto, Traumtagebuch, Analysen, Bilder und Kernfunktionen auf Grundlage der Vertragserfüllung.</li>
       <li><strong>Transkription und Analyse:</strong> Verarbeitung auf Grundlage deiner ausdrücklichen Einwilligung, insbesondere wenn deine Einträge sensible Informationen enthalten.</li>
-      <li><strong>Sicherheit, Stabilität und Verbesserung:</strong> berechtigtes Interesse an einem sicheren und zuverlässigen Dienst ohne Marketingprofiling.</li>
+      <li><strong>Sicherheit und technische Stabilität:</strong> berechtigtes Interesse an einem sicheren und zuverlässigen Dienst ohne Marketingprofiling.</li>
       <li><strong>Aggregierte, cookiefreie Reichweitenmessung mit Ahrefs:</strong> berechtigtes Interesse an der Verbesserung öffentlicher Inhalte, ohne zielgerichtete Werbung oder websiteübergreifendes Tracking.</li>
       <li><strong>Heatmaps und Sitzungsaufzeichnungen mit Microsoft Clarity:</strong> ausschließlich auf Grundlage deiner <strong>Einwilligung</strong> in Analytics, die du jederzeit ablehnen oder widerrufen kannst.</li>
       <li><strong>Reichweitenmessung mit Google Analytics:</strong> ausschließlich auf Grundlage deiner <strong>Einwilligung</strong> in Analytics, die du jederzeit ablehnen oder widerrufen kannst.</li>

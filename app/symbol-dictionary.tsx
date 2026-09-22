@@ -1,7 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { AtmosphericBackground } from "@/components/inspiration/AtmosphericBackground";
 import { CategoryHeader } from "@/components/symbols/CategoryHeader";
@@ -659,20 +659,20 @@ export default function SymbolDictionaryScreen() {
       </MotiView>
 
       {/* Symbol list */}
-      <ScrollView
+      <FlatList<Row>
         testID="symbol-list"
         style={styles.list}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
-      >
-        {listData.length === 0
-          ? renderEmptyComponent()
-          : listData.map((item) => (
-              <React.Fragment key={item.id}>
-                {renderListRow(item)}
-              </React.Fragment>
-            ))}
-      </ScrollView>
+        data={listData}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => renderListRow(item)}
+        ListEmptyComponent={renderEmptyComponent()}
+        initialNumToRender={12}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+        removeClippedSubviews={false}
+      />
     </LinearGradient>
   );
 }

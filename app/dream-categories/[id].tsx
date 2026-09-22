@@ -5,7 +5,7 @@ import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { Exploration360Panel } from '@/components/chat/Exploration360Panel';
 import { Fonts } from '@/constants/theme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { useDreams } from '@/context/DreamsContext';
+import { useDreamsData } from '@/context/DreamsContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -60,7 +60,7 @@ const CATEGORIES: Category[] = [
 export default function DreamCategoriesScreen() {
   const { t } = useTranslation();
   const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
-  const { dreams } = useDreams();
+  const { dreams } = useDreamsData();
   const { colors, shadows, mode } = useTheme();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const scrollPerf = useScrollIdle();

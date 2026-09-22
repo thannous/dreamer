@@ -24,7 +24,7 @@ export interface RecordingTextInputProps {
   /** False when the device cannot capture speech at all: the mic is hidden, not just disabled. */
   voiceSupported?: boolean;
   voiceStatus?: MicButtonStatus;
-  recordingDurationLabel?: string;
+  recordingDurationLabel?: React.ReactNode;
   showVoiceHint?: boolean;
   onVoiceHintDismiss?: () => void;
   placeholder?: string;

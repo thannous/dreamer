@@ -1,6 +1,6 @@
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { MarkdownText } from '@/components/ui/MarkdownText';
-import { AnalysisReadingModal } from '@/components/analysis/AnalysisReadingModal';
+import { AnalysisReadingLauncher, type AnalysisReadingHandle } from '@/components/analysis/AnalysisReadingLauncher';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
@@ -32,15 +32,13 @@ import { useAuth } from '@/context/AuthContext';
 import { SignInToOpenDream } from '@/components/auth/SignInToOpenDream';
 import { dreamAuthReturnDestination } from '@/lib/authReturnIntent';
 import { useOnboarding } from '@/context/OnboardingContext';
-import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
-import { useDreams } from '@/context/DreamsContext';
+import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useDreamShareComposite } from '@/hooks/useDreamShareComposite';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
-import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildFirstValueProperties } from '@/lib/activationAnalytics';
@@ -250,8 +248,8 @@ function JournalDetailContent() {
   useEffect(() => {
     recallEligibleDreamIdRef.current = recallOffer.eligibleDreamId;
   }, [recallOffer.eligibleDreamId]);
+  const { dreams } = useDreamsData();
   const {
-    dreams,
     toggleFavorite,
     updateDream,
     deleteDream,
@@ -259,7 +257,7 @@ function JournalDetailContent() {
     resolveDreamConflict,
     generateDreamImage,
     analyzeDream,
-  } = useDreams();
+  } = useDreamsActions();
   const { user } = useAuth();
   const { colors, shadows, mode } = useTheme();
   const insets = useSafeAreaInsets();
@@ -272,8 +270,12 @@ function JournalDetailContent() {
     coverCaptionHeight,
   );
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const markdownStyles = useMemo(() => StyleSheet.create({
+    transcript: { fontSize: 14, lineHeight: 26, color: noctalia.text.secondary },
+    interpretation: { fontSize: 16, lineHeight: 26, color: noctalia.text.primary },
+    insight: { fontSize: 15, lineHeight: 22, color: noctalia.text.secondary },
+  }), [noctalia.text.primary, noctalia.text.secondary]);
   const { language } = useLanguage();
-  const scrollPerf = useScrollIdle();
   useClearWebFocus();
 
   useEffect(() => {
@@ -286,7 +288,7 @@ function JournalDetailContent() {
   const [isRetryingSync, setIsRetryingSync] = useState(false);
   const [syncRetryFailed, setSyncRetryFailed] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [isReadingAnalysis, setIsReadingAnalysis] = useState(false);
+  const analysisReadingRef = useRef<AnalysisReadingHandle>(null);
   const awaitingAnalysisReading = useRef(false);
   const [analysisRecoveryClock, setAnalysisRecoveryClock] = useState(() => Date.now());
   const [showReplaceImageSheet, setShowReplaceImageSheet] = useState(false);
@@ -574,7 +576,7 @@ function JournalDetailContent() {
       awaitingAnalysisReading.current = false;
     } else if (showCompletedReading && dream?.interpretation?.trim() && awaitingAnalysisReading.current) {
       awaitingAnalysisReading.current = false;
-      setIsReadingAnalysis(true);
+      analysisReadingRef.current?.open();
     }
   }, [dream?.analysisStatus, dream?.interpretation, showCompletedReading]);
 
@@ -1466,40 +1468,38 @@ function JournalDetailContent() {
 
   if (!dream) {
     return (
-      <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-        <View className="relative flex-1 overflow-hidden bg-ink">
-          <KeyboardAvoidingView
-            className="flex-1"
-            behavior={keyboardBehavior}
-            keyboardVerticalOffset={keyboardVerticalOffset}
-          >
-            <View className="flex-1 items-center justify-center p-5">
-              <Text className="text-[18px] text-ivory">
-                {t('journal.detail.not_found.title')}
-              </Text>
-              {!user ? (
-                <SignInToOpenDream destination={dreamAuthReturnDestination('journal', { id, remoteId, clientRequestId })} />
-              ) : null}
-              <PressableScale
-                onPress={handleBackPress}
-                className="mt-4 rounded-sm bg-champagne px-6 py-3"
-              >
-                <Text className="font-sans-bold text-[16px] text-on-champagne">
-                  {t('journal.detail.not_found.back')}
-                </Text>
-              </PressableScale>
-            </View>
-            {savedConfirmationVisible ? (
-              <Toast
-                message={t('recording.save.confirmation')}
-                mode="success"
-                onHide={() => setSavedConfirmationVisible(false)}
-                testID={TID.Text.RecordingSaveConfirmation}
-              />
+      <View className="relative flex-1 overflow-hidden bg-ink">
+        <KeyboardAvoidingView
+          className="flex-1"
+          behavior={keyboardBehavior}
+          keyboardVerticalOffset={keyboardVerticalOffset}
+        >
+          <View className="flex-1 items-center justify-center p-5">
+            <Text className="text-[18px] text-ivory">
+              {t('journal.detail.not_found.title')}
+            </Text>
+            {!user ? (
+              <SignInToOpenDream destination={dreamAuthReturnDestination('journal', { id, remoteId, clientRequestId })} />
             ) : null}
-          </KeyboardAvoidingView>
-        </View>
-      </ScrollPerfProvider>
+            <PressableScale
+              onPress={handleBackPress}
+              className="mt-4 rounded-sm bg-champagne px-6 py-3"
+            >
+              <Text className="font-sans-bold text-[16px] text-on-champagne">
+                {t('journal.detail.not_found.back')}
+              </Text>
+            </PressableScale>
+          </View>
+          {savedConfirmationVisible ? (
+            <Toast
+              message={t('recording.save.confirmation')}
+              mode="success"
+              onHide={() => setSavedConfirmationVisible(false)}
+              testID={TID.Text.RecordingSaveConfirmation}
+            />
+          ) : null}
+        </KeyboardAvoidingView>
+      </View>
     );
   }
 
@@ -1553,7 +1553,7 @@ function JournalDetailContent() {
           autoFocus
         />
       ) : (
-        <MarkdownText style={{ fontSize: 14, lineHeight: 26, color: noctalia.text.secondary }}>{dream.transcript}</MarkdownText>
+        <MarkdownText style={markdownStyles.transcript}>{dream.transcript}</MarkdownText>
       )}
       {dream.captureOriginalTranscript ? <CaptureOriginal source={dream.captureOriginalTranscript} /> : null}
       {isEditingTranscript ? (
@@ -2296,13 +2296,12 @@ function JournalDetailContent() {
   };
 
   return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-      <View className="relative flex-1 overflow-hidden bg-ink">
-        <KeyboardAvoidingView
-          className="flex-1"
-          behavior={keyboardBehavior}
-          keyboardVerticalOffset={keyboardVerticalOffset}
-        >
+    <View className="relative flex-1 overflow-hidden bg-ink">
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={keyboardBehavior}
+        keyboardVerticalOffset={keyboardVerticalOffset}
+      >
         <PressableScale
           onPress={handleBackPress}
           className="absolute left-3 z-50 min-h-11 flex-row items-center gap-2 rounded-[22px] border border-line bg-ink/90 px-3"
@@ -2329,11 +2328,6 @@ function JournalDetailContent() {
               ((isEditing || isEditingTranscript) ? 220 : 100) + insets.bottom,
           }}
           keyboardShouldPersistTaps="handled"
-          scrollEventThrottle={16}
-          onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
-          onScrollEndDrag={scrollPerf.onScrollEndDrag}
-          onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
-          onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
           <View className="px-4 pb-6">
             {hasIllustratedCover ? renderIllustrationSection() : null}
@@ -2380,10 +2374,11 @@ function JournalDetailContent() {
                 <View testID={TID.Component.DreamDetailReadingZone}>
                   {renderDetailZoneHeader(t('journal.detail.zone.reading'), TID.Text.DreamDetailReadingZone)}
                   {showCompletedReading && !isAnalysisPending && dream.interpretation?.trim() ? (
-                    <PressableScale onPress={() => setIsReadingAnalysis(true)} accessibilityRole="button"
-                      testID="analysis.reading.open" className="min-h-[48px] justify-center self-start py-3">
-                      <Text className="font-sans-bold text-[15px] text-champagne-on">{t('analysis.reading.open')}</Text>
-                    </PressableScale>
+                    <AnalysisReadingLauncher ref={analysisReadingRef} dream={dream} imageUri={displayImageUrl}
+                      imageCacheKey={imageCacheKey}
+                      imageLoadFailed={Boolean(dream.imageUrl && !displayImageUrl && media.error)} onReloadImage={media.retry}
+                      isRetryingImage={isRetryingImage}
+                      onRetryImage={visibleIllustrationCta === 'retry' && !getImageJobFailure(dream.imageJobErrorCode) ? onRetryImage : undefined} />
                   ) : null}
                   {isAnalysisPending ? (
                     <Skeleton className="h-[60px] w-full rounded-sm" />
@@ -2414,7 +2409,7 @@ function JournalDetailContent() {
                         </Text>
                         <View className="mt-2 h-[2.5px] w-9 self-center rounded-[1.5px] bg-champagne opacity-85" />
                       </View>
-                      <MarkdownText variant="reading" style={{ fontSize: 16, lineHeight: 26, color: noctalia.text.primary }} containerStyle={{ marginBottom: 16 }}>
+                      <MarkdownText variant="reading" style={markdownStyles.interpretation} containerStyle={markdownContainerStyles.interpretation}>
                         {dream.interpretation}
                       </MarkdownText>
                     </>
@@ -2449,7 +2444,7 @@ function JournalDetailContent() {
                       <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
                         {symbol.name}
                       </Text>
-                      <MarkdownText style={{ fontSize: 15, lineHeight: 22, color: noctalia.text.secondary }}>
+                      <MarkdownText style={markdownStyles.insight}>
                         {symbol.meaning}
                       </MarkdownText>
                     </View>
@@ -2470,7 +2465,7 @@ function JournalDetailContent() {
                       <Text className="mb-0.5 font-sans-bold text-[15px] leading-[22px] text-ivory">
                         {emotion.name}
                       </Text>
-                      <MarkdownText style={{ fontSize: 15, lineHeight: 22, color: noctalia.text.secondary }}>
+                      <MarkdownText style={markdownStyles.insight}>
                         {emotion.insight}
                       </MarkdownText>
                     </View>
@@ -2492,7 +2487,7 @@ function JournalDetailContent() {
                       </View>
                       {dream.reflectionQuestions.map((question, index) => (
                         <View key={`reflection-${index}`} className="mb-3">
-                          <MarkdownText style={{ fontSize: 15, lineHeight: 22, color: noctalia.text.secondary }}>
+                          <MarkdownText style={markdownStyles.insight}>
                             {question}
                           </MarkdownText>
                         </View>
@@ -2629,13 +2624,6 @@ function JournalDetailContent() {
             </View>
           </View>
         )}
-        {isReadingAnalysis && dream.interpretation?.trim() ? (
-          <AnalysisReadingModal dream={dream} imageUri={displayImageUrl}
-            imageLoadFailed={Boolean(dream.imageUrl && !displayImageUrl && media.error)} onReloadImage={media.retry}
-            isRetryingImage={isRetryingImage}
-            onRetryImage={visibleIllustrationCta === 'retry' && !getImageJobFailure(dream.imageJobErrorCode) ? onRetryImage : undefined}
-            onClose={() => setIsReadingAnalysis(false)} />
-        ) : null}
         <AnalysisNoticeSheet
           visible={Boolean(analysisNotice)}
           onClose={handleDismissAnalysisNotice}
@@ -2826,8 +2814,11 @@ function JournalDetailContent() {
             <DreamShareImage key={shareMediaAttempt} ref={shareImageRef} dream={dream} t={t} resolvedMedia={media} onMediaReady={onShareMediaReady} />
           </View>
         )}
-        </KeyboardAvoidingView>
-      </View>
-    </ScrollPerfProvider>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
+
+const markdownContainerStyles = StyleSheet.create({
+  interpretation: { marginBottom: 16 },
+});

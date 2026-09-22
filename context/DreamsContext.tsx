@@ -11,13 +11,16 @@ import React, { createContext, useContext, useMemo } from 'react';
 export type DreamsDataContextValue = {
   dreams: DreamAnalysis[];
   loaded: boolean;
+};
+
+export type DreamsStatusContextValue = {
   persistenceState: DreamPersistenceState;
   refreshState: DreamRefreshState;
   completeness: JournalCompletenessState;
   remotePreviewAllowed: boolean;
 };
 
-// Actions context - stable references, never triggers re-renders
+// Actions context - changes only when action implementations change
 export type DreamsActionsContextValue = {
   addDream: (dream: DreamAnalysis) => Promise<DreamAnalysis>;
   updateDream: (dream: DreamAnalysis, priorTarget?: DreamTarget) => Promise<void>;
@@ -55,10 +58,11 @@ export type DreamsActionsContextValue = {
 };
 
 // Combined type for backward compatibility
-export type DreamsContextValue = DreamsDataContextValue & DreamsActionsContextValue;
+export type DreamsContextValue = DreamsDataContextValue & DreamsStatusContextValue & DreamsActionsContextValue;
 
 // Separate contexts to prevent unnecessary re-renders
 const DreamsDataContext = createContext<DreamsDataContextValue | null>(null);
+const DreamsStatusContext = createContext<DreamsStatusContextValue | null>(null);
 const DreamsActionsContext = createContext<DreamsActionsContextValue | null>(null);
 
 export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
@@ -69,12 +73,18 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     () => ({
       dreams: journal.dreams,
       loaded: journal.loaded,
+    }),
+    [journal.dreams, journal.loaded]
+  );
+
+  const statusValue = useMemo(
+    () => ({
       persistenceState: journal.persistenceState,
       refreshState: journal.refreshState,
       completeness: journal.completeness,
       remotePreviewAllowed: journal.remotePreviewAllowed,
     }),
-    [journal.dreams, journal.loaded, journal.persistenceState, journal.refreshState, journal.completeness, journal.remotePreviewAllowed]
+    [journal.persistenceState, journal.refreshState, journal.completeness, journal.remotePreviewAllowed]
   );
 
   const analysisActivityValue = useMemo(
@@ -121,11 +131,13 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
 
   return (
     <DreamsDataContext.Provider value={dataValue}>
-      <DreamsActionsContext.Provider value={actionsValue}>
-        <AnalysisActivityProvider value={analysisActivityValue}>
-          {children}
-        </AnalysisActivityProvider>
-      </DreamsActionsContext.Provider>
+      <DreamsStatusContext.Provider value={statusValue}>
+        <DreamsActionsContext.Provider value={actionsValue}>
+          <AnalysisActivityProvider value={analysisActivityValue}>
+            {children}
+          </AnalysisActivityProvider>
+        </DreamsActionsContext.Provider>
+      </DreamsStatusContext.Provider>
     </DreamsDataContext.Provider>
   );
 };
@@ -139,6 +151,13 @@ export const useDreamsData = (): DreamsDataContextValue => {
   if (!ctx) {
     throw new Error('useDreamsData must be used within DreamsProvider');
   }
+  return ctx;
+};
+
+/** Subscribe to persistence and refresh status only where it is displayed. */
+export const useDreamsStatus = (): DreamsStatusContextValue => {
+  const ctx = useContext(DreamsStatusContext);
+  if (!ctx) throw new Error('useDreamsStatus must be used within DreamsProvider');
   return ctx;
 };
 
@@ -165,6 +184,7 @@ export const useOptionalDreamsActions = (): DreamsActionsContextValue | null =>
  */
 export const useDreams = (): DreamsContextValue => {
   const data = useDreamsData();
+  const status = useDreamsStatus();
   const actions = useDreamsActions();
-  return { ...data, ...actions };
+  return { ...data, ...status, ...actions };
 };

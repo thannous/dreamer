@@ -191,7 +191,8 @@
     "release:check": "node ./scripts/mobile-release.js check",
     "release:build": "node ./scripts/mobile-release.js build",
     "eas-build-pre-install": "node ./scripts/mobile-release.js verify",
-    "analytics:baseline": "node ./scripts/product-funnel-report.js"
+    "analytics:baseline": "node ./scripts/product-funnel-report.js",
+    "postinstall": "patch-package --error-on-fail"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",
@@ -292,6 +293,7 @@
     "jsdom": "^27.2.0",
     "lenis": "^1.3.25",
     "motion": "^12.42.2",
+    "patch-package": "8.0.1",
     "pg": "^8.20.0",
     "playwright": "^1.58.2",
     "react-test-renderer": "^19.2.0",
@@ -310,7 +312,7 @@
   },
   "reanimated": {
     "staticFeatureFlags": {
-      "DISABLE_COMMIT_PAUSING_MECHANISM": true,
+      "DISABLE_COMMIT_PAUSING_MECHANISM": false,
       "ANDROID_SYNCHRONOUSLY_UPDATE_UI_PROPS": false,
       "IOS_SYNCHRONOUSLY_UPDATE_UI_PROPS": true,
       "USE_COMMIT_HOOK_ONLY_FOR_REACT_COMMITS": true

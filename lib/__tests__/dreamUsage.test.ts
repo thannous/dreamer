@@ -40,6 +40,25 @@ const buildDream = (overrides: Partial<DreamAnalysis> & { id?: number } = {}): D
 });
 
 describe('dreamUsage helpers', () => {
+  it('checks completion without reading unrelated conversation history', () => {
+    const dream = buildDream({ isAnalyzed: true, analysisStatus: 'done', analyzedAt: 123, interpretation: 'Reading' });
+    const readHistory = jest.fn(() => dream.chatHistory);
+    const observed = Object.defineProperty({ ...dream }, 'chatHistory', { get: readHistory });
+    expect(isDreamAnalyzed(observed)).toBe(true);
+    expect(readHistory).not.toHaveBeenCalled();
+  });
+
+  it('keeps focused predicates consistent with full state for legacy and current dreams', () => {
+    for (const analysisStatus of [undefined, 'none', 'pending', 'failed', 'done'] as const) {
+      for (const analyzedAt of [undefined, NaN, 123]) {
+        for (const interpretation of ['', '  ', 'Reading']) {
+          const dream = buildDream({ analysisStatus, analyzedAt, interpretation, isAnalyzed: true });
+          expect(isDreamAnalyzed(dream)).toBe(getDreamAnalysisState(dream).isAnalyzed);
+          expect(isDreamExplored(dream)).toBe(getDreamAnalysisState(dream).isExplored);
+        }
+      }
+    }
+  });
   it('only treats dreams as analyzed when the done state is complete', () => {
     const partial = buildDream({ id: 1, isAnalyzed: true, analysisStatus: 'done' });
     const complete = buildDream({

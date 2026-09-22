@@ -9,14 +9,12 @@ import {
 
 export function useAnalyticsPreferenceController() {
   const { t } = useTranslation();
-  const available = isProductAnalyticsAvailable();
+  const collectionAvailable = isProductAnalyticsAvailable();
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (!available) return;
-
     let active = true;
     void getProductAnalyticsPreference()
       .then((preference) => {
@@ -28,10 +26,10 @@ export function useAnalyticsPreferenceController() {
     return () => {
       active = false;
     };
-  }, [available]);
+  }, []);
 
   const toggle = useCallback(async (nextEnabled: boolean) => {
-    if (!available || saving) return;
+    if ((nextEnabled && !collectionAvailable) || saving) return;
     const previous = enabled;
     setEnabled(nextEnabled);
     setSaving(true);
@@ -46,9 +44,11 @@ export function useAnalyticsPreferenceController() {
     } finally {
       setSaving(false);
     }
-  }, [available, enabled, saving]);
+  }, [collectionAvailable, enabled, saving]);
 
-  const status = !available
+  // Previously granted consent must remain withdrawable while collection is off.
+  const available = collectionAvailable || enabled === true;
+  const status = !collectionAvailable
     ? t('analytics.privacy.unavailable')
     : enabled
       ? t('analytics.privacy.enabled')

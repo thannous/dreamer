@@ -1,0 +1,11 @@
+gradle.beforeProject { project ->
+  if (project.path == ':react-native-worklets') {
+    project.afterEvaluate {
+      project.android.sourceSets.test.java.srcDir(new File(gradle.startParameter.projectDir, '../tests/android/worklets-lifecycle'))
+      project.android.testOptions.unitTests.includeAndroidResources = true
+      project.dependencies.add('testImplementation', 'junit:junit:4.13.2')
+      project.dependencies.add('testImplementation', 'org.robolectric:robolectric:4.16.1')
+      project.dependencies.add('testImplementation', 'io.mockk:mockk:1.14.6')
+    }
+  }
+}

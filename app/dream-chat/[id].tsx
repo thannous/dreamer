@@ -10,7 +10,7 @@ import { useAuth } from '@/context/AuthContext';
 import { SignInToOpenDream } from '@/components/auth/SignInToOpenDream';
 import { dreamAuthReturnDestination } from '@/lib/authReturnIntent';
 import { ChatProvider, useKeyboardStateContext } from '@/context/ChatContext';
-import { useDreams } from '@/context/DreamsContext';
+import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -45,7 +45,7 @@ import { MotiView } from '@/lib/moti';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNetworkState } from 'expo-network';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useIsFocused, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
@@ -144,6 +144,7 @@ export default function DreamChatScreen() {
 }
 
 function DreamChatContent() {
+  const isFocused = useIsFocused();
   const { t } = useTranslation();
   const { id, remoteId, clientRequestId, category, mode: routeMode, messageId: routeMessageId } = useLocalSearchParams<{
     id: string;
@@ -154,7 +155,8 @@ function DreamChatContent() {
     messageId?: string | string[];
   }>();
   const targetMessageId = Array.isArray(routeMessageId) ? routeMessageId[0] : routeMessageId;
-  const { dreams, updateDream, applyServerDreamState } = useDreams();
+  const { dreams } = useDreamsData();
+  const { updateDream, applyServerDreamState } = useDreamsActions();
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { user } = useAuth();
@@ -1302,7 +1304,7 @@ function DreamChatContent() {
   );
 
   const composerHeader = (
-    <LoadingIndicator text={t('dream_chat.thinking')} visible={showThinkingIndicator} />
+    <LoadingIndicator text={t('dream_chat.thinking')} visible={showThinkingIndicator} focused={isFocused} />
   );
 
   return (

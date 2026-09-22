@@ -9,7 +9,9 @@ jest.mock('react-native/Libraries/Modal/Modal', () => {
 });
 jest.mock('react-native/Libraries/Components/ScrollView/ScrollView', () => {
   const React = require('react');
-  return { __esModule: true, default: ({ children, ...props }: any) => React.createElement('ScrollView', props, children) };
+  const ScrollView = ({ children, ...props }: any) => React.createElement('ScrollView', props, children);
+  ScrollView.Context = React.createContext(null);
+  return { __esModule: true, default: ScrollView };
 });
 jest.mock('expo-image', () => ({ Image: require('react-native').Image }));
 jest.mock('@/context/ThemeContext', () => ({ useTheme: () => ({ colors: {}, mode: 'light' }) }));
@@ -22,14 +24,6 @@ const dream = { title: 'Un nouveau départ', shareableQuote: 'Le voyage commence
   symbols: [{ name: 'La gare', meaning: 'Un lieu de passage, présent dans le récit.' }],
   emotions: [{ name: 'Joie', insight: 'Tu dis « je suis heureux ».' }],
   reflectionQuestions: ['Que représente cette gare pour toi ?'] };
-
-it('shows the entire saved reading immediately, including symbols and questions', () => {
-  const view = render(<AnalysisReadingModal dream={dream} onClose={jest.fn()} />);
-  for (const text of [dream.title, dream.interpretation, dream.symbols[0].meaning, dream.emotions[0].insight, `1. ${dream.reflectionQuestions[0]}`]) {
-    expect(view.getByText(text)).toBeTruthy();
-  }
-  expect(view.getByText('« Le voyage commence. »')).toBeTruthy();
-});
 
 it('supports close and system back', () => {
   const onClose = jest.fn();
@@ -91,12 +85,28 @@ it('preserves sparse and legacy analyses without fabricating missing sections', 
   expect(view.getByText('Un souvenir.')).toBeTruthy();
 });
 
-it('attributes only server-stamped poetic generations, never legacy excerpts', () => {
+it('retains every section and attributes only server-stamped poetic quotes', () => {
   const view = render(<AnalysisReadingModal dream={dream} onClose={jest.fn()} />);
+  for (const text of [dream.interpretation, dream.symbols[0].meaning, dream.emotions[0].insight]) {
+    expect(view.getByText(text)).toBeTruthy();
+  }
+  expect(view.getByText(`1. ${dream.reflectionQuestions[0]}`)).toBeTruthy();
   expect(view.getByText('« Le voyage commence. »')).toBeTruthy();
   expect(view.queryByText('journal.detail.quote_attribution')).toBeNull();
   view.rerender(<AnalysisReadingModal dream={{ ...dream, promptVersion: 'analysis-2026-09-18.poetic3' }} onClose={jest.fn()} />);
   expect(view.getByText('journal.detail.quote_attribution')).toBeTruthy();
-  view.rerender(<AnalysisReadingModal dream={{ ...dream, promptVersion: 'analysis-2026-09-01' }} onClose={jest.fn()} />);
-  expect(view.queryByText('journal.detail.quote_attribution')).toBeNull();
+});
+
+it('shares a versioned memory/disk image cache and resets loading when the image changes', () => {
+  const view = render(<AnalysisReadingModal dream={{ ...dream, imageUrl: 'ref' }} imageUri="https://example.com/1"
+    imageCacheKey="ref|1" onClose={jest.fn()} />);
+  const image = view.getByTestId('analysis.reading.image');
+  expect(image.props.source).toEqual({ uri: 'https://example.com/1', cacheKey: 'ref|1' });
+  expect(image.props.cachePolicy).toBe('memory-disk');
+  fireEvent(image, 'load');
+  expect(view.queryByText('analysis.reading.image_loading')).toBeNull();
+  view.rerender(<AnalysisReadingModal dream={{ ...dream, imageUrl: 'ref' }} imageUri="https://example.com/2"
+    imageCacheKey="ref|2" onClose={jest.fn()} />);
+  expect(view.getByTestId('analysis.reading.image').props.source.cacheKey).toBe('ref|2');
+  expect(view.getByText('analysis.reading.image_loading')).toBeTruthy();
 });

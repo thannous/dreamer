@@ -74,7 +74,8 @@ jest.mock('@/hooks/useRecordingSession', () => ({
   },
 }));
 jest.mock('@/context/DreamsContext', () => ({
-  useDreams: () => ({ addDream: mockAddDream, applyDreamCategorization: jest.fn(), dreams: [] }),
+  useDreamsData: () => ({ addDream: mockAddDream, applyDreamCategorization: jest.fn(), dreams: [] }),
+  useDreamsActions: () => ({ addDream: mockAddDream, applyDreamCategorization: jest.fn(), dreams: [] }),
 }));
 jest.mock('@/context/LanguageContext', () => ({ useLanguage: () => ({ language: 'fr' }) }));
 jest.mock('@/context/OnboardingContext', () => ({
