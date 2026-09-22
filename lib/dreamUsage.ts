@@ -145,7 +145,7 @@ export function getDreamAnalysisState(dream?: DreamAnalysis | null): DreamAnalys
     isAnalyzed,
     isPending,
     isFailed,
-    isExplored: Boolean(isFiniteTimestamp(dream?.explorationStartedAt) || hasOpenConversation(dream)),
+    isExplored: isDreamExplored(dream),
     hasAnalysisContent,
     hasValidAnalysisTimestamp,
     hasModelResponse,
@@ -154,11 +154,17 @@ export function getDreamAnalysisState(dream?: DreamAnalysis | null): DreamAnalys
 }
 
 export function isDreamAnalyzed(dream?: DreamAnalysis | null): dream is DreamAnalysis {
-  return getDreamAnalysisState(dream).isAnalyzed;
+  // A completed-analysis check must not inspect the conversation history.
+  return Boolean(
+    (dream?.analysisStatus == null || dream.analysisStatus === 'done') &&
+    dream?.isAnalyzed === true &&
+    isFiniteTimestamp(dream.analyzedAt) &&
+    dream.interpretation?.trim()
+  );
 }
 
 export function isDreamExplored(dream?: DreamAnalysis | null): boolean {
-  return getDreamAnalysisState(dream).isExplored;
+  return Boolean(isFiniteTimestamp(dream?.explorationStartedAt) || hasOpenConversation(dream));
 }
 
 export type ReflectionStage = 'lecture' | 'approfondir' | 'conversation';

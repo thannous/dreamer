@@ -1,3 +1,4 @@
+import { createStreamingTextPublisher } from '@/lib/chat/streamingTextPublisher';
 // Backend proxy integration for RN app. Configure base URL via EXPO_PUBLIC_API_URL
 // or app.json extra.apiUrl. Endpoints expected:
 // - POST /analyzeDream { transcript } -> AnalysisResult
@@ -388,9 +389,8 @@ export async function startOrContinueChat(
     clientRequestId?: string;
     messageMeta?: ChatMessage['meta'];
     /**
-     * When provided, the reply is streamed: called for each text delta with
-     * the accumulated text so far. The returned promise still resolves with
-     * the complete reply.
+     * Receives accumulated streaming text, coalesced for display. The first
+     * fragment and final text are immediate; the promise returns the full reply.
      */
     onDelta?: (accumulated: string) => void;
   }
@@ -462,6 +462,10 @@ async function streamChatRequest(
 
   const decoder = new TextDecoder();
   const reader = res.body.getReader();
+  const publisher = createStreamingTextPublisher(onDelta);
+  const stopPublishing = () => publisher.dispose();
+  signal?.addEventListener('abort', stopPublishing, { once: true });
+  if (signal?.aborted) stopPublishing();
   let buffer = '';
   let accumulated = '';
   let final: { text: string; message?: Partial<ChatMessage> } | null = null;
@@ -478,7 +482,7 @@ async function streamChatRequest(
     };
     if (typeof event?.delta === 'string' && event.delta) {
       accumulated += event.delta;
-      onDelta(accumulated);
+      publisher.push(accumulated);
     } else if (event?.done && typeof event.text === 'string') {
       final = { text: event.text, message: event.message };
     } else if (typeof event?.error === 'string') {
@@ -524,31 +528,34 @@ async function streamChatRequest(
       }
       if (done) break;
     }
+    buffer += decoder.decode();
+    drainBuffer(true);
+
+    if (streamError) {
+      const failure: { error?: string; status?: number } = streamError;
+      throw new HttpError({
+        status: failure.status ?? 500,
+        statusText: 'Stream error',
+        url,
+        bodyText: JSON.stringify(failure),
+        body: failure,
+      });
+    }
+    if (!final) {
+      throw new HttpError({
+        status: 502,
+        statusText: 'Incomplete stream',
+        url,
+        bodyText: 'Chat stream ended without a final message',
+      });
+    }
+    publisher.flush((final as { text: string }).text);
+    return final;
   } finally {
+    publisher.dispose();
+    signal?.removeEventListener('abort', stopPublishing);
     reader.releaseLock?.();
   }
-  buffer += decoder.decode();
-  drainBuffer(true);
-
-  if (streamError) {
-    const failure: { error?: string; status?: number } = streamError;
-    throw new HttpError({
-      status: failure.status ?? 500,
-      statusText: 'Stream error',
-      url,
-      bodyText: JSON.stringify(failure),
-      body: failure,
-    });
-  }
-  if (!final) {
-    throw new HttpError({
-      status: 502,
-      statusText: 'Incomplete stream',
-      url,
-      bodyText: 'Chat stream ended without a final message',
-    });
-  }
-  return final;
 }
 
 export function resetChat() {

@@ -75,7 +75,7 @@ jest.mock('../../lib/auth', () => ({
 
 // Mock supabase service
 const mockFetchFromSupabase = typedJestFn<() => Promise<DreamAnalysis[]>>();
-const mockFetchPage = typedJestFn<(userId: string, options: { cursor?: JournalCursor | null }) => Promise<JournalPage<DreamAnalysis>>>();
+const mockFetchPage = typedJestFn<(userId: string, options: { cursor?: JournalCursor | null; cachedDreams?: ReadonlyMap<number, DreamAnalysis> }) => Promise<JournalPage<DreamAnalysis>>>();
 const mockCreateInSupabase = jest.fn();
 
 jest.mock('../../services/supabaseDreamService', () => ({
@@ -185,7 +185,7 @@ describe('useDreamPersistence', () => {
       expect(result.current.remoteSnapshot).toBeNull();
       expect(mockSaveCachedRemoteDreams).not.toHaveBeenCalled();
       await act(async () => { await result.current.reloadDreams(); });
-      expect(mockFetchPage).toHaveBeenNthCalledWith(3, 'user-123', { cursor });
+      expect(mockFetchPage).toHaveBeenNthCalledWith(3, 'user-123', expect.objectContaining({ cursor }));
       expect(result.current.completeness.status).toBe('complete');
       expect(result.current.remoteSnapshot?.dreams).toEqual([first, last]);
       expect(result.current.dreams.map((dream) => dream.id).sort()).toEqual([1, 2]);
@@ -203,7 +203,7 @@ describe('useDreamPersistence', () => {
       await waitFor(() => expect(result.current.completeness.status).toBe('incomplete'));
       await act(async () => { await result.current.persistRemoteDreams([edited]); });
       await act(async () => { await result.current.reloadDreams(); });
-      expect(mockFetchPage).toHaveBeenNthCalledWith(3, 'user-123', { cursor: null });
+      expect(mockFetchPage).toHaveBeenNthCalledWith(3, 'user-123', expect.objectContaining({ cursor: null }));
       expect(result.current.dreams).toEqual([edited]);
     });
 
@@ -217,7 +217,7 @@ describe('useDreamPersistence', () => {
       mockUser.current = { id: 'user-b' };
       hook.rerender();
       await waitFor(() => expect(hook.result.current.completeness.status).toBe('complete'));
-      expect(mockFetchPage).toHaveBeenNthCalledWith(3, 'user-b', { cursor: null });
+      expect(mockFetchPage).toHaveBeenNthCalledWith(3, 'user-b', expect.objectContaining({ cursor: null }));
       expect(hook.result.current.remoteSnapshot).toEqual({ userScope: 'user:user-b', dreams: [] });
     });
   });
@@ -370,6 +370,46 @@ describe('useDreamPersistence', () => {
   });
 
   describe('guest mode (no remote sync)', () => {
+    it('coalesces queued snapshots and resolves all callers only after the latest snapshot is durable', async () => {
+      const firstWrite = deferred<void>();
+      const lastWrite = deferred<void>();
+      mockSaveDreams.mockImplementationOnce(() => firstWrite.promise).mockImplementationOnce(() => lastWrite.promise);
+      const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: false }));
+      await flushEffects();
+      const settled = jest.fn();
+      let promises!: Promise<void>[];
+      await act(async () => {
+        promises = Array.from({ length: 20 }, (_, index) => result.current.persistLocalDreams([
+          buildDream({ id: 1, transcript: `revision ${index}` }),
+        ]).then(settled));
+      });
+      expect(mockSaveDreams).toHaveBeenCalledTimes(1);
+      expect(settled).not.toHaveBeenCalled();
+      await act(async () => firstWrite.resolve(undefined));
+      expect(mockSaveDreams).toHaveBeenCalledTimes(2);
+      expect(mockSaveDreams).toHaveBeenLastCalledWith([expect.objectContaining({ transcript: 'revision 19' })]);
+      expect(settled).toHaveBeenCalledTimes(1);
+      await act(async () => { lastWrite.resolve(undefined); await Promise.all(promises); });
+      expect(settled).toHaveBeenCalledTimes(20);
+      expect(result.current.persistenceState).toEqual({ status: 'ready', target: 'device' });
+    });
+
+    it('rejects all coalesced callers on failure and retries the newest snapshot', async () => {
+      const firstWrite = deferred<void>();
+      mockSaveDreams.mockImplementationOnce(() => firstWrite.promise).mockRejectedValueOnce(new Error('disk full'));
+      const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: false }));
+      await flushEffects();
+      let outcomes!: Promise<PromiseSettledResult<void>[]>;
+      await act(async () => {
+        outcomes = Promise.allSettled([1, 2, 3].map((id) => result.current.persistLocalDreams([buildDream({ id })])));
+      });
+      await act(async () => firstWrite.resolve(undefined));
+      expect((await outcomes).map((outcome) => outcome.status)).toEqual(['fulfilled', 'rejected', 'rejected']);
+      expect(result.current.persistenceState).toMatchObject({ status: 'error', operation: 'write' });
+      await act(async () => result.current.retryPersistence());
+      expect(mockSaveDreams).toHaveBeenLastCalledWith([expect.objectContaining({ id: 3 })]);
+      expect(result.current.persistenceState.status).toBe('ready');
+    });
     it('loads dreams from local storage', async () => {
       const localDreams = [buildDream({ id: 1 }), buildDream({ id: 2 })];
       mockGetSavedDreams.mockResolvedValue({ status: 'loaded', value: localDreams });
@@ -692,6 +732,23 @@ describe('useDreamPersistence', () => {
   });
 
   describe('authenticated mode (remote sync)', () => {
+    it('reuses only the full server snapshot, never locally edited or truncated durable data', async () => {
+      const server = buildDream({ id: 1, remoteId: 101, revisionId: 'r1', transcript: 'server',
+        chatHistory: Array.from({ length: 60 }, (_, index) => ({ id: String(index), role: 'user', text: 'message' })) });
+      mockGetCachedRemoteDreams.mockResolvedValue({ status: 'loaded', value: [{ ...server, transcript: 'local edit', chatHistory: [] }] });
+      mockFetchFromSupabase.mockResolvedValue([server]);
+      const { result, rerender } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await flushEffects();
+      expect(mockFetchPage.mock.calls[0][1].cachedDreams?.size).toBe(0);
+      await act(async () => result.current.persistRemoteDreams([{ ...server, transcript: 'optimistic' }]));
+      await act(async () => result.current.reloadDreams());
+      expect(mockFetchPage.mock.lastCall?.[1].cachedDreams?.get(101)).toBe(server);
+      expect(mockFetchPage.mock.lastCall?.[1].cachedDreams?.get(101)?.chatHistory).toHaveLength(60);
+      mockUser.current = { id: 'another-user' };
+      rerender();
+      await flushEffects();
+      expect(mockFetchPage.mock.lastCall?.[1].cachedDreams?.size).toBe(0);
+    });
     it('loads dreams when session is not ready but access token exists', async () => {
       mockSessionReady.current = false;
       const remoteDreams = [buildDream({ id: 1, remoteId: 101 })];

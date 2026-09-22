@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { createJournalRepository } from '../journalRepository';
 import type { SupabaseDreamRow } from '../journalDreamMapper';
+import { mapRowToDream } from '../journalDreamMapper';
 
 const CREATED_AT = '2026-01-01T08:00:00.000Z';
 
@@ -58,6 +59,10 @@ function makeClient(
         filters.push([field, value]);
         return query;
       },
+      in(field: string, values: unknown[]) {
+        filters.push([field, values]);
+        return query;
+      },
       order() {
         return query;
       },
@@ -77,6 +82,61 @@ function makeClient(
 }
 
 describe('journal repository', () => {
+  it('reuses unchanged server revisions and fetches only changed or new details', async () => {
+    const unchanged = mapRowToDream(row(3, { revision_id: 'same', chat_history: [{ id: 'm', role: 'user', text: 'Full history' }] }));
+    const stale = mapRowToDream(row(2, { revision_id: 'old' }));
+    const deleted = mapRowToDream(row(4, { revision_id: 'gone' }));
+    const mock = makeClient([
+      { data: [{ id: 3, revision_id: 'same' }, { id: 2, revision_id: 'new' }, { id: 1, revision_id: 'added' }], error: null },
+      { data: [row(1, { revision_id: 'added' }), row(2, { revision_id: 'new' })], error: null },
+    ], []);
+    const repository = createJournalRepository({ getClient: () => mock.client });
+    const page = await repository.fetchDreamFullPage('user-a', { cachedDreams: new Map([[3, unchanged], [2, stale], [4, deleted]]) });
+    expect(mock.selectedColumns).toEqual(['id,revision_id', '*']);
+    expect(mock.filters).toContainEqual(['id', [2, 1]]);
+    expect(page.items.map((dream) => dream.remoteId)).toEqual([3, 2, 1]);
+    expect(page.items[0]).toBe(unchanged);
+    expect(page.items[1].revisionId).toBe('new');
+    expect(page.complete).toBe(false);
+  });
+
+  it('transfers no full details for an unchanged page and still checks the account', async () => {
+    const cached = mapRowToDream(row(3, { revision_id: 'same' }));
+    const mock = makeClient([{ data: [{ id: 3, revision_id: 'same' }], error: null }], []);
+    const repository = createJournalRepository({ getClient: () => mock.client });
+    await repository.fetchDreamFullPage('user-a', { cachedDreams: new Map([[3, cached]]) });
+    expect(mock.selectedColumns).toEqual(['id,revision_id']);
+    expect(mock.auth.getSession).toHaveBeenCalledTimes(2);
+  });
+
+  it('falls back to one full page when a bulk edit would require many detail requests', async () => {
+    const rows = Array.from({ length: 101 }, (_, index) => row(101 - index, { revision_id: 'new' }));
+    const mock = makeClient([
+      { data: rows.map(({ id, revision_id }) => ({ id, revision_id })), error: null },
+      { data: rows, error: null },
+    ], []);
+    const repository = createJournalRepository({ getClient: () => mock.client });
+    const page = await repository.fetchDreamFullPage('user-a', {
+      cachedDreams: new Map([[101, mapRowToDream(row(101, { revision_id: 'old' }))]]),
+    });
+    expect(page.items).toHaveLength(101);
+    expect(mock.selectedColumns).toEqual(['id,revision_id', '*']);
+    expect(mock.filters.some(([, value]) => Array.isArray(value))).toBe(false);
+  });
+
+  it.each([
+    { details: [] },
+    { details: [row(99)] },
+  ])('rejects a partial or foreign detail response instead of inferring deletions', async ({ details }) => {
+    const mock = makeClient([
+      { data: [{ id: 3, revision_id: 'new' }], error: null },
+      { data: details, error: null },
+    ], []);
+    const repository = createJournalRepository({ getClient: () => mock.client });
+    await expect(repository.fetchDreamFullPage('user-a', {
+      cachedDreams: new Map([[3, mapRowToDream(row(3, { revision_id: 'old' }))]]),
+    })).rejects.toThrow(/journal detail/);
+  });
   it('uses the lightweight projection and preserves remote identity for equal timestamps', async () => {
     const mock = makeClient(
       [{ data: [row(18), row(17)], error: null }],

@@ -45,7 +45,7 @@ import { MotiView } from '@/lib/moti';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNetworkState } from 'expo-network';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useIsFocused, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
@@ -144,6 +144,7 @@ export default function DreamChatScreen() {
 }
 
 function DreamChatContent() {
+  const isFocused = useIsFocused();
   const { t } = useTranslation();
   const { id, remoteId, clientRequestId, category, mode: routeMode, messageId: routeMessageId } = useLocalSearchParams<{
     id: string;
@@ -1302,7 +1303,7 @@ function DreamChatContent() {
   );
 
   const composerHeader = (
-    <LoadingIndicator text={t('dream_chat.thinking')} visible={showThinkingIndicator} />
+    <LoadingIndicator text={t('dream_chat.thinking')} visible={showThinkingIndicator} focused={isFocused} />
   );
 
   return (

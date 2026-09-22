@@ -1,4 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { TextEncoder, TextDecoder } from 'node:util';
+
+const mockStreamingFetch = jest.fn();
+jest.mock('expo/fetch', () => ({ fetch: (...args: unknown[]) => mockStreamingFetch(...args) }));
 
 // Mock config to use our test URL
 let mockApiBaseUrl = 'https://api.example.com';
@@ -129,6 +133,74 @@ describe('geminiServiceReal', () => {
       if (previousOrigin === undefined) delete process.env.EXPO_PUBLIC_SUPABASE_URL;
       else process.env.EXPO_PUBLIC_SUPABASE_URL = previousOrigin;
     }
+  });
+
+  describe('streamed chat display', () => {
+    const originalDecoder = globalThis.TextDecoder;
+    beforeEach(() => {
+      jest.useFakeTimers();
+      Object.assign(globalThis, { TextDecoder });
+      mockStreamingFetch.mockReset();
+    });
+    afterEach(() => {
+      jest.useRealTimers();
+      Object.assign(globalThis, { TextDecoder: originalDecoder });
+    });
+
+    function openStream() {
+      const encode = (events: unknown[]) => new TextEncoder().encode(events.map((event) => `data: ${JSON.stringify(event)}\n\n`).join(''));
+      let finish!: (value: { done: boolean; value?: Uint8Array }) => void;
+      let fail!: (reason: Error) => void;
+      let waiting!: () => void;
+      const ready = new Promise<void>((resolve) => { waiting = resolve; });
+      const held = new Promise<{ done: boolean; value?: Uint8Array }>((resolve, reject) => { finish = resolve; fail = reject; });
+      const releaseLock = jest.fn();
+      let reads = 0;
+      const read = async () => {
+        reads += 1;
+        if (reads === 1) return { done: false, value: encode([{ delta: 'a' }, { delta: 'b' }, { delta: 'c' }]) };
+        if (reads === 2) { waiting(); return held; }
+        return { done: true };
+      };
+      mockStreamingFetch.mockResolvedValue({ ok: true, body: { getReader: () => ({ read, releaseLock }) } });
+      return { ready, releaseLock, fail, finish: (events: unknown[]) => finish({ done: false, value: encode(events) }) };
+    }
+
+    it('coalesces SSE fragments and publishes authoritative final text before resolving', async () => {
+      const stream = openStream();
+      const onDelta = jest.fn();
+      const result = startOrContinueChat(123, 'question', 'en', undefined, undefined, { onDelta });
+      await stream.ready;
+      expect(onDelta.mock.calls).toEqual([['a']]);
+      jest.advanceTimersByTime(50);
+      expect(onDelta.mock.calls).toEqual([['a'], ['abc']]);
+      stream.finish([{ delta: 'd' }, { done: true, text: 'authoritative final' }]);
+      await expect(result).resolves.toMatchObject({ text: 'authoritative final' });
+      jest.runAllTimers();
+      expect(onDelta.mock.calls).toEqual([['a'], ['abc'], ['authoritative final']]);
+      expect(stream.releaseLock).toHaveBeenCalledTimes(1);
+      expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it.each(['error', 'abort'])('cancels queued UI work when the stream ends with %s', async (ending: string) => {
+      const stream = openStream();
+      const controller = new AbortController();
+      const onDelta = jest.fn();
+      const result = startOrContinueChat(123, 'question', 'en', undefined, undefined, { onDelta, signal: controller.signal });
+      const rejection = expect(result).rejects.toThrow();
+      await stream.ready;
+      if (ending === 'abort') {
+        controller.abort();
+        stream.fail(new Error('aborted'));
+      } else {
+        stream.finish([{ error: 'failed', status: 500 }]);
+      }
+      await rejection;
+      jest.runAllTimers();
+      expect(onDelta.mock.calls).toEqual([['a']]);
+      expect(stream.releaseLock).toHaveBeenCalledTimes(1);
+      expect(jest.getTimerCount()).toBe(0);
+    });
   });
 
   describe('analyzeDream', () => {

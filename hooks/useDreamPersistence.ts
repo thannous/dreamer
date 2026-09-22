@@ -101,6 +101,12 @@ type WriteScopeState = {
   tail: Promise<void>;
   failed: { sequence: number; dreams: DreamAnalysis[] } | null;
   loadToken: number;
+  queuedWrite?: {
+    dreams: DreamAnalysis[];
+    sequence: number;
+    writer: (dreams: DreamAnalysis[]) => Promise<void>;
+    promise: Promise<void>;
+  };
 };
 
 type GuestMigrationClaimOutcome<T> = {
@@ -200,6 +206,9 @@ export function useDreamPersistence({
   const traversalRef = useRef<{ scopeKey: string; sequence: number; cursor: JournalCursor | null; items: DreamAnalysis[] } | null>(null);
   const [refreshState, setRefreshState] = useState<DreamRefreshState>({ status: 'idle' });
   const [remoteSnapshot, setRemoteSnapshot] = useState<{ userScope: string | null; dreams: DreamAnalysis[] } | null>(null);
+  // Only complete server reads are reusable. Durable caches may contain local
+  // edits or truncated chat histories and must never masquerade as server data.
+  const serverSnapshotRef = useRef<{ scopeKey: string; dreams: DreamAnalysis[] } | null>(null);
   const mountedRef = useRef(true);
   useLayoutEffect(() => {
     mountedRef.current = true;
@@ -216,6 +225,7 @@ export function useDreamPersistence({
   useLayoutEffect(() => {
     if (activeScopeKeyRef.current !== activeScopeKey) {
       traversalRef.current = null;
+      serverSnapshotRef.current = null;
       setRemotePreviewAllowed(false);
       setCompleteness({ status: 'loading' });
     }
@@ -303,19 +313,31 @@ export function useDreamPersistence({
       ) return;
 
       const sequence = ++scope.sequence;
-      scope.pendingCount += 1;
       setStateForScope(scopeKey, { status: 'saving', target });
+      // The running write remains immutable. Waiters for superseded queued
+      // snapshots all wait for the newest snapshot to become durable (or fail).
+      if (scope.queuedWrite) {
+        scope.queuedWrite.dreams = normalized;
+        scope.queuedWrite.sequence = sequence;
+        scope.queuedWrite.writer = writer;
+        await scope.queuedWrite.promise;
+        return;
+      }
+      const job = { dreams: normalized, sequence, writer, promise: Promise.resolve() };
+      scope.pendingCount += 1;
+      if (scope.pendingCount > 1) scope.queuedWrite = job;
       const run = scope.tail.catch(() => undefined).then(async () => {
+        if (scope.queuedWrite === job) scope.queuedWrite = undefined;
         try {
-          await writer(normalized);
-          scope.durable = normalized;
-          if (scope.failed && scope.failed.sequence <= sequence) scope.failed = null;
-          if (scope.sequence === sequence) {
+          await job.writer(job.dreams);
+          scope.durable = job.dreams;
+          if (scope.failed && scope.failed.sequence <= job.sequence) scope.failed = null;
+          if (scope.sequence === job.sequence) {
             setStateForScope(scopeKey, { status: 'ready', target });
           }
         } catch {
-          scope.failed = { sequence, dreams: normalized };
-          if (scope.sequence === sequence) {
+          scope.failed = { sequence: job.sequence, dreams: job.dreams };
+          if (scope.sequence === job.sequence) {
             setStateForScope(scopeKey, { status: 'error', operation: 'write', target });
           }
           throw new DreamPersistenceError('write', target);
@@ -323,6 +345,7 @@ export function useDreamPersistence({
           scope.pendingCount = Math.max(0, scope.pendingCount - 1);
         }
       });
+      job.promise = run;
       scope.tail = run.then(
         () => undefined,
         () => undefined
@@ -940,8 +963,12 @@ export function useDreamPersistence({
           ? traversalRef.current
           : { scopeKey, sequence: scope.sequence, cursor: null, items: [] };
         traversalRef.current = traversal;
+        const previousServerDreams = serverSnapshotRef.current?.scopeKey === scopeKey
+          ? serverSnapshotRef.current.dreams : [];
+        const cachedDreams = new Map(previousServerDreams.flatMap((dream) =>
+          dream.remoteId && dream.revisionId ? [[dream.remoteId, dream] as const] : []));
         while (true) {
-          const page = await fetchDreamFullPage(userId!, { cursor: traversal.cursor });
+          const page = await fetchDreamFullPage(userId!, { cursor: traversal.cursor, cachedDreams });
           if (!isCurrent()) return { pendingMutations };
           if (!page.complete && !page.nextCursor) throw new Error('Incomplete journal page has no continuation');
           traversal.items.push(...page.items);
@@ -951,6 +978,7 @@ export function useDreamPersistence({
         const remoteDreams = traversal.items;
         traversalRef.current = null;
         if (!isCurrent()) return { pendingMutations };
+        serverSnapshotRef.current = { scopeKey, dreams: remoteDreams };
         setRefreshState({ status: 'idle' });
         setRemoteSnapshot({ userScope, dreams: remoteDreams });
         const normalizedRemote = normalizeDreamList(retainCaptureSources(remoteDreams, dreamsRef.current));
