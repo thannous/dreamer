@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Politique de Confidentialité",
   "publishedTime": "",
-  "modifiedTime": "2026-08-27",
+  "modifiedTime": "2026-09-22",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Politique de Confidentialité</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Dernière mise à jour : 27 août 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Dernière mise à jour : 22 septembre 2026</p>
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
                 <p class="text-dream-salmon font-medium flex gap-2 items-start">
