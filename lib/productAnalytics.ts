@@ -720,10 +720,9 @@ function isRemoteIngestDisabledError(error: unknown): boolean {
 
 async function disableRemoteIngestForSession(): Promise<void> {
   remoteDisabled = true;
-  journeyPromise = null;
-  await runSerialized(() =>
-    AsyncStorage.multiRemove([QUEUE_KEY, JOURNEY_KEY, ONCE_KEY, DREAM_SAVE_COHORT_KEY])
-  );
+  // Retain bounded deletion retries before purging identifiers that may already
+  // have been sent while ingestion was enabled. DELETE remains available.
+  await purgeProductAnalyticsWithDeletion();
 }
 
 export async function flushProductAnalytics(): Promise<void> {
@@ -876,6 +875,11 @@ export async function setProductAnalyticsEnabled(enabled: boolean): Promise<void
     return;
   }
 
+  await purgeProductAnalyticsWithDeletion();
+  if (preferenceWriteError) throw preferenceWriteError;
+}
+
+async function purgeProductAnalyticsWithDeletion(): Promise<void> {
   await runSerialized(async () => {
     const [queue, journeyRaw, pendingRaw] = await Promise.all([
       loadQueue(),
@@ -921,7 +925,6 @@ export async function setProductAnalyticsEnabled(enabled: boolean): Promise<void
   });
   journeyPromise = null;
   await flushPendingProductAnalyticsDeletions();
-  if (preferenceWriteError) throw preferenceWriteError;
 }
 
 export async function initializeProductAnalytics(): Promise<void> {

@@ -80,15 +80,32 @@ describe('useAnalyticsPreferenceController', () => {
     expect(result.current.error).toBe(true);
   });
 
-  it('stays disabled and skips persistence when analytics is unavailable', async () => {
+  it('allows withdrawing saved consent while collection is unavailable', async () => {
     mockIsAvailable.mockReturnValue(false);
     const { result } = renderHook(() => useAnalyticsPreferenceController());
 
-    await waitFor(() => expect(result.current.loading).toBe(false));
+    await waitFor(() => expect(result.current.enabled).toBe(true));
+    expect(result.current.available).toBe(true);
+    expect(result.current.status).toBe('analytics.privacy.unavailable');
+
+    await act(async () => {
+      await result.current.toggle(false);
+    });
+
+    expect(mockSetEnabled).toHaveBeenCalledWith(false);
+    expect(result.current.enabled).toBe(false);
+    expect(result.current.available).toBe(false);
+  });
+
+  it('stays disabled and skips activation when analytics is unavailable', async () => {
+    mockGetPreference.mockResolvedValue('disabled');
+    mockIsAvailable.mockReturnValue(false);
+    const { result } = renderHook(() => useAnalyticsPreferenceController());
+
+    await waitFor(() => expect(mockGetPreference).toHaveBeenCalled());
     expect(result.current.available).toBe(false);
     expect(result.current.enabled).toBe(false);
     expect(result.current.status).toBe('analytics.privacy.unavailable');
-    expect(mockGetPreference).not.toHaveBeenCalled();
 
     await act(async () => {
       await result.current.toggle(true);

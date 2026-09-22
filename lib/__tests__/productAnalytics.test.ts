@@ -454,6 +454,40 @@ describe('first-party product analytics', () => {
     expect(mockFetch).toHaveBeenCalledTimes(callsAfterDisable);
     expect(await AsyncStorage.getItem('product-analytics-queue-v1')).toBeNull();
   });
+  it('retains a deletion retry after the server kill switch purges a previously sent journey', async () => {
+    const provider = createProductAnalyticsProvider();
+    await provider.track('onboarding_started', { experience_version: 2 });
+    const journey = JSON.parse((await AsyncStorage.getItem('product-analytics-journey-v1')) ?? '{}');
+    mockNetworkState.mockResolvedValue({
+      isConnected: true,
+      isInternetReachable: true,
+      type: Network.NetworkStateType.WIFI,
+    });
+    mockFetch.mockImplementation(async (_url, options) => {
+      if (options?.method === 'DELETE') throw new Error('temporary deletion failure');
+      const events = (options?.body as { events: { event_id: string }[] }).events;
+      return { accepted_event_ids: events.map((event) => event.event_id), rejected_event_ids: [] };
+    });
+    await flushProductAnalytics();
+    await provider.track('onboarding_step_viewed', { step: 'path' });
+    mockFetch.mockRejectedValue({
+      status: 503,
+      body: { error: { code: 'ANALYTICS_INGEST_DISABLED' } },
+    });
+    await flushProductAnalytics();
+
+    expect(await AsyncStorage.getItem('product-analytics-journey-v1')).toBeNull();
+    expect(await AsyncStorage.getItem('product-analytics-queue-v1')).toBeNull();
+    const pending = JSON.parse((await AsyncStorage.getItem('product-analytics-pending-deletion-v1')) ?? '[]');
+    expect(pending).toEqual([expect.objectContaining({ journeyId: journey.id })]);
+    mockFetch.mockResolvedValue({});
+    await setProductAnalyticsEnabled(false);
+    expect(mockFetch).toHaveBeenLastCalledWith(expect.any(String), expect.objectContaining({
+      method: 'DELETE', body: { journey_ids: [journey.id] },
+    }));
+    expect(await AsyncStorage.getItem('product-analytics-pending-deletion-v1')).toBeNull();
+  });
+
   it('does not record milestones without opt-in or in an explicitly marked QA build', async () => {
     await AsyncStorage.removeItem('product-analytics-preference-v1');
     await trackDreamSaveMilestone(true);
