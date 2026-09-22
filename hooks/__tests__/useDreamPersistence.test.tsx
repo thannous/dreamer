@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import type { JournalCursor, JournalPage } from '../../lib/journalReadContracts';
 import type { GuestDreamMigrationOwner, DreamAnalysis, DreamListReadResult, DreamMutation } from '../../lib/types';
 import { useDreamPersistence } from '../useDreamPersistence';
+import * as dreamUtils from '../../lib/dreamUtils';
 
 const flushEffects = () => act(async () => {});
 
@@ -883,6 +884,25 @@ describe('useDreamPersistence', () => {
       });
 
       expect(mockSaveCachedRemoteDreams).toHaveBeenCalled();
+    });
+
+    it('normalizes and sorts a remote edit once before publishing and saving the same snapshot', async () => {
+      const { result } = renderHook(() => useDreamPersistence({ canUseRemoteSync: true }));
+      await flushEffects();
+      const normalize = jest.spyOn(dreamUtils, 'normalizeDreamList');
+      const sort = jest.spyOn(dreamUtils, 'sortDreams');
+      try {
+        await act(async () => result.current.persistRemoteDreams([
+          buildDream({ id: 1 }), buildDream({ id: 3 }), buildDream({ id: 2 }),
+        ]));
+        expect(normalize).toHaveBeenCalledTimes(1);
+        expect(sort).toHaveBeenCalledTimes(1);
+        expect(result.current.dreams.map(dream => dream.id)).toEqual([3, 2, 1]);
+        expect(mockSaveCachedRemoteDreams).toHaveBeenLastCalledWith(result.current.dreams, 'user:user-123');
+      } finally {
+        normalize.mockRestore();
+        sort.mockRestore();
+      }
     });
 
     it('persists using function updater', async () => {

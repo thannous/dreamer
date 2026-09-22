@@ -271,7 +271,17 @@ jest.mock('@/context/AuthContext', () => ({
 }));
 
 jest.mock('@/context/DreamsContext', () => ({
-  useDreams: () => ({
+  useDreamsData: () => ({
+    dreams: mockDreams,
+    toggleFavorite: mockToggleFavorite,
+    updateDream: mockUpdateDream,
+    deleteDream: mockDeleteDream,
+    retryDreamSync: mockRetryDreamSync,
+    resolveDreamConflict: jest.fn(),
+    generateDreamImage: jest.fn(),
+    analyzeDream: mockAnalyzeDream,
+  }),
+  useDreamsActions: () => ({
     dreams: mockDreams,
     toggleFavorite: mockToggleFavorite,
     updateDream: mockUpdateDream,

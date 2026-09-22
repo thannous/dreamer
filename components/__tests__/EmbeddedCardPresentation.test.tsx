@@ -120,7 +120,7 @@ jest.mock('@/context/AuthContext', () => ({
 }));
 
 jest.mock('@/context/DreamsContext', () => ({
-  useDreams: () => ({ dreams: [] }),
+  useDreamsData: () => ({ dreams: [] }),
   useDreamsActions: () => ({ reloadDreams: jest.fn() }),
   useOptionalDreamsActions: () => ({ reloadDreams: jest.fn() }),
 }));

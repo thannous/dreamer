@@ -1,5 +1,5 @@
 import { useAuth } from '@/context/AuthContext';
-import { useDreams } from '@/context/DreamsContext';
+import { useDreamsData } from '@/context/DreamsContext';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
@@ -15,7 +15,7 @@ type Props = {
 export const UpsellCard: React.FC<Props> = ({ testID }) => {
   const { user } = useAuth();
   const [dismissed, setDismissed] = useState(false);
-  const { dreams } = useDreams();
+  const { dreams } = useDreamsData();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();

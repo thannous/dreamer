@@ -510,12 +510,10 @@ export function useDreamPersistence({
       }
       const currentDreams = publishedScopeKey === scopeKey ? dreamsRef.current : [];
       const resolved = resolveDreamListUpdater(updater, currentDreams);
-      const normalized = normalizeDreamList(resolved);
-      const sorted = sortDreams(normalized);
       await enqueueWrite(
         scopeKey,
         'remote-cache',
-        sorted,
+        resolved,
         (value) => saveCachedRemoteDreams(value, userScope),
         true
       );

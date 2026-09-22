@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 
 import { QUOTAS } from '@/constants/limits';
 import { useAuth } from '@/context/AuthContext';
-import { useDreams } from '@/context/DreamsContext';
+import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
@@ -20,7 +20,8 @@ export interface UseDreamSavingOptions {
 }
 
 export function useDreamSaving(options: UseDreamSavingOptions = {}) {
-  const { addDream, applyDreamCategorization, dreams, analyzeDream } = useDreams();
+  const { dreams } = useDreamsData();
+  const { addDream, applyDreamCategorization, analyzeDream } = useDreamsActions();
   const { user } = useAuth();
   const { canAnalyzeNow, tier, quotaStatus } = useQuota();
   const { t, currentLang } = useTranslation();

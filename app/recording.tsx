@@ -1,3 +1,4 @@
+import { RecordingDurationLabel } from '@/components/recording/RecordingDurationLabel';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
@@ -25,7 +26,7 @@ import { useAuth } from '@/context/AuthContext';
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { useQuota } from '@/hooks/useQuota';
 import { buildAnalysisPaywallHref } from '@/lib/paywallRoute';
-import { useDreams } from '@/context/DreamsContext';
+import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
@@ -113,18 +114,12 @@ const trackedOnboardingRecordingDestinations = new Set<string>();
 
 type CaptureIntent = RecordingCaptureIntent;
 
-const formatRecordingDuration = (seconds: number) => {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-};
-
 export default function RecordingScreen() {
+  const { dreams } = useDreamsData();
   const {
     addDream,
     applyDreamCategorization,
-    dreams,
-  } = useDreams();
+  } = useDreamsActions();
   const { user } = useAuth();
   const { tier, quotaStatus, loading: quotaLoading, error: quotaError } = useQuota();
   const latestAccessRef = useRef({ user, tier, quotaStatus, quotaLoading, quotaError });
@@ -201,7 +196,10 @@ export default function RecordingScreen() {
     transcriptSelectionRef.current = undefined;
     setTranscriptSelection(undefined);
   }, []);
-  const persistedDraftValue = captureReview ? encodeCaptureReview(captureReview) : transcript;
+  const persistedDraftValue = useMemo(
+    () => captureReview ? encodeCaptureReview(captureReview) : transcript,
+    [captureReview, transcript]
+  );
   const { noteInput, persistBeforeExit, clearAfterSuccessfulSave, lastPersistedValue, isHydrated, hydrationStatus, retryHydration } = useRecordingDraftPersistence({
     transcript: persistedDraftValue,
     onRestore: handleRestoreDraft,
@@ -245,7 +243,6 @@ export default function RecordingScreen() {
   const offlineModelSheetVisibleRef = useRef(false);
   const hasSeenMicRationaleRef = useRef(false);
   const recordingStartedAtRef = useRef<number | null>(null);
-  const [recordingDurationSeconds, setRecordingDurationSeconds] = useState(0);
   const [voiceFallbackReason, setVoiceFallbackReason] = useState<VoiceFallbackReason>(null);
   const [isVoiceFallbackToastVisible, setIsVoiceFallbackToastVisible] = useState(false);
   const [recordingVoiceHintLoadedScope, setRecordingVoiceHintLoadedScope] =
@@ -418,8 +415,9 @@ export default function RecordingScreen() {
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
   const interactionDisabled = isPersisting || isFormatting || isLeavingReview || isRestartingCapture || !isHydrated;
   const isCompactLandscape = viewportWidth > viewportHeight && viewportHeight < 600;
-  const hasSaveableContent = isTranscriptSaveable(captureReview?.text ??
-    (editableCapture ?? parseCaptureEditableDraft(transcript)).sections.map(section => section.text).join('\n'));
+  const hasSaveableContent = useMemo(() => isTranscriptSaveable(captureReview?.text ??
+    (editableCapture ?? parseCaptureEditableDraft(transcript)).sections.map(section => section.text).join('\n')),
+    [captureReview, editableCapture, transcript]);
   const isSaveDisabled = !hasSaveableContent || interactionDisabled;
   const textInputRef = useRef<TextInput | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
@@ -535,23 +533,6 @@ export default function RecordingScreen() {
     stopRecording: stopSessionRecording,
     forceStopRecording,
   } = recordingSession;
-
-  useEffect(() => {
-    const keepAlive = isRecording || dictationIntent === 'listening' || isHandsFreeRestarting;
-    if (!keepAlive) {
-      setRecordingDurationSeconds(0);
-      return;
-    }
-
-    const updateDuration = () => {
-      const startedAt = recordingStartedAtRef.current;
-      setRecordingDurationSeconds(startedAt ? Math.max(0, Math.floor((Date.now() - startedAt) / 1000)) : 0);
-    };
-
-    updateDuration();
-    const interval = setInterval(updateDuration, 1000);
-    return () => clearInterval(interval);
-  }, [dictationIntent, isHandsFreeRestarting, isRecording]);
 
   useEffect(() => {
     offlineModelSheetVisibleRef.current = showOfflineModelSheet;
@@ -1335,7 +1316,7 @@ export default function RecordingScreen() {
 
   const isVoiceListening = isSpeechListening;
   const recordingDurationLabel = isVoiceListening
-    ? t('recording.status.duration', { duration: formatRecordingDuration(recordingDurationSeconds) })
+    ? <RecordingDurationLabel startedAtRef={recordingStartedAtRef} />
     : undefined;
   const voiceControlStatus = isPreparingRecording && !isVoiceListening
     ? 'preparing'

@@ -169,13 +169,19 @@ jest.mock('@/context/DreamsContext', () => ({
 }));
 jest.mock('@/context/ThemeContext', () => ({ useTheme: () => ({ colors: {}, mode: 'dark' }) }));
 jest.mock('@/constants/noctaliaDesign', () => ({ getNoctaliaDesignTokens: () => ({ text: { primary: '#fff' }, action: { primaryText: '#111' } }) }));
-jest.mock('@/hooks/useTranslation', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
-jest.mock('@/hooks/useLocaleFormatting', () => ({ useLocaleFormatting: () => ({ formatShortDate: () => '' }) }));
+jest.mock('@/hooks/useTranslation', () => {
+  const t = (key: string) => key;
+  return { useTranslation: () => ({ t }) };
+});
+jest.mock('@/hooks/useLocaleFormatting', () => {
+  const formatShortDate = () => '';
+  return { useLocaleFormatting: () => ({ formatShortDate }) };
+});
 jest.mock('@/hooks/useClearWebFocus', () => ({ useClearWebFocus: () => {} }));
 jest.mock('@/lib/accessibility', () => ({ blurActiveElement: () => {} }));
 jest.mock('@/lib/analytics', () => ({ trackProductEvent: () => Promise.resolve() }));
 jest.mock('@/lib/imageUtils', () => ({ getDreamThumbnailUri: () => null, preloadImage: () => Promise.resolve() }));
-jest.mock('@/context/ScrollPerfContext', () => ({ ScrollPerfProvider: ({ children }: any) => <>{children}</> }));
+jest.mock('@/context/ScrollPerfContext', () => ({ ScrollPerfProvider: ({ children, isScrolling }: any) => <div data-testid="scroll-perf" data-scrolling={isScrolling}>{children}</div> }));
 jest.mock('@/components/inspiration/AtmosphericBackground', () => ({ AtmosphericBackground: () => null }));
 jest.mock('@/components/NoctaliaScreenHeader', () => ({
   NoctaliaScreenHeader: ({ titleKey, actions = [], slot, inlineSlot }: any) => <header data-testid="journal-shared-header"><span>Noctalia</span><span>{titleKey}</span>{actions.map((action: any) => <button key={action.testID} data-testid={action.testID} aria-label={action.accessibilityLabel} onClick={action.onPress} />)}{inlineSlot ?? slot}</header>,
@@ -664,8 +670,9 @@ describe('Journal compact large-text layout', () => {
     expectReachableListViewport(640, 320, 2);
     pressSearchControl(input);
     expect(document.activeElement).toBe(input);
-    expect(dreamCard.getAttribute('data-scroll-state')).toBe('idle');
-    expect(mockListProps.extraData.isScrolling).toBe(false);
+    const renderItem = mockListProps.renderItem;
+    expect(dreamCard.hasAttribute('data-scroll-state')).toBe(false);
+    expect(screen.getByTestId('scroll-perf').getAttribute('data-scrolling')).toBe('false');
 
     mockListScrollToOffset.mockClear();
     mockKeyboardDismiss.mockClear();
@@ -675,12 +682,14 @@ describe('Journal compact large-text layout', () => {
 
     expect(mockListScrollToOffset).toHaveBeenCalled();
     expect(mockKeyboardDismiss).toHaveBeenCalled();
-    expect(dreamCard.getAttribute('data-scroll-state')).toBe('scrolling');
-    expect(mockListProps.extraData.isScrolling).toBe(true);
+    expect(mockListProps.renderItem).toBe(renderItem);
+    expect(mockListProps.extraData).toBeUndefined();
+    expect(screen.getByTestId('scroll-perf').getAttribute('data-scrolling')).toBe('true');
 
     await waitFor(() => {
-      expect(screen.getByTestId(TID.List.DreamItem(guestDream.id)).getAttribute('data-scroll-state')).toBe('idle');
-      expect(mockListProps.extraData.isScrolling).toBe(false);
+      expect(screen.getByTestId('scroll-perf').getAttribute('data-scrolling')).toBe('false');
+      expect(mockListProps.renderItem).toBe(renderItem);
+      expect(mockListProps.extraData).toBeUndefined();
     });
   });
 

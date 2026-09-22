@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { renderHook } from '@testing-library/react';
+import { render, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import type { DreamAnalysis } from '../../lib/types';
 
@@ -27,7 +27,7 @@ jest.mock('../../hooks/useDreamJournal', () => ({
   useDreamJournal: () => mockJournal,
 }));
 
-const { DreamsProvider, useDreams, useDreamsActions, useDreamsData, useOptionalDreamsActions } = require('../DreamsContext');
+const { DreamsProvider, useDreams, useDreamsActions, useDreamsData, useDreamsStatus, useOptionalDreamsActions } = require('../DreamsContext');
 
 describe('DreamsContext', () => {
   beforeEach(() => {
@@ -43,7 +43,34 @@ describe('DreamsContext', () => {
 
     expect(result.current.dreams).toEqual(mockJournal.dreams);
     expect(result.current.loaded).toBe(true);
-    expect(result.current.persistenceState).toEqual({ status: 'ready', target: 'device' });
+  });
+
+  it('notifies status consumers without rendering data consumers when saving settles', () => {
+    let dataRenders = 0;
+    const statuses: string[] = [];
+    const Data = React.memo(function Data() {
+      useDreamsData();
+      dataRenders++;
+      return null;
+    });
+    const Status = React.memo(function Status() {
+      statuses.push(useDreamsStatus().persistenceState.status);
+      return null;
+    });
+    const original = mockJournal.persistenceState;
+    const children = <><Data /><Status /></>;
+    const view = render(<DreamsProvider>{children}</DreamsProvider>);
+    try {
+      Object.assign(mockJournal, { persistenceState: { status: 'saving', target: 'device' } });
+      view.rerender(<DreamsProvider>{children}</DreamsProvider>);
+      mockJournal.persistenceState = original;
+      view.rerender(<DreamsProvider>{children}</DreamsProvider>);
+      expect(dataRenders).toBe(1);
+      expect(statuses).toEqual(['ready', 'saving', 'ready']);
+    } finally {
+      mockJournal.persistenceState = original;
+      view.unmount();
+    }
   });
 
   it('given provider__when invoking actions__then delegates to journal', async () => {
@@ -70,6 +97,7 @@ describe('DreamsContext', () => {
 
     expect(result.current.dreams).toEqual(mockJournal.dreams);
     expect(result.current.addDream).toBe(mockJournal.addDream);
+    expect(result.current.persistenceState).toEqual({ status: 'ready', target: 'device' });
   });
 
   it('given missing provider__when using data hook__then throws', () => {

@@ -21,7 +21,6 @@ export type DreamCardVariant = 'standard' | 'featured';
 interface DreamCardProps {
   dream: DreamAnalysis;
   onPress: (dream: DreamAnalysis) => void;
-  scrollState?: 'idle' | 'scrolling';
   testID?: string;
   /** Date string to display as an overline above the title */
   dateLabel?: string;
@@ -33,6 +32,7 @@ const failedThumbnailUris = new Set<string>();
 
 /** expo-image is not a Uniwind component, so its fill style stays an object. */
 const CARD_IMAGE_STYLE = { width: '100%', height: '100%' } as const;
+const CARD_IMAGE_PLACEHOLDER = { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
 
 /** Tag colours have to resolve to a literal class so Tailwind can see them. */
 const THEME_TAG_CLASS: Record<string, string> = {
@@ -61,7 +61,6 @@ const CARD_CLASS = 'overflow-hidden rounded-md border border-continuous border-l
 export const DreamCard = memo(function DreamCard({
   dream,
   onPress,
-  scrollState = 'idle',
   testID,
   dateLabel,
   variant = 'standard',
@@ -74,7 +73,6 @@ export const DreamCard = memo(function DreamCard({
     onPress(dream);
   }, [onPress, dream]);
 
-  const isScrolling = scrollState === 'scrolling';
   const isFeatured = variant === 'featured';
 
   // Use thumbnail URL for list view, fallback to generating one from full URL
@@ -122,9 +120,9 @@ export const DreamCard = memo(function DreamCard({
   // Get optimized image config for thumbnails
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
   const imageRecyclingKey = `${getDreamIdentityKey(dream)}-${imageVersion ?? 0}`;
-  const imageTransition = isScrolling ? 0 : imageConfig.transition;
-  const imagePlaceholder = isScrolling ? null : { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
-  const imagePriority = isScrolling ? 'low' : imageConfig.priority;
+  const imageTransition = imageConfig.transition;
+  const imagePlaceholder = CARD_IMAGE_PLACEHOLDER;
+  const imagePriority = imageConfig.priority;
 
   const isExplored = isDreamExplored(dream);
   const isAnalyzed = isDreamAnalyzed(dream);
@@ -332,7 +330,6 @@ export const DreamCard = memo(function DreamCard({
 }, (prev, next) => {
   if (prev === next) return true;
   if (prev.onPress !== next.onPress) return false;
-  if (prev.scrollState !== next.scrollState) return false;
   if (prev.testID !== next.testID) return false;
   if (prev.dateLabel !== next.dateLabel) return false;
   if (prev.variant !== next.variant) return false;

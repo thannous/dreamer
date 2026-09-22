@@ -10,7 +10,7 @@ import { useAuth } from '@/context/AuthContext';
 import { SignInToOpenDream } from '@/components/auth/SignInToOpenDream';
 import { dreamAuthReturnDestination } from '@/lib/authReturnIntent';
 import { ChatProvider, useKeyboardStateContext } from '@/context/ChatContext';
-import { useDreams } from '@/context/DreamsContext';
+import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -155,7 +155,8 @@ function DreamChatContent() {
     messageId?: string | string[];
   }>();
   const targetMessageId = Array.isArray(routeMessageId) ? routeMessageId[0] : routeMessageId;
-  const { dreams, updateDream, applyServerDreamState } = useDreams();
+  const { dreams } = useDreamsData();
+  const { updateDream, applyServerDreamState } = useDreamsActions();
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { user } = useAuth();

@@ -250,10 +250,6 @@ export default function JournalListScreen() {
     () => [LIST_CONTENT_STYLE, DESKTOP_MAX_WIDTH_STYLE, { paddingBottom: listBottomPadding }],
     [listBottomPadding]
   );
-  const listExtraData = useMemo(
-    () => ({ isScrolling }),
-    [isScrolling],
-  );
 
   // Get available themes
   const availableThemes = useMemo(() => getUniqueThemes(dreams), [dreams]);
@@ -584,14 +580,13 @@ export default function JournalListScreen() {
         <DreamCard
           dream={item}
           onPress={handleDreamPress}
-          scrollState={isScrolling ? 'scrolling' : 'idle'}
           testID={TID.List.DreamItem(item.id)}
           dateLabel={dateStr}
           variant={isFirstItem ? 'featured' : 'standard'}
         />
       </View>
     );
-  }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
+  }, [formatDreamListDate, t, handleDreamPress]);
 
   const renderDreamItemTablet = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
     const dreamTypeLabel = item.dreamType && (item.dreamType !== 'Symbolic Dream' || isDreamAnalyzed(item)) ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
@@ -602,14 +597,13 @@ export default function JournalListScreen() {
         <DreamCard
           dream={item}
           onPress={handleDreamPress}
-          scrollState={isScrolling ? 'scrolling' : 'idle'}
           testID={TID.List.DreamItem(item.id)}
           dateLabel={dateStr}
           variant="standard"
         />
       </View>
     );
-  }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
+  }, [formatDreamListDate, t, handleDreamPress]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const hasImage = !item.imageGenerationFailed && Boolean(item.thumbnailUrl || item.imageUrl);
@@ -640,12 +634,11 @@ export default function JournalListScreen() {
         <DreamCard
           dream={item}
           onPress={handleDreamPress}
-          scrollState={isScrolling ? 'scrolling' : 'idle'}
           testID={TID.List.DreamItem(item.id)}
         />
       </View>
     );
-  }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
+  }, [formatDreamListDate, t, handleDreamPress]);
 
   const hasNonDefaultSort = sortOrder !== 'newest';
   const hasActiveFilter = !!(
@@ -1027,7 +1020,6 @@ export default function JournalListScreen() {
           onEndReached={hasMore ? loadMore : undefined}
           onEndReachedThreshold={0.5}
           ListFooterComponent={listFooter}
-          extraData={listExtraData}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
@@ -1052,7 +1044,6 @@ export default function JournalListScreen() {
           onEndReached={hasMore ? loadMore : undefined}
           onEndReachedThreshold={0.5}
           ListFooterComponent={listFooter}
-          extraData={listExtraData}
           keyExtractor={keyExtractor}
           renderItem={isTabletLayout ? renderDreamItemTablet : renderDreamItem}
           numColumns={isTabletLayout ? 2 : 1}

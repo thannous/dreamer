@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { useNetworkState } from 'expo-network';
+import { useNetworkOnline } from './useNetworkOnline';
 import { AuthContext } from '@/context/AuthContext';
 import type { DreamAnalysis } from '@/lib/types';
 import { getDirectDreamMediaUrl, resolveDreamMedia, type DreamMediaResult } from '@/services/dreamMediaService';
@@ -7,8 +7,7 @@ import { getDirectDreamMediaUrl, resolveDreamMedia, type DreamMediaResult } from
 /** Resolve only mounted media; never replace durable references in journal state. */
 export function useDreamMedia(dream?: DreamAnalysis | null) {
   const userId = useContext(AuthContext)?.user?.id ?? null;
-  const network = useNetworkState();
-  const online = network.isInternetReachable ?? network.isConnected ?? true;
+  const online = useNetworkOnline();
   const imageUrl = dream?.imageUrl ?? '';
   const thumbnailUrl = dream?.thumbnailUrl ?? '';
   const imageUpdatedAt = dream?.imageUpdatedAt;

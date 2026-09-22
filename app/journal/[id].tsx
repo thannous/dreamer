@@ -32,7 +32,7 @@ import { useAuth } from '@/context/AuthContext';
 import { SignInToOpenDream } from '@/components/auth/SignInToOpenDream';
 import { dreamAuthReturnDestination } from '@/lib/authReturnIntent';
 import { useOnboarding } from '@/context/OnboardingContext';
-import { useDreams } from '@/context/DreamsContext';
+import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -248,8 +248,8 @@ function JournalDetailContent() {
   useEffect(() => {
     recallEligibleDreamIdRef.current = recallOffer.eligibleDreamId;
   }, [recallOffer.eligibleDreamId]);
+  const { dreams } = useDreamsData();
   const {
-    dreams,
     toggleFavorite,
     updateDream,
     deleteDream,
@@ -257,7 +257,7 @@ function JournalDetailContent() {
     resolveDreamConflict,
     generateDreamImage,
     analyzeDream,
-  } = useDreams();
+  } = useDreamsActions();
   const { user } = useAuth();
   const { colors, shadows, mode } = useTheme();
   const insets = useSafeAreaInsets();
