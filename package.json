@@ -190,7 +190,8 @@
     "release:prepare": "node ./scripts/mobile-release.js prepare",
     "release:check": "node ./scripts/mobile-release.js check",
     "release:build": "node ./scripts/mobile-release.js build",
-    "eas-build-pre-install": "node ./scripts/mobile-release.js verify"
+    "eas-build-pre-install": "node ./scripts/mobile-release.js verify",
+    "postinstall": "patch-package --error-on-fail"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",
@@ -291,6 +292,7 @@
     "jsdom": "^27.2.0",
     "lenis": "^1.3.25",
     "motion": "^12.42.2",
+    "patch-package": "8.0.1",
     "pg": "^8.20.0",
     "playwright": "^1.58.2",
     "react-test-renderer": "^19.2.0",

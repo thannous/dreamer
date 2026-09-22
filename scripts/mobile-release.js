@@ -39,7 +39,7 @@ function affects(app, file) {
   if (lucid) return app === 'lucid';
   if (/^app\/[_+][^/]*\.[jt]sx?$/.test(file)) return true;
   if (/^(app\/|assets\/images\/|lib\/i18n\/)/.test(file)) return app === 'noctalia';
-  return /^(components|context|hooks|lib|services|constants|assets|plugins|data)\//.test(file)
+  return /^(components|context|hooks|lib|services|constants|assets|plugins|patches|data)\//.test(file)
     || /^scripts\/(build-android[^/]*|expo-safe-runner|sync-android-native-version)\.js$/.test(file)
     || /^(app\.config\.ts|app\.json|package(-lock)?\.json|eas\.json|metro\.config\.js|babel\.config\.js|global\.css)$/.test(file);
 }

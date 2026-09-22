@@ -1,5 +1,5 @@
 import { MarkdownText } from '@/components/ui/MarkdownText';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -8,18 +8,18 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { DarkTheme, MorningTheme } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import type { DreamAnalysis } from '@/lib/types';
 
-type Props = {
+export type AnalysisReadingModalProps = {
   dream: Pick<DreamAnalysis, 'title' | 'shareableQuote' | 'interpretation'> & Partial<Pick<DreamAnalysis,
     'promptVersion' | 'symbols' | 'emotions' | 'reflectionQuestions' | 'imageUrl' | 'imageJobStatus' | 'imageGenerationFailed'>>;
   /** Resolved through the journal media boundary (including private storage signing). */
   imageUri?: string;
+  imageCacheKey?: string;
   imageLoadFailed?: boolean;
   onReloadImage?: () => void;
   onRetryImage?: () => void;
@@ -27,7 +27,7 @@ type Props = {
   onClose: () => void;
 };
 
-function ReadingIllustration({ dream, imageUri, imageLoadFailed, onReloadImage, onRetryImage, isRetryingImage }: Omit<Props, 'onClose'>) {
+function ReadingIllustration({ dream, imageUri, imageCacheKey, imageLoadFailed, onReloadImage, onRetryImage, isRetryingImage }: Omit<AnalysisReadingModalProps, 'onClose'>) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const tokens = getNoctaliaDesignTokens(colors, mode);
@@ -46,7 +46,7 @@ function ReadingIllustration({ dream, imageUri, imageLoadFailed, onReloadImage, 
   return (
     <View style={[styles.illustration, hasImage || pending ? styles.imageFrame : styles.emptyFrame, { backgroundColor: tokens.surface.soft }]} testID="analysis.reading.illustration">
       {hasImage && imageUri && !loadFailed ? (
-        <Image source={{ uri: imageUri }} contentFit="cover" style={StyleSheet.absoluteFill}
+        <Image source={{ uri: imageUri, cacheKey: imageCacheKey }} cachePolicy="memory-disk" contentFit="cover" style={StyleSheet.absoluteFill}
           accessibilityLabel={t('analysis.reading.image_alt', { title: dream.title })}
           onLoad={() => setLoaded(true)} onError={() => setLoadFailed(true)} testID="analysis.reading.image" />
       ) : null}
@@ -66,13 +66,14 @@ function ReadingIllustration({ dream, imageUri, imageLoadFailed, onReloadImage, 
 }
 
 /** The same saved analysis remains readable while its illustration finishes. */
-export function AnalysisReadingModal({ dream, imageUri, imageLoadFailed, onReloadImage, onRetryImage, isRetryingImage, onClose }: Props) {
+export function AnalysisReadingModal({ dream, imageUri, imageCacheKey, imageLoadFailed, onReloadImage, onRetryImage, isRetryingImage, onClose }: AnalysisReadingModalProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const quote = dream.shareableQuote?.trim();
   const backgroundColor = tokens.surface.raised;
+  const bodyStyle = useMemo(() => [styles.body, { color: tokens.text.primary }], [tokens.text.primary]);
   const insights = [
     { key: 'symbols', heading: t('journal.detail.symbols_header'), items: dream.symbols?.map(item => ({ name: item.name, text: item.meaning })) },
     { key: 'emotions', heading: t('journal.detail.emotions_header'), items: dream.emotions?.map(item => ({ name: item.name, text: item.insight })) },
@@ -90,10 +91,10 @@ export function AnalysisReadingModal({ dream, imageUri, imageLoadFailed, onReloa
         </View>
         <ScrollView contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40, paddingLeft: Math.max(insets.left, 24), paddingRight: Math.max(insets.right, 24) }]}>
           <Text accessibilityRole="header" style={[styles.title, { color: tokens.text.primary }]}>{dream.title}</Text>
-          <ReadingIllustration key={`${dream.imageUrl ?? ''}:${imageUri ?? ''}`} dream={dream} imageUri={imageUri} imageLoadFailed={imageLoadFailed} onReloadImage={onReloadImage}
+          <ReadingIllustration key={`${dream.imageUrl ?? ''}:${imageUri ?? ''}`} dream={dream} imageUri={imageUri} imageCacheKey={imageCacheKey} imageLoadFailed={imageLoadFailed} onReloadImage={onReloadImage}
             onRetryImage={onRetryImage} isRetryingImage={isRetryingImage} />
           <View testID="analysis.reading.body">
-            <MarkdownText variant="reading" style={[styles.body, { color: tokens.text.primary }]}>{dream.interpretation?.trim() ?? ''}</MarkdownText>
+            <MarkdownText variant="reading" style={bodyStyle}>{dream.interpretation?.trim() ?? ''}</MarkdownText>
           </View>
           {insights.map(section => section.items?.length ? (
             <View key={section.key} style={styles.section} testID={`analysis.reading.${section.key}`}>
@@ -101,7 +102,7 @@ export function AnalysisReadingModal({ dream, imageUri, imageLoadFailed, onReloa
               {section.items.map((item, index) => (
                 <View key={`${item.name}-${index}`} style={styles.insight}>
                   <Text style={[styles.insightTitle, { color: tokens.text.primary }]}>{item.name}</Text>
-                  <MarkdownText variant="reading" style={[styles.body, { color: tokens.text.primary }]}>{item.text}</MarkdownText>
+                  <MarkdownText variant="reading" style={bodyStyle}>{item.text}</MarkdownText>
                 </View>
               ))}
             </View>

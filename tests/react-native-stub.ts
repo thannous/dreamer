@@ -69,9 +69,18 @@ export const Pressable = ({ children, onPress, onPressIn, onPressOut, disabled, 
     typeof children === 'function' ? children({ pressed: false }) : children
   );
 
+function flattenStyle(style: unknown): Record<string, unknown> | undefined {
+  if (style === null || typeof style !== 'object') return undefined;
+  if (!Array.isArray(style)) return style as Record<string, unknown>;
+
+  const flattened: Record<string, unknown> = {};
+  for (const item of style) Object.assign(flattened, flattenStyle(item));
+  return flattened;
+}
+
 export const StyleSheet = {
   create: (styles: any) => styles,
-  flatten: (style: any) => style,
+  flatten: flattenStyle,
   absoluteFill: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 },
 };
 

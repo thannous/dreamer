@@ -1,0 +1,39 @@
+diff --git a/node_modules/react-native-enriched-markdown/android/src/main/java/com/swmansion/enriched/markdown/MeasurementStore.kt b/node_modules/react-native-enriched-markdown/android/src/main/java/com/swmansion/enriched/markdown/MeasurementStore.kt
+index d6f8772..89aa39c 100644
+--- a/node_modules/react-native-enriched-markdown/android/src/main/java/com/swmansion/enriched/markdown/MeasurementStore.kt
++++ b/node_modules/react-native-enriched-markdown/android/src/main/java/com/swmansion/enriched/markdown/MeasurementStore.kt
+@@ -180,7 +180,9 @@ object MeasurementStore {
+     viewId: Int,
+     strategy: String,
+   ) {
+-    breakStrategies[viewId] = strategy
++    if (breakStrategies.put(viewId, strategy) != strategy) {
++      data.remove(viewId)
++    }
+   }
+ 
+   fun clearBreakStrategy(viewId: Int) {
+@@ -222,7 +224,7 @@ object MeasurementStore {
+ 
+     val fontScale = checkAndUpdateFontScale(context, allowFontScaling, maxFontSizeMultiplier)
+ 
+-    // Split measurement always goes through the full measure path (no spannable caching)
++    // Split measurement caches final dimensions, not mutable rendered spans.
+     if (splitTableSegments) {
+       return measureAndCacheSplit(context, id, width, props, allowFontScaling, fontScale, maxFontSizeMultiplier)
+     }
+@@ -395,10 +397,10 @@ object MeasurementStore {
+       }
+     val propsHash = computePropsHashForMarkdown(markdown, props, allowFontScaling, fontScale, maxFontSizeMultiplier)
+ 
+-    // Streaming shortcut: reuse cached size when the filtered content and
+-    // width are unchanged. When the filter output changes (e.g. a table
+-    // becomes complete), the hash differs and we fall through to full measure.
+-    if (isStreaming && id != null) {
++    // Reuse dimensions for static text too. The hash covers filtered content,
++    // styles, flags and font scaling; width changes require a new layout.
++    // Dynamic image geometry and view disposal explicitly invalidate this entry.
++    if (id != null) {
+       val cached = data[id]
+       if (cached != null && cached.cachedWidth == width && cached.markdownHash == propsHash) {
+         return cached.cachedSize
