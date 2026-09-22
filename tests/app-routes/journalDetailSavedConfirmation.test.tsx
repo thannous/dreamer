@@ -20,10 +20,17 @@ let mockTier: 'guest' | 'free' | 'plus' = 'free';
 let mockUser: { id: string } | null = { id: 'user-1' };
 const mockUpdateDream = jest.fn();
 const mockRetryDreamSync = jest.fn(async (): Promise<void> => undefined);
-let mockCompositeLoads = true;
+let mockCompositeLoads: boolean | null = true;
+const mockCompositeEvents: {
+  source: string;
+  load: () => void;
+  display: () => void;
+  report: (source: string, ready: boolean) => void;
+}[] = [];
 let mockThemeMode: 'light' | 'dark' = 'dark';
 const mockRetryMedia = jest.fn();
 const mockShareComposite = jest.fn();
+const mockShareImageRef: { current: HTMLDivElement | null } = { current: null };
 jest.mock('@/components/ui/MarkdownText', () => ({ MarkdownText: ({ children }: { children: string }) => <span>{children}</span> }));
 
 jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => mockMedia ?? ({ imageUrl: dream?.imageUrl ?? '', thumbnailUrl: dream?.thumbnailUrl, loading: false, error: false, retry: mockRetryMedia }) }));
@@ -212,10 +219,23 @@ jest.mock('@/components/inspiration/GlassCard', () => ({
 }));
 
 jest.mock('@/components/journal/DreamShareImage', () => ({
-  DreamShareImage: ({ resolvedMedia, onMediaReady }: any) => {
-    require('react').useEffect(() => { if (resolvedMedia?.imageUrl) onMediaReady(resolvedMedia.imageUrl, mockCompositeLoads); }, [resolvedMedia?.imageUrl, onMediaReady]);
-    return null;
-  },
+  DreamShareImage: require('react').forwardRef(function MockDreamShareImage(
+    { resolvedMedia, onMediaReady }: any,
+    ref: React.ForwardedRef<HTMLDivElement>
+  ) {
+    require('react').useEffect(() => {
+      if (!resolvedMedia?.imageUrl) return;
+      const source = resolvedMedia.imageUrl;
+      mockCompositeEvents.push({
+        source,
+        load: () => undefined,
+        display: () => onMediaReady(source, true),
+        report: onMediaReady,
+      });
+      if (mockCompositeLoads !== null) onMediaReady(resolvedMedia.imageUrl, mockCompositeLoads);
+    }, [resolvedMedia?.imageUrl, onMediaReady]);
+    return <div ref={ref} data-testid="share-composite" />;
+  }),
 }));
 
 jest.mock('@/components/journal/ImageRetry', () => ({
@@ -339,7 +359,7 @@ jest.mock('@/hooks/useClearWebFocus', () => ({
 
 jest.mock('@/hooks/useDreamShareComposite', () => ({
   useDreamShareComposite: () => ({
-    shareImageRef: { current: null },
+    shareImageRef: mockShareImageRef,
     shareComposite: mockShareComposite,
     isGenerating: false,
   }),
@@ -420,6 +440,9 @@ describe('journal detail saved confirmation route', () => {
     mockRetryDreamSync.mockReset();
     mockRetryMedia.mockReset();
     mockShareComposite.mockReset();
+    mockShareImageRef.current = null;
+    mockCompositeEvents.length = 0;
+    mockCompositeLoads = true;
     require('react-native').Platform.OS = 'web';
     require('react-native').Share.share.mockClear();
     mockSearchParams = { id: '42', saved: '1' };
@@ -964,36 +987,75 @@ describe('journal detail saved confirmation route', () => {
 
 
 describe('native share media readiness', () => {
-  beforeEach(() => { mockCompositeLoads = true; mockShareComposite.mockClear(); mockRetryMedia.mockClear(); require('react-native').Share.share.mockClear(); });
+  beforeEach(() => { mockCompositeLoads = true; mockCompositeEvents.length = 0; mockShareComposite.mockClear(); mockRetryMedia.mockClear(); require('react-native').Share.share.mockClear(); require('react-native').Alert.alert.mockClear(); });
   afterEach(() => { cleanup(); require('react-native').Platform.OS = 'web'; mockMedia = null; });
-  it('keeps sharing pending through delayed signing then shares the composite', async () => {
+  it('waits for signing, then mounts the composite only on tap and captures after its image loads', async () => {
     require('react-native').Platform.OS = 'android';
     mockDreams = [buildDream({ imageUrl: 'supabase-storage://dream-images/A/image', isAnalyzed: true, analysisStatus: 'done' })];
     mockMedia = { imageUrl: '', loading: true, error: false, retry: mockRetryMedia };
+    mockCompositeLoads = null;
     const { rerender } = render(<JournalDetailScreen />);
     expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.queryByTestId('share-composite')).toBeNull();
     fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
     expect(require('react-native').Share.share).not.toHaveBeenCalled();
     mockMedia = { imageUrl: 'https://signed/image', loading: false, error: false, retry: mockRetryMedia };
     rerender(<JournalDetailScreen />);
+    expect(screen.queryByTestId('share-composite')).toBeNull();
     fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
-    expect(mockShareComposite).toHaveBeenCalled();
+    expect(screen.getByTestId('share-composite')).toBeTruthy();
+    expect(mockShareImageRef.current).not.toBeNull();
+    expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(true);
+    expect(mockShareComposite).not.toHaveBeenCalled();
+    await act(async () => { mockCompositeEvents[0].load(); });
+    expect(mockShareComposite).not.toHaveBeenCalled();
+    await act(async () => { mockCompositeEvents[0].display(); });
+    expect(mockShareComposite).toHaveBeenCalledTimes(1);
+    expect(screen.queryByTestId('share-composite')).toBeNull();
     expect(require('react-native').Share.share).not.toHaveBeenCalled();
   });
-  it('retries the same resolved URL after composite image failure', () => {
+  it('retries the same resolved URL after composite image failure and ignores old callbacks', async () => {
     require('react-native').Platform.OS = 'android';
     mockDreams = [buildDream({ imageUrl: 'https://cdn/image', isAnalyzed: true, analysisStatus: 'done' })];
     mockMedia = { imageUrl: 'https://cdn/image', loading: false, error: false, retry: mockRetryMedia };
     mockCompositeLoads = false;
     render(<JournalDetailScreen />);
+    expect(screen.queryByTestId('share-composite')).toBeNull();
     expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(false);
-    mockCompositeLoads = true;
-    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamShare)); });
     expect(mockRetryMedia).toHaveBeenCalledTimes(1);
+    expect(mockShareComposite).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('share-composite')).toBeNull();
     expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(false);
+    mockCompositeLoads = null;
     fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    expect(mockCompositeEvents).toHaveLength(2);
+    await act(async () => { mockCompositeEvents[0].report('https://cdn/image', true); });
+    expect(mockShareComposite).not.toHaveBeenCalled();
+    await act(async () => { mockCompositeEvents[1].report('https://cdn/image', true); });
     expect(mockShareComposite).toHaveBeenCalledTimes(1);
     expect(require('react-native').Share.share).not.toHaveBeenCalled();
+  });
+  it('ignores an image callback after the resolved source changes', async () => {
+    require('react-native').Platform.OS = 'android';
+    mockDreams = [buildDream({ imageUrl: 'https://cdn/image', isAnalyzed: true, analysisStatus: 'done' })];
+    mockMedia = { imageUrl: 'https://signed/old', loading: false, error: false, retry: mockRetryMedia };
+    mockCompositeLoads = null;
+    const { rerender } = render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    expect(mockCompositeEvents[0].source).toBe('https://signed/old');
+    await act(async () => {
+      mockMedia = { imageUrl: 'https://signed/new', loading: false, error: false, retry: mockRetryMedia };
+      rerender(<JournalDetailScreen />);
+    });
+    await act(async () => { mockCompositeEvents[0].report('https://signed/old', true); });
+    expect(mockShareComposite).not.toHaveBeenCalled();
+    expect(require('react-native').Alert.alert).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('share-composite')).toBeNull();
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    expect(mockCompositeEvents[1].source).toBe('https://signed/new');
+    await act(async () => { mockCompositeEvents[1].report('https://signed/new', true); });
+    expect(mockShareComposite).toHaveBeenCalledTimes(1);
   });
   it('offers retry on media failure without silently sharing text', () => {
     require('react-native').Platform.OS = 'android';
@@ -1003,6 +1065,13 @@ describe('native share media readiness', () => {
     fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
     expect(mockRetryMedia).toHaveBeenCalled();
     expect(require('react-native').Share.share).not.toHaveBeenCalled();
+  });
+  it('does not mount the native composite for web sharing', () => {
+    require('react-native').Platform.OS = 'web';
+    mockDreams = [buildDream({ imageUrl: 'https://cdn/image', isAnalyzed: true, analysisStatus: 'done' })];
+    mockMedia = { imageUrl: 'https://cdn/image', loading: false, error: false, retry: mockRetryMedia };
+    render(<JournalDetailScreen />);
+    expect(screen.queryByTestId('share-composite')).toBeNull();
   });
 });
 

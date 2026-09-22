@@ -618,6 +618,7 @@ export async function startNativeSpeechSession(
     let stopRequested = false;
     let unexpectedEndNotified = false;
     let lastPartial = '';
+    let lastPublishedPreview = '';
     let lastError: { code?: string; message?: string } | null = null;
     let finalChunks: string[] = [];
     let recordedUri: string | null = null;
@@ -670,11 +671,13 @@ export async function startNativeSpeechSession(
         finalChunks = mergeFinalChunk(finalChunks, transcript);
         lastPartial = '';
       } else {
+        if (transcript === lastPartial) return;
         lastPartial = transcript;
       }
 
       const preview = buildPreview(finalChunks, lastPartial);
-      if (preview && options?.onPartial) {
+      if (preview && preview !== lastPublishedPreview && options?.onPartial) {
+        lastPublishedPreview = preview;
         options.onPartial(preview);
       }
     });

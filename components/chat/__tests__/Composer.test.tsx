@@ -165,16 +165,26 @@ jest.mock('@/hooks/usePrefersReducedMotion', () => ({
   usePrefersReducedMotion: () => false,
 }));
 
-jest.mock('@/hooks/useRecordingSession', () => ({
-  useRecordingSession: () => ({
-    isRecording: mockIsRecording,
-    baseTranscriptRef: mockBaseTranscriptRef,
-    startRecording: mockStartRecording,
-    stopRecording: mockStopRecording,
-    setupAppStateListener: mockSetupAppStateListener,
-    forceStopRecording: mockForceStopRecording,
-  }),
-}));
+jest.mock('@/hooks/useRecordingSession', () => {
+  const React = require('react');
+  return {
+    useRecordingSession: ({ onLanguagePackMissing }: { onLanguagePackMissing: unknown }) => ({
+      isRecording: mockIsRecording,
+      baseTranscriptRef: mockBaseTranscriptRef,
+      startRecording: mockStartRecording,
+      stopRecording: mockStopRecording,
+      // In the real hook, this listener depends on stopRecording, which depends
+      // on onLanguagePackMissing. Keep that identity chain in this test double.
+      setupAppStateListener: React.useMemo(() => {
+        if (typeof onLanguagePackMissing !== 'function') {
+          throw new Error('Expected a language-pack callback');
+        }
+        return () => mockSetupAppStateListener();
+      }, [onLanguagePackMissing]),
+      forceStopRecording: mockForceStopRecording,
+    }),
+  };
+});
 
 jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
@@ -286,6 +296,34 @@ describe('Composer', () => {
 
     expect(onChangeText).toHaveBeenCalledWith('A blue room with rain');
     expect(onSend).toHaveBeenCalledWith(undefined);
+  });
+
+  it('keeps the active recording session through a composer rerender', async () => {
+    const onChangeText = jest.fn();
+    const onSend = jest.fn();
+    const composer = (value: string) => (
+      <Composer.Root value={value} onChangeText={onChangeText} onSend={onSend}>
+        <Composer.Body>
+          <Composer.Input />
+          <Composer.MicButton />
+          <Composer.SendButton />
+        </Composer.Body>
+      </Composer.Root>
+    );
+    const { rerender, unmount } = render(composer('Un rêve'));
+    await act(async () => {});
+    expect(mockSetupAppStateListener).toHaveBeenCalledTimes(1);
+
+    mockIsRecording = true;
+    rerender(composer('Un rêve de pluie'));
+
+    expect(mockAppStateCleanup).not.toHaveBeenCalled();
+    expect(mockForceStopRecording).not.toHaveBeenCalled();
+    expect(mockSetupAppStateListener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(mockAppStateCleanup).toHaveBeenCalledTimes(1);
+    expect(mockForceStopRecording).toHaveBeenCalledWith('unmount');
   });
 
   it('stops recording and sends the merged transcript only after stop resolves', async () => {

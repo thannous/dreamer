@@ -268,16 +268,23 @@ function Root({
     };
   }, [transcriptionLocale]);
 
+  const handlePartialTranscript = useCallback((text: string, { baseTranscript }: { baseTranscript: string }) => {
+    const base = baseTranscript.trim();
+    onChangeText(base ? `${base} ${text}` : text);
+  }, [onChangeText]);
+
+  const handleLanguagePackMissing = useCallback(({ locale, installedLocales }: {
+    locale: string;
+    installedLocales: string[];
+  }) => {
+    setLanguagePackMissingInfo({ locale, installedLocales });
+  }, []);
+
   const recordingSession = useRecordingSession({
     transcriptionLocale,
     t,
-    onPartialTranscript: (text, { baseTranscript }) => {
-      const base = baseTranscript.trim();
-      onChangeText(base ? `${base} ${text}` : text);
-    },
-    onLanguagePackMissing: ({ locale, installedLocales }) => {
-      setLanguagePackMissingInfo({ locale, installedLocales });
-    },
+    onPartialTranscript: handlePartialTranscript,
+    onLanguagePackMissing: handleLanguagePackMissing,
   });
 
   const {

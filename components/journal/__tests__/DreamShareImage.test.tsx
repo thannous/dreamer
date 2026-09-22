@@ -9,7 +9,12 @@ import type { DreamAnalysis } from '@/lib/types';
 jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => ({ imageUrl: dream?.imageUrl, thumbnailUrl: dream?.thumbnailUrl, loading: false, error: false }) }));
 
 jest.mock('expo-image', () => ({
-  Image: ({ source, onLoad, onError }: any) => <img alt="Dream" src={source.uri} onLoad={onLoad} onError={onError} />,
+  Image: ({ source, onLoad, onDisplay, onError }: any) => (
+    <>
+      <img alt="Dream" src={source.uri} onLoad={onLoad} onError={onError} />
+      <button type="button" data-testid="dream-image-displayed" onClick={onDisplay}>Display image</button>
+    </>
+  ),
 }));
 
 jest.mock('react-native', () => {
@@ -62,23 +67,26 @@ describe('DreamShareImage', () => {
 });
 
 
-it('uses the already resolved parent media and signals successful image loading', () => {
+it('uses resolved media and signals readiness only after the image is displayed', () => {
   const ready = jest.fn();
   render(<DreamShareImage dream={{ id: 1, imageUrl: 'private' } as DreamAnalysis} t={key => key}
     resolvedMedia={{ imageUrl: 'https://signed/image' }} onMediaReady={ready} />);
   expect(screen.getByAltText('Dream').getAttribute('src')).toBe('https://signed/image');
   expect(ready).not.toHaveBeenCalled();
   fireEvent.load(screen.getByAltText('Dream'));
+  expect(ready).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByTestId('dream-image-displayed'));
   expect(ready).toHaveBeenCalledWith('https://signed/image', true);
 });
 
 
-it('reports a bounded image-load timeout for retry instead of remaining pending forever', () => {
+it('reports a bounded display timeout for retry even when loading completed', () => {
   jest.useFakeTimers();
   try {
     const ready = jest.fn();
     const { unmount } = render(<DreamShareImage dream={{ id: 1 } as DreamAnalysis} t={key => key}
       resolvedMedia={{ imageUrl: 'https://signed/stalled' }} onMediaReady={ready} />);
+    fireEvent.load(screen.getByAltText('Dream'));
     act(() => { jest.advanceTimersByTime(10000); });
     expect(ready).toHaveBeenCalledWith('https://signed/stalled', false);
     unmount();
