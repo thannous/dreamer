@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/blog/water-dreams-meaning.webp",
   "twitterImageAlt": "Surface d’eau calme vue de près",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-18",
+  "modifiedTime": "2026-09-22",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-de-mort",
   "nextPath": "/fr/blog/reves-ex-partenaire",
   "preloadImage": "/img/blog/water-dreams-meaning.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Rêver d’inondation et d’eau : signification selon le rêve\",\n  \"description\": \"Rêver d’inondation, d’eau claire, d’eau trouble, de maison inondée ou d’eau de mer : détails à noter et pistes à comparer avec votre contexte.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/water-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/fr/a-propos\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-18\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/fr/blog/reves-eau\"\n  },\n  \"inLanguage\": \"fr\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 911,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/fr/blog/reves-eau\"\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Rêver d’inondation et d’eau : signification selon le rêve\",\n  \"description\": \"Rêver d’inondation, d’eau claire, d’eau trouble, de maison inondée ou d’eau de mer : détails à noter et pistes à comparer avec votre contexte.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/water-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/fr/a-propos\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-09-22\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/fr/blog/reves-eau\"\n  },\n  \"inLanguage\": \"fr\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1787,\n  \"timeRequired\": \"PT9M\",\n  \"url\": \"https://noctalia.app/fr/blog/reves-eau\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Que symbolise l’eau dans les rêves ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"L’eau peut servir de métaphore aux émotions, mais elle n’a pas de sens universel. Le lieu, le mouvement de l’eau, vos actions, votre émotion et les événements récents donnent un contexte plus utile que le symbole isolé.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Que signifie rêver de se noyer ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Se noyer peut accompagner un sentiment de pression ou d’impuissance, mais aussi reprendre une sensation corporelle ou une image récente. La scène seule ne permet pas de conclure à une cause psychologique.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Que signifient les rêves d’inondation ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Une inondation peut accompagner du stress ou un changement rapide. Regardez d’abord le lieu touché, la vitesse de l’eau, votre marge d’action et ce qui s’est passé récemment, sans traiter le rêve comme une prédiction.\"\n      }\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressources\",\n      \"item\": \"https://noctalia.app/fr/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Rêves d'Eau\",\n      \"item\": \"https://noctalia.app/fr/blog/reves-eau\"\n    }\n  ]\n}"
   ],
@@ -61,7 +61,7 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="signification-des-reves">Thématique : Signification des rêves</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publié le 11 décembre 2025</span>
-<span class="text-sm text-purple-300/60">4 min de lecture</span>
+<span class="text-sm text-purple-300/60">9 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Rêver d’inondation et d’eau : signification selon le rêve
@@ -194,6 +194,12 @@
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
+<h3 id="maison-inondee">Rêver d’une maison inondée</h3>
+<p>Était-ce votre logement actuel, une maison d’enfance ou un lieu inconnu ? Repérez la pièce touchée, les personnes présentes et la vitesse à laquelle l’eau montait. Protéger des objets, aider un proche ou chercher une sortie décrit des préoccupations différentes. Votre réaction compte aussi : panique, concentration ou soulagement lorsque l’eau se retire.</p>
+<p>Comparez ces détails avec un événement récent, comme une fuite, un déménagement ou des images d’inondation. Une inquiétude liée au foyer est une piste possible, pas une conclusion sur votre famille ou votre sécurité.</p>
+<h3 id="route-inondee">Rêver d’une route inondée</h3>
+<p>Une route sous l’eau peut interrompre un trajet, imposer un détour ou vous laisser dans l’attente. Notez votre destination, vos compagnons de voyage et votre marge de choix dans le rêve : pouviez-vous faire demi-tour, trouver un autre passage ou demander de l’aide ? L’eau montait-elle encore, et ressentiez-vous de la peur, de l’impatience ou du calme ?</p>
+<p>La scène peut faire écho à un contretemps, mais aussi reprendre un trajet ou une actualité récente. Elle ne prédit ni accident ni échec d’un projet ; le lieu et votre réaction servent surtout à formuler des questions adaptées à votre contexte.</p>
 <h2 id="etat">L'état de l'eau dans les rêves : claire, trouble ou agitée</h2>
 <p>
                     L’état de l’eau change l’ambiance du rêve, mais ne révèle pas automatiquement votre état psychologique :
@@ -332,7 +338,7 @@
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Que symbolise l'eau dans les rêves ?
+                            Que symbolise l’eau dans les rêves ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
@@ -350,7 +356,7 @@
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Que signifient les rêves d'inondation ?
+                            Que signifient les rêves d’inondation ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
@@ -367,7 +373,7 @@
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net: G. William Domhoff (dream research overview)</a></li>
 <li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Stages of sleep</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 18 juillet 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 22 septembre 2026</p>
 </section>
 <section class="mt-16">
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Articles Connexes</h2>

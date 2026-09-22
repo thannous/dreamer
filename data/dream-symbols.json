@@ -1198,31 +1198,32 @@
       "en": {
         "slug": "dog",
         "name": "Dog",
-        "shortDescription": "Dreaming of a dog is usually about trust, loyalty and protection. A friendly dog suggests support; a dog that attacks, bites or growls can point to conflict, betrayal anxiety or a relationship that feels unsafe.",
+        "shortDescription": "A dog dream can be comforting, playful or frightening. Start with whether you knew the dog, what it did and how you reacted. Being chased or bitten does not, by itself, reveal betrayal or predict an attack.",
         "askYourself": [
-          "Was the dog friendly, aggressive, stray or protective?",
-          "Did it attack, bite, follow or defend someone?",
-          "Which relationship of trust feels strong, fragile or wounded now?"
+          "Was this my dog, another familiar dog or one I had never seen before?",
+          "Who was approached, chased, bitten or protected, and how did I respond?",
+          "What feeling stayed with me, and had I recently seen a dog, watched a similar scene or worried about someone?"
         ],
         "seoTitle": "dog, dogs or dog attack",
         "faq": [
           {
-            "question": "What does it mean to dream about a dog?",
-            "answer": "A dog dream often concerns trust, loyalty, protection and relationships. The meaning changes depending on whether the dog is friendly, aggressive, stray, hurt or following you."
+            "question": "What does it mean to dream about a dog or several dogs?",
+            "answer": "There is no single meaning. Consider whether the dogs were familiar, how they behaved and whether you felt at ease or threatened. Companionship or responsibility may be relevant, but a pet, a recent encounter or something you watched can also supply the scene."
           },
           {
-            "question": "What does it mean to dream about dogs?",
-            "answer": "Several dogs can represent a group, family, friends or social dynamics. Calm dogs suggest support; aggressive dogs suggest pressure or conflict."
-          },
-          {
-            "question": "What does a dog attacking you in a dream mean?",
-            "answer": "A dog attack may indicate fear of betrayal, conflict in a relationship or a perceived threat from someone who should feel trustworthy."
+            "question": "What does being attacked by a dog in a dream mean?",
+            "answer": "It may fit a recent scare or a feeling of being under pressure, but it does not prove that someone is hostile or disloyal. Notice whether the dog reached you, whether you knew it and whether you escaped, froze or asked for help."
           },
           {
             "question": "What does a dog bite mean in a dream?",
-            "answer": "A dog bite can symbolize wounded trust, harsh words or a protective relationship that has become painful."
+            "answer": "A bite can make a dream feel especially threatening. Note what happened just before it and whether you could move away or protect yourself. Neither the bite nor the body part has a fixed meaning, and the dream is not evidence of betrayal or a future injury."
+          },
+          {
+            "question": "What if a dog attacks someone else in my dream?",
+            "answer": "Pay attention to who was involved and what you tried to do. Worry about that person, a wish to protect them or a recent image may offer context. Seeing someone attacked in a dream does not establish that they are in danger."
           }
-        ]
+        ],
+        "modifiedAt": "2026-09-22"
       },
       "fr": {
         "slug": "chien",
@@ -2144,31 +2145,34 @@
       "en": {
         "slug": "door",
         "name": "Door",
-        "shortDescription": "A door dream speaks about opportunities, decisions and boundaries. Opening a closed door suggests moving past a block; an open door can mean access or vulnerability; a door that will not open points to a pending choice.",
+        "shortDescription": "An open, locked or blocked door can feel welcoming, frustrating or unsafe in a dream. Notice where it leads, whether you want to cross it and what happens when you try. Its condition alone does not determine the meaning.",
         "askYourself": [
-          "Was the door open, closed, blocked or broken?",
-          "Was I opening it, closing it or crossing through?",
-          "Which decision, boundary or opportunity is present in my life now?"
+          "Was the door familiar, open, locked, blocked or moving on its own?",
+          "Was I trying to enter, leave, keep someone out or see what was on the other side?",
+          "What did I feel, and could a recent place, event or concern explain the scene?"
         ],
         "seoTitle": "open, closed or blocked door",
         "faq": [
           {
-            "question": "What does it mean to dream about doors?",
-            "answer": "Doors in dreams usually relate to opportunities, decisions and transitions. The meaning depends on whether the door was open, closed, blocked or crossed."
+            "question": "What does it mean to dream about a door?",
+            "answer": "Start with its location, what was beyond it and whether you wanted to enter or leave. Access, privacy or a decision may be useful personal associations, but a door does not always stand for an opportunity. A familiar place or recent event may explain it more directly."
           },
           {
-            "question": "What does opening a closed door mean in a dream?",
-            "answer": "Opening a closed door suggests trying to overcome a block, reach an opportunity or solve something that felt inaccessible."
+            "question": "What does a locked or blocked door mean in a dream?",
+            "answer": "Notice what stopped you: a lock, an object, another person or a door that would not move. Frustration may fit a current obstacle, while relief at being safely inside suggests a different context. The dream does not establish that you have missed an opportunity."
           },
           {
             "question": "What does an open front door mean in a dream?",
-            "answer": "An open front door can suggest vulnerability, trust, exposure or emotional openness."
+            "answer": "An open front door might feel welcoming, ordinary or unsettling. Consider whose home it was, who could come in and whether you wanted to close it. The scene can prompt questions about access or privacy without predicting an intrusion."
           },
           {
-            "question": "What does a door that will not open mean?",
-            "answer": "It often shows frustration, fear of rejection or an opportunity that needs more preparation, patience or a symbolic key."
+            "question": "What does a door opening by itself mean in a dream?",
+            "answer": "Recall what appeared beyond the door and whether you felt curious, relieved or afraid. A recent film, a familiar automatic door or a concern about control may offer context. The movement is not evidence of a presence or a message about the future."
           }
-        ]
+        ],
+        "documentTitle": "Door Dream Meaning: Open, Locked or Blocked Doors",
+        "documentMetaDescription": "Dreaming of an open, locked or blocked door? Explore the setting, your actions and feelings, including a door opening by itself, without fixed meanings.",
+        "modifiedAt": "2026-09-22"
       },
       "fr": {
         "slug": "porte",
@@ -3737,10 +3741,13 @@
       "fr": {
         "slug": "vetements",
         "name": "Vêtements",
-        "shortDescription": "Les vêtements représentent l'image que vous projetez au monde. Des vêtements inappropriés peuvent indiquer un sentiment de ne pas être à sa place.",
+        "shortDescription": "Rêver de vêtements peut faire écho à une occasion récente, au confort ou au regard des autres. Notez à qui ils appartiennent, leur état et votre réaction : une tenue neuve, sale ou empruntée n’a pas de signification unique.",
         "askYourself": [
-          "Est-ce que mon image publique reflète qui je suis vraiment ?"
-        ]
+          "À qui appartenaient les vêtements, et qui les portait ?",
+          "Étaient-ils neufs, familiers, sales, trop grands ou adaptés à la situation ?",
+          "Me sentais-je à l’aise, gêné ou surpris, et quel événement récent pourrait expliquer la scène ?"
+        ],
+        "modifiedAt": "2026-09-22"
       },
       "es": {
         "slug": "ropa",
@@ -5819,11 +5826,31 @@
       "fr": {
         "slug": "dispute",
         "name": "Dispute",
-        "shortDescription": "Les rêves de disputes reflètent un conflit intérieur, des tensions non résolues ou une frustration refoulée. Ils pointent souvent vers des problèmes de communication ou des désaccords non exprimés dans la vie éveillée.",
+        "shortDescription": "Rêver d’une dispute peut reprendre un désaccord récent, une conversation imaginée ou une émotion marquante. La personne présente, les paroles échangées et votre réaction offrent du contexte, sans révéler à elles seules un conflit caché.",
         "askYourself": [
-          "Y a-t-il un conflit non résolu que je dois aborder ?",
-          "Est-ce que je retiens des mots que j'ai besoin de dire ?"
-        ]
+          "Avec qui me disputais-je, et quel était le sujet précis de l’échange ?",
+          "Avons-nous un désaccord réel, ou cette scène rappelle-t-elle une conversation, une inquiétude ou une image récente ?",
+          "Pouvais-je répondre, écouter ou partir, et quelle émotion est restée au réveil ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de se disputer avec quelqu’un ?",
+            "answer": "Le rêve n’a pas de sens unique. Il peut reprendre un échange récent ou une conversation imaginée, sans prouver une colère refoulée. Notez la personne, le sujet du désaccord, votre réaction et l’émotion ressentie avant de chercher un lien avec votre quotidien."
+          },
+          {
+            "question": "Que signifie rêver d’une personne avec qui on est en conflit ?",
+            "answer": "Un désaccord réel peut fournir le contexte du rêve. Comparez les paroles rêvées avec ce qui s’est effectivement passé, sans les prendre pour les pensées de l’autre personne ni pour une solution à suivre. Le rêve ne prédit pas l’évolution du conflit."
+          },
+          {
+            "question": "Que signifie rêver d’une dispute avec une amie ?",
+            "answer": "Une incompréhension récente, la crainte de décevoir ou un souvenir partagé sont des pistes à comparer. Une dispute rêvée ne démontre pas que votre amie vous en veut. Ce qui se disait et votre émotion sont plus utiles qu’une interprétation fixe de l’amitié."
+          },
+          {
+            "question": "Que signifie rêver de se disputer avec sa fille ou son fils ?",
+            "answer": "La scène peut faire écho à une préoccupation parentale, à une question d’autonomie ou à un échange récent. L’âge de votre enfant dans le rêve, le sujet de la dispute et votre façon de réagir donnent du contexte. Cela ne prouve ni faute parentale ni problème chez l’enfant."
+          }
+        ],
+        "modifiedAt": "2026-09-22"
       },
       "es": {
         "slug": "discusion",
