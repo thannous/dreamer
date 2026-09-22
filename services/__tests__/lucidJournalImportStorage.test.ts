@@ -23,7 +23,8 @@ function snapshot(count: number): JournalImportSnapshot {
     copies: Object.fromEntries(Array.from({ length: count }, (_, i) => {
       const identity = journalCopyIdentity('A', String(i));
       return [identity, { identity, sourceProduct: 'journal' as const, sourceAccount: 'A', sourceId: String(i),
-        sourceRevision: '00000000-0000-4000-8000-000000000001', createdAt: date, importedAt: date, text: 'Rêve 🌙 漢字'.repeat(120), edited: false, deleted: false }];
+        // Forty repeats keep 2501 copies above the 1.5 MB single-value crypto limit.
+        sourceRevision: '00000000-0000-4000-8000-000000000001', createdAt: date, importedAt: date, text: 'Rêve 🌙 漢字'.repeat(40), edited: false, deleted: false }];
     })) };
 }
 function fixture() {

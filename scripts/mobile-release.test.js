@@ -1,5 +1,5 @@
 'use strict';
-/* global afterEach, describe, expect, it */
+/* global afterAll, afterEach, beforeAll, describe, expect, it */
 
 const fs = require('node:fs');
 const os = require('node:os');
@@ -8,7 +8,8 @@ const { execFileSync } = require('node:child_process');
 const { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, main } = require('./mobile-release');
 
 const fixtures = [];
-const git = (root, ...args) => execFileSync('git', ['-c', 'gc.auto=0', '-c', 'maintenance.auto=false', ...args], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+let baselineRoot = null;
+const git = (root, ...args) => execFileSync('git', ['-c', 'gc.auto=0', '-c', 'maintenance.auto=false', '-c', 'commit.gpgsign=false', ...args], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 function write(root, file, value) {
   fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true });
   fs.writeFileSync(path.join(root, file), typeof value === 'string' ? value : JSON.stringify(value));
@@ -17,13 +18,14 @@ function commit(root, message) {
   git(root, 'add', '.'); git(root, 'commit', '-m', message);
   return git(root, 'rev-parse', 'HEAD');
 }
-function fixture() {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'mobile-release-'));
-  fixtures.push(root);
+function buildBaseline() {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'mobile-release-base-'));
   git(root, 'init', '-b', 'master');
   git(root, 'config', 'user.name', 'Release Test');
   git(root, 'config', 'user.email', 'test@example.invalid');
+  fs.mkdirSync(path.join(root, 'empty-hooks'));
   git(root, 'config', 'core.hooksPath', path.join(root, 'empty-hooks'));
+  git(root, 'config', 'commit.gpgsign', 'false');
   for (const prefix of ['', 'apps/meditation/']) {
     write(root, `${prefix}eas.json`, { cli: { appVersionSource: 'remote' }, build: { production: { autoIncrement: true }, 'lucid-production': { autoIncrement: true } } });
     write(root, `${prefix}package.json`, { version: '3.1.0', scripts: {} });
@@ -38,7 +40,15 @@ function fixture() {
   git(root, 'update-ref', 'refs/remotes/origin/master', 'HEAD');
   return root;
 }
+function fixture() {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'mobile-release-'));
+  fixtures.push(root);
+  fs.cpSync(baselineRoot, root, { recursive: true });
+  return root;
+}
+beforeAll(() => { baselineRoot = buildBaseline(); });
 afterEach(() => fixtures.splice(0).forEach(root => fs.rmSync(root, { recursive: true, force: true })));
+afterAll(() => { if (baselineRoot) fs.rmSync(baselineRoot, { recursive: true, force: true }); });
 
 describe('semantic release policy', () => {
   it('uses explicit features and breaking markers, with a patch fallback', () => {

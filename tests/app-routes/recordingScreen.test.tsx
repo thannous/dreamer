@@ -59,6 +59,7 @@ let mockKeyboardListeners: Record<string, () => void> = {};
 let mockOnPartialTranscript: ((text: string) => void) | undefined;
 let mockOnNativeEnd: (() => void) | undefined;
 let mockAppStateHandler: ((state: string) => void) | undefined;
+const mockAppStateHandlers = new Set<(state: string) => void>();
 let mockIsRecording = false;
 const mockIsRecordingRef = { current: false };
 const mockResolveDeviceSpeechCapability = jest.fn();
@@ -188,8 +189,13 @@ jest.doMock('react-native', () => {
     BackHandler: { addEventListener: jest.fn(() => ({ remove: jest.fn() })) },
     AppState: {
       addEventListener: (_type: string, handler: (state: string) => void) => {
+        mockAppStateHandlers.add(handler);
         mockAppStateHandler = handler;
-        return { remove: jest.fn() };
+        return {
+          remove: () => {
+            mockAppStateHandlers.delete(handler);
+          },
+        };
       },
     },
     Keyboard: {
@@ -689,6 +695,7 @@ const { DreamPersistenceError } = require('@/lib/dreamStorageRead');
 const { Alert } = require('react-native');
 const { default: frenchTranslations } = require('@/lib/i18n/fr');
 const { getBottomNavigationLayout } = require('@/constants/layout');
+const { RECORDING_DRAFT_AUTOSAVE_DELAY_MS } = require('@/hooks/useRecordingDraftPersistence');
 
 const pendingDraftReads = new Set<(value: string) => void>();
 
@@ -705,6 +712,12 @@ async function awaitEditorReady() {
       (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).disabled
     ).toBe(false);
     expect(screen.getByTestId(TID.Screen.Recording).getAttribute('aria-busy')).toBe('false');
+  });
+}
+
+async function advancePastAutosaveWindow() {
+  await act(async () => {
+    await jest.advanceTimersByTimeAsync(RECORDING_DRAFT_AUTOSAVE_DELAY_MS + 100);
   });
 }
 
@@ -795,6 +808,7 @@ describe('Recording screen', () => {
   });
 
   beforeEach(() => {
+    jest.useFakeTimers();
     mockCurrentUser = { id: 'user-1' };
     mockGetGuestRecordedDreamCount.mockResolvedValue(0);
     mockQuotaState = { tier: 'free', loading: false, error: null, usage: { analysis: { used: 0, limit: 3, remaining: 3 } } };
@@ -814,6 +828,7 @@ describe('Recording screen', () => {
     mockOnPartialTranscript = undefined;
     mockOnNativeEnd = undefined;
     mockAppStateHandler = undefined;
+    mockAppStateHandlers.clear();
     mockIsRecording = false;
     mockIsRecordingRef.current = false;
     mockGetSavedTranscript.mockReset();
@@ -864,6 +879,7 @@ describe('Recording screen', () => {
         pendingDraftReads.clear();
       });
       jest.clearAllMocks();
+      jest.useRealTimers();
     }
   });
 
@@ -1785,9 +1801,7 @@ describe('Recording screen', () => {
       expect(mockAddDream).toHaveBeenCalled();
     });
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 400));
-    });
+    await advancePastAutosaveWindow();
 
     expect(mockSaveTranscript).not.toHaveBeenCalledWith('');
     expect(
@@ -1817,9 +1831,7 @@ describe('Recording screen', () => {
     });
 
     const callsAfterClear = mockSaveTranscript.mock.calls.length;
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 400));
-    });
+    await advancePastAutosaveWindow();
 
     expect(mockSaveTranscript.mock.calls.length).toBe(callsAfterClear);
     expect(mockSaveTranscript.mock.calls.filter((call: [string]) => call[0] === '').length).toBe(1);
@@ -1962,9 +1974,7 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
 
     await waitFor(() => expect(mockGetSavedTranscript).toHaveBeenCalledTimes(1));
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 400));
-    });
+    await advancePastAutosaveWindow();
     expect(mockSaveTranscript).not.toHaveBeenCalled();
     expect(
       (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
@@ -2110,6 +2120,7 @@ describe('Recording screen', () => {
     fireEvent.click(screen.getByTestId('recording-mode-voice'));
     await waitFor(() => {
       expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('voiceFirst');
+      expect(screen.getByTestId('conversation-question').textContent).toBe('What else do you remember?');
     });
     expect(screen.getByTestId(TID.Component.RecordingDraftProgress).textContent).toContain(
       'recording.draft_progress.saved_locally'
@@ -2278,9 +2289,11 @@ describe('Recording screen', () => {
     await waitFor(() => {
       expect(screen.getByTestId('recording-voice-control')).toBeTruthy();
     });
+    const listenersAtRest = mockAppStateHandlers.size;
     fireEvent.click(screen.getByTestId('recording-voice-control'));
     await waitFor(() => {
       expect(mockStartRecording).toHaveBeenCalledTimes(1);
+      expect(mockAppStateHandlers.size).toBeGreaterThan(listenersAtRest);
     });
     return view;
   }

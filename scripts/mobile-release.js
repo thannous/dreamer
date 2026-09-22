@@ -66,6 +66,67 @@ function contents(root, ref, file) {
   catch { return null; } // Added/deleted file; git diff below already validated the revisions.
 }
 
+function gitBytes(root, args, input) {
+  return execFileSync('git', ['-c', 'gc.auto=0', '-c', 'maintenance.auto=false', ...args], {
+    cwd: root,
+    input,
+    stdio: ['pipe', 'pipe', 'pipe'],
+    maxBuffer: 32 * 1024 * 1024,
+  });
+}
+
+// One diff-tree and one cat-file for the whole range. prepare() plans every app
+// against the same commits, so the parsed range is reused until that call ends.
+let commitRangeCache = null;
+
+function readCommitRange(root, sourceRef, head) {
+  const key = `${root}\0${sourceRef}\0${head}`;
+  const cached = commitRangeCache?.get(key);
+  if (cached) return cached;
+  const listed = git(root, 'rev-list', '--no-merges', `${sourceRef}..${head}`).trim();
+  const commits = listed ? listed.split('\n').filter(Boolean) : [];
+  const touched = new Map(commits.map(commit => [commit, []]));
+  const messages = new Map();
+  if (commits.length) {
+    const diff = gitBytes(root, ['diff-tree', '--stdin', '--root', '--name-only', '--no-renames', '-r', '-z'], `${commits.join('\n')}\n`);
+    const parts = diff.toString('utf8').split('\0');
+    if (parts.at(-1) === '') parts.pop();
+    let index = 0;
+    let current = null;
+    for (const part of parts) {
+      if (index < commits.length && part === commits[index]) {
+        current = commits[index];
+        index += 1;
+        continue;
+      }
+      if (!current) throw new Error(`diff-tree output before commit ${commits[index] ?? '<end>'}`);
+      touched.get(current).push(part);
+    }
+    if (index !== commits.length) throw new Error(`diff-tree reported ${index} of ${commits.length} commits`);
+
+    const raw = gitBytes(root, ['cat-file', '--batch'], `${commits.join('\n')}\n`);
+    let offset = 0;
+    for (const commit of commits) {
+      const newline = raw.indexOf(0x0a, offset);
+      if (newline < 0) throw new Error(`cat-file truncated before ${commit}`);
+      const header = raw.subarray(offset, newline).toString('utf8');
+      const match = header.match(/^([a-f0-9]{40}) commit (\d+)$/);
+      if (!match || match[1] !== commit) throw new Error(`Unexpected cat-file record for ${commit}: ${header}`);
+      const size = Number(match[2]);
+      const start = newline + 1;
+      const end = start + size;
+      const body = raw.subarray(start, end).toString('utf8');
+      const split = body.indexOf('\n\n');
+      if (split < 0) throw new Error(`Commit ${commit} has no message`);
+      messages.set(commit, body.slice(split + 2).trim());
+      offset = end + 1;
+    }
+  }
+  const range = { commits, touched, messages };
+  commitRangeCache?.set(key, range);
+  return range;
+}
+
 function changeLevel(message) {
   const subject = message.split('\n')[0];
   if (/^[a-z]+(?:\([^\n]*\))?!:/i.test(subject) || /^BREAKING[ -]CHANGE:\s/m.test(message)) return 'major';
@@ -110,11 +171,10 @@ function plan(root, app) {
   let level = files.length ? 'patch' : 'none';
   const reasons = [];
   // No --first-parent: ordinary merge commits often hide the feat/fix subjects.
-  const commits = files.length ? git(root, 'rev-list', '--no-merges', `${entry.sourceRef}..${head}`).trim().split('\n').filter(Boolean) : [];
-  for (const commit of commits) {
-    const touched = git(root, 'diff-tree', '--root', '--no-commit-id', '--name-only', '--no-renames', '-r', '-z', commit).split('\0');
-    if (!touched.some(file => relevant.has(file))) continue;
-    const message = git(root, 'show', '-s', '--format=%B', commit).trim();
+  const range = files.length ? readCommitRange(root, entry.sourceRef, head) : { commits: [], touched: new Map(), messages: new Map() };
+  for (const commit of range.commits) {
+    if (!(range.touched.get(commit) ?? []).some(file => relevant.has(file))) continue;
+    const message = range.messages.get(commit) ?? '';
     const impact = changeLevel(message);
     if (LEVELS.indexOf(impact) > LEVELS.indexOf(level)) level = impact;
     reasons.push({ commit, impact, subject: message.split('\n')[0] });
@@ -127,33 +187,38 @@ function assertClean(root) {
 }
 
 function prepare(root, apps, allowMajor = false) {
-  assertClean(root);
-  // Keep the recorded source reachable even when the generated release PR is squashed.
-  const head = git(root, 'rev-parse', 'HEAD').trim();
-  if (head !== git(root, 'rev-parse', 'refs/remotes/origin/master').trim()) throw new Error('Prepare from the current origin/master snapshot (on a release branch). Fetch first.');
-  const plans = apps.map(app => plan(root, app));
-  if (!allowMajor && plans.some(item => item.level === 'major')) throw new Error('Breaking change detected. Inspect release:plan, then use --allow-major intentionally.');
-  const state = readJson(root, STATE);
-  const writes = new Map();
-  for (const item of plans.filter(item => item.level !== 'none')) {
-    state.apps[item.app] = { version: item.next, sourceRef: head, baseline: 'Prepared source snapshot; not a Store publication claim' };
-    if (item.app === 'lucid') continue;
-    const prefix = item.app === 'meditation' ? 'apps/meditation/' : '';
-    for (const name of ['app.json', 'package.json', 'package-lock.json']) {
-      const file = prefix + name;
-      const data = readJson(root, file);
-      if (name === 'app.json') data.expo.version = item.next;
-      else {
-        data.version = item.next;
-        if (data.packages?.['']) data.packages[''].version = item.next;
+  commitRangeCache = new Map();
+  try {
+    assertClean(root);
+    // Keep the recorded source reachable even when the generated release PR is squashed.
+    const head = git(root, 'rev-parse', 'HEAD').trim();
+    if (head !== git(root, 'rev-parse', 'refs/remotes/origin/master').trim()) throw new Error('Prepare from the current origin/master snapshot (on a release branch). Fetch first.');
+    const plans = apps.map(app => plan(root, app));
+    if (!allowMajor && plans.some(item => item.level === 'major')) throw new Error('Breaking change detected. Inspect release:plan, then use --allow-major intentionally.');
+    const state = readJson(root, STATE);
+    const writes = new Map();
+    for (const item of plans.filter(item => item.level !== 'none')) {
+      state.apps[item.app] = { version: item.next, sourceRef: head, baseline: 'Prepared source snapshot; not a Store publication claim' };
+      if (item.app === 'lucid') continue;
+      const prefix = item.app === 'meditation' ? 'apps/meditation/' : '';
+      for (const name of ['app.json', 'package.json', 'package-lock.json']) {
+        const file = prefix + name;
+        const data = readJson(root, file);
+        if (name === 'app.json') data.expo.version = item.next;
+        else {
+          data.version = item.next;
+          if (data.packages?.['']) data.packages[''].version = item.next;
+        }
+        writes.set(file, data);
       }
-      writes.set(file, data);
     }
+    if (writes.size || plans.some(item => item.app === 'lucid' && item.level !== 'none')) writes.set(STATE, state);
+    // Validate every plan before writing any file. No commit, tag, build or upload here.
+    for (const [file, value] of writes) fs.writeFileSync(path.join(root, file), `${JSON.stringify(value, null, 2)}\n`);
+    return plans;
+  } finally {
+    commitRangeCache = null;
   }
-  if (writes.size || plans.some(item => item.app === 'lucid' && item.level !== 'none')) writes.set(STATE, state);
-  // Validate every plan before writing any file. No commit, tag, build or upload here.
-  for (const [file, value] of writes) fs.writeFileSync(path.join(root, file), `${JSON.stringify(value, null, 2)}\n`);
-  return plans;
 }
 
 function parseArgs(args) {
