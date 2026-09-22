@@ -191,6 +191,7 @@
     "release:check": "node ./scripts/mobile-release.js check",
     "release:build": "node ./scripts/mobile-release.js build",
     "eas-build-pre-install": "node ./scripts/mobile-release.js verify",
+    "analytics:baseline": "node ./scripts/product-funnel-report.js",
     "postinstall": "patch-package --error-on-fail"
   },
   "dependencies": {

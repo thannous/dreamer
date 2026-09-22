@@ -167,7 +167,7 @@ Deno.test('analytics validator rejects content, unknown fields, stale events, an
   assertEquals(validateProductAnalyticsEvent(validEvent({
     occurred_at: '2026-07-01T12:00:00.000Z',
   }), now), false);
-  assertEquals(validateProductAnalyticsEvent(validEvent({ platform: 'web' }), now), false);
+  assertEquals(validateProductAnalyticsEvent(validEvent({ platform: 'unknown' }), now), false);
   assertEquals(validateProductAnalyticsEvent(validEvent({
     event_name: 'onboarding_choice_selected',
     properties: {
@@ -255,4 +255,23 @@ Deno.test('analytics deletion accepts only UUID journey identifiers', async () =
 
   const response = await handleProductAnalytics(context(req));
   assertEquals(response.status, 400);
+});
+
+Deno.test('dream save cohorts validate dates and reject private or arbitrary properties', () => {
+  const cohortDay = Math.floor(now / 86400_000);
+  const make = (stage: string, day: number, extra = {}) => validEvent({
+    event_name: 'dream_save_milestone', properties: { stage, cohort_day: day, ...extra },
+  });
+  assertEquals(validateProductAnalyticsEvent(make('first', cohortDay), now), true);
+  assertEquals(validateProductAnalyticsEvent(make('return_7d', cohortDay - 7), now), true);
+  for (const event of [make('first', cohortDay - 1), make('return_7d', cohortDay),
+    make('return_7d', cohortDay - 8), make('return_7d', cohortDay + 1),
+    make('first', cohortDay, { dream_id: 'private' }), make('unknown', cohortDay)]) {
+    assertEquals(validateProductAnalyticsEvent(event, now), false);
+  }
+});
+
+Deno.test('analytics validator accepts web events without accepting an arbitrary platform', () => {
+  assertEquals(validateProductAnalyticsEvent(validEvent({ platform: 'web' }), now), true);
+  assertEquals(validateProductAnalyticsEvent(validEvent({ platform: 'desktop' }), now), false);
 });

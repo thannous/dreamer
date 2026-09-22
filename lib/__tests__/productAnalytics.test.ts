@@ -13,6 +13,7 @@ import {
   resolveDefaultProductAnalyticsPreference,
   setProductAnalyticsLocale,
   setProductAnalyticsEnabled,
+  trackDreamSaveMilestone,
 } from '@/lib/productAnalytics';
 import { canDeliverProductAnalytics, fetchProductAnalyticsJSON } from '@/lib/productAnalyticsGuestSession';
 
@@ -52,6 +53,7 @@ describe('first-party product analytics', () => {
   beforeEach(async () => {
     await AsyncStorage.clear();
     await resetProductAnalyticsForTesting();
+    await AsyncStorage.setItem('product-analytics-preference-v1', 'enabled');
     Platform.OS = 'android';
     process.env.EXPO_PUBLIC_PRODUCT_ANALYTICS_ENABLED = 'true';
     uuidCounter = 0;
@@ -80,7 +82,7 @@ describe('first-party product analytics', () => {
     Platform.OS = 'ios';
     expect(isProductAnalyticsAvailable()).toBe(true);
     Platform.OS = 'web';
-    expect(isProductAnalyticsAvailable()).toBe(false);
+    expect(isProductAnalyticsAvailable()).toBe(true);
     Platform.OS = 'android';
     process.env.EXPO_PUBLIC_PRODUCT_ANALYTICS_ENABLED = 'false';
     expect(isProductAnalyticsAvailable()).toBe(false);
@@ -274,19 +276,19 @@ describe('first-party product analytics', () => {
     await expect(getProductAnalyticsPreference()).resolves.toBe('disabled');
   });
 
-  it('treats an unknown stored preference as disabled while Noctalia keeps its historical default', async () => {
+  it('fails closed for unknown and absent preferences', async () => {
     await AsyncStorage.setItem('product-analytics-preference-v1', 'unexpected-value');
     await resetProductAnalyticsForTesting();
     expect(await getProductAnalyticsPreference()).toBe('disabled');
 
     await AsyncStorage.removeItem('product-analytics-preference-v1');
     await resetProductAnalyticsForTesting();
-    expect(await getProductAnalyticsPreference()).toBe('enabled');
+    expect(await getProductAnalyticsPreference()).toBe('disabled');
   });
 
   it('fails closed before explicit consent in the Lucid Trainer companion', () => {
     expect(resolveDefaultProductAnalyticsPreference(true)).toBe('disabled');
-    expect(resolveDefaultProductAnalyticsPreference(false)).toBe('enabled');
+    expect(resolveDefaultProductAnalyticsPreference(false)).toBe('disabled');
   });
 
   it('uses the effective app locale supplied by the bootstrap', async () => {
@@ -452,4 +454,56 @@ describe('first-party product analytics', () => {
     expect(mockFetch).toHaveBeenCalledTimes(callsAfterDisable);
     expect(await AsyncStorage.getItem('product-analytics-queue-v1')).toBeNull();
   });
+  it('does not record milestones without opt-in or in an explicitly marked QA build', async () => {
+    await AsyncStorage.removeItem('product-analytics-preference-v1');
+    await trackDreamSaveMilestone(true);
+    expect(await AsyncStorage.getItem('product-analytics-dream-save-cohort-v1')).toBeNull();
+    await AsyncStorage.setItem('product-analytics-preference-v1', 'enabled');
+    await resetProductAnalyticsForTesting();
+    const originalQa = process.env.EXPO_PUBLIC_PRODUCT_ANALYTICS_QA;
+    process.env.EXPO_PUBLIC_PRODUCT_ANALYTICS_QA = 'true';
+    try {
+      await trackDreamSaveMilestone(true);
+      expect(await AsyncStorage.getItem('product-analytics-queue-v1')).toBeNull();
+    } finally {
+      if (originalQa === undefined) delete process.env.EXPO_PUBLIC_PRODUCT_ANALYTICS_QA;
+      else process.env.EXPO_PUBLIC_PRODUCT_ANALYTICS_QA = originalQa;
+    }
+  });
+
+  it('records one first save and one later-day return despite journey rotation', async () => {
+    const first = Date.parse('2026-09-01T12:00:00Z');
+    const clock = jest.spyOn(Date, 'now').mockReturnValue(first);
+    await Promise.all([trackDreamSaveMilestone(true), trackDreamSaveMilestone(true)]);
+    clock.mockReturnValue(first + 60_000);
+    await trackDreamSaveMilestone(false); // Same-day saves do not count as returns.
+    await AsyncStorage.removeItem('product-analytics-journey-v1');
+    clock.mockReturnValue(first + 7 * 86400_000);
+    await Promise.all([trackDreamSaveMilestone(false), trackDreamSaveMilestone(false)]);
+    const queue = JSON.parse((await AsyncStorage.getItem('product-analytics-queue-v1')) ?? '[]');
+    expect(queue.map((e: { properties: unknown }) => e.properties)).toEqual([
+      { stage: 'first', cohort_day: Math.floor(first / 86400_000) },
+      { stage: 'return_7d', cohort_day: Math.floor(first / 86400_000) },
+    ]);
+    expect(queue[0].journey_id).not.toBe(queue[1].journey_id);
+    await setProductAnalyticsEnabled(false);
+    expect(await AsyncStorage.getItem('product-analytics-dream-save-cohort-v1')).toBeNull();
+  });
+
+  it('does not enroll an existing journal as a first-save cohort', async () => {
+    await trackDreamSaveMilestone(false);
+    expect(await AsyncStorage.getItem('product-analytics-dream-save-cohort-v1')).toBeNull();
+    expect(await AsyncStorage.getItem('product-analytics-queue-v1')).toBeNull();
+  });
+
+  it('queues consented web saves separately and does not send without authenticated delivery', async () => {
+    Platform.OS = 'web';
+    mockCanDeliver.mockResolvedValue(false);
+    await trackDreamSaveMilestone(true);
+    await flushProductAnalytics();
+    const queue = JSON.parse((await AsyncStorage.getItem('product-analytics-queue-v1')) ?? '[]');
+    expect(queue[0].platform).toBe('web');
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
 });

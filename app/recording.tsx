@@ -39,6 +39,7 @@ import {
   getRecordingDurationBucket,
   getTranscriptLengthBucket,
   trackProductEvent,
+  trackDreamSaveMilestone,
 } from '@/lib/analytics';
 import {
   buildDraftDream as buildDraftDreamPure,
@@ -1037,7 +1038,12 @@ export default function RecordingScreen() {
         ? { ...dreamToSave, captureOriginalTranscript: captureReview.source }
         : dreamToSave;
       setDraftDream(capturedDream);
+      const isNewDream = !dreams.some((dream) => dream.id === capturedDream.id);
+      const isFirstDream = dreams.length === 0;
       const savedDream = await addDream(capturedDream);
+      if (isNewDream) {
+        void trackDreamSaveMilestone(isFirstDream);
+      }
       clearAfterSuccessfulSave();
       setDraftDream(savedDream);
       void categorizeDream(latestTranscript, language)
@@ -1101,6 +1107,7 @@ export default function RecordingScreen() {
     captureReview,
     clearAfterSuccessfulSave,
     draftDream,
+    dreams,
     isHydrated,
     isPersisting,
     isRecordingRef,

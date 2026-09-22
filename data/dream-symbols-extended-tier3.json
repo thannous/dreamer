@@ -482,27 +482,39 @@
       ]
     },
     "fr": {
-      "fullInterpretation": "<p>Se disputer dans les rêves est l'un des thèmes les plus courants vécus par les rêveurs du monde entier. Ces échanges verbaux houleux dans le monde onirique pointent presque toujours vers des tensions non résolues — qu'elles soient internes ou interpersonnelles — qui cherchent à s'exprimer. Votre subconscient utilise le drame d'une dispute pour attirer votre attention sur des conflits enfouis.</p>\n<p>La personne avec laquelle vous vous disputez dans votre rêve est un indice crucial de sa signification. Se disputer avec un partenaire ou un membre de la famille reflète souvent des frictions réelles qui n'ont pas été pleinement abordées. Mais cela peut aussi représenter une dispute avec vous-même — un débat intérieur entre ce que vous voulez et ce que vous pensez devoir faire, entre la tête et le cœur, ou entre votre personnalité publique et privée.</p>\n<p>Les rêves de disputes surviennent fréquemment quand vous réprimez votre frustration dans la vie éveillée. Peut-être avez-vous retenu votre langue pour maintenir la paix, avalé votre colère pour éviter la confrontation, ou gardé vos opinions pour vous. Le rêve offre un espace sûr pour que ces émotions refoulées éclatent. Si vous vous retrouvez à dire des choses dans le rêve que vous ne diriez jamais à voix haute, soyez attentif — il y a peut-être une vérité dans ces mots de rêve qui mérite d'être reconnue.</p>\n<p>L'intensité émotionnelle de la dispute compte aussi. Un désaccord calme pourrait suggérer un conflit intérieur rationnel, tandis qu'une dispute à grands cris pourrait indiquer que les émotions ont atteint un point d'ébullition. Considérez si la dispute dans votre rêve reflète un besoin de s'exprimer, de poser des limites, ou enfin d'aborder un problème que vous avez évité.</p>",
+      "fullInterpretation": "<p>Une dispute en rêve peut reprendre une conversation récente, une inquiétude ou un échange que vous imaginez. Elle ne révèle pas nécessairement des tensions enfouies. Commencez par ce qui se passait : qui parlait, quel sujet déclenchait le désaccord et comment chacun réagissait.</p>\n<p>Si vous êtes réellement en conflit avec cette personne, le rêve peut en reprendre des éléments et en modifier d’autres. Distinguez les paroles entendues dans la vie de celles inventées pendant le sommeil. Le rêve ne donne pas accès aux intentions de l’autre et ne permet pas de prévoir une réconciliation ou une rupture.</p>\n<p>Sans conflit actuel, pensez à une discussion observée, à un souvenir ou à une conversation que vous redoutez. Une dispute avec une amie, un enfant ou un collègue ne renvoie pas automatiquement au même sujet. La proximité de la personne et votre émotion peuvent orienter des questions, sans imposer une explication.</p>\n<p>Notez enfin si vous pouviez vous exprimer, écouter, quitter la scène ou demander une pause. Crier, rester calme ou ne pas réussir à parler décrit votre expérience du rêve, pas un diagnostic. Si vous choisissez ensuite d’aborder un désaccord réel, appuyez-vous sur les faits vécus plutôt que sur des accusations tirées du rêve.</p>",
       "variations": [
         {
+          "context": "Se disputer avec une personne avec qui l’on est déjà en conflit",
+          "meaning": "Comparez le sujet du rêve au désaccord réel : était-il identique, amplifié ou complètement différent ? Votre colère, votre peur ou votre soulagement peuvent éclairer ce qui vous préoccupe, sans révéler ce que pense cette personne."
+        },
+        {
           "context": "Se disputer avec son partenaire",
-          "meaning": "Reflète souvent de véritables tensions relationnelles, des griefs non exprimés, ou la peur du conflit. Peut aussi représenter un conflit intérieur entre désir et engagement."
+          "meaning": "Un échange récent ou la crainte d’une conversation peut fournir le contexte. Notez ce qui était reproché et si vous vous sentiez écouté, sans conclure à une crise ou à des sentiments cachés chez votre partenaire."
+        },
+        {
+          "context": "Se disputer avec une amie",
+          "meaning": "Observez le motif du désaccord et ce que vous cherchiez à faire : vous expliquer, être entendu ou vous éloigner. Une inquiétude pour le lien est une piste possible ; un souvenir ou une scène vue récemment peut aussi suffire."
+        },
+        {
+          "context": "Se disputer avec sa fille ou son fils",
+          "meaning": "L’âge de l’enfant dans le rêve et le sujet de l’échange comptent : règles, autonomie, protection ou simple détail du quotidien. La scène peut accompagner une préoccupation parentale, sans établir que votre enfant va mal ou vous cache quelque chose."
         },
         {
           "context": "Se disputer avec un parent",
-          "meaning": "Peut symboliser des luttes avec l'autorité, des dynamiques familiales non résolues, ou la tension entre votre moi indépendant et les attentes parentales intériorisées."
+          "meaning": "Demandez-vous si la scène reprenait une discussion connue ou un désaccord imaginé. Les attentes familiales peuvent être une piste si elles correspondent à votre situation ; le rôle du parent n’a pas une signification universelle."
         },
         {
           "context": "Se disputer avec un inconnu",
-          "meaning": "L'inconnu représente souvent un aspect de vous-même. La dispute peut refléter un débat intérieur sur l'identité, les valeurs ou une décision."
+          "meaning": "Décrivez le lieu, le déclencheur et votre réaction. L’inconnu peut simplement faire partie de la scène ; il n’est pas nécessaire d’y voir une partie cachée de vous-même."
         },
         {
           "context": "Se disputer au travail",
-          "meaning": "Reflète le stress professionnel, le sentiment d'être sous-évalué, des conflits avec les collègues, ou de la frustration concernant la direction de carrière."
+          "meaning": "Une réunion, une tâche ou une difficulté professionnelle récente peut fournir le décor. Distinguez les faits du rêve de vos échanges réels avant d’y lire un conflit avec un collègue ou un manque de reconnaissance."
         },
         {
-          "context": "Incapable de parler pendant une dispute",
-          "meaning": "Symbolise le sentiment d'être réduit au silence, impuissant ou incapable de s'exprimer dans une situation réelle. Peut indiquer une colère ou frustration supprimée."
+          "context": "Ne pas réussir à parler pendant une dispute",
+          "meaning": "Essayiez-vous de répondre, de crier ou de vous faire comprendre ? La frustration peut rappeler une situation où vous vous êtes senti peu écouté, mais la scène seule ne démontre pas une colère refoulée."
         }
       ]
     },

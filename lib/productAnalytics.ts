@@ -6,6 +6,7 @@ import * as Network from 'expo-network';
 import { AppState, Platform } from 'react-native';
 
 import type { AnalyticsEventMap, AnalyticsEventName, AnalyticsProvider } from '@/lib/analytics';
+import { nextDreamSaveMilestone, DREAM_RETURN_WINDOW_MS } from '@/lib/dreamSaveMilestone';
 import { isLucidTrainer } from '@/lib/appVariant';
 import { getApiBaseUrl } from '@/lib/config';
 import { createScopedLogger } from '@/lib/logger';
@@ -27,6 +28,7 @@ const log = createScopedLogger('[ProductAnalytics]');
 const QUEUE_KEY = 'product-analytics-queue-v1';
 const PREFERENCE_KEY = 'product-analytics-preference-v1';
 const JOURNEY_KEY = 'product-analytics-journey-v1';
+const DREAM_SAVE_COHORT_KEY = 'product-analytics-dream-save-cohort-v1';
 const ONCE_KEY = 'product-analytics-once-v1';
 const PENDING_DELETION_KEY = 'product-analytics-pending-deletion-v1';
 const PRODUCT_ANALYTICS_DELETION_TTL_MS = PRODUCT_ANALYTICS_QUEUE_TTL_MS;
@@ -42,6 +44,7 @@ const PRODUCT_ANALYTICS_EVENT_NAMES = new Set<AnalyticsEventName>([
   'dream_capture_started',
   'recording_started',
   'recording_saved',
+  'dream_save_milestone',
   'recording_activation_insight_shown',
   'analysis_started',
   'analysis_completed',
@@ -135,6 +138,10 @@ const PRODUCT_ANALYTICS_PROPERTY_SCHEMAS: Record<AnalyticsEventName, PropertySch
     language: supportedLanguage,
     speech_available: bool,
     offline_model_state: oneOf('ready', 'online_fallback', 'unavailable', 'unknown'),
+  },
+  dream_save_milestone: {
+    stage: oneOf('first', 'return_7d'),
+    cohort_day: (value) => typeof value === 'number' && Number.isInteger(value) && value >= 20_000 && value <= 100_000,
   },
   recording_saved: {
     input_mode: oneOf('voice', 'text'),
@@ -332,10 +339,9 @@ let networkSubscription: { remove: () => void } | null = null;
 export function resolveDefaultProductAnalyticsPreference(
   lucidTrainer = isLucidTrainer
 ): ProductAnalyticsPreference {
-  // Noctalia keeps its historical first-party analytics default. The companion
-  // promises an explicit opt-in during its own onboarding, so a missing value
-  // must fail closed before the Lucid state has finished hydrating.
-  return lucidTrainer ? 'disabled' : 'enabled';
+  // Both products require an explicit stored opt-in before optional measurement.
+  void lucidTrainer;
+  return 'disabled';
 }
 
 function runSerialized<T>(work: () => Promise<T>): Promise<T> {
@@ -395,7 +401,7 @@ function isEnvelope(value: unknown): value is ProductAnalyticsEnvelope {
     typeof candidate.occurred_at === 'string' &&
     (candidate.journey_id === null ||
       (typeof candidate.journey_id === 'string' && UUID_PATTERN.test(candidate.journey_id))) &&
-    (candidate.platform === 'android' || candidate.platform === 'ios') &&
+    (candidate.platform === 'android' || candidate.platform === 'ios' || candidate.platform === 'web') &&
     typeof candidate.app_version === 'string' &&
     /^[0-9A-Za-z.+_-]{1,32}$/.test(candidate.app_version) &&
     (candidate.locale === 'fr' ||
@@ -535,13 +541,14 @@ async function getJourneyRecord(): Promise<JourneyRecord | null> {
 
 export function isProductAnalyticsPlatform(
   platform = Platform.OS
-): platform is 'android' | 'ios' {
-  return platform === 'android' || platform === 'ios';
+): platform is 'android' | 'ios' | 'web' {
+  return platform === 'android' || platform === 'ios' || platform === 'web';
 }
 
 export function isProductAnalyticsAvailable(): boolean {
   return (
     !remoteDisabled &&
+    (process.env.EXPO_PUBLIC_PRODUCT_ANALYTICS_QA ?? '').toLowerCase() !== 'true' &&
     isProductAnalyticsPlatform() &&
     (process.env.EXPO_PUBLIC_PRODUCT_ANALYTICS_ENABLED ?? '').toLowerCase() === 'true'
   );
@@ -638,6 +645,51 @@ export function createProductAnalyticsProvider(): AnalyticsProvider {
   };
 }
 
+/** Called only after a genuinely new dream has been durably saved. */
+export async function trackDreamSaveMilestone(isFirstDream: boolean): Promise<void> {
+  if (isLucidTrainer || !isProductAnalyticsAvailable() ||
+    (await getProductAnalyticsPreference()) !== 'enabled') return;
+  const journey = await getJourneyRecord();
+  if (!journey) return;
+  const platform = Platform.OS;
+  if (!isProductAnalyticsPlatform(platform)) return;
+  await runSerialized(async () => {
+    if (preferenceCache !== 'enabled' || !isProductAnalyticsAvailable()) return;
+    const now = Date.now();
+    const raw = await AsyncStorage.getItem(DREAM_SAVE_COHORT_KEY);
+    const next = nextDreamSaveMilestone(parseJson<unknown>(raw, null), isFirstDream, now);
+    if (!next.state) {
+      if (raw) await AsyncStorage.removeItem(DREAM_SAVE_COHORT_KEY);
+      return;
+    }
+    const writes: [string, string][] = [[DREAM_SAVE_COHORT_KEY, JSON.stringify(next.state)]];
+    if (next.milestone) {
+      const queue = await loadQueue();
+      const envelope: ProductAnalyticsEnvelope = {
+        event_id: Crypto.randomUUID(), event_name: 'dream_save_milestone', schema_version: 1,
+        occurred_at: new Date(now).toISOString(), journey_id: journey.id, platform,
+        app_version: getAppVersion(), locale: getLocale(), properties: next.milestone,
+      };
+      // Persist milestone and its once-only marker together before any network work.
+      writes.push([QUEUE_KEY, JSON.stringify(pruneProductAnalyticsQueue([...queue, envelope]))]);
+    }
+    await AsyncStorage.multiSet(writes);
+  });
+  void flushProductAnalytics();
+}
+
+async function pruneDreamSaveCohort(): Promise<void> {
+  await runSerialized(async () => {
+    const raw = await AsyncStorage.getItem(DREAM_SAVE_COHORT_KEY);
+    if (!raw) return;
+    const state = parseJson<{ firstSavedAt?: number } | null>(raw, null);
+    if (!state || typeof state.firstSavedAt !== 'number' || !Number.isFinite(state.firstSavedAt) ||
+      state.firstSavedAt > Date.now() || Date.now() - state.firstSavedAt > DREAM_RETURN_WINDOW_MS) {
+      await AsyncStorage.removeItem(DREAM_SAVE_COHORT_KEY);
+    }
+  });
+}
+
 async function isNetworkReachable(): Promise<boolean> {
   try {
     const state = await Network.getNetworkStateAsync();
@@ -670,7 +722,7 @@ async function disableRemoteIngestForSession(): Promise<void> {
   remoteDisabled = true;
   journeyPromise = null;
   await runSerialized(() =>
-    AsyncStorage.multiRemove([QUEUE_KEY, JOURNEY_KEY, ONCE_KEY])
+    AsyncStorage.multiRemove([QUEUE_KEY, JOURNEY_KEY, ONCE_KEY, DREAM_SAVE_COHORT_KEY])
   );
 }
 
@@ -865,7 +917,7 @@ export async function setProductAnalyticsEnabled(enabled: boolean): Promise<void
       writes.push([PENDING_DELETION_KEY, JSON.stringify([...merged.values()])]);
     }
     if (writes.length > 0) await AsyncStorage.multiSet(writes);
-    await AsyncStorage.multiRemove([QUEUE_KEY, JOURNEY_KEY, ONCE_KEY]);
+    await AsyncStorage.multiRemove([QUEUE_KEY, JOURNEY_KEY, ONCE_KEY, DREAM_SAVE_COHORT_KEY]);
   });
   journeyPromise = null;
   await flushPendingProductAnalyticsDeletions();
@@ -878,6 +930,7 @@ export async function initializeProductAnalytics(): Promise<void> {
     return;
   }
   initialized = true;
+  await pruneDreamSaveCohort().catch(() => {});
 
   if (isProductAnalyticsPlatform()) {
     networkSubscription = Network.addNetworkStateListener((state) => {
@@ -888,6 +941,7 @@ export async function initializeProductAnalytics(): Promise<void> {
     });
     appStateSubscription = AppState.addEventListener('change', (state) => {
       if (state === 'active') {
+        void pruneDreamSaveCohort().catch(() => {});
         void flushPendingProductAnalyticsDeletions();
         void flushProductAnalytics();
       }
