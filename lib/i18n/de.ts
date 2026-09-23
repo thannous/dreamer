@@ -824,7 +824,7 @@ const translations: Record<string, string> = {
     'recording.saved_analysis.guest_exhausted': "Deine Gastanalysen sind aufgebraucht. Dieser Traum bleibt in deinem Tagebuch. Erstelle ein kostenloses Konto, um ihn zu analysieren.",
     'recording.saved_analysis.later': 'Später',
     'recording.alert.limit.title': 'Konto erstellen',
-    'recording.alert.limit.message': 'Dein lokales Gast-Journal ist unbegrenzt. Erstelle ein kostenloses Konto, um deine Träume zu sichern und auf anderen Geräten zu öffnen. KI-Funktionen bleiben je nach Angebot begrenzt.',
+    'recording.alert.limit.message': 'Du kannst bis zu {limit} Träume ohne Konto speichern. Erstelle ein kostenloses Konto, um deine Träume zu sichern und auf anderen Geräten zu öffnen. KI-Funktionen bleiben je nach Angebot begrenzt.',
     'recording.alert.limit.cta': 'Zum Konto',
     'recording.analyze_prompt.sheet.title': 'Diesen Traum analysieren?',
     'recording.analyze_prompt.sheet.subtitle': 'Dein Traum ist gespeichert. Was möchtest du als Nächstes tun?',

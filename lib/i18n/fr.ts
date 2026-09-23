@@ -825,7 +825,7 @@ const translations: Record<string, string> = {
     'recording.saved_analysis.guest_exhausted': "Tes analyses invitées sont épuisées. Ce rêve reste dans ton journal. Crée un compte gratuit pour l’analyser.",
     'recording.saved_analysis.later': 'Plus tard',
     'recording.alert.limit.title': 'Crée un compte',
-    'recording.alert.limit.message': 'Ton journal local invité est illimité. Crée un compte gratuit pour sauvegarder tes rêves et les ouvrir sur d’autres appareils. Les fonctions IA restent limitées selon l’offre.',
+    'recording.alert.limit.message': 'Tu peux enregistrer jusqu’à {limit} rêves sans compte. Crée un compte gratuit pour sauvegarder tes rêves et les ouvrir sur d’autres appareils. Les fonctions IA restent limitées selon l’offre.',
     'recording.alert.limit.cta': 'Ouvrir mon compte',
     'recording.analyze_prompt.sheet.title': 'Rêve enregistré, analyser ce rêve ?',
     'recording.analyze_prompt.sheet.subtitle': 'Rêve enregistré. Et maintenant ?',

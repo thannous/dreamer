@@ -1,6 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 
 import { getTranslator, loadTranslations } from '../i18n';
+import { GUEST_DREAM_RECORDING_LIMIT } from '@/constants/limits';
 
 const languages: ('en' | 'fr' | 'es' | 'de' | 'it' | 'pt')[] = ['en', 'fr', 'es', 'de', 'it', 'pt'];
 
@@ -542,13 +543,13 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
-  it('does not present guest recording as a two-dream cap', async () => {
+  it('states the finite guest recording cap in every language', async () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
     for (const lang of languages) {
-      const value = getTranslator(lang)('recording.alert.limit.message');
-      expect(value).toMatch(/unlimited|illimit|ilimit|unbegrenzt/i);
-      expect(value).not.toMatch(/up to \{limit\}|hasta \{limit\}|fino a \{limit\}|bis zu \{limit\}|at[eé] \{limit\}|jusqu.à \{limit\}/i);
+      const value = getTranslator(lang)('recording.alert.limit.message', { limit: GUEST_DREAM_RECORDING_LIMIT });
+      expect(value).toContain(String(GUEST_DREAM_RECORDING_LIMIT));
+      expect(value).not.toMatch(/unlimited|illimit|ilimit|unbegrenzt/i);
       expect(value).not.toMatch(/\{limit\}/);
     }
   });

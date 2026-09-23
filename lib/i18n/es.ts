@@ -824,7 +824,7 @@ const translations: Record<string, string> = {
     'recording.saved_analysis.guest_exhausted': "Has agotado tus análisis de invitado. Este sueño sigue en tu diario. Crea una cuenta gratuita para analizarlo.",
     'recording.saved_analysis.later': 'Más tarde',
     'recording.alert.limit.title': 'Crea una cuenta',
-    'recording.alert.limit.message': 'Tu diario local de invitado es ilimitado. Crea una cuenta gratis para guardar tus sueños y abrirlos en otros dispositivos. Las funciones de IA siguen limitadas según tu plan.',
+    'recording.alert.limit.message': 'Puedes guardar hasta {limit} sueños sin cuenta. Crea una cuenta gratis para guardar tus sueños y abrirlos en otros dispositivos. Las funciones de IA siguen limitadas según tu plan.',
     'recording.alert.limit.cta': 'Ir a mi cuenta',
     'recording.analyze_prompt.sheet.title': '¿Analizar este sueño?',
     'recording.analyze_prompt.sheet.subtitle': 'Sueño guardado. ¿Y ahora?',

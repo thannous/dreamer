@@ -58,23 +58,23 @@ describe('VNext copy contracts', () => {
     }
   });
 
-  it('describes the guest journal as unlimited and AI features as plan-limited', () => {
+  it('states the guest recording cap while preserving saved dreams after the reflection limit', () => {
     for (const [language, translations] of Object.entries(packs)) {
       const guestJournal = translations['recording.alert.limit.message'];
       const guestReflection = translations['dream_chat.exploration_limit.message_guest'];
 
       expect({ language, guestJournal }).toEqual({
         language,
-        guestJournal: expect.stringMatching(/unlimited|illimit|ilimit|unbegrenzt/i),
+        guestJournal: expect.stringMatching(guestRecordingCapPattern),
       });
-      expect(guestJournal).not.toMatch(guestRecordingCapPattern);
-      expect(guestJournal).not.toMatch(/\{limit\}/);
+      expect(guestJournal).not.toMatch(/unlimited|illimit|ilimit|unbegrenzt/i);
       expect(guestJournal).not.toMatch(/costly|coûteux|costoso|kostspielig|costosi|caro de IA/i);
       expect(guestJournal).toMatch(/AI|IA|KI/i);
       expect(guestJournal).toMatch(/limited|limitées|limitadas|begrenzt|limitate/i);
 
-      expect(guestReflection).not.toMatch(/\b2\b|two |deux |dos |zwei |due |dois /i);
-      expect(guestReflection).toMatch(/unlimited|illimit|ilimit|unbegrenzt/i);
+      expect(guestReflection).not.toMatch(/\b(?:2|two|deux|dos|zwei|due|dois)\b/i);
+      expect(guestReflection).toMatch(/saved dreams|rêves enregistrés|sueños guardados|gespeicherten träume|sogni salvati|sonhos salvos/i);
+      expect(guestReflection).not.toMatch(/unlimited|illimit|ilimit|unbegrenzt/i);
     }
   });
 

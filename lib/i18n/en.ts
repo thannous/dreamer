@@ -824,7 +824,7 @@ const translations: Record<string, string> = {
     'recording.saved_analysis.guest_exhausted': "Your guest analyses are used up. This dream stays in your journal. Create a free account to analyze it.",
     'recording.saved_analysis.later': 'Later',
     'recording.alert.limit.title': 'Create an account',
-    'recording.alert.limit.message': 'Your local guest journal is unlimited. Create a free account to back up your dreams and open them on other devices. AI features stay limited according to your plan.',
+    'recording.alert.limit.message': 'You can save up to {limit} dreams without an account. Create a free account to back up your dreams and open them on other devices. AI features stay limited according to your plan.',
     'recording.alert.limit.cta': 'Go to account',
     'recording.analyze_prompt.sheet.title': 'Analyze this dream?',
     'recording.analyze_prompt.sheet.subtitle': 'Your dream is saved. What next?',
