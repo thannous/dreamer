@@ -62,6 +62,10 @@ Le compteur cumulatif local décide si un nouveau rêve peut être enregistré :
 
 Au démarrage, `migrateExistingGuestDreamRecording()` réconcilie le compteur avec au moins `dreams.length`, même si l’ancien marqueur de migration existe déjà. Cela corrige un ancien compteur sous-évalué après un échec d’incrément. Les rêves déjà enregistrés restent lisibles même si ce total dépasse la nouvelle limite ; seuls les nouveaux enregistrements sont bloqués.
 
+### Remise à zéro pour les développeurs
+
+Dans une build `__DEV__`, un invité peut ouvrir **Réglages → Test invité · mode dev → Réinitialiser les places invitées**. Cette action remet le compteur au nombre de rêves encore enregistrés sur l’appareil ; elle ne supprime aucun rêve et ne touche pas aux quotas d’analyse. Pour retrouver les cinq places, supprimer d’abord les rêves de test depuis le journal, puis utiliser ce bouton. Le contrôle n’est pas affiché dans les builds de production.
+
 ## Règle “analyses” (guest)
 
 ### Limite

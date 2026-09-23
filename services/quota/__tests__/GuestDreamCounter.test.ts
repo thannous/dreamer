@@ -4,6 +4,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import type { DreamAnalysis, DreamListReadResult } from '@/lib/types';
+import { withDevFlag } from '@/tests/setDevFlag';
 
 let getGuestRecordedDreamCount: typeof import('../GuestDreamCounter').getGuestRecordedDreamCount;
 let getLocalDreamRecordingCount: typeof import('../GuestDreamCounter').getLocalDreamRecordingCount;
@@ -12,6 +13,7 @@ let commitGuestDreamRecording: typeof import('../GuestDreamCounter').commitGuest
 let reconcilePendingGuestDreamRecording: typeof import('../GuestDreamCounter').reconcilePendingGuestDreamRecording;
 let migrateExistingGuestDreamRecording: typeof import('../GuestDreamCounter').migrateExistingGuestDreamRecording;
 let resetGuestDreamRecordingCount: typeof import('../GuestDreamCounter').resetGuestDreamRecordingCount;
+let resetGuestDreamRecordingAllowanceForDev: typeof import('../GuestDreamCounter').resetGuestDreamRecordingAllowanceForDev;
 let subscribeGuestDreamRecordingCount: typeof import('../GuestDreamCounter').subscribeGuestDreamRecordingCount;
 
 const { mockStorage, mockGetSavedDreams } = ((factory: any) => factory())(() => {
@@ -78,6 +80,7 @@ describe('GuestDreamCounter', () => {
       reconcilePendingGuestDreamRecording,
       migrateExistingGuestDreamRecording,
       resetGuestDreamRecordingCount,
+      resetGuestDreamRecordingAllowanceForDev,
       subscribeGuestDreamRecordingCount,
     } = require('../GuestDreamCounter'));
   });
@@ -191,6 +194,42 @@ describe('GuestDreamCounter', () => {
     expect(mockStorage.has(MIGRATION_KEY)).toBe(false);
     await expect(getLocalDreamRecordingCount()).resolves.toBe(0);
     unsubscribe();
+  });
+
+  it('lets a dev restore only deleted guest slots while preserving saved dreams', async () => {
+    const restoreDevFlag = withDevFlag(true);
+    try {
+      mockStorage.set(DREAM_RECORDING_KEY, '2');
+      setSavedDreams([dream(1)] as DreamAnalysis[]);
+      await expect(resetGuestDreamRecordingAllowanceForDev()).resolves.toBe(1);
+      expect(storedState()).toEqual({ count: 1, pending: null });
+      await expect(getGuestRecordedDreamCount(1)).resolves.toBe(1);
+
+      setSavedDreams([]);
+      await expect(resetGuestDreamRecordingAllowanceForDev()).resolves.toBe(0);
+      await expect(getGuestRecordedDreamCount(0)).resolves.toBe(0);
+    } finally {
+      restoreDevFlag();
+    }
+  });
+
+  it('blocks the QA reset in production or when the local journal is unreadable', async () => {
+    const restoreProductionFlag = withDevFlag(false);
+    try {
+      await expect(resetGuestDreamRecordingAllowanceForDev()).rejects.toThrow('development');
+    } finally {
+      restoreProductionFlag();
+    }
+
+    const restoreDevFlag = withDevFlag(true);
+    try {
+      mockStorage.set(DREAM_RECORDING_KEY, '2');
+      mockGetSavedDreams.mockResolvedValue({ status: 'error' });
+      await expect(resetGuestDreamRecordingAllowanceForDev()).rejects.toThrow();
+      expect(storedState()).toBeNull();
+    } finally {
+      restoreDevFlag();
+    }
   });
 
   it('migrateExistingGuestDreamRecording catches up when the journal grows', async () => {

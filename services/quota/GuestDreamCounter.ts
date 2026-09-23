@@ -153,6 +153,18 @@ export async function resetGuestDreamRecordingCount(): Promise<void> {
   });
 }
 
+/** Dev-only QA reset: forgive deleted history without touching saved dreams. */
+export async function resetGuestDreamRecordingAllowanceForDev(): Promise<number> {
+  if (typeof __DEV__ === 'undefined' || !__DEV__) {
+    throw new Error('Guest recording QA reset is available only in development');
+  }
+  return withGuestDreamRecordingLock(async () => {
+    const dreams = requireReadableDreams(await getSavedDreams());
+    await writeState({ count: dreams.length, pending: null });
+    return dreams.length;
+  });
+}
+
 /** A failed read never silently restores an exhausted allowance. */
 export async function getGuestRecordedDreamCount(currentDreamCount: number): Promise<number> {
   return withGuestDreamRecordingLock(async () => {

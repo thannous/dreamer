@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
+import { GuestRecordingQaReset } from '@/components/dev/GuestRecordingQaReset';
 import { VoiceLiveSpikeDebugEntry } from '@/components/dev/VoiceLiveSpikeDebugEntry';
 import { GuestProdQALab } from '@/components/guest/GuestProdQALab';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
@@ -148,6 +149,7 @@ export default function SettingsScreen() {
         </StaticFlatGlassCard>
       ) : null}
       <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" initialAccountSheetOpen={auth === 'signin'} />
+      <GuestRecordingQaReset />
       <GuestProdQALab />
       <VoiceLiveSpikeDebugEntry />
     </View>
