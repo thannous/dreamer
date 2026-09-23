@@ -593,25 +593,29 @@ export const useDreamJournal = () => {
               throw new DreamPersistenceError('write', 'device');
             }
 
+            let confirmedAfterWriteFailure = false;
             try {
               // Other journal writes can finish while the reservation is saved.
               await persistLocalDreams(upsertDream(dreamsRef.current, normalizedDream), {
                 publishAfterWrite: true,
                 discardFailedWrite: true,
                 pendingDream: normalizedDream,
+                onPendingWriteFailure: async () => {
+                  let outcome: 'saved' | 'absent' | 'none' = 'none';
+                  try {
+                    outcome = await reconcilePendingGuestDreamRecording();
+                  } catch (reconcileError) {
+                    logger.warn('Could not reconcile guest recording reservation', reconcileError);
+                    return 'unknown';
+                  }
+                  if (outcome !== 'saved') return outcome === 'absent' ? 'absent' : 'unknown';
+                  await reloadConfirmedDream();
+                  confirmedAfterWriteFailure = true;
+                  return 'saved';
+                },
               });
             } catch (error) {
-              // The writer may reject after the journal actually became durable.
-              // Only return the slot when a fresh journal read proves it absent.
-              let outcome: 'saved' | 'absent' | 'none' = 'none';
-              try {
-                outcome = await reconcilePendingGuestDreamRecording();
-              } catch (reconcileError) {
-                logger.warn('Could not reconcile guest recording reservation', reconcileError);
-              }
-              if (outcome === 'saved') {
-                return reloadConfirmedDream();
-              }
+              if (confirmedAfterWriteFailure) return normalizedDream;
               throw error;
             }
 

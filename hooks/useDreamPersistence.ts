@@ -56,6 +56,7 @@ export type JournalCompletenessState = { status: 'local' | 'loading' | 'complete
 export type DreamRefreshState = { status: 'idle' | 'refreshing' | 'error' };
 
 type LoadOperation = { isCurrent: () => boolean };
+type PendingGuestAdditionOutcome = 'saved' | 'absent' | 'unknown';
 
 export type DreamPersistenceState =
   | { status: 'loading' | 'ready' | 'saving'; target: 'device' | 'remote-cache' }
@@ -72,6 +73,15 @@ type LocalDreamWriteOptions = {
   discardFailedWrite?: boolean;
   /** Rebase other local writes on this new dream while its save is in flight. */
   pendingDream?: DreamAnalysis;
+  /** Settle the quota reservation before concurrent writes may rebase this dream. */
+  onPendingWriteFailure?: () => Promise<PendingGuestAdditionOutcome>;
+};
+
+type PendingGuestAddition = {
+  dream: DreamAnalysis;
+  settled: Promise<PendingGuestAdditionOutcome>;
+  resolve: (outcome: PendingGuestAdditionOutcome) => void;
+  outcome: PendingGuestAdditionOutcome | null;
 };
 
 export type UseDreamPersistenceResult = {
@@ -211,11 +221,7 @@ export function useDreamPersistence({
     target: canUseRemoteSync ? 'remote-cache' : 'device',
   });
   const dreamsRef = useRef<DreamAnalysis[]>([]);
-  const pendingGuestAdditionRef = useRef<{
-    dream: DreamAnalysis;
-    settled: Promise<boolean>;
-    resolve: (saved: boolean) => void;
-  } | null>(null);
+  const pendingGuestAdditionRef = useRef<PendingGuestAddition | null>(null);
   const [publishedScopeKey, setPublishedScopeKey] = useState(activeScopeKey);
   const [completeness, setCompleteness] = useState<JournalCompletenessState>({ status: 'loading' });
   const [remotePreviewAllowed, setRemotePreviewAllowed] = useState(false);
@@ -528,38 +534,44 @@ export function useDreamPersistence({
       throw new DreamPersistenceError('write', 'device');
     }
     if (options.pendingDream) {
-      let resolve!: (saved: boolean) => void;
-      const settled = new Promise<boolean>((done) => { resolve = done; });
-      const pending = { dream: options.pendingDream, settled, resolve };
+      let resolve!: (outcome: PendingGuestAdditionOutcome) => void;
+      const settled = new Promise<PendingGuestAdditionOutcome>((done) => { resolve = done; });
+      const pending: PendingGuestAddition = {
+        dream: options.pendingDream, settled, resolve, outcome: null,
+      };
       pendingGuestAdditionRef.current = pending;
       try {
         await enqueueWrite('local', 'device', newDreams, saveDreams, false, options);
-        pending.resolve(true);
-      } catch (error) {
-        // A storage writer can reject after making the journal durable. Keep
-        // that dream in subsequent writes until the quota reconciliation runs.
-        let saved = true;
-        try {
-          const result = await getSavedDreams();
-          if (result.status !== 'error') {
-            saved = result.status === 'loaded' && result.value.some(
-              (dream) => matchesDreamTarget(dream, pending.dream)
-            );
-          }
-        } catch {
-          // Unknown write outcome: preserve the dream rather than overwrite it.
-        }
-        pending.resolve(saved);
-        throw error;
-      } finally {
+        pending.outcome = 'saved';
+        pending.resolve('saved');
         if (pendingGuestAdditionRef.current === pending) pendingGuestAdditionRef.current = null;
+      } catch (error) {
+        // Keep other writers parked until the caller has reconciled the quota
+        // reservation and, for a saved dream, published the durable journal.
+        let outcome: PendingGuestAdditionOutcome = 'unknown';
+        try {
+          outcome = await options.onPendingWriteFailure?.() ?? 'unknown';
+        } catch {
+          // An unreadable journal leaves both the reservation and rebase uncertain.
+        }
+        pending.outcome = outcome;
+        pending.resolve(outcome);
+        if (outcome !== 'unknown' && pendingGuestAdditionRef.current === pending) {
+          pendingGuestAdditionRef.current = null;
+        }
+        throw error;
       }
       return;
     }
 
     const pending = pendingGuestAdditionRef.current;
-    const saved = pending ? await pending.settled : false;
-    const rebasedDreams = pending && saved && !newDreams.some(
+    const outcome = pending ? await pending.settled : 'absent';
+    if (outcome === 'unknown' || (pending && outcome === 'absent' && newDreams.some(
+      (dream) => matchesDreamTarget(dream, pending.dream)
+    ))) {
+      throw new DreamPersistenceError('read', 'device');
+    }
+    const rebasedDreams = pending && outcome === 'saved' && !newDreams.some(
       (dream) => matchesDreamTarget(dream, pending.dream)
     ) ? upsertDream(newDreams, pending.dream) : newDreams;
     await enqueueWrite('local', 'device', rebasedDreams, saveDreams, true, options);
@@ -896,7 +908,14 @@ export function useDreamPersistence({
         });
         if (localDreams && isCurrent()) {
           const currentScope = getWriteScope(scopeKey);
-          if (!preserveWriteAuthority) setDreamsForScope(scopeKey, localDreams);
+          if (!preserveWriteAuthority) {
+            setDreamsForScope(scopeKey, localDreams);
+            // A fresh authoritative read lets later edits recover from an
+            // earlier ambiguous write without trusting a stale snapshot.
+            if (pendingGuestAdditionRef.current?.outcome === 'unknown') {
+              pendingGuestAdditionRef.current = null;
+            }
+          }
           setPendingMutations([]);
           setPendingMutationsLoaded(true);
           setPendingMutationsScope(null);
