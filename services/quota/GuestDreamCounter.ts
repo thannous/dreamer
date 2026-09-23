@@ -167,14 +167,16 @@ export async function migrateExistingGuestDreamRecording(): Promise<void> {
   try {
     await withGuestDreamRecordingLock(async () => {
       const { state } = await reconcilePendingState();
-      if (await AsyncStorage.getItem(MIGRATION_KEY)) return;
-
+      // Older builds marked migration complete even when a later best-effort
+      // counter increment failed. Reconcile the durable journal every launch.
       const dreams = requireReadableDreams(await getSavedDreams());
       const count = Math.max(state.count, dreams.length);
       if (count > state.count) {
         await writeState({ count, pending: null });
       }
-      await AsyncStorage.setItem(MIGRATION_KEY, 'true');
+      if (!(await AsyncStorage.getItem(MIGRATION_KEY))) {
+        await AsyncStorage.setItem(MIGRATION_KEY, 'true');
+      }
     });
   } catch (error) {
     console.warn('[GuestDreamCounter] Migration failed:', error);

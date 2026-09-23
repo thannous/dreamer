@@ -23,7 +23,7 @@ import {
   type AnalysisSource,
 } from '@/lib/analytics';
 import { isResumableAnalysisRequest } from '@/lib/analysisRequest';
-import { DreamPersistenceError } from '@/lib/dreamStorageRead';
+import { DreamPersistenceError, requireReadableDreams } from '@/lib/dreamStorageRead';
 import {
   getAnalysisJobPollDelay,
   MAX_ANALYSIS_JOB_POLL_ATTEMPTS,
@@ -85,6 +85,7 @@ import { quotaService } from '@/services/quotaService';
 import { getIllustrationResolution } from '@/services/illustrationPreferences';
 import {
   getPendingImageJobs,
+  getSavedDreams,
   savePendingImageJobs,
 } from '@/services/storageService';
 import {
@@ -561,10 +562,30 @@ export const useDreamJournal = () => {
               return normalizedDream;
             }
 
+            const reloadConfirmedDream = async () => {
+              await reloadDreams();
+              if (!dreamsRef.current.some((existing) => matchesDreamTarget(existing, normalizedDream))) {
+                throw new DreamPersistenceError('read', 'device');
+              }
+              return normalizedDream;
+            };
+
+            // A prior write may have succeeded even if its acknowledgement or
+            // the subsequent reload failed. Retry that identity without a new slot.
+            let durableDreams: DreamAnalysis[];
+            try {
+              durableDreams = requireReadableDreams(await getSavedDreams());
+            } catch {
+              throw new DreamPersistenceError('read', 'device');
+            }
+            if (durableDreams.some((existing) => matchesDreamTarget(existing, normalizedDream))) {
+              return reloadConfirmedDream();
+            }
+
             try {
               await reserveGuestDreamRecording(
                 normalizedDream,
-                currentDreams.length,
+                Math.max(dreamsRef.current.length, durableDreams.length),
                 GUEST_DREAM_RECORDING_LIMIT
               );
             } catch (error) {
@@ -573,7 +594,8 @@ export const useDreamJournal = () => {
             }
 
             try {
-              await persistLocalDreams(upsertDream(currentDreams, normalizedDream), {
+              // Other journal writes can finish while the reservation is saved.
+              await persistLocalDreams(upsertDream(dreamsRef.current, normalizedDream), {
                 publishAfterWrite: true,
                 discardFailedWrite: true,
                 pendingDream: normalizedDream,
@@ -588,8 +610,7 @@ export const useDreamJournal = () => {
                 logger.warn('Could not reconcile guest recording reservation', reconcileError);
               }
               if (outcome === 'saved') {
-                await reloadDreams();
-                return normalizedDream;
+                return reloadConfirmedDream();
               }
               throw error;
             }

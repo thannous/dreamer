@@ -60,7 +60,7 @@ Le compteur cumulatif local décide si un nouveau rêve peut être enregistré :
 
 ### Migration (compat)
 
-Au démarrage, `migrateExistingGuestDreamRecording()` initialise le compteur depuis la clé historique et au moins `dreams.length`. Les rêves déjà enregistrés restent lisibles même si ce total dépasse la nouvelle limite ; seuls les nouveaux enregistrements sont bloqués.
+Au démarrage, `migrateExistingGuestDreamRecording()` réconcilie le compteur avec au moins `dreams.length`, même si l’ancien marqueur de migration existe déjà. Cela corrige un ancien compteur sous-évalué après un échec d’incrément. Les rêves déjà enregistrés restent lisibles même si ce total dépasse la nouvelle limite ; seuls les nouveaux enregistrements sont bloqués.
 
 ## Règle “analyses” (guest)
 

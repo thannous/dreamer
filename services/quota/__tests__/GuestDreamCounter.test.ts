@@ -193,7 +193,7 @@ describe('GuestDreamCounter', () => {
     unsubscribe();
   });
 
-  it('migrateExistingGuestDreamRecording is idempotent and seeds from dreams length', async () => {
+  it('migrateExistingGuestDreamRecording catches up when the journal grows', async () => {
     setSavedDreams([{ id: 1 }, { id: 2 }] as any);
     await migrateExistingGuestDreamRecording();
     expect(storedState().count).toBe(2);
@@ -201,7 +201,18 @@ describe('GuestDreamCounter', () => {
 
     setSavedDreams([{ id: 1 }, { id: 2 }, { id: 3 }] as any);
     await migrateExistingGuestDreamRecording();
-    expect(storedState().count).toBe(2);
+    expect(storedState().count).toBe(3);
+  });
+
+  it('repairs a legacy undercount even when the old migration marker is set', async () => {
+    mockStorage.set(DREAM_RECORDING_KEY, '4');
+    mockStorage.set(MIGRATION_KEY, 'true');
+    setSavedDreams([dream(1), dream(2), dream(3), dream(4), dream(5)] as DreamAnalysis[]);
+
+    await migrateExistingGuestDreamRecording();
+    expect(storedState()).toEqual({ count: 5, pending: null });
+    setSavedDreams([dream(1), dream(2), dream(3), dream(4)] as DreamAnalysis[]);
+    await expect(getGuestRecordedDreamCount(4)).resolves.toBe(5);
   });
 
   it('migration preserves a reserved count when fewer dreams are still present', async () => {
