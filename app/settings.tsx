@@ -78,6 +78,7 @@ function SettingsHost({ children, colorScheme, hostKey, seedColor, style }: Sett
 
 export default function SettingsScreen() {
   const { auth, section } = useLocalSearchParams<{ auth?: string; section?: string }>();
+  const directAccountForm = section === 'account' && (auth === 'signin' || auth === 'signup');
   const { colors, mode } = useTheme();
   const { returningGuestBlocked } = useAuth();
   const insets = useSafeAreaInsets();
@@ -180,8 +181,8 @@ export default function SettingsScreen() {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ padding: ThemeLayout.spacing.lg, paddingBottom: bottomPadding }}>
           <View className="w-full max-w-[760px] self-center">
-            <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" initialAccountSheetOpen={auth === 'signin'} />
-            <View className="mt-8">{quota}</View>
+            <EmailAuthCard key={auth} isCompact={isCompactLayout} presentation={directAccountForm ? 'card' : 'embedded'} initialMode={directAccountForm ? auth as 'signin' | 'signup' : undefined} />
+            {directAccountForm ? null : <View className="mt-8">{quota}</View>}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

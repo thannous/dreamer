@@ -15,6 +15,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { AppState } from 'react-native';
 
 import { useAuth } from '@/context/AuthContext';
+import { GUEST_DREAM_RECORDING_LIMIT } from '@/constants/limits';
 import { useSubscription } from '@/hooks/useSubscription';
 import {
   getDurationMsBucket,
@@ -49,7 +50,7 @@ import {
   upsertDream,
 } from '@/lib/dreamUtils';
 import { stampDreamAnalysisTranscript } from '@/lib/dreamAnalysisFreshness';
-import { coerceQuotaError, QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { coerceQuotaError, GuestDreamLimitError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import { getImageJobPollDelay } from '@/lib/imageJobPolling';
 import { logger } from '@/lib/logger';
@@ -73,6 +74,7 @@ import {
   syncWithServerCount,
 } from '@/services/quota/GuestAnalysisCounter';
 import {
+  getGuestRecordedDreamCount,
   incrementLocalDreamRecordingCount,
   withGuestDreamRecordingLock,
 } from '@/services/quota/GuestDreamCounter';
@@ -552,6 +554,9 @@ export const useDreamJournal = () => {
           return withGuestDreamRecordingLock(async () => {
             const currentDreams = dreamsRef.current;
             const alreadyExists = currentDreams.some((existing) => matchesDreamTarget(existing, normalizedDream));
+            if (!alreadyExists && await getGuestRecordedDreamCount(currentDreams.length) >= GUEST_DREAM_RECORDING_LIMIT) {
+              throw new GuestDreamLimitError();
+            }
             await persistLocalDreams(upsertDream(currentDreams, normalizedDream));
             if (!alreadyExists) {
               try {

@@ -296,6 +296,26 @@ describe('EmailAuthCard', () => {
     mockOptionalDreamsActions = { reloadDreams: mockReloadDreams };
   });
 
+  it('starts in signup mode and submits signup on Enter instead of signing in', async () => {
+    render(<EmailAuthCard initialMode="signup" />);
+    expect(screen.queryByTestId(TID.Button.AuthSignIn)).toBeNull();
+    expect(screen.queryByTestId(TID.Button.AuthForgotPassword)).toBeNull();
+    fireEvent.change(screen.getByTestId(TID.Input.AuthEmail), { target: { value: 'new@example.com' } });
+    fireEvent.change(screen.getByTestId(TID.Input.AuthPassword), { target: { value: 'password' } });
+    await act(async () => { fireEvent.submit(screen.getByTestId(TID.Input.AuthEmail).closest('form')!); });
+    expect(mockSignUpWithEmailPassword).toHaveBeenCalledWith('new@example.com', 'password', expect.anything());
+    expect(mockSignInWithEmailPassword).not.toHaveBeenCalled();
+  });
+
+  it('switches to sign in without discarding the typed email', async () => {
+    render(<EmailAuthCard initialMode="signup" />);
+    fireEvent.change(screen.getByTestId(TID.Input.AuthEmail), { target: { value: 'known@example.com' } });
+    await act(async () => { fireEvent.click(screen.getByTestId('auth.switchMode')); });
+    expect(screen.getByTestId(TID.Button.AuthSignIn)).toBeTruthy();
+    expect(screen.queryByTestId(TID.Button.AuthSignUp)).toBeNull();
+    expect((screen.getByTestId(TID.Input.AuthEmail) as HTMLInputElement).value).toBe('known@example.com');
+  });
+
   it('opens the forgot-password panel pre-filled with the sign-in email and shows a neutral confirmation', async () => {
     render(<EmailAuthCard />);
 

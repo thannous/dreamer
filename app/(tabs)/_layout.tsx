@@ -65,7 +65,7 @@ function TabBarItem({ label, icon, focused, palette, geometry }: {
       importantForAccessibility="no-hide-descendants"
       // React Navigation centers this custom icon in an absolute wrapper.
       // A percentage on the Text alone cannot bound its intrinsic parent width.
-      style={{ width: labelWidth, maxWidth: '100%' }}
+      style={{ width: labelWidth, maxWidth: '100%', borderRadius: 18, backgroundColor: focused ? palette.barBorder : 'transparent' }}
       className={`flex-1 min-w-0 items-center justify-center ${
         compact ? 'gap-[1px]' : narrow ? 'gap-[4px]' : 'gap-[5px]'
       }`}
@@ -101,7 +101,8 @@ function TabBarItem({ label, icon, focused, palette, geometry }: {
   );
 }
 
-function AddDreamTabItem({ label, palette, geometry }: {
+function AddDreamTabItem({ label, palette, geometry, focused }: {
+  focused: boolean;
   label: string;
   palette: TabPalette;
   geometry: TabGeometry;
@@ -134,12 +135,12 @@ function AddDreamTabItem({ label, palette, geometry }: {
         // shadow*/elevation, which has no single Tailwind equivalent, and the colour
         // is derived from the palette.
         !geometry.largeText && ADD_TAB_LIFT[compact ? 'compact' : narrow ? 'narrow' : 'default'],
-        ADD_TAB_SHADOW,
+        focused && ADD_TAB_SHADOW,
         {
           width: centerActionWidth,
           height: centerActionHeight,
-          backgroundColor: palette.accent,
-          borderColor: palette.accentLight,
+          backgroundColor: focused ? palette.accent : palette.barBg,
+          borderColor: focused ? palette.accentLight : palette.barBorder,
           shadowColor: palette.accent,
         },
       ]}
@@ -150,12 +151,12 @@ function AddDreamTabItem({ label, palette, geometry }: {
         }`}
       >
         {activeAnalysis ? (
-          <ActivityIndicator size="small" color={palette.textOnAccentSurface} />
+          <ActivityIndicator size="small" color={(focused ? palette.textOnAccentSurface : palette.text)} />
         ) : (
           <IconSymbol
             size={24}
             name="pencil"
-            color={palette.textOnAccentSurface}
+            color={(focused ? palette.textOnAccentSurface : palette.text)}
           />
         )}
       </View>
@@ -163,7 +164,7 @@ function AddDreamTabItem({ label, palette, geometry }: {
         accessible={false}
         className="w-full min-w-0 shrink text-center font-sans-bold"
         style={{
-          color: palette.textOnAccentSurface,
+          color: (focused ? palette.textOnAccentSurface : palette.text),
           fontSize: geometry.labelFontSize,
           lineHeight: geometry.labelLineHeight,
           height: stackedLabels ? geometry.centerLabelHeight : undefined,
@@ -382,8 +383,8 @@ export default function TabLayout() {
               accessibilityBusy={Boolean(activeAnalysis)}
             />
           ),
-          tabBarIcon: () => (
-            <AddDreamTabItem label={t(navigationLayout.largeText ? 'nav.capture_dream_compact' : 'nav.capture_dream')} palette={palette} geometry={geometry} />
+          tabBarIcon: ({ focused }) => (
+            <AddDreamTabItem focused={focused} label={t(navigationLayout.largeText ? 'nav.capture_dream_compact' : 'nav.capture_dream')} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(2, navigationLayout),
         }}

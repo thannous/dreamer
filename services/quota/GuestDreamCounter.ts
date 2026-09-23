@@ -99,7 +99,8 @@ export async function getGuestRecordedDreamCount(currentDreamCount: number): Pro
   if (isMockModeEnabled()) {
     return Math.max(mockSessionRecordingCount, currentDreamCount);
   }
-  const local = await getLocalDreamRecordingCount();
+  // A failed read must not silently reset an exhausted recording allowance.
+  const local = safeParseInt(await AsyncStorage.getItem(DREAM_RECORDING_KEY));
   return Math.max(local, currentDreamCount);
 }
 

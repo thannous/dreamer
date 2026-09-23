@@ -577,7 +577,7 @@ describe('DreamRecallAssistantCard', () => {
     read.mockRestore();
   });
 
-  it('restores typed and partial voice details after pause, unmount and resume with real hook/storage', async () => {
+  it('restores typed and partial voice details after leaving and returning with real hook/storage', async () => {
     mockUseRealRecall = true;
     const view = renderCard();
     await waitFor(() => { expect(screen.getByTestId(TID.Button.DreamRecallStart)).toBeTruthy(); });
@@ -590,8 +590,7 @@ describe('DreamRecallAssistantCard', () => {
       mockRecordingSessionOptions.onPartialTranscript?.('partial voice detail', { baseTranscript: 'Typed beginning' });
     });
     mockStopRecording.mockResolvedValueOnce({ transcript: 'partial voice detail with final words', error: undefined });
-    fireEvent.click(screen.getByTestId(TID.Button.DreamRecallPause));
-    await waitFor(() => { expect(screen.getByTestId(TID.Button.DreamRecallResume)).toBeTruthy(); });
+    await act(async () => { mockAppStateListeners.forEach(listener => listener('background')); });
     view.unmount();
     setRecording(false);
     renderCard();
@@ -790,9 +789,7 @@ describe('DreamRecallAssistantCard', () => {
     expect((screen.getByTestId(TID.Button.DreamRecallSubmit) as HTMLButtonElement).disabled).toBe(
       true
     );
-    expect((screen.getByTestId(TID.Button.DreamRecallPause) as HTMLButtonElement).disabled).toBe(
-      true
-    );
+    expect(screen.queryByTestId(TID.Button.DreamRecallPause)).toBeNull();
     expect((screen.getByTestId(TID.Button.DreamRecallSkip) as HTMLButtonElement).disabled).toBe(
       true
     );
@@ -879,17 +876,13 @@ describe('DreamRecallAssistantCard', () => {
     expect(screen.queryByTestId(TID.Component.DreamRecallAssistantCard)).toBeNull();
   });
 
-  it('wires pause and complete actions on an active question', async () => {
+  it('wires the single complete action on an active question', async () => {
     resetHook({
       state: sessionState('active', [openQuestionTurn]),
       currentQuestion: QUESTION,
     });
     renderCard();
 
-    fireEvent.click(screen.getByTestId(TID.Button.DreamRecallPause));
-    await waitFor(() => {
-      expect(mockPause).toHaveBeenCalledTimes(1);
-    });
     fireEvent.click(screen.getByTestId(TID.Button.DreamRecallComplete));
     await waitFor(() => {
       expect(mockComplete).toHaveBeenCalledTimes(1);
@@ -1065,13 +1058,6 @@ describe('DreamRecallAssistantCard', () => {
         expect(mockStartRecording).toHaveBeenCalled();
       });
 
-      fireEvent.click(screen.getByTestId(TID.Button.DreamRecallPause));
-      await waitFor(() => {
-        expect(order).toEqual(['stop', 'pause']);
-      });
-
-      order.length = 0;
-      setRecording(true);
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallSkip));
       await waitFor(() => {
         expect(order).toEqual(['stop', 'skip']);

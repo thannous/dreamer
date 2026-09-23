@@ -372,7 +372,7 @@ describe('useDreamJournal', () => {
     mockNetworkState.isInternetReachable = true;
     mockNetworkState.isConnected = true;
     mockGetCurrentNetworkState.mockImplementation(async () => mockNetworkState);
-    mockGetGuestRecordedDreamCount.mockResolvedValue(0);
+    mockGetGuestRecordedDreamCount.mockImplementation(async (count) => Math.max(mockGuestDreamCounterState.count, count));
     process.env.EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED = '';
     setSavedDreams([]);
     mockSaveDreams.mockResolvedValue(undefined);
@@ -592,53 +592,49 @@ describe('useDreamJournal', () => {
       expect(result.current.dreams.map((d: DreamAnalysis) => d.id)).toEqual([3, 2, 1]);
     });
 
-    it('saves at least 3 guest dreams even when the historical counter exceeds 2', async () => {
+    it('allows five cumulative guest recordings, then protects the sixth without writing it', async () => {
+      const { GuestDreamLimitError } = require('../../lib/errors');
+      const { result } = await renderLoadedDreamJournal();
+      for (let id = 1; id <= 5; id += 1) {
+        await act(async () => { await result.current.addDream(buildDream({ id })); });
+      }
+      expect(result.current.dreams).toHaveLength(5);
+      expect(mockGuestDreamCounterState.count).toBe(5);
+      const writes = mockSaveDreams.mock.calls.length;
+      await act(async () => {
+        await expect(result.current.addDream(buildDream({ id: 6 }))).rejects.toBeInstanceOf(GuestDreamLimitError);
+      });
+      expect(mockSaveDreams).toHaveBeenCalledTimes(writes);
+      expect(result.current.dreams).toHaveLength(5);
+    });
+
+    it('does not restore a guest recording after deletion and permits retry of an existing identity', async () => {
+      const { GuestDreamLimitError } = require('../../lib/errors');
+      const { result } = await renderLoadedDreamJournal();
+      for (let id = 1; id <= 5; id += 1) {
+        await act(async () => { await result.current.addDream(buildDream({ id })); });
+      }
+      await act(async () => { await result.current.addDream({ ...result.current.dreams.find((d: DreamAnalysis) => d.id === 5)!, title: 'Updated' }); });
+      expect(mockGuestDreamCounterState.count).toBe(5);
+      await act(async () => { await result.current.deleteDream(5); });
+      await act(async () => {
+        await expect(result.current.addDream(buildDream({ id: 6 }))).rejects.toBeInstanceOf(GuestDreamLimitError);
+      });
+      expect(result.current.dreams).toHaveLength(4);
+    });
+
+    it('keeps prior dreams readable when an older guest has already exceeded the new limit', async () => {
+      const { GuestDreamLimitError } = require('../../lib/errors');
       mockGuestDreamCounterState.count = 9;
+      setSavedDreams([buildDream({ id: 1 })]);
       const { result } = await renderLoadedDreamJournal();
-
+      expect(result.current.dreams).toHaveLength(1);
       await act(async () => {
-        await result.current.addDream(buildDream({ id: 1 }));
+        await expect(result.current.addDream(buildDream({ id: 2 }))).rejects.toBeInstanceOf(GuestDreamLimitError);
       });
-      await act(async () => {
-        await result.current.addDream(buildDream({ id: 2 }));
-      });
-      await act(async () => {
-        await result.current.addDream(buildDream({ id: 3 }));
-      });
-
-      expect(result.current.dreams).toHaveLength(3);
-      expect(result.current.dreams.map((d: DreamAnalysis) => d.id)).toEqual([3, 2, 1]);
-      expect(mockSaveDreams).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({ id: 1 }),
-          expect.objectContaining({ id: 2 }),
-          expect.objectContaining({ id: 3 }),
-        ])
-      );
-      expect(mockGuestDreamCounterState.count).toBe(12);
+      expect(result.current.dreams).toHaveLength(1);
     });
 
-    it('saves guest dreams without consulting a recording ceiling', async () => {
-      mockGuestDreamCounterState.count = 99;
-      mockGetGuestRecordedDreamCount.mockResolvedValue(99);
-      const { result } = await renderLoadedDreamJournal();
-
-      await act(async () => {
-        await result.current.addDream(buildDream({ id: 41 }));
-      });
-      await act(async () => {
-        await result.current.addDream(buildDream({ id: 42 }));
-      });
-
-      expect(result.current.dreams.map((d: DreamAnalysis) => d.id)).toEqual([42, 41]);
-      expect(mockGetGuestRecordedDreamCount).not.toHaveBeenCalled();
-      expect(mockSaveDreams).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({ id: 41 }),
-          expect.objectContaining({ id: 42 }),
-        ])
-      );
-    });
   });
 
   describe('addDream - remote mode', () => {

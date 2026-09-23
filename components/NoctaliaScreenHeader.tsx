@@ -40,6 +40,7 @@ export interface NoctaliaHeaderChip {
 
 interface NoctaliaScreenHeaderProps {
   titleKey: string;
+  includeTopInset?: boolean;
   actions?: NoctaliaHeaderAction[];
   chips?: NoctaliaHeaderChip[];
   slot?: ReactNode;
@@ -49,6 +50,7 @@ interface NoctaliaScreenHeaderProps {
 
 export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   titleKey,
+  includeTopInset = true,
   actions = [],
   chips = [],
   slot,
@@ -72,7 +74,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   const quietIconColor = noctalia.text.secondary;
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
+    <View style={[styles.container, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
       <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow, stackActions && styles.titleRowStacked, wrapInlineSlot && styles.searchRowWrapped]}>
         <View style={[styles.titleBlock, stackActions && styles.titleBlockStacked,
           Boolean(inlineSlot) && (canInlineSlot

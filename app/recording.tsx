@@ -21,12 +21,10 @@ import { RememberedDreamProfileChips } from '@/components/recording/RememberedDr
 import { Toast } from '@/components/Toast';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
+import { GUEST_DREAM_RECORDING_LIMIT } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { useAuth } from '@/context/AuthContext';
-import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
-import { useQuota } from '@/hooks/useQuota';
-import { buildAnalysisPaywallHref } from '@/lib/paywallRoute';
 import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
+import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
@@ -47,6 +45,7 @@ import {
 } from '@/lib/dreamUtils';
 import { isMockModeEnabled } from '@/lib/env';
 import { DreamPersistenceError } from '@/lib/dreamStorageRead';
+import { GuestDreamLimitError } from '@/lib/errors';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { createScopedLogger } from '@/lib/logger';
 import {
@@ -77,6 +76,7 @@ import type {
   RememberedDreamKind,
 } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
+import { getGuestRecordedDreamCount, subscribeGuestDreamRecordingCount } from '@/services/quota/GuestDreamCounter';
 import {
   registerOfflineModelPromptHandler,
   resolveDeviceSpeechCapability,
@@ -103,6 +103,7 @@ import {
   type LayoutChangeEvent,
   ScrollView,
   StyleSheet,
+  Text,
   TextInput,
   View,
   useWindowDimensions,
@@ -117,16 +118,12 @@ type CaptureIntent = RecordingCaptureIntent;
 
 export default function RecordingScreen() {
   const { dreams } = useDreamsData();
+  const { user } = useAuth();
   const {
     addDream,
     applyDreamCategorization,
   } = useDreamsActions();
-  const { user } = useAuth();
-  const { tier, quotaStatus, loading: quotaLoading, error: quotaError } = useQuota();
-  const latestAccessRef = useRef({ user, tier, quotaStatus, quotaLoading, quotaError });
-  useEffect(() => {
-    latestAccessRef.current = { user, tier, quotaStatus, quotaLoading, quotaError };
-  }, [user, tier, quotaStatus, quotaLoading, quotaError]);
+
   const { colors, mode } = useTheme();
   const { language } = useLanguage();
   const { t } = useTranslation();
@@ -152,6 +149,21 @@ export default function RecordingScreen() {
   );
 
   const [transcript, setTranscript] = useState('');
+  const [guestDreamsRemaining, setGuestDreamsRemaining] = useState<number | null>(null);
+  useEffect(() => {
+    if (user) return undefined;
+    let active = true;
+    const refresh = () => {
+      void getGuestRecordedDreamCount(dreams.length).then((used) => {
+        if (active) setGuestDreamsRemaining(Math.max(0, GUEST_DREAM_RECORDING_LIMIT - used));
+      }).catch(() => {
+        if (active) setGuestDreamsRemaining(null);
+      });
+    };
+    refresh();
+    const unsubscribe = subscribeGuestDreamRecordingCount(refresh);
+    return () => { active = false; unsubscribe(); };
+  }, [dreams.length, user]);
   const [editableCapture, setEditableCapture] = useState<CaptureEditableDraft | null>(null);
   const [captureReviewState, setCaptureReview] = useState<CaptureReview | null>(null);
   const captureReview = useMemo(() => captureReviewState && captureReviewState.text === captureReviewState.source
@@ -640,19 +652,8 @@ export default function RecordingScreen() {
     dream: DreamAnalysis,
     options?: { saved?: boolean; recall?: boolean }
   ) => {
-    const access = latestAccessRef.current;
-    if (options?.saved && !options.recall && access.user && getSavedAnalysisAction({
-      tier: access.tier, loading: access.quotaLoading, error: access.quotaError, status: access.quotaStatus,
-    }) === 'upgrade') {
-      void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch((error) => {
-        log.warn('Failed to clear the completed capture intent', error);
-      });
-      router.replace(buildAnalysisPaywallHref(dream, access.user.id, { afterSave: true }));
-      return;
-    }
-    // Unknown/offline access must not block durable capture or cause a later redirect.
     router.replace(buildJournalDetailHref(dream, options));
-  }, [transitionOnboarding]);
+  }, []);
 
   useEffect(() => {
     const pending = onboardingState.pendingRecordingIntent;
@@ -829,6 +830,11 @@ export default function RecordingScreen() {
       };
       const response = await startSessionRecording(sourceTranscript);
       if (response.success) {
+        // Permission dialogs can take focus away from the editor. Restore it
+        // after startup without moving the user's selected insertion point.
+        if (inputMode === 'text' && !options?.preserveDraft) {
+          textInputRef.current?.focus();
+        }
         setDictationIntentState('listening');
         lastInputSourceRef.current = 'voice';
         if (!captureStartedTrackedRef.current) {
@@ -1081,6 +1087,14 @@ export default function RecordingScreen() {
       }
       navigateToSavedDream(savedDream, { saved: true, recall: completeWithHelp });
     } catch (error) {
+      if (error instanceof GuestDreamLimitError) {
+        setGuestDreamsRemaining(0);
+        Alert.alert(t('recording.guest_recording.limit_title'), t('recording.guest_recording.limit_message', { limit: GUEST_DREAM_RECORDING_LIMIT }), [
+          { text: t('recording.guest_recording.signup'), onPress: () => router.push('/settings?section=account&auth=signup') },
+          { text: t('recording.guest_recording.keep_draft'), style: 'cancel' },
+        ]);
+        return;
+      }
       const message = error instanceof DreamPersistenceError
         ? t(
             error.operation === 'read'
@@ -1660,6 +1674,7 @@ export default function RecordingScreen() {
             ref={scrollViewRef}
             style={[
               styles.scrollView,
+              !isDesktopWeb && { marginTop: insets.top },
               separateFooterViewport && { marginBottom: scrollBottomReservation },
             ]}
             contentContainerStyle={styles.scrollContent}
@@ -1669,6 +1684,7 @@ export default function RecordingScreen() {
           >
             {!isDesktopWeb ? (
               <NoctaliaScreenHeader
+                includeTopInset={false}
                 titleKey="nav.capture_dream"
                 actions={[{
                   icon: 'gear',
@@ -1680,7 +1696,7 @@ export default function RecordingScreen() {
             <MockNavigationRail />
             <View style={mainContentStyle}>
               <View style={[styles.bodySection, isCompactLandscape && styles.bodySectionCompact]}>
-                {!editableCapture ? <RecordingInputModeSelect
+                {!editableCapture && !keyboardVisible ? <RecordingInputModeSelect
                   value={inputMode}
                   disabled={interactionDisabled || isPreparingRecording || !!captureReview}
                   onChange={handleInputModePreferenceChange}
@@ -1758,7 +1774,7 @@ export default function RecordingScreen() {
                   }}
                   disabled={interactionDisabled}
                   lengthWarning={lengthWarning}
-                  instructionText={
+                  instructionText={keyboardVisible ? '' :
                     captureIntent === 'remembered'
                       ? t('recording.remembered.active_instruction')
                       : t('recording.write.instruction')
@@ -1791,6 +1807,16 @@ export default function RecordingScreen() {
                     value={captureReview?.text ?? transcript}
                     persisted={transcript.length > 0 && lastPersistedValue === persistedDraftValue}
                   />
+                ) : null}
+
+                {hydrationStatus === 'ready' && !user && guestDreamsRemaining !== null ? (
+                  <Text testID="recording-guest-remaining" accessibilityLiveRegion="polite"
+                    className="mt-2 font-sans text-[13px] text-ivory-muted">
+                    {t(guestDreamsRemaining === 0
+                      ? 'recording.guest_recording.exhausted_inline'
+                      : guestDreamsRemaining === 1 ? 'recording.guest_recording.remaining_one'
+                      : 'recording.guest_recording.remaining', { remaining: guestDreamsRemaining })}
+                  </Text>
                 ) : null}
 
               </View>

@@ -97,7 +97,7 @@ export function NoctaliaBottomNav({
   // Icon and indicator colours are values on native props, so they stay on the tokens.
   const navActiveColor = noctalia.nav.active;
   const navInactiveColor = noctalia.nav.inactive;
-  const addTextColor = noctalia.action.primaryText;
+  const addTextColor = activeKey === 'addDream' ? noctalia.action.primaryText : navInactiveColor;
   const horizontalLayout = getTabBarHorizontalLayout(width);
 
   const barClassName = [
@@ -107,7 +107,8 @@ export function NoctaliaBottomNav({
   ].join(' ');
 
   const addItemClassName = [
-    'items-center justify-center border-2 border-champagne-soft bg-champagne',
+    'items-center justify-center border-2',
+    activeKey === 'addDream' ? 'border-champagne-soft bg-champagne' : 'border-line-nav bg-ink-nav',
     navigationLayout.horizontalCenter ? 'flex-row' : '',
     navigationLayout.compact
       ? 'gap-px rounded-[22px]'
@@ -222,7 +223,7 @@ export function NoctaliaBottomNav({
                     importantForAccessibility="no-hide-descendants"
                     className={addItemClassName}
                     style={[
-                      ADD_SHADOW,
+                      isActive && ADD_SHADOW,
                       !navigationLayout.largeText && addLift,
                       {
                         width: navigationLayout.centerActionWidth,
@@ -241,7 +242,7 @@ export function NoctaliaBottomNav({
                     )}
                       <Text
                         accessible={false}
-                        className={`font-sans-bold w-full min-w-0 shrink text-center text-on-champagne ${
+                        className={`font-sans-bold w-full min-w-0 shrink text-center ${isActive ? 'text-on-champagne' : 'text-ivory-muted'} ${
                           navigationLayout.narrow ? 'text-[11px] px-px' : 'text-[12px]'
                         }`}
                         style={[

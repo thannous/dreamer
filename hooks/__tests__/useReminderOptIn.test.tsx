@@ -116,7 +116,7 @@ describe('useReminderOptIn', () => {
       weekdayTime: '07:30',
       weekendEnabled: true,
       weekendTime: '08:30',
-      weeklyRecapEnabled: true,
+      weeklyRecapEnabled: false,
       streakRiskEnabled: false,
       inactivityNudgeEnabled: false,
     };

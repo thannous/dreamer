@@ -552,10 +552,11 @@ function RootLayoutNav({
         pendingAuthDestination,
         });
       const currentPath = pathnameRef.current ?? pathname;
-      // Store sheets background the app. The current offer/detail owns the saved
-      // dream journey; resuming its recording intent here would reopen capture.
+      // Permission dialogs and store sheets background the app. The mounted
+      // capture/offer/detail already owns this intent. Replacing capture here
+      // would unmount the editor while its microphone request is still pending.
       if (decision.reason === 'pending_intent'
-        && (currentPath === '/paywall' || currentPath?.startsWith('/journal/'))) return;
+        && (currentPath === '/recording' || currentPath === '/paywall' || currentPath?.startsWith('/journal/'))) return;
       if (decision.reason !== 'default') {
         engageDecision(decision);
         return;

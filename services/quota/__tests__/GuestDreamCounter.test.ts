@@ -100,6 +100,11 @@ describe('GuestDreamCounter', () => {
     await expect(getGuestRecordedDreamCount(5)).resolves.toBe(5);
   });
 
+  it('rejects an unreadable quota counter instead of treating it as zero', async () => {
+    mockAsyncStorage.getItem.mockRejectedValueOnce(new Error('storage unavailable'));
+    await expect(getGuestRecordedDreamCount(0)).rejects.toThrow('storage unavailable');
+  });
+
   it('resetGuestDreamRecordingCount clears the cumulative count and migration marker', async () => {
     const listener = jest.fn();
     const unsubscribe = subscribeGuestDreamRecordingCount(listener);
