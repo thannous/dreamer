@@ -47,6 +47,14 @@ function safeParseInt(val: string | null): number {
   return Number.isNaN(parsed) ? 0 : parsed;
 }
 
+function requireStoredCount(val: string | null): number {
+  if (val === null) return 0;
+  if (!/^(0|[1-9]\d*)$/.test(val)) throw new Error('Invalid guest recording count');
+  const count = Number(val);
+  if (!Number.isSafeInteger(count)) throw new Error('Invalid guest recording count');
+  return count;
+}
+
 export async function getLocalDreamRecordingCount(): Promise<number> {
   if (isMockModeEnabled()) {
     return mockSessionRecordingCount;
@@ -60,15 +68,16 @@ export async function getLocalDreamRecordingCount(): Promise<number> {
   }
 }
 
-export async function incrementLocalDreamRecordingCount(): Promise<number> {
+export async function incrementLocalDreamRecordingCount(currentDreamCount = 0): Promise<number> {
   if (isMockModeEnabled()) {
-    mockSessionRecordingCount += 1;
+    mockSessionRecordingCount = Math.max(mockSessionRecordingCount, currentDreamCount) + 1;
     emitRecordingCountChange();
     return mockSessionRecordingCount;
   }
   try {
-    const current = await getLocalDreamRecordingCount();
-    const next = current + 1;
+    // Admission must never treat a transient read failure as an empty counter.
+    const current = requireStoredCount(await AsyncStorage.getItem(DREAM_RECORDING_KEY));
+    const next = Math.max(current, currentDreamCount) + 1;
     await AsyncStorage.setItem(DREAM_RECORDING_KEY, String(next));
     emitRecordingCountChange();
     return next;
@@ -100,7 +109,7 @@ export async function getGuestRecordedDreamCount(currentDreamCount: number): Pro
     return Math.max(mockSessionRecordingCount, currentDreamCount);
   }
   // A failed read must not silently reset an exhausted recording allowance.
-  const local = safeParseInt(await AsyncStorage.getItem(DREAM_RECORDING_KEY));
+  const local = requireStoredCount(await AsyncStorage.getItem(DREAM_RECORDING_KEY));
   return Math.max(local, currentDreamCount);
 }
 
@@ -114,9 +123,10 @@ export async function migrateExistingGuestDreamRecording(): Promise<void> {
     if (migrated) return;
 
     const dreams = requireReadableDreams(await getSavedDreams());
-    const count = dreams.length;
+    const stored = requireStoredCount(await AsyncStorage.getItem(DREAM_RECORDING_KEY));
+    const count = Math.max(stored, dreams.length);
 
-    if (count > 0) {
+    if (count > stored) {
       await AsyncStorage.setItem(DREAM_RECORDING_KEY, String(count));
       emitRecordingCountChange();
       console.log(`[GuestDreamCounter] Migrated recording count: ${count}`);

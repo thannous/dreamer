@@ -94,6 +94,21 @@ describe('GuestDreamCounter', () => {
     expect(mockStorage.get(DREAM_RECORDING_KEY)).toBe('1');
   });
 
+  it('never lowers an older stored count and refuses a failed read before incrementing', async () => {
+    mockStorage.set(DREAM_RECORDING_KEY, '4');
+    await expect(incrementLocalDreamRecordingCount(2)).resolves.toBe(5);
+    expect(mockStorage.get(DREAM_RECORDING_KEY)).toBe('5');
+    mockAsyncStorage.getItem.mockRejectedValueOnce(new Error('storage unavailable'));
+    await expect(incrementLocalDreamRecordingCount(1)).rejects.toThrow('storage unavailable');
+    expect(mockStorage.get(DREAM_RECORDING_KEY)).toBe('5');
+  });
+
+  it('does not report a reservation when its durable write fails', async () => {
+    mockAsyncStorage.setItem.mockRejectedValueOnce(new Error('storage full'));
+    await expect(incrementLocalDreamRecordingCount(0)).rejects.toThrow('storage full');
+    expect(mockStorage.has(DREAM_RECORDING_KEY)).toBe(false);
+  });
+
   it('getGuestRecordedDreamCount uses max(local, currentDreamCount)', async () => {
     mockStorage.set(DREAM_RECORDING_KEY, '2');
     await expect(getGuestRecordedDreamCount(1)).resolves.toBe(2);
@@ -103,6 +118,13 @@ describe('GuestDreamCounter', () => {
   it('rejects an unreadable quota counter instead of treating it as zero', async () => {
     mockAsyncStorage.getItem.mockRejectedValueOnce(new Error('storage unavailable'));
     await expect(getGuestRecordedDreamCount(0)).rejects.toThrow('storage unavailable');
+  });
+
+  it('rejects an invalid stored counter rather than resetting the lifetime allowance', async () => {
+    mockStorage.set(DREAM_RECORDING_KEY, 'corrupt');
+    await expect(getGuestRecordedDreamCount(0)).rejects.toThrow('Invalid guest recording count');
+    await expect(incrementLocalDreamRecordingCount(0)).rejects.toThrow('Invalid guest recording count');
+    expect(mockStorage.get(DREAM_RECORDING_KEY)).toBe('corrupt');
   });
 
   it('resetGuestDreamRecordingCount clears the cumulative count and migration marker', async () => {
@@ -129,6 +151,14 @@ describe('GuestDreamCounter', () => {
     setSavedDreams([{ id: 1 }, { id: 2 }, { id: 3 }] as any);
     await migrateExistingGuestDreamRecording();
     expect(mockStorage.get(DREAM_RECORDING_KEY)).toBe('2');
+  });
+
+  it('migration preserves a reserved count when fewer dreams are still present', async () => {
+    mockStorage.set(DREAM_RECORDING_KEY, '5');
+    setSavedDreams([{ id: 1 }] as any);
+    await migrateExistingGuestDreamRecording();
+    expect(mockStorage.get(DREAM_RECORDING_KEY)).toBe('5');
+    expect(mockStorage.get(MIGRATION_KEY)).toBe('true');
   });
 
   it('ignores persisted recording counts in mock mode so an empty in-memory journal can save again', async () => {

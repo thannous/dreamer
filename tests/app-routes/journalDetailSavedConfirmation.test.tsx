@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 import type { PendingRecordingIntent } from '@/lib/onboardingState';
 import type { DreamAnalysis } from '@/lib/types';
 import { requestAnalysisReturnRoute } from '@/lib/paywallRoute';
+import { trackInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { TID } from '@/lib/testIDs';
 
 let mockPendingRecordingIntent: Partial<PendingRecordingIntent> | null = null;
@@ -482,6 +483,22 @@ describe('journal detail saved confirmation route', () => {
     expect(mockCategorizeDream).not.toHaveBeenCalled();
   });
 
+  it('waits for the first categorization before offering metadata recovery', async () => {
+    const transcript = 'A blue door above the sea.';
+    mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
+    let finish!: () => void;
+    const pendingResult = new Promise<void>((resolve) => { finish = resolve; });
+    const initial = trackInitialDreamCategorization('client:persisted-original-42',
+      () => pendingResult);
+    render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.metadata.loading')).toBeTruthy();
+    expect(screen.queryByTestId('dream-metadata-retry')).toBeNull();
+    expect(mockCategorizeDream).not.toHaveBeenCalled();
+
+    await act(async () => { finish(); await initial; });
+    expect(screen.getByTestId('dream-metadata-retry')).toBeTruthy();
+  });
+
   it('does not restore an old draft title when subject detection finishes after enrichment', async () => {
     mockReferenceImagesEnabled = true;
     let finish!: (value: unknown) => void;
@@ -618,18 +635,18 @@ describe('journal detail saved confirmation route', () => {
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
 
-  it('completes the saved guest intent when exhausted access arrives without opening another sheet', () => {
+  it('preserves the saved guest choice when exhausted access arrives without opening another sheet', () => {
     mockTier = 'guest';
     mockUser = null;
     mockQuotaLoading = true;
     mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
     const view = render(<JournalDetailScreen />);
-    expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+    expect(mockTransitionOnboarding).not.toHaveBeenCalled();
     mockQuotaLoading = false;
     mockQuotaStatus = { canAnalyze: false };
     mockQuotaUsage = { analysis: { used: 2, limit: 2, remaining: 0 } };
     view.rerender(<JournalDetailScreen />);
-    expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+    expect(mockTransitionOnboarding).not.toHaveBeenCalled();
     expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
     expect(screen.queryByTestId('quota-limit')).toBeNull();
     expect(require('expo-router').router.push).not.toHaveBeenCalled();
@@ -704,7 +721,7 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
     expect(screen.getByTestId('btn.savedDream.returnToJournal')).toBeTruthy();
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
-    expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+    expect(mockTransitionOnboarding).not.toHaveBeenCalled();
   });
 
   it.each([
@@ -733,8 +750,28 @@ describe('journal detail saved confirmation route', () => {
       phase: 'analysis_requested',
       savedDreamId: 42,
     });
-    expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+    expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
     expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
+  });
+
+  it('waits for the durable analysis intent before starting analysis', async () => {
+    mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
+    let finish!: () => void;
+    mockTransitionOnboarding.mockImplementationOnce(() => new Promise<void>((resolve) => { finish = resolve; }));
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    await act(async () => { finish(); });
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not analyze when the durable intent cannot be written', async () => {
+    mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
+    mockTransitionOnboarding.mockRejectedValueOnce(new Error('storage unavailable'));
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
   });
 
   it('persists analysis_requested only after the allowance check succeeds', async () => {
@@ -745,7 +782,7 @@ describe('journal detail saved confirmation route', () => {
     render(<JournalDetailScreen />);
     await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
-    expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+    expect(mockTransitionOnboarding).not.toHaveBeenCalled();
     await act(async () => { allow(true); });
     expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
     expect(mockTransitionOnboarding).toHaveBeenCalledWith({
@@ -785,7 +822,7 @@ describe('journal detail saved confirmation route', () => {
     if (label === 'auth') expect(require('expo-router').router.push).toHaveBeenCalledWith('/settings?section=account&auth=signin');
     else expect(require('expo-router').router.push).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/paywall' }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
-    expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+    expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
   });
 
   it('clears the pending intent once the onboarding analysis result is visible', () => {

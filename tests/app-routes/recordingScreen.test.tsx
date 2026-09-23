@@ -6,6 +6,8 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 import type { DreamAnalysis } from '@/lib/types';
 import { encodeCaptureReview } from '@/lib/captureReviewDraft';
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { isInitialDreamCategorizationPending } from '@/lib/initialDreamCategorization';
 import { TID } from '@/lib/testIDs';
 
 const mockGetGuestRecordedDreamCount = jest.fn(async () => 0);
@@ -1583,7 +1585,10 @@ describe('Recording screen', () => {
     expect(mockPush).not.toHaveBeenCalled();
     expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
     expect(mockCategorizeDream).toHaveBeenCalledWith('A blue room under the rain', 'fr');
-    resolveCategorize?.({ title: 'Rain Room', theme: 'calm', dreamType: 'Symbolic Dream' });
+    const savedIdentity = getDreamIdentityKey({ ...mockAddDream.mock.calls[0][0], id: 42 });
+    expect(isInitialDreamCategorizationPending(savedIdentity)).toBe(true);
+    await act(async () => { resolveCategorize?.({ title: 'Rain Room', theme: 'calm', dreamType: 'Symbolic Dream' }); });
+    expect(isInitialDreamCategorizationPending(savedIdentity)).toBe(false);
   });
 
   it('saves once then opens the saved dream even with exhausted analysis credits', async () => {

@@ -220,12 +220,10 @@ jest.mock('../../services/quota/MockQuotaEventStore', () => ({
 
 // Mock GuestDreamCounter (avoid persisting between tests)
 const mockGetGuestRecordedDreamCount = typedJestFn<(currentDreamCount: number) => Promise<number>>();
+const mockIncrementLocalDreamRecordingCount = typedJestFn<(currentDreamCount: number) => Promise<number>>();
 
 jest.mock('../../services/quota/GuestDreamCounter', () => ({
-  incrementLocalDreamRecordingCount: async () => {
-    mockGuestDreamCounterState.count += 1;
-    return mockGuestDreamCounterState.count;
-  },
+  incrementLocalDreamRecordingCount: mockIncrementLocalDreamRecordingCount,
   getGuestRecordedDreamCount: mockGetGuestRecordedDreamCount,
   withGuestDreamRecordingLock: async (fn: () => Promise<unknown>) => fn(),
 }));
@@ -373,6 +371,10 @@ describe('useDreamJournal', () => {
     mockNetworkState.isConnected = true;
     mockGetCurrentNetworkState.mockImplementation(async () => mockNetworkState);
     mockGetGuestRecordedDreamCount.mockImplementation(async (count) => Math.max(mockGuestDreamCounterState.count, count));
+    mockIncrementLocalDreamRecordingCount.mockImplementation(async (count) => {
+      mockGuestDreamCounterState.count = Math.max(mockGuestDreamCounterState.count, count) + 1;
+      return mockGuestDreamCounterState.count;
+    });
     process.env.EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED = '';
     setSavedDreams([]);
     mockSaveDreams.mockResolvedValue(undefined);
@@ -558,6 +560,17 @@ describe('useDreamJournal', () => {
   });
 
   describe('addDream - local mode', () => {
+    it('does not persist a new guest dream if its quota reservation fails', async () => {
+      const { DreamPersistenceError } = require('../../lib/dreamStorageRead');
+      mockIncrementLocalDreamRecordingCount.mockRejectedValueOnce(new Error('storage full'));
+      const { result } = await renderLoadedDreamJournal();
+      await act(async () => {
+        await expect(result.current.addDream(buildDream({ id: 1 }))).rejects.toBeInstanceOf(DreamPersistenceError);
+      });
+      expect(mockSaveDreams).not.toHaveBeenCalled();
+      expect(result.current.dreams).toHaveLength(0);
+    });
+
     it('adds dream to local storage when not authenticated', async () => {
       const { result } = await renderLoadedDreamJournal();
 
@@ -571,6 +584,9 @@ describe('useDreamJournal', () => {
       expect(result.current.dreams[0].id).toBe(1);
       expect(mockSaveDreams).toHaveBeenCalledWith(
         expect.arrayContaining([expect.objectContaining({ id: 1 })])
+      );
+      expect(mockIncrementLocalDreamRecordingCount.mock.invocationCallOrder[0]).toBeLessThan(
+        mockSaveDreams.mock.invocationCallOrder[0]
       );
     });
 

@@ -23,6 +23,7 @@ import {
   type AnalysisSource,
 } from '@/lib/analytics';
 import { isResumableAnalysisRequest } from '@/lib/analysisRequest';
+import { DreamPersistenceError } from '@/lib/dreamStorageRead';
 import {
   getAnalysisJobPollDelay,
   MAX_ANALYSIS_JOB_POLL_ATTEMPTS,
@@ -554,17 +555,25 @@ export const useDreamJournal = () => {
           return withGuestDreamRecordingLock(async () => {
             const currentDreams = dreamsRef.current;
             const alreadyExists = currentDreams.some((existing) => matchesDreamTarget(existing, normalizedDream));
-            if (!alreadyExists && await getGuestRecordedDreamCount(currentDreams.length) >= GUEST_DREAM_RECORDING_LIMIT) {
-              throw new GuestDreamLimitError();
-            }
-            await persistLocalDreams(upsertDream(currentDreams, normalizedDream));
             if (!alreadyExists) {
+              let recordedCount: number;
               try {
-                await incrementLocalDreamRecordingCount();
-              } catch (err) {
-                logger.warn('[useDreamJournal] Failed to increment guest recording count', err);
+                recordedCount = await getGuestRecordedDreamCount(currentDreams.length);
+              } catch {
+                throw new DreamPersistenceError('read', 'device');
+              }
+              if (recordedCount >= GUEST_DREAM_RECORDING_LIMIT) {
+                throw new GuestDreamLimitError();
+              }
+              // Reserve the slot durably before the dream can be saved. A failed
+              // journal write can be retried with the same optimistic identity.
+              try {
+                await incrementLocalDreamRecordingCount(currentDreams.length);
+              } catch {
+                throw new DreamPersistenceError('write', 'device');
               }
             }
+            await persistLocalDreams(upsertDream(currentDreams, normalizedDream));
             return normalizedDream;
           });
         }

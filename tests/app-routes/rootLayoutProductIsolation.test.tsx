@@ -138,7 +138,7 @@ describe('root product composition (real root and DreamsProvider)', () => {
     expect(mockMark).toHaveBeenCalledWith('startup.route_committed');
   });
 
-  it.each(['/paywall', '/journal/42'])('keeps the saved dream journey on %s after returning from the store', async (path) => {
+  it.each(['/paywall', '/journal/42', '/settings'])('keeps the saved dream journey on %s after returning from the store', async (path) => {
     mockLucid = false;
     mockUser = { id: 'user-1' };
     const view = await mountStartup();

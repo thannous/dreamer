@@ -556,7 +556,8 @@ function RootLayoutNav({
       // capture/offer/detail already owns this intent. Replacing capture here
       // would unmount the editor while its microphone request is still pending.
       if (decision.reason === 'pending_intent'
-        && (currentPath === '/recording' || currentPath === '/paywall' || currentPath?.startsWith('/journal/'))) return;
+        && (currentPath === '/recording' || currentPath === '/paywall' || currentPath?.startsWith('/journal/')
+          || (onboardingState.pendingRecordingIntent?.phase !== 'capture' && currentPath?.startsWith('/settings')))) return;
       if (decision.reason !== 'default') {
         engageDecision(decision);
         return;

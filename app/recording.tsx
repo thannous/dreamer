@@ -45,7 +45,9 @@ import {
 } from '@/lib/dreamUtils';
 import { isMockModeEnabled } from '@/lib/env';
 import { DreamPersistenceError } from '@/lib/dreamStorageRead';
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { GuestDreamLimitError } from '@/lib/errors';
+import { trackInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { createScopedLogger } from '@/lib/logger';
 import {
@@ -1052,8 +1054,10 @@ export default function RecordingScreen() {
       }
       clearAfterSuccessfulSave();
       setDraftDream(savedDream);
-      void categorizeDream(latestTranscript, language)
-        .then((categorization) => applyDreamCategorization(savedDream.id, categorization))
+      void trackInitialDreamCategorization(getDreamIdentityKey(savedDream), async () => {
+        const categorization = await categorizeDream(latestTranscript, language);
+        await applyDreamCategorization(savedDream.id, categorization);
+      })
         .catch((error) => {
           log.warn('Quick categorization failed:', error);
         });
@@ -1079,7 +1083,7 @@ export default function RecordingScreen() {
               savedDreamId: savedDream.id,
             }
           : { type: 'CLEAR_PENDING_INTENT' as const };
-        void transitionOnboarding(pendingEvent).catch((error) => {
+        await transitionOnboarding(pendingEvent).catch((error) => {
           if (__DEV__) {
             console.warn('[Recording] Failed to persist post-save onboarding phase', error);
           }

@@ -6,6 +6,7 @@ import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { isInitialDreamCategorizationPending, subscribeInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
@@ -81,7 +82,7 @@ import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -360,15 +361,27 @@ function JournalDetailContent() {
   const guestNeedsAccount = !user && (savedAnalysisAction === 'signup' || savedAnalysisAction === 'login');
 
   const dream = useMemo(() => resolveDreamRoute(dreams, { id, remoteId, clientRequestId }), [dreams, id, remoteId, clientRequestId]);
+  const categorizationIdentity = dream ? getDreamIdentityKey(dream) : '';
+  const getInitialCategorizationPending = useCallback(
+    () => Boolean(categorizationIdentity && isInitialDreamCategorizationPending(categorizationIdentity)),
+    [categorizationIdentity]
+  );
+  const initialCategorizationPending = useSyncExternalStore(
+    subscribeInitialDreamCategorization,
+    getInitialCategorizationPending,
+    () => false
+  );
   const latestMetadataDreamRef = useRef(dream);
   useLayoutEffect(() => {
     latestMetadataDreamRef.current = dream;
     return () => { latestMetadataDreamRef.current = undefined; };
   }, [dream]);
-  const needsMetadataRecovery = Boolean(dream && !dream.isAnalyzed && dream.analysisStatus !== 'pending'
+  const hasUncategorizedDraft = Boolean(dream && !dream.isAnalyzed && dream.analysisStatus !== 'pending'
     && !dream.theme && dream.title === deriveDraftTitle(dream.transcript, ''));
+  const needsMetadataRecovery = hasUncategorizedDraft && !initialCategorizationPending;
   const recoverMetadata = useCallback(async () => {
-    if (!dream || !needsMetadataRecovery || metadataRecoveryInFlightRef.current) return;
+    if (!dream || !needsMetadataRecovery || isInitialDreamCategorizationPending(getDreamIdentityKey(dream))
+      || metadataRecoveryInFlightRef.current) return;
     metadataRecoveryInFlightRef.current = true;
     setIsRecoveringMetadata(true);
     setMetadataRecoveryFailed(false);
@@ -383,16 +396,6 @@ function JournalDetailContent() {
       setIsRecoveringMetadata(false);
     }
   }, [applyDreamCategorization, dream, language, needsMetadataRecovery]);
-  useEffect(() => {
-    const pending = onboardingState.pendingRecordingIntent;
-    if (!dream || pending?.savedDreamId !== dream.id
-      || pending.phase !== 'analysis_confirmation') return;
-    // Capture is complete. Keeping this intent would reopen capture when the
-    // guest returns from a sign-in sheet or the system browser.
-    void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => {
-      console.warn('[JournalDetail] Failed to complete the saved guest capture');
-    });
-  }, [dream, onboardingState.pendingRecordingIntent, transitionOnboarding]);
   const handleImageUpgrade = useCallback(() => {
     router.push(buildPaywallHref('image_generation'));
   }, []);
@@ -1289,8 +1292,15 @@ function JournalDetailContent() {
   }, [dream, generateDreamImage, illustrationAccess.allowed, illustrationAccess.bundledRequestId, t, user]);
 
   const handleBackPress = useCallback(() => {
+    const pending = onboardingState.pendingRecordingIntent;
+    if (dream && pending?.savedDreamId === dream.id && pending.phase === 'analysis_confirmation') {
+      void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => {
+        console.warn('[JournalDetail] Failed to dismiss the saved dream analysis choice');
+      }).finally(() => router.replace('/(tabs)/journal'));
+      return;
+    }
     router.replace('/(tabs)/journal');
-  }, []);
+  }, [dream, onboardingState.pendingRecordingIntent, transitionOnboarding]);
 
   const handleJourneyPress = useCallback(() => {
     if (!dream) return;
@@ -1393,12 +1403,10 @@ function JournalDetailContent() {
 
         const pending = onboardingState.pendingRecordingIntent;
         if (pending?.savedDreamId === dream.id && pending.phase === 'analysis_confirmation') {
-          void transitionOnboarding({
+          await transitionOnboarding({
             type: 'SET_PENDING_PHASE',
             phase: 'analysis_requested',
             savedDreamId: dream.id,
-          }).catch(() => {
-            console.warn('[JournalDetail] Failed to persist the onboarding analysis request');
           });
         }
 
@@ -1715,6 +1723,11 @@ function JournalDetailContent() {
           <Text className="mb-5 font-sans text-[12px] leading-5 text-ivory-muted">
             {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
           </Text>
+          {!isEditing && hasUncategorizedDraft && initialCategorizationPending ? (
+            <Text className="mb-4 font-sans text-[13px] text-ivory-muted">
+              {t('journal.detail.metadata.loading')}
+            </Text>
+          ) : null}
           {!isEditing && needsMetadataRecovery ? (
             <View className="mb-4 gap-2">
               <Pressable onPress={recoverMetadata} disabled={isRecoveringMetadata}
