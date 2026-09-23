@@ -722,10 +722,23 @@ describe('journal detail saved confirmation route', () => {
   });
 
   it('does not launch an analysis from a stale or fabricated purchase URL', async () => {
-    mockTier = 'plus';
+    mockTier = 'free';
     mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' };
     await act(async () => { render(<JournalDetailScreen />); });
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(mockSetParams).toHaveBeenCalledWith({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
+    expect(screen.queryByText('loading.analyzing')).toBeNull();
+    expect((screen.getByTestId(TID.Button.EditMetadata) as HTMLButtonElement).disabled).toBe(false);
+  });
+
+  it('locks edits and deletion while valid purchased access is propagating', async () => {
+    requestAnalysisReturnRoute({ dreamId: '42', dreamClientRequestId: 'persisted-original-42', dreamOwnerId: 'user-1' }, 'user-1');
+    mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' };
+    render(<JournalDetailScreen />);
+
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect((screen.getByTestId(TID.Button.EditMetadata) as HTMLButtonElement).disabled).toBe(true);
+    expect((screen.getByTestId(TID.Button.DreamDelete) as HTMLButtonElement).disabled).toBe(true);
   });
 
   it.each(['another-account', 'done', 'pending'])('does not resume an analysis for %s', async (state: string) => {

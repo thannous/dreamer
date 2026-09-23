@@ -1,4 +1,4 @@
-import { buildPaywallHref, requestAnalysisReturnRoute, consumePurchasedAnalysisReturn, getSavedDreamReturnRoute } from '@/lib/paywallRoute';
+import { buildPaywallHref, requestAnalysisReturnRoute, consumePurchasedAnalysisReturn, getSavedDreamReturnRoute, hasPendingPurchasedAnalysisReturn } from '@/lib/paywallRoute';
 
 describe('paywallRoute', () => {
   it('builds a paywall route with contextual trigger params', () => {
@@ -34,10 +34,13 @@ describe('analysis return route', () => {
 
 it('allows only a matching, one-time purchase return and rejects an old route flag', () => {
   requestAnalysisReturnRoute({ dreamId: '42', dreamRemoteId: '17', dreamOwnerId: 'owner' }, 'owner');
+  expect(hasPendingPurchasedAnalysisReturn({ id: '42', remoteId: '18' }, 'owner')).toBe(false);
+  expect(hasPendingPurchasedAnalysisReturn({ id: '42', remoteId: '17' }, 'owner')).toBe(true);
   expect(consumePurchasedAnalysisReturn({ id: '42', remoteId: '18' }, 'owner')).toBe(false);
   expect(consumePurchasedAnalysisReturn({ id: '42', remoteId: '17' }, 'other')).toBe(false);
   expect(consumePurchasedAnalysisReturn({ id: '42', remoteId: '17' }, 'owner')).toBe(true);
   expect(consumePurchasedAnalysisReturn({ id: '42', remoteId: '17' }, 'owner')).toBe(false);
+  expect(hasPendingPurchasedAnalysisReturn({ id: '42', remoteId: '17' }, 'owner')).toBe(false);
 });
 
 it('expires an abandoned purchase return', () => {

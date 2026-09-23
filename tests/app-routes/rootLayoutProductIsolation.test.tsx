@@ -143,11 +143,37 @@ describe('root product composition (real root and DreamsProvider)', () => {
     mockUser = { id: 'user-1' };
     const view = await mountStartup();
     mockPathname = path;
+    mockSearchParams = path === '/paywall' ? { dreamId: '42' } : {};
     mockPendingRecordingIntent = { entryId: 'saved-entry', intent: 'record_dream', source: 'onboarding', postSave: 'confirm_analysis', phase: 'analysis_confirmation', savedDreamId: 42 };
     await act(async () => { view.rerender(<RootLayout />); });
     mockReplace.mockClear();
     await act(async () => { mockForeground?.(); });
     expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['/paywall', '99', 'analysis_confirmation', 42],
+    ['/journal/41', '', 'analysis_confirmation', 42],
+    ['/paywall', '42', 'capture', 42],
+  ] as const)('resumes an unrelated pending intent from %s', async (path, dreamId, phase, savedDreamId) => {
+    mockLucid = false;
+    mockUser = { id: 'user-1' };
+    const view = await mountStartup();
+    mockPathname = path;
+    mockSearchParams = dreamId ? { dreamId } : {};
+    mockPendingRecordingIntent = {
+      entryId: 'other-entry', intent: 'record_dream', source: 'onboarding',
+      postSave: 'confirm_analysis', phase, savedDreamId,
+    };
+    await act(async () => { view.rerender(<RootLayout />); });
+    mockReplace.mockClear();
+
+    await act(async () => { mockForeground?.(); jest.advanceTimersByTime(100); });
+
+    expect(mockReplace).toHaveBeenCalledWith({
+      pathname: '/recording',
+      params: { entryId: 'other-entry', intent: 'record_dream', source: 'onboarding', postSave: 'analyze' },
+    });
   });
 
   it('keeps the first dream capture mounted when microphone permission returns to the foreground', async () => {

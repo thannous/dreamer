@@ -73,7 +73,7 @@ import {
   isJournalSavedConfirmationParam,
   shouldOfferSavedDreamAnalysis,
 } from '@/lib/journalSavedConfirmation';
-import { buildAnalysisPaywallHref, buildPaywallHref, consumePurchasedAnalysisReturn } from '@/lib/paywallRoute';
+import { buildAnalysisPaywallHref, buildPaywallHref, consumePurchasedAnalysisReturn, hasPendingPurchasedAnalysisReturn } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
@@ -724,8 +724,10 @@ function JournalDetailContent() {
     [analysisRecoveryClock, dream, isAnalyzing]
   );
   const isAnalysisPending = reflectionJourney.isPendingFresh && !isAnalyzing;
-  const awaitingPurchasedAnalysis = analyzeAfterPurchase === '1' && analysisOwnerId === user?.id
-    && Boolean(dream && !dream.isAnalyzed);
+  const hasPurchasedAnalysisReturn = Boolean(dream && user && analysisOwnerId === user.id
+    && hasPendingPurchasedAnalysisReturn(getDreamRouteParams(dream), user.id));
+  const awaitingPurchasedAnalysis = analyzeAfterPurchase === '1' && hasPurchasedAnalysisReturn
+    && Boolean(dream && !dream.isAnalyzed && dream.analysisStatus !== 'pending');
   const isPrimaryActionBusy = visiblePrimaryAction === 'analyze'
     && (awaitingPurchasedAnalysis || isAnalyzing || isAnalysisPending);
   const detailActionCard = useMemo(() => {
@@ -828,7 +830,8 @@ function JournalDetailContent() {
       disabled: false,
     };
   }, [awaitingPurchasedAnalysis, canRecoverPendingAnalysis, canResumeAnalysis, dream, guestNeedsAccount, isAnalyzing, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, savedAnalysisAction, t, user]);
-  const isAnalysisLocked = !!dream && (isAnalysisPending || isAnalyzing);
+  const isAnalysisLaunchBlocked = !!dream && (isAnalysisPending || isAnalyzing);
+  const isAnalysisLocked = isAnalysisLaunchBlocked || awaitingPurchasedAnalysis;
   const isImageJobPending = illustrationSidecar === 'pending';
   const isSyncPending = dreamSyncState === 'pending';
   const isSyncFailed = dreamSyncState === 'failed';
@@ -1393,7 +1396,7 @@ function JournalDetailContent() {
 
   const runAnalyze = useCallback(
     async (replaceImage: boolean, skipAllowanceCheck = false) => {
-      if (!dream || isAnalysisLocked || analysisLaunchInFlightRef.current) return;
+      if (!dream || isAnalysisLaunchBlocked || analysisLaunchInFlightRef.current) return;
       // Lock synchronously, including the asynchronous quota check.
       analysisLaunchInFlightRef.current = true;
       setIsAnalyzing(true);
@@ -1455,7 +1458,7 @@ function JournalDetailContent() {
       analyzeDream,
       dream,
       ensureAnalyzeAllowed,
-      isAnalysisLocked,
+      isAnalysisLaunchBlocked,
       isPlus,
       language,
       onboardingState.pendingRecordingIntent,
@@ -1471,7 +1474,7 @@ function JournalDetailContent() {
     if (analyzeAfterPurchase !== '1' || purchaseAnalysisHandledRef.current) return;
     // Wait for the verified subscription to reach this screen; never consume a
     // free credit while the purchase result is still propagating.
-    if (!user || analysisOwnerId !== user.id) {
+    if (!user || analysisOwnerId !== user.id || (dream && !hasPurchasedAnalysisReturn)) {
       purchaseAnalysisHandledRef.current = true;
       router.setParams({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
       return;
@@ -1485,7 +1488,7 @@ function JournalDetailContent() {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       void runAnalyze(!hasExistingImage);
     }
-  }, [analysisOwnerId, analyzeAfterPurchase, dream, hasExistingImage, isPlus, quotaLoading, runAnalyze, user]);
+  }, [analysisOwnerId, analyzeAfterPurchase, dream, hasExistingImage, hasPurchasedAnalysisReturn, isPlus, quotaLoading, runAnalyze, user]);
 
   const handleAnalyze = useCallback(async () => {
     if (!dream || analysisPressInFlightRef.current) return;
@@ -2698,7 +2701,9 @@ function JournalDetailContent() {
 
               <PressableScale
                 onPress={onDelete}
-                className="mt-2 min-h-[44px] min-w-[44px] flex-row items-center justify-center gap-1.5 self-center px-3"
+                disabled={isAnalysisLocked}
+                accessibilityState={{ disabled: isAnalysisLocked }}
+                className={`mt-2 min-h-[44px] min-w-[44px] flex-row items-center justify-center gap-1.5 self-center px-3 ${isAnalysisLocked ? 'opacity-70' : ''}`}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 accessibilityRole="button"
                 testID={TID.Button.DreamDelete}

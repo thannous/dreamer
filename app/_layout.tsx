@@ -555,9 +555,14 @@ function RootLayoutNav({
       // Permission dialogs, store sheets and email verification background the app.
       // The mounted capture, offer, detail or account settings owns the intent;
       // replacing it would unmount an editor or verification dialog in progress.
+      const pendingIntent = onboardingState.pendingRecordingIntent;
+      const savedDreamId = pendingIntent?.savedDreamId;
+      const ownsSavedDream = pendingIntent && savedDreamId !== undefined
+        && (pendingIntent.phase === 'analysis_confirmation' || pendingIntent.phase === 'analysis_requested')
+        && (currentPath === `/journal/${savedDreamId}`
+          || (currentPath === '/paywall' && searchParams.dreamId === String(savedDreamId)));
       if (decision.reason === 'pending_intent'
-        && (currentPath === '/recording' || currentPath === '/paywall' || currentPath?.startsWith('/journal/')
-          || currentPath?.startsWith('/settings'))) return;
+        && (currentPath === '/recording' || currentPath?.startsWith('/settings') || ownsSavedDream)) return;
       if (decision.reason !== 'default') {
         engageDecision(decision);
         return;
@@ -664,6 +669,7 @@ function RootLayoutNav({
       pendingAuthDestination,
       pendingLucidNotificationUrl,
       returningGuestBlocked,
+      searchParams.dreamId,
       startupReady,
       user,
     ]

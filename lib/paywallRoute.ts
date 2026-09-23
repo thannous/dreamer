@@ -37,6 +37,14 @@ function analysisReturnKey(route: DreamRouteParams, ownerId: string): string {
   return JSON.stringify([ownerId, identity]);
 }
 
+/** A URL flag is only a pending purchase return when the in-memory offer matches. */
+export function hasPendingPurchasedAnalysisReturn(route: DreamRouteParams, ownerId: string): boolean {
+  const intent = pendingPurchasedAnalysis;
+  return Boolean(intent
+    && Date.now() - intent.createdAt <= PURCHASE_RETURN_TTL_MS
+    && intent.key === analysisReturnKey(route, ownerId));
+}
+
 /** A route flag alone is not consent to launch an analysis. Consume the purchase once. */
 export function consumePurchasedAnalysisReturn(route: DreamRouteParams, ownerId: string): boolean {
   if (!pendingPurchasedAnalysis) return false;
