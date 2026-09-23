@@ -17,6 +17,10 @@ const mockRecordingRef = { current: false };
 
 jest.mock('@/context/AuthContext', () => ({ useAuth: () => ({ user: null }) }));
 jest.mock('@/hooks/useQuota', () => ({ useQuota: () => ({ tier: 'guest', loading: false }) }));
+jest.mock('@/services/quota/GuestDreamCounter', () => ({
+  getGuestRecordedDreamCount: jest.fn(async () => 0),
+  subscribeGuestDreamRecordingCount: jest.fn(() => () => undefined),
+}));
 
 jest.mock('react-native', () => {
   const React = require('react');

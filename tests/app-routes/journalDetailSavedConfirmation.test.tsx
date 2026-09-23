@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 import type { PendingRecordingIntent } from '@/lib/onboardingState';
 import type { DreamAnalysis } from '@/lib/types';
 import { requestAnalysisReturnRoute } from '@/lib/paywallRoute';
+import { trackInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { TID } from '@/lib/testIDs';
 
 let mockPendingRecordingIntent: Partial<PendingRecordingIntent> | null = null;
@@ -40,6 +41,9 @@ const mockAnalyzeDream = jest.fn();
 const mockDeleteDream = jest.fn();
 const mockSetParams = jest.fn();
 let mockSearchParams: { id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; analyzeAfterPurchase?: string; analysisOwnerId?: string } = { id: '42', saved: '1' };
+let mockReferenceImagesEnabled = false;
+const mockCategorizeDream = jest.fn();
+const mockApplyDreamCategorization = jest.fn(async (_dream: unknown, _result: unknown) => undefined);
 let mockDreams: DreamAnalysis[] = [];
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
@@ -302,6 +306,7 @@ jest.mock('@/context/DreamsContext', () => ({
     analyzeDream: mockAnalyzeDream,
   }),
   useDreamsActions: () => ({
+    applyDreamCategorization: mockApplyDreamCategorization,
     dreams: mockDreams,
     toggleFavorite: mockToggleFavorite,
     updateDream: mockUpdateDream,
@@ -404,7 +409,7 @@ jest.mock('@/hooks/useTranslation', () => ({
 jest.mock('@/lib/env', () => ({
   isHdIllustrationsEnabled: () => true,
   isMockModeEnabled: () => false,
-  isReferenceImagesEnabled: () => false,
+  isReferenceImagesEnabled: () => mockReferenceImagesEnabled,
 }));
 
 const mockTrackProductEvent = jest.fn();
@@ -413,7 +418,7 @@ jest.mock('@/lib/analytics', () => ({
 }));
 
 jest.mock('@/services/geminiService', () => ({
-  categorizeDream: jest.fn(),
+  categorizeDream: (...args: unknown[]) => mockCategorizeDream(...args),
   generateImageWithReference: jest.fn(),
 }));
 
@@ -422,6 +427,9 @@ const { default: JournalDetailScreen } = require('@/app/journal/[id]');
 describe('journal detail saved confirmation route', () => {
   beforeEach(() => {
     mockThemeMode = 'dark';
+    mockReferenceImagesEnabled = false;
+    mockCategorizeDream.mockReset();
+    mockApplyDreamCategorization.mockClear();
     mockSetParams.mockReset();
     mockAnalyzeDream.mockReset();
     mockTrackProductEvent.mockReset();
@@ -455,15 +463,106 @@ describe('journal detail saved confirmation route', () => {
 
   it('offers analysis after save without launching it until accepted', async () => {
     render(<JournalDetailScreen />);
-    expect(screen.getByTestId(TID.Sheet.SavedDreamAnalysis)).toBeTruthy();
+    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
+    expect(screen.getByTestId('btn.savedDream.returnToJournal')).toBeTruthy();
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
-    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
     expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
     expect(mockAnalyzeDream).toHaveBeenCalledWith(mockDreams[0], mockDreams[0].transcript, {
-      replaceExistingImage: true, lang: 'fr', analyticsSource: 'journal_detail',
+      replaceExistingImage: false, lang: 'fr', analyticsSource: 'journal_detail',
     });
     expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
     expect(mockTransitionOnboarding).not.toHaveBeenCalled();
+  });
+
+  it('does not start a second categorization for a saved guest dream', () => {
+    mockUser = null;
+    mockTier = 'guest';
+    mockDreams = [buildDream({ hasPerson: undefined, hasAnimal: undefined })];
+    render(<JournalDetailScreen />);
+    expect(mockCategorizeDream).not.toHaveBeenCalled();
+  });
+
+  it('waits for the first categorization before offering metadata recovery', async () => {
+    const transcript = 'A blue door above the sea.';
+    mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
+    let finish!: () => void;
+    const pendingResult = new Promise<void>((resolve) => { finish = resolve; });
+    const initial = trackInitialDreamCategorization('client:persisted-original-42',
+      () => pendingResult);
+    render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.metadata.loading')).toBeTruthy();
+    expect(screen.queryByTestId('dream-metadata-retry')).toBeNull();
+    expect(mockCategorizeDream).not.toHaveBeenCalled();
+
+    await act(async () => { finish(); await initial; });
+    expect(screen.getByTestId('dream-metadata-retry')).toBeTruthy();
+  });
+
+  it('does not restore an old draft title when subject detection finishes after enrichment', async () => {
+    mockReferenceImagesEnabled = true;
+    let finish!: (value: unknown) => void;
+    mockCategorizeDream.mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
+    mockDreams = [buildDream({ title: 'Old draft…', hasPerson: undefined, hasAnimal: undefined })];
+    const view = render(<JournalDetailScreen />);
+    expect(mockCategorizeDream).toHaveBeenCalledTimes(1);
+
+    mockDreams = [buildDream({ title: 'Generated title', theme: 'calm', hasPerson: true, hasAnimal: false })];
+    view.rerender(<JournalDetailScreen />);
+    await act(async () => { finish({ title: 'Ignored title', hasPerson: true, hasAnimal: false }); });
+
+    expect(mockUpdateDream).not.toHaveBeenCalled();
+    expect(screen.getByText('Generated title')).toBeTruthy();
+  });
+
+  it('recovers generated metadata on request without spending an analysis or opening quota sheets', async () => {
+    mockUser = null;
+    mockTier = 'guest';
+    mockQuotaStatus = { canAnalyze: false };
+    mockQuotaUsage = { analysis: { used: 2, limit: 2, remaining: 0 } };
+    const transcript = 'A blue door above the sea.';
+    mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
+    const metadata = { title: 'The blue doorway', theme: 'calm', dreamType: 'Symbolic Dream', hasPerson: false, hasAnimal: false };
+    mockCategorizeDream.mockImplementationOnce(async () => metadata);
+    render(<JournalDetailScreen />);
+
+    await act(async () => { fireEvent.click(screen.getByTestId('dream-metadata-retry')); });
+
+    expect(mockCategorizeDream).toHaveBeenCalledWith(transcript, 'fr');
+    expect(mockApplyDreamCategorization).toHaveBeenCalledWith(mockDreams[0], metadata);
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('quota-limit')).toBeNull();
+    expect(require('expo-router').router.push).not.toHaveBeenCalled();
+  });
+
+  it('keeps a failed metadata retry recoverable without changing the saved story', async () => {
+    const transcript = 'A blue door above the sea.';
+    mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
+    mockCategorizeDream.mockImplementationOnce(async () => { throw new Error('offline'); });
+    render(<JournalDetailScreen />);
+
+    await act(async () => { fireEvent.click(screen.getByTestId('dream-metadata-retry')); });
+
+    expect(screen.getByRole('alert').textContent).toBe('journal.detail.metadata.error');
+    expect(mockApplyDreamCategorization).not.toHaveBeenCalled();
+    expect(mockUpdateDream).not.toHaveBeenCalled();
+    expect((screen.getByTestId('dream-metadata-retry') as HTMLButtonElement).disabled).toBe(false);
+  });
+
+  it('does not replace a title edited while metadata recovery is pending', async () => {
+    const transcript = 'A blue door above the sea.';
+    mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
+    let finish!: (value: unknown) => void;
+    mockCategorizeDream.mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
+    const view = render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId('dream-metadata-retry'));
+    mockDreams = [buildDream({ transcript, title: 'My chosen title', theme: undefined })];
+    view.rerender(<JournalDetailScreen />);
+
+    await act(async () => { finish({ title: 'Generated title', theme: 'calm', dreamType: 'Symbolic Dream' }); });
+
+    expect(mockApplyDreamCategorization).not.toHaveBeenCalled();
+    expect(screen.getByText('My chosen title')).toBeTruthy();
   });
 
   it('never redirects from the detail when an exhausted quota becomes known', async () => {
@@ -477,8 +576,8 @@ describe('journal detail saved confirmation route', () => {
     mockQuotaStatus = { canAnalyze: false };
     view.rerender(<JournalDetailScreen />);
     expect(require('expo-router').router.push).not.toHaveBeenCalled();
-    expect(screen.getByText('Discover Plus')).toBeTruthy();
-    await act(async () => { fireEvent.click(screen.getByText('Discover Plus')); });
+    expect(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)).toBeTruthy();
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
     expect(require('expo-router').router.push).toHaveBeenCalledTimes(1);
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockUpdateDream).not.toHaveBeenCalled();
@@ -493,7 +592,7 @@ describe('journal detail saved confirmation route', () => {
     render(<JournalDetailScreen />);
     expect(screen.queryByText('Create account')).toBeNull();
     expect(screen.queryByText('Discover Plus')).toBeNull();
-    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
     expect(screen.getByRole('alert')).toBeTruthy();
     expect(screen.queryByTestId('quota-limit')).toBeNull();
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
@@ -504,7 +603,7 @@ describe('journal detail saved confirmation route', () => {
     mockCanAnalyzeNow = false;
     mockQuotaUsage = { analysis: { used: 4, limit: 3, remaining: -1 } };
     render(<JournalDetailScreen />);
-    expect(screen.getByText('Discover Plus')).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)).toBeTruthy();
   });
 
   it('offers analysis to Plus even while an old free quota is still cached', async () => {
@@ -512,9 +611,33 @@ describe('journal detail saved confirmation route', () => {
     mockQuotaUsage = { analysis: { used: 3, limit: 3, remaining: 0 } };
     mockCanAnalyzeNow = false;
     render(<JournalDetailScreen />);
-    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
     expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
     expect(screen.queryByText('Discover Plus')).toBeNull();
+  });
+
+  it.each(['guest', 'free'] as const)('resumes a failed %s analysis without another quota or account route', async (tier: 'guest' | 'free') => {
+    mockTier = tier;
+    mockUser = tier === 'guest' ? null : { id: 'user-1' };
+    mockQuotaStatus = { canAnalyze: false };
+    mockQuotaUsage = { analysis: { used: 2, limit: 2, remaining: 0 } };
+    mockCanAnalyzeNow = false;
+    mockCanAnalyze.mockResolvedValue(false);
+    mockDreams = [buildDream({
+      analysisStatus: 'failed',
+      analysisRequestId: '11111111-1111-4111-8111-111111111111',
+    })];
+
+    render(<JournalDetailScreen />);
+    const action = screen.getByTestId(TID.Button.DreamDetailPrimaryCta);
+    expect(action.textContent).toContain('journal.detail.analyze_button.retry');
+    await act(async () => { fireEvent.click(action); });
+
+    expect(mockAnalyzeDream).toHaveBeenCalledWith(mockDreams[0], mockDreams[0].transcript, {
+      replaceExistingImage: false, lang: 'fr', analyticsSource: 'journal_detail',
+    });
+    expect(mockCanAnalyze).not.toHaveBeenCalled();
+    expect(require('expo-router').router.push).not.toHaveBeenCalled();
   });
 
   it.each([false, true])('preserves the guest account path (returning device: %s)', async (isUpgraded: boolean) => {
@@ -523,16 +646,43 @@ describe('journal detail saved confirmation route', () => {
     mockQuotaStatus = { isUpgraded };
     mockQuotaUsage = { analysis: { used: 2, limit: 2, remaining: 0 } };
     render(<JournalDetailScreen />);
-    await act(async () => { fireEvent.click(screen.getByText(isUpgraded ? 'Sign in' : 'Create account')); });
-    expect(require('expo-router').router.push).toHaveBeenCalledWith('/settings?section=account');
+    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
+    expect(require('expo-router').router.push).not.toHaveBeenCalled();
+    const action = screen.getByTestId(TID.Button.DreamDetailPrimaryCta);
+    expect(action.textContent).toContain(isUpgraded ? 'journal.detail.quota_limit.cta_login' : 'journal.detail.quota_limit.cta_guest');
+    await act(async () => { fireEvent.click(action); });
+    expect(require('expo-router').router.push).toHaveBeenCalledWith(isUpgraded
+      ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
+    expect(require('expo-router').router.push).toHaveBeenCalledTimes(1);
+    expect(screen.queryByTestId('quota-limit')).toBeNull();
+    expect(mockCanAnalyze).not.toHaveBeenCalled();
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
+  });
+
+  it('preserves the saved guest choice when exhausted access arrives without opening another sheet', () => {
+    mockTier = 'guest';
+    mockUser = null;
+    mockQuotaLoading = true;
+    mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
+    const view = render(<JournalDetailScreen />);
+    expect(mockTransitionOnboarding).not.toHaveBeenCalled();
+    mockQuotaLoading = false;
+    mockQuotaStatus = { canAnalyze: false };
+    mockQuotaUsage = { analysis: { used: 2, limit: 2, remaining: 0 } };
+    view.rerender(<JournalDetailScreen />);
+    expect(mockTransitionOnboarding).not.toHaveBeenCalled();
+    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
+    expect(screen.queryByTestId('quota-limit')).toBeNull();
+    expect(require('expo-router').router.push).not.toHaveBeenCalled();
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(mockUpdateDream).not.toHaveBeenCalled();
   });
 
   it('verifies unknown access instead of trusting the optimistic canAnalyzeNow default', async () => {
     mockQuotaUsage = undefined;
     mockCanAnalyze.mockRejectedValueOnce(new Error('offline'));
     render(<JournalDetailScreen />);
-    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
     expect(mockCanAnalyze).toHaveBeenCalledTimes(1);
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(screen.getByRole('alert')).toBeTruthy();
@@ -592,7 +742,8 @@ describe('journal detail saved confirmation route', () => {
     mockSearchParams = { id: '42' };
     mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
     render(<JournalDetailScreen />);
-    expect(screen.getByTestId(TID.Sheet.SavedDreamAnalysis)).toBeTruthy();
+    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
+    expect(screen.getByTestId('btn.savedDream.returnToJournal')).toBeTruthy();
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockTransitionOnboarding).not.toHaveBeenCalled();
   });
@@ -616,7 +767,7 @@ describe('journal detail saved confirmation route', () => {
   it('advances a matching confirmation to analysis_requested on accept', async () => {
     mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
     render(<JournalDetailScreen />);
-    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
     expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
     expect(mockTransitionOnboarding).toHaveBeenCalledWith({
       type: 'SET_PENDING_PHASE',
@@ -627,13 +778,33 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
   });
 
+  it('waits for the durable analysis intent before starting analysis', async () => {
+    mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
+    let finish!: () => void;
+    mockTransitionOnboarding.mockImplementationOnce(() => new Promise<void>((resolve) => { finish = resolve; }));
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    await act(async () => { finish(); });
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not analyze when the durable intent cannot be written', async () => {
+    mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
+    mockTransitionOnboarding.mockRejectedValueOnce(new Error('storage unavailable'));
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+  });
+
   it('persists analysis_requested only after the allowance check succeeds', async () => {
     mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
     mockCanAnalyzeNow = false;
     let allow!: (value: boolean) => void;
     mockCanAnalyze.mockReturnValueOnce(new Promise<boolean>(resolve => { allow = resolve; }));
     render(<JournalDetailScreen />);
-    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockTransitionOnboarding).not.toHaveBeenCalled();
     await act(async () => { allow(true); });
@@ -671,11 +842,11 @@ describe('journal detail saved confirmation route', () => {
     mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
     setup();
     render(<JournalDetailScreen />);
-    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
-    if (label === 'auth') expect(screen.getByTestId('quota-limit')).toBeTruthy();
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
+    if (label === 'auth') expect(require('expo-router').router.push).toHaveBeenCalledWith('/settings?section=account&auth=signin');
     else expect(require('expo-router').router.push).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/paywall' }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
-    expect(mockTransitionOnboarding).not.toHaveBeenCalled();
+    expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
   });
 
   it('clears the pending intent once the onboarding analysis result is visible', () => {
@@ -698,27 +869,13 @@ describe('journal detail saved confirmation route', () => {
     );
   });
 
-  it.each(['Later', 'Dismiss offer'])('keeps the saved dream untouched on %s and does not reopen on rerender', (action: string) => {
+  it('returns to the journal without changing the saved dream or opening an offer', async () => {
     mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
-    const view = render(<JournalDetailScreen />);
-    fireEvent.click(screen.getByText(action));
-    mockSearchParams = { id: '42' };
-    view.rerender(<JournalDetailScreen />);
-    expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId('btn.savedDream.returnToJournal')); });
+    expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockUpdateDream).not.toHaveBeenCalled();
-    expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
-  });
-
-  it.each([
-    { params: { id: '42' }, dream: buildDream() },
-    { params: { id: '42', saved: '1', recall: '1' }, dream: buildDream() },
-    { params: { id: '42', saved: '1' }, dream: buildDream({ isAnalyzed: true, analysisStatus: 'done' }) },
-    { params: { id: '42', saved: '1' }, dream: buildDream({ analysisStatus: 'pending', clientUpdatedAt: Date.now() }) },
-  ])('does not interrupt a revisit, explicit recall, or existing analysis ($params)', ({ params, dream }: { params: typeof mockSearchParams; dream: DreamAnalysis }) => {
-    mockSearchParams = params;
-    mockDreams = [dream];
-    render(<JournalDetailScreen />);
     expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
   });
 
@@ -729,7 +886,7 @@ describe('journal detail saved confirmation route', () => {
     mockCanAnalyze.mockReturnValueOnce(new Promise<boolean>(resolve => { allow = resolve; }));
     mockAnalyzeDream.mockReturnValueOnce(new Promise<void>(resolve => { finish = resolve; }));
     render(<JournalDetailScreen />);
-    const accept = screen.getByText('Analyze saved dream');
+    const accept = screen.getByTestId(TID.Button.DreamDetailPrimaryCta);
     await act(async () => {
       fireEvent.click(accept);
       fireEvent.click(accept);
@@ -747,7 +904,7 @@ describe('journal detail saved confirmation route', () => {
     mockCanAnalyzeNow = false;
     mockCanAnalyze.mockResolvedValueOnce(false);
     render(<JournalDetailScreen />);
-    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
     expect(screen.queryByTestId('quota-limit')).toBeNull();
     expect(require('expo-router').router.push).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/paywall' }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
@@ -757,7 +914,7 @@ describe('journal detail saved confirmation route', () => {
   it('shows an analysis failure and leaves the saved transcript available for retry', async () => {
     mockAnalyzeDream.mockImplementationOnce(async () => { throw new Error('Network request failed'); });
     render(<JournalDetailScreen />);
-    await act(async () => { fireEvent.click(screen.getByText('Analyze saved dream')); });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
     expect(screen.getByRole('alert')).toBeTruthy();
     expect(mockDreams[0].transcript).toBe('I flew over a quiet city with a blue door.');
     expect((screen.getByTestId(TID.Button.DreamDetailPrimaryCta) as HTMLButtonElement).disabled).toBe(false);

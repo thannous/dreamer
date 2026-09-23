@@ -16,7 +16,7 @@ La source de vérité des quotas “guest” est dans `constants/limits.ts` :
 - Explorations (début de chat sur un rêve) : `QUOTAS.guest.exploration` n’est plus une entitlement produit (voir `limits.ts`)
 - Messages par rêve : `QUOTAS.guest.messagesPerDream = 10`
 - Images : `QUOTAS.guest.image = 2`
-- Rêves enregistrés : illimités en local. Le compte sert au backup / sync / multi-appareils, pas à enregistrer plus de rêves.
+- Rêves enregistrés : `GUEST_DREAM_RECORDING_LIMIT = 5` sauvegardes locales cumulées (même après suppression). Un compte permet ensuite la sauvegarde et la synchronisation sans cette limite guest.
 
 ## Où sont enregistrés les rêves guest
 
@@ -35,32 +35,36 @@ Impacts produit :
 
 ### Limite
 
-- Un utilisateur guest peut **enregistrer un nombre illimité de rêves localement**.
-- Aucun compte, paywall ou quota Journal n’est exigé avant confirmation de la sauvegarde.
+- Un utilisateur guest peut **enregistrer jusqu’à 5 rêves localement** au total. Supprimer un rêve ne rend pas une place.
+- Le contrôle s’applique avant l’écriture d’un nouveau rêve ; à la limite, le brouillon reste disponible et l’utilisateur peut créer un compte.
 - Les quotas analyses / images / chat restent inchangés.
 
-### Compteur local (télémétrie, non bloquant)
+### Compteur local (admission)
 
-Un compteur cumulatif local peut encore exister :
+Le compteur cumulatif local décide si un nouveau rêve peut être enregistré :
 
 - Module : `services/quota/GuestDreamCounter.ts`
-- Clé AsyncStorage : `guest_total_dream_recording_count_v1`
-- Il ne décide plus si un rêve est enregistrable.
+- Clé AsyncStorage : `guest_dream_recording_state_v2` (compteur et réservation liée à l’identité du rêve). La clé `guest_total_dream_recording_count_v1` reste l’entrée de migration.
+- Une réservation est écrite avant le rêve, puis confirmée quand celui-ci est durable. Après un échec ou un redémarrage, le journal local est relu : une réservation sans rêve durable est libérée ; un rêve durable garde sa place.
+- Si le compteur ou le journal ne peut pas être lu, un nouvel enregistrement est refusé temporairement plutôt que de remettre le quota à zéro.
 
 ### Gating (contrôle)
 
-- Il n’y a plus de helper `lib/guestLimits.ts` ni de sheet/banner de limite Journal.
-- `app/recording.tsx` enregistre directement via `addDream`, sans pré-check ni catch `GUEST_LIMIT_REACHED`.
-- `hooks/useDreamJournal.ts` (`addDream()` guest) persiste sous lock et n’émet plus `GUEST_LIMIT_REACHED`.
-- `hooks/useDreamSaving.ts` n’applique plus de pré-check ni de catch de limite d’enregistrement.
+- `app/recording.tsx` affiche le nombre de sauvegardes restantes et garde le brouillon avec un accès au compte si `addDream()` refuse une sixième sauvegarde.
+- `hooks/useDreamJournal.ts` (`addDream()` guest) réserve une place sous lock avant l’écriture ; une nouvelle ligne n’apparaît dans le journal qu’après une écriture durable.
+- `hooks/useDreamSaving.ts` traite aussi l’erreur de limite pour les parcours qui utilisent ce hook.
 
 ### Concurrence (double tap / double submit)
 
-- `withGuestDreamRecordingLock()` sérialise encore la persistance locale guest pour éviter deux écritures simultanées.
+- `withGuestDreamRecordingLock()` sérialise l’admission, l’écriture et la suppression locale guest pour éviter les doubles réservations et préserver le compteur après suppression.
 
 ### Migration (compat)
 
-Au démarrage, `migrateExistingGuestDreamRecording()` peut encore initialiser le compteur historique depuis `dreams.length`. Cela n’a plus d’effet d’admission.
+Au démarrage, `migrateExistingGuestDreamRecording()` réconcilie le compteur avec au moins `dreams.length`, même si l’ancien marqueur de migration existe déjà. Cela corrige un ancien compteur sous-évalué après un échec d’incrément. Les rêves déjà enregistrés restent lisibles même si ce total dépasse la nouvelle limite ; seuls les nouveaux enregistrements sont bloqués.
+
+### Remise à zéro pour les développeurs
+
+Dans une build `__DEV__`, un invité peut ouvrir **Réglages → Test invité · mode dev → Réinitialiser les places invitées**. Cette action remet le compteur au nombre de rêves encore enregistrés sur l’appareil ; elle ne supprime aucun rêve et ne touche pas aux quotas d’analyse. Pour retrouver les cinq places, supprimer d’abord les rêves de test depuis le journal, puis utiliser ce bouton. Le contrôle n’est pas affiché dans les builds de production.
 
 ## Règle “analyses” (guest)
 
@@ -104,14 +108,14 @@ Comme pour les analyses :
 
 - Carte quotas : `components/quota/QuotaStatusCard.tsx`
 - Les quotas affichés pour le guest restent analyses / images / chat.
-- Une éventuelle ligne “Rêves enregistrés” héritée de l’UI ne doit plus être lue comme un quota d’admission Journal.
+- La capture affiche séparément le nombre de rêves guest encore enregistrables.
 
 ## Limites connues / risques
 
 - Comme c’est du local, un utilisateur peut “reset” en réinstallant l’app ou en effaçant les données.
   - Mitigation possible : enforcement serveur par fingerprint (déjà en place côté endpoint quota pour certaines métriques), au prix d’une dépendance réseau.
-- Si le stockage des rêves est purgé (ex: récupération automatique “Row too big”), le journal local est perdu. Le compteur historique, s’il existe encore, ne doit plus bloquer un nouvel enregistrement.
-  - Mitigation : proposer un compte pour le backup, sans quota Journal avant sauvegarde.
+- Si le stockage des rêves est purgé (ex: récupération automatique “Row too big”), le journal local est perdu. Le compteur cumulatif peut rester à sa valeur antérieure ; une suppression ou purge ne rend pas le quota guest.
+  - Mitigation : proposer un compte pour sauvegarder et synchroniser les rêves.
 
 ## Passage guest → compte (création / connexion)
 

@@ -708,3 +708,9 @@ export class SubscriptionError extends Error {
     }
   }
 }
+export class GuestDreamLimitError extends Error {
+  constructor() {
+    super('Guest dream recording limit reached');
+    this.name = 'GuestDreamLimitError';
+  }
+}

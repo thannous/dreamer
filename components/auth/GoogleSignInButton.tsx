@@ -8,7 +8,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { clearStayOnSettingsIntent, requestStayOnSettingsIntent } from '@/lib/navigationIntents';
 import { createScopedLogger } from '@/lib/logger';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { FontAwesome } from '@expo/vector-icons';
 import { TID } from '@/lib/testIDs';
 
 const log = createScopedLogger('[GoogleSignInButton]');
@@ -97,7 +97,7 @@ export default function GoogleSignInButton({
           <ActivityIndicator color={noctalia.text.primary} size="small" />
         ) : (
           <>
-            <IconSymbol name="g.circle.fill" size={20} color={noctalia.accent.text} />
+            <FontAwesome name="google" size={20} color={noctalia.text.primary} />
             <Text style={[styles.buttonText, { color: noctalia.text.primary }]}>{t('auth.google.cta')}</Text>
           </>
         )}

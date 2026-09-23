@@ -3,6 +3,9 @@
  */
 export type UserTier = 'guest' | 'free' | 'plus';
 
+/** Lifetime local recording allowance before an account is required. */
+export const GUEST_DREAM_RECORDING_LIMIT = 5;
+
 /**
  * Quota limits by user tier
  * null = unlimited

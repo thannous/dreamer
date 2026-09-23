@@ -75,7 +75,7 @@ Key points
 - In the app Settings tab, sign up or sign in with email/password.
 - Go to Recording, write a dream, tap Save.
 - Backend calls Gemini to analyze and stores in `public.dreams`. Illustration is a separate optional endpoint; the current image endpoint returns a placeholder URL.
-- Guests can record an unlimited local journal. Costly AI usage (analysis, illustrations, chat) stays quota-gated. Once authenticated, new dreams are persisted to `public.dreams` via Supabase and synced back into the journal automatically.
+- Guests can record up to five dreams locally, counted cumulatively even after deletion. Costly AI usage (analysis, illustrations, chat) has separate quotas. Once authenticated, new dreams are persisted to `public.dreams` via Supabase and synced back into the journal automatically.
 
 Notes
 - You can expand with additional endpoints later (chat, TTS) using the same pattern.

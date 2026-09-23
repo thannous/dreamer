@@ -6,8 +6,8 @@ import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { isInitialDreamCategorizationPending, subscribeInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
-import { ReminderOptInCard } from '@/components/reminders/ReminderOptInCard';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
@@ -16,7 +16,6 @@ import { ErrorType } from '@/lib/errors';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import {
   AnalysisNoticeSheet,
-  SavedDreamAnalysisSheet,
   DeleteConfirmSheet,
   ImageErrorSheet,
   QuotaLimitSheet,
@@ -48,7 +47,7 @@ import {
   isResumableAnalysisRequest,
 } from '@/lib/analysisRequest';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
-import { getDreamSyncState, normalizeDreamMemoryMetadata } from '@/lib/dreamUtils';
+import { deriveDraftTitle, getDreamSyncState, normalizeDreamMemoryMetadata } from '@/lib/dreamUtils';
 import {
   buildReflectionResumeHref,
   getDreamAnalysisState,
@@ -83,7 +82,7 @@ import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -234,7 +233,7 @@ function JournalDetailContent() {
   const [savedConfirmationVisible, setSavedConfirmationVisible] = useState(
     () => isJournalSavedConfirmationParam(savedParam)
   );
-  const [showSavedAnalysisSheet, setShowSavedAnalysisSheet] = useState(
+  const [isSavedArrival] = useState(
     () =>
       analyzeAfterPurchase !== '1' && shouldOfferSavedDreamAnalysis({
         savedParam,
@@ -244,8 +243,8 @@ function JournalDetailContent() {
         dreamId: id,
       })
   );
-  const savedAnalysisChoiceHandledRef = useRef(false);
   const analysisLaunchInFlightRef = useRef(false);
+  const analysisPressInFlightRef = useRef(false);
   const purchaseAnalysisHandledRef = useRef(false);
   const recallEligibleDreamIdRef = useRef<string | null>(
     resolveJournalDreamRecallOfferEligible({
@@ -273,6 +272,7 @@ function JournalDetailContent() {
     resolveDreamConflict,
     generateDreamImage,
     analyzeDream,
+    applyDreamCategorization,
   } = useDreamsActions();
   const { user } = useAuth();
   const { colors, shadows, mode } = useTheme();
@@ -304,6 +304,9 @@ function JournalDetailContent() {
   const [isRetryingSync, setIsRetryingSync] = useState(false);
   const [syncRetryFailed, setSyncRetryFailed] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isRecoveringMetadata, setIsRecoveringMetadata] = useState(false);
+  const [metadataRecoveryFailed, setMetadataRecoveryFailed] = useState(false);
+  const metadataRecoveryInFlightRef = useRef(false);
   const analysisReadingRef = useRef<AnalysisReadingHandle>(null);
   const awaitingAnalysisReading = useRef(false);
   const [analysisRecoveryClock, setAnalysisRecoveryClock] = useState(() => Date.now());
@@ -352,8 +355,49 @@ function JournalDetailContent() {
   const referenceImagesEnabled = isReferenceImagesEnabled();
   const isPlus = tier === 'plus';
   const canUseReference = referenceImagesEnabled && Boolean(user);
+  const savedAnalysisAction = getSavedAnalysisAction({
+    tier, loading: quotaLoading, error: quotaError, status: quotaStatus,
+  });
 
   const dream = useMemo(() => resolveDreamRoute(dreams, { id, remoteId, clientRequestId }), [dreams, id, remoteId, clientRequestId]);
+  const canResumeAnalysis = Boolean(dream && isResumableAnalysisRequest(dream));
+  const guestNeedsAccount = !user && !canResumeAnalysis
+    && (savedAnalysisAction === 'signup' || savedAnalysisAction === 'login');
+  const categorizationIdentity = dream ? getDreamIdentityKey(dream) : '';
+  const getInitialCategorizationPending = useCallback(
+    () => Boolean(categorizationIdentity && isInitialDreamCategorizationPending(categorizationIdentity)),
+    [categorizationIdentity]
+  );
+  const initialCategorizationPending = useSyncExternalStore(
+    subscribeInitialDreamCategorization,
+    getInitialCategorizationPending,
+    () => false
+  );
+  const latestMetadataDreamRef = useRef(dream);
+  useLayoutEffect(() => {
+    latestMetadataDreamRef.current = dream;
+    return () => { latestMetadataDreamRef.current = undefined; };
+  }, [dream]);
+  const hasUncategorizedDraft = Boolean(dream && !dream.isAnalyzed && dream.analysisStatus !== 'pending'
+    && !dream.theme && dream.title === deriveDraftTitle(dream.transcript, ''));
+  const needsMetadataRecovery = hasUncategorizedDraft && !initialCategorizationPending;
+  const recoverMetadata = useCallback(async () => {
+    if (!dream || !needsMetadataRecovery || isInitialDreamCategorizationPending(getDreamIdentityKey(dream))
+      || metadataRecoveryInFlightRef.current) return;
+    metadataRecoveryInFlightRef.current = true;
+    setIsRecoveringMetadata(true);
+    setMetadataRecoveryFailed(false);
+    try {
+      const result = await categorizeDream(dream.transcript, language);
+      if (latestMetadataDreamRef.current !== dream) return;
+      await applyDreamCategorization(dream, result);
+    } catch {
+      if (latestMetadataDreamRef.current === dream) setMetadataRecoveryFailed(true);
+    } finally {
+      metadataRecoveryInFlightRef.current = false;
+      setIsRecoveringMetadata(false);
+    }
+  }, [applyDreamCategorization, dream, language, needsMetadataRecovery]);
   const handleImageUpgrade = useCallback(() => {
     router.push(buildPaywallHref('image_generation'));
   }, []);
@@ -488,19 +532,21 @@ function JournalDetailContent() {
     };
   }, []);
 
-  // Lazy backfill hasPerson/hasAnimal if undefined and transcript exists
+  // Subject detection is only needed for authenticated reference-image tools.
+  // Guests already receive metadata from the post-save categorization request.
   useEffect(() => {
-    if (!dream) return;
+    if (!dream || !canUseReference) return;
     if (hasBackfilledSubjectRef.current) return;
     if (dream.hasPerson !== undefined || dream.hasAnimal !== undefined) return;
     if (!dream.transcript?.trim()) return;
 
     hasBackfilledSubjectRef.current = true;
+    let cancelled = false;
 
     (async () => {
       try {
         const result = await categorizeDream(dream.transcript, language);
-        if (result.hasPerson !== undefined || result.hasAnimal !== undefined) {
+        if (!cancelled && (result.hasPerson !== undefined || result.hasAnimal !== undefined)) {
           await updateDream({
             ...dream,
             hasPerson: result.hasPerson,
@@ -514,7 +560,9 @@ function JournalDetailContent() {
         }
       }
     })();
-  }, [dream, language, updateDream]);
+    // A newer title, analysis or user edit owns the dream after it changes.
+    return () => { cancelled = true; };
+  }, [canUseReference, dream, language, updateDream]);
 
   useEffect(() => {
     if (!isEditingTranscript || !scrollViewRef.current) {
@@ -708,6 +756,30 @@ function JournalDetailContent() {
     }
 
     if (primaryAction === 'analyze') {
+      if (user && savedAnalysisAction === 'upgrade' && !canResumeAnalysis) {
+        return {
+          icon: 'sparkles' as const,
+          title: t('recording.saved_analysis.title'),
+          message: t('recording.saved_analysis.exhausted'),
+          step: t('journal.detail.action.analyze.step'),
+          cta: t('recording.saved_analysis.upgrade'),
+          disabled: false,
+        };
+      }
+      if (guestNeedsAccount) {
+        return {
+          icon: 'person.fill' as const,
+          title: t('recording.saved_analysis.title'),
+          message: t(savedAnalysisAction === 'login'
+            ? 'journal.detail.quota_limit.message_login'
+            : 'recording.saved_analysis.guest_exhausted'),
+          step: t('journal.detail.action.analyze.step'),
+          cta: t(savedAnalysisAction === 'login'
+            ? 'journal.detail.quota_limit.cta_login'
+            : 'journal.detail.quota_limit.cta_guest'),
+          disabled: false,
+        };
+      }
       const failed = dream.analysisStatus === 'failed' || canRecoverPendingAnalysis;
       return {
         icon: failed ? 'arrow.clockwise' as const : 'sparkles' as const,
@@ -755,7 +827,7 @@ function JournalDetailContent() {
       cta: t('journal.detail.explore_button.new'),
       disabled: false,
     };
-  }, [awaitingPurchasedAnalysis, canRecoverPendingAnalysis, dream, isAnalyzing, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, t]);
+  }, [awaitingPurchasedAnalysis, canRecoverPendingAnalysis, canResumeAnalysis, dream, guestNeedsAccount, isAnalyzing, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, savedAnalysisAction, t, user]);
   const isAnalysisLocked = !!dream && (isAnalysisPending || isAnalyzing);
   const isImageJobPending = illustrationSidecar === 'pending';
   const isSyncPending = dreamSyncState === 'pending';
@@ -1223,14 +1295,14 @@ function JournalDetailContent() {
 
   const handleBackPress = useCallback(() => {
     const pending = onboardingState.pendingRecordingIntent;
-    // Leaving the optional analysis confirmation must allow another capture.
-    if (pending?.savedDreamId === dream?.id && pending?.phase === 'analysis_confirmation') {
+    if (dream && pending?.savedDreamId === dream.id && pending.phase === 'analysis_confirmation') {
       void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => {
-        console.warn('[JournalDetail] Failed to dismiss the onboarding analysis confirmation');
-      });
+        console.warn('[JournalDetail] Failed to dismiss the saved dream analysis choice');
+      }).finally(() => router.replace('/(tabs)/journal'));
+      return;
     }
     router.replace('/(tabs)/journal');
-  }, [dream?.id, onboardingState.pendingRecordingIntent, transitionOnboarding]);
+  }, [dream, onboardingState.pendingRecordingIntent, transitionOnboarding]);
 
   const handleJourneyPress = useCallback(() => {
     if (!dream) return;
@@ -1274,6 +1346,9 @@ function JournalDetailContent() {
         if (isPlus) return false;
         if (tier === 'free' && user && dream) {
           router.push(buildAnalysisPaywallHref(dream, user.id));
+        } else if (!user) {
+          router.push(quotaStatus?.isUpgraded
+            ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
         } else {
           setQuotaSheetMode(!user && quotaStatus?.isUpgraded ? 'login' : 'quota');
           setShowQuotaLimitSheet(true);
@@ -1301,11 +1376,8 @@ function JournalDetailContent() {
   const handleQuotaLimitPrimary = useCallback(() => {
     setShowQuotaLimitSheet(false);
     if (tier === 'guest') {
-      if (quotaSheetMode === 'login') {
-        router.push('/settings?section=account');
-      } else {
-        router.push('/settings');
-      }
+      router.push(quotaSheetMode === 'login'
+        ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
     } else {
       if (dream && user) router.push(buildAnalysisPaywallHref(dream, user.id));
     }
@@ -1333,12 +1405,10 @@ function JournalDetailContent() {
 
         const pending = onboardingState.pendingRecordingIntent;
         if (pending?.savedDreamId === dream.id && pending.phase === 'analysis_confirmation') {
-          void transitionOnboarding({
+          await transitionOnboarding({
             type: 'SET_PENDING_PHASE',
             phase: 'analysis_requested',
             savedDreamId: dream.id,
-          }).catch(() => {
-            console.warn('[JournalDetail] Failed to persist the onboarding analysis request');
           });
         }
 
@@ -1397,41 +1467,6 @@ function JournalDetailContent() {
     ]
   );
 
-  const closeSavedAnalysisSheet = useCallback(() => {
-    savedAnalysisChoiceHandledRef.current = true;
-    setShowSavedAnalysisSheet(false);
-  }, []);
-
-  const dismissSavedAnalysis = useCallback(() => {
-    closeSavedAnalysisSheet();
-    const pending = onboardingState.pendingRecordingIntent;
-    if (pending?.savedDreamId === dream?.id && pending?.phase === 'analysis_confirmation') {
-      void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => {
-        console.warn('[JournalDetail] Failed to dismiss the onboarding analysis confirmation');
-      });
-    }
-  }, [closeSavedAnalysisSheet, dream?.id, onboardingState.pendingRecordingIntent, transitionOnboarding]);
-
-  const savedAnalysisAction = getSavedAnalysisAction({
-    tier, loading: quotaLoading, error: quotaError, status: quotaStatus,
-  });
-
-  const confirmSavedAnalysis = useCallback(() => {
-    if (!dream || savedAnalysisChoiceHandledRef.current || savedAnalysisAction === 'checking') return;
-    closeSavedAnalysisSheet();
-    if (savedAnalysisAction === 'upgrade' && user) {
-      router.push(buildAnalysisPaywallHref(dream, user.id));
-      return;
-    }
-    if (savedAnalysisAction === 'signup' || savedAnalysisAction === 'login') {
-      router.push('/settings?section=account');
-      return;
-    }
-    // Persist analysis_requested only after runAnalyze's allowance check succeeds.
-    // Explicit consent requests the existing bundled analysis + image pipeline.
-    void runAnalyze(true);
-  }, [closeSavedAnalysisSheet, dream, runAnalyze, savedAnalysisAction, user]);
-
   useEffect(() => {
     if (analyzeAfterPurchase !== '1' || purchaseAnalysisHandledRef.current) return;
     // Wait for the verified subscription to reach this screen; never consume a
@@ -1444,7 +1479,6 @@ function JournalDetailContent() {
     if (!dream || !isPlus || quotaLoading) return;
     purchaseAnalysisHandledRef.current = true;
     router.setParams({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
-    savedAnalysisChoiceHandledRef.current = true;
     if (consumePurchasedAnalysisReturn(getDreamRouteParams(dream), user.id)
       && !dream.isAnalyzed && dream.analysisStatus !== 'pending') {
       // Consume an external purchase-navigation event, guarded above to run once.
@@ -1454,20 +1488,34 @@ function JournalDetailContent() {
   }, [analysisOwnerId, analyzeAfterPurchase, dream, hasExistingImage, isPlus, quotaLoading, runAnalyze, user]);
 
   const handleAnalyze = useCallback(async () => {
-    if (!dream) return;
+    if (!dream || analysisPressInFlightRef.current) return;
+    analysisPressInFlightRef.current = true;
+    try {
+      if (user && savedAnalysisAction === 'upgrade' && !canResumeAnalysis) {
+        router.push(buildAnalysisPaywallHref(dream, user.id));
+        return;
+      }
+      if (guestNeedsAccount) {
+        router.push(savedAnalysisAction === 'login'
+          ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
+        return;
+      }
 
-    if (!isResumableAnalysisRequest(dream)) {
-      const allowed = await ensureAnalyzeAllowed();
-      if (!allowed) return;
+      if (!canResumeAnalysis) {
+        const allowed = await ensureAnalyzeAllowed();
+        if (!allowed) return;
+      }
+
+      if (hasExistingImage) {
+        setShowReplaceImageSheet(true);
+        return;
+      }
+
+      await runAnalyze(shouldReplaceExistingImage('first'), true);
+    } finally {
+      analysisPressInFlightRef.current = false;
     }
-
-    if (hasExistingImage) {
-      setShowReplaceImageSheet(true);
-      return;
-    }
-
-    void runAnalyze(shouldReplaceExistingImage('first'), true);
-  }, [dream, ensureAnalyzeAllowed, hasExistingImage, runAnalyze]);
+  }, [canResumeAnalysis, dream, ensureAnalyzeAllowed, guestNeedsAccount, hasExistingImage, runAnalyze, savedAnalysisAction, user]);
 
   const handleReplaceImage = useCallback(() => {
     void runAnalyze(shouldReplaceExistingImage('replace'));
@@ -1677,6 +1725,27 @@ function JournalDetailContent() {
           <Text className="mb-5 font-sans text-[12px] leading-5 text-ivory-muted">
             {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
           </Text>
+          {!isEditing && hasUncategorizedDraft && initialCategorizationPending ? (
+            <Text className="mb-4 font-sans text-[13px] text-ivory-muted">
+              {t('journal.detail.metadata.loading')}
+            </Text>
+          ) : null}
+          {!isEditing && needsMetadataRecovery ? (
+            <View className="mb-4 gap-2">
+              <Pressable onPress={recoverMetadata} disabled={isRecoveringMetadata}
+                accessibilityRole="button" accessibilityState={{ disabled: isRecoveringMetadata, busy: isRecoveringMetadata }}
+                className="min-h-[44px] flex-row items-center gap-2"
+                testID="dream-metadata-retry">
+                {isRecoveringMetadata ? <ActivityIndicator size="small" color={noctalia.accent.text} /> : null}
+                <Text className="shrink font-sans-medium text-[13px] text-champagne-on underline">
+                  {t(isRecoveringMetadata ? 'journal.detail.metadata.loading' : 'journal.detail.metadata.retry')}
+                </Text>
+              </Pressable>
+              {metadataRecoveryFailed ? <Text accessibilityRole="alert" className="font-sans text-[13px] text-ivory-muted">
+                {t('journal.detail.metadata.error')}
+              </Text> : null}
+            </View>
+          ) : null}
         </>
       ) : null}
 
@@ -1936,13 +2005,13 @@ function JournalDetailContent() {
     );
   };
 
-  const analysisAccessLabel = visiblePrimaryAction !== 'analyze' || isPrimaryActionBusy ? null
+  const analysisAccessLabel = visiblePrimaryAction !== 'analyze' || isPrimaryActionBusy || canResumeAnalysis || guestNeedsAccount || savedAnalysisAction === 'upgrade' ? null
     : quotaHint.kind === 'unknown' ? t('journal.detail.check_analysis')
       : quotaHint.kind === 'remaining' && quotaHint.remaining <= 0
         ? t('journal.detail.analysis_options') : null;
 
   const renderQuotaHint = () => {
-    if (!quotaHintLabel) {
+    if (!quotaHintLabel || canResumeAnalysis) {
       return null;
     }
     return (
@@ -2036,22 +2105,32 @@ function JournalDetailContent() {
         testID={TID.Component.DreamDetailActionCard}
         className={`mb-[18px] gap-3.5 rounded-lg border border-line-strong bg-ink-active p-4`}
       >
+        {isSavedArrival && !isStalePrimaryAction ? (
+          <>
+            <Text className="font-sans-bold text-[16px] text-ivory">{t('recording.saved_analysis.title')}</Text>
+            <PressableScale accessibilityRole="button" onPress={handleBackPress}
+              testID="btn.savedDream.returnToJournal"
+              className="min-h-[48px] items-center justify-center rounded-md bg-champagne px-4 py-3">
+              <Text className="font-sans-bold text-[15px] text-on-champagne">{t('journal.detail.saved.return')}</Text>
+            </PressableScale>
+          </>
+        ) : null}
         <View className="flex-row items-start gap-3">
           <View className={`h-[34px] w-[34px] items-center justify-center rounded-full bg-ink-active`}>
             <IconSymbol name={detailActionCard.icon} size={18} color={noctalia.accent.text} />
           </View>
           <View className="flex-1 gap-1">
-            <Text
+            {!isSavedArrival ? <Text
               className={`font-sans-bold text-[11px] uppercase text-champagne-on`}
               testID={TID.Text.DreamDetailActionStep}
             >
               {detailActionCard.step}
-            </Text>
+            </Text> : null}
             <Text
               className={`font-display-medium text-[17px] leading-[23px] text-ivory`}
               testID={TID.Text.DreamDetailActionTitle}
             >
-              {detailActionCard.title}
+              {guestNeedsAccount && savedAnalysisAction === 'signup' ? t('journal.detail.quota_limit.title_guest') : isSavedArrival ? detailActionCard.cta : detailActionCard.title}
             </Text>
             {analysisAccessLabel ? null : (
               <Text
@@ -2061,14 +2140,14 @@ function JournalDetailContent() {
                 {detailActionCard.message}
               </Text>
             )}
-            {renderQuotaHint()}
+            {guestNeedsAccount ? null : renderQuotaHint()}
           </View>
         </View>
         <PressableScale
           testID={primaryButtonTestID}
           onPress={onPress}
           disabled={disabled}
-          className={`flex-row items-center justify-center gap-2 rounded-md bg-champagne px-4 py-[13px] ${
+          className={`flex-row items-center justify-center gap-2 rounded-md px-4 py-[13px] ${isSavedArrival ? 'border border-line-strong bg-ink-soft' : 'bg-champagne'} ${
             disabled ? 'opacity-75' : ''
           }`}
           accessibilityRole="button"
@@ -2079,12 +2158,12 @@ function JournalDetailContent() {
             <ActivityIndicator size="small" color={noctalia.action.primaryText} />
           ) : (
             <IconSymbol
-              name={visiblePrimaryAction === 'analyze' ? (isStalePrimaryAction ? 'arrow.clockwise' : 'sparkles') : 'arrow.right'}
+              name={guestNeedsAccount ? 'person.fill' : visiblePrimaryAction === 'analyze' ? (isStalePrimaryAction ? 'arrow.clockwise' : 'sparkles') : 'arrow.right'}
               size={18}
-              color={noctalia.action.primaryText}
+              color={isSavedArrival ? noctalia.text.primary : noctalia.action.primaryText}
             />
           )}
-          <Text className={`font-sans-bold text-[15px] text-on-champagne`}>
+          <Text className={`shrink text-center font-sans-bold text-[15px] ${isSavedArrival ? 'text-ivory' : 'text-on-champagne'}`}>
             {analysisAccessLabel ?? detailActionCard.cta}
           </Text>
         </PressableScale>
@@ -2367,8 +2446,8 @@ function JournalDetailContent() {
       >
         <PressableScale
           onPress={handleBackPress}
-          className="absolute left-3 z-50 min-h-11 flex-row items-center gap-2 rounded-[22px] border border-line bg-ink/90 px-3"
-          style={{ top: insets.top + 12 }}
+          className="self-start ml-3 z-50 min-h-11 flex-row items-center gap-2 rounded-[22px] border border-line bg-ink/90 px-3"
+          style={{ marginTop: insets.top + 12, marginBottom: 12 }}
           testID={TID.Button.NavigateJournal}
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
@@ -2384,9 +2463,9 @@ function JournalDetailContent() {
             setCoverViewport(previous => previous?.width === layout.width && previous.height === layout.height
               ? previous : { width: layout.width, height: layout.height });
           }}
-          style={{ marginTop: hasIllustratedCover ? 0 : insets.top }}
+
           contentContainerStyle={{
-            paddingTop: hasIllustratedCover ? 0 : 80,
+            paddingTop: 8,
             paddingBottom:
               ((isEditing || isEditingTranscript) ? 220 : 100) + insets.bottom,
           }}
@@ -2564,9 +2643,7 @@ function JournalDetailContent() {
             <Reveal index={7}>
               {renderFirstValueBackupCard()}
 
-              {!isEditing && !isEditingTranscript ? (
-                <ReminderOptInCard surface="journal_detail" style={{ marginBottom: 20 }} />
-              ) : null}
+
             </Reveal>
 
             <Reveal index={8}>
@@ -2837,12 +2914,6 @@ function JournalDetailContent() {
           </View>
         </Modal>
 
-        <SavedDreamAnalysisSheet
-          visible={showSavedAnalysisSheet && savedAnalysisAction !== 'checking' && !dream.isAnalyzed && dream.analysisStatus !== 'pending' && !isAnalyzing}
-          onClose={dismissSavedAnalysis}
-          onPrimary={confirmSavedAnalysis}
-          action={savedAnalysisAction}
-        />
         <ReferenceImageSheet
           visible={referenceImagesEnabled && showReferenceSheet}
           subjectType={referenceSubjectType}

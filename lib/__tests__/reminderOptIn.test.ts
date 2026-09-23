@@ -37,14 +37,14 @@ describe('reminderOptIn', () => {
         { weekdayEnabled: false, weekdayTime: '07:00', weekendEnabled: false, weekendTime: '10:00' },
         '07:30'
       )
-    ).toEqual({ weekdayEnabled: true, weekdayTime: '07:30', weekendEnabled: true, weekendTime: '08:30', weeklyRecapEnabled: true, streakRiskEnabled: false, inactivityNudgeEnabled: false });
+    ).toEqual({ weekdayEnabled: true, weekdayTime: '07:30', weekendEnabled: true, weekendTime: '08:30', weeklyRecapEnabled: false, streakRiskEnabled: false, inactivityNudgeEnabled: false });
 
     expect(
       buildOptInNotificationSettings(
         { weekdayEnabled: false, weekdayTime: '07:00', weekendEnabled: true, weekendTime: '11:15' },
         '06:30'
       )
-    ).toEqual({ weekdayEnabled: true, weekdayTime: '06:30', weekendEnabled: true, weekendTime: '11:15', weeklyRecapEnabled: true, streakRiskEnabled: false, inactivityNudgeEnabled: false });
+    ).toEqual({ weekdayEnabled: true, weekdayTime: '06:30', weekendEnabled: true, weekendTime: '11:15', weeklyRecapEnabled: false, streakRiskEnabled: false, inactivityNudgeEnabled: false });
   });
 
   it('arms exactly the families the card discloses, and no more', () => {
@@ -56,12 +56,11 @@ describe('reminderOptIn', () => {
       .filter(([, value]) => value === true)
       .map(([key]) => key)
       .sort();
-    // One tap arms the essential morning reminder and the Sunday recap.
+    // Only the requested morning reminders are newly enabled.
     // Streak and inactivity stay off unless the user already enabled them.
     expect(enabled).toEqual([
       'weekdayEnabled',
       'weekendEnabled',
-      'weeklyRecapEnabled',
     ]);
     expect(en['reminders.opt_in.includes']).toBeTruthy();
   });
@@ -73,7 +72,7 @@ describe('reminderOptIn', () => {
         expect(translations[key]).not.toBe(key);
         expect(translations[key].trim()).not.toBe('');
       }
-      expect(translations['reminders.opt_in.includes'].toLowerCase()).toMatch(/sunday recap|récap du dimanche|resumen del domingo|sonntagsübersicht|riepilogo della domenica|resumo de domingo/);
+      expect(translations['reminders.opt_in.includes'].toLowerCase()).toMatch(/sunday recap|récap du dimanche|resumen del domingo|sonntagsübersicht|sonntagsrückblick|riepilogo della domenica|resumo de domingo/);
       expect(translations['notifications.analysis_ready.body'].toLowerCase()).not.toMatch(
         /symbol|symbole|símbolo|simbolo|nightmare|cauchemar|pesadilla|incubo|pesadelo/
       );

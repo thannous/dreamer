@@ -85,6 +85,7 @@ type Props = {
   returnTo?: '/settings' | '/lucid/(tabs)/settings';
   showGoogleSignIn?: boolean;
   initialAccountSheetOpen?: boolean;
+  initialMode?: 'signin' | 'signup';
 };
 
 export const EmailAuthCard: React.FC<Props> = ({
@@ -93,6 +94,7 @@ export const EmailAuthCard: React.FC<Props> = ({
   returnTo = '/settings',
   showGoogleSignIn = true,
   initialAccountSheetOpen = false,
+  initialMode,
 }) => {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -103,6 +105,7 @@ export const EmailAuthCard: React.FC<Props> = ({
   const dreamsActions = useOptionalDreamsActions();
   const { language } = useLanguage();
 
+  const [formMode, setFormMode] = useState(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -374,7 +377,8 @@ export const EmailAuthCard: React.FC<Props> = ({
       // Enter inside the reset panel is handled by its own onSubmitEditing.
       return;
     }
-    attemptSignIn();
+    if (formMode === 'signup') void attemptSignUp();
+    else void attemptSignIn();
   };
 
   const resendStatusMessage = useMemo(() => {
@@ -563,7 +567,7 @@ export const EmailAuthCard: React.FC<Props> = ({
           onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
           secureTextEntry={!passwordVisible}
           textContentType="password"
-          onSubmitEditing={attemptSignIn}
+          onSubmitEditing={formMode === 'signup' ? attemptSignUp : attemptSignIn}
         />
         <Pressable
           testID={TID.Button.AuthTogglePassword}
@@ -590,6 +594,28 @@ export const EmailAuthCard: React.FC<Props> = ({
         </Text>
       )}
 
+      {formMode ? (
+        <View style={{ gap: 12 }}>
+          <Pressable accessibilityRole="button" accessibilityState={{ disabled: emailActionsDisabled }}
+            testID={formMode === 'signup' ? TID.Button.AuthSignUp : TID.Button.AuthSignIn}
+            disabled={emailActionsDisabled}
+            onPress={formMode === 'signup' ? attemptSignUp : attemptSignIn}
+            style={[styles.btn, { minHeight: 48, backgroundColor: emailActionsDisabled ? noctalia.action.disabled : noctalia.action.primary, borderColor: emailActionsDisabled ? noctalia.action.disabledBorder : noctalia.action.primaryBorder }]}>
+            {submitting ? <ActivityIndicator color={noctalia.action.primaryText} /> : (
+              <Text style={[styles.btnText, { color: emailActionsDisabled ? noctalia.action.disabledText : noctalia.action.primaryText, textAlign: 'center' }]}>
+                {t(formMode === 'signup' ? 'settings.account.button.sign_up' : 'settings.account.button.sign_in')}
+              </Text>
+            )}
+          </Pressable>
+          <Pressable accessibilityRole="button" disabled={isBusy} testID="auth.switchMode"
+            onPress={() => { setFormMode(formMode === 'signup' ? 'signin' : 'signup'); closeForgotPassword(); }}
+            style={{ minHeight: 48, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: noctalia.text.secondary, textAlign: 'center' }}>
+              {t(formMode === 'signup' ? 'settings.account.already_registered' : 'settings.account.button.sign_up')}
+            </Text>
+          </Pressable>
+        </View>
+      ) : (
       <View style={[styles.row, isCompact && styles.rowCompact]}>
         <Pressable
           testID={TID.Button.AuthSignIn}
@@ -663,8 +689,9 @@ export const EmailAuthCard: React.FC<Props> = ({
           )}
         </Pressable>
       </View>
+      )}
 
-      {forgotPasswordOpen ? (
+      {formMode === 'signup' ? null : forgotPasswordOpen ? (
         <View
           style={[
             styles.forgotPasswordPanel,
@@ -864,7 +891,7 @@ export const EmailAuthCard: React.FC<Props> = ({
     >
       {presentation !== 'embedded' ? (
         <Text style={[styles.cardTitle, { color: noctalia.text.primary }]}>
-          {t('settings.account.title')}
+          {t(formMode === 'signup' ? 'settings.account.button.sign_up' : formMode === 'signin' ? 'settings.account.button.sign_in' : 'settings.account.title')}
         </Text>
       ) : null}
       <Text

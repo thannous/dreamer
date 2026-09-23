@@ -35,10 +35,7 @@ export function deriveWeekendTime(weekdayTime: string): string {
  * time, weekends one hour later. Existing weekend preferences are preserved when
  * the user had already customised them.
  *
- * The card is a consent moment for the essential morning reminder and the
- * Sunday recap. Streak and inactivity reminders stay off unless the user already
- * enabled them in Settings. Anything enabled here must be spelled out in
- * `reminders.opt_in.includes`.
+ * Only morning reminders are enabled here. Other existing preferences are preserved.
  */
 export function buildOptInNotificationSettings(
   current: NotificationSettings,
@@ -49,10 +46,7 @@ export function buildOptInNotificationSettings(
     weekdayTime,
     weekendEnabled: true,
     weekendTime: current.weekendEnabled ? current.weekendTime : deriveWeekendTime(weekdayTime),
-    // Disclosed by `reminders.opt_in.includes`. Adding a family here without
-    // updating that copy (in the six locales) breaks the informed consent the
-    // card is built on.
-    weeklyRecapEnabled: true,
+    weeklyRecapEnabled: current.weeklyRecapEnabled === true,
     streakRiskEnabled: current.streakRiskEnabled === true,
     inactivityNudgeEnabled: current.inactivityNudgeEnabled === true,
   };

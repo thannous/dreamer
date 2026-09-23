@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -24,6 +24,7 @@ export const ReminderOptInCard = memo(function ReminderOptInCard({ surface, styl
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const optIn = useReminderOptIn(surface);
+  const [expanded, setExpanded] = useState(false);
 
   if (!optIn.visible) {
     return null;
@@ -64,15 +65,15 @@ export const ReminderOptInCard = memo(function ReminderOptInCard({ surface, styl
           ? t('reminders.opt_in.enabled_body', { time: optIn.selectedTime })
           : t('reminders.opt_in.body')}
       </Text>
-      {/* Accepting the card arms the morning reminder and the Sunday recap.
-          Streak and inactivity stay off unless already enabled in Settings. */}
+      {expanded ? <>
       <Text style={[styles.includes, { color: noctalia.text.tertiary }]}>
         {t('reminders.opt_in.includes')}
       </Text>
 
+      </> : null}
       {optIn.enabled ? null : (
         <>
-          <View style={styles.presets} accessibilityRole="radiogroup">
+          {expanded ? <View style={styles.presets} accessibilityRole="radiogroup">
             {optIn.presets.map((time) => {
               const selected = time === optIn.selectedTime;
               return (
@@ -102,13 +103,13 @@ export const ReminderOptInCard = memo(function ReminderOptInCard({ surface, styl
                 </Pressable>
               );
             })}
-          </View>
+          </View> : null}
 
           <View style={styles.actions}>
             <Pressable
               accessibilityRole="button"
               disabled={optIn.busy}
-              onPress={() => void optIn.enable()}
+              onPress={() => expanded ? void optIn.enable() : setExpanded(true)}
               testID="btn.reminderOptIn.enable"
               style={({ pressed }) => [
                 styles.enable,
@@ -124,7 +125,7 @@ export const ReminderOptInCard = memo(function ReminderOptInCard({ surface, styl
                 <ActivityIndicator size="small" color={enableForeground} />
               ) : (
                 <Text style={[styles.enableLabel, { color: enableForeground }]}>
-                  {t('reminders.opt_in.cta', { time: optIn.selectedTime })}
+                  {expanded ? t('reminders.opt_in.cta', { time: optIn.selectedTime }) : t('reminders.opt_in.configure')}
                 </Text>
               )}
             </Pressable>

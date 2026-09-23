@@ -97,7 +97,6 @@ export function DreamRecallAssistantCard({
     error,
     start,
     submitAnswer,
-    pause,
     resume,
     skip,
     complete,
@@ -362,13 +361,6 @@ export function DreamRecallAssistantCard({
     });
   }, [runAfterVoice, submitAnswer]);
 
-  const handlePause = useCallback(() => {
-    void runAfterVoice(async (finalText) => {
-      updateDraftAnswer(finalText);
-      await pause();
-    });
-  }, [pause, runAfterVoice, updateDraftAnswer]);
-
   const handleSkip = useCallback(() => {
     void runAfterVoice(async (finalText) => {
       updateDraftAnswer(finalText);
@@ -414,15 +406,6 @@ export function DreamRecallAssistantCard({
 
     return (
       <View className={cardClass} testID={TID.Component.DreamRecallOffer}>
-        <Text className="font-sans text-caption uppercase tracking-[0] text-champagne-on">
-          {String(t('dream_recall.offer.eyebrow'))}
-        </Text>
-        <Text className="font-sans-bold text-[18px] text-ivory">
-          {String(t('dream_recall.offer.title'))}
-        </Text>
-        <Text className="font-sans text-body-sm text-ivory-muted">
-          {String(t('dream_recall.offer.body'))}
-        </Text>
         {error ? (
           <Text accessibilityLiveRegion="polite" className="font-sans text-body-sm text-danger-on">
             {String(t('dream_recall.session.error'))}
@@ -606,12 +589,6 @@ export function DreamRecallAssistantCard({
             onPress={handleSubmit}
             disabled={!canSubmit}
             variant="primary"
-          />
-          <RecallAction
-            testID={TID.Button.DreamRecallPause}
-            label={String(t('dream_recall.session.pause'))}
-            onPress={handlePause}
-            disabled={sessionActionsDisabled}
           />
           <RecallAction
             testID={TID.Button.DreamRecallSkip}

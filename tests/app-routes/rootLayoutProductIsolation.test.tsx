@@ -138,7 +138,7 @@ describe('root product composition (real root and DreamsProvider)', () => {
     expect(mockMark).toHaveBeenCalledWith('startup.route_committed');
   });
 
-  it.each(['/paywall', '/journal/42'])('keeps the saved dream journey on %s after returning from the store', async (path) => {
+  it.each(['/paywall', '/journal/42', '/settings'])('keeps the saved dream journey on %s after returning from the store', async (path) => {
     mockLucid = false;
     mockUser = { id: 'user-1' };
     const view = await mountStartup();
@@ -148,6 +148,63 @@ describe('root product composition (real root and DreamsProvider)', () => {
     mockReplace.mockClear();
     await act(async () => { mockForeground?.(); });
     expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('keeps the first dream capture mounted when microphone permission returns to the foreground', async () => {
+    mockPlatform = 'android';
+    mockLucid = false;
+    mockUser = null;
+    mockPendingRecordingIntent = {
+      entryId: 'first-dream', intent: 'record_dream', source: 'onboarding',
+      postSave: 'confirm_analysis', phase: 'capture',
+    };
+    await mountStartup();
+    // Capture consumes its route params, but keeps the durable intent until save.
+    expect(mockSearchParams).toEqual({});
+    mockReplace.mockClear();
+
+    await act(async () => { mockForeground?.(); jest.advanceTimersByTime(100); });
+    await act(async () => { mockForeground?.(); jest.advanceTimersByTime(100); });
+
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('keeps guest account settings mounted while a capture is pending across foreground returns', async () => {
+    mockLucid = false;
+    mockUser = null;
+    const view = await mountStartup();
+    mockPathname = '/settings';
+    mockPendingRecordingIntent = {
+      entryId: 'first-dream', intent: 'record_dream', source: 'onboarding',
+      postSave: 'confirm_analysis', phase: 'capture',
+    };
+    await act(async () => { view.rerender(<RootLayout />); });
+    mockReplace.mockClear();
+
+    await act(async () => { mockForeground?.(); jest.advanceTimersByTime(100); });
+    await act(async () => { mockForeground?.(); jest.advanceTimersByTime(100); });
+
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('still resumes the pending first dream when returning from another screen', async () => {
+    mockLucid = false;
+    mockUser = null;
+    const view = await mountStartup();
+    mockPathname = '/explore';
+    mockPendingRecordingIntent = {
+      entryId: 'first-dream', intent: 'record_dream', source: 'onboarding',
+      postSave: 'confirm_analysis', phase: 'capture',
+    };
+    await act(async () => { view.rerender(<RootLayout />); });
+    mockReplace.mockClear();
+
+    await act(async () => { mockForeground?.(); jest.advanceTimersByTime(100); });
+
+    expect(mockReplace).toHaveBeenCalledWith({
+      pathname: '/recording',
+      params: { entryId: 'first-dream', intent: 'record_dream', source: 'onboarding', postSave: 'analyze' },
+    });
   });
 
   it.each([null, { id: 'account-with-journal' }])('keeps Lucid startup outside Journal runtime for user %j', async (user) => {

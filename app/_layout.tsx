@@ -552,10 +552,12 @@ function RootLayoutNav({
         pendingAuthDestination,
         });
       const currentPath = pathnameRef.current ?? pathname;
-      // Store sheets background the app. The current offer/detail owns the saved
-      // dream journey; resuming its recording intent here would reopen capture.
+      // Permission dialogs, store sheets and email verification background the app.
+      // The mounted capture, offer, detail or account settings owns the intent;
+      // replacing it would unmount an editor or verification dialog in progress.
       if (decision.reason === 'pending_intent'
-        && (currentPath === '/paywall' || currentPath?.startsWith('/journal/'))) return;
+        && (currentPath === '/recording' || currentPath === '/paywall' || currentPath?.startsWith('/journal/')
+          || currentPath?.startsWith('/settings'))) return;
       if (decision.reason !== 'default') {
         engageDecision(decision);
         return;

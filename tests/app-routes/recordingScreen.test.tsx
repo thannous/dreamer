@@ -6,8 +6,12 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 import type { DreamAnalysis } from '@/lib/types';
 import { encodeCaptureReview } from '@/lib/captureReviewDraft';
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { isInitialDreamCategorizationPending } from '@/lib/initialDreamCategorization';
 import { TID } from '@/lib/testIDs';
 
+const mockGetGuestRecordedDreamCount = jest.fn(async () => 0);
+const mockSubscribeGuestDreamRecordingCount = jest.fn(() => () => undefined);
 const mockAddDream = jest.fn();
 const mockTrackDreamSaveMilestone = jest.fn(async () => undefined);
 const mockAnalyzeDream = jest.fn();
@@ -319,12 +323,13 @@ jest.doMock('@/components/recording/RecordingTextInput', () => {
         value: string;
         inputTestID?: string;
       },
-      _ref: React.ForwardedRef<unknown>
+      ref: React.ForwardedRef<HTMLTextAreaElement>
     ) => (
       <div data-layout={layout} data-testid="recording-composer">
         {onClear && value ? <button data-testid={TID.Button.ClearDream} onClick={onClear}>Clear</button> : null}
         {showVoiceHint ? <span data-testid="recording-voice-hint">Voice hint</span> : null}
         <textarea
+          ref={ref}
           data-testid={inputTestID}
           disabled={disabled}
           onChange={(event) => onChange(event.currentTarget.value)}
@@ -462,6 +467,11 @@ jest.doMock('@/context/DreamsContext', () => ({
     reloadDreams: jest.fn(),
     updateDream: jest.fn(),
   }),
+}));
+
+jest.doMock('@/services/quota/GuestDreamCounter', () => ({
+  getGuestRecordedDreamCount: mockGetGuestRecordedDreamCount,
+  subscribeGuestDreamRecordingCount: mockSubscribeGuestDreamRecordingCount,
 }));
 
 jest.doMock('@/context/LanguageContext', () => ({
@@ -786,6 +796,7 @@ describe('Recording screen', () => {
 
   beforeEach(() => {
     mockCurrentUser = { id: 'user-1' };
+    mockGetGuestRecordedDreamCount.mockResolvedValue(0);
     mockQuotaState = { tier: 'free', loading: false, error: null, usage: { analysis: { used: 0, limit: 3, remaining: 3 } } };
     mockDreams = [];
     mockPendingRecordingIntent = null;
@@ -1272,6 +1283,56 @@ describe('Recording screen', () => {
     expect(status()).not.toBe('recording');
   });
 
+  it('focuses the write editor only after the first microphone permission and startup succeed', async () => {
+    let finishStart!: (value: { success: boolean }) => void;
+    mockStartRecording.mockImplementationOnce(() => new Promise((resolve) => { finishStart = resolve; }));
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    const editor = screen.getByTestId(TID.Input.DreamTranscript);
+
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    fireEvent.click(await screen.findByTestId('mic-rationale-allow'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    expect(document.activeElement).not.toBe(editor);
+
+    await act(async () => { finishStart({ success: true }); });
+
+    expect(document.activeElement).toBe(editor);
+  });
+
+  it('does not focus the write editor when microphone permission is denied', async () => {
+    mockStartRecording.mockResolvedValueOnce({ success: false, error: 'permission_denied' });
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    const editor = screen.getByTestId(TID.Input.DreamTranscript);
+
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    fireEvent.click(await screen.findByTestId('mic-rationale-allow'));
+    await screen.findByTestId(TID.Text.RecordingFallbackNotice);
+
+    expect(document.activeElement).not.toBe(editor);
+  });
+
+  it('preserves the selected insertion range when refocusing the write editor for dictation', async () => {
+    mockRecordingPermissionState = 'granted';
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    const editor = screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement;
+    fireEvent.change(editor, { target: { value: 'Le jardin fleuri' } });
+    editor.setSelectionRange(3, 9);
+    fireEvent.select(editor);
+    act(() => editor.blur());
+
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+
+    await waitFor(() => expect(document.activeElement).toBe(editor));
+    expect(editor.selectionStart).toBe(3);
+    expect(editor.selectionEnd).toBe(9);
+    act(() => mockOnPartialTranscript?.('parc'));
+    expect(editor.value).toBe('Le parc fleuri');
+  });
+
   it('keeps capture navigation available on a wide Android window', () => {
     mockPlatformOS = 'android';
     mockViewportWidth = 1280;
@@ -1436,6 +1497,30 @@ describe('Recording screen', () => {
     }
   );
 
+  it('explains the guest recording limit while preserving the unsaved text', async () => {
+    const { GuestDreamLimitError } = require('@/lib/errors');
+    mockCurrentUser = null;
+    mockGetGuestRecordedDreamCount.mockResolvedValue(5);
+    mockAddDream.mockRejectedValueOnce(new GuestDreamLimitError());
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    await waitFor(() => expect(screen.getByTestId('recording-guest-remaining').textContent)
+      .toContain('recording.guest_recording.exhausted_inline'));
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'A dream I want to keep' },
+    });
+    await act(async () => { fireEvent.click(screen.getByTestId('recording-save')); });
+    expect(Alert.alert).toHaveBeenCalledWith(
+      'recording.guest_recording.limit_title',
+      'recording.guest_recording.limit_message',
+      expect.arrayContaining([expect.objectContaining({ text: 'recording.guest_recording.keep_draft' })]),
+    );
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value)
+      .toBe('A dream I want to keep');
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(mockCategorizeDream).not.toHaveBeenCalled();
+  });
+
   it('persists only once for rapid save presses before storage resolves', async () => {
     let finish!: (dream: DreamAnalysis) => void;
     mockAddDream.mockImplementationOnce(() => new Promise<DreamAnalysis>(resolve => { finish = resolve; }));
@@ -1500,10 +1585,13 @@ describe('Recording screen', () => {
     expect(mockPush).not.toHaveBeenCalled();
     expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
     expect(mockCategorizeDream).toHaveBeenCalledWith('A blue room under the rain', 'fr');
-    resolveCategorize?.({ title: 'Rain Room', theme: 'calm', dreamType: 'Symbolic Dream' });
+    const savedIdentity = getDreamIdentityKey({ ...mockAddDream.mock.calls[0][0], id: 42 });
+    expect(isInitialDreamCategorizationPending(savedIdentity)).toBe(true);
+    await act(async () => { resolveCategorize?.({ title: 'Rain Room', theme: 'calm', dreamType: 'Symbolic Dream' }); });
+    expect(isInitialDreamCategorizationPending(savedIdentity)).toBe(false);
   });
 
-  it('saves once then opens only the offer with the exact saved dream identity', async () => {
+  it('saves once then opens the saved dream even with exhausted analysis credits', async () => {
     mockQuotaState.usage.analysis = { used: 3, limit: 3, remaining: 0 };
     let finish!: (dream: DreamAnalysis) => void;
     mockAddDream.mockImplementationOnce(() => new Promise<DreamAnalysis>(resolve => { finish = resolve; }));
@@ -1519,12 +1607,12 @@ describe('Recording screen', () => {
     await act(async () => { finish({ ...buildDream('A quiet lake'), remoteId: 17, clientRequestId: 'capture-42' }); });
     expect(mockReplace).toHaveBeenCalledTimes(1);
     expect(mockReplace).toHaveBeenCalledWith({
-      pathname: '/paywall',
-      params: { trigger: 'analysis_cta', afterSave: '1', dreamId: '42', dreamRemoteId: '17', dreamClientRequestId: 'capture-42', dreamOwnerId: 'user-1' },
+      pathname: '/journal/[id]',
+      params: { id: '42', remoteId: '17', clientRequestId: 'capture-42', saved: '1' },
     });
     expect(mockPush).not.toHaveBeenCalled();
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
-    expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
 
   it.each(['available', 'plus', 'guest', 'loading', 'offline'])(
@@ -1807,7 +1895,7 @@ describe('Recording screen', () => {
     mockPendingRecordingIntent = { entryId: 'pending-entry', savedDreamId: 42, phase: 'analysis_confirmation' };
     mockDreams = [buildDream('already saved pending dream')];
     const view = render(<RecordingScreen />);
-    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/paywall' })));
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/journal/[id]' })));
     view.rerender(<RecordingScreen />);
     expect(mockReplace).toHaveBeenCalledTimes(1);
     expect(mockAddDream).not.toHaveBeenCalled();
@@ -2140,11 +2228,13 @@ describe('Recording screen', () => {
     fireEvent.click(screen.getByTestId('recording-voice-control'));
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
     act(() => mockOnPartialTranscript?.('grand'));
+    act(() => editor.blur());
     mockStopRecording.mockResolvedValueOnce({ transcript: 'grand' });
     await act(async () => { mockOnNativeEnd?.(); });
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
     act(() => mockOnPartialTranscript?.('et beau'));
     expect(editor.value).toBe('Le grand et beau jardin fleuri');
+    expect(document.activeElement).not.toBe(editor);
   });
 
   it('keeps Tell available on Android when a local speech model is installed', async () => {

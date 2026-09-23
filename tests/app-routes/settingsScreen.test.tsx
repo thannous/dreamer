@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 afterEach(() => {
@@ -15,6 +15,7 @@ const mockReplace = jest.fn();
 let mockCanGoBack = true;
 const mockUseAuth = jest.fn();
 const mockUseSubscription = jest.fn();
+const mockResetGuestRecordingAllowance = jest.fn(async () => 1);
 let mockWindowWidth = 390;
 let mockPlatformOS = 'web';
 
@@ -83,6 +84,7 @@ jest.doMock('react-native', () => {
       },
     },
     KeyboardAvoidingView: createElement('div'),
+    ActivityIndicator: createElement('div'),
     ScrollView: createElement('div'),
     Pressable: createElement('button'),
     Text: createElement('span'),
@@ -226,7 +228,7 @@ jest.doMock('@/hooks/useScrollIdle', () => ({
 }));
 
 jest.doMock('@/components/auth/EmailAuthCard', () => ({
-  EmailAuthCard: ({ initialAccountSheetOpen }: any) => { mockInitialAccountSheetOpen = initialAccountSheetOpen; return <div data-testid="email-auth-card" />; },
+  EmailAuthCard: ({ initialAccountSheetOpen, presentation }: any) => { mockInitialAccountSheetOpen = initialAccountSheetOpen; return <div data-testid="email-auth-card" data-presentation={presentation} />; },
 }));
 
 jest.doMock('@/components/quota/QuotaStatusCard', () => ({
@@ -264,6 +266,10 @@ jest.doMock('@/services/voiceLiveSpikeStorage', () => ({
   loadFeatureEnabled: jest.fn(async () => false),
   saveDebugEnabled: jest.fn(async () => undefined),
   saveFeatureEnabled: jest.fn(async () => undefined),
+}));
+
+jest.doMock('@/services/quota/GuestDreamCounter', () => ({
+  resetGuestDreamRecordingAllowanceForDev: () => mockResetGuestRecordingAllowance(),
 }));
 
 jest.doMock('react-native-reanimated', () => {
@@ -331,6 +337,30 @@ describe('Settings screen', () => {
       subscriptionSubtitle: 'settings.plus.subtitle',
     });
     expect(screen.queryByTestId(VOICE_LIVE_SPIKE_TEST_IDS.debugEntry)).toBeNull();
+    expect(screen.queryByTestId('guest-recording-qa-reset')).toBeNull();
+  });
+
+  it('offers a guest-only dev reset that reports the preserved dream count', async () => {
+    restoreDevFlag?.();
+    restoreDevFlag = withDevFlag(true);
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false, user: null });
+    mockUseSubscription.mockReturnValue({ isActive: false, loading: false, status: null });
+
+    render(<SettingsScreen />);
+    fireEvent.click(screen.getByTestId('guest-recording-qa-reset-button'));
+
+    await waitFor(() => expect(mockResetGuestRecordingAllowance).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(screen.getByTestId('guest-recording-qa-reset-result').textContent).toContain('4 rêves'));
+  });
+
+  it('does not offer the guest reset to a signed-in developer', () => {
+    restoreDevFlag?.();
+    restoreDevFlag = withDevFlag(true);
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false, user: { id: 'user-1' } });
+    mockUseSubscription.mockReturnValue({ isActive: false, loading: false, status: null });
+
+    render(<SettingsScreen />);
+    expect(screen.queryByTestId('guest-recording-qa-reset')).toBeNull();
   });
 
   it('[B] caps hosted React Native content to the centered desktop field group', () => {
@@ -447,8 +477,8 @@ it('opens the account form for the drawer sign-in entry', () => {
 });
 
 
-it.each([undefined, 'signin'])('includes subscription access in the account without general preferences (auth=%s)', (auth: string | undefined) => {
-  mockParams = { section: 'account', auth };
+it('includes subscription access in the account without general preferences', () => {
+  mockParams = { section: 'account' };
   mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
   render(<SettingsScreen />);
   expect(screen.getByTestId('settings-account-only')).toBeTruthy();
@@ -457,7 +487,20 @@ it.each([undefined, 'signin'])('includes subscription access in the account with
   expect(screen.getByTestId('settings-quota-rn-content')).toBeTruthy();
   fireEvent.click(screen.getByTestId('quota-status-card'));
   expect(mockPush).toHaveBeenCalledWith({ pathname: '/paywall', params: { trigger: 'settings' } });
-  expect(mockInitialAccountSheetOpen).toBe(auth === 'signin');
+  expect(mockInitialAccountSheetOpen).toBeFalsy();
+});
+
+it.each(['signup', 'signin'])('opens the requested %s form directly without a second account action or sheet', (auth: string) => {
+  mockCanGoBack = true;
+  mockBack.mockClear();
+  mockParams = { section: 'account', auth };
+  mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+  render(<SettingsScreen />);
+  expect(screen.getByTestId('email-auth-card').getAttribute('data-presentation')).toBe('card');
+  expect(mockInitialAccountSheetOpen).toBeFalsy();
+  expect(screen.queryByTestId('settings-quota-rn-content')).toBeNull();
+  fireEvent.click(screen.getByTestId('settings.back'));
+  expect(mockBack).toHaveBeenCalledTimes(1);
 });
 it('preserves the authentication recovery surface for a blocked returning guest', () => {
   mockParams = { section: 'account' };
