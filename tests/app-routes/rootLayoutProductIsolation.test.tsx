@@ -169,6 +169,24 @@ describe('root product composition (real root and DreamsProvider)', () => {
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
+  it('keeps guest account settings mounted while a capture is pending across foreground returns', async () => {
+    mockLucid = false;
+    mockUser = null;
+    const view = await mountStartup();
+    mockPathname = '/settings';
+    mockPendingRecordingIntent = {
+      entryId: 'first-dream', intent: 'record_dream', source: 'onboarding',
+      postSave: 'confirm_analysis', phase: 'capture',
+    };
+    await act(async () => { view.rerender(<RootLayout />); });
+    mockReplace.mockClear();
+
+    await act(async () => { mockForeground?.(); jest.advanceTimersByTime(100); });
+    await act(async () => { mockForeground?.(); jest.advanceTimersByTime(100); });
+
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
   it('still resumes the pending first dream when returning from another screen', async () => {
     mockLucid = false;
     mockUser = null;

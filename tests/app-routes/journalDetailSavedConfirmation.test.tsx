@@ -616,6 +616,30 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.queryByText('Discover Plus')).toBeNull();
   });
 
+  it.each(['guest', 'free'] as const)('resumes a failed %s analysis without another quota or account route', async (tier: 'guest' | 'free') => {
+    mockTier = tier;
+    mockUser = tier === 'guest' ? null : { id: 'user-1' };
+    mockQuotaStatus = { canAnalyze: false };
+    mockQuotaUsage = { analysis: { used: 2, limit: 2, remaining: 0 } };
+    mockCanAnalyzeNow = false;
+    mockCanAnalyze.mockResolvedValue(false);
+    mockDreams = [buildDream({
+      analysisStatus: 'failed',
+      analysisRequestId: '11111111-1111-4111-8111-111111111111',
+    })];
+
+    render(<JournalDetailScreen />);
+    const action = screen.getByTestId(TID.Button.DreamDetailPrimaryCta);
+    expect(action.textContent).toContain('journal.detail.analyze_button.retry');
+    await act(async () => { fireEvent.click(action); });
+
+    expect(mockAnalyzeDream).toHaveBeenCalledWith(mockDreams[0], mockDreams[0].transcript, {
+      replaceExistingImage: false, lang: 'fr', analyticsSource: 'journal_detail',
+    });
+    expect(mockCanAnalyze).not.toHaveBeenCalled();
+    expect(require('expo-router').router.push).not.toHaveBeenCalled();
+  });
+
   it.each([false, true])('preserves the guest account path (returning device: %s)', async (isUpgraded: boolean) => {
     mockTier = 'guest';
     mockUser = null;

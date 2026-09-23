@@ -552,12 +552,12 @@ function RootLayoutNav({
         pendingAuthDestination,
         });
       const currentPath = pathnameRef.current ?? pathname;
-      // Permission dialogs and store sheets background the app. The mounted
-      // capture/offer/detail already owns this intent. Replacing capture here
-      // would unmount the editor while its microphone request is still pending.
+      // Permission dialogs, store sheets and email verification background the app.
+      // The mounted capture, offer, detail or account settings owns the intent;
+      // replacing it would unmount an editor or verification dialog in progress.
       if (decision.reason === 'pending_intent'
         && (currentPath === '/recording' || currentPath === '/paywall' || currentPath?.startsWith('/journal/')
-          || (onboardingState.pendingRecordingIntent?.phase !== 'capture' && currentPath?.startsWith('/settings')))) return;
+          || currentPath?.startsWith('/settings'))) return;
       if (decision.reason !== 'default') {
         engageDecision(decision);
         return;

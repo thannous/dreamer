@@ -358,9 +358,11 @@ function JournalDetailContent() {
   const savedAnalysisAction = getSavedAnalysisAction({
     tier, loading: quotaLoading, error: quotaError, status: quotaStatus,
   });
-  const guestNeedsAccount = !user && (savedAnalysisAction === 'signup' || savedAnalysisAction === 'login');
 
   const dream = useMemo(() => resolveDreamRoute(dreams, { id, remoteId, clientRequestId }), [dreams, id, remoteId, clientRequestId]);
+  const canResumeAnalysis = Boolean(dream && isResumableAnalysisRequest(dream));
+  const guestNeedsAccount = !user && !canResumeAnalysis
+    && (savedAnalysisAction === 'signup' || savedAnalysisAction === 'login');
   const categorizationIdentity = dream ? getDreamIdentityKey(dream) : '';
   const getInitialCategorizationPending = useCallback(
     () => Boolean(categorizationIdentity && isInitialDreamCategorizationPending(categorizationIdentity)),
@@ -754,7 +756,7 @@ function JournalDetailContent() {
     }
 
     if (primaryAction === 'analyze') {
-      if (user && savedAnalysisAction === 'upgrade') {
+      if (user && savedAnalysisAction === 'upgrade' && !canResumeAnalysis) {
         return {
           icon: 'sparkles' as const,
           title: t('recording.saved_analysis.title'),
@@ -825,7 +827,7 @@ function JournalDetailContent() {
       cta: t('journal.detail.explore_button.new'),
       disabled: false,
     };
-  }, [awaitingPurchasedAnalysis, canRecoverPendingAnalysis, dream, guestNeedsAccount, isAnalyzing, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, savedAnalysisAction, t, user]);
+  }, [awaitingPurchasedAnalysis, canRecoverPendingAnalysis, canResumeAnalysis, dream, guestNeedsAccount, isAnalyzing, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, savedAnalysisAction, t, user]);
   const isAnalysisLocked = !!dream && (isAnalysisPending || isAnalyzing);
   const isImageJobPending = illustrationSidecar === 'pending';
   const isSyncPending = dreamSyncState === 'pending';
@@ -1489,7 +1491,7 @@ function JournalDetailContent() {
     if (!dream || analysisPressInFlightRef.current) return;
     analysisPressInFlightRef.current = true;
     try {
-      if (user && savedAnalysisAction === 'upgrade') {
+      if (user && savedAnalysisAction === 'upgrade' && !canResumeAnalysis) {
         router.push(buildAnalysisPaywallHref(dream, user.id));
         return;
       }
@@ -1499,7 +1501,7 @@ function JournalDetailContent() {
         return;
       }
 
-      if (!isResumableAnalysisRequest(dream)) {
+      if (!canResumeAnalysis) {
         const allowed = await ensureAnalyzeAllowed();
         if (!allowed) return;
       }
@@ -1513,7 +1515,7 @@ function JournalDetailContent() {
     } finally {
       analysisPressInFlightRef.current = false;
     }
-  }, [dream, ensureAnalyzeAllowed, guestNeedsAccount, hasExistingImage, runAnalyze, savedAnalysisAction, user]);
+  }, [canResumeAnalysis, dream, ensureAnalyzeAllowed, guestNeedsAccount, hasExistingImage, runAnalyze, savedAnalysisAction, user]);
 
   const handleReplaceImage = useCallback(() => {
     void runAnalyze(shouldReplaceExistingImage('replace'));
@@ -2003,13 +2005,13 @@ function JournalDetailContent() {
     );
   };
 
-  const analysisAccessLabel = visiblePrimaryAction !== 'analyze' || isPrimaryActionBusy || guestNeedsAccount || savedAnalysisAction === 'upgrade' ? null
+  const analysisAccessLabel = visiblePrimaryAction !== 'analyze' || isPrimaryActionBusy || canResumeAnalysis || guestNeedsAccount || savedAnalysisAction === 'upgrade' ? null
     : quotaHint.kind === 'unknown' ? t('journal.detail.check_analysis')
       : quotaHint.kind === 'remaining' && quotaHint.remaining <= 0
         ? t('journal.detail.analysis_options') : null;
 
   const renderQuotaHint = () => {
-    if (!quotaHintLabel) {
+    if (!quotaHintLabel || canResumeAnalysis) {
       return null;
     }
     return (
