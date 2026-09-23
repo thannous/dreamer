@@ -92,6 +92,19 @@ describe('semantic release policy', () => {
 });
 
 describe('release planning against real Git histories', () => {
+  it('ignores empty commits between relevant changes when planning and preparing', () => {
+    const root = fixture();
+    write(root, 'app/home.tsx', 'feature'); commit(root, 'feat: new home');
+    git(root, 'commit', '--allow-empty', '-m', 'chore: no file changes');
+    write(root, 'app/home.tsx', 'feature with fix'); commit(root, 'fix: polish home');
+
+    const planned = plan(root, 'noctalia');
+    expect(planned.next).toBe('3.2.0');
+    expect(planned.reasons.map(reason => reason.subject)).toEqual(['fix: polish home', 'feat: new home']);
+    git(root, 'update-ref', 'refs/remotes/origin/master', 'HEAD');
+    expect(prepare(root, ['noctalia'])[0].next).toBe('3.2.0');
+  });
+
   it('aggregates changes once, writes matching app/package/lock versions, and is idempotent after commit', () => {
     const root = fixture();
     write(root, 'app/home.tsx', 'feature'); commit(root, 'feat: new home');

@@ -88,7 +88,9 @@ function readCommitRange(root, sourceRef, head) {
   const touched = new Map(commits.map(commit => [commit, []]));
   const messages = new Map();
   if (commits.length) {
-    const diff = gitBytes(root, ['diff-tree', '--stdin', '--root', '--name-only', '--no-renames', '-r', '-z'], `${commits.join('\n')}\n`);
+    // Keep a record for --allow-empty commits so the following paths still
+    // map to the right hash in the rev-list sequence.
+    const diff = gitBytes(root, ['diff-tree', '--stdin', '--root', '--always', '--name-only', '--no-renames', '-r', '-z'], `${commits.join('\n')}\n`);
     const parts = diff.toString('utf8').split('\0');
     if (parts.at(-1) === '') parts.pop();
     let index = 0;
