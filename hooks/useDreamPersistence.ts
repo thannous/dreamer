@@ -15,6 +15,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 
 import { useAuth } from '../context/AuthContext';
 import { getAccessToken } from '../lib/auth';
+import { matchesDreamTarget } from '../lib/dreamIdentity';
 import { DreamPersistenceError } from '../lib/dreamStorageRead';
 import type { JournalCursor } from '../lib/journalReadContracts';
 import { logger } from '../lib/logger';
@@ -64,6 +65,15 @@ export type DreamPersistenceState =
       target: 'device' | 'remote-cache';
     };
 
+type LocalDreamWriteOptions = {
+  /** A new guest save is only shown after its journal write is durable. */
+  publishAfterWrite?: boolean;
+  /** Keep the capture draft, rather than an unsaved optimistic journal row. */
+  discardFailedWrite?: boolean;
+  /** Rebase other local writes on this new dream while its save is in flight. */
+  pendingDream?: DreamAnalysis;
+};
+
 export type UseDreamPersistenceResult = {
   /** Current list of dreams */
   dreams: DreamAnalysis[];
@@ -84,7 +94,7 @@ export type UseDreamPersistenceResult = {
   /** Ref to current dreams for use in callbacks */
   dreamsRef: React.RefObject<DreamAnalysis[]>;
   /** Persist dreams to local storage (guest mode) */
-  persistLocalDreams: (dreams: DreamAnalysis[]) => Promise<void>;
+  persistLocalDreams: (dreams: DreamAnalysis[], options?: LocalDreamWriteOptions) => Promise<void>;
   /** Persist dreams to remote cache (authenticated mode) */
   persistRemoteDreams: (updater: DreamListUpdater) => Promise<void>;
   /** Reload dreams from storage/server */
@@ -106,6 +116,7 @@ type WriteScopeState = {
     sequence: number;
     writer: (dreams: DreamAnalysis[]) => Promise<void>;
     promise: Promise<void>;
+    options: LocalDreamWriteOptions;
   };
 };
 
@@ -200,6 +211,11 @@ export function useDreamPersistence({
     target: canUseRemoteSync ? 'remote-cache' : 'device',
   });
   const dreamsRef = useRef<DreamAnalysis[]>([]);
+  const pendingGuestAdditionRef = useRef<{
+    dream: DreamAnalysis;
+    settled: Promise<boolean>;
+    resolve: (saved: boolean) => void;
+  } | null>(null);
   const [publishedScopeKey, setPublishedScopeKey] = useState(activeScopeKey);
   const [completeness, setCompleteness] = useState<JournalCompletenessState>({ status: 'loading' });
   const [remotePreviewAllowed, setRemotePreviewAllowed] = useState(false);
@@ -293,7 +309,8 @@ export function useDreamPersistence({
       target: 'device' | 'remote-cache',
       nextDreams: DreamAnalysis[],
       writer: (dreams: DreamAnalysis[]) => Promise<void>,
-      publishOptimistically: boolean
+      publishOptimistically: boolean,
+      options: LocalDreamWriteOptions = {}
     ): Promise<void> => {
       // A projection must never reintroduce a row hidden by a local mutation.
       if (activeScopeKeyRef.current === scopeKey) setRemotePreviewAllowed(false);
@@ -310,7 +327,10 @@ export function useDreamPersistence({
         scope.durable &&
         areDreamListsEqual(scope.durable, normalized) &&
         !scope.failed
-      ) return;
+      ) {
+        if (options.publishAfterWrite) setDreamsForScope(scopeKey, normalized);
+        return;
+      }
 
       const sequence = ++scope.sequence;
       setStateForScope(scopeKey, { status: 'saving', target });
@@ -320,10 +340,11 @@ export function useDreamPersistence({
         scope.queuedWrite.dreams = normalized;
         scope.queuedWrite.sequence = sequence;
         scope.queuedWrite.writer = writer;
+        scope.queuedWrite.options = options;
         await scope.queuedWrite.promise;
         return;
       }
-      const job = { dreams: normalized, sequence, writer, promise: Promise.resolve() };
+      const job = { dreams: normalized, sequence, writer, promise: Promise.resolve(), options };
       scope.pendingCount += 1;
       if (scope.pendingCount > 1) scope.queuedWrite = job;
       const run = scope.tail.catch(() => undefined).then(async () => {
@@ -333,10 +354,15 @@ export function useDreamPersistence({
           scope.durable = job.dreams;
           if (scope.failed && scope.failed.sequence <= job.sequence) scope.failed = null;
           if (scope.sequence === job.sequence) {
+            if (job.options.publishAfterWrite) setDreamsForScope(scopeKey, job.dreams);
             setStateForScope(scopeKey, { status: 'ready', target });
           }
         } catch {
-          scope.failed = { sequence: job.sequence, dreams: job.dreams };
+          if (job.options.discardFailedWrite) {
+            if (scope.failed && scope.failed.sequence <= job.sequence) scope.failed = null;
+          } else {
+            scope.failed = { sequence: job.sequence, dreams: job.dreams };
+          }
           if (scope.sequence === job.sequence) {
             setStateForScope(scopeKey, { status: 'error', operation: 'write', target });
           }
@@ -491,12 +517,53 @@ export function useDreamPersistence({
   /**
    * Persist dreams to local storage (for guest users)
    */
-  const persistLocalDreams = useCallback(async (newDreams: DreamAnalysis[]) => {
+  const persistLocalDreams = useCallback(async (
+    newDreams: DreamAnalysis[],
+    options: LocalDreamWriteOptions = {}
+  ) => {
     if (activeScopeKeyRef.current !== 'local') {
       throw new Error('Journal account changed before this save could start.');
     }
-    await enqueueWrite('local', 'device', newDreams, saveDreams, true);
-  }, [enqueueWrite]);
+    if (options.discardFailedWrite && getWriteScope('local').failed) {
+      throw new DreamPersistenceError('write', 'device');
+    }
+    if (options.pendingDream) {
+      let resolve!: (saved: boolean) => void;
+      const settled = new Promise<boolean>((done) => { resolve = done; });
+      const pending = { dream: options.pendingDream, settled, resolve };
+      pendingGuestAdditionRef.current = pending;
+      try {
+        await enqueueWrite('local', 'device', newDreams, saveDreams, false, options);
+        pending.resolve(true);
+      } catch (error) {
+        // A storage writer can reject after making the journal durable. Keep
+        // that dream in subsequent writes until the quota reconciliation runs.
+        let saved = true;
+        try {
+          const result = await getSavedDreams();
+          if (result.status !== 'error') {
+            saved = result.status === 'loaded' && result.value.some(
+              (dream) => matchesDreamTarget(dream, pending.dream)
+            );
+          }
+        } catch {
+          // Unknown write outcome: preserve the dream rather than overwrite it.
+        }
+        pending.resolve(saved);
+        throw error;
+      } finally {
+        if (pendingGuestAdditionRef.current === pending) pendingGuestAdditionRef.current = null;
+      }
+      return;
+    }
+
+    const pending = pendingGuestAdditionRef.current;
+    const saved = pending ? await pending.settled : false;
+    const rebasedDreams = pending && saved && !newDreams.some(
+      (dream) => matchesDreamTarget(dream, pending.dream)
+    ) ? upsertDream(newDreams, pending.dream) : newDreams;
+    await enqueueWrite('local', 'device', rebasedDreams, saveDreams, true, options);
+  }, [enqueueWrite, getWriteScope]);
 
   /**
    * Persist dreams to remote cache (for authenticated users)

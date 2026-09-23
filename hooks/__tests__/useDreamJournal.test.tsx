@@ -5,7 +5,7 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { GuestDreamMigrationOwner, DreamAnalysis, DreamListReadResult, DreamMutation, PendingImageJob, QuotaStatus } from '../../lib/types';
-import { QuotaError, QuotaErrorCode } from '../../lib/errors';
+import { GuestDreamLimitError, QuotaError, QuotaErrorCode } from '../../lib/errors';
 import { getDreamAnalysisFreshness, hashDreamTranscript } from '../../lib/dreamAnalysisFreshness';
 
 type AnyFunction = (...args: any[]) => any;
@@ -73,7 +73,7 @@ const {
   mockIncrementLocalAnalysisCount: typedJestFn<() => Promise<number>>(),
   mockIncrementLocalImageCount: typedJestFn<(claim?: { jobId?: string | null }) => Promise<number>>(),
   mockSyncWithServerCount: typedJestFn<(count: number, quotaType: 'analysis' | 'exploration' | 'image') => Promise<number>>(),
-  mockGuestDreamCounterState: { count: 0 },
+  mockGuestDreamCounterState: { count: 0, pending: null as string | null },
   mockUseAuth: typedJestFn<
     () => { user: { id: string; app_metadata?: Record<string, unknown> } | null; sessionReady: boolean }
   >(),
@@ -220,10 +220,14 @@ jest.mock('../../services/quota/MockQuotaEventStore', () => ({
 
 // Mock GuestDreamCounter (avoid persisting between tests)
 const mockGetGuestRecordedDreamCount = typedJestFn<(currentDreamCount: number) => Promise<number>>();
-const mockIncrementLocalDreamRecordingCount = typedJestFn<(currentDreamCount: number) => Promise<number>>();
+const mockReserveGuestDreamRecording = typedJestFn<(dream: DreamAnalysis, currentDreamCount: number, limit: number) => Promise<void>>();
+const mockCommitGuestDreamRecording = typedJestFn<(dream: DreamAnalysis) => Promise<void>>();
+const mockReconcilePendingGuestDreamRecording = typedJestFn<() => Promise<'saved' | 'absent' | 'none'>>();
 
 jest.mock('../../services/quota/GuestDreamCounter', () => ({
-  incrementLocalDreamRecordingCount: mockIncrementLocalDreamRecordingCount,
+  reserveGuestDreamRecording: mockReserveGuestDreamRecording,
+  commitGuestDreamRecording: mockCommitGuestDreamRecording,
+  reconcilePendingGuestDreamRecording: mockReconcilePendingGuestDreamRecording,
   getGuestRecordedDreamCount: mockGetGuestRecordedDreamCount,
   withGuestDreamRecordingLock: async (fn: () => Promise<unknown>) => fn(),
 }));
@@ -367,13 +371,27 @@ describe('useDreamJournal', () => {
     mockEnvState.mockMode = false;
     setMockUser(null);
     mockGuestDreamCounterState.count = 0;
+    mockGuestDreamCounterState.pending = null;
     mockNetworkState.isInternetReachable = true;
     mockNetworkState.isConnected = true;
     mockGetCurrentNetworkState.mockImplementation(async () => mockNetworkState);
     mockGetGuestRecordedDreamCount.mockImplementation(async (count) => Math.max(mockGuestDreamCounterState.count, count));
-    mockIncrementLocalDreamRecordingCount.mockImplementation(async (count) => {
-      mockGuestDreamCounterState.count = Math.max(mockGuestDreamCounterState.count, count) + 1;
-      return mockGuestDreamCounterState.count;
+    mockReserveGuestDreamRecording.mockImplementation(async (dream, count, limit) => {
+      const used = Math.max(mockGuestDreamCounterState.count, count);
+      if (used >= limit) throw new GuestDreamLimitError();
+      mockGuestDreamCounterState.count = used + 1;
+      mockGuestDreamCounterState.pending = dream.clientRequestId ?? `local:${dream.id}`;
+    });
+    mockCommitGuestDreamRecording.mockImplementation(async (dream) => {
+      if (mockGuestDreamCounterState.pending === (dream.clientRequestId ?? `local:${dream.id}`)) {
+        mockGuestDreamCounterState.pending = null;
+      }
+    });
+    mockReconcilePendingGuestDreamRecording.mockImplementation(async () => {
+      if (!mockGuestDreamCounterState.pending) return 'none';
+      mockGuestDreamCounterState.count -= 1;
+      mockGuestDreamCounterState.pending = null;
+      return 'absent';
     });
     process.env.EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED = '';
     setSavedDreams([]);
@@ -562,7 +580,7 @@ describe('useDreamJournal', () => {
   describe('addDream - local mode', () => {
     it('does not persist a new guest dream if its quota reservation fails', async () => {
       const { DreamPersistenceError } = require('../../lib/dreamStorageRead');
-      mockIncrementLocalDreamRecordingCount.mockRejectedValueOnce(new Error('storage full'));
+      mockReserveGuestDreamRecording.mockRejectedValueOnce(new Error('storage full'));
       const { result } = await renderLoadedDreamJournal();
       await act(async () => {
         await expect(result.current.addDream(buildDream({ id: 1 }))).rejects.toBeInstanceOf(DreamPersistenceError);
@@ -585,9 +603,77 @@ describe('useDreamJournal', () => {
       expect(mockSaveDreams).toHaveBeenCalledWith(
         expect.arrayContaining([expect.objectContaining({ id: 1 })])
       );
-      expect(mockIncrementLocalDreamRecordingCount.mock.invocationCallOrder[0]).toBeLessThan(
+      expect(mockReserveGuestDreamRecording.mock.invocationCallOrder[0]).toBeLessThan(
         mockSaveDreams.mock.invocationCallOrder[0]
       );
+    });
+
+    it('releases a failed new save without leaving an unsaved journal row', async () => {
+      const { DreamPersistenceError } = require('../../lib/dreamStorageRead');
+      mockSaveDreams.mockRejectedValueOnce(new Error('storage full'));
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await expect(result.current.addDream(buildDream({ id: 1 }))).rejects.toBeInstanceOf(DreamPersistenceError);
+      });
+      expect(result.current.dreams).toHaveLength(0);
+      expect(mockGuestDreamCounterState.count).toBe(0);
+
+      await act(async () => {
+        await result.current.addDream(buildDream({ id: 2 }));
+      });
+      expect(result.current.dreams.map((dream: DreamAnalysis) => dream.id)).toEqual([2]);
+      expect(mockGuestDreamCounterState.count).toBe(1);
+    });
+
+    it('keeps the slot and saved dream when the writer rejects after a durable write', async () => {
+      mockSaveDreams.mockImplementationOnce(async (dreams: DreamAnalysis[]) => {
+        setSavedDreams(dreams);
+        throw new Error('write acknowledgement lost');
+      });
+      mockReconcilePendingGuestDreamRecording.mockResolvedValueOnce('saved');
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.addDream(buildDream({ id: 1 }));
+      });
+      expect(result.current.dreams.map((dream: DreamAnalysis) => dream.id)).toEqual([1]);
+      expect(mockGuestDreamCounterState.count).toBe(1);
+    });
+
+    it('keeps a new dream when another guest journal edit starts during its write', async () => {
+      setSavedDreams([buildDream({ id: 1, isFavorite: false })]);
+      const { result } = await renderLoadedDreamJournal();
+      let finishFirstWrite!: () => void;
+      mockSaveDreams.mockImplementationOnce(() => new Promise<void>((resolve) => {
+        finishFirstWrite = resolve;
+      }));
+
+      let adding!: Promise<DreamAnalysis>;
+      await act(async () => {
+        adding = result.current.addDream(buildDream({ id: 2 }));
+        await Promise.resolve();
+      });
+      await waitFor(() => expect(mockSaveDreams).toHaveBeenCalledTimes(1));
+
+      let favoriting!: Promise<void>;
+      await act(async () => {
+        favoriting = result.current.toggleFavorite(1);
+        await Promise.resolve();
+      });
+      expect(mockSaveDreams).toHaveBeenCalledTimes(1);
+
+      await act(async () => {
+        finishFirstWrite();
+        await Promise.all([adding, favoriting]);
+      });
+      expect(result.current.dreams.map((dream: DreamAnalysis) => dream.id)).toEqual([2, 1]);
+      expect(result.current.dreams.find((dream: DreamAnalysis) => dream.id === 1)?.isFavorite).toBe(true);
+      expect(mockSaveDreams).toHaveBeenLastCalledWith(expect.arrayContaining([
+        expect.objectContaining({ id: 1, isFavorite: true }),
+        expect.objectContaining({ id: 2 }),
+      ]));
+      expect(mockGuestDreamCounterState.count).toBe(2);
     });
 
     it('sorts dreams by id descending', async () => {

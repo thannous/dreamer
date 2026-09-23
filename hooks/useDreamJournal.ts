@@ -75,8 +75,9 @@ import {
   syncWithServerCount,
 } from '@/services/quota/GuestAnalysisCounter';
 import {
-  getGuestRecordedDreamCount,
-  incrementLocalDreamRecordingCount,
+  commitGuestDreamRecording,
+  reconcilePendingGuestDreamRecording,
+  reserveGuestDreamRecording,
   withGuestDreamRecordingLock,
 } from '@/services/quota/GuestDreamCounter';
 import { markMockAnalysis, markMockImage } from '@/services/quota/MockQuotaEventStore';
@@ -555,25 +556,51 @@ export const useDreamJournal = () => {
           return withGuestDreamRecordingLock(async () => {
             const currentDreams = dreamsRef.current;
             const alreadyExists = currentDreams.some((existing) => matchesDreamTarget(existing, normalizedDream));
-            if (!alreadyExists) {
-              let recordedCount: number;
-              try {
-                recordedCount = await getGuestRecordedDreamCount(currentDreams.length);
-              } catch {
-                throw new DreamPersistenceError('read', 'device');
-              }
-              if (recordedCount >= GUEST_DREAM_RECORDING_LIMIT) {
-                throw new GuestDreamLimitError();
-              }
-              // Reserve the slot durably before the dream can be saved. A failed
-              // journal write can be retried with the same optimistic identity.
-              try {
-                await incrementLocalDreamRecordingCount(currentDreams.length);
-              } catch {
-                throw new DreamPersistenceError('write', 'device');
-              }
+            if (alreadyExists) {
+              await persistLocalDreams(upsertDream(currentDreams, normalizedDream));
+              return normalizedDream;
             }
-            await persistLocalDreams(upsertDream(currentDreams, normalizedDream));
+
+            try {
+              await reserveGuestDreamRecording(
+                normalizedDream,
+                currentDreams.length,
+                GUEST_DREAM_RECORDING_LIMIT
+              );
+            } catch (error) {
+              if (error instanceof GuestDreamLimitError) throw error;
+              throw new DreamPersistenceError('write', 'device');
+            }
+
+            try {
+              await persistLocalDreams(upsertDream(currentDreams, normalizedDream), {
+                publishAfterWrite: true,
+                discardFailedWrite: true,
+                pendingDream: normalizedDream,
+              });
+            } catch (error) {
+              // The writer may reject after the journal actually became durable.
+              // Only return the slot when a fresh journal read proves it absent.
+              let outcome: 'saved' | 'absent' | 'none' = 'none';
+              try {
+                outcome = await reconcilePendingGuestDreamRecording();
+              } catch (reconcileError) {
+                logger.warn('Could not reconcile guest recording reservation', reconcileError);
+              }
+              if (outcome === 'saved') {
+                await reloadDreams();
+                return normalizedDream;
+              }
+              throw error;
+            }
+
+            try {
+              await commitGuestDreamRecording(normalizedDream);
+            } catch (error) {
+              // The durable journal still proves this slot was spent. A later
+              // quota read or deletion will finish the pending reservation.
+              logger.warn('Could not finalize guest recording reservation', error);
+            }
             return normalizedDream;
           });
         }
@@ -608,6 +635,7 @@ export const useDreamJournal = () => {
       hasNetwork,
       persistLocalDreams,
       queueOfflineOperation,
+      reloadDreams,
       syncPendingMutations,
       user,
     ]
@@ -836,18 +864,25 @@ export const useDreamJournal = () => {
    */
   const deleteDream = useCallback(
     async (target: DreamTarget) => {
+      if (!canUseRemoteSync) {
+        await withGuestDreamRecordingLock(async () => {
+          const currentDreams = dreamsRef.current;
+          const existing = resolveDreamTarget(currentDreams, target);
+          if (!existing) throw new Error('Dream identity is ambiguous or missing');
+          // If finalizing the save previously failed, commit its slot before
+          // removing the only durable evidence that it was spent.
+          await commitGuestDreamRecording(existing);
+          await persistLocalDreams(removeDream(currentDreams, existing));
+          await clearPendingImageJobsForDream(target);
+        });
+        return;
+      }
+
       const dreamId = typeof target === 'number' ? target : target.id;
       const currentDreams = dreamsRef.current;
       const existing = resolveDreamTarget(currentDreams, target);
 
       if (!existing) throw new Error('Dream identity is ambiguous or missing');
-
-      if (!canUseRemoteSync) {
-        const newDreams = removeDream(currentDreams, existing!);
-        await persistLocalDreams(newDreams);
-        await clearPendingImageJobsForDream(target);
-        return;
-      }
 
       const remoteId = resolveRemoteId(target);
       if (!remoteId) {

@@ -1,25 +1,30 @@
 /**
- * GuestDreamCounter - Persistent local counter for guest dream recordings
- *
- * This module stores a cumulative "recorded dreams" counter for guest users.
- * It prevents quota bypass where a guest deletes dreams to record more.
- *
- * The counter is stored in AsyncStorage and is never decremented.
- * We compute usage as max(localCounter, currentDreamCount).
+ * Cumulative guest recording allowance. A reservation and its dream identity
+ * share one durable record so an interrupted journal write can be reconciled.
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getSavedDreams } from '@/services/storageService';
-import { isMockModeEnabled } from '@/lib/env';
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { requireReadableDreams } from '@/lib/dreamStorageRead';
+import { isMockModeEnabled } from '@/lib/env';
+import { GuestDreamLimitError } from '@/lib/errors';
+import type { DreamAnalysis } from '@/lib/types';
+import { getSavedDreams } from '@/services/storageService';
 
-const DREAM_RECORDING_KEY = 'guest_total_dream_recording_count_v1';
+const LEGACY_COUNT_KEY = 'guest_total_dream_recording_count_v1';
+const RECORDING_STATE_KEY = 'guest_dream_recording_state_v2';
 const MIGRATION_KEY = 'guest_dream_recording_migrated_v1';
+
+type RecordingIdentity = Pick<DreamAnalysis, 'id' | 'clientRequestId'>;
+type RecordingState = {
+  count: number;
+  pending: { identity: string; previousCount: number } | null;
+};
 
 let recordingLock: Promise<void> = Promise.resolve();
 const recordingCountListeners = new Set<() => void>();
-/** Mock dreams live in memory; keep the recording counter in the same session lifetime. */
-let mockSessionRecordingCount = 0;
+/** Mock dreams live in memory; keep their allowance in the same session. */
+let mockSessionState: RecordingState = { count: 0, pending: null };
 
 const emitRecordingCountChange = () => {
   recordingCountListeners.forEach((listener) => listener());
@@ -41,98 +46,136 @@ export async function withGuestDreamRecordingLock<T>(fn: () => Promise<T>): Prom
   return run;
 }
 
-function safeParseInt(val: string | null): number {
-  if (!val) return 0;
-  const parsed = parseInt(val, 10);
-  return Number.isNaN(parsed) ? 0 : parsed;
-}
-
-function requireStoredCount(val: string | null): number {
-  if (val === null) return 0;
-  if (!/^(0|[1-9]\d*)$/.test(val)) throw new Error('Invalid guest recording count');
-  const count = Number(val);
+function requireStoredCount(value: string | null): number {
+  if (value === null) return 0;
+  if (!/^(0|[1-9]\d*)$/.test(value)) throw new Error('Invalid guest recording count');
+  const count = Number(value);
   if (!Number.isSafeInteger(count)) throw new Error('Invalid guest recording count');
   return count;
 }
 
-export async function getLocalDreamRecordingCount(): Promise<number> {
-  if (isMockModeEnabled()) {
-    return mockSessionRecordingCount;
-  }
+function requireRecordingState(value: string): RecordingState {
+  let parsed: unknown;
   try {
-    const val = await AsyncStorage.getItem(DREAM_RECORDING_KEY);
-    return safeParseInt(val);
+    parsed = JSON.parse(value);
+  } catch {
+    throw new Error('Invalid guest recording state');
+  }
+  if (!parsed || typeof parsed !== 'object') throw new Error('Invalid guest recording state');
+  const { count, pending } = parsed as Partial<RecordingState>;
+  if (!Number.isSafeInteger(count) || (count ?? -1) < 0) {
+    throw new Error('Invalid guest recording state');
+  }
+  if (pending !== null && (
+    !pending || typeof pending !== 'object' ||
+    typeof pending.identity !== 'string' || !pending.identity ||
+    !Number.isSafeInteger(pending.previousCount) ||
+    pending.previousCount < 0 || count !== pending.previousCount + 1
+  )) {
+    throw new Error('Invalid guest recording state');
+  }
+  return { count: count as number, pending: pending ?? null };
+}
+
+async function readState(): Promise<RecordingState> {
+  if (isMockModeEnabled()) return mockSessionState;
+  const stored = await AsyncStorage.getItem(RECORDING_STATE_KEY);
+  if (stored !== null) return requireRecordingState(stored);
+  return { count: requireStoredCount(await AsyncStorage.getItem(LEGACY_COUNT_KEY)), pending: null };
+}
+
+async function writeState(state: RecordingState): Promise<void> {
+  if (isMockModeEnabled()) {
+    mockSessionState = state;
+  } else {
+    await AsyncStorage.setItem(RECORDING_STATE_KEY, JSON.stringify(state));
+  }
+  emitRecordingCountChange();
+}
+
+/** Must be called under the recording lock, after any guest journal write settles. */
+async function reconcilePendingState(): Promise<{ state: RecordingState; outcome: 'saved' | 'absent' | 'none' }> {
+  const state = await readState();
+  if (!state.pending) return { state, outcome: 'none' };
+
+  const dreams = requireReadableDreams(await getSavedDreams());
+  const saved = dreams.some((dream) => getDreamIdentityKey(dream) === state.pending?.identity);
+  const next: RecordingState = {
+    count: saved ? state.count : state.pending.previousCount,
+    pending: null,
+  };
+  await writeState(next);
+  return { state: next, outcome: saved ? 'saved' : 'absent' };
+}
+
+/** Returns whether the reserved dream reached durable journal storage. */
+export async function reconcilePendingGuestDreamRecording(): Promise<'saved' | 'absent' | 'none'> {
+  return (await reconcilePendingState()).outcome;
+}
+
+/** Reserve a lifetime slot before writing a new guest dream. Called under the lock. */
+export async function reserveGuestDreamRecording(
+  dream: RecordingIdentity,
+  currentDreamCount: number,
+  limit: number
+): Promise<void> {
+  const { state } = await reconcilePendingState();
+  const used = Math.max(state.count, currentDreamCount);
+  if (used >= limit) throw new GuestDreamLimitError();
+  await writeState({
+    count: used + 1,
+    pending: { identity: getDreamIdentityKey(dream), previousCount: used },
+  });
+}
+
+/** Mark a saved dream committed, including before deleting that same dream. */
+export async function commitGuestDreamRecording(dream: RecordingIdentity): Promise<void> {
+  const state = await readState();
+  if (!state.pending || state.pending.identity !== getDreamIdentityKey(dream)) return;
+  await writeState({ count: state.count, pending: null });
+}
+
+export async function getLocalDreamRecordingCount(): Promise<number> {
+  try {
+    return await getGuestRecordedDreamCount(0);
   } catch (error) {
     console.warn('[GuestDreamCounter] Failed to get recording count:', error);
     return 0;
   }
 }
 
-export async function incrementLocalDreamRecordingCount(currentDreamCount = 0): Promise<number> {
-  if (isMockModeEnabled()) {
-    mockSessionRecordingCount = Math.max(mockSessionRecordingCount, currentDreamCount) + 1;
-    emitRecordingCountChange();
-    return mockSessionRecordingCount;
-  }
-  try {
-    // Admission must never treat a transient read failure as an empty counter.
-    const current = requireStoredCount(await AsyncStorage.getItem(DREAM_RECORDING_KEY));
-    const next = Math.max(current, currentDreamCount) + 1;
-    await AsyncStorage.setItem(DREAM_RECORDING_KEY, String(next));
-    emitRecordingCountChange();
-    return next;
-  } catch (error) {
-    console.warn('[GuestDreamCounter] Failed to increment recording count:', error);
-    throw error;
-  }
-}
-
-/**
- * Clears the cumulative guest recording state for explicit mock/test resets.
- * The lock ensures a recording already being persisted cannot restore the
- * counter after the reset completes.
- */
+/** Explicit mock/test reset; serialized so an in-flight save cannot restore it. */
 export async function resetGuestDreamRecordingCount(): Promise<void> {
-  mockSessionRecordingCount = 0;
   await withGuestDreamRecordingLock(async () => {
-    await AsyncStorage.multiRemove([DREAM_RECORDING_KEY, MIGRATION_KEY]);
+    mockSessionState = { count: 0, pending: null };
+    await AsyncStorage.multiRemove([RECORDING_STATE_KEY, LEGACY_COUNT_KEY, MIGRATION_KEY]);
     emitRecordingCountChange();
   });
 }
 
-/**
- * Returns the effective used recording count for quota checks.
- * Uses max(localCounter, currentDreamCount) so deletions don't reduce usage.
- */
+/** A failed read never silently restores an exhausted allowance. */
 export async function getGuestRecordedDreamCount(currentDreamCount: number): Promise<number> {
-  if (isMockModeEnabled()) {
-    return Math.max(mockSessionRecordingCount, currentDreamCount);
-  }
-  // A failed read must not silently reset an exhausted recording allowance.
-  const local = requireStoredCount(await AsyncStorage.getItem(DREAM_RECORDING_KEY));
-  return Math.max(local, currentDreamCount);
+  return withGuestDreamRecordingLock(async () => {
+    const { state } = await reconcilePendingState();
+    return Math.max(state.count, currentDreamCount);
+  });
 }
 
-/**
- * One-time migration: initialize the counter from currently saved dreams.
- * This ensures existing guest users don't regain quota by upgrading the app.
- */
+/** Seed historical usage from dreams saved before this allowance was introduced. */
 export async function migrateExistingGuestDreamRecording(): Promise<void> {
+  if (isMockModeEnabled()) return;
   try {
-    const migrated = await AsyncStorage.getItem(MIGRATION_KEY);
-    if (migrated) return;
+    await withGuestDreamRecordingLock(async () => {
+      const { state } = await reconcilePendingState();
+      if (await AsyncStorage.getItem(MIGRATION_KEY)) return;
 
-    const dreams = requireReadableDreams(await getSavedDreams());
-    const stored = requireStoredCount(await AsyncStorage.getItem(DREAM_RECORDING_KEY));
-    const count = Math.max(stored, dreams.length);
-
-    if (count > stored) {
-      await AsyncStorage.setItem(DREAM_RECORDING_KEY, String(count));
-      emitRecordingCountChange();
-      console.log(`[GuestDreamCounter] Migrated recording count: ${count}`);
-    }
-
-    await AsyncStorage.setItem(MIGRATION_KEY, 'true');
+      const dreams = requireReadableDreams(await getSavedDreams());
+      const count = Math.max(state.count, dreams.length);
+      if (count > state.count) {
+        await writeState({ count, pending: null });
+      }
+      await AsyncStorage.setItem(MIGRATION_KEY, 'true');
+    });
   } catch (error) {
     console.warn('[GuestDreamCounter] Migration failed:', error);
   }
