@@ -76,6 +76,7 @@ import {
 } from '@/services/quota/GuestAnalysisCounter';
 import {
   commitGuestDreamRecording,
+  preserveGuestDreamRecordingCountBeforeDeletion,
   reconcilePendingGuestDreamRecording,
   reserveGuestDreamRecording,
   withGuestDreamRecordingLock,
@@ -894,6 +895,9 @@ export const useDreamJournal = () => {
           const currentDreams = dreamsRef.current;
           const existing = resolveDreamTarget(currentDreams, target);
           if (!existing) throw new Error('Dream identity is ambiguous or missing');
+          // A failed startup migration may have left a legacy counter behind
+          // the durable journal. Preserve that evidence before removing it.
+          await preserveGuestDreamRecordingCountBeforeDeletion(currentDreams.length);
           // If finalizing the save previously failed, commit its slot before
           // removing the only durable evidence that it was spent.
           await commitGuestDreamRecording(existing);

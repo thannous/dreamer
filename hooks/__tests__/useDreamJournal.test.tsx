@@ -222,11 +222,13 @@ jest.mock('../../services/quota/MockQuotaEventStore', () => ({
 const mockGetGuestRecordedDreamCount = typedJestFn<(currentDreamCount: number) => Promise<number>>();
 const mockReserveGuestDreamRecording = typedJestFn<(dream: DreamAnalysis, currentDreamCount: number, limit: number) => Promise<void>>();
 const mockCommitGuestDreamRecording = typedJestFn<(dream: DreamAnalysis) => Promise<void>>();
+const mockPreserveGuestDreamRecordingCountBeforeDeletion = typedJestFn<(currentDreamCount: number) => Promise<void>>();
 const mockReconcilePendingGuestDreamRecording = typedJestFn<() => Promise<'saved' | 'absent' | 'none'>>();
 
 jest.mock('../../services/quota/GuestDreamCounter', () => ({
   reserveGuestDreamRecording: mockReserveGuestDreamRecording,
   commitGuestDreamRecording: mockCommitGuestDreamRecording,
+  preserveGuestDreamRecordingCountBeforeDeletion: mockPreserveGuestDreamRecordingCountBeforeDeletion,
   reconcilePendingGuestDreamRecording: mockReconcilePendingGuestDreamRecording,
   getGuestRecordedDreamCount: mockGetGuestRecordedDreamCount,
   withGuestDreamRecordingLock: async (fn: () => Promise<unknown>) => fn(),
@@ -386,6 +388,9 @@ describe('useDreamJournal', () => {
       if (mockGuestDreamCounterState.pending === (dream.clientRequestId ?? `local:${dream.id}`)) {
         mockGuestDreamCounterState.pending = null;
       }
+    });
+    mockPreserveGuestDreamRecordingCountBeforeDeletion.mockImplementation(async (count) => {
+      mockGuestDreamCounterState.count = Math.max(mockGuestDreamCounterState.count, count);
     });
     mockReconcilePendingGuestDreamRecording.mockImplementation(async () => {
       if (!mockGuestDreamCounterState.pending) return 'none';
@@ -919,6 +924,21 @@ describe('useDreamJournal', () => {
       await act(async () => { await result.current.addDream({ ...result.current.dreams.find((d: DreamAnalysis) => d.id === 5)!, title: 'Updated' }); });
       expect(mockGuestDreamCounterState.count).toBe(5);
       await act(async () => { await result.current.deleteDream(5); });
+      await act(async () => {
+        await expect(result.current.addDream(buildDream({ id: 6 }))).rejects.toBeInstanceOf(GuestDreamLimitError);
+      });
+      expect(result.current.dreams).toHaveLength(4);
+    });
+
+    it('seeds a legacy guest undercount before deleting the fifth saved dream', async () => {
+      const { GuestDreamLimitError } = require('../../lib/errors');
+      mockGuestDreamCounterState.count = 4;
+      setSavedDreams([1, 2, 3, 4, 5].map((id) => buildDream({ id })));
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => { await result.current.deleteDream(5); });
+      expect(mockPreserveGuestDreamRecordingCountBeforeDeletion).toHaveBeenCalledWith(5);
+      expect(mockGuestDreamCounterState.count).toBe(5);
       await act(async () => {
         await expect(result.current.addDream(buildDream({ id: 6 }))).rejects.toBeInstanceOf(GuestDreamLimitError);
       });
@@ -1799,6 +1819,18 @@ describe('useDreamJournal', () => {
 
       expect(result.current.dreams).toHaveLength(0);
       expect(mockSaveDreams).toHaveBeenCalledWith([]);
+    });
+
+    it('keeps a guest dream when its lifetime count cannot be preserved before deletion', async () => {
+      setSavedDreams([buildDream({ id: 1 })]);
+      const { result } = await renderLoadedDreamJournal();
+      mockPreserveGuestDreamRecordingCountBeforeDeletion.mockRejectedValueOnce(new Error('journal unreadable'));
+
+      await act(async () => {
+        await expect(result.current.deleteDream(1)).rejects.toThrow('journal unreadable');
+      });
+      expect(mockSaveDreams).not.toHaveBeenCalled();
+      expect(result.current.dreams).toHaveLength(1);
     });
 
     it('deletes dream from Supabase when authenticated', async () => {

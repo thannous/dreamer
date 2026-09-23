@@ -11,6 +11,7 @@ let getLocalDreamRecordingCount: typeof import('../GuestDreamCounter').getLocalD
 let reserveGuestDreamRecording: typeof import('../GuestDreamCounter').reserveGuestDreamRecording;
 let commitGuestDreamRecording: typeof import('../GuestDreamCounter').commitGuestDreamRecording;
 let reconcilePendingGuestDreamRecording: typeof import('../GuestDreamCounter').reconcilePendingGuestDreamRecording;
+let preserveGuestDreamRecordingCountBeforeDeletion: typeof import('../GuestDreamCounter').preserveGuestDreamRecordingCountBeforeDeletion;
 let migrateExistingGuestDreamRecording: typeof import('../GuestDreamCounter').migrateExistingGuestDreamRecording;
 let resetGuestDreamRecordingCount: typeof import('../GuestDreamCounter').resetGuestDreamRecordingCount;
 let resetGuestDreamRecordingAllowanceForDev: typeof import('../GuestDreamCounter').resetGuestDreamRecordingAllowanceForDev;
@@ -78,6 +79,7 @@ describe('GuestDreamCounter', () => {
       reserveGuestDreamRecording,
       commitGuestDreamRecording,
       reconcilePendingGuestDreamRecording,
+      preserveGuestDreamRecordingCountBeforeDeletion,
       migrateExistingGuestDreamRecording,
       resetGuestDreamRecordingCount,
       resetGuestDreamRecordingAllowanceForDev,
@@ -161,6 +163,8 @@ describe('GuestDreamCounter', () => {
     mockStorage.set(DREAM_RECORDING_KEY, '2');
     await expect(getGuestRecordedDreamCount(1)).resolves.toBe(2);
     await expect(getGuestRecordedDreamCount(5)).resolves.toBe(5);
+    expect(storedState()).toEqual({ count: 5, pending: null });
+    await expect(getGuestRecordedDreamCount(0)).resolves.toBe(5);
   });
 
   it('rejects an unreadable quota counter instead of treating it as zero', async () => {
@@ -252,6 +256,28 @@ describe('GuestDreamCounter', () => {
     expect(storedState()).toEqual({ count: 5, pending: null });
     setSavedDreams([dream(1), dream(2), dream(3), dream(4)] as DreamAnalysis[]);
     await expect(getGuestRecordedDreamCount(4)).resolves.toBe(5);
+  });
+
+  it('preserves five saved dreams before deletion when startup migration could not read them', async () => {
+    mockStorage.set(DREAM_RECORDING_KEY, '4');
+    const fiveDreams = [dream(1), dream(2), dream(3), dream(4), dream(5)] as DreamAnalysis[];
+    mockGetSavedDreams.mockResolvedValueOnce({ status: 'error' });
+    setSavedDreams(fiveDreams);
+    await migrateExistingGuestDreamRecording();
+    expect(storedState()).toBeNull();
+
+    await preserveGuestDreamRecordingCountBeforeDeletion(4);
+    expect(storedState()).toEqual({ count: 5, pending: null });
+    setSavedDreams(fiveDreams.slice(0, 4));
+    await expect(reserveGuestDreamRecording(dream(6), 4, 5)).rejects.toThrow();
+    expect(storedState().count).toBe(5);
+  });
+
+  it('does not remove a dream when its lifetime count cannot be verified', async () => {
+    mockStorage.set(DREAM_RECORDING_KEY, '4');
+    mockGetSavedDreams.mockResolvedValue({ status: 'error' });
+    await expect(preserveGuestDreamRecordingCountBeforeDeletion(4)).rejects.toThrow();
+    expect(storedState()).toBeNull();
   });
 
   it('migration preserves a reserved count when fewer dreams are still present', async () => {

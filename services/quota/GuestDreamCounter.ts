@@ -93,6 +93,12 @@ async function writeState(state: RecordingState): Promise<void> {
   emitRecordingCountChange();
 }
 
+async function persistAtLeastCount(state: RecordingState, currentDreamCount: number): Promise<number> {
+  const count = Math.max(state.count, currentDreamCount);
+  if (count > state.count) await writeState({ count, pending: null });
+  return count;
+}
+
 /** Must be called under the recording lock, after any guest journal write settles. */
 async function reconcilePendingState(): Promise<{ state: RecordingState; outcome: 'saved' | 'absent' | 'none' }> {
   const state = await readState();
@@ -169,8 +175,15 @@ export async function resetGuestDreamRecordingAllowanceForDev(): Promise<number>
 export async function getGuestRecordedDreamCount(currentDreamCount: number): Promise<number> {
   return withGuestDreamRecordingLock(async () => {
     const { state } = await reconcilePendingState();
-    return Math.max(state.count, currentDreamCount);
+    return persistAtLeastCount(state, currentDreamCount);
   });
+}
+
+/** Called under the recording lock before deleting durable guest journal evidence. */
+export async function preserveGuestDreamRecordingCountBeforeDeletion(currentDreamCount: number): Promise<void> {
+  const { state } = await reconcilePendingState();
+  const dreams = requireReadableDreams(await getSavedDreams());
+  await persistAtLeastCount(state, Math.max(currentDreamCount, dreams.length));
 }
 
 /** Seed historical usage from dreams saved before this allowance was introduced. */
@@ -182,10 +195,7 @@ export async function migrateExistingGuestDreamRecording(): Promise<void> {
       // Older builds marked migration complete even when a later best-effort
       // counter increment failed. Reconcile the durable journal every launch.
       const dreams = requireReadableDreams(await getSavedDreams());
-      const count = Math.max(state.count, dreams.length);
-      if (count > state.count) {
-        await writeState({ count, pending: null });
-      }
+      await persistAtLeastCount(state, dreams.length);
       if (!(await AsyncStorage.getItem(MIGRATION_KEY))) {
         await AsyncStorage.setItem(MIGRATION_KEY, 'true');
       }
