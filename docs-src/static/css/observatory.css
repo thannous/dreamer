@@ -338,6 +338,7 @@
   min-height: 100%;
   pointer-events: none;
   background:
+    radial-gradient(ellipse 75% 65% at 50% 38%, transparent 45%, rgba(3, 4, 13, 0.72) 100%),
     linear-gradient(180deg, rgba(3, 4, 13, 0.2), rgba(3, 4, 13, 0.55) 56%, rgba(3, 4, 13, 0.96)),
     url('/img/hero/noctalia-observatory-bg.webp') center center / cover no-repeat;
   opacity: 0.55;
@@ -368,28 +369,20 @@
   font-family: 'Fraunces', serif;
   font-variation-settings: 'opsz' 144;
   font-weight: 300;
-  font-size: clamp(2.9rem, 7.6vw, 6.9rem);
+  font-size: clamp(2.9rem, 6.8vw, 6.1rem);
   line-height: 1.02;
   letter-spacing: -0.028em;
   color: var(--oh-ivory);
   text-wrap: balance;
   margin: 0 auto 1.8rem;
-  max-width: 62rem;
+  max-width: 66rem;
 }
 
 .oh-hero-title .oh-accent-line {
   display: block;
   font-weight: 360;
   color: var(--oh-champagne-on);
-}
-
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  .oh-hero-title .oh-accent-line {
-    background: linear-gradient(100deg, var(--oh-ivory) 0%, var(--oh-champagne-on) 38%, var(--oh-champagne-on) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+  text-shadow: 0 0 48px rgba(234, 212, 180, 0.22);
 }
 
 .oh-hero-lede {
@@ -1259,15 +1252,15 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .oh-symbol:hover {
+  a.oh-symbol:hover {
     background-color: var(--oh-champagne-06);
   }
 
-  .oh-symbol:hover .oh-symbol-name {
+  a.oh-symbol:hover .oh-symbol-name {
     color: var(--oh-champagne-on);
   }
 
-  .oh-symbol:hover svg {
+  a.oh-symbol:hover svg {
     opacity: 1;
     transform: translate(0, 0);
   }
@@ -1289,8 +1282,7 @@
 /* ---------------------------------------------------------------- */
 
 body .noctalia-premium-nav .text-dream-salmon,
-body #mobileMenuPanel .text-dream-salmon,
-body [data-faq-visible] .text-dream-salmon {
+body #mobileMenuPanel .text-dream-salmon {
   color: var(--oh-champagne-on);
 }
 

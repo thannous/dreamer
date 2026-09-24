@@ -45,15 +45,21 @@ const withSuffix = (selectorList, suffix) =>
     .join(',');
 
 const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
+// easeOutCubic: the restrained curve for the cinematic hero sequence.
+const EASE_FILM = 'cubic-bezier(0.22, 0.61, 0.36, 1)';
+const WORD_STAGGER_MS = 85;
+const HEADLINE_LEAD_MS = 450;
 
-const getHeroItems = () => Array.from(document.querySelectorAll('.hero-anim'));
+const getHeroItems = () => Array.from(document.querySelectorAll('.hero-anim:not(.oh-hero-title)'));
+const getHeadline = () => document.querySelector('.oh-hero-title');
 const getRevealItems = () => Array.from(document.querySelectorAll('.reveal'));
 const getFeatureMedia = () => Array.from(document.querySelectorAll('.oh-feature-media'));
 
 const showStaticState = () => {
   getFeatureMedia().forEach((el) => el.classList.add('is-inview'));
+  getHeadline()?.classList.add('is-revealed');
 
-  getHeroItems().forEach((el) => {
+  Array.from(document.querySelectorAll('.hero-anim')).forEach((el) => {
     el.classList.remove('opacity-0');
     el.style.opacity = '1';
     el.style.visibility = 'visible';
@@ -139,18 +145,63 @@ const loadScript = (src) => {
 };
 
 /* ------------------------------------------------------------------ */
+/* Headline: per-word focus pull (full & light tiers).                 */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Wraps each word of the headline in `.oh-word` so it can rise out of a
+ * soft blur, one word after another, like a dream coming back. Spaces stay
+ * as text nodes so wrapping, balancing and the accessible name are intact.
+ */
+const revealHeadline = () => {
+  const headline = getHeadline();
+  if (!headline) return;
+  const walker = document.createTreeWalker(headline, NodeFilter.SHOW_TEXT);
+  const textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+  let index = 0;
+  textNodes.forEach((node) => {
+    const parts = node.textContent.split(/(\s+)/);
+    if (!parts.some((part) => part.trim())) return;
+    const fragment = document.createDocumentFragment();
+    parts.forEach((part) => {
+      if (!part) return;
+      if (!part.trim()) {
+        fragment.append(document.createTextNode(part));
+        return;
+      }
+      const word = document.createElement('span');
+      word.className = 'oh-word';
+      word.textContent = part;
+      word.style.transitionDelay = `${index * WORD_STAGGER_MS}ms`;
+      index += 1;
+      fragment.append(word);
+    });
+    node.replaceWith(fragment);
+  });
+
+  html.classList.add('exp-words');
+  // Two frames: the collapsed state must be committed before it transitions.
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => headline.classList.add('is-revealed'));
+  });
+};
+
+/* ------------------------------------------------------------------ */
 /* Light tier: IO reveals (no GSAP).                                   */
 /* ------------------------------------------------------------------ */
 
 const initLightMotion = () => {
+  revealHeadline();
   const heroItems = getHeroItems();
   heroItems.forEach((el, index) => {
     el.classList.remove('opacity-0');
     el.style.opacity = '0';
     el.style.visibility = 'visible';
     el.style.transform = 'translate3d(0, 14px, 0)';
-    el.style.transition = `opacity 700ms ${EASE_OUT}, transform 700ms ${EASE_OUT}`;
-    el.style.transitionDelay = `${Math.min(index * 90, 360)}ms`;
+    el.style.transition = `opacity 900ms ${EASE_FILM}, transform 900ms ${EASE_FILM}`;
+    el.style.transitionDelay = `${HEADLINE_LEAD_MS + index * 120}ms`;
   });
 
   window.requestAnimationFrame(() => {
@@ -170,8 +221,12 @@ const initLightMotion = () => {
 
   const observer = new IntersectionObserver(
     (entries, activeObserver) => {
+      let batchIndex = 0;
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
+        // Siblings entering together cascade instead of landing at once.
+        entry.target.style.transitionDelay = `${Math.min(batchIndex * 80, 320)}ms`;
+        batchIndex += 1;
         entry.target.classList.add('active');
         entry.target.style.opacity = '1';
         entry.target.style.visibility = 'visible';
@@ -242,17 +297,20 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis) => {
     gsapLib.ticker.lagSmoothing(0);
   }
 
-  // Hero intro.
-  const heroItems = gsapLib.utils.toArray('.hero-anim');
+  // Hero sequence: the headline surfaces word by word, then the supporting
+  // copy and the product shot follow on the same restrained curve
+  // (GSAP power2.out is the cubic ease-out used by EASE_FILM).
+  revealHeadline();
+  const heroItems = getHeroItems();
   if (heroItems.length) {
     gsapLib.set(heroItems, { opacity: 0, visibility: 'visible', y: 16 });
     gsapLib.to(heroItems, {
       opacity: 1,
       y: 0,
       duration: 1,
-      ease: 'expo.out',
+      ease: 'power2.out',
       stagger: 0.12,
-      delay: 0.12,
+      delay: HEADLINE_LEAD_MS / 1000,
       onComplete: () => {
         heroItems.forEach((el) => {
           el.style.visibility = 'visible';
@@ -260,39 +318,37 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis) => {
       },
     });
 
-    // The headline resolves out of a soft focus, like a dream coming back.
-    gsapLib.fromTo(
-      '.oh-hero-title',
-      { filter: 'blur(8px)' },
-      { filter: 'blur(0px)', duration: 0.9, ease: 'expo.out', delay: 0.12, clearProps: 'filter' }
-    );
-
     gsapLib.fromTo(
       '.noctalia-observatory > header picture',
       { scale: 0.94, opacity: 0.8 },
-      { scale: 1, opacity: 1, duration: 1.2, ease: 'expo.out', delay: 0.35 }
+      { scale: 1, opacity: 1, duration: 1.4, ease: 'power2.out', delay: 0.8 }
     );
   }
 
-  // Section reveals.
-  gsapLib.utils.toArray('.reveal').forEach((el) => {
-    gsapLib.fromTo(
-      el,
-      { autoAlpha: 0, y: 20 },
-      {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.9,
-        ease: 'expo.out',
-        immediateRender: false,
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 86%',
-          toggleActions: 'play none none none',
-          once: true,
-        },
-      }
-    );
+  // Section reveals: elements entering together cascade 80ms apart; section
+  // heads also pull focus. `.active` drives the CSS hairline draws.
+  const isHead = (el) => el.matches('.oh-section-head, .oh-pricing-head');
+  const revealItems = gsapLib.utils.toArray('.reveal');
+  gsapLib.set(revealItems, { autoAlpha: 0, y: 24 });
+  ScrollTrigger.batch(revealItems, {
+    start: 'top 86%',
+    once: true,
+    onEnter: (batch) => {
+      batch.forEach((el) => el.classList.add('active'));
+      gsapLib.fromTo(
+        batch,
+        { autoAlpha: 0, y: 24, filter: (i, el) => (isHead(el) ? 'blur(6px)' : 'blur(0px)') },
+        {
+          autoAlpha: 1,
+          y: 0,
+          filter: 'blur(0px)',
+          duration: 1,
+          ease: 'power2.out',
+          stagger: 0.08,
+          clearProps: 'filter',
+        }
+      );
+    },
   });
 
   // Steps: staggered scrub reveals. The heading is intentionally NOT pinned:
@@ -482,6 +538,86 @@ const initSky = async (quality) => {
 };
 
 /* ------------------------------------------------------------------ */
+/* Hero film (full & light tiers).                                     */
+/* ------------------------------------------------------------------ */
+
+const FILM_BASE = '/video/hero/noctalia-dream-loop';
+
+/**
+ * A muted, looping clip rendered from the hero still, so its first frame is
+ * the poster the page already painted: once it plays, it crossfades in over
+ * the still with no visible cut. Injected after the LCP, never on the static
+ * tier (reduced motion, save-data) or slow connections, and paused whenever
+ * the hero is off screen or the tab is hidden.
+ */
+const initFilm = (isFull) => {
+  const heroHeader = document.querySelector(HERO_SELECTOR);
+  if (!heroHeader || typeof HTMLVideoElement === 'undefined') return;
+  const connection = navigator.connection;
+  if (connection && (connection.saveData || /(^|-)2g$/.test(connection.effectiveType || ''))) return;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (reducedMotion.matches) return;
+
+  const width = isFull && window.matchMedia('(min-width: 900px)').matches ? 1280 : 854;
+  const film = document.createElement('div');
+  film.className = 'oh-hero-film';
+  film.setAttribute('aria-hidden', 'true');
+
+  const video = document.createElement('video');
+  video.muted = true;
+  video.defaultMuted = true;
+  video.loop = true;
+  video.playsInline = true;
+  video.preload = 'auto';
+  video.disablePictureInPicture = true;
+  video.setAttribute('muted', '');
+  video.setAttribute('playsinline', '');
+  video.setAttribute('tabindex', '-1');
+  [
+    ['webm', 'video/webm; codecs="vp9"'],
+    ['mp4', 'video/mp4'],
+  ].forEach(([extension, type]) => {
+    const source = document.createElement('source');
+    source.src = `${FILM_BASE}-${width}.${extension}`;
+    source.type = type;
+    video.append(source);
+  });
+  film.append(video);
+
+  const remove = () => {
+    video.pause();
+    film.remove();
+  };
+  video.addEventListener('playing', () => film.classList.add('is-playing'), { once: true });
+  video.addEventListener('error', remove, { once: true });
+  reducedMotion.addEventListener?.('change', (event) => {
+    if (event.matches) remove();
+  });
+
+  heroHeader.prepend(film);
+  let heroVisible = true;
+  const sync = () => {
+    if (!film.isConnected) return;
+    if (heroVisible && !document.hidden) {
+      video.play().catch(remove);
+    } else {
+      video.pause();
+    }
+  };
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(
+      (entries) => {
+        heroVisible = entries[0].isIntersecting;
+        sync();
+      },
+      { threshold: 0.02 }
+    ).observe(heroHeader);
+  }
+  document.addEventListener('visibilitychange', sync);
+  sync();
+};
+
+/* ------------------------------------------------------------------ */
 /* Boot.                                                               */
 /* ------------------------------------------------------------------ */
 
@@ -498,6 +634,7 @@ const bootEnhanced = async (currentTier) => {
 
   try {
     const skyPromise = initSky(isFull ? 'full' : 'light');
+    initFilm(isFull);
     initFeatureMedia();
 
     const { default: Lenis } = await import('lenis');

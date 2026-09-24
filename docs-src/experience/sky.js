@@ -1,5 +1,5 @@
 /**
- * Noctalia canvas sky — twinkling stars, deep nebula haze and a quiet moon
+ * Noctalia canvas sky — twinkling stars and deep nebula haze above the hero
  * drawn on a plain 2D canvas.
  *
  * Replaces the previous three.js/WebGL scene with the same public contract
@@ -90,32 +90,6 @@ function buildNebulaSprite(blobs) {
   return sprite;
 }
 
-/** Cream disc with a restrained halo, pre-rendered once. */
-function buildMoonSprite() {
-  const size = 256;
-  const half = size / 2;
-  const sprite = document.createElement('canvas');
-  sprite.width = size;
-  sprite.height = size;
-  const ctx = sprite.getContext('2d');
-
-  const halo = ctx.createRadialGradient(half, half, size * 0.16, half, half, half);
-  halo.addColorStop(0, 'rgba(255, 249, 239, 0.14)');
-  halo.addColorStop(0.5, 'rgba(234, 212, 180, 0.05)');
-  halo.addColorStop(1, 'rgba(255, 249, 239, 0)');
-  ctx.fillStyle = halo;
-  ctx.fillRect(0, 0, size, size);
-
-  const disc = ctx.createRadialGradient(half, half, 0, half, half, size * 0.17);
-  disc.addColorStop(0, 'rgba(255, 249, 239, 0.8)');
-  disc.addColorStop(0.82, 'rgba(255, 249, 239, 0.74)');
-  disc.addColorStop(0.94, 'rgba(255, 249, 239, 0.3)');
-  disc.addColorStop(1, 'rgba(255, 249, 239, 0)');
-  ctx.fillStyle = disc;
-  ctx.fillRect(0, 0, size, size);
-  return sprite;
-}
-
 function buildStars(count) {
   const sprites = new Map();
   const stars = [];
@@ -165,7 +139,6 @@ export function createSky({ container, quality = 'full', onKill } = {}) {
     [0.36, 0.6, 0.34, '#446b8c', 0.14],
     [0.64, 0.4, 0.3, '#6c568f', 0.12],
   ]);
-  const moon = buildMoonSprite();
 
   const pointer = { x: 0, y: 0 };
   const pointerSmooth = { x: 0, y: 0 };
@@ -237,19 +210,6 @@ export function createSky({ container, quality = 'full', onKill } = {}) {
         drawSize
       );
     }
-
-    // Moon: upper right, drifting up slightly faster than the stars. It must
-    // stay clear of the headline, so narrow screens lift it above the title.
-    const moonSize = Math.min(width, height) * 0.42;
-    const narrow = width < 700;
-    ctx.globalAlpha = 0.85;
-    ctx.drawImage(
-      moon,
-      width * (narrow ? 0.8 : 0.83) + pointerSmooth.x * 4 - moonSize / 2,
-      height * (narrow ? 0.1 : 0.24) - scrollProgress * height * 0.09 - moonSize / 2,
-      moonSize,
-      moonSize
-    );
 
     if (shooting.active) {
       const fade = Math.sin(Math.PI * shooting.progress) * 0.45;
