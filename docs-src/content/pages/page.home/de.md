@@ -424,11 +424,230 @@
         </div>
     </section>
 
+    <!-- 3b. Understanding: a star map of the example dreams -->
+    <section class="oh-section oh-understand" data-chapter="understanding">
+        <div class="oh-section-head reveal">
+            <div>
+                <span class="oh-index" aria-hidden="true">03 · Verstehen</span>
+                <h2 class="oh-h2">Eine Nacht ist eine Szene. Zehn Nächte sind eine Karte.</h2>
+            </div>
+            <div>
+                <p class="oh-lede">Jeder aufgenommene Traum fügt seine Symbole dem Himmel hinzu. Kehrt dasselbe Bild zurück, werden seine Linien heller – und ein Muster erscheint, das keine einzelne Nacht zeigen konnte.</p>
+                <p class="oh-starmap-hint">Fahre über einen Stern oder tippe ihn an, um seinen Träumen zu folgen.</p>
+            </div>
+        </div>
+        <div class="oh-starmap">
+            <div class="oh-starmap-stage">
+                <div class="oh-starmap-story">
+                    <p class="oh-starmap-progress" aria-hidden="true">Traum <span class="oh-starmap-step">10</span> / 10</p>
+                    <ol class="oh-starmap-dreams">
+                    <li class="oh-starmap-dream" data-symbols="8,10">
+                        <p class="oh-dream-meta"><time>23. Sept.</time><span class="oh-emotion" data-emotion="disorientation">Verwirrung</span></p>
+                        <h3 class="oh-starmap-title">Die Treppe, die es nicht gab</h3>
+                        <p class="oh-starmap-text">Ich war im <mark class="oh-sym-word" data-sym="8">Haus</mark> meiner Großmutter, aber da war eine Treppe, die ich nie gesehen hatte. Oben summte eine blaue <mark class="oh-sym-word" data-sym="10">Tür</mark>.</p>
+                    </li>
+                    <li class="oh-starmap-dream" data-symbols="2,14">
+                        <p class="oh-dream-meta"><time>21. Sept.</time><span class="oh-emotion" data-emotion="joy">Freude</span></p>
+                        <h3 class="oh-starmap-title">Flug über den Hafen</h3>
+                        <p class="oh-starmap-text">Ich hob vom Steg ab und stieg einfach immer weiter. Die Boote unten sahen aus wie Papierlaternen auf dem Wasser.</p>
+                    </li>
+                    <li class="oh-starmap-dream" data-symbols="0,8">
+                        <p class="oh-dream-meta"><time>18. Sept.</time><span class="oh-emotion" data-emotion="serenity">Gelassenheit</span></p>
+                        <h3 class="oh-starmap-title">Die Flut kam in die Küche</h3>
+                        <p class="oh-starmap-text">Wasser stieg durch den Küchenboden, klar und warm. Niemand geriet in Panik; wir deckten einfach weiter den Tisch.</p>
+                    </li>
+                    <li class="oh-starmap-dream" data-symbols="13,15,10">
+                        <p class="oh-dream-meta"><time>15. Sept.</time><span class="oh-emotion" data-emotion="fear">Angst</span></p>
+                        <h3 class="oh-starmap-title">Verfolgt durch einen Wald aus Türen</h3>
+                        <p class="oh-starmap-text">Etwas war hinter mir zwischen den Bäumen. Jeder Stamm hatte eine Tür, und jede Tür führte in denselben Wald.</p>
+                    </li>
+                    <li class="oh-starmap-dream" data-symbols="3">
+                        <p class="oh-dream-meta"><time>12. Sept.</time><span class="oh-emotion" data-emotion="helplessness">Ohnmacht</span></p>
+                        <h3 class="oh-starmap-title">Meine Zähne waren aus Glas</h3>
+                        <p class="oh-starmap-text">Ich sollte gleich einen Vortrag halten und spürte, wie meine Zähne zu Glas wurden. Ich traute mich kein Wort zu sagen.</p>
+                    </li>
+                    <li class="oh-starmap-dream" data-symbols="9,1">
+                        <p class="oh-dream-meta"><time>9. Sept.</time><span class="oh-emotion" data-emotion="urgency">Dringlichkeit</span></p>
+                        <h3 class="oh-starmap-title">Das Auto ohne Fahrer</h3>
+                        <p class="oh-starmap-text">Ich saß hinten, und der Fahrersitz war leer. Die Straße endete an einer Klippe, und wir fuhren einfach weiter.</p>
+                    </li>
+                    <li class="oh-starmap-dream" data-symbols="7,8">
+                        <p class="oh-dream-meta"><time>5. Sept.</time><span class="oh-emotion" data-emotion="tenderness">Zärtlichkeit</span></p>
+                        <h3 class="oh-starmap-title">Eine Katze, die meinen Namen kannte</h3>
+                        <p class="oh-starmap-text">Eine graue Katze saß auf dem Fensterbrett meiner alten Wohnung und sagte ganz leise meinen Namen, als hätte sie auf mich gewartet.</p>
+                    </li>
+                    <li class="oh-starmap-dream" data-symbols="11,0">
+                        <p class="oh-dream-meta"><time>30. Aug.</time><span class="oh-emotion" data-emotion="loneliness">Einsamkeit</span></p>
+                        <h3 class="oh-starmap-title">Feuer auf dem gefrorenen See</h3>
+                        <p class="oh-starmap-text">Mitten auf einem gefrorenen See brannte ein Lagerfeuer. Ich ging stundenlang darauf zu, und es kam nie näher.</p>
+                    </li>
+                    <li class="oh-starmap-dream" data-symbols="1,2">
+                        <p class="oh-dream-meta"><time>24. Aug.</time><span class="oh-emotion" data-emotion="serenity">Gelassenheit</span></p>
+                        <h3 class="oh-starmap-title">Fallen, dann schweben</h3>
+                        <p class="oh-starmap-text">Ich rutschte von einem Dach und fiel lange. Auf halber Strecke wurde aus dem Fallen ein Schweben.</p>
+                    </li>
+                    <li class="oh-starmap-dream" data-symbols="6,12">
+                        <p class="oh-dream-meta"><time>17. Aug.</time><span class="oh-emotion" data-emotion="grief">Trauer</span></p>
+                        <h3 class="oh-starmap-title">Die Hündin am Bahnhof</h3>
+                        <p class="oh-starmap-text">Unsere alte Hündin wartete auf dem Bahnsteig, so wie sie früher an der Tür gewartet hat. Sie ist seit zwei Jahren tot.</p>
+                    </li>
+                    </ol>
+                </div>
+                <div class="oh-starmap-map">
+                    <svg class="oh-starmap-sky" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><circle cx="129.5" cy="45.3" r="0.4" opacity="0.21" /><circle cx="214.4" cy="109.7" r="0.4" opacity="0.52" /><circle cx="85.9" cy="25.8" r="0.8" opacity="0.21" /><circle cx="36.3" cy="127.4" r="1.0" opacity="0.23" /><circle cx="89.3" cy="188.2" r="0.4" opacity="0.39" /><circle cx="158.7" cy="292.9" r="0.4" opacity="0.39" /><circle cx="53.3" cy="125.7" r="1.0" opacity="0.22" /><circle cx="123.4" cy="244.8" r="0.5" opacity="0.22" /><circle cx="228.5" cy="56.4" r="0.4" opacity="0.38" /><circle cx="25.1" cy="17.9" r="0.5" opacity="0.36" /><circle cx="212.7" cy="233.2" r="0.8" opacity="0.40" /><circle cx="181.3" cy="89.9" r="0.5" opacity="0.44" /><circle cx="97.6" cy="172.3" r="1.0" opacity="0.36" /><circle cx="137.4" cy="134.7" r="1.0" opacity="0.54" /><circle cx="47.2" cy="125.4" r="0.6" opacity="0.24" /><circle cx="195.6" cy="11.8" r="0.4" opacity="0.46" /><circle cx="229.2" cy="262.6" r="0.6" opacity="0.31" /><circle cx="140.1" cy="149.0" r="0.8" opacity="0.21" /><circle cx="37.4" cy="81.0" r="0.4" opacity="0.20" /><circle cx="280.6" cy="194.1" r="0.8" opacity="0.29" /><circle cx="154.3" cy="200.6" r="0.4" opacity="0.53" /><circle cx="142.2" cy="183.3" r="0.8" opacity="0.20" /><circle cx="307.3" cy="38.8" r="0.5" opacity="0.33" /><circle cx="366.7" cy="149.0" r="0.5" opacity="0.35" /><circle cx="219.8" cy="265.0" r="0.8" opacity="0.50" /><circle cx="111.4" cy="124.6" r="0.6" opacity="0.43" /><circle cx="152.2" cy="69.2" r="0.4" opacity="0.25" /><circle cx="92.8" cy="70.0" r="0.8" opacity="0.49" /><circle cx="72.9" cy="84.6" r="0.5" opacity="0.34" /><circle cx="147.7" cy="169.9" r="0.5" opacity="0.44" /><circle cx="206.2" cy="185.3" r="0.4" opacity="0.35" /><circle cx="348.4" cy="285.6" r="1.0" opacity="0.33" /><circle cx="159.6" cy="31.1" r="0.8" opacity="0.20" /><circle cx="26.9" cy="62.6" r="0.5" opacity="0.22" /><circle cx="240.3" cy="30.7" r="1.0" opacity="0.24" /><circle cx="40.6" cy="109.1" r="0.4" opacity="0.21" /><circle cx="83.2" cy="112.9" r="0.6" opacity="0.53" /><circle cx="240.9" cy="142.2" r="0.4" opacity="0.49" /><circle cx="397.2" cy="139.8" r="0.8" opacity="0.30" /><circle cx="57.6" cy="224.9" r="0.6" opacity="0.36" /><circle cx="276.8" cy="154.9" r="0.5" opacity="0.53" /><circle cx="211.3" cy="44.0" r="1.0" opacity="0.52" /><circle cx="303.3" cy="89.4" r="0.4" opacity="0.44" /><circle cx="104.4" cy="110.0" r="0.5" opacity="0.31" /><circle cx="89.1" cy="162.5" r="1.0" opacity="0.30" /><circle cx="89.2" cy="243.5" r="0.5" opacity="0.48" /><circle cx="327.3" cy="222.0" r="0.5" opacity="0.25" /><circle cx="197.1" cy="219.3" r="0.4" opacity="0.47" /><circle cx="188.9" cy="58.1" r="1.0" opacity="0.53" /><circle cx="178.9" cy="281.1" r="0.6" opacity="0.53" /><circle cx="145.9" cy="66.1" r="0.5" opacity="0.35" /><circle cx="135.1" cy="144.8" r="1.0" opacity="0.49" /><circle cx="191.8" cy="195.9" r="0.4" opacity="0.49" /><circle cx="48.0" cy="116.6" r="0.5" opacity="0.36" /><circle cx="71.4" cy="236.7" r="0.6" opacity="0.21" /><circle cx="378.5" cy="216.5" r="0.8" opacity="0.33" /><circle cx="378.7" cy="217.4" r="0.5" opacity="0.55" /><circle cx="11.0" cy="177.2" r="0.8" opacity="0.48" /><circle cx="58.5" cy="248.0" r="0.8" opacity="0.42" /><circle cx="140.2" cy="164.6" r="0.5" opacity="0.19" /><circle cx="319.7" cy="217.9" r="0.4" opacity="0.37" /><circle cx="373.4" cy="130.1" r="0.5" opacity="0.49" /><circle cx="84.4" cy="75.6" r="0.6" opacity="0.37" /><circle cx="305.5" cy="97.8" r="1.0" opacity="0.34" /><circle cx="52.4" cy="273.0" r="0.6" opacity="0.51" /><circle cx="265.0" cy="244.5" r="1.0" opacity="0.34" /><circle cx="367.1" cy="150.5" r="1.0" opacity="0.24" /><circle cx="204.2" cy="261.8" r="0.5" opacity="0.41" /><circle cx="310.4" cy="44.9" r="0.5" opacity="0.36" /><circle cx="290.1" cy="166.9" r="0.6" opacity="0.43" /><circle cx="212.3" cy="144.7" r="0.4" opacity="0.51" /><circle cx="22.7" cy="57.4" r="0.4" opacity="0.47" /><circle cx="203.1" cy="168.5" r="0.4" opacity="0.34" /><circle cx="245.0" cy="151.7" r="1.0" opacity="0.25" /><circle cx="110.9" cy="152.4" r="0.8" opacity="0.37" /><circle cx="99.1" cy="157.0" r="0.6" opacity="0.52" /><circle cx="357.1" cy="60.8" r="0.8" opacity="0.23" /><circle cx="48.6" cy="132.6" r="0.4" opacity="0.43" /><circle cx="171.3" cy="63.8" r="0.6" opacity="0.47" /><circle cx="358.8" cy="46.3" r="0.6" opacity="0.23" /><circle cx="353.1" cy="290.3" r="0.5" opacity="0.46" /><circle cx="37.7" cy="265.5" r="0.5" opacity="0.55" /><circle cx="333.0" cy="48.4" r="0.8" opacity="0.55" /><circle cx="161.5" cy="126.4" r="0.6" opacity="0.30" /><circle cx="288.9" cy="5.8" r="1.0" opacity="0.35" /><circle cx="281.3" cy="115.3" r="1.0" opacity="0.41" /><circle cx="204.9" cy="19.3" r="0.5" opacity="0.54" /><circle cx="41.9" cy="79.7" r="0.4" opacity="0.52" /><circle cx="72.6" cy="226.7" r="0.8" opacity="0.49" /><circle cx="270.4" cy="283.8" r="0.8" opacity="0.24" /></svg>
+                    <svg class="oh-starmap-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path class="oh-link" data-a="8" data-b="10" data-dream="0" d="M47 49 L64 35" pathLength="1" style="--w:2.8" /><path class="oh-link-tip" data-a="8" data-b="10" d="M47 49 L64 35" pathLength="1" /><path class="oh-link" data-a="2" data-b="14" data-dream="1" d="M28 30 L10 15" pathLength="1" style="--w:1.6" /><path class="oh-link-tip" data-a="2" data-b="14" d="M28 30 L10 15" pathLength="1" /><path class="oh-link" data-a="0" data-b="8" data-dream="2" d="M26 60 L47 49" pathLength="1" style="--w:2.8" /><path class="oh-link-tip" data-a="0" data-b="8" d="M26 60 L47 49" pathLength="1" /><path class="oh-link" data-a="13" data-b="15" data-dream="3" d="M89 40 L78 17" pathLength="1" style="--w:1.0" /><path class="oh-link-tip" data-a="13" data-b="15" d="M89 40 L78 17" pathLength="1" /><path class="oh-link" data-a="10" data-b="13" data-dream="3" d="M64 35 L89 40" pathLength="1" style="--w:1.6" /><path class="oh-link-tip" data-a="10" data-b="13" d="M64 35 L89 40" pathLength="1" /><path class="oh-link" data-a="10" data-b="15" data-dream="3" d="M64 35 L78 17" pathLength="1" style="--w:1.6" /><path class="oh-link-tip" data-a="10" data-b="15" d="M64 35 L78 17" pathLength="1" /><path class="oh-link" data-a="1" data-b="9" data-dream="5" d="M46 14 L63 9" pathLength="1" style="--w:1.6" /><path class="oh-link-tip" data-a="1" data-b="9" d="M46 14 L63 9" pathLength="1" /><path class="oh-link" data-a="7" data-b="8" data-dream="6" d="M40 80 L47 49" pathLength="1" style="--w:2.2" /><path class="oh-link-tip" data-a="7" data-b="8" d="M40 80 L47 49" pathLength="1" /><path class="oh-link" data-a="0" data-b="11" data-dream="7" d="M26 60 L10 45" pathLength="1" style="--w:1.6" /><path class="oh-link-tip" data-a="0" data-b="11" d="M26 60 L10 45" pathLength="1" /><path class="oh-link" data-a="1" data-b="2" data-dream="8" d="M46 14 L28 30" pathLength="1" style="--w:2.2" /><path class="oh-link-tip" data-a="1" data-b="2" d="M46 14 L28 30" pathLength="1" /><path class="oh-link" data-a="6" data-b="12" data-dream="9" d="M79 62 L90 83" pathLength="1" style="--w:1.0" /><path class="oh-link-tip" data-a="6" data-b="12" d="M79 62 L90 83" pathLength="1" /></svg>
+                    <ul class="oh-starmap-stars">
+                        <li class="oh-star-item nb-8 nb-11 is-card-above is-card-right" data-sym="0" style="--x:26%;--y:60%;--c:2">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-0">
+                                <img src="/img/starmap/water-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Wasser</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-0" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 2/10</p>
+                                <ul><li><time>18. Sept.</time> Die Flut kam in die Küche</li><li><time>30. Aug.</time> Feuer auf dem gefrorenen See</li></ul>
+                            </div>
+                        </li>
+                        <li class="oh-star-item nb-2 nb-9 is-card-below" data-sym="1" style="--x:46%;--y:14%;--c:2">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-1">
+                                <img src="/img/starmap/falling-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Fallen</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-1" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 2/10</p>
+                                <ul><li><time>9. Sept.</time> Das Auto ohne Fahrer</li><li><time>24. Aug.</time> Fallen, dann schweben</li></ul>
+                            </div>
+                        </li>
+                        <li class="oh-star-item nb-1 nb-14 is-card-below is-card-right" data-sym="2" style="--x:28%;--y:30%;--c:2">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-2">
+                                <img src="/img/starmap/flying-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Fliegen</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-2" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 2/10</p>
+                                <ul><li><time>21. Sept.</time> Flug über den Hafen</li><li><time>24. Aug.</time> Fallen, dann schweben</li></ul>
+                            </div>
+                        </li>
+                        <li class="oh-star-item is-card-above" data-sym="3" style="--x:64%;--y:70%;--c:1">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-3">
+                                <img src="/img/starmap/teeth-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Zähne</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-3" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 1/10</p>
+                                <ul><li><time>12. Sept.</time> Meine Zähne waren aus Glas</li></ul>
+                            </div>
+                        </li>
+                        <li class="oh-star-item nb-12 is-card-above is-card-left" data-sym="6" style="--x:79%;--y:62%;--c:1">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-6">
+                                <img src="/img/starmap/dog-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Hund</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-6" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 1/10</p>
+                                <ul><li><time>17. Aug.</time> Die Hündin am Bahnhof</li></ul>
+                            </div>
+                        </li>
+                        <li class="oh-star-item nb-8 is-card-above" data-sym="7" style="--x:40%;--y:80%;--c:1">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-7">
+                                <img src="/img/starmap/cat-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Katze</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-7" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 1/10</p>
+                                <ul><li><time>5. Sept.</time> Eine Katze, die meinen Namen kannte</li></ul>
+                            </div>
+                        </li>
+                        <li class="oh-star-item nb-0 nb-7 nb-10 is-card-above" data-sym="8" style="--x:47%;--y:49%;--c:3">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-8">
+                                <img src="/img/starmap/house-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Haus</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-8" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 3/10</p>
+                                <ul><li><time>23. Sept.</time> Die Treppe, die es nicht gab</li><li><time>18. Sept.</time> Die Flut kam in die Küche</li><li><time>5. Sept.</time> Eine Katze, die meinen Namen kannte</li></ul>
+                            </div>
+                        </li>
+                        <li class="oh-star-item nb-1 is-card-below" data-sym="9" style="--x:63%;--y:9%;--c:1">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-9">
+                                <img src="/img/starmap/car-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Auto</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-9" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 1/10</p>
+                                <ul><li><time>9. Sept.</time> Das Auto ohne Fahrer</li></ul>
+                            </div>
+                        </li>
+                        <li class="oh-star-item nb-8 nb-13 nb-15 is-card-below" data-sym="10" style="--x:64%;--y:35%;--c:2">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-10">
+                                <img src="/img/starmap/door-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Tür</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-10" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 2/10</p>
+                                <ul><li><time>23. Sept.</time> Die Treppe, die es nicht gab</li><li><time>15. Sept.</time> Verfolgt durch einen Wald aus Türen</li></ul>
+                            </div>
+                        </li>
+                        <li class="oh-star-item nb-0 is-card-above is-card-right" data-sym="11" style="--x:10%;--y:45%;--c:1">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-11">
+                                <img src="/img/starmap/fire-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Feuer</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-11" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 1/10</p>
+                                <ul><li><time>30. Aug.</time> Feuer auf dem gefrorenen See</li></ul>
+                            </div>
+                        </li>
+                        <li class="oh-star-item nb-6 is-card-above is-card-left is-label-above" data-sym="12" style="--x:90%;--y:83%;--c:1">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-12">
+                                <img src="/img/starmap/death-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Tod</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-12" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 1/10</p>
+                                <ul><li><time>17. Aug.</time> Die Hündin am Bahnhof</li></ul>
+                            </div>
+                        </li>
+                        <li class="oh-star-item nb-10 nb-15 is-card-below is-card-left" data-sym="13" style="--x:89%;--y:40%;--c:1">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-13">
+                                <img src="/img/starmap/chased-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Verfolgt werden</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-13" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 1/10</p>
+                                <ul><li><time>15. Sept.</time> Verfolgt durch einen Wald aus Türen</li></ul>
+                            </div>
+                        </li>
+                        <li class="oh-star-item nb-2 is-card-below is-card-right" data-sym="14" style="--x:10%;--y:15%;--c:1">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-14">
+                                <img src="/img/starmap/ocean-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Ozean</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-14" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 1/10</p>
+                                <ul><li><time>21. Sept.</time> Flug über den Hafen</li></ul>
+                            </div>
+                        </li>
+                        <li class="oh-star-item nb-10 nb-13 is-card-below is-card-left" data-sym="15" style="--x:78%;--y:17%;--c:1">
+                            <button class="oh-star" type="button" aria-describedby="oh-star-card-15">
+                                <img src="/img/starmap/forest-160w.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                                <span class="oh-star-name">Wald</span>
+                            </button>
+                            <div class="oh-star-card" id="oh-star-card-15" role="tooltip">
+                                <p class="oh-star-card-title">In diesen Träumen · 1/10</p>
+                                <ul><li><time>15. Sept.</time> Verfolgt durch einen Wald aus Türen</li></ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <p class="oh-starmap-stat reveal"><span>Haus kommt in 3 von 10 Träumen vor.</span> <a href="#noctalia-werkzeuge-entdecken">Erkunden, was es bedeuten könnte <span aria-hidden="true">→</span></a></p>
+    </section>
+
     <!-- 8. Dream Symbols Dictionary -->
     <section id="traumsymbole">
         <div class="oh-section-head reveal">
             <div>
-                <span class="oh-index" aria-hidden="true">03 · Verstehen</span>
                 <span class="oh-symbols-badge"><i data-lucide="book-open"></i> KOSTENLOSE RESSOURCE</span>
                 <h2 class="oh-h2">Traumsymbol-Lexikon</h2>
             </div>
