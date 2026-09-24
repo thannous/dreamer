@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, main } = require('./mobile-release');
+const { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, main } = require('./mobile-release');
 
 const fixtures = [];
 let baselineRoot = null;
@@ -149,6 +149,50 @@ describe('release planning against real Git histories', () => {
     expect(() => plan(root, 'noctalia')).toThrow('Missing baseline');
     write(root, 'package.json', { version: '9.0.0' });
     expect(() => verify(root, 'noctalia')).toThrow('Version drift');
+  });
+  it('blocks a HealthKit-linked iOS release with missing store purpose strings', () => {
+    const root = fixture();
+    const packageFile = path.join(root, 'package.json');
+    const pkg = JSON.parse(fs.readFileSync(packageFile, 'utf8'));
+    pkg.dependencies = { '@kingstinct/react-native-healthkit': '14.1.0' };
+    write(root, 'package.json', pkg);
+    expect(() => verify(root, 'noctalia')).toThrow('NSHealthShareUsageDescription');
+    const app = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'));
+    app.expo.ios = { infoPlist: { NSHealthShareUsageDescription: 'Reads sleep history', NSHealthUpdateUsageDescription: 'Does not write Health data' } };
+    write(root, 'app.json', app);
+    expect(verify(root, 'noctalia').version).toBe('3.1.0');
+  });
+  it('selects the internal Play track and a Starter-compatible TestFlight submission', () => {
+    const id = '12345678-1234-4234-8234-123456789abc';
+    const android = internalSubmitArgs('android', id);
+    const ios = internalSubmitArgs('ios', id);
+    expect(android).toEqual(['--yes', 'eas-cli@21.0.0', 'submit', '--platform', 'android', '--profile', 'internal', '--id', id, '--non-interactive']);
+    expect(ios).toEqual(['--yes', 'eas-cli@21.0.0', 'submit', '--platform', 'ios', '--profile', 'production', '--id', id, '--non-interactive']);
+    expect([...android, ...ios]).not.toContain('--what-to-test');
+    expect(() => internalSubmitArgs('android', 'latest')).toThrow('build ID');
+    expect(parseArgs(['submit-internal', '--app', 'noctalia', '--platform', 'ios', '--id', id, '--dry-run']).dryRun).toBe(true);
+  });
+  it('refuses an unfinished, preview or unrelated build before internal submission', () => {
+    const expected = { projectId: 'project-1', version: '3.4.4' };
+    const build = { status: 'FINISHED', platform: 'ANDROID', distribution: 'STORE', buildProfile: 'production',
+      project: { id: 'project-1' }, appVersion: '3.4.4', artifacts: { buildUrl: 'https://expo.dev/app.aab' } };
+    expect(() => assertInternalBuild(build, 'android', expected)).not.toThrow();
+    expect(() => assertInternalBuild({ ...build, status: 'ERRORED' }, 'android', expected)).toThrow('FINISHED');
+    expect(() => assertInternalBuild({ ...build, distribution: 'INTERNAL' }, 'android', expected)).toThrow('STORE');
+    expect(() => assertInternalBuild({ ...build, buildProfile: 'preview' }, 'android', expected)).toThrow('production');
+    expect(() => assertInternalBuild({ ...build, platform: 'IOS' }, 'android', expected)).toThrow('platform');
+    expect(() => assertInternalBuild({ ...build, project: { id: 'other' } }, 'android', expected)).toThrow('project');
+    expect(() => assertInternalBuild({ ...build, appVersion: '3.4.3' }, 'android', expected)).toThrow('version');
+    expect(() => assertInternalBuild({ ...build, artifacts: {} }, 'android', expected)).toThrow('artifact');
+  });
+  it('rejects an iOS binary made before relevant source changes', () => {
+    const root = fixture();
+    const builtCommit = git(root, 'rev-parse', 'HEAD');
+    write(root, 'doc_web_interne/docs/note.md', 'documentation'); commit(root, 'docs: clarify release');
+    expect(() => assertIosBuildSource(root, { gitCommitHash: builtCommit })).not.toThrow();
+    write(root, 'app/home.tsx', 'changed after build'); commit(root, 'fix: update home');
+    expect(() => assertIosBuildSource(root, { gitCommitHash: builtCommit })).toThrow('app/home.tsx');
+    expect(() => assertIosBuildSource(root, { gitCommitHash: null })).toThrow('source commit');
   });
   it('rejects distribution configurations that can reuse a build number', () => {
     const root = fixture();
