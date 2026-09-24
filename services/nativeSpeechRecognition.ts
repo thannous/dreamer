@@ -589,9 +589,13 @@ export async function startNativeSpeechSession(
     // Network-capable iOS recognition requires a separate speech authorization.
     // Resolve it before start() can trigger an asynchronous system prompt after
     // the caller has enabled its inactive/background cleanup and restored focus.
-    const permissionsAlreadySatisfied = options?.permissionAlreadyGranted && (
+    let permissionsAlreadySatisfied = Boolean(options?.permissionAlreadyGranted && (
       Platform.OS === 'android' || (Platform.OS === 'ios' && requiresOnDeviceRecognition)
-    );
+    ));
+    if (Platform.OS === 'ios' && !permissionsAlreadySatisfied) {
+      const currentPermissions = await speechModule.getPermissionsAsync?.();
+      permissionsAlreadySatisfied = currentPermissions?.granted === true;
+    }
 
     // Web doesn't need (or support) permission requests; avoid noisy warnings
     const permissions = Platform.OS === 'web'

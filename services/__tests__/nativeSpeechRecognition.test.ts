@@ -697,6 +697,7 @@ describe('iOS first-use speech authorization', () => {
       getSupportedLocales: async () => ({ installedLocales: onDevice ? ['fr-FR'] : [] }),
       supportsRecording: () => true,
       getStateAsync: async () => 'inactive',
+      getPermissionsAsync: jest.fn(async (): Promise<{ granted: boolean }> => ({ granted: false })),
       requestPermissionsAsync: jest.fn(async (): Promise<{ granted: boolean }> => ({ granted: true })),
       start: jest.fn(() => listeners.get('start')?.()),
       stop: jest.fn(() => listeners.get('end')?.()),
@@ -767,6 +768,27 @@ describe('iOS first-use speech authorization', () => {
     expect(onPartial).toHaveBeenLastCalledWith('Je marche dans un jardin');
     listeners.get('result')?.({ results: [{ transcript: 'Je marche dans un jardin fleuri.' }], isFinal: true });
     await expect(session!.stop()).resolves.toMatchObject({ transcript: 'Je marche dans un jardin fleuri.' });
+  });
+
+  it('starts already-authorized iOS network dictation without a prompt or settling delay', async () => {
+    jest.useFakeTimers();
+    Platform.OS = 'ios';
+    AppState.currentState = 'active';
+    const { speechModule } = createSpeechModule();
+    speechModule.getPermissionsAsync.mockResolvedValue({ granted: true });
+    const onListeningChange = jest.fn();
+
+    const pendingSession = startNativeSpeechSession('fr-FR', {
+      permissionAlreadyGranted: true,
+      onListeningChange,
+    });
+    await jest.advanceTimersByTimeAsync(0);
+
+    expect(speechModule.start).toHaveBeenCalledTimes(1);
+    expect(onListeningChange).toHaveBeenCalledWith(true);
+    expect(speechModule.requestPermissionsAsync).not.toHaveBeenCalled();
+    expect(jest.getTimerCount()).toBe(0);
+    (await pendingSession)?.abort();
   });
 
   it('does not start when speech authorization is denied despite microphone access', async () => {

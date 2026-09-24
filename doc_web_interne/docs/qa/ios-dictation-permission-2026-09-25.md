@@ -74,3 +74,22 @@ containing this correction: accept first-use permissions, confirm editor focus,
 speak a French sentence and observe its insertion without tapping the microphone
 again. Also confirm denial leaves listening off and a real app background stops it.
 No permissions or application data were reset on the connected iPhone.
+
+## PR review follow-up
+
+Before the follow-up implementation: an already-authorized iOS network session
+should start without another permission request or a fixed settling delay. Add
+a regression with granted combined permissions and a controlled clock before
+changing the authorization path. Native-dialog E2E does not cover this scheduling
+boundary deterministically.
+
+The added test failed before the fix (recognition had not started with an unchanged
+clock). The service now reads combined iOS permissions first; a stored grant skips
+both the request and the 300 ms settling delay. New grants still wait for foreground.
+
+The review's on-device permission claim was checked against version 56.0.1:
+`ExpoSpeechRecognitionModule.swift` calls speech authorization only when
+`requiresOnDeviceRecognition` is false. The library explicitly documents microphone-only
+on-device iOS recognition. This path is preserved, with the native source and
+[permission contract](https://github.com/jamsch/expo-speech-recognition#requestpermissionsasync)
+provided in the review reply.
