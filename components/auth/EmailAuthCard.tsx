@@ -974,6 +974,8 @@ export const EmailAuthCard: React.FC<Props> = ({
                 return (
                   <Pressable
                     key={profile}
+                    accessibilityLabel={t(titleKey)}
+                    accessibilityRole="button"
                     testID={TID.Button.MockProfile(profile)}
                     style={({ pressed }) => [
                       styles.mockButton,

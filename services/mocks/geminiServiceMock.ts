@@ -58,7 +58,7 @@ export async function analyzeDream(
   console.log('[MOCK] analyzeDream called with transcript:', transcript.slice(0, 50) + '...', 'lang:', lang);
   await delay(MOCK_ANALYSIS_DURATION_MS);
 
-  const result = generateAnalysisResult(transcript);
+  const result = generateAnalysisResult(transcript, lang);
   console.log('[MOCK] analyzeDream returning:', result.title);
   return result;
 }
@@ -74,7 +74,7 @@ export async function categorizeDream(
   console.log('[MOCK] categorizeDream called with transcript:', transcript.slice(0, 50) + '...', 'lang:', lang);
   await delay(500 + Math.random() * 500); // 0.5-1 second
 
-  const result = generateAnalysisResult(transcript);
+  const result = generateAnalysisResult(transcript, lang);
 
   // Simulate subject detection based on transcript content
   const transcriptLower = transcript.toLowerCase();
@@ -118,7 +118,7 @@ export async function analyzeDreamWithImage(
   console.log('[MOCK] analyzeDreamWithImage called with lang:', lang);
   await delay(MOCK_ANALYSIS_DURATION_MS);
 
-  const result = generateAnalysisResult(transcript);
+  const result = generateAnalysisResult(transcript, lang);
   const imageUrl = getRandomImageForTheme(result.theme);
 
   console.log('[MOCK] analyzeDreamWithImage returning with image');
@@ -139,7 +139,7 @@ export async function analyzeDreamWithImageResilient(
 
   // Simulate progressive delay (analysis phase)
   await delay(MOCK_ANALYSIS_DURATION_MS / 2);
-  const result = generateAnalysisResult(transcript);
+  const result = generateAnalysisResult(transcript, lang);
 
   // Simulate image generation phase
   await delay(MOCK_ANALYSIS_DURATION_MS / 2);

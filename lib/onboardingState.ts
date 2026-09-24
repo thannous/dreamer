@@ -1,5 +1,6 @@
 import type { Href } from 'expo-router';
 
+import { isMockDogfoodPersistenceEnabled } from '@/lib/env';
 import { logger } from '@/lib/logger';
 import {
   getFirstLaunchCompleted,
@@ -329,6 +330,28 @@ async function readSnapshot(scope: OnboardingScope): Promise<{
       },
       shouldPersist: true,
     };
+  }
+
+  if (scope.startsWith('user:mock-') && isMockDogfoodPersistenceEnabled()) {
+    const guestSnapshot = await getOnboardingStateSnapshot('guest');
+    if (guestSnapshot) {
+      try {
+        const guestState = normalizeOnboardingState(JSON.parse(guestSnapshot) as unknown, now);
+        if (isOnboardingTerminal(guestState)) {
+          return {
+            state: {
+              ...createDefaultState(now),
+              status: 'skipped',
+              completionReason: 'skip',
+              completedAt: now,
+            },
+            shouldPersist: true,
+          };
+        }
+      } catch {
+        // A malformed guest snapshot cannot complete onboarding for another profile.
+      }
+    }
   }
 
   return { state: createDefaultState(now), shouldPersist: true };

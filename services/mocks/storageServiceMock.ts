@@ -18,6 +18,7 @@ import type {
   ThemePreference,
 } from '@/lib/types';
 import { migrateLegacyDreamMutation } from '@/lib/dreamUtils';
+import { isMockDogfoodPersistenceEnabled } from '@/lib/env';
 import { reportSyncQueueClearedWithPending } from '@/lib/syncObservability';
 import { getPredefinedDreamsWithTimestamps } from '@/mock-data/predefinedDreams';
 
@@ -58,6 +59,22 @@ const ONBOARDING_GUEST_CLAIMED_BY_KEY = 'gemini_dream_journal_onboarding_guest_c
 const PENDING_RECORDING_NOTIFICATION_KEY = 'gemini_dream_journal_pending_recording_notification_v1';
 const DREAMS_MIGRATION_SYNCED_PREFIX = 'gemini_dream_journal_dreams_migration_synced_';
 const GUEST_DREAM_MIGRATION_OWNER_KEY = 'gemini_dream_journal_guest_migration_owner_v1';
+const MOCK_DOGFOOD_STORAGE_PREFIX = 'noctalia_mock_dogfood_v1:';
+
+// Dogfood persistence is opt-in and namespaced away from real account data.
+async function getMockItem(key: string): Promise<string | null> {
+  if (!isMockDogfoodPersistenceEnabled()) return mockStorage[key] ?? null;
+  const { default: AsyncStorage } = await import('@react-native-async-storage/async-storage');
+  return (await AsyncStorage.getItem(`${MOCK_DOGFOOD_STORAGE_PREFIX}${key}`)) ?? mockStorage[key] ?? null;
+}
+
+async function setMockItem(key: string, value: string): Promise<void> {
+  if (isMockDogfoodPersistenceEnabled()) {
+    const { default: AsyncStorage } = await import('@react-native-async-storage/async-storage');
+    await AsyncStorage.setItem(`${MOCK_DOGFOOD_STORAGE_PREFIX}${key}`, value);
+  }
+  mockStorage[key] = value;
+}
 
 const scopedStorageKey = (baseKey: string, userScope?: string | null): string =>
   userScope ? `${baseKey}:${userScope}` : baseKey;
@@ -523,7 +540,7 @@ export async function saveRitualStepProgress(progress: RitualStepProgress): Prom
 export async function getFirstLaunchCompleted(): Promise<boolean> {
   console.log('[MOCK STORAGE] getFirstLaunchCompleted called');
   try {
-    const savedFlag = mockStorage[FIRST_LAUNCH_COMPLETED_KEY];
+    const savedFlag = await getMockItem(FIRST_LAUNCH_COMPLETED_KEY);
     if (savedFlag) {
       const completed = JSON.parse(savedFlag) as boolean;
       console.log('[MOCK STORAGE] Returning first launch flag:', completed);
@@ -539,7 +556,7 @@ export async function getFirstLaunchCompleted(): Promise<boolean> {
 export async function saveFirstLaunchCompleted(completed: boolean): Promise<void> {
   console.log('[MOCK STORAGE] saveFirstLaunchCompleted called:', completed);
   try {
-    mockStorage[FIRST_LAUNCH_COMPLETED_KEY] = JSON.stringify(completed);
+    await setMockItem(FIRST_LAUNCH_COMPLETED_KEY, JSON.stringify(completed));
     console.log('[MOCK STORAGE] First launch flag saved');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save first launch flag:', error);
@@ -563,18 +580,18 @@ export async function saveLastSeenReleaseNotesVersion(version: string): Promise<
 }
 
 export async function getOnboardingStateSnapshot(actorScope: string): Promise<string | null> {
-  return mockStorage[scopedStorageKey(ONBOARDING_STATE_KEY, actorScope)] ?? null;
+  return getMockItem(scopedStorageKey(ONBOARDING_STATE_KEY, actorScope));
 }
 
 export async function saveOnboardingStateSnapshot(
   actorScope: string,
   serializedState: string
 ): Promise<void> {
-  mockStorage[scopedStorageKey(ONBOARDING_STATE_KEY, actorScope)] = serializedState;
+  await setMockItem(scopedStorageKey(ONBOARDING_STATE_KEY, actorScope), serializedState);
 }
 
 export async function getOnboardingGuestClaimedBy(): Promise<string | null> {
-  const saved = mockStorage[ONBOARDING_GUEST_CLAIMED_BY_KEY];
+  const saved = await getMockItem(ONBOARDING_GUEST_CLAIMED_BY_KEY);
   if (!saved) return null;
   try {
     const parsed = JSON.parse(saved) as unknown;
@@ -585,7 +602,7 @@ export async function getOnboardingGuestClaimedBy(): Promise<string | null> {
 }
 
 export async function saveOnboardingGuestClaimedBy(userId: string): Promise<void> {
-  mockStorage[ONBOARDING_GUEST_CLAIMED_BY_KEY] = JSON.stringify(userId);
+  await setMockItem(ONBOARDING_GUEST_CLAIMED_BY_KEY, JSON.stringify(userId));
 }
 
 export async function getPendingRecordingNotification(): Promise<'/recording' | null> {

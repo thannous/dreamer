@@ -14,6 +14,7 @@ export type ExpoPublicEnvKey =
   | 'EXPO_PUBLIC_GUEST_QA_LAB'
   | 'EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED'
   | 'EXPO_PUBLIC_MOCK_MODE'
+  | 'EXPO_PUBLIC_MOCK_PERSISTENCE'
   | 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER'
   | 'EXPO_PUBLIC_PERFORMANCE_TRACING'
   | 'EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED'
@@ -49,6 +50,8 @@ export function getExpoPublicEnvValue(key: ExpoPublicEnvKey): string | undefined
       return process.env.EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED;
     case 'EXPO_PUBLIC_MOCK_MODE':
       return process.env.EXPO_PUBLIC_MOCK_MODE;
+    case 'EXPO_PUBLIC_MOCK_PERSISTENCE':
+      return process.env.EXPO_PUBLIC_MOCK_PERSISTENCE;
     case 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER':
       return process.env.EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER;
     case 'EXPO_PUBLIC_PERFORMANCE_TRACING':
@@ -82,6 +85,10 @@ export function getExpoPublicEnvValue(key: ExpoPublicEnvKey): string | undefined
 
 export function isMockModeEnabled(): boolean {
   return (getExpoPublicEnvValue('EXPO_PUBLIC_MOCK_MODE') ?? '').toLowerCase() === 'true';
+}
+
+export function isMockDogfoodPersistenceEnabled(): boolean {
+  return isMockModeEnabled() && getExpoPublicEnvValue('EXPO_PUBLIC_MOCK_PERSISTENCE') === 'true';
 }
 
 export function isChatDebugEnabled(): boolean {
