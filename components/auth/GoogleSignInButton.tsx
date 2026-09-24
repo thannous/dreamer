@@ -8,7 +8,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { clearStayOnSettingsIntent, requestStayOnSettingsIntent } from '@/lib/navigationIntents';
 import { createScopedLogger } from '@/lib/logger';
-import { FontAwesome } from '@expo/vector-icons';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { TID } from '@/lib/testIDs';
 
 const log = createScopedLogger('[GoogleSignInButton]');

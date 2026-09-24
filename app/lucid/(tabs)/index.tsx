@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -27,7 +27,7 @@ import {
 import { evaluateLucidSafetyPolicyFromState } from '@/lib/lucid/safety';
 import { resolveLucidTodayAction } from '@/lib/lucid/todayAction';
 
-const DREAM_ATLAS = require('../../../assets/images/lucid/today-dream-atlas.png');
+const DREAM_ATLAS = require('../../../assets/images/lucid/today-dream-atlas.webp');
 
 const COPY = {
   en: {

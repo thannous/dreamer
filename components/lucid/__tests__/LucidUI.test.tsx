@@ -5,8 +5,7 @@ import React from 'react';
 
 const mockUseLucidReducedMotion = jest.fn(() => false);
 
-jest.mock('@expo/vector-icons', () => ({
-  Ionicons: () => <span />,
+jest.mock('@expo/vector-icons/Ionicons', () => ({ __esModule: true, default: () => <span />,
 }));
 
 jest.mock('expo-linear-gradient', () => ({

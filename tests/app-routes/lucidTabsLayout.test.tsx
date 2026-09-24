@@ -34,8 +34,7 @@ jest.mock('expo-router', () => {
   return { Tabs };
 });
 
-jest.mock('@expo/vector-icons', () => ({
-  Ionicons: () => <span />,
+jest.mock('@expo/vector-icons/Ionicons', () => ({ __esModule: true, default: () => <span />,
 }));
 
 jest.mock('react-native', () => ({

@@ -78,7 +78,7 @@ jest.mock('expo-router', () => ({
   router: { back: mockBack, canGoBack: mockCanGoBack, replace: mockReplace, push: jest.fn() },
   useLocalSearchParams: () => mockRouteParams,
 }));
-jest.mock('@expo/vector-icons', () => ({ Ionicons: () => <span aria-hidden="true" /> }));
+jest.mock('@expo/vector-icons/Ionicons', () => ({ __esModule: true, default: () => <span aria-hidden="true" /> }));
 jest.mock('expo-image', () => ({
   Image: ({ testID }: { testID?: string }) => <img alt="" data-testid={testID} />,
 }));

@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import React, { useMemo, useState, useSyncExternalStore } from 'react';
 import { Alert, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
@@ -28,7 +28,7 @@ import {
 } from '@/lib/lucid/safety';
 import { DEFAULT_SLEEP_SOUND_ID, SLEEP_SOUNDS, type SleepSoundId } from '@/lib/sleepSounds';
 
-const NIGHT_SANCTUARY = require('../../../assets/images/lucid/night-ritual-sanctuary.png');
+const NIGHT_SANCTUARY = require('../../../assets/images/lucid/night-ritual-sanctuary.webp');
 
 const SOUND_ICONS = {
   rain: 'rainy',

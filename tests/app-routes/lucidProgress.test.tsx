@@ -38,7 +38,7 @@ const mockStaleExperiment = {
 
 const mockPush = jest.fn();
 jest.mock('expo-router', () => ({ router: { push: (...args: unknown[]) => mockPush(...args) } }));
-jest.mock('@expo/vector-icons', () => ({ Ionicons: () => <span aria-hidden="true" /> }));
+jest.mock('@expo/vector-icons/Ionicons', () => ({ __esModule: true, default: () => <span aria-hidden="true" /> }));
 
 jest.mock('expo-image', () => ({
   Image: () => <img alt="" />,
