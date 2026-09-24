@@ -38,6 +38,20 @@ def main():
         text = save(name + '.xml', adb('exec-out', 'uiautomator', 'dump', '/dev/tty'))
         return ET.fromstring(text[text.index('<?xml'):text.index('</hierarchy>') + 12])
 
+    def capture_tree(name):
+        # Recording may focus its composer after launch; the IME then hides the tabs.
+        time.sleep(1)
+        if 'mInputShown=true' in adb('shell', 'dumpsys', 'input_method'):
+            adb('shell', 'input', 'keyevent', '4')
+            time.sleep(0.4)
+        root = tree(name)
+        if not any(n.get('resource-id') == 'tab.journal' for n in root.iter('node')):
+            if 'mInputShown=true' in adb('shell', 'dumpsys', 'input_method'):
+                adb('shell', 'input', 'keyevent', '4')
+                time.sleep(0.4)
+                root = tree(name + '-ime-closed')
+        return root
+
     def node(root, test_id):
         matches = [n for n in root.iter('node') if n.get('resource-id') == test_id]
         if len(matches) != 1:
@@ -90,7 +104,7 @@ def main():
         adb('shell', 'am', 'force-stop', PACKAGE)
         save('launch.txt', adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity'))
         time.sleep(2)
-        root = tree('initial-capture')
+        root = capture_tree('initial-capture')
         check(screen(root) == 'capture', 'Onboarded app starts on Capture')
         journal = center(root, 'tab.journal')
         adb('shell', 'input', 'tap', *journal)
@@ -100,7 +114,7 @@ def main():
         capture = center(root, 'tab.addDream')
         adb('shell', 'input', 'tap', *capture)
         time.sleep(0.7)
-        root = tree('warm-capture')
+        root = capture_tree('warm-capture')
         check(screen(root) == 'capture', 'Warm-up returns to Capture')
         baseline = sample('before')
         for index in range(1, args.runs + 1):
@@ -111,7 +125,7 @@ def main():
             capture = center(root, 'tab.addDream')
             adb('shell', 'input', 'tap', *capture)
             time.sleep(0.7)
-            root = tree(f'cycle-{index}-capture')
+            root = capture_tree(f'cycle-{index}-capture')
             check(screen(root) == 'capture', f'Cycle {index} returns to Capture')
             journal = center(root, 'tab.journal')
             if index == 5 or index == args.runs:
