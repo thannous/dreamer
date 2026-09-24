@@ -74,7 +74,7 @@
     <section id="como-funciona">
         <div class="oh-section-head reveal" data-steps-heading>
             <div>
-                <span class="oh-index" aria-hidden="true">01</span>
+                <span class="oh-index" aria-hidden="true">01 · Sonho</span>
                 <h2 class="oh-h2">De uma cena que se apaga a um relato para reler</h2>
             </div>
             <p class="oh-lede">Primeiro, capture enquanto ainda está vivo. Depois, dê sentido, quando estiver bem acordado.</p>
@@ -129,7 +129,7 @@
     <section id="funcionalidades">
         <div class="oh-section-head reveal">
             <div>
-                <span class="oh-index" aria-hidden="true">02</span>
+                <span class="oh-index" aria-hidden="true">02 · Despertar</span>
                 <h2 class="oh-h2">O que cada sonho guarda</h2>
             </div>
             <p class="oh-lede">O relato original fica intacto. Todo o resto é opcional e só entra quando um sonho pede.</p>
@@ -220,144 +220,11 @@
         </div>
     </section>
 
-    <!-- 4. Explore Noctalia tools -->
-    <section aria-labelledby="explorer-outils-noctalia" class="oh-section">
-        <div class="oh-section-head reveal">
-            <div>
-                <span class="oh-index" aria-hidden="true">03</span>
-                <h2 id="explorer-outils-noctalia" class="oh-h2">Encontre seu ponto de partida</h2>
-            </div>
-            <p class="oh-lede">Comece por onde você está: registrar mais rápido, refletir com um guia, procurar um símbolo ou ver a análise de sonhos no Android.</p>
-        </div>
-        <div class="oh-tools">
-            <a href="/pt-br/diario-de-sonhos-por-voz" class="oh-tool glass-panel reveal">
-                <span>
-                    <h3>Diário de sonhos por voz</h3>
-                    <p>Descubra como registrar um sonho por voz nos primeiros instantes depois de acordar.</p>
-                </span>
-                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
-            </a>
-            <a href="/pt-br/app-interpretacao-de-sonhos-ia" class="oh-tool glass-panel reveal">
-                <span>
-                    <h3>Interpretação de sonhos por IA</h3>
-                    <p>Descubra como uma reflexão guiada conecta símbolos, emoções, imagens e perguntas de acompanhamento.</p>
-                </span>
-                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
-            </a>
-            <a href="/pt-br/app-dicionario-de-sonhos" class="oh-tool glass-panel reveal">
-                <span>
-                    <h3>Aplicativo dicionário de sonhos</h3>
-                    <p>Explore símbolos frequentes e conecte-os ao contexto do seu sonho registrado.</p>
-                </span>
-                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
-            </a>
-            <a href="/pt-br/app-android-analise-de-sonhos" class="oh-tool glass-panel reveal">
-                <span>
-                    <h3>App Android de análise de sonhos</h3>
-                    <p>Veja como o Noctalia registra, transcreve e analisa seus sonhos no Android.</p>
-                </span>
-                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
-            </a>
-        </div>
-    </section>
-
-    <!-- 5. Who is it for? (Profiles) -->
-    <section class="oh-section">
-        <div class="oh-section-head reveal">
-            <div>
-                <span class="oh-index" aria-hidden="true">04</span>
-                <h2 class="oh-h2">Para manhãs como essas</h2>
-            </div>
-        </div>
-        <div class="oh-profiles">
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="search"></i></span>
-                <h3>Seus sonhos somem antes do café</h3>
-                <p>Trinta segundos de voz são mais fáceis do que um texto caprichado quando você ainda está meio dormindo.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
-                <h3>Você já escreve um diário</h3>
-                <p>Seus sonhos ganham lugar ao lado das pessoas, perguntas e emoções sobre as quais você já escreve.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
-                <h3>Uma imagem sempre volta</h3>
-                <p>Os relatos salvos ajudam a comparar a cena — e o que ela fez você sentir — cada vez que ela reaparece.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 6. Pricing / Plans -->
-    <section class="oh-section">
-        <div class="oh-pricing-head reveal">
-            <span class="oh-index" aria-hidden="true">05</span>
-            <h2 class="oh-h2">Comece grátis. Vá mais fundo com o Plus.</h2>
-        </div>
-        <div class="oh-pricing">
-            <div class="oh-plan oh-plan--free reveal">
-                <div class="oh-plan-head">
-                    <h3>Sonhador</h3>
-                    <div class="oh-plan-price">Grátis</div>
-                    <p class="oh-plan-desc">Registre cada sonho e experimente as ferramentas de reflexão antes de decidir se precisa de mais.</p>
-                </div>
-                <ul>
-                    <li>Registros ilimitados, por voz ou texto</li>
-                    <li>3 análises de sonhos por mês</li>
-                    <li>2 explorações guiadas por mês</li>
-                    <li>Seu diário de sonhos salvo</li>
-                </ul>
-                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=pt-BR" class="oh-plan-cta">Baixar o app</a>
-            </div>
-
-            <div class="oh-plan oh-plan--plus reveal">
-                <div class="oh-plan-head">
-                    <span class="oh-plan-tag">Plano pago</span>
-                    <h3>Noctalia Plus</h3>
-                    <div class="oh-plan-price">Preço exibido no Google Play</div>
-                    <p class="oh-plan-desc">O Google Play mostra a opção mensal ou anual disponível para o seu país e a sua conta.</p>
-                </div>
-                <ul>
-                    <li>Análises de sonhos ilimitadas</li>
-                    <li>Explorações guiadas ilimitadas</li>
-                    <li>Mensagens de acompanhamento ilimitadas por sonho</li>
-                </ul>
-                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=pt-BR" class="oh-plan-cta">Ver o Noctalia Plus</a>
-                <p class="oh-plan-note">O Google Play mostra o preço aplicável, o período de cobrança e qualquer elegibilidade antes da compra.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 7. FAQ -->
-    <section class="oh-section">
-        <div class="oh-pricing-head reveal">
-            <span class="oh-index" aria-hidden="true">06</span>
-            <h2 class="oh-h2">Perguntas frequentes</h2>
-        </div>
-        <div class="oh-faq reveal">
-            <details>
-                <summary>Como funciona a análise dos sonhos?</summary>
-                <p>O Noctalia lê o relato do sonho e sugere temas, símbolos e perguntas para considerar. São pontos de partida para a reflexão, não um diagnóstico nem um significado único e correto.</p>
-            </details>
-            <details>
-                <summary>Meus sonhos são privados?</summary>
-                <p>Sim. Suas transcrições e textos são criptografados em trânsito e armazenados com segurança. O áudio de voz serve apenas para a transcrição e não é guardado de forma permanente pelo Noctalia. O Noctalia não revende seus dados e não usa publicidade direcionada; o acesso é limitado a você e aos prestadores necessários ao serviço.</p>
-            </details>
-            <details>
-                <summary>Posso escrever meus sonhos em vez de falar?</summary>
-                <p>Sim. Se você prefere não acordar quem dorme ao seu lado, ou simplesmente gosta de escrever, há um editor de texto completo junto com a captura por voz.</p>
-            </details>
-            <details>
-                <summary>O aplicativo funciona offline?</summary>
-                <p>Você pode escrever e salvar um sonho sem conexão. A transcrição por voz funciona offline no Android 13 ou superior quando um modelo de voz compatível está instalado. A análise, a geração de imagens e a sincronização precisam de conexão e são retomadas assim que você se reconectar.</p>
-            </details>
-        </div>
-    </section>
-
     <!-- 8. Dream Symbols Dictionary -->
     <section id="symboles">
         <div class="oh-section-head reveal">
             <div>
+                <span class="oh-index" aria-hidden="true">03 · Compreender</span>
                 <span class="oh-symbols-badge"><i data-lucide="book-open"></i> RECURSO GRATUITO</span>
                 <h2 class="oh-h2">Dicionário de Símbolos</h2>
             </div>
@@ -419,6 +286,165 @@
             <a href="/pt-br/app-dicionario-de-sonhos" class="oh-btn-quiet">
                 <i data-lucide="book-open"></i> Conhecer o app dicionário de sonhos <i data-lucide="arrow-right"></i>
             </a>
+        </div>
+    </section>
+
+    <!-- 4. Explore Noctalia tools -->
+    <section aria-labelledby="explorer-outils-noctalia" class="oh-section">
+        <div class="oh-section-head reveal">
+            <div>
+                <span class="oh-index" aria-hidden="true">04</span>
+                <h2 id="explorer-outils-noctalia" class="oh-h2">Encontre seu ponto de partida</h2>
+            </div>
+            <p class="oh-lede">Comece por onde você está: registrar mais rápido, refletir com um guia, procurar um símbolo ou ver a análise de sonhos no Android.</p>
+        </div>
+        <div class="oh-tools">
+            <a href="/pt-br/diario-de-sonhos-por-voz" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Diário de sonhos por voz</h3>
+                    <p>Descubra como registrar um sonho por voz nos primeiros instantes depois de acordar.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+            <a href="/pt-br/app-interpretacao-de-sonhos-ia" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Interpretação de sonhos por IA</h3>
+                    <p>Descubra como uma reflexão guiada conecta símbolos, emoções, imagens e perguntas de acompanhamento.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+            <a href="/pt-br/app-dicionario-de-sonhos" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Aplicativo dicionário de sonhos</h3>
+                    <p>Explore símbolos frequentes e conecte-os ao contexto do seu sonho registrado.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+            <a href="/pt-br/app-android-analise-de-sonhos" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>App Android de análise de sonhos</h3>
+                    <p>Veja como o Noctalia registra, transcreve e analisa seus sonhos no Android.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+        </div>
+    </section>
+
+    <!-- 5. Who is it for? (Profiles) -->
+    <section class="oh-section">
+        <div class="oh-section-head reveal">
+            <div>
+                <span class="oh-index" aria-hidden="true">05 · Lembrar</span>
+                <h2 class="oh-h2">Para manhãs como essas</h2>
+            </div>
+        </div>
+        <div class="oh-profiles">
+            <div class="oh-profile reveal">
+                <span class="oh-profile-icon"><i data-lucide="search"></i></span>
+                <h3>Seus sonhos somem antes do café</h3>
+                <p>Trinta segundos de voz são mais fáceis do que um texto caprichado quando você ainda está meio dormindo.</p>
+            </div>
+            <div class="oh-profile reveal">
+                <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
+                <h3>Você já escreve um diário</h3>
+                <p>Seus sonhos ganham lugar ao lado das pessoas, perguntas e emoções sobre as quais você já escreve.</p>
+            </div>
+            <div class="oh-profile reveal">
+                <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
+                <h3>Uma imagem sempre volta</h3>
+                <p>Os relatos salvos ajudam a comparar a cena — e o que ela fez você sentir — cada vez que ela reaparece.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Pricing / Plans -->
+    <section class="oh-section">
+        <div class="oh-pricing-head reveal">
+            <span class="oh-index" aria-hidden="true">06</span>
+            <h2 class="oh-h2">Comece grátis. Vá mais fundo com o Plus.</h2>
+        </div>
+        <div class="oh-pricing">
+            <div class="oh-plan oh-plan--free reveal">
+                <div class="oh-plan-head">
+                    <h3>Sonhador</h3>
+                    <div class="oh-plan-price">Grátis</div>
+                    <p class="oh-plan-desc">Registre cada sonho e experimente as ferramentas de reflexão antes de decidir se precisa de mais.</p>
+                </div>
+                <ul>
+                    <li>Registros ilimitados, por voz ou texto</li>
+                    <li>3 análises de sonhos por mês</li>
+                    <li>2 explorações guiadas por mês</li>
+                    <li>Seu diário de sonhos salvo</li>
+                </ul>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=pt-BR" class="oh-plan-cta">Baixar o app</a>
+            </div>
+
+            <div class="oh-plan oh-plan--plus reveal">
+                <div class="oh-plan-head">
+                    <span class="oh-plan-tag">Plano pago</span>
+                    <h3>Noctalia Plus</h3>
+                    <div class="oh-plan-price">Preço exibido no Google Play</div>
+                    <p class="oh-plan-desc">O Google Play mostra a opção mensal ou anual disponível para o seu país e a sua conta.</p>
+                </div>
+                <ul>
+                    <li>Análises de sonhos ilimitadas</li>
+                    <li>Explorações guiadas ilimitadas</li>
+                    <li>Mensagens de acompanhamento ilimitadas por sonho</li>
+                </ul>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=pt-BR" class="oh-plan-cta">Ver o Noctalia Plus</a>
+                <p class="oh-plan-note">O Google Play mostra o preço aplicável, o período de cobrança e qualquer elegibilidade antes da compra.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. FAQ -->
+    <section class="oh-section">
+        <div class="oh-pricing-head reveal">
+            <span class="oh-index" aria-hidden="true">07</span>
+            <h2 class="oh-h2">Perguntas frequentes</h2>
+        </div>
+        <div class="oh-faq reveal">
+            <details>
+                <summary>Como funciona a análise dos sonhos?</summary>
+                <p>O Noctalia lê o relato do sonho e sugere temas, símbolos e perguntas para considerar. São pontos de partida para a reflexão, não um diagnóstico nem um significado único e correto.</p>
+            </details>
+            <details>
+                <summary>Meus sonhos são privados?</summary>
+                <p>Sim. Suas transcrições e textos são criptografados em trânsito e armazenados com segurança. O áudio de voz serve apenas para a transcrição e não é guardado de forma permanente pelo Noctalia. O Noctalia não revende seus dados e não usa publicidade direcionada; o acesso é limitado a você e aos prestadores necessários ao serviço.</p>
+            </details>
+            <details>
+                <summary>Posso escrever meus sonhos em vez de falar?</summary>
+                <p>Sim. Se você prefere não acordar quem dorme ao seu lado, ou simplesmente gosta de escrever, há um editor de texto completo junto com a captura por voz.</p>
+            </details>
+            <details>
+                <summary>O aplicativo funciona offline?</summary>
+                <p>Você pode escrever e salvar um sonho sem conexão. A transcrição por voz funciona offline no Android 13 ou superior quando um modelo de voz compatível está instalado. A análise, a geração de imagens e a sincronização precisam de conexão e são retomadas assim que você se reconectar.</p>
+            </details>
+        </div>
+    </section>
+
+    <!-- 9. Ending: eyes reopen onto the app -->
+    <section class="oh-ending" data-chapter="ending">
+        <div class="oh-ending-portal reveal">
+            <div class="phone-frame oh-ending-phone">
+                    <picture>
+                        <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <img src="../img/en/recording-800w.jpg" alt="Registro de um sonho no aplicativo Noctalia" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+        </div>
+        <div class="oh-ending-copy reveal">
+            <h2 class="oh-h2">Abra os olhos. O sonho ainda está aí.</h2>
+            <p class="oh-lede">Registre antes que ele se apague — com suas palavras, no celular, assim que acordar.</p>
+            <div class="oh-hero-cta">
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=pt-BR" class="oh-btn-primary">
+                    Registrar meu primeiro sonho <i data-lucide="play"></i>
+                </a>
+            </div>
+            <p class="oh-hero-note">
+                <i data-lucide="shield-check"></i> App Android gratuito no Google Play · Ferramenta de reflexão, não diagnóstico
+            </p>
         </div>
     </section>
 

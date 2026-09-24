@@ -74,7 +74,7 @@
     <section id="how-it-works">
         <div class="oh-section-head reveal" data-steps-heading>
             <div>
-                <span class="oh-index" aria-hidden="true">01</span>
+                <span class="oh-index" aria-hidden="true">01 · Dream</span>
                 <h2 class="oh-h2">From a fading scene to an entry you can return to</h2>
             </div>
             <p class="oh-lede">Capture first, while it is still vivid. Make sense of it later, once you are fully awake.</p>
@@ -129,7 +129,7 @@
     <section id="features">
         <div class="oh-section-head reveal">
             <div>
-                <span class="oh-index" aria-hidden="true">02</span>
+                <span class="oh-index" aria-hidden="true">02 · Waking</span>
                 <h2 class="oh-h2">What each dream keeps</h2>
             </div>
             <p class="oh-lede">The original account stays untouched. Everything else is optional, added only when a dream calls for it.</p>
@@ -220,144 +220,11 @@
         </div>
     </section>
 
-    <!-- 4. Explore Noctalia tools -->
-    <section aria-labelledby="explore-noctalia-tools" class="oh-section">
-        <div class="oh-section-head reveal">
-            <div>
-                <span class="oh-index" aria-hidden="true">03</span>
-                <h2 id="explore-noctalia-tools" class="oh-h2">Find your way in</h2>
-            </div>
-            <p class="oh-lede">Start where you are: faster capture, guided reflection, a symbol to look up, or a side-by-side of dream journal apps.</p>
-        </div>
-        <div class="oh-tools">
-            <a href="/en/voice-dream-journal" class="oh-tool glass-panel reveal">
-                <span>
-                    <h3>Voice Dream Journal</h3>
-                    <p>See the voice-capture workflow for the first moments after waking.</p>
-                </span>
-                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
-            </a>
-            <a href="/en/ai-dream-interpretation-app" class="oh-tool glass-panel reveal">
-                <span>
-                    <h3>AI Interpretation App</h3>
-                    <p>Learn how guided reflection connects symbols, moods, images, and follow-up questions.</p>
-                </span>
-                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
-            </a>
-            <a href="/en/dream-dictionary-app" class="oh-tool glass-panel reveal">
-                <span>
-                    <h3>Dream Dictionary App</h3>
-                    <p>Browse common symbols, then relate them to the context of your saved dream.</p>
-                </span>
-                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
-            </a>
-            <a href="/en/dream-journal-apps" class="oh-tool glass-panel reveal">
-                <span>
-                    <h3>Best Dream Journal Apps</h3>
-                    <p>Compare approaches to recording, privacy, AI features, and pricing.</p>
-                </span>
-                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
-            </a>
-        </div>
-    </section>
-
-    <!-- 5. Who is it for? (Profiles) -->
-    <section class="oh-section">
-        <div class="oh-section-head reveal">
-            <div>
-                <span class="oh-index" aria-hidden="true">04</span>
-                <h2 class="oh-h2">Made for mornings like these</h2>
-            </div>
-        </div>
-        <div class="oh-profiles">
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="search"></i></span>
-                <h3>Your dreams are gone by breakfast</h3>
-                <p>Thirty seconds of voice is easier than a polished entry while you are still half asleep.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
-                <h3>You already keep a journal</h3>
-                <p>Dreams can sit beside the people, questions and feelings you already write about.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
-                <h3>One image keeps coming back</h3>
-                <p>Saved entries let you compare the scene — and how it made you feel — each time it returns.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 6. Pricing / Plans -->
-    <section class="oh-section">
-        <div class="oh-pricing-head reveal">
-            <span class="oh-index" aria-hidden="true">05</span>
-            <h2 class="oh-h2">Start free. Go deeper with Plus.</h2>
-        </div>
-        <div class="oh-pricing">
-            <div class="oh-plan oh-plan--free reveal">
-                <div class="oh-plan-head">
-                    <h3>Dreamer</h3>
-                    <div class="oh-plan-price">Free</div>
-                    <p class="oh-plan-desc">Record every dream and try the reflection tools before deciding whether you need more.</p>
-                </div>
-                <ul>
-                    <li>Unlimited recordings, voice or text</li>
-                    <li>3 dream analyses per month</li>
-                    <li>2 guided explorations per month</li>
-                    <li>Your saved dream journal</li>
-                </ul>
-                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="oh-plan-cta">Download the app</a>
-            </div>
-
-            <div class="oh-plan oh-plan--plus reveal">
-                <div class="oh-plan-head">
-                    <span class="oh-plan-tag">Paid plan</span>
-                    <h3>Noctalia Plus</h3>
-                    <div class="oh-plan-price">Price shown in Google Play</div>
-                    <p class="oh-plan-desc">Google Play shows the monthly or annual option available for your country and account.</p>
-                </div>
-                <ul>
-                    <li>Unlimited dream analyses</li>
-                    <li>Unlimited guided explorations</li>
-                    <li>Unlimited follow-up messages per dream</li>
-                </ul>
-                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="oh-plan-cta">View Noctalia Plus</a>
-                <p class="oh-plan-note">Google Play shows the applicable price, billing period and any eligibility before purchase.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 7. FAQ -->
-    <section class="oh-section">
-        <div class="oh-pricing-head reveal">
-            <span class="oh-index" aria-hidden="true">06</span>
-            <h2 class="oh-h2">Frequently asked questions</h2>
-        </div>
-        <div class="oh-faq reveal">
-            <details>
-                <summary>How does dream analysis work?</summary>
-                <p>Noctalia reads the dream account and suggests themes, symbols, and questions to consider. These are prompts for reflection, not a diagnosis or a single correct meaning.</p>
-            </details>
-            <details>
-                <summary>Are my dreams private?</summary>
-                <p>Yes. Your transcripts and notes are encrypted in transit and stored securely. Voice audio is used only for transcription and is not persistently stored by Noctalia. Noctalia does not sell personal data or use targeted advertising; access is limited to you and the service providers needed to deliver the app.</p>
-            </details>
-            <details>
-                <summary>Can I type my dreams instead of speaking?</summary>
-                <p>Yes. If you prefer not to wake your partner or simply enjoy writing, a full text editor is available alongside voice capture.</p>
-            </details>
-            <details>
-                <summary>Does the app work offline?</summary>
-                <p>You can type and save a dream without a connection. Voice transcription works offline on Android 13 or later when a compatible speech model is installed. Analysis, image generation, and server sync require a connection and resume after you reconnect.</p>
-            </details>
-        </div>
-    </section>
-
     <!-- 8. Dream Symbols Dictionary -->
     <section id="symbols">
         <div class="oh-section-head reveal">
             <div>
+                <span class="oh-index" aria-hidden="true">03 · Understanding</span>
                 <span class="oh-symbols-badge"><i data-lucide="book-open"></i> FREE RESOURCE</span>
                 <h2 class="oh-h2">Dream Symbols Dictionary</h2>
             </div>
@@ -435,6 +302,165 @@
             <a href="/en/guides/dream-symbols-dictionary" class="oh-btn-quiet">
                 <i data-lucide="book-open"></i> Explore all 150 symbols <i data-lucide="arrow-right"></i>
             </a>
+        </div>
+    </section>
+
+    <!-- 4. Explore Noctalia tools -->
+    <section aria-labelledby="explore-noctalia-tools" class="oh-section">
+        <div class="oh-section-head reveal">
+            <div>
+                <span class="oh-index" aria-hidden="true">04</span>
+                <h2 id="explore-noctalia-tools" class="oh-h2">Find your way in</h2>
+            </div>
+            <p class="oh-lede">Start where you are: faster capture, guided reflection, a symbol to look up, or a side-by-side of dream journal apps.</p>
+        </div>
+        <div class="oh-tools">
+            <a href="/en/voice-dream-journal" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Voice Dream Journal</h3>
+                    <p>See the voice-capture workflow for the first moments after waking.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+            <a href="/en/ai-dream-interpretation-app" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>AI Interpretation App</h3>
+                    <p>Learn how guided reflection connects symbols, moods, images, and follow-up questions.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+            <a href="/en/dream-dictionary-app" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Dream Dictionary App</h3>
+                    <p>Browse common symbols, then relate them to the context of your saved dream.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+            <a href="/en/dream-journal-apps" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Best Dream Journal Apps</h3>
+                    <p>Compare approaches to recording, privacy, AI features, and pricing.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+        </div>
+    </section>
+
+    <!-- 5. Who is it for? (Profiles) -->
+    <section class="oh-section">
+        <div class="oh-section-head reveal">
+            <div>
+                <span class="oh-index" aria-hidden="true">05 · Remembering</span>
+                <h2 class="oh-h2">Made for mornings like these</h2>
+            </div>
+        </div>
+        <div class="oh-profiles">
+            <div class="oh-profile reveal">
+                <span class="oh-profile-icon"><i data-lucide="search"></i></span>
+                <h3>Your dreams are gone by breakfast</h3>
+                <p>Thirty seconds of voice is easier than a polished entry while you are still half asleep.</p>
+            </div>
+            <div class="oh-profile reveal">
+                <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
+                <h3>You already keep a journal</h3>
+                <p>Dreams can sit beside the people, questions and feelings you already write about.</p>
+            </div>
+            <div class="oh-profile reveal">
+                <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
+                <h3>One image keeps coming back</h3>
+                <p>Saved entries let you compare the scene — and how it made you feel — each time it returns.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Pricing / Plans -->
+    <section class="oh-section">
+        <div class="oh-pricing-head reveal">
+            <span class="oh-index" aria-hidden="true">06</span>
+            <h2 class="oh-h2">Start free. Go deeper with Plus.</h2>
+        </div>
+        <div class="oh-pricing">
+            <div class="oh-plan oh-plan--free reveal">
+                <div class="oh-plan-head">
+                    <h3>Dreamer</h3>
+                    <div class="oh-plan-price">Free</div>
+                    <p class="oh-plan-desc">Record every dream and try the reflection tools before deciding whether you need more.</p>
+                </div>
+                <ul>
+                    <li>Unlimited recordings, voice or text</li>
+                    <li>3 dream analyses per month</li>
+                    <li>2 guided explorations per month</li>
+                    <li>Your saved dream journal</li>
+                </ul>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="oh-plan-cta">Download the app</a>
+            </div>
+
+            <div class="oh-plan oh-plan--plus reveal">
+                <div class="oh-plan-head">
+                    <span class="oh-plan-tag">Paid plan</span>
+                    <h3>Noctalia Plus</h3>
+                    <div class="oh-plan-price">Price shown in Google Play</div>
+                    <p class="oh-plan-desc">Google Play shows the monthly or annual option available for your country and account.</p>
+                </div>
+                <ul>
+                    <li>Unlimited dream analyses</li>
+                    <li>Unlimited guided explorations</li>
+                    <li>Unlimited follow-up messages per dream</li>
+                </ul>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="oh-plan-cta">View Noctalia Plus</a>
+                <p class="oh-plan-note">Google Play shows the applicable price, billing period and any eligibility before purchase.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. FAQ -->
+    <section class="oh-section">
+        <div class="oh-pricing-head reveal">
+            <span class="oh-index" aria-hidden="true">07</span>
+            <h2 class="oh-h2">Frequently asked questions</h2>
+        </div>
+        <div class="oh-faq reveal">
+            <details>
+                <summary>How does dream analysis work?</summary>
+                <p>Noctalia reads the dream account and suggests themes, symbols, and questions to consider. These are prompts for reflection, not a diagnosis or a single correct meaning.</p>
+            </details>
+            <details>
+                <summary>Are my dreams private?</summary>
+                <p>Yes. Your transcripts and notes are encrypted in transit and stored securely. Voice audio is used only for transcription and is not persistently stored by Noctalia. Noctalia does not sell personal data or use targeted advertising; access is limited to you and the service providers needed to deliver the app.</p>
+            </details>
+            <details>
+                <summary>Can I type my dreams instead of speaking?</summary>
+                <p>Yes. If you prefer not to wake your partner or simply enjoy writing, a full text editor is available alongside voice capture.</p>
+            </details>
+            <details>
+                <summary>Does the app work offline?</summary>
+                <p>You can type and save a dream without a connection. Voice transcription works offline on Android 13 or later when a compatible speech model is installed. Analysis, image generation, and server sync require a connection and resume after you reconnect.</p>
+            </details>
+        </div>
+    </section>
+
+    <!-- 9. Ending: eyes reopen onto the app -->
+    <section class="oh-ending" data-chapter="ending">
+        <div class="oh-ending-portal reveal">
+            <div class="phone-frame oh-ending-phone">
+                    <picture>
+                        <source type="image/webp" srcset="/img/en/recording-480w.webp 480w, /img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <source type="image/jpeg" srcset="/img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <img src="/img/en/recording-800w.jpg" alt="Recording your dream with your voice" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+        </div>
+        <div class="oh-ending-copy reveal">
+            <h2 class="oh-h2">Open your eyes. The dream is still there.</h2>
+            <p class="oh-lede">Record it before it fades — in your own words, on your phone, the moment you wake.</p>
+            <div class="oh-hero-cta">
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="oh-btn-primary">
+                    Record my first dream <i data-lucide="play"></i>
+                </a>
+            </div>
+            <p class="oh-hero-note">
+                <i data-lucide="shield-check"></i> Free Android app on Google Play · A tool for reflection, not diagnosis
+            </p>
         </div>
     </section>
 

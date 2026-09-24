@@ -74,7 +74,7 @@
     <section id="comment-ca-marche">
         <div class="oh-section-head reveal" data-steps-heading>
             <div>
-                <span class="oh-index" aria-hidden="true">01</span>
+                <span class="oh-index" aria-hidden="true">01 · Rêve</span>
                 <h2 class="oh-h2">D’une scène qui s’efface à un récit que vous pouvez relire</h2>
             </div>
             <p class="oh-lede">Capturez d’abord, tant que c’est encore vif. Donnez-lui du sens ensuite, une fois bien réveillé.</p>
@@ -129,7 +129,7 @@
     <section id="fonctionnalites">
         <div class="oh-section-head reveal">
             <div>
-                <span class="oh-index" aria-hidden="true">02</span>
+                <span class="oh-index" aria-hidden="true">02 · Réveil</span>
                 <h2 class="oh-h2">Ce que chaque rêve conserve</h2>
             </div>
             <p class="oh-lede">Le récit d’origine reste intact. Tout le reste est facultatif, ajouté seulement quand un rêve l’appelle.</p>
@@ -220,144 +220,11 @@
         </div>
     </section>
 
-    <!-- 4. Explore Noctalia tools -->
-    <section aria-labelledby="explorer-outils-noctalia" class="oh-section">
-        <div class="oh-section-head reveal">
-            <div>
-                <span class="oh-index" aria-hidden="true">03</span>
-                <h2 id="explorer-outils-noctalia" class="oh-h2">Trouvez votre porte d’entrée</h2>
-            </div>
-            <p class="oh-lede">Partez de là où vous en êtes : une saisie plus rapide, une réflexion guidée, un symbole à chercher ou un comparatif d’applications.</p>
-        </div>
-        <div class="oh-tools">
-            <a href="/fr/journal-de-reves-vocal" class="oh-tool glass-panel reveal">
-                <span>
-                    <h3>Journal de rêves vocal</h3>
-                    <p>Découvrez comment enregistrer un rêve à la voix dans les premiers instants après le réveil.</p>
-                </span>
-                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
-            </a>
-            <a href="/fr/application-interpretation-reves-ia" class="oh-tool glass-panel reveal">
-                <span>
-                    <h3>Interprétation des rêves par IA</h3>
-                    <p>Découvrez comment une réflexion guidée relie symboles, émotions, images et questions de suivi.</p>
-                </span>
-                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
-            </a>
-            <a href="/fr/dictionnaire-de-reves-application" class="oh-tool glass-panel reveal">
-                <span>
-                    <h3>Application dictionnaire des rêves</h3>
-                    <p>Parcourez des symboles fréquents, puis reliez-les au contexte de votre rêve enregistré.</p>
-                </span>
-                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
-            </a>
-            <a href="/fr/applications-journal-de-reves" class="oh-tool glass-panel reveal">
-                <span>
-                    <h3>Meilleures applications de journal de rêves</h3>
-                    <p>Comparez les méthodes de saisie, la confidentialité, les fonctions d'IA et les prix.</p>
-                </span>
-                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
-            </a>
-        </div>
-    </section>
-
-    <!-- 5. Who is it for? (Profiles) -->
-    <section class="oh-section">
-        <div class="oh-section-head reveal">
-            <div>
-                <span class="oh-index" aria-hidden="true">04</span>
-                <h2 class="oh-h2">Pour les matins comme ceux-là</h2>
-            </div>
-        </div>
-        <div class="oh-profiles">
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="search"></i></span>
-                <h3>Vos rêves s’envolent avant le café</h3>
-                <p>Trente secondes de voix, c’est plus simple qu’un texte soigné quand on est encore à moitié endormi.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
-                <h3>Vous tenez déjà un journal</h3>
-                <p>Vos rêves trouvent leur place à côté des personnes, des questions et des émotions sur lesquelles vous écrivez déjà.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
-                <h3>Une image revient sans cesse</h3>
-                <p>Les récits enregistrés permettent de comparer la scène — et ce qu’elle vous a fait ressentir — à chaque retour.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 6. Pricing / Plans -->
-    <section class="oh-section">
-        <div class="oh-pricing-head reveal">
-            <span class="oh-index" aria-hidden="true">05</span>
-            <h2 class="oh-h2">Commencez gratuitement. Allez plus loin avec Plus.</h2>
-        </div>
-        <div class="oh-pricing">
-            <div class="oh-plan oh-plan--free reveal">
-                <div class="oh-plan-head">
-                    <h3>Rêveur</h3>
-                    <div class="oh-plan-price">Gratuit</div>
-                    <p class="oh-plan-desc">Enregistrez chaque rêve et essayez les outils de réflexion avant de décider s’il vous en faut plus.</p>
-                </div>
-                <ul>
-                    <li>Enregistrements illimités, à la voix ou par écrit</li>
-                    <li>3 analyses de rêves par mois</li>
-                    <li>2 explorations guidées par mois</li>
-                    <li>Votre journal de rêves sauvegardé</li>
-                </ul>
-                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="oh-plan-cta">Télécharger l’application</a>
-            </div>
-
-            <div class="oh-plan oh-plan--plus reveal">
-                <div class="oh-plan-head">
-                    <span class="oh-plan-tag">Offre payante</span>
-                    <h3>Noctalia Plus</h3>
-                    <div class="oh-plan-price">Prix affiché sur Google Play</div>
-                    <p class="oh-plan-desc">Google Play affiche l’option mensuelle ou annuelle disponible pour votre pays et votre compte.</p>
-                </div>
-                <ul>
-                    <li>Analyses de rêves illimitées</li>
-                    <li>Explorations guidées illimitées</li>
-                    <li>Messages de suivi illimités par rêve</li>
-                </ul>
-                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="oh-plan-cta">Voir Noctalia Plus</a>
-                <p class="oh-plan-note">Google Play affiche le prix applicable, la période de facturation et toute condition d’éligibilité avant l’achat.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 7. FAQ -->
-    <section class="oh-section">
-        <div class="oh-pricing-head reveal">
-            <span class="oh-index" aria-hidden="true">06</span>
-            <h2 class="oh-h2">Questions fréquentes</h2>
-        </div>
-        <div class="oh-faq reveal">
-            <details>
-                <summary>Comment fonctionne l’analyse des rêves ?</summary>
-                <p>Noctalia lit le récit de votre rêve et propose des thèmes, des symboles et des questions à considérer. Ce sont des pistes de réflexion, pas un diagnostic ni une signification unique.</p>
-            </details>
-            <details>
-                <summary>Mes rêves sont-ils privés ?</summary>
-                <p>Oui. Vos transcriptions et textes sont chiffrés en transit et stockés de manière sécurisée. L’audio vocal sert uniquement à la transcription et n’est pas conservé durablement par Noctalia. Noctalia ne revend pas vos données et n’utilise pas de publicité ciblée ; l’accès est limité à vous et aux prestataires nécessaires au service.</p>
-            </details>
-            <details>
-                <summary>Puis-je écrire mes rêves au lieu de parler ?</summary>
-                <p>Oui. Si vous préférez ne pas réveiller la personne à côté de vous, ou si vous aimez simplement écrire, un éditeur de texte complet est disponible en plus de la saisie vocale.</p>
-            </details>
-            <details>
-                <summary>L’application fonctionne-t-elle hors ligne ?</summary>
-                <p>Vous pouvez écrire et enregistrer un rêve sans connexion. La transcription vocale fonctionne hors ligne sur Android 13 ou version ultérieure lorsqu’un modèle vocal compatible est installé. L’analyse, la génération d’image et la synchronisation nécessitent une connexion et reprennent dès que vous êtes reconnecté.</p>
-            </details>
-        </div>
-    </section>
-
     <!-- 8. Dream Symbols Dictionary -->
     <section id="symboles">
         <div class="oh-section-head reveal">
             <div>
+                <span class="oh-index" aria-hidden="true">03 · Comprendre</span>
                 <span class="oh-symbols-badge"><i data-lucide="book-open"></i> RESSOURCE GRATUITE</span>
                 <h2 class="oh-h2">Dictionnaire des symboles</h2>
             </div>
@@ -435,6 +302,165 @@
             <a href="guides/dictionnaire-symboles-reves" class="oh-btn-quiet">
                 <i data-lucide="book-open"></i> Explorer les 150 symboles <i data-lucide="arrow-right"></i>
             </a>
+        </div>
+    </section>
+
+    <!-- 4. Explore Noctalia tools -->
+    <section aria-labelledby="explorer-outils-noctalia" class="oh-section">
+        <div class="oh-section-head reveal">
+            <div>
+                <span class="oh-index" aria-hidden="true">04</span>
+                <h2 id="explorer-outils-noctalia" class="oh-h2">Trouvez votre porte d’entrée</h2>
+            </div>
+            <p class="oh-lede">Partez de là où vous en êtes : une saisie plus rapide, une réflexion guidée, un symbole à chercher ou un comparatif d’applications.</p>
+        </div>
+        <div class="oh-tools">
+            <a href="/fr/journal-de-reves-vocal" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Journal de rêves vocal</h3>
+                    <p>Découvrez comment enregistrer un rêve à la voix dans les premiers instants après le réveil.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+            <a href="/fr/application-interpretation-reves-ia" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Interprétation des rêves par IA</h3>
+                    <p>Découvrez comment une réflexion guidée relie symboles, émotions, images et questions de suivi.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+            <a href="/fr/dictionnaire-de-reves-application" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Application dictionnaire des rêves</h3>
+                    <p>Parcourez des symboles fréquents, puis reliez-les au contexte de votre rêve enregistré.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+            <a href="/fr/applications-journal-de-reves" class="oh-tool glass-panel reveal">
+                <span>
+                    <h3>Meilleures applications de journal de rêves</h3>
+                    <p>Comparez les méthodes de saisie, la confidentialité, les fonctions d'IA et les prix.</p>
+                </span>
+                <span class="oh-tool-arrow"><i data-lucide="arrow-up-right"></i></span>
+            </a>
+        </div>
+    </section>
+
+    <!-- 5. Who is it for? (Profiles) -->
+    <section class="oh-section">
+        <div class="oh-section-head reveal">
+            <div>
+                <span class="oh-index" aria-hidden="true">05 · Se souvenir</span>
+                <h2 class="oh-h2">Pour les matins comme ceux-là</h2>
+            </div>
+        </div>
+        <div class="oh-profiles">
+            <div class="oh-profile reveal">
+                <span class="oh-profile-icon"><i data-lucide="search"></i></span>
+                <h3>Vos rêves s’envolent avant le café</h3>
+                <p>Trente secondes de voix, c’est plus simple qu’un texte soigné quand on est encore à moitié endormi.</p>
+            </div>
+            <div class="oh-profile reveal">
+                <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
+                <h3>Vous tenez déjà un journal</h3>
+                <p>Vos rêves trouvent leur place à côté des personnes, des questions et des émotions sur lesquelles vous écrivez déjà.</p>
+            </div>
+            <div class="oh-profile reveal">
+                <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
+                <h3>Une image revient sans cesse</h3>
+                <p>Les récits enregistrés permettent de comparer la scène — et ce qu’elle vous a fait ressentir — à chaque retour.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Pricing / Plans -->
+    <section class="oh-section">
+        <div class="oh-pricing-head reveal">
+            <span class="oh-index" aria-hidden="true">06</span>
+            <h2 class="oh-h2">Commencez gratuitement. Allez plus loin avec Plus.</h2>
+        </div>
+        <div class="oh-pricing">
+            <div class="oh-plan oh-plan--free reveal">
+                <div class="oh-plan-head">
+                    <h3>Rêveur</h3>
+                    <div class="oh-plan-price">Gratuit</div>
+                    <p class="oh-plan-desc">Enregistrez chaque rêve et essayez les outils de réflexion avant de décider s’il vous en faut plus.</p>
+                </div>
+                <ul>
+                    <li>Enregistrements illimités, à la voix ou par écrit</li>
+                    <li>3 analyses de rêves par mois</li>
+                    <li>2 explorations guidées par mois</li>
+                    <li>Votre journal de rêves sauvegardé</li>
+                </ul>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="oh-plan-cta">Télécharger l’application</a>
+            </div>
+
+            <div class="oh-plan oh-plan--plus reveal">
+                <div class="oh-plan-head">
+                    <span class="oh-plan-tag">Offre payante</span>
+                    <h3>Noctalia Plus</h3>
+                    <div class="oh-plan-price">Prix affiché sur Google Play</div>
+                    <p class="oh-plan-desc">Google Play affiche l’option mensuelle ou annuelle disponible pour votre pays et votre compte.</p>
+                </div>
+                <ul>
+                    <li>Analyses de rêves illimitées</li>
+                    <li>Explorations guidées illimitées</li>
+                    <li>Messages de suivi illimités par rêve</li>
+                </ul>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="oh-plan-cta">Voir Noctalia Plus</a>
+                <p class="oh-plan-note">Google Play affiche le prix applicable, la période de facturation et toute condition d’éligibilité avant l’achat.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. FAQ -->
+    <section class="oh-section">
+        <div class="oh-pricing-head reveal">
+            <span class="oh-index" aria-hidden="true">07</span>
+            <h2 class="oh-h2">Questions fréquentes</h2>
+        </div>
+        <div class="oh-faq reveal">
+            <details>
+                <summary>Comment fonctionne l’analyse des rêves ?</summary>
+                <p>Noctalia lit le récit de votre rêve et propose des thèmes, des symboles et des questions à considérer. Ce sont des pistes de réflexion, pas un diagnostic ni une signification unique.</p>
+            </details>
+            <details>
+                <summary>Mes rêves sont-ils privés ?</summary>
+                <p>Oui. Vos transcriptions et textes sont chiffrés en transit et stockés de manière sécurisée. L’audio vocal sert uniquement à la transcription et n’est pas conservé durablement par Noctalia. Noctalia ne revend pas vos données et n’utilise pas de publicité ciblée ; l’accès est limité à vous et aux prestataires nécessaires au service.</p>
+            </details>
+            <details>
+                <summary>Puis-je écrire mes rêves au lieu de parler ?</summary>
+                <p>Oui. Si vous préférez ne pas réveiller la personne à côté de vous, ou si vous aimez simplement écrire, un éditeur de texte complet est disponible en plus de la saisie vocale.</p>
+            </details>
+            <details>
+                <summary>L’application fonctionne-t-elle hors ligne ?</summary>
+                <p>Vous pouvez écrire et enregistrer un rêve sans connexion. La transcription vocale fonctionne hors ligne sur Android 13 ou version ultérieure lorsqu’un modèle vocal compatible est installé. L’analyse, la génération d’image et la synchronisation nécessitent une connexion et reprennent dès que vous êtes reconnecté.</p>
+            </details>
+        </div>
+    </section>
+
+    <!-- 9. Ending: eyes reopen onto the app -->
+    <section class="oh-ending" data-chapter="ending">
+        <div class="oh-ending-portal reveal">
+            <div class="phone-frame oh-ending-phone">
+                    <picture>
+                        <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <img src="../img/en/recording-800w.jpg" alt="Enregistrement vocal de votre rêve" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+        </div>
+        <div class="oh-ending-copy reveal">
+            <h2 class="oh-h2">Ouvrez les yeux. Le rêve est toujours là.</h2>
+            <p class="oh-lede">Enregistrez-le avant qu’il ne s’efface — avec vos mots, sur votre téléphone, dès le réveil.</p>
+            <div class="oh-hero-cta">
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="oh-btn-primary">
+                    Enregistrer mon premier rêve <i data-lucide="play"></i>
+                </a>
+            </div>
+            <p class="oh-hero-note">
+                <i data-lucide="shield-check"></i> Application Android gratuite sur Google Play · Outil de réflexion, pas de diagnostic
+            </p>
         </div>
     </section>
 
