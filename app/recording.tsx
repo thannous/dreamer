@@ -652,7 +652,7 @@ export default function RecordingScreen() {
 
   const navigateToSavedDream = useCallback((
     dream: DreamAnalysis,
-    options?: { saved?: boolean; recall?: boolean }
+    options?: { saved?: boolean; recall?: boolean; autoAnalyze?: boolean }
   ) => {
     router.replace(buildJournalDetailHref(dream, options));
   }, []);
@@ -1090,7 +1090,7 @@ export default function RecordingScreen() {
           }
         });
       }
-      navigateToSavedDream(savedDream, { saved: true, recall: completeWithHelp });
+      navigateToSavedDream(savedDream, { saved: true, recall: completeWithHelp, autoAnalyze: isNewDream && !user && !completeWithHelp });
     } catch (error) {
       if (error instanceof GuestDreamLimitError) {
         setGuestDreamsRemaining(0);
@@ -1138,6 +1138,7 @@ export default function RecordingScreen() {
     t,
     transitionOnboarding,
     transcript,
+    user,
   ]);
 
 

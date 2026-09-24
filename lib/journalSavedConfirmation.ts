@@ -39,7 +39,7 @@ export function shouldOfferSavedDreamAnalysis(input: {
 
 export function buildJournalDetailHref(
   dreamId: string | number | DreamAnalysis,
-  options?: { saved?: boolean; recall?: boolean }
+  options?: { saved?: boolean; recall?: boolean; autoAnalyze?: boolean }
 ): Href {
   const params: Record<string, string> = typeof dreamId === 'object'
     ? { ...getDreamRouteParams(dreamId) }
@@ -48,6 +48,7 @@ export function buildJournalDetailHref(
     params[JOURNAL_SAVED_CONFIRMATION_PARAM] = JOURNAL_SAVED_CONFIRMATION_VALUE;
   }
   if (options?.recall) params.recall = '1';
+  if (options?.autoAnalyze) params.autoAnalyze = '1';
 
   return {
     pathname: '/journal/[id]',

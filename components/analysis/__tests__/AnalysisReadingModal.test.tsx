@@ -37,11 +37,15 @@ it('updates queued, running and completed illustration without hiding or regener
   const onRetryImage = jest.fn();
   const view = render(<AnalysisReadingModal dream={{ ...dream, imageJobStatus: 'queued' }} onRetryImage={onRetryImage} onClose={jest.fn()} />);
   expect(view.getByText('analysis.reading.image_queued')).toBeTruthy();
+  const readingOrder = JSON.stringify(view.toJSON());
+  expect(readingOrder.indexOf('analysis.reading.body')).toBeLessThan(readingOrder.indexOf('analysis.reading.illustration'));
   view.rerender(<AnalysisReadingModal dream={{ ...dream, imageJobStatus: 'running' }} onRetryImage={onRetryImage} onClose={jest.fn()} />);
   expect(view.getByText('analysis.reading.image_generating')).toBeTruthy();
+  expect(view.getByTestId('analysis.reading.generation_dots', { includeHiddenElements: true })).toBeTruthy();
   expect(view.getByText(dream.interpretation)).toBeTruthy();
   view.rerender(<AnalysisReadingModal dream={{ ...dream, imageUrl: 'private-reference' }} imageUri="https://example.com/signed.webp" onRetryImage={onRetryImage} onClose={jest.fn()} />);
   expect(view.getByTestId('analysis.reading.image').props.source).toEqual({ uri: 'https://example.com/signed.webp' });
+  expect(view.queryByTestId('analysis.reading.generation_dots', { includeHiddenElements: true })).toBeNull();
   fireEvent(view.getByTestId('analysis.reading.image'), 'load');
   expect(view.queryByText('analysis.reading.image_loading')).toBeNull();
   expect(view.getByText(dream.interpretation)).toBeTruthy();

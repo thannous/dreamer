@@ -19,6 +19,12 @@ describe('journalSavedConfirmation', () => {
     });
   });
 
+  it('marks a newly saved dream for one automatic guest demo', () => {
+    expect(buildJournalDetailHref(42, { saved: true, autoAnalyze: true })).toEqual({
+      pathname: '/journal/[id]', params: { id: '42', saved: '1', autoAnalyze: '1' },
+    });
+  });
+
   it('routes an explicit recall continuation with its saved dream', () => {
     expect(buildJournalDetailHref(42, { saved: true, recall: true })).toEqual({
       pathname: '/journal/[id]', params: { id: '42', saved: '1', recall: '1' },

@@ -14,6 +14,7 @@ import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
 import { ErrorType } from '@/lib/errors';
 import { ImageRetry } from '@/components/journal/ImageRetry';
+import { ImageGenerationDots } from '@/components/analysis/ImageGenerationDots';
 import {
   AnalysisNoticeSheet,
   DeleteConfirmSheet,
@@ -227,7 +228,7 @@ export default function JournalDetailScreen() {
 }
 
 function JournalDetailContent() {
-  const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam, analyzeAfterPurchase, analysisOwnerId } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; analyzeAfterPurchase?: string; analysisOwnerId?: string }>();
+  const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam, autoAnalyze: autoAnalyzeParam, analyzeAfterPurchase, analysisOwnerId } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; analysisOwnerId?: string }>();
   const recallRequested = isJournalSavedConfirmationParam(recallParam);
   const { state: onboardingState, transition: transitionOnboarding } = useOnboarding();
   const [savedConfirmationVisible, setSavedConfirmationVisible] = useState(
@@ -244,6 +245,7 @@ function JournalDetailContent() {
       })
   );
   const analysisLaunchInFlightRef = useRef(false);
+  const autoAnalysisHandledRef = useRef(false);
   const analysisPressInFlightRef = useRef(false);
   const purchaseAnalysisHandledRef = useRef(false);
   const recallEligibleDreamIdRef = useRef<string | null>(
@@ -1471,6 +1473,25 @@ function JournalDetailContent() {
   );
 
   useEffect(() => {
+    if (autoAnalyzeParam !== '1' || autoAnalysisHandledRef.current || !dream || quotaLoading) return;
+    const hasGuestDemoCredits = !user && tier === 'guest'
+      && savedAnalysisAction === 'analyze' && guestImageAvailable;
+    if (!isSavedArrival || recallRequested || !hasGuestDemoCredits
+      || dream.isAnalyzed || dream.analysisStatus !== 'none' || dream.analysisRequestId) {
+      autoAnalysisHandledRef.current = true;
+      router.setParams({ autoAnalyze: undefined });
+      return;
+    }
+    const timer = setTimeout(() => {
+      autoAnalysisHandledRef.current = true;
+      void runAnalyze(true);
+      router.setParams({ autoAnalyze: undefined });
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [autoAnalyzeParam, dream, guestImageAvailable, isSavedArrival, quotaLoading,
+    recallRequested, runAnalyze, savedAnalysisAction, tier, user]);
+
+  useEffect(() => {
     if (analyzeAfterPurchase !== '1' || purchaseAnalysisHandledRef.current) return;
     // Wait for the verified subscription to reach this screen; never consume a
     // free credit while the purchase result is still propagating.
@@ -2346,8 +2367,7 @@ function JournalDetailContent() {
             </View>
           )
         ) : illustrationSidecar === 'pending' ? (
-          <View className="min-h-[180px] flex-col items-center justify-center gap-3 rounded-lg border border-line-strong bg-ink-active px-6 py-6">
-            <ActivityIndicator size="large" color={noctalia.accent.soft} />
+          <View className="flex-col items-center justify-center gap-3 rounded-lg border border-line-strong bg-ink-active px-4 py-6" accessibilityLiveRegion="polite">
             <Text className="text-center font-sans-bold text-[16px] text-ivory">
               {t('journal.detail.image.generating_title')}
             </Text>
@@ -2356,6 +2376,7 @@ function JournalDetailContent() {
                 ? t('journal.detail.image.queued_subtitle')
                 : t('journal.detail.image.running_subtitle')}
             </Text>
+            <ImageGenerationDots color={noctalia.accent.base} size={240} testID="journal.detail.image.generation_dots" />
           </View>
         ) : (
           <View className="min-h-[180px] flex-col items-center justify-center gap-2.5 rounded-lg border border-line bg-ink-soft px-5 py-6">
@@ -2559,6 +2580,7 @@ function JournalDetailContent() {
                       </MarkdownText>
                     </>
                   ) : null}
+                  {!hasIllustratedCover ? renderIllustrationSection() : null}
                 </View>
               ) : null}
             </Reveal>
@@ -2572,7 +2594,6 @@ function JournalDetailContent() {
                   offerEligible={recallOffer.offerEligible}
                 />
               ) : null}
-              {!hasIllustratedCover ? renderIllustrationSection() : null}
             </Reveal>
 
             <Reveal index={6}>

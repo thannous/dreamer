@@ -1,4 +1,5 @@
 import { MarkdownText } from '@/components/ui/MarkdownText';
+import { ImageGenerationDots } from './ImageGenerationDots';
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Image } from 'expo-image';
@@ -44,7 +45,7 @@ function ReadingIllustration({ dream, imageUri, imageCacheKey, imageLoadFailed, 
         : hasImage ? t('analysis.reading.image_loading') : t('journal.detail.image.no_image_title');
 
   return (
-    <View style={[styles.illustration, hasImage || pending ? styles.imageFrame : styles.emptyFrame, { backgroundColor: tokens.surface.soft }]} testID="analysis.reading.illustration">
+    <View style={[styles.illustration, hasImage ? styles.imageFrame : pending ? styles.pendingFrame : styles.emptyFrame, { backgroundColor: tokens.surface.soft }]} testID="analysis.reading.illustration">
       {hasImage && imageUri && !loadFailed ? (
         <Image source={{ uri: imageUri, cacheKey: imageCacheKey }} cachePolicy="memory-disk" contentFit="cover" style={StyleSheet.absoluteFill}
           accessibilityLabel={t('analysis.reading.image_alt', { title: dream.title })}
@@ -52,8 +53,9 @@ function ReadingIllustration({ dream, imageUri, imageCacheKey, imageLoadFailed, 
       ) : null}
       {!loaded || pending || failed ? (
         <View style={[styles.imageStatus, { backgroundColor: tokens.surface.soft }]} accessibilityLiveRegion="polite">
-          {loading ? <ActivityIndicator color={tokens.accent.text} /> : <IconSymbol name="photo" size={28} color={tokens.text.secondary} />}
+          {loading && !pending ? <ActivityIndicator color={tokens.accent.text} /> : !pending ? <IconSymbol name="photo" size={28} color={tokens.text.secondary} /> : null}
           <Text style={[styles.imageLabel, { color: tokens.text.secondary }]}>{label}</Text>
+          {pending ? <ImageGenerationDots color={tokens.accent.base} size={240} testID="analysis.reading.generation_dots" /> : null}
           {failed && (unavailable ? onReloadImage : onRetryImage) ? (
             <PressableScale onPress={unavailable ? () => { setLoadFailed(false); onReloadImage?.(); } : onRetryImage} accessibilityRole="button" style={styles.retry} testID="analysis.reading.image_retry">
               <Text style={[styles.imageLabel, { color: tokens.accent.text }]}>{t(unavailable ? 'journal.persistence.retry' : 'image_retry.retry_generation')}</Text>
@@ -91,11 +93,11 @@ export function AnalysisReadingModal({ dream, imageUri, imageCacheKey, imageLoad
         </View>
         <ScrollView contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40, paddingLeft: Math.max(insets.left, 24), paddingRight: Math.max(insets.right, 24) }]}>
           <Text accessibilityRole="header" style={[styles.title, { color: tokens.text.primary }]}>{dream.title}</Text>
-          <ReadingIllustration key={`${dream.imageUrl ?? ''}:${imageUri ?? ''}`} dream={dream} imageUri={imageUri} imageCacheKey={imageCacheKey} imageLoadFailed={imageLoadFailed} onReloadImage={onReloadImage}
-            onRetryImage={onRetryImage} isRetryingImage={isRetryingImage} />
           <View testID="analysis.reading.body">
             <MarkdownText variant="reading" style={bodyStyle}>{dream.interpretation?.trim() ?? ''}</MarkdownText>
           </View>
+          <ReadingIllustration key={`${dream.imageUrl ?? ''}:${imageUri ?? ''}`} dream={dream} imageUri={imageUri} imageCacheKey={imageCacheKey} imageLoadFailed={imageLoadFailed} onReloadImage={onReloadImage}
+            onRetryImage={onRetryImage} isRetryingImage={isRetryingImage} />
           {insights.map(section => section.items?.length ? (
             <View key={section.key} style={styles.section} testID={`analysis.reading.${section.key}`}>
               <Text accessibilityRole="header" style={[styles.sectionTitle, { color: tokens.text.primary }]}>{section.heading}</Text>
@@ -134,8 +136,9 @@ const styles = StyleSheet.create({
   close: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
   content: { paddingTop: 10, width: '100%', maxWidth: 620, alignSelf: 'center' },
   title: { fontFamily: Fonts.lora.regular, fontSize: 26, lineHeight: 35, marginBottom: 20 },
-  illustration: { width: '100%', borderRadius: 20, overflow: 'hidden', marginBottom: 28 },
+  illustration: { width: '100%', borderRadius: 20, overflow: 'hidden', marginTop: 28, marginBottom: 28 },
   imageFrame: { minHeight: 190, aspectRatio: 4 / 3 },
+  pendingFrame: { minHeight: 310 },
   emptyFrame: { minHeight: 140 },
   imageStatus: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 20 },
   imageLabel: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 22, textAlign: 'center' },
