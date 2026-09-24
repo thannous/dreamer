@@ -56,6 +56,7 @@ const getRevealItems = () => Array.from(document.querySelectorAll('.reveal'));
 const getFeatureMedia = () => Array.from(document.querySelectorAll('.oh-feature-media'));
 
 const showStaticState = () => {
+  html.classList.remove('exp-starmap');
   getFeatureMedia().forEach((el) => el.classList.add('is-inview'));
   getHeadline()?.classList.add('is-revealed');
 
@@ -599,7 +600,7 @@ const initDawn = () => {
 
 const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 
-const initDreamSpace = (allowDrag) => {
+const initDreamSpace = () => {
   const space = document.querySelector('.oh-dreamspace');
   const list = space?.querySelector('.oh-dream-list');
   if (!space || !list || !CSS.supports('transform-style', 'preserve-3d')) return null;
@@ -686,7 +687,7 @@ const initDreamSpace = (allowDrag) => {
   document.addEventListener('visibilitychange', start);
 
   let moved = 0;
-  if (allowDrag && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     const stage = space.querySelector('.oh-dreamspace-stage');
     let lastX = 0;
     let lastY = 0;
@@ -717,11 +718,16 @@ const initDreamSpace = (allowDrag) => {
       stage.classList.remove('is-dragging');
     };
     stage.addEventListener('pointerup', end);
-    stage.addEventListener('pointercancel', end);
+    stage.addEventListener('pointercancel', () => {
+      end();
+      moved = 0;
+    });
     stage.addEventListener(
       'click',
       (event) => {
-        if (moved > 6) {
+        const wasDragged = moved > 6;
+        moved = 0;
+        if (wasDragged && event.detail > 0) {
           event.preventDefault();
           event.stopPropagation();
         }
@@ -923,7 +929,7 @@ const initStarmap = () => {
     });
   };
   initPinning();
-  if (!('IntersectionObserver' in window)) return;
+  if (!('IntersectionObserver' in window) || typeof ResizeObserver !== 'function') return;
 
   html.classList.add('exp-starmap');
   const dreams = Array.from(root.querySelectorAll('.oh-starmap-dream')).map((el) => ({
@@ -1237,9 +1243,13 @@ const playIntro = (heroHeader, film, loop, variant) =>
     skip.textContent = SKIP_LABELS[(html.lang || 'en').slice(0, 2).toLowerCase()] || SKIP_LABELS.en;
 
     let finished = false;
+    let slowStartTimer = 0;
+    let maximumTimer = 0;
     const finish = (cut) => {
       if (finished) return;
       finished = true;
+      window.clearTimeout(slowStartTimer);
+      window.clearTimeout(maximumTimer);
       skip.remove();
       window.removeEventListener('scroll', onScroll);
       document.removeEventListener('keydown', onKey);
@@ -1274,9 +1284,10 @@ const playIntro = (heroHeader, film, loop, variant) =>
     window.addEventListener('scroll', onScroll, { passive: true });
     document.addEventListener('keydown', onKey);
     // Never make a slow connection wait for the film.
-    window.setTimeout(() => {
+    slowStartTimer = window.setTimeout(() => {
       if (intro.paused) finish(true);
     }, 2500);
+    maximumTimer = window.setTimeout(() => finish(true), 7000);
 
     film.append(intro);
     intro.play().catch(() => finish(true));
@@ -1301,11 +1312,11 @@ const initFilm = (isFull) => {
   const heroHeader = document.querySelector(HERO_SELECTOR);
   if (!heroHeader || !canPlayFilm()) return Promise.resolve();
 
-  const wide = isFull && window.matchMedia('(min-width: 900px)').matches;
+  const wide = window.matchMedia('(min-width: 900px)').matches;
   const film = document.createElement('div');
   film.className = 'oh-hero-film';
   film.setAttribute('aria-hidden', 'true');
-  const video = createVideo(FILM_BASE, wide ? '1280' : '854', 'oh-hero-loop');
+  const video = createVideo(FILM_BASE, isFull && wide ? '1280' : '854', 'oh-hero-loop');
   video.loop = true;
   film.append(video);
 
@@ -1316,10 +1327,6 @@ const initFilm = (isFull) => {
   };
   video.addEventListener('playing', () => film.classList.add('is-playing'), { once: true });
   video.addEventListener('error', remove, { once: true });
-  window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener?.('change', (event) => {
-    if (event.matches) remove();
-  });
-
   heroHeader.prepend(film);
   let heroVisible = true;
   const sync = () => {
@@ -1372,7 +1379,7 @@ const bootEnhanced = async (currentTier) => {
     const heroReady = initFilm(isFull);
     initFeatureMedia();
     initDawn();
-    const space = initDreamSpace(isFull);
+    const space = initDreamSpace();
     initLightbox(space);
     initWaking();
     initStarmap();
@@ -1405,6 +1412,23 @@ const bootEnhanced = async (currentTier) => {
     showStaticState();
   }
 };
+
+// Re-enter the static tier if the OS preference changes while this page is
+// open. Reloading disposes every active controller, including Lenis, GSAP,
+// canvas, and requestAnimationFrame loops, then the head script selects static.
+if (tier !== 'static' && typeof window.matchMedia === 'function') {
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const onReducedMotionChange = (event) => {
+    if (!event.matches) return;
+    showStaticState();
+    window.location.reload();
+  };
+  if (typeof reducedMotion.addEventListener === 'function') {
+    reducedMotion.addEventListener('change', onReducedMotionChange);
+  } else {
+    reducedMotion.addListener?.(onReducedMotionChange);
+  }
+}
 
 if (tier === 'static') {
   bootStatic();

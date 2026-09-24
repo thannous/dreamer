@@ -184,9 +184,27 @@ html.exp-sky-on .sky-stage {
 /* Headline words (full & light tiers).                              */
 /* ---------------------------------------------------------------- */
 
+/* The tier is set in the head before first paint. Keep the plain title
+ * hidden until its words have been wrapped, so it cannot flash before LCP. */
+html[data-exp-tier="full"] .oh-hero-title.hero-anim,
+html[data-exp-tier="light"] .oh-hero-title.hero-anim {
+  opacity: 0;
+  visibility: hidden;
+  animation: exp-headline-fallback 0s 15s forwards;
+}
+
+/* If the animation module never loads, reveal the real HTML title. */
+@keyframes exp-headline-fallback {
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
 html.exp-words .oh-hero-title.hero-anim {
   opacity: 1;
   visibility: visible;
+  animation: none;
 }
 
 .oh-word {
@@ -527,7 +545,7 @@ html.exp-3d .oh-dreamspace-stage.is-dragging {
 
 .oh-lightbox-label {
   margin: 0.4rem 0 0;
-  color: #ead4b4;
+  color: var(--oh-champagne-on);
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -709,7 +727,7 @@ html.exp-starmap .oh-starmap-stage {
 html.exp-starmap .oh-starmap-progress {
   display: block;
   margin: 0 0 0.9rem;
-  color: #ead4b4;
+  color: var(--oh-champagne-on);
   font-size: 0.74rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -756,7 +774,7 @@ html.exp-starmap .oh-sym-word::after {
 }
 
 html.exp-starmap .oh-sym-word.is-marked {
-  color: #ead4b4;
+  color: var(--oh-champagne-on);
 }
 
 html.exp-starmap .oh-sym-word.is-marked::after {
@@ -767,7 +785,7 @@ html.exp-starmap .oh-sym-word.is-marked::after {
   position: fixed;
   z-index: 130;
   margin: 0;
-  color: #ead4b4;
+  color: var(--oh-champagne-on);
   font-size: 0.92rem;
   line-height: 1.6;
   pointer-events: none;

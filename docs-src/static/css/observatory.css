@@ -1562,7 +1562,7 @@ body .noctalia-consent-actions button:hover {
   padding: 0.18rem 0.6rem;
   border: 1px solid rgba(234, 212, 180, 0.38);
   border-radius: 999px;
-  color: #ead4b4;
+  color: var(--oh-champagne-on);
   font-size: 0.68rem;
   white-space: nowrap;
 }
@@ -1609,7 +1609,7 @@ body .noctalia-consent-actions button:hover {
 }
 
 .oh-dream-more summary {
-  color: #ead4b4;
+  color: var(--oh-champagne-on);
   font-size: 0.8rem;
   cursor: pointer;
 }
@@ -1637,7 +1637,7 @@ body .noctalia-consent-actions button:hover {
 
 .oh-dream-symbols li::before {
   content: '# ';
-  color: #ead4b4;
+  color: var(--oh-champagne-on);
 }
 
 .oh-dream-open {
@@ -1658,7 +1658,7 @@ body .noctalia-consent-actions button:hover {
 .oh-dreams-hint {
   display: none;
   margin-top: 1rem;
-  color: #ead4b4;
+  color: var(--oh-champagne-on);
   font-size: 0.8rem;
   letter-spacing: 0.04em;
 }
@@ -1919,7 +1919,7 @@ body .noctalia-consent-actions button:hover {
 .oh-streak-label {
   display: block;
   margin-top: 0.35rem;
-  color: #ead4b4;
+  color: var(--oh-champagne-on);
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1979,7 +1979,7 @@ body .noctalia-consent-actions button:hover {
 
 .oh-starmap-hint {
   margin: 1rem 0 0;
-  color: #ead4b4;
+  color: var(--oh-champagne-on);
   font-size: 0.8rem;
   letter-spacing: 0.02em;
 }
@@ -2201,7 +2201,7 @@ body .noctalia-consent-actions button:hover {
 
 .oh-star-card-title {
   margin: 0 0 0.5rem;
-  color: #ead4b4;
+  color: var(--oh-champagne-on);
   font-size: 0.68rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -2275,7 +2275,7 @@ body .noctalia-consent-actions button:hover {
 }
 
 .oh-starmap-stat a {
-  color: #ead4b4;
+  color: var(--oh-champagne-on);
   font-size: 0.9rem;
   text-decoration: underline;
   text-underline-offset: 4px;
