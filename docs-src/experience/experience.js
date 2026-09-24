@@ -44,11 +44,23 @@ const withSuffix = (selectorList, suffix) =>
     .map((selector) => `${selector.trim()} ${suffix}`)
     .join(',');
 
-const getHeroItems = () => Array.from(document.querySelectorAll('.hero-anim'));
+const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
+// easeOutCubic: the restrained curve for the cinematic hero sequence.
+const EASE_FILM = 'cubic-bezier(0.22, 0.61, 0.36, 1)';
+const WORD_STAGGER_MS = 85;
+const HEADLINE_LEAD_MS = 450;
+
+const getHeroItems = () => Array.from(document.querySelectorAll('.hero-anim:not(.oh-hero-title)'));
+const getHeadline = () => document.querySelector('.oh-hero-title');
 const getRevealItems = () => Array.from(document.querySelectorAll('.reveal'));
+const getFeatureMedia = () => Array.from(document.querySelectorAll('.oh-feature-media'));
 
 const showStaticState = () => {
-  getHeroItems().forEach((el) => {
+  html.classList.remove('exp-starmap');
+  getFeatureMedia().forEach((el) => el.classList.add('is-inview'));
+  getHeadline()?.classList.add('is-revealed');
+
+  Array.from(document.querySelectorAll('.hero-anim')).forEach((el) => {
     el.classList.remove('opacity-0');
     el.style.opacity = '1';
     el.style.visibility = 'visible';
@@ -134,24 +146,71 @@ const loadScript = (src) => {
 };
 
 /* ------------------------------------------------------------------ */
+/* Headline: per-word focus pull (full & light tiers).                 */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Wraps each word of the headline in `.oh-word` so it can rise out of a
+ * soft blur, one word after another, like a dream coming back. Spaces stay
+ * as text nodes so wrapping, balancing and the accessible name are intact.
+ */
+const revealHeadline = () => {
+  const headline = getHeadline();
+  if (!headline) return;
+  const walker = document.createTreeWalker(headline, NodeFilter.SHOW_TEXT);
+  const textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+  let index = 0;
+  textNodes.forEach((node) => {
+    const parts = node.textContent.split(/(\s+)/);
+    if (!parts.some((part) => part.trim())) return;
+    const fragment = document.createDocumentFragment();
+    parts.forEach((part) => {
+      if (!part) return;
+      if (!part.trim()) {
+        fragment.append(document.createTextNode(part));
+        return;
+      }
+      const word = document.createElement('span');
+      word.className = 'oh-word';
+      word.textContent = part;
+      word.style.transitionDelay = `${index * WORD_STAGGER_MS}ms`;
+      index += 1;
+      fragment.append(word);
+    });
+    node.replaceWith(fragment);
+  });
+
+  html.classList.add('exp-words');
+  // Two frames: the collapsed state must be committed before it transitions.
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => headline.classList.add('is-revealed'));
+  });
+};
+
+/* ------------------------------------------------------------------ */
 /* Light tier: IO reveals (no GSAP).                                   */
 /* ------------------------------------------------------------------ */
 
-const initLightMotion = () => {
+const initLightMotion = (heroReady) => {
   const heroItems = getHeroItems();
   heroItems.forEach((el, index) => {
     el.classList.remove('opacity-0');
     el.style.opacity = '0';
     el.style.visibility = 'visible';
     el.style.transform = 'translate3d(0, 14px, 0)';
-    el.style.transition = 'opacity 700ms ease, transform 700ms ease';
-    el.style.transitionDelay = `${Math.min(index * 90, 360)}ms`;
+    el.style.transition = `opacity 900ms ${EASE_FILM}, transform 900ms ${EASE_FILM}`;
+    el.style.transitionDelay = `${HEADLINE_LEAD_MS + index * 120}ms`;
   });
 
-  window.requestAnimationFrame(() => {
-    heroItems.forEach((el) => {
-      el.style.opacity = '1';
-      el.style.transform = 'translate3d(0, 0, 0)';
+  heroReady.then(() => {
+    revealHeadline();
+    window.requestAnimationFrame(() => {
+      heroItems.forEach((el) => {
+        el.style.opacity = '1';
+        el.style.transform = 'translate3d(0, 0, 0)';
+      });
     });
   });
 
@@ -165,8 +224,12 @@ const initLightMotion = () => {
 
   const observer = new IntersectionObserver(
     (entries, activeObserver) => {
+      let batchIndex = 0;
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
+        // Siblings entering together cascade instead of landing at once.
+        entry.target.style.transitionDelay = `${Math.min(batchIndex * 80, 320)}ms`;
+        batchIndex += 1;
         entry.target.classList.add('active');
         entry.target.style.opacity = '1';
         entry.target.style.visibility = 'visible';
@@ -182,16 +245,50 @@ const initLightMotion = () => {
     el.style.opacity = '0';
     el.style.visibility = 'visible';
     el.style.transform = 'translate3d(0, 18px, 0)';
-    el.style.transition = 'opacity 650ms ease, transform 650ms ease';
+    el.style.transition = `opacity 650ms ${EASE_OUT}, transform 650ms ${EASE_OUT}`;
     observer.observe(el);
   });
+};
+
+/* ------------------------------------------------------------------ */
+/* Feature illustrations: one-shot bar entrance (full & light tiers).  */
+/* ------------------------------------------------------------------ */
+
+const initFeatureMedia = () => {
+  const media = getFeatureMedia();
+  if (!media.length) return;
+  if (!('IntersectionObserver' in window)) {
+    media.forEach((el) => el.classList.add('is-inview'));
+    return;
+  }
+
+  media.forEach((el) => {
+    // Already on screen when the layer boots: show it settled, never shrink it.
+    if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('is-inview');
+    Array.from(el.querySelectorAll('rect')).forEach((bar, index) => {
+      bar.style.transitionDelay = `${Math.min(index * 30, 540)}ms`;
+    });
+  });
+  html.classList.add('exp-motion');
+
+  const observer = new IntersectionObserver(
+    (entries, activeObserver) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-inview');
+        activeObserver.unobserve(entry.target);
+      });
+    },
+    { rootMargin: '0px 0px -15% 0px', threshold: 0.6 }
+  );
+  media.forEach((el) => observer.observe(el));
 };
 
 /* ------------------------------------------------------------------ */
 /* Full tier: GSAP scenes (ported from landing-animations.js).         */
 /* ------------------------------------------------------------------ */
 
-const initGsapScenes = (gsapLib, ScrollTrigger, lenis) => {
+const initGsapScenes = (gsapLib, ScrollTrigger, lenis, heroReady) => {
   gsapLib.registerPlugin(ScrollTrigger);
   ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 
@@ -203,17 +300,20 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis) => {
     gsapLib.ticker.lagSmoothing(0);
   }
 
-  // Hero intro.
-  const heroItems = gsapLib.utils.toArray('.hero-anim');
-  if (heroItems.length) {
-    gsapLib.set(heroItems, { opacity: 0, visibility: 'visible', y: 16 });
+  // Hero sequence: the headline surfaces word by word, then the supporting
+  // copy and the product shot follow on the same restrained curve
+  // (GSAP power2.out is the cubic ease-out used by EASE_FILM).
+  const heroItems = getHeroItems();
+  gsapLib.set(heroItems, { opacity: 0, visibility: 'visible', y: 16 });
+  heroReady.then(() => {
+    revealHeadline();
     gsapLib.to(heroItems, {
       opacity: 1,
       y: 0,
       duration: 1,
       ease: 'power2.out',
       stagger: 0.12,
-      delay: 0.12,
+      delay: HEADLINE_LEAD_MS / 1000,
       onComplete: () => {
         heroItems.forEach((el) => {
           el.style.visibility = 'visible';
@@ -224,29 +324,34 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis) => {
     gsapLib.fromTo(
       '.noctalia-observatory > header picture',
       { scale: 0.94, opacity: 0.8 },
-      { scale: 1, opacity: 1, duration: 1.2, ease: 'power2.out', delay: 0.35 }
+      { scale: 1, opacity: 1, duration: 1.4, ease: 'power2.out', delay: 0.8 }
     );
-  }
+  });
 
-  // Section reveals.
-  gsapLib.utils.toArray('.reveal').forEach((el) => {
-    gsapLib.fromTo(
-      el,
-      { autoAlpha: 0, y: 24 },
-      {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.9,
-        ease: 'power2.out',
-        immediateRender: false,
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 86%',
-          toggleActions: 'play none none none',
-          once: true,
-        },
-      }
-    );
+  // Section reveals: elements entering together cascade 80ms apart; section
+  // heads also pull focus. `.active` drives the CSS hairline draws.
+  const isHead = (el) => el.matches('.oh-section-head, .oh-pricing-head');
+  const revealItems = gsapLib.utils.toArray('.reveal');
+  gsapLib.set(revealItems, { autoAlpha: 0, y: 24 });
+  ScrollTrigger.batch(revealItems, {
+    start: 'top 86%',
+    once: true,
+    onEnter: (batch) => {
+      batch.forEach((el) => el.classList.add('active'));
+      gsapLib.fromTo(
+        batch,
+        { autoAlpha: 0, y: 24, filter: (i, el) => (isHead(el) ? 'blur(6px)' : 'blur(0px)') },
+        {
+          autoAlpha: 1,
+          y: 0,
+          filter: 'blur(0px)',
+          duration: 1,
+          ease: 'power2.out',
+          stagger: 0.08,
+          clearProps: 'filter',
+        }
+      );
+    },
   });
 
   // Steps: staggered scrub reveals. The heading is intentionally NOT pinned:
@@ -436,6 +541,825 @@ const initSky = async (quality) => {
 };
 
 /* ------------------------------------------------------------------ */
+/* One night: chapters, dawn, dream fragments, constellation, ending.  */
+/* ------------------------------------------------------------------ */
+
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+const smooth = (t) => t * t * (3 - 2 * t);
+let activeLenis = null;
+
+/* Dawn: one fixed layer whose opacity follows the night's progress, from
+ * ink in the dream to a champagne dawn once the page wakes. Opacity only. */
+const initDawn = () => {
+  const main = document.querySelector('.noctalia-observatory');
+  if (!main) return;
+  const dawn = document.createElement('div');
+  dawn.className = 'oh-dawn';
+  dawn.setAttribute('aria-hidden', 'true');
+  main.prepend(dawn);
+  const stops = [
+    ['.oh-dreams', 0, 0.55],
+    ['.oh-waking', 1, 0.5],
+    ['.oh-understand', 0.55, 0.5],
+    ['.oh-remember', 0.8, 0.5],
+    ['.oh-ending', 1, 0.5],
+  ]
+    .map(([selector, value, anchor]) => ({ el: document.querySelector(selector), value, anchor }))
+    .filter((stop) => stop.el);
+  if (!stops.length) return;
+  let frame = 0;
+  const update = () => {
+    frame = 0;
+    const mid = window.innerHeight * 0.5;
+    const points = stops.map(({ el, value, anchor }) => {
+      const rect = el.getBoundingClientRect();
+      return { y: rect.top + rect.height * anchor - mid, value };
+    });
+    let value = points[0].y > 0 ? 0 : points[points.length - 1].value;
+    for (let i = 0; i < points.length - 1; i += 1) {
+      const a = points[i];
+      const b = points[i + 1];
+      if (a.y <= 0 && b.y > 0) {
+        value = a.value + (b.value - a.value) * smooth(-a.y / (b.y - a.y));
+        break;
+      }
+    }
+    dawn.style.opacity = value.toFixed(3);
+  };
+  const request = () => {
+    if (!frame) frame = window.requestAnimationFrame(update);
+  };
+  window.addEventListener('scroll', request, { passive: true });
+  window.addEventListener('resize', request);
+  update();
+};
+
+/* ------------------------------------------------------------------ */
+/* Dream: the example entries float on a Fibonacci sphere in CSS 3D.   */
+/* ------------------------------------------------------------------ */
+
+const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+
+const initDreamSpace = () => {
+  const space = document.querySelector('.oh-dreamspace');
+  const list = space?.querySelector('.oh-dream-list');
+  if (!space || !list || !CSS.supports('transform-style', 'preserve-3d')) return null;
+  const slots = Array.from(list.querySelectorAll('.oh-dream-slot'));
+  if (slots.length < 4) return null;
+  html.classList.add('exp-3d');
+
+  const vectors = slots.map((slot, i) => {
+    const y = 1 - ((i + 0.5) * 2) / slots.length;
+    const r = Math.sqrt(1 - y * y);
+    const theta = i * GOLDEN_ANGLE;
+    return { x: Math.cos(theta) * r, y, z: Math.sin(theta) * r };
+  });
+
+  let radius = 300;
+  const layout = () => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const cardWidth = w < 700 ? 150 : w < 1100 ? 188 : 214;
+    radius = clamp(Math.min(w * 0.46, h * 0.5), 175, 440);
+    space.style.setProperty('--card-w', `${cardWidth}px`);
+    slots.forEach((slot, i) => {
+      const { x, y, z } = vectors[i];
+      const yaw = Math.atan2(x, z);
+      const pitch = -Math.asin(y);
+      slot.style.transform = `rotateY(${yaw.toFixed(4)}rad) rotateX(${pitch.toFixed(4)}rad) translateZ(${radius.toFixed(0)}px)`;
+    });
+  };
+  layout();
+  window.addEventListener('resize', layout);
+
+  const state = { drift: 0, dragYaw: 0, dragPitch: 0, velocity: 0, dragging: false, paused: false, visible: false };
+  let last = performance.now();
+  let raf = 0;
+  const opacities = slots.map(() => -1);
+
+  const tick = (now) => {
+    raf = 0;
+    const dt = Math.min(64, now - last);
+    last = now;
+    if (!state.dragging) {
+      state.drift += dt * 0.00007;
+      state.dragYaw += state.velocity;
+      state.velocity *= 0.94;
+    }
+    const rect = space.getBoundingClientRect();
+    const track = Math.max(1, rect.height - window.innerHeight);
+    const p = clamp(-rect.top / track, 0, 1);
+    const approach = smooth(clamp(p / 0.72, 0, 1));
+    const wake = smooth(clamp((p - 0.74) / 0.26, 0, 1));
+    const yaw = state.drift + p * Math.PI * 1.1 + state.dragYaw;
+    const pitch = 0.16 * Math.sin(state.drift * 0.8) + (p - 0.4) * 0.4 + state.dragPitch;
+    const dolly = -radius * 0.85 + approach * radius * 0.95 - wake * radius * 2.6;
+    list.style.transform = `translate3d(0, 0, ${dolly.toFixed(1)}px) rotateX(${pitch.toFixed(4)}rad) rotateY(${yaw.toFixed(4)}rad)`;
+
+    const cy = Math.cos(yaw);
+    const sy = Math.sin(yaw);
+    const cp = Math.cos(pitch);
+    const sp = Math.sin(pitch);
+    vectors.forEach((v, i) => {
+      const z1 = -v.x * sy + v.z * cy;
+      const zc = v.y * sp + z1 * cp;
+      const facing = clamp((zc + 0.15) / 1.15, 0, 1);
+      const opacity = Math.round((0.28 + 0.72 * facing) * (1 - wake) * 100) / 100;
+      if (opacity !== opacities[i]) {
+        opacities[i] = opacity;
+        slots[i].style.opacity = String(opacity);
+        slots[i].classList.toggle('is-back', zc < -0.05);
+      }
+    });
+    space.classList.toggle('is-fading', wake > 0.15);
+    if (state.visible && !state.paused && !document.hidden) raf = window.requestAnimationFrame(tick);
+  };
+  const start = () => {
+    if (!raf && state.visible && !state.paused) {
+      last = performance.now();
+      raf = window.requestAnimationFrame(tick);
+    }
+  };
+  new IntersectionObserver((entries) => {
+    state.visible = entries[0].isIntersecting;
+    start();
+  }).observe(space);
+  document.addEventListener('visibilitychange', start);
+
+  let moved = 0;
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const stage = space.querySelector('.oh-dreamspace-stage');
+    let lastX = 0;
+    let lastY = 0;
+    stage.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0) return;
+      state.dragging = true;
+      moved = 0;
+      lastX = event.clientX;
+      lastY = event.clientY;
+    });
+    stage.addEventListener('pointermove', (event) => {
+      if (!state.dragging) return;
+      const dx = event.clientX - lastX;
+      const dy = event.clientY - lastY;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      moved += Math.abs(dx) + Math.abs(dy);
+      if (moved > 6 && !stage.hasPointerCapture(event.pointerId)) {
+        stage.setPointerCapture(event.pointerId);
+        stage.classList.add('is-dragging');
+      }
+      state.velocity = dx * 0.0045;
+      state.dragYaw += dx * 0.0045;
+      state.dragPitch = clamp(state.dragPitch - dy * 0.003, -0.5, 0.5);
+    });
+    const end = () => {
+      state.dragging = false;
+      stage.classList.remove('is-dragging');
+    };
+    stage.addEventListener('pointerup', end);
+    stage.addEventListener('pointercancel', () => {
+      end();
+      moved = 0;
+    });
+    stage.addEventListener(
+      'click',
+      (event) => {
+        const wasDragged = moved > 6;
+        moved = 0;
+        if (wasDragged && event.detail > 0) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      },
+      true
+    );
+  }
+
+  return {
+    pause: () => {
+      state.paused = true;
+    },
+    resume: () => {
+      state.paused = false;
+      start();
+    },
+  };
+};
+
+/* FLIP lightbox: an entry grows from its card into the full page the app
+ * would show. Transform and opacity only; Escape or the backdrop closes. */
+const initLightbox = (space) => {
+  const section = document.querySelector('.oh-dreams');
+  if (!section) return;
+  let labels = {};
+  try {
+    labels = JSON.parse(section.dataset.labels || '{}');
+  } catch {
+    labels = {};
+  }
+  const buttons = Array.from(section.querySelectorAll('.oh-dream-open'));
+  buttons.forEach((button) => {
+    button.hidden = false;
+    button.addEventListener('click', () => open(button.closest('.oh-dream'), button));
+  });
+
+  const open = (card, trigger) => {
+    const img = card.querySelector('.oh-dream-img');
+    const overlay = document.createElement('div');
+    overlay.className = 'oh-lightbox';
+    const titleId = `oh-lightbox-title-${Date.now()}`;
+    overlay.innerHTML = `
+      <div class="oh-lightbox-backdrop"></div>
+      <div class="oh-lightbox-panel" role="dialog" aria-modal="true" aria-labelledby="${titleId}">
+        <img class="oh-lightbox-img" alt="" width="800" height="1000">
+        <div class="oh-lightbox-body">
+          <p class="oh-dream-meta"></p>
+          <h3 class="oh-lightbox-title" id="${titleId}"></h3>
+          <p class="oh-lightbox-label"></p>
+          <div class="oh-lightbox-transcript"></div>
+          <p class="oh-lightbox-label oh-lightbox-label--symbols"></p>
+          <ul class="oh-dream-symbols"></ul>
+          <p class="oh-lightbox-note"></p>
+        </div>
+        <button class="oh-lightbox-close" type="button"></button>
+      </div>`;
+    const panel = overlay.querySelector('.oh-lightbox-panel');
+    const full = overlay.querySelector('.oh-lightbox-img');
+    full.src = img.currentSrc || img.src;
+    const upgrade = new Image();
+    upgrade.onload = () => {
+      full.src = upgrade.src;
+    };
+    upgrade.src = img.dataset.full;
+    overlay.querySelector('.oh-dream-meta').innerHTML = card.querySelector('.oh-dream-meta').innerHTML;
+    overlay.querySelector('.oh-lightbox-title').textContent = card.querySelector('.oh-dream-title').textContent;
+    overlay.querySelector('.oh-lightbox-label').textContent = labels.transcript || '';
+    const transcript = overlay.querySelector('.oh-lightbox-transcript');
+    [card.querySelector('.oh-dream-excerpt'), card.querySelector('.oh-dream-rest')].forEach((source) => {
+      const p = document.createElement('p');
+      p.textContent = source.textContent;
+      transcript.append(p);
+    });
+    overlay.querySelector('.oh-lightbox-label--symbols').textContent = labels.symbols || '';
+    overlay.querySelector('.oh-dream-symbols').innerHTML = card.querySelector('.oh-dream-symbols').innerHTML;
+    overlay.querySelector('.oh-lightbox-note').textContent = labels.example || '';
+    const close = overlay.querySelector('.oh-lightbox-close');
+    close.setAttribute('aria-label', labels.close || 'Close');
+    close.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
+    space?.pause();
+    activeLenis?.stop();
+    document.documentElement.classList.add('oh-lightbox-open');
+    document.body.append(overlay);
+
+    const first = card.getBoundingClientRect();
+    const lastRect = panel.getBoundingClientRect();
+    const invert = () =>
+      `translate(${first.left - lastRect.left}px, ${first.top - lastRect.top}px) scale(${first.width / lastRect.width}, ${first.height / lastRect.height})`;
+    panel.style.transformOrigin = '0 0';
+    panel.style.transform = invert();
+    panel.style.opacity = '0.4';
+    card.style.visibility = 'hidden';
+    panel.getBoundingClientRect();
+    overlay.classList.add('is-open');
+    panel.style.transition = `transform 560ms ${EASE_FILM}, opacity 320ms ease`;
+    panel.style.transform = 'none';
+    panel.style.opacity = '1';
+    close.focus({ preventScroll: true });
+
+    let closing = false;
+    const dismiss = () => {
+      if (closing) return;
+      closing = true;
+      document.removeEventListener('keydown', onKey);
+      overlay.classList.remove('is-open');
+      const back = card.getBoundingClientRect();
+      const now = panel.getBoundingClientRect();
+      const visible = back.bottom > 0 && back.top < window.innerHeight && back.width > 0;
+      panel.style.transition = `transform 460ms ${EASE_FILM}, opacity 460ms ease`;
+      panel.style.transform = visible
+        ? `translate(${back.left - now.left}px, ${back.top - now.top}px) scale(${back.width / now.width}, ${back.height / now.height})`
+        : 'scale(0.94)';
+      panel.style.opacity = visible ? '0.6' : '0';
+      window.setTimeout(() => {
+        card.style.visibility = '';
+        overlay.remove();
+        document.documentElement.classList.remove('oh-lightbox-open');
+        activeLenis?.start();
+        space?.resume();
+        trigger.focus({ preventScroll: true });
+      }, 470);
+    };
+    const onKey = (event) => {
+      if (event.key === 'Escape') dismiss();
+      if (event.key === 'Tab') {
+        event.preventDefault();
+        close.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    close.addEventListener('click', dismiss);
+    overlay.querySelector('.oh-lightbox-backdrop').addEventListener('click', dismiss);
+  };
+};
+
+/* Waking: while the section is on screen the waveform breathes, the timer
+ * runs and the example transcript appears word by word, once. */
+const initWaking = () => {
+  const rec = document.querySelector('.oh-rec');
+  if (!rec || !('IntersectionObserver' in window)) return;
+  const text = rec.querySelector('.oh-rec-text');
+  const time = rec.querySelector('.oh-rec-time');
+  rec.querySelectorAll('.oh-rec-wave span').forEach((bar, i) => bar.style.setProperty('--i', String(i)));
+  const words = text.textContent.trim().split(/\s+/);
+  text.textContent = '';
+  const spans = words.map((word) => {
+    const span = document.createElement('span');
+    span.className = 'oh-rec-word';
+    span.textContent = `${word} `;
+    text.append(span);
+    return span;
+  });
+  let seconds = 14;
+  let timer = 0;
+  let typed = false;
+  new IntersectionObserver(
+    (entries) => {
+      const live = entries[0].isIntersecting;
+      rec.classList.toggle('is-live', live);
+      window.clearInterval(timer);
+      if (!live) return;
+      timer = window.setInterval(() => {
+        seconds += 1;
+        time.textContent = `00:${String(seconds % 60).padStart(2, '0')}`;
+      }, 1000);
+      if (typed) return;
+      typed = true;
+      spans.forEach((span, i) => window.setTimeout(() => span.classList.add('is-in'), 500 + i * 120));
+    },
+    { threshold: 0.45 }
+  ).observe(rec);
+};
+
+/* Understanding: a 2D star map of the example dreams. The finished map is
+ * the HTML default; here it is rebuilt on scroll. The first dream types out
+ * and its symbol words fly into the sky, then each dream lights its stars and
+ * draws its lines, which thicken as symbols recur. Transform, opacity and
+ * stroke only. */
+const initStarmap = () => {
+  const root = document.querySelector('.oh-starmap');
+  if (!root) return;
+  const stars = new Map(Array.from(root.querySelectorAll('.oh-star-item')).map((li) => [Number(li.dataset.sym), li]));
+  const initPinning = () => {
+    const clear = () => stars.forEach((li) => li.classList.remove('is-pinned'));
+    stars.forEach((li) => {
+      li.querySelector('.oh-star').addEventListener('click', (event) => {
+        event.stopPropagation();
+        const pinned = li.classList.contains('is-pinned');
+        clear();
+        li.classList.toggle('is-pinned', !pinned);
+      });
+    });
+    document.addEventListener('click', clear);
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      clear();
+      if (root.contains(document.activeElement)) document.activeElement.blur();
+    });
+  };
+  initPinning();
+  if (!('IntersectionObserver' in window) || typeof ResizeObserver !== 'function') return;
+
+  html.classList.add('exp-starmap');
+  const dreams = Array.from(root.querySelectorAll('.oh-starmap-dream')).map((el) => ({
+    el,
+    syms: el.dataset.symbols.split(',').map(Number),
+  }));
+  const links = Array.from(root.querySelectorAll('.oh-link')).map((path) => ({
+    path,
+    tip: path.nextElementSibling,
+    a: Number(path.dataset.a),
+    b: Number(path.dataset.b),
+    dream: Number(path.dataset.dream),
+    drawn: false,
+  }));
+  const stepLabel = root.querySelector('.oh-starmap-step');
+  let step = -1;
+
+  // Dash lengths only follow pathLength without non-scaling strokes, so the
+  // staged map draws in real pixels and is re-laid out on resize.
+  const svg = root.querySelector('.oh-starmap-lines');
+  const segments = [...links.flatMap(({ path, tip }) => [path, tip])].map((el) => ({
+    el,
+    pts: el.getAttribute('d').match(/[\d.]+/g).map(Number),
+  }));
+  const layoutLines = () => {
+    const { width, height } = svg.getBoundingClientRect();
+    if (!width || !height) return;
+    svg.setAttribute('viewBox', `0 0 ${width.toFixed(1)} ${height.toFixed(1)}`);
+    segments.forEach(({ el, pts: [x1, y1, x2, y2] }) => {
+      el.setAttribute(
+        'd',
+        `M${((x1 * width) / 100).toFixed(1)} ${((y1 * height) / 100).toFixed(1)} L${((x2 * width) / 100).toFixed(1)} ${((y2 * height) / 100).toFixed(1)}`
+      );
+    });
+  };
+  layoutLines();
+  new ResizeObserver(layoutLines).observe(svg);
+
+  const setStep = (k) => {
+    if (k === step) return;
+    step = k;
+    const counts = new Map();
+    dreams.slice(0, k).forEach(({ syms }) => syms.forEach((s) => counts.set(s, (counts.get(s) || 0) + 1)));
+    const current = Math.max(0, k - 1);
+    const glowing = k > 0 ? dreams[current].syms : [];
+    dreams.forEach(({ el }, i) => el.classList.toggle('is-current', i === current));
+    stars.forEach((li, sym) => {
+      const count = counts.get(sym) || 0;
+      li.classList.toggle('is-born', count > 0 || li.classList.contains('is-flown'));
+      li.classList.toggle('is-glow', glowing.includes(sym));
+      li.style.setProperty('--c', String(Math.max(1, count)));
+    });
+    links.forEach((link) => {
+      const drawn = link.dream < k;
+      if (drawn && !link.drawn) {
+        link.tip.classList.remove('is-running');
+        link.tip.getBoundingClientRect();
+        link.tip.classList.add('is-running');
+      }
+      link.drawn = drawn;
+      link.path.classList.toggle('is-drawn', drawn);
+      const ca = counts.get(link.a) || 1;
+      const cb = counts.get(link.b) || 1;
+      link.path.style.setProperty('--w-now', (1 + 0.6 * (ca - 1 + cb - 1)).toFixed(2));
+    });
+    stepLabel.textContent = String(Math.max(1, k));
+  };
+
+  // Intro: the first dream's words appear one by one; symbol words underline
+  // and fly to their stars.
+  const first = dreams[0].el.querySelector('.oh-starmap-text');
+  const words = [];
+  Array.from(first.childNodes).forEach((node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const parts = node.textContent.split(/(\s+)/);
+      const frag = document.createDocumentFragment();
+      parts.forEach((part) => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) {
+          frag.append(part);
+          return;
+        }
+        const span = document.createElement('span');
+        span.className = 'oh-type-word';
+        span.textContent = part;
+        frag.append(span);
+        words.push(span);
+      });
+      node.replaceWith(frag);
+    } else {
+      node.classList.add('oh-type-word');
+      words.push(node);
+    }
+  });
+
+  let introStarted = false;
+  let introDone = false;
+  const timers = [];
+  const fly = (mark) => {
+    const star = stars.get(Number(mark.dataset.sym));
+    if (!star) return;
+    const from = mark.getBoundingClientRect();
+    const to = star.querySelector('img').getBoundingClientRect();
+    const ghost = mark.cloneNode(true);
+    ghost.classList.add('oh-sym-ghost');
+    Object.assign(ghost.style, { left: `${from.left}px`, top: `${from.top}px` });
+    document.body.append(ghost);
+    const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+    const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+    const flight = ghost.animate(
+      [
+        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+        { transform: `translate(${dx * 0.55}px, ${dy * 0.35 - 40}px) scale(1.15)`, opacity: 1, offset: 0.45 },
+        { transform: `translate(${dx}px, ${dy}px) scale(0.4)`, opacity: 0 },
+      ],
+      { duration: 1100, easing: EASE_FILM, fill: 'forwards' }
+    );
+    flight.onfinish = () => ghost.remove();
+    timers.push(
+      window.setTimeout(() => {
+        star.classList.add('is-flown', 'is-born', 'is-glow');
+      }, 800)
+    );
+  };
+  const finishIntro = () => {
+    if (introDone) return;
+    introDone = true;
+    timers.forEach((t) => window.clearTimeout(t));
+    words.forEach((w) => w.classList.add('is-in'));
+    first.querySelectorAll('.oh-sym-word').forEach((mark) => {
+      mark.classList.add('is-marked');
+      stars.get(Number(mark.dataset.sym))?.classList.add('is-flown');
+    });
+    step = -1;
+    update();
+  };
+  const startIntro = () => {
+    introStarted = true;
+    setStep(0);
+    let delay = 300;
+    words.forEach((word) => {
+      timers.push(window.setTimeout(() => word.classList.add('is-in'), delay));
+      if (word.classList.contains('oh-sym-word')) {
+        timers.push(window.setTimeout(() => word.classList.add('is-marked'), delay + 250));
+        timers.push(window.setTimeout(() => fly(word), delay + 700));
+        delay += 500;
+      }
+      delay += 110;
+    });
+    timers.push(window.setTimeout(finishIntro, delay + 1400));
+  };
+
+  const progress = () => {
+    const rect = root.getBoundingClientRect();
+    return clamp(-rect.top / Math.max(1, rect.height - window.innerHeight), 0, 1);
+  };
+  const update = () => {
+    const p = progress();
+    const rect = root.getBoundingClientRect();
+    if (!introStarted) {
+      if (rect.top < window.innerHeight * 0.35) startIntro();
+      else return setStep(0);
+    }
+    if (!introDone) {
+      if (p > 0.16) finishIntro();
+      return undefined;
+    }
+    return setStep(1 + clamp(Math.floor(((p - 0.14) / 0.76) * 10), 0, 9));
+  };
+  let frame = 0;
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!frame)
+        frame = window.requestAnimationFrame(() => {
+          frame = 0;
+          update();
+        });
+    },
+    { passive: true }
+  );
+  update();
+};
+
+/* Remembering: the journal cascades in, the emotion lines draw across six
+ * weeks and the streak counts up, each once. */
+const initRemember = () => {
+  const section = document.querySelector('.oh-remember');
+  if (!section || !('IntersectionObserver' in window)) return;
+  section.querySelectorAll('.oh-timeline-item').forEach((item, i) => item.style.setProperty('--i', String(i)));
+  section.querySelectorAll('.oh-regularity span').forEach((cell, i) => cell.style.setProperty('--i', String(i)));
+  const onceVisible = (el, run, threshold = 0.35) => {
+    if (!el) return;
+    new IntersectionObserver(
+      (entries, observer) => {
+        if (!entries[0].isIntersecting) return;
+        observer.disconnect();
+        run();
+      },
+      { threshold }
+    ).observe(el);
+  };
+  section.classList.add('is-staged');
+  onceVisible(section.querySelector('.oh-journal'), () => section.querySelector('.oh-journal').classList.add('is-in'), 0.2);
+  onceVisible(section.querySelector('.oh-chart'), () => section.querySelector('.oh-chart').classList.add('is-drawn'));
+  const streak = section.querySelector('.oh-streak');
+  onceVisible(streak, () => {
+    streak.classList.add('is-in');
+    streak.querySelectorAll('.oh-streak-num').forEach((num) => {
+      const target = Number(num.textContent);
+      const started = performance.now();
+      const step = (now) => {
+        const t = clamp((now - started) / 1200, 0, 1);
+        num.textContent = String(Math.round(target * smooth(t)));
+        if (t < 1) window.requestAnimationFrame(step);
+      };
+      window.requestAnimationFrame(step);
+    });
+  });
+};
+
+const INTRO_BASE = '/video/intro/noctalia-intro';
+const EYES_OPEN_BASE = '/video/intro/noctalia-eyes-open';
+
+const canPlayFilm = () => {
+  if (typeof HTMLVideoElement === 'undefined') return false;
+  const connection = navigator.connection;
+  if (connection && (connection.saveData || /(^|-)2g$/.test(connection.effectiveType || ''))) return false;
+  return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+};
+
+const createVideo = (base, variant, className) => {
+  const video = document.createElement('video');
+  video.className = className;
+  video.muted = true;
+  video.defaultMuted = true;
+  video.playsInline = true;
+  video.preload = 'auto';
+  video.disablePictureInPicture = true;
+  video.setAttribute('muted', '');
+  video.setAttribute('playsinline', '');
+  video.setAttribute('tabindex', '-1');
+  video.setAttribute('aria-hidden', 'true');
+  [
+    ['webm', 'video/webm; codecs="vp9"'],
+    ['mp4', 'video/mp4'],
+  ].forEach(([extension, type]) => {
+    const source = document.createElement('source');
+    source.src = `${base}-${variant}.${extension}`;
+    source.type = type;
+    video.append(source);
+  });
+  return video;
+};
+
+/** The eyes open onto the app screen: a reversed segment of the intro
+ * plays once when the closing section arrives, then dissolves. */
+const initEnding = () => {
+  const portal = document.querySelector('.oh-ending-portal');
+  if (!portal || !canPlayFilm() || !('IntersectionObserver' in window)) return;
+  const eye = document.createElement('div');
+  eye.className = 'oh-ending-eye';
+  const video = createVideo(EYES_OPEN_BASE, '854', 'oh-ending-video');
+  video.preload = 'none';
+  eye.append(video);
+  portal.append(eye);
+  const dissolve = () => eye.classList.add('is-done');
+  video.addEventListener('ended', dissolve, { once: true });
+  video.addEventListener('error', dissolve, { once: true });
+  new IntersectionObserver(
+    (entries, observer) => {
+      if (!entries[0].isIntersecting) return;
+      observer.disconnect();
+      video.preload = 'auto';
+      video.play().then(() => eye.classList.add('is-playing')).catch(dissolve);
+    },
+    { threshold: 0.5 }
+  ).observe(portal);
+};
+
+const INTRO_KEY = 'noctalia.intro.v1';
+const SKIP_LABELS = {
+  en: 'Skip intro',
+  fr: 'Passer l’intro',
+  es: 'Saltar la intro',
+  de: 'Intro überspringen',
+  it: 'Salta l’intro',
+  pt: 'Pular a intro',
+};
+
+const introAlreadySeen = () => {
+  try {
+    return Boolean(window.localStorage.getItem(INTRO_KEY));
+  } catch {
+    return true;
+  }
+};
+
+/**
+ * First visit only: a ~4s film pushes into a sleeping eye, the lid closes,
+ * stars bloom and it lands on the hero loop's first frame, so the loop takes
+ * over with no visible cut. The headline and CTAs are real HTML underneath;
+ * Skip, Escape, scrolling or a slow network end the intro at once.
+ */
+const playIntro = (heroHeader, film, loop, variant) =>
+  new Promise((resolve) => {
+    const intro = createVideo(INTRO_BASE, variant, 'oh-intro-video');
+    const skip = document.createElement('button');
+    skip.type = 'button';
+    skip.className = 'oh-intro-skip';
+    skip.textContent = SKIP_LABELS[(html.lang || 'en').slice(0, 2).toLowerCase()] || SKIP_LABELS.en;
+
+    let finished = false;
+    let slowStartTimer = 0;
+    let maximumTimer = 0;
+    const finish = (cut) => {
+      if (finished) return;
+      finished = true;
+      window.clearTimeout(slowStartTimer);
+      window.clearTimeout(maximumTimer);
+      skip.remove();
+      window.removeEventListener('scroll', onScroll);
+      document.removeEventListener('keydown', onKey);
+      loop.currentTime = 0;
+      if (cut) {
+        intro.classList.add('is-leaving');
+        window.setTimeout(() => intro.remove(), 700);
+      } else {
+        intro.remove();
+      }
+      resolve();
+    };
+    const onScroll = () => {
+      if (window.scrollY > 80) finish(true);
+    };
+    const onKey = (event) => {
+      if (event.key === 'Escape') finish(true);
+    };
+
+    intro.addEventListener('playing', () => {
+      try {
+        window.localStorage.setItem(INTRO_KEY, String(Date.now()));
+      } catch {
+        // Storage blocked: the intro may replay, which is harmless.
+      }
+      film.classList.add('is-intro', 'is-playing');
+      heroHeader.append(skip);
+    }, { once: true });
+    intro.addEventListener('ended', () => finish(false), { once: true });
+    intro.addEventListener('error', () => finish(true), { once: true });
+    skip.addEventListener('click', () => finish(true));
+    window.addEventListener('scroll', onScroll, { passive: true });
+    document.addEventListener('keydown', onKey);
+    // Never make a slow connection wait for the film.
+    slowStartTimer = window.setTimeout(() => {
+      if (intro.paused) finish(true);
+    }, 2500);
+    maximumTimer = window.setTimeout(() => finish(true), 7000);
+
+    film.append(intro);
+    intro.play().catch(() => finish(true));
+  });
+
+/* ------------------------------------------------------------------ */
+/* Hero film (full & light tiers).                                     */
+/* ------------------------------------------------------------------ */
+
+const FILM_BASE = '/video/hero/noctalia-dream-loop';
+
+/**
+ * A muted, looping clip rendered from the hero still, so its first frame is
+ * the poster the page already painted: once it plays, it crossfades in over
+ * the still with no visible cut. Injected after the LCP, never on the static
+ * tier (reduced motion, save-data) or slow connections, and paused whenever
+ * the hero is off screen or the tab is hidden. On a first visit the intro
+ * film plays in the same layer first. Resolves when the hero headline may
+ * reveal.
+ */
+const initFilm = (isFull) => {
+  const heroHeader = document.querySelector(HERO_SELECTOR);
+  if (!heroHeader || !canPlayFilm()) return Promise.resolve();
+
+  const wide = window.matchMedia('(min-width: 900px)').matches;
+  const film = document.createElement('div');
+  film.className = 'oh-hero-film';
+  film.setAttribute('aria-hidden', 'true');
+  const video = createVideo(FILM_BASE, isFull && wide ? '1280' : '854', 'oh-hero-loop');
+  video.loop = true;
+  film.append(video);
+
+  let started = false;
+  const remove = () => {
+    video.pause();
+    film.remove();
+  };
+  video.addEventListener('playing', () => film.classList.add('is-playing'), { once: true });
+  video.addEventListener('error', remove, { once: true });
+  heroHeader.prepend(film);
+  let heroVisible = true;
+  const sync = () => {
+    if (!film.isConnected || !started) return;
+    if (heroVisible && !document.hidden) {
+      video.play().catch(remove);
+    } else {
+      video.pause();
+    }
+  };
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(
+      (entries) => {
+        heroVisible = entries[0].isIntersecting;
+        sync();
+      },
+      { threshold: 0.02 }
+    ).observe(heroHeader);
+  }
+  document.addEventListener('visibilitychange', sync);
+
+  const startLoop = () => {
+    started = true;
+    sync();
+  };
+  if (introAlreadySeen() || window.scrollY > 80) {
+    startLoop();
+    return Promise.resolve();
+  }
+  return playIntro(heroHeader, film, video, wide ? '1280' : '540x960').then(startLoop);
+};
+
+/* ------------------------------------------------------------------ */
 /* Boot.                                                               */
 /* ------------------------------------------------------------------ */
 
@@ -452,12 +1376,22 @@ const bootEnhanced = async (currentTier) => {
 
   try {
     const skyPromise = initSky(isFull ? 'full' : 'light');
+    const heroReady = initFilm(isFull);
+    initFeatureMedia();
+    initDawn();
+    const space = initDreamSpace();
+    initLightbox(space);
+    initWaking();
+    initStarmap();
+    initRemember();
+    initEnding();
 
     const { default: Lenis } = await import('lenis');
     const lenis = new Lenis({ autoRaf: !isFull, anchors: true });
+    activeLenis = lenis;
 
     if (!isFull) {
-      initLightMotion();
+      initLightMotion(heroReady);
       await skyPromise;
       return;
     }
@@ -470,7 +1404,7 @@ const bootEnhanced = async (currentTier) => {
       throw new Error('GSAP failed to load');
     }
 
-    initGsapScenes(window.gsap, window.ScrollTrigger, lenis);
+    initGsapScenes(window.gsap, window.ScrollTrigger, lenis, heroReady);
     initMagneticButtons();
     initOrbParallax();
     await skyPromise;
@@ -478,6 +1412,23 @@ const bootEnhanced = async (currentTier) => {
     showStaticState();
   }
 };
+
+// Re-enter the static tier if the OS preference changes while this page is
+// open. Reloading disposes every active controller, including Lenis, GSAP,
+// canvas, and requestAnimationFrame loops, then the head script selects static.
+if (tier !== 'static' && typeof window.matchMedia === 'function') {
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const onReducedMotionChange = (event) => {
+    if (!event.matches) return;
+    showStaticState();
+    window.location.reload();
+  };
+  if (typeof reducedMotion.addEventListener === 'function') {
+    reducedMotion.addEventListener('change', onReducedMotionChange);
+  } else {
+    reducedMotion.addListener?.(onReducedMotionChange);
+  }
+}
 
 if (tier === 'static') {
   bootStatic();

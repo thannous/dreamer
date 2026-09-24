@@ -32,7 +32,7 @@
     "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Planos e preços do Noctalia\",\"description\":\"Compare o plano gratuito Sonhador e a assinatura opcional Noctalia Plus. O Google Play exibe o preço e as opções aplicáveis antes da compra.\",\"url\":\"https://noctalia.app/pt-br/precos\",\"inLanguage\":\"pt-BR\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-07-31T00:00:00+02:00\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Início\",\"item\":\"https://noctalia.app/pt-br/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Preços\",\"item\":\"https://noctalia.app/pt-br/precos\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"BRL\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Instalação gratuita com compras opcionais do Noctalia Plus exibidas pelo Google Play.\"}}",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"O Noctalia é gratuito?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sim. O plano Sonhador inclui registros de sonhos ilimitados, três análises de sonhos por mês, duas explorações guiadas por mês e um diário de sonhos salvo.\"}},{\"@type\":\"Question\",\"name\":\"Quanto custa o Noctalia Plus?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Abra a página do Google Play ou a tela de assinatura no app para ver o preço, o período de cobrança, os impostos, a elegibilidade e qualquer promoção aplicáveis ao seu país e à sua conta antes da compra.\"}},{\"@type\":\"Question\",\"name\":\"Há assinaturas mensal e anual disponíveis?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Opções mensal e anual podem ser oferecidas. O Google Play exibe as opções atualmente acessíveis no seu país e para a sua conta; a disponibilidade pode variar.\"}},{\"@type\":\"Question\",\"name\":\"Onde gerenciar ou cancelar uma assinatura?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"O Noctalia Plus é cobrado pelo Google Play. Você pode gerenciar ou cancelar a assinatura na seção Assinaturas da conta do Google Play usada na compra.\"}}]}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"O Noctalia é gratuito?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sim. O plano Sonhador inclui registros de sonhos ilimitados, três análises de sonhos por mês (cada uma com uma imagem), explorações guiadas sem limite mensal, até 10 mensagens de acompanhamento por sonho analisado e um diário de sonhos salvo.\"}},{\"@type\":\"Question\",\"name\":\"Quanto custa o Noctalia Plus?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Abra a página do Google Play ou a tela de assinatura no app para ver o preço, o período de cobrança, os impostos, a elegibilidade e qualquer promoção aplicáveis ao seu país e à sua conta antes da compra.\"}},{\"@type\":\"Question\",\"name\":\"Há assinaturas mensal e anual disponíveis?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Opções mensal e anual podem ser oferecidas. O Google Play exibe as opções atualmente acessíveis no seu país e para a sua conta; a disponibilidade pode variar.\"}},{\"@type\":\"Question\",\"name\":\"Onde gerenciar ou cancelar uma assinatura?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"O Noctalia Plus é cobrado pelo Google Play. Você pode gerenciar ou cancelar a assinatura na seção Assinaturas da conta do Google Play usada na compra.\"}}]}"
   ],
   "activeNav": "resources"
 }
@@ -49,8 +49,9 @@
       <p class="text-2xl text-dream-cream mb-5">Grátis</p>
       <ul class="list-disc pl-5 space-y-2">
         <li>Registros por voz ou texto ilimitados</li>
-        <li>Três análises de sonhos por mês</li>
-        <li>Duas explorações guiadas por mês</li>
+        <li>3 análises de sonhos por mês, cada uma com uma imagem</li>
+        <li>Explorações guiadas sem limite mensal</li>
+        <li>Até 10 mensagens de acompanhamento por sonho analisado</li>
         <li>Um diário de sonhos salvo para consultar</li>
       </ul>
       <p class="mt-5">Este plano permite testar o percurso completo, do registro à reflexão, sem começar uma assinatura paga.</p>
@@ -60,9 +61,9 @@
       <h2 class="text-3xl font-serif text-white mb-3">Noctalia Plus</h2>
       <p class="text-2xl text-dream-cream mb-5">Preço atual no Google Play</p>
       <ul class="list-disc pl-5 space-y-2">
-        <li>Análises de sonhos ilimitadas</li>
-        <li>Explorações guiadas ilimitadas</li>
-        <li>Mensagens de acompanhamento ilimitadas para cada sonho</li>
+        <li>Análises de sonhos e imagens ilimitadas</li>
+        <li>Até 20 mensagens de acompanhamento por sonho</li>
+        <li>Síntese 360° no fim de uma exploração guiada</li>
         <li>Cobrança e renovação gerenciadas pelo Google Play</li>
       </ul>
       <p class="mt-5">As opções mensal e anual podem variar conforme o país, a conta e a elegibilidade. O Google Play exibe a oferta exata antes da compra.</p>
@@ -77,7 +78,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Perguntas sobre os planos e a cobrança</h2>
     <div class="space-y-5">
-      <div><h3 class="text-white font-medium">O Noctalia é gratuito?</h3><p class="mt-1">Sim. O plano Sonhador inclui registros de sonhos ilimitados, três análises de sonhos por mês, duas explorações guiadas por mês e um diário de sonhos salvo.</p></div>
+      <div><h3 class="text-white font-medium">O Noctalia é gratuito?</h3><p class="mt-1">Sim. O plano Sonhador inclui registros de sonhos ilimitados, três análises de sonhos por mês (cada uma com uma imagem), explorações guiadas sem limite mensal, até 10 mensagens de acompanhamento por sonho analisado e um diário de sonhos salvo.</p></div>
       <div><h3 class="text-white font-medium">Quanto custa o Noctalia Plus?</h3><p class="mt-1">Abra a página do Google Play ou a tela de assinatura no app para ver o preço, o período de cobrança, os impostos, a elegibilidade e qualquer promoção aplicáveis ao seu país e à sua conta antes da compra.</p></div>
       <div><h3 class="text-white font-medium">Há assinaturas mensal e anual disponíveis?</h3><p class="mt-1">Opções mensal e anual podem ser oferecidas. O Google Play exibe as opções atualmente acessíveis no seu país e para a sua conta; a disponibilidade pode variar.</p></div>
       <div><h3 class="text-white font-medium">Onde gerenciar ou cancelar uma assinatura?</h3><p class="mt-1">O Noctalia Plus é cobrado pelo Google Play. Você pode gerenciar ou cancelar a assinatura na seção Assinaturas da conta do Google Play usada na compra.</p></div>

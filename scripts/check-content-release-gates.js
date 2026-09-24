@@ -94,30 +94,63 @@ const COMMERCIAL_FAQ_MINIMUMS = new Map([
   ['page.oniri-alternative', 2],
 ]);
 const HOME_PRODUCT_FACTS = {
+  de: { audio: 'Sprachaudio wird nur für die Transkription verwendet und von Noctalia nicht dauerhaft gespeichert' },
+  en: { audio: 'Voice audio is used only for transcription and is not persistently stored by Noctalia' },
+  es: { audio: 'El audio de voz se utiliza solo para la transcripción y Noctalia no lo conserva de forma permanente' },
+  fr: { audio: 'L’audio vocal sert uniquement à la transcription et n’est pas conservé durablement par Noctalia' },
+  it: { audio: 'L’audio vocale viene usato solo per la trascrizione e non viene conservato in modo permanente da Noctalia' },
+};
+// Plan facts follow the app: `constants/limits.ts` is the source of truth and
+// `{n}` is filled from it, so a changed limit fails this gate until the copy
+// is updated. `retired` lists claims the app no longer supports.
+const LIMITS_FILE = path.join(ROOT_DIR, 'constants', 'limits.ts');
+const PLAN_FACT_PAGES = [
+  ['page.home', true],
+  ['page.pricing', true],
+  ['page.faq', false],
+];
+const PLAN_FACT_COPY = {
   de: {
-    analysis: '3 Traumanalysen pro Monat',
-    exploration: '2 geführte Erkundungen pro Monat',
-    audio: 'Sprachaudio wird nur für die Transkription verwendet und von Noctalia nicht dauerhaft gespeichert',
+    analysis: '{n} Traumanalysen pro Monat',
+    exploration: 'Geführte Erkundungen ohne monatliches Limit',
+    freeMessages: 'Bis zu {n} Folgenachrichten pro analysiertem Traum',
+    plusMessages: 'Bis zu {n} Folgenachrichten pro Traum',
+    retired: [/\b(\d+|zwei|drei)\s+geführte\s+erkundungen\s+pro\s+monat/u, /unbegrenzte\s+folgenachrichten/u, /unbegrenzte\s+geführte\s+erkundungen/u],
   },
   en: {
-    analysis: '3 dream analyses per month',
-    exploration: '2 guided explorations per month',
-    audio: 'Voice audio is used only for transcription and is not persistently stored by Noctalia',
+    analysis: '{n} dream analyses per month',
+    exploration: 'Guided explorations with no monthly limit',
+    freeMessages: 'Up to {n} follow-up messages per analyzed dream',
+    plusMessages: 'Up to {n} follow-up messages per dream',
+    retired: [/\b(\d+|two|three)\s+guided\s+explorations\s+(per|a)\s+month/u, /unlimited\s+follow-up\s+messages/u, /unlimited\s+guided\s+explorations/u],
   },
   es: {
-    analysis: '3 análisis de sueños al mes',
-    exploration: '2 exploraciones guiadas al mes',
-    audio: 'El audio de voz se utiliza solo para la transcripción y Noctalia no lo conserva de forma permanente',
+    analysis: '{n} análisis de sueños al mes',
+    exploration: 'Exploraciones guiadas sin límite mensual',
+    freeMessages: 'Hasta {n} mensajes de seguimiento por sueño analizado',
+    plusMessages: 'Hasta {n} mensajes de seguimiento por sueño',
+    retired: [/(\d+|dos|tres)\s+exploraciones\s+guiadas\s+al\s+mes/u, /mensajes\s+de\s+seguimiento\s+ilimitados/u, /exploraciones\s+guiadas\s+ilimitadas/u],
   },
   fr: {
-    analysis: '3 analyses de rêves par mois',
-    exploration: '2 explorations guidées par mois',
-    audio: 'L’audio vocal sert uniquement à la transcription et n’est pas conservé durablement par Noctalia',
+    analysis: '{n} analyses de rêves par mois',
+    exploration: 'Explorations guidées sans limite mensuelle',
+    freeMessages: 'Jusqu’à {n} messages de suivi par rêve analysé',
+    plusMessages: 'Jusqu’à {n} messages de suivi par rêve',
+    retired: [/(\d+|deux|trois)\s+explorations\s+guidées\s+par\s+mois/u, /messages\s+de\s+suivi\s+illimités/u, /explorations\s+guidées\s+illimitées/u],
   },
   it: {
-    analysis: '3 analisi dei sogni al mese',
-    exploration: '2 esplorazioni guidate al mese',
-    audio: 'L’audio vocale viene usato solo per la trascrizione e non viene conservato in modo permanente da Noctalia',
+    analysis: '{n} analisi dei sogni al mese',
+    exploration: 'Esplorazioni guidate senza limite mensile',
+    freeMessages: 'Fino a {n} messaggi di approfondimento per sogno analizzato',
+    plusMessages: 'Fino a {n} messaggi di approfondimento per sogno',
+    retired: [/(\d+|due|tre)\s+esplorazioni\s+guidate\s+al\s+mese/u, /messaggi\s+di\s+approfondimento\s+illimitati/u, /esplorazioni\s+guidate\s+illimitate/u],
+  },
+  'pt-br': {
+    analysis: '{n} análises de sonhos por mês',
+    exploration: 'Explorações guiadas sem limite mensal',
+    freeMessages: 'Até {n} mensagens de acompanhamento por sonho analisado',
+    plusMessages: 'Até {n} mensagens de acompanhamento por sonho',
+    retired: [/(\d+|duas|três)\s+explorações\s+guiadas\s+por\s+mês/u, /mensagens\s+de\s+acompanhamento\s+ilimitadas/u, /explorações\s+guiadas\s+ilimitadas/u],
   },
 };
 const PUBLIC_METADATA_FIELDS = [
@@ -633,6 +666,108 @@ function checkCommercialContent(errors) {
   return pageCount;
 }
 
+/** Reads the `QUOTAS` table from constants/limits.ts (null = unlimited). */
+function readAppQuotas(source = fs.readFileSync(LIMITS_FILE, 'utf8')) {
+  const block = source.match(/export const QUOTAS\b[^=]*=\s*\{([\s\S]*?)\n\};/);
+  if (!block) throw new Error('constants/limits.ts: QUOTAS table not found');
+  const quotas = {};
+  for (const [, tier, body] of block[1].matchAll(/(\w+):\s*\{([^}]*)\}/g)) {
+    quotas[tier] = {};
+    for (const [, key, value] of body.matchAll(/(\w+):\s*(null|\d+)/g)) {
+      quotas[tier][key] = value === 'null' ? null : Number(value);
+    }
+  }
+  return quotas;
+}
+
+/**
+ * Canonical plan-fact strings for one language, filled from the app quotas.
+ * Throws when the quotas no longer match the shape these sentences describe,
+ * so a product change forces a copy change instead of silently passing.
+ */
+function buildPlanFacts(lang, quotas) {
+  const copy = PLAN_FACT_COPY[lang];
+  if (!copy) return null;
+  const { free, plus } = quotas;
+  if (!free || !plus) throw new Error('constants/limits.ts: free and plus tiers are required');
+  if (free.exploration !== null || plus.exploration !== null) {
+    throw new Error('constants/limits.ts meters explorations again; update PLAN_FACT_COPY');
+  }
+  if (plus.analysis !== null) throw new Error('constants/limits.ts caps Plus analyses; update PLAN_FACT_COPY');
+  for (const [tier, key] of [['free', 'analysis'], ['free', 'messagesPerDream'], ['plus', 'messagesPerDream']]) {
+    if (!Number.isInteger(quotas[tier][key])) {
+      throw new Error(`constants/limits.ts: ${tier}.${key} must be a number for PLAN_FACT_COPY`);
+    }
+  }
+  const fill = (template, n) => template.replace('{n}', String(n));
+  return {
+    required: [
+      fill(copy.analysis, free.analysis),
+      copy.exploration,
+      fill(copy.freeMessages, free.messagesPerDream),
+      fill(copy.plusMessages, plus.messagesPerDream),
+    ],
+    retired: copy.retired,
+  };
+}
+
+/** Returns the plan-fact problems in one page's visible and structured text. */
+function evaluatePlanFacts({ facts, visibleText, schemaText = '', requireFacts }) {
+  const problems = [];
+  const visible = normalizeText(visibleText);
+  if (requireFacts) {
+    for (const fact of facts.required) {
+      if (!visible.includes(normalizeText(fact))) problems.push(`missing "${fact}"`);
+    }
+  }
+  const everything = `${visible}\n${normalizeText(schemaText)}`;
+  for (const pattern of facts.retired) {
+    const match = everything.match(pattern);
+    if (match) problems.push(`retired plan claim "${match[0]}"`);
+  }
+  return problems;
+}
+
+function checkPlanFacts(errors) {
+  let quotas;
+  try {
+    quotas = readAppQuotas();
+  } catch (error) {
+    errors.push(`[plan facts] ${error.message}`);
+    return 0;
+  }
+  let pageCount = 0;
+  for (const [pageId, requireFacts] of PLAN_FACT_PAGES) {
+    for (const lang of staticPageSourceLanguages(pageId)) {
+      const filePath = path.join(PAGE_SOURCE_DIR, pageId, `${lang}.md`);
+      const label = path.relative(ROOT_DIR, filePath);
+      let facts;
+      try {
+        facts = buildPlanFacts(lang, quotas);
+      } catch (error) {
+        errors.push(`[plan facts] ${error.message}`);
+        return pageCount;
+      }
+      if (!facts) {
+        errors.push(`[plan facts] ${label}: no PLAN_FACT_COPY for "${lang}"`);
+        continue;
+      }
+      const { meta, body } = readSourceDocument(filePath);
+      let schemaText = '';
+      try {
+        schemaText = JSON.stringify(collectSchemaNodes(meta.jsonLd));
+      } catch (error) {
+        errors.push(`[plan facts] ${label}: ${error.message}`);
+      }
+      for (const problem of evaluatePlanFacts({ facts, visibleText: body, schemaText, requireFacts })) {
+        errors.push(`[plan facts] ${label}: ${problem}`);
+      }
+      pageCount += 1;
+    }
+  }
+  return pageCount;
+}
+
 function checkHomeProductFacts(errors) {
   const storeUrl = siteConfig.storeLinks.androidBase;
   let pageCount = 0;
@@ -649,12 +784,6 @@ function checkHomeProductFacts(errors) {
     }
     const visibleText = normalizeText(body);
     pageCount += 1;
-
-    for (const fact of [facts.analysis, facts.exploration]) {
-      if (!visibleText.includes(normalizeText(fact))) {
-        errors.push(`[home product facts] ${path.relative(ROOT_DIR, filePath)}: missing "${fact}"`);
-      }
-    }
 
     let nodes;
     try {
@@ -1105,6 +1234,7 @@ function runReleaseGates() {
   const researchLinkFileCount = checkMisattributedResearchLinks(errors);
   const commercialPageCount = checkCommercialContent(errors);
   const homePageCount = checkHomeProductFacts(errors);
+  const planFactPageCount = checkPlanFacts(errors);
   const metadataFileCount = checkMetadataIntegrity(errors);
   const reviewers = checkReviewerIntegrity(errors);
   const symbolCount = checkSymbolLocalization(errors);
@@ -1116,6 +1246,7 @@ function runReleaseGates() {
     errors,
     extendedSymbolLocaleCount,
     homePageCount,
+    planFactPageCount,
     metadataFileCount,
     reviewers,
     researchLinkFileCount,
@@ -1143,7 +1274,8 @@ function main() {
       `${result.softwareApplicationCount} software application schemas, ` +
       `${result.datasetCount} dataset schemas, ` +
       `${result.spanish.fileCount} Spanish articles, ${result.commercialPageCount} commercial pages, ` +
-      `${result.homePageCount} home product-fact pages, ${result.metadataFileCount} metadata sources, ` +
+      `${result.homePageCount} home product-fact pages, ${result.planFactPageCount} plan-fact pages, ` +
+      `${result.metadataFileCount} metadata sources, ` +
       `${result.researchLinkFileCount} research-link sources, ` +
       `${result.symbolCount} fully localized symbols, ` +
       `${result.extendedSymbolLocaleCount} extended symbol locales.`
@@ -1163,6 +1295,10 @@ if (require.main === module) {
 module.exports = {
   COMMERCIAL_PAGE_FAMILIES,
   MIN_COMMERCIAL_WORDS,
+  PLAN_FACT_COPY,
+  buildPlanFacts,
+  evaluatePlanFacts,
+  readAppQuotas,
   collectSchemaNodes,
   countVisibleWords,
   checkStructuredDataDateSources,

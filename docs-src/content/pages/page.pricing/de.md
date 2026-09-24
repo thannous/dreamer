@@ -32,7 +32,7 @@
     "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Noctalia Tarife und Preise\",\"description\":\"Vergleiche den kostenlosen Träumer-Tarif mit dem optionalen Noctalia-Plus-Abo. Google Play zeigt Preis und verfügbare Optionen vor dem Kauf.\",\"url\":\"https://noctalia.app/de/preise\",\"inLanguage\":\"de\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-07-31T00:00:00+02:00\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Startseite\",\"item\":\"https://noctalia.app/de/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Preise\",\"item\":\"https://noctalia.app/de/preise\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"EUR\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Kostenlose Installation mit optionalen, von Google Play angezeigten Noctalia-Plus-Käufen.\"}}",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Kann ich Noctalia kostenlos nutzen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ja. Der Träumer-Tarif enthält unbegrenzte Traumaufzeichnungen, drei Traumanalysen pro Monat, zwei geführte Erkundungen pro Monat und ein gespeichertes Traumtagebuch.\"}},{\"@type\":\"Question\",\"name\":\"Wie viel kostet Noctalia Plus?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Öffne den Google-Play-Eintrag oder den Abo-Bildschirm in der App, um vor dem Kauf den aktuellen Preis, den Abrechnungszeitraum, Steuern, die Berechtigung und mögliche Angebote für dein Land und Konto zu sehen.\"}},{\"@type\":\"Question\",\"name\":\"Gibt es monatliche und jährliche Abos?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Monatliche und jährliche Optionen können verfügbar sein. Google Play zeigt die aktuell für dein Land und Konto angebotenen Optionen, deshalb kann die Verfügbarkeit variieren.\"}},{\"@type\":\"Question\",\"name\":\"Wo kann ich ein Abo verwalten oder kündigen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus wird über Google Play abgerechnet. Du kannst das Abo im Bereich Abonnements des Google-Play-Kontos verwalten oder kündigen, das für den Kauf verwendet wurde.\"}}]}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Kann ich Noctalia kostenlos nutzen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ja. Der Träumer-Tarif enthält unbegrenzte Traumaufzeichnungen, drei Traumanalysen pro Monat (jeweils mit Bild), geführte Erkundungen ohne monatliches Limit, bis zu 10 Folgenachrichten pro analysiertem Traum und ein gespeichertes Traumtagebuch.\"}},{\"@type\":\"Question\",\"name\":\"Wie viel kostet Noctalia Plus?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Öffne den Google-Play-Eintrag oder den Abo-Bildschirm in der App, um vor dem Kauf den aktuellen Preis, den Abrechnungszeitraum, Steuern, die Berechtigung und mögliche Angebote für dein Land und Konto zu sehen.\"}},{\"@type\":\"Question\",\"name\":\"Gibt es monatliche und jährliche Abos?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Monatliche und jährliche Optionen können verfügbar sein. Google Play zeigt die aktuell für dein Land und Konto angebotenen Optionen, deshalb kann die Verfügbarkeit variieren.\"}},{\"@type\":\"Question\",\"name\":\"Wo kann ich ein Abo verwalten oder kündigen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus wird über Google Play abgerechnet. Du kannst das Abo im Bereich Abonnements des Google-Play-Kontos verwalten oder kündigen, das für den Kauf verwendet wurde.\"}}]}"
   ],
   "activeNav": "resources"
 }
@@ -49,8 +49,9 @@
       <p class="text-2xl text-dream-cream mb-5">Kostenlos</p>
       <ul class="list-disc pl-5 space-y-2">
         <li>Unbegrenzte Traumaufzeichnungen per Sprache oder Text</li>
-        <li>Drei Traumanalysen pro Monat</li>
-        <li>Zwei geführte Erkundungen pro Monat</li>
+        <li>3 Traumanalysen pro Monat, jeweils mit Bild</li>
+        <li>Geführte Erkundungen ohne monatliches Limit</li>
+        <li>Bis zu 10 Folgenachrichten pro analysiertem Traum</li>
         <li>Ein gespeichertes Traumtagebuch zum späteren Nachlesen</li>
       </ul>
       <p class="mt-5">Mit diesem Tarif kannst du den vollständigen Ablauf vom Festhalten bis zur Reflexion ausprobieren, ohne ein kostenpflichtiges Abo zu beginnen.</p>
@@ -60,9 +61,9 @@
       <h2 class="text-3xl font-serif text-white mb-3">Noctalia Plus</h2>
       <p class="text-2xl text-dream-cream mb-5">Aktueller Preis bei Google Play</p>
       <ul class="list-disc pl-5 space-y-2">
-        <li>Unbegrenzte Traumanalysen</li>
-        <li>Unbegrenzte geführte Erkundungen</li>
-        <li>Unbegrenzte Folgenachrichten pro Traum</li>
+        <li>Unbegrenzte Traumanalysen und Bilder</li>
+        <li>Bis zu 20 Folgenachrichten pro Traum</li>
+        <li>360°-Synthese am Ende einer geführten Erkundung</li>
         <li>Abrechnung und Verlängerung über Google Play</li>
       </ul>
       <p class="mt-5">Monatliche und jährliche Optionen können je nach Land, Konto und Berechtigung abweichen. Google Play zeigt das genaue Angebot vor dem Kauf.</p>
@@ -77,7 +78,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Fragen zu Tarifen und Abrechnung</h2>
     <div class="space-y-5">
-      <div><h3 class="text-white font-medium">Kann ich Noctalia kostenlos nutzen?</h3><p class="mt-1">Ja. Der Träumer-Tarif enthält unbegrenzte Traumaufzeichnungen, drei Traumanalysen pro Monat, zwei geführte Erkundungen pro Monat und ein gespeichertes Traumtagebuch.</p></div>
+      <div><h3 class="text-white font-medium">Kann ich Noctalia kostenlos nutzen?</h3><p class="mt-1">Ja. Der Träumer-Tarif enthält unbegrenzte Traumaufzeichnungen, drei Traumanalysen pro Monat (jeweils mit Bild), geführte Erkundungen ohne monatliches Limit, bis zu 10 Folgenachrichten pro analysiertem Traum und ein gespeichertes Traumtagebuch.</p></div>
       <div><h3 class="text-white font-medium">Wie viel kostet Noctalia Plus?</h3><p class="mt-1">Öffne den Google-Play-Eintrag oder den Abo-Bildschirm in der App, um vor dem Kauf den aktuellen Preis, den Abrechnungszeitraum, Steuern, die Berechtigung und mögliche Angebote für dein Land und Konto zu sehen.</p></div>
       <div><h3 class="text-white font-medium">Gibt es monatliche und jährliche Abos?</h3><p class="mt-1">Monatliche und jährliche Optionen können verfügbar sein. Google Play zeigt die aktuell für dein Land und Konto angebotenen Optionen, deshalb kann die Verfügbarkeit variieren.</p></div>
       <div><h3 class="text-white font-medium">Wo kann ich ein Abo verwalten oder kündigen?</h3><p class="mt-1">Noctalia Plus wird über Google Play abgerechnet. Du kannst das Abo im Bereich Abonnements des Google-Play-Kontos verwalten oder kündigen, das für den Kauf verwendet wurde.</p></div>
