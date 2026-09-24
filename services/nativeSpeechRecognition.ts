@@ -12,6 +12,8 @@ import {
 } from '@/lib/speechCapability';
 
 type NativeSpeechOptions = {
+  /** Cancels authorization/foreground startup when the recording route is left. */
+  signal?: AbortSignal;
   /** True only after the recognizer reports that it is ready to listen. */
   onListeningChange?: (listening: boolean) => void;
   onPartial?: (text: string) => void;
@@ -567,6 +569,7 @@ export async function startNativeSpeechSession(
 
   // Ensure the module is loaded asynchronously
   const speechModule = await loadSpeechRecognitionModule();
+  if (options?.signal?.aborted) return null;
   if (!speechModule) {
     if (__DEV__) {
       console.warn('[nativeSpeech] no module, cannot start session', { sessionId });
@@ -584,6 +587,7 @@ export async function startNativeSpeechSession(
     }
 
     const capability = await computeSpeechCapability(speechModule, languageCode, true);
+    if (options?.signal?.aborted) return null;
     const { androidRecognitionServicePackage, requiresOnDeviceRecognition } = capability;
     // Microphone access also authorizes Android and on-device iOS recognition.
     // Network-capable iOS recognition requires a separate speech authorization.
@@ -597,22 +601,28 @@ export async function startNativeSpeechSession(
       permissionsAlreadySatisfied = currentPermissions?.granted === true;
     }
 
+    if (options?.signal?.aborted) return null;
+
     // Web doesn't need (or support) permission requests; avoid noisy warnings
     const permissions = Platform.OS === 'web'
       ? { granted: hasWebSpeechAPI() }
       : permissionsAlreadySatisfied
         ? { granted: true }
         : await speechModule.requestPermissionsAsync();
+    if (options?.signal?.aborted) return null;
     if (!permissions.granted) {
       if (__DEV__) {
         console.warn('[nativeSpeech] permissions not granted', permissions);
       }
+      if (Platform.OS === 'ios') throw new Error('speech_permission_denied');
       return null;
     }
 
     if (Platform.OS === 'ios' && !permissionsAlreadySatisfied) {
-      await waitForPermissionActivityToSettle();
+      await waitForPermissionActivityToSettle(options?.signal);
     }
+
+    if (options?.signal?.aborted) return null;
 
     const supportsRecording = speechModule.supportsRecording?.() ?? false;
     if (__DEV__) {
@@ -630,6 +640,7 @@ export async function startNativeSpeechSession(
     }
 
     await ensureSpeechModuleInactive(speechModule);
+    if (options?.signal?.aborted) return null;
 
     let ended = false;
     let stopRequested = false;
@@ -857,6 +868,7 @@ export async function startNativeSpeechSession(
 
     return { stop, abort, hasRecording: supportsRecording };
   } catch (error) {
+    if (error instanceof Error && error.message === 'speech_permission_denied') throw error;
     if (__DEV__) {
       console.warn('[nativeSpeech] failed to start', error);
     }

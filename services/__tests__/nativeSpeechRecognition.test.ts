@@ -307,7 +307,7 @@ describe('native speech module integration', () => {
     expect(session).toBeNull();
   });
 
-  it('returns null when permissions are denied', async () => {
+  it('reports denied iOS permissions separately from unavailable recognition', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
@@ -319,9 +319,7 @@ describe('native speech module integration', () => {
 
     __setCachedSpeechModuleForTests(speechModule);
 
-    const session = await startNativeSpeechSession('en-US');
-
-    expect(session).toBeNull();
+    await expect(startNativeSpeechSession('en-US')).rejects.toThrow('speech_permission_denied');
   });
 
   it('does not reopen Android permissions when the caller already granted microphone access', async () => {
@@ -800,9 +798,40 @@ describe('iOS first-use speech authorization', () => {
     await expect(startNativeSpeechSession('fr-FR', {
       permissionAlreadyGranted: true,
       onListeningChange,
-    })).resolves.toBeNull();
+    })).rejects.toThrow('speech_permission_denied');
     expect(speechModule.start).not.toHaveBeenCalled();
     expect(onListeningChange).not.toHaveBeenCalled();
+  });
+
+  it.each(['permission', 'foreground', 'settling'])('cancels startup during %s without starting recognition', async (phase: 'permission' | 'foreground' | 'settling') => {
+    jest.useFakeTimers();
+    Platform.OS = 'ios';
+    AppState.currentState = phase === 'foreground' ? 'inactive' : 'active';
+    const remove = jest.fn();
+    jest.spyOn(AppState, 'addEventListener').mockReturnValue({ remove });
+    const { speechModule } = createSpeechModule();
+    let grantSpeech!: (permission: { granted: boolean }) => void;
+    if (phase === 'permission') {
+      speechModule.requestPermissionsAsync.mockImplementation(() => new Promise((resolve) => {
+        grantSpeech = resolve;
+      }));
+    }
+    const controller = new AbortController();
+    const onListeningChange = jest.fn();
+    const pending = startNativeSpeechSession('fr-FR', {
+      permissionAlreadyGranted: true,
+      signal: controller.signal,
+      onListeningChange,
+    });
+    await jest.advanceTimersByTimeAsync(0);
+    controller.abort();
+    if (phase === 'permission') grantSpeech({ granted: true });
+    await jest.advanceTimersByTimeAsync(300);
+    if (phase === 'foreground') expect(remove).toHaveBeenCalledTimes(1);
+    expect(speechModule.start).not.toHaveBeenCalled();
+    expect(onListeningChange).not.toHaveBeenCalled();
+    await expect(pending).resolves.toBeNull();
+    expect(jest.getTimerCount()).toBe(0);
   });
 
   it('keeps on-device iOS dictation available with microphone permission alone', async () => {

@@ -93,3 +93,27 @@ The review's on-device permission claim was checked against version 56.0.1:
 on-device iOS recognition. This path is preserved, with the native source and
 [permission contract](https://github.com/jamsch/expo-speech-recognition#requestpermissionsasync)
 provided in the review reply.
+
+## Second review failure model (before implementation)
+
+- Blur/unmount while microphone/speech permission or foreground handoff is pending
+  must cancel startup before the native recognizer starts; no late editor focus.
+- Cancelling the foreground wait must release its AppState listener and timer.
+- A denied speech permission must survive the service boundary and yield a
+  permission-specific explanation with a Settings action, not unsupported-device UI.
+
+The native-dialog timing gap above also applies to cancellation. Add deterministic
+service cancellation and hook cleanup/denial regressions before implementation.
+
+Before this follow-up: 7 failing regressions, 83 passes across service/hook suites.
+After correction: all 181 tests in the three focused service/hook/route suites pass.
+Machine-readable report: `/private/tmp/dictation-review-final.json`.
+
+Pending starts now carry an AbortSignal from the route lifecycle through both
+permission waits; cancellation releases the AppState listener/timer and prevents
+native start. A late returned session is aborted before it can mark recording ready.
+The route ignores cancellation without showing a failure or restoring editor focus.
+Speech denial on iOS propagates distinctly and offers a Settings recovery action;
+the inline fallback describes both microphone and speech authorization in six locales.
+Android/web denial behavior remains unchanged. ESLint has zero errors and one
+pre-existing `set-state-in-effect` warning in the unchanged capture-intent effect.
