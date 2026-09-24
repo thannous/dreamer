@@ -860,3 +860,13 @@ export function resetMockStorage(): void {
   Object.keys(mockStorage).forEach(key => delete mockStorage[key]);
   dreamsPreloaded = false;
 }
+
+/** Clear only the persisted dogfood namespace; real app storage is untouched. */
+export async function clearMockDogfoodStorage(): Promise<void> {
+  const { default: AsyncStorage } = await import('@react-native-async-storage/async-storage');
+  const keys = (await AsyncStorage.getAllKeys())
+    .filter(key => key.startsWith(MOCK_DOGFOOD_STORAGE_PREFIX));
+  if (keys.length > 0) {
+    await AsyncStorage.multiRemove(keys);
+  }
+}

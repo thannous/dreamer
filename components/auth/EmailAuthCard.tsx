@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
+import { router } from 'expo-router';
 import { AuthApiError, isAuthApiError } from '@supabase/auth-js';
 import {
   ActivityIndicator,
@@ -12,6 +13,7 @@ import {
 } from 'react-native';
 
 import { useAuth } from '@/context/AuthContext';
+import { useOnboarding } from '@/context/OnboardingContext';
 import { useOptionalDreamsActions } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -26,6 +28,7 @@ import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
 import { EyeIcon, EyeOffIcon } from '@/components/icons/DreamIcons';
 import {
   requestPasswordReset,
+  resetMockTestState,
   resendVerificationEmail,
   signInMock,
   signInWithEmailPassword,
@@ -102,6 +105,7 @@ export const EmailAuthCard: React.FC<Props> = ({
   const cardBg = noctalia.surface.raised;
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
+  const { reload: reloadOnboarding } = useOnboarding();
   const dreamsActions = useOptionalDreamsActions();
   const { language } = useLanguage();
 
@@ -313,10 +317,14 @@ export const EmailAuthCard: React.FC<Props> = ({
     if (!isMockModeEnabled || isBusy) return;
     setSubmitting('signout');
     try {
-      await signOut();
+      await resetMockTestState();
       await dreamsActions?.reloadDreams();
+      // A guest reset does not change auth scope, so refresh its onboarding state.
+      if (!user) await reloadOnboarding();
       clearPendingVerification();
       clearStayOnSettingsIntent();
+      setAccountSheetVisible(false);
+      router.replace('/onboarding');
     } catch (error) {
       handleSupabaseError(error, 'settings.account.alert.signout_failed.title');
     } finally {
@@ -1009,6 +1017,8 @@ export const EmailAuthCard: React.FC<Props> = ({
                 );
               })}
               <Pressable
+                accessibilityLabel={t('settings.account.mock.reset')}
+                accessibilityRole="button"
                 testID={TID.Button.MockResetState}
                 style={({ pressed }) => [
                   styles.mockButton,

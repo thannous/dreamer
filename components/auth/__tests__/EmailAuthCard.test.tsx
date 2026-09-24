@@ -91,6 +91,8 @@ const {
   mockResendVerificationEmail,
   mockRequestPasswordReset,
   mockReloadDreams,
+  mockReloadOnboarding,
+  mockRouterReplace,
 } = ((factory: any) => factory())(() => ({
   mockAlert: jest.fn(),
   mockClearStayOnSettingsIntent: jest.fn(),
@@ -101,6 +103,8 @@ const {
   mockResendVerificationEmail: jest.fn(),
   mockRequestPasswordReset: jest.fn(),
   mockReloadDreams: jest.fn(),
+  mockReloadOnboarding: jest.fn(),
+  mockRouterReplace: jest.fn(),
 }));
 
 ((key: string, value: unknown) => { Object.defineProperty(globalThis, key, { configurable: true, writable: true, value }); })('__DEV__', false);
@@ -128,6 +132,14 @@ jest.mock('@supabase/auth-js', () => {
 
 jest.mock('@/context/AuthContext', () => ({
   useAuth: () => ({ user: mockCurrentUser, loading: mockAuthLoading }),
+}));
+
+jest.mock('@/context/OnboardingContext', () => ({
+  useOnboarding: () => ({ reload: mockReloadOnboarding }),
+}));
+
+jest.mock('expo-router', () => ({
+  router: { replace: mockRouterReplace },
 }));
 
 let mockOptionalDreamsActions: { reloadDreams: typeof mockReloadDreams } | null = {
@@ -198,6 +210,7 @@ jest.mock('@/lib/auth', () => ({
   signInMock: jest.fn(),
   signInWithEmailPassword: mockSignInWithEmailPassword,
   signOut: mockSignOut,
+  resetMockTestState: jest.fn(),
   signUpWithEmailPassword: mockSignUpWithEmailPassword,
   resendVerificationEmail: mockResendVerificationEmail,
 }));
@@ -292,6 +305,7 @@ describe('EmailAuthCard', () => {
     mockSignUpWithEmailPassword.mockResolvedValue({ email_confirmed_at: null });
     mockSignOut.mockResolvedValue(undefined);
     mockReloadDreams.mockResolvedValue(undefined);
+    mockReloadOnboarding.mockResolvedValue(undefined);
     mockRequestPasswordReset.mockResolvedValue(undefined);
     mockOptionalDreamsActions = { reloadDreams: mockReloadDreams };
   });

@@ -265,26 +265,26 @@ const ANALYSIS_COPY: Record<AppLanguage, AnalysisCopy> = {
     fallbackTitle: 'Um sonho para explorar',
     interpretations: [
       'Este sonho pode evocar um desejo de liberdade e espaço.',
-      'O caminho do sonho pode lembrar uma questão que estás a explorar.',
-      'Um encontro no sonho pode estar ligado a uma memória ou emoção.',
+      'O caminho do sonho pode trazer à tona uma questão que você está explorando.',
+      'Um encontro no sonho pode estar ligado a uma lembrança ou emoção.',
     ],
     quotes: [
-      'Um sonho pode abrir uma nova perspetiva.',
-      'Cada detalhe convida à reflexão.',
-      'A noite deixa um rasto para explorar.',
+      'Um sonho pode abrir uma nova perspectiva.',
+      'Cada detalhe é um convite à reflexão.',
+      'A noite deixa um rastro para explorar.',
     ],
     symbols: [
-      { name: 'Água', meaning: 'A água pode evocar o movimento das emoções.' },
+      { name: 'Água', meaning: 'A água pode representar o movimento das emoções.' },
       { name: 'Luz', meaning: 'A luz pode representar um ponto de referência no sonho.' },
-      { name: 'Porta', meaning: 'Uma porta pode sugerir uma passagem ou possibilidade.' },
+      { name: 'Porta', meaning: 'Uma porta pode sugerir uma passagem ou uma possibilidade.' },
     ],
     emotions: [
-      { name: 'Admiração', insight: 'Abertura ao que o sonho mostra.' },
-      { name: 'Saudade', insight: 'Uma possível ligação a uma memória presente.' },
+      { name: 'Admiração', insight: 'Abertura para o que o sonho mostra.' },
+      { name: 'Saudade', insight: 'Uma possível ligação com uma lembrança que ainda está viva.' },
     ],
     questions: [
-      'Que momento do sonho te marcou mais?',
-      'Reconheces hoje alguma sensação desse sonho?',
+      'Qual momento do sonho mais marcou você?',
+      'Você reconhece hoje alguma sensação desse sonho?',
     ],
   },
 };

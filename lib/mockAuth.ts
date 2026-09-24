@@ -41,6 +41,7 @@ let accountCreatedOnDevice = false;
 const listeners = new Set<(user: User | null, session: Session | null) => void>();
 
 type MockProfileDependencies = {
+  clearMockDogfoodStorage: typeof import('@/services/mocks/storageServiceMock').clearMockDogfoodStorage;
   preloadDreamsNow: typeof import('@/services/mocks/storageServiceMock').preloadDreamsNow;
   resetMockStorage: typeof import('@/services/mocks/storageServiceMock').resetMockStorage;
   setPreloadDreamsEnabled: typeof import('@/services/mocks/storageServiceMock').setPreloadDreamsEnabled;
@@ -68,6 +69,7 @@ function loadMockProfileDependencies(): Promise<MockProfileDependencies> {
       const quota = require('@/services/quotaService') as typeof import('@/services/quotaService');
 
       return {
+        clearMockDogfoodStorage: storage.clearMockDogfoodStorage,
         preloadDreamsNow: storage.preloadDreamsNow,
         resetMockStorage: storage.resetMockStorage,
         setPreloadDreamsEnabled: storage.setPreloadDreamsEnabled,
@@ -201,6 +203,14 @@ export async function signOut(): Promise<void> {
   ]);
   quotaService.invalidate(null);
   emitAuthChange();
+}
+
+/** Explicit test reset, separate from ordinary profile switching and sign-out. */
+export async function resetTestState(): Promise<void> {
+  const { clearMockDogfoodStorage } = await loadMockProfileDependencies();
+  await clearMockDogfoodStorage();
+  await signOut();
+  resetAccountCreatedFlag();
 }
 
 // Simulate verification after resending so automated tests can cover both states.
