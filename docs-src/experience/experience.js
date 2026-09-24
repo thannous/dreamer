@@ -327,28 +327,6 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis, heroReady) => {
     );
   });
 
-  // Dream fragments drift at their own depth while the steps scroll past,
-  // then dissolve as the page wakes up. Transform and opacity only.
-  const fragmentsHost = document.querySelector(STEP_SECTION_SELECTOR);
-  gsapLib.utils.toArray('.oh-fragment').forEach((fragment) => {
-    const depth = Number(fragment.dataset.depth || 1);
-    gsapLib.fromTo(
-      fragment,
-      { y: 90 * depth },
-      {
-        y: -90 * depth,
-        ease: 'none',
-        scrollTrigger: { trigger: fragmentsHost, start: 'top bottom', end: 'bottom top', scrub: true },
-      }
-    );
-    gsapLib.to(fragment, {
-      opacity: 0,
-      scale: 1.35,
-      ease: 'none',
-      scrollTrigger: { trigger: fragmentsHost, start: 'bottom 75%', end: 'bottom 15%', scrub: true },
-    });
-  });
-
   // Section reveals: elements entering together cascade 80ms apart; section
   // heads also pull focus. `.active` drives the CSS hairline draws.
   const isHead = (el) => el.matches('.oh-section-head, .oh-pricing-head');
@@ -565,107 +543,405 @@ const initSky = async (quality) => {
 /* One night: chapters, dawn, dream fragments, constellation, ending.  */
 /* ------------------------------------------------------------------ */
 
-const CHAPTER_SELECTORS = [
-  ['dream', `${HERO_SELECTOR}, ${STEP_SECTION_SELECTOR}`],
-  ['waking', FEATURE_SECTION_SELECTOR],
-  ['understanding', '#symbols, #symboles, #simbolos, #traumsymbole, #simboli, .oh-section[aria-labelledby]'],
-  ['remembering', '.oh-section:not([aria-labelledby])'],
-  ['ending', '.oh-ending'],
-];
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+const smooth = (t) => t * t * (3 - 2 * t);
+let activeLenis = null;
 
-/** Tracks which chapter crosses the middle of the viewport. CSS turns the
- * chapter into a slow ink-to-dawn tint; nothing is scroll-scrubbed here. */
-const initChapters = () => {
-  if (!('IntersectionObserver' in window)) return;
+/* Dawn: one fixed layer whose opacity follows the night's progress, from
+ * ink in the dream to a champagne dawn once the page wakes. Opacity only. */
+const initDawn = () => {
   const main = document.querySelector('.noctalia-observatory');
   if (!main) return;
   const dawn = document.createElement('div');
   dawn.className = 'oh-dawn';
   dawn.setAttribute('aria-hidden', 'true');
   main.prepend(dawn);
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) html.dataset.chapter = entry.target.dataset.nightChapter;
-      });
-    },
-    { rootMargin: '-50% 0px -50% 0px' }
-  );
-  CHAPTER_SELECTORS.forEach(([chapter, selector]) => {
-    document.querySelectorAll(selector).forEach((el) => {
-      if (el.dataset.nightChapter) return;
-      el.dataset.nightChapter = chapter;
-      observer.observe(el);
+  const stops = [
+    ['.oh-dreams', 0, 0.55],
+    ['.oh-waking', 1, 0.5],
+    ['.oh-symbols', 0.55, 0.5],
+    ['.oh-remember', 0.8, 0.5],
+    ['.oh-ending', 1, 0.5],
+  ]
+    .map(([selector, value, anchor]) => ({ el: document.querySelector(selector), value, anchor }))
+    .filter((stop) => stop.el);
+  if (!stops.length) return;
+  let frame = 0;
+  const update = () => {
+    frame = 0;
+    const mid = window.innerHeight * 0.5;
+    const points = stops.map(({ el, value, anchor }) => {
+      const rect = el.getBoundingClientRect();
+      return { y: rect.top + rect.height * anchor - mid, value };
     });
-  });
-  html.dataset.chapter = 'dream';
+    let value = points[0].y > 0 ? 0 : points[points.length - 1].value;
+    for (let i = 0; i < points.length - 1; i += 1) {
+      const a = points[i];
+      const b = points[i + 1];
+      if (a.y <= 0 && b.y > 0) {
+        value = a.value + (b.value - a.value) * smooth(-a.y / (b.y - a.y));
+        break;
+      }
+    }
+    dawn.style.opacity = value.toFixed(3);
+  };
+  const request = () => {
+    if (!frame) frame = window.requestAnimationFrame(update);
+  };
+  window.addEventListener('scroll', request, { passive: true });
+  window.addEventListener('resize', request);
+  update();
 };
 
-const FRAGMENTS = [
-  // [left %, top %, size rem, kind, depth]
-  [3, 24, 0.35, 'star', 1.4],
-  [84, 6, 7, 'wisp', 0.6],
-  [96, 38, 0.3, 'star', 1.8],
-  [10, 52, 9, 'orb', 0.5],
-  [94, 66, 0.4, 'star', 1.1],
-  [1, 82, 6, 'wisp', 0.9],
-  [97, 92, 0.3, 'star', 1.6],
-];
+/* ------------------------------------------------------------------ */
+/* Dream: the example entries float on a Fibonacci sphere in CSS 3D.   */
+/* ------------------------------------------------------------------ */
 
-const initFragments = () => {
-  const host = document.querySelector(STEP_SECTION_SELECTOR);
-  if (!host) return;
-  const layer = document.createElement('div');
-  layer.className = 'oh-fragments';
-  layer.setAttribute('aria-hidden', 'true');
-  FRAGMENTS.forEach(([left, top, size, kind, depth]) => {
-    const fragment = document.createElement('span');
-    fragment.className = `oh-fragment oh-fragment--${kind}`;
-    fragment.dataset.depth = String(depth);
-    fragment.style.left = `${left}%`;
-    fragment.style.top = `${top}%`;
-    fragment.style.width = `${size}rem`;
-    fragment.style.height = `${size}rem`;
-    layer.append(fragment);
+const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+
+const initDreamSpace = (allowDrag) => {
+  const space = document.querySelector('.oh-dreamspace');
+  const list = space?.querySelector('.oh-dream-list');
+  if (!space || !list || !CSS.supports('transform-style', 'preserve-3d')) return null;
+  const slots = Array.from(list.querySelectorAll('.oh-dream-slot'));
+  if (slots.length < 4) return null;
+  html.classList.add('exp-3d');
+
+  const vectors = slots.map((slot, i) => {
+    const y = 1 - ((i + 0.5) * 2) / slots.length;
+    const r = Math.sqrt(1 - y * y);
+    const theta = i * GOLDEN_ANGLE;
+    return { x: Math.cos(theta) * r, y, z: Math.sin(theta) * r };
   });
-  host.prepend(layer);
+
+  let radius = 300;
+  const layout = () => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const cardWidth = w < 700 ? 150 : w < 1100 ? 188 : 214;
+    radius = clamp(Math.min(w * 0.46, h * 0.5), 175, 440);
+    space.style.setProperty('--card-w', `${cardWidth}px`);
+    slots.forEach((slot, i) => {
+      const { x, y, z } = vectors[i];
+      const yaw = Math.atan2(x, z);
+      const pitch = -Math.asin(y);
+      slot.style.transform = `rotateY(${yaw.toFixed(4)}rad) rotateX(${pitch.toFixed(4)}rad) translateZ(${radius.toFixed(0)}px)`;
+    });
+  };
+  layout();
+  window.addEventListener('resize', layout);
+
+  const state = { drift: 0, dragYaw: 0, dragPitch: 0, velocity: 0, dragging: false, paused: false, visible: false };
+  let last = performance.now();
+  let raf = 0;
+  const opacities = slots.map(() => -1);
+
+  const tick = (now) => {
+    raf = 0;
+    const dt = Math.min(64, now - last);
+    last = now;
+    if (!state.dragging) {
+      state.drift += dt * 0.00007;
+      state.dragYaw += state.velocity;
+      state.velocity *= 0.94;
+    }
+    const rect = space.getBoundingClientRect();
+    const track = Math.max(1, rect.height - window.innerHeight);
+    const p = clamp(-rect.top / track, 0, 1);
+    const approach = smooth(clamp(p / 0.72, 0, 1));
+    const wake = smooth(clamp((p - 0.74) / 0.26, 0, 1));
+    const yaw = state.drift + p * Math.PI * 1.1 + state.dragYaw;
+    const pitch = 0.16 * Math.sin(state.drift * 0.8) + (p - 0.4) * 0.4 + state.dragPitch;
+    const dolly = -radius * 0.85 + approach * radius * 0.95 - wake * radius * 2.6;
+    list.style.transform = `translate3d(0, 0, ${dolly.toFixed(1)}px) rotateX(${pitch.toFixed(4)}rad) rotateY(${yaw.toFixed(4)}rad)`;
+
+    const cy = Math.cos(yaw);
+    const sy = Math.sin(yaw);
+    const cp = Math.cos(pitch);
+    const sp = Math.sin(pitch);
+    vectors.forEach((v, i) => {
+      const z1 = -v.x * sy + v.z * cy;
+      const zc = v.y * sp + z1 * cp;
+      const facing = clamp((zc + 0.15) / 1.15, 0, 1);
+      const opacity = Math.round((0.28 + 0.72 * facing) * (1 - wake) * 100) / 100;
+      if (opacity !== opacities[i]) {
+        opacities[i] = opacity;
+        slots[i].style.opacity = String(opacity);
+        slots[i].classList.toggle('is-back', zc < -0.05);
+      }
+    });
+    space.classList.toggle('is-fading', wake > 0.15);
+    if (state.visible && !state.paused && !document.hidden) raf = window.requestAnimationFrame(tick);
+  };
+  const start = () => {
+    if (!raf && state.visible && !state.paused) {
+      last = performance.now();
+      raf = window.requestAnimationFrame(tick);
+    }
+  };
+  new IntersectionObserver((entries) => {
+    state.visible = entries[0].isIntersecting;
+    start();
+  }).observe(space);
+  document.addEventListener('visibilitychange', start);
+
+  let moved = 0;
+  if (allowDrag && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const stage = space.querySelector('.oh-dreamspace-stage');
+    let lastX = 0;
+    let lastY = 0;
+    stage.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0) return;
+      state.dragging = true;
+      moved = 0;
+      lastX = event.clientX;
+      lastY = event.clientY;
+    });
+    stage.addEventListener('pointermove', (event) => {
+      if (!state.dragging) return;
+      const dx = event.clientX - lastX;
+      const dy = event.clientY - lastY;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      moved += Math.abs(dx) + Math.abs(dy);
+      if (moved > 6 && !stage.hasPointerCapture(event.pointerId)) {
+        stage.setPointerCapture(event.pointerId);
+        stage.classList.add('is-dragging');
+      }
+      state.velocity = dx * 0.0045;
+      state.dragYaw += dx * 0.0045;
+      state.dragPitch = clamp(state.dragPitch - dy * 0.003, -0.5, 0.5);
+    });
+    const end = () => {
+      state.dragging = false;
+      stage.classList.remove('is-dragging');
+    };
+    stage.addEventListener('pointerup', end);
+    stage.addEventListener('pointercancel', end);
+    stage.addEventListener(
+      'click',
+      (event) => {
+        if (moved > 6) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      },
+      true
+    );
+  }
+
+  return {
+    pause: () => {
+      state.paused = true;
+    },
+    resume: () => {
+      state.paused = false;
+      start();
+    },
+  };
 };
 
-// Pairs of symbol indexes joined by a line: a loose chain across the grid.
-const CONSTELLATION = [0, 5, 2, 7, 11, 14, 9, 12, 8];
+/* FLIP lightbox: an entry grows from its card into the full page the app
+ * would show. Transform and opacity only; Escape or the backdrop closes. */
+const initLightbox = (space) => {
+  const section = document.querySelector('.oh-dreams');
+  if (!section) return;
+  let labels = {};
+  try {
+    labels = JSON.parse(section.dataset.labels || '{}');
+  } catch {
+    labels = {};
+  }
+  const buttons = Array.from(section.querySelectorAll('.oh-dream-open'));
+  buttons.forEach((button) => {
+    button.hidden = false;
+    button.addEventListener('click', () => open(button.closest('.oh-dream'), button));
+  });
 
-/** Links a few symbols with hairlines that draw in once, like a constellation
- * found in the night sky. Recomputed on resize without replaying. */
+  const open = (card, trigger) => {
+    const img = card.querySelector('.oh-dream-img');
+    const overlay = document.createElement('div');
+    overlay.className = 'oh-lightbox';
+    const titleId = `oh-lightbox-title-${Date.now()}`;
+    overlay.innerHTML = `
+      <div class="oh-lightbox-backdrop"></div>
+      <div class="oh-lightbox-panel" role="dialog" aria-modal="true" aria-labelledby="${titleId}">
+        <img class="oh-lightbox-img" alt="" width="800" height="1000">
+        <div class="oh-lightbox-body">
+          <p class="oh-dream-meta"></p>
+          <h3 class="oh-lightbox-title" id="${titleId}"></h3>
+          <p class="oh-lightbox-label"></p>
+          <div class="oh-lightbox-transcript"></div>
+          <p class="oh-lightbox-label oh-lightbox-label--symbols"></p>
+          <ul class="oh-dream-symbols"></ul>
+          <p class="oh-lightbox-note"></p>
+        </div>
+        <button class="oh-lightbox-close" type="button"></button>
+      </div>`;
+    const panel = overlay.querySelector('.oh-lightbox-panel');
+    const full = overlay.querySelector('.oh-lightbox-img');
+    full.src = img.currentSrc || img.src;
+    const upgrade = new Image();
+    upgrade.onload = () => {
+      full.src = upgrade.src;
+    };
+    upgrade.src = img.dataset.full;
+    overlay.querySelector('.oh-dream-meta').innerHTML = card.querySelector('.oh-dream-meta').innerHTML;
+    overlay.querySelector('.oh-lightbox-title').textContent = card.querySelector('.oh-dream-title').textContent;
+    overlay.querySelector('.oh-lightbox-label').textContent = labels.transcript || '';
+    const transcript = overlay.querySelector('.oh-lightbox-transcript');
+    [card.querySelector('.oh-dream-excerpt'), card.querySelector('.oh-dream-rest')].forEach((source) => {
+      const p = document.createElement('p');
+      p.textContent = source.textContent;
+      transcript.append(p);
+    });
+    overlay.querySelector('.oh-lightbox-label--symbols').textContent = labels.symbols || '';
+    overlay.querySelector('.oh-dream-symbols').innerHTML = card.querySelector('.oh-dream-symbols').innerHTML;
+    overlay.querySelector('.oh-lightbox-note').textContent = labels.example || '';
+    const close = overlay.querySelector('.oh-lightbox-close');
+    close.setAttribute('aria-label', labels.close || 'Close');
+    close.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
+    space?.pause();
+    activeLenis?.stop();
+    document.documentElement.classList.add('oh-lightbox-open');
+    document.body.append(overlay);
+
+    const first = card.getBoundingClientRect();
+    const lastRect = panel.getBoundingClientRect();
+    const invert = () =>
+      `translate(${first.left - lastRect.left}px, ${first.top - lastRect.top}px) scale(${first.width / lastRect.width}, ${first.height / lastRect.height})`;
+    panel.style.transformOrigin = '0 0';
+    panel.style.transform = invert();
+    panel.style.opacity = '0.4';
+    card.style.visibility = 'hidden';
+    panel.getBoundingClientRect();
+    overlay.classList.add('is-open');
+    panel.style.transition = `transform 560ms ${EASE_FILM}, opacity 320ms ease`;
+    panel.style.transform = 'none';
+    panel.style.opacity = '1';
+    close.focus({ preventScroll: true });
+
+    let closing = false;
+    const dismiss = () => {
+      if (closing) return;
+      closing = true;
+      document.removeEventListener('keydown', onKey);
+      overlay.classList.remove('is-open');
+      const back = card.getBoundingClientRect();
+      const now = panel.getBoundingClientRect();
+      const visible = back.bottom > 0 && back.top < window.innerHeight && back.width > 0;
+      panel.style.transition = `transform 460ms ${EASE_FILM}, opacity 460ms ease`;
+      panel.style.transform = visible
+        ? `translate(${back.left - now.left}px, ${back.top - now.top}px) scale(${back.width / now.width}, ${back.height / now.height})`
+        : 'scale(0.94)';
+      panel.style.opacity = visible ? '0.6' : '0';
+      window.setTimeout(() => {
+        card.style.visibility = '';
+        overlay.remove();
+        document.documentElement.classList.remove('oh-lightbox-open');
+        activeLenis?.start();
+        space?.resume();
+        trigger.focus({ preventScroll: true });
+      }, 470);
+    };
+    const onKey = (event) => {
+      if (event.key === 'Escape') dismiss();
+      if (event.key === 'Tab') {
+        event.preventDefault();
+        close.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    close.addEventListener('click', dismiss);
+    overlay.querySelector('.oh-lightbox-backdrop').addEventListener('click', dismiss);
+  };
+};
+
+/* Waking: while the section is on screen the waveform breathes, the timer
+ * runs and the example transcript appears word by word, once. */
+const initWaking = () => {
+  const rec = document.querySelector('.oh-rec');
+  if (!rec || !('IntersectionObserver' in window)) return;
+  const text = rec.querySelector('.oh-rec-text');
+  const time = rec.querySelector('.oh-rec-time');
+  rec.querySelectorAll('.oh-rec-wave span').forEach((bar, i) => bar.style.setProperty('--i', String(i)));
+  const words = text.textContent.trim().split(/\s+/);
+  text.textContent = '';
+  const spans = words.map((word) => {
+    const span = document.createElement('span');
+    span.className = 'oh-rec-word';
+    span.textContent = `${word} `;
+    text.append(span);
+    return span;
+  });
+  let seconds = 14;
+  let timer = 0;
+  let typed = false;
+  new IntersectionObserver(
+    (entries) => {
+      const live = entries[0].isIntersecting;
+      rec.classList.toggle('is-live', live);
+      window.clearInterval(timer);
+      if (!live) return;
+      timer = window.setInterval(() => {
+        seconds += 1;
+        time.textContent = `00:${String(seconds % 60).padStart(2, '0')}`;
+      }, 1000);
+      if (typed) return;
+      typed = true;
+      spans.forEach((span, i) => window.setTimeout(() => span.classList.add('is-in'), 500 + i * 120));
+    },
+    { threshold: 0.45 }
+  ).observe(rec);
+};
+
+/* Understanding: symbols that share a dream above are joined by lines
+ * that draw in one after another, like a constellation being found. */
 const initConstellation = () => {
   const grid = document.querySelector('.oh-symbols');
   if (!grid || !('IntersectionObserver' in window)) return;
-  const names = Array.from(grid.querySelectorAll('.oh-symbol-name'));
-  if (names.length < 10) return;
+  const cells = Array.from(grid.querySelectorAll('.oh-symbol'));
+  const edges = new Map();
+  const linked = new Set();
+  document.querySelectorAll('.oh-dream[data-symbols]').forEach((dream) => {
+    const ids = dream.dataset.symbols.split(',').map(Number).filter((i) => cells[i]);
+    ids.forEach((i) => linked.add(i));
+    ids.forEach((a, i) => ids.slice(i + 1).forEach((b) => edges.set(`${Math.min(a, b)}-${Math.max(a, b)}`, [a, b])));
+  });
+  if (!edges.size) return;
+  linked.forEach((i) => cells[i].classList.add('is-linked'));
+
   const svgNs = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(svgNs, 'svg');
   svg.setAttribute('class', 'oh-constellation');
   svg.setAttribute('aria-hidden', 'true');
-  const path = document.createElementNS(svgNs, 'path');
-  path.setAttribute('pathLength', '1');
-  svg.append(path);
   grid.prepend(svg);
 
   const draw = () => {
     const box = grid.getBoundingClientRect();
     svg.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
-    svg.querySelectorAll('circle').forEach((dot) => dot.remove());
-    const points = CONSTELLATION.filter((i) => names[i]).map((i) => {
-      const r = names[i].getBoundingClientRect();
-      return [r.left - box.left - 10, r.top - box.top + r.height * 0.55];
+    svg.replaceChildren();
+    const point = (i) => {
+      const r = cells[i].querySelector('.oh-symbol-name').getBoundingClientRect();
+      return [r.left - box.left - 12, r.top - box.top + r.height * 0.55];
+    };
+    Array.from(edges.values()).forEach(([a, b], order) => {
+      const [x1, y1] = point(a);
+      const [x2, y2] = point(b);
+      const path = document.createElementNS(svgNs, 'path');
+      path.setAttribute('d', `M${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)}`);
+      path.setAttribute('pathLength', '1');
+      path.style.transitionDelay = `${order * 170}ms`;
+      svg.append(path);
     });
-    path.setAttribute('d', points.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join(' '));
-    points.forEach(([x, y], i) => {
+    Array.from(linked).forEach((i, order) => {
+      const [x, y] = point(i);
       const dot = document.createElementNS(svgNs, 'circle');
       dot.setAttribute('cx', x.toFixed(1));
       dot.setAttribute('cy', y.toFixed(1));
-      dot.setAttribute('r', '2.2');
-      dot.style.transitionDelay = `${200 + i * 140}ms`;
+      dot.setAttribute('r', '3.2');
+      dot.style.transitionDelay = `${order * 110}ms`;
       svg.append(dot);
     });
   };
@@ -678,11 +954,48 @@ const initConstellation = () => {
   new IntersectionObserver(
     (entries, observer) => {
       if (!entries[0].isIntersecting) return;
-      svg.classList.add('is-drawn');
+      grid.classList.add('is-drawn');
       observer.disconnect();
     },
-    { threshold: 0.35 }
+    { threshold: 0.3 }
   ).observe(grid);
+};
+
+/* Remembering: the journal cascades in, the emotion lines draw across six
+ * weeks and the streak counts up, each once. */
+const initRemember = () => {
+  const section = document.querySelector('.oh-remember');
+  if (!section || !('IntersectionObserver' in window)) return;
+  section.querySelectorAll('.oh-timeline-item').forEach((item, i) => item.style.setProperty('--i', String(i)));
+  section.querySelectorAll('.oh-regularity span').forEach((cell, i) => cell.style.setProperty('--i', String(i)));
+  const onceVisible = (el, run, threshold = 0.35) => {
+    if (!el) return;
+    new IntersectionObserver(
+      (entries, observer) => {
+        if (!entries[0].isIntersecting) return;
+        observer.disconnect();
+        run();
+      },
+      { threshold }
+    ).observe(el);
+  };
+  section.classList.add('is-staged');
+  onceVisible(section.querySelector('.oh-journal'), () => section.querySelector('.oh-journal').classList.add('is-in'), 0.2);
+  onceVisible(section.querySelector('.oh-chart'), () => section.querySelector('.oh-chart').classList.add('is-drawn'));
+  const streak = section.querySelector('.oh-streak');
+  onceVisible(streak, () => {
+    streak.classList.add('is-in');
+    streak.querySelectorAll('.oh-streak-num').forEach((num) => {
+      const target = Number(num.textContent);
+      const started = performance.now();
+      const step = (now) => {
+        const t = clamp((now - started) / 1200, 0, 1);
+        num.textContent = String(Math.round(target * smooth(t)));
+        if (t < 1) window.requestAnimationFrame(step);
+      };
+      window.requestAnimationFrame(step);
+    });
+  });
 };
 
 const INTRO_BASE = '/video/intro/noctalia-intro';
@@ -911,13 +1224,17 @@ const bootEnhanced = async (currentTier) => {
     const skyPromise = initSky(isFull ? 'full' : 'light');
     const heroReady = initFilm(isFull);
     initFeatureMedia();
-    initChapters();
-    initFragments();
+    initDawn();
+    const space = initDreamSpace(isFull);
+    initLightbox(space);
+    initWaking();
     initConstellation();
+    initRemember();
     initEnding();
 
     const { default: Lenis } = await import('lenis');
     const lenis = new Lenis({ autoRaf: !isFull, anchors: true });
+    activeLenis = lenis;
 
     if (!isFull) {
       initLightMotion(heroReady);

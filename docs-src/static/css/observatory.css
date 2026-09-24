@@ -1494,3 +1494,498 @@ body .noctalia-consent-actions button:hover {
     grid-template-columns: minmax(220px, 1.15fr) repeat(4, minmax(135px, 1fr));
   }
 }
+
+/* ---------------------------------------------------------------- */
+/* v4 chapters: base layout (all tiers, including static)            */
+/* ---------------------------------------------------------------- */
+
+.oh-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* 01 Dream: example entries, styled like the app's journal cards. */
+.oh-dream-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.oh-dream {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(234, 212, 180, 0.16);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #17161f, #0c0c15);
+  box-shadow: inset 0 1px 0 rgba(255, 249, 239, 0.06), 0 24px 48px -28px rgba(0, 0, 0, 0.8);
+}
+
+.oh-dream-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  height: auto;
+  object-fit: cover;
+  background: #14131a;
+}
+
+.oh-dream-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.95rem 1.05rem 1.1rem;
+}
+
+.oh-dream-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0;
+  color: #b7aec9;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.oh-emotion {
+  padding: 0.18rem 0.6rem;
+  border: 1px solid rgba(234, 212, 180, 0.38);
+  border-radius: 999px;
+  color: #ead4b4;
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
+.oh-dream-title {
+  margin: 0;
+  color: #fff9ef;
+  font-family: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.12rem;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.oh-dream-excerpt,
+.oh-dream-rest {
+  margin: 0;
+  color: #b7aec9;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.oh-dream-excerpt {
+  quotes: '“' '”';
+}
+
+.oh-dream-excerpt:lang(fr) {
+  quotes: '« ' ' »';
+}
+
+.oh-dream-excerpt:is(:lang(es), :lang(it)) {
+  quotes: '«' '»';
+}
+
+.oh-dream-excerpt:lang(de) {
+  quotes: '„' '“';
+}
+
+.oh-dream-excerpt::before {
+  content: open-quote;
+}
+
+.oh-dream-excerpt::after {
+  content: close-quote;
+}
+
+.oh-dream-more summary {
+  color: #ead4b4;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.oh-dream-more[open] summary {
+  margin-bottom: 0.4rem;
+}
+
+.oh-dream-symbols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: auto 0 0;
+  padding: 0.35rem 0 0;
+  list-style: none;
+}
+
+.oh-dream-symbols li {
+  padding: 0.14rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 249, 239, 0.07);
+  color: #fff9ef;
+  font-size: 0.7rem;
+}
+
+.oh-dream-symbols li::before {
+  content: '# ';
+  color: #ead4b4;
+}
+
+.oh-dream-open {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.oh-dream-open:focus-visible {
+  outline: 2px solid #ead4b4;
+  outline-offset: 3px;
+}
+
+.oh-dreams-hint {
+  display: none;
+  margin-top: 1rem;
+  color: #ead4b4;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+.oh-dreams-note {
+  margin: 1.5rem 0 0;
+  color: #b7aec9;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+/* 02 Waking */
+.oh-waking-grid {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+}
+
+.oh-waking-copy .oh-lede {
+  margin: 1.25rem 0 2rem;
+}
+
+.oh-rec {
+  max-width: 30rem;
+  padding: 1.25rem 1.4rem 1.4rem;
+  border-radius: 20px;
+}
+
+.oh-rec-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+  color: #fff9ef;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.oh-rec-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #ead4b4;
+  box-shadow: 0 0 0 4px rgba(234, 212, 180, 0.16);
+}
+
+.oh-rec-time {
+  margin-left: auto;
+  color: #b7aec9;
+  font-variant-numeric: tabular-nums;
+}
+
+.oh-rec-wave {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 64px;
+}
+
+.oh-rec-wave span {
+  flex: 1;
+  max-width: 5px;
+  height: calc(var(--h) * 1%);
+  border-radius: 3px;
+  background: linear-gradient(180deg, #fff9ef, #ead4b4);
+  opacity: 0.85;
+  transform-origin: center;
+}
+
+.oh-rec-text {
+  margin: 1.1rem 0 0;
+  color: #fff9ef;
+  font-family: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.02rem;
+  font-style: italic;
+  line-height: 1.55;
+}
+
+.oh-waking-device {
+  display: flex;
+  justify-content: center;
+}
+
+.oh-waking-device .phone-frame {
+  width: min(78%, 300px);
+}
+
+/* 03 Understanding caption */
+.oh-constellation-caption {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1.25rem;
+  color: #b7aec9;
+  font-size: 0.85rem;
+}
+
+.oh-constellation-caption::before {
+  content: '';
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: #ead4b4;
+  box-shadow: 0 0 10px rgba(234, 212, 180, 0.8);
+}
+
+/* 04 Remembering */
+.oh-remember-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.oh-remember-side {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.oh-journal,
+.oh-chart,
+.oh-streak {
+  margin: 0;
+  padding: 1.4rem 1.5rem;
+  border-radius: 22px;
+}
+
+.oh-remember-h3 {
+  margin: 0 0 1rem;
+  color: #fff9ef;
+  font-family: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+}
+
+.oh-timeline {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 1.1rem;
+  list-style: none;
+}
+
+.oh-timeline::before {
+  content: '';
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  left: 0.2rem;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(234, 212, 180, 0.5), rgba(234, 212, 180, 0.05));
+}
+
+.oh-timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 4.6rem minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.62rem 0;
+  border-bottom: 1px solid rgba(255, 249, 239, 0.06);
+  font-size: 0.86rem;
+}
+
+.oh-timeline-item:last-child {
+  border-bottom: 0;
+}
+
+.oh-timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -1.13rem;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ead4b4;
+}
+
+.oh-timeline-item time {
+  color: #b7aec9;
+  font-size: 0.76rem;
+}
+
+.oh-timeline-title {
+  overflow: hidden;
+  color: #fff9ef;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oh-chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.oh-chart-grid line {
+  stroke: rgba(255, 249, 239, 0.07);
+}
+
+.oh-chart-line path {
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.oh-chart-line.is-fear path {
+  stroke: #b7aec9;
+}
+
+.oh-chart-line.is-serenity path {
+  stroke: #ead4b4;
+}
+
+.oh-chart-line.is-fear circle {
+  fill: #b7aec9;
+}
+
+.oh-chart-line.is-serenity circle {
+  fill: #ead4b4;
+}
+
+.oh-chart-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.4rem;
+  color: #b7aec9;
+  font-size: 0.72rem;
+}
+
+.oh-chart-legend {
+  display: flex;
+  gap: 1.25rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  color: #fff9ef;
+  font-size: 0.8rem;
+  list-style: none;
+}
+
+.oh-chart-legend li::before {
+  content: '';
+  display: inline-block;
+  width: 1.1rem;
+  height: 2px;
+  margin-right: 0.45rem;
+  vertical-align: middle;
+  background: #b7aec9;
+}
+
+.oh-chart-legend .is-serenity::before {
+  background: #ead4b4;
+}
+
+.oh-streak-stats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.1rem;
+}
+
+.oh-streak-stats p {
+  margin: 0;
+}
+
+.oh-streak-num {
+  color: #fff9ef;
+  font-family: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+  font-size: 2.6rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.oh-streak-unit {
+  color: #b7aec9;
+  font-size: 0.85rem;
+}
+
+.oh-streak-label {
+  display: block;
+  margin-top: 0.35rem;
+  color: #ead4b4;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.oh-regularity {
+  display: grid;
+  grid-template-columns: repeat(7, 14px);
+  gap: 7px;
+}
+
+.oh-regularity span {
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(255, 249, 239, 0.12);
+  border-radius: 4px;
+}
+
+.oh-regularity span.is-on {
+  border-color: transparent;
+  background: #ead4b4;
+  box-shadow: 0 0 8px rgba(234, 212, 180, 0.35);
+}
+
+.oh-regularity-caption {
+  margin: 0.85rem 0 0;
+  color: #b7aec9;
+  font-size: 0.76rem;
+}
+
+@media (min-width: 900px) {
+  .oh-waking-grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 4rem;
+  }
+
+  .oh-remember-grid {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+}
+
+/* `overflow-x: hidden` turns these into scroll containers, which breaks
+ * position: sticky for the dream space; clip keeps the same clipping. */
+@supports (overflow-x: clip) {
+  html:has(.noctalia-observatory),
+  html:has(.noctalia-observatory) body,
+  main.noctalia-observatory {
+    overflow-x: clip;
+  }
+}
