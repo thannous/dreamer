@@ -22,6 +22,8 @@
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to use the microphone.",
         "NSCameraUsageDescription": "Allow Noctalia to use the camera when you choose to add a reference image to a dream.",
         "NSPhotoLibraryUsageDescription": "Allow Noctalia to select a reference image for your dream.",
+        "NSHealthShareUsageDescription": "When you choose to connect Apple Health in Lucid Trainer, Noctalia reads your past sleep records to show personal trends.",
+        "NSHealthUpdateUsageDescription": "Noctalia does not add or change data in Apple Health. Its optional sleep history feature only reads records you choose to connect.",
         "CADisableMinimumFrameDurationOnPhone": true,
         "LSApplicationQueriesSchemes": [
           "mailto",
