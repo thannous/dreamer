@@ -22,6 +22,7 @@
     "boundaries:check": "node scripts/check-monorepo-boundaries.js",
     "start": "node ./scripts/expo-safe-runner.js start",
     "start:mock": "node ./scripts/expo-safe-runner.js --profile .env.mock start",
+    "start:mock:dogfood": "EXPO_PUBLIC_MOCK_PERSISTENCE=true node ./scripts/expo-safe-runner.js --profile .env.mock start",
     "start:lucid": "node ./scripts/expo-safe-runner.js --profile .env.lucid start",
     "start:lucid:mock": "node ./scripts/expo-safe-runner.js --profile .env.lucid.mock start",
     "start:lucid:teststore": "node ./scripts/expo-safe-runner.js --profile .env.lucid.teststore start",

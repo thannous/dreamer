@@ -91,6 +91,8 @@ const {
   mockResendVerificationEmail,
   mockRequestPasswordReset,
   mockReloadDreams,
+  mockReloadOnboarding,
+  mockRouterReplace,
 } = ((factory: any) => factory())(() => ({
   mockAlert: jest.fn(),
   mockClearStayOnSettingsIntent: jest.fn(),
@@ -101,6 +103,8 @@ const {
   mockResendVerificationEmail: jest.fn(),
   mockRequestPasswordReset: jest.fn(),
   mockReloadDreams: jest.fn(),
+  mockReloadOnboarding: jest.fn(),
+  mockRouterReplace: jest.fn(),
 }));
 
 ((key: string, value: unknown) => { Object.defineProperty(globalThis, key, { configurable: true, writable: true, value }); })('__DEV__', false);
@@ -108,6 +112,7 @@ const {
 let mockCurrentUser: any = null;
 let mockAuthLoading = false;
 let mockSupabaseConfigured = true;
+let mockHasOnboardingProvider = true;
 
 jest.mock('@supabase/auth-js', () => {
   class AuthApiError extends Error {
@@ -128,6 +133,18 @@ jest.mock('@supabase/auth-js', () => {
 
 jest.mock('@/context/AuthContext', () => ({
   useAuth: () => ({ user: mockCurrentUser, loading: mockAuthLoading }),
+}));
+
+jest.mock('@/context/OnboardingContext', () => ({
+  useOnboarding: () => {
+    if (!mockHasOnboardingProvider) throw new Error('useOnboarding must be used within OnboardingProvider');
+    return { reload: mockReloadOnboarding };
+  },
+  useOptionalOnboarding: () => mockHasOnboardingProvider ? { reload: mockReloadOnboarding } : null,
+}));
+
+jest.mock('expo-router', () => ({
+  router: { replace: mockRouterReplace },
 }));
 
 let mockOptionalDreamsActions: { reloadDreams: typeof mockReloadDreams } | null = {
@@ -198,6 +215,7 @@ jest.mock('@/lib/auth', () => ({
   signInMock: jest.fn(),
   signInWithEmailPassword: mockSignInWithEmailPassword,
   signOut: mockSignOut,
+  resetMockTestState: jest.fn(),
   signUpWithEmailPassword: mockSignUpWithEmailPassword,
   resendVerificationEmail: mockResendVerificationEmail,
 }));
@@ -287,11 +305,13 @@ describe('EmailAuthCard', () => {
     mockCurrentUser = null;
     mockAuthLoading = false;
     mockSupabaseConfigured = true;
+    mockHasOnboardingProvider = true;
     Alert.alert = mockAlert;
     mockSignInWithEmailPassword.mockResolvedValue(undefined);
     mockSignUpWithEmailPassword.mockResolvedValue({ email_confirmed_at: null });
     mockSignOut.mockResolvedValue(undefined);
     mockReloadDreams.mockResolvedValue(undefined);
+    mockReloadOnboarding.mockResolvedValue(undefined);
     mockRequestPasswordReset.mockResolvedValue(undefined);
     mockOptionalDreamsActions = { reloadDreams: mockReloadDreams };
   });
@@ -505,8 +525,11 @@ describe('EmailAuthCard', () => {
     });
   });
 
-  it('renders the Lucid return path without a Journal dreams provider', () => {
+  // Isolation gap: iOS dogfood only exercises the Journal shell. Lucid has no
+  // DreamsProvider or OnboardingProvider; an unconditional hook crashes on render.
+  it('renders the Lucid return path without Journal providers', () => {
     mockOptionalDreamsActions = null;
+    mockHasOnboardingProvider = false;
     expect(() => render(<EmailAuthCard returnTo="/lucid/(tabs)/settings" />)).not.toThrow();
     expect(screen.getByTestId(TID.Button.AuthSignIn)).toBeDefined();
     expect(screen.getByTestId(TID.Input.AuthEmail)).toBeDefined();

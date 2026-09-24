@@ -19,7 +19,7 @@ These dreams can be pre-loaded by selecting the **Existing user** or **Premium u
 ### `generators.ts`
 Provides functions to generate random dream content:
 - `generateRandomDream()` - Creates a complete random dream entry
-- `generateAnalysisResult(transcript)` - Generates analysis for a given transcript
+- `generateAnalysisResult(transcript, lang?)` - Generates stable mock analysis in the requested app language (en, fr, es, de, it, pt)
 - `generateChatResponse(userMessage, dreamContext)` - Creates contextual chat responses
 
 Use these when you want to add new dreams in mock mode without hardcoding them.

@@ -24,6 +24,7 @@ import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useTranslation } from '@/hooks/useTranslation';
+import { isMockDogfoodPersistenceEnabled } from '@/lib/env';
 import { isOnboardingTerminal } from '@/lib/onboardingState';
 import { TID } from '@/lib/testIDs';
 import {
@@ -290,7 +291,7 @@ export function WhatsNewModalHost({ ready }: { ready: boolean }) {
   const [visible, setVisible] = useState(false);
   const nonTerminalScopesRef = useRef(new Set<string>());
   const scopeKey = scope ?? 'default';
-  const eligible = ready && !loading && isOnboardingTerminal(state);
+  const eligible = ready && !loading && isOnboardingTerminal(state) && !isMockDogfoodPersistenceEnabled();
 
   useEffect(() => {
     if (!loading && !isOnboardingTerminal(state)) {

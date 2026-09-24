@@ -2,7 +2,7 @@
  * Generators for random mock data
  */
 
-import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
+import type { AppLanguage, DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { getRandomImageForTheme, getThumbnailUrl } from './assets';
 
 const DREAM_TITLES = [
@@ -127,20 +127,22 @@ export function titleFromTranscript(transcript: string): string {
 /**
  * Generate analysis result (for API mock).
  * Titles follow the transcript so successive mock dreams stay distinguishable.
+ * The fixture follows the app language; it does not attempt to interpret the dream.
  */
-export function generateAnalysisResult(transcript: string) {
-  const theme = pickFromTranscript(transcript, THEMES);
-  const interpretation = pickFromTranscript(transcript, INTERPRETATIONS);
-  const shareableQuote = pickFromTranscript(transcript, SHAREABLE_QUOTES);
-  const dreamType = pickFromTranscript(transcript, DREAM_TYPES);
+type AnalysisCopy = {
+  fallbackTitle: string;
+  interpretations: readonly string[];
+  quotes: readonly string[];
+  symbols: readonly { name: string; meaning: string }[];
+  emotions: readonly { name: string; insight: string }[];
+  questions: readonly string[];
+};
 
-  return {
-    title: titleFromTranscript(transcript),
-    interpretation,
-    shareableQuote,
-    theme,
-    dreamType,
-    imagePrompt: `A ${theme} dream scene: ${transcript.slice(0, 50)}`,
+const ANALYSIS_COPY: Record<AppLanguage, AnalysisCopy> = {
+  en: {
+    fallbackTitle: DREAM_TITLES[0],
+    interpretations: INTERPRETATIONS,
+    quotes: SHAREABLE_QUOTES,
     symbols: [
       { name: 'Water', meaning: 'Emotional currents moving beneath the surface of this dream.' },
       { name: 'Light', meaning: 'A guiding awareness drawing your attention toward change.' },
@@ -150,9 +152,158 @@ export function generateAnalysisResult(transcript: string) {
       { name: 'Wonder', insight: 'An openness to what this dream is showing you.' },
       { name: 'Longing', insight: 'A quiet pull toward something not yet named.' },
     ],
-    reflectionQuestions: [
+    questions: [
       'What part of this dream felt most alive to you?',
       'Where in your waking life do you feel a similar pull?',
     ],
+  },
+  fr: {
+    fallbackTitle: 'Un rêve à explorer',
+    interpretations: [
+      'Ce rêve peut évoquer un besoin de liberté et d’espace.',
+      'Le chemin du rêve peut rappeler une question que tu explores en ce moment.',
+      'Une rencontre dans le rêve peut faire écho à un souvenir ou à une émotion.',
+    ],
+    quotes: [
+      'Un rêve ouvre parfois une nouvelle perspective.',
+      'Chaque détail peut inviter à la réflexion.',
+      'La nuit laisse une trace à explorer.',
+    ],
+    symbols: [
+      { name: 'Eau', meaning: 'L’eau peut évoquer le mouvement des émotions.' },
+      { name: 'Lumière', meaning: 'La lumière peut représenter un repère dans le rêve.' },
+      { name: 'Porte', meaning: 'Une porte peut suggérer un passage ou une possibilité.' },
+    ],
+    emotions: [
+      { name: 'Étonnement', insight: 'Une ouverture à ce que le rêve te montre.' },
+      { name: 'Nostalgie', insight: 'Un lien possible avec un souvenir encore présent.' },
+    ],
+    questions: [
+      'Quel moment de ce rêve t’a le plus marqué ?',
+      'Retrouves-tu une sensation de ce rêve dans ta journée ?',
+    ],
+  },
+  es: {
+    fallbackTitle: 'Un sueño por explorar',
+    interpretations: [
+      'Este sueño puede evocar un deseo de libertad y espacio.',
+      'El recorrido del sueño puede recordar una pregunta que exploras ahora.',
+      'Un encuentro en el sueño puede conectar con un recuerdo o una emoción.',
+    ],
+    quotes: [
+      'Un sueño puede abrir una nueva perspectiva.',
+      'Cada detalle invita a reflexionar.',
+      'La noche deja una huella por explorar.',
+    ],
+    symbols: [
+      { name: 'Agua', meaning: 'El agua puede evocar el movimiento de las emociones.' },
+      { name: 'Luz', meaning: 'La luz puede representar una guía dentro del sueño.' },
+      { name: 'Puerta', meaning: 'Una puerta puede sugerir un paso o una posibilidad.' },
+    ],
+    emotions: [
+      { name: 'Asombro', insight: 'Una apertura a lo que muestra el sueño.' },
+      { name: 'Nostalgia', insight: 'Un posible vínculo con un recuerdo presente.' },
+    ],
+    questions: [
+      '¿Qué momento del sueño te llamó más la atención?',
+      '¿Reconoces hoy alguna sensación de ese sueño?',
+    ],
+  },
+  de: {
+    fallbackTitle: 'Ein Traum zum Erkunden',
+    interpretations: [
+      'Dieser Traum könnte einen Wunsch nach Freiheit und Raum andeuten.',
+      'Der Weg im Traum könnte an eine Frage erinnern, die dich gerade beschäftigt.',
+      'Eine Begegnung im Traum könnte mit einer Erinnerung oder einem Gefühl verbunden sein.',
+    ],
+    quotes: [
+      'Ein Traum kann eine neue Perspektive eröffnen.',
+      'Jedes Detail lädt zum Nachdenken ein.',
+      'Die Nacht hinterlässt eine Spur zum Erkunden.',
+    ],
+    symbols: [
+      { name: 'Wasser', meaning: 'Wasser kann die Bewegung von Gefühlen andeuten.' },
+      { name: 'Licht', meaning: 'Licht kann im Traum ein Orientierungspunkt sein.' },
+      { name: 'Tür', meaning: 'Eine Tür kann einen Übergang oder eine Möglichkeit andeuten.' },
+    ],
+    emotions: [
+      { name: 'Staunen', insight: 'Offenheit für das, was der Traum zeigt.' },
+      { name: 'Sehnsucht', insight: 'Eine mögliche Verbindung zu einer Erinnerung.' },
+    ],
+    questions: [
+      'Welcher Moment dieses Traums ist dir besonders in Erinnerung geblieben?',
+      'Erkennst du heute ein Gefühl aus diesem Traum wieder?',
+    ],
+  },
+  it: {
+    fallbackTitle: 'Un sogno da esplorare',
+    interpretations: [
+      'Questo sogno può evocare un desiderio di libertà e spazio.',
+      'Il percorso del sogno può richiamare una domanda che stai esplorando.',
+      'Un incontro nel sogno può collegarsi a un ricordo o a un’emozione.',
+    ],
+    quotes: [
+      'Un sogno può aprire una nuova prospettiva.',
+      'Ogni dettaglio invita alla riflessione.',
+      'La notte lascia una traccia da esplorare.',
+    ],
+    symbols: [
+      { name: 'Acqua', meaning: 'L’acqua può evocare il movimento delle emozioni.' },
+      { name: 'Luce', meaning: 'La luce può rappresentare un punto di riferimento nel sogno.' },
+      { name: 'Porta', meaning: 'Una porta può suggerire un passaggio o una possibilità.' },
+    ],
+    emotions: [
+      { name: 'Meraviglia', insight: 'Apertura verso ciò che il sogno mostra.' },
+      { name: 'Nostalgia', insight: 'Un possibile legame con un ricordo ancora presente.' },
+    ],
+    questions: [
+      'Quale momento del sogno ti è rimasto più impresso?',
+      'Riconosci oggi una sensazione provata nel sogno?',
+    ],
+  },
+  pt: {
+    fallbackTitle: 'Um sonho para explorar',
+    interpretations: [
+      'Este sonho pode evocar um desejo de liberdade e espaço.',
+      'O caminho do sonho pode trazer à tona uma questão que você está explorando.',
+      'Um encontro no sonho pode estar ligado a uma lembrança ou emoção.',
+    ],
+    quotes: [
+      'Um sonho pode abrir uma nova perspectiva.',
+      'Cada detalhe é um convite à reflexão.',
+      'A noite deixa um rastro para explorar.',
+    ],
+    symbols: [
+      { name: 'Água', meaning: 'A água pode representar o movimento das emoções.' },
+      { name: 'Luz', meaning: 'A luz pode representar um ponto de referência no sonho.' },
+      { name: 'Porta', meaning: 'Uma porta pode sugerir uma passagem ou uma possibilidade.' },
+    ],
+    emotions: [
+      { name: 'Admiração', insight: 'Abertura para o que o sonho mostra.' },
+      { name: 'Saudade', insight: 'Uma possível ligação com uma lembrança que ainda está viva.' },
+    ],
+    questions: [
+      'Qual momento do sonho mais marcou você?',
+      'Você reconhece hoje alguma sensação desse sonho?',
+    ],
+  },
+};
+
+export function generateAnalysisResult(transcript: string, lang = 'en') {
+  const language = lang.slice(0, 2).toLowerCase() as AppLanguage;
+  const copy = ANALYSIS_COPY[language] ?? ANALYSIS_COPY.en;
+  const theme = pickFromTranscript(transcript, THEMES);
+  const dreamType = pickFromTranscript(transcript, DREAM_TYPES);
+
+  return {
+    title: transcript.trim() ? titleFromTranscript(transcript) : copy.fallbackTitle,
+    interpretation: pickFromTranscript(transcript, copy.interpretations),
+    shareableQuote: pickFromTranscript(transcript, copy.quotes),
+    theme,
+    dreamType,
+    imagePrompt: `A ${theme} dream scene: ${transcript.slice(0, 50)}`,
+    symbols: copy.symbols.map(symbol => ({ ...symbol })),
+    emotions: copy.emotions.map(emotion => ({ ...emotion })),
+    reflectionQuestions: [...copy.questions],
   };
 }

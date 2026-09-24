@@ -9,10 +9,12 @@ const mockResetPasswordForEmail = jest.fn();
 const mockUpdateUser = jest.fn();
 const mockGetSession = jest.fn();
 const mockSetSession = jest.fn();
+const mockResetMockTestState = jest.fn();
+let mockModeEnabled = false;
 const mockOnAuthStateChange = jest.fn();
 
 jest.mock('../env', () => ({
-  isMockModeEnabled: () => false,
+  isMockModeEnabled: () => mockModeEnabled,
 }));
 
 jest.mock('../logger', () => ({
@@ -21,6 +23,7 @@ jest.mock('../logger', () => ({
 
 jest.mock('../mockAuth', () => ({
   signInWithGoogleWeb: jest.fn(),
+  resetTestState: mockResetMockTestState,
 }));
 
 jest.mock('../supabase', () => ({
@@ -117,6 +120,7 @@ async function flushMicrotasks() {
 describe('web auth helpers', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockModeEnabled = false;
     mockSignInWithOAuth.mockResolvedValue({
       data: { url: OAUTH_AUTHORIZE_URL },
       error: null,
@@ -158,6 +162,28 @@ describe('web auth helpers', () => {
 
     expect(typeof auth.isGoogleSignInAvailable).toBe('function');
     expect(auth.isGoogleSignInAvailable()).toBe(true);
+  });
+
+  // Isolation gap: the iOS dogfood journey cannot catch a missing web-platform
+  // export. The web reset must delegate only in mock mode and reject in real mode.
+  it('exposes a guarded mock test reset on the web auth module', async () => {
+    const auth = require('../auth.web') as typeof import('../auth.web');
+
+    expect(typeof auth.resetMockTestState).toBe('function');
+    await expect(auth.resetMockTestState()).rejects.toThrow('Mock test state reset requires mock mode');
+    expect(mockResetMockTestState).not.toHaveBeenCalled();
+  });
+
+  it('delegates the web test reset to mock auth in mock mode', async () => {
+    mockModeEnabled = true;
+    let auth: typeof import('../auth.web') | null = null;
+    jest.isolateModules(() => {
+      auth = require('../auth.web') as typeof import('../auth.web');
+    });
+
+    await auth!.resetMockTestState();
+
+    expect(mockResetMockTestState).toHaveBeenCalledTimes(1);
   });
 
   it('posts the complete callback URL to a same-origin opener', () => {
