@@ -354,8 +354,27 @@ describe('Composer', () => {
     expect(onSend).toHaveBeenCalledTimes(1);
   });
 
-  it('alerts when voice recording cannot start', async () => {
+  it('does not replace the permission recovery alert owned by the recording hook', async () => {
     mockStartRecording.mockResolvedValue({ success: false, error: 'permission_denied' });
+    await renderComposer();
+    await act(async () => { fireEvent.click(screen.getByTestId('composer-mic')); });
+    expect(mockStartRecording).toHaveBeenCalled();
+    expect(mockAlert).not.toHaveBeenCalled();
+  });
+
+  it('does not show a stale error when startup is cancelled after unmount', async () => {
+    let finish!: (value: { success: boolean; error: string }) => void;
+    mockStartRecording.mockImplementation(() => new Promise((resolve) => { finish = resolve; }));
+    await renderComposer();
+    await act(async () => { fireEvent.click(screen.getByTestId('composer-mic')); });
+    cleanup();
+    await act(async () => { finish({ success: false, error: 'cancelled' }); });
+    expect(mockForceStopRecording).toHaveBeenCalledWith('unmount');
+    expect(mockAlert).not.toHaveBeenCalled();
+  });
+
+  it('alerts when voice recording cannot start', async () => {
+    mockStartRecording.mockResolvedValue({ success: false, error: 'start_failed' });
     await renderComposer();
 
     fireEvent.click(screen.getByTestId('composer-mic'));

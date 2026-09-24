@@ -4,7 +4,7 @@ import { act, renderHook } from '@testing-library/react';
 import { AudioModule, setAudioModeAsync, useAudioRecorder } from 'expo-audio';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
-import { Alert, AppState, Platform } from 'react-native';
+import { Alert, AppState, Linking, Platform } from 'react-native';
 
 import {
   ensureOfflineSttModel,
@@ -79,6 +79,7 @@ jest.mock('../../services/speechToText', () => ({
 }));
 
 jest.mock('react-native', () => ({
+  Linking: { openSettings: jest.fn().mockResolvedValue(undefined) },
   Alert: {
     alert: jest.fn(),
   },
@@ -181,6 +182,43 @@ describe('useRecordingSession', () => {
     expect(result.current.isSpeechListening).toBe(true);
     act(() => onListeningChange?.(false));
     expect(result.current.isSpeechListening).toBe(false);
+  });
+
+  it.each(['blur', 'unmount'] as const)('cancels pending startup on %s', async (reason: 'blur' | 'unmount') => {
+    (Platform as { OS: string }).OS = 'ios';
+    jest.mocked(AudioModule.getRecordingPermissionsAsync).mockResolvedValue({ granted: true } as never);
+    let finishStart!: (session: any) => void;
+    jest.mocked(startNativeSpeechSession).mockImplementation(() => new Promise((resolve) => { finishStart = resolve; }));
+    const session = { abort: jest.fn(), stop: jest.fn() };
+    const { result } = renderHook(() => useRecordingSession(defaultOptions));
+    let pending!: ReturnType<typeof result.current.startRecording>;
+    await act(async () => { pending = result.current.startRecording('My draft'); });
+    const options = jest.mocked(startNativeSpeechSession).mock.calls[0][1];
+    await act(async () => { await result.current.forceStopRecording(reason); });
+    expect(options?.signal?.aborted).toBe(true);
+    await act(async () => { finishStart(session); await pending; });
+    await expect(pending).resolves.toEqual({ success: false, error: 'cancelled' });
+    expect(session.abort).toHaveBeenCalled();
+    expect(result.current.isRecording).toBe(false);
+    expect(Alert.alert).not.toHaveBeenCalled();
+  });
+
+  it('reports speech permission denial with a working Settings recovery action', async () => {
+    (Platform as { OS: string }).OS = 'ios';
+    jest.mocked(startNativeSpeechSession).mockRejectedValue(new Error('speech_permission_denied'));
+    const { result } = renderHook(() => useRecordingSession(defaultOptions));
+    let response: { success: boolean; error?: string } | undefined;
+    await act(async () => { response = await result.current.startRecording(''); });
+    expect(response).toEqual({ success: false, error: 'permission_denied' });
+    expect(result.current.isRecording).toBe(false);
+    expect(Alert.alert).toHaveBeenCalledWith(
+      'recording.alert.permission_required.title',
+      'recording.alert.speech_permission_required.message',
+      expect.any(Array),
+    );
+    const buttons = jest.mocked(Alert.alert).mock.calls[0][2];
+    await act(async () => { buttons?.[1].onPress?.(); });
+    expect(Linking.openSettings).toHaveBeenCalledTimes(1);
   });
 
   it('startRecording should return success when permissions granted', async () => {

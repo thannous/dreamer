@@ -310,7 +310,8 @@ function Root({
     if (response.success) {
       return;
     }
-    if (response.error === 'offline_model_not_ready') {
+    // Lifecycle cancellation is silent; permission recovery is owned by the hook.
+    if (response.error === 'cancelled' || response.error === 'permission_denied' || response.error === 'offline_model_not_ready') {
       return;
     }
     Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
