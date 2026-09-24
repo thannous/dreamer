@@ -44,10 +44,15 @@ const withSuffix = (selectorList, suffix) =>
     .map((selector) => `${selector.trim()} ${suffix}`)
     .join(',');
 
+const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
+
 const getHeroItems = () => Array.from(document.querySelectorAll('.hero-anim'));
 const getRevealItems = () => Array.from(document.querySelectorAll('.reveal'));
+const getFeatureMedia = () => Array.from(document.querySelectorAll('.oh-feature-media'));
 
 const showStaticState = () => {
+  getFeatureMedia().forEach((el) => el.classList.add('is-inview'));
+
   getHeroItems().forEach((el) => {
     el.classList.remove('opacity-0');
     el.style.opacity = '1';
@@ -144,7 +149,7 @@ const initLightMotion = () => {
     el.style.opacity = '0';
     el.style.visibility = 'visible';
     el.style.transform = 'translate3d(0, 14px, 0)';
-    el.style.transition = 'opacity 700ms ease, transform 700ms ease';
+    el.style.transition = `opacity 700ms ${EASE_OUT}, transform 700ms ${EASE_OUT}`;
     el.style.transitionDelay = `${Math.min(index * 90, 360)}ms`;
   });
 
@@ -182,9 +187,43 @@ const initLightMotion = () => {
     el.style.opacity = '0';
     el.style.visibility = 'visible';
     el.style.transform = 'translate3d(0, 18px, 0)';
-    el.style.transition = 'opacity 650ms ease, transform 650ms ease';
+    el.style.transition = `opacity 650ms ${EASE_OUT}, transform 650ms ${EASE_OUT}`;
     observer.observe(el);
   });
+};
+
+/* ------------------------------------------------------------------ */
+/* Feature illustrations: one-shot bar entrance (full & light tiers).  */
+/* ------------------------------------------------------------------ */
+
+const initFeatureMedia = () => {
+  const media = getFeatureMedia();
+  if (!media.length) return;
+  if (!('IntersectionObserver' in window)) {
+    media.forEach((el) => el.classList.add('is-inview'));
+    return;
+  }
+
+  media.forEach((el) => {
+    // Already on screen when the layer boots: show it settled, never shrink it.
+    if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('is-inview');
+    Array.from(el.querySelectorAll('rect')).forEach((bar, index) => {
+      bar.style.transitionDelay = `${Math.min(index * 30, 540)}ms`;
+    });
+  });
+  html.classList.add('exp-motion');
+
+  const observer = new IntersectionObserver(
+    (entries, activeObserver) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-inview');
+        activeObserver.unobserve(entry.target);
+      });
+    },
+    { rootMargin: '0px 0px -15% 0px', threshold: 0.6 }
+  );
+  media.forEach((el) => observer.observe(el));
 };
 
 /* ------------------------------------------------------------------ */
@@ -211,7 +250,7 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis) => {
       opacity: 1,
       y: 0,
       duration: 1,
-      ease: 'power2.out',
+      ease: 'expo.out',
       stagger: 0.12,
       delay: 0.12,
       onComplete: () => {
@@ -221,10 +260,17 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis) => {
       },
     });
 
+    // The headline resolves out of a soft focus, like a dream coming back.
+    gsapLib.fromTo(
+      '.oh-hero-title',
+      { filter: 'blur(8px)' },
+      { filter: 'blur(0px)', duration: 0.9, ease: 'expo.out', delay: 0.12, clearProps: 'filter' }
+    );
+
     gsapLib.fromTo(
       '.noctalia-observatory > header picture',
       { scale: 0.94, opacity: 0.8 },
-      { scale: 1, opacity: 1, duration: 1.2, ease: 'power2.out', delay: 0.35 }
+      { scale: 1, opacity: 1, duration: 1.2, ease: 'expo.out', delay: 0.35 }
     );
   }
 
@@ -232,12 +278,12 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis) => {
   gsapLib.utils.toArray('.reveal').forEach((el) => {
     gsapLib.fromTo(
       el,
-      { autoAlpha: 0, y: 24 },
+      { autoAlpha: 0, y: 20 },
       {
         autoAlpha: 1,
         y: 0,
         duration: 0.9,
-        ease: 'power2.out',
+        ease: 'expo.out',
         immediateRender: false,
         scrollTrigger: {
           trigger: el,
@@ -452,6 +498,7 @@ const bootEnhanced = async (currentTier) => {
 
   try {
     const skyPromise = initSky(isFull ? 'full' : 'light');
+    initFeatureMedia();
 
     const { default: Lenis } = await import('lenis');
     const lenis = new Lenis({ autoRaf: !isFull, anchors: true });

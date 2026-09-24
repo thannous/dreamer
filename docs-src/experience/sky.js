@@ -26,13 +26,12 @@ const FPS_THRESHOLD = 20;
 const FPS_WINDOW_MS = 2500;
 const WATCHDOG_WARMUP_MS = 3000;
 
-/* Cream first, then lavenders; salmon stays rare so the accent keeps its
- * editorial scarcity. Weights must sum to 1. */
+/* Ivory first, then the palette's muted lavender; champagne stays rare so
+ * the accent keeps its editorial scarcity. Weights must sum to 1. */
 const STAR_PALETTE = [
-  { color: '#fff7ed', weight: 0.55 },
-  { color: '#e9d5ff', weight: 0.25 },
-  { color: '#c4b5fd', weight: 0.12 },
-  { color: '#fda481', weight: 0.08 },
+  { color: '#fff9ef', weight: 0.6 },
+  { color: '#b7aec9', weight: 0.3 },
+  { color: '#ead4b4', weight: 0.1 },
 ];
 
 function withAlpha(hex, alpha) {
@@ -101,17 +100,17 @@ function buildMoonSprite() {
   const ctx = sprite.getContext('2d');
 
   const halo = ctx.createRadialGradient(half, half, size * 0.16, half, half, half);
-  halo.addColorStop(0, 'rgba(255, 247, 237, 0.16)');
-  halo.addColorStop(0.5, 'rgba(253, 164, 129, 0.05)');
-  halo.addColorStop(1, 'rgba(255, 247, 237, 0)');
+  halo.addColorStop(0, 'rgba(255, 249, 239, 0.14)');
+  halo.addColorStop(0.5, 'rgba(234, 212, 180, 0.05)');
+  halo.addColorStop(1, 'rgba(255, 249, 239, 0)');
   ctx.fillStyle = halo;
   ctx.fillRect(0, 0, size, size);
 
   const disc = ctx.createRadialGradient(half, half, 0, half, half, size * 0.17);
-  disc.addColorStop(0, 'rgba(255, 247, 237, 0.92)');
-  disc.addColorStop(0.82, 'rgba(255, 247, 237, 0.88)');
-  disc.addColorStop(0.94, 'rgba(255, 247, 237, 0.35)');
-  disc.addColorStop(1, 'rgba(255, 247, 237, 0)');
+  disc.addColorStop(0, 'rgba(255, 249, 239, 0.8)');
+  disc.addColorStop(0.82, 'rgba(255, 249, 239, 0.74)');
+  disc.addColorStop(0.94, 'rgba(255, 249, 239, 0.3)');
+  disc.addColorStop(1, 'rgba(255, 249, 239, 0)');
   ctx.fillStyle = disc;
   ctx.fillRect(0, 0, size, size);
   return sprite;
@@ -154,16 +153,17 @@ export function createSky({ container, quality = 'full', onKill } = {}) {
   const stars = buildStars(starCount);
   let starDrawCount = starCount;
 
-  /* Two dark violet/indigo hazes — depth, not spectacle. */
+  /* Two dark hazes from the palette's veil, noir, mystical and calm tints —
+   * depth, not spectacle. */
   const nebulaA = buildNebulaSprite([
-    [0.42, 0.5, 0.5, '#2e1065', 0.5],
-    [0.6, 0.36, 0.34, '#4c1d95', 0.28],
-    [0.3, 0.62, 0.4, '#312e81', 0.32],
+    [0.42, 0.5, 0.5, '#192344', 0.55],
+    [0.6, 0.36, 0.34, '#6c568f', 0.16],
+    [0.3, 0.62, 0.4, '#31354f', 0.4],
   ]);
   const nebulaB = buildNebulaSprite([
-    [0.5, 0.5, 0.48, '#1e1b4b', 0.5],
-    [0.36, 0.6, 0.34, '#3b0764', 0.3],
-    [0.64, 0.4, 0.3, '#4c1d95', 0.2],
+    [0.5, 0.5, 0.48, '#31354f', 0.45],
+    [0.36, 0.6, 0.34, '#446b8c', 0.14],
+    [0.64, 0.4, 0.3, '#6c568f', 0.12],
   ]);
   const moon = buildMoonSprite();
 
@@ -238,13 +238,15 @@ export function createSky({ container, quality = 'full', onKill } = {}) {
       );
     }
 
-    // Moon: upper right, drifting up slightly faster than the stars.
+    // Moon: upper right, drifting up slightly faster than the stars. It must
+    // stay clear of the headline, so narrow screens lift it above the title.
     const moonSize = Math.min(width, height) * 0.42;
+    const narrow = width < 700;
     ctx.globalAlpha = 0.85;
     ctx.drawImage(
       moon,
-      width * 0.76 + pointerSmooth.x * 4 - moonSize / 2,
-      height * 0.28 - scrollProgress * height * 0.09 - moonSize / 2,
+      width * (narrow ? 0.8 : 0.83) + pointerSmooth.x * 4 - moonSize / 2,
+      height * (narrow ? 0.1 : 0.24) - scrollProgress * height * 0.09 - moonSize / 2,
       moonSize,
       moonSize
     );
@@ -256,8 +258,8 @@ export function createSky({ container, quality = 'full', onKill } = {}) {
       const tailX = headX - shooting.dx * shooting.length * 0.6;
       const tailY = headY - shooting.dy * shooting.length * 0.6;
       const trail = ctx.createLinearGradient(tailX, tailY, headX, headY);
-      trail.addColorStop(0, 'rgba(255, 247, 237, 0)');
-      trail.addColorStop(1, `rgba(255, 247, 237, ${fade})`);
+      trail.addColorStop(0, 'rgba(255, 249, 239, 0)');
+      trail.addColorStop(1, `rgba(255, 249, 239, ${fade})`);
       ctx.globalAlpha = 1;
       ctx.strokeStyle = trail;
       ctx.lineWidth = 1.4;

@@ -44,6 +44,28 @@ html.exp-sky-on .sky-stage {
 }
 
 /* ---------------------------------------------------------------- */
+/* Feature illustrations (full & light tiers).                       */
+/* The waveform and the emotion chart play once when they scroll in: */
+/* bars rise from their baseline to explain "voice" and "compare     */
+/* over time". `html.exp-motion` is only set by experience.js on the */
+/* enhanced tiers, so the static tier never sees the collapsed state.*/
+/* ---------------------------------------------------------------- */
+
+html.exp-motion .oh-feature-media rect {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  transition: transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+html.exp-motion .oh-feature--d .oh-feature-media rect {
+  transform-origin: 50% 100%;
+}
+
+html.exp-motion .oh-feature-media:not(.is-inview) rect {
+  transform: scaleY(0.2);
+}
+
+/* ---------------------------------------------------------------- */
 /* Static tier: content is visible with zero JS motion.              */
 /* Specificity (0,2,1) beats `.reveal` / `.opacity-0` (0,1,0) so no  */
 /* !important is needed and scroll-driven animations can still run.  */
@@ -82,7 +104,7 @@ html.exp-static .reveal {
 @keyframes exp-static-reveal {
   from {
     opacity: 0;
-    transform: translate3d(0, 18px, 0);
+    transform: translate3d(0, 12px, 0);
   }
   to {
     opacity: 1;
@@ -102,5 +124,10 @@ html.exp-static .reveal {
   html[data-exp-tier="static"] .reveal,
   html[data-exp-tier="static"] .noctalia-observatory > header picture {
     animation: none;
+  }
+
+  html.exp-motion .oh-feature-media rect {
+    transform: none;
+    transition: none;
   }
 }
