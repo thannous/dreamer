@@ -150,56 +150,6 @@ html.exp-sky-on .sky-stage {
   will-change: opacity;
 }
 
-/* Constellation over the symbols (enhanced tiers): drawn from the example dreams. */
-.oh-constellation {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  filter: drop-shadow(0 0 4px rgba(234, 212, 180, 0.45));
-}
-
-.oh-constellation path {
-  fill: none;
-  stroke: rgba(234, 212, 180, 0.6);
-  stroke-width: 1.4;
-  stroke-linecap: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset 1400ms cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-.oh-constellation circle {
-  fill: #ead4b4;
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
-  transform: scale(0.2);
-  transition: opacity 500ms ease, transform 700ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.oh-symbols.is-drawn .oh-constellation path {
-  stroke-dashoffset: 0;
-}
-
-.oh-symbols.is-drawn .oh-constellation circle {
-  opacity: 1;
-  transform: none;
-}
-
-.oh-symbols.is-drawn .oh-symbol.is-linked .oh-symbol-name {
-  color: #ead4b4;
-  transition: color 900ms ease 600ms;
-}
-
-/* Lines pass behind the symbol text, never across it. */
-.oh-symbols:has(.oh-constellation) :is(.oh-symbol-name, .oh-symbol-q) {
-  text-shadow: 0 0 3px #03040d, 0 0 8px #03040d, 0 0 14px #03040d;
-}
-
 /* Ending: the eyes open in a soft oval, then dissolve onto the app. */
 .oh-ending-eye {
   position: absolute;
@@ -374,9 +324,7 @@ html.exp-static .reveal {
     display: none;
   }
 
-  .oh-dawn,
-  .oh-constellation path,
-  .oh-constellation circle {
+  .oh-dawn {
     transition: none;
   }
 }
@@ -736,5 +684,226 @@ html.exp-motion .oh-rec-dot {
   html.exp-motion .oh-rec-wave span,
   html.exp-motion .oh-rec-dot {
     animation: none;
+  }
+}
+
+
+/* ---------------------------------------------------------------- */
+/* 03 Understanding staged on scroll (html.exp-starmap).             */
+/* ---------------------------------------------------------------- */
+
+html.exp-starmap .oh-starmap {
+  position: relative;
+  height: 420vh;
+}
+
+html.exp-starmap .oh-starmap-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  padding: 5.5rem 0 1.5rem;
+  align-content: center;
+}
+
+html.exp-starmap .oh-starmap-progress {
+  display: block;
+  margin: 0 0 0.9rem;
+  color: #ead4b4;
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+html.exp-starmap .oh-starmap-dreams {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+html.exp-starmap .oh-starmap-dream {
+  grid-area: 1 / 1;
+  padding: 1.2rem 1.3rem 1.3rem;
+  border: 1px solid rgba(234, 212, 180, 0.16);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(23, 22, 31, 0.92), rgba(12, 12, 21, 0.92));
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition: opacity 500ms ease, transform 600ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+html.exp-starmap .oh-starmap-dream.is-current {
+  opacity: 1;
+  transform: none;
+}
+
+html.exp-starmap .oh-starmap-dream .oh-starmap-text {
+  display: block;
+}
+
+html.exp-starmap .oh-type-word {
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+html.exp-starmap .oh-type-word.is-in {
+  opacity: 1;
+}
+
+html.exp-starmap .oh-sym-word::after {
+  transform: scaleX(0);
+  transition: transform 450ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+html.exp-starmap .oh-sym-word.is-marked {
+  color: #ead4b4;
+}
+
+html.exp-starmap .oh-sym-word.is-marked::after {
+  transform: none;
+}
+
+.oh-sym-ghost {
+  position: fixed;
+  z-index: 130;
+  margin: 0;
+  color: #ead4b4;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  pointer-events: none;
+  text-shadow: 0 0 12px rgba(234, 212, 180, 0.9);
+  will-change: transform, opacity;
+}
+
+.oh-sym-ghost::after {
+  display: none;
+}
+
+html.exp-starmap .oh-star-item {
+  transition: opacity 500ms ease, visibility 0s;
+}
+
+html.exp-starmap .oh-star-item:not(.is-born) {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms ease, visibility 0s linear 250ms;
+}
+
+html.exp-starmap .oh-star-item:not(.is-born) img {
+  transform: scale(0.3);
+}
+
+html.exp-starmap .oh-star::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 48px;
+  height: 48px;
+  margin-left: -24px;
+  border-radius: 50%;
+  box-shadow: 0 0 26px 10px rgba(234, 212, 180, 0.5);
+  transform: scale(calc(0.82 + var(--c, 1) * 0.14));
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+
+html.exp-starmap .oh-star-item.is-label-above .oh-star::before {
+  top: auto;
+  bottom: 0;
+}
+
+html.exp-starmap .oh-star-item.is-glow .oh-star::before {
+  opacity: 1;
+}
+
+html.exp-starmap .oh-link {
+  vector-effect: none;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1100ms cubic-bezier(0.22, 0.61, 0.36, 1), stroke-width 600ms ease, opacity 250ms ease;
+}
+
+html.exp-starmap .oh-link.is-drawn {
+  stroke-dashoffset: 0;
+}
+
+html.exp-starmap .oh-link-tip {
+  stroke: #fff9ef;
+  stroke-width: 5px;
+  stroke-linecap: round;
+  stroke-dasharray: 0.02 2;
+  stroke-dashoffset: 0.02;
+  vector-effect: none;
+  opacity: 0;
+}
+
+html.exp-starmap .oh-link-tip.is-running {
+  animation: oh-tip 1100ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes oh-tip {
+  from {
+    stroke-dashoffset: 0.02;
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  to {
+    stroke-dashoffset: -0.98;
+    opacity: 0;
+  }
+}
+
+@media (min-width: 900px) {
+  html.exp-starmap .oh-starmap-map {
+    justify-self: center;
+    width: min(100%, calc((100svh - 8rem) * 1.43));
+  }
+}
+
+@media (max-width: 899px) {
+  html.exp-starmap .oh-starmap {
+    height: 380vh;
+  }
+
+  html.exp-starmap .oh-starmap-stage {
+    grid-template-rows: auto 1fr;
+    gap: 1rem;
+    padding-top: 4.75rem;
+    align-content: start;
+  }
+
+  html.exp-starmap .oh-starmap-dream {
+    padding: 0.9rem 1rem 1rem;
+  }
+
+  html.exp-starmap .oh-star::before {
+    width: 36px;
+    height: 36px;
+    margin-left: -18px;
+    box-shadow: 0 0 20px 6px rgba(234, 212, 180, 0.5);
+    transform: scale(calc(0.82 + var(--c, 1) * 0.14));
+  }
+
+  html.exp-starmap .oh-starmap-title {
+    font-size: 0.95rem;
+  }
+
+  html.exp-starmap .oh-starmap-text {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 0.84rem;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  html.exp-starmap .oh-starmap-map {
+    justify-self: center;
+    width: min(100%, calc((100svh - 18rem) / 1.08));
   }
 }

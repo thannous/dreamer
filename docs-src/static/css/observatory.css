@@ -1747,25 +1747,6 @@ body .noctalia-consent-actions button:hover {
   width: min(78%, 300px);
 }
 
-/* 03 Understanding caption */
-.oh-constellation-caption {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin: 0 0 1.25rem;
-  color: #b7aec9;
-  font-size: 0.85rem;
-}
-
-.oh-constellation-caption::before {
-  content: '';
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 50%;
-  background: #ead4b4;
-  box-shadow: 0 0 10px rgba(234, 212, 180, 0.8);
-}
-
 /* 04 Remembering */
 .oh-remember-grid {
   display: grid;
@@ -1987,5 +1968,359 @@ body .noctalia-consent-actions button:hover {
   html:has(.noctalia-observatory) body,
   main.noctalia-observatory {
     overflow-x: clip;
+  }
+}
+
+
+/* ---------------------------------------------------------------- */
+/* 03 Understanding: star map. This is the finished constellation;   */
+/* experience.css stages it on scroll in the enhanced tiers.         */
+/* ---------------------------------------------------------------- */
+
+.oh-starmap-hint {
+  margin: 1rem 0 0;
+  color: #ead4b4;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+
+.oh-starmap-stage {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+
+.oh-starmap-progress {
+  display: none;
+}
+
+.oh-starmap-dreams {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.75rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.oh-starmap-dream {
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgba(255, 249, 239, 0.07);
+}
+
+.oh-starmap-title {
+  margin: 0.35rem 0 0;
+  color: #fff9ef;
+  font-family: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.02rem;
+  font-weight: 400;
+}
+
+.oh-starmap-text {
+  margin: 0.5rem 0 0;
+  color: #b7aec9;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.oh-starmap-dream:not(:first-child) .oh-starmap-text {
+  display: none;
+}
+
+.oh-sym-word {
+  position: relative;
+  background: none;
+  color: #fff9ef;
+}
+
+.oh-sym-word::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -0.12em;
+  left: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: #ead4b4;
+  box-shadow: 0 0 8px rgba(234, 212, 180, 0.7);
+  transform-origin: left center;
+}
+
+.oh-starmap-map {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 10 / 7;
+  border: 1px solid rgba(234, 212, 180, 0.12);
+  border-radius: 28px;
+  background: radial-gradient(ellipse at 50% 40%, #121330, #070816 62%, #03040d);
+  box-shadow: inset 0 0 80px rgba(3, 4, 13, 0.9);
+}
+
+.oh-starmap-sky,
+.oh-starmap-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.oh-starmap-sky {
+  border-radius: inherit;
+}
+
+.oh-starmap-sky circle {
+  fill: #fff9ef;
+}
+
+.oh-starmap-lines {
+  overflow: visible;
+}
+
+.oh-link {
+  fill: none;
+  stroke: rgba(234, 212, 180, 0.78);
+  stroke-width: calc(var(--w-now, var(--w, 1)) * 1px);
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  transition: opacity 250ms ease;
+}
+
+.oh-link-tip {
+  fill: none;
+  stroke: none;
+}
+
+.oh-starmap-stars {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.oh-star-item {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  z-index: 1;
+  transform: translate(-50%, -24px);
+  transition: opacity 250ms ease;
+}
+
+.oh-star-item:is(:hover, :focus-within, .is-pinned) {
+  z-index: 6;
+}
+
+.oh-star {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff9ef;
+  cursor: pointer;
+}
+
+.oh-star img {
+  display: block;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(234, 212, 180, 0.55), 0 0 18px rgba(234, 212, 180, 0.35);
+  transform: scale(calc(0.82 + var(--c, 1) * 0.14));
+  transition: transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.oh-star:focus-visible {
+  outline: none;
+}
+
+.oh-star:focus-visible img {
+  outline: 2px solid #ead4b4;
+  outline-offset: 4px;
+}
+
+.oh-star-name {
+  margin-top: calc((var(--c, 1) - 1) * 4px);
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-shadow: 0 0 4px #03040d, 0 0 10px #03040d;
+}
+
+.oh-star-item.is-label-above {
+  transform: translate(-50%, calc(-100% + 24px));
+}
+
+.oh-star-item.is-label-above .oh-star {
+  flex-direction: column-reverse;
+}
+
+.oh-star-card {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 50%;
+  z-index: 5;
+  width: 15.5rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(234, 212, 180, 0.3);
+  border-radius: 14px;
+  background: rgba(12, 12, 21, 0.97);
+  box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity 200ms ease, visibility 0s linear 200ms;
+}
+
+.oh-star-item.is-card-above .oh-star-card {
+  top: auto;
+  bottom: calc(100% + 0.5rem);
+}
+
+.oh-star-item.is-card-left .oh-star-card {
+  right: 0;
+  left: auto;
+  transform: none;
+}
+
+.oh-star-item.is-card-right .oh-star-card {
+  left: 0;
+  transform: none;
+}
+
+.oh-star-item:is(:hover, :focus-within, .is-pinned) .oh-star-card {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 200ms ease;
+}
+
+.oh-star-card-title {
+  margin: 0 0 0.5rem;
+  color: #ead4b4;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.oh-star-card ul {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.oh-star-card li {
+  color: #fff9ef;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.oh-star-card time {
+  color: #b7aec9;
+  font-size: 0.72rem;
+}
+
+/* Focus a star: only its own lines and neighbours stay lit. */
+.oh-starmap-map:has(.oh-star-item[data-sym="0"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="0"], [data-b="0"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="0"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="0"], .nb-0),
+.oh-starmap-map:has(.oh-star-item[data-sym="1"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="1"], [data-b="1"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="1"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="1"], .nb-1),
+.oh-starmap-map:has(.oh-star-item[data-sym="2"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="2"], [data-b="2"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="2"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="2"], .nb-2),
+.oh-starmap-map:has(.oh-star-item[data-sym="3"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="3"], [data-b="3"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="3"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="3"], .nb-3),
+.oh-starmap-map:has(.oh-star-item[data-sym="6"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="6"], [data-b="6"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="6"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="6"], .nb-6),
+.oh-starmap-map:has(.oh-star-item[data-sym="7"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="7"], [data-b="7"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="7"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="7"], .nb-7),
+.oh-starmap-map:has(.oh-star-item[data-sym="8"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="8"], [data-b="8"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="8"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="8"], .nb-8),
+.oh-starmap-map:has(.oh-star-item[data-sym="9"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="9"], [data-b="9"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="9"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="9"], .nb-9),
+.oh-starmap-map:has(.oh-star-item[data-sym="10"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="10"], [data-b="10"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="10"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="10"], .nb-10),
+.oh-starmap-map:has(.oh-star-item[data-sym="11"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="11"], [data-b="11"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="11"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="11"], .nb-11),
+.oh-starmap-map:has(.oh-star-item[data-sym="12"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="12"], [data-b="12"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="12"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="12"], .nb-12),
+.oh-starmap-map:has(.oh-star-item[data-sym="13"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="13"], [data-b="13"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="13"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="13"], .nb-13),
+.oh-starmap-map:has(.oh-star-item[data-sym="14"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="14"], [data-b="14"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="14"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="14"], .nb-14),
+.oh-starmap-map:has(.oh-star-item[data-sym="15"]:is(:hover, :focus-within, .is-pinned)) .oh-link:not([data-a="15"], [data-b="15"]),
+.oh-starmap-map:has(.oh-star-item[data-sym="15"]:is(:hover, :focus-within, .is-pinned)) .oh-star-item:not([data-sym="15"], .nb-15) {
+  opacity: 0.14;
+}
+
+.oh-starmap-stat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem 1.25rem;
+  margin: 2.5rem 0 0;
+  text-align: center;
+}
+
+.oh-starmap-stat > span {
+  color: #fff9ef;
+  font-family: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+}
+
+.oh-starmap-stat a {
+  color: #ead4b4;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 699px) {
+  .oh-starmap-map {
+    aspect-ratio: 1 / 1.08;
+    border-radius: 20px;
+  }
+
+  .oh-star img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .oh-star-item {
+    transform: translate(-50%, -18px);
+  }
+
+  .oh-star-item.is-label-above {
+    transform: translate(-50%, calc(-100% + 18px));
+  }
+
+  .oh-star-name {
+    font-size: 0.64rem;
+  }
+
+  .oh-star-card {
+    width: 12.5rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .oh-starmap-stage {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
+    gap: 3rem;
+  }
+
+  .oh-starmap-dreams {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .oh-starmap-lines {
+    filter: drop-shadow(0 0 3px rgba(234, 212, 180, 0.55));
   }
 }
