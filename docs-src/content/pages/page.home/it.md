@@ -60,13 +60,6 @@
                 <i data-lucide="shield-check"></i> App Android gratuita su Google Play · Strumento di riflessione, non diagnosi
             </p>
 
-            <div class="oh-hero-visual hero-anim">
-                <picture>
-                    <source type="image/webp" srcset="/screenshot/demo1_cropped-400w.webp 400w, /screenshot/demo1_cropped-800w.webp 800w, /screenshot/demo1_cropped-1600w.webp 1600w" sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 95vw">
-                    <source type="image/jpeg" srcset="/screenshot/demo1_cropped-400w.jpg 400w, /screenshot/demo1_cropped-800w.jpg 800w, /screenshot/demo1_cropped-1600w.jpg 1600w" sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 95vw">
-                    <img src="/screenshot/demo1_cropped-1600w.jpg" alt="Interfaccia app Noctalia – Demo" class="w-full" width="1600" height="678" decoding="async" fetchpriority="high">
-                </picture>
-            </div>
         </div>
     </header>
 
@@ -248,7 +241,6 @@
                 </ul>
             </div>
         </div>
-        <p class="oh-dreams-note">Voce di esempio scritta per questa pagina</p>
     </section>
 
     <!-- 1c. Waking: speak it before it fades -->

@@ -323,7 +323,6 @@
 
 .noctalia-observatory > header {
   position: relative;
-  min-height: 100svh;
   width: 100%;
   padding: 9rem 1.5rem 6rem;
   overflow: hidden;
@@ -346,7 +345,7 @@
   transform: scale(1.01);
 }
 
-/* Horizon: a low champagne dawn behind the product shot. */
+/* Horizon: a low champagne dawn beneath the hero copy. */
 .noctalia-observatory > header::after {
   content: '';
   position: absolute;
@@ -428,45 +427,6 @@
   align-items: center;
   text-align: center;
   margin: 0 auto;
-}
-
-.oh-hero-visual {
-  position: relative;
-  width: min(100%, 1080px);
-  margin: 4.5rem auto 0;
-}
-
-/* Halo behind the product shot. */
-.oh-hero-visual::before {
-  content: '';
-  position: absolute;
-  inset: 12% 6% -10%;
-  z-index: -1;
-  pointer-events: none;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at 50% 40%, rgba(234, 212, 180, 0.2), rgba(25, 35, 68, 0.3) 45%, transparent 72%);
-  filter: blur(40px);
-}
-
-/* Gradient hairline ring: padding-box fill + border-box gradient. */
-.oh-hero-visual picture {
-  display: block;
-  position: relative;
-  overflow: hidden;
-  border-radius: 22px;
-  border: 1px solid transparent;
-  background:
-    linear-gradient(var(--oh-ink-raised), var(--oh-ink-raised)) padding-box,
-    linear-gradient(160deg, rgba(234, 212, 180, 0.5), rgba(234, 212, 180, 0.06) 38%, rgba(183, 174, 201, 0.18) 100%) border-box;
-  box-shadow:
-    0 60px 120px -40px rgba(0, 0, 0, 0.85),
-    0 30px 120px -50px rgba(234, 212, 180, 0.28);
-}
-
-.oh-hero-visual img {
-  display: block;
-  width: 100%;
-  transform-origin: center;
 }
 
 /* Sections without a locale id share this rhythm. */
@@ -1450,14 +1410,8 @@ body .noctalia-consent-actions button:hover {
 
 @media (max-width: 899px) {
   .noctalia-observatory > header {
-    min-height: auto;
     padding-top: 7.5rem;
     padding-bottom: 3.5rem;
-  }
-
-  .oh-hero-visual,
-  .noctalia-observatory > header .hero-anim:last-child {
-    margin-top: 3.5rem;
   }
 
   .oh-section-head {
@@ -1661,13 +1615,6 @@ body .noctalia-consent-actions button:hover {
   color: var(--oh-champagne-on);
   font-size: 0.8rem;
   letter-spacing: 0.04em;
-}
-
-.oh-dreams-note {
-  margin: 1.5rem 0 0;
-  color: #b7aec9;
-  font-size: 0.78rem;
-  text-align: center;
 }
 
 /* 02 Waking */

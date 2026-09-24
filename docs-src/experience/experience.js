@@ -301,7 +301,7 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis, heroReady) => {
   }
 
   // Hero sequence: the headline surfaces word by word, then the supporting
-  // copy and the product shot follow on the same restrained curve
+  // copy follows on the same restrained curve
   // (GSAP power2.out is the cubic ease-out used by EASE_FILM).
   const heroItems = getHeroItems();
   gsapLib.set(heroItems, { opacity: 0, visibility: 'visible', y: 16 });
@@ -321,11 +321,6 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis, heroReady) => {
       },
     });
 
-    gsapLib.fromTo(
-      '.noctalia-observatory > header picture',
-      { scale: 0.94, opacity: 0.8 },
-      { scale: 1, opacity: 1, duration: 1.4, ease: 'power2.out', delay: 0.8 }
-    );
   });
 
   // Section reveals: elements entering together cascade 80ms apart; section

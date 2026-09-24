@@ -290,14 +290,6 @@ html.exp-static .reveal {
   }
 }
 
-@supports (animation-timeline: scroll()) {
-  html[data-exp-tier="static"] .noctalia-observatory > header picture {
-    animation: exp-static-parallax linear both;
-    animation-timeline: scroll();
-    animation-range: 0 100vh;
-  }
-}
-
 @keyframes exp-static-reveal {
   from {
     opacity: 0;
@@ -309,17 +301,10 @@ html.exp-static .reveal {
   }
 }
 
-@keyframes exp-static-parallax {
-  to {
-    transform: translate3d(0, -4vh, 0);
-  }
-}
-
 /* prefers-reduced-motion lands on the static tier by design and must stay
  * completely still, scroll-driven effects included. */
 @media (prefers-reduced-motion: reduce) {
-  html[data-exp-tier="static"] .reveal,
-  html[data-exp-tier="static"] .noctalia-observatory > header picture {
+  html[data-exp-tier="static"] .reveal {
     animation: none;
   }
 
