@@ -9,6 +9,7 @@ import { Alert, AppState, Platform } from 'react-native';
 
 import { createScopedLogger } from '@/lib/logger';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
+import { waitForPermissionActivityToSettle } from '@/lib/recordingPermissions';
 import {
   getSpeechLocaleAvailability,
   isWebSpeechRecognitionAvailable,
@@ -18,7 +19,6 @@ import {
 import { transcribeAudio } from '@/services/speechToText';
 
 const log = createScopedLogger('[useRecordingSession]');
-const PERMISSION_ACTIVITY_SETTLE_MS = 300;
 
 type RecordingPermissionResult = {
   granted: boolean;
@@ -37,28 +37,6 @@ async function getOrRequestRecordingPermission(): Promise<RecordingPermissionRes
 
   const requested = await AudioModule.requestRecordingPermissionsAsync();
   return { granted: requested.granted, prompted: true };
-}
-
-async function waitForPermissionActivityToSettle(): Promise<void> {
-  if (Platform.OS === 'web') return;
-
-  // AppState.currentState is undefined in some test and SSR environments. On a
-  // device it is populated, so wait for Android's permission activity to hand
-  // focus back before starting the recognizer and registering lifecycle cleanup.
-  if (AppState.currentState && AppState.currentState !== 'active') {
-    await new Promise<void>((resolve) => {
-      const subscription = AppState.addEventListener('change', (state) => {
-        if (state === 'active') {
-          subscription.remove();
-          resolve();
-        }
-      });
-    });
-  }
-
-  if (AppState.currentState) {
-    await new Promise((resolve) => setTimeout(resolve, PERMISSION_ACTIVITY_SETTLE_MS));
-  }
 }
 
 async function deleteRecordedAudio(uri: string | undefined): Promise<void> {

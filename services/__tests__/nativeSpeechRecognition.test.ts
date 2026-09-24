@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import {
   __setCachedSpeechModuleForTests,
@@ -155,6 +155,11 @@ describe('buildPreview', () => {
 });
 
 describe('native speech module integration', () => {
+  beforeEach(() => {
+    const { AppState } = require('react-native');
+    AppState.currentState = 'active';
+  });
+
   afterEach(async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'web';
@@ -678,5 +683,119 @@ describe('resolveDeviceSpeechCapability — Android API levels down to minSdk 28
     const capability = await resolveDeviceSpeechCapability('fr-FR');
 
     expect(capability.tier).toBe('server_only');
+  });
+});
+
+describe('iOS first-use speech authorization', () => {
+  const { AppState, Platform } = require('react-native');
+
+  const createSpeechModule = (onDevice = false) => {
+    const listeners = new Map<string, (event?: any) => void>();
+    const speechModule = {
+      isRecognitionAvailable: () => true,
+      supportsOnDeviceRecognition: () => onDevice,
+      getSupportedLocales: async () => ({ installedLocales: onDevice ? ['fr-FR'] : [] }),
+      supportsRecording: () => true,
+      getStateAsync: async () => 'inactive',
+      requestPermissionsAsync: jest.fn(async (): Promise<{ granted: boolean }> => ({ granted: true })),
+      start: jest.fn(() => listeners.get('start')?.()),
+      stop: jest.fn(() => listeners.get('end')?.()),
+      abort: jest.fn(),
+      addListener: jest.fn((event: string, callback: (payload?: any) => void) => {
+        listeners.set(event, callback);
+        return { remove: () => listeners.delete(event) };
+      }),
+    };
+    __setCachedSpeechModuleForTests(speechModule as any);
+    return { speechModule, listeners };
+  };
+
+  afterEach(() => {
+    AppState.currentState = 'active';
+    Platform.OS = 'web';
+    __setCachedSpeechModuleForTests(undefined);
+    jest.restoreAllMocks();
+    jest.useRealTimers();
+  });
+
+  it('waits for speech authorization and foreground restoration before listening and delivering text', async () => {
+    jest.useFakeTimers();
+    Platform.OS = 'ios';
+    AppState.currentState = 'inactive';
+    let onAppStateChange: ((state: string) => void) | undefined;
+    const remove = jest.fn();
+    jest.spyOn(AppState, 'addEventListener').mockImplementation((...args: any[]) => {
+      onAppStateChange = args[1];
+      return { remove };
+    });
+    const { speechModule, listeners } = createSpeechModule();
+    let grantSpeech!: (permission: { granted: boolean }) => void;
+    speechModule.requestPermissionsAsync.mockImplementation(() => new Promise((resolve) => {
+      grantSpeech = resolve;
+    }));
+    const onListeningChange = jest.fn();
+    const onPartial = jest.fn();
+    let returned = false;
+    const pendingSession = startNativeSpeechSession('fr-FR', {
+      permissionAlreadyGranted: true,
+      onListeningChange,
+      onPartial,
+    }).then((session) => { returned = true; return session; });
+
+    await jest.advanceTimersByTimeAsync(0);
+    expect(speechModule.requestPermissionsAsync).toHaveBeenCalledTimes(1);
+    expect(speechModule.start).not.toHaveBeenCalled();
+    expect(returned).toBe(false);
+    expect(onListeningChange).not.toHaveBeenCalled();
+
+    grantSpeech({ granted: true });
+    await jest.advanceTimersByTimeAsync(1000);
+    expect(speechModule.start).not.toHaveBeenCalled();
+    expect(returned).toBe(false);
+
+    AppState.currentState = 'active';
+    onAppStateChange?.('active');
+    await jest.advanceTimersByTimeAsync(299);
+    expect(speechModule.start).not.toHaveBeenCalled();
+    await jest.advanceTimersByTimeAsync(1);
+    const session = await pendingSession;
+    expect(speechModule.start).toHaveBeenCalledTimes(1);
+    expect(onListeningChange).toHaveBeenLastCalledWith(true);
+    expect(remove).toHaveBeenCalledTimes(1);
+
+    listeners.get('result')?.({ results: [{ transcript: 'Je marche dans un jardin' }], isFinal: false });
+    expect(onPartial).toHaveBeenLastCalledWith('Je marche dans un jardin');
+    listeners.get('result')?.({ results: [{ transcript: 'Je marche dans un jardin fleuri.' }], isFinal: true });
+    await expect(session!.stop()).resolves.toMatchObject({ transcript: 'Je marche dans un jardin fleuri.' });
+  });
+
+  it('does not start when speech authorization is denied despite microphone access', async () => {
+    Platform.OS = 'ios';
+    const { speechModule } = createSpeechModule();
+    speechModule.requestPermissionsAsync.mockResolvedValue({ granted: false });
+    const onListeningChange = jest.fn();
+
+    await expect(startNativeSpeechSession('fr-FR', {
+      permissionAlreadyGranted: true,
+      onListeningChange,
+    })).resolves.toBeNull();
+    expect(speechModule.start).not.toHaveBeenCalled();
+    expect(onListeningChange).not.toHaveBeenCalled();
+  });
+
+  it('keeps on-device iOS dictation available with microphone permission alone', async () => {
+    Platform.OS = 'ios';
+    const { speechModule, listeners } = createSpeechModule(true);
+    const onPartial = jest.fn();
+    const session = await startNativeSpeechSession('fr-FR', {
+      permissionAlreadyGranted: true,
+      onPartial,
+    });
+
+    expect(speechModule.requestPermissionsAsync).not.toHaveBeenCalled();
+    expect(speechModule.start).toHaveBeenCalledWith(expect.objectContaining({ requiresOnDeviceRecognition: true }));
+    listeners.get('result')?.({ results: [{ transcript: 'Un rêve local' }], isFinal: true });
+    expect(onPartial).toHaveBeenCalledWith('Un rêve local');
+    await expect(session!.stop()).resolves.toMatchObject({ transcript: 'Un rêve local' });
   });
 });
