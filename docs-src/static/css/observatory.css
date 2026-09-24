@@ -1,31 +1,63 @@
 /* Noctalia observatory landing layer.
  *
- * Editorial night-journal design: one warm accent (salmon) on a deep plum
- * base, cream ink, hairline separators instead of glass cards, Fraunces
- * display type. Custom `oh-*` classes own the layout so the page does not
- * depend on Tailwind utilities being recompiled.
+ * Editorial night-journal design on the canonical Noctalia palette
+ * (constants/noctaliaPalette.ts, dark mode): ink grounds, ivory text,
+ * champagne accent. Refinement comes from tints, veils, hairline gradients,
+ * grain and depth — never from new hues. Champagne is a fill, line and glow
+ * colour; accented copy uses `--oh-champagne-on`.
+ *
+ * Custom `oh-*` classes own the layout so the page does not depend on
+ * Tailwind utilities being recompiled. This file only loads on
+ * `layout: "landing"` pages, so the `:root` tokens and shared-shell
+ * overrides below never leak into other pages.
  *
  * Contract: the hero LCP background below must keep referencing
  * /img/hero/noctalia-observatory-bg.webp (see check-web-performance-contract).
  */
 
-.noctalia-observatory {
-  --oh-ink: #fff7ed;
-  --oh-ink-70: rgba(255, 247, 237, 0.72);
-  --oh-ink-45: rgba(255, 247, 237, 0.48);
-  --oh-line: rgba(255, 247, 237, 0.1);
-  --oh-accent: #fda481;
-  --oh-accent-55: rgba(253, 164, 129, 0.55);
-  --oh-card: rgba(255, 247, 237, 0.028);
+:root {
+  /* Canonical palette (dark). */
+  --oh-ink: #03040d;
+  --oh-ink-raised: #14131a;
+  --oh-ivory: #fff9ef;
+  --oh-ivory-muted: #b7aec9;
+  --oh-champagne: #ead4b4;
+  --oh-champagne-on: #ead4b4;
+  --oh-on-champagne: #382d35;
+  --oh-veil: rgba(25, 35, 68, 0.42);
+  --oh-noir: #31354f;
 
+  /* Tints derived from the palette. */
+  --oh-ivory-80: rgba(255, 249, 239, 0.8);
+  --oh-champagne-light: #f6ebda;
+  --oh-champagne-12: rgba(234, 212, 180, 0.12);
+  --oh-champagne-06: rgba(234, 212, 180, 0.06);
+  --oh-line: rgba(234, 212, 180, 0.12);
+  --oh-line-strong: rgba(234, 212, 180, 0.26);
+
+  /* Light-mode palette for the single inverted (ivory) surface. */
+  --oh-light-text: #382d35;
+  --oh-light-muted: #64514f;
+  --oh-light-accent: #7c4c2b;
+
+  --oh-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+::selection {
+  background: var(--oh-champagne);
+  color: var(--oh-on-champagne);
+}
+
+.noctalia-observatory {
   position: relative;
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
   isolation: isolate;
-  color: var(--oh-ink);
+  color: var(--oh-ivory);
 }
 
+/* Ground: ink with a navy veil, a faint champagne dawn and a noir floor. */
 .noctalia-observatory::before {
   content: '';
   position: fixed;
@@ -33,57 +65,88 @@
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(circle at 72% -6%, rgba(253, 164, 129, 0.07), transparent 30rem),
-    radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.12), transparent 32rem),
-    #0a0514;
+    radial-gradient(ellipse 70rem 46rem at 12% -8%, var(--oh-veil), transparent 70%),
+    radial-gradient(ellipse 48rem 34rem at 88% -4%, rgba(234, 212, 180, 0.07), transparent 70%),
+    radial-gradient(ellipse 80rem 40rem at 50% 115%, rgba(49, 53, 79, 0.45), transparent 70%), var(--oh-ink);
 }
 
+/* Grain: a static, tiled noise texture keeps large ink areas from banding. */
 .noctalia-observatory::after {
   content: '';
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.1;
-  background-image:
-    linear-gradient(rgba(255, 247, 237, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 247, 237, 0.05) 1px, transparent 1px);
-  background-size: 96px 96px;
-  mask-image: radial-gradient(circle at 50% 8%, black, transparent 62%);
-  -webkit-mask-image: radial-gradient(circle at 50% 8%, black, transparent 62%);
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.98 0 0 0 0 0.94 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+.noctalia-observatory .text-dream-salmon {
+  color: var(--oh-champagne-on);
+}
+
+.noctalia-observatory .text-dream-cream {
+  color: var(--oh-ivory);
 }
 
 /* ---------------------------------------------------------------- */
 /* Shared primitives                                                 */
 /* ---------------------------------------------------------------- */
 
+/* Card surface: tinted glass with a top highlight, a champagne corner glow
+ * and a soft drop shadow for depth. The hover glow is an opacity-only
+ * overlay so it can transition cheaply. */
 .noctalia-observatory .glass-panel {
-  background: var(--oh-card);
+  position: relative;
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(234, 212, 180, 0.06), transparent 55%),
+    linear-gradient(180deg, rgba(255, 249, 239, 0.035), rgba(255, 249, 239, 0.012));
   border: 1px solid var(--oh-line);
-  border-radius: 14px;
-  box-shadow: none;
+  border-radius: 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 249, 239, 0.05),
+    0 30px 60px -40px rgba(0, 0, 0, 0.85);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  transition: border-color 0.3s ease, transform 0.3s ease, background 0.3s ease;
+  transition: border-color 200ms ease;
 }
 
-.noctalia-observatory .glass-panel:hover {
-  border-color: rgba(255, 247, 237, 0.22);
-  background: rgba(255, 247, 237, 0.045);
+.noctalia-observatory .glass-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(80% 70% at 50% 0%, rgba(234, 212, 180, 0.08), transparent 70%);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .noctalia-observatory .glass-panel:hover {
+    border-color: var(--oh-line-strong);
+  }
+
+  .noctalia-observatory .glass-panel:hover::after {
+    opacity: 1;
+  }
 }
 
 .noctalia-observatory .glass-button {
   background: transparent;
-  border: 1px solid rgba(255, 247, 237, 0.22);
+  border: 1px solid var(--oh-line-strong);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  transition: border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  transition:
+    border-color 200ms ease,
+    color 200ms ease;
 }
 
 .noctalia-observatory .glass-button:hover {
   background: transparent;
-  border-color: var(--oh-accent);
-  color: var(--oh-accent);
+  border-color: var(--oh-champagne);
+  color: var(--oh-champagne-on);
 }
 
 .noctalia-observatory section {
@@ -92,25 +155,41 @@
   padding-right: 1.5rem;
 }
 
-/* Decorative section index ("01", "02", …) — pure layout device. */
+/* Decorative section index ("01", "02", …): a champagne rule and numeral. */
 .oh-index {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
   font-family: 'Outfit', sans-serif;
   font-weight: 500;
   font-size: 0.72rem;
-  letter-spacing: 0.24em;
-  color: var(--oh-accent-55);
-  margin-bottom: 1.1rem;
+  letter-spacing: 0.26em;
+  color: var(--oh-champagne-on);
+  margin-bottom: 1.25rem;
+}
+
+.oh-index::before {
+  content: '';
+  width: 2.25rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--oh-champagne));
+}
+
+.oh-pricing-head .oh-index::after {
+  content: '';
+  width: 2.25rem;
+  height: 1px;
+  background: linear-gradient(90deg, var(--oh-champagne), transparent);
 }
 
 .oh-h2 {
   font-family: 'Fraunces', serif;
   font-variation-settings: 'opsz' 144;
-  font-weight: 340;
-  font-size: clamp(2.05rem, 4.2vw, 3.4rem);
-  line-height: 1.08;
-  letter-spacing: -0.015em;
-  color: var(--oh-ink);
+  font-weight: 330;
+  font-size: clamp(2.1rem, 4.4vw, 3.6rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  color: var(--oh-ivory);
   text-wrap: balance;
 }
 
@@ -119,7 +198,7 @@
   font-weight: 300;
   font-size: 1.05rem;
   line-height: 1.7;
-  color: var(--oh-ink-45);
+  color: var(--oh-ivory-muted);
   max-width: 38rem;
 }
 
@@ -137,53 +216,105 @@
   max-width: 30rem;
 }
 
-/* Primary CTA — solid salmon pill, motion limited to transform/shadow. */
+/* Icon chip shared by features and profiles. */
+.oh-feature-icon,
+.oh-profile-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  border-radius: 999px;
+  color: var(--oh-champagne);
+  background: radial-gradient(circle at 30% 25%, rgba(234, 212, 180, 0.18), rgba(234, 212, 180, 0.05) 70%);
+  border: 1px solid var(--oh-line-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 249, 239, 0.08),
+    0 8px 24px -12px rgba(234, 212, 180, 0.35);
+}
+
+/* Primary CTA — champagne pill with a light top edge and a warm glow. The
+ * stronger hover glow is a pre-rendered layer faded in with opacity. */
 .oh-btn-primary {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
   padding: 1rem 2.1rem;
   border-radius: 999px;
-  background: var(--oh-accent);
-  color: #0a0514;
+  background: linear-gradient(180deg, var(--oh-champagne-light) 0%, var(--oh-champagne) 70%);
+  color: var(--oh-on-champagne);
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
   font-size: 1.02rem;
   text-align: center;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(56, 45, 53, 0.14),
+    0 12px 32px -12px rgba(234, 212, 180, 0.5);
+  transition: transform 160ms var(--oh-ease-out);
 }
 
-.oh-btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 44px rgba(253, 164, 129, 0.28);
-  background: #ffb795;
+.oh-btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: 0 18px 48px -10px rgba(234, 212, 180, 0.6);
+  opacity: 0;
+  transition: opacity 200ms ease;
 }
 
 .oh-btn-primary:active {
-  transform: translateY(0) scale(0.98);
+  transform: scale(0.97);
 }
 
-/* Secondary CTA — quiet text link with sliding underline. */
+@media (hover: hover) and (pointer: fine) {
+  .oh-btn-primary:hover::after {
+    opacity: 1;
+  }
+}
+
+/* Secondary CTA — quiet text link with a champagne hairline. */
 .oh-btn-quiet {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
   padding: 1rem 0.25rem;
-  color: var(--oh-ink-70);
+  color: var(--oh-ivory-80);
   font-family: 'Outfit', sans-serif;
   font-weight: 500;
   font-size: 1.02rem;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-size: 0% 1px;
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  transition: background-size 0.35s ease, color 0.3s ease;
+  transition: color 200ms ease;
+}
+
+.oh-btn-quiet::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.7rem;
+  height: 1px;
+  background: linear-gradient(90deg, var(--oh-champagne), rgba(234, 212, 180, 0.2));
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 250ms var(--oh-ease-out);
+}
+
+.oh-btn-quiet svg {
+  color: var(--oh-champagne);
 }
 
 .oh-btn-quiet:hover {
-  color: var(--oh-accent);
-  background-size: 100% 1px;
+  color: var(--oh-champagne-on);
+}
+
+.oh-btn-quiet:hover::after {
+  transform: scaleX(1);
 }
 
 /* ---------------------------------------------------------------- */
@@ -194,10 +325,12 @@
   position: relative;
   min-height: 100svh;
   width: 100%;
-  padding: 9rem 1.5rem 5rem;
+  padding: 9rem 1.5rem 6rem;
   overflow: hidden;
 }
 
+/* The purple-toned photograph is desaturated and veiled in ink so it reads
+ * as part of the palette rather than a new hue. */
 .noctalia-observatory > header::before {
   content: '';
   position: absolute;
@@ -205,11 +338,25 @@
   min-height: 100%;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(10, 5, 20, 0.3), rgba(10, 5, 20, 0.6) 58%, rgba(10, 5, 20, 0.94)),
+    linear-gradient(180deg, rgba(3, 4, 13, 0.2), rgba(3, 4, 13, 0.55) 56%, rgba(3, 4, 13, 0.96)),
     url('/img/hero/noctalia-observatory-bg.webp') center center / cover no-repeat;
-  opacity: 0.5;
-  filter: saturate(1.05) contrast(1.03);
+  opacity: 0.55;
+  filter: saturate(0.55) contrast(1.04);
   transform: scale(1.01);
+}
+
+/* Horizon: a low champagne dawn behind the product shot. */
+.noctalia-observatory > header::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -18rem;
+  width: min(140%, 96rem);
+  height: 36rem;
+  transform: translateX(-50%);
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(234, 212, 180, 0.13), rgba(25, 35, 68, 0.2) 45%, transparent 70%);
 }
 
 .noctalia-observatory > header > div {
@@ -220,11 +367,11 @@
 .oh-hero-title {
   font-family: 'Fraunces', serif;
   font-variation-settings: 'opsz' 144;
-  font-weight: 315;
+  font-weight: 300;
   font-size: clamp(2.9rem, 7.6vw, 6.9rem);
-  line-height: 1.03;
-  letter-spacing: -0.02em;
-  color: var(--oh-ink);
+  line-height: 1.02;
+  letter-spacing: -0.028em;
+  color: var(--oh-ivory);
   text-wrap: balance;
   margin: 0 auto 1.8rem;
   max-width: 62rem;
@@ -232,8 +379,17 @@
 
 .oh-hero-title .oh-accent-line {
   display: block;
-  font-weight: 380;
-  color: var(--oh-accent);
+  font-weight: 360;
+  color: var(--oh-champagne-on);
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .oh-hero-title .oh-accent-line {
+    background: linear-gradient(100deg, var(--oh-ivory) 0%, var(--oh-champagne-on) 38%, var(--oh-champagne-on) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
 .oh-hero-lede {
@@ -241,7 +397,7 @@
   font-weight: 300;
   font-size: clamp(1.05rem, 1.5vw, 1.25rem);
   line-height: 1.65;
-  color: var(--oh-ink-70);
+  color: var(--oh-ivory-80);
   max-width: 40rem;
   margin: 0 auto 2.8rem;
   text-wrap: pretty;
@@ -264,11 +420,11 @@
   font-family: 'Outfit', sans-serif;
   font-size: 0.78rem;
   letter-spacing: 0.02em;
-  color: var(--oh-ink-45);
+  color: var(--oh-ivory-muted);
 }
 
 .oh-hero-note svg {
-  color: var(--oh-accent);
+  color: var(--oh-champagne);
 }
 
 .oh-hero-inner {
@@ -282,18 +438,36 @@
 }
 
 .oh-hero-visual {
+  position: relative;
   width: min(100%, 1080px);
   margin: 4.5rem auto 0;
 }
 
+/* Halo behind the product shot. */
+.oh-hero-visual::before {
+  content: '';
+  position: absolute;
+  inset: 12% 6% -10%;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 40%, rgba(234, 212, 180, 0.2), rgba(25, 35, 68, 0.3) 45%, transparent 72%);
+  filter: blur(40px);
+}
+
+/* Gradient hairline ring: padding-box fill + border-box gradient. */
 .oh-hero-visual picture {
   display: block;
   position: relative;
   overflow: hidden;
-  border-radius: 20px;
-  border: 1px solid var(--oh-line);
-  box-shadow: 0 42px 120px rgba(0, 0, 0, 0.55), 0 0 90px rgba(253, 164, 129, 0.07);
-  background: rgba(255, 247, 237, 0.03);
+  border-radius: 22px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--oh-ink-raised), var(--oh-ink-raised)) padding-box,
+    linear-gradient(160deg, rgba(234, 212, 180, 0.5), rgba(234, 212, 180, 0.06) 38%, rgba(183, 174, 201, 0.18) 100%) border-box;
+  box-shadow:
+    0 60px 120px -40px rgba(0, 0, 0, 0.85),
+    0 30px 120px -50px rgba(234, 212, 180, 0.28);
 }
 
 .oh-hero-visual img {
@@ -304,7 +478,7 @@
 
 /* Sections without a locale id share this rhythm. */
 .oh-section {
-  padding-top: 8rem;
+  padding-top: clamp(6rem, 10vw, 9rem);
   padding-bottom: 2rem;
 }
 
@@ -316,11 +490,15 @@
 }
 
 /* Icon sizing (lucide svgs are inlined at build time). */
-.oh-step-icon svg,
-.oh-feature-icon svg,
-.oh-profile-icon svg {
+.oh-step-icon svg {
   width: 1.45rem;
   height: 1.45rem;
+}
+
+.oh-feature-icon svg,
+.oh-profile-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .oh-hero-note svg {
@@ -335,8 +513,8 @@
 }
 
 .oh-tool-arrow svg {
-  width: 1.15rem;
-  height: 1.15rem;
+  width: 1.05rem;
+  height: 1.05rem;
 }
 
 .oh-symbol svg {
@@ -358,7 +536,7 @@
 /* ---------------------------------------------------------------- */
 
 .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) {
-  padding-top: 8rem;
+  padding-top: clamp(6rem, 10vw, 9rem);
   padding-bottom: 2rem;
 }
 
@@ -372,8 +550,18 @@
 
 .oh-step {
   position: relative;
-  border-top: 1px solid var(--oh-line);
   padding-top: 2rem;
+}
+
+.oh-step::before,
+.oh-profile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--oh-line-strong), var(--oh-line) 45%, transparent);
 }
 
 .oh-step-num {
@@ -381,27 +569,32 @@
   font-family: 'Fraunces', serif;
   font-variation-settings: 'opsz' 144;
   font-weight: 300;
-  font-size: 4.2rem;
+  font-size: 4.6rem;
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 1px var(--oh-accent-55);
+  -webkit-text-stroke: 1px rgba(234, 212, 180, 0.6);
+  background: linear-gradient(180deg, rgba(234, 212, 180, 0.28), rgba(234, 212, 180, 0) 85%);
+  -webkit-background-clip: text;
+  background-clip: text;
   margin-bottom: 1.4rem;
+  width: max-content;
 }
 
 .oh-step-icon {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  color: var(--oh-accent);
+  color: var(--oh-champagne);
   margin-bottom: 1.1rem;
 }
 
 .oh-step h3 {
   font-family: 'Fraunces', serif;
-  font-weight: 380;
-  font-size: 1.55rem;
+  font-weight: 360;
+  font-size: 1.6rem;
   line-height: 1.2;
-  color: var(--oh-ink);
+  letter-spacing: -0.01em;
+  color: var(--oh-ivory);
   margin-bottom: 0.8rem;
 }
 
@@ -410,7 +603,7 @@
   font-weight: 300;
   font-size: 0.95rem;
   line-height: 1.7;
-  color: var(--oh-ink-45);
+  color: var(--oh-ivory-muted);
   max-width: 26rem;
 }
 
@@ -421,10 +614,14 @@
 
 /* Editorial phone frame (overrides the compiled 4px border). */
 .noctalia-observatory .phone-frame {
-  border: 1px solid var(--oh-line);
-  border-radius: 24px;
-  background: #0a0514;
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.55), 0 0 64px rgba(253, 164, 129, 0.05);
+  border: 1px solid transparent;
+  border-radius: 26px;
+  background:
+    linear-gradient(var(--oh-ink), var(--oh-ink)) padding-box,
+    linear-gradient(165deg, rgba(234, 212, 180, 0.42), rgba(234, 212, 180, 0.05) 40%, rgba(183, 174, 201, 0.16)) border-box;
+  box-shadow:
+    0 40px 80px -30px rgba(0, 0, 0, 0.85),
+    0 24px 80px -40px rgba(234, 212, 180, 0.3);
 }
 
 @media (max-width: 899px) {
@@ -454,8 +651,23 @@
 /* ---------------------------------------------------------------- */
 
 .noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita) {
-  padding-top: 8rem;
+  position: relative;
+  padding-top: clamp(6rem, 10vw, 9rem);
   padding-bottom: 2rem;
+}
+
+/* A veil pools behind the feature grid to give the section its own depth. */
+.noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita)::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: min(120%, 80rem);
+  height: 40rem;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, rgba(25, 35, 68, 0.5), transparent 68%);
 }
 
 .oh-features {
@@ -478,7 +690,7 @@
 
 .oh-feature-top {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
 }
@@ -488,20 +700,17 @@
   font-weight: 500;
   font-size: 0.72rem;
   letter-spacing: 0.22em;
-  color: var(--oh-accent-55);
-}
-
-.oh-feature-icon {
-  color: var(--oh-accent);
-  display: flex;
+  text-transform: uppercase;
+  color: var(--oh-champagne-on);
 }
 
 .oh-feature h3 {
   font-family: 'Fraunces', serif;
-  font-weight: 360;
-  font-size: 1.65rem;
-  line-height: 1.2;
-  color: var(--oh-ink);
+  font-weight: 350;
+  font-size: 1.7rem;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  color: var(--oh-ivory);
   margin-bottom: 0.85rem;
 }
 
@@ -510,7 +719,7 @@
   font-weight: 300;
   font-size: 0.95rem;
   line-height: 1.7;
-  color: var(--oh-ink-45);
+  color: var(--oh-ivory-muted);
   max-width: 30rem;
 }
 
@@ -528,23 +737,31 @@
   font-weight: 300;
   font-size: 0.92rem;
   line-height: 1.6;
-  color: var(--oh-ink-70);
+  color: var(--oh-ivory-80);
 }
 
 .oh-feature ul li::before {
-  content: '—';
+  content: '';
   flex-shrink: 0;
-  color: var(--oh-accent-55);
+  width: 0.9rem;
+  height: 1px;
+  transform: translateY(-0.28em);
+  background: var(--oh-champagne);
 }
 
 .oh-feature ul li strong {
   font-weight: 500;
-  color: var(--oh-ink);
+  color: var(--oh-ivory);
 }
 
 .oh-feature-media {
-  margin-top: 0.5rem;
-  color: var(--oh-accent);
+  margin-top: 1.4rem;
+  color: var(--oh-champagne);
+}
+
+.oh-feature-media svg {
+  width: min(100%, 17rem);
+  height: auto;
 }
 
 @media (min-width: 900px) {
@@ -592,10 +809,10 @@
 
 .oh-tool h3 {
   font-family: 'Fraunces', serif;
-  font-weight: 380;
-  font-size: 1.3rem;
+  font-weight: 370;
+  font-size: 1.32rem;
   line-height: 1.25;
-  color: var(--oh-ink);
+  color: var(--oh-ivory);
   margin-bottom: 0.7rem;
 }
 
@@ -604,18 +821,39 @@
   font-weight: 300;
   font-size: 0.92rem;
   line-height: 1.65;
-  color: var(--oh-ink-45);
+  color: var(--oh-ivory-muted);
 }
 
 .oh-tool .oh-tool-arrow {
   align-self: flex-end;
-  color: var(--oh-ink-45);
-  transition: color 0.3s ease, transform 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--oh-line);
+  color: var(--oh-ivory-muted);
+  transition:
+    color 200ms ease,
+    border-color 200ms ease,
+    background-color 200ms ease;
 }
 
-.oh-tool:hover .oh-tool-arrow {
-  color: var(--oh-accent);
-  transform: translate(3px, -3px);
+.oh-tool .oh-tool-arrow svg {
+  transition: transform 200ms var(--oh-ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .oh-tool:hover .oh-tool-arrow {
+    color: var(--oh-on-champagne);
+    border-color: var(--oh-champagne);
+    background-color: var(--oh-champagne);
+  }
+
+  .oh-tool:hover .oh-tool-arrow svg {
+    transform: translate(2px, -2px);
+  }
 }
 
 @media (min-width: 700px) {
@@ -643,22 +881,20 @@
 }
 
 .oh-profile {
-  border-top: 1px solid var(--oh-line);
-  padding-top: 1.9rem;
+  position: relative;
+  padding-top: 2rem;
 }
 
 .oh-profile-icon {
-  color: var(--oh-accent);
-  display: flex;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.3rem;
 }
 
 .oh-profile h3 {
   font-family: 'Fraunces', serif;
-  font-weight: 380;
-  font-size: 1.4rem;
+  font-weight: 370;
+  font-size: 1.45rem;
   line-height: 1.25;
-  color: var(--oh-ink);
+  color: var(--oh-ivory);
   margin-bottom: 0.75rem;
 }
 
@@ -667,7 +903,7 @@
   font-weight: 300;
   font-size: 0.95rem;
   line-height: 1.7;
-  color: var(--oh-ink-45);
+  color: var(--oh-ivory-muted);
   max-width: 24rem;
 }
 
@@ -683,6 +919,7 @@
 /* ---------------------------------------------------------------- */
 
 .oh-pricing {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
@@ -708,13 +945,13 @@
   font-size: 0.68rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--oh-accent-55);
+  color: var(--oh-champagne-on);
   margin-bottom: 1.2rem;
 }
 
 .oh-plan h3 {
   font-family: 'Fraunces', serif;
-  font-weight: 380;
+  font-weight: 370;
   font-size: 1.75rem;
   line-height: 1.15;
   margin-bottom: 0.5rem;
@@ -722,9 +959,11 @@
 
 .oh-plan-price {
   font-family: 'Fraunces', serif;
-  font-weight: 340;
-  font-size: 2.4rem;
-  line-height: 1.1;
+  font-variation-settings: 'opsz' 144;
+  font-weight: 320;
+  font-size: 2.5rem;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
   margin-bottom: 0.9rem;
 }
 
@@ -752,8 +991,12 @@
 }
 
 .oh-plan ul li::before {
-  content: '—';
+  content: '';
   flex-shrink: 0;
+  width: 0.9rem;
+  height: 1px;
+  transform: translateY(-0.28em);
+  background: currentColor;
   opacity: 0.6;
 }
 
@@ -761,51 +1004,67 @@
   margin-top: auto;
 }
 
-/* Free plan: quiet hairline block. */
+/* Free plan: quiet tinted-glass block. */
 .oh-plan--free {
   border: 1px solid var(--oh-line);
-  border-radius: 14px;
-  color: var(--oh-ink);
+  border-radius: 18px;
+  color: var(--oh-ivory);
+  background: linear-gradient(180deg, rgba(255, 249, 239, 0.03), rgba(255, 249, 239, 0.008));
+  box-shadow: inset 0 1px 0 rgba(255, 249, 239, 0.05);
 }
 
 .oh-plan--free .oh-plan-desc,
 .oh-plan--free ul li {
-  color: var(--oh-ink-45);
+  color: var(--oh-ivory-muted);
+}
+
+.oh-plan--free ul li::before {
+  background: var(--oh-champagne);
 }
 
 .oh-plan--free .oh-plan-cta {
   display: block;
   text-align: center;
   padding: 0.95rem 1.5rem;
-  border: 1px solid rgba(255, 247, 237, 0.25);
+  border: 1px solid var(--oh-line-strong);
   border-radius: 999px;
-  color: var(--oh-ink);
+  color: var(--oh-ivory);
   font-family: 'Outfit', sans-serif;
   font-weight: 500;
-  transition: border-color 0.3s ease, color 0.3s ease;
+  transition:
+    border-color 200ms ease,
+    color 200ms ease,
+    transform 160ms var(--oh-ease-out);
 }
 
 .oh-plan--free .oh-plan-cta:hover {
-  border-color: var(--oh-accent);
-  color: var(--oh-accent);
+  border-color: var(--oh-champagne);
+  color: var(--oh-champagne-on);
 }
 
-/* Plus plan: inverted cream card — the single light surface of the page. */
+/* Plus plan: the single light surface, in the palette's light mode. */
 .oh-plan--plus {
   position: relative;
-  border-radius: 14px;
-  background: var(--oh-ink);
-  color: #0a0514;
-  box-shadow: 0 30px 80px rgba(253, 164, 129, 0.12);
+  border-radius: 18px;
+  background: linear-gradient(165deg, var(--oh-ivory) 0%, var(--oh-champagne-light) 70%, #f1e2cc 100%);
+  color: var(--oh-light-text);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 30px 70px -45px rgba(234, 212, 180, 0.22),
+    0 30px 60px -30px rgba(0, 0, 0, 0.6);
 }
 
 .oh-plan--plus .oh-plan-tag {
-  color: #b85c30;
+  color: var(--oh-light-accent);
 }
 
 .oh-plan--plus .oh-plan-desc,
 .oh-plan--plus ul li {
-  color: rgba(10, 5, 20, 0.62);
+  color: var(--oh-light-muted);
+}
+
+.oh-plan--plus ul li::before {
+  background: var(--oh-light-accent);
 }
 
 .oh-plan--plus .oh-plan-cta {
@@ -813,16 +1072,18 @@
   text-align: center;
   padding: 0.95rem 1.5rem;
   border-radius: 999px;
-  background: #0a0514;
-  color: var(--oh-ink);
+  background: linear-gradient(180deg, #1d1b24, var(--oh-ink));
+  color: var(--oh-ivory);
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 249, 239, 0.1),
+    0 12px 28px -14px rgba(3, 4, 13, 0.7);
+  transition: transform 160ms var(--oh-ease-out);
 }
 
-.oh-plan--plus .oh-plan-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(10, 5, 20, 0.35);
+.oh-plan .oh-plan-cta:active {
+  transform: scale(0.97);
 }
 
 .oh-plan-note {
@@ -831,7 +1092,7 @@
   font-weight: 300;
   font-size: 0.72rem;
   line-height: 1.5;
-  color: rgba(10, 5, 20, 0.5);
+  color: var(--oh-light-muted);
 }
 
 @media (min-width: 860px) {
@@ -869,17 +1130,18 @@
   cursor: pointer;
   list-style: none;
   font-family: 'Fraunces', serif;
-  font-weight: 360;
-  font-size: 1.25rem;
+  font-weight: 350;
+  font-size: 1.28rem;
   line-height: 1.35;
-  color: var(--oh-ink);
-  transition: color 0.3s ease;
+  color: var(--oh-ivory);
+  transition: color 200ms ease;
 }
 
 .oh-faq summary::-webkit-details-marker {
   display: none;
 }
 
+/* The same "+" rotates into a "×" so the state change reads as one object. */
 .oh-faq summary::after {
   content: '+';
   flex-shrink: 0;
@@ -887,16 +1149,16 @@
   font-weight: 300;
   font-size: 1.5rem;
   line-height: 1;
-  color: var(--oh-accent-55);
-  transition: transform 0.3s ease;
+  color: var(--oh-champagne);
+  transition: transform 200ms var(--oh-ease-out);
 }
 
 .oh-faq details[open] summary::after {
-  content: '–';
+  transform: rotate(45deg);
 }
 
 .oh-faq summary:hover {
-  color: var(--oh-accent);
+  color: var(--oh-champagne-on);
 }
 
 .oh-faq details p {
@@ -906,7 +1168,20 @@
   font-weight: 300;
   font-size: 0.95rem;
   line-height: 1.75;
-  color: var(--oh-ink-45);
+  color: var(--oh-ivory-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .oh-faq details[open] p {
+    animation: oh-faq-in 240ms var(--oh-ease-out);
+  }
+}
+
+@keyframes oh-faq-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
 }
 
 /* ---------------------------------------------------------------- */
@@ -914,7 +1189,7 @@
 /* ---------------------------------------------------------------- */
 
 .noctalia-observatory :is(#symboles, #symbols, #simbolos, #traumsymbole, #simboli) {
-  padding-top: 8rem;
+  padding-top: clamp(6rem, 10vw, 9rem);
   padding-bottom: 2rem;
 }
 
@@ -927,9 +1202,11 @@
   font-size: 0.68rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--oh-accent-55);
-  border: 1px solid rgba(253, 164, 129, 0.28);
-  padding: 0.5rem 0.9rem;
+  color: var(--oh-champagne-on);
+  border: 1px solid var(--oh-line-strong);
+  border-radius: 999px;
+  background: var(--oh-champagne-06);
+  padding: 0.5rem 0.95rem;
   margin-bottom: 1.6rem;
 }
 
@@ -947,17 +1224,18 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.35rem 0.5rem;
+  padding: 1.35rem 0.75rem;
   border-bottom: 1px solid var(--oh-line);
+  transition: background-color 200ms ease;
 }
 
 .oh-symbol-name {
   font-family: 'Fraunces', serif;
-  font-weight: 380;
-  font-size: 1.2rem;
+  font-weight: 370;
+  font-size: 1.22rem;
   line-height: 1.25;
-  color: var(--oh-ink);
-  transition: color 0.3s ease;
+  color: var(--oh-ivory);
+  transition: color 200ms ease;
 }
 
 .oh-symbol-q {
@@ -967,25 +1245,37 @@
   font-weight: 300;
   font-size: 0.8rem;
   line-height: 1.5;
-  color: var(--oh-ink-45);
+  color: var(--oh-ivory-muted);
 }
 
 .oh-symbol svg {
   flex-shrink: 0;
-  color: var(--oh-ink-45);
+  color: var(--oh-champagne);
   opacity: 0;
   transform: translate(-4px, 4px);
-  transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease;
+  transition:
+    opacity 200ms ease,
+    transform 200ms var(--oh-ease-out);
 }
 
-.oh-symbol:hover .oh-symbol-name {
-  color: var(--oh-accent);
+@media (hover: hover) and (pointer: fine) {
+  .oh-symbol:hover {
+    background-color: var(--oh-champagne-06);
+  }
+
+  .oh-symbol:hover .oh-symbol-name {
+    color: var(--oh-champagne-on);
+  }
+
+  .oh-symbol:hover svg {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
 }
 
-.oh-symbol:hover svg {
+.oh-symbol:focus-visible svg {
   opacity: 1;
-  transform: translate(0, 0);
-  color: var(--oh-accent);
+  transform: none;
 }
 
 @media (min-width: 700px) {
@@ -995,8 +1285,44 @@
 }
 
 /* ---------------------------------------------------------------- */
-/* Footer (shared renderer component, landing variant)               */
+/* Shared shell on landing pages (nav, footer)                       */
 /* ---------------------------------------------------------------- */
+
+body .noctalia-premium-nav .text-dream-salmon,
+body #mobileMenuPanel .text-dream-salmon,
+body [data-faq-visible] .text-dream-salmon {
+  color: var(--oh-champagne-on);
+}
+
+body .noctalia-premium-nav.py-2 {
+  background: rgba(3, 4, 13, 0.78);
+}
+
+/* The consent panel styles are injected at runtime by site-shell.js; the
+ * `body` prefix outranks them without !important. */
+body .noctalia-consent-panel {
+  border-color: var(--oh-line-strong);
+  background: rgba(20, 19, 26, 0.96);
+}
+
+body .noctalia-consent-panel a,
+body .noctalia-consent-manage:hover {
+  color: var(--oh-champagne-on);
+}
+
+body .noctalia-consent-actions button {
+  border-color: rgba(234, 212, 180, 0.5);
+}
+
+/* site-shell.js marks this colour !important. */
+body .noctalia-consent-gpc {
+  color: var(--oh-champagne-on) !important;
+}
+
+body .noctalia-consent-actions button:hover {
+  border-color: var(--oh-champagne);
+  background: var(--oh-champagne-12);
+}
 
 .landing-footer {
   position: relative;
@@ -1004,9 +1330,20 @@
   width: 100%;
   padding: 4.5rem clamp(1.25rem, 3vw, 3rem) 2.5rem;
   background:
-    radial-gradient(circle at 16% 0%, rgba(253, 164, 129, 0.08), transparent 28rem),
-    linear-gradient(180deg, #0a0514 0%, #080310 100%);
-  color: #fff7ed;
+    radial-gradient(ellipse 40rem 18rem at 16% 0%, rgba(234, 212, 180, 0.07), transparent 70%),
+    radial-gradient(ellipse 50rem 24rem at 90% 100%, var(--oh-veil), transparent 70%), var(--oh-ink);
+  color: var(--oh-ivory);
+}
+
+.landing-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(100%, 1200px);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, var(--oh-line-strong), transparent);
 }
 
 .landing-footer > .grid {
@@ -1031,23 +1368,23 @@
 
 .landing-footer h4,
 .landing-footer h5 {
-  color: #fff7ed;
+  color: var(--oh-ivory);
 }
 
 .landing-footer p,
 .landing-footer li a,
 .landing-footer .text-gray-500,
 .landing-footer .text-gray-600 {
-  color: rgba(255, 247, 237, 0.6);
+  color: var(--oh-ivory-muted);
 }
 
 .landing-footer li a:hover,
 .landing-footer .text-dream-salmon {
-  color: #fda481;
+  color: var(--oh-champagne-on);
 }
 
 .landing-footer .glass-button {
-  border-color: rgba(255, 247, 237, 0.18);
+  border-color: var(--oh-line-strong);
   background: transparent;
 }
 
@@ -1056,7 +1393,8 @@
   max-width: none;
   margin-left: auto;
   margin-right: auto;
-  color: rgba(255, 247, 237, 0.45);
+  border-color: var(--oh-line);
+  color: var(--oh-ivory-muted);
 }
 
 /* ---------------------------------------------------------------- */
