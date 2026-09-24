@@ -29,7 +29,7 @@
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": [\n    {\n      \"@type\": \"FAQPage\",\n      \"mainEntity\": [\n        {\n          \"@type\": \"Question\",\n          \"name\": \"Wie funktioniert die Traumanalyse?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Noctalia nutzt fortschrittliche Sprachmodelle, die von der analytischen Psychologie (Jung) und der Traumsymbolik inspiriert sind. Die Analyse-Engine erkennt wiederkehrende Motive und Archetypen, um dir Denkanstöße zu geben, ohne jemals eine absolute Wahrheit zu behaupten.\"\n          }\n        },\n        {\n          \"@type\": \"Question\",\n          \"name\": \"Sind meine Träume privat?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Ja. Deine Transkripte und Notizen werden bei der Übertragung verschlüsselt und sicher gespeichert. Sprachaudio wird nur für die Transkription verwendet und von Noctalia nicht dauerhaft gespeichert. Noctalia verkauft keine personenbezogenen Daten und nutzt keine zielgerichtete Werbung; Zugriff haben nur du und die für den App-Betrieb nötigen Dienstleister.\"\n          }\n        },\n        {\n          \"@type\": \"Question\",\n          \"name\": \"Kann ich meine Träume tippen statt zu sprechen?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Ja. Wenn du deinen Partner nicht wecken möchtest oder einfach lieber schreibst, steht ein vollständiger Texteditor neben der Sprachaufnahme zur Verfügung.\"\n          }\n        },\n        {\n          \"@type\": \"Question\",\n          \"name\": \"Funktioniert die App offline?\",\n          \"acceptedAnswer\": {\n            \"@type\": \"Answer\",\n            \"text\": \"Du kannst Träume offline aufnehmen. Analyse und Synchronisierung laufen automatisch, sobald du wieder verbunden bist.\"\n          }\n        }\n      ]\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\",\n        \"width\": 512,\n        \"height\": 512\n      },\n      \"description\": \"Traumtagebuch-App zum Erfassen und Erkunden deiner Träume.\",\n      \"sameAs\": [\n        \"https://www.instagram.com/noctaliadreams/\",\n        \"https://x.com/NoctaliaDreams\",\n        \"https://www.tiktok.com/@noctaliadreams\"\n      ],\n      \"alternateName\": [\n        \"Noctalia Dream Journal\"\n      ]\n    },\n    {\n      \"@type\": \"WebSite\",\n      \"@id\": \"https://noctalia.app/#website\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n      },\n      \"inLanguage\": [\n        \"de\",\n        \"en\",\n        \"fr\",\n        \"es\",\n        \"it\"\n      ],\n      \"alternateName\": [\n        \"Noctalia dream journal\",\n        \"Noctalia app\"\n      ]\n    },\n    {\n      \"@type\": \"MobileApplication\",\n      \"name\": \"Noctalia\",\n      \"description\": \"Traumtagebuch-App. Erfasse Träume per Sprache, erkunde sie mit Noctalia-Insights und verstehe deine Nächte besser.\",\n      \"operatingSystem\": \"Android\",\n      \"applicationCategory\": \"LifestyleApplication\",\n      \"inLanguage\": \"de\",\n      \"publisher\": {\n        \"@id\": \"https://noctalia.app/#organization\"\n      },\n      \"downloadUrl\": \"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\n      \"screenshot\": [\n        \"https://noctalia.app/img/en/recording-800w.jpg\",\n        \"https://noctalia.app/img/en/analizing-800w.jpg\",\n        \"https://noctalia.app/img/en/exploring-800w.jpg\"\n      ],\n      \"featureList\": [\n        \"Sprachaufnahme von Träumen\",\n        \"Traum-Insights\",\n        \"Traumbild-Generierung\",\n        \"Traumtagebuch\",\n        \"Emotionales Tracking\"\n      ],\n      \"offers\": {\n        \"@type\": \"Offer\",\n        \"price\": \"0\",\n        \"priceCurrency\": \"EUR\",\n        \"url\": \"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\n        \"description\": \"Kostenlose Installation; optionale Noctalia-Plus-Käufe werden in Google Play angezeigt.\"\n      },\n      \"@id\": \"https://noctalia.app/#mobile-application\",\n      \"url\": \"https://noctalia.app/\"\n    }\n  ]\n}"
+    "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Wie funktioniert die Traumanalyse?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia liest deine Traumerzählung und schlägt Themen, Symbole und Fragen zum Nachdenken vor. Das sind Denkanstöße, keine Diagnose und keine einzig richtige Bedeutung.\"}},{\"@type\":\"Question\",\"name\":\"Sind meine Träume privat?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ja. Deine Transkripte und Notizen werden bei der Übertragung verschlüsselt und sicher gespeichert. Sprachaudio wird nur für die Transkription verwendet und von Noctalia nicht dauerhaft gespeichert. Noctalia verkauft keine personenbezogenen Daten und nutzt keine zielgerichtete Werbung; Zugriff haben nur du und die für den App-Betrieb nötigen Dienstleister.\"}},{\"@type\":\"Question\",\"name\":\"Kann ich meine Träume tippen statt zu sprechen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ja. Wenn du niemanden neben dir wecken möchtest oder einfach gern schreibst, steht neben der Spracheingabe ein vollständiger Texteditor bereit.\"}},{\"@type\":\"Question\",\"name\":\"Funktioniert die App offline?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Du kannst einen Traum ohne Verbindung schreiben und speichern. Die Sprachtranskription funktioniert offline ab Android 13, wenn ein kompatibles Sprachmodell installiert ist. Analyse, Bilderzeugung und Synchronisierung brauchen eine Verbindung und laufen weiter, sobald du wieder online bist.\"}}]},{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\",\"name\":\"Noctalia\",\"url\":\"https://noctalia.app\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://noctalia.app/logo/logo_noctalia.png\",\"width\":512,\"height\":512},\"description\":\"Traumtagebuch-App zum Erfassen und Erkunden deiner Träume.\",\"sameAs\":[\"https://www.instagram.com/noctaliadreams/\",\"https://x.com/NoctaliaDreams\",\"https://www.tiktok.com/@noctaliadreams\"],\"alternateName\":[\"Noctalia Dream Journal\"]},{\"@type\":\"WebSite\",\"@id\":\"https://noctalia.app/#website\",\"name\":\"Noctalia\",\"url\":\"https://noctalia.app\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"},\"inLanguage\":[\"de\",\"en\",\"fr\",\"es\",\"it\"],\"alternateName\":[\"Noctalia dream journal\",\"Noctalia app\"]},{\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"description\":\"Traumtagebuch-App. Erfasse Träume per Sprache, erkunde sie mit Noctalia-Insights und verstehe deine Nächte besser.\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"inLanguage\":\"de\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"},\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"screenshot\":[\"https://noctalia.app/img/en/recording-800w.jpg\",\"https://noctalia.app/img/en/analizing-800w.jpg\",\"https://noctalia.app/img/en/exploring-800w.jpg\"],\"featureList\":[\"Sprachaufnahme von Träumen\",\"Traum-Insights\",\"Traumbild-Generierung\",\"Traumtagebuch\",\"Emotionales Tracking\"],\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"EUR\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Kostenlose Installation; optionale Noctalia-Plus-Käufe werden in Google Play angezeigt.\"},\"@id\":\"https://noctalia.app/#mobile-application\",\"url\":\"https://noctalia.app/\"}]}"
   ],
   "activeNav": "resources"
 }
@@ -41,23 +41,23 @@
     <header>
         <div class="oh-hero-inner">
             <h1 class="oh-hero-title hero-anim">
-                Halte Träume fest,<span class="oh-accent-line">bevor sie verblassen</span>
+                Halte den Traum fest, <span class="oh-accent-line">bevor der Tag ihn löscht</span>
             </h1>
 
             <p class="oh-hero-lede hero-anim">
-                Nach dem Aufwachen sprichst du den Traum einfach ein. Noctalia macht daraus einen privaten Eintrag mit Symbolen, Bild, Reflexionsfragen und weiteren Denkanstößen.
+                Sprich ihn gleich nach dem Aufwachen ein, in deinen eigenen Worten. Noctalia bewahrt diese erste Erzählung unverändert und hilft dir danach, ihren Symbolen, Gefühlen und Fragen nachzugehen – auf Wunsch mit einem Bild der Szene.
             </p>
 
             <div class="oh-hero-cta hero-anim hero-cta">
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="oh-btn-primary">
                     Ersten Traum aufnehmen <i data-lucide="play"></i>
                 </a>
-                <a href="/de/guides/traumsymbole-lexikon" class="oh-btn-quiet" aria-label="Das Traumsymbole-Lexikon entdecken">
+                <a href="/de/guides/traumsymbole-lexikon" class="oh-btn-quiet" aria-label="Das Traumsymbol-Lexikon entdecken">
                     <i data-lucide="book-open"></i> Symbole entdecken
                 </a>
             </div>
             <p class="oh-hero-note hero-anim">
-                <i data-lucide="shield-check"></i> Android-App bei Google Play · Reflexionstool, keine Diagnose
+                <i data-lucide="shield-check"></i> Kostenlose Android-App bei Google Play · Reflexionstool, keine Diagnose
             </p>
 
             <div class="oh-hero-visual hero-anim">
@@ -75,9 +75,9 @@
         <div class="oh-section-head reveal" data-steps-heading>
             <div>
                 <span class="oh-index" aria-hidden="true">01</span>
-                <h2 class="oh-h2">Von der halbwachen Erinnerung zum Traum, den du wieder ansehen kannst</h2>
+                <h2 class="oh-h2">Von einer verblassenden Szene zu einem Eintrag, zu dem du zurückkehrst</h2>
             </div>
-            <p class="oh-lede">Halte die Szene fest, erkenne Muster und kehre zum Traum zurück, wenn du darüber nachdenken möchtest.</p>
+            <p class="oh-lede">Erst festhalten, solange es noch lebendig ist. Später verstehen, wenn du richtig wach bist.</p>
         </div>
 
         <div id="schritte-traeume" class="oh-steps">
@@ -85,7 +85,7 @@
                 <span class="oh-step-num" aria-hidden="true">1</span>
                 <span class="oh-step-icon"><i data-lucide="mic"></i></span>
                 <h3>Aufnehmen</h3>
-                <p>Erzähle beim Aufwachen einfach deinen Traum laut. Die App erfasst jedes Detail, bevor es verblasst.</p>
+                <p>Sag, was übrig ist: ein Ort, ein Gesicht, ein Gefühl. Per Sprache oder Text – das Transkript kannst du später korrigieren.</p>
                 <div class="phone-frame" data-phone="record">
                     <picture>
                         <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
@@ -99,7 +99,7 @@
                 <span class="oh-step-num" aria-hidden="true">2</span>
                 <span class="oh-step-icon"><i data-lucide="sparkles"></i></span>
                 <h3>Analysieren</h3>
-                <p>Noctalia transkribiert und entschlüsselt sofort Symbole, Emotionen und verborgene Archetypen in deiner Geschichte.</p>
+                <p>Noctalia transkribiert deine Erzählung und zeigt mögliche Symbole, Gefühle und Themen, die darin wiederkehren.</p>
                 <div class="phone-frame" data-phone="analyze">
                     <picture>
                         <source type="image/webp" srcset="../img/en/analizing-480w.webp 480w, ../img/en/analizing-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
@@ -113,7 +113,7 @@
                 <span class="oh-step-num" aria-hidden="true">3</span>
                 <span class="oh-step-icon"><i data-lucide="compass"></i></span>
                 <h3>Entdecken</h3>
-                <p>Visualisiere deinen Traum mit einem generierten Bild und vertiefe die persönliche Bedeutung mit geführten Folgefragen.</p>
+                <p>Stelle Folgefragen, prüfe, welche Assoziationen wirklich zu deinem Leben passen, und erzeuge ein Bild, wenn die Szene es verdient.</p>
                 <div class="phone-frame" data-phone="explore">
                     <picture>
                         <source type="image/webp" srcset="../img/en/exploring-480w.webp 480w, ../img/en/exploring-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
@@ -130,20 +130,20 @@
         <div class="oh-section-head reveal">
             <div>
                 <span class="oh-index" aria-hidden="true">02</span>
-                <h2 class="oh-h2">Dein Traumlabor</h2>
+                <h2 class="oh-h2">Was jeder Traum behält</h2>
             </div>
-            <p class="oh-lede">Eine Suite fokussierter Werkzeuge, um deine Nächte in Selbsterkenntnis zu verwandeln.</p>
+            <p class="oh-lede">Die ursprüngliche Erzählung bleibt unangetastet. Alles andere ist optional und kommt nur dazu, wenn ein Traum danach verlangt.</p>
         </div>
 
         <div class="oh-features">
             <article class="oh-feature oh-feature--a glass-panel reveal">
                 <div class="oh-feature-top">
-                    <span class="oh-feature-num">01 · STT-Technologie</span>
+                    <span class="oh-feature-num">01 · Von Sprache zu Text</span>
                     <span class="oh-feature-icon"><i data-lucide="mic"></i></span>
                 </div>
                 <div>
-                    <h3>Sprachaufnahme &amp; Transkription</h3>
-                    <p>Hör auf, im Dunkeln zu tippen. Noctalia verwandelt dein verschlafenes Flüstern in sauberen, strukturierten Text.</p>
+                    <h3>Deine Stimme, transkribiert</h3>
+                    <p>Flüstere eine Notiz, bevor sich der Traum auflöst. Noctalia macht daraus Text, den du korrigieren kannst: Namen, Orte, die Details, die zählen.</p>
                     <div class="oh-feature-media" aria-hidden="true">
                         <svg width="180" height="36" viewBox="0 0 180 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="0" y="12" width="3" height="12" rx="1.5" fill="currentColor" opacity="0.45"/>
@@ -177,8 +177,8 @@
                     <span class="oh-feature-icon"><i data-lucide="image"></i></span>
                 </div>
                 <div>
-                    <h3>Visuelles Tagebuch</h3>
-                    <p>Jede Traumreise wird automatisch in Noctalia illustriert.</p>
+                    <h3>Ein Bild der Szene</h3>
+                    <p>Erzeuge ein Bild für einen Traum, den du wiedersehen möchtest.</p>
                 </div>
             </article>
 
@@ -188,11 +188,11 @@
                     <span class="oh-feature-icon"><i data-lucide="brain-circuit"></i></span>
                 </div>
                 <div>
-                    <h3>Geführte Analyse</h3>
+                    <h3>Geführte Reflexion</h3>
                     <ul>
-                        <li><span><strong>Deutung:</strong> Eine knappe Zusammenfassung der tieferen Bedeutung.</span></li>
-                        <li><span><strong>Symbole:</strong> Archetypen-Entschlüsselung (Jung/Freud inspiriert).</span></li>
-                        <li><span><strong>Geführte Reflexion:</strong> Stelle deinem Traum Folgefragen.</span></li>
+                        <li><span><strong>Überblick:</strong> Der Traum, verdichtet zu einer kurzen Zusammenfassung.</span></li>
+                        <li><span><strong>Symbole:</strong> Mögliche Assoziationen, abzuwägen mit deinem eigenen Kontext.</span></li>
+                        <li><span><strong>Folgefragen:</strong> Stelle deinem Traum weitere Fragen.</span></li>
                     </ul>
                 </div>
             </article>
@@ -203,8 +203,8 @@
                     <span class="oh-feature-icon"><i data-lucide="bar-chart-2"></i></span>
                 </div>
                 <div>
-                    <h3>Emotionales Tracking</h3>
-                    <p>Erkenne wiederkehrende Themen und verfolge, wie sich deine nächtliche Stimmung im Laufe der Zeit entwickelt.</p>
+                    <h3>Muster von Nacht zu Nacht</h3>
+                    <p>Sieh, welche Gefühle und Themen von einem gespeicherten Eintrag zum nächsten wiederkehren.</p>
                     <div class="oh-feature-media" aria-hidden="true">
                         <svg width="200" height="72" viewBox="0 0 200 72" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="0" y="44" width="24" height="28" rx="2" fill="currentColor" opacity="0.25"/>
@@ -225,9 +225,9 @@
         <div class="oh-section-head reveal">
             <div>
                 <span class="oh-index" aria-hidden="true">03</span>
-                <h2 id="noctalia-werkzeuge-entdecken" class="oh-h2">Finde den passenden Weg, deine Träume zu erkunden</h2>
+                <h2 id="noctalia-werkzeuge-entdecken" class="oh-h2">Finde deinen Einstieg</h2>
             </div>
-            <p class="oh-lede">Beginne mit dem, was du gerade brauchst: schnelleres Festhalten, geführte Reflexion, Symbolsuche oder einen App-Vergleich.</p>
+            <p class="oh-lede">Beginne dort, wo du gerade stehst: schneller festhalten, geführt reflektieren, ein Symbol nachschlagen oder Traumtagebuch-Apps vergleichen.</p>
         </div>
         <div class="oh-tools">
             <a href="/de/traumtagebuch-spracheingabe" class="oh-tool glass-panel reveal">
@@ -266,87 +266,24 @@
         <div class="oh-section-head reveal">
             <div>
                 <span class="oh-index" aria-hidden="true">04</span>
-                <h2 class="oh-h2">Ist es für dich?</h2>
+                <h2 class="oh-h2">Gemacht für solche Morgen</h2>
             </div>
         </div>
         <div class="oh-profiles">
             <div class="oh-profile reveal">
                 <span class="oh-profile-icon"><i data-lucide="search"></i></span>
-                <h3>Der Neugierige</h3>
-                <p>Du fragst dich, warum du davon träumst, Zähne zu verlieren oder zu fliegen. Du suchst nach Bedeutung.</p>
+                <h3>Beim Frühstück ist der Traum verflogen</h3>
+                <p>Dreißig Sekunden Sprache sind leichter als ein ausformulierter Eintrag, solange du noch halb schläfst.</p>
             </div>
             <div class="oh-profile reveal">
                 <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
-                <h3>Der Introspektive</h3>
-                <p>Du nutzt Tagebuchschreiben und persönliche Entwicklung, um dich selbst besser zu verstehen.</p>
+                <h3>Du führst schon ein Tagebuch</h3>
+                <p>Deine Träume finden ihren Platz neben den Menschen, Fragen und Gefühlen, über die du ohnehin schreibst.</p>
             </div>
             <div class="oh-profile reveal">
                 <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
-                <h3>Der Entdecker</h3>
-                <p>Du praktizierst oder möchtest luzides Träumen lernen, um dein Unterbewusstsein zu lenken.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials (hidden pre-launch) -->
-    <section id="testimonials" class="py-24 px-4 bg-black/20 hidden">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="font-serif text-3xl md:text-4xl text-center mb-16 reveal">Geteilte Träume</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass-panel p-8 rounded-2xl reveal">
-                    <div class="flex gap-1 text-dream-salmon mb-4">
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                    </div>
-                    <p class="text-gray-300 text-sm mb-6 italic">"Erstaunlich, um meine wiederkehrenden Albträume zu entpacken. Die Analyse half mir, sie mit Arbeitsstress zu verknüpfen. Beruhigend."</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-blue-500"></div>
-                        <div>
-                            <div class="text-sm font-bold">Sophie L.</div>
-                            <div class="text-xs text-gray-500">Nutzerin seit 2 Monaten</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-8 rounded-2xl reveal" style="transition-delay: 100ms;">
-                    <div class="flex gap-1 text-dream-salmon mb-4">
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                    </div>
-                    <p class="text-gray-300 text-sm mb-6 italic">"Ich hasste es, morgens zu schreiben und vergab alles. Mit der Sprachaufnahme wurde es zum natürlichen Reflex."</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-teal-500"></div>
-                        <div>
-                            <div class="text-sm font-bold">Marc D.</div>
-                            <div class="text-xs text-gray-500">Klarträumer</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-8 rounded-2xl reveal" style="transition-delay: 200ms;">
-                    <div class="flex gap-1 text-dream-salmon mb-4">
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                    </div>
-                    <p class="text-gray-300 text-sm mb-6 italic">"Die generierten Bilder sind atemberaubend. Meinen Traum visuell Gestalt annehmen zu sehen, fühlt sich magisch an. Mein Tagebuch sieht wunderschön aus."</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-red-500"></div>
-                        <div>
-                            <div class="text-sm font-bold">Elodie M.</div>
-                            <div class="text-xs text-gray-500">Künstlerin</div>
-                        </div>
-                    </div>
-                </div>
+                <h3>Ein Bild kehrt immer wieder</h3>
+                <p>Gespeicherte Einträge machen es leichter, die Szene – und was sie in dir auslöst – bei jeder Wiederkehr zu vergleichen.</p>
             </div>
         </div>
     </section>
@@ -355,39 +292,38 @@
     <section class="oh-section">
         <div class="oh-pricing-head reveal">
             <span class="oh-index" aria-hidden="true">05</span>
-            <h2 class="oh-h2">Beginne deine Reise</h2>
+            <h2 class="oh-h2">Kostenlos starten. Mit Plus tiefer gehen.</h2>
         </div>
         <div class="oh-pricing">
             <div class="oh-plan oh-plan--free reveal">
                 <div class="oh-plan-head">
                     <h3>Träumer</h3>
                     <div class="oh-plan-price">Kostenlos</div>
-                    <p class="oh-plan-desc">Entdecke die Magie deiner Nächte ohne Verpflichtung.</p>
+                    <p class="oh-plan-desc">Nimm jeden Traum auf und probiere die Reflexionswerkzeuge, bevor du entscheidest, ob du mehr brauchst.</p>
                 </div>
                 <ul>
-                    <li>Unbegrenzte Aufnahmen</li>
+                    <li>Unbegrenzte Aufnahmen, per Sprache oder Text</li>
                     <li>3 Traumanalysen pro Monat</li>
                     <li>2 geführte Erkundungen pro Monat</li>
-                    <li>Basis-Tagebuch</li>
+                    <li>Dein gespeichertes Traumtagebuch</li>
                 </ul>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="oh-plan-cta">App herunterladen</a>
             </div>
 
             <div class="oh-plan oh-plan--plus reveal">
                 <div class="oh-plan-head">
-                    <span class="oh-plan-tag">Empfohlen</span>
+                    <span class="oh-plan-tag">Bezahlabo</span>
                     <h3>Noctalia Plus</h3>
-                    <div class="oh-plan-price">Aktueller Preis bei Google Play</div>
-                    <p class="oh-plan-desc">Monats- und Jahresoptionen können je nach Land und Berechtigung variieren.</p>
+                    <div class="oh-plan-price">Preis in Google Play</div>
+                    <p class="oh-plan-desc">Google Play zeigt die monatliche oder jährliche Option, die für dein Land und dein Konto verfügbar ist.</p>
                 </div>
                 <ul>
-                    <li>Unbegrenzte geführte Reflexionen</li>
-                    <li>HD-Bildgenerierung</li>
-                    <li>Erweiterte Statistiken</li>
-                    <li>Geführte Traumreflexion</li>
+                    <li>Unbegrenzte Traumanalysen</li>
+                    <li>Unbegrenzte geführte Erkundungen</li>
+                    <li>Unbegrenzte Folgenachrichten pro Traum</li>
                 </ul>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="oh-plan-cta">Noctalia Plus ansehen</a>
-                <p class="oh-plan-note">Google Play zeigt vor dem Kauf den geltenden Preis, den Abrechnungszeitraum und jede Berechtigung.</p>
+                <p class="oh-plan-note">Google Play zeigt vor dem Kauf den geltenden Preis, den Abrechnungszeitraum und etwaige Voraussetzungen.</p>
             </div>
         </div>
     </section>
@@ -401,7 +337,7 @@
         <div class="oh-faq reveal">
             <details>
                 <summary>Wie funktioniert die Traumanalyse?</summary>
-                <p>Noctalia nutzt fortschrittliche Sprachmodelle, die von der analytischen Psychologie (Jung) und der Traumsymbolik inspiriert sind. Die Analyse-Engine erkennt wiederkehrende Motive und Archetypen, um dir Denkanstöße zu geben, ohne jemals eine absolute Wahrheit zu behaupten.</p>
+                <p>Noctalia liest deine Traumerzählung und schlägt Themen, Symbole und Fragen zum Nachdenken vor. Das sind Denkanstöße, keine Diagnose und keine einzig richtige Bedeutung.</p>
             </details>
             <details>
                 <summary>Sind meine Träume privat?</summary>
@@ -409,11 +345,11 @@
             </details>
             <details>
                 <summary>Kann ich meine Träume tippen statt zu sprechen?</summary>
-                <p>Ja. Wenn du deinen Partner nicht wecken möchtest oder einfach lieber schreibst, steht ein vollständiger Texteditor neben der Sprachaufnahme zur Verfügung.</p>
+                <p>Ja. Wenn du niemanden neben dir wecken möchtest oder einfach gern schreibst, steht neben der Spracheingabe ein vollständiger Texteditor bereit.</p>
             </details>
             <details>
                 <summary>Funktioniert die App offline?</summary>
-                <p>Du kannst Träume offline aufnehmen. Analyse und Synchronisierung laufen automatisch, sobald du wieder verbunden bist.</p>
+                <p>Du kannst einen Traum ohne Verbindung schreiben und speichern. Die Sprachtranskription funktioniert offline ab Android 13, wenn ein kompatibles Sprachmodell installiert ist. Analyse, Bilderzeugung und Synchronisierung brauchen eine Verbindung und laufen weiter, sobald du wieder online bist.</p>
             </details>
         </div>
     </section>
@@ -423,74 +359,74 @@
         <div class="oh-section-head reveal">
             <div>
                 <span class="oh-symbols-badge"><i data-lucide="book-open"></i> KOSTENLOSE RESSOURCE</span>
-                <h2 class="oh-h2">Traumsymbole-Wörterbuch</h2>
+                <h2 class="oh-h2">Traumsymbol-Lexikon</h2>
             </div>
-            <p class="oh-lede">Entdecken Sie 150 Traumsymbole mit kontextbezogenen Deutungsansätzen und Reflexionsfragen. Sie sind Ausgangspunkte, keine festen Botschaften Ihres Unterbewusstseins.</p>
+            <p class="oh-lede">Entdecke 150 häufige Symbole, jeweils mit Kontextfragen und möglichen Assoziationen. Die Szene – und wie du dich darin gefühlt hast – zählt mehr als jede feste Definition.</p>
         </div>
 
         <div class="oh-symbols reveal">
             <a href="traumsymbole/wasser" class="oh-symbol">
-                <span><span class="oh-symbol-name">Wasser</span><span class="oh-symbol-q">Emotionen &amp; Unterbewusstsein</span></span>
+                <span><span class="oh-symbol-name">Wasser</span><span class="oh-symbol-q">Ruhiges Wasser, Flut oder Tiefe?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/fallen" class="oh-symbol">
-                <span><span class="oh-symbol-name">Fallen</span><span class="oh-symbol-q">Kontrollverlust</span></span>
+                <span><span class="oh-symbol-name">Fallen</span><span class="oh-symbol-q">Angst, Loslassen oder ein Körpergefühl?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/fliegen" class="oh-symbol">
-                <span><span class="oh-symbol-name">Fliegen</span><span class="oh-symbol-q">Freiheit &amp; Transzendenz</span></span>
+                <span><span class="oh-symbol-name">Fliegen</span><span class="oh-symbol-q">Hast du gesteuert oder dich treiben lassen?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/zaehne" class="oh-symbol">
-                <span><span class="oh-symbol-name">Zähne</span><span class="oh-symbol-q">Angst &amp; Selbstbild</span></span>
+                <span><span class="oh-symbol-name">Zähne</span><span class="oh-symbol-q">Schmerz, Aussehen oder Verlust?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/schlange" class="oh-symbol">
-                <span><span class="oh-symbol-name">Schlange</span><span class="oh-symbol-q">Verwandlung</span></span>
+                <span><span class="oh-symbol-name">Schlange</span><span class="oh-symbol-q">Bedrohung, Neugier oder Vertrautheit?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/spinne" class="oh-symbol">
-                <span><span class="oh-symbol-name">Spinne</span><span class="oh-symbol-q">Kreativität &amp; Angst</span></span>
+                <span><span class="oh-symbol-name">Spinne</span><span class="oh-symbol-q">Netz, Biss oder stille Beobachterin?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/hund" class="oh-symbol">
-                <span><span class="oh-symbol-name">Hund</span><span class="oh-symbol-q">Treue &amp; Schutz</span></span>
+                <span><span class="oh-symbol-name">Hund</span><span class="oh-symbol-q">Vertrauter Begleiter oder fremder Hund?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/katze" class="oh-symbol">
-                <span><span class="oh-symbol-name">Katze</span><span class="oh-symbol-q">Unabhängigkeit &amp; Intuition</span></span>
+                <span><span class="oh-symbol-name">Katze</span><span class="oh-symbol-q">Anhänglich, distanziert oder aggressiv?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/haus" class="oh-symbol">
-                <span><span class="oh-symbol-name">Haus</span><span class="oh-symbol-q">Das Selbst &amp; die Psyche</span></span>
+                <span><span class="oh-symbol-name">Haus</span><span class="oh-symbol-q">Welches Zimmer hast du betreten?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/auto" class="oh-symbol">
-                <span><span class="oh-symbol-name">Auto</span><span class="oh-symbol-q">Lebensrichtung</span></span>
+                <span><span class="oh-symbol-name">Auto</span><span class="oh-symbol-q">Wer fuhr, und wohin?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/tuer" class="oh-symbol">
-                <span><span class="oh-symbol-name">Tür</span><span class="oh-symbol-q">Chancen</span></span>
+                <span><span class="oh-symbol-name">Tür</span><span class="oh-symbol-q">Offen, verschlossen oder unbekannt?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/feuer" class="oh-symbol">
-                <span><span class="oh-symbol-name">Feuer</span><span class="oh-symbol-q">Leidenschaft &amp; Zerstörung</span></span>
+                <span><span class="oh-symbol-name">Feuer</span><span class="oh-symbol-q">Wärme, Gefahr oder die Folgen?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/tod" class="oh-symbol">
-                <span><span class="oh-symbol-name">Tod</span><span class="oh-symbol-q">Enden &amp; Wiedergeburt</span></span>
+                <span><span class="oh-symbol-name">Tod</span><span class="oh-symbol-q">Wer oder was ging zu Ende?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/verfolgung" class="oh-symbol">
-                <span><span class="oh-symbol-name">Verfolgt werden</span><span class="oh-symbol-q">Vermeidung &amp; Angst</span></span>
+                <span><span class="oh-symbol-name">Verfolgt werden</span><span class="oh-symbol-q">Wer hat dich verfolgt, und wo?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/meer" class="oh-symbol">
-                <span><span class="oh-symbol-name">Ozean</span><span class="oh-symbol-q">Tiefe Emotionen</span></span>
+                <span><span class="oh-symbol-name">Ozean</span><span class="oh-symbol-q">Ufer, offenes Meer oder Sturm?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="traumsymbole/wald" class="oh-symbol">
-                <span><span class="oh-symbol-name">Wald</span><span class="oh-symbol-q">Das Unbekannte</span></span>
+                <span><span class="oh-symbol-name">Wald</span><span class="oh-symbol-q">Verirrt, geborgen oder auf Erkundung?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
         </div>
@@ -503,18 +439,3 @@
     </section>
 
 </main>
-
-            <!-- FAQ (from JSON-LD) -->
-            <section class="mb-10" data-faq-visible="true">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="help-circle" class="w-6 h-6 text-dream-salmon"></i>
-                    FAQ
-                </h2>
-                <div class="grid gap-4">
-
-                <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">Kann ich meine Träume auch tippen statt zu sprechen?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">Ja, ein vollständiger Texteditor steht zur Verfügung, wenn du deine Träume lieber schreibst statt sie per Sprache aufzunehmen.</p>
-                </div>
-                </div>
-            </section>

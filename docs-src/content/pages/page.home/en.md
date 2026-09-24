@@ -41,23 +41,23 @@
     <header>
         <div class="oh-hero-inner">
             <h1 class="oh-hero-title hero-anim">
-                Record dreams before<span class="oh-accent-line">they disappear</span>
+                Hold on to the dream <span class="oh-accent-line">before daylight takes it</span>
             </h1>
 
             <p class="oh-hero-lede hero-anim">
-                When you wake up, speak what you remember. Noctalia keeps the original account alongside symbols, an optional image, and questions you can return to later.
+                Speak it the moment you wake, in your own words. Noctalia keeps that first account intact, then helps you trace its symbols, emotions and questions — with an image of the scene if you want one.
             </p>
 
             <div class="oh-hero-cta hero-anim hero-cta">
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="oh-btn-primary">
                     Record my first dream <i data-lucide="play"></i>
                 </a>
-                <a href="/en/guides/dream-symbols-dictionary" class="oh-btn-quiet" aria-label="Explore the dream symbols dictionary">
-                    <i data-lucide="book-open"></i> Explore dream symbols
+                <a href="/en/guides/dream-symbols-dictionary" class="oh-btn-quiet" aria-label="Browse the dream symbols dictionary">
+                    <i data-lucide="book-open"></i> Browse dream symbols
                 </a>
             </div>
             <p class="oh-hero-note hero-anim">
-                <i data-lucide="shield-check"></i> Android app on Google Play · Reflection tool, not diagnosis
+                <i data-lucide="shield-check"></i> Free Android app on Google Play · A tool for reflection, not diagnosis
             </p>
 
             <div class="oh-hero-visual hero-anim">
@@ -75,9 +75,9 @@
         <div class="oh-section-head reveal" data-steps-heading>
             <div>
                 <span class="oh-index" aria-hidden="true">01</span>
-                <h2 class="oh-h2">Keep the details you remember on waking</h2>
+                <h2 class="oh-h2">From a fading scene to an entry you can return to</h2>
             </div>
-            <p class="oh-lede">Start with the scene in your own words. Add context or explore possible patterns once you are fully awake.</p>
+            <p class="oh-lede">Capture first, while it is still vivid. Make sense of it later, once you are fully awake.</p>
         </div>
 
         <div id="how-it-works-steps" class="oh-steps">
@@ -85,7 +85,7 @@
                 <span class="oh-step-num" aria-hidden="true">1</span>
                 <span class="oh-step-icon"><i data-lucide="mic"></i></span>
                 <h3>Record</h3>
-                <p>Narrate what you remember, even if it is only a place, a person, or a feeling. You can edit the transcript later.</p>
+                <p>Say whatever is left: a place, a face, a feeling. Voice or text — you can fix the transcript afterwards.</p>
                 <div class="phone-frame" data-phone="record">
                     <picture>
                         <source type="image/webp" srcset="/img/en/recording-480w.webp 480w, /img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
@@ -99,7 +99,7 @@
                 <span class="oh-step-num" aria-hidden="true">2</span>
                 <span class="oh-step-icon"><i data-lucide="sparkles"></i></span>
                 <h3>Analyze</h3>
-                <p>Noctalia transcribes the recording and highlights possible symbols, emotions, and repeated themes in the account.</p>
+                <p>Noctalia transcribes your account and points out possible symbols, emotions and themes that recur in it.</p>
                 <div class="phone-frame" data-phone="analyze">
                     <picture>
                         <source type="image/webp" srcset="/img/en/analizing-480w.webp 480w, /img/en/analizing-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
@@ -113,7 +113,7 @@
                 <span class="oh-step-num" aria-hidden="true">3</span>
                 <span class="oh-step-icon"><i data-lucide="compass"></i></span>
                 <h3>Explore</h3>
-                <p>Generate an optional image, then use follow-up questions to test which associations fit your own context.</p>
+                <p>Ask follow-up questions, test which associations actually fit your life, and generate an image if the scene deserves one.</p>
                 <div class="phone-frame" data-phone="explore">
                     <picture>
                         <source type="image/webp" srcset="/img/en/exploring-480w.webp 480w, /img/en/exploring-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
@@ -130,9 +130,9 @@
         <div class="oh-section-head reveal">
             <div>
                 <span class="oh-index" aria-hidden="true">02</span>
-                <h2 class="oh-h2">What stays with each dream entry</h2>
+                <h2 class="oh-h2">What each dream keeps</h2>
             </div>
-            <p class="oh-lede">Keep the original account, then add only the tools that are useful for that particular dream.</p>
+            <p class="oh-lede">The original account stays untouched. Everything else is optional, added only when a dream calls for it.</p>
         </div>
 
         <div class="oh-features">
@@ -142,8 +142,8 @@
                     <span class="oh-feature-icon"><i data-lucide="mic"></i></span>
                 </div>
                 <div>
-                    <h3>Voice capture &amp; transcription</h3>
-                    <p>Record a short voice note on waking. Noctalia transcribes it so you can correct names, places, and details later.</p>
+                    <h3>Your voice, transcribed</h3>
+                    <p>Whisper a note before the dream dissolves. Noctalia turns it into text you can correct — names, places, the details that matter.</p>
                     <div class="oh-feature-media" aria-hidden="true">
                         <svg width="180" height="36" viewBox="0 0 180 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="0" y="12" width="3" height="12" rx="1.5" fill="currentColor" opacity="0.45"/>
@@ -177,8 +177,8 @@
                     <span class="oh-feature-icon"><i data-lucide="image"></i></span>
                 </div>
                 <div>
-                    <h3>Visual journal</h3>
-                    <p>Generate an image for an entry when a visual reminder would help.</p>
+                    <h3>A picture of the scene</h3>
+                    <p>Generate an image for a dream you want to see again.</p>
                 </div>
             </article>
 
@@ -190,9 +190,9 @@
                 <div>
                     <h3>Guided reflection</h3>
                     <ul>
-                        <li><span><strong>Overview:</strong> A concise summary of the dream account.</span></li>
-                        <li><span><strong>Symbols:</strong> Possible associations to compare with your own context.</span></li>
-                        <li><span><strong>Guided reflection:</strong> Ask follow-up questions about your dream.</span></li>
+                        <li><span><strong>Overview:</strong> The dream, distilled into a short summary.</span></li>
+                        <li><span><strong>Symbols:</strong> Possible associations to weigh against your own context.</span></li>
+                        <li><span><strong>Follow-up questions:</strong> Keep asking about the dream.</span></li>
                     </ul>
                 </div>
             </article>
@@ -203,8 +203,8 @@
                     <span class="oh-feature-icon"><i data-lucide="bar-chart-2"></i></span>
                 </div>
                 <div>
-                    <h3>Compare emotions over time</h3>
-                    <p>Compare the emotions and themes you recorded across saved entries.</p>
+                    <h3>Patterns across nights</h3>
+                    <p>See which emotions and themes resurface from one saved entry to the next.</p>
                     <div class="oh-feature-media" aria-hidden="true">
                         <svg width="200" height="72" viewBox="0 0 200 72" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="0" y="44" width="24" height="28" rx="2" fill="currentColor" opacity="0.25"/>
@@ -225,9 +225,9 @@
         <div class="oh-section-head reveal">
             <div>
                 <span class="oh-index" aria-hidden="true">03</span>
-                <h2 id="explore-noctalia-tools" class="oh-h2">Choose the right way to explore your dreams</h2>
+                <h2 id="explore-noctalia-tools" class="oh-h2">Find your way in</h2>
             </div>
-            <p class="oh-lede">Start with the part you need now: faster capture, guided reflection, symbol lookup, or an app comparison.</p>
+            <p class="oh-lede">Start where you are: faster capture, guided reflection, a symbol to look up, or a side-by-side of dream journal apps.</p>
         </div>
         <div class="oh-tools">
             <a href="/en/voice-dream-journal" class="oh-tool glass-panel reveal">
@@ -266,24 +266,24 @@
         <div class="oh-section-head reveal">
             <div>
                 <span class="oh-index" aria-hidden="true">04</span>
-                <h2 class="oh-h2">When Noctalia may be useful</h2>
+                <h2 class="oh-h2">Made for mornings like these</h2>
             </div>
         </div>
         <div class="oh-profiles">
             <div class="oh-profile reveal">
                 <span class="oh-profile-icon"><i data-lucide="search"></i></span>
-                <h3>You forget dreams quickly</h3>
-                <p>A short voice note is easier than writing a polished entry while you are still half asleep.</p>
+                <h3>Your dreams are gone by breakfast</h3>
+                <p>Thirty seconds of voice is easier than a polished entry while you are still half asleep.</p>
             </div>
             <div class="oh-profile reveal">
                 <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
                 <h3>You already keep a journal</h3>
-                <p>Dream entries can sit alongside the questions, people, and emotions you want to revisit.</p>
+                <p>Dreams can sit beside the people, questions and feelings you already write about.</p>
             </div>
             <div class="oh-profile reveal">
                 <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
-                <h3>One image keeps returning</h3>
-                <p>Saved entries make it easier to compare the scene and your reaction each time it appears.</p>
+                <h3>One image keeps coming back</h3>
+                <p>Saved entries let you compare the scene — and how it made you feel — each time it returns.</p>
             </div>
         </div>
     </section>
@@ -292,20 +292,20 @@
     <section class="oh-section">
         <div class="oh-pricing-head reveal">
             <span class="oh-index" aria-hidden="true">05</span>
-            <h2 class="oh-h2">Choose a plan</h2>
+            <h2 class="oh-h2">Start free. Go deeper with Plus.</h2>
         </div>
         <div class="oh-pricing">
             <div class="oh-plan oh-plan--free reveal">
                 <div class="oh-plan-head">
                     <h3>Dreamer</h3>
                     <div class="oh-plan-price">Free</div>
-                    <p class="oh-plan-desc">Record dreams and try the reflection tools before deciding whether you need more.</p>
+                    <p class="oh-plan-desc">Record every dream and try the reflection tools before deciding whether you need more.</p>
                 </div>
                 <ul>
-                    <li>Unlimited recordings</li>
+                    <li>Unlimited recordings, voice or text</li>
                     <li>3 dream analyses per month</li>
                     <li>2 guided explorations per month</li>
-                    <li>Saved dream journal</li>
+                    <li>Your saved dream journal</li>
                 </ul>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="oh-plan-cta">Download the app</a>
             </div>
@@ -361,7 +361,7 @@
                 <span class="oh-symbols-badge"><i data-lucide="book-open"></i> FREE RESOURCE</span>
                 <h2 class="oh-h2">Dream Symbols Dictionary</h2>
             </div>
-            <p class="oh-lede">Browse 150 common dream symbols with context questions and possible associations. The scene and your own reaction matter more than a fixed definition.</p>
+            <p class="oh-lede">Browse 150 common symbols, each with context questions and possible associations. The scene — and how you felt in it — matters more than any fixed definition.</p>
         </div>
 
         <div class="oh-symbols reveal">
