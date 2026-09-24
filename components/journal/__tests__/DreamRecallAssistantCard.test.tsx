@@ -1104,6 +1104,28 @@ describe('DreamRecallAssistantCard', () => {
       expect(view).toBeTruthy();
     });
 
+    it('does not display an old cancelled-start error on the next recall question', async () => {
+      const gate = deferred<{ success: boolean; error: string }>();
+      mockStartRecording.mockImplementation(() => gate.promise);
+      const view = renderActiveQuestion();
+      await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic)); });
+      resetHook({
+        state: sessionState('active', [
+          openQuestionTurn,
+          { ...openQuestionTurn, id: 'q-2', kind: QUESTION_TWO.kind, text: QUESTION_TWO.text },
+        ]),
+        currentQuestion: QUESTION_TWO,
+      });
+      await act(async () => {
+        view.rerender(<DreamRecallAssistantCard dreamId="dream-42" originalTranscript={ORIGINAL}
+          originalPersistedSegmentId="persisted-original-42" offerEligible />);
+      });
+      expect(mockForceStopRecording).toHaveBeenCalledWith('blur');
+      await act(async () => { gate.resolve({ success: false, error: 'cancelled' }); });
+      expect(screen.getByText(QUESTION_TWO.text)).toBeTruthy();
+      expect(screen.queryByText('dream_recall.session.voice_error')).toBeNull();
+    });
+
     it('keeps typed text and shows voice_error when start fails', async () => {
       mockStartRecording.mockImplementation(async () => ({ success: false }));
       renderActiveQuestion();

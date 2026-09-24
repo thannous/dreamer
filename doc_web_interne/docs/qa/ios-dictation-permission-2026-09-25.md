@@ -117,3 +117,20 @@ Speech denial on iOS propagates distinctly and offers a Settings recovery action
 the inline fallback describes both microphone and speech authorization in six locales.
 Android/web denial behavior remains unchanged. ESLint has zero errors and one
 pre-existing `set-state-in-effect` warning in the unchanged capture-intent effect.
+
+## Shared-consumer review gap (before implementation)
+
+The recording route handles cancellation but chat and recall also consume the hook.
+A late cancelled result must not show an alert after chat unmount or mark the next
+recall question as a voice failure. Chat must not replace the hook's permission
+recovery dialog with a second generic error. Add deferred component regressions
+for these visible outcomes before changing the consumers; native permission dialogs
+remain simulated as described above.
+
+Consumer regressions: 3 failed / 50 passed before the fix, then all 53 passed.
+Rerun: `npm run test:file -- components/chat/__tests__/Composer.test.tsx components/journal/__tests__/DreamRecallAssistantCard.test.tsx --watchman=false --json --outputFile=/private/tmp/dictation-consumers-green.json`.
+Chat ignores cancellation and permission denial already explained by the hook;
+recall ignores cancellation without marking the next question as failed. The debug
+prototype does not interpret startup results and cannot show either stale failure.
+React component review: no new effects, subscriptions, dependencies or rerenders;
+existing hook cleanup and real startup-failure UI are preserved.
