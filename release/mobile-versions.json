@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "apps": {
     "noctalia": {
-      "version": "3.4.3",
-      "sourceRef": "6f8fa975de651f3b2a350a1b11eebb6e14481007",
-      "baseline": "Prepared merged source; 3.4.0 through 3.4.2 already used by EAS Internal candidates; not a Store publication claim"
+      "version": "3.4.4",
+      "sourceRef": "74826f0e790a791ddac5bc188db0cde8ebd0b828",
+      "baseline": "Prepared source snapshot; not a Store publication claim"
     },
     "lucid": {
       "version": "1.0.0",
