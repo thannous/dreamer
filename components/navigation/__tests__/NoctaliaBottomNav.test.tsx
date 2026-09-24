@@ -11,7 +11,7 @@ let mockWindowWidth = 390;
 let mockWindowHeight = 844;
 let mockFontScale = 1;
 let mockActiveAnalysis: { dreamId: number } | null = null;
-const mockPush = jest.fn();
+const mockDismissTo = jest.fn();
 
 jest.mock('react-native', () => {
   const React = require('react');
@@ -121,7 +121,7 @@ jest.mock('react-native', () => {
 });
 
 jest.mock('expo-router', () => ({
-  router: { push: (...args: any[]) => mockPush(...args) },
+  router: { dismissTo: (...args: any[]) => mockDismissTo(...args) },
 }));
 
 jest.mock('react-native-safe-area-context', () => ({
@@ -171,7 +171,7 @@ afterEach(() => {
   mockWindowHeight = 844;
   mockFontScale = 1;
   mockActiveAnalysis = null;
-  mockPush.mockClear();
+  mockDismissTo.mockClear();
 });
 
 const barBox = (testID: string) =>
@@ -266,7 +266,7 @@ describe('NoctaliaBottomNav', () => {
 
     fireEvent.click(screen.getByTestId(TID.Tab.Explore));
 
-    expect(mockPush).toHaveBeenCalledWith('/(tabs)/explore');
+    expect(mockDismissTo).toHaveBeenCalledWith('/(tabs)/explore');
   });
 
   it('keeps words visible on two lines at 320 dp with default text scale', () => {
@@ -335,7 +335,7 @@ describe('NoctaliaBottomNav', () => {
       const frames = tabs.map((tab) => JSON.parse(tab.getAttribute('data-native-style') ?? '{}'));
       expect(frames.every((frame) => frame?.position === undefined)).toBe(true);
       fireEvent.click(tabs[4]);
-      expect(mockPush).toHaveBeenLastCalledWith('/(tabs)/explore');
+      expect(mockDismissTo).toHaveBeenLastCalledWith('/(tabs)/explore');
       view.unmount();
     }
   });

@@ -10,7 +10,7 @@ import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import React, { useMemo } from 'react';
 import {
   ActivityIndicator,
@@ -32,7 +32,7 @@ type BottomNavItem = {
   label: string;
   accessibilityLabel: string;
   icon: IconName;
-  href: string;
+  href: Href;
   testID: string;
 };
 
@@ -140,7 +140,7 @@ export function NoctaliaBottomNav({
       label: t(navigationLayout.largeText ? 'nav.home_compact' : 'nav.home'),
       accessibilityLabel: t('nav.home'),
       icon: 'house',
-      href: '/',
+      href: '/(tabs)',
       testID: TID.Tab.Home,
     },
     {
@@ -148,7 +148,7 @@ export function NoctaliaBottomNav({
       label: t('nav.journal'),
       accessibilityLabel: t('nav.journal'),
       icon: 'book',
-      href: '/journal',
+      href: '/(tabs)/journal',
       testID: TID.Tab.Journal,
     },
     {
@@ -164,7 +164,7 @@ export function NoctaliaBottomNav({
       label: t(navigationLayout.largeText ? 'nav.stats_compact' : 'nav.stats'),
       accessibilityLabel: t('nav.stats'),
       icon: 'chart.bar',
-      href: '/statistics',
+      href: '/(tabs)/statistics',
       testID: TID.Tab.Stats,
     },
     {
@@ -201,7 +201,9 @@ export function NoctaliaBottomNav({
             return (
               <Pressable
                 key={item.key}
-                onPress={isActive ? undefined : () => router.push(item.href as any)}
+                // Capture sits above the tab navigator. Return to that instance so
+                // repeated tab switches release Capture instead of stacking both.
+                onPress={isActive ? undefined : () => router.dismissTo(item.href)}
                 accessibilityRole="tab"
                 aria-selected={isActive}
                 aria-busy={isCenter ? Boolean(activeAnalysis) : undefined}
