@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -32,9 +32,9 @@ const PROGRAMS: readonly LucidTechnique[] = [
 // artwork remains neutral. All labels, progress and selection state stay in
 // React Native so they remain translated and accessible.
 const PROGRAM_ART: Readonly<Record<LucidTechnique, number>> = {
-  mild: require('../../../assets/images/lucid/program-mild-destination.png'),
-  ssild: require('../../../assets/images/lucid/program-ssild-destination.png'),
-  wbtb: require('../../../assets/images/lucid/program-wbtb-destination.png'),
+  mild: require('../../../assets/images/lucid/program-mild-destination.webp'),
+  ssild: require('../../../assets/images/lucid/program-ssild-destination.webp'),
+  wbtb: require('../../../assets/images/lucid/program-wbtb-destination.webp'),
 };
 
 const COPY = {

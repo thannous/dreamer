@@ -65,3 +65,44 @@ Validation:
 npx jest --runTestsByPath scripts/measure-android-performance.test.js --runInBand --watchman=false
 python3 -m unittest discover -s scripts/android -p 'test_*.py'
 ```
+
+## Static artwork and APK size
+
+`AtmosphericBackground` keeps the upper ornament and the horizon in separate,
+content-bounded SVG viewports. Android's `react-native-svg` implementation uses a
+bitmap per viewport and recreates it after detachment. Excluding the transparent
+middle reduces those bitmap allocations without changing the paths, scale, theme
+colours, or stroke widths. Check both variants in portrait and landscape when
+changing their bounds; allow room for strokes and antialiasing. Capture uses an
+instant native-stack transition because it is a peer in the bottom navigation.
+
+Import icon families directly (for example `@expo/vector-icons/Ionicons`). The
+package barrel brings unrelated font assets into the Metro bundle. Eight opaque
+Lucid illustrations use lossless WebP; their decoded RGBA pixels and dimensions
+match the original PNGs. Keep alpha artwork unchanged unless its decoded pixels
+also match. Do not reduce image quality or remove features to meet a size target.
+
+A local `production-apk`, profileable, `arm64-v8a` Release comparison against
+`347090f5`, built with Node 24 and JDK 17 via `npm run android:release:local`, gives:
+
+| APK content | Before (bytes) | After (bytes) |
+| --- | ---: | ---: |
+| Signed APK | 103,482,113 | 99,006,405 |
+| Embedded Hermes bundle | 14,894,580 | 14,614,360 |
+| Compressed Android resources | 28,416,122 | 24,224,598 |
+| DEX | 28,719,600 | 28,719,600 |
+| Native libraries | 27,266,312 | 27,266,312 |
+
+This is a 4,475,708-byte APK reduction (4.33%). It is not a Play download-size,
+installed-size, or runtime-memory claim. Keep bundle/native compression defaults:
+compressing them merely to reduce APK bytes can trade installation/startup work
+against that figure. Reproduce with the same ABI and build profile, preserve the
+first APK before building the second, and compare ZIP entry sizes as well as the
+complete signed APK. Profileable APKs remain local validation artifacts.
+
+Device traces, journal content, UI trees, and device-specific metrics stay in a
+private output directory. Before reinstalling a physical build, verify its
+package, version, signature, data backup coverage, and restoration method; an old
+backup is not proof that newer local data is covered. Use the existing
+`tests/android/navigation-retention.py` under the device lock for repeated
+Capture/Journal navigation without clearing app data.

@@ -62,7 +62,7 @@ jest.mock('react-native', () => {
   };
 });
 
-jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
+jest.mock('@expo/vector-icons/Ionicons', () => ({ __esModule: true, default: () => null }));
 
 jest.mock('expo-image', () => ({
   Image: () => <img alt="" />,

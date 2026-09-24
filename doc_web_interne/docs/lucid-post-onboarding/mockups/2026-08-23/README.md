@@ -12,14 +12,14 @@
 
 | Usage | Fichier | Intention |
 | --- | --- | --- |
-| MILD | `assets/images/lucid/program-mild-destination.png` | Chemin de mémoire vers une intention claire |
-| SSILD | `assets/images/lucid/program-ssild-destination.png` | Trois courants sensoriels convergeant vers un sanctuaire |
-| WBTB | `assets/images/lucid/program-wbtb-destination.png` | Pont calme entre nuit et lumière du matin |
-| Nuit | `assets/images/lucid/night-ritual-sanctuary.png` | Sanctuaire ouvert et trois plinthes neutres |
-| Progression | `assets/images/lucid/progress-constellation.png` | Route céleste neutre destinée aux données natives |
+| MILD | `assets/images/lucid/program-mild-destination.webp` | Chemin de mémoire vers une intention claire |
+| SSILD | `assets/images/lucid/program-ssild-destination.webp` | Trois courants sensoriels convergeant vers un sanctuaire |
+| WBTB | `assets/images/lucid/program-wbtb-destination.webp` | Pont calme entre nuit et lumière du matin |
+| Nuit | `assets/images/lucid/night-ritual-sanctuary.webp` | Sanctuaire ouvert et trois plinthes neutres |
+| Progression | `assets/images/lucid/progress-constellation.webp` | Route céleste neutre destinée aux données natives |
 
 Les cinq images ont été générées avec l’outil intégré `image_gen` en prenant
-`mild-journey-path.png` et `today-dream-atlas.png` comme références de palette,
+`mild-journey-path.webp` et `today-dream-atlas.webp` comme références de palette,
 de texture et de monde. Contraintes communes des prompts : illustration
 cinématographique nocturne, composition mobile verticale, espace négatif pour
 les contrôles, aucune interface ou donnée peinte, aucun personnage, logo,

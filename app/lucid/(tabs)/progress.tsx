@@ -29,7 +29,7 @@ import type { LucidGuidanceFocus } from '@/lib/lucid/personalization';
 import { buildLucidWeeklyReview } from '@/lib/lucid/progress';
 import type { LucidExperiment, LucidTechnique } from '@/lib/lucid/model';
 
-const PROGRESS_CONSTELLATION = require('../../../assets/images/lucid/progress-constellation.png');
+const PROGRESS_CONSTELLATION = require('../../../assets/images/lucid/progress-constellation.webp');
 
 const METHOD_ANCHORS: Record<LucidTechnique, ViewStyle> = {
   mild: { left: '18%', top: '58%' },

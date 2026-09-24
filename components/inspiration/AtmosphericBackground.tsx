@@ -75,6 +75,16 @@ export function AtmosphericBackground({ variant = 'immersive' }: AtmosphericBack
   const veilOpacity = isSubtle ? (mode === 'dark' ? 0.08 : 0.16) : (mode === 'dark' ? 0.2 : 0.42);
   const horizonOpacity = isSubtle ? (mode === 'dark' ? 0.22 : 0.16) : (mode === 'dark' ? 0.74 : 0.48);
 
+  // Android SVG views allocate a bitmap for their entire viewport and rebuild it
+  // after a screen reattaches. Keep the empty middle out of those bitmaps without
+  // downsampling the artwork. Include stroke/antialiasing room at both edges.
+  const orbitHeight = Math.min(height, Math.ceil(Math.max(
+    height * 0.02 + Math.min(height * 0.24, 180),
+    height * 0.1 + Math.min(width * (isSubtle ? 0.28 : 0.42), isSubtle ? 140 : 210),
+  )) + 1);
+  const horizonTop = Math.floor(height * 0.68) - 1;
+  const horizonHeight = Math.ceil(height * (isSubtle ? 0.86 : 0.9)) - horizonTop + 1;
+
   return (
     <View style={styles.container} pointerEvents="none">
       <LinearGradient
@@ -87,9 +97,9 @@ export function AtmosphericBackground({ variant = 'immersive' }: AtmosphericBack
 
       <Svg
         width={width}
-        height={height}
-        viewBox={`0 0 ${Math.max(width, 1)} ${Math.max(height, 1)}`}
-        style={StyleSheet.absoluteFill}
+        height={orbitHeight}
+        viewBox={`0 0 ${Math.max(width, 1)} ${Math.max(orbitHeight, 1)}`}
+        style={styles.artwork}
         preserveAspectRatio="none"
       >
         <Defs>
@@ -126,6 +136,15 @@ export function AtmosphericBackground({ variant = 'immersive' }: AtmosphericBack
             strokeWidth="0.7"
           />
         ) : null}
+      </Svg>
+
+      <Svg
+        width={width}
+        height={horizonHeight}
+        viewBox={`0 ${horizonTop} ${Math.max(width, 1)} ${Math.max(horizonHeight, 1)}`}
+        style={[styles.artwork, { top: horizonTop }]}
+        preserveAspectRatio="none"
+      >
         <Path
           d={`M ${-width * 0.06} ${height * 0.76} C ${width * 0.18} ${height * 0.68}, ${width * 0.36} ${height * 0.73}, ${width * 0.54} ${height * 0.8} C ${width * 0.7} ${height * 0.86}, ${width * 0.86} ${height * 0.82}, ${width * 1.06} ${height * 0.76}`}
           fill="none"
@@ -169,6 +188,11 @@ export function AtmosphericBackground({ variant = 'immersive' }: AtmosphericBack
 }
 
 const styles = StyleSheet.create({
+  artwork: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+  },
   container: {
     ...StyleSheet.absoluteFill,
     overflow: 'hidden',

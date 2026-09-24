@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { Fragment, type ReactNode, useEffect, useState } from 'react';
 import {
@@ -28,8 +28,8 @@ import {
 import { useTheme } from '@/context/ThemeContext';
 import type { LucidProgramSession } from '@/lib/lucid/content/types';
 
-const JOURNEY_BACKGROUND = require('@/assets/images/lucid/mild-journey-path.png');
-const CURRENT_SESSION_ART = require('@/assets/images/lucid/mild-session-portal.png');
+const JOURNEY_BACKGROUND = require('@/assets/images/lucid/mild-journey-path.webp');
+const CURRENT_SESSION_ART = require('@/assets/images/lucid/mild-session-portal.webp');
 const JOURNEY_ASPECT_RATIO = 915 / 1719;
 const IMMERSIVE_CARD_GAP = LucidSpace.xl * 7;
 const IMMERSIVE_SPLIT_CLEARANCE = LucidSpace.xl + LucidSpace.md;

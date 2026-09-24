@@ -54,8 +54,7 @@ jest.mock('react-native', () => ({
   },
 }));
 
-jest.mock('@expo/vector-icons', () => ({
-  Ionicons: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
+jest.mock('@expo/vector-icons/Ionicons', () => ({ __esModule: true, default: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
 }));
 
 jest.mock('expo-router', () => ({

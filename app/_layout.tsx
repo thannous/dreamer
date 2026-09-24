@@ -841,7 +841,9 @@ function RootLayoutNav({
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="settings" options={{ headerShown: false }} />
             <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-            <Stack.Screen name="recording" options={{ headerShown: false }} />
+            {/* Capture is a peer in the bottom navigation even though its route
+                sits above the tabs. It follows the same instant tab switch. */}
+            <Stack.Screen name="recording" options={{ headerShown: false, animation: 'none' }} />
             <Stack.Screen name="journal/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />

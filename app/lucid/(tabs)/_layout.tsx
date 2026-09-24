@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
 import React, { useMemo, type ComponentProps } from 'react';
 import { Platform, StyleSheet, Text, useWindowDimensions, type ColorValue } from 'react-native';

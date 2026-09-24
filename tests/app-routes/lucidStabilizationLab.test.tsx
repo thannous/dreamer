@@ -62,7 +62,7 @@ jest.mock('expo-router', () => ({
     canGoBack: () => mockCanGoBack,
   },
 }));
-jest.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
+jest.mock('@expo/vector-icons/Ionicons', () => ({ __esModule: true, default: () => null }));
 const mockWindow = { width: 390, fontScale: 1 };
 jest.mock('react-native', () => {
   const actual = jest.requireActual('../react-native-stub');
