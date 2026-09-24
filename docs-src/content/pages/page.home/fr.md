@@ -70,11 +70,216 @@
         </div>
     </header>
 
+    <!-- 1b. Dream: example entries in a 3D night -->
+    <section class="oh-section oh-dreams" data-chapter="dream" data-labels='{&quot;close&quot;:&quot;Fermer&quot;,&quot;transcript&quot;:&quot;Transcription&quot;,&quot;symbols&quot;:&quot;Symboles&quot;,&quot;example&quot;:&quot;Exemple d’entrée rédigé pour cette page&quot;}'>
+        <div class="oh-section-head reveal">
+            <div>
+                <span class="oh-index" aria-hidden="true">01 · Rêve</span>
+                <h2 class="oh-h2">Des rêves, tels qu’ils ont été racontés</h2>
+            </div>
+            <div>
+                <p class="oh-lede">Dix exemples d’entrées, conservées comme Noctalia les conserve : les mots dits au réveil, la date, le ressenti et une image de la scène.</p>
+                <p class="oh-dreams-hint" aria-hidden="true">Faites tourner la nuit · ouvrez une entrée pour la lire</p>
+            </div>
+        </div>
+        <div class="oh-dreamspace">
+            <div class="oh-dreamspace-stage">
+                <ul class="oh-dream-list" role="list">
+                <li class="oh-dream-slot">
+                    <article class="oh-dream" data-symbols="8,10" data-emotion="disorientation">
+                        <img class="oh-dream-img" src="/img/dreams/staircase-480w.webp" data-full="/img/dreams/staircase-800w.webp" width="480" height="600" loading="lazy" decoding="async" alt="">
+                        <div class="oh-dream-body">
+                            <p class="oh-dream-meta"><time>23 sept.</time><span class="oh-emotion" data-emotion="disorientation">Désorientation</span></p>
+                            <h3 class="oh-dream-title">L’escalier qui n’existait pas</h3>
+                            <p class="oh-dream-excerpt">J’étais chez ma grand-mère, mais il y avait un escalier que je n’avais jamais vu. En haut, une porte bleue bourdonnait.</p>
+                            <details class="oh-dream-more">
+                                <summary>Ouvrir l’entrée</summary>
+                                <p class="oh-dream-rest">Je connais cette maison par cœur, et pourtant chaque marche allongeait le couloir. Quand j’ai touché la porte, elle était tiède, comme si quelqu’un respirait derrière. Je me suis réveillée avant de l’ouvrir, et je veux encore savoir ce qu’il y avait.</p>
+                            </details>
+                            <ul class="oh-dream-symbols" aria-label="Symboles"><li>Maison</li><li>Porte</li></ul>
+                        </div>
+                        <button class="oh-dream-open" type="button" aria-label="Ouvrir l’entrée : L’escalier qui n’existait pas" hidden></button>
+                    </article>
+                </li>
+                <li class="oh-dream-slot">
+                    <article class="oh-dream" data-symbols="2,14" data-emotion="joy">
+                        <img class="oh-dream-img" src="/img/dreams/harbour-480w.webp" data-full="/img/dreams/harbour-800w.webp" width="480" height="600" loading="lazy" decoding="async" alt="">
+                        <div class="oh-dream-body">
+                            <p class="oh-dream-meta"><time>21 sept.</time><span class="oh-emotion" data-emotion="joy">Joie</span></p>
+                            <h3 class="oh-dream-title">Voler au-dessus du port</h3>
+                            <p class="oh-dream-excerpt">J’ai quitté la jetée et je n’ai plus cessé de monter. En bas, les bateaux ressemblaient à des lanternes de papier sur l’eau.</p>
+                            <details class="oh-dream-more">
+                                <summary>Ouvrir l’entrée</summary>
+                                <p class="oh-dream-rest">Aucun effort, juste un vent tiède sous les bras. J’entendais ma sœur rire quelque part en dessous. Pour la première fois depuis des semaines, je me suis réveillé léger.</p>
+                            </details>
+                            <ul class="oh-dream-symbols" aria-label="Symboles"><li>Voler</li><li>Mer</li></ul>
+                        </div>
+                        <button class="oh-dream-open" type="button" aria-label="Ouvrir l’entrée : Voler au-dessus du port" hidden></button>
+                    </article>
+                </li>
+                <li class="oh-dream-slot">
+                    <article class="oh-dream" data-symbols="0,8" data-emotion="serenity">
+                        <img class="oh-dream-img" src="/img/dreams/tide-480w.webp" data-full="/img/dreams/tide-800w.webp" width="480" height="600" loading="lazy" decoding="async" alt="">
+                        <div class="oh-dream-body">
+                            <p class="oh-dream-meta"><time>18 sept.</time><span class="oh-emotion" data-emotion="serenity">Sérénité</span></p>
+                            <h3 class="oh-dream-title">La marée est entrée dans la cuisine</h3>
+                            <p class="oh-dream-excerpt">L’eau est montée par le carrelage de la cuisine, claire et tiède. Personne ne paniquait ; on continuait à mettre la table.</p>
+                            <details class="oh-dream-more">
+                                <summary>Ouvrir l’entrée</summary>
+                                <p class="oh-dream-rest">Des poissons passaient devant le frigo et la lumière traversait l’eau en longs rubans. Mon père servait le thé comme si de rien n’était. C’était calme, presque une bénédiction.</p>
+                            </details>
+                            <ul class="oh-dream-symbols" aria-label="Symboles"><li>Eau</li><li>Maison</li></ul>
+                        </div>
+                        <button class="oh-dream-open" type="button" aria-label="Ouvrir l’entrée : La marée est entrée dans la cuisine" hidden></button>
+                    </article>
+                </li>
+                <li class="oh-dream-slot">
+                    <article class="oh-dream" data-symbols="13,15,10" data-emotion="fear">
+                        <img class="oh-dream-img" src="/img/dreams/doors-480w.webp" data-full="/img/dreams/doors-800w.webp" width="480" height="600" loading="lazy" decoding="async" alt="">
+                        <div class="oh-dream-body">
+                            <p class="oh-dream-meta"><time>15 sept.</time><span class="oh-emotion" data-emotion="fear">Peur</span></p>
+                            <h3 class="oh-dream-title">Poursuivie dans une forêt de portes</h3>
+                            <p class="oh-dream-excerpt">Quelque chose me suivait entre les arbres. Chaque tronc avait une porte, et chaque porte ouvrait sur la même forêt.</p>
+                            <details class="oh-dream-more">
+                                <summary>Ouvrir l’entrée</summary>
+                                <p class="oh-dream-rest">Je n’ai jamais vu ce qui me suivait, j’entendais seulement les branches craquer de plus en plus près. Je choisissais des portes, de plus en plus vite. Je me suis réveillée le cœur battant et je l’ai enregistré avant qu’il ne m’échappe.</p>
+                            </details>
+                            <ul class="oh-dream-symbols" aria-label="Symboles"><li>Poursuite</li><li>Forêt</li><li>Porte</li></ul>
+                        </div>
+                        <button class="oh-dream-open" type="button" aria-label="Ouvrir l’entrée : Poursuivie dans une forêt de portes" hidden></button>
+                    </article>
+                </li>
+                <li class="oh-dream-slot">
+                    <article class="oh-dream" data-symbols="3" data-emotion="helplessness">
+                        <img class="oh-dream-img" src="/img/dreams/glass-teeth-480w.webp" data-full="/img/dreams/glass-teeth-800w.webp" width="480" height="600" loading="lazy" decoding="async" alt="">
+                        <div class="oh-dream-body">
+                            <p class="oh-dream-meta"><time>12 sept.</time><span class="oh-emotion" data-emotion="helplessness">Impuissance</span></p>
+                            <h3 class="oh-dream-title">Mes dents étaient en verre</h3>
+                            <p class="oh-dream-excerpt">J’allais faire une présentation et je sentais mes dents se changer en verre. Je n’osais plus dire un mot.</p>
+                            <details class="oh-dream-more">
+                                <summary>Ouvrir l’entrée</summary>
+                                <p class="oh-dream-rest">Tout le monde attendait. Quand j’ai enfin souri, la lumière les a traversées et a dessiné de petits arcs-en-ciel sur le mur. Bizarrement, personne ne l’a remarqué à part moi.</p>
+                            </details>
+                            <ul class="oh-dream-symbols" aria-label="Symboles"><li>Dents</li></ul>
+                        </div>
+                        <button class="oh-dream-open" type="button" aria-label="Ouvrir l’entrée : Mes dents étaient en verre" hidden></button>
+                    </article>
+                </li>
+                <li class="oh-dream-slot">
+                    <article class="oh-dream" data-symbols="9,1" data-emotion="urgency">
+                        <img class="oh-dream-img" src="/img/dreams/no-driver-480w.webp" data-full="/img/dreams/no-driver-800w.webp" width="480" height="600" loading="lazy" decoding="async" alt="">
+                        <div class="oh-dream-body">
+                            <p class="oh-dream-meta"><time>9 sept.</time><span class="oh-emotion" data-emotion="urgency">Urgence</span></p>
+                            <h3 class="oh-dream-title">La voiture sans conducteur</h3>
+                            <p class="oh-dream-excerpt">J’étais assis à l’arrière et le siège du conducteur était vide. La route s’arrêtait à une falaise et on continuait tout droit.</p>
+                            <details class="oh-dream-more">
+                                <summary>Ouvrir l’entrée</summary>
+                                <p class="oh-dream-rest">J’essayais de passer à l’avant, mais la voiture s’allongeait sans fin. Puis on est tombés, lentement, comme dans du miel. Je me suis réveillé juste avant le sol.</p>
+                            </details>
+                            <ul class="oh-dream-symbols" aria-label="Symboles"><li>Voiture</li><li>Chute</li></ul>
+                        </div>
+                        <button class="oh-dream-open" type="button" aria-label="Ouvrir l’entrée : La voiture sans conducteur" hidden></button>
+                    </article>
+                </li>
+                <li class="oh-dream-slot">
+                    <article class="oh-dream" data-symbols="7,8" data-emotion="tenderness">
+                        <img class="oh-dream-img" src="/img/dreams/cat-480w.webp" data-full="/img/dreams/cat-800w.webp" width="480" height="600" loading="lazy" decoding="async" alt="">
+                        <div class="oh-dream-body">
+                            <p class="oh-dream-meta"><time>5 sept.</time><span class="oh-emotion" data-emotion="tenderness">Tendresse</span></p>
+                            <h3 class="oh-dream-title">Un chat qui connaissait mon prénom</h3>
+                            <p class="oh-dream-excerpt">Un chat gris était assis sur le rebord de mon ancien appartement et a prononcé mon prénom, tout doucement, comme s’il m’attendait.</p>
+                            <details class="oh-dream-more">
+                                <summary>Ouvrir l’entrée</summary>
+                                <p class="oh-dream-rest">Il m’a guidée à travers des pièces que j’avais oubliées : mon premier bureau, un manteau perdu il y a des années. À la fin, il s’est lové dans la lumière et je me suis sentie pardonnée pour quelque chose que je ne savais pas nommer.</p>
+                            </details>
+                            <ul class="oh-dream-symbols" aria-label="Symboles"><li>Chat</li><li>Maison</li></ul>
+                        </div>
+                        <button class="oh-dream-open" type="button" aria-label="Ouvrir l’entrée : Un chat qui connaissait mon prénom" hidden></button>
+                    </article>
+                </li>
+                <li class="oh-dream-slot">
+                    <article class="oh-dream" data-symbols="11,0" data-emotion="loneliness">
+                        <img class="oh-dream-img" src="/img/dreams/frozen-lake-480w.webp" data-full="/img/dreams/frozen-lake-800w.webp" width="480" height="600" loading="lazy" decoding="async" alt="">
+                        <div class="oh-dream-body">
+                            <p class="oh-dream-meta"><time>30 août</time><span class="oh-emotion" data-emotion="loneliness">Solitude</span></p>
+                            <h3 class="oh-dream-title">Un feu sur le lac gelé</h3>
+                            <p class="oh-dream-excerpt">Un feu de camp brûlait au milieu d’un lac gelé. J’ai marché vers lui pendant des heures sans jamais m’en approcher.</p>
+                            <details class="oh-dream-more">
+                                <summary>Ouvrir l’entrée</summary>
+                                <p class="oh-dream-rest">La glace chantait sous mes pas. Je voyais des gens que j’aime assis autour du feu, mais ils ne m’entendaient pas les appeler. Je me suis réveillé glacé, et très silencieux.</p>
+                            </details>
+                            <ul class="oh-dream-symbols" aria-label="Symboles"><li>Feu</li><li>Eau</li></ul>
+                        </div>
+                        <button class="oh-dream-open" type="button" aria-label="Ouvrir l’entrée : Un feu sur le lac gelé" hidden></button>
+                    </article>
+                </li>
+                <li class="oh-dream-slot">
+                    <article class="oh-dream" data-symbols="1,2" data-emotion="serenity">
+                        <img class="oh-dream-img" src="/img/dreams/floating-480w.webp" data-full="/img/dreams/floating-800w.webp" width="480" height="600" loading="lazy" decoding="async" alt="">
+                        <div class="oh-dream-body">
+                            <p class="oh-dream-meta"><time>24 août</time><span class="oh-emotion" data-emotion="serenity">Sérénité</span></p>
+                            <h3 class="oh-dream-title">Tomber, puis flotter</h3>
+                            <p class="oh-dream-excerpt">J’ai glissé d’un toit et je suis tombée longtemps. À mi-chemin, la chute s’est changée en flottement.</p>
+                            <details class="oh-dream-more">
+                                <summary>Ouvrir l’entrée</summary>
+                                <p class="oh-dream-rest">Les lumières de la ville s’étalaient sous moi comme une galaxie lente. J’ai cessé d’avoir peur au moment où j’ai décidé de regarder autour de moi. C’est la troisième fois cet été que la chute se transforme en vol.</p>
+                            </details>
+                            <ul class="oh-dream-symbols" aria-label="Symboles"><li>Chute</li><li>Voler</li></ul>
+                        </div>
+                        <button class="oh-dream-open" type="button" aria-label="Ouvrir l’entrée : Tomber, puis flotter" hidden></button>
+                    </article>
+                </li>
+                <li class="oh-dream-slot">
+                    <article class="oh-dream" data-symbols="6,12" data-emotion="grief">
+                        <img class="oh-dream-img" src="/img/dreams/station-480w.webp" data-full="/img/dreams/station-800w.webp" width="480" height="600" loading="lazy" decoding="async" alt="">
+                        <div class="oh-dream-body">
+                            <p class="oh-dream-meta"><time>17 août</time><span class="oh-emotion" data-emotion="grief">Chagrin</span></p>
+                            <h3 class="oh-dream-title">La chienne qui attendait à la gare</h3>
+                            <p class="oh-dream-excerpt">Notre vieille chienne attendait sur le quai, comme elle attendait autrefois derrière la porte. Elle est partie il y a deux ans.</p>
+                            <details class="oh-dream-more">
+                                <summary>Ouvrir l’entrée</summary>
+                                <p class="oh-dream-rest">Elle remuait la queue et marchait à côté de moi jusqu’à l’arrivée du train. Je savais que je ne pouvais pas l’emmener. J’ai pleuré au réveil, mais c’étaient de bonnes larmes.</p>
+                            </details>
+                            <ul class="oh-dream-symbols" aria-label="Symboles"><li>Chien</li><li>Mort</li></ul>
+                        </div>
+                        <button class="oh-dream-open" type="button" aria-label="Ouvrir l’entrée : La chienne qui attendait à la gare" hidden></button>
+                    </article>
+                </li>
+                </ul>
+            </div>
+        </div>
+        <p class="oh-dreams-note">Exemple d’entrée rédigé pour cette page</p>
+    </section>
+
+    <!-- 1c. Waking: speak it before it fades -->
+    <section class="oh-section oh-waking" data-chapter="waking">
+        <div class="oh-waking-grid">
+            <div class="oh-waking-copy reveal">
+                <span class="oh-index" aria-hidden="true">02 · Réveil</span>
+                <h2 class="oh-h2">Dites-le avant qu’il ne s’efface</h2>
+                <p class="oh-lede">Un geste, et vous parlez. Noctalia transforme votre voix en texte modifiable : le premier récit est gardé avant que la journée ne vienne l’écraser.</p>
+                <div class="oh-rec glass-panel" aria-hidden="true">
+                    <p class="oh-rec-head"><span class="oh-rec-dot"></span>Enregistrement<span class="oh-rec-time">00:14</span></p>
+                    <div class="oh-rec-wave"><span style="--h:22"></span><span style="--h:40"></span><span style="--h:64"></span><span style="--h:38"></span><span style="--h:80"></span><span style="--h:52"></span><span style="--h:90"></span><span style="--h:34"></span><span style="--h:60"></span><span style="--h:76"></span><span style="--h:44"></span><span style="--h:96"></span><span style="--h:58"></span><span style="--h:30"></span><span style="--h:70"></span><span style="--h:48"></span><span style="--h:84"></span><span style="--h:36"></span><span style="--h:62"></span><span style="--h:28"></span><span style="--h:74"></span><span style="--h:50"></span><span style="--h:88"></span><span style="--h:42"></span><span style="--h:66"></span><span style="--h:32"></span><span style="--h:56"></span><span style="--h:24"></span></div>
+                    <p class="oh-rec-text">J’étais chez ma grand-mère, mais il y avait un escalier que je n’avais jamais vu. En haut, une porte bleue bourdonnait.</p>
+                </div>
+            </div>
+            <div class="oh-waking-device reveal">
+                <div class="phone-frame oh-waking-phone">
+                    <picture>
+                        <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <img src="../img/en/recording-800w.jpg" alt="Enregistrement vocal de votre rêve" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- 2. How it works (3 steps) -->
     <section id="comment-ca-marche">
         <div class="oh-section-head reveal" data-steps-heading>
             <div>
-                <span class="oh-index" aria-hidden="true">01 · Rêve</span>
                 <h2 class="oh-h2">D’une scène qui s’efface à un récit que vous pouvez relire</h2>
             </div>
             <p class="oh-lede">Capturez d’abord, tant que c’est encore vif. Donnez-lui du sens ensuite, une fois bien réveillé.</p>
@@ -129,7 +334,6 @@
     <section id="fonctionnalites">
         <div class="oh-section-head reveal">
             <div>
-                <span class="oh-index" aria-hidden="true">02 · Réveil</span>
                 <h2 class="oh-h2">Ce que chaque rêve conserve</h2>
             </div>
             <p class="oh-lede">Le récit d’origine reste intact. Tout le reste est facultatif, ajouté seulement quand un rêve l’appelle.</p>
@@ -309,7 +513,6 @@
     <section aria-labelledby="explorer-outils-noctalia" class="oh-section">
         <div class="oh-section-head reveal">
             <div>
-                <span class="oh-index" aria-hidden="true">04</span>
                 <h2 id="explorer-outils-noctalia" class="oh-h2">Trouvez votre porte d’entrée</h2>
             </div>
             <p class="oh-lede">Partez de là où vous en êtes : une saisie plus rapide, une réflexion guidée, un symbole à chercher ou un comparatif d’applications.</p>
@@ -346,11 +549,58 @@
         </div>
     </section>
 
+    <!-- 4b. Remembering: journal, emotions over time, streak -->
+    <section class="oh-section oh-remember" data-chapter="remembering">
+        <div class="oh-section-head reveal">
+            <div>
+                <span class="oh-index" aria-hidden="true">04 · Se souvenir</span>
+                <h2 class="oh-h2">Vos nuits, en mémoire</h2>
+            </div>
+            <p class="oh-lede">Chaque entrée rejoint un journal que vous pouvez remonter. Au fil des semaines, Noctalia montre les émotions qui reviennent, la fréquence de vos souvenirs et la durée de votre série.</p>
+        </div>
+        <div class="oh-remember-grid">
+            <div class="oh-journal glass-panel reveal">
+                <h3 class="oh-remember-h3">Journal</h3>
+                <ol class="oh-timeline">
+                        <li class="oh-timeline-item"><time>23 sept.</time><span class="oh-timeline-title">L’escalier qui n’existait pas</span><span class="oh-emotion" data-emotion="disorientation">Désorientation</span></li>
+                        <li class="oh-timeline-item"><time>21 sept.</time><span class="oh-timeline-title">Voler au-dessus du port</span><span class="oh-emotion" data-emotion="joy">Joie</span></li>
+                        <li class="oh-timeline-item"><time>18 sept.</time><span class="oh-timeline-title">La marée est entrée dans la cuisine</span><span class="oh-emotion" data-emotion="serenity">Sérénité</span></li>
+                        <li class="oh-timeline-item"><time>15 sept.</time><span class="oh-timeline-title">Poursuivie dans une forêt de portes</span><span class="oh-emotion" data-emotion="fear">Peur</span></li>
+                        <li class="oh-timeline-item"><time>12 sept.</time><span class="oh-timeline-title">Mes dents étaient en verre</span><span class="oh-emotion" data-emotion="helplessness">Impuissance</span></li>
+                        <li class="oh-timeline-item"><time>9 sept.</time><span class="oh-timeline-title">La voiture sans conducteur</span><span class="oh-emotion" data-emotion="urgency">Urgence</span></li>
+                        <li class="oh-timeline-item"><time>5 sept.</time><span class="oh-timeline-title">Un chat qui connaissait mon prénom</span><span class="oh-emotion" data-emotion="tenderness">Tendresse</span></li>
+                        <li class="oh-timeline-item"><time>30 août</time><span class="oh-timeline-title">Un feu sur le lac gelé</span><span class="oh-emotion" data-emotion="loneliness">Solitude</span></li>
+                        <li class="oh-timeline-item"><time>24 août</time><span class="oh-timeline-title">Tomber, puis flotter</span><span class="oh-emotion" data-emotion="serenity">Sérénité</span></li>
+                        <li class="oh-timeline-item"><time>17 août</time><span class="oh-timeline-title">La chienne qui attendait à la gare</span><span class="oh-emotion" data-emotion="grief">Chagrin</span></li>
+                </ol>
+            </div>
+            <div class="oh-remember-side">
+                <figure class="oh-chart glass-panel reveal">
+                    <figcaption class="oh-remember-h3">Émotions sur six semaines</figcaption>
+                    <svg class="oh-chart-svg" viewBox="0 0 300 140" aria-hidden="true" focusable="false"><g class="oh-chart-grid"><line x1="14" x2="286" y1="14.0" y2="14.0" /><line x1="14" x2="286" y1="42.0" y2="42.0" /><line x1="14" x2="286" y1="70.0" y2="70.0" /><line x1="14" x2="286" y1="98.0" y2="98.0" /><line x1="14" x2="286" y1="126.0" y2="126.0" /></g><g class="oh-chart-line is-fear"><path d="M14.0 58.8 L68.4 36.4 L122.8 58.8 L177.2 81.2 L231.6 81.2 L286.0 103.6" pathLength="1" /><circle cx="14.0" cy="58.8" r="3" style="--i:0" /><circle cx="68.4" cy="36.4" r="3" style="--i:1" /><circle cx="122.8" cy="58.8" r="3" style="--i:2" /><circle cx="177.2" cy="81.2" r="3" style="--i:3" /><circle cx="231.6" cy="81.2" r="3" style="--i:4" /><circle cx="286.0" cy="103.6" r="3" style="--i:5" /></g><g class="oh-chart-line is-serenity"><path d="M14.0 103.6 L68.4 103.6 L122.8 81.2 L177.2 81.2 L231.6 58.8 L286.0 36.4" pathLength="1" /><circle cx="14.0" cy="103.6" r="3" style="--i:0" /><circle cx="68.4" cy="103.6" r="3" style="--i:1" /><circle cx="122.8" cy="81.2" r="3" style="--i:2" /><circle cx="177.2" cy="81.2" r="3" style="--i:3" /><circle cx="231.6" cy="58.8" r="3" style="--i:4" /><circle cx="286.0" cy="36.4" r="3" style="--i:5" /></g></svg>
+                    <p class="oh-sr">Peur: 3 → 4 → 3 → 2 → 2 → 1 · Sérénité: 1 → 1 → 2 → 2 → 3 → 4</p>
+                    <div class="oh-chart-axis" aria-hidden="true"><span>Il y a 6 semaines</span><span>Cette semaine</span></div>
+                    <ul class="oh-chart-legend">
+                        <li class="is-fear">Peur</li>
+                        <li class="is-serenity">Sérénité</li>
+                    </ul>
+                </figure>
+                <div class="oh-streak glass-panel reveal">
+                    <div class="oh-streak-stats">
+                        <p><span class="oh-streak-num">6</span> <span class="oh-streak-unit">nuits</span><span class="oh-streak-label">Série actuelle</span></p>
+                        <p><span class="oh-streak-num">9</span> <span class="oh-streak-unit">nuits</span><span class="oh-streak-label">Série la plus longue</span></p>
+                    </div>
+                    <div class="oh-regularity" aria-hidden="true"><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span></div>
+                    <p class="oh-regularity-caption">Matins avec un rêve enregistré, cinq dernières semaines · 27/35</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- 5. Who is it for? (Profiles) -->
     <section class="oh-section">
         <div class="oh-section-head reveal">
             <div>
-                <span class="oh-index" aria-hidden="true">05 · Se souvenir</span>
                 <h2 class="oh-h2">Pour les matins comme ceux-là</h2>
             </div>
         </div>
@@ -376,7 +626,6 @@
     <!-- 6. Pricing / Plans -->
     <section class="oh-section">
         <div class="oh-pricing-head reveal">
-            <span class="oh-index" aria-hidden="true">06</span>
             <h2 class="oh-h2">Commencez gratuitement. Allez plus loin avec Plus.</h2>
         </div>
         <div class="oh-pricing">
@@ -416,7 +665,6 @@
     <!-- 7. FAQ -->
     <section class="oh-section">
         <div class="oh-pricing-head reveal">
-            <span class="oh-index" aria-hidden="true">07</span>
             <h2 class="oh-h2">Questions fréquentes</h2>
         </div>
         <div class="oh-faq reveal">
