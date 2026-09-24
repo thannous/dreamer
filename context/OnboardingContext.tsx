@@ -237,8 +237,12 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
   return <OnboardingContext.Provider value={value}>{children}</OnboardingContext.Provider>;
 }
 
+export function useOptionalOnboarding(): OnboardingContextValue | null {
+  return useContext(OnboardingContext);
+}
+
 export function useOnboarding(): OnboardingContextValue {
-  const context = useContext(OnboardingContext);
+  const context = useOptionalOnboarding();
   if (!context) {
     throw new Error('useOnboarding must be used within OnboardingProvider');
   }

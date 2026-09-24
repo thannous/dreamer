@@ -112,6 +112,7 @@ const {
 let mockCurrentUser: any = null;
 let mockAuthLoading = false;
 let mockSupabaseConfigured = true;
+let mockHasOnboardingProvider = true;
 
 jest.mock('@supabase/auth-js', () => {
   class AuthApiError extends Error {
@@ -135,7 +136,11 @@ jest.mock('@/context/AuthContext', () => ({
 }));
 
 jest.mock('@/context/OnboardingContext', () => ({
-  useOnboarding: () => ({ reload: mockReloadOnboarding }),
+  useOnboarding: () => {
+    if (!mockHasOnboardingProvider) throw new Error('useOnboarding must be used within OnboardingProvider');
+    return { reload: mockReloadOnboarding };
+  },
+  useOptionalOnboarding: () => mockHasOnboardingProvider ? { reload: mockReloadOnboarding } : null,
 }));
 
 jest.mock('expo-router', () => ({
@@ -300,6 +305,7 @@ describe('EmailAuthCard', () => {
     mockCurrentUser = null;
     mockAuthLoading = false;
     mockSupabaseConfigured = true;
+    mockHasOnboardingProvider = true;
     Alert.alert = mockAlert;
     mockSignInWithEmailPassword.mockResolvedValue(undefined);
     mockSignUpWithEmailPassword.mockResolvedValue({ email_confirmed_at: null });
@@ -519,8 +525,11 @@ describe('EmailAuthCard', () => {
     });
   });
 
-  it('renders the Lucid return path without a Journal dreams provider', () => {
+  // Isolation gap: iOS dogfood only exercises the Journal shell. Lucid has no
+  // DreamsProvider or OnboardingProvider; an unconditional hook crashes on render.
+  it('renders the Lucid return path without Journal providers', () => {
     mockOptionalDreamsActions = null;
+    mockHasOnboardingProvider = false;
     expect(() => render(<EmailAuthCard returnTo="/lucid/(tabs)/settings" />)).not.toThrow();
     expect(screen.getByTestId(TID.Button.AuthSignIn)).toBeDefined();
     expect(screen.getByTestId(TID.Input.AuthEmail)).toBeDefined();
