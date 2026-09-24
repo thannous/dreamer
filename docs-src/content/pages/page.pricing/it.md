@@ -32,7 +32,7 @@
     "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Piani e prezzi Noctalia\",\"description\":\"Confronta il piano gratuito Sognatore e l'abbonamento facoltativo Noctalia Plus. Google Play mostra prezzo e opzioni applicabili prima dell'acquisto.\",\"url\":\"https://noctalia.app/it/prezzi\",\"inLanguage\":\"it\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-07-31T00:00:00+02:00\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/it/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Prezzi\",\"item\":\"https://noctalia.app/it/prezzi\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"EUR\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Installazione gratuita con acquisti facoltativi Noctalia Plus mostrati da Google Play.\"}}",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Noctalia si può usare gratis?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sì. Il piano Sognatore include registrazioni dei sogni illimitate, tre analisi dei sogni al mese, due esplorazioni guidate al mese e un diario dei sogni salvato.\"}},{\"@type\":\"Question\",\"name\":\"Quanto costa Noctalia Plus?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Apri la scheda Google Play o la schermata di abbonamento nell'app per vedere prima dell'acquisto il prezzo, il periodo di fatturazione, le imposte, l'idoneità e le eventuali promozioni per il tuo paese e account.\"}},{\"@type\":\"Question\",\"name\":\"Sono disponibili abbonamenti mensili e annuali?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Possono essere disponibili opzioni mensili e annuali. Google Play mostra le opzioni offerte attualmente per il tuo paese e account, quindi la disponibilità può variare.\"}},{\"@type\":\"Question\",\"name\":\"Dove posso gestire o annullare un abbonamento?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus viene fatturato tramite Google Play. Puoi gestirlo o annullarlo dalla sezione Abbonamenti dell'account Google Play utilizzato per l'acquisto.\"}}]}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Noctalia si può usare gratis?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sì. Il piano Sognatore include registrazioni dei sogni illimitate, tre analisi dei sogni al mese (ognuna con un’immagine), esplorazioni guidate senza limite mensile, fino a 10 messaggi di approfondimento per sogno analizzato e un diario dei sogni salvato.\"}},{\"@type\":\"Question\",\"name\":\"Quanto costa Noctalia Plus?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Apri la scheda Google Play o la schermata di abbonamento nell'app per vedere prima dell'acquisto il prezzo, il periodo di fatturazione, le imposte, l'idoneità e le eventuali promozioni per il tuo paese e account.\"}},{\"@type\":\"Question\",\"name\":\"Sono disponibili abbonamenti mensili e annuali?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Possono essere disponibili opzioni mensili e annuali. Google Play mostra le opzioni offerte attualmente per il tuo paese e account, quindi la disponibilità può variare.\"}},{\"@type\":\"Question\",\"name\":\"Dove posso gestire o annullare un abbonamento?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus viene fatturato tramite Google Play. Puoi gestirlo o annullarlo dalla sezione Abbonamenti dell'account Google Play utilizzato per l'acquisto.\"}}]}"
   ],
   "activeNav": "resources"
 }
@@ -49,8 +49,9 @@
       <p class="text-2xl text-dream-cream mb-5">Gratis</p>
       <ul class="list-disc pl-5 space-y-2">
         <li>Registrazioni dei sogni con voce o testo illimitate</li>
-        <li>Tre analisi dei sogni al mese</li>
-        <li>Due esplorazioni guidate al mese</li>
+        <li>3 analisi dei sogni al mese, ognuna con un’immagine</li>
+        <li>Esplorazioni guidate senza limite mensile</li>
+        <li>Fino a 10 messaggi di approfondimento per sogno analizzato</li>
         <li>Un diario dei sogni salvato da rileggere</li>
       </ul>
       <p class="mt-5">Questo piano permette di provare il percorso completo, dalla cattura alla riflessione, senza iniziare un abbonamento a pagamento.</p>
@@ -60,9 +61,9 @@
       <h2 class="text-3xl font-serif text-white mb-3">Noctalia Plus</h2>
       <p class="text-2xl text-dream-cream mb-5">Prezzo attuale su Google Play</p>
       <ul class="list-disc pl-5 space-y-2">
-        <li>Analisi dei sogni illimitate</li>
-        <li>Esplorazioni guidate illimitate</li>
-        <li>Messaggi di approfondimento illimitati per ogni sogno</li>
+        <li>Analisi dei sogni e immagini illimitate</li>
+        <li>Fino a 20 messaggi di approfondimento per sogno</li>
+        <li>Sintesi a 360° alla fine di un’esplorazione guidata</li>
         <li>Fatturazione e rinnovo gestiti da Google Play</li>
       </ul>
       <p class="mt-5">Le opzioni mensile e annuale possono variare per paese, account e idoneità. Google Play mostra l'offerta esatta prima dell'acquisto.</p>
@@ -77,7 +78,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Domande su piani e fatturazione</h2>
     <div class="space-y-5">
-      <div><h3 class="text-white font-medium">Noctalia si può usare gratis?</h3><p class="mt-1">Sì. Il piano Sognatore include registrazioni dei sogni illimitate, tre analisi dei sogni al mese, due esplorazioni guidate al mese e un diario dei sogni salvato.</p></div>
+      <div><h3 class="text-white font-medium">Noctalia si può usare gratis?</h3><p class="mt-1">Sì. Il piano Sognatore include registrazioni dei sogni illimitate, tre analisi dei sogni al mese (ognuna con un’immagine), esplorazioni guidate senza limite mensile, fino a 10 messaggi di approfondimento per sogno analizzato e un diario dei sogni salvato.</p></div>
       <div><h3 class="text-white font-medium">Quanto costa Noctalia Plus?</h3><p class="mt-1">Apri la scheda Google Play o la schermata di abbonamento nell'app per vedere prima dell'acquisto il prezzo, il periodo di fatturazione, le imposte, l'idoneità e le eventuali promozioni per il tuo paese e account.</p></div>
       <div><h3 class="text-white font-medium">Sono disponibili abbonamenti mensili e annuali?</h3><p class="mt-1">Possono essere disponibili opzioni mensili e annuali. Google Play mostra le opzioni offerte attualmente per il tuo paese e account, quindi la disponibilità può variare.</p></div>
       <div><h3 class="text-white font-medium">Dove posso gestire o annullare un abbonamento?</h3><p class="mt-1">Noctalia Plus viene fatturato tramite Google Play. Puoi gestirlo o annullarlo dalla sezione Abbonamenti dell'account Google Play utilizzato per l'acquisto.</p></div>

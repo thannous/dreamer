@@ -856,8 +856,9 @@
                 </div>
                 <ul>
                     <li>Grabaciones ilimitadas, por voz o texto</li>
-                    <li>3 análisis de sueños al mes</li>
-                    <li>2 exploraciones guiadas al mes</li>
+                    <li>3 análisis de sueños al mes, cada uno con una imagen</li>
+                    <li>Exploraciones guiadas sin límite mensual</li>
+                    <li>Hasta 10 mensajes de seguimiento por sueño analizado</li>
                     <li>Tu diario de sueños guardado</li>
                 </ul>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es" class="oh-plan-cta">Descargar la app</a>
@@ -871,9 +872,9 @@
                     <p class="oh-plan-desc">Google Play muestra la opción mensual o anual disponible para tu país y tu cuenta.</p>
                 </div>
                 <ul>
-                    <li>Análisis de sueños ilimitados</li>
-                    <li>Exploraciones guiadas ilimitadas</li>
-                    <li>Mensajes de seguimiento ilimitados por sueño</li>
+                    <li>Análisis de sueños e imágenes ilimitados</li>
+                    <li>Hasta 20 mensajes de seguimiento por sueño</li>
+                    <li>Síntesis 360° al final de una exploración guiada</li>
                 </ul>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es" class="oh-plan-cta">Ver Noctalia Plus</a>
                 <p class="oh-plan-note">Google Play muestra el precio aplicable, el periodo de facturación y cualquier elegibilidad antes de comprar.</p>

@@ -32,7 +32,7 @@
     "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Offres et tarifs Noctalia\",\"description\":\"Comparez l'offre gratuite Rêveur et l'abonnement facultatif Noctalia Plus. Google Play affiche le prix et les options applicables avant l'achat.\",\"url\":\"https://noctalia.app/fr/tarifs\",\"inLanguage\":\"fr\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-07-31T00:00:00+02:00\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Accueil\",\"item\":\"https://noctalia.app/fr/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Tarifs\",\"item\":\"https://noctalia.app/fr/tarifs\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"EUR\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Installation gratuite avec achats Noctalia Plus facultatifs affichés par Google Play.\"}}",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Noctalia est-elle gratuite ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Oui. L'offre Rêveur comprend des enregistrements de rêves illimités, trois analyses de rêves par mois, deux explorations guidées par mois et un journal de rêves enregistré.\"}},{\"@type\":\"Question\",\"name\":\"Combien coûte Noctalia Plus ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ouvrez la fiche Google Play ou l'écran d'abonnement dans l'application pour voir le prix, la période de facturation, les taxes, l'éligibilité et toute promotion applicables à votre pays et à votre compte avant l'achat.\"}},{\"@type\":\"Question\",\"name\":\"Des abonnements mensuel et annuel sont-ils disponibles ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Des options mensuelle et annuelle peuvent être proposées. Google Play affiche les options actuellement accessibles dans votre pays et pour votre compte ; leur disponibilité peut donc varier.\"}},{\"@type\":\"Question\",\"name\":\"Où gérer ou résilier un abonnement ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus est facturé via Google Play. Vous pouvez gérer ou résilier l'abonnement depuis la rubrique Abonnements du compte Google Play utilisé lors de l'achat.\"}}]}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Noctalia est-elle gratuite ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Oui. L'offre Rêveur comprend des enregistrements de rêves illimités, trois analyses de rêves par mois (chacune avec une image), des explorations guidées sans limite mensuelle, jusqu’à 10 messages de suivi par rêve analysé et un journal de rêves enregistré.\"}},{\"@type\":\"Question\",\"name\":\"Combien coûte Noctalia Plus ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ouvrez la fiche Google Play ou l'écran d'abonnement dans l'application pour voir le prix, la période de facturation, les taxes, l'éligibilité et toute promotion applicables à votre pays et à votre compte avant l'achat.\"}},{\"@type\":\"Question\",\"name\":\"Des abonnements mensuel et annuel sont-ils disponibles ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Des options mensuelle et annuelle peuvent être proposées. Google Play affiche les options actuellement accessibles dans votre pays et pour votre compte ; leur disponibilité peut donc varier.\"}},{\"@type\":\"Question\",\"name\":\"Où gérer ou résilier un abonnement ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus est facturé via Google Play. Vous pouvez gérer ou résilier l'abonnement depuis la rubrique Abonnements du compte Google Play utilisé lors de l'achat.\"}}]}"
   ],
   "activeNav": "resources"
 }
@@ -49,8 +49,9 @@
       <p class="text-2xl text-dream-cream mb-5">Gratuit</p>
       <ul class="list-disc pl-5 space-y-2">
         <li>Enregistrements vocaux ou textuels illimités</li>
-        <li>Trois analyses de rêves par mois</li>
-        <li>Deux explorations guidées par mois</li>
+        <li>3 analyses de rêves par mois, chacune avec une image</li>
+        <li>Explorations guidées sans limite mensuelle</li>
+        <li>Jusqu’à 10 messages de suivi par rêve analysé</li>
         <li>Un journal de rêves enregistré à consulter</li>
       </ul>
       <p class="mt-5">Cette offre permet de tester le parcours complet, de la capture à la réflexion, sans commencer d'abonnement payant.</p>
@@ -60,9 +61,9 @@
       <h2 class="text-3xl font-serif text-white mb-3">Noctalia Plus</h2>
       <p class="text-2xl text-dream-cream mb-5">Prix actuel sur Google Play</p>
       <ul class="list-disc pl-5 space-y-2">
-        <li>Analyses de rêves illimitées</li>
-        <li>Explorations guidées illimitées</li>
-        <li>Messages de suivi illimités pour chaque rêve</li>
+        <li>Analyses de rêves et images illimitées</li>
+        <li>Jusqu’à 20 messages de suivi par rêve</li>
+        <li>Synthèse 360° à la fin d’une exploration guidée</li>
         <li>Facturation et renouvellement gérés par Google Play</li>
       </ul>
       <p class="mt-5">Les choix mensuel et annuel peuvent varier selon le pays, le compte et l'éligibilité. Google Play affiche l'offre exacte avant l'achat.</p>
@@ -77,7 +78,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Questions sur les offres et la facturation</h2>
     <div class="space-y-5">
-      <div><h3 class="text-white font-medium">Noctalia est-elle gratuite ?</h3><p class="mt-1">Oui. L'offre Rêveur comprend des enregistrements de rêves illimités, trois analyses de rêves par mois, deux explorations guidées par mois et un journal de rêves enregistré.</p></div>
+      <div><h3 class="text-white font-medium">Noctalia est-elle gratuite ?</h3><p class="mt-1">Oui. L'offre Rêveur comprend des enregistrements de rêves illimités, trois analyses de rêves par mois (chacune avec une image), des explorations guidées sans limite mensuelle, jusqu’à 10 messages de suivi par rêve analysé et un journal de rêves enregistré.</p></div>
       <div><h3 class="text-white font-medium">Combien coûte Noctalia Plus ?</h3><p class="mt-1">Ouvrez la fiche Google Play ou l'écran d'abonnement dans l'application pour voir le prix, la période de facturation, les taxes, l'éligibilité et toute promotion applicables à votre pays et à votre compte avant l'achat.</p></div>
       <div><h3 class="text-white font-medium">Des abonnements mensuel et annuel sont-ils disponibles ?</h3><p class="mt-1">Des options mensuelle et annuelle peuvent être proposées. Google Play affiche les options actuellement accessibles dans votre pays et pour votre compte ; leur disponibilité peut donc varier.</p></div>
       <div><h3 class="text-white font-medium">Où gérer ou résilier un abonnement ?</h3><p class="mt-1">Noctalia Plus est facturé via Google Play. Vous pouvez gérer ou résilier l'abonnement depuis la rubrique Abonnements du compte Google Play utilisé lors de l'achat.</p></div>

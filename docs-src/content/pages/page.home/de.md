@@ -856,8 +856,9 @@
                 </div>
                 <ul>
                     <li>Unbegrenzte Aufnahmen, per Sprache oder Text</li>
-                    <li>3 Traumanalysen pro Monat</li>
-                    <li>2 geführte Erkundungen pro Monat</li>
+                    <li>3 Traumanalysen pro Monat, jeweils mit Bild</li>
+                    <li>Geführte Erkundungen ohne monatliches Limit</li>
+                    <li>Bis zu 10 Folgenachrichten pro analysiertem Traum</li>
                     <li>Dein gespeichertes Traumtagebuch</li>
                 </ul>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="oh-plan-cta">App herunterladen</a>
@@ -871,9 +872,9 @@
                     <p class="oh-plan-desc">Google Play zeigt die monatliche oder jährliche Option, die für dein Land und dein Konto verfügbar ist.</p>
                 </div>
                 <ul>
-                    <li>Unbegrenzte Traumanalysen</li>
-                    <li>Unbegrenzte geführte Erkundungen</li>
-                    <li>Unbegrenzte Folgenachrichten pro Traum</li>
+                    <li>Unbegrenzte Traumanalysen und Bilder</li>
+                    <li>Bis zu 20 Folgenachrichten pro Traum</li>
+                    <li>360°-Synthese am Ende einer geführten Erkundung</li>
                 </ul>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="oh-plan-cta">Noctalia Plus ansehen</a>
                 <p class="oh-plan-note">Google Play zeigt vor dem Kauf den geltenden Preis, den Abrechnungszeitraum und etwaige Voraussetzungen.</p>

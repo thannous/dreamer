@@ -32,7 +32,7 @@
     "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Noctalia plans and pricing\",\"description\":\"Compare Noctalia's free Dreamer plan and optional Noctalia Plus subscription. Google Play shows the current price and billing options before purchase.\",\"url\":\"https://noctalia.app/en/pricing\",\"inLanguage\":\"en\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-07-31T00:00:00+02:00\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Pricing\",\"item\":\"https://noctalia.app/en/pricing\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"EUR\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Free installation with optional Noctalia Plus purchases shown by Google Play.\"}}",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Is Noctalia free to use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. The Dreamer plan includes unlimited dream recordings, three dream analyses per month, two guided explorations per month and a saved dream journal.\"}},{\"@type\":\"Question\",\"name\":\"How much does Noctalia Plus cost?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Open the Google Play listing or the in-app subscription screen to see the current price, billing period, taxes, eligibility and any promotion for your country and account before you purchase.\"}},{\"@type\":\"Question\",\"name\":\"Are monthly and annual subscriptions available?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Monthly and annual options may be available. Google Play shows the options currently offered to your country and account, so availability can vary.\"}},{\"@type\":\"Question\",\"name\":\"Where can I manage or cancel a subscription?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus is billed through Google Play. You can manage or cancel it from the subscriptions section of the Google Play account used for the purchase.\"}}]}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Is Noctalia free to use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. The Dreamer plan includes unlimited dream recordings, three dream analyses per month (each with an image), guided explorations with no monthly limit, up to 10 follow-up messages per analyzed dream and a saved dream journal.\"}},{\"@type\":\"Question\",\"name\":\"How much does Noctalia Plus cost?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Open the Google Play listing or the in-app subscription screen to see the current price, billing period, taxes, eligibility and any promotion for your country and account before you purchase.\"}},{\"@type\":\"Question\",\"name\":\"Are monthly and annual subscriptions available?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Monthly and annual options may be available. Google Play shows the options currently offered to your country and account, so availability can vary.\"}},{\"@type\":\"Question\",\"name\":\"Where can I manage or cancel a subscription?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus is billed through Google Play. You can manage or cancel it from the subscriptions section of the Google Play account used for the purchase.\"}}]}"
   ],
   "activeNav": "resources"
 }
@@ -49,8 +49,9 @@
       <p class="text-2xl text-dream-cream mb-5">Free</p>
       <ul class="list-disc pl-5 space-y-2">
         <li>Unlimited voice or text dream recordings</li>
-        <li>Three dream analyses per month</li>
-        <li>Two guided explorations per month</li>
+        <li>3 dream analyses per month, each with an image</li>
+        <li>Guided explorations with no monthly limit</li>
+        <li>Up to 10 follow-up messages per analyzed dream</li>
         <li>A saved dream journal you can revisit</li>
       </ul>
       <p class="mt-5">This plan is designed to let you test the complete capture-and-reflect workflow without starting a paid subscription.</p>
@@ -60,9 +61,9 @@
       <h2 class="text-3xl font-serif text-white mb-3">Noctalia Plus</h2>
       <p class="text-2xl text-dream-cream mb-5">Current price on Google Play</p>
       <ul class="list-disc pl-5 space-y-2">
-        <li>Unlimited dream analyses</li>
-        <li>Unlimited guided explorations</li>
-        <li>Unlimited follow-up messages per dream</li>
+        <li>Unlimited dream analyses and images</li>
+        <li>Up to 20 follow-up messages per dream</li>
+        <li>360° synthesis at the end of a guided exploration</li>
         <li>Billing and renewal managed by Google Play</li>
       </ul>
       <p class="mt-5">Monthly and annual choices can vary by country, account and eligibility. Google Play displays the exact offer before purchase.</p>
@@ -77,7 +78,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Plans and billing FAQ</h2>
     <div class="space-y-5">
-      <div><h3 class="text-white font-medium">Is Noctalia free to use?</h3><p class="mt-1">Yes. The Dreamer plan includes unlimited dream recordings, three dream analyses per month, two guided explorations per month and a saved dream journal.</p></div>
+      <div><h3 class="text-white font-medium">Is Noctalia free to use?</h3><p class="mt-1">Yes. The Dreamer plan includes unlimited dream recordings, three dream analyses per month (each with an image), guided explorations with no monthly limit, up to 10 follow-up messages per analyzed dream and a saved dream journal.</p></div>
       <div><h3 class="text-white font-medium">How much does Noctalia Plus cost?</h3><p class="mt-1">Open the Google Play listing or the in-app subscription screen to see the current price, billing period, taxes, eligibility and any promotion for your country and account before you purchase.</p></div>
       <div><h3 class="text-white font-medium">Are monthly and annual subscriptions available?</h3><p class="mt-1">Monthly and annual options may be available. Google Play shows the options currently offered to your country and account, so availability can vary.</p></div>
       <div><h3 class="text-white font-medium">Where can I manage or cancel a subscription?</h3><p class="mt-1">Noctalia Plus is billed through Google Play. You can manage or cancel it from the subscriptions section of the Google Play account used for the purchase.</p></div>

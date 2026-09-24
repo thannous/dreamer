@@ -856,8 +856,9 @@
                 </div>
                 <ul>
                     <li>Unlimited recordings, voice or text</li>
-                    <li>3 dream analyses per month</li>
-                    <li>2 guided explorations per month</li>
+                    <li>3 dream analyses per month, each with an image</li>
+                    <li>Guided explorations with no monthly limit</li>
+                    <li>Up to 10 follow-up messages per analyzed dream</li>
                     <li>Your saved dream journal</li>
                 </ul>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="oh-plan-cta">Download the app</a>
@@ -871,9 +872,9 @@
                     <p class="oh-plan-desc">Google Play shows the monthly or annual option available for your country and account.</p>
                 </div>
                 <ul>
-                    <li>Unlimited dream analyses</li>
-                    <li>Unlimited guided explorations</li>
-                    <li>Unlimited follow-up messages per dream</li>
+                    <li>Unlimited dream analyses and images</li>
+                    <li>Up to 20 follow-up messages per dream</li>
+                    <li>360° synthesis at the end of a guided exploration</li>
                 </ul>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="oh-plan-cta">View Noctalia Plus</a>
                 <p class="oh-plan-note">Google Play shows the applicable price, billing period and any eligibility before purchase.</p>
