@@ -482,6 +482,14 @@ export async function signInWithApple(): Promise<User> {
 /**
  * Complete sign out from both Google (mock) and Supabase
  */
+/** Clear mock dogfood persistence and sign out only for the explicit test reset. */
+export async function resetMockTestState(): Promise<void> {
+  if (!isMockMode) {
+    throw new Error('Mock test state reset requires mock mode');
+  }
+  await mockAuth.resetTestState();
+}
+
 export async function signOut() {
   if (isMockMode) {
     await mockAuth.signOut();
