@@ -60,7 +60,7 @@
     <section class="oh-section oh-dreams" data-chapter="dream" data-labels='{&quot;close&quot;:&quot;Schließen&quot;,&quot;transcript&quot;:&quot;Transkript&quot;,&quot;symbols&quot;:&quot;Symbole&quot;,&quot;example&quot;:&quot;Beispieleintrag für diese Seite&quot;}'>
         <div class="oh-section-head reveal">
             <h2 class="oh-h2">Illustriere deine Träume</h2>
-            <p class="oh-h2 oh-dreams-heading-end">Erkunde deine Träume</p>
+            <p class="oh-h2 oh-dreams-heading-end">Verstehe ihre Bedeutung</p>
         </div>
         <div class="oh-dreamspace">
             <div class="oh-dreamspace-pin">
@@ -228,7 +228,7 @@
                 </li>
                 </ul>
             </div>
-                <p class="oh-h2 oh-dreams-closing reveal">Erkunde deine Träume</p>
+                <p class="oh-h2 oh-dreams-closing reveal">Verstehe ihre Bedeutung</p>
             </div>
         </div>
     </section>
