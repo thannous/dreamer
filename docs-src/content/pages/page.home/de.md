@@ -41,11 +41,11 @@
     <header>
         <div class="oh-hero-inner">
             <h1 class="oh-hero-title hero-anim">
-                Halte den Traum fest, <span class="oh-accent-line">bevor der Tag ihn löscht</span>
+                <span class="oh-accent-line">Traumtagebuch</span>
             </h1>
 
             <p class="oh-hero-lede hero-anim">
-                Sprich ihn gleich nach dem Aufwachen ein, in deinen eigenen Worten. Noctalia bewahrt diese erste Erzählung unverändert und hilft dir danach, ihren Symbolen, Gefühlen und Fragen nachzugehen – auf Wunsch mit einem Bild der Szene.
+                Bewahre all deine Träume an einem Ort auf. Schreib sie nach dem Aufwachen auf oder sprich sie ein, finde sie später wieder und erkunde ihre Symbole mit Noctalia.
             </p>
 
             <div class="oh-hero-cta hero-anim hero-cta">
@@ -71,7 +71,7 @@
                 <h2 class="oh-h2">Träume, so wie sie erzählt wurden</h2>
             </div>
             <div>
-                <p class="oh-lede">Zehn Beispieleinträge, so festgehalten, wie Noctalia sie festhält: die Worte direkt nach dem Aufwachen, das Datum, das Gefühl und ein Bild der Szene.</p>
+                <p class="oh-lede">Jeder Traum kann illustriert oder analysiert werden – oder beides.</p>
                 <p class="oh-dreams-hint" aria-hidden="true">Ziehen, um die Nacht zu drehen · Eintrag öffnen zum Lesen</p>
             </div>
         </div>

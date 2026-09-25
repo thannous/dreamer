@@ -41,12 +41,8 @@
     <header>
         <div class="oh-hero-inner">
             <h1 class="oh-hero-title hero-anim">
-                Retenez le rêve <span class="oh-accent-line">avant que le jour l’efface</span>
+                Journal de <span class="oh-accent-line">rêves</span>
             </h1>
-
-            <p class="oh-hero-lede hero-anim">
-                Racontez-le dès le réveil, avec vos mots. Noctalia garde ce premier récit intact, puis vous aide à en suivre les symboles, les émotions et les questions — avec une image de la scène si vous le souhaitez.
-            </p>
 
             <div class="oh-hero-cta hero-anim hero-cta">
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="oh-btn-primary">
@@ -56,9 +52,6 @@
                     <i data-lucide="book-open"></i> Parcourir les symboles
                 </a>
             </div>
-            <p class="oh-hero-note hero-anim">
-                <i data-lucide="shield-check"></i> Application Android gratuite sur Google Play · Outil de réflexion, pas de diagnostic
-            </p>
 
         </div>
     </header>
@@ -66,16 +59,11 @@
     <!-- 1b. Dream: example entries in a 3D night -->
     <section class="oh-section oh-dreams" data-chapter="dream" data-labels='{&quot;close&quot;:&quot;Fermer&quot;,&quot;transcript&quot;:&quot;Transcription&quot;,&quot;symbols&quot;:&quot;Symboles&quot;,&quot;example&quot;:&quot;Exemple d’entrée rédigé pour cette page&quot;}'>
         <div class="oh-section-head reveal">
-            <div>
-                <span class="oh-index" aria-hidden="true">01 · Rêve</span>
-                <h2 class="oh-h2">Des rêves, tels qu’ils ont été racontés</h2>
-            </div>
-            <div>
-                <p class="oh-lede">Dix exemples d’entrées, conservées comme Noctalia les conserve : les mots dits au réveil, la date, le ressenti et une image de la scène.</p>
-                <p class="oh-dreams-hint" aria-hidden="true">Faites tourner la nuit · ouvrez une entrée pour la lire</p>
-            </div>
+            <h2 class="oh-h2">Illustre tes rêves</h2>
+            <p class="oh-h2 oh-dreams-heading-end">Explore tes rêves</p>
         </div>
         <div class="oh-dreamspace">
+            <div class="oh-dreamspace-pin">
             <div class="oh-dreamspace-stage">
                 <ul class="oh-dream-list" role="list">
                 <li class="oh-dream-slot">
@@ -240,6 +228,8 @@
                 </li>
                 </ul>
             </div>
+                <p class="oh-h2 oh-dreams-closing reveal">Explore tes rêves</p>
+            </div>
         </div>
     </section>
 
@@ -248,8 +238,8 @@
         <div class="oh-waking-grid">
             <div class="oh-waking-copy reveal">
                 <span class="oh-index" aria-hidden="true">02 · Réveil</span>
-                <h2 class="oh-h2">Dites-le avant qu’il ne s’efface</h2>
-                <p class="oh-lede">Un geste, et vous parlez. Noctalia transforme votre voix en texte modifiable : le premier récit est gardé avant que la journée ne vienne l’écraser.</p>
+                <h2 class="oh-h2">Votre rêve, à l’écrit ou à la voix</h2>
+                <p class="oh-lede">Noctalia vous aide à l’écrire.</p>
                 <div class="oh-rec glass-panel" aria-hidden="true">
                     <p class="oh-rec-head"><span class="oh-rec-dot"></span>Enregistrement<span class="oh-rec-time">00:14</span></p>
                     <div class="oh-rec-wave"><span style="--h:22"></span><span style="--h:40"></span><span style="--h:64"></span><span style="--h:38"></span><span style="--h:80"></span><span style="--h:52"></span><span style="--h:90"></span><span style="--h:34"></span><span style="--h:60"></span><span style="--h:76"></span><span style="--h:44"></span><span style="--h:96"></span><span style="--h:58"></span><span style="--h:30"></span><span style="--h:70"></span><span style="--h:48"></span><span style="--h:84"></span><span style="--h:36"></span><span style="--h:62"></span><span style="--h:28"></span><span style="--h:74"></span><span style="--h:50"></span><span style="--h:88"></span><span style="--h:42"></span><span style="--h:66"></span><span style="--h:32"></span><span style="--h:56"></span><span style="--h:24"></span></div>

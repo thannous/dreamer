@@ -41,11 +41,11 @@
     <header>
         <div class="oh-hero-inner">
             <h1 class="oh-hero-title hero-anim">
-                Trattieni il sogno <span class="oh-accent-line">prima che il giorno lo cancelli</span>
+                Diario dei <span class="oh-accent-line">sogni</span>
             </h1>
 
             <p class="oh-hero-lede hero-anim">
-                Raccontalo appena sveglio, con parole tue. Noctalia conserva intatto quel primo racconto e poi ti aiuta a seguirne simboli, emozioni e domande, con un’immagine della scena se la desideri.
+                Conserva tutti i tuoi sogni in un unico diario. Scrivili o dettali al risveglio, poi ritrovali ed esplora i loro simboli con Noctalia.
             </p>
 
             <div class="oh-hero-cta hero-anim hero-cta">
@@ -71,7 +71,7 @@
                 <h2 class="oh-h2">Sogni, così come sono stati raccontati</h2>
             </div>
             <div>
-                <p class="oh-lede">Dieci voci di esempio, conservate come le conserva Noctalia: le parole dette al risveglio, la data, l’emozione e un’immagine della scena.</p>
+                <p class="oh-lede">Ogni sogno può essere illustrato, analizzato o entrambe le cose.</p>
                 <p class="oh-dreams-hint" aria-hidden="true">Trascina per far ruotare la notte · apri una voce per leggerla</p>
             </div>
         </div>

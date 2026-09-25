@@ -41,11 +41,11 @@
     <header>
         <div class="oh-hero-inner">
             <h1 class="oh-hero-title hero-anim">
-                Guarde o sonho <span class="oh-accent-line">antes que o dia o apague</span>
+                Diário de <span class="oh-accent-line">sonhos</span>
             </h1>
 
             <p class="oh-hero-lede hero-anim">
-                Conte assim que acordar, com suas palavras. O Noctalia guarda esse primeiro relato intacto e depois ajuda você a seguir seus símbolos, emoções e perguntas — com uma imagem da cena, se quiser.
+                Guarde todos os seus sonhos em um só diário. Escreva ou dite ao acordar, depois encontre cada sonho novamente e explore seus símbolos com o Noctalia.
             </p>
 
             <div class="oh-hero-cta hero-anim hero-cta">
@@ -71,7 +71,7 @@
                 <h2 class="oh-h2">Sonhos, do jeito que foram contados</h2>
             </div>
             <div>
-                <p class="oh-lede">Dez registros de exemplo, guardados como o Noctalia guarda: as palavras ditas ao acordar, a data, o sentimento e uma imagem da cena.</p>
+                <p class="oh-lede">Cada sonho pode ser ilustrado, analisado ou as duas coisas.</p>
                 <p class="oh-dreams-hint" aria-hidden="true">Arraste para girar a noite · abra um registro para ler</p>
             </div>
         </div>

@@ -41,11 +41,11 @@
     <header>
         <div class="oh-hero-inner">
             <h1 class="oh-hero-title hero-anim">
-                Hold on to the dream <span class="oh-accent-line">before daylight takes it</span>
+                Dream <span class="oh-accent-line">journal</span>
             </h1>
 
             <p class="oh-hero-lede hero-anim">
-                Speak it the moment you wake, in your own words. Noctalia keeps that first account intact, then helps you trace its symbols, emotions and questions — with an image of the scene if you want one.
+                Keep all your dreams in one journal. Write or dictate them when you wake up, then find them again and explore their symbols with Noctalia.
             </p>
 
             <div class="oh-hero-cta hero-anim hero-cta">
@@ -71,7 +71,7 @@
                 <h2 class="oh-h2">Dreams, as they were told</h2>
             </div>
             <div>
-                <p class="oh-lede">Ten example entries, kept the way Noctalia keeps them: the words spoken on waking, the date, the feeling, and an image of the scene.</p>
+                <p class="oh-lede">Each dream can be illustrated, analyzed, or both.</p>
                 <p class="oh-dreams-hint" aria-hidden="true">Drag to turn the night · open an entry to read it</p>
             </div>
         </div>
