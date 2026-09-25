@@ -58,6 +58,7 @@ function renderTierInlineScript() {
     '        window.__EXP_TIER__ = tier;',
     "        var slowConnection = Boolean(navigator.connection && /(^|-)2g$/.test(navigator.connection.effectiveType || ''));",
     "        if (tier !== 'static' && !slowConnection) {",
+    "          if (!location.hash && 'scrollRestoration' in history) history.scrollRestoration = 'manual';",
     "          document.documentElement.classList.add('exp-intro-pending');",
     '          window.__expIntroGateTimer = window.setTimeout(function () {',
     "            document.documentElement.classList.remove('exp-intro-pending');",
