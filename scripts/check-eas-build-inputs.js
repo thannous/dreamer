@@ -26,6 +26,20 @@ function assertPortableFingerprint(fingerprint) {
   return fingerprint.sources.length;
 }
 
+function assertCleanNativeModules(root, fingerprint, platform) {
+  if (platform !== 'android') return;
+  const dirty = fingerprint.sources.filter(source =>
+    source.type === 'dir'
+    && typeof source.filePath === 'string'
+    && source.reasons?.includes('rncoreAutolinkingAndroid')
+    && fs.existsSync(path.join(root, source.filePath, 'android', 'build'))
+  );
+  if (dirty.length) {
+    const samples = dirty.slice(0, 3).map(source => source.filePath).join(', ');
+    throw new Error(`Fingerprint includes local Gradle output in native modules: ${samples}. Run npm ci in an isolated checkout before EAS Build.`);
+  }
+}
+
 function assertAndroidStoreConfig(config, app) {
   const expectedPackage = STORE_BUNDLES[app];
   if (!expectedPackage) throw new Error(`No Android store identity configured for ${app}`);
@@ -63,6 +77,7 @@ async function checkBuildInputs(root, app, platform) {
   catch (error) { throw new Error(`Install project dependencies with npm ci in ${projectRoot} before EAS Build: ${error.message}`); }
   const fingerprint = await createFingerprintAsync(projectRoot, { platforms: [platform], silent: true });
   const sourceCount = assertPortableFingerprint(fingerprint);
+  assertCleanNativeModules(projectRoot, fingerprint, platform);
 
   if (app !== 'meditation') {
     const expo = path.join(projectRoot, 'node_modules', '.bin', process.platform === 'win32' ? 'expo.cmd' : 'expo');
@@ -99,4 +114,4 @@ if (require.main === module) {
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
 
-module.exports = { assertPortableFingerprint, assertIosStoreConfig, assertAndroidStoreConfig, checkBuildInputs };
+module.exports = { assertPortableFingerprint, assertCleanNativeModules, assertIosStoreConfig, assertAndroidStoreConfig, checkBuildInputs };
