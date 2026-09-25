@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { PendingRecordingIntent } from '@/lib/onboardingState';
@@ -40,7 +40,7 @@ const mockToggleFavorite = jest.fn();
 const mockAnalyzeDream = jest.fn();
 const mockDeleteDream = jest.fn();
 const mockSetParams = jest.fn();
-let mockSearchParams: { id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; analyzeAfterPurchase?: string; analysisOwnerId?: string } = { id: '42', saved: '1' };
+let mockSearchParams: { id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; analysisOwnerId?: string } = { id: '42', saved: '1' };
 let mockReferenceImagesEnabled = false;
 const mockCategorizeDream = jest.fn();
 const mockApplyDreamCategorization = jest.fn(async (_dream: unknown, _result: unknown) => undefined);
@@ -459,6 +459,45 @@ describe('journal detail saved confirmation route', () => {
 
   afterEach(() => {
     cleanup();
+  });
+
+  it('starts one analysis and image for a newly saved guest dream with both credits', async () => {
+    mockUser = null;
+    mockTier = 'guest';
+    mockQuotaUsage = {
+      analysis: { used: 0, limit: 2, remaining: 2 },
+      image: { used: 0, limit: 2, remaining: 2 },
+    };
+    mockSearchParams = { id: '42', saved: '1', autoAnalyze: '1' };
+    mockPendingRecordingIntent = { savedDreamId: 42, phase: 'analysis_confirmation' };
+    const view = render(<JournalDetailScreen />);
+    await waitFor(() => expect(mockAnalyzeDream).toHaveBeenCalledWith(mockDreams[0], mockDreams[0].transcript, {
+      replaceExistingImage: true, lang: 'fr', analyticsSource: 'journal_detail',
+    }));
+    expect(mockTransitionOnboarding).toHaveBeenCalledWith({
+      type: 'SET_PENDING_PHASE', phase: 'analysis_requested', savedDreamId: 42,
+    });
+    view.rerender(<JournalDetailScreen />);
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    { label: 'image credits exhausted', setup: () => { mockQuotaUsage.image = { used: 2, limit: 2, remaining: 0 }; } },
+    { label: 'analysis credits exhausted', setup: () => { mockQuotaStatus = { canAnalyze: false }; } },
+    { label: 'signed in', setup: () => { mockUser = { id: 'user-1' }; mockTier = 'free'; } },
+    { label: 'already pending', setup: () => { mockDreams = [buildDream({ analysisStatus: 'pending' })]; } },
+    { label: 'recall requested', setup: () => { mockSearchParams.recall = '1'; } },
+  ])('does not auto-consume a guest demo when $label', async ({ setup }: { setup: () => void }) => {
+    mockUser = null;
+    mockTier = 'guest';
+    mockQuotaUsage = {
+      analysis: { used: 0, limit: 2, remaining: 2 },
+      image: { used: 0, limit: 2, remaining: 2 },
+    };
+    mockSearchParams = { id: '42', saved: '1', autoAnalyze: '1' };
+    setup();
+    await act(async () => { render(<JournalDetailScreen />); });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
 
   it('offers analysis after save without launching it until accepted', async () => {

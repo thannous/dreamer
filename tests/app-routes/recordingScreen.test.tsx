@@ -1643,7 +1643,7 @@ describe('Recording screen', () => {
       fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A quiet lake' } });
       await act(async () => { fireEvent.click(screen.getByTestId('recording-save')); });
       expect(mockReplace).toHaveBeenCalledTimes(1);
-      expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } });
+      expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1', ...(access === 'guest' ? { autoAnalyze: '1' } : {}) } });
       mockQuotaState.loading = false;
       mockQuotaState.error = null;
       view.rerender(<RecordingScreen />);

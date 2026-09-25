@@ -11,7 +11,7 @@ describe('journal dream detail visible order', () => {
     return index;
   };
 
-  it('renders title, original transcript, analysis, optional recall, fallback illustration, then symbols and secondary actions', () => {
+  it('renders title, original transcript, analysis, illustration, optional recall, then symbols and secondary actions', () => {
     const titleAndDate = markerIndex(mainReturn, '{!isEditing && renderMetadataCard()}');
     const originalTranscript = markerIndex(mainReturn, '{renderTranscriptBody()}');
     const recallOffer = markerIndex(mainReturn, '<DreamRecallAssistantCard');
@@ -29,8 +29,8 @@ describe('journal dream detail visible order', () => {
     expect(originalTranscript).toBeLessThan(analysisState);
     expect(analysisState).toBeLessThan(analysisResult);
     expect(analysisResult).toBeLessThan(interpretation);
-    expect(interpretation).toBeLessThan(recallOffer);
-    expect(recallOffer).toBeLessThan(illustration);
+    expect(interpretation).toBeLessThan(illustration);
+    expect(illustration).toBeLessThan(recallOffer);
     expect(illustration).toBeLessThan(symbols);
     expect(symbols).toBeLessThan(emotions);
     expect(emotions).toBeLessThan(reflection);
