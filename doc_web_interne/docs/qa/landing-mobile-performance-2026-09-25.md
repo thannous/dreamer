@@ -68,3 +68,11 @@ Local first playback was 4.370s; the uncompressed local server differs from
 production, so this is not a controlled production startup-time comparison.
 Twenty-four focused tests cover preload preferences/cleanup, disjoint buffers,
 skip/autoplay fallback and preparation deadlines. No screenshots were taken.
+
+The first production follow-up started earlier (2.733s), but exposed a 726ms
+buffering pause not seen locally. A two-second contiguous startup reserve now
+prevents starting on too little data. The six-second loading escape hatch and
+skip/error cleanup remain active. An isolated MCP production session with this
+reserve injected before playback measured a 3.977s start, no intro waiting events,
+and a 1ms handoff; this experiment informed the source change and is not itself
+proof of the final deployment. The focused test count is now 25.

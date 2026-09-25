@@ -4,13 +4,13 @@ const vm = require('node:vm');
 const source = fs.readFileSync(path.join(__dirname, '../../docs-src/experience/experience.js'), 'utf8');
 const code = source.slice(source.indexOf('const playIntro ='), source.indexOf('const FILM_BASE ='));
 
-function setup({ warmed = true, rejected = false } = {}) {
+function setup({ warmed = true, rejected = false, buffered = 2 } = {}) {
   const elements = [];
   const element = () => {
     const handlers = new Map();
     const classes = new Set();
     const el = {
-      currentTime: 0, duration: 4.2, buffered: { length: 1, start: () => 0, end: () => 1.2 },
+      currentTime: 0, duration: 4.2, buffered: { length: 1, start: () => 0, end: () => buffered },
       children: [], classList: { add: (...names) => names.forEach(n => classes.add(n)), remove: (...names) => names.forEach(n => classes.delete(n)), contains: n => classes.has(n) },
       append(...children) { this.children.push(...children); },
       setAttribute() {}, remove: jest.fn(), pause: jest.fn(),
@@ -99,4 +99,16 @@ describe('background frame preparation', () => {
     await jest.advanceTimersByTimeAsync(1200);
     expect(await result).toBe(false); expect(s.video.cancelVideoFrameCallback).toHaveBeenCalledWith(7);
   });
+});
+
+test('waits for a startup reserve and cancels pending playback when skipped', async () => {
+  const s = setup({ buffered: 0.7 });
+  expect(s.intro.play).not.toHaveBeenCalled();
+  s.intro.buffered.end = () => 2; s.intro.emit('progress');
+  expect(s.intro.play).toHaveBeenCalledTimes(1);
+  s.intro.emit('loadeddata'); expect(s.intro.play).toHaveBeenCalledTimes(1);
+  const skipped = setup({ buffered: 0.7 }); skipped.skip.emit('click');
+  skipped.intro.buffered.end = () => 4.2; skipped.intro.emit('progress');
+  expect(skipped.intro.play).not.toHaveBeenCalled();
+  await jest.advanceTimersByTimeAsync(280); await skipped.result;
 });

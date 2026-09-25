@@ -1261,6 +1261,18 @@ const playIntro = (film, loop, variant) =>
     let played = false;
     let slowStartTimer = 0;
     let maximumTimer = 0;
+    let playbackRequested = false;
+    const beginPlayback = () => {
+      if (finished || playbackRequested || !Number.isFinite(intro.duration)) return;
+      // Keep a short reserve: Chrome may otherwise start on a few frames and
+      // immediately stop while fonts, scripts and the remaining film arrive.
+      for (let i = 0; i < intro.buffered.length; i += 1) {
+        if (intro.buffered.start(i) > 0.05 || intro.buffered.end(i) < Math.min(2, intro.duration - 0.05)) continue;
+        playbackRequested = true;
+        intro.play().catch(() => finish(true, true));
+        break;
+      }
+    };
     const prepareLoop = () => {
       if (finished || preparedLoop || !played) return;
       // The opening film owns the bandwidth until it can finish without more
@@ -1286,6 +1298,7 @@ const playIntro = (film, loop, variant) =>
       skip.remove();
       window.removeEventListener('scroll', onScroll);
       document.removeEventListener('keydown', onKey);
+      for (const event of ['progress', 'loadeddata', 'canplaythrough']) intro.removeEventListener(event, beginPlayback);
       intro.removeEventListener('progress', prepareLoop);
       intro.removeEventListener('timeupdate', prepareLoop);
       intro.removeEventListener('canplaythrough', prepareLoop);
@@ -1334,9 +1347,10 @@ const playIntro = (film, loop, variant) =>
     }, 6000);
     maximumTimer = window.setTimeout(() => finish(true, !played), 12000);
 
+    for (const event of ['progress', 'loadeddata', 'canplaythrough']) intro.addEventListener(event, beginPlayback);
     overlay.append(intro);
     document.body.append(overlay);
-    intro.play().catch(() => finish(true, true));
+    beginPlayback();
   });
 
 /* ------------------------------------------------------------------ */
