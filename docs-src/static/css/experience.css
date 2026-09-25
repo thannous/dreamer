@@ -132,9 +132,11 @@ html.exp-intro-pending .oh-dreams > * {
 
 .oh-intro-overlay .oh-intro-video {
   position: absolute;
-  inset: 0;
+  inset: 0 0 auto;
   width: 100%;
-  height: 100%;
+  /* Match the sky's crop even while mobile browser bars expand or collapse. */
+  height: 100vh;
+  height: 100lvh;
   object-fit: cover;
 }
 
@@ -1034,15 +1036,18 @@ html.exp-starmap .oh-link-tip.is-running {
 .noctalia-observatory.oh-has-shared-sky { overflow: clip !important; }
         .oh-has-shared-sky > header::before { opacity: 0; }
         .oh-shared-sky {
-          position: absolute;
+          position: fixed;
           inset: 0 0 auto;
+          height: 100vh;
+          height: 100lvh;
           z-index: -2;
           pointer-events: none;
-          -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 30svh), transparent);
-          mask-image: linear-gradient(180deg, #000 calc(100% - 30svh), transparent);
+          overflow: hidden;
+          contain: layout paint;
+          will-change: opacity;
         }
         .oh-sky-poster {
-          position: sticky; top: 0; height: 100dvh; overflow: hidden;
+          position: relative; height: 100%; overflow: hidden;
         }
         .oh-sky-media {
           position: absolute; inset: 0;
@@ -1064,9 +1069,7 @@ html.exp-starmap .oh-link-tip.is-running {
           background: linear-gradient(180deg, rgba(3,4,13,.08), rgba(3,4,13,.18));
         }
         .oh-has-shared-sky .oh-dreams::before {
-          inset: -8rem 0 auto; height: min(100rem, calc(100% + 8rem));
-          background: transparent;
-          -webkit-mask-image: none; mask-image: none;
+          display: none;
         }
 
 .oh-intro-retry { margin: 1rem auto 0; display: flex; }

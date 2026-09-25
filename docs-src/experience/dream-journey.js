@@ -73,6 +73,8 @@ export function initDreamJourney(heroReady, seek = top => window.scrollTo({ top,
   let ready = false, active = -1, frame = 0, seen = false;
   const state = { cardsProgress: 0, mapProgress: 0, mapActive: false, cardsActive: true };
   const clamp = (x) => Math.max(0, Math.min(1, x));
+  const setStyle = (el, name, value) => { if (el.style[name] !== value) el.style[name] = value; };
+  let lastIndex = -1, lastPercent = -1;
   const update = () => {
     frame = 0;
     const rect = track.getBoundingClientRect();
@@ -83,26 +85,32 @@ export function initDreamJourney(heroReady, seek = top => window.scrollTo({ top,
     const index = p < 0.18 ? 0 : p < 0.48 ? 1 : 2;
     const sectionProgress = index === 0 ? p / 0.18 : index === 1 ? 1 + (p - 0.18) / 0.30 : 2 + (p - 0.48) / 0.52;
     fill.style.transform = `scaleY(${clamp(sectionProgress / 3)})`;
-    meter.setAttribute('aria-valuenow', String(Math.round(p * 100)));
-    meter.setAttribute('aria-valuetext', `${index + 1}/3 — ${copy[index]}`);
-    dots.forEach((dot, i) => {
-      dot.classList.toggle('is-current', i === index);
-      dot.classList.toggle('is-past', i < index);
-      if (i === index) dot.setAttribute('aria-current', 'step');
-      else dot.removeAttribute('aria-current');
-    });
+    const percent = Math.round(p * 100);
+    if (percent !== lastPercent) { lastPercent = percent; meter.setAttribute('aria-valuenow', String(percent)); }
+    if (index !== lastIndex) {
+      lastIndex = index;
+      meter.setAttribute('aria-valuetext', `${index + 1}/3 — ${copy[index]}`);
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('is-current', i === index);
+        dot.classList.toggle('is-past', i < index);
+        if (i === index) dot.setAttribute('aria-current', 'step');
+        else dot.removeAttribute('aria-current');
+      });
+    }
     state.cardsProgress = Math.min(0.68, p / 0.235 * 0.68);
     state.mapProgress = clamp((p - 0.56) / 0.44);
     state.mapActive = blend >= 0.5;
+    const wasActive = state.cardsActive;
     state.cardsActive = galleryFade < 1;
-    cards.style.opacity = String(1 - galleryFade);
-    cards.inert = !state.cardsActive;
-    cards.style.visibility = state.cardsActive ? '' : 'hidden';
-    map.style.opacity = String(blend);
-    map.style.visibility = blend > 0 ? 'visible' : 'hidden';
-    map.inert = !state.mapActive;
+    if (wasActive !== state.cardsActive) document.dispatchEvent(new Event('dream-journey-change'));
+    setStyle(cards, 'opacity', String(1 - galleryFade));
+    if (cards.inert !== !state.cardsActive) cards.inert = !state.cardsActive;
+    setStyle(cards, 'visibility', state.cardsActive ? '' : 'hidden');
+    setStyle(map, 'opacity', String(blend));
+    setStyle(map, 'visibility', blend > 0 ? 'visible' : 'hidden');
+    if (map.inert !== !state.mapActive) map.inert = !state.mapActive;
     const visible = ready && seen && !document.documentElement.matches('.exp-intro-pending, .oh-sky-expanding');
-    progress.hidden = !visible;
+    if (progress.hidden !== !visible) progress.hidden = !visible;
     if (!visible) return;
     if (index === active) return;
     active = index;

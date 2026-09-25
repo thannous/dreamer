@@ -48,6 +48,12 @@
   color: var(--oh-on-champagne);
 }
 
+/* Reserve the mobile navigation's final size before its controller loads. */
+@media (max-width: 767px) {
+  .noctalia-premium-nav #navDesktopLangDropdown { display: none !important; }
+  .noctalia-premium-nav #mobileMenuButton { display: inline-flex !important; }
+}
+
 .noctalia-observatory {
   position: relative;
   width: 100%;

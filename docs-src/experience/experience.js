@@ -646,10 +646,13 @@ const initDreamSpace = (journey) => {
   const state = { drift: 0, dragYaw: 0, dragPitch: 0, velocity: 0, dragging: false, paused: false, visible: false };
   let last = performance.now();
   let raf = 0;
+  let fading = false;
+  const canAnimate = () => state.visible && !state.paused && !document.hidden && (!journey || journey.cardsActive) && !html.classList.contains('exp-intro-pending');
   const opacities = slots.map(() => -1);
 
   const tick = (now) => {
     raf = 0;
+    if (!canAnimate()) return;
     const dt = Math.min(64, now - last);
     last = now;
     if (!state.dragging) {
@@ -657,9 +660,9 @@ const initDreamSpace = (journey) => {
       state.dragYaw += state.velocity;
       state.velocity *= 0.94;
     }
-    const rect = space.getBoundingClientRect();
-    const track = Math.max(1, rect.height - window.innerHeight);
-    const p = journey ? journey.cardsProgress : clamp(-rect.top / track, 0, 1);
+    // The journey already measured scroll geometry this frame.
+    const rect = journey ? null : space.getBoundingClientRect();
+    const p = journey ? journey.cardsProgress : clamp(-rect.top / Math.max(1, rect.height - window.innerHeight), 0, 1);
     const approach = smooth(clamp(p / 0.72, 0, 1));
     const wake = smooth(clamp((p - 0.74) / 0.26, 0, 1));
     const yaw = state.drift + p * Math.PI * 1.1 + state.dragYaw;
@@ -682,11 +685,13 @@ const initDreamSpace = (journey) => {
         slots[i].classList.toggle('is-back', zc < -0.05);
       }
     });
-    space.classList.toggle('is-fading', wake > 0.15);
-    if (state.visible && !state.paused && !document.hidden) raf = window.requestAnimationFrame(tick);
+    if (fading !== (wake > 0.15)) {
+      fading = wake > 0.15; space.classList.toggle('is-fading', fading);
+    }
+    if (canAnimate()) raf = window.requestAnimationFrame(tick);
   };
   const start = () => {
-    if (!raf && state.visible && !state.paused) {
+    if (!raf && canAnimate()) {
       last = performance.now();
       raf = window.requestAnimationFrame(tick);
     }
@@ -694,8 +699,11 @@ const initDreamSpace = (journey) => {
   new IntersectionObserver((entries) => {
     state.visible = entries[0].isIntersecting;
     start();
-  }).observe(space);
+  }).observe(space.querySelector('.oh-dreamspace-stage'));
   document.addEventListener('visibilitychange', start);
+  document.addEventListener('dream-journey-change', start);
+  document.addEventListener('dream-sky-visibility-change', start);
+  new MutationObserver(start).observe(html, { attributes: true, attributeFilter: ['class'] });
 
   attachDreamDrag(space.querySelector('.oh-dreamspace-stage'), state, clamp);
 
@@ -1207,6 +1215,7 @@ const SKIP_LABELS = {
  * Skip, Escape, scrolling or a slow network end the intro at once.
  */
 const waitForFilmFrame = (video) => new Promise((resolve) => {
+  video.preload = 'auto';
   let frameId;
   let settled = false;
   const done = (ready) => {
@@ -1332,6 +1341,9 @@ const initFilm = (isFull) => {
   film.setAttribute('aria-hidden', 'true');
   const video = createVideo(FILM_BASE, isFull && wide ? '1280' : '854', 'oh-hero-loop');
   video.loop = true;
+  // Prioritize the opening film; preload the loop once the intro is playing.
+  video.preload = 'none';
+  video.poster = '/img/hero/noctalia-observatory-bg.webp';
   film.append(video);
 
   let started = false;
@@ -1346,7 +1358,7 @@ const initFilm = (isFull) => {
   let filmVisible = true;
   const sync = () => {
     if (!film.isConnected || !started || introPlaying) return;
-    if (filmVisible && !document.hidden && !html.classList.contains('oh-lightbox-open')) {
+    if (filmVisible && !document.hidden && !html.classList.contains('oh-lightbox-open') && document.querySelector('.oh-shared-sky')?.style?.visibility !== 'hidden') {
       video.play().catch(remove);
     } else {
       video.pause();
@@ -1363,6 +1375,7 @@ const initFilm = (isFull) => {
   }
   document.addEventListener('visibilitychange', sync);
   document.addEventListener('dream-dialog-change', sync);
+  document.addEventListener('dream-sky-visibility-change', sync);
 
   const startLoop = () => {
     started = true;

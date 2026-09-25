@@ -46,17 +46,19 @@ export function createDreamAnalysisDemo(pin, cards) {
   question.querySelector('h4').textContent = labels[3];
   question.querySelector('p').textContent = labels[4];
   const words = (readings[lang] || readings.en)[selected.reading].split(/(\s+)/).map(word => {
-    const span = document.createElement('span'); span.textContent = word;
+    const span = document.createElement('span'); span.textContent = word; span.style.opacity = '0';
     insight.querySelector('p').append(span); return span;
   });
   pin.append(root);
   const clamp = x => Math.min(1, Math.max(0, x));
   let origin = null;
+  let shownWords = -1;
+  const setStyle = (el, prop, value) => { if (el.style[prop] !== value) el.style[prop] = value; };
   return {
     update(p) {
       const visible = p > 0.18 && p < 0.56;
-      if (!visible) { root.hidden = true; origin = null; return; }
-      root.hidden = false;
+      if (!visible) { if (!root.hidden) root.hidden = true; origin = null; return; }
+      if (root.hidden) root.hidden = false;
       if (!origin) {
         root.style.transform = 'none';
         const source = selected.card.getBoundingClientRect();
@@ -70,15 +72,21 @@ export function createDreamAnalysisDemo(pin, cards) {
       const enter = clamp((p - 0.18) / 0.055);
       const exit = clamp((p - 0.48) / 0.08);
       // Offset coordinates remain stable through this entry, avoiding a moving target.
-      root.style.transform = `translate3d(${origin.x * (1 - enter)}px, ${origin.y * (1 - enter)}px, 0) scale(${origin.scale + enter * (1 - origin.scale)})`;
-      root.style.opacity = String(enter * (1 - exit));
+      setStyle(root, 'transform', `translate3d(${origin.x * (1 - enter)}px, ${origin.y * (1 - enter)}px, 0) scale(${origin.scale + enter * (1 - origin.scale)})`);
+      setStyle(root, 'opacity', String(enter * (1 - exit)));
       const written = clamp((p - 0.25) / 0.16);
-      status.hidden = written > 0;
-      insight.style.opacity = written > 0 ? '1' : '0';
-      words.forEach((word, i) => { word.style.opacity = i / words.length < written ? '1' : '0'; });
-      insight.setAttribute('aria-hidden', String(written === 0));
-      question.style.opacity = String(clamp((p - 0.41) / 0.04));
-      question.setAttribute('aria-hidden', String(p < 0.41));
+      const count = Math.ceil(written * words.length);
+      if (count !== shownWords) {
+        const oldCount = Math.max(0, shownWords);
+        for (let i = Math.min(oldCount, count); i < Math.max(oldCount, count); i++) words[i].style.opacity = i < count ? '1' : '0';
+        shownWords = count;
+        status.hidden = count > 0;
+        setStyle(insight, 'opacity', count > 0 ? '1' : '0');
+        insight.setAttribute('aria-hidden', String(count === 0));
+      }
+      setStyle(question, 'opacity', String(clamp((p - 0.41) / 0.04)));
+      const hidden = String(p < 0.41);
+      if (question.getAttribute('aria-hidden') !== hidden) question.setAttribute('aria-hidden', hidden);
     },
     destroy() { root.remove(); },
   };
