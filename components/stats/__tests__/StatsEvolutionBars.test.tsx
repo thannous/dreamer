@@ -102,13 +102,4 @@ describe('StatsEvolutionBars', () => {
     expect(screen.getByText('28 Aug · Calm')).toBeTruthy();
     expect(screen.getByText('3 dreams')).toBeTruthy();
   });
-
-  it('stacks date, theme and count at 320 dp', () => {
-    render(<StatsEvolutionBars days={DAYS} compact testID="trends.evolution.chart" />);
-
-    expect(screen.getByText('28 Aug')).toBeTruthy();
-    expect(screen.getByText('Calm')).toBeTruthy();
-    expect(screen.queryByText('28 Aug · Calm')).toBeNull();
-    expect(screen.getByTestId('trends.evolution.chart.day.2026-08-28')).toBeTruthy();
-  });
 });

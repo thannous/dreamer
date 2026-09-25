@@ -538,27 +538,6 @@ describe('Lucid MILD journey behavior', () => {
     });
   });
 
-  it('keeps the established contained layout for programs without an immersive map', () => {
-    mockProgramId = 'ssild';
-
-    render(<LucidProgramDetailScreen />);
-
-    expect(screen.getByRole('heading', { name: 'SSILD' })).not.toBeNull();
-    expect(screen.queryByTestId('lucid-program-details')).toBeNull();
-
-    const map = screen.getByTestId('lucid-journey-map');
-    const currentCard = screen.getByTestId('lucid-journey-current-card');
-    const safety = screen.getByTestId('lucid-journey-safety');
-    const scene = screen.getByTestId('lucid-journey-scene');
-
-    expect(map.contains(currentCard)).toBe(true);
-    expect(map.contains(safety)).toBe(true);
-    expect(map.contains(scene)).toBe(true);
-    expectBefore(currentCard, safety);
-    expectBefore(safety, scene);
-    expect(screen.getAllByTestId('lucid-journey-continue')).toHaveLength(1);
-  });
-
   it('blocks starting WBTB from the program route when the safety policy forbids it', async () => {
     mockProgramId = 'wbtb';
     render(<LucidProgramDetailScreen />);

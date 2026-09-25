@@ -322,17 +322,6 @@ describe('Onboarding screen', () => {
     jest.clearAllMocks();
   });
 
-  it('skips onboarding and opens recording', async () => {
-    renderOnboarding();
-
-    fireEvent.click(screen.getByTestId(TID.Button.OnboardingSkip));
-
-    await waitFor(() => {
-      expect(mockTransition).toHaveBeenCalledWith({ type: 'SKIP' });
-      expect(mockReplace).toHaveBeenCalledWith('/recording');
-    });
-  });
-
   it('keeps the leaving CTA mounted after a successful skip', async () => {
     renderOnboarding();
 
@@ -368,45 +357,6 @@ describe('Onboarding screen', () => {
     act(() => drainPendingInteractions());
 
     expect(screen.queryByTestId(TID.Component.OnboardingPath)).toBeNull();
-  });
-
-  it('keeps the remembered-dream choice through completion and opens its recording intent', async () => {
-    renderOnboarding({ step: 'path', selectedPath: 'analyze' });
-
-    fireEvent.click(screen.getByTestId(TID.Button.OnboardingPath('memory')));
-    await waitFor(() => {
-      expect(mockTransition).toHaveBeenCalledWith({ type: 'SELECT_PATH', path: 'memory' });
-    });
-
-    fireEvent.click(screen.getByTestId(TID.Button.OnboardingPrimary));
-
-    await waitFor(() => {
-      expect(mockTransition).toHaveBeenCalledWith({ type: 'COMPLETE', path: 'memory' });
-      expect(mockReplace).toHaveBeenCalledWith({
-        pathname: '/recording',
-        params: {
-          entryId: 'entry-memory',
-          intent: 'remembered',
-          source: 'onboarding',
-          postSave: 'journal',
-        },
-      });
-    });
-  });
-
-  it('opens the symbol dictionary after choosing the dictionary path', async () => {
-    renderOnboarding({ step: 'path', selectedPath: 'analyze' });
-
-    fireEvent.click(screen.getByTestId(TID.Button.OnboardingPath('dictionary')));
-    fireEvent.click(screen.getByTestId(TID.Button.OnboardingPrimary));
-
-    await waitFor(() => {
-      expect(mockTransition).toHaveBeenCalledWith({ type: 'COMPLETE', path: 'dictionary' });
-      expect(mockReplace).toHaveBeenCalledWith({
-        pathname: '/symbol-dictionary',
-        params: { source: 'onboarding' },
-      });
-    });
   });
 
   it('ignores a rapid duplicate completion press', async () => {

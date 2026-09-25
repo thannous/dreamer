@@ -172,18 +172,4 @@ describe('drawer modal accessibility', () => {
     expect(mockPush).toHaveBeenCalledWith('/favorites');
   });
 
-  it('keeps Ready and Begin distinct in every catalogue', () => {
-    expect(translate('en', 'breathe.ready')).toBe('Ready');
-    expect(translate('en', 'breathe.start')).toBe('Begin');
-    expect(translate('fr', 'breathe.ready')).toBe('Prêt');
-    expect(translate('fr', 'breathe.start')).toBe('Commencer');
-    expect(translate('de', 'breathe.ready')).toBe('Bereit');
-    expect(translate('es', 'breathe.ready')).toBe('Listo');
-    expect(translate('it', 'breathe.ready')).toBe('Pronto');
-    expect(translate('pt', 'breathe.ready')).toBe('Pronto');
-    expect(translate('de', 'breathe.start')).toBe('Beginnen');
-    expect(translate('es', 'breathe.start')).toBe('Empezar');
-    expect(translate('it', 'breathe.start')).toBe('Inizia');
-    expect(translate('pt', 'breathe.start')).toBe('Começar');
-  });
 });

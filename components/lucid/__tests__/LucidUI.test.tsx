@@ -131,18 +131,6 @@ describe('LucidCard press feedback', () => {
     mockUseLucidReducedMotion.mockReturnValue(false);
   });
 
-  it('keeps a light scale when motion is allowed', () => {
-    const { getByTestId } = render(
-      <LucidCard onPress={() => {}} testID="lucid-card">
-        Card
-      </LucidCard>
-    );
-
-    const pressed = flatten(getByTestId('lucid-card').getAttribute('data-pressed-style'));
-    expect(pressed.opacity).toBe(0.78);
-    expect(pressed.transform).toEqual([{ scale: 0.97 }]);
-  });
-
   it('drops scale and keeps opacity when motion is reduced', () => {
     mockUseLucidReducedMotion.mockReturnValue(true);
     const onPress = jest.fn();

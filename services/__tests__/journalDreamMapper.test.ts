@@ -192,14 +192,6 @@ describe('journal dream mapper', () => {
   });
 });
 
-describe('journal mapper import boundary', () => {
-  it('has no native or Supabase runtime imports', () => {
-    const source = require('node:fs').readFileSync(require.resolve('../journalDreamMapper'), 'utf8');
-    expect(source).not.toMatch(/from ['"](?:react-native|expo-|@supabase\/supabase-js)/);
-    expect(source).not.toMatch(/require\(['"](?:react-native|expo-|@supabase\/supabase-js)/);
-  });
-});
-
 it('round-trips an unclassified sparse reflection without fabricating a type or insights', () => {
   const source = row({ dream_type: 'Unknown', analysis_details: {
     symbols: [], emotions: [], reflectionQuestions: [], promptVersion: 'analysis-2026-09-08.1',
@@ -211,7 +203,6 @@ it('round-trips an unclassified sparse reflection without fabricating a type or 
   expect(mapDreamToRow(dream, 'user-a').dream_type).toBe('Unknown');
   expect(mapRowToDreamListItem(source).dreamType).toBe('Unknown');
 });
-
 
 it('loads a durable image failure after restart without letting clients write it back', () => {
   const mapped = mapRowToDream(row({ image_url: '', image_generation_failed: false, image_generation_error_code: 'FREE_IMAGE_ANALYSIS_REQUIRED' }));

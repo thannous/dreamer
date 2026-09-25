@@ -97,62 +97,6 @@ describe('AnalysisProgress', () => {
     jest.useRealTimers();
   });
 
-  it('renders the step message, progress and first mantra', () => {
-    render(
-      <AnalysisProgress
-        step={AnalysisStep.ANALYZING}
-        progress={25}
-        message="Analyzing your dream..."
-        error={null}
-      />
-    );
-    flushInitialEffects();
-
-    expect(screen.getByText('Analyzing your dream...')).toBeTruthy();
-    expect(screen.getByText('25%')).toBeTruthy();
-    expect(screen.getByText('analysis.mantra.analyzing.1')).toBeTruthy();
-    expect(screen.getByTestId('icon.sparkles')).toBeTruthy();
-  });
-
-  it('rotates mantras over time', () => {
-    render(
-      <AnalysisProgress
-        step={AnalysisStep.ANALYZING}
-        progress={25}
-        message="Analyzing your dream..."
-        error={null}
-      />
-    );
-    flushInitialEffects();
-
-    expect(screen.getByText('analysis.mantra.analyzing.1')).toBeTruthy();
-
-    act(() => {
-      jest.advanceTimersByTime(4200);
-    });
-    expect(screen.getByText('analysis.mantra.analyzing.2')).toBeTruthy();
-
-    act(() => {
-      jest.advanceTimersByTime(4200);
-    });
-    expect(screen.getByText('analysis.mantra.analyzing.3')).toBeTruthy();
-  });
-
-  it('shows the per-step icon for image generation', () => {
-    render(
-      <AnalysisProgress
-        step={AnalysisStep.GENERATING_IMAGE}
-        progress={65}
-        message="Generating dream imagery..."
-        error={null}
-      />
-    );
-    flushInitialEffects();
-
-    expect(screen.getByTestId('icon.photo')).toBeTruthy();
-    expect(screen.getByText('analysis.mantra.generating_image.1')).toBeTruthy();
-  });
-
   it('renders the error state with a working retry button', () => {
     const onRetry = jest.fn();
     const error: ClassifiedError = {

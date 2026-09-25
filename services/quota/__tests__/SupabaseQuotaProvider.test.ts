@@ -80,19 +80,6 @@ describe('SupabaseQuotaProvider', () => {
     provider = new SupabaseQuotaProvider();
   });
 
-  describe('class instantiation and basic methods', () => {
-    it('given new provider when instantiated then creates cache and sets TTL', () => {
-      // Given
-      // No setup needed
-
-      // When
-      const newProvider = new SupabaseQuotaProvider();
-
-      // Then
-      expect(newProvider).toBeInstanceOf(SupabaseQuotaProvider);
-    });
-  });
-
   describe('private method testing via public interface', () => {
     it('given user when getting used analysis count then queries Supabase correctly', async () => {
       // Given

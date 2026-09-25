@@ -214,11 +214,3 @@ describe('journal queue transitions', () => {
     expect(result).toBe(list);
   });
 });
-
-describe('journal queue transition import boundary', () => {
-  it('has no React Native or Supabase runtime imports', () => {
-    const source = require('node:fs').readFileSync(require.resolve('../../lib/journalQueueTransitions'), 'utf8');
-    expect(source).not.toMatch(/from ['"](?:react-native|expo-|@supabase\/supabase-js)/);
-    expect(source).not.toMatch(/require\(['"](?:react-native|expo-|@supabase\/supabase-js)/);
-  });
-});

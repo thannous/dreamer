@@ -16,37 +16,6 @@ const CATALOGUES: Record<AppLanguage, Record<string, string>> = {
   pt,
 };
 
-const GATE_REASONS = [
-  'premium-session',
-  'monthly-quota',
-  'premium-pattern',
-  'premium-timer',
-] as const;
-const REASON_ALIASES: Record<string, (typeof GATE_REASONS)[number]> = {
-  session: 'premium-session',
-  quota: 'monthly-quota',
-};
-
-function firstParam(value: string | string[] | undefined): string | undefined {
-  return Array.isArray(value) ? value[0] : value;
-}
-
-function resolvePaywallReason(
-  raw: string | string[] | undefined
-): (typeof GATE_REASONS)[number] | null {
-  const value = firstParam(raw);
-  if (!value) return null;
-  if ((GATE_REASONS as readonly string[]).includes(value)) {
-    return value as (typeof GATE_REASONS)[number];
-  }
-  return REASON_ALIASES[value] ?? null;
-}
-
-function paywallReasonKey(raw: string | string[] | undefined): string {
-  const resolved = resolvePaywallReason(raw);
-  return resolved ? `paywall.reason.${resolved}` : 'paywall.reason.fallback';
-}
-
 const REASONS = [
   'premium-session',
   'monthly-quota',
@@ -66,28 +35,6 @@ const COMMERCIAL_KEYS = [
   'paywall.restore',
   'paywall.legal',
 ] as const;
-
-describe('paywall reason mapping', () => {
-  it('keeps Plus-session and monthly-quota as distinct gates', () => {
-    expect(resolvePaywallReason('premium-session')).toBe('premium-session');
-    expect(resolvePaywallReason('monthly-quota')).toBe('monthly-quota');
-    expect(paywallReasonKey('premium-session')).toBe('paywall.reason.premium-session');
-    expect(paywallReasonKey('monthly-quota')).toBe('paywall.reason.monthly-quota');
-  });
-
-  it('maps the older session alias without leaking the raw key', () => {
-    expect(resolvePaywallReason('session')).toBe('premium-session');
-    expect(paywallReasonKey('session')).toBe('paywall.reason.premium-session');
-  });
-
-  it('falls back for missing and unknown tokens', () => {
-    expect(paywallReasonKey(undefined)).toBe('paywall.reason.fallback');
-    expect(paywallReasonKey('not-a-reason')).toBe('paywall.reason.fallback');
-    expect(paywallReasonKey(['session', 'monthly-quota'])).toBe(
-      'paywall.reason.premium-session'
-    );
-  });
-});
 
 describe('paywall copy completeness', () => {
   it.each(SHIPPED_LANGUAGES)('%s covers every paywall reason without a raw key', (language) => {

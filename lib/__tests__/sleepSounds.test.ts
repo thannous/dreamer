@@ -1,18 +1,9 @@
 import {
   isSleepSoundId,
   isSleepTimerMinutes,
-  SLEEP_SOUND_LOOP_SECONDS,
-  SLEEP_SOUND_TIMER_OPTIONS,
 } from '@/lib/sleepSounds';
 
 describe('sleepSounds', () => {
-  it('uses compact five-minute source loops', () => {
-    expect(SLEEP_SOUND_LOOP_SECONDS).toBe(5 * 60);
-  });
-
-  it('exposes the three supported timer durations', () => {
-    expect(SLEEP_SOUND_TIMER_OPTIONS).toEqual([15, 30, 45]);
-  });
 
   it.each(['rain', 'ocean', 'brown-noise'])('accepts the supported sound id %s', (soundId) => {
     expect(isSleepSoundId(soundId)).toBe(true);

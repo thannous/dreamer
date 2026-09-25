@@ -391,18 +391,4 @@ describe('GuestQuotaProvider', () => {
       expect(status.reasons).toBeUndefined();
     });
   });
-
-  describe('cache management', () => {
-    it('given provider when invalidating cache then completes successfully', async () => {
-      // Given
-      const provider = new GuestQuotaProvider();
-
-      // When
-      provider.invalidate();
-
-      // Then
-      // Cache invalidation should complete without errors
-      expect(true).toBe(true);
-    });
-  });
 });

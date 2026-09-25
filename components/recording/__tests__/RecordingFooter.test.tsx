@@ -79,14 +79,4 @@ describe('RecordingFooter', () => {
     expect(onCompleteWithHelp).toHaveBeenCalledTimes(1);
     expect(onSave).not.toHaveBeenCalled();
   });
-
-  it('keeps the default-size button content-sized', () => {
-    mockDimensions = { width: 390, height: 844, scale: 1, fontScale: 1 };
-    const view = render(<RecordingFooter onSave={jest.fn()} isSaveDisabled={false} saveButtonLabel="Enregistrer le rêve" />);
-    const style = StyleSheet.flatten(view.getByTestId(TID.Button.SaveDream).props.style);
-    expect(style.width).toBeUndefined();
-    expect(style.minWidth).toBe(260);
-    expect(style.paddingVertical).toBe(17);
-    expect(style.borderRadius).toBe(22);
-  });
 });

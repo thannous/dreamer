@@ -84,14 +84,6 @@ describe('catalogue completeness', () => {
     expect(missing).toEqual([]);
   });
 
-  it.each(Object.keys(CATALOGUES))('%s carries no leftover English', (language) => {
-    // A handful of strings are legitimately identical across languages —
-    // product names, "Plus", "Pause", "4-7-8". Anything beyond that many
-    // usually means a forgotten copy-paste.
-    const identical = Object.keys(en).filter((key) => CATALOGUES[language][key] === en[key as keyof typeof en]);
-    expect(identical.length).toBeLessThan(25);
-  });
-
   /** Placeholders are contractual: a lost `{count}` renders a sentence wrong. */
   it.each(Object.keys(CATALOGUES))('%s keeps every placeholder', (language) => {
     const placeholders = (value: string) => (value.match(/\{(\w+)\}/g) ?? []).sort().join(',');

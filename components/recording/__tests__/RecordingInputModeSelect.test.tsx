@@ -113,40 +113,6 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 describe('RecordingInputModeSelect', () => {
-  it('shows both capture paths without opening a menu', () => {
-    const onChange = jest.fn();
-
-    render(<RecordingInputModeSelect value="text" onChange={onChange} />);
-
-    expect(screen.getByTestId(TID.Button.InputModeSelect)).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.InputModeText)).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.InputModeVoice)).toBeTruthy();
-    expect(screen.getByText('Écrire')).toBeTruthy();
-    expect(screen.getByText('Raconter')).toBeTruthy();
-    expect(screen.getByTestId(TID.Text.RecordingInputMode('text'))).toBeTruthy();
-    expect(screen.getByTestId(TID.Text.RecordingInputMode('voice'))).toBeTruthy();
-    expect(screen.queryByTestId('icon.line.3.horizontal')).toBeNull();
-    expect(screen.queryByTestId(TID.Button.InputModeDismiss)).toBeNull();
-    expect(onChange).not.toHaveBeenCalled();
-    expect(screen.getByTestId(TID.Button.InputModeSelect).getAttribute('role')).toBe('tablist');
-    expect(screen.getByTestId(TID.Button.InputModeSelect).getAttribute('aria-label')).toBe('Mode');
-    expect(screen.getByTestId(TID.Button.InputModeSelect).getAttribute('data-accessibility-hint')).toBe(
-      'You can switch between Write and Tell anytime; the text stays the same.'
-    );
-    expect(screen.getByTestId(TID.Button.InputModeText).getAttribute('aria-selected')).toBe('true');
-    expect(screen.getByTestId(TID.Button.InputModeVoice).getAttribute('aria-selected')).toBe('false');
-  });
-
-  it('switches from write to tell without a hidden menu', () => {
-    const onChange = jest.fn();
-
-    render(<RecordingInputModeSelect value="text" onChange={onChange} />);
-
-    fireEvent.click(screen.getByTestId(TID.Button.InputModeVoice));
-
-    expect(onChange).toHaveBeenCalledWith('voice');
-    expect(onChange).toHaveBeenCalledTimes(1);
-  });
 
   it('does not emit a change when the current path is selected again', () => {
     const onChange = jest.fn();

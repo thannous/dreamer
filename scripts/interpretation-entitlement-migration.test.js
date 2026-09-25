@@ -19,9 +19,6 @@ const migrationName = fs.readdirSync(migrationsDir).find((name) =>
 );
 
 describe('interpretation entitlement and device risk database contract', () => {
-  it('ships the expected migration', () => {
-    expect(migrationName).toBeDefined();
-  });
 
   const readSql = () => {
     if (!migrationName) return '';

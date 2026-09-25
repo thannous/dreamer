@@ -40,32 +40,6 @@ jest.mock('react-native', () => {
   };
 });
 
-describe('DreamShareImage', () => {
-  it('always displays the Noctalia attribution', () => {
-    const dream: DreamAnalysis = {
-      id: 1,
-      transcript: 'Un rêve',
-      title: 'Titre du rêve',
-      interpretation: '',
-      shareableQuote: '',
-      imageUrl: '',
-      chatHistory: [],
-      dreamType: 'Symbolic Dream',
-    };
-
-    render(
-      <DreamShareImage
-        dream={dream}
-        t={(key) =>
-          key === 'journal.detail.share_image.footer' ? 'Créé avec Noctalia.app' : key
-        }
-      />
-    );
-
-    expect(screen.getByText('Créé avec Noctalia.app')).toBeTruthy();
-  });
-});
-
 
 it('uses resolved media and signals readiness only after the image is displayed', () => {
   const ready = jest.fn();

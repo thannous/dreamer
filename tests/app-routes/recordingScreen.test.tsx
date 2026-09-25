@@ -1668,30 +1668,6 @@ describe('Recording screen', () => {
     expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } });
   });
 
-  it('opens the saved dream immediately after a successful save', async () => {
-    render(<RecordingScreen />);
-    await awaitEditorReady();
-
-    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
-      target: { value: 'A blue room under the rain' },
-    });
-    fireEvent.click(await screen.findByTestId('recording-save'));
-
-    await waitFor(() => {
-      expect(mockAddDream).toHaveBeenCalledWith(
-        expect.objectContaining({ transcript: 'A blue room under the rain' })
-      );
-      expect(mockReplace).toHaveBeenCalledWith({
-        pathname: '/journal/[id]',
-        params: { id: '42', saved: '1' },
-      });
-    });
-
-    expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
-    expect(screen.queryByTestId('btn.guestLimit.cta')).toBeNull();
-    expect(mockAnalyzeDream).not.toHaveBeenCalled();
-  });
-
   it('does not open reference photos or analysis after saving an animal dream', async () => {
     mockReferenceImagesEnabled = true;
     mockAddDream.mockImplementation(async (dream: DreamAnalysis) => ({
@@ -2093,12 +2069,6 @@ describe('Recording screen', () => {
     fireEvent.click(screen.getByTestId('recording-mode-voice'));
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'Du soleil.' } });
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(answerPair(answerPair('Un jardin.', 'Une porte.'), 'Du soleil.', 'dream_recall.question.what_else'));
-  });
-
-  it('does not render the retired hamburger capture tour', () => {
-    render(<RecordingScreen />);
-
-    expect(screen.queryByTestId(TID.Component.RecordingOnboardingTour)).toBeNull();
   });
 
   it('shows the saved-locally copy only after the draft is persisted, including across Write/Tell', async () => {

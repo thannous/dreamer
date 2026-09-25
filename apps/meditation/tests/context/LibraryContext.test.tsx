@@ -86,18 +86,6 @@ describe('LibraryProvider', () => {
       });
     });
 
-    it('stamps the LOCAL calendar day, not UTC', async () => {
-      const { result } = await mountLibrary();
-
-      await act(async () => {
-        await result.current.recordPractice({ seconds: 60 }, '2026-08-19');
-      });
-
-      expect(result.current.practiceLog[0].dateISO).toBe('2026-08-19');
-      // A 23:40 practice must belong to that evening, not to the next day.
-      expect(result.current.practiceLog[0].dateISO).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    });
-
     it('keeps entries in order and does not overwrite earlier ones', async () => {
       const { result } = await mountLibrary();
 

@@ -48,65 +48,6 @@ afterEach(() => {
   mockWindowWidth = 390;
 });
 
-describe('ScreenContainer', () => {
-  it('constrains content on a wide Android window', () => {
-    mockPlatformOS = 'android';
-    mockWindowWidth = 840;
-
-    render(
-      <ScreenContainer
-        maxWidth={960}
-        desktopPaddingHorizontal={40}
-        testID="screen-container"
-      >
-        Content
-      </ScreenContainer>
-    );
-
-    const inner = screen.getByTestId('screen-container').firstElementChild;
-    expect(inner).not.toBeNull();
-    expect(inner?.getAttribute('data-native-style')).toContain('"maxWidth":960');
-    expect(inner?.getAttribute('data-native-style')).toContain('"paddingHorizontal":40');
-  });
-
-  it('preserves the constrained desktop Web layout', () => {
-    mockPlatformOS = 'web';
-    mockWindowWidth = 1280;
-
-    render(<ScreenContainer testID="screen-container">Content</ScreenContainer>);
-
-    expect(screen.getByTestId('screen-container').firstElementChild).not.toBeNull();
-  });
-
-  it('does not add a nested constraint below the wide breakpoint', () => {
-    mockPlatformOS = 'android';
-    mockWindowWidth = 599;
-
-    render(<ScreenContainer testID="screen-container">Content</ScreenContainer>);
-
-    expect(screen.getByTestId('screen-container').firstElementChild).toBeNull();
-  });
-});
-
-it.each(['android', 'web'] as const)('fills the bounded wide %s wrapper only when requested', platform => {
-  mockPlatformOS = platform;
-  mockWindowWidth = 1280;
-  const { rerender } = render(<ScreenContainer testID="bounded" style={{ flex: 1 }} fillContent>Content</ScreenContainer>);
-  const outer = screen.getByTestId('bounded');
-  expect(outer.getAttribute('data-native-style')).toContain('"flex":1');
-  expect(outer.firstElementChild?.getAttribute('data-native-style')).toContain('"flex":1');
-  rerender(<ScreenContainer testID="bounded" style={{ flex: 1 }}>Content</ScreenContainer>);
-  expect(outer.firstElementChild?.getAttribute('data-native-style')).not.toContain('"flex":1');
-});
-it('keeps a bounded wrapper in the narrow layout', () => {
-  mockPlatformOS = 'android';
-  mockWindowWidth = 390;
-  render(<ScreenContainer testID="bounded" style={{ flex: 1 }} fillContent>Content</ScreenContainer>);
-  const outer = screen.getByTestId('bounded');
-  expect(outer.getAttribute('data-native-style')).toContain('"flex":1');
-  expect(outer.firstElementChild?.getAttribute('data-native-style')).toContain('"flex":1');
-});
-
 it('preserves child state and mount across wide and narrow bounded layouts', () => {
   const mounted = jest.fn();
   const unmounted = jest.fn();

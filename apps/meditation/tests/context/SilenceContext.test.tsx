@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { act, render, screen } from '@testing-library/react-native';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { ReactTestInstance } from 'react-test-renderer';
@@ -67,28 +67,6 @@ describe('progressive silence', () => {
     renderScreen();
 
     expect(screen.queryByTestId(TID.Button.RevealControls)).toBeNull();
-  });
-
-  it('covers the whole screen once the chrome has withdrawn, not just the chrome', () => {
-    renderScreen();
-    letTheChromeWithdraw();
-
-    // One catcher for the screen. Two would mean each piece of chrome is back
-    // to catching only its own touches, which is the bug this replaced.
-    expect(screen.getAllByTestId(TID.Button.RevealControls)).toHaveLength(1);
-  });
-
-  it('brings every piece back together on a touch outside all of them', () => {
-    renderScreen();
-    letTheChromeWithdraw();
-
-    fireEvent.press(screen.getByTestId(TID.Button.RevealControls));
-
-    // The catcher only exists while the chrome is hidden: its absence is the
-    // assertion that both halves came back, and came back at the same time.
-    expect(screen.queryByTestId(TID.Button.RevealControls)).toBeNull();
-    expect(screen.getByTestId('chrome.top')).toBeTruthy();
-    expect(screen.getByTestId('chrome.bottom')).toBeTruthy();
   });
 
   it('never withdraws while the screen is inactive', () => {

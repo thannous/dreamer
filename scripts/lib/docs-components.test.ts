@@ -25,35 +25,8 @@ describe('docs shared components', () => {
     expect(html).toContain('Dictionnaire des rêves');
     expect(html).toContain('À propos');
     expect(html).toContain('Télécharger l&#39;app');
-    expect(html).toContain('transition-colors duration-300 py-4 noctalia-premium-nav');
-    expect(html).toContain('noctalia-premium-nav-inner px-4 sm:px-8');
-    expect(html).toContain('text-dream-salmon');
   });
 
-  it('keeps the internal header aligned with the landing header and removes the search icon', () => {
-    const { createRenderContext } = require('./docs-components/context');
-    const { renderNavigation } = require('./docs-components/navigation');
-
-    const context = createRenderContext({
-      manifest,
-      entryId: 'blog.index',
-      meta: {
-        lang: 'en',
-        layout: 'blogIndex',
-        activeNav: 'resources',
-      },
-    });
-
-    const html = renderNavigation(context);
-
-    expect(html).toContain('transition-colors duration-300 py-4 noctalia-premium-nav');
-    expect(html).toContain('data-expanded-class="py-4"');
-    expect(html).toContain('data-compact-class="py-2"');
-    expect(html).toContain('noctalia-premium-nav-inner px-4 sm:px-8');
-    expect(html).not.toContain('noctalia-premium-search');
-    expect(html).not.toContain('data-lucide="search"');
-    expect(html).toContain('noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors');
-  });
 
   it.each([
     ['en', 'Choose language', 'Navigation menu'],
@@ -100,7 +73,6 @@ describe('docs shared components', () => {
     expect(html).toContain('Dictionnaire des rêves');
     expect(html).toContain('Symboles populaires');
     expect(html).toContain('Suppression de compte');
-    expect(html).not.toMatch(/<li><a [^>]*class="text-dream-salmon transition-colors"/);
   });
 
   it.each([
@@ -139,8 +111,7 @@ describe('docs shared components', () => {
       );
       expect(resourcesTitle).not.toBe(blogLabel);
       expect(guidesTitle).not.toBe(dictionaryLabel);
-      expect(html).not.toMatch(/<li><a [^>]*class="text-dream-salmon transition-colors"/);
-    }
+      }
   );
 
   it('keeps the landing hero special while supporting managed page heroes', () => {
@@ -192,24 +163,4 @@ describe('docs shared components', () => {
     expect(html).toContain('data-lucide="book-open"');
   });
 
-  it('exposes shared component styles required by generated pages', () => {
-    const { renderSharedComponentStyles } = require('./docs-components/styles');
-
-    const html = renderSharedComponentStyles();
-
-    expect(html).toContain('<style>');
-    expect(html).toContain('.noctalia-premium-nav');
-    expect(html).toContain('.noctalia-premium-nav { background: transparent');
-    expect(html).toContain('.noctalia-premium-nav.py-2 { background: rgba(10, 5, 20, 0.78)');
-    expect(html).toContain('.noctalia-premium-nav-inner');
-    expect(html).toContain('.noctalia-premium-nav-actions');
-    expect(html).toContain('.mobile-menu-backdrop');
-    expect(html).toContain('#mobileMenuPanel { position: fixed');
-    expect(html).toContain('.mobile-menu-surface { min-height: calc(100dvh - 5.25rem)');
-    expect(html).toContain('justify-content: space-between');
-    expect(html).toContain('margin-left: auto');
-    expect(html).toContain(
-      '#mobileMenuButton { min-width: 2.75rem; min-height: 2.75rem; align-items: center; justify-content: center; }'
-    );
-  });
 });

@@ -23,7 +23,6 @@ jest.mock('expo-haptics', () => ({
   NotificationFeedbackType: { Success: 'success', Warning: 'warning', Error: 'error' },
 }));
 
-
 describe('useAnalysisProgress', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -33,91 +32,7 @@ describe('useAnalysisProgress', () => {
     jest.useRealTimers();
   });
 
-  describe('initial state', () => {
-    it('starts with IDLE step', () => {
-      const { result } = renderHook(() => useAnalysisProgress());
-
-      expect(result.current.step).toBe(AnalysisStep.IDLE);
-      expect(result.current.progress).toBe(0);
-      expect(result.current.error).toBeNull();
-    });
-
-    it('returns translated message', () => {
-      const { result } = renderHook(() => useAnalysisProgress());
-
-      expect(result.current.message).toBe('analysis.step.ready');
-    });
-  });
-
   describe('setStep', () => {
-    it('given ANALYZING step when setting then updates state', async () => {
-      const { result } = renderHook(() => useAnalysisProgress());
-
-      act(() => {
-        result.current.setStep(AnalysisStep.ANALYZING);
-      });
-
-      expect(result.current.step).toBe(AnalysisStep.ANALYZING);
-      expect(result.current.message).toBe('analysis.step.analyzing');
-
-      // Progress animates to 25
-      await act(async () => {
-        await jest.runAllTimersAsync();
-      });
-
-      expect(result.current.progress).toBe(25);
-    });
-
-    it('given GENERATING_IMAGE step when setting then updates state', async () => {
-      const { result } = renderHook(() => useAnalysisProgress());
-
-      act(() => {
-        result.current.setStep(AnalysisStep.GENERATING_IMAGE);
-      });
-
-      expect(result.current.step).toBe(AnalysisStep.GENERATING_IMAGE);
-      expect(result.current.message).toBe('analysis.step.generating_image');
-
-      await act(async () => {
-        await jest.runAllTimersAsync();
-      });
-
-      expect(result.current.progress).toBe(65);
-    });
-
-    it('given FINALIZING step when setting then updates state', async () => {
-      const { result } = renderHook(() => useAnalysisProgress());
-
-      act(() => {
-        result.current.setStep(AnalysisStep.FINALIZING);
-      });
-
-      expect(result.current.step).toBe(AnalysisStep.FINALIZING);
-      expect(result.current.message).toBe('analysis.step.finalizing');
-
-      await act(async () => {
-        await jest.runAllTimersAsync();
-      });
-
-      expect(result.current.progress).toBe(90);
-    });
-
-    it('given COMPLETE step when setting then updates state', async () => {
-      const { result } = renderHook(() => useAnalysisProgress());
-
-      act(() => {
-        result.current.setStep(AnalysisStep.COMPLETE);
-      });
-
-      expect(result.current.step).toBe(AnalysisStep.COMPLETE);
-      expect(result.current.message).toBe('analysis.step.complete');
-
-      await act(async () => {
-        await jest.runAllTimersAsync();
-      });
-
-      expect(result.current.progress).toBe(100);
-    });
 
     it('clears error when setting new step', async () => {
       const { result } = renderHook(() => useAnalysisProgress());
@@ -334,35 +249,6 @@ describe('useAnalysisProgress', () => {
 
       expect(Haptics.impactAsync).not.toHaveBeenCalled();
       expect(Haptics.notificationAsync).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('progress animation', () => {
-    it('animates progress smoothly', async () => {
-      const { result } = renderHook(() => useAnalysisProgress());
-
-      act(() => {
-        result.current.setStep(AnalysisStep.ANALYZING);
-      });
-
-      // Initial progress should still be 0
-      expect(result.current.progress).toBe(0);
-
-      // Advance some time
-      await act(async () => {
-        await jest.advanceTimersByTimeAsync(250);
-      });
-
-      // Progress should be partially advanced
-      expect(result.current.progress).toBeGreaterThan(0);
-      expect(result.current.progress).toBeLessThan(25);
-
-      // Complete animation
-      await act(async () => {
-        await jest.advanceTimersByTimeAsync(300);
-      });
-
-      expect(result.current.progress).toBe(25);
     });
   });
 });

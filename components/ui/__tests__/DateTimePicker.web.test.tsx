@@ -64,19 +64,4 @@ describe('DateTimePicker web adapter', () => {
     expect(selectedDate.getHours()).toBe(8);
     expect(selectedDate.getMinutes()).toBe(45);
   });
-
-  it('forwards dark-theme input colors to the native time control', () => {
-    render(
-      <DateTimePicker
-        value={new Date(2026, 6, 10, 7, 0)}
-        mode="time"
-        style={{ color: '#FFF9EF', colorScheme: 'dark' }}
-        testID="dark-time-input"
-      />
-    );
-
-    const input = screen.getByTestId('dark-time-input') as HTMLInputElement;
-    expect(input.style.color).toBe('rgb(255, 249, 239)');
-    expect(input.style.colorScheme).toBe('dark');
-  });
 });

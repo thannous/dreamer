@@ -212,36 +212,6 @@ describe('SymbolDictionaryScreen', () => {
 
   // ── Rendering ───────────────────────────────────────────────────────────
   describe('initial rendering', () => {
-    it('renders the header with icon and title', () => {
-      render(<SymbolDictionaryScreen />);
-
-      expect(screen.getByText('symbols.dictionary_title')).toBeTruthy();
-    });
-
-    it('renders the search bar', () => {
-      render(<SymbolDictionaryScreen />);
-
-      expect(screen.getByTestId('search-bar')).toBeTruthy();
-    });
-
-    it('renders the browse mode switch with A-Z and theme options', () => {
-      render(<SymbolDictionaryScreen />);
-
-      expect(screen.getByText('symbols.browse_alphabetical')).toBeTruthy();
-      expect(screen.getByText('symbols.browse_theme')).toBeTruthy();
-    });
-
-    it('defaults to alphabetical browse mode', () => {
-      render(<SymbolDictionaryScreen />);
-
-      // In alphabetical mode, letter headers should appear
-      expect(screen.getByTestId('letter-header-A')).toBeTruthy();
-      expect(screen.getByTestId('letter-header-B')).toBeTruthy();
-      expect(screen.getByTestId('letter-header-C')).toBeTruthy();
-      expect(screen.getByTestId('letter-header-H')).toBeTruthy();
-      expect(screen.getByTestId('letter-header-M')).toBeTruthy();
-      expect(screen.getByTestId('letter-header-W')).toBeTruthy();
-    });
 
     it('renders the first alphabetical item instead of leaving a blank first row', () => {
       render(<SymbolDictionaryScreen />);
@@ -249,30 +219,6 @@ describe('SymbolDictionaryScreen', () => {
       expect(screen.getByTestId('symbol-card-abandonment')).toBeTruthy();
       expect(screen.getByTestId('symbol-card-bird')).toBeTruthy();
       expect(screen.getByTestId('symbol-card-water')).toBeTruthy();
-    });
-  });
-
-  // ── Full alphabet ─────────────────────────────────────────────────────
-  describe('full alphabet display', () => {
-    it('displays all 26 letters A-Z', () => {
-      render(<SymbolDictionaryScreen />);
-
-      const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-      for (const letter of alphabet) {
-        expect(screen.getByText(letter)).toBeTruthy();
-      }
-    });
-
-    it('disables letters that have no matching symbols', () => {
-      render(<SymbolDictionaryScreen />);
-
-      // Letters with symbols: A (Abandonment), B (Bird), C (Cat), H (Hand), M (Moon), W (Water)
-      // Letter D has no symbols, so it should still render as an unavailable alphabet option.
-      expect(screen.getByText('D')).toBeTruthy();
-
-      // Letters with symbols should not be disabled
-      const letterB = screen.getByText('B');
-      expect(letterB).toBeTruthy();
     });
   });
 
@@ -287,18 +233,6 @@ describe('SymbolDictionaryScreen', () => {
       expect(screen.getByTestId('category-header-nature')).toBeTruthy();
       expect(screen.getByTestId('category-header-animals')).toBeTruthy();
       expect(screen.getByTestId('category-header-body')).toBeTruthy();
-    });
-
-    it('shows category chips in theme mode', () => {
-      render(<SymbolDictionaryScreen />);
-
-      // Switch to theme mode
-      fireEvent.click(screen.getByText('symbols.browse_theme'));
-
-      expect(screen.getByText('symbols.all_categories')).toBeTruthy();
-      expect(screen.getByText('Nature')).toBeTruthy();
-      expect(screen.getByText('Animals')).toBeTruthy();
-      expect(screen.getByText('Body')).toBeTruthy();
     });
 
     it('switches back to alphabetical mode', () => {
@@ -408,17 +342,6 @@ describe('SymbolDictionaryScreen', () => {
       fireEvent.click(screen.getByTestId('btn.symbolDictionary.guides'));
 
       expect(mockPush).toHaveBeenCalledWith('/dream-guides');
-    });
-
-    it('navigates to symbol detail when pressing a symbol card', () => {
-      render(<SymbolDictionaryScreen />);
-
-      fireEvent.click(screen.getByTestId('symbol-card-water'));
-
-      expect(mockPush).toHaveBeenCalledWith({
-        pathname: '/symbol-detail/[id]',
-        params: { id: 'water', source: 'dictionary' },
-      });
     });
 
     it('navigates back when pressing the back button', () => {

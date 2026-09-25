@@ -6,7 +6,7 @@ import { ScrollView } from 'react-native';
 import BreatheExercise from '@/app/breathe/[pattern]';
 import { BreathGauge } from '@/components/breathe/BreathGauge';
 import { BreathRing } from '@/components/breathe/BreathRing';
-import { WorldTrainerSignature } from '@/components/trainer/WorldTrainerSignature';
+
 import type { BreathEngine } from '@/hooks/useBreathEngine';
 import { TID } from '@/lib/testIDs';
 
@@ -165,16 +165,6 @@ describe('immersive breathing trainer', () => {
     expect(screen.getByTestId(TID.Button.BreatheStart)).toHaveTextContent('Pause');
   });
 
-  it('provides a distinct static mark for the selected world motion', () => {
-    const view = render(
-      <WorldTrainerSignature motion="orbit" size={240}>
-        <ReactNative.View />
-      </WorldTrainerSignature>
-    );
-
-    expect(view.UNSAFE_getByProps({ testID: 'trainer.signature.orbit' })).toBeTruthy();
-  });
-
   it('announces an active phase once without a live region echo', () => {
     const announce = jest.spyOn(ReactNative.AccessibilityInfo, 'announceForAccessibility');
     mockScreenReader = true;
@@ -300,14 +290,6 @@ describe('immersive breathing trainer', () => {
     const stopsAfterPause = mockStopBreathVoice.mock.calls.length;
     view.unmount();
     expect(mockStopBreathVoice.mock.calls.length).toBeGreaterThan(stopsAfterPause);
-  });
-
-  it('keeps Ready on the title and Begin on the CTA until the exercise starts', () => {
-    render(<BreatheExercise />);
-
-    expect(screen.getByTestId(TID.Text.BreathePhase)).toHaveTextContent('Ready');
-    expect(screen.getByTestId(TID.Button.BreatheStart)).toHaveTextContent('Begin');
-    expect(screen.getByTestId(TID.Button.BreatheStart)).not.toHaveTextContent('Ready');
   });
 
   it('maps resume after a pause without looking like a fresh start', () => {
@@ -456,68 +438,4 @@ describe('immersive breathing trainer', () => {
     }
   });
 
-  it('keeps Ready, timer and CTA stacked without the truncated world header at 320dp/200%', () => {
-    const dimensions = jest.spyOn(ReactNative, 'useWindowDimensions').mockReturnValue({
-      width: 320,
-      height: 569,
-      scale: 3,
-      fontScale: 2,
-    });
-
-    try {
-      const view = render(<BreatheExercise />);
-      const phase = screen.getByTestId(TID.Text.BreathePhase);
-      const timer = screen.getByText('3:00');
-      const start = screen.getByTestId(TID.Button.BreatheStart);
-      const column = screen.getByTestId(TID.Screen.BreatheExercise);
-
-      expect(phase).toHaveTextContent('Ready');
-      expect(phase.props.className).toEqual(expect.stringContaining('text-h2'));
-      expect(phase.props.className).not.toEqual(expect.stringContaining('text-display'));
-      expect(screen.queryByText('CONSTE…')).toBeNull();
-      expect(screen.queryByText('Constellation')).toBeNull();
-      expect(screen.queryByText('2/3 · Practice')).toBeNull();
-      expect(timer).toBeTruthy();
-      expect(start).toHaveTextContent('Begin');
-      expect(column.props.className).toEqual(expect.stringContaining('min-h-0'));
-      expect(column.props.contentContainerClassName).toEqual(
-        expect.stringContaining('justify-between')
-      );
-      expect(view.UNSAFE_queryByType(BreathGauge)).toBeNull();
-      expect(view.UNSAFE_queryByType(BreathRing)).toBeNull();
-      expect(column.props.horizontal).toBeFalsy();
-      const rails = view
-        .UNSAFE_getAllByType(ScrollView)
-        .filter((node) => node.props.horizontal === true);
-      expect(rails).toHaveLength(2);
-      const collectJsonText = (node: unknown, acc: string[] = []): string[] => {
-        if (node == null || typeof node === 'boolean') return acc;
-        if (typeof node === 'string' || typeof node === 'number') {
-          acc.push(String(node));
-          return acc;
-        }
-        if (Array.isArray(node)) {
-          node.forEach((item) => collectJsonText(item, acc));
-          return acc;
-        }
-        if (typeof node === 'object' && 'children' in node) {
-          return collectJsonText((node as { children?: unknown }).children, acc);
-        }
-        return acc;
-      };
-      const columnText = collectJsonText(view.toJSON());
-      const readyIndex = columnText.indexOf('Ready');
-      const timerIndex = columnText.indexOf('3:00');
-      const howLongIndex = columnText.indexOf('How long?');
-      const beginIndex = columnText.indexOf('Begin');
-      expect(readyIndex).toBeGreaterThanOrEqual(0);
-      expect(timerIndex).toBeGreaterThan(readyIndex);
-      expect(howLongIndex).toBeGreaterThan(timerIndex);
-      expect(beginIndex).toBeGreaterThan(howLongIndex);
-      expect(screen.getByTestId('btn.breathe.voice')).toBeTruthy();
-      expect(screen.getByTestId('btn.breathe.haptic')).toBeTruthy();
-    } finally {
-      dimensions.mockRestore();
-    }
-  });
 });

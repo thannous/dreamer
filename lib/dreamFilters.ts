@@ -67,7 +67,6 @@ function matchesSearch(
   // Perf: Cross-field matching only matters when the query contains whitespace because we join fields
   // with a single space. For single-token queries, the per-field checks above are sufficient and we
   // can skip allocating a large concatenated string + `.toLowerCase()` per dream.
-  // Measured in `tests/perf/filterBySearch.perf.test.ts`: ~38ms -> ~16ms avg (20k dreams, no matches).
   if (!queryHasWhitespace) return false;
 
   // Preserve cross-field matching by checking the joined text
