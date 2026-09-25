@@ -1,3 +1,6 @@
+import { createDreamSymbolFlight } from './dream-symbol-flight.js';
+import { initDreamJourney } from './dream-journey.js';
+import { initDreamHeadings } from './dream-headings.js';
 import { attachDreamDrag } from './dream-drag.js';
 import { initSharedSky } from './shared-sky.js';
 
@@ -171,7 +174,7 @@ const loadScript = (src) => {
  */
 const revealHeadline = () => {
   const headline = getHeadline();
-  if (!headline) return;
+  if (!headline || headline.querySelector('.oh-word')) return;
   const walker = document.createTreeWalker(headline, NodeFilter.SHOW_TEXT);
   const textNodes = [];
   while (walker.nextNode()) textNodes.push(walker.currentNode);
@@ -309,9 +312,7 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis, heroReady) => {
 
   if (lenis) {
     lenis.on('scroll', ScrollTrigger.update);
-    gsapLib.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
+
     gsapLib.ticker.lagSmoothing(0);
   }
 
@@ -575,7 +576,7 @@ const initDawn = () => {
     ['.oh-ending', 1, 0.5],
   ]
     .map(([selector, value, anchor]) => ({ el: document.querySelector(selector), value, anchor }))
-    .filter((stop) => stop.el);
+    .filter((stop) => stop.el && !stop.el.classList.contains('oh-journey-source'));
   if (!stops.length) return;
   let frame = 0;
   const update = () => {
@@ -610,7 +611,7 @@ const initDawn = () => {
 
 const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 
-const initDreamSpace = () => {
+const initDreamSpace = (journey) => {
   const space = document.querySelector('.oh-dreamspace');
   const list = space?.querySelector('.oh-dream-list');
   if (!space || !list || !CSS.supports('transform-style', 'preserve-3d')) return null;
@@ -658,7 +659,7 @@ const initDreamSpace = () => {
     }
     const rect = space.getBoundingClientRect();
     const track = Math.max(1, rect.height - window.innerHeight);
-    const p = clamp(-rect.top / track, 0, 1);
+    const p = journey ? journey.cardsProgress : clamp(-rect.top / track, 0, 1);
     const approach = smooth(clamp(p / 0.72, 0, 1));
     const wake = smooth(clamp((p - 0.74) / 0.26, 0, 1));
     const yaw = state.drift + p * Math.PI * 1.1 + state.dragYaw;
@@ -733,7 +734,7 @@ const initLightbox = (space) => {
     const titleId = `oh-lightbox-title-${Date.now()}`;
     overlay.innerHTML = `
       <div class="oh-lightbox-backdrop"></div>
-      <div class="oh-lightbox-panel" role="dialog" aria-modal="true" aria-labelledby="${titleId}">
+      <div class="oh-lightbox-panel" data-lenis-prevent role="dialog" aria-modal="true" aria-labelledby="${titleId}">
         <img class="oh-lightbox-img" alt="" width="800" height="1000">
         <div class="oh-lightbox-body">
           <p class="oh-dream-meta"></p>
@@ -871,7 +872,7 @@ const initWaking = () => {
  * and its symbol words fly into the sky, then each dream lights its stars and
  * draws its lines, which thicken as symbols recur. Transform, opacity and
  * stroke only. */
-const initStarmap = () => {
+const initStarmap = (journey) => {
   const root = document.querySelector('.oh-starmap');
   if (!root) return;
   const stars = new Map(Array.from(root.querySelectorAll('.oh-star-item')).map((li) => [Number(li.dataset.sym), li]));
@@ -989,6 +990,7 @@ const initStarmap = () => {
     }
   });
 
+  const scrubFirstDream = journey ? createDreamSymbolFlight(words, first, stars) : null;
   let introStarted = false;
   let introDone = false;
   const timers = [];
@@ -1047,14 +1049,28 @@ const initStarmap = () => {
   };
 
   const progress = () => {
+    if (journey) return journey.mapProgress;
     const rect = root.getBoundingClientRect();
     return clamp(-rect.top / Math.max(1, rect.height - window.innerHeight), 0, 1);
   };
   const update = () => {
+    if (journey) {
+      const p = journey.mapProgress;
+      // Reserve the opening third of the map scroll for the first account.
+      // No timer can skip the flight: stopping or reversing scroll preserves it.
+      if (!journey.mapActive || p < 0.3) {
+        setStep(0);
+        scrubFirstDream(journey.mapActive ? p / 0.3 : 0, journey.mapActive);
+      } else {
+        if (step < 1) scrubFirstDream(1);
+        setStep(1 + clamp(Math.floor(((p - 0.3) / 0.7) * 10), 0, 9));
+      }
+      return;
+    }
     const p = progress();
     const rect = root.getBoundingClientRect();
     if (!introStarted) {
-      if (rect.top < window.innerHeight * 0.35) startIntro();
+      if (journey ? journey.mapActive : rect.top < window.innerHeight * 0.35) startIntro();
       else return setStep(0);
     }
     if (!introDone) {
@@ -1075,6 +1091,7 @@ const initStarmap = () => {
     },
     { passive: true }
   );
+  if (journey) setStep(0);
   update();
 };
 
@@ -1409,20 +1426,26 @@ const bootStatic = () => {
 const bootEnhanced = async (currentTier, heroReady) => {
   const isFull = currentTier === 'full';
   const moduleScript = document.querySelector('script[data-animation-module="experience"]');
+  let journey;
 
   try {
     const skyPromise = Promise.resolve();
+    journey = initDreamJourney(heroReady, top => {
+      if (activeLenis) activeLenis.scrollTo(top, { immediate: true });
+      else window.scrollTo({ top, behavior: 'instant' });
+    });
+    if (!journey) initDreamHeadings(heroReady);
     initFeatureMedia();
     initDawn();
-    const space = initDreamSpace();
+    const space = initDreamSpace(journey);
     initLightbox(space);
     initWaking();
-    initStarmap();
+    initStarmap(journey);
     initRemember();
     initEnding();
 
     const { default: Lenis } = await import('lenis');
-    const lenis = new Lenis({ autoRaf: !isFull, anchors: true });
+    const lenis = new Lenis({ autoRaf: true, anchors: true });
     activeLenis = lenis;
 
     if (!isFull) {
@@ -1444,6 +1467,7 @@ const bootEnhanced = async (currentTier, heroReady) => {
     initOrbParallax();
     await skyPromise;
   } catch {
+    journey?.restore();
     showStaticState();
   }
 };
@@ -1468,6 +1492,7 @@ if (tier !== 'static' && typeof window.matchMedia === 'function') {
 initSharedSky();
 // Start the lightweight video immediately; defer the heavier 3D scenes to idle.
 const heroReady = tier === 'static' ? Promise.resolve() : initFilm(tier === 'full');
+if (tier !== 'static') heroReady.then(revealHeadline);
 
 if (tier === 'static') {
   bootStatic();

@@ -1458,8 +1458,12 @@ body .noctalia-consent-actions button:hover {
 
 @media (max-width: 899px) {
   .noctalia-observatory > header {
-    padding-top: 7.5rem;
-    padding-bottom: 2rem;
+    padding-top: 6.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .oh-dreams {
+    padding-top: 4rem;
   }
 
   .oh-section-head {
