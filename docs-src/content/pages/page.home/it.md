@@ -44,10 +44,6 @@
                 Diario dei <span class="oh-accent-line">sogni</span>
             </h1>
 
-            <p class="oh-hero-lede hero-anim">
-                Conserva tutti i tuoi sogni in un unico diario. Scrivili o dettali al risveglio, poi ritrovali ed esplora i loro simboli con Noctalia.
-            </p>
-
             <div class="oh-hero-cta hero-anim hero-cta">
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it" class="oh-btn-primary">
                     Registra il primo sogno <i data-lucide="play"></i>
@@ -56,9 +52,6 @@
                     <i data-lucide="book-open"></i> Esplora i simboli
                 </a>
             </div>
-            <p class="oh-hero-note hero-anim">
-                <i data-lucide="shield-check"></i> App Android gratuita su Google Play · Strumento di riflessione, non diagnosi
-            </p>
 
         </div>
     </header>
@@ -66,16 +59,11 @@
     <!-- 1b. Dream: example entries in a 3D night -->
     <section class="oh-section oh-dreams" data-chapter="dream" data-labels='{&quot;close&quot;:&quot;Chiudi&quot;,&quot;transcript&quot;:&quot;Trascrizione&quot;,&quot;symbols&quot;:&quot;Simboli&quot;,&quot;example&quot;:&quot;Voce di esempio scritta per questa pagina&quot;}'>
         <div class="oh-section-head reveal">
-            <div>
-                <span class="oh-index" aria-hidden="true">01 · Sogno</span>
-                <h2 class="oh-h2">Sogni, così come sono stati raccontati</h2>
-            </div>
-            <div>
-                <p class="oh-lede">Ogni sogno può essere illustrato, analizzato o entrambe le cose.</p>
-                <p class="oh-dreams-hint" aria-hidden="true">Trascina per far ruotare la notte · apri una voce per leggerla</p>
-            </div>
+            <h2 class="oh-h2">Illustra i tuoi sogni</h2>
+            <p class="oh-h2 oh-dreams-heading-end">Esplora i tuoi sogni</p>
         </div>
         <div class="oh-dreamspace">
+            <div class="oh-dreamspace-pin">
             <div class="oh-dreamspace-stage">
                 <ul class="oh-dream-list" role="list">
                 <li class="oh-dream-slot">
@@ -239,6 +227,8 @@
                     </article>
                 </li>
                 </ul>
+            </div>
+                <p class="oh-h2 oh-dreams-closing reveal">Esplora i tuoi sogni</p>
             </div>
         </div>
     </section>
@@ -468,8 +458,8 @@
         <div class="oh-waking-grid">
             <div class="oh-waking-copy reveal">
                 <span class="oh-index" aria-hidden="true">03 · Risveglio</span>
-                <h2 class="oh-h2">Dillo prima che svanisca</h2>
-                <p class="oh-lede">Un tocco e parli. Noctalia trasforma la tua voce in testo che puoi correggere, così il primo racconto resta prima che la giornata ci scriva sopra.</p>
+                <h2 class="oh-h2">Il tuo sogno, scritto o a voce</h2>
+                <p class="oh-lede">Noctalia ti aiuta a scriverlo.</p>
                 <div class="oh-rec glass-panel" aria-hidden="true">
                     <p class="oh-rec-head"><span class="oh-rec-dot"></span>Registrazione<span class="oh-rec-time">00:14</span></p>
                     <div class="oh-rec-wave"><span style="--h:22"></span><span style="--h:40"></span><span style="--h:64"></span><span style="--h:38"></span><span style="--h:80"></span><span style="--h:52"></span><span style="--h:90"></span><span style="--h:34"></span><span style="--h:60"></span><span style="--h:76"></span><span style="--h:44"></span><span style="--h:96"></span><span style="--h:58"></span><span style="--h:30"></span><span style="--h:70"></span><span style="--h:48"></span><span style="--h:84"></span><span style="--h:36"></span><span style="--h:62"></span><span style="--h:28"></span><span style="--h:74"></span><span style="--h:50"></span><span style="--h:88"></span><span style="--h:42"></span><span style="--h:66"></span><span style="--h:32"></span><span style="--h:56"></span><span style="--h:24"></span></div>

@@ -330,6 +330,8 @@
     const panel = document.createElement('section');
     panel.id = CONSENT_PANEL_ID;
     panel.className = 'noctalia-consent-panel';
+    const deferForIntro = Boolean(document.querySelector('.noctalia-observatory'));
+    panel.hidden = Boolean(storedConsent) || deferForIntro;
     panel.setAttribute('role', 'dialog');
     panel.setAttribute('aria-labelledby', `${CONSENT_PANEL_ID}-title`);
     panel.setAttribute('aria-describedby', `${CONSENT_PANEL_ID}-description`);
@@ -365,6 +367,21 @@
       updateAnalyticsConsent(storedConsent === 'granted');
     } else {
       updateAnalyticsConsent(false);
+      if (deferForIntro) {
+        const deadline = Date.now() + 20000;
+        const showWhenReady = () => {
+          if (!panel.isConnected || readStoredConsent()) return;
+          const introActive = document.querySelector('.oh-intro-overlay') ||
+            document.documentElement.classList.contains('exp-intro-pending') ||
+            document.documentElement.classList.contains('oh-sky-expanding');
+          if (introActive && Date.now() < deadline) {
+            window.setTimeout(showWhenReady, 250);
+            return;
+          }
+          panel.hidden = false;
+        };
+        window.setTimeout(showWhenReady, 800);
+      }
     }
   };
 

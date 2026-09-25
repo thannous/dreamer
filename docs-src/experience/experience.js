@@ -1,3 +1,4 @@
+import { attachDreamDrag } from './dream-drag.js';
 import { initSharedSky } from './shared-sky.js';
 
 /**
@@ -695,55 +696,7 @@ const initDreamSpace = () => {
   }).observe(space);
   document.addEventListener('visibilitychange', start);
 
-  let moved = 0;
-  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    const stage = space.querySelector('.oh-dreamspace-stage');
-    let lastX = 0;
-    let lastY = 0;
-    stage.addEventListener('pointerdown', (event) => {
-      if (event.button !== 0) return;
-      state.dragging = true;
-      moved = 0;
-      lastX = event.clientX;
-      lastY = event.clientY;
-    });
-    stage.addEventListener('pointermove', (event) => {
-      if (!state.dragging) return;
-      const dx = event.clientX - lastX;
-      const dy = event.clientY - lastY;
-      lastX = event.clientX;
-      lastY = event.clientY;
-      moved += Math.abs(dx) + Math.abs(dy);
-      if (moved > 6 && !stage.hasPointerCapture(event.pointerId)) {
-        stage.setPointerCapture(event.pointerId);
-        stage.classList.add('is-dragging');
-      }
-      state.velocity = dx * 0.0045;
-      state.dragYaw += dx * 0.0045;
-      state.dragPitch = clamp(state.dragPitch - dy * 0.003, -0.5, 0.5);
-    });
-    const end = () => {
-      state.dragging = false;
-      stage.classList.remove('is-dragging');
-    };
-    stage.addEventListener('pointerup', end);
-    stage.addEventListener('pointercancel', () => {
-      end();
-      moved = 0;
-    });
-    stage.addEventListener(
-      'click',
-      (event) => {
-        const wasDragged = moved > 6;
-        moved = 0;
-        if (wasDragged && event.detail > 0) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-      },
-      true
-    );
-  }
+  attachDreamDrag(space.querySelector('.oh-dreamspace-stage'), state, clamp);
 
   return {
     pause: () => {
@@ -1077,6 +1030,22 @@ const initStarmap = () => {
     step = -1;
     update();
   };
+  let retry;
+  const showRetry = () => {
+    if (!retry) {
+      retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'oh-btn-secondary oh-intro-retry';
+      const labels = { fr: 'Voir l’intro', en: 'Play intro', de: 'Intro ansehen', es: 'Ver intro', it: 'Guarda l’intro', pt: 'Ver introdução' };
+      retry.textContent = labels[(html.lang || 'en').slice(0, 2)] || labels.en;
+      retry.addEventListener('click', () => {
+        activeLenis?.scrollTo(0, { immediate: true });
+        window.scrollTo(0, 0);
+        startIntro();
+      });
+    }
+    heroHeader.querySelector('.oh-hero-inner').append(retry);
+  };
   const startIntro = () => {
     introStarted = true;
     setStep(0);
@@ -1165,10 +1134,10 @@ const initRemember = () => {
 const INTRO_BASE = '/video/intro/noctalia-intro';
 const EYES_OPEN_BASE = '/video/intro/noctalia-eyes-open';
 
-const canPlayFilm = () => {
+const canPlayFilm = (allowSlowConnection = false) => {
   if (typeof HTMLVideoElement === 'undefined') return false;
   const connection = navigator.connection;
-  if (connection && (connection.saveData || /(^|-)2g$/.test(connection.effectiveType || ''))) return false;
+  if (connection && (connection.saveData || (!allowSlowConnection && /(^|-)2g$/.test(connection.effectiveType || '')))) return false;
   return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 };
 
@@ -1185,8 +1154,8 @@ const createVideo = (base, variant, className) => {
   video.setAttribute('tabindex', '-1');
   video.setAttribute('aria-hidden', 'true');
   [
-    ['webm', 'video/webm; codecs="vp9"'],
     ['mp4', 'video/mp4'],
+    ['webm', 'video/webm; codecs="vp9"'],
   ].forEach(([extension, type]) => {
     const source = document.createElement('source');
     source.src = `${base}-${variant}.${extension}`;
@@ -1271,9 +1240,10 @@ const playIntro = (film, loop, variant) =>
 
     let finished = false;
     let preparedLoop;
+    let played = false;
     let slowStartTimer = 0;
     let maximumTimer = 0;
-    const finish = async (cut = false) => {
+    const finish = async (cut = false, unavailable = false) => {
       if (finished) return;
       finished = true;
       window.clearTimeout(slowStartTimer);
@@ -1294,7 +1264,7 @@ const playIntro = (film, loop, variant) =>
         overlay.remove();
         film.classList.remove('is-handoff');
         revealDreamsAfterIntro();
-        resolve();
+        resolve({ played, unavailable });
       }, cut ? 280 : 720);
     };
     const onScroll = () => {
@@ -1306,6 +1276,7 @@ const playIntro = (film, loop, variant) =>
 
     intro.addEventListener('playing', () => {
       if (finished) return;
+      played = true;
       overlay.classList.add('is-playing');
       overlay.append(skip);
       loop.currentTime = 0;
@@ -1315,19 +1286,19 @@ const playIntro = (film, loop, variant) =>
       });
     }, { once: true });
     intro.addEventListener('ended', () => finish(), { once: true });
-    intro.addEventListener('error', () => finish(true), { once: true });
+    intro.addEventListener('error', () => finish(true, true), { once: true });
     skip.addEventListener('click', () => finish(true));
     window.addEventListener('scroll', onScroll, { passive: true });
     document.addEventListener('keydown', onKey);
     // Never make a slow connection wait for the film.
     slowStartTimer = window.setTimeout(() => {
-      if (intro.paused) finish(true);
-    }, 2500);
-    maximumTimer = window.setTimeout(() => finish(true), 7000);
+      if (!played) finish(true, true);
+    }, 6000);
+    maximumTimer = window.setTimeout(() => finish(true, !played), 12000);
 
     overlay.append(intro);
     document.body.append(overlay);
-    intro.play().catch(() => finish(true));
+    intro.play().catch(() => finish(true, true));
   });
 
 /* ------------------------------------------------------------------ */
@@ -1349,7 +1320,7 @@ let replayIntroOnReturn = null;
 
 const initFilm = (isFull) => {
   const heroHeader = document.querySelector(HERO_SELECTOR);
-  if (!heroHeader || !canPlayFilm()) {
+  if (!heroHeader || !canPlayFilm(true)) {
     revealDreamsAfterIntro();
     return Promise.resolve();
   }
@@ -1396,14 +1367,32 @@ const initFilm = (isFull) => {
     started = true;
     sync();
   };
+  let retry;
+  const showRetry = () => {
+    if (!retry) {
+      retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'oh-btn-secondary oh-intro-retry';
+      const labels = { fr: 'Voir l’intro', en: 'Play intro', de: 'Intro ansehen', es: 'Ver intro', it: 'Guarda l’intro', pt: 'Ver introdução' };
+      retry.textContent = labels[(html.lang || 'en').slice(0, 2)] || labels.en;
+      retry.addEventListener('click', () => {
+        activeLenis?.scrollTo(0, { immediate: true });
+        window.scrollTo(0, 0);
+        startIntro();
+      });
+    }
+    heroHeader.querySelector('.oh-hero-inner').append(retry);
+  };
   const startIntro = () => {
-    if (!film.isConnected || introPlaying) return Promise.resolve();
+    if (introPlaying) return Promise.resolve();
+    retry?.remove();
     holdDreamsForIntro();
     introPlaying = true;
     video.pause();
     // The landscape master and loop share a composition; object-fit: cover
     // applies the same viewport crop on phones and desktops.
-    return playIntro(film, video, '1280').then(() => {
+    return playIntro(film, video, '1280').then((result) => {
+      if (result.unavailable) showRetry();
       introPlaying = false;
       startLoop();
     });
@@ -1413,6 +1402,11 @@ const initFilm = (isFull) => {
     window.scrollTo(0, 0);
     startIntro();
   };
+  if (!canPlayFilm()) {
+    revealDreamsAfterIntro();
+    showRetry();
+    return Promise.resolve();
+  }
   if (!window.location.hash) window.scrollTo(0, 0);
   return startIntro();
 };
