@@ -831,6 +831,7 @@ export default function RecordingScreen() {
         },
       };
       const response = await startSessionRecording(sourceTranscript);
+      if (response.error === 'cancelled') return false;
       if (response.success) {
         // Permission dialogs can take focus away from the editor. Restore it
         // after startup without moving the user's selected insertion point.

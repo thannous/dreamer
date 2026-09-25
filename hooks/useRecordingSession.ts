@@ -5,10 +5,11 @@ import {
 } from 'expo-audio';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, AppState, Platform } from 'react-native';
+import { Alert, AppState, Linking, Platform } from 'react-native';
 
 import { createScopedLogger } from '@/lib/logger';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
+import { waitForPermissionActivityToSettle } from '@/lib/recordingPermissions';
 import {
   getSpeechLocaleAvailability,
   isWebSpeechRecognitionAvailable,
@@ -18,7 +19,6 @@ import {
 import { transcribeAudio } from '@/services/speechToText';
 
 const log = createScopedLogger('[useRecordingSession]');
-const PERMISSION_ACTIVITY_SETTLE_MS = 300;
 
 type RecordingPermissionResult = {
   granted: boolean;
@@ -37,28 +37,6 @@ async function getOrRequestRecordingPermission(): Promise<RecordingPermissionRes
 
   const requested = await AudioModule.requestRecordingPermissionsAsync();
   return { granted: requested.granted, prompted: true };
-}
-
-async function waitForPermissionActivityToSettle(): Promise<void> {
-  if (Platform.OS === 'web') return;
-
-  // AppState.currentState is undefined in some test and SSR environments. On a
-  // device it is populated, so wait for Android's permission activity to hand
-  // focus back before starting the recognizer and registering lifecycle cleanup.
-  if (AppState.currentState && AppState.currentState !== 'active') {
-    await new Promise<void>((resolve) => {
-      const subscription = AppState.addEventListener('change', (state) => {
-        if (state === 'active') {
-          subscription.remove();
-          resolve();
-        }
-      });
-    });
-  }
-
-  if (AppState.currentState) {
-    await new Promise((resolve) => setTimeout(resolve, PERMISSION_ACTIVITY_SETTLE_MS));
-  }
 }
 
 async function deleteRecordedAudio(uri: string | undefined): Promise<void> {
@@ -115,6 +93,7 @@ export function useRecordingSession({
   const stopPromiseRef = useRef<Promise<RecordingSessionResult> | null>(null);
   const hasAutoStoppedRecordingRef = useRef(false);
   const baseTranscriptRef = useRef('');
+  const pendingStartRef = useRef<AbortController | null>(null);
 
   const handleRecorderError = useCallback(
     (context: string, error: unknown) => {
@@ -159,6 +138,7 @@ export function useRecordingSession({
 
   const forceStopRecording = useCallback(
     async (reason: 'blur' | 'unmount') => {
+      pendingStartRef.current?.abort();
       let cleanupUri: string | undefined;
       const hasNativeSession = Boolean(nativeSessionRef.current);
       const recorderIsRecording = getRecorderIsRecording();
@@ -378,6 +358,12 @@ export function useRecordingSession({
 
   const startRecording = useCallback(
     async (currentTranscript: string): Promise<{ success: boolean; error?: string }> => {
+      if (pendingStartRef.current) return { success: false, error: 'transition_in_progress' };
+      const controller = new AbortController();
+      pendingStartRef.current = controller;
+      const checkCancelled = () => {
+        if (controller.signal.aborted) throw new Error('cancelled');
+      };
       let audioModeEnabled = false;
       setIsSpeechListening(false);
 
@@ -400,6 +386,7 @@ export function useRecordingSession({
           }
         } else {
           const { granted, prompted } = await getOrRequestRecordingPermission();
+          checkCancelled();
           setRecordingPermissionState(granted ? 'granted' : 'denied');
           if (!granted) {
             Alert.alert(
@@ -409,21 +396,24 @@ export function useRecordingSession({
             return { success: false, error: 'permission_denied' };
           }
           if (prompted) {
-            await waitForPermissionActivityToSettle();
+            await waitForPermissionActivityToSettle(controller.signal);
           }
         }
 
+        checkCancelled();
         await setAudioModeAsync({
           allowsRecording: true,
           playsInSilentMode: true,
         });
         audioModeEnabled = true;
+        checkCancelled();
 
         recorderReleasedRef.current = false;
         nativeSessionRef.current?.abort();
         baseTranscriptRef.current = currentTranscript;
 
-        nativeSessionRef.current = await startNativeSpeechSession(transcriptionLocale, {
+        const nativeSession = await startNativeSpeechSession(transcriptionLocale, {
+          signal: controller.signal,
           onListeningChange: setIsSpeechListening,
           permissionAlreadyGranted: Platform.OS !== 'web',
           onEnd: onNativeEnd,
@@ -431,6 +421,10 @@ export function useRecordingSession({
             onPartialTranscript?.(text, { baseTranscript: baseTranscriptRef.current });
           },
         });
+
+        if (controller.signal.aborted) nativeSession?.abort();
+        checkCancelled();
+        nativeSessionRef.current = nativeSession;
 
         if (Platform.OS === 'ios' && !nativeSessionRef.current) {
           await setAudioModeAsync({ allowsRecording: false });
@@ -465,6 +459,7 @@ export function useRecordingSession({
         hasAutoStoppedRecordingRef.current = false;
         if (!skipRecorderRef.current) {
           await audioRecorder.prepareToRecordAsync(RECORDING_OPTIONS);
+          checkCancelled();
           audioRecorder.record();
         } else if (__DEV__) {
           log.debug('skipping audioRecorder because native session active');
@@ -490,9 +485,25 @@ export function useRecordingSession({
             log.warn('Failed to reset audio mode after start failure', resetError);
           }
         }
+        if (controller.signal.aborted) return { success: false, error: 'cancelled' };
+        if (err instanceof Error && err.message === 'speech_permission_denied') {
+          Alert.alert(
+            t('recording.alert.permission_required.title'),
+            t('recording.alert.speech_permission_required.message'),
+            [
+              { text: t('common.cancel'), style: 'cancel' },
+              { text: t('reference_image.open_settings'), onPress: () => {
+                void Linking.openSettings().catch((error) => log.warn('Failed to open settings', error));
+              } },
+            ],
+          );
+          return { success: false, error: 'permission_denied' };
+        }
         handleRecorderError('startRecording', err);
         log.error('Failed to start recording', err);
         return { success: false, error: err instanceof Error ? err.message : 'start_failed' };
+      } finally {
+        pendingStartRef.current = null;
       }
     },
     [audioRecorder, t, transcriptionLocale, onNativeEnd, onPartialTranscript, handleRecorderError]

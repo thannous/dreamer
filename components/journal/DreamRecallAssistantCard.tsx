@@ -297,6 +297,7 @@ export function DreamRecallAssistantCard({
     baseTranscriptRef.current = typed;
     try {
       const response = await startSessionRecording(typed);
+      if (response.error === 'cancelled') return;
       if (!response.success) {
         setVoiceError(true);
       }
