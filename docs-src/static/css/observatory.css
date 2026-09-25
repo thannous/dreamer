@@ -323,9 +323,8 @@
 
 .noctalia-observatory > header {
   position: relative;
-  min-height: 100svh;
   width: 100%;
-  padding: 9rem 1.5rem 6rem;
+  padding: 9rem 1.5rem 3.5rem;
   overflow: hidden;
 }
 
@@ -344,20 +343,8 @@
   opacity: 0.55;
   filter: saturate(0.55) contrast(1.04);
   transform: scale(1.01);
-}
-
-/* Horizon: a low champagne dawn behind the product shot. */
-.noctalia-observatory > header::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: -18rem;
-  width: min(140%, 96rem);
-  height: 36rem;
-  transform: translateX(-50%);
-  pointer-events: none;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at 50% 50%, rgba(234, 212, 180, 0.13), rgba(25, 35, 68, 0.2) 45%, transparent 70%);
+  -webkit-mask-image: linear-gradient(180deg, #000 58%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 58%, transparent 100%);
 }
 
 .noctalia-observatory > header > div {
@@ -379,7 +366,7 @@
 }
 
 .oh-hero-title .oh-accent-line {
-  display: block;
+  display: inline;
   font-weight: 360;
   color: var(--oh-champagne-on);
   text-shadow: 0 0 48px rgba(234, 212, 180, 0.22);
@@ -430,49 +417,57 @@
   margin: 0 auto;
 }
 
-.oh-hero-visual {
-  position: relative;
-  width: min(100%, 1080px);
-  margin: 4.5rem auto 0;
-}
-
-/* Halo behind the product shot. */
-.oh-hero-visual::before {
-  content: '';
-  position: absolute;
-  inset: 12% 6% -10%;
-  z-index: -1;
-  pointer-events: none;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at 50% 40%, rgba(234, 212, 180, 0.2), rgba(25, 35, 68, 0.3) 45%, transparent 72%);
-  filter: blur(40px);
-}
-
-/* Gradient hairline ring: padding-box fill + border-box gradient. */
-.oh-hero-visual picture {
-  display: block;
-  position: relative;
-  overflow: hidden;
-  border-radius: 22px;
-  border: 1px solid transparent;
-  background:
-    linear-gradient(var(--oh-ink-raised), var(--oh-ink-raised)) padding-box,
-    linear-gradient(160deg, rgba(234, 212, 180, 0.5), rgba(234, 212, 180, 0.06) 38%, rgba(183, 174, 201, 0.18) 100%) border-box;
-  box-shadow:
-    0 60px 120px -40px rgba(0, 0, 0, 0.85),
-    0 30px 120px -50px rgba(234, 212, 180, 0.28);
-}
-
-.oh-hero-visual img {
-  display: block;
-  width: 100%;
-  transform-origin: center;
-}
-
 /* Sections without a locale id share this rhythm. */
 .oh-section {
   padding-top: clamp(6rem, 10vw, 9rem);
   padding-bottom: 2rem;
+}
+
+.oh-dreams {
+  position: relative;
+  isolation: isolate;
+  z-index: 1;
+  margin-top: -4rem;
+  padding-top: calc(clamp(3rem, 5vw, 4rem) + 3rem);
+}
+
+.oh-dreams-heading-end {
+  display: none;
+}
+
+.oh-dreams-closing {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0.75rem auto 0;
+  text-align: right;
+}
+
+@media (min-width: 1100px) {
+  .oh-dreams-heading-end {
+    display: block;
+    margin: 0 0 0 auto;
+    text-align: right;
+  }
+
+  .oh-dreams-closing {
+    display: none;
+  }
+}
+
+.oh-dreams::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: min(80rem, 100%);
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 22%, rgba(255, 249, 239, 0.5) 0 1px, transparent 2px),
+    radial-gradient(circle at 78% 14%, rgba(255, 249, 239, 0.38) 0 1px, transparent 2px),
+    radial-gradient(circle at 89% 39%, rgba(234, 212, 180, 0.42) 0 1px, transparent 2px),
+    radial-gradient(ellipse 65% 36% at 50% 19%, rgba(72, 55, 97, 0.3), transparent 76%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 4rem, #000 65rem, transparent 80rem);
+  mask-image: linear-gradient(180deg, transparent 0, #000 4rem, #000 65rem, transparent 80rem);
 }
 
 /* Centered heads (pricing, FAQ). */
@@ -1450,14 +1445,8 @@ body .noctalia-consent-actions button:hover {
 
 @media (max-width: 899px) {
   .noctalia-observatory > header {
-    min-height: auto;
     padding-top: 7.5rem;
-    padding-bottom: 3.5rem;
-  }
-
-  .oh-hero-visual,
-  .noctalia-observatory > header .hero-anim:last-child {
-    margin-top: 3.5rem;
+    padding-bottom: 2rem;
   }
 
   .oh-section-head {
@@ -1661,13 +1650,6 @@ body .noctalia-consent-actions button:hover {
   color: var(--oh-champagne-on);
   font-size: 0.8rem;
   letter-spacing: 0.04em;
-}
-
-.oh-dreams-note {
-  margin: 1.5rem 0 0;
-  color: #b7aec9;
-  font-size: 0.78rem;
-  text-align: center;
 }
 
 /* 02 Waking */

@@ -56,6 +56,13 @@ function renderTierInlineScript() {
     '        var tier = computeTier(env);',
     "        document.documentElement.dataset.expTier = tier;",
     '        window.__EXP_TIER__ = tier;',
+    "        var slowConnection = Boolean(navigator.connection && /(^|-)2g$/.test(navigator.connection.effectiveType || ''));",
+    "        if (tier !== 'static' && !slowConnection) {",
+    "          document.documentElement.classList.add('exp-intro-pending');",
+    '          window.__expIntroGateTimer = window.setTimeout(function () {',
+    "            document.documentElement.classList.remove('exp-intro-pending');",
+    '          }, 12000);',
+    '        }',
     '      })();',
     '    </script>',
   ].join('\n');

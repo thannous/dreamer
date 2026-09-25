@@ -41,12 +41,8 @@
     <header>
         <div class="oh-hero-inner">
             <h1 class="oh-hero-title hero-anim">
-                Retenez le rêve <span class="oh-accent-line">avant que le jour l’efface</span>
+                Journal de <span class="oh-accent-line">rêves</span>
             </h1>
-
-            <p class="oh-hero-lede hero-anim">
-                Racontez-le dès le réveil, avec vos mots. Noctalia garde ce premier récit intact, puis vous aide à en suivre les symboles, les émotions et les questions — avec une image de la scène si vous le souhaitez.
-            </p>
 
             <div class="oh-hero-cta hero-anim hero-cta">
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="oh-btn-primary">
@@ -56,33 +52,18 @@
                     <i data-lucide="book-open"></i> Parcourir les symboles
                 </a>
             </div>
-            <p class="oh-hero-note hero-anim">
-                <i data-lucide="shield-check"></i> Application Android gratuite sur Google Play · Outil de réflexion, pas de diagnostic
-            </p>
 
-            <div class="oh-hero-visual hero-anim">
-                <picture>
-                    <source type="image/webp" srcset="/screenshot/demo1_cropped-400w.webp 400w, /screenshot/demo1_cropped-800w.webp 800w, /screenshot/demo1_cropped-1600w.webp 1600w" sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 95vw">
-                    <source type="image/jpeg" srcset="/screenshot/demo1_cropped-400w.jpg 400w, /screenshot/demo1_cropped-800w.jpg 800w, /screenshot/demo1_cropped-1600w.jpg 1600w" sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 95vw">
-                    <img src="/screenshot/demo1_cropped-1600w.jpg" alt="Interface de l'application Noctalia - Démo" class="w-full" width="1600" height="678" decoding="async" fetchpriority="high">
-                </picture>
-            </div>
         </div>
     </header>
 
     <!-- 1b. Dream: example entries in a 3D night -->
     <section class="oh-section oh-dreams" data-chapter="dream" data-labels='{&quot;close&quot;:&quot;Fermer&quot;,&quot;transcript&quot;:&quot;Transcription&quot;,&quot;symbols&quot;:&quot;Symboles&quot;,&quot;example&quot;:&quot;Exemple d’entrée rédigé pour cette page&quot;}'>
         <div class="oh-section-head reveal">
-            <div>
-                <span class="oh-index" aria-hidden="true">01 · Rêve</span>
-                <h2 class="oh-h2">Des rêves, tels qu’ils ont été racontés</h2>
-            </div>
-            <div>
-                <p class="oh-lede">Dix exemples d’entrées, conservées comme Noctalia les conserve : les mots dits au réveil, la date, le ressenti et une image de la scène.</p>
-                <p class="oh-dreams-hint" aria-hidden="true">Faites tourner la nuit · ouvrez une entrée pour la lire</p>
-            </div>
+            <h2 class="oh-h2">Illustre tes rêves</h2>
+            <p class="oh-h2 oh-dreams-heading-end">Explore tes rêves</p>
         </div>
         <div class="oh-dreamspace">
+            <div class="oh-dreamspace-pin">
             <div class="oh-dreamspace-stage">
                 <ul class="oh-dream-list" role="list">
                 <li class="oh-dream-slot">
@@ -247,180 +228,8 @@
                 </li>
                 </ul>
             </div>
-        </div>
-        <p class="oh-dreams-note">Exemple d’entrée rédigé pour cette page</p>
-    </section>
-
-    <!-- 1c. Waking: speak it before it fades -->
-    <section class="oh-section oh-waking" data-chapter="waking">
-        <div class="oh-waking-grid">
-            <div class="oh-waking-copy reveal">
-                <span class="oh-index" aria-hidden="true">02 · Réveil</span>
-                <h2 class="oh-h2">Dites-le avant qu’il ne s’efface</h2>
-                <p class="oh-lede">Un geste, et vous parlez. Noctalia transforme votre voix en texte modifiable : le premier récit est gardé avant que la journée ne vienne l’écraser.</p>
-                <div class="oh-rec glass-panel" aria-hidden="true">
-                    <p class="oh-rec-head"><span class="oh-rec-dot"></span>Enregistrement<span class="oh-rec-time">00:14</span></p>
-                    <div class="oh-rec-wave"><span style="--h:22"></span><span style="--h:40"></span><span style="--h:64"></span><span style="--h:38"></span><span style="--h:80"></span><span style="--h:52"></span><span style="--h:90"></span><span style="--h:34"></span><span style="--h:60"></span><span style="--h:76"></span><span style="--h:44"></span><span style="--h:96"></span><span style="--h:58"></span><span style="--h:30"></span><span style="--h:70"></span><span style="--h:48"></span><span style="--h:84"></span><span style="--h:36"></span><span style="--h:62"></span><span style="--h:28"></span><span style="--h:74"></span><span style="--h:50"></span><span style="--h:88"></span><span style="--h:42"></span><span style="--h:66"></span><span style="--h:32"></span><span style="--h:56"></span><span style="--h:24"></span></div>
-                    <p class="oh-rec-text">J’étais dans la maison de ma grand-mère, mais il y avait un escalier que je n’avais jamais vu. En haut, une porte bleue bourdonnait.</p>
-                </div>
+                <p class="oh-h2 oh-dreams-closing reveal">Explore tes rêves</p>
             </div>
-            <div class="oh-waking-device reveal">
-                <div class="phone-frame oh-waking-phone">
-                    <picture>
-                        <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <img src="../img/en/recording-800w.jpg" alt="Enregistrement vocal de votre rêve" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
-                    </picture>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 2. How it works (3 steps) -->
-    <section id="comment-ca-marche">
-        <div class="oh-section-head reveal" data-steps-heading>
-            <div>
-                <h2 class="oh-h2">D’une scène qui s’efface à un récit que vous pouvez relire</h2>
-            </div>
-            <p class="oh-lede">Capturez d’abord, tant que c’est encore vif. Donnez-lui du sens ensuite, une fois bien réveillé.</p>
-        </div>
-
-        <div id="etapes-reves" class="oh-steps">
-            <article class="oh-step reveal" data-step="record">
-                <span class="oh-step-num" aria-hidden="true">1</span>
-                <span class="oh-step-icon"><i data-lucide="mic"></i></span>
-                <h3>Enregistrez</h3>
-                <p>Dites ce qu’il en reste : un lieu, un visage, une sensation. À la voix ou par écrit — vous pourrez corriger la transcription ensuite.</p>
-                <div class="phone-frame" data-phone="record">
-                    <picture>
-                        <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <img src="../img/en/recording-800w.jpg" alt="Enregistrement vocal de votre rêve" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
-                    </picture>
-                </div>
-            </article>
-
-            <article class="oh-step reveal" data-step="analyze">
-                <span class="oh-step-num" aria-hidden="true">2</span>
-                <span class="oh-step-icon"><i data-lucide="sparkles"></i></span>
-                <h3>Analysez</h3>
-                <p>Noctalia transcrit votre récit et relève les symboles, les émotions et les thèmes qui semblent s’y répéter.</p>
-                <div class="phone-frame" data-phone="analyze">
-                    <picture>
-                        <source type="image/webp" srcset="../img/en/analizing-480w.webp 480w, ../img/en/analizing-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <source type="image/jpeg" srcset="../img/en/analizing-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <img src="../img/en/analizing-800w.jpg" alt="Analyse instantanée de votre rêve" class="w-full h-full object-cover" width="800" height="1615" loading="lazy" decoding="async">
-                    </picture>
-                </div>
-            </article>
-
-            <article class="oh-step reveal" data-step="explore">
-                <span class="oh-step-num" aria-hidden="true">3</span>
-                <span class="oh-step-icon"><i data-lucide="compass"></i></span>
-                <h3>Explorez</h3>
-                <p>Posez des questions de suivi, vérifiez quelles associations résonnent vraiment avec votre vie, et générez une image si la scène le mérite.</p>
-                <div class="phone-frame" data-phone="explore">
-                    <picture>
-                        <source type="image/webp" srcset="../img/en/exploring-480w.webp 480w, ../img/en/exploring-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <source type="image/jpeg" srcset="../img/en/exploring-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <img src="../img/en/exploring-800w.jpg" alt="Exploration et visualisation de votre rêve" class="w-full h-full object-cover" width="800" height="1659" loading="lazy" decoding="async">
-                    </picture>
-                </div>
-            </article>
-        </div>
-    </section>
-
-    <!-- 3. What stays with each dream entry (Features) -->
-    <section id="fonctionnalites">
-        <div class="oh-section-head reveal">
-            <div>
-                <h2 class="oh-h2">Ce que chaque rêve conserve</h2>
-            </div>
-            <p class="oh-lede">Le récit d’origine reste intact. Tout le reste est facultatif, ajouté seulement quand un rêve l’appelle.</p>
-        </div>
-
-        <div class="oh-features">
-            <article class="oh-feature oh-feature--a glass-panel reveal">
-                <div class="oh-feature-top">
-                    <span class="oh-feature-num">01 · De la voix au texte</span>
-                    <span class="oh-feature-icon"><i data-lucide="mic"></i></span>
-                </div>
-                <div>
-                    <h3>Votre voix, transcrite</h3>
-                    <p>Murmurez une note avant que le rêve ne se dissipe. Noctalia la transforme en texte que vous pouvez corriger : les noms, les lieux, les détails qui comptent.</p>
-                    <div class="oh-feature-media" aria-hidden="true">
-                        <svg width="180" height="36" viewBox="0 0 180 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="0" y="12" width="3" height="12" rx="1.5" fill="currentColor" opacity="0.45"/>
-                            <rect x="9" y="8" width="3" height="20" rx="1.5" fill="currentColor" opacity="0.7"/>
-                            <rect x="18" y="14" width="3" height="8" rx="1.5" fill="currentColor" opacity="0.4"/>
-                            <rect x="27" y="4" width="3" height="28" rx="1.5" fill="currentColor" opacity="0.85"/>
-                            <rect x="36" y="10" width="3" height="16" rx="1.5" fill="currentColor" opacity="0.6"/>
-                            <rect x="45" y="16" width="3" height="6" rx="1.5" fill="currentColor" opacity="0.35"/>
-                            <rect x="54" y="6" width="3" height="24" rx="1.5" fill="currentColor" opacity="0.75"/>
-                            <rect x="63" y="12" width="3" height="12" rx="1.5" fill="currentColor" opacity="0.5"/>
-                            <rect x="72" y="2" width="3" height="32" rx="1.5" fill="currentColor" opacity="0.9"/>
-                            <rect x="81" y="9" width="3" height="18" rx="1.5" fill="currentColor" opacity="0.6"/>
-                            <rect x="90" y="15" width="3" height="7" rx="1.5" fill="currentColor" opacity="0.4"/>
-                            <rect x="99" y="7" width="3" height="22" rx="1.5" fill="currentColor" opacity="0.7"/>
-                            <rect x="108" y="13" width="3" height="10" rx="1.5" fill="currentColor" opacity="0.45"/>
-                            <rect x="117" y="5" width="3" height="26" rx="1.5" fill="currentColor" opacity="0.8"/>
-                            <rect x="126" y="11" width="3" height="14" rx="1.5" fill="currentColor" opacity="0.55"/>
-                            <rect x="135" y="16" width="3" height="5" rx="1.5" fill="currentColor" opacity="0.35"/>
-                            <rect x="144" y="8" width="3" height="20" rx="1.5" fill="currentColor" opacity="0.65"/>
-                            <rect x="153" y="13" width="3" height="10" rx="1.5" fill="currentColor" opacity="0.45"/>
-                            <rect x="162" y="10" width="3" height="16" rx="1.5" fill="currentColor" opacity="0.55"/>
-                            <rect x="171" y="15" width="3" height="6" rx="1.5" fill="currentColor" opacity="0.35"/>
-                        </svg>
-                    </div>
-                </div>
-            </article>
-
-            <article class="oh-feature oh-feature--b glass-panel reveal">
-                <div class="oh-feature-top">
-                    <span class="oh-feature-num">02</span>
-                    <span class="oh-feature-icon"><i data-lucide="image"></i></span>
-                </div>
-                <div>
-                    <h3>Une image de la scène</h3>
-                    <p>Générez une image pour un rêve que vous voulez revoir.</p>
-                </div>
-            </article>
-
-            <article class="oh-feature oh-feature--c glass-panel reveal">
-                <div class="oh-feature-top">
-                    <span class="oh-feature-num">03</span>
-                    <span class="oh-feature-icon"><i data-lucide="brain-circuit"></i></span>
-                </div>
-                <div>
-                    <h3>Réflexion guidée</h3>
-                    <ul>
-                        <li><span><strong>Synthèse :</strong> Le rêve, condensé en un court résumé.</span></li>
-                        <li><span><strong>Symboles :</strong> Des associations possibles, à confronter à votre propre contexte.</span></li>
-                        <li><span><strong>Questions de suivi :</strong> Continuez à interroger votre rêve.</span></li>
-                    </ul>
-                </div>
-            </article>
-
-            <article class="oh-feature oh-feature--d glass-panel reveal">
-                <div class="oh-feature-top">
-                    <span class="oh-feature-num">04</span>
-                    <span class="oh-feature-icon"><i data-lucide="bar-chart-2"></i></span>
-                </div>
-                <div>
-                    <h3>Des motifs d’une nuit à l’autre</h3>
-                    <p>Voyez quelles émotions et quels thèmes reviennent d’un récit enregistré à l’autre.</p>
-                    <div class="oh-feature-media" aria-hidden="true">
-                        <svg width="200" height="72" viewBox="0 0 200 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="0" y="44" width="24" height="28" rx="2" fill="currentColor" opacity="0.25"/>
-                            <rect x="34" y="30" width="24" height="42" rx="2" fill="currentColor" opacity="0.45"/>
-                            <rect x="68" y="12" width="24" height="60" rx="2" fill="currentColor" opacity="0.7"/>
-                            <rect x="102" y="38" width="24" height="34" rx="2" fill="currentColor" opacity="0.35"/>
-                            <rect x="136" y="22" width="24" height="50" rx="2" fill="currentColor" opacity="0.55"/>
-                            <rect x="170" y="48" width="24" height="24" rx="2" fill="currentColor" opacity="0.25"/>
-                        </svg>
-                    </div>
-                </div>
-            </article>
         </div>
     </section>
 
@@ -428,7 +237,7 @@
     <section class="oh-section oh-understand" data-chapter="understanding">
         <div class="oh-section-head reveal">
             <div>
-                <span class="oh-index" aria-hidden="true">03 · Comprendre</span>
+                <span class="oh-index" aria-hidden="true">02 · Comprendre</span>
                 <h2 class="oh-h2">Une nuit, c’est une scène. Dix nuits, c’est une carte.</h2>
             </div>
             <div>
@@ -642,6 +451,179 @@
             </div>
         </div>
         <p class="oh-starmap-stat reveal"><span>Maison apparaît dans 3 rêves sur 10.</span> <a href="#explorer-outils-noctalia">Explorer ce que cela peut signifier <span aria-hidden="true">→</span></a></p>
+    </section>
+
+    <!-- 1c. Waking: speak it before it fades -->
+    <section class="oh-section oh-waking" data-chapter="waking">
+        <div class="oh-waking-grid">
+            <div class="oh-waking-copy reveal">
+                <span class="oh-index" aria-hidden="true">03 · Réveil</span>
+                <h2 class="oh-h2">Votre rêve, à l’écrit ou à la voix</h2>
+                <p class="oh-lede">Noctalia vous aide à l’écrire.</p>
+                <div class="oh-rec glass-panel" aria-hidden="true">
+                    <p class="oh-rec-head"><span class="oh-rec-dot"></span>Enregistrement<span class="oh-rec-time">00:14</span></p>
+                    <div class="oh-rec-wave"><span style="--h:22"></span><span style="--h:40"></span><span style="--h:64"></span><span style="--h:38"></span><span style="--h:80"></span><span style="--h:52"></span><span style="--h:90"></span><span style="--h:34"></span><span style="--h:60"></span><span style="--h:76"></span><span style="--h:44"></span><span style="--h:96"></span><span style="--h:58"></span><span style="--h:30"></span><span style="--h:70"></span><span style="--h:48"></span><span style="--h:84"></span><span style="--h:36"></span><span style="--h:62"></span><span style="--h:28"></span><span style="--h:74"></span><span style="--h:50"></span><span style="--h:88"></span><span style="--h:42"></span><span style="--h:66"></span><span style="--h:32"></span><span style="--h:56"></span><span style="--h:24"></span></div>
+                    <p class="oh-rec-text">J’étais dans la maison de ma grand-mère, mais il y avait un escalier que je n’avais jamais vu. En haut, une porte bleue bourdonnait.</p>
+                </div>
+            </div>
+            <div class="oh-waking-device reveal">
+                <div class="phone-frame oh-waking-phone">
+                    <picture>
+                        <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <img src="../img/en/recording-800w.jpg" alt="Enregistrement vocal de votre rêve" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. How it works (3 steps) -->
+    <section id="comment-ca-marche">
+        <div class="oh-section-head reveal" data-steps-heading>
+            <div>
+                <h2 class="oh-h2">D’une scène qui s’efface à un récit que vous pouvez relire</h2>
+            </div>
+            <p class="oh-lede">Capturez d’abord, tant que c’est encore vif. Donnez-lui du sens ensuite, une fois bien réveillé.</p>
+        </div>
+
+        <div id="etapes-reves" class="oh-steps">
+            <article class="oh-step reveal" data-step="record">
+                <span class="oh-step-num" aria-hidden="true">1</span>
+                <span class="oh-step-icon"><i data-lucide="mic"></i></span>
+                <h3>Enregistrez</h3>
+                <p>Dites ce qu’il en reste : un lieu, un visage, une sensation. À la voix ou par écrit — vous pourrez corriger la transcription ensuite.</p>
+                <div class="phone-frame" data-phone="record">
+                    <picture>
+                        <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <img src="../img/en/recording-800w.jpg" alt="Enregistrement vocal de votre rêve" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+            </article>
+
+            <article class="oh-step reveal" data-step="analyze">
+                <span class="oh-step-num" aria-hidden="true">2</span>
+                <span class="oh-step-icon"><i data-lucide="sparkles"></i></span>
+                <h3>Analysez</h3>
+                <p>Noctalia transcrit votre récit et relève les symboles, les émotions et les thèmes qui semblent s’y répéter.</p>
+                <div class="phone-frame" data-phone="analyze">
+                    <picture>
+                        <source type="image/webp" srcset="../img/en/analizing-480w.webp 480w, ../img/en/analizing-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <source type="image/jpeg" srcset="../img/en/analizing-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <img src="../img/en/analizing-800w.jpg" alt="Analyse instantanée de votre rêve" class="w-full h-full object-cover" width="800" height="1615" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+            </article>
+
+            <article class="oh-step reveal" data-step="explore">
+                <span class="oh-step-num" aria-hidden="true">3</span>
+                <span class="oh-step-icon"><i data-lucide="compass"></i></span>
+                <h3>Explorez</h3>
+                <p>Posez des questions de suivi, vérifiez quelles associations résonnent vraiment avec votre vie, et générez une image si la scène le mérite.</p>
+                <div class="phone-frame" data-phone="explore">
+                    <picture>
+                        <source type="image/webp" srcset="../img/en/exploring-480w.webp 480w, ../img/en/exploring-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <source type="image/jpeg" srcset="../img/en/exploring-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                        <img src="../img/en/exploring-800w.jpg" alt="Exploration et visualisation de votre rêve" class="w-full h-full object-cover" width="800" height="1659" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- 3. What stays with each dream entry (Features) -->
+    <section id="fonctionnalites">
+        <div class="oh-section-head reveal">
+            <div>
+                <h2 class="oh-h2">Ce que chaque rêve conserve</h2>
+            </div>
+            <p class="oh-lede">Le récit d’origine reste intact. Tout le reste est facultatif, ajouté seulement quand un rêve l’appelle.</p>
+        </div>
+
+        <div class="oh-features">
+            <article class="oh-feature oh-feature--a glass-panel reveal">
+                <div class="oh-feature-top">
+                    <span class="oh-feature-num">01 · De la voix au texte</span>
+                    <span class="oh-feature-icon"><i data-lucide="mic"></i></span>
+                </div>
+                <div>
+                    <h3>Votre voix, transcrite</h3>
+                    <p>Murmurez une note avant que le rêve ne se dissipe. Noctalia la transforme en texte que vous pouvez corriger : les noms, les lieux, les détails qui comptent.</p>
+                    <div class="oh-feature-media" aria-hidden="true">
+                        <svg width="180" height="36" viewBox="0 0 180 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0" y="12" width="3" height="12" rx="1.5" fill="currentColor" opacity="0.45"/>
+                            <rect x="9" y="8" width="3" height="20" rx="1.5" fill="currentColor" opacity="0.7"/>
+                            <rect x="18" y="14" width="3" height="8" rx="1.5" fill="currentColor" opacity="0.4"/>
+                            <rect x="27" y="4" width="3" height="28" rx="1.5" fill="currentColor" opacity="0.85"/>
+                            <rect x="36" y="10" width="3" height="16" rx="1.5" fill="currentColor" opacity="0.6"/>
+                            <rect x="45" y="16" width="3" height="6" rx="1.5" fill="currentColor" opacity="0.35"/>
+                            <rect x="54" y="6" width="3" height="24" rx="1.5" fill="currentColor" opacity="0.75"/>
+                            <rect x="63" y="12" width="3" height="12" rx="1.5" fill="currentColor" opacity="0.5"/>
+                            <rect x="72" y="2" width="3" height="32" rx="1.5" fill="currentColor" opacity="0.9"/>
+                            <rect x="81" y="9" width="3" height="18" rx="1.5" fill="currentColor" opacity="0.6"/>
+                            <rect x="90" y="15" width="3" height="7" rx="1.5" fill="currentColor" opacity="0.4"/>
+                            <rect x="99" y="7" width="3" height="22" rx="1.5" fill="currentColor" opacity="0.7"/>
+                            <rect x="108" y="13" width="3" height="10" rx="1.5" fill="currentColor" opacity="0.45"/>
+                            <rect x="117" y="5" width="3" height="26" rx="1.5" fill="currentColor" opacity="0.8"/>
+                            <rect x="126" y="11" width="3" height="14" rx="1.5" fill="currentColor" opacity="0.55"/>
+                            <rect x="135" y="16" width="3" height="5" rx="1.5" fill="currentColor" opacity="0.35"/>
+                            <rect x="144" y="8" width="3" height="20" rx="1.5" fill="currentColor" opacity="0.65"/>
+                            <rect x="153" y="13" width="3" height="10" rx="1.5" fill="currentColor" opacity="0.45"/>
+                            <rect x="162" y="10" width="3" height="16" rx="1.5" fill="currentColor" opacity="0.55"/>
+                            <rect x="171" y="15" width="3" height="6" rx="1.5" fill="currentColor" opacity="0.35"/>
+                        </svg>
+                    </div>
+                </div>
+            </article>
+
+            <article class="oh-feature oh-feature--b glass-panel reveal">
+                <div class="oh-feature-top">
+                    <span class="oh-feature-num">02</span>
+                    <span class="oh-feature-icon"><i data-lucide="image"></i></span>
+                </div>
+                <div>
+                    <h3>Une image de la scène</h3>
+                    <p>Générez une image pour un rêve que vous voulez revoir.</p>
+                </div>
+            </article>
+
+            <article class="oh-feature oh-feature--c glass-panel reveal">
+                <div class="oh-feature-top">
+                    <span class="oh-feature-num">03</span>
+                    <span class="oh-feature-icon"><i data-lucide="brain-circuit"></i></span>
+                </div>
+                <div>
+                    <h3>Réflexion guidée</h3>
+                    <ul>
+                        <li><span><strong>Synthèse :</strong> Le rêve, condensé en un court résumé.</span></li>
+                        <li><span><strong>Symboles :</strong> Des associations possibles, à confronter à votre propre contexte.</span></li>
+                        <li><span><strong>Questions de suivi :</strong> Continuez à interroger votre rêve.</span></li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="oh-feature oh-feature--d glass-panel reveal">
+                <div class="oh-feature-top">
+                    <span class="oh-feature-num">04</span>
+                    <span class="oh-feature-icon"><i data-lucide="bar-chart-2"></i></span>
+                </div>
+                <div>
+                    <h3>Des motifs d’une nuit à l’autre</h3>
+                    <p>Voyez quelles émotions et quels thèmes reviennent d’un récit enregistré à l’autre.</p>
+                    <div class="oh-feature-media" aria-hidden="true">
+                        <svg width="200" height="72" viewBox="0 0 200 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0" y="44" width="24" height="28" rx="2" fill="currentColor" opacity="0.25"/>
+                            <rect x="34" y="30" width="24" height="42" rx="2" fill="currentColor" opacity="0.45"/>
+                            <rect x="68" y="12" width="24" height="60" rx="2" fill="currentColor" opacity="0.7"/>
+                            <rect x="102" y="38" width="24" height="34" rx="2" fill="currentColor" opacity="0.35"/>
+                            <rect x="136" y="22" width="24" height="50" rx="2" fill="currentColor" opacity="0.55"/>
+                            <rect x="170" y="48" width="24" height="24" rx="2" fill="currentColor" opacity="0.25"/>
+                        </svg>
+                    </div>
+                </div>
+            </article>
+        </div>
     </section>
 
     <!-- 8. Dream Symbols Dictionary -->

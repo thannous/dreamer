@@ -1,3 +1,5 @@
+import { initSharedSky } from './shared-sky.js';
+
 /**
  * Noctalia experience layer — adaptive orchestrator for the landing pages.
  *
@@ -55,7 +57,19 @@ const getHeadline = () => document.querySelector('.oh-hero-title');
 const getRevealItems = () => Array.from(document.querySelectorAll('.reveal'));
 const getFeatureMedia = () => Array.from(document.querySelectorAll('.oh-feature-media'));
 
+const revealDreamsAfterIntro = () => {
+  window.clearTimeout(window.__expIntroGateTimer);
+  html.classList.remove('exp-intro-pending');
+};
+
+const holdDreamsForIntro = () => {
+  html.classList.add('exp-intro-pending');
+  window.clearTimeout(window.__expIntroGateTimer);
+  window.__expIntroGateTimer = window.setTimeout(revealDreamsAfterIntro, 9000);
+};
+
 const showStaticState = () => {
+  revealDreamsAfterIntro();
   html.classList.remove('exp-starmap');
   getFeatureMedia().forEach((el) => el.classList.add('is-inview'));
   getHeadline()?.classList.add('is-revealed');
@@ -301,7 +315,7 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis, heroReady) => {
   }
 
   // Hero sequence: the headline surfaces word by word, then the supporting
-  // copy and the product shot follow on the same restrained curve
+  // copy follows on the same restrained curve
   // (GSAP power2.out is the cubic ease-out used by EASE_FILM).
   const heroItems = getHeroItems();
   gsapLib.set(heroItems, { opacity: 0, visibility: 'visible', y: 16 });
@@ -321,11 +335,6 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis, heroReady) => {
       },
     });
 
-    gsapLib.fromTo(
-      '.noctalia-observatory > header picture',
-      { scale: 0.94, opacity: 0.8 },
-      { scale: 1, opacity: 1, duration: 1.4, ease: 'power2.out', delay: 0.8 }
-    );
   });
 
   // Section reveals: elements entering together cascade 80ms apart; section
@@ -1210,7 +1219,6 @@ const initEnding = () => {
   ).observe(portal);
 };
 
-const INTRO_KEY = 'noctalia.intro.v1';
 const SKIP_LABELS = {
   en: 'Skip intro',
   fr: 'Passer l’intro',
@@ -1220,22 +1228,39 @@ const SKIP_LABELS = {
   pt: 'Pular a intro',
 };
 
-const introAlreadySeen = () => {
-  try {
-    return Boolean(window.localStorage.getItem(INTRO_KEY));
-  } catch {
-    return true;
-  }
-};
-
 /**
- * First visit only: a ~4s film pushes into a sleeping eye, the lid closes,
- * stars bloom and it lands on the hero loop's first frame, so the loop takes
- * over with no visible cut. The headline and CTAs are real HTML underneath;
+ * On each landing-page visit: a ~4s film pushes into a sleeping eye, the lid closes,
+ * stars bloom, then the viewport overlay dissolves onto the page. The
+ * headline and CTAs are real HTML underneath;
  * Skip, Escape, scrolling or a slow network end the intro at once.
  */
-const playIntro = (heroHeader, film, loop, variant) =>
+const waitForFilmFrame = (video) => new Promise((resolve) => {
+  let frameId;
+  let settled = false;
+  const done = (ready) => {
+    if (settled) return;
+    settled = true;
+    window.clearTimeout(timeout);
+    video.removeEventListener('playing', onPlaying);
+    if (frameId !== undefined) video.cancelVideoFrameCallback?.(frameId);
+    resolve(ready);
+  };
+  const onPlaying = () => window.requestAnimationFrame(() => done(true));
+  const timeout = window.setTimeout(() => done(false), 1200);
+  if (typeof video.requestVideoFrameCallback === 'function') {
+    frameId = video.requestVideoFrameCallback(() => done(true));
+  } else {
+    video.addEventListener('playing', onPlaying, { once: true });
+  }
+  video.play().catch(() => done(false));
+});
+
+const playIntro = (film, loop, variant) =>
   new Promise((resolve) => {
+    // Attach to body: the hero's clipping and stacking context must never
+    // constrain the opening film to the height of its text content.
+    const overlay = document.createElement('div');
+    overlay.className = 'oh-intro-overlay';
     const intro = createVideo(INTRO_BASE, variant, 'oh-intro-video');
     const skip = document.createElement('button');
     skip.type = 'button';
@@ -1243,9 +1268,10 @@ const playIntro = (heroHeader, film, loop, variant) =>
     skip.textContent = SKIP_LABELS[(html.lang || 'en').slice(0, 2).toLowerCase()] || SKIP_LABELS.en;
 
     let finished = false;
+    let preparedLoop;
     let slowStartTimer = 0;
     let maximumTimer = 0;
-    const finish = (cut) => {
+    const finish = async (cut = false) => {
       if (finished) return;
       finished = true;
       window.clearTimeout(slowStartTimer);
@@ -1253,14 +1279,21 @@ const playIntro = (heroHeader, film, loop, variant) =>
       skip.remove();
       window.removeEventListener('scroll', onScroll);
       document.removeEventListener('keydown', onKey);
-      loop.currentTime = 0;
-      if (cut) {
-        intro.classList.add('is-leaving');
-        window.setTimeout(() => intro.remove(), 700);
-      } else {
-        intro.remove();
+      // Decode the loop during the intro, so the handoff never starts
+      // with a new seek or a wait on the final frame of the opening film.
+      if (!cut && await (preparedLoop || waitForFilmFrame(loop))) {
+        film.classList.add('is-handoff', 'is-playing');
+        loop.play().catch(() => {});
       }
-      resolve();
+      if (cut) overlay.classList.add('is-cut');
+      overlay.classList.add('is-leaving');
+      window.setTimeout(() => {
+        intro.pause();
+        overlay.remove();
+        film.classList.remove('is-handoff');
+        revealDreamsAfterIntro();
+        resolve();
+      }, cut ? 280 : 720);
     };
     const onScroll = () => {
       if (window.scrollY > 80) finish(true);
@@ -1270,15 +1303,16 @@ const playIntro = (heroHeader, film, loop, variant) =>
     };
 
     intro.addEventListener('playing', () => {
-      try {
-        window.localStorage.setItem(INTRO_KEY, String(Date.now()));
-      } catch {
-        // Storage blocked: the intro may replay, which is harmless.
-      }
-      film.classList.add('is-intro', 'is-playing');
-      heroHeader.append(skip);
+      if (finished) return;
+      overlay.classList.add('is-playing');
+      overlay.append(skip);
+      loop.currentTime = 0;
+      preparedLoop = waitForFilmFrame(loop).then((ready) => {
+        if (!finished) loop.pause();
+        return ready;
+      });
     }, { once: true });
-    intro.addEventListener('ended', () => finish(false), { once: true });
+    intro.addEventListener('ended', () => finish(), { once: true });
     intro.addEventListener('error', () => finish(true), { once: true });
     skip.addEventListener('click', () => finish(true));
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -1289,7 +1323,8 @@ const playIntro = (heroHeader, film, loop, variant) =>
     }, 2500);
     maximumTimer = window.setTimeout(() => finish(true), 7000);
 
-    film.append(intro);
+    overlay.append(intro);
+    document.body.append(overlay);
     intro.play().catch(() => finish(true));
   });
 
@@ -1304,13 +1339,18 @@ const FILM_BASE = '/video/hero/noctalia-dream-loop';
  * the poster the page already painted: once it plays, it crossfades in over
  * the still with no visible cut. Injected after the LCP, never on the static
  * tier (reduced motion, save-data) or slow connections, and paused whenever
- * the hero is off screen or the tab is hidden. On a first visit the intro
- * film plays in the same layer first. Resolves when the hero headline may
+ * the hero is off screen or the tab is hidden. On each visit the intro film
+ * plays in a separate viewport overlay first. Resolves when the hero headline may
  * reveal.
  */
+let replayIntroOnReturn = null;
+
 const initFilm = (isFull) => {
   const heroHeader = document.querySelector(HERO_SELECTOR);
-  if (!heroHeader || !canPlayFilm()) return Promise.resolve();
+  if (!heroHeader || !canPlayFilm()) {
+    revealDreamsAfterIntro();
+    return Promise.resolve();
+  }
 
   const wide = window.matchMedia('(min-width: 900px)').matches;
   const film = document.createElement('div');
@@ -1321,6 +1361,7 @@ const initFilm = (isFull) => {
   film.append(video);
 
   let started = false;
+  let introPlaying = false;
   const remove = () => {
     video.pause();
     film.remove();
@@ -1328,10 +1369,10 @@ const initFilm = (isFull) => {
   video.addEventListener('playing', () => film.classList.add('is-playing'), { once: true });
   video.addEventListener('error', remove, { once: true });
   heroHeader.prepend(film);
-  let heroVisible = true;
+  let filmVisible = true;
   const sync = () => {
-    if (!film.isConnected || !started) return;
-    if (heroVisible && !document.hidden) {
+    if (!film.isConnected || !started || introPlaying) return;
+    if (filmVisible && !document.hidden) {
       video.play().catch(remove);
     } else {
       video.pause();
@@ -1340,11 +1381,11 @@ const initFilm = (isFull) => {
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(
       (entries) => {
-        heroVisible = entries[0].isIntersecting;
+        filmVisible = entries[0].isIntersecting;
         sync();
       },
       { threshold: 0.02 }
-    ).observe(heroHeader);
+    ).observe(film);
   }
   document.addEventListener('visibilitychange', sync);
 
@@ -1352,11 +1393,29 @@ const initFilm = (isFull) => {
     started = true;
     sync();
   };
-  if (introAlreadySeen() || window.scrollY > 80) {
+  const startIntro = () => {
+    if (!film.isConnected || introPlaying) return Promise.resolve();
+    holdDreamsForIntro();
+    introPlaying = true;
+    video.pause();
+    // The landscape master and loop share a composition; object-fit: cover
+    // applies the same viewport crop on phones and desktops.
+    return playIntro(film, video, '1280').then(() => {
+      introPlaying = false;
+      startLoop();
+    });
+  };
+  replayIntroOnReturn = () => {
+    activeLenis?.scrollTo(0, { immediate: true });
+    window.scrollTo(0, 0);
+    startIntro();
+  };
+  if (window.scrollY > 80) {
+    revealDreamsAfterIntro();
     startLoop();
     return Promise.resolve();
   }
-  return playIntro(heroHeader, film, video, wide ? '1280' : '540x960').then(startLoop);
+  return startIntro();
 };
 
 /* ------------------------------------------------------------------ */
@@ -1375,7 +1434,7 @@ const bootEnhanced = async (currentTier) => {
   const moduleScript = document.querySelector('script[data-animation-module="experience"]');
 
   try {
-    const skyPromise = initSky(isFull ? 'full' : 'light');
+    const skyPromise = Promise.resolve();
     const heroReady = initFilm(isFull);
     initFeatureMedia();
     initDawn();
@@ -1430,6 +1489,8 @@ if (tier !== 'static' && typeof window.matchMedia === 'function') {
   }
 }
 
+initSharedSky();
+
 if (tier === 'static') {
   bootStatic();
 } else {
@@ -1438,14 +1499,15 @@ if (tier === 'static') {
   });
 }
 
-// BFCache: pages restored from the back/forward cache need a refresh, not a
-// full re-boot (the tier script has already run again anyway).
+// BFCache: replay the opening film when returning via browser Back, then
+// refresh scroll-driven scenes without booting duplicate controllers.
 window.addEventListener('pageshow', (event) => {
   if (!event.persisted) return;
   if (tier === 'static') {
     showStaticState();
     return;
   }
+  replayIntroOnReturn?.();
   if (window.ScrollTrigger) {
     window.ScrollTrigger.refresh(true);
   }
