@@ -1162,10 +1162,10 @@ const createVideo = (base, variant, className) => {
   video.setAttribute('playsinline', '');
   video.setAttribute('tabindex', '-1');
   video.setAttribute('aria-hidden', 'true');
-  [
-    ['mp4', 'video/mp4'],
-    ['webm', 'video/webm; codecs="vp9"'],
-  ].forEach(([extension, type]) => {
+  const formats = [['mp4', 'video/mp4'], ['webm', 'video/webm; codecs="vp9"']];
+  // The existing VP9 intro has the same framing at half the transfer size.
+  if (className === 'oh-intro-video') formats.reverse();
+  formats.forEach(([extension, type]) => {
     const source = document.createElement('source');
     source.src = `${base}-${variant}.${extension}`;
     source.type = type;
@@ -1214,7 +1214,7 @@ const SKIP_LABELS = {
  * headline and CTAs are real HTML underneath;
  * Skip, Escape, scrolling or a slow network end the intro at once.
  */
-const waitForFilmFrame = (video) => new Promise((resolve) => {
+const waitForFilmFrame = (video, timeoutMs = 1200) => new Promise((resolve) => {
   video.preload = 'auto';
   let frameId;
   let settled = false;
@@ -1227,7 +1227,7 @@ const waitForFilmFrame = (video) => new Promise((resolve) => {
     resolve(ready);
   };
   const onPlaying = () => window.requestAnimationFrame(() => done(true));
-  const timeout = window.setTimeout(() => done(false), 1200);
+  const timeout = window.setTimeout(() => done(false), timeoutMs);
   if (typeof video.requestVideoFrameCallback === 'function') {
     frameId = video.requestVideoFrameCallback(() => done(true));
   } else {
@@ -1242,7 +1242,15 @@ const playIntro = (film, loop, variant) =>
     // constrain the opening film to the height of its text content.
     const overlay = document.createElement('div');
     overlay.className = 'oh-intro-overlay';
-    const intro = createVideo(INTRO_BASE, variant, 'oh-intro-video');
+    const warmed = window.__expIntroVideo;
+    window.__expIntroVideo = null;
+    const intro = warmed && !warmed.error ? warmed : createVideo(INTRO_BASE, variant, 'oh-intro-video');
+    intro.className = 'oh-intro-video';
+    intro.setAttribute('muted', '');
+    intro.setAttribute('playsinline', '');
+    intro.setAttribute('aria-hidden', 'true');
+    intro.setAttribute('tabindex', '-1');
+    intro.disablePictureInPicture = true;
     const skip = document.createElement('button');
     skip.type = 'button';
     skip.className = 'oh-intro-skip';
@@ -1253,6 +1261,23 @@ const playIntro = (film, loop, variant) =>
     let played = false;
     let slowStartTimer = 0;
     let maximumTimer = 0;
+    const prepareLoop = () => {
+      if (finished || preparedLoop || !played) return;
+      // The opening film owns the bandwidth until it can finish without more
+      // data. Preparing both videos at `playing` starves it on slow mobile links.
+      if (!Number.isFinite(intro.duration)) return;
+      let bufferedToEnd = false;
+      for (let i = 0; i < intro.buffered.length; i += 1) {
+        if (intro.buffered.start(i) <= intro.currentTime + 0.05 &&
+            intro.buffered.end(i) >= intro.duration - 0.05) bufferedToEnd = true;
+      }
+      if (!bufferedToEnd) return;
+      loop.currentTime = 0;
+      preparedLoop = waitForFilmFrame(loop, Math.max(1200, (intro.duration - intro.currentTime) * 1000 + 500)).then((ready) => {
+        if (!finished) loop.pause();
+        return ready;
+      });
+    };
     const finish = async (cut = false, unavailable = false) => {
       if (finished) return;
       finished = true;
@@ -1261,6 +1286,9 @@ const playIntro = (film, loop, variant) =>
       skip.remove();
       window.removeEventListener('scroll', onScroll);
       document.removeEventListener('keydown', onKey);
+      intro.removeEventListener('progress', prepareLoop);
+      intro.removeEventListener('timeupdate', prepareLoop);
+      intro.removeEventListener('canplaythrough', prepareLoop);
       // Decode the loop during the intro, so the handoff never starts
       // with a new seek or a wait on the final frame of the opening film.
       if (!cut && await (preparedLoop || waitForFilmFrame(loop))) {
@@ -1289,12 +1317,12 @@ const playIntro = (film, loop, variant) =>
       played = true;
       overlay.classList.add('is-playing');
       overlay.append(skip);
-      loop.currentTime = 0;
-      preparedLoop = waitForFilmFrame(loop).then((ready) => {
-        if (!finished) loop.pause();
-        return ready;
-      });
+      prepareLoop();
     }, { once: true });
+    // Demuxing can extend buffered ranges after the final network progress event.
+    intro.addEventListener('timeupdate', prepareLoop);
+    intro.addEventListener('progress', prepareLoop);
+    intro.addEventListener('canplaythrough', prepareLoop);
     intro.addEventListener('ended', () => finish(), { once: true });
     intro.addEventListener('error', () => finish(true, true), { once: true });
     skip.addEventListener('click', () => finish(true));
@@ -1341,7 +1369,7 @@ const initFilm = (isFull) => {
   film.setAttribute('aria-hidden', 'true');
   const video = createVideo(FILM_BASE, isFull && wide ? '1280' : '854', 'oh-hero-loop');
   video.loop = true;
-  // Prioritize the opening film; preload the loop once the intro is playing.
+  // Prioritize the opening film; prepare the loop once the remaining intro is buffered.
   video.preload = 'none';
   video.poster = '/img/hero/noctalia-observatory-bg.webp';
   film.append(video);

@@ -42,3 +42,29 @@ native dream-dialog scrolling. No screenshots or automated visual approval.
 
 Physical Safari/iOS and Android Chrome still need user confirmation of the original
 black-frame symptom and perceived smoothness. No animation was removed.
+
+## Intro loading follow-up
+
+A production Chrome DevTools MCP trace (390×844/DPR 3, Slow 4G, CPU 4×)
+found three intro buffering pauses totalling about 447ms. The MP4 transferred
+485,680 bytes; first playback was at 4.610s. The loop competed for bandwidth
+as soon as the intro began.
+
+The landing head now warms the actual muted video element before styles and
+animation modules finish loading; the experience layer adopts that element.
+The existing 1280×720 VP9/WebM intro is preferred with MP4 as the next source.
+Reduced motion, Save-Data and 2G still prevent automatic preloading. Unused
+preloaded media is released if enhancement fails to initialize.
+
+The background starts preparing only when the remaining intro is buffered,
+including a timeupdate check because demuxing can update buffered ranges after
+the last progress event. Its preparation timeout uses the remaining intro time.
+The existing synchronized dissolve is retained.
+
+Final local MCP trace with the same throttling: 236,974 bytes for the intro
+(51% fewer), no intro buffering pauses, no errors, CLS 0. The loop's first frame
+was ready 610ms before the intro ended; playback resumed 7ms after the end event.
+Local first playback was 4.370s; the uncompressed local server differs from
+production, so this is not a controlled production startup-time comparison.
+Twenty-four focused tests cover preload preferences/cleanup, disjoint buffers,
+skip/autoplay fallback and preparation deadlines. No screenshots were taken.

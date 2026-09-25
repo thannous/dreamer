@@ -598,10 +598,10 @@ function renderCommonHead(meta, entry, assetVersion, bodyHtml) {
     '    <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>',
     '    <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>',
     preloadLines.join('\n'),
+    renderHeadScripts(meta, assetVersion),
     renderAhrefsAnalyticsScript(),
     renderStyles(meta, assetVersion, entry?.id),
     renderViewTransitionHeadStyles(),
-    renderHeadScripts(meta, assetVersion),
     renderJsonLd(meta, entry, bodyHtml, {
       url: ogImage,
       width: ogImageDimensions.width,

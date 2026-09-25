@@ -57,3 +57,30 @@ describe('renderTierInlineScript', () => {
     expect(script.split('</script>')).toHaveLength(2);
   });
 });
+
+describe('early intro loading', () => {
+  const vm = require('node:vm');
+  function boot({ reduced = false, saveData = false, effectiveType = '4g' } = {}) {
+    let release;
+    const video = { children: [], appendChild(source) { this.children.push(source); }, replaceChildren: jest.fn(), removeAttribute: jest.fn(), load: jest.fn() };
+    const document = { documentElement: { dataset: {}, classList: { add() {}, remove() {} } }, createElement: jest.fn(tag => tag === 'video' ? video : {}) };
+    const window = { matchMedia: query => ({ matches: query.includes('reduced-motion') ? reduced : true }), setTimeout: fn => { release = fn; } };
+    const context = { document, window, navigator: { hardwareConcurrency: 8, deviceMemory: 8, connection: { saveData, effectiveType } }, location: { hash: '' }, history: {} };
+    vm.runInNewContext(renderTierInlineScript().replace(/<\/?script>/g, ''), context);
+    return { window, document, video, release: () => release?.() };
+  }
+  it('warms a muted inline video and releases unused media if enhancement never loads', () => {
+    const s = boot();
+    expect(s.window.__expIntroVideo).toBe(s.video);
+    expect(s.video).toMatchObject({ muted: true, playsInline: true, preload: 'auto' });
+    expect(s.video.children.map(source => source.src)).toEqual(['/video/intro/noctalia-intro-1280.webm', '/video/intro/noctalia-intro-1280.mp4']);
+    s.release(); expect(s.video.replaceChildren).toHaveBeenCalled(); expect(s.video.removeAttribute).toHaveBeenCalledWith('src'); expect(s.video.load).toHaveBeenCalled();
+  });
+  it.each([{ reduced: true }, { saveData: true }, { effectiveType: '2g' }, { effectiveType: 'slow-2g' }])('does not download a film when motion or network preferences prevent autoplay: %j', options => {
+    expect(boot(options).document.createElement).not.toHaveBeenCalled();
+  });
+  it('does not unload a film already adopted by the experience layer', () => {
+    const s = boot(); s.window.__expIntroVideo = null; s.release();
+    expect(s.video.load).not.toHaveBeenCalled();
+  });
+});
