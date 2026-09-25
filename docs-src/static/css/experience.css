@@ -536,7 +536,7 @@ html.exp-3d .oh-dreamspace-stage.is-dragging {
   inset: 0;
   background: rgba(3, 4, 13, 0.82);
   opacity: 0;
-  transition: opacity 420ms ease;
+  transition: opacity 180ms ease;
 }
 
 .oh-lightbox.is-open .oh-lightbox-backdrop {

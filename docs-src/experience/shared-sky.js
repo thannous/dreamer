@@ -5,7 +5,7 @@ function createSkyMotion(doc, shared, media) {
       let raf = 0, last = 0, introStart = null, intro = 0;
       let scroll = 0, target = 0, height = win.innerHeight, range = 1, top = 0;
       const clamp = (value) => Math.max(0, Math.min(1, value));
-      const blocked = () => win.__EXP_TIER__ === 'static' || reduced.matches || doc.hidden || doc.querySelector('.oh-intro-overlay') || doc.documentElement.classList.contains('exp-intro-pending');
+      const blocked = () => win.__EXP_TIER__ === 'static' || reduced.matches || doc.hidden || doc.documentElement.classList.contains('oh-lightbox-open') || doc.querySelector('.oh-intro-overlay') || doc.documentElement.classList.contains('exp-intro-pending');
       const schedule = () => {
         if (!raf && !blocked()) raf = win.requestAnimationFrame(tick);
       };
@@ -53,6 +53,7 @@ function createSkyMotion(doc, shared, media) {
       win.addEventListener('scroll', onScroll, { passive: true });
       win.addEventListener('resize', refresh, { passive: true });
       doc.addEventListener('visibilitychange', refresh);
+      doc.addEventListener('dream-dialog-change', refresh);
       reduced.addEventListener('change', onPreference);
       refresh();
       return {
@@ -69,6 +70,7 @@ function createSkyMotion(doc, shared, media) {
           win.removeEventListener('scroll', onScroll);
           win.removeEventListener('resize', refresh);
           doc.removeEventListener('visibilitychange', refresh);
+          doc.removeEventListener('dream-dialog-change', refresh);
           reduced.removeEventListener('change', onPreference);
         }
       };

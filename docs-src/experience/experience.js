@@ -568,8 +568,8 @@ const initDawn = () => {
   main.prepend(dawn);
   const stops = [
     ['.oh-dreams', 0, 0.55],
-    ['.oh-waking', 1, 0.5],
     ['.oh-understand', 0.55, 0.5],
+    ['.oh-waking', 1, 0.5],
     ['.oh-remember', 0.8, 0.5],
     ['.oh-ending', 1, 0.5],
   ]
@@ -820,6 +820,7 @@ const initLightbox = (space) => {
     space?.pause();
     activeLenis?.stop();
     document.documentElement.classList.add('oh-lightbox-open');
+    document.dispatchEvent(new Event('dream-dialog-change'));
     document.body.append(overlay);
 
     const first = card.getBoundingClientRect();
@@ -832,7 +833,7 @@ const initLightbox = (space) => {
     card.style.visibility = 'hidden';
     panel.getBoundingClientRect();
     overlay.classList.add('is-open');
-    panel.style.transition = `transform 560ms ${EASE_FILM}, opacity 320ms ease`;
+    panel.style.transition = `transform 280ms ${EASE_FILM}, opacity 200ms ease`;
     panel.style.transform = 'none';
     panel.style.opacity = '1';
     close.focus({ preventScroll: true });
@@ -846,7 +847,7 @@ const initLightbox = (space) => {
       const back = card.getBoundingClientRect();
       const now = panel.getBoundingClientRect();
       const visible = back.bottom > 0 && back.top < window.innerHeight && back.width > 0;
-      panel.style.transition = `transform 460ms ${EASE_FILM}, opacity 460ms ease`;
+      panel.style.transition = `transform 180ms ${EASE_FILM}, opacity 180ms ease`;
       panel.style.transform = visible
         ? `translate(${back.left - now.left}px, ${back.top - now.top}px) scale(${back.width / now.width}, ${back.height / now.height})`
         : 'scale(0.94)';
@@ -855,10 +856,11 @@ const initLightbox = (space) => {
         card.style.visibility = '';
         overlay.remove();
         document.documentElement.classList.remove('oh-lightbox-open');
+        document.dispatchEvent(new Event('dream-dialog-change'));
         activeLenis?.start();
         space?.resume();
         trigger.focus({ preventScroll: true });
-      }, 470);
+      }, 190);
     };
     const onKey = (event) => {
       if (event.key === 'Escape') dismiss();
@@ -1372,7 +1374,7 @@ const initFilm = (isFull) => {
   let filmVisible = true;
   const sync = () => {
     if (!film.isConnected || !started || introPlaying) return;
-    if (filmVisible && !document.hidden) {
+    if (filmVisible && !document.hidden && !html.classList.contains('oh-lightbox-open')) {
       video.play().catch(remove);
     } else {
       video.pause();
@@ -1388,6 +1390,7 @@ const initFilm = (isFull) => {
     ).observe(film);
   }
   document.addEventListener('visibilitychange', sync);
+  document.addEventListener('dream-dialog-change', sync);
 
   const startLoop = () => {
     started = true;
@@ -1410,11 +1413,7 @@ const initFilm = (isFull) => {
     window.scrollTo(0, 0);
     startIntro();
   };
-  if (window.scrollY > 80) {
-    revealDreamsAfterIntro();
-    startLoop();
-    return Promise.resolve();
-  }
+  if (!window.location.hash) window.scrollTo(0, 0);
   return startIntro();
 };
 
@@ -1429,13 +1428,12 @@ const bootStatic = () => {
   window.setTimeout(showStaticState, 1200);
 };
 
-const bootEnhanced = async (currentTier) => {
+const bootEnhanced = async (currentTier, heroReady) => {
   const isFull = currentTier === 'full';
   const moduleScript = document.querySelector('script[data-animation-module="experience"]');
 
   try {
     const skyPromise = Promise.resolve();
-    const heroReady = initFilm(isFull);
     initFeatureMedia();
     initDawn();
     const space = initDreamSpace();
@@ -1490,12 +1488,14 @@ if (tier !== 'static' && typeof window.matchMedia === 'function') {
 }
 
 initSharedSky();
+// Start the lightweight video immediately; defer the heavier 3D scenes to idle.
+const heroReady = tier === 'static' ? Promise.resolve() : initFilm(tier === 'full');
 
 if (tier === 'static') {
   bootStatic();
 } else {
   afterLcp(() => {
-    bootEnhanced(tier).catch(() => showStaticState());
+    bootEnhanced(tier, heroReady).catch(() => showStaticState());
   });
 }
 
