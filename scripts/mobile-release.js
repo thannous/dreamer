@@ -149,6 +149,15 @@ function verify(root, app) {
   if (eas.cli?.appVersionSource !== 'remote' || eas.build?.[profile]?.autoIncrement !== true) {
     throw new Error(`${app} distribution requires remote EAS versions and autoIncrement on ${profile}`);
   }
+  if (app !== 'meditation') {
+    const pkg = readJson(root, 'package.json');
+    if (pkg.dependencies?.['@kingstinct/react-native-healthkit']) {
+      const plist = readJson(root, 'app.json').expo.ios?.infoPlist;
+      const missing = ['NSHealthShareUsageDescription', 'NSHealthUpdateUsageDescription']
+        .filter(key => typeof plist?.[key] !== 'string' || !plist[key].trim());
+      if (missing.length) throw new Error(`HealthKit-linked iOS app needs ${missing.join(', ')} in app.json before a Store build`);
+    }
+  }
   if (app !== 'lucid') {
     const prefix = app === 'meditation' ? 'apps/meditation/' : '';
     const versions = [readJson(root, `${prefix}app.json`).expo.version,
@@ -224,15 +233,45 @@ function prepare(root, apps, allowMajor = false) {
 }
 
 function parseArgs(args) {
-  const options = { action: args[0], app: process.env.NOCTALIA_APP_VARIANT === 'lucid' ? 'lucid' : 'noctalia', platform: null, allowMajor: false };
+  const options = { action: args[0], app: process.env.NOCTALIA_APP_VARIANT === 'lucid' ? 'lucid' : 'noctalia', platform: null, id: null, dryRun: false, allowMajor: false };
   for (let i = 1; i < args.length; i++) {
     if (args[i] === '--app') options.app = args[++i];
     else if (args[i] === '--platform') options.platform = args[++i];
+    else if (args[i] === '--id') options.id = args[++i];
+    else if (args[i] === '--dry-run') options.dryRun = true;
     else if (args[i] === '--allow-major') options.allowMajor = true;
     else throw new Error(`Unknown option: ${args[i]}`);
   }
   if (![...APPS, 'all'].includes(options.app)) throw new Error('Choose --app noctalia|lucid|meditation|all');
+  if (options.dryRun && options.action !== 'submit-internal') throw new Error('--dry-run is only available for submit-internal');
   return options;
+}
+
+function internalSubmitArgs(platform, id) {
+  if (!['android', 'ios'].includes(platform)) throw new Error('Internal submission needs --platform android|ios');
+  if (!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(id ?? '')) throw new Error('Internal submission needs an explicit EAS build ID');
+  return ['--yes', 'eas-cli@21.0.0', 'submit', '--platform', platform,
+    '--profile', platform === 'android' ? 'internal' : 'production', '--id', id, '--non-interactive'];
+}
+
+function assertInternalBuild(build, platform, expected) {
+  if (build?.status !== 'FINISHED') throw new Error('Internal submission requires a FINISHED EAS build');
+  if (build.platform !== platform.toUpperCase()) throw new Error(`EAS build platform does not match ${platform}`);
+  if (build.distribution !== 'STORE') throw new Error('Internal Store testing requires a STORE build, not a preview/ad hoc build');
+  if (build.buildProfile !== 'production') throw new Error('Internal Store testing requires the production build profile');
+  if (build.project?.id !== expected.projectId) throw new Error('EAS build belongs to a different project');
+  if (build.appVersion !== expected.version) throw new Error('EAS build version does not match the prepared release');
+  if (!build.artifacts?.buildUrl) throw new Error('EAS build has no downloadable Store artifact');
+}
+
+function assertIosBuildSource(root, build) {
+  const ref = build?.gitCommitHash;
+  if (!/^[a-f0-9]{40}$/.test(ref ?? '')) throw new Error('iOS EAS build has no verifiable source commit');
+  try { git(root, 'cat-file', '-e', `${ref}^{commit}`); }
+  catch { throw new Error(`iOS EAS build source commit ${ref} is unavailable locally; fetch it before submission`); }
+  const changed = git(root, 'diff', '--name-only', '--no-renames', '-z', ref, 'HEAD').split('\0').filter(Boolean)
+    .filter(file => affects('noctalia', file));
+  if (changed.length) throw new Error(`iOS EAS build predates mobile source changes: ${changed.slice(0, 5).join(', ')}. Build a new IPA before submission.`);
 }
 
 function main(args = process.argv.slice(2), root = ROOT) {
@@ -247,7 +286,7 @@ function main(args = process.argv.slice(2), root = ROOT) {
     console.log(JSON.stringify(prepare(root, apps, options.allowMajor), null, 2));
     return;
   }
-  if (!['plan', 'check', 'build'].includes(options.action)) throw new Error('Usage: mobile-release.js plan|prepare|check|verify|build --app APP [--platform android|ios] [--allow-major]');
+  if (!['plan', 'check', 'build', 'submit-internal'].includes(options.action)) throw new Error('Usage: mobile-release.js plan|prepare|check|verify|build|submit-internal --app APP [--platform android|ios] [--id EAS_BUILD_ID] [--dry-run] [--allow-major]');
   const plans = apps.map(app => plan(root, app));
   if (options.action === 'plan') {
     console.log(JSON.stringify(plans, null, 2));
@@ -259,11 +298,41 @@ function main(args = process.argv.slice(2), root = ROOT) {
     console.log('Prepared release versions cover all committed mobile changes.');
     return;
   }
+  if (options.action === 'submit-internal') {
+    if (options.app !== 'noctalia') throw new Error('Internal submission is configured only for Noctalia');
+    const args = internalSubmitArgs(options.platform, options.id);
+    const eas = readJson(root, 'eas.json');
+    if (eas.submit?.internal?.android?.track !== 'internal' || !eas.submit?.production?.ios?.ascAppId) {
+      throw new Error('Internal Store submission profiles are missing or could target the wrong app/track');
+    }
+    const command = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+    const env = { ...process.env, EXPO_NO_DOTENV: '1', NOCTALIA_APP_VARIANT: 'noctalia', EXPO_PUBLIC_APP_VARIANT: 'noctalia' };
+    const inspected = spawnSync(command, ['--yes', 'eas-cli@21.0.0', 'build:view', options.id, '--json'], {
+      cwd: root, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'], maxBuffer: 32 * 1024 * 1024,
+    });
+    if (inspected.error || inspected.status !== 0) throw new Error(`Could not inspect EAS build before submission: ${inspected.error?.message || inspected.status}`);
+    let build;
+    try { build = JSON.parse(inspected.stdout); }
+    catch { throw new Error('EAS build inspection returned invalid JSON; no submission started'); }
+    const appConfig = readJson(root, 'app.json').expo;
+    assertInternalBuild(build, options.platform, { projectId: appConfig.extra?.eas?.projectId, version: appConfig.version });
+    if (options.platform === 'ios') assertIosBuildSource(root, build);
+    if (options.dryRun) {
+      console.log(`Internal ${options.platform} submission ready: build ${options.id}, EAS submit profile ${options.platform === 'android' ? 'internal' : 'production'}. No submission started.`);
+      return;
+    }
+    const submitted = spawnSync(command, args, { cwd: root, env, stdio: 'inherit' });
+    if (submitted.error || submitted.status !== 0) throw new Error(`EAS internal submission failed: ${submitted.error?.message || submitted.status}`);
+    return;
+  }
   if (apps.length !== 1 || !['android', 'ios'].includes(options.platform)) throw new Error('Build needs one --app and --platform android|ios');
   const app = apps[0];
+  const env = { ...process.env, EXPO_NO_DOTENV: '1', NOCTALIA_APP_VARIANT: app === 'lucid' ? 'lucid' : 'noctalia', EXPO_PUBLIC_APP_VARIANT: app === 'lucid' ? 'lucid' : 'noctalia' };
+  const preflight = spawnSync(process.execPath, [path.join(root, 'scripts/check-eas-build-inputs.js'), '--app', app, '--platform', options.platform], { cwd: root, env, stdio: 'inherit' });
+  if (preflight.error || preflight.status !== 0) throw new Error(`Local EAS build preflight failed; no build started: ${preflight.error?.message || preflight.status}`);
   const result = spawnSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['--yes', 'eas-cli@21.0.0', 'build', '--platform', options.platform, '--profile', app === 'lucid' ? 'lucid-production' : 'production'], {
     cwd: app === 'meditation' ? path.join(root, 'apps/meditation') : root,
-    env: { ...process.env, EXPO_NO_DOTENV: '1', NOCTALIA_APP_VARIANT: app === 'lucid' ? 'lucid' : 'noctalia', EXPO_PUBLIC_APP_VARIANT: app === 'lucid' ? 'lucid' : 'noctalia' },
+    env,
     stdio: 'inherit',
   });
   if (result.error || result.status !== 0) throw new Error(`EAS build failed: ${result.error?.message || result.status}`);
@@ -272,4 +341,4 @@ function main(args = process.argv.slice(2), root = ROOT) {
 if (require.main === module) {
   try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, main };
+module.exports = { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, main };
