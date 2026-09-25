@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 
 import { resolveJournalDreamRecallOfferEligible } from '../journalDreamRecallOffer';
 
@@ -63,34 +61,6 @@ describe('resolveJournalDreamRecallOfferEligible', () => {
       })
     ).toEqual({ offerEligible: true, eligibleDreamId: '42' });
   });
-});
-
-describe('journal detail recall offer wiring', () => {
-  const source = readFileSync(join(__dirname, '../../app/journal/[id].tsx'), 'utf8');
-  const optionalRecall = source.slice(
-    source.indexOf('{!recallRequested ? ('),
-    source.indexOf('{renderIllustrationSection()}')
-  );
-
-  it('mounts the optional recall offer after the original transcript', () => {
-    expect(source).toContain(
-      "import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard'"
-    );
-    expect(source).toContain('resolveJournalDreamRecallOfferEligible');
-    expect(source.indexOf('<Reveal index={2}>')).toBeLessThan(
-      source.indexOf('<DreamRecallAssistantCard', source.indexOf('<Reveal index={3}>'))
-    );
-    expect(optionalRecall).toContain('<DreamRecallAssistantCard');
-    expect(optionalRecall).toContain('dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}');
-    expect(optionalRecall).toContain('originalTranscript={dream.transcript}');
-    expect(optionalRecall).toContain(
-      'originalPersistedSegmentId={dream.clientRequestId ?? (dream.remoteId != null ? getDreamIdentityKey(dream) : String(dream.id))}'
-    );
-    expect(optionalRecall).toContain('offerEligible={recallOffer.offerEligible}');
-  });
-
-  // The rendered order is exercised in journalDetailSavedConfirmation.test.tsx.
-
 });
 
 // Rendered zone order (with and without illustration) is covered by

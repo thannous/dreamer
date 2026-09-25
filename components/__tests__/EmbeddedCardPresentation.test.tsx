@@ -226,60 +226,12 @@ jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon.${name}`} />,
 }));
 
-const { QuotaStatusCard } = require('@/components/quota/QuotaStatusCard');
-const { SubscriptionCard } = require('@/components/subscription/SubscriptionCard');
 const { SubscriptionQALab } = require('@/components/subscription/SubscriptionQALab');
-
-const embeddedChrome = {
-  backgroundColor: 'transparent',
-  borderRadius: 0,
-  borderWidth: 0,
-  marginBottom: 0,
-  padding: 0,
-};
-
-const getRootStyle = (element: React.ReactElement) => {
-  const { container } = render(element);
-  const root = container.firstElementChild as HTMLElement;
-  return JSON.parse(root.dataset.style ?? '{}');
-};
 
 describe('embedded card presentation', () => {
   afterEach(() => {
     cleanup();
     mockIsMockModeEnabled.mockReturnValue(false);
-  });
-
-  const cases: [string, () => React.ReactElement][] = [
-    ['QuotaStatusCard', () => <QuotaStatusCard presentation="embedded" />],
-    [
-      'SubscriptionCard',
-      () => <SubscriptionCard title="Plus" features={['Feature']} presentation="embedded" />,
-    ],
-    ['SubscriptionQALab', () => <SubscriptionQALab presentation="embedded" />],
-  ];
-
-  it.each(cases)(
-    'removes only the outer chrome from %s without forcing root flex',
-    (_name: string, createElement: () => React.ReactElement) => {
-      const rootStyle = getRootStyle(createElement());
-
-      expect(rootStyle).toEqual(expect.objectContaining(embeddedChrome));
-      expect(rootStyle).not.toHaveProperty('flex');
-      expect(rootStyle).not.toHaveProperty('flexGrow');
-    }
-  );
-
-  it('keeps card as the default presentation', () => {
-    expect(getRootStyle(<SubscriptionCard title="Plus" features={['Feature']} />)).toEqual(
-      expect.objectContaining({
-        backgroundColor: '#raised',
-        borderRadius: 24,
-        borderWidth: 1,
-        marginBottom: 16,
-        padding: 16,
-      })
-    );
   });
 
   it('keeps the embedded QA lab compact until its accessible disclosure is opened', () => {

@@ -16,7 +16,7 @@ jest.mock('../../services/storageService', () => ({
   saveThemePreference: mockSaveThemePreference,
 }));
 
-const { DarkTheme, LightTheme, Shadows } = require('../../constants/journalTheme');
+const { DarkTheme, Shadows } = require('../../constants/journalTheme');
 const { ThemeProvider, useTheme } = require('../ThemeContext');
 
 describe('ThemeContext', () => {
@@ -85,14 +85,5 @@ describe('ThemeContext', () => {
     expect(result.current.preference).toBe('dark');
     expect(result.current.mode).toBe('dark');
     expect(result.current.colors).toBe(DarkTheme);
-  });
-
-  it('given missing provider__when using hook__then returns default snapshot', () => {
-    const { result } = renderHook(() => useTheme());
-
-    expect(result.current.preference).toBe('dynamic');
-    expect(result.current.mode).toBe('light');
-    expect(result.current.colors).toBe(LightTheme);
-    expect(result.current.shadows).toBe(Shadows.light);
   });
 });

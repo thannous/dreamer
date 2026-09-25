@@ -48,7 +48,6 @@ jest.mock('expo-router', () => ({
 const {
   useJournalLayoutSettingsPreference,
   useLanguageSettingsPreference,
-  useRecordingGuideAction,
   useThemeSettingsPreference,
 } = require('../useSettingsPreferences');
 
@@ -146,16 +145,5 @@ describe('settings preference controllers', () => {
     });
 
     expect(mockSetJournalLayoutPreference).toHaveBeenCalledWith('compact');
-  });
-
-  it('does not replay the retired hamburger capture tour', async () => {
-    const { result } = renderHook(() => useRecordingGuideAction());
-
-    await act(async () => {
-      await result.current.restart();
-    });
-
-    expect(mockRouterPush).not.toHaveBeenCalled();
-    expect(result.current.saving).toBe(false);
   });
 });

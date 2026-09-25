@@ -14,12 +14,4 @@ describe('world sound personalities', () => {
     });
   });
 
-  it('gives the grounded worlds layered signatures and the airy worlds a brief cue', () => {
-    expect(WORLD_SOUND_BY_ID.forest.secondary?.assetId).toBe('brown-noise');
-    expect(WORLD_SOUND_BY_ID.sanctuary.secondary?.assetId).toBe('rain');
-    expect(WORLD_SOUND_BY_ID.constellation.cue).not.toBeNull();
-    expect(WORLD_SOUND_BY_ID.dawn.cue).not.toBeNull();
-    expect(WORLD_SOUND_BY_ID.cloud.cue).not.toBeNull();
-    expect(WORLD_SOUND_BY_ID.tide.cue).toBeNull();
-  });
 });

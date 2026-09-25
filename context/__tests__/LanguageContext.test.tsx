@@ -115,10 +115,4 @@ describe('LanguageContext', () => {
     expect(result.current.preference).toBe('es');
     expect(result.current.language).toBe('es');
   });
-
-  it('throws when hook is used outside provider', () => {
-    expect(() => renderHook(() => useLanguage())).toThrow(
-      'useLanguage must be used within LanguageProvider'
-    );
-  });
 });

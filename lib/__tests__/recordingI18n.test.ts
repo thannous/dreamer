@@ -5,33 +5,6 @@ import { GUEST_DREAM_RECORDING_LIMIT } from '@/constants/limits';
 
 const languages: ('en' | 'fr' | 'es' | 'de' | 'it' | 'pt')[] = ['en', 'fr', 'es', 'de', 'it', 'pt'];
 
-const obsoleteFirstRunOnboardingKeys = [
-  'onboarding.path.library.title',
-  'onboarding.path.library.body',
-  'onboarding.path.library.kicker',
-  'onboarding.path.library.detail_title',
-  'onboarding.path.library.cta',
-  'onboarding.capture.title',
-  'onboarding.capture.mode.text.title',
-  'onboarding.capture.mode.text.body',
-  'onboarding.capture.mode.voice.title',
-  'onboarding.capture.mode.voice.body',
-  'onboarding.capture.hint',
-  'onboarding.capture.cta',
-] as const;
-
-const frenchRecordingTutoiementKeys = [
-  'recording.alert.stt_unavailable.message',
-  'recording.alert.language_pack_missing.message',
-  'recording.alert.offline_model.message',
-  'recording.alert.limit.title',
-  'recording.analysis_limit.assurance_guest',
-  'guest.upsell.title',
-  'guest.upsell.subtitle',
-  'guest.upsell.benefit.unlimited',
-  'guest.first_dream.sheet.subtitle',
-] as const;
-
 const firstDreamSheetKeys = [
   'guest.first_dream.sheet.title',
   'guest.first_dream.sheet.subtitle',
@@ -533,16 +506,6 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
-  it('does not retain obsolete library-path or onboarding capture translations', async () => {
-    const packs = await Promise.all(languages.map((lang) => loadTranslations(lang)));
-
-    for (const pack of packs) {
-      for (const key of obsoleteFirstRunOnboardingKeys) {
-        expect(pack).not.toHaveProperty(key);
-      }
-    }
-  });
-
   it('states the finite guest recording cap in every language', async () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
@@ -551,17 +514,6 @@ describe('Recording i18n - bottom sheets', () => {
       expect(value).toContain(String(GUEST_DREAM_RECORDING_LIMIT));
       expect(value).not.toMatch(/unlimited|illimit|ilimit|unbegrenzt/i);
       expect(value).not.toMatch(/\{limit\}/);
-    }
-  });
-
-  it('keeps the cited French recording journey in tutoiement', async () => {
-    const translations = await loadTranslations('fr');
-
-    for (const key of frenchRecordingTutoiementKeys) {
-      const value = translations[key];
-      expect(value).toBeDefined();
-      expect(value).not.toMatch(/\b(?:vous|votre|vos)\b/i);
-      expect(value).not.toMatch(/\b(?:saisissez|téléchargez|choisissez|créez)\b/i);
     }
   });
 

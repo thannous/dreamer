@@ -127,23 +127,4 @@ describe('alternatives comparison table build contract', () => {
     }
   );
 
-  it('ships a dedicated card layout below 1024px without horizontal scrolling', () => {
-    const css = fs.readFileSync(
-      path.join(ROOT_DIR, 'docs-src', 'static', 'css', 'alternatives-table.css'),
-      'utf8'
-    );
-    const mobileStart = css.indexOf('@media (max-width: 1023px)');
-    const mobileEnd = css.indexOf('@media (max-width: 520px)');
-    const mobile = css.slice(mobileStart, mobileEnd);
-
-    expect(mobileStart).toBeGreaterThanOrEqual(0);
-    expect(mobileEnd).toBeGreaterThan(mobileStart);
-    expect(css).toContain('.alternatives-table tbody th[scope="row"]');
-    expect(css).toContain('content: attr(data-label)');
-    expect(css).toContain('position: sticky');
-    expect(mobile).toContain('overflow: visible');
-    expect(mobile).toContain('min-width: 0 !important');
-    expect(mobile).toContain('display: grid');
-    expect(mobile).not.toContain('overflow-x: auto');
-  });
 });

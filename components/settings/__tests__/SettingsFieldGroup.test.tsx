@@ -85,7 +85,6 @@ const { BackHandler } = require('react-native');
 const selectTheme = jest.fn(async () => {});
 const selectLanguage = jest.fn(async () => {});
 const selectJournalLayout = jest.fn(async () => {});
-const restartRecordingGuide = jest.fn(async () => {});
 const toggleWeekday = jest.fn(async () => {});
 const setWeekdayTime = jest.fn(async () => {});
 const openSubscription = jest.fn();
@@ -223,21 +222,6 @@ afterEach(() => {
 });
 
 describe('SettingsFieldGroup', () => {
-  it('renders the mock-aligned account, experience, rituals and Plus cards', () => {
-    render(<SettingsFieldGroup {...baseProps} />);
-
-    expect(screen.getByTestId('slot-account')).toBeTruthy();
-    expect(screen.getByTestId('settings-section-preferences')).toBeTruthy();
-    expect(screen.getByTestId('settings-section-notifications')).toBeTruthy();
-    expect(screen.getByTestId('settings-section-subscription')).toBeTruthy();
-    expect(screen.getByTestId('settings-section-quota')).toBeTruthy();
-    expect(screen.getByTestId('slot-quota')).toBeTruthy();
-    expect(screen.getByText('settings.section.experience')).toBeTruthy();
-    expect(screen.getByText('settings.section.rituals')).toBeTruthy();
-    expect(screen.getByText('Noctalia Plus')).toBeTruthy();
-    expect(screen.getByTestId('settings-app-version').textContent).toBe('Version 3.0.1 (42)');
-    expect(screen.queryByTestId('settings-journal-layout-choice')).toBeNull();
-  });
 
   it('keeps the returning guest barrier to account and language', () => {
     render(<SettingsFieldGroup {...baseProps} returningGuestBlocked />);
@@ -337,14 +321,6 @@ describe('SettingsFieldGroup', () => {
 
     fireEvent.click(screen.getByTestId('settings-section-subscription'));
     expect(openSubscription).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not offer the retired hamburger capture tour from Settings', () => {
-    render(<SettingsFieldGroup {...baseProps} />);
-
-    expect(screen.queryByTestId('btn.recording.onboarding.restart')).toBeNull();
-    expect(screen.queryByText('settings.onboarding.restart')).toBeNull();
-    expect(restartRecordingGuide).not.toHaveBeenCalled();
   });
 
   it('hides the orphan journal layout preference because it no longer drives Journal', () => {

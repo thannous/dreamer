@@ -46,31 +46,4 @@ describe('home today i18n', () => {
       }
     }
   });
-
-  it('keeps French Accueil copy in tutoiement', () => {
-    expect(fr['home.today.draft_resume.body']).toMatch(/brouillon.*enregistré/);
-    expect(fr['home.today.draft_resume.body']).toMatch(/\btu\b/);
-    expect(fr['home.today.empty.cta']).toMatch(/Capturer/);
-    expect(fr['home.today.rest.title']).toBe('Tu as terminé pour aujourd’hui');
-    expect(fr['home.today.rest.body']).toBe(
-      'Ton rêve est enregistré et approfondi. Tu peux revenir au journal quand tu veux.'
-    );
-    expect(fr['nav.home']).toBe('Aujourd’hui');
-    expect(fr['nav.stats']).toBe('Tendances');
-  });
-
-  it('uses exact Today/Trends labels for nav.home and nav.stats', () => {
-    expect(en['nav.home']).toBe('Today');
-    expect(en['nav.stats']).toBe('Trends');
-    expect(fr['nav.home']).toBe('Aujourd’hui');
-    expect(fr['nav.stats']).toBe('Tendances');
-    expect(es['nav.home']).toBe('Hoy');
-    expect(es['nav.stats']).toBe('Tendencias');
-    expect(de['nav.home']).toBe('Heute');
-    expect(de['nav.stats']).toBe('Trends');
-    expect(italian['nav.home']).toBe('Oggi');
-    expect(italian['nav.stats']).toBe('Tendenze');
-    expect(pt['nav.home']).toBe('Hoje');
-    expect(pt['nav.stats']).toBe('Tendências');
-  });
 });

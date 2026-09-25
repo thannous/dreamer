@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-
 import React from 'react';
 
 import BreathIntroStep from '@/app/(onboarding)/breath-intro';
-import WelcomeScreen from '@/app/welcome';
+
 import { BreathProvider } from '@/context/BreathContext';
 import { TID } from '@/lib/testIDs';
 import * as audio from '@/services/audioService';
@@ -58,26 +58,6 @@ describe('breath introduction', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsFocused = true;
-  });
-
-  it('places the shared-breath preview between welcome and goals', () => {
-    render(<WelcomeScreen />);
-
-    fireEvent.press(screen.getByTestId(TID.Button.WelcomeStart));
-    expect(mockPush).toHaveBeenLastCalledWith('/breath-intro');
-
-    render(
-      <BreathProvider>
-        <BreathIntroStep />
-      </BreathProvider>
-    );
-
-    expect(screen.getByTestId(TID.Screen.OnboardingBreathIntro)).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.BreathIntroHalo)).toBeTruthy();
-    expect(screen.getByText('Continue')).toBeTruthy();
-
-    fireEvent.press(screen.getByTestId(TID.Button.OnboardingContinue));
-    expect(mockPush).toHaveBeenLastCalledWith('/goals');
   });
 
   it('answers one touch with sound, one haptic and an engaged single-cycle state', async () => {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { StyleSheet } from 'react-native';
 
 import {
   RELEASE_NOTES_VERSION,
@@ -174,17 +173,6 @@ describe('WhatsNewModal', () => {
 
     expect(onPrimary).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(2);
-  });
-
-  it('adapts its elevated surface to dark and light themes', () => {
-    const view = render(<WhatsNewModal visible onClose={jest.fn()} onPrimary={jest.fn()} />);
-    const darkStyle = StyleSheet.flatten(view.getByTestId(TID.Component.WhatsNewCard).props.style);
-    expect(darkStyle.backgroundColor).toBe('#14131A');
-
-    mockMode = 'light';
-    view.rerender(<WhatsNewModal visible onClose={jest.fn()} onPrimary={jest.fn()} />);
-    const lightStyle = StyleSheet.flatten(view.getByTestId(TID.Component.WhatsNewCard).props.style);
-    expect(lightStyle.backgroundColor).toBe('#F5EADB');
   });
 
   it('shows once after onboarding and persists the version before opening the journal', async () => {

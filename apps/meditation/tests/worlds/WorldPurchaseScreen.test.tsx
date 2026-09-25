@@ -92,7 +92,6 @@ jest.mock('uniwind', () => ({
   withUniwind: (Component: React.ComponentType<object>) => Component,
 }));
 
-
 function interpolate(template: string, values?: Record<string, string | number>) {
   if (!values) return template;
   return template.replace(/\{(\w+)\}/g, (match, name: string) =>
@@ -252,17 +251,6 @@ describe('world purchase handoff', () => {
     }
   });
 
-  it('uses a paler local backing when the purchased world is daylight', () => {
-    mockWorldId = 'dawn';
-    render(<WorldPurchaseScreen />);
-    expect(screen.getByTestId('world.purchase.intro-backing').props.style).toMatchObject({
-      backgroundColor: worldPurchaseBackingFill('light'),
-    });
-    expect(screen.getByTestId('world.purchase.actions-backing').props.style).toMatchObject({
-      backgroundColor: worldPurchaseBackingFill('light'),
-    });
-  });
-
   it('starts the optional sound preview only after an explicit tap', () => {
     const copy = worldPurchaseCopy('tide');
     const { rerender } = render(<WorldPurchaseScreen />);
@@ -290,36 +278,6 @@ describe('world purchase handoff', () => {
     expect(soundButton()).toHaveTextContent(copy.soundOn);
     expect(soundButton().props.accessibilityState).toMatchObject({ selected: false });
     expect(screen.getByLabelText(copy.soundOn)).toBeTruthy();
-  });
-
-  it('keeps buy, restore and back reachable at large text sizes', () => {
-    mockFontScale = 2;
-    jest.spyOn(ReactNative, 'useWindowDimensions').mockReturnValue({
-      width: 360,
-      height: 800,
-      scale: 3,
-      fontScale: 2,
-    });
-
-    render(<WorldPurchaseScreen />);
-
-    const chrome = screen.getByTestId('world.purchase.chrome-backing');
-    const chromeClasses = String(chrome.props.className ?? '').split(/\s+/);
-    expect(chromeClasses).not.toContain('flex-row');
-    expect(chromeClasses).toContain('shrink-0');
-    expect(screen.getByTestId('btn.worldPurchase.sound').props.className).toMatch(/self-start/);
-    expect(screen.getByTestId('btn.worldPurchase.sound').props.className.split(/\s+/)).not.toContain('h-12');
-
-    const back = screen.getByTestId(TID.Button.WorldPurchaseBack);
-    const backWrapper = back.parent;
-    const backClasses = String(backWrapper?.props?.className ?? '').split(/\s+/);
-    expect(back).toHaveTextContent(mockEn['common.back']);
-    expect(backClasses).toContain('self-start');
-    expect(backClasses).not.toContain('flex-1');
-    expect(screen.getByTestId(TID.Button.WorldPurchaseBuy)).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.WorldPurchaseRestore)).toBeTruthy();
-    expect(screen.getByText(worldPurchaseCopy('tide').benefit1)).toBeTruthy();
-    expect(screen.getByText(mockEn['world.purchase.notPlus'])).toBeTruthy();
   });
 
   it('keeps dawn preview copy on dawn and tide copy on tide', () => {

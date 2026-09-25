@@ -97,6 +97,9 @@ upload_cert.der
 docs-src/img-tmp/*
 marketing/seo/search-console/*_to_*/
 
+# Local dogfood captures and reports
+/dogfood-output/
+
 # Maestro generated outputs
 .maestro-home/
 maestro-results/

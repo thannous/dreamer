@@ -40,33 +40,6 @@ describe('meditation world registry', () => {
     }
   });
 
-  it('authors a centre veil strong enough for each artwork family', () => {
-    const darkWorlds = WORLD_IDS.filter((id) => WORLD_BY_ID[id].appearance === 'dark');
-    const paperWorlds = WORLD_IDS.filter((id) => WORLD_BY_ID[id].appearance === 'light');
-
-    expect(darkWorlds).toEqual(['constellation', 'forest', 'tide', 'sanctuary']);
-    expect(paperWorlds).toEqual(['dawn', 'cloud']);
-
-    for (const id of darkWorlds) {
-      expect(WORLD_BY_ID[id].atmosphere.centreScrimOpacity).toBeGreaterThanOrEqual(0.5);
-    }
-
-    for (const id of paperWorlds) {
-      expect(WORLD_BY_ID[id].atmosphere.centreScrimOpacity).toBeGreaterThanOrEqual(0.5);
-    }
-  });
-
-  it('ships nocturnal worlds with two luminous counterpoints', () => {
-    expect(WORLD_IDS.map((id) => WORLD_BY_ID[id].appearance).sort()).toEqual([
-      'dark',
-      'dark',
-      'dark',
-      'dark',
-      'light',
-      'light',
-    ]);
-  });
-
   it('exposes exactly three free and three one-time purchase worlds', () => {
     const free = WORLD_IDS.filter((id) => WORLD_BY_ID[id].access === 'free');
     const purchase = WORLD_IDS.filter((id) => WORLD_BY_ID[id].access === 'purchase');

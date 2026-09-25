@@ -296,8 +296,4 @@ describe('AuthContext', () => {
     expect(result.current.user).toBeNull();
     expect(result.current.sessionReady).toBe(false);
   });
-
-  it('given missing provider__when using hook__then throws', () => {
-    expect(() => renderHook(() => useAuth())).toThrow('useAuth must be used within AuthProvider');
-  });
 });

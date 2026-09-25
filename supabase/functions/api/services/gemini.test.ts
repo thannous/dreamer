@@ -5,18 +5,12 @@ import {
   GeminiChatStream,
   extractInteractionImage,
   extractModelParts,
-  GEMINI_FLASH_LITE_MODEL,
   GEMINI_FLASH_MODEL,
   GEMINI_CHAT_MODEL,
   isRetiredTextModel,
   resolveTextModel,
 } from './gemini.ts';
 
-Deno.test('text model constants point at current Interactions-era models', () => {
-  assertEquals(GEMINI_FLASH_MODEL, 'gemini-3.8-flash');
-  assertEquals(GEMINI_CHAT_MODEL, 'gemini-3.5-flash-lite');
-  assertEquals(GEMINI_FLASH_LITE_MODEL, 'gemini-3.5-flash-lite');
-});
 
 Deno.test('extractInteractionImage prefers the output_image helper', () => {
   const interaction = {

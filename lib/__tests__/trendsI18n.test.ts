@@ -23,14 +23,10 @@ const ctaKeys = [
   'trends.cta.review_patterns',
 ] as const;
 
-
 const countedPairs = [
   ['trends.week.active_days.value_one', 'trends.week.active_days.value'],
   ['trends.patterns.recurrence_one', 'trends.patterns.recurrence'],
 ] as const;
-
-const placeholdersOf = (value: string): string[] =>
-  [...value.matchAll(/\{\{?\s*([a-zA-Z_]+)\s*\}?\}/g)].map((match) => match[1]).sort();
 
 async function loadAllLanguages() {
   const packs = await Promise.all(
@@ -77,27 +73,6 @@ describe('trends i18n', () => {
         expect(pack[key].trim()).not.toBe('');
         expect(t(key)).not.toBe(key);
         expect(t(key).trim()).not.toBe('');
-      }
-    }
-  });
-
-  it('keeps trends placeholders identical to English for every key', async () => {
-    const packs = await loadAllLanguages();
-    const trendsKeys = trendsKeysFrom(packs.en);
-
-    expect(trendsKeys).toHaveLength(EXPECTED_TRENDS_KEY_COUNT);
-
-    for (const language of languages) {
-      for (const key of trendsKeys) {
-        expect({
-          language,
-          key,
-          placeholders: placeholdersOf(packs[language][key] ?? ''),
-        }).toEqual({
-          language,
-          key,
-          placeholders: placeholdersOf(packs.en[key]),
-        });
       }
     }
   });

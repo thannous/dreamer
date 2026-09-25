@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 
 import { describe, expect, it } from '@jest/globals';
 
@@ -106,15 +104,5 @@ describe('buildDisplayMessages', () => {
     const history: ChatMessage[] = [model('prior-model', 'Still there.')];
     expect(buildDisplayMessages(history, 'Still there.', null)).toEqual(history);
     expect(buildDisplayMessages(history, null, 'send-1')).toEqual(history);
-  });
-});
-
-describe('dream chat streaming identity wiring', () => {
-  const source = readFileSync(join(__dirname, '../../../app/dream-chat/[id].tsx'), 'utf8');
-
-  it('replaces the streaming bubble by request identity rather than text compare', () => {
-    expect(source).toContain('buildDisplayMessages(');
-    expect(source).toContain('streamingRequestIdRef');
-    expect(source).not.toContain('lastMessage.text.trim() === streamingReply.trim()');
   });
 });

@@ -2,8 +2,6 @@
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
-
-let themeCallCount = 0;
 let streamingForTest = false;
 
 vi.mock('react-native', async () => {
@@ -94,7 +92,6 @@ vi.mock('@legendapp/list/reanimated', async () => {
 
 vi.mock('../../../context/ThemeContext', () => ({
   useTheme: () => {
-    themeCallCount += 1;
     return {
       mode: 'dark',
       colors: {
@@ -148,27 +145,6 @@ vi.mock('../ScrollToBottomButton', () => ({
 vi.mock('../MarkdownText', () => ({
   MarkdownText: ({ children }: { children: string }) => <>{children}</>,
 }));
-
-const messages = Array.from({ length: 40 }, (_, index) => ({
-  id: `m-${index}`,
-  role: index % 2 === 0 ? 'user' : 'model',
-  text: index % 2 === 0 ? `User message ${index}` : `Assistant message ${index} **bold**`,
-}));
-
-describe('perf(MessagesList): rerender churn', () => {
-  it('logs how many themed components render on a no-op rerender', async () => {
-    const { MessagesList } = await import('../MessagesList');
-
-    const utils = render(<MessagesList messages={messages as any} style={{ opacity: 1 }} />);
-    themeCallCount = 0;
-
-    utils.rerender(<MessagesList messages={messages as any} style={{ opacity: 1 }} />);
-
-    // This is intentionally informational (baseline vs after is captured in CLI output).
-    console.log(`[perf] MessagesList useTheme() calls on no-op rerender: ${themeCallCount}`);
-    expect(themeCallCount).toBeGreaterThan(0);
-  }, 20000);
-});
 
 
 describe('MessagesList streaming visibility', () => {

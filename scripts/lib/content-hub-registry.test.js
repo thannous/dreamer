@@ -147,49 +147,6 @@ function expectInvalid({ config = makeConfig(), manifest = makeManifest(), sourc
 }
 
 describe('content hub registry', () => {
-  it('loads the real topology with exactly the 30 approved blog spokes', () => {
-    const registry = loadContentHubRegistry({ rootDir: ROOT_DIR });
-    const blogHubs = registry.hubs.filter((hub) => hub.kind === 'hubAndSpoke');
-    const actualSpokes = blogHubs.flatMap((hub) => hub.spokePageIds).sort();
-    const expectedSpokes = [
-      'blog.anxiety-dreams-meaning',
-      'blog.back-to-school-dreams',
-      'blog.back-to-school-nightmares-children',
-      'blog.being-chased-dreams',
-      'blog.children-dreams-guide',
-      'blog.death-dreams-meaning',
-      'blog.dream-incubation-guide',
-      'blog.dream-interpretation-history',
-      'blog.dream-journal-guide',
-      'blog.dreams-about-ex',
-      'blog.dreams-and-creativity',
-      'blog.dreams-mental-health',
-      'blog.exam-dreams-meaning',
-      'blog.falling-dreams-meaning',
-      'blog.false-awakening-dreams',
-      'blog.flying-dreams-meaning',
-      'blog.how-to-remember-dreams',
-      'blog.lucid-dreaming-beginners-guide',
-      'blog.precognitive-dreams-science',
-      'blog.pregnancy-dreams-meaning',
-      'blog.recurring-dreams-meaning',
-      'blog.rem-sleep-dreams',
-      'blog.sleep-paralysis-guide',
-      'blog.snake-dreams-meaning',
-      'blog.stop-nightmares-guide',
-      'blog.stress-dreams-work',
-      'blog.teeth-falling-out-dreams',
-      'blog.water-dreams-meaning',
-      'blog.why-we-dream-science',
-      'blog.why-we-forget-dreams',
-    ].sort();
-
-    expect(registry.hubs).toHaveLength(4);
-    expect(actualSpokes).toEqual(expectedSpokes);
-    expect(new Set(actualSpokes).size).toBe(30);
-    expect(Object.isFrozen(registry.hubs)).toBe(true);
-    expect(Object.isFrozen(registry.getHubByPageId('blog.dream-meanings'))).toBe(true);
-  });
 
   it('resolves primary hubs, related ids, paths, titles, and validate-only members', () => {
     const registry = loadFixture();

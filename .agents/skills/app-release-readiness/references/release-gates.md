@@ -1,6 +1,6 @@
 # Release gate checklist
 
-Read only the sections relevant to the target platform and release path. Provider labels are examples; use the actual stack discovered in the project.
+Read only the sections relevant to the target platform and release path. Provider labels and checklist items are examples to verify against current official requirements and the actual stack. A gate omitted from a partial audit is unassessed, not passed.
 
 ## Store metadata and compliance
 
@@ -58,7 +58,7 @@ Capture the exact identifiers at every stage:
 8. Submission: review submission receipt and current review state.
 9. Publication: production release or rollout percentage, public store visibility, and version shown publicly.
 
-Do not skip rungs when reporting. Mark unseen intermediate stages `INDETERMINATE` even if a later claim exists without inspectable evidence.
+Report the highest stage supported by current authoritative evidence for the exact candidate. A verified processed build does not require rerunning the upload or reconstructing every earlier log. Preserve the distinction between stages: a claimed later state without inspectable evidence remains unverified, and a missing intermediate log must not be invented.
 
 ## Real-device QA record
 
@@ -79,7 +79,7 @@ Never press buy, confirm payment, restore against a live account, delete a real 
 ## Blocker severity and ownership
 
 - `P0 publication blocker`: prevents upload, processing, selection, submission, or policy acceptance.
-- `P1 release-risk blocker`: release could proceed mechanically but critical behavior or evidence is missing.
+- `P1 release-risk blocker`: release could proceed mechanically but a required critical behavior or qualification is unmet. Missing evidence is reported as uncertainty; explain why that evidence is required for the target action.
 - `P2 follow-up`: non-critical improvement that does not block the defined release target.
 
 Assign one owner and one next action to each blocker. Split combined blockers when different systems or people own them. External review or processing remains a blocker or wait state until current provider evidence clears it.

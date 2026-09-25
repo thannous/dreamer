@@ -134,12 +134,23 @@ checks and small corrections, and keep one concise evidence record for the work 
   the requested change. Consult specialized references when the affected behavior requires
   them. Reuse established patterns and dependencies.
 - Treat `package.json` as the command source of truth; do not invent parallel wrappers.
-- Never run `expo prebuild`, EAS builds, store submissions, production deploys, or destructive database commands without explicit authorization.
+- Never run `expo prebuild` without explicit authorization, including when `expo run:android`
+  or `expo run:ios` would trigger it because the corresponding native directory is absent.
+  Before an authorized local build, check for `android/` or `ios/`; if the directory exists,
+  proceed with the requested build. The start modes in `script/build_and_run.sh` use
+  `expo start` and do not prebuild.
+- Never run EAS builds, store submissions, production deploys, or destructive database
+  commands without explicit authorization.
 - Never commit secrets or temporary logs. Every `EXPO_PUBLIC_*` value is client-visible.
 - Distinguish patch failures from baseline, environment, Watchman, emulator, and network failures.
 - On macOS, start Expo or Metro through the canonical package script with required outside-sandbox approval so React Native DevTools can register with AppKit. Do not patch Expo or React Native middleware to disable the standalone DevTools shell.
 
 ## Essential Commands
+
+`mise.toml` pins Node and Deno to the CI versions. Run `mise install`, then use
+`mise exec -- <command>` unless your shell already activates the project tools.
+Install root dependencies from the repository root. Meditation uses a separate
+lockfile and additionally requires `mise exec -- npm ci` in `apps/meditation`.
 
 - Install: `npm ci` (reproducible), `npm install` (update), `npx expo install <package>` (Expo-compatible package).
 - Run: `npm run start`, `npm run web`, `npm run android`, `npm run ios`.
@@ -152,17 +163,31 @@ Backend URL resolution uses `EXPO_PUBLIC_API_URL`, then `app.json` `expo.extra.a
 
 ## Validation
 
+- Never write unit tests after you write code.
+- Highly prefer E2E tests as the sole testing mechanism. Use them to verify complex features work. At the end of E2E tests, produce a verifiable and repeatable artifact.
+- If you must test a system in isolation, first write down all the ways it could fail, then write the code.
+
+For an isolation-test exception, record the failure modes and the gap in existing E2E
+coverage before implementation; write the tests before the implementation too. Keep
+only tests that detect a concrete failure the E2E assertions would miss. Avoid
+implementation-shape checks, cosmetic copy assertions, and duplicate happy paths.
+
+An E2E artifact must identify the tested revision/build, environment, fixtures or
+preconditions, exact rerun command, assertions and pass/fail result, with a trace,
+recording, screenshots or machine-readable report as appropriate. A screenshot alone
+is not proof of unobserved behavior. Redact secrets and private user content.
+
 Choose validation by the behavior and risk changed, not by the number of files or a fixed checklist.
 
 | Change | Default validation |
 | --- | --- |
 | Documentation or copy with no layout/behavior impact | Read the diff, check affected links and `git diff --check`; no app tests/builds. |
 | Small visual adjustment | Focused lint and inspection of the affected screen, including relevant contrast/text scaling; no full suite by default. |
-| Functional behavior | Existing focused behavior tests, relevant lint/types, and the affected UI journey when applicable. |
-| Storage, accounts, sync, payments, shared runtime or build configuration | Broader affected suites and failure cases; native checks where the risk requires them. |
+| Functional behavior | The affected E2E journey with a repeatable evidence artifact, plus relevant lint/types. Use existing isolation tests only for documented gaps. |
+| Storage, accounts, sync, payments, shared runtime or build configuration | E2E failure/recovery journeys with evidence artifacts; isolation tests for documented gaps and native checks where the risk requires them. |
 
 - Pick one appropriate focused test entry point; the commands below are alternatives, not a sequence to run in full.
-- Add tests only for meaningful behavior or regression risks not already covered. Do not add tests that merely mirror implementation or assert cosmetic wording.
+- Apply the E2E-first policy above when adding coverage; isolation tests require a documented failure model and must precede implementation.
 - Once checks pass, rerun only when changed code, dependencies/configuration, a failure or an unresolved risk invalidates that evidence. A documentation-only follow-up does not invalidate code tests.
 - Consolidate local corrections and evidence before pushing when practical. Do not push each small documentation correction separately merely to trigger another CI run.
 - For functional, shared-code or tooling PRs, use `npm run test:prepush` once on the clean committed worktree as the final affected-test entry point; it replaces a guessed manual test selection. It refreshes `origin/master`, uses the CI classifier, checks applicable app/test types and root Jest, and rejects revisions modified during the run. Documentation-only and small visual changes retain the proportional validation above. It does not replace lint, native, site-build, Meditation or Edge checks required by the changed surface.
@@ -188,7 +213,7 @@ Commit source inputs and tracked manifests, never generated `docs/`. Deployment 
 
 - Use strict TypeScript, 2-space indentation, focused typed functions, function components, PascalCase components, and `useX` hooks.
 - Reuse components, theme constants, service boundaries, and i18n patterns. Keep hook dependencies correct; memoize only for a clear or measured rerender issue.
-- Use `@testing-library/react-native`. Name tests `*.test.ts` or `*.test.tsx`, colocated or under `__tests__/`; keep them deterministic and behavior-focused.
+- For justified React Native isolation tests, use `@testing-library/react-native`. Name tests `*.test.ts` or `*.test.tsx`, colocated or under `__tests__/`; keep them deterministic and behavior-focused.
 - In React tests, await asynchronous interactions inside `act` (or the library's async event helpers) and resolve test-controlled promises inside awaited `act` before asserting committed UI state. Do not repair timing races by inflating timeouts. Copy-contract tests should preserve meaning such as optionality and saved state rather than require obsolete cosmetic wording.
 - Add `testID` only for stable automation or UI targeting. Validate affected mobile surfaces and capture screenshots or recordings when useful.
 

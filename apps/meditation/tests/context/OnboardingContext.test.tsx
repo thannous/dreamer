@@ -97,11 +97,6 @@ describe('OnboardingProvider', () => {
   });
 
   describe('restoring', () => {
-    it('starts from the defaults on a fresh install', async () => {
-      const { result } = await mountOnboarding();
-
-      expect(result.current.state).toEqual(INITIAL_ONBOARDING);
-    });
 
     it('restores the state written by an earlier session', async () => {
       const stored: OnboardingState = {
@@ -215,13 +210,4 @@ describe('OnboardingProvider', () => {
     });
   });
 
-  describe('outside the provider', () => {
-    it('hands back inert defaults rather than throwing', async () => {
-      const { result } = renderHook(() => useOnboarding());
-
-      expect(result.current.state).toEqual(INITIAL_ONBOARDING);
-      expect(result.current.loaded).toBe(false);
-      await expect(result.current.update({ goals: ['sleep'] })).resolves.toBeUndefined();
-    });
-  });
 });

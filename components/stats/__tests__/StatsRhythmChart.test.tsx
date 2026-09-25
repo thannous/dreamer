@@ -98,25 +98,4 @@ describe('StatsRhythmChart', () => {
     expect(screen.getByRole('progressbar', { name: 'Tue' }).getAttribute('aria-valuenow')).toBe('0');
     expect(monday.querySelector('[aria-hidden="true"]')).toBeTruthy();
   });
-
-  it('shortens the track at 320 dp without dropping a day', () => {
-    render(
-      <StatsRhythmChart
-        days={DAYS}
-        compact
-        accessibilityLabel="Weekly rhythm"
-        testID="trends.week.rhythm"
-      />,
-    );
-
-    expect(screen.getByTestId('trends.week.rhythm.day.1')).toBeTruthy();
-    expect(screen.getByTestId('trends.week.rhythm.day.2')).toBeTruthy();
-    expect(screen.getByTestId('trends.week.rhythm.day.3')).toBeTruthy();
-    const tracks = screen.getAllByRole('progressbar');
-    expect(tracks).toHaveLength(3);
-    const heights = Array.from(screen.getByTestId('trends.week.rhythm').querySelectorAll('[data-height]')).map(
-      (node) => node.getAttribute('data-height'),
-    );
-    expect(heights).toEqual(['56', '56', '56']);
-  });
 });

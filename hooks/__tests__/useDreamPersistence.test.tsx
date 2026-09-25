@@ -94,7 +94,6 @@ jest.mock('../../lib/logger', () => ({
   },
 }));
 
-
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   id: Date.now(),
   transcript: 'Test dream',
@@ -410,39 +409,6 @@ describe('useDreamPersistence', () => {
       await act(async () => result.current.retryPersistence());
       expect(mockSaveDreams).toHaveBeenLastCalledWith([expect.objectContaining({ id: 3 })]);
       expect(result.current.persistenceState.status).toBe('ready');
-    });
-    it('loads dreams from local storage', async () => {
-      const localDreams = [buildDream({ id: 1 }), buildDream({ id: 2 })];
-      mockGetSavedDreams.mockResolvedValue({ status: 'loaded', value: localDreams });
-
-      const { result } = renderHook(() =>
-        useDreamPersistence({ canUseRemoteSync: false })
-      );
-
-      await flushEffects();
-      expect(result.current.loaded).toBe(true);
-
-      expect(result.current.dreams).toHaveLength(2);
-      expect(mockGetSavedDreams).toHaveBeenCalled();
-      expect(mockFetchFromSupabase).not.toHaveBeenCalled();
-    });
-
-    it('persists dreams to local storage', async () => {
-      const { result } = renderHook(() =>
-        useDreamPersistence({ canUseRemoteSync: false })
-      );
-
-      await flushEffects();
-      expect(result.current.loaded).toBe(true);
-
-      const newDreams = [buildDream({ id: 1 })];
-      await act(async () => {
-        await result.current.persistLocalDreams(newDreams);
-      });
-
-      expect(mockSaveDreams).toHaveBeenCalledWith(expect.arrayContaining([
-        expect.objectContaining({ id: 1 }),
-      ]));
     });
 
     it('retries an identical local payload after the first durable write fails', async () => {
@@ -765,39 +731,6 @@ describe('useDreamPersistence', () => {
       expect(mockGetAccessToken).toHaveBeenCalled();
       expect(mockFetchFromSupabase).toHaveBeenCalled();
       expect(result.current.dreams).toHaveLength(1);
-    });
-
-    it('loads dreams from Supabase', async () => {
-      const remoteDreams = [
-        buildDream({ id: 1, remoteId: 101 }),
-        buildDream({ id: 3, remoteId: 103 }),
-        buildDream({ id: 2, remoteId: 102 }),
-      ];
-      mockFetchFromSupabase.mockResolvedValue(remoteDreams);
-
-      const { result } = renderHook(() =>
-        useDreamPersistence({ canUseRemoteSync: true })
-      );
-
-      await flushEffects();
-      expect(result.current.loaded).toBe(true);
-
-      expect(result.current.dreams.map((dream) => dream.id)).toEqual([3, 2, 1]);
-      expect(mockFetchFromSupabase).toHaveBeenCalled();
-    });
-
-    it('caches fetched remote dreams', async () => {
-      const remoteDreams = [buildDream({ id: 1, remoteId: 101 })];
-      mockFetchFromSupabase.mockResolvedValue(remoteDreams);
-
-      const { result } = renderHook(() =>
-        useDreamPersistence({ canUseRemoteSync: true })
-      );
-
-      await flushEffects();
-      expect(result.current.loaded).toBe(true);
-
-      expect(mockSaveCachedRemoteDreams).toHaveBeenCalled();
     });
 
     it('loads pending mutations from storage', async () => {

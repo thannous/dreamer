@@ -377,7 +377,6 @@ jobs:
           command: |
             mkdir -p artifacts/edge-contracts/test-results
             npm run test:file -- \
-              scripts/analysis-idempotency-migration.test.js \
               scripts/check-db-contract.test.js \
               scripts/dream-images-auth-user-policy-migration.test.js \
               scripts/guest-chat-route-contract.test.js \

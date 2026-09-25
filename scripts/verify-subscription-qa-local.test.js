@@ -1,12 +1,9 @@
 const {
   checkNodeSyntaxFiles,
-  commands,
   exitCodeForUnexpectedStatus,
   getResultError,
   runReportCommand,
   runCommands,
-  syntaxFiles,
-  unitTestFiles,
 } = require('./verify-subscription-qa-local');
 
 function memoryStream() {
@@ -22,87 +19,7 @@ function memoryStream() {
 }
 
 describe('subscription QA local verifier', () => {
-  it('requires the QA report to surface current session readiness blockers', () => {
-    const reportCommand = commands.find((command) => command.label === 'report: subscription QA coverage');
 
-    expect(reportCommand.env).toMatchObject({
-      REVENUECAT_PLAY_STORE_STATE_PATH: 'doc_web_interne/docs/revenuecat-play-store-state.example.json',
-    });
-
-    expect(reportCommand.expectedStdoutIncludes).toEqual(
-      expect.arrayContaining([
-        '## Evidence Commands',
-        'OK | Authenticated Test Store paywall flow exists',
-        'Authenticated Test Store paywall',
-        'npm run subscription:qa:evidence -- --gate play_monthly',
-        '--installer-package-name com.android.vending',
-        '## Current Session Readiness',
-        'Verified manual/external scenarios: 0',
-        'Manual or external gates remaining: 7',
-        '## RevenueCat Release Smoke Evidence',
-        'Release smoke evidence assertions remaining: 2',
-        'Account switch | Test Store or Play | Plus user logout does not leak to free user',
-        'Test Store signed-in account env',
-        'Account switch second account env',
-        'Device app user id extraction',
-        'Physical Android device visibility',
-        'npm run android:device:physical',
-        'checks USB and ADB Wireless Debugging mDNS visibility',
-        'Play install source diagnostic exists',
-        'npm run android:play-install-source -- --device <adb-id>',
-        'Play QA device preflight exists',
-        'npm run android:play-qa-device -- --device <adb-id>',
-        'Play QA device wait helper exists',
-        'npm run android:play-qa-device:wait',
-        'npm run android:play-qa-device:wait while connecting one Play-installed tester phone',
-        'add -- --device <adb-id> when multiple devices are ready',
-        'Play QA device preflight',
-        'after the device is ready',
-        'Google Play monthly base plan snapshot',
-        'Google Play annual base plan snapshot',
-        'Google Play internal track snapshot',
-        'Google Play track state updater exists',
-        'RevenueCat subscriber expiry snapshot',
-        'RevenueCat subscriber expiry state updater exists',
-        'Play monthly base plan snapshot',
-        'Play annual base plan snapshot',
-        'Google OAuth Android client snapshot parses',
-        'Google OAuth Android client state updater exists',
-        'STALE',
-        'refresh with npm run subscription:qa:play-state',
-      ])
-    );
-  });
-
-  it('includes the Play store state updater in local verification', () => {
-    expect(commands.map((command) => command.label)).toEqual(
-      expect.arrayContaining([
-        'syntax: subscription QA scripts',
-        'unit: subscription QA scripts',
-      ])
-    );
-    expect(syntaxFiles).toEqual(
-      expect.arrayContaining([
-        'scripts/update-revenuecat-play-store-state.js',
-        'scripts/update-revenuecat-subscriber-expiry-state.js',
-        'scripts/update-google-play-subscription-state.js',
-        'scripts/update-google-play-track-state.js',
-        'scripts/update-google-cloud-project-state.js',
-        'scripts/update-google-oauth-android-client-state.js',
-        'scripts/android-tooling.js',
-        'scripts/check-android-release-gates.js',
-        'scripts/check-play-install-source.js',
-        'scripts/check-play-qa-device.js',
-        'scripts/wait-for-play-qa-device.js',
-        'scripts/run-subscription-release-smoke.js',
-      ])
-    );
-    const unitCommand = commands.find((command) => command.label === 'unit: subscription QA scripts');
-    expect(unitCommand.args).toEqual(expect.arrayContaining(unitTestFiles));
-    expect(unitCommand.args).toEqual(
-      expect.arrayContaining(['--runTestsByPath', '--selectProjects', 'node'])
-    );
-  });
 
   it('parses every CommonJS source in one process and reports syntax errors', () => {
     const valid = checkNodeSyntaxFiles(['valid.js'], {

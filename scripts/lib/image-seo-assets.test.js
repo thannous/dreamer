@@ -9,12 +9,6 @@ const {
 describe('image SEO asset registry', () => {
   const registry = readImageAssetRegistry();
 
-  it('contains the ten Search Console Image pilot pages', () => {
-    expect(Object.keys(registry.pages)).toHaveLength(10);
-    expect(
-      Object.values(registry.pages).reduce((sum, page) => sum + page.impressions, 0)
-    ).toBe(16290);
-  });
 
   it('resolves a page by canonical URL or page id and locale', () => {
     expect(

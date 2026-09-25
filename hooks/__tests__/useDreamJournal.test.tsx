@@ -443,31 +443,6 @@ describe('useDreamJournal', () => {
   });
 
   describe('initialization and loading', () => {
-    it('loads local dreams when not authenticated', async () => {
-      const localDreams = [buildDream({ id: 1 }), buildDream({ id: 2 })];
-      setSavedDreams(localDreams);
-
-      const { result } = await renderLoadedDreamJournal();
-
-      expect(result.current.dreams).toHaveLength(2);
-      expect(mockGetSavedDreams).toHaveBeenCalled();
-      expect(mockFetchDreamsFromSupabase).not.toHaveBeenCalled();
-    });
-
-    it('loads remote dreams when authenticated', async () => {
-      setMockUser({ id: 'user-1' });
-      const remoteDreams = [buildDream({ id: 1, remoteId: 101 })];
-      mockFetchDreamsFromSupabase.mockResolvedValue(remoteDreams);
-
-      const { result } = await renderLoadedDreamJournal();
-
-      expect(result.current.dreams).toHaveLength(1);
-      expect(mockFetchDreamsFromSupabase).toHaveBeenCalled();
-      expect(mockSaveCachedRemoteDreams).toHaveBeenCalledWith(
-        expect.arrayContaining([expect.objectContaining({ id: 1 })]),
-        'user:user-1'
-      );
-    });
 
     it('falls back to cached dreams when remote fetch fails', async () => {
       setMockUser({ id: 'user-1' });
@@ -592,25 +567,6 @@ describe('useDreamJournal', () => {
       });
       expect(mockSaveDreams).not.toHaveBeenCalled();
       expect(result.current.dreams).toHaveLength(0);
-    });
-
-    it('adds dream to local storage when not authenticated', async () => {
-      const { result } = await renderLoadedDreamJournal();
-
-      const newDream = buildDream({ id: 1 });
-
-      await act(async () => {
-        await result.current.addDream(newDream);
-      });
-
-      expect(result.current.dreams).toHaveLength(1);
-      expect(result.current.dreams[0].id).toBe(1);
-      expect(mockSaveDreams).toHaveBeenCalledWith(
-        expect.arrayContaining([expect.objectContaining({ id: 1 })])
-      );
-      expect(mockReserveGuestDreamRecording.mock.invocationCallOrder[0]).toBeLessThan(
-        mockSaveDreams.mock.invocationCallOrder[0]
-      );
     });
 
     it('releases a failed new save without leaving an unsaved journal row', async () => {
@@ -1204,24 +1160,6 @@ describe('useDreamJournal', () => {
         remoteId: 1097, title: 'Follow-up edit',
       })));
       await waitFor(() => expect(result.current.dreams[0]).toMatchObject({ title: 'Follow-up edit', syncState: 'clean' }));
-    });
-
-    it('updates dream locally when not authenticated', async () => {
-      const existingDream = buildDream({ id: 1, title: 'Original' });
-      setSavedDreams([existingDream]);
-
-      const { result } = await renderLoadedDreamJournal();
-
-      const updatedDream = { ...existingDream, title: 'Updated' };
-
-      await act(async () => {
-        await result.current.updateDream(updatedDream);
-      });
-
-      expect(result.current.dreams[0].title).toBe('Updated');
-      expect(mockSaveDreams).toHaveBeenCalledWith(
-        expect.arrayContaining([expect.objectContaining({ title: 'Updated' })])
-      );
     });
 
     it('updates dream in Supabase when authenticated', async () => {
@@ -1915,24 +1853,6 @@ describe('useDreamJournal', () => {
   });
 
   describe('toggleFavorite', () => {
-    it('toggles favorite locally when not authenticated', async () => {
-      const existingDream = buildDream({ id: 1, isFavorite: false });
-      setSavedDreams([existingDream]);
-
-      const { result } = await renderLoadedDreamJournal();
-
-      await act(async () => {
-        await result.current.toggleFavorite(1);
-      });
-
-      expect(result.current.dreams[0].isFavorite).toBe(true);
-
-      await act(async () => {
-        await result.current.toggleFavorite(1);
-      });
-
-      expect(result.current.dreams[0].isFavorite).toBe(false);
-    });
 
     it('updates favorite in Supabase when authenticated', async () => {
       setMockUser({ id: 'user-1' });

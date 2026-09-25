@@ -3,7 +3,6 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, jest } from '@jest/globals';
 
-import { RecordingActivationInsightCard } from '@/components/recording/RecordingActivationInsightCard';
 import {
   QuotaLimitSheet,
 } from '@/components/recording/RecordingSheets';
@@ -200,42 +199,6 @@ jest.mock('@/hooks/useTranslation', () => ({
 
 describe('RecordingSheets', () => {
   const noop = () => undefined;
-
-  it('uses draft copy before save', () => {
-    render(
-      <RecordingActivationInsightCard
-        context="draft"
-        insight={{
-          tone: 'memory',
-          signalIds: ['memory', 'place'],
-          charCount: 18,
-        }}
-      />
-    );
-
-    expect(screen.getByTestId(TID.Text.RecordingActivationInsightSummary).textContent).toBe(
-      'This memory can already become a marker for your profile.'
-    );
-  });
-
-  it('makes guest analysis quota continuation feel free and recoverable', () => {
-    render(
-      <QuotaLimitSheet
-        visible
-        onClose={noop}
-        onPrimary={noop}
-        onSecondary={noop}
-        onLink={noop}
-        mode="limit"
-        tier="guest"
-        usageLimit={2}
-      />
-    );
-
-    expect(screen.getByText(
-      'The 2 guest analyses are free. Your text stays here; the free account simply saves it and lets you continue.'
-    )).toBeTruthy();
-  });
 
   it('offers a direct quota reset action when mock reset is available', () => {
     const onReset = jest.fn();

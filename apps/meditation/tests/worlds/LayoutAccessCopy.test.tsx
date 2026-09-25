@@ -93,18 +93,6 @@ describe('TI-391 access, sound and settings copy', () => {
     mockPracticeLog = [];
   });
 
-  it('keeps Free/Plus wording aligned across the six catalogues', () => {
-    expect(translate('en', 'common.free')).toBe('Free');
-    expect(translate('fr', 'common.free')).toBe('Gratuit');
-    expect(translate('de', 'common.free')).toBe('Kostenlos');
-    expect(translate('es', 'common.free')).toBe('Gratis');
-    expect(translate('it', 'common.free')).toBe('Gratuita');
-    expect(translate('pt', 'common.free')).toBe('Grátis');
-    expect(translate('fr', 'complete.home')).toBe('Retour à l’accueil');
-    expect(translate('fr', 'trainer.sound.on')).toBe('Couper le son');
-    expect(translate('fr', 'trainer.sound.off')).toBe('Activer le son');
-  });
-
   it('explains that a saved Plus session is still locked', () => {
     render(
       <SessionCard session={SESSION_BY_ID['sleep-body-scan']} testID="layout.plus.saved" />

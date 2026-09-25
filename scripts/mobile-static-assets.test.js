@@ -49,14 +49,4 @@ describe('mobile static asset contract', () => {
     expect(fs.statSync(assetPath).size).toBeLessThan(baselineBytes * 0.15);
   });
 
-  it('references the WebP backgrounds from onboarding and keeps Metro support enabled', () => {
-    const source = fs.readFileSync(path.join(ROOT_DIR, 'app', 'onboarding.tsx'), 'utf8');
-    const metroConfig = require('../metro.config');
-
-    expect(source).toContain(
-      "require('@/assets/images/onboarding-reverie-background.webp')"
-    );
-    expect(source).not.toMatch(/onboarding-(?:astral|path|reverie)-background\.png/);
-    expect(metroConfig.resolver.assetExts).toContain('webp');
-  });
 });

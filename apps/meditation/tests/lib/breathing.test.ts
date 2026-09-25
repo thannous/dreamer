@@ -18,10 +18,6 @@ describe('cycleDurationMs', () => {
     expect(cycleDurationMs(PATTERN_BY_ID[id])).toBe(expected);
   });
 
-  it('matches the app-wide breath for the coherent pattern', () => {
-    // 5.5 s in, 5.5 s out — the same rhythm the interface itself breathes at.
-    expect(cycleDurationMs(PATTERN_BY_ID.coherent)).toBe(11_000);
-  });
 });
 
 describe('breathStateAt', () => {

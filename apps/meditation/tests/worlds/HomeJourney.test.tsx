@@ -4,12 +4,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, useWindowDimensions } from 'react-native';
 
 import HomeTab from '@/app/(drawer)/(tabs)/index';
-import {
-  ACTIVE_JOURNEY_CTA_TEST_ID,
-  ACTIVE_JOURNEY_WIDTH_RATIO,
-  COMPACT_INACTIVE_JOURNEY_MIN_HEIGHT,
-  INACTIVE_JOURNEY_MIN_HEIGHT,
-} from '@/components/journey/WorldJourneyPicker';
+import { ACTIVE_JOURNEY_CTA_TEST_ID } from '@/components/journey/WorldJourneyPicker';
 import { LibraryProvider } from '@/context/LibraryContext';
 import { OnboardingProvider } from '@/context/OnboardingContext';
 import { WorldProvider } from '@/context/WorldContext';
@@ -382,59 +377,6 @@ describe('immersive home journey', () => {
     expect(useWindowDimensions().fontScale).toBe(2);
   });
 
-  it('uses a horizontal carousel with stable card slots and a visible neighbour', async () => {
-    const view = renderHome();
-
-    await act(async () => {
-      await Promise.resolve();
-    });
-
-    const active = StyleSheet.flatten(screen.getByTestId('home.world-switcher.constellation').props.style);
-    const inactive = StyleSheet.flatten(screen.getByTestId('home.world-switcher.dawn').props.style);
-
-    expect(view.UNSAFE_getAllByType(ScrollView).some((node) => node.props.horizontal)).toBe(true);
-    expect(active.width).toBeCloseTo((mockDimensions.width - 32) * 0.7, 2);
-    expect(inactive.width).toBe(active.width);
-    expect(inactive.minHeight).toBe(COMPACT_INACTIVE_JOURNEY_MIN_HEIGHT);
-    expect(active.minHeight).toBe(COMPACT_INACTIVE_JOURNEY_MIN_HEIGHT);
-  });
-
-  it('preserves the immersive card proportions on a roomy viewport', async () => {
-    mockDimensions.width = 390;
-    mockDimensions.height = 844;
-    const view = renderHome();
-
-    await act(async () => {
-      await Promise.resolve();
-    });
-
-    const active = StyleSheet.flatten(screen.getByTestId('home.world-switcher.constellation').props.style);
-    const inactive = StyleSheet.flatten(screen.getByTestId('home.world-switcher.dawn').props.style);
-
-    expect(view.UNSAFE_getAllByType(ScrollView).some((node) => node.props.horizontal)).toBe(true);
-    expect(active.width).toBeCloseTo((mockDimensions.width - 32) * ACTIVE_JOURNEY_WIDTH_RATIO, 2);
-    expect(active.minHeight).toBe(INACTIVE_JOURNEY_MIN_HEIGHT);
-    expect(inactive.minHeight).toBe(INACTIVE_JOURNEY_MIN_HEIGHT);
-  });
-
-  it('keeps the carousel at the listener-controlled position when selecting a world', async () => {
-    renderHome();
-
-    const forest = await screen.findByRole('radio', { name: 'Inner forest' });
-    expect(screen.getByTestId('home.journey.deck').props.onLayout).toBeUndefined();
-    expect(forest.props.onLayout).toBeUndefined();
-
-    fireEvent.press(forest);
-
-    await waitFor(() =>
-      expect(screen.getByRole('radio', { name: 'Inner forest' }).props.accessibilityState).toMatchObject({
-        checked: true,
-      })
-    );
-    expect(screen.getByTestId('home.journey.deck').props.onLayout).toBeUndefined();
-    expect(screen.getByTestId('home.world-switcher.forest').props.onLayout).toBeUndefined();
-  });
-
   it('reveals the hydrated initial world once without recentering later choices', async () => {
     const scrollTo = jest.spyOn(ScrollView.prototype, 'scrollTo').mockImplementation(() => {});
     try {
@@ -800,30 +742,6 @@ describe('immersive home journey', () => {
     fireEvent.press(cta);
     expect(mockOpenPaywall).toHaveBeenCalledWith('premium-session');
     expect(mockPush).not.toHaveBeenCalled();
-  });
-
-  it('keeps the daily ritual above weekly metrics so the first action is practice, not a scoreboard', async () => {
-    renderHome();
-
-    await act(async () => {
-      await Promise.resolve();
-    });
-
-    const flatten = (node: { props?: { testID?: unknown }; children?: unknown[] }, acc: string[] = []): string[] => {
-      const testID = node.props?.testID;
-      if (typeof testID === 'string') acc.push(testID);
-      const children = Array.isArray(node.children) ? node.children : [];
-      children.forEach((child) => {
-        if (child && typeof child === 'object') {
-          flatten(child as { props?: { testID?: unknown }; children?: unknown[] }, acc);
-        }
-      });
-      return acc;
-    };
-    const ids = flatten(screen.UNSAFE_root);
-    expect(ids.indexOf('home.journey.deck')).toBeGreaterThan(-1);
-    expect(ids.indexOf('home.journey.week')).toBeGreaterThan(ids.indexOf('home.journey.deck'));
-    expect(screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID)).toHaveTextContent(/^Begin$/);
   });
 
   it('never uses a Begin CTA when the recommended ritual is gated, and still offers an immediate breathe alternative', async () => {

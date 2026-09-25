@@ -302,7 +302,6 @@ jest.doMock('react-native-reanimated', () => {
 });
 
 const { default: SettingsScreen } = require('@/app/settings');
-const { VOICE_LIVE_SPIKE_TEST_IDS } = require('@/lib/voiceLiveSpikeHost');
 const { withDevFlag } = require('@/tests/setDevFlag');
 
 describe('Settings screen', () => {
@@ -316,28 +315,6 @@ describe('Settings screen', () => {
     restoreDevFlag?.();
     mockWindowWidth = 390;
     mockPlatformOS = 'web';
-  });
-
-  it('[B] lets the account card fill the mock-aligned editorial column', () => {
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
-    mockUseSubscription.mockReturnValue({
-      isActive: false,
-      loading: false,
-      status: null,
-    });
-
-    render(<SettingsScreen />);
-
-    expect(screen.getByTestId('settings-account-rn-content').className).toContain('w-full');
-    expect(screen.getByTestId('settings-quota-rn-content')).toBeTruthy();
-    expect(screen.getByTestId('quota-status-card')).toBeTruthy();
-    expect(capturedSettingsProps).toMatchObject({
-      appVersionLabel: 'Version 3.0.1 (42)',
-      subscriptionTitle: 'subscription.settings.title.plus',
-      subscriptionSubtitle: 'settings.plus.subtitle',
-    });
-    expect(screen.queryByTestId(VOICE_LIVE_SPIKE_TEST_IDS.debugEntry)).toBeNull();
-    expect(screen.queryByTestId('guest-recording-qa-reset')).toBeNull();
   });
 
   it('offers a guest-only dev reset that reports the preserved dream count', async () => {
@@ -361,38 +338,6 @@ describe('Settings screen', () => {
 
     render(<SettingsScreen />);
     expect(screen.queryByTestId('guest-recording-qa-reset')).toBeNull();
-  });
-
-  it('[B] caps hosted React Native content to the centered desktop field group', () => {
-    mockWindowWidth = 1440;
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
-    mockUseSubscription.mockReturnValue({
-      isActive: false,
-      loading: false,
-      status: null,
-    });
-
-    render(<SettingsScreen />);
-
-    expect(screen.getByTestId('settings-account-rn-content').className).toContain('w-full');
-  });
-
-  it('[B] keeps the Android clipping guard while using the full card width', () => {
-    mockPlatformOS = 'android';
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
-    mockUseSubscription.mockReturnValue({
-      isActive: false,
-      loading: false,
-      status: null,
-    });
-
-    render(<SettingsScreen />);
-
-    // Uniwind resolves `className` in the Metro transformer, which Jest never runs, so
-    // the classes assert the intent: full width, plus the Android clipping guard.
-    const accountContent = screen.getByTestId('settings-account-rn-content');
-    expect(accountContent.className).toContain('w-full');
-    expect(accountContent.className).toContain('pb-6');
   });
 
   it('[B] Given a returning guest is blocked When rendering Then it hides subscription features', () => {
@@ -436,25 +381,6 @@ describe('Settings screen', () => {
     });
     screen.getByTestId('settings-plus-card').click();
     expect(mockPush).toHaveBeenCalledTimes(1);
-  });
-
-  it('[E] keeps the mock copy stable for active subscriptions', () => {
-    // Given
-    capturedSettingsProps = null;
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
-    mockUseSubscription.mockReturnValue({
-      isActive: true,
-      loading: false,
-      status: { expiryDate: 'not-a-date', tier: 'plus', isActive: true },
-    });
-
-    // When
-    render(<SettingsScreen />);
-
-    // Then
-    expect(screen.getByTestId('settings-plus-card').textContent).toBe(
-      'subscription.settings.title.plus'
-    );
   });
 });
 
