@@ -1030,22 +1030,6 @@ const initStarmap = () => {
     step = -1;
     update();
   };
-  let retry;
-  const showRetry = () => {
-    if (!retry) {
-      retry = document.createElement('button');
-      retry.type = 'button';
-      retry.className = 'oh-btn-secondary oh-intro-retry';
-      const labels = { fr: 'Voir l’intro', en: 'Play intro', de: 'Intro ansehen', es: 'Ver intro', it: 'Guarda l’intro', pt: 'Ver introdução' };
-      retry.textContent = labels[(html.lang || 'en').slice(0, 2)] || labels.en;
-      retry.addEventListener('click', () => {
-        activeLenis?.scrollTo(0, { immediate: true });
-        window.scrollTo(0, 0);
-        startIntro();
-      });
-    }
-    heroHeader.querySelector('.oh-hero-inner').append(retry);
-  };
   const startIntro = () => {
     introStarted = true;
     setStep(0);
