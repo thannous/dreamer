@@ -481,6 +481,26 @@ describe('journal detail saved confirmation route', () => {
     expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
   });
 
+  it('waits for guest quota recovery before starting the saved dream demo', async () => {
+    mockUser = null;
+    mockTier = 'guest';
+    mockQuotaUsage = {
+      analysis: { used: 0, limit: 2, remaining: 2 },
+      image: { used: 0, limit: 2, remaining: 2 },
+    };
+    mockQuotaStatus = { canAnalyze: false, guestBootstrapStatus: 'degraded' };
+    mockSearchParams = { id: '42', saved: '1', autoAnalyze: '1' };
+    const view = render(<JournalDetailScreen />);
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+
+    mockQuotaStatus = { canAnalyze: true, guestBootstrapStatus: 'ready' };
+    view.rerender(<JournalDetailScreen />);
+    await waitFor(() => expect(mockAnalyzeDream).toHaveBeenCalledTimes(1));
+    expect(mockAnalyzeDream).toHaveBeenCalledWith(mockDreams[0], mockDreams[0].transcript, {
+      replaceExistingImage: true, lang: 'fr', analyticsSource: 'journal_detail',
+    });
+  });
+
   it.each([
     { label: 'image credits exhausted', setup: () => { mockQuotaUsage.image = { used: 2, limit: 2, remaining: 0 }; } },
     { label: 'analysis credits exhausted', setup: () => { mockQuotaStatus = { canAnalyze: false }; } },
