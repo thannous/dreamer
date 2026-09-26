@@ -1255,6 +1255,21 @@ const playIntro = (film, loop, variant) =>
     let slowStartTimer = 0;
     let maximumTimer = 0;
     let playbackRequested = false;
+    let firstFrameTimer = 0;
+    let playbackAttempt = 0;
+    let triedMp4 = false;
+    const retryMp4 = () => {
+      if (finished || played || triedMp4 || !intro.currentSrc.endsWith('.webm')) return false;
+      triedMp4 = true;
+      playbackAttempt += 1;
+      playbackRequested = false;
+      window.clearTimeout(firstFrameTimer);
+      // Some WebKit versions download VP9 fully but never decode its first frame.
+      // A source change aborts the old play promise; only the new attempt may fail.
+      intro.src = `${INTRO_BASE}-${variant}.mp4`;
+      intro.load();
+      return true;
+    };
     const beginPlayback = () => {
       if (finished || playbackRequested || !Number.isFinite(intro.duration)) return;
       // Keep a short reserve: Chrome may otherwise start on a few frames and
@@ -1262,7 +1277,13 @@ const playIntro = (film, loop, variant) =>
       for (let i = 0; i < intro.buffered.length; i += 1) {
         if (intro.buffered.start(i) > 0.05 || intro.buffered.end(i) < Math.min(2, intro.duration - 0.05)) continue;
         playbackRequested = true;
-        intro.play().catch(() => finish(true, true));
+        const attempt = ++playbackAttempt;
+        firstFrameTimer = window.setTimeout(() => {
+          if (!played) retryMp4();
+        }, 1200);
+        intro.play().catch(() => {
+          if (attempt === playbackAttempt && !finished && !retryMp4()) finish(true, true);
+        });
         break;
       }
     };
@@ -1288,6 +1309,7 @@ const playIntro = (film, loop, variant) =>
       finished = true;
       window.clearTimeout(slowStartTimer);
       window.clearTimeout(maximumTimer);
+      window.clearTimeout(firstFrameTimer);
       skip.remove();
       window.removeEventListener('scroll', onScroll);
       document.removeEventListener('keydown', onKey);
@@ -1321,6 +1343,7 @@ const playIntro = (film, loop, variant) =>
     intro.addEventListener('playing', () => {
       if (finished) return;
       played = true;
+      window.clearTimeout(firstFrameTimer);
       overlay.classList.add('is-playing');
       overlay.append(skip);
       prepareLoop();
@@ -1330,7 +1353,9 @@ const playIntro = (film, loop, variant) =>
     intro.addEventListener('progress', prepareLoop);
     intro.addEventListener('canplaythrough', prepareLoop);
     intro.addEventListener('ended', () => finish(), { once: true });
-    intro.addEventListener('error', () => finish(true, true), { once: true });
+    intro.addEventListener('error', () => {
+      if (!retryMp4()) finish(true, true);
+    });
     skip.addEventListener('click', () => finish(true));
     window.addEventListener('scroll', onScroll, { passive: true });
     document.addEventListener('keydown', onKey);
