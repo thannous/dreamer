@@ -45,9 +45,17 @@ export function initStarmapSteps(root, dreams, stars, journey, setStep) {
     button.setAttribute('aria-label', labels[i]); button.title = labels[i];
     button.addEventListener('click', event => {
       const target = Math.max(0, Math.min(dreams.length - 1, current + direction));
-      // Land on the reading plateau; pointer navigation traverses the flight.
+      const end = (target + 0.88) / dreams.length;
       const immediate = event.detail === 0 || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      journey.seekMap((target + 0.88) / dreams.length, { immediate, duration: 1.1 });
+      if (immediate) {
+        journey.seekMap(end, { immediate: true });
+        return;
+      }
+      // Open the requested account first, then give its words and comets a full
+      // six seconds. Linear progress avoids the default scroll easing rushing
+      // the reading phase; wheel/touch input can still interrupt the sequence.
+      journey.seekMap((target + 0.05) / dreams.length, { immediate: true });
+      journey.seekMap(end, { duration: 6, easing: progress => progress });
     });
     return button;
   });
