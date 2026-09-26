@@ -317,6 +317,16 @@ function main(args = process.argv.slice(2), root = ROOT) {
     const appConfig = readJson(root, 'app.json').expo;
     assertInternalBuild(build, options.platform, { projectId: appConfig.extra?.eas?.projectId, version: appConfig.version });
     if (options.platform === 'ios') assertIosBuildSource(root, build);
+    const submissionLookup = spawnSync(process.platform === 'win32' ? 'npm.cmd' : 'npm', [
+      'exec', '--yes', '--package=eas-cli@21.0.0', '--', 'node',
+      path.join(root, 'scripts/check-eas-internal-submission.js'),
+      '--project-id', appConfig.extra.eas.projectId,
+      '--platform', options.platform,
+      '--build-id', options.id,
+    ], { cwd: root, env, stdio: 'inherit' });
+    if (submissionLookup.error || submissionLookup.status !== 0) {
+      throw new Error('EAS submission history check failed; no submission started');
+    }
     if (options.dryRun) {
       console.log(`Internal ${options.platform} submission ready: build ${options.id}, EAS submit profile ${options.platform === 'android' ? 'internal' : 'production'}. No submission started.`);
       return;
