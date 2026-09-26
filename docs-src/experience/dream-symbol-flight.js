@@ -1,5 +1,5 @@
-/** Scrub the first account and its symbol flights with the scroll position. */
-export function createDreamSymbolFlight(words, first, stars) {
+/** Scrub an account and its symbol flights with the scroll position. */
+export function createDreamSymbolFlight(words, first, stars, manageStars = true) {
   const clamp = value => Math.max(0, Math.min(1, value));
   const flights = [...first.querySelectorAll('.oh-sym-word')].map(mark => {
     const star = stars.get(Number(mark.dataset.sym));
@@ -25,7 +25,9 @@ export function createDreamSymbolFlight(words, first, stars) {
     document.body.append(arrival);
     return { mark, star, ghost, trail, arrival };
   }).filter(Boolean);
-  return (progress, visible = true) => {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const update = (progress, visible = true) => {
+    const landed = [];
     const p = clamp(progress);
     words.forEach((word, index) => {
       word.classList.toggle('is-in', p >= (index + 1) / words.length * 0.48);
@@ -35,14 +37,16 @@ export function createDreamSymbolFlight(words, first, stars) {
       const t = clamp((p - start) / 0.25);
       const arrived = t === 1;
       mark.classList.toggle('is-marked', p >= 0.48);
-      star.classList.toggle('is-flown', arrived);
-      star.classList.toggle('is-born', arrived);
-      star.classList.toggle('is-glow', arrived);
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      ghost.hidden = !visible || reduced || t <= 0 || arrived;
+      if (arrived) landed.push(Number(mark.dataset.sym));
+      if (manageStars) {
+        star.classList.toggle('is-flown', arrived);
+        star.classList.toggle('is-born', arrived);
+        star.classList.toggle('is-glow', arrived);
+      }
+      ghost.hidden = !visible || reduced.matches || t <= 0 || arrived;
       trail.forEach(dot => { dot.hidden = ghost.hidden; });
       const burst = clamp((p - start - 0.21) / 0.13);
-      arrival.hidden = !visible || reduced || burst <= 0 || burst >= 1;
+      arrival.hidden = !visible || reduced.matches || burst <= 0 || burst >= 1;
       if (ghost.hidden && arrival.hidden) return;
       const from = mark.getBoundingClientRect();
       const to = star.querySelector('img').getBoundingClientRect();
@@ -69,5 +73,10 @@ export function createDreamSymbolFlight(words, first, stars) {
       arrival.style.transform = `translate3d(${x1}px, ${y1}px, 0) translate(-50%, -50%) scale(${0.9 + burst * 1.1})`;
       arrival.style.opacity = String(Math.sin(burst * Math.PI) * 0.8);
     });
+    return landed;
   };
+  update.destroy = () => flights.forEach(({ ghost, trail, arrival }) => {
+    [ghost, ...trail, arrival].forEach(element => element.remove());
+  });
+  return update;
 }

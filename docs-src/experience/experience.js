@@ -1,4 +1,4 @@
-import { createDreamSymbolFlight } from './dream-symbol-flight.js';
+import { initStarmapSteps } from './starmap-steps.js';
 import { initDreamJourney } from './dream-journey.js';
 import { initDreamHeadings } from './dream-headings.js';
 import { attachDreamDrag } from './dream-drag.js';
@@ -941,12 +941,13 @@ const initStarmap = (journey) => {
   layoutLines();
   new ResizeObserver(layoutLines).observe(svg);
 
-  const setStep = (k) => {
-    if (k === step) return;
-    step = k;
+  const setStep = (k, selected = Math.max(0, k - 1)) => {
+    const key = `${k}:${selected}`;
+    if (key === step) return;
+    step = key;
     const counts = new Map();
     dreams.slice(0, k).forEach(({ syms }) => syms.forEach((s) => counts.set(s, (counts.get(s) || 0) + 1)));
-    const current = Math.max(0, k - 1);
+    const current = selected;
     const glowing = k > 0 ? dreams[current].syms : [];
     dreams.forEach(({ el }, i) => el.classList.toggle('is-current', i === current));
     stars.forEach((li, sym) => {
@@ -968,8 +969,14 @@ const initStarmap = (journey) => {
       const cb = counts.get(link.b) || 1;
       link.path.style.setProperty('--w-now', (1 + 0.6 * (ca - 1 + cb - 1)).toFixed(2));
     });
-    stepLabel.textContent = String(Math.max(1, k));
+    const label = String(selected + 1);
+    if (stepLabel.textContent !== label) stepLabel.textContent = label;
   };
+
+  if (journey) {
+    journey.mapCleanup = initStarmapSteps(root, dreams, stars, journey, setStep);
+    return;
+  }
 
   // Intro: the first dream's words appear one by one; symbol words underline
   // and fly to their stars.
@@ -998,7 +1005,6 @@ const initStarmap = (journey) => {
     }
   });
 
-  const scrubFirstDream = journey ? createDreamSymbolFlight(words, first, stars) : null;
   let introStarted = false;
   let introDone = false;
   const timers = [];
@@ -1062,19 +1068,6 @@ const initStarmap = (journey) => {
     return clamp(-rect.top / Math.max(1, rect.height - window.innerHeight), 0, 1);
   };
   const update = () => {
-    if (journey) {
-      const p = journey.mapProgress;
-      // Reserve the opening third of the map scroll for the first account.
-      // No timer can skip the flight: stopping or reversing scroll preserves it.
-      if (!journey.mapActive || p < 0.3) {
-        setStep(0);
-        scrubFirstDream(journey.mapActive ? p / 0.3 : 0, journey.mapActive);
-      } else {
-        if (step < 1) scrubFirstDream(1);
-        setStep(1 + clamp(Math.floor(((p - 0.3) / 0.7) * 10), 0, 9));
-      }
-      return;
-    }
     const p = progress();
     const rect = root.getBoundingClientRect();
     if (!introStarted) {
@@ -1485,9 +1478,9 @@ const bootEnhanced = async (currentTier, heroReady) => {
 
   try {
     const skyPromise = Promise.resolve();
-    journey = initDreamJourney(heroReady, top => {
-      if (activeLenis) activeLenis.scrollTo(top, { immediate: true });
-      else window.scrollTo({ top, behavior: 'instant' });
+    journey = initDreamJourney(heroReady, (top, options = { immediate: true }) => {
+      if (activeLenis) activeLenis.scrollTo(top, options);
+      else window.scrollTo({ top, behavior: options.immediate ? 'instant' : 'smooth' });
     });
     if (!journey) initDreamHeadings(heroReady);
     initFeatureMedia();

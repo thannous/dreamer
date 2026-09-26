@@ -12,6 +12,15 @@ export function initDreamJourney(heroReady, seek = top => window.scrollTo({ top,
   const understanding = document.querySelector('.oh-understand');
   const map = understanding?.querySelector('.oh-starmap');
   if (!cards || !head || !map || !closing) return null;
+  // Preserve the gallery/analysis distance; give each account its own reading slot.
+  const dreamCount = map.querySelectorAll('.oh-starmap-dream').length;
+  track.style.height = `${100 + 336 + dreamCount * 90}svh`;
+  const distances = () => ({ prelude: pin.clientHeight * 3.36, map: pin.clientHeight * dreamCount * 0.9 });
+  const seekProgress = (p, options) => {
+    const d = distances();
+    const offset = p <= 0.56 ? p / 0.56 * d.prelude : d.prelude + (p - 0.56) / 0.44 * d.map;
+    seek(window.scrollY + track.getBoundingClientRect().top + offset, options);
+  };
   const labels = {
     en: 'Discover what connects them', fr: 'Découvre ce qui les relie',
     de: 'Entdecke, was sie verbindet', es: 'Descubre qué los conecta',
@@ -38,8 +47,7 @@ export function initDreamJourney(heroReady, seek = top => window.scrollTo({ top,
     dot.style.top = `${i * 100 / 3}%`;
     dot.setAttribute('aria-label', copy[i]);
     dot.addEventListener('click', () => {
-      const rect = track.getBoundingClientRect();
-      seek(window.scrollY + rect.top + [0.015, 0.255, 0.565][i] * Math.max(1, rect.height - window.innerHeight));
+      seekProgress([0.015, 0.255, 0.565][i]);
     });
     progress.append(dot);
     return dot;
@@ -78,7 +86,9 @@ export function initDreamJourney(heroReady, seek = top => window.scrollTo({ top,
   const update = () => {
     frame = 0;
     const rect = track.getBoundingClientRect();
-    const p = clamp(-rect.top / Math.max(1, rect.height - window.innerHeight));
+    const d = distances();
+    const offset = -rect.top;
+    const p = clamp(offset <= d.prelude ? offset / d.prelude * 0.56 : 0.56 + (offset - d.prelude) / d.map * 0.44);
     const blend = clamp((p - 0.48) / 0.08);
     const galleryFade = clamp((p - 0.18) / 0.055);
     analysis.update(p);
@@ -133,11 +143,14 @@ export function initDreamJourney(heroReady, seek = top => window.scrollTo({ top,
   heroReady.then(() => { ready = true; schedule(); });
   update();
   return Object.assign(state, {
+    seekMap(p, options) { seekProgress(0.56 + clamp(p) * 0.44, options); },
     restore() {
+      state.mapCleanup?.();
       cancelAnimationFrame(frame);
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
       observer.disconnect(); gates.disconnect();
+      track.style.height = '';
       marker.replaceWith(map); title.remove(); progress.remove(); analysis.destroy();
       [head, closing, understanding].forEach(el => el.classList.remove('oh-journey-source'));
       [map, cards].forEach(el => { el.style.opacity = ''; el.style.visibility = ''; el.inert = false; });

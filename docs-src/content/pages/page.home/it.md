@@ -258,47 +258,47 @@
                     <li class="oh-starmap-dream" data-symbols="2,14">
                         <p class="oh-dream-meta"><time>21 set</time><span class="oh-emotion" data-emotion="joy">Gioia</span></p>
                         <h3 class="oh-starmap-title">In volo sopra il porto</h3>
-                        <p class="oh-starmap-text">Mi sono staccato dal molo e ho continuato a salire. Sotto, le barche sembravano lanterne di carta sull’acqua.</p>
+                        <p class="oh-starmap-text">Mi sono staccato dal molo e ho continuato a <mark class="oh-sym-word" data-sym="2">salire</mark>. Sotto, le barche sembravano lanterne di carta sull’<mark class="oh-sym-word" data-sym="14">acqua</mark>.</p>
                     </li>
                     <li class="oh-starmap-dream" data-symbols="0,8">
                         <p class="oh-dream-meta"><time>18 set</time><span class="oh-emotion" data-emotion="serenity">Serenità</span></p>
                         <h3 class="oh-starmap-title">La marea è entrata in cucina</h3>
-                        <p class="oh-starmap-text">L’acqua è salita dal pavimento della cucina, limpida e tiepida. Nessuno si agitava; continuavamo ad apparecchiare.</p>
+                        <p class="oh-starmap-text">L’<mark class="oh-sym-word" data-sym="0">acqua</mark> è salita dal pavimento della <mark class="oh-sym-word" data-sym="8">cucina</mark>, limpida e tiepida. Nessuno si agitava; continuavamo ad apparecchiare.</p>
                     </li>
                     <li class="oh-starmap-dream" data-symbols="13,15,10">
                         <p class="oh-dream-meta"><time>15 set</time><span class="oh-emotion" data-emotion="fear">Paura</span></p>
                         <h3 class="oh-starmap-title">Inseguita in un bosco di porte</h3>
-                        <p class="oh-starmap-text">Qualcosa mi seguiva tra gli alberi. Ogni tronco aveva una porta, e ogni porta si apriva sullo stesso bosco.</p>
+                        <p class="oh-starmap-text">Qualcosa <mark class="oh-sym-word" data-sym="13">mi seguiva</mark> tra gli alberi. Ogni tronco aveva una <mark class="oh-sym-word" data-sym="10">porta</mark>, e ogni porta si apriva sullo stesso <mark class="oh-sym-word" data-sym="15">bosco</mark>.</p>
                     </li>
                     <li class="oh-starmap-dream" data-symbols="3">
                         <p class="oh-dream-meta"><time>12 set</time><span class="oh-emotion" data-emotion="helplessness">Impotenza</span></p>
                         <h3 class="oh-starmap-title">I miei denti erano di vetro</h3>
-                        <p class="oh-starmap-text">Stavo per fare una presentazione e sentivo i denti trasformarsi in vetro. Non osavo dire una parola.</p>
+                        <p class="oh-starmap-text">Stavo per fare una presentazione e sentivo i <mark class="oh-sym-word" data-sym="3">denti</mark> trasformarsi in vetro. Non osavo dire una parola.</p>
                     </li>
                     <li class="oh-starmap-dream" data-symbols="9,1">
                         <p class="oh-dream-meta"><time>9 set</time><span class="oh-emotion" data-emotion="urgency">Urgenza</span></p>
                         <h3 class="oh-starmap-title">L’auto senza autista</h3>
-                        <p class="oh-starmap-text">Ero sul sedile posteriore e quello del guidatore era vuoto. La strada finiva su una scogliera e noi andavamo avanti.</p>
+                        <p class="oh-starmap-text">Ero sul sedile posteriore e quello del <mark class="oh-sym-word" data-sym="9">guidatore</mark> era vuoto. La strada finiva su una <mark class="oh-sym-word" data-sym="1">scogliera</mark> e noi andavamo avanti.</p>
                     </li>
                     <li class="oh-starmap-dream" data-symbols="7,8">
                         <p class="oh-dream-meta"><time>5 set</time><span class="oh-emotion" data-emotion="tenderness">Tenerezza</span></p>
                         <h3 class="oh-starmap-title">Un gatto che conosceva il mio nome</h3>
-                        <p class="oh-starmap-text">Un gatto grigio era sul davanzale del mio vecchio appartamento e ha detto il mio nome, piano piano, come se mi aspettasse.</p>
+                        <p class="oh-starmap-text">Un <mark class="oh-sym-word" data-sym="7">gatto</mark> grigio era sul davanzale del mio vecchio <mark class="oh-sym-word" data-sym="8">appartamento</mark> e ha detto il mio nome, piano piano, come se mi aspettasse.</p>
                     </li>
                     <li class="oh-starmap-dream" data-symbols="11,0">
                         <p class="oh-dream-meta"><time>30 ago</time><span class="oh-emotion" data-emotion="loneliness">Solitudine</span></p>
                         <h3 class="oh-starmap-title">Fuoco sul lago ghiacciato</h3>
-                        <p class="oh-starmap-text">Un falò bruciava in mezzo a un lago ghiacciato. Ho camminato verso di lui per ore e non si avvicinava mai.</p>
+                        <p class="oh-starmap-text">Un <mark class="oh-sym-word" data-sym="11">falò</mark> bruciava in mezzo a un <mark class="oh-sym-word" data-sym="0">lago</mark> ghiacciato. Ho camminato verso di lui per ore e non si avvicinava mai.</p>
                     </li>
                     <li class="oh-starmap-dream" data-symbols="1,2">
                         <p class="oh-dream-meta"><time>24 ago</time><span class="oh-emotion" data-emotion="serenity">Serenità</span></p>
                         <h3 class="oh-starmap-title">Cadere, poi fluttuare</h3>
-                        <p class="oh-starmap-text">Sono scivolata da un tetto e sono caduta a lungo. A metà strada, la caduta è diventata un fluttuare.</p>
+                        <p class="oh-starmap-text">Sono scivolata da un tetto e sono <mark class="oh-sym-word" data-sym="1">caduta</mark> a lungo. A metà strada, la caduta è diventata un <mark class="oh-sym-word" data-sym="2">fluttuare</mark>.</p>
                     </li>
                     <li class="oh-starmap-dream" data-symbols="6,12">
                         <p class="oh-dream-meta"><time>17 ago</time><span class="oh-emotion" data-emotion="grief">Dolore</span></p>
                         <h3 class="oh-starmap-title">La cagnolina che aspettava in stazione</h3>
-                        <p class="oh-starmap-text">La nostra vecchia cagnolina aspettava sul binario, come un tempo aspettava dietro la porta. Non c’è più da due anni.</p>
+                        <p class="oh-starmap-text">La nostra vecchia <mark class="oh-sym-word" data-sym="6">cagnolina</mark> aspettava sul binario, come un tempo aspettava dietro la porta. <mark class="oh-sym-word" data-sym="12">Non c’è più da due anni</mark>.</p>
                     </li>
                     </ol>
                 </div>
