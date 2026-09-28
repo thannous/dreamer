@@ -331,3 +331,7 @@ TI-633 and the PR remain open. Remaining qualification: remote/account scenarios
 native interrupted-write recovery, short viewport/accessibility, real image traffic,
 and the adverse/indeterminate frame signal plus residual write latency. No production
 merge or deployment was performed.
+
+### Follow-up failure model: repeated native reads
+
+Physical write diagnostics observed 5,000 upserts on the first favorite after restart, then one on the next. Two reads of an unchanged scope replace the engine reference snapshot while the UI retains equivalent earlier objects. This can rewrite the entire journal. A focused SQLite isolation check is justified because UI persistence assertions cannot detect redundant serialization: repeated reads of the same committed revision must preserve references; a revision changed by another connection must invalidate the cache; failed writes must not publish a new snapshot (existing rollback coverage). Tests precede the cache correction.

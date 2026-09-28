@@ -59,6 +59,20 @@ describe('journal records on real SQLite', () => {
     await store.write('A', [changed[0]], legacy);
     expect(await store.read('A', legacy)).toEqual([changed[0]]);
   });
+  it('keeps references across unchanged reads and invalidates on another committed revision', async () => {
+    const first = await store.read('A', legacy);
+    const second = await store.read('A', legacy);
+    expect(second[0]).toBe(first[0]);
+    encode.mockClear();
+    await store.write('A', [{ ...first[0], text: 'edited' }, first[1]], legacy);
+    expect(encode).toHaveBeenCalledTimes(1);
+    db.prepare('UPDATE journal_records SET value=? WHERE scope=? AND identity=?')
+      .run(JSON.stringify({ key: 'b', text: 'external' }), 'A', 'b');
+    db.prepare('UPDATE journal_scopes SET revision=revision+1 WHERE scope=?').run('A');
+    const refreshed = await store.read('A', legacy);
+    expect(refreshed[1]).toEqual({ key: 'b', text: 'external' });
+    expect(refreshed[1]).not.toBe(first[1]);
+  });
   it('rejects corrupt rows and duplicate identities instead of falling back or truncating', async () => {
     await expect(store.write('A', [{ key: 'a' }, { key: 'a' }], legacy)).rejects.toThrow();
     await store.read('A', legacy);

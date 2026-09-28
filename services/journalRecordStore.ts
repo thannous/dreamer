@@ -10,11 +10,12 @@ export type RecordDatabase = RecordTransaction & {
 type Scope = { version: number; revision: number; present: number; record_count: number };
 type Row = { identity: string; position: number; value: string };
 
-export function createJournalRecordStore<T extends object>({ database, keyOf, encode, validate }: {
+export function createJournalRecordStore<T extends object>({ database, keyOf, encode, validate, onWriteProgress }: {
   database: () => Promise<RecordDatabase>;
   keyOf: (value: T) => string;
   encode: (value: T) => Promise<string>;
   validate: (value: unknown) => boolean;
+  onWriteProgress?: (phase: string, counts: Record<string, number>) => void;
 }) {
   let ready: Promise<RecordDatabase> | undefined;
   let tail: Promise<unknown> = Promise.resolve();
@@ -90,6 +91,11 @@ export function createJournalRecordStore<T extends object>({ database, keyOf, en
         const info = await ensureScope(tx, scope, legacy);
         revision = info.revision;
         if (!info.present) return;
+        const cached = snapshots.get(scope);
+        if (cached?.revision === info.revision && cached.values.length === info.record_count) {
+          result = cached.values;
+          return;
+        }
         const rows = await tx.getAllAsync<Row>('SELECT identity, position, value FROM journal_records WHERE scope=? ORDER BY position', scope);
         if (rows.length !== info.record_count) throw new Error('Incomplete journal records');
         result = rows.map(row => {
@@ -103,12 +109,20 @@ export function createJournalRecordStore<T extends object>({ database, keyOf, en
       return result;
     }),
     write: (scope: string, values: T[], legacy: () => Promise<T[] | null>): Promise<void> => serial(async () => {
+      const progress = (phase: string, counts: Record<string, number> = {}) => {
+        try { onWriteProgress?.(phase, counts); } catch { /* Observability cannot affect durability. */ }
+      };
+      progress('queued');
       check(values);
       const db = await open();
+      progress('opened');
       let revision = 0;
       await db.withExclusiveTransactionAsync(async tx => {
         const info = await ensureScope(tx, scope, legacy);
+        progress('transaction');
         const snapshot = snapshots.get(scope);
+        let changedCount = 0;
+        let movedCount = 0;
         const previous = new Map(snapshot?.revision === info.revision
           ? snapshot.values.map((value, position) => [keyOf(value), { value, position }] as const) : []);
         const remaining = snapshot?.revision === info.revision
@@ -129,14 +143,18 @@ export function createJournalRecordStore<T extends object>({ database, keyOf, en
           const old = previous.get(identity);
           if (old?.value === value) {
             if (old.position !== position) {
+              movedCount++;
               moved.push({ identity, position });
               if (moved.length === batchSize) await flushMoves();
             }
           } else {
+            changedCount++;
             changed.push({ identity, position, value: await encode(value) });
+            if (changedCount === 1) progress('first_encoded');
             if (changed.length === batchSize) { await insertRows(tx, scope, changed); changed.length = 0; }
           }
         }
+        progress('prepared');
         await insertRows(tx, scope, changed);
         await flushMoves();
         const removed = [...remaining];
@@ -144,9 +162,11 @@ export function createJournalRecordStore<T extends object>({ database, keyOf, en
           const batch = removed.slice(start, start + batchSize);
           await tx.runAsync(`DELETE FROM journal_records WHERE scope=? AND identity IN (${batch.map(() => '?').join(',')})`, scope, ...batch);
         }
+        progress('records', { changed: changedCount, moved: movedCount, removed: removed.length, cached: snapshot?.revision === info.revision ? 1 : 0 });
         revision = info.revision + 1;
         await tx.runAsync('UPDATE journal_scopes SET revision=?, present=1, record_count=? WHERE scope=?', revision, values.length, scope);
       });
+      progress('committed');
       // Publish only after COMMIT. Failed writes cannot poison the reference cache.
       remember(scope, revision, values);
     }),

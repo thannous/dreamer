@@ -54,6 +54,8 @@ import {
   Platform,
   Text,
   type GestureResponderEvent,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   type TextInput,
   View,
   type ViewToken,
@@ -158,6 +160,8 @@ export default function JournalListScreen() {
   // A column change remounts the list; keyboard/height changes retain its offset.
   const mobileListKey = isTabletLayout ? 'tablet-2col' : 'mobile-cards-1col';
   const listScrollY = useSharedValue(0);
+  const staticScrollY = useRef(0);
+  const scrollLayout = useRef({ mobileListKey, isDesktopLayout, searchConsumesLayout });
   const searchCollapseStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: searchConsumesLayout ? 0 :
       -Math.max(0, Math.min(listScrollY.get(), mobileSearchHeaderHeight)) }],
@@ -230,13 +234,17 @@ export default function JournalListScreen() {
   const overlaySearchDragOriginRef = useRef({ pageX: 0, pageY: 0, offset: 0 });
 
   useLayoutEffect(() => {
-    // The column-keyed FlashList remounts at offset 0 when this key changes.
-    // Desktop unmounts that list while mobileListKey stays mobile-cards-1col,
-    // so include the desktop switch. Keep the origin when only
-    // searchConsumesLayout flips so a later overlay drag continues from the
-    // retained list offset instead of jumping to the top.
-    listScrollY.set(0);
-  }, [mobileListKey, isDesktopLayout, listScrollY]);
+    const previous = scrollLayout.current;
+    if (previous.mobileListKey !== mobileListKey || previous.isDesktopLayout !== isDesktopLayout) {
+      staticScrollY.current = 0;
+      listScrollY.set(0);
+    } else if (previous.searchConsumesLayout !== searchConsumesLayout) {
+      // Transfer once when the header changes mode; keep retained list offsets.
+      if (searchConsumesLayout) staticScrollY.current = listScrollY.get();
+      else listScrollY.set(staticScrollY.current);
+    }
+    scrollLayout.current = { mobileListKey, isDesktopLayout, searchConsumesLayout };
+  }, [mobileListKey, isDesktopLayout, searchConsumesLayout, listScrollY]);
 
   const setScrolling = useCallback((next: boolean) => {
     if (isScrollingRef.current === next) return;
@@ -522,6 +530,12 @@ export default function JournalListScreen() {
       clearTimeout(scrollIdleTimeoutRef.current);
     }
   }, [setScrolling]);
+
+  // A fixed header needs only an offset for a future viewport change. FlashList
+  // already delivers JS scroll events; avoid a UI worklet for every such frame.
+  const handleStaticListScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    staticScrollY.current = event.nativeEvent.contentOffset.y;
+  }, []);
 
   const handleListScroll = useAnimatedScrollHandler({
     onScroll: (event) => { listScrollY.set(event.contentOffset.y); },
@@ -1058,7 +1072,7 @@ export default function JournalListScreen() {
           // Always reserve the full absolute overlay, never a capped remainder.
           style={{ flex: 1, marginBottom: overlayNavClearance }}
           ListHeaderComponent={listHeader}
-          onScroll={handleListScroll}
+          onScroll={searchConsumesLayout ? handleStaticListScroll : handleListScroll}
           scrollEventThrottle={16}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"

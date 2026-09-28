@@ -859,6 +859,7 @@ const nativeJournalRecords = createJournalRecordStore<DreamAnalysis>({
     Number.isSafeInteger((value as DreamAnalysis).id) &&
     typeof (value as DreamAnalysis).transcript === 'string',
   encode: async (value) => JSON.stringify(value),
+  onWriteProgress: (phase, counts) => markPerformance(`journal.records_${phase}`, counts),
 });
 
 async function readLegacyDreamRecords(key: string): Promise<DreamAnalysis[] | null> {
