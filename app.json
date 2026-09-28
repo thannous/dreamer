@@ -122,13 +122,16 @@
           "android": {
             "minSdkVersion": 28,
             "enableMinifyInReleaseBuilds": true,
-            "enableShrinkResourcesInReleaseBuilds": true
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "gifEnabled": false,
+            "webpEnabled": false
           },
           "ios": {
             "enableSceneSupport": true
           }
         }
       ],
+      "./plugins/withAndroidR8Optimization",
       "./plugins/withRevenueCatTestStoreBuild",
       "./plugins/withSoftExceptionLogging",
       "expo-sqlite",

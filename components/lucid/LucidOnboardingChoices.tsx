@@ -69,7 +69,7 @@ const EXPERIENCE_ANCHORS: Record<LucidExperienceLevel, ViewStyle> = {
 };
 
 const ORB_SIZE = 64;
-const EXPERIENCE_MOON = require('@/assets/images/lucid/onboarding/experience-moon.png');
+const EXPERIENCE_MOON = require('@/assets/images/lucid/onboarding/experience-moon.webp');
 const MOMENT_WAKE = require('@/assets/images/lucid/onboarding/moment-wake-sunrise.png');
 
 export function LucidSegmentedProgress({

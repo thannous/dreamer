@@ -159,6 +159,7 @@ describe('product route roots', () => {
       const config = resolveExpoConfig({ config: baseExpo() } as any);
       expect(config.plugins?.filter((plugin) => (Array.isArray(plugin) ? plugin[0] : plugin) === 'expo-router'))
         .toEqual([['expo-router', { root: './routes/lucid' }]]);
+      expect(config.plugins).not.toContain('./plugins/withAndroidR8Optimization');
     });
   });
 });

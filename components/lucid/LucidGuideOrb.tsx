@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   useAnimatedStyle,
@@ -82,8 +83,8 @@ export function LucidGuideOrb({
       />
       <Image
         accessible={false}
-        resizeMode="contain"
-        source={require('../../assets/images/lucid/lucid-guide-orb.png')}
+        contentFit="contain"
+        source={require('../../assets/images/lucid/lucid-guide-orb.webp')}
         style={styles.image}
       />
     </View>

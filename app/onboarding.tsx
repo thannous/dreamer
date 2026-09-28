@@ -19,13 +19,13 @@ import {
 } from '@/lib/productAnalytics';
 import { TID } from '@/lib/testIDs';
 import { Asset } from 'expo-asset';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
   ActivityIndicator,
-  Image,
   InteractionManager,
   Platform,
   Pressable,
@@ -434,7 +434,7 @@ export default function OnboardingScreen() {
         {Platform.OS === 'web' ? (
           <View style={[StyleSheet.absoluteFill, backgroundWebStyle]} />
         ) : (
-          <Image source={BACKGROUND_IMAGE} resizeMode="cover" fadeDuration={0} style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} />
+          <Image source={BACKGROUND_IMAGE} contentFit="cover" style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} />
         )}
         <LinearGradient
           colors={['rgba(3,4,13,0.12)', 'rgba(3,4,13,0.08)', 'rgba(3,4,13,0.60)', 'rgba(3,4,13,0.88)']}
