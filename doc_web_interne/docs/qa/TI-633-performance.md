@@ -210,3 +210,9 @@ keep unchanged-record serialization avoidance and atomic acknowledgement. Existi
 SQLite rollback/reopen tests plus the repeated native favorite/restart journey validate
 this change; no new isolated suite is required. Preserve the failed short-timeout
 recovery attempt and the eventual commit event as evidence.
+
+Second device observation: after batching, subsequent 5,000-row favorite writes still
+took 2,381/935 ms. The engine unnecessarily reloaded every identity through SQLite
+even with a matching cached scope revision. Reuse that revision-validated identity
+set; retain the database lookup after eviction/revision mismatch. Existing scope,
+rollback and reopen tests cover cache invalidation; remeasure the same UI journey.

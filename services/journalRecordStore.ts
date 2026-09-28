@@ -111,8 +111,9 @@ export function createJournalRecordStore<T extends object>({ database, keyOf, en
         const snapshot = snapshots.get(scope);
         const previous = new Map(snapshot?.revision === info.revision
           ? snapshot.values.map((value, position) => [keyOf(value), { value, position }] as const) : []);
-        const stored = await tx.getAllAsync<{ identity: string }>('SELECT identity FROM journal_records WHERE scope=?', scope);
-        const remaining = new Set(stored.map(row => row.identity));
+        const remaining = snapshot?.revision === info.revision
+          ? new Set(previous.keys())
+          : new Set((await tx.getAllAsync<{ identity: string }>('SELECT identity FROM journal_records WHERE scope=?', scope)).map(row => row.identity));
         const changed: { identity: string; position: number; value: string }[] = [];
         const moved: { identity: string; position: number }[] = [];
         const flushMoves = async () => {
