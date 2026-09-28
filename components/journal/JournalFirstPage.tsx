@@ -1,6 +1,7 @@
 import Feather from '@expo/vector-icons/Feather';
 import React, { useMemo, useState } from 'react';
-import { Image, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { Image } from 'expo-image';
+import { Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -53,11 +54,10 @@ export function JournalFirstPage({ bottomInset, onStartDream, onSettings }: Jour
             <Image
               testID="journal-first-page-art"
               source={mode === 'dark' ? DARK_NOTEBOOK : LIGHT_NOTEBOOK}
-              resizeMode="contain"
+              contentFit="contain"
               accessible={false}
               importantForAccessibility="no"
-              className="w-full self-center"
-              style={{ aspectRatio: 1.5, maxHeight: fontScale > 1.2 ? 180 : 240 }}
+              style={{ width: '100%', alignSelf: 'center', aspectRatio: 1.5, maxHeight: fontScale > 1.2 ? 180 : 240 }}
             />
             <Text className="font-sans text-[15px] leading-[22px] text-ivory-muted">
               {t('journal.first_page.body')}

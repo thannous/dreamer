@@ -270,6 +270,8 @@ jest.doMock('@/hooks/useTranslation', () => ({
   }),
 }));
 
+jest.doMock('expo-image', () => ({ Image: require('react-native').Image }));
+
 jest.doMock('@/lib/analytics', () => ({
   trackProductEvent: mockTrackProductEvent,
 }));
