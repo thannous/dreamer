@@ -1,9 +1,11 @@
 # TI-633 — Dreamer performance implementation
 
 Owner: current TI-633 integration chat. Requested 2026-09-28, delivery target same day.
-Base: 15c2e62da9205838b5682536c5cd643ef74d9445. Scope: Dreamer only.
-Authorized: implementation, focused validation, commits and PR delivery. Native builds,
-reinstallations, paid AI calls and production publication require explicit authorization.
+Base after requested rebase: 491f40c96c36cf5d3c20dea78ec1d7a2d20e4ea1. Scope: Dreamer only.
+Authorized: implementation, focused validation, commits and public PR delivery; local
+instrumented Android before/after builds. Installation is conditional on compatible
+signing and verified data backup/restoration, without uninstall or data clearing.
+Paid AI calls, EAS cloud builds and production publication are not authorized.
 Existing root AGENTS.md and process sprint edits are preserved outside this worktree.
 
 ## Qualification plan and evidence
@@ -132,3 +134,65 @@ Space Grotesk, other first-screen headings use the display family. Presence as E
 assets is not native font pre-registration. Keep current typography until equivalent
 release candidates can be measured. F8 route/build separation remains under TI-561;
 no second-app architecture change was made in this performance patch.
+
+
+## Delivery update after rebase, 2026-09-28
+
+PR: https://github.com/thannous/dreamer/pull/228 (draft).
+Code candidate: `bae6b33a3578fcc41a2238e585cc7ce465d18a37`.
+`git pull --rebase origin master` completed without conflicts; range-diff confirms
+both patch commits are unchanged. Updated AGENTS.md and version-sync guidance applied.
+`mise exec -- npm run release:versions:check -- --platform android` read EAS 3.4.5 / 82,
+with no local changes. The build wrapper also synchronized that same counter.
+
+`mise exec -- npm run test:prepush` passed on this code candidate against base
+`491f40c96c36cf5d3c20dea78ec1d7a2d20e4ea1`: app/test types, 195 suites and 2,605
+assertions passed; one existing skipped test. Private report:
+`/tmp/ti633-prepush-rebased.log`. Documentation-only follow-ups reuse this evidence.
+
+### Completed local native builds
+
+Both use the existing generated native projects (no prebuild), Temurin 17.0.20.1,
+arm64-v8a, production-apk release, R8/resource shrinking and profileable enabled.
+Reproduce in the corresponding baseline/candidate checkout:
+
+```sh
+JAVA_HOME=/Users/timax/.local/share/mise/installs/java/temurin-17.0.20+101 ANDROID_HOME=/Users/timax/Library/Android/sdk mise exec -- npm run android:release:local -- --abi arm64-v8a --profileable --reuse-native-project
+```
+
+| Artifact | Baseline | Candidate |
+|---|---|---|
+| Source | `491f40c96c36cf5d3c20dea78ec1d7a2d20e4ea1` | `bae6b33a3578fcc41a2238e585cc7ce465d18a37` |
+| APK SHA-256 | `a499a2060822e24ab25689eb80673494ff1864f6ff856dc9dbe0c67468062b49` | `a2f12ed4fb25913ecec73a064117b69cbba089d082b558be09a791cc2a468e5a` |
+| Bytes | 89,344,971 | 89,355,511 |
+| Embedded update ID | `d0469f7b-fd90-4a4e-87e0-421247c5a68e` | `21ee893e-f143-41eb-8a35-0a37d39c5d37` |
+| New storage marker in bundle | absent | present |
+
+Each APK is `dist/android/production-apk-profileable-release.apk` in its managed
+worktree (`dreamer-performance-baseline/noctalia` or `dreamer-performance/noctalia`).
+Both manifests identify `com.tanuki75.noctalia`, 3.4.5 / 82, shell profiling enabled;
+`apksigner verify` passes with the local certificate documented above. Runtime/OTA
+actually launched: unobserved, as neither APK was installed. Backend unchanged.
+These artifact sizes do not measure Play download size or a runtime improvement.
+
+Initial baseline compilation at the previous base failed under Java 25.0.3 in
+expo-updates/nitro Prefab generation (`GeneratePrefabPackages.kt`, restricted
+`java.lang.System` warning). The retry used Java 17 and the new master, then succeeded;
+no repeated attempt under unchanged conditions. Private build logs:
+`/tmp/ti633-baseline-build.log`, `/tmp/ti633-baseline-build-jdk17.log`,
+`/tmp/ti633-candidate-build-jdk17.log`. APK inventories:
+`/tmp/ti633-baseline-apk.json`, `/tmp/ti633-candidate-apk.json`.
+
+### Fixtures, cost and remaining gate
+
+100/1,000/5,000 synthetic records were generated as local JSON in
+`/tmp/ti633-synthetic/`, with a manifest and generation script
+`/tmp/ti633-generate-fixtures.py`. No AI generation, upload, paid API call or personal
+account import occurred. Placeholder images do not represent real image transfer loads.
+No large-dataset device measurement has been performed.
+
+Native installation remains blocked by the Play/local signature mismatch and the
+absence of a verified data backup/restoration path. No installation was attempted.
+Next prerequisite: an authorized compatible-signed candidate and a verified preservation
+path for the existing account and guest journal. Native SQLite recovery and before/after
+performance remain open; the PR stays draft, unmerged, and TI-633 is not complete.
