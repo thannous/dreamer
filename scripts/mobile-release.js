@@ -4,6 +4,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { execFileSync, spawnSync } = require('node:child_process');
+const { syncMobileBuildVersions } = require('./sync-mobile-build-versions');
 
 const ROOT = path.resolve(__dirname, '..');
 const STATE = 'release/mobile-versions.json';
@@ -40,7 +41,7 @@ function affects(app, file) {
   if (/^app\/[_+][^/]*\.[jt]sx?$/.test(file)) return true;
   if (/^(app\/|assets\/images\/|lib\/i18n\/)/.test(file)) return app === 'noctalia';
   return /^(components|context|hooks|lib|services|constants|assets|plugins|patches|data)\//.test(file)
-    || /^scripts\/(build-android[^/]*|expo-safe-runner|sync-android-native-version)\.js$/.test(file)
+    || /^scripts\/(build-android[^/]*|expo-safe-runner|sync-android-native-version|sync-mobile-build-versions)\.js$/.test(file)
     || /^(app\.config\.ts|app\.json|package(-lock)?\.json|eas\.json|metro\.config\.js|babel\.config\.js|global\.css)$/.test(file);
 }
 
@@ -193,8 +194,25 @@ function plan(root, app) {
   return { app, current: entry.version, next: bump(entry.version, level), level, sourceRef: entry.sourceRef, head, files, reasons };
 }
 
-function assertClean(root) {
-  if (git(root, 'status', '--porcelain', '--untracked-files=all').trim()) throw new Error('Commit or isolate your changes before preparing/building a release. Nothing was changed.');
+function withoutBuildNumbers(data) {
+  for (const [platform, field] of [['android', 'versionCode'], ['ios', 'buildNumber']]) {
+    if (data.expo?.[platform]) {
+      delete data.expo[platform][field];
+      if (Object.keys(data.expo[platform]).length === 0) delete data.expo[platform];
+    }
+  }
+  return JSON.stringify(data);
+}
+
+function assertClean(root, { allowBuildNumbers = false } = {}) {
+  const status = git(root, 'status', '--porcelain', '-z', '--untracked-files=all');
+  if (!status) return;
+  // A completed Android build can refresh the EAS counters before the iOS build.
+  // Permit only that unstaged metadata delta, never source or staged changes.
+  if (allowBuildNumbers && status === ' M app.json\0') {
+    if (withoutBuildNumbers(readJson(root, 'app.json')) === withoutBuildNumbers(JSON.parse(git(root, 'show', 'HEAD:app.json')))) return;
+  }
+  throw new Error('Commit or isolate your changes before preparing/building a release. Nothing was changed.');
 }
 
 function prepare(root, apps, allowMajor = false) {
@@ -270,13 +288,20 @@ function assertIosBuildSource(root, build) {
   try { git(root, 'cat-file', '-e', `${ref}^{commit}`); }
   catch { throw new Error(`iOS EAS build source commit ${ref} is unavailable locally; fetch it before submission`); }
   const changed = git(root, 'diff', '--name-only', '--no-renames', '-z', ref, 'HEAD').split('\0').filter(Boolean)
-    .filter(file => affects('noctalia', file));
+    .filter(file => affects('noctalia', file))
+    .filter(file => file !== 'app.json'
+      || withoutBuildNumbers(JSON.parse(contents(root, ref, file))) !== withoutBuildNumbers(JSON.parse(contents(root, 'HEAD', file))));
   if (changed.length) throw new Error(`iOS EAS build predates mobile source changes: ${changed.slice(0, 5).join(', ')}. Build a new IPA before submission.`);
 }
 
 function main(args = process.argv.slice(2), root = ROOT) {
   const options = parseArgs(args);
   const apps = options.app === 'all' ? APPS : [options.app];
+  if (['sync-versions', 'check-versions'].includes(options.action)) {
+    if (options.app !== 'noctalia') throw new Error('Build counter synchronization currently supports --app noctalia only.');
+    console.log(JSON.stringify(syncMobileBuildVersions({ root, platform: options.platform || 'all', check: options.action === 'check-versions' }), null, 2));
+    return;
+  }
   if (options.action === 'verify') {
     apps.forEach(app => verify(root, app));
     console.log(`Mobile version metadata consistent: ${apps.join(', ')}`);
@@ -286,13 +311,13 @@ function main(args = process.argv.slice(2), root = ROOT) {
     console.log(JSON.stringify(prepare(root, apps, options.allowMajor), null, 2));
     return;
   }
-  if (!['plan', 'check', 'build', 'submit-internal'].includes(options.action)) throw new Error('Usage: mobile-release.js plan|prepare|check|verify|build|submit-internal --app APP [--platform android|ios] [--id EAS_BUILD_ID] [--dry-run] [--allow-major]');
+  if (!['plan', 'check', 'build', 'submit-internal'].includes(options.action)) throw new Error('Usage: mobile-release.js plan|prepare|check|verify|build|submit-internal|sync-versions|check-versions --app APP [--platform android|ios|all] [--id EAS_BUILD_ID] [--dry-run] [--allow-major]');
   const plans = apps.map(app => plan(root, app));
   if (options.action === 'plan') {
     console.log(JSON.stringify(plans, null, 2));
     return;
   }
-  assertClean(root);
+  assertClean(root, { allowBuildNumbers: options.app === 'noctalia' });
   if (plans.some(item => item.level !== 'none')) throw new Error('Unversioned mobile changes. Run release:plan and release:prepare, then commit/merge the release metadata before building.');
   if (options.action === 'check') {
     console.log('Prepared release versions cover all committed mobile changes.');
@@ -345,10 +370,18 @@ function main(args = process.argv.slice(2), root = ROOT) {
     env,
     stdio: 'inherit',
   });
+  if (app === 'noctalia') {
+    try {
+      const synced = syncMobileBuildVersions({ root, platform: options.platform, env });
+      console.log(`EAS counters synchronized locally: ${JSON.stringify(synced)}`);
+    } catch (error) {
+      throw new Error(`EAS build command returned ${result.status ?? 'an error'}, but local counter sync failed: ${error.message}. Inspect the existing EAS build before retrying a build; run release:versions:sync to retry only synchronization.`);
+    }
+  }
   if (result.error || result.status !== 0) throw new Error(`EAS build failed: ${result.error?.message || result.status}`);
 }
 
 if (require.main === module) {
   try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, main };
+module.exports = { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, assertClean, main };

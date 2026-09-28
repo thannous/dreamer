@@ -122,6 +122,31 @@ do not assume an older Play build accepts current deep links. Before an explicit
 reinstallation, establish and verify the data backup and restoration method. Batch independent
 checks and small corrections, and keep one concise evidence record for the work package.
 
+## Delivery and QA Continuity
+
+1. Identify each mobile release candidate in the existing evidence record: source SHA,
+   platform, binary version/build and install source, OTA update/runtime/channel if applicable,
+   and relevant backend revision or migration state. Mark unknown fields explicitly. Decide
+   whether delivery needs a native build, OTA, or backend deployment; only qualify changes
+   actually present in the tested environment.
+   For Noctalia build counters, use `npm run release:versions:sync` and verify with
+   `npm run release:versions:check`; see [version synchronization](doc_web_interne/docs/mobile-build-version-sync.md).
+   Keep EAS as the counter source; never change a Store or EAS counter to match stale local files.
+2. Before an affected device journey, check the approved existing account, preserved local
+   data, quota/entitlement state, test-payment mode when applicable, and supported UI entry
+   points. Use stable automation targets and existing device coordination. An environment
+   blocker is not an app failure; do not create another account or reset data to bypass it.
+3. Before retrying a failed build, submission, or backend deployment, record its stage,
+   exact error, and changed condition that justifies the retry. Reuse canonical preflights
+   and check existing submissions. For migration drift, compare tracked SQL, applied history,
+   and actual schema before proposing a repair; never reconcile history blindly.
+4. Keep one compact handoff per work package: integration owner, scope and existing
+   authorizations, candidate identity, valid evidence, unresolved blocker, and next action.
+   Reuse decisions and unchanged evidence. Keep private QA artifacts out of Git; tracked
+   summaries must be redacted. These records do not grant additional action permissions.
+
+Sprint deliverables and success criteria: [four process improvements](doc_web_interne/docs/process-sprint-2026-09-28.md).
+
 ## Project Rules
 
 - For the Dreamer VNext goal, Motorola validations run only against the base app

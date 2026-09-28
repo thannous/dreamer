@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, main } = require('./mobile-release');
+const { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, assertClean, main } = require('./mobile-release');
 
 const fixtures = [];
 let baselineRoot = null;
@@ -49,6 +49,22 @@ function fixture() {
 beforeAll(() => { baselineRoot = buildBaseline(); });
 afterEach(() => fixtures.splice(0).forEach(root => fs.rmSync(root, { recursive: true, force: true })));
 afterAll(() => { if (baselineRoot) fs.rmSync(baselineRoot, { recursive: true, force: true }); });
+
+describe('synchronized build counters', () => {
+  it('allows only build-counter drift for distribution, keeping source changes blocked', () => {
+    const root = fixture();
+    const file = path.join(root, 'app.json');
+    const value = JSON.parse(fs.readFileSync(file, 'utf8'));
+    value.expo.android.versionCode = 82;
+    value.expo.ios = { buildNumber: '11' };
+    fs.writeFileSync(file, JSON.stringify(value));
+    expect(() => assertClean(root, { allowBuildNumbers: true })).not.toThrow();
+    expect(() => assertClean(root)).toThrow();
+    value.expo.version = '3.5.0';
+    fs.writeFileSync(file, JSON.stringify(value));
+    expect(() => assertClean(root, { allowBuildNumbers: true })).toThrow();
+  });
+});
 
 describe('semantic release policy', () => {
   it('uses explicit features and breaking markers, with a patch fallback', () => {
@@ -193,6 +209,18 @@ describe('release planning against real Git histories', () => {
     write(root, 'app/home.tsx', 'changed after build'); commit(root, 'fix: update home');
     expect(() => assertIosBuildSource(root, { gitCommitHash: builtCommit })).toThrow('app/home.tsx');
     expect(() => assertIosBuildSource(root, { gitCommitHash: null })).toThrow('source commit');
+  });
+  it('accepts a recorded counter sync after an iOS build but rejects other config changes', () => {
+    const root = fixture();
+    const builtCommit = git(root, 'rev-parse', 'HEAD');
+    const config = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'));
+    config.expo.android.versionCode = 82;
+    config.expo.ios = { buildNumber: '11' };
+    write(root, 'app.json', config); commit(root, 'chore: sync build counters');
+    expect(() => assertIosBuildSource(root, { gitCommitHash: builtCommit })).not.toThrow();
+    config.expo.ios.requireFullScreen = true;
+    write(root, 'app.json', config); commit(root, 'fix: change native configuration');
+    expect(() => assertIosBuildSource(root, { gitCommitHash: builtCommit })).toThrow('app.json');
   });
   it('rejects distribution configurations that can reuse a build number', () => {
     const root = fixture();
