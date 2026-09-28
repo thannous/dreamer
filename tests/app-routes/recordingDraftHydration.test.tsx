@@ -94,7 +94,7 @@ jest.mock('@/context/ThemeContext', () => ({
 jest.mock('@/hooks/useTranslation', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 jest.mock('@/hooks/usePrefersReducedMotion', () => ({ usePrefersReducedMotion: () => true }));
 jest.mock('@/lib/moti', () => ({ MotiView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div> }));
-jest.mock('@/lib/env', () => ({ isMockModeEnabled: () => false }));
+jest.mock('@/lib/env', () => ({ isMockModeEnabled: () => false, isPerformanceTracingEnabled: () => false }));
 jest.mock('@/lib/analytics', () => ({
   trackProductEvent: jest.fn(async () => {}), getRecordingDurationBucket: () => 'none',
   trackDreamSaveMilestone: jest.fn(async () => {}),

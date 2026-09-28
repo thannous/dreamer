@@ -612,6 +612,7 @@ jest.doMock('@/lib/dreamUtils', () => ({
 }));
 
 jest.doMock('@/lib/env', () => ({
+  isPerformanceTracingEnabled: () => false,
   isMockModeEnabled: () => false,
   isReferenceImagesEnabled: () => mockReferenceImagesEnabled,
 }));
