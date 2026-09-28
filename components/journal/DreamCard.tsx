@@ -74,6 +74,11 @@ export const DreamCard = memo(function DreamCard({
   }, [onPress, dream]);
 
   const isFeatured = variant === 'featured';
+  // Native Text still shapes long inputs behind numberOfLines. Keep enough text
+  // for every card width; navigation and storage retain the complete dream.
+  const transcriptPreview = useMemo(() => dream.transcript.length > 1000
+    ? `${dream.transcript.slice(0, 1000).replace(/[\uD800-\uDBFF]$/u, '')}…`
+    : dream.transcript, [dream.transcript]);
 
   // Use thumbnail URL for list view, fallback to generating one from full URL
   const imageVersion = useMemo(
@@ -299,7 +304,7 @@ export const DreamCard = memo(function DreamCard({
             </Text>
           ) : (
             <Text className="min-h-[80px] font-sans text-body-sm text-ivory-muted" numberOfLines={4}>
-              {dream.transcript}
+              {transcriptPreview}
             </Text>
           )}
           {(dream.theme || badges.length > 0) && (
@@ -332,7 +337,7 @@ export const DreamCard = memo(function DreamCard({
           {dream.title}
         </Text>
         <Text className="font-sans text-body-sm text-ivory-muted" numberOfLines={3}>
-          {dream.transcript}
+          {transcriptPreview}
         </Text>
         {(dream.theme || badges.length > 0) && (
           <View className="flex-row flex-wrap gap-2">
