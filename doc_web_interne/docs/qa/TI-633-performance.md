@@ -1,5 +1,7 @@
 # TI-633 — Dreamer performance implementation
 
+> **Latest status:** physical comparisons and native restart checks are now complete for the scenarios below. See **Final device evidence** for current results and limitations; earlier installation blockers are historical.
+
 Owner: current TI-633 integration chat. Requested 2026-09-28, delivery target same day.
 Base after requested rebase: 491f40c96c36cf5d3c20dea78ec1d7a2d20e4ea1. Scope: Dreamer only.
 Authorized: implementation, focused validation, commits and public PR delivery; local
@@ -216,3 +218,116 @@ took 2,381/935 ms. The engine unnecessarily reloaded every identity through SQLi
 even with a matching cached scope revision. Reuse that revision-validated identity
 set; retain the database lookup after eviction/revision mismatch. Existing scope,
 rollback and reopen tests cover cache invalidation; remeasure the same UI journey.
+
+
+## Final device evidence
+
+The user subsequently explicitly authorized uninstalling the Play app and replacing
+it with the local test build, after the local-data loss consequence was explained.
+That operation succeeded. It superseded the earlier no-uninstall condition for this
+replacement; preservation of the old local journal is **not** claimed. Later build
+changes used same-signature `adb install -r`, without further Noctalia uninstall.
+
+### Startup comparison
+
+Source before: `491f40c9`; first candidate: `bae6b33a`. Fresh local guest installation,
+onboarding screen, same Motorola/Android/settings, one warm-up per build and five
+runs per mode fixed beforehand. APK hashes verified against installed binaries.
+All 30 retained runs valid, no crash/development transport; thermal status 0 and
+battery temperature 26.0–26.9°C. This does not measure journal hydration.
+
+| Mode | Before median launch (ms) | Candidate median launch (ms) |
+|---|---:|---:|
+| Cold | 666 | 670 |
+| Task return after 250 ms | 54 | 60 |
+| Resume after 5 seconds | 48 | 45 |
+
+No startup gain established. Candidate fonts-settled durations: 23–24 ms across the
+five cold samples; this is a local warm-filesystem observation, not a fresh-install
+font benchmark or a reason to remove typography assets.
+
+### Journal frame comparison
+
+Real release APKs, actual native storage and FlashList, guest-only synthetic content.
+Fixture injection uses a separately signed local Android instrumentation runner;
+it refuses non-fixture dreams and does not inject account sessions or pending server
+mutations. Existing APK JavaScript was unchanged by injection. No model calls,
+account login/import, cloud builds or production publication occurred. The fixture
+images are one-pixel local placeholders: network image cost remains unqualified.
+
+Pilot validated the APK manifest/signature/runtime plus a real Simpleperf probe.
+Three fixed runs per dataset and build. Measurements use Perfetto FrameTimeline
+surface frames. All series completed at 26.9°C, thermal status 0. Normal portrait
+viewport: this does not qualify the short-viewport collapsing-header case.
+
+| Dreams | Baseline median run P95 (ms) | First candidate median run P95 (ms) | Verdict |
+|---|---:|---:|---|
+| 100 | 8.14 | 11.09 | Indeterminate |
+| 1,000 | 8.68 | 10.95 | Indeterminate |
+| 5,000 | 8.35 | 9.76 | Indeterminate |
+
+The higher candidate medians are an adverse signal, not a performance success.
+Per-run ranges overlap, so the predefined comparison rule establishes neither a
+gain nor a confirmed regression. After the batching correction (`02fbb268`), the
+5,000-row retest yielded P95 10.53 ms (9.83–10.92 range), 3 missed frames / 667;
+comparison remains indeterminate. The final identity-cache-only follow-up reuses
+these unchanged UI observations without claiming a fresh frame series on that SHA.
+
+### Native durability and corrective follow-up
+
+Migration/loading and SQLite integrity/count checks passed at 100/1,000/5,000 rows.
+The first implementation exhibited a 31,310 ms native commit for its first favorite
+write after ascending fixture migration followed by descending UI order. Batched
+SQL reduced that same first-reorder case to 2,808 ms. This is a correction to the
+first TI-633 implementation, **not a measured 31-second master baseline**.
+
+Subsequent writes remained 2,381/935 ms. Reusing revision-validated identities removed
+an unnecessary full identity query, but final subsequent samples were still
+1,860/1,019 ms. Do not claim a confirmed latency gain from that second small change.
+Residual large-journal write latency needs follow-up; no arbitrary release threshold
+is inferred from these samples.
+
+The final UI journey toggled a synthetic favorite twice, waited for actual
+`journal.storage_committed` events, force-stopped the process, relaunched, filtered
+favorites and verified the selected dream remained present. Passed. Final database
+integrity was `ok`, actual/declared counts both 5,000. This proves ordinary commit
+and restart for that guest journey; it does not prove power loss during a transaction,
+account switching, remote checkpoint/network contention, or all failure recovery.
+The short initial two-second observation failed before the 31-second commit and is
+retained as failed evidence, not relabelled a pass.
+
+A malformed UTF-8 log byte also exposed a reader preflight error. The runner now
+replaces invalid log bytes while preserving runtime JSON validation; the next real
+pilot passed. The original failed pilot is retained.
+
+### Final candidate and repeatability
+
+- Code: `ce2198707d16a6294da9e2431ba254175a81f978`.
+- APK SHA-256: `059ae25aca67521b4dfe2469b8094d88b0d95151ea69dc1bafbd5aa7b709f689`.
+- Embedded update: `1e68a75b-dd8c-4bef-985d-dc1e6a702dbe`.
+- Runtime: `511f8614d6bed3f7f609014541b1cdfae65bb422`.
+- Installed locally: com.tanuki75.noctalia, release/profileable, 3.4.5 / 82;
+  embedded launch verified, no emergency launch. Same local signing certificate.
+- `test:prepush`: app/test types, 195 suites / 2,605 assertions pass on this code SHA,
+  one existing skipped assertion. Focused storage: 69 assertions pass. Build succeeds.
+- Synthetic rows and the instrumentation package were removed after measurement;
+  the final corrected Noctalia build remains installed and starts successfully.
+
+Private durable evidence: `/Users/timax/Projects/noctalia/dogfood-output/ti633-device-20260928/`.
+It includes raw traces, JSON/CSV reports, UI trees, marker logs, fixture sources,
+instrumentation source/build recipe, exact driver scripts, APK identity manifests,
+and failed attempts. Binary APK duplicates are excluded; retain the managed-worktree
+artifacts matching the recorded hashes. No raw device artifacts are committed.
+
+Original rerun entry points, under the Dreamer device lock and with fresh output
+directories: `python3 /tmp/ti633-startup-compare.py`,
+`python3 /tmp/ti633-volume-compare.py`, `python3 /tmp/ti633-batched-device.py`,
+`python3 /tmp/ti633-final-recovery.py`. The archived copies retain original `/tmp`
+paths; restore those fixture directories or update paths before a new run. The
+canonical measurement commands and scenario JSON are preserved in those scripts.
+Do not inject these datasets into a personal signed-in journal.
+
+TI-633 and the PR remain open. Remaining qualification: remote/account scenarios,
+native interrupted-write recovery, short viewport/accessibility, real image traffic,
+and the adverse/indeterminate frame signal plus residual write latency. No production
+merge or deployment was performed.
