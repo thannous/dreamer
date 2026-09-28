@@ -29,7 +29,6 @@ import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Platform,
   Pressable,
   StyleSheet,
   View,
@@ -350,7 +349,6 @@ export function MessagesList({
 
   // Avoid copying data on every render (can trigger extra list work)
   const listData = messages;
-  const shouldRecycleItems = Platform.OS !== 'android';
 
   const loadingAccessibility = isLoading
     ? { accessibilityState: { busy: true }, accessibilityLabel: loadingText }
@@ -385,7 +383,7 @@ export function MessagesList({
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.contentContainer, { paddingTop: insets.top + 8 }, contentContainerStyle]}
         // LegendList specific props for chat UX
-        recycleItems={shouldRecycleItems}
+        recycleItems
         estimatedItemSize={80}
         ListHeaderComponent={ListHeaderComponent ?? null}
         ListFooterComponent={footerComponent}
