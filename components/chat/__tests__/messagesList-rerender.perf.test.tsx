@@ -74,13 +74,14 @@ vi.mock('@legendapp/list/reanimated', async () => {
       data,
       renderItem,
       keyExtractor,
+      recycleItems,
       ListHeaderComponent,
       ListFooterComponent,
     }: any) => (
-      <div>
+      <div data-recycle-items={String(recycleItems)}>
         {ListHeaderComponent}
         {data.map((item: any, index: number) => (
-          <React.Fragment key={keyExtractor?.(item) ?? index}>
+          <React.Fragment key={recycleItems ? index : keyExtractor?.(item) ?? index}>
             {renderItem({ item, index })}
           </React.Fragment>
         ))}
@@ -178,5 +179,45 @@ describe('MessagesList terminal errors', () => {
       utils.rerender(<MessagesList messages={[{ ...failed, meta: { isError: true, retry: { messageText: 'Try again' } } }] as any} onRetryMessage={onRetryMessage} />);
       expect(utils.container.querySelectorAll('button').length).toBe(1);
     } finally { utils.unmount(); }
+  });
+});
+
+
+describe('MessagesList recycled rows', () => {
+  it('updates reused rows without retaining the previous message or retry action', async () => {
+    const { MessagesList } = await import('../MessagesList');
+    const onRetryMessage = vi.fn();
+    const previous = {
+      id: 'previous-error',
+      role: 'model',
+      text: 'Previous failed reply',
+      meta: { isError: true, retry: { messageText: 'Retry previous reply' } },
+    };
+    const next = {
+      id: 'next-error',
+      role: 'model',
+      text: 'Next failed reply',
+      meta: { isError: true, retry: { messageText: 'Retry next reply' } },
+    };
+    const recovered = { id: 'recovered-reply', role: 'model', text: 'Recovered reply' };
+
+    const utils = render(<MessagesList messages={[previous] as any} onRetryMessage={onRetryMessage} />);
+    try {
+      expect(utils.container.querySelector('[data-recycle-items]')?.getAttribute('data-recycle-items')).toBe('true');
+      expect(utils.container.textContent).toContain(previous.text);
+      expect(utils.container.querySelectorAll('button')).toHaveLength(1);
+
+      utils.rerender(<MessagesList messages={[next] as any} onRetryMessage={onRetryMessage} />);
+      expect(utils.container.textContent).toContain(next.text);
+      expect(utils.container.textContent).not.toContain(previous.text);
+      utils.container.querySelector('button')?.click();
+      expect(onRetryMessage).toHaveBeenCalledWith(next);
+
+      utils.rerender(<MessagesList messages={[recovered] as any} onRetryMessage={onRetryMessage} />);
+      expect(utils.container.textContent).toContain(recovered.text);
+      expect(utils.container.querySelectorAll('button')).toHaveLength(0);
+    } finally {
+      utils.unmount();
+    }
   });
 });
