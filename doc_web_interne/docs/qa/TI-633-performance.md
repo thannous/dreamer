@@ -1,12 +1,13 @@
 # TI-633 — Dreamer performance implementation
 
-> **Latest status:** physical comparisons and native restart checks are now complete for the scenarios below. See **Final device evidence** for current results and limitations; earlier installation blockers are historical.
+> **Latest status:** follow-up fixes are installed and verified on Motorola. See **Frame-drop investigation and follow-up fixes** and **Final installed follow-up candidate** for the current evidence. Rare navigation deadline misses remain; no zero-jank or cold-start gain is claimed. Earlier installation blockers are historical.
 
 Owner: current TI-633 integration chat. Requested 2026-09-28, delivery target same day.
 Base after requested rebase: 491f40c96c36cf5d3c20dea78ec1d7a2d20e4ea1. Scope: Dreamer only.
 Authorized: implementation, focused validation, commits and public PR delivery; local
-instrumented Android before/after builds. Installation is conditional on compatible
-signing and verified data backup/restoration, without uninstall or data clearing.
+instrumented Android before/after builds. The user subsequently explicitly authorized
+removing the incompatible Play installation and replacing it locally; this was done
+earlier. Follow-up installs reuse the compatible local signature and retain app data.
 Paid AI calls, EAS cloud builds and production publication are not authorized.
 Existing root AGENTS.md and process sprint edits are preserved outside this worktree.
 
@@ -335,3 +336,120 @@ merge or deployment was performed.
 ### Follow-up failure model: repeated native reads
 
 Physical write diagnostics observed 5,000 upserts on the first favorite after restart, then one on the next. Two reads of an unchanged scope replace the engine reference snapshot while the UI retains equivalent earlier objects. This can rewrite the entire journal. A focused SQLite isolation check is justified because UI persistence assertions cannot detect redundant serialization: repeated reads of the same committed revision must preserve references; a revision changed by another connection must invalidate the cache; failed writes must not publish a new snapshot (existing rollback coverage). Tests precede the cache correction.
+
+## Frame-drop investigation and follow-up fixes (28 September)
+
+The follow-up uses actual touches on the journal cards, four journal swipes, two detail
+swipes, and a favorite mutation with 5,000 synthetic guest records. An initial deep-link
+probe produced 559 ms and 81 ms UI waits on Android GC; these were **not** reproduced
+as such by the real card-tap journey and are not reported as its opening latency.
+
+Confirmed causes and changes:
+
+- Repeated native reads replaced the engine's object snapshot while the UI retained
+  equivalent prior objects: the first favorite rewrote **5,000 rows**. Reuse the bounded
+  scope snapshot only when committed revision and record count match. Another committed
+  revision invalidates it. On-device diagnostics now show **one changed row**.
+- `analysisReadyJournalSignature` sorted 5,000 numeric IDs using `localeCompare`.
+  Favorite-only Simpleperf samples showed Hermes/Android ICU collator creation and GC;
+  this unrelated JS work delayed SQLite promise continuations. ASCII ID sorting now
+  avoids linguistic collation. Reminder semantics remain covered by existing checks.
+- The fixed-height journal header invoked a UI worklet on every scroll event. It now
+  stores the already-delivered JS offset without React state updates; overlay mode
+  retains its UI worklet. Offset is transferred only when mode changes.
+- Nine staggered section entrances were removed from the frequently opened detail.
+  This alone did **not** eliminate opening jank. Warm open/back traces still showed
+  native `Record View#draw()` work of 31–35 ms, so Android detail navigation now uses
+  an immediate transition. iOS retains the inherited navigation behavior.
+
+### Repeated device results before the final Android transition change
+
+Three actual-touch runs per candidate; same 5,000 local fixtures, portrait and font
+scale 1.0. These are diagnostic comparisons, not the earlier canonical cold/warm
+startup series. Temperature was not recorded per diagnostic run, so do not treat
+small frame-count differences as a statistically established gain.
+
+| Measured phase | Before ICU/static-header fix | Candidate a08d5003 |
+| --- | ---: | ---: |
+| Favorite durable write, median | 1,081.7 ms | 94.1 ms |
+| Individual writes | 1,046.1 / 1,149.7 / 1,081.7 ms | 70.5 / 97.0 / 94.1 ms |
+| Journal scroll: app-deadline misses / frames | 5 / 758 | 2 / 765 |
+| Detail opening: app-deadline misses / frames | 6 / 187 | 6 / 160 |
+| Detail scroll: app-deadline misses / frames | 0 / 447 | 0 / 447 |
+| Favorite interaction: app-deadline misses / frames | 0 / 32 | 0 / 28 |
+
+The write median dropped **91.3%**. No claim of zero jank, a proven global FPS gain,
+or faster cold start follows from these results. The reduced opening frame count
+reflects removed animation; its miss ratio is not directly interchangeable with the
+old animated sequence. FrameTimeline errors were absent in all nine diagnostic traces.
+Frame durations are app rendering/GPU completion times, not inverse on-screen FPS.
+`Buffer Stuffing` is a separate latency state, not automatically a dropped frame;
+see the [official FrameTimeline definitions](https://perfetto.dev/docs/data-sources/frametimeline).
+
+### Native behavior and evidence boundaries
+
+- The 22 existing responsive journal checks pass, including offset continuity when
+  only height changes and reset when the list remounts.
+- Physical short-viewport pilot: 1220x1000 override, font scale 2.0. Header-origin
+  swipes reached cards; original 1220x2712 and font scale 1.0 were restored and reread.
+  Two retained failed probes used the bottom navigation area or required a card before
+  scrolling. They are harness failures, not passes or confirmed application defects.
+  Android recreated the activity on settings changes; this does not prove same-instance
+  rotation offset retention or TalkBack gestures.
+- Final source checks: `npm run test:prepush` passed on 70c72225: **197 suites,
+  2,625 assertions**, one skipped; app/test types pass. Focused lint has no errors,
+  with existing warnings. Local release build succeeded with JDK 17 and reused native
+  project, without prebuild, EAS build, store publication, or paid AI generation.
+- The new real-SQLite regression failed first, then passed with snapshot reuse.
+  Existing rollback/account isolation checks remain passing.
+
+### Final installed follow-up candidate
+
+- Source: **70c72225ce768ce4a5bd15d3553fb6f4e18bcbfe**. Final APK SHA-256:
+  `0177c30e96a70798c9c54bc2bd3b4bc574752e4735d70a0685339cb5a6cd2144`.
+  Local release 3.4.5/82, profileable and non-debuggable; compatible certificate checked.
+  Installed APK hash was reread from the device and matches. Embedded update:
+  `271a64f5-66e9-463a-98a5-c3547c43f7f8`; runtime:
+  `511f8614d6bed3f7f609014541b1cdfae65bb422`; embedded=true, emergency=false.
+- A final CPU profile isolated native Text/Minikin shaping during return to the list.
+  `numberOfLines` did not bound the input: cards passed entire transcripts to native
+  Text. Card previews now pass at most 1,000 UTF-16 code units plus an ellipsis, avoiding
+  a dangling high surrogate. The complete DreamAnalysis remains the navigation/storage
+  value. Physical UI assertions verified the full 3,840-character fixture transcript
+  in detail and bounded card text after restart.
+- Three warm opens/back pairs, with immediate Android navigation held constant:
+  back-frame maxima **39.18 / 38.74 / 37.93 ms → 26.40 / 26.16 / 26.37 ms** after
+  bounding card text (median **38.74 → 26.37 ms**, about **32%** lower). Each return
+  still had one app-deadline miss. Removing the transition alone did not fix that draw
+  cost; the preview change addressed its text-shaping component.
+- Final complete-flow pilot: journal scroll **0/252**, detail open **2/27**, detail
+  scroll **0/149**, favorite **0/12** app-deadline misses/frames. Durable favorite
+  write **94.8 ms**. This single pilot supplements the three-run series above; it is
+  not presented as a three-run final-build comparison or proof of universal 60 FPS.
+- Warm final opens: **3/22** app-deadline misses; backs: **3/32**. The original animated
+  warm series had **8/98** and **3/99** respectively. Animation removal changes the
+  frame denominator, so percentages across those modes are not an equivalent metric.
+  Residual native mount/draw spikes remain, including one 34.75 ms warm-open frame.
+  These are measured limitations, not hidden invalid runs or a new zero-jank gate.
+- Final native recovery passed: favorite persisted after process death/relaunch;
+  SQLite integrity was `ok`, declared and actual record counts were 5,000. The helper
+  then removed only its guarded synthetic guest fixtures, was uninstalled, and the
+  final embedded release was relaunched. Original screen/font settings were verified.
+
+Private evidence is preserved under ignored `dogfood-output/ti633-jank-20260928/`:
+phase timestamps, Perfetto and CPU profiles, JSON summaries, UI assertions, failed
+pilots, build/test logs, and exact private drivers. The prior fixture generator and
+signed helper remain in the earlier ignored evidence package. No raw trace, dream
+text, device logs or helper binary is committed. Diagnostic rerun (after the same
+synthetic-only guest preconditions, with a fresh output directory):
+
+```sh
+mise exec -- node scripts/android-device-lock.js wrap --owner dreamer --device "$SERIAL" --   python3 "$PRIVATE_EVIDENCE/ti633-jank-ui.py" "$FRESH_OUTPUT"
+python3 "$PRIVATE_EVIDENCE/ti633-analyze-jank.py" "$FRESH_OUTPUT"
+```
+
+The private driver records its exact device target; update it deliberately if the
+ADB endpoint changes. Reuse the fixture guard and cleanup driver. Remaining audit
+limits from the earlier report (real-account sync/checkpoint/network contention,
+real-image transfers, crash-interrupted native transaction, production deployment)
+remain unqualified. No paid AI calls, store publishing or merge was performed.
