@@ -132,7 +132,8 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
       name !== 'expo-splash-screen' &&
       name !== 'expo-speech-recognition' &&
       name !== '@react-native-google-signin/google-signin' &&
-      name !== './plugins/withDisableNotificationsBootActions'
+      name !== './plugins/withDisableNotificationsBootActions' &&
+      name !== './plugins/withAndroidR8Optimization'
     );
   });
   const lucidGooglePlugins = resolveLucidGooglePlugin();
