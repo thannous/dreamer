@@ -196,3 +196,17 @@ absence of a verified data backup/restoration path. No installation was attempte
 Next prerequisite: an authorized compatible-signed candidate and a verified preservation
 path for the existing account and guest journal. Native SQLite recovery and before/after
 performance remain open; the PR stays draft, unmerged, and TI-633 is not complete.
+
+
+### Device-discovered write latency, before corrective implementation
+
+The 5,000-row synthetic native journal exposed a 31.31-second first favorite commit.
+The fixture was inserted in ascending order, while the UI sorts descending; the store
+issued a separate asynchronous SQL bridge call for every moved row, plus normalized
+image rows. Prepending a new dream can also move all positions. This is real excessive
+bridge overhead, even though the fixture magnifies the initial reordering. Corrective
+plan: batch inserts, position updates and deletes within the same exclusive transaction,
+keep unchanged-record serialization avoidance and atomic acknowledgement. Existing real
+SQLite rollback/reopen tests plus the repeated native favorite/restart journey validate
+this change; no new isolated suite is required. Preserve the failed short-timeout
+recovery attempt and the eventual commit event as evidence.

@@ -132,7 +132,7 @@ class Runner:
             raise ValueError('Debuggable binary cannot qualify Release performance')
         signature = self.command([self.o['apksigner'], 'verify', '--print-certs', str(apk)]).stdout.decode()
         cert = re.search(r'certificate SHA-256 digest: ([0-9a-f]+)', signature)[1]
-        logs = self.adb('logcat', '-d', '--pid', pid, '-v', 'brief').decode()
+        logs = self.adb('logcat', '-d', '--pid', pid, '-v', 'brief').decode('utf-8', errors='replace')
         runtimes = []
         for line in logs.splitlines():
             if '[NoctaliaRuntime]' in line and '{' in line:

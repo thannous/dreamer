@@ -48,6 +48,16 @@ export function createJournalRecordStore<T extends object>({ database, keyOf, en
       keys.add(key);
     }
   };
+  // Bound SQLite parameters and amortize native bridge calls for large reorder/migration batches.
+  const batchSize = 100;
+  const insertRows = async (tx: RecordTransaction, scope: string, rows: { identity: string; position: number; value: string }[]) => {
+    for (let start = 0; start < rows.length; start += batchSize) {
+      const batch = rows.slice(start, start + batchSize);
+      await tx.runAsync(`INSERT INTO journal_records(scope, identity, position, value) VALUES ${batch.map(() => '(?, ?, ?, ?)').join(',')}
+        ON CONFLICT(scope, identity) DO UPDATE SET position=excluded.position, value=excluded.value`,
+      ...batch.flatMap(row => [scope, row.identity, row.position, row.value]));
+    }
+  };
   const getScope = async (tx: RecordTransaction, scope: string) => {
     const [info] = await tx.getAllAsync<Scope>('SELECT version, revision, present, record_count FROM journal_scopes WHERE scope=?', scope);
     if (info && (info.version !== 1 || !Number.isSafeInteger(info.revision) || ![0, 1].includes(info.present))) {
@@ -61,10 +71,12 @@ export function createJournalRecordStore<T extends object>({ database, keyOf, en
     const values = await legacy(); // Read errors abort migration; never interpret them as empty.
     if (values !== null && !Array.isArray(values)) throw new Error('Invalid legacy journal');
     check(values ?? []);
+    const rows = [];
     for (const [position, value] of (values ?? []).entries()) {
-      await tx.runAsync('INSERT INTO journal_records(scope, identity, position, value) VALUES (?, ?, ?, ?)',
-        scope, keyOf(value), position, await encode(value));
+      rows.push({ identity: keyOf(value), position, value: await encode(value) });
+      if (rows.length === batchSize) { await insertRows(tx, scope, rows); rows.length = 0; }
     }
+    await insertRows(tx, scope, rows);
     const info = { version: 1, revision: 0, present: values === null ? 0 : 1, record_count: values?.length ?? 0 };
     await tx.runAsync('INSERT INTO journal_scopes(scope, version, revision, present, record_count) VALUES (?, 1, 0, ?, ?)', scope, info.present, info.record_count);
     return info;
@@ -101,19 +113,36 @@ export function createJournalRecordStore<T extends object>({ database, keyOf, en
           ? snapshot.values.map((value, position) => [keyOf(value), { value, position }] as const) : []);
         const stored = await tx.getAllAsync<{ identity: string }>('SELECT identity FROM journal_records WHERE scope=?', scope);
         const remaining = new Set(stored.map(row => row.identity));
+        const changed: { identity: string; position: number; value: string }[] = [];
+        const moved: { identity: string; position: number }[] = [];
+        const flushMoves = async () => {
+          if (!moved.length) return;
+          await tx.runAsync(`UPDATE journal_records SET position=CASE identity ${moved.map(() => 'WHEN ? THEN ?').join(' ')} END
+            WHERE scope=? AND identity IN (${moved.map(() => '?').join(',')})`,
+          ...moved.flatMap(row => [row.identity, row.position]), scope, ...moved.map(row => row.identity));
+          moved.length = 0;
+        };
         for (const [position, value] of values.entries()) {
           const identity = keyOf(value);
           remaining.delete(identity);
           const old = previous.get(identity);
           if (old?.value === value) {
-            if (old.position !== position) await tx.runAsync('UPDATE journal_records SET position=? WHERE scope=? AND identity=?', position, scope, identity);
+            if (old.position !== position) {
+              moved.push({ identity, position });
+              if (moved.length === batchSize) await flushMoves();
+            }
           } else {
-            await tx.runAsync(`INSERT INTO journal_records(scope, identity, position, value) VALUES (?, ?, ?, ?)
-              ON CONFLICT(scope, identity) DO UPDATE SET position=excluded.position, value=excluded.value`,
-            scope, identity, position, await encode(value));
+            changed.push({ identity, position, value: await encode(value) });
+            if (changed.length === batchSize) { await insertRows(tx, scope, changed); changed.length = 0; }
           }
         }
-        for (const identity of remaining) await tx.runAsync('DELETE FROM journal_records WHERE scope=? AND identity=?', scope, identity);
+        await insertRows(tx, scope, changed);
+        await flushMoves();
+        const removed = [...remaining];
+        for (let start = 0; start < removed.length; start += batchSize) {
+          const batch = removed.slice(start, start + batchSize);
+          await tx.runAsync(`DELETE FROM journal_records WHERE scope=? AND identity IN (${batch.map(() => '?').join(',')})`, scope, ...batch);
+        }
         revision = info.revision + 1;
         await tx.runAsync('UPDATE journal_scopes SET revision=?, present=1, record_count=? WHERE scope=?', revision, values.length, scope);
       });
