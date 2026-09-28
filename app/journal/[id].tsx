@@ -26,7 +26,7 @@ import {
   ReplaceImageSheet,
   type AnalysisNotice,
 } from '@/components/journal/JournalDetailSheets';
-import { PressableScale, Reveal } from '@/components/motion';
+import { PressableScale } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
@@ -2526,11 +2526,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
         >
           <View className="px-4 pb-6">
             {hasIllustratedCover ? renderIllustrationSection() : null}
-            {/* The sections enter once, staggered, as the dream loads in. The `Reveal`
-                wrappers sit OUTSIDE the conditionals on purpose: they mount with the
-                screen and stay mounted, so toggling edit mode never replays the
-                entrance. `staggerDelay` caps at 6 steps, so the last one starts at
-                300 ms and this never reads as a loading sequence. */}
+            {/* Native navigation supplies the transition; frequent detail visits show sections immediately. */}
             {recallRequested ? (
               <DreamRecallAssistantCard
                 dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
@@ -2540,31 +2536,31 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
                 startRequested
               />
             ) : null}
-            <Reveal index={0}>
+            <View>
               {/* Plus metadata card */}
               {!isEditing && renderMetadataCard()}
-            </Reveal>
-            <Reveal index={1}>{renderSyncStatusCard()}</Reveal>
+            </View>
+            <View>{renderSyncStatusCard()}</View>
 
             {!isEditingTranscript && (
               <View
                 className="mt-2 mb-5"
                 onLayout={(event) => setTranscriptSectionOffset(event.nativeEvent.layout.y)}
               >
-                <Reveal index={2}>
+                <View>
                   <View className="px-2 pb-4">
                     {renderTranscriptBody()}
                   </View>
-                </Reveal>
+                </View>
               </View>
             )}
 
-            <Reveal index={3}>
+            <View>
               {renderStaleBanner()}
               {renderDetailActionCard(['analyze'])}
-            </Reveal>
+            </View>
 
-            <Reveal index={4}>
+            <View>
               {(showCompletedReading || isAnalysisPending) ? (
                 <View testID={TID.Component.DreamDetailReadingZone}>
                   {renderDetailZoneHeader(t('journal.detail.zone.reading'), TID.Text.DreamDetailReadingZone)}
@@ -2612,9 +2608,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
                   {!hasIllustratedCover ? renderIllustrationSection() : null}
                 </View>
               ) : null}
-            </Reveal>
+            </View>
 
-            <Reveal index={5}>
+            <View>
               {!recallRequested ? (
                 <DreamRecallAssistantCard
                   dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
@@ -2623,9 +2619,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
                   offerEligible={recallOffer.offerEligible}
                 />
               ) : null}
-            </Reveal>
+            </View>
 
-            <Reveal index={6}>
+            <View>
               {!isAnalysisPending && showCompletedReading && dream.symbols && dream.symbols.length > 0 ? (
                 <>
                   <View className="mt-2 mb-3 items-center">
@@ -2691,15 +2687,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
                   ) : null}
                 </View>
               ) : null}
-            </Reveal>
+            </View>
 
-            <Reveal index={7}>
+            <View>
               {renderFirstValueBackupCard()}
 
 
-            </Reveal>
+            </View>
 
-            <Reveal index={8}>
+            <View>
               {renderDetailZoneHeader(t('journal.detail.zone.actions'))}
 
               <View className="mb-6 flex-row justify-around gap-3">
@@ -2764,7 +2760,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
                   {t('journal.menu.delete')}
                 </Text>
               </PressableScale>
-            </Reveal>
+            </View>
             </View>
         </ScrollView>
 
