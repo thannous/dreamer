@@ -80,7 +80,8 @@ describe('measure-android-performance', () => {
       devTransportDetected: false,
       fatalError: run === 3,
       gfxinfo: { deadlineMisses: run, jankyPercent: run, p95Ms: 20 + run, p99Ms: 90 + run },
-      launch: { totalTimeMs: 700 + run },
+      activityResumed: true,
+      launch: { status: 'ok', totalTimeMs: 700 + run },
       markers: { rootToInteractiveMs: 300 + run },
       meminfo: { graphicsKb: 60 + run, nativeHeapKb: 170 + run, totalPssKb: 320 + run },
       mode: 'cold',
@@ -88,8 +89,8 @@ describe('measure-android-performance', () => {
       thermalStatus: 0,
     }));
     expect(summarizeRuns(runs)).toMatchObject({
-      count: 3,
-      amTotalMs: { median: 702, p95: 703 },
+      count: 2, totalCount: 3, validCount: 2, invalidCount: 1,
+      amTotalMs: { count: 2, median: 701, p95: 702 },
       fatalRuns: 1,
     });
     expect(toCsv(runs)).toContain('mode,run,am_total_ms');

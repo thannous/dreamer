@@ -40,6 +40,34 @@ const setup = (initialMutations: DreamMutation[] = []) => {
 };
 
 describe('injected durable Journal sync engine', () => {
+  it('syncs a target while an unrelated in-flight replay is stalled', async () => {
+    const { commands, dependencies } = setup([mutation()]);
+    const stalled = deferred();
+    dependencies.createDreamInSupabase.mockImplementationOnce(async value => {
+      await stalled.promise; return { ...value, remoteId: 10 };
+    });
+    const background = commands.syncPendingMutations();
+    await flush();
+    const other = { ...mutation('receipt-2'), clientRequestId: 'dream-2',
+      payload: { dream: dream(2) }, entityKey: 'client:dream-2' };
+    await commands.queueOfflineOperation(other, prev => [...prev, dream(2)]);
+    await commands.syncPendingMutations(dream(2));
+    expect(dependencies.createDreamInSupabase).toHaveBeenCalledTimes(2);
+    expect(commands.pendingMutationsRef.current.map(entry => entry.id)).toEqual(['receipt-1']);
+    stalled.resolve();
+    await background;
+    expect(commands.pendingMutationsRef.current).toEqual([]);
+  });
+
+  it('targeted replay leaves unrelated queued work untouched and shares the same identity receipt', async () => {
+    const other = { ...mutation('receipt-2'), clientRequestId: 'dream-2',
+      payload: { dream: dream(2) }, entityKey: 'client:dream-2' };
+    const { commands, dependencies } = setup([mutation(), other]);
+    await Promise.all([commands.syncPendingMutations(dream()), commands.syncPendingMutations(dream())]);
+    expect(dependencies.createDreamInSupabase).toHaveBeenCalledTimes(1);
+    expect(commands.pendingMutationsRef.current.map(entry => entry.id)).toEqual(['receipt-2']);
+  });
+
   it('serializes durable writes and permits a later write after storage rejection', async () => {
     const { dependencies, commands, persistRemoteDreams } = setup();
     const write = deferred();

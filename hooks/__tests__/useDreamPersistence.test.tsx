@@ -55,6 +55,8 @@ const mockGetGuestDreamMigrationOwner = typedJestFn<() => Promise<GuestDreamMigr
 const mockSetGuestDreamMigrationOwner = typedJestFn<(ownerUserId: GuestDreamMigrationOwner | null) => Promise<void>>();
 
 jest.mock('../../services/storageService', () => ({
+  getServerDreamCheckpoint: async () => [],
+  saveServerDreamCheckpoint: async () => undefined,
   getSavedDreams: () => mockGetSavedDreams(),
   saveDreams: (dreams: DreamAnalysis[]) => mockSaveDreams(dreams),
   getCachedRemoteDreams: (scope?: string | null) => mockGetCachedRemoteDreams(scope),

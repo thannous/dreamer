@@ -106,3 +106,40 @@ package, version, signature, data backup coverage, and restoration method; an ol
 backup is not proof that newer local data is covered. Use the existing
 `tests/android/navigation-retention.py` under the device lock for repeated
 Capture/Journal navigation without clearing app data.
+
+## Startup report schema 2
+
+Startup JSON retains every raw run with `valid` and `failureReasons`; CSV appends
+`valid,failure_reasons`. Summary `count` now counts valid runs only; `totalCount`,
+`validCount` and `invalidCount` disambiguate the population. Each metric has its
+own finite-value `count`. No valid observations yields null percentiles, not zero.
+Fatal/development counters and top-level failures still cover all runs, and any
+invalid run keeps exit code 2. Consumers of schema 1 must account for this change.
+`warm` remains a task return after 250 ms, not Android activity recreation.
+
+Run the synthetic transport CLI check with
+`npm run test:file -- scripts/measure-android-performance-cli.test.js --watchman=false`.
+This verifies reporting and failure handling; it provides no app timing evidence.
+
+### Journal scroll and user latency markers (TI-635)
+
+Use the existing private scenario contract with `--mode reading --phases journal-scroll`.
+The capture verifies the reference card before scrolling and does not open the detail
+or reader for a journal-only phase. Use a short viewport where the search header
+collapses; preserve orientation/font scale and swipe coordinates between candidates.
+Pilot first (`--pilot`), then define the run count before the series. Never seed a
+personal journal. The default reading phases remain unchanged.
+
+With `EXPO_PUBLIC_PERFORMANCE_TRACING=true`, new markers distinguish
+`startup.fonts_settled`, `journal.first_list_painted`, `journal.first_useful_content`
+(first viewable card), `journal.interaction`, `journal.sync_complete`,
+`journal.save_requested`, `journal.save_acknowledged`, `journal.storage_started`,
+`journal.storage_normalized`, `journal.storage_committed`, `analysis.requested`,
+`analysis.target_synced`, `analysis.http_started`, `analysis.job_accepted`,
+`analysis.result_observed`, and `analysis.text_displayed` (reader modal onShow).
+Storage/analysis stages carry a bounded process-local numeric `trace`; no dream
+identity, transcript, signed URL or account identifier is logged. A storage commit
+includes queue wait and SQLite transaction time, not only serialization. HTTP result
+observation includes polling/network delay and is not model execution duration.
+A list paint is not synchronization completion, and an empty/loading list is not
+proof that the intended dataset was rendered. Keep the UI assertions with the trace.

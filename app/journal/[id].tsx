@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { AnalysisReadingLauncher, type AnalysisReadingHandle } from '@/components/analysis/AnalysisReadingLauncher';
@@ -25,7 +26,7 @@ import {
   ReplaceImageSheet,
   type AnalysisNotice,
 } from '@/components/journal/JournalDetailSheets';
-import { PressableScale, Reveal } from '@/components/motion';
+import { PressableScale } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
@@ -225,10 +226,12 @@ const Skeleton = ({ className }: { className: string }) => (
 export default function JournalDetailScreen() {
   const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
   const { user } = useAuth();
-  return <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])} />;
+  const { dreams } = useDreamsData();
+  const dream = resolveDreamRoute(dreams, route);
+  return <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])} dream={dream} />;
 }
 
-function JournalDetailContent() {
+const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dream?: DreamAnalysis }) {
   const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam, autoAnalyze: autoAnalyzeParam, analyzeAfterPurchase, analysisOwnerId } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; analysisOwnerId?: string }>();
   const recallRequested = isJournalSavedConfirmationParam(recallParam);
   const { state: onboardingState, transition: transitionOnboarding } = useOnboarding();
@@ -267,7 +270,6 @@ function JournalDetailContent() {
   useEffect(() => {
     recallEligibleDreamIdRef.current = recallOffer.eligibleDreamId;
   }, [recallOffer.eligibleDreamId]);
-  const { dreams } = useDreamsData();
   const {
     toggleFavorite,
     updateDream,
@@ -363,7 +365,6 @@ function JournalDetailContent() {
     tier, loading: quotaLoading, error: quotaError, status: quotaStatus,
   });
 
-  const dream = useMemo(() => resolveDreamRoute(dreams, { id, remoteId, clientRequestId }), [dreams, id, remoteId, clientRequestId]);
   const canResumeAnalysis = Boolean(dream && isResumableAnalysisRequest(dream));
   const guestNeedsAccount = !user && !canResumeAnalysis
     && (savedAnalysisAction === 'signup' || savedAnalysisAction === 'login');
@@ -2525,11 +2526,7 @@ function JournalDetailContent() {
         >
           <View className="px-4 pb-6">
             {hasIllustratedCover ? renderIllustrationSection() : null}
-            {/* The sections enter once, staggered, as the dream loads in. The `Reveal`
-                wrappers sit OUTSIDE the conditionals on purpose: they mount with the
-                screen and stay mounted, so toggling edit mode never replays the
-                entrance. `staggerDelay` caps at 6 steps, so the last one starts at
-                300 ms and this never reads as a loading sequence. */}
+            {/* Native navigation supplies the transition; frequent detail visits show sections immediately. */}
             {recallRequested ? (
               <DreamRecallAssistantCard
                 dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
@@ -2539,31 +2536,31 @@ function JournalDetailContent() {
                 startRequested
               />
             ) : null}
-            <Reveal index={0}>
+            <View>
               {/* Plus metadata card */}
               {!isEditing && renderMetadataCard()}
-            </Reveal>
-            <Reveal index={1}>{renderSyncStatusCard()}</Reveal>
+            </View>
+            <View>{renderSyncStatusCard()}</View>
 
             {!isEditingTranscript && (
               <View
                 className="mt-2 mb-5"
                 onLayout={(event) => setTranscriptSectionOffset(event.nativeEvent.layout.y)}
               >
-                <Reveal index={2}>
+                <View>
                   <View className="px-2 pb-4">
                     {renderTranscriptBody()}
                   </View>
-                </Reveal>
+                </View>
               </View>
             )}
 
-            <Reveal index={3}>
+            <View>
               {renderStaleBanner()}
               {renderDetailActionCard(['analyze'])}
-            </Reveal>
+            </View>
 
-            <Reveal index={4}>
+            <View>
               {(showCompletedReading || isAnalysisPending) ? (
                 <View testID={TID.Component.DreamDetailReadingZone}>
                   {renderDetailZoneHeader(t('journal.detail.zone.reading'), TID.Text.DreamDetailReadingZone)}
@@ -2611,9 +2608,9 @@ function JournalDetailContent() {
                   {!hasIllustratedCover ? renderIllustrationSection() : null}
                 </View>
               ) : null}
-            </Reveal>
+            </View>
 
-            <Reveal index={5}>
+            <View>
               {!recallRequested ? (
                 <DreamRecallAssistantCard
                   dreamId={getDreamRecallStorageId(dream, user?.id ?? null)}
@@ -2622,9 +2619,9 @@ function JournalDetailContent() {
                   offerEligible={recallOffer.offerEligible}
                 />
               ) : null}
-            </Reveal>
+            </View>
 
-            <Reveal index={6}>
+            <View>
               {!isAnalysisPending && showCompletedReading && dream.symbols && dream.symbols.length > 0 ? (
                 <>
                   <View className="mt-2 mb-3 items-center">
@@ -2690,15 +2687,15 @@ function JournalDetailContent() {
                   ) : null}
                 </View>
               ) : null}
-            </Reveal>
+            </View>
 
-            <Reveal index={7}>
+            <View>
               {renderFirstValueBackupCard()}
 
 
-            </Reveal>
+            </View>
 
-            <Reveal index={8}>
+            <View>
               {renderDetailZoneHeader(t('journal.detail.zone.actions'))}
 
               <View className="mb-6 flex-row justify-around gap-3">
@@ -2763,7 +2760,7 @@ function JournalDetailContent() {
                   {t('journal.menu.delete')}
                 </Text>
               </PressableScale>
-            </Reveal>
+            </View>
             </View>
         </ScrollView>
 
@@ -3012,7 +3009,7 @@ function JournalDetailContent() {
       </KeyboardAvoidingView>
     </View>
   );
-}
+});
 
 const markdownContainerStyles = StyleSheet.create({
   interpretation: { marginBottom: 16 },

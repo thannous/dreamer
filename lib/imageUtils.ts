@@ -155,10 +155,20 @@ export function getImageConfig(viewType: 'thumbnail' | 'full') {
  * Preload images to warm up the cache
  * Useful for preloading thumbnails before they enter viewport
  */
-export async function preloadImage(uri: string): Promise<void> {
+export function getDreamThumbnailCacheKey(media: { thumbnailUrl?: string; thumbnailCacheKey?: string; imageCacheKey?: string }): string | undefined {
+  return media.thumbnailUrl ? media.thumbnailCacheKey
+    : media.imageCacheKey ? `${media.imageCacheKey}:derived-thumbnail` : undefined;
+}
+
+export async function preloadImage(uri: string, cacheKey?: string): Promise<void> {
   try {
     const { Image } = await import('expo-image');
-    await Image.prefetch(uri);
+    if (cacheKey) {
+      // prefetch accepts URLs only. loadAsync uses the same source identity as
+      // the card and bounds the decoded bitmap while warming the native cache.
+      const image = await Image.loadAsync({ uri, cacheKey }, { maxWidth: THUMBNAIL_SIZE, maxHeight: THUMBNAIL_SIZE });
+      image.release();
+    } else await Image.prefetch(uri);
   } catch (error) {
     // Silently fail - image will load when needed
     if (__DEV__) {

@@ -154,6 +154,8 @@ jest.mock('../useSubscription', () => ({
 
 // Mock storageService
 jest.mock('../../services/storageService', () => ({
+  getServerDreamCheckpoint: async () => [],
+  saveServerDreamCheckpoint: async () => undefined,
   getDreamsMigrationSynced: mockGetDreamsMigrationSynced,
   setDreamsMigrationSynced: async () => undefined,
   getSavedDreams: mockGetSavedDreams,

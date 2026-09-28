@@ -1,3 +1,4 @@
+import { markPerformance } from '@/lib/performanceTrace';
 import { mergeDreamSnapshot, retainCaptureSources } from '../lib/dreamSnapshotMerge';
 /**
  * useDreamPersistence - Handles dream storage and loading
@@ -15,7 +16,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 
 import { useAuth } from '../context/AuthContext';
 import { getAccessToken } from '../lib/auth';
-import { matchesDreamTarget } from '../lib/dreamIdentity';
+import { getDreamIdentityKey, matchesDreamTarget } from '../lib/dreamIdentity';
 import { DreamPersistenceError } from '../lib/dreamStorageRead';
 import type { JournalCursor } from '../lib/journalReadContracts';
 import { logger } from '../lib/logger';
@@ -31,6 +32,8 @@ import {
   upsertDream,
 } from '../lib/dreamUtils';
 import {
+  getServerDreamCheckpoint,
+  saveServerDreamCheckpoint,
   getDreamsMigrationSynced,
   getGuestDreamMigrationOwner,
   getCachedRemoteDreams,
@@ -285,8 +288,13 @@ export function useDreamPersistence({
       if (!mountedRef.current || activeScopeKeyRef.current !== scopeKey) return;
       setPublishedScopeKey(scopeKey);
       if (!areDreamListsEqual(dreamsRef.current, nextDreams)) {
-        dreamsRef.current = nextDreams;
-        setDreams(nextDreams);
+        const previous = new Map(dreamsRef.current.map(dream => [getDreamIdentityKey(dream), dream]));
+        const stable = nextDreams.map(dream => {
+          const old = previous.get(getDreamIdentityKey(dream));
+          return old && areDreamsEqualForLocalState(old, dream) ? old : dream;
+        });
+        dreamsRef.current = stable;
+        setDreams(stable);
       }
     },
     []
@@ -326,7 +334,10 @@ export function useDreamPersistence({
         throw new DreamPersistenceError('read', target);
       }
 
-      const normalized = sortDreams(normalizeDreamList(nextDreams));
+      const prepared = normalizeDreamList(nextDreams);
+      // Local upserts normally preserve order; only reorder when an ID moved.
+      const normalized = prepared.every((dream, index) => index === 0 || prepared[index - 1].id >= dream.id)
+        ? prepared : sortDreams(prepared);
       if (publishOptimistically) setDreamsForScope(scopeKey, normalized);
       if (
         scope.pendingCount === 0 &&
@@ -1041,14 +1052,15 @@ export function useDreamPersistence({
         }
 
         if (!isCurrent()) return { pendingMutations };
-        // Retain only an in-memory checkpoint; partial pages never replace the
+        // Resume partial traversal in memory; partial pages never replace the
         // durable cache or become an authoritative deletion/sync snapshot.
         const traversal = traversalRef.current?.scopeKey === scopeKey && traversalRef.current.sequence === scope.sequence
           ? traversalRef.current
           : { scopeKey, sequence: scope.sequence, cursor: null, items: [] };
         traversalRef.current = traversal;
         const previousServerDreams = serverSnapshotRef.current?.scopeKey === scopeKey
-          ? serverSnapshotRef.current.dreams : [];
+          ? serverSnapshotRef.current.dreams : await getServerDreamCheckpoint(userScope!);
+        if (!isCurrent()) return { pendingMutations };
         const cachedDreams = new Map(previousServerDreams.flatMap((dream) =>
           dream.remoteId && dream.revisionId ? [[dream.remoteId, dream] as const] : []));
         while (true) {
@@ -1063,6 +1075,12 @@ export function useDreamPersistence({
         traversalRef.current = null;
         if (!isCurrent()) return { pendingMutations };
         serverSnapshotRef.current = { scopeKey, dreams: remoteDreams };
+        markPerformance('journal.sync_complete', { count: remoteDreams.length });
+        // Never serialize local overlays as server authority. Only a completed
+        // traversal can replace this checkpoint; cache failure leaves sync usable.
+        void saveServerDreamCheckpoint(remoteDreams, userScope!).catch(() => {
+          logger.warn('Server journal checkpoint could not be persisted');
+        });
         setRefreshState({ status: 'idle' });
         setRemoteSnapshot({ userScope, dreams: remoteDreams });
         const normalizedRemote = normalizeDreamList(retainCaptureSources(remoteDreams, dreamsRef.current));

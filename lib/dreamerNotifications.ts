@@ -646,7 +646,9 @@ export function analysisReadyJournalSignature(
   return dreams
     .filter((dream) => isAnalysisReadyApplicable(dream))
     .map((dream) => String(dream.id))
-    .sort((left, right) => left.localeCompare(right))
+    // IDs are ASCII digits, not display text. localeCompare creates an ICU
+    // collator per comparison on Hermes and stalls large-journal mutations.
+    .sort()
     .join(',');
 }
 

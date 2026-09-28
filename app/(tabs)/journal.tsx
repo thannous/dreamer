@@ -1,3 +1,5 @@
+import { markPerformance } from '@/lib/performanceTrace';
+import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
@@ -39,7 +41,7 @@ import { blurActiveElement } from '@/lib/accessibility';
 import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate, type JournalAnalysisStatusFilter, type JournalQuickFilter } from '@/lib/dreamFilters';
 import { getDreamTypeLabel } from '@/lib/dreamLabels';
 import { isDreamAnalyzed } from '@/lib/dreamUsage';
-import { getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
+import { getDreamThumbnailCacheKey, getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
 import { trackProductEvent } from '@/lib/analytics';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
@@ -94,6 +96,8 @@ function getInitialKeyboardVisibility(): boolean {
   return typeof Keyboard.isVisible === 'function' ? Keyboard.isVisible() : false;
 }
 
+const AnimatedDreamList = Animated.createAnimatedComponent(FlashList<DreamAnalysis>);
+
 export default function JournalListScreen() {
   const { dreams, completeness, remotePreviewAllowed, loadRemoteDreamForPreview, persistenceState, refreshState, reloadDreams, retryPersistence } = useDreams();
   const { colors, mode } = useTheme();
@@ -102,6 +106,14 @@ export default function JournalListScreen() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   useClearWebFocus();
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
+  const firstUsefulList = useRef(false);
+  const firstUsefulContent = useRef(false);
+  const onListLoaded = useCallback(() => {
+    if (!firstUsefulList.current) {
+      firstUsefulList.current = true;
+      markPerformance('journal.first_list_painted');
+    }
+  }, []);
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
   const searchInputRef = useRef<TextInput>(null);
   const { width, height, fontScale } = useWindowDimensions();
@@ -145,17 +157,15 @@ export default function JournalListScreen() {
       : 0;
   const searchConsumesLayout = isDesktopLayout
     || keyboardAvoidedViewport - mobileSearchHeaderHeight >= MIN_MOBILE_JOURNAL_LIST_VIEWPORT;
-  const searchLayoutKey = `${searchConsumesLayout ? 'flow' : 'overlay'}:${isTabletLayout ? 'tablet' : 'mobile'}`;
-  // Column count, not overlay vs flow. Keyboard and viewport-height changes can
-  // flip searchConsumesLayout without remounting FlashList or clearing its offset.
+  // A column change remounts the list; keyboard/height changes retain its offset.
   const mobileListKey = isTabletLayout ? 'tablet-2col' : 'mobile-cards-1col';
-  const [searchCollapse, setSearchCollapse] = useState({ key: searchLayoutKey, offset: 0 });
-  if (searchCollapse.key !== searchLayoutKey) {
-    // Comparing keys only hid a stale offset. Reinitialize so a rotation back
-    // to overlay:tablet cannot reuse the previous layout's collapse.
-    setSearchCollapse({ key: searchLayoutKey, offset: 0 });
-  }
-  const searchCollapseOffset = searchCollapse.key === searchLayoutKey ? searchCollapse.offset : 0;
+  const listScrollY = useSharedValue(0);
+  const staticScrollY = useRef(0);
+  const scrollLayout = useRef({ mobileListKey, isDesktopLayout, searchConsumesLayout });
+  const searchCollapseStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: searchConsumesLayout ? 0 :
+      -Math.max(0, Math.min(listScrollY.get(), mobileSearchHeaderHeight)) }],
+  }));
 
   useEffect(() => {
     const show = Keyboard.addListener(
@@ -221,17 +231,20 @@ export default function JournalListScreen() {
   const isScrollingRef = useRef(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollIdleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const listScrollOffsetRef = useRef(0);
   const overlaySearchDragOriginRef = useRef({ pageX: 0, pageY: 0, offset: 0 });
 
   useLayoutEffect(() => {
-    // The column-keyed FlashList remounts at offset 0 when this key changes.
-    // Desktop unmounts that list while mobileListKey stays mobile-cards-1col,
-    // so include the desktop switch. Keep the origin when only
-    // searchConsumesLayout flips so a later overlay drag continues from the
-    // retained list offset instead of jumping to the top.
-    listScrollOffsetRef.current = 0;
-  }, [mobileListKey, isDesktopLayout]);
+    const previous = scrollLayout.current;
+    if (previous.mobileListKey !== mobileListKey || previous.isDesktopLayout !== isDesktopLayout) {
+      staticScrollY.current = 0;
+      listScrollY.set(0);
+    } else if (previous.searchConsumesLayout !== searchConsumesLayout) {
+      // Transfer once when the header changes mode; keep retained list offsets.
+      if (searchConsumesLayout) staticScrollY.current = listScrollY.get();
+      else listScrollY.set(staticScrollY.current);
+    }
+    scrollLayout.current = { mobileListKey, isDesktopLayout, searchConsumesLayout };
+  }, [mobileListKey, isDesktopLayout, searchConsumesLayout, listScrollY]);
 
   const setScrolling = useCallback((next: boolean) => {
     if (isScrollingRef.current === next) return;
@@ -368,8 +381,8 @@ export default function JournalListScreen() {
     for (const dream of resolved) {
       if (generation !== mediaGeneration.current) return;
       const uri = getDreamThumbnailUri(dream);
-      if (uri && isLikelyOptimizedThumbnailUri(uri) && rememberPrefetchedUri(uri)) {
-        await preloadImage(uri);
+      if (uri && isLikelyOptimizedThumbnailUri(uri) && rememberPrefetchedUri(getDreamThumbnailCacheKey(dream) ?? uri)) {
+        await preloadImage(uri, getDreamThumbnailCacheKey(dream));
       }
     }
   }, [mediaUserId, rememberPrefetchedUri]);
@@ -448,6 +461,7 @@ export default function JournalListScreen() {
   }, []);
 
   const handleDreamPress = useCallback((dream: DreamAnalysis) => {
+    markPerformance('journal.interaction');
     if (isNavigatingRef.current) {
       return;
     }
@@ -492,6 +506,10 @@ export default function JournalListScreen() {
 
     if (min !== Number.POSITIVE_INFINITY && max !== Number.NEGATIVE_INFINITY) {
       viewableRangeRef.current = { min, max };
+      if (!firstUsefulContent.current) {
+        firstUsefulContent.current = true;
+        markPerformance('journal.first_useful_content');
+      }
     }
   }).current;
 
@@ -513,24 +531,23 @@ export default function JournalListScreen() {
     }
   }, [setScrolling]);
 
-  const handleListScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const y = event.nativeEvent.contentOffset.y;
-    listScrollOffsetRef.current = y;
-    if (searchConsumesLayout) return;
-    const next = Math.max(0, Math.min(y, mobileSearchHeaderHeight));
-    setSearchCollapse((current) => {
-      if (current.key === searchLayoutKey && Math.abs(current.offset - next) < 0.5) return current;
-      return { key: searchLayoutKey, offset: next };
-    });
-  }, [mobileSearchHeaderHeight, searchConsumesLayout, searchLayoutKey]);
+  // A fixed header needs only an offset for a future viewport change. FlashList
+  // already delivers JS scroll events; avoid a UI worklet for every such frame.
+  const handleStaticListScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    staticScrollY.current = event.nativeEvent.contentOffset.y;
+  }, []);
+
+  const handleListScroll = useAnimatedScrollHandler({
+    onScroll: (event) => { listScrollY.set(event.contentOffset.y); },
+  });
 
   const handleOverlaySearchTouchStart = useCallback((event: GestureResponderEvent) => {
     overlaySearchDragOriginRef.current = {
       pageX: event.nativeEvent.pageX,
       pageY: event.nativeEvent.pageY,
-      offset: listScrollOffsetRef.current,
+      offset: listScrollY.get(),
     };
-  }, []);
+  }, [listScrollY]);
 
   const shouldForwardOverlaySearchDrag = useCallback((event: GestureResponderEvent) => {
     if (searchConsumesLayout) return false;
@@ -954,7 +971,7 @@ export default function JournalListScreen() {
         <AtmosphericBackground variant="subtle" />
 
         {isDesktopLayout ? listHeader : (
-          <View
+          <Animated.View
             testID="journal-search-chrome"
             className="pb-2"
             onLayout={(event) => {
@@ -968,7 +985,7 @@ export default function JournalListScreen() {
             // to the list so the bar can collapse, while taps still reach the
             // input and clear button.
             pointerEvents={searchConsumesLayout ? 'auto' : 'box-none'}
-            style={{
+            style={[{
               ...(searchConsumesLayout
                 ? null
                 : {
@@ -977,9 +994,8 @@ export default function JournalListScreen() {
                     start: 0,
                     end: 0,
                     zIndex: 2,
-                    transform: [{ translateY: -searchCollapseOffset }],
                   }),
-            }}
+            }, searchCollapseStyle]}
           >
             <View
               pointerEvents="auto"
@@ -1004,7 +1020,7 @@ export default function JournalListScreen() {
                 inlineSlot={searchBar}
               />
             </View>
-          </View>
+          </Animated.View>
         )}
 
       {/* List */}
@@ -1012,7 +1028,8 @@ export default function JournalListScreen() {
         <RemoteJournalList key={mediaUserId} userId={mediaUserId} searchQuery={deferredSearchQuery}
           onOpenDream={openRemoteDream} header={isDesktopLayout ? undefined : listHeader} bottomInset={overlayNavClearance} />
       ) : isDesktopLayout ? (
-        <FlashList
+        <AnimatedDreamList
+          onLoad={onListLoaded}
           testID={TID.List.Dreams}
           ref={flatListRef}
           key={`desktop-${desktopColumns}`}
@@ -1036,7 +1053,8 @@ export default function JournalListScreen() {
           onMomentumScrollEnd={scheduleIdle}
         />
       ) : (
-        <FlashList
+        <AnimatedDreamList
+          onLoad={onListLoaded}
           testID={TID.List.Dreams}
           ref={flatListRef}
           key={mobileListKey}
@@ -1054,7 +1072,7 @@ export default function JournalListScreen() {
           // Always reserve the full absolute overlay, never a capped remainder.
           style={{ flex: 1, marginBottom: overlayNavClearance }}
           ListHeaderComponent={listHeader}
-          onScroll={handleListScroll}
+          onScroll={searchConsumesLayout ? handleStaticListScroll : handleListScroll}
           scrollEventThrottle={16}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"

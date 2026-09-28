@@ -200,6 +200,22 @@ describe('Journal primary storage write authority', () => {
         },
       }));
 
+      // The native primary journal is now a record database, not the legacy KV blob.
+      // Keep it alive across module reload and inject the same busy boundary there.
+      const { DatabaseSync } = jest.requireActual('node:sqlite') as typeof import('node:sqlite');
+      const db = new DatabaseSync(':memory:');
+      const adapter = {
+        execAsync: async (sql: string) => { db.exec(sql); },
+        getAllAsync: async (sql: string, ...args: (string | number | null)[]) => db.prepare(sql).all(...args),
+        runAsync: async (sql: string, ...args: (string | number | null)[]) => db.prepare(sql).run(...args),
+        withExclusiveTransactionAsync: async (task: (tx: unknown) => Promise<void>) => {
+          if (busy) throw new Error('SQLITE_BUSY: database is locked');
+          db.exec('BEGIN IMMEDIATE');
+          try { await task(adapter); db.exec('COMMIT'); }
+          catch (error) { db.exec('ROLLBACK'); throw error; }
+        },
+      };
+      jest.doMock('expo-sqlite', () => ({ openDatabaseAsync: async () => adapter }));
       const storage: typeof import('../storageServiceReal') = require('../storageServiceReal');
       const changed = [{ ...originalDream, title: 'Latest edit' }];
       const save = () => target === 'journal'
@@ -220,6 +236,8 @@ describe('Journal primary storage write authority', () => {
         ? await restarted.getSavedDreams()
         : await restarted.getCachedRemoteDreams(scope);
       expect(result).toMatchObject({ status: 'loaded', value: changed });
+      expect(JSON.parse(primaryValues.get(key)!)).toEqual([originalDream]);
+      db.close();
     }
   );
 });

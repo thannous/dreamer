@@ -20,7 +20,7 @@ import {
 export type UseOfflineSyncQueueOptions = JournalSyncOptions;
 
 const EMPTY_MUTATIONS: DreamMutation[] = [];
-export type SyncReplayOptions = { refreshNetworkState?: boolean };
+export type SyncReplayOptions = { refreshNetworkState?: boolean; target?: DreamTarget };
 
 async function readCurrentConnectivity(): Promise<boolean> {
   let timeout: ReturnType<typeof setTimeout> | undefined;
@@ -66,16 +66,16 @@ export function useOfflineSyncQueue(options: UseOfflineSyncQueueOptions): UseOff
     persistRemoteDreams
   }, user, persistence), [engine, canUseRemoteSync, hasNetwork, userScope, persistRemoteDreams, user, persistence]);
 
-  const syncPendingMutations = useCallback(async ({ refreshNetworkState = false }: SyncReplayOptions = {}) => {
+  const syncPendingMutations = useCallback(async ({ refreshNetworkState = false, target }: SyncReplayOptions = {}) => {
     if (!refreshNetworkState || !canUseRemoteSync || !user) {
-      return commands.syncPendingMutations();
+      return commands.syncPendingMutations(target);
     }
     // A native connectivity event may have been missed while the app was asleep.
     // Bind this attempt to the fresh snapshot, not the render's cached boolean.
     const connected = await readCurrentConnectivity();
     if (!connected) throw new Error('Journal sync requires an internet connection');
     return engine.bind({ canUseRemoteSync, hasNetwork: connected, userScope, persistRemoteDreams },
-      user, persistence).syncPendingMutations();
+      user, persistence).syncPendingMutations(target);
   }, [commands, canUseRemoteSync, user, engine, userScope, persistRemoteDreams, persistence]);
 
   useLayoutEffect(() => {

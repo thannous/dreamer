@@ -1,3 +1,4 @@
+import { markPerformance, performanceTraceId } from '../lib/performanceTrace';
 import { retainedImageJobError } from '@/lib/dreamSnapshotMerge';
 import { type DreamTarget, matchesDreamTarget, resolveDreamTarget, getDreamIdentityKey } from '../lib/dreamIdentity';
 /**
@@ -42,6 +43,7 @@ import {
   generateMutationId,
   generateUUID,
   getDreamSyncState,
+  getMutationDreamTarget,
   hasDreamUpdateIntentConflict,
   isConflictError,
   mergeAuthoritativeDreamIdentity,
@@ -139,6 +141,12 @@ export const useDreamJournal = () => {
   const isMockMode = isMockModeEnabled();
   const canUseRemoteSync = isAuthenticated && !isMockMode;
   const userScope = user?.id ? `user:${user.id}` : null;
+  const analysisScopeRef = useRef(userScope);
+  const analysisEpochRef = useRef(0);
+  useLayoutEffect(() => {
+    analysisScopeRef.current = userScope;
+    analysisEpochRef.current += 1;
+  }, [userScope]);
   const supabaseTier = useMemo(() => deriveUserTier(user), [user]);
   const tier = useMemo(
     () => {
@@ -1366,6 +1374,7 @@ export const useDreamJournal = () => {
         analyticsSource?: AnalysisSource;
       }
     ): Promise<DreamAnalysis> => {
+      const epoch = analysisEpochRef.current;
       const dreamId = typeof target === 'number' ? target : target.id;
       const shouldReplaceImage = options?.replaceExistingImage === true;
 
@@ -1410,6 +1419,7 @@ export const useDreamJournal = () => {
         }
       }
 
+      const analysisTrace = performanceTraceId(requestId);
       const analysisStartedAt = Date.now();
       void trackProductEvent('analysis_started', {
         source: options?.analyticsSource ?? 'unknown',
@@ -1417,17 +1427,48 @@ export const useDreamJournal = () => {
         guest_status: user ? 'signed_in' : 'guest',
       });
 
-      // Initial pending state
-      const currentDreamState: DreamAnalysis = {
-        ...dream,
-        analysisStatus: 'pending',
-        analysisRequestId: requestId,
-        clientUpdatedAt: analysisStartedAt,
+      const assertAnalysisScope = () => {
+        if (analysisScopeRef.current !== userScope || analysisEpochRef.current !== epoch) throw new Error('Analysis account changed');
       };
-      analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'pending');
-      await updateDream(currentDreamState);
-      // Best-effort: flush any pending sync so Supabase reflects "pending" before the user navigates away.
-      await syncPendingMutations();
+      let currentDreamState = dream;
+      try {
+        assertAnalysisScope();
+        markPerformance('analysis.requested', { trace: analysisTrace });
+        // Resolve the target's existing create/update receipt before a direct write.
+        if (canUseRemoteSync) {
+          await syncPendingMutations({ target: dream });
+          assertAnalysisScope();
+          const current = resolveCurrentDream(dream);
+          if (getDreamSyncState(current) === 'conflict' ||
+            livePendingMutationsRef.current.some(mutation => matchesDreamTarget(getMutationDreamTarget(mutation), current))) {
+            throw new Error('Dream changes must be synchronized before analysis');
+          }
+        }
+        const analysisBase = resolveCurrentDream(dream);
+        // Initial pending state
+        currentDreamState = {
+          ...analysisBase,
+          analysisStatus: 'pending',
+          analysisRequestId: requestId,
+          clientUpdatedAt: analysisStartedAt,
+        };
+        analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'pending');
+        await updateDream(currentDreamState);
+        assertAnalysisScope();
+        await syncPendingMutations({ target: currentDreamState });
+        assertAnalysisScope();
+        if (canUseRemoteSync && livePendingMutationsRef.current.some(mutation =>
+          matchesDreamTarget(getMutationDreamTarget(mutation), currentDreamState))) {
+          throw new Error('Dream changes must be synchronized before analysis');
+        }
+        markPerformance('analysis.target_synced', { trace: analysisTrace });
+      } catch (error) {
+        if (analysisScopeRef.current === userScope) {
+          analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
+          analysisStatusOverridesRef.current.delete(getDreamIdentityKey(dream));
+        }
+        throw error;
+      }
       const syncedDream = resolveCurrentDream(currentDreamState);
       const useServerAnalysisJob =
         shouldUseServerAnalysis && syncedDream.remoteId != null;
@@ -1468,6 +1509,8 @@ export const useDreamJournal = () => {
         if (useServerAnalysisJob) {
           const requestedImageSize = shouldReplaceImage && tier === 'plus'
             ? await getIllustrationResolution(user?.id) : '1K';
+          assertAnalysisScope();
+          markPerformance('analysis.http_started', { trace: analysisTrace });
           const command = await submitDreamAnalysisJob({
             dreamId: syncedDream.remoteId!,
             analysisRequestId: requestId,
@@ -1477,8 +1520,11 @@ export const useDreamJournal = () => {
             replaceExistingImage: shouldReplaceImage && requestedImageSize === '1K',
           });
           serverJobAccepted = true;
+          markPerformance('analysis.job_accepted', { trace: analysisTrace });
 
           const status = await waitForAnalysisJob(command.jobId);
+          assertAnalysisScope();
+          markPerformance('analysis.result_observed', { trace: analysisTrace, terminal: Boolean(status) });
           if (!status) {
             throw new Error('Analysis is still running. Reopen the dream to refresh it.');
           }
@@ -1524,10 +1570,11 @@ export const useDreamJournal = () => {
 
           emitProgress(AnalysisStep.FINALIZING);
           const remoteDream = await fetchDreamFromSupabase(syncedDream.remoteId!, user?.id);
+          assertAnalysisScope();
           const mergedDream = mergeRemoteDreamWithClientState(remoteDream, latestDream);
           const stampedDream = stampDreamAnalysisTranscript(mergedDream, mergedDream.transcript);
           await updateDream(stampedDream);
-          await syncPendingMutations();
+          await syncPendingMutations({ target: stampedDream });
           const refreshedDream = resolveCurrentDream(stampedDream);
 
           void trackProductEvent('analysis_completed', {
@@ -1543,11 +1590,15 @@ export const useDreamJournal = () => {
           return refreshedDream;
         }
 
+        assertAnalysisScope();
+        markPerformance('analysis.http_started', { trace: analysisTrace });
         const analysis = await analyzeDreamText(transcript, options?.lang, fingerprint, {
           remoteDreamId: syncedDream.remoteId,
           analysisRequestId: requestId,
         });
 
+        assertAnalysisScope();
+        markPerformance('analysis.result_observed', { trace: analysisTrace, terminal: true });
         const { imagePrompt, quotaUsed, ...analysisFields } = analysis;
         analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'done');
 
@@ -1581,7 +1632,7 @@ export const useDreamJournal = () => {
           };
         }
         await updateDream(next);
-        await syncPendingMutations();
+        await syncPendingMutations({ target: dream });
         next = resolveCurrentDream(next);
 
         if (shouldReplaceImage) {
@@ -1645,6 +1696,7 @@ export const useDreamJournal = () => {
         setLastAnalysisOutcome({ dreamId, status: 'done', completedAt: Date.now() });
         return next;
       } catch (error) {
+        assertAnalysisScope();
         const quotaError = coerceQuotaError(error, tier);
         setLastAnalysisOutcome({ dreamId, status: 'failed', completedAt: Date.now() });
         if (serverJobAccepted) {
@@ -1698,7 +1750,9 @@ export const useDreamJournal = () => {
       syncPendingMutations,
       updateDream,
       user,
+      userScope,
       tier,
+      livePendingMutationsRef,
       waitForAnalysisJob,
     ]
   );

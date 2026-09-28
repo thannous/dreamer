@@ -1,3 +1,4 @@
+import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { ImageGenerationDots } from './ImageGenerationDots';
 import React, { useMemo, useState } from 'react';
@@ -17,7 +18,7 @@ import type { DreamAnalysis } from '@/lib/types';
 
 export type AnalysisReadingModalProps = {
   dream: Pick<DreamAnalysis, 'title' | 'shareableQuote' | 'interpretation'> & Partial<Pick<DreamAnalysis,
-    'promptVersion' | 'symbols' | 'emotions' | 'reflectionQuestions' | 'imageUrl' | 'imageJobStatus' | 'imageGenerationFailed'>>;
+    'analysisRequestId' | 'promptVersion' | 'symbols' | 'emotions' | 'reflectionQuestions' | 'imageUrl' | 'imageJobStatus' | 'imageGenerationFailed'>>;
   /** Resolved through the journal media boundary (including private storage signing). */
   imageUri?: string;
   imageCacheKey?: string;
@@ -82,7 +83,8 @@ export function AnalysisReadingModal({ dream, imageUri, imageCacheKey, imageLoad
   ];
 
   return (
-    <Modal visible animationType="none" presentationStyle="fullScreen" onRequestClose={onClose}>
+    <Modal visible animationType="none" presentationStyle="fullScreen" onRequestClose={onClose}
+      onShow={() => { if (dream.analysisRequestId) markPerformance('analysis.text_displayed', { trace: performanceTraceId(dream.analysisRequestId) }); }}>
       <View style={[styles.screen, { backgroundColor }]} accessibilityViewIsModal testID="analysis.reading.modal">
         {mode === 'dark' ? <LinearGradient colors={[tokens.screen.gradient[1], backgroundColor]} style={styles.glow} pointerEvents="none" /> : null}
         <View style={[styles.toolbar, { paddingTop: insets.top + 8, paddingRight: Math.max(insets.right, 24) }]}>

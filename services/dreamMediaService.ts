@@ -1,3 +1,4 @@
+import { thumbnailFailures } from '@/lib/thumbnailFailureCache';
 import Constants from 'expo-constants';
 import { supabase } from '@/lib/supabase';
 import { getGuestMediaOwner } from '@/lib/guestSession';
@@ -20,6 +21,8 @@ export type DreamMediaInput = {
   analyzedAt?: number;
 };
 export type DreamMediaResult = {
+  imageCacheKey?: string;
+  thumbnailCacheKey?: string;
   imageUrl: string;
   thumbnailUrl?: string;
   imageStatus: Status;
@@ -199,6 +202,7 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, 
     setDreamMediaScope(userId: string | null) {
       if (userId === owner) return;
       owner = userId;
+      thumbnailFailures.setScope(userId);
       generation++;
       cache.clear();
       pending.forEach(entry => entry.complete(failed));
@@ -206,6 +210,7 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, 
       queue.length = 0;
     },
     invalidateDreamMedia(value?: string) {
+      thumbnailFailures.clear();
       if (value === undefined) {
         cache.clear();
         pending.forEach(entry => entry.complete(failed));
@@ -226,9 +231,18 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, 
       if (requestGeneration !== generation || userId !== owner) {
         return { imageUrl: '', imageStatus: 'error', thumbnailStatus: 'error' };
       }
+      const cacheKey = (source: string | null | undefined, resource: Resource, variant: string) => {
+        if (!source || !resource.url || resource.status !== 'ready' || version === undefined) return undefined;
+        const parsed = parse(source);
+        if (!parsed || !('path' in parsed)) return undefined;
+        // Emitted only after resolve authorized the source; this key grants no access.
+        return JSON.stringify(['dream-media-v1', origin, userId ?? 'guest', BUCKET, parsed.path, variant, version]);
+      };
       const expirations = [image.expiresAt, thumbnail.expiresAt].filter((value): value is number => value !== undefined);
       return {
         imageUrl: image.url, thumbnailUrl: thumbnail.url || undefined,
+        imageCacheKey: cacheKey(dream.imageUrl, image, 'original'),
+        thumbnailCacheKey: cacheKey(dream.thumbnailUrl, thumbnail, 'thumbnail'),
         imageStatus: image.status, thumbnailStatus: thumbnail.status,
         ...(expirations.length ? { expiresAt: Math.min(...expirations) } : {}),
       };

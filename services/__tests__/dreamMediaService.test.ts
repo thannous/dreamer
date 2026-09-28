@@ -17,6 +17,23 @@ function setup() {
 }
 
 describe('dream media resolver', () => {
+  it('keeps authorized cache identity stable across signatures and changes it with content or account', async () => {
+    const { resolver, advance } = setup();
+    const dream = { imageUrl: ref('A/image.png'), thumbnailUrl: ref('A/thumb.png'), imageUpdatedAt: 1 };
+    const first = await resolver.resolveDreamMedia(dream, 'A');
+    advance(24 * 60 * 60 * 1000);
+    const refreshed = await resolver.resolveDreamMedia(dream, 'A');
+    expect(first.imageCacheKey).toBeTruthy();
+    expect(refreshed.imageCacheKey).toBe(first.imageCacheKey);
+    expect(first.thumbnailCacheKey).not.toBe(first.imageCacheKey);
+    const changed = await resolver.resolveDreamMedia({ ...dream, imageUpdatedAt: 2 }, 'A');
+    expect(changed.imageCacheKey).not.toBe(first.imageCacheKey);
+    resolver.setDreamMediaScope('B');
+    const denied = await resolver.resolveDreamMedia(dream, 'B');
+    expect(denied.imageUrl).toBe('');
+    expect(denied.imageCacheKey).toBeUndefined();
+  });
+
   it.each([10, 100, 1000])('batches %i reference pairs with bounded cache', async count => {
     const { resolver, sign } = setup();
     const results = await Promise.all(Array.from({ length: count }, (_, i) => resolver.resolveDreamMedia({

@@ -14,7 +14,8 @@ import sys
 import time
 import xml.etree.ElementTree as ET
 
-PHASES = ['detail-open', 'detail-scroll', 'reading-open', 'reading-scroll']
+DEFAULT_PHASES = ['detail-open', 'detail-scroll', 'reading-open', 'reading-scroll']
+PHASES = ['journal-scroll', *DEFAULT_PHASES]
 PACKAGE = 'com.tanuki75.noctalia'
 
 def save(file, value):
@@ -70,7 +71,7 @@ class Runner:
         self.out = Path(options['output'])
         self.out.mkdir(parents=True, exist_ok=True)
         self.scenario = json.loads(Path(options['scenario']).read_text())
-        self.phases = options.get('phases', ','.join(PHASES)).split(',')
+        self.phases = options.get('phases', ','.join(DEFAULT_PHASES)).split(',')
         if not self.phases or any(p not in PHASES for p in self.phases):
             raise ValueError('Unknown reading phase')
         if options['packageName'] != PACKAGE:
@@ -131,7 +132,7 @@ class Runner:
             raise ValueError('Debuggable binary cannot qualify Release performance')
         signature = self.command([self.o['apksigner'], 'verify', '--print-certs', str(apk)]).stdout.decode()
         cert = re.search(r'certificate SHA-256 digest: ([0-9a-f]+)', signature)[1]
-        logs = self.adb('logcat', '-d', '--pid', pid, '-v', 'brief').decode()
+        logs = self.adb('logcat', '-d', '--pid', pid, '-v', 'brief').decode('utf-8', errors='replace')
         runtimes = []
         for line in logs.splitlines():
             if '[NoctaliaRuntime]' in line and '{' in line:
@@ -267,6 +268,13 @@ class Runner:
         digest = hashlib.sha256(label.encode()).hexdigest()
         if digest != self.scenario['dreamLabelSha256']:
             raise ValueError('Reference dream content changed')
+        if 'journal-scroll' in self.phases:
+            self.measure(run, 'journal-scroll', self.scroll)
+            if not any(p != 'journal-scroll' for p in self.phases):
+                return
+            card = self.find(self.tree(), self.scenario['targetTestId'])
+            if card is None:
+                raise ValueError('Reference dream not visible after journal scroll')
         self.measure(run, 'detail-open', lambda: self.tap(card))
         if self.find(self.tree(), 'btn.navigateJournal') is None:
             raise ValueError('Detail screen not verified')
