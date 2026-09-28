@@ -145,6 +145,7 @@ const DREAM_THEMES: DreamTheme[] = ['surreal', 'mystical', 'calm', 'noir'];
 const isMockMode = isMockModeEnabled();
 const DREAM_IMAGE_ASPECT = 9 / 16;
 const DREAM_IMAGE_CROP_EPSILON = 0.01;
+const GUEST_DEMO_QUOTA_WAIT_MS = 30_000;
 
 const humanizeMemoryValue = (value: string): string => value.replace(/_/g, ' ');
 
@@ -246,6 +247,7 @@ function JournalDetailContent() {
   );
   const analysisLaunchInFlightRef = useRef(false);
   const autoAnalysisHandledRef = useRef(false);
+  const autoAnalysisExpiresAtRef = useRef<number | null>(null);
   const analysisPressInFlightRef = useRef(false);
   const purchaseAnalysisHandledRef = useRef(false);
   const recallEligibleDreamIdRef = useRef<string | null>(
@@ -1473,16 +1475,39 @@ function JournalDetailContent() {
   );
 
   useEffect(() => {
-    if (autoAnalyzeParam !== '1' || autoAnalysisHandledRef.current || !dream || quotaLoading) return;
-    const hasGuestDemoCredits = !user && tier === 'guest'
-      && savedAnalysisAction === 'analyze' && guestImageAvailable;
-    if (!isSavedArrival || recallRequested || !hasGuestDemoCredits
+    if (autoAnalyzeParam !== '1' || autoAnalysisHandledRef.current) return;
+    if (autoAnalysisExpiresAtRef.current === null) {
+      autoAnalysisExpiresAtRef.current = Date.now() + GUEST_DEMO_QUOTA_WAIT_MS;
+    }
+    const remaining = autoAnalysisExpiresAtRef.current - Date.now();
+    if (remaining <= 0) {
+      autoAnalysisHandledRef.current = true;
+      router.setParams({ autoAnalyze: undefined });
+      return;
+    }
+    // A first guest session may be provisional while Play Integrity and the
+    // remote quota settle. Keep the saved-dream intent briefly, never forever.
+    const timeout = setTimeout(() => {
+      if (autoAnalysisHandledRef.current) return;
+      autoAnalysisHandledRef.current = true;
+      router.setParams({ autoAnalyze: undefined });
+    }, remaining);
+    return () => clearTimeout(timeout);
+  }, [autoAnalyzeParam]);
+
+  useEffect(() => {
+    if (autoAnalyzeParam !== '1' || autoAnalysisHandledRef.current || !dream) return;
+    if (!isSavedArrival || recallRequested || user || tier !== 'guest'
       || dream.isAnalyzed || dream.analysisStatus !== 'none' || dream.analysisRequestId) {
       autoAnalysisHandledRef.current = true;
       router.setParams({ autoAnalyze: undefined });
       return;
     }
+    // An unavailable credit can be a stale quota response during the first
+    // guest bootstrap. Wait for a confirmed eligible response or the timeout.
+    if (quotaLoading || savedAnalysisAction !== 'analyze' || !guestImageAvailable) return;
     const timer = setTimeout(() => {
+      if (autoAnalysisHandledRef.current) return;
       autoAnalysisHandledRef.current = true;
       void runAnalyze(true);
       router.setParams({ autoAnalyze: undefined });
@@ -1514,6 +1539,9 @@ function JournalDetailContent() {
   const handleAnalyze = useCallback(async () => {
     if (!dream || analysisPressInFlightRef.current) return;
     analysisPressInFlightRef.current = true;
+    // The explicit tap owns the action if quota recovery happens concurrently.
+    autoAnalysisHandledRef.current = true;
+    if (autoAnalyzeParam === '1') router.setParams({ autoAnalyze: undefined });
     try {
       if (user && savedAnalysisAction === 'upgrade' && !canResumeAnalysis) {
         router.push(buildAnalysisPaywallHref(dream, user.id));
@@ -1539,7 +1567,7 @@ function JournalDetailContent() {
     } finally {
       analysisPressInFlightRef.current = false;
     }
-  }, [canResumeAnalysis, dream, ensureAnalyzeAllowed, guestNeedsAccount, hasExistingImage, runAnalyze, savedAnalysisAction, user]);
+  }, [autoAnalyzeParam, canResumeAnalysis, dream, ensureAnalyzeAllowed, guestNeedsAccount, hasExistingImage, runAnalyze, savedAnalysisAction, user]);
 
   const handleReplaceImage = useCallback(() => {
     void runAnalyze(shouldReplaceExistingImage('replace'));
