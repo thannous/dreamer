@@ -1,3 +1,4 @@
+import { thumbnailFailures } from '@/lib/thumbnailFailureCache';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { PressableScale } from '@/components/motion';
@@ -9,10 +10,10 @@ import { areDreamMemoryMetadataEqual, getDreamSyncState } from '@/lib/dreamUtils
 import { isRememberedDream } from '@/lib/dreamFilters';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { isMockModeEnabled } from '@/lib/env';
-import { getDreamImageVersion, getDreamThumbnailUri, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
+import { getDreamImageVersion, getDreamThumbnailCacheKey, getDreamThumbnailUri, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import { DreamAnalysis } from '@/lib/types';
 import { Image } from 'expo-image';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -28,7 +29,6 @@ interface DreamCardProps {
   variant?: DreamCardVariant;
 }
 
-const failedThumbnailUris = new Set<string>();
 
 /** expo-image is not a Uniwind component, so its fill style stays an object. */
 const CARD_IMAGE_STYLE = { width: '100%', height: '100%' } as const;
@@ -96,20 +96,36 @@ export const DreamCard = memo(function DreamCard({
   }, [media.imageUrl, imageVersion]);
   const trimmedThumbnailUri = thumbnailUri.trim();
 
-  // OPTIMIZATION: Initialize state with known failed status to avoid double-render on mount
+  const accessScope = media.accessScope ?? null;
+  const thumbnailCacheKey = getDreamThumbnailCacheKey(media);
+  const failureKey = thumbnailCacheKey ?? trimmedThumbnailUri;
+  const retryIdentity = JSON.stringify([accessScope, failureKey]);
+  const retriedThumbnail = useRef<string | null>(null);
+
+  // Initialize state with known failed status to avoid double-render on mount
   const [useFullImage, setUseFullImage] = useState(() => {
-    return !!trimmedThumbnailUri && failedThumbnailUris.has(trimmedThumbnailUri);
+    return !!trimmedThumbnailUri && thumbnailFailures.has(accessScope, failureKey);
   });
 
   useEffect(() => {
-    const shouldFallback = !!trimmedThumbnailUri && failedThumbnailUris.has(trimmedThumbnailUri);
+    const shouldFallback = !!trimmedThumbnailUri && thumbnailFailures.has(accessScope, failureKey);
     // Only update if state doesn't match derived reality
     if (useFullImage !== shouldFallback) {
       setUseFullImage(shouldFallback);
     }
-  }, [trimmedThumbnailUri, fullImageUri, useFullImage]);
+  }, [trimmedThumbnailUri, fullImageUri, useFullImage, accessScope, failureKey]);
 
-  const preferFullImage = useFullImage || (trimmedThumbnailUri && failedThumbnailUris.has(trimmedThumbnailUri));
+  useEffect(() => {
+    if (!useFullImage || retriedThumbnail.current === retryIdentity) return;
+    const timer = setTimeout(() => {
+      retriedThumbnail.current = retryIdentity;
+      thumbnailFailures.remove(accessScope, failureKey);
+      setUseFullImage(false);
+    }, thumbnailFailures.ttlMs);
+    return () => clearTimeout(timer);
+  }, [useFullImage, retryIdentity, accessScope, failureKey]);
+
+  const preferFullImage = useFullImage || (trimmedThumbnailUri && thumbnailFailures.has(accessScope, failureKey));
   const imageUri = preferFullImage
     ? fullImageUri
     : (trimmedThumbnailUri || fullImageUri);
@@ -119,7 +135,7 @@ export const DreamCard = memo(function DreamCard({
 
   // Get optimized image config for thumbnails
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
-  const imageRecyclingKey = `${getDreamIdentityKey(dream)}-${imageVersion ?? 0}`;
+  const imageRecyclingKey = JSON.stringify([accessScope, getDreamIdentityKey(dream), imageVersion ?? 0]);
   const imageTransition = imageConfig.transition;
   const imagePlaceholder = CARD_IMAGE_PLACEHOLDER;
   const imagePriority = imageConfig.priority;
@@ -241,7 +257,7 @@ export const DreamCard = memo(function DreamCard({
       >
         <View className={`w-full overflow-hidden ${isFeatured ? 'h-[200px]' : 'h-[160px]'}`}>
           <Image
-            source={imageUri ? { uri: imageUri } : null}
+            source={imageUri ? { uri: imageUri, cacheKey: preferFullImage ? media.imageCacheKey : thumbnailCacheKey } : null}
             style={CARD_IMAGE_STYLE}
             contentFit={imageConfig.contentFit}
             transition={imageTransition}
@@ -249,8 +265,8 @@ export const DreamCard = memo(function DreamCard({
             priority={imagePriority}
             recyclingKey={imageRecyclingKey}
             onError={() => {
-              if (trimmedThumbnailUri && trimmedThumbnailUri !== fullImageUri) {
-                failedThumbnailUris.add(trimmedThumbnailUri);
+              if (!preferFullImage && trimmedThumbnailUri && trimmedThumbnailUri !== fullImageUri) {
+                thumbnailFailures.record(accessScope, failureKey);
               }
               if (!preferFullImage && fullImageUri && imageUri !== fullImageUri) {
                 setUseFullImage(true);

@@ -2,6 +2,9 @@ import * as FileSystem from 'expo-file-system';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { Platform } from 'react-native';
 
+import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { createJournalRecordStore } from './journalRecordStore';
+import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
 import { migrateLegacyDreamMutation } from '@/lib/dreamUtils';
 import { logger } from '@/lib/logger';
 import { reportSyncQueueClearedWithPending } from '@/lib/syncObservability';
@@ -747,7 +750,11 @@ async function persistDataUriImage(imageUrl: string, dreamId: number): Promise<s
   }
 }
 
+const normalizedRecordCache = new WeakMap<DreamAnalysis, DreamAnalysis>();
+
 async function normalizeDreamForStorage(dream: DreamAnalysis): Promise<DreamAnalysis> {
+  const cached = normalizedRecordCache.get(dream);
+  if (cached) return cached;
   const trimmedChatHistory = Array.isArray(dream.chatHistory)
     ? dream.chatHistory.slice(-MAX_CHAT_HISTORY_FOR_STORAGE)
     : [];
@@ -766,12 +773,10 @@ async function normalizeDreamForStorage(dream: DreamAnalysis): Promise<DreamAnal
     thumbnailUrl = persisted ?? undefined;
   }
 
-  return {
-    ...dream,
-    imageUrl,
-    thumbnailUrl,
-    chatHistory: trimmedChatHistory,
-  };
+  const normalized = { ...dream, imageUrl, thumbnailUrl, chatHistory: trimmedChatHistory };
+  normalizedRecordCache.set(dream, normalized);
+  normalizedRecordCache.set(normalized, normalized);
+  return normalized;
 }
 
 async function normalizeDreamsForStorage(dreams: DreamAnalysis[]): Promise<DreamAnalysis[]> {
@@ -841,8 +846,62 @@ function isJournalLayoutPreference(value: unknown): value is JournalLayoutPrefer
   return value === 'cards' || value === 'compact';
 }
 
+// Native journal records share one engine/connection. Existing web KV semantics remain.
+const nativeJournalRecords = createJournalRecordStore<DreamAnalysis>({
+  database: async () => {
+    // Resolve only on native access; web keeps its existing IndexedDB adapter.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { openDatabaseAsync } = require('expo-sqlite') as typeof import('expo-sqlite');
+    return openDatabaseAsync('dreamer-journal-v1.db');
+  },
+  keyOf: getDreamIdentityKey,
+  validate: (value) => typeof value === 'object' && value !== null &&
+    Number.isSafeInteger((value as DreamAnalysis).id) &&
+    typeof (value as DreamAnalysis).transcript === 'string',
+  encode: async (value) => JSON.stringify(value),
+});
+
+async function readLegacyDreamRecords(key: string): Promise<DreamAnalysis[] | null> {
+  const raw = await getItem(key, { strict: true });
+  if (raw === null) return null;
+  const parsed: unknown = JSON.parse(raw);
+  if (!Array.isArray(parsed)) throw new Error('Invalid legacy journal');
+  return normalizeDreamsForStorage(parsed);
+}
+
+async function readNativeDreamRecords(key: string): Promise<DreamAnalysis[] | null> {
+  const values = await nativeJournalRecords.read(key, () => readLegacyDreamRecords(key));
+  values?.forEach(value => normalizedRecordCache.set(value, value));
+  return values;
+}
+
+/** Only complete, unmodified server rows belong to this separate checkpoint. */
+export async function getServerDreamCheckpoint(userScope: string): Promise<DreamAnalysis[]> {
+  if (!userScope) return [];
+  try {
+    const key = `server-checkpoint-v1:${userScope}`;
+    const values = Platform.OS === 'web'
+      ? JSON.parse(await getItem(key, { strict: true }) ?? '[]') as unknown
+      : await nativeJournalRecords.read(key, async () => null) ?? [];
+    if (!Array.isArray(values) || values.some(value => !Number.isSafeInteger(value?.remoteId) ||
+      !value?.revisionId || !Number.isSafeInteger(value?.id) || typeof value?.transcript !== 'string')) return [];
+    return values;
+  } catch { return []; } // Optional optimization; corruption never authorizes deletion.
+}
+
+export async function saveServerDreamCheckpoint(dreams: DreamAnalysis[], userScope: string): Promise<void> {
+  if (!userScope || dreams.some(dream => !Number.isSafeInteger(dream.remoteId) || !dream.revisionId)) return;
+  const key = `server-checkpoint-v1:${userScope}`;
+  if (Platform.OS === 'web') await setItem(key, JSON.stringify(dreams), { strict: true });
+  else await nativeJournalRecords.write(key, dreams, async () => null);
+}
+
 export async function getSavedDreams(): Promise<DreamListReadResult> {
   try {
+    if (Platform.OS !== 'web') {
+      const value = await readNativeDreamRecords(DREAMS_STORAGE_KEY);
+      return value === null ? { status: 'absent' } : { status: 'loaded', value: [...value].sort((a, b) => b.id - a.id) };
+    }
     const savedDreams = await getItem(DREAMS_STORAGE_KEY, { strict: true });
     if (savedDreams == null) return { status: 'absent' };
     const dreams = JSON.parse(savedDreams) as unknown;
@@ -861,8 +920,13 @@ export async function getSavedDreams(): Promise<DreamListReadResult> {
 
 export async function saveDreams(dreams: DreamAnalysis[]): Promise<void> {
   try {
+    const trace = performanceTraceId();
+    markPerformance('journal.storage_started', { trace, count: dreams.length });
     const normalized = await normalizeDreamsForStorage(dreams);
-    await setItem(DREAMS_STORAGE_KEY, JSON.stringify(normalized), { strict: true });
+    markPerformance('journal.storage_normalized', { trace, count: dreams.length });
+    if (Platform.OS !== 'web') await nativeJournalRecords.write(DREAMS_STORAGE_KEY, normalized, () => readLegacyDreamRecords(DREAMS_STORAGE_KEY));
+    else await setItem(DREAMS_STORAGE_KEY, JSON.stringify(normalized), { strict: true });
+    markPerformance('journal.storage_committed', { trace, count: dreams.length });
   } catch {
     if (__DEV__) {
       console.error('Failed to save dreams');
@@ -1540,6 +1604,10 @@ export async function getCachedRemoteDreams(
   userScope?: string | null
 ): Promise<DreamListReadResult> {
   try {
+    if (Platform.OS !== 'web') {
+      const value = await readNativeDreamRecords(scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope));
+      return value === null ? { status: 'absent' } : { status: 'loaded', value };
+    }
     const cachedDreams = await readScopedJson(
       REMOTE_DREAMS_CACHE_KEY,
       userScope,
@@ -1562,8 +1630,14 @@ export async function saveCachedRemoteDreams(
   userScope?: string | null
 ): Promise<void> {
   try {
+    const trace = performanceTraceId();
+    markPerformance('journal.storage_started', { trace, count: dreams.length });
     const normalized = await normalizeDreamsForStorage(dreams);
-    await writeScopedJson(REMOTE_DREAMS_CACHE_KEY, JSON.stringify(normalized), userScope);
+    const key = scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope);
+    markPerformance('journal.storage_normalized', { trace, count: dreams.length });
+    if (Platform.OS !== 'web') await nativeJournalRecords.write(key, normalized, () => readLegacyDreamRecords(key));
+    else await writeScopedJson(REMOTE_DREAMS_CACHE_KEY, JSON.stringify(normalized), userScope);
+    markPerformance('journal.storage_committed', { trace, count: dreams.length });
   } catch (error) {
     if (__DEV__) {
       if (isSQLiteBusyError(error)) {
@@ -1665,6 +1739,10 @@ async function getPendingDreamMutationsBeforeClear(userScope?: string | null): P
 }
 
 export async function clearRemoteDreamStorage(userScope?: string | null): Promise<void> {
+  if (Platform.OS !== 'web') {
+    await nativeJournalRecords.clear(scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope));
+    if (userScope) await nativeJournalRecords.clear(`server-checkpoint-v1:${userScope}`);
+  } else if (userScope) await removeItem(`server-checkpoint-v1:${userScope}`);
   const pendingMutations = await getPendingDreamMutationsBeforeClear(userScope);
   if (pendingMutations.length > 0) {
     reportSyncQueueClearedWithPending({

@@ -181,24 +181,26 @@ function percentile(values, percentileValue) {
 }
 
 function summarizeRuns(runs) {
-  const field = (selector) => runs.map(selector).filter(Number.isFinite);
+  const valid = runs.filter((run) => getRunFailureReasons(run).length === 0);
+  const metric = (selector, includeP95 = false) => {
+    const values = valid.map(selector).filter(Number.isFinite);
+    return { count: values.length, median: percentile(values, 50),
+      ...(includeP95 ? { p95: percentile(values, 95) } : {}) };
+  };
   return {
-    count: runs.length,
-    amTotalMs: {
-      median: percentile(field((run) => run.launch.totalTimeMs), 50),
-      p95: percentile(field((run) => run.launch.totalTimeMs), 95),
-    },
-    rootToInteractiveMs: {
-      median: percentile(field((run) => run.markers.rootToInteractiveMs), 50),
-      p95: percentile(field((run) => run.markers.rootToInteractiveMs), 95),
-    },
-    frameP95Ms: { median: percentile(field((run) => run.gfxinfo.p95Ms), 50) },
-    frameP99Ms: { median: percentile(field((run) => run.gfxinfo.p99Ms), 50) },
-    jankyPercent: { median: percentile(field((run) => run.gfxinfo.jankyPercent), 50) },
-    deadlineMisses: { median: percentile(field((run) => run.gfxinfo.deadlineMisses), 50) },
-    totalPssKb: { median: percentile(field((run) => run.meminfo.totalPssKb), 50) },
-    nativeHeapKb: { median: percentile(field((run) => run.meminfo.nativeHeapKb), 50) },
-    graphicsKb: { median: percentile(field((run) => run.meminfo.graphicsKb), 50) },
+    count: valid.length,
+    totalCount: runs.length,
+    validCount: valid.length,
+    invalidCount: runs.length - valid.length,
+    amTotalMs: metric((run) => run.launch.totalTimeMs, true),
+    rootToInteractiveMs: metric((run) => run.markers.rootToInteractiveMs, true),
+    frameP95Ms: metric((run) => run.gfxinfo.p95Ms),
+    frameP99Ms: metric((run) => run.gfxinfo.p99Ms),
+    jankyPercent: metric((run) => run.gfxinfo.jankyPercent),
+    deadlineMisses: metric((run) => run.gfxinfo.deadlineMisses),
+    totalPssKb: metric((run) => run.meminfo.totalPssKb),
+    nativeHeapKb: metric((run) => run.meminfo.nativeHeapKb),
+    graphicsKb: metric((run) => run.meminfo.graphicsKb),
     fatalRuns: runs.filter((run) => run.fatalError).length,
     devTransportRuns: runs.filter((run) => run.devTransportDetected).length,
   };
@@ -388,7 +390,7 @@ function toCsv(runs) {
     'mode', 'run', 'am_total_ms', 'root_to_interactive_ms', 'frame_p95_ms',
     'frame_p99_ms', 'janky_percent', 'deadline_misses', 'pss_kb',
     'native_heap_kb', 'graphics_kb', 'thermal_status', 'fatal_error',
-    'dev_transport_detected',
+    'dev_transport_detected', 'valid', 'failure_reasons',
   ];
   const rows = runs.map((run) => [
     run.mode,
@@ -405,6 +407,8 @@ function toCsv(runs) {
     run.thermalStatus,
     run.fatalError,
     run.devTransportDetected,
+    getRunFailureReasons(run).length === 0,
+    getRunFailureReasons(run).join(';'),
   ]);
   return [headers, ...rows].map((row) => row.map((value) => value ?? '').join(',')).join('\n') + '\n';
 }
@@ -479,6 +483,8 @@ function main() {
         settleMs: options.settleMs,
         timeoutMs: options.timeoutMs,
       });
+      run.failureReasons = getRunFailureReasons(run);
+      run.valid = run.failureReasons.length === 0;
       runs.push(run);
       process.stdout.write(
         `[android-perf] ${mode} ${runNumber}/${options.runs}: am=${run.launch.totalTimeMs ?? 'n/a'}ms interactive=${run.markers.rootToInteractiveMs ?? 'n/a'}ms pss=${run.meminfo.totalPssKb ?? 'n/a'}KB\n`
@@ -487,6 +493,7 @@ function main() {
   }
 
   const report = {
+    schemaVersion: 2,
     capturedAt: new Date().toISOString(),
     device: serial,
     packageName: options.packageName,

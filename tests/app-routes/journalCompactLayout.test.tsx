@@ -53,6 +53,31 @@ let mockListProps: Record<string, any> = {};
 let mockHeaderOnLayout: ((event: any) => void) | undefined;
 
 jest.mock('expo-router', () => ({ router: { push: (...args: unknown[]) => mockPush(...args) }, useFocusEffect: () => {} }));
+// Model UI-runtime values separately from screen state. Only the animated host
+// subscribes; scrolling does not cause the Journal screen to render in this adapter.
+jest.mock('react-native-reanimated', () => {
+  const React = require('react');
+  const base = jest.requireActual('../../tests/react-native-reanimated-stub');
+  const listeners = new Set<() => void>();
+  const View = (props: any) => {
+    const [, update] = React.useReducer((n: number) => n + 1, 0);
+    React.useLayoutEffect(() => { listeners.add(update); return () => { listeners.delete(update); }; }, []);
+    const parts = Array.isArray(props.style) ? props.style : [props.style];
+    const style = Object.assign({}, ...parts.map((part: any) => part?.__factory ? part.__factory() : part));
+    return React.createElement(require('react-native').View, { ...props, style });
+  };
+  return { ...base, __esModule: true, default: { ...base.default, View },
+    useSharedValue: (initial: number) => {
+      const value = React.useRef(initial);
+      return React.useMemo(() => ({ get: () => value.current, set: (next: number) => {
+        if (next === value.current) return;
+        value.current = next; listeners.forEach(notify => notify());
+      } }), []);
+    },
+    useAnimatedStyle: (factory: () => unknown) => ({ __factory: factory }),
+    useAnimatedScrollHandler: (handlers: any) => (event: any) => handlers.onScroll(event.nativeEvent ?? event),
+  };
+});
 jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 24, bottom: 24, left: 0, right: 0 }) }));
 jest.mock('react-native', () => {
   const React = require('react');
@@ -828,7 +853,7 @@ describe('Journal compact large-text layout', () => {
     expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
       expect.objectContaining({
         position: 'absolute',
-        transform: [{ translateY: 0 }],
+        transform: [{ translateY: -mobileSearchHeaderHeight(2) }],
       }),
     );
 

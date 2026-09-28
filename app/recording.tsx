@@ -1,3 +1,4 @@
+import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
 import { RecordingDurationLabel } from '@/components/recording/RecordingDurationLabel';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
@@ -1049,7 +1050,10 @@ export default function RecordingScreen() {
       setDraftDream(capturedDream);
       const isNewDream = !dreams.some((dream) => dream.id === capturedDream.id);
       const isFirstDream = dreams.length === 0;
+      const saveTrace = performanceTraceId();
+      markPerformance('journal.save_requested', { trace: saveTrace });
       const savedDream = await addDream(capturedDream);
+      markPerformance('journal.save_acknowledged', { trace: saveTrace });
       if (isNewDream) {
         void trackDreamSaveMilestone(isFirstDream);
       }

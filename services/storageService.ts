@@ -79,3 +79,7 @@ export const getDreamsMigrationSynced = service.getDreamsMigrationSynced;
 export const setDreamsMigrationSynced = service.setDreamsMigrationSynced;
 export const getGuestDreamMigrationOwner = service.getGuestDreamMigrationOwner;
 export const setGuestDreamMigrationOwner = service.setGuestDreamMigrationOwner;
+
+// Checkpoints are an optional real-sync optimization, never mock journal state.
+export const getServerDreamCheckpoint = realService.getServerDreamCheckpoint;
+export const saveServerDreamCheckpoint = realService.saveServerDreamCheckpoint;

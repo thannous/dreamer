@@ -58,6 +58,9 @@ export function useDreamMedia(dream?: DreamAnalysis | null) {
   const value = resolved?.identity === identity && resolved.epoch === refreshEpoch
     ? resolved.value : undefined;
   return {
+    accessScope: userId,
+    imageCacheKey: value?.imageCacheKey,
+    thumbnailCacheKey: value?.thumbnailCacheKey,
     retry: () => setRefreshEpoch(epoch => epoch + 1),
     imageUrl: value?.imageUrl ?? getDirectDreamMediaUrl(imageUrl) ?? '',
     thumbnailUrl: value?.thumbnailUrl ?? getDirectDreamMediaUrl(thumbnailUrl),

@@ -45,6 +45,23 @@ const mockAsyncStorage = {
 
 const mockReportSyncQueueClearedWithPending = jest.fn();
 
+// Exercise the real record-store SQL against SQLite while retaining legacy KV fixtures.
+jest.mock('expo-sqlite', () => {
+  const { DatabaseSync } = jest.requireActual('node:sqlite') as typeof import('node:sqlite');
+  const db = new DatabaseSync(':memory:');
+  const adapter = {
+    execAsync: async (sql: string) => { db.exec(sql); },
+    getAllAsync: async (sql: string, ...args: (string | number | null)[]) => db.prepare(sql).all(...args),
+    runAsync: async (sql: string, ...args: (string | number | null)[]) => db.prepare(sql).run(...args),
+    withExclusiveTransactionAsync: async (task: (tx: unknown) => Promise<void>) => {
+      db.exec('BEGIN IMMEDIATE');
+      try { await task(adapter); db.exec('COMMIT'); }
+      catch (error) { db.exec('ROLLBACK'); throw error; }
+    },
+  };
+  return { openDatabaseAsync: async () => adapter };
+});
+
 jest.mock('@react-native-async-storage/async-storage', () => ({
   __esModule: true,
   default: mockAsyncStorage,
@@ -552,7 +569,7 @@ describe('storageServiceReal', () => {
     }
   });
 
-  it('stores dreams on filesystem for native platforms and bypasses AsyncStorage reads', async () => {
+  it('stores native records and retains the legacy copy during migration', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
@@ -573,6 +590,7 @@ describe('storageServiceReal', () => {
 
     const { getInfoAsync } = require('expo-file-system/legacy');
     const getInfoSpy = jest.mocked(getInfoAsync);
+    getInfoSpy.mockResolvedValue({ exists: false } as any);
 
     const storage = require('../storageServiceReal');
 
@@ -592,9 +610,8 @@ describe('storageServiceReal', () => {
 
     await storage.saveDreams(dreams);
 
-    expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
-    expect(kvStore.setItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY, expect.stringContaining('"title":"A dream"'));
-    expect(getInfoSpy).not.toHaveBeenCalled();
+    expect(mockAsyncStorage.removeItem).not.toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
+    expect(kvStore.setItem).not.toHaveBeenCalled();
 
     mockAsyncStorage.getItem.mockClear();
     const loaded = requireLoadedDreams(await storage.getSavedDreams());
@@ -1034,7 +1051,7 @@ describe('storageServiceReal', () => {
     (globalThis as any).__DEV__ = originalDev;
   });
 
-  it('logs when file-backed delete fails during kv writes', async () => {
+  it('keeps the legacy file even when its deletion would fail', async () => {
     const originalDev = (globalThis as any).__DEV__;
     (globalThis as any).__DEV__ = true;
     const { Platform } = require('react-native');
@@ -1052,7 +1069,8 @@ describe('storageServiceReal', () => {
     };
     jest.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
 
-    const { deleteAsync } = require('expo-file-system/legacy');
+    const { deleteAsync, getInfoAsync } = require('expo-file-system/legacy');
+    jest.mocked(getInfoAsync).mockResolvedValue({ exists: false } as any);
     jest.mocked(deleteAsync).mockRejectedValueOnce(new Error('delete failed'));
 
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -1073,8 +1091,10 @@ describe('storageServiceReal', () => {
 
     await storage.saveDreams(dreams);
 
-    expect(kvStore.setItem).toHaveBeenCalled();
-    expect(warnSpy).toHaveBeenCalled();
+    expect(kvStore.setItem).not.toHaveBeenCalled();
+    expect(deleteAsync).not.toHaveBeenCalled();
+    expect(requireLoadedDreams(await storage.getSavedDreams())[0].transcript).toBe('hello');
+    warnSpy.mockRestore();
     (globalThis as any).__DEV__ = originalDev;
   });
 

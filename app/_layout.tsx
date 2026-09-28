@@ -887,6 +887,7 @@ function JournalRuntime({ children }: React.PropsWithChildren) {
  * navigation tree (plus the animated splash overlay).
  */
 export default function RootLayout() {
+  const [fontsStartedAt] = useState(() => globalThis.performance?.now?.() ?? Date.now());
   const [fontsLoaded, fontError] = useFonts({
     SpaceGrotesk_400Regular,
     SpaceGrotesk_500Medium,
@@ -931,6 +932,13 @@ export default function RootLayout() {
   useEffect(() => {
     markPerformance('startup.root_mounted');
   }, []);
+
+  useEffect(() => {
+    if (fontsLoaded || fontError) markPerformance('startup.fonts_settled', {
+      success: fontsLoaded,
+      duration_ms: Math.round((globalThis.performance?.now?.() ?? Date.now()) - fontsStartedAt),
+    });
+  }, [fontsLoaded, fontError, fontsStartedAt]);
 
   useEffect(() => {
     if (Platform.OS !== 'android' || isLucidTrainer) return;

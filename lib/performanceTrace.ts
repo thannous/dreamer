@@ -30,3 +30,17 @@ export function markPerformance(
     `${PREFIX} name=${name} elapsed_ms=${now.toFixed(1)}${fields ? ` ${fields}` : ''}`
   );
 }
+
+// Opaque process-local correlation only. Keys never reach logs or persisted state.
+let traceSequence = 0;
+const correlations = new Map<string, number>();
+export function performanceTraceId(key?: string): number | undefined {
+  if (!isPerformanceTracingEnabled()) return undefined;
+  if (key && correlations.has(key)) return correlations.get(key);
+  const id = ++traceSequence;
+  if (key) {
+    correlations.set(key, id);
+    if (correlations.size > 128) correlations.delete(correlations.keys().next().value!);
+  }
+  return id;
+}

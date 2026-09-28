@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 import React from 'react';
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render as renderTree, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { PendingRecordingIntent } from '@/lib/onboardingState';
@@ -8,6 +8,12 @@ import type { DreamAnalysis } from '@/lib/types';
 import { requestAnalysisReturnRoute } from '@/lib/paywallRoute';
 import { trackInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { TID } from '@/lib/testIDs';
+
+// Static hook fixtures need an actual context notification across a memo boundary.
+const mockRenderContext = React.createContext({});
+const render = (ui: React.ReactElement) => renderTree(ui, { wrapper: ({ children }) => (
+  <mockRenderContext.Provider value={{}}>{children}</mockRenderContext.Provider>
+) });
 
 let mockPendingRecordingIntent: Partial<PendingRecordingIntent> | null = null;
 const mockTransitionOnboarding = jest.fn(async () => undefined);
@@ -378,7 +384,9 @@ jest.mock('@/hooks/useLocaleFormatting', () => ({
 }));
 
 jest.mock('@/hooks/useQuota', () => ({
-  useQuota: () => ({
+  useQuota: () => {
+    require('react').useContext(mockRenderContext);
+    return ({
     canAnalyzeNow: mockCanAnalyzeNow,
     canAnalyze: mockCanAnalyze,
     canGenerateImageNow: true,
@@ -387,7 +395,7 @@ jest.mock('@/hooks/useQuota', () => ({
     loading: mockQuotaLoading,
     quotaStatus: mockQuotaStatus ? { tier: mockTier, usage: mockQuotaUsage, canAnalyze: (mockQuotaUsage?.analysis.remaining ?? 1) > 0, ...mockQuotaStatus }
       : mockCanAnalyzeNow && mockQuotaUsage ? { tier: mockTier, usage: mockQuotaUsage, canAnalyze: true } : null,
-  }),
+  }); },
 }));
 
 jest.mock('@/hooks/useScrollIdle', () => ({

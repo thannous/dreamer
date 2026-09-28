@@ -52,9 +52,8 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
   const resolveSnapshotDependenciesRef = cell<(() => void) | null>(null);
   // Only entries proven never attempted may be cancelled during durable preparation.
   const preparingCreatesRef = cell(new Set<string>());
-  const syncingRef = cell(false);
   const syncTokenRef = cell(0);
-  const inFlightSyncRef = cell<Promise<void> | null>(null);
+  const flights = new Set<{ mutations: DreamMutation[]; promise: Promise<void> }>();
   const mountedRef = cell(true);
   const mutationsLoadedRef = cell(initialSnapshotMatchesScope);
   const mutationScopeRef = cell(userScope);
@@ -67,9 +66,8 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
       mutationScopeRef.current = userScope;
       pendingMutationsRef.current = [];
       syncTokenRef.current += 1;
-      syncingRef.current = false;
       // An old account's unresolved request must not hold the new account hostage.
-      inFlightSyncRef.current = null;
+      flights.clear();
       preparingCreatesRef.current.clear();
     }
     mutationsLoadedRef.current = initialSnapshotMatchesScope;
@@ -270,8 +268,8 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
     user: { id: string } | null | undefined,
     persistence = bindPersistence({ canUseRemoteSync, userScope })) => {
     const { persistPendingMutations } = persistence;
-    const syncPendingMutations = async function replayPendingMutations(): Promise<void> {
-      if (!pendingMutationsRef.current.length) return;
+    const syncPendingMutations = async function replayPendingMutations(target?: DreamTarget): Promise<void> {
+      if (!pendingMutationsRef.current.length && !flights.size) return;
       const deferredReason = !canUseRemoteSync || !user ? 'session_unavailable'
         : !hasNetwork ? 'offline_snapshot'
           : activeUserScopeRef.current !== userScope ? 'account_changed' : null;
@@ -280,18 +278,23 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
         return;
       }
 
-      if (inFlightSyncRef.current) {
-        await inFlightSyncRef.current;
+      // Wait only for receipts that can affect this identity. A background
+      // batch containing the target remains a dependency until its response.
+      const matchesTarget = (entry: DreamMutation) => target === undefined ||
+        matchesDreamTarget(getMutationDreamTarget(entry), target);
+      for (;;) {
+        const dependencies = [...flights].filter(flight => flight.mutations.some(matchesTarget));
+        if (!dependencies.length) break;
+        await Promise.all(dependencies.map(flight => flight.promise));
+        if (!mountedRef.current || activeUserScopeRef.current !== userScope) return;
       }
-
-      if (!mountedRef.current || syncingRef.current || activeUserScopeRef.current !== userScope) return;
-
-      const eligibleMutations = pendingMutationsRef.current.filter((entry) => isRetryableMutation(entry) &&
+      if (!mountedRef.current || activeUserScopeRef.current !== userScope) return;
+      const eligibleMutations = pendingMutationsRef.current.filter((entry) => matchesTarget(entry) &&
+        isRetryableMutation(entry) &&
         (!['delete', 'update'].includes(entry.operation) || getMutationRemoteId(entry) != null));
       if (!eligibleMutations.length) return;
-
-      const currentToken = ++syncTokenRef.current;
-      syncingRef.current = true;
+      const currentToken = syncTokenRef.current;
+      const flight = { mutations: eligibleMutations, promise: Promise.resolve() as Promise<void> };
 
       const markMutationState = (
         mutation: DreamMutation,
@@ -327,7 +330,7 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
             pendingMutationsRef.current.some((entry) => entry.id === mutation.id));
           eligibleMutations.splice(0, eligibleMutations.length, ...stillQueued);
           if (!eligibleMutations.length) return;
-          preparingCreatesRef.current.clear();
+          eligibleMutations.forEach(mutation => preparingCreatesRef.current.delete(mutation.id));
           networkStarted = true;
           const canUseBatchSync = userScope && typeof syncDreamMutationsInSupabase === 'function';
           const results = canUseBatchSync
@@ -581,17 +584,17 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
           });
         } finally {
           if (syncTokenRef.current === currentToken) {
-            preparingCreatesRef.current.clear();
-            syncingRef.current = false;
-            inFlightSyncRef.current = null;
+            eligibleMutations.forEach(mutation => preparingCreatesRef.current.delete(mutation.id));
+            flights.delete(flight);
           }
         }
       })();
 
-      inFlightSyncRef.current = syncPromise;
+      flight.promise = syncPromise;
+      flights.add(flight);
       await syncPromise;
       if (resolvedDependencies && mountedRef.current && activeUserScopeRef.current === userScope) {
-        await replayPendingMutations();
+        await replayPendingMutations(target);
       }
     };
 

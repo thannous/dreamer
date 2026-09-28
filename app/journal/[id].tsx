@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { AnalysisReadingLauncher, type AnalysisReadingHandle } from '@/components/analysis/AnalysisReadingLauncher';
@@ -225,10 +226,12 @@ const Skeleton = ({ className }: { className: string }) => (
 export default function JournalDetailScreen() {
   const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
   const { user } = useAuth();
-  return <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])} />;
+  const { dreams } = useDreamsData();
+  const dream = resolveDreamRoute(dreams, route);
+  return <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])} dream={dream} />;
 }
 
-function JournalDetailContent() {
+const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dream?: DreamAnalysis }) {
   const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam, autoAnalyze: autoAnalyzeParam, analyzeAfterPurchase, analysisOwnerId } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; analysisOwnerId?: string }>();
   const recallRequested = isJournalSavedConfirmationParam(recallParam);
   const { state: onboardingState, transition: transitionOnboarding } = useOnboarding();
@@ -267,7 +270,6 @@ function JournalDetailContent() {
   useEffect(() => {
     recallEligibleDreamIdRef.current = recallOffer.eligibleDreamId;
   }, [recallOffer.eligibleDreamId]);
-  const { dreams } = useDreamsData();
   const {
     toggleFavorite,
     updateDream,
@@ -363,7 +365,6 @@ function JournalDetailContent() {
     tier, loading: quotaLoading, error: quotaError, status: quotaStatus,
   });
 
-  const dream = useMemo(() => resolveDreamRoute(dreams, { id, remoteId, clientRequestId }), [dreams, id, remoteId, clientRequestId]);
   const canResumeAnalysis = Boolean(dream && isResumableAnalysisRequest(dream));
   const guestNeedsAccount = !user && !canResumeAnalysis
     && (savedAnalysisAction === 'signup' || savedAnalysisAction === 'login');
@@ -3012,7 +3013,7 @@ function JournalDetailContent() {
       </KeyboardAvoidingView>
     </View>
   );
-}
+});
 
 const markdownContainerStyles = StyleSheet.create({
   interpretation: { marginBottom: 16 },
