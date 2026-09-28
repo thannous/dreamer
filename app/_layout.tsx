@@ -844,7 +844,9 @@ function RootLayoutNav({
             {/* Capture is a peer in the bottom navigation even though its route
                 sits above the tabs. It follows the same instant tab switch. */}
             <Stack.Screen name="recording" options={{ headerShown: false, animation: 'none' }} />
-            <Stack.Screen name="journal/[id]" options={{ headerShown: false }} />
+            {/* Repeated Android detail transitions redraw the retained journal;
+                measured draw stalls exceed a frame. Keep this frequent route instant. */}
+            <Stack.Screen name="journal/[id]" options={{ headerShown: false, ...(Platform.OS === 'android' ? { animation: 'none' as const } : {}) }} />
             <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="symbol-dictionary" options={{ headerShown: false }} />
