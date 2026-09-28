@@ -29,10 +29,11 @@
           "mailto",
           "tel"
         ]
-      }
+      },
+      "buildNumber": "11"
     },
     "android": {
-      "versionCode": 68,
+      "versionCode": 82,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

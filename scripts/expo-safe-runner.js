@@ -8,6 +8,7 @@ const { parseEnv } = require('node:util');
 const {
   syncAndroidNativeVersion,
 } = require('./sync-android-native-version');
+const { syncMobileBuildVersions, usesNoctaliaBuildVersions } = require('./sync-mobile-build-versions');
 const {
   attachDeviceLockSignals,
   defaultMetroPortForOwner,
@@ -254,6 +255,10 @@ function main(args = process.argv.slice(2)) {
     if (parsedArgs.envFile) {
       const resolvedPath = loadEnvProfile(parsedArgs.envFile);
       console.error(`[expo] Environment profile: ${path.relative(process.cwd(), resolvedPath)}`);
+    }
+    if (['run:android', 'run:ios'].includes(parsedArgs.expoArgs[0]) && usesNoctaliaBuildVersions()) {
+      const synced = syncMobileBuildVersions({ platform: parsedArgs.expoArgs[0] === 'run:android' ? 'android' : 'ios' });
+      console.error(`[expo] EAS build version synchronized: ${synced.version} (${synced.versionCode ?? synced.buildNumber})`);
     }
     if (isAndroidRun(parsedArgs.expoArgs)) {
       const result = syncAndroidNativeVersion({

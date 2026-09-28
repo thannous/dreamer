@@ -10,6 +10,7 @@ const { parseEnv: parseExpoEnv } = require('@expo/env');
 
 const { resolveCommand } = require('./android-tooling');
 const { parseAdbDevices } = require('./check-android-adb-device');
+const { syncMobileBuildVersions, usesNoctaliaBuildVersions } = require('./sync-mobile-build-versions');
 const {
   parseLockOwner,
   prepareAndroidDeviceLocks,
@@ -690,6 +691,10 @@ function main() {
     options.profileable,
     options.sideBySideQa
   );
+  if (usesNoctaliaBuildVersions(env)) {
+    const synced = syncMobileBuildVersions({ root: ROOT, platform: 'android', env });
+    process.stdout.write(`EAS build version synchronized: ${synced.version} (${synced.versionCode})\n`);
+  }
   const adbCommand = env.ADB_BIN || resolveCommand('adb', { env }) || 'adb';
   let device = options.device;
   let abi = options.abi;
