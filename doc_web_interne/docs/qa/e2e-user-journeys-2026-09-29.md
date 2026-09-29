@@ -26,6 +26,38 @@ empty disposable emulator and its version re-read as 3.4.5 (68). APK hash and
 native source identity remain those recorded below. Metro serves the candidate
 JavaScript. No physical device, real account or real payment was used.
 
+**Native billing recovery passed, one attempt, zero retries.** The flow confirms
+mock service mode and each selected outcome, checks that cancellation/error retain
+free access, dismisses the error, reopens the offer without a stale error, retries,
+then checks persistent Plus access, unlimited quota and removal of the upgrade CTA.
+Controls are centered to keep the development LogBox banner outside tap targets;
+success is checked through persistent access rather than a short-lived toast.
+
+Tested native content: `0c8cd1c7` plus the final billing YAML changes, recorded by
+the follow-up commit. Sorted-path/NUL/file SHA-256:
+`3b18d783793a91c8ee137bf35de80fe605229759bf5000b924524350550bf66c`.
+The exact 16-path list and rerun command are in ignored
+`maestro-results/android/journeys/billing-recovery-evidence.json`;
+`billing-recovery-final-run.log` identifies the successful run. Command results,
+error/success screenshots and hierarchies are under the flow's emulator directory.
+The native APK's precise source revision is unknown; its verified version/hash
+identify the reused binary. This qualifies current JavaScript on that local build,
+not a store release. The original three native journey results below keep their
+original revision identity.
+
+After starting the mock server and setting the Maestro/Java paths as below, rerun:
+
+```sh
+DEV_CLIENT_URL='exp+noctalia://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8084' \
+mise exec -- npm run test:e2e:journeys -- \
+  --flow maestro/journeys/billing-recovery.yml \
+  --device emulator-5554 --metro-port 8084 --no-start-metro
+```
+
+Local `test:prepush` at `0c8cd1c7`: app/test types and 155 suites / 2,051 assertions
+passed, one existing skipped suite/test. The final PR head and its remote checks
+remain separately observable in [PR #229](https://github.com/thannous/dreamer/pull/229).
+
 ## Follow-up: zero real payments
 
 The requested billing extension adds eight browser journeys. **23/23 web tests
@@ -54,7 +86,7 @@ warnings on unchanged effect/ref lines. Rerun:
 are in [the guide](../../../e2e/README.md#billing-without-real-payments).
 HTML/JUnit/traces remain in the same ignored artifact locations described below.
 
-Native billing is **not qualified by this follow-up**: the existing API 37 emulator
+Earlier native attempt (superseded by the qualification above): the API 37 emulator
 aborted with exit 134 after loading its snapshot, before a Noctalia session could
 be established. No installation, device reset or native build was performed in
 this follow-up. The three successful native journeys below remain evidence for

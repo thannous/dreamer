@@ -24,8 +24,16 @@ env:
     element:
       id: btn.subscription.qa.purchase.cancelled
     direction: DOWN
+    centerElement: true
 - tapOn:
     id: btn.subscription.qa.purchase.cancelled
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.actionLabel
+    direction: UP
+- assertVisible:
+    id: text.subscription.qa.actionLabel
+    text: "Next mock purchase: cancelled"
 - runFlow: subflows/open-plus-offer.yml
 - tapOn:
     id: btn.paywall.purchase
@@ -45,8 +53,16 @@ env:
     element:
       id: btn.subscription.qa.purchase.error
     direction: DOWN
+    centerElement: true
 - tapOn:
     id: btn.subscription.qa.purchase.error
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.actionLabel
+    direction: UP
+- assertVisible:
+    id: text.subscription.qa.actionLabel
+    text: "Next mock purchase: error"
 - runFlow: subflows/open-plus-offer.yml
 - tapOn:
     id: btn.paywall.purchase
@@ -54,7 +70,7 @@ env:
     visible:
       id: bottomSheet.paywall.error
     timeout: 15000
-- assertVisible: "Connection error"
+- assertVisible: "Connection error.*"
 - takeScreenshot: mock-checkout-error
 - tapOn: "OK"
 - tapOn:
@@ -67,7 +83,7 @@ env:
     id: btn.paywall.purchase
 - extendedWaitUntil:
     visible:
-      id: toast.paywall.success
+      text: Noctalia Plus is active
     timeout: 15000
 - tapOn:
     id: btn.paywall.close
