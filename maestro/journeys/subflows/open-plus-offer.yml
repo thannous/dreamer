@@ -1,0 +1,14 @@
+appId: com.tanuki75.noctalia
+---
+- scrollUntilVisible:
+    element:
+      text: Upgrade to Noctalia Plus
+    direction: UP
+- tapOn:
+    text: Upgrade to Noctalia Plus
+- extendedWaitUntil:
+    visible:
+      id: screen.paywall
+    timeout: 15000
+- tapOn:
+    id: btn.paywall.selectMonthly

@@ -1,0 +1,83 @@
+appId: com.tanuki75.noctalia
+name: Mock checkout cancellation and error preserve free access before a successful retry
+tags: [journeys, billing, mock]
+env:
+  PROFILE: existing
+---
+- runFlow: subflows/start-guest.yml
+- runFlow: subflows/select-profile.yml
+- runFlow: subflows/open-settings.yml
+- scrollUntilVisible:
+    element:
+      id: screen.subscription.qaLab.toggle
+    direction: DOWN
+- tapOn:
+    id: screen.subscription.qaLab.toggle
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.mode
+    direction: DOWN
+- assertVisible:
+    id: text.subscription.qa.mode
+    text: ".*Mock services.*"
+- scrollUntilVisible:
+    element:
+      id: btn.subscription.qa.purchase.cancelled
+    direction: DOWN
+- tapOn:
+    id: btn.subscription.qa.purchase.cancelled
+- runFlow: subflows/open-plus-offer.yml
+- tapOn:
+    id: btn.paywall.purchase
+- extendedWaitUntil:
+    visible:
+      id: btn.paywall.purchase
+      enabled: true
+    timeout: 15000
+- assertNotVisible:
+    id: bottomSheet.paywall.error
+- assertNotVisible:
+    id: toast.paywall.success
+- tapOn:
+    id: btn.paywall.close
+- runFlow: subflows/assert-free-allowance.yml
+- scrollUntilVisible:
+    element:
+      id: btn.subscription.qa.purchase.error
+    direction: DOWN
+- tapOn:
+    id: btn.subscription.qa.purchase.error
+- runFlow: subflows/open-plus-offer.yml
+- tapOn:
+    id: btn.paywall.purchase
+- extendedWaitUntil:
+    visible:
+      id: bottomSheet.paywall.error
+    timeout: 15000
+- assertVisible: "Connection error"
+- takeScreenshot: mock-checkout-error
+- tapOn: "OK"
+- tapOn:
+    id: btn.paywall.close
+- runFlow: subflows/assert-free-allowance.yml
+- runFlow: subflows/open-plus-offer.yml
+- assertNotVisible:
+    id: bottomSheet.paywall.error
+- tapOn:
+    id: btn.paywall.purchase
+- extendedWaitUntil:
+    visible:
+      id: toast.paywall.success
+    timeout: 15000
+- tapOn:
+    id: btn.paywall.close
+- scrollUntilVisible:
+    element:
+      id: quota.analysisValue
+    direction: UP
+- assertVisible:
+    id: quota.analysisValue
+    text: "Unlimited|Illimité"
+- assertNotVisible:
+    text: Upgrade to Noctalia Plus
+- takeScreenshot: mock-checkout-recovered-plus

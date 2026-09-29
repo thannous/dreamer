@@ -1,24 +1,8 @@
-import { test as base, expect, type Page } from 'playwright/test';
-
-// These journeys must never reach a store, RevenueCat or a real backend.
-const test = base.extend<{ offlineBilling: void }>({
-  offlineBilling: [async ({ context }, use) => {
-    const billingRequests: string[] = [];
-    await context.route('**/*', async (route) => {
-      const url = new URL(route.request().url());
-      if (url.origin === 'http://127.0.0.1:8084') return route.continue();
-      if (/revenuecat|supabase|stripe|purchases|billing/i.test(url.hostname)) {
-        billingRequests.push(url.hostname);
-      }
-      await route.abort();
-    });
-    await use();
-    expect(billingRequests, 'No real billing/backend request is allowed').toEqual([]);
-  }, { auto: true }],
-});
+import type { Page } from 'playwright/test';
+import { test, expect } from './fixtures';
 
 async function setupFreeAccount(page: Page) {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await page.getByTestId('btn.onboarding.intro.next').click();
   await page.getByTestId('btn.onboarding.skip').click();
   await page.getByTestId('btn.recording.home').click();

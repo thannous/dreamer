@@ -571,6 +571,7 @@ export default function JournalListScreen() {
   // No `entering` on a row: FlashList recycles them, so an entrance replays on every
   // scroll. The list itself is the thing that appeared, and it appeared with the screen.
   const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
+    if (!item) return null;
     const dreamTypeLabel = item.dreamType && (item.dreamType !== 'Symbolic Dream' || isDreamAnalyzed(item)) ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
     const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
     const isFirstItem = index === 0;
@@ -589,6 +590,7 @@ export default function JournalListScreen() {
   }, [formatDreamListDate, t, handleDreamPress]);
 
   const renderDreamItemTablet = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
+    if (!item) return null;
     const dreamTypeLabel = item.dreamType && (item.dreamType !== 'Symbolic Dream' || isDreamAnalyzed(item)) ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
     const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
 
@@ -606,6 +608,8 @@ export default function JournalListScreen() {
   }, [formatDreamListDate, t, handleDreamPress]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
+    // Recycling can briefly retain an index after a filter shrinks the data array.
+    if (!item) return null;
     const hasImage = !item.imageGenerationFailed && Boolean(item.thumbnailUrl || item.imageUrl);
     const isRecent = index < 3;
     const isFavorite = !!item.isFavorite;

@@ -1,5 +1,31 @@
 # Principal user journeys — 2026-09-29
 
+## Current qualification: CI failure and recovery
+
+CircleCI job 2030 at `126db012` exposed six web failures. The cold Expo bundle
+was not ready when timed journeys started; image CDN requests prolonged page load;
+a filtered FlashList recycled an absent item and crashed the desktop journal;
+reflection messages were below the viewport after its large header.
+
+The server readiness probe now waits for compiled JavaScript, navigation waits for
+DOM readiness, CI runs one worker, and all journeys use offline service routes with
+a deterministic image fixture. Billing/backend requests remain forbidden. The
+journal's three row renderers skip absent recycled items. Reflection tests use
+the existing **Jump to latest** control and retain message/reply revisit assertions.
+No retries or assertion timeouts were increased.
+
+**23/23 web journeys passed in 1.7 minutes in CI mode**, from a fresh managed
+server; app/test types and focused lint passed (four existing journal hook/ref
+warnings, zero errors). Artifacts are in the standard ignored HTML/JUnit/trace
+locations below. The candidate is the working tree based on `126db012`; its
+follow-up commit records these executable changes.
+
+The API 37 emulator recovered after a boot without its faulty snapshot. It had no
+installed Noctalia package; the existing local debug APK was installed into this
+empty disposable emulator and its version re-read as 3.4.5 (68). APK hash and
+native source identity remain those recorded below. Metro serves the candidate
+JavaScript. No physical device, real account or real payment was used.
+
 ## Follow-up: zero real payments
 
 The requested billing extension adds eight browser journeys. **23/23 web tests

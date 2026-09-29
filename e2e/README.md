@@ -34,6 +34,10 @@ profile switches; dream data still stays in memory. Each test has fresh browser 
 For an already-running mock server only, set `E2E_REUSE_SERVER=1` locally. CI always
 starts a fresh server. Use an actual local `node_modules` installation: linking a
 different checkout's dependencies can break Metro dynamic-module resolution.
+Server readiness waits for the first compiled JavaScript bundle. CI uses one
+worker to keep its smaller runner deterministic; local runs use two. Every web
+journey blocks external services and substitutes a local image fixture for the
+mock image CDN. Service workers are disabled so they cannot bypass these routes.
 
 Artifacts (ignored by Git): `test-results/e2e-web-report/` (HTML),
 `test-results/e2e-web-junit/results.xml` (JUnit), and `test-results/e2e-web/`
@@ -88,6 +92,10 @@ The runner configures ADB reverse and records command logs, Maestro step results
 and screenshots under `maestro-results/android/journeys/`. Set `MAESTRO_BIN` and
 `JAVA_HOME` if not installed on PATH. Record the binary version/build, source
 revision and exact command alongside each qualification result.
+The four native journeys cover guest capture, free journal continuity, Plus
+sign-out and mock checkout cancellation/error followed by successful recovery.
+The billing journey uses the normal paywall and asserts that failed attempts keep
+free limits, while a successful retry unlocks unlimited analysis.
 
 ## What this proves
 

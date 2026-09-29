@@ -46,6 +46,7 @@ const MAESTRO_FLOW_ENV_KEYS = Object.freeze({
   'maestro/journeys/guest-capture.yml': ['DEV_CLIENT_URL'],
   'maestro/journeys/free-journal.yml': ['DEV_CLIENT_URL'],
   'maestro/journeys/plus-account.yml': ['DEV_CLIENT_URL'],
+  'maestro/journeys/billing-recovery.yml': ['DEV_CLIENT_URL'],
   'maestro/release-auth-analysis.yml': [
     'REVENUECAT_QA_SWITCH_FREE_EMAIL',
     'REVENUECAT_QA_SWITCH_FREE_PASSWORD',
@@ -122,6 +123,7 @@ const SUITES = {
     'maestro/journeys/guest-capture.yml',
     'maestro/journeys/free-journal.yml',
     'maestro/journeys/plus-account.yml',
+    'maestro/journeys/billing-recovery.yml',
   ],
   smoke: [
     'maestro/smoke.yml',

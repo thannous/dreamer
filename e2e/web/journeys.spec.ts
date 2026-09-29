@@ -1,7 +1,8 @@
-import { test, expect, type Page } from 'playwright/test';
+import type { Page } from 'playwright/test';
+import { test, expect } from './fixtures';
 
 async function startGuest(page: Page) {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.getByTestId('screen.onboarding')).toBeVisible();
   await page.getByTestId('btn.onboarding.intro.next').click();
   await page.getByTestId('btn.onboarding.skip').click();
@@ -185,6 +186,8 @@ test('Plus user continues a reflection and sees the conversation on revisit', as
   await page.getByTestId('btn.dreamCategory.freeChat').click();
   await page.getByTestId('chat.input.message').fill('E2E: why did the library feel so familiar?');
   await page.getByTestId('chat.button.send').click();
+  const latest = page.getByRole('button', { name: 'Jump to latest', exact: true });
+  if (await latest.isVisible()) await latest.click();
   await expect(page.getByText('E2E: why did the library feel so familiar?', { exact: true })).toBeVisible();
   await expect(page.getByTestId('chat.input.message')).toBeEditable();
   const answer = page.getByText(/^(That's an interesting question|Based on your dream,|Dreams like yours often|The elements you mentioned|I sense that this dream)/);
@@ -192,6 +195,7 @@ test('Plus user continues a reflection and sees the conversation on revisit', as
   const response = await answer.innerText();
   await page.getByRole('button', { name: 'Back', exact: true }).click();
   await page.getByTestId('btn.dreamCategory.freeChat').click();
+  if (await latest.isVisible()) await latest.click();
   await expect(page.getByText('E2E: why did the library feel so familiar?', { exact: true })).toBeVisible();
   await expect(page.getByText(response, { exact: true })).toBeVisible();
 });
