@@ -5,11 +5,16 @@ import { normalizeSubscriptionTier } from '@/lib/quotaTier';
 import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 
 type SubscriptionStatusListener = (status: SubscriptionStatus) => void;
-export type MockSubscriptionScenario = 'free' | 'monthly' | 'annual' | 'cancelled' | 'expired';
+export type MockSubscriptionScenario = 'free' | 'monthly' | 'annual' | 'cancelled' | 'expired' | 'restore_available';
+export type MockPurchaseOutcome = 'success' | 'cancelled' | 'error';
 
 let initialized = false;
 let currentStatus: SubscriptionStatus | null = null;
 let currentStatusUserId: string | null = null;
+let hasExplicitStatus = false;
+let nextPurchase: { userId: string; outcome: MockPurchaseOutcome } | null = null;
+// A simulated store receipt is separate from locally loaded access and scoped to its owner.
+const receipts = new Map<string, SubscriptionStatus>();
 const DEFAULT_PLUS_PRODUCT_ID = 'mock_plus';
 const listeners = new Set<SubscriptionStatusListener>();
 
@@ -67,10 +72,12 @@ async function syncStatusWithCurrentUser(): Promise<SubscriptionStatus> {
   if (currentStatusUserId !== userId) {
     currentStatus = null;
     currentStatusUserId = userId;
+    hasExplicitStatus = false;
+    if (nextPurchase?.userId !== userId) nextPurchase = null;
   }
 
-  // If the user has purchased (currentStatus is paid), preserve that state for this user
-  if (currentStatus?.tier === 'plus') {
+  // Refresh must preserve explicit expiry/free states as well as active purchases.
+  if (currentStatus && hasExplicitStatus) {
     return currentStatus;
   }
 
@@ -116,15 +123,10 @@ export async function loadOfferings(): Promise<PurchasePackage[]> {
   return mockPackages;
 }
 
-function setTier(tier: SubscriptionTier, productId: string | null, userId: string | null): SubscriptionStatus {
-  const status: SubscriptionStatus = {
-    tier,
-    isActive: tier === 'plus',
-    expiryDate: null,
-    productId,
-  };
+function setStatus(status: SubscriptionStatus, userId: string | null): SubscriptionStatus {
   currentStatus = status;
   currentStatusUserId = userId;
+  hasExplicitStatus = true;
   emitStatus(status);
   return status;
 }
@@ -182,29 +184,47 @@ function buildMockScenarioStatus(scenario: MockSubscriptionScenario): Subscripti
 
 export async function applyMockScenario(scenario: MockSubscriptionScenario): Promise<SubscriptionStatus> {
   const user = await getCurrentUser();
+  if (!user) throw new Error('auth_required');
   initialized = true;
   const status = buildMockScenarioStatus(scenario);
-  currentStatus = status;
-  currentStatusUserId = user?.id ?? null;
-  emitStatus(status);
-  return status;
+  if (scenario === 'free') receipts.delete(user.id);
+  else receipts.set(user.id, scenario === 'restore_available' ? buildMockScenarioStatus('monthly') : status);
+  return setStatus(status, user.id);
+}
+
+export async function setNextMockPurchaseOutcome(outcome: MockPurchaseOutcome): Promise<void> {
+  const user = await getCurrentUser();
+  if (!user) throw new Error('auth_required');
+  nextPurchase = { userId: user.id, outcome };
 }
 
 export async function purchasePackage(id: string): Promise<SubscriptionStatus> {
   if (!initialized) {
     throw new Error('Purchases not initialized');
   }
-  const pkg = mockPackages.find((item) => item.id === id) ?? mockPackages[0];
+  const pkg = mockPackages.find((item) => item.id === id);
+  if (!pkg) throw new Error('ITEM_UNAVAILABLE');
   const user = await getCurrentUser();
-  const userId = user?.id ?? null;
-  return setTier('plus', pkg.id, userId);
+  if (!user) throw new Error('auth_required');
+  const outcome = nextPurchase?.userId === user.id ? nextPurchase.outcome : 'success';
+  nextPurchase = null;
+  if (outcome === 'cancelled') {
+    throw Object.assign(new Error('Purchase cancelled'), { userCancelled: true });
+  }
+  if (outcome === 'error') throw new Error('NETWORK_ERROR');
+  const status = buildMockScenarioStatus(pkg.interval === 'annual' ? 'annual' : 'monthly');
+  receipts.set(user.id, status);
+  return setStatus(status, user.id);
 }
 
 export async function restorePurchases(): Promise<SubscriptionStatus> {
   if (!initialized) {
     throw new Error('Purchases not initialized');
   }
-  return syncStatusWithCurrentUser();
+  const user = await getCurrentUser();
+  if (!user) throw new Error('auth_required');
+  const receipt = receipts.get(user.id);
+  return receipt ? setStatus(receipt, user.id) : syncStatusWithCurrentUser();
 }
 
 export async function refreshStatus(): Promise<SubscriptionStatus> {
@@ -229,5 +249,7 @@ export async function logOutUser(): Promise<void> {
   initialized = false;
   currentStatus = null;
   currentStatusUserId = null;
+  hasExplicitStatus = false;
+  nextPurchase = null;
   listeners.clear();
 }

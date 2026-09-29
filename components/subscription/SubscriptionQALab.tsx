@@ -24,6 +24,8 @@ import {
 } from '@/services/subscriptionService';
 import {
   applyMockScenario,
+  setNextMockPurchaseOutcome,
+  type MockPurchaseOutcome,
   type MockSubscriptionScenario,
 } from '@/services/mocks/subscriptionServiceMock';
 
@@ -48,6 +50,7 @@ const MOCK_SCENARIOS: { id: MockSubscriptionScenario; label: string; hint: strin
   { id: 'annual', label: 'Annual', hint: 'Active renewal' },
   { id: 'cancelled', label: 'Cancelled', hint: 'Active until expiry' },
   { id: 'expired', label: 'Expired', hint: 'Back to free' },
+  { id: 'restore_available', label: 'Restore available', hint: 'Previous mock receipt; free until restored' },
 ];
 
 function maskKey(value?: string): string {
@@ -237,6 +240,16 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
       });
     }
   }, [isMockMode, syncLocalStatus, user]);
+
+  const handleMockPurchaseOutcome = useCallback(async (outcome: MockPurchaseOutcome) => {
+    if (!isMockMode || !user) return;
+    try {
+      await setNextMockPurchaseOutcome(outcome);
+      setAction({ label: `Next mock purchase: ${outcome}`, kind: 'success' });
+    } catch (err) {
+      setAction({ label: 'Mock purchase setup failed', detail: (err as Error).message, kind: 'error' });
+    }
+  }, [isMockMode, user]);
 
   const handleRealPurchase = useCallback(async (interval: 'monthly' | 'annual') => {
     const pkg = interval === 'monthly' ? monthlyPackage : annualPackage;
@@ -525,6 +538,21 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
           </>
         )}
       </ActionGroup>
+
+      {isMockMode ? (
+        <ActionGroup title="Next mock purchase · no payment">
+          {(['success', 'cancelled', 'error'] as const).map((outcome) => (
+            <QaButton
+              key={outcome}
+              label={outcome}
+              hint="One attempt, then success"
+              disabled={isBusy || !user}
+              onPress={() => void handleMockPurchaseOutcome(outcome)}
+              testID={`btn.subscription.qa.purchase.${outcome}`}
+            />
+          ))}
+        </ActionGroup>
+      ) : null}
 
       <ActionGroup title="Verification">
         {!isMockMode ? (

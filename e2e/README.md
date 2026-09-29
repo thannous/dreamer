@@ -44,6 +44,30 @@ source revision, dirty state, environment and fixture profiles. Open any trace w
 CircleCI's `noctalia-e2e-web` job runs these journeys and retains results and traces.
 Existing quality, native and backend gates remain in place.
 
+## Billing without real payments
+
+`web/billing.spec.ts` adds eight journeys: monthly/annual purchase, cancelled
+checkout and retry, purchase error and recovery, restoration with/without a receipt,
+cancelled renewal followed by expiry, and receipt ownership across account switches.
+Expired access cannot be restored as active; journal content remains available.
+
+Run only these cases with:
+`mise exec -- npm run test:e2e:web -- e2e/web/billing.spec.ts`.
+The browser blocks every request outside the local app and fails if the app attempts
+to contact a recognized billing or Supabase host. The suite also asserts the mock
+service mode before interacting with the paywall. No card, store account, real
+receipt, production account or paid transaction is used.
+
+For manual testing, start `start:mock`, select a mock account, open Settings, and
+expand **Subscription · QA**. Choose the next mock purchase result (success,
+cancelled, error), then open the normal Plus offer and use its purchase button.
+Cancellation/error affect one attempt only; the following attempt succeeds.
+**Restore available** seeds a previous receipt while keeping local access free;
+the normal **Restore purchases** action activates it. **Cancelled** means renewal
+is cancelled but access remains active; **Expired** returns to free limits.
+These controls are mounted only in mock mode, and receipts are in memory and scoped
+to the mock account. Reopening the app starts a new simulation.
+
 ## Android
 
 Requires Java 17, Android SDK, Maestro 2.10.0 and a disposable emulator with a
@@ -72,12 +96,10 @@ real Supabase authentication/RLS, cross-device sync, dream durability after a
 process restart, microphone behavior, AI quality or store billing. The mock dream
 store is in memory; revisiting a screen tests session continuity only.
 
-Keep a small separate real-service smoke suite for login, save/reload and actual
-entitlement retrieval when service access is available. Prefer a dedicated test
-backend; if production test accounts are used, reserve them exclusively for that
-suite and do not clear their data or force a paid tier in SQL. RevenueCat remains
-the entitlement source of truth. Existing guarded Test Store/release flows cover
-their specialized scope and are retained.
+An optional separate backend smoke suite may qualify login and save/reload when
+service access is available. Payment coverage in this suite remains entirely
+simulated; real purchases are never a prerequisite. Existing guarded Test Store
+and release flows are retained but are not invoked by these commands.
 
 Seven obsolete Maestro web flows were replaced by `web/journeys.spec.ts`: recording
 save, journal search, dream delete, transcript edit, favorite toggle/filter and

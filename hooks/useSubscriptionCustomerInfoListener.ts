@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
+import { isMockModeEnabled } from '@/lib/env';
 
 import type { SubscriptionStatus } from '@/lib/types';
 import {
@@ -49,7 +50,7 @@ export function useSubscriptionCustomerInfoListener(
 
   useEffect(() => {
     if (!enabled || !onStatusChange) return;
-    if (Platform.OS !== 'ios' && Platform.OS !== 'android') return;
+    if (Platform.OS !== 'ios' && Platform.OS !== 'android' && !isMockModeEnabled()) return;
 
     callbackRegistry.add(stableCallback);
     ensureListener();

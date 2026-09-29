@@ -20,6 +20,7 @@ import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackg
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
+import { SubscriptionQALab } from '@/components/subscription/SubscriptionQALab';
 import { LegalSection } from '@/components/settings/LegalSection';
 import { SettingsFieldGroup } from '@/components/settings/SettingsFieldGroup';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -30,6 +31,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getAppVersionString } from '@/lib/appVersion';
+import { isMockModeEnabled } from '@/lib/env';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 
 /**
@@ -158,6 +160,7 @@ export default function SettingsScreen() {
   const quota = (
     <View className={RN_SLOT_CLASS} testID="settings-quota-rn-content">
       <QuotaStatusCard onUpgradePress={handleOpenPaywall} presentation="embedded" />
+      {isMockModeEnabled() ? <SubscriptionQALab presentation="embedded" /> : null}
     </View>
   );
 

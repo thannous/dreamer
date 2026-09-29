@@ -1,5 +1,42 @@
 # Principal user journeys — 2026-09-29
 
+## Follow-up: zero real payments
+
+The requested billing extension adds eight browser journeys. **23/23 web tests
+passed in 49.9 seconds, zero retries**, from a fresh managed mock server. The eight
+billing cases block external browser requests and assert mock service mode before
+using the real paywall UI. No real account, payment or production change was made.
+
+Coverage: monthly/annual purchase, checkout cancellation/retry, network-error
+recovery, restore with/without a simulated receipt, cancelled renewal versus
+expiry, expired receipt restoration, account ownership and retained journal data.
+The QA controls are accessible only in mock Settings. The tests revealed and fixed
+mock status events being ignored on web, explicit expired state being overwritten
+on refresh, and dismissed purchase errors reappearing when reopening the paywall.
+
+Tested content: working tree based on `eb593b3b`. SHA-256 of the sorted paths below,
+each followed by a NUL and its file bytes:
+`b4f907d183de3ea5b66a17533456c9b8be7bdecb6c7e0d0ea00cbe211be86a67`.
+Paths: `app/paywall.tsx`, `app/settings.tsx`,
+`components/subscription/SubscriptionQALab.tsx`, `e2e/web/billing.spec.ts`,
+`hooks/useSubscriptionCustomerInfoListener.ts`, `hooks/useSubscriptionInternal.ts`,
+`services/mocks/subscriptionServiceMock.ts`. The follow-up commit records this content.
+
+App/test TypeScript passed. Focused lint: zero errors, three existing React hook
+warnings on unchanged effect/ref lines. Rerun:
+`mise exec -- npm run test:e2e:web`; billing-only command and interactive controls
+are in [the guide](../../../e2e/README.md#billing-without-real-payments).
+HTML/JUnit/traces remain in the same ignored artifact locations described below.
+
+Native billing is **not qualified by this follow-up**: the existing API 37 emulator
+aborted with exit 134 after loading its snapshot, before a Noctalia session could
+be established. No installation, device reset or native build was performed in
+this follow-up. The three successful native journeys below remain evidence for
+their original revision, not for the new billing scenarios. Remote CI qualification
+also remains separate; the previous pipeline was still in checkout when inspected.
+
+## Original journey qualification
+
 Owner: Codex, branch `codex/principal-user-journeys`. Implementation base:
 `15c2e62da9205838b5682536c5cd643ef74d9445`; final executable changes: `42aa18aa`.
 The web report was generated against the identical working-tree content immediately
