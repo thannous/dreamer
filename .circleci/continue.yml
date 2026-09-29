@@ -428,16 +428,16 @@ workflows:
   noctalia:
     when: << pipeline.parameters.run_noctalia >>
     jobs:
-      - noctalia-e2e-web:
-          filters:
-            tags:
-              only: /.*/
       - noctalia-quality:
           run_changed_tests: << pipeline.parameters.run_changed_tests >>
           run_full_tests: << pipeline.parameters.run_full_tests >>
           diff_base: << pipeline.parameters.diff_base >>
           require_timing_baseline: << pipeline.parameters.require_timing_baseline >>
           publish_timing_baseline: << pipeline.parameters.publish_timing_baseline >>
+          filters:
+            tags:
+              only: /.*/
+      - noctalia-e2e-web:
           filters:
             tags:
               only: /.*/

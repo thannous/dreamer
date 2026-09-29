@@ -35,6 +35,13 @@ this follow-up. The three successful native journeys below remain evidence for
 their original revision, not for the new billing scenarios. Remote CI qualification
 also remains separate; the previous pipeline was still in checkout when inspected.
 
+Final affected-test gate at `bd5557c1`: 155 suites / 2,051 assertions passed;
+one existing suite/test remains skipped. The settings-host isolation fixture now
+stubs the QA child; no new isolation test was added. CircleCI then exposed an
+existing workflow-order assumption in `fallback-jest.test.sh`: keep
+`noctalia-quality` first and append the independent E2E job. The unchanged CI
+fallback check passed locally after that configuration-only correction.
+
 ## Original journey qualification
 
 Owner: Codex, branch `codex/principal-user-journeys`. Implementation base:
