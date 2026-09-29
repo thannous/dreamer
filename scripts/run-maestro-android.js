@@ -43,6 +43,9 @@ const SENSITIVE_FLOW_GUARDS = Object.freeze({
   'maestro/subscription-teststore-account-switch-free-email-manual.yml': 'account-switch-email:v1',
 });
 const MAESTRO_FLOW_ENV_KEYS = Object.freeze({
+  'maestro/journeys/guest-capture.yml': ['DEV_CLIENT_URL'],
+  'maestro/journeys/free-journal.yml': ['DEV_CLIENT_URL'],
+  'maestro/journeys/plus-account.yml': ['DEV_CLIENT_URL'],
   'maestro/release-auth-analysis.yml': [
     'REVENUECAT_QA_SWITCH_FREE_EMAIL',
     'REVENUECAT_QA_SWITCH_FREE_PASSWORD',
@@ -115,6 +118,11 @@ const SENSITIVE_MAESTRO_SCREENSHOT_EXTENSIONS = new Set([
 const EMAIL_LITERAL_PATTERN = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi;
 
 const SUITES = {
+  journeys: [
+    'maestro/journeys/guest-capture.yml',
+    'maestro/journeys/free-journal.yml',
+    'maestro/journeys/plus-account.yml',
+  ],
   smoke: [
     'maestro/smoke.yml',
   ],

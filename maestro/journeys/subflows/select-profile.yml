@@ -1,0 +1,15 @@
+appId: com.tanuki75.noctalia
+---
+- runFlow: open-settings.yml
+- tapOn:
+    id: settings-account-open-signin
+- scrollUntilVisible:
+    element:
+      id: ${'btn.mockProfile.' + PROFILE}
+    direction: DOWN
+- tapOn:
+    id: ${'btn.mockProfile.' + PROFILE}
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 15000

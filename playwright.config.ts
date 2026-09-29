@@ -1,0 +1,38 @@
+import { defineConfig, devices } from 'playwright/test';
+import { execFileSync } from 'node:child_process';
+
+export default defineConfig({
+  metadata: {
+    sourceRevision: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+    dirty: Boolean(execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim()),
+    environment: 'local Expo web; mock auth, subscription, AI and in-memory dream storage',
+    personas: 'guest; new free; exhausted existing free; plus',
+  },
+  testDir: './e2e/web',
+  fullyParallel: true,
+  forbidOnly: Boolean(process.env.CI),
+  retries: 0,
+  workers: 2,
+  timeout: 60_000,
+  expect: { timeout: 15_000 },
+  outputDir: 'test-results/e2e-web',
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'test-results/e2e-web-report', open: 'never' }],
+    ['junit', { outputFile: 'test-results/e2e-web-junit/results.xml', includeProjectInTestName: true }],
+  ],
+  use: {
+    baseURL: 'http://127.0.0.1:8084',
+    locale: 'en-US',
+    trace: 'on',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+  },
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  webServer: {
+    command: 'npm run start:mock -- --web --port 8084',
+    url: 'http://127.0.0.1:8084',
+    reuseExistingServer: process.env.E2E_REUSE_SERVER === '1' && !process.env.CI,
+    timeout: 120_000,
+  },
+});

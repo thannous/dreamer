@@ -95,6 +95,26 @@ commands:
             - /home/circleci/.npm
 
 jobs:
+  noctalia-e2e-web:
+    executor: node
+    steps:
+      - install-root-dependencies:
+          save_cache: false
+      - run:
+          name: Install Chromium and browser dependencies
+          command: npx playwright install --with-deps chromium
+      - run:
+          name: Verify guest, free and Plus user journeys with isolated mock services
+          command: npm run test:e2e:web
+      - store_test_results:
+          path: test-results/e2e-web-junit
+      - store_artifacts:
+          path: test-results/e2e-web-report
+          destination: e2e-web-report
+      - store_artifacts:
+          path: test-results/e2e-web
+          destination: e2e-web-traces
+
   noctalia-quality:
     executor: node
     parameters:
@@ -408,6 +428,10 @@ workflows:
   noctalia:
     when: << pipeline.parameters.run_noctalia >>
     jobs:
+      - noctalia-e2e-web:
+          filters:
+            tags:
+              only: /.*/
       - noctalia-quality:
           run_changed_tests: << pipeline.parameters.run_changed_tests >>
           run_full_tests: << pipeline.parameters.run_full_tests >>

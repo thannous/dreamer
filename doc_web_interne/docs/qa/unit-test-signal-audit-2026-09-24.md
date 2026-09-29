@@ -1,5 +1,9 @@
 # Test signal audit — 2026-09-24
 
+Update (2026-09-29): seven historical `maestro/web-*.yml` references below are now
+superseded by the executed Playwright journeys. See [current E2E coverage](../../../e2e/README.md).
+The original audit and its evidence dates remain unchanged.
+
 Base revision: `17312e7ec82e88228f13ea0dc16d6a5d13cd8185`. Test-file diff SHA-256: `6fbf15ee981c6dbed239583398e795b7121fefbec436d791e5090f6bca255560` (tracked `*.test.*` changes, sorted by path).
 
 Integration note (2026-09-25): this checksum and the verification table record the original audit against `17312e7e`. The commit branch starts from `333ea2cd` after the later master updates; the original run results are not a claim of post-update E2E execution.

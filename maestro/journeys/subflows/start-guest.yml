@@ -1,0 +1,43 @@
+# Disposable emulator only: the runner rejects clearState on physical devices.
+appId: com.tanuki75.noctalia
+---
+- launchApp:
+    clearState: true
+- openLink: ${DEV_CLIENT_URL || 'exp+noctalia://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081'}
+- runFlow:
+    when:
+      visible: DEVELOPMENT SERVERS
+    commands:
+      - tapOn: >-
+          ${'http://[^ ]+:' + (DEV_CLIENT_URL ? decodeURIComponent(DEV_CLIENT_URL).split(':').pop() : '8081')}
+- extendedWaitUntil:
+    visible: "Continue|Skip|Reload"
+    timeout: 60000
+- runFlow:
+    when:
+      visible: Continue
+    commands:
+      - tapOn: Continue
+- runFlow:
+    when:
+      visible: Reload
+    commands:
+      # Expo's floating Tools button covers the application's Settings button.
+      - scrollUntilVisible:
+          element: Tools button
+          direction: DOWN
+      - tapOn: Tools button
+      - pressKey: back
+- extendedWaitUntil:
+    visible:
+      id: screen.onboarding
+    timeout: 60000
+- tapOn:
+    id: btn.onboarding.intro.next
+- tapOn:
+    id: btn.onboarding.primary
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 15000
+- runFlow: ../../subflows/ensure-recording-text.yml
