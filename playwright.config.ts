@@ -5,7 +5,7 @@ export default defineConfig({
   metadata: {
     sourceRevision: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
     dirty: Boolean(execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim()),
-    environment: 'local Expo web; mock auth, subscription, AI and in-memory dream storage',
+    environment: 'local Expo web; mock auth/subscription/AI; persisted preferences; in-memory dreams',
     personas: 'guest; new free; exhausted existing free; plus',
   },
   testDir: './e2e/web',
@@ -31,6 +31,8 @@ export default defineConfig({
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
     command: 'npm run start:mock -- --web --port 8084',
+    // Keep onboarding/preferences across mock account switches. Dreams stay in memory.
+    env: { EXPO_PUBLIC_MOCK_PERSISTENCE: 'true' },
     url: 'http://127.0.0.1:8084',
     reuseExistingServer: process.env.E2E_REUSE_SERVER === '1' && !process.env.CI,
     timeout: 120_000,

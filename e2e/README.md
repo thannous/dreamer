@@ -29,6 +29,8 @@ mise exec -- npm run test:e2e:web:report
 ```
 
 Port 8084 must be free. Playwright starts the canonical mock server automatically.
+It enables `EXPO_PUBLIC_MOCK_PERSISTENCE=true` so onboarding and preferences survive
+profile switches; dream data still stays in memory. Each test has fresh browser storage.
 For an already-running mock server only, set `E2E_REUSE_SERVER=1` locally. CI always
 starts a fresh server. Use an actual local `node_modules` installation: linking a
 different checkout's dependencies can break Metro dynamic-module resolution.
@@ -50,7 +52,7 @@ This suite clears emulator app data; the existing runner rejects that operation
 on physical devices. Build/install authorization and native-directory requirements
 remain those in `AGENTS.md`.
 
-Start `mise exec -- npm run start:mock -- --port 8084`, then:
+Start `EXPO_PUBLIC_MOCK_PERSISTENCE=true mise exec -- npm run start:mock -- --port 8084`, then:
 
 ```sh
 DEV_CLIENT_URL='exp+noctalia://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8084' \
