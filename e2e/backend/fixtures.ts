@@ -31,10 +31,8 @@ export async function login(page: Page, account: Account) {
   await page.getByTestId('btn.onboarding.intro.next').click();
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
-  // Restart the real persisted guest state and dismiss the first-launch release notes through the UI.
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.getByRole('button', { name: 'Later', exact: true }).click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  // Continue from the completed onboarding. Reloading here races its async
+  // release-notes acknowledgement and can create a modal absent on first launch.
   await page.getByTestId('btn.recording.home').click();
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
   await page.getByTestId('settings-account-open-signin').click();
