@@ -16,7 +16,11 @@ const isolatedRun = !suppliedStatus && !prepareOnly;
 const workdir = isolatedRun ? fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-backend-e2e-')) : path.join(os.tmpdir(), 'noctalia-backend-e2e');
 const project = `noctalia-backend-e2e-disposable${isolatedRun ? `-${randomUUID().slice(0, 8)}` : ''}`;
 const target = path.join(workdir, 'supabase');
-const cli = process.env.E2E_SUPABASE_CLI || path.join(root, 'node_modules/.bin/supabase');
+// Use the shipped Go engine on macOS, retaining ordinary OS signature validation.
+const cli = process.env.E2E_SUPABASE_CLI || (process.platform === 'darwin'
+  ? path.join(path.dirname(require.resolve(`@supabase/cli-darwin-${process.arch}/package.json`)), 'bin/supabase-go')
+  : path.join(root, 'node_modules/.bin/supabase'));
+const docker = process.env.E2E_DOCKER_CLI || 'docker';
 
 function command(binary, argv, options = {}) {
   const result = spawnSync(binary, argv, { cwd: root, stdio: 'inherit', ...options });
@@ -53,10 +57,11 @@ let network;
 try {
   if (!suppliedStatus) {
     // Never reset or stop another project. Supabase initializes this separate project from migrations.
-    network = command('docker', ['network', 'create', '--opt', 'com.docker.network.bridge.host_binding_ipv4=127.0.0.1', project], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' }).trim();
+    network = command(docker, ['network', 'create', '--opt', 'com.docker.network.bridge.host_binding_ipv4=127.0.0.1', project], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' }).trim();
     // Capture stdout because CLI startup prints privileged local keys there.
-    command(cli, ['start', '--workdir', workdir, '--network-id', network, '--exclude', 'studio,logflare,vector,edge-runtime,imgproxy,mailpit,postgres-meta'], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    // Also clean partially started containers if migration replay fails.
     started = true;
+    command(cli, ['start', '--workdir', workdir, '--network-id', network, '--exclude', 'studio,logflare,vector,edge-runtime,imgproxy,mailpit,postgres-meta'], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
     const status = command(cli, ['status', '--workdir', workdir, '--output', 'json'], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' });
     fs.writeFileSync(statusFile, status, { mode: 0o600 });
   }
@@ -86,5 +91,5 @@ try {
 } finally {
   // Only this run's randomly named disposable database is removed; no reset or --all.
   if (started) command(cli, ['stop', '--workdir', workdir, '--no-backup']);
-  if (network) command('docker', ['network', 'rm', network]);
+  if (network) command(docker, ['network', 'rm', network]);
 }

@@ -31,7 +31,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getAppVersionString } from '@/lib/appVersion';
-import { isMockModeEnabled } from '@/lib/env';
+import { getExpoPublicEnvValue, isMockModeEnabled } from '@/lib/env';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 
 /**
@@ -89,6 +89,12 @@ export default function SettingsScreen() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { width, height } = useWindowDimensions();
   const appVersion = getAppVersionString();
+  const storeKey = getExpoPublicEnvValue(Platform.OS === 'android'
+    ? 'EXPO_PUBLIC_REVENUECAT_ANDROID_KEY'
+    : Platform.OS === 'ios' ? 'EXPO_PUBLIC_REVENUECAT_IOS_KEY' : 'EXPO_PUBLIC_REVENUECAT_WEB_KEY');
+  const showSubscriptionQaLab = isMockModeEnabled() || (
+    getExpoPublicEnvValue('EXPO_PUBLIC_SUBSCRIPTION_QA_LAB') === 'true' && storeKey?.startsWith('test_')
+  );
   useClearWebFocus();
 
   const isCompactLayout = width <= 375;
@@ -160,7 +166,7 @@ export default function SettingsScreen() {
   const quota = (
     <View className={RN_SLOT_CLASS} testID="settings-quota-rn-content">
       <QuotaStatusCard onUpgradePress={handleOpenPaywall} presentation="embedded" />
-      {isMockModeEnabled() ? <SubscriptionQALab presentation="embedded" /> : null}
+      {showSubscriptionQaLab ? <SubscriptionQALab presentation="embedded" /> : null}
     </View>
   );
 

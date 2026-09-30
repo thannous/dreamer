@@ -45,6 +45,7 @@ export async function login(page: Page, account: Account) {
   await page.getByTestId('btn.recording.home').click();
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
   await expect(page.getByTestId('text.auth.email')).toContainText(account.email);
+  await expect(page.getByTestId('screen.subscription.qaLab')).toHaveCount(0);
 }
 
 export async function journal(page: Page) {

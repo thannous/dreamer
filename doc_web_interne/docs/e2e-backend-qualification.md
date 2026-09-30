@@ -36,8 +36,12 @@ mise exec -- npm run test:e2e:backend -- --status-file /absolute/private/status.
 
 This mode accepts only `http://127.0.0.1:56321`, never starts or stops the supplied
 stack, and is intended for a locally owned stack with loopback port forwarding.
-`E2E_SUPABASE_CLI` can select a local CLI executable; the default is the locked
-npm Supabase CLI. No hosted test branch is required.
+`E2E_SUPABASE_CLI` can select a local CLI executable. The default uses the locked
+npm CLI on Linux and its co-located Go engine on macOS. The macOS launcher failed
+OS signature validation on this machine; the shipped Go engine has a valid
+signature and completed the suite without changing OS security settings.
+`E2E_DOCKER_CLI` and `DOCKER_HOST` can select a local Docker-compatible runtime.
+No hosted test branch is required.
 
 ## Assertions and artifacts
 
@@ -75,7 +79,62 @@ The master web run after PR 229 failed with a FlashList grid measurement accessi
 a removed item while filtering favorites. The desktop web grid now discards stale
 layouts when item membership changes. Its native list identity stays unchanged.
 
-Local pilot: five backend journeys passed on a fresh Postgres 17 stack; all 23 mock
-web journeys passed after the grid fix. The final committed revision and remote
-CI result are recorded in the PR and machine-readable reports; native/store
-qualification remains open until its own build and device evidence is available.
+Five backend journeys passed on a fresh Postgres 17 stack; all 23 mock web
+journeys passed after the grid fix. The final committed revision and remote CI
+result are recorded in the PR and machine-readable reports.
+
+## Native checks without a payment
+
+The disposable Pixel 9 / API 37 emulator ran the existing debug binary
+`com.tanuki75.noctalia`, version 3.4.5 (68), APK SHA-256
+`f513a34fbf5ee97e4f18ee9ea18ce55f8dbcbbe979aadaa390f3cd2f1dffd32c`.
+Its native source revision is unknown; Metro served the current JavaScript.
+This evidence qualifies that debug configuration, not a store release or iOS.
+The physical device, existing user accounts and their data were untouched.
+
+Three flows passed with zero automatic retries:
+
+- `test:e2e:permissions`: denied microphone offers text entry; granting it removes
+  the rationale; a text draft remains editable; notification warnings follow
+  grant/revocation. The flow restores permissions and airplane mode on completion.
+  It does not assert speech recognition or transcription.
+- `test:e2e:storage`: a guest saves a synthetic dream in real native storage while
+  airplane mode is enabled, kills the process, reopens the saved transcript, then
+  restores connectivity and reads it again. Metro remained reachable over ADB;
+  autonomous offline startup of an embedded release bundle is still unqualified.
+- `test:e2e:subscription-teststore`: the actual RevenueCat SDK initializes in Test
+  Store mode, loads two configured packages and completes the read-only SDK probe.
+  No purchase, restore or payment action is invoked. Native receipt lifecycle,
+  cancellation, renewal and restore are not qualified by this probe.
+
+The Test Store QA lab requires both the explicit QA flag and a `test_` key for
+the current platform in real mode. Ordinary real-mode accounts cannot see it,
+which the backend E2E login asserts. Mock mode keeps its existing lab.
+
+Prepare an appropriate private real-mode profile, use the existing compatible
+debug binary, and start Metro through the canonical script:
+
+```sh
+mise exec -- npm run start -- --profile /absolute/private/native.env --dev-client --port 8081
+# In another terminal, with Maestro/Java available and a disposable emulator:
+DEV_CLIENT_URL='exp+noctalia://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081' \
+  mise exec -- npm run test:e2e:permissions -- --device <emulator> --env-file /absolute/private/native.env
+DEV_CLIENT_URL='exp+noctalia://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081' \
+  mise exec -- npm run test:e2e:storage -- --device <emulator> --env-file /absolute/private/native.env
+```
+
+For the SDK probe, use a separate real-mode profile with a RevenueCat Test Store
+key and `EXPO_PUBLIC_SUBSCRIPTION_QA_LAB=true`, start its Metro on port 8086, and run:
+
+```sh
+DEV_CLIENT_URL='exp+noctalia://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8086' \
+  mise exec -- npm run test:e2e:subscription-teststore -- --device <emulator> \
+    --env-file /absolute/private/teststore.env --metro-port 8086 --retries 0 --no-restart-metro
+```
+
+Private ignored evidence is under `maestro-results/android/`: each successful flow
+has `commands.json`, screenshots and logs, plus a compact `*-evidence.json`
+manifest with revision, binary, fixtures, rerun command and limitations.
+`test:e2e:resilience` remains the distinct standalone release gate and requires
+its existing release preflight. No native build, reinstall or store submission
+was performed in this work package.

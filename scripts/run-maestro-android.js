@@ -47,6 +47,9 @@ const MAESTRO_FLOW_ENV_KEYS = Object.freeze({
   'maestro/journeys/free-journal.yml': ['DEV_CLIENT_URL'],
   'maestro/journeys/plus-account.yml': ['DEV_CLIENT_URL'],
   'maestro/journeys/billing-recovery.yml': ['DEV_CLIENT_URL'],
+  'maestro/release-permissions.yml': ['DEV_CLIENT_URL'],
+  'maestro/release-offline-local.yml': ['DEV_CLIENT_URL'],
+  'maestro/subscription-teststore-readiness.yml': ['DEV_CLIENT_URL'],
   'maestro/release-auth-analysis.yml': [
     'REVENUECAT_QA_SWITCH_FREE_EMAIL',
     'REVENUECAT_QA_SWITCH_FREE_PASSWORD',

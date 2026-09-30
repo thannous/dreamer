@@ -1,27 +1,48 @@
 appId: com.tanuki75.noctalia
+name: Test Store SDK probe without a purchase
 ---
-- runFlow: subflows/open-mock-app.yml
+- runFlow: journeys/subflows/start-guest.yml
 - openLink: noctalia://settings
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes"
     timeout: 30000
 - scrollUntilVisible:
     element:
-      text: "Subscription QA Lab"
+      id: screen.subscription.qaLab
     direction: DOWN
     visibilityPercentage: 40
     timeout: 30000
+- tapOn:
+    id: screen.subscription.qaLab.toggle
 - assertVisible:
     id: text.subscription.qa.mode
-- assertVisible: "RevenueCat Test Store"
-- assertVisible: "PACKAGES"
-- assertVisible: "2"
+    text: "RevenueCat Test Store"
+- extendedWaitUntil:
+    visible:
+      id: text.subscription.qa.packages
+      text: "2"
+    timeout: 120000
 - scrollUntilVisible:
     element:
-      text: "Buy monthly"
+      id: btn.subscription.qa.probe
     direction: DOWN
     visibilityPercentage: 60
     timeout: 30000
-- assertVisible: "Buy annual"
-- assertVisible: "\\$9\\.99"
-- assertVisible: "\\$79\\.98"
+- tapOn:
+    id: btn.subscription.qa.probe
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.actionLabel
+    direction: UP
+    visibilityPercentage: 60
+    timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: text.subscription.qa.actionLabel
+      text: "SDK probe completed"
+    timeout: 60000
+- assertVisible:
+    id: text.subscription.qa.action
+    text: "packages 2.*"
+- assertNotVisible: "SDK probe failed"
+- takeScreenshot: teststore-sdk-probe-without-purchase
