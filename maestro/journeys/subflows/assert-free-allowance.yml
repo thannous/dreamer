@@ -1,0 +1,9 @@
+appId: com.tanuki75.noctalia
+---
+- scrollUntilVisible:
+    element:
+      id: quota.analysisValue
+    direction: UP
+- assertVisible:
+    id: quota.analysisValue
+    text: ".* / 3"

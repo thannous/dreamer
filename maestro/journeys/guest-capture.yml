@@ -1,0 +1,52 @@
+appId: com.tanuki75.noctalia
+name: Guest captures a story and finds it in Journal
+tags: [journeys, guest, mock]
+---
+- runFlow: subflows/start-guest.yml
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "E2E sapphire lighthouse above the quiet ocean."
+- hideKeyboard
+- tapOn:
+    id: btn.recording.inputMode.voice
+- tapOn:
+    id: btn.recording.inputMode.text
+- assertVisible:
+    id: input.dreamTranscript
+    text: "E2E sapphire lighthouse above the quiet ocean."
+- tapOn:
+    id: btn.saveDream
+- extendedWaitUntil:
+    visible:
+      id: component.transcriptCard
+    timeout: 30000
+- assertVisible: "E2E sapphire lighthouse above the quiet ocean."
+- extendedWaitUntil:
+    visible:
+      id: analysis.reading.close
+    timeout: 30000
+- tapOn:
+    id: analysis.reading.close
+- tapOn:
+    id: btn.navigateJournal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 15000
+- runFlow: ../subflows/ensure-journal-search-visible.yml
+- tapOn:
+    id: input.searchDreams
+- inputText: "sapphire lighthouse"
+- hideKeyboard
+- extendedWaitUntil:
+    visible:
+      id: "dream.item.*"
+    timeout: 15000
+- tapOn:
+    id: "dream.item.*"
+- scrollUntilVisible:
+    element:
+      id: component.transcriptCard
+    direction: DOWN
+- assertVisible: "E2E sapphire lighthouse above the quiet ocean."
+- takeScreenshot: guest-story-reopened

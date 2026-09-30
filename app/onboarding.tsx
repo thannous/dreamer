@@ -117,6 +117,7 @@ export default function OnboardingScreen() {
   const selectionVersionRef = useRef(0);
 
   useFocusEffect(useCallback(() => {
+    if (Platform.OS === 'web') return;
     const entry = StatusBar.pushStackEntry({ barStyle: 'light-content' });
     return () => StatusBar.popStackEntry(entry);
   }, []));

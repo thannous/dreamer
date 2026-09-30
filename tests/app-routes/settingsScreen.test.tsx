@@ -236,6 +236,11 @@ jest.doMock('@/components/quota/QuotaStatusCard', () => ({
     <button data-testid="quota-status-card" onClick={onUpgradePress}>subscription-options</button>,
 }));
 
+// Billing behavior is exercised by e2e/web/billing.spec.ts; this suite isolates the settings host.
+jest.doMock('@/components/subscription/SubscriptionQALab', () => ({
+  SubscriptionQALab: () => null,
+}));
+
 jest.doMock('@/components/settings/LegalSection', () => ({
   LegalSection: () => <div data-testid="legal-section" />,
 }));

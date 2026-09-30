@@ -63,6 +63,7 @@ export default function PaywallScreen() {
     loading,
     processing,
     error,
+    clearError,
     packages,
     purchase,
     restore,
@@ -312,7 +313,8 @@ export default function PaywallScreen() {
 
   const handleCloseErrorSheet = useCallback(() => {
     setShowErrorSheet(false);
-  }, []);
+    clearError();
+  }, [clearError]);
 
   const translateWithFallback = useCallback((key: string, fallback?: string) => {
     void translationRevision;

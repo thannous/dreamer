@@ -1,0 +1,33 @@
+appId: com.tanuki75.noctalia
+name: Plus account has unlimited analysis and sign-out returns to guest
+tags: [journeys, plus, mock]
+env:
+  PROFILE: plus
+---
+- runFlow: subflows/start-guest.yml
+- runFlow: subflows/select-profile.yml
+- runFlow: subflows/open-settings.yml
+- scrollUntilVisible:
+    element:
+      id: quota.analysisValue
+    direction: DOWN
+- assertVisible:
+    id: quota.analysisValue
+    text: "Unlimited|Illimité"
+- takeScreenshot: plus-allowance
+- scrollUntilVisible:
+    element:
+      id: btn.auth.signOut
+    direction: UP
+- tapOn:
+    id: btn.auth.signOut
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 15000
+- runFlow: subflows/open-settings.yml
+- assertVisible:
+    id: settings-account-open-signin
+- assertNotVisible:
+    id: btn.auth.signOut
+- takeScreenshot: guest-after-plus-signout

@@ -102,6 +102,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
   const [processing, setProcessing] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const clearError = useCallback(() => setError(null), []);
   const isMockMode = isMockModeEnabled();
   const requiresAuth = !user?.id;
   // Track which expiry we've already refreshed to avoid infinite loops on expired plans
@@ -681,6 +682,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     processing,
     refreshing,
     error,
+    clearError,
     packages,
     requiresAuth,
     purchase,
