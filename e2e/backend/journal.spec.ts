@@ -95,13 +95,22 @@ test('another account and an anonymous client cannot read or mutate an owner dre
 
 for (const tier of ['free', 'plus'] as const) {
   test(`${tier} allowance comes from the server without any purchase`, async ({ page, accounts }) => {
-    await login(page, accounts[tier]);
-    await expect(page.getByTestId('quota.analysisValue')).toContainText(tier === 'plus' ? 'Unlimited' : '/ 3');
     const userClient = client();
     expect((await userClient.auth.signInWithPassword(accounts[tier])).error).toBeNull();
+    const story = `E2E ${tier} account-only dream ${randomUUID()}`;
+    const inserted = await userClient.from('dreams').insert({
+      user_id: accounts[tier].id, transcript: story, title: 'Account-only dream',
+      interpretation: '', shareable_quote: '', dream_type: 'Symbolic Dream', client_request_id: randomUUID(),
+    });
+    expect(inserted.error).toBeNull();
+    await login(page, accounts[tier]);
+    await expect(page.getByTestId('quota.analysisValue')).toContainText(tier === 'plus' ? 'Unlimited' : '/ 3');
     const snapshot = await userClient.rpc('get_authenticated_quota_snapshot');
     expect(snapshot.error).toBeNull();
     expect(snapshot.data.tier).toBe(tier);
+    await journal(page);
+    await expect(page.getByTestId(/^dream\.item\./).filter({ hasText: story })).toHaveCount(1);
+    await page.getByTestId('tab.settings').click();
     await page.getByTestId('btn.auth.signOut').click();
     await expect(page.getByTestId('screen.recording')).toBeVisible();
     await journal(page);
