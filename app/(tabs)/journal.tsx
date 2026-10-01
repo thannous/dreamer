@@ -1036,7 +1036,9 @@ export default function JournalListScreen() {
           onLoad={onListLoaded}
           testID={TID.List.Dreams}
           ref={flatListRef}
-          key={`desktop-${desktopColumns}`}
+          // Web grid measurements can arrive after filtering removed their row.
+          // Recreate the grid when its item membership changes to discard stale layouts.
+          key={`desktop-${desktopColumns}-${Platform.OS === 'web' ? visibleItems.map(keyExtractor).join(',') : ''}`}
           data={visibleItems}
           onEndReached={hasMore ? loadMore : undefined}
           onEndReachedThreshold={0.5}

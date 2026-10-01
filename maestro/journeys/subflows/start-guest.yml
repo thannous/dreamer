@@ -8,8 +8,18 @@ appId: com.tanuki75.noctalia
     when:
       visible: DEVELOPMENT SERVERS
     commands:
-      - tapOn: >-
-          ${'http://[^ ]+:' + (DEV_CLIENT_URL ? decodeURIComponent(DEV_CLIENT_URL).split(':').pop() : '8081')}
+      - tapOn:
+          text: >-
+            ${'http://[^ ]+:' + (DEV_CLIENT_URL ? decodeURIComponent(DEV_CLIENT_URL).split(':').pop() : '8081')}
+          # Cold Metro bundles can still be opening from the deep link before a row exists.
+          optional: true
+      - runFlow:
+          when:
+            visible: DEVELOPMENT SERVERS
+          commands:
+            - tapOn: "http://"
+            - inputText: ${decodeURIComponent(DEV_CLIENT_URL || 'exp+noctalia://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081').split('?url=')[1]}
+            - tapOn: Connect
 - extendedWaitUntil:
     visible: "Continue|Skip|Reload"
     timeout: 60000

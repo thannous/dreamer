@@ -161,5 +161,7 @@ $$;
 -- Supabase default that no longer auto-exposes newly created public tables.
 grant select, insert, update, delete on table public.dreams to authenticated;
 grant usage, select on sequence public.dreams_id_seq to authenticated;
+grant select, insert, update, delete on table public.dreams to service_role;
+grant usage, select on sequence public.dreams_id_seq to service_role;
 grant insert on table public.waitlist_subscribers to anon;
 grant select on table public.waitlist_subscribers to service_role;

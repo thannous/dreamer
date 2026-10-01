@@ -3,6 +3,11 @@
 -- quota is exhausted; ordinary new account analyses remain quota-gated.
 -- Both existing BEFORE INSERT triggers invoke the same function, so the
 -- private ledger recognizes a repeated call for the same client dream key.
+-- Existing projects may have this schema from Dashboard setup; fresh databases do not.
+create schema if not exists private;
+revoke all on schema private from public, anon;
+grant usage on schema private to authenticated;
+
 create table private.guest_analysis_imports (
   analysis_request_id uuid primary key,
   user_id uuid not null,

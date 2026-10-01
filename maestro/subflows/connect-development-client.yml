@@ -1,0 +1,25 @@
+appId: ${APP_ID || "com.tanuki75.noctalia"}
+---
+# Standalone builds skip this. A cleared debug app needs its Metro URL again.
+- runFlow:
+    when:
+      visible: DEVELOPMENT SERVERS
+    commands:
+      - openLink: ${DEV_CLIENT_URL || 'exp+noctalia://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081'}
+      - extendedWaitUntil:
+          visible: "Continue|Skip|Reload"
+          timeout: 60000
+      - runFlow:
+          when:
+            visible: Continue
+          commands:
+            - tapOn: Continue
+      - runFlow:
+          when:
+            visible: Reload
+          commands:
+            - scrollUntilVisible:
+                element: Tools button
+                direction: DOWN
+            - tapOn: Tools button
+            - pressKey: back

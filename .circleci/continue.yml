@@ -95,6 +95,41 @@ commands:
             - /home/circleci/.npm
 
 jobs:
+  noctalia-e2e-backend:
+    machine:
+      image: ubuntu-2404:2026.05.1
+    resource_class: medium
+    steps:
+      - checkout
+      - run:
+          name: Use the repository Node version
+          command: |
+            cd /tmp
+            curl -fsSLO https://nodejs.org/dist/v24.19.0/node-v24.19.0-linux-x64.tar.xz
+            curl -fsSLO https://nodejs.org/dist/v24.19.0/SHASUMS256.txt
+            sha256sum --check --ignore-missing SHASUMS256.txt
+            tar -xJf node-v24.19.0-linux-x64.tar.xz
+            echo 'export PATH=/tmp/node-v24.19.0-linux-x64/bin:$PATH' >> "$BASH_ENV"
+      - run:
+          name: Install locked dependencies and Chromium
+          command: |
+            npm ci
+            npx playwright install --with-deps chromium
+      - run:
+          name: Verify real local Auth, durable journal, account isolation and Free/Plus rights
+          command: npm run test:e2e:backend
+      - store_test_results:
+          path: test-results/e2e-backend-junit
+      - store_artifacts:
+          path: test-results/e2e-backend-report
+          destination: e2e-backend-report
+      - store_artifacts:
+          path: test-results/e2e-backend
+          destination: e2e-backend-videos
+      - store_artifacts:
+          path: test-results/e2e-backend-results.json
+          destination: e2e-backend-results.json
+
   noctalia-e2e-web:
     executor: node
     steps:
@@ -438,6 +473,17 @@ workflows:
             tags:
               only: /.*/
       - noctalia-e2e-web:
+          filters:
+            tags:
+              only: /.*/
+
+  backend-e2e:
+    when:
+      or:
+        - << pipeline.parameters.run_noctalia >>
+        - << pipeline.parameters.run_edge_contracts >>
+    jobs:
+      - noctalia-e2e-backend:
           filters:
             tags:
               only: /.*/
