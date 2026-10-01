@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-09-22",
+    "lastUpdated": "2026-09-29",
     "totalSymbols": 160,
     "languages": [
       "en",
@@ -1228,31 +1228,34 @@
       "fr": {
         "slug": "chien",
         "name": "Chien",
-        "shortDescription": "Rêver de chien parle souvent de confiance, de loyauté et de protection. Un chien affectueux évoque le soutien; un chien qui attaque, mord ou grogne peut signaler conflit, peur de trahison ou relation devenue insécurisante.",
+        "shortDescription": "Un chien peut rendre un rêve rassurant, joyeux ou inquiétant. Commencez par sa familiarité, son comportement et votre réaction. Une attaque ou une morsure rêvée ne révèle pas, à elle seule, une trahison et ne prédit pas une agression.",
         "askYourself": [
-          "Le chien était-il affectueux, agressif, errant ou protecteur ?",
-          "M’attaquait-il, me mordait-il, me suivait-il ou défendait-il quelqu’un ?",
-          "Quel lien de confiance semble solide, fragile ou blessé maintenant ?"
+          "Était-ce mon chien, un autre chien familier ou un animal inconnu ?",
+          "Qui était approché, poursuivi, mordu ou protégé, et comment ai-je réagi ?",
+          "Quelle émotion reste au réveil, et une rencontre, une vidéo ou une préoccupation récente pourrait-elle expliquer la scène ?"
         ],
         "seoTitle": "chien, chiens ou chien agressif",
         "faq": [
           {
-            "question": "Que signifie rêver d’un chien ?",
-            "answer": "Rêver d’un chien concerne souvent la confiance, la loyauté, la protection et les relations. Le sens change si le chien est affectueux, agressif, errant, blessé ou s’il vous suit."
+            "question": "Que signifie rêver d'un chien ?",
+            "answer": "Il n'existe pas de sens unique. Notez si le chien était familier, ce qu'il faisait et si vous vous sentiez à l'aise ou menacé. La compagnie ou une responsabilité peuvent être des associations personnelles; votre animal, une rencontre récente ou une vidéo peuvent également expliquer la scène."
           },
           {
-            "question": "Que signifie rêver de chiens ?",
-            "answer": "Plusieurs chiens peuvent représenter un groupe, la famille, les amis ou les dynamiques sociales. Des chiens calmes indiquent le soutien; des chiens agressifs indiquent une pression ou un conflit."
+            "question": "Que signifie rêver de plusieurs chiens ?",
+            "answer": "Observez si les chiens agissaient ensemble, vous entouraient ou vous laissaient à distance. Un groupe peut vous rappeler une situation sociale, mais le nombre de chiens ne démontre ni soutien ni conflit. Votre réaction et vos souvenirs récents aident à préciser le contexte."
           },
           {
-            "question": "Que signifie rêver d’un chien qui attaque ?",
-            "answer": "Un chien qui attaque peut indiquer une peur de trahison, un conflit relationnel ou une menace perçue chez quelqu’un qui devrait inspirer confiance."
+            "question": "Que signifie rêver d'un chien qui attaque ?",
+            "answer": "La scène peut rappeler une peur récente ou une situation ressentie comme imprévisible, sans prouver que quelqu'un vous veut du mal. Connaissiez-vous le chien ? Qui était menacé ? Avez-vous fui, cherché de l'aide ou tenté de protéger quelqu'un ?"
           },
           {
-            "question": "Que signifie rêver d’un chien qui mord ?",
-            "answer": "La morsure d’un chien signale une confiance blessée, une parole agressive ou une relation protectrice devenue douloureuse."
+            "question": "Que signifie rêver d'un chien qui mord ?",
+            "answer": "Une morsure peut rendre le rêve particulièrement inquiétant. Notez ce qui se passait juste avant et si vous pouviez vous éloigner. Ni la morsure ni la partie du corps touchée n'ont un sens fixe; elles ne constituent pas une preuve de trahison ou de blessure à venir."
           }
-        ]
+        ],
+        "documentTitle": "Rêver de chien : attaque, morsure ou chien amical",
+        "documentMetaDescription": "Chien connu ou inconnu, amical ou agressif : comparez son comportement, votre réaction et votre contexte récent pour explorer ce rêve.",
+        "modifiedAt": "2026-09-29"
       },
       "es": {
         "slug": "perro",
@@ -5073,11 +5076,15 @@
       "fr": {
         "slug": "perdu",
         "name": "Être Perdu",
-        "shortDescription": "Être perdu dans les rêves symbolise la confusion, le manque de direction ou l'incertitude sur le chemin de vie. Cela reflète souvent un sentiment d'être dépassé ou déconnecté de son but.",
+        "shortDescription": "Rêver d'être perdu peut être inquiétant ou, parfois, éveiller la curiosité. Le lieu, les personnes présentes et votre manière de chercher un chemin donnent des pistes. La scène ne prouve pas que vous manquez de direction dans votre vie.",
         "askYourself": [
-          "Où est-ce que je me sens sans direction dans ma vie ?",
-          "Quel guidage ou clarté ai-je besoin ?"
-        ]
+          "Le lieu était-il familier, inconnu ou un mélange de plusieurs endroits ?",
+          "Cherchais-je une adresse, une personne ou une sortie, et pouvais-je demander de l'aide ?",
+          "Quelle émotion dominait, et quel trajet, souvenir ou événement récent pourrait expliquer le décor ?"
+        ],
+        "documentTitle": "Rêver d'être perdu : en ville ou ailleurs",
+        "documentMetaDescription": "Ville inconnue, maison introuvable ou chemin retrouvé : observez le lieu, votre réaction et un souvenir récent avant de chercher le sens du rêve.",
+        "modifiedAt": "2026-09-29"
       },
       "es": {
         "slug": "perdido",
