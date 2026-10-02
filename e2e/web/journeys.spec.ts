@@ -29,6 +29,9 @@ async function journal(page: Page) {
   const back = page.getByTestId('btn.navigateJournal');
   if (await back.isVisible()) await back.click();
   else {
+    if (!await page.getByTestId('tab.journal').filter({ visible: true }).isVisible()) {
+      await page.getByTestId('btn.recording.home').click();
+    }
     await page.getByTestId('tab.journal').filter({ visible: true }).click();
   }
   await expect(page.getByTestId('screen.journal').filter({ visible: true })).toHaveCount(1);
