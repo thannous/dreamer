@@ -19,15 +19,16 @@ async function prepareReflection(page: Page, media: 'loaded' | 'failed' | 'absen
   await page.getByTestId('btn.saveDream').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
   await page.getByTestId('btn.dream.primaryCta').click();
-  await page.getByTestId('analysis.reading.close').click();
+  await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
   if (media !== 'absent') {
     await page.getByTestId('btn.journal.illustrate').click();
-    await expect(page.getByTestId('btn.journal.illustration.expand')).toBeVisible();
+    if (media !== 'failed') await expect(page.getByTestId('btn.journal.illustration.expand')).toBeVisible();
     await expect(page.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
   }
   await page.getByTestId('btn.editMetadata').click();
   await page.getByTestId('input.dreamTitle').fill(dreamTitle);
   await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
   await page.getByTestId('component.dreamDetail.actionCard').click();
   await expect(page.getByTestId('screen.dreamCategories')).toBeVisible();
 }
@@ -43,6 +44,7 @@ async function appearance(page: Page, mode: 'dark' | 'light') {
   await page.getByTestId(`quick-settings.theme.${mode}`).click();
   await page.getByTestId('quick-settings.close').click();
   await page.getByTestId('btn.home.today.cta').click();
+  await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
   await page.getByTestId('component.dreamDetail.actionCard').click();
   await expect(page.getByTestId('screen.dreamCategories')).toHaveCSS('background-color', mode === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
 }
