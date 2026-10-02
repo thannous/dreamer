@@ -1604,3 +1604,7 @@ final result: passed (local web card scope)
 - Assertions: portrait geometry and text bounds, translated metadata and independent lucid/recurring/memory labels, full-story navigation, responsive overflow, saved memory, search recovery and favorite toggling.
 - Repeatable artifacts in the isolated worktree: `test-results/e2e-web-junit/results.xml`, `test-results/e2e-web-report/index.html`, per-test screenshots and `trace.zip` under `test-results/e2e-web/`. All remain ignored.
 - Focused lint: zero errors, four existing Journal ref warnings; test types, generated theme parity and brand parity passed. Final committed pre-push validation and remote CI are reported in the PR.
+
+**PR CI integration correction**
+- Initial PR head `893b10a7` passed all non-web checks and 41/42 web journeys, including every new Journal test. The empty Trends journey timed out on its obsolete `Close analysis` locator: latest master replaced that analysis overlay with inline Mon rêve reading.
+- Updated the existing journey to return with `btn.navigateJournal` and assert the saved story in the visible Journal card. No app behavior or CI routing is changed. The failed run remains available in CircleCI job 2270.
