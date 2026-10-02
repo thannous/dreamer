@@ -7,7 +7,6 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  Switch,
   Text,
   useWindowDimensions,
   View,
@@ -25,6 +24,8 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import { IllustrationQualityPreference } from './IllustrationQualityPreference';
+import { SettingsSection } from './SettingsSection';
+import { SettingsToggle } from './SettingsToggle';
 import { isHdIllustrationsEnabled } from '@/lib/env';
 
 import {
@@ -40,6 +41,7 @@ type SettingsFieldGroupProps = {
   appVersionLabel?: string;
   bottomPadding: number;
   legal?: ReactElement;
+  footer?: ReactElement;
   onOpenSubscription: () => void;
   quota: ReactElement;
   returningGuestBlocked: boolean;
@@ -50,10 +52,9 @@ type SettingsFieldGroupProps = {
 /**
  * Values `className` cannot reach.
  *
- * `Switch` accepts no `className` (Uniwind types it as `never`); the web time input is a
- * DOM node, not a React Native view; and `fontVariant` has no utility.
+ * The web time input is a DOM node, not a React Native view;
+ * `fontVariant` has no utility.
  */
-const REMINDER_SWITCH_STYLE = { transform: [{ scale: 1.15 }] } as const;
 const TABULAR_NUMS_STYLE: TextStyle = { fontVariant: ['tabular-nums'] };
 const WEB_TIME_PICKER_STYLE = {
   backgroundColor: 'transparent',
@@ -68,11 +69,10 @@ const WEB_TIME_PICKER_STYLE = {
 /** Settings rows are stacked edge to edge; hit slop would overlap the neighbouring row. */
 const NO_HIT_SLOP = 0;
 
-const ROW_CLASS = 'min-h-[46px] w-full flex-row items-center gap-4';
-const RITUAL_ROW_CLASS = `${ROW_CLASS} min-h-[42px]`;
-const ROW_LABEL_CLASS = 'flex-1 font-sans text-[15px] leading-[20px] text-ivory';
+const ROW_CLASS = 'min-h-[64px] w-full flex-row items-center gap-3 py-3';
+const RITUAL_ROW_CLASS = ROW_CLASS;
+const ROW_LABEL_CLASS = 'min-w-0 flex-1 font-sans text-[15px] leading-[20px] text-ivory';
 const ROW_VALUE_CLASS = 'max-w-[36%] shrink font-sans text-[15px] leading-[20px] text-right text-ivory-muted';
-const CARD_CLASS = 'w-full rounded-[18px] border border-line-strong bg-ink-raised';
 const SHEET_HEADER_CLASS = 'mb-[18px] flex-row items-center gap-3';
 const SHEET_HEADER_ICON_CLASS =
   'h-11 w-11 items-center justify-center rounded-[22px] border border-champagne-soft bg-ink-soft';
@@ -232,32 +232,6 @@ function PreferenceSheet<T extends string>({
   );
 }
 
-type EditorialCardProps = {
-  children: React.ReactNode;
-  compact?: boolean;
-  icon: 'book.closed.fill' | 'bell';
-  noctalia: NoctaliaDesignTokens;
-  title: string;
-  testID: string;
-};
-
-function EditorialCard({ children, compact = false, icon, noctalia, title, testID }: EditorialCardProps) {
-  return (
-    <View className={`${CARD_CLASS} overflow-hidden px-4`} testID={testID}>
-      <View
-        className={cx(
-          'flex-row items-center justify-between',
-          compact ? 'min-h-10' : 'min-h-12'
-        )}
-      >
-        <Text className="font-display-semibold text-h2 text-ivory">{title}</Text>
-        <IconSymbol name={icon} size={23} color={noctalia.accent.text} />
-      </View>
-      {children}
-    </View>
-  );
-}
-
 type PreferenceRowProps = {
   icon: 'sun.max.fill' | 'globe' | 'book.closed.fill' | 'arrow.clockwise';
   isLast?: boolean;
@@ -341,6 +315,7 @@ export function SettingsFieldGroup({
   appVersionLabel,
   bottomPadding,
   legal,
+  footer,
   onOpenSubscription,
   quota,
   returningGuestBlocked,
@@ -413,23 +388,18 @@ export function SettingsFieldGroup({
     <>
       <SettingsContentHost testID="settings-editorial-host">
         <ScrollView
-          contentContainerClassName="gap-3.5 px-gutter pt-[35px]"
+          contentContainerClassName="gap-6 px-gutter pt-5"
           contentContainerStyle={{ paddingBottom: Math.max(bottomPadding, 112) }}
           contentInsetAdjustmentBehavior="never"
           showsVerticalScrollIndicator={false}
           className="w-full flex-1"
           testID="settings-field-group"
         >
-          <View
-            className={`${CARD_CLASS} overflow-hidden px-4 py-1`}
-            testID="settings-section-account"
-          >
+          <SettingsSection title={t('settings.section.account')} testID="settings-section-account">
             {account}
-          </View>
+          </SettingsSection>
 
-          <EditorialCard
-            icon="book.closed.fill"
-            noctalia={noctalia}
+          <SettingsSection
             title={t('settings.section.experience')}
             testID="settings-section-preferences"
           >
@@ -453,14 +423,11 @@ export function SettingsFieldGroup({
               value={language.currentLabel}
             />
             <IllustrationQualityPreference />
-          </EditorialCard>
+          </SettingsSection>
 
           {!returningGuestBlocked ? (
             <>
-              <EditorialCard
-                compact
-                icon="bell"
-                noctalia={noctalia}
+              <SettingsSection
                 title={t('settings.section.rituals')}
                 testID="settings-section-notifications"
               >
@@ -468,7 +435,7 @@ export function SettingsFieldGroup({
                   <View
                     accessibilityLiveRegion="polite"
                     accessibilityRole="alert"
-                    className="mb-2 flex-row items-center gap-2.5 rounded-md border border-warning-line bg-warning px-3 py-2.5"
+                    className="mt-3 mb-2 flex-row items-center gap-2.5 rounded-md border border-warning-line bg-warning px-3 py-2.5"
                   >
                     <IconSymbol
                       name="exclamationmark.triangle.fill"
@@ -486,6 +453,7 @@ export function SettingsFieldGroup({
                 <Pressable
                   accessibilityRole="switch"
                   accessibilityState={{ checked: reminderEnabled }}
+                  aria-checked={reminderEnabled}
                   onPress={toggleReminder}
                   className={`${RITUAL_ROW_CLASS} border-b border-b-line`}
                   testID="settings-notifications-reminder-toggle"
@@ -494,15 +462,11 @@ export function SettingsFieldGroup({
                   <Text className={ROW_LABEL_CLASS}>
                     {t('settings.rituals.reminders')}
                   </Text>
-                  <Switch
-                    ios_backgroundColor={noctalia.surface.soft}
+                  <SettingsToggle
                     onValueChange={(enabled) => {
                       void notifications.toggleWeekday(enabled);
                     }}
-                    thumbColor={noctalia.text.primary}
-                    trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
                     value={reminderEnabled}
-                    style={REMINDER_SWITCH_STYLE}
                   />
                 </Pressable>
                 <PressableScale
@@ -524,6 +488,7 @@ export function SettingsFieldGroup({
                 <Pressable
                   accessibilityRole="switch"
                   accessibilityState={{ checked: weekendEnabled }}
+                  aria-checked={weekendEnabled}
                   onPress={toggleWeekendReminder}
                   className={cx(RITUAL_ROW_CLASS, weekendEnabled && 'border-b border-b-line')}
                   testID="settings-notifications-weekend-toggle"
@@ -532,15 +497,11 @@ export function SettingsFieldGroup({
                   <Text className={ROW_LABEL_CLASS}>
                     {t('settings.rituals.weekend_reminders')}
                   </Text>
-                  <Switch
-                    ios_backgroundColor={noctalia.surface.soft}
+                  <SettingsToggle
                     onValueChange={(enabled) => {
                       void notifications.toggleWeekend(enabled);
                     }}
-                    thumbColor={noctalia.text.primary}
-                    trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
                     value={weekendEnabled}
-                    style={REMINDER_SWITCH_STYLE}
                   />
                 </Pressable>
                 {weekendEnabled ? (
@@ -564,6 +525,7 @@ export function SettingsFieldGroup({
                 <Pressable
                   accessibilityRole="switch"
                   accessibilityState={{ checked: weeklyRecapEnabled }}
+                  aria-checked={weeklyRecapEnabled}
                   onPress={toggleWeeklyRecap}
                   className={`${RITUAL_ROW_CLASS} border-t border-t-line`}
                   testID="settings-notifications-weekly-recap-toggle"
@@ -577,20 +539,17 @@ export function SettingsFieldGroup({
                       {t('settings.rituals.weekly_recap_hint')}
                     </Text>
                   </View>
-                  <Switch
-                    ios_backgroundColor={noctalia.surface.soft}
+                  <SettingsToggle
                     onValueChange={(enabled) => {
                       void notifications.toggleWeeklyRecap(enabled);
                     }}
-                    thumbColor={noctalia.text.primary}
-                    trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
                     value={weeklyRecapEnabled}
-                    style={REMINDER_SWITCH_STYLE}
                   />
                 </Pressable>
                 <Pressable
                   accessibilityRole="switch"
                   accessibilityState={{ checked: streakRiskEnabled }}
+                  aria-checked={streakRiskEnabled}
                   onPress={toggleStreakRisk}
                   className={`${RITUAL_ROW_CLASS} border-t border-t-line`}
                   testID={TID.Button.SettingsStreakRiskToggle}
@@ -604,20 +563,17 @@ export function SettingsFieldGroup({
                       {t('settings.rituals.streak_risk_hint')}
                     </Text>
                   </View>
-                  <Switch
-                    ios_backgroundColor={noctalia.surface.soft}
+                  <SettingsToggle
                     onValueChange={(enabled) => {
                       void notifications.toggleStreakRisk(enabled);
                     }}
-                    thumbColor={noctalia.text.primary}
-                    trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
                     value={streakRiskEnabled}
-                    style={REMINDER_SWITCH_STYLE}
                   />
                 </Pressable>
                 <Pressable
                   accessibilityRole="switch"
                   accessibilityState={{ checked: inactivityNudgeEnabled }}
+                  aria-checked={inactivityNudgeEnabled}
                   onPress={toggleInactivityNudge}
                   className={`${RITUAL_ROW_CLASS} border-t border-t-line`}
                   testID={TID.Button.SettingsInactivityNudgeToggle}
@@ -631,15 +587,11 @@ export function SettingsFieldGroup({
                       {t('settings.rituals.inactivity_nudge_hint')}
                     </Text>
                   </View>
-                  <Switch
-                    ios_backgroundColor={noctalia.surface.soft}
+                  <SettingsToggle
                     onValueChange={(enabled) => {
                       void notifications.toggleInactivityNudge(enabled);
                     }}
-                    thumbColor={noctalia.text.primary}
-                    trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
                     value={inactivityNudgeEnabled}
-                    style={REMINDER_SWITCH_STYLE}
                   />
                 </Pressable>
                 {!notifications.unsupported && reminderEnabled ? (
@@ -662,39 +614,37 @@ export function SettingsFieldGroup({
                     </PressableScale>
                   </View>
                 ) : null}
-              </EditorialCard>
+              </SettingsSection>
 
-              <PressableScale
-                accessibilityRole="button"
-                onPress={onOpenSubscription}
-                hitSlop={NO_HIT_SLOP}
-                className="min-h-16 w-full flex-row items-center gap-3.5 rounded-[18px] border border-champagne bg-ink-raised px-4 py-2.5"
-                testID="settings-section-subscription"
-              >
-                <View className="h-11 w-11 items-center justify-center rounded-[22px] border border-champagne">
-                  <IconSymbol name="sparkles" size={28} color={noctalia.accent.text} />
-                </View>
-                <View className="flex-1 gap-0.5">
-                  <Text className="font-display-semibold text-[20px] leading-[25px] text-ivory">
-                    {subscriptionTitle}
-                  </Text>
-                  <Text className="font-sans text-[13px] leading-[17px] text-ivory-muted">
-                    {subscriptionSubtitle}
-                  </Text>
-                </View>
-                <IconSymbol name="chevron.right" size={26} color={noctalia.accent.text} />
-              </PressableScale>
-
-              <View
-                className={`${CARD_CLASS} p-4`}
+              <SettingsSection
+                title={t('settings.quota.title')}
                 testID="settings-section-quota"
               >
-                {quota}
-              </View>
+                <View className="py-4">{quota}</View>
+                <PressableScale
+                  accessibilityRole="button"
+                  onPress={onOpenSubscription}
+                  hitSlop={NO_HIT_SLOP}
+                  className="min-h-16 w-full flex-row items-center gap-3 border-t border-line py-3"
+                  testID="settings-section-subscription"
+                >
+                  <IconSymbol name="sparkles" size={24} color={noctalia.accent.text} />
+                  <View className="min-w-0 flex-1 gap-1">
+                    <Text className="font-sans-medium text-[15px] leading-[20px] text-ivory">
+                      {subscriptionTitle}
+                    </Text>
+                    <Text className="font-sans text-[13px] leading-[18px] text-ivory-muted">
+                      {subscriptionSubtitle}
+                    </Text>
+                  </View>
+                  <IconSymbol name="chevron.right" size={20} color={noctalia.text.tertiary} />
+                </PressableScale>
+              </SettingsSection>
             </>
           ) : null}
 
           {legal}
+          {!returningGuestBlocked ? footer : null}
 
           {appVersionLabel ? (
             <View className="items-center px-4 py-2.5" testID="settings-app-version">
