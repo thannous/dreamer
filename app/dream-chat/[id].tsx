@@ -1182,11 +1182,10 @@ function DreamChatContent() {
         <View style={[DecoLines.rule, { backgroundColor: noctalia.accent.base }]} />
       </View>
       <Exploration360Panel
-        progress={exploration360Status.progress}
+        canGenerateSynthesis={exploration360Status.canGenerateSynthesis}
         hasSynthesis={exploration360Status.hasSynthesis}
         onSynthesisPress={handleSynthesisPress}
         synthesisDisabled={isInteractionLocked || !hasQuotaCheckClearance || isQuotaGateBlocked}
-        animationDelay={160}
         style={styles.exploration360Panel}
       />
       {targetFailedMessage ? (
@@ -1229,7 +1228,7 @@ function DreamChatContent() {
           ) : null}
         </View>
       ) : null}
-      {(messages.length <= 2 || !exploration360Status.progress.isComplete) && (
+      {(
         <View style={styles.quickCategoriesContainer}>
           <Text
             accessibilityLiveRegion="polite"

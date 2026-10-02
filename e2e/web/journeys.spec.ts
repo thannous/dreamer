@@ -228,3 +228,46 @@ for (const profile of ['new', 'plus'] as const) {
     await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
   });
 }
+
+test('reflection offers an optional recap after one angle and updates it after another exchange', async ({ page }, testInfo) => {
+  await selectProfile(page, 'plus');
+  await page.setViewportSize({ width: 390, height: 867 });
+  await page.getByRole('tab', { name: 'Today', exact: true }).click();
+  await page.getByTestId('btn.inspiration.personalReadingNext').click();
+  await expect(page.getByTestId('component.transcriptCard')).toBeVisible();
+  await page.getByTestId('component.dreamDetail.actionCard').click();
+
+  const categories = page.getByTestId('screen.dreamCategories');
+  await expect(categories).toBeVisible();
+  for (const angle of ['symbols', 'emotions', 'growth']) {
+    await expect(page.getByTestId(`btn.dreamCategory.${angle}`)).toHaveCount(1);
+  }
+  await expect(page.getByTestId('btn.exploration360.synthesis')).toHaveCount(0);
+  await page.getByTestId('btn.dreamCategory.readAnalysis').click();
+  await expect(page.getByTestId('analysis.reading.body')).toContainText('The infinite library represents your vast inner knowledge and memories.');
+  await page.getByTestId('analysis.reading.close').click();
+  await page.screenshot({ path: testInfo.outputPath('reflection-before-exchange.png'), fullPage: false });
+  await page.getByTestId('btn.dreamCategory.symbols').click();
+  const recap = page.getByTestId('btn.exploration360.synthesis').filter({ visible: true });
+  await expect(recap).toBeEnabled();
+  await expect(recap).toHaveText(/Take stock/);
+  await recap.click();
+  await expect(page.getByText('Take stock of my dream', { exact: true }).filter({ visible: true })).toBeVisible();
+  await expect(page.getByTestId('text.reflection.recapCurrent').filter({ visible: true })).toBeVisible();
+  await expect(recap).toHaveCount(0);
+  await page.getByTestId('quick-category-emotions').click();
+  await expect(recap).toBeEnabled();
+  await expect(recap).toHaveText(/Update recap/);
+  await recap.click();
+  await expect(page.getByText('Take stock of my dream', { exact: true }).filter({ visible: true })).toHaveCount(2);
+  await expect(page.getByTestId('text.reflection.recapCurrent').filter({ visible: true })).toBeVisible();
+  await expect(recap).toHaveCount(0);
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await expect(categories).toBeVisible();
+  // Explored angles remain accessible; reopening one must not send it again.
+  await page.getByTestId('btn.dreamCategory.symbols').click();
+  await expect(page.getByText('Take stock of my dream', { exact: true }).filter({ visible: true })).toHaveCount(2);
+  await expect(recap).toHaveCount(0);
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await page.screenshot({ path: testInfo.outputPath('reflection-after-exchanges.png'), fullPage: false });
+});

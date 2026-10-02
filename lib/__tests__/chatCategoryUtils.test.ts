@@ -22,6 +22,16 @@ describe('chatCategoryUtils', () => {
     expect(isCategoryExplored(history, 'symbols')).toBe(false);
   });
 
+  it('does not complete a failed category with an unrelated later answer', () => {
+    const history: ChatMessage[] = [
+      { id: 'u1', role: 'user', text: 'symbols', meta: { category: 'symbols' } },
+      { id: 'u2', role: 'user', text: 'emotions', meta: { category: 'emotions' } },
+      { id: 'm2', role: 'model', text: 'Emotion answer' },
+    ];
+    expect(isCategoryExplored(history, 'symbols')).toBe(false);
+    expect(isCategoryExplored(history, 'emotions')).toBe(true);
+  });
+
   it('returns true when a non-error model reply follows prompt', () => {
     const history: ChatMessage[] = [
       { id: 'm1', role: 'user', text: 'Q', meta: { category: 'symbols' } },

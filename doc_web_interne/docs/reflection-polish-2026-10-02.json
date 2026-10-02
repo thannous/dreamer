@@ -1,0 +1,47 @@
+{
+  "owner": "codex/reflection-polish",
+  "scope": "Option 1 grouped reflection list; optional recap after one explored angle; refresh after new successful exchanges",
+  "authorization": "User requested implementation. Preserve Plus access rule, unrelated WIP, and production/store boundaries.",
+  "failureModes": [
+    "A pending/failed angle incorrectly unlocks recap",
+    "A single successful angle remains blocked by the old three-angle gate",
+    "A saved recap permanently blocks updates",
+    "Pending/failed follow-up falsely makes recap stale",
+    "An unrelated answer is paired with a failed synthesis request",
+    "Repeated navigation generates unsolicited recaps"
+  ],
+  "validation": "Existing Playwright mock UI journey extended before implementation. Existing isolated history tests updated first for failure states and persisted-history pairing not injectable through the browser fixtures.",
+  "e2eGap": "Mock AI fixtures always return successful replies; they cannot reconstruct interrupted/failed persisted history to verify unlock and freshness boundaries.",
+  "sourceCandidate": {
+    "branch": "codex/reflection-polish",
+    "baseline": "7df7752d66bbca7e695c4763f63c1f581cc08ac7",
+    "identity": "Final committed revision is embedded in the Playwright report metadata and recorded in the PR validation."
+  },
+  "checks": {
+    "historyTests": "17 assertions passed in two existing suites",
+    "routeTests": "4 existing navigation/identity assertions passed; obsolete three-angle progress assertion removed",
+    "types": "app and test TypeScript checks passed",
+    "lint": "0 errors; four pre-existing warnings in unchanged chat hooks",
+    "e2e": {
+      "result": "2 journeys passed",
+      "command": "E2E_WEB_PORT=8085 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- --grep 'reflection offers an optional recap|Plus user continues a reflection' --workers 1",
+      "environment": "Expo web mock auth, Plus, AI; 390x867 viewport for new flow; synthetic predefined dream",
+      "assertions": [
+        "saved analysis content is readable",
+        "no recap before an angle reply",
+        "recap available after one angle",
+        "successful recap saved and marked current",
+        "another angle makes recap refreshable",
+        "updated recap remains visible on revisit",
+        "reopening an explored angle sends no new recap"
+      ],
+      "artifacts": "Ignored test-results/e2e-web: trace.zip, before/after screenshots; JUnit and HTML report"
+    },
+    "designQA": "Normalized comparison against approved option 1; French light/dark and 320px inspection; canonical fonts/palette, 44px+ targets. Native text scaling and physical-device quality unqualified."
+  },
+  "nativeQualification": "not tested",
+  "backendDeployment": "not needed; existing Plus gate retained",
+  "requiredFinalCheck": "npm run test:prepush on the clean committed candidate; result recorded in PR validation.",
+  "knownBaselineIssue": "Mobile web journal fails in FlashList RecyclerView style handling. New phone journey uses the supported Today recommendation entry. This unrelated journal defect is not fixed or qualified by this change.",
+  "delivery": "Implementation and PR only. Master merge may trigger Cloudflare production publication; no production/store/backend deployment or new device installation authorized here."
+}

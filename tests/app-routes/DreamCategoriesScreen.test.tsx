@@ -84,6 +84,14 @@ jest.mock('@/hooks/useClearWebFocus', () => ({
   useClearWebFocus: () => {},
 }));
 
+jest.mock('@/components/analysis/AnalysisReadingModal', () => ({
+  AnalysisReadingModal: () => null,
+}));
+
+jest.mock('@/hooks/useDreamMedia', () => ({
+  useDreamMedia: () => ({ imageUrl: undefined, imageCacheKey: undefined, error: false, retry: jest.fn() }),
+}));
+
 jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({
     mode: 'dark',
@@ -222,21 +230,6 @@ describe('Dream categories screen', () => {
       pathname: '/dream-chat/[id]',
       params: { id: '123', mode: 'synthesis' },
     });
-  });
-
-  it('[S] Given a new dream When rendering Then it shows 360 progress without synthesis CTA', () => {
-    // Given
-    mockUseLocalSearchParams.mockReturnValue({ id: '123' });
-    mockUseDreams.mockReturnValue({
-      dreams: [{ id: 123, title: 'A dream', chatHistory: [] }],
-    });
-
-    // When
-    render(<DreamCategoriesScreen />);
-
-    // Then
-    expect(screen.getByTestId(TID.Component.Exploration360Panel)).toBeTruthy();
-    expect(screen.queryByTestId(TID.Button.Exploration360Synthesis)).toBeNull();
   });
 
   it('[E] Given an unknown dream id When rendering Then it shows a not-found message', () => {

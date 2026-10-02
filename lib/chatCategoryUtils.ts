@@ -46,6 +46,7 @@ const normalizeText = (value: string): string => value.trim().replace(/\s+/g, ' 
 const isNonErrorModelReplyAfter = (history: ChatMessage[], startIndex: number, errorVariants: string[]): boolean => {
   for (let i = startIndex + 1; i < history.length; i++) {
     const msg = history[i];
+    if (msg.role === 'user' || msg.meta?.isError) return false;
     if (msg.role !== 'model') continue;
     const candidate = normalizeText(msg.text ?? '');
     if (!candidate) continue;

@@ -80,7 +80,7 @@ describe('exploration360', () => {
     expect(getNextExploration360Axis(dream)).toBeNull();
   });
 
-  it('unlocks synthesis only after all three axes are complete', () => {
+  it('unlocks a recap after one completed angle without requiring the other two', () => {
     const partialDream = buildDream({
       chatHistory: [
         { id: 'u1', role: 'user', text: 'symbols', meta: { category: 'symbols' } },
@@ -98,7 +98,7 @@ describe('exploration360', () => {
       ],
     });
 
-    expect(getExploration360SynthesisStatus(partialDream).canGenerateSynthesis).toBe(false);
+    expect(getExploration360SynthesisStatus(partialDream).canGenerateSynthesis).toBe(true);
     expect(getExploration360SynthesisStatus(completeDream).canGenerateSynthesis).toBe(true);
   });
 
@@ -132,6 +132,45 @@ describe('exploration360', () => {
     });
 
     expect(hasExploration360Synthesis(dream)).toBe(false);
+  });
+
+  it('does not unlock a recap for a pending or failed angle', () => {
+    const prompt = { id: 'u1', role: 'user' as const, text: 'symbols', meta: { category: 'symbols' as const } };
+    expect(getExploration360SynthesisStatus(buildDream({ chatHistory: [prompt] })).canGenerateSynthesis).toBe(false);
+    expect(getExploration360SynthesisStatus(buildDream({ chatHistory: [prompt,
+      { id: 'm1', role: 'model', text: 'Network unavailable', meta: { isError: true } },
+    ] })).canGenerateSynthesis).toBe(false);
+  });
+
+  it('allows refreshing a saved recap only after a successful new exchange', () => {
+    const history: NonNullable<DreamAnalysis['chatHistory']> = [
+      { id: 'u1', role: 'user', text: 'symbols', meta: { category: 'symbols' } },
+      { id: 'm1', role: 'model', text: 'Symbol reply' },
+      { id: 'u2', role: 'user', text: 'Recap', meta: { exploration360Synthesis: true } },
+      { id: 'm2', role: 'model', text: 'Saved recap' },
+    ];
+    expect(getExploration360SynthesisStatus(buildDream({ chatHistory: history })).canGenerateSynthesis).toBe(false);
+    const followUp = { id: 'u3', role: 'user' as const, text: 'What about my emotions?', meta: { category: 'emotions' as const } };
+    expect(getExploration360SynthesisStatus(buildDream({ chatHistory: [...history, followUp] })).canGenerateSynthesis).toBe(false);
+    expect(getExploration360SynthesisStatus(buildDream({ chatHistory: [...history, followUp,
+      { id: 'm3', role: 'model', text: 'Failed reply', meta: { isError: true } },
+    ] })).canGenerateSynthesis).toBe(false);
+    const updated = [...history, followUp, { id: 'm3', role: 'model' as const, text: 'Emotional thread' }];
+    expect(getExploration360SynthesisStatus(buildDream({ chatHistory: updated })).canGenerateSynthesis).toBe(true);
+    expect(getExploration360SynthesisStatus(buildDream({ chatHistory: [...updated,
+      { id: 'u4', role: 'user', text: 'Update recap', meta: { exploration360Synthesis: true } },
+      { id: 'm4', role: 'model', text: 'Updated recap' },
+    ] })).canGenerateSynthesis).toBe(false);
+  });
+
+  it('does not mistake a later unrelated answer for a missing recap reply', () => {
+    const dream = buildDream({ chatHistory: [
+      { id: 'u1', role: 'user', text: 'Recap', meta: { exploration360Synthesis: true } },
+      { id: 'u2', role: 'user', text: 'symbols', meta: { category: 'symbols' } },
+      { id: 'm2', role: 'model', text: 'A symbol answer, not a recap' },
+    ] });
+    expect(hasExploration360Synthesis(dream)).toBe(false);
+    expect(getExploration360SynthesisStatus(dream).canGenerateSynthesis).toBe(true);
   });
 
   it('reserves final 360 synthesis generation for Plus users', () => {

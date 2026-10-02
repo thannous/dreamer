@@ -2,11 +2,11 @@ import { test as base, expect } from 'playwright/test';
 
 // Keep mock journeys independent of image CDNs, analytics and real payment services.
 export const test = base.extend<{ offlineServices: void }>({
-  offlineServices: [async ({ context }, use) => {
+  offlineServices: [async ({ context, baseURL }, use) => {
     const billingRequests: string[] = [];
     await context.route('**/*', async (route) => {
       const url = new URL(route.request().url());
-      if (url.origin === 'http://127.0.0.1:8084') return route.continue();
+      if (url.origin === new URL(baseURL ?? 'http://127.0.0.1:8084').origin) return route.continue();
       if (url.hostname === 'picsum.photos' || url.hostname === 'fastly.picsum.photos') {
         return route.fulfill({
           contentType: 'image/svg+xml',
