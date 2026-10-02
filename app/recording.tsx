@@ -78,7 +78,6 @@ import type {
   RememberedDreamKind,
 } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
-import { getGuestRecordedDreamCount, subscribeGuestDreamRecordingCount } from '@/services/quota/GuestDreamCounter';
 import {
   registerOfflineModelPromptHandler,
   resolveDeviceSpeechCapability,
@@ -105,7 +104,6 @@ import {
   type LayoutChangeEvent,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   View,
   useWindowDimensions,
@@ -151,21 +149,6 @@ export default function RecordingScreen() {
   );
 
   const [transcript, setTranscript] = useState('');
-  const [guestDreamsRemaining, setGuestDreamsRemaining] = useState<number | null>(null);
-  useEffect(() => {
-    if (user) return undefined;
-    let active = true;
-    const refresh = () => {
-      void getGuestRecordedDreamCount(dreams.length).then((used) => {
-        if (active) setGuestDreamsRemaining(Math.max(0, GUEST_DREAM_RECORDING_LIMIT - used));
-      }).catch(() => {
-        if (active) setGuestDreamsRemaining(null);
-      });
-    };
-    refresh();
-    const unsubscribe = subscribeGuestDreamRecordingCount(refresh);
-    return () => { active = false; unsubscribe(); };
-  }, [dreams.length, user]);
   const [editableCapture, setEditableCapture] = useState<CaptureEditableDraft | null>(null);
   const [captureReviewState, setCaptureReview] = useState<CaptureReview | null>(null);
   const captureReview = useMemo(() => captureReviewState && captureReviewState.text === captureReviewState.source
@@ -1096,7 +1079,6 @@ export default function RecordingScreen() {
       navigateToSavedDream(savedDream, { saved: true, recall: completeWithHelp, autoAnalyze: isNewDream && !user && !completeWithHelp });
     } catch (error) {
       if (error instanceof GuestDreamLimitError) {
-        setGuestDreamsRemaining(0);
         Alert.alert(t('recording.guest_recording.limit_title'), t('recording.guest_recording.limit_message', { limit: GUEST_DREAM_RECORDING_LIMIT }), [
           { text: t('recording.guest_recording.signup'), onPress: () => router.push('/settings?section=account&auth=signup') },
           { text: t('recording.guest_recording.keep_draft'), style: 'cancel' },
@@ -1787,7 +1769,7 @@ export default function RecordingScreen() {
                   instructionText={keyboardVisible ? '' :
                     captureIntent === 'remembered'
                       ? t('recording.remembered.active_instruction')
-                      : t('recording.placeholder')
+                      : t('recording.write.instruction')
                   }
                   switchToVoiceLabel={voiceControlLabel}
                   voiceSupported={isVoiceSupported}
@@ -1818,16 +1800,6 @@ export default function RecordingScreen() {
                     value={captureReview?.text ?? transcript}
                     persisted={transcript.length > 0 && lastPersistedValue === persistedDraftValue}
                   />
-                ) : null}
-
-                {hydrationStatus === 'ready' && !user && guestDreamsRemaining !== null ? (
-                  <Text testID="recording-guest-remaining" accessibilityLiveRegion="polite"
-                    className="mt-2 font-sans text-[13px] text-ivory-muted">
-                    {t(guestDreamsRemaining === 0
-                      ? 'recording.guest_recording.exhausted_inline'
-                      : guestDreamsRemaining === 1 ? 'recording.guest_recording.remaining_one'
-                      : 'recording.guest_recording.remaining', { remaining: guestDreamsRemaining })}
-                  </Text>
                 ) : null}
 
               </View>

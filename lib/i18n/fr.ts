@@ -630,7 +630,7 @@ const translations: Record<string, string> = {
     "recording.review.save_original": "Enregistrer sans reformuler",
     "recording.conversation.finish": "Terminer et enregistrer",
     "recording.conversation.reply_voice": "Continuer à la voix",
-    "recording.write.instruction": "Ton carnet libre : quelques mots ou un récit complet.",
+    "recording.write.instruction": "Décris ton rêve",
     "recording.tell.title": "Ton récit, à ton rythme",
     "recording.tell.empty": "Raconte ce qui te revient. Tu pourras relire ton récit ou te faire aider pour le compléter.",
     "recording.tell.edit": "Relire et modifier",

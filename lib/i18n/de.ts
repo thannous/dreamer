@@ -629,7 +629,7 @@ const translations: Record<string, string> = {
     "recording.review.save_original": "Ohne Umformulierung speichern",
     "recording.conversation.finish": "Beenden und speichern",
     "recording.conversation.reply_voice": "Mit Sprache fortfahren",
-    "recording.write.instruction": "Dein freies Tagebuch: ein paar Worte oder eine ganze Geschichte.",
+    "recording.write.instruction": "Beschreibe deinen Traum",
     "recording.tell.title": "Deine Geschichte, in deinem Tempo",
     "recording.tell.empty": "Erzähle, woran du dich erinnerst. Danach kannst du deinen Bericht lesen oder dir beim Ergänzen helfen lassen.",
     "recording.tell.edit": "Lesen und bearbeiten",

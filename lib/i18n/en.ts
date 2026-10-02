@@ -629,7 +629,7 @@ const translations: Record<string, string> = {
     "recording.review.save_original": "Save without rewording",
     "recording.conversation.finish": "Finish and save",
     "recording.conversation.reply_voice": "Continue by voice",
-    "recording.write.instruction": "Your free-form journal: a few words or a full story.",
+    "recording.write.instruction": "Describe your dream",
     "recording.tell.title": "Your story, at your pace",
     "recording.tell.empty": "Tell what you remember. You can review your story or get help adding details afterwards.",
     "recording.tell.edit": "Review and edit",

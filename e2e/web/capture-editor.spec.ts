@@ -34,6 +34,8 @@ test('capture gives the story room, respects explicit and automatic themes, and 
   const save = page.getByTestId('btn.saveDream');
   const count = page.getByTestId('component.recording.draftProgress.count');
   await expect(save).toBeDisabled();
+  await expect(page.getByText('Décris ton rêve', { exact: true })).toBeVisible();
+  await expect(page.getByTestId('recording-guest-remaining')).toHaveCount(0);
   await editor.fill(story);
   await expect(page.getByText('Brouillon conservé sur cet appareil', { exact: true })).toBeVisible();
   await expect(count).toHaveText(`${story.length} caractères`);

@@ -1521,8 +1521,6 @@ describe('Recording screen', () => {
     mockAddDream.mockRejectedValueOnce(new GuestDreamLimitError());
     render(<RecordingScreen />);
     await awaitEditorReady();
-    await waitFor(() => expect(screen.getByTestId('recording-guest-remaining').textContent)
-      .toContain('recording.guest_recording.exhausted_inline'));
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'A dream I want to keep' },
     });
