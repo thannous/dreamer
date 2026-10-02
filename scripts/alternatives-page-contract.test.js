@@ -8,10 +8,19 @@ const {
   siteConfig,
 } = require('./lib/docs-site-config');
 const { readSourceDocument } = require('./lib/docs-source-utils');
+const { loadComparisonData } = require('./lib/alternatives-table');
 
 const PAGE_ID = 'page.alternatives';
 const DATASET_IDENTIFIER = 'noctalia-dream-journal-apps-comparison-2026';
 const DATASET_URL = 'https://noctalia.app/data/dream-journal-apps-comparison-2026.csv';
+const comparisonRows = [...loadComparisonData().values()];
+const datasetVersion = comparisonRows.map((row) => row.last_reviewed).sort().at(-1);
+const featureCounts = [
+  comparisonRows.filter((row) => ['Yes', 'Former listing advertised it'].includes(row.ai_interpretation)).length,
+  comparisonRows.filter((row) => ['Strong', 'Yes', 'Text and voice positioning'].includes(row.voice_capture)).length,
+  comparisonRows.filter((row) => ['Yes', 'Former listing advertised it'].includes(row.generated_images)).length,
+  comparisonRows.filter((row) => ['Strong', 'Yes', 'Former listing advertised reality checks'].includes(row.lucid_dreaming)).length,
+];
 const APP_NAMES = [
   'Noctalia',
   'DreamApp',
@@ -68,13 +77,17 @@ describe('dream journal app comparison contract', () => {
       expect(body).toContain('id="methodology"');
       expect(body).toContain('id="dataset"');
       expect(body).toContain(localizedSvg);
-      expect(body).toMatch(/10[^<]*11/);
-      expect(body).toMatch(/7[^<]*11/);
-      expect(body).toMatch(/4[^<]*11/);
-      expect(body).toMatch(/3[^<]*11/);
+      const findings = body.slice(body.indexOf('id="findings"'), body.indexOf('id="feature-snapshot"'));
+      const visibleCounts = [...findings.matchAll(/<p class="text-3xl[^"]*">(\d+)\D+11<\/p>/g)]
+        .map((match) => Number(match[1]));
+      expect(visibleCounts).toEqual(featureCounts);
 
       const localSvgPath = path.join(DOCS_SRC_DIR, 'static', localizedSvg.slice(1));
       expect(fs.existsSync(localSvgPath)).toBe(true);
+      const svg = fs.readFileSync(localSvgPath, 'utf8');
+      const chartCounts = [...svg.matchAll(/<text x="1028"[^>]*>(\d+) \/ 11<\/text>/g)]
+        .map((match) => Number(match[1]));
+      expect(chartCounts).toEqual(featureCounts);
     }
   );
 
@@ -91,9 +104,9 @@ describe('dream journal app comparison contract', () => {
       expect(dataset).toMatchObject({
         identifier: DATASET_IDENTIFIER,
         dateCreated: '2026-07-12',
-        dateModified: '2026-08-09',
-        version: '2026-08-09',
-        temporalCoverage: '2026-07-12/2026-08-09',
+        dateModified: datasetVersion,
+        version: datasetVersion,
+        temporalCoverage: `2026-07-12/${datasetVersion}`,
         isAccessibleForFree: true,
         inLanguage: 'en',
       });

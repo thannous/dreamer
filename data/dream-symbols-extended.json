@@ -1,7 +1,7 @@
 {
   "meta": {
     "description": "Extended content for dream symbols - full interpretations and variations",
-    "lastUpdated": "2026-09-22"
+    "lastUpdated": "2026-10-02"
   },
   "symbols": {
     "water": {
@@ -1401,6 +1401,10 @@
           {
             "context": "Une maison en ruines ou délabrée",
             "meaning": "Fatigue, perte de repères ou besoin de réparation sont des pistes possibles. Des travaux réels ou un bâtiment récemment visité peuvent aussi expliquer l'image."
+          },
+          {
+            "context": "Une maison en travaux ou en rénovation",
+            "meaning": "Repérez ce qui est en chantier et qui décide des travaux. De la curiosité devant une pièce rénovée et de l’inquiétude face à un passage bloqué orientent vers des questions différentes : changement souhaité, attente ou manque de confort. Vérifiez aussi si des travaux réels ou une recherche de logement ont nourri la scène."
           },
           {
             "context": "Découvrir de nouvelles pièces",
@@ -4290,27 +4294,27 @@
         }
       },
       "it": {
-        "fullInterpretation": "<p>Le scale nei sogni rappresentano tipicamente progresso, ambizioni e il percorso della vita. Salire o scendere le scale riflette come ti stai muovendo rispetto ai tuoi obiettivi e alla tua crescita personale.</p>\n<p>Salire le scale facilmente simboleggia progresso, successo e la sensazione di avvicinarti ai tuoi obiettivi. Difficoltà nel salire le scale possono indicare ostacoli o sfide sul tuo cammino.</p>\n<p>Scendere le scale può avere vari significati: la discesa nell'inconscio, un passo indietro o l'esplorazione di aspetti più profondi di se stessi.</p>\n<p>Scale infinite simboleggiano spesso la sensazione di non raggiungere mai la meta nonostante i grandi sforzi.</p>",
+        "fullInterpretation": "<p>Per leggere un sogno con le scale, parti dalla scena: salivi o scendevi, verso quale luogo e con chi? Una scala di casa, una rampa di servizio e una scalinata sconosciuta non hanno necessariamente lo stesso significato.</p>\n<p>Salire può accompagnare un obiettivo o una fatica; scendere può dare sollievo, curiosità oppure paura. Non è una regola secondo cui salire significa riuscire e scendere significa fallire: la destinazione e la tua emozione possono cambiare del tutto la lettura.</p>\n<p>Considera anche una spiegazione quotidiana: una scala percorsa di recente, un trasloco, un ascensore guasto o una scena vista in un film. Annota questi dettagli prima di cercare un significato simbolico.</p>\n<p><strong>Esempio inventato:</strong> sogni di salire molte rampe per raggiungere un ufficio, ma trovi sempre lo stesso pianerottolo. Nel diario puoi separare la scena («non arrivo»), l’emozione («fretta») e il contesto («ieri aspettavo una risposta»). Il collegamento è una domanda da esplorare, non la prova che il sogno riveli un problema. Per tenere separate osservazioni e ipotesi, segui il <a href=\"/it/blog/dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne\">metodo del diario dei sogni</a>.</p>",
         "variations": [
           {
             "context": "Salire le scale facilmente",
-            "meaning": "Simboleggia progresso, successo e la sensazione di avvicinarti ai tuoi obiettivi con fiducia."
+            "meaning": "Puoi provare fiducia, curiosità o piacere nel movimento. Conta ciò che ti aspetta in cima: raggiungere un amico e arrivare a una porta chiusa suggeriscono domande diverse, senza garantire un successo futuro."
           },
           {
             "context": "Faticare a salire le scale",
-            "meaning": "Rappresenta ostacoli, sfide o la sensazione che il percorso verso i tuoi obiettivi sia più difficile del previsto."
+            "meaning": "Gradini alti, borse pesanti o una rampa ripida possono ricordare uno sforzo concreto. Chiediti se desideravi la meta, se qualcuno ti aiutava e se la fatica riprende un episodio recente, prima di leggerla come un ostacolo personale."
           },
           {
             "context": "Scendere le scale",
-            "meaning": "Può simboleggiare la discesa nell'inconscio, l'esplorazione di aspetti più profondi di sé o un passo indietro."
+            "meaning": "La discesa può essere un ritorno, una via di uscita o un’esplorazione. Se eri sollevato potresti ricordare una pausa o un allontanamento desiderato; se avevi paura, osserva il buio, la velocità e la destinazione. Scendere non equivale necessariamente a perdere terreno."
           },
           {
             "context": "Cadere dalle scale",
-            "meaning": "Indica una battuta d'arresto, perdita di controllo o la paura di perdere ciò che si è raggiunto."
+            "meaning": "Nota se inciampavi, mancava un gradino o qualcuno ti spingeva. La scena può richiamare sorpresa o perdita di appoggio, ma anche una caduta vista o temuta di recente. Non predice un incidente."
           },
           {
             "context": "Scale infinite o senza fine",
-            "meaning": "Simboleggia la sensazione di non raggiungere mai la meta nonostante i grandi sforzi, o una sfida che sembra non finire mai."
+            "meaning": "Se i piani si ripetevano, annota che cosa cercavi e come reagivi: insistere, fermarti o cambiare strada. Una sensazione di attesa è una pista possibile, non l’unica spiegazione del sogno."
           }
         ],
         "illustration": {
