@@ -14,12 +14,14 @@ import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
+import { useQuota } from '@/hooks/useQuota';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { isDreamExplored } from '@/lib/dreamUsage';
-import { getExploration360SynthesisStatus } from '@/lib/exploration360';
+import { canUseExploration360Synthesis, getExploration360SynthesisStatus } from '@/lib/exploration360';
 import { getDreamImageVersion, withCacheBuster } from '@/lib/imageUtils';
+import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 
 const CATEGORY_ICONS = { symbols: 'sparkles', emotions: 'heart.fill', growth: 'leaf.fill' } as const;
@@ -37,6 +39,7 @@ export default function DreamCategoriesScreen() {
   const [failedImage, setFailedImage] = useState<string | null>(null);
   useClearWebFocus();
   const dream = resolveDreamRoute(dreams, route);
+  const { tier, subscriptionLoading } = useQuota({ dreamId: dream?.id, dream });
   const media = useDreamMedia(dream);
   const status = getExploration360SynthesisStatus(dream);
   const mediaUrl = media.thumbnailUrl || media.imageUrl;
@@ -45,6 +48,8 @@ export default function DreamCategoriesScreen() {
   const imageIdentity = JSON.stringify([media.accessScope, cacheKey, uri]);
   const source = useMemo(() => uri ? { uri, cacheKey } : undefined, [uri, cacheKey]);
   const showImage = Boolean(source && !media.error && imageIdentity !== failedImage);
+  const canUseSynthesis = canUseExploration360Synthesis(tier);
+  const subscriptionReady = !subscriptionLoading || canUseSynthesis;
 
   if (!dream) {
     return <View style={[styles.empty, { backgroundColor: tokens.screen.background }]}>
@@ -53,6 +58,12 @@ export default function DreamCategoriesScreen() {
   }
 
   const openChat = () => router.push({ pathname: '/dream-chat/[id]', params: getDreamRouteParams(dream) });
+  const openSynthesis = () => {
+    if (!subscriptionReady) return;
+    router.push(canUseSynthesis
+      ? { pathname: '/dream-chat/[id]', params: { ...getDreamRouteParams(dream), mode: 'synthesis' } }
+      : buildPaywallHref('exploration_limit'));
+  };
 
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
@@ -112,7 +123,7 @@ export default function DreamCategoriesScreen() {
           </View>
 
           <Exploration360Panel hasSynthesis={status.hasSynthesis} canGenerateSynthesis={status.canGenerateSynthesis}
-            onSynthesisPress={() => router.push({ pathname: '/dream-chat/[id]', params: { ...getDreamRouteParams(dream), mode: 'synthesis' } })}
+            onSynthesisPress={openSynthesis} synthesisDisabled={!subscriptionReady}
             onReadSynthesisPress={openChat} variant="reflection" style={styles.recap} />
 
           <Pressable onPress={openChat} testID={TID.Button.DreamFreeChat} accessibilityRole="button"

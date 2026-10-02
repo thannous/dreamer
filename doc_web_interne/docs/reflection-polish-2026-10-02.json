@@ -43,5 +43,49 @@
   "backendDeployment": "not needed; existing Plus gate retained",
   "requiredFinalCheck": "npm run test:prepush on the clean committed candidate; result recorded in PR validation.",
   "knownBaselineIssue": "Mobile web journal fails in FlashList RecyclerView style handling. New phone journey uses the supported Today recommendation entry. This unrelated journal defect is not fixed or qualified by this change.",
-  "delivery": "Implementation and PR only. Master merge may trigger Cloudflare production publication; no production/store/backend deployment or new device installation authorized here."
+  "delivery": "Implementation and PR only. Master merge may trigger Cloudflare production publication; no production/store/backend deployment or new device installation authorized here.",
+  "directPlusFollowup": {
+    "scope": "Direct Plus offer from Reflection for guest/free users; keep Plus synthesis route and reading saved recaps",
+    "authorizations": "Local master correction and final commit; physical Motorola verification requested. New device installation and paid subscription are separate unresolved prerequisites.",
+    "sourceBase": "7fe91a79f3e09fffa827521ac14400a71a11f48e",
+    "validationSnapshot": "ceb4ebe897416c23dcf7265bfbd66e460412051f",
+    "failureModes": [
+      "Free recap action adds a chat hop before the offer",
+      "Closing the offer returns to chat instead of Reflection",
+      "Paid users are sent to an offer while subscription state is loading"
+    ],
+    "checks": {
+      "testFirst": "New E2E failed before correction with dream-chat then paywall navigation",
+      "e2e": "Two journeys passed: free direct Plus + decline return, Plus one-angle recap + refresh",
+      "types": "app/test types passed",
+      "lint": "focused lint passed",
+      "prepush": "Clean validation snapshot passed app/test types and 4 existing route tests; scoped implementation hashes match master working files",
+      "diffCheck": "passed"
+    },
+    "e2eRerun": "E2E_WEB_PORT=8085 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- --grep 'free reflection opens Plus directly|reflection offers an optional recap' --workers 1",
+    "e2eArtifacts": "test-results/e2e-web: traces and screenshots; HTML and JUnit reports ignored by Git",
+    "device": {
+      "platform": "Motorola physical",
+      "installedVersion": "3.4.6 (83)",
+      "installSource": "Local ADB install",
+      "fontScale": "1.0, reread unchanged",
+      "existingAccount": "Confirmed signed in; email omitted",
+      "entitlement": "Free; Plus expired",
+      "updatedScreen": "Not yet installed; cannot qualify new rendering or native text scaling",
+      "realRecap": "Blocked by Plus entitlement",
+      "stateRestored": "Settings view restored; device lock released"
+    },
+    "nativeCandidate": {
+      "sourceSnapshot": "ceb4ebe897416c23dcf7265bfbd66e460412051f",
+      "build": "Local Release APK arm64-v8a built successfully with Java 17 and existing Android project; no prebuild or EAS build",
+      "package": "com.tanuki75.noctalia",
+      "version": "3.4.5 (83), local QA candidate; master versionName retained, EAS build counter synchronized in private checkout only",
+      "apkSha256": "7f32f6ec4adb3fd973449b80452f501394278e9815bd2c9f425fd596bf71d4f7",
+      "signing": "Verified same signing certificate as installed 3.4.6 (83)",
+      "deviceInstallation": "Not performed; explicit authorization pending",
+      "baselineDependencyCheck": "Expo SDK 57 patch-level recommendations pre-exist; dependencies left unchanged"
+    },
+    "nextAction": "Explicit compatible-update authorization and verified data-preservation method required for device rendering/text-scale QA; existing account needs Plus for real recap quality.",
+    "delivery": "Scoped correction on local master; local commit only, no push/publication"
+  }
 }
