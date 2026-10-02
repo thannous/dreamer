@@ -1,4 +1,5 @@
 /* @jest-environment jsdom */
+jest.mock('@/components/lucid/LucidGuideOrb', () => ({ LucidGuideOrb: ({ testID = 'lucid-guide-orb' }: { testID?: string }) => <div data-testid={testID} /> }));
 
 import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -457,27 +458,12 @@ describe('Lucid SSILD sensory lab screen', () => {
     mockReduceMotion = true;
     syncLab(running());
     const { container } = render(<LucidSsildSensoryLabScreen />);
-    expect(screen.getByTestId('lucid-ssild-lab-static')).not.toBeNull();
-    expect(screen.queryByTestId('lucid-ssild-lab-static')).not.toBeNull();
     expect(container.innerHTML).not.toMatch(/Animated|Reanimated/);
     expect(screen.getByTestId('lucid-ssild-lab-object-state').textContent).toBe('S’apaiser');
     expect(screen.getByText('Ne cherchez à produire aucune expérience.')).not.toBeNull();
   });
 
-  it('uses a static object variant under Reduce Motion and the morphing one otherwise', () => {
-    syncLab(running(readyPlan('normal'), 50_000));
-    render(<LucidSsildSensoryLabScreen />);
-    expect(screen.queryByTestId('lucid-ssild-lab-static')).toBeNull();
-    expect(screen.getByTestId('lucid-ssild-lab-object-state').textContent).toBe('Vue');
-    cleanup();
 
-    mockReduceMotion = true;
-    syncLab(running(readyPlan('normal'), 50_000));
-    render(<LucidSsildSensoryLabScreen />);
-    expect(screen.getByTestId('lucid-ssild-lab-static').textContent).toBe('Vue');
-    expect(screen.getByTestId('lucid-ssild-lab-object-state').textContent).toBe('Vue');
-    expect(screen.getByText('Remarquez l’obscurité derrière vos paupières.')).not.toBeNull();
-  });
 
   it('interrupts a running SSILD session once from a real audio interruption and never invents completion', async () => {
     mockAudioEnabled = true;

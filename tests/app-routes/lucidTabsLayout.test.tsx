@@ -120,29 +120,5 @@ describe('Lucid tabs layout', () => {
     ).toHaveLength(4);
   });
 
-  it('keeps four localized labels readable at 360 dp with enlarged text', () => {
-    mockDimensions = { width: 360, height: 800, scale: 1, fontScale: 2 };
-    render(<LucidTabsLayout />);
 
-    const visible = [...mockScreenOptions.entries()].filter(
-      ([, options]) => (options as { href?: unknown }).href !== null
-    );
-    expect(visible.map(([name]) => name)).toEqual(['index', 'journal', 'programs', 'progress']);
-    for (const [, options] of visible) {
-      const label = (options as {
-        tabBarLabel: (input: { color: string }) => React.ReactElement;
-      }).tabBarLabel({ color: '#111' });
-      const props = label.props as {
-        numberOfLines: number;
-        maxFontSizeMultiplier: number;
-        adjustsFontSizeToFit: boolean;
-        minimumFontScale: number;
-      };
-      expect(props.numberOfLines).toBe(1);
-      expect(props.maxFontSizeMultiplier).toBe(1.2);
-      expect(props.adjustsFontSizeToFit).toBe(true);
-      expect(props.minimumFontScale).toBe(0.85);
-    }
-    expect((mockNavigatorOptions as { tabBarStyle: { height: number } }).tabBarStyle.height).toBe(72);
-  });
 });

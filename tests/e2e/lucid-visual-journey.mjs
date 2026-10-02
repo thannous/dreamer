@@ -106,9 +106,13 @@ export async function runLucidVisualJourney({ browser, base, output, revision, o
     check('Account sheet uses Lucid light surface', sheet?.background === 'rgb(255, 255, 255)', sheet);
     await new Promise(r => setTimeout(r, 400));
     await observe();
-    await tab.playwright.getByTestId('input.auth.email').fill('invalid-email');
+    await tab.playwright.getByTestId('input.auth.email').click();
     await observe();
-    await tab.playwright.getByTestId('input.auth.password').fill('short');
+    await tab.playwright.getByTestId('input.auth.email').pressSequentially('invalid-email');
+    await observe();
+    await tab.playwright.getByTestId('input.auth.password').click();
+    await observe();
+    await tab.playwright.getByTestId('input.auth.password').pressSequentially('short');
     await observe();
     const form = await tab.playwright.evaluate(() => {
       const button = document.querySelector('[data-testid="btn.auth.signIn"]');
@@ -164,7 +168,7 @@ export async function runLucidVisualJourney({ browser, base, output, revision, o
     await shot('24-resumed');
     await goto('/lucid/ssild-lab');
     await tab.playwright.getByTestId('lucid-ssild-lab-primary').click();
-    check('Sensory lab starts with a visible phase', (await observe()).includes('Étape'));
+    check('Sensory lab starts with a visible phase', (await observe()).includes('progressbar \"Sens 1 sur'));
     await shot('25-active');
     await tab.playwright.getByTestId('lucid-ssild-lab-pause').click();
     check('Sensory lab pause is visible', (await observe()).includes('En pause'));

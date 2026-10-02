@@ -24,7 +24,7 @@ let mockState: LucidJournalImportRuntimeState;
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
 jest.mock('@/context/LucidTrainerContext', () => ({ useLucidTrainer: () => ({ content: { locale: 'en' }, userScope: mockUserScope }) }));
 jest.mock('@/context/ThemeContext', () => ({ useTheme: () => ({ colors: {}, mode: 'dark' }) }));
-jest.mock('@/constants/lucidTheme', () => ({ LucidSpace: { md: 16 }, LucidType: { caption: [14,20] }, getLucidPalette: () => ({ text: '#fff', textSecondary: '#ddd' }) }));
+jest.mock('@/constants/lucidTheme', () => ({ ...jest.requireActual('@/constants/lucidTheme'), LucidSpace: { md: 16 }, LucidType: { ...jest.requireActual('@/constants/lucidTheme').LucidType, caption: [14,20] }, getLucidPalette: () => ({ text: '#fff', textSecondary: '#ddd' }) }));
 jest.mock('@/components/lucid/LucidUI', () => {
   const { View, Text, Pressable } = require('react-native');
   return { LucidScreen: ({ children }: any) => <View>{children}</View>, LucidCard: View,

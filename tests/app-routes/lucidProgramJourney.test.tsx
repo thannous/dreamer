@@ -159,6 +159,7 @@ jest.mock('@/constants/lucidTheme', () => ({
 }));
 
 jest.mock('@/context/ThemeContext', () => ({
+  ThemeModeScope: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useTheme: () => ({ colors: {}, mode: 'dark' }),
 }));
 
