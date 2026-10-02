@@ -1,6 +1,9 @@
 import { defineConfig, devices } from 'playwright/test';
 import { execFileSync } from 'node:child_process';
 
+const port = Number(process.env.E2E_WEB_PORT ?? '8084');
+const baseURL = `http://127.0.0.1:${port}`;
+
 export default defineConfig({
   metadata: {
     sourceRevision: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
@@ -22,7 +25,7 @@ export default defineConfig({
     ['junit', { outputFile: 'test-results/e2e-web-junit/results.xml', includeProjectInTestName: true }],
   ],
   use: {
-    baseURL: 'http://127.0.0.1:8084',
+    baseURL,
     locale: 'en-US',
     serviceWorkers: 'block',
     trace: 'on',
@@ -31,11 +34,11 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: 'npm run start:mock -- --web --port 8084',
+    command: `npm run start:mock -- --web --port ${port}`,
     // Keep onboarding/preferences across mock account switches. Dreams stay in memory.
     env: { EXPO_PUBLIC_MOCK_PERSISTENCE: 'true' },
     // Wait for Metro's cold bundle compilation before starting timed UI journeys.
-    url: 'http://127.0.0.1:8084/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.routerRoot=app&transform.reactCompiler=true&unstable_transformProfile=hermes-stable',
+    url: `${baseURL}/node_modules/expo-router/entry.bundle?platform=web&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.routerRoot=app&transform.reactCompiler=true&unstable_transformProfile=hermes-stable`,
     reuseExistingServer: process.env.E2E_REUSE_SERVER === '1' && !process.env.CI,
     timeout: 120_000,
   },

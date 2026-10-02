@@ -1,6 +1,6 @@
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import type { UserTier } from '@/constants/limits';
-import type { DreamAnalysis, DreamChatCategory } from '@/lib/types';
+import type { ChatMessage, DreamAnalysis, DreamChatCategory } from '@/lib/types';
 
 export type Exploration360AxisId = Exclude<DreamChatCategory, 'general'>;
 
@@ -71,37 +71,46 @@ export function getNextExploration360Axis(dream: DreamAnalysis | null | undefine
   return getExploration360Progress(dream).nextAxis;
 }
 
-export function hasExploration360Synthesis(dream: DreamAnalysis | null | undefined): boolean {
-  const history = dream?.chatHistory;
-  if (!history?.length) return false;
-
-  for (let index = 0; index < history.length; index++) {
-    const message = history[index];
-    if (message.role !== 'user' || !message.meta?.exploration360Synthesis) {
-      continue;
-    }
-
-    for (let replyIndex = index + 1; replyIndex < history.length; replyIndex++) {
-      const reply = history[replyIndex];
-      if (reply.role !== 'model') continue;
-      if (reply.meta?.isError) break;
-      if (reply.text?.trim()) return true;
-    }
+function successfulReplyIndex(history: ChatMessage[], promptIndex: number): number {
+  for (let index = promptIndex + 1; index < history.length; index++) {
+    const reply = history[index];
+    // A later prompt starts another exchange; its reply cannot finish this one.
+    if (reply.role === 'user' || reply.meta?.isError) return -1;
+    if (reply.role === 'model' && reply.text?.trim()) return index;
   }
+  return -1;
+}
 
-  return false;
+function latestSynthesisReplyIndex(history: ChatMessage[]): number {
+  let latest = -1;
+  history.forEach((message, index) => {
+    if (message.role === 'user' && message.meta?.exploration360Synthesis) {
+      latest = Math.max(latest, successfulReplyIndex(history, index));
+    }
+  });
+  return latest;
+}
+
+export function hasExploration360Synthesis(dream: DreamAnalysis | null | undefined): boolean {
+  return latestSynthesisReplyIndex(dream?.chatHistory ?? []) >= 0;
 }
 
 export function getExploration360SynthesisStatus(
   dream: DreamAnalysis | null | undefined
 ): Exploration360SynthesisStatus {
   const progress = getExploration360Progress(dream);
-  const hasSynthesis = hasExploration360Synthesis(dream);
+  const history = dream?.chatHistory ?? [];
+  const latestSynthesis = latestSynthesisReplyIndex(history);
+  const hasSynthesis = latestSynthesis >= 0;
+  const hasNewExchange = history.some((message, index) =>
+    index > latestSynthesis && message.role === 'user' &&
+    !message.meta?.exploration360Synthesis && successfulReplyIndex(history, index) > latestSynthesis
+  );
 
   return {
     progress,
     hasSynthesis,
-    canGenerateSynthesis: progress.isComplete && !hasSynthesis,
+    canGenerateSynthesis: progress.completedCount > 0 && hasNewExchange,
   };
 }
 
