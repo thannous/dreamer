@@ -23,6 +23,8 @@ const DESIGN = {
   'ink-soft': 'surface.soft', 'ink-overlay': 'surface.overlay', 'line-strong': 'surface.borderStrong',
   'champagne-dim': 'action.disabled', 'champagne-dim-line': 'action.disabledBorder',
   'ivory-disabled': 'action.disabledText',
+  'illustration-text': 'illustration.text',
+  'illustration-scrim': 'illustration.scrim',
   ...Object.fromEntries(['danger', 'success', 'warning'].flatMap(status => [
     [status, `status.${status}.background`], [`${status}-line`, `status.${status}.border`],
     [`${status}-on`, `status.${status}.text`], [`${status}-icon`, `status.${status}.icon`],

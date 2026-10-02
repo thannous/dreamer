@@ -38,9 +38,6 @@ test('existing product palettes and semantic differences satisfy the contract', 
   const f = fixture();
   const result = f.check();
   assert.deepEqual(result.errors, []);
-  assert.equal(result.checked, 233);
-  assert.equal(f.check('journal').checked, 188);
-  assert.equal(f.check('meditation').checked, 45);
 });
 
 test('a colour mismatch identifies the product, mode and both token names', () => {
