@@ -1059,6 +1059,7 @@ export default function JournalListScreen() {
           onMomentumScrollEnd={scheduleIdle}
         />
       ) : (
+        <View style={{ flex: 1, marginBottom: overlayNavClearance }}>
         <AnimatedDreamList
           onLoad={onListLoaded}
           testID={TID.List.Dreams}
@@ -1074,9 +1075,8 @@ export default function JournalListScreen() {
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
           contentContainerStyle={listContentStyle}
-          // The navigator hides its tab bar while the keyboard is shown.
-          // Always reserve the full absolute overlay, never a capped remainder.
-          style={{ flex: 1, marginBottom: overlayNavClearance }}
+          // Keep layout styles on the wrapper: Reanimated supplies style arrays,
+          // while FlashList's web container spreads its style as an object.
           ListHeaderComponent={listHeader}
           onScroll={searchConsumesLayout ? handleStaticListScroll : handleListScroll}
           scrollEventThrottle={16}
@@ -1092,6 +1092,7 @@ export default function JournalListScreen() {
           onMomentumScrollBegin={handleScrollBegin}
           onMomentumScrollEnd={scheduleIdle}
         />
+        </View>
       )}
 
       <AdvancedFilterSheet

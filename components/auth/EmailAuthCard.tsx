@@ -92,6 +92,7 @@ type Props = {
   showGoogleSignIn?: boolean;
   initialAccountSheetOpen?: boolean;
   initialMode?: 'signin' | 'signup';
+  showSignOut?: boolean;
 };
 
 export const EmailAuthCard: React.FC<Props> = ({
@@ -101,6 +102,7 @@ export const EmailAuthCard: React.FC<Props> = ({
   showGoogleSignIn = true,
   initialAccountSheetOpen = false,
   initialMode,
+  showSignOut = true,
 }) => {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getAuthDesignTokens(colors, mode), [colors, mode]);
@@ -1100,7 +1102,11 @@ export const EmailAuthCard: React.FC<Props> = ({
             },
           ]}
         >
-          <>{isLucidTrainer ? <Ionicons name="person-outline" size={24} color={noctalia.accent.text} /> : <IconSymbol name="moon.stars.fill" size={30} color={noctalia.accent.soft} />}</>
+          {isLucidTrainer ? (
+            <Ionicons name="person-outline" size={24} color={noctalia.accent.text} />
+          ) : (
+            <IconSymbol name="moon.stars.fill" size={24} color={noctalia.accent.soft} />
+          )}
         </View>
         <View style={styles.summaryCopy}>
           <View
@@ -1118,6 +1124,15 @@ export const EmailAuthCard: React.FC<Props> = ({
                 : t('settings.account.status.guest')}
             </Text>
           </View>
+          {user?.email ? (
+            <Text
+              numberOfLines={1}
+              style={[styles.summaryEmail, { color: noctalia.text.primary }]}
+              testID={TID.Text.AuthEmail}
+            >
+              {user.email}
+            </Text>
+          ) : null}
           {user ? (
             <Text style={[styles.summaryDescription, { color: noctalia.text.secondary }]}>
               {isLucidTrainer ? lucidDescription : t('settings.account.description_signed_in')}
@@ -1130,23 +1145,14 @@ export const EmailAuthCard: React.FC<Props> = ({
               {isLucidTrainer ? lucidDescription : t('settings.account.description_signed_out')}
             </Text>
           )}
-          {user?.email ? (
-            <Text
-              numberOfLines={1}
-              style={[styles.summaryEmail, { color: noctalia.text.primary }]}
-              testID={TID.Text.AuthEmail}
-            >
-              {user.email}
-            </Text>
-          ) : null}
         </View>
       </View>
 
-      <View
-        style={[styles.summaryDivider, { backgroundColor: noctalia.surface.border }]}
-      />
+      {!user || showSignOut ? (
+        <View style={[styles.summaryDivider, { backgroundColor: noctalia.surface.border }]} />
+      ) : null}
 
-      {user ? (
+      {user && showSignOut ? (
         <Pressable
           accessibilityRole="button"
           disabled={isBusy}
@@ -1170,7 +1176,7 @@ export const EmailAuthCard: React.FC<Props> = ({
             </Text>
           )}
         </Pressable>
-      ) : (
+      ) : !user ? (
         <View style={styles.summaryActions}>
           <Pressable
             accessibilityRole="button"
@@ -1207,7 +1213,7 @@ export const EmailAuthCard: React.FC<Props> = ({
             </Text>
           </Pressable>
         </View>
-      )}
+      ) : null}
     </View>
   );
 
@@ -1304,11 +1310,11 @@ const styles = StyleSheet.create({
   },
   summaryIcon: {
     alignItems: 'center',
-    borderRadius: 32,
+    borderRadius: 24,
     borderWidth: 1,
-    height: 64,
+    height: 48,
     justifyContent: 'center',
-    width: 64,
+    width: 48,
   },
   summaryCopy: {
     flex: 1,
@@ -1323,18 +1329,18 @@ const styles = StyleSheet.create({
   },
   statusPillText: {
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 14,
-    lineHeight: 18,
+    fontSize: 12,
+    lineHeight: 16,
   },
   summaryDescription: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 20,
+    fontSize: 13,
+    lineHeight: 18,
   },
   summaryEmail: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: 15,
+    lineHeight: 20,
   },
   summaryDivider: {
     height: 1,

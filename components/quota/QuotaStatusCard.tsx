@@ -32,6 +32,7 @@ const isMeaningfulImageQuota = (usage?: UsageEntry): usage is UsageEntry =>
 type Props = {
   onUpgradePress?: () => void;
   presentation?: 'card' | 'embedded';
+  showTitle?: boolean;
 };
 
 const formatUsage = (usage?: UsageEntry, unlimitedLabel?: string) => {
@@ -71,6 +72,7 @@ const QUOTA_REASON_KEYS: Record<string, string> = {
 export const QuotaStatusCard: React.FC<Props> = ({
   onUpgradePress,
   presentation = 'card',
+  showTitle = true,
 }) => {
   const { user } = useAuth();
   const { colors, mode } = useTheme();
@@ -189,9 +191,9 @@ export const QuotaStatusCard: React.FC<Props> = ({
     >
       <View style={styles.headerRow}>
         <View style={styles.headerTextContainer}>
-          <Text style={[styles.title, { color: noctalia.text.primary }]}>
+          {showTitle ? <Text style={[styles.title, { color: noctalia.text.primary }]}>
             {t('settings.quota.title')}
-          </Text>
+          </Text> : null}
           {subscriptionPending || subscriptionKnown ? (
             <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
               {subscriptionPending

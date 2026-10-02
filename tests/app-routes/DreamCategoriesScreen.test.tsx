@@ -76,6 +76,9 @@ jest.mock('react-native', () => {
   };
 });
 
+// This route fixture exercises navigation; actual media is qualified in web E2E.
+jest.mock('expo-image', () => ({ Image: () => null }));
+
 jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));

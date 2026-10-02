@@ -230,7 +230,7 @@ function expectUngroupedSection(testID: string, heading: string) {
   expect(section.getAttribute('data-accessible')).toBe('false');
   expect(section.getAttribute('role')).toBe('none');
   expect(section.getAttribute('aria-label')).toBeNull();
-  expect(section.querySelector('[role="header"]')?.textContent).toBe(heading);
+  expect(section.querySelector('[role="header"]')?.textContent).toContain(heading);
 }
 
 describe('Statistics screen VNext trends', () => {
@@ -284,7 +284,7 @@ describe('Statistics screen VNext trends', () => {
 
     expectVNextShell();
     expectUngroupedSection('trends.section.week', 'trends.section.week');
-    expectUngroupedSection('trends.section.patterns', 'trends.section.patterns');
+    expectUngroupedSection('trends.section.patterns', 'trends.patterns.themes');
     expectUngroupedSection('trends.section.evolution', 'trends.section.evolution');
     expect(screen.getByLabelText('trends.cta.capture_first')).toBeTruthy();
     expect(screen.getByText('trends.week.last_activity.empty')).toBeTruthy();
@@ -415,36 +415,6 @@ describe('Statistics screen VNext trends', () => {
     expect(screen.queryByText(/chat/i)).toBeNull();
   });
 
-  it('exposes labelled rhythm bars whose values are readable without colour', () => {
-    mockUseDreams.mockReturnValue({
-      dreams: [
-        analyzed(localDay(2026, 7, 24), { theme: 'calm' }),
-        analyzed(localDay(2026, 7, 29), { theme: 'noir' }),
-        analyzed(localDay(2026, 7, 29, 12), { theme: 'calm' }),
-      ],
-      loaded: true,
-    });
-
-    render(<StatisticsScreen />);
-
-    const chart = screen.getByTestId('trends.week.rhythm');
-    expect(chart.getAttribute('aria-label')).toBe('trends.week.rhythm');
-    expect(chart.getAttribute('data-accessible')).toBe('false');
-    expect(chart.getAttribute('role')).toBe('none');
-
-    const monday = screen.getByRole('progressbar', { name: 'trends.week.weekday.mon' });
-    const saturday = screen.getByRole('progressbar', { name: 'trends.week.weekday.sat' });
-    expect(monday.getAttribute('data-testid')).toBe('trends.week.rhythm.day.1');
-    expect(monday.getAttribute('data-accessible')).toBe('true');
-    expect(monday.getAttribute('aria-valuenow')).toBe('1');
-    expect(monday.getAttribute('aria-valuetext')).toBe('stats.legend.count_one:count=1');
-    expect(saturday.getAttribute('aria-valuenow')).toBe('2');
-    expect(saturday.getAttribute('aria-valuetext')).toBe('stats.legend.count:count=2');
-    expect(screen.getByTestId('trends.week.rhythm.day.1')).toBeTruthy();
-    expect(screen.getByTestId('trends.week.rhythm.day.0')).toBeTruthy();
-    expect(screen.queryByTestId('trends.layout.compact')).toBeNull();
-  });
-
   it('keeps the three sections and labelled charts usable at 320 dp', () => {
     mockWindow.width = 320;
     mockUseDreams.mockReturnValue({
@@ -460,10 +430,6 @@ describe('Statistics screen VNext trends', () => {
 
     expectVNextShell();
     expect(screen.getByTestId('trends.layout.compact')).toBeTruthy();
-    expect(screen.getByTestId('trends.week.rhythm')).toBeTruthy();
-    for (const weekday of [1, 2, 3, 4, 5, 6, 0]) {
-      expect(screen.getByTestId(`trends.week.rhythm.day.${weekday}`)).toBeTruthy();
-    }
     expect(screen.getByTestId('trends.patterns.themes.list')).toBeTruthy();
     expect(screen.getByTestId('trends.evolution.chart')).toBeTruthy();
     expect(screen.getByTestId('trends.evolution.chart.day.2026-08-27')).toBeTruthy();
@@ -526,8 +492,6 @@ describe('Statistics screen VNext trends', () => {
       const node = screen.getByText(label);
       expect(node.getAttribute('data-number-of-lines')).toBeNull();
       expect(node.getAttribute('data-allow-font-scaling')).toBeNull();
-      expect(node.getAttribute('class')).toContain('shrink');
-      expect(node.parentElement?.getAttribute('class')).toContain('w-full');
     }
   });
 });

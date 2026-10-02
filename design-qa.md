@@ -1,4 +1,133 @@
+# Mon rêve — lecture continue
+
+final result: passed
+
+## Comparaison visuelle
+
+- Source : `/Users/timax/Projects/noctalia/dist/mon-reve-maquettes-20261002/01-immersion-lecture-continue.png`.
+- Captures : `/Users/timax/Projects/noctalia/dist/mon-reve-implementation-20261003/dream-{light,dark}-{hero,story,reading}.png`.
+- Comparaisons côte à côte : même dossier, `comparison-light.png` et `comparison-dark.png`.
+- Source : 862 × 1825 px, deux colonnes de 431 px. Chaque colonne est ramenée à 390 px de large pour la comparaison.
+- Application : Chromium, viewport CSS 390 × 844, densité 1, captures 390 × 844 px. Les vues image et récit sont assemblées verticalement face à la source longue ; elles représentent deux positions de défilement, pas une capture continue.
+- État : français, compte Plus simulé, récit et titre identiques à la source, analyse enregistrée simulée. Les classifications, la date et le texte d’analyse sont des données de test différentes de la maquette.
+- Comparaison détaillée : récit, titre, bouton Modifier et action fixe lisibles à leur taille réelle ; captures `reading` ouvertes pour vérifier les sous-sections et la lisibilité.
+
+## Surfaces vérifiées
+
+| Surface | Résultat |
+| --- | --- |
+| Typographie | Fraunces pour le titre, Space Grotesk pour le récit et les contrôles. Corps 16/26, titres de section 18 px, sous-sections 17 px. La hiérarchie reste lisible dans les deux thèmes. |
+| Espacement | Image sur le premier viewport, surfaces de lecture opaques, marges de 24 px, sections espacées. La barre de navigation protège le texte lors du défilement. La réserve basse suit la hauteur réelle de l’action. |
+| Couleurs | Tokens communs ink/ivory/champagne. Accent textuel champagne-on, texte de bouton on-champagne. Le changement de thème système ne remplace pas un thème explicitement choisi. |
+| Illustration | Asset raster existant, même URI dans les deux thèmes, sans filtre colorimétrique. Le recadrage suit le viewport immersif ; la maquette générée comporte une variation du dessin. |
+| Contenu | Mon récit, Modifier et Analyse visibles. Interprétation, tous les symboles, toutes les émotions, questions et citation sont intégrés. Aucun lancement automatique d’une fenêtre de lecture. |
+
+Évolution approuvée après la maquette : suppression de « Lire l’analyse » et intégration de toute l’analyse. « Commencer ma réflexion » devient l’action fixe dès l’arrivée dans la lecture ; une conversation existante propose « Reprendre ma réflexion ». Les commandes secondaires existantes restent accessibles dans le pied du contenu plutôt que dans un nouveau menu.
+
+## Historique des corrections
+
+1. [P2] Le bouton Retour isolé se superposait au texte pendant la lecture. Correction : barre supérieure opaque au défilement ; captures révisées `story` et `reading`.
+2. [P2] Le libellé Modifier affichait une clé de traduction. Correction : libellé traduit dans les six langues ; captures révisées et contrôle français E2E.
+3. [P2] Le titre commençait dans les derniers pixels du premier viewport. Correction : départ du titre après la pleine hauteur de l’image ; captures révisées `hero`.
+
+Aucune différence P0/P1/P2 restante dans ces états. L’icône éclair en bas à gauche appartient au menu développeur Expo et est exclue du jugement du produit distribué. Aucun dessin de remplacement n’a été créé dans le code.
+
+## Vérification fonctionnelle et limites
+
+Les quatre suites affectées couvrent clair/sombre, image conservée, analyse complète, image absente ou en échec, édition, analyse obsolète, quotas, journal, favoris, réflexion enregistrée et bilan. Les traces, captures et rapport JUnit sont générés dans `test-results/` ignoré ; le paquet local pérenne est copié dans le dossier d’implémentation ci-dessus.
+
+Rerun depuis la révision qui ajoute ce rapport :
+
+```sh
+EXPO_PUBLIC_MOCK_PERSISTENCE=true mise exec -- npm run start:mock -- --web --port 8087
+E2E_WEB_PORT=8087 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- e2e/web/dream-continuous-reading.spec.ts e2e/web/journeys.spec.ts e2e/web/home-editorial.spec.ts e2e/web/reflection-context.spec.ts --workers=2
+```
+
+L’identité exacte du candidat, les résultats et les préconditions figurent dans le rapport Playwright et le manifeste local. Les services réseau réels sont bloqués par les fixtures : ceci valide le parcours de l’interface avec services simulés. Installation iPhone/Android, comportement natif du clavier et grande taille de texte restent non qualifiés par cette exécution web. Aucun changement natif ou de dépendance.
+
+CI initiale (ff93bab, job 2214) : 30/34 parcours passent. Deux assertions supposaient un seul élément img alors qu’Expo conserve l’image précédente pendant le fondu ; deux autres éditaient le titre avant que l’erreur de chargement ait stabilisé la mise en page. Correction : vérifier l’URI de l’image réellement demandée et sa largeur naturelle, et attendre l’état d’illustration indisponible avant d’éditer. Aucun délai arbitraire ni augmentation de timeout. Le nouvel identifiant de l’état indisponible sert à cette vérification stable.
+
+
+---
+
+## Rapports antérieurs conservés
+
+# Reflection — selected concept 3, 2026-10-02
+
+Source visual truth: /Users/timax/Projects/noctalia/dist/reflexion-maquettes-v2-20261002/03-reve-en-contexte.png (1391×1131, dark left/light right).
+Target: existing production Expo app; 390×844 CSS mobile viewport; local .env.mock on port 8085; synthetic Plus fixture; first successful symbols exchange, before recap.
+Final evidence: output/reflection-context-20261002/comparison-final-dark.png and comparison-final-light.png (reference left, implementation right); action-final-light.png; implemented-themes.png; browser-local.jpg from the in-app browser. The manual browser uses a synthetic dream and the normal mock photo; matched visual comparisons use the supplied elephant fixture.
+Normalization: crop each 680×1131 source view, resize proportionally to 390×649 and pad 195px below to the requested 390×844 target. No screen or artwork stretching. Implementation captures are 390×844 at density 1. Generated source is shorter than the requested logical viewport; extra bottom space is explicit.
+
+Initial findings (resolved):
+- [P2] Row padding and section gaps extend the list and move the primary action down. Reduce row padding and restore the compact source rhythm.
+- [P2] Context margins and thumbnail width differ from the source, changing dream-title wrapping. Match the inset and enlarge the small thumbnail slightly.
+- [P2] Section and action typography are too large for the compact reference. Tighten their scale using existing fonts and keep body copy readable.
+- [P3] Native icon variants, canonical colors and the Plus caption punctuation differ slightly from generated art. Keep the app's real icons, accessible tokens and established entitlement wording.
+
+Five fidelity surfaces: typography and spacing need the above corrections; canonical dark/light colors retained; real dream artwork is resolved through useDreamMedia and unchanged between themes; three localized angles and optional recap behavior retained. Update the final copy to the selected conversation label.
+
+Behavior evidence so far: successful theme-identity/recap journey, independent dark state, absent artwork and 320×640 image failure; existing reflection revisit and recap-refresh journeys passed. Initial test harness corrections were session-preserving navigation and scoping the visible title. The completed-dream Home → Journal route reproduces the pre-existing CSSStyleDeclaration/FlashList baseline; its trace remains private in second/. No Journal changes are included.
+Native rendering, native font scaling, actual account/backend/AI and billing remain unqualified by mock web.
+
+
+
+Post-fix comparison: opened the original target, both final combined comparisons and the focused action comparison. Reduced row padding (14→10), compacted heading/section gaps, aligned 32px content insets, adjusted thumbnail 84→90px and refined section/action type scale. Both primary actions and conversation links fit at 390×844; absent/failed images preserve title and choices. At 320×640 the page remains scrollable and controls reachable. No actionable P0/P1/P2 findings remain.
+
+| Before | After | Why |
+| --- | --- | --- |
+| Tall grouped list with icon tiles | Flat compact rows with thin separators | Match selected composition and show each angle once |
+| Dream title without image context | Resolved 90×96 thumbnail beside title/analysis link | Keep the current dream visible and retain secure media handling |
+| Explored state only in accessibility hint | Visible Resume plus existing hint | Make reopening an exchange clear without sending another prompt |
+| Shared recap visuals everywhere | Scoped reflection presentation; chat keeps default | Emphasize the primary action without changing chat behavior |
+
+Final fidelity pass: Fraunces and Space Grotesk are the real app fonts (no fallback substitution); row descriptions remain readable at 14px, versus smaller generated raster copy. Layout and hierarchy match the selected concept with native touch minimums and explicit source-density normalization. Colors use unchanged canonical tokens; secondary text contrast is preserved and redundant decorative heart/leaf icons retain the palette. Artwork is the same unrecolored fixture in both themes, cover-cropped through the existing media resolver. Copy matches the source actions, except retained localized Plus caption punctuation (P3).
+
+React/code review: all hooks precede conditional returns; memoized image source and scope-aware failure identity avoid theme reloads and cross-account reuse; no new fetch layer, billing logic or animations; all interactions use existing routes and tests. Large native text switches the context to a vertical layout; native font scaling is not physically qualified.
+
+Final validation: 6 focused web/mock E2E journeys passed (44.5s), with trace/HTML/JUnit, covering explicit themes overriding the system, identical artwork URI, initial/recorded/saved-recap states, reading, independent dark rendering, absent artwork, 320×640 image failure, existing conversation revisit and recap refresh. Focused lint, app types (before spacing-only correction), and explicit new E2E types passed. The first clean-commit prepush exposed an existing route fixture missing the newly imported expo-image native mock (requireNativeViewManager was unavailable). Its navigation assertions remain intact; add only the media-module mock, then rerun test:prepush on the final clean commit. Runtime and E2E evidence remain unchanged.
+
+Rerun: E2E_WEB_PORT=8085 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- e2e/web/reflection-context.spec.ts e2e/web/journeys.spec.ts --workers=2 --grep reflection --output=output/reflection-context-20261002/final
+
+Follow-up limits: physical Android/iOS, native scaling, actual account/backend/AI quality remain unqualified. Completed-dream Home → Journal CSSStyleDeclaration baseline is retained privately and excluded; no Journal or payment changes.
+
+final result: passed
+
+---
+
 # Design QA
+
+## 2026-10-02 — Aujourd’hui, galerie éditoriale (latest work package)
+
+Integration owner: `codex/aujourdhui-gallery`. Scope: the approved Home gallery in dark and light, its existing state-driven action, compact recurring insight, and native reminder/settings entry. Implementation, scoped fixes and PR delivery are authorized; production publication, EAS, store submission and device installation are not included in this package.
+
+Source visual truth: `/Users/timax/Projects/noctalia/dist/aujourdhui-galerie-editoriale-20261002/sombre.png` and `clair.png` (841×1870 px each). The common synthetic illustration is copied unchanged into `e2e/fixtures/home-dream.png` (SHA-256 `8367fc0820920e2376f8968e8e46bff5234921b51f95a545acc50dee174eb3ab`); it is a test fixture, not a bundled replacement for user artwork.
+
+Implementation/evidence: private ignored `output/aujourdhui-20261002/`: `implemented-themes.png`, `comparison-dark.png`, `comparison-light.png`, `detail-dark.png`, `detail-light.png`, `final-web/`, `final-report/`, `final-junit/` and `evidence.json`. Source frames are proportionally normalized to 390×867 CSS px; actual Chromium captures are 390×867 px at density 1. Full comparisons place source and implementation next to each other; caption/action details use the same crop and density. Narrow fallback capture is 320×640 px.
+
+State/preconditions: Friday 2 October 2026; mock Plus persona with a newly saved, analyzed and explicitly illustrated synthetic dream; French selected through settings; explicit dark/light preferences tested against the opposite system preference. External billing/backend calls are blocked. Reduced motion is enabled for stable visual captures. Empty/guest draft and failed-image cases have separate journeys.
+
+Findings and fixes:
+- P1 resolved: React Compiler cached fallback copy after a lazy language pack loaded. `useTranslation` opts out of compiler memoization of the external mutable cache and refreshes translator identity when its revision changes. The E2E switches from English to French and observes the translated Home heading.
+- P2 resolved: the initial image crop hid the subject under the reading veil. The image plane is offset within the clipped hero, and the hero occupies 58% of the viewport with bounded height.
+- P2 resolved: the initial brand/title spacing and recurring row were too dense. The brand is 18 px, the page title 38/46, dream title 29/32, and action 24/30; the compact theme label omits the redundant “theme” prefix.
+- Fonts/typography: existing Fraunces display and sans families retained; reference hierarchy and two-line dream title inspected in both full and detail comparisons. Content remains wrapping rather than ellipsized. Native font scaling is not qualified.
+- Spacing/layout: 24 px reading margins, a single underlined action, bounded immersive image and a compact insight row. Settings touch area is 44 px and the action at least 56 px. Existing floating five-destination navigation is intentionally retained, so the reference footer is not copied.
+- Colors/tokens: canonical ink/ivory/champagne-on tokens and theme-derived image veils. Heading/date sit under a strong local veil; action and supporting copy sit on a solid ground. The same source/cache identity remains across themes. No recoloring or theme-specific generation.
+- Image quality: the original raster fixture is used unchanged, cover-fitted and clipped. Subject/crop inspected with the saturated turquoise/coral/violet illustration. A failed image collapses the artwork region while preserving title, action and navigation.
+- Copy/content: localized label, dream title and “Reprendre ce rêve”; recurring counts come from journal data. Web omits the unsupported reminder action. Native uses an existing settings entry and shows a next reminder only when both enabled and permitted.
+
+Validation: focused Expo lint and explicit TypeScript checks of both changed E2E files passed. Home E2E: **3 passed (29.5s)**, with trace, screenshots, HTML and JUnit reports. Rerun: `E2E_WEB_PORT=8085 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- e2e/web/home-editorial.spec.ts --workers=1`. Use `EXPO_PUBLIC_MOCK_PERSISTENCE=true mise exec -- npm run start:mock -- --web --port 8085` for a reusable server, or omit `E2E_REUSE_SERVER` to let Playwright launch it. `evidence.json` records the tested base revision, dirty source snapshot, per-file hashes, deleted files, fixture identity and command; final committed code can be compared to those hashes without treating a dirty run as a clean-head run. Required final checks use `npm run test:prepush` on the committed clean worktree.
+
+Reflection continuity: the adapted existing E2E passes through Home → compact recurring insight → weekly recap → the suggested dream → reflection, including one-angle recap and its later refresh (**1 passed, 13.0s**, trace in `reflection-via-recap/`). It no longer depends on the removed Home next-action row.
+
+Broader validation: after adapting the existing settings navigation and the return from stacked capture to journal tabs, the complete web suite passes (**27 passed, 1.4m**; `all-web/`, `all-web-report/`, `all-web-junit/`). Explicit TypeScript checks cover all three changed web specs and the backend fixture. The first-head backend CI failure was a deterministic duplicate “Settings” selector before its backend assertions; its two selectors now use Home settings → All settings, and final-head backend qualification depends on CircleCI. No backend API, Auth, entitlement, schema or fixture account lifecycle was modified.
+
+Limits: a separate attempt through the journal list encountered `Failed to set an indexed property [0] on CSSStyleDeclaration`; its trace remains in `reflection-gap/`. The shared journal/Markdown surface was not changed to suppress it, and the journal-list entry remains unqualified by this package. No Android/iOS physical rendering, native text scaling, notification scheduling or production AI qualification. The dependency symlink initially broke Metro dynamic imports; isolated `npm ci` resolved that environment issue.
+
+Implementation checklist: source/implementation comparisons inspected; P1/P2 findings above resolved; existing draft/day-rollover/routing state retained; artifacts preserved privately; final pre-push/remote CI evidence to accompany PR delivery. P3: artwork composition and the existing shared footer can vary from the synthetic reference; neither changes the approved Home hierarchy.
+
+final result: passed (Home web/mock visual and functional scope only)
 
 Source visual: `/Users/tanuki/.codex/generated_images/019e930f-9f65-7131-bc49-b5963e40f541/ig_0cd7b98a92836eb8016a218f907450819085595d87962de403.png`
 

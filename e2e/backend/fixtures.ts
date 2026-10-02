@@ -34,14 +34,16 @@ export async function login(page: Page, account: Account) {
   // Continue from the completed onboarding. Reloading here races its async
   // release-notes acknowledgement and can create a modal absent on first launch.
   await page.getByTestId('btn.recording.home').click();
-  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  await page.getByTestId('btn.header.home.settings').click();
+  await page.getByTestId('quick-settings.all').click();
   await page.getByTestId('settings-account-open-signin').click();
   await page.getByTestId('input.auth.email').fill(account.email);
   await page.getByTestId('input.auth.password').fill(account.password);
   await page.getByTestId('btn.auth.signIn').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
   await page.getByTestId('btn.recording.home').click();
-  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  await page.getByTestId('btn.header.home.settings').click();
+  await page.getByTestId('quick-settings.all').click();
   await expect(page.getByTestId('text.auth.email')).toContainText(account.email);
   await expect(page.getByTestId('screen.subscription.qaLab')).toHaveCount(0);
 }

@@ -3,6 +3,7 @@ import { areTranslationsLoaded, getTranslator, loadTranslations } from '@/lib/i1
 import { useLanguage } from '@/context/LanguageContext';
 
 export const useTranslation = () => {
+  'use no memo'; // Language-pack readiness comes from an external mutable cache.
   const { language } = useLanguage();
   const [translationRevision, setTranslationRevision] = useState(0);
   // Capture readiness during render so a pack loaded before the effect still
@@ -27,6 +28,8 @@ export const useTranslation = () => {
     };
   }, [language, translationsLoaded]);
 
-  const t = useMemo(() => getTranslator(language), [language]);
+  // Invalidate memoized copy once a lazy language pack replaces its fallback.
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- The revision represents changes in the external translation cache.
+  const t = useMemo(() => getTranslator(language), [language, translationRevision]);
   return { t, currentLang: language, translationRevision };
 };
