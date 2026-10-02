@@ -19,6 +19,7 @@ type LucidGuideOrbProps = {
   active?: boolean;
   reduceMotion?: boolean;
   testID?: string;
+  size?: 'regular' | 'compact';
 };
 
 /**
@@ -31,6 +32,7 @@ export function LucidGuideOrb({
   active = false,
   reduceMotion = false,
   testID = 'lucid-guide-orb',
+  size = 'regular',
 }: LucidGuideOrbProps) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
@@ -71,7 +73,7 @@ export function LucidGuideOrb({
       accessibilityLabel={accessibilityLabel}
       accessibilityRole="image"
       testID={testID}
-      style={styles.root}
+      style={[styles.root, size === 'compact' && { width: 132 }]}
     >
       <Animated.View
         pointerEvents="none"

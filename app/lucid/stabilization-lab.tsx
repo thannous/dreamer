@@ -105,7 +105,7 @@ const COPY = {
     retry: 'Réessayer',
     start: 'Commencer la pratique',
     restart: 'Recommencer',
-    empty: 'Commence quand tu veux. Le laboratoire ne démarre jamais tout seul.',
+    empty: 'Commencez quand vous voulez. Le laboratoire ne démarre jamais tout seul.',
     completed: 'Cette pratique est terminée. Les Insights restent sur cet appareil.',
     practices: 'Pratiques',
     completions: 'Complétions',
@@ -119,43 +119,43 @@ const COPY = {
     repeat: 'Répéter cette étape',
     pause: 'Pause',
     leave: 'Quitter et reprendre plus tard',
-    statusPaused: 'En pause. Reprends quand tu es prêt.',
-    statusInterrupted: 'Laissé pour plus tard. Reprends quand tu es prêt.',
-    lastReady: 'Dernière étape terminée. Tu peux terminer le laboratoire.',
+    statusPaused: 'En pause. Reprenez quand vous êtes prêt.',
+    statusInterrupted: 'Laissé pour plus tard. Reprenez quand vous êtes prêt.',
+    lastReady: 'Dernière étape terminée. Vous pouvez terminer le laboratoire.',
     stepDone: 'Étape terminée.',
     labDone: 'Pratique terminée.',
     stepRepeated: 'Étape répétée.',
     errors: {
       invalid_scope: 'Ce laboratoire n’est pas disponible pour le compte actuel.',
       invalid_metadata: 'Cette pratique n’a pas pu être mise à jour.',
-      persistence_failed: 'Le laboratoire n’a pas pu être enregistré sur cet appareil. Réessaie.',
+      persistence_failed: 'Le laboratoire n’a pas pu être enregistré sur cet appareil. Réessayez.',
       storage_full: 'Cet appareil n’a plus assez d’espace pour le laboratoire.',
     },
     steps: {
       hands: {
-        title: 'Regarde tes mains',
-        body: 'Amène tes deux mains dans le champ de vision et observe-les telles qu’elles sont.',
-        action: 'Regarde tes mains jusqu’à ce qu’elles te semblent stables.',
+        title: 'Regardez vos mains',
+        body: 'Amenez vos deux mains dans le champ de vision et observez-les telles qu’elles sont.',
+        action: 'Regardez vos mains jusqu’à ce qu’elles vous semblent stables.',
       },
       surface: {
-        title: 'Touche une surface',
-        body: 'Pose une main sur une surface proche et sens le contact.',
-        action: 'Touche une surface lentement.',
+        title: 'Touchez une surface',
+        body: 'Posez une main sur une surface proche et sentez le contact.',
+        action: 'Touchez une surface lentement.',
       },
       three_details: {
-        title: 'Nomme trois détails',
-        body: 'Repère trois détails concrets autour de toi. Ne les saisis pas et ne les enregistre pas.',
-        action: 'Nomme trois détails à voix basse.',
+        title: 'Nommez trois détails',
+        body: 'Repérez trois détails concrets autour de vous. Ne les saisissez pas et ne les enregistrez pas.',
+        action: 'Nommez trois détails à voix basse.',
       },
       intention: {
-        title: 'Pose une intention',
-        body: 'Choisis une prochaine action calme. Les mots restent avec toi ; ils ne sont pas stockés.',
-        action: 'Garde une intention courte.',
+        title: 'Posez une intention',
+        body: 'Choisissez une prochaine action calme. Les mots restent avec vous ; ils ne sont pas stockés.',
+        action: 'Gardez une intention courte.',
       },
       slow_before_control: {
-        title: 'Ralentis avant de contrôler',
-        body: 'Attends avant d’essayer de changer la scène. L’orientation vient d’abord.',
-        action: 'Ralentis avant tout contrôle.',
+        title: 'Ralentissez avant de contrôler',
+        body: 'Attendez avant d’essayer de changer la scène. L’orientation vient d’abord.',
+        action: 'Ralentissez avant tout contrôle.',
       },
     },
   },
@@ -522,11 +522,12 @@ export default function LucidStabilizationLabScreen() {
           </View>
         )
       }
-      subtitle={copy.subtitle}
+      subtitle={!session || session.status === 'completed' ? copy.subtitle : undefined}
       testID="lucid-stabilization-lab"
       title={copy.title}
       trailing={<LucidIconAction icon="close" label={copy.close} onPress={() => void close()} />}
     >
+      {!session || session.status === 'completed' ? (
       <LucidCard style={styles.notice}>
         <Text style={[styles.body, { color: palette.text }]}>{copy.disclaimer}</Text>
         <Text style={[styles.meta, { color: palette.textSecondary }]}>
@@ -534,7 +535,9 @@ export default function LucidStabilizationLabScreen() {
         </Text>
         <Text style={[styles.meta, { color: palette.textSecondary }]}>{copy.local}</Text>
       </LucidCard>
+      ) : null}
 
+      {!session || session.status === 'completed' ? (
       <View
         style={[styles.metrics, compact && styles.metricsCompact]}
         testID="lucid-stabilization-lab-metrics"
@@ -555,6 +558,7 @@ export default function LucidStabilizationLabScreen() {
           value={String(lab.insights.repeatCount)}
         />
       </View>
+      ) : null}
 
       {lab.isLoading ? (
         <Text accessibilityLiveRegion="polite" style={[styles.body, { color: palette.textSecondary }]}>

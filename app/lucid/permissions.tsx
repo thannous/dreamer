@@ -6,6 +6,7 @@ import { Linking, StyleSheet, Text, View } from 'react-native';
 import {
   LucidButton,
   LucidCard,
+  LucidDisclosure,
   LucidIconAction,
   LucidIconTile,
   LucidPill,
@@ -47,7 +48,7 @@ const COPY = {
     enable: 'Demander l’autorisation',
     settings: 'Ouvrir les réglages système',
     audio: 'Audio nocturne',
-    audioBody: 'Utilise des sons embarqués sur le haut-parleur, à faible volume choisi. Aucun micro, aucune écoute, aucun enregistrement.',
+    audioBody: 'Les sons intégrés sont joués sur le haut-parleur, au volume que vous choisissez. Aucun micro, aucune écoute, aucun enregistrement.',
     timezone: 'Heure et fuseau',
     timezoneBody: 'Les horaires sont réconciliés au lancement et au retour actif après un changement de fuseau ou d’heure.',
     reboot: 'Comportement après redémarrage',
@@ -183,7 +184,7 @@ export default function LucidPermissionsScreen() {
         body={`${c.timezoneBody}\n\n${state!.preferences.timeZone}`}
         icon="globe"
       />
-      <Info title={c.reboot} body={c.rebootBody} icon="refresh" />
+      <>{__DEV__ ? <LucidDisclosure title={c.reboot} testID="lucid-permissions-diagnostics"><Text style={[styles.body, { color: palette.textSecondary }]}>{c.rebootBody}</Text></LucidDisclosure> : null}</>
     </LucidScreen>
   );
 }

@@ -1,3 +1,4 @@
+import { LucidGuideOrb } from '@/components/lucid/LucidGuideOrb';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -18,7 +19,7 @@ import {
   LucidProgressBar,
   LucidScreen,
 } from '@/components/lucid/LucidUI';
-import { getLucidPalette, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidGuidedRitualSound } from '@/hooks/useLucidGuidedRitualSound';
@@ -28,7 +29,6 @@ import { createLucidGuidedRitualPlan } from '@/lib/lucid/guidedRitual';
 import { closeLucidRoute } from '@/lib/lucid/routes';
 import { evaluateLucidSafetyPolicyFromState } from '@/lib/lucid/safety';
 import type {
-  LucidSsildSensoryFocus,
   LucidSsildSensoryLabSession,
   LucidSsildSensoryPhase,
   LucidSsildSensoryVisualState,
@@ -110,7 +110,7 @@ const COPY = {
     resume: 'Reprendre',
     pause: 'Pause',
     leave: 'Quitter sans terminer',
-    empty: 'Commence quand tu veux. Le laboratoire ne démarre jamais tout seul.',
+    empty: 'Commencez quand vous voulez. Le laboratoire ne démarre jamais tout seul.',
     durationFull: 'Environ 5 min',
     durationReduced: 'Environ 3 min',
     silent: 'Silencieux. Le texte et le sens actuel suffisent.',
@@ -121,8 +121,8 @@ const COPY = {
     recoveryAction: 'Retour aux programmes',
     fullPlan: 'Cycle complet de 5 minutes',
     reducedPlan: 'Raccourci pour protéger le sommeil',
-    statusPaused: 'En pause. Reprends quand tu es prêt.',
-    statusInterrupted: 'Laissé pour plus tard. Reprends quand tu es prêt.',
+    statusPaused: 'En pause. Reprenez quand vous êtes prêt.',
+    statusInterrupted: 'Laissé pour plus tard. Reprenez quand vous êtes prêt.',
     statusCompleted: 'Pratique terminée.',
     remaining: (seconds: number) => `${seconds} s restantes`,
     progress: (current: number, total: number) => `Sens ${current} sur ${total}`,
@@ -148,7 +148,7 @@ const COPY = {
     errors: {
       invalid_scope: 'Ce laboratoire n’est pas disponible pour le compte actuel.',
       invalid_metadata: 'Cette pratique n’a pas pu être mise à jour.',
-      persistence_failed: 'Le laboratoire n’a pas pu être enregistré sur cet appareil. Réessaie.',
+      persistence_failed: 'Le laboratoire n’a pas pu être enregistré sur cet appareil. Réessayez.',
       storage_full: 'Cet appareil n’a plus assez d’espace pour le laboratoire.',
     },
   },
@@ -343,11 +343,6 @@ function visualOpacity(visual: LucidSsildSensoryVisualState): number {
   if (visual === 'dim') return 0.38;
   if (visual === 'emphasis') return 1;
   return 0.72;
-}
-
-function objectRole(focus: LucidSsildSensoryFocus): 'sight' | 'sound' | 'body' | 'rest' {
-  if (focus === 'sight' || focus === 'sound' || focus === 'body') return focus;
-  return 'rest';
 }
 
 async function playBodyHaptic(): Promise<void> {
@@ -652,7 +647,6 @@ export default function LucidSsildSensoryLabScreen() {
   const errorMessage = errorCopy(copy, lab.error);
   const durationLabel = plannedDurationSeconds === 180 ? copy.durationReduced : copy.durationFull;
   const planLabel = plannedDurationSeconds === 180 ? copy.reducedPlan : copy.fullPlan;
-  const objectFocus = phase ? objectRole(phase.focus) : 'rest';
   const objectOpacity = phase ? visualOpacity(phase.visual) : 0.72;
 
   return (
@@ -671,16 +665,18 @@ export default function LucidSsildSensoryLabScreen() {
           </View>
         )
       }
-      subtitle={copy.subtitle}
+      subtitle={!session || session.status === 'completed' ? copy.subtitle : undefined}
       testID="lucid-ssild-lab"
       title={copy.title}
       trailing={<LucidIconAction icon="close" label={copy.close} onPress={() => void close()} />}
     >
+      {!session || session.status === 'completed' ? (
       <LucidCard style={compact ? { ...styles.notice, ...styles.noticeCompact } : styles.notice}>
         <Text style={[styles.body, { color: palette.text }]}>{copy.disclaimer}</Text>
         <Text style={[styles.meta, { color: palette.textSecondary }]}>{durationLabel}</Text>
         <Text style={[styles.meta, { color: palette.textSecondary }]}>{copy.local}</Text>
       </LucidCard>
+      ) : null}
 
       {recoveryBlocked ? (
         <LucidCard style={styles.notice} testID="lucid-ssild-lab-recovery">
@@ -725,31 +721,9 @@ export default function LucidSsildSensoryLabScreen() {
             style={styles.objectStage}
             testID="lucid-ssild-lab-object"
           >
-            <View
-              style={[
-                styles.objectCore,
-                {
-                  backgroundColor: palette.surfaceRaised,
-                  borderColor: palette.borderInteractive,
-                  opacity: objectOpacity,
-                },
-                reduceMotion
-                  ? styles.objectStatic
-                  : objectFocus === 'sight'
-                    ? styles.objectSight
-                    : objectFocus === 'sound'
-                      ? styles.objectSound
-                      : objectFocus === 'body'
-                        ? styles.objectBody
-                        : null,
-              ]}
-            />
-            <Text
-              style={[styles.meta, { color: palette.textMuted }]}
-              testID={reduceMotion ? 'lucid-ssild-lab-static' : undefined}
-            >
-              {copy.focuses[phase.focus].title}
-            </Text>
+            <View style={{ opacity: objectOpacity }} testID={reduceMotion ? 'lucid-ssild-lab-static' : undefined}>
+              <LucidGuideOrb accessibilityLabel={copy.focuses[phase.focus].title} reduceMotion size="compact" />
+            </View>
           </View>
           <Text
             accessibilityRole="header"
@@ -833,31 +807,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: LucidSpace.sm,
-  },
-  objectCore: {
-    width: 88,
-    height: 88,
-    borderRadius: LucidRadius.xl,
-    borderWidth: 1,
-  },
-  objectStatic: {
-    width: 88,
-    height: 88,
-    borderRadius: LucidRadius.xl,
-  },
-  objectSight: {
-    width: 104,
-    height: 104,
-  },
-  objectSound: {
-    width: 72,
-    height: 72,
-    borderRadius: LucidRadius.full,
-  },
-  objectBody: {
-    width: 96,
-    height: 64,
-    borderRadius: LucidRadius.md,
   },
   actions: { gap: LucidSpace.sm },
   footer: { gap: LucidSpace.sm },

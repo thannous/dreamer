@@ -29,13 +29,10 @@ export default function LucidTabsLayout() {
   const insets = useSafeAreaInsets();
   const { width, fontScale } = useWindowDimensions();
   const labels = content.chrome.tabs;
-  const compact = width < 370;
-  // Hauteur de barre. Deux principes : iOS pose ses onglets plus haut qu'Android
-  // (49pt + libellé contre 56dp Material), et la hauteur suit le fontScale —
-  // figée à 70, elle rognait le libellé dès le premier cran d'agrandissement.
-  // La barre grandit exactement autant que le texte qu'elle porte, jamais plus.
+  // Keep room for the 28px icon slot, the full label line and vertical padding.
+  // Font scaling can grow the bar up to the space already reserved by screens.
   const tabBarHeight = Math.min(
-    Math.round((Platform.OS === 'ios' ? (compact ? 64 : 70) : compact ? 60 : 66) * Math.min(fontScale, TAB_LABEL_MAX_FONT_SCALE)),
+    Math.round((Platform.OS === 'ios' ? 76 : 72) * Math.min(fontScale, TAB_LABEL_MAX_FONT_SCALE)),
     TAB_BAR_MAX_HEIGHT
   );
 
@@ -95,6 +92,8 @@ export default function LucidTabsLayout() {
       headerShown: false,
       sceneStyle: { backgroundColor: palette.background },
       tabBarShowLabel: true,
+      tabBarLabelPosition: 'below-icon' as const,
+      animation: 'none' as const,
       tabBarActiveTintColor: palette.accentStrong,
       tabBarInactiveTintColor: palette.textMuted,
       tabBarHideOnKeyboard: true,
@@ -152,8 +151,8 @@ export default function LucidTabsLayout() {
 const styles = StyleSheet.create({
   // Un onglet cède de la largeur à ses voisins au lieu d'élargir la barre : aucune
   // largeur figée ici, les quatre destinations visibles se partagent la place disponible.
-  tabBarItem: { height: '100%', flexShrink: 1 },
+  tabBarItem: { flex: 1, minHeight: 48 },
   // Palier « overline » : 11/14. En dessous (10pt) le libellé passait sous les 11pt
   // des HIG et les 12sp de Material, sur l'élément le plus permanent de l'app.
-  tabLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], textAlign: 'center', flexShrink: 1 },
+  tabLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], textAlign: 'center', flexShrink: 0, minHeight: LucidType.overline[1] },
 });
