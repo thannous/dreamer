@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-09-29",
+    "lastUpdated": "2026-10-02",
     "totalSymbols": 160,
     "languages": [
       "en",
@@ -844,15 +844,19 @@
         "faq": [
           {
             "question": "Que signifie rêver d’une maison ?",
-            "answer": "Rêver d’une maison renvoie souvent au monde intérieur, à la sécurité, à la famille ou à l’identité. Les pièces, l’état de la maison et l’émotion ressentie aident à comprendre quelle partie de vous demande attention."
+            "answer": "Une maison peut évoquer la sécurité, la famille ou l’identité, ou simplement reprendre un lieu connu. Les pièces, l’état du bâtiment et l’émotion ressentie donnent des pistes à comparer avec votre vécu, sans sens universel."
           },
           {
             "question": "Que signifie rêver d’une maison inconnue, en ruine ou en travaux ?",
-            "answer": "Une maison inconnue peut représenter une partie de vous que vous découvrez. Une maison en ruine peut signaler fatigue ou perte de repères. Une maison en travaux indique plutôt reconstruction, adaptation ou changement intérieur."
+            "answer": "Une maison inconnue peut représenter une partie de vous que vous découvrez. Une maison en ruine peut évoquer fatigue ou perte de repères. Pour une maison en travaux, comparez le changement possible avec un chantier, un déménagement ou une attente réelle : aucune de ces scènes n’a un sens automatique."
+          },
+          {
+            "question": "Que signifie rêver d’une maison en travaux ?",
+            "answer": "Une maison en travaux peut évoquer un changement en cours, une attente ou un inconfort provisoire, selon ce que vous y faites et ressentez. Un chantier réel, un déménagement ou des images récentes peuvent aussi expliquer la scène. Notez qui dirige les travaux, ce qui reste accessible et si vous souhaitez y vivre."
           },
           {
             "question": "Que signifie chaque pièce de la maison dans un rêve ?",
-            "answer": "La chambre touche souvent à l’intimité et au repos, la cuisine au soin et aux besoins, la salle de bain au nettoyage émotionnel, le grenier aux souvenirs et la cave à ce qui reste plus caché."
+            "answer": "Il n’existe pas de correspondance fixe entre une pièce et une émotion. Une chambre peut rappeler le repos ou l’intimité, une cuisine un moment partagé, une cave un souvenir précis. Notez ce que vous y faisiez et vos propres associations avec ce lieu."
           },
           {
             "question": "Que signifie rêver de sa maison d’enfance ?",
@@ -860,14 +864,14 @@
           },
           {
             "question": "Que signifie rêver d’une maison hantée ou qui s’effondre ?",
-            "answer": "Une maison hantée peut évoquer une mémoire, une peur ou une émotion ancienne qui revient. Une maison qui s’effondre parle plutôt d’un sentiment d’instabilité ou d’une base intérieure à reconstruire."
+            "answer": "Une maison hantée peut évoquer un souvenir ou une peur ; un effondrement, une impression d’instabilité. Un film, une information ou un souci concret pour un logement peuvent aussi alimenter ces images. Elles ne prédisent pas un événement."
           },
           {
             "question": "Quelles questions noter dans son journal après un rêve de maison ?",
             "answer": "Notez la pièce principale, l’état de la maison, les personnes présentes et l’émotion dominante. Demandez-vous aussi quelle zone de votre vie ressemble à cette maison en ce moment."
           }
         ],
-        "modifiedAt": "2026-08-11"
+        "modifiedAt": "2026-10-02"
       },
       "es": {
         "slug": "casa",
@@ -2798,11 +2802,15 @@
       "it": {
         "slug": "scale",
         "name": "Scale",
-        "shortDescription": "Le scale rappresentano ascesa, discesa e sviluppo personale. Salire indica progresso, scendere può indicare autoesplorazione o passi indietro.",
+        "shortDescription": "Sognare scale può richiamare un percorso, una fatica o un luogo familiare. Salire, scendere o cadere cambia la scena: conta dove stavi andando e come ti sentivi.",
         "askYourself": [
-          "Sto facendo progressi nella mia vita?",
-          "In quale direzione mi sto muovendo?"
-        ]
+          "Dove portavano le scale, e volevo davvero arrivarci?",
+          "Salivo, scendevo o cadevo? Provavo sollievo, curiosità, fretta o paura?",
+          "Quale dettaglio ricorda un luogo o un episodio recente da annotare nel diario?"
+        ],
+        "documentTitle": "Sognare scale: salire, scendere o cadere",
+        "seoTitle": "salire, scendere o cadere",
+        "modifiedAt": "2026-10-02"
       },
       "pt": {
         "slug": "escada",

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
   <title id="title">Apps de diario de sueños en 2026: resumen de funciones</title>
-  <desc id="description">Gráfico basado en una revisión documental enlazada a fuentes de 11 aplicaciones. Diez muestran interpretación con IA, siete captura por voz, cuatro imágenes generadas y tres una estructura para sueños lúcidos.</desc>
+  <desc id="description">Señales públicas en 11 filas fechadas: interpretación IA 10, captura de voz 8, imágenes generadas 6, estructura lúcida 4. Incluye datos históricos de DreamKit identificados; las fechas varían.</desc>
   <defs>
     <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a0514"/><stop offset="0.58" stop-color="#160a2b"/><stop offset="1" stop-color="#2e1065"/></linearGradient>
     <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fda481"/><stop offset="1" stop-color="#c084fc"/></linearGradient>
@@ -15,10 +15,10 @@
     <g fill="#e9d5ff" font-size="16" opacity="0.64"><text x="398" y="213">0</text><text x="952" y="213">11 apps</text></g>
     <g stroke="#fff7ed" stroke-opacity="0.12" stroke-width="1"><line x1="400" y1="222" x2="400" y2="552"/><line x1="700" y1="222" x2="700" y2="552"/><line x1="1000" y1="222" x2="1000" y2="552"/></g>
     <g font-size="22" font-weight="520" fill="#fff7ed"><text x="72" y="265">Interpretación con IA</text><text x="72" y="355">Captura por voz</text><text x="72" y="445">Imágenes generadas</text><text x="72" y="535">Estructura de sueños lúcidos</text></g>
-    <g><rect x="400" y="238" width="600" height="36" rx="18" fill="#fff7ed" opacity="0.1"/><rect x="400" y="238" width="545" height="36" rx="18" fill="url(#bar)"/><rect x="400" y="328" width="600" height="36" rx="18" fill="#fff7ed" opacity="0.1"/><rect x="400" y="328" width="382" height="36" rx="18" fill="url(#bar)"/><rect x="400" y="418" width="600" height="36" rx="18" fill="#fff7ed" opacity="0.1"/><rect x="400" y="418" width="218" height="36" rx="18" fill="url(#bar)"/><rect x="400" y="508" width="600" height="36" rx="18" fill="#fff7ed" opacity="0.1"/><rect x="400" y="508" width="164" height="36" rx="18" fill="url(#bar)"/></g>
-    <g fill="#fff7ed" font-size="25" font-weight="650"><text x="1028" y="266">10 / 11</text><text x="1028" y="356">7 / 11</text><text x="1028" y="446">4 / 11</text><text x="1028" y="536">3 / 11</text></g>
+    <g><rect x="400" y="238" width="600" height="36" rx="18" fill="#fff7ed" opacity="0.1"/><rect x="400" y="238" width="545" height="36" rx="18" fill="url(#bar)"/><rect x="400" y="328" width="600" height="36" rx="18" fill="#fff7ed" opacity="0.1"/><rect x="400" y="328" width="436" height="36" rx="18" fill="url(#bar)"/><rect x="400" y="418" width="600" height="36" rx="18" fill="#fff7ed" opacity="0.1"/><rect x="400" y="418" width="327" height="36" rx="18" fill="url(#bar)"/><rect x="400" y="508" width="600" height="36" rx="18" fill="#fff7ed" opacity="0.1"/><rect x="400" y="508" width="218" height="36" rx="18" fill="url(#bar)"/></g>
+    <g fill="#fff7ed" font-size="25" font-weight="650"><text x="1028" y="266">10 / 11</text><text x="1028" y="356">8 / 11</text><text x="1028" y="446">6 / 11</text><text x="1028" y="536">4 / 11</text></g>
     <line x1="72" y1="585" x2="1128" y2="585" stroke="#fff7ed" stroke-opacity="0.16"/>
-    <text x="72" y="620" fill="#e9d5ff" font-size="15" opacity="0.74">Conteos descriptivos, no un ranking, cuota de mercado ni evidencia clínica · Versión del 9 ago 2026</text>
+    <text x="72" y="620" fill="#e9d5ff" font-size="15" opacity="0.74">Conteos descriptivos, no un ranking, cuota de mercado ni evidencia clínica · Versión del 2 oct 2026</text>
     <text x="72" y="649" fill="#fda481" font-size="17" font-weight="600">noctalia.app/es/apps-diario-de-suenos</text>
   </g>
 </svg>
