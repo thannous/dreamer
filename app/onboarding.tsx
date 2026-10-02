@@ -1,5 +1,7 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
+import { PressableScale } from '@/components/motion/PressableScale';
+import type { OnboardingFeature } from '@/components/onboarding/OnboardingFeatureSheet';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { DarkTheme } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
@@ -7,6 +9,7 @@ import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
+import { isOnboardingFeatureSheetsEnabled } from '@/lib/env';
 import { peekReturnToPaywallTrigger } from '@/lib/navigationIntents';
 import { getAuthReturnSnapshot } from '@/lib/authReturnIntent';
 import { buildPaywallHref } from '@/lib/paywallRoute';
@@ -64,9 +67,13 @@ const PATHS: PathDefinition[] = [
 
 const SIGNALS = [
   { id: 'capture', icon: 'pencil' as const },
-  { id: 'decode', icon: 'eye.fill' as const },
-  { id: 'profile', icon: 'sparkles' as const },
-];
+  { id: 'connect', icon: 'sparkles' as const },
+  { id: 'explore', icon: 'bubble.left.and.bubble.right' as const },
+] satisfies { id: OnboardingFeature; icon: React.ComponentProps<typeof IconSymbol>['name'] }[];
+
+// Keep the disabled previews from initializing their motion/gesture modules.
+const OnboardingFeatureSheet = React.lazy(() => import('@/components/onboarding/OnboardingFeatureSheet')
+  .then((module) => ({ default: module.OnboardingFeatureSheet })));
 
 const BACKGROUND_IMAGE = require('@/assets/images/onboarding-reverie-background.webp');
 // The immersive artwork always needs its nocturnal contrast, independently of
@@ -84,6 +91,7 @@ const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
 export default function OnboardingScreen() {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
+  const featureSheetsEnabled = isOnboardingFeatureSheetsEnabled();
   const insets = useSafeAreaInsets();
   const {
     state,
@@ -101,6 +109,9 @@ export default function OnboardingScreen() {
   const [isStepTransitioning, setIsStepTransitioning] = useState(false);
   const [failedAction, setFailedAction] = useState<FailedAction | null>(null);
   const [showPrivacySheet, setShowPrivacySheet] = useState(false);
+  const [activeFeature, setActiveFeature] = useState<OnboardingFeature | null>(null);
+  const featureTriggers = useRef<Partial<Record<OnboardingFeature, View | null>>>({});
+  const featureFocusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
   const [analyticsPreferenceLoading, setAnalyticsPreferenceLoading] = useState(false);
   const [analyticsPreferenceError, setAnalyticsPreferenceError] = useState(false);
@@ -115,6 +126,24 @@ export default function OnboardingScreen() {
   const isLeavingRef = useRef(false);
   const stepTransitionRef = useRef(false);
   const selectionVersionRef = useRef(0);
+
+  useEffect(() => () => {
+    if (featureFocusTimer.current) clearTimeout(featureFocusTimer.current);
+  }, []);
+
+  const closeFeature = () => {
+    const trigger = activeFeature ? featureTriggers.current[activeFeature] : null;
+    setActiveFeature(null);
+    if (featureFocusTimer.current) clearTimeout(featureFocusTimer.current);
+    featureFocusTimer.current = setTimeout(() => {
+      if (isLeavingRef.current || stepTransitionRef.current) return;
+      if (Platform.OS === 'web') trigger?.focus();
+      else {
+        const node = findNodeHandle(trigger ?? null);
+        if (node) AccessibilityInfo.setAccessibilityFocus(node);
+      }
+    }, Platform.OS === 'web' ? 0 : 300);
+  };
 
   useFocusEffect(useCallback(() => {
     if (Platform.OS === 'web') return;
@@ -544,18 +573,50 @@ export default function OnboardingScreen() {
               {t('onboarding.intro.subtitle')}
             </Text>
             <View style={styles.signalList} testID={TID.Component.OnboardingIntroSignals}>
-              {SIGNALS.map((signal) => (
-                <View key={signal.id} style={styles.signalRow}>
-                  <View style={[styles.signalIcon, { borderColor: titleAccent }]}>
-                    <IconSymbol name={signal.icon} size={21} color={titleAccent as ColorValue} />
-                  </View>
-                  <View style={styles.signalCopy}>
-                    <Text style={[styles.signalTitle, { color: noctalia.text.primary }]}>
-                      {t(`onboarding.intro.signal.${signal.id}.title`)}
-                    </Text>
-                  </View>
-                </View>
-              ))}
+              {SIGNALS.map((signal) => {
+                const content = (
+                  <>
+                    <View style={[styles.signalIcon, { borderColor: titleAccent }]}>
+                      <IconSymbol name={signal.icon} size={21} color={titleAccent as ColorValue} />
+                    </View>
+                    <View style={styles.signalCopy}>
+                      <Text style={[styles.signalTitle, { color: noctalia.text.primary }]}>
+                        {t(`onboarding.feature.${signal.id}.title`)}
+                      </Text>
+                      <Text style={[styles.signalBody, { color: noctalia.text.secondary }]}>
+                        {t(`onboarding.feature.${signal.id}.short`)}
+                      </Text>
+                    </View>
+                  </>
+                );
+
+                if (!featureSheetsEnabled) {
+                  return (
+                    <View key={signal.id} style={styles.signalRow} testID={`btn.onboarding.feature.${signal.id}`}>
+                      {content}
+                    </View>
+                  );
+                }
+
+                return (
+                  <PressableScale
+                    key={signal.id}
+                    ref={(node) => { featureTriggers.current[signal.id] = node; }}
+                    accessibilityRole="button"
+                    accessibilityLabel={t(`onboarding.feature.${signal.id}.title`)}
+                    accessibilityHint={t('onboarding.feature.open_hint')}
+                    onPress={() => {
+                      if (featureFocusTimer.current) clearTimeout(featureFocusTimer.current);
+                      setActiveFeature(signal.id);
+                    }}
+                    disabled={isLeaving || isStepTransitioning}
+                    style={styles.signalRow}
+                    testID={`btn.onboarding.feature.${signal.id}`}
+                  >
+                    {content}
+                  </PressableScale>
+                );
+              })}
             </View>
             <Pressable
               accessibilityRole="button"
@@ -745,6 +806,12 @@ export default function OnboardingScreen() {
         </Pressable>
       </View>
 
+      {featureSheetsEnabled && activeFeature ? (
+        <React.Suspense fallback={null}>
+          <OnboardingFeatureSheet feature={activeFeature} onClose={closeFeature} />
+        </React.Suspense>
+      ) : null}
+
       {showPrivacySheet ? <StandardBottomSheet
         visible
         onClose={() => setShowPrivacySheet(false)}
@@ -835,10 +902,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   signalList: { width: '100%', maxWidth: 420, flexDirection: 'row', justifyContent: 'space-around', gap: 8, paddingTop: 12 },
-  signalRow: { flex: 1, alignItems: 'center', gap: 10 },
+  signalRow: { flex: 1, minHeight: 96, alignItems: 'center', gap: 10, paddingVertical: 4 },
   signalIcon: { width: 48, height: 48, borderRadius: 24, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  signalCopy: { alignItems: 'center' },
+  signalCopy: { alignItems: 'center', gap: 3 },
   signalTitle: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 19, textAlign: 'center' },
+  signalBody: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 10, lineHeight: 15, textAlign: 'center' },
   privacyLink: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 8 },
   privacyLinkText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, textDecorationLine: 'underline' },
   stepStage: { position: 'relative', alignSelf: 'stretch' },

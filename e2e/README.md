@@ -54,6 +54,15 @@ worker to keep its smaller runner deterministic; local runs use two. Every web
 journey blocks external services and substitutes a local image fixture for the
 mock image CDN. Service workers are disabled so they cannot bypass these routes.
 
+The onboarding feature sheets are disabled by default. The default run verifies
+that tapping Tell / Understand / Explore opens no sheet, while privacy and the
+main onboarding path remain usable. To exercise the preserved motion previews,
+start a fresh bundle with explicit opt-in:
+
+```sh
+EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true mise exec -- npm run test:e2e:web -- e2e/web/onboarding-features.spec.ts
+```
+
 Artifacts (ignored by Git): `test-results/e2e-web-report/` (HTML),
 `test-results/e2e-web-junit/results.xml` (JUnit), and `test-results/e2e-web/`
 (traces for every test; failure screenshots/video). The HTML report records the

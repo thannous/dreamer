@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import {
   AccessibilityInfo,
+  Pressable,
   ScrollView,
   findNodeHandle,
   Text,
@@ -72,8 +73,14 @@ export type StandardBottomSheetProps = {
   subtitle?: string;
   /** Optional custom body content between subtitle and actions */
   children?: React.ReactNode;
-  /** Actions configuration - passed to BottomSheetActions */
-  actions: StandardBottomSheetActions;
+  /** Optional footer actions; informational sheets can use a close button instead. */
+  actions?: StandardBottomSheetActions;
+  /** Optional fixed top-right close control, with a localized accessibility label. */
+  closeButton?: { label: string; testID?: string };
+  /** Optional opaque color for the platform host. */
+  surfaceColor?: BottomSheetProps['surfaceColor'];
+  /** Use the host's surface without a second content background or shadow. */
+  transparentContent?: BottomSheetProps['transparentContent'];
   /** Test ID for E2E testing */
   testID?: string;
   /** Test ID for title text */
@@ -121,6 +128,9 @@ export function StandardBottomSheet({
   subtitle,
   children,
   actions,
+  closeButton,
+  surfaceColor,
+  transparentContent = false,
   testID,
   titleTestID,
   style,
@@ -149,13 +159,13 @@ export function StandardBottomSheet({
 
   const backdropColor = noctalia.surface.overlay;
 
-  const primaryState: BottomSheetActionState = actions.primaryLoading
+  const primaryState: BottomSheetActionState = actions?.primaryLoading
     ? 'loading'
-    : actions.primaryDisabled
+    : actions?.primaryDisabled
       ? 'disabled'
       : 'enabled';
 
-  const secondaryState: Exclude<BottomSheetActionState, 'loading'> = actions.secondaryDisabled
+  const secondaryState: Exclude<BottomSheetActionState, 'loading'> = actions?.secondaryDisabled
     ? 'disabled'
     : 'enabled';
 
@@ -164,18 +174,46 @@ export function StandardBottomSheet({
       visible={visible}
       onClose={onClose}
       backdropColor={backdropColor}
+      surfaceColor={surfaceColor}
+      transparentContent={transparentContent}
       snapPoints={snapPoints}
       scrollable={false}
-      dismissBehavior={dismissBehavior ?? (actions.primaryLoading ? 'none' : 'pan')}
+      dismissBehavior={dismissBehavior ?? (actions?.primaryLoading ? 'none' : 'pan')}
       className="px-6 pt-2"
       style={[
         // Safe-area inset and the theme shadow are runtime values, not classes.
         { paddingBottom: insets.bottom + ThemeLayout.spacing.md },
-        shadows.xl,
+        !transparentContent && shadows.xl,
         style,
       ]}
       testID={testID}
     >
+      {closeButton ? (
+        <View className="mb-2 min-h-12 flex-row items-center">
+          <View accessible={false} className="w-12" />
+          <Text
+            ref={titleRef}
+            {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
+            accessible
+            accessibilityRole="header"
+            className="flex-1 text-center font-sans-bold text-[20px] text-ivory"
+            style={webTitleFocusResetStyle}
+            testID={titleTestID}
+          >
+            {title}
+          </Text>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={closeButton.label}
+            onPress={onClose}
+            disabled={actions?.primaryLoading}
+            className="h-12 w-12 items-center justify-center rounded-full"
+            testID={closeButton.testID}
+          >
+            <IconSymbol name="xmark" size={22} color={colors.textPrimary} />
+          </Pressable>
+        </View>
+      ) : null}
       <ScrollView scrollEnabled={bodyScrollEnabled} style={{ flexShrink: 1 }} nestedScrollEnabled keyboardShouldPersistTaps="handled">
 
       {/* Title */}
@@ -188,7 +226,7 @@ export function StandardBottomSheet({
         </View>
       ) : null}
 
-      <Text
+      {!closeButton ? <Text
         ref={titleRef}
         {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
         accessible
@@ -198,7 +236,7 @@ export function StandardBottomSheet({
         testID={titleTestID}
       >
         {title}
-      </Text>
+      </Text> : null}
 
       {/* Subtitle */}
       {subtitle ? (
@@ -213,7 +251,7 @@ export function StandardBottomSheet({
       </ScrollView>
 
       {/* Actions remain outside the scrollable content. */}
-      <BottomSheetActions>
+      {actions ? <BottomSheetActions>
         <BottomSheetPrimaryAction
           label={actions.primaryLabel}
           detail={actions.primaryDetail}
@@ -243,7 +281,7 @@ export function StandardBottomSheet({
             testID={actions.linkTestID}
           />
         ) : null}
-      </BottomSheetActions>
+      </BottomSheetActions> : null}
     </BottomSheet>
   );
 }
