@@ -72,7 +72,8 @@ test('capture gives the story room, respects explicit and automatic themes, and 
   for (const paragraph of story.split('\n\n')) {
     await expect(page.getByTestId('component.transcriptCard')).toContainText(paragraph);
   }
-  await page.getByTestId('analysis.reading.close').click();
+  await expect(page.getByTestId('component.dreamDetail.readingZone')).toBeVisible();
+  await expect(page.getByTestId('analysis.reading.modal')).toHaveCount(0);
   await page.getByTestId('btn.editTranscript').click();
   await expect(page.getByTestId('input.dreamTranscript')).toHaveValue(story);
   await page.getByTestId('btn.editTranscript').click();

@@ -47,6 +47,7 @@ async function openDream(page: Page, title: string) {
   await expect(card).toHaveCount(1);
   await card.click();
   await expect(page.getByTestId('component.transcriptCard')).toBeVisible();
+  await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
 }
 
 test('guest can start a first dream from onboarding', async ({ page }) => {
@@ -69,10 +70,8 @@ test('guest saves the first dream and can read its simulated analysis', async ({
   await page.getByTestId('input.dreamTranscript').fill(story);
   await page.getByTestId('btn.saveDream').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-  await expect(page.getByRole('button', { name: 'Close analysis', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Close analysis', exact: true }).click();
-  await page.getByRole('button', { name: 'Read the full analysis', exact: true }).click();
-  await page.getByRole('button', { name: 'Close analysis', exact: true }).click();
+  await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
+  await expect(page.getByTestId('analysis.reading.modal')).toHaveCount(0);
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
 });
 
@@ -91,12 +90,14 @@ test('free user saves a dream and finds the exact story in the journal', async (
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
 });
 
-test('free user searches, sees no match, and recovers the journal', async ({ page }) => {
+test('free user searches, sees no match, and recovers the journal', async ({ page }, info) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await selectProfile(page, 'existing');
   await journal(page);
   await search(page, 'The Infinite Library');
   await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
   await expect(page.getByTestId(/^dream\.item\./)).toContainText('The Infinite Library');
+  await page.screenshot({ path: info.outputPath('journal-mobile-entry.png') });
   await search(page, 'E2E no such dream 93f82');
   await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(0);
   await search(page, 'The Infinite Library');
@@ -203,6 +204,10 @@ test('Plus user continues a reflection and sees the conversation on revisit', as
   if (await latest.isVisible()) await latest.click();
   await expect(page.getByText('E2E: why did the library feel so familiar?', { exact: true })).toBeVisible();
   await expect(page.getByText(response, { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('component.dreamDetail.actionCard')).toContainText('Continue my reflection');
 });
 
 test('exhausted free account can keep a dream and decline the analysis offer', async ({ page }) => {
@@ -226,9 +231,8 @@ for (const profile of ['new', 'plus'] as const) {
     await page.getByTestId('btn.saveDream').click();
     await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
     await page.getByTestId('btn.dream.primaryCta').click();
-    await expect(page.getByTestId('analysis.reading.close')).toBeVisible();
-    await page.getByTestId('analysis.reading.close').click();
-    await expect(page.getByRole('button', { name: 'Read the full analysis', exact: true })).toBeVisible();
+    await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
+    await expect(page.getByTestId('analysis.reading.modal')).toHaveCount(0);
     await expect(page.getByTestId('screen.paywall')).toHaveCount(0);
     await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
   });
@@ -243,6 +247,7 @@ test('reflection offers an optional recap after one angle and updates it after a
   await expect(page.getByTestId('screen.weeklyRecap')).toBeVisible();
   await page.getByTestId('btn.weeklyRecap.openDream').click();
   await expect(page.getByTestId('component.transcriptCard')).toBeVisible();
+  await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
   await page.getByTestId('component.dreamDetail.actionCard').click();
 
   const categories = page.getByTestId('screen.dreamCategories');

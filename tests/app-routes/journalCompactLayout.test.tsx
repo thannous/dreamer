@@ -338,6 +338,11 @@ function overlayClearance(width: number, height: number, fontScale: number) {
   );
 }
 
+function renderedListViewportStyle() {
+  const viewport = screen.getByTestId(TID.List.Dreams).parentElement;
+  return JSON.parse(viewport?.getAttribute('data-style') ?? '{}') as { flex?: number; marginBottom?: number };
+}
+
 function expectReachableListViewport(
   width: number,
   height: number,
@@ -348,7 +353,7 @@ function expectReachableListViewport(
   const searchMinHeight = searchBarLayout(fontScale).minHeight;
   const searchHeaderHeight = mobileSearchHeaderHeight(fontScale);
   const reservedOverlay = keyboardVisible ? 0 : overlayClearance(width, height, fontScale);
-  const listStyle = flattenStyle(mockListProps.style);
+  const listStyle = renderedListViewportStyle();
   const contentStyle = flattenStyle(mockListProps.contentContainerStyle);
   const marginBottom = listStyle.marginBottom ?? 0;
   const extraNavPadding = (contentStyle.paddingBottom ?? 0) - ThemeLayout.spacing.lg;
@@ -533,7 +538,7 @@ describe('Journal compact large-text layout', () => {
     const view = render(<JournalScreen />);
     const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
     const list = screen.getByTestId(TID.List.Dreams);
-    const navigationClearance = mockListProps.style.marginBottom;
+    const navigationClearance = renderedListViewportStyle().marginBottom;
     expect(list.contains(input)).toBe(false);
     expect(list.contains(screen.getByTestId('journal-shared-header'))).toBe(false);
     expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
@@ -549,7 +554,7 @@ describe('Journal compact large-text layout', () => {
     expect(screen.getByTestId(TID.Input.SearchDreams)).toBe(input);
     expect(document.activeElement).toBe(input);
     expect(input.value).toBe('blue room');
-    expect(mockListProps.style.marginBottom).toBe(0);
+    expect(renderedListViewportStyle().marginBottom).toBe(0);
     expectReachableListViewport(437, 490, fontScale, true);
     expect(mockListProps.keyboardShouldPersistTaps).toBe('handled');
     expect(mockListProps.keyboardDismissMode).toBe('on-drag');
@@ -558,7 +563,7 @@ describe('Journal compact large-text layout', () => {
     Object.assign(mockWindow, { height: 949 });
     view.rerender(<JournalScreen />);
     expect(screen.getByTestId(TID.Input.SearchDreams)).toBe(input);
-    expect(mockListProps.style.marginBottom).toBe(navigationClearance);
+    expect(renderedListViewportStyle().marginBottom).toBe(navigationClearance);
     expectReachableListViewport(437, 949, fontScale);
     view.unmount();
     expect(mockKeyboardListeners.size).toBe(0);
@@ -641,7 +646,7 @@ describe('Journal compact large-text layout', () => {
     const reservedOverlay = overlayClearance(640, 320, 2);
     const list = screen.getByTestId(TID.List.Dreams);
     const dreamCard = screen.getByTestId(TID.List.DreamItem(guestDream.id));
-    const listStyle = flattenStyle(mockListProps.style);
+    const listStyle = renderedListViewportStyle();
     const uncoveredListBox = 320 - reservedOverlay;
 
     expect(searchMinHeight).toBe(112);

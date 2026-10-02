@@ -31,12 +31,16 @@ async function populatedHome(page: Page, failImage = false) {
   await page.getByTestId('btn.saveDream').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
   await page.getByTestId('btn.dream.primaryCta').click();
-  await expect(page.getByTestId('analysis.reading.close')).toBeVisible();
-  await page.getByTestId('analysis.reading.close').click();
+  await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
   await page.getByTestId('btn.journal.illustrate').click();
   await expect(page.getByTestId('btn.journal.illustrate')).toHaveCount(0);
-  await expect(page.getByTestId('btn.journal.illustration.expand')).toBeVisible();
+  if (!failImage) await expect(page.getByTestId('btn.journal.illustration.expand')).toBeVisible();
   await expect(page.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
+  if (failImage) {
+    // Bring the lazy artwork into range before waiting for its failure state.
+    await page.getByTestId('component.metadataCard').scrollIntoViewIfNeeded();
+    await expect(page.getByTestId('journal.detail.image.unavailable')).toBeVisible();
+  }
   await page.getByTestId('btn.editMetadata').click();
   await page.getByTestId('input.dreamTitle').fill(dreamTitle);
   await page.getByTestId('btn.editMetadata').click();

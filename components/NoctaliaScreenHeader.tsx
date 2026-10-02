@@ -41,6 +41,7 @@ export interface NoctaliaHeaderChip {
 interface NoctaliaScreenHeaderProps {
   titleKey: string;
   prominentTitle?: boolean;
+  variant?: 'standard' | 'editorial';
   includeTopInset?: boolean;
   actions?: NoctaliaHeaderAction[];
   chips?: NoctaliaHeaderChip[];
@@ -52,6 +53,7 @@ interface NoctaliaScreenHeaderProps {
 export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   titleKey,
   prominentTitle = false,
+  variant = 'standard',
   includeTopInset = true,
   actions = [],
   chips = [],
@@ -76,7 +78,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   const quietIconColor = noctalia.text.secondary;
 
   return (
-    <View style={[styles.container, prominentTitle && styles.prominentContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
+    <View style={[styles.container, prominentTitle && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
       <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow, stackActions && styles.titleRowStacked, wrapInlineSlot && styles.searchRowWrapped]}>
         <View style={[styles.titleBlock, stackActions && styles.titleBlockStacked,
           Boolean(inlineSlot) && (canInlineSlot
@@ -84,7 +86,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             : { flex: 0, width: '100%', paddingRight: stackActions ? 0 : actions.length * 52 }),
         ]}>
           <Text
-            style={[styles.brand, prominentTitle && styles.quietBrand, { color: noctalia.text.primary }]}
+            style={[styles.brand, prominentTitle && styles.quietBrand, variant === 'editorial' && styles.editorialBrand, { color: noctalia.text.primary }]}
             numberOfLines={wrapTitle ? undefined : 1}
             adjustsFontSizeToFit={!wrapTitle}
             minimumFontScale={0.84}
@@ -92,8 +94,8 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             Noctalia
           </Text>
           <Text
-            accessibilityRole={prominentTitle ? 'header' : undefined}
-            style={[styles.subtitle, prominentTitle && styles.prominentTitle, { color: prominentTitle ? noctalia.text.primary : noctalia.text.secondary }]}
+            accessibilityRole={prominentTitle || variant === 'editorial' ? 'header' : undefined}
+            style={[styles.subtitle, prominentTitle && styles.prominentTitle, variant === 'editorial' && styles.editorialTitle, { color: prominentTitle || variant === 'editorial' ? noctalia.text.primary : noctalia.text.secondary }]}
             numberOfLines={wrapTitle ? undefined : 1}
             adjustsFontSizeToFit={!wrapTitle}
             minimumFontScale={0.84}
@@ -107,7 +109,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
           </View>
         ) : null}
         {actions.length > 0 ? (
-          <View style={[styles.headerActions, isNarrow && styles.headerActionsNarrow, stackActions && styles.headerActionsStacked,
+          <View style={[styles.headerActions, variant === 'editorial' && styles.editorialActions, isNarrow && styles.headerActionsNarrow, stackActions && styles.headerActionsStacked,
             wrapInlineSlot && !stackActions && { position: 'absolute', top: 0, right: isNarrow ? 16 : 24 },
           ]}>
             {actions.map((action) => (
@@ -189,6 +191,10 @@ const webMaxContentStyle = { width: 'max-content' } as unknown as ViewStyle;
 const webNowrapStyle = { whiteSpace: 'nowrap' } as unknown as TextStyle;
 
 const styles = StyleSheet.create({
+  editorialContainer: { borderBottomWidth: 0 },
+  editorialBrand: { fontSize: 18, lineHeight: 24, marginBottom: 8 },
+  editorialTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 36, lineHeight: 44, opacity: 1 },
+  editorialActions: { alignSelf: 'flex-start' },
   container: {
     gap: ThemeLayout.spacing.md,
     paddingBottom: ThemeLayout.spacing.sm,
