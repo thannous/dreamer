@@ -1,3 +1,57 @@
+# Mon rêve — lecture continue
+
+final result: passed
+
+## Comparaison visuelle
+
+- Source : `/Users/timax/Projects/noctalia/dist/mon-reve-maquettes-20261002/01-immersion-lecture-continue.png`.
+- Captures : `/Users/timax/Projects/noctalia/dist/mon-reve-implementation-20261003/dream-{light,dark}-{hero,story,reading}.png`.
+- Comparaisons côte à côte : même dossier, `comparison-light.png` et `comparison-dark.png`.
+- Source : 862 × 1825 px, deux colonnes de 431 px. Chaque colonne est ramenée à 390 px de large pour la comparaison.
+- Application : Chromium, viewport CSS 390 × 844, densité 1, captures 390 × 844 px. Les vues image et récit sont assemblées verticalement face à la source longue ; elles représentent deux positions de défilement, pas une capture continue.
+- État : français, compte Plus simulé, récit et titre identiques à la source, analyse enregistrée simulée. Les classifications, la date et le texte d’analyse sont des données de test différentes de la maquette.
+- Comparaison détaillée : récit, titre, bouton Modifier et action fixe lisibles à leur taille réelle ; captures `reading` ouvertes pour vérifier les sous-sections et la lisibilité.
+
+## Surfaces vérifiées
+
+| Surface | Résultat |
+| --- | --- |
+| Typographie | Fraunces pour le titre, Space Grotesk pour le récit et les contrôles. Corps 16/26, titres de section 18 px, sous-sections 17 px. La hiérarchie reste lisible dans les deux thèmes. |
+| Espacement | Image sur le premier viewport, surfaces de lecture opaques, marges de 24 px, sections espacées. La barre de navigation protège le texte lors du défilement. La réserve basse suit la hauteur réelle de l’action. |
+| Couleurs | Tokens communs ink/ivory/champagne. Accent textuel champagne-on, texte de bouton on-champagne. Le changement de thème système ne remplace pas un thème explicitement choisi. |
+| Illustration | Asset raster existant, même URI dans les deux thèmes, sans filtre colorimétrique. Le recadrage suit le viewport immersif ; la maquette générée comporte une variation du dessin. |
+| Contenu | Mon récit, Modifier et Analyse visibles. Interprétation, tous les symboles, toutes les émotions, questions et citation sont intégrés. Aucun lancement automatique d’une fenêtre de lecture. |
+
+Évolution approuvée après la maquette : suppression de « Lire l’analyse » et intégration de toute l’analyse. « Commencer ma réflexion » devient l’action fixe dès l’arrivée dans la lecture ; une conversation existante propose « Reprendre ma réflexion ». Les commandes secondaires existantes restent accessibles dans le pied du contenu plutôt que dans un nouveau menu.
+
+## Historique des corrections
+
+1. [P2] Le bouton Retour isolé se superposait au texte pendant la lecture. Correction : barre supérieure opaque au défilement ; captures révisées `story` et `reading`.
+2. [P2] Le libellé Modifier affichait une clé de traduction. Correction : libellé traduit dans les six langues ; captures révisées et contrôle français E2E.
+3. [P2] Le titre commençait dans les derniers pixels du premier viewport. Correction : départ du titre après la pleine hauteur de l’image ; captures révisées `hero`.
+
+Aucune différence P0/P1/P2 restante dans ces états. L’icône éclair en bas à gauche appartient au menu développeur Expo et est exclue du jugement du produit distribué. Aucun dessin de remplacement n’a été créé dans le code.
+
+## Vérification fonctionnelle et limites
+
+Les quatre suites affectées couvrent clair/sombre, image conservée, analyse complète, image absente ou en échec, édition, analyse obsolète, quotas, journal, favoris, réflexion enregistrée et bilan. Les traces, captures et rapport JUnit sont générés dans `test-results/` ignoré ; le paquet local pérenne est copié dans le dossier d’implémentation ci-dessus.
+
+Rerun depuis la révision qui ajoute ce rapport :
+
+```sh
+EXPO_PUBLIC_MOCK_PERSISTENCE=true mise exec -- npm run start:mock -- --web --port 8087
+E2E_WEB_PORT=8087 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- e2e/web/dream-continuous-reading.spec.ts e2e/web/journeys.spec.ts e2e/web/home-editorial.spec.ts e2e/web/reflection-context.spec.ts --workers=2
+```
+
+L’identité exacte du candidat, les résultats et les préconditions figurent dans le rapport Playwright et le manifeste local. Les services réseau réels sont bloqués par les fixtures : ceci valide le parcours de l’interface avec services simulés. Installation iPhone/Android, comportement natif du clavier et grande taille de texte restent non qualifiés par cette exécution web. Aucun changement natif ou de dépendance.
+
+CI initiale (ff93bab, job 2214) : 30/34 parcours passent. Deux assertions supposaient un seul élément img alors qu’Expo conserve l’image précédente pendant le fondu ; deux autres éditaient le titre avant que l’erreur de chargement ait stabilisé la mise en page. Correction : vérifier l’URI de l’image réellement demandée et sa largeur naturelle, et attendre l’état d’illustration indisponible avant d’éditer. Aucun délai arbitraire ni augmentation de timeout. Le nouvel identifiant de l’état indisponible sert à cette vérification stable.
+
+
+---
+
+## Rapports antérieurs conservés
+
 # Reflection — selected concept 3, 2026-10-02
 
 Source visual truth: /Users/timax/Projects/noctalia/dist/reflexion-maquettes-v2-20261002/03-reve-en-contexte.png (1391×1131, dark left/light right).
